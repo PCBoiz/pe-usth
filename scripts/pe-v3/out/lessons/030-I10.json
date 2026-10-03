@@ -1,0 +1,278 @@
+{
+  "lesson_code": "I10",
+  "sort_order": 30,
+  "module": "M7 · Kế thừa và override (Ex3)",
+  "title": "I10 · Override __str__",
+  "subtitle": "Trung cấp · M7 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I10 · Override __str__",
+    "subtitle": "Trung cấp · M7 · 25 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I10",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP TRUNG CẤP",
+          "I10"
+        ],
+        "title": "Override __str__",
+        "goal": "Override __str__ mà giữ đủ chuỗi của lớp cha.",
+        "task": "Lấy super().__str__() rồi nối \", Standard version[...]\".",
+        "predict": "str(self) trong __str__ gọi cha hay gọi chính nó?",
+        "code": "class C(ProgrammingLanguage):\n    # __init__ đã cấp\n    def __str__(self):\n        pass",
+        "tests": [
+          "C17 → … Standard version[C17]",
+          "C23 với [] → … Paradigms[], Standard version[C23]"
+        ],
+        "reflect": "Tại sao dùng super().__str__()?"
+      },
+      "context": {
+        "title": "Override __str__ mà giữ đầy đủ chuỗi của lớp cha.",
+        "body": "C đã có constructor. Override __str__: lấy chuỗi của cha bằng super().__str__() rồi nối \", Standard version[...]\".",
+        "example": "C17 → Language[C], Year created[1972], Paradigms['procedural'], Standard version[C17]",
+        "prereq": "I09",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Gọi str(self) bên trong __str__ sẽ gọi cha hay gọi lại chính method hiện tại?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Gọi lại chính nó — đệ quy tới RecursionError",
+            "detail": "self là object C nên str(self) chạy C.__str__.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Gọi __str__ của cha",
+            "detail": "Chỉ super().__str__() mới đi lên cha.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Trả chuỗi rỗng",
+            "detail": "Không có điểm dừng.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Viết lại cả chuỗi của cha trong lớp con\"",
+        "body": "Copy format của cha vào con là lặp code: cha đổi format thì con lệch. super().__str__() lấy đúng phần của cha. Và __str__ vẫn phải return str, không print."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Override: lớp con viết method CÙNG TÊN để thay hành vi khi gọi trên object con."
+        },
+        {
+          "n": 2,
+          "body": "super().__str__() lấy chuỗi của cha; lớp con chỉ nối thêm phần của mình."
+        },
+        {
+          "n": 3,
+          "body": "Đừng gọi str(self) trong __str__: nó gọi lại chính method đang chạy → đệ quy vô hạn (RecursionError)."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def __str__(self):\n        return f\"Animal[{self.name}]\"\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)\n        self.breed = breed\n\n    def __str__(self):\n        base = super().__str__()\n        return base + f\", Breed[{self.breed}]\"\n\nprint(Dog(\"Rex\", \"Corgi\"))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "C23 với paradigms [] → str(obj) kết thúc thế nào?",
+          "options": [
+            {
+              "text": "…Paradigms[], Standard version[C23]",
+              "detail": "Phần cha giữ nguyên, nối thêm phần con.",
+              "correct": true
+            },
+            {
+              "text": "Standard version[C23]",
+              "detail": "Mất phần của cha.",
+              "correct": false
+            },
+            {
+              "text": "…Paradigms[]",
+              "detail": "Thiếu phần của con.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Phần cha giữ nguyên, nối thêm phần con."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Tại sao dùng super().__str__() trong lớp con?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Để lấy hành vi của cha rồi mở rộng: giữ đủ tên, năm, list do cha định dạng và chỉ nối thêm Standard version[...]. Không lặp code của cha, và không gọi str(self) vì đó là gọi lại chính method → đệ quy."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp phần lấy chuỗi cha và phần nối.",
+        "rule": "Thử C23 và list paradigms rỗng; kiểm vẫn có đủ các trường của cha."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Chuỗi cha → description."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Nối \", Standard version[C17]\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "return chuỗi đầy đủ."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Đổi obj.std_version = \"C23\" rồi str(obj) — phần cuối là gì?",
+        "options": [
+          "Standard version[C23]",
+          "Standard version[C17]",
+          "Không đổi được"
+        ],
+        "correct": "Standard version[C23]"
+      },
+      "scaffold": {
+        "template": "    def __str__(self):\n        description = {{slot1}}\n        return {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "super().__str__()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "description + f\", Standard version[{self.std_version}]\""
+          }
+        ],
+        "bank": [
+          {
+            "label": "str(self)",
+            "slot": 1,
+            "trap": "Đệ quy vô hạn."
+          },
+          {
+            "label": "super().__str__()",
+            "slot": 1
+          },
+          {
+            "label": "f\"Language[{self.name}]\"",
+            "slot": 1,
+            "trap": "Mất các trường còn lại của cha."
+          },
+          {
+            "label": "description + f\", Standard version[{self.std_version}]\"",
+            "slot": 2
+          },
+          {
+            "label": "f\", Standard version[{self.std_version}]\"",
+            "slot": 2,
+            "trap": "Mất phần của cha."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "C đã có constructor. Override __str__: lấy chuỗi của cha bằng super().__str__() rồi nối \", Standard version[...]\".\n\nThực hành: Lấy super().__str__() rồi nối thông tin phiên bản.",
+        "io": [
+          {
+            "label": "C17",
+            "value": "Chuỗi giữ tên/năm/list và thêm Standard version[C17]"
+          },
+          {
+            "label": "C23 với []",
+            "value": "Kết thúc bằng Standard version[C23]; phần cha có Paradigms[]"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        pass\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\ntext = str(language)\nprint(text)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Lấy super().__str__() rồi nối thông tin phiên bản."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. description = super().__str__()\n2. return description + f\", Standard version[{self.std_version}]\""
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "        description = super().__str__()\n        return ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "C17: đủ trường cha + phiên bản",
+          "call": "str(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "\"Language[C], Year created[1972], Paradigms['procedural'], Standard version[C17]\""
+        },
+        {
+          "name": "C23 với []",
+          "call": "str(C(\"C\", 1972, [], 'C23'))",
+          "expect": "'Language[C], Year created[1972], Paradigms[], Standard version[C23]'"
+        },
+        {
+          "name": "Đổi std_version phản ánh vào chuỗi",
+          "call": "(lambda o: (setattr(o, 'std_version', 'C11'), str(o))[1])(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "\"Language[C], Year created[1972], Paradigms['procedural'], Standard version[C11]\""
+        },
+        {
+          "name": "Gọi str riêng: không in, không RecursionError",
+          "call": "(lambda r: (r.error, r.stdout))(_studio.call(str, C(\"C\", 1972, ['procedural'], 'C17')))",
+          "expect": "(None, '')"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "C.__init__(self, name, year_created, paradigms, std_version)",
+          "does": "Khởi tạo phần cha và thêm phiên bản C.",
+          "takes": "self; ba trường của cha; std_version: str",
+          "gives": "None",
+          "effect": "Gọi super().__init__; gán self.std_version.",
+          "call": "C(\"C\", 1972, [\"procedural\"], \"C17\")"
+        },
+        {
+          "sig": "C.__str__(self)",
+          "does": "Giữ chuỗi của cha rồi thêm phiên bản.",
+          "takes": "self: object C",
+          "gives": "str kết thúc bằng Standard version[...]",
+          "effect": "Không print, không đổi trạng thái.",
+          "call": "str(obj) kết thúc bằng Standard version[C17]"
+        }
+      ]
+    }
+  }
+}

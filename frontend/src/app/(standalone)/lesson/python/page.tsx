@@ -1,7 +1,7 @@
 import PageStyles from '@/components/PageStyles';
 import PythonStudio from '@/components/python-studio/PythonStudio';
 import StudioLesson from '@/components/python-studio/StudioLesson';
-import { PYTHON_LESSON_NUMBER } from '@/lib/python-studio';
+import { PYTHON_DEMO_PARAM } from '@/lib/python-studio';
 
 const STUDIO_CSS = [
   '/static/css/edu-theme.css',
@@ -9,28 +9,26 @@ const STUDIO_CSS = [
 ];
 
 // Course links pass a zero-based lesson index; the lessons table numbers rows
-// from 1 (sort_order). Lesson 11 (List & Mutability) is the hand-built studio;
-// every other lesson renders from lessons.content_json, which the admin fills by
-// importing a PDF or Markdown file.
+// from 1 (sort_order). Mọi bài của khoá (40 bài PE Python v3) render từ
+// lessons.content_json bằng StudioLesson. Studio dựng tay List & Mutability
+// không còn thuộc giáo trình: chỉ mở được bằng ?demo=list, không ghi tiến độ.
 export default async function LessonPythonPage({
   searchParams,
 }: {
-  searchParams: Promise<{ lesson?: string }>;
+  searchParams: Promise<{ lesson?: string; demo?: string }>;
 }) {
-  const { lesson } = await searchParams;
-  const index = Number(lesson);
-  const sortOrder =
-    lesson === undefined || !Number.isInteger(index) || index < 0
-      ? PYTHON_LESSON_NUMBER
-      : index + 1;
-
-  if (sortOrder === PYTHON_LESSON_NUMBER)
+  const { lesson, demo } = await searchParams;
+  if (demo === PYTHON_DEMO_PARAM)
     return (
       <>
         <PageStyles hrefs={STUDIO_CSS} />
         <PythonStudio />
       </>
     );
+
+  const index = Number(lesson);
+  const sortOrder =
+    lesson === undefined || !Number.isInteger(index) || index < 0 ? 1 : index + 1;
   return (
     <>
       <PageStyles hrefs={STUDIO_CSS} />

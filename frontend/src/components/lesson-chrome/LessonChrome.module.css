@@ -1,9 +1,28 @@
+/* Khung màn bài học — số đo theo Figma "PE Python v3 — 20 bài cơ bản B01–B20"
+   (frame 1440 × 900): top bar 56px trắng, nền phẳng --st-page-bg, cột nội dung
+   680px (--st-col), bottom bar 88px trắng với nút CTA 480px ở giữa. */
+
+/* Trang bài học không nạp CSS reset: bỏ lề 8px mặc định của body để khung
+   tràn viền như Figma. */
+:global(body):has(.chrome) {
+  margin: 0;
+}
+
+/* Hai thanh trên/dưới dùng border-box để số đo khớp đúng frame Figma. */
+.topBar,
+.topBar *,
+.bottomBar,
+.bottomBar * {
+  box-sizing: border-box;
+}
+
 .chrome {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   color: var(--edu-t1);
   font-family: var(--edu-font);
+  background: var(--st-page-bg);
 }
 
 .topBar {
@@ -11,17 +30,15 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--edu-nav-bg);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-bottom: 1px solid var(--edu-sidebar-border);
+  background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
 }
+/* Frame 1440: nút × ở x=56, pill streak kết thúc ở x=1350. */
 .topBarInner {
-  max-width: 1280px;
+  max-width: 1440px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 90px 0 56px;
   display: flex;
   align-items: center;
   gap: 14px;
@@ -48,24 +65,49 @@
   transform: scale(0.95);
 }
 
+/* Tên khoá · tên bài ("Python · Biến và kết quả"). */
+.lessonContext {
+  flex: 0 1 285px;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--edu-t2);
+  font-size: 16px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Thanh tiến độ: các đoạn ghép sát nhau thành MỘT rãnh mảnh 6px như Figma;
+   vẫn là từng nút riêng để bấm xem lại màn đã qua. */
 .track {
-  flex: 1;
+  flex: 1 1 690px;
+  max-width: 690px;
+  margin-left: 11px;
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: 0;
   padding: 8px 0;
 }
 .segment {
   flex: 1;
   height: 6px;
-  border-radius: 999px;
-  background: var(--edu-track-bg);
+  border-radius: 0;
+  background: var(--st-track);
   overflow: hidden;
   /* Đoạn có thể bấm được render thành <button> — bỏ style mặc định của nút,
      và nới vùng chạm lên 20px bằng padding ảo để ngón tay bấm trúng. */
   padding: 0;
   border: 0;
   display: block;
+}
+.segment:first-child {
+  border-radius: 3px 0 0 3px;
+}
+.segment:last-child {
+  border-radius: 0 3px 3px 0;
+}
+.segment:only-child {
+  border-radius: 3px;
 }
 button.segment {
   cursor: pointer;
@@ -76,25 +118,26 @@ button.segment::after {
   position: absolute;
   inset: -7px 0;
 }
-/* Màn đang mở nhưng đã xong (đoạn đầy, trông y hệt các đoạn đã qua): viền nổi
-   quanh đoạn để vẫn thấy mình đang ở đâu. */
-.segmentCurrent {
-  box-shadow:
-    0 0 0 2px var(--edu-panel-bg-solid),
-    0 0 0 4px var(--edu-accent);
-}
 /* Luôn render thẻ fill (kể cả rộng 0) để width có thể transition — nếu chỉ
    gắn/gỡ thẻ theo bước thì trình duyệt không có giá trị cũ để nội suy. */
 .segmentFill {
   width: 0;
   height: 100%;
-  border-radius: 999px;
-  background: var(--edu-accent-grad);
+  background: var(--edu-accent);
   transition: width 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+.segmentCurrent .segmentFill {
+  background: var(--edu-accent);
+}
+/* Đã xong nhưng nằm sau màn đang xem lại. */
+.segmentAhead .segmentFill {
+  background: var(--edu-accent-3);
 }
 
 .stepLabel {
-  font-size: 13px;
+  margin-left: 1px;
+  min-width: 56px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--edu-t3);
   white-space: nowrap;
@@ -103,19 +146,20 @@ button.segment::after {
 }
 
 .streakPill {
-  background: var(--edu-accent-soft);
+  margin-left: auto;
+  min-width: 120px;
+  height: 34px;
+  background: var(--st-streak-bg);
   color: var(--edu-accent-text);
-  border-radius: 999px;
-  padding: 4px 12px;
+  border-radius: 17px;
+  padding: 0 18px;
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 13px;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
   font-weight: 700;
   flex-shrink: 0;
-}
-.streakPill svg {
-  color: var(--edu-accent);
 }
 
 .main {
@@ -125,11 +169,13 @@ button.segment::after {
   justify-content: center;
   width: 100%;
 }
+/* Cột 680px là CHIỀU RỘNG NỘI DUNG (Figma); trang dùng content-box nên phần
+   đệm hai bên nằm ngoài 680px. */
 .contentContainer {
   max-width: var(--st-col);
   width: 100%;
   margin: 0 auto;
-  padding: 32px 20px;
+  padding: 45px 20px 32px;
 }
 
 /* Chuyển cảnh giữa các bước: thẻ mới trôi lên + hiện dần. Khoá bằng
@@ -153,38 +199,55 @@ button.segment::after {
   position: sticky;
   bottom: 0;
   z-index: 50;
-  background: var(--edu-nav-bg);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border-top: 1px solid var(--edu-sidebar-border);
+  background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
 }
+/* Ba cột: trạng thái lưu | nút chính 480px đúng giữa (x=480–960 ở frame 1440) | nút phụ. */
 .bottomBarInner {
-  max-width: var(--st-col);
+  max-width: 1440px;
   height: 100%;
   margin: 0 auto;
-  padding: 0 20px;
-  display: flex;
+  padding: 0 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 480px) minmax(0, 1fr);
   align-items: center;
-  justify-content: center;
+  gap: 16px;
+}
+
+.saveLabel {
+  justify-self: start;
+  min-width: 0;
+  padding-left: 129px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--edu-t3);
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.secondarySlot {
+  justify-self: start;
+  min-width: 0;
 }
 
 .primaryBtn {
   width: 100%;
   height: 52px;
-  border-radius: 999px;
+  border-radius: 26px;
   border: 0;
-  background: var(--edu-accent-grad);
-  color: var(--edu-panel-bg-solid);
+  background: var(--edu-accent);
+  /* Chữ trắng ở cả hai chế độ: nền nút là màu accent cố định (trước đây dùng
+     --edu-panel-bg-solid nên ở chế độ tối chữ thành màu tối, khó đọc). */
+  color: #fff;
   font-size: 16px;
   font-weight: 700;
   font-family: inherit;
-  box-shadow: 0 12px 28px var(--edu-accent-soft-strong);
   cursor: pointer;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
 .primaryBtn:hover:not(:disabled) {
   transform: translateY(-1px);
+  filter: brightness(1.05);
 }
 .primaryBtn:active:not(:disabled) {
   transform: translateY(1px);
@@ -218,6 +281,7 @@ button.segment::after {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
   transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 .secondaryBtn:hover {
@@ -226,6 +290,14 @@ button.segment::after {
 }
 .secondaryBtn:active {
   transform: translateY(1px);
+}
+
+.closeBtn:focus-visible,
+button.segment:focus-visible,
+.primaryBtn:focus-visible,
+.secondaryBtn:focus-visible {
+  outline: 3px solid var(--edu-accent-3);
+  outline-offset: 3px;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -237,15 +309,70 @@ button.segment::after {
   }
 }
 
+/* Màn vừa: bỏ khoảng đệm lớn bên trái nhãn lưu. */
+@media (max-width: 1180px) {
+  .saveLabel {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .topBarInner,
+  .bottomBarInner {
+    padding: 0 16px;
+  }
+  .lessonContext {
+    flex-basis: 180px;
+    font-size: 14px;
+  }
+  .streakPill {
+    min-width: 0;
+    padding: 0 12px;
+  }
+}
+
 @media (max-width: 560px) {
   .topBarInner {
     gap: 8px;
     padding: 0 12px;
   }
+  .lessonContext {
+    display: none;
+  }
+  .track {
+    margin-left: 0;
+  }
   .contentContainer {
     padding: 20px 16px;
   }
+  .bottomBar {
+    height: auto;
+    min-height: var(--st-action-h);
+  }
   .bottomBarInner {
-    padding: 0 16px;
+    min-height: var(--st-action-h);
+    padding: 10px 16px;
+    gap: 8px;
+    display: flex;
+  }
+  .saveLabel {
+    max-width: 96px;
+    font-size: 11px;
+    line-height: 1.3;
+    white-space: normal;
+  }
+  .primaryBtn {
+    flex: 1;
+    min-width: 132px;
+    height: 48px;
+    font-size: 14px;
+  }
+  .secondarySlot {
+    order: -1;
+  }
+  .secondaryBtn {
+    height: 48px;
+    padding: 0 12px;
+    font-size: 12px;
   }
 }

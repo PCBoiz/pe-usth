@@ -1,0 +1,291 @@
+{
+  "lesson_code": "B11",
+  "sort_order": 11,
+  "module": "M3 · Đọc và ghi file",
+  "title": "B11 · Đọc file đầu tiên",
+  "subtitle": "Cơ bản · M3 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B11 · Đọc file đầu tiên",
+    "subtitle": "Cơ bản · M3 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B11",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP CƠ BẢN",
+          "B11"
+        ],
+        "title": "Đọc file đầu tiên",
+        "goal": "Đọc toàn bộ file UTF-8 bằng with/open.",
+        "task": "Đọc data.txt vào text, rồi in text sau khi ra khỏi with.",
+        "predict": "Nếu file rỗng, file.read() trả gì?",
+        "code": "# Dev cấp data.txt\n# Tự dùng with open(..., encoding=\"utf-8\")\n# Đọc toàn bộ vào text",
+        "tests": [
+          "Có dữ liệu → text giữ đúng nội dung",
+          "File rỗng → text = \"\""
+        ],
+        "reflect": "Vì sao ra khỏi with vẫn in được text?"
+      },
+      "context": {
+        "title": "Đọc toàn bộ file UTF-8 bằng with/open.",
+        "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.",
+        "example": "data.txt chứa \"level\\npython\\nđộđ\" → text nhận đúng nội dung đó.",
+        "prereq": "B10",
+        "level": "Cơ bản",
+        "files": [
+          "data.txt"
+        ]
+      },
+      "predict": {
+        "question": "Nếu file rỗng, file.read() nhận được gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Chuỗi rỗng \"\"",
+            "detail": "Không có ký tự nào để đọc; read() trả \"\" chứ không lỗi.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "None",
+            "detail": "read() luôn trả về str.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "File rỗng vẫn mở và đọc bình thường.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Đóng file rồi thì mất luôn nội dung đã đọc\"",
+        "body": "text đã là một chuỗi trong bộ nhớ; with chỉ đóng kết nối tới file. Còn thiếu file thì Python báo FileNotFoundError — đó là lỗi dữ liệu/môi trường, bài này chưa cần try/except."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "open mở file: \"r\" là đọc, encoding=\"utf-8\" để đọc đúng chữ có dấu."
+        },
+        {
+          "n": 2,
+          "body": "with giữ file trong khối thụt vào và TỰ ĐÓNG file khi ra khỏi khối. file.read() lấy toàn bộ nội dung thành một str, kể cả ký tự xuống dòng."
+        },
+        {
+          "n": 3,
+          "body": "Ra khỏi with, file đã đóng nhưng biến content vẫn giữ chuỗi trong bộ nhớ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "with open(\"note.txt\", \"r\", encoding=\"utf-8\") as file:\n    content = file.read()\n\nprint(len(content))\nprint(content)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Vì sao cần encoding=\"utf-8\" khi mở data.txt?",
+          "options": [
+            {
+              "text": "Để đọc đúng chữ có dấu như \"độđ\"",
+              "detail": "Mã hoá mặc định của máy có thể khác UTF-8.",
+              "correct": true
+            },
+            {
+              "text": "Để đọc nhanh hơn",
+              "detail": "Encoding quyết định cách giải mã byte thành chữ, không phải tốc độ.",
+              "correct": false
+            },
+            {
+              "text": "Để file tự đóng",
+              "detail": "Việc tự đóng file là của with.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mã hoá mặc định của máy có thể khác UTF-8."
+        },
+        {
+          "question": "Mở data.txt bằng mode \"w\" để đọc thì chuyện gì xảy ra?",
+          "options": [
+            {
+              "text": "Nội dung file bị xoá ngay khi mở",
+              "detail": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn.",
+              "correct": true
+            },
+            {
+              "text": "Đọc bình thường",
+              "detail": "\"w\" là mode ghi, không đọc được.",
+              "correct": false
+            },
+            {
+              "text": "Python tự đổi sang \"r\"",
+              "detail": "Python làm đúng mode bạn ghi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao in text ở ngoài with vẫn được?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "file.read() đã chép nội dung file vào biến text (một str trong bộ nhớ). with chỉ đóng file khi ra khỏi khối, không xoá biến text, nên print(text) ở ngoài vẫn in đúng nội dung, kể cả chữ có dấu."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp lời mở file và lệnh đọc.",
+        "rule": "Thử file rỗng và file có tiếng Việt; không thêm xử lý lỗi ở bài này."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "open(\"data.txt\", \"r\", encoding=\"utf-8\") mở file."
+          },
+          {
+            "label": "Bước 2",
+            "text": "file.read() → text = \"level\\npython\\nđộđ\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Ra khỏi with → file đóng."
+          },
+          {
+            "label": "Bước 4",
+            "text": "print(text) → in nội dung, cộng một xuống dòng của print."
+          }
+        ]
+      },
+      "counter": {
+        "question": "data.txt rỗng thì print(text) in gì?",
+        "options": [
+          "Một dòng trống",
+          "None",
+          "Báo lỗi"
+        ],
+        "correct": "Một dòng trống"
+      },
+      "scaffold": {
+        "template": "with {{slot1}} as file:\n    {{slot2}}\n\nprint(text)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "open(\"data.txt\", \"r\", encoding=\"utf-8\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "text = file.read()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "text = file",
+            "slot": 2,
+            "trap": "file là đối tượng file, chưa phải nội dung."
+          },
+          {
+            "label": "text = file.read()",
+            "slot": 2
+          },
+          {
+            "label": "open(\"data.txt\", \"r\", encoding=\"utf-8\")",
+            "slot": 1
+          },
+          {
+            "label": "open(\"data.txt\", \"w\", encoding=\"utf-8\")",
+            "slot": 1,
+            "trap": "Mode w XOÁ file nguồn!"
+          },
+          {
+            "label": "text = file.readline()",
+            "slot": 2,
+            "trap": "Chỉ đọc một dòng."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.\n\nThực hành: Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with.",
+        "io": [
+          {
+            "label": "data.txt: \"level\\npython\\nđộđ\"",
+            "value": "text đúng; stdout thêm một xuống dòng do print"
+          },
+          {
+            "label": "File rỗng",
+            "value": "text = \"\"; print tạo một dòng rỗng"
+          }
+        ]
+      },
+      "starterCode": "# data.txt đã được cấp trong thư mục bài.\n# Tự đọc file vào text và in để quan sát.\n",
+      "solutionCode": "with open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    text = file.read()\n\nprint(text)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. with open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n2. Trong with: text = file.read(); ngoài with: print(text)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "with open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    ...\nprint(text)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "text nhận đúng nội dung (cả dấu tiếng Việt)",
+          "call": "_studio.run().var('text')",
+          "expect": "'level\\npython\\nđộđ'"
+        },
+        {
+          "name": "stdout = nội dung + một xuống dòng",
+          "call": "_studio.run().stdout",
+          "expect": "'level\\npython\\nđộđ\\n'"
+        },
+        {
+          "name": "File rỗng → text = \"\"",
+          "call": "_studio.run(files={'data.txt': ''}).var('text')",
+          "expect": "''"
+        },
+        {
+          "name": "Ca riêng: \"xin chào\"",
+          "call": "_studio.run(files={'data.txt': 'xin chào'}).var('text')",
+          "expect": "'xin chào'"
+        },
+        {
+          "name": "Giữ xuống dòng cuối file",
+          "call": "_studio.run(files={'data.txt': 'a\\nb\\n'}).var('text')",
+          "expect": "'a\\nb\\n'"
+        }
+      ],
+      "files": [
+        {
+          "name": "data.txt",
+          "content": "level\npython\nđộđ",
+          "kind": "data"
+        }
+      ]
+    }
+  }
+}

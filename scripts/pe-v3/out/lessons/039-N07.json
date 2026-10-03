@@ -1,0 +1,326 @@
+{
+  "lesson_code": "N07",
+  "sort_order": 39,
+  "module": "M9 · Process và đo thời gian (Ex5)",
+  "title": "N07 · Mỗi process chạy n thread",
+  "subtitle": "Nâng cao · M9 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N07 · Mỗi process chạy n thread",
+    "subtitle": "Nâng cao · M9 · 40 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N07",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M9",
+          "BÀI TẬP NÂNG CAO",
+          "N07"
+        ],
+        "title": "Mỗi process chạy n thread",
+        "goal": "Mỗi process con chạy n thread.",
+        "task": "Trong child gọi obj.parallel_compile(n); lỗi exit 1, xong exit 0.",
+        "predict": "Thread được tạo trước fork hay sau fork trong child?",
+        "code": "if pid == 0:\n    # gọi obj.parallel_compile(n)\n    # lỗi → os._exit(1)\n    # xong → os._exit(0)",
+        "tests": [
+          "m = 1, n = 2 → một child, hai worker",
+          "m = 2, n = 3 → hai child × ba worker"
+        ],
+        "reflect": "Vì sao sáu dòng in chưa đủ chứng minh có sáu thread?"
+      },
+      "context": {
+        "title": "Ghép process với method thread đã học.",
+        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.",
+        "example": "m = 2, n = 3 → hai child; mỗi child tạo ba thread, tổng sáu công việc.",
+        "prereq": "N06",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py",
+          "thread_language.py",
+          "process_tools.py"
+        ]
+      },
+      "predict": {
+        "question": "Thread được tạo trước fork ở parent hay sau fork trong child?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Sau fork, trong child",
+            "detail": "Fork từ process đang có nhiều thread là nguy hiểm (chỉ thread gọi fork được sao chép).",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Trước fork, ở parent",
+            "detail": "Parent phải đơn luồng khi fork.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không quan trọng",
+            "detail": "Rất quan trọng trên POSIX.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Sáu dòng in ra là đủ chứng minh hai process, sáu thread\"",
+        "body": "Một vòng lặp tuần tự trong một process cũng in được sáu dòng. Phải kiểm PID, thread identity và thời điểm hoàn tất. Đừng đổi lỗi trong child thành exit code 0."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Thread được tạo SAU fork, bên trong child. Parent fork khi vẫn còn đơn luồng."
+        },
+        {
+          "n": 2,
+          "body": "Child join đủ thread của nó rồi mới _exit — thoát sớm sẽ cắt ngang worker."
+        },
+        {
+          "n": 3,
+          "body": "Bằng chứng đúng là PID và thread identity của từng worker, không phải số dòng in ra."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import os\nimport threading\n\ndef job():\n    print(\"pid\", os.getpid(), \"thread\", threading.get_ident(), flush=True)\n\npid = os.fork()\nif pid == 0:\n    workers = [threading.Thread(target=job) for index in range(2)]\n    for worker in workers:\n        worker.start()\n    for worker in workers:\n        worker.join()\n    os._exit(0)\nos.waitpid(pid, 0)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "parallel_compile trong child ném exception. Child nên thoát thế nào?",
+          "options": [
+            {
+              "text": "os._exit(1) để parent biết child lỗi",
+              "detail": "Parent chờ đủ rồi báo RuntimeError.",
+              "correct": true
+            },
+            {
+              "text": "os._exit(0)",
+              "detail": "Che lỗi — parent tưởng thành công.",
+              "correct": false
+            },
+            {
+              "text": "Không cần thoát",
+              "detail": "Child sẽ chạy tiếp code của parent.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Parent chờ đủ rồi báo RuntimeError."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao sáu dòng in chưa đủ chứng minh có hai process và sáu thread?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Một vòng lặp tuần tự trong một process cũng in được sáu dòng giống hệt. Muốn chứng minh phải kiểm PID của từng child khác parent, mỗi PID có ba worker thread cùng tồn tại, và parent chờ đủ child — số dòng in không đo được điều đó."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp nhánh child.",
+        "rule": "Thử m = 1, n = 2; fixture ghi PID và thread identity để kiểm thật số worker."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Parent đơn luồng → fork m child."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Mỗi child → parallel_compile(n): n thread, join đủ."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Child _exit(0) (lỗi → 1) → parent wait đủ."
+          }
+        ]
+      },
+      "counter": {
+        "question": "m = 2, n = 3: tổng số worker thread?",
+        "options": [
+          "6",
+          "3",
+          "2"
+        ],
+        "correct": "6"
+      },
+      "scaffold": {
+        "template": "            pid = os.fork()\n            if pid == 0:\n                try:\n                    {{slot1}}\n                except Exception:\n                    {{slot2}}\n                {{slot3}}\n            pids.append(pid)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "obj.parallel_compile(n)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "os._exit(1)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "os._exit(0)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "threading.Thread(target=obj.parallel_compile, args=(n,))",
+            "slot": 1,
+            "trap": "Chỉ tạo Thread, chưa start/join."
+          },
+          {
+            "label": "pass",
+            "slot": 2,
+            "trap": "Child đi tiếp xuống _exit(0) — lỗi bị che."
+          },
+          {
+            "label": "print(\"child failed\")",
+            "slot": 2,
+            "trap": "In ra rồi đi tiếp xuống _exit(0) — parent tưởng child thành công."
+          },
+          {
+            "label": "os._exit(0)",
+            "slot": 3
+          },
+          {
+            "label": "obj.parallel_compile(n)",
+            "slot": 1
+          },
+          {
+            "label": "os._exit(1)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.\n\nThực hành: Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).",
+        "io": [
+          {
+            "label": "m = 1, n = 2",
+            "value": "Một child, hai worker hoàn tất"
+          },
+          {
+            "label": "m = 2, n = 3",
+            "value": "Hai child, mỗi child ba worker; parent chờ đủ"
+          }
+        ]
+      },
+      "starterCode": "import os\nimport sys\nfrom process_tools import wait_for_children\n\nfrom thread_language import C\n\n\ndef main(m, n):\n    if type(m) is not int or m <= 0:\n        raise ValueError(\"m must be a positive integer\")\n    if type(n) is not int or n <= 0:\n        raise ValueError(\"n must be a positive integer\")\n\n    obj = C(\"C\", 1972, [\"procedural\"], \"C17\")\n    sys.stdout.flush()\n    pids = []\n    try:\n        for index in range(m):\n            pid = os.fork()\n            if pid == 0:\n                # Tự gọi obj.parallel_compile(n) trong child;\n                # lỗi -> os._exit(1), xong -> os._exit(0).\n                os._exit(0)\n            pids.append(pid)\n    except OSError:\n        wait_for_children(pids)\n        raise\n\n    if not wait_for_children(pids):\n        raise RuntimeError(\"child failed\")\n\n\nif __name__ == \"__main__\":\n    main(2, 3)\n",
+      "solutionCode": "import os\nimport sys\nfrom process_tools import wait_for_children\n\nfrom thread_language import C\n\n\ndef main(m, n):\n    if type(m) is not int or m <= 0:\n        raise ValueError(\"m must be a positive integer\")\n    if type(n) is not int or n <= 0:\n        raise ValueError(\"n must be a positive integer\")\n\n    obj = C(\"C\", 1972, [\"procedural\"], \"C17\")\n    sys.stdout.flush()\n    pids = []\n    try:\n        for index in range(m):\n            pid = os.fork()\n            if pid == 0:\n                try:\n                    obj.parallel_compile(n)\n                except Exception:\n                    os._exit(1)\n                os._exit(0)\n            pids.append(pid)\n    except OSError:\n        wait_for_children(pids)\n        raise\n\n    if not wait_for_children(pids):\n        raise RuntimeError(\"child failed\")\n\n\nif __name__ == \"__main__\":\n    main(2, 3)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Class thread đã cấp; không viết lại OOP và thread.\n2. Sau fork, chỉ nhánh pid = 0 gọi parallel_compile; method đã join đủ trước khi child thoát.\n3. Exception trong child → exit code 1; parent chờ đủ rồi kiểm kết quả."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "            if pid == 0:\n                try:\n                    obj.parallel_compile(n)\n                except Exception:\n                    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "m = 2: hai child",
+          "call": "len(_studio.main.children)",
+          "expect": "2"
+        },
+        {
+          "name": "Mỗi child đúng 3 thread",
+          "call": "[c.thread_count for c in _studio.main.children]",
+          "expect": "[3, 3]"
+        },
+        {
+          "name": "Trong child: start hết rồi join hết",
+          "call": "[c.starts_before_joins and c.all_joined for c in _studio.main.children]",
+          "expect": "[True, True]"
+        },
+        {
+          "name": "Parent đơn luồng khi fork",
+          "call": "_studio.main.threads_before_fork",
+          "expect": "0"
+        },
+        {
+          "name": "m = 1, n = 2",
+          "call": "[c.thread_count for c in _studio.run(entry='main(1, 2)').children]",
+          "expect": "[2]"
+        },
+        {
+          "name": "Child lỗi → exit 1 → parent RuntimeError",
+          "call": "_studio.run(entry='main(2, 3)', setup='import thread_language\\ndef _boom(self, n):\\n    raise RuntimeError(\"boom\")\\nthread_language.C.parallel_compile = _boom').error",
+          "expect": "'RuntimeError'"
+        },
+        {
+          "name": "Mọi child được chờ",
+          "call": "_studio.main.reaped_all",
+          "expect": "True"
+        },
+        {
+          "name": "m sai → ValueError",
+          "call": "_studio.run(entry='main(0, 3)').error",
+          "expect": "'ValueError'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        },
+        {
+          "name": "thread_language.py",
+          "content": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        threads = []\n        for index in range(n):\n            worker = threading.Thread(target=self._compile_worker, args=(n,))\n            threads.append(worker)\n\n        for worker in threads:\n            worker.start()\n\n        for worker in threads:\n            worker.join()\n",
+          "kind": "module"
+        },
+        {
+          "name": "process_tools.py",
+          "content": "import os\n\n\ndef wait_for_children(pids):\n    success = True\n    for pid in pids:\n        try:\n            waited_pid, status = os.waitpid(pid, 0)\n        except OSError:\n            success = False\n        else:\n            if not os.WIFEXITED(status):\n                success = False\n            elif os.WEXITSTATUS(status) != 0:\n                success = False\n    return success\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "parallel_compile(self, n)",
+          "does": "Tạo n thread và chờ tất cả hoàn tất.",
+          "takes": "self; n là int dương, không phải bool",
+          "gives": "None; n sai → ValueError",
+          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
+        },
+        {
+          "sig": "wait_for_children(pids)",
+          "does": "Chờ và thu hồi trạng thái của tất cả child đã lưu (cấp sẵn).",
+          "takes": "pids: list[int] — chỉ PID child của parent",
+          "gives": "bool: True khi mọi child thoát mã 0",
+          "effect": "Gọi waitpid cho từng child; một child lỗi vẫn chờ tiếp các PID còn lại.",
+          "call": "wait_for_children([pid1, pid2]) → True/False"
+        }
+      ],
+      "env": "os.fork chỉ có trên Linux/macOS/WSL — Python trên Windows báo \"module os has no attribute fork\" (lỗi môi trường, không phải sai kiến thức). Studio chạy bản MÔ PHỎNG fork/waitpid trong trình duyệt để chấm cấu trúc parent/child; nghiệm thu thật bằng script Python 3 trên Linux/WSL, parent đơn luồng."
+    }
+  }
+}

@@ -20,7 +20,11 @@ export interface Mcq {
   explanation?: string;
 }
 
-/** step_4.procedure: các bước quy trình của bài không có mã Python để chạy. */
+/**
+ * step_4.procedure: các bước quy trình của bài không có mã Python để chạy.
+ * step_4.files / contracts / gate / env: thêm cho giáo trình PE v3 (xem
+ * scripts/pe-v3/README.md) — kiểu chi tiết ở frontend/src/lib/studio-lesson.ts.
+ */
 export interface StudioLesson {
   schema?: string;
   title?: string;
@@ -180,6 +184,22 @@ export function validateStudioLesson(value: unknown): string[] {
     // Bước sandbox mà không có test thì học viên không thể nộp bài.
     if (nonEmptyString(four.starterCode) && !Array.isArray(tests)) {
       errors.push('step_4.tests: có code khởi tạo thì phải có phần Test.');
+    }
+    // File cấp sẵn (language_base.py, data.txt…) được ghi vào thư mục chạy bài
+    // trong trình duyệt — tên phải là tên file trơn, không có đường dẫn.
+    if (four.files !== undefined) {
+      if (!Array.isArray(four.files)) {
+        errors.push('step_4.files: phải là mảng { name, content }.');
+      } else {
+        four.files.forEach((f, i) => {
+          if (!isObject(f)) return errors.push(`step_4.files[${i}]: sai kiểu.`);
+          const name = f.name;
+          if (!nonEmptyString(name) || !/^[\w.-]+$/.test(String(name)))
+            errors.push(`step_4.files[${i}].name: cần tên file trơn (chữ, số, . _ -).`);
+          if (typeof f.content !== 'string')
+            errors.push(`step_4.files[${i}].content: phải là chuỗi.`);
+        });
+      }
     }
   }
 

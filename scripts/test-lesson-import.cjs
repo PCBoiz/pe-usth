@@ -104,9 +104,10 @@ async function upload(file, name, access) {
     undefined,
     adminAuth.access,
   );
-  // completeLesson chặn lessonNo > course.lessons, mà lessons = COUNT(*) sau khi
-  // thêm -> dùng ngay vị trí kế tiếp để số thứ tự luôn hợp lệ.
-  const sortOrder = lessons.length + 1;
+  // completeLesson chặn lessonNo > course.lessons, mà lessons = số bài đang hoạt
+  // động sau khi thêm -> dùng ngay vị trí kế tiếp. Bài lưu trữ của giáo trình cũ
+  // (sort_order >= 1000, xem scripts/seed-pe-v3.ts) không tính.
+  const sortOrder = lessons.filter((l) => l.sortOrder < 1000).length + 1;
   const created = await api(
     '/api/admin/lessons',
     'POST',
@@ -168,7 +169,8 @@ async function upload(file, name, access) {
     await page.goto(`${origin}/lesson/python?lesson=${sortOrder - 1}`);
     // UI mới (LessonChrome): mỗi phần của bài là MỘT màn, thanh tiến độ trên
     // đầu đếm theo số màn chứ không phải 4 bước S.
-    const cta = () => page.locator('footer button').last();
+    // Nút chính của LessonChrome (nút Gợi ý đứng sau nó trong footer).
+    const cta = () => page.locator('footer [data-cta="primary"]');
     const eyebrow = () => page.locator('main [class*="eyebrow"]').first();
     await cta().waitFor({ timeout: 30000 });
     await eyebrow().getByText(/NGỮ CẢNH/i).waitFor({ timeout: 30000 });

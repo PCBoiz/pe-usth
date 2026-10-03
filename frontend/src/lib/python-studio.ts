@@ -1,11 +1,10 @@
 // The Figma lesson is List & Mutability — the one studio screen built by hand
 // instead of read from `lessons.content_json`.
 //
-// Nó nằm CUỐI giáo trình (bài 93) chứ không phải bài 11 như trước: 92 bài của
-// gói PE_Python_v2 đã chiếm bài 1..92, và bài nào rơi đúng số này thì
-// content_json bị bỏ qua. Số ở đây phải khớp HAND_BUILT_SORT_ORDER trong
-// scripts/pe-convert/convert.py và vị trí trong curricula.json.
-export const PYTHON_LESSON_NUMBER = 93;
+// Khoá python giờ là 40 bài PE Python v3 (scripts/pe-v3), mọi bài đều đọc
+// content_json. Bài dựng tay này nằm NGOÀI giáo trình: chỉ mở bằng
+// /lesson/python?demo=list và không ghi tiến độ (xem PythonStudio.tsx).
+export const PYTHON_DEMO_PARAM = 'list';
 export const STARTER_CODE = `def clean_and_boost_scores(raw_scores: list[float], bonus: float) -> list[float]:
     """Lọc điểm âm, cộng thưởng và giữ nguyên danh sách gốc."""
     result = []

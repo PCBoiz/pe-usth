@@ -346,8 +346,17 @@ export class CoursesService {
     courseId: string,
     totalLessons: number,
   ) {
+    // Chỉ đếm bài đang nằm trong giáo trình (sort_order 1..totalLessons). Khi
+    // thay giáo trình (vd. khoá python chuyển sang PE v3 — scripts/seed-pe-v3.ts),
+    // bài cũ được lưu trữ ở sort_order >= 1000 cùng lesson_progress của nó; nếu
+    // đếm cả chúng thì học viên cũ hiện sẵn % hoàn thành của khoá mới.
     const completedLessons = await tx.lessonProgress.count({
-      where: { userId, courseId, status: 'completed' },
+      where: {
+        userId,
+        courseId,
+        status: 'completed',
+        lesson: { sortOrder: { gte: 1, lte: totalLessons } },
+      },
     });
 
     const progress =

@@ -1,0 +1,275 @@
+{
+  "lesson_code": "I09",
+  "sort_order": 29,
+  "module": "M7 · Kế thừa và override (Ex3)",
+  "title": "I09 · super và thuộc tính mới",
+  "subtitle": "Trung cấp · M7 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I09 · super và thuộc tính mới",
+    "subtitle": "Trung cấp · M7 · 25 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I09",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP TRUNG CẤP",
+          "I09"
+        ],
+        "title": "super và thuộc tính mới",
+        "goal": "Khởi tạo phần cha và thêm std_version.",
+        "task": "Viết C.__init__ gọi super().__init__ rồi lưu std_version.",
+        "predict": "Không gọi cha thì ba trường còn lại có tồn tại?",
+        "code": "class C(ProgrammingLanguage):\n    def __init__(self, name, year_created,\n                 paradigms, std_version):\n        pass",
+        "tests": [
+          "C17 → đủ bốn thuộc tính",
+          "C23 → giữ đúng phiên bản"
+        ],
+        "reflect": "Vì sao gọi super().__init__ thay vì gán lại mọi trường?"
+      },
+      "context": {
+        "title": "Khởi tạo phần cha và thêm std_version trong lớp con.",
+        "body": "Viết C.__init__(self, name, year_created, paradigms, std_version): gọi super().__init__ với ba trường của cha, rồi lưu self.std_version.",
+        "example": "C(\"C\", 1972, [\"procedural\"], \"C17\") giữ đủ bốn thuộc tính.",
+        "prereq": "I08",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Nếu chỉ gán std_version mà không gọi cha, ba trường còn lại có tồn tại không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — đọc language.name sẽ báo AttributeError",
+            "detail": "__init__ của con thay hoàn toàn __init__ của cha.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — Python tự gọi cha",
+            "detail": "Phải tự gọi super().__init__.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Có nhưng bằng None",
+            "detail": "Thuộc tính không tồn tại chứ không phải None.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Tự gán lại cả ba trường của cha cho chắc\"",
+        "body": "Viết lại là lặp logic của cha — và dễ quên phần copy list. Gọi super().__init__(name, year_created, paradigms) để cha giữ trách nhiệm đó. Không viết super().__init__(self, ...)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "super() truy cập hành vi của lớp cha; super().__init__(name) để cha khởi tạo phần của cha."
+        },
+        {
+          "n": 2,
+          "body": "self.breed = breed thêm thuộc tính RIÊNG của lớp con."
+        },
+        {
+          "n": 3,
+          "body": "Không truyền self vào super().__init__ — super() đã gắn với object hiện tại."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name)\n        self.breed = breed\n\nrex = Dog(\"Rex\", \"Corgi\")\nprint(rex.name, rex.breed)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Sửa list nguồn sau khi tạo C(\"C\", 1972, source, \"C17\") thì language.paradigms?",
+          "options": [
+            {
+              "text": "Không đổi — constructor cha đã copy list",
+              "detail": "Dùng super() là dùng luôn phần copy.",
+              "correct": true
+            },
+            {
+              "text": "Đổi theo",
+              "detail": "Chỉ khi tự gán self.paradigms = paradigms.",
+              "correct": false
+            },
+            {
+              "text": "Bị xoá",
+              "detail": "Không có lệnh xoá.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Dùng super() là dùng luôn phần copy."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao gọi super().__init__ thay vì tự gán lại toàn bộ trường?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Lớp cha đã giữ trách nhiệm khởi tạo name, year_created và copy list paradigms. Gọi super().__init__ dùng lại đúng logic đó; lớp con chỉ thêm std_version. Tự gán lại vừa lặp code vừa dễ quên list(paradigms)."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp hai dòng của constructor lớp con.",
+        "rule": "Tạo object C17 và C23; đổi phiên bản của object thứ nhất, kiểm object thứ hai."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Ba trường → constructor cha (có copy list)."
+          },
+          {
+            "label": "Bước 2",
+            "text": "C17 → thuộc tính của con."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Object có đủ bốn trường."
+          }
+        ]
+      },
+      "counter": {
+        "question": "C(\"C\", 1972, [], \"C23\").std_version là gì?",
+        "options": [
+          "C23",
+          "C17",
+          "None"
+        ],
+        "correct": "C23"
+      },
+      "scaffold": {
+        "template": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        {{slot1}}\n        {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "super().__init__(name, year_created, paradigms)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "self.std_version = std_version"
+          }
+        ],
+        "bank": [
+          {
+            "label": "super().__init__(name, year_created, paradigms)",
+            "slot": 1
+          },
+          {
+            "label": "self.std_version = std_version",
+            "slot": 2
+          },
+          {
+            "label": "std_version = std_version",
+            "slot": 2,
+            "trap": "Biến cục bộ, object không có thuộc tính."
+          },
+          {
+            "label": "ProgrammingLanguage(name, year_created, paradigms)",
+            "slot": 1,
+            "trap": "Tạo một object KHÁC rồi bỏ đi."
+          },
+          {
+            "label": "super().__init__(self, name, year_created, paradigms)",
+            "slot": 1,
+            "trap": "Thừa self → TypeError."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết C.__init__(self, name, year_created, paradigms, std_version): gọi super().__init__ với ba trường của cha, rồi lưu self.std_version.\n\nThực hành: Gọi super().__init__ với ba trường của cha, rồi lưu std_version.",
+        "io": [
+          {
+            "label": "C17",
+            "value": "name=C, year_created=1972, paradigms=[procedural], std_version=C17"
+          },
+          {
+            "label": "C23",
+            "value": "Giữ đúng phiên bản C23"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        pass\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\nprint(language.name)\nprint(language.year_created)\nprint(language.paradigms)\nprint(language.std_version)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Gọi super().__init__ với ba trường của cha, rồi lưu std_version."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. super().__init__(name, year_created, paradigms)\n2. self.std_version = std_version"
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(...)\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Bốn thuộc tính của C17",
+          "call": "(lambda o: (o.name, o.year_created, o.paradigms, o.std_version))(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "('C', 1972, ['procedural'], 'C17')"
+        },
+        {
+          "name": "C23 giữ đúng phiên bản",
+          "call": "C(\"C\", 1972, ['procedural'], 'C23').std_version",
+          "expect": "'C23'"
+        },
+        {
+          "name": "Đổi phiên bản object A không đổi B",
+          "call": "_studio.check('a = C(\"C\", 1972, [], \"C17\")\\nb = C(\"C\", 1972, [], \"C23\")\\na.std_version = \"C11\"\\nassert b.std_version == \"C23\"')",
+          "expect": "True"
+        },
+        {
+          "name": "Sửa list nguồn không đổi object (copy của cha)",
+          "call": "_studio.check('src = [\"procedural\"]\\no = C(\"C\", 1972, src, \"C17\")\\nsrc.append(\"x\")\\nassert o.paradigms == [\"procedural\"]')",
+          "expect": "True"
+        },
+        {
+          "name": "Method cha vẫn dùng được",
+          "call": "str(C(\"C\", 1972, [], 'C17'))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "C.__init__(self, name, year_created, paradigms, std_version)",
+          "does": "Khởi tạo phần cha và thêm phiên bản C.",
+          "takes": "self; ba trường của cha; std_version: str",
+          "gives": "None",
+          "effect": "Gọi super().__init__; gán self.std_version.",
+          "call": "C(\"C\", 1972, [\"procedural\"], \"C17\")"
+        }
+      ]
+    }
+  }
+}

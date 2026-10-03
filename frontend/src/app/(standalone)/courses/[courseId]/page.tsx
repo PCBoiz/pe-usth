@@ -152,8 +152,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
   const enrollment = data?.enrollment;
   const streak = data?.streak ?? 0;
   const userName = data?.userName;
-  // Lối tắt vào Studio bài 11 chỉ dành cho quản trị: học viên vẫn phải đi qua
-  // danh sách bài như bình thường.
+  // Lối tắt vào bài demo dựng tay chỉ dành cho quản trị: học viên đi theo
+  // danh sách 40 bài của giáo trình như bình thường.
   const isAdmin = data?.userRole === 'admin';
 
   const curriculum = CURRICULA[courseId] || {};
@@ -317,8 +317,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                 </div>
               </div>
 
-              {/* Block: Bài demo Studio — chỉ quản trị viên thấy, để mở thẳng
-                  bài 11 mà không cần học hết các bài trước. */}
+              {/* Block: Bài demo Studio — chỉ quản trị viên thấy. Bài dựng tay
+                  List & Mutability nằm ngoài giáo trình PE v3, không ghi tiến độ. */}
               {courseId === 'python' && isAdmin && (
                 <div className="cd-block">
                   <div className="cd-block-hd">
@@ -327,14 +327,14 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                   </div>
                   <div className="cd-block-body">
                     <p className="cd-desc">
-                      Bài 11 · List &amp; Mutability — bản dựng tay đủ 4 bước S1–S4
-                      (dự đoán, phân loại, lắp ghép, sandbox Pyodide). Chỉ quản trị
-                      viên thấy mục này; mở được kể cả khi chưa học các bài trước.
+                      List &amp; Mutability — bản dựng tay đủ 4 bước S1–S4 (dự đoán,
+                      phân loại, lắp ghép, sandbox Pyodide). Nằm ngoài 40 bài PE v3
+                      nên không ghi tiến độ; chỉ quản trị viên thấy mục này.
                     </p>
                     <a
                       className="edu-cd-btn primary"
                       style={{ display: 'inline-flex', marginTop: 12 }}
-                      href="/lesson/python?lesson=10"
+                      href="/lesson/python?demo=list"
                     >
                       Mở bài demo
                     </a>

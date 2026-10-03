@@ -14,6 +14,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { apiFetch, asList, findEnrollment } from '@/lib/api';
+import LessonBrief from '@/components/lesson-chrome/LessonBrief';
 import LessonChrome from '@/components/lesson-chrome/LessonChrome';
 import ShellB from '@/components/lesson-chrome/ShellB';
 import Assemble from '@/components/lesson-chrome/exercises/Assemble';
@@ -53,6 +54,8 @@ type RunResult = {
   tests: TestResult[];
   output: string;
   error?: string;
+  /** Tóm tắt của bộ chấm về thread/process mô phỏng — hiện mờ dưới console. */
+  notes?: string[];
   duration: number;
   version: string;
 };
@@ -90,9 +93,20 @@ const ICON = {
   ),
 };
 
+/** Đoạn văn cách nhau bằng dòng trống → từng khối riêng (mô tả nằm trong <p>). */
+function paragraphs(text?: string): React.ReactNode {
+  if (!text || !text.includes('\n\n')) return text;
+  return text.split(/\n{2,}/).map((part, i) => (
+    <span key={i} style={{ display: 'block', marginTop: i ? 8 : 0 }}>
+      {part}
+    </span>
+  ));
+}
+
 /** Nhãn nhỏ trên mỗi thẻ: "S2 · Bẫy ngộ nhận". */
 function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: string } {
   const map: Record<string, { icon: React.ReactNode; label: string }> = {
+    brief: { icon: ICON.book, label: 'Tổng quan bài' },
     context: { icon: ICON.book, label: 'Ngữ cảnh' },
     explain: { icon: ICON.code, label: 'Giải thích từng dòng' },
     memory: { icon: ICON.swap, label: 'Mô hình bộ nhớ' },
@@ -272,6 +286,7 @@ export default function StudioLesson({
     return () => clearTimeout(save);
   }, [d, draftKey, lesson]);
 
+
   async function enroll() {
     setBusy(true);
     try {
@@ -337,6 +352,8 @@ export default function StudioLesson({
     setResult(null);
     setRunning(true);
     setRuntimeStatus('Đang tải Python…');
+    // Cửa tự kiểm tra chỉ mở lời giải sau lần NỘP đầu, đạt hay chưa đạt.
+    if (submit && !d.submitted) update({ submitted: true });
     const instance = new Worker('/static/js/studio-lesson.worker.js');
     worker.current = instance;
     const expire = (text: string) => {
@@ -384,6 +401,7 @@ export default function StudioLesson({
       code: d.code,
       tests: four.tests ?? [],
       forbid: four.forbid ?? [],
+      files: four.files ?? [],
     });
   }
 
@@ -406,6 +424,13 @@ export default function StudioLesson({
   const hints = lesson?.step_4?.hints ?? [];
   const tests = lesson?.step_4?.tests ?? [];
   const procedure = lesson?.step_4?.procedure ?? [];
+  const files = lesson?.step_4?.files ?? [];
+  const contracts = lesson?.step_4?.contracts ?? [];
+  const gate = Boolean(lesson?.step_4?.gate);
+  // Ví dụ minh hoạ (PE v3) dùng dữ liệu KHÁC đề bài: chỉ hiện ở màn giải thích,
+  // không gắn vào câu dự đoán hay thẻ ngộ nhận như mã ví dụ của bài v2.
+  const lessonCode =
+    lesson?.step_1?.code?.kind === 'demo' ? undefined : lesson?.step_1?.code?.source;
   // Chỉ dựng ô soạn mã khi thật sự có mã Python để làm: bài quy trình thuần
   // (không code khởi tạo, không lời giải, không ca chấm) thì editor chỉ gây rối.
   const showEditor = Boolean(
@@ -474,17 +499,22 @@ export default function StudioLesson({
       const selfExplain = lesson.step_2?.selfExplain;
       const rubric = selfExplain?.rubric ?? [];
       if (!rubric.length) {
-        // Bài PE không có đáp án mẫu cho ô này: placeholder chính là mô tả mức
-        // điểm tối đa (rubric "2") của ngân hàng đề, nên đó là thứ để đối chiếu.
-        const sample = selfExplain?.placeholder
-          ? `Bài mẫu (admin điền sẵn): ${selfExplain.placeholder}`
-          : '';
+        // Bài v3 có lời giải thích mẫu (mức 2/2). Bài v2 thì không: placeholder
+        // chính là mô tả mức điểm tối đa của ngân hàng đề, dùng tạm để đối chiếu.
+        const sample = selfExplain?.sample
+          ? selfExplain.sample
+          : selfExplain?.placeholder
+            ? `Bài mẫu (admin điền sẵn): ${selfExplain.placeholder}`
+            : '';
         const passes =
           sample.length >= SELF_EXPLAIN_MIN.chars &&
           sample.split(/\s+/).filter(Boolean).length >= SELF_EXPLAIN_MIN.words;
         return {
           rows: [
-            ...(selfExplain?.placeholder ? [{ label: 'Tiêu chí đạt điểm tối đa', value: selfExplain.placeholder }] : []),
+            ...(selfExplain?.sample ? [{ label: 'Lời giải thích mẫu', value: selfExplain.sample }] : []),
+            ...(selfExplain?.placeholder && !selfExplain?.sample
+              ? [{ label: 'Tiêu chí đạt điểm tối đa', value: selfExplain.placeholder }]
+              : []),
             {
               label: 'Cách chấm',
               value: `Không có rubric từ khoá — chỉ yêu cầu tối thiểu ${SELF_EXPLAIN_MIN.words} từ / ${SELF_EXPLAIN_MIN.chars} ký tự.`,
@@ -640,6 +670,7 @@ export default function StudioLesson({
     window.location.assign(`/courses/${courseId}`);
   }
 
+
   // ---------- Nội dung từng màn ----------
 
   function sandboxRows(): SandboxTestRow[] {
@@ -659,6 +690,7 @@ export default function StudioLesson({
     if (result.output)
       for (const line of result.output.replace(/\n$/, '').split('\n')) lines.push({ text: line });
     if (result.error) lines.push({ text: result.error, tone: 'err' });
+    for (const note of result.notes ?? []) lines.push({ text: note, tone: 'muted' });
     if (!lines.length) {
       // Ô soạn mã trống hoặc chỉ có chú thích thì "không in ra gì" là vô nghĩa
       // với người học — nói thẳng là chưa có lệnh nào chạy.
@@ -691,7 +723,15 @@ export default function StudioLesson({
         {checked && verdict && (
           <FeedbackBanner
             correct={verdict.correct}
-            title={verdict.correct ? 'Chính xác!' : 'Chưa đúng — thử lại nhé'}
+            title={
+              scr.kind === 'selfExplain'
+                ? verdict.correct
+                  ? 'Đã ghi nhận — tự so với lời giải thích mẫu'
+                  : 'Chưa đủ ý — viết thêm nhé'
+                : verdict.correct
+                  ? 'Chính xác!'
+                  : 'Chưa đúng — thử lại nhé'
+            }
             explanation={verdict.explain}
           />
         )}
@@ -703,31 +743,80 @@ export default function StudioLesson({
     const three = lesson.step_3;
     const four = lesson.step_4;
 
-    if (scr.kind === 'context')
-      return shell(
-        one?.code?.source ? (
-          <CodeBlock
-            filename={one.code.filename || 'example.py'}
-            langTag={one.code.version || 'Python 3.12'}
-            lines={toCodeLines(one.code.source)}
-          />
-        ) : null,
-        { title: one?.context?.title || lesson.title || 'Ngữ cảnh', description: one?.context?.body },
-      );
+    // Màn mở đầu "một màn" theo Figma: tự có tiêu đề, không bọc trong thẻ ShellB.
+    if (scr.kind === 'brief' && one?.brief) return <LessonBrief {...one.brief} />;
 
-    if (scr.kind === 'explain')
+    if (scr.kind === 'context') {
+      const ctx = one?.context;
+      const facts = [
+        ctx?.example && { label: 'Ví dụ', value: ctx.example },
+        ctx?.prereq && { label: 'Học trước', value: ctx.prereq },
+        ctx?.files?.length && { label: 'File trong thư mục bài', value: ctx.files.join(', '), code: true },
+      ].filter((x): x is { label: string; value: string; code?: boolean } => Boolean(x));
+      return shell(
+        <>
+          {(ctx?.level || gate) && (
+            <div className={c.tags}>
+              {ctx?.level && <span className={c.tag}>{ctx.level}</span>}
+              {gate && <span className={`${c.tag} ${c.tagGate}`}>Cửa tự kiểm tra</span>}
+            </div>
+          )}
+          {facts.length > 0 && (
+            <dl className={c.facts}>
+              {facts.map((row) => (
+                <div key={row.label}>
+                  <dt>{row.label}</dt>
+                  <dd>{row.code ? <code>{row.value}</code> : row.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+          {lessonCode && (
+            <CodeBlock
+              filename={one?.code?.filename || 'example.py'}
+              langTag={one?.code?.version || 'Python 3.12'}
+              lines={toCodeLines(lessonCode)}
+            />
+          )}
+        </>,
+        { title: ctx?.title || lesson.title || 'Ngữ cảnh', description: paragraphs(ctx?.body) },
+      );
+    }
+
+    if (scr.kind === 'explain') {
+      const rows = one?.explain ?? [];
+      const demo = one?.code?.kind === 'demo';
+      // Cửa tự kiểm tra không có mã ví dụ: chỉ còn các ý cần nắm trước khi tự viết.
+      if (!one?.code?.source)
+        return shell(
+          <ol className={c.trace}>
+            {rows.map((row, i) => (
+              <li key={i}>
+                <b>{row.title || `Ý ${row.n ?? i + 1}`}</b>
+                <span>{row.body}</span>
+              </li>
+            ))}
+          </ol>,
+          { title: 'Những điều cần nắm trước khi tự viết' },
+        );
       return shell(
         <CodeAnnotated
-          filename={one?.code?.filename || 'example.py'}
-          langTag={one?.code?.version || 'Python 3.12'}
-          code={toCodeLines(one?.code?.source || '')}
-          annotations={(one?.explain ?? []).map((row, i) => ({
+          filename={one.code.filename || 'example.py'}
+          langTag={one.code.version || 'Python 3.12'}
+          code={toCodeLines(one.code.source)}
+          annotations={rows.map((row, i) => ({
             label: row.title || `Ý ${row.n ?? i + 1}`,
             detail: row.body,
           }))}
         />,
-        { title: 'Đọc lại ví dụ theo từng ý' },
+        demo
+          ? {
+              title: 'Ví dụ minh hoạ cơ chế',
+              description: 'Cùng cơ chế với bài, nhưng dữ liệu khác — đọc hiểu rồi tự áp dụng vào đề.',
+            }
+          : { title: 'Đọc lại ví dụ theo từng ý' },
       );
+    }
 
     if (scr.kind === 'memory') {
       const m = one?.memory;
@@ -766,9 +855,13 @@ export default function StudioLesson({
         <Misconception
           myth={one?.misconception?.title || 'Ngộ nhận thường gặp'}
           correction={one?.misconception?.body}
-          exampleLabel={one?.code?.source ? 'Ví dụ của bài' : undefined}
+          exampleLabel={(one?.misconception?.code ?? lessonCode) ? 'Ví dụ của bài' : undefined}
           langTag={one?.code?.version}
-          code={one?.code?.source ? toCodeLines(one.code.source) : undefined}
+          code={
+            (one?.misconception?.code ?? lessonCode)
+              ? toCodeLines((one?.misconception?.code ?? lessonCode)!)
+              : undefined
+          }
         />
       );
 
@@ -776,9 +869,9 @@ export default function StudioLesson({
       const predict = one?.predict;
       return shell(
         <Mcq
-          filename={one?.code?.filename || 'example.py'}
+          filename={predict?.code ? 'solution.py' : one?.code?.filename || 'example.py'}
           langTag={one?.code?.version || 'Python 3.12'}
-          code={one?.code?.source ? toCodeLines(one.code.source) : undefined}
+          code={(predict?.code || lessonCode) ? toCodeLines((predict?.code || lessonCode)!) : undefined}
           options={(predict?.options ?? []).map((o, i) => ({
             key: letterKey(i),
             label: o.title,
@@ -880,7 +973,7 @@ export default function StudioLesson({
       return shell(
         <>
           <Assemble
-            filename="solution.py"
+            filename="main.py"
             langTag="Python 3.12"
             lines={scaffold.template
               .replace(/\s+$/, '')
@@ -970,8 +1063,15 @@ export default function StudioLesson({
           eyebrowLabel={eyebrow.label}
           metaLabel={meta?.title}
           title={four?.task?.title || 'Thử thách độc lập'}
-          description={four?.task?.body}
+          description={paragraphs(four?.task?.body)}
         >
+          {four?.env && <div className={`${c.note} ${c.noteWarn}`}>{four.env}</div>}
+          {gate && !d.submitted && (
+            <div className={c.note} role="status">
+              <strong>Cửa tự kiểm tra.</strong> Tự viết và nộp lần đầu trước — lời giải mẫu chỉ mở sau lần nộp
+              đó. Mở gợi ý vẫn được, nhưng lượt này sẽ ghi nhận là có hỗ trợ.
+            </div>
+          )}
           {io.length > 0 && (
             <dl className={c.io}>
               {io.map((row) => (
@@ -981,6 +1081,49 @@ export default function StudioLesson({
                 </div>
               ))}
             </dl>
+          )}
+          {contracts.length > 0 && (
+            <details className={c.panel} open={contracts.length <= 2}>
+              <summary>
+                Hợp đồng hàm <span>{contracts.map((k) => k.sig.split('(')[0]).join(' · ')}</span>
+              </summary>
+              <ul className={c.contracts}>
+                {contracts.map((k) => (
+                  <li key={k.sig}>
+                    <code className={c.sig}>{k.sig}</code>
+                    {k.does && <p>{k.does}</p>}
+                    <dl>
+                      {k.takes && (<div><dt>Nhận</dt><dd>{k.takes}</dd></div>)}
+                      {k.gives && (<div><dt>Trả</dt><dd>{k.gives}</dd></div>)}
+                      {k.effect && (<div><dt>Tác dụng</dt><dd>{k.effect}</dd></div>)}
+                      {k.call && (<div><dt>Gọi</dt><dd><code>{k.call}</code></dd></div>)}
+                    </dl>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          )}
+          {files.length > 0 && (
+            <details className={c.panel}>
+              <summary>
+                File trong thư mục bài <span>{files.map((f) => f.name).join(' · ')}</span>
+              </summary>
+              <p className={c.panelNote}>
+                Đặt sẵn cạnh main.py mỗi lần chạy (chỉ đọc). Bộ chấm còn dùng thêm dữ liệu mới bạn chưa thấy.
+              </p>
+              {files.map((f) => (
+                <CodeBlock
+                  key={f.name}
+                  filename={f.name}
+                  langTag={f.kind === 'data' ? 'dữ liệu · UTF-8' : 'file cấp sẵn'}
+                  lines={
+                    f.kind === 'data'
+                      ? f.content.split('\n').map((line, i) => ({ num: i + 1, content: line || ' ' }))
+                      : toCodeLines(f.content.replace(/\n+$/, ''))
+                  }
+                />
+              ))}
+            </details>
           )}
           {/* Bài quy trình: các bước phải làm trên máy thật. Không có mã Python
               nào để chạy nên KHÔNG hiện ô soạn mã — trước đây bài loại này đổ
@@ -1013,6 +1156,7 @@ export default function StudioLesson({
           )}
           {showEditor && (
             <SandboxEditor
+              filename="main.py"
               langTag={runtimeStatus || 'CPython 3.12'}
               code={d.code}
               onCodeChange={(code) => update({ code })}
@@ -1020,9 +1164,9 @@ export default function StudioLesson({
               onRun={() => run(false)}
               onStop={cancelRun}
               onShowSolution={
-                four?.solutionCode
+                four?.solutionCode && (!gate || d.submitted)
                   ? () => {
-                      update({ code: four.solutionCode!, solutionUsed: true });
+                      update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
                       setMessage('Đã chèn lời giải mẫu. Hãy đọc hiểu trước khi nộp.');
                     }
                   : undefined
@@ -1042,7 +1186,8 @@ export default function StudioLesson({
             <HintSheet
               levels={hints.map((h, i) => ({
                 title: h.title,
-                body: h.body,
+                // Tầng "lời giải từng phần" là code nhiều dòng: giữ nguyên thụt lề.
+                body: h.body.includes('\n') ? <pre className={c.hintCode}>{h.body}</pre> : h.body,
                 locked: i > hintIndex,
               }))}
               openIndex={hintIndex}
@@ -1063,15 +1208,26 @@ export default function StudioLesson({
         xpLabel={completed ? `+${meta?.xpReward ?? 0} XP` : `${meta?.xpReward ?? 0} XP`}
         title={completed ? 'Đã hoàn thành bài học!' : 'Tổng kết bài học'}
         description={
-          completed
+          (completed
             ? 'Tiến độ và XP đã được lưu. Bạn có thể quay lại luyện tập bất cứ lúc nào.'
             : tests.length
               ? 'Bài này chấm tự động — nộp bài ở màn sandbox để ghi nhận hoàn thành.'
-              : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.'
+              : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.') +
+          (d.assisted
+            ? gate
+              ? ' Lượt này có dùng gợi ý/lời giải: cửa tự kiểm tra tính là "có hỗ trợ" — hãy tự làm lại với dữ liệu mới.'
+              : ' Lượt này có dùng gợi ý/lời giải — thử làm lại không mở gợi ý để chắc kiến thức.'
+            : '')
         }
         stats={[
           { icon: '🎯', value: `${done}/${graded.length || 0}`, label: 'Câu đã làm đúng' },
-          { icon: '🧪', value: `${result?.tests.filter((t) => t.passed).length ?? 0}/${tests.length}`, label: 'Ca kiểm thử đạt' },
+          {
+            icon: '🧪',
+            // Kết quả chạy không lưu qua lần tải trang; bài có test chỉ hoàn thành
+            // được qua lượt nộp đạt hết ca, nên đã hoàn thành = đạt đủ.
+            value: `${result ? result.tests.filter((t) => t.passed).length : completed ? tests.length : 0}/${tests.length}`,
+            label: 'Ca kiểm thử đạt',
+          },
           { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' },
         ]}
         facts={[
@@ -1096,13 +1252,19 @@ export default function StudioLesson({
     (acc, x, i) => (d.done[x.key] ? Math.max(acc, i + 2) : acc),
     1,
   );
-
   function frame(children: React.ReactNode, over?: Partial<React.ComponentProps<typeof LessonChrome>>) {
     return (
       <LessonChrome
         step={Math.min(d.step, Math.max(1, screens.length || 1))}
         totalSteps={Math.max(1, screens.length || 1)}
         streak={streak}
+        courseLabel={
+          lesson?.step_1?.brief?.title || meta?.title
+            ? 'Python · ' + (lesson?.step_1?.brief?.title || meta?.title)
+            : 'Python Studio'
+        }
+        // Lưu nháp thành công thì giữ đúng câu của Figma; chỉ đổi khi có lỗi.
+        saveLabel={saveStatus.startsWith('Không') ? saveStatus : '✓ Tiến độ tự lưu'}
         onClose={leave}
         primaryLabel={cta.label}
         primaryTone={cta.tone}
@@ -1116,9 +1278,18 @@ export default function StudioLesson({
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
         secondaryLabel={
-          hints.length && scr?.kind === 'sandbox' ? (hintOpen ? '💡 Ẩn gợi ý' : '💡 Gợi ý') : undefined
+          hints.length && scr?.kind === 'sandbox'
+            ? hintOpen
+              ? '💡 Ẩn gợi ý'
+              : gate && !d.assisted
+                ? '💡 Gợi ý (tính là có hỗ trợ)'
+                : '💡 Gợi ý'
+            : undefined
         }
-        onSecondaryClick={() => setHintOpen((o) => !o)}
+        onSecondaryClick={() => {
+          if (!hintOpen && !d.assisted) update({ assisted: true });
+          setHintOpen((o) => !o);
+        }}
         {...over}
       >
         {children}
@@ -1219,7 +1390,7 @@ export default function StudioLesson({
               )}
               {adminKey.code && (
                 <CodeBlock
-                  filename="solution.py"
+                  filename="main.py"
                   langTag="Lời giải mẫu"
                   lines={toCodeLines(adminKey.code)}
                 />
@@ -1241,7 +1412,6 @@ export default function StudioLesson({
           )}
         </section>
       )}
-      <p className={c.save}>{saveStatus || 'Đang tải tiến độ…'}</p>
     </>,
   );
 }

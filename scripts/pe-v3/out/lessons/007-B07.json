@@ -1,0 +1,285 @@
+{
+  "lesson_code": "B07",
+  "sort_order": 7,
+  "module": "M2 · Vòng lặp và hàm",
+  "title": "B07 · Lọc bằng vòng lặp",
+  "subtitle": "Cơ bản · M2 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B07 · Lọc bằng vòng lặp",
+    "subtitle": "Cơ bản · M2 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B07",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP CƠ BẢN",
+          "B07"
+        ],
+        "title": "Lọc bằng vòng lặp",
+        "goal": "Tạo list mới và dùng append để giữ từ đối xứng không rỗng.",
+        "task": "Duyệt words, bỏ chuỗi rỗng và chỉ thêm palindrome vào list kết quả.",
+        "predict": "Nếu \"level\" xuất hiện hai lần, kết quả giữ mấy lần?",
+        "code": "words = [\"level\", \"python\", \"radar\", \"\"]\npalindromes = []\n# Duyệt, kiểm tra rồi append",
+        "tests": [
+          "List mẫu → [\"level\", \"radar\"]",
+          "[] → []"
+        ],
+        "reflect": "Vì sao phải giữ thứ tự và phần tử trùng?"
+      },
+      "context": {
+        "title": "Tích luỹ kết quả lọc bằng list mới và append.",
+        "body": "Cho words = [\"level\", \"python\", \"radar\", \"\"] và palindromes = []. Dùng for/if/append để giữ các từ đối xứng KHÔNG rỗng, rồi in palindromes. Chưa dùng hàm tự định nghĩa.",
+        "example": "[\"level\", \"python\", \"radar\", \"\"] → [\"level\", \"radar\"].",
+        "prereq": "B06",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Nếu \"level\" xuất hiện hai lần trong words, kết quả cần giữ mấy lần?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Hai lần — giữ cả phần tử trùng",
+            "detail": "Mỗi lần gặp từ hợp lệ là append một lần; không dùng set.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Một lần",
+            "detail": "Bài không yêu cầu bỏ trùng; set còn làm mất thứ tự.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không lần nào",
+            "detail": "level là từ đối xứng hợp lệ.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Xoá từ sai khỏi words cho gọn\"",
+        "body": "Không sửa list đầu vào, nhất là trong lúc đang duyệt nó — dễ bỏ sót phần tử. Tạo list kết quả mới rồi append. Ở lần đầu học cũng chưa dùng comprehension: viết vòng lặp rõ từng bước."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "evens = [] tạo nơi giữ kết quả, đặt TRƯỚC vòng lặp."
+        },
+        {
+          "n": 2,
+          "body": "Mỗi lượt, if quyết định giữ hay bỏ; append thêm phần tử vào CUỐI evens."
+        },
+        {
+          "n": 3,
+          "body": "Duyệt numbers nhưng chỉ sửa evens — list đầu vào giữ nguyên. Kết quả [4, 10]."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "numbers = [4, 7, 10]\nevens = []\nfor number in numbers:\n    if number % 2 == 0:\n        evens.append(number)\nprint(evens)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "words = [\"\", \"Level\"] thì palindromes là gì?",
+          "options": [
+            {
+              "text": "[]",
+              "detail": "Chuỗi rỗng bị bỏ; \"Level\" đảo thành \"leveL\" nên không bằng.",
+              "correct": true
+            },
+            {
+              "text": "[\"Level\"]",
+              "detail": "So sánh phân biệt hoa/thường.",
+              "correct": false
+            },
+            {
+              "text": "[\"\"]",
+              "detail": "Chuỗi rỗng bị loại trước bước so sánh.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chuỗi rỗng bị bỏ; \"Level\" đảo thành \"leveL\" nên không bằng."
+        },
+        {
+          "question": "words = [\"a\", \"ab\", \"a\"] thì palindromes là gì?",
+          "options": [
+            {
+              "text": "[\"a\", \"a\"]",
+              "detail": "Giữ thứ tự và phần tử trùng.",
+              "correct": true
+            },
+            {
+              "text": "[\"a\"]",
+              "detail": "Không bỏ trùng.",
+              "correct": false
+            },
+            {
+              "text": "[\"a\", \"ab\", \"a\"]",
+              "detail": "\"ab\" đảo thành \"ba\", khác nhau.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Giữ thứ tự và phần tử trùng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao kết quả giữ thứ tự và cả phần tử trùng?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Vòng lặp đi theo thứ tự của words, mỗi lần gặp từ hợp lệ thì append đúng một lần vào cuối palindromes. Không dùng set nên không bỏ trùng, không xáo thứ tự. words không bị sửa vì chỉ palindromes được append."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: [\"a\", \"ab\", \"a\"]. Lắp điều kiện so sánh và lệnh thêm vào kết quả.",
+        "rule": "Thử [\"a\", \"ab\", \"a\"] và []; kiểm list đầu vào không đổi."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "palindromes = []."
+          },
+          {
+            "label": "Bước 2",
+            "text": "level → hợp lệ → [level]."
+          },
+          {
+            "label": "Bước 3",
+            "text": "python → đảo thành nohtyp, khác → giữ nguyên list."
+          },
+          {
+            "label": "Bước 4",
+            "text": "radar → [level, radar]."
+          },
+          {
+            "label": "Bước 5",
+            "text": "\"\" → rỗng, bỏ qua."
+          }
+        ]
+      },
+      "counter": {
+        "question": "words = [\"a\", \"ab\", \"a\"] cho kết quả nào?",
+        "options": [
+          "['a', 'a']",
+          "['a']",
+          "['a', 'ab', 'a']"
+        ],
+        "correct": "['a', 'a']"
+      },
+      "scaffold": {
+        "template": "words = [\"a\", \"ab\", \"a\"]\npalindromes = []\nfor word in words:\n    if word != \"\":\n        reversed_word = word[::-1]\n        if {{slot1}}:\n            {{slot2}}\nprint(palindromes)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "word == reversed_word"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "palindromes.append(word)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "words.append(word)",
+            "slot": 2,
+            "trap": "Sửa list đầu vào."
+          },
+          {
+            "label": "palindromes.append(word)",
+            "slot": 2
+          },
+          {
+            "label": "palindromes = [word]",
+            "slot": 2,
+            "trap": "Ghi đè, mất các từ trước."
+          },
+          {
+            "label": "word = reversed_word",
+            "slot": 1,
+            "trap": "Gán chứ không so sánh."
+          },
+          {
+            "label": "word == reversed_word",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho words = [\"level\", \"python\", \"radar\", \"\"] và palindromes = []. Dùng for/if/append để giữ các từ đối xứng KHÔNG rỗng, rồi in palindromes. Chưa dùng hàm tự định nghĩa.\n\nThực hành: Bỏ chuỗi rỗng trước, rồi dùng phép đảo và so sánh đã học để quyết định append.",
+        "io": [
+          {
+            "label": "List mẫu",
+            "value": "[\"level\", \"radar\"]"
+          },
+          {
+            "label": "[]",
+            "value": "[]"
+          }
+        ]
+      },
+      "starterCode": "words = [\"level\", \"python\", \"radar\", \"\"]\npalindromes = []\n# Tự duyệt, kiểm tra và append.\n",
+      "solutionCode": "words = [\"level\", \"python\", \"radar\", \"\"]\npalindromes = []\n\nfor word in words:\n    if word != \"\":\n        reversed_word = word[::-1]\n        if word == reversed_word:\n            palindromes.append(word)\n\nprint(palindromes)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Bỏ chuỗi rỗng trước, rồi dùng phép đảo và so sánh đã học để quyết định append."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. palindromes = [] đã có; mỗi lượt kiểm word != \"\".\n2. reversed_word = word[::-1]; nếu word == reversed_word thì palindromes.append(word)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "for word in words:\n    if word != \"\":\n        reversed_word = word[::-1]\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "List mẫu → [\"level\", \"radar\"]",
+          "call": "_studio.run().var('palindromes')",
+          "expect": "['level', 'radar']"
+        },
+        {
+          "name": "List rỗng → []",
+          "call": "_studio.run(vars={'words': []}).var('palindromes')",
+          "expect": "[]"
+        },
+        {
+          "name": "Giữ thứ tự và phần tử trùng",
+          "call": "_studio.run(vars={'words': ['a', 'ab', 'a']}).var('palindromes')",
+          "expect": "['a', 'a']"
+        },
+        {
+          "name": "Bỏ chuỗi rỗng, giữ hoa/thường",
+          "call": "_studio.run(vars={'words': ['', 'Level']}).var('palindromes')",
+          "expect": "[]"
+        },
+        {
+          "name": "Không sửa words",
+          "call": "_studio.run().var('words')",
+          "expect": "['level', 'python', 'radar', '']"
+        }
+      ]
+    }
+  }
+}

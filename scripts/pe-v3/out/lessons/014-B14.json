@@ -1,0 +1,306 @@
+{
+  "lesson_code": "B14",
+  "sort_order": 14,
+  "module": "M3 · Đọc và ghi file",
+  "title": "B14 · Đưa phần đọc vào hàm",
+  "subtitle": "Cơ bản · M3 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B14 · Đưa phần đọc vào hàm",
+    "subtitle": "Cơ bản · M3 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B14",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP CƠ BẢN",
+          "B14"
+        ],
+        "title": "Đưa phần đọc vào hàm",
+        "goal": "Hàm read_lines(path) trả list dòng đã bỏ newline.",
+        "task": "Dùng tham số path thay tên file cố định và return list sau khi đọc.",
+        "predict": "return lines ở ngoài with có dùng được không?",
+        "code": "def read_lines(path):\n    pass\n\n# Gọi thử và in ở ngoài hàm",
+        "tests": [
+          "2 dòng → [\"level\", \"python\"]",
+          "File rỗng → []"
+        ],
+        "reflect": "Vì sao dùng return thay print trong hàm?"
+      },
+      "context": {
+        "title": "Đưa việc đọc từng dòng vào một hàm có giá trị trả về.",
+        "body": "Viết read_lines(path) trả list các dòng đã bỏ ký tự xuống dòng ở cuối (như B12). Hàm không print. Gọi thử với \"data.txt\" và in kết quả ở ngoài hàm.",
+        "example": "data.txt chứa \"level\\npython\" → read_lines(\"data.txt\") → [\"level\", \"python\"].",
+        "prereq": "B13",
+        "level": "Cơ bản",
+        "files": [
+          "data.txt"
+        ]
+      },
+      "predict": {
+        "question": "return lines đặt ngoài with có còn trả được kết quả không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Có — lines đã nằm trong bộ nhớ",
+            "detail": "Đóng file không xoá list đã đọc.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Không — file đóng thì lines rỗng",
+            "detail": "with chỉ đóng file, không đụng tới biến.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "return sau with là cách viết chuẩn.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"print(lines) trong hàm là đủ\"",
+        "body": "Nơi gọi cần LIST để lọc tiếp; print chỉ hiển thị và hàm trả None. Đừng hard-code \"data.txt\" trong thân hàm — dùng tham số path. Thiếu file thì cứ để FileNotFoundError bật lên, đừng biến lỗi thành []."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "path là tham số: cùng một hàm đọc được bất kỳ file nào, không cố định \"note.txt\" trong thân hàm."
+        },
+        {
+          "n": 2,
+          "body": "Biến tạo trong hàm (content) là của riêng mỗi lần gọi."
+        },
+        {
+          "n": 3,
+          "body": "return content nằm sau with: file đã đóng, giá trị vẫn được gửi về nơi gọi."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def read_text(path):\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        content = file.read()\n    return content\n\nprint(read_text(\"note.txt\"))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "read_lines(\"missing.txt\") khi file không tồn tại thì…",
+          "options": [
+            {
+              "text": "Phát sinh FileNotFoundError",
+              "detail": "Để lỗi hiện ra giúp phát hiện sai tên file.",
+              "correct": true
+            },
+            {
+              "text": "Trả []",
+              "detail": "Giấu lỗi làm nơi gọi tưởng file rỗng.",
+              "correct": false
+            },
+            {
+              "text": "Trả None",
+              "detail": "Không có return nào chạy tới khi open lỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Để lỗi hiện ra giúp phát hiện sai tên file."
+        },
+        {
+          "question": "Khởi tạo lines = [] ở đâu để mỗi lần gọi có list mới?",
+          "options": [
+            {
+              "text": "Trong thân hàm",
+              "detail": "Mỗi lần gọi chạy lại thân hàm nên có list mới.",
+              "correct": true
+            },
+            {
+              "text": "Ở ngoài hàm, trên đầu file",
+              "detail": "List dùng chung sẽ dồn kết quả của nhiều lần gọi.",
+              "correct": false
+            },
+            {
+              "text": "Không cần khởi tạo",
+              "detail": "append vào biến chưa có sẽ báo NameError.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mỗi lần gọi chạy lại thân hàm nên có list mới."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao return lines thay vì print(lines) trong hàm?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Nơi gọi cần list để dùng tiếp (lọc palindrome). print chỉ hiển thị lên màn hình và hàm sẽ trả None, nơi gọi không nhận được dữ liệu. return lines gửi list về; muốn xem thì nơi gọi tự print."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp tham số đúng chỗ và lệnh trả kết quả.",
+        "rule": "Gọi cùng hàm với other.txt và với một file rỗng. Không bắt lỗi thiếu file."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "read_lines(\"data.txt\") → path = \"data.txt\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Đọc từng dòng → lines = [\"level\", \"python\"]."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Ra khỏi with → đóng file."
+          },
+          {
+            "label": "Bước 4",
+            "text": "return lines → nơi gọi nhận list."
+          }
+        ]
+      },
+      "counter": {
+        "question": "File \" a \\nđộđ\" → read_lines trả gì?",
+        "options": [
+          "[\" a \", \"độđ\"]",
+          "[\"a\", \"độđ\"]",
+          "[\" a \\n\", \"độđ\"]"
+        ],
+        "correct": "[\" a \", \"độđ\"]"
+      },
+      "scaffold": {
+        "template": "def read_lines(path):\n    lines = []\n    with open({{slot1}}, \"r\", encoding=\"utf-8\") as file:\n        for line in file:\n            lines.append(line.rstrip(\"\\r\\n\"))\n    {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "path"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "return lines"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\"data.txt\"",
+            "slot": 1,
+            "trap": "Hard-code tên file."
+          },
+          {
+            "label": "return line",
+            "slot": 2,
+            "trap": "Chỉ trả dòng cuối."
+          },
+          {
+            "label": "path",
+            "slot": 1
+          },
+          {
+            "label": "print(lines)",
+            "slot": 2,
+            "trap": "Hàm sẽ trả None."
+          },
+          {
+            "label": "return lines",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết read_lines(path) trả list các dòng đã bỏ ký tự xuống dòng ở cuối (như B12). Hàm không print. Gọi thử với \"data.txt\" và in kết quả ở ngoài hàm.\n\nThực hành: Dùng tham số path thay tên file cố định; return list sau khi đọc hết.",
+        "io": [
+          {
+            "label": "File: \"level\\npython\"",
+            "value": "[\"level\", \"python\"]"
+          },
+          {
+            "label": "File rỗng",
+            "value": "[]"
+          }
+        ]
+      },
+      "starterCode": "def read_lines(path):\n    pass\n\n# Gọi thử và in ở ngoài hàm.\n",
+      "solutionCode": "def read_lines(path):\n    lines = []\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        for line in file:\n            text = line.rstrip(\"\\r\\n\")\n            lines.append(text)\n    return lines\n\nlines = read_lines(\"data.txt\")\nprint(lines)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng tham số path thay tên file cố định; return list sau khi đọc hết."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. lines = [] trong hàm; with open(path, \"r\", encoding=\"utf-8\").\n2. Mỗi dòng rstrip(\"\\r\\n\") rồi append; return lines sau with."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def read_lines(path):\n    lines = []\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        ...\n    return lines"
+        }
+      ],
+      "tests": [
+        {
+          "name": "\"level\\npython\" → [\"level\", \"python\"]",
+          "call": "read_lines(_studio.write('t1.txt', 'level\\npython'))",
+          "expect": "['level', 'python']"
+        },
+        {
+          "name": "File rỗng → []",
+          "call": "read_lines(_studio.write('t2.txt', ''))",
+          "expect": "[]"
+        },
+        {
+          "name": "Đọc đúng file theo path (other.txt)",
+          "call": "read_lines(_studio.write('other.txt', 'a\\nb'))",
+          "expect": "['a', 'b']"
+        },
+        {
+          "name": "UTF-8 và khoảng trắng",
+          "call": "read_lines(_studio.write('t3.txt', ' a \\nđộđ'))",
+          "expect": "[' a ', 'độđ']"
+        },
+        {
+          "name": "Thiếu file → FileNotFoundError",
+          "call": "_studio.call(read_lines, 'missing.txt').error",
+          "expect": "'FileNotFoundError'"
+        },
+        {
+          "name": "Hàm không print",
+          "call": "_studio.stdout(read_lines, 'data.txt')",
+          "expect": "''"
+        }
+      ],
+      "files": [
+        {
+          "name": "data.txt",
+          "content": "level\npython",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "read_lines(path)",
+          "does": "Đọc từng dòng và bỏ ký tự xuống dòng ở cuối.",
+          "takes": "path: str — tên hoặc đường dẫn file UTF-8",
+          "gives": "list[str]; file rỗng trả []",
+          "effect": "Đọc file; with đóng file; không in. Thiếu file phát sinh FileNotFoundError.",
+          "call": "read_lines(\"data.txt\") → danh sách các dòng"
+        }
+      ]
+    }
+  }
+}

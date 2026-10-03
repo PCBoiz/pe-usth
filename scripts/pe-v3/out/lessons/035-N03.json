@@ -1,0 +1,314 @@
+{
+  "lesson_code": "N03",
+  "sort_order": 35,
+  "module": "M8 · Thread và chờ kết thúc (Ex4)",
+  "title": "N03 · Ex4 có hỗ trợ",
+  "subtitle": "Nâng cao · M8 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N03 · Ex4 có hỗ trợ",
+    "subtitle": "Nâng cao · M8 · 35 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N03",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M8",
+          "BÀI TẬP NÂNG CAO",
+          "N03"
+        ],
+        "title": "Ex4 có hỗ trợ",
+        "goal": "Ghép helper và parallel_compile theo ba checkpoint.",
+        "task": "Viết _compile_worker và parallel_compile với args=(n,).",
+        "predict": "args=(n,) để làm gì? Vì sao có dấu phẩy?",
+        "code": "class C(BaseC):\n    def _compile_worker(self, n): ...\n    def parallel_compile(self, n):\n        # tạo list → start hết → join hết",
+        "tests": [
+          "n = 1 / C17 → một dòng \"1 threads\"",
+          "n = 3 / C17 → ba dòng \"3 threads\""
+        ],
+        "reflect": "Thread đã tạo khác công việc đã chạy thế nào?"
+      },
+      "context": {
+        "title": "Ghép helper và parallel_compile theo ba checkpoint.",
+        "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.",
+        "example": "n = 3, C17 → ba dòng \"Compiling C code using 3 threads with standard version C17\".",
+        "prereq": "N02",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py"
+        ]
+      },
+      "predict": {
+        "question": "args=(n,) dùng để làm gì? Vì sao có dấu phẩy?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Truyền n vào helper; dấu phẩy để (n,) là tuple một phần tử",
+            "detail": "Thread gọi target(*args).",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Dấu phẩy thừa, bỏ đi cũng được",
+            "detail": "(n) chỉ là n trong ngoặc — không phải tuple.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "args là số thread cần tạo",
+            "detail": "Số thread do vòng range(n) quyết định.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"target=self._compile_worker(n) cho gọn\"",
+        "body": "Có ngoặc là gọi helper NGAY trong thread hiện tại; Thread nhận None. Đưa tên method vào target, đối số vào args=(n,). Đừng hiển thị cả mẫu một lúc — làm lần lượt ba checkpoint: tạo list, start hết, join hết."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "args là TUPLE các đối số truyền vào target: Thread chạy report(\"tasks\", 3)."
+        },
+        {
+          "n": 2,
+          "body": "Tuple một phần tử phải có dấu phẩy: (3,) — còn (3) chỉ là số 3 trong ngoặc."
+        },
+        {
+          "n": 3,
+          "body": "flush=True đẩy output ra ngay; cần khi dùng lại trong process ở N07–N08."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\ndef report(label, total):\n    print(f\"{label}: {total}\", flush=True)\n\nworker = threading.Thread(target=report, args=(\"tasks\", 3))\nworker.start()\nworker.join()\n\nsingle = (3,)\nprint(type(single), len(single))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "args=(n) với n = 3 sẽ thế nào khi thread chạy?",
+          "options": [
+            {
+              "text": "Lỗi TypeError trong thread — (3) không phải tuple",
+              "detail": "Thread cần args là iterable các đối số.",
+              "correct": true
+            },
+            {
+              "text": "Chạy bình thường",
+              "detail": "(3) là số nguyên 3.",
+              "correct": false
+            },
+            {
+              "text": "Tạo 3 thread",
+              "detail": "args không quyết định số thread.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Thread cần args là iterable các đối số."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Phân biệt đối tượng Thread đã tạo với công việc đã chạy.",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Tạo Thread chỉ mô tả target và args, chưa chạy gì. start() mới cho công việc chạy trong thread con, join() chờ nó kết thúc. Vì vậy parallel_compile tạo list n Thread, start hết rồi join hết mới trả về."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Ba checkpoint của parallel_compile.",
+        "rule": "Đổi n = 1 sang n = 3; thử bản start/join trong cùng một vòng rồi sửa lại."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "parallel_compile(3) → ba Thread target = helper, args = (3,)."
+          },
+          {
+            "label": "Bước 2",
+            "text": "start 3 worker → ba thông báo."
+          },
+          {
+            "label": "Bước 3",
+            "text": "join đủ → trả None."
+          }
+        ]
+      },
+      "counter": {
+        "question": "obj.parallel_compile(1) với C23 in gì?",
+        "options": [
+          "Compiling C code using 1 threads with standard version C23",
+          "Compiling C code using 3 threads with standard version C23",
+          "Không in gì"
+        ],
+        "correct": "Compiling C code using 1 threads with standard version C23"
+      },
+      "scaffold": {
+        "template": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n        threads = []\n        for index in range(n):\n            threads.append({{slot1}})\n        for worker in threads:\n            {{slot2}}\n        for worker in threads:\n            {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "threading.Thread(target=self._compile_worker, args=(n,))"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "worker.start()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "worker.join()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "threading.Thread(target=self._compile_worker, args=n)",
+            "slot": 1,
+            "trap": "args phải là tuple (n,)."
+          },
+          {
+            "label": "worker.start()",
+            "slot": 2
+          },
+          {
+            "label": "threading.Thread(target=self._compile_worker(n))",
+            "slot": 1,
+            "trap": "Gọi helper ngay ở thread hiện tại."
+          },
+          {
+            "label": "worker.join()",
+            "slot": 3
+          },
+          {
+            "label": "threading.Thread(target=self._compile_worker, args=(n,))",
+            "slot": 1
+          },
+          {
+            "label": "self._compile_worker(n)",
+            "slot": 2,
+            "trap": "Chạy tuần tự trong thread chính."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.\n\nThực hành: Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước.",
+        "io": [
+          {
+            "label": "n = 1 / C17",
+            "value": "Một dòng có 1 threads và C17"
+          },
+          {
+            "label": "n = 3 / C17",
+            "value": "Ba dòng có 3 threads và C17; trả về khi tất cả xong"
+          }
+        ]
+      },
+      "starterCode": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        pass\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n        # Tự viết tạo list, start và join.\n",
+      "solutionCode": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        threads = []\n        for index in range(n):\n            worker = threading.Thread(target=self._compile_worker, args=(n,))\n            threads.append(worker)\n\n        for worker in threads:\n            worker.start()\n\n        for worker in threads:\n            worker.join()\n\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nobj.parallel_compile(3)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Helper chỉ in thông báo chứa n và phiên bản, flush=True.\n2. target giữ callable; args=(n,) là tuple một phần tử truyền n vào helper.\n3. parallel_compile tạo list, start toàn bộ rồi join toàn bộ; không yêu cầu output theo thứ tự."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "worker = threading.Thread(target=self._compile_worker, args=(n,))\nthreads.append(worker)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Helper in đúng một dòng",
+          "call": "_studio.stdout(C(\"C\", 1972, [], \"C17\")._compile_worker, 3)",
+          "expect": "'Compiling C code using 3 threads with standard version C17\\n'"
+        },
+        {
+          "name": "n = 3: ba worker",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).thread_count",
+          "expect": "3"
+        },
+        {
+          "name": "Start hết rồi mới join",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).starts_before_joins",
+          "expect": "True"
+        },
+        {
+          "name": "Join đủ mọi worker",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).all_joined",
+          "expect": "True"
+        },
+        {
+          "name": "target là method, args = (n,)",
+          "call": "[(t.target_name, t._args) for t in _studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 2).threads]",
+          "expect": "[('_compile_worker', (2,)), ('_compile_worker', (2,))]"
+        },
+        {
+          "name": "n = 3: ba dòng đúng thông báo",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).stdout",
+          "expect": "'Compiling C code using 3 threads with standard version C17\\nCompiling C code using 3 threads with standard version C17\\nCompiling C code using 3 threads with standard version C17\\n'"
+        },
+        {
+          "name": "n = 1, C23",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C23').parallel_compile, 1).stdout",
+          "expect": "'Compiling C code using 1 threads with standard version C23\\n'"
+        },
+        {
+          "name": "Trả None khi tất cả xong",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 2).value",
+          "expect": "None"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "_compile_worker(self, n)",
+          "does": "Thực hiện một công việc mô phỏng.",
+          "takes": "self; n: int — đọc self.std_version",
+          "gives": "None",
+          "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+          "call": "obj._compile_worker(3) → thông báo cho n = 3"
+        },
+        {
+          "sig": "parallel_compile(self, n)",
+          "does": "Tạo n thread và chờ tất cả hoàn tất.",
+          "takes": "self; n là int dương, không phải bool",
+          "gives": "None; n sai → ValueError",
+          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading.Thread: target chạy khi start() và bộ chấm ghi lại thứ tự tạo / start / join. Hãy chạy thêm file trên máy (Windows hoặc Linux) để thấy thread thật — thứ tự dòng in có thể khác mỗi lần."
+    }
+  }
+}

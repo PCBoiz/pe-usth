@@ -1,0 +1,260 @@
+{
+  "lesson_code": "I05",
+  "sort_order": 25,
+  "module": "M6 · Trạng thái và lớp cha (Ex2)",
+  "title": "I05 · Hai object độc lập",
+  "subtitle": "Trung cấp · M6 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I05 · Hai object độc lập",
+    "subtitle": "Trung cấp · M6 · 25 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I05",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP TRUNG CẤP",
+          "I05"
+        ],
+        "title": "Hai object độc lập",
+        "goal": "Sửa list dùng chung để hai object độc lập.",
+        "task": "Sửa đúng chỗ lưu list trong constructor để A không kéo theo B.",
+        "predict": "Với self.paradigms = paradigms, đang có mấy list?",
+        "code": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        ...\n        self.paradigms = paradigms  # lỗi",
+        "tests": [
+          "Thêm functional vào A → B và source giữ nguyên",
+          "Source ban đầu [] → B và source vẫn []"
+        ],
+        "reflect": "Vì sao hai list bằng nhau vẫn cần là hai object?"
+      },
+      "context": {
+        "title": "Sửa list dùng chung để hai object độc lập.",
+        "body": "Class trong khung đang lưu self.paradigms = paradigms nên các object dùng chung list. Sửa ĐÚNG chỗ lưu list trong constructor để thêm paradigm vào object A không làm đổi object B hay list nguồn. Các method khác giữ nguyên.",
+        "example": "A và B tạo từ cùng source = [\"procedural\"]; thêm \"functional\" vào A chỉ đổi A.",
+        "prereq": "I04",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Với self.paradigms = paradigms, A, B và source đang giữ mấy list?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Một list dùng chung",
+            "detail": "Ba tên cùng trỏ vào một list.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Ba list riêng",
+            "detail": "Phép gán không sao chép.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Hai list",
+            "detail": "Không có lệnh nào tạo list mới.",
+            "correct": false
+          }
+        ],
+        "code": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = paradigms\n\nsource = [\"procedural\"]\nlanguage_a = ProgrammingLanguage(\"Python\", 1991, source)\nlanguage_b = ProgrammingLanguage(\"C\", 1972, source)"
+      },
+      "misconception": {
+        "title": "\"Hai list bằng giá trị là cùng một list\"",
+        "body": "== so giá trị, is so danh tính. Hai list riêng có thể bằng nhau (==) nhưng sửa list này không đổi list kia. Đừng \"sửa\" lỗi bằng cách xoá dữ liệu của source."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "a = source không tạo list mới: a và source là HAI TÊN của cùng một list."
+        },
+        {
+          "n": 2,
+          "body": "list(source) tạo list mới có cùng phần tử."
+        },
+        {
+          "n": 3,
+          "body": "a.append(\"y\") sửa list chung → source cũng thành ['x', 'y']; b vẫn ['x']. is kiểm có phải CÙNG một object không."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "source = [\"x\"]\na = source\nb = list(source)\na.append(\"y\")\nprint(source)\nprint(b)\nprint(a is source, b is source)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Sau khi sửa đúng, A.paradigms is B.paradigms cho gì?",
+          "options": [
+            {
+              "text": "False",
+              "detail": "Mỗi object có list riêng.",
+              "correct": true
+            },
+            {
+              "text": "True",
+              "detail": "Đó là bản lỗi.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi",
+              "detail": "is luôn so sánh được.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mỗi object có list riêng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao hai list bằng giá trị vẫn cần là hai object khác nhau?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Nếu A, B và source dùng chung một list thì append vào A cũng làm B và source đổi theo. list(paradigms) cho mỗi object một list riêng: lúc đầu bằng giá trị nhưng sửa list này không ảnh hưởng list kia."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Sửa đúng một dòng trong constructor.",
+        "rule": "Sau khi sửa, thử sửa source; kiểm A và B đều không bị đổi theo."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "source → bản copy cho A; bản copy khác cho B."
+          },
+          {
+            "label": "Bước 2",
+            "text": "A.add_paradigms(\"functional\") → chỉ list của A đổi."
+          },
+          {
+            "label": "Bước 3",
+            "text": "B và source vẫn là [\"procedural\"]."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Với BẢN LỖI: thêm \"functional\" vào A rồi print(B.paradigms) in gì?",
+        "options": [
+          "['procedural', 'functional']",
+          "['procedural']",
+          "[]"
+        ],
+        "correct": "['procedural', 'functional']"
+      },
+      "scaffold": {
+        "template": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        {{slot1}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "self.paradigms = list(paradigms)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "self.paradigms = list(paradigms)",
+            "slot": 1
+          },
+          {
+            "label": "self.paradigms = []",
+            "slot": 1,
+            "trap": "Mất dữ liệu ban đầu."
+          },
+          {
+            "label": "paradigms.clear()",
+            "slot": 1,
+            "trap": "Xoá dữ liệu của nơi gọi."
+          },
+          {
+            "label": "self.paradigms = paradigms",
+            "slot": 1,
+            "trap": "Vẫn dùng chung list."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Class trong khung đang lưu self.paradigms = paradigms nên các object dùng chung list. Sửa ĐÚNG chỗ lưu list trong constructor để thêm paradigm vào object A không làm đổi object B hay list nguồn. Các method khác giữ nguyên.\n\nThực hành: Tạo A, B từ cùng source rồi thêm vào A.",
+        "io": [
+          {
+            "label": "Thêm functional vào A",
+            "value": "A = [procedural, functional]; B và source = [procedural]"
+          },
+          {
+            "label": "Source ban đầu []",
+            "value": "Thêm vào A không đổi B hay source"
+          }
+        ]
+      },
+      "starterCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = paradigms\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\nsource = [\"procedural\"]\nlanguage_a = ProgrammingLanguage(\"Python\", 1991, source)\nlanguage_b = ProgrammingLanguage(\"C\", 1972, source)\nlanguage_a.add_paradigms(\"functional\")\nprint(language_a.paradigms)\nprint(language_b.paradigms)\nprint(source)\n",
+      "solutionCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\nsource = [\"procedural\"]\nlanguage_a = ProgrammingLanguage(\"Python\", 1991, source)\nlanguage_b = ProgrammingLanguage(\"C\", 1972, source)\nlanguage_a.add_paradigms(\"functional\")\nprint(language_a.paradigms)\nprint(language_b.paradigms)\nprint(source)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo A, B từ cùng source rồi thêm vào A."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Gán nguyên list chỉ tạo thêm tham chiếu, không tạo list mới.\n2. Đổi thành list(paradigms): mỗi lần khởi tạo object có list riêng."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "        self.paradigms = list(...)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "A đổi; B và source giữ nguyên",
+          "call": "_studio.run().stdout",
+          "expect": "\"['procedural', 'functional']\\n['procedural']\\n['procedural']\\n\""
+        },
+        {
+          "name": "Source ban đầu []",
+          "call": "_studio.run(vars={'source': []}).stdout",
+          "expect": "\"['functional']\\n[]\\n[]\\n\""
+        },
+        {
+          "name": "A.paradigms is not B.paradigms",
+          "call": "_studio.check('s = [\"p\"]\\na = ProgrammingLanguage(\"A\", 1, s)\\nb = ProgrammingLanguage(\"B\", 2, s)\\nassert a.paradigms is not b.paradigms')",
+          "expect": "True"
+        },
+        {
+          "name": "Sửa source sau khi tạo cả hai → A/B không đổi",
+          "call": "_studio.check('s = [\"p\"]\\na = ProgrammingLanguage(\"A\", 1, s)\\nb = ProgrammingLanguage(\"B\", 2, s)\\ns.append(\"z\")\\nassert a.paradigms == [\"p\"] and b.paradigms == [\"p\"]')",
+          "expect": "True"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "ProgrammingLanguage.__init__(self, name, year_created, paradigms)",
+          "does": "Khởi tạo ba thuộc tính của object.",
+          "takes": "self: object hiện tại; name: str; year_created: int; paradigms: list[str]",
+          "gives": "None — lời gọi class mới tạo ra object, không phải giá trị của __init__",
+          "effect": "Gán thuộc tính; list(paradigms) tạo list riêng.",
+          "call": "ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+        },
+        {
+          "sig": "add_paradigms(self, paradigm)",
+          "does": "Thêm một kiểu lập trình vào cuối list.",
+          "takes": "self; paradigm: str",
+          "gives": "None",
+          "effect": "Sửa self.paradigms; giữ phần tử trùng; không in.",
+          "call": "obj.add_paradigms(\"functional\")"
+        }
+      ]
+    }
+  }
+}

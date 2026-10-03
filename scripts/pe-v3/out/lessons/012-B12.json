@@ -1,0 +1,291 @@
+{
+  "lesson_code": "B12",
+  "sort_order": 12,
+  "module": "M3 · Đọc và ghi file",
+  "title": "B12 · Đọc từng dòng",
+  "subtitle": "Cơ bản · M3 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B12 · Đọc từng dòng",
+    "subtitle": "Cơ bản · M3 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B12",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP CƠ BẢN",
+          "B12"
+        ],
+        "title": "Đọc từng dòng",
+        "goal": "Chỉ bỏ CR/LF cuối dòng, giữ khoảng trắng.",
+        "task": "Duyệt file, dùng rstrip(\"\\r\\n\") và thêm từng dòng vào list.",
+        "predict": "strip() có giữ dấu cách quanh \" level \" không?",
+        "code": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        pass",
+        "tests": [
+          "\" level \\n\\nradar\" → giữ dấu cách",
+          "File rỗng → []"
+        ],
+        "reflect": "Vì sao dùng rstrip(\"\\r\\n\") thay strip()?"
+      },
+      "context": {
+        "title": "Đọc từng dòng và chỉ bỏ ký tự CR/LF ở cuối dòng.",
+        "body": "Duyệt data.txt từng dòng; dùng line.rstrip(\"\\r\\n\") để bỏ ký tự xuống dòng ở cuối rồi append vào lines. Phần mở file đã cấp.",
+        "example": "File \" level \\n\\nradar\" → [\" level \", \"\", \"radar\"].",
+        "prereq": "B11",
+        "level": "Cơ bản",
+        "files": [
+          "data.txt"
+        ]
+      },
+      "predict": {
+        "question": "Dùng strip() thay rstrip(\"\\r\\n\") có giữ hai dấu cách quanh \" level \" không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — strip() xoá cả khoảng trắng hai đầu",
+            "detail": "\" level \" thành \"level\": dữ liệu bị đổi.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — strip() chỉ bỏ xuống dòng",
+            "detail": "strip() không tham số bỏ MỌI khoảng trắng hai đầu.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Chỉ giữ dấu cách bên phải",
+            "detail": "Cả hai đầu đều bị xoá.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Bỏ luôn dòng rỗng khi đọc cho gọn\"",
+        "body": "Bước đọc chỉ chuyển file thành list dòng — giữ nguyên dữ liệu. Loại chuỗi rỗng là việc của bước kiểm tra palindrome. strip() cũng sai vì làm mất dấu cách thuộc dữ liệu."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "for line in file đọc lần lượt từng dòng; mỗi dòng (trừ dòng cuối có thể không có) mang \"\\n\" ở cuối."
+        },
+        {
+          "n": 2,
+          "body": "rstrip(\"\\r\\n\") chỉ bỏ ký tự CR/LF ở CUỐI — dấu cách vẫn giữ nguyên."
+        },
+        {
+          "n": 3,
+          "body": "append lưu cả chuỗi rỗng; việc lọc là của bước sau."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "rows = []\nwith open(\"scores.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        rows.append(line.rstrip(\"\\r\\n\"))\nprint(rows)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "File \"a\\r\\nb\\r\\n\" (xuống dòng kiểu Windows) cho lines là gì?",
+          "options": [
+            {
+              "text": "[\"a\", \"b\"]",
+              "detail": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối.",
+              "correct": true
+            },
+            {
+              "text": "[\"a\\r\", \"b\\r\"]",
+              "detail": "CR cũng nằm trong tập ký tự được bỏ.",
+              "correct": false
+            },
+            {
+              "text": "[\"a\", \"\", \"b\", \"\"]",
+              "detail": "Mỗi dòng chỉ được đọc một lần.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối."
+        },
+        {
+          "question": "Dòng cuối \"radar\" không có xuống dòng. line[:-1] cho kết quả gì?",
+          "options": [
+            {
+              "text": "\"rada\" — cắt mất chữ r",
+              "detail": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip.",
+              "correct": true
+            },
+            {
+              "text": "\"radar\"",
+              "detail": "line[:-1] không kiểm tra ký tự cuối là gì.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi",
+              "detail": "Slicing không lỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao dùng rstrip(\"\\r\\n\") thay vì strip()?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Bài chỉ bỏ ký tự xuống dòng ở cuối. strip() còn xoá dấu cách đầu/cuối nên \" level \" thành \"level\" — đổi dữ liệu. rstrip(\"\\r\\n\") giữ nguyên khoảng trắng, bỏ cả \\r của file Windows, và dòng cuối không có newline vẫn được giữ nguyên."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp phép bỏ xuống dòng và lệnh thêm vào list.",
+        "rule": "Thử file rỗng, file xuống dòng CRLF và file có dòng cuối không newline."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "\" level \\n\" → \" level \"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "\"\\n\" → \"\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "\"radar\" (không newline) → giữ \"radar\"."
+          },
+          {
+            "label": "Bước 4",
+            "text": "lines = [\" level \", \"\", \"radar\"]."
+          }
+        ]
+      },
+      "counter": {
+        "question": "File \" \\n\" (một dấu cách rồi xuống dòng) cho lines là gì?",
+        "options": [
+          "[\" \"]",
+          "[\"\"]",
+          "[]"
+        ],
+        "correct": "[\" \"]"
+      },
+      "scaffold": {
+        "template": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        text = {{slot1}}\n        {{slot2}}\nprint(lines)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "line.rstrip(\"\\r\\n\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "lines.append(text)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "line[:-1]",
+            "slot": 1,
+            "trap": "Cắt mất ký tự cuối của dòng không có newline."
+          },
+          {
+            "label": "line.strip()",
+            "slot": 1,
+            "trap": "Xoá cả dấu cách thuộc dữ liệu."
+          },
+          {
+            "label": "lines.append(text)",
+            "slot": 2
+          },
+          {
+            "label": "line.rstrip(\"\\r\\n\")",
+            "slot": 1
+          },
+          {
+            "label": "lines = [text]",
+            "slot": 2,
+            "trap": "Ghi đè list mỗi lượt."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Duyệt data.txt từng dòng; dùng line.rstrip(\"\\r\\n\") để bỏ ký tự xuống dòng ở cuối rồi append vào lines. Phần mở file đã cấp.\n\nThực hành: Đọc list dòng; giữ chuỗi rỗng và khoảng trắng để phần lọc xử lý sau.",
+        "io": [
+          {
+            "label": "\" level \\n\\nradar\"",
+            "value": "[\" level \", \"\", \"radar\"]"
+          },
+          {
+            "label": "File rỗng",
+            "value": "[]"
+          }
+        ]
+      },
+      "starterCode": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        pass\n# Tự thêm từng dòng đã xử lý vào lines.\nprint(lines)\n",
+      "solutionCode": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        text = line.rstrip(\"\\r\\n\")\n        lines.append(text)\n\nprint(lines)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đọc list dòng; giữ chuỗi rỗng và khoảng trắng để phần lọc xử lý sau."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Mỗi lượt: text = line.rstrip(\"\\r\\n\").\n2. lines.append(text) — giữ cả chuỗi rỗng."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    for line in file:\n        text = line.rstrip(\"\\r\\n\")\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "\" level \\n\\nradar\" → [\" level \", \"\", \"radar\"]",
+          "call": "_studio.run().var('lines')",
+          "expect": "[' level ', '', 'radar']"
+        },
+        {
+          "name": "File rỗng → []",
+          "call": "_studio.run(files={'data.txt': ''}).var('lines')",
+          "expect": "[]"
+        },
+        {
+          "name": "CRLF: \"a\\r\\nb\\r\\n\" → [\"a\", \"b\"]",
+          "call": "_studio.run(files={'data.txt': 'a\\r\\nb\\r\\n'}).var('lines')",
+          "expect": "['a', 'b']"
+        },
+        {
+          "name": "Dòng cuối không newline giữ nguyên",
+          "call": "_studio.run(files={'data.txt': 'radar'}).var('lines')",
+          "expect": "['radar']"
+        },
+        {
+          "name": "\" \\n\" → [\" \"] (giữ dấu cách)",
+          "call": "_studio.run(files={'data.txt': ' \\n'}).var('lines')",
+          "expect": "[' ']"
+        }
+      ],
+      "files": [
+        {
+          "name": "data.txt",
+          "content": " level \n\nradar",
+          "kind": "data"
+        }
+      ]
+    }
+  }
+}

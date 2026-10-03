@@ -1,4 +1,8 @@
 /**
+ * ĐÃ THAY THẾ: khoá `python` giờ dùng 40 bài PE Python v3 — nạp bằng
+ * scripts/seed-pe-v3.ts. Chạy script này sẽ ghi đè bài 1..92 bằng giáo trình
+ * v2 cũ, nên nó từ chối chạy nếu thiếu cờ --force-v2.
+ *
  * seed-pe-lessons.ts — nạp 92 bài PE_Python_v2 đã chuyển đổi vào khoá `python`.
  *
  * NGUỒN: scripts/pe-convert/out/lessons.json, sinh bởi
@@ -53,6 +57,14 @@ const SET_COUNT = process.argv.includes('--set-count');
 const BUNDLE = join(__dirname, 'pe-convert', 'out', 'lessons.json');
 
 async function main() {
+  if (!process.argv.includes('--force-v2')) {
+    console.error(
+      'Khoá python đã chuyển sang PE v3 (scripts/seed-pe-v3.ts). Script v2 này sẽ ' +
+        'ghi đè giáo trình hiện tại — thêm --force-v2 nếu thật sự muốn quay lại v2.',
+    );
+    process.exitCode = 1;
+    return;
+  }
   const bundle = JSON.parse(readFileSync(BUNDLE, 'utf8')) as {
     course_id: string;
     hand_built: { sort_order: number; module: string; title: string };

@@ -1,0 +1,308 @@
+{
+  "lesson_code": "N01",
+  "sort_order": 33,
+  "module": "M8 · Thread và chờ kết thúc (Ex4)",
+  "title": "N01 · Một thread",
+  "subtitle": "Nâng cao · M8 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N01 · Một thread",
+    "subtitle": "Nâng cao · M8 · 30 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N01",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M8",
+          "BÀI TẬP NÂNG CAO",
+          "N01"
+        ],
+        "title": "Một thread",
+        "goal": "Chạy một công việc trong thread và chờ nó xong.",
+        "task": "Tạo Thread(target=obj.compile), start rồi join.",
+        "predict": "target=obj.compile khác obj.compile() thế nào?",
+        "code": "import threading\nfrom c_language import C\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\n# Tạo Thread, start, join",
+        "tests": [
+          "C17 → một dòng compile trong thread con",
+          "C23 → worker đã xong sau join"
+        ],
+        "reflect": "Vì sao không viết target=obj.compile()?"
+      },
+      "context": {
+        "title": "Chạy một công việc trong thread và chờ nó kết thúc.",
+        "body": "Cho obj = C(\"C\", 1972, [\"procedural\"], \"C17\") (c_language.py đã cấp, có method compile). Tạo một threading.Thread với target=obj.compile, start rồi join.",
+        "example": "Một thread gọi compile của C17 → một dòng \"Compiling C code using standard version C17\".",
+        "prereq": "I12",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py"
+        ]
+      },
+      "predict": {
+        "question": "target=obj.compile khác target=obj.compile() thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không ngoặc: giao hàm cho thread; có ngoặc: gọi ngay ở thread chính, target nhận None",
+            "detail": "Dấu ngoặc là lời gọi hàm.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Giống nhau",
+            "detail": "Một cái là hàm, một cái là kết quả (None) của lời gọi.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Có ngoặc mới chạy được",
+            "detail": "start() mới là thứ cho target chạy.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Có dòng Compiling in ra là thread đã chạy đúng\"",
+        "body": "target=obj.compile() cũng in ra dòng đó — nhưng từ thread CHÍNH, còn thread con nhận target=None và không làm gì. Không gọi start hai lần trên cùng một Thread (RuntimeError)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Thread(target=greet) tạo đối tượng MÔ TẢ công việc — chưa chạy gì."
+        },
+        {
+          "n": 2,
+          "body": "start() mới cho greet chạy trong thread con; join() bắt thread chính chờ worker xong."
+        },
+        {
+          "n": 3,
+          "body": "target nhận TÊN hàm (greet), không có dấu ngoặc: greet() sẽ chạy ngay trong thread chính và đưa None vào target."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\ndef greet():\n    print(\"Hello from\", threading.current_thread().name)\n\nworker = threading.Thread(target=greet)\nworker.start()\nworker.join()\nprint(\"Main continues\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Gọi worker.start() hai lần trên cùng một Thread thì…",
+          "options": [
+            {
+              "text": "RuntimeError: threads can only be started once",
+              "detail": "Cần thêm worker thì tạo Thread mới.",
+              "correct": true
+            },
+            {
+              "text": "Chạy target hai lần",
+              "detail": "Một Thread chỉ start được một lần.",
+              "correct": false
+            },
+            {
+              "text": "Lần hai bị bỏ qua",
+              "detail": "Python báo lỗi chứ không bỏ qua.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Cần thêm worker thì tạo Thread mới."
+        },
+        {
+          "question": "worker.run() khác worker.start() thế nào?",
+          "options": [
+            {
+              "text": "run() chạy target NGAY trong thread hiện tại; start() mới tạo thread con",
+              "detail": "Gọi run() không tạo thread mới.",
+              "correct": true
+            },
+            {
+              "text": "Giống nhau",
+              "detail": "Chỉ start() tạo luồng thực thi mới.",
+              "correct": false
+            },
+            {
+              "text": "run() chạy nhanh hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Gọi run() không tạo thread mới."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao không viết target=obj.compile()?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Dấu ngoặc gọi compile ngay tại nơi tạo Thread, trong thread chính; giá trị trả về là None nên Thread nhận target=None và thread con không làm gì. target phải là callable obj.compile (không ngoặc) để start() cho nó chạy trong thread con."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: C23. Lắp ba thao tác Thread/start/join.",
+        "rule": "Thử object C23; kiểm công việc chạy trong thread con và đã xong sau join."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Tạo Thread → chưa chạy."
+          },
+          {
+            "label": "Bước 2",
+            "text": "start() → compile chạy ở thread con."
+          },
+          {
+            "label": "Bước 3",
+            "text": "join() → chờ worker xong → chương trình tiếp tục."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Với obj C23, worker in gì?",
+        "options": [
+          "Compiling C code using standard version C23",
+          "Compiling C code using standard version C17",
+          "Không in gì"
+        ],
+        "correct": "Compiling C code using standard version C23"
+      },
+      "scaffold": {
+        "template": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C23\")\nworker = {{slot1}}\n{{slot2}}\n{{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "threading.Thread(target=obj.compile)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "worker.start()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "worker.join()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "obj.compile()",
+            "slot": 3,
+            "trap": "Gọi thêm một lần, không chờ worker."
+          },
+          {
+            "label": "worker.join()",
+            "slot": 3
+          },
+          {
+            "label": "worker.start()",
+            "slot": 2
+          },
+          {
+            "label": "threading.Thread(target=obj.compile())",
+            "slot": 1,
+            "trap": "Gọi compile ngay ở thread chính."
+          },
+          {
+            "label": "threading.Thread(target=obj.compile)",
+            "slot": 1
+          },
+          {
+            "label": "worker.run()",
+            "slot": 2,
+            "trap": "Chạy target trong thread chính, không tạo thread mới."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho obj = C(\"C\", 1972, [\"procedural\"], \"C17\") (c_language.py đã cấp, có method compile). Tạo một threading.Thread với target=obj.compile, start rồi join.\n\nThực hành: Đưa callable obj.compile vào target; chưa gọi compile ngay.",
+        "io": [
+          {
+            "label": "Object C17",
+            "value": "Một dòng compile C17; target chạy trong thread con"
+          },
+          {
+            "label": "Object C23",
+            "value": "Một dòng compile C23; worker đã xong sau join"
+          }
+        ]
+      },
+      "starterCode": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\n# Tự tạo Thread, start và join.\n",
+      "solutionCode": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nworker = threading.Thread(target=obj.compile)\nworker.start()\nworker.join()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đưa callable obj.compile vào target; chưa gọi compile ngay."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Thread(...) tạo đối tượng mô tả công việc; nó chưa chạy cho đến start().\n2. target nhận tên hàm callable; join() chờ worker kết thúc trước khi chạy tiếp."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "worker = threading.Thread(target=obj.compile)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tạo đúng một Thread",
+          "call": "_studio.main.thread_count",
+          "expect": "1"
+        },
+        {
+          "name": "target là method, không gọi sẵn",
+          "call": "_studio.main.targets_callable",
+          "expect": "True"
+        },
+        {
+          "name": "Công việc chạy trong thread con",
+          "call": "_studio.main.threads[0].output",
+          "expect": "'Compiling C code using standard version C17\\n'"
+        },
+        {
+          "name": "start trước, join sau",
+          "call": "_studio.main.starts_before_joins",
+          "expect": "True"
+        },
+        {
+          "name": "Worker đã được join",
+          "call": "_studio.main.all_joined",
+          "expect": "True"
+        },
+        {
+          "name": "Object C23",
+          "call": "_studio.run(vars={'obj': _studio.expr('C(\"C\", 1972, [\"procedural\"], \"C23\")')}).threads[0].output",
+          "expect": "'Compiling C code using standard version C23\\n'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading.Thread: target chạy khi start() và bộ chấm ghi lại thứ tự tạo / start / join. Hãy chạy thêm file trên máy (Windows hoặc Linux) để thấy thread thật — thứ tự dòng in có thể khác mỗi lần."
+    }
+  }
+}

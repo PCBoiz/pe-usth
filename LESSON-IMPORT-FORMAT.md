@@ -21,8 +21,13 @@ OCR. Hãy xuất PDF từ trình soạn thảo, hoặc dùng thẳng Markdown.
 
 ## Mẫu Markdown
 
-Mỗi bước là một heading `## S<n> <tên gì cũng được>`. Bước nào không có thì bỏ luôn —
-Studio tự ẩn và đánh số lại (ví dụ chỉ có S1 và S4 thì học viên thấy "Bước 1/2").
+Mỗi bước là một heading `## S<n> <tên gì cũng được>`. Bước nào không có thì bỏ luôn.
+
+Studio **không** hiện mỗi bước một trang: từng phần bên dưới (ngữ cảnh, giải thích,
+ngộ nhận, mỗi câu trắc nghiệm, phân loại, tự giải thích, khung lắp ghép, nhật ký,
+sandbox) là MỘT màn riêng trong khung LessonChrome, cuối cùng thêm màn tổng kết.
+Thanh tiến độ trên đầu đếm theo số màn đó, và phần nào tài liệu không có thì không
+sinh màn.
 
 ````markdown
 # Tiêu đề bài học
@@ -149,7 +154,13 @@ def solve(rows):
 - **Mã khoá học**: thường là `python`.
 - **Số thứ tự bài** (`sort_order`) bắt đầu từ 1. Đường dẫn dùng chỉ số từ 0, nên bài
   `sort_order = 10` mở bằng `/lesson/python?lesson=9`.
-- `sort_order = 11` là bài List & Mutability dựng tay, **không đọc `content_json`**.
+- Khoá `python` dùng 40 bài PE Python v3 ở `sort_order` 1–40, nạp bằng
+  `scripts/seed-pe-v3.ts` (xem `scripts/pe-v3/README.md`). Bài nhập thêm nên đặt ở
+  `sort_order = 41` trở đi; `sort_order >= 1000` là bài LƯU TRỮ của giáo trình cũ, không
+  tính vào số bài của khoá.
+- Bài v3 dùng thêm vài trường mà mẫu Markdown chưa sinh ra (`step_4.files`,
+  `contracts`, `gate`, `env`, `step_2.selfExplain.sample`) và ca chấm gọi `_studio.run(...)`
+  để chạy lại cả chương trình — chi tiết ở `scripts/pe-v3/README.md`.
 - Hoàn thành bài ghi đúng `sort_order` của bài đang học.
 - Trắc nghiệm nằm ở `step_2.mcq` nên tự động vào kho câu hỏi của quiz ôn tập.
 

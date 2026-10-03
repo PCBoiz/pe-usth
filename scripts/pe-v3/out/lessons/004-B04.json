@@ -1,0 +1,272 @@
+{
+  "lesson_code": "B04",
+  "sort_order": 4,
+  "module": "M1 · Dữ liệu và điều kiện",
+  "title": "B04 · So sánh palindrome",
+  "subtitle": "Cơ bản · M1 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B04 · So sánh palindrome",
+    "subtitle": "Cơ bản · M1 · 15 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B04",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP CƠ BẢN",
+          "B04"
+        ],
+        "title": "So sánh palindrome",
+        "goal": "So sánh chuỗi gốc và chuỗi đảo để tạo bool.",
+        "task": "Với text không rỗng, so sánh text với reversed_text và in result.",
+        "predict": "\"Level\" có bằng chuỗi đảo của chính nó không?",
+        "code": "text = \"level\"\nreversed_text = text[::-1]\n# Tạo result bằng phép so sánh ==",
+        "tests": [
+          "level → True",
+          "abc → False"
+        ],
+        "reflect": "Vì sao \"Level\" cho kết quả False?"
+      },
+      "context": {
+        "title": "So sánh chuỗi gốc và chuỗi đảo để tạo giá trị bool.",
+        "body": "Cho text (không rỗng) và reversed_text = text[::-1] đã cấp. Tạo result bằng phép so sánh text với reversed_text rồi in result.",
+        "example": "text = \"level\" → result = True; text = \"abc\" → result = False.",
+        "prereq": "B03",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "\"Level\" có giống chuỗi đảo của chính nó không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — đảo ra \"leveL\", chữ L hoa đổi chỗ",
+            "detail": "So sánh phân biệt hoa/thường nên kết quả là False.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — vì \"level\" là palindrome",
+            "detail": "Bài này KHÔNG đổi chữ thường; \"Level\" khác \"leveL\".",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi vì có chữ hoa",
+            "detail": "So sánh chuỗi không bao giờ lỗi vì chữ hoa.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Phải viết if/else mới có True/False\"",
+        "body": "Bản thân phép so sánh đã là một giá trị bool: result = text == reversed_text gán thẳng True/False. Và đừng tự đổi chữ thường bằng lower() — đề yêu cầu giữ nguyên hoa/thường."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "== hỏi \"hai giá trị có bằng nhau không?\" và trả về bool: True hoặc False. Một dấu = là gán, hai dấu == là so sánh."
+        },
+        {
+          "n": 2,
+          "body": "So sánh chuỗi phân biệt hoa/thường: \"Noon\" khác \"nooN\"."
+        },
+        {
+          "n": 3,
+          "body": "Luồng dữ liệu: noon → đảo được noon → bằng nhau → same = True."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "word = \"noon\"\nbackwards = word[::-1]\nsame = word == backwards\nprint(same)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "text = \"a\" thì result là gì?",
+          "options": [
+            {
+              "text": "True",
+              "detail": "Một ký tự đảo lại vẫn là chính nó.",
+              "correct": true
+            },
+            {
+              "text": "False",
+              "detail": "\"a\" == \"a\" là đúng.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi",
+              "detail": "Chuỗi một ký tự đảo bình thường.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Một ký tự đảo lại vẫn là chính nó."
+        },
+        {
+          "question": "Khác nhau giữa = và == là gì?",
+          "options": [
+            {
+              "text": "= gán giá trị cho biến; == so sánh và trả bool",
+              "detail": "result = text == reversed_text dùng cả hai.",
+              "correct": true
+            },
+            {
+              "text": "Hai dấu giống nhau",
+              "detail": "text = reversed_text là gán, không trả True/False.",
+              "correct": false
+            },
+            {
+              "text": "== là gán hai lần",
+              "detail": "== không gán gì cả.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "result = text == reversed_text dùng cả hai."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao \"Level\" khác \"level\" trong phép kiểm tra này?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Đảo \"Level\" được \"leveL\": chữ L hoa chuyển từ đầu xuống cuối. So sánh chuỗi phân biệt hoa/thường nên \"Level\" == \"leveL\" là False. Bài giữ nguyên dữ liệu, không tự chuyển sang chữ thường."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: text = \"abc\". Chọn phép tạo result.",
+        "rule": "Thử \"abc\" và \"Level\"; viết chuỗi đảo ra giấy trước khi chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "text = \"level\"; reversed_text = \"level\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "text == reversed_text → True."
+          },
+          {
+            "label": "Bước 3",
+            "text": "result giữ True."
+          },
+          {
+            "label": "Bước 4",
+            "text": "print(result) → True."
+          }
+        ]
+      },
+      "counter": {
+        "question": "text = \"abc\" thì chương trình in gì?",
+        "options": [
+          "True",
+          "False",
+          "cba"
+        ],
+        "correct": "False"
+      },
+      "scaffold": {
+        "template": "text = \"abc\"\nreversed_text = text[::-1]\n{{slot1}}\nprint(result)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "result = text == reversed_text"
+          }
+        ],
+        "bank": [
+          {
+            "label": "result = text == reversed_text",
+            "slot": 1
+          },
+          {
+            "label": "result = text.lower() == reversed_text.lower()",
+            "slot": 1,
+            "trap": "Tự đổi chữ thường làm sai hợp đồng của bài."
+          },
+          {
+            "label": "result = \"True\"",
+            "slot": 1,
+            "trap": "Chuỗi \"True\" không phải kết quả so sánh."
+          },
+          {
+            "label": "result = text = reversed_text",
+            "slot": 1,
+            "trap": "Dấu = là gán, không so sánh."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho text (không rỗng) và reversed_text = text[::-1] đã cấp. Tạo result bằng phép so sánh text với reversed_text rồi in result.\n\nThực hành: So sánh text với reversed_text bằng ==, không đổi hoa/thường.",
+        "io": [
+          {
+            "label": "text = \"level\"",
+            "value": "True"
+          },
+          {
+            "label": "text = \"abc\"",
+            "value": "False"
+          }
+        ]
+      },
+      "starterCode": "text = \"level\"\nreversed_text = text[::-1]\n# Tự tạo result bằng phép so sánh và in.\n",
+      "solutionCode": "text = \"level\"\nreversed_text = text[::-1]\nresult = text == reversed_text\nprint(result)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "So sánh text với reversed_text bằng ==, không đổi hoa/thường."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. == trả bool True/False.\n2. Gán kết quả so sánh vào result rồi print(result)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "result = text == ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "text = \"level\" → True",
+          "call": "_studio.run().stdout",
+          "expect": "'True\\n'"
+        },
+        {
+          "name": "text = \"abc\" → False",
+          "call": "_studio.run(vars={'text': 'abc'}).stdout",
+          "expect": "'False\\n'"
+        },
+        {
+          "name": "\"Level\" → False (giữ hoa/thường)",
+          "call": "_studio.run(vars={'text': 'Level'}).stdout",
+          "expect": "'False\\n'"
+        },
+        {
+          "name": "text = \"a\" → True",
+          "call": "_studio.run(vars={'text': 'a'}).stdout",
+          "expect": "'True\\n'"
+        },
+        {
+          "name": "result là bool",
+          "call": "type(_studio.run().var('result')).__name__",
+          "expect": "'bool'"
+        }
+      ]
+    }
+  }
+}

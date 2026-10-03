@@ -1,0 +1,296 @@
+{
+  "lesson_code": "N05",
+  "sort_order": 37,
+  "module": "M9 · Process và đo thời gian (Ex5)",
+  "title": "N05 · Một process con",
+  "subtitle": "Nâng cao · M9 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N05 · Một process con",
+    "subtitle": "Nâng cao · M9 · 35 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N05",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M9",
+          "BÀI TẬP NÂNG CAO",
+          "N05"
+        ],
+        "title": "Một process con",
+        "goal": "Hiểu hai nhánh sau fork và chờ một child.",
+        "task": "Child in Child work rồi _exit(0); parent waitpid rồi mới in.",
+        "predict": "pid trong child và trong parent khác nhau thế nào?",
+        "code": "def main():\n    sys.stdout.flush()\n    # fork, tách nhánh child / parent\n    # waitpid rồi in Parent finished",
+        "tests": [
+          "Script mẫu → Child work ↵ Parent finished",
+          "Child exit 1 → parent RuntimeError"
+        ],
+        "reflect": "Vì sao child phải _exit và parent phải waitpid?"
+      },
+      "context": {
+        "title": "Hiểu hai nhánh sau fork và chờ một child.",
+        "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".",
+        "example": "Child in Child work; parent chỉ in Parent finished sau khi child đã kết thúc.",
+        "prereq": "N04",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Giá trị pid trong child và parent khác nhau thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Child nhận 0; parent nhận PID (số dương) của child",
+            "detail": "Nhờ vậy if pid == 0 tách được hai nhánh.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Cả hai nhận PID của child",
+            "detail": "Child nhận 0.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Parent nhận 0",
+            "detail": "Ngược lại.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thay fork bằng thread cho chạy được trên Windows\"",
+        "body": "Thread và process là hai cơ chế khác nhau — bài này học process. Lỗi \"os has no attribute fork\" trên Windows là lỗi môi trường: chạy trên WSL/Linux. Lưu ý thêm: _exit không tự flush output — child in bằng flush=True, parent gọi sys.stdout.flush() trước khi fork để output đệm không bị nhân đôi."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "fork tạo process con. Cùng một lời gọi trở về HAI lần: trả 0 trong child, trả PID của child trong parent."
+        },
+        {
+          "n": 2,
+          "body": "Child làm việc rồi os._exit(0) — nếu không thoát, child chạy tiếp cả phần code của parent."
+        },
+        {
+          "n": 3,
+          "body": "Parent gọi waitpid(pid, 0) để chờ và thu hồi child. status không phải exit code: dùng WIFEXITED rồi WEXITSTATUS."
+        },
+        {
+          "n": 4,
+          "body": "if __name__ == \"__main__\": chỉ gọi main khi chạy file trực tiếp; import file thì không tự chạy."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import os\n\npid = os.fork()\nif pid == 0:\n    print(\"child: my pid is\", os.getpid(), flush=True)\n    os._exit(0)\n\nprint(\"parent: created child\", pid)\nos.waitpid(pid, 0)\nprint(\"parent: child done\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Child quên os._exit(0) thì…",
+          "options": [
+            {
+              "text": "Child chạy tiếp code của parent: tự waitpid (lỗi), in cả \"Parent finished\"",
+              "detail": "Child là bản sao của parent.",
+              "correct": true
+            },
+            {
+              "text": "Child tự dừng sau print",
+              "detail": "Không có gì dừng nó.",
+              "correct": false
+            },
+            {
+              "text": "Parent báo lỗi ngay",
+              "detail": "Parent không biết child đang làm gì.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Child là bản sao của parent."
+        },
+        {
+          "question": "status trả về từ os.waitpid là gì?",
+          "options": [
+            {
+              "text": "Một số mã hoá; dùng os.WIFEXITED(status) rồi os.WEXITSTATUS(status) để lấy exit code",
+              "detail": "Không so trực tiếp với 0/1.",
+              "correct": true
+            },
+            {
+              "text": "Chính exit code của child",
+              "detail": "Exit code nằm ở byte cao của status.",
+              "correct": false
+            },
+            {
+              "text": "PID của child",
+              "detail": "PID là phần tử thứ nhất của tuple.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không so trực tiếp với 0/1."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao child phải _exit và parent phải waitpid?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Child là bản sao của parent: nếu không os._exit sau khi làm việc, nó chạy tiếp phần code của parent. waitpid giúp parent chờ child kết thúc và thu hồi trạng thái (không để lại zombie), nhờ đó parent chỉ in Parent finished sau khi child xong và biết child thoát thành công hay lỗi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp điều kiện nhánh child, lệnh thoát và lệnh chờ.",
+        "rule": "Đội dev thêm fixture child chậm hoặc exit code 1; kiểm parent vẫn chờ và nhận đúng trạng thái."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "fork → child pid = 0 → in Child work → _exit(0)."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Parent có PID child → waitpid → kiểm status."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Child thành công → in Parent finished."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Child thoát với mã 1 thì parent làm gì?",
+        "options": [
+          "raise RuntimeError(\"child failed\")",
+          "In Parent finished như thường",
+          "Không biết được"
+        ],
+        "correct": "raise RuntimeError(\"child failed\")"
+      },
+      "scaffold": {
+        "template": "import os\nimport sys\n\ndef main():\n    sys.stdout.flush()\n    pid = os.fork()\n    if {{slot1}}:\n        print(\"Child work\", flush=True)\n        {{slot2}}\n\n    waited_pid, status = {{slot3}}\n    if not os.WIFEXITED(status) or os.WEXITSTATUS(status) != 0:\n        raise RuntimeError(\"child failed\")\n    print(\"Parent finished\", flush=True)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "pid == 0"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "os._exit(0)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "os.waitpid(pid, 0)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "return",
+            "slot": 2,
+            "trap": "Child quay về và chạy tiếp code của parent ở nơi gọi main."
+          },
+          {
+            "label": "os._exit(0)",
+            "slot": 2
+          },
+          {
+            "label": "os.waitpid(pid, 0)",
+            "slot": 3
+          },
+          {
+            "label": "pid > 0",
+            "slot": 1,
+            "trap": "Đó là nhánh parent."
+          },
+          {
+            "label": "time.sleep(1)",
+            "slot": 3,
+            "trap": "Ngủ không phải chờ: không thu hồi child, không biết exit code."
+          },
+          {
+            "label": "pid == 0",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".\n\nThực hành: Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc.",
+        "io": [
+          {
+            "label": "Chạy script mẫu",
+            "value": "Child work trước Parent finished; parent thoát mã 0"
+          },
+          {
+            "label": "Child chậm (fixture)",
+            "value": "Parent vẫn chờ child trước thông báo cuối"
+          }
+        ]
+      },
+      "starterCode": "import os\nimport sys\n\n\ndef main():\n    sys.stdout.flush()\n    # Tự fork, tách nhánh child/parent và waitpid.\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "solutionCode": "import os\nimport sys\n\n\ndef main():\n    sys.stdout.flush()\n    pid = os.fork()\n    if pid == 0:\n        print(\"Child work\", flush=True)\n        os._exit(0)\n\n    waited_pid, status = os.waitpid(pid, 0)\n    if not os.WIFEXITED(status) or os.WEXITSTATUS(status) != 0:\n        raise RuntimeError(\"child failed\")\n    print(\"Parent finished\", flush=True)\n\n\nif __name__ == \"__main__\":\n    main()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. fork tạo process con; trả 0 trong child, PID child trong parent.\n2. Child làm việc rồi _exit(0); flush=True đẩy output trước _exit.\n3. Parent waitpid(pid, 0); dùng WIFEXITED/WEXITSTATUS đọc trạng thái."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    pid = os.fork()\n    if pid == 0:\n        print(\"Child work\", flush=True)\n        os._exit(0)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Child work rồi Parent finished",
+          "call": "_studio.main.stdout",
+          "expect": "'Child work\\nParent finished\\n'"
+        },
+        {
+          "name": "Đúng một child",
+          "call": "len(_studio.main.children)",
+          "expect": "1"
+        },
+        {
+          "name": "Child thoát bằng os._exit(0)",
+          "call": "[(c.exited, c.exit_code) for c in _studio.main.children]",
+          "expect": "[(True, 0)]"
+        },
+        {
+          "name": "Parent đã chờ (thu hồi) child",
+          "call": "_studio.main.reaped_all",
+          "expect": "True"
+        },
+        {
+          "name": "Parent finished in SAU khi chờ",
+          "call": "_studio.main.after_waits('Parent finished')",
+          "expect": "True"
+        },
+        {
+          "name": "Child exit 1 → parent RuntimeError",
+          "call": "_studio.run(child_exit={0: 1}).error",
+          "expect": "'RuntimeError'"
+        }
+      ],
+      "env": "os.fork chỉ có trên Linux/macOS/WSL — Python trên Windows báo \"module os has no attribute fork\" (lỗi môi trường, không phải sai kiến thức). Studio chạy bản MÔ PHỎNG fork/waitpid trong trình duyệt để chấm cấu trúc parent/child; nghiệm thu thật bằng script Python 3 trên Linux/WSL, parent đơn luồng."
+    }
+  }
+}

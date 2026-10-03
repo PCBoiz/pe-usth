@@ -1,0 +1,240 @@
+{
+  "lesson_code": "B20",
+  "sort_order": 20,
+  "module": "M4 · Ghép bài Ex1",
+  "title": "B20 · Ex1 tự làm",
+  "subtitle": "Cơ bản · M4 · 40 phút · Cửa tự kiểm tra Ex1 · file/palindrome",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B20 · Ex1 tự làm",
+    "subtitle": "Cơ bản · M4 · 40 phút · Cửa tự kiểm tra Ex1 · file/palindrome",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B20",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP CƠ BẢN",
+          "B20"
+        ],
+        "title": "Ex1 tự làm",
+        "goal": "Tự giải Ex1 trên dữ liệu mới, không xem lời giải trước.",
+        "task": "Viết chương trình đọc data.txt và ghi palindromes.txt; tối đa 3 hàm.",
+        "predict": "Hãy mô tả đường đi dữ liệu trước khi viết code.",
+        "code": "# Không cấp hàm mẫu trong bài kiểm tra\n# Tự viết: đọc → lọc → ghi\n# Chạy ca công khai trước khi nộp",
+        "tests": [
+          "a / ab / radar → file a, radar",
+          "File rỗng → file kết quả rỗng"
+        ],
+        "reflect": "Giải thích đầu vào, đầu ra từng hàm và vì sao xét mọi dòng."
+      },
+      "context": {
+        "title": "Tự giải Ex1 trên dữ liệu mới, không xem lời giải trước.",
+        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.",
+        "example": "\"a\\nab\\nradar\" → palindromes.txt \"a\\nradar\\n\".",
+        "prereq": "B19",
+        "level": "Cơ bản",
+        "files": [
+          "data.txt"
+        ]
+      },
+      "predict": {
+        "question": "Mô tả đường đi dữ liệu trước khi viết code — đường nào đúng?",
+        "options": [
+          {
+            "id": "a",
+            "title": "data.txt → list dòng → lọc từng dòng → ghi palindromes.txt",
+            "detail": "Đọc → lọc → ghi, file nguồn chỉ được đọc.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "data.txt → ghi đè data.txt → lọc",
+            "detail": "Không bao giờ ghi vào file nguồn.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "đọc → ghi → lọc",
+            "detail": "Phải lọc xong mới ghi kết quả.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Năm cái bẫy của Ex1",
+        "body": "strip()/lower() làm đổi dữ liệu; set làm mất thứ tự và phần tử trùng; mode \"a\" cộng dồn kết quả cũ; line[:-1] cắt mất ký tự của dòng cuối không newline; quên loại chuỗi rỗng thì dòng trống lọt vào file."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Đầu vào: data.txt (UTF-8). Đầu ra: palindromes.txt, mỗi chuỗi hợp lệ một dòng."
+        },
+        {
+          "n": 2,
+          "body": "Bộ chấm dùng file mới chưa thấy: có Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng CRLF và dòng cuối không newline."
+        },
+        {
+          "n": 3,
+          "body": "Đây là cửa kiểm tra cơ bản: nộp lần đầu trước khi xem lời giải. Mở gợi ý thì được ghi nhận \"có hỗ trợ\"."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "data.txt \"Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx\" → palindromes.txt?",
+          "options": [
+            {
+              "text": "\"level\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+              "detail": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự.",
+              "correct": true
+            },
+            {
+              "text": "\"level\\nđộđ\\na\\nradar\\nx\\n\"",
+              "detail": "Sai: strip \" a \" và bỏ trùng.",
+              "correct": false
+            },
+            {
+              "text": "\"Level\\nlevel\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+              "detail": "Sai: \"Level\" không đối xứng khi phân biệt hoa/thường.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Giải thích đầu vào/đầu ra của từng hàm bạn viết và vì sao mọi dòng đều được xét.",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "read_lines nhận path, trả list dòng đã bỏ CR/LF cuối. is_palindrome nhận một chuỗi, trả bool (rỗng là False, phân biệt hoa/thường). write_lines nhận path và list, ghi đè file và trả None. Vòng lặp duyệt đủ list từ read_lines nên mọi dòng đều được kiểm trước khi ghi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm dùng fixture mới: Unicode, dòng rỗng, khoảng trắng, từ trùng, CRLF và dòng cuối không newline."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Đọc: data.txt → list dòng (chỉ bỏ CR/LF cuối)."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Lọc: giữ dòng không rỗng và bằng chuỗi đảo của nó."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Ghi: mở palindromes.txt bằng \"w\", mỗi dòng hợp lệ + \"\\n\"."
+          }
+        ]
+      },
+      "counter": {
+        "question": "data.txt \"ab\\r\\nx\\r\\n\" (CRLF) → palindromes.txt?",
+        "options": [
+          "\"x\\n\"",
+          "\"x\\r\\n\"",
+          "\"ab\\nx\\n\""
+        ],
+        "correct": "\"x\\n\""
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.\n\nThực hành: Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi.",
+        "io": [
+          {
+            "label": "\"a\\nab\\nradar\"",
+            "value": "File: \"a\\nradar\\n\""
+          },
+          {
+            "label": "File rỗng",
+            "value": "File kết quả rỗng"
+          }
+        ]
+      },
+      "starterCode": "# Không cấp hàm mẫu ở bài kiểm tra độc lập.\n# Tự viết đọc -> lọc -> ghi, tối đa 3 hàm.\n",
+      "solutionCode": "def read_lines(path):\n    lines = []\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        for line in file:\n            text = line.rstrip(\"\\r\\n\")\n            lines.append(text)\n    return lines\n\ndef is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nlines = read_lines(\"data.txt\")\npalindromes = []\nfor text in lines:\n    if is_palindrome(text):\n        palindromes.append(text)\n\nwrite_lines(\"palindromes.txt\", palindromes)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Đọc file thành list, chỉ bỏ CR/LF cuối dòng.\n2. Kiểm từng chuỗi: bỏ rỗng, giữ hoa/thường, khoảng trắng, thứ tự và trùng.\n3. Ghi đè file kết quả, mỗi chuỗi một dòng; giữ file nguồn nguyên vẹn."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "lines = read_lines(\"data.txt\")\npalindromes = []\nfor text in lines:\n    if is_palindrome(text):\n        palindromes.append(text)\nwrite_lines(\"palindromes.txt\", palindromes)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Fixture công khai",
+          "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
+          "expect": "'a\\nradar\\n'"
+        },
+        {
+          "name": "File rỗng → file kết quả rỗng",
+          "call": "_studio.run(files={'data.txt': ''}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Có Unicode, dòng rỗng",
+          "call": "_studio.run(files={'data.txt': 'level\\npython\\n\\nđộđ\\nradar'}).file('palindromes.txt')",
+          "expect": "'level\\nđộđ\\nradar\\n'"
+        },
+        {
+          "name": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng",
+          "call": "_studio.run(files={'data.txt': 'Level\\n a \\nradar\\nradar'}).file('palindromes.txt')",
+          "expect": "' a \\nradar\\nradar\\n'"
+        },
+        {
+          "name": "File xuống dòng CRLF",
+          "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
+          "expect": "'radar\\nx\\n'"
+        },
+        {
+          "name": "Dòng cuối không có newline",
+          "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
+          "expect": "'radar\\n'"
+        },
+        {
+          "name": "Ghi đè file kết quả cũ",
+          "call": "_studio.run(files={'data.txt': 'ab', 'palindromes.txt': 'old\\n'}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Không sửa file nguồn",
+          "call": "_studio.run(files={'data.txt': 'level\\npython'}).file('data.txt')",
+          "expect": "'level\\npython'"
+        },
+        {
+          "name": "Ca riêng: dữ liệu hỗn hợp",
+          "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
+          "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
+        }
+      ],
+      "files": [
+        {
+          "name": "data.txt",
+          "content": "a\nab\nradar",
+          "kind": "data"
+        }
+      ],
+      "gate": true
+    }
+  }
+}

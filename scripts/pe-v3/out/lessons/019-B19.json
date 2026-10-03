@@ -1,0 +1,335 @@
+{
+  "lesson_code": "B19",
+  "sort_order": 19,
+  "module": "M4 · Ghép bài Ex1",
+  "title": "B19 · Ex1 có hỗ trợ",
+  "subtitle": "Cơ bản · M4 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B19 · Ex1 có hỗ trợ",
+    "subtitle": "Cơ bản · M4 · 35 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B19",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP CƠ BẢN",
+          "B19"
+        ],
+        "title": "Ex1 có hỗ trợ",
+        "goal": "Ghép đọc, kiểm tra và ghi thành chương trình Ex1.",
+        "task": "Hoàn thành 3 hàm và vòng lặp điều phối theo từng checkpoint.",
+        "predict": "Bước nào bỏ newline? Bước nào bỏ chuỗi rỗng?",
+        "code": "def read_lines(path): pass\ndef is_palindrome(text): pass\ndef write_lines(path, lines): pass\n# Điều phối: đọc → lọc → ghi",
+        "tests": [
+          "level / python / độđ / radar → 3 dòng đúng",
+          "File rỗng → file kết quả rỗng"
+        ],
+        "reflect": "Vì sao mỗi hàm chỉ đảm nhiệm một phần việc?"
+      },
+      "context": {
+        "title": "Ghép ba hàm đã học thành chương trình Ex1 có hỗ trợ.",
+        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.",
+        "example": "File \"level\\npython\\n\\nđộđ\\nradar\" → palindromes.txt \"level\\nđộđ\\nradar\\n\".",
+        "prereq": "B18",
+        "level": "Cơ bản",
+        "files": [
+          "data.txt"
+        ]
+      },
+      "predict": {
+        "question": "Bước nào bỏ ký tự xuống dòng? Bước nào bỏ chuỗi rỗng?",
+        "options": [
+          {
+            "id": "a",
+            "title": "read_lines bỏ xuống dòng; is_palindrome loại chuỗi rỗng",
+            "detail": "Mỗi hàm một nhiệm vụ.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "read_lines làm cả hai",
+            "detail": "Bước đọc giữ nguyên dữ liệu, kể cả dòng rỗng.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "write_lines bỏ chuỗi rỗng",
+            "detail": "write_lines ghi đúng list được đưa vào.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thêm strip/lower hay set cho gọn\"",
+        "body": "strip/lower đổi dữ liệu (\" a \" và \"Level\" bị xử lý sai), set làm mất thứ tự và phần tử trùng. Và không bao giờ mở file nguồn bằng \"w\"."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Checkpoint 1 — read_lines: file → list dòng, chỉ bỏ CR/LF cuối dòng. Kiểm list trước khi lọc."
+        },
+        {
+          "n": 2,
+          "body": "Checkpoint 2 — is_palindrome + vòng lặp: giữ chuỗi không rỗng, đối xứng, đúng thứ tự và cả phần tử trùng."
+        },
+        {
+          "n": 3,
+          "body": "Checkpoint 3 — write_lines: ghi đè file kết quả, mỗi chuỗi một dòng; file nguồn không đổi."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "lines = read_lines(\"data.txt\")            # checkpoint 1: đọc\npalindromes = []\nfor text in lines:                         # checkpoint 2: lọc\n    if is_palindrome(text):\n        palindromes.append(text)\nwrite_lines(\"palindromes.txt\", palindromes)  # checkpoint 3: ghi",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "data.txt \"Level\\n a \\nradar\\nradar\" → palindromes.txt?",
+          "options": [
+            {
+              "text": "\" a \\nradar\\nradar\\n\"",
+              "detail": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng.",
+              "correct": true
+            },
+            {
+              "text": "\"level\\na\\nradar\\n\"",
+              "detail": "Không lower, không strip, không bỏ trùng.",
+              "correct": false
+            },
+            {
+              "text": "\"radar\\n\"",
+              "detail": "Không dùng set.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao read_lines không tự lọc, và write_lines không tự kiểm palindrome?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Mỗi hàm giữ một nhiệm vụ: read_lines chỉ đọc, is_palindrome chỉ kiểm, write_lines chỉ ghi. Vòng lặp điều phối nối các bước nên dễ kiểm từng checkpoint, dễ sửa riêng và dùng lại hàm cho dữ liệu khác."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Ba checkpoint: lắp dòng cốt lõi của mỗi hàm.",
+        "rule": "Đổi fixture thành \"Level\\n a \\nradar\\nradar\"; dự đoán file kết quả trước khi chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "File → read_lines → [\"level\", \"python\", \"\", \"độđ\", \"radar\"]."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Lọc → [\"level\", \"độđ\", \"radar\"]."
+          },
+          {
+            "label": "Bước 3",
+            "text": "write_lines → palindromes.txt."
+          }
+        ]
+      },
+      "counter": {
+        "question": "data.txt chỉ có \"radar\" (không newline) → palindromes.txt?",
+        "options": [
+          "\"radar\\n\"",
+          "\"radar\"",
+          "\"\""
+        ],
+        "correct": "\"radar\\n\""
+      },
+      "scaffold": {
+        "template": "def read_lines(path):\n    lines = []\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        for line in file:\n            lines.append({{slot1}})\n    return lines\n\ndef is_palindrome(text):\n    if text == \"\":\n        return False\n    {{slot2}}\n\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "line.rstrip(\"\\r\\n\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "return text == text[::-1]"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "file.write(text + \"\\n\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "file.write(text)",
+            "slot": 3,
+            "trap": "Các dòng dính liền."
+          },
+          {
+            "label": "return text.lower() == text[::-1].lower()",
+            "slot": 2,
+            "trap": "Đổi hoa/thường."
+          },
+          {
+            "label": "line.rstrip(\"\\r\\n\")",
+            "slot": 1
+          },
+          {
+            "label": "line.strip()",
+            "slot": 1,
+            "trap": "Mất khoảng trắng thuộc dữ liệu."
+          },
+          {
+            "label": "return text == text[::-1]",
+            "slot": 2
+          },
+          {
+            "label": "file.write(text + \"\\n\")",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.\n\nThực hành: Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử.",
+        "io": [
+          {
+            "label": "Fixture mẫu",
+            "value": "File: \"level\\nđộđ\\nradar\\n\""
+          },
+          {
+            "label": "File rỗng",
+            "value": "File kết quả rỗng"
+          }
+        ]
+      },
+      "starterCode": "def read_lines(path):\n    pass\n\ndef is_palindrome(text):\n    pass\n\ndef write_lines(path, lines):\n    pass\n\n# Tự viết phần điều phối đọc -> lọc -> ghi.\n",
+      "solutionCode": "def read_lines(path):\n    lines = []\n    with open(path, \"r\", encoding=\"utf-8\") as file:\n        for line in file:\n            text = line.rstrip(\"\\r\\n\")\n            lines.append(text)\n    return lines\n\ndef is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nlines = read_lines(\"data.txt\")\npalindromes = []\nfor text in lines:\n    if is_palindrome(text):\n        palindromes.append(text)\n\nwrite_lines(\"palindromes.txt\", palindromes)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Hoàn thành read_lines rồi kiểm list dòng; chưa lọc ở bước này.\n2. Hoàn thành is_palindrome và vòng lặp lọc; so với kết quả dự đoán.\n3. Hoàn thành write_lines để xuất list đã lọc; kiểm file nguồn không thay đổi."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "lines = read_lines(\"data.txt\")\npalindromes = []\nfor text in lines:\n    if is_palindrome(text):\n        palindromes.append(text)\nwrite_lines(\"palindromes.txt\", palindromes)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Checkpoint 1: read_lines",
+          "call": "read_lines(_studio.write('c1.txt', ' a \\n\\nradar'))",
+          "expect": "[' a ', '', 'radar']"
+        },
+        {
+          "name": "Checkpoint 2: is_palindrome",
+          "call": "[is_palindrome(x) for x in [\"level\", \"\", \"Level\", \" a \", \"độđ\"]]",
+          "expect": "[True, False, False, True, True]"
+        },
+        {
+          "name": "Checkpoint 3: write_lines",
+          "call": "(write_lines('c3.txt', ['a', 'b']), _studio.read('c3.txt'))",
+          "expect": "(None, 'a\\nb\\n')"
+        },
+        {
+          "name": "Cả chương trình: Fixture công khai",
+          "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
+          "expect": "'a\\nradar\\n'"
+        },
+        {
+          "name": "Cả chương trình: File rỗng → file kết quả rỗng",
+          "call": "_studio.run(files={'data.txt': ''}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Cả chương trình: Có Unicode, dòng rỗng",
+          "call": "_studio.run(files={'data.txt': 'level\\npython\\n\\nđộđ\\nradar'}).file('palindromes.txt')",
+          "expect": "'level\\nđộđ\\nradar\\n'"
+        },
+        {
+          "name": "Cả chương trình: Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng",
+          "call": "_studio.run(files={'data.txt': 'Level\\n a \\nradar\\nradar'}).file('palindromes.txt')",
+          "expect": "' a \\nradar\\nradar\\n'"
+        },
+        {
+          "name": "Cả chương trình: File xuống dòng CRLF",
+          "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
+          "expect": "'radar\\nx\\n'"
+        },
+        {
+          "name": "Cả chương trình: Dòng cuối không có newline",
+          "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
+          "expect": "'radar\\n'"
+        },
+        {
+          "name": "Cả chương trình: Ghi đè file kết quả cũ",
+          "call": "_studio.run(files={'data.txt': 'ab', 'palindromes.txt': 'old\\n'}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Cả chương trình: Không sửa file nguồn",
+          "call": "_studio.run(files={'data.txt': 'level\\npython'}).file('data.txt')",
+          "expect": "'level\\npython'"
+        },
+        {
+          "name": "Cả chương trình: Ca riêng: dữ liệu hỗn hợp",
+          "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
+          "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
+        }
+      ],
+      "files": [
+        {
+          "name": "data.txt",
+          "content": "level\npython\n\nđộđ\nradar",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "read_lines(path)",
+          "does": "Đọc từng dòng và bỏ ký tự xuống dòng ở cuối.",
+          "takes": "path: str — tên hoặc đường dẫn file UTF-8",
+          "gives": "list[str]; file rỗng trả []",
+          "effect": "Đọc file; with đóng file; không in. Thiếu file phát sinh FileNotFoundError.",
+          "call": "read_lines(\"data.txt\") → danh sách các dòng"
+        },
+        {
+          "sig": "is_palindrome(text)",
+          "does": "Kiểm tra chuỗi đối xứng và không rỗng.",
+          "takes": "text: str — giữ nguyên hoa/thường và khoảng trắng",
+          "gives": "bool",
+          "effect": "Không in, không ghi file, không sửa dữ liệu đầu vào.",
+          "call": "is_palindrome(\"level\") → True"
+        },
+        {
+          "sig": "write_lines(path, lines)",
+          "does": "Ghi từng chuỗi trên một dòng.",
+          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "gives": "None — không có return mang giá trị",
+          "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
+          "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
+        }
+      ]
+    }
+  }
+}

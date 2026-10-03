@@ -1,0 +1,272 @@
+{
+  "lesson_code": "B03",
+  "sort_order": 3,
+  "module": "M1 · Dữ liệu và điều kiện",
+  "title": "B03 · Đảo chuỗi",
+  "subtitle": "Cơ bản · M1 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B03 · Đảo chuỗi",
+    "subtitle": "Cơ bản · M1 · 15 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B03",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP CƠ BẢN",
+          "B03"
+        ],
+        "title": "Đảo chuỗi",
+        "goal": "Đảo một chuỗi bằng slicing.",
+        "task": "Cho text, tạo reversed_text bằng slicing rồi in kết quả.",
+        "predict": "Đảo \"level\" và \"a\" được gì?",
+        "code": "text = \"python\"\n# Tạo reversed_text từ text\n# In reversed_text",
+        "tests": [
+          "python → nohtyp",
+          "a → a"
+        ],
+        "reflect": "Sau phép đảo, text có bị đổi thành nohtyp không?"
+      },
+      "context": {
+        "title": "Đảo một chuỗi bằng slicing.",
+        "body": "Cho text = \"python\". Tạo reversed_text bằng slicing rồi in kết quả.",
+        "example": "text = \"python\" → reversed_text = \"nohtyp\".",
+        "prereq": "B02",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Đảo \"level\" và \"a\" cho kết quả gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "\"level\" và \"a\"",
+            "detail": "Hai chuỗi này đọc xuôi hay ngược đều giống nhau.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "\"level\" và chuỗi rỗng",
+            "detail": "Một ký tự đảo lại vẫn là chính nó.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "\"levle\" và \"a\"",
+            "detail": "Đọc ngược từng ký tự l-e-v-e-l vẫn ra level.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"text[-1] là đảo chuỗi\"",
+        "body": "text[-1] chỉ lấy MỘT ký tự cuối (\"n\" của python). Muốn đảo cả chuỗi phải có hai dấu hai chấm: text[::-1]."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Slicing có dạng [start:stop:step]. Bỏ trống start và stop là lấy cả chuỗi; step = -1 là đi từ cuối về đầu."
+        },
+        {
+          "n": 2,
+          "body": "word[::-1] tạo một chuỗi MỚI \"desserts\"; word vẫn giữ \"stressed\"."
+        },
+        {
+          "n": 3,
+          "body": "Luồng dữ liệu: s t r e s s e d → đọc từ cuối về đầu → d e s s e r t s."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "word = \"stressed\"\nbackwards = word[::-1]\nprint(backwards)\nprint(word)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Sau reversed_text = text[::-1] với text = \"python\", text bằng gì?",
+          "options": [
+            {
+              "text": "\"python\" — text không đổi",
+              "detail": "Slicing tạo chuỗi mới; chuỗi trong Python không bị sửa tại chỗ.",
+              "correct": true
+            },
+            {
+              "text": "\"nohtyp\"",
+              "detail": "Chỉ reversed_text nhận chuỗi đảo.",
+              "correct": false
+            },
+            {
+              "text": "Chuỗi rỗng",
+              "detail": "Không lệnh nào xoá text.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Slicing tạo chuỗi mới; chuỗi trong Python không bị sửa tại chỗ."
+        },
+        {
+          "question": "text = \"\" (chuỗi rỗng) thì text[::-1] là gì?",
+          "options": [
+            {
+              "text": "Chuỗi rỗng \"\"",
+              "detail": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi.",
+              "correct": true
+            },
+            {
+              "text": "Báo IndexError",
+              "detail": "Slicing không báo lỗi với chuỗi rỗng.",
+              "correct": false
+            },
+            {
+              "text": "None",
+              "detail": "Slicing luôn trả về str.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Sau phép đảo, text có bị đổi thành \"nohtyp\" không? Vì sao?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Không. text[::-1] tạo một chuỗi mới rồi gán vào reversed_text; text vẫn giữ \"python\" vì chuỗi không bị sửa tại chỗ. Chuỗi rỗng đảo vẫn ra chuỗi rỗng vì không có ký tự nào để đảo."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: text = \"ab\". Chọn đúng phép đảo cả chuỗi.",
+        "rule": "Thử text = \"ab\" và text = \"\" (chuỗi rỗng); giải thích vì sao chuỗi rỗng vẫn đảo được."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "text = \"python\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "text[::-1] đi từ \"n\" về \"p\" → \"nohtyp\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "reversed_text giữ \"nohtyp\"; text vẫn là \"python\"."
+          },
+          {
+            "label": "Bước 4",
+            "text": "print(reversed_text) → nohtyp."
+          }
+        ]
+      },
+      "counter": {
+        "question": "text = \"ab\" thì chương trình in gì?",
+        "options": [
+          "ab",
+          "ba",
+          "b"
+        ],
+        "correct": "ba"
+      },
+      "scaffold": {
+        "template": "text = \"ab\"\n{{slot1}}\nprint(reversed_text)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "reversed_text = text[::-1]"
+          }
+        ],
+        "bank": [
+          {
+            "label": "reversed_text = text[::1]",
+            "slot": 1,
+            "trap": "step = 1 là đi xuôi, không đảo."
+          },
+          {
+            "label": "reversed_text = text[::-1]",
+            "slot": 1
+          },
+          {
+            "label": "text = text[::-1]",
+            "slot": 1,
+            "trap": "Ghi đè text, còn reversed_text chưa có."
+          },
+          {
+            "label": "reversed_text = text[-1]",
+            "slot": 1,
+            "trap": "Chỉ lấy ký tự cuối."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho text = \"python\". Tạo reversed_text bằng slicing rồi in kết quả.\n\nThực hành: Dùng text[::-1] và lưu vào biến có tên rõ ràng (reversed_text).",
+        "io": [
+          {
+            "label": "text = \"python\"",
+            "value": "nohtyp"
+          },
+          {
+            "label": "text = \"a\"",
+            "value": "a"
+          }
+        ]
+      },
+      "starterCode": "text = \"python\"\n# Tự tạo reversed_text và in.\n",
+      "solutionCode": "text = \"python\"\nreversed_text = text[::-1]\nprint(reversed_text)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng text[::-1] và lưu vào biến có tên rõ ràng (reversed_text)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Slicing [::-1] đọc chuỗi từ cuối về đầu.\n2. Lưu kết quả vào reversed_text rồi print(reversed_text)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "reversed_text = text[...]"
+        }
+      ],
+      "tests": [
+        {
+          "name": "text = \"python\" → nohtyp",
+          "call": "_studio.run().stdout",
+          "expect": "'nohtyp\\n'"
+        },
+        {
+          "name": "text = \"a\" → a",
+          "call": "_studio.run(vars={'text': 'a'}).stdout",
+          "expect": "'a\\n'"
+        },
+        {
+          "name": "text = \"ab\" → ba",
+          "call": "_studio.run(vars={'text': 'ab'}).stdout",
+          "expect": "'ba\\n'"
+        },
+        {
+          "name": "Chuỗi rỗng đảo vẫn rỗng",
+          "call": "_studio.run(vars={'text': ''}).var('reversed_text')",
+          "expect": "''"
+        },
+        {
+          "name": "text giữ nguyên sau phép đảo",
+          "call": "_studio.run().var('text')",
+          "expect": "'python'"
+        }
+      ]
+    }
+  }
+}

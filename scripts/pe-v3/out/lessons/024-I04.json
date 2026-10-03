@@ -1,0 +1,316 @@
+{
+  "lesson_code": "I04",
+  "sort_order": 24,
+  "module": "M5 · Class đầu tiên",
+  "title": "I04 · Viết __str__",
+  "subtitle": "Trung cấp · M5 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I04 · Viết __str__",
+    "subtitle": "Trung cấp · M5 · 25 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I04",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "I04"
+        ],
+        "title": "Viết __str__",
+        "goal": "Trả chuỗi biểu diễn object bằng __str__.",
+        "task": "Viết __str__ trả Language[...], Year created[...], Paradigms[...].",
+        "predict": "__str__ cần print chuỗi hay return chuỗi?",
+        "code": "class ProgrammingLanguage:\n    # __init__ và add_paradigms đã cấp\n    def __str__(self):\n        pass",
+        "tests": [
+          "Python/1991 → Language[Python], Year created[1991], …",
+          "C/1972/[] → … Paradigms[]"
+        ],
+        "reflect": "Vì sao print(obj) dùng được __str__?"
+      },
+      "context": {
+        "title": "Trả chuỗi biểu diễn object bằng __str__.",
+        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.",
+        "example": "str(language) → Language[Python], Year created[1991], Paradigms['procedural']",
+        "prereq": "I03",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "__str__ cần print chuỗi hay return chuỗi?",
+        "options": [
+          {
+            "id": "a",
+            "title": "return — str(obj) và print(obj) lấy giá trị trả về",
+            "detail": "print(obj) tự in chuỗi mà __str__ trả.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "print",
+            "detail": "__str__ in rồi trả None → str(obj) báo TypeError.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cả hai",
+            "detail": "In thêm trong __str__ làm mỗi lần str(obj) đều sinh output.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Paradigms[{self.paradigms}] mới đúng format\"",
+        "body": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Format v3 là f\", Paradigms{self.paradigms}\"."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "f trước dấu nháy cho phép đặt giá trị trong {}: f\"Point[{self.x}]\" → \"Point[2]\"."
+        },
+        {
+          "n": 2,
+          "body": "+= nối thêm phần tiếp theo vào text."
+        },
+        {
+          "n": 3,
+          "body": "str(p) và print(p) đều gọi __str__; __str__ phải RETURN str."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Point:\n    def __init__(self, x, y):\n        self.x = x\n        self.y = y\n\n    def __str__(self):\n        text = f\"Point[{self.x}]\"\n        text += f\", y[{self.y}]\"\n        return text\n\np = Point(2, 5)\nprint(p)\nprint(str(p) == \"Point[2], y[5]\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Object C/1972/[] → str(obj) là gì?",
+          "options": [
+            {
+              "text": "Language[C], Year created[1972], Paradigms[]",
+              "detail": "List rỗng biểu diễn là [].",
+              "correct": true
+            },
+            {
+              "text": "Language[C], Year created[1972], Paradigms[[]]",
+              "detail": "Thừa một cặp ngoặc.",
+              "correct": false
+            },
+            {
+              "text": "Language[C], Year created[1972]",
+              "detail": "Thiếu trường Paradigms.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "List rỗng biểu diễn là []."
+        },
+        {
+          "question": "Nếu __str__ chỉ print rồi kết thúc, str(obj) sẽ…",
+          "options": [
+            {
+              "text": "Báo TypeError: __str__ returned non-string",
+              "detail": "__str__ trả None.",
+              "correct": true
+            },
+            {
+              "text": "Trả chuỗi rỗng",
+              "detail": "Python không tự đổi None thành \"\".",
+              "correct": false
+            },
+            {
+              "text": "Chạy bình thường",
+              "detail": "str(obj) bắt buộc __str__ trả str.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "__str__ trả None."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao print(obj) dùng được __str__?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "print cần một chuỗi để hiển thị object; nó gọi str(obj), và str(obj) gọi __str__ để lấy chuỗi trả về. Vì vậy __str__ phải return str; nếu chỉ print thì trả None và str(obj) báo TypeError."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp hai phần nối và lệnh trả kết quả.",
+        "rule": "Thử name = \"C\", year = 1972, paradigms = []; kiểm format và stdout của str(obj)."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "\"Language[Python]\""
+          },
+          {
+            "label": "Bước 2",
+            "text": "+ \", Year created[1991]\""
+          },
+          {
+            "label": "Bước 3",
+            "text": "+ \", Paradigms['procedural']\""
+          },
+          {
+            "label": "Bước 4",
+            "text": "return chuỗi → nơi gọi mới print."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Paradigms [\"procedural\", \"functional\"] → phần cuối chuỗi là gì?",
+        "options": [
+          "Paradigms['procedural', 'functional']",
+          "Paradigms[procedural, functional]",
+          "Paradigms[['procedural', 'functional']]"
+        ],
+        "correct": "Paradigms['procedural', 'functional']"
+      },
+      "scaffold": {
+        "template": "    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += {{slot1}}\n        description += {{slot2}}\n        {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "f\", Year created[{self.year_created}]\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "f\", Paradigms{self.paradigms}\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "return description"
+          }
+        ],
+        "bank": [
+          {
+            "label": "return description",
+            "slot": 3
+          },
+          {
+            "label": "f\", Year created[{self.year_created}]\"",
+            "slot": 1
+          },
+          {
+            "label": "f\", Paradigms{self.paradigms}\"",
+            "slot": 2
+          },
+          {
+            "label": "\", Year created[self.year_created]\"",
+            "slot": 1,
+            "trap": "Thiếu f và {} → in nguyên chữ."
+          },
+          {
+            "label": "print(description)",
+            "slot": 3,
+            "trap": "__str__ trả None → TypeError."
+          },
+          {
+            "label": "f\", Paradigms[{self.paradigms}]\"",
+            "slot": 2,
+            "trap": "Thừa một cặp ngoặc vuông."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.\n\nThực hành: Tạo description theo ba bước, rồi return description.",
+        "io": [
+          {
+            "label": "Object Python",
+            "value": "Language[Python], Year created[1991], Paradigms['procedural']"
+          },
+          {
+            "label": "C/1972/[]",
+            "value": "Language[C], Year created[1972], Paradigms[]"
+          }
+        ]
+      },
+      "starterCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        pass\n",
+      "solutionCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\ntext = str(language)\nprint(text)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo description theo ba bước, rồi return description."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. description = f\"Language[{self.name}]\"\n2. Nối Year created và Paradigms bằng +=; return description."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Object Python",
+          "call": "str(ProgrammingLanguage('Python', 1991, ['procedural']))",
+          "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\""
+        },
+        {
+          "name": "C/1972/[]",
+          "call": "str(ProgrammingLanguage('C', 1972, []))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]'"
+        },
+        {
+          "name": "Hai paradigm giữ thứ tự",
+          "call": "str(ProgrammingLanguage('Python', 1991, ['procedural', 'functional']))",
+          "expect": "\"Language[Python], Year created[1991], Paradigms['procedural', 'functional']\""
+        },
+        {
+          "name": "str(obj) không in gì",
+          "call": "_studio.stdout(str, ProgrammingLanguage('C', 1972, []))",
+          "expect": "''"
+        },
+        {
+          "name": "print(obj) in một dòng",
+          "call": "_studio.stdout(print, ProgrammingLanguage('C', 1972, []))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]\\n'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "ProgrammingLanguage.__init__(self, name, year_created, paradigms)",
+          "does": "Khởi tạo ba thuộc tính của object.",
+          "takes": "self: object hiện tại; name: str; year_created: int; paradigms: list[str]",
+          "gives": "None — lời gọi class mới tạo ra object, không phải giá trị của __init__",
+          "effect": "Gán thuộc tính; list(paradigms) tạo list riêng.",
+          "call": "ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+        },
+        {
+          "sig": "add_paradigms(self, paradigm)",
+          "does": "Thêm một kiểu lập trình vào cuối list.",
+          "takes": "self; paradigm: str",
+          "gives": "None",
+          "effect": "Sửa self.paradigms; giữ phần tử trùng; không in.",
+          "call": "obj.add_paradigms(\"functional\")"
+        },
+        {
+          "sig": "ProgrammingLanguage.__str__(self)",
+          "does": "Biểu diễn object bằng chuỗi.",
+          "takes": "self",
+          "gives": "str đúng format v3",
+          "effect": "Không print, không đổi object.",
+          "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
+        }
+      ]
+    }
+  }
+}

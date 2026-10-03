@@ -13,7 +13,6 @@ import {
   initialDraft,
   MUTATIONS,
   OPERATIONS,
-  PYTHON_LESSON_NUMBER,
   SOLUTION_CODE,
   STARTER_CODE,
   type Draft,
@@ -30,6 +29,10 @@ const HINTS = [
   'Tạo result = [], duyệt raw_scores, bỏ điểm âm rồi thêm round(score + bonus, 2). Không sửa raw_scores.',
 ];
 
+// Bài dựng tay theo Figma cũ. Từ khi khoá python chuyển sang 40 bài PE v3, bài
+// này không còn trong giáo trình: chỉ mở bằng /lesson/python?demo=list (lối tắt
+// cho quản trị ở trang khoá học) và KHÔNG ghi tiến độ/XP — backend từ chối số
+// bài nằm ngoài courses.lessons.
 export default function PythonStudio() {
   const [d, setD] = useState<Draft>(initialDraft);
   const [user, setUser] = useState<{
@@ -48,7 +51,6 @@ export default function PythonStudio() {
   const [runtimeStatus, setRuntimeStatus] = useState('');
   const [result, setResult] = useState<RunResult | null>(null);
   const [completed, setCompleted] = useState(false);
-  const [reward, setReward] = useState<number | null>(null);
   const [hint, setHint] = useState(false);
   const [help, setHelp] = useState(0);
   const [selectedToken, setSelectedToken] = useState('');
@@ -66,7 +68,7 @@ export default function PythonStudio() {
     const response = await apiFetch(path, options);
     if (response.status === 401) {
       window.location.assign(
-        '/login?next=' + encodeURIComponent('/lesson/python'),
+        '/login?next=' + encodeURIComponent('/lesson/python?demo=list'),
       );
       throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
     }
@@ -92,11 +94,6 @@ export default function PythonStudio() {
       const enrollment = findEnrollment(
         asList(enrollments, 'enrolled'),
         'python',
-      );
-      setReward(
-        typeof enrollments.pythonStudio?.xpReward === 'number'
-          ? enrollments.pythonStudio.xpReward
-          : null,
       );
       let restored = initialDraft();
       try {
@@ -125,10 +122,7 @@ export default function PythonStudio() {
       setD(restored);
       setUser(profile);
       setEnrolled(Boolean(enrollment));
-      setCompleted(
-        Array.isArray(enrollment?.completedLessonNumbers) &&
-          enrollment.completedLessonNumbers.includes(PYTHON_LESSON_NUMBER),
-      );
+      setCompleted(false);
     } catch (error) {
       setLoadError(
         error instanceof Error ? error.message : 'Không kết nối được backend.',
@@ -171,37 +165,12 @@ export default function PythonStudio() {
       setBusy(false);
     }
   }
-  async function complete() {
-    setBusy(true);
-    try {
-      const saved = await json(
-        `/api/lessons/${PYTHON_LESSON_NUMBER}/complete`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            courseId: 'python',
-            lessonTitle: 'Danh sách (List) — List & Mutability',
-            quizScore: 100,
-          }),
-        },
-      );
-      setCompleted(true);
-      setMessage(
-        saved.alreadyCompleted
-          ? 'Bài học đã hoàn thành trước đó. Tiến độ được giữ nguyên, không cộng XP lần hai.'
-          : `Hoàn thành bài học! +${saved.xpGained} XP. Đã lưu tiến độ lên backend.`,
-      );
-      setUser((prev) =>
-        prev ? { ...prev, xp: prev.xp + saved.xpGained } : prev,
-      );
-    } catch (error) {
-      setMessage(
-        `Code đã đạt, nhưng chưa lưu được tiến độ: ${(error as Error).message}. Bấm Nộp & Chấm điểm để thử lại.`,
-      );
-    } finally {
-      setBusy(false);
-    }
+  // Bài demo: chấm đạt là xong, không gọi /api/lessons/:n/complete.
+  function complete() {
+    setCompleted(true);
+    setMessage(
+      'Đạt hết ca kiểm thử. Đây là bài demo ngoài giáo trình PE v3 nên không ghi tiến độ hay XP.',
+    );
   }
   function cancelRun() {
     worker.current?.terminate();
@@ -270,7 +239,7 @@ export default function PythonStudio() {
         data.tests.length === 5 &&
         data.tests.every((t: { passed: boolean }) => t.passed)
       )
-        void complete();
+        complete();
     };
     instance.postMessage({ code: d.code, submit });
   }
@@ -373,7 +342,7 @@ export default function PythonStudio() {
           <div className={s.breadcrumb}>
             Python Core <Icon step={d.step} n={headerIcons[1]} /> Module 02{' '}
             <Icon step={d.step} n={headerIcons[1]} />{' '}
-            <strong>Bài 11: List &amp; Mutability</strong>
+            <strong>Bài demo: List &amp; Mutability</strong>
           </div>
           <div className={s.headerActions}>
             <span className={s.xp}>
@@ -480,7 +449,7 @@ export default function PythonStudio() {
                       <Icon step={4} n={1} /> Anti-Mutation: ACTIVE
                     </span>
                     <span className={s.amber}>
-                      <Icon step={4} n={2} /> +{reward ?? '—'} XP
+                      <Icon step={4} n={2} /> Demo · không tính XP
                     </span>
                   </>
                 ) : d.step === 3 ? (
@@ -498,8 +467,8 @@ export default function PythonStudio() {
             </div>
             {completed && (
               <div className={s.success} role="status">
-                ✓ Bài này đã hoàn thành và được lưu trên hệ thống. Bạn có thể
-                luyện tập lại.
+                ✓ Đạt hết ca kiểm thử. Bài demo nằm ngoài giáo trình nên không
+                ghi tiến độ — bạn có thể luyện tập lại.
               </div>
             )}
             {d.step === 1 && (

@@ -1,0 +1,250 @@
+{
+  "lesson_code": "I07",
+  "sort_order": 27,
+  "module": "M6 · Trạng thái và lớp cha (Ex2)",
+  "title": "I07 · Ex2 tự làm",
+  "subtitle": "Trung cấp · M6 · 40 phút · Cửa tự kiểm tra Ex2 · class",
+  "estimated_minutes": 40,
+  "xp_reward": 30,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I07 · Ex2 tự làm",
+    "subtitle": "Trung cấp · M6 · 40 phút · Cửa tự kiểm tra Ex2 · class",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I07",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP TRUNG CẤP",
+          "I07"
+        ],
+        "title": "Ex2 tự làm",
+        "goal": "Tự viết ProgrammingLanguage hoàn chỉnh cho Ex2.",
+        "task": "Viết __init__, add_paradigms, __str__; nộp trước khi xem lời giải.",
+        "predict": "Method nào thay đổi trạng thái object?",
+        "code": "# Tự viết class ProgrammingLanguage\n# với ba method\n# Không cấp lời giải ở lần nộp đầu",
+        "tests": [
+          "C/1972 + imperative → Paradigms['procedural', 'imperative']",
+          "Hai object cùng source → list riêng"
+        ],
+        "reflect": "Method nào đổi trạng thái, method nào chỉ đọc?"
+      },
+      "context": {
+        "title": "Tự viết ProgrammingLanguage hoàn chỉnh cho Ex2.",
+        "body": "Tự viết class ProgrammingLanguage với ba method: __init__ (lưu name, year_created và BẢN SAO list paradigms), add_paradigms (append vào cuối, trả None, không in) và __str__ (return chuỗi Language[name], Year created[year], Paradigms[...]). Không xem lời giải trước khi nộp.",
+        "example": "C/1972/[\"procedural\"], thêm imperative → Language[C], Year created[1972], Paradigms['procedural', 'imperative']",
+        "prereq": "I06",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Method nào thay đổi trạng thái object, method nào chỉ đọc?",
+        "options": [
+          {
+            "id": "a",
+            "title": "add_paradigms thay đổi; __str__ chỉ đọc",
+            "detail": "__init__ khởi tạo trạng thái lúc tạo object.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "__str__ thay đổi; add_paradigms chỉ đọc",
+            "detail": "Ngược lại.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cả hai chỉ đọc",
+            "detail": "append sửa list của object.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Bốn cái bẫy của Ex2",
+        "body": "self.paradigms = paradigms (dùng chung list); self.paradigms = self.paradigms.append(...) (gán None); __str__ print thay vì return (TypeError); Paradigms[{self.paradigms}] (thừa ngoặc vuông)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "__init__ khởi tạo: ba thuộc tính, list(paradigms) cho list riêng."
+        },
+        {
+          "n": 2,
+          "body": "add_paradigms THAY ĐỔI trạng thái: append, trả None, không in."
+        },
+        {
+          "n": 3,
+          "body": "__str__ chỉ ĐỌC trạng thái: trả chuỗi đúng format, không in."
+        },
+        {
+          "n": 4,
+          "body": "Cửa kiểm tra Ex2: bộ chấm dùng hai object từ cùng list nguồn, tên/năm mới và nhiều paradigm."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Hai object tạo từ cùng list nguồn; thêm \"x\" vào A. B.paradigms thế nào?",
+          "options": [
+            {
+              "text": "Không đổi",
+              "detail": "Mỗi object giữ bản sao riêng.",
+              "correct": true
+            },
+            {
+              "text": "Có thêm \"x\"",
+              "detail": "Chỉ khi dùng chung list (lỗi).",
+              "correct": false
+            },
+            {
+              "text": "Bị xoá",
+              "detail": "Không có lệnh xoá.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mỗi object giữ bản sao riêng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Method nào thay đổi trạng thái, method nào chỉ đọc trạng thái? Vì sao điều đó quan trọng?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "__init__ khởi tạo trạng thái; add_paradigms thay đổi list của object và trả None; __str__ chỉ đọc các trường để trả chuỗi, không in, không sửa gì — gọi bao nhiêu lần cũng cho cùng kết quả. Tách rõ như vậy mới kiểm được từng method riêng."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm dùng hai object từ cùng list nguồn, tên/năm mới, list rỗng và phần tử trùng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Tạo object: __init__ lưu ba trường + copy list."
+          },
+          {
+            "label": "Bước 2",
+            "text": "add_paradigms(\"imperative\") → list thêm phần tử cuối."
+          },
+          {
+            "label": "Bước 3",
+            "text": "str(obj) → __str__ → chuỗi đầy đủ → nơi gọi print."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Go/2009/[] thêm \"concurrent\" → str(obj)?",
+        "options": [
+          "Language[Go], Year created[2009], Paradigms['concurrent']",
+          "Language[Go], Year created[2009], Paradigms[concurrent]",
+          "Language[Go], Year created[2009], Paradigms[]"
+        ],
+        "correct": "Language[Go], Year created[2009], Paradigms['concurrent']"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Tự viết class ProgrammingLanguage với ba method: __init__ (lưu name, year_created và BẢN SAO list paradigms), add_paradigms (append vào cuối, trả None, không in) và __str__ (return chuỗi Language[name], Year created[year], Paradigms[...]). Không xem lời giải trước khi nộp.\n\nThực hành: Tạo object, thêm dữ liệu rồi gọi str. Kiểm ba trường và list riêng.",
+        "io": [
+          {
+            "label": "C/1972; thêm imperative",
+            "value": "Language[C], Year created[1972], Paradigms['procedural', 'imperative']"
+          },
+          {
+            "label": "List rỗng",
+            "value": "Thêm được một paradigm; không dùng list chung"
+          }
+        ]
+      },
+      "starterCode": "# Tự viết class ProgrammingLanguage với ba method.\n# Không cấp lời giải ở lần nộp đầu.\n",
+      "solutionCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n\nlanguage = ProgrammingLanguage(\"C\", 1972, [\"procedural\"])\nlanguage.add_paradigms(\"imperative\")\ntext = str(language)\nprint(text)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo object, thêm dữ liệu rồi gọi str. Kiểm ba trường và list riêng."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Constructor lưu ba trường và copy list nguồn.\n2. add_paradigms thêm vào cuối list của object và trả None.\n3. __str__ trả chuỗi đầy đủ, không tự in."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        ...\n    def add_paradigms(self, paradigm):\n        ...\n    def __str__(self):\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Ba thuộc tính",
+          "call": "(lambda o: (o.name, o.year_created, o.paradigms))(ProgrammingLanguage('C', 1972, ['procedural']))",
+          "expect": "('C', 1972, ['procedural'])"
+        },
+        {
+          "name": "Thêm imperative rồi str",
+          "call": "_studio.call(lambda: (lambda o: (o.add_paradigms('imperative'), str(o))[1])(ProgrammingLanguage('C', 1972, ['procedural']))).value",
+          "expect": "\"Language[C], Year created[1972], Paradigms['procedural', 'imperative']\""
+        },
+        {
+          "name": "List rỗng: thêm được một paradigm",
+          "call": "(lambda o: (o.add_paradigms('functional'), o.paradigms)[1])(ProgrammingLanguage('Go', 2009, []))",
+          "expect": "['functional']"
+        },
+        {
+          "name": "Hai object từ cùng list nguồn độc lập nhau",
+          "call": "_studio.check('src = [\"p\"]\\na = ProgrammingLanguage(\"A\", 1, src)\\nb = ProgrammingLanguage(\"B\", 2, src)\\na.add_paradigms(\"x\")\\nassert b.paradigms == [\"p\"], \"B bị đổi theo A\"\\nassert src == [\"p\"], \"list nguồn bị đổi\"\\nsrc.append(\"y\")\\nassert a.paradigms == [\"p\", \"x\"], \"A bị đổi theo list nguồn\"')",
+          "expect": "True"
+        },
+        {
+          "name": "add_paradigms trả None, giữ trùng",
+          "call": "(lambda o: (o.add_paradigms('p'), o.add_paradigms('p'), o.paradigms))(ProgrammingLanguage('X', 1, []))",
+          "expect": "(None, None, ['p', 'p'])"
+        },
+        {
+          "name": "str không tự in",
+          "call": "_studio.stdout(str, ProgrammingLanguage('C', 1972, []))",
+          "expect": "''"
+        },
+        {
+          "name": "Format với list rỗng",
+          "call": "str(ProgrammingLanguage('C', 1972, []))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "ProgrammingLanguage.__init__(self, name, year_created, paradigms)",
+          "does": "Khởi tạo ba thuộc tính của object.",
+          "takes": "self: object hiện tại; name: str; year_created: int; paradigms: list[str]",
+          "gives": "None — lời gọi class mới tạo ra object, không phải giá trị của __init__",
+          "effect": "Gán thuộc tính; list(paradigms) tạo list riêng.",
+          "call": "ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+        },
+        {
+          "sig": "add_paradigms(self, paradigm)",
+          "does": "Thêm một kiểu lập trình vào cuối list.",
+          "takes": "self; paradigm: str",
+          "gives": "None",
+          "effect": "Sửa self.paradigms; giữ phần tử trùng; không in.",
+          "call": "obj.add_paradigms(\"functional\")"
+        },
+        {
+          "sig": "ProgrammingLanguage.__str__(self)",
+          "does": "Biểu diễn object bằng chuỗi.",
+          "takes": "self",
+          "gives": "str đúng format v3",
+          "effect": "Không print, không đổi object.",
+          "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
+        }
+      ],
+      "gate": true
+    }
+  }
+}

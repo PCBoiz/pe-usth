@@ -1,0 +1,297 @@
+{
+  "lesson_code": "B09",
+  "sort_order": 9,
+  "module": "M2 · Vòng lặp và hàm",
+  "title": "B09 · Hàm kiểm tra chuỗi",
+  "subtitle": "Cơ bản · M2 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B09 · Hàm kiểm tra chuỗi",
+    "subtitle": "Cơ bản · M2 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B09",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP CƠ BẢN",
+          "B09"
+        ],
+        "title": "Hàm kiểm tra chuỗi",
+        "goal": "Viết hàm kiểm tra palindrome.",
+        "task": "Viết is_palindrome(text): rỗng trả False; còn lại so với chuỗi đảo.",
+        "predict": "\"a\" và chuỗi rỗng cho kết quả gì?",
+        "code": "def is_palindrome(text):\n    pass",
+        "tests": [
+          "\"level\" → True",
+          "\"\" → False"
+        ],
+        "reflect": "Vì sao chuỗi rỗng trả False dù bằng chuỗi đảo?"
+      },
+      "context": {
+        "title": "Tự viết một hàm kiểm tra palindrome.",
+        "body": "Viết is_palindrome(text): chuỗi rỗng trả False; còn lại so text với chuỗi đảo của nó. Không strip, không đổi hoa/thường, không print.",
+        "example": "is_palindrome(\"level\") → True; is_palindrome(\"python\") → False.",
+        "prereq": "B08",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Dự đoán is_palindrome(\"a\") và is_palindrome(\"\").",
+        "options": [
+          {
+            "id": "a",
+            "title": "True và False",
+            "detail": "\"a\" đảo vẫn là \"a\"; chuỗi rỗng bị loại theo quy tắc của khoá.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "True và True",
+            "detail": "Rỗng bằng chuỗi đảo của nó, nhưng quy tắc bài nói rỗng trả False.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "False và False",
+            "detail": "Một ký tự là palindrome hợp lệ.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thêm strip() và lower() cho chắc\"",
+        "body": "Làm vậy là đổi hợp đồng của bài: \" a \" phải được xét nguyên (đảo vẫn là \" a \" → True), còn \"Level\" phải là False. Hàm kiểm tra không in, không ghi file, không sửa dữ liệu đầu vào."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Nhánh đầu xử lý trường hợp đặc biệt trước: rỗng → return False ngay, các dòng sau không chạy."
+        },
+        {
+          "n": 2,
+          "body": "flipped giữ chuỗi đảo; return code == flipped trả thẳng kết quả so sánh (bool)."
+        },
+        {
+          "n": 3,
+          "body": "\"1221\" → \"1221\" → True; \"\" → False ngay từ nhánh đầu."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def is_mirror(code):\n    if code == \"\":\n        return False\n    flipped = code[::-1]\n    return code == flipped\n\nprint(is_mirror(\"1221\"))\nprint(is_mirror(\"\"))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "is_palindrome(\" a \") trả gì?",
+          "options": [
+            {
+              "text": "True — dấu cách hai bên đối xứng nhau",
+              "detail": "Không strip nên \" a \" đảo vẫn là \" a \".",
+              "correct": true
+            },
+            {
+              "text": "False",
+              "detail": "Dấu cách là ký tự bình thường, vẫn đối xứng.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi",
+              "detail": "Chuỗi có dấu cách vẫn so sánh được.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không strip nên \" a \" đảo vẫn là \" a \"."
+        },
+        {
+          "question": "is_palindrome(\"độđ\") trả gì?",
+          "options": [
+            {
+              "text": "True",
+              "detail": "Ký tự có dấu cũng được đảo đúng thứ tự.",
+              "correct": true
+            },
+            {
+              "text": "False",
+              "detail": "đ-ộ-đ đọc ngược vẫn là đ-ộ-đ.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi vì có dấu tiếng Việt",
+              "detail": "Chuỗi Python là Unicode.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Ký tự có dấu cũng được đảo đúng thứ tự."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao chuỗi rỗng trả False dù nó bằng chuỗi đảo của chính nó?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Quy tắc của khoá định nghĩa palindrome phải KHÔNG rỗng. Nhánh if text == \"\" chạy trước phép so sánh và return False ngay. Nếu bỏ nhánh này thì \"\" == \"\" là True — sai quy tắc."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp nhánh xử lý rỗng và lệnh trả kết quả.",
+        "rule": "Thử \"radar\", \"Level\" và \" a \". Không strip, không đổi hoa/thường."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "\"python\" → không rỗng → đảo \"nohtyp\" → khác → False."
+          },
+          {
+            "label": "Bước 2",
+            "text": "\"level\" → đảo \"level\" → True."
+          },
+          {
+            "label": "Bước 3",
+            "text": "\"\" → False ngay, không tới bước đảo."
+          }
+        ]
+      },
+      "counter": {
+        "question": "is_palindrome(\"Level\") trả gì?",
+        "options": [
+          "True",
+          "False",
+          "Báo lỗi"
+        ],
+        "correct": "False"
+      },
+      "scaffold": {
+        "template": "def is_palindrome(text):\n    if {{slot1}}:\n        return False\n    reversed_text = text[::-1]\n    {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "text == \"\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "return text == reversed_text"
+          }
+        ],
+        "bank": [
+          {
+            "label": "text.strip() == \"\"",
+            "slot": 1,
+            "trap": "Loại cả chuỗi chỉ có dấu cách."
+          },
+          {
+            "label": "return text == reversed_text",
+            "slot": 2
+          },
+          {
+            "label": "text == \"\"",
+            "slot": 1
+          },
+          {
+            "label": "return text.lower() == reversed_text.lower()",
+            "slot": 2,
+            "trap": "Đổi hoa/thường."
+          },
+          {
+            "label": "print(text == reversed_text)",
+            "slot": 2,
+            "trap": "In thay vì trả về."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết is_palindrome(text): chuỗi rỗng trả False; còn lại so text với chuỗi đảo của nó. Không strip, không đổi hoa/thường, không print.\n\nThực hành: Xử lý chuỗi rỗng trước; lưu chuỗi đảo rồi return phép so sánh.",
+        "io": [
+          {
+            "label": "\"level\"",
+            "value": "True"
+          },
+          {
+            "label": "\"\"",
+            "value": "False"
+          }
+        ]
+      },
+      "starterCode": "def is_palindrome(text):\n    pass\n",
+      "solutionCode": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\nresult = is_palindrome(\"level\")\nprint(result)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Xử lý chuỗi rỗng trước; lưu chuỗi đảo rồi return phép so sánh."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Nhánh đầu: if text == \"\": return False.\n2. reversed_text = text[::-1]; return text == reversed_text."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def is_palindrome(text):\n    if text == \"\":\n        return False\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "\"level\" → True",
+          "call": "is_palindrome(\"level\")",
+          "expect": "True"
+        },
+        {
+          "name": "\"\" → False",
+          "call": "is_palindrome(\"\")",
+          "expect": "False"
+        },
+        {
+          "name": "\"ab\" → False",
+          "call": "is_palindrome(\"ab\")",
+          "expect": "False"
+        },
+        {
+          "name": "\"Level\" → False (giữ hoa/thường)",
+          "call": "is_palindrome(\"Level\")",
+          "expect": "False"
+        },
+        {
+          "name": "\" a \" → True (không strip)",
+          "call": "is_palindrome(\" a \")",
+          "expect": "True"
+        },
+        {
+          "name": "\"độđ\" → True",
+          "call": "is_palindrome(\"độđ\")",
+          "expect": "True"
+        },
+        {
+          "name": "Hàm không print",
+          "call": "_studio.stdout(is_palindrome, \"level\")",
+          "expect": "''"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "is_palindrome(text)",
+          "does": "Kiểm tra chuỗi đối xứng và không rỗng.",
+          "takes": "text: str — giữ nguyên hoa/thường và khoảng trắng",
+          "gives": "bool",
+          "effect": "Không in, không ghi file, không sửa dữ liệu đầu vào.",
+          "call": "is_palindrome(\"level\") → True"
+        }
+      ]
+    }
+  }
+}

@@ -34,9 +34,11 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
                 padding: '14px 16px',
               }}
             >
+              {/* Trước đây chỉ mở khoá được khi có `cost`; bài học thật không
+                  trừ XP nên không truyền cost, và học viên kẹt ở tầng 1. */}
               <button
                 type="button"
-                onClick={() => locked && level.cost != null && onUnlock(i)}
+                onClick={() => locked && onUnlock(i)}
                 disabled={!locked}
                 style={{
                   width: '100%',
@@ -53,9 +55,9 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
                 }}
               >
                 <span>{locked ? '🔒' : '💡'} {level.title}</span>
-                {locked && level.cost != null && (
+                {locked && (
                   <span style={{ background: 'var(--edu-accent-soft)', color: 'var(--edu-accent-text)', borderRadius: 999, padding: '3px 10px', fontSize: 11 }}>
-                    ⚡ Mở khoá (-{level.cost} XP)
+                    {level.cost != null ? `⚡ Mở khoá (-${level.cost} XP)` : 'Mở gợi ý này'}
                   </span>
                 )}
               </button>

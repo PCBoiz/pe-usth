@@ -42,14 +42,42 @@ export type MemoryModel = {
   assertionResult?: string;
 };
 
+/** Màn mở đầu "một màn" (Figma PE Python v3): tóm cả bài trên một trang. */
+export type LessonBriefData = {
+  /** ["M1", "BÀI TẬP CƠ BẢN", "B01"] */
+  eyebrow: string[];
+  title: string;
+  goal?: string;
+  task: string;
+  predict?: string;
+  /** Khung code rút gọn hiện trong main.py (không phải code khởi tạo thật). */
+  code?: string;
+  /** Hai ca công khai, dạng "Mặc định → Python ↵ 1991". */
+  tests?: string[];
+  reflect?: string;
+};
+
 export type Step1 = {
   heading?: string;
-  context?: { title?: string; body?: string };
-  code?: { filename?: string; version?: string; source: string };
-  predict?: { question: string; options: PredictOption[] };
+  /** Có thì màn đầu của bài là LessonBrief thay cho thẻ "Ngữ cảnh". */
+  brief?: LessonBriefData;
+  context?: {
+    title?: string;
+    body?: string;
+    /** Ví dụ vào/ra của đề, hiện ngay dưới đề. */
+    example?: string;
+    /** "Học trước", mức độ và file cấp sẵn — hiện thành dải nhãn nhỏ. */
+    prereq?: string;
+    level?: string;
+    files?: string[];
+  };
+  /** kind 'demo' = ví dụ minh hoạ khác dữ liệu đề: chỉ dùng ở màn giải thích. */
+  code?: { filename?: string; version?: string; source: string; kind?: 'demo' | 'lesson' };
+  /** `code` riêng của câu dự đoán; bỏ trống thì dùng step_1.code (trừ khi là demo). */
+  predict?: { question: string; options: PredictOption[]; code?: string };
   memory?: MemoryModel;
   explain?: { n?: number; title?: string; body: string }[];
-  misconception?: { title?: string; body: string };
+  misconception?: { title?: string; body: string; code?: string };
 };
 
 export type ClassifyBin = {
@@ -71,6 +99,8 @@ export type Step2 = {
     prompt: string;
     placeholder?: string;
     rubric?: { label: string; keywords: string[] }[];
+    /** Lời giải thích mẫu (mức 2/2) — chỉ hiện SAU khi học viên đã viết của mình. */
+    sample?: string;
   };
 };
 
@@ -89,6 +119,19 @@ export type Step3 = {
 
 export type LessonTest = { name: string; call: string; expect: string };
 
+/** File đặt sẵn trong thư mục chạy bài: module cấp sẵn (import được) hoặc dữ liệu (data.txt…). */
+export type LessonFile = { name: string; content: string; kind?: 'module' | 'data' };
+
+/** "Hợp đồng" của một hàm/method: nhận gì, trả gì, tác dụng phụ — đúng mẫu thẻ hàm của PE v3. */
+export type LessonContract = {
+  sig: string;
+  does?: string;
+  takes?: string;
+  gives?: string;
+  effect?: string;
+  call?: string;
+};
+
 export type Step4 = {
   heading?: string;
   task?: { title?: string; body?: string; io?: { label: string; value: string }[] };
@@ -101,6 +144,13 @@ export type Step4 = {
   tests?: LessonTest[];
   /** Substrings that must not appear in the learner's code (anti-mutation guard). */
   forbid?: string[];
+  /** Ghi vào thư mục chạy trước mỗi lần chạy; bộ chấm cho phép thay theo từng ca. */
+  files?: LessonFile[];
+  contracts?: LessonContract[];
+  /** Cửa tự kiểm tra (B20, I07, I12, N04, N08): lời giải chỉ mở sau lần nộp đầu. */
+  gate?: boolean;
+  /** Ghi chú môi trường (thread/fork chạy bản mô phỏng trong trình duyệt). */
+  env?: string;
 };
 
 export type StudioLesson = {
@@ -203,6 +253,10 @@ export type LessonDraft = {
   solutionUsed: boolean;
   /** Màn hình đã qua, theo `LessonScreen.key`. */
   done: Record<string, boolean>;
+  /** Đã bấm "Nộp & Chấm điểm" ít nhất một lần — mở khoá lời giải ở cửa tự kiểm tra. */
+  submitted?: boolean;
+  /** Đã mở gợi ý hoặc lời giải: lượt này được ghi nhận là "có hỗ trợ". */
+  assisted?: boolean;
 };
 
 export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
@@ -217,6 +271,8 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
     code: lesson.step_4?.starterCode ?? '',
     solutionUsed: false,
     done: {},
+    submitted: false,
+    assisted: false,
   };
 }
 
@@ -228,6 +284,7 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
 // một màn… Thanh tiến độ trên đầu đếm theo số màn này.
 
 export type ScreenKind =
+  | 'brief'
   | 'context'
   | 'explain'
   | 'memory'
@@ -273,7 +330,8 @@ function screen(
 export function buildScreens(lesson: StudioLesson): LessonScreen[] {
   const out: LessonScreen[] = [];
   const one = lesson.step_1;
-  if (one?.context?.body || one?.code?.source) out.push(screen('s1-context', 'context', 1));
+  if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
+  else if (one?.context?.body || one?.code?.source) out.push(screen('s1-context', 'context', 1));
   if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
   if (one?.memory) out.push(screen('s1-memory', 'memory', 1));
   if (one?.misconception?.body) out.push(screen('s1-misconception', 'misconception', 1));
@@ -378,10 +436,13 @@ export function screenVerdict(
     }
     const words = text.split(/\s+/).filter(Boolean).length;
     const enough = text.length >= SELF_EXPLAIN_MIN.chars && words >= SELF_EXPLAIN_MIN.words;
+    const sample = lesson.step_2?.selfExplain?.sample;
     return {
       correct: enough,
       explain: enough
-        ? 'Lời giải thích đã được ghi lại cho người chấm.'
+        ? sample
+          ? `Đối chiếu với lời giải thích mẫu (mức 2/2): ${sample}`
+          : 'Lời giải thích đã được ghi lại cho người chấm.'
         : `Viết thành câu giải thích cơ chế (ít nhất ${SELF_EXPLAIN_MIN.words} từ), đừng gõ cho có.`,
     };
   }

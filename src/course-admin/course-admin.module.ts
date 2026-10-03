@@ -28,6 +28,13 @@ import { AdminGuard } from 'src/common/guards/admin/admin.guard';
 import { CurrentUserId } from 'src/common/decorators/current-user.decorator';
 import { LessonImportService } from './lesson-import.service';
 
+/**
+ * Bài có sort_order từ mốc này trở lên là bài LƯU TRỮ của giáo trình cũ —
+ * scripts/seed-pe-v3.ts dời toàn bộ bài cũ của khoá python sang 1000 + số cũ để
+ * giữ lesson_progress của học viên mà không lẫn vào giáo trình mới.
+ */
+export const ARCHIVED_SORT_ORDER = 1000;
+
 /** Giá trị hợp lệ của enum course_level trong DB. */
 export const COURSE_LEVELS = ['beginner', 'intermediate', 'advanced'] as const;
 const LEVEL_MESSAGE = 'Cấp độ phải là beginner, intermediate hoặc advanced';
@@ -344,9 +351,15 @@ export class CourseAdminService {
     return { ok: true };
   }
 
-  /** Đồng bộ courses.lessons = COUNT(*) thực tế sau mọi thay đổi bài học. */
+  /**
+   * Đồng bộ courses.lessons = số bài ĐANG HOẠT ĐỘNG sau mọi thay đổi bài học.
+   * Bài lưu trữ của giáo trình cũ (sort_order >= ARCHIVED_SORT_ORDER) chỉ còn
+   * để giữ lịch sử học, không tính vào số bài của khoá.
+   */
   private async syncLessonCount(courseId: string) {
-    const lessonCount = await this.prisma.lesson.count({ where: { courseId } });
+    const lessonCount = await this.prisma.lesson.count({
+      where: { courseId, sortOrder: { lt: ARCHIVED_SORT_ORDER } },
+    });
     await this.prisma.course.update({
       where: { id: courseId },
       data: { lessonCount },

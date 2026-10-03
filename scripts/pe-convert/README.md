@@ -1,5 +1,9 @@
 # Chuyển PE_Python_v2 thành bài học Python Studio
 
+> **Đã thay thế.** Khoá `python` giờ dùng 40 bài PE Python v3 — xem
+> [`scripts/pe-v3/README.md`](../pe-v3/README.md). Bộ chuyển đổi v2 dưới đây giữ lại để
+> tham khảo; `seed-pe-lessons.ts` từ chối chạy nếu thiếu `--force-v2`.
+
 Bộ chuyển đổi đọc gói bàn giao **PE_Python_v2** (92 bài, định dạng riêng của
 nhóm biên soạn) và sinh ra nội dung `studio-lesson/v1` — đúng thứ mà
 `lessons.content_json` lưu và `StudioLesson.tsx` dựng thành 4 màn hình S1–S4.

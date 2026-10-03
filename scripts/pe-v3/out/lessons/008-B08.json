@@ -1,0 +1,292 @@
+{
+  "lesson_code": "B08",
+  "sort_order": 8,
+  "module": "M2 · Vòng lặp và hàm",
+  "title": "B08 · Tự viết một hàm",
+  "subtitle": "Cơ bản · M2 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B08 · Tự viết một hàm",
+    "subtitle": "Cơ bản · M2 · 20 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B08",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP CƠ BẢN",
+          "B08"
+        ],
+        "title": "Tự viết một hàm",
+        "goal": "Định nghĩa hàm đầu tiên và nhận kết quả bằng return.",
+        "task": "Viết is_empty(text), trả True khi text rỗng, ngược lại False.",
+        "predict": "Một dấu cách có phải chuỗi rỗng không?",
+        "code": "def is_empty(text):\n    pass\n\n# Tự gọi thử hàm ở bên ngoài",
+        "tests": [
+          "\"\" → True",
+          "\" \" → False"
+        ],
+        "reflect": "Nếu thay return True bằng print(True), result nhận gì?"
+      },
+      "context": {
+        "title": "Tự định nghĩa hàm đầu tiên và nhận kết quả bằng return.",
+        "body": "Viết is_empty(text) trả True nếu text là chuỗi rỗng, ngược lại trả False. Hàm không print; gọi thử ở ngoài, lưu vào result rồi in.",
+        "example": "is_empty(\"\") → True; is_empty(\" \") → False.",
+        "prereq": "B07",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Một dấu cách \" \" có phải chuỗi rỗng không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — nó có 1 ký tự",
+            "detail": "Chuỗi rỗng là \"\" (0 ký tự); \" \" chứa một dấu cách.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có",
+            "detail": "Dấu cách là một ký tự thật.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Tuỳ máy",
+            "detail": "Kết quả luôn giống nhau.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"print(True) trong hàm cũng là trả kết quả\"",
+        "body": "print chỉ hiện chữ lên màn hình. Hàm không có return mang giá trị thì trả None — result = is_empty(\"\") sẽ là None. Hàm kiểm tra phải return; việc in để nơi gọi làm. pass chỉ giữ chỗ trong khung, không phải lời giải."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "def đặt tên hàm; text là THAM SỐ nhận giá trị khi gọi. Định nghĩa hàm chưa chạy thân hàm."
+        },
+        {
+          "n": 2,
+          "body": "return đưa giá trị về NƠI GỌI và kết thúc lần gọi đó."
+        },
+        {
+          "n": 3,
+          "body": "is_short(\"ab\") → text = \"ab\" → độ dài 2 < 3 → return True → result = True → print in True."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def is_short(text):\n    if len(text) < 3:\n        return True\n    else:\n        return False\n\nresult = is_short(\"ab\")\nprint(result)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Nếu thay return True bằng print(True), result = is_empty(\"\") nhận gì?",
+          "options": [
+            {
+              "text": "None",
+              "detail": "Hàm không gặp return mang giá trị nên trả None.",
+              "correct": true
+            },
+            {
+              "text": "True",
+              "detail": "print không đưa giá trị về nơi gọi.",
+              "correct": false
+            },
+            {
+              "text": "\"True\"",
+              "detail": "print không trả về chuỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Hàm không gặp return mang giá trị nên trả None."
+        },
+        {
+          "question": "is_empty(\"\\n\") trả gì?",
+          "options": [
+            {
+              "text": "False — ký tự xuống dòng vẫn là một ký tự",
+              "detail": "\"\\n\" có độ dài 1.",
+              "correct": true
+            },
+            {
+              "text": "True",
+              "detail": "Chỉ \"\" mới rỗng.",
+              "correct": false
+            },
+            {
+              "text": "None",
+              "detail": "Hàm đúng luôn trả bool.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "\"\\n\" có độ dài 1."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Nếu thay return True bằng print(True), result nhận gì? Vì sao?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "result nhận None. print chỉ in True ra màn hình như một tác dụng phụ; hàm không gặp return mang giá trị nên Python tự trả None. Nơi gọi cần giá trị bool để dùng tiếp, nên hàm phải return True/False."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp điều kiện và giá trị trả về.",
+        "rule": "Thử is_empty(\"a\") và is_empty(\" \"); lưu kết quả vào result rồi in ở nơi gọi."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "is_empty(\"\") → text = \"\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "text == \"\" đúng → return True."
+          },
+          {
+            "label": "Bước 3",
+            "text": "result = True → print(result) in True."
+          }
+        ]
+      },
+      "counter": {
+        "question": "is_empty(\"a\") trả gì?",
+        "options": [
+          "True",
+          "False",
+          "None"
+        ],
+        "correct": "False"
+      },
+      "scaffold": {
+        "template": "def is_empty(text):\n    if {{slot1}}:\n        {{slot2}}\n    else:\n        return False\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "text == \"\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "return True"
+          }
+        ],
+        "bank": [
+          {
+            "label": "text == \" \"",
+            "slot": 1,
+            "trap": "Dấu cách không phải chuỗi rỗng."
+          },
+          {
+            "label": "pass",
+            "slot": 2,
+            "trap": "Chỉ giữ chỗ, không làm gì."
+          },
+          {
+            "label": "return True",
+            "slot": 2
+          },
+          {
+            "label": "text == \"\"",
+            "slot": 1
+          },
+          {
+            "label": "print(True)",
+            "slot": 2,
+            "trap": "In chứ không trả về — hàm sẽ trả None."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết is_empty(text) trả True nếu text là chuỗi rỗng, ngược lại trả False. Hàm không print; gọi thử ở ngoài, lưu vào result rồi in.\n\nThực hành: Viết if/else rõ ràng để trả bool, không print bên trong hàm.",
+        "io": [
+          {
+            "label": "is_empty(\"\")",
+            "value": "True"
+          },
+          {
+            "label": "is_empty(\" \")",
+            "value": "False"
+          }
+        ]
+      },
+      "starterCode": "def is_empty(text):\n    pass\n\n# Gọi thử hàm ở đây.\n",
+      "solutionCode": "def is_empty(text):\n    if text == \"\":\n        return True\n    else:\n        return False\n\nresult = is_empty(\"\")\nprint(result)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Viết if/else rõ ràng để trả bool, không print bên trong hàm."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. if text == \"\": return True\n2. else: return False — rồi gọi thử result = is_empty(\"\") và print(result) ở ngoài hàm."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def is_empty(text):\n    if text == \"\":\n        return True\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "is_empty(\"\") → True",
+          "call": "is_empty(\"\")",
+          "expect": "True"
+        },
+        {
+          "name": "is_empty(\" \") → False",
+          "call": "is_empty(\" \")",
+          "expect": "False"
+        },
+        {
+          "name": "is_empty(\"a\") → False",
+          "call": "is_empty(\"a\")",
+          "expect": "False"
+        },
+        {
+          "name": "is_empty(\"\\n\") → False",
+          "call": "is_empty(\"\\n\")",
+          "expect": "False"
+        },
+        {
+          "name": "Hàm không print",
+          "call": "_studio.stdout(is_empty, \"\")",
+          "expect": "''"
+        },
+        {
+          "name": "Trả về bool",
+          "call": "type(is_empty(\"x\")).__name__",
+          "expect": "'bool'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "is_empty(text)",
+          "does": "Kiểm tra chuỗi rỗng.",
+          "takes": "text: str",
+          "gives": "bool — True nếu text == \"\", ngược lại False",
+          "effect": "Không in, không đổi dữ liệu ngoài.",
+          "call": "is_empty(\" \") → False"
+        }
+      ]
+    }
+  }
+}

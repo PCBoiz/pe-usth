@@ -1,0 +1,276 @@
+{
+  "lesson_code": "B02",
+  "sort_order": 2,
+  "module": "M1 · Dữ liệu và điều kiện",
+  "title": "B02 · Ghép chuỗi",
+  "subtitle": "Cơ bản · M1 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "B02 · Ghép chuỗi",
+    "subtitle": "Cơ bản · M1 · 15 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B02",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP CƠ BẢN",
+          "B02"
+        ],
+        "title": "Ghép chuỗi",
+        "goal": "Tạo thông báo từ phần cố định và một biến chuỗi.",
+        "task": "Từ name = \"Python\", tạo message = \"Language: Python\" bằng phép nối rồi in.",
+        "predict": "Nếu name = \"C\", message sẽ là gì?",
+        "code": "name = \"Python\"\n# Tự tạo message bằng phép nối\n# In message",
+        "tests": [
+          "name = \"Python\" → Language: Python",
+          "name = \"C\" → Language: C"
+        ],
+        "reflect": "Vì sao không nên viết cố định cả câu thông báo?"
+      },
+      "context": {
+        "title": "Tạo thông báo từ phần cố định và một biến chuỗi.",
+        "body": "Cho name = \"Python\". Tạo message = \"Language: Python\" bằng phép nối chuỗi rồi in message.",
+        "example": "name = \"Python\" → message = \"Language: Python\".",
+        "prereq": "B01",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Nếu name = \"C\", message sẽ là gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "\"Language: C\"",
+            "detail": "Phần cố định giữ nguyên, phần sau lấy giá trị mới của name.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "\"Language: Python\"",
+            "detail": "message được ghép lại từ name mới mỗi lần chạy.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "\"Language:C\"",
+            "detail": "Dấu cách nằm trong \"Language: \" nên vẫn còn.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Viết thẳng message = \"Language: Python\" cho nhanh\"",
+        "body": "Câu cố định chỉ đúng với đúng một dữ liệu: đổi name = \"C\" vẫn in Language: Python. Ghép \"Language: \" + name mới dùng được cho mọi tên. Lưu ý: bài này name là str; cộng chuỗi với số (như \"Year: \" + 1991) báo TypeError."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Dấu + giữa hai chuỗi ghép chúng theo thứ tự trái sang phải: \"Hello, \" + \"Hue\" → \"Hello, Hue\"."
+        },
+        {
+          "n": 2,
+          "body": "Dấu cách sau dấu phẩy nằm TRONG chuỗi \"Hello, \" nên là một phần của dữ liệu."
+        },
+        {
+          "n": 3,
+          "body": "greeting nhận chuỗi mới; print(greeting) in chuỗi đó."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "city = \"Hue\"\ngreeting = \"Hello, \" + city\nprint(greeting)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "name = \"\" (chuỗi rỗng) thì message là gì?",
+          "options": [
+            {
+              "text": "\"Language: \" — vẫn còn dấu cách ở cuối",
+              "detail": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định.",
+              "correct": true
+            },
+            {
+              "text": "\"Language:\"",
+              "detail": "Dấu cách thuộc phần cố định nên không mất.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi vì name rỗng",
+              "detail": "Chuỗi rỗng vẫn là str hợp lệ để ghép.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định."
+        },
+        {
+          "question": "Biểu thức nào gây TypeError?",
+          "options": [
+            {
+              "text": "\"Year: \" + 1991",
+              "detail": "Không cộng được str với int.",
+              "correct": true
+            },
+            {
+              "text": "\"Year: \" + \"1991\"",
+              "detail": "Hai chuỗi ghép bình thường thành \"Year: 1991\".",
+              "correct": false
+            },
+            {
+              "text": "\"Language: \" + name, với name = \"C\"",
+              "detail": "Cả hai đều là chuỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không cộng được str với int."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao không nên viết message = \"Language: Python\" cố định?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Câu cố định không phản ánh name mới. Ghép \"Language: \" + name thì mỗi lần chạy message lấy giá trị hiện tại của name: name = \"C\" cho Language: C, name = \"Rust\" cho Language: Rust. Một dòng code dùng được cho nhiều dữ liệu."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: name = \"Rust\". Lắp phép ghép và lệnh in.",
+        "rule": "Thay name bằng chuỗi rỗng \"\". Kiểm xem dấu cách sau dấu hai chấm còn được giữ không."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "name = \"Python\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "\"Language: \" + name → \"Language: \" + \"Python\" → \"Language: Python\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "message giữ chuỗi mới."
+          },
+          {
+            "label": "Bước 4",
+            "text": "print(message) → Language: Python."
+          }
+        ]
+      },
+      "counter": {
+        "question": "name = \"Rust\" thì chương trình in gì?",
+        "options": [
+          "Language: Rust",
+          "Language: Python",
+          "Language:Rust"
+        ],
+        "correct": "Language: Rust"
+      },
+      "scaffold": {
+        "template": "name = \"Rust\"\nmessage = {{slot1}}\n{{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\"Language: \" + name"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "print(message)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\"Language: \" + name",
+            "slot": 1
+          },
+          {
+            "label": "print(\"message\")",
+            "slot": 2,
+            "trap": "In ra chữ message."
+          },
+          {
+            "label": "\"Language: Rust\"",
+            "slot": 1,
+            "trap": "Hard-code cả câu."
+          },
+          {
+            "label": "print(message)",
+            "slot": 2
+          },
+          {
+            "label": "\"Language:\" + name",
+            "slot": 1,
+            "trap": "Mất dấu cách sau dấu hai chấm."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho name = \"Python\". Tạo message = \"Language: Python\" bằng phép nối chuỗi rồi in message.\n\nThực hành: Tạo message bằng \"Language: \" + name, rồi in message.",
+        "io": [
+          {
+            "label": "name = \"Python\"",
+            "value": "Language: Python"
+          },
+          {
+            "label": "name = \"C\"",
+            "value": "Language: C"
+          }
+        ]
+      },
+      "starterCode": "name = \"Python\"\n# Tự tạo message bằng phép nối chuỗi và in.\n",
+      "solutionCode": "name = \"Python\"\nmessage = \"Language: \" + name\nprint(message)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo message bằng \"Language: \" + name, rồi in message."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Phần cố định \"Language: \" có một dấu cách ở cuối.\n2. Ghép với name bằng dấu +, lưu vào message, rồi print(message)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "message = \"Language: \" + ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "name = \"Python\"",
+          "call": "_studio.run().stdout",
+          "expect": "'Language: Python\\n'"
+        },
+        {
+          "name": "name = \"C\" — không hard-code cả câu",
+          "call": "_studio.run(vars={'name': 'C'}).stdout",
+          "expect": "'Language: C\\n'"
+        },
+        {
+          "name": "name rỗng vẫn giữ dấu cách cuối",
+          "call": "_studio.run(vars={'name': ''}).var('message')",
+          "expect": "'Language: '"
+        },
+        {
+          "name": "name = \"Rust\"",
+          "call": "_studio.run(vars={'name': 'Rust'}).stdout",
+          "expect": "'Language: Rust\\n'"
+        }
+      ]
+    }
+  }
+}

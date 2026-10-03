@@ -89,7 +89,7 @@ async function api(route, method = 'GET', body, access) {
       fullPage: true,
     });
   };
-  await page.goto(origin + '/lesson/python');
+  await page.goto(origin + '/lesson/python?demo=list');
   await page
     .getByRole('heading', { name: /List & Mutability|Ngữ cảnh/ })
     .first()
@@ -166,41 +166,20 @@ async function api(route, method = 'GET', body, access) {
     .waitFor({ timeout: 90000 });
   console.log('Real Python rejects incorrect solution: PASS');
   await editor.fill(solution);
-  const saved = page.waitForResponse(
-    (r) =>
-      r.url().includes('/api/lessons/11/complete') &&
-      r.request().method() === 'POST',
-    { timeout: 90000 },
-  );
+  // Bài demo nằm ngoài giáo trình PE v3: chấm đạt nhưng KHÔNG gọi API hoàn thành.
+  let completionCalls = 0;
+  page.on('request', (r) => {
+    if (/\/api\/lessons\/\d+\/complete/.test(r.url())) completionCalls += 1;
+  });
   await page
     .getByRole('button', { name: 'Nộp & Chấm điểm', exact: true })
     .click();
-  const response = await saved;
-  assert.equal(response.status(), 200);
-  const completion = await response.json();
-  console.log('Completion response:', JSON.stringify(completion));
   await page
-    .getByText('Bài này đã hoàn thành và được lưu trên hệ thống.', {
-      exact: false,
-    })
-    .waitFor();
+    .getByText('Bài demo nằm ngoài giáo trình', { exact: false })
+    .waitFor({ timeout: 90000 });
   await snap('step-4-passed');
-  const after = await api('/api/user', 'GET', undefined, auth.access);
-  const savedAgain = page.waitForResponse(
-    (r) =>
-      r.url().includes('/api/lessons/11/complete') &&
-      r.request().method() === 'POST',
-    { timeout: 90000 },
-  );
-  await page
-    .getByRole('button', { name: 'Nộp & Chấm điểm', exact: true })
-    .click();
-  const repeat = await (await savedAgain).json();
-  assert.equal(repeat.xpGained, 0);
-  assert.equal(repeat.alreadyCompleted, true);
-  const afterAgain = await api('/api/user', 'GET', undefined, auth.access);
-  assert.equal(afterAgain.xp, after.xp);
-  console.log('Repeated submission does not grant XP twice: PASS');
+  assert.equal(completionCalls, 0, 'bài demo không được ghi tiến độ');
+  console.log('Demo lesson passes without recording progress: PASS');
   await editor.fill(
     'def clean_and_boost_scores(raw_scores, bonus):\n    original = raw_scores[:]\n    raw_scores.clear()\n    raw_scores.extend(original)\n    return [round(x + bonus, 2) for x in raw_scores if x >= 0]',
   );
@@ -226,16 +205,10 @@ async function api(route, method = 'GET', body, access) {
         .some((k) => JSON.parse(localStorage.getItem(k)).code === code),
     solution,
   );
-  const enrollments = await api('/api/enrolled', 'GET', undefined, auth.access);
-  assert(
-    enrollments.enrolled
-      .find((e) => e.id === 'python' || e.courseId === 'python')
-      .completedLessonNumbers.includes(11),
-  );
   await page.reload();
   await editor.waitFor();
   assert.equal(await editor.inputValue(), solution);
-  console.log('Reload restores code and backend completion: PASS');
+  console.log('Reload restores code: PASS');
   for (const width of [390, 768]) {
     await page.setViewportSize({ width, height: 844 });
     await snap('mobile-' + width);

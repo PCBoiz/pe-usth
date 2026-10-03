@@ -1,8 +1,9 @@
 'use client';
 
-// Dịch từ Stitch "khung_bài_học_python_lesson_chrome_wrapper" (code.html):
-// top bar 56px (đóng bài + progress bar chia đoạn + streak) — vùng nội dung
-// đơn cột, căn giữa quang học, max-width 680px — bottom bar 88px (1 nút CTA).
+// Dịch từ Stitch "khung_bài_học_python_lesson_chrome_wrapper" (code.html), chỉnh
+// lại theo Figma "PE Python v3 — 20 bài cơ bản B01–B20": top bar 56px trắng (đóng
+// bài + tên bài + thanh tiến độ liền mảnh + 🔥 streak) — vùng nội dung đơn cột
+// 680px trên nền phẳng — bottom bar 88px ("✓ Tiến độ tự lưu" + 1 nút CTA 480px).
 // Dùng chung cho mọi loại bài học (không riêng Python) nên đặt ngoài
 // components/python-studio; ăn theo token --edu-*/--st-* đã gom ở
 // edu-theme.css + studio-tokens.css (--st-chrome-h/--st-action-h/--st-col/
@@ -14,6 +15,8 @@ export interface LessonChromeProps {
   step: number;
   totalSteps: number;
   streak: number;
+  courseLabel?: string;
+  saveLabel?: string;
   onClose?: () => void;
   primaryLabel: string;
   onPrimaryClick?: () => void;
@@ -29,9 +32,9 @@ export interface LessonChromeProps {
   /** Đoạn xa nhất được phép bấm tới; mặc định là bước hiện tại. */
   seekMax?: number;
   /** Màn nào đã xong (theo chỉ số 0-based), để tô ĐẦY đúng những đoạn đó dù
-   *  đang xem lại một màn cũ. Màn đang mở luôn tô đầy (viền tím báo đang ở
-   *  đây) bất kể done hay chưa — không truyền thì mọi đoạn trước bước hiện
-   *  tại cũng coi như đầy. */
+   *  đang xem lại một màn cũ. Màn đang mở luôn tô đầy bất kể done hay chưa;
+   *  màn đã xong nằm SAU màn đang mở tô nhạt hơn để vẫn thấy mình đang ở đâu.
+   *  Không truyền thì mọi đoạn trước bước hiện tại cũng coi như đầy. */
   doneSteps?: boolean[];
   children: React.ReactNode;
 }
@@ -40,6 +43,8 @@ export default function LessonChrome({
   step,
   totalSteps,
   streak,
+  courseLabel = 'Python Studio',
+  saveLabel = '✓ Tiến độ tự lưu',
   onClose,
   primaryLabel,
   onPrimaryClick,
@@ -74,6 +79,8 @@ export default function LessonChrome({
             </svg>
           </button>
 
+          <div className={styles.lessonContext} title={courseLabel}>{courseLabel}</div>
+
           <div className={styles.track} title={`Tiến độ bài học: ${step}/${totalSteps}`}>
             {Array.from({ length: totalSteps }, (_, i) => {
               const idx = i + 1;
@@ -81,12 +88,16 @@ export default function LessonChrome({
               // Đoạn đầy khi màn đó đã xong (doneSteps), khi màn đứng trước
               // bước hiện tại (fallback lúc không có doneSteps, hoặc phòng khi
               // done thiếu mục), hoặc khi đó là màn đang mở — kể cả chưa làm
-              // xong: dừng ở nửa đoạn trông như treo/lỗi, animate cho đầy hẳn
-              // rồi dùng viền bên dưới để vẫn biết đang ở đoạn nào.
+              // xong: dừng ở nửa đoạn trông như treo/lỗi. Thanh liền mảnh theo
+              // Figma nên không có viền đánh dấu: đoạn đã xong nằm SAU màn đang
+              // mở (khi xem lại) tô nhạt hơn để vẫn thấy mình đang ở đâu.
               const width = doneSteps?.[i] || idx < step || current ? '100%' : '0%';
+              const ahead = !current && idx > step && Boolean(doneSteps?.[i]);
               const className = current
                 ? `${styles.segment} ${styles.segmentCurrent}`
-                : styles.segment;
+                : ahead
+                  ? `${styles.segment} ${styles.segmentAhead}`
+                  : styles.segment;
               const fill = <div className={styles.segmentFill} style={{ width }} />;
               // Chỉ những màn đã đi qua mới bấm được: thanh tiến độ không phải
               // đường tắt bỏ qua phần chưa làm.
@@ -113,11 +124,8 @@ export default function LessonChrome({
 
           <span className={styles.stepLabel}>{step}/{totalSteps}</span>
 
-          <div className={styles.streakPill}>
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M12 23c4.97 0 9-4.03 9-9 0-4.9-3.23-7.5-5.5-9.5-1.12-.99-1.5-2.5-1.5-2.5s-2 2-3 4.5c-.83 2.08-1.5 3-3 3.5-1.04.35-2 .5-2 3.5 0 4.97 4.03 9 9 9z" fillOpacity="0.9" />
-              <path d="M12 21c2.76 0 5-2.24 5-5 0-2.5-1.5-3.5-2.5-4.5-.5-.5-.5-1-.5-1s-1 1-1.5 2c-.5 1-1 1.5-2 1.5-.5 0-1 0-1 2 0 2.76 2.24 5 5 5z" fill="var(--edu-panel-bg-solid)" fillOpacity="0.8" />
-            </svg>
+          <div className={styles.streakPill} title={`Chuỗi ${streak} ngày học liên tiếp`}>
+            <span aria-hidden="true">🔥</span>
             <span>{streak}</span>
           </div>
         </div>
@@ -134,19 +142,25 @@ export default function LessonChrome({
 
       <footer className={styles.bottomBar}>
         <div className={styles.bottomBarInner}>
-          {secondaryLabel && (
-            <button type="button" className={styles.secondaryBtn} onClick={onSecondaryClick}>
-              {secondaryLabel}
-            </button>
-          )}
+          <span className={styles.saveLabel} role="status">{saveLabel}</span>
           <button
             type="button"
             className={primaryClass}
             onClick={onPrimaryClick}
             disabled={primaryDisabled}
+            data-cta="primary"
           >
             {primaryLabel}
           </button>
+          {/* Cột phải: nút phụ (vd. Gợi ý). Luôn render ô trống để nút chính
+              đứng đúng giữa thanh như Figma. */}
+          <span className={styles.secondarySlot}>
+            {secondaryLabel && (
+              <button type="button" className={styles.secondaryBtn} onClick={onSecondaryClick}>
+                {secondaryLabel}
+              </button>
+            )}
+          </span>
         </div>
       </footer>
     </div>

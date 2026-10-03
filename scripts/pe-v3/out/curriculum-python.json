@@ -1,0 +1,102 @@
+{
+  "requirements": [
+    "Không cần kinh nghiệm lập trình trước — học lần lượt 9 chặng, từ biến tới process",
+    "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để luyện thêm",
+    "Chặng 9 (fork/process) cần Linux hoặc WSL khi nghiệm thu thật; trong bài có bản mô phỏng"
+  ],
+  "skills": [
+    "Biến, chuỗi, điều kiện, vòng lặp và tự viết hàm có return",
+    "Đọc/ghi file UTF-8 và giải Ex1: lọc palindrome từ data.txt ra palindromes.txt",
+    "Class, constructor, __str__ và list riêng cho từng object (Ex2)",
+    "Kế thừa, super() và override (Ex3)",
+    "Thread: tạo n worker, start hết rồi join hết, kiểm dữ liệu n (Ex4)",
+    "Process: fork m child, mỗi child n thread, chờ đủ và đo thời gian đúng (Ex5)"
+  ],
+  "modules": [
+    {
+      "title": "M1 · Dữ liệu và điều kiện",
+      "lessons": [
+        "B01 · Biến và kết quả",
+        "B02 · Ghép chuỗi",
+        "B03 · Đảo chuỗi",
+        "B04 · So sánh palindrome",
+        "B05 · if và else"
+      ]
+    },
+    {
+      "title": "M2 · Vòng lặp và hàm",
+      "lessons": [
+        "B06 · Duyệt danh sách",
+        "B07 · Lọc bằng vòng lặp",
+        "B08 · Tự viết một hàm",
+        "B09 · Hàm kiểm tra chuỗi",
+        "B10 · Nối hai hàm"
+      ]
+    },
+    {
+      "title": "M3 · Đọc và ghi file",
+      "lessons": [
+        "B11 · Đọc file đầu tiên",
+        "B12 · Đọc từng dòng",
+        "B13 · Ghi một kết quả",
+        "B14 · Đưa phần đọc vào hàm",
+        "B15 · Đưa phần ghi vào hàm"
+      ]
+    },
+    {
+      "title": "M4 · Ghép bài Ex1",
+      "lessons": [
+        "B16 · Sửa lỗi print và return",
+        "B17 · Nối đọc với lọc",
+        "B18 · Nối lọc với ghi",
+        "B19 · Ex1 có hỗ trợ",
+        "B20 · Ex1 tự làm"
+      ]
+    },
+    {
+      "title": "M5 · Class đầu tiên",
+      "lessons": [
+        "I01 · Đọc thuộc tính object",
+        "I02 · Viết constructor",
+        "I03 · Thêm một paradigm",
+        "I04 · Viết __str__"
+      ]
+    },
+    {
+      "title": "M6 · Trạng thái và lớp cha (Ex2)",
+      "lessons": [
+        "I05 · Hai object độc lập",
+        "I06 · Phân biệt print và str",
+        "I07 · Ex2 tự làm",
+        "I08 · Lớp con đầu tiên"
+      ]
+    },
+    {
+      "title": "M7 · Kế thừa và override (Ex3)",
+      "lessons": [
+        "I09 · super và thuộc tính mới",
+        "I10 · Override __str__",
+        "I11 · Viết compile",
+        "I12 · Ex3 tự làm"
+      ]
+    },
+    {
+      "title": "M8 · Thread và chờ kết thúc (Ex4)",
+      "lessons": [
+        "N01 · Một thread",
+        "N02 · Nhiều thread",
+        "N03 · Ex4 có hỗ trợ",
+        "N04 · Ex4 tự làm và sửa lỗi"
+      ]
+    },
+    {
+      "title": "M9 · Process và đo thời gian (Ex5)",
+      "lessons": [
+        "N05 · Một process con",
+        "N06 · Tạo m process",
+        "N07 · Mỗi process chạy n thread",
+        "N08 · Ex5 tự làm"
+      ]
+    }
+  ]
+}

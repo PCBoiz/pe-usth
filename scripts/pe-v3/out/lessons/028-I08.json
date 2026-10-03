@@ -1,0 +1,265 @@
+{
+  "lesson_code": "I08",
+  "sort_order": 28,
+  "module": "M6 · Trạng thái và lớp cha (Ex2)",
+  "title": "I08 · Lớp con đầu tiên",
+  "subtitle": "Trung cấp · M6 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "I08 · Lớp con đầu tiên",
+    "subtitle": "Trung cấp · M6 · 25 phút",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I08",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP TRUNG CẤP",
+          "I08"
+        ],
+        "title": "Lớp con đầu tiên",
+        "goal": "Tạo lớp con và dùng hành vi của lớp cha.",
+        "task": "Khai báo class C(ProgrammingLanguage): pass rồi tạo object C.",
+        "predict": "C chưa có constructor thì ai khởi tạo ba trường?",
+        "code": "from language_base import ProgrammingLanguage\n\n# Khai báo class C kế thừa\n# Tạo object và dùng add_paradigms",
+        "tests": [
+          "Object C/1972 → đủ ba trường từ cha",
+          "isinstance(language, ProgrammingLanguage) → True"
+        ],
+        "reflect": "Vì sao C dùng được method dù thân chỉ có pass?"
+      },
+      "context": {
+        "title": "Tạo lớp con và dùng hành vi của lớp cha.",
+        "body": "Từ class cha ProgrammingLanguage (language_base.py), khai báo class C(ProgrammingLanguage) chưa thêm gì (pass). Tạo language = C(\"C\", 1972, [\"procedural\"]), thêm \"imperative\" bằng method của cha, rồi in name, paradigms và isinstance(language, ProgrammingLanguage).",
+        "example": "C kế thừa ProgrammingLanguage; object C dùng được add_paradigms của cha.",
+        "prereq": "I07",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Class C chưa viết constructor thì ai khởi tạo ba trường?",
+        "options": [
+          {
+            "id": "a",
+            "title": "__init__ của lớp cha ProgrammingLanguage",
+            "detail": "Python tìm method không có ở lớp con lên lớp cha.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Không ai — object rỗng",
+            "detail": "Constructor cha vẫn chạy.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi vì thiếu __init__",
+            "detail": "Kế thừa đã cung cấp __init__.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Tạo object ProgrammingLanguage cũng được\"",
+        "body": "Bài yêu cầu object của lớp C. ProgrammingLanguage(\"C\", ...) có cùng dữ liệu nhưng thuộc lớp cha — các bài sau (super, override, compile) cần đúng lớp con."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "class Dog(Animal): tên cha trong ngoặc tạo quan hệ kế thừa."
+        },
+        {
+          "n": 2,
+          "body": "pass: lớp con chưa thêm gì — Dog(\"Rex\") dùng __init__ của Animal, rex.describe() dùng method của cha."
+        },
+        {
+          "n": 3,
+          "body": "isinstance(rex, Animal) là True: object của lớp con cũng là object của lớp cha."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Animal:\n    def __init__(self, name):\n        self.name = name\n\n    def describe(self):\n        return \"I am \" + self.name\n\nclass Dog(Animal):\n    pass\n\nrex = Dog(\"Rex\")\nprint(rex.describe())\nprint(isinstance(rex, Animal))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "type(language).__name__ là gì?",
+          "options": [
+            {
+              "text": "C",
+              "detail": "Object tạo từ lớp con.",
+              "correct": true
+            },
+            {
+              "text": "ProgrammingLanguage",
+              "detail": "Đó là lớp cha; isinstance mới tính cả cha.",
+              "correct": false
+            },
+            {
+              "text": "object",
+              "detail": "type trả lớp cụ thể nhất.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Object tạo từ lớp con."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao C dùng được method dù thân class chỉ có pass?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Khi C không định nghĩa một method, Python tìm method đó ở lớp cha ProgrammingLanguage. Vì vậy C(\"C\", 1972, ...) dùng __init__ của cha, add_paradigms và __str__ cũng là của cha; isinstance(language, ProgrammingLanguage) là True."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp khai báo lớp con và lời tạo object.",
+        "rule": "Tạo hai object C khác tên/năm; thêm paradigm bằng method của cha."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "C dùng constructor cha → có ba trường."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Gọi add_paradigms của cha → list thêm imperative."
+          },
+          {
+            "label": "Bước 3",
+            "text": "isinstance(language, ProgrammingLanguage) → True."
+          }
+        ]
+      },
+      "counter": {
+        "question": "str(C(\"C\", 1972, [])) dùng format nào?",
+        "options": [
+          "Language[C], Year created[1972], Paradigms[] (format của cha)",
+          "C object",
+          "Báo lỗi"
+        ],
+        "correct": "Language[C], Year created[1972], Paradigms[] (format của cha)"
+      },
+      "scaffold": {
+        "template": "from language_base import ProgrammingLanguage\n\n{{slot1}}\n    pass\n\nlanguage = {{slot2}}\nlanguage.add_paradigms(\"imperative\")\nprint(isinstance(language, ProgrammingLanguage))\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "class C(ProgrammingLanguage):"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "C(\"C\", 1972, [\"procedural\"])"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ProgrammingLanguage(\"C\", 1972, [\"procedural\"])",
+            "slot": 2,
+            "trap": "Object của lớp cha."
+          },
+          {
+            "label": "class C(ProgrammingLanguage):",
+            "slot": 1
+          },
+          {
+            "label": "C(\"C\", 1972, [\"procedural\"])",
+            "slot": 2
+          },
+          {
+            "label": "class ProgrammingLanguage(C):",
+            "slot": 1,
+            "trap": "Ngược quan hệ cha/con."
+          },
+          {
+            "label": "class C:",
+            "slot": 1,
+            "trap": "Không kế thừa → không có __init__ ba tham số."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Từ class cha ProgrammingLanguage (language_base.py), khai báo class C(ProgrammingLanguage) chưa thêm gì (pass). Tạo language = C(\"C\", 1972, [\"procedural\"]), thêm \"imperative\" bằng method của cha, rồi in name, paradigms và isinstance(language, ProgrammingLanguage).\n\nThực hành: Dùng class C(ProgrammingLanguage): pass, rồi tạo object như với lớp cha.",
+        "io": [
+          {
+            "label": "Object C/1972",
+            "value": "Có đủ ba trường từ constructor cha"
+          },
+          {
+            "label": "isinstance(language, ProgrammingLanguage)",
+            "value": "True"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\n# Tự khai báo class C kế thừa và tạo object.\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    pass\n\nlanguage = C(\"C\", 1972, [\"procedural\"])\nlanguage.add_paradigms(\"imperative\")\nprint(language.name)\nprint(language.paradigms)\nprint(isinstance(language, ProgrammingLanguage))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng class C(ProgrammingLanguage): pass, rồi tạo object như với lớp cha."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Tên cha trong ngoặc xác định kế thừa; pass là chưa thêm hành vi mới.\n2. isinstance kiểm object có thuộc class đó hoặc lớp con của nó không."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "class C(ProgrammingLanguage):\n    pass\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "stdout: name, paradigms, isinstance",
+          "call": "_studio.run().stdout",
+          "expect": "\"C\\n['procedural', 'imperative']\\nTrue\\n\""
+        },
+        {
+          "name": "C kế thừa ProgrammingLanguage",
+          "call": "issubclass(C, ProgrammingLanguage)",
+          "expect": "True"
+        },
+        {
+          "name": "language là object của C",
+          "call": "type(_studio.main.var('language')).__name__",
+          "expect": "'C'"
+        },
+        {
+          "name": "Hai object C có list độc lập",
+          "call": "_studio.check('a = C(\"C\", 1972, [])\\nb = C(\"C\", 1989, [])\\na.add_paradigms(\"x\")\\nassert b.paradigms == []')",
+          "expect": "True"
+        },
+        {
+          "name": "str dùng format của cha",
+          "call": "str(C('C', 1972, []))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ]
+    }
+  }
+}

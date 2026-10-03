@@ -3,9 +3,14 @@
  *
  * Unlike python-studio.worker.js — which hard-codes the List & Mutability
  * cases — this one takes its cases from the lesson's content_json:
- *   { code, tests: [{ name, call, expect }], forbid: ["...", ...] }
+ *   { code, tests: [{ name, call, expect }], forbid: ["...", ...], files: [{ name, content }] }
  * `call` and `expect` are both Python expressions evaluated in the learner's
  * own namespace, so a lesson can assert on anything it can express.
+ *
+ * The grading loop itself lives in studio-harness.py (same folder) so that
+ * scripts/pe-v3/check-pyodide.mjs can run the very same code under Node. It
+ * adds what PE v3 needs: re-running a whole script with other data, fixture
+ * files (data.txt…), and simulated threading / os.fork — Pyodide has neither.
  *
  * Python still runs in a disposable browser worker, never in the NestJS process.
  */
@@ -14,6 +19,7 @@ self.onmessage = async ({ data }) => {
   try {
     const tests = Array.isArray(data.tests) ? data.tests : [];
     const forbid = Array.isArray(data.forbid) ? data.forbid : [];
+    const files = Array.isArray(data.files) ? data.files : [];
 
     // Cheap source check first: no point booting a 10 MB runtime to reject this.
     const banned = forbid.filter((token) => String(data.code).includes(token));
@@ -30,49 +36,34 @@ self.onmessage = async ({ data }) => {
     }
 
     importScripts('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js');
-    let output = '';
+    // Print nào lọt ra ngoài bộ chấm (hiếm) vẫn được giữ lại để hiện cho học viên.
+    let stray = '';
     const write = (line) => {
-      if (output.length < 12000)
-        output += line.slice(0, 12000 - output.length) + '\n';
+      if (stray.length < 4000) stray += line.slice(0, 4000 - stray.length) + '\n';
     };
-    const py = await loadPyodide({
-      indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/',
-      stdout: write,
-      stderr: write,
-    });
+    const [py, harness] = await Promise.all([
+      loadPyodide({
+        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/',
+        stdout: write,
+        stderr: write,
+      }),
+      // no-cache = vẫn dùng bản trong cache nhưng hỏi lại server (ETag), để bộ
+      // chấm luôn khớp với ca kiểm thử vừa nạp vào bài.
+      fetch('/static/js/studio-harness.py', { cache: 'no-cache' }).then((r) => {
+        if (!r.ok) throw new Error(`không tải được bộ chấm (${r.status})`);
+        return r.text();
+      }),
+    ]);
     self.postMessage({ type: 'ready' });
     const started = performance.now();
-    py.globals.set('_studio_source', data.code);
-    py.globals.set('_studio_cases', JSON.stringify(tests));
-    const json = await py.runPythonAsync(`
-import json, traceback, sys
-_results = []
-_error = None
-try:
-    _namespace = {"__name__": "__main__"}
-    exec(compile(_studio_source, "solution.py", "exec"), _namespace)
-    for _case in json.loads(_studio_cases):
-        _name = _case.get("name") or _case.get("call") or "Kiểm tra"
-        try:
-            _actual = eval(_case["call"], _namespace)
-            _expected = eval(_case["expect"], _namespace)
-            _ok = _actual == _expected
-            _detail = (
-                "Đạt: %r" % (_actual,)
-                if _ok
-                else "Mong đợi %r nhưng nhận %r" % (_expected, _actual)
-            )
-            _results.append({"name": _name, "passed": bool(_ok), "detail": _detail[:400]})
-        except Exception as e:
-            _results.append({"name": _name, "passed": False, "detail": str(e)[:400]})
-except BaseException:
-    _error = traceback.format_exc(limit=4)
-json.dumps({"tests": _results, "error": _error, "version": sys.version.split()[0]})
-`);
+    await py.runPythonAsync(harness);
+    const grade = py.globals.get('_studio_main');
+    const result = JSON.parse(grade(String(data.code), JSON.stringify(tests), JSON.stringify(files)));
+    grade.destroy();
     self.postMessage({
       type: 'result',
-      ...JSON.parse(json),
-      output,
+      ...result,
+      output: (result.output || '') + stray,
       duration: Math.round(performance.now() - started),
     });
   } catch (error) {

@@ -1,0 +1,284 @@
+{
+  "lesson_code": "N08",
+  "sort_order": 40,
+  "module": "M9 · Process và đo thời gian (Ex5)",
+  "title": "N08 · Ex5 tự làm",
+  "subtitle": "Nâng cao · M9 · 45 phút · Cửa tự kiểm tra Ex5 · process",
+  "estimated_minutes": 45,
+  "xp_reward": 40,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N08 · Ex5 tự làm",
+    "subtitle": "Nâng cao · M9 · 45 phút · Cửa tự kiểm tra Ex5 · process",
+    "source": {
+      "kind": "pe-v3",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N08",
+      "parser": "pe-v3/build",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M9",
+          "BÀI TẬP NÂNG CAO",
+          "N08"
+        ],
+        "title": "Ex5 tự làm",
+        "goal": "Tự giải Ex5 và đo đúng vòng đời công việc.",
+        "task": "Viết benchmark(m, n): đo trước khi fork, dừng đo sau khi chờ đủ.",
+        "predict": "Dừng đo trước waitpid thì đang đo phần nào?",
+        "code": "class C(BaseC):\n    def benchmark(self, m, n):\n        pass",
+        "tests": [
+          "m = 1, n = 1 → trả float sau khi xong",
+          "m = 2, n = 3 → đo cả thời gian chờ"
+        ],
+        "reflect": "Vì sao kết thúc phép đo sau wait_for_children?"
+      },
+      "context": {
+        "title": "Tự giải Ex5 và đo thời gian đúng vòng đời công việc.",
+        "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.",
+        "example": "benchmark(2, 3) trả số giây sau khi hai child (mỗi child ba thread) đã xong.",
+        "prereq": "N07",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py",
+          "thread_language.py",
+          "process_tools.py"
+        ]
+      },
+      "predict": {
+        "question": "Nếu lấy thời gian kết thúc TRƯỚC waitpid, bạn đang đo phần nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Chỉ thời gian tạo child — chưa tính lúc child làm việc",
+            "detail": "Phải chờ đủ mới biết công việc đã xong.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Toàn bộ công việc",
+            "detail": "Child có thể còn đang chạy.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không đo gì",
+            "detail": "Vẫn đo, nhưng sai đoạn.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Bốn cái bẫy của Ex5",
+        "body": "Đo bắt đầu sau khi đã fork; dừng đo trước khi chờ đủ; quên validation (True, 1.5, \"2\" lọt qua); để child lỗi thoát mã 0. Cũng đừng kỳ vọng m/n lớn hơn thì nhanh hơn — print chỉ mô phỏng compile."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Validation m, n trước khi tạo process; parent vẫn đơn luồng khi fork."
+        },
+        {
+          "n": 2,
+          "body": "Giữ luồng N07: child gọi parallel_compile rồi thoát; parent lưu PID và chờ đủ, kể cả khi một child thất bại."
+        },
+        {
+          "n": 3,
+          "body": "Đo time.time() trước vòng tạo và sau khi chờ đủ. Số giây phụ thuộc máy — không chấm một con số cố định, không bắt nhiều worker phải nhanh hơn."
+        },
+        {
+          "n": 4,
+          "body": "Trong trình duyệt, mỗi lần fork/chờ cộng thêm thời gian ẢO để bộ chấm biết bạn đo bao trùm cả vòng đời child."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "benchmark(True, 3) theo hợp đồng v3?",
+          "options": [
+            {
+              "text": "ValueError trước khi fork",
+              "detail": "bool không phải int hợp lệ ở bài này.",
+              "correct": true
+            },
+            {
+              "text": "Chạy với m = 1",
+              "detail": "Không chấp nhận bool.",
+              "correct": false
+            },
+            {
+              "text": "Trả 0.0",
+              "detail": "Phải báo lỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "bool không phải int hợp lệ ở bài này."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao đặt phép đo kết thúc sau wait_for_children?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Chỉ khi chờ đủ mới biết mọi child (và thread của chúng) đã hoàn tất. Dừng đo trước đó là bỏ mất thời gian chạy còn lại của child. Bắt đầu đo trước vòng fork để tính cả chi phí tạo process."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm dùng m, n mới, child chậm, một child lỗi và fork lỗi giữa chừng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "start = time.time() → fork m child."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Mỗi child: n thread, join, _exit."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Parent wait đủ → elapsed = time.time() - start → return float."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Trả về gì khi một child lỗi?",
+        "options": [
+          "raise RuntimeError sau khi chờ đủ",
+          "Số giây như thường",
+          "None"
+        ],
+        "correct": "raise RuntimeError sau khi chờ đủ"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.\n\nThực hành: Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ.",
+        "io": [
+          {
+            "label": "m = 1, n = 1",
+            "value": "Trả float sau khi công việc xong"
+          },
+          {
+            "label": "m = 2, n = 3",
+            "value": "Hai child, mỗi child ba worker; đo bao gồm thời gian chờ"
+          }
+        ]
+      },
+      "starterCode": "import os\nimport sys\nimport time\nfrom thread_language import C as BaseC\nfrom process_tools import wait_for_children\n\n\nclass C(BaseC):\n    def benchmark(self, m, n):\n        pass\n",
+      "solutionCode": "import os\nimport sys\nimport time\nfrom thread_language import C as BaseC\nfrom process_tools import wait_for_children\n\n\nclass C(BaseC):\n    def benchmark(self, m, n):\n        if type(m) is not int or m <= 0:\n            raise ValueError(\"m must be a positive integer\")\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        sys.stdout.flush()\n        start = time.time()\n        pids = []\n        try:\n            for index in range(m):\n                pid = os.fork()\n                if pid == 0:\n                    try:\n                        self.parallel_compile(n)\n                    except Exception:\n                        os._exit(1)\n                    os._exit(0)\n                pids.append(pid)\n        except OSError:\n            wait_for_children(pids)\n            raise\n\n        if not wait_for_children(pids):\n            raise RuntimeError(\"child failed\")\n\n        elapsed = time.time() - start\n        return elapsed\n\n\nif __name__ == \"__main__\":\n    obj = C(\"C\", 1972, [\"procedural\"], \"C17\")\n    elapsed = obj.benchmark(2, 3)\n    print(elapsed)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Kiểm m, n bằng type(...) is int và > 0.\n2. start = time.time(); vòng fork như N07 (self.parallel_compile(n) trong child).\n3. wait_for_children(pids) → lỗi thì RuntimeError; elapsed = time.time() - start; return elapsed."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "        start = time.time()\n        ...\n        if not wait_for_children(pids):\n            raise RuntimeError(\"child failed\")\n        return time.time() - start"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Trả float",
+          "call": "type(_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, 3)').value).__name__",
+          "expect": "'float'"
+        },
+        {
+          "name": "Đo bao trùm từ trước fork tới sau khi chờ đủ",
+          "call": "_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, 3)').measured_lifecycle",
+          "expect": "True"
+        },
+        {
+          "name": "m = 2, n = 3: hai child × ba thread",
+          "call": "[c.thread_count for c in _studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, 3)').children]",
+          "expect": "[3, 3]"
+        },
+        {
+          "name": "m = 1, n = 1",
+          "call": "(lambda r: (len(r.children), r.reaped_all))(_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(1, 1)'))",
+          "expect": "(1, True)"
+        },
+        {
+          "name": "Parent đơn luồng khi fork",
+          "call": "_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, 3)').threads_before_fork",
+          "expect": "0"
+        },
+        {
+          "name": "m/n sai → ValueError, chưa fork",
+          "call": "[(_studio.run(entry=e).error, len(_studio.run(entry=e).children)) for e in ['C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(0, 3)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(-1, 3)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(True, 3)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(1.5, 3)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(\"2\", 3)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, 0)', 'C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(2, False)']]",
+          "expect": "[('ValueError', 0), ('ValueError', 0), ('ValueError', 0), ('ValueError', 0), ('ValueError', 0), ('ValueError', 0), ('ValueError', 0)]"
+        },
+        {
+          "name": "Child lỗi → chờ đủ rồi RuntimeError",
+          "call": "(lambda r: (r.error, r.reaped_all))(_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(3, 1)', child_exit={1: 1}))",
+          "expect": "('RuntimeError', True)"
+        },
+        {
+          "name": "Fork lỗi giữa chừng → OSError, không bỏ sót child",
+          "call": "(lambda r: (r.error, r.unreaped))(_studio.run(entry='C(\"C\", 1972, [\"procedural\"], \"C17\").benchmark(3, 1)', fail_fork_at=1))",
+          "expect": "('OSError', [])"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        },
+        {
+          "name": "thread_language.py",
+          "content": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        threads = []\n        for index in range(n):\n            worker = threading.Thread(target=self._compile_worker, args=(n,))\n            threads.append(worker)\n\n        for worker in threads:\n            worker.start()\n\n        for worker in threads:\n            worker.join()\n",
+          "kind": "module"
+        },
+        {
+          "name": "process_tools.py",
+          "content": "import os\n\n\ndef wait_for_children(pids):\n    success = True\n    for pid in pids:\n        try:\n            waited_pid, status = os.waitpid(pid, 0)\n        except OSError:\n            success = False\n        else:\n            if not os.WIFEXITED(status):\n                success = False\n            elif os.WEXITSTATUS(status) != 0:\n                success = False\n    return success\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "benchmark(self, m, n)",
+          "does": "Đo từ trước khi tạo child đến sau khi mọi child kết thúc.",
+          "takes": "self; m, n: int dương, không phải bool",
+          "gives": "float số giây; đầu vào sai → ValueError; child lỗi → RuntimeError; fork lỗi → raise lại OSError",
+          "effect": "Tạo m child, mỗi child n thread; thu hồi mọi child; dùng time.time.",
+          "call": "obj.benchmark(2, 3) → số giây thực đo, không cố định"
+        },
+        {
+          "sig": "parallel_compile(self, n)",
+          "does": "Tạo n thread và chờ tất cả hoàn tất.",
+          "takes": "self; n là int dương, không phải bool",
+          "gives": "None; n sai → ValueError",
+          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
+        },
+        {
+          "sig": "wait_for_children(pids)",
+          "does": "Chờ và thu hồi trạng thái của tất cả child đã lưu (cấp sẵn).",
+          "takes": "pids: list[int] — chỉ PID child của parent",
+          "gives": "bool: True khi mọi child thoát mã 0",
+          "effect": "Gọi waitpid cho từng child; một child lỗi vẫn chờ tiếp các PID còn lại.",
+          "call": "wait_for_children([pid1, pid2]) → True/False"
+        }
+      ],
+      "gate": true,
+      "env": "os.fork chỉ có trên Linux/macOS/WSL — Python trên Windows báo \"module os has no attribute fork\" (lỗi môi trường, không phải sai kiến thức). Studio chạy bản MÔ PHỎNG fork/waitpid trong trình duyệt để chấm cấu trúc parent/child; nghiệm thu thật bằng script Python 3 trên Linux/WSL, parent đơn luồng."
+    }
+  }
+}
