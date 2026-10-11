@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N07",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Ghép process với method thread đã học.",
-        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.",
+        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Kiểm tra đầu vào m, n và khung fork/chờ đã cấp.",
         "example": "m = 2, n = 3 → hai child; mỗi child tạo ba thread, tổng sáu công việc.",
         "prereq": "N06",
         "level": "Nâng cao",
@@ -65,7 +65,7 @@
           {
             "id": "c",
             "title": "Không quan trọng",
-            "detail": "Rất quan trọng trên POSIX.",
+            "detail": "Rất quan trọng trên Linux/macOS.",
             "correct": false
           }
         ]
@@ -122,7 +122,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao sáu dòng in chưa đủ chứng minh có hai process và sáu thread?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Một vòng lặp tuần tự trong một process cũng in được sáu dòng giống hệt. Muốn chứng minh phải kiểm PID của từng child khác parent, mỗi PID có ba worker thread cùng tồn tại, và parent chờ đủ child — số dòng in không đo được điều đó."
       }
     },
@@ -130,7 +130,7 @@
       "task": {
         "title": "Luyện có hỗ trợ",
         "body": "Lắp nhánh child.",
-        "rule": "Thử m = 1, n = 2; fixture ghi PID và thread identity để kiểm thật số worker."
+        "rule": "Thử m = 1, n = 2; bộ chấm ghi PID và mã của từng thread để đếm đúng số worker."
       },
       "trace": {
         "steps": [
@@ -210,7 +210,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.\n\nThực hành: Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).",
+        "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Kiểm tra đầu vào m, n và khung fork/chờ đã cấp.\n\nThực hành: Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).",
         "io": [
           {
             "label": "m = 1, n = 2",
@@ -308,7 +308,7 @@
           "does": "Tạo n thread và chờ tất cả hoàn tất.",
           "takes": "self; n là int dương, không phải bool",
           "gives": "None; n sai → ValueError",
-          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
           "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
         },
         {

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B05",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao không đặt hai print ở ngoài if/else?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Lệnh ở ngoài nhánh thì luôn chạy, nên cả PALINDROME lẫn NOT PALINDROME đều được in — không còn lựa chọn theo result. Đặt mỗi print trong đúng nhánh thì mỗi lần chạy chỉ in một dòng phù hợp với result."
       }
     },

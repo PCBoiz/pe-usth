@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B12",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -24,7 +24,7 @@
           "B12"
         ],
         "title": "Đọc từng dòng",
-        "goal": "Chỉ bỏ CR/LF cuối dòng, giữ khoảng trắng.",
+        "goal": "Chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng, giữ khoảng trắng.",
         "task": "Duyệt file, dùng rstrip(\"\\r\\n\") và thêm từng dòng vào list.",
         "predict": "strip() có giữ dấu cách quanh \" level \" không?",
         "code": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        pass",
@@ -35,7 +35,7 @@
         "reflect": "Vì sao dùng rstrip(\"\\r\\n\") thay strip()?"
       },
       "context": {
-        "title": "Đọc từng dòng và chỉ bỏ ký tự CR/LF ở cuối dòng.",
+        "title": "Đọc từng dòng và chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng.",
         "body": "Duyệt data.txt từng dòng; dùng line.rstrip(\"\\r\\n\") để bỏ ký tự xuống dòng ở cuối rồi append vào lines. Phần mở file đã cấp.",
         "example": "File \" level \\n\\nradar\" → [\" level \", \"\", \"radar\"].",
         "prereq": "B11",
@@ -78,7 +78,7 @@
         },
         {
           "n": 2,
-          "body": "rstrip(\"\\r\\n\") chỉ bỏ ký tự CR/LF ở CUỐI — dấu cách vẫn giữ nguyên."
+          "body": "rstrip(\"\\r\\n\") chỉ bỏ ký tự xuống dòng (\\r, \\n) ở CUỐI — dấu cách vẫn giữ nguyên."
         },
         {
           "n": 3,
@@ -99,7 +99,7 @@
           "options": [
             {
               "text": "[\"a\", \"b\"]",
-              "detail": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối.",
+              "detail": "rstrip(\"\\r\\n\") bỏ cả \\r lẫn \\n ở cuối.",
               "correct": true
             },
             {
@@ -114,7 +114,7 @@
             }
           ],
           "correct": 0,
-          "explanation": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối."
+          "explanation": "rstrip(\"\\r\\n\") bỏ cả \\r lẫn \\n ở cuối."
         },
         {
           "question": "Dòng cuối \"radar\" không có xuống dòng. line[:-1] cho kết quả gì?",
@@ -141,15 +141,15 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao dùng rstrip(\"\\r\\n\") thay vì strip()?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "Bài chỉ bỏ ký tự xuống dòng ở cuối. strip() còn xoá dấu cách đầu/cuối nên \" level \" thành \"level\" — đổi dữ liệu. rstrip(\"\\r\\n\") giữ nguyên khoảng trắng, bỏ cả \\r của file Windows, và dòng cuối không có newline vẫn được giữ nguyên."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Bài chỉ bỏ ký tự xuống dòng ở cuối. strip() còn xoá dấu cách đầu/cuối nên \" level \" thành \"level\" — đổi dữ liệu. rstrip(\"\\r\\n\") giữ nguyên khoảng trắng, bỏ cả \\r của file Windows, và dòng cuối không có ký tự xuống dòng vẫn được giữ nguyên."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
         "body": "Lắp phép bỏ xuống dòng và lệnh thêm vào list.",
-        "rule": "Thử file rỗng, file xuống dòng CRLF và file có dòng cuối không newline."
+        "rule": "Thử file rỗng, file xuống dòng kiểu Windows (\\r\\n) và file có dòng cuối không có ký tự xuống dòng."
       },
       "trace": {
         "steps": [
@@ -163,7 +163,7 @@
           },
           {
             "label": "Bước 3",
-            "text": "\"radar\" (không newline) → giữ \"radar\"."
+            "text": "\"radar\" (không có ký tự xuống dòng) → giữ \"radar\"."
           },
           {
             "label": "Bước 4",
@@ -198,7 +198,7 @@
           {
             "label": "line[:-1]",
             "slot": 1,
-            "trap": "Cắt mất ký tự cuối của dòng không có newline."
+            "trap": "Cắt mất ký tự cuối của dòng không có ký tự xuống dòng."
           },
           {
             "label": "line.strip()",
@@ -264,12 +264,12 @@
           "expect": "[]"
         },
         {
-          "name": "CRLF: \"a\\r\\nb\\r\\n\" → [\"a\", \"b\"]",
+          "name": "Xuống dòng kiểu Windows: \"a\\r\\nb\\r\\n\" → [\"a\", \"b\"]",
           "call": "_studio.run(files={'data.txt': 'a\\r\\nb\\r\\n'}).var('lines')",
           "expect": "['a', 'b']"
         },
         {
-          "name": "Dòng cuối không newline giữ nguyên",
+          "name": "Dòng cuối không có ký tự xuống dòng vẫn giữ nguyên",
           "call": "_studio.run(files={'data.txt': 'radar'}).var('lines')",
           "expect": "['radar']"
         },
@@ -305,7 +305,7 @@
               "right": "\"\""
             },
             {
-              "left": "\"radar\" (không newline)",
+              "left": "\"radar\" (không có ký tự xuống dòng)",
               "right": "giữ \"radar\""
             }
           ],

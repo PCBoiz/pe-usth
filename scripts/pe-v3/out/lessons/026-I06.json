@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -29,8 +29,8 @@
         "predict": "__str__ chỉ print thì str(obj) có hợp lệ không?",
         "code": "    def __str__(self):\n        ...\n        print(description)  # lỗi\n\n# text = str(...) rồi print(...)",
         "tests": [
-          "Object Python → stdout đúng một dòng",
-          "Gọi str riêng → không có output"
+          "Object Python → in đúng một dòng",
+          "Gọi str riêng → không in gì"
         ],
         "reflect": "Giá trị trả về khác dòng được in thế nào?"
       },
@@ -117,7 +117,7 @@
       ],
       "selfExplain": {
         "prompt": "Sự khác nhau giữa giá trị trả về và dòng được in là gì?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Giá trị trả về đi vào biến (text = str(language)) để dùng tiếp; dòng được in chỉ là tác dụng phụ trên màn hình. __str__ phải trả chuỗi; print(language) mới là nơi hiển thị, và str(language) gọi riêng không in gì."
       }
     },
@@ -131,7 +131,7 @@
         "steps": [
           {
             "label": "Bước 1",
-            "text": "str(language) → __str__ → text (không có output)."
+            "text": "str(language) → __str__ → text (không in gì)."
           },
           {
             "label": "Bước 2",
@@ -205,11 +205,11 @@
         "io": [
           {
             "label": "Object Python",
-            "value": "text đúng str; stdout một dòng từ print"
+            "value": "text đúng str; in một dòng từ print"
           },
           {
             "label": "Gọi str riêng",
-            "value": "Không có output"
+            "value": "Không in gì"
           }
         ]
       },
@@ -231,12 +231,12 @@
       ],
       "tests": [
         {
-          "name": "stdout đúng một dòng",
+          "name": "in đúng một dòng",
           "call": "_studio.run().stdout",
           "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\\n\""
         },
         {
-          "name": "text là chuỗi đúng format",
+          "name": "text là chuỗi đúng định dạng",
           "call": "_studio.run().var('text')",
           "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\""
         },
@@ -269,7 +269,7 @@
           "sig": "ProgrammingLanguage.__str__(self)",
           "does": "Biểu diễn object bằng chuỗi.",
           "takes": "self",
-          "gives": "str đúng format v3",
+          "gives": "str đúng định dạng của đề",
           "effect": "Không print, không đổi object.",
           "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
         }

@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N05",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Hiểu hai nhánh sau fork và chờ một child.",
-        "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".",
+        "body": "Trong khung script Linux/macOS, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".",
         "example": "Child in Child work; parent chỉ in Parent finished sau khi child đã kết thúc.",
         "prereq": "N04",
         "level": "Nâng cao"
@@ -66,7 +66,7 @@
       },
       "misconception": {
         "title": "\"Thay fork bằng thread cho chạy được trên Windows\"",
-        "body": "Thread và process là hai cơ chế khác nhau — bài này học process. Lỗi \"os has no attribute fork\" trên Windows là lỗi môi trường: chạy trên WSL/Linux. Lưu ý thêm: _exit không tự flush output — child in bằng flush=True, parent gọi sys.stdout.flush() trước khi fork để output đệm không bị nhân đôi."
+        "body": "Thread và process là hai cơ chế khác nhau — bài này học process. Lỗi \"os has no attribute fork\" trên Windows là lỗi môi trường: chạy trên WSL/Linux. Lưu ý thêm: _exit không tự đẩy các dòng in còn đệm ra màn hình — child in bằng flush=True, parent gọi sys.stdout.flush() trước khi fork để phần in ra đệm không bị nhân đôi."
       },
       "explain": [
         {
@@ -99,8 +99,8 @@
           "question": "Child quên os._exit(0) thì…",
           "options": [
             {
-              "text": "Child chạy tiếp code của parent: tự waitpid (lỗi), in cả \"Parent finished\"",
-              "detail": "Child là bản sao của parent.",
+              "text": "Child chạy tiếp xuống code của parent: gọi waitpid khi không có process con nên báo lỗi và thoát mã khác 0; parent thấy vậy và raise RuntimeError — không in \"Parent finished\"",
+              "detail": "Child là bản sao của parent: thiếu _exit thì nó chạy luôn phần code dành cho parent.",
               "correct": true
             },
             {
@@ -115,7 +115,7 @@
             }
           ],
           "correct": 0,
-          "explanation": "Child là bản sao của parent."
+          "explanation": "Child là bản sao của parent: thiếu _exit thì nó chạy luôn phần code dành cho parent."
         },
         {
           "question": "status trả về từ os.waitpid là gì?",
@@ -142,7 +142,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao child phải _exit và parent phải waitpid?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Child là bản sao của parent: nếu không os._exit sau khi làm việc, nó chạy tiếp phần code của parent. waitpid giúp parent chờ child kết thúc và thu hồi trạng thái (không để lại zombie), nhờ đó parent chỉ in Parent finished sau khi child xong và biết child thoát thành công hay lỗi."
       }
     },
@@ -150,7 +150,7 @@
       "task": {
         "title": "Luyện có hỗ trợ",
         "body": "Lắp điều kiện nhánh child, lệnh thoát và lệnh chờ.",
-        "rule": "Đội dev thêm fixture child chậm hoặc exit code 1; kiểm parent vẫn chờ và nhận đúng trạng thái."
+        "rule": "Thử thêm: child chạy chậm, hoặc child thoát với mã 1 — parent vẫn phải chờ child rồi mới báo kết quả."
       },
       "trace": {
         "steps": [
@@ -230,15 +230,15 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".\n\nThực hành: Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc.",
+        "body": "Trong khung script Linux/macOS, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".\n\nThực hành: Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc.",
         "io": [
           {
             "label": "Chạy script mẫu",
             "value": "Child work trước Parent finished; parent thoát mã 0"
           },
           {
-            "label": "Child chậm (fixture)",
-            "value": "Parent vẫn chờ child trước thông báo cuối"
+            "label": "Child thoát mã 1",
+            "value": "Parent chờ xong rồi raise RuntimeError"
           }
         ]
       },
@@ -251,7 +251,7 @@
         },
         {
           "title": "Cấu trúc",
-          "body": "1. fork tạo process con; trả 0 trong child, PID child trong parent.\n2. Child làm việc rồi _exit(0); flush=True đẩy output trước _exit.\n3. Parent waitpid(pid, 0); dùng WIFEXITED/WEXITSTATUS đọc trạng thái."
+          "body": "1. fork tạo process con; trả 0 trong child, PID child trong parent.\n2. Child làm việc rồi _exit(0); flush=True đẩy dòng in ra màn hình trước _exit.\n3. Parent waitpid(pid, 0); dùng WIFEXITED/WEXITSTATUS đọc trạng thái."
         },
         {
           "title": "Lời giải từng phần",

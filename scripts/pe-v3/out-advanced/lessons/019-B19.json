@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B19",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -25,8 +25,8 @@
         ],
         "title": "Ex1 có hỗ trợ",
         "goal": "Ghép đọc, kiểm tra và ghi thành chương trình Ex1.",
-        "task": "Hoàn thành 3 hàm và vòng lặp điều phối theo từng checkpoint.",
-        "predict": "Bước nào bỏ newline? Bước nào bỏ chuỗi rỗng?",
+        "task": "Hoàn thành 3 hàm và vòng lặp chính theo từng mốc.",
+        "predict": "Bước nào bỏ ký tự xuống dòng? Bước nào bỏ chuỗi rỗng?",
         "code": "def read_lines(path): pass\ndef is_palindrome(text): pass\ndef write_lines(path, lines): pass\n# Điều phối: đọc → lọc → ghi",
         "tests": [
           "level / python / độđ / radar → 3 dòng đúng",
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Ghép ba hàm đã học thành chương trình Ex1 có hỗ trợ.",
-        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.",
+        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần chương trình chính: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba mốc; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.",
         "example": "File \"level\\npython\\n\\nđộđ\\nradar\" → palindromes.txt \"level\\nđộđ\\nradar\\n\".",
         "prereq": "B18",
         "level": "Cơ bản",
@@ -74,15 +74,15 @@
       "explain": [
         {
           "n": 1,
-          "body": "Checkpoint 1 — read_lines: file → list dòng, chỉ bỏ CR/LF cuối dòng. Kiểm list trước khi lọc."
+          "body": "Mốc 1 — read_lines: file → list dòng, chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng. Kiểm list trước khi lọc."
         },
         {
           "n": 2,
-          "body": "Checkpoint 2 — is_palindrome + vòng lặp: giữ chuỗi không rỗng, đối xứng, đúng thứ tự và cả phần tử trùng."
+          "body": "Mốc 2 — is_palindrome + vòng lặp: giữ chuỗi không rỗng, đối xứng, đúng thứ tự và cả phần tử trùng."
         },
         {
           "n": 3,
-          "body": "Checkpoint 3 — write_lines: ghi đè file kết quả, mỗi chuỗi một dòng; file nguồn không đổi."
+          "body": "Mốc 3 — write_lines: ghi đè file kết quả, mỗi chuỗi một dòng; file nguồn không đổi."
         }
       ],
       "code": {
@@ -119,15 +119,15 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao read_lines không tự lọc, và write_lines không tự kiểm palindrome?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "Mỗi hàm giữ một nhiệm vụ: read_lines chỉ đọc, is_palindrome chỉ kiểm, write_lines chỉ ghi. Vòng lặp điều phối nối các bước nên dễ kiểm từng checkpoint, dễ sửa riêng và dùng lại hàm cho dữ liệu khác."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi hàm giữ một nhiệm vụ: read_lines chỉ đọc, is_palindrome chỉ kiểm, write_lines chỉ ghi. Vòng lặp chính nối các bước nên dễ kiểm từng mốc, dễ sửa riêng và dùng lại hàm cho dữ liệu khác."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Ba checkpoint: lắp dòng cốt lõi của mỗi hàm.",
-        "rule": "Đổi fixture thành \"Level\\n a \\nradar\\nradar\"; dự đoán file kết quả trước khi chạy."
+        "body": "Ba mốc: lắp dòng cốt lõi của mỗi hàm.",
+        "rule": "Đổi dữ liệu thử thành \"Level\\n a \\nradar\\nradar\"; dự đoán file kết quả trước khi chạy."
       },
       "trace": {
         "steps": [
@@ -146,7 +146,7 @@
         ]
       },
       "counter": {
-        "question": "data.txt chỉ có \"radar\" (không newline) → palindromes.txt?",
+        "question": "data.txt chỉ có \"radar\" (không có ký tự xuống dòng) → palindromes.txt?",
         "options": [
           "\"radar\\n\"",
           "\"radar\"",
@@ -207,10 +207,10 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.\n\nThực hành: Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử.",
+        "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần chương trình chính: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba mốc; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.\n\nThực hành: Làm theo ba mốc: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử.",
         "io": [
           {
-            "label": "Fixture mẫu",
+            "label": "Dữ liệu mẫu",
             "value": "File: \"level\\nđộđ\\nradar\\n\""
           },
           {
@@ -224,7 +224,7 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử."
+          "body": "Làm theo ba mốc: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử."
         },
         {
           "title": "Cấu trúc",
@@ -237,22 +237,22 @@
       ],
       "tests": [
         {
-          "name": "Checkpoint 1: read_lines",
+          "name": "Mốc 1: read_lines",
           "call": "read_lines(_studio.write('c1.txt', ' a \\n\\nradar'))",
           "expect": "[' a ', '', 'radar']"
         },
         {
-          "name": "Checkpoint 2: is_palindrome",
+          "name": "Mốc 2: is_palindrome",
           "call": "[is_palindrome(x) for x in [\"level\", \"\", \"Level\", \" a \", \"độđ\"]]",
           "expect": "[True, False, False, True, True]"
         },
         {
-          "name": "Checkpoint 3: write_lines",
+          "name": "Mốc 3: write_lines",
           "call": "(write_lines('c3.txt', ['a', 'b']), _studio.read('c3.txt'))",
           "expect": "(None, 'a\\nb\\n')"
         },
         {
-          "name": "Cả chương trình: Fixture công khai",
+          "name": "Cả chương trình: Dữ liệu mẫu của đề",
           "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
           "expect": "'a\\nradar\\n'"
         },
@@ -272,12 +272,12 @@
           "expect": "' a \\nradar\\nradar\\n'"
         },
         {
-          "name": "Cả chương trình: File xuống dòng CRLF",
+          "name": "Cả chương trình: File xuống dòng kiểu Windows (\\r\\n)",
           "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
           "expect": "'radar\\nx\\n'"
         },
         {
-          "name": "Cả chương trình: Dòng cuối không có newline",
+          "name": "Cả chương trình: Dòng cuối không có ký tự xuống dòng",
           "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
           "expect": "'radar\\n'"
         },
@@ -292,7 +292,7 @@
           "expect": "'level\\npython'"
         },
         {
-          "name": "Cả chương trình: Ca riêng: dữ liệu hỗn hợp",
+          "name": "Cả chương trình: Ca ẩn: dữ liệu hỗn hợp",
           "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
           "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
         }
@@ -324,7 +324,7 @@
         {
           "sig": "write_lines(path, lines)",
           "does": "Ghi từng chuỗi trên một dòng.",
-          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
           "gives": "None — không có return mang giá trị",
           "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
           "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"

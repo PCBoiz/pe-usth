@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B20",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Tự giải Ex1 trên dữ liệu mới, không xem lời giải trước.",
-        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.",
+        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.",
         "example": "\"a\\nab\\nradar\" → palindromes.txt \"a\\nradar\\n\".",
         "prereq": "B19",
         "level": "Cơ bản",
@@ -69,7 +69,7 @@
       },
       "misconception": {
         "title": "Năm cái bẫy của Ex1",
-        "body": "strip()/lower() làm đổi dữ liệu; set làm mất thứ tự và phần tử trùng; mode \"a\" cộng dồn kết quả cũ; line[:-1] cắt mất ký tự của dòng cuối không newline; quên loại chuỗi rỗng thì dòng trống lọt vào file."
+        "body": "strip()/lower() làm đổi dữ liệu; set làm mất thứ tự và phần tử trùng; chế độ \"a\" cộng dồn kết quả cũ; line[:-1] cắt mất ký tự của dòng cuối không có ký tự xuống dòng; quên loại chuỗi rỗng thì dòng trống lọt vào file."
       },
       "explain": [
         {
@@ -78,7 +78,7 @@
         },
         {
           "n": 2,
-          "body": "Bộ chấm dùng file mới chưa thấy: có Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng CRLF và dòng cuối không newline."
+          "body": "Bộ chấm dùng file mới chưa thấy: có Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng kiểu Windows (\\r\\n) và dòng cuối không có ký tự xuống dòng."
         },
         {
           "n": 3,
@@ -113,21 +113,21 @@
       ],
       "selfExplain": {
         "prompt": "Giải thích đầu vào/đầu ra của từng hàm bạn viết và vì sao mọi dòng đều được xét.",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "read_lines nhận path, trả list dòng đã bỏ CR/LF cuối. is_palindrome nhận một chuỗi, trả bool (rỗng là False, phân biệt hoa/thường). write_lines nhận path và list, ghi đè file và trả None. Vòng lặp duyệt đủ list từ read_lines nên mọi dòng đều được kiểm trước khi ghi."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "read_lines nhận path, trả list dòng đã bỏ ký tự xuống dòng (\\r, \\n) cuối. is_palindrome nhận một chuỗi, trả bool (rỗng là False, phân biệt hoa/thường). write_lines nhận path và list, ghi đè file và trả None. Vòng lặp duyệt đủ list từ read_lines nên mọi dòng đều được kiểm trước khi ghi."
       }
     },
     "step_3": {
       "task": {
         "title": "Lập kế hoạch trước khi tự viết",
         "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
-        "rule": "Bộ chấm dùng fixture mới: Unicode, dòng rỗng, khoảng trắng, từ trùng, CRLF và dòng cuối không newline."
+        "rule": "Bộ chấm dùng dữ liệu thử mới: Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng kiểu Windows (\\r\\n) và dòng cuối không có ký tự xuống dòng."
       },
       "trace": {
         "steps": [
           {
             "label": "Bước 1",
-            "text": "Đọc: data.txt → list dòng (chỉ bỏ CR/LF cuối)."
+            "text": "Đọc: data.txt → list dòng (chỉ bỏ \\r, \\n ở cuối dòng)."
           },
           {
             "label": "Bước 2",
@@ -140,7 +140,7 @@
         ]
       },
       "counter": {
-        "question": "data.txt \"ab\\r\\nx\\r\\n\" (CRLF) → palindromes.txt?",
+        "question": "data.txt \"ab\\r\\nx\\r\\n\" (xuống dòng kiểu Windows) → palindromes.txt?",
         "options": [
           "\"x\\n\"",
           "\"x\\r\\n\"",
@@ -152,7 +152,7 @@
     "step_4": {
       "task": {
         "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.\n\nThực hành: Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi.",
+        "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.\n\nThực hành: Nộp bài lần đầu trước khi xem đáp án; chạy ví dụ trong đề để phát hiện lỗi.",
         "io": [
           {
             "label": "\"a\\nab\\nradar\"",
@@ -169,11 +169,11 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi."
+          "body": "Nộp bài lần đầu trước khi xem đáp án; chạy ví dụ trong đề để phát hiện lỗi."
         },
         {
           "title": "Cấu trúc",
-          "body": "1. Đọc file thành list, chỉ bỏ CR/LF cuối dòng.\n2. Kiểm từng chuỗi: bỏ rỗng, giữ hoa/thường, khoảng trắng, thứ tự và trùng.\n3. Ghi đè file kết quả, mỗi chuỗi một dòng; giữ file nguồn nguyên vẹn."
+          "body": "1. Đọc file thành list, chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng.\n2. Kiểm từng chuỗi: bỏ rỗng, giữ hoa/thường, khoảng trắng, thứ tự và trùng.\n3. Ghi đè file kết quả, mỗi chuỗi một dòng; giữ file nguồn nguyên vẹn."
         },
         {
           "title": "Lời giải từng phần",
@@ -182,7 +182,7 @@
       ],
       "tests": [
         {
-          "name": "Fixture công khai",
+          "name": "Dữ liệu mẫu của đề",
           "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
           "expect": "'a\\nradar\\n'"
         },
@@ -202,12 +202,12 @@
           "expect": "' a \\nradar\\nradar\\n'"
         },
         {
-          "name": "File xuống dòng CRLF",
+          "name": "File xuống dòng kiểu Windows (\\r\\n)",
           "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
           "expect": "'radar\\nx\\n'"
         },
         {
-          "name": "Dòng cuối không có newline",
+          "name": "Dòng cuối không có ký tự xuống dòng",
           "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
           "expect": "'radar\\n'"
         },
@@ -222,7 +222,7 @@
           "expect": "'level\\npython'"
         },
         {
-          "name": "Ca riêng: dữ liệu hỗn hợp",
+          "name": "Ca ẩn: dữ liệu hỗn hợp",
           "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
           "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
         }

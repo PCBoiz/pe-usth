@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I11",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Viết method compile dùng trạng thái hiện tại của object.",
-        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.",
+        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không viết cứng C17. Constructor và __str__ đã cấp.",
         "example": "C17 → Compiling C code using standard version C17",
         "prereq": "I10",
         "level": "Trung cấp",
@@ -69,7 +69,7 @@
       },
       "misconception": {
         "title": "\"return message thay cho print\"",
-        "body": "Hợp đồng của compile là IN một dòng; return message thì không có output — sai đề. Ngược lại, __str__ thì phải return, không print."
+        "body": "Yêu cầu của compile là IN một dòng; return message thì không in gì — sai đề. Ngược lại, __str__ thì phải return, không print."
       },
       "explain": [
         {
@@ -109,7 +109,7 @@
             },
             {
               "text": "compile trả chuỗi",
-              "detail": "Theo hợp đồng v3, compile in.",
+              "detail": "Theo yêu cầu của đề, compile in.",
               "correct": false
             }
           ],
@@ -119,7 +119,7 @@
       ],
       "selfExplain": {
         "prompt": "compile khác __str__ ở kết quả và tác dụng phụ thế nào?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "__str__ trả chuỗi và không in, nên str(obj) dùng được để lưu hay nối tiếp. compile in thông báo (tác dụng phụ) và trả None. Cả hai đọc trạng thái hiện tại: đổi std_version thì lần gọi sau phản ánh giá trị mới."
       }
     },
@@ -184,7 +184,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.\n\nThực hành: In thông báo có self.std_version; không hard-code C17.",
+        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không viết cứng C17. Constructor và __str__ đã cấp.\n\nThực hành: In thông báo có self.std_version; không viết cứng C17.",
         "io": [
           {
             "label": "C17",
@@ -201,7 +201,7 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "In thông báo có self.std_version; không hard-code C17."
+          "body": "In thông báo có self.std_version; không viết cứng C17."
         },
         {
           "title": "Cấu trúc",

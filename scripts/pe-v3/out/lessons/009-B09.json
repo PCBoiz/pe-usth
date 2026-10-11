@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B09",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -66,7 +66,7 @@
       },
       "misconception": {
         "title": "\"Thêm strip() và lower() cho chắc\"",
-        "body": "Làm vậy là đổi hợp đồng của bài: \" a \" phải được xét nguyên (đảo vẫn là \" a \" → True), còn \"Level\" phải là False. Hàm kiểm tra không in, không ghi file, không sửa dữ liệu đầu vào."
+        "body": "Làm vậy là đổi yêu cầu của bài: \" a \" phải được xét nguyên (đảo vẫn là \" a \" → True), còn \"Level\" phải là False. Hàm kiểm tra không in, không ghi file, không sửa dữ liệu đầu vào."
       },
       "explain": [
         {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao chuỗi rỗng trả False dù nó bằng chuỗi đảo của chính nó?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Quy tắc của khoá định nghĩa palindrome phải KHÔNG rỗng. Nhánh if text == \"\" chạy trước phép so sánh và return False ngay. Nếu bỏ nhánh này thì \"\" == \"\" là True — sai quy tắc."
       }
     },

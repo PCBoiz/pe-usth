@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -24,7 +24,7 @@
           "N03"
         ],
         "title": "Ex4 có hỗ trợ",
-        "goal": "Ghép helper và parallel_compile theo ba checkpoint.",
+        "goal": "Ghép hàm phụ và parallel_compile theo ba mốc.",
         "task": "Viết _compile_worker và parallel_compile với args=(n,).",
         "predict": "args=(n,) để làm gì? Vì sao có dấu phẩy?",
         "code": "class C(BaseC):\n    def _compile_worker(self, n): ...\n    def parallel_compile(self, n):\n        # tạo list → start hết → join hết",
@@ -35,8 +35,8 @@
         "reflect": "Thread đã tạo khác công việc đã chạy thế nào?"
       },
       "context": {
-        "title": "Ghép helper và parallel_compile theo ba checkpoint.",
-        "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.",
+        "title": "Ghép hàm phụ và parallel_compile theo ba mốc.",
+        "body": "Trong class C(BaseC), viết hàm phụ _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Kiểm tra đầu vào n đã cấp.",
         "example": "n = 3, C17 → ba dòng \"Compiling C code using 3 threads with standard version C17\".",
         "prereq": "N02",
         "level": "Nâng cao",
@@ -50,7 +50,7 @@
         "options": [
           {
             "id": "a",
-            "title": "Truyền n vào helper; dấu phẩy để (n,) là tuple một phần tử",
+            "title": "Truyền n vào hàm phụ; dấu phẩy để (n,) là tuple một phần tử",
             "detail": "Thread gọi target(*args).",
             "correct": true
           },
@@ -70,7 +70,7 @@
       },
       "misconception": {
         "title": "\"target=self._compile_worker(n) cho gọn\"",
-        "body": "Có ngoặc là gọi helper NGAY trong thread hiện tại; Thread nhận None. Đưa tên method vào target, đối số vào args=(n,). Đừng hiển thị cả mẫu một lúc — làm lần lượt ba checkpoint: tạo list, start hết, join hết."
+        "body": "Có ngoặc là gọi hàm phụ NGAY trong thread hiện tại; Thread nhận None. Đưa tên method vào target, đối số vào args=(n,). Đừng hiển thị cả mẫu một lúc — làm lần lượt ba mốc: tạo list, start hết, join hết."
       },
       "explain": [
         {
@@ -83,7 +83,7 @@
         },
         {
           "n": 3,
-          "body": "flush=True đẩy output ra ngay; cần khi dùng lại trong process ở N07–N08."
+          "body": "flush=True đẩy dòng in ra màn hình ngay; cần khi dùng lại trong process ở N07–N08."
         }
       ],
       "code": {
@@ -120,21 +120,21 @@
       ],
       "selfExplain": {
         "prompt": "Phân biệt đối tượng Thread đã tạo với công việc đã chạy.",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Tạo Thread chỉ mô tả target và args, chưa chạy gì. start() mới cho công việc chạy trong thread con, join() chờ nó kết thúc. Vì vậy parallel_compile tạo list n Thread, start hết rồi join hết mới trả về."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Ba checkpoint của parallel_compile.",
+        "body": "Ba mốc của parallel_compile.",
         "rule": "Đổi n = 1 sang n = 3; thử bản start/join trong cùng một vòng rồi sửa lại."
       },
       "trace": {
         "steps": [
           {
             "label": "Bước 1",
-            "text": "parallel_compile(3) → ba Thread target = helper, args = (3,)."
+            "text": "parallel_compile(3) → ba Thread target = hàm phụ, args = (3,)."
           },
           {
             "label": "Bước 2",
@@ -187,7 +187,7 @@
           {
             "label": "threading.Thread(target=self._compile_worker(n))",
             "slot": 1,
-            "trap": "Gọi helper ngay ở thread hiện tại."
+            "trap": "Gọi hàm phụ ngay ở thread hiện tại."
           },
           {
             "label": "worker.join()",
@@ -208,7 +208,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.\n\nThực hành: Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước.",
+        "body": "Trong class C(BaseC), viết hàm phụ _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Kiểm tra đầu vào n đã cấp.\n\nThực hành: Mốc 1 tạo list; mốc 2 start hết; mốc 3 join hết. Kiểm từng bước.",
         "io": [
           {
             "label": "n = 1 / C17",
@@ -225,11 +225,11 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước."
+          "body": "Mốc 1 tạo list; mốc 2 start hết; mốc 3 join hết. Kiểm từng bước."
         },
         {
           "title": "Cấu trúc",
-          "body": "1. Helper chỉ in thông báo chứa n và phiên bản, flush=True.\n2. target giữ callable; args=(n,) là tuple một phần tử truyền n vào helper.\n3. parallel_compile tạo list, start toàn bộ rồi join toàn bộ; không yêu cầu output theo thứ tự."
+          "body": "1. Hàm phụ chỉ in thông báo chứa n và phiên bản, flush=True.\n2. target giữ callable; args=(n,) là tuple một phần tử truyền n vào hàm phụ.\n3. parallel_compile tạo list, start toàn bộ rồi join toàn bộ; không yêu cầu phần in ra theo thứ tự."
         },
         {
           "title": "Lời giải từng phần",
@@ -238,7 +238,7 @@
       ],
       "tests": [
         {
-          "name": "Helper in đúng một dòng",
+          "name": "Hàm phụ in đúng một dòng",
           "call": "_studio.stdout(C(\"C\", 1972, [], \"C17\")._compile_worker, 3)",
           "expect": "'Compiling C code using 3 threads with standard version C17\\n'"
         },
@@ -296,7 +296,7 @@
           "does": "Thực hiện một công việc mô phỏng.",
           "takes": "self; n: int — đọc self.std_version",
           "gives": "None",
-          "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+          "effect": "In một dòng có n và phiên bản; flush=True đẩy dòng in ra màn hình ngay.",
           "call": "obj._compile_worker(3) → thông báo cho n = 3"
         },
         {
@@ -304,7 +304,7 @@
           "does": "Tạo n thread và chờ tất cả hoàn tất.",
           "takes": "self; n là int dương, không phải bool",
           "gives": "None; n sai → ValueError",
-          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
           "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
         }
       ],

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B18",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Nối kết quả lọc list với hàm ghi file.",
-        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.",
+        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh chính: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.",
         "example": "words = [\"level\", \"python\", \"radar\", \"\"] → file \"level\\nradar\\n\".",
         "prereq": "B17",
         "level": "Cơ bản"
@@ -116,14 +116,14 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao ghi words thay vì palindromes là sai?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "words còn chứa từ không đối xứng và chuỗi rỗng; palindromes mới là kết quả lọc cần xuất. Lưu kết quả lọc vào palindromes rồi đưa đúng list đó cho write_lines thì file chỉ có chuỗi đối xứng, giữ thứ tự và trùng."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Dữ liệu mới: [\"radar\", \"ab\", \"radar\"]. Lắp hai lệnh điều phối.",
+        "body": "Dữ liệu mới: [\"radar\", \"ab\", \"radar\"]. Lắp hai lệnh chính.",
         "rule": "Thử [\"radar\", \"ab\", \"radar\"] và []; kiểm file bị ghi đè và giữ phần tử trùng."
       },
       "trace": {
@@ -191,7 +191,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.\n\nThực hành: Lưu kết quả lọc vào palindromes, rồi ghi list đó.",
+        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh chính: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.\n\nThực hành: Lưu kết quả lọc vào palindromes, rồi ghi list đó.",
         "io": [
           {
             "label": "List mẫu",
@@ -266,7 +266,7 @@
         {
           "sig": "write_lines(path, lines)",
           "does": "Ghi từng chuỗi trên một dòng.",
-          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
           "gives": "None — không có return mang giá trị",
           "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
           "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"

@@ -18,7 +18,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -40,7 +40,7 @@
      },
      "context": {
       "title": "Gán giá trị vào biến và in theo thứ tự.",
-      "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.",
+      "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có dữ liệu nhập từ bàn phím.",
       "example": "Kết quả: Python rồi 1991 — mỗi giá trị một dòng.",
       "prereq": "Không cần bài trước.",
       "level": "Cơ bản"
@@ -142,7 +142,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao đổi giá trị biến làm kết quả đổi theo mà không phải sửa lệnh print?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "print không giữ sẵn chữ Python hay số 1991; mỗi lần chạy, print(year) đọc giá trị HIỆN TẠI của biến year. Gán year = 2026 thì dòng thứ hai thành 2026, còn dòng đầu vẫn là Python vì name không đổi."
      }
     },
@@ -225,7 +225,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.\n\nThực hành: Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến.",
+      "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có dữ liệu nhập từ bàn phím.\n\nThực hành: Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến.",
       "io": [
        {
         "label": "Mặc định",
@@ -294,7 +294,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -418,7 +418,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao không nên viết message = \"Language: Python\" cố định?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Câu cố định không phản ánh name mới. Ghép \"Language: \" + name thì mỗi lần chạy message lấy giá trị hiện tại của name: name = \"C\" cho Language: C, name = \"Rust\" cho Language: Rust. Một dòng code dùng được cho nhiều dữ liệu."
      }
     },
@@ -536,14 +536,14 @@
        "expect": "'Language: Python\\n'"
       },
       {
-       "name": "name = \"C\" — không hard-code cả câu",
+       "name": "name = \"C\" — không viết cứng cả câu",
        "call": "_studio.run(vars={'name': 'C'}).stdout",
        "expect": "'Language: C\\n'"
       },
       {
-       "name": "name rỗng vẫn giữ dấu cách cuối",
-       "call": "_studio.run(vars={'name': ''}).var('message')",
-       "expect": "'Language: '"
+       "name": "name rỗng → in đúng phần cố định \"Language: \"",
+       "call": "_studio.run(vars={'name': ''}).stdout",
+       "expect": "'Language: \\n'"
       },
       {
        "name": "name = \"Rust\"",
@@ -570,7 +570,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -694,7 +694,7 @@
      ],
      "selfExplain": {
       "prompt": "Sau phép đảo, text có bị đổi thành \"nohtyp\" không? Vì sao?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Không. text[::-1] tạo một chuỗi mới rồi gán vào reversed_text; text vẫn giữ \"python\" vì chuỗi không bị sửa tại chỗ. Chuỗi rỗng đảo vẫn ra chuỗi rỗng vì không có ký tự nào để đảo."
      }
     },
@@ -813,9 +813,9 @@
        "expect": "'ba\\n'"
       },
       {
-       "name": "Chuỗi rỗng đảo vẫn rỗng",
-       "call": "_studio.run(vars={'text': ''}).var('reversed_text')",
-       "expect": "''"
+       "name": "Chuỗi rỗng đảo vẫn rỗng (in ra dòng trống)",
+       "call": "_studio.run(vars={'text': ''}).stdout",
+       "expect": "'\\n'"
       },
       {
        "name": "text giữ nguyên sau phép đảo",
@@ -842,7 +842,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -966,7 +966,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao \"Level\" khác \"level\" trong phép kiểm tra này?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Đảo \"Level\" được \"leveL\": chữ L hoa chuyển từ đầu xuống cuối. So sánh chuỗi phân biệt hoa/thường nên \"Level\" == \"leveL\" là False. Bài giữ nguyên dữ liệu, không tự chuyển sang chữ thường."
      }
     },
@@ -1022,7 +1022,7 @@
        {
         "label": "result = text.lower() == reversed_text.lower()",
         "slot": 1,
-        "trap": "Tự đổi chữ thường làm sai hợp đồng của bài."
+        "trap": "Tự đổi chữ thường làm sai yêu cầu của bài."
        },
        {
         "label": "result = \"True\"",
@@ -1114,7 +1114,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -1238,7 +1238,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao không đặt hai print ở ngoài if/else?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Lệnh ở ngoài nhánh thì luôn chạy, nên cả PALINDROME lẫn NOT PALINDROME đều được in — không còn lựa chọn theo result. Đặt mỗi print trong đúng nhánh thì mỗi lần chạy chỉ in một dòng phù hợp với result."
      }
     },
@@ -1362,7 +1362,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -1378,7 +1378,7 @@
       "code": "words = [\"level\", \"python\", \"radar\"]\n# Dùng for để in từng word",
       "tests": [
        "List mẫu → 3 dòng đúng thứ tự",
-       "[] → không có output"
+       "[] → không in gì"
       ],
       "reflect": "Vì sao list rỗng không in gì?"
      },
@@ -1464,8 +1464,8 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao list rỗng không in gì?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "Vòng for lấy lần lượt từng phần tử của list. List rỗng không có phần tử nào để gán cho word, nên thân vòng lặp không chạy lần nào và không có output. Đó không phải lỗi."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "Vòng for lấy lần lượt từng phần tử của list. List rỗng không có phần tử nào để gán cho word, nên thân vòng lặp không chạy lần nào và không in gì. Đó không phải lỗi."
      }
     },
     "step_3": {
@@ -1546,7 +1546,7 @@
        },
        {
         "label": "[]",
-        "value": "Không có output."
+        "value": "Không in gì."
        }
       ]
      },
@@ -1573,7 +1573,7 @@
        "expect": "'level\\npython\\nradar\\n'"
       },
       {
-       "name": "List rỗng: không có output",
+       "name": "List rỗng: không in gì",
        "call": "_studio.run(vars={'words': []}).stdout",
        "expect": "''"
       },
@@ -1607,7 +1607,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -1731,7 +1731,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao kết quả giữ thứ tự và cả phần tử trùng?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Vòng lặp đi theo thứ tự của words, mỗi lần gặp từ hợp lệ thì append đúng một lần vào cuối palindromes. Không dùng set nên không bỏ trùng, không xáo thứ tự. words không bị sửa vì chỉ palindromes được append."
      }
     },
@@ -1892,7 +1892,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -2016,7 +2016,7 @@
      ],
      "selfExplain": {
       "prompt": "Nếu thay return True bằng print(True), result nhận gì? Vì sao?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "result nhận None. print chỉ in True ra màn hình như một tác dụng phụ; hàm không gặp return mang giá trị nên Python tự trả None. Nơi gọi cần giá trị bool để dùng tiếp, nên hàm phải return True/False."
      }
     },
@@ -2184,7 +2184,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B09",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -2236,7 +2236,7 @@
      },
      "misconception": {
       "title": "\"Thêm strip() và lower() cho chắc\"",
-      "body": "Làm vậy là đổi hợp đồng của bài: \" a \" phải được xét nguyên (đảo vẫn là \" a \" → True), còn \"Level\" phải là False. Hàm kiểm tra không in, không ghi file, không sửa dữ liệu đầu vào."
+      "body": "Làm vậy là đổi yêu cầu của bài: \" a \" phải được xét nguyên (đảo vẫn là \" a \" → True), còn \"Level\" phải là False. Hàm kiểm tra không in, không ghi file, không sửa dữ liệu đầu vào."
      },
      "explain": [
       {
@@ -2308,7 +2308,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao chuỗi rỗng trả False dù nó bằng chuỗi đảo của chính nó?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Quy tắc của khoá định nghĩa palindrome phải KHÔNG rỗng. Nhánh if text == \"\" chạy trước phép so sánh và return False ngay. Nếu bỏ nhánh này thì \"\" == \"\" là True — sai quy tắc."
      }
     },
@@ -2481,7 +2481,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B10",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -2605,7 +2605,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao return phải đặt sau vòng for?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "return kết thúc hàm. Đặt trong for thì hàm dừng ở phần tử đầu tiên; với list rỗng vòng lặp không chạy nên không gặp return và hàm trả None. Đặt sau for thì mọi phần tử đều được xét và list rỗng trả []."
      }
     },
@@ -2789,7 +2789,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B11",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -2811,7 +2811,7 @@
      },
      "context": {
       "title": "Đọc toàn bộ file UTF-8 bằng with/open.",
-      "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.",
+      "body": "Dùng with/open (chế độ \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.",
       "example": "data.txt chứa \"level\\npython\\nđộđ\" → text nhận đúng nội dung đó.",
       "prereq": "B10",
       "level": "Cơ bản",
@@ -2892,31 +2892,31 @@
        "explanation": "Mã hoá mặc định của máy có thể khác UTF-8."
       },
       {
-       "question": "Mở data.txt bằng mode \"w\" để đọc thì chuyện gì xảy ra?",
+       "question": "Mở data.txt bằng chế độ \"w\" để đọc thì chuyện gì xảy ra?",
        "options": [
         {
          "text": "Nội dung file bị xoá ngay khi mở",
-         "detail": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn.",
+         "detail": "Chế độ \"w\" ghi đè — tuyệt đối không dùng với file nguồn.",
          "correct": true
         },
         {
          "text": "Đọc bình thường",
-         "detail": "\"w\" là mode ghi, không đọc được.",
+         "detail": "\"w\" là chế độ ghi, không đọc được.",
          "correct": false
         },
         {
          "text": "Python tự đổi sang \"r\"",
-         "detail": "Python làm đúng mode bạn ghi.",
+         "detail": "Python làm đúng chế độ bạn ghi.",
          "correct": false
         }
        ],
        "correct": 0,
-       "explanation": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn."
+       "explanation": "Chế độ \"w\" ghi đè — tuyệt đối không dùng với file nguồn."
       }
      ],
      "selfExplain": {
       "prompt": "Vì sao in text ở ngoài with vẫn được?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "file.read() đã chép nội dung file vào biến text (một str trong bộ nhớ). with chỉ đóng file khi ra khỏi khối, không xoá biến text, nên print(text) ở ngoài vẫn in đúng nội dung, kể cả chữ có dấu."
      }
     },
@@ -2986,7 +2986,7 @@
        {
         "label": "open(\"data.txt\", \"w\", encoding=\"utf-8\")",
         "slot": 1,
-        "trap": "Mode w XOÁ file nguồn!"
+        "trap": "Chế độ w XOÁ file nguồn!"
        },
        {
         "label": "text = file.readline()",
@@ -2999,11 +2999,11 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.\n\nThực hành: Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with.",
+      "body": "Dùng with/open (chế độ \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.\n\nThực hành: Đọc bằng chế độ \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with.",
       "io": [
        {
         "label": "data.txt: \"level\\npython\\nđộđ\"",
-        "value": "text đúng; stdout thêm một xuống dòng do print"
+        "value": "text đúng; khi in có thêm một dòng mới do print"
        },
        {
         "label": "File rỗng",
@@ -3016,7 +3016,7 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with."
+       "body": "Đọc bằng chế độ \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with."
       },
       {
        "title": "Cấu trúc",
@@ -3034,7 +3034,7 @@
        "expect": "'level\\npython\\nđộđ'"
       },
       {
-       "name": "stdout = nội dung + một xuống dòng",
+       "name": "in ra: nội dung + một dòng mới",
        "call": "_studio.run().stdout",
        "expect": "'level\\npython\\nđộđ\\n'"
       },
@@ -3044,7 +3044,7 @@
        "expect": "''"
       },
       {
-       "name": "Ca riêng: \"xin chào\"",
+       "name": "Ca ẩn: \"xin chào\"",
        "call": "_studio.run(files={'data.txt': 'xin chào'}).var('text')",
        "expect": "'xin chào'"
       },
@@ -3080,7 +3080,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B12",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -3090,7 +3090,7 @@
        "B12"
       ],
       "title": "Đọc từng dòng",
-      "goal": "Chỉ bỏ CR/LF cuối dòng, giữ khoảng trắng.",
+      "goal": "Chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng, giữ khoảng trắng.",
       "task": "Duyệt file, dùng rstrip(\"\\r\\n\") và thêm từng dòng vào list.",
       "predict": "strip() có giữ dấu cách quanh \" level \" không?",
       "code": "lines = []\nwith open(\"data.txt\", \"r\", encoding=\"utf-8\") as file:\n    for line in file:\n        pass",
@@ -3101,7 +3101,7 @@
       "reflect": "Vì sao dùng rstrip(\"\\r\\n\") thay strip()?"
      },
      "context": {
-      "title": "Đọc từng dòng và chỉ bỏ ký tự CR/LF ở cuối dòng.",
+      "title": "Đọc từng dòng và chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng.",
       "body": "Duyệt data.txt từng dòng; dùng line.rstrip(\"\\r\\n\") để bỏ ký tự xuống dòng ở cuối rồi append vào lines. Phần mở file đã cấp.",
       "example": "File \" level \\n\\nradar\" → [\" level \", \"\", \"radar\"].",
       "prereq": "B11",
@@ -3144,7 +3144,7 @@
       },
       {
        "n": 2,
-       "body": "rstrip(\"\\r\\n\") chỉ bỏ ký tự CR/LF ở CUỐI — dấu cách vẫn giữ nguyên."
+       "body": "rstrip(\"\\r\\n\") chỉ bỏ ký tự xuống dòng (\\r, \\n) ở CUỐI — dấu cách vẫn giữ nguyên."
       },
       {
        "n": 3,
@@ -3165,7 +3165,7 @@
        "options": [
         {
          "text": "[\"a\", \"b\"]",
-         "detail": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối.",
+         "detail": "rstrip(\"\\r\\n\") bỏ cả \\r lẫn \\n ở cuối.",
          "correct": true
         },
         {
@@ -3180,7 +3180,7 @@
         }
        ],
        "correct": 0,
-       "explanation": "rstrip(\"\\r\\n\") bỏ cả CR lẫn LF ở cuối."
+       "explanation": "rstrip(\"\\r\\n\") bỏ cả \\r lẫn \\n ở cuối."
       },
       {
        "question": "Dòng cuối \"radar\" không có xuống dòng. line[:-1] cho kết quả gì?",
@@ -3207,15 +3207,15 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao dùng rstrip(\"\\r\\n\") thay vì strip()?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "Bài chỉ bỏ ký tự xuống dòng ở cuối. strip() còn xoá dấu cách đầu/cuối nên \" level \" thành \"level\" — đổi dữ liệu. rstrip(\"\\r\\n\") giữ nguyên khoảng trắng, bỏ cả \\r của file Windows, và dòng cuối không có newline vẫn được giữ nguyên."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "Bài chỉ bỏ ký tự xuống dòng ở cuối. strip() còn xoá dấu cách đầu/cuối nên \" level \" thành \"level\" — đổi dữ liệu. rstrip(\"\\r\\n\") giữ nguyên khoảng trắng, bỏ cả \\r của file Windows, và dòng cuối không có ký tự xuống dòng vẫn được giữ nguyên."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
       "body": "Lắp phép bỏ xuống dòng và lệnh thêm vào list.",
-      "rule": "Thử file rỗng, file xuống dòng CRLF và file có dòng cuối không newline."
+      "rule": "Thử file rỗng, file xuống dòng kiểu Windows (\\r\\n) và file có dòng cuối không có ký tự xuống dòng."
      },
      "trace": {
       "steps": [
@@ -3229,7 +3229,7 @@
        },
        {
         "label": "Bước 3",
-        "text": "\"radar\" (không newline) → giữ \"radar\"."
+        "text": "\"radar\" (không có ký tự xuống dòng) → giữ \"radar\"."
        },
        {
         "label": "Bước 4",
@@ -3264,7 +3264,7 @@
        {
         "label": "line[:-1]",
         "slot": 1,
-        "trap": "Cắt mất ký tự cuối của dòng không có newline."
+        "trap": "Cắt mất ký tự cuối của dòng không có ký tự xuống dòng."
        },
        {
         "label": "line.strip()",
@@ -3330,12 +3330,12 @@
        "expect": "[]"
       },
       {
-       "name": "CRLF: \"a\\r\\nb\\r\\n\" → [\"a\", \"b\"]",
+       "name": "Xuống dòng kiểu Windows: \"a\\r\\nb\\r\\n\" → [\"a\", \"b\"]",
        "call": "_studio.run(files={'data.txt': 'a\\r\\nb\\r\\n'}).var('lines')",
        "expect": "['a', 'b']"
       },
       {
-       "name": "Dòng cuối không newline giữ nguyên",
+       "name": "Dòng cuối không có ký tự xuống dòng vẫn giữ nguyên",
        "call": "_studio.run(files={'data.txt': 'radar'}).var('lines')",
        "expect": "['radar']"
       },
@@ -3371,7 +3371,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B13",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -3382,7 +3382,7 @@
       ],
       "title": "Ghi một kết quả",
       "goal": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
-      "task": "Dùng mode w ghi words vào palindromes.txt; tự thêm newline.",
+      "task": "Dùng chế độ w ghi words vào palindromes.txt; tự thêm ký tự xuống dòng.",
       "predict": "Chạy lại với words = [\"a\"] có giữ dữ liệu cũ không?",
       "code": "words = [\"level\", \"radar\"]\n# Mở palindromes.txt bằng mode w\n# Ghi từng word + \"\\n\"",
       "tests": [
@@ -3393,7 +3393,7 @@
      },
      "context": {
       "title": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
-      "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.",
+      "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng chế độ \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.",
       "example": "words = [\"level\", \"radar\"] → palindromes.txt chứa \"level\\nradar\\n\".",
       "prereq": "B12",
       "level": "Cơ bản"
@@ -3403,14 +3403,14 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — mode \"w\" ghi đè, file chỉ còn \"a\\n\"",
+        "title": "Không — chế độ \"w\" ghi đè, file chỉ còn \"a\\n\"",
         "detail": "Mở bằng \"w\" là làm rỗng file trước khi ghi.",
         "correct": true
        },
        {
         "id": "b",
         "title": "Có — \"a\" được thêm vào cuối",
-        "detail": "Đó là hành vi của mode \"a\" (append).",
+        "detail": "Đó là hành vi của chế độ \"a\" (append).",
         "correct": false
        },
        {
@@ -3422,8 +3422,8 @@
       ]
      },
      "misconception": {
-      "title": "\"Mở bằng mode \"a\" cho an toàn\"",
-      "body": "Mode \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
+      "title": "\"Mở bằng chế độ \"a\" cho an toàn\"",
+      "body": "Chế độ \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
      },
      "explain": [
       {
@@ -3495,14 +3495,14 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao phải tự thêm \"\\n\" khi ghi?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "file.write ghi đúng chuỗi được đưa vào, không tự xuống dòng như print mặc định. Nối word + \"\\n\" thì mỗi từ nằm trên một dòng; mode \"w\" ghi đè nên chạy lại không lẫn dữ liệu cũ."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "file.write ghi đúng chuỗi được đưa vào, không tự xuống dòng như print mặc định. Nối word + \"\\n\" thì mỗi từ nằm trên một dòng; chế độ \"w\" ghi đè nên chạy lại không lẫn dữ liệu cũ."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Dữ liệu mới: [\"độđ\", \"độđ\"]. Chọn mode mở file và lệnh ghi.",
+      "body": "Dữ liệu mới: [\"độđ\", \"độđ\"]. Chọn chế độ mở file và lệnh ghi.",
       "rule": "Chạy hai lần với hai list khác nhau; lần thứ hai thử [] và kiểm file rỗng."
      },
      "trace": {
@@ -3583,11 +3583,11 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.\n\nThực hành: Mỗi lần write ghi word + \"\\n\".",
+      "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng chế độ \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.\n\nThực hành: Mỗi lần write ghi word + \"\\n\".",
       "io": [
        {
         "label": "[\"level\", \"radar\"]",
-        "value": "File: \"level\\nradar\\n\"; stdout rỗng"
+        "value": "File: \"level\\nradar\\n\"; không in gì"
        },
        {
         "label": "[]",
@@ -3618,7 +3618,7 @@
        "expect": "'level\\nradar\\n'"
       },
       {
-       "name": "stdout rỗng",
+       "name": "không in gì",
        "call": "_studio.run().stdout",
        "expect": "''"
       },
@@ -3657,7 +3657,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B14",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -3667,7 +3667,7 @@
        "B14"
       ],
       "title": "Đưa phần đọc vào hàm",
-      "goal": "Hàm read_lines(path) trả list dòng đã bỏ newline.",
+      "goal": "Hàm read_lines(path) trả list dòng đã bỏ ký tự xuống dòng.",
       "task": "Dùng tham số path thay tên file cố định và return list sau khi đọc.",
       "predict": "return lines ở ngoài with có dùng được không?",
       "code": "def read_lines(path):\n    pass\n\n# Gọi thử và in ở ngoài hàm",
@@ -3712,7 +3712,7 @@
      },
      "misconception": {
       "title": "\"print(lines) trong hàm là đủ\"",
-      "body": "Nơi gọi cần LIST để lọc tiếp; print chỉ hiển thị và hàm trả None. Đừng hard-code \"data.txt\" trong thân hàm — dùng tham số path. Thiếu file thì cứ để FileNotFoundError bật lên, đừng biến lỗi thành []."
+      "body": "Nơi gọi cần LIST để lọc tiếp; print chỉ hiển thị và hàm trả None. Đừng viết cứng \"data.txt\" trong thân hàm — dùng tham số path. Thiếu file thì cứ để FileNotFoundError bật lên, đừng biến lỗi thành []."
      },
      "explain": [
       {
@@ -3784,7 +3784,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao return lines thay vì print(lines) trong hàm?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Nơi gọi cần list để dùng tiếp (lọc palindrome). print chỉ hiển thị lên màn hình và hàm sẽ trả None, nơi gọi không nhận được dữ liệu. return lines gửi list về; muốn xem thì nơi gọi tự print."
      }
     },
@@ -3963,7 +3963,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B15",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -3974,7 +3974,7 @@
       ],
       "title": "Đưa phần ghi vào hàm",
       "goal": "Hàm write_lines(path, lines) có tác dụng ghi file.",
-      "task": "Dùng with, mode w, UTF-8; thêm newline sau từng chuỗi.",
+      "task": "Dùng with, chế độ w, UTF-8; thêm ký tự xuống dòng sau từng chuỗi.",
       "predict": "Không có return mang giá trị thì nơi gọi nhận gì?",
       "code": "def write_lines(path, lines):\n    pass",
       "tests": [
@@ -3985,7 +3985,7 @@
      },
      "context": {
       "title": "Đưa việc ghi từng dòng vào hàm có tác dụng phụ.",
-      "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.",
+      "body": "Viết write_lines(path, lines): mở path bằng chế độ \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.",
       "example": "write_lines(\"palindromes.txt\", [\"level\", \"radar\"]) tạo file hai dòng và trả None.",
       "prereq": "B14",
       "level": "Cơ bản"
@@ -4065,14 +4065,14 @@
      ],
      "selfExplain": {
       "prompt": "Hàm trả None có nghĩa là không làm được việc gì không?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Không. write_lines thực hiện tác dụng phụ là ghi file; nó không cần trả dữ liệu để hoàn thành việc đó. Kết quả nằm trong file đích, còn giá trị trả về là None vì không có return mang giá trị."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Lắp mode mở file và lệnh ghi từng chuỗi.",
+      "body": "Lắp chế độ mở file và lệnh ghi từng chuỗi.",
       "rule": "Gọi hai lần vào cùng một file: trước ghi [\"a\"], sau ghi []; kiểm nội dung lần đầu bị thay thế."
      },
      "trace": {
@@ -4148,7 +4148,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.\n\nThực hành: Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\".",
+      "body": "Viết write_lines(path, lines): mở path bằng chế độ \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.\n\nThực hành: Dùng chế độ \"w\", UTF-8 và for để ghi mỗi text + \"\\n\".",
       "io": [
        {
         "label": "[\"level\", \"radar\"]",
@@ -4165,7 +4165,7 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\"."
+       "body": "Dùng chế độ \"w\", UTF-8 và for để ghi mỗi text + \"\\n\"."
       },
       {
        "title": "Cấu trúc",
@@ -4212,7 +4212,7 @@
       {
        "sig": "write_lines(path, lines)",
        "does": "Ghi từng chuỗi trên một dòng.",
-       "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+       "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
        "gives": "None — không có return mang giá trị",
        "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
        "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
@@ -4237,7 +4237,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B16",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -4290,7 +4290,7 @@
      },
      "misconception": {
       "title": "\"print trong hàm giúp nơi gọi thấy kết quả\"",
-      "body": "Nơi gọi chỉ nhận được giá trị qua return; print trong hàm làm bẩn stdout mỗi lần gọi. Lệnh print ở cuối mã mẫu là của NƠI GỌI để quan sát, không phải trong hàm."
+      "body": "Nơi gọi chỉ nhận được giá trị qua return; print trong hàm in thừa ra màn hình mỗi lần gọi. Lệnh print ở cuối mã mẫu là của NƠI GỌI để quan sát, không phải trong hàm."
      },
      "explain": [
       {
@@ -4340,7 +4340,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao bản lỗi trả None khi words = []?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Với list rỗng, vòng for không chạy lượt nào; return nằm trong vòng lặp nên không bao giờ được thực hiện, hàm chạy hết và Python tự trả None. Đặt return sau for thì list rỗng trả [] và list dài được xét đủ."
      }
     },
@@ -4459,7 +4459,7 @@
        "expect": "['radar']"
       },
       {
-       "name": "Lời gọi hàm không in gì (stdout rỗng)",
+       "name": "Lời gọi hàm không in gì",
        "call": "_studio.stdout(filter_palindromes, [\"level\", \"ab\"])",
        "expect": "''"
       }
@@ -4501,7 +4501,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B17",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -4523,7 +4523,7 @@
      },
      "context": {
       "title": "Nối kết quả đọc file với bước lọc bằng vòng lặp.",
-      "body": "read_lines và is_palindrome đã cấp. Tự viết phần điều phối: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.",
+      "body": "read_lines và is_palindrome đã cấp. Tự viết phần chương trình chính: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.",
       "example": "data.txt: level, python, radar → [\"level\", \"radar\"].",
       "prereq": "B16",
       "level": "Cơ bản",
@@ -4628,14 +4628,14 @@
      ],
      "selfExplain": {
       "prompt": "Hai hàm đã cấp có vai trò khác nhau thế nào?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "read_lines đọc file và trả list chuỗi; nó không quyết định giữ hay bỏ dòng nào. is_palindrome kiểm một chuỗi và trả bool. Vòng lặp điều phối nối chúng: lấy từng text trong list, hỏi is_palindrome, append vào palindromes nếu True."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "read_lines đọc file và trả list chuỗi; nó không quyết định giữ hay bỏ dòng nào. is_palindrome kiểm một chuỗi và trả bool. Vòng lặp chính nối chúng: lấy từng text trong list, hỏi is_palindrome, append vào palindromes nếu True."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Lắp phần điều phối (hai hàm đã cấp ở trên).",
+      "body": "Lắp phần chương trình chính (hai hàm đã cấp ở trên).",
       "rule": "Thử file rỗng và file chứa \"Level\", một dòng rỗng, \"a\"; kiểm file nguồn không đổi."
      },
      "trace": {
@@ -4702,7 +4702,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "read_lines và is_palindrome đã cấp. Tự viết phần điều phối: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.\n\nThực hành: Đọc file, lọc vào list mới; chưa cần write_lines.",
+      "body": "read_lines và is_palindrome đã cấp. Tự viết phần chương trình chính: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.\n\nThực hành: Đọc file, lọc vào list mới; chưa cần write_lines.",
       "io": [
        {
         "label": "\"level\\npython\\nradar\"",
@@ -4806,7 +4806,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B18",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -4828,7 +4828,7 @@
      },
      "context": {
       "title": "Nối kết quả lọc list với hàm ghi file.",
-      "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.",
+      "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh chính: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.",
       "example": "words = [\"level\", \"python\", \"radar\", \"\"] → file \"level\\nradar\\n\".",
       "prereq": "B17",
       "level": "Cơ bản"
@@ -4908,14 +4908,14 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao ghi words thay vì palindromes là sai?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "words còn chứa từ không đối xứng và chuỗi rỗng; palindromes mới là kết quả lọc cần xuất. Lưu kết quả lọc vào palindromes rồi đưa đúng list đó cho write_lines thì file chỉ có chuỗi đối xứng, giữ thứ tự và trùng."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Dữ liệu mới: [\"radar\", \"ab\", \"radar\"]. Lắp hai lệnh điều phối.",
+      "body": "Dữ liệu mới: [\"radar\", \"ab\", \"radar\"]. Lắp hai lệnh chính.",
       "rule": "Thử [\"radar\", \"ab\", \"radar\"] và []; kiểm file bị ghi đè và giữ phần tử trùng."
      },
      "trace": {
@@ -4983,7 +4983,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.\n\nThực hành: Lưu kết quả lọc vào palindromes, rồi ghi list đó.",
+      "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh chính: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.\n\nThực hành: Lưu kết quả lọc vào palindromes, rồi ghi list đó.",
       "io": [
        {
         "label": "List mẫu",
@@ -5058,7 +5058,7 @@
       {
        "sig": "write_lines(path, lines)",
        "does": "Ghi từng chuỗi trên một dòng.",
-       "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+       "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
        "gives": "None — không có return mang giá trị",
        "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
        "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
@@ -5083,7 +5083,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B19",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -5094,8 +5094,8 @@
       ],
       "title": "Ex1 có hỗ trợ",
       "goal": "Ghép đọc, kiểm tra và ghi thành chương trình Ex1.",
-      "task": "Hoàn thành 3 hàm và vòng lặp điều phối theo từng checkpoint.",
-      "predict": "Bước nào bỏ newline? Bước nào bỏ chuỗi rỗng?",
+      "task": "Hoàn thành 3 hàm và vòng lặp chính theo từng mốc.",
+      "predict": "Bước nào bỏ ký tự xuống dòng? Bước nào bỏ chuỗi rỗng?",
       "code": "def read_lines(path): pass\ndef is_palindrome(text): pass\ndef write_lines(path, lines): pass\n# Điều phối: đọc → lọc → ghi",
       "tests": [
        "level / python / độđ / radar → 3 dòng đúng",
@@ -5105,7 +5105,7 @@
      },
      "context": {
       "title": "Ghép ba hàm đã học thành chương trình Ex1 có hỗ trợ.",
-      "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.",
+      "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần chương trình chính: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba mốc; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.",
       "example": "File \"level\\npython\\n\\nđộđ\\nradar\" → palindromes.txt \"level\\nđộđ\\nradar\\n\".",
       "prereq": "B18",
       "level": "Cơ bản",
@@ -5143,15 +5143,15 @@
      "explain": [
       {
        "n": 1,
-       "body": "Checkpoint 1 — read_lines: file → list dòng, chỉ bỏ CR/LF cuối dòng. Kiểm list trước khi lọc."
+       "body": "Mốc 1 — read_lines: file → list dòng, chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng. Kiểm list trước khi lọc."
       },
       {
        "n": 2,
-       "body": "Checkpoint 2 — is_palindrome + vòng lặp: giữ chuỗi không rỗng, đối xứng, đúng thứ tự và cả phần tử trùng."
+       "body": "Mốc 2 — is_palindrome + vòng lặp: giữ chuỗi không rỗng, đối xứng, đúng thứ tự và cả phần tử trùng."
       },
       {
        "n": 3,
-       "body": "Checkpoint 3 — write_lines: ghi đè file kết quả, mỗi chuỗi một dòng; file nguồn không đổi."
+       "body": "Mốc 3 — write_lines: ghi đè file kết quả, mỗi chuỗi một dòng; file nguồn không đổi."
       }
      ],
      "code": {
@@ -5188,15 +5188,15 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao read_lines không tự lọc, và write_lines không tự kiểm palindrome?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "Mỗi hàm giữ một nhiệm vụ: read_lines chỉ đọc, is_palindrome chỉ kiểm, write_lines chỉ ghi. Vòng lặp điều phối nối các bước nên dễ kiểm từng checkpoint, dễ sửa riêng và dùng lại hàm cho dữ liệu khác."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "Mỗi hàm giữ một nhiệm vụ: read_lines chỉ đọc, is_palindrome chỉ kiểm, write_lines chỉ ghi. Vòng lặp chính nối các bước nên dễ kiểm từng mốc, dễ sửa riêng và dùng lại hàm cho dữ liệu khác."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Ba checkpoint: lắp dòng cốt lõi của mỗi hàm.",
-      "rule": "Đổi fixture thành \"Level\\n a \\nradar\\nradar\"; dự đoán file kết quả trước khi chạy."
+      "body": "Ba mốc: lắp dòng cốt lõi của mỗi hàm.",
+      "rule": "Đổi dữ liệu thử thành \"Level\\n a \\nradar\\nradar\"; dự đoán file kết quả trước khi chạy."
      },
      "trace": {
       "steps": [
@@ -5215,7 +5215,7 @@
       ]
      },
      "counter": {
-      "question": "data.txt chỉ có \"radar\" (không newline) → palindromes.txt?",
+      "question": "data.txt chỉ có \"radar\" (không có ký tự xuống dòng) → palindromes.txt?",
       "options": [
        "\"radar\\n\"",
        "\"radar\"",
@@ -5276,10 +5276,10 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần điều phối: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba checkpoint; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.\n\nThực hành: Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử.",
+      "body": "Hoàn thành ba hàm read_lines, is_palindrome, write_lines và phần chương trình chính: đọc data.txt → lọc palindrome → ghi palindromes.txt. Làm theo ba mốc; mỗi hàm một nhiệm vụ, chưa thêm hàm thứ tư.\n\nThực hành: Làm theo ba mốc: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử.",
       "io": [
        {
-        "label": "Fixture mẫu",
+        "label": "Dữ liệu mẫu",
         "value": "File: \"level\\nđộđ\\nradar\\n\""
        },
        {
@@ -5293,7 +5293,7 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Làm theo ba checkpoint: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử."
+       "body": "Làm theo ba mốc: đọc được list; lọc đúng list; ghi đúng file. Mở gợi ý sau khi đã thử."
       },
       {
        "title": "Cấu trúc",
@@ -5306,22 +5306,22 @@
      ],
      "tests": [
       {
-       "name": "Checkpoint 1: read_lines",
+       "name": "Mốc 1: read_lines",
        "call": "read_lines(_studio.write('c1.txt', ' a \\n\\nradar'))",
        "expect": "[' a ', '', 'radar']"
       },
       {
-       "name": "Checkpoint 2: is_palindrome",
+       "name": "Mốc 2: is_palindrome",
        "call": "[is_palindrome(x) for x in [\"level\", \"\", \"Level\", \" a \", \"độđ\"]]",
        "expect": "[True, False, False, True, True]"
       },
       {
-       "name": "Checkpoint 3: write_lines",
+       "name": "Mốc 3: write_lines",
        "call": "(write_lines('c3.txt', ['a', 'b']), _studio.read('c3.txt'))",
        "expect": "(None, 'a\\nb\\n')"
       },
       {
-       "name": "Cả chương trình: Fixture công khai",
+       "name": "Cả chương trình: Dữ liệu mẫu của đề",
        "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
        "expect": "'a\\nradar\\n'"
       },
@@ -5341,12 +5341,12 @@
        "expect": "' a \\nradar\\nradar\\n'"
       },
       {
-       "name": "Cả chương trình: File xuống dòng CRLF",
+       "name": "Cả chương trình: File xuống dòng kiểu Windows (\\r\\n)",
        "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
        "expect": "'radar\\nx\\n'"
       },
       {
-       "name": "Cả chương trình: Dòng cuối không có newline",
+       "name": "Cả chương trình: Dòng cuối không có ký tự xuống dòng",
        "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
        "expect": "'radar\\n'"
       },
@@ -5361,7 +5361,7 @@
        "expect": "'level\\npython'"
       },
       {
-       "name": "Cả chương trình: Ca riêng: dữ liệu hỗn hợp",
+       "name": "Cả chương trình: Ca ẩn: dữ liệu hỗn hợp",
        "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
        "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
       }
@@ -5393,7 +5393,7 @@
       {
        "sig": "write_lines(path, lines)",
        "does": "Ghi từng chuỗi trên một dòng.",
-       "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+       "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
        "gives": "None — không có return mang giá trị",
        "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
        "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
@@ -5418,7 +5418,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B20",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -5440,7 +5440,7 @@
      },
      "context": {
       "title": "Tự giải Ex1 trên dữ liệu mới, không xem lời giải trước.",
-      "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.",
+      "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.",
       "example": "\"a\\nab\\nradar\" → palindromes.txt \"a\\nradar\\n\".",
       "prereq": "B19",
       "level": "Cơ bản",
@@ -5473,7 +5473,7 @@
      },
      "misconception": {
       "title": "Năm cái bẫy của Ex1",
-      "body": "strip()/lower() làm đổi dữ liệu; set làm mất thứ tự và phần tử trùng; mode \"a\" cộng dồn kết quả cũ; line[:-1] cắt mất ký tự của dòng cuối không newline; quên loại chuỗi rỗng thì dòng trống lọt vào file."
+      "body": "strip()/lower() làm đổi dữ liệu; set làm mất thứ tự và phần tử trùng; chế độ \"a\" cộng dồn kết quả cũ; line[:-1] cắt mất ký tự của dòng cuối không có ký tự xuống dòng; quên loại chuỗi rỗng thì dòng trống lọt vào file."
      },
      "explain": [
       {
@@ -5482,7 +5482,7 @@
       },
       {
        "n": 2,
-       "body": "Bộ chấm dùng file mới chưa thấy: có Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng CRLF và dòng cuối không newline."
+       "body": "Bộ chấm dùng file mới chưa thấy: có Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng kiểu Windows (\\r\\n) và dòng cuối không có ký tự xuống dòng."
       },
       {
        "n": 3,
@@ -5517,21 +5517,21 @@
      ],
      "selfExplain": {
       "prompt": "Giải thích đầu vào/đầu ra của từng hàm bạn viết và vì sao mọi dòng đều được xét.",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "read_lines nhận path, trả list dòng đã bỏ CR/LF cuối. is_palindrome nhận một chuỗi, trả bool (rỗng là False, phân biệt hoa/thường). write_lines nhận path và list, ghi đè file và trả None. Vòng lặp duyệt đủ list từ read_lines nên mọi dòng đều được kiểm trước khi ghi."
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "read_lines nhận path, trả list dòng đã bỏ ký tự xuống dòng (\\r, \\n) cuối. is_palindrome nhận một chuỗi, trả bool (rỗng là False, phân biệt hoa/thường). write_lines nhận path và list, ghi đè file và trả None. Vòng lặp duyệt đủ list từ read_lines nên mọi dòng đều được kiểm trước khi ghi."
      }
     },
     "step_3": {
      "task": {
       "title": "Lập kế hoạch trước khi tự viết",
       "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
-      "rule": "Bộ chấm dùng fixture mới: Unicode, dòng rỗng, khoảng trắng, từ trùng, CRLF và dòng cuối không newline."
+      "rule": "Bộ chấm dùng dữ liệu thử mới: Unicode, dòng rỗng, khoảng trắng, từ trùng, xuống dòng kiểu Windows (\\r\\n) và dòng cuối không có ký tự xuống dòng."
      },
      "trace": {
       "steps": [
        {
         "label": "Bước 1",
-        "text": "Đọc: data.txt → list dòng (chỉ bỏ CR/LF cuối)."
+        "text": "Đọc: data.txt → list dòng (chỉ bỏ \\r, \\n ở cuối dòng)."
        },
        {
         "label": "Bước 2",
@@ -5544,7 +5544,7 @@
       ]
      },
      "counter": {
-      "question": "data.txt \"ab\\r\\nx\\r\\n\" (CRLF) → palindromes.txt?",
+      "question": "data.txt \"ab\\r\\nx\\r\\n\" (xuống dòng kiểu Windows) → palindromes.txt?",
       "options": [
        "\"x\\n\"",
        "\"x\\r\\n\"",
@@ -5556,7 +5556,7 @@
     "step_4": {
      "task": {
       "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-      "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ CR/LF ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.\n\nThực hành: Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi.",
+      "body": "Tự viết chương trình đọc data.txt và ghi các dòng palindrome ra palindromes.txt, tối đa 3 hàm tự viết. Không có hàm mẫu cấp sẵn. Quy tắc của khoá: palindrome phải KHÔNG rỗng; phân biệt hoa/thường; giữ khoảng trắng; chỉ bỏ ký tự xuống dòng (\\r, \\n) ở cuối dòng; giữ thứ tự và phần tử trùng; ghi đè file kết quả; không sửa file nguồn.\n\nThực hành: Nộp bài lần đầu trước khi xem đáp án; chạy ví dụ trong đề để phát hiện lỗi.",
       "io": [
        {
         "label": "\"a\\nab\\nradar\"",
@@ -5573,11 +5573,11 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Nộp bài lần đầu trước khi xem đáp án; chạy ca công khai để phát hiện lỗi."
+       "body": "Nộp bài lần đầu trước khi xem đáp án; chạy ví dụ trong đề để phát hiện lỗi."
       },
       {
        "title": "Cấu trúc",
-       "body": "1. Đọc file thành list, chỉ bỏ CR/LF cuối dòng.\n2. Kiểm từng chuỗi: bỏ rỗng, giữ hoa/thường, khoảng trắng, thứ tự và trùng.\n3. Ghi đè file kết quả, mỗi chuỗi một dòng; giữ file nguồn nguyên vẹn."
+       "body": "1. Đọc file thành list, chỉ bỏ ký tự xuống dòng (\\r, \\n) cuối dòng.\n2. Kiểm từng chuỗi: bỏ rỗng, giữ hoa/thường, khoảng trắng, thứ tự và trùng.\n3. Ghi đè file kết quả, mỗi chuỗi một dòng; giữ file nguồn nguyên vẹn."
       },
       {
        "title": "Lời giải từng phần",
@@ -5586,7 +5586,7 @@
      ],
      "tests": [
       {
-       "name": "Fixture công khai",
+       "name": "Dữ liệu mẫu của đề",
        "call": "_studio.run(files={'data.txt': 'a\\nab\\nradar'}).file('palindromes.txt')",
        "expect": "'a\\nradar\\n'"
       },
@@ -5606,12 +5606,12 @@
        "expect": "' a \\nradar\\nradar\\n'"
       },
       {
-       "name": "File xuống dòng CRLF",
+       "name": "File xuống dòng kiểu Windows (\\r\\n)",
        "call": "_studio.run(files={'data.txt': 'radar\\r\\nab\\r\\nx\\r\\n'}).file('palindromes.txt')",
        "expect": "'radar\\nx\\n'"
       },
       {
-       "name": "Dòng cuối không có newline",
+       "name": "Dòng cuối không có ký tự xuống dòng",
        "call": "_studio.run(files={'data.txt': 'radar'}).file('palindromes.txt')",
        "expect": "'radar\\n'"
       },
@@ -5626,7 +5626,7 @@
        "expect": "'level\\npython'"
       },
       {
-       "name": "Ca riêng: dữ liệu hỗn hợp",
+       "name": "Ca ẩn: dữ liệu hỗn hợp",
        "call": "_studio.run(files={'data.txt': 'Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx'}).file('palindromes.txt')",
        "expect": "'level\\nđộđ\\n a \\nradar\\nradar\\nx\\n'"
       }
@@ -5658,7 +5658,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -5789,7 +5789,7 @@
      ],
      "selfExplain": {
       "prompt": "Class và object khác nhau thế nào trong ví dụ này?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "ProgrammingLanguage là class — bản mô tả gồm ba thuộc tính. language là object tạo từ class bằng lời gọi ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]) và giữ giá trị riêng. Đổi sang object C/1972 vẫn đọc bằng cùng mã language.name, language.year_created, language.paradigms."
      }
     },
@@ -5912,7 +5912,7 @@
        "expect": "\"C\\n1972\\n['procedural']\\n\""
       },
       {
-       "name": "Ca riêng: Rust/2010/[]",
+       "name": "Ca ẩn: Rust/2010/[]",
        "call": "_studio.run(vars={'language': _studio.expr(\"ProgrammingLanguage('Rust', 2010, [])\")}).stdout",
        "expect": "'Rust\\n2010\\n[]\\n'"
       },
@@ -5948,7 +5948,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -6054,7 +6054,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao dùng list(paradigms) thay vì gán nguyên paradigms?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Gán nguyên list khiến object và nơi gọi cùng trỏ vào một list: sửa list nguồn là object đổi theo. list(paradigms) tạo list mới chứa cùng phần tử, nên object có list riêng; sửa source sau khi tạo không làm object thay đổi."
      }
     },
@@ -6216,7 +6216,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -6249,7 +6249,7 @@
        {
         "id": "a",
         "title": "Có — append không bỏ trùng",
-        "detail": "Quy ước v3: thêm vào cuối, giữ trùng.",
+        "detail": "Quy ước của đề: thêm vào cuối, giữ trùng.",
         "correct": true
        },
        {
@@ -6340,7 +6340,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao result là None nhưng list vẫn thay đổi?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "add_paradigms sửa trạng thái của object qua self.paradigms.append(...) — một tác dụng phụ. Nó không có return mang giá trị nên lời gọi trả None. Muốn xem kết quả thì đọc obj.paradigms."
      }
     },
@@ -6502,7 +6502,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -6524,7 +6524,7 @@
      },
      "context": {
       "title": "Trả chuỗi biểu diễn object bằng __str__.",
-      "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.",
+      "body": "Trong class đã cấp, viết __str__ trả chuỗi theo định dạng của đề: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.",
       "example": "str(language) → Language[Python], Year created[1991], Paradigms['procedural']",
       "prereq": "I03",
       "level": "Trung cấp"
@@ -6547,14 +6547,14 @@
        {
         "id": "c",
         "title": "Cả hai",
-        "detail": "In thêm trong __str__ làm mỗi lần str(obj) đều sinh output.",
+        "detail": "In thêm trong __str__ làm mỗi lần str(obj) đều in thêm ra màn hình.",
         "correct": false
        }
       ]
      },
      "misconception": {
-      "title": "\"Paradigms[{self.paradigms}] mới đúng format\"",
-      "body": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Format v3 là f\", Paradigms{self.paradigms}\"."
+      "title": "\"Paradigms[{self.paradigms}] mới đúng định dạng\"",
+      "body": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Định dạng của đề là f\", Paradigms{self.paradigms}\"."
      },
      "explain": [
       {
@@ -6626,7 +6626,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao print(obj) dùng được __str__?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "print cần một chuỗi để hiển thị object; nó gọi str(obj), và str(obj) gọi __str__ để lấy chuỗi trả về. Vì vậy __str__ phải return str; nếu chỉ print thì trả None và str(obj) báo TypeError."
      }
     },
@@ -6634,7 +6634,7 @@
      "task": {
       "title": "Luyện có hỗ trợ",
       "body": "Lắp hai phần nối và lệnh trả kết quả.",
-      "rule": "Thử name = \"C\", year = 1972, paradigms = []; kiểm format và stdout của str(obj)."
+      "rule": "Thử name = \"C\", year = 1972, paradigms = []; kiểm định dạng và phần in ra của str(obj)."
      },
      "trace": {
       "steps": [
@@ -6718,7 +6718,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.\n\nThực hành: Tạo description theo ba bước, rồi return description.",
+      "body": "Trong class đã cấp, viết __str__ trả chuỗi theo định dạng của đề: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.\n\nThực hành: Tạo description theo ba bước, rồi return description.",
       "io": [
        {
         "label": "Object Python",
@@ -6794,7 +6794,7 @@
        "sig": "ProgrammingLanguage.__str__(self)",
        "does": "Biểu diễn object bằng chuỗi.",
        "takes": "self",
-       "gives": "str đúng format v3",
+       "gives": "str đúng định dạng của đề",
        "effect": "Không print, không đổi object.",
        "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
       }
@@ -6818,7 +6818,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -6921,7 +6921,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao hai list bằng giá trị vẫn cần là hai object khác nhau?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Nếu A, B và source dùng chung một list thì append vào A cũng làm B và source đổi theo. list(paradigms) cho mỗi object một list riêng: lúc đầu bằng giá trị nhưng sửa list này không ảnh hưởng list kia."
      }
     },
@@ -7078,7 +7078,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -7093,8 +7093,8 @@
       "predict": "__str__ chỉ print thì str(obj) có hợp lệ không?",
       "code": "    def __str__(self):\n        ...\n        print(description)  # lỗi\n\n# text = str(...) rồi print(...)",
       "tests": [
-       "Object Python → stdout đúng một dòng",
-       "Gọi str riêng → không có output"
+       "Object Python → in đúng một dòng",
+       "Gọi str riêng → không in gì"
       ],
       "reflect": "Giá trị trả về khác dòng được in thế nào?"
      },
@@ -7181,7 +7181,7 @@
      ],
      "selfExplain": {
       "prompt": "Sự khác nhau giữa giá trị trả về và dòng được in là gì?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Giá trị trả về đi vào biến (text = str(language)) để dùng tiếp; dòng được in chỉ là tác dụng phụ trên màn hình. __str__ phải trả chuỗi; print(language) mới là nơi hiển thị, và str(language) gọi riêng không in gì."
      }
     },
@@ -7195,7 +7195,7 @@
       "steps": [
        {
         "label": "Bước 1",
-        "text": "str(language) → __str__ → text (không có output)."
+        "text": "str(language) → __str__ → text (không in gì)."
        },
        {
         "label": "Bước 2",
@@ -7269,11 +7269,11 @@
       "io": [
        {
         "label": "Object Python",
-        "value": "text đúng str; stdout một dòng từ print"
+        "value": "text đúng str; in một dòng từ print"
        },
        {
         "label": "Gọi str riêng",
-        "value": "Không có output"
+        "value": "Không in gì"
        }
       ]
      },
@@ -7295,12 +7295,12 @@
      ],
      "tests": [
       {
-       "name": "stdout đúng một dòng",
+       "name": "in đúng một dòng",
        "call": "_studio.run().stdout",
        "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\\n\""
       },
       {
-       "name": "text là chuỗi đúng format",
+       "name": "text là chuỗi đúng định dạng",
        "call": "_studio.run().var('text')",
        "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\""
       },
@@ -7333,7 +7333,7 @@
        "sig": "ProgrammingLanguage.__str__(self)",
        "does": "Biểu diễn object bằng chuỗi.",
        "takes": "self",
-       "gives": "str đúng format v3",
+       "gives": "str đúng định dạng của đề",
        "effect": "Không print, không đổi object.",
        "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
       }
@@ -7357,7 +7357,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -7422,7 +7422,7 @@
       },
       {
        "n": 3,
-       "body": "__str__ chỉ ĐỌC trạng thái: trả chuỗi đúng format, không in."
+       "body": "__str__ chỉ ĐỌC trạng thái: trả chuỗi đúng định dạng, không in."
       },
       {
        "n": 4,
@@ -7457,7 +7457,7 @@
      ],
      "selfExplain": {
       "prompt": "Method nào thay đổi trạng thái, method nào chỉ đọc trạng thái? Vì sao điều đó quan trọng?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "__init__ khởi tạo trạng thái; add_paradigms thay đổi list của object và trả None; __str__ chỉ đọc các trường để trả chuỗi, không in, không sửa gì — gọi bao nhiêu lần cũng cho cùng kết quả. Tách rõ như vậy mới kiểm được từng method riêng."
      }
     },
@@ -7556,7 +7556,7 @@
        "expect": "''"
       },
       {
-       "name": "Format với list rỗng",
+       "name": "Định dạng với list rỗng",
        "call": "str(ProgrammingLanguage('C', 1972, []))",
        "expect": "'Language[C], Year created[1972], Paradigms[]'"
       }
@@ -7582,7 +7582,7 @@
        "sig": "ProgrammingLanguage.__str__(self)",
        "does": "Biểu diễn object bằng chuỗi.",
        "takes": "self",
-       "gives": "str đúng format v3",
+       "gives": "str đúng định dạng của đề",
        "effect": "Không print, không đổi object.",
        "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
       }
@@ -7607,7 +7607,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -7712,7 +7712,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao C dùng được method dù thân class chỉ có pass?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Khi C không định nghĩa một method, Python tìm method đó ở lớp cha ProgrammingLanguage. Vì vậy C(\"C\", 1972, ...) dùng __init__ của cha, add_paradigms và __str__ cũng là của cha; isinstance(language, ProgrammingLanguage) là True."
      }
     },
@@ -7739,13 +7739,13 @@
       ]
      },
      "counter": {
-      "question": "str(C(\"C\", 1972, [])) dùng format nào?",
+      "question": "str(C(\"C\", 1972, [])) dùng định dạng nào?",
       "options": [
-       "Language[C], Year created[1972], Paradigms[] (format của cha)",
+       "Language[C], Year created[1972], Paradigms[] (định dạng của cha)",
        "C object",
        "Báo lỗi"
       ],
-      "correct": "Language[C], Year created[1972], Paradigms[] (format của cha)"
+      "correct": "Language[C], Year created[1972], Paradigms[] (định dạng của cha)"
      },
      "scaffold": {
       "template": "from language_base import ProgrammingLanguage\n\n{{slot1}}\n    pass\n\nlanguage = {{slot2}}\nlanguage.add_paradigms(\"imperative\")\nprint(isinstance(language, ProgrammingLanguage))\n",
@@ -7821,7 +7821,7 @@
      ],
      "tests": [
       {
-       "name": "stdout: name, paradigms, isinstance",
+       "name": "In ra: name, paradigms, isinstance",
        "call": "_studio.run().stdout",
        "expect": "\"C\\n['procedural', 'imperative']\\nTrue\\n\""
       },
@@ -7841,7 +7841,7 @@
        "expect": "True"
       },
       {
-       "name": "str dùng format của cha",
+       "name": "str dùng định dạng của cha",
        "call": "str(C('C', 1972, []))",
        "expect": "'Language[C], Year created[1972], Paradigms[]'"
       }
@@ -7872,7 +7872,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I09",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -7977,7 +7977,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao gọi super().__init__ thay vì tự gán lại toàn bộ trường?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Lớp cha đã giữ trách nhiệm khởi tạo name, year_created và copy list paradigms. Gọi super().__init__ dùng lại đúng logic đó; lớp con chỉ thêm std_version. Tự gán lại vừa lặp code vừa dễ quên list(paradigms)."
      }
     },
@@ -8147,7 +8147,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I10",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -8202,7 +8202,7 @@
      },
      "misconception": {
       "title": "\"Viết lại cả chuỗi của cha trong lớp con\"",
-      "body": "Copy format của cha vào con là lặp code: cha đổi format thì con lệch. super().__str__() lấy đúng phần của cha. Và __str__ vẫn phải return str, không print."
+      "body": "Copy định dạng của cha vào con là lặp code: cha đổi định dạng thì con lệch. super().__str__() lấy đúng phần của cha. Và __str__ vẫn phải return str, không print."
      },
      "explain": [
       {
@@ -8252,7 +8252,7 @@
      ],
      "selfExplain": {
       "prompt": "Tại sao dùng super().__str__() trong lớp con?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Để lấy hành vi của cha rồi mở rộng: giữ đủ tên, năm, list do cha định dạng và chỉ nối thêm Standard version[...]. Không lặp code của cha, và không gọi str(self) vì đó là gọi lại chính method → đệ quy."
      }
     },
@@ -8425,7 +8425,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I11",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -8447,7 +8447,7 @@
      },
      "context": {
       "title": "Viết method compile dùng trạng thái hiện tại của object.",
-      "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.",
+      "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không viết cứng C17. Constructor và __str__ đã cấp.",
       "example": "C17 → Compiling C code using standard version C17",
       "prereq": "I10",
       "level": "Trung cấp",
@@ -8480,7 +8480,7 @@
      },
      "misconception": {
       "title": "\"return message thay cho print\"",
-      "body": "Hợp đồng của compile là IN một dòng; return message thì không có output — sai đề. Ngược lại, __str__ thì phải return, không print."
+      "body": "Yêu cầu của compile là IN một dòng; return message thì không in gì — sai đề. Ngược lại, __str__ thì phải return, không print."
      },
      "explain": [
       {
@@ -8520,7 +8520,7 @@
         },
         {
          "text": "compile trả chuỗi",
-         "detail": "Theo hợp đồng v3, compile in.",
+         "detail": "Theo yêu cầu của đề, compile in.",
          "correct": false
         }
        ],
@@ -8530,7 +8530,7 @@
      ],
      "selfExplain": {
       "prompt": "compile khác __str__ ở kết quả và tác dụng phụ thế nào?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "__str__ trả chuỗi và không in, nên str(obj) dùng được để lưu hay nối tiếp. compile in thông báo (tác dụng phụ) và trả None. Cả hai đọc trạng thái hiện tại: đổi std_version thì lần gọi sau phản ánh giá trị mới."
      }
     },
@@ -8595,7 +8595,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.\n\nThực hành: In thông báo có self.std_version; không hard-code C17.",
+      "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không viết cứng C17. Constructor và __str__ đã cấp.\n\nThực hành: In thông báo có self.std_version; không viết cứng C17.",
       "io": [
        {
         "label": "C17",
@@ -8612,7 +8612,7 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "In thông báo có self.std_version; không hard-code C17."
+       "body": "In thông báo có self.std_version; không viết cứng C17."
       },
       {
        "title": "Cấu trúc",
@@ -8697,7 +8697,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I12",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -8739,7 +8739,7 @@
        {
         "id": "b",
         "title": "__str__ in thông báo; compile trả chuỗi",
-        "detail": "Ngược hợp đồng.",
+        "detail": "Ngược yêu cầu của đề.",
         "correct": false
        },
        {
@@ -8752,7 +8752,7 @@
      },
      "misconception": {
       "title": "Ba cái bẫy của Ex3",
-      "body": "Quên super().__init__ (thiếu trường cha); gọi str(self) trong __str__ (RecursionError); compile hard-code C17 hoặc return thay vì print."
+      "body": "Quên super().__init__ (thiếu trường cha); gọi str(self) trong __str__ (RecursionError); compile viết cứng C17 hoặc return thay vì print."
      },
      "explain": [
       {
@@ -8796,7 +8796,7 @@
      ],
      "selfExplain": {
       "prompt": "Phần nào của object do cha khởi tạo, phần nào do con bổ sung?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Cha khởi tạo name, year_created, paradigms (kèm copy list) qua super().__init__. Con thêm std_version, mở rộng __str__ bằng super().__str__() + Standard version[...], và thêm compile in thông báo theo phiên bản hiện tại."
      }
     },
@@ -8958,7 +8958,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -9086,7 +9086,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao không viết target=obj.compile()?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Dấu ngoặc gọi compile ngay tại nơi tạo Thread, trong thread chính; giá trị trả về là None nên Thread nhận target=None và thread con không làm gì. target phải là callable obj.compile (không ngoặc) để start() cho nó chạy trong thread con."
      }
     },
@@ -9266,7 +9266,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -9372,7 +9372,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao tách vòng start và vòng join?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "join ngay sau từng start làm nơi gọi chờ worker đó xong rồi mới start worker kế tiếp — chạy tuần tự. Start hết trước cho phép mọi worker chạy chồng lấp; vòng join sau đó bảo đảm tất cả đã xong trước khi đi tiếp."
      }
     },
@@ -9552,7 +9552,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -9562,7 +9562,7 @@
        "N03"
       ],
       "title": "Ex4 có hỗ trợ",
-      "goal": "Ghép helper và parallel_compile theo ba checkpoint.",
+      "goal": "Ghép hàm phụ và parallel_compile theo ba mốc.",
       "task": "Viết _compile_worker và parallel_compile với args=(n,).",
       "predict": "args=(n,) để làm gì? Vì sao có dấu phẩy?",
       "code": "class C(BaseC):\n    def _compile_worker(self, n): ...\n    def parallel_compile(self, n):\n        # tạo list → start hết → join hết",
@@ -9573,8 +9573,8 @@
       "reflect": "Thread đã tạo khác công việc đã chạy thế nào?"
      },
      "context": {
-      "title": "Ghép helper và parallel_compile theo ba checkpoint.",
-      "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.",
+      "title": "Ghép hàm phụ và parallel_compile theo ba mốc.",
+      "body": "Trong class C(BaseC), viết hàm phụ _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Kiểm tra đầu vào n đã cấp.",
       "example": "n = 3, C17 → ba dòng \"Compiling C code using 3 threads with standard version C17\".",
       "prereq": "N02",
       "level": "Nâng cao",
@@ -9588,7 +9588,7 @@
       "options": [
        {
         "id": "a",
-        "title": "Truyền n vào helper; dấu phẩy để (n,) là tuple một phần tử",
+        "title": "Truyền n vào hàm phụ; dấu phẩy để (n,) là tuple một phần tử",
         "detail": "Thread gọi target(*args).",
         "correct": true
        },
@@ -9608,7 +9608,7 @@
      },
      "misconception": {
       "title": "\"target=self._compile_worker(n) cho gọn\"",
-      "body": "Có ngoặc là gọi helper NGAY trong thread hiện tại; Thread nhận None. Đưa tên method vào target, đối số vào args=(n,). Đừng hiển thị cả mẫu một lúc — làm lần lượt ba checkpoint: tạo list, start hết, join hết."
+      "body": "Có ngoặc là gọi hàm phụ NGAY trong thread hiện tại; Thread nhận None. Đưa tên method vào target, đối số vào args=(n,). Đừng hiển thị cả mẫu một lúc — làm lần lượt ba mốc: tạo list, start hết, join hết."
      },
      "explain": [
       {
@@ -9621,7 +9621,7 @@
       },
       {
        "n": 3,
-       "body": "flush=True đẩy output ra ngay; cần khi dùng lại trong process ở N07–N08."
+       "body": "flush=True đẩy dòng in ra màn hình ngay; cần khi dùng lại trong process ở N07–N08."
       }
      ],
      "code": {
@@ -9658,21 +9658,21 @@
      ],
      "selfExplain": {
       "prompt": "Phân biệt đối tượng Thread đã tạo với công việc đã chạy.",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Tạo Thread chỉ mô tả target và args, chưa chạy gì. start() mới cho công việc chạy trong thread con, join() chờ nó kết thúc. Vì vậy parallel_compile tạo list n Thread, start hết rồi join hết mới trả về."
      }
     },
     "step_3": {
      "task": {
       "title": "Luyện có hỗ trợ",
-      "body": "Ba checkpoint của parallel_compile.",
+      "body": "Ba mốc của parallel_compile.",
       "rule": "Đổi n = 1 sang n = 3; thử bản start/join trong cùng một vòng rồi sửa lại."
      },
      "trace": {
       "steps": [
        {
         "label": "Bước 1",
-        "text": "parallel_compile(3) → ba Thread target = helper, args = (3,)."
+        "text": "parallel_compile(3) → ba Thread target = hàm phụ, args = (3,)."
        },
        {
         "label": "Bước 2",
@@ -9725,7 +9725,7 @@
        {
         "label": "threading.Thread(target=self._compile_worker(n))",
         "slot": 1,
-        "trap": "Gọi helper ngay ở thread hiện tại."
+        "trap": "Gọi hàm phụ ngay ở thread hiện tại."
        },
        {
         "label": "worker.join()",
@@ -9746,7 +9746,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Trong class C(BaseC), viết helper _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Validation n đã cấp.\n\nThực hành: Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước.",
+      "body": "Trong class C(BaseC), viết hàm phụ _compile_worker(self, n) in \"Compiling C code using {n} threads with standard version {std_version}\" (flush=True), và hoàn thành parallel_compile(self, n): tạo n Thread với target=self._compile_worker, args=(n,), start hết rồi join hết. Kiểm tra đầu vào n đã cấp.\n\nThực hành: Mốc 1 tạo list; mốc 2 start hết; mốc 3 join hết. Kiểm từng bước.",
       "io": [
        {
         "label": "n = 1 / C17",
@@ -9763,11 +9763,11 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Checkpoint 1 tạo list; checkpoint 2 start hết; checkpoint 3 join hết. Kiểm từng bước."
+       "body": "Mốc 1 tạo list; mốc 2 start hết; mốc 3 join hết. Kiểm từng bước."
       },
       {
        "title": "Cấu trúc",
-       "body": "1. Helper chỉ in thông báo chứa n và phiên bản, flush=True.\n2. target giữ callable; args=(n,) là tuple một phần tử truyền n vào helper.\n3. parallel_compile tạo list, start toàn bộ rồi join toàn bộ; không yêu cầu output theo thứ tự."
+       "body": "1. Hàm phụ chỉ in thông báo chứa n và phiên bản, flush=True.\n2. target giữ callable; args=(n,) là tuple một phần tử truyền n vào hàm phụ.\n3. parallel_compile tạo list, start toàn bộ rồi join toàn bộ; không yêu cầu phần in ra theo thứ tự."
       },
       {
        "title": "Lời giải từng phần",
@@ -9776,7 +9776,7 @@
      ],
      "tests": [
       {
-       "name": "Helper in đúng một dòng",
+       "name": "Hàm phụ in đúng một dòng",
        "call": "_studio.stdout(C(\"C\", 1972, [], \"C17\")._compile_worker, 3)",
        "expect": "'Compiling C code using 3 threads with standard version C17\\n'"
       },
@@ -9834,7 +9834,7 @@
        "does": "Thực hiện một công việc mô phỏng.",
        "takes": "self; n: int — đọc self.std_version",
        "gives": "None",
-       "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+       "effect": "In một dòng có n và phiên bản; flush=True đẩy dòng in ra màn hình ngay.",
        "call": "obj._compile_worker(3) → thông báo cho n = 3"
       },
       {
@@ -9842,7 +9842,7 @@
        "does": "Tạo n thread và chờ tất cả hoàn tất.",
        "takes": "self; n là int dương, không phải bool",
        "gives": "None; n sai → ValueError",
-       "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+       "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
        "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
       }
      ],
@@ -9866,7 +9866,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -9884,11 +9884,11 @@
        "n = 3 → ba worker, trả None",
        "n = 0 → ValueError, chưa có worker"
       ],
-      "reflect": "Validation và join kiểm hai điều khác nhau thế nào?"
+      "reflect": "Kiểm tra đầu vào và join bảo đảm hai điều khác nhau thế nào?"
      },
      "context": {
       "title": "Tự giải Ex4 và kiểm dữ liệu n.",
-      "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.",
+      "body": "Hàm phụ _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.",
       "example": "n = 3 hợp lệ; n = 0, -1, True, 1.5 hoặc \"3\" → ValueError.",
       "prereq": "N03",
       "level": "Nâng cao",
@@ -9909,7 +9909,7 @@
        {
         "id": "b",
         "title": "Vì True bằng 1 nên hợp lệ",
-        "detail": "Đề v3 coi bool là dữ liệu sai.",
+        "detail": "Đề bài coi bool là dữ liệu sai.",
         "correct": false
        },
        {
@@ -9922,7 +9922,7 @@
      },
      "misconception": {
       "title": "\"Kiểm n xong thì không cần join\"",
-      "body": "Validation kiểm ĐẦU VÀO trước khi chạy; join bảo đảm vòng đời worker đã HOÀN TẤT trước khi trả về — hai việc khác nhau. Và đừng hứa worker bắt đầu cùng lúc hay chạy nhanh hơn: đó không phải tiêu chí Ex4."
+      "body": "Kiểm tra đầu vào xét DỮ LIỆU VÀO trước khi chạy; join bảo đảm vòng đời worker đã HOÀN TẤT trước khi trả về — hai việc khác nhau. Và đừng hứa worker bắt đầu cùng lúc hay chạy nhanh hơn: đó không phải tiêu chí Ex4."
      },
      "explain": [
       {
@@ -9935,7 +9935,7 @@
       },
       {
        "n": 3,
-       "body": "Sau validation, tạo/start/join như N02; helper giữ đúng một nhiệm vụ in thông báo."
+       "body": "Sau kiểm tra đầu vào, tạo/start/join như N02; hàm phụ giữ đúng một nhiệm vụ in thông báo."
       },
       {
        "n": 4,
@@ -9946,7 +9946,7 @@
     "step_2": {
      "mcq": [
       {
-       "question": "parallel_compile(1.5) theo hợp đồng v3 thì…",
+       "question": "parallel_compile(1.5) theo yêu cầu của đề thì…",
        "options": [
         {
          "text": "ValueError, chưa tạo worker nào",
@@ -9969,16 +9969,16 @@
       }
      ],
      "selfExplain": {
-      "prompt": "Validation n và join kiểm hai điều khác nhau thế nào?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-      "sample": "Validation kiểm đầu vào trước khi chạy: n phải là int dương, không phải bool, sai thì raise ValueError khi chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về."
+      "prompt": "Kiểm tra n và join bảo đảm hai điều khác nhau thế nào?",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+      "sample": "Kiểm tra đầu vào xét dữ liệu trước khi chạy: n phải là int dương, không phải bool, sai thì raise ValueError khi chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về."
      }
     },
     "step_3": {
      "task": {
       "title": "Lập kế hoạch trước khi tự viết",
       "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
-      "rule": "Bộ chấm dùng n khác và fixture đo vòng đời worker; dữ liệu sai phải lỗi trước khi có worker."
+      "rule": "Bộ chấm thử với n khác và theo dõi từng worker từ lúc tạo tới lúc xong; dữ liệu sai phải báo lỗi trước khi có worker."
      },
      "trace": {
       "steps": [
@@ -10005,7 +10005,7 @@
     "step_4": {
      "task": {
       "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-      "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.\n\nThực hành: Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.",
+      "body": "Hàm phụ _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.\n\nThực hành: Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.",
       "io": [
        {
         "label": "n = 3",
@@ -10113,7 +10113,7 @@
        "does": "Thực hiện một công việc mô phỏng.",
        "takes": "self; n: int — đọc self.std_version",
        "gives": "None",
-       "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+       "effect": "In một dòng có n và phiên bản; flush=True đẩy dòng in ra màn hình ngay.",
        "call": "obj._compile_worker(3) → thông báo cho n = 3"
       },
       {
@@ -10121,7 +10121,7 @@
        "does": "Tạo n thread và chờ tất cả hoàn tất.",
        "takes": "self; n là int dương, không phải bool",
        "gives": "None; n sai → ValueError",
-       "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+       "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
        "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
       }
      ],
@@ -10146,7 +10146,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -10168,7 +10168,7 @@
      },
      "context": {
       "title": "Hiểu hai nhánh sau fork và chờ một child.",
-      "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".",
+      "body": "Trong khung script Linux/macOS, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".",
       "example": "Child in Child work; parent chỉ in Parent finished sau khi child đã kết thúc.",
       "prereq": "N04",
       "level": "Nâng cao"
@@ -10198,7 +10198,7 @@
      },
      "misconception": {
       "title": "\"Thay fork bằng thread cho chạy được trên Windows\"",
-      "body": "Thread và process là hai cơ chế khác nhau — bài này học process. Lỗi \"os has no attribute fork\" trên Windows là lỗi môi trường: chạy trên WSL/Linux. Lưu ý thêm: _exit không tự flush output — child in bằng flush=True, parent gọi sys.stdout.flush() trước khi fork để output đệm không bị nhân đôi."
+      "body": "Thread và process là hai cơ chế khác nhau — bài này học process. Lỗi \"os has no attribute fork\" trên Windows là lỗi môi trường: chạy trên WSL/Linux. Lưu ý thêm: _exit không tự đẩy các dòng in còn đệm ra màn hình — child in bằng flush=True, parent gọi sys.stdout.flush() trước khi fork để phần in ra đệm không bị nhân đôi."
      },
      "explain": [
       {
@@ -10231,8 +10231,8 @@
        "question": "Child quên os._exit(0) thì…",
        "options": [
         {
-         "text": "Child chạy tiếp code của parent: tự waitpid (lỗi), in cả \"Parent finished\"",
-         "detail": "Child là bản sao của parent.",
+         "text": "Child chạy tiếp xuống code của parent: gọi waitpid khi không có process con nên báo lỗi và thoát mã khác 0; parent thấy vậy và raise RuntimeError — không in \"Parent finished\"",
+         "detail": "Child là bản sao của parent: thiếu _exit thì nó chạy luôn phần code dành cho parent.",
          "correct": true
         },
         {
@@ -10247,7 +10247,7 @@
         }
        ],
        "correct": 0,
-       "explanation": "Child là bản sao của parent."
+       "explanation": "Child là bản sao của parent: thiếu _exit thì nó chạy luôn phần code dành cho parent."
       },
       {
        "question": "status trả về từ os.waitpid là gì?",
@@ -10274,7 +10274,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao child phải _exit và parent phải waitpid?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Child là bản sao của parent: nếu không os._exit sau khi làm việc, nó chạy tiếp phần code của parent. waitpid giúp parent chờ child kết thúc và thu hồi trạng thái (không để lại zombie), nhờ đó parent chỉ in Parent finished sau khi child xong và biết child thoát thành công hay lỗi."
      }
     },
@@ -10282,7 +10282,7 @@
      "task": {
       "title": "Luyện có hỗ trợ",
       "body": "Lắp điều kiện nhánh child, lệnh thoát và lệnh chờ.",
-      "rule": "Đội dev thêm fixture child chậm hoặc exit code 1; kiểm parent vẫn chờ và nhận đúng trạng thái."
+      "rule": "Thử thêm: child chạy chậm, hoặc child thoát với mã 1 — parent vẫn phải chờ child rồi mới báo kết quả."
      },
      "trace": {
       "steps": [
@@ -10362,15 +10362,15 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Trong khung script POSIX, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".\n\nThực hành: Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc.",
+      "body": "Trong khung script Linux/macOS, dùng os.fork(): nhánh child (pid == 0) in \"Child work\" (flush=True) rồi os._exit(0); nhánh parent chờ bằng os.waitpid(pid, 0), kiểm trạng thái thoát (WIFEXITED/WEXITSTATUS, sai thì raise RuntimeError) rồi mới in \"Parent finished\".\n\nThực hành: Chạy từ script trên Linux/WSL; parent đơn luồng. Child phải thoát sau khi làm xong việc.",
       "io": [
        {
         "label": "Chạy script mẫu",
         "value": "Child work trước Parent finished; parent thoát mã 0"
        },
        {
-        "label": "Child chậm (fixture)",
-        "value": "Parent vẫn chờ child trước thông báo cuối"
+        "label": "Child thoát mã 1",
+        "value": "Parent chờ xong rồi raise RuntimeError"
        }
       ]
      },
@@ -10383,7 +10383,7 @@
       },
       {
        "title": "Cấu trúc",
-       "body": "1. fork tạo process con; trả 0 trong child, PID child trong parent.\n2. Child làm việc rồi _exit(0); flush=True đẩy output trước _exit.\n3. Parent waitpid(pid, 0); dùng WIFEXITED/WEXITSTATUS đọc trạng thái."
+       "body": "1. fork tạo process con; trả 0 trong child, PID child trong parent.\n2. Child làm việc rồi _exit(0); flush=True đẩy dòng in ra màn hình trước _exit.\n3. Parent waitpid(pid, 0); dùng WIFEXITED/WEXITSTATUS đọc trạng thái."
       },
       {
        "title": "Lời giải từng phần",
@@ -10442,7 +10442,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -10464,7 +10464,7 @@
      },
      "context": {
       "title": "Tạo đúng m child mà không nhân đôi cây process.",
-      "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Validation m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.",
+      "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Kiểm tra đầu vào m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.",
       "example": "m = 2 → hai Child work, rồi một Parent finished.",
       "prereq": "N05",
       "level": "Nâng cao",
@@ -10573,7 +10573,7 @@
      ],
      "selfExplain": {
       "prompt": "Tại sao chờ sau vòng tạo, thay vì chờ ngay từng child?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Chờ ngay mỗi lượt khiến parent chưa tạo child kế tiếp cho tới khi child trước xong — các child chạy tuần tự. Tạo đủ m child trước rồi mới chờ cho phép chúng làm việc chồng lấp; wait_for_children vẫn thu hồi đủ và kiểm exit status."
      }
     },
@@ -10581,7 +10581,7 @@
      "task": {
       "title": "Luyện có hỗ trợ",
       "body": "Lắp vòng tạo m child.",
-      "rule": "Thử m = 1 và m = 3; fixture một child lỗi hoặc fork lỗi sau child đầu."
+      "rule": "Thử m = 1 và m = 3; thử cả khi một child báo lỗi, hoặc fork lỗi sau child đầu tiên."
      },
      "trace": {
       "steps": [
@@ -10661,7 +10661,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Validation m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.\n\nThực hành: Chỉ parent append PID; child in rồi thoát, không quay lại vòng for.",
+      "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Kiểm tra đầu vào m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.\n\nThực hành: Chỉ parent append PID; child in rồi thoát, không quay lại vòng for.",
       "io": [
        {
         "label": "m = 1",
@@ -10768,7 +10768,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -10790,7 +10790,7 @@
      },
      "context": {
       "title": "Ghép process với method thread đã học.",
-      "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.",
+      "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Kiểm tra đầu vào m, n và khung fork/chờ đã cấp.",
       "example": "m = 2, n = 3 → hai child; mỗi child tạo ba thread, tổng sáu công việc.",
       "prereq": "N06",
       "level": "Nâng cao",
@@ -10819,7 +10819,7 @@
        {
         "id": "c",
         "title": "Không quan trọng",
-        "detail": "Rất quan trọng trên POSIX.",
+        "detail": "Rất quan trọng trên Linux/macOS.",
         "correct": false
        }
       ]
@@ -10876,7 +10876,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao sáu dòng in chưa đủ chứng minh có hai process và sáu thread?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Một vòng lặp tuần tự trong một process cũng in được sáu dòng giống hệt. Muốn chứng minh phải kiểm PID của từng child khác parent, mỗi PID có ba worker thread cùng tồn tại, và parent chờ đủ child — số dòng in không đo được điều đó."
      }
     },
@@ -10884,7 +10884,7 @@
      "task": {
       "title": "Luyện có hỗ trợ",
       "body": "Lắp nhánh child.",
-      "rule": "Thử m = 1, n = 2; fixture ghi PID và thread identity để kiểm thật số worker."
+      "rule": "Thử m = 1, n = 2; bộ chấm ghi PID và mã của từng thread để đếm đúng số worker."
      },
      "trace": {
       "steps": [
@@ -10964,7 +10964,7 @@
     "step_4": {
      "task": {
       "title": "Thử thách độc lập",
-      "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Validation m, n và khung fork/chờ đã cấp.\n\nThực hành: Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).",
+      "body": "Viết phần child trong main(m, n): mỗi child gọi obj.parallel_compile(n) (thread_language.py đã cấp); lỗi thì os._exit(1), xong thì os._exit(0). Parent đơn luồng tạo m child rồi chờ đủ bằng wait_for_children. Kiểm tra đầu vào m, n và khung fork/chờ đã cấp.\n\nThực hành: Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).",
       "io": [
        {
         "label": "m = 1, n = 2",
@@ -11062,7 +11062,7 @@
        "does": "Tạo n thread và chờ tất cả hoàn tất.",
        "takes": "self; n là int dương, không phải bool",
        "gives": "None; n sai → ValueError",
-       "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+       "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
        "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
       },
       {
@@ -11094,7 +11094,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-03T08:50:30+00:00"
+     "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
      "brief": {
@@ -11152,12 +11152,12 @@
      },
      "misconception": {
       "title": "Bốn cái bẫy của Ex5",
-      "body": "Đo bắt đầu sau khi đã fork; dừng đo trước khi chờ đủ; quên validation (True, 1.5, \"2\" lọt qua); để child lỗi thoát mã 0. Cũng đừng kỳ vọng m/n lớn hơn thì nhanh hơn — print chỉ mô phỏng compile."
+      "body": "Đo bắt đầu sau khi đã fork; dừng đo trước khi chờ đủ; quên kiểm tra đầu vào (True, 1.5, \"2\" lọt qua); để child lỗi thoát mã 0. Cũng đừng kỳ vọng m/n lớn hơn thì nhanh hơn — print chỉ mô phỏng compile."
      },
      "explain": [
       {
        "n": 1,
-       "body": "Validation m, n trước khi tạo process; parent vẫn đơn luồng khi fork."
+       "body": "Kiểm tra đầu vào m, n trước khi tạo process; parent vẫn đơn luồng khi fork."
       },
       {
        "n": 2,
@@ -11176,7 +11176,7 @@
     "step_2": {
      "mcq": [
       {
-       "question": "benchmark(True, 3) theo hợp đồng v3?",
+       "question": "benchmark(True, 3) theo yêu cầu của đề?",
        "options": [
         {
          "text": "ValueError trước khi fork",
@@ -11200,7 +11200,7 @@
      ],
      "selfExplain": {
       "prompt": "Vì sao đặt phép đo kết thúc sau wait_for_children?",
-      "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+      "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
       "sample": "Chỉ khi chờ đủ mới biết mọi child (và thread của chúng) đã hoàn tất. Dừng đo trước đó là bỏ mất thời gian chạy còn lại của child. Bắt đầu đo trước vòng fork để tính cả chi phí tạo process."
      }
     },
@@ -11239,7 +11239,7 @@
     "step_4": {
      "task": {
       "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-      "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.\n\nThực hành: Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ.",
+      "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.\n\nThực hành: Kiểm tra đầu vào trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ.",
       "io": [
        {
         "label": "m = 1, n = 1",
@@ -11256,7 +11256,7 @@
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ."
+       "body": "Kiểm tra đầu vào trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ."
       },
       {
        "title": "Cấu trúc",
@@ -11345,7 +11345,7 @@
        "does": "Tạo n thread và chờ tất cả hoàn tất.",
        "takes": "self; n là int dương, không phải bool",
        "gives": "None; n sai → ValueError",
-       "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+       "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
        "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
       },
       {

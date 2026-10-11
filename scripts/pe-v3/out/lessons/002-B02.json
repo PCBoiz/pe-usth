@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B02",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao không nên viết message = \"Language: Python\" cố định?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Câu cố định không phản ánh name mới. Ghép \"Language: \" + name thì mỗi lần chạy message lấy giá trị hiện tại của name: name = \"C\" cho Language: C, name = \"Rust\" cho Language: Rust. Một dòng code dùng được cho nhiều dữ liệu."
       }
     },
@@ -256,14 +256,14 @@
           "expect": "'Language: Python\\n'"
         },
         {
-          "name": "name = \"C\" — không hard-code cả câu",
+          "name": "name = \"C\" — không viết cứng cả câu",
           "call": "_studio.run(vars={'name': 'C'}).stdout",
           "expect": "'Language: C\\n'"
         },
         {
-          "name": "name rỗng vẫn giữ dấu cách cuối",
-          "call": "_studio.run(vars={'name': ''}).var('message')",
-          "expect": "'Language: '"
+          "name": "name rỗng → in đúng phần cố định \"Language: \"",
+          "call": "_studio.run(vars={'name': ''}).stdout",
+          "expect": "'Language: \\n'"
         },
         {
           "name": "name = \"Rust\"",

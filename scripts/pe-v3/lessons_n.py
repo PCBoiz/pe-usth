@@ -519,7 +519,7 @@ threads.append(worker)''',
                    'chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về.'),
         flow=['n sai → ValueError trước bước tạo.',
               'n hợp lệ → n worker → start hết → join hết → trả None.'],
-        transfer='Bộ chấm dùng n khác và fixture đo vòng đời worker; dữ liệu sai phải lỗi trước khi có worker.',
+        transfer='Bộ chấm thử với n khác và theo dõi từng worker từ lúc tạo tới lúc xong; dữ liệu sai phải báo lỗi trước khi có worker.',
         counter=dict(q='parallel_compile("3") → ?', options=['ValueError', 'Ba worker', 'TypeError'], correct='ValueError'),
         practice='Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.',
         steps=['if type(n) is not int or n <= 0: raise ValueError("n must be a positive integer")',
@@ -575,7 +575,8 @@ print("parent: child done")
               'gọi sys.stdout.flush() trước khi fork để output đệm không bị nhân đôi.'),
         mcq=[
             dict(q='Child quên os._exit(0) thì…', options=[
-                ('Child chạy tiếp code của parent: tự waitpid (lỗi), in cả "Parent finished"', 'Child là bản sao của parent.', True),
+                ('Child chạy tiếp xuống code của parent: gọi waitpid khi không có process con nên báo lỗi và thoát mã khác 0; parent thấy vậy và raise RuntimeError — không in "Parent finished"',
+                 'Child là bản sao của parent: thiếu _exit thì nó chạy luôn phần code dành cho parent.', True),
                 ('Child tự dừng sau print', 'Không có gì dừng nó.', False),
                 ('Parent báo lỗi ngay', 'Parent không biết child đang làm gì.', False),
             ]),
@@ -614,7 +615,7 @@ def main():
         flow=['fork → child pid = 0 → in Child work → _exit(0).',
               'Parent có PID child → waitpid → kiểm status.',
               'Child thành công → in Parent finished.'],
-        transfer='Đội dev thêm fixture child chậm hoặc exit code 1; kiểm parent vẫn chờ và nhận đúng trạng thái.',
+        transfer='Thử thêm: child chạy chậm, hoặc child thoát với mã 1 — parent vẫn phải chờ child rồi mới báo kết quả.',
         counter=dict(q='Child thoát với mã 1 thì parent làm gì?', options=[
             'raise RuntimeError("child failed")', 'In Parent finished như thường', 'Không biết được'],
             correct='raise RuntimeError("child failed")'),
@@ -628,7 +629,7 @@ def main():
         os._exit(0)
     ...''',
         io=[('Chạy script mẫu', 'Child work trước Parent finished; parent thoát mã 0'),
-            ('Child chậm (fixture)', 'Parent vẫn chờ child trước thông báo cuối')],
+            ('Child thoát mã 1', 'Parent chờ xong rồi raise RuntimeError')],
         starter=r'''import os
 import sys
 
@@ -770,7 +771,7 @@ print("parent saw", len(pids), "children")
         flow=['Parent tạo pid1 → child 1 làm việc, _exit.',
               'Parent tạo pid2 → child 2 làm việc, _exit.',
               'Parent chờ pid1, pid2 → in Parent finished.'],
-        transfer='Thử m = 1 và m = 3; fixture một child lỗi hoặc fork lỗi sau child đầu.',
+        transfer='Thử m = 1 và m = 3; thử cả khi một child báo lỗi, hoặc fork lỗi sau child đầu tiên.',
         counter=dict(q='Bỏ os._exit(0) với m = 2 thì có bao nhiêu process (kể cả parent)?',
                      options=['4 — child đầu fork thêm một cháu', '3', '2'], correct='4 — child đầu fork thêm một cháu'),
         practice='Chỉ parent append PID; child in rồi thoát, không quay lại vòng for.',
@@ -894,7 +895,7 @@ os.waitpid(pid, 0)
         flow=['Parent đơn luồng → fork m child.',
               'Mỗi child → parallel_compile(n): n thread, join đủ.',
               'Child _exit(0) (lỗi → 1) → parent wait đủ.'],
-        transfer='Thử m = 1, n = 2; fixture ghi PID và thread identity để kiểm thật số worker.',
+        transfer='Thử m = 1, n = 2; bộ chấm ghi PID và mã của từng thread để đếm đúng số worker.',
         counter=dict(q='m = 2, n = 3: tổng số worker thread?', options=['6', '3', '2'], correct='6'),
         practice='Parent tạo child khi CHƯA có worker thread; child gọi method đã học, join xong mới _exit(0).',
         steps=['Class thread đã cấp; không viết lại OOP và thread.',

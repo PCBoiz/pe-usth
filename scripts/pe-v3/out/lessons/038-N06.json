@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Tạo đúng m child mà không nhân đôi cây process.",
-        "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Validation m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.",
+        "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Kiểm tra đầu vào m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.",
         "example": "m = 2 → hai Child work, rồi một Parent finished.",
         "prereq": "N05",
         "level": "Nâng cao",
@@ -145,7 +145,7 @@
       ],
       "selfExplain": {
         "prompt": "Tại sao chờ sau vòng tạo, thay vì chờ ngay từng child?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Chờ ngay mỗi lượt khiến parent chưa tạo child kế tiếp cho tới khi child trước xong — các child chạy tuần tự. Tạo đủ m child trước rồi mới chờ cho phép chúng làm việc chồng lấp; wait_for_children vẫn thu hồi đủ và kiểm exit status."
       }
     },
@@ -153,7 +153,7 @@
       "task": {
         "title": "Luyện có hỗ trợ",
         "body": "Lắp vòng tạo m child.",
-        "rule": "Thử m = 1 và m = 3; fixture một child lỗi hoặc fork lỗi sau child đầu."
+        "rule": "Thử m = 1 và m = 3; thử cả khi một child báo lỗi, hoặc fork lỗi sau child đầu tiên."
       },
       "trace": {
         "steps": [
@@ -233,7 +233,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Validation m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.\n\nThực hành: Chỉ parent append PID; child in rồi thoát, không quay lại vòng for.",
+        "body": "Viết vòng tạo trong main(m): chỉ parent tiếp tục vòng lặp tạo m child; mỗi child in \"Child work\" rồi os._exit(0); parent lưu PID vào pids. Kiểm tra đầu vào m, khung xử lý fork lỗi và lệnh chờ wait_for_children (process_tools.py) đã cấp.\n\nThực hành: Chỉ parent append PID; child in rồi thoát, không quay lại vòng for.",
         "io": [
           {
             "label": "m = 1",

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I05",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -117,7 +117,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao hai list bằng giá trị vẫn cần là hai object khác nhau?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Nếu A, B và source dùng chung một list thì append vào A cũng làm B và source đổi theo. list(paradigms) cho mỗi object một list riêng: lúc đầu bằng giá trị nhưng sửa list này không ảnh hưởng list kia."
       }
     },

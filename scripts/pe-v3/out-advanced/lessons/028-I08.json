@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I08",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -119,7 +119,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao C dùng được method dù thân class chỉ có pass?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Khi C không định nghĩa một method, Python tìm method đó ở lớp cha ProgrammingLanguage. Vì vậy C(\"C\", 1972, ...) dùng __init__ của cha, add_paradigms và __str__ cũng là của cha; isinstance(language, ProgrammingLanguage) là True."
       }
     },
@@ -146,13 +146,13 @@
         ]
       },
       "counter": {
-        "question": "str(C(\"C\", 1972, [])) dùng format nào?",
+        "question": "str(C(\"C\", 1972, [])) dùng định dạng nào?",
         "options": [
-          "Language[C], Year created[1972], Paradigms[] (format của cha)",
+          "Language[C], Year created[1972], Paradigms[] (định dạng của cha)",
           "C object",
           "Báo lỗi"
         ],
-        "correct": "Language[C], Year created[1972], Paradigms[] (format của cha)"
+        "correct": "Language[C], Year created[1972], Paradigms[] (định dạng của cha)"
       },
       "scaffold": {
         "template": "from language_base import ProgrammingLanguage\n\n{{slot1}}\n    pass\n\nlanguage = {{slot2}}\nlanguage.add_paradigms(\"imperative\")\nprint(isinstance(language, ProgrammingLanguage))\n",
@@ -228,7 +228,7 @@
       ],
       "tests": [
         {
-          "name": "stdout: name, paradigms, isinstance",
+          "name": "In ra: name, paradigms, isinstance",
           "call": "_studio.run().stdout",
           "expect": "\"C\\n['procedural', 'imperative']\\nTrue\\n\""
         },
@@ -248,7 +248,7 @@
           "expect": "True"
         },
         {
-          "name": "str dùng format của cha",
+          "name": "str dùng định dạng của cha",
           "call": "str(C('C', 1972, []))",
           "expect": "'Language[C], Year created[1972], Paradigms[]'"
         }

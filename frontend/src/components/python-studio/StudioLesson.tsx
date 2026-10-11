@@ -1464,7 +1464,8 @@ export default function StudioLesson({
           options={(predict?.options ?? []).map((o, i) => ({
             key: letterKey(i),
             label: o.title,
-            sub: o.detail,
+            // Giải thích của phương án lộ luôn đáp án: chỉ hiện sau khi đã kiểm tra.
+            sub: checked ? o.detail : undefined,
           }))}
           selected={d.predict || null}
           onSelect={(key) => {
@@ -1487,7 +1488,7 @@ export default function StudioLesson({
           options={q.options.map((o, oi) => ({
             key: letterKey(oi),
             label: optionText(o),
-            sub: optionDetail(o),
+            sub: checked ? optionDetail(o) : undefined,
           }))}
           selected={d.mcq[i] ?? null}
           onSelect={(key) => {
@@ -1630,7 +1631,7 @@ export default function StudioLesson({
           {contracts.length > 0 && (
             <details className={c.panel} open={contracts.length <= 2}>
               <summary>
-                Hợp đồng hàm <span>{contracts.map((k) => k.sig.split('(')[0]).join(' · ')}</span>
+                Mô tả hàm <span>{contracts.map((k) => k.sig.split('(')[0]).join(' · ')}</span>
               </summary>
               <ul className={c.contracts}>
                 {contracts.map((k) => (

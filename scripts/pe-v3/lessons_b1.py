@@ -158,7 +158,7 @@ print(message)
         tests=[
             T('name = "Python"', run() + '.stdout', out('Language: Python')),
             T('name = "C" — không hard-code cả câu', run(vars={'name': 'C'}) + '.stdout', out('Language: C')),
-            T('name rỗng vẫn giữ dấu cách cuối', run(vars={'name': ''}) + ".var('message')", 'Language: '),
+            T('name rỗng → in đúng phần cố định "Language: "', run(vars={'name': ''}) + '.stdout', out('Language: ')),
             T('name = "Rust"', run(vars={'name': 'Rust'}) + '.stdout', out('Language: Rust')),
         ],
         bad=[('hard-code', 'name = "Python"\nmessage = "Language: Python"\nprint(message)\n'),
@@ -237,7 +237,7 @@ print(reversed_text)
             T('text = "python" → nohtyp', run() + '.stdout', out('nohtyp')),
             T('text = "a" → a', run(vars={'text': 'a'}) + '.stdout', out('a')),
             T('text = "ab" → ba', run(vars={'text': 'ab'}) + '.stdout', out('ba')),
-            T('Chuỗi rỗng đảo vẫn rỗng', run(vars={'text': ''}) + ".var('reversed_text')", ''),
+            T('Chuỗi rỗng đảo vẫn rỗng (in ra dòng trống)', run(vars={'text': ''}) + '.stdout', out('')),
             T('text giữ nguyên sau phép đảo', run() + ".var('text')", 'python'),
         ],
         bad=[('lấy ký tự cuối', 'text = "python"\nreversed_text = text[-1]\nprint(reversed_text)\n'),

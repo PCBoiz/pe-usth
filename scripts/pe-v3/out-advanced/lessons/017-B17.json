@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B17",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Nối kết quả đọc file với bước lọc bằng vòng lặp.",
-        "body": "read_lines và is_palindrome đã cấp. Tự viết phần điều phối: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.",
+        "body": "read_lines và is_palindrome đã cấp. Tự viết phần chương trình chính: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.",
         "example": "data.txt: level, python, radar → [\"level\", \"radar\"].",
         "prereq": "B16",
         "level": "Cơ bản",
@@ -141,14 +141,14 @@
       ],
       "selfExplain": {
         "prompt": "Hai hàm đã cấp có vai trò khác nhau thế nào?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "read_lines đọc file và trả list chuỗi; nó không quyết định giữ hay bỏ dòng nào. is_palindrome kiểm một chuỗi và trả bool. Vòng lặp điều phối nối chúng: lấy từng text trong list, hỏi is_palindrome, append vào palindromes nếu True."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "read_lines đọc file và trả list chuỗi; nó không quyết định giữ hay bỏ dòng nào. is_palindrome kiểm một chuỗi và trả bool. Vòng lặp chính nối chúng: lấy từng text trong list, hỏi is_palindrome, append vào palindromes nếu True."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Lắp phần điều phối (hai hàm đã cấp ở trên).",
+        "body": "Lắp phần chương trình chính (hai hàm đã cấp ở trên).",
         "rule": "Thử file rỗng và file chứa \"Level\", một dòng rỗng, \"a\"; kiểm file nguồn không đổi."
       },
       "trace": {
@@ -215,7 +215,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "read_lines và is_palindrome đã cấp. Tự viết phần điều phối: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.\n\nThực hành: Đọc file, lọc vào list mới; chưa cần write_lines.",
+        "body": "read_lines và is_palindrome đã cấp. Tự viết phần chương trình chính: đọc data.txt bằng read_lines, duyệt từng dòng, giữ dòng là palindrome vào palindromes, rồi in palindromes. Chưa ghi file.\n\nThực hành: Đọc file, lọc vào list mới; chưa cần write_lines.",
         "io": [
           {
             "label": "\"level\\npython\\nradar\"",

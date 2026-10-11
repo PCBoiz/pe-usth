@@ -582,6 +582,13 @@ class Result:
             return None
 
     def var(self, name):
+        # Đề PE yêu cầu lưu kết quả vào biến có tên cố định (message, lines…).
+        # Thiếu biến thì nói thẳng lý do — "nhận None" khiến người học tưởng
+        # logic sai trong khi chỉ đặt tên khác.
+        if name not in self.ns:
+            raise StudioSetupError(
+                'Không thấy biến `%s` sau khi chạy. Đề yêu cầu lưu kết quả vào biến tên `%s` '
+                '— đổi tên biến thì bộ chấm không tìm được.' % (name, name))
         return self.ns.get(name)
 
     @property

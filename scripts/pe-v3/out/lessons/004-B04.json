@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B04",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao \"Level\" khác \"level\" trong phép kiểm tra này?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Đảo \"Level\" được \"leveL\": chữ L hoa chuyển từ đầu xuống cuối. So sánh chuỗi phân biệt hoa/thường nên \"Level\" == \"leveL\" là False. Bài giữ nguyên dữ liệu, không tự chuyển sang chữ thường."
       }
     },
@@ -194,7 +194,7 @@
           {
             "label": "result = text.lower() == reversed_text.lower()",
             "slot": 1,
-            "trap": "Tự đổi chữ thường làm sai hợp đồng của bài."
+            "trap": "Tự đổi chữ thường làm sai yêu cầu của bài."
           },
           {
             "label": "result = \"True\"",

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B08",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Nếu thay return True bằng print(True), result nhận gì? Vì sao?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "result nhận None. print chỉ in True ra màn hình như một tác dụng phụ; hàm không gặp return mang giá trị nên Python tự trả None. Nơi gọi cần giá trị bool để dùng tiếp, nên hàm phải return True/False."
       }
     },

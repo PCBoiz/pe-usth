@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -30,7 +30,7 @@
         "code": "words = [\"level\", \"python\", \"radar\"]\n# Dùng for để in từng word",
         "tests": [
           "List mẫu → 3 dòng đúng thứ tự",
-          "[] → không có output"
+          "[] → không in gì"
         ],
         "reflect": "Vì sao list rỗng không in gì?"
       },
@@ -116,8 +116,8 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao list rỗng không in gì?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "Vòng for lấy lần lượt từng phần tử của list. List rỗng không có phần tử nào để gán cho word, nên thân vòng lặp không chạy lần nào và không có output. Đó không phải lỗi."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Vòng for lấy lần lượt từng phần tử của list. List rỗng không có phần tử nào để gán cho word, nên thân vòng lặp không chạy lần nào và không in gì. Đó không phải lỗi."
       }
     },
     "step_3": {
@@ -198,7 +198,7 @@
           },
           {
             "label": "[]",
-            "value": "Không có output."
+            "value": "Không in gì."
           }
         ]
       },
@@ -225,7 +225,7 @@
           "expect": "'level\\npython\\nradar\\n'"
         },
         {
-          "name": "List rỗng: không có output",
+          "name": "List rỗng: không in gì",
           "call": "_studio.run(vars={'words': []}).stdout",
           "expect": "''"
         },

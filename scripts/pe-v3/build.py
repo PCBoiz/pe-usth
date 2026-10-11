@@ -29,6 +29,7 @@ from pathlib import Path
 HERE = Path(__file__).parent
 sys.path.insert(0, str(HERE))
 
+import glossary  # noqa: E402
 import lessons_b1  # noqa: E402
 import lessons_b2  # noqa: E402
 import lessons_i  # noqa: E402
@@ -170,7 +171,7 @@ def build_lesson(spec: dict, sort_order: int) -> tuple[dict, dict]:
         'mcq': [mcq_block(code, q) for q in spec['mcq']],
         'selfExplain': {
             'prompt': spec['why']['prompt'],
-            'placeholder': 'Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).',
+            'placeholder': 'Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).',
             'sample': spec['why']['sample'],
         },
     }
@@ -280,6 +281,7 @@ def main() -> int:
     try:
         for i, spec in enumerate(specs, start=1):
             row, check_row = build_lesson(spec, i)
+            row['content_json'] = glossary.polish(row['content_json'])
             rows.append(strip_none(row))
             qa.append(check_row)
     except BuildError as err:

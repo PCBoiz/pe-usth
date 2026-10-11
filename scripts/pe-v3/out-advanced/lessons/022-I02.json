@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I02",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -120,7 +120,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao dùng list(paradigms) thay vì gán nguyên paradigms?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Gán nguyên list khiến object và nơi gọi cùng trỏ vào một list: sửa list nguồn là object đổi theo. list(paradigms) tạo list mới chứa cùng phần tử, nên object có list riêng; sửa source sau khi tạo không làm object thay đổi."
       }
     },

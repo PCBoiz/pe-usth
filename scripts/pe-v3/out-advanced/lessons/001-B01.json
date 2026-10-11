@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B01",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Gán giá trị vào biến và in theo thứ tự.",
-        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.",
+        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có dữ liệu nhập từ bàn phím.",
         "example": "Kết quả: Python rồi 1991 — mỗi giá trị một dòng.",
         "prereq": "Không cần bài trước.",
         "level": "Cơ bản"
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao đổi giá trị biến làm kết quả đổi theo mà không phải sửa lệnh print?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "print không giữ sẵn chữ Python hay số 1991; mỗi lần chạy, print(year) đọc giá trị HIỆN TẠI của biến year. Gán year = 2026 thì dòng thứ hai thành 2026, còn dòng đầu vẫn là Python vì name không đổi."
       }
     },
@@ -221,7 +221,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.\n\nThực hành: Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến.",
+        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có dữ liệu nhập từ bàn phím.\n\nThực hành: Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến.",
         "io": [
           {
             "label": "Mặc định",

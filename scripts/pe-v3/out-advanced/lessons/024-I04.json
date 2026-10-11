@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I04",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Trả chuỗi biểu diễn object bằng __str__.",
-        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.",
+        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo định dạng của đề: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.",
         "example": "str(language) → Language[Python], Year created[1991], Paradigms['procedural']",
         "prereq": "I03",
         "level": "Trung cấp"
@@ -59,14 +59,14 @@
           {
             "id": "c",
             "title": "Cả hai",
-            "detail": "In thêm trong __str__ làm mỗi lần str(obj) đều sinh output.",
+            "detail": "In thêm trong __str__ làm mỗi lần str(obj) đều in thêm ra màn hình.",
             "correct": false
           }
         ]
       },
       "misconception": {
-        "title": "\"Paradigms[{self.paradigms}] mới đúng format\"",
-        "body": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Format v3 là f\", Paradigms{self.paradigms}\"."
+        "title": "\"Paradigms[{self.paradigms}] mới đúng định dạng\"",
+        "body": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Định dạng của đề là f\", Paradigms{self.paradigms}\"."
       },
       "explain": [
         {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao print(obj) dùng được __str__?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "print cần một chuỗi để hiển thị object; nó gọi str(obj), và str(obj) gọi __str__ để lấy chuỗi trả về. Vì vậy __str__ phải return str; nếu chỉ print thì trả None và str(obj) báo TypeError."
       }
     },
@@ -146,7 +146,7 @@
       "task": {
         "title": "Luyện có hỗ trợ",
         "body": "Lắp hai phần nối và lệnh trả kết quả.",
-        "rule": "Thử name = \"C\", year = 1972, paradigms = []; kiểm format và stdout của str(obj)."
+        "rule": "Thử name = \"C\", year = 1972, paradigms = []; kiểm định dạng và phần in ra của str(obj)."
       },
       "trace": {
         "steps": [
@@ -230,7 +230,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo format v3: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.\n\nThực hành: Tạo description theo ba bước, rồi return description.",
+        "body": "Trong class đã cấp, viết __str__ trả chuỗi theo định dạng của đề: Language[name], Year created[year], Paradigms[...list...] — ví dụ Language[Python], Year created[1991], Paradigms['procedural']. __str__ phải return chuỗi, không print.\n\nThực hành: Tạo description theo ba bước, rồi return description.",
         "io": [
           {
             "label": "Object Python",
@@ -306,7 +306,7 @@
           "sig": "ProgrammingLanguage.__str__(self)",
           "does": "Biểu diễn object bằng chuỗi.",
           "takes": "self",
-          "gives": "str đúng format v3",
+          "gives": "str đúng định dạng của đề",
           "effect": "Không print, không đổi object.",
           "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
         }
@@ -332,9 +332,9 @@
               "explain": "Đúng — đây là ý chính của bài."
             },
             {
-              "statement": "Paradigms[{self.paradigms}] mới đúng format",
+              "statement": "Paradigms[{self.paradigms}] mới đúng định dạng",
               "answer": false,
-              "explain": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Format v3 là f\", Paradigms{self.paradigms}\"."
+              "explain": "f\"{self.paradigms}\" đã có sẵn ngoặc vuông: ['procedural']. Viết thêm [...] bên ngoài thành Paradigms[['procedural']]. Định dạng của đề là f\", Paradigms{self.paradigms}\"."
             }
           ]
         },

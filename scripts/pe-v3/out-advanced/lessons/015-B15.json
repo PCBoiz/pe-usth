@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B15",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -25,7 +25,7 @@
         ],
         "title": "Đưa phần ghi vào hàm",
         "goal": "Hàm write_lines(path, lines) có tác dụng ghi file.",
-        "task": "Dùng with, mode w, UTF-8; thêm newline sau từng chuỗi.",
+        "task": "Dùng with, chế độ w, UTF-8; thêm ký tự xuống dòng sau từng chuỗi.",
         "predict": "Không có return mang giá trị thì nơi gọi nhận gì?",
         "code": "def write_lines(path, lines):\n    pass",
         "tests": [
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Đưa việc ghi từng dòng vào hàm có tác dụng phụ.",
-        "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.",
+        "body": "Viết write_lines(path, lines): mở path bằng chế độ \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.",
         "example": "write_lines(\"palindromes.txt\", [\"level\", \"radar\"]) tạo file hai dòng và trả None.",
         "prereq": "B14",
         "level": "Cơ bản"
@@ -116,14 +116,14 @@
       ],
       "selfExplain": {
         "prompt": "Hàm trả None có nghĩa là không làm được việc gì không?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Không. write_lines thực hiện tác dụng phụ là ghi file; nó không cần trả dữ liệu để hoàn thành việc đó. Kết quả nằm trong file đích, còn giá trị trả về là None vì không có return mang giá trị."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Lắp mode mở file và lệnh ghi từng chuỗi.",
+        "body": "Lắp chế độ mở file và lệnh ghi từng chuỗi.",
         "rule": "Gọi hai lần vào cùng một file: trước ghi [\"a\"], sau ghi []; kiểm nội dung lần đầu bị thay thế."
       },
       "trace": {
@@ -199,7 +199,7 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.\n\nThực hành: Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\".",
+        "body": "Viết write_lines(path, lines): mở path bằng chế độ \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.\n\nThực hành: Dùng chế độ \"w\", UTF-8 và for để ghi mỗi text + \"\\n\".",
         "io": [
           {
             "label": "[\"level\", \"radar\"]",
@@ -216,7 +216,7 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\"."
+          "body": "Dùng chế độ \"w\", UTF-8 và for để ghi mỗi text + \"\\n\"."
         },
         {
           "title": "Cấu trúc",
@@ -263,7 +263,7 @@
         {
           "sig": "write_lines(path, lines)",
           "does": "Ghi từng chuỗi trên một dòng.",
-          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "takes": "path: str; lines: list[str] không chứa ký tự xuống dòng (\\r, \\n) bên trong",
           "gives": "None — không có return mang giá trị",
           "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
           "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"

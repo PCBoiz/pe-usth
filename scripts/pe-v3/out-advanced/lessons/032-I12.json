@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I12",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -56,7 +56,7 @@
           {
             "id": "b",
             "title": "__str__ in thông báo; compile trả chuỗi",
-            "detail": "Ngược hợp đồng.",
+            "detail": "Ngược yêu cầu của đề.",
             "correct": false
           },
           {
@@ -69,7 +69,7 @@
       },
       "misconception": {
         "title": "Ba cái bẫy của Ex3",
-        "body": "Quên super().__init__ (thiếu trường cha); gọi str(self) trong __str__ (RecursionError); compile hard-code C17 hoặc return thay vì print."
+        "body": "Quên super().__init__ (thiếu trường cha); gọi str(self) trong __str__ (RecursionError); compile viết cứng C17 hoặc return thay vì print."
       },
       "explain": [
         {
@@ -113,7 +113,7 @@
       ],
       "selfExplain": {
         "prompt": "Phần nào của object do cha khởi tạo, phần nào do con bổ sung?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Cha khởi tạo name, year_created, paradigms (kèm copy list) qua super().__init__. Con thêm std_version, mở rộng __str__ bằng super().__str__() + Standard version[...], và thêm compile in thông báo theo phiên bản hiện tại."
       }
     },

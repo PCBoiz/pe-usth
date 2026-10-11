@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I01",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -145,7 +145,7 @@
       ],
       "selfExplain": {
         "prompt": "Class và object khác nhau thế nào trong ví dụ này?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "ProgrammingLanguage là class — bản mô tả gồm ba thuộc tính. language là object tạo từ class bằng lời gọi ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]) và giữ giá trị riêng. Đổi sang object C/1972 vẫn đọc bằng cùng mã language.name, language.year_created, language.paradigms."
       }
     },
@@ -268,7 +268,7 @@
           "expect": "\"C\\n1972\\n['procedural']\\n\""
         },
         {
-          "name": "Ca riêng: Rust/2010/[]",
+          "name": "Ca ẩn: Rust/2010/[]",
           "call": "_studio.run(vars={'language': _studio.expr(\"ProgrammingLanguage('Rust', 2010, [])\")}).stdout",
           "expect": "'Rust\\n2010\\n[]\\n'"
         },

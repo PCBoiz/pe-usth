@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -47,7 +47,7 @@
           {
             "id": "a",
             "title": "Có — append không bỏ trùng",
-            "detail": "Quy ước v3: thêm vào cuối, giữ trùng.",
+            "detail": "Quy ước của đề: thêm vào cuối, giữ trùng.",
             "correct": true
           },
           {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao result là None nhưng list vẫn thay đổi?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "add_paradigms sửa trạng thái của object qua self.paradigms.append(...) — một tác dụng phụ. Nó không có return mang giá trị nên lời gọi trả None. Muốn xem kết quả thì đọc obj.paradigms."
       }
     },

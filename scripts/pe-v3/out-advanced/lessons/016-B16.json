@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B16",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -67,7 +67,7 @@
       },
       "misconception": {
         "title": "\"print trong hàm giúp nơi gọi thấy kết quả\"",
-        "body": "Nơi gọi chỉ nhận được giá trị qua return; print trong hàm làm bẩn stdout mỗi lần gọi. Lệnh print ở cuối mã mẫu là của NƠI GỌI để quan sát, không phải trong hàm."
+        "body": "Nơi gọi chỉ nhận được giá trị qua return; print trong hàm in thừa ra màn hình mỗi lần gọi. Lệnh print ở cuối mã mẫu là của NƠI GỌI để quan sát, không phải trong hàm."
       },
       "explain": [
         {
@@ -117,7 +117,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao bản lỗi trả None khi words = []?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Với list rỗng, vòng for không chạy lượt nào; return nằm trong vòng lặp nên không bao giờ được thực hiện, hàm chạy hết và Python tự trả None. Đặt return sau for thì list rỗng trả [] và list dài được xét đủ."
       }
     },
@@ -236,7 +236,7 @@
           "expect": "['radar']"
         },
         {
-          "name": "Lời gọi hàm không in gì (stdout rỗng)",
+          "name": "Lời gọi hàm không in gì",
           "call": "_studio.stdout(filter_palindromes, [\"level\", \"ab\"])",
           "expect": "''"
         }

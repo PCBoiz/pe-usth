@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -138,7 +138,7 @@
       ],
       "selfExplain": {
         "prompt": "Sau phép đảo, text có bị đổi thành \"nohtyp\" không? Vì sao?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Không. text[::-1] tạo một chuỗi mới rồi gán vào reversed_text; text vẫn giữ \"python\" vì chuỗi không bị sửa tại chỗ. Chuỗi rỗng đảo vẫn ra chuỗi rỗng vì không có ký tự nào để đảo."
       }
     },
@@ -257,9 +257,9 @@
           "expect": "'ba\\n'"
         },
         {
-          "name": "Chuỗi rỗng đảo vẫn rỗng",
-          "call": "_studio.run(vars={'text': ''}).var('reversed_text')",
-          "expect": "''"
+          "name": "Chuỗi rỗng đảo vẫn rỗng (in ra dòng trống)",
+          "call": "_studio.run(vars={'text': ''}).stdout",
+          "expect": "'\\n'"
         },
         {
           "name": "text giữ nguyên sau phép đảo",

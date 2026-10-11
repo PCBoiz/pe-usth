@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I07",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -79,7 +79,7 @@
         },
         {
           "n": 3,
-          "body": "__str__ chỉ ĐỌC trạng thái: trả chuỗi đúng format, không in."
+          "body": "__str__ chỉ ĐỌC trạng thái: trả chuỗi đúng định dạng, không in."
         },
         {
           "n": 4,
@@ -114,7 +114,7 @@
       ],
       "selfExplain": {
         "prompt": "Method nào thay đổi trạng thái, method nào chỉ đọc trạng thái? Vì sao điều đó quan trọng?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "__init__ khởi tạo trạng thái; add_paradigms thay đổi list của object và trả None; __str__ chỉ đọc các trường để trả chuỗi, không in, không sửa gì — gọi bao nhiêu lần cũng cho cùng kết quả. Tách rõ như vậy mới kiểm được từng method riêng."
       }
     },
@@ -213,7 +213,7 @@
           "expect": "''"
         },
         {
-          "name": "Format với list rỗng",
+          "name": "Định dạng với list rỗng",
           "call": "str(ProgrammingLanguage('C', 1972, []))",
           "expect": "'Language[C], Year created[1972], Paradigms[]'"
         }
@@ -239,7 +239,7 @@
           "sig": "ProgrammingLanguage.__str__(self)",
           "does": "Biểu diễn object bằng chuỗi.",
           "takes": "self",
-          "gives": "str đúng format v3",
+          "gives": "str đúng định dạng của đề",
           "effect": "Không print, không đổi object.",
           "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
         }

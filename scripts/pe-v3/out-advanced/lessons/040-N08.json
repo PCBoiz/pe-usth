@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N08",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -72,12 +72,12 @@
       },
       "misconception": {
         "title": "Bốn cái bẫy của Ex5",
-        "body": "Đo bắt đầu sau khi đã fork; dừng đo trước khi chờ đủ; quên validation (True, 1.5, \"2\" lọt qua); để child lỗi thoát mã 0. Cũng đừng kỳ vọng m/n lớn hơn thì nhanh hơn — print chỉ mô phỏng compile."
+        "body": "Đo bắt đầu sau khi đã fork; dừng đo trước khi chờ đủ; quên kiểm tra đầu vào (True, 1.5, \"2\" lọt qua); để child lỗi thoát mã 0. Cũng đừng kỳ vọng m/n lớn hơn thì nhanh hơn — print chỉ mô phỏng compile."
       },
       "explain": [
         {
           "n": 1,
-          "body": "Validation m, n trước khi tạo process; parent vẫn đơn luồng khi fork."
+          "body": "Kiểm tra đầu vào m, n trước khi tạo process; parent vẫn đơn luồng khi fork."
         },
         {
           "n": 2,
@@ -96,7 +96,7 @@
     "step_2": {
       "mcq": [
         {
-          "question": "benchmark(True, 3) theo hợp đồng v3?",
+          "question": "benchmark(True, 3) theo yêu cầu của đề?",
           "options": [
             {
               "text": "ValueError trước khi fork",
@@ -120,7 +120,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao đặt phép đo kết thúc sau wait_for_children?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Chỉ khi chờ đủ mới biết mọi child (và thread của chúng) đã hoàn tất. Dừng đo trước đó là bỏ mất thời gian chạy còn lại của child. Bắt đầu đo trước vòng fork để tính cả chi phí tạo process."
       }
     },
@@ -159,7 +159,7 @@
     "step_4": {
       "task": {
         "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-        "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.\n\nThực hành: Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ.",
+        "body": "Viết benchmark(self, m, n) trong class C (kế thừa thread_language.C): kiểm m, n là int dương không phải bool (sai → ValueError, trước khi fork); bắt đầu đo bằng time.time() TRƯỚC khi tạo child; tạo m child, mỗi child gọi self.parallel_compile(n) rồi thoát (lỗi → exit 1); parent chờ đủ bằng wait_for_children, child lỗi → RuntimeError, fork lỗi giữa chừng → chờ child đã tạo rồi raise lại; trả về số giây đo SAU khi chờ đủ.\n\nThực hành: Kiểm tra đầu vào trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ.",
         "io": [
           {
             "label": "m = 1, n = 1",
@@ -176,7 +176,7 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Validation trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ."
+          "body": "Kiểm tra đầu vào trước khi fork; bắt đầu đo trước khi tạo child; kết thúc đo sau khi chờ đủ."
         },
         {
           "title": "Cấu trúc",
@@ -265,7 +265,7 @@
           "does": "Tạo n thread và chờ tất cả hoàn tất.",
           "takes": "self; n là int dương, không phải bool",
           "gives": "None; n sai → ValueError",
-          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
           "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
         },
         {
@@ -288,7 +288,7 @@
           "id": "trueFalse-0",
           "type": "trueFalse",
           "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
-          "prompt": "benchmark(True, 3) theo hợp đồng v3?",
+          "prompt": "benchmark(True, 3) theo yêu cầu của đề?",
           "items": [
             {
               "statement": "ValueError trước khi fork",

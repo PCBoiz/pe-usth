@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B11",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Đọc toàn bộ file UTF-8 bằng with/open.",
-        "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.",
+        "body": "Dùng with/open (chế độ \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.",
         "example": "data.txt chứa \"level\\npython\\nđộđ\" → text nhận đúng nội dung đó.",
         "prereq": "B10",
         "level": "Cơ bản",
@@ -117,31 +117,31 @@
           "explanation": "Mã hoá mặc định của máy có thể khác UTF-8."
         },
         {
-          "question": "Mở data.txt bằng mode \"w\" để đọc thì chuyện gì xảy ra?",
+          "question": "Mở data.txt bằng chế độ \"w\" để đọc thì chuyện gì xảy ra?",
           "options": [
             {
               "text": "Nội dung file bị xoá ngay khi mở",
-              "detail": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn.",
+              "detail": "Chế độ \"w\" ghi đè — tuyệt đối không dùng với file nguồn.",
               "correct": true
             },
             {
               "text": "Đọc bình thường",
-              "detail": "\"w\" là mode ghi, không đọc được.",
+              "detail": "\"w\" là chế độ ghi, không đọc được.",
               "correct": false
             },
             {
               "text": "Python tự đổi sang \"r\"",
-              "detail": "Python làm đúng mode bạn ghi.",
+              "detail": "Python làm đúng chế độ bạn ghi.",
               "correct": false
             }
           ],
           "correct": 0,
-          "explanation": "Mode \"w\" ghi đè — tuyệt đối không dùng với file nguồn."
+          "explanation": "Chế độ \"w\" ghi đè — tuyệt đối không dùng với file nguồn."
         }
       ],
       "selfExplain": {
         "prompt": "Vì sao in text ở ngoài with vẫn được?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "file.read() đã chép nội dung file vào biến text (một str trong bộ nhớ). with chỉ đóng file khi ra khỏi khối, không xoá biến text, nên print(text) ở ngoài vẫn in đúng nội dung, kể cả chữ có dấu."
       }
     },
@@ -211,7 +211,7 @@
           {
             "label": "open(\"data.txt\", \"w\", encoding=\"utf-8\")",
             "slot": 1,
-            "trap": "Mode w XOÁ file nguồn!"
+            "trap": "Chế độ w XOÁ file nguồn!"
           },
           {
             "label": "text = file.readline()",
@@ -224,11 +224,11 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Dùng with/open (mode \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.\n\nThực hành: Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with.",
+        "body": "Dùng with/open (chế độ \"r\", encoding=\"utf-8\") để đọc toàn bộ data.txt vào text, rồi in text ở NGOÀI khối with. File data.txt đã có sẵn trong thư mục bài.\n\nThực hành: Đọc bằng chế độ \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with.",
         "io": [
           {
             "label": "data.txt: \"level\\npython\\nđộđ\"",
-            "value": "text đúng; stdout thêm một xuống dòng do print"
+            "value": "text đúng; khi in có thêm một dòng mới do print"
           },
           {
             "label": "File rỗng",
@@ -241,7 +241,7 @@
       "hints": [
         {
           "title": "Nguyên lý",
-          "body": "Đọc bằng mode \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with."
+          "body": "Đọc bằng chế độ \"r\" và encoding=\"utf-8\". In text sau khi ra khỏi with."
         },
         {
           "title": "Cấu trúc",
@@ -259,7 +259,7 @@
           "expect": "'level\\npython\\nđộđ'"
         },
         {
-          "name": "stdout = nội dung + một xuống dòng",
+          "name": "in ra: nội dung + một dòng mới",
           "call": "_studio.run().stdout",
           "expect": "'level\\npython\\nđộđ\\n'"
         },
@@ -269,7 +269,7 @@
           "expect": "''"
         },
         {
-          "name": "Ca riêng: \"xin chào\"",
+          "name": "Ca ẩn: \"xin chào\"",
           "call": "_studio.run(files={'data.txt': 'xin chào'}).var('text')",
           "expect": "'xin chào'"
         },

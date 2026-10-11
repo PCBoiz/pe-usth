@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B13",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -25,7 +25,7 @@
         ],
         "title": "Ghi một kết quả",
         "goal": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
-        "task": "Dùng mode w ghi words vào palindromes.txt; tự thêm newline.",
+        "task": "Dùng chế độ w ghi words vào palindromes.txt; tự thêm ký tự xuống dòng.",
         "predict": "Chạy lại với words = [\"a\"] có giữ dữ liệu cũ không?",
         "code": "words = [\"level\", \"radar\"]\n# Mở palindromes.txt bằng mode w\n# Ghi từng word + \"\\n\"",
         "tests": [
@@ -36,7 +36,7 @@
       },
       "context": {
         "title": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
-        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.",
+        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng chế độ \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.",
         "example": "words = [\"level\", \"radar\"] → palindromes.txt chứa \"level\\nradar\\n\".",
         "prereq": "B12",
         "level": "Cơ bản"
@@ -46,14 +46,14 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — mode \"w\" ghi đè, file chỉ còn \"a\\n\"",
+            "title": "Không — chế độ \"w\" ghi đè, file chỉ còn \"a\\n\"",
             "detail": "Mở bằng \"w\" là làm rỗng file trước khi ghi.",
             "correct": true
           },
           {
             "id": "b",
             "title": "Có — \"a\" được thêm vào cuối",
-            "detail": "Đó là hành vi của mode \"a\" (append).",
+            "detail": "Đó là hành vi của chế độ \"a\" (append).",
             "correct": false
           },
           {
@@ -65,8 +65,8 @@
         ]
       },
       "misconception": {
-        "title": "\"Mở bằng mode \"a\" cho an toàn\"",
-        "body": "Mode \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
+        "title": "\"Mở bằng chế độ \"a\" cho an toàn\"",
+        "body": "Chế độ \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
       },
       "explain": [
         {
@@ -138,14 +138,14 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao phải tự thêm \"\\n\" khi ghi?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "file.write ghi đúng chuỗi được đưa vào, không tự xuống dòng như print mặc định. Nối word + \"\\n\" thì mỗi từ nằm trên một dòng; mode \"w\" ghi đè nên chạy lại không lẫn dữ liệu cũ."
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "file.write ghi đúng chuỗi được đưa vào, không tự xuống dòng như print mặc định. Nối word + \"\\n\" thì mỗi từ nằm trên một dòng; chế độ \"w\" ghi đè nên chạy lại không lẫn dữ liệu cũ."
       }
     },
     "step_3": {
       "task": {
         "title": "Luyện có hỗ trợ",
-        "body": "Dữ liệu mới: [\"độđ\", \"độđ\"]. Chọn mode mở file và lệnh ghi.",
+        "body": "Dữ liệu mới: [\"độđ\", \"độđ\"]. Chọn chế độ mở file và lệnh ghi.",
         "rule": "Chạy hai lần với hai list khác nhau; lần thứ hai thử [] và kiểm file rỗng."
       },
       "trace": {
@@ -226,11 +226,11 @@
     "step_4": {
       "task": {
         "title": "Thử thách độc lập",
-        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.\n\nThực hành: Mỗi lần write ghi word + \"\\n\".",
+        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng chế độ \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.\n\nThực hành: Mỗi lần write ghi word + \"\\n\".",
         "io": [
           {
             "label": "[\"level\", \"radar\"]",
-            "value": "File: \"level\\nradar\\n\"; stdout rỗng"
+            "value": "File: \"level\\nradar\\n\"; không in gì"
           },
           {
             "label": "[]",
@@ -261,7 +261,7 @@
           "expect": "'level\\nradar\\n'"
         },
         {
-          "name": "stdout rỗng",
+          "name": "không in gì",
           "call": "_studio.run().stdout",
           "expect": "''"
         },
@@ -302,9 +302,9 @@
               "explain": "Đúng — đây là ý chính của bài."
             },
             {
-              "statement": "Mở bằng mode \"a\" cho an toàn",
+              "statement": "Mở bằng chế độ \"a\" cho an toàn",
               "answer": false,
-              "explain": "Mode \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
+              "explain": "Chế độ \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
             }
           ]
         },

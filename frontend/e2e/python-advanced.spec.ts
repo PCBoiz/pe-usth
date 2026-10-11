@@ -206,9 +206,15 @@ async function playLesson(page: Page, code: string) {
   if (!play.boss) {
     await shot(page, `${code}-explain`);
     await clickPrimary(page, /Tiếp tục/); // giải thích
-    const right = lesson.step_1!.predict!.options.findIndex((o) => o.correct);
+    const options = lesson.step_1!.predict!.options;
+    const right = options.findIndex((o) => o.correct);
+    // Lời giải thích của từng phương án lộ đáp án: chỉ được hiện SAU khi kiểm tra.
+    const wrongDetail = options.find((o) => !o.correct && o.detail)?.detail;
+    if (wrongDetail) await expect(page.getByText(wrongDetail, { exact: true })).toHaveCount(0);
     await page.locator('button[aria-pressed]').nth(right).click();
-    await checkAndNext(page);
+    await clickPrimary(page, 'Kiểm tra');
+    if (wrongDetail) await expect(page.getByText(wrongDetail, { exact: true })).toBeVisible();
+    await clickPrimary(page, /Tiếp tục/);
   }
   for (const g of play.games) await playGame(page, row, g);
 

@@ -14,7 +14,7 @@
       "kind": "pe-v3-advanced",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N04",
       "parser": "pe-v3/build_advanced",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -32,11 +32,11 @@
           "n = 3 → ba worker, trả None",
           "n = 0 → ValueError, chưa có worker"
         ],
-        "reflect": "Validation và join kiểm hai điều khác nhau thế nào?"
+        "reflect": "Kiểm tra đầu vào và join bảo đảm hai điều khác nhau thế nào?"
       },
       "context": {
         "title": "Tự giải Ex4 và kiểm dữ liệu n.",
-        "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.",
+        "body": "Hàm phụ _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.",
         "example": "n = 3 hợp lệ; n = 0, -1, True, 1.5 hoặc \"3\" → ValueError.",
         "prereq": "N03",
         "level": "Nâng cao",
@@ -57,7 +57,7 @@
           {
             "id": "b",
             "title": "Vì True bằng 1 nên hợp lệ",
-            "detail": "Đề v3 coi bool là dữ liệu sai.",
+            "detail": "Đề bài coi bool là dữ liệu sai.",
             "correct": false
           },
           {
@@ -70,7 +70,7 @@
       },
       "misconception": {
         "title": "\"Kiểm n xong thì không cần join\"",
-        "body": "Validation kiểm ĐẦU VÀO trước khi chạy; join bảo đảm vòng đời worker đã HOÀN TẤT trước khi trả về — hai việc khác nhau. Và đừng hứa worker bắt đầu cùng lúc hay chạy nhanh hơn: đó không phải tiêu chí Ex4."
+        "body": "Kiểm tra đầu vào xét DỮ LIỆU VÀO trước khi chạy; join bảo đảm vòng đời worker đã HOÀN TẤT trước khi trả về — hai việc khác nhau. Và đừng hứa worker bắt đầu cùng lúc hay chạy nhanh hơn: đó không phải tiêu chí Ex4."
       },
       "explain": [
         {
@@ -83,7 +83,7 @@
         },
         {
           "n": 3,
-          "body": "Sau validation, tạo/start/join như N02; helper giữ đúng một nhiệm vụ in thông báo."
+          "body": "Sau kiểm tra đầu vào, tạo/start/join như N02; hàm phụ giữ đúng một nhiệm vụ in thông báo."
         },
         {
           "n": 4,
@@ -94,7 +94,7 @@
     "step_2": {
       "mcq": [
         {
-          "question": "parallel_compile(1.5) theo hợp đồng v3 thì…",
+          "question": "parallel_compile(1.5) theo yêu cầu của đề thì…",
           "options": [
             {
               "text": "ValueError, chưa tạo worker nào",
@@ -117,16 +117,16 @@
         }
       ],
       "selfExplain": {
-        "prompt": "Validation n và join kiểm hai điều khác nhau thế nào?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
-        "sample": "Validation kiểm đầu vào trước khi chạy: n phải là int dương, không phải bool, sai thì raise ValueError khi chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về."
+        "prompt": "Kiểm tra n và join bảo đảm hai điều khác nhau thế nào?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Kiểm tra đầu vào xét dữ liệu trước khi chạy: n phải là int dương, không phải bool, sai thì raise ValueError khi chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về."
       }
     },
     "step_3": {
       "task": {
         "title": "Lập kế hoạch trước khi tự viết",
         "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
-        "rule": "Bộ chấm dùng n khác và fixture đo vòng đời worker; dữ liệu sai phải lỗi trước khi có worker."
+        "rule": "Bộ chấm thử với n khác và theo dõi từng worker từ lúc tạo tới lúc xong; dữ liệu sai phải báo lỗi trước khi có worker."
       },
       "trace": {
         "steps": [
@@ -153,7 +153,7 @@
     "step_4": {
       "task": {
         "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
-        "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.\n\nThực hành: Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.",
+        "body": "Hàm phụ _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.\n\nThực hành: Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.",
         "io": [
           {
             "label": "n = 3",
@@ -261,7 +261,7 @@
           "does": "Thực hiện một công việc mô phỏng.",
           "takes": "self; n: int — đọc self.std_version",
           "gives": "None",
-          "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+          "effect": "In một dòng có n và phiên bản; flush=True đẩy dòng in ra màn hình ngay.",
           "call": "obj._compile_worker(3) → thông báo cho n = 3"
         },
         {
@@ -269,7 +269,7 @@
           "does": "Tạo n thread và chờ tất cả hoàn tất.",
           "takes": "self; n là int dương, không phải bool",
           "gives": "None; n sai → ValueError",
-          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "effect": "Tạo/start/join thread; worker tự in ra màn hình; không bảo đảm thứ tự dòng in.",
           "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
         }
       ],
@@ -284,7 +284,7 @@
           "id": "trueFalse-0",
           "type": "trueFalse",
           "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
-          "prompt": "parallel_compile(1.5) theo hợp đồng v3 thì…",
+          "prompt": "parallel_compile(1.5) theo yêu cầu của đề thì…",
           "items": [
             {
               "statement": "ValueError, chưa tạo worker nào",

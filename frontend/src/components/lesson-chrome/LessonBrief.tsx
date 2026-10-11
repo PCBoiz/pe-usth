@@ -1,7 +1,8 @@
 // Màn mở đầu "một màn" của bài học — dịch từ Figma "PE Python v3 — 20 bài cơ bản
 // B01–B20" (frame B01…B20, cùng một mẫu): nhãn chặng → tiêu đề → mục tiêu → thẻ
-// NHIỆM VỤ → thẻ DỰ ĐOÁN → khung main.py → CA KIỂM TRA CÔNG KHAI → GIẢI THÍCH
-// TRƯỚC KHI XEM ĐÁP ÁN. Nằm trong khung LessonChrome (thanh trên + nút "Tiếp tục →").
+// NHIỆM VỤ → thẻ DỰ ĐOÁN → khung main.py → CA KIỂM TRA CÔNG KHAI → câu hỏi tự
+// trả lời (Figma ghi "Giải thích trước khi xem đáp án", nhưng nội dung là một CÂU
+// HỎI để người học tự giải thích, nên nhãn nói đúng việc phải làm). Nằm trong khung LessonChrome (thanh trên + nút "Tiếp tục →").
 import styles from './LessonBrief.module.css';
 
 export interface LessonBriefProps {
@@ -81,7 +82,7 @@ export default function LessonBrief({
 
       {reflect && (
         <section className={styles.reflect}>
-          <h2 className={styles.reflectLabel}>Giải thích trước khi xem đáp án</h2>
+          <h2 className={styles.reflectLabel}>Tự trả lời trước khi xem đáp án</h2>
           <p className={styles.reflectText}>{reflect}</p>
         </section>
       )}

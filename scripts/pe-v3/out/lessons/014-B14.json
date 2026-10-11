@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B14",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-03T08:50:30+00:00"
+      "importedAt": "2026-10-11T08:45:41+00:00"
     },
     "step_1": {
       "brief": {
@@ -24,7 +24,7 @@
           "B14"
         ],
         "title": "Đưa phần đọc vào hàm",
-        "goal": "Hàm read_lines(path) trả list dòng đã bỏ newline.",
+        "goal": "Hàm read_lines(path) trả list dòng đã bỏ ký tự xuống dòng.",
         "task": "Dùng tham số path thay tên file cố định và return list sau khi đọc.",
         "predict": "return lines ở ngoài with có dùng được không?",
         "code": "def read_lines(path):\n    pass\n\n# Gọi thử và in ở ngoài hàm",
@@ -69,7 +69,7 @@
       },
       "misconception": {
         "title": "\"print(lines) trong hàm là đủ\"",
-        "body": "Nơi gọi cần LIST để lọc tiếp; print chỉ hiển thị và hàm trả None. Đừng hard-code \"data.txt\" trong thân hàm — dùng tham số path. Thiếu file thì cứ để FileNotFoundError bật lên, đừng biến lỗi thành []."
+        "body": "Nơi gọi cần LIST để lọc tiếp; print chỉ hiển thị và hàm trả None. Đừng viết cứng \"data.txt\" trong thân hàm — dùng tham số path. Thiếu file thì cứ để FileNotFoundError bật lên, đừng biến lỗi thành []."
       },
       "explain": [
         {
@@ -141,7 +141,7 @@
       ],
       "selfExplain": {
         "prompt": "Vì sao return lines thay vì print(lines) trong hàm?",
-        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
         "sample": "Nơi gọi cần list để dùng tiếp (lọc palindrome). print chỉ hiển thị lên màn hình và hàm sẽ trả None, nơi gọi không nhận được dữ liệu. return lines gửi list về; muốn xem thì nơi gọi tự print."
       }
     },
