@@ -79,12 +79,16 @@ model AuthSession {
   id         Int       @id @default(autoincrement())
   userId     Int       @map("user_id")
   token      String
+  // Chuỗi token sinh ra từ cùng một lần đăng nhập (xem RefreshTokenService).
+  // Nullable: bản Django dùng chung bảng không biết cột này.
+  familyId   String?   @map("family_id")
   deviceInfo String?   @map("device_info")
   expiresAt  DateTime? @map("expires_at") @db.Timestamptz(6)
   revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(6)
 
   user User @relation(fields: [userId], references: [id])
 
+  @@index([familyId])
   @@map("auth_sessions")
 }
 

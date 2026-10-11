@@ -24,6 +24,12 @@ export const envValidationSchema = Joi.object({
   JWT_ACCESS_EXPIRES: Joi.string().default('30m'),
   JWT_REFRESH_EXPIRES: Joi.string().default('8h'),
 
+  // Cookie refresh token: 'lax' khi frontend và backend cùng site (vd
+  // app.example.com + api.example.com); 'none' khi khác site (bắt buộc HTTPS).
+  REFRESH_COOKIE_SAMESITE: Joi.string()
+    .valid('lax', 'strict', 'none')
+    .default('lax'),
+
   FRONTEND_URL: Joi.string().uri().required(),
   ALLOWED_ORIGINS: Joi.string().required(),
 

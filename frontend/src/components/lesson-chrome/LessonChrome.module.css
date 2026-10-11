@@ -174,6 +174,9 @@ button.segment::after {
 .contentContainer {
   max-width: var(--st-col);
   width: 100%;
+  /* Mục flex: không có dòng này thì một dòng code dài (min-content) đẩy cả cột
+     rộng hơn màn hình điện thoại thay vì tự cuộn trong khung code. */
+  min-width: 0;
   margin: 0 auto;
   padding: 45px 20px 32px;
 }
@@ -374,5 +377,27 @@ button.segment:focus-visible,
     height: 48px;
     padding: 0 12px;
     font-size: 12px;
+  }
+}
+
+/* Ô điểm của khoá có mini-game: cùng dáng pill streak, đứng ngay trước nó. */
+.scorePill {
+  margin-left: auto;
+  height: 34px;
+  background: var(--edu-accent-soft);
+  color: var(--edu-accent-text);
+  border-radius: 17px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+@media (max-width: 560px) {
+  .scorePill {
+    padding: 0 10px;
   }
 }

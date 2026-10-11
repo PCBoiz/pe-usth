@@ -1,7 +1,7 @@
 'use client';
 
 // Dựng mọi bài lưu ở `lessons.content_json` theo schema studio-lesson/v1 (kết
-// quả của bộ nhập PDF/Markdown và của scripts/pe-convert) bằng khung
+// quả của bộ nhập PDF/Markdown và của scripts/pe-v3) bằng khung
 // LessonChrome — vỏ dịch từ Stitch, xem trước ở /admin/lesson-chrome-demo:
 // thanh tiến độ trên đầu, MỘT thẻ nội dung mỗi màn, một nút CTA dưới đáy.
 //
@@ -12,6 +12,7 @@
 //
 // Bài List & Mutability dựng tay vẫn dùng PythonStudio.tsx, không đi qua đây.
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { apiFetch, asList, findEnrollment } from '@/lib/api';
 import LessonBrief from '@/components/lesson-chrome/LessonBrief';
@@ -21,35 +22,50 @@ import Assemble from '@/components/lesson-chrome/exercises/Assemble';
 import Classify from '@/components/lesson-chrome/exercises/Classify';
 import CodeAnnotated from '@/components/lesson-chrome/exercises/CodeAnnotated';
 import CodeBlock from '@/components/lesson-chrome/exercises/CodeBlock';
-import { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
+import Console, { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 import FeedbackBanner from '@/components/lesson-chrome/exercises/FeedbackBanner';
 import HintSheet from '@/components/lesson-chrome/exercises/HintSheet';
+import MatchPairs from '@/components/lesson-chrome/exercises/MatchPairs';
 import Mcq from '@/components/lesson-chrome/exercises/Mcq';
 import Misconception from '@/components/lesson-chrome/exercises/Misconception';
+import Parsons from '@/components/lesson-chrome/exercises/Parsons';
 import Recap from '@/components/lesson-chrome/exercises/Recap';
 import SandboxEditor, {
   SandboxTestRow,
 } from '@/components/lesson-chrome/exercises/SandboxEditor';
 import SelfExplain from '@/components/lesson-chrome/exercises/SelfExplain';
+import SpotError from '@/components/lesson-chrome/exercises/SpotError';
+import TraceTable from '@/components/lesson-chrome/exercises/TraceTable';
+import TrueFalse from '@/components/lesson-chrome/exercises/TrueFalse';
 import Visual from '@/components/lesson-chrome/exercises/Visual';
 import { toCodeLines } from '@/lib/py-highlight';
 import c from './studio-chrome.module.css';
 import {
   buildScreens,
   correctIndex,
+  EMPTY_SCORE,
+  gameAnswered,
+  gameOf,
   initialLessonDraft,
   isGraded,
+  isRunnableGame,
   letterKey,
   optionDetail,
   optionText,
+  parsonsCode,
+  quizPercent,
+  scoreCheck,
   screenVerdict,
   SELF_EXPLAIN_MIN,
+  type GameState,
   type LessonDraft,
   type LessonScreen,
+  type PlayGame,
   type StudioLesson as Lesson,
 } from '@/lib/studio-lesson';
 
 type TestResult = { name: string; passed: boolean; detail: string };
+type Award = { name?: string | null; description?: string | null; icon?: string | null };
 type RunResult = {
   tests: TestResult[];
   output: string;
@@ -121,16 +137,35 @@ function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: string } 
     sandbox: { icon: ICON.play, label: 'Thử thách độc lập' },
     recap: { icon: ICON.bulb, label: 'Tổng kết' },
   };
+  const games: Record<PlayGame['type'], { icon: React.ReactNode; label: string }> = {
+    traceTable: { icon: ICON.book, label: 'Game · Theo dõi biến' },
+    match: { icon: ICON.swap, label: 'Game · Nối cặp' },
+    trueFalse: { icon: ICON.help, label: 'Game · Đúng hay sai' },
+    fill: { icon: ICON.swap, label: 'Game · Điền mảnh code' },
+    parsons: { icon: ICON.play, label: 'Game · Ghép code ▶' },
+    spotError: { icon: ICON.bulb, label: 'Game · Săn lỗi' },
+    debug: { icon: ICON.play, label: 'Game · Sửa code ▶' },
+    selfExplain: { icon: ICON.bulb, label: 'Tự giải thích' },
+  };
+  if (scr.kind === 'game' && scr.gameType) return games[scr.gameType];
   const found = map[scr.kind] ?? { icon: ICON.book, label: scr.label };
   return { icon: found.icon, label: `S${scr.origin} · ${found.label}` };
+}
+
+/** Thụt lề của một dòng Python, tính theo bậc 4 dấu cách (Parsons hiển thị). */
+function indentOf(line: string): number {
+  return Math.floor((line.length - line.trimStart().length) / 4);
 }
 
 export default function StudioLesson({
   courseId,
   lessonNo,
+  courseName = 'Python',
 }: {
   courseId: string;
   lessonNo: number;
+  /** Tên khoá hiện trên thanh trên cùng và nút đăng ký. */
+  courseName?: string;
 }) {
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [meta, setMeta] = useState<{ title: string; xpReward: number } | null>(null);
@@ -155,11 +190,29 @@ export default function StudioLesson({
   const [hintIndex, setHintIndex] = useState(0);
   const [answerOpen, setAnswerOpen] = useState(false);
   const [held, setHeld] = useState<string | null>(null);
+  /** Kết quả chấm của game chạy code (parsons/debug), theo khoá màn. */
+  const [runVerdicts, setRunVerdicts] = useState<
+    Record<string, { correct: boolean; explain: string; result: RunResult }>
+  >({});
+  /** Lần chạy gần nhất của từng game có editor (debug). */
+  const [gameRuns, setGameRuns] = useState<Record<string, RunResult>>({});
+  /** "+10 điểm · Combo x3" bật lên rồi tự tắt. */
+  const [pop, setPop] = useState<{ id: number; text: string } | null>(null);
+  /** Hiệu ứng ăn mừng khi code chạy đúng — đổi số để chạy lại animation. */
+  const [celebrate, setCelebrate] = useState(0);
+  const [awards, setAwards] = useState<Award[]>([]);
+  const [xpGained, setXpGained] = useState<number | null>(null);
+  /** Phản hồi tức thì trong game (nối nhầm, bấm phải dòng bẫy). */
+  const [flash, setFlash] = useState('');
   const worker = useRef<Worker | null>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const screens = useMemo(() => (lesson ? buildScreens(lesson) : []), [lesson]);
   const scr: LessonScreen | undefined = screens[d.step - 1];
+  const play = lesson?.play;
+  const boss = Boolean(play?.boss);
+  const game = lesson ? gameOf(lesson, scr) : undefined;
+  const score = d.score ?? EMPTY_SCORE;
   const draftKey = user ? `pe-studio-lesson-v1:${user.id}:${courseId}:${lessonNo}` : null;
   const update = (changes: Partial<LessonDraft>) => setD((prev) => ({ ...prev, ...changes }));
 
@@ -167,7 +220,7 @@ export default function StudioLesson({
     const response = await apiFetch(path, options);
     if (response.status === 401) {
       window.location.assign(
-        '/login?next=' + encodeURIComponent(`/lesson/python?lesson=${lessonNo - 1}`),
+        '/login?next=' + encodeURIComponent(`/lesson/${courseId}?lesson=${lessonNo - 1}`),
       );
       throw new Error('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
     }
@@ -244,6 +297,11 @@ export default function StudioLesson({
             // phải kẹp lại cho khỏi rơi ra ngoài mảng.
             step: Math.min(list.length, Math.max(1, Number(stored.step) || 1)),
             done: stored.done && typeof stored.done === 'object' ? stored.done : {},
+            games: stored.games && typeof stored.games === 'object' ? stored.games : {},
+            score:
+              stored.score && typeof stored.score === 'object'
+                ? { ...EMPTY_SCORE, ...stored.score }
+                : EMPTY_SCORE,
             code: String(stored.code).slice(0, 15000),
           };
         }
@@ -313,10 +371,15 @@ export default function StudioLesson({
           courseId,
           lessonTitle: meta?.title,
           xpEarned: meta?.xpReward || undefined,
-          quizScore: 100,
+          // Khoá có mini-game gửi điểm thật (tỉ lệ màn đúng ngay lần đầu);
+          // backend dùng nó để chia XP trong khung 50–100% xp_reward.
+          quizScore: play ? quizPercent(screens, d, boss) : 100,
         }),
       });
       setCompleted(true);
+      if (typeof body.xpGained === 'number') setXpGained(body.xpGained);
+      if (Array.isArray(body.newAchievements) && body.newAchievements.length)
+        setAwards(body.newAchievements as Award[]);
       setMessage(
         body.alreadyCompleted
           ? 'Bài này đã hoàn thành trước đó — không cộng XP lần hai.'
@@ -336,30 +399,22 @@ export default function StudioLesson({
     setRunning(false);
   }
 
-  function run(submit: boolean) {
-    if (running || busy) return;
+  /**
+   * Chạy `code` với bộ test của bài trong Pyodide (worker riêng mỗi lần) rồi
+   * gọi onDone. Dùng chung cho sandbox và các game chạy code.
+   */
+  function execute(code: string, onDone: (data: RunResult) => void) {
     const four = lesson?.step_4;
-    if (!four || !lesson) return;
-    const sandboxAt = screens.findIndex((x) => x.kind === 'sandbox');
-    const blocked = screens
-      .slice(0, sandboxAt < 0 ? 0 : sandboxAt)
-      .some((x) => isGraded(x.kind) && !d.done[x.key]);
-    if (submit && blocked) {
-      setMessage('Hãy hoàn thành các màn học phía trước trước khi nộp bài.');
-      return;
-    }
+    if (!four) return;
     setMessage('');
-    setResult(null);
     setRunning(true);
     setRuntimeStatus('Đang tải Python…');
-    // Cửa tự kiểm tra chỉ mở lời giải sau lần NỘP đầu, đạt hay chưa đạt.
-    if (submit && !d.submitted) update({ submitted: true });
     const instance = new Worker('/static/js/studio-lesson.worker.js');
     worker.current = instance;
     const expire = (text: string) => {
       cancelRun();
       setRuntimeStatus('');
-      setResult({ tests: [], output: '', error: text, duration: 0, version: '' });
+      onDone({ tests: [], output: '', error: text, duration: 0, version: '' });
     };
     timer.current = setTimeout(
       () => expire('Tải Python quá lâu. Kiểm tra kết nối mạng rồi thử lại.'),
@@ -379,30 +434,121 @@ export default function StudioLesson({
       }
       cancelRun();
       setRuntimeStatus(data.version ? `CPython ${data.version}` : '');
+      onDone(data);
+    };
+    instance.postMessage({
+      code,
+      tests: four.tests ?? [],
+      forbid: four.forbid ?? [],
+      files: four.files ?? [],
+    });
+  }
+
+  function passedAll(data: RunResult): boolean {
+    const total = lesson?.step_4?.tests?.length ?? 0;
+    return (
+      !data.error &&
+      total > 0 &&
+      data.tests.length === total &&
+      data.tests.every((t: TestResult) => t.passed)
+    );
+  }
+
+  function run(submit: boolean) {
+    if (running || busy) return;
+    if (!lesson?.step_4) return;
+    const sandboxAt = screens.findIndex((x) => x.kind === 'sandbox');
+    const blocked = screens
+      .slice(0, sandboxAt < 0 ? 0 : sandboxAt)
+      .some((x) => isGraded(x.kind) && !d.done[x.key]);
+    if (submit && blocked) {
+      setMessage('Hãy hoàn thành các màn học phía trước trước khi nộp bài.');
+      return;
+    }
+    setResult(null);
+    // Cửa tự kiểm tra chỉ mở lời giải sau lần NỘP đầu, đạt hay chưa đạt.
+    if (submit && !d.submitted) update({ submitted: true });
+    execute(d.code, (data) => {
       setResult(data);
-      const tests = four.tests ?? [];
-      const allPassed =
-        !data.error &&
-        tests.length > 0 &&
-        data.tests.length === tests.length &&
-        data.tests.every((t: TestResult) => t.passed);
       // Chỉ lượt NỘP mới ghi nhận: chạy thử đạt hết vẫn phải bấm nộp thì tiến
       // độ mới được lưu, nếu không học viên tưởng xong mà backend không biết.
-      if (submit && allPassed) {
+      if (submit && passedAll(data)) {
         markDone('s4-sandbox');
+        if (play) setCelebrate((n) => n + 1);
         void complete();
         // Nộp đạt là xong phần thực hành: đưa thẳng sang màn tổng kết để bấm
         // tiếp sang bài sau, không bắt bấm thêm "Tiếp tục".
         const recapAt = screens.findIndex((x) => x.kind === 'recap');
         if (recapAt >= 0) goTo(recapAt + 1);
       }
-    };
-    instance.postMessage({
-      code: d.code,
-      tests: four.tests ?? [],
-      forbid: four.forbid ?? [],
-      files: four.files ?? [],
     });
+  }
+
+  /** Mã đang chấm của game chạy code. */
+  function gameCode(g: PlayGame): string {
+    const st = d.games?.[g.id] ?? {};
+    if (g.type === 'parsons') return parsonsCode(g, st.picked ?? []);
+    if (g.type === 'debug') return st.code ?? g.code;
+    return '';
+  }
+
+  /** "Kiểm tra" ở game chạy code: chạy thật, đạt hết test mới tính đúng. */
+  function runGame(key: string, g: PlayGame, grade: boolean) {
+    if (running || busy) return;
+    setGameRuns((prev) => {
+      const next = { ...prev };
+      delete next[key];
+      return next;
+    });
+    execute(gameCode(g), (data) => {
+      setGameRuns((prev) => ({ ...prev, [key]: data }));
+      if (!grade) return;
+      const correct = passedAll(data);
+      const failed = data.tests.filter((t) => !t.passed);
+      setRunVerdicts((prev) => ({
+        ...prev,
+        [key]: {
+          correct,
+          result: data,
+          explain: correct
+            ? `Chương trình chạy đúng — đạt cả ${data.tests.length} ca kiểm thử.`
+            : data.error
+              ? `Python báo lỗi khi chạy: ${data.error.trim().split('\n').slice(-1)[0]}`
+              : `Trượt ${failed.length}/${data.tests.length} ca: ${failed
+                  .slice(0, 2)
+                  .map((t) => t.name)
+                  .join('; ')}.`,
+        },
+      }));
+      setCheckedKey(key);
+      award(key, correct);
+      if (correct) {
+        markDone(key);
+        setCelebrate((n) => n + 1);
+      }
+    });
+  }
+
+  /** Cộng điểm (chỉ khoá có mini-game). clean=false: đúng nhưng đã nhầm trước đó. */
+  function award(key: string, correct: boolean, clean = correct) {
+    if (!play) return;
+    let s = d.score ?? EMPTY_SCORE;
+    if (correct && !clean) s = scoreCheck(s, key, false).score;
+    const r = scoreCheck(s, key, correct);
+    update({ score: r.score });
+    if (r.gained > 0)
+      setPop((prev) => ({
+        id: (prev?.id ?? 0) + 1,
+        text: `+${r.gained} điểm${r.score.combo >= 3 ? ` · Combo x${r.score.combo} 🔥` : ''}`,
+      }));
+  }
+
+  function updateGame(id: string, changes: Partial<GameState>) {
+    setCheckedKey('');
+    setD((prev) => ({
+      ...prev,
+      games: { ...prev.games, [id]: { ...(prev.games?.[id] ?? {}), ...changes } },
+    }));
   }
 
   function markDone(key: string) {
@@ -420,7 +566,12 @@ export default function StudioLesson({
   // ---------- Trạng thái màn hiện tại ----------
 
   const checked = Boolean(scr && checkedKey === scr.key);
-  const verdict = lesson && scr && checked ? screenVerdict(lesson, scr, d) : null;
+  const verdict =
+    lesson && scr && checked
+      ? isRunnableGame(game)
+        ? (runVerdicts[scr.key] ?? null)
+        : screenVerdict(lesson, scr, d)
+      : null;
   const hints = lesson?.step_4?.hints ?? [];
   const tests = lesson?.step_4?.tests ?? [];
   const procedure = lesson?.step_4?.procedure ?? [];
@@ -448,6 +599,7 @@ export default function StudioLesson({
     if (scr.kind === 'scaffold')
       return (lesson.step_3?.scaffold?.slots ?? []).every((slot) => d.slots[slot.n]);
     if (scr.kind === 'counter') return Boolean(d.counter);
+    if (scr.kind === 'game') return game ? gameAnswered(lesson, game, d) : false;
     return true;
   }
 
@@ -544,6 +696,67 @@ export default function StudioLesson({
         fill: { counter: letterKey(i) },
       };
     }
+    if (scr.kind === 'game' && game) {
+      const fillGame = (state: GameState) => ({ games: { ...d.games, [game.id]: state } });
+      switch (game.type) {
+        case 'traceTable':
+          return {
+            rows: Object.entries(game.answers).map(([k, v]) => {
+              const [row, col] = k.split('-');
+              return { label: `${game.rows[Number(row)]?.step} · ${col}`, value: v };
+            }),
+            fill: fillGame({ cells: { ...game.answers } }),
+          };
+        case 'match':
+          return {
+            rows: game.pairs.map((p) => ({ label: p.left, value: p.right })),
+            fill: fillGame({ matched: Object.fromEntries(game.pairs.map((_, i) => [i, i])) }),
+          };
+        case 'trueFalse':
+          return {
+            rows: game.items.map((it) => ({ label: it.answer ? 'ĐÚNG' : 'SAI', value: it.statement })),
+            fill: fillGame({
+              tf: Object.fromEntries(game.items.map((it, i) => [i, it.answer ? 'true' : 'false'])),
+            }),
+          };
+        case 'fill': {
+          const slots = lesson.step_3?.scaffold?.slots ?? [];
+          return {
+            rows: slots.map((slot) => ({ label: `Ô ${slot.n}`, value: slot.answer })),
+            fill: { slots: Object.fromEntries(slots.map((slot) => [slot.n, slot.answer])) },
+          };
+        }
+        case 'parsons':
+          return {
+            rows: [],
+            code: parsonsCode(game, game.lines.map((l) => l.id)),
+            fill: fillGame({ picked: game.lines.map((l) => l.id) }),
+          };
+        case 'spotError':
+          return {
+            rows: [
+              { label: 'Dòng lỗi', value: String(game.line) },
+              { label: 'Lỗi', value: game.label },
+            ],
+            fill: fillGame({ line: game.line }),
+          };
+        case 'debug':
+          return {
+            rows: [{ label: 'Lỗi cần sửa', value: game.label }],
+            code: lesson.step_4?.solutionCode,
+            fill: lesson.step_4?.solutionCode
+              ? fillGame({ code: lesson.step_4.solutionCode })
+              : undefined,
+          };
+        case 'selfExplain': {
+          const sample = lesson.step_2?.selfExplain?.sample ?? '';
+          return {
+            rows: sample ? [{ label: 'Lời giải thích mẫu', value: sample }] : [],
+            fill: sample ? { explanation: sample } : undefined,
+          };
+        }
+      }
+    }
     if (scr.kind === 'sandbox') {
       const solution = lesson.step_4?.solutionCode;
       if (!solution && !tests.length) return null;
@@ -632,8 +845,15 @@ export default function StudioLesson({
     }
 
     if (isGraded(scr.kind)) {
+      if (isRunnableGame(game) && running)
+        return { label: 'Đang chạy code…', tone: 'accent', disabled: true, action: 'check' };
       if (!checked)
-        return { label: 'Kiểm tra', tone: 'accent', disabled: !answered(), action: 'check' };
+        return {
+          label: isRunnableGame(game) ? '▶ Chạy & kiểm tra' : 'Kiểm tra',
+          tone: 'accent',
+          disabled: !answered(),
+          action: 'check',
+        };
       if (verdict && !verdict.correct)
         return { label: 'Thử lại', tone: 'err', action: 'retry' };
       return { label: 'Tiếp tục →', tone: 'ok', action: 'next' };
@@ -657,8 +877,15 @@ export default function StudioLesson({
     if (action === 'submit') return run(true);
     if (action === 'check') {
       if (!scr || !lesson) return;
+      setFlash('');
+      if (game && isRunnableGame(game)) return runGame(scr.key, game, true);
       setCheckedKey(scr.key);
-      if (screenVerdict(lesson, scr, d)?.correct) markDone(scr.key);
+      const v = screenVerdict(lesson, scr, d);
+      if (v) {
+        const misses = game?.type === 'match' ? (d.games?.[game.id]?.misses ?? 0) : 0;
+        award(scr.key, v.correct, v.correct && !misses);
+      }
+      if (v?.correct) markDone(scr.key);
       return;
     }
     if (action === 'retry') return setCheckedKey('');
@@ -705,6 +932,356 @@ export default function StudioLesson({
       });
     }
     return lines;
+  }
+
+  function renderScaffold(title?: string) {
+    if (!lesson || !scr) return null;
+    const three = lesson.step_3;
+    const scaffold = three?.scaffold;
+    if (!scaffold) return null;
+    const eyebrow = eyebrowOf(scr);
+    const shell = (node: React.ReactNode, extra?: { title?: string; description?: React.ReactNode }) => (
+      <ShellB
+        eyebrowIcon={eyebrow.icon}
+        eyebrowLabel={eyebrow.label}
+        metaLabel={meta?.title}
+        title={title ?? extra?.title ?? ''}
+        description={extra?.description}
+      >
+        {node}
+        {checked && verdict && (
+          <FeedbackBanner
+            correct={verdict.correct}
+            title={verdict.correct ? 'Chính xác!' : 'Chưa đúng — thử lại nhé'}
+            explanation={verdict.explain}
+          />
+        )}
+      </ShellB>
+    );
+    const slotOf = (line: string) => /\{\{\s*slot(\d+)\s*\}\}/.exec(line);
+    const placed = new Set(Object.values(d.slots));
+    return shell(
+      <>
+        <Assemble
+          filename="main.py"
+          langTag="Python 3.12"
+          lines={scaffold.template
+            .replace(/\s+$/, '')
+            .split('\n')
+            .map((line, i) => {
+              const hit = slotOf(line);
+              if (!hit) return { num: i + 1, before: line };
+              const n = Number(hit[1]);
+              return {
+                num: i + 1,
+                before: line.slice(0, hit.index),
+                slotId: `slot${n}`,
+                after: line.slice((hit.index ?? 0) + hit[0].length),
+              };
+            })}
+          filled={Object.fromEntries(
+            Object.entries(d.slots).map(([n, label]) => [`slot${n}`, label]),
+          )}
+          bank={scaffold.bank.filter((b) => !placed.has(b.label)).map((b) => b.label)}
+          heldToken={held}
+          onHold={setHeld}
+          onFillSlot={(slotId) => {
+            if (!held) return;
+            setCheckedKey('');
+            update({ slots: { ...d.slots, [Number(slotId.replace('slot', ''))]: held } });
+            setHeld(null);
+          }}
+        />
+        <button
+          type="button"
+          className={c.resetLink}
+          onClick={() => {
+            setCheckedKey('');
+            update({ slots: {} });
+            setHeld(null);
+          }}
+        >
+          Đặt lại các slot
+        </button>
+      </>,
+      {
+        title: three?.task?.title || 'Lắp lại khung mã',
+        description: three?.task?.body,
+      },
+    );
+  }
+
+  function gameConsole(data: RunResult | undefined): ConsoleLine[] | null {
+    if (!data) return null;
+    const lines: ConsoleLine[] = [];
+    if (data.output)
+      for (const line of data.output.replace(/\n$/, '').split('\n')) lines.push({ text: line });
+    if (data.error) lines.push({ text: data.error, tone: 'err' });
+    if (!lines.length) lines.push({ text: 'Chương trình chạy xong, không in ra gì.', tone: 'muted' });
+    return lines;
+  }
+
+  function gameRows(data: RunResult | undefined): SandboxTestRow[] {
+    return tests.map((t, i) => {
+      const got = data?.tests?.[i];
+      return {
+        label: t.name || t.call,
+        detail: got?.detail,
+        status: !data || !got ? 'pending' : got.passed ? 'pass' : 'fail',
+      };
+    });
+  }
+
+  function renderGame(
+    g: PlayGame,
+    shell: (node: React.ReactNode, extra?: Partial<React.ComponentProps<typeof ShellB>>) => React.ReactNode,
+  ) {
+    if (!lesson || !scr) return null;
+    const st = d.games?.[g.id] ?? {};
+    const flashNote = flash ? (
+      <div className={`${c.note} ${c.noteWarn}`} role="status">
+        {flash}
+      </div>
+    ) : null;
+
+    if (g.type === 'traceTable')
+      return shell(
+        <TraceTable
+          filename="vi_du.py"
+          code={toCodeLines(g.code)}
+          columns={g.columns}
+          rows={g.rows}
+          answers={st.cells ?? {}}
+          onAnswerChange={(key, value) => updateGame(g.id, { cells: { ...st.cells, [key]: value } })}
+        />,
+        {
+          title: g.title,
+          description: 'Chạy chương trình trong đầu: sau mỗi dòng, biến nào đổi và đổi thành gì? Chuỗi gõ có hay không có nháy đều được.',
+        },
+      );
+
+    if (g.type === 'match') {
+      const matched = st.matched ?? {};
+      return shell(
+        <>
+          <MatchPairs
+            left={g.pairs.map((p, i) => ({ id: String(i), content: p.left }))}
+            right={g.rightOrder.map((i) => ({ id: String(i), content: g.pairs[i].right }))}
+            matched={Object.fromEntries(Object.entries(matched).map(([l, r]) => [l, String(r)]))}
+            pendingLeft={st.pending == null ? null : String(st.pending)}
+            onPickLeft={(id) => {
+              setFlash('');
+              updateGame(g.id, { pending: Number(id) });
+            }}
+            onPickRight={(id) => {
+              const left = st.pending;
+              if (left == null) return;
+              if (Number(id) === left) {
+                setFlash('');
+                updateGame(g.id, { matched: { ...matched, [left]: left }, pending: null });
+              } else {
+                setFlash(`Chưa khớp: "${g.pairs[left].left}" không làm "${g.pairs[Number(id)].right}". Thử cặp khác.`);
+                updateGame(g.id, { pending: null, misses: (st.misses ?? 0) + 1 });
+              }
+            }}
+          />
+          {flashNote}
+        </>,
+        { title: g.title, description: 'Bấm một dòng lệnh bên trái, rồi bấm việc nó làm bên phải.' },
+      );
+    }
+
+    if (g.type === 'trueFalse')
+      return shell(
+        <ol className={c.tfList}>
+          {g.items.map((it, i) => (
+            <li key={i}>
+              <p>{g.prompt ? <code>{it.statement}</code> : it.statement}</p>
+              <TrueFalse
+                selected={st.tf?.[i] ?? null}
+                onSelect={(value) => updateGame(g.id, { tf: { ...st.tf, [i]: value } })}
+                correctValue={it.answer ? 'true' : 'false'}
+                checked={checked}
+              />
+            </li>
+          ))}
+        </ol>,
+        {
+          title: g.title,
+          description: g.prompt ? (
+            <>
+              <code>{g.prompt}</code>
+              <br />
+              Mỗi đáp án dưới đây chọn Đúng hoặc Sai, rồi bấm Kiểm tra.
+            </>
+          ) : (
+            'Mỗi câu chọn Đúng hoặc Sai, rồi bấm Kiểm tra.'
+          ),
+        },
+      );
+
+    if (g.type === 'fill') return renderScaffold(g.title);
+
+    if (g.type === 'parsons') {
+      const picked = st.picked ?? [];
+      const revealed = st.revealed ?? [];
+      const head = g.head ? g.head.split('\n') : [];
+      const tail = g.tail ? g.tail.split('\n') : [];
+      const byId = new Map(
+        [...g.lines, ...g.distractors].map((l) => [l.id, l] as const),
+      );
+      const run = runVerdicts[scr.key]?.result;
+      return shell(
+        <>
+          <Parsons
+            filename="main.py"
+            builtLines={[
+              ...head.map((text, i) => ({
+                id: `h${i}`,
+                content: text.trim() || ' ',
+                indent: indentOf(text),
+                fixed: true,
+              })),
+              ...picked.map((id) => {
+                const text = byId.get(id)?.text ?? '';
+                return { id, content: text.trim(), indent: indentOf(text) };
+              }),
+            ]}
+            tailLines={tail.map((text, i) => ({
+              id: `t${i}`,
+              content: text.trim() || ' ',
+              indent: indentOf(text),
+              fixed: true,
+            }))}
+            pool={g.order
+              .filter((id) => !picked.includes(id))
+              .map((id) => {
+                const item = byId.get(id)!;
+                const reason = 'reason' in item ? (item.reason as string) : undefined;
+                return { id, content: item.text, distractorReason: reason };
+              })}
+            revealed={revealed}
+            onPick={(id) => {
+              setFlash('');
+              updateGame(g.id, { picked: [...picked, id] });
+            }}
+            onAttemptDistractor={(id) => {
+              const item = g.distractors.find((x) => x.id === id);
+              setFlash(`Bẫy! Dòng này sai vì: ${item?.reason ?? 'không đúng yêu cầu'}. Chuỗi combo bị ngắt.`);
+              updateGame(g.id, { revealed: [...revealed, id] });
+              if (play) update({ score: { ...score, combo: 0 } });
+            }}
+          />
+          <div className={c.gameTools}>
+            <button
+              type="button"
+              className={c.resetLink}
+              disabled={!picked.length}
+              onClick={() => updateGame(g.id, { picked: picked.slice(0, -1) })}
+            >
+              ↩ Gỡ dòng cuối
+            </button>
+            <button
+              type="button"
+              className={c.resetLink}
+              disabled={!picked.length}
+              onClick={() => updateGame(g.id, { picked: [] })}
+            >
+              Xếp lại từ đầu
+            </button>
+          </div>
+          {flashNote}
+          {checked && run && (
+            <div className={c.runResult}>
+              <Console title="KẾT QUẢ CHẠY main.py" meta={`${run.duration} ms`} lines={gameConsole(run)} />
+              <ul className={c.runTests}>
+                {gameRows(run).map((row, i) => (
+                  <li key={i} className={row.status === 'pass' ? c.runPass : c.runFail}>
+                    {row.status === 'pass' ? '✓' : '✕'} {row.label}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </>,
+        {
+          title: g.title,
+          description:
+            'Bấm từng dòng theo đúng thứ tự để ghép thành chương trình. Cẩn thận: trong kho có dòng bẫy. Ghép xong bấm ▶ để chạy thật với các ca kiểm thử.',
+        },
+      );
+    }
+
+    if (g.type === 'spotError') {
+      const hits = new Set(g.lines?.length ? g.lines : [g.line]);
+      return shell(
+        <SpotError
+          filename="main.py"
+          lines={toCodeLines(g.code).map((line, i) => {
+            const num = g.firstLine + i;
+            return { num, content: line.content, errorLabel: hits.has(num) ? g.label : undefined };
+          })}
+          selected={st.line ?? null}
+          onSelect={(num) => updateGame(g.id, { line: num })}
+          correctLine={checked ? (st.line != null && hits.has(st.line) ? st.line : g.line) : undefined}
+          checked={checked}
+        />,
+        { title: g.title, description: 'Chương trình này chạy được nhưng cho kết quả SAI. Bấm vào dòng gây ra lỗi.' },
+      );
+    }
+
+    if (g.type === 'debug') {
+      const run = gameRuns[scr.key];
+      return shell(
+        <>
+          <SandboxEditor
+            filename="main.py"
+            langTag={runtimeStatus || 'CPython 3.12'}
+            code={st.code ?? g.code}
+            onCodeChange={(code) => updateGame(g.id, { code })}
+            running={running}
+            onRun={() => runGame(scr.key, g, false)}
+            onStop={cancelRun}
+            consoleLines={gameConsole(run)}
+            consoleMeta={run ? `${run.duration} ms` : runtimeStatus}
+            tests={gameRows(run)}
+            disabled={busy}
+          />
+          <details className={c.panel}>
+            <summary>Gợi ý: tên lỗi</summary>
+            <p className={c.panelNote}>{g.label}</p>
+          </details>
+          <button
+            type="button"
+            className={c.resetLink}
+            onClick={() => updateGame(g.id, { code: g.code })}
+          >
+            Khôi phục code ban đầu
+          </button>
+        </>,
+        {
+          title: g.title,
+          description:
+            'Code dưới đây có MỘT lỗi thường gặp. Bấm "Chạy thử" để xem ca nào trượt, sửa lại rồi bấm ▶ Chạy & kiểm tra.',
+        },
+      );
+    }
+
+    // selfExplain
+    const min = play?.selfExplainMinWords ?? SELF_EXPLAIN_MIN.words;
+    return shell(
+      <SelfExplain
+        value={d.explanation}
+        onChange={(value) => {
+          setCheckedKey('');
+          update({ explanation: value });
+        }}
+        placeholder={lesson.step_2?.selfExplain?.placeholder}
+        rubricLabels={[]}
+        requirement={`Viết thành một câu, ít nhất ${min} từ.`}
+      />,
+      { title: lesson.step_2?.selfExplain?.prompt || g.title },
+    );
   }
 
   function renderScreen() {
@@ -799,16 +1376,28 @@ export default function StudioLesson({
           </ol>,
           { title: 'Những điều cần nắm trước khi tự viết' },
         );
+      // Khoá có mini-game bỏ màn "Ngộ nhận" riêng: gộp thành một dòng cảnh báo ở đây.
+      const myth =
+        play && one?.misconception?.body ? (
+          <div className={`${c.note} ${c.noteWarn}`}>
+            <strong>Ngộ nhận hay gặp: {one.misconception.title?.replace(/^["“]|["”]$/g, '')}</strong>
+            <br />
+            {one.misconception.body}
+          </div>
+        ) : null;
       return shell(
-        <CodeAnnotated
-          filename={one.code.filename || 'example.py'}
-          langTag={one.code.version || 'Python 3.12'}
-          code={toCodeLines(one.code.source)}
-          annotations={rows.map((row, i) => ({
-            label: row.title || `Ý ${row.n ?? i + 1}`,
-            detail: row.body,
-          }))}
-        />,
+        <>
+          <CodeAnnotated
+            filename={one.code.filename || 'example.py'}
+            langTag={one.code.version || 'Python 3.12'}
+            code={toCodeLines(one.code.source)}
+            annotations={rows.map((row, i) => ({
+              label: row.title || `Ý ${row.n ?? i + 1}`,
+              detail: row.body,
+            }))}
+          />
+          {myth}
+        </>,
         demo
           ? {
               title: 'Ví dụ minh hoạ cơ chế',
@@ -965,61 +1554,7 @@ export default function StudioLesson({
         { title: two?.selfExplain?.prompt || 'Giải thích cách làm của bạn' },
       );
 
-    if (scr.kind === 'scaffold') {
-      const scaffold = three?.scaffold;
-      if (!scaffold) return null;
-      const slotOf = (line: string) => /\{\{\s*slot(\d+)\s*\}\}/.exec(line);
-      const placed = new Set(Object.values(d.slots));
-      return shell(
-        <>
-          <Assemble
-            filename="main.py"
-            langTag="Python 3.12"
-            lines={scaffold.template
-              .replace(/\s+$/, '')
-              .split('\n')
-              .map((line, i) => {
-                const hit = slotOf(line);
-                if (!hit) return { num: i + 1, before: line };
-                const n = Number(hit[1]);
-                return {
-                  num: i + 1,
-                  before: line.slice(0, hit.index),
-                  slotId: `slot${n}`,
-                  after: line.slice((hit.index ?? 0) + hit[0].length),
-                };
-              })}
-            filled={Object.fromEntries(
-              Object.entries(d.slots).map(([n, label]) => [`slot${n}`, label]),
-            )}
-            bank={scaffold.bank.filter((b) => !placed.has(b.label)).map((b) => b.label)}
-            heldToken={held}
-            onHold={setHeld}
-            onFillSlot={(slotId) => {
-              if (!held) return;
-              setCheckedKey('');
-              update({ slots: { ...d.slots, [Number(slotId.replace('slot', ''))]: held } });
-              setHeld(null);
-            }}
-          />
-          <button
-            type="button"
-            className={c.resetLink}
-            onClick={() => {
-              setCheckedKey('');
-              update({ slots: {} });
-              setHeld(null);
-            }}
-          >
-            Đặt lại các slot
-          </button>
-        </>,
-        {
-          title: three?.task?.title || 'Lắp lại khung mã',
-          description: three?.task?.body,
-        },
-      );
-    }
+    if (scr.kind === 'scaffold') return renderScaffold();
 
     if (scr.kind === 'trace')
       return shell(
@@ -1055,6 +1590,8 @@ export default function StudioLesson({
       );
     }
 
+    if (scr.kind === 'game' && game) return renderGame(game, shell);
+
     if (scr.kind === 'sandbox') {
       const io = four?.task?.io ?? [];
       return (
@@ -1066,11 +1603,19 @@ export default function StudioLesson({
           description={paragraphs(four?.task?.body)}
         >
           {four?.env && <div className={`${c.note} ${c.noteWarn}`}>{four.env}</div>}
-          {gate && !d.submitted && (
-            <div className={c.note} role="status">
-              <strong>Cửa tự kiểm tra.</strong> Tự viết và nộp lần đầu trước — lời giải mẫu chỉ mở sau lần nộp
-              đó. Mở gợi ý vẫn được, nhưng lượt này sẽ ghi nhận là có hỗ trợ.
+          {boss ? (
+            <div className={`${c.note} ${c.boss}`} role="status">
+              <strong>⚔️ Trận Boss của chặng.</strong> Không có gợi ý — tự viết và nộp. Lời giải mẫu chỉ mở
+              sau lần nộp đầu, và xem nó thì điểm trận này bị giới hạn ở 60%.
             </div>
+          ) : (
+            gate &&
+            !d.submitted && (
+              <div className={c.note} role="status">
+                <strong>Cửa tự kiểm tra.</strong> Tự viết và nộp lần đầu trước — lời giải mẫu chỉ mở sau lần nộp
+                đó. Mở gợi ý vẫn được, nhưng lượt này sẽ ghi nhận là có hỗ trợ.
+              </div>
+            )
           )}
           {io.length > 0 && (
             <dl className={c.io}>
@@ -1203,6 +1748,47 @@ export default function StudioLesson({
     // recap
     const graded = screens.filter((x) => isGraded(x.kind));
     const done = graded.filter((x) => d.done[x.key]).length;
+    const firstTry = graded.filter((x) => score.firstTry[x.key] === true).length;
+    const xpText =
+      completed && xpGained !== null
+        ? `+${xpGained} XP`
+        : completed
+          ? `+${meta?.xpReward ?? 0} XP`
+          : `${meta?.xpReward ?? 0} XP`;
+    if (play)
+      return (
+        <Recap
+          xpLabel={xpText}
+          title={
+            completed ? (boss ? '⚔️ Đã hạ Boss của chặng!' : 'Đã hoàn thành bài học!') : 'Tổng kết bài học'
+          }
+          description={
+            (completed
+              ? boss
+                ? 'Chặng tiếp theo đã mở khoá. '
+                : 'Tiến độ và XP đã được lưu. '
+              : tests.length
+                ? 'Nộp bài ở màn sandbox để ghi nhận hoàn thành. '
+                : 'Xác nhận khi bạn đã làm xong. ') +
+            `XP nhận được tính theo số game bạn làm đúng ngay lần đầu (${firstTry}/${graded.length}).` +
+            (d.assisted ? ' Lượt này có dùng gợi ý/lời giải nên điểm bị giới hạn.' : '')
+          }
+          stats={[
+            { icon: '⭐', value: String(score.points), label: 'Điểm trong bài' },
+            { icon: '🔥', value: `x${score.bestCombo}`, label: 'Combo cao nhất' },
+            { icon: '🎯', value: `${firstTry}/${graded.length || 0}`, label: 'Đúng ngay lần đầu' },
+          ]}
+          facts={[
+            ...(lesson.step_1?.explain ?? []).map((row) => row.body),
+            lesson.step_1?.misconception?.body
+              ? `Tránh ngộ nhận: ${lesson.step_1.misconception.body}`
+              : undefined,
+          ]
+            .filter((x): x is string => Boolean(x))
+            .slice(0, 3)}
+          onFinish={() => doAction(primary().action)}
+        />
+      );
     return (
       <Recap
         xpLabel={completed ? `+${meta?.xpReward ?? 0} XP` : `${meta?.xpReward ?? 0} XP`}
@@ -1258,10 +1844,12 @@ export default function StudioLesson({
         step={Math.min(d.step, Math.max(1, screens.length || 1))}
         totalSteps={Math.max(1, screens.length || 1)}
         streak={streak}
+        points={play ? score.points : undefined}
         courseLabel={
-          lesson?.step_1?.brief?.title || meta?.title
-            ? 'Python · ' + (lesson?.step_1?.brief?.title || meta?.title)
-            : 'Python Studio'
+          (boss ? '⚔️ BOSS · ' : '') +
+          (lesson?.step_1?.brief?.title || meta?.title
+            ? `${courseName} · ` + (lesson?.step_1?.brief?.title || meta?.title)
+            : `${courseName} Studio`)
         }
         // Lưu nháp thành công thì giữ đúng câu của Figma; chỉ đổi khi có lỗi.
         saveLabel={saveStatus.startsWith('Không') ? saveStatus : '✓ Tiến độ tự lưu'}
@@ -1278,7 +1866,7 @@ export default function StudioLesson({
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
         secondaryLabel={
-          hints.length && scr?.kind === 'sandbox'
+          hints.length && scr?.kind === 'sandbox' && !boss
             ? hintOpen
               ? '💡 Ẩn gợi ý'
               : gate && !d.assisted
@@ -1293,6 +1881,58 @@ export default function StudioLesson({
         {...over}
       >
         {children}
+        {pop &&
+          createPortal(
+            <div
+              key={`pop-${pop.id}`}
+              className={c.pop}
+              role="status"
+              onAnimationEnd={() => setPop(null)}
+            >
+              {pop.text}
+            </div>,
+            document.body,
+          )}
+        {celebrate > 0 &&
+          createPortal(
+            <div
+              key={`burst-${celebrate}`}
+              className={c.burst}
+              aria-hidden="true"
+              onAnimationEnd={(e) => {
+                if (e.target === e.currentTarget) setCelebrate(0);
+              }}
+            >
+              {['🎉', '✨', '🐍', '⭐', '🎊', '✨', '🎉', '⭐'].map((emoji, i) => (
+                <span key={i} style={{ '--i': i } as React.CSSProperties}>
+                  {emoji}
+                </span>
+              ))}
+              <strong>▶ Code chạy đúng!</strong>
+            </div>,
+            document.body,
+          )}
+        {awards.length > 0 &&
+          createPortal(
+          <div className={c.awardsBackdrop} role="dialog" aria-modal="true" aria-label="Thành tích mới">
+            <div className={c.awards}>
+              <p className={c.awardsEyebrow}>THÀNH TÍCH MỚI</p>
+              {awards.map((a, i) => (
+                <div key={i} className={c.award}>
+                  <span>{a.icon || '🏅'}</span>
+                  <div>
+                    <strong>{a.name || 'Huy hiệu mới'}</strong>
+                    {a.description && <p>{a.description}</p>}
+                  </div>
+                </div>
+              ))}
+              <button type="button" onClick={() => setAwards([])}>
+                Tuyệt vời!
+              </button>
+            </div>
+          </div>,
+            document.body,
+          )}
         {message && (
           <div className={c.toast} role="status">
             <p>{message}</p>
@@ -1327,11 +1967,11 @@ export default function StudioLesson({
   if (!enrolled && user?.role !== 'admin')
     return frame(
       info(
-        meta?.title || 'Bài học Python',
+        meta?.title || `Bài học ${courseName}`,
         'Đăng ký khóa học miễn phí để mở bài học và lưu tiến độ.',
       ),
       {
-        primaryLabel: busy ? 'Đang đăng ký…' : 'Đăng ký khóa Python & bắt đầu',
+        primaryLabel: busy ? 'Đang đăng ký…' : `Đăng ký khóa ${courseName} & bắt đầu`,
         primaryDisabled: busy,
         onPrimaryClick: () => void enroll(),
         onSeek: undefined,

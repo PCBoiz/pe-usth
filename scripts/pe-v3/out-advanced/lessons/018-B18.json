@@ -1,0 +1,378 @@
+{
+  "lesson_code": "B18",
+  "sort_order": 18,
+  "module": "M4 · Ghép bài Ex1",
+  "title": "B18 · Nối lọc với ghi",
+  "subtitle": "Cơ bản · M4 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B18 · Nối lọc với ghi",
+    "subtitle": "Cơ bản · M4 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B18",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP CƠ BẢN",
+          "B18"
+        ],
+        "title": "Nối lọc với ghi",
+        "goal": "Đưa list đã lọc vào hàm ghi file.",
+        "task": "Dùng filter_palindromes(words), rồi write_lines cho kết quả.",
+        "predict": "Ghi words gốc hay palindromes?",
+        "code": "words = [\"level\", \"python\", \"radar\", \"\"]\n# Gọi filter_palindromes\n# Gọi write_lines với kết quả lọc",
+        "tests": [
+          "List mẫu → file chỉ có level, radar",
+          "[] → file rỗng"
+        ],
+        "reflect": "Vì sao ghi words thay palindromes là sai?"
+      },
+      "context": {
+        "title": "Nối kết quả lọc list với hàm ghi file.",
+        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.",
+        "example": "words = [\"level\", \"python\", \"radar\", \"\"] → file \"level\\nradar\\n\".",
+        "prereq": "B17",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Đưa words gốc hay palindromes vào write_lines?",
+        "options": [
+          {
+            "id": "a",
+            "title": "palindromes — list đã lọc",
+            "detail": "File kết quả chỉ chứa chuỗi đối xứng.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "words gốc",
+            "detail": "words còn từ sai và chuỗi rỗng.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cả hai",
+            "detail": "Mỗi lần gọi write_lines ghi đè lần trước.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Ghi thẳng words cho nhanh\"",
+        "body": "words còn từ sai và chuỗi rỗng; file kết quả phải chỉ có chuỗi đối xứng. Bài này cũng không đọc thêm file — đầu vào là list cấp sẵn."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "keep_even trả LIST MỚI; list gốc không đổi."
+        },
+        {
+          "n": 2,
+          "body": "evens giữ kết quả trung gian — đặt tên rõ để dòng sau dùng."
+        },
+        {
+          "n": 3,
+          "body": "save_numbers nhận evens (đã lọc), không nhận list gốc."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def keep_even(numbers):\n    result = []\n    for number in numbers:\n        if number % 2 == 0:\n            result.append(number)\n    return result\n\ndef save_numbers(path, numbers):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for number in numbers:\n            file.write(str(number) + \"\\n\")\n\nevens = keep_even([3, 4, 10])\nsave_numbers(\"evens.txt\", evens)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "words = [\"Level\", \"\"] thì palindromes.txt chứa gì?",
+          "options": [
+            {
+              "text": "File rỗng",
+              "detail": "Không từ nào hợp lệ; write_lines vẫn tạo/ghi đè file.",
+              "correct": true
+            },
+            {
+              "text": "\"Level\\n\"",
+              "detail": "Phân biệt hoa/thường.",
+              "correct": false
+            },
+            {
+              "text": "Không có file",
+              "detail": "write_lines luôn mở file bằng \"w\".",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không từ nào hợp lệ; write_lines vẫn tạo/ghi đè file."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao ghi words thay vì palindromes là sai?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "words còn chứa từ không đối xứng và chuỗi rỗng; palindromes mới là kết quả lọc cần xuất. Lưu kết quả lọc vào palindromes rồi đưa đúng list đó cho write_lines thì file chỉ có chuỗi đối xứng, giữ thứ tự và trùng."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: [\"radar\", \"ab\", \"radar\"]. Lắp hai lệnh điều phối.",
+        "rule": "Thử [\"radar\", \"ab\", \"radar\"] và []; kiểm file bị ghi đè và giữ phần tử trùng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "words → filter_palindromes → [level, radar]."
+          },
+          {
+            "label": "Bước 2",
+            "text": "[level, radar] → write_lines → hai dòng trong palindromes.txt."
+          }
+        ]
+      },
+      "counter": {
+        "question": "words = [\"radar\", \"ab\", \"radar\"] → palindromes.txt?",
+        "options": [
+          "\"radar\\nradar\\n\"",
+          "\"radar\\n\"",
+          "\"radar\\nab\\nradar\\n\""
+        ],
+        "correct": "\"radar\\nradar\\n\""
+      },
+      "scaffold": {
+        "template": "words = [\"radar\", \"ab\", \"radar\"]\npalindromes = {{slot1}}\n{{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "filter_palindromes(words)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "write_lines(\"palindromes.txt\", palindromes)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(palindromes)",
+            "slot": 2,
+            "trap": "In ra màn hình, không ghi file."
+          },
+          {
+            "label": "filter_palindromes(words)",
+            "slot": 1
+          },
+          {
+            "label": "write_lines(\"palindromes.txt\", words)",
+            "slot": 2,
+            "trap": "Ghi cả từ sai."
+          },
+          {
+            "label": "is_palindrome(words)",
+            "slot": 1,
+            "trap": "Kiểm cả list — trả một bool."
+          },
+          {
+            "label": "write_lines(\"palindromes.txt\", palindromes)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "is_palindrome, filter_palindromes và write_lines đã cấp. Với words cho sẵn, tự viết HAI lệnh điều phối: lọc words thành palindromes rồi ghi palindromes ra palindromes.txt.\n\nThực hành: Lưu kết quả lọc vào palindromes, rồi ghi list đó.",
+        "io": [
+          {
+            "label": "List mẫu",
+            "value": "File: \"level\\nradar\\n\""
+          },
+          {
+            "label": "[]",
+            "value": "File rỗng, thay dữ liệu cũ"
+          }
+        ]
+      },
+      "starterCode": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        if is_palindrome(word):\n            palindromes.append(word)\n    return palindromes\n\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nwords = [\"level\", \"python\", \"radar\", \"\"]\n# Tự gọi filter_palindromes rồi write_lines.\n",
+      "solutionCode": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        if is_palindrome(word):\n            palindromes.append(word)\n    return palindromes\n\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nwords = [\"level\", \"python\", \"radar\", \"\"]\npalindromes = filter_palindromes(words)\nwrite_lines(\"palindromes.txt\", palindromes)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Lưu kết quả lọc vào palindromes, rồi ghi list đó."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. palindromes = filter_palindromes(words)\n2. write_lines(\"palindromes.txt\", palindromes)"
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "palindromes = filter_palindromes(words)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "List mẫu → \"level\\nradar\\n\"",
+          "call": "_studio.run().file('palindromes.txt')",
+          "expect": "'level\\nradar\\n'"
+        },
+        {
+          "name": "Giữ trùng: [\"radar\", \"ab\", \"radar\"]",
+          "call": "_studio.run(vars={'words': ['radar', 'ab', 'radar']}).file('palindromes.txt')",
+          "expect": "'radar\\nradar\\n'"
+        },
+        {
+          "name": "[] → file rỗng, thay dữ liệu cũ",
+          "call": "_studio.run(vars={'words': []}, files={'palindromes.txt': 'old\\n'}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "[\"Level\", \"\"] → file rỗng",
+          "call": "_studio.run(vars={'words': ['Level', '']}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Không sửa words",
+          "call": "_studio.run().var('words')",
+          "expect": "['level', 'python', 'radar', '']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "is_palindrome(text)",
+          "does": "Kiểm tra chuỗi đối xứng và không rỗng.",
+          "takes": "text: str — giữ nguyên hoa/thường và khoảng trắng",
+          "gives": "bool",
+          "effect": "Không in, không ghi file, không sửa dữ liệu đầu vào.",
+          "call": "is_palindrome(\"level\") → True"
+        },
+        {
+          "sig": "filter_palindromes(words)",
+          "does": "Lọc chuỗi bằng is_palindrome, giữ thứ tự và trùng lặp.",
+          "takes": "words: list[str]",
+          "gives": "list[str] mới; list rỗng khi không có kết quả",
+          "effect": "Không in, không sửa words.",
+          "call": "filter_palindromes([\"radar\", \"ab\"]) → [\"radar\"]"
+        },
+        {
+          "sig": "write_lines(path, lines)",
+          "does": "Ghi từng chuỗi trên một dòng.",
+          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "gives": "None — không có return mang giá trị",
+          "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
+          "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "Ghi thẳng words cho nhanh",
+              "answer": false,
+              "explain": "words còn từ sai và chuỗi rỗng; file kết quả phải chỉ có chuỗi đối xứng. Bài này cũng không đọc thêm file — đầu vào là list cấp sẵn."
+            },
+            {
+              "statement": "save_numbers nhận evens (đã lọc), không nhận list gốc.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "keep_even trả LIST MỚI; list gốc không đổi.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            }
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        if is_palindrome(word):\n            palindromes.append(word)",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L12",
+              "text": "    return palindromes"
+            },
+            {
+              "id": "L14",
+              "text": "def write_lines(path, lines):"
+            },
+            {
+              "id": "L15",
+              "text": "    with open(path, \"w\", encoding=\"utf-8\") as file:"
+            },
+            {
+              "id": "L16",
+              "text": "        for text in lines:"
+            },
+            {
+              "id": "L17",
+              "text": "            file.write(text + \"\\n\")"
+            },
+            {
+              "id": "L19",
+              "text": "words = [\"level\", \"python\", \"radar\", \"\"]"
+            },
+            {
+              "id": "L20",
+              "text": "palindromes = filter_palindromes(words)"
+            },
+            {
+              "id": "L21",
+              "text": "write_lines(\"palindromes.txt\", palindromes)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "write_lines(\"palindromes.txt\", words)",
+              "reason": "ghi words"
+            }
+          ],
+          "order": [
+            "L12",
+            "L20",
+            "L19",
+            "L17",
+            "L21",
+            "L16",
+            "L15",
+            "L14",
+            "D0"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\ndef write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nwords = [\"level\", \"python\", \"radar\", \"\"]\nwrite_lines(\"palindromes.txt\", words)",
+          "firstLine": 14,
+          "line": 21,
+          "lines": [
+            21
+          ],
+          "label": "ghi words",
+          "fix": "palindromes = filter_palindromes(words)\nwrite_lines(\"palindromes.txt\", palindromes)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

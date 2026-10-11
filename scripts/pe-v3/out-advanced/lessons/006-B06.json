@@ -1,0 +1,323 @@
+{
+  "lesson_code": "B06",
+  "sort_order": 6,
+  "module": "M2 · Vòng lặp và hàm",
+  "title": "B06 · Duyệt danh sách",
+  "subtitle": "Cơ bản · M2 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B06 · Duyệt danh sách",
+    "subtitle": "Cơ bản · M2 · 15 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B06",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP CƠ BẢN",
+          "B06"
+        ],
+        "title": "Duyệt danh sách",
+        "goal": "Duyệt list và xử lý từng phần tử bằng for.",
+        "task": "In từng từ trong words trên một dòng, giữ nguyên thứ tự.",
+        "predict": "List rỗng làm thân vòng lặp chạy mấy lần?",
+        "code": "words = [\"level\", \"python\", \"radar\"]\n# Dùng for để in từng word",
+        "tests": [
+          "List mẫu → 3 dòng đúng thứ tự",
+          "[] → không có output"
+        ],
+        "reflect": "Vì sao list rỗng không in gì?"
+      },
+      "context": {
+        "title": "Duyệt list và xử lý từng phần tử bằng for.",
+        "body": "Cho words = [\"level\", \"python\", \"radar\"]. Dùng for để in từng phần tử, mỗi phần tử một dòng.",
+        "example": "Ba dòng theo đúng thứ tự: level, python, radar.",
+        "prereq": "B05",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "List rỗng [] làm vòng lặp chạy bao nhiêu lần?",
+        "options": [
+          {
+            "id": "a",
+            "title": "0 lần",
+            "detail": "Không có phần tử nào để gán cho biến lặp.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "1 lần",
+            "detail": "Vòng for chạy đúng bằng số phần tử.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "Duyệt list rỗng là hợp lệ.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"print(words) cũng in từng từ\"",
+        "body": "print(words) in biểu diễn của cả list trên MỘT dòng: ['level', 'python', 'radar']. Đề cần mỗi từ một dòng nên phải duyệt bằng for."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "List dùng [] và giữ các phần tử theo thứ tự."
+        },
+        {
+          "n": 2,
+          "body": "Mỗi lượt for, color nhận phần tử tiếp theo; khối thụt vào chạy một lần cho mỗi phần tử."
+        },
+        {
+          "n": 3,
+          "body": "print(\"done\") không thụt vào nên chạy MỘT lần sau khi vòng lặp kết thúc."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "colors = [\"red\", \"green\"]\nfor color in colors:\n    print(color)\nprint(\"done\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "words = [\"radar\", \"radar\"] thì in mấy dòng?",
+          "options": [
+            {
+              "text": "2 dòng radar",
+              "detail": "for duyệt đủ mọi phần tử, kể cả phần tử trùng.",
+              "correct": true
+            },
+            {
+              "text": "1 dòng radar",
+              "detail": "for không tự bỏ trùng.",
+              "correct": false
+            },
+            {
+              "text": "Không in gì",
+              "detail": "List có hai phần tử nên thân vòng lặp chạy hai lần.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "for duyệt đủ mọi phần tử, kể cả phần tử trùng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao list rỗng không in gì?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Vòng for lấy lần lượt từng phần tử của list. List rỗng không có phần tử nào để gán cho word, nên thân vòng lặp không chạy lần nào và không có output. Đó không phải lỗi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: words = [\"a\", \"ab\"]. Lắp vòng lặp và lệnh in.",
+        "rule": "Thử words = [] và words = [\"radar\", \"radar\"]; đếm số dòng in ra."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Lượt 1: word = \"level\" → in level."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Lượt 2: word = \"python\" → in python."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Lượt 3: word = \"radar\" → in radar; hết phần tử, vòng lặp dừng."
+          }
+        ]
+      },
+      "counter": {
+        "question": "words = [\"a\"] thì chương trình in gì?",
+        "options": [
+          "a",
+          "['a']",
+          "Không in gì"
+        ],
+        "correct": "a"
+      },
+      "scaffold": {
+        "template": "words = [\"a\", \"ab\"]\n{{slot1}}\n    {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "for word in words:"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "print(word)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(word)",
+            "slot": 2
+          },
+          {
+            "label": "for word in \"words\":",
+            "slot": 1,
+            "trap": "Duyệt từng ký tự của chuỗi \"words\"."
+          },
+          {
+            "label": "print(words)",
+            "slot": 2,
+            "trap": "In cả list mỗi lượt."
+          },
+          {
+            "label": "for word in words:",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho words = [\"level\", \"python\", \"radar\"]. Dùng for để in từng phần tử, mỗi phần tử một dòng.\n\nThực hành: In từng từ trong vòng for, không in nguyên list.",
+        "io": [
+          {
+            "label": "List mẫu",
+            "value": "level\\npython\\nradar\\n"
+          },
+          {
+            "label": "[]",
+            "value": "Không có output."
+          }
+        ]
+      },
+      "starterCode": "words = [\"level\", \"python\", \"radar\"]\n# Tự viết for để in từng word.\n",
+      "solutionCode": "words = [\"level\", \"python\", \"radar\"]\nfor word in words:\n    print(word)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "In từng từ trong vòng for, không in nguyên list."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. for word in words: — mỗi lượt word là một phần tử.\n2. Thân vòng lặp: print(word), thụt vào 4 dấu cách."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "for word in words:\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "List mẫu: ba dòng đúng thứ tự",
+          "call": "_studio.run().stdout",
+          "expect": "'level\\npython\\nradar\\n'"
+        },
+        {
+          "name": "List rỗng: không có output",
+          "call": "_studio.run(vars={'words': []}).stdout",
+          "expect": "''"
+        },
+        {
+          "name": "Phần tử trùng vẫn in hai dòng",
+          "call": "_studio.run(vars={'words': ['radar', 'radar']}).stdout",
+          "expect": "'radar\\nradar\\n'"
+        },
+        {
+          "name": "[\"a\"] → một dòng a",
+          "call": "_studio.run(vars={'words': ['a']}).stdout",
+          "expect": "'a\\n'"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Lượt 1: word = \"level\"",
+              "right": "in level"
+            },
+            {
+              "left": "Lượt 2: word = \"python\"",
+              "right": "in python"
+            },
+            {
+              "left": "Lượt 3: word = \"radar\"",
+              "right": "in radar; hết phần tử, vòng lặp dừng"
+            }
+          ],
+          "rightOrder": [
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L0",
+              "text": "words = [\"level\", \"python\", \"radar\"]"
+            },
+            {
+              "id": "L1",
+              "text": "for word in words:"
+            },
+            {
+              "id": "L2",
+              "text": "    print(word)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "print(words)",
+              "reason": "in cả list"
+            }
+          ],
+          "order": [
+            "D0",
+            "L0",
+            "L2",
+            "L1"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "words = [\"level\", \"python\", \"radar\"]\nprint(words)",
+          "firstLine": 1,
+          "line": 2,
+          "lines": [
+            2
+          ],
+          "label": "in cả list",
+          "fix": "for word in words:\n    print(word)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

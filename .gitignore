@@ -2,7 +2,14 @@ node_modules
 # Keep environment variables out of version control
 .env
 
-/generated/prisma
+# Prisma client sinh ra bởi `prisma generate` (`npm run build` tự chạy qua prebuild)
+/src/generated/prisma
+
+# Tài khoản đo tải do `npm run loadtest:prepare` sinh ra
+/scripts/loadtest-accounts.json
+
+__pycache__/
+coverage/
 
 .claude
 
@@ -13,7 +20,5 @@ node_modules
 dist/
 
 docs/
-
-test/
 
 python-studio-qa/

@@ -1,0 +1,373 @@
+{
+  "lesson_code": "B13",
+  "sort_order": 13,
+  "module": "M3 · Đọc và ghi file",
+  "title": "B13 · Ghi một kết quả",
+  "subtitle": "Cơ bản · M3 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B13 · Ghi một kết quả",
+    "subtitle": "Cơ bản · M3 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B13",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP CƠ BẢN",
+          "B13"
+        ],
+        "title": "Ghi một kết quả",
+        "goal": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
+        "task": "Dùng mode w ghi words vào palindromes.txt; tự thêm newline.",
+        "predict": "Chạy lại với words = [\"a\"] có giữ dữ liệu cũ không?",
+        "code": "words = [\"level\", \"radar\"]\n# Mở palindromes.txt bằng mode w\n# Ghi từng word + \"\\n\"",
+        "tests": [
+          "[level, radar] → file có 2 dòng",
+          "[] → file rỗng"
+        ],
+        "reflect": "Vì sao file.write cần tự thêm \"\\n\"?"
+      },
+      "context": {
+        "title": "Ghi list chuỗi ra file, mỗi phần tử một dòng.",
+        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.",
+        "example": "words = [\"level\", \"radar\"] → palindromes.txt chứa \"level\\nradar\\n\".",
+        "prereq": "B12",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Chạy lại với words = [\"a\"] — file có giữ dữ liệu của lần trước không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — mode \"w\" ghi đè, file chỉ còn \"a\\n\"",
+            "detail": "Mở bằng \"w\" là làm rỗng file trước khi ghi.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — \"a\" được thêm vào cuối",
+            "detail": "Đó là hành vi của mode \"a\" (append).",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi vì file đã tồn tại",
+            "detail": "\"w\" ghi đè file có sẵn mà không báo lỗi.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Mở bằng mode \"a\" cho an toàn\"",
+        "body": "Mode \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "\"w\" tạo file nếu chưa có và XOÁ nội dung cũ nếu đã có."
+        },
+        {
+          "n": 2,
+          "body": "file.write ghi đúng chuỗi được đưa vào — không tự xuống dòng như print, nên phải nối \"\\n\"."
+        },
+        {
+          "n": 3,
+          "body": "with đóng file sau khi ghi xong; kết quả nằm trong FILE, không phải trên màn hình."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "names = [\"An\", \"Binh\"]\nwith open(\"names.txt\", \"w\", encoding=\"utf-8\") as file:\n    for name in names:\n        file.write(name + \"\\n\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Vì sao phải tự thêm \"\\n\" sau mỗi từ?",
+          "options": [
+            {
+              "text": "Vì write không tự xuống dòng",
+              "detail": "Không có \"\\n\" thì các từ dính liền: \"levelradar\".",
+              "correct": true
+            },
+            {
+              "text": "Vì UTF-8 yêu cầu",
+              "detail": "Encoding không liên quan tới xuống dòng.",
+              "correct": false
+            },
+            {
+              "text": "Không cần, write tự xuống dòng",
+              "detail": "Chỉ print mới tự thêm xuống dòng.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Không có \"\\n\" thì các từ dính liền: \"levelradar\"."
+        },
+        {
+          "question": "words = [] thì palindromes.txt sau khi chạy là gì?",
+          "options": [
+            {
+              "text": "File rỗng (được tạo hoặc ghi đè)",
+              "detail": "Mở \"w\" đã làm rỗng file; vòng lặp không ghi gì.",
+              "correct": true
+            },
+            {
+              "text": "Không có file",
+              "detail": "open(..., \"w\") tạo file ngay khi mở.",
+              "correct": false
+            },
+            {
+              "text": "Giữ dữ liệu cũ",
+              "detail": "\"w\" luôn xoá nội dung cũ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mở \"w\" đã làm rỗng file; vòng lặp không ghi gì."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao phải tự thêm \"\\n\" khi ghi?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "file.write ghi đúng chuỗi được đưa vào, không tự xuống dòng như print mặc định. Nối word + \"\\n\" thì mỗi từ nằm trên một dòng; mode \"w\" ghi đè nên chạy lại không lẫn dữ liệu cũ."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: [\"độđ\", \"độđ\"]. Chọn mode mở file và lệnh ghi.",
+        "rule": "Chạy hai lần với hai list khác nhau; lần thứ hai thử [] và kiểm file rỗng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Mở \"w\" → file rỗng."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Ghi \"level\\n\"."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Ghi \"radar\\n\"."
+          },
+          {
+            "label": "Bước 4",
+            "text": "Ra khỏi with → đóng file."
+          }
+        ]
+      },
+      "counter": {
+        "question": "File cũ chứa \"old\\n\", chạy với words = [\"a\"]. File sau khi chạy?",
+        "options": [
+          "\"a\\n\"",
+          "\"old\\na\\n\"",
+          "\"old\\n\""
+        ],
+        "correct": "\"a\\n\""
+      },
+      "scaffold": {
+        "template": "words = [\"độđ\", \"độđ\"]\nwith open(\"palindromes.txt\", {{slot1}}, encoding=\"utf-8\") as file:\n    for word in words:\n        {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\"w\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "file.write(word + \"\\n\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\"r\"",
+            "slot": 1,
+            "trap": "Chỉ đọc, không ghi được."
+          },
+          {
+            "label": "\"a\"",
+            "slot": 1,
+            "trap": "Cộng dồn qua các lần chạy."
+          },
+          {
+            "label": "print(word)",
+            "slot": 2,
+            "trap": "In ra màn hình, không ghi file."
+          },
+          {
+            "label": "file.write(word + \"\\n\")",
+            "slot": 2
+          },
+          {
+            "label": "file.write(word)",
+            "slot": 2,
+            "trap": "Các từ dính liền trên một dòng."
+          },
+          {
+            "label": "\"w\"",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho words = [\"level\", \"radar\"]. Mở palindromes.txt bằng mode \"w\" (UTF-8) và ghi mỗi từ trên một dòng. List kết quả đã cấp, chưa phải tự lọc. Không in gì ra màn hình.\n\nThực hành: Mỗi lần write ghi word + \"\\n\".",
+        "io": [
+          {
+            "label": "[\"level\", \"radar\"]",
+            "value": "File: \"level\\nradar\\n\"; stdout rỗng"
+          },
+          {
+            "label": "[]",
+            "value": "Tạo/ghi đè thành file rỗng"
+          }
+        ]
+      },
+      "starterCode": "words = [\"level\", \"radar\"]\n# Tự mở palindromes.txt bằng mode w và ghi từng word.\n",
+      "solutionCode": "words = [\"level\", \"radar\"]\nwith open(\"palindromes.txt\", \"w\", encoding=\"utf-8\") as file:\n    for word in words:\n        file.write(word + \"\\n\")\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Mỗi lần write ghi word + \"\\n\"."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. with open(\"palindromes.txt\", \"w\", encoding=\"utf-8\") as file:\n2. for word in words: file.write(word + \"\\n\")"
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "with open(\"palindromes.txt\", \"w\", encoding=\"utf-8\") as file:\n    for word in words:\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "File: \"level\\nradar\\n\"",
+          "call": "_studio.run().file('palindromes.txt')",
+          "expect": "'level\\nradar\\n'"
+        },
+        {
+          "name": "stdout rỗng",
+          "call": "_studio.run().stdout",
+          "expect": "''"
+        },
+        {
+          "name": "[] → file rỗng",
+          "call": "_studio.run(vars={'words': []}).file('palindromes.txt')",
+          "expect": "''"
+        },
+        {
+          "name": "Ghi đè file cũ",
+          "call": "_studio.run(vars={'words': ['a']}, files={'palindromes.txt': 'old\\n'}).file('palindromes.txt')",
+          "expect": "'a\\n'"
+        },
+        {
+          "name": "Giữ dấu tiếng Việt và dòng trùng",
+          "call": "_studio.run(vars={'words': ['độđ', 'độđ']}).file('palindromes.txt')",
+          "expect": "'độđ\\nđộđ\\n'"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "with đóng file sau khi ghi xong; kết quả nằm trong FILE, không phải trên màn hình.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "\"w\" tạo file nếu chưa có và XOÁ nội dung cũ nếu đã có.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "Mở bằng mode \"a\" cho an toàn",
+              "answer": false,
+              "explain": "Mode \"a\" cộng dồn kết quả qua các lần chạy — chạy hai lần là file lẫn dữ liệu cũ. Và tuyệt đối không mở data.txt (file nguồn) bằng \"w\": nội dung bị xoá ngay khi mở."
+            }
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L0",
+              "text": "words = [\"level\", \"radar\"]"
+            },
+            {
+              "id": "L1",
+              "text": "with open(\"palindromes.txt\", \"w\", encoding=\"utf-8\") as file:"
+            },
+            {
+              "id": "L2",
+              "text": "    for word in words:"
+            },
+            {
+              "id": "L3",
+              "text": "        file.write(word + \"\\n\")"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "with open(\"palindromes.txt\", \"a\", encoding=\"utf-8\") as file:",
+              "reason": "mode a"
+            },
+            {
+              "id": "D1",
+              "text": "        file.write(word)",
+              "reason": "thiếu xuống dòng"
+            }
+          ],
+          "order": [
+            "L2",
+            "D0",
+            "L0",
+            "D1",
+            "L1",
+            "L3"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "words = [\"level\", \"radar\"]\nwith open(\"palindromes.txt\", \"a\", encoding=\"utf-8\") as file:\n    for word in words:\n        file.write(word + \"\\n\")",
+          "firstLine": 1,
+          "line": 2,
+          "lines": [
+            2
+          ],
+          "label": "mode a",
+          "fix": "with open(\"palindromes.txt\", \"w\", encoding=\"utf-8\") as file:"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

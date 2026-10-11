@@ -7,12 +7,14 @@
  * chưa có data) → gà-và-trứng: fetch đầu tiên đập vào Next :3000 và 404.
  *
  * apiFetch trỏ thẳng NEXT_PUBLIC_API_URL + đính "Authorization: Bearer" từ
- * localStorage (cùng key pe_access/pe_refresh với pe-bridge.js) + thử refresh
- * token đúng 1 lần khi 401 — mirror tối thiểu logic của bridge.
+ * localStorage (cùng key pe_access với pe-bridge.js) + thử refresh token đúng
+ * 1 lần khi 401 — mirror tối thiểu logic của bridge. Refresh token nằm trong
+ * cookie httpOnly do backend đặt; pe_refresh trong localStorage chỉ còn là key
+ * cũ, đọc một lần để chuyển phiên sang cookie rồi xoá.
  */
 
 const LS_ACCESS = 'pe_access';
-const LS_REFRESH = 'pe_refresh';
+const LS_LEGACY_REFRESH = 'pe_refresh';
 
 function origin(): string {
   const w = window as unknown as { __PE_API_ORIGIN?: string };
@@ -36,24 +38,34 @@ function ls(key: string): string | null {
  */
 let refreshing: Promise<string | null> | null = null;
 
+function callRefresh(): Promise<Response> {
+  const legacy = ls(LS_LEGACY_REFRESH);
+  return fetch(`${origin()}/auth/refresh`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(legacy ? { refresh: legacy } : {}),
+  });
+}
+
 function refreshAccess(): Promise<string | null> {
   if (typeof window !== 'undefined') {
     const w = window as unknown as { __PE_refreshAccess?: () => Promise<string | null> };
     if (typeof w.__PE_refreshAccess === 'function') return w.__PE_refreshAccess();
   }
   if (refreshing) return refreshing;
-  const refresh = ls(LS_REFRESH);
-  if (!refresh) return Promise.resolve(null);
-  refreshing = fetch(`${origin()}/auth/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refresh }),
-  })
+  // Khách chưa đăng nhập thì không có cookie refresh — khỏi gọi mạng.
+  const maybeLoggedIn =
+    ls(LS_ACCESS) || ls(LS_LEGACY_REFRESH) || document.cookie.includes('pe_has_session=1');
+  if (!maybeLoggedIn) return Promise.resolve(null);
+  refreshing = callRefresh()
+    // Tab khác vừa rotate cùng cookie -> 401; thử lại 1 lần với cookie mới.
+    .then((r) => (r.status === 401 ? new Promise((ok) => setTimeout(ok, 400)).then(callRefresh) : r))
     .then(async (rr) => {
       if (rr.status === 401 || rr.status === 403) {
         try {
           localStorage.removeItem(LS_ACCESS);
-          localStorage.removeItem(LS_REFRESH);
+          localStorage.removeItem(LS_LEGACY_REFRESH);
         } catch {
           /* private mode */
         }
@@ -70,7 +82,7 @@ function refreshAccess(): Promise<string | null> {
       if (!d?.access) return null;
       try {
         localStorage.setItem(LS_ACCESS, d.access);
-        if (d.refresh) localStorage.setItem(LS_REFRESH, d.refresh);
+        localStorage.removeItem(LS_LEGACY_REFRESH);
       } catch {
         /* private mode */
       }

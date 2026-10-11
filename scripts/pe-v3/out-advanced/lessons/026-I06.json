@@ -1,0 +1,365 @@
+{
+  "lesson_code": "I06",
+  "sort_order": 26,
+  "module": "M6 · Trạng thái và lớp cha (Ex2)",
+  "title": "I06 · Phân biệt print và str",
+  "subtitle": "Trung cấp · M6 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "I06 · Phân biệt print và str",
+    "subtitle": "Trung cấp · M6 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I06",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP TRUNG CẤP",
+          "I06"
+        ],
+        "title": "Phân biệt print và str",
+        "goal": "Phân biệt lấy chuỗi bằng str và in bằng print.",
+        "task": "Sửa __str__ đang print; viết text = str(language) và print(language).",
+        "predict": "__str__ chỉ print thì str(obj) có hợp lệ không?",
+        "code": "    def __str__(self):\n        ...\n        print(description)  # lỗi\n\n# text = str(...) rồi print(...)",
+        "tests": [
+          "Object Python → stdout đúng một dòng",
+          "Gọi str riêng → không có output"
+        ],
+        "reflect": "Giá trị trả về khác dòng được in thế nào?"
+      },
+      "context": {
+        "title": "Phân biệt lấy chuỗi bằng str và in bằng print.",
+        "body": "__str__ trong khung đang print thay vì return. Sửa nó, rồi viết hai lời gọi: text = str(language) để lấy chuỗi, và print(language) để hiển thị.",
+        "example": "text = str(language) lưu chuỗi; print(language) in một dòng. Gọi str riêng không tự in.",
+        "prereq": "I05",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Nếu __str__ chỉ print rồi kết thúc, str(obj) nhận được str hợp lệ không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — __str__ trả None nên str(obj) báo TypeError",
+            "detail": "Dòng in ra không phải giá trị trả về.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — chuỗi vừa in",
+            "detail": "print không trả chuỗi.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Nhận chuỗi rỗng",
+            "detail": "Python không tự đổi None thành \"\".",
+            "correct": false
+          }
+        ],
+        "code": "    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        print(description)"
+      },
+      "misconception": {
+        "title": "\"Thêm return None sau print là xong\"",
+        "body": "Vẫn trả None. Phải thay print(description) bằng return description. Giá trị trả về là thứ str(obj) nhận; dòng được in chỉ là tác dụng phụ."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "str(badge) gọi __str__ và nhận CHUỖI trả về — không in gì."
+        },
+        {
+          "n": 2,
+          "body": "label là str bình thường: dùng được len, nối chuỗi, ghi file…"
+        },
+        {
+          "n": 3,
+          "body": "print(badge) cũng gọi __str__, rồi mới đưa chuỗi ra màn hình: đúng một dòng."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Badge:\n    def __init__(self, owner):\n        self.owner = owner\n\n    def __str__(self):\n        return f\"Badge[{self.owner}]\"\n\nbadge = Badge(\"An\")\nlabel = str(badge)\nprint(len(label))\nprint(badge)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Gọi str(language) hai lần liên tiếp thì…",
+          "options": [
+            {
+              "text": "Hai kết quả bằng nhau, không in gì, object không đổi",
+              "detail": "__str__ chỉ đọc trạng thái.",
+              "correct": true
+            },
+            {
+              "text": "In hai dòng",
+              "detail": "str không in.",
+              "correct": false
+            },
+            {
+              "text": "Lần hai báo lỗi",
+              "detail": "__str__ gọi bao nhiêu lần cũng được.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "__str__ chỉ đọc trạng thái."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Sự khác nhau giữa giá trị trả về và dòng được in là gì?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Giá trị trả về đi vào biến (text = str(language)) để dùng tiếp; dòng được in chỉ là tác dụng phụ trên màn hình. __str__ phải trả chuỗi; print(language) mới là nơi hiển thị, và str(language) gọi riêng không in gì."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Sửa __str__ và viết hai cách gọi.",
+        "rule": "Thử object C/1972/[]; kiểm text là str và chỉ có một dòng do print ở nơi gọi."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "str(language) → __str__ → text (không có output)."
+          },
+          {
+            "label": "Bước 2",
+            "text": "print(language) → __str__ → một dòng trên màn hình."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Chương trình đúng (text = str(language); print(language)) in mấy dòng?",
+        "options": [
+          "1 dòng",
+          "2 dòng",
+          "0 dòng"
+        ],
+        "correct": "1 dòng"
+      },
+      "scaffold": {
+        "template": "    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        {{slot1}}\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\ntext = {{slot2}}\n{{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "return description"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "str(language)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "print(language)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "return description",
+            "slot": 1
+          },
+          {
+            "label": "print(language)",
+            "slot": 3
+          },
+          {
+            "label": "print(description)",
+            "slot": 1,
+            "trap": "__str__ trả None."
+          },
+          {
+            "label": "language.__str__",
+            "slot": 2,
+            "trap": "Chưa gọi method — text là một method, không phải chuỗi."
+          },
+          {
+            "label": "str(language)",
+            "slot": 2
+          },
+          {
+            "label": "print(text())",
+            "slot": 3,
+            "trap": "text là str, không gọi được."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "__str__ trong khung đang print thay vì return. Sửa nó, rồi viết hai lời gọi: text = str(language) để lấy chuỗi, và print(language) để hiển thị.\n\nThực hành: Lưu text = str(language) và dùng print(language) để hiển thị.",
+        "io": [
+          {
+            "label": "Object Python",
+            "value": "text đúng str; stdout một dòng từ print"
+          },
+          {
+            "label": "Gọi str riêng",
+            "value": "Không có output"
+          }
+        ]
+      },
+      "starterCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        print(description)\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\n# Tự viết text = str(...) và print(...).\n",
+      "solutionCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\ntext = str(language)\nprint(language)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Lưu text = str(language) và dùng print(language) để hiển thị."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Thay print(description) cuối __str__ bằng return description.\n2. text = str(language); print(language)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "text = str(language)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "stdout đúng một dòng",
+          "call": "_studio.run().stdout",
+          "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\\n\""
+        },
+        {
+          "name": "text là chuỗi đúng format",
+          "call": "_studio.run().var('text')",
+          "expect": "\"Language[Python], Year created[1991], Paradigms['procedural']\""
+        },
+        {
+          "name": "str(obj) gọi riêng không in",
+          "call": "_studio.stdout(str, ProgrammingLanguage('Python', 1991, ['procedural']))",
+          "expect": "''"
+        },
+        {
+          "name": "C/1972/[] không TypeError",
+          "call": "str(ProgrammingLanguage('C', 1972, []))",
+          "expect": "'Language[C], Year created[1972], Paradigms[]'"
+        },
+        {
+          "name": "Gọi str hai lần bằng nhau",
+          "call": "(lambda o: str(o) == str(o))(ProgrammingLanguage('A', 1, ['x']))",
+          "expect": "True"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "ProgrammingLanguage.__init__(self, name, year_created, paradigms)",
+          "does": "Khởi tạo ba thuộc tính của object.",
+          "takes": "self: object hiện tại; name: str; year_created: int; paradigms: list[str]",
+          "gives": "None — lời gọi class mới tạo ra object, không phải giá trị của __init__",
+          "effect": "Gán thuộc tính; list(paradigms) tạo list riêng.",
+          "call": "ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+        },
+        {
+          "sig": "ProgrammingLanguage.__str__(self)",
+          "does": "Biểu diễn object bằng chuỗi.",
+          "takes": "self",
+          "gives": "str đúng format v3",
+          "effect": "Không print, không đổi object.",
+          "call": "str(obj) → Language[Python], Year created[1991], Paradigms['procedural']"
+        }
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "Thêm return None sau print là xong",
+              "answer": false,
+              "explain": "Vẫn trả None. Phải thay print(description) bằng return description. Giá trị trả về là thứ str(obj) nhận; dòng được in chỉ là tác dụng phụ."
+            },
+            {
+              "statement": "label là str bình thường: dùng được len, nối chuỗi, ghi file…",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "str(badge) gọi __str__ và nhận CHUỖI trả về — không in gì.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            }
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L6",
+              "text": "    def __str__(self):"
+            },
+            {
+              "id": "L7",
+              "text": "        description = f\"Language[{self.name}]\""
+            },
+            {
+              "id": "L8",
+              "text": "        description += f\", Year created[{self.year_created}]\""
+            },
+            {
+              "id": "L9",
+              "text": "        description += f\", Paradigms{self.paradigms}\""
+            },
+            {
+              "id": "L10",
+              "text": "        return description"
+            },
+            {
+              "id": "L12",
+              "text": "language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+            },
+            {
+              "id": "L13",
+              "text": "text = str(language)"
+            },
+            {
+              "id": "L14",
+              "text": "print(language)"
+            }
+          ],
+          "distractors": [],
+          "order": [
+            "L9",
+            "L6",
+            "L12",
+            "L14",
+            "L13",
+            "L7",
+            "L8",
+            "L10"
+          ]
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

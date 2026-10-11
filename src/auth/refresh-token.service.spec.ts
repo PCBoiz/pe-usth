@@ -62,8 +62,16 @@ describe('RefreshTokenService', () => {
   });
 
   describe('rotateAndBlacklist', () => {
+    const live = () => ({
+      id: 7,
+      userId: 42,
+      familyId: 'fam-1',
+      revokedAt: null,
+      expiresAt: new Date(Date.now() + 60_000),
+    });
+
     it('tra DB bằng hash của token, không phải token thô', async () => {
-      authSession.findFirst.mockResolvedValue({ id: 7, userId: 42 });
+      authSession.findFirst.mockResolvedValue(live());
 
       await service.rotateAndBlacklist('raw-token-abc');
 
@@ -71,13 +79,10 @@ describe('RefreshTokenService', () => {
       expect(where.token).toBe(
         createHash('sha256').update('raw-token-abc').digest('hex'),
       );
-      // Hai điều kiện chặn token đã thu hồi / đã hết hạn.
-      expect(where.revokedAt).toBeNull();
-      expect(where.expiresAt.gt).toBeInstanceOf(Date);
     });
 
-    it('đánh dấu revokedAt cho token cũ rồi cấp token mới khác hẳn', async () => {
-      authSession.findFirst.mockResolvedValue({ id: 7, userId: 42 });
+    it('đánh dấu revokedAt cho token cũ rồi cấp token mới CÙNG family', async () => {
+      authSession.findFirst.mockResolvedValue(live());
 
       const rotated = await service.rotateAndBlacklist('raw-token-abc');
 
@@ -86,15 +91,14 @@ describe('RefreshTokenService', () => {
         where: { id: 7, revokedAt: null },
         data: { revokedAt: expect.any(Date) },
       });
-      // Token mới được cấp cho đúng user cũ.
-      expect(authSession.create.mock.calls[0][0].data.userId).toBe(42);
-      // Trả về userId để AuthService ký access token mà không phải tra DB lần nữa.
+      const created = authSession.create.mock.calls[0][0].data;
+      expect(created.userId).toBe(42);
+      expect(created.familyId).toBe('fam-1');
       expect(rotated.userId).toBe(42);
-      expect(typeof rotated.refreshToken).toBe('string');
       expect(rotated.refreshToken).not.toBe('raw-token-abc');
     });
 
-    it('ném Unauthorized và KHÔNG cấp token mới khi token không hợp lệ', async () => {
+    it('ném Unauthorized và KHÔNG cấp token mới khi token không tồn tại', async () => {
       authSession.findFirst.mockResolvedValue(null);
 
       await expect(service.rotateAndBlacklist('token-rac')).rejects.toThrow(
@@ -104,14 +108,78 @@ describe('RefreshTokenService', () => {
       expect(authSession.create).not.toHaveBeenCalled();
     });
 
+    it('ném Unauthorized khi token đã hết hạn', async () => {
+      authSession.findFirst.mockResolvedValue({
+        ...live(),
+        expiresAt: new Date(Date.now() - 1),
+      });
+
+      await expect(service.rotateAndBlacklist('raw-token-abc')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      expect(authSession.create).not.toHaveBeenCalled();
+    });
+
     it('ném Unauthorized khi request song song đã rotate trước (count=0)', async () => {
-      authSession.findFirst.mockResolvedValue({ id: 7, userId: 42 });
+      authSession.findFirst.mockResolvedValue(live());
       authSession.updateMany.mockResolvedValue({ count: 0 });
 
       await expect(service.rotateAndBlacklist('raw-token-abc')).rejects.toThrow(
         UnauthorizedException,
       );
       expect(authSession.create).not.toHaveBeenCalled();
+    });
+
+    it('token vừa rotate trong vài giây (2 tab cùng refresh) -> 401 nhưng KHÔNG thu hồi family', async () => {
+      authSession.findFirst.mockResolvedValue({
+        ...live(),
+        revokedAt: new Date(Date.now() - 1_000),
+      });
+
+      await expect(service.rotateAndBlacklist('raw-token-abc')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      expect(authSession.updateMany).not.toHaveBeenCalled();
+    });
+
+    it('dùng lại token đã thu hồi từ lâu -> thu hồi CẢ family', async () => {
+      authSession.findFirst.mockResolvedValue({
+        ...live(),
+        revokedAt: new Date(Date.now() - 5 * 60_000),
+      });
+
+      await expect(service.rotateAndBlacklist('raw-token-abc')).rejects.toThrow(
+        UnauthorizedException,
+      );
+      expect(authSession.updateMany).toHaveBeenCalledWith({
+        where: { familyId: 'fam-1', revokedAt: null },
+        data: { revokedAt: expect.any(Date) },
+      });
+      expect(authSession.create).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('revoke', () => {
+    it('logout thu hồi cả family của token', async () => {
+      authSession.findFirst.mockResolvedValue({ id: 7, familyId: 'fam-1' });
+
+      await service.revoke('raw-token-abc');
+
+      expect(authSession.updateMany).toHaveBeenCalledWith({
+        where: { familyId: 'fam-1', revokedAt: null },
+        data: { revokedAt: expect.any(Date) },
+      });
+    });
+
+    it('phiên cũ chưa có family chỉ thu hồi chính nó', async () => {
+      authSession.findFirst.mockResolvedValue({ id: 7, familyId: null });
+
+      await service.revoke('raw-token-abc');
+
+      expect(authSession.updateMany).toHaveBeenCalledWith({
+        where: { id: 7, revokedAt: null },
+        data: { revokedAt: expect.any(Date) },
+      });
     });
   });
 });

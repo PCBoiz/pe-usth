@@ -1,4 +1,4 @@
-import { createHash, randomBytes } from 'crypto';
+import { createHash, randomBytes, randomUUID } from 'crypto';
 import {
   Injectable,
   Logger,
@@ -31,6 +31,13 @@ function parseDuration(value: string | undefined, fallbackMs: number): number {
   }
 }
 
+/**
+ * Token đã bị rotate trong khoảng này mà bị gửi lại thì coi là race hợp lệ
+ * (2 tab cùng refresh bằng một cookie) — chỉ trả 401, KHÔNG thu hồi cả family.
+ * Quá khoảng này mới coi là token bị đánh cắp và dùng lại.
+ */
+const REUSE_GRACE_MS = 30_000;
+
 function hashToken(rawToken: string): string {
   return createHash('sha256').update(rawToken).digest('hex');
 }
@@ -43,7 +50,7 @@ export interface RotatedRefreshToken {
 @Injectable()
 export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
   /** Lifetime đọc từ JWT_REFRESH_EXPIRES (mặc định 8h) — 1 nguồn sự thật duy nhất. */
-  private readonly lifetimeMs: number;
+  readonly lifetimeMs: number;
   private readonly logger = new Logger(RefreshTokenService.name);
   private pruneTimer?: NodeJS.Timeout;
 
@@ -57,7 +64,15 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
     );
   }
 
-  async issue(userId: number): Promise<string> {
+  /**
+   * familyId nối các token sinh ra từ cùng một lần đăng nhập. Mỗi lần rotate
+   * token mới kế thừa familyId của token cũ — nhờ đó khi phát hiện dùng lại
+   * token đã thu hồi có thể thu hồi TOÀN BỘ chuỗi phiên đó.
+   */
+  async issue(
+    userId: number,
+    familyId: string = randomUUID(),
+  ): Promise<string> {
     const rawToken = randomBytes(32).toString('hex');
     const expiresAt = new Date(Date.now() + this.lifetimeMs);
 
@@ -65,6 +80,7 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
       data: {
         userId,
         token: hashToken(rawToken),
+        familyId,
         expiresAt,
       },
     });
@@ -80,17 +96,33 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
    * một compare-and-set nguyên tử — 2 request refresh cùng lúc với CÙNG token
    * thì chỉ đúng 1 request thắng (count=1), request kia nhận 401 thay vì cả 2
    * cùng được cấp cặp token mới.
+   *
+   * Chống dùng lại token bị đánh cắp: token đã bị thu hồi từ lâu hơn
+   * REUSE_GRACE_MS mà vẫn được gửi lên nghĩa là có HAI bên cùng giữ chuỗi
+   * token này (người dùng và kẻ tấn công) -> thu hồi cả family, cả hai đều
+   * phải đăng nhập lại. Không làm vậy thì ai refresh trước sẽ giữ phiên mãi.
    */
   async rotateAndBlacklist(oldToken: string): Promise<RotatedRefreshToken> {
     const session = await this.prisma.authSession.findFirst({
-      where: {
-        token: hashToken(oldToken),
-        revokedAt: null,
-        expiresAt: { gt: new Date() },
-      },
+      where: { token: hashToken(oldToken) },
     });
 
     if (!session) {
+      throw new UnauthorizedException();
+    }
+
+    if (session.revokedAt) {
+      const revokedAgoMs = Date.now() - session.revokedAt.getTime();
+      if (revokedAgoMs > REUSE_GRACE_MS) {
+        await this.revokeFamily(session.id, session.familyId);
+        this.logger.warn(
+          `Phát hiện dùng lại refresh token đã thu hồi (user ${session.userId}) — đã thu hồi cả chuỗi phiên`,
+        );
+      }
+      throw new UnauthorizedException();
+    }
+
+    if (!session.expiresAt || session.expiresAt <= new Date()) {
       throw new UnauthorizedException();
     }
 
@@ -99,13 +131,16 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
       data: { revokedAt: new Date() },
     });
     if (revoked.count === 0) {
-      // Token vừa bị request song song khác rotate — coi như reuse, từ chối.
+      // Token vừa bị request song song khác rotate — race hợp lệ, chỉ từ chối.
       throw new UnauthorizedException();
     }
 
     return {
       userId: session.userId,
-      refreshToken: await this.issue(session.userId),
+      refreshToken: await this.issue(
+        session.userId,
+        session.familyId ?? randomUUID(),
+      ),
     };
   }
 
@@ -114,8 +149,25 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
    * theo spec: "không lỗi nếu token không hợp lệ".
    */
   async revoke(rawToken: string): Promise<void> {
+    const session = await this.prisma.authSession.findFirst({
+      where: { token: hashToken(rawToken) },
+      select: { id: true, familyId: true },
+    });
+    if (session) await this.revokeFamily(session.id, session.familyId);
+  }
+
+  /**
+   * Thu hồi mọi token còn hiệu lực cùng family. Phiên cũ (tạo trước khi có
+   * cột family_id) không có family -> chỉ thu hồi chính nó.
+   */
+  private async revokeFamily(
+    sessionId: number,
+    familyId: string | null,
+  ): Promise<void> {
     await this.prisma.authSession.updateMany({
-      where: { token: hashToken(rawToken), revokedAt: null },
+      where: familyId
+        ? { familyId, revokedAt: null }
+        : { id: sessionId, revokedAt: null },
       data: { revokedAt: new Date() },
     });
   }

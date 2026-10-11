@@ -8,7 +8,7 @@ import oauthConfig from './config/oauth.config';
 import throttleConfig from './config/throttle.config';
 import geminiConfig from './config/gemini.config';
 import { HealthController } from './health/health.controller';
-import { ApiGetwayModule } from './api-getway/api-getway.module';
+import { ApiGatewayModule } from './api-gateway/api-gateway.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CoursesModule } from './courses/courses.module';
@@ -25,7 +25,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
 
 @Module({
   imports: [
-    ApiGetwayModule,
+    ApiGatewayModule,
     PrismaModule,
     ConfigModule.forRoot({
       isGlobal: true,
@@ -48,7 +48,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
   ],
   controllers: [HealthController],
 })
-// Middleware (RequestId/SecurityHeaders/Cors) do ApiGetwayModule đăng ký DUY NHẤT
+// Middleware (RequestId/SecurityHeaders/Cors) do ApiGatewayModule đăng ký DUY NHẤT
 // một lần — trước đây AppModule đăng ký lặp làm mọi request chạy CORS 2 lần và
 // preflight OPTIONS bị xử lý trên response đã end.
 export class AppModule {}

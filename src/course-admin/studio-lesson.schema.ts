@@ -8,10 +8,22 @@
  */
 
 export const STUDIO_LESSON_SCHEMA = 'studio-lesson/v1';
+/** v1 + khối `play` (mini-game của khoá Python Advanced). */
+export const STUDIO_LESSON_SCHEMA_V2 = 'studio-lesson/v2';
+
+export const PLAY_GAME_TYPES = [
+  'traceTable',
+  'match',
+  'trueFalse',
+  'fill',
+  'parsons',
+  'spotError',
+  'debug',
+  'selfExplain',
+] as const;
 
 export type McqOption =
-  | string
-  | { text: string; correct?: boolean; detail?: string };
+  string | { text: string; correct?: boolean; detail?: string };
 
 export interface Mcq {
   question: string;
@@ -39,14 +51,13 @@ export interface StudioLesson {
   step_2?: { mcq?: Mcq[] } & Record<string, unknown>;
   step_3?: Record<string, unknown>;
   step_4?: Record<string, unknown>;
+  play?: Record<string, unknown>;
 }
 
 export const STEP_KEYS = ['step_1', 'step_2', 'step_3', 'step_4'] as const;
 
 function isObject(value: unknown): value is Record<string, unknown> {
-  return (
-    typeof value === 'object' && value !== null && !Array.isArray(value)
-  );
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }
 
 function nonEmptyString(value: unknown): boolean {
@@ -96,7 +107,8 @@ export function validateStudioLesson(value: unknown): string[] {
       two.mcq.forEach((q, i) => {
         const at = `step_2.mcq[${i}]`;
         if (!isObject(q)) return errors.push(`${at}: phải là object.`);
-        if (!nonEmptyString(q.question)) errors.push(`${at}.question: thiếu đề bài.`);
+        if (!nonEmptyString(q.question))
+          errors.push(`${at}.question: thiếu đề bài.`);
         const options = (q as Mcq).options;
         if (!Array.isArray(options) || options.length < 2) {
           errors.push(`${at}.options: cần ít nhất 2 lựa chọn.`);
@@ -154,9 +166,7 @@ export function validateStudioLesson(value: unknown): string[] {
       slots.filter(isObject).forEach((slot) => {
         const n = (slot as { n?: number }).n;
         if (!String(template).includes(`{{slot${n}}}`)) {
-          errors.push(
-            `step_3.scaffold.template: thiếu chỗ đặt {{slot${n}}}.`,
-          );
+          errors.push(`step_3.scaffold.template: thiếu chỗ đặt {{slot${n}}}.`);
         }
         if (!nonEmptyString((slot as { answer?: string }).answer)) {
           errors.push(`step_3.scaffold.slots: slot ${n} thiếu đáp án.`);
@@ -195,7 +205,9 @@ export function validateStudioLesson(value: unknown): string[] {
           if (!isObject(f)) return errors.push(`step_4.files[${i}]: sai kiểu.`);
           const name = f.name;
           if (!nonEmptyString(name) || !/^[\w.-]+$/.test(String(name)))
-            errors.push(`step_4.files[${i}].name: cần tên file trơn (chữ, số, . _ -).`);
+            errors.push(
+              `step_4.files[${i}].name: cần tên file trơn (chữ, số, . _ -).`,
+            );
           if (typeof f.content !== 'string')
             errors.push(`step_4.files[${i}].content: phải là chuỗi.`);
         });
@@ -203,5 +215,93 @@ export function validateStudioLesson(value: unknown): string[] {
     }
   }
 
+  if (lesson.play !== undefined) errors.push(...validatePlay(lesson));
+
+  return errors;
+}
+
+/** Kiểm tra khối `play`: game phải đủ dữ liệu để chơi và chấm được. */
+function validatePlay(lesson: StudioLesson): string[] {
+  const errors: string[] = [];
+  const play = lesson.play;
+  if (!isObject(play)) return ['play: phải là object.'];
+  if (!Array.isArray(play.games) || play.games.length === 0)
+    return ['play.games: cần ít nhất 1 game.'];
+  const ids = new Set<string>();
+  play.games.forEach((g, i) => {
+    const at = `play.games[${i}]`;
+    if (!isObject(g)) return errors.push(`${at}: phải là object.`);
+    const id = String(g.id ?? '');
+    if (!nonEmptyString(id)) errors.push(`${at}.id: thiếu id.`);
+    else if (ids.has(id)) errors.push(`${at}.id: trùng "${id}".`);
+    ids.add(id);
+    const type = String(g.type ?? '');
+    if (!(PLAY_GAME_TYPES as readonly string[]).includes(type)) {
+      errors.push(`${at}.type: "${type}" không phải loại game hợp lệ.`);
+      return;
+    }
+    const need = (cond: boolean, msg: string) => {
+      if (!cond) errors.push(`${at} (${type}): ${msg}`);
+    };
+    const four = lesson.step_4;
+    const hasTests =
+      isObject(four) && Array.isArray(four.tests) && four.tests.length > 0;
+    switch (type) {
+      case 'traceTable':
+        need(
+          Array.isArray(g.columns) && g.columns.length > 0,
+          'thiếu columns.',
+        );
+        need(Array.isArray(g.rows) && g.rows.length > 0, 'thiếu rows.');
+        need(
+          isObject(g.answers) && Object.keys(g.answers).length > 0,
+          'không có ô nào để điền.',
+        );
+        break;
+      case 'match':
+        need(
+          Array.isArray(g.pairs) && g.pairs.length >= 2,
+          'cần ít nhất 2 cặp.',
+        );
+        need(
+          Array.isArray(g.rightOrder) &&
+            Array.isArray(g.pairs) &&
+            g.rightOrder.length === g.pairs.length,
+          'rightOrder phải có đúng số phần tử của pairs.',
+        );
+        break;
+      case 'trueFalse':
+        need(Array.isArray(g.items) && g.items.length > 0, 'thiếu items.');
+        break;
+      case 'fill':
+        need(
+          isObject(lesson.step_3) && isObject(lesson.step_3.scaffold),
+          'cần step_3.scaffold.',
+        );
+        break;
+      case 'parsons':
+        need(
+          Array.isArray(g.lines) && g.lines.length >= 2,
+          'cần ít nhất 2 dòng để xếp.',
+        );
+        need(Array.isArray(g.order), 'thiếu order.');
+        need(hasTests, 'chấm bằng chạy code nên bài phải có step_4.tests.');
+        break;
+      case 'spotError':
+        need(nonEmptyString(g.code), 'thiếu code.');
+        need(typeof g.line === 'number', 'thiếu số dòng lỗi.');
+        break;
+      case 'debug':
+        need(nonEmptyString(g.code), 'thiếu code cần sửa.');
+        need(hasTests, 'chấm bằng chạy code nên bài phải có step_4.tests.');
+        break;
+      case 'selfExplain':
+        need(
+          isObject(lesson.step_2) && isObject(lesson.step_2.selfExplain),
+          'cần step_2.selfExplain.',
+        );
+        break;
+    }
+  });
   return errors;
 }

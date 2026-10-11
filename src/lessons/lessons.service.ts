@@ -17,6 +17,20 @@ const DEFAULT_XP = 50; // Django default khi xpEarned không hợp lệ
 const MAX_XP = 500; // Django chặn client gửi XP tuỳ ý
 const DEFAULT_LESSON_MINUTES = 15; // COALESCE(l.estimated_minutes, 15)
 
+/**
+ * Khoá có mini-game (Python Advanced) chia XP theo chất lượng làm bài:
+ * quizScore = % màn đúng ngay lần đầu, XP = xp_reward × (50% + 50% × quizScore).
+ * Chặn trần ở xp_reward nên client có gian lận quizScore cũng không vượt được
+ * mức thưởng do server cấu hình — chỉ có thể tự làm mình nhận ÍT hơn.
+ */
+const SCORED_XP_COURSES = ['python_advanced'];
+
+export function scaledXp(base: number, quizScore: number | undefined): number {
+  if (quizScore === undefined || !Number.isFinite(quizScore)) return base;
+  const pct = Math.min(100, Math.max(0, quizScore));
+  return Math.max(1, Math.round(base * (0.5 + 0.5 * (pct / 100))));
+}
+
 @Injectable()
 export class LessonsService {
   private readonly logger = new Logger(LessonsService.name);
@@ -223,8 +237,11 @@ export class LessonsService {
       // Trước đây dùng thẳng body.xpEarned (chỉ chặn <= 500), nên client sửa
       // payload là tự thưởng cho mình gấp 10 lần mỗi bài. Giá trị chuẩn nằm ở
       // cột lessons.xp_reward; bài chưa cấu hình (=0) thì dùng mặc định.
-      const xpGain =
+      const baseXp =
         lesson.xpReward > 0 ? Math.min(lesson.xpReward, MAX_XP) : DEFAULT_XP;
+      const xpGain = SCORED_XP_COURSES.includes(courseId)
+        ? scaledXp(baseXp, quizScore)
+        : baseXp;
 
       // Bước 2: CHIẾM QUYỀN "người hoàn thành đầu tiên" một cách NGUYÊN TỬ.
       //

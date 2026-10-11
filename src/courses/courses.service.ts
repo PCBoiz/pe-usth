@@ -26,6 +26,7 @@ const SKILLS_CACHE_TTL_MS = 5 * 60 * 1000; // Task 96: cache 5 phút
 /** Icon cố định theo course id (task 89). */
 const COURSE_ICONS: Record<string, string> = {
   python: '🐍',
+  python_advanced: '🐍',
   javascript: '📜',
   java: '☕',
   c: '🔧',
@@ -34,6 +35,12 @@ const COURSE_ICONS: Record<string, string> = {
   go: '🐹',
   rust: '🦀',
 };
+
+/**
+ * Khoá học bằng Python Studio: trang khoá học cần biết CHÍNH XÁC bài số mấy đã
+ * xong (mở khoá tuần tự), không chỉ tổng số bài — xem getEnrolled().
+ */
+export const STUDIO_COURSES = ['python', 'python_advanced'];
 
 /** DB lưu enum tiếng Anh; card trên dashboard cần nhãn tiếng Việt. */
 const LEVEL_LABELS: Record<string, string> = {
@@ -132,10 +139,13 @@ export class CoursesService {
     });
 
     const titles = await this.fetchLessonTitles(rows);
-    const pythonCompleted = rows.some((r) => r.courseId === 'python')
+    const studioIds = rows
+      .map((r) => r.courseId)
+      .filter((id) => STUDIO_COURSES.includes(id));
+    const studioCompleted = studioIds.length
       ? await this.prisma.lessonProgress.findMany({
-          where: { userId, courseId: 'python', status: 'completed' },
-          select: { lesson: { select: { sortOrder: true } } },
+          where: { userId, courseId: { in: studioIds }, status: 'completed' },
+          select: { courseId: true, lesson: { select: { sortOrder: true } } },
         })
       : [];
     const studioLesson = await this.prisma.lesson.findFirst({
@@ -146,13 +156,19 @@ export class CoursesService {
       ok: true,
       pythonStudio: {
         lessonNumber: 11,
-        xpReward: studioLesson && studioLesson.xpReward > 0
-          ? Math.min(studioLesson.xpReward, 500) : 50,
+        xpReward:
+          studioLesson && studioLesson.xpReward > 0
+            ? Math.min(studioLesson.xpReward, 500)
+            : 50,
       },
       enrolled: rows.map((r) => ({
         ...this.mapEnrollment(r, titles),
-        ...(r.courseId === 'python'
-          ? { completedLessonNumbers: pythonCompleted.map((p) => p.lesson.sortOrder) }
+        ...(STUDIO_COURSES.includes(r.courseId)
+          ? {
+              completedLessonNumbers: studioCompleted
+                .filter((p) => p.courseId === r.courseId)
+                .map((p) => p.lesson.sortOrder),
+            }
           : {}),
       })),
     };

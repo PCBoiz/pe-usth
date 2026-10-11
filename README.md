@@ -1,98 +1,117 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Programming EDU
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Nền tảng học lập trình: khoá học, bài học tương tác, Python Studio (chạy Python
+ngay trên trình duyệt bằng Pyodide), diễn đàn, bảng xếp hạng và trợ lý AI (Gemini).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+| Phần | Công nghệ | Thư mục |
+|---|---|---|
+| Backend API | NestJS 11, Prisma 7, PostgreSQL (Neon) | `src/`, `prisma/` |
+| Frontend | Next.js 16, React 19 (bọc một phần JS legacy chuyển từ bản Flask/Django) | `frontend/` |
+| Nội dung giáo trình Python | Python + Pyodide | `scripts/pe-v3/` |
 
-## Description
+## Cấu trúc
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+```
+src/
+  api-gateway/     middleware, guard, filter, pipe dùng chung (auth, rate limit, CORS, header bảo mật)
+  auth/            đăng nhập, đăng ký, refresh token (cookie httpOnly), OAuth Google/Facebook
+  <module>/        mỗi module nghiệp vụ: *.controller.ts, *.service.ts, dto/, *.module.ts
+  common/          decorator, guard, filter, middleware, tiện ích bảo mật
+  config/          cấu hình đọc từ env + Joi schema (env.validation.ts)
+prisma/
+  schema.prisma    schema DB
+  migrations/      lịch sử thay đổi DB (Prisma Migrate)
+frontend/
+  src/app/         các trang (App Router)
+  src/components/  component React (lesson-chrome, python-studio là code React mới)
+  public/static/   JS/CSS legacy, nạp qua <LegacyScripts>; pe-bridge.js nối legacy với API
+scripts/           seed, đo tải, giáo trình pe-v3
 ```
 
-## Compile and run the project
+## Chạy local
+
+Yêu cầu: Node 22+, npm.
 
 ```bash
-# development
-$ npm run start
+# Backend (cổng 5000)
+cp .env.example .env          # điền DATABASE_URL, DIRECT_URL, JWT_ACCESS_SECRET (>= 32 ký tự)...
+npm install
+npx prisma generate
+npm run start:dev
 
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# Frontend (cổng 3000) — terminal khác
+cd frontend
+npm install
+npm run dev
 ```
 
-## Run tests
+Frontend gọi backend qua `NEXT_PUBLIC_API_URL` (mặc định `http://localhost:5000`).
+
+## Biến môi trường chính
+
+Danh sách đầy đủ và giá trị hợp lệ nằm ở [src/config/env.validation.ts](src/config/env.validation.ts);
+app từ chối khởi động nếu thiếu biến bắt buộc.
+
+| Biến | Ý nghĩa |
+|---|---|
+| `DATABASE_URL` / `DIRECT_URL` | Chuỗi kết nối pooled (app) / direct (Prisma CLI) |
+| `JWT_ACCESS_SECRET`, `JWT_ACCESS_EXPIRES`, `JWT_REFRESH_EXPIRES` | Ký access token; hạn access/refresh (vd `30m`, `8h`) |
+| `FRONTEND_URL`, `ALLOWED_ORIGINS` | Redirect sau OAuth; danh sách origin được CORS |
+| `REFRESH_COOKIE_SAMESITE` | `lax` (mặc định) khi frontend và backend **cùng site**; `none` khi khác site (bắt buộc HTTPS) |
+| `TRUST_PROXY_HOPS` | Số reverse proxy phía trước, để rate limit lấy đúng IP người dùng |
+| `GOOGLE_*`, `FACEBOOK_*` | OAuth (không bắt buộc) |
+| `GEMINI_API_KEY` | Trợ lý AI và nhập bài học bằng AI (không bắt buộc) |
+
+## Xác thực
+
+- **Access token** (JWT, ngắn hạn) gửi qua header `Authorization: Bearer`.
+- **Refresh token** nằm trong cookie `pe_refresh` (`httpOnly`, `path=/auth`). JavaScript
+  không đọc được, nên lỗ XSS không lấy được phiên dài hạn. Phía DB chỉ lưu hash SHA-256.
+- Mỗi lần refresh, token cũ bị thu hồi và token mới được cấp **cùng family**. Nếu một
+  token đã thu hồi bị gửi lại (quá 30 giây sau khi rotate), toàn bộ family bị thu hồi:
+  token bị đánh cắp không dùng tiếp được.
+- Frontend và backend phải dùng chung site (vd `app.example.com` + `api.example.com`) để
+  cookie `SameSite=Lax` hoạt động. Nếu buộc phải khác site thì đặt
+  `REFRESH_COOKIE_SAMESITE=none`. Lưu ý Safari chặn cookie bên thứ ba.
+
+## Database và migration
+
+Schema được quản lý bằng Prisma Migrate (`prisma/migrations/`). Migration `0_init` là
+baseline: nó mô tả đúng cấu trúc DB đang chạy và **không được chạy lại** trên DB đã có dữ liệu.
+
+**Lần đầu trên một DB đã tồn tại** (chỉ làm một lần cho mỗi môi trường):
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npx prisma migrate resolve --applied 0_init   # đánh dấu baseline là đã áp dụng
+npm run migrate:deploy                        # chạy các migration sau baseline
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+**Về sau**, sửa `schema.prisma`, rồi:
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+npx prisma migrate dev --name <ten-thay-doi>  # trên DB dev: sinh và chạy migration
+npm run migrate:deploy                        # trên staging/production
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+DB đang dùng chung với bản Django trong giai đoạn chuyển tiếp, nên mọi migration phải
+tương thích ngược: chỉ thêm cột nullable hoặc có default, không đổi tên hay xoá cột.
+Index tuỳ chọn cho tải cao nằm ở [prisma/optional-indexes.sql](prisma/optional-indexes.sql) (chạy tay).
 
-## Resources
+## Kiểm thử và CI
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+npm run typecheck && npx jest          # backend
+cd frontend && npm run typecheck && npm run lint && npm run build
+cd frontend && npx playwright test -c e2e/playwright.config.ts   # e2e (cần backend + frontend đang chạy)
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+GitHub Actions ([.github/workflows/ci.yml](.github/workflows/ci.yml)) chạy typecheck, unit
+test và build cho cả hai phần trên mỗi pull request.
 
-## Support
+## Tài liệu khác
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- [LESSON-IMPORT-FORMAT.md](LESSON-IMPORT-FORMAT.md): định dạng nhập bài học từ PDF/Markdown
+- [PYTHON-STUDIO-TEST.md](PYTHON-STUDIO-TEST.md): kiểm thử Python Studio
+- [scripts/pe-v3/README.md](scripts/pe-v3/README.md): dựng và nạp giáo trình Python v3
+- Khoá **Python Advanced** (cùng 40 bài, học bằng mini-game): mục cuối của [scripts/pe-v3/README.md](scripts/pe-v3/README.md)
+- [src/api-gateway/README.md](src/api-gateway/README.md): ranh giới gateway ↔ module nghiệp vụ

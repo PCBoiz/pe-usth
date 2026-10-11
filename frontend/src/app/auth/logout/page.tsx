@@ -9,9 +9,9 @@ import { useEffect } from 'react';
 export default function LogoutPage() {
   useEffect(() => {
     const origin = (window as unknown as { __PE_API_ORIGIN?: string }).__PE_API_ORIGIN || '';
-    let refresh: string | null = null;
+    let legacyRefresh: string | null = null;
     try {
-      refresh = localStorage.getItem('pe_refresh');
+      legacyRefresh = localStorage.getItem('pe_refresh');
       localStorage.removeItem('pe_access');
       localStorage.removeItem('pe_refresh');
     } catch {
@@ -24,15 +24,14 @@ export default function LogoutPage() {
       /* private mode */
     }
     const done = () => window.location.replace('/');
-    if (refresh) {
-      fetch(`${origin}/auth/logout`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh }),
-      }).then(done, done);
-    } else {
-      done();
-    }
+    // Luôn gọi backend: refresh token nằm trong cookie httpOnly, chỉ server
+    // thu hồi và xoá được. credentials:'include' để cookie được gửi lên.
+    fetch(`${origin}/auth/logout`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(legacyRefresh ? { refresh: legacyRefresh } : {}),
+    }).then(done, done);
   }, []);
 
   return null;

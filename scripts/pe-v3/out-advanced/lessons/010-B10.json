@@ -1,0 +1,396 @@
+{
+  "lesson_code": "B10",
+  "sort_order": 10,
+  "module": "M2 · Vòng lặp và hàm",
+  "title": "B10 · Nối hai hàm",
+  "subtitle": "Cơ bản · M2 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B10 · Nối hai hàm",
+    "subtitle": "Cơ bản · M2 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B10",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP CƠ BẢN",
+          "B10"
+        ],
+        "title": "Nối hai hàm",
+        "goal": "Nối hàm kiểm tra với hàm lọc list.",
+        "task": "Viết filter_palindromes(words), gọi is_palindrome cho từng word.",
+        "predict": "is_palindrome nhận cả list hay từng word?",
+        "code": "def filter_palindromes(words):\n    # Gọi is_palindrome(word)\n    pass",
+        "tests": [
+          "[level, ab, radar] → [level, radar]",
+          "[] → []"
+        ],
+        "reflect": "Vì sao return phải ở sau vòng for?"
+      },
+      "context": {
+        "title": "Nối hàm kiểm tra với hàm lọc list.",
+        "body": "is_palindrome (B09) đã cấp. Tự viết filter_palindromes(words): duyệt từng word, gọi is_palindrome(word), append từ hợp lệ, cuối cùng return list kết quả.",
+        "example": "filter_palindromes([\"level\", \"ab\", \"radar\", \"\"]) → [\"level\", \"radar\"].",
+        "prereq": "B09",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "is_palindrome cần nhận cả list hay từng word?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Từng word — mỗi lần một chuỗi",
+            "detail": "Hàm kiểm tra nhận str; vòng lặp đưa từng phần tử vào.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Cả list words",
+            "detail": "Đảo list rồi so sánh list không phải là kiểm tra từng từ.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Tên file",
+            "detail": "Bài này chưa đọc file.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Đặt return trong for cho gọn\"",
+        "body": "return kết thúc hàm ngay ở lượt đầu tiên: chỉ xét được phần tử đầu. Với list rỗng, vòng lặp không chạy nên return trong for không bao giờ tới — hàm trả None."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "keep_even tạo list kết quả RIÊNG; mỗi lượt gọi is_even với MỘT số."
+        },
+        {
+          "n": 2,
+          "body": "return result nằm SAU vòng for (thụt ngang hàng for) để xét đủ mọi phần tử, kể cả khi list rỗng."
+        },
+        {
+          "n": 3,
+          "body": "3 → False → bỏ; 4 → True → thêm; 10 → True → thêm → [4, 10]."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def is_even(number):\n    return number % 2 == 0\n\ndef keep_even(numbers):\n    result = []\n    for number in numbers:\n        if is_even(number):\n            result.append(number)\n    return result\n\nprint(keep_even([3, 4, 10]))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "filter_palindromes([\"radar\", \"ab\", \"radar\"]) trả gì?",
+          "options": [
+            {
+              "text": "[\"radar\", \"radar\"]",
+              "detail": "Giữ thứ tự và phần tử trùng.",
+              "correct": true
+            },
+            {
+              "text": "[\"radar\"]",
+              "detail": "Không bỏ trùng.",
+              "correct": false
+            },
+            {
+              "text": "[\"radar\", \"ab\", \"radar\"]",
+              "detail": "\"ab\" không đối xứng.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Giữ thứ tự và phần tử trùng."
+        },
+        {
+          "question": "filter_palindromes([\"Level\", \"\", \"a\"]) trả gì?",
+          "options": [
+            {
+              "text": "[\"a\"]",
+              "detail": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại.",
+              "correct": true
+            },
+            {
+              "text": "[\"Level\", \"a\"]",
+              "detail": "Giữ nguyên hoa/thường.",
+              "correct": false
+            },
+            {
+              "text": "[\"\", \"a\"]",
+              "detail": "Chuỗi rỗng không phải palindrome theo quy tắc.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao return phải đặt sau vòng for?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "return kết thúc hàm. Đặt trong for thì hàm dừng ở phần tử đầu tiên; với list rỗng vòng lặp không chạy nên không gặp return và hàm trả None. Đặt sau for thì mọi phần tử đều được xét và list rỗng trả []."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp lời gọi hàm kiểm tra và lệnh trả kết quả (dòng cuối thụt ngang hàng với for).",
+        "rule": "Thử [] và [\"radar\", \"ab\", \"radar\"]; kiểm words giữ nguyên."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "level → is_palindrome True → thêm."
+          },
+          {
+            "label": "Bước 2",
+            "text": "ab → False → bỏ."
+          },
+          {
+            "label": "Bước 3",
+            "text": "radar → True → thêm."
+          },
+          {
+            "label": "Bước 4",
+            "text": "\"\" → False → bỏ."
+          },
+          {
+            "label": "Bước 5",
+            "text": "Hết for → return [\"level\", \"radar\"]."
+          }
+        ]
+      },
+      "counter": {
+        "question": "filter_palindromes([]) trả gì?",
+        "options": [
+          "[]",
+          "None",
+          "Báo lỗi"
+        ],
+        "correct": "[]"
+      },
+      "scaffold": {
+        "template": "def filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        if {{slot1}}:\n            palindromes.append(word)\n    {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "is_palindrome(word)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "return palindromes"
+          }
+        ],
+        "bank": [
+          {
+            "label": "is_palindrome(words)",
+            "slot": 1,
+            "trap": "Đưa cả list vào hàm kiểm một chuỗi."
+          },
+          {
+            "label": "return palindromes",
+            "slot": 2
+          },
+          {
+            "label": "return word",
+            "slot": 2,
+            "trap": "Chỉ trả từ cuối cùng."
+          },
+          {
+            "label": "is_palindrome(word)",
+            "slot": 1
+          },
+          {
+            "label": "print(palindromes)",
+            "slot": 2,
+            "trap": "Hàm sẽ trả None."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "is_palindrome (B09) đã cấp. Tự viết filter_palindromes(words): duyệt từng word, gọi is_palindrome(word), append từ hợp lệ, cuối cùng return list kết quả.\n\nThực hành: Dùng for, gọi is_palindrome(word), append phần tử hợp lệ; return sau vòng lặp.",
+        "io": [
+          {
+            "label": "List mẫu",
+            "value": "[\"level\", \"radar\"]"
+          },
+          {
+            "label": "[]",
+            "value": "[]"
+          }
+        ]
+      },
+      "starterCode": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):\n    pass\n",
+      "solutionCode": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        if is_palindrome(word):\n            palindromes.append(word)\n    return palindromes\n\nwords = [\"level\", \"ab\", \"radar\", \"\"]\nresult = filter_palindromes(words)\nprint(result)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng for, gọi is_palindrome(word), append phần tử hợp lệ; return sau vòng lặp."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. palindromes = [] trong hàm; for word in words: if is_palindrome(word): append.\n2. return palindromes nằm sau for, thụt 4 dấu cách."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def filter_palindromes(words):\n    palindromes = []\n    for word in words:\n        ...\n    return palindromes"
+        }
+      ],
+      "tests": [
+        {
+          "name": "List mẫu → [\"level\", \"radar\"]",
+          "call": "filter_palindromes([\"level\", \"ab\", \"radar\", \"\"])",
+          "expect": "['level', 'radar']"
+        },
+        {
+          "name": "List rỗng → []",
+          "call": "filter_palindromes([])",
+          "expect": "[]"
+        },
+        {
+          "name": "Giữ trùng: [\"radar\", \"ab\", \"radar\"]",
+          "call": "filter_palindromes([\"radar\", \"ab\", \"radar\"])",
+          "expect": "['radar', 'radar']"
+        },
+        {
+          "name": "[\"Level\", \"\", \"a\"] → [\"a\"]",
+          "call": "filter_palindromes([\"Level\", \"\", \"a\"])",
+          "expect": "['a']"
+        },
+        {
+          "name": "Không sửa words, trả list mới",
+          "call": "_studio.check('w = [\"a\", \"ab\"]\\nr = filter_palindromes(w)\\nassert w == [\"a\", \"ab\"], \"words bị sửa\"\\nassert r is not w, \"phải trả list MỚI\"')",
+          "expect": "True"
+        },
+        {
+          "name": "Hàm không print",
+          "call": "_studio.stdout(filter_palindromes, [\"level\"])",
+          "expect": "''"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "is_palindrome(text)",
+          "does": "Kiểm tra chuỗi đối xứng và không rỗng (đã cấp).",
+          "takes": "text: str",
+          "gives": "bool",
+          "effect": "Không in, không sửa dữ liệu.",
+          "call": "is_palindrome(\"level\") → True"
+        },
+        {
+          "sig": "filter_palindromes(words)",
+          "does": "Lọc chuỗi bằng is_palindrome, giữ thứ tự và trùng lặp.",
+          "takes": "words: list[str]",
+          "gives": "list[str] mới; list rỗng khi không có kết quả",
+          "effect": "Không in, không sửa words.",
+          "call": "filter_palindromes([\"radar\", \"ab\"]) → [\"radar\"]"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "level",
+              "right": "is_palindrome True → thêm"
+            },
+            {
+              "left": "ab",
+              "right": "False → bỏ"
+            },
+            {
+              "left": "radar",
+              "right": "True → thêm"
+            },
+            {
+              "left": "Hết for",
+              "right": "return [\"level\", \"radar\"]"
+            }
+          ],
+          "rightOrder": [
+            3,
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "def is_palindrome(text):\n    if text == \"\":\n        return False\n\n    reversed_text = text[::-1]\n    return text == reversed_text\n\ndef filter_palindromes(words):",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L8",
+              "text": "    palindromes = []"
+            },
+            {
+              "id": "L9",
+              "text": "    for word in words:"
+            },
+            {
+              "id": "L10",
+              "text": "        if is_palindrome(word):"
+            },
+            {
+              "id": "L11",
+              "text": "            palindromes.append(word)"
+            },
+            {
+              "id": "L12",
+              "text": "    return palindromes"
+            },
+            {
+              "id": "L14",
+              "text": "words = [\"level\", \"ab\", \"radar\", \"\"]"
+            },
+            {
+              "id": "L15",
+              "text": "result = filter_palindromes(words)"
+            },
+            {
+              "id": "L16",
+              "text": "print(result)"
+            }
+          ],
+          "distractors": [],
+          "order": [
+            "L14",
+            "L9",
+            "L11",
+            "L15",
+            "L10",
+            "L12",
+            "L8",
+            "L16"
+          ]
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

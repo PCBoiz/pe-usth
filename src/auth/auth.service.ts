@@ -13,8 +13,6 @@ import { LoginDto } from './dto/login.dto';
 import { PHONE_REGEX, RegisterDto } from './dto/register.dto';
 import { RefreshTokenService } from './refresh-token.service';
 
-const HASH_PREFIXES = ['scrypt:', 'pbkdf2:'];
-
 /** Khớp default của Django: backend/accounts/models.py -> role = 'Học viên'. */
 const DEFAULT_ROLE = 'Học viên';
 
@@ -76,9 +74,6 @@ export class AuthService {
         'Email/số điện thoại hoặc mật khẩu không đúng',
       );
     }
-
-    // Mật khẩu legacy lưu plaintext -> nâng cấp lên hash ngay khi đăng nhập đúng.
-    await this.upgradeLegacyPasswordIfNeeded(user, dto.password);
 
     // Bước 3: build response.
     const tokens = await this.issueTokens(user);
@@ -249,16 +244,5 @@ export class AuthService {
     if (or.length === 0) return null;
 
     return this.prisma.user.findFirst({ where: { OR: or } });
-  }
-
-  private async upgradeLegacyPasswordIfNeeded(user: User, rawPassword: string) {
-    const isHashed = HASH_PREFIXES.some((p) => user.password.startsWith(p));
-    if (isHashed) return;
-
-    await this.prisma.user.update({
-      where: { id: user.id },
-      data: { password: await WerkzeugScryptHasher.encode(rawPassword) },
-    });
-    this.cachedUsers.invalidate(user.id);
   }
 }

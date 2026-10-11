@@ -123,3 +123,34 @@ dòng cũ hơn) cùng 131 dòng tiến độ của 3 học viên; khoá python g
 
 Bài dựng tay List & Mutability (PythonStudio.tsx) không thuộc v3: chỉ mở bằng
 `/lesson/python?demo=list` (lối tắt cho admin ở trang khoá học) và không ghi tiến độ.
+
+## Khoá Python Advanced (`python_advanced`) — cùng 40 bài, học bằng mini-game
+
+Khoá riêng, KHÔNG đụng khoá `python`. Nội dung là studio-lesson/v2 = bài v3 + khối
+`play` (danh sách game) do `build_advanced.py` SINH từ dữ liệu đã kiểm chứng — không soạn tay:
+
+| Game | Sinh từ | Chấm bằng |
+|---|---|---|
+| Theo dõi biến (`traceTable`) | chạy ví dụ minh hoạ qua `sys.settrace` | so giá trị biến |
+| Nối cặp (`match`) | nhật ký biến đổi "code → ý nghĩa" | nối sai bị chặn tại chỗ |
+| Đúng/sai (`trueFalse`) | ngộ nhận + ý giải thích; Boss dùng câu trắc nghiệm | so đáp án |
+| Điền code (`fill`) | khung lắp ghép sẵn có, kèm giải thích từng thẻ bẫy | so đáp án |
+| Ghép code ▶ (`parsons`) | dòng của LỜI GIẢI, dòng bẫy lấy từ biến thể sai | **chạy thật** bộ test trong Pyodide |
+| Săn lỗi (`spotError`) | biến thể sai của qa.json (đúng một khối khác biệt) | so dòng |
+| Sửa code ▶ (`debug`, Nâng cao) | biến thể sai | **chạy thật** bộ test trong Pyodide |
+
+Luồng: Cơ bản 8 màn (brief → giải thích → dự đoán → khởi động → ghép code ▶ → săn lỗi →
+sandbox → tổng kết), Trung cấp thêm điền code, Nâng cao thay ghép code bằng sửa code và có tự
+giải thích (≥ 8 từ). 5 cửa tự kiểm tra là **Boss**: chỉ game + sandbox, không gợi ý.
+Điểm trong bài: đúng ngay lần đầu +10, chuỗi đúng từ 3 trở lên +20, sửa rồi đúng +5. XP gửi về
+backend = `xp_reward × (50% + 50% × % màn đúng ngay lần đầu)` (`scaledXp`, lessons.service.ts).
+
+```bash
+python scripts/pe-v3/build_advanced.py          # -> out-advanced/ (+ report.md: game của từng bài)
+node scripts/pe-v3/check-advanced.mjs           # Pyodide: ghép đúng thì qua test, thứ tự xáo trộn và code cần sửa thì trượt
+npx ts-node scripts/seed-python-advanced.ts     # xem trước; --apply để ghi, --publish để công khai
+```
+
+E2E chơi hết B01, B04, I03, N01, B20 (cả khổ 390px) với API giả lập, Python chạy thật:
+`cd frontend && PW_CHANNEL=msedge npx playwright test -c e2e/playwright.config.ts python-advanced`
+(cần `npm run dev` đang chạy; bỏ `PW_CHANNEL` nếu đã `npx playwright install`).

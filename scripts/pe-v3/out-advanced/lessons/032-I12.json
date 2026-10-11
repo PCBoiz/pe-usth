@@ -1,0 +1,304 @@
+{
+  "lesson_code": "I12",
+  "sort_order": 32,
+  "module": "M7 · Kế thừa và override (Ex3)",
+  "title": "I12 · Ex3 tự làm",
+  "subtitle": "Trung cấp · M7 · 40 phút · Cửa tự kiểm tra Ex3 · kế thừa",
+  "estimated_minutes": 40,
+  "xp_reward": 30,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "I12 · Ex3 tự làm",
+    "subtitle": "Trung cấp · M7 · 40 phút · Cửa tự kiểm tra Ex3 · kế thừa",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I12",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP TRUNG CẤP",
+          "I12"
+        ],
+        "title": "Ex3 tự làm",
+        "goal": "Tự giải Ex3 với class cha cấp sẵn.",
+        "task": "Tự viết C với __init__, __str__ và compile; không viết lại class cha.",
+        "predict": "Nêu trách nhiệm của ba method trước khi viết.",
+        "code": "from language_base import ProgrammingLanguage\n\n# Tự viết class C: __init__, __str__, compile",
+        "tests": [
+          "C17 → đủ bốn trường, chuỗi và thông báo",
+          "isinstance với cha → True"
+        ],
+        "reflect": "Phần nào do cha khởi tạo, phần nào do con bổ sung?"
+      },
+      "context": {
+        "title": "Tự giải Ex3 với class cha cấp sẵn.",
+        "body": "Từ class cha ProgrammingLanguage (đã cấp, đã kiểm), tự viết class C với ba method: __init__ (super + std_version), __str__ (chuỗi của cha + \", Standard version[...]\") và compile (in \"Compiling C code using standard version ...\"). Không viết lại class cha.",
+        "example": "C17 → str có đủ bốn trường; compile in Compiling C code using standard version C17.",
+        "prereq": "I11",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Nêu trách nhiệm của __init__, __str__ và compile — phương án nào đúng?",
+        "options": [
+          {
+            "id": "a",
+            "title": "__init__ khởi tạo (gọi cha); __str__ trả chuỗi; compile in thông báo",
+            "detail": "Mỗi method một trách nhiệm.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "__str__ in thông báo; compile trả chuỗi",
+            "detail": "Ngược hợp đồng.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "__init__ in object",
+            "detail": "Constructor không in.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Ba cái bẫy của Ex3",
+        "body": "Quên super().__init__ (thiếu trường cha); gọi str(self) trong __str__ (RecursionError); compile hard-code C17 hoặc return thay vì print."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Phần cha khởi tạo: name, year_created, paradigms (có copy list) — gọi qua super()."
+        },
+        {
+          "n": 2,
+          "body": "Phần con bổ sung: std_version; override __str__; method compile."
+        },
+        {
+          "n": 3,
+          "body": "Cửa kiểm tra Ex3: dữ liệu mới C11/C23, list nguồn dùng chung cho hai object. Khoảng 15–25 dòng mới."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Phần nào của object do cha khởi tạo?",
+          "options": [
+            {
+              "text": "name, year_created, paradigms",
+              "detail": "Con chỉ thêm std_version.",
+              "correct": true
+            },
+            {
+              "text": "std_version",
+              "detail": "Đó là phần của con.",
+              "correct": false
+            },
+            {
+              "text": "Không phần nào",
+              "detail": "super().__init__ khởi tạo ba trường.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Con chỉ thêm std_version."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Phần nào của object do cha khởi tạo, phần nào do con bổ sung?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Cha khởi tạo name, year_created, paradigms (kèm copy list) qua super().__init__. Con thêm std_version, mở rộng __str__ bằng super().__str__() + Standard version[...], và thêm compile in thông báo theo phiên bản hiện tại."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm dùng C11/C23 và list nguồn dùng chung cho hai object."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Tạo C → cha lưu ba trường, con thêm std_version."
+          },
+          {
+            "label": "Bước 2",
+            "text": "str(obj) → chuỗi cha + phiên bản."
+          },
+          {
+            "label": "Bước 3",
+            "text": "compile() → đọc std_version hiện tại, in một dòng."
+          }
+        ]
+      },
+      "counter": {
+        "question": "C(\"C\", 1972, [], \"C23\") → str(obj)?",
+        "options": [
+          "Language[C], Year created[1972], Paradigms[], Standard version[C23]",
+          "Language[C], Standard version[C23]",
+          "Standard version[C23]"
+        ],
+        "correct": "Language[C], Year created[1972], Paradigms[], Standard version[C23]"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Từ class cha ProgrammingLanguage (đã cấp, đã kiểm), tự viết class C với ba method: __init__ (super + std_version), __str__ (chuỗi của cha + \", Standard version[...]\") và compile (in \"Compiling C code using standard version ...\"). Không viết lại class cha.\n\nThực hành: Tạo object C, kiểm thuộc tính, str và compile; không viết lại class cha.",
+        "io": [
+          {
+            "label": "C17",
+            "value": "Đúng bốn trường, chuỗi và thông báo"
+          },
+          {
+            "label": "isinstance với cha",
+            "value": "True; các method cha vẫn dùng được"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        pass\n\n    def __str__(self):\n        pass\n\n    def compile(self):\n        pass\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\nprint(str(language))\nlanguage.compile()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo object C, kiểm thuộc tính, str và compile; không viết lại class cha."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Constructor con gọi cha rồi lưu std_version.\n2. __str__ gọi cha và nối phiên bản, trả str.\n3. compile đọc trạng thái và in một thông báo."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "class C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        ...\n    def __str__(self):\n        ...\n    def compile(self):\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Bốn thuộc tính",
+          "call": "(lambda o: (o.name, o.year_created, o.paradigms, o.std_version))(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "('C', 1972, ['procedural'], 'C17')"
+        },
+        {
+          "name": "isinstance với lớp cha",
+          "call": "isinstance(C(\"C\", 1972, ['procedural'], 'C17'), ProgrammingLanguage)",
+          "expect": "True"
+        },
+        {
+          "name": "str đủ bốn trường",
+          "call": "str(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "\"Language[C], Year created[1972], Paradigms['procedural'], Standard version[C17]\""
+        },
+        {
+          "name": "compile in đúng một dòng, trả None",
+          "call": "(lambda r: (r.value, r.stdout))(_studio.call(C(\"C\", 1972, ['procedural'], 'C17').compile))",
+          "expect": "(None, 'Compiling C code using standard version C17\\n')"
+        },
+        {
+          "name": "compile dùng phiên bản hiện tại",
+          "call": "_studio.stdout(lambda: (lambda o: (setattr(o, 'std_version', 'C23'), o.compile()))(C(\"C\", 1972, ['procedural'], 'C17')))",
+          "expect": "'Compiling C code using standard version C23\\n'"
+        },
+        {
+          "name": "Method cha vẫn dùng được",
+          "call": "(lambda o: (o.add_paradigms('imperative'), o.paradigms)[1])(C(\"C\", 1972, ['procedural'], 'C17'))",
+          "expect": "['procedural', 'imperative']"
+        },
+        {
+          "name": "Hai object C11/C23 độc lập",
+          "call": "_studio.check('src = [\"procedural\"]\\na = C(\"C\", 1972, src, \"C11\")\\nb = C(\"C\", 1972, src, \"C23\")\\na.add_paradigms(\"imperative\")\\nassert b.paradigms == [\"procedural\"]\\nassert (a.std_version, b.std_version) == (\"C11\", \"C23\")\\nsrc.append(\"x\")\\nassert a.paradigms == [\"procedural\", \"imperative\"]')",
+          "expect": "True"
+        },
+        {
+          "name": "str không in, không đệ quy",
+          "call": "_studio.call(str, C(\"C\", 1972, [], 'C23')).stdout",
+          "expect": "''"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "C.__init__(self, name, year_created, paradigms, std_version)",
+          "does": "Khởi tạo phần cha và thêm phiên bản C.",
+          "takes": "self; ba trường của cha; std_version: str",
+          "gives": "None",
+          "effect": "Gọi super().__init__; gán self.std_version.",
+          "call": "C(\"C\", 1972, [\"procedural\"], \"C17\")"
+        },
+        {
+          "sig": "C.__str__(self)",
+          "does": "Giữ chuỗi của cha rồi thêm phiên bản.",
+          "takes": "self: object C",
+          "gives": "str kết thúc bằng Standard version[...]",
+          "effect": "Không print, không đổi trạng thái.",
+          "call": "str(obj) kết thúc bằng Standard version[C17]"
+        },
+        {
+          "sig": "compile(self)",
+          "does": "In thông báo mô phỏng biên dịch.",
+          "takes": "self: object C — đọc std_version hiện tại",
+          "gives": "None",
+          "effect": "In một dòng; không chạy compiler C thật.",
+          "call": "obj.compile() → Compiling C code using standard version C17"
+        }
+      ],
+      "gate": true
+    },
+    "play": {
+      "level": "I",
+      "boss": true,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
+          "prompt": "Phần nào của object do cha khởi tạo?",
+          "items": [
+            {
+              "statement": "name, year_created, paradigms",
+              "answer": true,
+              "explain": "Con chỉ thêm std_version."
+            },
+            {
+              "statement": "std_version",
+              "answer": false,
+              "explain": "Đó là phần của con."
+            },
+            {
+              "statement": "Không phần nào",
+              "answer": false,
+              "explain": "super().__init__ khởi tạo ba trường."
+            }
+          ]
+        },
+        {
+          "id": "spotError-1",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(\"Compiling C code using standard version C17\")",
+          "firstLine": 6,
+          "line": 13,
+          "lines": [
+            13
+          ],
+          "label": "compile hard-code",
+          "fix": "        print(f\"Compiling C code using standard version {self.std_version}\")\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\nprint(str(language))\nlanguage.compile()"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

@@ -1,0 +1,384 @@
+{
+  "lesson_code": "I11",
+  "sort_order": 31,
+  "module": "M7 · Kế thừa và override (Ex3)",
+  "title": "I11 · Viết compile",
+  "subtitle": "Trung cấp · M7 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "I11 · Viết compile",
+    "subtitle": "Trung cấp · M7 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I11",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP TRUNG CẤP",
+          "I11"
+        ],
+        "title": "Viết compile",
+        "goal": "Viết method compile dùng trạng thái hiện tại.",
+        "task": "compile(self) in Compiling C code using standard version <std_version>.",
+        "predict": "Đổi C17 thành C23 thì compile in giá trị nào?",
+        "code": "class C(ProgrammingLanguage):\n    # __init__ và __str__ đã cấp\n    def compile(self):\n        pass",
+        "tests": [
+          "C17 → Compiling C code using standard version C17",
+          "C23 → … standard version C23"
+        ],
+        "reflect": "compile khác __str__ ở kết quả và tác dụng phụ thế nào?"
+      },
+      "context": {
+        "title": "Viết method compile dùng trạng thái hiện tại của object.",
+        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.",
+        "example": "C17 → Compiling C code using standard version C17",
+        "prereq": "I10",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Nếu std_version đổi từ C17 thành C23, compile nên in giá trị nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "C23 — giá trị hiện tại",
+            "detail": "compile đọc self.std_version mỗi lần được gọi.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "C17 — giá trị lúc tạo object",
+            "detail": "Không có gì \"chụp\" lại giá trị cũ.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cả hai",
+            "detail": "Mỗi lần gọi in đúng một dòng.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"return message thay cho print\"",
+        "body": "Hợp đồng của compile là IN một dòng; return message thì không có output — sai đề. Ngược lại, __str__ thì phải return, không print."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "status đọc self.model ĐÚNG LÚC được gọi — đổi model rồi gọi lại sẽ in giá trị mới."
+        },
+        {
+          "n": 2,
+          "body": "Method chỉ print (tác dụng phụ) nên trả None: result là None."
+        },
+        {
+          "n": 3,
+          "body": "compile trong bài cũng vậy: in thông báo mô phỏng, không biên dịch C thật."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Printer:\n    def __init__(self, model):\n        self.model = model\n\n    def status(self):\n        print(f\"Printer {self.model} ready\")\n\np = Printer(\"X1\")\np.status()\np.model = \"X2\"\nresult = p.status()\nprint(result)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "compile khác __str__ thế nào?",
+          "options": [
+            {
+              "text": "compile in một dòng và trả None; __str__ trả chuỗi và không in",
+              "detail": "Khác ở kết quả và tác dụng phụ.",
+              "correct": true
+            },
+            {
+              "text": "Giống nhau",
+              "detail": "Một cái in, một cái trả.",
+              "correct": false
+            },
+            {
+              "text": "compile trả chuỗi",
+              "detail": "Theo hợp đồng v3, compile in.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Khác ở kết quả và tác dụng phụ."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "compile khác __str__ ở kết quả và tác dụng phụ thế nào?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "__str__ trả chuỗi và không in, nên str(obj) dùng được để lưu hay nối tiếp. compile in thông báo (tác dụng phụ) và trả None. Cả hai đọc trạng thái hiện tại: đổi std_version thì lần gọi sau phản ánh giá trị mới."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp thân compile.",
+        "rule": "Đổi std_version thành C23 rồi gọi lại; kiểm mỗi lần đúng một dòng và trả None."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Object giữ C17."
+          },
+          {
+            "label": "Bước 2",
+            "text": "compile đọc std_version."
+          },
+          {
+            "label": "Bước 3",
+            "text": "In thông báo C17; trả None."
+          }
+        ]
+      },
+      "counter": {
+        "question": "obj.std_version = \"C23\"; obj.compile() in gì?",
+        "options": [
+          "Compiling C code using standard version C23",
+          "Compiling C code using standard version C17",
+          "Không in gì"
+        ],
+        "correct": "Compiling C code using standard version C23"
+      },
+      "scaffold": {
+        "template": "    def compile(self):\n        {{slot1}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "print(f\"Compiling C code using standard version {self.std_version}\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(f\"Compiling C code using standard version {self.std_version}\")",
+            "slot": 1
+          },
+          {
+            "label": "print(\"Compiling C code using standard version C17\")",
+            "slot": 1,
+            "trap": "Hard-code C17."
+          },
+          {
+            "label": "return f\"Compiling C code using standard version {self.std_version}\"",
+            "slot": 1,
+            "trap": "Không in gì."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Thêm method compile(self) in đúng một dòng: Compiling C code using standard version <std_version>. Đọc self.std_version hiện tại, không hard-code C17. Constructor và __str__ đã cấp.\n\nThực hành: In thông báo có self.std_version; không hard-code C17.",
+        "io": [
+          {
+            "label": "C17",
+            "value": "Compiling C code using standard version C17"
+          },
+          {
+            "label": "C23",
+            "value": "Compiling C code using standard version C23"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        pass\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\nlanguage.compile()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "In thông báo có self.std_version; không hard-code C17."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. f-string đọc self.std_version.\n2. print đúng một dòng; không return."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def compile(self):\n        print(f\"...\")"
+        }
+      ],
+      "tests": [
+        {
+          "name": "C17: một dòng đúng",
+          "call": "_studio.stdout(C(\"C\", 1972, ['procedural'], 'C17').compile)",
+          "expect": "'Compiling C code using standard version C17\\n'"
+        },
+        {
+          "name": "C23: một dòng đúng",
+          "call": "_studio.stdout(C(\"C\", 1972, ['procedural'], 'C23').compile)",
+          "expect": "'Compiling C code using standard version C23\\n'"
+        },
+        {
+          "name": "Trả None",
+          "call": "_studio.call(C(\"C\", 1972, ['procedural'], 'C17').compile).value",
+          "expect": "None"
+        },
+        {
+          "name": "Đổi phiên bản rồi gọi lại",
+          "call": "_studio.stdout(lambda: (lambda o: (o.compile(), setattr(o, 'std_version', 'C11'), o.compile()))(C(\"C\", 1972, ['procedural'], 'C17')))",
+          "expect": "'Compiling C code using standard version C17\\nCompiling C code using standard version C11\\n'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "C.__init__(self, name, year_created, paradigms, std_version)",
+          "does": "Khởi tạo phần cha và thêm phiên bản C.",
+          "takes": "self; ba trường của cha; std_version: str",
+          "gives": "None",
+          "effect": "Gọi super().__init__; gán self.std_version.",
+          "call": "C(\"C\", 1972, [\"procedural\"], \"C17\")"
+        },
+        {
+          "sig": "C.__str__(self)",
+          "does": "Giữ chuỗi của cha rồi thêm phiên bản.",
+          "takes": "self: object C",
+          "gives": "str kết thúc bằng Standard version[...]",
+          "effect": "Không print, không đổi trạng thái.",
+          "call": "str(obj) kết thúc bằng Standard version[C17]"
+        },
+        {
+          "sig": "compile(self)",
+          "does": "In thông báo mô phỏng biên dịch.",
+          "takes": "self: object C — đọc std_version hiện tại",
+          "gives": "None",
+          "effect": "In một dòng; không chạy compiler C thật.",
+          "call": "obj.compile() → Compiling C code using standard version C17"
+        }
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "compile trong bài cũng vậy: in thông báo mô phỏng, không biên dịch C thật.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "return message thay cho print",
+              "answer": false,
+              "explain": "Hợp đồng của compile là IN một dòng; return message thì không có output — sai đề. Ngược lại, __str__ thì phải return, không print."
+            },
+            {
+              "statement": "Method chỉ print (tác dụng phụ) nên trả None: result là None.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            }
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "from language_base import ProgrammingLanguage\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L5",
+              "text": "        self.std_version = std_version"
+            },
+            {
+              "id": "L7",
+              "text": "    def __str__(self):"
+            },
+            {
+              "id": "L8",
+              "text": "        description = super().__str__()"
+            },
+            {
+              "id": "L9",
+              "text": "        return description + f\", Standard version[{self.std_version}]\""
+            },
+            {
+              "id": "L11",
+              "text": "    def compile(self):"
+            },
+            {
+              "id": "L12",
+              "text": "        print(f\"Compiling C code using standard version {self.std_version}\")"
+            },
+            {
+              "id": "L14",
+              "text": "language = C(\"C\", 1972, [\"procedural\"], \"C17\")"
+            },
+            {
+              "id": "L15",
+              "text": "language.compile()"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "        print(\"Compiling C code using standard version C17\")",
+              "reason": "hard-code"
+            },
+            {
+              "id": "D1",
+              "text": "        return f\"Compiling C code using standard version {self.std_version}\"",
+              "reason": "return thay print"
+            }
+          ],
+          "order": [
+            "L8",
+            "L11",
+            "L14",
+            "D0",
+            "L5",
+            "L9",
+            "L7",
+            "L15",
+            "D1",
+            "L12"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(\"Compiling C code using standard version C17\")",
+          "firstLine": 6,
+          "line": 13,
+          "lines": [
+            13
+          ],
+          "label": "hard-code",
+          "fix": "        print(f\"Compiling C code using standard version {self.std_version}\")\n\nlanguage = C(\"C\", 1972, [\"procedural\"], \"C17\")\nlanguage.compile()"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

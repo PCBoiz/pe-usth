@@ -7,6 +7,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
@@ -20,7 +21,13 @@ import {
   type OAuthErrorRequest,
 } from 'src/common/guards/jwt-auth/oauth-callback.guard';
 import type { User } from 'src/generated/prisma';
-import { AuthService } from './auth.service';
+import { AuthService, type TokenPair } from './auth.service';
+import {
+  clearRefreshCookie,
+  readRefreshCookie,
+  setRefreshCookie,
+} from './refresh-cookie';
+import { RefreshTokenService } from './refresh-token.service';
 import { LoginDto } from './dto/login.dto';
 import { RegisterDto } from './dto/register.dto';
 import { LogoutDto, RefreshDto } from './dto/token.dto';
@@ -33,7 +40,18 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly refreshTokens: RefreshTokenService,
   ) {}
+
+  /** Chuyển refresh token từ body sang cookie httpOnly; body chỉ còn access. */
+  private moveRefreshToCookie<T extends TokenPair>(
+    res: Response,
+    result: T,
+  ): Omit<T, 'refresh'> {
+    const { refresh, ...rest } = result;
+    setRefreshCookie(res, refresh, this.refreshTokens.lifetimeMs);
+    return rest;
+  }
 
   // Throttle override: đè tier 'ip_hour' RIÊNG cho route này.
   // CustomThrottlerGuard sinh key theo `${controller}.${route}:${ip}:${name}` nên
@@ -48,8 +66,11 @@ export class AuthController {
       ttl: seconds(Number(process.env.THROTTLE_LOGIN_TTL_SECONDS ?? 60)),
     },
   })
-  login(@Body() dto: LoginDto) {
-    return this.authService.login(dto);
+  async login(
+    @Body() dto: LoginDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.moveRefreshToCookie(res, await this.authService.login(dto));
   }
 
   @Post('register')
@@ -60,15 +81,23 @@ export class AuthController {
       ttl: seconds(Number(process.env.THROTTLE_REGISTER_TTL_SECONDS ?? 60)),
     },
   })
-  register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+  async register(
+    @Body() dto: RegisterDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    return this.moveRefreshToCookie(res, await this.authService.register(dto));
   }
 
   // Spec yêu cầu hỗ trợ CẢ GET và POST /auth/logout.
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  logoutPost(@Body() dto: LogoutDto) {
-    return this.authService.logout(dto?.refresh);
+  async logoutPost(
+    @Body() dto: LogoutDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    clearRefreshCookie(res);
+    return this.authService.logout(readRefreshCookie(req) ?? dto?.refresh);
   }
 
   // GET KHÔNG nhận refresh token qua query string: token trong URL lọt vào
@@ -82,8 +111,23 @@ export class AuthController {
 
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
-  refresh(@Body() dto: RefreshDto) {
-    return this.authService.refresh(dto.refresh);
+  async refresh(
+    @Body() dto: RefreshDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const token = readRefreshCookie(req) ?? dto.refresh;
+    if (!token) throw new UnauthorizedException();
+    try {
+      return this.moveRefreshToCookie(
+        res,
+        await this.authService.refresh(token),
+      );
+    } catch (err) {
+      // Cookie chết (hết hạn/đã thu hồi) -> xoá để trình duyệt khỏi gửi lại.
+      if (err instanceof UnauthorizedException) clearRefreshCookie(res);
+      throw err;
+    }
   }
 
   // ---------- Task 59 ----------
@@ -117,15 +161,16 @@ export class AuthController {
       return;
     }
 
-    const tokens = await this.authService.issueTokens(user);
+    const { access } = this.moveRefreshToCookie(
+      res,
+      await this.authService.issueTokens(user),
+    );
 
     // Sheet 3: PHẢI dùng fragment (#), KHÔNG dùng query string (?).
     // Fragment không được trình duyệt gửi lên server, không lọt vào access log
-    // hay header Referer của các request sau -> tránh rò rỉ JWT.
-    const fragment = new URLSearchParams({
-      access: tokens.access,
-      refresh: tokens.refresh,
-    }).toString();
+    // hay header Referer của các request sau -> tránh rò rỉ JWT. Chỉ access
+    // token đi qua fragment; refresh token đã nằm trong cookie httpOnly.
+    const fragment = new URLSearchParams({ access }).toString();
 
     res.redirect(`${frontendUrl}/auth/callback#${fragment}`);
   }
@@ -157,11 +202,11 @@ export class AuthController {
       return;
     }
 
-    const tokens = await this.authService.issueTokens(user);
-    const fragment = new URLSearchParams({
-      access: tokens.access,
-      refresh: tokens.refresh,
-    }).toString();
+    const { access } = this.moveRefreshToCookie(
+      res,
+      await this.authService.issueTokens(user),
+    );
+    const fragment = new URLSearchParams({ access }).toString();
 
     res.redirect(`${frontendUrl}/auth/callback#${fragment}`);
   }

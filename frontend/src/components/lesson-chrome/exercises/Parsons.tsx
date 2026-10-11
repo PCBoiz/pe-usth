@@ -11,15 +11,50 @@ export interface ParsonsPoolItem {
   distractorReason?: string;
 }
 
+export interface ParsonsLine {
+  id: string;
+  content: React.ReactNode;
+  indent: number;
+  /** Dòng có sẵn (phần đầu/đuôi cố định của chương trình) — tô mờ. */
+  fixed?: boolean;
+}
+
 export interface ParsonsProps {
   filename?: string;
-  builtLines: { id: string; content: React.ReactNode; indent: number }[];
+  builtLines: ParsonsLine[];
+  /** Phần cuối chương trình có sẵn, hiện SAU ô "bấm để nối tiếp". */
+  tailLines?: ParsonsLine[];
   pool: ParsonsPoolItem[];
   onPick: (id: string) => void;
   onAttemptDistractor: (id: string) => void;
+  /**
+   * Có truyền thì nhãn "Nhiễu: lý do" chỉ hiện cho dòng nhiễu đã bấm nhầm
+   * (dạng game); không truyền thì hiện ngay như bản demo.
+   */
+  revealed?: string[];
 }
 
-export default function Parsons({ filename, builtLines, pool, onPick, onAttemptDistractor }: ParsonsProps) {
+function Line({ line, num }: { line: ParsonsLine; num: number }) {
+  return (
+    <div
+      className={styles.codeLine}
+      style={{ paddingLeft: line.indent * 20, opacity: line.fixed ? 0.55 : 1 }}
+    >
+      <span className={styles.lineNum}>{num}</span>
+      <span className={styles.codeText}>{line.content}</span>
+    </div>
+  );
+}
+
+export default function Parsons({
+  filename,
+  builtLines,
+  tailLines = [],
+  pool,
+  onPick,
+  onAttemptDistractor,
+  revealed,
+}: ParsonsProps) {
   return (
     <div>
       <div className={styles.codeCard}>
@@ -29,17 +64,14 @@ export default function Parsons({ filename, builtLines, pool, onPick, onAttemptD
         </div>
         <div className={styles.codeBody}>
           {builtLines.map((line, i) => (
-            <div key={line.id} className={styles.codeLine} style={{ paddingLeft: line.indent * 20 }}>
-              <span className={styles.lineNum}>{i + 1}</span>
-              <span className={styles.codeText}>{line.content}</span>
-            </div>
+            <Line key={line.id} line={line} num={i + 1} />
           ))}
           <div
             style={{
               border: '1px dashed var(--st-code-gutter)',
               borderRadius: 6,
               padding: '6px 12px',
-              marginTop: 6,
+              margin: '6px 0',
               fontSize: 11,
               color: 'var(--st-syn-comment)',
               textAlign: 'center',
@@ -47,29 +79,45 @@ export default function Parsons({ filename, builtLines, pool, onPick, onAttemptD
           >
             + Bấm một dòng lệnh bên dưới để nối tiếp vào đây
           </div>
+          {tailLines.map((line, i) => (
+            <Line key={line.id} line={line} num={builtLines.length + i + 1} />
+          ))}
         </div>
       </div>
       <div style={{ marginTop: 14 }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
-          DÒNG LỆNH CÒN LẠI &amp; DÒNG GÂY NHIỄU
+          {revealed ? 'DÒNG LỆNH CÒN LẠI (CÓ DÒNG BẪY)' : <>DÒNG LỆNH CÒN LẠI &amp; DÒNG GÂY NHIỄU</>}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {pool.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className={styles.optionCard}
-              onClick={() => (item.distractorReason ? onAttemptDistractor(item.id) : onPick(item.id))}
-              style={{ justifyContent: 'space-between' }}
-            >
-              <code>{item.content}</code>
-              {item.distractorReason && (
-                <span style={{ fontSize: 11, color: 'var(--st-err-text)', background: 'var(--st-err-bg)', borderRadius: 999, padding: '2px 10px' }}>
-                  Nhiễu: {item.distractorReason}
-                </span>
-              )}
-            </button>
-          ))}
+          {pool.map((item) => {
+            const showReason =
+              item.distractorReason && (!revealed || revealed.includes(item.id));
+            return (
+              <button
+                key={item.id}
+                type="button"
+                className={styles.optionCard}
+                disabled={Boolean(revealed && showReason)}
+                onClick={() => (item.distractorReason ? onAttemptDistractor(item.id) : onPick(item.id))}
+                style={{
+                  justifyContent: 'space-between',
+                  opacity: revealed && showReason ? 0.6 : 1,
+                  minWidth: 0,
+                  gap: 8,
+                }}
+              >
+                {/* Giữ thụt lề (pre) nhưng cuộn ngang trong nút, không đẩy rộng trang. */}
+                <code style={{ display: 'block', flex: 1, whiteSpace: 'pre', overflowX: 'auto', minWidth: 0, textAlign: 'left' }}>
+                  {item.content}
+                </code>
+                {showReason && (
+                  <span style={{ fontSize: 11, color: 'var(--st-err-text)', background: 'var(--st-err-bg)', borderRadius: 999, padding: '2px 10px', whiteSpace: 'normal' }}>
+                    Nhiễu: {item.distractorReason}
+                  </span>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
     </div>

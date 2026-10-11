@@ -1,0 +1,398 @@
+{
+  "lesson_code": "I03",
+  "sort_order": 23,
+  "module": "M5 · Class đầu tiên",
+  "title": "I03 · Thêm một paradigm",
+  "subtitle": "Trung cấp · M5 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "I03 · Thêm một paradigm",
+    "subtitle": "Trung cấp · M5 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I03",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "I03"
+        ],
+        "title": "Thêm một paradigm",
+        "goal": "Tự viết method thêm dữ liệu vào object.",
+        "task": "Viết add_paradigms(self, paradigm) bằng append; không in, không return.",
+        "predict": "Thêm hai lần cùng một giá trị có giữ cả hai?",
+        "code": "class ProgrammingLanguage:\n    # Constructor đã cấp\n    def add_paradigms(self, paradigm):\n        pass",
+        "tests": [
+          "Thêm functional → phần tử mới ở cuối",
+          "Giá trị trả về → None"
+        ],
+        "reflect": "Vì sao result là None nhưng list vẫn thay đổi?"
+      },
+      "context": {
+        "title": "Tự viết method thêm dữ liệu vào object.",
+        "body": "Trong class đã cấp (constructor từ I02), viết method add_paradigms(self, paradigm) thêm paradigm vào cuối self.paradigms bằng append. Method không in, không return giá trị.",
+        "example": "Từ [\"procedural\"], thêm \"functional\" → [\"procedural\", \"functional\"].",
+        "prereq": "I02",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Gọi add_paradigms hai lần với cùng giá trị có giữ cả hai lần không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Có — append không bỏ trùng",
+            "detail": "Quy ước v3: thêm vào cuối, giữ trùng.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Không — chỉ giữ một lần",
+            "detail": "append không kiểm tra trùng.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi lần thứ hai",
+            "detail": "Thêm trùng là hợp lệ.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"self.paradigms = self.paradigms.append(p) cho chắc\"",
+        "body": "append sửa list tại chỗ và trả None: dòng đó gán None vào self.paradigms — list mất luôn. Chỉ cần self.paradigms.append(paradigm)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Method là hàm thuộc class. cart.add(\"pen\") tự truyền cart vào self."
+        },
+        {
+          "n": 2,
+          "body": "self.items.append(item) sửa list CỦA object đó và giữ thứ tự."
+        },
+        {
+          "n": 3,
+          "body": "Method không return nên result là None — nhưng cart.items đã đổi."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Cart:\n    def __init__(self):\n        self.items = []\n\n    def add(self, item):\n        self.items.append(item)\n\ncart = Cart()\nresult = cart.add(\"pen\")\nprint(cart.items)\nprint(result)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "result = obj.add_paradigms(\"functional\") thì result là gì?",
+          "options": [
+            {
+              "text": "None",
+              "detail": "Method không có return mang giá trị.",
+              "correct": true
+            },
+            {
+              "text": "['procedural', 'functional']",
+              "detail": "Muốn xem list thì đọc obj.paradigms.",
+              "correct": false
+            },
+            {
+              "text": "True",
+              "detail": "Không có gì trả True.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Method không có return mang giá trị."
+        },
+        {
+          "question": "Thêm vào object A thì object B (tạo riêng) có đổi không?",
+          "options": [
+            {
+              "text": "Không — mỗi object có list riêng",
+              "detail": "self là object được gọi method.",
+              "correct": true
+            },
+            {
+              "text": "Có",
+              "detail": "Constructor đã tạo list riêng cho mỗi object.",
+              "correct": false
+            },
+            {
+              "text": "Tuỳ thứ tự tạo",
+              "detail": "Không phụ thuộc thứ tự.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "self là object được gọi method."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao result là None nhưng list vẫn thay đổi?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "add_paradigms sửa trạng thái của object qua self.paradigms.append(...) — một tác dụng phụ. Nó không có return mang giá trị nên lời gọi trả None. Muốn xem kết quả thì đọc obj.paradigms."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp thân method.",
+        "rule": "Thêm hai lần \"procedural\" vào object có list rỗng; kiểm thứ tự và giá trị trả về."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Object giữ [\"procedural\"]."
+          },
+          {
+            "label": "Bước 2",
+            "text": "add_paradigms(\"functional\") → append vào cuối."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Object giữ [\"procedural\", \"functional\"]; result = None."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Object list rỗng, thêm \"procedural\" hai lần → paradigms?",
+        "options": [
+          "['procedural', 'procedural']",
+          "['procedural']",
+          "[]"
+        ],
+        "correct": "['procedural', 'procedural']"
+      },
+      "scaffold": {
+        "template": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        {{slot1}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "self.paradigms.append(paradigm)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "self.paradigms.append(paradigm)",
+            "slot": 1
+          },
+          {
+            "label": "return self.paradigms + [paradigm]",
+            "slot": 1,
+            "trap": "Tạo list mới, object không đổi."
+          },
+          {
+            "label": "paradigms.append(paradigm)",
+            "slot": 1,
+            "trap": "paradigms không phải biến trong method này → NameError."
+          },
+          {
+            "label": "self.paradigms = self.paradigms.append(paradigm)",
+            "slot": 1,
+            "trap": "append trả None → mất list."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Trong class đã cấp (constructor từ I02), viết method add_paradigms(self, paradigm) thêm paradigm vào cuối self.paradigms bằng append. Method không in, không return giá trị.\n\nThực hành: Dùng self.paradigms.append(paradigm); không tạo list dùng chung.",
+        "io": [
+          {
+            "label": "Thêm functional",
+            "value": "List có phần tử mới ở cuối"
+          },
+          {
+            "label": "Giá trị trả về",
+            "value": "None; method không tự in"
+          }
+        ]
+      },
+      "starterCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        pass\n",
+      "solutionCode": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\nresult = language.add_paradigms(\"functional\")\nprint(language.paradigms)\nprint(result)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng self.paradigms.append(paradigm); không tạo list dùng chung."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Method nhận self và paradigm.\n2. Một dòng: self.paradigms.append(paradigm) — không return."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def add_paradigms(self, paradigm):\n        self.paradigms..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Thêm functional vào cuối",
+          "call": "(lambda o: (o.add_paradigms('functional'), o.paradigms)[1])(ProgrammingLanguage('Python', 1991, ['procedural']))",
+          "expect": "['procedural', 'functional']"
+        },
+        {
+          "name": "Trả None",
+          "call": "ProgrammingLanguage('Python', 1991, []).add_paradigms('x')",
+          "expect": "None"
+        },
+        {
+          "name": "Giữ phần tử trùng",
+          "call": "(lambda o: (o.add_paradigms('procedural'), o.add_paradigms('procedural'), o.paradigms)[2])(ProgrammingLanguage('X', 1, []))",
+          "expect": "['procedural', 'procedural']"
+        },
+        {
+          "name": "Thêm vào A không đổi B hay list nguồn",
+          "call": "_studio.check('src = [\"p\"]\\na = ProgrammingLanguage(\"A\", 1, src)\\nb = ProgrammingLanguage(\"B\", 2, src)\\na.add_paradigms(\"x\")\\nassert b.paradigms == [\"p\"] and src == [\"p\"]')",
+          "expect": "True"
+        },
+        {
+          "name": "Method không in",
+          "call": "_studio.stdout(ProgrammingLanguage('A', 1, []).add_paradigms, 'x')",
+          "expect": "''"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "ProgrammingLanguage.__init__(self, name, year_created, paradigms)",
+          "does": "Khởi tạo ba thuộc tính của object.",
+          "takes": "self: object hiện tại; name: str; year_created: int; paradigms: list[str]",
+          "gives": "None — lời gọi class mới tạo ra object, không phải giá trị của __init__",
+          "effect": "Gán thuộc tính; list(paradigms) tạo list riêng.",
+          "call": "ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+        },
+        {
+          "sig": "add_paradigms(self, paradigm)",
+          "does": "Thêm một kiểu lập trình vào cuối list.",
+          "takes": "self; paradigm: str",
+          "gives": "None",
+          "effect": "Sửa self.paradigms; giữ phần tử trùng; không in.",
+          "call": "obj.add_paradigms(\"functional\")"
+        }
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "Method không return nên result là None — nhưng cart.items đã đổi.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "self.items.append(item) sửa list CỦA object đó và giữ thứ tự.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "self.paradigms = self.paradigms.append(p) cho chắc",
+              "answer": false,
+              "explain": "append sửa list tại chỗ và trả None: dòng đó gán None vào self.paradigms — list mất luôn. Chỉ cần self.paradigms.append(paradigm)."
+            }
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):",
+          "tail": "print(result)",
+          "lines": [
+            {
+              "id": "L2",
+              "text": "        self.name = name"
+            },
+            {
+              "id": "L3",
+              "text": "        self.year_created = year_created"
+            },
+            {
+              "id": "L4",
+              "text": "        self.paradigms = list(paradigms)"
+            },
+            {
+              "id": "L6",
+              "text": "    def add_paradigms(self, paradigm):"
+            },
+            {
+              "id": "L7",
+              "text": "        self.paradigms.append(paradigm)"
+            },
+            {
+              "id": "L9",
+              "text": "language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+            },
+            {
+              "id": "L10",
+              "text": "result = language.add_paradigms(\"functional\")"
+            },
+            {
+              "id": "L11",
+              "text": "print(language.paradigms)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "        self.paradigms = self.paradigms.append(paradigm)",
+              "reason": "gán kết quả append"
+            },
+            {
+              "id": "D1",
+              "text": "        return self.paradigms",
+              "reason": "trả list"
+            }
+          ],
+          "order": [
+            "L11",
+            "L2",
+            "L6",
+            "L3",
+            "L4",
+            "L10",
+            "L9",
+            "D0",
+            "L7",
+            "D1"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms = self.paradigms.append(paradigm)",
+          "firstLine": 1,
+          "line": 8,
+          "lines": [
+            8
+          ],
+          "label": "gán kết quả append",
+          "fix": "        self.paradigms.append(paradigm)\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\nresult = language.add_paradigms(\"functional\")\nprint(language.paradigms)\nprint(result)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

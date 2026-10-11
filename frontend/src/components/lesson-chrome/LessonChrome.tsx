@@ -15,6 +15,8 @@ export interface LessonChromeProps {
   step: number;
   totalSteps: number;
   streak: number;
+  /** Điểm trong bài (khoá có mini-game). Không truyền thì không hiện ô điểm. */
+  points?: number;
   courseLabel?: string;
   saveLabel?: string;
   onClose?: () => void;
@@ -43,6 +45,7 @@ export default function LessonChrome({
   step,
   totalSteps,
   streak,
+  points,
   courseLabel = 'Python Studio',
   saveLabel = '✓ Tiến độ tự lưu',
   onClose,
@@ -124,7 +127,18 @@ export default function LessonChrome({
 
           <span className={styles.stepLabel}>{step}/{totalSteps}</span>
 
-          <div className={styles.streakPill} title={`Chuỗi ${streak} ngày học liên tiếp`}>
+          {points !== undefined && (
+            <div className={styles.scorePill} title="Điểm trong bài này" aria-label={`${points} điểm`}>
+              <span aria-hidden="true">⭐</span>
+              <span>{points}</span>
+            </div>
+          )}
+
+          <div
+            className={styles.streakPill}
+            style={points !== undefined ? { marginLeft: 0 } : undefined}
+            title={`Chuỗi ${streak} ngày học liên tiếp`}
+          >
             <span aria-hidden="true">🔥</span>
             <span>{streak}</span>
           </div>

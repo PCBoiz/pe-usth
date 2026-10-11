@@ -1,0 +1,362 @@
+{
+  "lesson_code": "B15",
+  "sort_order": 15,
+  "module": "M3 · Đọc và ghi file",
+  "title": "B15 · Đưa phần ghi vào hàm",
+  "subtitle": "Cơ bản · M3 · 20 phút",
+  "estimated_minutes": 20,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B15 · Đưa phần ghi vào hàm",
+    "subtitle": "Cơ bản · M3 · 20 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B15",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP CƠ BẢN",
+          "B15"
+        ],
+        "title": "Đưa phần ghi vào hàm",
+        "goal": "Hàm write_lines(path, lines) có tác dụng ghi file.",
+        "task": "Dùng with, mode w, UTF-8; thêm newline sau từng chuỗi.",
+        "predict": "Không có return mang giá trị thì nơi gọi nhận gì?",
+        "code": "def write_lines(path, lines):\n    pass",
+        "tests": [
+          "2 từ → file có 2 dòng",
+          "[] → file rỗng; trả None"
+        ],
+        "reflect": "Trả None có nghĩa là hàm không làm được việc gì không?"
+      },
+      "context": {
+        "title": "Đưa việc ghi từng dòng vào hàm có tác dụng phụ.",
+        "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.",
+        "example": "write_lines(\"palindromes.txt\", [\"level\", \"radar\"]) tạo file hai dòng và trả None.",
+        "prereq": "B14",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Hàm không có return mang giá trị thì nơi gọi nhận gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "None",
+            "detail": "Python tự trả None khi hàm chạy hết mà không gặp return mang giá trị.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "List vừa ghi",
+            "detail": "Không có return lines nên không trả list.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "True",
+            "detail": "Không có gì trả True.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Hàm trả None là hàm không làm gì\"",
+        "body": "write_lines làm việc bằng TÁC DỤNG PHỤ: ghi file. Nó không cần trả dữ liệu. Đừng dùng print(lines) thay cho ghi file — hai hành vi khác nhau."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "path quyết định file đích; names là list chuỗi cần ghi."
+        },
+        {
+          "n": 2,
+          "body": "Không có return mang giá trị nên lời gọi trả None — kết quả cần quan sát nằm ở FILE."
+        },
+        {
+          "n": 3,
+          "body": "print(result) in None: hàm vẫn làm xong việc của nó (ghi file) — đó là tác dụng phụ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "def save_names(path, names):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for name in names:\n            file.write(name + \"\\n\")\n\nresult = save_names(\"names.txt\", [\"An\"])\nprint(result)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Gọi write_lines(\"out.txt\", [\"a\"]) rồi write_lines(\"out.txt\", []). File cuối cùng chứa gì?",
+          "options": [
+            {
+              "text": "Rỗng — lần gọi sau ghi đè",
+              "detail": "Mỗi lần mở \"w\" là làm rỗng file.",
+              "correct": true
+            },
+            {
+              "text": "\"a\\n\"",
+              "detail": "Lần gọi thứ hai đã ghi đè.",
+              "correct": false
+            },
+            {
+              "text": "Báo lỗi vì list rỗng",
+              "detail": "Duyệt list rỗng là hợp lệ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mỗi lần mở \"w\" là làm rỗng file."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Hàm trả None có nghĩa là không làm được việc gì không?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Không. write_lines thực hiện tác dụng phụ là ghi file; nó không cần trả dữ liệu để hoàn thành việc đó. Kết quả nằm trong file đích, còn giá trị trả về là None vì không có return mang giá trị."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp mode mở file và lệnh ghi từng chuỗi.",
+        "rule": "Gọi hai lần vào cùng một file: trước ghi [\"a\"], sau ghi []; kiểm nội dung lần đầu bị thay thế."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "lines → lấy từng text."
+          },
+          {
+            "label": "Bước 2",
+            "text": "Ghi text + \"\\n\" vào file đích."
+          },
+          {
+            "label": "Bước 3",
+            "text": "Ra khỏi with → đóng file."
+          },
+          {
+            "label": "Bước 4",
+            "text": "Hàm kết thúc → trả None."
+          }
+        ]
+      },
+      "counter": {
+        "question": "write_lines(\"out.txt\", [\"độđ\"]) trả về gì?",
+        "options": [
+          "None",
+          "[\"độđ\"]",
+          "True"
+        ],
+        "correct": "None"
+      },
+      "scaffold": {
+        "template": "def write_lines(path, lines):\n    with open(path, {{slot1}}, encoding=\"utf-8\") as file:\n        for text in lines:\n            {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\"w\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "file.write(text + \"\\n\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "file.write(lines)",
+            "slot": 2,
+            "trap": "write nhận str, không nhận list → TypeError."
+          },
+          {
+            "label": "\"w\"",
+            "slot": 1
+          },
+          {
+            "label": "\"a\"",
+            "slot": 1,
+            "trap": "Cộng dồn qua các lần gọi."
+          },
+          {
+            "label": "print(text)",
+            "slot": 2,
+            "trap": "In ra màn hình, không ghi file."
+          },
+          {
+            "label": "file.write(text + \"\\n\")",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết write_lines(path, lines): mở path bằng mode \"w\", UTF-8, ghi mỗi chuỗi trong lines trên một dòng. Hàm không print và không return giá trị.\n\nThực hành: Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\".",
+        "io": [
+          {
+            "label": "[\"level\", \"radar\"]",
+            "value": "File: \"level\\nradar\\n\"; trả None"
+          },
+          {
+            "label": "[]",
+            "value": "File rỗng; trả None"
+          }
+        ]
+      },
+      "starterCode": "def write_lines(path, lines):\n    pass\n",
+      "solutionCode": "def write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n\nwrite_lines(\"palindromes.txt\", [\"level\", \"radar\"])\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Dùng mode \"w\", UTF-8 và for để ghi mỗi text + \"\\n\"."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. with open(path, \"w\", encoding=\"utf-8\") as file:\n2. for text in lines: file.write(text + \"\\n\") — không return."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "[\"level\", \"radar\"] → file hai dòng, trả None",
+          "call": "(write_lines('w1.txt', ['level', 'radar']), _studio.read('w1.txt'))",
+          "expect": "(None, 'level\\nradar\\n')"
+        },
+        {
+          "name": "[] → file rỗng, trả None",
+          "call": "(write_lines('w2.txt', []), _studio.read('w2.txt'))",
+          "expect": "(None, '')"
+        },
+        {
+          "name": "Ghi đè, không cộng dồn",
+          "call": "_studio.check('write_lines(\"w3.txt\", [\"a\"])\\nwrite_lines(\"w3.txt\", [])\\nassert _studio.read(\"w3.txt\") == \"\", \"file phải rỗng sau lần ghi thứ hai\"')",
+          "expect": "True"
+        },
+        {
+          "name": "UTF-8: \"độđ\"",
+          "call": "(write_lines('w4.txt', ['độđ']), _studio.read('w4.txt'))[1]",
+          "expect": "'độđ\\n'"
+        },
+        {
+          "name": "Không sửa lines",
+          "call": "_studio.check('items = [\"a\", \"b\"]\\nwrite_lines(\"w5.txt\", items)\\nassert items == [\"a\", \"b\"]')",
+          "expect": "True"
+        },
+        {
+          "name": "Hàm không print",
+          "call": "_studio.stdout(write_lines, 'w6.txt', ['a'])",
+          "expect": "''"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "write_lines(path, lines)",
+          "does": "Ghi từng chuỗi trên một dòng.",
+          "takes": "path: str; lines: list[str] không chứa CR/LF bên trong",
+          "gives": "None — không có return mang giá trị",
+          "effect": "Tạo hoặc ghi đè file; không sửa lines, không in.",
+          "call": "write_lines(\"out.txt\", [\"a\"]) → None; file chứa a và xuống dòng"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "lines",
+              "right": "lấy từng text"
+            },
+            {
+              "left": "Ra khỏi with",
+              "right": "đóng file"
+            },
+            {
+              "left": "Hàm kết thúc",
+              "right": "trả None"
+            }
+          ],
+          "rightOrder": [
+            2,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L0",
+              "text": "def write_lines(path, lines):"
+            },
+            {
+              "id": "L1",
+              "text": "    with open(path, \"w\", encoding=\"utf-8\") as file:"
+            },
+            {
+              "id": "L2",
+              "text": "        for text in lines:"
+            },
+            {
+              "id": "L3",
+              "text": "            file.write(text + \"\\n\")"
+            },
+            {
+              "id": "L5",
+              "text": "write_lines(\"palindromes.txt\", [\"level\", \"radar\"])"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    return lines",
+              "reason": "trả list"
+            }
+          ],
+          "order": [
+            "L1",
+            "D0",
+            "L0",
+            "L5",
+            "L2",
+            "L3"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "def write_lines(path, lines):\n    with open(path, \"w\", encoding=\"utf-8\") as file:\n        for text in lines:\n            file.write(text + \"\\n\")\n    return lines",
+          "firstLine": 1,
+          "line": 5,
+          "lines": [
+            5
+          ],
+          "label": "trả list",
+          "fix": "\nwrite_lines(\"palindromes.txt\", [\"level\", \"radar\"])"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

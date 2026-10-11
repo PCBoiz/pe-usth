@@ -83,7 +83,7 @@ export class UserService {
     const user = await this.prisma.user.findUnique({ where: { id: userId } });
     if (!user) throw new NotFoundException('Không tìm thấy người dùng');
 
-    // checkPassword tự nhận diện scrypt:/pbkdf2:/plaintext legacy.
+    // checkPassword tự nhận diện scrypt:/pbkdf2:.
     if (!(await checkPassword(user.password, dto.current))) {
       throw new UnauthorizedException('Mật khẩu hiện tại không đúng');
     }

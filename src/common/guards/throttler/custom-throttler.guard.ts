@@ -17,6 +17,17 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
   }
 
   /**
+   * Người đã đăng nhập bị đếm theo user id, khách theo IP. Đếm thuần theo IP
+   * làm cả một lớp học/trường dùng chung NAT chia nhau một quota (vd chatbot
+   * 60 lượt/giờ cho cả phòng máy). Cần JwtAuthGuard chạy TRƯỚC guard này để
+   * req.user đã có — xem thứ tự APP_GUARD trong ApiGatewayModule.
+   */
+  protected getTracker(req: Record<string, any>): Promise<string> {
+    const userId = (req.user as { sub?: number } | undefined)?.sub;
+    return Promise.resolve(userId ? `user:${userId}` : `ip:${String(req.ip)}`);
+  }
+
+  /**
    * Cho phép tắt hoàn toàn rate limit qua env THROTTLE_DISABLED=true.
    *
    * Mục đích DUY NHẤT: đo sức chịu tải thật của server trong môi trường nội bộ.

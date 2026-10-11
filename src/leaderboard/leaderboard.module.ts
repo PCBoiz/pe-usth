@@ -1,17 +1,6 @@
-import { Controller, Get, Module, Query } from '@nestjs/common';
-import { CurrentUserId } from 'src/common/decorators/current-user.decorator';
+import { Module } from '@nestjs/common';
 import { LeaderboardService } from './leaderboard.service';
-
-// ---------- Task 160 ----------
-@Controller()
-export class LeaderboardController {
-  constructor(private readonly leaderboard: LeaderboardService) {}
-
-  @Get('leaderboard')
-  get(@CurrentUserId() userId: number, @Query('type') type?: string) {
-    return this.leaderboard.getLeaderboard(userId, type);
-  }
-}
+import { LeaderboardController } from './leaderboard.controller';
 
 @Module({
   controllers: [LeaderboardController],

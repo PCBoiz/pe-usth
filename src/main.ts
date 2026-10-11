@@ -1,15 +1,15 @@
 import 'dotenv/config';
+import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 // Kiểu NestExpressApplication (không phải INestApplication chung) mới có
 // useBodyParser — cần để đặt trần kích thước body.
 import type { NestExpressApplication } from '@nestjs/platform-express';
 import compression from 'compression';
 import { AppModule } from './app.module';
-import { AppLogger } from './common/logger/logger/logger.service';
-import { setupApiGateway } from './api-getway/api-getway.setup';
+import { setupApiGateway } from './api-gateway/api-gateway.setup';
 
 async function bootstrap() {
-  const logger = new AppLogger({ json: true });
+  const logger = new Logger('Bootstrap');
 
   // Một promise bị reject mà không ai bắt sẽ làm Node KẾT THÚC TIẾN TRÌNH
   // (mặc định từ Node 15). Dưới tải cao, chỉ cần một lỗi mạng Neon lọt ra ngoài
@@ -28,7 +28,6 @@ async function bootstrap() {
   });
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger,
     // Chặn body quá lớn ngay tại cổng vào: không có trần thì một request duy
     // nhất gửi JSON hàng chục MB (vd lộ trình cá nhân) đủ để ngốn RAM và làm
     // chậm cả tiến trình. 1mb thoải mái cho mọi payload hợp lệ của hệ thống.
@@ -57,7 +56,6 @@ async function bootstrap() {
 
   logger.log(
     `Server sẵn sàng trên cổng ${port} | UV_THREADPOOL_SIZE=${process.env.UV_THREADPOOL_SIZE ?? '4 (mặc định)'} | rate limit ${process.env.THROTTLE_DISABLED === 'true' ? 'ĐÃ TẮT (chỉ dùng khi đo tải)' : 'đang bật'}`,
-    'Bootstrap',
   );
 }
 bootstrap();

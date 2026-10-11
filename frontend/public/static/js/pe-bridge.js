@@ -21,10 +21,14 @@
 
   var ORIGIN = window.__PE_API_ORIGIN || '';
   var LS_ACCESS = 'pe_access';
-  var LS_REFRESH = 'pe_refresh';
+  /* Refresh token giờ nằm trong cookie httpOnly do backend đặt (JS không đọc
+   * được). Key localStorage cũ chỉ còn đọc MỘT lần để chuyển phiên đang đăng
+   * nhập sang cookie, sau đó bị xoá. */
+  var LS_LEGACY_REFRESH = 'pe_refresh';
 
   function getAccess() { try { return localStorage.getItem(LS_ACCESS); } catch (e) { return null; } }
-  function getRefresh() { try { return localStorage.getItem(LS_REFRESH); } catch (e) { return null; } }
+  function getLegacyRefresh() { try { return localStorage.getItem(LS_LEGACY_REFRESH); } catch (e) { return null; } }
+  function dropLegacyRefresh() { try { localStorage.removeItem(LS_LEGACY_REFRESH); } catch (e) {} }
   /* Cookie CỜ (không chứa token) để proxy.ts của Next đọc được trạng thái
    * "có phiên" từ server — localStorage server không đọc được. max-age khớp
    * hạn refresh token (8h), được gia hạn mỗi lần login/refresh. */
@@ -34,38 +38,55 @@
   function clearSessionCookie() {
     try { document.cookie = 'pe_has_session=; path=/; max-age=0; SameSite=Lax'; } catch (e) {}
   }
-  function setTokens(access, refresh) {
+  function setTokens(access) {
     try {
       if (access) localStorage.setItem(LS_ACCESS, access);
-      if (refresh) localStorage.setItem(LS_REFRESH, refresh);
     } catch (e) { /* private mode */ }
+    dropLegacyRefresh();
     if (access) setSessionCookie();
   }
   function clearTokens() {
-    try { localStorage.removeItem(LS_ACCESS); localStorage.removeItem(LS_REFRESH); } catch (e) {}
+    try { localStorage.removeItem(LS_ACCESS); } catch (e) {}
+    dropLegacyRefresh();
     clearSessionCookie();
   }
   window.__PE_setTokens = setTokens;
   window.__PE_clearTokens = clearTokens;
 
+  /* credentials:'include' bắt buộc: backend khác origin, thiếu nó trình duyệt
+   * không gửi cookie refresh lên và cũng bỏ qua Set-Cookie trả về. */
+  function callRefresh() {
+    var legacy = getLegacyRefresh();
+    return _origFetch(ORIGIN + '/auth/refresh', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(legacy ? { refresh: legacy } : {}),
+    });
+  }
+
   /* Refresh access token — DÙNG CHUNG cho retry-401 của fetch và SSE.
-   * Dedupe bằng 1 promise đang bay: ROTATE_REFRESH_TOKENS + BLACKLIST nghĩa là
-   * 2 lời gọi refresh song song với cùng refresh token → lời gọi sau bị 401
-   * (token đã vào blacklist) và đá user ra ngoài oan. */
+   * Dedupe bằng 1 promise đang bay trong tab. Hai TAB cùng refresh thì tab
+   * chậm hơn gửi cookie cũ và nhận 401 — thử lại đúng 1 lần sau chút ít, lúc
+   * đó trình duyệt đã nhận cookie mới từ tab kia. */
+  /* Khách chưa đăng nhập thì không có cookie refresh — khỏi gọi mạng. */
+  function maybeLoggedIn() {
+    return !!(getAccess() || getLegacyRefresh() ||
+      document.cookie.indexOf('pe_has_session=1') !== -1);
+  }
+
   var _refreshing = null;
   function refreshAccess() {
     if (_refreshing) return _refreshing;
-    var refresh = getRefresh();
-    if (!refresh) return Promise.resolve(null);
-    _refreshing = _origFetch(ORIGIN + '/auth/refresh', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh: refresh }),
+    if (!maybeLoggedIn()) return Promise.resolve(null);
+    _refreshing = callRefresh().then(function (r) {
+      if (r.status !== 401) return r;
+      return new Promise(function (ok) { setTimeout(ok, 400); }).then(callRefresh);
     }).then(function (r) {
       if (r.status === 401 || r.status === 403) { clearTokens(); return null; }
       if (!r.ok) return null;  // lỗi mạng/5xx: giữ token, thử lại sau
       return r.json().then(function (d) {
-        setTokens(d.access, d.refresh);
+        setTokens(d.access);
         return d.access;
       });
     }).catch(function () { return null; });
@@ -113,13 +134,17 @@
         headers.set('Authorization', 'Bearer ' + access);
       }
       opts = Object.assign({}, opts, { headers: headers });
+      // /auth/*: phải gửi/nhận cookie refresh httpOnly (khác origin).
+      if (url.indexOf('/auth/') === 0 || url.indexOf(ORIGIN + '/auth/') === 0) {
+        opts.credentials = 'include';
+      }
     }
     return _origFetch(finalUrl, opts).then(function (resp) {
       // Bắt token từ login/register (main.js không cần biết JWT tồn tại)
       if (toBackend && resp.ok &&
           (url.indexOf('/auth/login') === 0 || url.indexOf('/auth/register') === 0)) {
         resp.clone().json().then(function (data) {
-          if (data && data.access) setTokens(data.access, data.refresh);
+          if (data && data.access) setTokens(data.access);
         }).catch(function () {});
       }
       // 401 → thử refresh 1 lần (trừ chính các call auth)

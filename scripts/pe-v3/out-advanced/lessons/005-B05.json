@@ -1,0 +1,328 @@
+{
+  "lesson_code": "B05",
+  "sort_order": 5,
+  "module": "M1 · Dữ liệu và điều kiện",
+  "title": "B05 · if và else",
+  "subtitle": "Cơ bản · M1 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B05 · if và else",
+    "subtitle": "Cơ bản · M1 · 15 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B05",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP CƠ BẢN",
+          "B05"
+        ],
+        "title": "if và else",
+        "goal": "Chọn đúng một thông báo bằng if/else.",
+        "task": "In PALINDROME nếu result đúng, nếu không in NOT PALINDROME.",
+        "predict": "result = False sẽ chạy nhánh nào?",
+        "code": "result = True\n# Viết if / else\n# Mỗi nhánh in một thông báo",
+        "tests": [
+          "True → PALINDROME",
+          "False → NOT PALINDROME"
+        ],
+        "reflect": "Vì sao không đặt hai lệnh print ngoài if/else?"
+      },
+      "context": {
+        "title": "Chọn đúng một thông báo bằng if/else.",
+        "body": "Cho biến result (True hoặc False). In PALINDROME nếu result là True, ngược lại in NOT PALINDROME — dùng if/else.",
+        "example": "result = True → PALINDROME; result = False → NOT PALINDROME.",
+        "prereq": "B04",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Với result = False, nhánh nào được thực hiện?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Nhánh else — in NOT PALINDROME",
+            "detail": "Điều kiện sai nên bỏ qua khối if.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Nhánh if",
+            "detail": "Khối if chỉ chạy khi result là True.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cả hai nhánh",
+            "detail": "if/else luôn chọn đúng MỘT nhánh.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Đặt hai print ra ngoài if/else cũng được\"",
+        "body": "Lệnh không thụt vào thì không thuộc nhánh nào: cả hai print đều chạy và chương trình in hai dòng bất kể result. Sai thụt lề còn có thể gây IndentationError hoặc làm lệnh chạy ngoài nhánh."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "if kiểm tra is_open: True thì chạy khối thụt vào dưới if; False thì chạy khối dưới else."
+        },
+        {
+          "n": 2,
+          "body": "Dấu : mở một khối lệnh; thụt vào 4 dấu cách để Python biết lệnh nào thuộc nhánh nào."
+        },
+        {
+          "n": 3,
+          "body": "Mỗi lần chạy CHỈ một nhánh chạy: is_open = False → bỏ nhánh if → in CLOSED."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "is_open = False\nif is_open:\n    print(\"OPEN\")\nelse:\n    print(\"CLOSED\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Nếu đổi nhầm hai thông báo (nhánh if in NOT PALINDROME), chương trình sẽ…",
+          "options": [
+            {
+              "text": "Vẫn chạy nhưng in sai thông báo — sai bài",
+              "detail": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi.",
+              "correct": true
+            },
+            {
+              "text": "Báo SyntaxError",
+              "detail": "Cú pháp vẫn đúng.",
+              "correct": false
+            },
+            {
+              "text": "Tự in đúng",
+              "detail": "Máy chỉ làm đúng điều được viết.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi."
+        },
+        {
+          "question": "Chương trình đúng in bao nhiêu dòng mỗi lần chạy?",
+          "options": [
+            {
+              "text": "Đúng 1 dòng",
+              "detail": "Chỉ một nhánh chạy.",
+              "correct": true
+            },
+            {
+              "text": "2 dòng",
+              "detail": "Đó là khi cả hai print nằm ngoài if/else.",
+              "correct": false
+            },
+            {
+              "text": "Tuỳ result mà 0 hoặc 2",
+              "detail": "Luôn có đúng một nhánh.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chỉ một nhánh chạy."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao không đặt hai print ở ngoài if/else?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Lệnh ở ngoài nhánh thì luôn chạy, nên cả PALINDROME lẫn NOT PALINDROME đều được in — không còn lựa chọn theo result. Đặt mỗi print trong đúng nhánh thì mỗi lần chạy chỉ in một dòng phù hợp với result."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Đặt mỗi thông báo vào đúng nhánh.",
+        "rule": "Chạy lần lượt result = True và result = False. Thử đổi nhầm hai thông báo rồi giải thích vì sao chương trình vẫn chạy nhưng sai bài."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "result = True → điều kiện đúng → chạy nhánh if → in PALINDROME."
+          },
+          {
+            "label": "Bước 2",
+            "text": "result = False → bỏ nhánh if → chạy else → in NOT PALINDROME."
+          }
+        ]
+      },
+      "counter": {
+        "question": "result = False thì chương trình in gì?",
+        "options": [
+          "Một dòng: NOT PALINDROME",
+          "Hai dòng: PALINDROME rồi NOT PALINDROME",
+          "Không in gì"
+        ],
+        "correct": "Một dòng: NOT PALINDROME"
+      },
+      "scaffold": {
+        "template": "result = False\nif result:\n    {{slot1}}\nelse:\n    {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "print(\"PALINDROME\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "print(\"NOT PALINDROME\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(\"PALINDROME\")",
+            "slot": 1
+          },
+          {
+            "label": "print(\"NOT PALINDROME\")",
+            "slot": 2
+          },
+          {
+            "label": "print(result)",
+            "slot": 1,
+            "trap": "In True/False chứ không in thông báo."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho biến result (True hoặc False). In PALINDROME nếu result là True, ngược lại in NOT PALINDROME — dùng if/else.\n\nThực hành: Chạy lần lượt result = True và result = False; mỗi lần phải in đúng một dòng.",
+        "io": [
+          {
+            "label": "result = True",
+            "value": "PALINDROME (một dòng)"
+          },
+          {
+            "label": "result = False",
+            "value": "NOT PALINDROME (một dòng)"
+          }
+        ]
+      },
+      "starterCode": "result = True\n# Tự viết if/else và hai thông báo.\n",
+      "solutionCode": "result = True\n\nif result:\n    print(\"PALINDROME\")\nelse:\n    print(\"NOT PALINDROME\")\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Chạy lần lượt result = True và result = False; mỗi lần phải in đúng một dòng."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. if result: → nhánh True in PALINDROME.\n2. else: → nhánh False in NOT PALINDROME. Thụt vào 4 dấu cách."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "if result:\n    print(\"PALINDROME\")\nelse:\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "result = True → PALINDROME",
+          "call": "_studio.run().stdout",
+          "expect": "'PALINDROME\\n'"
+        },
+        {
+          "name": "result = False → NOT PALINDROME",
+          "call": "_studio.run(vars={'result': False}).stdout",
+          "expect": "'NOT PALINDROME\\n'"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "Mỗi lần chạy CHỈ một nhánh chạy: is_open = False → bỏ nhánh if → in CLOSED.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "Đặt hai print ra ngoài if/else cũng được",
+              "answer": false,
+              "explain": "Lệnh không thụt vào thì không thuộc nhánh nào: cả hai print đều chạy và chương trình in hai dòng bất kể result. Sai thụt lề còn có thể gây IndentationError hoặc làm lệnh chạy ngoài nhánh."
+            },
+            {
+              "statement": "Dấu : mở một khối lệnh; thụt vào 4 dấu cách để Python biết lệnh nào thuộc nhánh nào.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            }
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L0",
+              "text": "result = True"
+            },
+            {
+              "id": "L2",
+              "text": "if result:"
+            },
+            {
+              "id": "L3",
+              "text": "    print(\"PALINDROME\")"
+            },
+            {
+              "id": "L4",
+              "text": "else:"
+            },
+            {
+              "id": "L5",
+              "text": "    print(\"NOT PALINDROME\")"
+            }
+          ],
+          "distractors": [],
+          "order": [
+            "L4",
+            "L0",
+            "L2",
+            "L3",
+            "L5"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "result = True\nprint(\"PALINDROME\")\nprint(\"NOT PALINDROME\")",
+          "firstLine": 1,
+          "line": 2,
+          "lines": [
+            2,
+            3
+          ],
+          "label": "print ngoài nhánh",
+          "fix": "\nif result:\n    print(\"PALINDROME\")\nelse:\n    print(\"NOT PALINDROME\")"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

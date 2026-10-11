@@ -1,0 +1,323 @@
+{
+  "lesson_code": "N04",
+  "sort_order": 36,
+  "module": "M8 · Thread và chờ kết thúc (Ex4)",
+  "title": "N04 · Ex4 tự làm và sửa lỗi",
+  "subtitle": "Nâng cao · M8 · 40 phút · Cửa tự kiểm tra Ex4 · thread",
+  "estimated_minutes": 40,
+  "xp_reward": 40,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "N04 · Ex4 tự làm và sửa lỗi",
+    "subtitle": "Nâng cao · M8 · 40 phút · Cửa tự kiểm tra Ex4 · thread",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N04",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M8",
+          "BÀI TẬP NÂNG CAO",
+          "N04"
+        ],
+        "title": "Ex4 tự làm và sửa lỗi",
+        "goal": "Tự giải Ex4 và kiểm dữ liệu n.",
+        "task": "Viết lại parallel_compile(n): chỉ nhận int dương, không nhận bool.",
+        "predict": "Vì sao isinstance(n, int) chưa loại được True?",
+        "code": "class C(BaseC):\n    # _compile_worker đã cấp\n    def parallel_compile(self, n):\n        pass",
+        "tests": [
+          "n = 3 → ba worker, trả None",
+          "n = 0 → ValueError, chưa có worker"
+        ],
+        "reflect": "Validation và join kiểm hai điều khác nhau thế nào?"
+      },
+      "context": {
+        "title": "Tự giải Ex4 và kiểm dữ liệu n.",
+        "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.",
+        "example": "n = 3 hợp lệ; n = 0, -1, True, 1.5 hoặc \"3\" → ValueError.",
+        "prereq": "N03",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py"
+        ]
+      },
+      "predict": {
+        "question": "Vì sao chỉ kiểm isinstance(n, int) chưa loại được True?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Vì bool là lớp con của int nên isinstance(True, int) là True",
+            "detail": "type(True) is int là False.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Vì True bằng 1 nên hợp lệ",
+            "detail": "Đề v3 coi bool là dữ liệu sai.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "isinstance đã loại được",
+            "detail": "Không — cần type(n) is int.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Kiểm n xong thì không cần join\"",
+        "body": "Validation kiểm ĐẦU VÀO trước khi chạy; join bảo đảm vòng đời worker đã HOÀN TẤT trước khi trả về — hai việc khác nhau. Và đừng hứa worker bắt đầu cùng lúc hay chạy nhanh hơn: đó không phải tiêu chí Ex4."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "bool là lớp con của int: isinstance(True, int) là True. Dùng type(n) is int để loại bool."
+        },
+        {
+          "n": 2,
+          "body": "raise ValueError báo dữ liệu không hợp lệ — không âm thầm chạy 0 worker."
+        },
+        {
+          "n": 3,
+          "body": "Sau validation, tạo/start/join như N02; helper giữ đúng một nhiệm vụ in thông báo."
+        },
+        {
+          "n": 4,
+          "body": "Cửa kiểm tra Ex4: bộ chấm đo vòng đời worker thật sự (tạo, start hết, join hết), không chỉ đếm dòng in."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "parallel_compile(1.5) theo hợp đồng v3 thì…",
+          "options": [
+            {
+              "text": "ValueError, chưa tạo worker nào",
+              "detail": "Chỉ nhận int dương.",
+              "correct": true
+            },
+            {
+              "text": "Tạo 1 worker",
+              "detail": "Không làm tròn.",
+              "correct": false
+            },
+            {
+              "text": "TypeError từ range",
+              "detail": "Phải chặn sớm bằng ValueError.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chỉ nhận int dương."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Validation n và join kiểm hai điều khác nhau thế nào?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "Validation kiểm đầu vào trước khi chạy: n phải là int dương, không phải bool, sai thì raise ValueError khi chưa có worker nào. join kiểm vòng đời: mọi worker đã start đều kết thúc trước khi parallel_compile trả về."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm dùng n khác và fixture đo vòng đời worker; dữ liệu sai phải lỗi trước khi có worker."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "n sai → ValueError trước bước tạo."
+          },
+          {
+            "label": "Bước 2",
+            "text": "n hợp lệ → n worker → start hết → join hết → trả None."
+          }
+        ]
+      },
+      "counter": {
+        "question": "parallel_compile(\"3\") → ?",
+        "options": [
+          "ValueError",
+          "Ba worker",
+          "TypeError"
+        ],
+        "correct": "ValueError"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Cửa tự kiểm tra — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Helper _compile_worker đã cấp. Tự viết lại parallel_compile(n) từ khung rỗng, kể cả kiểm tra n: chỉ nhận int dương — không nhận bool (True), 1.5 hay \"3\". Dữ liệu sai phải raise ValueError TRƯỚC khi tạo worker; dữ liệu đúng thì tạo n worker, start hết rồi join hết.\n\nThực hành: Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết.",
+        "io": [
+          {
+            "label": "n = 3",
+            "value": "Ba worker và ba thông báo; trả None khi xong"
+          },
+          {
+            "label": "n = 0",
+            "value": "ValueError; chưa tạo worker"
+          }
+        ]
+      },
+      "starterCode": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        pass\n",
+      "solutionCode": "import threading\nfrom c_language import C as BaseC\n\n\nclass C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        threads = []\n        for index in range(n):\n            worker = threading.Thread(target=self._compile_worker, args=(n,))\n            threads.append(worker)\n\n        for worker in threads:\n            worker.start()\n\n        for worker in threads:\n            worker.join()\n\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nobj.parallel_compile(3)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Kiểm type(n) is int và n > 0 trước khi tạo worker, rồi start hết / join hết."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. if type(n) is not int or n <= 0: raise ValueError(\"n must be a positive integer\")\n2. threads = [Thread(target=self._compile_worker, args=(n,)) cho mỗi lượt]; start hết; join hết."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def parallel_compile(self, n):\n        if type(n) is not int or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "n = 3: ba worker",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).thread_count",
+          "expect": "3"
+        },
+        {
+          "name": "Start hết rồi mới join",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).starts_before_joins",
+          "expect": "True"
+        },
+        {
+          "name": "Join đủ mọi worker",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).all_joined",
+          "expect": "True"
+        },
+        {
+          "name": "target là method, args = (n,)",
+          "call": "[(t.target_name, t._args) for t in _studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 2).threads]",
+          "expect": "[('_compile_worker', (2,)), ('_compile_worker', (2,))]"
+        },
+        {
+          "name": "n = 3: ba dòng đúng thông báo",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 3).stdout",
+          "expect": "'Compiling C code using 3 threads with standard version C17\\nCompiling C code using 3 threads with standard version C17\\nCompiling C code using 3 threads with standard version C17\\n'"
+        },
+        {
+          "name": "n = 1, C23",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C23').parallel_compile, 1).stdout",
+          "expect": "'Compiling C code using 1 threads with standard version C23\\n'"
+        },
+        {
+          "name": "Trả None khi tất cả xong",
+          "call": "_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 2).value",
+          "expect": "None"
+        },
+        {
+          "name": "n = 0 → ValueError, chưa tạo worker",
+          "call": "(lambda r: (r.error, r.thread_count))(_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 0))",
+          "expect": "('ValueError', 0)"
+        },
+        {
+          "name": "n = -1 → ValueError, chưa tạo worker",
+          "call": "(lambda r: (r.error, r.thread_count))(_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, -1))",
+          "expect": "('ValueError', 0)"
+        },
+        {
+          "name": "n = True → ValueError, chưa tạo worker",
+          "call": "(lambda r: (r.error, r.thread_count))(_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, True))",
+          "expect": "('ValueError', 0)"
+        },
+        {
+          "name": "n = 1.5 → ValueError, chưa tạo worker",
+          "call": "(lambda r: (r.error, r.thread_count))(_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, 1.5))",
+          "expect": "('ValueError', 0)"
+        },
+        {
+          "name": "n = '3' → ValueError, chưa tạo worker",
+          "call": "(lambda r: (r.error, r.thread_count))(_studio.call(C(\"C\", 1972, [\"procedural\"], 'C17').parallel_compile, '3'))",
+          "expect": "('ValueError', 0)"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "_compile_worker(self, n)",
+          "does": "Thực hiện một công việc mô phỏng.",
+          "takes": "self; n: int — đọc self.std_version",
+          "gives": "None",
+          "effect": "In một dòng có n và phiên bản; flush=True đẩy output ngay.",
+          "call": "obj._compile_worker(3) → thông báo cho n = 3"
+        },
+        {
+          "sig": "parallel_compile(self, n)",
+          "does": "Tạo n thread và chờ tất cả hoàn tất.",
+          "takes": "self; n là int dương, không phải bool",
+          "gives": "None; n sai → ValueError",
+          "effect": "Tạo/start/join thread; worker in output; không bảo đảm thứ tự dòng in.",
+          "call": "obj.parallel_compile(3) → đúng ba worker hoàn tất"
+        }
+      ],
+      "gate": true,
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading.Thread: target chạy khi start() và bộ chấm ghi lại thứ tự tạo / start / join. Hãy chạy thêm file trên máy (Windows hoặc Linux) để thấy thread thật — thứ tự dòng in có thể khác mỗi lần."
+    },
+    "play": {
+      "level": "N",
+      "boss": true,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
+          "prompt": "parallel_compile(1.5) theo hợp đồng v3 thì…",
+          "items": [
+            {
+              "statement": "ValueError, chưa tạo worker nào",
+              "answer": true,
+              "explain": "Chỉ nhận int dương."
+            },
+            {
+              "statement": "Tạo 1 worker",
+              "answer": false,
+              "explain": "Không làm tròn."
+            },
+            {
+              "statement": "TypeError từ range",
+              "answer": false,
+              "explain": "Phải chặn sớm bằng ValueError."
+            }
+          ]
+        },
+        {
+          "id": "spotError-1",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "class C(BaseC):\n    def _compile_worker(self, n):\n        message = f\"Compiling C code using {n} threads\"\n        message += f\" with standard version {self.std_version}\"\n        print(message, flush=True)\n\n    def parallel_compile(self, n):\n        if not isinstance(n, int) or n <= 0:\n            raise ValueError(\"n must be a positive integer\")\n\n        threads = []\n        for index in range(n):\n            worker = threading.Thread(target=self._compile_worker, args=(n,))\n            threads.append(worker)\n",
+          "firstLine": 5,
+          "line": 12,
+          "lines": [
+            12
+          ],
+          "label": "isinstance cho qua True",
+          "fix": "        if type(n) is not int or n <= 0:"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

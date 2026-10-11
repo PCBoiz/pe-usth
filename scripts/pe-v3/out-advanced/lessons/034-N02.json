@@ -1,0 +1,332 @@
+{
+  "lesson_code": "N02",
+  "sort_order": 34,
+  "module": "M8 · Thread và chờ kết thúc (Ex4)",
+  "title": "N02 · Nhiều thread",
+  "subtitle": "Nâng cao · M8 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "N02 · Nhiều thread",
+    "subtitle": "Nâng cao · M8 · 30 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N02",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M8",
+          "BÀI TẬP NÂNG CAO",
+          "N02"
+        ],
+        "title": "Nhiều thread",
+        "goal": "Chạy nhiều thread: start hết rồi join hết.",
+        "task": "Tạo n Thread trong list; vòng thứ nhất start, vòng thứ hai join.",
+        "predict": "Start rồi join ngay từng worker có còn chạy chồng lấp?",
+        "code": "n = 3\nthreads = []\n# Tạo n worker\n# Start hết rồi join hết",
+        "tests": [
+          "n = 1 → một worker hoàn tất",
+          "n = 3 → ba worker; start hết trước join"
+        ],
+        "reflect": "Vì sao tách vòng start và vòng join?"
+      },
+      "context": {
+        "title": "Chạy nhiều thread bằng hai vòng lặp start và join riêng.",
+        "body": "Tạo n Thread (target=obj.compile) và giữ trong list threads; vòng lặp thứ nhất start TẤT CẢ, vòng lặp thứ hai join TẤT CẢ. Bài này n đã là int dương.",
+        "example": "n = 3 → ba worker gọi compile; cả ba xong trước khi chương trình tiếp tục.",
+        "prereq": "N01",
+        "level": "Nâng cao",
+        "files": [
+          "language_base.py",
+          "c_language.py"
+        ]
+      },
+      "predict": {
+        "question": "Nếu start rồi join ngay từng worker trong CÙNG một vòng, các worker còn chạy chồng lấp được không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — worker trước phải xong mới start worker sau, thành chạy tuần tự",
+            "detail": "join chặn nơi gọi tới khi worker đó xong.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có",
+            "detail": "join ngay sau start không cho worker kế tiếp bắt đầu.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "Không lỗi — chỉ mất tính song song.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Dùng lại một Thread cho nhiều lần start\"",
+        "body": "Mỗi Thread chỉ start được một lần. Cần n worker thì tạo n Thread mới trong vòng lặp. Bài này chưa yêu cầu kiểm tra n (học ở N04)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "range(2) tạo 2 lượt (0, 1); mỗi lượt tạo một Thread MỚI và lưu vào list."
+        },
+        {
+          "n": 2,
+          "body": "Vòng thứ nhất start hết để các worker có thể chạy chồng lấp."
+        },
+        {
+          "n": 3,
+          "body": "Vòng thứ hai join hết: chương trình chỉ đi tiếp khi mọi worker đã xong."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\ndef tick():\n    print(\"tick\", flush=True)\n\nworkers = []\nfor index in range(2):\n    workers.append(threading.Thread(target=tick))\n\nfor worker in workers:\n    worker.start()\n\nfor worker in workers:\n    worker.join()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "n = 4 thì target compile chạy mấy lần?",
+          "options": [
+            {
+              "text": "4 lần, trên bốn Thread khác nhau",
+              "detail": "Mỗi lượt range tạo một Thread.",
+              "correct": true
+            },
+            {
+              "text": "1 lần",
+              "detail": "Có bốn worker.",
+              "correct": false
+            },
+            {
+              "text": "Tuỳ máy",
+              "detail": "Số worker xác định; chỉ thứ tự dòng in là tuỳ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mỗi lượt range tạo một Thread."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao tách vòng start và vòng join?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "join ngay sau từng start làm nơi gọi chờ worker đó xong rồi mới start worker kế tiếp — chạy tuần tự. Start hết trước cho phép mọi worker chạy chồng lấp; vòng join sau đó bảo đảm tất cả đã xong trước khi đi tiếp."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: lưu worker, start, join.",
+        "rule": "Đổi n = 1 rồi n = 4; kiểm đúng số worker và tất cả đều hoàn tất."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Tạo [worker0, worker1, worker2]."
+          },
+          {
+            "label": "Bước 2",
+            "text": "start 0/1/2."
+          },
+          {
+            "label": "Bước 3",
+            "text": "join 0/1/2 → hoàn tất."
+          }
+        ]
+      },
+      "counter": {
+        "question": "n = 1 thì có mấy dòng Compiling?",
+        "options": [
+          "1",
+          "3",
+          "0"
+        ],
+        "correct": "1"
+      },
+      "scaffold": {
+        "template": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nn = 3\nthreads = []\nfor index in range(n):\n    worker = threading.Thread(target=obj.compile)\n    {{slot1}}\n\nfor worker in threads:\n    {{slot2}}\n\nfor worker in threads:\n    {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "threads.append(worker)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "worker.start()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "worker.join()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "obj.compile()",
+            "slot": 2,
+            "trap": "Gọi ở thread chính."
+          },
+          {
+            "label": "worker.start()",
+            "slot": 2
+          },
+          {
+            "label": "threads = [worker]",
+            "slot": 1,
+            "trap": "Ghi đè, chỉ giữ worker cuối."
+          },
+          {
+            "label": "worker.join()",
+            "slot": 3
+          },
+          {
+            "label": "threads.append(worker)",
+            "slot": 1
+          },
+          {
+            "label": "worker.run()",
+            "slot": 2,
+            "trap": "Chạy target ngay ở thread chính, không tạo thread mới."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Tạo n Thread (target=obj.compile) và giữ trong list threads; vòng lặp thứ nhất start TẤT CẢ, vòng lặp thứ hai join TẤT CẢ. Bài này n đã là int dương.\n\nThực hành: Tạo Thread mới cho từng lượt lặp, giữ trong list, rồi start toàn bộ trước khi join.",
+        "io": [
+          {
+            "label": "n = 1",
+            "value": "Một worker hoàn tất"
+          },
+          {
+            "label": "n = 3",
+            "value": "Ba worker hoàn tất; tất cả start trước join"
+          }
+        ]
+      },
+      "starterCode": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nn = 3\nthreads = []\n# Tự tạo n worker, start hết rồi join hết.\n",
+      "solutionCode": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nn = 3\nthreads = []\nfor index in range(n):\n    worker = threading.Thread(target=obj.compile)\n    threads.append(worker)\n\nfor worker in threads:\n    worker.start()\n\nfor worker in threads:\n    worker.join()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo Thread mới cho từng lượt lặp, giữ trong list, rồi start toàn bộ trước khi join."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. range(n) tạo n lượt; mỗi lượt tạo một Thread mới và lưu vào threads.\n2. Vòng đầu start tất cả; vòng sau mới join tất cả."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "for index in range(n):\n    worker = threading.Thread(target=obj.compile)\n    threads.append(worker)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "n = 3: ba Thread",
+          "call": "_studio.main.thread_count",
+          "expect": "3"
+        },
+        {
+          "name": "Start hết trước khi join",
+          "call": "_studio.main.starts_before_joins",
+          "expect": "True"
+        },
+        {
+          "name": "Join đủ",
+          "call": "_studio.main.all_joined",
+          "expect": "True"
+        },
+        {
+          "name": "target là method obj.compile",
+          "call": "_studio.main.targets_callable",
+          "expect": "True"
+        },
+        {
+          "name": "n = 1: một worker",
+          "call": "_studio.run(vars={'n': 1}).thread_count",
+          "expect": "1"
+        },
+        {
+          "name": "n = 4: bốn worker, bốn dòng",
+          "call": "len(_studio.run(vars={'n': 4}).stdout.splitlines())",
+          "expect": "4"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        },
+        {
+          "name": "c_language.py",
+          "content": "from language_base import ProgrammingLanguage\n\n\nclass C(ProgrammingLanguage):\n    def __init__(self, name, year_created, paradigms, std_version):\n        super().__init__(name, year_created, paradigms)\n        self.std_version = std_version\n\n    def __str__(self):\n        description = super().__str__()\n        return description + f\", Standard version[{self.std_version}]\"\n\n    def compile(self):\n        print(f\"Compiling C code using standard version {self.std_version}\")\n",
+          "kind": "module"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading.Thread: target chạy khi start() và bộ chấm ghi lại thứ tự tạo / start / join. Hãy chạy thêm file trên máy (Windows hoặc Linux) để thấy thread thật — thứ tự dòng in có thể khác mỗi lần."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Đúng hay sai?",
+          "items": [
+            {
+              "statement": "Vòng thứ hai join hết: chương trình chỉ đi tiếp khi mọi worker đã xong.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "Vòng thứ nhất start hết để các worker có thể chạy chồng lấp.",
+              "answer": true,
+              "explain": "Đúng — đây là ý chính của bài."
+            },
+            {
+              "statement": "Dùng lại một Thread cho nhiều lần start",
+              "answer": false,
+              "explain": "Mỗi Thread chỉ start được một lần. Cần n worker thì tạo n Thread mới trong vòng lặp. Bài này chưa yêu cầu kiểm tra n (học ở N04)."
+            }
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "debug-2",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import threading\nfrom c_language import C\n\nobj = C(\"C\", 1972, [\"procedural\"], \"C17\")\nn = 3\nfor index in range(n):\n    worker = threading.Thread(target=obj.compile)\n    worker.start()\n    worker.join()\n",
+          "label": "start + join cùng vòng"
+        },
+        {
+          "id": "selfExplain-3",
+          "type": "selfExplain",
+          "title": "Vì sao tách vòng start và vòng join?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

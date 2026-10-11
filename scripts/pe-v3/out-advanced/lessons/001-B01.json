@@ -1,0 +1,371 @@
+{
+  "lesson_code": "B01",
+  "sort_order": 1,
+  "module": "M1 · Dữ liệu và điều kiện",
+  "title": "B01 · Biến và kết quả",
+  "subtitle": "Cơ bản · M1 · 15 phút",
+  "estimated_minutes": 15,
+  "xp_reward": 10,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "B01 · Biến và kết quả",
+    "subtitle": "Cơ bản · M1 · 15 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B01",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP CƠ BẢN",
+          "B01"
+        ],
+        "title": "Biến và kết quả",
+        "goal": "Gán giá trị vào biến và in theo thứ tự.",
+        "task": "Gán name = \"Python\", year = 1991; in hai biến trên hai dòng.",
+        "predict": "Nếu đổi year thành 2026, dòng nào thay đổi?",
+        "code": "# Tự gán name, year\n# In mỗi giá trị trên một dòng",
+        "tests": [
+          "Mặc định → Python ↵ 1991",
+          "year = 2026 → Python ↵ 2026"
+        ],
+        "reflect": "Vì sao đổi biến làm kết quả đổi mà không sửa print?"
+      },
+      "context": {
+        "title": "Gán giá trị vào biến và in theo thứ tự.",
+        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.",
+        "example": "Kết quả: Python rồi 1991 — mỗi giá trị một dòng.",
+        "prereq": "Không cần bài trước.",
+        "level": "Cơ bản"
+      },
+      "predict": {
+        "question": "Nếu đổi year thành 2026 (không sửa lệnh print), dòng kết quả nào thay đổi?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Chỉ dòng thứ hai",
+            "detail": "print(year) đọc giá trị mới 2026; dòng Python giữ nguyên.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Cả hai dòng",
+            "detail": "name không đổi nên dòng đầu vẫn là Python.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không dòng nào — phải sửa cả print",
+            "detail": "print đọc giá trị hiện tại của biến, không giữ cố định số 1991.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"print(\"name\") cũng in ra giá trị của biến name\"",
+        "body": "Có dấu nháy thì \"name\" là chuỗi chữ n-a-m-e, nên màn hình hiện đúng chữ name. Muốn đọc biến thì viết print(name), không có dấu nháy. Cũng đừng in sẵn cả đáp án như print(\"Python\") — đổi dữ liệu là sai ngay."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Dấu = gán giá trị cho tên biến: \"Hanoi\" là chuỗi (str), 1010 là số nguyên (int)."
+        },
+        {
+          "n": 2,
+          "body": "print(city) đọc giá trị HIỆN TẠI của city rồi in ra; mỗi lệnh print kết thúc bằng một lần xuống dòng."
+        },
+        {
+          "n": 3,
+          "body": "Luồng dữ liệu: city giữ Hanoi → print(city) in Hanoi; founded giữ 1010 → print(founded) in 1010."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "city = \"Hanoi\"\nfounded = 1010\nprint(city)\nprint(founded)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Với name = \"C\" và year = 1972, chương trình in gì?",
+          "options": [
+            {
+              "text": "C rồi 1972, mỗi giá trị một dòng",
+              "detail": "Hai lệnh print, mỗi lệnh tự xuống dòng.",
+              "correct": true
+            },
+            {
+              "text": "C 1972 trên cùng một dòng",
+              "detail": "Mỗi print kết thúc bằng xuống dòng nên có hai dòng.",
+              "correct": false
+            },
+            {
+              "text": "name rồi year",
+              "detail": "Không có dấu nháy nên print đọc giá trị của biến.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Hai lệnh print, mỗi lệnh tự xuống dòng."
+        },
+        {
+          "question": "Gán year = 0 thì dòng thứ hai in gì?",
+          "options": [
+            {
+              "text": "0",
+              "detail": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng.",
+              "correct": true
+            },
+            {
+              "text": "Một dòng trống",
+              "detail": "print(0) in chữ số 0, không in dòng trống.",
+              "correct": false
+            },
+            {
+              "text": "False",
+              "detail": "year là số nguyên 0, không phải bool.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao đổi giá trị biến làm kết quả đổi theo mà không phải sửa lệnh print?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "print không giữ sẵn chữ Python hay số 1991; mỗi lần chạy, print(year) đọc giá trị HIỆN TẠI của biến year. Gán year = 2026 thì dòng thứ hai thành 2026, còn dòng đầu vẫn là Python vì name không đổi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: name = \"C\", year = 1972. Đặt hai lệnh in vào đúng chỗ — chọn lệnh ĐỌC BIẾN, đừng chọn lệnh in chữ cố định.",
+        "rule": "Đổi name thành \"C\" và year thành 1972. Dự đoán hai dòng kết quả trước khi chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "name = \"Python\" → biến name giữ chuỗi Python."
+          },
+          {
+            "label": "Bước 2",
+            "text": "year = 1991 → biến year giữ số 1991."
+          },
+          {
+            "label": "Bước 3",
+            "text": "print(name) → dòng 1: Python."
+          },
+          {
+            "label": "Bước 4",
+            "text": "print(year) → dòng 2: 1991."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Đổi thành name = \"C\", year = 1972 thì kết quả là gì?",
+        "options": [
+          "Python rồi 1991",
+          "C rồi 1972",
+          "name rồi year"
+        ],
+        "correct": "C rồi 1972"
+      },
+      "scaffold": {
+        "template": "name = \"C\"\nyear = 1972\n{{slot1}}\n{{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "print(name)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "print(year)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(\"C\")",
+            "slot": 1,
+            "trap": "Hard-code: đổi dữ liệu là sai."
+          },
+          {
+            "label": "print(1972)",
+            "slot": 2,
+            "trap": "In số cố định, không đọc year."
+          },
+          {
+            "label": "print(name)",
+            "slot": 1
+          },
+          {
+            "label": "print(\"name\")",
+            "slot": 1,
+            "trap": "In ra chữ name chứ không đọc biến."
+          },
+          {
+            "label": "print(year)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Gán name = \"Python\" và year = 1991, rồi in hai biến trên hai dòng. Không có input nhập tay.\n\nThực hành: Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến.",
+        "io": [
+          {
+            "label": "Mặc định",
+            "value": "Python\\n1991\\n"
+          },
+          {
+            "label": "Đổi year = 2026",
+            "value": "Python\\n2026\\n"
+          }
+        ]
+      },
+      "starterCode": "# Tự gán name, year và in trên hai dòng.\n",
+      "solutionCode": "name = \"Python\"\nyear = 1991\nprint(name)\nprint(year)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Gán hai biến rồi dùng HAI lệnh print riêng, mỗi lệnh in một biến."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Dòng 1–2: gán name = \"Python\", year = 1991.\n2. Dòng 3–4: print(name) rồi print(year) — không đặt dấu nháy quanh tên biến."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "name = \"Python\"\nyear = 1991\nprint(name)\n# còn một lệnh in nữa"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Mặc định: Python rồi 1991",
+          "call": "_studio.run().stdout",
+          "expect": "'Python\\n1991\\n'"
+        },
+        {
+          "name": "Đổi year = 2026 thì dòng 2 đổi theo",
+          "call": "_studio.run(vars={'year': 2026}).stdout",
+          "expect": "'Python\\n2026\\n'"
+        },
+        {
+          "name": "Dữ liệu mới: C / 1972",
+          "call": "_studio.run(vars={'name': 'C', 'year': 1972}).stdout",
+          "expect": "'C\\n1972\\n'"
+        },
+        {
+          "name": "year = 0 vẫn in đủ hai dòng",
+          "call": "_studio.run(vars={'year': 0}).stdout",
+          "expect": "'Python\\n0\\n'"
+        }
+      ]
+    },
+    "play": {
+      "level": "B",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "name = \"Python\"",
+              "right": "biến name giữ chuỗi Python"
+            },
+            {
+              "left": "year = 1991",
+              "right": "biến year giữ số 1991"
+            },
+            {
+              "left": "print(name)",
+              "right": "dòng 1: Python"
+            },
+            {
+              "left": "print(year)",
+              "right": "dòng 2: 1991"
+            }
+          ],
+          "rightOrder": [
+            3,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "id": "parsons-1",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L0",
+              "text": "name = \"Python\""
+            },
+            {
+              "id": "L1",
+              "text": "year = 1991"
+            },
+            {
+              "id": "L2",
+              "text": "print(name)"
+            },
+            {
+              "id": "L3",
+              "text": "print(year)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "print(\"Python\")",
+              "reason": "in chữ cố định"
+            },
+            {
+              "id": "D1",
+              "text": "print(1991)",
+              "reason": "in chữ cố định"
+            }
+          ],
+          "order": [
+            "L3",
+            "D1",
+            "L0",
+            "L2",
+            "L1",
+            "D0"
+          ]
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "print(\"Python\")\nprint(1991)",
+          "firstLine": 1,
+          "line": 1,
+          "lines": [
+            1,
+            2
+          ],
+          "label": "in chữ cố định",
+          "fix": "name = \"Python\"\nyear = 1991\nprint(name)\nprint(year)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

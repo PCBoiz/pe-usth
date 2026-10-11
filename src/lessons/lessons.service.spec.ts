@@ -8,7 +8,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { StreakService } from 'src/common/streak/streak.service';
 import { AchievementsService } from 'src/achievements/achievements.service';
 import { CoursesService } from 'src/courses/courses.service';
-import { LessonsService } from './lessons.service';
+import { LessonsService, scaledXp } from './lessons.service';
 
 describe('LessonsService.completeLesson', () => {
   let service: LessonsService;
@@ -135,5 +135,23 @@ describe('LessonsService.completeLesson', () => {
       expect(prisma.lesson.create).not.toHaveBeenCalled();
       expect(prisma.user.update).not.toHaveBeenCalled();
     });
+  });
+});
+
+describe('scaledXp — XP theo chất lượng làm bài (khoá Python Advanced)', () => {
+  it('không gửi điểm thì nhận đủ xp_reward', () => {
+    expect(scaledXp(20, undefined)).toBe(20);
+  });
+
+  it('chia trong khung 50–100% theo % màn đúng ngay lần đầu', () => {
+    expect(scaledXp(20, 100)).toBe(20);
+    expect(scaledXp(20, 50)).toBe(15);
+    expect(scaledXp(20, 0)).toBe(10);
+  });
+
+  it('client gửi điểm vượt khung cũng không vượt xp_reward', () => {
+    expect(scaledXp(20, 1000)).toBe(20);
+    expect(scaledXp(20, -50)).toBe(10);
+    expect(scaledXp(20, Number.NaN)).toBe(20);
   });
 });

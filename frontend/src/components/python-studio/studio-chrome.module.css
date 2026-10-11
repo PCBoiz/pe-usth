@@ -412,3 +412,223 @@
     margin-bottom: 8px;
   }
 }
+
+/* ---------------------------------------------------------------- mini-game
+   Khoá Python Advanced (studio-lesson/v2): danh sách đúng/sai, nút công cụ
+   của game ghép code, dải Boss, điểm bật lên, hiệu ứng code chạy đúng và
+   hộp thành tích mới. Chỉ dùng token màu --edu-… và --st-… (lint:tokens cấm mã màu). */
+
+.boss {
+  background: var(--edu-accent-soft);
+  border-color: var(--edu-accent);
+  color: var(--edu-accent-text);
+}
+
+.tfList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.tfList li {
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.tfList p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: var(--edu-t1);
+}
+
+.gameTools {
+  display: flex;
+  gap: 18px;
+}
+
+.gameTools button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pop {
+  position: fixed;
+  top: 72px;
+  right: 24px;
+  z-index: 40;
+  background: var(--edu-accent);
+  color: var(--edu-panel-bg-solid);
+  font-weight: 800;
+  font-size: 14px;
+  border-radius: 999px;
+  padding: 8px 16px;
+  pointer-events: none;
+  animation: pe-pop 1.6s ease-out forwards;
+}
+
+@keyframes pe-pop {
+  0% { opacity: 0; transform: translateY(8px) scale(0.9); }
+  15% { opacity: 1; transform: translateY(0) scale(1.05); }
+  30% { transform: scale(1); }
+  80% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-16px); }
+}
+
+.burst {
+  position: fixed;
+  left: 50%;
+  top: 40%;
+  z-index: 40;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+  animation: pe-burst-life 1.8s linear forwards;
+}
+
+.burst strong {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  background: var(--st-ok-bg);
+  color: var(--st-ok-text);
+  border: 1px solid var(--st-ok-line);
+  border-radius: 999px;
+  padding: 10px 20px;
+  font-size: 16px;
+  animation: pe-pop 1.8s ease-out forwards;
+}
+
+.burst span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 26px;
+  --angle: calc(var(--i) * 45deg);
+  animation: pe-fly 1.2s ease-out forwards;
+}
+
+@keyframes pe-fly {
+  0% { opacity: 1; transform: translate(-50%, -50%) rotate(var(--angle)) translateY(0) rotate(calc(-1 * var(--angle))); }
+  100% { opacity: 0; transform: translate(-50%, -50%) rotate(var(--angle)) translateY(-150px) rotate(calc(-1 * var(--angle))); }
+}
+
+@keyframes pe-burst-life {
+  from { opacity: 1; }
+  to { opacity: 1; }
+}
+
+.awardsBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: color-mix(in srgb, var(--edu-t1) 45%, transparent);
+}
+
+.awards {
+  width: min(420px, 100%);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  animation: pe-pop-in 0.3s ease-out;
+}
+
+.awardsEyebrow {
+  margin: 0 0 14px;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--edu-accent-text);
+}
+
+.award {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  background: var(--edu-card-bg);
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+
+.award > span {
+  font-size: 30px;
+}
+
+.award strong {
+  color: var(--edu-t1);
+}
+
+.award p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--edu-t3);
+}
+
+.awards button {
+  margin-top: 8px;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 24px;
+  font-weight: 700;
+  background: var(--edu-accent);
+  color: var(--edu-panel-bg-solid);
+  cursor: pointer;
+}
+
+@keyframes pe-pop-in {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pop,
+  .burst strong,
+  .awards {
+    animation-duration: 0.01ms;
+  }
+  .burst span {
+    display: none;
+  }
+}
+
+.runResult {
+  margin-top: 14px;
+}
+
+.runTests {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.runTests li {
+  border-radius: 8px;
+  padding: 6px 12px;
+}
+
+.runPass {
+  background: var(--st-ok-bg);
+  color: var(--st-ok-text);
+}
+
+.runFail {
+  background: var(--st-err-bg);
+  color: var(--st-err-text);
+}

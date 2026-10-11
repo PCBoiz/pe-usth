@@ -34,6 +34,8 @@ type Curriculum = {
   modules?: { title: string; lessons: string[] }[];
 };
 const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, Curriculum>;
+// Khoá học bằng Python Studio (StudioLesson): tiến độ theo số thứ tự bài đã xong.
+const STUDIO_COURSES = ['python', 'python_advanced'];
 const LESSON_URLS = CURRICULA_JSON.LESSON_URLS as Record<string, string>;
 
 type LessonRow = { title: string; status: 'done' | 'current' | 'locked'; index: number };
@@ -331,6 +333,8 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                       phân loại, lắp ghép, sandbox Pyodide). Nằm ngoài 40 bài PE v3
                       nên không ghi tiến độ; chỉ quản trị viên thấy mục này.
                     </p>
+                    {/* Giữ <a> (tải lại toàn trang): trang này nạp JS legacy vá window.fetch, không nên để chúng sống tiếp sang Python Studio. */}
+                    {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
                     <a
                       className="edu-cd-btn primary"
                       style={{ display: 'inline-flex', marginTop: 12 }}
@@ -495,7 +499,7 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
           srcs={['/static/js/edu-chrome.js', '/static/js/course_detail.js', '/static/js/review_quiz.js', '/static/js/chatbot.js']}
           globals={{
             COURSE_ID: course.id,
-            CURRENT_LESSON_IDX: courseId === 'python' ? Math.max(0, (nextLesson ?? totalLessons) - 1) : completed,
+            CURRENT_LESSON_IDX: STUDIO_COURSES.includes(courseId) ? Math.max(0, (nextLesson ?? totalLessons) - 1) : completed,
             LESSON_URL: lessonUrl,
           }}
         />

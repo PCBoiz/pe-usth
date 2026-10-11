@@ -12,6 +12,14 @@
 
 export const STUDIO_LESSON_SCHEMA = 'studio-lesson/v1';
 
+/**
+ * studio-lesson/v2 = v1 + khối `play` (khoá Python Advanced): danh sách
+ * mini-game sinh bởi scripts/pe-v3/build_advanced.py. Có `play` thì
+ * buildScreens() dựng luồng ngắn theo game thay cho luồng S1–S4 đầy đủ; mọi
+ * trường v1 vẫn giữ (step_2.mcq còn phục vụ quiz ôn tập).
+ */
+export const STUDIO_LESSON_SCHEMA_V2 = 'studio-lesson/v2';
+
 export type McqOption = string | { text: string; correct?: boolean; detail?: string };
 
 export type Mcq = {
@@ -153,8 +161,77 @@ export type Step4 = {
   env?: string;
 };
 
+export type TraceTableGame = {
+  type: 'traceTable';
+  code: string;
+  columns: string[];
+  /** null = ô học viên phải điền. */
+  rows: { step: string; values: Record<string, string | null> }[];
+  /** Khoá `${rowIndex}-${column}` → giá trị đúng (repr Python). */
+  answers: Record<string, string>;
+};
+export type MatchGame = {
+  type: 'match';
+  pairs: { left: string; right: string }[];
+  /** Thứ tự hiện cột phải (chỉ số trong pairs), trộn sẵn lúc build. */
+  rightOrder: number[];
+};
+export type TrueFalseGame = {
+  type: 'trueFalse';
+  /** Câu hỏi chung cho mọi phát biểu (vd đề trắc nghiệm ở trận Boss). */
+  prompt?: string;
+  items: { statement: string; answer: boolean; explain?: string }[];
+};
+/** Dùng nguyên step_3.scaffold, chỉ thêm phản hồi theo bẫy của từng thẻ. */
+export type FillGame = { type: 'fill' };
+export type ParsonsGame = {
+  type: 'parsons';
+  /** Phần đầu/cuối lời giải giữ cố định, chỉ xếp lại các dòng ở giữa. */
+  head: string;
+  tail: string;
+  /** Đúng thứ tự của lời giải. */
+  lines: { id: string; text: string }[];
+  /** Dòng nhiễu lấy từ biến thể sai — bấm vào là bị chặn và hiện lý do. */
+  distractors: { id: string; text: string; reason: string }[];
+  /** Thứ tự hiện trong kho (đã trộn cả dòng nhiễu). */
+  order: string[];
+};
+export type SpotErrorGame = {
+  type: 'spotError';
+  code: string;
+  /** Số dòng của dòng đầu tiên trong `code` (đoạn trích từ chương trình dài). */
+  firstLine: number;
+  line: number;
+  /** Mọi dòng thuộc khối lỗi — chọn dòng nào trong đó cũng tính đúng. */
+  lines?: number[];
+  label: string;
+  fix?: string;
+};
+export type DebugGame = { type: 'debug'; code: string; label: string };
+export type SelfExplainGame = { type: 'selfExplain' };
+
+export type PlayGame = { id: string; title: string } & (
+  | TraceTableGame
+  | MatchGame
+  | TrueFalseGame
+  | FillGame
+  | ParsonsGame
+  | SpotErrorGame
+  | DebugGame
+  | SelfExplainGame
+);
+
+export type Play = {
+  level: 'B' | 'I' | 'N';
+  /** Cửa tự kiểm tra: chỉ game + sandbox, không gợi ý. */
+  boss?: boolean;
+  games: PlayGame[];
+  selfExplainMinWords?: number;
+};
+
 export type StudioLesson = {
   schema?: string;
+  play?: Play;
   title?: string;
   subtitle?: string;
   source?: { kind?: string; filename?: string; parser?: string; importedAt?: string };
@@ -257,6 +334,47 @@ export type LessonDraft = {
   submitted?: boolean;
   /** Đã mở gợi ý hoặc lời giải: lượt này được ghi nhận là "có hỗ trợ". */
   assisted?: boolean;
+  /** Trạng thái từng mini-game (studio-lesson/v2), theo PlayGame.id. */
+  games?: Record<string, GameState>;
+  /** Điểm trong bài: lần chấm đầu đúng +10 (combo từ 3 trở lên thì 20), sửa rồi đúng +5. */
+  score?: LessonScore;
+};
+
+export type GameState = {
+  /** match: chỉ số trái → chỉ số phải đã nối ĐÚNG. */
+  matched?: Record<number, number>;
+  pending?: number | null;
+  misses?: number;
+  /** trueFalse: chỉ số câu → lựa chọn. */
+  tf?: Record<number, 'true' | 'false'>;
+  /** traceTable: `${row}-${col}` → giá trị học viên gõ. */
+  cells?: Record<string, string>;
+  /** parsons: id các dòng đã xếp, theo thứ tự. */
+  picked?: string[];
+  /** parsons: dòng nhiễu đã bấm nhầm (hiện lý do). */
+  revealed?: string[];
+  /** spotError: dòng đang chọn. */
+  line?: number | null;
+  /** debug: code đang sửa. */
+  code?: string;
+};
+
+export type LessonScore = {
+  points: number;
+  combo: number;
+  bestCombo: number;
+  /** Số lần đã bấm "Kiểm tra" ở từng màn. */
+  attempts: Record<string, number>;
+  /** Màn đúng ngay lần chấm đầu (true) hay sai lần đầu (false). */
+  firstTry: Record<string, boolean>;
+};
+
+export const EMPTY_SCORE: LessonScore = {
+  points: 0,
+  combo: 0,
+  bestCombo: 0,
+  attempts: {},
+  firstTry: {},
 };
 
 export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
@@ -273,6 +391,8 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
     done: {},
     submitted: false,
     assisted: false,
+    games: {},
+    score: EMPTY_SCORE,
   };
 }
 
@@ -297,7 +417,9 @@ export type ScreenKind =
   | 'trace'
   | 'counter'
   | 'sandbox'
-  | 'recap';
+  | 'recap'
+  /** Một mini-game của studio-lesson/v2 (xem `gameId`). */
+  | 'game';
 
 export type LessonScreen = {
   /** Khoá ổn định (không đổi khi chèn thêm màn) — dùng lưu nháp và animation. */
@@ -308,6 +430,9 @@ export type LessonScreen = {
   label: string;
   /** Vị trí câu hỏi trong step_2.mcq. */
   index?: number;
+  /** PlayGame.id khi kind = 'game'. */
+  gameId?: string;
+  gameType?: PlayGame['type'];
 };
 
 const ORIGIN_LABEL: Record<1 | 2 | 3 | 4, string> = {
@@ -326,8 +451,40 @@ function screen(
   return { key, kind, origin, label: ORIGIN_LABEL[origin], index };
 }
 
+/**
+ * Luồng ngắn của bài có `play` (khoá Python Advanced):
+ *   brief → giải thích (+ ngộ nhận) → dự đoán → các mini-game → sandbox → tổng kết.
+ * Boss bỏ giải thích/dự đoán: chỉ game và sandbox.
+ */
+function buildPlayScreens(lesson: StudioLesson, play: Play): LessonScreen[] {
+  const out: LessonScreen[] = [];
+  const one = lesson.step_1;
+  if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
+  else if (one?.context?.body) out.push(screen('s1-context', 'context', 1));
+  if (!play.boss) {
+    if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
+    if ((one?.predict?.options?.length ?? 0) >= 2) out.push(screen('s1-predict', 'predict', 1));
+  }
+  for (const game of play.games) {
+    if (game.type === 'fill' && !lesson.step_3?.scaffold?.slots?.length) continue;
+    if (game.type === 'selfExplain' && !lesson.step_2?.selfExplain?.prompt) continue;
+    out.push({ ...screen(`g-${game.id}`, 'game', game.type === 'debug' ? 4 : 3), gameId: game.id, gameType: game.type });
+  }
+  const four = lesson.step_4;
+  if (four?.task?.body || four?.starterCode || four?.tests?.length || four?.solutionCode)
+    out.push(screen('s4-sandbox', 'sandbox', 4));
+  if (out.length) out.push(screen('recap', 'recap', 4));
+  return out;
+}
+
+export function gameOf(lesson: StudioLesson, scr: LessonScreen | undefined): PlayGame | undefined {
+  if (!scr || scr.kind !== 'game') return undefined;
+  return lesson.play?.games.find((g) => g.id === scr.gameId);
+}
+
 /** Trải nội dung bài thành danh sách màn hình, bỏ phần tài liệu không có. */
 export function buildScreens(lesson: StudioLesson): LessonScreen[] {
+  if (lesson.play?.games?.length) return buildPlayScreens(lesson, lesson.play);
   const out: LessonScreen[] = [];
   const one = lesson.step_1;
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
@@ -378,8 +535,186 @@ export function isGraded(kind: ScreenKind): boolean {
     kind === 'classify' ||
     kind === 'selfExplain' ||
     kind === 'scaffold' ||
-    kind === 'counter'
+    kind === 'counter' ||
+    kind === 'game'
   );
+}
+
+/** Game chấm bằng CHẠY code trong Pyodide (bất đồng bộ) thay vì so đáp án. */
+export function isRunnableGame(game: PlayGame | undefined): boolean {
+  return game?.type === 'parsons' || game?.type === 'debug';
+}
+
+/** Ghép chương trình từ các dòng đã xếp — khớp scripts/pe-v3/check-advanced.mjs. */
+export function parsonsCode(game: ParsonsGame, ids: string[]): string {
+  const byId = new Map(game.lines.map((l) => [l.id, l.text]));
+  const body = ids.map((id) => byId.get(id) ?? '').join('\n');
+  return [game.head, body, game.tail].filter((part) => part !== '').join('\n') + '\n';
+}
+
+/** So giá trị bảng theo dõi biến: bỏ nháy, khoảng trắng; True/true như nhau. */
+export function sameTraceValue(typed: string, expected: string): boolean {
+  const norm = (v: string) =>
+    v
+      .trim()
+      .replace(/^(['"])(.*)\1$/, '$2')
+      .replace(/\s+/g, ' ')
+      .toLowerCase();
+  return norm(typed) === norm(expected);
+}
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+/** Đã có câu trả lời đủ để bấm "Kiểm tra" chưa. */
+export function gameAnswered(lesson: StudioLesson, game: PlayGame, d: LessonDraft): boolean {
+  const st = d.games?.[game.id] ?? {};
+  switch (game.type) {
+    case 'traceTable':
+      return Object.keys(game.answers).every((k) => (st.cells?.[k] ?? '').trim() !== '');
+    case 'match':
+      return Object.keys(st.matched ?? {}).length === game.pairs.length;
+    case 'trueFalse':
+      return game.items.every((_, i) => Boolean(st.tf?.[i]));
+    case 'fill':
+      return (lesson.step_3?.scaffold?.slots ?? []).every((slot) => d.slots[slot.n]);
+    case 'parsons':
+      return (st.picked?.length ?? 0) === game.lines.length;
+    case 'spotError':
+      return st.line != null;
+    case 'debug':
+      return true;
+    case 'selfExplain':
+      return d.explanation.trim().length > 0;
+  }
+}
+
+/** Chấm game đồng bộ. Game chạy code (parsons/debug) trả null — chấm qua Pyodide. */
+export function gameVerdict(
+  lesson: StudioLesson,
+  game: PlayGame,
+  d: LessonDraft,
+): { correct: boolean; explain?: string } | null {
+  const st = d.games?.[game.id] ?? {};
+  switch (game.type) {
+    case 'traceTable': {
+      const wrong = Object.entries(game.answers).filter(
+        ([k, v]) => !sameTraceValue(st.cells?.[k] ?? '', v),
+      );
+      return {
+        correct: wrong.length === 0,
+        explain: wrong.length
+          ? `Còn ${wrong.length} ô chưa đúng. Đọc lại dòng lệnh ở cột "Bước": biến nào vừa đổi, đổi thành gì?`
+          : 'Bạn đã chạy chương trình trong đầu đúng như Python.',
+      };
+    }
+    case 'match':
+      return {
+        // Nối sai bị chặn ngay tại chỗ nên đủ cặp là đúng; số lần nhầm chỉ
+        // ảnh hưởng điểm (StudioLesson tính như "sửa rồi đúng").
+        correct: true,
+        explain: st.misses
+          ? `Nối đủ ${game.pairs.length} cặp sau ${st.misses} lần nhầm.`
+          : `Nối đúng cả ${game.pairs.length} cặp, không nhầm lần nào.`,
+      };
+    case 'trueFalse': {
+      const wrong = game.items.filter((it, i) => (st.tf?.[i] === 'true') !== it.answer);
+      return {
+        correct: wrong.length === 0,
+        explain: wrong.length
+          ? wrong
+              .map((it) => `"${it.statement}" là ${it.answer ? 'ĐÚNG' : 'SAI'}. ${it.explain ?? ''}`)
+              .join('\n\n')
+          : game.items.find((it) => !it.answer)?.explain,
+      };
+    }
+    case 'fill': {
+      const scaffold = lesson.step_3?.scaffold;
+      const slots = scaffold?.slots ?? [];
+      const wrong = slots.find((slot) => d.slots[slot.n] !== slot.answer);
+      if (!wrong) return { correct: slots.length > 0, explain: 'Khung mã đã khớp lời giải.' };
+      const trap = scaffold?.bank.find((b) => b.label === d.slots[wrong.n])?.trap;
+      return {
+        correct: false,
+        explain: trap
+          ? `Ô ${wrong.n}: ${d.slots[wrong.n]} — ${trap}`
+          : `Ô ${wrong.n} chưa đúng — thẻ này không làm đúng việc ô cần.`,
+      };
+    }
+    case 'spotError': {
+      const hits = game.lines?.length ? game.lines : [game.line];
+      const ok = st.line != null && hits.includes(st.line);
+      return {
+        correct: ok,
+        explain: ok
+          ? `Chuẩn: ${game.label}.${game.fix ? ` Sửa đúng là: ${game.fix.trim()}` : ''}`
+          : 'Dòng này vẫn đúng. Hỏi: dòng nào làm kết quả khác với đề bài yêu cầu?',
+      };
+    }
+    case 'selfExplain': {
+      const min = lesson.play?.selfExplainMinWords ?? SELF_EXPLAIN_MIN.words;
+      const enough = wordCount(d.explanation) >= min;
+      const sample = lesson.step_2?.selfExplain?.sample;
+      return {
+        correct: enough,
+        explain: enough
+          ? sample
+            ? `So với lời giải thích mẫu: ${sample}`
+            : 'Đã ghi lại lời giải thích của bạn.'
+          : `Viết thành một câu, ít nhất ${min} từ.`,
+      };
+    }
+    default:
+      return null;
+  }
+}
+
+/**
+ * Cộng điểm cho một lần bấm "Kiểm tra". Đúng ngay lần đầu: +10, chuỗi đúng
+ * liên tiếp từ 3 trở lên: +20. Sai rồi sửa đúng: +5 và mất chuỗi. Đúng lần nữa
+ * ở màn đã đúng (xem lại bài) không cộng thêm.
+ */
+export function scoreCheck(
+  prev: LessonScore,
+  key: string,
+  correct: boolean,
+): { score: LessonScore; gained: number } {
+  const attempts = (prev.attempts[key] ?? 0) + 1;
+  const first = attempts === 1;
+  const base = { ...prev, attempts: { ...prev.attempts, [key]: attempts } };
+  if (!correct)
+    return {
+      score: {
+        ...base,
+        combo: 0,
+        firstTry: first ? { ...prev.firstTry, [key]: false } : prev.firstTry,
+      },
+      gained: 0,
+    };
+  if (prev.firstTry[key] === true) return { score: base, gained: 0 };
+  const combo = first ? prev.combo + 1 : 0;
+  const gained = first ? (combo >= 3 ? 20 : 10) : 5;
+  return {
+    score: {
+      ...base,
+      points: prev.points + gained,
+      combo,
+      bestCombo: Math.max(prev.bestCombo, combo),
+      firstTry: { ...prev.firstTry, [key]: first },
+    },
+    gained,
+  };
+}
+
+/** Điểm 0–100 gửi về backend: tỉ lệ màn đúng ngay lần đầu, bị chặn trần khi dùng gợi ý. */
+export function quizPercent(screens: LessonScreen[], d: LessonDraft, boss: boolean): number {
+  const graded = screens.filter((x) => isGraded(x.kind));
+  if (!graded.length) return 100;
+  const first = graded.filter((x) => d.score?.firstTry[x.key] === true).length;
+  let pct = Math.round((first / graded.length) * 100);
+  if (d.assisted) pct = Math.min(pct, boss ? 60 : 80);
+  return Math.max(0, Math.min(100, pct));
 }
 
 /** Chấm màn hình hiện tại. null = màn chỉ để đọc. Màn sandbox chấm bằng Pyodide. */
@@ -461,6 +796,10 @@ export function screenVerdict(
       correct: counter.options[keyIndex(d.counter)] === counter.correct,
       explain: `Đáp án đúng: ${counter.correct}.`,
     };
+  }
+  if (scr.kind === 'game') {
+    const game = gameOf(lesson, scr);
+    return game ? gameVerdict(lesson, game, d) : null;
   }
   return null;
 }

@@ -1,0 +1,382 @@
+{
+  "lesson_code": "I01",
+  "sort_order": 21,
+  "module": "M5 · Class đầu tiên",
+  "title": "I01 · Đọc thuộc tính object",
+  "subtitle": "Trung cấp · M5 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "I01 · Đọc thuộc tính object",
+    "subtitle": "Trung cấp · M5 · 25 phút",
+    "source": {
+      "kind": "pe-v3-advanced",
+      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I01",
+      "parser": "pe-v3/build_advanced",
+      "importedAt": "2026-10-03T08:50:30+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "I01"
+        ],
+        "title": "Đọc thuộc tính object",
+        "goal": "Tạo object từ class được cấp và đọc thuộc tính.",
+        "task": "Tạo language từ ProgrammingLanguage rồi in ba thuộc tính.",
+        "predict": "Đổi sang object C/1972 có phải đổi tên thuộc tính?",
+        "code": "from language_base import ProgrammingLanguage\n\n# Tạo object language\n# In name, year_created, paradigms",
+        "tests": [
+          "Python/1991 → Python ↵ 1991 ↵ ['procedural']",
+          "C/1972 → C ↵ 1972 ↵ ['procedural']"
+        ],
+        "reflect": "Class và object khác nhau thế nào trong ví dụ?"
+      },
+      "context": {
+        "title": "Tạo object từ class được cấp và đọc thuộc tính.",
+        "body": "File language_base.py (đã cấp) có class ProgrammingLanguage. Tạo object language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]) rồi in ba thuộc tính name, year_created, paradigms — mỗi thuộc tính một dòng. Không viết lại class.",
+        "example": "Python / 1991 / [\"procedural\"] → ba dòng: Python, 1991, ['procedural'].",
+        "prereq": "B20",
+        "level": "Trung cấp",
+        "files": [
+          "language_base.py"
+        ]
+      },
+      "predict": {
+        "question": "Tạo object C/1972 bằng cùng class thì có phải đổi tên thuộc tính khi đọc không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không — vẫn là .name, .year_created, .paradigms",
+            "detail": "Mọi object của cùng class có cùng tên thuộc tính, khác giá trị.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Có — mỗi object một tên thuộc tính",
+            "detail": "Tên thuộc tính do class quy định.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Phải viết lại class",
+            "detail": "Một class tạo được nhiều object.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"name là một biến toàn cục\"",
+        "body": "name là thuộc tính CỦA object: phải viết language.name. Gõ name trơn sẽ báo NameError (hoặc lấy nhầm một biến khác). Bài này không tự viết lại class — class nằm trong language_base.py."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Class mô tả cách tạo object; mỗi object giữ dữ liệu RIÊNG của nó."
+        },
+        {
+          "n": 2,
+          "body": "Gọi tên class như gọi hàm — Book(\"De Men\", 120) — để tạo một object."
+        },
+        {
+          "n": 3,
+          "body": "novel.title dùng dấu chấm đọc thuộc tính title của object novel."
+        },
+        {
+          "n": 4,
+          "body": "Bài này dùng import để lấy class từ file cấp sẵn: from language_base import ProgrammingLanguage."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "class Book:\n    def __init__(self, title, pages):\n        self.title = title\n        self.pages = pages\n\nnovel = Book(\"De Men\", 120)\nprint(novel.title)\nprint(novel.pages)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "print(language.paradigms) với paradigms = [\"procedural\"] in gì?",
+          "options": [
+            {
+              "text": "['procedural']",
+              "detail": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn.",
+              "correct": true
+            },
+            {
+              "text": "procedural",
+              "detail": "Đó là phần tử, không phải cả list.",
+              "correct": false
+            },
+            {
+              "text": "[\"procedural\"]",
+              "detail": "Python biểu diễn chuỗi trong list bằng dấu nháy đơn.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn."
+        },
+        {
+          "question": "Class và object khác nhau thế nào?",
+          "options": [
+            {
+              "text": "Class là bản mô tả; object là một thực thể tạo từ class, giữ dữ liệu riêng",
+              "detail": "Một class tạo được nhiều object.",
+              "correct": true
+            },
+            {
+              "text": "Là một",
+              "detail": "ProgrammingLanguage là class; language là object.",
+              "correct": false
+            },
+            {
+              "text": "Object là file, class là hàm",
+              "detail": "Không đúng.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Một class tạo được nhiều object."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Class và object khác nhau thế nào trong ví dụ này?",
+        "placeholder": "Nối đầu vào → xử lý → đầu ra và nêu một ca biên của bài (ít nhất 12 từ).",
+        "sample": "ProgrammingLanguage là class — bản mô tả gồm ba thuộc tính. language là object tạo từ class bằng lời gọi ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]) và giữ giá trị riêng. Đổi sang object C/1972 vẫn đọc bằng cùng mã language.name, language.year_created, language.paradigms."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: C/1972/[\"procedural\"]. Lắp lời tạo object và lệnh đọc thuộc tính.",
+        "rule": "Tạo thêm object C/1972/[\"procedural\"] và dùng cùng cách truy cập."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Lời gọi class → object language."
+          },
+          {
+            "label": "Bước 2",
+            "text": "language.name → Python."
+          },
+          {
+            "label": "Bước 3",
+            "text": "language.year_created → 1991."
+          },
+          {
+            "label": "Bước 4",
+            "text": "language.paradigms → ['procedural']."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Với object C/1972/[\"procedural\"], dòng thứ hai in gì?",
+        "options": [
+          "1972",
+          "year_created",
+          "C"
+        ],
+        "correct": "1972"
+      },
+      "scaffold": {
+        "template": "from language_base import ProgrammingLanguage\n\nlanguage = {{slot1}}\nprint(language.name)\nprint({{slot2}})\nprint(language.paradigms)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "ProgrammingLanguage(\"C\", 1972, [\"procedural\"])"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "language.year_created"
+          }
+        ],
+        "bank": [
+          {
+            "label": "year_created",
+            "slot": 2,
+            "trap": "Thiếu object phía trước → NameError."
+          },
+          {
+            "label": "ProgrammingLanguage",
+            "slot": 1,
+            "trap": "Chỉ là class, chưa tạo object."
+          },
+          {
+            "label": "ProgrammingLanguage(\"C\", 1972, [\"procedural\"])",
+            "slot": 1
+          },
+          {
+            "label": "language.year_created",
+            "slot": 2
+          },
+          {
+            "label": "language.year",
+            "slot": 2,
+            "trap": "Sai tên thuộc tính → AttributeError."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "File language_base.py (đã cấp) có class ProgrammingLanguage. Tạo object language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]) rồi in ba thuộc tính name, year_created, paradigms — mỗi thuộc tính một dòng. Không viết lại class.\n\nThực hành: Gọi ProgrammingLanguage(...) rồi dùng dấu chấm để đọc thuộc tính.",
+        "io": [
+          {
+            "label": "Python/1991/[\"procedural\"]",
+            "value": "Python\\n1991\\n['procedural']"
+          },
+          {
+            "label": "C/1972/[\"procedural\"]",
+            "value": "C\\n1972\\n['procedural']"
+          }
+        ]
+      },
+      "starterCode": "from language_base import ProgrammingLanguage\n\n# Tự tạo object language và in ba thuộc tính.\n",
+      "solutionCode": "from language_base import ProgrammingLanguage\n\nlanguage = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\nprint(language.name)\nprint(language.year_created)\nprint(language.paradigms)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Gọi ProgrammingLanguage(...) rồi dùng dấu chấm để đọc thuộc tính."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. from language_base import ProgrammingLanguage (đã có).\n2. language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"]); in language.name, language.year_created, language.paradigms."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])\nprint(language.name)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Python/1991: ba dòng",
+          "call": "_studio.run().stdout",
+          "expect": "\"Python\\n1991\\n['procedural']\\n\""
+        },
+        {
+          "name": "Object C/1972 với cùng mã truy cập",
+          "call": "_studio.run(vars={'language': _studio.expr(\"ProgrammingLanguage('C', 1972, ['procedural'])\")}).stdout",
+          "expect": "\"C\\n1972\\n['procedural']\\n\""
+        },
+        {
+          "name": "Ca riêng: Rust/2010/[]",
+          "call": "_studio.run(vars={'language': _studio.expr(\"ProgrammingLanguage('Rust', 2010, [])\")}).stdout",
+          "expect": "'Rust\\n2010\\n[]\\n'"
+        },
+        {
+          "name": "language là object của ProgrammingLanguage",
+          "call": "type(_studio.main.var('language')).__name__",
+          "expect": "'ProgrammingLanguage'"
+        }
+      ],
+      "files": [
+        {
+          "name": "language_base.py",
+          "content": "class ProgrammingLanguage:\n    def __init__(self, name, year_created, paradigms):\n        self.name = name\n        self.year_created = year_created\n        self.paradigms = list(paradigms)\n\n    def add_paradigms(self, paradigm):\n        self.paradigms.append(paradigm)\n\n    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        return description\n",
+          "kind": "module"
+        }
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Lời gọi class",
+              "right": "object language"
+            },
+            {
+              "left": "language.name",
+              "right": "Python"
+            },
+            {
+              "left": "language.year_created",
+              "right": "1991"
+            },
+            {
+              "left": "language.paradigms",
+              "right": "['procedural']"
+            }
+          ],
+          "rightOrder": [
+            2,
+            3,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "from language_base import ProgrammingLanguage\n",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L2",
+              "text": "language = ProgrammingLanguage(\"Python\", 1991, [\"procedural\"])"
+            },
+            {
+              "id": "L3",
+              "text": "print(language.name)"
+            },
+            {
+              "id": "L4",
+              "text": "print(language.year_created)"
+            },
+            {
+              "id": "L5",
+              "text": "print(language.paradigms)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "print(\"Python\")",
+              "reason": "in chữ cố định"
+            },
+            {
+              "id": "D1",
+              "text": "print(1991)",
+              "reason": "in chữ cố định"
+            },
+            {
+              "id": "D2",
+              "text": "print([\"procedural\"])",
+              "reason": "in chữ cố định"
+            }
+          ],
+          "order": [
+            "L5",
+            "L2",
+            "D2",
+            "L3",
+            "D1",
+            "L4",
+            "D0"
+          ]
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

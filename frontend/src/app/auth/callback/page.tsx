@@ -1,18 +1,18 @@
 'use client';
 
 // Trang MỚI (bắt buộc với kiến trúc cross-origin — MIGRATION_NOTES §OAuth):
-// nhận JWT từ backend sau OAuth qua URL fragment, lưu token rồi về /dashboard.
+// nhận access token từ backend sau OAuth qua URL fragment, lưu rồi về /dashboard.
+// Refresh token KHÔNG đi qua URL: backend đã đặt sẵn vào cookie httpOnly.
 import { useEffect } from 'react';
 
 export default function OAuthCallbackPage() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.hash.replace(/^#/, ''));
     const access = params.get('access');
-    const refresh = params.get('refresh');
     if (access) {
       try {
         localStorage.setItem('pe_access', access);
-        if (refresh) localStorage.setItem('pe_refresh', refresh);
+        localStorage.removeItem('pe_refresh');
       } catch {
         /* private mode */
       }

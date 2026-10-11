@@ -29,6 +29,7 @@ var levelSuggestions = ["Phù hợp người mới", "Trung cấp", "Nâng cao"]
 var COURSE_URLS = {
   cpp: "/interface",
   python: "/lesson/python",
+  python_advanced: "/lesson/python_advanced",
   java: "/lesson/java",
   htmlcss: "/lesson/htmlcss",
   db_design: "/lesson/db_design",

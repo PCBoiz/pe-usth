@@ -15,8 +15,8 @@
  * CÁCH CHẠY (từ thư mục gốc repo, cần .env có DATABASE_URL):
  *   npx ts-node scripts/migrate-legacy-passwords.ts
  *
- * SAU KHI đã chạy trên production (và chỉ khi đó) mới được xoá nhánh fallback
- * plaintext trong src/common/security/check-password.ts.
+ * Nhánh fallback plaintext trong src/common/security/check-password.ts đã được
+ * gỡ — script chỉ còn dùng khi nhập dữ liệu legacy mới.
  */
 import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma';
