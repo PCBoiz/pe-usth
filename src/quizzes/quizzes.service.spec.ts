@@ -13,6 +13,23 @@ const SNAPSHOT = [
   { question: 'Q2', options: ['x', 'y'], correct: 1 },
 ];
 
+/**
+ * Hình dạng THẬT của câu hỏi trong content_json của 40 bài PE v3: `correct` nằm
+ * ở cấp câu hỏi (nên rơi vào nhánh "dạng 1") NHƯNG mỗi lựa chọn vẫn là object
+ * mang theo cờ `correct` và `detail`. Fixture cũ chỉ có chuỗi nên không bao giờ
+ * chạm tới đường đi này — đó là lý do lỗ lộ đáp án sống sót qua mọi bài test.
+ */
+const PE_V3_MCQ = {
+  question: 'File "a\\r\\nb\\r\\n" cho lines là gì?',
+  options: [
+    { text: '["a", "b"]', detail: 'rstrip bỏ cả \\r lẫn \\n.', correct: true },
+    { text: '["a\\r", "b\\r"]', detail: 'CR cũng bị bỏ.', correct: false },
+    { text: '["a", "", "b", ""]', detail: 'Mỗi dòng đọc một lần.', correct: false },
+  ],
+  correct: 0,
+  explanation: 'rstrip("\\r\\n") bỏ cả \\r lẫn \\n ở cuối.',
+};
+
 describe('QuizzesService', () => {
   let service: QuizzesService;
   let prisma: any;
@@ -65,6 +82,38 @@ describe('QuizzesService', () => {
         prisma.quiz.create.mock.calls[0][0].data.questionsJson,
       );
       expect(saved).toContain('correct');
+    });
+
+    it('câu hỏi PE v3 (correct ở cấp câu hỏi + cờ trong từng lựa chọn) không lộ gì', async () => {
+      prisma.lessonProgress.findMany.mockResolvedValue([{ lessonId: 1 }]);
+      prisma.lesson.findMany.mockResolvedValue([
+        {
+          id: 1,
+          courseId: 'python',
+          contentJson: {
+            step_2: {
+              mcq: [PE_V3_MCQ, PE_V3_MCQ, PE_V3_MCQ, PE_V3_MCQ, PE_V3_MCQ],
+            },
+          },
+        },
+      ]);
+      prisma.quiz.create.mockResolvedValue({ id: 9 });
+
+      const res: any = await service.generateQuiz(1, 'python');
+
+      const serialized = JSON.stringify(res);
+      expect(serialized).not.toContain('correct');
+      expect(serialized).not.toContain('detail');
+      expect(serialized).not.toContain('explanation');
+      // Lựa chọn phải tới FE dưới dạng chuỗi thuần, giữ nguyên thứ tự.
+      expect(res.questions[0].options).toEqual([
+        '["a", "b"]',
+        '["a\\r", "b\\r"]',
+        '["a", "", "b", ""]',
+      ]);
+      // Bản lưu DB vẫn phải đủ đáp án để chấm điểm ở server.
+      const saved = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      expect(saved[0].correct).toBe(0);
     });
 
     it('getQuiz khi CHƯA nộp: vẫn giấu đáp án', async () => {

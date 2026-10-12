@@ -602,8 +602,31 @@ export class QuizzesService {
       return null;
     }
 
-    // Dạng 1 — đã chuẩn, giữ nguyên.
-    if (x.correct !== undefined) return x as unknown as QuizQuestion;
+    // Lựa chọn LUÔN được quy về chuỗi, bất kể `correct` nằm ở đâu. Object lựa
+    // chọn mang theo cờ `correct` và lời giải thích của chính nó, mà
+    // `stripAnswers()` chỉ bỏ field ở CẤP CÂU HỎI — giữ nguyên object là gửi
+    // thẳng đáp án về trình duyệt. Nội dung PE v3 có CẢ HAI (`correct: 0` ở cấp
+    // câu hỏi VÀ cờ `correct` trong từng lựa chọn) nên trước đây rơi vào nhánh
+    // dạng 1 và lộ sạch đáp án của 60 câu trắc nghiệm.
+    const options: string[] = x.options.map((o) =>
+      o && typeof o === 'object' ? String(o.text ?? o.label ?? '') : String(o),
+    );
+
+    // Dạng 1 — `correct` đã ở cấp câu hỏi; chỉ cần lọc lại `options`.
+    if (x.correct !== undefined) {
+      return {
+        question: x.question,
+        options,
+        correct: x.correct,
+        // Lời giải thích chỉ đi vào bản lưu DB; `stripAnswers()` không trả nó
+        // cho FE, và submitQuiz() mới hiện sau khi đã chấm.
+        explanation:
+          x.explanation ??
+          (typeof x.correct === 'number'
+            ? x.options[x.correct]?.explanation
+            : undefined),
+      } as QuizQuestion;
+    }
 
     // Dạng 2 — tìm lựa chọn được đánh dấu đúng.
     const idx = x.options.findIndex(
@@ -613,9 +636,7 @@ export class QuizzesService {
 
     return {
       question: x.question,
-      options: x.options.map((o) =>
-        o && typeof o === 'object' ? String(o.text ?? o.label ?? '') : String(o),
-      ),
+      options,
       correct: idx,
       // Giải thích của chính đáp án đúng là thứ đáng hiện sau khi chấm.
       explanation: x.options[idx]?.explanation ?? x.explanation,
