@@ -4,10 +4,13 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  Res,
   UseGuards,
 } from '@nestjs/common';
 import { Throttle, seconds } from '@nestjs/throttler';
+import type { Response } from 'express';
 import { Public } from 'src/common/decorators/public.decorators';
+import { ThrottleMessage } from 'src/common/decorators/throttle-message.decorator';
 import { PythonRunnerAccessGuard } from './python-runner-access.guard';
 import { RunCodeDto } from './dto/run-code.dto';
 import { PythonRunnerService } from './python-runner.service';
@@ -29,7 +32,17 @@ export class PythonRunnerController {
   @Post('run')
   @HttpCode(HttpStatus.OK)
   @Throttle({ ip_hour: { limit: 10, ttl: seconds(60) } })
-  run(@Body() dto: RunCodeDto) {
-    return this.runner.run(dto.code);
+  // Hai kiểu 429 khác nhau: câu này là "bạn bấm quá nhiều" (chờ ~1 phút); hàng đợi
+  // đầy/chờ quá hạn do executor ném với câu "máy chủ đang quá tải" (chờ vài giây).
+  @ThrottleMessage('Bạn chạy quá nhiều lần, đợi khoảng 1 phút rồi thử lại')
+  run(@Body() dto: RunCodeDto, @Res({ passthrough: true }) res: Response) {
+    // Client ngắt kết nối (đóng/tải lại tab, proxy hết giờ) trước khi trả lời xong
+    // → huỷ: bài đang chờ thì rút khỏi hàng, đang chạy thì giết container để nhả
+    // chỗ ngay. `writableFinished` phân biệt với lần đóng bình thường sau khi đã trả lời.
+    const abort = new AbortController();
+    res.on('close', () => {
+      if (!res.writableFinished) abort.abort();
+    });
+    return this.runner.run(dto.code, abort.signal);
   }
 }

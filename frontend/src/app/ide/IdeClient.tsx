@@ -32,13 +32,15 @@ type RunResult = {
   timedOut: boolean;
   outputTruncated: boolean;
   durationMs: number;
+  /** Thời gian chờ trong hàng đợi của máy chạy (ms). Backend/runner cũ không gửi → undefined. */
+  queuedMs?: number;
 };
 
 type RunState =
   | { status: 'idle' }
   | { status: 'running' }
   | { status: 'done'; result: RunResult }
-  | { status: 'error'; kind: 'private' | 'busy' | 'other'; message: string };
+  | { status: 'error'; kind: 'private' | 'busy' | 'down' | 'other'; message: string };
 
 /** Chủ đề sáng/tối của trang: class `dark` trên <body> (xem SiteHeader/layout gốc). */
 function subscribeTheme(onChange: () => void) {
@@ -61,6 +63,13 @@ function clip(text: string): { text: string; clipped: boolean } {
     ? { text: text.slice(0, MAX_SHOWN_CHARS), clipped: true }
     : { text, clipped: false };
 }
+
+const ERROR_TITLES: Record<Extract<RunState, { status: 'error' }>['kind'], string> = {
+  private: 'IDE chưa được bật',
+  busy: 'Chưa chạy được lúc này',
+  down: 'Bộ chạy Python không sẵn sàng',
+  other: 'Lỗi',
+};
 
 /** Backend bọc lỗi thành { error: { message } } (AllExceptionsFilter) hoặc { message } (ValidationPipe). */
 function errorMessage(body: unknown, fallback: string): string {
@@ -110,9 +119,20 @@ export default function IdeClient() {
         setState({
           status: 'error',
           kind: 'busy',
-          // 429 có hai nguồn (đủ số container đang chạy / vượt 10 lượt mỗi phút), cả hai
-          // đều chữa bằng cách chờ nên dùng chung một câu.
-          message: 'Đang có quá nhiều bài chạy, thử lại sau vài giây.',
+          // 429 có hai nguồn với hai lời khuyên KHÁC NHAU, backend đã phân biệt bằng
+          // thông điệp: "Bạn chạy quá nhiều lần, đợi khoảng 1 phút…" (throttle) hoặc
+          // "Máy chủ đang quá tải, thử lại sau" (hàng đợi đầy / chờ quá hạn). Hiện đúng
+          // câu đó, đừng thay bằng câu chung.
+          message: errorMessage(body, 'Máy chủ đang quá tải, thử lại sau'),
+        });
+      } else if (res.status === 503) {
+        // Chế độ remote: backend không gọi được runner (tắt, lệch khoá, quá hạn). Chế độ local
+        // cũng có thể 503 (máy chủ chưa cài Docker). Dùng thông điệp của backend vì nó nói đúng
+        // nguyên nhân; chỉ khi không có mới dùng câu mặc định.
+        setState({
+          status: 'error',
+          kind: 'down',
+          message: errorMessage(body, 'Bộ chạy Python đang tắt, thử lại sau'),
         });
       } else if (!res.ok) {
         setState({
@@ -220,7 +240,7 @@ function Output({ state }: { state: RunState }) {
     return (
       <div className={`${styles.notice} ${styles.noticeError}`} role="alert">
         <strong>
-          {state.kind === 'private' ? 'IDE chưa được bật' : state.kind === 'busy' ? 'Máy chủ đang bận' : 'Lỗi'}
+          {ERROR_TITLES[state.kind]}
         </strong>
         <p>{state.message}</p>
       </div>
@@ -234,6 +254,10 @@ function Output({ state }: { state: RunState }) {
     <>
       <div className={styles.meta}>
         <span>Thời gian chạy: {(result.durationMs / 1000).toFixed(2)} s</span>
+        {/* Chỉ hiện khi thật sự phải xếp hàng; chạy ngay (0 ms) thì không thêm nhiễu. */}
+        {(result.queuedMs ?? 0) > 0 && (
+          <span>Chờ hàng đợi: {((result.queuedMs ?? 0) / 1000).toFixed(1)} s</span>
+        )}
         {ranOk && (
           <span className={result.exitCode === 0 ? styles.ok : styles.fail}>Mã thoát: {result.exitCode}</span>
         )}
@@ -246,7 +270,7 @@ function Output({ state }: { state: RunState }) {
       )}
       {result.exitCode === 137 && (
         <div className={`${styles.notice} ${styles.noticeWarn}`}>
-          Chương trình bị dừng vì dùng quá giới hạn bộ nhớ (1 GB) — mã thoát 137.
+          Chương trình bị dừng vì dùng quá giới hạn bộ nhớ — mã thoát 137.
         </div>
       )}
       {result.outputTruncated && (

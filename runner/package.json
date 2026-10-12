@@ -1,0 +1,20 @@
+{
+  "name": "pe-python-runner",
+  "version": "1.0.0",
+  "description": "Bộ chạy mã Python trong Docker cho Programming EDU (đặt trên VM, backend gọi qua HTTP).",
+  "private": true,
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "build": "esbuild src/main.ts --bundle --platform=node --target=node22 --outfile=dist/server.js --log-level=warning",
+    "start": "node --env-file=.env dist/server.js",
+    "typecheck": "tsc --noEmit",
+    "test": "esbuild test/*.test.ts --bundle --platform=node --target=node22 --format=cjs --outdir=.test-dist --log-level=warning && node --test --test-force-exit \".test-dist/*.test.js\""
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}
