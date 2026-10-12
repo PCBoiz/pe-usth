@@ -34,10 +34,15 @@ export default function TrueFalse({ snippet, selected, onSelect, correctValue, c
         aria-pressed={isSelected}
         style={tone}
       >
-        <span className={isSelected || isRight ? styles.toggleIconSelected : styles.toggleIcon}>
+        {/* Ký hiệu chỉ là hình (và sau khi chấm thì mang nghĩa đúng/sai) — ẩn
+            khỏi trình đọc màn hình, kết quả nói bằng chữ ở dưới. */}
+        <span aria-hidden="true" className={isSelected || isRight ? styles.toggleIconSelected : styles.toggleIcon}>
           {isRight ? '✓' : isWrong ? '✕' : icon}
         </span>
         {label}
+        {checked && (isRight || isWrong) && (
+          <span className={styles.srOnly}>{isRight ? ' — đáp án đúng' : ' — bạn đã chọn, sai'}</span>
+        )}
       </button>
     );
   };

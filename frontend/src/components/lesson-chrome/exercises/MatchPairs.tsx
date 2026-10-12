@@ -42,6 +42,10 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
                 key={item.id}
                 type="button"
                 disabled={isMatched}
+                // Đầu trái đang chờ ghép chỉ khác ở viền tím: trạng thái chọn
+                // phải lộ ra ngoài màu. (Không đặt aria-label — bộ e2e tìm nút
+                // theo đúng chữ trong `content`.)
+                aria-pressed={isPending}
                 onClick={() => onPickLeft(item.id)}
                 className={styles.optionCard}
                 style={{
@@ -79,7 +83,9 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
           })}
         </div>
       </div>
-      <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 10 }}>
+      {/* Ghép đúng một cặp thì hai mục chỉ đổi sang nền xanh rồi tắt — số cặp
+          đã ghép là chỗ duy nhất báo "vừa ăn một cặp", nên để nó tự đọc lên. */}
+      <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 10 }} role="status">
         Đã ghép {Object.keys(matched).length}/{left.length} cặp
       </div>
     </div>

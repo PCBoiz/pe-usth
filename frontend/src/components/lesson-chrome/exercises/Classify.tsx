@@ -27,6 +27,17 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
           <button
             key={bin.key}
             type="button"
+            // Chưa cầm token thì nút không làm gì: để `disabled` cho nó rơi hẳn
+            // khỏi thứ tự Tab, thay vì bắt người dùng bàn phím đi qua 3 nút chết.
+            disabled={!heldToken}
+            // Tên gọi của nút phải nói nó LÀM GÌ. Chỉ có nhãn nhóm (`int`,
+            // `str`…) thì trình đọc màn hình đọc "int, nút" — không hiểu bấm
+            // vào thì chuyện gì xảy ra.
+            aria-label={
+              heldToken
+                ? `Thả "${heldToken}" vào nhóm ${bin.label}${bin.items.length ? ` (đang có ${bin.items.length} token)` : ''}`
+                : `Nhóm ${bin.label} — chọn một token trong kho trước`
+            }
             onClick={() => heldToken && onDrop(bin.key)}
             style={{
               textAlign: 'left',
@@ -63,7 +74,9 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
           padding: '12px 16px',
         }}
       >
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
+        {/* "Đang cầm X" là trạng thái duy nhất cho biết thao tác đã ăn: phải
+            được đọc lên khi đổi. */}
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }} role="status">
           KHO TOKEN {heldToken ? `— đang cầm "${heldToken}", bấm vào nhóm để thả` : '(bấm để cầm lên)'}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -73,6 +86,9 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
               key={token}
               type="button"
               className={styles.chip}
+              // Token đang cầm chỉ khác nhau ở viền/nền — trạng thái "đang chọn"
+              // phải có mặt trong cây trợ năng, không chỉ trong màu.
+              aria-pressed={heldToken === token}
               onClick={() => onHold(token)}
               style={heldToken === token ? { borderColor: 'var(--edu-accent)', background: 'var(--edu-accent-soft)' } : undefined}
             >

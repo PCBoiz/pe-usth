@@ -162,10 +162,28 @@ button.segment::after {
   flex-shrink: 0;
 }
 
+/* ── VÌ SAO KHÔNG CĂN GIỮA Ở ĐÂY NỮA ─────────────────────────────────────
+   Trước đây `.main` căn giữa theo chiều dọc (`align-items: center`). Trang bài
+   học vẽ KHUNG TRƯỚC, NỘI DUNG SAU: StudioLesson dựng ngay LessonChrome với
+   một thẻ "Đang tải bài học…" cao chừng 150px, rồi khi content_json về mới
+   thay bằng nội dung bài thật cao hàng trăm px. Với align-items:center, thẻ
+   lúc đầu nằm giữa màn hình; khi nội dung thật tới, `.contentContainer` và
+   `.stepEnter` (hai thẻ KHÔNG bị thay, React giữ nguyên node) nhảy từ giữa
+   lên sát đỉnh. Đó là một cú dịch bố cục bằng gần nửa màn hình — đo trên bản
+   triển khai (Lighthouse, điện thoại) được CLS 0,47, trong khi ngưỡng "tốt"
+   là dưới 0,1.
+
+   Cách sửa: dời việc căn giữa xuống một tầng. `.main` kéo căng
+   `.contentContainer`, `.contentContainer` kéo căng `.stepEnter` — đỉnh của
+   cả hai nay cố định, không phụ thuộc nội dung cao bao nhiêu. Việc căn giữa
+   chuyển vào `.stepEnter` (`justify-content: center`), tác động lên CON của
+   nó — mà con là thẻ MỚI mỗi lần đổi nội dung, nên không tính là dịch bố cục.
+   Bề ngoài không đổi: toán ra đúng cùng một toạ độ (xem chú thích ở
+   .stepEnter). */
 .main {
   flex: 1;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   width: 100%;
 }
@@ -179,11 +197,34 @@ button.segment::after {
   min-width: 0;
   margin: 0 auto;
   padding: 45px 20px 32px;
+  /* Cột dọc để `.stepEnter` kéo căng hết chiều cao còn lại — xem chú thích
+     chống dịch bố cục ở `.main`. */
+  display: flex;
+  flex-direction: column;
 }
 
 /* Chuyển cảnh giữa các bước: thẻ mới trôi lên + hiện dần. Khoá bằng
-   `key={step}` ở LessonChrome.tsx nên mỗi bước là một lần chạy animation. */
+   `key={step}` ở LessonChrome.tsx nên mỗi bước là một lần chạy animation.
+   `transform` trong animation KHÔNG tính vào CLS nên nó không phải thủ phạm.
+
+   flex:1 + justify-content:center là chỗ căn giữa theo chiều dọc đã dời từ
+   `.main` xuống. Toạ độ ra đúng như cũ: trước là
+   (H − 77 − card)/2 + 45, nay là 45 + (H − 77 − card)/2 với H là chiều cao
+   `.main` (45/32 là phần đệm trên/dưới của .contentContainer).
+
+   min-height mặc định của mục flex trong cột là `auto`, nên nội dung cao hơn
+   khung thì khung tự nở — không có chuyện nội dung tràn lên trên và không
+   cuộn tới được (bệnh kinh điển của justify-content:center).
+
+   Dùng `align-content` chứ KHÔNG đổi sang `display:flex`: thẻ này vẫn phải là
+   block container. StudioLesson truyền vào một fragment nhiều thẻ con (ghi
+   chú quản trị, banner đã hoàn thành, rồi thẻ bài) — biến chúng thành mục
+   flex là tắt gộp lề giữa các thẻ, khoảng cách sẽ khác đi. `align-content`
+   trên block container căn giữa đúng phần nội dung mà không đổi cách con
+   được xếp. */
 .stepEnter {
+  flex: 1;
+  align-content: center;
   animation: stepIn 0.34s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 @keyframes stepIn {

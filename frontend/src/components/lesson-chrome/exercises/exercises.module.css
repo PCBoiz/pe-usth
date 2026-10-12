@@ -428,3 +428,51 @@
     animation: none;
   }
 }
+
+/* Chữ chỉ dành cho trình đọc màn hình (gợi ý bàn phím, nhãn kết quả chấm).
+   Không dùng display:none — như thế thì trình đọc màn hình cũng bỏ qua. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ── Mẹo thoát khỏi ô soạn mã (SandboxEditor) ─────────────────────────────
+   Tab trong ô soạn mã thụt lề chứ không nhảy focus, nên phải CHỈ cho người
+   dùng cách ra (WCAG 2.1.2). Chỉ để srOnly là chưa đủ: người dùng bàn phím
+   KHÔNG dùng trình đọc màn hình (chuột hỏng, khuyết tật vận động…) không nghe
+   được gì cả, với họ ô vẫn là bẫy.
+
+   Nên: ẩn như srOnly lúc bình thường — vẫn đọc được qua aria-describedby và
+   không thêm nhiễu vào màn — rồi hiện thành dòng chữ thật đúng lúc ô đang
+   được focus. */
+.editorHint {
+  composes: srOnly;
+}
+.codeCard:focus-within + .editorHint {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: -8px 0 12px;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--edu-t3);
+}
+
+/* Vòng focus của ô soạn mã. Bản trước đặt outline:none NỘI TUYẾN trong
+   SandboxEditor.tsx: focus vào ô là con trỏ biến mất hoàn toàn khỏi màn
+   (WCAG 2.4.7). Dùng cùng kiểu vòng với LessonChrome.module.css; offset ÂM vì
+   .codeCard có overflow:hidden — vòng vẽ ra ngoài sẽ bị cắt mất. */
+textarea.codeBody:focus-visible {
+  outline: 3px solid var(--edu-accent-3);
+  outline-offset: -3px;
+}

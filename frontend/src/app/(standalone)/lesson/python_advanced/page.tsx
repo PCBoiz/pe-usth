@@ -1,5 +1,16 @@
+import type { Metadata } from 'next';
+
 import PageStyles from '@/components/PageStyles';
 import StudioLesson from '@/components/python-studio/StudioLesson';
+
+// Cùng lý do với /lesson/python: Lighthouse SEO trừ điểm vì thiếu meta
+// description, mà tên bài chỉ có sau khi client tải content_json.
+export const metadata: Metadata = {
+  title: 'Bài học Python Advanced – Programming EDU',
+  description:
+    'Python Advanced: 40 bài luyện dưới dạng mini-game — ghép cặp, đúng/sai, '
+    + 'dò lỗi và trận boss cuối chặng, chấm ngay trong trình duyệt.',
+};
 
 const STUDIO_CSS = [
   '/static/css/edu-theme.css',

@@ -32,7 +32,7 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
           color: 'var(--edu-accent-text)',
         }}
       >
-        💎 {xpLabel} ✨
+        <span aria-hidden="true">💎</span> {xpLabel} <span aria-hidden="true">✨</span>
       </span>
       <h2 style={{ fontSize: 24, fontWeight: 800, margin: '16px 0 8px', color: 'var(--edu-t1)' }}>{title}</h2>
       <p style={{ fontSize: 14, color: 'var(--edu-t3)', maxWidth: 460, margin: '0 auto 20px' }}>{description}</p>
@@ -47,7 +47,7 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
               padding: 16,
             }}
           >
-            <div style={{ fontSize: 22 }}>{s.icon}</div>
+            <div style={{ fontSize: 22 }} aria-hidden="true">{s.icon}</div>
             <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--edu-t1)', margin: '6px 0 2px' }}>{s.value}</div>
             <div style={{ fontSize: 11, color: 'var(--edu-t3)' }}>{s.label}</div>
           </div>
@@ -55,11 +55,13 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
       </div>
       <div style={{ textAlign: 'left' }}>
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
-          📖 KIẾN THỨC CỐT LÕI ĐÃ HỌC
+          <span aria-hidden="true">📖</span> KIẾN THỨC CỐT LÕI ĐÃ HỌC
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {/* Danh sách thật: trình đọc màn hình báo được "3 mục" thay vì đọc liền
+            một mạch ba đoạn văn không rõ ranh giới. */}
+        <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'none', margin: 0, padding: 0 }}>
           {facts.map((f, i) => (
-            <div
+            <li
               key={i}
               style={{
                 display: 'flex',
@@ -73,11 +75,11 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
                 color: 'var(--edu-t1)',
               }}
             >
-              <span style={{ color: 'var(--st-ok-text)' }}>✓</span>
+              <span aria-hidden="true" style={{ color: 'var(--st-ok-text)' }}>✓</span>
               {f}
-            </div>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
       <button
         type="button"
@@ -95,7 +97,7 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
           marginTop: 20,
         }}
       >
-        Hoàn thành ✓
+        Hoàn thành <span aria-hidden="true">✓</span>
       </button>
     </div>
   );

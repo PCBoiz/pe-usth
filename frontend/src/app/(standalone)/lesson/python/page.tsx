@@ -1,7 +1,20 @@
+import type { Metadata } from 'next';
+
 import PageStyles from '@/components/PageStyles';
 import PythonStudio from '@/components/python-studio/PythonStudio';
 import StudioLesson from '@/components/python-studio/StudioLesson';
 import { PYTHON_DEMO_PARAM } from '@/lib/python-studio';
+
+// Lighthouse SEO chấm 90 trên trang bài học vì thiếu meta description. Tên bài
+// chỉ biết được sau khi client tải content_json (bài render ở trình duyệt), nên
+// không thể ghép tên bài vào đây mà vẫn giữ trang tĩnh — dùng câu mô tả chung
+// cho cả khoá, đã đủ cho thẻ description.
+export const metadata: Metadata = {
+  title: 'Bài học Python – Programming EDU',
+  description:
+    'Giáo trình Python 40 bài: đọc hiểu từng dòng, lắp ghép mã rồi tự viết và '
+    + 'chạy thử ngay trong trình duyệt, chấm tự động và lưu tiến độ.',
+};
 
 const STUDIO_CSS = [
   '/static/css/edu-theme.css',

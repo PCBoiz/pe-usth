@@ -40,6 +40,10 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
                 type="button"
                 onClick={() => locked && onUnlock(i)}
                 disabled={!locked}
+                // Tên nút phải nói việc nó làm. Để trần thì trình đọc màn hình
+                // đọc "lock, Gợi ý 2, Mở gợi ý này" — ba mảnh rời, mở đầu bằng
+                // tên của emoji.
+                aria-label={locked ? `Mở gợi ý: ${level.title}` : undefined}
                 style={{
                   width: '100%',
                   display: 'flex',
@@ -54,15 +58,19 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
                   fontSize: 13,
                 }}
               >
-                <span>{locked ? '🔒' : '💡'} {level.title}</span>
+                <span>
+                  <span aria-hidden="true">{locked ? '🔒' : '💡'}</span> {level.title}
+                </span>
                 {locked && (
                   <span style={{ background: 'var(--edu-accent-soft)', color: 'var(--edu-accent-text)', borderRadius: 999, padding: '3px 10px', fontSize: 11 }}>
                     {level.cost != null ? `⚡ Mở khoá (-${level.cost} XP)` : 'Mở gợi ý này'}
                   </span>
                 )}
               </button>
+              {/* Bấm "Mở gợi ý" xong thì nội dung hiện ra ở chỗ khác với nút vừa
+                  bấm — vùng sống để nó được đọc ngay, khỏi phải đi tìm. */}
               {isOpen && level.body && (
-                <div style={{ fontSize: 13, color: 'var(--edu-t2)', lineHeight: 1.7, marginTop: 10 }}>{level.body}</div>
+                <div role="status" style={{ fontSize: 13, color: 'var(--edu-t2)', lineHeight: 1.7, marginTop: 10 }}>{level.body}</div>
               )}
             </div>
           );

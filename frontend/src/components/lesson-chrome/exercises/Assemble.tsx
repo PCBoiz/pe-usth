@@ -49,6 +49,9 @@ export default function Assemble({
                 {line.slotId && (
                   <button
                     type="button"
+                    // Chưa cầm token thì ô trống không nhận được gì: bỏ khỏi
+                    // thứ tự Tab thay vì để một nút bấm không ra kết quả.
+                    disabled={!heldToken}
                     onClick={() => heldToken && onFillSlot(line.slotId!)}
                     style={{
                       display: 'inline-block',
@@ -74,7 +77,8 @@ export default function Assemble({
         </div>
       </div>
       <div style={{ background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14, marginTop: 12 }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
+        {/* Giống Classify: "đang cầm X" là phản hồi duy nhất của thao tác. */}
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }} role="status">
           KHO TỪ KHOÁ {heldToken ? `— đang cầm "${heldToken}"` : '(bấm để cầm lên)'}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -84,6 +88,7 @@ export default function Assemble({
               key={token}
               type="button"
               className={styles.chip}
+              aria-pressed={heldToken === token}
               onClick={() => onHold(token)}
               style={heldToken === token ? { borderColor: 'var(--edu-accent)', background: 'var(--edu-accent-soft)' } : undefined}
             >

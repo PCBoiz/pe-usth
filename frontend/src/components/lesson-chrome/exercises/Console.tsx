@@ -34,12 +34,18 @@ export default function Console({
           : styles.consoleRow;
 
   return (
-    <div className={styles.consolePanel}>
+    <div className={styles.consolePanel} role="group" aria-label={title}>
       <div className={styles.consoleHead}>
-        <span>▣ {title}</span>
-        <span>{running ? 'đang chạy…' : meta || (lines ? `${lines.length} dòng` : 'sẵn sàng')}</span>
+        <span>
+          <span aria-hidden="true">▣</span> {title}
+        </span>
+        <span role="status">{running ? 'đang chạy…' : meta || (lines ? `${lines.length} dòng` : 'sẵn sàng')}</span>
       </div>
-      <div className={styles.consoleBody}>
+      {/* Output chạy xong mới xuất hiện: không có vùng sống thì người dùng trình
+          đọc màn hình bấm "Chạy" rồi ngồi im, chẳng biết đã có kết quả.
+          role="log" (không phải "status") vì các dòng được THÊM VÀO, chỉ dòng
+          mới cần đọc chứ không đọc lại cả khung. */}
+      <div className={styles.consoleBody} role="log" aria-live="polite" aria-relevant="additions text">
         {running && <div className={styles.consoleRowMuted}>⟳ Đang biên dịch và thực thi…</div>}
         {!running && !lines && (
           <div className={styles.consoleRowMuted}>

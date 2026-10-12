@@ -47,6 +47,10 @@ export default function SpotError({ filename, lines, selected, onSelect, correct
               type="button"
               onClick={() => onSelect(line.num)}
               disabled={checked}
+              // Dòng đang chọn chỉ khác ở khung tím — trạng thái chọn phải lộ
+              // ra ngoài màu. (Không đặt aria-label: bộ e2e tìm dòng theo đúng
+              // chữ của câu lệnh.)
+              aria-pressed={isSelected}
               className={styles.codeLine}
               style={{
                 width: '100%',

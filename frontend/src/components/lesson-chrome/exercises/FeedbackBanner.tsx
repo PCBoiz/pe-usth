@@ -14,6 +14,10 @@ export default function FeedbackBanner({ correct, title, explanation }: Feedback
   return (
     <div
       className={styles.feedbackBanner}
+      // Thẻ này là KẾT QUẢ CHẤM BÀI, chỉ xuất hiện sau khi bấm "Kiểm tra": phải
+      // là vùng sống, nếu không thì thông tin đúng/sai chỉ tới được người nhìn
+      // thấy màu của nó.
+      role="status"
       style={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -25,7 +29,10 @@ export default function FeedbackBanner({ correct, title, explanation }: Feedback
         marginTop: 16,
       }}
     >
+      {/* Dấu ✓/✕ chỉ nhắc lại điều `title` đã nói bằng chữ — ẩn khỏi trình đọc
+          màn hình để không bị đọc thành "check mark" trước mỗi lần chấm. */}
       <span
+        aria-hidden="true"
         style={{
           width: 28,
           height: 28,

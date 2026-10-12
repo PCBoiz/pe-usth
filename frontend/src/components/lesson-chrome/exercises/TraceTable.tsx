@@ -1,6 +1,7 @@
 // Dịch từ màn Stitch "6. TRACE-TABLE — Bảng theo dõi biến": khối code +
 // bảng nhập giá trị biến qua từng bước lặp.
 import CodeBlock, { CodeBlockLine } from './CodeBlock';
+import styles from './exercises.module.css';
 
 export interface TraceRow {
   step: string;
@@ -38,15 +39,23 @@ export default function TraceTable({ filename, code, columns, rows, answers, onA
             color: 'var(--edu-t2)',
           }}
         >
-          <span>📊 TRẠNG THÁI BỘ NHỚ</span>
-          <span>{filledCount}/{totalCells} giá trị</span>
+          <span>
+            <span aria-hidden="true">📊</span> TRẠNG THÁI BỘ NHỚ
+          </span>
+          {/* Số ô đã điền là phản hồi tiến độ duy nhất của màn này. */}
+          <span role="status">{filledCount}/{totalCells} giá trị</span>
         </div>
         <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          {/* Tên bảng cho trình đọc màn hình: tiêu đề "TRẠNG THÁI BỘ NHỚ" ở trên
+              là một div rời, không gắn gì với <table>. */}
+          <caption className={styles.srOnly}>
+            Trạng thái bộ nhớ qua từng bước — điền giá trị của {columns.join(', ')}
+          </caption>
           <thead>
             <tr style={{ background: 'var(--edu-accent-soft)' }}>
-              <th style={{ textAlign: 'left', padding: '8px 14px', fontWeight: 700, color: 'var(--edu-t1)' }}>Bước</th>
+              <th scope="col" style={{ textAlign: 'left', padding: '8px 14px', fontWeight: 700, color: 'var(--edu-t1)' }}>Bước</th>
               {columns.map((c) => (
-                <th key={c} style={{ padding: '8px 14px', fontFamily: 'JetBrains Mono, monospace', color: 'var(--edu-accent-text)' }}>
+                <th key={c} scope="col" style={{ padding: '8px 14px', fontFamily: 'JetBrains Mono, monospace', color: 'var(--edu-accent-text)' }}>
                   {c}
                 </th>
               ))}

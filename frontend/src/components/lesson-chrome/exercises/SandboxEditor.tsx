@@ -4,6 +4,8 @@
 // code — thanh chạy — console — bảng kiểm thử) nhưng code là ô soạn thảo được
 // và kết quả đến từ Pyodide trong Web Worker, không phải dữ liệu soạn sẵn.
 // Sandbox.tsx giữ nguyên cho trang xem trước; bài học thật dùng file này.
+import { useId, useState } from 'react';
+
 import styles from './exercises.module.css';
 import Console, { ConsoleLine } from './Console';
 
@@ -54,6 +56,13 @@ export default function SandboxEditor({
   placeholder,
 }: SandboxEditorProps) {
   const passed = tests.filter((t) => t.status === 'pass').length;
+  const hintId = useId();
+  // Tab trong ô này thụt lề chứ không nhảy focus, nên tự nó là một BẪY BÀN PHÍM
+  // (WCAG 2.1.2): người dùng bàn phím vào được mà không ra được. Cách thoát quen
+  // thuộc của các trình soạn mã trên web: nhấn Escape để "nhả" Tab một lần, rồi
+  // Tab đi tiếp như bình thường. Shift+Tab luôn nhường cho trình duyệt nên lúc
+  // nào cũng còn một đường lùi ra khỏi ô, kể cả khi chưa biết mẹo Escape.
+  const [tabEscapes, setTabEscapes] = useState(false);
 
   return (
     <div>
@@ -66,6 +75,7 @@ export default function SandboxEditor({
         <textarea
           className={styles.codeBody}
           aria-label="Trình soạn mã Python"
+          aria-describedby={hintId}
           spellCheck={false}
           placeholder={placeholder}
           value={code}
@@ -76,7 +86,11 @@ export default function SandboxEditor({
             minHeight: 220,
             resize: 'vertical',
             border: 0,
-            outline: 'none',
+            // KHÔNG đặt outline:none ở đây. Bản trước có, và vì style nội tuyến
+            // thắng mọi quy tắc CSS nên không cách nào vẽ lại vòng focus —
+            // người dùng bàn phím vào ô này là mất dấu con trỏ (WCAG 2.4.7).
+            // Vòng focus nay do .codeBody:focus-visible trong
+            // exercises.module.css vẽ.
             color: 'var(--st-syn-plain)',
             background: 'transparent',
             fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
@@ -85,8 +99,21 @@ export default function SandboxEditor({
             // Tab thay vì nhảy focus: đang gõ code thụt lề là chuyện thường.
             tabSize: 4,
           }}
+          onBlur={() => setTabEscapes(false)}
           onKeyDown={(e) => {
-            if (e.key !== 'Tab') return;
+            if (e.key === 'Escape') {
+              setTabEscapes(true);
+              return;
+            }
+            if (e.key !== 'Tab') {
+              // Gõ tiếp là lại muốn thụt lề: thu hồi quyền thoát đã mở.
+              if (tabEscapes) setTabEscapes(false);
+              return;
+            }
+            if (e.shiftKey || tabEscapes) {
+              setTabEscapes(false);
+              return; // không preventDefault → trình duyệt tự chuyển focus
+            }
             e.preventDefault();
             const el = e.currentTarget;
             const at = el.selectionStart;
@@ -95,6 +122,20 @@ export default function SandboxEditor({
           }}
         />
       </div>
+      {/* Vừa là nội dung aria-describedby (đọc khi focus vào ô) vừa là vùng
+          sống: đổi câu lúc Escape được nhấn để người dùng biết mẹo đã ăn.
+
+          Nằm NGOÀI .codeCard (không phải trong như bản trước) để
+          `.codeCard:focus-within + .editorHint` hiện nó thành một dòng chữ
+          THẬT khi ô soạn mã đang được focus: người dùng bàn phím không dùng
+          trình đọc màn hình cũng cần biết mẹo Escape, nếu chỉ để srOnly thì
+          với họ đây vẫn là bẫy bàn phím (WCAG 2.1.2 đòi "phải CHỈ cho người
+          dùng cách thoát", không chỉ riêng người dùng trình đọc màn hình). */}
+      <p id={hintId} className={styles.editorHint} role="status">
+        {tabEscapes
+          ? 'Đã nhả Tab: nhấn Tab để chuyển ra khỏi trình soạn mã.'
+          : 'Tab thụt lề 4 dấu cách. Nhấn Escape rồi Tab để chuyển ra khỏi trình soạn mã; Shift+Tab lùi về điều khiển trước.'}
+      </p>
 
       <div className={styles.runRow}>
         <button
@@ -103,14 +144,18 @@ export default function SandboxEditor({
           onClick={running ? onStop : onRun}
           disabled={disabled}
         >
-          {running ? '■ Dừng' : '▶ Chạy thử'}
+          {/* Ký hiệu ■/▶ chỉ là hình: để trần thì trình đọc màn hình đọc thành
+              "black square"/"black right-pointing triangle" trước tên nút. */}
+          <span aria-hidden="true">{running ? '■' : '▶'}</span> {running ? 'Dừng' : 'Chạy thử'}
         </button>
         {onShowSolution && (
           <button type="button" className={styles.chip} onClick={onShowSolution}>
             Xem lời giải mẫu
           </button>
         )}
-        <span className={styles.runHint}>
+        {/* Kết quả chấm phải được ĐỌC LÊN: trước đây chỉ có màu và dấu ✓/✕ đổi,
+            người dùng trình đọc màn hình bấm "Chạy thử" rồi không biết gì xảy ra. */}
+        <span className={styles.runHint} role="status">
           {tests.length
             ? `${passed}/${tests.length} ca kiểm thử đạt`
             : 'Bài này chấm trên máy lab, không có ca tự động'}
@@ -133,11 +178,13 @@ export default function SandboxEditor({
               {passed}/{tests.length} đạt
             </span>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {/* Danh sách thật (ul/li): trình đọc màn hình đọc được "3 mục" thay vì
+              một chuỗi div không rõ đâu là hết. */}
+          <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'none', margin: 0, padding: 0 }}>
             {tests.map((t, i) => {
               const style = STATUS_STYLE[t.status];
               return (
-                <div
+                <li
                   key={i}
                   style={{
                     background: 'var(--edu-panel-bg-solid)',
@@ -159,10 +206,10 @@ export default function SandboxEditor({
                   {t.detail && t.status !== 'pending' && (
                     <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 4 }}>{t.detail}</div>
                   )}
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
       )}
     </div>

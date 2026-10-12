@@ -88,7 +88,13 @@ export default function Mcq({
                 <code>{opt.key}.</code> {opt.label}
                 {opt.sub && <span className={styles.optionSub}>{opt.sub}</span>}
               </span>
-              <span className={markClass}>{isRight ? '✓' : isWrong ? '✕' : ''}</span>
+              {/* Ô tròn/dấu ✓✕ là hình; kết quả chấm phải có bản chữ, nếu không
+                  thì sau khi "Kiểm tra" người dùng trình đọc màn hình chỉ nghe
+                  lại đúng danh sách lựa chọn như trước. */}
+              <span aria-hidden="true" className={markClass}>{isRight ? '✓' : isWrong ? '✕' : ''}</span>
+              {checked && (isRight || isWrong) && (
+                <span className={styles.srOnly}>{isRight ? ' — đáp án đúng' : ' — bạn đã chọn, sai'}</span>
+              )}
             </button>
           );
         })}

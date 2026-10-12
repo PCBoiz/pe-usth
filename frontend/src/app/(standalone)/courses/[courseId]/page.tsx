@@ -87,9 +87,54 @@ function StarRating() {
   );
 }
 
+/**
+ * Chữ chỉ dành cho trình đọc màn hình.
+ *
+ * Trạng thái của một bài (xong / đang học / bị khoá) trước đây CHỈ nằm trong
+ * class `.edu-cd-lesson.done|.locked` — tức là trong màu nền của ô tròn và
+ * trong dấu ✓ vẽ bằng <svg> không nhãn. Người dùng trình đọc màn hình nghe
+ * đúng một chuỗi "Biến và kết quả, Bài 3" cho cả ba trạng thái, không biết bài
+ * nào đã xong hay bài nào chưa mở.
+ *
+ * Để nội tuyến (không thêm class) vì edu-course-detail.css nằm ngoài phạm vi
+ * được sửa ở lần này — và trang này vốn đã dùng style nội tuyến khắp nơi.
+ */
+const SR_ONLY: React.CSSProperties = {
+  position: 'absolute',
+  width: 1,
+  height: 1,
+  padding: 0,
+  margin: -1,
+  overflow: 'hidden',
+  clip: 'rect(0, 0, 0, 0)',
+  whiteSpace: 'nowrap',
+  border: 0,
+};
+
+const LESSON_STATUS_TEXT: Record<LessonRow['status'], string> = {
+  done: ' — đã hoàn thành',
+  current: ' — bài đang học',
+  locked: ' — chưa mở, hãy học xong các bài trước',
+};
+
 export default function CourseDetailPage({ params }: { params: Promise<{ courseId: string }> }) {
   const { courseId } = use(params);
   const [data, setData] = useState<any>(null);
+  /**
+   * Accordion module mở/đóng — nay do React giữ, KHÔNG còn nhờ
+   * course_detail.js:toggleModule() bật class thẳng trên DOM.
+   *
+   * Lý do phải đổi: tiêu đề module là một <div onClick> nên bàn phím không với
+   * tới được — module đóng thì toàn bộ bài bên trong cũng không với tới được.
+   * Muốn biến nó thành <button aria-expanded> thì React phải BIẾT nó đang mở
+   * hay đóng; trong khi toggleModule() đổi class sau lưng React, aria-expanded
+   * sẽ nói sai ngay lần bấm đầu.
+   *
+   * Khoá theo `${courseId}:${mi}`: đổi khóa bằng client-side routing không
+   * unmount component này, nếu khoá theo chỉ số thì trạng thái mở của khóa
+   * trước dính sang khóa sau (cùng cái bẫy đã gặp ở ô chấm sao).
+   */
+  const [openModules, setOpenModules] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     // db_design* không vào route này (đã có route tĩnh) — guard giống main.py
@@ -261,45 +306,106 @@ export default function CourseDetailPage({ params }: { params: Promise<{ courseI
                 </div>
                 <div className="cd-block-body" style={{ paddingTop: 10 }}>
                   {modules.map((module, mi) => {
-                    const open = module.has_current || mi === 0;
+                    const openKey = `${courseId}:${mi}`;
+                    const open = openModules[openKey] ?? (module.has_current || mi === 0);
+                    const bodyId = `cd-module-body-${mi}`;
                     return (
                       <div className="edu-cd-module" key={mi}>
-                        <div className={`edu-cd-module-hd ${open ? 'open' : ''}`} onClick={(e) => W().toggleModule(e.currentTarget)}>
-                          <div className="edu-cd-module-arrow">▶</div>
+                        {/* <button> chứ không <div onClick>: tiêu đề module là
+                            thứ duy nhất mở được danh sách bài, để là <div> thì
+                            bàn phím không với tới (WCAG 2.1.1) và không có cách
+                            nào khai báo đang mở/đóng. */}
+                        <button
+                          type="button"
+                          className={`edu-cd-module-hd ${open ? 'open' : ''}`}
+                          aria-expanded={open}
+                          aria-controls={bodyId}
+                          onClick={() => setOpenModules((s) => ({ ...s, [openKey]: !open }))}
+                          // edu-course-detail.css nằm ngoài phạm vi sửa lần này
+                          // nên phải trung hoà style mặc định của <button> tại
+                          // đây: .edu-cd-module-hd được viết cho <div>.
+                          style={{
+                            width: '100%',
+                            boxSizing: 'border-box',
+                            font: 'inherit',
+                            // <button> không thừa kế màu chữ của body (UA đặt
+                            // `buttontext` = đen), nên ở chế độ tối chữ nào
+                            // không tự khai màu sẽ thành đen trên nền tối.
+                            color: 'inherit',
+                            textAlign: 'left',
+                            border: 0,
+                            background: 'transparent',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <div className="edu-cd-module-arrow" aria-hidden="true">▶</div>
                           <div className="edu-cd-module-name">{module.title}</div>
                           <div className="edu-cd-module-meta">{module.total} bài</div>
                           {enrollment && module.done_count > 0 && (
                             <div className="edu-cd-module-prog" style={{ marginLeft: 8 }}>{module.done_count}/{module.total} ✓</div>
                           )}
-                        </div>
-                        <div className={`edu-cd-module-body ${open ? 'open' : ''}`}>
+                        </button>
+                        <div className={`edu-cd-module-body ${open ? 'open' : ''}`} id={bodyId}>
                           <div className="edu-cd-lesson-list">
-                            {module.lessons.map((lesson) => (
-                              <div
-                                className={`edu-cd-lesson ${lesson.status}`}
-                                key={lesson.index}
-                                id={lesson.status === 'current' ? 'current-lesson' : undefined}
-                                data-clickable={lesson.status !== 'locked' ? '1' : undefined}
-                                onClick={
-                                  lesson.status !== 'locked'
-                                    ? () => { window.location.href = `${lessonUrl}?lesson=${lesson.index}`; }
-                                    : undefined
-                                }
-                              >
-                                <div className="edu-cd-lesson-icon">
-                                  {lesson.status === 'done' ? (
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
-                                  ) : (
-                                    lesson.index + 1
-                                  )}
-                                </div>
-                                <div className="edu-cd-lesson-body">
-                                  <div className="edu-cd-lesson-title">{lesson.title}</div>
-                                  <div className="edu-cd-lesson-meta">Bài {lesson.index + 1}</div>
-                                </div>
-                                {lesson.status === 'current' && <span className="edu-cd-lesson-badge">Tiếp tục</span>}
-                              </div>
-                            ))}
+                            {module.lessons.map((lesson) => {
+                              const locked = lesson.status === 'locked';
+                              // Nội dung giống nhau ở cả hai nhánh — chỉ khác
+                              // THẺ bọc: bài mở được là liên kết, bài khoá là
+                              // thẻ trơ.
+                              const body = (
+                                <>
+                                  <div className="edu-cd-lesson-icon" aria-hidden="true">
+                                    {lesson.status === 'done' ? (
+                                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5" /></svg>
+                                    ) : (
+                                      lesson.index + 1
+                                    )}
+                                  </div>
+                                  <div className="edu-cd-lesson-body">
+                                    <div className="edu-cd-lesson-title">{lesson.title}</div>
+                                    <div className="edu-cd-lesson-meta">Bài {lesson.index + 1}</div>
+                                  </div>
+                                  {lesson.status === 'current' && <span className="edu-cd-lesson-badge">Tiếp tục</span>}
+                                  <span style={SR_ONLY}>{LESSON_STATUS_TEXT[lesson.status]}</span>
+                                </>
+                              );
+                              if (locked)
+                                return (
+                                  <div className="edu-cd-lesson locked" key={lesson.index}>
+                                    {body}
+                                  </div>
+                                );
+                              // <a> chứ không <div onClick> hay <button>: cú
+                              // bấm này ĐIỀU HƯỚNG, nên để trình duyệt lo —
+                              // nhận Tab/Enter, hiện link ở thanh trạng thái,
+                              // mở tab mới được bằng chuột giữa/Ctrl. Trước đây
+                              // là <div onClick> nên bàn phím không vào được ô
+                              // nào trong danh sách bài (WCAG 2.1.1).
+                              //
+                              // Giữ <a href> tải lại cả trang (không dùng
+                              // next/link) đúng như window.location.href cũ:
+                              // trang này nạp JS legacy vá window.fetch, không
+                              // nên để chúng sống tiếp sang trang bài học.
+                              return (
+                                <a
+                                  className={`edu-cd-lesson ${lesson.status}`}
+                                  key={lesson.index}
+                                  // goLesson() trong course_detail.js tìm đúng
+                                  // id này rồi .click() — trên <a href> thì cú
+                                  // click vẫn điều hướng như cũ.
+                                  id={lesson.status === 'current' ? 'current-lesson' : undefined}
+                                  data-clickable="1"
+                                  href={`${lessonUrl}?lesson=${lesson.index}`}
+                                  aria-current={lesson.status === 'current' ? 'step' : undefined}
+                                  // <a> mặc định có gạch chân (lan sang cả chữ
+                                  // bên trong) và màu riêng; CSS của trang viết
+                                  // cho <div> nên trung hoà tại đây.
+                                  style={{ textDecoration: 'none', color: 'inherit' }}
+                                >
+                                  {body}
+                                </a>
+                              );
+                            })}
                           </div>
                         </div>
                       </div>

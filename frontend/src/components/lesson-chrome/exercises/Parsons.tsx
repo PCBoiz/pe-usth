@@ -62,7 +62,10 @@ export default function Parsons({
           <div className={styles.dots}><i /><i /><i /></div>
           {filename && <span className={styles.filename}>{filename}</span>}
         </div>
-        <div className={styles.codeBody}>
+        {/* Bấm một dòng ở kho là nó CHUYỂN vào đây — chỗ khác hẳn với nút vừa
+            bấm. aria-relevant="additions" để chỉ dòng mới được đọc, không đọc
+            lại cả khối mã mỗi lần. */}
+        <div className={styles.codeBody} role="log" aria-live="polite" aria-relevant="additions">
           {builtLines.map((line, i) => (
             <Line key={line.id} line={line} num={i + 1} />
           ))}
@@ -84,7 +87,9 @@ export default function Parsons({
           ))}
         </div>
       </div>
-      <div style={{ marginTop: 14 }}>
+      {/* Nhóm có tên: không thế thì trình đọc màn hình gặp một dãy nút lệnh
+          Python trần, không biết chúng thuộc kho dòng lệnh nào. */}
+      <div style={{ marginTop: 14 }} role="group" aria-label="Kho dòng lệnh còn lại, có cả dòng gây nhiễu">
         <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
           {revealed ? 'DÒNG LỆNH CÒN LẠI (CÓ DÒNG BẪY)' : <>DÒNG LỆNH CÒN LẠI &amp; DÒNG GÂY NHIỄU</>}
         </div>

@@ -3,6 +3,8 @@
 // Ô "tự giải thích" — phần S2 của studio-lesson không có trong bộ 27 màn Stitch
 // (bộ đó chỉ có các dạng chọn/điền). Dựng theo cùng ngôn ngữ thị giác: thẻ nền
 // sáng như các khối ngoài code, rubric hiện thành chip như kho token.
+import { useId } from 'react';
+
 import styles from './exercises.module.css';
 
 export interface SelfExplainProps {
@@ -24,10 +26,16 @@ export default function SelfExplain({
   requirement,
   disabled,
 }: SelfExplainProps) {
+  // Yêu cầu/rubric nằm NGAY DƯỚI ô nhập nên người nhìn thấy; người dùng trình
+  // đọc màn hình chỉ nghe thấy nếu nó được nối vào ô bằng aria-describedby.
+  const noteId = useId();
+  const hasNote = Boolean(requirement) || rubricLabels.length > 0;
+
   return (
     <div>
       <textarea
         aria-label="Lời giải thích của bạn"
+        aria-describedby={hasNote ? noteId : undefined}
         value={value}
         disabled={disabled}
         placeholder={placeholder || 'Nhập lời giải thích của bạn…'}
@@ -47,12 +55,12 @@ export default function SelfExplain({
         }}
       />
       {requirement && rubricLabels.length === 0 && (
-        <p className={styles.runHint} style={{ marginTop: 10 }}>
+        <p id={noteId} className={styles.runHint} style={{ marginTop: 10 }}>
           {requirement}
         </p>
       )}
       {rubricLabels.length > 0 && (
-        <div className={styles.suggestions} style={{ marginTop: 12 }}>
+        <div id={noteId} className={styles.suggestions} style={{ marginTop: 12 }}>
           <span className={styles.runHint} style={{ marginRight: 4 }}>
             Cần nêu được:
           </span>
