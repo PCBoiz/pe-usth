@@ -15,11 +15,20 @@
  * Python still runs in a disposable browser worker, never in the NestJS process.
  */
 /* global importScripts, loadPyodide */
+
+// Đường dẫn CÙNG ORIGIN tới runtime đã commit vào repo. Root-relative chứ
+// không '../../pyodide/…' để khỏi phụ thuộc vào vị trí của chính file worker,
+// giống fetch('/static/js/studio-harness.py') bên dưới.
+const PYODIDE_DIR = '/pyodide/v0.27.7/';
+
 self.onmessage = async ({ data }) => {
   try {
     const tests = Array.isArray(data.tests) ? data.tests : [];
     const forbid = Array.isArray(data.forbid) ? data.forbid : [];
     const files = Array.isArray(data.files) ? data.files : [];
+    // stdin: các dòng input() sẽ đọc lần lượt. Hợp đồng với phía React —
+    // tên trường này cố định, đừng đổi.
+    const stdin = Array.isArray(data.stdin) ? data.stdin.map(String) : [];
 
     // Cheap source check first: no point booting a 10 MB runtime to reject this.
     const banned = forbid.filter((token) => String(data.code).includes(token));
@@ -35,7 +44,12 @@ self.onmessage = async ({ data }) => {
       return;
     }
 
-    importScripts('https://cdn.jsdelivr.net/pyodide/v0.27.7/full/pyodide.js');
+    // Runtime Pyodide nằm trong repo (frontend/public/pyodide/v0.27.7/, ~13 MB:
+    // pyodide.js + asm.js + asm.wasm + python_stdlib.zip + pyodide-lock.json).
+    // Trước đây nạp từ cdn.jsdelivr.net: hai khoá Python chết theo một CDN bên
+    // thứ ba, và CSP phải mở connect-src ra domain đó. Cùng origin thì bỏ được
+    // cả hai, và bản runtime luôn khớp với bộ chấm trong cùng commit.
+    importScripts(PYODIDE_DIR + 'pyodide.js');
     // Print nào lọt ra ngoài bộ chấm (hiếm) vẫn được giữ lại để hiện cho học viên.
     let stray = '';
     const write = (line) => {
@@ -43,7 +57,7 @@ self.onmessage = async ({ data }) => {
     };
     const [py, harness] = await Promise.all([
       loadPyodide({
-        indexURL: 'https://cdn.jsdelivr.net/pyodide/v0.27.7/full/',
+        indexURL: PYODIDE_DIR,
         stdout: write,
         stderr: write,
       }),
@@ -58,7 +72,9 @@ self.onmessage = async ({ data }) => {
     const started = performance.now();
     await py.runPythonAsync(harness);
     const grade = py.globals.get('_studio_main');
-    const result = JSON.parse(grade(String(data.code), JSON.stringify(tests), JSON.stringify(files)));
+    const result = JSON.parse(
+      grade(String(data.code), JSON.stringify(tests), JSON.stringify(files), JSON.stringify(stdin)),
+    );
     grade.destroy();
     self.postMessage({
       type: 'result',
