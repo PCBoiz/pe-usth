@@ -74,6 +74,15 @@ export class CoursesService {
     const where: Prisma.CourseWhereInput = {};
     const and: Prisma.CourseWhereInput[] = [];
 
+    // Bước 0: cột courses.is_published có từ đầu nhưng CHƯA từng được dùng để
+    // lọc — khoá seed với is_published = false (vd. python_advanced, xem
+    // scripts/seed-python-advanced.ts) vẫn nằm trên trang khám phá và ai cũng
+    // đăng ký được. Học viên thường chỉ thấy khoá đã phát hành; quản trị viên
+    // thấy tất cả để xem trước bản nháp trước khi mở cho học viên.
+    if (!(await this.isAdmin(userId))) {
+      and.push({ isPublished: true });
+    }
+
     // Bước 1: search động trên nhiều cột.
     if (q?.trim()) {
       const term = q.trim();
@@ -176,8 +185,19 @@ export class CoursesService {
 
   // ---------- Task 90 ----------
   async getCoursesEnrolled(userId: number) {
+    // Khác listCourses() một chút: endpoint này nuôi cả trang "Khoá học của
+    // tôi", nên ngoài khoá đã phát hành còn phải giữ khoá mà CHÍNH user này đã
+    // ghi danh. Nếu lọc cứng is_published = true, học viên đang học một khoá bị
+    // ẩn sẽ thấy khoá đó biến mất khỏi danh sách và không vào học được nữa —
+    // chỉ việc KHÁM PHÁ bị chặn, không phải việc học đang dở.
+    const visible: Prisma.CourseWhereInput | undefined = (await this.isAdmin(
+      userId,
+    ))
+      ? undefined
+      : { OR: [{ isPublished: true }, { enrollments: { some: { userId } } }] };
+
     const [courses, rows] = await Promise.all([
-      this.prisma.course.findMany({ orderBy: { id: 'asc' } }),
+      this.prisma.course.findMany({ where: visible, orderBy: { id: 'asc' } }),
       this.prisma.enrollment.findMany({
         where: { userId },
         include: { course: true },
@@ -200,6 +220,23 @@ export class CoursesService {
       where: { id: courseId },
     });
     if (!course) throw new NotFoundException('Không tìm thấy khoá học');
+
+    // Khoá chưa phát hành không được nhận ghi danh MỚI: trước đây enroll() bỏ
+    // qua hẳn is_published nên bất kỳ ai biết mã khoá (python_advanced) đều
+    // đăng ký được vào bản nháp.
+    //
+    // Chỉ chặn người CHƯA ghi danh. Học viên đã ghi danh từ trước khi khoá bị
+    // ẩn vẫn gọi lại enroll() được, vì endpoint này đồng thời tính lại tiến độ
+    // (recomputeProgress) — chặn họ ở đây là cắt luôn đường học tiếp.
+    if (!course.isPublished) {
+      const existing = await this.prisma.enrollment.findUnique({
+        where: { userId_courseId: { userId, courseId } },
+        select: { userId: true },
+      });
+      if (!existing && !(await this.isAdmin(userId))) {
+        throw new ForbiddenException('Khoá học này chưa được phát hành');
+      }
+    }
 
     return this.prisma.$transaction(async (tx) => {
       // Bước 1: ON CONFLICT DO NOTHING — re-enroll không ghi đè dữ liệu cũ.
@@ -300,23 +337,63 @@ export class CoursesService {
     });
     const doneIds = new Set(done.map((d) => d.lessonId));
 
-    const skills = structure.map((s) => {
-      const completed = s.lessonIds.filter((id) => doneIds.has(id)).length;
-      return {
-        courseId: s.courseId,
-        skill: s.module,
-        total: s.lessonIds.length,
-        completed,
-        progress: s.lessonIds.length
-          ? Math.round((completed / s.lessonIds.length) * 100)
-          : 0,
-      };
-    });
+    // Bước 3: bảng kỹ năng dựng từ lessons của MỌI khoá, nên nó cũng là một
+    // đường khám phá: khoá nháp bị lộ cả mã khoá lẫn tên module (0%). Lọc ở
+    // đây thay vì trong getSkillStructure() vì structure được cache 5 phút và
+    // dùng chung cho mọi user — cờ is_published phải đọc tươi theo từng request.
+    // Vẫn giữ khoá mà user đã ghi danh, để tiến độ của học viên đang học một
+    // khoá bị ẩn không bốc hơi khỏi bảng kỹ năng.
+    const visibleIds = (await this.isAdmin(userId))
+      ? null
+      : new Set(
+          (
+            await this.prisma.course.findMany({
+              where: {
+                OR: [
+                  { isPublished: true },
+                  { enrollments: { some: { userId } } },
+                ],
+              },
+              select: { id: true },
+            })
+          ).map((c) => c.id),
+        );
+
+    const skills = structure
+      .filter((s) => !visibleIds || visibleIds.has(s.courseId))
+      .map((s) => {
+        const completed = s.lessonIds.filter((id) => doneIds.has(id)).length;
+        return {
+          courseId: s.courseId,
+          skill: s.module,
+          total: s.lessonIds.length,
+          completed,
+          progress: s.lessonIds.length
+            ? Math.round((completed / s.lessonIds.length) * 100)
+            : 0,
+        };
+      });
 
     return { ok: true, skills };
   }
 
   // ---------- helpers ----------
+
+  /**
+   * Người xem có phải quản trị viên không?
+   *
+   * Đọc cột users.role y như lessons.service.ts#getLessonContent (và cùng một
+   * khái niệm role = 'admin' mà AdminGuard dùng) — KHÔNG tự bày ra cơ chế
+   * quyền mới. Phải truy vấn DB vì các service ở đây chỉ nhận userId từ
+   * @CurrentUserId(), không thấy payload JWT.
+   */
+  private async isAdmin(userId: number): Promise<boolean> {
+    const viewer = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
+    return viewer?.role === 'admin';
+  }
 
   private async getSkillStructure() {
     if (this.skillsCache && this.skillsCache.expiresAt > Date.now()) {
