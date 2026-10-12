@@ -95,7 +95,17 @@ npm run migrate:deploy                        # trên staging/production
 
 DB đang dùng chung với bản Django trong giai đoạn chuyển tiếp, nên mọi migration phải
 tương thích ngược: chỉ thêm cột nullable hoặc có default, không đổi tên hay xoá cột.
-Index tuỳ chọn cho tải cao nằm ở [prisma/optional-indexes.sql](prisma/optional-indexes.sql) (chạy tay).
+Ràng buộc duy nhất `lessons(course_id, sort_order)` và các index nóng nằm trong migration
+`20261012000000_critical_indexes_and_lesson_sort_unique`, được `migrate:deploy` áp tự động.
+**Trước khi deploy migration đó**, kiểm tra dữ liệu trùng — câu lệnh phải trả về 0 dòng:
+
+```sql
+SELECT course_id, sort_order, count(*) FROM lessons GROUP BY 1,2 HAVING count(*) > 1;
+```
+
+[prisma/optional-indexes.sql](prisma/optional-indexes.sql) giữ lại bản `CONCURRENTLY` của
+đúng các index đó, cùng tên: chạy tay file này trước khi deploy nếu bảng đã lớn tới mức
+không được chặn ghi trong lúc tạo index.
 
 ## Kiểm thử và CI
 
