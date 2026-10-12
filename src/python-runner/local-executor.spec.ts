@@ -204,8 +204,46 @@ describe('LocalExecutor', () => {
   });
 
   describe('hàng đợi', () => {
-    // chờ executor đi tới execFile (sau mkdtemp/writeFile bất đồng bộ)
+    // Nhường vòng lặp sự kiện một nhịp, dùng cho các khẳng định PHỦ ĐỊNH
+    // ("chưa spawn", "không chạy muộn") — chỗ đó không có mốc nào để chờ.
     const settle = () => new Promise((r) => setTimeout(r, 50));
+
+    /**
+     * Chờ TỚI KHI executor đã spawn đủ `n` container, thay vì ngủ cố định 50ms.
+     *
+     * Vì sao: trước khi gọi execFile, executor còn mkdtemp + writeFile (I/O
+     * thật), nên "đã spawn chưa" là việc của đĩa chứ không phải của đồng hồ.
+     * 50ms đủ khi chạy riêng file này nhưng KHÔNG đủ khi chạy cả bộ (`npx jest
+     * --ci` mở 11 worker, ts-jest biên dịch nguội): đo được 2–4 ca trượt mỗi
+     * lần chạy sau khi xoá cache, với hai triệu chứng "Received length: 0" và
+     * "Exceeded timeout of 5000 ms" — test đọc `pending[0]` khi mảng còn rỗng
+     * nên lời hứa không bao giờ được trả lời.
+     *
+     * Tệ hơn cả trượt oan: test đi tiếp khi bài cũ chưa tới execFile làm lời
+     * gọi muộn rơi vào mock của test SAU, lệch bộ đếm của nó (ca "chỗ được nhả
+     * khi bài LỖI hạ tầng" trượt vì n đã bị +1 từ ca trước).
+     */
+    const spawned = async (pending: Call[], n: number) => {
+      const deadline = Date.now() + 5_000;
+      while (pending.length < n) {
+        if (Date.now() > deadline) {
+          throw new Error(
+            `chờ quá lâu: mong ${n} docker run, có ${pending.length}`,
+          );
+        }
+        await new Promise((r) => setTimeout(r, 5));
+      }
+    };
+
+    /** Chờ tới khi executor đã gọi `docker kill` (cũng là I/O, không theo đồng hồ). */
+    const killed = async (calls: Call[]) => {
+      const deadline = Date.now() + 5_000;
+      while (!calls.some((c) => c.args[0] === 'kill')) {
+        if (Date.now() > deadline)
+          throw new Error('chờ quá lâu: không thấy docker kill');
+        await new Promise((r) => setTimeout(r, 5));
+      }
+    };
 
     it('hết chỗ thì XẾP HÀNG (không 429), chạy khi có chỗ và báo queuedMs', async () => {
       const pending: Call[] = [];
@@ -213,7 +251,7 @@ describe('LocalExecutor', () => {
       const service = makeService({ PY_RUN_MAX_CONCURRENT: 1 });
 
       const first = service.run('while True: pass');
-      await settle();
+      await spawned(pending, 1);
       expect(pending).toHaveLength(1);
 
       const second = service.run('print(2)');
@@ -225,7 +263,7 @@ describe('LocalExecutor', () => {
       const firstResult = await first;
       expect(firstResult.queuedMs).toBeLessThan(40); // vào chạy ngay
 
-      await settle();
+      await spawned(pending, 2);
       expect(pending).toHaveLength(2); // nhả chỗ → lượt hai được chạy
       pending[1].cb(null, '2\n', '');
       const secondResult = await second;
@@ -242,7 +280,7 @@ describe('LocalExecutor', () => {
       });
 
       const running = service.run('while True: pass');
-      await settle();
+      await spawned(pending, 1);
       const waiting = service.run('print(2)'); // chiếm chỗ duy nhất trong hàng
       await settle();
 
@@ -254,7 +292,7 @@ describe('LocalExecutor', () => {
 
       pending[0].cb(null, '', '');
       await running;
-      await settle();
+      await spawned(pending, 2);
       pending[1].cb(null, '', '');
       await waiting;
     });
@@ -268,7 +306,7 @@ describe('LocalExecutor', () => {
       });
 
       const running = service.run('while True: pass');
-      await settle();
+      await spawned(pending, 1);
       const timedOut = await service.run('print(2)').catch((e: unknown) => e);
 
       expect((timedOut as HttpException).getStatus()).toBe(429);
@@ -286,7 +324,7 @@ describe('LocalExecutor', () => {
       const service = makeService({ PY_RUN_MAX_CONCURRENT: 1 });
 
       const running = service.run('while True: pass');
-      await settle();
+      await spawned(pending, 1);
       const client = new AbortController();
       const abandoned = service
         .run('print("không được chạy")', client.signal)
@@ -316,12 +354,12 @@ describe('LocalExecutor', () => {
       const run = service
         .run('while True: pass', client.signal)
         .catch((e: unknown) => e);
-      await settle();
+      await spawned(pending, 1);
       const name = pending[0].args[pending[0].args.indexOf('--name') + 1];
       expect(calls.some((c) => c.args[0] === 'kill')).toBe(false);
 
       client.abort();
-      await settle();
+      await killed(calls);
       const kill = calls.find((c) => c.args[0] === 'kill');
       expect(kill).toBeDefined();
       expect(kill!.args).toEqual(['kill', name]);
