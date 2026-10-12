@@ -61,9 +61,11 @@ async function expectNoHorizontalOverflow(page: Page, label: string) {
 }
 
 // ── Trang chủ + chi tiết khóa học ───────────────────────────────────────────
-// Một đại diện cho mỗi nhánh render: khóa React thuần (python_advanced), khóa dùng JS
-// legacy (db_design), khóa có giáo trình dài nhất (java — 110 bài, dễ tràn nhất).
-for (const path of ['/', '/courses/python_advanced', '/courses/java', '/courses/db_design']) {
+// Một đại diện cho mỗi nhánh render: khóa React thuần (python_advanced) và khóa
+// dùng JS legacy (db_design — route tĩnh riêng nên vẫn mở được bằng đường dẫn).
+// Bản trước đo thêm /courses/java (giáo trình dài nhất, 110 bài): java đã rời
+// danh mục tĩnh 13/10/2026 nên route động trả 404, đo một trang 404 là đo vô ích.
+for (const path of ['/', '/courses/python_advanced', '/courses/db_design']) {
   test(`không tràn ngang: ${path}`, async ({ page }) => {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500); // chờ font/script legacy dựng xong nội dung
@@ -71,15 +73,18 @@ for (const path of ['/', '/courses/python_advanced', '/courses/java', '/courses/
   });
 }
 
-test('trang chủ liệt kê đủ khóa và mỗi ô dẫn tới đúng trang chi tiết', async ({ page }) => {
+test('trang chủ chỉ còn ô Python và ô công cụ Python IDE', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const tiles = page.locator('a[href^="/courses/"]');
-  // Khoá `python` cơ bản đã gỡ (10/2026): còn 7 khoá.
-  await expect(tiles).toHaveCount(7);
+  // 13/10/2026: 6 khoá còn lại (cpp, java, htmlcss, db_design*) đã gỡ khỏi danh
+  // mục tĩnh cho buổi dùng thử — xem src/lib/catalog.ts. Còn đúng một ô khoá.
+  await expect(tiles).toHaveCount(1);
   const hrefs = await tiles.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
-  expect(hrefs).toContain('/courses/python_advanced');
-  expect(hrefs).not.toContain('/courses/python');
-  expect(hrefs).toContain('/courses/db_design_nc');
+  expect(hrefs).toEqual(['/courses/python_advanced']);
+
+  // Python IDE là CÔNG CỤ (href /ide, ngoài lưới khóa học) và hiện SẴN; chỉ ẩn
+  // khi build với NEXT_PUBLIC_IDE_ENABLED=off, mà e2e không đặt cờ đó.
+  await expect(page.locator('a[href="/ide"]')).toHaveCount(1);
 
   await page.locator('a[href="/courses/python_advanced"]').click();
   await expect(page).toHaveURL(/\/courses\/python_advanced$/);

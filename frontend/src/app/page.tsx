@@ -1,6 +1,9 @@
 // Trang chủ: lưới biểu tượng của mọi khóa học, bấm vào để mở trang chi tiết.
 // Dữ liệu từ danh mục tĩnh (src/lib/catalog.ts) — không gọi API vì mọi route
 // /api/courses* đều đòi đăng nhập mà frontend không còn trang đăng nhập.
+//
+// Từ 13/10/2026 danh mục chỉ còn Python Advanced: buổi dùng thử chỉ xoay quanh
+// khóa đó, các thẻ khác dẫn vào khóa dựng nửa vời (xem catalog.ts).
 import type { Metadata } from 'next';
 
 import PageStyles from '@/components/PageStyles';
@@ -41,8 +44,9 @@ export default function HomePage() {
           </ul>
 
           {/* Công cụ nằm NGOÀI lưới khóa học: không phải khóa, không ảnh hưởng
-              tiến độ/XP/đăng ký. Danh sách rỗng (IDE đang tắt) thì bỏ luôn cả
-              tiêu đề, không để một mục "Công cụ" trống trơ trên trang chủ. */}
+              tiến độ/XP/đăng ký. Mặc định có đúng một mục (Python IDE); tắt bằng
+              NEXT_PUBLIC_IDE_ENABLED=off thì danh sách rỗng, và khi rỗng phải bỏ
+              luôn cả tiêu đề — không để một mục "Công cụ" trống trơ trên trang. */}
           {TOOLS.length > 0 && (
             <>
               <h2 className={styles.sectionTitle}>Công cụ</h2>

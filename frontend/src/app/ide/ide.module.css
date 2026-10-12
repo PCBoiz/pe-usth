@@ -163,6 +163,26 @@
   border-color: color-mix(in srgb, crimson 40%, transparent);
 }
 
+/* Chi tiết kỹ thuật của lỗi hạ tầng: gập lại để người học không phải đọc thông
+   điệp của docker, nhưng KHÔNG xoá — giảng viên cần đúng nguyên văn để báo lỗi. */
+.detail {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.detail summary {
+  cursor: pointer;
+  color: var(--edu-t3);
+}
+.detailBody {
+  margin: 6px 0 0;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--edu-t3);
+}
+
 .stdout,
 .stderr {
   margin: 0 0 10px;

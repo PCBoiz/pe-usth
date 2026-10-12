@@ -6,6 +6,11 @@
 // không hàng đợi — nên "đang chạy" kéo dài tới khi chương trình xong hoặc hết giờ.
 //
 // Đây là công cụ, KHÔNG phải khóa học: không ghi tiến độ/XP/đăng ký.
+//
+// Lỗi HẠ TẦNG (máy chủ không có Docker, runner tắt, IDE chưa mở) được nói bằng
+// một câu bình thường, nguyên văn thông điệp kỹ thuật thì gập vào <details>. Lỗi
+// của MÃ người học (SyntaxError, exception, hết giờ) vẫn hiện nguyên như trước —
+// đó mới là thứ công cụ này tồn tại để cho thấy.
 
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
@@ -13,6 +18,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { apiFetch } from '@/lib/api';
+import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
 import styles from './ide.module.css';
@@ -40,7 +46,13 @@ type RunState =
   | { status: 'idle' }
   | { status: 'running' }
   | { status: 'done'; result: RunResult }
-  | { status: 'error'; kind: 'private' | 'busy' | 'down' | 'other'; message: string };
+  | {
+      status: 'error';
+      kind: 'private' | 'busy' | 'unavailable' | 'other';
+      message: string;
+      /** Nguyên văn thông điệp kỹ thuật, gập trong <details> cho người vận hành. */
+      detail?: string;
+    };
 
 /** Chủ đề sáng/tối của trang: class `dark` trên <body> (xem SiteHeader/layout gốc). */
 function subscribeTheme(onChange: () => void) {
@@ -65,9 +77,9 @@ function clip(text: string): { text: string; clipped: boolean } {
 }
 
 const ERROR_TITLES: Record<Extract<RunState, { status: 'error' }>['kind'], string> = {
-  private: 'IDE chưa được bật',
+  private: 'IDE chưa mở cho phiên này',
   busy: 'Chưa chạy được lúc này',
-  down: 'Bộ chạy Python không sẵn sàng',
+  unavailable: 'Bộ chạy Python đang được dựng',
   other: 'Lỗi',
 };
 
@@ -109,11 +121,16 @@ export default function IdeClient() {
       });
       const body: unknown = await res.json().catch(() => null);
       if (res.status === 401) {
-        // Không có đăng nhập để mà gợi ý: 401 nghĩa là backend vẫn đòi JWT cho route này.
+        // Không có đăng nhập để mà gợi ý: 401 nghĩa là backend vẫn đòi JWT cho route
+        // này và phiên khách hiện tại không có token. Tên biến môi trường là việc của
+        // người vận hành chứ không phải của người học → xuống <details>.
         setState({
           status: 'error',
           kind: 'private',
-          message: 'Backend chưa bật chế độ công khai cho IDE (PY_RUNNER_PUBLIC=true).',
+          message:
+            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
+            + 'bình thường ngay trong trình duyệt.',
+          detail: `HTTP 401 — ${errorMessage(body, 'backend chưa bật chế độ công khai cho IDE (PY_RUNNER_PUBLIC=true).')}`,
         });
       } else if (res.status === 429) {
         setState({
@@ -122,23 +139,34 @@ export default function IdeClient() {
           // 429 có hai nguồn với hai lời khuyên KHÁC NHAU, backend đã phân biệt bằng
           // thông điệp: "Bạn chạy quá nhiều lần, đợi khoảng 1 phút…" (throttle) hoặc
           // "Máy chủ đang quá tải, thử lại sau" (hàng đợi đầy / chờ quá hạn). Hiện đúng
-          // câu đó, đừng thay bằng câu chung.
+          // câu đó, đừng thay bằng câu chung: cả hai đều là lời khuyên cho người dùng.
           message: errorMessage(body, 'Máy chủ đang quá tải, thử lại sau'),
         });
       } else if (res.status === 503) {
-        // Chế độ remote: backend không gọi được runner (tắt, lệch khoá, quá hạn). Chế độ local
-        // cũng có thể 503 (máy chủ chưa cài Docker). Dùng thông điệp của backend vì nó nói đúng
-        // nguyên nhân; chỉ khi không có mới dùng câu mặc định.
+        // 503 ở route này LUÔN là hạ tầng, không bao giờ là lỗi của mã: chế độ remote
+        // không gọi được runner (tắt, lệch khoá, quá hạn), chế độ local không có docker
+        // ("Máy chủ chưa cài Docker"). Trước đây trang hiện thẳng câu của backend vì nó
+        // nói đúng nguyên nhân — nhưng người đọc là sinh viên, nên câu đó xuống
+        // <details> còn trên mặt là một câu bình thường.
         setState({
           status: 'error',
-          kind: 'down',
-          message: errorMessage(body, 'Bộ chạy Python đang tắt, thử lại sau'),
+          kind: 'unavailable',
+          message: RUNNER_UNAVAILABLE_MESSAGE,
+          detail: `HTTP 503 — ${errorMessage(body, 'bộ chạy Python không trả lời.')}`,
         });
       } else if (!res.ok) {
         setState({
           status: 'error',
           kind: 'other',
           message: errorMessage(body, `Không chạy được (HTTP ${res.status}).`),
+        });
+      } else if (isRunnerDown(body as RunResult)) {
+        // 200 nhưng docker chết trước khi Python kịp chạy — xem isRunnerDown().
+        setState({
+          status: 'error',
+          kind: 'unavailable',
+          message: RUNNER_UNAVAILABLE_MESSAGE,
+          detail: (body as RunResult).stderr.trim(),
         });
       } else {
         setState({ status: 'done', result: body as RunResult });
@@ -236,15 +264,25 @@ function Output({ state }: { state: RunState }) {
       </p>
     );
 
-  if (state.status === 'error')
+  if (state.status === 'error') {
+    // Hạ tầng chưa sẵn sàng thì KHÔNG tô đỏ: người học không làm gì sai cả.
+    const infra = state.kind === 'unavailable' || state.kind === 'private';
     return (
-      <div className={`${styles.notice} ${styles.noticeError}`} role="alert">
+      <div className={`${styles.notice} ${infra ? styles.noticeWarn : styles.noticeError}`} role="alert">
         <strong>
           {ERROR_TITLES[state.kind]}
         </strong>
         <p>{state.message}</p>
+        {/* Gập chứ không xoá: giảng viên/trợ giảng cần đúng nguyên văn để báo lỗi. */}
+        {state.detail && (
+          <details className={styles.detail}>
+            <summary>Chi tiết kỹ thuật</summary>
+            <pre className={styles.detailBody}>{state.detail}</pre>
+          </details>
+        )}
       </div>
     );
+  }
 
   const { result } = state;
   const out = clip(result.stdout);

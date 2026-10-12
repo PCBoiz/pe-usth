@@ -11,6 +11,15 @@
  * Khoá `python` cơ bản đã gỡ khỏi trang (10/2026): chỉ còn Python Advanced, giáo
  * trình 48 bài từ scripts/pe-v4 (đồng bộ bằng scripts/pe-v4/sync_curricula.py).
  *
+ * 13/10/2026 — gỡ nốt 6 khoá còn lại khỏi danh mục (cpp, java, htmlcss,
+ * db_design, db_design_tc, db_design_nc). Buổi dùng thử với giảng viên và sinh
+ * viên chỉ xoay quanh Python Advanced; một thẻ dẫn vào khoá rỗng hoặc dựng nửa
+ * vời làm người thử mất lòng tin vào cả buổi. Đây là thay đổi TRÌNH BÀY: bản ghi
+ * khoá trong DB và `prisma/seed-courses.js` không bị sửa, các route tự có của
+ * chúng (`/courses/db_design*`, `/lesson/java`, `/lesson/htmlcss`, `/interface`)
+ * vẫn chạy khi mở bằng đường dẫn trực tiếp — chỉ không còn lối vào từ trang chủ,
+ * và `/courses/{cpp,java,htmlcss}` (route động, `dynamicParams = false`) thành 404.
+ *
  * Sửa seed thì phải sửa cả file này (xem bẫy "hai nguồn danh sách bài" trong
  * AGENTS.md — đây là nguồn thứ ba của cùng một loại lệch).
  */
@@ -78,116 +87,6 @@ export const COURSES: CatalogCourse[] = [
     mark: 'Py+',
     lessonUrl: '/lesson/python_advanced',
   },
-  {
-    id: 'cpp',
-    label: 'C/C++',
-    title: 'Lập trình C/C++ nền tảng',
-    subtitle: 'Con trỏ, cấu trúc dữ liệu và OOP từ gốc',
-    description:
-      'Nắm chắc nền tảng của C/C++: kiểu dữ liệu, con trỏ và bộ nhớ, cấu trúc dữ liệu cơ bản '
-      + 'và lập trình hướng đối tượng.',
-    tag: 'NGÔN NGỮ LẬP TRÌNH',
-    level: 'beginner',
-    duration: '~35 giờ',
-    lessons: lessonCount('cpp', 40),
-    rating: 4.8,
-    image: '/static/images/cpp.webp',
-    color: '#00599C',
-    accent: '#659AD2',
-    mark: 'C++',
-    lessonUrl: '/interface',
-  },
-  {
-    id: 'java',
-    label: 'Java',
-    title: 'Java & Spring Boot chuyên nghiệp',
-    subtitle: 'OOP, Spring Boot và kiến trúc Microservices',
-    description:
-      'Từ OOP trong Java tới xây dựng dịch vụ với Spring Boot và tổ chức hệ thống theo kiến trúc Microservices.',
-    tag: 'NGÔN NGỮ LẬP TRÌNH',
-    level: 'intermediate',
-    duration: '~45 giờ',
-    lessons: lessonCount('java', 40),
-    rating: 4.8,
-    image: '/static/images/java.webp',
-    color: '#E76F00',
-    accent: '#5382A1',
-    mark: 'Jv',
-    lessonUrl: '/lesson/java',
-  },
-  {
-    id: 'htmlcss',
-    label: 'HTML & CSS',
-    title: 'HTML & CSS — Nền tảng Web',
-    subtitle: 'Xây giao diện web responsive từ con số 0',
-    description:
-      'Dựng trang web hoàn chỉnh từ thẻ HTML đến bố cục Flexbox/Grid và giao diện responsive trên mọi thiết bị.',
-    tag: 'FRONTEND',
-    level: 'beginner',
-    duration: '~30 giờ',
-    lessons: lessonCount('htmlcss', 40),
-    rating: 4.8,
-    image: '/static/images/htmlcss.webp',
-    color: '#E44D26',
-    accent: '#264DE4',
-    mark: '</>',
-    lessonUrl: '/lesson/htmlcss',
-  },
-  {
-    id: 'db_design',
-    label: 'Thiết kế CSDL',
-    title: 'Thiết kế CSDL: Từ ý tưởng đến hệ dữ liệu hoàn chỉnh',
-    subtitle: 'Phần 1 — Xây nền tảng GameHub',
-    description:
-      'Từ thực thể đầu tiên đến hệ CSDL hoàn chỉnh: ER Diagram, khóa chính/ngoại, chuẩn hóa 1NF→4NF và SQL ứng dụng thực tế.',
-    tag: 'DATABASE & BACKEND',
-    level: 'beginner',
-    duration: '~6 giờ',
-    lessons: 20,
-    rating: 4.8,
-    image: '/static/images/db_design.webp',
-    color: '#06B6D4',
-    accent: '#0E7490',
-    mark: 'DB',
-    lessonUrl: '/lesson/db_design',
-  },
-  {
-    id: 'db_design_tc',
-    label: 'SQL nâng cao',
-    title: 'SQL nâng cao, Dữ liệu lớn & Hiệu năng',
-    subtitle: 'GameHub Community — mạng xã hội của gamers',
-    description:
-      'Advanced SQL (Trigger, Procedure, Recursive CTE), Big Data & Analytics, Storage & Indexing — '
-      + 'xây mạng cộng đồng gamers của GameHub.',
-    tag: 'DATABASE & BACKEND',
-    level: 'intermediate',
-    duration: '~7 giờ',
-    lessons: 21,
-    rating: 4.8,
-    image: '/static/images/db_design_tc.webp',
-    color: '#0C4A6E',
-    accent: '#38BDF8',
-    mark: 'SQL',
-    lessonUrl: '/lesson/db_design_tc',
-  },
-  {
-    id: 'db_design_nc',
-    label: 'Database Engine',
-    title: 'Bên trong Database Engine: Tối ưu, Giao dịch & Phục hồi',
-    subtitle: 'GameHub Marketplace — sàn giao dịch vật phẩm',
-    description:
-      'Query Processing & Optimization, Concurrency Control, Crash Recovery — vận hành chợ giao dịch triệu người dùng của GameHub.',
-    tag: 'DATABASE & BACKEND',
-    level: 'advanced',
-    duration: '~9 giờ',
-    lessons: 25,
-    rating: 4.8,
-    image: '/static/images/db_design_nc.webp',
-    color: '#7C2D12',
-    accent: '#FB923C',
-    mark: 'TX',
-    lessonUrl: '/lesson/db_design_nc',
-  },
 ];
 
 export function findCourse(id: string): CatalogCourse | undefined {
@@ -212,25 +111,27 @@ const IDE_TOOL: CatalogTool = {
   id: 'ide',
   label: 'Python IDE',
   href: '/ide',
-  // Xanh lục + vàng chanh: chưa khóa nào dùng (8 khóa đang dùng xanh dương,
-  // tím, cam, đỏ cam, xanh ngọc, nâu).
+  // Xanh lục + vàng chanh: khác hẳn tím/hồng của khoá Python (thẻ duy nhất còn
+  // lại trong lưới) nên hai biểu tượng không lẫn vào nhau.
   color: '#059669',
   accent: '#A3E635',
   mark: 'IDE',
 };
 
 /**
- * Thẻ "Python IDE" chỉ hiện khi NEXT_PUBLIC_IDE_ENABLED=on.
+ * Thẻ "Python IDE" hiện SẴN; đặt NEXT_PUBLIC_IDE_ENABLED=off để ẩn.
  *
- * Vì sao phải tắt được: `/ide` gửi mã sang `POST /api/python/run`, mà route đó
- * chạy code trong container Docker (src/python-runner). Nền tảng web service
- * thường (Render chẳng hạn) chạy SẴN trong container và không có Docker bên
- * trong, nên mọi lần bấm Chạy đều trả lỗi hạ tầng. Để nguyên thẻ trên trang chủ
- * thì người dùng thử bấm vào và gặp lỗi ngay ở lần đầu tiên — tệ hơn là không
- * thấy thẻ nào cả.
+ * Mặc định cũ (12/10/2026) là ẩn, phải đặt =on mới hiện: `/ide` gửi mã sang
+ * `POST /api/python/run`, mà route đó chạy code trong container Docker
+ * (src/python-runner). Nền tảng web service thường (Render chẳng hạn) chạy SẴN
+ * trong container và không có Docker bên trong, nên mọi lần bấm Chạy đều trả lỗi
+ * hạ tầng — thà không có thẻ còn hơn để người dùng bấm vào rồi gặp lỗi.
  *
- * Bật lại bằng cách đặt biến đó khi đã có nơi chạy Docker thật (xem
- * docker/py-sandbox/Dockerfile và docs/deploy-runbook.md).
+ * 13/10/2026 đảo mặc định lại thành HIỆN, vì chỗ gây hại đã bịt ở đúng nơi:
+ * `IdeClient` nhận ra trường hợp "chưa có bộ chạy" và nói một câu bình thường
+ * (đang dựng, bài học vẫn chạy trong trình duyệt) thay vì dán thông điệp của
+ * docker ra màn hình. Công cụ viết được code vẫn có ích khi chưa chạy được, nên
+ * giữ nguyên cơ chế tắt: buổi nào không muốn thấy thì đặt cờ =off.
  */
 export const TOOLS: CatalogTool[] =
-  process.env.NEXT_PUBLIC_IDE_ENABLED === 'on' ? [IDE_TOOL] : [];
+  process.env.NEXT_PUBLIC_IDE_ENABLED === 'off' ? [] : [IDE_TOOL];

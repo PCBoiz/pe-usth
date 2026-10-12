@@ -1,6 +1,8 @@
-// Trang chi tiết khóa học (python_advanced, cpp, java, htmlcss).
+// Trang chi tiết khóa học. Danh mục tĩnh từ 13/10/2026 chỉ còn python_advanced
+// (xem src/lib/catalog.ts), nên route động này thực tế chỉ sinh ra
+// /courses/python_advanced; cpp/java/htmlcss đã rời danh mục nên thành 404.
 // Ba khóa db_design* có route tĩnh riêng (courses/db_design*/page.tsx) và được
-// Next ưu tiên trước route động này.
+// Next ưu tiên trước route động này — mở bằng đường dẫn trực tiếp vẫn chạy.
 //
 // Server component: chỉ tra danh mục tĩnh để dựng <title>/description và trả 404
 // cho mã khóa lạ. Phần tương tác (accordion giáo trình, chấm sao) ở CourseDetail.
@@ -15,6 +17,9 @@ import CourseDetail from './CourseDetail';
 export const dynamicParams = false;
 
 export function generateStaticParams() {
+  // Lọc db_design* không còn khớp gì (chúng đã rời danh mục) nhưng vẫn giữ: nếu
+  // sau này đưa một khóa db_design trở lại `COURSES`, route động mà sinh ra
+  // /courses/db_design thì đụng đúng đường dẫn của route tĩnh có sẵn.
   return COURSES.filter((c) => !c.id.startsWith('db_design')).map((c) => ({ courseId: c.id }));
 }
 
