@@ -41,20 +41,25 @@ export default function HomePage() {
           </ul>
 
           {/* Công cụ nằm NGOÀI lưới khóa học: không phải khóa, không ảnh hưởng
-              tiến độ/XP/đăng ký. */}
-          <h2 className={styles.sectionTitle}>Công cụ</h2>
-          <ul className={styles.grid}>
-            {TOOLS.map((tool) => (
-              <CatalogTile
-                key={tool.id}
-                href={tool.href}
-                label={tool.label}
-                color={tool.color}
-                accent={tool.accent}
-                mark={tool.mark}
-              />
-            ))}
-          </ul>
+              tiến độ/XP/đăng ký. Danh sách rỗng (IDE đang tắt) thì bỏ luôn cả
+              tiêu đề, không để một mục "Công cụ" trống trơ trên trang chủ. */}
+          {TOOLS.length > 0 && (
+            <>
+              <h2 className={styles.sectionTitle}>Công cụ</h2>
+              <ul className={styles.grid}>
+                {TOOLS.map((tool) => (
+                  <CatalogTile
+                    key={tool.id}
+                    href={tool.href}
+                    label={tool.label}
+                    color={tool.color}
+                    accent={tool.accent}
+                    mark={tool.mark}
+                  />
+                ))}
+              </ul>
+            </>
+          )}
         </main>
       </div>
     </>

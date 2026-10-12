@@ -208,15 +208,29 @@ export type CatalogTool = {
   mark: string;
 };
 
-export const TOOLS: CatalogTool[] = [
-  {
-    id: 'ide',
-    label: 'Python IDE',
-    href: '/ide',
-    // Xanh lục + vàng chanh: chưa khóa nào dùng (8 khóa đang dùng xanh dương,
-    // tím, cam, đỏ cam, xanh ngọc, nâu).
-    color: '#059669',
-    accent: '#A3E635',
-    mark: 'IDE',
-  },
-];
+const IDE_TOOL: CatalogTool = {
+  id: 'ide',
+  label: 'Python IDE',
+  href: '/ide',
+  // Xanh lục + vàng chanh: chưa khóa nào dùng (8 khóa đang dùng xanh dương,
+  // tím, cam, đỏ cam, xanh ngọc, nâu).
+  color: '#059669',
+  accent: '#A3E635',
+  mark: 'IDE',
+};
+
+/**
+ * Thẻ "Python IDE" chỉ hiện khi NEXT_PUBLIC_IDE_ENABLED=on.
+ *
+ * Vì sao phải tắt được: `/ide` gửi mã sang `POST /api/python/run`, mà route đó
+ * chạy code trong container Docker (src/python-runner). Nền tảng web service
+ * thường (Render chẳng hạn) chạy SẴN trong container và không có Docker bên
+ * trong, nên mọi lần bấm Chạy đều trả lỗi hạ tầng. Để nguyên thẻ trên trang chủ
+ * thì người dùng thử bấm vào và gặp lỗi ngay ở lần đầu tiên — tệ hơn là không
+ * thấy thẻ nào cả.
+ *
+ * Bật lại bằng cách đặt biến đó khi đã có nơi chạy Docker thật (xem
+ * docker/py-sandbox/Dockerfile và docs/deploy-runbook.md).
+ */
+export const TOOLS: CatalogTool[] =
+  process.env.NEXT_PUBLIC_IDE_ENABLED === 'on' ? [IDE_TOOL] : [];
