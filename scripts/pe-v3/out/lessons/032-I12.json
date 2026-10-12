@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I12",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "__init__ khởi tạo (gọi cha); __str__ trả chuỗi; compile in thông báo",
-            "detail": "Mỗi method một trách nhiệm.",
-            "correct": true
+            "title": "__init__ in object",
+            "detail": "Constructor không in.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "__init__ in object",
-            "detail": "Constructor không in.",
-            "correct": false
+            "title": "__init__ khởi tạo (gọi cha); __str__ trả chuỗi; compile in thông báo",
+            "detail": "Mỗi method một trách nhiệm.",
+            "correct": true
           }
         ]
       },
@@ -97,13 +97,13 @@
               "correct": true
             },
             {
-              "text": "std_version",
-              "detail": "Đó là phần của con.",
+              "text": "Không phần nào",
+              "detail": "super().__init__ khởi tạo ba trường.",
               "correct": false
             },
             {
-              "text": "Không phần nào",
-              "detail": "super().__init__ khởi tạo ba trường.",
+              "text": "std_version",
+              "detail": "Đó là phần của con.",
               "correct": false
             }
           ],
@@ -142,9 +142,9 @@
       "counter": {
         "question": "C(\"C\", 1972, [], \"C23\") → str(obj)?",
         "options": [
-          "Language[C], Year created[1972], Paradigms[], Standard version[C23]",
           "Language[C], Standard version[C23]",
-          "Standard version[C23]"
+          "Standard version[C23]",
+          "Language[C], Year created[1972], Paradigms[], Standard version[C23]"
         ],
         "correct": "Language[C], Year created[1972], Paradigms[], Standard version[C23]"
       }

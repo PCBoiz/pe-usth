@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I01",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,20 +49,20 @@
         "options": [
           {
             "id": "a",
+            "title": "Phải viết lại class",
+            "detail": "Một class tạo được nhiều object.",
+            "correct": false
+          },
+          {
+            "id": "b",
             "title": "Không — vẫn là .name, .year_created, .paradigms",
             "detail": "Mọi object của cùng class có cùng tên thuộc tính, khác giá trị.",
             "correct": true
           },
           {
-            "id": "b",
+            "id": "c",
             "title": "Có — mỗi object một tên thuộc tính",
             "detail": "Tên thuộc tính do class quy định.",
-            "correct": false
-          },
-          {
-            "id": "c",
-            "title": "Phải viết lại class",
-            "detail": "Một class tạo được nhiều object.",
             "correct": false
           }
         ]
@@ -102,6 +102,11 @@
           "question": "print(language.paradigms) với paradigms = [\"procedural\"] in gì?",
           "options": [
             {
+              "text": "[\"procedural\"]",
+              "detail": "Python biểu diễn chuỗi trong list bằng dấu nháy đơn.",
+              "correct": false
+            },
+            {
               "text": "['procedural']",
               "detail": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn.",
               "correct": true
@@ -110,24 +115,14 @@
               "text": "procedural",
               "detail": "Đó là phần tử, không phải cả list.",
               "correct": false
-            },
-            {
-              "text": "[\"procedural\"]",
-              "detail": "Python biểu diễn chuỗi trong list bằng dấu nháy đơn.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn."
         },
         {
           "question": "Class và object khác nhau thế nào?",
           "options": [
-            {
-              "text": "Class là bản mô tả; object là một thực thể tạo từ class, giữ dữ liệu riêng",
-              "detail": "Một class tạo được nhiều object.",
-              "correct": true
-            },
             {
               "text": "Là một",
               "detail": "ProgrammingLanguage là class; language là object.",
@@ -137,9 +132,14 @@
               "text": "Object là file, class là hàm",
               "detail": "Không đúng.",
               "correct": false
+            },
+            {
+              "text": "Class là bản mô tả; object là một thực thể tạo từ class, giữ dữ liệu riêng",
+              "detail": "Một class tạo được nhiều object.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Một class tạo được nhiều object."
         }
       ],
@@ -178,9 +178,9 @@
       "counter": {
         "question": "Với object C/1972/[\"procedural\"], dòng thứ hai in gì?",
         "options": [
+          "C",
           "1972",
-          "year_created",
-          "C"
+          "year_created"
         ],
         "correct": "1972"
       },

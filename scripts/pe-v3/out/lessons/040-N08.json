@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N08",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -52,15 +52,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Chỉ thời gian tạo child — chưa tính lúc child làm việc",
-            "detail": "Phải chờ đủ mới biết công việc đã xong.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Toàn bộ công việc",
             "detail": "Child có thể còn đang chạy.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Chỉ thời gian tạo child — chưa tính lúc child làm việc",
+            "detail": "Phải chờ đủ mới biết công việc đã xong.",
+            "correct": true
           },
           {
             "id": "c",
@@ -99,11 +99,6 @@
           "question": "benchmark(True, 3) theo yêu cầu của đề?",
           "options": [
             {
-              "text": "ValueError trước khi fork",
-              "detail": "bool không phải int hợp lệ ở bài này.",
-              "correct": true
-            },
-            {
               "text": "Chạy với m = 1",
               "detail": "Không chấp nhận bool.",
               "correct": false
@@ -112,9 +107,14 @@
               "text": "Trả 0.0",
               "detail": "Phải báo lỗi.",
               "correct": false
+            },
+            {
+              "text": "ValueError trước khi fork",
+              "detail": "bool không phải int hợp lệ ở bài này.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "bool không phải int hợp lệ ở bài này."
         }
       ],

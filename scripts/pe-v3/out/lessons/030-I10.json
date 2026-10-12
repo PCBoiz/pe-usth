@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I10",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,21 +49,21 @@
         "options": [
           {
             "id": "a",
-            "title": "Gọi lại chính nó — đệ quy tới RecursionError",
-            "detail": "self là object C nên str(self) chạy C.__str__.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Gọi __str__ của cha",
             "detail": "Chỉ super().__str__() mới đi lên cha.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "Trả chuỗi rỗng",
             "detail": "Không có điểm dừng.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Gọi lại chính nó — đệ quy tới RecursionError",
+            "detail": "self là object C nên str(self) chạy C.__str__.",
+            "correct": true
           }
         ]
       },
@@ -98,11 +98,6 @@
           "question": "C23 với paradigms [] → str(obj) kết thúc thế nào?",
           "options": [
             {
-              "text": "…Paradigms[], Standard version[C23]",
-              "detail": "Phần cha giữ nguyên, nối thêm phần con.",
-              "correct": true
-            },
-            {
               "text": "Standard version[C23]",
               "detail": "Mất phần của cha.",
               "correct": false
@@ -111,9 +106,14 @@
               "text": "…Paradigms[]",
               "detail": "Thiếu phần của con.",
               "correct": false
+            },
+            {
+              "text": "…Paradigms[], Standard version[C23]",
+              "detail": "Phần cha giữ nguyên, nối thêm phần con.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Phần cha giữ nguyên, nối thêm phần con."
         }
       ],
@@ -148,9 +148,9 @@
       "counter": {
         "question": "Đổi obj.std_version = \"C23\" rồi str(obj) — phần cuối là gì?",
         "options": [
-          "Standard version[C23]",
           "Standard version[C17]",
-          "Không đổi được"
+          "Không đổi được",
+          "Standard version[C23]"
         ],
         "correct": "Standard version[C23]"
       },

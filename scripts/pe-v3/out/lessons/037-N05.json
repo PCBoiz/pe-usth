@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N05",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,21 +46,21 @@
         "options": [
           {
             "id": "a",
-            "title": "Child nhận 0; parent nhận PID (số dương) của child",
-            "detail": "Nhờ vậy if pid == 0 tách được hai nhánh.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Cả hai nhận PID của child",
             "detail": "Child nhận 0.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "Parent nhận 0",
             "detail": "Ngược lại.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Child nhận 0; parent nhận PID (số dương) của child",
+            "detail": "Nhờ vậy if pid == 0 tách được hai nhánh.",
+            "correct": true
           }
         ]
       },
@@ -121,9 +121,9 @@
           "question": "status trả về từ os.waitpid là gì?",
           "options": [
             {
-              "text": "Một số mã hoá; dùng os.WIFEXITED(status) rồi os.WEXITSTATUS(status) để lấy exit code",
-              "detail": "Không so trực tiếp với 0/1.",
-              "correct": true
+              "text": "PID của child",
+              "detail": "PID là phần tử thứ nhất của tuple.",
+              "correct": false
             },
             {
               "text": "Chính exit code của child",
@@ -131,12 +131,12 @@
               "correct": false
             },
             {
-              "text": "PID của child",
-              "detail": "PID là phần tử thứ nhất của tuple.",
-              "correct": false
+              "text": "Một số mã hoá; dùng os.WIFEXITED(status) rồi os.WEXITSTATUS(status) để lấy exit code",
+              "detail": "Không so trực tiếp với 0/1.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Không so trực tiếp với 0/1."
         }
       ],
@@ -171,9 +171,9 @@
       "counter": {
         "question": "Child thoát với mã 1 thì parent làm gì?",
         "options": [
-          "raise RuntimeError(\"child failed\")",
           "In Parent finished như thường",
-          "Không biết được"
+          "Không biết được",
+          "raise RuntimeError(\"child failed\")"
         ],
         "correct": "raise RuntimeError(\"child failed\")"
       },

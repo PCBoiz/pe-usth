@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I07",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -93,6 +93,11 @@
           "question": "Hai object tạo từ cùng list nguồn; thêm \"x\" vào A. B.paradigms thế nào?",
           "options": [
             {
+              "text": "Bị xoá",
+              "detail": "Không có lệnh xoá.",
+              "correct": false
+            },
+            {
               "text": "Không đổi",
               "detail": "Mỗi object giữ bản sao riêng.",
               "correct": true
@@ -101,14 +106,9 @@
               "text": "Có thêm \"x\"",
               "detail": "Chỉ khi dùng chung list (lỗi).",
               "correct": false
-            },
-            {
-              "text": "Bị xoá",
-              "detail": "Không có lệnh xoá.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Mỗi object giữ bản sao riêng."
         }
       ],
@@ -143,9 +143,9 @@
       "counter": {
         "question": "Go/2009/[] thêm \"concurrent\" → str(obj)?",
         "options": [
+          "Language[Go], Year created[2009], Paradigms[]",
           "Language[Go], Year created[2009], Paradigms['concurrent']",
-          "Language[Go], Year created[2009], Paradigms[concurrent]",
-          "Language[Go], Year created[2009], Paradigms[]"
+          "Language[Go], Year created[2009], Paradigms[concurrent]"
         ],
         "correct": "Language[Go], Year created[2009], Paradigms['concurrent']"
       }

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B08",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,15 +46,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — nó có 1 ký tự",
-            "detail": "Chuỗi rỗng là \"\" (0 ký tự); \" \" chứa một dấu cách.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Có",
             "detail": "Dấu cách là một ký tự thật.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Không — nó có 1 ký tự",
+            "detail": "Chuỗi rỗng là \"\" (0 ký tự); \" \" chứa một dấu cách.",
+            "correct": true
           },
           {
             "id": "c",
@@ -95,11 +95,6 @@
           "question": "Nếu thay return True bằng print(True), result = is_empty(\"\") nhận gì?",
           "options": [
             {
-              "text": "None",
-              "detail": "Hàm không gặp return mang giá trị nên trả None.",
-              "correct": true
-            },
-            {
               "text": "True",
               "detail": "print không đưa giá trị về nơi gọi.",
               "correct": false
@@ -108,18 +103,23 @@
               "text": "\"True\"",
               "detail": "print không trả về chuỗi.",
               "correct": false
+            },
+            {
+              "text": "None",
+              "detail": "Hàm không gặp return mang giá trị nên trả None.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Hàm không gặp return mang giá trị nên trả None."
         },
         {
           "question": "is_empty(\"\\n\") trả gì?",
           "options": [
             {
-              "text": "False — ký tự xuống dòng vẫn là một ký tự",
-              "detail": "\"\\n\" có độ dài 1.",
-              "correct": true
+              "text": "None",
+              "detail": "Hàm đúng luôn trả bool.",
+              "correct": false
             },
             {
               "text": "True",
@@ -127,12 +127,12 @@
               "correct": false
             },
             {
-              "text": "None",
-              "detail": "Hàm đúng luôn trả bool.",
-              "correct": false
+              "text": "False — ký tự xuống dòng vẫn là một ký tự",
+              "detail": "\"\\n\" có độ dài 1.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "\"\\n\" có độ dài 1."
         }
       ],
@@ -167,8 +167,8 @@
       "counter": {
         "question": "is_empty(\"a\") trả gì?",
         "options": [
-          "True",
           "False",
+          "True",
           "None"
         ],
         "correct": "False"

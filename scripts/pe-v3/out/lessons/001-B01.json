@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B01",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,20 +46,20 @@
         "options": [
           {
             "id": "a",
+            "title": "Không dòng nào — phải sửa cả print",
+            "detail": "print đọc giá trị hiện tại của biến, không giữ cố định số 1991.",
+            "correct": false
+          },
+          {
+            "id": "b",
             "title": "Chỉ dòng thứ hai",
             "detail": "print(year) đọc giá trị mới 2026; dòng Python giữ nguyên.",
             "correct": true
           },
           {
-            "id": "b",
+            "id": "c",
             "title": "Cả hai dòng",
             "detail": "name không đổi nên dòng đầu vẫn là Python.",
-            "correct": false
-          },
-          {
-            "id": "c",
-            "title": "Không dòng nào — phải sửa cả print",
-            "detail": "print đọc giá trị hiện tại của biến, không giữ cố định số 1991.",
             "correct": false
           }
         ]
@@ -95,9 +95,9 @@
           "question": "Với name = \"C\" và year = 1972, chương trình in gì?",
           "options": [
             {
-              "text": "C rồi 1972, mỗi giá trị một dòng",
-              "detail": "Hai lệnh print, mỗi lệnh tự xuống dòng.",
-              "correct": true
+              "text": "name rồi year",
+              "detail": "Không có dấu nháy nên print đọc giá trị của biến.",
+              "correct": false
             },
             {
               "text": "C 1972 trên cùng một dòng",
@@ -105,26 +105,26 @@
               "correct": false
             },
             {
-              "text": "name rồi year",
-              "detail": "Không có dấu nháy nên print đọc giá trị của biến.",
-              "correct": false
+              "text": "C rồi 1972, mỗi giá trị một dòng",
+              "detail": "Hai lệnh print, mỗi lệnh tự xuống dòng.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Hai lệnh print, mỗi lệnh tự xuống dòng."
         },
         {
           "question": "Gán year = 0 thì dòng thứ hai in gì?",
           "options": [
             {
-              "text": "0",
-              "detail": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng.",
-              "correct": true
-            },
-            {
               "text": "Một dòng trống",
               "detail": "print(0) in chữ số 0, không in dòng trống.",
               "correct": false
+            },
+            {
+              "text": "0",
+              "detail": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng.",
+              "correct": true
             },
             {
               "text": "False",
@@ -132,7 +132,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng."
         }
       ],
@@ -171,8 +171,8 @@
       "counter": {
         "question": "Đổi thành name = \"C\", year = 1972 thì kết quả là gì?",
         "options": [
-          "Python rồi 1991",
           "C rồi 1972",
+          "Python rồi 1991",
           "name rồi year"
         ],
         "correct": "C rồi 1972"

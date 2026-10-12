@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I04",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,15 +46,15 @@
         "options": [
           {
             "id": "a",
-            "title": "return — str(obj) và print(obj) lấy giá trị trả về",
-            "detail": "print(obj) tự in chuỗi mà __str__ trả.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "print",
             "detail": "__str__ in rồi trả None → str(obj) báo TypeError.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "return — str(obj) và print(obj) lấy giá trị trả về",
+            "detail": "print(obj) tự in chuỗi mà __str__ trả.",
+            "correct": true
           },
           {
             "id": "c",
@@ -95,9 +95,9 @@
           "question": "Object C/1972/[] → str(obj) là gì?",
           "options": [
             {
-              "text": "Language[C], Year created[1972], Paradigms[]",
-              "detail": "List rỗng biểu diễn là [].",
-              "correct": true
+              "text": "Language[C], Year created[1972]",
+              "detail": "Thiếu trường Paradigms.",
+              "correct": false
             },
             {
               "text": "Language[C], Year created[1972], Paradigms[[]]",
@@ -105,12 +105,12 @@
               "correct": false
             },
             {
-              "text": "Language[C], Year created[1972]",
-              "detail": "Thiếu trường Paradigms.",
-              "correct": false
+              "text": "Language[C], Year created[1972], Paradigms[]",
+              "detail": "List rỗng biểu diễn là [].",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "List rỗng biểu diễn là []."
         },
         {
@@ -171,9 +171,9 @@
       "counter": {
         "question": "Paradigms [\"procedural\", \"functional\"] → phần cuối chuỗi là gì?",
         "options": [
-          "Paradigms['procedural', 'functional']",
+          "Paradigms[['procedural', 'functional']]",
           "Paradigms[procedural, functional]",
-          "Paradigms[['procedural', 'functional']]"
+          "Paradigms['procedural', 'functional']"
         ],
         "correct": "Paradigms['procedural', 'functional']"
       },

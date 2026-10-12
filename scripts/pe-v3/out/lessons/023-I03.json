@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,20 +46,20 @@
         "options": [
           {
             "id": "a",
+            "title": "Báo lỗi lần thứ hai",
+            "detail": "Thêm trùng là hợp lệ.",
+            "correct": false
+          },
+          {
+            "id": "b",
             "title": "Có — append không bỏ trùng",
             "detail": "Quy ước của đề: thêm vào cuối, giữ trùng.",
             "correct": true
           },
           {
-            "id": "b",
+            "id": "c",
             "title": "Không — chỉ giữ một lần",
             "detail": "append không kiểm tra trùng.",
-            "correct": false
-          },
-          {
-            "id": "c",
-            "title": "Báo lỗi lần thứ hai",
-            "detail": "Thêm trùng là hợp lệ.",
             "correct": false
           }
         ]
@@ -95,11 +95,6 @@
           "question": "result = obj.add_paradigms(\"functional\") thì result là gì?",
           "options": [
             {
-              "text": "None",
-              "detail": "Method không có return mang giá trị.",
-              "correct": true
-            },
-            {
               "text": "['procedural', 'functional']",
               "detail": "Muốn xem list thì đọc obj.paradigms.",
               "correct": false
@@ -108,9 +103,14 @@
               "text": "True",
               "detail": "Không có gì trả True.",
               "correct": false
+            },
+            {
+              "text": "None",
+              "detail": "Method không có return mang giá trị.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Method không có return mang giá trị."
         },
         {
@@ -167,9 +167,9 @@
       "counter": {
         "question": "Object list rỗng, thêm \"procedural\" hai lần → paradigms?",
         "options": [
-          "['procedural', 'procedural']",
           "['procedural']",
-          "[]"
+          "[]",
+          "['procedural', 'procedural']"
         ],
         "correct": "['procedural', 'procedural']"
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B12",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,21 +49,21 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — strip() xoá cả khoảng trắng hai đầu",
-            "detail": "\" level \" thành \"level\": dữ liệu bị đổi.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Có — strip() chỉ bỏ xuống dòng",
             "detail": "strip() không tham số bỏ MỌI khoảng trắng hai đầu.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "Chỉ giữ dấu cách bên phải",
             "detail": "Cả hai đầu đều bị xoá.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không — strip() xoá cả khoảng trắng hai đầu",
+            "detail": "\" level \" thành \"level\": dữ liệu bị đổi.",
+            "correct": true
           }
         ]
       },
@@ -103,13 +103,13 @@
               "correct": true
             },
             {
-              "text": "[\"a\\r\", \"b\\r\"]",
-              "detail": "CR cũng nằm trong tập ký tự được bỏ.",
+              "text": "[\"a\", \"\", \"b\", \"\"]",
+              "detail": "Mỗi dòng chỉ được đọc một lần.",
               "correct": false
             },
             {
-              "text": "[\"a\", \"\", \"b\", \"\"]",
-              "detail": "Mỗi dòng chỉ được đọc một lần.",
+              "text": "[\"a\\r\", \"b\\r\"]",
+              "detail": "CR cũng nằm trong tập ký tự được bỏ.",
               "correct": false
             }
           ],
@@ -120,14 +120,14 @@
           "question": "Dòng cuối \"radar\" không có xuống dòng. line[:-1] cho kết quả gì?",
           "options": [
             {
-              "text": "\"rada\" — cắt mất chữ r",
-              "detail": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip.",
-              "correct": true
-            },
-            {
               "text": "\"radar\"",
               "detail": "line[:-1] không kiểm tra ký tự cuối là gì.",
               "correct": false
+            },
+            {
+              "text": "\"rada\" — cắt mất chữ r",
+              "detail": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip.",
+              "correct": true
             },
             {
               "text": "Báo lỗi",
@@ -135,7 +135,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip."
         }
       ],
@@ -175,8 +175,8 @@
         "question": "File \" \\n\" (một dấu cách rồi xuống dòng) cho lines là gì?",
         "options": [
           "[\" \"]",
-          "[\"\"]",
-          "[]"
+          "[]",
+          "[\"\"]"
         ],
         "correct": "[\" \"]"
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I02",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -52,14 +52,14 @@
           },
           {
             "id": "b",
-            "title": "Có — vì cùng dữ liệu",
-            "detail": "Cùng dữ liệu lúc tạo không có nghĩa là cùng list.",
+            "title": "Tuỳ trình thông dịch",
+            "detail": "Hành vi luôn xác định.",
             "correct": false
           },
           {
             "id": "c",
-            "title": "Tuỳ trình thông dịch",
-            "detail": "Hành vi luôn xác định.",
+            "title": "Có — vì cùng dữ liệu",
+            "detail": "Cùng dữ liệu lúc tạo không có nghĩa là cùng list.",
             "correct": false
           }
         ]
@@ -153,8 +153,8 @@
       "counter": {
         "question": "Sau source.append(\"functional\"), language.paradigms là gì?",
         "options": [
-          "['procedural']",
           "['procedural', 'functional']",
+          "['procedural']",
           "[]"
         ],
         "correct": "['procedural']"

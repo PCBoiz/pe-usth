@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N04",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -143,9 +143,9 @@
       "counter": {
         "question": "parallel_compile(\"3\") → ?",
         "options": [
-          "ValueError",
           "Ba worker",
-          "TypeError"
+          "TypeError",
+          "ValueError"
         ],
         "correct": "ValueError"
       }

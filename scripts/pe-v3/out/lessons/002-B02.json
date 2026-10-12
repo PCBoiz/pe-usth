@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B02",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,20 +46,20 @@
         "options": [
           {
             "id": "a",
+            "title": "\"Language:C\"",
+            "detail": "Dấu cách nằm trong \"Language: \" nên vẫn còn.",
+            "correct": false
+          },
+          {
+            "id": "b",
             "title": "\"Language: C\"",
             "detail": "Phần cố định giữ nguyên, phần sau lấy giá trị mới của name.",
             "correct": true
           },
           {
-            "id": "b",
+            "id": "c",
             "title": "\"Language: Python\"",
             "detail": "message được ghép lại từ name mới mỗi lần chạy.",
-            "correct": false
-          },
-          {
-            "id": "c",
-            "title": "\"Language:C\"",
-            "detail": "Dấu cách nằm trong \"Language: \" nên vẫn còn.",
             "correct": false
           }
         ]
@@ -95,14 +95,14 @@
           "question": "name = \"\" (chuỗi rỗng) thì message là gì?",
           "options": [
             {
-              "text": "\"Language: \" — vẫn còn dấu cách ở cuối",
-              "detail": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định.",
-              "correct": true
-            },
-            {
               "text": "\"Language:\"",
               "detail": "Dấu cách thuộc phần cố định nên không mất.",
               "correct": false
+            },
+            {
+              "text": "\"Language: \" — vẫn còn dấu cách ở cuối",
+              "detail": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định.",
+              "correct": true
             },
             {
               "text": "Báo lỗi vì name rỗng",
@@ -110,21 +110,21 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định."
         },
         {
           "question": "Biểu thức nào gây TypeError?",
           "options": [
             {
-              "text": "\"Year: \" + 1991",
-              "detail": "Không cộng được str với int.",
-              "correct": true
-            },
-            {
               "text": "\"Year: \" + \"1991\"",
               "detail": "Hai chuỗi ghép bình thường thành \"Year: 1991\".",
               "correct": false
+            },
+            {
+              "text": "\"Year: \" + 1991",
+              "detail": "Không cộng được str với int.",
+              "correct": true
             },
             {
               "text": "\"Language: \" + name, với name = \"C\"",
@@ -132,7 +132,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Không cộng được str với int."
         }
       ],
@@ -171,8 +171,8 @@
       "counter": {
         "question": "name = \"Rust\" thì chương trình in gì?",
         "options": [
-          "Language: Rust",
           "Language: Python",
+          "Language: Rust",
           "Language:Rust"
         ],
         "correct": "Language: Rust"

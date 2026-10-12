@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B11",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Chuỗi rỗng \"\"",
-            "detail": "Không có ký tự nào để đọc; read() trả \"\" chứ không lỗi.",
-            "correct": true
+            "title": "Báo lỗi",
+            "detail": "File rỗng vẫn mở và đọc bình thường.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "Báo lỗi",
-            "detail": "File rỗng vẫn mở và đọc bình thường.",
-            "correct": false
+            "title": "Chuỗi rỗng \"\"",
+            "detail": "Không có ký tự nào để đọc; read() trả \"\" chứ không lỗi.",
+            "correct": true
           }
         ]
       },
@@ -98,11 +98,6 @@
           "question": "Vì sao cần encoding=\"utf-8\" khi mở data.txt?",
           "options": [
             {
-              "text": "Để đọc đúng chữ có dấu như \"độđ\"",
-              "detail": "Mã hoá mặc định của máy có thể khác UTF-8.",
-              "correct": true
-            },
-            {
               "text": "Để đọc nhanh hơn",
               "detail": "Encoding quyết định cách giải mã byte thành chữ, không phải tốc độ.",
               "correct": false
@@ -111,9 +106,14 @@
               "text": "Để file tự đóng",
               "detail": "Việc tự đóng file là của with.",
               "correct": false
+            },
+            {
+              "text": "Để đọc đúng chữ có dấu như \"độđ\"",
+              "detail": "Mã hoá mặc định của máy có thể khác UTF-8.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Mã hoá mặc định của máy có thể khác UTF-8."
         },
         {
@@ -125,13 +125,13 @@
               "correct": true
             },
             {
-              "text": "Đọc bình thường",
-              "detail": "\"w\" là chế độ ghi, không đọc được.",
+              "text": "Python tự đổi sang \"r\"",
+              "detail": "Python làm đúng chế độ bạn ghi.",
               "correct": false
             },
             {
-              "text": "Python tự đổi sang \"r\"",
-              "detail": "Python làm đúng chế độ bạn ghi.",
+              "text": "Đọc bình thường",
+              "detail": "\"w\" là chế độ ghi, không đọc được.",
               "correct": false
             }
           ],

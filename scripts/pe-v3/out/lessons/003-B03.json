@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,21 +46,21 @@
         "options": [
           {
             "id": "a",
-            "title": "\"level\" và \"a\"",
-            "detail": "Hai chuỗi này đọc xuôi hay ngược đều giống nhau.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "\"level\" và chuỗi rỗng",
             "detail": "Một ký tự đảo lại vẫn là chính nó.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "\"levle\" và \"a\"",
             "detail": "Đọc ngược từng ký tự l-e-v-e-l vẫn ra level.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "\"level\" và \"a\"",
+            "detail": "Hai chuỗi này đọc xuôi hay ngược đều giống nhau.",
+            "correct": true
           }
         ]
       },
@@ -100,13 +100,13 @@
               "correct": true
             },
             {
-              "text": "\"nohtyp\"",
-              "detail": "Chỉ reversed_text nhận chuỗi đảo.",
+              "text": "Chuỗi rỗng",
+              "detail": "Không lệnh nào xoá text.",
               "correct": false
             },
             {
-              "text": "Chuỗi rỗng",
-              "detail": "Không lệnh nào xoá text.",
+              "text": "\"nohtyp\"",
+              "detail": "Chỉ reversed_text nhận chuỗi đảo.",
               "correct": false
             }
           ],
@@ -117,11 +117,6 @@
           "question": "text = \"\" (chuỗi rỗng) thì text[::-1] là gì?",
           "options": [
             {
-              "text": "Chuỗi rỗng \"\"",
-              "detail": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi.",
-              "correct": true
-            },
-            {
               "text": "Báo IndexError",
               "detail": "Slicing không báo lỗi với chuỗi rỗng.",
               "correct": false
@@ -130,9 +125,14 @@
               "text": "None",
               "detail": "Slicing luôn trả về str.",
               "correct": false
+            },
+            {
+              "text": "Chuỗi rỗng \"\"",
+              "detail": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi."
         }
       ],
@@ -171,9 +171,9 @@
       "counter": {
         "question": "text = \"ab\" thì chương trình in gì?",
         "options": [
-          "ab",
           "ba",
-          "b"
+          "b",
+          "ab"
         ],
         "correct": "ba"
       },

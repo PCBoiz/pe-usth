@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,9 +46,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — __str__ trả None nên str(obj) báo TypeError",
-            "detail": "Dòng in ra không phải giá trị trả về.",
-            "correct": true
+            "title": "Nhận chuỗi rỗng",
+            "detail": "Python không tự đổi None thành \"\".",
+            "correct": false
           },
           {
             "id": "b",
@@ -58,9 +58,9 @@
           },
           {
             "id": "c",
-            "title": "Nhận chuỗi rỗng",
-            "detail": "Python không tự đổi None thành \"\".",
-            "correct": false
+            "title": "Không — __str__ trả None nên str(obj) báo TypeError",
+            "detail": "Dòng in ra không phải giá trị trả về.",
+            "correct": true
           }
         ],
         "code": "    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        print(description)"
@@ -96,9 +96,9 @@
           "question": "Gọi str(language) hai lần liên tiếp thì…",
           "options": [
             {
-              "text": "Hai kết quả bằng nhau, không in gì, object không đổi",
-              "detail": "__str__ chỉ đọc trạng thái.",
-              "correct": true
+              "text": "Lần hai báo lỗi",
+              "detail": "__str__ gọi bao nhiêu lần cũng được.",
+              "correct": false
             },
             {
               "text": "In hai dòng",
@@ -106,12 +106,12 @@
               "correct": false
             },
             {
-              "text": "Lần hai báo lỗi",
-              "detail": "__str__ gọi bao nhiêu lần cũng được.",
-              "correct": false
+              "text": "Hai kết quả bằng nhau, không in gì, object không đổi",
+              "detail": "__str__ chỉ đọc trạng thái.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "__str__ chỉ đọc trạng thái."
         }
       ],
@@ -142,9 +142,9 @@
       "counter": {
         "question": "Chương trình đúng (text = str(language); print(language)) in mấy dòng?",
         "options": [
-          "1 dòng",
           "2 dòng",
-          "0 dòng"
+          "0 dòng",
+          "1 dòng"
         ],
         "correct": "1 dòng"
       },

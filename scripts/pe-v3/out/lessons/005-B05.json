@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B05",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -95,14 +95,14 @@
           "question": "Nếu đổi nhầm hai thông báo (nhánh if in NOT PALINDROME), chương trình sẽ…",
           "options": [
             {
-              "text": "Vẫn chạy nhưng in sai thông báo — sai bài",
-              "detail": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi.",
-              "correct": true
-            },
-            {
               "text": "Báo SyntaxError",
               "detail": "Cú pháp vẫn đúng.",
               "correct": false
+            },
+            {
+              "text": "Vẫn chạy nhưng in sai thông báo — sai bài",
+              "detail": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi.",
+              "correct": true
             },
             {
               "text": "Tự in đúng",
@@ -110,12 +110,17 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi."
         },
         {
           "question": "Chương trình đúng in bao nhiêu dòng mỗi lần chạy?",
           "options": [
+            {
+              "text": "Tuỳ result mà 0 hoặc 2",
+              "detail": "Luôn có đúng một nhánh.",
+              "correct": false
+            },
             {
               "text": "Đúng 1 dòng",
               "detail": "Chỉ một nhánh chạy.",
@@ -125,14 +130,9 @@
               "text": "2 dòng",
               "detail": "Đó là khi cả hai print nằm ngoài if/else.",
               "correct": false
-            },
-            {
-              "text": "Tuỳ result mà 0 hoặc 2",
-              "detail": "Luôn có đúng một nhánh.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Chỉ một nhánh chạy."
         }
       ],
@@ -164,8 +164,8 @@
         "question": "result = False thì chương trình in gì?",
         "options": [
           "Một dòng: NOT PALINDROME",
-          "Hai dòng: PALINDROME rồi NOT PALINDROME",
-          "Không in gì"
+          "Không in gì",
+          "Hai dòng: PALINDROME rồi NOT PALINDROME"
         ],
         "correct": "Một dòng: NOT PALINDROME"
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -52,14 +52,14 @@
           },
           {
             "id": "b",
-            "title": "1 lần",
-            "detail": "Vòng for chạy đúng bằng số phần tử.",
+            "title": "Báo lỗi",
+            "detail": "Duyệt list rỗng là hợp lệ.",
             "correct": false
           },
           {
             "id": "c",
-            "title": "Báo lỗi",
-            "detail": "Duyệt list rỗng là hợp lệ.",
+            "title": "1 lần",
+            "detail": "Vòng for chạy đúng bằng số phần tử.",
             "correct": false
           }
         ]
@@ -95,9 +95,9 @@
           "question": "words = [\"radar\", \"radar\"] thì in mấy dòng?",
           "options": [
             {
-              "text": "2 dòng radar",
-              "detail": "for duyệt đủ mọi phần tử, kể cả phần tử trùng.",
-              "correct": true
+              "text": "Không in gì",
+              "detail": "List có hai phần tử nên thân vòng lặp chạy hai lần.",
+              "correct": false
             },
             {
               "text": "1 dòng radar",
@@ -105,12 +105,12 @@
               "correct": false
             },
             {
-              "text": "Không in gì",
-              "detail": "List có hai phần tử nên thân vòng lặp chạy hai lần.",
-              "correct": false
+              "text": "2 dòng radar",
+              "detail": "for duyệt đủ mọi phần tử, kể cả phần tử trùng.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "for duyệt đủ mọi phần tử, kể cả phần tử trùng."
         }
       ],
@@ -146,8 +146,8 @@
         "question": "words = [\"a\"] thì chương trình in gì?",
         "options": [
           "a",
-          "['a']",
-          "Không in gì"
+          "Không in gì",
+          "['a']"
         ],
         "correct": "a"
       },

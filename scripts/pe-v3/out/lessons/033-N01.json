@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N01",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -50,9 +50,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Không ngoặc: giao hàm cho thread; có ngoặc: gọi ngay ở thread chính, target nhận None",
-            "detail": "Dấu ngoặc là lời gọi hàm.",
-            "correct": true
+            "title": "Có ngoặc mới chạy được",
+            "detail": "start() mới là thứ cho target chạy.",
+            "correct": false
           },
           {
             "id": "b",
@@ -62,9 +62,9 @@
           },
           {
             "id": "c",
-            "title": "Có ngoặc mới chạy được",
-            "detail": "start() mới là thứ cho target chạy.",
-            "correct": false
+            "title": "Không ngoặc: giao hàm cho thread; có ngoặc: gọi ngay ở thread chính, target nhận None",
+            "detail": "Dấu ngoặc là lời gọi hàm.",
+            "correct": true
           }
         ]
       },
@@ -99,11 +99,6 @@
           "question": "Gọi worker.start() hai lần trên cùng một Thread thì…",
           "options": [
             {
-              "text": "RuntimeError: threads can only be started once",
-              "detail": "Cần thêm worker thì tạo Thread mới.",
-              "correct": true
-            },
-            {
               "text": "Chạy target hai lần",
               "detail": "Một Thread chỉ start được một lần.",
               "correct": false
@@ -112,23 +107,28 @@
               "text": "Lần hai bị bỏ qua",
               "detail": "Python báo lỗi chứ không bỏ qua.",
               "correct": false
+            },
+            {
+              "text": "RuntimeError: threads can only be started once",
+              "detail": "Cần thêm worker thì tạo Thread mới.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Cần thêm worker thì tạo Thread mới."
         },
         {
           "question": "worker.run() khác worker.start() thế nào?",
           "options": [
             {
-              "text": "run() chạy target NGAY trong thread hiện tại; start() mới tạo thread con",
-              "detail": "Gọi run() không tạo thread mới.",
-              "correct": true
-            },
-            {
               "text": "Giống nhau",
               "detail": "Chỉ start() tạo luồng thực thi mới.",
               "correct": false
+            },
+            {
+              "text": "run() chạy target NGAY trong thread hiện tại; start() mới tạo thread con",
+              "detail": "Gọi run() không tạo thread mới.",
+              "correct": true
             },
             {
               "text": "run() chạy nhanh hơn",
@@ -136,7 +136,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Gọi run() không tạo thread mới."
         }
       ],

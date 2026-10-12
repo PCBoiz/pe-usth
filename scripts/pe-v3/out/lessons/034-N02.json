@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N02",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -50,15 +50,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — worker trước phải xong mới start worker sau, thành chạy tuần tự",
-            "detail": "join chặn nơi gọi tới khi worker đó xong.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Có",
             "detail": "join ngay sau start không cho worker kế tiếp bắt đầu.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Không — worker trước phải xong mới start worker sau, thành chạy tuần tự",
+            "detail": "join chặn nơi gọi tới khi worker đó xong.",
+            "correct": true
           },
           {
             "id": "c",
@@ -99,11 +99,6 @@
           "question": "n = 4 thì target compile chạy mấy lần?",
           "options": [
             {
-              "text": "4 lần, trên bốn Thread khác nhau",
-              "detail": "Mỗi lượt range tạo một Thread.",
-              "correct": true
-            },
-            {
               "text": "1 lần",
               "detail": "Có bốn worker.",
               "correct": false
@@ -112,9 +107,14 @@
               "text": "Tuỳ máy",
               "detail": "Số worker xác định; chỉ thứ tự dòng in là tuỳ.",
               "correct": false
+            },
+            {
+              "text": "4 lần, trên bốn Thread khác nhau",
+              "detail": "Mỗi lượt range tạo một Thread.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Mỗi lượt range tạo một Thread."
         }
       ],
@@ -150,8 +150,8 @@
         "question": "n = 1 thì có mấy dòng Compiling?",
         "options": [
           "1",
-          "3",
-          "0"
+          "0",
+          "3"
         ],
         "correct": "1"
       },

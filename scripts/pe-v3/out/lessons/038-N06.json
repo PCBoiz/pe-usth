@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N06",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,15 +49,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Có — child chạy tiếp vòng lặp và fork ra process cháu",
-            "detail": "Cây process bị nhân đôi.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Không — child tự biết dừng",
             "detail": "Child là bản sao của parent tại thời điểm fork.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Có — child chạy tiếp vòng lặp và fork ra process cháu",
+            "detail": "Cây process bị nhân đôi.",
+            "correct": true
           },
           {
             "id": "c",
@@ -102,9 +102,9 @@
           "question": "m = 3, child thứ hai thoát mã 1. Parent nên làm gì?",
           "options": [
             {
-              "text": "Chờ đủ cả ba rồi raise RuntimeError",
-              "detail": "wait_for_children vẫn chờ tiếp PID còn lại.",
-              "correct": true
+              "text": "Coi như thành công",
+              "detail": "Child lỗi không được ghi nhận là thành công.",
+              "correct": false
             },
             {
               "text": "Dừng ngay, bỏ mặc child thứ ba",
@@ -112,12 +112,12 @@
               "correct": false
             },
             {
-              "text": "Coi như thành công",
-              "detail": "Child lỗi không được ghi nhận là thành công.",
-              "correct": false
+              "text": "Chờ đủ cả ba rồi raise RuntimeError",
+              "detail": "wait_for_children vẫn chờ tiếp PID còn lại.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "wait_for_children vẫn chờ tiếp PID còn lại."
         },
         {

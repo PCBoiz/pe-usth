@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B19",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "read_lines bỏ xuống dòng; is_palindrome loại chuỗi rỗng",
-            "detail": "Mỗi hàm một nhiệm vụ.",
-            "correct": true
+            "title": "write_lines bỏ chuỗi rỗng",
+            "detail": "write_lines ghi đúng list được đưa vào.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "write_lines bỏ chuỗi rỗng",
-            "detail": "write_lines ghi đúng list được đưa vào.",
-            "correct": false
+            "title": "read_lines bỏ xuống dòng; is_palindrome loại chuỗi rỗng",
+            "detail": "Mỗi hàm một nhiệm vụ.",
+            "correct": true
           }
         ]
       },
@@ -98,14 +98,14 @@
           "question": "data.txt \"Level\\n a \\nradar\\nradar\" → palindromes.txt?",
           "options": [
             {
-              "text": "\" a \\nradar\\nradar\\n\"",
-              "detail": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng.",
-              "correct": true
-            },
-            {
               "text": "\"level\\na\\nradar\\n\"",
               "detail": "Không lower, không strip, không bỏ trùng.",
               "correct": false
+            },
+            {
+              "text": "\" a \\nradar\\nradar\\n\"",
+              "detail": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng.",
+              "correct": true
             },
             {
               "text": "\"radar\\n\"",
@@ -113,7 +113,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng."
         }
       ],
@@ -148,9 +148,9 @@
       "counter": {
         "question": "data.txt chỉ có \"radar\" (không có ký tự xuống dòng) → palindromes.txt?",
         "options": [
-          "\"radar\\n\"",
+          "\"\"",
           "\"radar\"",
-          "\"\""
+          "\"radar\\n\""
         ],
         "correct": "\"radar\\n\""
       },

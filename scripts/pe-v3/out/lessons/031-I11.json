@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I11",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,21 +49,21 @@
         "options": [
           {
             "id": "a",
-            "title": "C23 — giá trị hiện tại",
-            "detail": "compile đọc self.std_version mỗi lần được gọi.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "C17 — giá trị lúc tạo object",
             "detail": "Không có gì \"chụp\" lại giá trị cũ.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "Cả hai",
             "detail": "Mỗi lần gọi in đúng một dòng.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "C23 — giá trị hiện tại",
+            "detail": "compile đọc self.std_version mỗi lần được gọi.",
+            "correct": true
           }
         ]
       },
@@ -98,11 +98,6 @@
           "question": "compile khác __str__ thế nào?",
           "options": [
             {
-              "text": "compile in một dòng và trả None; __str__ trả chuỗi và không in",
-              "detail": "Khác ở kết quả và tác dụng phụ.",
-              "correct": true
-            },
-            {
               "text": "Giống nhau",
               "detail": "Một cái in, một cái trả.",
               "correct": false
@@ -111,9 +106,14 @@
               "text": "compile trả chuỗi",
               "detail": "Theo yêu cầu của đề, compile in.",
               "correct": false
+            },
+            {
+              "text": "compile in một dòng và trả None; __str__ trả chuỗi và không in",
+              "detail": "Khác ở kết quả và tác dụng phụ.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Khác ở kết quả và tác dụng phụ."
         }
       ],
@@ -148,9 +148,9 @@
       "counter": {
         "question": "obj.std_version = \"C23\"; obj.compile() in gì?",
         "options": [
-          "Compiling C code using standard version C23",
+          "Không in gì",
           "Compiling C code using standard version C17",
-          "Không in gì"
+          "Compiling C code using standard version C23"
         ],
         "correct": "Compiling C code using standard version C23"
       },

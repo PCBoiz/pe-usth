@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B09",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -95,14 +95,14 @@
           "question": "is_palindrome(\" a \") trả gì?",
           "options": [
             {
-              "text": "True — dấu cách hai bên đối xứng nhau",
-              "detail": "Không strip nên \" a \" đảo vẫn là \" a \".",
-              "correct": true
-            },
-            {
               "text": "False",
               "detail": "Dấu cách là ký tự bình thường, vẫn đối xứng.",
               "correct": false
+            },
+            {
+              "text": "True — dấu cách hai bên đối xứng nhau",
+              "detail": "Không strip nên \" a \" đảo vẫn là \" a \".",
+              "correct": true
             },
             {
               "text": "Báo lỗi",
@@ -110,21 +110,21 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Không strip nên \" a \" đảo vẫn là \" a \"."
         },
         {
           "question": "is_palindrome(\"độđ\") trả gì?",
           "options": [
             {
-              "text": "True",
-              "detail": "Ký tự có dấu cũng được đảo đúng thứ tự.",
-              "correct": true
-            },
-            {
               "text": "False",
               "detail": "đ-ộ-đ đọc ngược vẫn là đ-ộ-đ.",
               "correct": false
+            },
+            {
+              "text": "True",
+              "detail": "Ký tự có dấu cũng được đảo đúng thứ tự.",
+              "correct": true
             },
             {
               "text": "Lỗi vì có dấu tiếng Việt",
@@ -132,7 +132,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Ký tự có dấu cũng được đảo đúng thứ tự."
         }
       ],
@@ -167,8 +167,8 @@
       "counter": {
         "question": "is_palindrome(\"Level\") trả gì?",
         "options": [
-          "True",
           "False",
+          "True",
           "Báo lỗi"
         ],
         "correct": "False"

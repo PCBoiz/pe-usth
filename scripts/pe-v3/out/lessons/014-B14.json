@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B14",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Có — lines đã nằm trong bộ nhớ",
-            "detail": "Đóng file không xoá list đã đọc.",
-            "correct": true
+            "title": "Báo lỗi",
+            "detail": "return sau with là cách viết chuẩn.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "Báo lỗi",
-            "detail": "return sau with là cách viết chuẩn.",
-            "correct": false
+            "title": "Có — lines đã nằm trong bộ nhớ",
+            "detail": "Đóng file không xoá list đã đọc.",
+            "correct": true
           }
         ]
       },
@@ -98,6 +98,11 @@
           "question": "read_lines(\"missing.txt\") khi file không tồn tại thì…",
           "options": [
             {
+              "text": "Trả None",
+              "detail": "Không có return nào chạy tới khi open lỗi.",
+              "correct": false
+            },
+            {
               "text": "Phát sinh FileNotFoundError",
               "detail": "Để lỗi hiện ra giúp phát hiện sai tên file.",
               "correct": true
@@ -106,14 +111,9 @@
               "text": "Trả []",
               "detail": "Giấu lỗi làm nơi gọi tưởng file rỗng.",
               "correct": false
-            },
-            {
-              "text": "Trả None",
-              "detail": "Không có return nào chạy tới khi open lỗi.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Để lỗi hiện ra giúp phát hiện sai tên file."
         },
         {
@@ -174,9 +174,9 @@
       "counter": {
         "question": "File \" a \\nđộđ\" → read_lines trả gì?",
         "options": [
-          "[\" a \", \"độđ\"]",
           "[\"a\", \"độđ\"]",
-          "[\" a \\n\", \"độđ\"]"
+          "[\" a \\n\", \"độđ\"]",
+          "[\" a \", \"độđ\"]"
         ],
         "correct": "[\" a \", \"độđ\"]"
       },

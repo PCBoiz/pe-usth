@@ -39,6 +39,10 @@ from support import support_files  # noqa: E402
 
 SCHEMA = 'studio-lesson/v1'
 SOURCE_PDF = 'PE_Python_v3_Toan_bo_40_bai_code.pdf'
+# Ngày của CHÍNH tài liệu nguồn, không phải lúc chạy lệnh. Trước đây trường này
+# lấy datetime.now() nên mỗi lần dựng là cả 40 file đều khác nhau, không thể
+# kiểm trong CI rằng "dựng lại có ra đúng thứ đã commit không".
+SOURCE_DATE = '2026-09-30T00:00:00+00:00'
 
 # (mã đầu, mã cuối, tên chặng, mức) — đúng "Roadmap 9 chặng" trang 2 của PDF.
 MODULES = [
@@ -98,9 +102,16 @@ def check(cond, code, message):
 
 
 def predict_block(code, spec):
-    options = [{'id': chr(97 + i), 'title': t, 'detail': d, 'correct': bool(ok)}
-               for i, (t, d, ok) in enumerate(spec['options'])]
+    options = [{'id': '', 'title': t, 'detail': d, 'correct': bool(ok)}
+               for t, d, ok in spec['options']]
     check(sum(o['correct'] for o in options) == 1, code, 'dự đoán phải có đúng một đáp án')
+    # Cùng lý do với ngân hàng lắp ghép ở scaffold_block: đáp án đúng không được
+    # luôn đứng đầu. Trước đây 40/40 câu dự đoán có đáp án ở vị trí thứ nhất, nên
+    # học viên nhận ra quy luật là chọn bừa ô đầu cũng đúng hết.
+    random.Random(f'{code}-predict').shuffle(options)
+    # Nhãn a/b/c đi theo VỊ TRÍ sau khi trộn, không dính vào nội dung lựa chọn.
+    for i, option in enumerate(options):
+        option['id'] = chr(97 + i)
     block = {'question': spec['q'], 'options': options}
     if spec.get('code'):
         block['code'] = spec['code'].rstrip('\n')
@@ -111,8 +122,14 @@ def mcq_block(code, spec):
     options = [{'text': t, 'detail': d, 'correct': bool(ok)} for t, d, ok in spec['options']]
     right = [i for i, o in enumerate(options) if o['correct']]
     check(len(right) == 1, code, f'trắc nghiệm "{spec["q"]}" phải có đúng một đáp án')
-    return {'question': spec['q'], 'options': options, 'correct': right[0],
-            'explanation': options[right[0]]['detail']}
+    # Seed gồm cả nội dung câu hỏi để mỗi câu trong một bài trộn mỗi kiểu, và để
+    # thêm/bớt câu khác không làm xáo trộn những câu đã có.
+    random.Random(f'{code}-mcq-{spec["q"]}').shuffle(options)
+    # `correct` là CHỈ SỐ nên phải tính lại sau khi trộn, nếu không kho câu hỏi
+    # ôn tập (quizzes.service.ts đọc step_2.mcq) sẽ chấm sai toàn bộ.
+    answer = next(i for i, o in enumerate(options) if o['correct'])
+    return {'question': spec['q'], 'options': options, 'correct': answer,
+            'explanation': options[answer]['detail']}
 
 
 def scaffold_block(code, spec):
@@ -180,6 +197,10 @@ def build_lesson(spec: dict, sort_order: int) -> tuple[dict, dict]:
     # ---- S3: luyện có hỗ trợ
     counter = spec['counter']
     check(counter['correct'] in counter['options'], code, 'đáp án tái dự đoán không nằm trong các lựa chọn')
+    # Lựa chọn tái dự đoán là chuỗi thuần và `correct` là GIÁ TRỊ chứ không phải
+    # chỉ số, nên chỉ cần trộn danh sách — đáp án vẫn khớp.
+    counter_options = list(counter['options'])
+    random.Random(f'{code}-counter').shuffle(counter_options)
     step3 = {
         'task': {
             'title': 'Luyện có hỗ trợ' if not gate else 'Lập kế hoạch trước khi tự viết',
@@ -187,7 +208,7 @@ def build_lesson(spec: dict, sort_order: int) -> tuple[dict, dict]:
             'rule': spec['transfer'],
         },
         'trace': {'steps': [{'label': f'Bước {i}', 'text': t} for i, t in enumerate(spec['flow'], start=1)]},
-        'counter': {'question': counter['q'], 'options': counter['options'], 'correct': counter['correct']},
+        'counter': {'question': counter['q'], 'options': counter_options, 'correct': counter['correct']},
     }
     if spec.get('scaffold'):
         check(not gate, code, 'cửa tự kiểm tra không cấp khung lắp ghép')
@@ -232,7 +253,7 @@ def build_lesson(spec: dict, sort_order: int) -> tuple[dict, dict]:
             'kind': 'pe-v3',
             'filename': f'{SOURCE_PDF}#{code}',
             'parser': 'pe-v3/build',
-            'importedAt': datetime.now(timezone.utc).replace(microsecond=0).isoformat(),
+            'importedAt': SOURCE_DATE,
         },
         'step_1': step1,
         'step_2': step2,

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B16",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -101,13 +101,13 @@
               "correct": true
             },
             {
-              "text": "[\"radar\"]",
-              "detail": "Hàm chưa kịp xét \"radar\".",
+              "text": "None",
+              "detail": "Lượt đầu đã gặp return [].",
               "correct": false
             },
             {
-              "text": "None",
-              "detail": "Lượt đầu đã gặp return [].",
+              "text": "[\"radar\"]",
+              "detail": "Hàm chưa kịp xét \"radar\".",
               "correct": false
             }
           ],
@@ -150,8 +150,8 @@
       "counter": {
         "question": "Bản đã sửa với [\"ab\", \"radar\"] trả gì?",
         "options": [
-          "[\"radar\"]",
           "[]",
+          "[\"radar\"]",
           "None"
         ],
         "correct": "[\"radar\"]"

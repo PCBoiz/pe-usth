@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N03",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -56,14 +56,14 @@
           },
           {
             "id": "b",
-            "title": "Dấu phẩy thừa, bỏ đi cũng được",
-            "detail": "(n) chỉ là n trong ngoặc — không phải tuple.",
+            "title": "args là số thread cần tạo",
+            "detail": "Số thread do vòng range(n) quyết định.",
             "correct": false
           },
           {
             "id": "c",
-            "title": "args là số thread cần tạo",
-            "detail": "Số thread do vòng range(n) quyết định.",
+            "title": "Dấu phẩy thừa, bỏ đi cũng được",
+            "detail": "(n) chỉ là n trong ngoặc — không phải tuple.",
             "correct": false
           }
         ]
@@ -99,14 +99,14 @@
           "question": "args=(n) với n = 3 sẽ thế nào khi thread chạy?",
           "options": [
             {
-              "text": "Lỗi TypeError trong thread — (3) không phải tuple",
-              "detail": "Thread cần args là iterable các đối số.",
-              "correct": true
-            },
-            {
               "text": "Chạy bình thường",
               "detail": "(3) là số nguyên 3.",
               "correct": false
+            },
+            {
+              "text": "Lỗi TypeError trong thread — (3) không phải tuple",
+              "detail": "Thread cần args là iterable các đối số.",
+              "correct": true
             },
             {
               "text": "Tạo 3 thread",
@@ -114,7 +114,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Thread cần args là iterable các đối số."
         }
       ],
@@ -149,9 +149,9 @@
       "counter": {
         "question": "obj.parallel_compile(1) với C23 in gì?",
         "options": [
+          "Không in gì",
           "Compiling C code using 1 threads with standard version C23",
-          "Compiling C code using 3 threads with standard version C23",
-          "Không in gì"
+          "Compiling C code using 3 threads with standard version C23"
         ],
         "correct": "Compiling C code using 1 threads with standard version C23"
       },

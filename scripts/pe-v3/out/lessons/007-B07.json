@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B07",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,15 +46,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Hai lần — giữ cả phần tử trùng",
-            "detail": "Mỗi lần gặp từ hợp lệ là append một lần; không dùng set.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Một lần",
             "detail": "Bài không yêu cầu bỏ trùng; set còn làm mất thứ tự.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Hai lần — giữ cả phần tử trùng",
+            "detail": "Mỗi lần gặp từ hợp lệ là append một lần; không dùng set.",
+            "correct": true
           },
           {
             "id": "c",
@@ -100,13 +100,13 @@
               "correct": true
             },
             {
-              "text": "[\"Level\"]",
-              "detail": "So sánh phân biệt hoa/thường.",
+              "text": "[\"\"]",
+              "detail": "Chuỗi rỗng bị loại trước bước so sánh.",
               "correct": false
             },
             {
-              "text": "[\"\"]",
-              "detail": "Chuỗi rỗng bị loại trước bước so sánh.",
+              "text": "[\"Level\"]",
+              "detail": "So sánh phân biệt hoa/thường.",
               "correct": false
             }
           ],
@@ -117,14 +117,14 @@
           "question": "words = [\"a\", \"ab\", \"a\"] thì palindromes là gì?",
           "options": [
             {
-              "text": "[\"a\", \"a\"]",
-              "detail": "Giữ thứ tự và phần tử trùng.",
-              "correct": true
-            },
-            {
               "text": "[\"a\"]",
               "detail": "Không bỏ trùng.",
               "correct": false
+            },
+            {
+              "text": "[\"a\", \"a\"]",
+              "detail": "Giữ thứ tự và phần tử trùng.",
+              "correct": true
             },
             {
               "text": "[\"a\", \"ab\", \"a\"]",
@@ -132,7 +132,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Giữ thứ tự và phần tử trùng."
         }
       ],
@@ -175,9 +175,9 @@
       "counter": {
         "question": "words = [\"a\", \"ab\", \"a\"] cho kết quả nào?",
         "options": [
+          "['a', 'ab', 'a']",
           "['a', 'a']",
-          "['a']",
-          "['a', 'ab', 'a']"
+          "['a']"
         ],
         "correct": "['a', 'a']"
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B13",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -95,11 +95,6 @@
           "question": "Vì sao phải tự thêm \"\\n\" sau mỗi từ?",
           "options": [
             {
-              "text": "Vì write không tự xuống dòng",
-              "detail": "Không có \"\\n\" thì các từ dính liền: \"levelradar\".",
-              "correct": true
-            },
-            {
               "text": "Vì UTF-8 yêu cầu",
               "detail": "Encoding không liên quan tới xuống dòng.",
               "correct": false
@@ -108,9 +103,14 @@
               "text": "Không cần, write tự xuống dòng",
               "detail": "Chỉ print mới tự thêm xuống dòng.",
               "correct": false
+            },
+            {
+              "text": "Vì write không tự xuống dòng",
+              "detail": "Không có \"\\n\" thì các từ dính liền: \"levelradar\".",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Không có \"\\n\" thì các từ dính liền: \"levelradar\"."
         },
         {
@@ -122,13 +122,13 @@
               "correct": true
             },
             {
-              "text": "Không có file",
-              "detail": "open(..., \"w\") tạo file ngay khi mở.",
+              "text": "Giữ dữ liệu cũ",
+              "detail": "\"w\" luôn xoá nội dung cũ.",
               "correct": false
             },
             {
-              "text": "Giữ dữ liệu cũ",
-              "detail": "\"w\" luôn xoá nội dung cũ.",
+              "text": "Không có file",
+              "detail": "open(..., \"w\") tạo file ngay khi mở.",
               "correct": false
             }
           ],
@@ -171,9 +171,9 @@
       "counter": {
         "question": "File cũ chứa \"old\\n\", chạy với words = [\"a\"]. File sau khi chạy?",
         "options": [
-          "\"a\\n\"",
           "\"old\\na\\n\"",
-          "\"old\\n\""
+          "\"old\\n\"",
+          "\"a\\n\""
         ],
         "correct": "\"a\\n\""
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B20",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,21 +49,21 @@
         "options": [
           {
             "id": "a",
-            "title": "data.txt → list dòng → lọc từng dòng → ghi palindromes.txt",
-            "detail": "Đọc → lọc → ghi, file nguồn chỉ được đọc.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "data.txt → ghi đè data.txt → lọc",
             "detail": "Không bao giờ ghi vào file nguồn.",
             "correct": false
           },
           {
-            "id": "c",
+            "id": "b",
             "title": "đọc → ghi → lọc",
             "detail": "Phải lọc xong mới ghi kết quả.",
             "correct": false
+          },
+          {
+            "id": "c",
+            "title": "data.txt → list dòng → lọc từng dòng → ghi palindromes.txt",
+            "detail": "Đọc → lọc → ghi, file nguồn chỉ được đọc.",
+            "correct": true
           }
         ]
       },
@@ -92,9 +92,9 @@
           "question": "data.txt \"Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx\" → palindromes.txt?",
           "options": [
             {
-              "text": "\"level\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
-              "detail": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự.",
-              "correct": true
+              "text": "\"Level\\nlevel\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+              "detail": "Sai: \"Level\" không đối xứng khi phân biệt hoa/thường.",
+              "correct": false
             },
             {
               "text": "\"level\\nđộđ\\na\\nradar\\nx\\n\"",
@@ -102,12 +102,12 @@
               "correct": false
             },
             {
-              "text": "\"Level\\nlevel\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
-              "detail": "Sai: \"Level\" không đối xứng khi phân biệt hoa/thường.",
-              "correct": false
+              "text": "\"level\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+              "detail": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự."
         }
       ],
@@ -142,9 +142,9 @@
       "counter": {
         "question": "data.txt \"ab\\r\\nx\\r\\n\" (xuống dòng kiểu Windows) → palindromes.txt?",
         "options": [
-          "\"x\\n\"",
+          "\"ab\\nx\\n\"",
           "\"x\\r\\n\"",
-          "\"ab\\nx\\n\""
+          "\"x\\n\""
         ],
         "correct": "\"x\\n\""
       }

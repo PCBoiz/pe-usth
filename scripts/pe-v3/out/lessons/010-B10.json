@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B10",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,9 +46,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Từng word — mỗi lần một chuỗi",
-            "detail": "Hàm kiểm tra nhận str; vòng lặp đưa từng phần tử vào.",
-            "correct": true
+            "title": "Tên file",
+            "detail": "Bài này chưa đọc file.",
+            "correct": false
           },
           {
             "id": "b",
@@ -58,9 +58,9 @@
           },
           {
             "id": "c",
-            "title": "Tên file",
-            "detail": "Bài này chưa đọc file.",
-            "correct": false
+            "title": "Từng word — mỗi lần một chuỗi",
+            "detail": "Hàm kiểm tra nhận str; vòng lặp đưa từng phần tử vào.",
+            "correct": true
           }
         ]
       },
@@ -100,13 +100,13 @@
               "correct": true
             },
             {
-              "text": "[\"radar\"]",
-              "detail": "Không bỏ trùng.",
+              "text": "[\"radar\", \"ab\", \"radar\"]",
+              "detail": "\"ab\" không đối xứng.",
               "correct": false
             },
             {
-              "text": "[\"radar\", \"ab\", \"radar\"]",
-              "detail": "\"ab\" không đối xứng.",
+              "text": "[\"radar\"]",
+              "detail": "Không bỏ trùng.",
               "correct": false
             }
           ],
@@ -117,14 +117,14 @@
           "question": "filter_palindromes([\"Level\", \"\", \"a\"]) trả gì?",
           "options": [
             {
-              "text": "[\"a\"]",
-              "detail": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại.",
-              "correct": true
-            },
-            {
               "text": "[\"Level\", \"a\"]",
               "detail": "Giữ nguyên hoa/thường.",
               "correct": false
+            },
+            {
+              "text": "[\"a\"]",
+              "detail": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại.",
+              "correct": true
             },
             {
               "text": "[\"\", \"a\"]",
@@ -132,7 +132,7 @@
               "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại."
         }
       ],
@@ -175,9 +175,9 @@
       "counter": {
         "question": "filter_palindromes([]) trả gì?",
         "options": [
+          "Báo lỗi",
           "[]",
-          "None",
-          "Báo lỗi"
+          "None"
         ],
         "correct": "[]"
       },

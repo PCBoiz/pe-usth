@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N07",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -52,15 +52,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Sau fork, trong child",
-            "detail": "Fork từ process đang có nhiều thread là nguy hiểm (chỉ thread gọi fork được sao chép).",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Trước fork, ở parent",
             "detail": "Parent phải đơn luồng khi fork.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Sau fork, trong child",
+            "detail": "Fork từ process đang có nhiều thread là nguy hiểm (chỉ thread gọi fork được sao chép).",
+            "correct": true
           },
           {
             "id": "c",
@@ -151,8 +151,8 @@
       "counter": {
         "question": "m = 2, n = 3: tổng số worker thread?",
         "options": [
-          "6",
           "3",
+          "6",
           "2"
         ],
         "correct": "6"

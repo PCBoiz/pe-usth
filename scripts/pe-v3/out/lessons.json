@@ -18,7 +18,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -50,20 +50,20 @@
       "options": [
        {
         "id": "a",
+        "title": "Không dòng nào — phải sửa cả print",
+        "detail": "print đọc giá trị hiện tại của biến, không giữ cố định số 1991.",
+        "correct": false
+       },
+       {
+        "id": "b",
         "title": "Chỉ dòng thứ hai",
         "detail": "print(year) đọc giá trị mới 2026; dòng Python giữ nguyên.",
         "correct": true
        },
        {
-        "id": "b",
+        "id": "c",
         "title": "Cả hai dòng",
         "detail": "name không đổi nên dòng đầu vẫn là Python.",
-        "correct": false
-       },
-       {
-        "id": "c",
-        "title": "Không dòng nào — phải sửa cả print",
-        "detail": "print đọc giá trị hiện tại của biến, không giữ cố định số 1991.",
         "correct": false
        }
       ]
@@ -99,9 +99,9 @@
        "question": "Với name = \"C\" và year = 1972, chương trình in gì?",
        "options": [
         {
-         "text": "C rồi 1972, mỗi giá trị một dòng",
-         "detail": "Hai lệnh print, mỗi lệnh tự xuống dòng.",
-         "correct": true
+         "text": "name rồi year",
+         "detail": "Không có dấu nháy nên print đọc giá trị của biến.",
+         "correct": false
         },
         {
          "text": "C 1972 trên cùng một dòng",
@@ -109,26 +109,26 @@
          "correct": false
         },
         {
-         "text": "name rồi year",
-         "detail": "Không có dấu nháy nên print đọc giá trị của biến.",
-         "correct": false
+         "text": "C rồi 1972, mỗi giá trị một dòng",
+         "detail": "Hai lệnh print, mỗi lệnh tự xuống dòng.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Hai lệnh print, mỗi lệnh tự xuống dòng."
       },
       {
        "question": "Gán year = 0 thì dòng thứ hai in gì?",
        "options": [
         {
-         "text": "0",
-         "detail": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng.",
-         "correct": true
-        },
-        {
          "text": "Một dòng trống",
          "detail": "print(0) in chữ số 0, không in dòng trống.",
          "correct": false
+        },
+        {
+         "text": "0",
+         "detail": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng.",
+         "correct": true
         },
         {
          "text": "False",
@@ -136,7 +136,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Số 0 là giá trị bình thường; print in đúng 0 và vẫn đủ hai dòng."
       }
      ],
@@ -175,8 +175,8 @@
      "counter": {
       "question": "Đổi thành name = \"C\", year = 1972 thì kết quả là gì?",
       "options": [
-       "Python rồi 1991",
        "C rồi 1972",
+       "Python rồi 1991",
        "name rồi year"
       ],
       "correct": "C rồi 1972"
@@ -294,7 +294,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -326,20 +326,20 @@
       "options": [
        {
         "id": "a",
+        "title": "\"Language:C\"",
+        "detail": "Dấu cách nằm trong \"Language: \" nên vẫn còn.",
+        "correct": false
+       },
+       {
+        "id": "b",
         "title": "\"Language: C\"",
         "detail": "Phần cố định giữ nguyên, phần sau lấy giá trị mới của name.",
         "correct": true
        },
        {
-        "id": "b",
+        "id": "c",
         "title": "\"Language: Python\"",
         "detail": "message được ghép lại từ name mới mỗi lần chạy.",
-        "correct": false
-       },
-       {
-        "id": "c",
-        "title": "\"Language:C\"",
-        "detail": "Dấu cách nằm trong \"Language: \" nên vẫn còn.",
         "correct": false
        }
       ]
@@ -375,14 +375,14 @@
        "question": "name = \"\" (chuỗi rỗng) thì message là gì?",
        "options": [
         {
-         "text": "\"Language: \" — vẫn còn dấu cách ở cuối",
-         "detail": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định.",
-         "correct": true
-        },
-        {
          "text": "\"Language:\"",
          "detail": "Dấu cách thuộc phần cố định nên không mất.",
          "correct": false
+        },
+        {
+         "text": "\"Language: \" — vẫn còn dấu cách ở cuối",
+         "detail": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định.",
+         "correct": true
         },
         {
          "text": "Báo lỗi vì name rỗng",
@@ -390,21 +390,21 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Ghép với chuỗi rỗng không bỏ ký tự nào của phần cố định."
       },
       {
        "question": "Biểu thức nào gây TypeError?",
        "options": [
         {
-         "text": "\"Year: \" + 1991",
-         "detail": "Không cộng được str với int.",
-         "correct": true
-        },
-        {
          "text": "\"Year: \" + \"1991\"",
          "detail": "Hai chuỗi ghép bình thường thành \"Year: 1991\".",
          "correct": false
+        },
+        {
+         "text": "\"Year: \" + 1991",
+         "detail": "Không cộng được str với int.",
+         "correct": true
         },
         {
          "text": "\"Language: \" + name, với name = \"C\"",
@@ -412,7 +412,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Không cộng được str với int."
       }
      ],
@@ -451,8 +451,8 @@
      "counter": {
       "question": "name = \"Rust\" thì chương trình in gì?",
       "options": [
-       "Language: Rust",
        "Language: Python",
+       "Language: Rust",
        "Language:Rust"
       ],
       "correct": "Language: Rust"
@@ -570,7 +570,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -602,21 +602,21 @@
       "options": [
        {
         "id": "a",
-        "title": "\"level\" và \"a\"",
-        "detail": "Hai chuỗi này đọc xuôi hay ngược đều giống nhau.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "\"level\" và chuỗi rỗng",
         "detail": "Một ký tự đảo lại vẫn là chính nó.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "\"levle\" và \"a\"",
         "detail": "Đọc ngược từng ký tự l-e-v-e-l vẫn ra level.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "\"level\" và \"a\"",
+        "detail": "Hai chuỗi này đọc xuôi hay ngược đều giống nhau.",
+        "correct": true
        }
       ]
      },
@@ -656,13 +656,13 @@
          "correct": true
         },
         {
-         "text": "\"nohtyp\"",
-         "detail": "Chỉ reversed_text nhận chuỗi đảo.",
+         "text": "Chuỗi rỗng",
+         "detail": "Không lệnh nào xoá text.",
          "correct": false
         },
         {
-         "text": "Chuỗi rỗng",
-         "detail": "Không lệnh nào xoá text.",
+         "text": "\"nohtyp\"",
+         "detail": "Chỉ reversed_text nhận chuỗi đảo.",
          "correct": false
         }
        ],
@@ -673,11 +673,6 @@
        "question": "text = \"\" (chuỗi rỗng) thì text[::-1] là gì?",
        "options": [
         {
-         "text": "Chuỗi rỗng \"\"",
-         "detail": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi.",
-         "correct": true
-        },
-        {
          "text": "Báo IndexError",
          "detail": "Slicing không báo lỗi với chuỗi rỗng.",
          "correct": false
@@ -686,9 +681,14 @@
          "text": "None",
          "detail": "Slicing luôn trả về str.",
          "correct": false
+        },
+        {
+         "text": "Chuỗi rỗng \"\"",
+         "detail": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Không có ký tự nào để đảo; kết quả vẫn rỗng, không lỗi."
       }
      ],
@@ -727,9 +727,9 @@
      "counter": {
       "question": "text = \"ab\" thì chương trình in gì?",
       "options": [
-       "ab",
        "ba",
-       "b"
+       "b",
+       "ab"
       ],
       "correct": "ba"
      },
@@ -842,7 +842,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -874,21 +874,21 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — đảo ra \"leveL\", chữ L hoa đổi chỗ",
-        "detail": "So sánh phân biệt hoa/thường nên kết quả là False.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Có — vì \"level\" là palindrome",
         "detail": "Bài này KHÔNG đổi chữ thường; \"Level\" khác \"leveL\".",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "Báo lỗi vì có chữ hoa",
         "detail": "So sánh chuỗi không bao giờ lỗi vì chữ hoa.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "Không — đảo ra \"leveL\", chữ L hoa đổi chỗ",
+        "detail": "So sánh phân biệt hoa/thường nên kết quả là False.",
+        "correct": true
        }
       ]
      },
@@ -923,11 +923,6 @@
        "question": "text = \"a\" thì result là gì?",
        "options": [
         {
-         "text": "True",
-         "detail": "Một ký tự đảo lại vẫn là chính nó.",
-         "correct": true
-        },
-        {
          "text": "False",
          "detail": "\"a\" == \"a\" là đúng.",
          "correct": false
@@ -936,9 +931,14 @@
          "text": "Báo lỗi",
          "detail": "Chuỗi một ký tự đảo bình thường.",
          "correct": false
+        },
+        {
+         "text": "True",
+         "detail": "Một ký tự đảo lại vẫn là chính nó.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Một ký tự đảo lại vẫn là chính nó."
       },
       {
@@ -950,13 +950,13 @@
          "correct": true
         },
         {
-         "text": "Hai dấu giống nhau",
-         "detail": "text = reversed_text là gán, không trả True/False.",
+         "text": "== là gán hai lần",
+         "detail": "== không gán gì cả.",
          "correct": false
         },
         {
-         "text": "== là gán hai lần",
-         "detail": "== không gán gì cả.",
+         "text": "Hai dấu giống nhau",
+         "detail": "text = reversed_text là gán, không trả True/False.",
          "correct": false
         }
        ],
@@ -999,9 +999,9 @@
      "counter": {
       "question": "text = \"abc\" thì chương trình in gì?",
       "options": [
-       "True",
+       "cba",
        "False",
-       "cba"
+       "True"
       ],
       "correct": "False"
      },
@@ -1114,7 +1114,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -1195,14 +1195,14 @@
        "question": "Nếu đổi nhầm hai thông báo (nhánh if in NOT PALINDROME), chương trình sẽ…",
        "options": [
         {
-         "text": "Vẫn chạy nhưng in sai thông báo — sai bài",
-         "detail": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi.",
-         "correct": true
-        },
-        {
          "text": "Báo SyntaxError",
          "detail": "Cú pháp vẫn đúng.",
          "correct": false
+        },
+        {
+         "text": "Vẫn chạy nhưng in sai thông báo — sai bài",
+         "detail": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi.",
+         "correct": true
         },
         {
          "text": "Tự in đúng",
@@ -1210,12 +1210,17 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Python không hiểu ý nghĩa thông báo; lỗi logic không báo lỗi."
       },
       {
        "question": "Chương trình đúng in bao nhiêu dòng mỗi lần chạy?",
        "options": [
+        {
+         "text": "Tuỳ result mà 0 hoặc 2",
+         "detail": "Luôn có đúng một nhánh.",
+         "correct": false
+        },
         {
          "text": "Đúng 1 dòng",
          "detail": "Chỉ một nhánh chạy.",
@@ -1225,14 +1230,9 @@
          "text": "2 dòng",
          "detail": "Đó là khi cả hai print nằm ngoài if/else.",
          "correct": false
-        },
-        {
-         "text": "Tuỳ result mà 0 hoặc 2",
-         "detail": "Luôn có đúng một nhánh.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Chỉ một nhánh chạy."
       }
      ],
@@ -1264,8 +1264,8 @@
       "question": "result = False thì chương trình in gì?",
       "options": [
        "Một dòng: NOT PALINDROME",
-       "Hai dòng: PALINDROME rồi NOT PALINDROME",
-       "Không in gì"
+       "Không in gì",
+       "Hai dòng: PALINDROME rồi NOT PALINDROME"
       ],
       "correct": "Một dòng: NOT PALINDROME"
      },
@@ -1362,7 +1362,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -1400,14 +1400,14 @@
        },
        {
         "id": "b",
-        "title": "1 lần",
-        "detail": "Vòng for chạy đúng bằng số phần tử.",
+        "title": "Báo lỗi",
+        "detail": "Duyệt list rỗng là hợp lệ.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "Báo lỗi",
-        "detail": "Duyệt list rỗng là hợp lệ.",
+        "title": "1 lần",
+        "detail": "Vòng for chạy đúng bằng số phần tử.",
         "correct": false
        }
       ]
@@ -1443,9 +1443,9 @@
        "question": "words = [\"radar\", \"radar\"] thì in mấy dòng?",
        "options": [
         {
-         "text": "2 dòng radar",
-         "detail": "for duyệt đủ mọi phần tử, kể cả phần tử trùng.",
-         "correct": true
+         "text": "Không in gì",
+         "detail": "List có hai phần tử nên thân vòng lặp chạy hai lần.",
+         "correct": false
         },
         {
          "text": "1 dòng radar",
@@ -1453,12 +1453,12 @@
          "correct": false
         },
         {
-         "text": "Không in gì",
-         "detail": "List có hai phần tử nên thân vòng lặp chạy hai lần.",
-         "correct": false
+         "text": "2 dòng radar",
+         "detail": "for duyệt đủ mọi phần tử, kể cả phần tử trùng.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "for duyệt đủ mọi phần tử, kể cả phần tử trùng."
       }
      ],
@@ -1494,8 +1494,8 @@
       "question": "words = [\"a\"] thì chương trình in gì?",
       "options": [
        "a",
-       "['a']",
-       "Không in gì"
+       "Không in gì",
+       "['a']"
       ],
       "correct": "a"
      },
@@ -1607,7 +1607,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -1639,15 +1639,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Hai lần — giữ cả phần tử trùng",
-        "detail": "Mỗi lần gặp từ hợp lệ là append một lần; không dùng set.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Một lần",
         "detail": "Bài không yêu cầu bỏ trùng; set còn làm mất thứ tự.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Hai lần — giữ cả phần tử trùng",
+        "detail": "Mỗi lần gặp từ hợp lệ là append một lần; không dùng set.",
+        "correct": true
        },
        {
         "id": "c",
@@ -1693,13 +1693,13 @@
          "correct": true
         },
         {
-         "text": "[\"Level\"]",
-         "detail": "So sánh phân biệt hoa/thường.",
+         "text": "[\"\"]",
+         "detail": "Chuỗi rỗng bị loại trước bước so sánh.",
          "correct": false
         },
         {
-         "text": "[\"\"]",
-         "detail": "Chuỗi rỗng bị loại trước bước so sánh.",
+         "text": "[\"Level\"]",
+         "detail": "So sánh phân biệt hoa/thường.",
          "correct": false
         }
        ],
@@ -1710,14 +1710,14 @@
        "question": "words = [\"a\", \"ab\", \"a\"] thì palindromes là gì?",
        "options": [
         {
-         "text": "[\"a\", \"a\"]",
-         "detail": "Giữ thứ tự và phần tử trùng.",
-         "correct": true
-        },
-        {
          "text": "[\"a\"]",
          "detail": "Không bỏ trùng.",
          "correct": false
+        },
+        {
+         "text": "[\"a\", \"a\"]",
+         "detail": "Giữ thứ tự và phần tử trùng.",
+         "correct": true
         },
         {
          "text": "[\"a\", \"ab\", \"a\"]",
@@ -1725,7 +1725,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Giữ thứ tự và phần tử trùng."
       }
      ],
@@ -1768,9 +1768,9 @@
      "counter": {
       "question": "words = [\"a\", \"ab\", \"a\"] cho kết quả nào?",
       "options": [
+       "['a', 'ab', 'a']",
        "['a', 'a']",
-       "['a']",
-       "['a', 'ab', 'a']"
+       "['a']"
       ],
       "correct": "['a', 'a']"
      },
@@ -1892,7 +1892,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -1924,15 +1924,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — nó có 1 ký tự",
-        "detail": "Chuỗi rỗng là \"\" (0 ký tự); \" \" chứa một dấu cách.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Có",
         "detail": "Dấu cách là một ký tự thật.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Không — nó có 1 ký tự",
+        "detail": "Chuỗi rỗng là \"\" (0 ký tự); \" \" chứa một dấu cách.",
+        "correct": true
        },
        {
         "id": "c",
@@ -1973,11 +1973,6 @@
        "question": "Nếu thay return True bằng print(True), result = is_empty(\"\") nhận gì?",
        "options": [
         {
-         "text": "None",
-         "detail": "Hàm không gặp return mang giá trị nên trả None.",
-         "correct": true
-        },
-        {
          "text": "True",
          "detail": "print không đưa giá trị về nơi gọi.",
          "correct": false
@@ -1986,18 +1981,23 @@
          "text": "\"True\"",
          "detail": "print không trả về chuỗi.",
          "correct": false
+        },
+        {
+         "text": "None",
+         "detail": "Hàm không gặp return mang giá trị nên trả None.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Hàm không gặp return mang giá trị nên trả None."
       },
       {
        "question": "is_empty(\"\\n\") trả gì?",
        "options": [
         {
-         "text": "False — ký tự xuống dòng vẫn là một ký tự",
-         "detail": "\"\\n\" có độ dài 1.",
-         "correct": true
+         "text": "None",
+         "detail": "Hàm đúng luôn trả bool.",
+         "correct": false
         },
         {
          "text": "True",
@@ -2005,12 +2005,12 @@
          "correct": false
         },
         {
-         "text": "None",
-         "detail": "Hàm đúng luôn trả bool.",
-         "correct": false
+         "text": "False — ký tự xuống dòng vẫn là một ký tự",
+         "detail": "\"\\n\" có độ dài 1.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "\"\\n\" có độ dài 1."
       }
      ],
@@ -2045,8 +2045,8 @@
      "counter": {
       "question": "is_empty(\"a\") trả gì?",
       "options": [
-       "True",
        "False",
+       "True",
        "None"
       ],
       "correct": "False"
@@ -2184,7 +2184,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B09",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -2265,14 +2265,14 @@
        "question": "is_palindrome(\" a \") trả gì?",
        "options": [
         {
-         "text": "True — dấu cách hai bên đối xứng nhau",
-         "detail": "Không strip nên \" a \" đảo vẫn là \" a \".",
-         "correct": true
-        },
-        {
          "text": "False",
          "detail": "Dấu cách là ký tự bình thường, vẫn đối xứng.",
          "correct": false
+        },
+        {
+         "text": "True — dấu cách hai bên đối xứng nhau",
+         "detail": "Không strip nên \" a \" đảo vẫn là \" a \".",
+         "correct": true
         },
         {
          "text": "Báo lỗi",
@@ -2280,21 +2280,21 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Không strip nên \" a \" đảo vẫn là \" a \"."
       },
       {
        "question": "is_palindrome(\"độđ\") trả gì?",
        "options": [
         {
-         "text": "True",
-         "detail": "Ký tự có dấu cũng được đảo đúng thứ tự.",
-         "correct": true
-        },
-        {
          "text": "False",
          "detail": "đ-ộ-đ đọc ngược vẫn là đ-ộ-đ.",
          "correct": false
+        },
+        {
+         "text": "True",
+         "detail": "Ký tự có dấu cũng được đảo đúng thứ tự.",
+         "correct": true
         },
         {
          "text": "Lỗi vì có dấu tiếng Việt",
@@ -2302,7 +2302,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Ký tự có dấu cũng được đảo đúng thứ tự."
       }
      ],
@@ -2337,8 +2337,8 @@
      "counter": {
       "question": "is_palindrome(\"Level\") trả gì?",
       "options": [
-       "True",
        "False",
+       "True",
        "Báo lỗi"
       ],
       "correct": "False"
@@ -2481,7 +2481,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B10",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -2513,9 +2513,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Từng word — mỗi lần một chuỗi",
-        "detail": "Hàm kiểm tra nhận str; vòng lặp đưa từng phần tử vào.",
-        "correct": true
+        "title": "Tên file",
+        "detail": "Bài này chưa đọc file.",
+        "correct": false
        },
        {
         "id": "b",
@@ -2525,9 +2525,9 @@
        },
        {
         "id": "c",
-        "title": "Tên file",
-        "detail": "Bài này chưa đọc file.",
-        "correct": false
+        "title": "Từng word — mỗi lần một chuỗi",
+        "detail": "Hàm kiểm tra nhận str; vòng lặp đưa từng phần tử vào.",
+        "correct": true
        }
       ]
      },
@@ -2567,13 +2567,13 @@
          "correct": true
         },
         {
-         "text": "[\"radar\"]",
-         "detail": "Không bỏ trùng.",
+         "text": "[\"radar\", \"ab\", \"radar\"]",
+         "detail": "\"ab\" không đối xứng.",
          "correct": false
         },
         {
-         "text": "[\"radar\", \"ab\", \"radar\"]",
-         "detail": "\"ab\" không đối xứng.",
+         "text": "[\"radar\"]",
+         "detail": "Không bỏ trùng.",
          "correct": false
         }
        ],
@@ -2584,14 +2584,14 @@
        "question": "filter_palindromes([\"Level\", \"\", \"a\"]) trả gì?",
        "options": [
         {
-         "text": "[\"a\"]",
-         "detail": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại.",
-         "correct": true
-        },
-        {
          "text": "[\"Level\", \"a\"]",
          "detail": "Giữ nguyên hoa/thường.",
          "correct": false
+        },
+        {
+         "text": "[\"a\"]",
+         "detail": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại.",
+         "correct": true
         },
         {
          "text": "[\"\", \"a\"]",
@@ -2599,7 +2599,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "\"Level\" khác \"leveL\", chuỗi rỗng bị loại."
       }
      ],
@@ -2642,9 +2642,9 @@
      "counter": {
       "question": "filter_palindromes([]) trả gì?",
       "options": [
+       "Báo lỗi",
        "[]",
-       "None",
-       "Báo lỗi"
+       "None"
       ],
       "correct": "[]"
      },
@@ -2789,7 +2789,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B11",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -2824,9 +2824,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Chuỗi rỗng \"\"",
-        "detail": "Không có ký tự nào để đọc; read() trả \"\" chứ không lỗi.",
-        "correct": true
+        "title": "Báo lỗi",
+        "detail": "File rỗng vẫn mở và đọc bình thường.",
+        "correct": false
        },
        {
         "id": "b",
@@ -2836,9 +2836,9 @@
        },
        {
         "id": "c",
-        "title": "Báo lỗi",
-        "detail": "File rỗng vẫn mở và đọc bình thường.",
-        "correct": false
+        "title": "Chuỗi rỗng \"\"",
+        "detail": "Không có ký tự nào để đọc; read() trả \"\" chứ không lỗi.",
+        "correct": true
        }
       ]
      },
@@ -2873,11 +2873,6 @@
        "question": "Vì sao cần encoding=\"utf-8\" khi mở data.txt?",
        "options": [
         {
-         "text": "Để đọc đúng chữ có dấu như \"độđ\"",
-         "detail": "Mã hoá mặc định của máy có thể khác UTF-8.",
-         "correct": true
-        },
-        {
          "text": "Để đọc nhanh hơn",
          "detail": "Encoding quyết định cách giải mã byte thành chữ, không phải tốc độ.",
          "correct": false
@@ -2886,9 +2881,14 @@
          "text": "Để file tự đóng",
          "detail": "Việc tự đóng file là của with.",
          "correct": false
+        },
+        {
+         "text": "Để đọc đúng chữ có dấu như \"độđ\"",
+         "detail": "Mã hoá mặc định của máy có thể khác UTF-8.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Mã hoá mặc định của máy có thể khác UTF-8."
       },
       {
@@ -2900,13 +2900,13 @@
          "correct": true
         },
         {
-         "text": "Đọc bình thường",
-         "detail": "\"w\" là chế độ ghi, không đọc được.",
+         "text": "Python tự đổi sang \"r\"",
+         "detail": "Python làm đúng chế độ bạn ghi.",
          "correct": false
         },
         {
-         "text": "Python tự đổi sang \"r\"",
-         "detail": "Python làm đúng chế độ bạn ghi.",
+         "text": "Đọc bình thường",
+         "detail": "\"w\" là chế độ ghi, không đọc được.",
          "correct": false
         }
        ],
@@ -3080,7 +3080,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B12",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -3115,21 +3115,21 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — strip() xoá cả khoảng trắng hai đầu",
-        "detail": "\" level \" thành \"level\": dữ liệu bị đổi.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Có — strip() chỉ bỏ xuống dòng",
         "detail": "strip() không tham số bỏ MỌI khoảng trắng hai đầu.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "Chỉ giữ dấu cách bên phải",
         "detail": "Cả hai đầu đều bị xoá.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "Không — strip() xoá cả khoảng trắng hai đầu",
+        "detail": "\" level \" thành \"level\": dữ liệu bị đổi.",
+        "correct": true
        }
       ]
      },
@@ -3169,13 +3169,13 @@
          "correct": true
         },
         {
-         "text": "[\"a\\r\", \"b\\r\"]",
-         "detail": "CR cũng nằm trong tập ký tự được bỏ.",
+         "text": "[\"a\", \"\", \"b\", \"\"]",
+         "detail": "Mỗi dòng chỉ được đọc một lần.",
          "correct": false
         },
         {
-         "text": "[\"a\", \"\", \"b\", \"\"]",
-         "detail": "Mỗi dòng chỉ được đọc một lần.",
+         "text": "[\"a\\r\", \"b\\r\"]",
+         "detail": "CR cũng nằm trong tập ký tự được bỏ.",
          "correct": false
         }
        ],
@@ -3186,14 +3186,14 @@
        "question": "Dòng cuối \"radar\" không có xuống dòng. line[:-1] cho kết quả gì?",
        "options": [
         {
-         "text": "\"rada\" — cắt mất chữ r",
-         "detail": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip.",
-         "correct": true
-        },
-        {
          "text": "\"radar\"",
          "detail": "line[:-1] không kiểm tra ký tự cuối là gì.",
          "correct": false
+        },
+        {
+         "text": "\"rada\" — cắt mất chữ r",
+         "detail": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip.",
+         "correct": true
         },
         {
          "text": "Báo lỗi",
@@ -3201,7 +3201,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "line[:-1] luôn bỏ ký tự cuối, kể cả khi đó không phải \\n. Vì vậy dùng rstrip."
       }
      ],
@@ -3241,8 +3241,8 @@
       "question": "File \" \\n\" (một dấu cách rồi xuống dòng) cho lines là gì?",
       "options": [
        "[\" \"]",
-       "[\"\"]",
-       "[]"
+       "[]",
+       "[\"\"]"
       ],
       "correct": "[\" \"]"
      },
@@ -3371,7 +3371,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B13",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -3452,11 +3452,6 @@
        "question": "Vì sao phải tự thêm \"\\n\" sau mỗi từ?",
        "options": [
         {
-         "text": "Vì write không tự xuống dòng",
-         "detail": "Không có \"\\n\" thì các từ dính liền: \"levelradar\".",
-         "correct": true
-        },
-        {
          "text": "Vì UTF-8 yêu cầu",
          "detail": "Encoding không liên quan tới xuống dòng.",
          "correct": false
@@ -3465,9 +3460,14 @@
          "text": "Không cần, write tự xuống dòng",
          "detail": "Chỉ print mới tự thêm xuống dòng.",
          "correct": false
+        },
+        {
+         "text": "Vì write không tự xuống dòng",
+         "detail": "Không có \"\\n\" thì các từ dính liền: \"levelradar\".",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Không có \"\\n\" thì các từ dính liền: \"levelradar\"."
       },
       {
@@ -3479,13 +3479,13 @@
          "correct": true
         },
         {
-         "text": "Không có file",
-         "detail": "open(..., \"w\") tạo file ngay khi mở.",
+         "text": "Giữ dữ liệu cũ",
+         "detail": "\"w\" luôn xoá nội dung cũ.",
          "correct": false
         },
         {
-         "text": "Giữ dữ liệu cũ",
-         "detail": "\"w\" luôn xoá nội dung cũ.",
+         "text": "Không có file",
+         "detail": "open(..., \"w\") tạo file ngay khi mở.",
          "correct": false
         }
        ],
@@ -3528,9 +3528,9 @@
      "counter": {
       "question": "File cũ chứa \"old\\n\", chạy với words = [\"a\"]. File sau khi chạy?",
       "options": [
-       "\"a\\n\"",
        "\"old\\na\\n\"",
-       "\"old\\n\""
+       "\"old\\n\"",
+       "\"a\\n\""
       ],
       "correct": "\"a\\n\""
      },
@@ -3657,7 +3657,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B14",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -3692,9 +3692,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Có — lines đã nằm trong bộ nhớ",
-        "detail": "Đóng file không xoá list đã đọc.",
-        "correct": true
+        "title": "Báo lỗi",
+        "detail": "return sau with là cách viết chuẩn.",
+        "correct": false
        },
        {
         "id": "b",
@@ -3704,9 +3704,9 @@
        },
        {
         "id": "c",
-        "title": "Báo lỗi",
-        "detail": "return sau with là cách viết chuẩn.",
-        "correct": false
+        "title": "Có — lines đã nằm trong bộ nhớ",
+        "detail": "Đóng file không xoá list đã đọc.",
+        "correct": true
        }
       ]
      },
@@ -3741,6 +3741,11 @@
        "question": "read_lines(\"missing.txt\") khi file không tồn tại thì…",
        "options": [
         {
+         "text": "Trả None",
+         "detail": "Không có return nào chạy tới khi open lỗi.",
+         "correct": false
+        },
+        {
          "text": "Phát sinh FileNotFoundError",
          "detail": "Để lỗi hiện ra giúp phát hiện sai tên file.",
          "correct": true
@@ -3749,14 +3754,9 @@
          "text": "Trả []",
          "detail": "Giấu lỗi làm nơi gọi tưởng file rỗng.",
          "correct": false
-        },
-        {
-         "text": "Trả None",
-         "detail": "Không có return nào chạy tới khi open lỗi.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Để lỗi hiện ra giúp phát hiện sai tên file."
       },
       {
@@ -3817,9 +3817,9 @@
      "counter": {
       "question": "File \" a \\nđộđ\" → read_lines trả gì?",
       "options": [
-       "[\" a \", \"độđ\"]",
        "[\"a\", \"độđ\"]",
-       "[\" a \\n\", \"độđ\"]"
+       "[\" a \\n\", \"độđ\"]",
+       "[\" a \", \"độđ\"]"
       ],
       "correct": "[\" a \", \"độđ\"]"
      },
@@ -3963,7 +3963,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B15",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -4001,14 +4001,14 @@
        },
        {
         "id": "b",
-        "title": "List vừa ghi",
-        "detail": "Không có return lines nên không trả list.",
+        "title": "True",
+        "detail": "Không có gì trả True.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "True",
-        "detail": "Không có gì trả True.",
+        "title": "List vừa ghi",
+        "detail": "Không có return lines nên không trả list.",
         "correct": false
        }
       ]
@@ -4044,11 +4044,6 @@
        "question": "Gọi write_lines(\"out.txt\", [\"a\"]) rồi write_lines(\"out.txt\", []). File cuối cùng chứa gì?",
        "options": [
         {
-         "text": "Rỗng — lần gọi sau ghi đè",
-         "detail": "Mỗi lần mở \"w\" là làm rỗng file.",
-         "correct": true
-        },
-        {
          "text": "\"a\\n\"",
          "detail": "Lần gọi thứ hai đã ghi đè.",
          "correct": false
@@ -4057,9 +4052,14 @@
          "text": "Báo lỗi vì list rỗng",
          "detail": "Duyệt list rỗng là hợp lệ.",
          "correct": false
+        },
+        {
+         "text": "Rỗng — lần gọi sau ghi đè",
+         "detail": "Mỗi lần mở \"w\" là làm rỗng file.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Mỗi lần mở \"w\" là làm rỗng file."
       }
      ],
@@ -4098,8 +4098,8 @@
      "counter": {
       "question": "write_lines(\"out.txt\", [\"độđ\"]) trả về gì?",
       "options": [
-       "None",
        "[\"độđ\"]",
+       "None",
        "True"
       ],
       "correct": "None"
@@ -4237,7 +4237,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B16",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -4324,13 +4324,13 @@
          "correct": true
         },
         {
-         "text": "[\"radar\"]",
-         "detail": "Hàm chưa kịp xét \"radar\".",
+         "text": "None",
+         "detail": "Lượt đầu đã gặp return [].",
          "correct": false
         },
         {
-         "text": "None",
-         "detail": "Lượt đầu đã gặp return [].",
+         "text": "[\"radar\"]",
+         "detail": "Hàm chưa kịp xét \"radar\".",
          "correct": false
         }
        ],
@@ -4373,8 +4373,8 @@
      "counter": {
       "question": "Bản đã sửa với [\"ab\", \"radar\"] trả gì?",
       "options": [
-       "[\"radar\"]",
        "[]",
+       "[\"radar\"]",
        "None"
       ],
       "correct": "[\"radar\"]"
@@ -4501,7 +4501,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B17",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -4542,14 +4542,14 @@
        },
        {
         "id": "b",
-        "title": "Cả list lines",
-        "detail": "Đưa cả list vào là so sánh list với list đảo.",
+        "title": "Tên file \"data.txt\"",
+        "detail": "Tên file không phải dữ liệu cần kiểm.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "Tên file \"data.txt\"",
-        "detail": "Tên file không phải dữ liệu cần kiểm.",
+        "title": "Cả list lines",
+        "detail": "Đưa cả list vào là so sánh list với list đảo.",
         "correct": false
        }
       ]
@@ -4585,9 +4585,9 @@
        "question": "data.txt chứa \"Level\\n\\na\". palindromes là gì?",
        "options": [
         {
-         "text": "[\"a\"]",
-         "detail": "\"Level\" sai hoa/thường; dòng rỗng bị loại.",
-         "correct": true
+         "text": "[\"\", \"a\"]",
+         "detail": "Chuỗi rỗng không phải palindrome.",
+         "correct": false
         },
         {
          "text": "[\"Level\", \"a\"]",
@@ -4595,17 +4595,22 @@
          "correct": false
         },
         {
-         "text": "[\"\", \"a\"]",
-         "detail": "Chuỗi rỗng không phải palindrome.",
-         "correct": false
+         "text": "[\"a\"]",
+         "detail": "\"Level\" sai hoa/thường; dòng rỗng bị loại.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "\"Level\" sai hoa/thường; dòng rỗng bị loại."
       },
       {
        "question": "Bài này có tạo palindromes.txt không?",
        "options": [
+        {
+         "text": "Có nếu list không rỗng",
+         "detail": "Không có lệnh ghi nào trong bài.",
+         "correct": false
+        },
         {
          "text": "Không — chỉ in list; ghi file là việc của B18",
          "detail": "Mỗi bài thêm một mắt xích.",
@@ -4615,14 +4620,9 @@
          "text": "Có",
          "detail": "Chưa gọi hàm ghi nào.",
          "correct": false
-        },
-        {
-         "text": "Có nếu list không rỗng",
-         "detail": "Không có lệnh ghi nào trong bài.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Mỗi bài thêm một mắt xích."
       }
      ],
@@ -4657,9 +4657,9 @@
      "counter": {
       "question": "data.txt \"radar\\nradar\" → palindromes?",
       "options": [
+       "[]",
        "[\"radar\", \"radar\"]",
-       "[\"radar\"]",
-       "[]"
+       "[\"radar\"]"
       ],
       "correct": "[\"radar\", \"radar\"]"
      },
@@ -4806,7 +4806,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B18",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -4844,14 +4844,14 @@
        },
        {
         "id": "b",
-        "title": "words gốc",
-        "detail": "words còn từ sai và chuỗi rỗng.",
+        "title": "Cả hai",
+        "detail": "Mỗi lần gọi write_lines ghi đè lần trước.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "Cả hai",
-        "detail": "Mỗi lần gọi write_lines ghi đè lần trước.",
+        "title": "words gốc",
+        "detail": "words còn từ sai và chuỗi rỗng.",
         "correct": false
        }
       ]
@@ -4933,9 +4933,9 @@
      "counter": {
       "question": "words = [\"radar\", \"ab\", \"radar\"] → palindromes.txt?",
       "options": [
-       "\"radar\\nradar\\n\"",
        "\"radar\\n\"",
-       "\"radar\\nab\\nradar\\n\""
+       "\"radar\\nab\\nradar\\n\"",
+       "\"radar\\nradar\\n\""
       ],
       "correct": "\"radar\\nradar\\n\""
      },
@@ -5083,7 +5083,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B19",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -5118,9 +5118,9 @@
       "options": [
        {
         "id": "a",
-        "title": "read_lines bỏ xuống dòng; is_palindrome loại chuỗi rỗng",
-        "detail": "Mỗi hàm một nhiệm vụ.",
-        "correct": true
+        "title": "write_lines bỏ chuỗi rỗng",
+        "detail": "write_lines ghi đúng list được đưa vào.",
+        "correct": false
        },
        {
         "id": "b",
@@ -5130,9 +5130,9 @@
        },
        {
         "id": "c",
-        "title": "write_lines bỏ chuỗi rỗng",
-        "detail": "write_lines ghi đúng list được đưa vào.",
-        "correct": false
+        "title": "read_lines bỏ xuống dòng; is_palindrome loại chuỗi rỗng",
+        "detail": "Mỗi hàm một nhiệm vụ.",
+        "correct": true
        }
       ]
      },
@@ -5167,14 +5167,14 @@
        "question": "data.txt \"Level\\n a \\nradar\\nradar\" → palindromes.txt?",
        "options": [
         {
-         "text": "\" a \\nradar\\nradar\\n\"",
-         "detail": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng.",
-         "correct": true
-        },
-        {
          "text": "\"level\\na\\nradar\\n\"",
          "detail": "Không lower, không strip, không bỏ trùng.",
          "correct": false
+        },
+        {
+         "text": "\" a \\nradar\\nradar\\n\"",
+         "detail": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng.",
+         "correct": true
         },
         {
          "text": "\"radar\\n\"",
@@ -5182,7 +5182,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Giữ khoảng trắng, phân biệt hoa/thường, giữ trùng."
       }
      ],
@@ -5217,9 +5217,9 @@
      "counter": {
       "question": "data.txt chỉ có \"radar\" (không có ký tự xuống dòng) → palindromes.txt?",
       "options": [
-       "\"radar\\n\"",
+       "\"\"",
        "\"radar\"",
-       "\"\""
+       "\"radar\\n\""
       ],
       "correct": "\"radar\\n\""
      },
@@ -5418,7 +5418,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B20",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -5453,21 +5453,21 @@
       "options": [
        {
         "id": "a",
-        "title": "data.txt → list dòng → lọc từng dòng → ghi palindromes.txt",
-        "detail": "Đọc → lọc → ghi, file nguồn chỉ được đọc.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "data.txt → ghi đè data.txt → lọc",
         "detail": "Không bao giờ ghi vào file nguồn.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "đọc → ghi → lọc",
         "detail": "Phải lọc xong mới ghi kết quả.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "data.txt → list dòng → lọc từng dòng → ghi palindromes.txt",
+        "detail": "Đọc → lọc → ghi, file nguồn chỉ được đọc.",
+        "correct": true
        }
       ]
      },
@@ -5496,9 +5496,9 @@
        "question": "data.txt \"Level\\nlevel\\n\\nđộđ\\n a \\nradar\\nradar\\nx\" → palindromes.txt?",
        "options": [
         {
-         "text": "\"level\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
-         "detail": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự.",
-         "correct": true
+         "text": "\"Level\\nlevel\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+         "detail": "Sai: \"Level\" không đối xứng khi phân biệt hoa/thường.",
+         "correct": false
         },
         {
          "text": "\"level\\nđộđ\\na\\nradar\\nx\\n\"",
@@ -5506,12 +5506,12 @@
          "correct": false
         },
         {
-         "text": "\"Level\\nlevel\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
-         "detail": "Sai: \"Level\" không đối xứng khi phân biệt hoa/thường.",
-         "correct": false
+         "text": "\"level\\nđộđ\\n a \\nradar\\nradar\\nx\\n\"",
+         "detail": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Đủ mọi quy tắc: bỏ Level và dòng rỗng, giữ khoảng trắng, trùng và thứ tự."
       }
      ],
@@ -5546,9 +5546,9 @@
      "counter": {
       "question": "data.txt \"ab\\r\\nx\\r\\n\" (xuống dòng kiểu Windows) → palindromes.txt?",
       "options": [
-       "\"x\\n\"",
+       "\"ab\\nx\\n\"",
        "\"x\\r\\n\"",
-       "\"ab\\nx\\n\""
+       "\"x\\n\""
       ],
       "correct": "\"x\\n\""
      }
@@ -5658,7 +5658,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -5693,20 +5693,20 @@
       "options": [
        {
         "id": "a",
+        "title": "Phải viết lại class",
+        "detail": "Một class tạo được nhiều object.",
+        "correct": false
+       },
+       {
+        "id": "b",
         "title": "Không — vẫn là .name, .year_created, .paradigms",
         "detail": "Mọi object của cùng class có cùng tên thuộc tính, khác giá trị.",
         "correct": true
        },
        {
-        "id": "b",
+        "id": "c",
         "title": "Có — mỗi object một tên thuộc tính",
         "detail": "Tên thuộc tính do class quy định.",
-        "correct": false
-       },
-       {
-        "id": "c",
-        "title": "Phải viết lại class",
-        "detail": "Một class tạo được nhiều object.",
         "correct": false
        }
       ]
@@ -5746,6 +5746,11 @@
        "question": "print(language.paradigms) với paradigms = [\"procedural\"] in gì?",
        "options": [
         {
+         "text": "[\"procedural\"]",
+         "detail": "Python biểu diễn chuỗi trong list bằng dấu nháy đơn.",
+         "correct": false
+        },
+        {
          "text": "['procedural']",
          "detail": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn.",
          "correct": true
@@ -5754,24 +5759,14 @@
          "text": "procedural",
          "detail": "Đó là phần tử, không phải cả list.",
          "correct": false
-        },
-        {
-         "text": "[\"procedural\"]",
-         "detail": "Python biểu diễn chuỗi trong list bằng dấu nháy đơn.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "print một list in biểu diễn của list: ngoặc vuông và dấu nháy đơn."
       },
       {
        "question": "Class và object khác nhau thế nào?",
        "options": [
-        {
-         "text": "Class là bản mô tả; object là một thực thể tạo từ class, giữ dữ liệu riêng",
-         "detail": "Một class tạo được nhiều object.",
-         "correct": true
-        },
         {
          "text": "Là một",
          "detail": "ProgrammingLanguage là class; language là object.",
@@ -5781,9 +5776,14 @@
          "text": "Object là file, class là hàm",
          "detail": "Không đúng.",
          "correct": false
+        },
+        {
+         "text": "Class là bản mô tả; object là một thực thể tạo từ class, giữ dữ liệu riêng",
+         "detail": "Một class tạo được nhiều object.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Một class tạo được nhiều object."
       }
      ],
@@ -5822,9 +5822,9 @@
      "counter": {
       "question": "Với object C/1972/[\"procedural\"], dòng thứ hai in gì?",
       "options": [
+       "C",
        "1972",
-       "year_created",
-       "C"
+       "year_created"
       ],
       "correct": "1972"
      },
@@ -5948,7 +5948,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -5986,14 +5986,14 @@
        },
        {
         "id": "b",
-        "title": "Có — vì cùng dữ liệu",
-        "detail": "Cùng dữ liệu lúc tạo không có nghĩa là cùng list.",
+        "title": "Tuỳ trình thông dịch",
+        "detail": "Hành vi luôn xác định.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "Tuỳ trình thông dịch",
-        "detail": "Hành vi luôn xác định.",
+        "title": "Có — vì cùng dữ liệu",
+        "detail": "Cùng dữ liệu lúc tạo không có nghĩa là cùng list.",
         "correct": false
        }
       ]
@@ -6087,8 +6087,8 @@
      "counter": {
       "question": "Sau source.append(\"functional\"), language.paradigms là gì?",
       "options": [
-       "['procedural']",
        "['procedural', 'functional']",
+       "['procedural']",
        "[]"
       ],
       "correct": "['procedural']"
@@ -6216,7 +6216,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -6248,20 +6248,20 @@
       "options": [
        {
         "id": "a",
+        "title": "Báo lỗi lần thứ hai",
+        "detail": "Thêm trùng là hợp lệ.",
+        "correct": false
+       },
+       {
+        "id": "b",
         "title": "Có — append không bỏ trùng",
         "detail": "Quy ước của đề: thêm vào cuối, giữ trùng.",
         "correct": true
        },
        {
-        "id": "b",
+        "id": "c",
         "title": "Không — chỉ giữ một lần",
         "detail": "append không kiểm tra trùng.",
-        "correct": false
-       },
-       {
-        "id": "c",
-        "title": "Báo lỗi lần thứ hai",
-        "detail": "Thêm trùng là hợp lệ.",
         "correct": false
        }
       ]
@@ -6297,11 +6297,6 @@
        "question": "result = obj.add_paradigms(\"functional\") thì result là gì?",
        "options": [
         {
-         "text": "None",
-         "detail": "Method không có return mang giá trị.",
-         "correct": true
-        },
-        {
          "text": "['procedural', 'functional']",
          "detail": "Muốn xem list thì đọc obj.paradigms.",
          "correct": false
@@ -6310,9 +6305,14 @@
          "text": "True",
          "detail": "Không có gì trả True.",
          "correct": false
+        },
+        {
+         "text": "None",
+         "detail": "Method không có return mang giá trị.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Method không có return mang giá trị."
       },
       {
@@ -6369,9 +6369,9 @@
      "counter": {
       "question": "Object list rỗng, thêm \"procedural\" hai lần → paradigms?",
       "options": [
-       "['procedural', 'procedural']",
        "['procedural']",
-       "[]"
+       "[]",
+       "['procedural', 'procedural']"
       ],
       "correct": "['procedural', 'procedural']"
      },
@@ -6502,7 +6502,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -6534,15 +6534,15 @@
       "options": [
        {
         "id": "a",
-        "title": "return — str(obj) và print(obj) lấy giá trị trả về",
-        "detail": "print(obj) tự in chuỗi mà __str__ trả.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "print",
         "detail": "__str__ in rồi trả None → str(obj) báo TypeError.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "return — str(obj) và print(obj) lấy giá trị trả về",
+        "detail": "print(obj) tự in chuỗi mà __str__ trả.",
+        "correct": true
        },
        {
         "id": "c",
@@ -6583,9 +6583,9 @@
        "question": "Object C/1972/[] → str(obj) là gì?",
        "options": [
         {
-         "text": "Language[C], Year created[1972], Paradigms[]",
-         "detail": "List rỗng biểu diễn là [].",
-         "correct": true
+         "text": "Language[C], Year created[1972]",
+         "detail": "Thiếu trường Paradigms.",
+         "correct": false
         },
         {
          "text": "Language[C], Year created[1972], Paradigms[[]]",
@@ -6593,12 +6593,12 @@
          "correct": false
         },
         {
-         "text": "Language[C], Year created[1972]",
-         "detail": "Thiếu trường Paradigms.",
-         "correct": false
+         "text": "Language[C], Year created[1972], Paradigms[]",
+         "detail": "List rỗng biểu diễn là [].",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "List rỗng biểu diễn là []."
       },
       {
@@ -6659,9 +6659,9 @@
      "counter": {
       "question": "Paradigms [\"procedural\", \"functional\"] → phần cuối chuỗi là gì?",
       "options": [
-       "Paradigms['procedural', 'functional']",
+       "Paradigms[['procedural', 'functional']]",
        "Paradigms[procedural, functional]",
-       "Paradigms[['procedural', 'functional']]"
+       "Paradigms['procedural', 'functional']"
       ],
       "correct": "Paradigms['procedural', 'functional']"
      },
@@ -6818,7 +6818,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -6850,15 +6850,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Một list dùng chung",
-        "detail": "Ba tên cùng trỏ vào một list.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Ba list riêng",
         "detail": "Phép gán không sao chép.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Một list dùng chung",
+        "detail": "Ba tên cùng trỏ vào một list.",
+        "correct": true
        },
        {
         "id": "c",
@@ -6900,9 +6900,9 @@
        "question": "Sau khi sửa đúng, A.paradigms is B.paradigms cho gì?",
        "options": [
         {
-         "text": "False",
-         "detail": "Mỗi object có list riêng.",
-         "correct": true
+         "text": "Báo lỗi",
+         "detail": "is luôn so sánh được.",
+         "correct": false
         },
         {
          "text": "True",
@@ -6910,12 +6910,12 @@
          "correct": false
         },
         {
-         "text": "Báo lỗi",
-         "detail": "is luôn so sánh được.",
-         "correct": false
+         "text": "False",
+         "detail": "Mỗi object có list riêng.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Mỗi object có list riêng."
       }
      ],
@@ -6950,9 +6950,9 @@
      "counter": {
       "question": "Với BẢN LỖI: thêm \"functional\" vào A rồi print(B.paradigms) in gì?",
       "options": [
-       "['procedural', 'functional']",
        "['procedural']",
-       "[]"
+       "[]",
+       "['procedural', 'functional']"
       ],
       "correct": "['procedural', 'functional']"
      },
@@ -7078,7 +7078,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -7110,9 +7110,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — __str__ trả None nên str(obj) báo TypeError",
-        "detail": "Dòng in ra không phải giá trị trả về.",
-        "correct": true
+        "title": "Nhận chuỗi rỗng",
+        "detail": "Python không tự đổi None thành \"\".",
+        "correct": false
        },
        {
         "id": "b",
@@ -7122,9 +7122,9 @@
        },
        {
         "id": "c",
-        "title": "Nhận chuỗi rỗng",
-        "detail": "Python không tự đổi None thành \"\".",
-        "correct": false
+        "title": "Không — __str__ trả None nên str(obj) báo TypeError",
+        "detail": "Dòng in ra không phải giá trị trả về.",
+        "correct": true
        }
       ],
       "code": "    def __str__(self):\n        description = f\"Language[{self.name}]\"\n        description += f\", Year created[{self.year_created}]\"\n        description += f\", Paradigms{self.paradigms}\"\n        print(description)"
@@ -7160,9 +7160,9 @@
        "question": "Gọi str(language) hai lần liên tiếp thì…",
        "options": [
         {
-         "text": "Hai kết quả bằng nhau, không in gì, object không đổi",
-         "detail": "__str__ chỉ đọc trạng thái.",
-         "correct": true
+         "text": "Lần hai báo lỗi",
+         "detail": "__str__ gọi bao nhiêu lần cũng được.",
+         "correct": false
         },
         {
          "text": "In hai dòng",
@@ -7170,12 +7170,12 @@
          "correct": false
         },
         {
-         "text": "Lần hai báo lỗi",
-         "detail": "__str__ gọi bao nhiêu lần cũng được.",
-         "correct": false
+         "text": "Hai kết quả bằng nhau, không in gì, object không đổi",
+         "detail": "__str__ chỉ đọc trạng thái.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "__str__ chỉ đọc trạng thái."
       }
      ],
@@ -7206,9 +7206,9 @@
      "counter": {
       "question": "Chương trình đúng (text = str(language); print(language)) in mấy dòng?",
       "options": [
-       "1 dòng",
        "2 dòng",
-       "0 dòng"
+       "0 dòng",
+       "1 dòng"
       ],
       "correct": "1 dòng"
      },
@@ -7357,7 +7357,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -7436,6 +7436,11 @@
        "question": "Hai object tạo từ cùng list nguồn; thêm \"x\" vào A. B.paradigms thế nào?",
        "options": [
         {
+         "text": "Bị xoá",
+         "detail": "Không có lệnh xoá.",
+         "correct": false
+        },
+        {
          "text": "Không đổi",
          "detail": "Mỗi object giữ bản sao riêng.",
          "correct": true
@@ -7444,14 +7449,9 @@
          "text": "Có thêm \"x\"",
          "detail": "Chỉ khi dùng chung list (lỗi).",
          "correct": false
-        },
-        {
-         "text": "Bị xoá",
-         "detail": "Không có lệnh xoá.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Mỗi object giữ bản sao riêng."
       }
      ],
@@ -7486,9 +7486,9 @@
      "counter": {
       "question": "Go/2009/[] thêm \"concurrent\" → str(obj)?",
       "options": [
+       "Language[Go], Year created[2009], Paradigms[]",
        "Language[Go], Year created[2009], Paradigms['concurrent']",
-       "Language[Go], Year created[2009], Paradigms[concurrent]",
-       "Language[Go], Year created[2009], Paradigms[]"
+       "Language[Go], Year created[2009], Paradigms[concurrent]"
       ],
       "correct": "Language[Go], Year created[2009], Paradigms['concurrent']"
      }
@@ -7607,7 +7607,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -7642,9 +7642,9 @@
       "options": [
        {
         "id": "a",
-        "title": "__init__ của lớp cha ProgrammingLanguage",
-        "detail": "Python tìm method không có ở lớp con lên lớp cha.",
-        "correct": true
+        "title": "Báo lỗi vì thiếu __init__",
+        "detail": "Kế thừa đã cung cấp __init__.",
+        "correct": false
        },
        {
         "id": "b",
@@ -7654,9 +7654,9 @@
        },
        {
         "id": "c",
-        "title": "Báo lỗi vì thiếu __init__",
-        "detail": "Kế thừa đã cung cấp __init__.",
-        "correct": false
+        "title": "__init__ của lớp cha ProgrammingLanguage",
+        "detail": "Python tìm method không có ở lớp con lên lớp cha.",
+        "correct": true
        }
       ]
      },
@@ -7691,6 +7691,11 @@
        "question": "type(language).__name__ là gì?",
        "options": [
         {
+         "text": "object",
+         "detail": "type trả lớp cụ thể nhất.",
+         "correct": false
+        },
+        {
          "text": "C",
          "detail": "Object tạo từ lớp con.",
          "correct": true
@@ -7699,14 +7704,9 @@
          "text": "ProgrammingLanguage",
          "detail": "Đó là lớp cha; isinstance mới tính cả cha.",
          "correct": false
-        },
-        {
-         "text": "object",
-         "detail": "type trả lớp cụ thể nhất.",
-         "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Object tạo từ lớp con."
       }
      ],
@@ -7741,9 +7741,9 @@
      "counter": {
       "question": "str(C(\"C\", 1972, [])) dùng định dạng nào?",
       "options": [
+       "Báo lỗi",
        "Language[C], Year created[1972], Paradigms[] (định dạng của cha)",
-       "C object",
-       "Báo lỗi"
+       "C object"
       ],
       "correct": "Language[C], Year created[1972], Paradigms[] (định dạng của cha)"
      },
@@ -7872,7 +7872,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I09",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -7907,9 +7907,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — đọc language.name sẽ báo AttributeError",
-        "detail": "__init__ của con thay hoàn toàn __init__ của cha.",
-        "correct": true
+        "title": "Có nhưng bằng None",
+        "detail": "Thuộc tính không tồn tại chứ không phải None.",
+        "correct": false
        },
        {
         "id": "b",
@@ -7919,9 +7919,9 @@
        },
        {
         "id": "c",
-        "title": "Có nhưng bằng None",
-        "detail": "Thuộc tính không tồn tại chứ không phải None.",
-        "correct": false
+        "title": "Không — đọc language.name sẽ báo AttributeError",
+        "detail": "__init__ của con thay hoàn toàn __init__ của cha.",
+        "correct": true
        }
       ]
      },
@@ -8007,8 +8007,8 @@
       "question": "C(\"C\", 1972, [], \"C23\").std_version là gì?",
       "options": [
        "C23",
-       "C17",
-       "None"
+       "None",
+       "C17"
       ],
       "correct": "C23"
      },
@@ -8147,7 +8147,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I10",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -8182,21 +8182,21 @@
       "options": [
        {
         "id": "a",
-        "title": "Gọi lại chính nó — đệ quy tới RecursionError",
-        "detail": "self là object C nên str(self) chạy C.__str__.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Gọi __str__ của cha",
         "detail": "Chỉ super().__str__() mới đi lên cha.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "Trả chuỗi rỗng",
         "detail": "Không có điểm dừng.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "Gọi lại chính nó — đệ quy tới RecursionError",
+        "detail": "self là object C nên str(self) chạy C.__str__.",
+        "correct": true
        }
       ]
      },
@@ -8231,11 +8231,6 @@
        "question": "C23 với paradigms [] → str(obj) kết thúc thế nào?",
        "options": [
         {
-         "text": "…Paradigms[], Standard version[C23]",
-         "detail": "Phần cha giữ nguyên, nối thêm phần con.",
-         "correct": true
-        },
-        {
          "text": "Standard version[C23]",
          "detail": "Mất phần của cha.",
          "correct": false
@@ -8244,9 +8239,14 @@
          "text": "…Paradigms[]",
          "detail": "Thiếu phần của con.",
          "correct": false
+        },
+        {
+         "text": "…Paradigms[], Standard version[C23]",
+         "detail": "Phần cha giữ nguyên, nối thêm phần con.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Phần cha giữ nguyên, nối thêm phần con."
       }
      ],
@@ -8281,9 +8281,9 @@
      "counter": {
       "question": "Đổi obj.std_version = \"C23\" rồi str(obj) — phần cuối là gì?",
       "options": [
-       "Standard version[C23]",
        "Standard version[C17]",
-       "Không đổi được"
+       "Không đổi được",
+       "Standard version[C23]"
       ],
       "correct": "Standard version[C23]"
      },
@@ -8425,7 +8425,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I11",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -8460,21 +8460,21 @@
       "options": [
        {
         "id": "a",
-        "title": "C23 — giá trị hiện tại",
-        "detail": "compile đọc self.std_version mỗi lần được gọi.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "C17 — giá trị lúc tạo object",
         "detail": "Không có gì \"chụp\" lại giá trị cũ.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "Cả hai",
         "detail": "Mỗi lần gọi in đúng một dòng.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "C23 — giá trị hiện tại",
+        "detail": "compile đọc self.std_version mỗi lần được gọi.",
+        "correct": true
        }
       ]
      },
@@ -8509,11 +8509,6 @@
        "question": "compile khác __str__ thế nào?",
        "options": [
         {
-         "text": "compile in một dòng và trả None; __str__ trả chuỗi và không in",
-         "detail": "Khác ở kết quả và tác dụng phụ.",
-         "correct": true
-        },
-        {
          "text": "Giống nhau",
          "detail": "Một cái in, một cái trả.",
          "correct": false
@@ -8522,9 +8517,14 @@
          "text": "compile trả chuỗi",
          "detail": "Theo yêu cầu của đề, compile in.",
          "correct": false
+        },
+        {
+         "text": "compile in một dòng và trả None; __str__ trả chuỗi và không in",
+         "detail": "Khác ở kết quả và tác dụng phụ.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Khác ở kết quả và tác dụng phụ."
       }
      ],
@@ -8559,9 +8559,9 @@
      "counter": {
       "question": "obj.std_version = \"C23\"; obj.compile() in gì?",
       "options": [
-       "Compiling C code using standard version C23",
+       "Không in gì",
        "Compiling C code using standard version C17",
-       "Không in gì"
+       "Compiling C code using standard version C23"
       ],
       "correct": "Compiling C code using standard version C23"
      },
@@ -8697,7 +8697,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I12",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -8732,9 +8732,9 @@
       "options": [
        {
         "id": "a",
-        "title": "__init__ khởi tạo (gọi cha); __str__ trả chuỗi; compile in thông báo",
-        "detail": "Mỗi method một trách nhiệm.",
-        "correct": true
+        "title": "__init__ in object",
+        "detail": "Constructor không in.",
+        "correct": false
        },
        {
         "id": "b",
@@ -8744,9 +8744,9 @@
        },
        {
         "id": "c",
-        "title": "__init__ in object",
-        "detail": "Constructor không in.",
-        "correct": false
+        "title": "__init__ khởi tạo (gọi cha); __str__ trả chuỗi; compile in thông báo",
+        "detail": "Mỗi method một trách nhiệm.",
+        "correct": true
        }
       ]
      },
@@ -8780,13 +8780,13 @@
          "correct": true
         },
         {
-         "text": "std_version",
-         "detail": "Đó là phần của con.",
+         "text": "Không phần nào",
+         "detail": "super().__init__ khởi tạo ba trường.",
          "correct": false
         },
         {
-         "text": "Không phần nào",
-         "detail": "super().__init__ khởi tạo ba trường.",
+         "text": "std_version",
+         "detail": "Đó là phần của con.",
          "correct": false
         }
        ],
@@ -8825,9 +8825,9 @@
      "counter": {
       "question": "C(\"C\", 1972, [], \"C23\") → str(obj)?",
       "options": [
-       "Language[C], Year created[1972], Paradigms[], Standard version[C23]",
        "Language[C], Standard version[C23]",
-       "Standard version[C23]"
+       "Standard version[C23]",
+       "Language[C], Year created[1972], Paradigms[], Standard version[C23]"
       ],
       "correct": "Language[C], Year created[1972], Paradigms[], Standard version[C23]"
      }
@@ -8958,7 +8958,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N01",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -8994,9 +8994,9 @@
       "options": [
        {
         "id": "a",
-        "title": "Không ngoặc: giao hàm cho thread; có ngoặc: gọi ngay ở thread chính, target nhận None",
-        "detail": "Dấu ngoặc là lời gọi hàm.",
-        "correct": true
+        "title": "Có ngoặc mới chạy được",
+        "detail": "start() mới là thứ cho target chạy.",
+        "correct": false
        },
        {
         "id": "b",
@@ -9006,9 +9006,9 @@
        },
        {
         "id": "c",
-        "title": "Có ngoặc mới chạy được",
-        "detail": "start() mới là thứ cho target chạy.",
-        "correct": false
+        "title": "Không ngoặc: giao hàm cho thread; có ngoặc: gọi ngay ở thread chính, target nhận None",
+        "detail": "Dấu ngoặc là lời gọi hàm.",
+        "correct": true
        }
       ]
      },
@@ -9043,11 +9043,6 @@
        "question": "Gọi worker.start() hai lần trên cùng một Thread thì…",
        "options": [
         {
-         "text": "RuntimeError: threads can only be started once",
-         "detail": "Cần thêm worker thì tạo Thread mới.",
-         "correct": true
-        },
-        {
          "text": "Chạy target hai lần",
          "detail": "Một Thread chỉ start được một lần.",
          "correct": false
@@ -9056,23 +9051,28 @@
          "text": "Lần hai bị bỏ qua",
          "detail": "Python báo lỗi chứ không bỏ qua.",
          "correct": false
+        },
+        {
+         "text": "RuntimeError: threads can only be started once",
+         "detail": "Cần thêm worker thì tạo Thread mới.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Cần thêm worker thì tạo Thread mới."
       },
       {
        "question": "worker.run() khác worker.start() thế nào?",
        "options": [
         {
-         "text": "run() chạy target NGAY trong thread hiện tại; start() mới tạo thread con",
-         "detail": "Gọi run() không tạo thread mới.",
-         "correct": true
-        },
-        {
          "text": "Giống nhau",
          "detail": "Chỉ start() tạo luồng thực thi mới.",
          "correct": false
+        },
+        {
+         "text": "run() chạy target NGAY trong thread hiện tại; start() mới tạo thread con",
+         "detail": "Gọi run() không tạo thread mới.",
+         "correct": true
         },
         {
          "text": "run() chạy nhanh hơn",
@@ -9080,7 +9080,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Gọi run() không tạo thread mới."
       }
      ],
@@ -9266,7 +9266,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N02",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -9302,15 +9302,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Không — worker trước phải xong mới start worker sau, thành chạy tuần tự",
-        "detail": "join chặn nơi gọi tới khi worker đó xong.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Có",
         "detail": "join ngay sau start không cho worker kế tiếp bắt đầu.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Không — worker trước phải xong mới start worker sau, thành chạy tuần tự",
+        "detail": "join chặn nơi gọi tới khi worker đó xong.",
+        "correct": true
        },
        {
         "id": "c",
@@ -9351,11 +9351,6 @@
        "question": "n = 4 thì target compile chạy mấy lần?",
        "options": [
         {
-         "text": "4 lần, trên bốn Thread khác nhau",
-         "detail": "Mỗi lượt range tạo một Thread.",
-         "correct": true
-        },
-        {
          "text": "1 lần",
          "detail": "Có bốn worker.",
          "correct": false
@@ -9364,9 +9359,14 @@
          "text": "Tuỳ máy",
          "detail": "Số worker xác định; chỉ thứ tự dòng in là tuỳ.",
          "correct": false
+        },
+        {
+         "text": "4 lần, trên bốn Thread khác nhau",
+         "detail": "Mỗi lượt range tạo một Thread.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Mỗi lượt range tạo một Thread."
       }
      ],
@@ -9402,8 +9402,8 @@
       "question": "n = 1 thì có mấy dòng Compiling?",
       "options": [
        "1",
-       "3",
-       "0"
+       "0",
+       "3"
       ],
       "correct": "1"
      },
@@ -9552,7 +9552,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N03",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -9594,14 +9594,14 @@
        },
        {
         "id": "b",
-        "title": "Dấu phẩy thừa, bỏ đi cũng được",
-        "detail": "(n) chỉ là n trong ngoặc — không phải tuple.",
+        "title": "args là số thread cần tạo",
+        "detail": "Số thread do vòng range(n) quyết định.",
         "correct": false
        },
        {
         "id": "c",
-        "title": "args là số thread cần tạo",
-        "detail": "Số thread do vòng range(n) quyết định.",
+        "title": "Dấu phẩy thừa, bỏ đi cũng được",
+        "detail": "(n) chỉ là n trong ngoặc — không phải tuple.",
         "correct": false
        }
       ]
@@ -9637,14 +9637,14 @@
        "question": "args=(n) với n = 3 sẽ thế nào khi thread chạy?",
        "options": [
         {
-         "text": "Lỗi TypeError trong thread — (3) không phải tuple",
-         "detail": "Thread cần args là iterable các đối số.",
-         "correct": true
-        },
-        {
          "text": "Chạy bình thường",
          "detail": "(3) là số nguyên 3.",
          "correct": false
+        },
+        {
+         "text": "Lỗi TypeError trong thread — (3) không phải tuple",
+         "detail": "Thread cần args là iterable các đối số.",
+         "correct": true
         },
         {
          "text": "Tạo 3 thread",
@@ -9652,7 +9652,7 @@
          "correct": false
         }
        ],
-       "correct": 0,
+       "correct": 1,
        "explanation": "Thread cần args là iterable các đối số."
       }
      ],
@@ -9687,9 +9687,9 @@
      "counter": {
       "question": "obj.parallel_compile(1) với C23 in gì?",
       "options": [
+       "Không in gì",
        "Compiling C code using 1 threads with standard version C23",
-       "Compiling C code using 3 threads with standard version C23",
-       "Không in gì"
+       "Compiling C code using 3 threads with standard version C23"
       ],
       "correct": "Compiling C code using 1 threads with standard version C23"
      },
@@ -9866,7 +9866,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N04",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -9995,9 +9995,9 @@
      "counter": {
       "question": "parallel_compile(\"3\") → ?",
       "options": [
-       "ValueError",
        "Ba worker",
-       "TypeError"
+       "TypeError",
+       "ValueError"
       ],
       "correct": "ValueError"
      }
@@ -10146,7 +10146,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N05",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -10178,21 +10178,21 @@
       "options": [
        {
         "id": "a",
-        "title": "Child nhận 0; parent nhận PID (số dương) của child",
-        "detail": "Nhờ vậy if pid == 0 tách được hai nhánh.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Cả hai nhận PID của child",
         "detail": "Child nhận 0.",
         "correct": false
        },
        {
-        "id": "c",
+        "id": "b",
         "title": "Parent nhận 0",
         "detail": "Ngược lại.",
         "correct": false
+       },
+       {
+        "id": "c",
+        "title": "Child nhận 0; parent nhận PID (số dương) của child",
+        "detail": "Nhờ vậy if pid == 0 tách được hai nhánh.",
+        "correct": true
        }
       ]
      },
@@ -10253,9 +10253,9 @@
        "question": "status trả về từ os.waitpid là gì?",
        "options": [
         {
-         "text": "Một số mã hoá; dùng os.WIFEXITED(status) rồi os.WEXITSTATUS(status) để lấy exit code",
-         "detail": "Không so trực tiếp với 0/1.",
-         "correct": true
+         "text": "PID của child",
+         "detail": "PID là phần tử thứ nhất của tuple.",
+         "correct": false
         },
         {
          "text": "Chính exit code của child",
@@ -10263,12 +10263,12 @@
          "correct": false
         },
         {
-         "text": "PID của child",
-         "detail": "PID là phần tử thứ nhất của tuple.",
-         "correct": false
+         "text": "Một số mã hoá; dùng os.WIFEXITED(status) rồi os.WEXITSTATUS(status) để lấy exit code",
+         "detail": "Không so trực tiếp với 0/1.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "Không so trực tiếp với 0/1."
       }
      ],
@@ -10303,9 +10303,9 @@
      "counter": {
       "question": "Child thoát với mã 1 thì parent làm gì?",
       "options": [
-       "raise RuntimeError(\"child failed\")",
        "In Parent finished như thường",
-       "Không biết được"
+       "Không biết được",
+       "raise RuntimeError(\"child failed\")"
       ],
       "correct": "raise RuntimeError(\"child failed\")"
      },
@@ -10442,7 +10442,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N06",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -10477,15 +10477,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Có — child chạy tiếp vòng lặp và fork ra process cháu",
-        "detail": "Cây process bị nhân đôi.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Không — child tự biết dừng",
         "detail": "Child là bản sao của parent tại thời điểm fork.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Có — child chạy tiếp vòng lặp và fork ra process cháu",
+        "detail": "Cây process bị nhân đôi.",
+        "correct": true
        },
        {
         "id": "c",
@@ -10530,9 +10530,9 @@
        "question": "m = 3, child thứ hai thoát mã 1. Parent nên làm gì?",
        "options": [
         {
-         "text": "Chờ đủ cả ba rồi raise RuntimeError",
-         "detail": "wait_for_children vẫn chờ tiếp PID còn lại.",
-         "correct": true
+         "text": "Coi như thành công",
+         "detail": "Child lỗi không được ghi nhận là thành công.",
+         "correct": false
         },
         {
          "text": "Dừng ngay, bỏ mặc child thứ ba",
@@ -10540,12 +10540,12 @@
          "correct": false
         },
         {
-         "text": "Coi như thành công",
-         "detail": "Child lỗi không được ghi nhận là thành công.",
-         "correct": false
+         "text": "Chờ đủ cả ba rồi raise RuntimeError",
+         "detail": "wait_for_children vẫn chờ tiếp PID còn lại.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "wait_for_children vẫn chờ tiếp PID còn lại."
       },
       {
@@ -10768,7 +10768,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N07",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -10806,15 +10806,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Sau fork, trong child",
-        "detail": "Fork từ process đang có nhiều thread là nguy hiểm (chỉ thread gọi fork được sao chép).",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Trước fork, ở parent",
         "detail": "Parent phải đơn luồng khi fork.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Sau fork, trong child",
+        "detail": "Fork từ process đang có nhiều thread là nguy hiểm (chỉ thread gọi fork được sao chép).",
+        "correct": true
        },
        {
         "id": "c",
@@ -10905,8 +10905,8 @@
      "counter": {
       "question": "m = 2, n = 3: tổng số worker thread?",
       "options": [
-       "6",
        "3",
+       "6",
        "2"
       ],
       "correct": "6"
@@ -11094,7 +11094,7 @@
      "kind": "pe-v3",
      "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#N08",
      "parser": "pe-v3/build",
-     "importedAt": "2026-10-11T08:45:41+00:00"
+     "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
      "brief": {
@@ -11132,15 +11132,15 @@
       "options": [
        {
         "id": "a",
-        "title": "Chỉ thời gian tạo child — chưa tính lúc child làm việc",
-        "detail": "Phải chờ đủ mới biết công việc đã xong.",
-        "correct": true
-       },
-       {
-        "id": "b",
         "title": "Toàn bộ công việc",
         "detail": "Child có thể còn đang chạy.",
         "correct": false
+       },
+       {
+        "id": "b",
+        "title": "Chỉ thời gian tạo child — chưa tính lúc child làm việc",
+        "detail": "Phải chờ đủ mới biết công việc đã xong.",
+        "correct": true
        },
        {
         "id": "c",
@@ -11179,11 +11179,6 @@
        "question": "benchmark(True, 3) theo yêu cầu của đề?",
        "options": [
         {
-         "text": "ValueError trước khi fork",
-         "detail": "bool không phải int hợp lệ ở bài này.",
-         "correct": true
-        },
-        {
          "text": "Chạy với m = 1",
          "detail": "Không chấp nhận bool.",
          "correct": false
@@ -11192,9 +11187,14 @@
          "text": "Trả 0.0",
          "detail": "Phải báo lỗi.",
          "correct": false
+        },
+        {
+         "text": "ValueError trước khi fork",
+         "detail": "bool không phải int hợp lệ ở bài này.",
+         "correct": true
         }
        ],
-       "correct": 0,
+       "correct": 2,
        "explanation": "bool không phải int hợp lệ ở bài này."
       }
      ],

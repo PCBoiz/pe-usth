@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B17",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -55,14 +55,14 @@
           },
           {
             "id": "b",
-            "title": "Cả list lines",
-            "detail": "Đưa cả list vào là so sánh list với list đảo.",
+            "title": "Tên file \"data.txt\"",
+            "detail": "Tên file không phải dữ liệu cần kiểm.",
             "correct": false
           },
           {
             "id": "c",
-            "title": "Tên file \"data.txt\"",
-            "detail": "Tên file không phải dữ liệu cần kiểm.",
+            "title": "Cả list lines",
+            "detail": "Đưa cả list vào là so sánh list với list đảo.",
             "correct": false
           }
         ]
@@ -98,9 +98,9 @@
           "question": "data.txt chứa \"Level\\n\\na\". palindromes là gì?",
           "options": [
             {
-              "text": "[\"a\"]",
-              "detail": "\"Level\" sai hoa/thường; dòng rỗng bị loại.",
-              "correct": true
+              "text": "[\"\", \"a\"]",
+              "detail": "Chuỗi rỗng không phải palindrome.",
+              "correct": false
             },
             {
               "text": "[\"Level\", \"a\"]",
@@ -108,17 +108,22 @@
               "correct": false
             },
             {
-              "text": "[\"\", \"a\"]",
-              "detail": "Chuỗi rỗng không phải palindrome.",
-              "correct": false
+              "text": "[\"a\"]",
+              "detail": "\"Level\" sai hoa/thường; dòng rỗng bị loại.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "\"Level\" sai hoa/thường; dòng rỗng bị loại."
         },
         {
           "question": "Bài này có tạo palindromes.txt không?",
           "options": [
+            {
+              "text": "Có nếu list không rỗng",
+              "detail": "Không có lệnh ghi nào trong bài.",
+              "correct": false
+            },
             {
               "text": "Không — chỉ in list; ghi file là việc của B18",
               "detail": "Mỗi bài thêm một mắt xích.",
@@ -128,14 +133,9 @@
               "text": "Có",
               "detail": "Chưa gọi hàm ghi nào.",
               "correct": false
-            },
-            {
-              "text": "Có nếu list không rỗng",
-              "detail": "Không có lệnh ghi nào trong bài.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Mỗi bài thêm một mắt xích."
         }
       ],
@@ -170,9 +170,9 @@
       "counter": {
         "question": "data.txt \"radar\\nradar\" → palindromes?",
         "options": [
+          "[]",
           "[\"radar\", \"radar\"]",
-          "[\"radar\"]",
-          "[]"
+          "[\"radar\"]"
         ],
         "correct": "[\"radar\", \"radar\"]"
       },

@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#B15",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -52,14 +52,14 @@
           },
           {
             "id": "b",
-            "title": "List vừa ghi",
-            "detail": "Không có return lines nên không trả list.",
+            "title": "True",
+            "detail": "Không có gì trả True.",
             "correct": false
           },
           {
             "id": "c",
-            "title": "True",
-            "detail": "Không có gì trả True.",
+            "title": "List vừa ghi",
+            "detail": "Không có return lines nên không trả list.",
             "correct": false
           }
         ]
@@ -95,11 +95,6 @@
           "question": "Gọi write_lines(\"out.txt\", [\"a\"]) rồi write_lines(\"out.txt\", []). File cuối cùng chứa gì?",
           "options": [
             {
-              "text": "Rỗng — lần gọi sau ghi đè",
-              "detail": "Mỗi lần mở \"w\" là làm rỗng file.",
-              "correct": true
-            },
-            {
               "text": "\"a\\n\"",
               "detail": "Lần gọi thứ hai đã ghi đè.",
               "correct": false
@@ -108,9 +103,14 @@
               "text": "Báo lỗi vì list rỗng",
               "detail": "Duyệt list rỗng là hợp lệ.",
               "correct": false
+            },
+            {
+              "text": "Rỗng — lần gọi sau ghi đè",
+              "detail": "Mỗi lần mở \"w\" là làm rỗng file.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Mỗi lần mở \"w\" là làm rỗng file."
         }
       ],
@@ -149,8 +149,8 @@
       "counter": {
         "question": "write_lines(\"out.txt\", [\"độđ\"]) trả về gì?",
         "options": [
-          "None",
           "[\"độđ\"]",
+          "None",
           "True"
         ],
         "correct": "None"

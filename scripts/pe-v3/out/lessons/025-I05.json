@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I05",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -46,15 +46,15 @@
         "options": [
           {
             "id": "a",
-            "title": "Một list dùng chung",
-            "detail": "Ba tên cùng trỏ vào một list.",
-            "correct": true
-          },
-          {
-            "id": "b",
             "title": "Ba list riêng",
             "detail": "Phép gán không sao chép.",
             "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Một list dùng chung",
+            "detail": "Ba tên cùng trỏ vào một list.",
+            "correct": true
           },
           {
             "id": "c",
@@ -96,9 +96,9 @@
           "question": "Sau khi sửa đúng, A.paradigms is B.paradigms cho gì?",
           "options": [
             {
-              "text": "False",
-              "detail": "Mỗi object có list riêng.",
-              "correct": true
+              "text": "Báo lỗi",
+              "detail": "is luôn so sánh được.",
+              "correct": false
             },
             {
               "text": "True",
@@ -106,12 +106,12 @@
               "correct": false
             },
             {
-              "text": "Báo lỗi",
-              "detail": "is luôn so sánh được.",
-              "correct": false
+              "text": "False",
+              "detail": "Mỗi object có list riêng.",
+              "correct": true
             }
           ],
-          "correct": 0,
+          "correct": 2,
           "explanation": "Mỗi object có list riêng."
         }
       ],
@@ -146,9 +146,9 @@
       "counter": {
         "question": "Với BẢN LỖI: thêm \"functional\" vào A rồi print(B.paradigms) in gì?",
         "options": [
-          "['procedural', 'functional']",
           "['procedural']",
-          "[]"
+          "[]",
+          "['procedural', 'functional']"
         ],
         "correct": "['procedural', 'functional']"
       },

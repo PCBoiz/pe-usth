@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I09",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "Không — đọc language.name sẽ báo AttributeError",
-            "detail": "__init__ của con thay hoàn toàn __init__ của cha.",
-            "correct": true
+            "title": "Có nhưng bằng None",
+            "detail": "Thuộc tính không tồn tại chứ không phải None.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "Có nhưng bằng None",
-            "detail": "Thuộc tính không tồn tại chứ không phải None.",
-            "correct": false
+            "title": "Không — đọc language.name sẽ báo AttributeError",
+            "detail": "__init__ của con thay hoàn toàn __init__ của cha.",
+            "correct": true
           }
         ]
       },
@@ -149,8 +149,8 @@
         "question": "C(\"C\", 1972, [], \"C23\").std_version là gì?",
         "options": [
           "C23",
-          "C17",
-          "None"
+          "None",
+          "C17"
         ],
         "correct": "C23"
       },

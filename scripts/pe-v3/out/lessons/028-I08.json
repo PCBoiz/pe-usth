@@ -14,7 +14,7 @@
       "kind": "pe-v3",
       "filename": "PE_Python_v3_Toan_bo_40_bai_code.pdf#I08",
       "parser": "pe-v3/build",
-      "importedAt": "2026-10-11T08:45:41+00:00"
+      "importedAt": "2026-09-30T00:00:00+00:00"
     },
     "step_1": {
       "brief": {
@@ -49,9 +49,9 @@
         "options": [
           {
             "id": "a",
-            "title": "__init__ của lớp cha ProgrammingLanguage",
-            "detail": "Python tìm method không có ở lớp con lên lớp cha.",
-            "correct": true
+            "title": "Báo lỗi vì thiếu __init__",
+            "detail": "Kế thừa đã cung cấp __init__.",
+            "correct": false
           },
           {
             "id": "b",
@@ -61,9 +61,9 @@
           },
           {
             "id": "c",
-            "title": "Báo lỗi vì thiếu __init__",
-            "detail": "Kế thừa đã cung cấp __init__.",
-            "correct": false
+            "title": "__init__ của lớp cha ProgrammingLanguage",
+            "detail": "Python tìm method không có ở lớp con lên lớp cha.",
+            "correct": true
           }
         ]
       },
@@ -98,6 +98,11 @@
           "question": "type(language).__name__ là gì?",
           "options": [
             {
+              "text": "object",
+              "detail": "type trả lớp cụ thể nhất.",
+              "correct": false
+            },
+            {
               "text": "C",
               "detail": "Object tạo từ lớp con.",
               "correct": true
@@ -106,14 +111,9 @@
               "text": "ProgrammingLanguage",
               "detail": "Đó là lớp cha; isinstance mới tính cả cha.",
               "correct": false
-            },
-            {
-              "text": "object",
-              "detail": "type trả lớp cụ thể nhất.",
-              "correct": false
             }
           ],
-          "correct": 0,
+          "correct": 1,
           "explanation": "Object tạo từ lớp con."
         }
       ],
@@ -148,9 +148,9 @@
       "counter": {
         "question": "str(C(\"C\", 1972, [])) dùng định dạng nào?",
         "options": [
+          "Báo lỗi",
           "Language[C], Year created[1972], Paradigms[] (định dạng của cha)",
-          "C object",
-          "Báo lỗi"
+          "C object"
         ],
         "correct": "Language[C], Year created[1972], Paradigms[] (định dạng của cha)"
       },
