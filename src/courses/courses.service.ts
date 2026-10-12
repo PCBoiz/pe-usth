@@ -40,7 +40,7 @@ const COURSE_ICONS: Record<string, string> = {
  * Khoá học bằng Python Studio: trang khoá học cần biết CHÍNH XÁC bài số mấy đã
  * xong (mở khoá tuần tự), không chỉ tổng số bài — xem getEnrolled().
  */
-export const STUDIO_COURSES = ['python', 'python_advanced'];
+export const STUDIO_COURSES = ['python_advanced'];
 
 /** DB lưu enum tiếng Anh; card trên dashboard cần nhãn tiếng Việt. */
 const LEVEL_LABELS: Record<string, string> = {
@@ -157,19 +157,13 @@ export class CoursesService {
           select: { courseId: true, lesson: { select: { sortOrder: true } } },
         })
       : [];
-    const studioLesson = await this.prisma.lesson.findFirst({
-      where: { courseId: 'python', sortOrder: 11 },
-      select: { xpReward: true },
-    });
+    // Trước đây chỗ này còn truy vấn `lessons` của khoá 'python' bài 11 để trả
+    // thêm field `pythonStudio` cho card trên dashboard cũ. Khoá 'python' đã
+    // được gỡ (chỉ còn python_advanced) và không client nào đọc field đó nữa —
+    // giữ lại chỉ là thêm một vòng gọi Neon (~237ms) trên đường nóng của mọi
+    // lần mở bài học, để lấy về null.
     return {
       ok: true,
-      pythonStudio: {
-        lessonNumber: 11,
-        xpReward:
-          studioLesson && studioLesson.xpReward > 0
-            ? Math.min(studioLesson.xpReward, 500)
-            : 50,
-      },
       enrolled: rows.map((r) => ({
         ...this.mapEnrollment(r, titles),
         ...(STUDIO_COURSES.includes(r.courseId)
