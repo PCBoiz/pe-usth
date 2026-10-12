@@ -30,7 +30,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 22 bộ, 161 ca, tất cả đạt |
+| Backend test | 23 bộ, 164 ca, tất cả đạt |
 | Backend lint | 527 lỗi — **mốc trần trong CI là 600, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, ~180 cảnh báo |
@@ -75,8 +75,11 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Frontend không còn đăng nhập, nhưng backend vẫn đòi JWT.** Trang chủ `/` và `/courses/*` đọc
   danh mục tĩnh `frontend/src/lib/catalog.ts` (chép từ `prisma/seed-courses.js`, số bài lấy từ
   `curricula.json`) chứ không gọi `/api/courses` — gọi thì khách nhận 401. Sửa seed khoá học thì
-  sửa cả file này. Trang bài học (`/lesson/*`) vẫn gọi API có JWT: khách không có phiên sẽ thấy
-  lỗi chứ không bị đá sang `/login` (route đó đã gỡ).
+  sửa cả file này. Trang bài học (`/lesson/*`) vẫn gọi API có JWT: `apiFetch` gặp 401 mà không
+  refresh được thì gọi `POST /auth/guest` để nhận tài khoản khách (email `@guest.local`, mật
+  khẩu rỗng nên không đăng nhập bằng mật khẩu được), rồi bài học tự ghi danh. Tắt bằng
+  `GUEST_LOGIN=off`. Deploy khác domain thì phải đặt `REFRESH_COOKIE_SAMESITE=none`, không thì
+  hết hạn access token là khách mất phiên và nhận tài khoản mới (mất tiến độ).
 - **`prisma/seed-courses.js` vẫn tạo 40 bài rỗng mã `python-1…python-40`.** Chạy nhầm sau khi
   seed v3 sẽ sinh bài trùng thứ tự.
 - **527 lỗi lint backend KHÔNG phải lỗi định dạng.** Đã đo: chỉ 6% chạy `--fix` là xong. 89%

@@ -88,6 +88,23 @@ export class AuthController {
     return this.moveRefreshToCookie(res, await this.authService.register(dto));
   }
 
+  // Tài khoản khách cho buổi thử nghiệm (xem AuthService.guest). Quota riêng,
+  // CAO hơn register vì cả lớp ngồi chung một Wi-Fi = chung một IP NAT: 40 máy
+  // mở link cùng lúc không được bị 429. Mỗi trình duyệt chỉ gọi route này một
+  // lần (sau đó dùng refresh cookie), nên quota này vẫn chặn được kẻ spam tạo
+  // tài khoản hàng loạt.
+  @Post('guest')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({
+    ip_hour: {
+      limit: Number(process.env.THROTTLE_GUEST_LIMIT ?? 120),
+      ttl: seconds(Number(process.env.THROTTLE_GUEST_TTL_SECONDS ?? 3600)),
+    },
+  })
+  async guest(@Res({ passthrough: true }) res: Response) {
+    return this.moveRefreshToCookie(res, await this.authService.guest());
+  }
+
   // Spec yêu cầu hỗ trợ CẢ GET và POST /auth/logout.
   @Post('logout')
   @HttpCode(HttpStatus.OK)

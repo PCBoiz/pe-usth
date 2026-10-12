@@ -1,9 +1,11 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { randomUUID } from 'crypto';
 import { User } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { checkPassword } from 'src/common/security/check-password';
@@ -129,6 +131,37 @@ export class AuthService {
       needs_questionnaire: !user.questionnaireCompleted,
       ...tokens,
     };
+  }
+
+  // ---------- Tài khoản khách (buổi thử nghiệm với giảng viên/sinh viên) ----------
+  // Frontend đã gỡ trang đăng nhập/đăng ký, nhưng mọi API bài học vẫn đòi JWT
+  // (tiến độ, XP, chấm bài đều gắn user_id). Thay vì mở từng route cho người
+  // lạ, mỗi trình duyệt tự nhận một tài khoản ẩn danh: tiến độ vẫn lưu trên
+  // server như học viên thật và đội dự án đọc lại được số liệu buổi test.
+  //
+  // An toàn:
+  //  · password = '' — checkPassword() trả false cho chuỗi rỗng, nên không ai
+  //    đăng nhập vào tài khoản khách bằng mật khẩu, kể cả qua bản Django.
+  //  · email @guest.local là duy nhất (randomUUID) và nhận diện được để lọc
+  //    hoặc dọn sau buổi test: DELETE ... WHERE email LIKE '%@guest.local'.
+  //  · Tắt bằng GUEST_LOGIN=off khi không còn cần (route trả 403).
+  async guest() {
+    if ((process.env.GUEST_LOGIN ?? 'on').toLowerCase() === 'off') {
+      throw new ForbiddenException('Chế độ khách đã tắt');
+    }
+    const id = randomUUID();
+    const user = await this.prisma.user.create({
+      data: {
+        name: `Khách ${id.slice(0, 4).toUpperCase()}`,
+        email: `guest_${id}@guest.local`,
+        password: '',
+        role: DEFAULT_ROLE,
+        // Bỏ bảng hỏi đầu vào: người thử vào thẳng khoá học.
+        questionnaireCompleted: true,
+      },
+    });
+    const tokens = await this.issueTokens(user);
+    return { ok: true, guest: true, needs_questionnaire: false, ...tokens };
   }
 
   // ---------- Task 48: logout ----------

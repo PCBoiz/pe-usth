@@ -24,6 +24,8 @@ const PREFIX_EXCLUDED = [
   { path: 'auth/register', method: RequestMethod.POST },
   { path: 'auth/logout', method: RequestMethod.ALL },
   { path: 'auth/refresh', method: RequestMethod.POST },
+  // Tài khoản khách (buổi thử nghiệm) — cùng nhóm /auth/* ở root như login.
+  { path: 'auth/guest', method: RequestMethod.POST },
   { path: 'auth/google', method: RequestMethod.GET },
   { path: 'auth/google/callback', method: RequestMethod.GET },
   { path: 'auth/facebook', method: RequestMethod.GET },

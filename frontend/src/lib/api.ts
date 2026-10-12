@@ -101,6 +101,45 @@ function refreshAccess(): Promise<string | null> {
   return refreshing;
 }
 
+/**
+ * Tài khoản khách: frontend không còn trang đăng nhập/đăng ký, nên ai mở link
+ * mà chưa có phiên thì tự nhận một tài khoản ẩn danh (POST /auth/guest) và học
+ * ngay — tiến độ vẫn lưu trên server. Dedupe bằng một promise đang bay: trang
+ * bài học gọi 3 API song song, không được sinh ra 3 tài khoản khách.
+ */
+let guesting: Promise<string | null> | null = null;
+
+function ensureGuest(): Promise<string | null> {
+  if (guesting) return guesting;
+  guesting = fetch(`${origin()}/auth/guest`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: '{}',
+  })
+    .then(async (r) => {
+      if (!r.ok) return null;
+      const d = await r.json().catch(() => null);
+      if (!d?.access) return null;
+      try {
+        localStorage.setItem(LS_ACCESS, d.access);
+      } catch {
+        /* private mode: vẫn dùng được access trong phiên này */
+      }
+      try {
+        document.cookie = 'pe_has_session=1; path=/; max-age=28800; SameSite=Lax';
+      } catch {
+        /* non-browser */
+      }
+      return d.access as string;
+    })
+    .catch(() => null)
+    .finally(() => {
+      guesting = null;
+    });
+  return guesting;
+}
+
 export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Response> {
   const base = origin();
   const send = (access: string | null) => {
@@ -111,7 +150,9 @@ export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Re
 
   let res = await send(ls(LS_ACCESS));
   if (res.status === 401) {
-    const access = await refreshAccess();
+    // Thứ tự: refresh phiên cũ trước (giữ tiến độ của khách đã học hôm qua),
+    // chỉ khi không còn phiên nào mới tạo khách mới.
+    const access = (await refreshAccess()) ?? (await ensureGuest());
     if (access) res = await send(access);
   }
   return res;

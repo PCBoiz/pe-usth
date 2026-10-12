@@ -94,8 +94,27 @@ export function useLessonData({
     setLoadError('');
     setEmpty(false);
     try {
-      const [profile, enrollments] = await Promise.all([json('/api/user'), json('/api/enrolled')]);
-      const enrollment = findEnrollment(asList(enrollments, 'enrolled'), courseId);
+      // Gọi /api/user TRƯỚC, không song song: với người mới, request đầu tiên
+      // là request tạo tài khoản khách (apiFetch). Chạy song song thì hai
+      // request cùng nhận 401 — vẫn chỉ một khách nhờ dedupe, nhưng tuần tự
+      // thì /api/enrolled chắc chắn đi với token đã có.
+      const profile = await json('/api/user');
+      let enrollment = findEnrollment(asList(await json('/api/enrolled'), 'enrolled'), courseId);
+      // Trang khoá học nay là danh mục tĩnh, không còn nút "Đăng ký" — mở bài
+      // là tự ghi danh, để người thử vào thẳng nội dung. Ghi danh lặp lại an
+      // toàn (backend ON CONFLICT DO NOTHING), lỗi thì rơi về màn ghi danh như trước.
+      if (!enrollment && profile.role !== 'admin') {
+        try {
+          await json(`/api/courses/${encodeURIComponent(courseId)}/enroll`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({}),
+          });
+          enrollment = findEnrollment(asList(await json('/api/enrolled'), 'enrolled'), courseId);
+        } catch {
+          /* giữ enrollment = null -> hiện màn ghi danh */
+        }
+      }
       setUser(profile);
       setEnrolled(Boolean(enrollment));
       setTotalLessons(Number(enrollment?.totalLessons) || 0);
