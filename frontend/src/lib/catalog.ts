@@ -208,3 +208,30 @@ export const COURSES: CatalogCourse[] = [
 export function findCourse(id: string): CatalogCourse | undefined {
   return COURSES.find((c) => c.id === id);
 }
+
+/**
+ * Công cụ học tập — KHÔNG phải khóa học: không có giáo trình, không đăng ký,
+ * không tiến độ/XP. Tách khỏi `COURSES` để không lọt vào trang chi tiết khóa
+ * (`generateStaticParams`) hay số liệu tổng hợp nào đếm theo danh mục khóa.
+ */
+export type CatalogTool = {
+  id: string;
+  label: string;
+  href: string;
+  color: string;
+  accent: string;
+  mark: string;
+};
+
+export const TOOLS: CatalogTool[] = [
+  {
+    id: 'ide',
+    label: 'Python IDE',
+    href: '/ide',
+    // Xanh lục + vàng chanh: chưa khóa nào dùng (8 khóa đang dùng xanh dương,
+    // tím, cam, đỏ cam, xanh ngọc, nâu).
+    color: '#059669',
+    accent: '#A3E635',
+    mark: 'IDE',
+  },
+];

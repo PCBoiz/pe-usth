@@ -1,0 +1,195 @@
+/* Python IDE — chỉ dùng token của edu-theme.css (lint:tokens cấm mã màu hex). */
+.page { min-height: 100vh; }
+
+.main {
+  /* cùng bề rộng với trang chủ và SiteHeader để lề trái thẳng hàng */
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 4px 24px 48px;
+  font-family: var(--edu-font);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 20px;
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--edu-t1);
+}
+
+.actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+
+.select {
+  height: 42px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--edu-t1);
+  background: var(--edu-pill-bg);
+  border: 1px solid var(--edu-pill-border);
+  border-radius: 12px;
+  cursor: pointer;
+}
+.select:focus-visible,
+.run:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 2px;
+}
+/* <option> vẽ bằng bảng màu hệ điều hành: ép nền đặc để chữ không chìm ở chế độ tối. */
+.select option { color: var(--edu-t1); background: var(--edu-panel-bg-solid); }
+
+.run {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 22px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--edu-panel-bg-solid);
+  background: var(--edu-accent-grad);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: var(--edu-card-shadow);
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.run:hover:not(:disabled) { transform: translateY(-1px); }
+.run:disabled { opacity: 0.6; cursor: progress; }
+
+.kbd {
+  padding: 2px 7px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 500;
+  color: inherit;
+  background: var(--edu-track-bg);
+  border-radius: 6px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Editor trái, output phải; hẹp thì xếp dọc (xem media bên dưới). */
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  gap: 16px;
+  height: calc(100vh - 190px);
+  min-height: 460px;
+}
+
+.editorPane,
+.outputPane {
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-panel-border);
+  border-radius: 16px;
+  box-shadow: var(--edu-card-shadow);
+}
+.editorPane { padding: 8px 0; }
+.outputPane { padding: 16px 18px; overflow: auto; }
+
+.editorLoading,
+.hint {
+  margin: 0;
+  font-size: 14px;
+  color: var(--edu-t3);
+}
+.editorLoading { padding: 18px; }
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border: 2px solid var(--edu-track-bg);
+  border-top-color: var(--edu-accent);
+  border-radius: 50%;
+  animation: ide-spin 0.8s linear infinite;
+}
+@keyframes ide-spin { to { transform: rotate(360deg); } }
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  margin-bottom: 12px;
+  font-size: 13px;
+  color: var(--edu-t3);
+}
+.ok { color: var(--edu-accent-text); }
+.fail { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
+
+.notice {
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--edu-t1);
+  border: 1px solid var(--edu-card-border);
+  border-radius: 12px;
+}
+.notice p { margin: 4px 0 0; }
+.notice code { font-size: 12.5px; word-break: break-all; }
+.noticeWarn {
+  background: color-mix(in srgb, orange 16%, transparent);
+  border-color: color-mix(in srgb, orange 45%, transparent);
+}
+.noticeError {
+  background: color-mix(in srgb, crimson 12%, transparent);
+  border-color: color-mix(in srgb, crimson 40%, transparent);
+}
+
+.stdout,
+.stderr {
+  margin: 0 0 10px;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 13.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.stdout { color: var(--edu-t1); }
+.stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+  .run { transition: none; }
+}
+
+@media (max-width: 899.98px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: 55vh minmax(220px, auto);
+    height: auto;
+  }
+}
+
+@media (max-width: 639.98px) {
+  .main { padding: 0 16px 40px; }
+  .title { font-size: 24px; }
+  .kbd { display: none; }
+}

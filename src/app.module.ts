@@ -22,6 +22,7 @@ import { ForumModule } from './forum/forum.module';
 import { RoadmapModule } from './roadmap/roadmap.module';
 import { CourseAdminModule } from './course-admin/course-admin.module';
 import { ChatbotModule } from './chatbot/chatbot.module';
+import { PythonRunnerModule } from './python-runner/python-runner.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { ChatbotModule } from './chatbot/chatbot.module';
     RoadmapModule,
     CourseAdminModule,
     ChatbotModule,
+    PythonRunnerModule,
   ],
   controllers: [HealthController],
 })

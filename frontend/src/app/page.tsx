@@ -3,11 +3,11 @@
 // /api/courses* đều đòi đăng nhập mà frontend không còn trang đăng nhập.
 import type { Metadata } from 'next';
 
-import CourseGlyph from '@/components/CourseGlyph';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
-import { COURSES } from '@/lib/catalog';
+import { COURSES, TOOLS } from '@/lib/catalog';
 
+import CatalogTile from './CatalogTile';
 import styles from './home.module.css';
 
 export const metadata: Metadata = {
@@ -26,22 +26,33 @@ export default function HomePage() {
         <main className={styles.main}>
           <h1 className={styles.title}>Khóa học</h1>
           <p className={styles.sub}>Chọn một khóa để xem giáo trình chi tiết.</p>
-  
+
           <ul className={styles.grid}>
             {COURSES.map((course) => (
-              <li key={course.id} className={styles.cell}>
-                {/* <a> thường (tải lại trang) thay vì next/link: trang chi tiết các
-                    khóa CSDL nạp script legacy tự gắn sự kiện một lần lúc nạp, đi
-                    client-side thì chúng không chạy lại (bẫy đã gặp ở ô chấm sao
-                    — xem comment trong courses/[courseId]/page.tsx). */}
-                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-                <a className={styles.tile} href={`/courses/${course.id}`}>
-                  <span className={styles.icon}>
-                    <CourseGlyph color={course.color} accent={course.accent} mark={course.mark} />
-                  </span>
-                  <span className={styles.label}>{course.label}</span>
-                </a>
-              </li>
+              <CatalogTile
+                key={course.id}
+                href={`/courses/${course.id}`}
+                label={course.label}
+                color={course.color}
+                accent={course.accent}
+                mark={course.mark}
+              />
+            ))}
+          </ul>
+
+          {/* Công cụ nằm NGOÀI lưới khóa học: không phải khóa, không ảnh hưởng
+              tiến độ/XP/đăng ký. */}
+          <h2 className={styles.sectionTitle}>Công cụ</h2>
+          <ul className={styles.grid}>
+            {TOOLS.map((tool) => (
+              <CatalogTile
+                key={tool.id}
+                href={tool.href}
+                label={tool.label}
+                color={tool.color}
+                accent={tool.accent}
+                mark={tool.mark}
+              />
             ))}
           </ul>
         </main>

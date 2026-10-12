@@ -87,3 +87,16 @@
   .title { font-size: 28px; }
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
 }
+
+/* Tiêu đề mục phụ (Công cụ) — nhỏ hơn h1, cách lưới khóa học phía trên. */
+.sectionTitle {
+  margin: 56px 0 28px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--edu-t1);
+}
+
+@media (max-width: 639.98px) {
+  .sectionTitle { margin: 40px 0 20px; font-size: 20px; }
+}
