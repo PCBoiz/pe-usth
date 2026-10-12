@@ -57,6 +57,26 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
+      {
+        // Runtime Pyodide (~32 MB: wasm + stdlib + wheel numpy/pandas/matplotlib)
+        // nằm trong thư mục ĐÃ GHIM PHIÊN BẢN, nên nội dung không bao giờ đổi:
+        // muốn nâng cấp là đổi sang /pyodide/v0.28.x/, không ghi đè file cũ.
+        // Mặc định `public/` được phục vụ với cache ngắn — cả lớp mở bài là mỗi
+        // máy tải lại 32 MB, chưa kể mỗi lần vào lại. immutable cắt hẳn việc đó.
+        source: "/pyodide/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Hình minh hoạ lý thuyết (SVG động) cũng là tài nguyên tĩnh, nhưng tên
+        // file KHÔNG ghim phiên bản — sửa hình là ghi đè. Cho cache một ngày và
+        // bắt kiểm lại bằng revalidate để bản sửa tới được người học trong ngày.
+        source: "/static/anim/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
+        ],
+      },
     ];
   },
 };
