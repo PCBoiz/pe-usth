@@ -51,13 +51,20 @@ describe('RefreshTokenService', () => {
     });
 
     it('đặt hạn 8 giờ kể từ lúc cấp', async () => {
+      // Kẹp hai đầu bằng hai lần đọc đồng hồ, không dùng một mốc + dung sai.
+      // Bản cũ so hạn với `before` chụp TRƯỚC khi gọi issue(), còn service
+      // tính `Date.now() + 8h` ở BÊN TRONG: chỉ cần đồng hồ nhảy 1ms giữa hai
+      // lời gọi là vượt trần (gặp thật: 28800001 > 28800000) và test đỏ ngẫu
+      // nhiên dù code không sai. [before+8h, after+8h] là bất biến chính xác
+      // của phép tính đó nên không cần dung sai, mà vẫn bắt được lệch TTL.
       const before = Date.now();
       await service.issue(1);
+      const after = Date.now();
       const { expiresAt } = authSession.create.mock.calls[0][0].data;
 
-      const lifetimeMs = expiresAt.getTime() - before;
-      expect(lifetimeMs).toBeGreaterThan(8 * 60 * 60 * 1000 - 5_000);
-      expect(lifetimeMs).toBeLessThanOrEqual(8 * 60 * 60 * 1000);
+      const EIGHT_HOURS = 8 * 60 * 60 * 1000;
+      expect(expiresAt.getTime()).toBeGreaterThanOrEqual(before + EIGHT_HOURS);
+      expect(expiresAt.getTime()).toBeLessThanOrEqual(after + EIGHT_HOURS);
     });
   });
 

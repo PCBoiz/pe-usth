@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { AuthService, OAuthProfile } from 'src/auth/auth.service';
+import { createOAuthStateStore } from 'src/auth/oauth-state';
 
 /** Task 58 — GoogleStrategy, scope openid/email/profile. */
 @Injectable()
@@ -18,6 +19,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       ),
       callbackURL: configService.getOrThrow<string>('oauth.google.callbackUrl'),
       scope: ['openid', 'email', 'profile'],
+      // `state` BẮT BUỘC (RFC 6749 §10.12): không có nó thì callback nhận bất
+      // kỳ ?code= nào, kể cả code của kẻ tấn công dụ trình duyệt nạn nhân gọi
+      // vào -> nạn nhân bị đăng nhập bằng danh tính kẻ tấn công (login CSRF).
+      // Store tự viết thay cho SessionStore mặc định vì app không có
+      // express-session và chạy nhiều instance — xem src/auth/oauth-state.ts.
+      store: createOAuthStateStore(
+        'google',
+        configService.getOrThrow<string>('jwt.accessSecret'),
+      ),
     });
   }
 

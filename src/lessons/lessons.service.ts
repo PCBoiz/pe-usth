@@ -31,6 +31,69 @@ export function scaledXp(base: number, quizScore: number | undefined): number {
   return Math.max(1, Math.round(base * (0.5 + 0.5 * (pct / 100))));
 }
 
+/** Đọc step_4 trong content_json mà không tin cấu trúc JSON do admin nhập vào. */
+function readStep4(
+  contentJson: Prisma.JsonValue | null | undefined,
+): Record<string, unknown> | null {
+  if (
+    !contentJson ||
+    typeof contentJson !== 'object' ||
+    Array.isArray(contentJson)
+  )
+    return null;
+  const step4 = (contentJson as Record<string, unknown>)['step_4'];
+  if (!step4 || typeof step4 !== 'object' || Array.isArray(step4)) return null;
+  return step4 as Record<string, unknown>;
+}
+
+/**
+ * Bài có "cửa tự kiểm tra": step_4.gate === true.
+ *
+ * Hiện đúng 5 bài B20, I07, I12, N04, N08 (scripts/pe-v3/lessons_*.py khai
+ * `gate=True`, build.py ghi `step4['gate'] = True`). Nhận diện theo CỜ trong
+ * nội dung chứ không hard-code 5 mã bài: biên tập thêm cửa mới thì server tự
+ * khoá theo, không phải sửa code backend.
+ */
+export function isSelfTestGateLesson(
+  contentJson: Prisma.JsonValue | null | undefined,
+): boolean {
+  return readStep4(contentJson)?.['gate'] === true;
+}
+
+/**
+ * Bỏ `step_4.solutionCode` khỏi nội dung gửi về trình duyệt.
+ *
+ * LỖ HỔNG ĐƯỢC BỊT: quy tắc sản phẩm của cửa tự kiểm tra là "lời giải mẫu chỉ
+ * mở sau lần nộp đầu" — nhưng nó CHỈ được canh ở trình duyệt
+ * (StudioLesson.tsx: `onShowSolution={four?.solutionCode && (!gate || d.submitted)}`),
+ * còn server vẫn trả nguyên content_json. Nghĩa là mở tab Network xem response
+ * của GET /api/courses/:id/lessons/:n/content là đã có toàn bộ lời giải trước
+ * khi gõ một dòng nào — kiểm trên API thật đúng như vậy. Nút bị ẩn không phải
+ * là dữ liệu bị giữ lại.
+ *
+ * Trả về BẢN SAO (clone nông ở 2 tầng đủ dùng vì chỉ xoá một khoá của step_4):
+ * không được mutate object đọc từ Prisma vì nó có thể còn được dùng ở nơi khác.
+ *
+ * Giữ lại cờ `solutionWithheld` để client phân biệt "bài không có lời giải mẫu"
+ * với "có nhưng server đang giữ" — không có cờ này thì FE không thể giải thích
+ * cho học viên vì sao nút biến mất.
+ */
+export function withholdSolutionCode(
+  contentJson: Prisma.JsonValue,
+): Prisma.JsonValue {
+  const step4 = readStep4(contentJson);
+  if (!step4 || !('solutionCode' in step4)) return contentJson;
+
+  // delete trên BẢN SAO, không destructuring-bỏ-biến: biến thừa chỉ để loại
+  // một khoá làm eslint (no-unused-vars) đỏ mà không nói thêm điều gì.
+  const keptStep4 = { ...step4 };
+  delete keptStep4.solutionCode;
+  return {
+    ...(contentJson as Record<string, unknown>),
+    step_4: { ...keptStep4, solutionWithheld: true },
+  };
+}
+
 @Injectable()
 export class LessonsService {
   private readonly logger = new Logger(LessonsService.name);
@@ -124,6 +187,9 @@ export class LessonsService {
       where: { userId_courseId: { userId, courseId } },
       select: { userId: true },
     });
+
+    // Đã chứng minh là admin ngay ở nhánh dưới -> khỏi truy vấn lại role lần hai.
+    let knownAdmin = false;
     if (!enrollment) {
       // Quản trị viên xem trước bài học mà không phải ghi danh như học viên.
       // Đây chỉ là quyền ĐỌC: completeLesson vẫn đòi Enrollment nên không có
@@ -135,6 +201,7 @@ export class LessonsService {
       if (viewer?.role !== 'admin') {
         throw new ForbiddenException('Bạn chưa đăng ký khóa học này');
       }
+      knownAdmin = true;
     }
 
     const lesson = await this.prisma.lesson.findFirst({
@@ -155,8 +222,54 @@ export class LessonsService {
       where: { userId, courseId, lessonId: lesson.id, status: 'completed' },
       select: { lessonId: true },
     });
+    const completed = Boolean(progress);
 
-    return { ok: true, lesson, completed: Boolean(progress) };
+    // CHỈ giữ lời giải mẫu lại ở bài cửa tự kiểm tra và khi học viên chưa xong
+    // bài. Không mở rộng sang mọi bài vì ở các bài còn lại "Hiện lời giải" là
+    // TÍNH NĂNG có chủ đích (gợi ý bậc cuối, bấm vào là FE ghi solutionUsed /
+    // assisted) — cắt hết thì phá trải nghiệm học mà không bịt thêm lỗ nào.
+    //
+    // Truy vấn role chỉ nằm trong nhánh này: 5/40 bài, và chỉ tới khi học viên
+    // làm xong. Đường nóng (mọi bài khác) KHÔNG phải thêm vòng gọi DB nào —
+    // mỗi vòng tới Neon ~237ms nên không đặt nó ở ngoài.
+    // ĐÁNH ĐỔI NGƯỜI DÙNG THẤY ĐƯỢC, ghi lại để không ai tưởng là lỗi:
+    // FE chỉ gọi endpoint này MỘT LẦN lúc mở bài (StudioLesson.tsx, useEffect
+    // nạp content), còn nút "Hiện lời giải" của bài cửa bật theo cờ tại chỗ
+    // `!gate || d.submitted`. Mốc của server là `completed` (có
+    // LessonProgress), KHÔNG phải "đã nộp" — server không có tín hiệu nào cho
+    // trạng thái đó. Nên ở 5 bài cửa, học viên nộp xong trong cùng phiên vẫn
+    // chưa thấy lời giải mẫu: phải tải lại trang sau khi bài được tính hoàn
+    // thành. Khoảng trống này nằm ở FE (gọi lại content sau POST
+    // /lessons/:n/complete, hoặc đọc cờ `solutionWithheld` để xin lời giải khi
+    // cần) — cố tình KHÔNG lấp bằng cách nới lỏng điều kiện ở server, vì nới ra
+    // là mở lại đúng cái lỗ vừa bịt.
+    const gated = isSelfTestGateLesson(lesson.contentJson);
+    if (gated && !completed) {
+      const isAdmin =
+        knownAdmin ||
+        (
+          await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: { role: true },
+          })
+        )?.role === 'admin';
+
+      // Admin xem trước nội dung thì vẫn thấy lời giải: bảng đáp án trong
+      // StudioLesson.tsx đã chặn theo role === 'admin' sẵn, và họ không phải
+      // người đang được đánh giá.
+      if (!isAdmin) {
+        return {
+          ok: true,
+          lesson: {
+            ...lesson,
+            contentJson: withholdSolutionCode(lesson.contentJson),
+          },
+          completed,
+        };
+      }
+    }
+
+    return { ok: true, lesson, completed };
   }
 
   async completeLesson(

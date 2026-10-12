@@ -41,17 +41,28 @@ export function clearRefreshCookie(res: Response): void {
   res.clearCookie(REFRESH_COOKIE, baseOptions());
 }
 
-/** Đọc cookie không cần cookie-parser — chỉ cần đúng một cookie này. */
-export function readRefreshCookie(req: Request): string | undefined {
+/**
+ * Đọc một cookie từ header thô — app không nạp cookie-parser.
+ *
+ * Dùng chung cho refresh token và state của OAuth (oauth-state.ts) để chỉ có
+ * MỘT cách parse cookie trong hệ thống: thêm middleware hay đổi cách decode
+ * thì sửa đúng một chỗ.
+ */
+export function readCookie(req: Request, name: string): string | undefined {
   const header = req.headers.cookie;
   if (!header) return undefined;
   for (const part of header.split(';')) {
     const eq = part.indexOf('=');
     if (eq === -1) continue;
-    if (part.slice(0, eq).trim() === REFRESH_COOKIE) {
+    if (part.slice(0, eq).trim() === name) {
       const value = decodeURIComponent(part.slice(eq + 1).trim());
       return value || undefined;
     }
   }
   return undefined;
+}
+
+/** Đọc cookie không cần cookie-parser — chỉ cần đúng một cookie này. */
+export function readRefreshCookie(req: Request): string | undefined {
+  return readCookie(req, REFRESH_COOKIE);
 }

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { Profile, Strategy } from 'passport-facebook';
 import { AuthService, OAuthProfile } from 'src/auth/auth.service';
+import { createOAuthStateStore } from 'src/auth/oauth-state';
 
 /** Task 61 — FacebookStrategy, mirror GoogleStrategy. */
 @Injectable()
@@ -22,6 +23,13 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       // Graph API mặc định KHÔNG trả email/ảnh — phải khai profileFields.
       profileFields: ['id', 'displayName', 'emails', 'photos'],
       scope: ['email'],
+      // Cùng lý do như GoogleStrategy: không có `state` thì /auth/facebook/callback
+      // nhận mọi ?code= đưa tới, mở đường login CSRF. Cookie state riêng cho
+      // facebook nên hai luồng OAuth mở song song không ghi đè nhau.
+      store: createOAuthStateStore(
+        'facebook',
+        configService.getOrThrow<string>('jwt.accessSecret'),
+      ),
     });
   }
 
