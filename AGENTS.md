@@ -30,9 +30,11 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 19 bộ, 122 ca, tất cả đạt |
+| Backend test | 22 bộ, 161 ca, tất cả đạt |
+| Backend lint | 527 lỗi — **mốc trần trong CI là 600, chỉ được hạ** |
 | Frontend typecheck | sạch |
-| Frontend lint | 0 lỗi, 180 cảnh báo |
+| Frontend lint | 0 lỗi, ~180 cảnh báo |
+| Frontend unit test | `cd frontend && npm run test:unit` → 32 ca đạt |
 
 ## Ràng buộc không được phá
 
@@ -72,6 +74,15 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   lần seed phải kiểm hai nguồn có lệch không.
 - **`prisma/seed-courses.js` vẫn tạo 40 bài rỗng mã `python-1…python-40`.** Chạy nhầm sau khi
   seed v3 sẽ sinh bài trùng thứ tự.
+- **527 lỗi lint backend KHÔNG phải lỗi định dạng.** Đã đo: chỉ 6% chạy `--fix` là xong. 89%
+  là nhóm `no-unsafe-*` (290 member-access, 120 call, 59 assignment, 14 return) — `any` chảy
+  xuyên qua code ở các trang chuyển từ bản Django. Dọn là việc đặt lại kiểu ở ranh giới dữ
+  liệu, làm dần từng module rồi hạ mốc trần trong `ci.yml`.
+- **Server biết "đã hoàn thành", không biết "đã nộp".** Ở 5 bài cửa tự kiểm tra, lời giải mẫu
+  bị giữ lại tới khi bài được ghi nhận hoàn thành, mà frontend chỉ nạp nội dung một lần lúc mở
+  bài. Nên học viên nộp xong trong cùng phiên phải tải lại trang mới thấy lời giải. Cách sửa
+  đúng nằm ở frontend: nạp lại nội dung sau `POST /lessons/:n/complete`, hoặc dùng cờ
+  `solutionWithheld` để xin lời giải khi cần.
 
 ## Quy ước khi sửa
 
