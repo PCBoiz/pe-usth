@@ -1,5 +1,6 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
-import { ThrottlerGuard } from '@nestjs/throttler';
+import { ThrottlerGuard, type ThrottlerLimitDetail } from '@nestjs/throttler';
+import { THROTTLE_MESSAGE_KEY } from 'src/common/decorators/throttle-message.decorator';
 
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
@@ -46,5 +47,25 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
       return true;
     }
     return super.shouldSkip(context);
+  }
+
+  /**
+   * Route nào khai @ThrottleMessage thì dùng câu của route đó cho lỗi 429.
+   *
+   * Mặc định của thư viện là "ThrottlerException: Too Many Requests" — tiếng
+   * Anh và không nói được người dùng nên làm gì tiếp. Riêng /python/run có hai
+   * kiểu 429 phải phân biệt: bấm quá nhiều (chờ ~1 phút) và hàng đợi của máy
+   * chủ đầy (chờ vài giây) — xem python-runner.controller.spec.ts.
+   */
+  protected async getErrorMessage(
+    context: ExecutionContext,
+    throttlerLimitDetail: ThrottlerLimitDetail,
+  ): Promise<string> {
+    const custom = this.reflector.getAllAndOverride<string | undefined>(
+      THROTTLE_MESSAGE_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (custom) return custom;
+    return super.getErrorMessage(context, throttlerLimitDetail);
   }
 }

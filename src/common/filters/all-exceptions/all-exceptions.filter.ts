@@ -9,7 +9,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { ThrottlerException } from '@nestjs/throttler';
+import { ThrottlerException, throttlerMessage } from '@nestjs/throttler';
 
 /**
  * Nhận diện lỗi hạ tầng DB tạm thời (cạn pool, mất kết nối, Neon đang ngủ dậy).
@@ -47,7 +47,15 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
 
     if (exception instanceof ThrottlerException) {
       status = HttpStatus.TOO_MANY_REQUESTS;
-      message = 'Quá nhiều yêu cầu, vui lòng thử lại sau';
+      // Route nào khai @ThrottleMessage thì CustomThrottlerGuard đã đặt câu
+      // riêng; chỉ thay bằng câu chung khi vẫn là mặc định tiếng Anh của thư
+      // viện ('ThrottlerException: Too Many Requests'). Không phân biệt chỗ này
+      // thì /python/run luôn nói "bạn bấm quá nhiều" kể cả khi thật ra hàng đợi
+      // của máy chủ đầy — hai việc khác nhau, cách xử lý khác nhau.
+      message =
+        exception.message && exception.message !== throttlerMessage
+          ? exception.message
+          : 'Quá nhiều yêu cầu, vui lòng thử lại sau';
     } else if (isDbUnavailable(exception)) {
       // Cạn pool / mất kết nối DB là tình trạng TẠM THỜI của hạ tầng, không
       // phải lỗi lập trình -> 503 (kèm Retry-After) đúng ngữ nghĩa hơn 500.
