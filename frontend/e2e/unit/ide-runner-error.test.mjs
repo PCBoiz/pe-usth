@@ -13,10 +13,11 @@
  * Bằng chứng bộ test này bắt được lỗi thật (quy ước AGENTS.md: gỡ bản sửa ra,
  * test phải trượt):
  *  - Bỏ hẳn phần nhận diện (`return false` ngay đầu hàm — tức hành vi CŨ, dán
- *    thông điệp docker ra màn hình) → 4/9 ca trượt.
- *  - Nới cho rộng (bỏ hai điều kiện `result.stdout` và `/code/main.py`, tức
- *    chỉ cần stderr khớp dấu hiệu docker là coi là hạ tầng) → 2/9 ca trượt,
- *    đúng hai ca mô phỏng mã người học tự in chuỗi của docker ra stderr.
+ *    nguyên thông điệp của docker ra màn hình) → 4/10 ca trượt.
+ *  - Bỏ riêng điều kiện `result.stdout` (nới: chương trình đã in được gì đó
+ *    vẫn bị coi là hạ tầng) → 1/10 ca trượt.
+ *  - Bỏ riêng điều kiện `/code/main.py` (nới: traceback của người học mà mang
+ *    chữ của docker cũng bị coi là hạ tầng) → 1/10 ca trượt.
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -161,6 +162,22 @@ test('có stdout thì chương trình đã chạy thật — không phải hạ 
         exitCode: 1,
         stdout: 'dang kiem tra ket noi...\n',
         stderr: 'error during connect: ket noi that bai\n',
+      }),
+    ),
+    false,
+  );
+});
+
+test('exception của người học MANG chữ của docker vẫn là lỗi của mã, không phải hạ tầng', () => {
+  assert.equal(
+    isRunnerDown(
+      outcome({
+        exitCode: 1,
+        stderr:
+          'Traceback (most recent call last):\n'
+          + '  File "/code/main.py", line 5, in <module>\n'
+          + "    raise RuntimeError('Cannot connect to the Docker daemon')\n"
+          + 'RuntimeError: Cannot connect to the Docker daemon\n',
       }),
     ),
     false,

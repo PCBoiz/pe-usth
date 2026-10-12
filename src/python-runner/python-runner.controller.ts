@@ -31,7 +31,19 @@ export class PythonRunnerController {
   // container đang sống.
   @Post('run')
   @HttpCode(HttpStatus.OK)
-  @Throttle({ ip_hour: { limit: 10, ttl: seconds(60) } })
+  // Ngưỡng đọc từ env như /auth/login, /auth/register, /auth/guest — và vì ĐÚNG
+  // lý do đã gặp ở /auth/guest: cả một lớp học ngồi chung Wi-Fi là chung một IP
+  // NAT. Route này @Public() nên JwtAuthGuard toàn cục bỏ qua, req.user chưa có
+  // khi throttler chạy, nên CustomThrottlerGuard luôn đếm theo `ip:` — 10
+  // lượt/phút nghĩa là CẢ PHÒNG 40 người chia nhau 10 lần bấm Chạy mỗi phút.
+  // @Throttle là decorator nên giá trị phải tính được lúc nạp class: đọc thẳng
+  // process.env, không qua ConfigService.
+  @Throttle({
+    ip_hour: {
+      limit: Number(process.env.THROTTLE_PY_RUN_LIMIT ?? 10),
+      ttl: seconds(Number(process.env.THROTTLE_PY_RUN_TTL_SECONDS ?? 60)),
+    },
+  })
   // Hai kiểu 429 khác nhau: câu này là "bạn bấm quá nhiều" (chờ ~1 phút); hàng đợi
   // đầy/chờ quá hạn do executor ném với câu "máy chủ đang quá tải" (chờ vài giây).
   @ThrottleMessage('Bạn chạy quá nhiều lần, đợi khoảng 1 phút rồi thử lại')

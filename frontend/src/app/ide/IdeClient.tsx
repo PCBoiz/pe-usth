@@ -130,7 +130,12 @@ export default function IdeClient() {
           message:
             'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
             + 'bình thường ngay trong trình duyệt.',
-          detail: `HTTP 401 — ${errorMessage(body, 'backend chưa bật chế độ công khai cho IDE (PY_RUNNER_PUBLIC=true).')}`,
+          // KHÔNG gợi ý PY_RUNNER_PUBLIC=true ở đây. Câu cũ mời người vận hành
+          // bật một cờ mở toang route chạy mã cho cả internet, trong khi 401
+          // gần như luôn có nghĩa khác: phiên khách chưa kịp cấp. apiFetch đã
+          // tự gọi POST /auth/guest khi gặp 401 rồi gửi lại — nên IDE chạy
+          // bình thường với PY_RUNNER_PUBLIC=false.
+          detail: `HTTP 401 — ${errorMessage(body, 'phiên đăng nhập chưa sẵn sàng; tải lại trang để nhận phiên khách mới.')}`,
         });
       } else if (res.status === 429) {
         setState({

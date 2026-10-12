@@ -50,7 +50,6 @@ from reportlab.lib.units import mm
 from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
-    KeepTogether,
     NextPageTemplate,
     PageBreak,
     PageTemplate,
@@ -62,8 +61,17 @@ from reportlab.platypus import (
 )
 from reportlab.platypus.tableofcontents import TableOfContents
 
-import handbook as hb
-from handbook import esc, kv_table, wrap_code
+# Phải đặt TRƯỚC `import handbook`: handbook._font_dirs() import matplotlib chỉ để
+# hỏi đường dẫn thư mục font, nhưng matplotlib kéo theo numpy + OpenBLAS và OpenBLAS
+# cấp sẵn một vùng nhớ cho mỗi lõi CPU. Trên máy đang bận, nó chết bằng
+# "OpenBLAS error: Memory allocation still failed after 10 retries" — một lỗi ABORT
+# ở tầng C, try/except trong _font_dirs không đỡ được. Dựng một file PDF thì không
+# cần đa luồng BLAS, nên ghìm về 1 luồng. setdefault để ai đặt sẵn thì vẫn giữ.
+for _blas in ("OPENBLAS_NUM_THREADS", "OMP_NUM_THREADS", "MKL_NUM_THREADS"):
+    os.environ.setdefault(_blas, "1")
+
+import handbook as hb  # noqa: E402  (phải nạp sau khi ghìm số luồng BLAS ở trên)
+from handbook import esc, kv_table, wrap_code  # noqa: E402
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(HERE, "out")
@@ -1084,9 +1092,9 @@ class AnswerKeyDoc(BaseDocTemplate):
 def cover_flowables(styles, entries, absent, build_date, only):
     f = [Spacer(1, 22 * mm)]
     f.append(Paragraph("PYTHON NÂNG CAO · PE-V4 · 20 BÀI ĐẦU", styles["cover_kicker"]))
-    f.append(Paragraph("Bản đáp án cho giảng viên và cố vấn", styles["cover_title"]))
-    f.append(Paragraph("%d/%d bài trong phạm vi · bản dựng %s" % (len(entries), len(SCOPE_CODES), build_date),
-                       styles["cover_sub"]))
+    f.append(Paragraph("Bản đáp án · 20 bài đầu", styles["cover_title"]))
+    f.append(Paragraph("Dành cho giảng viên và cố vấn buổi chạy thử · %d/%d bài · bản dựng %s"
+                       % (len(entries), len(SCOPE_CODES), build_date), styles["cover_sub"]))
     f.append(box([Paragraph("KHÔNG PHÁT CHO HỌC VIÊN", styles["cover_warn"]),
                   Paragraph("Tập giấy này chứa lời giải mẫu, đáp án trắc nghiệm và đáp án mọi mini-game "
                             "của 20 bài đầu. Phát cho học viên là phá buổi chạy thử. Mỗi trang đều có "
@@ -1099,8 +1107,9 @@ def cover_flowables(styles, entries, absent, build_date, only):
         "lời giải mẫu, biết bộ chấm đòi gì, trả lời được “sai ở đâu” mà không phải tự giải lại 20 bài.",
         "<b>Phạm vi.</b> P01–P07 (process), T01–T06 (thread), G01–G06 (GUI), R02 (boss). %d bài còn lại "
         "của giáo trình CỐ Ý không có ở đây: %s." % (len(OUT_OF_SCOPE), ", ".join(OUT_OF_SCOPE)),
-        "<b>Mỗi bài bắt đầu ở một trang mới</b> và mang mã bài ở đầu trang. Bài nhiều code (R02) tràn "
-        "sang vài trang — các trang đó vẫn mang đúng mã bài.",
+        "<b>Mỗi bài bắt đầu ở một trang mới</b> (trừ bài đầu của mỗi module, đi liền dưới tên module) và "
+        "mang mã bài ở đầu trang. Bài nhiều code (R02) tràn sang vài trang — các trang đó vẫn mang "
+        "đúng mã bài, nên một tờ bị xé ra vẫn biết là của bài nào.",
         "<b>Nguồn.</b> Mọi dòng trong tài liệu được render từ bản build, không câu nào gõ tay: "
         "<font face=\"HBMono\" size=\"8\">out/lessons/*.json</font> (đề, trắc nghiệm, giải thích, ngộ nhận, "
         "trace, scaffold, env) · <font face=\"HBMono\" size=\"8\">out/qa.json</font> (lời giải mẫu, bộ ca "
@@ -1222,7 +1231,8 @@ def build(out_dir: str, adv_dir: str, pdf_path: str, build_date: str, only=None)
     toc = TableOfContents()
     toc.levelStyles = [styles["toc1"], styles["toc2"]]
     story.append(Paragraph("Mục lục", styles["h1"]))
-    story.append(Paragraph("Số trang là trang PDF. Mỗi bài bắt đầu ở một trang mới.", styles["small"]))
+    story.append(Paragraph("Số trang là trang PDF. Mỗi bài bắt đầu ở một trang mới, trừ bài đầu của "
+                           "mỗi module (đi liền dưới tên module).", styles["small"]))
     story.append(Spacer(1, 4))
     story.append(toc)
     story.append(PageBreak())

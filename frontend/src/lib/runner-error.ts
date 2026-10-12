@@ -63,7 +63,7 @@ const USER_CODE_PATH = '/code/main.py';
  * docker. Nguyên văn stderr vẫn được giữ trong <details> ở IdeClient, không xoá.
  */
 export function isRunnerDown(result: RunOutcomeLike): boolean {
-  return false; // MUTATION A
+  if (result.timedOut || result.outputTruncated) return false;
   if (result.exitCode === 0 || result.stdout) return false;
   const err = result.stderr.toLowerCase();
   if (!err || err.includes(USER_CODE_PATH)) return false;
