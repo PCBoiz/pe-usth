@@ -72,6 +72,11 @@ model User {
   following           UserFollow[] @relation("UserFollowers")
   followers           UserFollow[] @relation("UserFollowing")
 
+  // Bảng xếp hạng ORDER BY xp/streak DESC LIMIT 20.
+  // `map:` giữ đúng tên trong prisma/optional-indexes.sql để bản chạy tay
+  // (CONCURRENTLY) và migration 20261012000000 là cùng một index.
+  @@index([xp(sort: Desc)], map: "idx_users_xp_desc")
+  @@index([streak(sort: Desc)], map: "idx_users_streak_desc")
   @@map("users")
 }
 
@@ -89,6 +94,7 @@ model AuthSession {
   user User @relation(fields: [userId], references: [id])
 
   @@index([familyId])
+  @@index([token], map: "idx_auth_sessions_token")
   @@map("auth_sessions")
 }
 
@@ -157,6 +163,11 @@ model Lesson {
   lessonProgress LessonProgress[]
 
   @@unique([courseId, lessonCode])
+  // Bản ghi tự tạo khi hoàn thành bài để lesson_code NULL, nên unique ở trên
+  // không chặn được trùng (Postgres coi mọi NULL là khác nhau). Ràng buộc này
+  // mới là thứ làm nhánh bắt P2002 trong LessonsService.resolveLesson() hoạt
+  // động. Xem migration 20261012000000_critical_indexes_and_lesson_sort_unique.
+  @@unique([courseId, sortOrder], map: "uq_lessons_course_sort")
   @@index([contentJson], type: Gin)
   @@map("lessons")
 }
@@ -192,6 +203,9 @@ model LessonProgress {
   lesson Lesson @relation(fields: [lessonId], references: [id])
 
   @@id([userId, lessonId])
+  // PK (user_id, lesson_id) không phủ được course_id — tính lại tiến độ khi
+  // enroll/complete lọc theo cặp (user_id, course_id).
+  @@index([userId, courseId], map: "idx_lesson_progress_user_course")
   @@map("lesson_progress")
 }
 
@@ -319,6 +333,8 @@ model UserDailyXpLog {
 
   user User @relation(fields: [userId], references: [id])
 
+  // Leaderboard tuần: SUM(xp_earned) theo (user_id, khoảng log_date).
+  @@index([userId, logDate], map: "idx_daily_xp_user_date")
   @@map("user_daily_xp_logs")
 }
 
@@ -374,6 +390,8 @@ model Notification {
 
   user User @relation(fields: [userId], references: [id])
 
+  // /api/notifications/badge bị client poll ~45s/lần và không rate-limit.
+  @@index([userId, isRead, createdAt(sort: Desc)], map: "idx_notifications_user_read_created")
   @@map("notifications")
 }
 
@@ -407,6 +425,8 @@ model Comment {
   replies   Comment[]         @relation("CommentReplies")
   reactions CommentReaction[]
 
+  // Phân trang bình luận gốc (parent_comment_id IS NULL) và nạp reply theo bài.
+  @@index([postId, parentCommentId, createdAt], map: "idx_comments_post_parent_created")
   @@map("comments")
 }
 

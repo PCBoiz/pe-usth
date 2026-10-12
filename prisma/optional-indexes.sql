@@ -1,9 +1,30 @@
--- Index khuyến nghị cho hiệu năng khi tải cao.
--- KHÔNG chạy tự động (DB Neon dùng chung với bản Django trong giai đoạn chuyển
--- tiếp — repo này cam kết không tự đổi cấu trúc DB). Chạy tay khi đã xác nhận:
---   psql "$DIRECT_URL" -f prisma/optional-indexes.sql
--- Tất cả dùng IF NOT EXISTS + CONCURRENTLY nên an toàn chạy lại nhiều lần và
--- không khoá bảng khi tạo.
+-- Index cho hiệu năng khi tải cao — BẢN CONCURRENTLY, CHẠY TAY (tuỳ chọn).
+--
+-- ĐÃ ĐƯỢC NÂNG THÀNH MIGRATION: tất cả các index dưới đây giờ nằm trong
+--   prisma/migrations/20261012000000_critical_indexes_and_lesson_sort_unique/
+-- và được `npm run migrate:deploy` áp dụng TỰ ĐỘNG. Không cần chạy file này
+-- trong trường hợp bình thường.
+--
+-- File này còn tồn tại vì một việc duy nhất mà migration KHÔNG làm được:
+-- Prisma Migrate bọc mỗi migration trong một transaction, còn Postgres không
+-- cho `CREATE INDEX CONCURRENTLY` chạy trong transaction block (lỗi 25001).
+-- Migration vì thế dùng `CREATE INDEX` thường, giữ khoá SHARE và CHẶN GHI trên
+-- bảng suốt lúc build index.
+--
+-- Khi bảng đã lớn (notifications, auth_sessions) và không được phép chặn ghi,
+-- dùng đường zero-downtime: chạy file này TRƯỚC khi deploy, ngoài Prisma:
+--     psql "$DIRECT_URL" -f prisma/optional-indexes.sql
+-- Tên index ở đây TRÙNG từng ký tự với tên trong migration và với `map:` trong
+-- schema.prisma, nên sau đó mọi câu `CREATE ... IF NOT EXISTS` trong migration
+-- là no-op và `migrate deploy` vẫn ghi nhận migration đã áp dụng. KHÔNG đổi tên
+-- index trong file này mà không đổi ở cả hai nơi kia.
+--
+-- TRƯỚC KHI CHẠY: unique index ở mục (6) sẽ báo lỗi nếu dữ liệu đã có cặp
+-- (course_id, sort_order) trùng. Kiểm tra bằng truy vấn ở ngay trên mục đó.
+-- Tất cả câu lệnh đều IF NOT EXISTS + CONCURRENTLY nên an toàn chạy lại nhiều lần.
+-- Lưu ý: một CREATE INDEX CONCURRENTLY bị lỗi để lại index INVALID; dò bằng
+--     SELECT indexrelid::regclass FROM pg_index WHERE NOT indisvalid;
+-- rồi DROP INDEX index_đó và chạy lại.
 
 -- 1) auth_sessions.token: mọi lần refresh token đều tra theo cột này.
 --    Không có index -> full table scan trên bảng phình liên tục theo login.
