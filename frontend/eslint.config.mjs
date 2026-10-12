@@ -17,6 +17,11 @@ const eslintConfig = defineConfig([
     // không chèn `eslint-disable` vào file vendor: file vendor phải giữ đúng
     // từng byte như bản gốc thì sau này mới đối chiếu và nâng cấp được.
     "public/pyodide/**",
+    // Kết quả Playwright sinh ra khi chạy e2e ở máy. Đã nằm trong .gitignore
+    // nhưng ESLint không đọc .gitignore, nên ai chạy e2e xong rồi lint sẽ thấy
+    // hàng trăm lỗi của code máy sinh — đủ để mất lòng tin vào cổng lint.
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 
