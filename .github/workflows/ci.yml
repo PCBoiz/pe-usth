@@ -4,6 +4,9 @@ on:
   push:
     branches: [master]
   pull_request:
+  # Job giáo trình chỉ chạy khi có thay đổi liên quan; mốc này để chạy tay khi
+  # cần dựng lại kiểm chứng mà không phải push thêm commit rỗng.
+  workflow_dispatch:
 
 jobs:
   backend:
@@ -22,6 +25,48 @@ jobs:
       - run: npm ci
       - run: npx prisma generate
       - run: npm run typecheck
+
+      # `npm run lint` trong package.json là `eslint … --fix`: nó SỬA file chứ
+      # không kiểm. Chạy --fix trên runner thì lỗi bị tự dọn rồi báo xanh —
+      # đúng cái mình không muốn. Nên gọi eslint trực tiếp, bỏ --fix.
+      #
+      # Hai điều chỉnh nữa, giải thích vì sao con số dưới đây không phải 0:
+      #  1. `src/generated/**` là client Prisma do `prisma generate` sinh ra.
+      #     Lint nó cho ~31k lỗi prettier của code máy sinh — vô nghĩa, loại ra.
+      #  2. Phần code người viết còn 527 lỗi (đo 12/10/2026). ĐỪNG tưởng đây là
+      #     lỗi định dạng chạy `--fix` một phát là xong — đã đo: chỉ 33 lỗi (6%)
+      #     tự sửa được, trong đó 29 là prettier. 469 lỗi còn lại (89%) là nhóm
+      #     `no-unsafe-*`:
+      #         290  no-unsafe-member-access
+      #         120  no-unsafe-call
+      #          59  no-unsafe-assignment
+      #          14  no-unsafe-return
+      #     Tức là `any` chảy xuyên qua code — phần lớn ở các trang chuyển từ
+      #     bản Django cũ. Dọn nó là việc đặt lại kiểu ở ranh giới dữ liệu, làm
+      #     dần từng module, không phải việc của một lệnh.
+      #
+      #     Gate ở 0 thì CI đỏ vĩnh viễn, mà một job luôn đỏ còn tệ hơn không có
+      #     job. Nên dùng mốc trần, chỉ được ĐI XUỐNG: dọn được bao nhiêu thì hạ
+      #     TRAN xuống bấy nhiêu, không bao giờ nâng lên.
+      - name: Lint backend (chế độ kiểm, không --fix)
+        run: |
+          npx eslint "{src,apps,libs,test}/**/*.ts" \
+            --ignore-pattern "src/generated/**" \
+            -f json -o "$RUNNER_TEMP/eslint-report.json" || true
+          node -e "
+          const r = require(process.env.RUNNER_TEMP + '/eslint-report.json');
+          const TRAN = 600; // đo được 528 ngày 12/10/2026; dư chỗ cho spec đang viết dở
+          const loi = r.reduce((s, f) => s + f.errorCount, 0);
+          const canhBao = r.reduce((s, f) => s + f.warningCount, 0);
+          const top = r.filter((f) => f.errorCount).sort((a, b) => b.errorCount - a.errorCount);
+          for (const f of top.slice(0, 10)) console.log(f.errorCount + '  ' + f.filePath);
+          console.log('eslint backend: ' + loi + ' lỗi, ' + canhBao + ' cảnh báo (trần ' + TRAN + ')');
+          if (loi > TRAN) {
+            console.log('::error::Lint backend vượt trần ' + TRAN + ' (+' + (loi - TRAN) + '). Chạy npm run lint ở máy cho eslint --fix dọn, rồi hạ TRAN trong ci.yml.');
+            process.exit(1);
+          }
+          "
+
       - run: npx jest --ci
       - run: npm run build
 
@@ -40,4 +85,115 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm run lint
+
+      # Bộ chấm bài nằm hẳn ở trình duyệt (AGENTS.md: server tin `quizScore` do
+      # client gửi), nên `src/lib/studio-lesson.ts` là thứ duy nhất quyết định
+      # học viên đạt hay trượt. Test này chạy bằng `node --test` trên chính JSON
+      # bài thật ở scripts/pe-v3/out/, không thêm dependency, ~0,3s — rẻ nhất mà
+      # giá trị cao nhất, nên để trước `build`.
+      - run: npm run test:unit
+
       - run: npm run build
+
+      # Chưa đưa `npm run test:e2e` (Playwright) vào CI, vì ba lý do cụ thể:
+      #  1. e2e/playwright.config.ts không có `webServer` — nó giả định người
+      #     chạy đã tự `npm run dev` ở cổng 3000. Muốn vào CI thì phải sửa
+      #     chính file config đó, hoặc tự dựng server + vòng chờ trong workflow.
+      #  2. python-advanced.spec.ts giả lập hết API bằng page.route nên KHÔNG
+      #     cần backend, nhưng Pyodide thì vẫn tải ~10 MB từ CDN thật mỗi lần
+      #     chạy (AGENTS.md: "Pyodide tải lại mỗi lần chạy") — phụ thuộc mạng
+      #     ngoài trong test có giới hạn thời gian là nguồn đỏ giả.
+      #  3. Các spec còn lại trong e2e/ (pe-run-sql, drag-regression,
+      #     mobile-responsive) cần Django cổng 9000 + tài khoản thật, nên không
+      #     thể chạy cả thư mục.
+      # Khi nào thêm: cho `webServer` vào playwright.config.ts, cache
+      # ~/.cache/ms-playwright, và nạp Pyodide từ local thay vì CDN.
+
+  # GitHub chỉ cho lọc `paths` ở mức workflow, không ở mức job; cả repo dùng một
+  # file ci.yml nên phải tự so diff rồi bật/tắt job giáo trình bên dưới. Lý do
+  # tách ra: dựng lại 40 bài rồi chấm thử bằng Pyodide chỉ cần làm khi nguồn
+  # giáo trình đổi, không nên làm chậm mọi PR.
+  thay-doi:
+    runs-on: ubuntu-latest
+    outputs:
+      giao-trinh: ${{ steps.loc.outputs.giao-trinh }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # cần lịch sử để tìm điểm rẽ nhánh
+      - id: loc
+        run: |
+          if [ "${{ github.event_name }}" = workflow_dispatch ]; then
+            # Chạy tay thì cố ý muốn dựng lại — đừng lọc diff nữa.
+            echo 'giao-trinh=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          if [ "${{ github.event_name }}" = pull_request ]; then
+            base=$(git merge-base "origin/${{ github.base_ref }}" HEAD || true)
+          else
+            base=$(git rev-parse HEAD^ 2>/dev/null || true)
+          fi
+          if [ -z "$base" ]; then
+            # Không dò được mốc so sánh (push đầu tiên, chạy tay, lịch sử bị
+            # cắt) thì chạy cho chắc — thà chậm hơn là bỏ sót.
+            echo 'giao-trinh=true' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          doi=$(git diff --name-only "$base" HEAD)
+          echo "$doi"
+          # Tính cả ci.yml: sửa job này thì để chính nó chạy mà tự chứng minh.
+          if printf '%s\n' "$doi" | grep -qE '^(scripts/pe-v3/|frontend/public/static/js/studio-harness\.py$|\.github/workflows/ci\.yml$)'; then
+            echo 'giao-trinh=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'giao-trinh=false' >> "$GITHUB_OUTPUT"
+          fi
+
+  giao-trinh:
+    needs: thay-doi
+    if: needs.thay-doi.outputs.giao-trinh == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Trên runner Linux là `python`; ở máy Windows phải gọi `py` vì `python`
+      # là stub của Microsoft Store (xem AGENTS.md).
+      - run: python scripts/pe-v3/build.py
+
+      # build.py đã được làm tất định có chủ đích: `importedAt` lấy SOURCE_DATE
+      # (ngày của PDF nguồn) chứ không lấy datetime.now(), và mọi chỗ xáo trộn
+      # đều dùng random.Random(hạt giống cố định). Nhờ vậy mới kiểm được điều
+      # này: thứ đã commit trong scripts/pe-v3/out/ đúng là thứ build.py dựng
+      # ra. Lệch nhau nghĩa là có người sửa tay file out/ hoặc quên dựng lại —
+      # mà DB thì seed từ out/, nên lệch là nội dung học viên thấy khác nguồn.
+      - name: Dựng lại phải ra đúng thứ đã commit
+        run: |
+          if ! git diff --exit-code -- scripts/pe-v3/out; then
+            echo "::error::Dựng lại ra khác scripts/pe-v3/out đã commit. Chạy py scripts/pe-v3/build.py rồi commit kết quả."
+            exit 1
+          fi
+          # git diff không thấy file mới chưa theo dõi — soát thêm bằng status.
+          moi=$(git status --porcelain --untracked-files=all -- scripts/pe-v3/out)
+          if [ -n "$moi" ]; then
+            echo "$moi"
+            echo "::error::build.py sinh file chưa được commit trong scripts/pe-v3/out."
+            exit 1
+          fi
+
+      # Pyodide cố tình không nằm trong dependencies (gói rất nặng, chỉ bước này
+      # cần tới). `--no-save` để không chạm package.json/package-lock.json; và
+      # bước kiểm tất định ở trên đã chạy xong trước đó nên không bị nhiễu.
+      - run: npm ci
+      - run: npm i --no-save pyodide@0.27.7
+
+      # Chấm thử bằng CHÍNH bộ chấm của trình duyệt
+      # (frontend/public/static/js/studio-harness.py): lời giải mẫu phải đạt hết
+      # 233 ca, còn 110 khung trống/biến thể sai đều phải trượt — nếu khung
+      # trống mà đạt thì học viên bấm Nộp ngay là qua bài.
+      - run: node scripts/pe-v3/check-pyodide.mjs
