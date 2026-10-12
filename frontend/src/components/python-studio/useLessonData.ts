@@ -202,6 +202,21 @@ export function useLessonData({
           }),
         });
         setCompleted(true);
+        // Bài cửa: server chỉ trả solutionCode khi bài ĐÃ hoàn thành, mà nội
+        // dung chỉ nạp một lần lúc mở bài — trước đây nộp xong phải tải lại
+        // trang mới thấy lời giải mẫu (AGENTS.md). Giờ vừa ghi nhận xong thì
+        // xin lại nội dung để lấy lời giải; hỏng thì thôi, không chặn bài.
+        if (lesson?.step_4?.solutionWithheld) {
+          try {
+            const fresh = await json(
+              `/api/courses/${encodeURIComponent(courseId)}/lessons/${lessonNo}/content`,
+            );
+            const content = fresh.lesson?.contentJson as Lesson | null;
+            if (content?.step_4?.solutionCode) setLesson(content);
+          } catch {
+            /* giữ nội dung cũ */
+          }
+        }
         if (typeof body.xpGained === 'number') setXpGained(body.xpGained);
         if (Array.isArray(body.newAchievements) && body.newAchievements.length)
           setAwards(body.newAchievements as Award[]);
@@ -216,7 +231,7 @@ export function useLessonData({
         setBusy(false);
       }
     },
-    [courseId, json, lessonNo, meta],
+    [courseId, json, lesson, lessonNo, meta],
   );
 
   return {

@@ -86,11 +86,11 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   là nhóm `no-unsafe-*` (290 member-access, 120 call, 59 assignment, 14 return) — `any` chảy
   xuyên qua code ở các trang chuyển từ bản Django. Dọn là việc đặt lại kiểu ở ranh giới dữ
   liệu, làm dần từng module rồi hạ mốc trần trong `ci.yml`.
-- **Server biết "đã hoàn thành", không biết "đã nộp".** Ở 5 bài cửa tự kiểm tra, lời giải mẫu
-  bị giữ lại tới khi bài được ghi nhận hoàn thành, mà frontend chỉ nạp nội dung một lần lúc mở
-  bài. Nên học viên nộp xong trong cùng phiên phải tải lại trang mới thấy lời giải. Cách sửa
-  đúng nằm ở frontend: nạp lại nội dung sau `POST /lessons/:n/complete`, hoặc dùng cờ
-  `solutionWithheld` để xin lời giải khi cần.
+- **Server biết "đã hoàn thành", không biết "đã nộp".** Ở bài cửa tự kiểm tra, lời giải mẫu
+  bị giữ lại tới khi bài được ghi nhận hoàn thành. Frontend từng chỉ nạp nội dung một lần lúc
+  mở bài nên phải tải lại trang mới thấy lời giải; nay `useLessonData.complete` thấy cờ
+  `solutionWithheld` thì nạp lại nội dung ngay sau `POST /lessons/:n/complete`. Lời giải vẫn
+  chỉ mở khi đã HOÀN THÀNH, không phải khi vừa nộp lần đầu.
 
 ## Quy ước khi sửa
 

@@ -157,9 +157,20 @@ export type Step4 = {
   contracts?: LessonContract[];
   /** Cửa tự kiểm tra (B20, I07, I12, N04, N08): lời giải chỉ mở sau lần nộp đầu. */
   gate?: boolean;
+  /** Server đang giữ solutionCode (bài cửa chưa hoàn thành) — xem
+   *  withholdSolutionCode ở src/lessons/lessons.service.ts. */
+  solutionWithheld?: boolean;
   /** Ghi chú môi trường (thread/fork chạy bản mô phỏng trong trình duyệt). */
   env?: string;
+  /**
+   * Thư viện ngoài bài cần (khoá Python Advanced): worker tải + import sẵn
+   * TRƯỚC khi bấm giờ 5 giây. Chỉ các gói tự lưu trữ trong /pyodide/v0.27.7/.
+   */
+  packages?: StudioPackage[];
 };
+
+/** Gói Pyodide 0.27.7 tự lưu trữ — khớp PACKAGES của studio-lesson.worker.js và scripts/pe-v4/build.py. */
+export type StudioPackage = 'numpy' | 'pandas' | 'matplotlib' | 'sqlite3';
 
 export type TraceTableGame = {
   type: 'traceTable';
