@@ -1,0 +1,505 @@
+{
+  "lesson_code": "P05",
+  "sort_order": 5,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P05 · subprocess.run và kết quả",
+  "subtitle": "Trung cấp · M1 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "P05 · subprocess.run và kết quả",
+    "subtitle": "Trung cấp · M1 · 40 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#P05",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P05"
+        ],
+        "title": "subprocess.run và kết quả",
+        "goal": "Chạy process con bằng subprocess.run và đọc đúng kết quả.",
+        "task": "Viết exit_code, output_of (check_output) và máy chấm grade có timeout.",
+        "predict": "check_output trả exit code hay đầu ra?",
+        "code": "def exit_code(code): ...     # run(...).returncode\ndef output_of(code): ...     # check_output(..., text=True)\ndef grade(code, expected, limit=2):\n    # \"TIMEOUT\" / \"ERROR <mã>\" / \"PASS\" / \"FAIL\"",
+        "tests": [
+          "grade(\"print(2+3)\", \"5\") → PASS",
+          "grade(\"raise SystemExit(2)\", \"\") → ERROR 2"
+        ],
+        "reflect": "Vì sao phải kiểm returncode trước khi so stdout?"
+      },
+      "context": {
+        "title": "Chạy process con bằng subprocess.run và đọc đúng returncode, stdout, lỗi và timeout.",
+        "body": "Viết ba hàm, mỗi hàm chạy code Python trong một process con bằng [sys.executable, \"-c\", code]. exit_code(code) trả exit code (int) của con. output_of(code) trả stdout của con dạng str bằng subprocess.check_output (con thoát mã khác 0 thì để CalledProcessError bay ra). grade(code, expected, limit=2) là máy chấm mini: chạy con với capture_output=True, text=True, timeout=limit — quá giờ trả \"TIMEOUT\"; exit code khác 0 trả \"ERROR <mã>\"; stdout bỏ khoảng trắng hai đầu bằng expected trả \"PASS\"; còn lại \"FAIL\".",
+        "example": "grade(\"print(2+3)\", \"5\") → \"PASS\"; grade(\"raise SystemExit(2)\", \"\") → \"ERROR 2\"; output_of(\"print(7)\") → \"7\\n\"; exit_code(\"pass\") → 0.",
+        "prereq": "P04",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "subprocess.check_output([sys.executable, \"-c\", \"print(1)\"], text=True) trả về gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "0 — exit code",
+            "detail": "Đó là ngộ nhận phổ biến nhất về check_output.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "\"1\\n\" — stdout của con",
+            "detail": "check_output trả đầu ra; exit code nằm ở run().returncode hoặc trong exception.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Một CompletedProcess",
+            "detail": "Đó là kiểu trả về của run().",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"check_output trả exit code\"",
+        "body": "check_output trả STDOUT của con. Viết if subprocess.check_output(...) == 0 là so chuỗi/bytes với 0 — luôn False; còn khi con thoát mã khác 0, check_output ném CalledProcessError chứ không trả mã. Lấy exit code bằng run(...).returncode, hoặc error.returncode trong except. Ngộ nhận anh em: tưởng exit code khác 0 tự thành lỗi — run() không ném gì nếu thiếu check=True."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "subprocess.run(args, ...) chạy con và CHỜ nó xong, trả CompletedProcess có returncode, stdout, stderr."
+        },
+        {
+          "n": 2,
+          "body": "args là LIST: phần tử đầu là chương trình — sys.executable là đúng Python đang chạy, không phụ thuộc \"python\" trên PATH — rồi tới từng đối số."
+        },
+        {
+          "n": 3,
+          "body": "Mặc định con in thẳng ra màn hình và result.stdout là None. capture_output=True mới thu; text=True để nhận str thay vì bytes."
+        },
+        {
+          "n": 4,
+          "body": "Exit code khác 0 KHÔNG tự thành exception: tự kiểm returncode, hoặc check=True để nhận CalledProcessError (có .returncode). timeout= quá giờ → TimeoutExpired."
+        },
+        {
+          "n": 5,
+          "body": "check_output(args, text=True) trả STDOUT của con, không phải exit code, và tự check: mã khác 0 → CalledProcessError."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import subprocess\nimport sys\n\nresult = subprocess.run([sys.executable, \"-c\", \"print(2+3)\"],\n                        capture_output=True, text=True, check=True)\nprint(repr(result.stdout), result.returncode)\n\ntry:\n    subprocess.run([sys.executable, \"-c\", \"raise SystemExit(2)\"], check=True)\nexcept subprocess.CalledProcessError as error:\n    print(\"exit code:\", error.returncode)\n\nprint(repr(subprocess.check_output([sys.executable, \"-c\", \"print('hi')\"], text=True)))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "subprocess.run([sys.executable, \"-c\", \"raise SystemExit(3)\"]) (không có check) thì…",
+          "options": [
+            {
+              "text": "Ném SystemExit trong process cha",
+              "detail": "SystemExit xảy ra trong process CON; cha chỉ thấy exit code.",
+              "correct": false
+            },
+            {
+              "text": "Trả CompletedProcess với returncode = 3, không ném lỗi",
+              "detail": "Chỉ check=True mới biến mã khác 0 thành CalledProcessError.",
+              "correct": true
+            },
+            {
+              "text": "Ném CalledProcessError",
+              "detail": "Cần check=True.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chỉ check=True mới biến mã khác 0 thành CalledProcessError."
+        },
+        {
+          "question": "Vì sao viết [sys.executable, \"-c\", code] thay vì chuỗi \"python -c \" + code?",
+          "options": [
+            {
+              "text": "Hai cách như nhau",
+              "detail": "Code có dấu cách hay dấu ngoặc kép sẽ bị tách sai.",
+              "correct": false
+            },
+            {
+              "text": "List giao từng đối số nguyên vẹn, không cần shell tách chuỗi; sys.executable chắc chắn là Python đang chạy",
+              "detail": "Chuỗi không có shell=True bị coi là TÊN chương trình trên Linux; \"python\" có thể là bản khác, hoặc stub của Microsoft Store trên Windows.",
+              "correct": true
+            },
+            {
+              "text": "Chuỗi chạy chậm hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chuỗi không có shell=True bị coi là TÊN chương trình trên Linux; \"python\" có thể là bản khác, hoặc stub của Microsoft Store trên Windows."
+        },
+        {
+          "question": "Con chạy 1/0 (không bắt lỗi). returncode là?",
+          "options": [
+            {
+              "text": "0",
+              "detail": "Có lỗi thì không phải 0.",
+              "correct": false
+            },
+            {
+              "text": "ZeroDivisionError",
+              "detail": "Cha không nhận object exception của con, chỉ nhận mã thoát.",
+              "correct": false
+            },
+            {
+              "text": "1 — ngoại lệ không bắt làm Python thoát mã 1, traceback ra stderr",
+              "detail": "Traceback nằm trong result.stderr nếu có capture.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Traceback nằm trong result.stderr nếu có capture."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "grade kiểm returncode TRƯỚC khi so stdout. Vì sao?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Con có thể in đúng \"5\" rồi mới gặp lỗi và thoát mã khác 0 — chỉ so stdout sẽ chấm PASS một chương trình hỏng. Exit code là tín hiệu thành công/thất bại chính thức của process; chỉ khi nó bằng 0 mới so đầu ra. Trường hợp đặc biệt: chạy quá limit thì không có exit code bình thường, trả TIMEOUT."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp máy chấm mini.",
+        "rule": "Thử code in nhiều dòng, code in đúng rồi mới thoát mã 3, và code ngủ time.sleep(5) với limit = 1."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "run([sys.executable, \"-c\", code]) → cha chờ con kết thúc"
+          },
+          {
+            "label": "Bước 2",
+            "text": "quá limit giây → TimeoutExpired → \"TIMEOUT\""
+          },
+          {
+            "label": "Bước 3",
+            "text": "returncode != 0 → \"ERROR <mã>\""
+          },
+          {
+            "label": "Bước 4",
+            "text": "stdout.strip() == expected → \"PASS\", khác thì \"FAIL\""
+          }
+        ]
+      },
+      "counter": {
+        "question": "grade(\"print(5); raise SystemExit(3)\", \"5\") trả gì?",
+        "options": [
+          "PASS",
+          "FAIL",
+          "ERROR 3"
+        ],
+        "correct": "ERROR 3"
+      },
+      "scaffold": {
+        "template": "def grade(code, expected, limit=2):\n    try:\n        result = subprocess.run([sys.executable, \"-c\", code],\n                                capture_output=True, text=True, {{slot1}})\n    except {{slot2}}:\n        return \"TIMEOUT\"\n    if {{slot3}}:\n        return f\"ERROR {result.returncode}\"\n    if result.stdout.strip() == expected:\n        return \"PASS\"\n    return \"FAIL\"\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "timeout=limit"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "subprocess.TimeoutExpired"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "result.returncode != 0"
+          }
+        ],
+        "bank": [
+          {
+            "label": "result.returncode != 0",
+            "slot": 3
+          },
+          {
+            "label": "result.stderr",
+            "slot": 3,
+            "trap": "Có chữ trong stderr chưa chắc là lỗi; tín hiệu chính thức là returncode."
+          },
+          {
+            "label": "subprocess.TimeoutExpired",
+            "slot": 2
+          },
+          {
+            "label": "timeout=limit",
+            "slot": 1
+          },
+          {
+            "label": "check=True",
+            "slot": 1,
+            "trap": "Mã khác 0 thành CalledProcessError — không ai bắt, và mất timeout."
+          },
+          {
+            "label": "subprocess.CalledProcessError",
+            "slot": 2,
+            "trap": "Không có check=True thì run() không ném lỗi này; quá giờ là TimeoutExpired."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết ba hàm, mỗi hàm chạy code Python trong một process con bằng [sys.executable, \"-c\", code]. exit_code(code) trả exit code (int) của con. output_of(code) trả stdout của con dạng str bằng subprocess.check_output (con thoát mã khác 0 thì để CalledProcessError bay ra). grade(code, expected, limit=2) là máy chấm mini: chạy con với capture_output=True, text=True, timeout=limit — quá giờ trả \"TIMEOUT\"; exit code khác 0 trả \"ERROR <mã>\"; stdout bỏ khoảng trắng hai đầu bằng expected trả \"PASS\"; còn lại \"FAIL\".\n\nThực hành: Một lần run() là đủ cho grade: capture_output=True, text=True, timeout=limit. Bắt TimeoutExpired, rồi kiểm returncode, cuối cùng mới so stdout.",
+        "io": [
+          {
+            "label": "grade(\"print(2+3)\", \"5\")",
+            "value": "\"PASS\""
+          },
+          {
+            "label": "grade(\"raise SystemExit(2)\", \"\")",
+            "value": "\"ERROR 2\""
+          },
+          {
+            "label": "grade(\"import time; time.sleep(5)\", \"\", 1)",
+            "value": "\"TIMEOUT\""
+          }
+        ]
+      },
+      "starterCode": "import subprocess\nimport sys\n\n\ndef exit_code(code):\n    # Exit code (int) của process con chạy code.\n    pass\n\n\ndef output_of(code):\n    # stdout (str) của con, dùng subprocess.check_output.\n    pass\n\n\ndef grade(code, expected, limit=2):\n    # \"TIMEOUT\" / \"ERROR <mã>\" / \"PASS\" / \"FAIL\"\n    pass\n\n\nif __name__ == \"__main__\":\n    print(grade(\"print(2+3)\", \"5\"))\n",
+      "solutionCode": "import subprocess\nimport sys\n\n\ndef exit_code(code):\n    return subprocess.run([sys.executable, \"-c\", code]).returncode\n\n\ndef output_of(code):\n    return subprocess.check_output([sys.executable, \"-c\", code], text=True)\n\n\ndef grade(code, expected, limit=2):\n    try:\n        result = subprocess.run([sys.executable, \"-c\", code],\n                                capture_output=True, text=True, timeout=limit)\n    except subprocess.TimeoutExpired:\n        return \"TIMEOUT\"\n    if result.returncode != 0:\n        return f\"ERROR {result.returncode}\"\n    if result.stdout.strip() == expected:\n        return \"PASS\"\n    return \"FAIL\"\n\n\nif __name__ == \"__main__\":\n    print(grade(\"print(2+3)\", \"5\"))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Một lần run() là đủ cho grade: capture_output=True, text=True, timeout=limit. Bắt TimeoutExpired, rồi kiểm returncode, cuối cùng mới so stdout."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. exit_code: return subprocess.run([sys.executable, \"-c\", code]).returncode.\n2. output_of: return subprocess.check_output([sys.executable, \"-c\", code], text=True).\n3. grade: try run(..., capture_output=True, text=True, timeout=limit); except subprocess.TimeoutExpired → \"TIMEOUT\".\n4. returncode != 0 → f\"ERROR {result.returncode}\"; stdout.strip() == expected → \"PASS\"; còn lại \"FAIL\"."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def exit_code(code):\n    return subprocess.run([sys.executable, \"-c\", code]).returncode\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "exit_code(\"pass\") → 0",
+          "call": "exit_code(\"pass\")",
+          "expect": "0"
+        },
+        {
+          "name": "exit_code: SystemExit(4) → 4, 1/0 → 1",
+          "call": "(exit_code(\"raise SystemExit(4)\"), exit_code(\"1/0\"))",
+          "expect": "(4, 1)"
+        },
+        {
+          "name": "output_of trả stdout (str)",
+          "call": "output_of(\"print(6 * 7)\")",
+          "expect": "'42\\n'"
+        },
+        {
+          "name": "output_of: nhiều dòng",
+          "call": "output_of(\"for i in range(3): print(i)\")",
+          "expect": "'0\\n1\\n2\\n'"
+        },
+        {
+          "name": "output_of: con thoát mã 5 → CalledProcessError",
+          "call": "_studio.call(output_of, \"raise SystemExit(5)\").error",
+          "expect": "'CalledProcessError'"
+        },
+        {
+          "name": "grade: PASS và FAIL",
+          "call": "(grade(\"print(2+3)\", \"5\"), grade(\"print(6)\", \"5\"))",
+          "expect": "('PASS', 'FAIL')"
+        },
+        {
+          "name": "grade: in đúng rồi thoát mã 3 → ERROR 3",
+          "call": "grade(\"print(5); raise SystemExit(3)\", \"5\")",
+          "expect": "'ERROR 3'"
+        },
+        {
+          "name": "grade: ngoại lệ trong con → ERROR 1",
+          "call": "grade(\"1/0\", \"x\")",
+          "expect": "'ERROR 1'"
+        },
+        {
+          "name": "grade: quá giờ → TIMEOUT",
+          "call": "grade(\"import time; time.sleep(5)\", \"\", 1)",
+          "expect": "'TIMEOUT'"
+        },
+        {
+          "name": "grade: ngủ ít hơn limit mặc định vẫn chấm",
+          "call": "grade(\"import time; time.sleep(1); print('ok')\", \"ok\")",
+          "expect": "'PASS'"
+        },
+        {
+          "name": "grade: nhiều dòng, chỉ bỏ khoảng trắng hai đầu",
+          "call": "grade(\"print(1); print(2)\", \"1\\n2\")",
+          "expect": "'PASS'"
+        },
+        {
+          "name": "Lệnh con là list [sys.executable, \"-c\", code], không phải chuỗi",
+          "call": "(lambda a: (isinstance(a, (list, tuple)), list(a)))(_studio.call(exit_code, \"raise SystemExit(4)\").subprocess_calls[0][\"args\"])",
+          "expect": "(True, [__import__(\"sys\").executable, \"-c\", \"raise SystemExit(4)\"])"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "exit_code(code)",
+          "does": "Exit code của process con chạy code.",
+          "takes": "code: str",
+          "gives": "int",
+          "effect": "Con in thẳng ra màn hình (không thu).",
+          "call": "exit_code(\"raise SystemExit(4)\") → 4"
+        },
+        {
+          "sig": "output_of(code)",
+          "does": "stdout của process con.",
+          "takes": "code: str",
+          "gives": "str; con thoát mã khác 0 → CalledProcessError",
+          "effect": "Dùng subprocess.check_output(..., text=True).",
+          "call": "output_of(\"print(6 * 7)\") → \"42\\n\""
+        },
+        {
+          "sig": "grade(code, expected, limit=2)",
+          "does": "Máy chấm mini: chạy con, so đầu ra.",
+          "takes": "code, expected: str; limit: giây",
+          "gives": "\"TIMEOUT\" | \"ERROR <mã>\" | \"PASS\" | \"FAIL\"",
+          "effect": "Một lần subprocess.run(capture_output=True, text=True, timeout=limit).",
+          "call": "grade(\"print(2+3)\", \"5\") → \"PASS\""
+        }
+      ],
+      "env": "Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG subprocess: lệnh [sys.executable, \"-c\", code] hoặc [sys.executable, \"ten_file.py\", ...] chạy chương trình con trong một vùng nhớ riêng, có stdin/stdout/stderr riêng, returncode lấy từ sys.exit()/ngoại lệ, và time.sleep() của con chỉ đẩy một đồng hồ ảo (timeout vẫn được tính đúng). Lệnh shell khác (ls, dir, ping…) không chạy được ở đây. Hãy chạy lại file trên máy (Windows/Linux) để thấy process thật."
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "run([sys.executable, \"-c\", code])",
+              "right": "cha chờ con kết thúc"
+            },
+            {
+              "left": "quá limit giây",
+              "right": "TimeoutExpired → \"TIMEOUT\""
+            },
+            {
+              "left": "returncode != 0",
+              "right": "\"ERROR <mã>\""
+            },
+            {
+              "left": "stdout.strip() == expected",
+              "right": "\"PASS\", khác thì \"FAIL\""
+            }
+          ],
+          "rightOrder": [
+            3,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "import subprocess\nimport sys\n\n",
+          "tail": "    except subprocess.TimeoutExpired:\n        return \"TIMEOUT\"\n    if result.returncode != 0:\n        return f\"ERROR {result.returncode}\"\n    if result.stdout.strip() == expected:\n        return \"PASS\"\n    return \"FAIL\"\n\n\nif __name__ == \"__main__\":\n    print(grade(\"print(2+3)\", \"5\"))",
+          "lines": [
+            {
+              "id": "L4",
+              "text": "def exit_code(code):"
+            },
+            {
+              "id": "L5",
+              "text": "    return subprocess.run([sys.executable, \"-c\", code]).returncode"
+            },
+            {
+              "id": "L8",
+              "text": "def output_of(code):"
+            },
+            {
+              "id": "L9",
+              "text": "    return subprocess.check_output([sys.executable, \"-c\", code], text=True)"
+            },
+            {
+              "id": "L12",
+              "text": "def grade(code, expected, limit=2):"
+            },
+            {
+              "id": "L13",
+              "text": "    try:"
+            },
+            {
+              "id": "L14",
+              "text": "        result = subprocess.run([sys.executable, \"-c\", code],"
+            },
+            {
+              "id": "L15",
+              "text": "                                capture_output=True, text=True, timeout=limit)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    return subprocess.check_output([sys.executable, \"-c\", code])",
+              "reason": "check_output tưởng trả exit code"
+            },
+            {
+              "id": "D1",
+              "text": "    return subprocess.run(sys.executable + \" -c \" + code).returncode",
+              "reason": "ghép lệnh thành một chuỗi thay vì list"
+            }
+          ],
+          "order": [
+            "L15",
+            "L9",
+            "L14",
+            "D0",
+            "L12",
+            "L8",
+            "L4",
+            "L13",
+            "D1",
+            "L5"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import subprocess\nimport sys\n\n\ndef exit_code(code):\n    return subprocess.check_output([sys.executable, \"-c\", code])\n\n\ndef output_of(code):\n    return subprocess.check_output([sys.executable, \"-c\", code], text=True)\n\n\ndef grade(code, expected, limit=2):",
+          "firstLine": 1,
+          "line": 6,
+          "lines": [
+            6
+          ],
+          "label": "check_output tưởng trả exit code",
+          "fix": "    return subprocess.run([sys.executable, \"-c\", code]).returncode"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

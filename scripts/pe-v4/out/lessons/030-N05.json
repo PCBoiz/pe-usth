@@ -1,0 +1,352 @@
+{
+  "lesson_code": "N05",
+  "sort_order": 30,
+  "module": "M5 · NumPy",
+  "title": "N05 · View, copy và sai số số thực",
+  "subtitle": "Trung cấp · M5 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N05 · View, copy và sai số số thực",
+    "subtitle": "Trung cấp · M5 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#N05",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N05"
+        ],
+        "title": "View, copy và sai số số thực",
+        "goal": "Tránh sửa nhầm array gốc qua view; so số thực bằng tolerance.",
+        "task": "scaled_head(a, k, factor) không đổi a; totals_match(parts, total) dùng np.isclose.",
+        "predict": "b = a[:2]; b[0] = 9 — a có đổi không?",
+        "code": "def scaled_head(a, k, factor):\n    pass  # a[:k] là view!\n\ndef totals_match(parts, total):\n    pass  # np.isclose, không ==",
+        "tests": [
+          "[10, 20, 30], k = 2, × 2 → [20, 40]; a giữ nguyên",
+          "[0.1, 0.2] với 0.3 → True"
+        ],
+        "reflect": "Khi nào slice NumPy khác slice list?"
+      },
+      "context": {
+        "title": "Biết khi nào slice sửa luôn array gốc, và so sánh số thực bằng tolerance.",
+        "body": "Viết scaled_head(a, k, factor): trả array MỚI gồm k phần tử đầu của a nhân với factor; array a của người gọi phải giữ nguyên, và kết quả không được dùng chung bộ nhớ với a. Viết totals_match(parts, total): True nếu tổng các phần tử của parts bằng total trong sai số cho phép (np.isclose), không so bằng ==.",
+        "example": "a = np.array([10, 20, 30]); scaled_head(a, 2, 2) → [20, 40] và a vẫn là [10, 20, 30]; totals_match([0.1, 0.2], 0.3) → True.",
+        "prereq": "N04",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Sau ba dòng dưới, a là gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "[1, 2, 3]",
+            "detail": "Chỉ đúng nếu b = a[:2].copy().",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "[9, 2]",
+            "detail": "a vẫn có 3 phần tử; b mới có 2.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "[9, 2, 3] — b là view của a",
+            "detail": "Slice cơ bản dùng chung bộ nhớ với array gốc.",
+            "correct": true
+          }
+        ],
+        "code": "a = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9"
+      },
+      "misconception": {
+        "title": "\"Cắt slice là đã có bản sao riêng, như list Python\"",
+        "body": "Với list Python, lst[:2] là bản sao; với NumPy, a[:2] là VIEW. Sửa tại chỗ trên view (b[0] = 9, b *= 2) làm array của người gọi đổi theo — lỗi khó thấy vì hàm vẫn trả đúng kết quả. Gọi .copy() khi cần độc lập."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Slice cơ bản (a[1:3], a[:, 0]) trả VIEW: một cửa sổ nhìn vào cùng bộ nhớ. Gán vào view (window[0] = 50, head *= 2) là sửa luôn array gốc."
+        },
+        {
+          "n": 2,
+          "body": "Boolean mask và fancy indexing (a[a > 5], a[[0, 2]]) trả COPY. Muốn chắc chắn độc lập thì gọi .copy(); np.shares_memory(x, y) cho biết hai array có dùng chung bộ nhớ không."
+        },
+        {
+          "n": 3,
+          "body": "Phép toán tạo kết quả mới (a[:2] * 2) cho array MỚI; còn *=, +=, gán vào chỉ số là sửa TẠI CHỖ và giữ nguyên dtype (head *= 1.5 trên array số nguyên báo UFuncTypeError — khi đó dùng a[:k] * 1.5). reshape cũng có thể trả view — đừng mặc định là nó đã sao chép."
+        },
+        {
+          "n": 4,
+          "body": "astype(int) CẮT phần thập phân (2.7 → 2, −1.5 → −1), không làm tròn; muốn làm tròn thì np.round trước. dtype nhỏ hơn (float32, int8) tiết kiệm bộ nhớ nhưng có thể mất độ chính xác hoặc tràn số."
+        },
+        {
+          "n": 5,
+          "body": "Số thực nhị phân không biểu diễn đúng 0.1: 0.1 + 0.2 = 0.30000000000000004. So bằng np.isclose / np.allclose (hoặc math.isclose) với tolerance phù hợp, không dùng ==."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\n\nscores = np.array([4, 5, 6, 7])\nwindow = scores[1:3]           # slice → view, chung bộ nhớ\nwindow[0] = 50\nprint(scores)\n\npicked = scores[scores > 5]    # mask → copy\npicked[0] = -1\nprint(scores, picked)\n\nsafe = scores[:2].copy()\nsafe[:] = 0\nprint(scores, np.shares_memory(scores, window), np.shares_memory(scores, safe))\n\nprint(np.array([2.7, -1.5]).astype(int))   # cắt phần thập phân, không làm tròn\nprint(0.1 + 0.2, 0.1 + 0.2 == 0.3, np.isclose(0.1 + 0.2, 0.3))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Phép nào trả COPY chứ không phải view?",
+          "options": [
+            {
+              "text": "a[a > 0]",
+              "detail": "Boolean mask luôn tạo array mới.",
+              "correct": true
+            },
+            {
+              "text": "a[:, 0]",
+              "detail": "Vẫn là slice cơ bản — view.",
+              "correct": false
+            },
+            {
+              "text": "a[1:4]",
+              "detail": "Slice cơ bản là view.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Boolean mask luôn tạo array mới."
+        },
+        {
+          "question": "np.array([1.9, 2.1]).astype(int) cho gì?",
+          "options": [
+            {
+              "text": "[2, 2]",
+              "detail": "astype không làm tròn.",
+              "correct": false
+            },
+            {
+              "text": "[1, 2] — cắt phần thập phân",
+              "detail": "Muốn [2, 2] thì np.round trước rồi mới astype.",
+              "correct": true
+            },
+            {
+              "text": "Lỗi vì mất thông tin",
+              "detail": "NumPy cho phép, chỉ âm thầm cắt.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Muốn [2, 2] thì np.round trước rồi mới astype."
+        },
+        {
+          "question": "Kiểm 0.1 + 0.2 có \"bằng\" 0.3 không, cách nào đúng?",
+          "options": [
+            {
+              "text": "0.1 + 0.2 == 0.3 → True",
+              "detail": "Thực tế là False: tổng là 0.30000000000000004.",
+              "correct": false
+            },
+            {
+              "text": "np.isclose(0.1 + 0.2, 0.3) → True",
+              "detail": "Sai số làm tròn nằm trong tolerance.",
+              "correct": true
+            },
+            {
+              "text": "int(0.1 + 0.2) == int(0.3) → True rồi kết luận bằng nhau",
+              "detail": "Đúng là True, nhưng vì cả hai bị cắt về 0 — so như vậy vô nghĩa.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Sai số làm tròn nằm trong tolerance."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao scaled_head phải copy trước khi nhân tại chỗ, và vì sao so số thực bằng np.isclose?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "a[:k] là view dùng chung bộ nhớ với a; nhân tại chỗ (*=) trên view sẽ sửa array của người gọi. copy() tạo bộ nhớ riêng nên chỉ kết quả đổi. Số thực nhị phân có sai số làm tròn (0.1 + 0.2 = 0.30000000000000004) nên == có thể sai dù hai số \"bằng nhau\"; np.isclose so trong một sai số cho phép."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: nhân đôi giá 3 sản phẩm đầu mà không sửa bảng giá gốc, rồi kiểm tổng.",
+        "rule": "Thử array số thực và k bằng cả độ dài array; sau mỗi lời gọi in lại array gốc để chắc nó không đổi."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "a[:2] → view, chung bộ nhớ với a"
+          },
+          {
+            "label": "Bước 2",
+            "text": "a[:2].copy() → bộ nhớ riêng"
+          },
+          {
+            "label": "Bước 3",
+            "text": "head *= 2 → chỉ head đổi, a giữ [10, 20, 30]"
+          },
+          {
+            "label": "Bước 4",
+            "text": "np.sum([0.1, 0.2]) → 0.30000000000000004"
+          },
+          {
+            "label": "Bước 5",
+            "text": "np.isclose(tổng, 0.3) → True, còn == cho False"
+          }
+        ]
+      },
+      "counter": {
+        "question": "totals_match([1.1, 2.2], 3.3) → ?",
+        "options": [
+          "False",
+          "Lỗi",
+          "True"
+        ],
+        "correct": "True"
+      },
+      "scaffold": {
+        "template": "import numpy as np\n\nprices = np.array([1.1, 2.2, 4.0, 9.9])\nfirst = prices[:3]{{slot1}}\nfirst *= 2\nsame = np.shares_memory(prices, first)\ntotal_ok = {{slot2}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": ".copy()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "np.isclose(first.sum(), 14.6)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "np.isclose(first.sum(), 14.6)",
+            "slot": 2
+          },
+          {
+            "label": "first.sum() == 14.6",
+            "slot": 2,
+            "trap": "Tổng thực tế là 14.600000000000001 → == cho False."
+          },
+          {
+            "label": "[:]",
+            "slot": 1,
+            "trap": "prices[:3][:] vẫn là view của prices."
+          },
+          {
+            "label": ".copy()",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết scaled_head(a, k, factor): trả array MỚI gồm k phần tử đầu của a nhân với factor; array a của người gọi phải giữ nguyên, và kết quả không được dùng chung bộ nhớ với a. Viết totals_match(parts, total): True nếu tổng các phần tử của parts bằng total trong sai số cho phép (np.isclose), không so bằng ==.\n\nThực hành: Lấy a[:k].copy() rồi mới nhân (hoặc a[:k] * factor — phép * tạo array mới); tổng dùng np.sum và so bằng np.isclose.",
+        "io": [
+          {
+            "label": "scaled_head(np.array([10, 20, 30]), 2, 2)",
+            "value": "[20, 40]; a vẫn [10, 20, 30]"
+          },
+          {
+            "label": "totals_match([0.1, 0.2], 0.3)",
+            "value": "True"
+          },
+          {
+            "label": "totals_match([0.1, 0.2], 0.31)",
+            "value": "False"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef scaled_head(a, k, factor):\n    pass\n\n\ndef totals_match(parts, total):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef scaled_head(a, k, factor):\n    head = a[:k].copy()\n    head *= factor\n    return head\n\n\ndef totals_match(parts, total):\n    return bool(np.isclose(np.sum(parts), total))\n\n\nprices = np.array([10, 20, 30])\nprint(scaled_head(prices, 2, 2), prices)\nprint(totals_match([0.1, 0.2], 0.3), 0.1 + 0.2 == 0.3)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Lấy a[:k].copy() rồi mới nhân (hoặc a[:k] * factor — phép * tạo array mới); tổng dùng np.sum và so bằng np.isclose."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. head = a[:k].copy(); head *= factor; return head.\n2. totals_match: return bool(np.isclose(np.sum(parts), total))."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def scaled_head(a, k, factor):\n    head = a[:k].copy()\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "2 phần tử đầu × 2",
+          "call": "[int(v) for v in scaled_head(np.array([10, 20, 30]), 2, 2)]",
+          "expect": "[20, 40]"
+        },
+        {
+          "name": "Array gốc giữ nguyên",
+          "call": "(lambda a: (scaled_head(a, 2, 2), a.tolist())[1])(np.array([10, 20, 30]))",
+          "expect": "[10, 20, 30]"
+        },
+        {
+          "name": "Số thực, k = 3 (dữ liệu khác)",
+          "call": "(lambda a: ([round(float(v), 4) for v in scaled_head(a, 3, 0.5)], a.tolist()))(np.array([2.0, 4.0, 6.0, 8.0]))",
+          "expect": "([1.0, 2.0, 3.0], [2.0, 4.0, 6.0, 8.0])"
+        },
+        {
+          "name": "k = 0 → rỗng",
+          "call": "len(scaled_head(np.array([1, 2]), 0, 3))",
+          "expect": "0"
+        },
+        {
+          "name": "Sửa kết quả không làm đổi a",
+          "call": "(lambda a: (lambda h: (h.__setitem__(0, 99), a.tolist())[1])(scaled_head(a, 2, 1)))(np.array([5, 6, 7]))",
+          "expect": "[5, 6, 7]"
+        },
+        {
+          "name": "0.1 + 0.2 so với 0.3",
+          "call": "totals_match([0.1, 0.2], 0.3)",
+          "expect": "True"
+        },
+        {
+          "name": "1.1 + 2.2 so với 3.3",
+          "call": "totals_match([1.1, 2.2], 3.3)",
+          "expect": "True"
+        },
+        {
+          "name": "Lệch thật → False",
+          "call": "totals_match([0.1, 0.2], 0.31)",
+          "expect": "False"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "scaled_head(a, k, factor)",
+          "does": "Nhân k phần tử đầu của a với factor, trả array MỚI.",
+          "takes": "a: ndarray; k: int ≥ 0; factor: số (cùng loại số với a)",
+          "gives": "ndarray k phần tử, không dùng chung bộ nhớ với a",
+          "effect": "KHÔNG sửa a của người gọi.",
+          "call": "scaled_head(np.array([10, 20, 30]), 2, 2) → [20, 40]; a vẫn [10, 20, 30]"
+        },
+        {
+          "sig": "totals_match(parts, total)",
+          "does": "Kiểm tổng các phần có bằng total trong sai số cho phép.",
+          "takes": "parts: list/array số thực; total: số",
+          "gives": "bool",
+          "effect": "Không in gì.",
+          "call": "totals_match([0.1, 0.2], 0.3) → True"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy.",
+      "packages": [
+        "numpy"
+      ]
+    }
+  }
+}

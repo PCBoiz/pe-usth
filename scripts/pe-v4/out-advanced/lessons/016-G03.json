@@ -1,0 +1,437 @@
+{
+  "lesson_code": "G03",
+  "sort_order": 16,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G03 · Dữ liệu nhập và lựa chọn",
+  "subtitle": "Nâng cao · M3 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "G03 · Dữ liệu nhập và lựa chọn",
+    "subtitle": "Nâng cao · M3 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#G03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G03"
+        ],
+        "title": "Dữ liệu nhập và lựa chọn",
+        "goal": "Đọc Entry, Combobox, Radiobutton, Checkbutton bằng get() và kiểm dữ liệu trước khi dùng.",
+        "task": "Tạo hai Radiobutton chung exam_var; viết add_mark(): đổi điểm sang float (nhận \"8,5\"), sai thì messagebox.",
+        "predict": "Entry chứa \"8.5\" có tự là float không?",
+        "code": "def add_mark():\n    name = name_var.get().strip()\n    raw = mark_var.get().strip().replace(\",\", \".\")\n    # try float(raw) ... except ValueError: showerror\n    # 0..10, retake_var.get(), insert vào Listbox",
+        "tests": [
+          "Mai, 8.5, Python, Giữa kỳ → \"Mai | Python | Giữa kỳ | 8.5\"",
+          "\"abc\" → showerror, Listbox không đổi"
+        ],
+        "reflect": "Vì sao if retake_var: luôn đúng?"
+      },
+      "context": {
+        "title": "Đọc trạng thái Entry, Combobox, Radiobutton, Checkbutton bằng get(), đổi kiểu và kiểm tra trước khi dùng.",
+        "body": "Form nhập điểm đã có name_var, mark_var (StringVar gắn hai Entry), course_box (ttk.Combobox), retake_var (BooleanVar của Checkbutton \"Thi lại\"), marks_list (Listbox) và status.\n\n(1) Tạo hai Radiobutton \"Giữa kỳ\", \"Cuối kỳ\" dùng CHUNG exam_var (value bằng đúng chữ trên nút).\n\n(2) Viết add_mark(): họ tên rỗng → messagebox.showwarning, dừng; điểm đổi sang float (chấp nhận \"8,5\"), không phải số hoặc ngoài 0..10 → messagebox.showerror, dừng; hợp lệ → thêm dòng \"<tên> | <môn> | <kỳ thi> | <điểm>\" (điểm là float vừa đổi, in thẳng: 8.5, 7.0, 9.25; thêm \" | thi lại\" nếu đánh dấu) vào cuối marks_list và đổi status thành \"Đã nhập <số dòng> điểm\".",
+        "example": "Mai, \"8.5\", Python, Giữa kỳ → dòng \"Mai | Python | Giữa kỳ | 8.5\"; \"abc\" → hộp lỗi, Listbox không đổi.",
+        "prereq": "G02",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Entry chứa \"8.5\" — mark_var.get() trả gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Số thực 8.5",
+            "detail": "StringVar luôn trả str.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Chuỗi \"8.5\" — phải float() mới thành số 8.5",
+            "detail": "Entry chỉ biết chữ; đổi kiểu là việc của bạn.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Số nguyên 8",
+            "detail": "Không có phép đổi kiểu tự động nào.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Viết if retake_var: là kiểm ô đã tích\"",
+        "body": "retake_var là OBJECT BooleanVar — object luôn được coi là đúng, nên nhánh \"thi lại\" chạy cả khi ô chưa tích. Phải đọc giá trị: if retake_var.get():. Tương tự float(mark_var) nổ TypeError vì truyền object, không phải chuỗi. Và Radiobutton mỗi nút một biến riêng thì không còn là một nhóm: chọn \"Cuối kỳ\" không đổi exam_var."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "StringVar, IntVar, DoubleVar, BooleanVar giữ giá trị gắn với widget: get() đọc, set() đặt — không đọc thẳng object."
+        },
+        {
+          "n": 2,
+          "body": "Entry luôn cho CHUỖI: \"8.5\" chưa phải số. float() đổi kiểu và nổ ValueError với \"abc\", nên bọc trong try/except."
+        },
+        {
+          "n": 3,
+          "body": "Checkbutton bật/tắt một biến; các Radiobutton cùng nhóm phải dùng CHUNG một biến, mỗi nút một value."
+        },
+        {
+          "n": 4,
+          "body": "Listbox.insert(tk.END, chuỗi) thêm cuối, size() đếm dòng; get(tk.ACTIVE) chỉ là mục active, chưa chắc là mục được chọn."
+        },
+        {
+          "n": 5,
+          "body": "ttk.Combobox(values=[...]) chứa lựa chọn, get() lấy giá trị đang chọn; state=\"readonly\" chặn gõ chữ lạ vào."
+        },
+        {
+          "n": 6,
+          "body": "Kiểm tra trước, dùng sau: dữ liệu sai thì báo bằng messagebox và return — không thêm dòng nửa vời."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import tkinter as tk\nfrom tkinter import ttk\n\nroot = tk.Tk()\nsize = tk.StringVar(value=\"M\")\nfor text in [\"S\", \"M\", \"L\"]:\n    tk.Radiobutton(root, text=text, value=text, variable=size).pack()\n\nice = tk.IntVar(value=0)\ntk.Checkbutton(root, text=\"Thêm đá\", variable=ice).pack()\n\ndrink = ttk.Combobox(root, values=[\"Trà\", \"Cà phê\"], state=\"readonly\")\ndrink.set(\"Trà\")\ndrink.pack()\n\norders = tk.Listbox(root)\norders.pack()\n\nice.set(1)                      # như người dùng tích ô\ndrink.set(\"Cà phê\")             # như người dùng chọn mục\norders.insert(tk.END, f\"{drink.get()} size {size.get()}, đá = {ice.get()}\")\nprint(orders.get(0, tk.END))\n\ncups = \"3\"                      # Entry luôn trả chuỗi\nprint(int(cups) * 2, cups * 2)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Entry chứa \"8.5\" có tự là float không?",
+          "options": [
+            {
+              "text": "Có, Tkinter tự nhận ra số",
+              "detail": "Entry không biết kiểu dữ liệu.",
+              "correct": false
+            },
+            {
+              "text": "Không — phải chuyển kiểu và xử lý dữ liệu không hợp lệ",
+              "detail": "get() luôn trả chuỗi.",
+              "correct": true
+            },
+            {
+              "text": "Có, nếu dùng StringVar",
+              "detail": "StringVar cũng trả chuỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "get() luôn trả chuỗi."
+        },
+        {
+          "question": "Hai Radiobutton \"Giữa kỳ\", \"Cuối kỳ\" phải cấu hình thế nào để thành một nhóm?",
+          "options": [
+            {
+              "text": "Cùng variable=exam_var, mỗi nút một value khác nhau",
+              "detail": "Chọn nút nào thì exam_var nhận value của nút đó.",
+              "correct": true
+            },
+            {
+              "text": "Mỗi nút một StringVar riêng",
+              "detail": "Khi đó chúng độc lập, không loại trừ nhau.",
+              "correct": false
+            },
+            {
+              "text": "Cùng text, khác variable",
+              "detail": "text chỉ là chữ hiển thị.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chọn nút nào thì exam_var nhận value của nút đó."
+        },
+        {
+          "question": "float(\"8,5\") cho kết quả gì?",
+          "options": [
+            {
+              "text": "85.0",
+              "detail": "Dấu phẩy không bị bỏ qua.",
+              "correct": false
+            },
+            {
+              "text": "ValueError — Python dùng dấu chấm thập phân",
+              "detail": "Thay \",\" bằng \".\" trước khi đổi kiểu.",
+              "correct": true
+            },
+            {
+              "text": "8.5",
+              "detail": "float không hiểu dấu phẩy thập phân.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Thay \",\" bằng \".\" trước khi đổi kiểu."
+        },
+        {
+          "question": "marks_list.get(tk.ACTIVE) trả gì?",
+          "options": [
+            {
+              "text": "Mục cuối cùng",
+              "detail": "Mục cuối là get(tk.END).",
+              "correct": false
+            },
+            {
+              "text": "Mọi mục trong Listbox",
+              "detail": "Muốn hết thì get(0, tk.END).",
+              "correct": false
+            },
+            {
+              "text": "Mục đang active (có con trỏ), không nhất thiết là mọi mục được chọn",
+              "detail": "Mục được chọn: curselection().",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Mục được chọn: curselection()."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao add_mark phải dừng (return) ngay khi điểm không hợp lệ, trước khi insert vào Listbox?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Dữ liệu từ giao diện là chuỗi người dùng gõ, có thể là \"abc\" hoặc \"11\". Đổi kiểu và kiểm khoảng trước; sai thì báo bằng messagebox rồi return để Listbox và status không nhận dòng hỏng. Trường hợp đặc biệt: \"8,5\" hợp lệ sau khi thay dấu phẩy; 0 và 10 nằm trong khoảng."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: chọn ca học bằng Radiobutton và đánh dấu \"Có laptop\". Lắp ba chỗ.",
+        "rule": "Bộ chấm điền tên/điểm khác, chọn môn bằng course_box.set, bấm Radiobutton \"Cuối kỳ\", tích hoặc bỏ \"Thi lại\", rồi bấm Thêm và đọc dòng cuối Listbox."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "name_var.get().strip() → họ tên đã bỏ khoảng trắng"
+          },
+          {
+            "label": "Bước 2",
+            "text": "float(raw.replace(\",\", \".\")) → \"8,5\" thành 8.5"
+          },
+          {
+            "label": "Bước 3",
+            "text": "Không phải số hoặc ngoài 0..10 → showerror rồi return"
+          },
+          {
+            "label": "Bước 4",
+            "text": "marks_list.insert(tk.END, line) → thêm dòng cuối Listbox"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Không thay \",\" bằng \".\" thì float(\"9,25\") làm gì?",
+        "options": [
+          "Trả 9.25",
+          "Trả 925.0",
+          "ValueError"
+        ],
+        "correct": "ValueError"
+      },
+      "scaffold": {
+        "template": "import tkinter as tk\n\nroot = tk.Tk()\nshift_var = tk.StringVar(value=\"Sáng\")\nlaptop_var = tk.BooleanVar(value=False)\n\nfor text in [\"Sáng\", \"Chiều\"]:\n    tk.Radiobutton(root, text=text, value=text, variable={{slot1}}).pack()\ntk.Checkbutton(root, text=\"Có laptop\", variable=laptop_var).pack()\nsummary = tk.Label(root, text=\"\")\nsummary.pack()\n\n\ndef show():\n    note = \"mang laptop\" if {{slot2}} else \"không laptop\"\n    summary.config(text=\"Ca \" + {{slot3}} + \", \" + note)\n\n\ntk.Button(root, text=\"Xem\", command=show).pack()\nroot.mainloop()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "shift_var"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "laptop_var.get()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "shift_var.get()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "laptop_var",
+            "slot": 2,
+            "trap": "Object BooleanVar luôn được coi là đúng — phải gọi get()."
+          },
+          {
+            "label": "shift_var.get()",
+            "slot": 3
+          },
+          {
+            "label": "laptop_var.get()",
+            "slot": 2
+          },
+          {
+            "label": "tk.StringVar(value=\"Sáng\")",
+            "slot": 1,
+            "trap": "Mỗi nút một biến mới: hai Radiobutton không còn chung nhóm."
+          },
+          {
+            "label": "str(shift_var)",
+            "slot": 3,
+            "trap": "str() của StringVar là TÊN biến Tcl (PY_VAR0), không phải giá trị."
+          },
+          {
+            "label": "shift_var",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Form nhập điểm đã có name_var, mark_var (StringVar gắn hai Entry), course_box (ttk.Combobox), retake_var (BooleanVar của Checkbutton \"Thi lại\"), marks_list (Listbox) và status.\n\n(1) Tạo hai Radiobutton \"Giữa kỳ\", \"Cuối kỳ\" dùng CHUNG exam_var (value bằng đúng chữ trên nút).\n\n(2) Viết add_mark(): họ tên rỗng → messagebox.showwarning, dừng; điểm đổi sang float (chấp nhận \"8,5\"), không phải số hoặc ngoài 0..10 → messagebox.showerror, dừng; hợp lệ → thêm dòng \"<tên> | <môn> | <kỳ thi> | <điểm>\" (điểm là float vừa đổi, in thẳng: 8.5, 7.0, 9.25; thêm \" | thi lại\" nếu đánh dấu) vào cuối marks_list và đổi status thành \"Đã nhập <số dòng> điểm\".\n\nThực hành: Mỗi giá trị đọc qua get(); điểm qua replace(\",\", \".\") rồi float() trong try/except; kiểm 0..10; chỉ insert khi mọi thứ hợp lệ.",
+        "io": [
+          {
+            "label": "Mai, \"8.5\", Python, Giữa kỳ, không thi lại",
+            "value": "Dòng \"Mai | Python | Giữa kỳ | 8.5\"; status \"Đã nhập 1 điểm\""
+          },
+          {
+            "label": "Điểm \"abc\" hoặc \"10.5\"",
+            "value": "showerror; Listbox giữ nguyên"
+          },
+          {
+            "label": "Họ tên rỗng",
+            "value": "showwarning; Listbox giữ nguyên"
+          }
+        ]
+      },
+      "starterCode": "import tkinter as tk\nfrom tkinter import ttk, messagebox\n\nroot = tk.Tk()\nroot.title(\"Nhập điểm\")\n\nname_var = tk.StringVar()\nmark_var = tk.StringVar()\nexam_var = tk.StringVar(value=\"Giữa kỳ\")\nretake_var = tk.BooleanVar(value=False)\n\ntk.Label(root, text=\"Họ tên\").pack()\ntk.Entry(root, textvariable=name_var).pack()\ntk.Label(root, text=\"Điểm (0-10)\").pack()\ntk.Entry(root, textvariable=mark_var).pack()\n\ncourse_box = ttk.Combobox(root, values=[\"Python\", \"Data\", \"Web\"], state=\"readonly\")\ncourse_box.set(\"Python\")\ncourse_box.pack()\n\n# (1) Tạo hai Radiobutton \"Giữa kỳ\", \"Cuối kỳ\" dùng chung exam_var.\n\ntk.Checkbutton(root, text=\"Thi lại\", variable=retake_var).pack()\n\nmarks_list = tk.Listbox(root, height=6)\nmarks_list.pack()\nstatus = tk.Label(root, text=\"Chưa có điểm\")\nstatus.pack()\n\n\ndef add_mark():\n    # (2) Đọc biến bằng get(), kiểm tra, rồi thêm dòng vào marks_list và cập nhật status.\n    pass\n\n\ntk.Button(root, text=\"Thêm\", command=add_mark).pack()\n\nroot.mainloop()\n",
+      "solutionCode": "import tkinter as tk\nfrom tkinter import ttk, messagebox\n\nroot = tk.Tk()\nroot.title(\"Nhập điểm\")\n\nname_var = tk.StringVar()\nmark_var = tk.StringVar()\nexam_var = tk.StringVar(value=\"Giữa kỳ\")\nretake_var = tk.BooleanVar(value=False)\n\ntk.Label(root, text=\"Họ tên\").pack()\ntk.Entry(root, textvariable=name_var).pack()\ntk.Label(root, text=\"Điểm (0-10)\").pack()\ntk.Entry(root, textvariable=mark_var).pack()\n\ncourse_box = ttk.Combobox(root, values=[\"Python\", \"Data\", \"Web\"], state=\"readonly\")\ncourse_box.set(\"Python\")\ncourse_box.pack()\n\nfor text in [\"Giữa kỳ\", \"Cuối kỳ\"]:\n    tk.Radiobutton(root, text=text, value=text, variable=exam_var).pack()\n\ntk.Checkbutton(root, text=\"Thi lại\", variable=retake_var).pack()\n\nmarks_list = tk.Listbox(root, height=6)\nmarks_list.pack()\nstatus = tk.Label(root, text=\"Chưa có điểm\")\nstatus.pack()\n\n\ndef add_mark():\n    name = name_var.get().strip()\n    if name == \"\":\n        messagebox.showwarning(\"Thiếu họ tên\", \"Hãy nhập họ tên\")\n        return\n    raw = mark_var.get().strip().replace(\",\", \".\")\n    try:\n        mark = float(raw)\n    except ValueError:\n        messagebox.showerror(\"Điểm không hợp lệ\", f\"'{raw}' không phải là số\")\n        return\n    if not 0 <= mark <= 10:\n        messagebox.showerror(\"Điểm không hợp lệ\", \"Điểm phải trong khoảng 0..10\")\n        return\n    line = f\"{name} | {course_box.get()} | {exam_var.get()} | {mark}\"\n    if retake_var.get():\n        line += \" | thi lại\"\n    marks_list.insert(tk.END, line)\n    status.config(text=f\"Đã nhập {marks_list.size()} điểm\")\n\n\ntk.Button(root, text=\"Thêm\", command=add_mark).pack()\n\nroot.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Mỗi giá trị đọc qua get(); điểm qua replace(\",\", \".\") rồi float() trong try/except; kiểm 0..10; chỉ insert khi mọi thứ hợp lệ."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. for text in [\"Giữa kỳ\", \"Cuối kỳ\"]: tk.Radiobutton(root, text=text, value=text, variable=exam_var).pack()\n2. name = name_var.get().strip(); rỗng → showwarning, return.\n3. mark = float(mark_var.get().strip().replace(\",\", \".\")) trong try; ValueError hoặc ngoài 0..10 → showerror, return.\n4. line = f\"{name} | {course_box.get()} | {exam_var.get()} | {mark}\"; retake_var.get() → thêm \" | thi lại\"; insert; cập nhật status."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    raw = mark_var.get().strip().replace(\",\", \".\")\n    try:\n        mark = float(raw)\n    except ValueError:\n        messagebox.showerror(\"Điểm không hợp lệ\", f\"'{raw}' không phải là số\")\n        return"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Chưa nhập: Listbox rỗng, status \"Chưa có điểm\"",
+          "call": "(marks_list.size(), status.cget('text'))",
+          "expect": "(0, 'Chưa có điểm')"
+        },
+        {
+          "name": "Mai, 8.5, Python, Giữa kỳ",
+          "call": "(name_var.set('Mai'), mark_var.set('8.5'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1]",
+          "expect": "'Mai | Python | Giữa kỳ | 8.5'"
+        },
+        {
+          "name": "Radiobutton Cuối kỳ + Data + thi lại",
+          "call": "(name_var.set('An'), mark_var.set('7'), course_box.set('Data'), _studio.tk.find(type='Radiobutton', text='Cuối kỳ').invoke(), retake_var.set(True), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1]",
+          "expect": "'An | Data | Cuối kỳ | 7.0 | thi lại'"
+        },
+        {
+          "name": "Dấu phẩy \"9,25\", tên có khoảng trắng",
+          "call": "(name_var.set(' Lan '), mark_var.set('9,25'), course_box.set('Web'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1]",
+          "expect": "'Lan | Web | Giữa kỳ | 9.25'"
+        },
+        {
+          "name": "Biên 10 và 0 hợp lệ",
+          "call": "[(name_var.set('Huy'), mark_var.set('10'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1], (name_var.set('Huy'), mark_var.set('0'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Cuối kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1]]",
+          "expect": "['Huy | Python | Giữa kỳ | 10.0', 'Huy | Python | Cuối kỳ | 0.0']"
+        },
+        {
+          "name": "\"abc\" → showerror, không thêm dòng",
+          "call": "(lambda n, m: ((name_var.set('Mai'), mark_var.set('abc'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1], (marks_list.size() - n, len(_studio.tk.messages) - m, 'error' in str(_studio.tk.messages[-1][0]) if _studio.tk.messages else False))[1])(marks_list.size(), len(_studio.tk.messages))",
+          "expect": "(0, 1, True)"
+        },
+        {
+          "name": "\"10.5\" ngoài 0..10 → showerror, không thêm dòng",
+          "call": "(lambda n, m: ((name_var.set('Mai'), mark_var.set('10.5'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1], (marks_list.size() - n, len(_studio.tk.messages) - m, 'error' in str(_studio.tk.messages[-1][0]) if _studio.tk.messages else False))[1])(marks_list.size(), len(_studio.tk.messages))",
+          "expect": "(0, 1, True)"
+        },
+        {
+          "name": "Họ tên rỗng → showwarning, không thêm dòng",
+          "call": "(lambda n, m: ((name_var.set('   '), mark_var.set('8'), course_box.set('Python'), _studio.tk.find(type='Radiobutton', text='Giữa kỳ').invoke(), retake_var.set(False), _studio.tk.find(type='Button', text='Thêm').invoke(), marks_list.get(marks_list.size() - 1))[-1], (marks_list.size() - n, len(_studio.tk.messages) - m, 'warning' in str(_studio.tk.messages[-1][0]) if _studio.tk.messages else False))[1])(marks_list.size(), len(_studio.tk.messages))",
+          "expect": "(0, 1, True)"
+        },
+        {
+          "name": "status đếm đúng số dòng trong Listbox",
+          "call": "status.cget('text')",
+          "expect": "'Đã nhập %d điểm' % marks_list.size()"
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "name_var.get().strip()",
+              "right": "họ tên đã bỏ khoảng trắng"
+            },
+            {
+              "left": "float(raw.replace(\",\", \".\"))",
+              "right": "\"8,5\" thành 8.5"
+            },
+            {
+              "left": "Không phải số hoặc ngoài 0..10",
+              "right": "showerror rồi return"
+            },
+            {
+              "left": "marks_list.insert(tk.END, line)",
+              "right": "thêm dòng cuối Listbox"
+            }
+          ],
+          "rightOrder": [
+            3,
+            1,
+            2,
+            0
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    except ValueError:\n        messagebox.showerror(\"Điểm không hợp lệ\", f\"'{raw}' không phải là số\")\n        return\n    if not 0 <= mark <= 10:\n        messagebox.showerror(\"Điểm không hợp lệ\", \"Điểm phải trong khoảng 0..10\")\n        return\n    line = f\"{name} | {course_box.get()} | {exam_var.get()} | {mark}\"\n    if retake_var:\n        line += \" | thi lại\"\n    marks_list.insert(tk.END, line)\n    status.config(text=f\"Đã nhập {marks_list.size()} điểm\")\n\n\ntk.Button(root, text=\"Thêm\", command=add_mark).pack()\n",
+          "firstLine": 40,
+          "line": 47,
+          "lines": [
+            47
+          ],
+          "label": "if retake_var: (quên get())",
+          "fix": "    if retake_var.get():"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import tkinter as tk\nfrom tkinter import ttk, messagebox\n\nroot = tk.Tk()\nroot.title(\"Nhập điểm\")\n\nname_var = tk.StringVar()\nmark_var = tk.StringVar()\nexam_var = tk.StringVar(value=\"Giữa kỳ\")\nretake_var = tk.BooleanVar(value=False)\n\ntk.Label(root, text=\"Họ tên\").pack()\ntk.Entry(root, textvariable=name_var).pack()\ntk.Label(root, text=\"Điểm (0-10)\").pack()\ntk.Entry(root, textvariable=mark_var).pack()\n\ncourse_box = ttk.Combobox(root, values=[\"Python\", \"Data\", \"Web\"], state=\"readonly\")\ncourse_box.set(\"Python\")\ncourse_box.pack()\n\nfor text in [\"Giữa kỳ\", \"Cuối kỳ\"]:\n    tk.Radiobutton(root, text=text, value=text, variable=tk.StringVar(value=\"Giữa kỳ\")).pack()\n\ntk.Checkbutton(root, text=\"Thi lại\", variable=retake_var).pack()\n\nmarks_list = tk.Listbox(root, height=6)\nmarks_list.pack()\nstatus = tk.Label(root, text=\"Chưa có điểm\")\nstatus.pack()\n\n\ndef add_mark():\n    name = name_var.get().strip()\n    if name == \"\":\n        messagebox.showwarning(\"Thiếu họ tên\", \"Hãy nhập họ tên\")\n        return\n    raw = mark_var.get().strip().replace(\",\", \".\")\n    try:\n        mark = float(raw)\n    except ValueError:\n        messagebox.showerror(\"Điểm không hợp lệ\", f\"'{raw}' không phải là số\")\n        return\n    if not 0 <= mark <= 10:\n        messagebox.showerror(\"Điểm không hợp lệ\", \"Điểm phải trong khoảng 0..10\")\n        return\n    line = f\"{name} | {course_box.get()} | {exam_var.get()} | {mark}\"\n    if retake_var.get():\n        line += \" | thi lại\"\n    marks_list.insert(tk.END, line)\n    status.config(text=f\"Đã nhập {marks_list.size()} điểm\")\n\n\ntk.Button(root, text=\"Thêm\", command=add_mark).pack()\n\nroot.mainloop()\n",
+          "label": "mỗi Radiobutton một biến riêng"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao add_mark phải dừng (return) ngay khi điểm không hợp lệ, trước khi insert vào Listbox?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

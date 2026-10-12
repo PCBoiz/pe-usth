@@ -1,0 +1,385 @@
+{
+  "lesson_code": "PD04",
+  "sort_order": 35,
+  "module": "M6 · pandas",
+  "title": "PD04 · Lọc, tính cột và cập nhật an toàn",
+  "subtitle": "Nâng cao · M6 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "PD04 · Lọc, tính cột và cập nhật an toàn",
+    "subtitle": "Nâng cao · M6 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#PD04",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD04"
+        ],
+        "title": "Lọc, tính cột và cập nhật an toàn",
+        "goal": "Lọc, tính cột và cập nhật bằng loc trên bản copy.",
+        "task": "Viết add_flags(df) (revenue, status) và top_orders(df, region, min_revenue).",
+        "predict": "df[mask][\"status\"] = \"check\" có sửa được df không?",
+        "code": "def add_flags(df):\n    out = df.copy()\n    # revenue, status \"ok\" / \"check\"\n\ndef top_orders(df, region, min_revenue):\n    pass",
+        "tests": [
+          "qty [2, 3], giá [10, 20], ngưỡng 30 → [60]",
+          "qty ≤ 0 → status \"check\"; df gốc không đổi"
+        ],
+        "reflect": "Vì sao phải viết out.loc[mask, \"status\"] = ... trong một lần?"
+      },
+      "context": {
+        "title": "Lọc bằng mask có ngoặc, tạo cột doanh thu và cập nhật bằng df.loc[mask, cột] trên bản copy.",
+        "body": "Bảng đơn đã đúng kiểu (order_id, region, qty, unit_price; qty có thể ≤ 0). Viết add_flags(df): trả bản COPY có thêm cột revenue = qty * unit_price và cột status — \"ok\" cho mọi dòng, riêng dòng qty <= 0 là \"check\", cập nhật bằng .loc[mask, \"status\"]; không được sửa df gốc. Viết top_orders(df, region, min_revenue): từ add_flags(df), giữ dòng đúng region, status \"ok\" và revenue >= min_revenue, sắp revenue giảm dần.",
+        "example": "qty [2, 3, -1], giá [10, 20, 10] → revenue [20, 60, -10], status [ok, ok, check]. top_orders(..., \"north\", 30) chỉ còn đơn revenue 60.",
+        "prereq": "PD03",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Hai dòng dưới khác nhau thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Dòng đầu sửa df; dòng sau gán vào bảng tạm nên df không đổi",
+            "detail": "df[mask] tạo bảng mới; [\"status\"] = ... gán vào bảng đó.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Dòng đầu lỗi vì loc chỉ dùng để đọc",
+            "detail": "loc dùng được cả để đọc lẫn ghi.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Giống nhau, dòng sau ngắn hơn",
+            "detail": "Dòng sau là chained assignment — không ghi vào df.",
+            "correct": false
+          }
+        ],
+        "code": "df.loc[df[\"qty\"] <= 0, \"status\"] = \"check\"\ndf[df[\"qty\"] <= 0][\"status\"] = \"check\""
+      },
+      "misconception": {
+        "title": "\"Có SettingWithCopyWarning thôi, kết quả vẫn đúng\"",
+        "body": "Cảnh báo đó báo phép gán có thể rơi vào bảng tạm: df[mask][\"col\"] = ... KHÔNG sửa df, cả ở pandas 2.2 trong trình duyệt lẫn pandas 3. Dạng df[\"col\"][mask] = ... có khi vẫn \"ăn\" ở pandas 2.2 nhưng hỏng âm thầm ở pandas 3 (Copy-on-Write). Luôn viết một lần: df.loc[mask, \"col\"] = giá_trị."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Mask là Series True/False. Ghép điều kiện bằng & (và), | (hoặc), ~ (phủ định) và BỌC NGOẶC từng điều kiện: & ưu tiên cao hơn ==, >=."
+        },
+        {
+          "n": 2,
+          "body": "`and`/`or` của Python cần MỘT giá trị True/False nên với Series báo \"truth value of a Series is ambiguous\"."
+        },
+        {
+          "n": 3,
+          "body": "Cột mới: df[\"revenue\"] = df[\"qty\"] * df[\"unit_price\"] (hoặc df.assign(revenue=...)) tính cả cột một lần, không cần vòng for. revenue cùng đơn vị tiền với unit_price."
+        },
+        {
+          "n": 4,
+          "body": "Cập nhật một phần cột: df.loc[mask, \"status\"] = \"check\" — MỘT lần lập chỉ mục, ghi thẳng vào df."
+        },
+        {
+          "n": 5,
+          "body": "df[mask][\"status\"] = ... là chained assignment: df[mask] tạo bảng tạm, phép gán rơi vào bảng tạm và df không đổi (pandas cảnh báo SettingWithCopyWarning; pandas 3 với Copy-on-Write càng chắc chắn không đổi)."
+        },
+        {
+          "n": 6,
+          "body": "Hàm nhận df của người gọi: out = df.copy() trước khi thêm cột, nếu không bảng của người gọi bị đổi theo. Lọc ra bảng con rồi muốn sửa riêng thì cũng copy()."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\ndf = pd.DataFrame({\"mark\": [4, 8, 9], \"cls\": [\"A\", \"A\", \"B\"]})\npassed_a = df.loc[(df[\"mark\"] >= 5) & (df[\"cls\"] == \"A\")]\nprint(passed_a[\"mark\"].tolist())\n\ndf[\"grade\"] = \"pass\"\ndf.loc[df[\"mark\"] < 5, \"grade\"] = \"fail\"\nprint(df[\"grade\"].tolist())\n\ndf[df[\"mark\"] < 5][\"grade\"] = \"retake\"\nprint(df[\"grade\"].tolist())\n\ntop = df.sort_values(\"mark\", ascending=False).head(2)\nprint(top[\"mark\"].tolist())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "df[df[\"qty\"] > 0 & df[\"region\"] == \"north\"] (thiếu ngoặc) thì…",
+          "options": [
+            {
+              "text": "pandas tự hiểu là and",
+              "detail": "Python không đoán ý.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi hoặc ra sai — & được tính trước > và ==",
+              "detail": "Viết (df[\"qty\"] > 0) & (df[\"region\"] == \"north\").",
+              "correct": true
+            },
+            {
+              "text": "Chạy đúng như ý",
+              "detail": "& ưu tiên cao hơn phép so sánh.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Viết (df[\"qty\"] > 0) & (df[\"region\"] == \"north\")."
+        },
+        {
+          "question": "Hàm gán out = df rồi out[\"revenue\"] = ... (không copy). Sau khi gọi, bảng của người gọi…",
+          "options": [
+            {
+              "text": "Không đổi — Python truyền bản sao",
+              "detail": "Python truyền tham chiếu tới cùng đối tượng.",
+              "correct": false
+            },
+            {
+              "text": "Có thêm cột revenue — hàm đã sửa chính đối tượng được truyền vào",
+              "detail": "DataFrame là đối tượng mutable như list.",
+              "correct": true
+            },
+            {
+              "text": "Lỗi",
+              "detail": "Gán cột mới luôn được phép.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "DataFrame là đối tượng mutable như list."
+        },
+        {
+          "question": "Lấy 3 đơn doanh thu cao nhất, cách nào đúng?",
+          "options": [
+            {
+              "text": "df.sort_values(\"revenue\", ascending=False).head(3)",
+              "detail": "Sắp giảm dần rồi lấy đầu.",
+              "correct": true
+            },
+            {
+              "text": "df.sort_values(\"revenue\").head(3)",
+              "detail": "Mặc định tăng dần: đó là 3 đơn thấp nhất.",
+              "correct": false
+            },
+            {
+              "text": "df.head(3)",
+              "detail": "head lấy 3 dòng đầu theo thứ tự hiện tại.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Sắp giảm dần rồi lấy đầu."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao add_flags phải copy() và cập nhật status bằng loc?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "copy() để hàm không sửa bảng người gọi đưa vào — người gọi có thể còn dùng bảng gốc. Cập nhật bằng out.loc[mask, \"status\"] là một phép gán duy nhất vào chính bảng; viết out[mask][\"status\"] = ... chỉ gán vào bảng tạm do out[mask] tạo ra nên status không đổi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: có đơn qty 0, qty âm và hai vùng. Lắp bốn chỗ.",
+        "rule": "Đổi vùng và ngưỡng doanh thu; thêm đơn qty 0 và qty âm; kiểm bảng gốc không có cột mới."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "out = df.copy() → bảng riêng, bảng gốc không đổi."
+          },
+          {
+            "label": "Bước 2",
+            "text": "out[\"qty\"] * out[\"unit_price\"] → cột revenue cho mọi dòng."
+          },
+          {
+            "label": "Bước 3",
+            "text": "out.loc[out[\"qty\"] <= 0, \"status\"] → \"check\" đúng dòng."
+          },
+          {
+            "label": "Bước 4",
+            "text": "(a) & (b) & (c) → mask: đúng vùng, ok, đủ doanh thu."
+          },
+          {
+            "label": "Bước 5",
+            "text": "sort_values(..., ascending=False) → đơn lớn nhất lên đầu."
+          }
+        ]
+      },
+      "counter": {
+        "question": "qty [1, 0, 4], giá [50, 20, 10] → cột status = ?",
+        "options": [
+          "[\"ok\", \"check\", \"ok\"]",
+          "[\"check\", \"check\", \"ok\"]",
+          "[\"ok\", \"ok\", \"ok\"]"
+        ],
+        "correct": "[\"ok\", \"check\", \"ok\"]"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef add_flags(df):\n    out = {{slot1}}\n    out[\"revenue\"] = out[\"qty\"] * out[\"unit_price\"]\n    out[\"status\"] = \"ok\"\n    {{slot2}}\n    return out\n\n\ndef top_orders(df, region, min_revenue):\n    data = add_flags(df)\n    mask = {{slot3}}\n    return {{slot4}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "df.copy()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "data.loc[mask].sort_values(\"revenue\")",
+            "slot": 4,
+            "trap": "Mặc định tăng dần — đơn nhỏ lên đầu."
+          },
+          {
+            "label": "data[\"region\"] == region and data[\"revenue\"] >= min_revenue",
+            "slot": 3,
+            "trap": "`and` không dùng được với Series."
+          },
+          {
+            "label": "df.copy()",
+            "slot": 1
+          },
+          {
+            "label": "df",
+            "slot": 1,
+            "trap": "Không copy: thêm cột vào chính bảng của người gọi."
+          },
+          {
+            "label": "out[out[\"qty\"] <= 0][\"status\"] = \"check\"",
+            "slot": 2,
+            "trap": "Chained assignment: gán vào bảng tạm, out không đổi."
+          },
+          {
+            "label": "data.loc[mask].sort_values(\"revenue\", ascending=False)",
+            "slot": 4
+          },
+          {
+            "label": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)",
+            "slot": 3
+          },
+          {
+            "label": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\"",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Bảng đơn đã đúng kiểu (order_id, region, qty, unit_price; qty có thể ≤ 0). Viết add_flags(df): trả bản COPY có thêm cột revenue = qty * unit_price và cột status — \"ok\" cho mọi dòng, riêng dòng qty <= 0 là \"check\", cập nhật bằng .loc[mask, \"status\"]; không được sửa df gốc. Viết top_orders(df, region, min_revenue): từ add_flags(df), giữ dòng đúng region, status \"ok\" và revenue >= min_revenue, sắp revenue giảm dần.\n\nThực hành: copy → tính revenue → status mặc định \"ok\" → loc[mask, \"status\"] = \"check\"; lọc bằng mask có ngoặc rồi sort_values giảm dần.",
+        "io": [
+          {
+            "label": "qty [2, 3, -1], giá [10, 20, 10]",
+            "value": "revenue [20, 60, -10]; status [ok, ok, check]"
+          },
+          {
+            "label": "top_orders(df, \"north\", 30)",
+            "value": "Chỉ đơn north, status ok, revenue ≥ 30, giảm dần"
+          },
+          {
+            "label": "Sau khi gọi",
+            "value": "df gốc không có cột revenue/status"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef add_flags(df):\n    # Bản copy + cột revenue + cột status (\"ok\", riêng qty <= 0 là \"check\")\n    pass\n\n\ndef top_orders(df, region, min_revenue):\n    # Đúng region, status \"ok\", revenue >= min_revenue, sắp revenue giảm dần\n    pass\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\n        \"order_id\": [\"O1\", \"O2\", \"O3\", \"O4\"],\n        \"region\": [\"north\", \"north\", \"south\", \"north\"],\n        \"qty\": [2, 3, 2, -1],\n        \"unit_price\": [10, 20, 20, 10],\n    })\n    print(add_flags(orders))\n    print(top_orders(orders, \"north\", 30))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef add_flags(df):\n    out = df.copy()\n    out[\"revenue\"] = out[\"qty\"] * out[\"unit_price\"]\n    out[\"status\"] = \"ok\"\n    out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\"\n    return out\n\n\ndef top_orders(df, region, min_revenue):\n    data = add_flags(df)\n    mask = (data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)\n    return data.loc[mask].sort_values(\"revenue\", ascending=False)\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\n        \"order_id\": [\"O1\", \"O2\", \"O3\", \"O4\"],\n        \"region\": [\"north\", \"north\", \"south\", \"north\"],\n        \"qty\": [2, 3, 2, -1],\n        \"unit_price\": [10, 20, 20, 10],\n    })\n    print(add_flags(orders))\n    print(top_orders(orders, \"north\", 30))\n    print(orders.columns.tolist())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "copy → tính revenue → status mặc định \"ok\" → loc[mask, \"status\"] = \"check\"; lọc bằng mask có ngoặc rồi sort_values giảm dần."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. out = df.copy(); out[\"revenue\"] = out[\"qty\"] * out[\"unit_price\"].\n2. out[\"status\"] = \"ok\"; out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\".\n3. top_orders: mask ba điều kiện bọc ngoặc nối bằng &; trả data.loc[mask].sort_values(\"revenue\", ascending=False)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def add_flags(df):\n    out = df.copy()\n    out[\"revenue\"] = out[\"qty\"] * out[\"unit_price\"]\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: revenue ≥ 30, giảm dần",
+          "call": "top_orders(pd.DataFrame({\"order_id\": [\"O1\", \"O2\"], \"region\": [\"north\", \"north\"], \"qty\": [2, 3], \"unit_price\": [10, 20]}), \"north\", 30)[\"revenue\"].tolist()",
+          "expect": "[60]"
+        },
+        {
+          "name": "revenue = qty × unit_price",
+          "call": "add_flags(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}))[\"revenue\"].tolist()",
+          "expect": "[40.0, 40.0, 0.0, 50.0, -50.0, 80.0]"
+        },
+        {
+          "name": "qty ≤ 0 → status \"check\"",
+          "call": "add_flags(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}))[\"status\"].tolist()",
+          "expect": "['ok', 'ok', 'check', 'ok', 'check', 'ok']"
+        },
+        {
+          "name": "Không sửa bảng gốc",
+          "call": "(lambda r: (add_flags(r), r.columns.tolist())[1])(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}))",
+          "expect": "['order_id', 'region', 'qty', 'unit_price']"
+        },
+        {
+          "name": "Lọc vùng + ngưỡng, sắp giảm dần",
+          "call": "top_orders(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}), \"hue\", 40)[\"order_id\"].tolist()",
+          "expect": "['B4', 'B1']"
+        },
+        {
+          "name": "Ngưỡng 0: đơn status \"check\" vẫn bị loại",
+          "call": "top_orders(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}), \"hue\", 0)[\"order_id\"].tolist()",
+          "expect": "['B4', 'B1']"
+        },
+        {
+          "name": "Vùng khác",
+          "call": "top_orders(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}), \"hanoi\", 50)[\"order_id\"].tolist()",
+          "expect": "['B6']"
+        },
+        {
+          "name": "Không đơn nào đạt → bảng rỗng",
+          "call": "len(top_orders(pd.DataFrame({\"order_id\": [\"B1\", \"B2\", \"B3\", \"B4\", \"B5\", \"B6\"], \"region\": [\"hue\", \"hanoi\", \"hue\", \"hue\", \"hue\", \"hanoi\"], \"qty\": [5, 4, 0, 1, -2, 2], \"unit_price\": [8.0, 10.0, 30.0, 50.0, 25.0, 40.0]}), \"hanoi\", 1000))",
+          "expect": "0"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "add_flags(df)",
+          "does": "Thêm cột revenue và status trên bản sao.",
+          "takes": "df: DataFrame có qty, unit_price",
+          "gives": "DataFrame mới thêm revenue, status (\"ok\"/\"check\")",
+          "effect": "Không sửa df.",
+          "call": "add_flags(df)[\"status\"].tolist() → [\"ok\", \"ok\", \"check\"]"
+        },
+        {
+          "sig": "top_orders(df, region, min_revenue)",
+          "does": "Lọc đơn tốt của một vùng, lớn nhất trước.",
+          "takes": "df như trên; region: str; min_revenue: số",
+          "gives": "DataFrame đã lọc, revenue giảm dần",
+          "effect": "Không sửa df.",
+          "call": "top_orders(df, \"north\", 30)[\"revenue\"].tolist() → [60]"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

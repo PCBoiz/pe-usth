@@ -1,0 +1,527 @@
+{
+  "lesson_code": "X02",
+  "sort_order": 22,
+  "module": "M4 · Nhập dữ liệu, SQL và tra cứu",
+  "title": "X02 · Excel, Stata, SAS, HDF5 và MATLAB",
+  "subtitle": "Trung cấp · M4 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "X02 · Excel, Stata, SAS, HDF5 và MATLAB",
+    "subtitle": "Trung cấp · M4 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#X02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP TRUNG CẤP",
+          "X02"
+        ],
+        "title": "Excel, Stata, SAS, HDF5 và MATLAB",
+        "goal": "Chọn đúng thư viện theo đuôi file; ghi–đọc Stata không thêm index.",
+        "task": "Điền READERS, viết reader_for(path) và stata_roundtrip(df, path).",
+        "predict": "to_stata không có write_index=False thì đọc lại thừa cột nào?",
+        "code": "READERS = {\".csv\": \"pd.read_csv\"}  # điền tiếp\n\ndef reader_for(path):\n    pass  # đuôi .lower(); đuôi lạ → ValueError\n\ndef stata_roundtrip(df, path):\n    pass",
+        "tests": [
+          "\"Lab/Marks.XLSX\" → \"pd.read_excel\"",
+          "\"notes.txt\" → ValueError"
+        ],
+        "reflect": "Vì sao phải nhìn đuôi file trước khi chọn hàm đọc?"
+      },
+      "context": {
+        "title": "Nhận ra thư viện đọc từng định dạng file và tự kiểm một vòng ghi–đọc Stata.",
+        "body": "Hoàn thành READERS (đuôi file chữ thường → tên hàm đọc) cho đủ 8 đuôi: .csv → \"pd.read_csv\"; .xlsx, .xls → \"pd.read_excel\"; .dta → \"pd.read_stata\"; .sas7bdat → \"pd.read_sas\"; .h5, .hdf5 → \"h5py.File\"; .mat → \"scipy.io.loadmat\". Viết reader_for(path): lấy đuôi file (không phân biệt hoa/thường, tên có thể có nhiều dấu chấm), trả tên hàm đọc; đuôi không có trong READERS → raise ValueError. Viết stata_roundtrip(df, path): ghi df ra file Stata KHÔNG kèm index, đọc lại bằng pd.read_stata và trả DataFrame đọc được.",
+        "example": "reader_for(\"Lab/Marks.XLSX\") → \"pd.read_excel\"; reader_for(\"notes.txt\") → ValueError; stata_roundtrip giữ đúng hai cột name, mark.",
+        "prereq": "X01",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Ghi rồi đọc lại bằng Stata như dưới đây. Bảng đọc lại có những cột nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "[\"index\", \"x\"] — to_stata mặc định ghi cả index thành cột",
+            "detail": "Muốn bỏ thì truyền write_index=False.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "[\"x\"]",
+            "detail": "Chỉ đúng khi đã truyền write_index=False.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi vì Stata không lưu được số nguyên",
+            "detail": "Stata lưu được số nguyên.",
+            "correct": false
+          }
+        ],
+        "code": "df = pd.DataFrame({\"x\": [1, 2]})\ndf.to_stata(\"a.dta\")\nprint(pd.read_stata(\"a.dta\").columns.tolist())"
+      },
+      "misconception": {
+        "title": "\"Mọi file dữ liệu đều đọc bằng read_csv hoặc một thư viện chung\"",
+        "body": ".xlsx là file nén chứa XML, .dta và .sas7bdat là định dạng nhị phân của Stata và SAS, .h5 là HDF5 có cây group/dataset, .mat là workspace của MATLAB. Đọc chúng bằng read_csv chỉ ra rác hoặc UnicodeDecodeError. Nhìn đuôi file để chọn đúng thư viện, rồi tra tài liệu phiên bản đang dùng — API cũ như parse_cols, .value đã bị bỏ."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Mỗi định dạng có \"cửa\" riêng: Excel (.xlsx/.xls) → pd.read_excel hoặc pd.ExcelFile; Stata (.dta) → pd.read_stata; SAS (.sas7bdat) → pd.read_sas (slide cũ dùng thư viện sas7bdat: SAS7BDAT(path).to_data_frame()); HDF5 (.h5) → h5py.File; MATLAB (.mat) → scipy.io.loadmat."
+        },
+        {
+          "n": 2,
+          "body": "Excel có nhiều sheet: pd.ExcelFile(path).sheet_names liệt kê tên sheet; book.parse(\"Marks\") hoặc pd.read_excel(path, sheet_name=\"Marks\") đọc một sheet (sheet_name=0 là sheet đầu). usecols=[\"mark\"] chỉ lấy cột cần — thay cho parse_cols trong bảng cũ. Cần cài openpyxl."
+        },
+        {
+          "n": 3,
+          "body": "h5py.File(path) mở file HDF5 như một dict lồng nhau: list(f.keys()) cho các group/dataset, f[\"group/data\"][()] lấy dữ liệu (bảng cũ viết .value — đã bị bỏ). scipy.io.loadmat(path) trả dict: tên biến MATLAB → ndarray. File .mat bản v7.3 thực chất là HDF5: loadmat báo NotImplementedError thì mới mở bằng h5py."
+        },
+        {
+          "n": 4,
+          "body": "to_excel / to_stata mặc định ghi cả index thành một cột. Muốn đọc lại đúng bảng gốc thì ghi index=False (Excel) hoặc write_index=False (Stata)."
+        },
+        {
+          "n": 5,
+          "body": "Đuôi file lấy bằng Path(path).suffix — phần sau dấu chấm CUỐI, kèm dấu chấm: \"exp.v2.h5\" → \".h5\", \"README\" → \"\". Hạ chữ thường bằng .lower() để \"Marks.XLSX\" vẫn nhận ra Excel. API đổi theo phiên bản: hiểu chức năng trước, rồi tra tài liệu của phiên bản đang dùng."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\nfrom io import BytesIO\n\nweather = pd.DataFrame({\"city\": [\"Hue\", \"Vinh\"], \"temp\": [31.5, 29.0]})\n\nwith_index = BytesIO()\nweather.to_stata(with_index)\nwith_index.seek(0)\nprint(pd.read_stata(with_index).columns.tolist())\n\nclean = BytesIO()\nweather.to_stata(clean, write_index=False)\nclean.seek(0)\nback = pd.read_stata(clean)\nprint(back.columns.tolist())\nprint(back)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Muốn đọc workspace.mat thì dùng gì?",
+          "options": [
+            {
+              "text": "scipy.io.loadmat — trả dict tên biến → array",
+              "detail": "Nhóm scipy.io trong bảng tra cứu.",
+              "correct": true
+            },
+            {
+              "text": "pd.read_csv",
+              "detail": ".mat là file nhị phân, không phải văn bản.",
+              "correct": false
+            },
+            {
+              "text": "pd.read_stata",
+              "detail": "Dành cho file .dta của Stata.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Nhóm scipy.io trong bảng tra cứu."
+        },
+        {
+          "question": "book.xlsx có hai sheet \"Q1\" và \"Q2\". Đọc sheet thứ hai thế nào?",
+          "options": [
+            {
+              "text": "pd.read_excel(\"book.xlsx\", sheet_name=\"Q2\") hoặc sheet_name=1",
+              "detail": "Chọn sheet bằng tên hoặc chỉ số đếm từ 0.",
+              "correct": true
+            },
+            {
+              "text": "pd.read_excel(\"book.xlsx\") rồi lấy dòng thứ hai",
+              "detail": "Mặc định chỉ đọc sheet đầu tiên.",
+              "correct": false
+            },
+            {
+              "text": "pd.read_excel(\"book.xlsx\", sheet_name=2)",
+              "detail": "Chỉ số đếm từ 0: 2 là sheet thứ BA (ở đây không có).",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chọn sheet bằng tên hoặc chỉ số đếm từ 0."
+        },
+        {
+          "question": "Vừa mở file HDF5: f = h5py.File(\"exp.h5\"). Muốn biết bên trong có gì, làm gì đầu tiên?",
+          "options": [
+            {
+              "text": "f.read()",
+              "detail": "Không có method này; dữ liệu lấy qua key.",
+              "correct": false
+            },
+            {
+              "text": "f.head()",
+              "detail": "h5py.File không phải DataFrame.",
+              "correct": false
+            },
+            {
+              "text": "list(f.keys()) — xem các group/dataset ở gốc",
+              "detail": "HDF5 tổ chức như dict lồng nhau.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "HDF5 tổ chức như dict lồng nhau."
+        },
+        {
+          "question": "Survey của khoa xuất ra file survey.dta. Hàm nào đọc được?",
+          "options": [
+            {
+              "text": "pd.read_sas(\"survey.dta\")",
+              "detail": "read_sas dành cho .sas7bdat/.xpt của SAS — dễ nhầm vì cùng là phần mềm thống kê.",
+              "correct": false
+            },
+            {
+              "text": "pd.read_stata(\"survey.dta\")",
+              "detail": ".dta là định dạng của Stata.",
+              "correct": true
+            },
+            {
+              "text": "h5py.File(\"survey.dta\")",
+              "detail": "h5py chỉ mở file HDF5.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": ".dta là định dạng của Stata."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao nên ghi index=False / write_index=False khi lưu bảng để chương trình khác đọc lại?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mặc định pandas ghi index thành một cột riêng (tên \"index\" hoặc \"Unnamed: 0\"). Đọc lại sẽ có thêm cột không có trong bảng gốc, làm lệch số cột và có thể bị tính nhầm như dữ liệu thật. Tắt ghi index thì vòng ghi–đọc trả lại đúng các cột ban đầu."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp bảng tra, cách lấy đuôi file và lệnh ghi Stata.",
+        "rule": "Thêm một định dạng mới mà không sửa reader_for: chỉ thêm một dòng vào READERS (ví dụ \".parquet\": \"pd.read_parquet\")."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Path(\"Lab/Marks.XLSX\").suffix.lower() → \".xlsx\""
+          },
+          {
+            "label": "Bước 2",
+            "text": "READERS[\".xlsx\"] → \"pd.read_excel\""
+          },
+          {
+            "label": "Bước 3",
+            "text": "Path(\"notes.txt\").suffix không có trong READERS → ValueError"
+          },
+          {
+            "label": "Bước 4",
+            "text": "to_stata(write_index=False) + read_stata → đúng cột name, mark"
+          }
+        ]
+      },
+      "counter": {
+        "question": "reader_for(\"exp.v2.h5\") trả gì?",
+        "options": [
+          "\"h5py.File\"",
+          "\"v2\"",
+          "ValueError"
+        ],
+        "correct": "\"h5py.File\""
+      },
+      "scaffold": {
+        "template": "from pathlib import Path\n\nimport pandas as pd\n\nREADERS = {\".csv\": \"pd.read_csv\", \".dta\": {{slot1}}, \".mat\": {{slot2}}}\n\n\ndef reader_for(path):\n    suffix = {{slot3}}\n    if suffix not in READERS:\n        raise ValueError(\"unknown data format: \" + path)\n    return READERS[suffix]\n\n\ndef stata_roundtrip(df, path):\n    {{slot4}}\n    return pd.read_stata(path)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\"pd.read_stata\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "\"scipy.io.loadmat\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "Path(path).suffix.lower()"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "df.to_stata(path, write_index=False)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\"pd.read_sas\"",
+            "slot": 1,
+            "trap": ".dta là Stata; read_sas dành cho .sas7bdat của SAS."
+          },
+          {
+            "label": "\"scipy.io.loadmat\"",
+            "slot": 2
+          },
+          {
+            "label": "\"h5py.File\"",
+            "slot": 2,
+            "trap": "h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat."
+          },
+          {
+            "label": "df.to_stata(path)",
+            "slot": 4,
+            "trap": "Ghi thêm cột index — đọc lại thừa một cột."
+          },
+          {
+            "label": "\"pd.read_stata\"",
+            "slot": 1
+          },
+          {
+            "label": "path.split(\".\")[1]",
+            "slot": 3,
+            "trap": "Lấy phần sau dấu chấm ĐẦU TIÊN, không kèm dấu chấm: \"exp.v2.h5\" → \"v2\"."
+          },
+          {
+            "label": "df.to_stata(path, write_index=False)",
+            "slot": 4
+          },
+          {
+            "label": "Path(path).suffix.lower()",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hoàn thành READERS (đuôi file chữ thường → tên hàm đọc) cho đủ 8 đuôi: .csv → \"pd.read_csv\"; .xlsx, .xls → \"pd.read_excel\"; .dta → \"pd.read_stata\"; .sas7bdat → \"pd.read_sas\"; .h5, .hdf5 → \"h5py.File\"; .mat → \"scipy.io.loadmat\". Viết reader_for(path): lấy đuôi file (không phân biệt hoa/thường, tên có thể có nhiều dấu chấm), trả tên hàm đọc; đuôi không có trong READERS → raise ValueError. Viết stata_roundtrip(df, path): ghi df ra file Stata KHÔNG kèm index, đọc lại bằng pd.read_stata và trả DataFrame đọc được.\n\nThực hành: Lấy đuôi bằng Path(path).suffix.lower(); tra trong READERS; không có thì raise ValueError. Ghi Stata với write_index=False rồi đọc lại bằng pd.read_stata.",
+        "io": [
+          {
+            "label": "reader_for(\"Lab/Marks.XLSX\")",
+            "value": "\"pd.read_excel\""
+          },
+          {
+            "label": "reader_for(\"notes.txt\")",
+            "value": "ValueError"
+          },
+          {
+            "label": "stata_roundtrip(bảng name/mark, \"m.dta\")",
+            "value": "DataFrame đúng hai cột name, mark"
+          }
+        ]
+      },
+      "starterCode": "from pathlib import Path\n\nimport pandas as pd\n\n# Đuôi file (chữ thường) → tên hàm/lớp dùng để đọc. Điền tiếp theo bảng trong đề.\nREADERS = {\n    \".csv\": \"pd.read_csv\",\n}\n\n\ndef reader_for(path):\n    pass\n\n\ndef stata_roundtrip(df, path):\n    pass\n",
+      "solutionCode": "from pathlib import Path\n\nimport pandas as pd\n\nREADERS = {\n    \".csv\": \"pd.read_csv\",\n    \".xlsx\": \"pd.read_excel\",\n    \".xls\": \"pd.read_excel\",\n    \".dta\": \"pd.read_stata\",\n    \".sas7bdat\": \"pd.read_sas\",\n    \".h5\": \"h5py.File\",\n    \".hdf5\": \"h5py.File\",\n    \".mat\": \"scipy.io.loadmat\",\n}\n\n\ndef reader_for(path):\n    suffix = Path(path).suffix.lower()\n    if suffix not in READERS:\n        raise ValueError(\"unknown data format: \" + path)\n    return READERS[suffix]\n\n\ndef stata_roundtrip(df, path):\n    df.to_stata(path, write_index=False)\n    return pd.read_stata(path)\n\n\nprint(reader_for(\"Lab/Marks.XLSX\"))\nmarks = pd.DataFrame({\"name\": [\"Mai\", \"An\"], \"mark\": [8.5, 9.0]})\nprint(stata_roundtrip(marks, \"marks.dta\"))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Lấy đuôi bằng Path(path).suffix.lower(); tra trong READERS; không có thì raise ValueError. Ghi Stata với write_index=False rồi đọc lại bằng pd.read_stata."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. READERS: điền đủ 8 đuôi theo bảng trong đề (khoá là chữ thường, có dấu chấm).\n2. reader_for: suffix = Path(path).suffix.lower(); suffix không có trong READERS → raise ValueError; còn lại return READERS[suffix].\n3. stata_roundtrip: df.to_stata(path, write_index=False); return pd.read_stata(path)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def reader_for(path):\n    suffix = Path(path).suffix.lower()\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Excel: marks.xlsx",
+          "call": "reader_for('marks.xlsx')",
+          "expect": "'pd.read_excel'"
+        },
+        {
+          "name": "Không phân biệt hoa thường, có thư mục",
+          "call": "reader_for('Lab/Marks.XLSX')",
+          "expect": "'pd.read_excel'"
+        },
+        {
+          "name": "Stata: survey.dta",
+          "call": "reader_for('survey.dta')",
+          "expect": "'pd.read_stata'"
+        },
+        {
+          "name": "MATLAB: workspace.mat",
+          "call": "reader_for('workspace.mat')",
+          "expect": "'scipy.io.loadmat'"
+        },
+        {
+          "name": "Đủ các đuôi còn lại (tên có nhiều dấu chấm)",
+          "call": "[reader_for(p) for p in ('exp.v2.h5', 'run.HDF5', 'census.sas7bdat', 'a.csv', 'old.xls')]",
+          "expect": "['h5py.File', 'h5py.File', 'pd.read_sas', 'pd.read_csv', 'pd.read_excel']"
+        },
+        {
+          "name": "Đuôi lạ → ValueError",
+          "call": "_studio.call(reader_for, 'notes.txt').error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "Không có đuôi → ValueError",
+          "call": "_studio.call(reader_for, 'README').error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "Stata: đúng cột, không thêm index",
+          "call": "stata_roundtrip(pd.DataFrame({'name': ['Mai', 'An'], 'mark': [8.5, 9.0]}), 'r1.dta').columns.tolist()",
+          "expect": "['name', 'mark']"
+        },
+        {
+          "name": "Stata: giữ nguyên giá trị (dữ liệu khác)",
+          "call": "(lambda d: (d['city'].tolist(), d['temp'].tolist()))(stata_roundtrip(pd.DataFrame({'city': ['Hue', 'Vinh', 'Hanoi'], 'temp': [31.5, 29.0, 27.25]}), 'r2.dta'))",
+          "expect": "(['Hue', 'Vinh', 'Hanoi'], [31.5, 29.0, 27.25])"
+        },
+        {
+          "name": "Ghi ra đúng path đã cho",
+          "call": "(stata_roundtrip(pd.DataFrame({'x': [1.0]}), 'r3.dta'), __import__('os').path.getsize('r3.dta') > 0)[1]",
+          "expect": "True"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "reader_for(path)",
+          "does": "Chọn hàm đọc phù hợp theo đuôi file.",
+          "takes": "path: str — tên hoặc đường dẫn file",
+          "gives": "str — tên hàm đọc, vd. \"pd.read_excel\"; đuôi lạ → ValueError",
+          "effect": "Không mở file.",
+          "call": "reader_for(\"Lab/Marks.XLSX\") → \"pd.read_excel\""
+        },
+        {
+          "sig": "stata_roundtrip(df, path)",
+          "does": "Ghi df ra file Stata (.dta) rồi đọc lại.",
+          "takes": "df: DataFrame; path: str",
+          "gives": "DataFrame đọc lại — đúng các cột của df, không thêm cột index",
+          "effect": "Tạo/ghi đè file path.",
+          "call": "stata_roundtrip(bảng name/mark, \"m.dta\") → cột [\"name\", \"mark\"]"
+        }
+      ],
+      "env": "Bài này chỉ nạp pandas trong trình duyệt (Pyodide): ghi/đọc Stata và CSV chạy thật. Excel cần thêm openpyxl, HDF5 cần h5py, file .mat cần scipy — phần đó học qua giải thích và trắc nghiệm; muốn thử trên máy: pip install openpyxl h5py scipy rồi chạy các dòng mẫu trong phần giải thích. Lần đầu mở bài, trình duyệt tải thêm thư viện nên chờ lâu hơn một chút.",
+      "packages": [
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Path(\"Lab/Marks.XLSX\").suffix.lower()",
+              "right": "\".xlsx\""
+            },
+            {
+              "left": "READERS[\".xlsx\"]",
+              "right": "\"pd.read_excel\""
+            },
+            {
+              "left": "Path(\"notes.txt\").suffix không có trong READERS",
+              "right": "ValueError"
+            },
+            {
+              "left": "to_stata(write_index=False) + read_stata",
+              "right": "đúng cột name, mark"
+            }
+          ],
+          "rightOrder": [
+            1,
+            0,
+            3,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "from pathlib import Path\n\nimport pandas as pd\n\nREADERS = {\n    \".csv\": \"pd.read_csv\",\n    \".xlsx\": \"pd.read_excel\",\n    \".xls\": \"pd.read_excel\",\n    \".dta\": \"pd.read_stata\",\n    \".sas7bdat\": \"pd.read_sas\",\n    \".h5\": \"h5py.File\",\n    \".hdf5\": \"h5py.File\",\n    \".mat\": \"scipy.io.loadmat\",\n}\n\n\ndef reader_for(path):\n    suffix = Path(path).suffix.lower()",
+          "tail": "print(stata_roundtrip(marks, \"marks.dta\"))",
+          "lines": [
+            {
+              "id": "L18",
+              "text": "    if suffix not in READERS:"
+            },
+            {
+              "id": "L19",
+              "text": "        raise ValueError(\"unknown data format: \" + path)"
+            },
+            {
+              "id": "L20",
+              "text": "    return READERS[suffix]"
+            },
+            {
+              "id": "L23",
+              "text": "def stata_roundtrip(df, path):"
+            },
+            {
+              "id": "L24",
+              "text": "    df.to_stata(path, write_index=False)"
+            },
+            {
+              "id": "L25",
+              "text": "    return pd.read_stata(path)"
+            },
+            {
+              "id": "L28",
+              "text": "print(reader_for(\"Lab/Marks.XLSX\"))"
+            },
+            {
+              "id": "L29",
+              "text": "marks = pd.DataFrame({\"name\": [\"Mai\", \"An\"], \"mark\": [8.5, 9.0]})"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    df.to_stata(path)",
+              "reason": "quên write_index=False"
+            },
+            {
+              "id": "D1",
+              "text": "    \".dta\": \"pd.read_sas\",",
+              "reason": "nhầm Stata với SAS"
+            }
+          ],
+          "order": [
+            "L28",
+            "L23",
+            "L25",
+            "D1",
+            "L19",
+            "L24",
+            "L20",
+            "L18",
+            "D0",
+            "L29"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    suffix = Path(path).suffix.lower()\n    if suffix not in READERS:\n        raise ValueError(\"unknown data format: \" + path)\n    return READERS[suffix]\n\n\ndef stata_roundtrip(df, path):\n    df.to_stata(path)\n    return pd.read_stata(path)\n\n\nprint(reader_for(\"Lab/Marks.XLSX\"))\nmarks = pd.DataFrame({\"name\": [\"Mai\", \"An\"], \"mark\": [8.5, 9.0]})\nprint(stata_roundtrip(marks, \"marks.dta\"))",
+          "firstLine": 18,
+          "line": 25,
+          "lines": [
+            25
+          ],
+          "label": "quên write_index=False",
+          "fix": "    df.to_stata(path, write_index=False)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

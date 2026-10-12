@@ -1,0 +1,452 @@
+{
+  "lesson_code": "PD03",
+  "sort_order": 34,
+  "module": "M6 · pandas",
+  "title": "PD03 · Làm sạch thiếu, trùng và sai kiểu",
+  "subtitle": "Nâng cao · M6 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "PD03 · Làm sạch thiếu, trùng và sai kiểu",
+    "subtitle": "Nâng cao · M6 · 40 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#PD03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD03"
+        ],
+        "title": "Làm sạch thiếu, trùng và sai kiểu",
+        "goal": "Làm sạch kiểu số, nhãn chữ và dòng trùng theo khoá.",
+        "task": "Viết score_stats(values) và clean_sales(raw): to_numeric(coerce), strip/lower, bỏ trùng theo order_id.",
+        "predict": "[\"8\", \"bad\", \"9\"]: trung bình hợp lệ là bao nhiêu?",
+        "code": "def score_stats(values):\n    pass  # {\"bad\": ..., \"mean\": ...}\n\ndef clean_sales(raw):\n    df = raw.copy()\n    # chuẩn hoá, đổi số, bỏ trùng, bỏ thiếu",
+        "tests": [
+          "[\"8\", \"bad\", \"9\"] → {\"bad\": 1, \"mean\": 8.5}",
+          "sales.csv 11 dòng → 8 dòng sạch"
+        ],
+        "reflect": "Vì sao không được coi ô \"bad\" là 0?"
+      },
+      "context": {
+        "title": "Đổi kiểu an toàn, chuẩn hoá nhãn và bỏ trùng theo khoá — không coi ô thiếu là 0.",
+        "body": "Viết hai hàm. score_stats(values): values là list chuỗi điểm có thể hỏng (\"8\", \"bad\", \"9\", \"\"); trả dict {\"bad\": số ô không đổi được thành số, \"mean\": trung bình các ô HỢP LỆ làm tròn 2 chữ số, hoặc None nếu không có ô hợp lệ}. clean_sales(raw): raw là DataFrame đọc thô từ CSV bán hàng (order_id, date, region, product, qty, unit_price); trả bản sạch: region bỏ khoảng trắng và viết thường, qty và unit_price thành số (ô hỏng thành NaN), bỏ dòng trùng order_id (giữ dòng đầu), bỏ dòng thiếu qty hoặc unit_price, index đánh lại từ 0. Không sửa raw. (Ngày hỏng và qty âm để các bài sau xử lý.)",
+        "example": "[\"8\", \"bad\", \"9\"] → {\"bad\": 1, \"mean\": 8.5}. sales.csv 11 dòng → clean_sales còn 8 dòng (bỏ bản O05 gửi lại, O03 thiếu qty, O08 thiếu giá).",
+        "prereq": "PD02",
+        "level": "Nâng cao",
+        "files": [
+          "sales.csv"
+        ]
+      },
+      "predict": {
+        "question": "Kết quả của dòng dưới là?",
+        "options": [
+          {
+            "id": "a",
+            "title": "8.5 — \"bad\" thành NaN và mean bỏ qua NaN",
+            "detail": "Trung bình của 8 và 9.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "ValueError vì có chữ \"bad\"",
+            "detail": "errors=\"coerce\" không báo lỗi mà đổi thành NaN.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "5.67 — \"bad\" tính là 0",
+            "detail": "Chỉ khi fillna(0): bịa thêm một điểm 0.",
+            "correct": false
+          }
+        ],
+        "code": "pd.to_numeric(pd.Series([\"8\", \"bad\", \"9\"]), errors=\"coerce\").mean()"
+      },
+      "misconception": {
+        "title": "\"Ô hỏng hay ô thiếu thì cứ coi là 0 cho dễ tính\"",
+        "body": "0 là một GIÁ TRỊ: số lượng 0, điểm 0. Ô \"bad\" hay ô trống là \"không biết\". fillna(0) kéo trung bình xuống và tạo ra đơn hàng 0 sản phẩm không có thật. Đổi thành NaN, đếm, rồi chọn chính sách có lý do (bỏ dòng, cách ly, hỏi lại nguồn)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Kiểm trước, sửa sau: isna().sum() đếm ô thiếu, duplicated(subset=khoá).sum() đếm dòng trùng. Thiếu (NaN) khác 0 và khác chuỗi rỗng."
+        },
+        {
+          "n": 2,
+          "body": "pd.to_numeric(..., errors=\"coerce\") biến ô hỏng (\"bad\", \"two\", \"?\") thành NaN để đếm và rà soát; astype(float) thì ValueError ngay ở ô hỏng đầu tiên."
+        },
+        {
+          "n": 3,
+          "body": "mean() tự bỏ qua NaN: [\"8\", \"bad\", \"9\"] → 8.5. fillna(0) trước khi tính là bịa thêm một điểm 0 → 5.67."
+        },
+        {
+          "n": 4,
+          "body": "str.strip().str.lower() gộp \" North \", \"NORTH\", \"north\" thành một nhãn; không chuẩn hoá thì groupby đếm thành ba vùng."
+        },
+        {
+          "n": 5,
+          "body": "Grain của bảng bán hàng là MỘT đơn = một order_id. drop_duplicates(subset=\"order_id\") bỏ bản gửi lại; drop_duplicates() không khoá chỉ bỏ dòng giống hệt nhau từng ô."
+        },
+        {
+          "n": 6,
+          "body": "dropna(subset=[...]) bỏ dòng thiếu số liệu bắt buộc; ghi lại đã bỏ bao nhiêu dòng (len trước − len sau) thay vì xoá âm thầm."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\nmarks = pd.Series([\"7\", \"\", \"x\", \"10\"])\nnums = pd.to_numeric(marks, errors=\"coerce\")\nprint(nums.tolist())\nprint(int(nums.isna().sum()), \"ô hỏng; mean hợp lệ =\", nums.mean())\nprint(\"Nếu coi hỏng là 0:\", nums.fillna(0).mean())\n\nlabels = pd.Series([\" Hanoi\", \"HANOI \", \"hanoi\"])\nprint(labels.nunique(), \"->\", labels.str.strip().str.lower().nunique())\n\norders = pd.DataFrame({\"id\": [\"A1\", \"A1\", \"A2\"], \"qty\": [2, 5, 2]})\nprint(len(orders.drop_duplicates()), len(orders.drop_duplicates(subset=\"id\")))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Hai đơn O11, O12 khác order_id nhưng cùng ngày, vùng, sản phẩm, qty, giá. drop_duplicates(subset=\"order_id\") làm gì?",
+          "options": [
+            {
+              "text": "Giữ cả hai — đó là hai giao dịch thật",
+              "detail": "Khoá order_id khác nhau nên không trùng.",
+              "correct": true
+            },
+            {
+              "text": "Bỏ cả hai",
+              "detail": "drop_duplicates luôn giữ một bản (keep=\"first\").",
+              "correct": false
+            },
+            {
+              "text": "Bỏ một đơn vì giống nhau",
+              "detail": "Chỉ khi bỏ trùng theo các cột giá trị — sai grain.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Khoá order_id khác nhau nên không trùng."
+        },
+        {
+          "question": "Đơn O05 bị gửi lại lần 2 với qty khác. drop_duplicates() KHÔNG có subset thì…",
+          "options": [
+            {
+              "text": "Báo lỗi trùng khoá",
+              "detail": "drop_duplicates không báo lỗi.",
+              "correct": false
+            },
+            {
+              "text": "Giữ dòng đầu",
+              "detail": "Đó là kết quả của subset=\"order_id\".",
+              "correct": false
+            },
+            {
+              "text": "Giữ cả hai dòng O05 vì hai dòng khác nhau ở qty",
+              "detail": "Không khoá thì chỉ dòng giống hệt từng ô mới bị bỏ.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Không khoá thì chỉ dòng giống hệt từng ô mới bị bỏ."
+        },
+        {
+          "question": "pd.Series([\"2\", \"two\"]).astype(float) thì…",
+          "options": [
+            {
+              "text": "[2.0, nan]",
+              "detail": "Đó là kết quả của to_numeric(errors=\"coerce\").",
+              "correct": false
+            },
+            {
+              "text": "[2.0, 0.0]",
+              "detail": "pandas không tự đổi chữ thành 0.",
+              "correct": false
+            },
+            {
+              "text": "ValueError ở ô \"two\"",
+              "detail": "Dùng to_numeric(errors=\"coerce\") để đổi ô hỏng thành NaN.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Dùng to_numeric(errors=\"coerce\") để đổi ô hỏng thành NaN."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao bỏ trùng theo order_id mà không theo cả dòng hay theo các cột giá trị?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi dòng của bảng là một đơn — khoá order_id xác định grain. Bản gửi lại có thể lệch vài ô nên drop_duplicates() cả dòng không bắt được; còn bỏ theo giá trị (vùng, sản phẩm, giá) thì xoá nhầm hai giao dịch thật chỉ vì giống nhau. Bỏ theo khoá giữ đúng một dòng cho mỗi đơn."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: qty có chữ \"two\", nhãn vùng lẫn hoa thường, một đơn bị gửi lại. Lắp ba chỗ.",
+        "rule": "Thử bảng có đơn gửi lại với qty khác, hai đơn thật giống hệt giá trị, qty \"two\" và giá \"?\"; đếm số dòng còn lại."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "str.strip().str.lower() → \" North \" và \"NORTH\" thành \"north\"."
+          },
+          {
+            "label": "Bước 2",
+            "text": "to_numeric(errors=\"coerce\") → \"two\" và ô trống thành NaN."
+          },
+          {
+            "label": "Bước 3",
+            "text": "drop_duplicates(subset=\"order_id\") → mỗi đơn còn một dòng."
+          },
+          {
+            "label": "Bước 4",
+            "text": "dropna(subset=[\"qty\", \"unit_price\"]) → bỏ dòng thiếu số liệu."
+          },
+          {
+            "label": "Bước 5",
+            "text": "reset_index(drop=True) → index 0, 1, 2… liền mạch."
+          }
+        ]
+      },
+      "counter": {
+        "question": "score_stats([\"10\", \"?\", \"\", \"6\"]) = ?",
+        "options": [
+          "{\"bad\": 1, \"mean\": 8.0}",
+          "{\"bad\": 2, \"mean\": 8.0}",
+          "{\"bad\": 2, \"mean\": 4.0}"
+        ],
+        "correct": "{\"bad\": 2, \"mean\": 8.0}"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = {{slot1}}\n    df[\"qty\"] = {{slot2}}\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n    df = {{slot3}}\n    df = df.dropna(subset=[\"qty\", \"unit_price\"])\n    return df.reset_index(drop=True)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "df[\"region\"].str.strip().str.lower()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "pd.to_numeric(df[\"qty\"], errors=\"coerce\").fillna(0)",
+            "slot": 2,
+            "trap": "Coi ô thiếu là 0 — tạo đơn 0 sản phẩm."
+          },
+          {
+            "label": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")",
+            "slot": 3
+          },
+          {
+            "label": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")",
+            "slot": 2
+          },
+          {
+            "label": "df[\"region\"].lower()",
+            "slot": 1,
+            "trap": "Series không có .lower(); phải đi qua .str."
+          },
+          {
+            "label": "df.drop_duplicates()",
+            "slot": 3,
+            "trap": "Không khoá: bản gửi lại lệch một ô vẫn lọt."
+          },
+          {
+            "label": "df[\"region\"].str.strip().str.lower()",
+            "slot": 1
+          },
+          {
+            "label": "df[\"qty\"].astype(float)",
+            "slot": 2,
+            "trap": "ValueError ở ô \"two\"."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm. score_stats(values): values là list chuỗi điểm có thể hỏng (\"8\", \"bad\", \"9\", \"\"); trả dict {\"bad\": số ô không đổi được thành số, \"mean\": trung bình các ô HỢP LỆ làm tròn 2 chữ số, hoặc None nếu không có ô hợp lệ}. clean_sales(raw): raw là DataFrame đọc thô từ CSV bán hàng (order_id, date, region, product, qty, unit_price); trả bản sạch: region bỏ khoảng trắng và viết thường, qty và unit_price thành số (ô hỏng thành NaN), bỏ dòng trùng order_id (giữ dòng đầu), bỏ dòng thiếu qty hoặc unit_price, index đánh lại từ 0. Không sửa raw. (Ngày hỏng và qty âm để các bài sau xử lý.)\n\nThực hành: copy() trước khi sửa; chuẩn hoá chữ qua .str; to_numeric(errors=\"coerce\") cho cột số; bỏ trùng theo order_id; dropna theo cột bắt buộc.",
+        "io": [
+          {
+            "label": "[\"8\", \"bad\", \"9\"]",
+            "value": "{\"bad\": 1, \"mean\": 8.5}"
+          },
+          {
+            "label": "sales.csv (11 dòng)",
+            "value": "8 dòng: bỏ bản O05 gửi lại, O03 thiếu qty, O08 thiếu giá"
+          },
+          {
+            "label": "Đơn gửi lại khác qty",
+            "value": "Giữ dòng đầu của order_id"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef score_stats(values):\n    # {\"bad\": số ô không đổi được thành số, \"mean\": trung bình ô hợp lệ (2 chữ số) hoặc None}\n    pass\n\n\ndef clean_sales(raw):\n    # Không sửa raw: làm trên bản copy\n    pass\n\n\nif __name__ == \"__main__\":\n    print(score_stats([\"8\", \"bad\", \"9\"]))\n    print(clean_sales(pd.read_csv(\"sales.csv\")))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef score_stats(values):\n    s = pd.to_numeric(pd.Series(values), errors=\"coerce\")\n    valid = s.dropna()\n    mean = round(float(valid.mean()), 2) if len(valid) else None\n    return {\"bad\": int(s.isna().sum()), \"mean\": mean}\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"qty\"] = pd.to_numeric(df[\"qty\"], errors=\"coerce\")\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n    df = df.drop_duplicates(subset=\"order_id\", keep=\"first\")\n    df = df.dropna(subset=[\"qty\", \"unit_price\"])\n    return df.reset_index(drop=True)\n\n\nif __name__ == \"__main__\":\n    print(score_stats([\"8\", \"bad\", \"9\"]))\n    raw = pd.read_csv(\"sales.csv\")\n    clean = clean_sales(raw)\n    print(len(raw), \"->\", len(clean), \"dòng\")\n    print(clean[[\"order_id\", \"region\", \"qty\", \"unit_price\"]])\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "copy() trước khi sửa; chuẩn hoá chữ qua .str; to_numeric(errors=\"coerce\") cho cột số; bỏ trùng theo order_id; dropna theo cột bắt buộc."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. score_stats: s = pd.to_numeric(pd.Series(values), errors=\"coerce\"); bad = int(s.isna().sum()); mean tính trên s.dropna(), rỗng thì None.\n2. clean_sales: df = raw.copy(), rồi chuẩn hoá region và đổi hai cột số.\n3. drop_duplicates(subset=\"order_id\", keep=\"first\") → dropna(subset=[\"qty\", \"unit_price\"]) → reset_index(drop=True)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def score_stats(values):\n    s = pd.to_numeric(pd.Series(values), errors=\"coerce\")\n    valid = s.dropna()\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: [\"8\", \"bad\", \"9\"]",
+          "call": "score_stats([\"8\", \"bad\", \"9\"])",
+          "expect": "{'bad': 1, 'mean': 8.5}"
+        },
+        {
+          "name": "Ô trống và \"?\" đều hỏng, không tính là 0",
+          "call": "score_stats([\"10\", \"?\", \"\", \"6\"])",
+          "expect": "{'bad': 2, 'mean': 8.0}"
+        },
+        {
+          "name": "Không có ô hợp lệ → mean là None",
+          "call": "score_stats([\"x\", \"\"])",
+          "expect": "{'bad': 2, 'mean': None}"
+        },
+        {
+          "name": "Dữ liệu bẩn: còn đúng các đơn hợp lệ",
+          "call": "clean_sales(pd.read_csv(_studio.write('raw_a.csv', 'order_id,date,region,product,qty,unit_price\\nA1,2026-03-01, Hanoi ,Pen,2,5\\nA2,2026-03-01,HANOI,Pen,two,5\\nA3,2026-03-02,hue,Book,1,12\\nA3,2026-03-02,Hue,Book,4,12\\nA4,2026-03-03,hue ,Book,1,12\\nA5,2026-03-03,Hanoi,Pen,,5\\nA6,2026-03-04,hanoi,Pen,3,?\\nA7,2026-03-03,hue,Book,1,12\\n')))[\"order_id\"].tolist()",
+          "expect": "['A1', 'A3', 'A4', 'A7']"
+        },
+        {
+          "name": "Nhãn vùng đã chuẩn hoá",
+          "call": "clean_sales(pd.read_csv(_studio.write('raw_a.csv', 'order_id,date,region,product,qty,unit_price\\nA1,2026-03-01, Hanoi ,Pen,2,5\\nA2,2026-03-01,HANOI,Pen,two,5\\nA3,2026-03-02,hue,Book,1,12\\nA3,2026-03-02,Hue,Book,4,12\\nA4,2026-03-03,hue ,Book,1,12\\nA5,2026-03-03,Hanoi,Pen,,5\\nA6,2026-03-04,hanoi,Pen,3,?\\nA7,2026-03-03,hue,Book,1,12\\n')))[\"region\"].tolist()",
+          "expect": "['hanoi', 'hue', 'hue', 'hue']"
+        },
+        {
+          "name": "Đơn gửi lại: giữ dòng đầu (qty 1), qty là số",
+          "call": "clean_sales(pd.read_csv(_studio.write('raw_a.csv', 'order_id,date,region,product,qty,unit_price\\nA1,2026-03-01, Hanoi ,Pen,2,5\\nA2,2026-03-01,HANOI,Pen,two,5\\nA3,2026-03-02,hue,Book,1,12\\nA3,2026-03-02,Hue,Book,4,12\\nA4,2026-03-03,hue ,Book,1,12\\nA5,2026-03-03,Hanoi,Pen,,5\\nA6,2026-03-04,hanoi,Pen,3,?\\nA7,2026-03-03,hue,Book,1,12\\n')))[\"qty\"].tolist()",
+          "expect": "[2.0, 1.0, 1.0, 1.0]"
+        },
+        {
+          "name": "sales.csv: 11 → 8 dòng, index liền 0..7",
+          "call": "clean_sales(pd.read_csv(\"sales.csv\")).index.tolist()",
+          "expect": "[0, 1, 2, 3, 4, 5, 6, 7]"
+        },
+        {
+          "name": "Không sửa raw",
+          "call": "(lambda r: (clean_sales(r), r[\"region\"].tolist()[:2])[1])(pd.read_csv(\"sales.csv\"))",
+          "expect": "[' North ', 'south']"
+        }
+      ],
+      "files": [
+        {
+          "name": "sales.csv",
+          "content": "order_id,date,region,product,qty,unit_price\r\nO01,2026-01-01, North ,Book,2,10\r\nO02,2026-01-02,south,Pen,1,20\r\nO03,2026-01-03,north,Book,,10\r\nO04,bad,south,Pen,2,20\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO06,2026-01-25,South,Pen,2,20\r\nO07,2026-02-01,north,Book,-1,10\r\nO08,2026-02-02,south,Pen,2,\r\nO09,2026-02-03,north,Book,1,15\r\nO10,2026-02-04,south,Pen,3,10\r\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "score_stats(values)",
+          "does": "Đếm ô điểm hỏng và tính trung bình các ô hợp lệ.",
+          "takes": "values: list chuỗi (có thể \"bad\", \"\", \"?\")",
+          "gives": "dict {\"bad\": int, \"mean\": float | None}",
+          "effect": "Không coi ô hỏng là 0.",
+          "call": "score_stats([\"8\", \"bad\", \"9\"]) → {\"bad\": 1, \"mean\": 8.5}"
+        },
+        {
+          "sig": "clean_sales(raw)",
+          "does": "Làm sạch bảng bán hàng đọc thô.",
+          "takes": "raw: DataFrame cột order_id, date, region, product, qty, unit_price",
+          "gives": "DataFrame mới, mỗi order_id một dòng, qty/unit_price là số, index 0..n-1",
+          "effect": "Không sửa raw.",
+          "call": "len(clean_sales(pd.read_csv(\"sales.csv\"))) → 8"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "str.strip().str.lower()",
+              "right": "\" North \" và \"NORTH\" thành \"north\""
+            },
+            {
+              "left": "to_numeric(errors=\"coerce\")",
+              "right": "\"two\" và ô trống thành NaN"
+            },
+            {
+              "left": "drop_duplicates(subset=\"order_id\")",
+              "right": "mỗi đơn còn một dòng"
+            },
+            {
+              "left": "dropna(subset=[\"qty\", \"unit_price\"])",
+              "right": "bỏ dòng thiếu số liệu"
+            }
+          ],
+          "rightOrder": [
+            1,
+            3,
+            0,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import pandas as pd\n\n\ndef score_stats(values):\n    s = pd.to_numeric(pd.Series(values), errors=\"coerce\").fillna(0)\n    valid = s.dropna()\n    mean = round(float(valid.mean()), 2) if len(valid) else None\n    return {\"bad\": int(s.isna().sum()), \"mean\": mean}\n\n\ndef clean_sales(raw):\n    df = raw.copy()",
+          "firstLine": 1,
+          "line": 5,
+          "lines": [
+            5
+          ],
+          "label": "coi ô hỏng là 0",
+          "fix": "    s = pd.to_numeric(pd.Series(values), errors=\"coerce\")"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import pandas as pd\n\n\ndef score_stats(values):\n    s = pd.to_numeric(pd.Series(values), errors=\"coerce\")\n    valid = s.dropna()\n    mean = round(float(valid.mean()), 2) if len(valid) else None\n    return {\"bad\": int(s.isna().sum()), \"mean\": mean}\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"qty\"] = pd.to_numeric(df[\"qty\"], errors=\"coerce\")\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n    df = df.drop_duplicates()\n    df = df.dropna(subset=[\"qty\", \"unit_price\"])\n    return df.reset_index(drop=True)\n\n\nif __name__ == \"__main__\":\n    print(score_stats([\"8\", \"bad\", \"9\"]))\n    raw = pd.read_csv(\"sales.csv\")\n    clean = clean_sales(raw)\n    print(len(raw), \"->\", len(clean), \"dòng\")\n    print(clean[[\"order_id\", \"region\", \"qty\", \"unit_price\"]])\n",
+          "label": "bỏ trùng không theo khoá"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao bỏ trùng theo order_id mà không theo cả dòng hay theo các cột giá trị?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

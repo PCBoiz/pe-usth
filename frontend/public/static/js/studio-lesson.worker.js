@@ -31,6 +31,51 @@ const PYODIDE_DIR = '/pyodide/v0.27.7/';
 // worker thay thế ở nền. Học viên chỉ chờ lại khi code của chính họ treo.
 let runtime = null;
 
+// Thư viện ngoài (khoá Python Advanced) — wheel lấy nguyên bản từ bản phân phối
+// Pyodide 0.27.7, lưu CÙNG ORIGIN trong PYODIDE_DIR (đúng sha256 của
+// pyodide-lock.json; loadPackage tự kéo theo phụ thuộc). Chỉ tải cho bài cần:
+// bài không dùng thì lần chạy đầu không chậm thêm byte nào.
+// Khoá = tên gói (step_4.packages), giá trị = tên module khi `import`.
+const PACKAGES = { numpy: 'numpy', pandas: 'pandas', matplotlib: 'matplotlib', sqlite3: 'sqlite3' };
+const IMPORT_TO_PACKAGE = Object.fromEntries(Object.entries(PACKAGES).map(([pkg, mod]) => [mod, pkg]));
+/** Gói đã tải VÀ đã import sẵn trong runtime đang giữ. */
+const warmed = new Set();
+
+/** Gói bài cần: khai trong bài + dò `import` trong chính code sẽ chạy. */
+function packagesFor(py, declared, code) {
+  const wanted = new Set(declared.filter((name) => name in PACKAGES));
+  let found = null;
+  try {
+    found = py.pyodide_py.code.find_imports(String(code));
+    for (const name of found.toJs()) {
+      const pkg = IMPORT_TO_PACKAGE[String(name).split('.')[0]];
+      if (pkg) wanted.add(pkg);
+    }
+  } catch {
+    // Code lỗi cú pháp: để lần chạy thật báo lỗi cho học viên.
+  } finally {
+    found?.destroy?.();
+  }
+  return [...wanted].filter((name) => !warmed.has(name));
+}
+
+/**
+ * Tải gói rồi import sẵn (_studio_preload) TRƯỚC khi báo 'ready'. Vì sao phải
+ * import luôn: `import pandas` / `matplotlib.pyplot` tốn vài giây trong Pyodide —
+ * nếu để rơi vào cửa sổ 5 giây của lần chạy, bài đúng cũng bị cắt ở lần bấm đầu.
+ */
+async function warmPackages(py, names) {
+  if (!names.length) return;
+  await py.loadPackage(names, { messageCallback: () => {}, errorCallback: () => {} });
+  const preload = py.globals.get('_studio_preload');
+  try {
+    preload(JSON.stringify(names));
+  } finally {
+    preload.destroy();
+  }
+  names.forEach((name) => warmed.add(name));
+}
+
 async function getRuntime() {
   if (runtime) return runtime;
   importScripts(PYODIDE_DIR + 'pyodide.js');
@@ -57,7 +102,9 @@ self.onmessage = async ({ data }) => {
   // lúc học viên vừa mở bài, trong khi họ còn đang đọc các màn đầu.
   if (data && data.type === 'warmup') {
     try {
-      await getRuntime();
+      const { py } = await getRuntime();
+      // Bài có khai packages: tải + import luôn lúc học viên còn đọc các màn đầu.
+      if (Array.isArray(data.packages)) await warmPackages(py, packagesFor(py, data.packages.map(String), ''));
       self.postMessage({ type: 'ready' });
       self.postMessage({ type: 'idle' });
     } catch (error) {
@@ -101,6 +148,15 @@ self.onmessage = async ({ data }) => {
     // thứ ba, và CSP phải mở connect-src ra domain đó. Cùng origin thì bỏ được
     // cả hai, và bản runtime luôn khớp với bộ chấm trong cùng commit.
     const { py, box } = await getRuntime();
+    // Chỉ phía React mới (gửi trường `packages`) hiểu thông điệp 'loading';
+    // React cũ coi mọi thông điệp lạ là kết quả, nên với nó thì im lặng.
+    if (Array.isArray(data.packages)) {
+      const missing = packagesFor(py, data.packages.map(String), data.code);
+      if (missing.length) {
+        self.postMessage({ type: 'loading', packages: missing });
+        await warmPackages(py, missing);
+      }
+    }
     // Print nào lọt ra ngoài bộ chấm (hiếm) vẫn được giữ lại để hiện cho học
     // viên. Dọn trước mỗi lần chạy vì runtime nay dùng lại giữa các lần.
     box.stray = '';

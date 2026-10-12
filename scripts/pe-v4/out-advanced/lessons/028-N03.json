@@ -1,0 +1,471 @@
+{
+  "lesson_code": "N03",
+  "sort_order": 28,
+  "module": "M5 · NumPy",
+  "title": "N03 · Broadcasting và chuẩn hoá dữ liệu",
+  "subtitle": "Trung cấp · M5 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "N03 · Broadcasting và chuẩn hoá dữ liệu",
+    "subtitle": "Trung cấp · M5 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#N03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N03"
+        ],
+        "title": "Broadcasting và chuẩn hoá dữ liệu",
+        "goal": "Trừ mean và z-score theo cột bằng broadcasting.",
+        "task": "center_columns(a) và zscore_columns(a) với keepdims; cột std = 0 ra 0.",
+        "predict": "(3, 2) − mean(axis=1) có broadcast được không?",
+        "code": "def center_columns(a):\n    a = np.asarray(a, dtype=float)\n    pass  # a - mean(axis=0, keepdims=True)\n\ndef zscore_columns(a):\n    pass  # std == 0 → chia cho 1",
+        "tests": [
+          "[[2, 20], [4, 40]] → [[-1, -10], [1, 10]]",
+          "[[1, 5], [3, 5]] → [[-1, 0], [1, 0]]"
+        ],
+        "reflect": "Vì sao ma trận vuông làm lỗi axis khó thấy?"
+      },
+      "context": {
+        "title": "Trừ mean và chuẩn hoá z-score theo cột bằng broadcasting, xử lý cột hằng.",
+        "body": "Viết center_columns(a): trừ mean của TỪNG CỘT khỏi cột đó (dùng mean(axis=0, keepdims=True)) và trả array số thực cùng shape. Viết zscore_columns(a): (a − mean cột) / std cột; cột có std = 0 (mọi giá trị bằng nhau) phải ra toàn 0 thay vì nan. Không sửa array đầu vào.",
+        "example": "center_columns([[2, 20], [4, 40]]) → [[-1, -10], [1, 10]]; zscore_columns([[1, 5], [3, 5]]) → [[-1, 0], [1, 0]].",
+        "prereq": "N02",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "a có shape (3, 2). a − a.mean(axis=1) chạy thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "ValueError — mean theo hàng có shape (3,), không khớp chiều cuối 2",
+            "detail": "So từ phải: 2 với 3 không bằng nhau và không có 1.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Trừ mean của từng cột",
+            "detail": "mean(axis=1) là mean theo hàng.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Trừ mean của từng hàng",
+            "detail": "Muốn vậy phải keepdims=True để có shape (3, 1).",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Không báo lỗi broadcast nghĩa là đã trừ đúng chiều\"",
+        "body": "Với ma trận vuông (2, 2), a − a.mean(axis=1) vẫn chạy: mean theo hàng shape (2,) bị kéo theo CỘT, cho số sai mà không lỗi. Viết shape mong muốn trước khi tính và dùng keepdims=True để chiều bị gộp vẫn hiện ra — (1, n) là mean cột, (m, 1) là mean hàng."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Broadcasting: NumPy so shape từ PHẢI sang TRÁI; hai chiều hợp nhau khi bằng nhau, hoặc một bên bằng 1 (hoặc không có). (3, 2) * (2,) → (3, 2): vector giá được \"kéo\" cho từng hàng."
+        },
+        {
+          "n": 2,
+          "body": "a.mean(axis=0) có shape (2,); thêm keepdims=True thì shape (1, 2) — viết rõ \"một hàng mean\" nên a − mean trừ đúng từng cột. Với phép theo hàng (axis=1) thì bắt buộc keepdims: (3, 1) mới trừ/chia được cho (3, 2)."
+        },
+        {
+          "n": 3,
+          "body": "Shape không hợp, như (3, 2) − (3,), báo ValueError: operands could not be broadcast. Nguy hiểm hơn là ma trận vuông: nhầm axis vẫn broadcast được nên không có lỗi, chỉ có số sai."
+        },
+        {
+          "n": 4,
+          "body": "z-score = (x − mean) / std. Cột hằng có std = 0 → chia cho 0 ra nan; thay std bằng 1 ở những cột đó (np.where(std == 0, 1, std)) để kết quả là 0. Khi chuẩn hoá dữ liệu mới, dùng lại mean/std của tập tham chiếu."
+        },
+        {
+          "n": 5,
+          "body": "Broadcast không có nghĩa là không tốn bộ nhớ: kết quả shape (10000, 10000) vẫn được cấp phát đầy đủ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\n\nqty = np.array([[2, 1], [0, 3], [4, 2]])   # 3 đơn hàng × 2 sản phẩm\nprice = np.array([15.0, 40.0])             # giá từng sản phẩm, shape (2,)\nrevenue = qty * price                      # (3, 2) * (2,) → giá áp cho mỗi hàng\nprint(revenue)\n\norder_total = revenue.sum(axis=1, keepdims=True)\nprint(order_total.shape)                   # (3, 1)\nprint(revenue / order_total)               # tỉ trọng từng sản phẩm trong đơn\n\ntry:\n    revenue - revenue.sum(axis=1)          # (3, 2) - (3,) → không khớp\nexcept ValueError as error:\n    print(\"ValueError:\", error)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Shape nào broadcast được với (4, 3)?",
+          "options": [
+            {
+              "text": "(3, 4)",
+              "detail": "Cả hai chiều đều lệch.",
+              "correct": false
+            },
+            {
+              "text": "(1, 3) — chiều 1 được kéo thành 4",
+              "detail": "Từ phải: 3 = 3, còn 1 kéo được.",
+              "correct": true
+            },
+            {
+              "text": "(4,)",
+              "detail": "Từ phải: 3 với 4 không khớp → ValueError.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Từ phải: 3 = 3, còn 1 kéo được."
+        },
+        {
+          "question": "Chuẩn hoá z-score cột [5, 5, 5] mà không xử lý gì thì ra gì?",
+          "options": [
+            {
+              "text": "nan — std = 0 nên thành 0/0",
+              "detail": "Cần thay std = 0 bằng 1 để ra 0.",
+              "correct": true
+            },
+            {
+              "text": "5",
+              "detail": "Mean đã bị trừ đi.",
+              "correct": false
+            },
+            {
+              "text": "0",
+              "detail": "Chỉ khi đã xử lý std = 0.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Cần thay std = 0 bằng 1 để ra 0."
+        },
+        {
+          "question": "a.mean(axis=0, keepdims=True) với a shape (3, 2) có shape gì?",
+          "options": [
+            {
+              "text": "(1, 2)",
+              "detail": "Chiều bị gộp vẫn còn, với độ dài 1.",
+              "correct": true
+            },
+            {
+              "text": "(3, 1)",
+              "detail": "Đó là mean theo hàng với keepdims.",
+              "correct": false
+            },
+            {
+              "text": "(2,)",
+              "detail": "Đó là khi không có keepdims.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chiều bị gộp vẫn còn, với độ dài 1."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao cần keepdims=True và xử lý std = 0 khi chuẩn hoá theo cột?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "keepdims=True giữ chiều bị gộp với độ dài 1 (mean cột có shape (1, n)), nên phép trừ broadcast rõ ràng theo cột và không vô tình khớp nhầm chiều khi ma trận vuông. Cột hằng có std = 0, chia sẽ ra nan; thay std bằng 1 ở cột đó để z-score bằng 0, đúng ý nghĩa \"không lệch khỏi mean\"."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: chuẩn hoá theo HÀNG (mỗi hàng là một học viên, mỗi cột một môn). Lắp đúng chiều.",
+        "rule": "Thử array 3 × 2 và 3 × 3 có một cột hằng: kiểm từng cột sau khi trừ có mean 0, cột hằng ra 0 chứ không nan."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "mean(axis=0, keepdims=True) → [[3., 30.]], shape (1, 2)"
+          },
+          {
+            "label": "Bước 2",
+            "text": "a − mean → [[-1., -10.], [1., 10.]]"
+          },
+          {
+            "label": "Bước 3",
+            "text": "[[1, 5], [3, 5]].std(axis=0) → [1., 0.]"
+          },
+          {
+            "label": "Bước 4",
+            "text": "np.where(std == 0, 1, std) → cột hằng chia cho 1, ra 0"
+          }
+        ]
+      },
+      "counter": {
+        "question": "zscore_columns([[0, 7], [10, 7]]) → ?",
+        "options": [
+          "[[-5, 0], [5, 0]]",
+          "[[-1, 0], [1, 0]]",
+          "[[-1, nan], [1, nan]]"
+        ],
+        "correct": "[[-1, 0], [1, 0]]"
+      },
+      "scaffold": {
+        "template": "import numpy as np\n\nmarks = np.array([[6.0, 8.0, 10.0], [5.0, 5.0, 5.0]])\nrow_mean = marks.mean({{slot1}})\nrow_std = marks.std(axis=1, keepdims=True)\nsafe = {{slot2}}\nz = {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "axis=1, keepdims=True"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "np.where(row_std == 0, 1, row_std)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "(marks - row_mean) / safe"
+          }
+        ],
+        "bank": [
+          {
+            "label": "axis=0, keepdims=True",
+            "slot": 1,
+            "trap": "Đó là mean từng cột (từng môn), không phải từng học viên."
+          },
+          {
+            "label": "np.where(row_std == 0, 1, row_std)",
+            "slot": 2
+          },
+          {
+            "label": "axis=1",
+            "slot": 1,
+            "trap": "Shape (2,) không trừ được cho (2, 3) — cần (2, 1)."
+          },
+          {
+            "label": "(marks - row_mean) / safe",
+            "slot": 3
+          },
+          {
+            "label": "axis=1, keepdims=True",
+            "slot": 1
+          },
+          {
+            "label": "(marks - row_mean) / row_std",
+            "slot": 3,
+            "trap": "Hàng hằng có std = 0 → nan."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết center_columns(a): trừ mean của TỪNG CỘT khỏi cột đó (dùng mean(axis=0, keepdims=True)) và trả array số thực cùng shape. Viết zscore_columns(a): (a − mean cột) / std cột; cột có std = 0 (mọi giá trị bằng nhau) phải ra toàn 0 thay vì nan. Không sửa array đầu vào.\n\nThực hành: Đổi đầu vào sang float, lấy mean/std với axis=0, keepdims=True, thay std = 0 bằng 1 trước khi chia.",
+        "io": [
+          {
+            "label": "center_columns([[2, 20], [4, 40]])",
+            "value": "[[-1, -10], [1, 10]]"
+          },
+          {
+            "label": "zscore_columns([[1, 5], [3, 5]])",
+            "value": "[[-1, 0], [1, 0]] — cột hằng ra 0"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef center_columns(a):\n    pass\n\n\ndef zscore_columns(a):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef center_columns(a):\n    a = np.asarray(a, dtype=float)\n    mean = a.mean(axis=0, keepdims=True)\n    return a - mean\n\n\ndef zscore_columns(a):\n    a = np.asarray(a, dtype=float)\n    std = a.std(axis=0, keepdims=True)\n    safe = np.where(std == 0, 1, std)\n    return (a - a.mean(axis=0, keepdims=True)) / safe\n\n\nprint(center_columns([[2, 20], [4, 40]]))\nprint(zscore_columns([[1, 5], [3, 5]]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đổi đầu vào sang float, lấy mean/std với axis=0, keepdims=True, thay std = 0 bằng 1 trước khi chia."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. center_columns: a = np.asarray(a, dtype=float); return a - a.mean(axis=0, keepdims=True).\n2. zscore_columns: std = a.std(axis=0, keepdims=True); safe = np.where(std == 0, 1, std).\n3. return (a - a.mean(axis=0, keepdims=True)) / safe — phép trừ tạo array mới, a không đổi."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def center_columns(a):\n    a = np.asarray(a, dtype=float)\n    mean = a.mean(axis=0, keepdims=True)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: trừ mean từng cột",
+          "call": "[[round(float(v), 4) for v in row] for row in center_columns([[2, 20], [4, 40]])]",
+          "expect": "[[-1.0, -10.0], [1.0, 10.0]]"
+        },
+        {
+          "name": "3 × 3: không nhầm axis",
+          "call": "[[round(float(v), 4) for v in row] for row in center_columns([[1, 10, 100], [3, 30, 300], [5, 50, 500]])]",
+          "expect": "[[-2.0, -20.0, -200.0], [0.0, 0.0, 0.0], [2.0, 20.0, 200.0]]"
+        },
+        {
+          "name": "3 × 2: giữ shape, mỗi cột có mean 0",
+          "call": "(lambda c: (tuple(c.shape), [round(float(v), 6) for v in c.mean(axis=0)]))(center_columns([[1, 2], [3, 4], [5, 9]]))",
+          "expect": "((3, 2), [0.0, 0.0])"
+        },
+        {
+          "name": "z-score có cột hằng → 0, không nan",
+          "call": "[[round(float(v), 4) for v in row] for row in zscore_columns([[1, 5], [3, 5]])]",
+          "expect": "[[-1.0, 0.0], [1.0, 0.0]]"
+        },
+        {
+          "name": "z-score dữ liệu khác (3 hàng)",
+          "call": "[[round(float(v), 4) for v in row] for row in zscore_columns([[2, 1], [4, 1], [6, 1]])]",
+          "expect": "[[-1.2247, 0.0], [0.0, 0.0], [1.2247, 0.0]]"
+        },
+        {
+          "name": "z-score không có cột hằng",
+          "call": "[[round(float(v), 4) for v in row] for row in zscore_columns([[0, 2], [10, 6]])]",
+          "expect": "[[-1.0, -1.0], [1.0, 1.0]]"
+        },
+        {
+          "name": "Không sửa array đầu vào",
+          "call": "(lambda x: (center_columns(x), x.tolist())[1])(np.array([[1.0, 2.0], [3.0, 6.0]]))",
+          "expect": "[[1.0, 2.0], [3.0, 6.0]]"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "center_columns(a)",
+          "does": "Trừ mean của từng cột khỏi cột đó.",
+          "takes": "a: array/list 2 chiều",
+          "gives": "ndarray float cùng shape; mỗi cột có mean 0",
+          "effect": "Không sửa a.",
+          "call": "center_columns([[2, 20], [4, 40]]) → [[-1, -10], [1, 10]]"
+        },
+        {
+          "sig": "zscore_columns(a)",
+          "does": "Chuẩn hoá z-score theo cột: (x − mean) / std.",
+          "takes": "a: array/list 2 chiều",
+          "gives": "ndarray float cùng shape; cột hằng (std = 0) ra toàn 0",
+          "effect": "Không sửa a.",
+          "call": "zscore_columns([[1, 5], [3, 5]]) → [[-1, 0], [1, 0]]"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy.",
+      "packages": [
+        "numpy"
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "mean(axis=0, keepdims=True)",
+              "right": "[[3., 30.]], shape (1, 2)"
+            },
+            {
+              "left": "a − mean",
+              "right": "[[-1., -10.], [1., 10.]]"
+            },
+            {
+              "left": "[[1, 5], [3, 5]].std(axis=0)",
+              "right": "[1., 0.]"
+            },
+            {
+              "left": "np.where(std == 0, 1, std)",
+              "right": "cột hằng chia cho 1, ra 0"
+            }
+          ],
+          "rightOrder": [
+            1,
+            0,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "import numpy as np\n\n",
+          "tail": "    return (a - a.mean(axis=0, keepdims=True)) / safe\n\n\nprint(center_columns([[2, 20], [4, 40]]))\nprint(zscore_columns([[1, 5], [3, 5]]))",
+          "lines": [
+            {
+              "id": "L3",
+              "text": "def center_columns(a):"
+            },
+            {
+              "id": "L4",
+              "text": "    a = np.asarray(a, dtype=float)"
+            },
+            {
+              "id": "L5",
+              "text": "    mean = a.mean(axis=0, keepdims=True)"
+            },
+            {
+              "id": "L6",
+              "text": "    return a - mean"
+            },
+            {
+              "id": "L9",
+              "text": "def zscore_columns(a):"
+            },
+            {
+              "id": "L10",
+              "text": "    a = np.asarray(a, dtype=float)"
+            },
+            {
+              "id": "L11",
+              "text": "    std = a.std(axis=0, keepdims=True)"
+            },
+            {
+              "id": "L12",
+              "text": "    safe = np.where(std == 0, 1, std)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    mean = a.mean(axis=1, keepdims=True)",
+              "reason": "trừ mean theo hàng"
+            },
+            {
+              "id": "D1",
+              "text": "    return (a - a.mean(axis=0, keepdims=True)) / std",
+              "reason": "không xử lý std = 0"
+            }
+          ],
+          "order": [
+            "D0",
+            "L10",
+            "L12",
+            "D1",
+            "L4",
+            "L9",
+            "L5",
+            "L6",
+            "L11",
+            "L3"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import numpy as np\n\n\ndef center_columns(a):\n    a = np.asarray(a, dtype=float)\n    mean = a.mean(axis=1, keepdims=True)\n    return a - mean\n\n\ndef zscore_columns(a):\n    a = np.asarray(a, dtype=float)\n    std = a.std(axis=0, keepdims=True)\n    safe = np.where(std == 0, 1, std)",
+          "firstLine": 1,
+          "line": 6,
+          "lines": [
+            6
+          ],
+          "label": "trừ mean theo hàng",
+          "fix": "    mean = a.mean(axis=0, keepdims=True)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

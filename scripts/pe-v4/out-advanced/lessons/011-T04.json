@@ -1,0 +1,461 @@
+{
+  "lesson_code": "T04",
+  "sort_order": 11,
+  "module": "M2 · Đa luồng",
+  "title": "T04 · GIL, CPU-bound và I/O-bound",
+  "subtitle": "Nâng cao · M2 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "T04 · GIL, CPU-bound và I/O-bound",
+    "subtitle": "Nâng cao · M2 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#T04",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T04"
+        ],
+        "title": "GIL, CPU-bound và I/O-bound",
+        "goal": "Ước lượng thời gian theo workload, chọn thread hay process.",
+        "task": "Viết wall_time(tasks, strategy) theo mô hình GIL và best_strategy(tasks).",
+        "predict": "Hai task CPU 3 giây chạy bằng 2 thread — mất bao lâu?",
+        "code": "def wall_time(tasks, strategy):\n    # serial: cộng hết\n    # thread: max(tổng CPU, I/O dài nhất)\n    # process: task dài nhất\n\ndef best_strategy(tasks): ...",
+        "tests": [
+          "[(\"io\", 2), (\"io\", 3)], \"thread\" → 3",
+          "[(\"cpu\", 2), (\"cpu\", 3)], \"thread\" → 5"
+        ],
+        "reflect": "Vì sao thread giúp được việc chờ I/O mà không giúp được tính toán?"
+      },
+      "context": {
+        "title": "Ước lượng thời gian theo loại workload và chọn chạy tuần tự, bằng thread hay bằng process.",
+        "body": "Mỗi task là (kind, seconds): \"cpu\" = tính Python thuần, \"io\" = chờ (mạng, đĩa). Viết wall_time(tasks, strategy) theo mô hình lý tưởng (mỗi task một worker, đủ lõi, bỏ qua chi phí tạo): \"serial\" = cộng mọi task; \"thread\" (CPython có GIL) = max(tổng giây CPU, task I/O dài nhất); \"process\" = task dài nhất; strategy khác → ValueError; không có task → 0. Viết best_strategy(tasks): cách có wall_time nhỏ nhất, bằng nhau thì chọn cách đứng trước trong serial → thread → process (rẻ hơn).",
+        "example": "[(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]: serial 9, thread max(4, 3) = 4, process 4 → best_strategy = \"thread\".",
+        "prereq": "T03",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Hai task tính Python thuần, mỗi task 3 giây, chạy bằng 2 thread trên máy 4 lõi (CPython có GIL). Tổng thời gian khoảng bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "≈ 1.5 giây",
+            "detail": "Không có cơ chế nào chia đôi một task.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "≈ 3 giây — mỗi thread một lõi",
+            "detail": "Đúng với 2 process, không đúng với thread khi có GIL.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "≈ 6 giây — hai thread thay nhau giữ GIL",
+            "detail": "Phần CPU cộng dồn; muốn ≈ 3 giây phải dùng 2 process.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thêm thread thì chương trình Python nào cũng nhanh hơn\"",
+        "body": "Chỉ đúng khi thời gian chủ yếu là CHỜ (I/O). Với tính toán Python thuần, GIL cho mỗi lúc một thread chạy bytecode nên thêm thread không giảm thời gian, có khi còn chậm hơn vì chuyển ngữ cảnh. Chọn theo loại workload, không theo số thread."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "CPython có GIL (Global Interpreter Lock): tại một thời điểm chỉ MỘT thread được chạy bytecode Python. GIL giúp interpreter quản lý bộ nhớ an toàn (reference counting, garbage collector)."
+        },
+        {
+          "n": 2,
+          "body": "CPU-bound = thời gian đi vào tính toán. Nhiều thread tính Python thuần phải thay nhau giữ GIL nên phần CPU CỘNG DỒN: 2 + 3 giây vẫn ≈ 5 giây — thêm thread không nhanh hơn."
+        },
+        {
+          "n": 3,
+          "body": "I/O-bound = thời gian đi vào chờ (mạng, đĩa, sleep). Thread đang chờ I/O nhả GIL, nên các lần chờ CHỒNG LÊN NHAU và chồng lên cả lúc thread khác tính: thread = max(tổng CPU, lần chờ dài nhất)."
+        },
+        {
+          "n": 4,
+          "body": "Mỗi process có interpreter và GIL riêng nên phần CPU chạy song song được trên nhiều lõi — đổi lại tốn chi phí tạo process và chép dữ liệu. Vì vậy khi bằng thời gian, chọn cách rẻ hơn."
+        },
+        {
+          "n": 5,
+          "body": "Ngoại lệ cần nhớ: một số thư viện native (vd. phần lõi của NumPy) nhả GIL khi tính, nhưng không thể suy ra mọi code dùng NumPy đều song song; bản CPython free-threaded (3.13+) có thể tắt GIL. Và GIL KHÔNG thay Lock: race condition của ứng dụng vẫn còn (T05)."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "tasks = [(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]\ncpu_total = sum(s for kind, s in tasks if kind == \"cpu\")\nio_longest = max(s for kind, s in tasks if kind == \"io\")\nserial = sum(s for kind, s in tasks)\nthreads = max(cpu_total, io_longest)\nprocesses = max(s for kind, s in tasks)\nprint(\"serial:\", serial, \"| thread:\", threads, \"| process:\", processes)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Có GIL thì race condition của ứng dụng có tự biến mất không?",
+          "options": [
+            {
+              "text": "Có — mỗi lúc chỉ một thread chạy",
+              "detail": "Thread có thể bị đổi giữa hai bytecode của cùng một câu lệnh.",
+              "correct": false
+            },
+            {
+              "text": "Không — GIL bảo vệ interpreter, không bảo vệ các bước đọc-sửa-ghi của bạn",
+              "detail": "counter += 1 vẫn có thể bị xen giữa; cần Lock (T05).",
+              "correct": true
+            },
+            {
+              "text": "Chỉ biến mất khi dùng list",
+              "detail": "List không có cơ chế khoá nào cho bạn.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "counter += 1 vẫn có thể bị xen giữa; cần Lock (T05)."
+        },
+        {
+          "question": "Tải 50 trang web, mỗi trang chủ yếu chờ mạng. Lựa chọn hợp lý?",
+          "options": [
+            {
+              "text": "Không nên song song",
+              "detail": "Chờ tuần tự 50 trang là lãng phí.",
+              "correct": false
+            },
+            {
+              "text": "Process — vì thread bị GIL",
+              "detail": "GIL được nhả trong lúc chờ I/O; process tốn hơn mà không nhanh hơn.",
+              "correct": false
+            },
+            {
+              "text": "Thread — các lần chờ mạng chồng lên nhau",
+              "detail": "Thread đang chờ I/O nhả GIL.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Thread đang chờ I/O nhả GIL."
+        },
+        {
+          "question": "Phát biểu nào về NumPy đúng?",
+          "options": [
+            {
+              "text": "NumPy không dùng được trong thread",
+              "detail": "Dùng được bình thường.",
+              "correct": false
+            },
+            {
+              "text": "Một số phép tính native nhả GIL, nhưng không suy ra được mọi code dùng NumPy đều chạy song song",
+              "detail": "Phải xét từng thao tác, đo thật trên máy.",
+              "correct": true
+            },
+            {
+              "text": "NumPy luôn bỏ qua GIL",
+              "detail": "Code Python bao quanh lời gọi NumPy vẫn cần GIL.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Phải xét từng thao tác, đo thật trên máy."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao wall_time(..., \"thread\") cộng phần CPU nhưng lấy max phần I/O?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Với GIL, mỗi lúc chỉ một thread chạy bytecode nên các task CPU phải thay nhau: thời gian cộng dồn. Thread đang chờ I/O nhả GIL nên các lần chờ diễn ra cùng lúc và chồng lên cả lúc thread khác tính; vì vậy thời gian là max(tổng CPU, lần chờ dài nhất). Trường hợp đặc biệt: không có task nào → 0."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp công thức của ba cách chạy theo mô hình GIL.",
+        "rule": "Thử workload toàn CPU, toàn I/O và trộn; xem khi nào thread thắng, khi nào cần process."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "serial → cộng mọi task: 2 + 3 + 4 = 9"
+          },
+          {
+            "label": "Bước 2",
+            "text": "thread → max(tổng CPU, I/O dài nhất) = max(4, 3) = 4"
+          },
+          {
+            "label": "Bước 3",
+            "text": "process → task dài nhất = 4"
+          },
+          {
+            "label": "Bước 4",
+            "text": "best_strategy → nhanh nhất; bằng nhau chọn cách rẻ hơn"
+          }
+        ]
+      },
+      "counter": {
+        "question": "best_strategy([(\"cpu\", 2), (\"cpu\", 2), (\"io\", 1)]) trả về?",
+        "options": [
+          "thread",
+          "serial",
+          "process"
+        ],
+        "correct": "process"
+      },
+      "scaffold": {
+        "template": "def wall_time(tasks, strategy):\n    cpu = [seconds for kind, seconds in tasks if kind == \"cpu\"]\n    io = [seconds for kind, seconds in tasks if kind == \"io\"]\n    if strategy == \"serial\":\n        return {{slot1}}\n    if strategy == \"thread\":\n        return {{slot2}}\n    if strategy == \"process\":\n        return {{slot3}}\n    raise ValueError(\"unknown strategy: \" + str(strategy))\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "sum(cpu) + sum(io)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "max(sum(cpu), max(io, default=0))"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "max(cpu + io, default=0)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "max(sum(cpu), sum(io))",
+            "slot": 2,
+            "trap": "Các lần chờ I/O chồng lên nhau: lấy lần dài nhất, không cộng."
+          },
+          {
+            "label": "sum(cpu) + sum(io)",
+            "slot": 1
+          },
+          {
+            "label": "max(sum(cpu), max(io, default=0))",
+            "slot": 2
+          },
+          {
+            "label": "sum(cpu) + max(io, default=0)",
+            "slot": 2,
+            "trap": "Lúc thread này chờ I/O, thread khác vẫn tính được — không nối tiếp."
+          },
+          {
+            "label": "max(cpu + io, default=0)",
+            "slot": 3
+          },
+          {
+            "label": "sum(cpu + io) / len(tasks)",
+            "slot": 3,
+            "trap": "Không có phép chia đều: mỗi task chạy trọn thời gian của nó."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Mỗi task là (kind, seconds): \"cpu\" = tính Python thuần, \"io\" = chờ (mạng, đĩa). Viết wall_time(tasks, strategy) theo mô hình lý tưởng (mỗi task một worker, đủ lõi, bỏ qua chi phí tạo): \"serial\" = cộng mọi task; \"thread\" (CPython có GIL) = max(tổng giây CPU, task I/O dài nhất); \"process\" = task dài nhất; strategy khác → ValueError; không có task → 0. Viết best_strategy(tasks): cách có wall_time nhỏ nhất, bằng nhau thì chọn cách đứng trước trong serial → thread → process (rẻ hơn).\n\nThực hành: Tách giây CPU và giây I/O; serial cộng hết, thread lấy max(tổng CPU, I/O dài nhất), process lấy task dài nhất. best_strategy so lần lượt serial → thread → process, chỉ đổi khi NHANH HƠN hẳn.",
+        "io": [
+          {
+            "label": "wall_time([(\"io\", 2), (\"io\", 3), (\"io\", 1)], \"thread\")",
+            "value": "3"
+          },
+          {
+            "label": "wall_time([(\"cpu\", 2), (\"cpu\", 3)], \"thread\")",
+            "value": "5 — GIL, không nhanh hơn tuần tự"
+          },
+          {
+            "label": "wall_time([(\"cpu\", 2), (\"cpu\", 3)], \"process\")",
+            "value": "3"
+          },
+          {
+            "label": "best_strategy([(\"cpu\", 1)])",
+            "value": "\"serial\" — bằng nhau thì chọn cách đơn giản"
+          }
+        ]
+      },
+      "starterCode": "def wall_time(tasks, strategy):\n    # tasks: list các (kind, seconds) — kind là \"cpu\" hoặc \"io\".\n    # strategy: \"serial\" | \"thread\" | \"process\"; khác -> ValueError.\n    pass\n\n\ndef best_strategy(tasks):\n    # Nhanh nhất trong serial / thread / process; bằng nhau thì chọn cách đứng trước.\n    pass\n\n\nif __name__ == \"__main__\":\n    work = [(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]\n    print(wall_time(work, \"serial\"), wall_time(work, \"thread\"), wall_time(work, \"process\"))\n    print(best_strategy(work))\n",
+      "solutionCode": "def wall_time(tasks, strategy):\n    cpu = [seconds for kind, seconds in tasks if kind == \"cpu\"]\n    io = [seconds for kind, seconds in tasks if kind == \"io\"]\n    if strategy == \"serial\":\n        return sum(cpu) + sum(io)\n    if strategy == \"thread\":\n        return max(sum(cpu), max(io, default=0))\n    if strategy == \"process\":\n        return max(cpu + io, default=0)\n    raise ValueError(\"unknown strategy: \" + str(strategy))\n\n\ndef best_strategy(tasks):\n    best = \"serial\"\n    for strategy in (\"thread\", \"process\"):\n        if wall_time(tasks, strategy) < wall_time(tasks, best):\n            best = strategy\n    return best\n\n\nif __name__ == \"__main__\":\n    work = [(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]\n    print(wall_time(work, \"serial\"), wall_time(work, \"thread\"), wall_time(work, \"process\"))\n    print(best_strategy(work))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tách giây CPU và giây I/O; serial cộng hết, thread lấy max(tổng CPU, I/O dài nhất), process lấy task dài nhất. best_strategy so lần lượt serial → thread → process, chỉ đổi khi NHANH HƠN hẳn."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. cpu = các seconds có kind \"cpu\"; io = các seconds có kind \"io\".\n2. serial: sum(cpu) + sum(io); thread: max(sum(cpu), max(io, default=0)); process: max(cpu + io, default=0).\n3. strategy lạ → raise ValueError.\n4. best_strategy: best = \"serial\"; với \"thread\" rồi \"process\", nếu wall_time nhỏ hơn hẳn thì đổi best."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    if strategy == \"thread\":\n        return max(sum(cpu), max(io, default=0))\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Toàn I/O, thread → lần chờ dài nhất",
+          "call": "wall_time([(\"io\", 2), (\"io\", 3), (\"io\", 1)], \"thread\")",
+          "expect": "3"
+        },
+        {
+          "name": "Toàn CPU, thread → cộng dồn (GIL)",
+          "call": "wall_time([(\"cpu\", 2), (\"cpu\", 3)], \"thread\")",
+          "expect": "5"
+        },
+        {
+          "name": "Toàn CPU, process → task dài nhất",
+          "call": "wall_time([(\"cpu\", 2), (\"cpu\", 3)], \"process\")",
+          "expect": "3"
+        },
+        {
+          "name": "Trộn: serial và thread",
+          "call": "[wall_time([(\"cpu\", 4), (\"io\", 3), (\"io\", 5)], s) for s in (\"serial\", \"thread\")]",
+          "expect": "[12, 5]"
+        },
+        {
+          "name": "Số thực: CPU 0.1 + 0.2 với I/O 0.25",
+          "call": "[round(wall_time([(\"cpu\", 0.1), (\"cpu\", 0.2), (\"io\", 0.25)], s), 6) for s in (\"serial\", \"thread\", \"process\")]",
+          "expect": "[0.55, 0.3, 0.25]"
+        },
+        {
+          "name": "Không có task → 0",
+          "call": "[wall_time([], s) for s in (\"serial\", \"thread\", \"process\")]",
+          "expect": "[0, 0, 0]"
+        },
+        {
+          "name": "strategy lạ → ValueError",
+          "call": "_studio.call(wall_time, [(\"io\", 1)], \"gpu\").error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "best_strategy theo workload",
+          "call": "[best_strategy(t) for t in ([(\"io\", 2), (\"io\", 2)], [(\"cpu\", 2), (\"cpu\", 2)], [(\"cpu\", 3), (\"io\", 2), (\"io\", 2)], [(\"cpu\", 2), (\"cpu\", 2), (\"io\", 1)])]",
+          "expect": "['thread', 'process', 'thread', 'process']"
+        },
+        {
+          "name": "Bằng nhau → chọn cách đơn giản hơn",
+          "call": "[best_strategy([(\"cpu\", 1)]), best_strategy([])]",
+          "expect": "['serial', 'serial']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "wall_time(tasks, strategy)",
+          "does": "Ước lượng thời gian chạy lý tưởng của một workload.",
+          "takes": "tasks: list (kind, seconds), kind \"cpu\"/\"io\"; strategy: \"serial\" | \"thread\" | \"process\"",
+          "gives": "số giây (int/float); strategy lạ → ValueError",
+          "effect": "Không chạy gì thật, không in. Mô hình: mỗi task một worker, đủ lõi, bỏ qua chi phí tạo.",
+          "call": "wall_time([(\"io\", 2), (\"io\", 3), (\"cpu\", 4)], \"thread\") → 4"
+        },
+        {
+          "sig": "best_strategy(tasks)",
+          "does": "Chọn cách chạy nhanh nhất; bằng nhau thì chọn cách đơn giản hơn.",
+          "takes": "tasks: như wall_time",
+          "gives": "\"serial\" | \"thread\" | \"process\"",
+          "effect": "So lần lượt serial → thread → process; chỉ đổi khi NHANH HƠN hẳn.",
+          "call": "best_strategy([(\"cpu\", 2), (\"cpu\", 2)]) → \"process\""
+        }
+      ],
+      "env": "Bài này không chạy thread: bộ chấm dùng ĐỒNG HỒ ẢO (số giây ghi trong từng task), vì trình duyệt chạy Python trong một luồng duy nhất và thời gian đo thật thì mỗi lần một khác. Muốn thấy GIL thật, chạy trên máy: hai thread cùng tính sum(range(10**7)) rồi so với hai thread cùng time.sleep(1), đo bằng time.perf_counter()."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "traceTable-0",
+          "type": "traceTable",
+          "title": "Theo dõi biến: điền giá trị sau mỗi dòng",
+          "code": "tasks = [(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]\ncpu_total = sum(s for kind, s in tasks if kind == \"cpu\")\nio_longest = max(s for kind, s in tasks if kind == \"io\")\nserial = sum(s for kind, s in tasks)\nthreads = max(cpu_total, io_longest)\nprocesses = max(s for kind, s in tasks)\nprint(\"serial:\", serial, \"| thread:\", threads, \"| process:\", processes)",
+          "columns": [
+            "cpu_total",
+            "io_longest",
+            "serial"
+          ],
+          "rows": [
+            {
+              "step": "cpu_total = sum(s for kind, s in tasks i",
+              "values": {
+                "cpu_total": "4",
+                "io_longest": "—",
+                "serial": "—"
+              }
+            },
+            {
+              "step": "io_longest = max(s for kind, s in tasks ",
+              "values": {
+                "cpu_total": "4",
+                "io_longest": null,
+                "serial": "—"
+              }
+            },
+            {
+              "step": "serial = sum(s for kind, s in tasks)",
+              "values": {
+                "cpu_total": "4",
+                "io_longest": "3",
+                "serial": null
+              }
+            },
+            {
+              "step": "threads = max(cpu_total, io_longest)",
+              "values": {
+                "cpu_total": "4",
+                "io_longest": "3",
+                "serial": "9"
+              }
+            },
+            {
+              "step": "processes = max(s for kind, s in tasks)",
+              "values": {
+                "cpu_total": "4",
+                "io_longest": "3",
+                "serial": "9"
+              }
+            }
+          ],
+          "answers": {
+            "1-io_longest": "3",
+            "2-serial": "9"
+          }
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "def wall_time(tasks, strategy):\n    cpu = [seconds for kind, seconds in tasks if kind == \"cpu\"]\n    io = [seconds for kind, seconds in tasks if kind == \"io\"]\n    if strategy == \"serial\":\n        return sum(cpu) + sum(io)\n    if strategy == \"thread\":\n        return max(cpu + io, default=0)\n    if strategy == \"process\":\n        return max(cpu + io, default=0)\n    raise ValueError(\"unknown strategy: \" + str(strategy))\n\n\ndef best_strategy(tasks):\n    best = \"serial\"",
+          "firstLine": 1,
+          "line": 7,
+          "lines": [
+            7
+          ],
+          "label": "quên GIL: coi thread chạy song song cả phần CPU",
+          "fix": "        return max(sum(cpu), max(io, default=0))"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "def wall_time(tasks, strategy):\n    cpu = [seconds for kind, seconds in tasks if kind == \"cpu\"]\n    io = [seconds for kind, seconds in tasks if kind == \"io\"]\n    if strategy == \"serial\":\n        return sum(cpu) + sum(io)\n    if strategy == \"thread\":\n        return sum(cpu) + sum(io)\n    if strategy == \"process\":\n        return max(cpu + io, default=0)\n    raise ValueError(\"unknown strategy: \" + str(strategy))\n\n\ndef best_strategy(tasks):\n    best = \"serial\"\n    for strategy in (\"thread\", \"process\"):\n        if wall_time(tasks, strategy) < wall_time(tasks, best):\n            best = strategy\n    return best\n\n\nif __name__ == \"__main__\":\n    work = [(\"io\", 2), (\"io\", 3), (\"cpu\", 4)]\n    print(wall_time(work, \"serial\"), wall_time(work, \"thread\"), wall_time(work, \"process\"))\n    print(best_strategy(work))\n",
+          "label": "tưởng GIL chặn cả lúc chờ I/O"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao wall_time(..., \"thread\") cộng phần CPU nhưng lấy max phần I/O?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

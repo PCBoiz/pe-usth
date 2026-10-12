@@ -1,0 +1,411 @@
+{
+  "lesson_code": "G01",
+  "sort_order": 14,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G01 · GUI, CLI và cửa sổ",
+  "subtitle": "Nâng cao · M3 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "G01 · GUI, CLI và cửa sổ",
+    "subtitle": "Nâng cao · M3 · 25 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#G01",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G01"
+        ],
+        "title": "GUI, CLI và cửa sổ",
+        "goal": "Tạo cửa sổ chính, cửa sổ phụ và chạy vòng lặp sự kiện.",
+        "task": "Đặt tiêu đề app_title, kích thước size cho root; thêm Toplevel \"Details\"; gọi mainloop().",
+        "predict": "Dòng print đặt sau root.mainloop() chạy lúc nào?",
+        "code": "import tkinter as tk\napp_title = \"Student system\"\nsize = \"800x600\"\n# root = tk.Tk(); title(...); geometry(...)\n# details = tk.Toplevel(root)\n# root.mainloop()",
+        "tests": [
+          "Mặc định → root.title() = Student system, 800x600",
+          "app_title = \"Quản lý điểm\" → tiêu đề đổi theo"
+        ],
+        "reflect": "Vì sao cửa sổ phụ dùng Toplevel chứ không gọi tk.Tk() lần nữa?"
+      },
+      "context": {
+        "title": "Tạo cửa sổ chính, cửa sổ phụ và giao quyền điều khiển cho vòng lặp sự kiện.",
+        "body": "Cho app_title = \"Student system\" và size = \"800x600\". Tạo cửa sổ chính root = tk.Tk(), đặt tiêu đề app_title và kích thước size; tạo cửa sổ phụ details bằng tk.Toplevel(root) với tiêu đề \"Details\", kích thước \"400x300\"; dòng cuối gọi root.mainloop().",
+        "example": "app_title = \"Student system\" → root.title() trả \"Student system\"; details là Toplevel thuộc root.",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Trên máy thật, dòng print đặt SAU root.mainloop() chạy khi nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Ngay lập tức, cùng lúc cửa sổ hiện ra",
+            "detail": "Chỉ Studio mô phỏng mới cho mainloop trả về ngay.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Không bao giờ chạy",
+            "detail": "Đóng cửa sổ thì mainloop trả về và code phía sau chạy tiếp.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Khi người dùng đóng cửa sổ chính — mainloop chặn tới lúc đó",
+            "detail": "Event loop chạy bên trong mainloop().",
+            "correct": true
+          }
+        ],
+        "code": "root = tk.Tk()\nroot.mainloop()\nprint(\"Bye\")"
+      },
+      "misconception": {
+        "title": "\"Muốn thêm cửa sổ thì gọi tk.Tk() lần nữa\"",
+        "body": "Mỗi tk.Tk() khởi động một bộ thông dịch Tcl riêng: StringVar hay ảnh (PhotoImage) gắn với cửa sổ này không dùng được ở cửa sổ kia, lỗi rất khó hiểu. Cửa sổ phụ dùng tk.Toplevel(root). Cũng đừng viết root.title = \"...\" — đó là GHI ĐÈ method bằng một chuỗi: tiêu đề không đổi, còn root.title() sau đó nổ TypeError."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "CLI chạy lệnh từ trên xuống rồi kết thúc; GUI vẽ cửa sổ rồi CHỜ người dùng bấm, gõ (sự kiện) để gọi hàm xử lý."
+        },
+        {
+          "n": 2,
+          "body": "Tkinter có sẵn trong Python nên các ví dụ dùng nó; PyQt, Kivy, wxPython là thư viện GUI khác cùng ý tưởng."
+        },
+        {
+          "n": 3,
+          "body": "tk.Tk() tạo cửa sổ CHÍNH (một cái cho cả chương trình); tk.Toplevel(root) tạo cửa sổ PHỤ thuộc root."
+        },
+        {
+          "n": 4,
+          "body": "title(\"...\") và geometry(\"800x600\") là lời gọi method: rộng x cao, chữ x thường. title() không đối số thì đọc lại tiêu đề."
+        },
+        {
+          "n": 5,
+          "body": "mainloop() là vòng lặp sự kiện: nó chặn tại chỗ và chỉ trả về khi cửa sổ chính đóng — nên đặt ở cuối chương trình."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import tkinter as tk\n\nroot = tk.Tk()\nroot.title(\"Máy tính bỏ túi\")\nroot.geometry(\"320x200\")\nprint(\"Tiêu đề:\", root.title())\n\nhelp_window = tk.Toplevel(root)\nhelp_window.title(\"Trợ giúp\")\nprint(\"Cửa sổ phụ thuộc root:\", help_window.master is root)\n\nprint(\"Gọi mainloop...\")\nroot.mainloop()\nprint(\"mainloop đã trả về: cửa sổ đã đóng\")",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Toplevel dùng để tạo gì?",
+          "options": [
+            {
+              "text": "Một cửa sổ phụ thuộc ứng dụng Tk hiện tại",
+              "detail": "Đóng cửa sổ chính thì Toplevel đóng theo.",
+              "correct": true
+            },
+            {
+              "text": "Cửa sổ chính thứ hai, độc lập hoàn toàn",
+              "detail": "Cửa sổ chính là tk.Tk(); Toplevel phụ thuộc root.",
+              "correct": false
+            },
+            {
+              "text": "Một khung nằm bên trong cửa sổ",
+              "detail": "Đó là Frame; Toplevel là một cửa sổ riêng.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Đóng cửa sổ chính thì Toplevel đóng theo."
+        },
+        {
+          "question": "Khác biệt cốt lõi giữa chương trình CLI và GUI là gì?",
+          "options": [
+            {
+              "text": "GUI chờ sự kiện trong event loop rồi gọi hàm xử lý; CLI chạy lệnh theo thứ tự",
+              "detail": "Vì thế GUI cần mainloop().",
+              "correct": true
+            },
+            {
+              "text": "CLI không nhận được dữ liệu từ người dùng",
+              "detail": "CLI nhận qua input() hoặc đối số dòng lệnh.",
+              "correct": false
+            },
+            {
+              "text": "GUI luôn chạy nhanh hơn CLI",
+              "detail": "Tốc độ không phải khác biệt cốt lõi; GUI thường tốn bộ nhớ hơn.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Vì thế GUI cần mainloop()."
+        },
+        {
+          "question": "Viết root.title = \"Student system\" (không ngoặc) thì sao?",
+          "options": [
+            {
+              "text": "Tiêu đề đổi như root.title(\"Student system\")",
+              "detail": "Không có method nào được gọi.",
+              "correct": false
+            },
+            {
+              "text": "SyntaxError ngay khi chạy",
+              "detail": "Cú pháp gán hợp lệ — lỗi chỉ lộ ra lúc dùng.",
+              "correct": false
+            },
+            {
+              "text": "Tiêu đề không đổi; root.title giờ là chuỗi nên root.title() nổ TypeError",
+              "detail": "Đó là phép gán, không gọi method.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Đó là phép gán, không gọi method."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao root.mainloop() phải nằm ở cuối chương trình?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "mainloop() chặn tại chỗ để nhận và xử lý sự kiện cho tới khi cửa sổ chính đóng. Code đặt sau nó (tạo widget, cửa sổ phụ) chỉ chạy khi người dùng đã đóng cửa sổ — quá muộn. Vì vậy tạo xong mọi cửa sổ, widget rồi mới gọi mainloop(). Trường hợp đặc biệt: quên mainloop thì chạy bằng file, cửa sổ hiện rồi tắt ngay."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: \"Quản lý thư viện\", 640x480. Lắp bốn lời gọi.",
+        "rule": "Đổi app_title và size (vd. \"Quản lý điểm\", \"640x480\"); bộ chấm chạy lại chương trình rồi đọc tiêu đề và kích thước của cửa sổ mới."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "tk.Tk() → tạo cửa sổ chính root"
+          },
+          {
+            "label": "Bước 2",
+            "text": "root.title(app_title) → đặt chữ trên thanh tiêu đề"
+          },
+          {
+            "label": "Bước 3",
+            "text": "tk.Toplevel(root) → tạo cửa sổ phụ thuộc root"
+          },
+          {
+            "label": "Bước 4",
+            "text": "root.mainloop() → chờ sự kiện tới khi cửa sổ đóng"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Với app_title = \"Quản lý điểm\", root.title() trả gì?",
+        "options": [
+          "Quản lý điểm",
+          "tk",
+          "Student system"
+        ],
+        "correct": "Quản lý điểm"
+      },
+      "scaffold": {
+        "template": "import tkinter as tk\n\napp_title = \"Quản lý thư viện\"\nsize = \"640x480\"\n\nroot = {{slot1}}\nroot.title(app_title)\n{{slot2}}\ndetails = {{slot3}}\ndetails.title(\"Details\")\n{{slot4}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "tk.Tk()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "root.geometry(size)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "tk.Toplevel(root)"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "root.mainloop()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "root.geometry(\"640*480\")",
+            "slot": 2,
+            "trap": "Kích thước dùng chữ x: \"640x480\" — dấu * làm Tk báo TclError."
+          },
+          {
+            "label": "tk.Toplevel(root)",
+            "slot": 3
+          },
+          {
+            "label": "root.geometry(size)",
+            "slot": 2
+          },
+          {
+            "label": "root.geometry = size",
+            "slot": 2,
+            "trap": "Ghi đè method bằng chuỗi; kích thước không đổi."
+          },
+          {
+            "label": "tk.Tk",
+            "slot": 1,
+            "trap": "Thiếu ngoặc: root là class Tk chứ chưa phải cửa sổ."
+          },
+          {
+            "label": "root.mainloop",
+            "slot": 4,
+            "trap": "Thiếu ngoặc: chỉ nhắc tên method, vòng lặp sự kiện không chạy."
+          },
+          {
+            "label": "root.mainloop()",
+            "slot": 4
+          },
+          {
+            "label": "tk.Tk()",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Cho app_title = \"Student system\" và size = \"800x600\". Tạo cửa sổ chính root = tk.Tk(), đặt tiêu đề app_title và kích thước size; tạo cửa sổ phụ details bằng tk.Toplevel(root) với tiêu đề \"Details\", kích thước \"400x300\"; dòng cuối gọi root.mainloop().\n\nThực hành: title và geometry là method nên phải có ngoặc và đối số; cửa sổ phụ là tk.Toplevel(root); root.mainloop() ở dòng cuối.",
+        "io": [
+          {
+            "label": "app_title = \"Student system\", size = \"800x600\"",
+            "value": "Cửa sổ chính 800x600 tên Student system; cửa sổ phụ Details 400x300"
+          },
+          {
+            "label": "app_title = \"Quản lý điểm\", size = \"640x480\"",
+            "value": "root.title() trả \"Quản lý điểm\", kích thước 640x480"
+          }
+        ]
+      },
+      "starterCode": "import tkinter as tk\n\napp_title = \"Student system\"\nsize = \"800x600\"\n\n# 1. Tạo cửa sổ chính root; đặt tiêu đề app_title và kích thước size.\n# 2. Tạo cửa sổ phụ details: tiêu đề \"Details\", kích thước \"400x300\".\n# 3. Chạy vòng lặp sự kiện ở dòng cuối.\n",
+      "solutionCode": "import tkinter as tk\n\napp_title = \"Student system\"\nsize = \"800x600\"\n\nroot = tk.Tk()\nroot.title(app_title)\nroot.geometry(size)\n\ndetails = tk.Toplevel(root)\ndetails.title(\"Details\")\ndetails.geometry(\"400x300\")\n\nroot.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "title và geometry là method nên phải có ngoặc và đối số; cửa sổ phụ là tk.Toplevel(root); root.mainloop() ở dòng cuối."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. root = tk.Tk(); root.title(app_title); root.geometry(size)\n2. details = tk.Toplevel(root); details.title(\"Details\"); details.geometry(\"400x300\")\n3. Dòng cuối: root.mainloop()"
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "root = tk.Tk()\nroot.title(app_title)\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tiêu đề cửa sổ chính",
+          "call": "root.title()",
+          "expect": "'Student system'"
+        },
+        {
+          "name": "Kích thước 800x600",
+          "call": "root.geometry().split('+')[0]",
+          "expect": "'800x600'"
+        },
+        {
+          "name": "Cửa sổ phụ là Toplevel, không phải Tk thứ hai",
+          "call": "type(details).__name__",
+          "expect": "'Toplevel'"
+        },
+        {
+          "name": "Cửa sổ phụ thuộc root",
+          "call": "details.master is root",
+          "expect": "True"
+        },
+        {
+          "name": "Cửa sổ phụ: Details, 400x300",
+          "call": "(details.title(), details.geometry().split('+')[0])",
+          "expect": "('Details', '400x300')"
+        },
+        {
+          "name": "Đã gọi mainloop()",
+          "call": "_studio.tk.mainloop_called",
+          "expect": "True"
+        },
+        {
+          "name": "Dữ liệu khác: \"Quản lý điểm\", 640x480",
+          "call": "(lambda w: (w.title(), w.geometry().split('+')[0]))(_studio.run(vars={'app_title': 'Quản lý điểm', 'size': '640x480'}).ns['root'])",
+          "expect": "('Quản lý điểm', '640x480')"
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "tk.Tk()",
+              "right": "tạo cửa sổ chính root"
+            },
+            {
+              "left": "root.title(app_title)",
+              "right": "đặt chữ trên thanh tiêu đề"
+            },
+            {
+              "left": "tk.Toplevel(root)",
+              "right": "tạo cửa sổ phụ thuộc root"
+            },
+            {
+              "left": "root.mainloop()",
+              "right": "chờ sự kiện tới khi cửa sổ đóng"
+            }
+          ],
+          "rightOrder": [
+            2,
+            3,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import tkinter as tk\n\napp_title = \"Student system\"\nsize = \"800x600\"\n\nroot = tk.Tk()\nroot.title = app_title\nroot.geometry(size)\n\ndetails = tk.Toplevel(root)\ndetails.title(\"Details\")\ndetails.geometry(\"400x300\")\n\nroot.mainloop()",
+          "firstLine": 1,
+          "line": 7,
+          "lines": [
+            7
+          ],
+          "label": "gán title thay vì gọi",
+          "fix": "root.title(app_title)"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import tkinter as tk\n\napp_title = \"Student system\"\nsize = \"800x600\"\n\nroot = tk.Tk()\nroot.title(app_title)\nroot.geometry(size)\n\ndetails = tk.Tk()\ndetails.title(\"Details\")\ndetails.geometry(\"400x300\")\n\nroot.mainloop()\n",
+          "label": "cửa sổ phụ bằng tk.Tk()"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao root.mainloop() phải nằm ở cuối chương trình?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

@@ -1,0 +1,441 @@
+{
+  "lesson_code": "DA01",
+  "sort_order": 47,
+  "module": "M8 · Dự án DA",
+  "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
+  "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
+  "estimated_minutes": 60,
+  "xp_reward": 40,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
+    "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#DA01",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M8",
+          "BOSS",
+          "DA01"
+        ],
+        "title": "Mini-project: doanh thu từ raw tới chart",
+        "goal": "Tự dựng pipeline doanh thu từ raw tới chart.",
+        "task": "Viết load → clean (có lý do loại) → report → KPI → chart; sales.csv phải ra 6 đơn, revenue 155.",
+        "predict": "drop_duplicates() không tham số đã đủ để bỏ trùng đơn hàng chưa?",
+        "code": "def load_sales(path): ...            # mọi cột là chữ\ndef clean_sales(raw): ...            # → (clean, rejected)\ndef quality_report(raw, clean, rejected): ...\ndef kpi_table(clean, by): ...        # orders, qty, revenue, avg_price\ndef revenue_chart(clean): ...        # → Figure: barh + line",
+        "tests": [
+          "sales.csv → 6 đơn, revenue 155",
+          "kpi_table(clean, \"region\") → north 65, south 90"
+        ],
+        "reflect": "Vì sao rows_in phải bằng rows_out cộng tổng các lý do loại?"
+      },
+      "context": {
+        "title": "Tự dựng pipeline doanh thu: đọc raw → làm sạch có lý do → báo cáo chất lượng → KPI → biểu đồ.",
+        "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.",
+        "example": "sales.csv: 11 dòng raw → 6 đơn hợp lệ, revenue = 155 (north 65, south 90; 2026-01: 110, 2026-02: 45).",
+        "prereq": "M06",
+        "level": "Nâng cao",
+        "files": [
+          "sales.csv"
+        ]
+      },
+      "predict": {
+        "question": "sales.csv có hai dòng O05 giống hệt nhau, O03 thiếu qty, O04 có date \"bad\", O07 qty = -1, O08 thiếu giá. Theo chính sách của bài, còn bao nhiêu đơn và revenue bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "7 đơn, revenue 185",
+            "detail": "Quên bỏ bản trùng O05 — đơn 30 bị cộng hai lần.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "6 đơn, revenue 155",
+            "detail": "Loại O03, O04, O07, O08 và bản O05 thứ hai: 20 + 20 + 30 + 40 + 15 + 30 = 155.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "11 dòng, revenue 215",
+            "detail": "Không làm sạch, chỉ điền thiếu bằng 0: O04 vẫn cộng 40, O07 trừ 10, bản trùng cộng 30.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Năm cái bẫy của DA01",
+        "body": "Đọc không khai dtype (mã \"0101\" thành 101, qty thành 2.0); chuẩn hoá thiếu một bước (strip mà quên lower thì \"North\" và \"north\" là hai vùng); drop_duplicates() không subset (chỉ bỏ dòng giống HỆT, đơn nhập lại với \"Book\"/\"book\" vẫn bị đếm hai lần); avg_price = trung bình unit_price (trung bình của tỷ số thay cho tỷ số của tổng); vẽ barh từ giao dịch thô thay vì từ bảng KPI. Thêm một lỗi pandas hay gặp: df = raw (không .copy()) rồi sửa df là sửa luôn raw."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Định nghĩa grain trước khi viết code: một dòng là một đơn hàng, nên order_id phải duy nhất. Bỏ trùng, đếm đơn, cộng doanh thu đều dựa trên câu này."
+        },
+        {
+          "n": 2,
+          "body": "Đọc raw dưới dạng chữ (dtype=str) để chưa mất gì trước khi kiểm: mã \"0101\" không thành số 101, \" North \" còn nguyên dấu cách để bạn thấy dữ liệu bẩn ra sao. Ép kiểu là việc của bước làm sạch: pd.to_numeric và pd.to_datetime với errors=\"coerce\" biến giá trị hỏng thành NaN/NaT để rà soát, không làm sập chương trình."
+        },
+        {
+          "n": 3,
+          "body": "Loại dòng phải có lý do, và mỗi dòng đúng một lý do: nhờ vậy rows_in = rows_out + tổng các lý do. Phép đối chiếu này bắt được dòng \"bốc hơi\" giữa đường. rejected giữ text RAW (date vẫn là \"bad\") để người khác kiểm lại được."
+        },
+        {
+          "n": 4,
+          "body": "KPI phải nói rõ mẫu số: giá bán bình quân = tổng revenue / tổng qty (tỷ số của tổng), không phải trung bình cột unit_price — đơn mua 5 cái phải nặng hơn đơn mua 1 cái."
+        },
+        {
+          "n": 5,
+          "body": "Biểu đồ vẽ từ bảng đã tổng hợp: barh để so vùng (sắp tăng dần, cột dài nhất nằm trên cùng), line cho diễn tiến theo tháng, tiêu đề ghi rõ đây là dữ liệu mô phỏng. Vẽ thẳng giao dịch thô thì mỗi đơn thành một cột chồng lên nhau — trông như tổng nhưng không phải."
+        }
+      ]
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Đơn P7 bị nhập hai lần: \" west,Book\" và \"West,book\". Hai đơn P8, P9 giống nhau mọi cột trừ order_id. Lệnh bỏ trùng nào đúng với grain \"một dòng = một đơn\"?",
+          "options": [
+            {
+              "text": "drop_duplicates(subset=[\"date\", \"region\", \"qty\", \"unit_price\"])",
+              "detail": "Xoá nhầm P9: hai đơn thật khác order_id chỉ \"trông giống nhau\".",
+              "correct": false
+            },
+            {
+              "text": "duplicated(subset=\"order_id\", keep=\"first\") trên các dòng đã hợp lệ",
+              "detail": "Khoá của grain là order_id: P7 còn một dòng, P8 và P9 đều được giữ.",
+              "correct": true
+            },
+            {
+              "text": "drop_duplicates() không tham số",
+              "detail": "Chỉ bỏ dòng giống hệt ở mọi cột — \"Book\"/\"book\" khác nhau nên đơn P7 bị đếm hai lần.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Khoá của grain là order_id: P7 còn một dòng, P8 và P9 đều được giữ."
+        },
+        {
+          "question": "Vùng north có 3 đơn: 2 cuốn × 10, 3 cuốn × 10, 1 cuốn × 15. Giá bán bình quân mỗi cuốn là?",
+          "options": [
+            {
+              "text": "65 / 3 ≈ 21.67",
+              "detail": "Đó là doanh thu bình quân mỗi ĐƠN, không phải mỗi cuốn.",
+              "correct": false
+            },
+            {
+              "text": "(10 + 10 + 15) / 3 ≈ 11.67",
+              "detail": "Trung bình đơn giá coi đơn 1 cuốn nặng bằng đơn 3 cuốn.",
+              "correct": false
+            },
+            {
+              "text": "65 / 6 ≈ 10.83 — tổng revenue chia tổng qty",
+              "detail": "Tỷ số của tổng: cuốn nào cũng nặng như nhau.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Tỷ số của tổng: cuốn nào cũng nặng như nhau."
+        },
+        {
+          "question": "Đọc file có mã đơn \"0101\", \"0102\"… bằng pd.read_csv(path) không khai dtype thì…",
+          "options": [
+            {
+              "text": "order_id thành số 101, 102 — mất số 0 đầu, không còn khớp với hệ thống khác",
+              "detail": "pandas tự đoán kiểu: cột toàn chữ số thành int.",
+              "correct": true
+            },
+            {
+              "text": "Báo lỗi ngay",
+              "detail": "Không lỗi gì — đó mới là chỗ nguy hiểm.",
+              "correct": false
+            },
+            {
+              "text": "Vẫn giữ nguyên \"0101\"",
+              "detail": "Chỉ giữ khi khai dtype=str (hoặc dtype={\"order_id\": str}).",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "pandas tự đoán kiểu: cột toàn chữ số thành int."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao rows_in phải bằng rows_out cộng tổng các lý do loại, và vì sao mỗi dòng chỉ được một lý do?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi dòng raw phải đi đúng một nơi: vào clean, hoặc vào rejected với một lý do. Nếu tổng không khớp là có dòng bị mất (lọc hai lần, groupby bỏ NaN) hoặc bị đếm hai lần. Một dòng vừa sai ngày vừa thiếu qty mà đếm cả hai lý do thì tổng các lý do lớn hơn số dòng bị loại và phép đối chiếu vô nghĩa; nên kiểm theo thứ tự cố định và dừng ở lỗi đầu tiên."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm chạy lại cả pipeline trên một file khác bạn chưa thấy: mã đơn có số 0 đầu, ngày 30/02, ô ngày trống, qty viết bằng chữ, qty = 0, giá không phải số, một đơn nhập hai lần với cách viết khác, và hai đơn thật giống nhau. Viết cứng 6 / 155 sẽ trượt."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "load_sales: sales.csv → 11 dòng, mọi cột là chữ."
+          },
+          {
+            "label": "Bước 2",
+            "text": "clean_sales: chuẩn hoá region, ép kiểu date / qty / unit_price → gắn lý do → bỏ trùng order_id → 6 đơn + 5 dòng rejected."
+          },
+          {
+            "label": "Bước 3",
+            "text": "quality_report: 11 = 6 + (1 bad_date + 2 bad_qty + 1 bad_price + 1 duplicate)."
+          },
+          {
+            "label": "Bước 4",
+            "text": "kpi_table: north 65, south 90; 2026-01 110, 2026-02 45 — tổng vẫn 155."
+          },
+          {
+            "label": "Bước 5",
+            "text": "revenue_chart: barh 2 cột (65, 90) + line 2 điểm (110, 45)."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Thêm đơn hợp lệ \"O11,2026-02-10, South,Pen,1,20\" vào cuối sales.csv. Revenue của south thành bao nhiêu?",
+        "options": [
+          "20",
+          "90",
+          "110"
+        ],
+        "correct": "110"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.\n\nThực hành: Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải.",
+        "io": [
+          {
+            "label": "sales.csv",
+            "value": "11 dòng → 6 đơn, revenue 155; rejected: O03 bad_qty, O04 bad_date, O05 duplicate, O07 bad_qty, O08 bad_price"
+          },
+          {
+            "label": "kpi_table(clean, \"region\")",
+            "value": "north: 3 đơn, 65, avg_price 10.83 · south: 3 đơn, 90, avg_price 15.0"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Boss DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.\n# Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    pass\n\n\ndef clean_sales(raw):\n    pass\n\n\ndef quality_report(raw, clean, rejected):\n    pass\n\n\ndef kpi_table(clean, by):\n    pass\n\n\ndef revenue_chart(clean):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# raw = load_sales(\"sales.csv\")\n# clean, rejected = clean_sales(raw)\n# print(quality_report(raw, clean, rejected))\n# print(kpi_table(clean, \"region\"))\n",
+      "solutionCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    # dtype=str: mọi cột là chữ, giữ nguyên raw để còn kiểm và báo lỗi.\n    return pd.read_csv(path, dtype=str)\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"date\"] = pd.to_datetime(df[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    df[\"qty\"] = pd.to_numeric(df[\"qty\"], errors=\"coerce\")\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n\n    # Mỗi dòng nhận MỘT lý do, theo thứ tự kiểm cố định.\n    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"bad_date\", df[\"date\"].isna()),\n        (\"bad_qty\", df[\"qty\"].isna() | (df[\"qty\"] <= 0)),\n        (\"bad_price\", df[\"unit_price\"].isna() | (df[\"unit_price\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Bỏ trùng theo khoá của grain, chỉ trong các dòng đã hợp lệ.\n    dup_rows = df[reason == \"\"].duplicated(subset=\"order_id\", keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    clean[\"month\"] = clean[\"date\"].dt.strftime(\"%Y-%m\")\n    clean[\"revenue\"] = clean[\"qty\"] * clean[\"unit_price\"]\n\n    rejected = raw[reason != \"\"].copy()\n    rejected[\"reason\"] = reason[reason != \"\"]\n    return clean, rejected\n\n\ndef quality_report(raw, clean, rejected):\n    if len(raw) != len(clean) + len(rejected):\n        raise ValueError(\"raw != clean + rejected: có dòng bị mất hoặc bị đếm hai lần\")\n    report = {\"rows_in\": len(raw), \"rows_out\": len(clean)}\n    for name in REASONS:\n        report[name] = int((rejected[\"reason\"] == name).sum())\n    return report\n\n\ndef kpi_table(clean, by):\n    table = clean.groupby(by).agg(\n        orders=(\"order_id\", \"count\"),\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    # Tỷ số của tổng: đơn mua 5 cái nặng hơn đơn mua 1 cái.\n    table[\"avg_price\"] = table[\"revenue\"] / table[\"qty\"]\n    return table\n\n\ndef revenue_chart(clean):\n    by_region = kpi_table(clean, \"region\")[\"revenue\"].sort_values()\n    by_month = kpi_table(clean, \"month\")[\"revenue\"]\n\n    fig, (ax_region, ax_month) = plt.subplots(1, 2, figsize=(10, 4), layout=\"constrained\")\n    ax_region.barh(by_region.index, by_region.values)\n    ax_region.set(title=\"Doanh thu theo vùng (dữ liệu mô phỏng)\", xlabel=\"Doanh thu\")\n    ax_month.plot(by_month.index, by_month.values, marker=\"o\")\n    ax_month.set(title=\"Doanh thu theo tháng (dữ liệu mô phỏng)\", xlabel=\"Tháng\", ylabel=\"Doanh thu\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    raw = load_sales(\"sales.csv\")\n    clean, rejected = clean_sales(raw)\n    print(quality_report(raw, clean, rejected))\n    print(rejected[[\"order_id\", \"reason\"]].to_string(index=False))\n    print(kpi_table(clean, \"region\").round(2))\n    print(\"Tổng revenue:\", clean[\"revenue\"].sum())\n    revenue_chart(clean)\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. load_sales: pd.read_csv(path, dtype=str) — chưa ép kiểu lúc đọc.\n2. clean_sales: df = raw.copy(); region .str.strip().str.lower(); pd.to_datetime(..., format=\"%Y-%m-%d\", errors=\"coerce\"); pd.to_numeric(..., errors=\"coerce\") cho qty và unit_price.\n3. Series reason toàn \"\": lần lượt bad_date → bad_qty → bad_price, chỉ gán cho dòng còn \"\"; trong các dòng còn \"\", duplicated(subset=\"order_id\") → \"duplicate\".\n4. clean = dòng reason == \"\" + month + revenue; rejected = raw của dòng bị loại + cột reason.\n5. quality_report đếm theo REASONS và kiểm tổng; kpi_table = groupby(by).agg(...) rồi avg_price = revenue / qty; revenue_chart lấy số từ kpi_table."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"bad_date\", df[\"date\"].isna()),\n        (\"bad_qty\", df[\"qty\"].isna() | (df[\"qty\"] <= 0)),\n        (\"bad_price\", df[\"unit_price\"].isna() | (df[\"unit_price\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "load_sales: 11 dòng × 6 cột, đúng tên cột",
+          "call": "(lambda r: (len(r), list(r.columns)))(load_sales('sales.csv'))",
+          "expect": "(11, ['order_id', 'date', 'region', 'product', 'qty', 'unit_price'])"
+        },
+        {
+          "name": "load_sales đọc mọi cột là chữ: \" North \" còn dấu cách, qty là \"2\", ô trống là NaN",
+          "call": "(lambda r: (r.loc[0, 'region'], r.loc[0, 'qty'], int(r['qty'].isna().sum())))(load_sales('sales.csv'))",
+          "expect": "(' North ', '2', 1)"
+        },
+        {
+          "name": "File mới: mã đơn \"0101\" giữ số 0 đầu",
+          "call": "load_sales(_studio.write('sales_q2.csv', 'order_id,date,region,product,qty,unit_price\\n0101,2026-03-01,East,Pen,2,20\\n0102,2026-03-02, west,Book,1,10\\n0103,2026-02-30,east,Pen,1,20\\n0104,,West,Book,2,10\\n0105,2026-03-04,WEST ,Book,two,10\\n0102,2026-03-02,West,book,1,10\\n0106,2026-04-01,east,Pen,3,abc\\n0107,2026-04-02,east,Pen,4,15\\n0108,2026-04-02,east,Pen,4,15\\n0109,2026-04-05,  West,Book,2,12.5\\n0110,2026-04-06,west,Book,0,12\\n0111,2026-03-15,EAST,Book,5,8\\n0112,2026-04-20,west,Pen,1,20\\n'))['order_id'].head(2).tolist()",
+          "expect": "['0101', '0102']"
+        },
+        {
+          "name": "sales.csv → đúng 6 đơn hợp lệ",
+          "call": "sorted(clean_sales(load_sales('sales.csv'))[0]['order_id'])",
+          "expect": "['O01', 'O02', 'O05', 'O06', 'O09', 'O10']"
+        },
+        {
+          "name": "sales.csv → tổng revenue = 155",
+          "call": "float(clean_sales(load_sales('sales.csv'))[0]['revenue'].sum())",
+          "expect": "155.0"
+        },
+        {
+          "name": "clean: region chuẩn hoá, month dạng \"YYYY-MM\", date là datetime, revenue là số",
+          "call": "(lambda c: (sorted(set(c['region'])), sorted(set(c['month'])), __import__('pandas').api.types.is_datetime64_any_dtype(c['date']), __import__('pandas').api.types.is_numeric_dtype(c['revenue'])))(clean_sales(load_sales('sales.csv'))[0])",
+          "expect": "(['north', 'south'], ['2026-01', '2026-02'], True, True)"
+        },
+        {
+          "name": "rejected: 5 dòng, mỗi dòng đúng một lý do",
+          "call": "sorted(map(tuple, clean_sales(load_sales('sales.csv'))[1][['order_id', 'reason']].values.tolist()))",
+          "expect": "[('O03', 'bad_qty'), ('O04', 'bad_date'), ('O05', 'duplicate'), ('O07', 'bad_qty'), ('O08', 'bad_price')]"
+        },
+        {
+          "name": "rejected giữ text raw (date vẫn là \"bad\"); raw không bị sửa",
+          "call": "(lambda raw: (lambda res: (res[1].loc[res[1]['order_id'] == 'O04', 'date'].tolist(), raw.loc[0, 'region'], len(raw)))(clean_sales(raw)))(load_sales('sales.csv'))",
+          "expect": "(['bad'], ' North ', 11)"
+        },
+        {
+          "name": "quality_report trên sales.csv: 11 = 6 + 1 + 2 + 1 + 1",
+          "call": "(lambda raw: quality_report(raw, *clean_sales(raw)))(load_sales('sales.csv'))",
+          "expect": "{'rows_in': 11, 'rows_out': 6, 'bad_date': 1, 'bad_qty': 2, 'bad_price': 1, 'duplicate': 1}"
+        },
+        {
+          "name": "quality_report: số dòng không khớp (mất một dòng clean) → ValueError",
+          "call": "(lambda raw: (lambda c, r: _studio.call(quality_report, raw, c.iloc[1:], r).error)(*clean_sales(raw)))(load_sales('sales.csv'))",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "File mới: report 13 → 7 (2 bad_date, 2 bad_qty, 1 bad_price, 1 duplicate)",
+          "call": "(lambda raw: quality_report(raw, *clean_sales(raw)))(load_sales(_studio.write('sales_q2.csv', 'order_id,date,region,product,qty,unit_price\\n0101,2026-03-01,East,Pen,2,20\\n0102,2026-03-02, west,Book,1,10\\n0103,2026-02-30,east,Pen,1,20\\n0104,,West,Book,2,10\\n0105,2026-03-04,WEST ,Book,two,10\\n0102,2026-03-02,West,book,1,10\\n0106,2026-04-01,east,Pen,3,abc\\n0107,2026-04-02,east,Pen,4,15\\n0108,2026-04-02,east,Pen,4,15\\n0109,2026-04-05,  West,Book,2,12.5\\n0110,2026-04-06,west,Book,0,12\\n0111,2026-03-15,EAST,Book,5,8\\n0112,2026-04-20,west,Pen,1,20\\n')))",
+          "expect": "{'rows_in': 13, 'rows_out': 7, 'bad_date': 2, 'bad_qty': 2, 'bad_price': 1, 'duplicate': 1}"
+        },
+        {
+          "name": "File mới: 7 đơn, revenue 255 — bỏ trùng theo order_id, giữ hai đơn thật giống nhau",
+          "call": "(lambda c: (sorted(c['order_id']), float(c['revenue'].sum())))(clean_sales(load_sales(_studio.write('sales_q2.csv', 'order_id,date,region,product,qty,unit_price\\n0101,2026-03-01,East,Pen,2,20\\n0102,2026-03-02, west,Book,1,10\\n0103,2026-02-30,east,Pen,1,20\\n0104,,West,Book,2,10\\n0105,2026-03-04,WEST ,Book,two,10\\n0102,2026-03-02,West,book,1,10\\n0106,2026-04-01,east,Pen,3,abc\\n0107,2026-04-02,east,Pen,4,15\\n0108,2026-04-02,east,Pen,4,15\\n0109,2026-04-05,  West,Book,2,12.5\\n0110,2026-04-06,west,Book,0,12\\n0111,2026-03-15,EAST,Book,5,8\\n0112,2026-04-20,west,Pen,1,20\\n')))[0])",
+          "expect": "(['0101', '0102', '0107', '0108', '0109', '0111', '0112'], 255.0)"
+        },
+        {
+          "name": "kpi_table theo region: orders, revenue và avg_price = revenue / qty",
+          "call": "(lambda t: (t['orders'].to_dict(), t['revenue'].to_dict(), t['avg_price'].round(2).to_dict()))(kpi_table(clean_sales(load_sales('sales.csv'))[0], 'region'))",
+          "expect": "({'north': 3, 'south': 3}, {'north': 65.0, 'south': 90.0}, {'north': 10.83, 'south': 15.0})"
+        },
+        {
+          "name": "kpi_table theo month; tổng các tháng = 155",
+          "call": "(lambda t: (t['revenue'].to_dict(), float(t['revenue'].sum())))(kpi_table(clean_sales(load_sales('sales.csv'))[0], 'month'))",
+          "expect": "({'2026-01': 110.0, '2026-02': 45.0}, 155.0)"
+        },
+        {
+          "name": "kpi_table trên 3 giao dịch của bài tập gốc: A 30, B 60, tổng 90",
+          "call": "(lambda t: (t['revenue'].to_dict(), t['avg_price'].to_dict(), float(t['revenue'].sum())))(kpi_table(__import__('pandas').DataFrame({'order_id': ['a1', 'a2', 'b1'], 'region': ['A', 'A', 'B'], 'qty': [1, 2, 3], 'unit_price': [10, 10, 20], 'revenue': [10, 20, 60]}), 'region'))",
+          "expect": "({'A': 30, 'B': 60}, {'A': 10.0, 'B': 20.0}, 90.0)"
+        },
+        {
+          "name": "File mới: KPI theo region và theo month",
+          "call": "(lambda c: (kpi_table(c, 'region')['revenue'].to_dict(), kpi_table(c, 'region')['avg_price'].round(2).to_dict(), kpi_table(c, 'month')['revenue'].to_dict()))(clean_sales(load_sales(_studio.write('sales_q2.csv', 'order_id,date,region,product,qty,unit_price\\n0101,2026-03-01,East,Pen,2,20\\n0102,2026-03-02, west,Book,1,10\\n0103,2026-02-30,east,Pen,1,20\\n0104,,West,Book,2,10\\n0105,2026-03-04,WEST ,Book,two,10\\n0102,2026-03-02,West,book,1,10\\n0106,2026-04-01,east,Pen,3,abc\\n0107,2026-04-02,east,Pen,4,15\\n0108,2026-04-02,east,Pen,4,15\\n0109,2026-04-05,  West,Book,2,12.5\\n0110,2026-04-06,west,Book,0,12\\n0111,2026-03-15,EAST,Book,5,8\\n0112,2026-04-20,west,Pen,1,20\\n')))[0])",
+          "expect": "({'east': 200.0, 'west': 55.0}, {'east': 13.33, 'west': 13.75}, {'2026-03': 90.0, '2026-04': 165.0})"
+        },
+        {
+          "name": "revenue_chart: 2 Axes — barh 2 vùng (65, 90) và line 2 tháng (110, 45)",
+          "call": "(lambda f: (len(f.axes), [float(p.get_width()) for p in f.axes[0].patches], [float(y) for y in f.axes[1].lines[0].get_ydata()]))(revenue_chart(clean_sales(load_sales('sales.csv'))[0]))",
+          "expect": "(2, [65.0, 90.0], [110.0, 45.0])"
+        },
+        {
+          "name": "File mới: barh sắp tăng dần (west 55 rồi east 200), line 90 → 165",
+          "call": "(lambda f: ([float(p.get_width()) for p in f.axes[0].patches], [float(y) for y in f.axes[1].lines[0].get_ydata()]))(revenue_chart(clean_sales(load_sales(_studio.write('sales_q2.csv', 'order_id,date,region,product,qty,unit_price\\n0101,2026-03-01,East,Pen,2,20\\n0102,2026-03-02, west,Book,1,10\\n0103,2026-02-30,east,Pen,1,20\\n0104,,West,Book,2,10\\n0105,2026-03-04,WEST ,Book,two,10\\n0102,2026-03-02,West,book,1,10\\n0106,2026-04-01,east,Pen,3,abc\\n0107,2026-04-02,east,Pen,4,15\\n0108,2026-04-02,east,Pen,4,15\\n0109,2026-04-05,  West,Book,2,12.5\\n0110,2026-04-06,west,Book,0,12\\n0111,2026-03-15,EAST,Book,5,8\\n0112,2026-04-20,west,Pen,1,20\\n')))[0]))",
+          "expect": "([55.0, 200.0], [90.0, 165.0])"
+        },
+        {
+          "name": "revenue_chart: Axes nào cũng có tiêu đề, có nhãn trục, ghi rõ dữ liệu mô phỏng",
+          "call": "(lambda f: (lambda text: (all(a.get_title() for a in f.axes), bool(f.axes[0].get_xlabel()), bool(f.axes[1].get_xlabel()), bool(f.axes[1].get_ylabel()), 'mô phỏng' in text or 'synthetic' in text))(' '.join([a.get_title() for a in f.axes] + [f.get_suptitle()]).lower()))(revenue_chart(clean_sales(load_sales('sales.csv'))[0]))",
+          "expect": "(True, True, True, True, True)"
+        }
+      ],
+      "files": [
+        {
+          "name": "sales.csv",
+          "content": "order_id,date,region,product,qty,unit_price\r\nO01,2026-01-01, North ,Book,2,10\r\nO02,2026-01-02,south,Pen,1,20\r\nO03,2026-01-03,north,Book,,10\r\nO04,bad,south,Pen,2,20\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO06,2026-01-25,South,Pen,2,20\r\nO07,2026-02-01,north,Book,-1,10\r\nO08,2026-02-02,south,Pen,2,\r\nO09,2026-02-03,north,Book,1,15\r\nO10,2026-02-04,south,Pen,3,10\r\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "load_sales(path)",
+          "does": "Đọc file CSV bán hàng, giữ nguyên raw.",
+          "takes": "path: str — file CSV có dòng tiêu đề",
+          "gives": "DataFrame đủ các cột theo thứ tự của file; MỌI ô là chuỗi (dtype=str), ô trống là NaN",
+          "effect": "Không ép kiểu, không strip, không bỏ dòng nào.",
+          "call": "load_sales(\"sales.csv\") → 11 dòng × 6 cột; .loc[0, \"region\"] == \" North \""
+        },
+        {
+          "sig": "clean_sales(raw)",
+          "does": "Chuẩn hoá, kiểm từng dòng, gắn lý do loại, bỏ trùng theo order_id.",
+          "takes": "raw: DataFrame từ load_sales — KHÔNG được sửa",
+          "gives": "(clean, rejected). clean: dòng hợp lệ; region đã strip + lower; date kiểu datetime; qty, unit_price là số; thêm month = \"YYYY-MM\" và revenue = qty × unit_price. rejected: các dòng RAW bị loại (giữ text gốc) + cột reason",
+          "effect": "Lý do theo thứ tự kiểm, mỗi dòng một lý do: bad_date (không phải ngày YYYY-MM-DD có thật) → bad_qty (thiếu, không phải số, hoặc ≤ 0) → bad_price (thiếu, không phải số, hoặc ≤ 0) → duplicate (trong các dòng hợp lệ, order_id đã gặp — giữ dòng đầu).",
+          "call": "clean_sales(load_sales(\"sales.csv\")) → 6 dòng clean, 5 dòng rejected"
+        },
+        {
+          "sig": "quality_report(raw, clean, rejected)",
+          "does": "Tóm tắt chất lượng dữ liệu và đối chiếu số dòng.",
+          "takes": "raw; clean, rejected do clean_sales trả về",
+          "gives": "dict đủ 6 khoá: rows_in, rows_out, bad_date, bad_qty, bad_price, duplicate (lý do không gặp thì 0)",
+          "effect": "len(raw) khác len(clean) + len(rejected) → raise ValueError.",
+          "call": "→ {\"rows_in\": 11, \"rows_out\": 6, \"bad_date\": 1, \"bad_qty\": 2, \"bad_price\": 1, \"duplicate\": 1}"
+        },
+        {
+          "sig": "kpi_table(clean, by)",
+          "does": "Bảng KPI theo vùng hoặc theo tháng.",
+          "takes": "clean; by: \"region\" hoặc \"month\"",
+          "gives": "DataFrame, index là giá trị của cột by (tăng dần); cột orders (số đơn), qty (tổng), revenue (tổng), avg_price = revenue / qty của nhóm",
+          "effect": "Không sửa clean.",
+          "call": "kpi_table(clean, \"region\") → north: 3 đơn, revenue 65, avg_price 10.83"
+        },
+        {
+          "sig": "revenue_chart(clean)",
+          "does": "Vẽ hai biểu đồ từ bảng KPI đã tổng hợp (không từ giao dịch thô).",
+          "takes": "clean",
+          "gives": "Figure đúng 2 Axes: axes[0] barh revenue theo region, sắp TĂNG dần; axes[1] line revenue theo month, có marker",
+          "effect": "Mỗi Axes có title, tiêu đề ghi rõ \"dữ liệu mô phỏng\"; axes[0] có xlabel; axes[1] có xlabel và ylabel. Không gọi plt.show() trong hàm.",
+          "call": "revenue_chart(clean).axes[0].patches → 2 cột dài 65 và 90"
+        }
+      ],
+      "gate": true,
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": true,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
+          "prompt": "Đơn P7 bị nhập hai lần: \" west,Book\" và \"West,book\". Hai đơn P8, P9 giống nhau mọi cột trừ order_id. Lệnh bỏ trùng nào đúng với grain \"một dòng = một đơn\"?",
+          "items": [
+            {
+              "statement": "drop_duplicates(subset=[\"date\", \"region\", \"qty\", \"unit_price\"])",
+              "answer": false,
+              "explain": "Xoá nhầm P9: hai đơn thật khác order_id chỉ \"trông giống nhau\"."
+            },
+            {
+              "statement": "duplicated(subset=\"order_id\", keep=\"first\") trên các dòng đã hợp lệ",
+              "answer": true,
+              "explain": "Khoá của grain là order_id: P7 còn một dòng, P8 và P9 đều được giữ."
+            },
+            {
+              "statement": "drop_duplicates() không tham số",
+              "answer": false,
+              "explain": "Chỉ bỏ dòng giống hệt ở mọi cột — \"Book\"/\"book\" khác nhau nên đơn P7 bị đếm hai lần."
+            }
+          ]
+        },
+        {
+          "id": "spotError-1",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "        (\"bad_qty\", df[\"qty\"].isna() | (df[\"qty\"] <= 0)),\n        (\"bad_price\", df[\"unit_price\"].isna() | (df[\"unit_price\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Bỏ trùng theo khoá của grain, chỉ trong các dòng đã hợp lệ.\n    dup_rows = df[reason == \"\"].duplicated(keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    clean[\"month\"] = clean[\"date\"].dt.strftime(\"%Y-%m\")\n    clean[\"revenue\"] = clean[\"qty\"] * clean[\"unit_price\"]\n\n    rejected = raw[reason != \"\"].copy()",
+          "firstLine": 23,
+          "line": 30,
+          "lines": [
+            30
+          ],
+          "label": "bỏ trùng cả dòng thay vì theo order_id",
+          "fix": "    dup_rows = df[reason == \"\"].duplicated(subset=\"order_id\", keep=\"first\")"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

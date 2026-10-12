@@ -1,0 +1,378 @@
+{
+  "lesson_code": "N01",
+  "sort_order": 26,
+  "module": "M5 · NumPy",
+  "title": "N01 · Array, dtype, shape và axis",
+  "subtitle": "Trung cấp · M5 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N01 · Array, dtype, shape và axis",
+    "subtitle": "Trung cấp · M5 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#N01",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N01"
+        ],
+        "title": "Array, dtype, shape và axis",
+        "goal": "Tạo array 2 chiều và tổng hợp đúng axis.",
+        "task": "make_grid(n, n_cols) bằng arange/reshape; describe(a) trả shape, ndim, size, tổng cột, tổng hàng, tổng chung.",
+        "predict": "Array (3, 4): sum(axis=0) có mấy phần tử?",
+        "code": "import numpy as np\n\ndef make_grid(n, n_cols):\n    pass  # np.arange(...).reshape(...)\n\ndef describe(a):\n    pass",
+        "tests": [
+          "make_grid(12, 4) → col_sums [15, 18, 21, 24]",
+          "make_grid(10, 4) → ValueError"
+        ],
+        "reflect": "axis=0 gộp chiều nào, giữ chiều nào?"
+      },
+      "context": {
+        "title": "Tạo array 2 chiều bằng arange/reshape và tổng hợp đúng theo axis.",
+        "body": "Viết make_grid(n, n_cols): array các số 1..n xếp thành hàng, mỗi hàng n_cols cột (n không chia hết cho n_cols thì để reshape báo ValueError). Viết describe(a) — a là array hoặc list lồng nhau 2 chiều — trả dict: shape, ndim, size, col_sums (tổng TỪNG CỘT), row_sums (tổng từng hàng) và total (tổng tất cả).",
+        "example": "make_grid(12, 4) → shape (3, 4); describe(...) → col_sums [15, 18, 21, 24], row_sums [10, 26, 42], total 78.",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "a = np.arange(1, 13).reshape(3, 4). a.sum(axis=0) có bao nhiêu phần tử?",
+        "options": [
+          {
+            "id": "a",
+            "title": "1 — tổng toàn bộ là 78",
+            "detail": "Đó là a.sum() không có axis.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "3 — một tổng cho mỗi hàng",
+            "detail": "Đó là axis=1.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "4 — gộp 3 hàng lại, còn một tổng cho mỗi cột",
+            "detail": "axis=0 là chiều hàng bị gộp mất.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"axis=0 nghĩa là tính theo hàng nên được một số cho mỗi hàng\"",
+        "body": "axis là chiều bị GỘP mất, không phải chiều được giữ lại. Với array (3, 4), axis=0 gộp 3 hàng → kết quả shape (4,) — một số cho mỗi cột. Ma trận vuông còn nguy hiểm hơn: nhầm axis vẫn ra đúng shape nên không có lỗi nào báo, chỉ có số sai."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "np.array([[...], [...]]) tạo ndarray 2 chiều. Mọi phần tử chung MỘT dtype: toàn số nguyên thì là int64 trên máy 64-bit (trong trình duyệt có thể là int32 — tuỳ nền tảng); trộn 1 với 2.5 thì cả array thành float64."
+        },
+        {
+          "n": 2,
+          "body": "shape là kích thước từng chiều, ví dụ (2, 3) = 2 hàng × 3 cột; ndim là số chiều (2); size là tổng số phần tử (6). len(a) chỉ là độ dài chiều đầu — số hàng."
+        },
+        {
+          "n": 3,
+          "body": "np.arange(1, 13) cho 1..12 — điểm dừng KHÔNG nằm trong kết quả. reshape(3, 4) xếp lại 12 phần tử thành 3 hàng × 4 cột; viết -1 để NumPy tự tính một chiều; số phần tử không khớp → ValueError. linspace, zeros, ones tạo nhanh dữ liệu thử."
+        },
+        {
+          "n": 4,
+          "body": "axis là chiều bị GỘP: sum(axis=0) gộp các hàng → còn một giá trị cho mỗi cột; sum(axis=1) gộp các cột → còn một giá trị cho mỗi hàng. Không ghi axis thì gộp hết thành một số."
+        },
+        {
+          "n": 5,
+          "body": "Trước khi tính, viết ra shape mong muốn và đơn vị của mỗi cột: tổng theo cột của array (3, 4) phải có shape (4,)."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\n\ntemps = np.array([[30, 32, 31], [25, 27, 26]])   # 2 thành phố × 3 ngày\nprint(temps.shape, temps.ndim, temps.size, len(temps))\nprint(temps.sum(axis=0))   # gộp các HÀNG → còn một số cho mỗi ngày (cột)\nprint(temps.sum(axis=1))   # gộp các CỘT → còn một số cho mỗi thành phố (hàng)\nprint(temps.sum())\n\nprint(np.array([1, 2, 3.5]).dtype)\nprint(np.linspace(0, 1, 5))\nprint(np.zeros((2, 3)).shape, np.ones(2))\nprint(np.arange(6).reshape(3, -1))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "a.shape là (5, 3). len(a) và a.size bằng bao nhiêu?",
+          "options": [
+            {
+              "text": "len(a) = 15, a.size = 15",
+              "detail": "len chỉ là số hàng.",
+              "correct": false
+            },
+            {
+              "text": "len(a) = 5, a.size = 15",
+              "detail": "len đo chiều đầu; size đếm mọi phần tử.",
+              "correct": true
+            },
+            {
+              "text": "len(a) = 3, a.size = 8",
+              "detail": "size là TÍCH các chiều, không phải tổng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "len đo chiều đầu; size đếm mọi phần tử."
+        },
+        {
+          "question": "np.arange(10).reshape(4, 3) thì sao?",
+          "options": [
+            {
+              "text": "Cắt bớt còn 9 phần tử",
+              "detail": "NumPy không tự cắt.",
+              "correct": false
+            },
+            {
+              "text": "ValueError — 10 phần tử không xếp được thành 4 × 3 = 12",
+              "detail": "reshape giữ nguyên số phần tử.",
+              "correct": true
+            },
+            {
+              "text": "Tự thêm 2 số 0 cho đủ",
+              "detail": "NumPy không tự đệm.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "reshape giữ nguyên số phần tử."
+        },
+        {
+          "question": "np.array([1, 2, 3.5]).dtype là gì?",
+          "options": [
+            {
+              "text": "object",
+              "detail": "Chỉ khi trộn những kiểu không phải số.",
+              "correct": false
+            },
+            {
+              "text": "int và float lẫn nhau",
+              "detail": "Mỗi array chỉ có một dtype.",
+              "correct": false
+            },
+            {
+              "text": "float64 — một số thực kéo cả array thành số thực",
+              "detail": "Array có một dtype chung.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Array có một dtype chung."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Giải thích axis=0 và axis=1 với array điểm có shape (học viên, môn).",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Với array shape (học viên, môn), axis=0 gộp chiều học viên nên kết quả còn một giá trị cho mỗi môn (tổng hay trung bình theo môn); axis=1 gộp chiều môn nên còn một giá trị cho mỗi học viên. Kiểm lại bằng shape kết quả: (số môn,) hay (số học viên,)."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: 2 thành phố × 3 ngày. Lắp lệnh tạo dữ liệu, số phần tử và tổng theo axis.",
+        "rule": "Thử array 2 × 3 nhập tay ([[5, 0, 1], [2, 2, 2]]) và một ma trận vuông 2 × 2: viết shape kết quả mong muốn TRƯỚC khi chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "np.arange(1, 13) → 12 số từ 1 đến 12"
+          },
+          {
+            "label": "Bước 2",
+            "text": "reshape(-1, 4) → shape (3, 4)"
+          },
+          {
+            "label": "Bước 3",
+            "text": "sum(axis=0) → [15, 18, 21, 24], một tổng mỗi cột"
+          },
+          {
+            "label": "Bước 4",
+            "text": "sum(axis=1) → [10, 26, 42], một tổng mỗi hàng"
+          },
+          {
+            "label": "Bước 5",
+            "text": "sum() → 78"
+          }
+        ]
+      },
+      "counter": {
+        "question": "describe([[1, 2], [3, 4]])[\"col_sums\"] là gì?",
+        "options": [
+          "[4, 6]",
+          "[3, 7]",
+          "10"
+        ],
+        "correct": "[4, 6]"
+      },
+      "scaffold": {
+        "template": "import numpy as np\n\ntemps = np.arange(1, {{slot1}}).reshape(2, 3)\ninfo = {\n    \"shape\": temps.shape,\n    \"size\": {{slot2}},\n    \"per_day\": temps.sum({{slot3}}),\n    \"per_city\": temps.sum({{slot4}}),\n}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "7"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "temps.size"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "axis=0"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "axis=1"
+          }
+        ],
+        "bank": [
+          {
+            "label": "axis=2",
+            "slot": 4,
+            "trap": "Array 2 chiều chỉ có axis 0 và 1 — AxisError."
+          },
+          {
+            "label": "len(temps)",
+            "slot": 2,
+            "trap": "len chỉ đếm số hàng (2), không phải số phần tử (6)."
+          },
+          {
+            "label": "temps.size",
+            "slot": 2
+          },
+          {
+            "label": "axis=0",
+            "slot": 3
+          },
+          {
+            "label": "axis=1",
+            "slot": 4
+          },
+          {
+            "label": "7",
+            "slot": 1
+          },
+          {
+            "label": "6",
+            "slot": 1,
+            "trap": "arange dừng TRƯỚC điểm dừng: arange(1, 6) chỉ có 5 số, reshape(2, 3) sẽ lỗi."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết make_grid(n, n_cols): array các số 1..n xếp thành hàng, mỗi hàng n_cols cột (n không chia hết cho n_cols thì để reshape báo ValueError). Viết describe(a) — a là array hoặc list lồng nhau 2 chiều — trả dict: shape, ndim, size, col_sums (tổng TỪNG CỘT), row_sums (tổng từng hàng) và total (tổng tất cả).\n\nThực hành: make_grid dùng np.arange(1, n + 1).reshape(-1, n_cols); describe đổi đầu vào bằng np.asarray rồi dùng shape, ndim, size, sum(axis=0), sum(axis=1), sum().",
+        "io": [
+          {
+            "label": "make_grid(12, 4)",
+            "value": "shape (3, 4); hàng cuối [9, 10, 11, 12]"
+          },
+          {
+            "label": "describe(make_grid(12, 4))",
+            "value": "col_sums [15, 18, 21, 24] · row_sums [10, 26, 42] · total 78"
+          },
+          {
+            "label": "make_grid(10, 4)",
+            "value": "ValueError"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef make_grid(n, n_cols):\n    pass\n\n\ndef describe(a):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef make_grid(n, n_cols):\n    return np.arange(1, n + 1).reshape(-1, n_cols)\n\n\ndef describe(a):\n    a = np.asarray(a)\n    return {\n        \"shape\": a.shape,\n        \"ndim\": a.ndim,\n        \"size\": a.size,\n        \"col_sums\": a.sum(axis=0),\n        \"row_sums\": a.sum(axis=1),\n        \"total\": a.sum(),\n    }\n\n\ngrid = make_grid(12, 4)\nprint(grid)\nprint(describe(grid))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "make_grid dùng np.arange(1, n + 1).reshape(-1, n_cols); describe đổi đầu vào bằng np.asarray rồi dùng shape, ndim, size, sum(axis=0), sum(axis=1), sum()."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. make_grid: return np.arange(1, n + 1).reshape(-1, n_cols) — điểm dừng là n + 1.\n2. describe: a = np.asarray(a) để nhận cả list lồng nhau.\n3. col_sums = a.sum(axis=0) (gộp hàng), row_sums = a.sum(axis=1) (gộp cột), total = a.sum()."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def make_grid(n, n_cols):\n    return np.arange(1, n + 1).reshape(...)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "make_grid(12, 4): shape (3, 4)",
+          "call": "make_grid(12, 4).shape",
+          "expect": "(3, 4)"
+        },
+        {
+          "name": "make_grid(12, 4): hàng cuối là 9..12",
+          "call": "[int(v) for v in make_grid(12, 4)[-1]]",
+          "expect": "[9, 10, 11, 12]"
+        },
+        {
+          "name": "make_grid(8, 2): 4 hàng, bắt đầu từ 1",
+          "call": "(make_grid(8, 2).shape, [int(v) for v in make_grid(8, 2)[0]])",
+          "expect": "((4, 2), [1, 2])"
+        },
+        {
+          "name": "make_grid(10, 4) → ValueError",
+          "call": "_studio.call(make_grid, 10, 4).error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "Tổng từng cột (axis=0)",
+          "call": "[int(v) for v in describe(make_grid(12, 4))['col_sums']]",
+          "expect": "[15, 18, 21, 24]"
+        },
+        {
+          "name": "Tổng từng hàng (axis=1)",
+          "call": "[int(v) for v in describe(make_grid(12, 4))['row_sums']]",
+          "expect": "[10, 26, 42]"
+        },
+        {
+          "name": "shape, ndim, size, total",
+          "call": "(lambda d: (tuple(d['shape']), int(d['ndim']), int(d['size']), int(d['total'])))(describe(make_grid(12, 4)))",
+          "expect": "((3, 4), 2, 12, 78)"
+        },
+        {
+          "name": "List lồng nhau 2 × 3 (dữ liệu khác)",
+          "call": "(lambda d: ([int(v) for v in d['col_sums']], [int(v) for v in d['row_sums']], int(d['size'])))(describe([[5, 0, 1], [2, 2, 2]]))",
+          "expect": "([7, 2, 3], [6, 6], 6)"
+        },
+        {
+          "name": "Ma trận vuông 2 × 2: không nhầm axis",
+          "call": "(lambda d: ([int(v) for v in d['col_sums']], [int(v) for v in d['row_sums']]))(describe([[1, 2], [3, 4]]))",
+          "expect": "([4, 6], [3, 7])"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "make_grid(n, n_cols)",
+          "does": "Xếp các số 1..n thành array 2 chiều, mỗi hàng n_cols cột.",
+          "takes": "n, n_cols: int dương",
+          "gives": "ndarray shape (n // n_cols, n_cols); n không chia hết → ValueError",
+          "effect": "Không in gì.",
+          "call": "make_grid(12, 4) → shape (3, 4), hàng cuối [9, 10, 11, 12]"
+        },
+        {
+          "sig": "describe(a)",
+          "does": "Mô tả array 2 chiều và tổng theo từng axis.",
+          "takes": "a: ndarray hoặc list lồng nhau, 2 chiều",
+          "gives": "dict shape, ndim, size, col_sums, row_sums, total",
+          "effect": "Không sửa a.",
+          "call": "describe(make_grid(12, 4))[\"col_sums\"] → [15, 18, 21, 24]"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy. Số nguyên mặc định của numpy trong trình duyệt là int32 (trên máy 64-bit thường là int64) — bộ chấm không phụ thuộc dtype đó.",
+      "packages": [
+        "numpy"
+      ]
+    }
+  }
+}

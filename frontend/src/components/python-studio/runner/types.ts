@@ -5,7 +5,7 @@
 // chạy trong Docker ở server. Mọi thứ phía trên chỉ được gọi qua `Runner` dưới
 // đây, nên thay bộ chấm là viết một lớp mới cùng hợp đồng này, không phải sửa
 // lại màn sandbox và các game chạy code.
-import type { LessonFile, LessonTest } from '@/lib/studio-lesson';
+import type { LessonFile, LessonTest, StudioPackage } from '@/lib/studio-lesson';
 
 export type TestResult = { name: string; passed: boolean; detail: string };
 
@@ -22,7 +22,7 @@ export type RunResult = {
 /**
  * Một lượt chạy. Các trường này cũng chính là HỢP ĐỒNG THÔNG ĐIỆP với
  * public/static/js/studio-lesson.worker.js — tên trường cố định, đừng đổi:
- *   { code, tests, forbid, files, stdin }
+ *   { code, tests, forbid, files, stdin, packages }
  */
 export type RunRequest = {
   code: string;
@@ -37,6 +37,11 @@ export type RunRequest = {
    * thêm ô "dữ liệu vào" thì chỉ cần truyền mảng vào đây.
    */
   stdin?: string[];
+  /**
+   * Thư viện ngoài (numpy, pandas…) của bài. Worker tải + import sẵn rồi mới
+   * báo 'ready', nên thời gian tải không bị tính vào 5 giây chạy code.
+   */
+  packages?: StudioPackage[];
 };
 
 /** Hai mốc thời gian chờ, tách ra để lớp gọi đọc được chứ không chôn số. */
@@ -50,8 +55,8 @@ export type RunLimits = {
 export const DEFAULT_LIMITS: RunLimits = { readyMs: 60000, execMs: 5000 };
 
 export interface Runner {
-  /** Nạp sẵn runtime khi học viên mới mở bài, trước khi họ bấm Chạy. */
-  prewarm(): void;
+  /** Nạp sẵn runtime (và thư viện của bài) khi học viên mới mở bài, trước khi họ bấm Chạy. */
+  prewarm(packages?: StudioPackage[]): void;
   /**
    * Chạy một lượt. KHÔNG bao giờ reject: quá hạn hay lỗi hạ tầng đều trả về
    * RunResult có `error`, để phía UI chỉ phải xử lý một đường. Trả `null`

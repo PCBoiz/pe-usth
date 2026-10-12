@@ -14,8 +14,10 @@
 //
 // Hợp đồng thông điệp với worker (public/static/js/studio-lesson.worker.js —
 // file đó do phía runtime quản, ở đây không sửa):
-//   gửi đi : { code, tests, forbid, files, stdin }   ← tên trường cố định
-//   nhận về: { type: 'ready' }  rồi  { type: 'result', ...RunResult }
+//   gửi đi : { code, tests, forbid, files, stdin, packages }   ← tên trường cố định
+//   nhận về: [{ type: 'loading' }]  { type: 'ready' }  rồi  { type: 'result', ...RunResult }
+//   'loading' = worker đang tải/import thư viện của bài (numpy, pandas…): đồng hồ
+//   quay về mốc nạp runtime, 5 giây chỉ bắt đầu ở 'ready'.
 //
 // Worker hôm nay là loại MỘT-LƯỢT: nó nạp Pyodide bên trong `onmessage`, chấm,
 // rồi coi như xong — chưa giữ runtime lại được. Nên lớp này tự dò:
@@ -27,6 +29,8 @@
 //     runtime giờ cùng origin nên lần nạp sau lấy từ cache HTTP.
 // Nhờ vậy file này đúng với worker hôm nay, và tự lên đời khi worker biết giữ
 // runtime, không phải sửa lại phía React.
+import type { StudioPackage } from '@/lib/studio-lesson';
+
 import {
   DEFAULT_LIMITS,
   type RunLimits,
@@ -63,7 +67,19 @@ export class PyodideRunner implements Runner {
 
   constructor(private readonly limits: RunLimits = DEFAULT_LIMITS) {}
 
-  prewarm(): void {
+  /** Thư viện của bài gần nhất — dựng lại worker sau khi bị giết thì nạp sẵn luôn. */
+  private packages: StudioPackage[] = [];
+
+  prewarm(packages?: StudioPackage[]): void {
+    if (packages) this.packages = packages;
+    // Nội dung bài về SAU khi runtime đã nạp sẵn (thường gặp): worker đang rỗi
+    // thì gửi thêm một lượt warmup chỉ để tải + import thư viện của bài.
+    if (this.worker && this.phase === 'idle' && this.kind === 'reusable' && packages?.length && !this.pending) {
+      this.phase = 'warming';
+      this.send({ code: '', tests: [], forbid: [], files: [], stdin: [], packages }, true);
+      this.arm(this.limits.readyMs);
+      return;
+    }
     if (this.disposed || this.worker || this.pending) return;
     // Worker một-lượt thì nạp sẵn lần nữa chẳng được gì: cache đã nóng sau lần
     // đầu, mà bật Pyodide lên lại tốn vài giây CPU của máy học viên.
@@ -71,12 +87,13 @@ export class PyodideRunner implements Runner {
     this.prewarmed = true;
     this.spawn();
     this.phase = 'warming';
-    this.send({ code: '', tests: [], forbid: [], files: [], stdin: [] }, true);
+    this.send({ code: '', tests: [], forbid: [], files: [], stdin: [], packages: this.packages }, true);
     this.arm(this.limits.readyMs);
   }
 
   run(request: RunRequest, onStatus?: (status: string) => void): Promise<RunResult | null> {
     if (this.disposed) return Promise.resolve(null);
+    if (request.packages) this.packages = request.packages;
     // Gọi trùng lượt: phía UI đã chặn bằng cờ `running`, ở đây chỉ để chắc.
     if (this.pending)
       return Promise.resolve(failed('Đang chạy một lượt khác — chờ xong rồi thử lại.'));
@@ -145,6 +162,7 @@ export class PyodideRunner implements Runner {
       files: request.files,
       // Giữ nguyên trường stdin của hợp đồng dù lượt này chưa có UI nhập liệu.
       stdin: request.stdin ?? [],
+      packages: request.packages ?? [],
       // Worker biết giữ runtime sẽ hiểu cờ này là "chỉ nạp, chưa chấm gì".
       // Worker một-lượt không biết nó: nó chấm code rỗng với 0 ca — vô hại.
       ...(warmup ? { type: 'warmup' } : null),
@@ -152,6 +170,15 @@ export class PyodideRunner implements Runner {
   }
 
   private receive(data: ({ type?: string } & Partial<RunResult>) | null) {
+    if (data?.type === 'loading') {
+      // Worker đang tải/import thư viện của bài: chưa phải code học viên chạy,
+      // nên chờ theo mốc nạp runtime chứ không theo 5 giây.
+      if (this.pending) {
+        this.arm(this.limits.readyMs);
+        this.pending.status?.('Đang tải thư viện (numpy/pandas…)…');
+      }
+      return;
+    }
     if (data?.type === 'ready') {
       // Runtime đã nạp xong: từ giờ là code của học viên chạy → bấm 5 giây.
       if (this.pending) {

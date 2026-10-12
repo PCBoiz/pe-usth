@@ -1,0 +1,363 @@
+{
+  "lesson_code": "X05",
+  "sort_order": 25,
+  "module": "M4 · Nhập dữ liệu, SQL và tra cứu",
+  "title": "X05 · Matplotlib: tùy chỉnh và xuất",
+  "subtitle": "Trung cấp · M4 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "X05 · Matplotlib: tùy chỉnh và xuất",
+    "subtitle": "Trung cấp · M4 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#X05",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP TRUNG CẤP",
+          "X05"
+        ],
+        "title": "Matplotlib: tùy chỉnh và xuất",
+        "goal": "Làm biểu đồ đọc được và xuất đúng figure ra PNG.",
+        "task": "plot_marks: bar + đường mốc \"Pass\" + ylim 0..10 + legend. export_png: fig.savefig vào BytesIO rồi plt.close(fig).",
+        "predict": "Figure 4×2 inch lưu với dpi 50 thì PNG rộng, cao bao nhiêu pixel?",
+        "code": "def export_png(fig, dpi):\n    buf = BytesIO()\n    # lưu CHÍNH fig với dpi\n    # đóng fig\n    return buf.getvalue()",
+        "tests": [
+          "plot_marks([\"An\", \"Binh\"], [8, 6], 5) → mốc nét đứt ở 5, legend Pass",
+          "export_png(figure 4×2, 50) → PNG 200×100, figure đã đóng"
+        ],
+        "reflect": "clf() khác close() thế nào, và vì sao savefig phải đứng trước close?"
+      },
+      "context": {
+        "title": "Làm biểu đồ đọc được (nhãn, đường mốc, giới hạn trục, legend) và xuất đúng figure ra PNG rồi đóng nó.",
+        "body": "Viết hai hàm. (1) plot_marks(names, marks, pass_mark): bar chart điểm từng sinh viên; đường ngang nét đứt ax.axhline(pass_mark, linestyle=\"--\", label=\"Pass\"); trục y cố định 0..10; ax.legend(); tiêu đề \"Marks\", nhãn \"Student\" / \"Score\"; return fig. (2) export_png(fig, dpi): lưu CHÍNH fig (không phải \"figure hiện hành\") vào io.BytesIO dạng PNG với dpi cho trước, sau đó đóng fig bằng plt.close(fig), trả về bytes.",
+        "example": "plot_marks([\"An\", \"Binh\"], [8, 6], 5) → 2 cột 8 và 6, mốc nét đứt ở 5, legend \"Pass\". export_png của figure 4×2 inch với dpi 50 → bytes PNG 200×100 pixel, figure đã đóng.",
+        "prereq": "X04",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Lưu figure 4×3 inch với dpi=50 ra PNG thì ảnh có kích thước bao nhiêu pixel?",
+        "options": [
+          {
+            "id": "a",
+            "title": "400 × 300",
+            "detail": "Đó là dpi=100 — dpi quyết định mật độ điểm ảnh.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "200 × 150",
+            "detail": "pixel = inch × dpi: 4 × 50 và 3 × 50.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "4 × 3",
+            "detail": "figsize tính bằng inch, không phải pixel.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"plt.close(fig) rồi plt.savefig(...) vẫn lưu được biểu đồ vừa vẽ\"",
+        "body": "plt.savefig lưu figure HIỆN HÀNH. Khi fig đã đóng (hoặc sau plt.show() trên máy, lúc cửa sổ đã tắt) không còn figure đó; pyplot tạo một figure MỚI, trống, khổ mặc định 6.4×4.8 inch — file ra là ảnh trắng, sai kích thước. Dùng fig.savefig(...) trước, plt.close(fig) sau."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Chữ giúp đọc biểu đồ: ax.set(title=..., xlabel=..., ylabel=...) cho tên và đơn vị. Nét vẽ có label=... thì ax.legend() mới có mục để hiện. ax.axhline(y, linestyle=\"--\") vẽ một đường mốc ngang (vd. điểm đạt) — nó cũng là một Line2D trong ax.lines."
+        },
+        {
+          "n": 2,
+          "body": "Màu, alpha, marker, linewidth, linestyle là tham số của từng lệnh vẽ; ax.text/ax.annotate đặt chữ tại một toạ độ. ax.set_ylim(0, 10) cố định vùng nhìn: cột bắt đầu từ 0 nên chiều dài cột so được với nhau, và thang không nhảy theo dữ liệu."
+        },
+        {
+          "n": 3,
+          "body": "fig.savefig(buf, ..., dpi=50) ghi CHÍNH figure đó. Kích thước pixel = figsize (inch) × dpi: 4×3 inch ở dpi 50 → 200×150. io.BytesIO là \"file trong bộ nhớ\": getvalue() trả bytes, mở đầu bằng chữ ký PNG; rộng/cao nằm ở byte 16–24."
+        },
+        {
+          "n": 4,
+          "body": "Ba lệnh dọn dẹp khác nhau: ax.cla() xoá nội dung một Axes, fig.clf() xoá nội dung figure nhưng figure VẪN mở, plt.close(fig) đóng hẳn figure và giải phóng bộ nhớ. Luôn savefig TRƯỚC close (và trước plt.show() trên máy)."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\nfig, ax = plt.subplots(figsize=(4, 3))\nax.bar([\"Q1\", \"Q2\"], [7, 4], color=\"steelblue\")\nax.axhline(5, color=\"gray\", linestyle=\"--\", label=\"Target\")\nax.set_ylim(0, 10)\nax.legend()\n\nbuf = BytesIO()\nfig.savefig(buf, format=\"png\", dpi=50)\npng = buf.getvalue()\nprint(png[:4])\nprint(int.from_bytes(png[16:20], \"big\"), int.from_bytes(png[20:24], \"big\"))\nplt.close(fig)\nprint(plt.fignum_exists(fig.number))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "fig.clf() khác plt.close(fig) thế nào?",
+          "options": [
+            {
+              "text": "close chỉ xoá Axes đầu tiên",
+              "detail": "Xoá một Axes là việc của ax.cla().",
+              "correct": false
+            },
+            {
+              "text": "clf xoá nội dung nhưng figure vẫn mở; close đóng hẳn figure",
+              "detail": "Chạy hàng loạt mà chỉ clf thì figure vẫn chiếm bộ nhớ.",
+              "correct": true
+            },
+            {
+              "text": "Giống nhau",
+              "detail": "clf giữ figure mở; close mới đóng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chạy hàng loạt mà chỉ clf thì figure vẫn chiếm bộ nhớ."
+        },
+        {
+          "question": "ax.axhline(5, label=\"Pass\") nhưng không gọi ax.legend() thì…",
+          "options": [
+            {
+              "text": "Legend tự hiện",
+              "detail": "Matplotlib không tự thêm legend.",
+              "correct": false
+            },
+            {
+              "text": "Đường mốc vẫn được vẽ, nhưng không có hộp chú giải",
+              "detail": "label chỉ hiện khi legend() được gọi.",
+              "correct": true
+            },
+            {
+              "text": "Báo lỗi",
+              "detail": "Không có lỗi nào.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "label chỉ hiện khi legend() được gọi."
+        },
+        {
+          "question": "Vì sao cố định ax.set_ylim(0, 10) cho bảng điểm thang 10?",
+          "options": [
+            {
+              "text": "Để ảnh nét hơn",
+              "detail": "Độ nét do dpi quyết định, không phải ylim.",
+              "correct": false
+            },
+            {
+              "text": "Cột bắt đầu từ 0 và thang không đổi theo dữ liệu, nên chiều dài cột so được",
+              "detail": "Tự co trục có thể cắt đáy cột, phóng đại chênh lệch.",
+              "correct": true
+            },
+            {
+              "text": "Bắt buộc, nếu không bar báo lỗi",
+              "detail": "Không bắt buộc; đây là lựa chọn để đọc đúng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Tự co trục có thể cắt đáy cột, phóng đại chênh lệch."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao export_png dùng fig.savefig(...) rồi mới plt.close(fig), không đảo thứ tự hay dùng plt.savefig?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "fig.savefig ghi đúng figure được truyền vào, không phụ thuộc \"figure hiện hành\" — nơi gọi có thể vừa tạo figure khác. Đóng trước thì plt.savefig không còn figure đó: pyplot tạo figure mới trống, ảnh ra trắng và sai kích thước. Lưu xong mới close để giải phóng bộ nhớ; clf() không đủ vì figure vẫn mở."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "plot_marks đã viết sẵn. Lắp export_png: tạo bộ đệm, lưu đúng figure với dpi, đóng figure.",
+        "rule": "Thử 3 sinh viên với mốc 4; xuất figure 4×2 inch ở dpi 50 rồi dpi 100 và so kích thước pixel."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "ax.bar(names, marks) → mỗi sinh viên một cột"
+          },
+          {
+            "label": "Bước 2",
+            "text": "ax.axhline(pass_mark, linestyle=\"--\") → đường mốc điểm đạt"
+          },
+          {
+            "label": "Bước 3",
+            "text": "ax.set_ylim(0, 10) → cột bắt đầu từ 0, thang cố định"
+          },
+          {
+            "label": "Bước 4",
+            "text": "fig.savefig(buf, dpi=dpi) → bytes PNG của đúng fig"
+          },
+          {
+            "label": "Bước 5",
+            "text": "plt.close(fig) → figure đóng, giải phóng bộ nhớ"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Figure 5×2 inch, export_png(fig, 40) → PNG bao nhiêu pixel?",
+        "options": [
+          "500 × 200",
+          "200 × 80",
+          "5 × 2"
+        ],
+        "correct": "200 × 80"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef plot_marks(names, marks, pass_mark):\n    fig, ax = plt.subplots()\n    ax.bar(names, marks)\n    ax.axhline(pass_mark, color=\"gray\", linestyle=\"--\", label=\"Pass\")\n    ax.set_ylim(0, 10)\n    ax.legend()\n    ax.set(title=\"Marks\", xlabel=\"Student\", ylabel=\"Score\")\n    return fig\n\n\ndef export_png(fig, dpi):\n    buf = {{slot1}}\n    {{slot2}}\n    {{slot3}}\n    return buf.getvalue()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "BytesIO()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "plt.close(fig)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "BytesIO()",
+            "slot": 1
+          },
+          {
+            "label": "open(\"chart.png\", \"wb\")",
+            "slot": 1,
+            "trap": "Đề cần bytes trong bộ nhớ, không ghi file."
+          },
+          {
+            "label": "plt.close(fig)",
+            "slot": 3
+          },
+          {
+            "label": "fig.savefig(buf, format=\"png\", dpi=dpi)",
+            "slot": 2
+          },
+          {
+            "label": "plt.savefig(buf, format=\"png\", dpi=dpi)",
+            "slot": 2,
+            "trap": "Lưu figure HIỆN HÀNH — chưa chắc là fig được truyền vào."
+          },
+          {
+            "label": "fig.clf()",
+            "slot": 3,
+            "trap": "Xoá nội dung nhưng figure vẫn mở."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm. (1) plot_marks(names, marks, pass_mark): bar chart điểm từng sinh viên; đường ngang nét đứt ax.axhline(pass_mark, linestyle=\"--\", label=\"Pass\"); trục y cố định 0..10; ax.legend(); tiêu đề \"Marks\", nhãn \"Student\" / \"Score\"; return fig. (2) export_png(fig, dpi): lưu CHÍNH fig (không phải \"figure hiện hành\") vào io.BytesIO dạng PNG với dpi cho trước, sau đó đóng fig bằng plt.close(fig), trả về bytes.\n\nThực hành: plot_marks: bar → axhline có label → set_ylim(0, 10) → legend → nhãn → return fig. export_png: BytesIO → fig.savefig(..., dpi=dpi) → plt.close(fig) → getvalue().",
+        "io": [
+          {
+            "label": "plot_marks([\"An\", \"Binh\"], [8, 6], 5)",
+            "value": "2 cột 8, 6; mốc nét đứt ở 5; legend Pass; trục y 0..10"
+          },
+          {
+            "label": "export_png(plt.figure(figsize=(4, 2)), 50)",
+            "value": "bytes PNG 200×100 pixel; figure đã đóng"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef plot_marks(names, marks, pass_mark):\n    # bar điểm; axhline nét đứt label \"Pass\"; ylim 0..10; legend; tiêu đề + nhãn; return fig\n    pass\n\n\ndef export_png(fig, dpi):\n    # Lưu CHÍNH fig vào BytesIO dạng PNG với dpi; đóng fig; trả bytes\n    pass\n\n\nif __name__ == \"__main__\":\n    plot_marks([\"An\", \"Binh\", \"Chi\"], [8, 6, 9], 5)\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef plot_marks(names, marks, pass_mark):\n    fig, ax = plt.subplots()\n    ax.bar(names, marks)\n    ax.axhline(pass_mark, color=\"gray\", linestyle=\"--\", label=\"Pass\")\n    ax.set_ylim(0, 10)\n    ax.legend()\n    ax.set(title=\"Marks\", xlabel=\"Student\", ylabel=\"Score\")\n    return fig\n\n\ndef export_png(fig, dpi):\n    buf = BytesIO()\n    fig.savefig(buf, format=\"png\", dpi=dpi)\n    plt.close(fig)\n    return buf.getvalue()\n\n\nif __name__ == \"__main__\":\n    plot_marks([\"An\", \"Binh\", \"Chi\"], [8, 6, 9], 5)\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "plot_marks: bar → axhline có label → set_ylim(0, 10) → legend → nhãn → return fig. export_png: BytesIO → fig.savefig(..., dpi=dpi) → plt.close(fig) → getvalue()."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. plot_marks: ax.bar(names, marks); ax.axhline(pass_mark, color=\"gray\", linestyle=\"--\", label=\"Pass\").\n2. ax.set_ylim(0, 10); ax.legend(); ax.set(title=\"Marks\", xlabel=\"Student\", ylabel=\"Score\"); return fig.\n3. export_png: buf = BytesIO(); fig.savefig(buf, format=\"png\", dpi=dpi) — dùng fig, không dùng plt.savefig.\n4. plt.close(fig) SAU khi lưu; return buf.getvalue()."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def export_png(fig, dpi):\n    buf = BytesIO()\n    fig.savefig(buf, format=\"png\", dpi=dpi)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Mỗi sinh viên một cột đúng điểm",
+          "call": "[float(v) for v in (p.get_height() for p in plot_marks([\"An\", \"Binh\", \"Chi\"], [9, 3, 6], 4).axes[0].patches)]",
+          "expect": "[9.0, 3.0, 6.0]"
+        },
+        {
+          "name": "Đường mốc nét đứt ở pass_mark",
+          "call": "[(l.get_linestyle(), [float(v) for v in l.get_ydata()]) for l in plot_marks([\"An\", \"Binh\", \"Chi\"], [9, 3, 6], 4).axes[0].lines]",
+          "expect": "[('--', [4.0, 4.0])]"
+        },
+        {
+          "name": "Trục y cố định 0..10",
+          "call": "tuple(float(v) for v in plot_marks([\"An\", \"Binh\", \"Chi\"], [9, 3, 6], 4).axes[0].get_ylim())",
+          "expect": "(0.0, 10.0)"
+        },
+        {
+          "name": "Legend có mục \"Pass\"",
+          "call": "[t.get_text() for t in plot_marks([\"An\", \"Binh\", \"Chi\"], [9, 3, 6], 4).axes[0].get_legend().get_texts()]",
+          "expect": "['Pass']"
+        },
+        {
+          "name": "Tiêu đề và nhãn trục",
+          "call": "(lambda ax: (ax.get_title(), ax.get_xlabel(), ax.get_ylabel()))(plot_marks([\"An\", \"Binh\", \"Chi\"], [9, 3, 6], 4).axes[0])",
+          "expect": "('Marks', 'Student', 'Score')"
+        },
+        {
+          "name": "export_png trả bytes PNG",
+          "call": "export_png(plt.figure(figsize=(4, 2)), 50)[:8]",
+          "expect": "b'\\x89PNG\\r\\n\\x1a\\n'"
+        },
+        {
+          "name": "Lưu đúng fig được truyền vào, không phải figure hiện hành",
+          "call": "(lambda b: (int.from_bytes(b[16:20], \"big\"), int.from_bytes(b[20:24], \"big\")))((lambda f, other: export_png(f, 50))(plt.figure(figsize=(4, 2)), plt.figure(figsize=(3, 3))))",
+          "expect": "(200, 100)"
+        },
+        {
+          "name": "dpi quyết định số pixel",
+          "call": "(lambda b: (int.from_bytes(b[16:20], \"big\"), int.from_bytes(b[20:24], \"big\")))(export_png(plt.figure(figsize=(2, 1)), 100))",
+          "expect": "(200, 100)"
+        },
+        {
+          "name": "Figure đã đóng sau khi xuất",
+          "call": "(lambda f: (export_png(f, 30), plt.fignum_exists(f.number))[1])(plt.figure())",
+          "expect": "False"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_marks(names, marks, pass_mark)",
+          "does": "Vẽ điểm từng sinh viên kèm mốc điểm đạt.",
+          "takes": "names: list tên; marks: list điểm 0..10; pass_mark: số",
+          "gives": "Figure 1 Axes",
+          "effect": "Bar + axhline nét đứt label \"Pass\"; ylim 0..10; legend; tiêu đề Marks.",
+          "call": "plot_marks([\"An\"], [8], 5).axes[0].get_ylim() → (0.0, 10.0)"
+        },
+        {
+          "sig": "export_png(fig, dpi)",
+          "does": "Xuất một figure ra PNG trong bộ nhớ.",
+          "takes": "fig: Figure bất kỳ; dpi: số điểm ảnh mỗi inch",
+          "gives": "bytes PNG (rộng = inch × dpi)",
+          "effect": "Đóng fig sau khi lưu (plt.fignum_exists(fig.number) → False).",
+          "call": "export_png(plt.figure(figsize=(4, 2)), 50) → PNG 200×100"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy"
+      ]
+    }
+  }
+}

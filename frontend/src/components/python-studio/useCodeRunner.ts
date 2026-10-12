@@ -15,6 +15,7 @@ import {
   type LessonScreen,
   type PlayGame,
   type StudioLesson as Lesson,
+  type StudioPackage,
 } from '@/lib/studio-lesson';
 
 import { PyodideRunner } from './runner/pyodide-runner';
@@ -30,7 +31,14 @@ export type CodeRunner = {
   cancel: () => void;
 };
 
-export function useCodeRunner({ enabled }: { enabled: boolean }): CodeRunner {
+export function useCodeRunner({
+  enabled,
+  packages,
+}: {
+  enabled: boolean;
+  /** Thư viện của bài: nạp sẵn cùng runtime khi mở bài. */
+  packages?: StudioPackage[];
+}): CodeRunner {
   const [running, setRunning] = useState(false);
   const [runtimeStatus, setRuntimeStatus] = useState('');
   // Bộ chạy nằm trong ref và được dựng LƯỜI (chỉ chạm trong callback/effect,
@@ -55,11 +63,14 @@ export function useCodeRunner({ enabled }: { enabled: boolean }): CodeRunner {
 
   // Nạp sẵn runtime ngay khi bài mở ra: học viên còn mấy màn đọc hiểu trước khi
   // tới ô soạn mã, nên phần chờ ~13 MB rơi vào lúc họ không ngồi đợi.
+  // Khoá theo NỘI DUNG mảng để effect không chạy lại mỗi lần render.
+  const packageKey = (packages ?? []).join(',');
   useEffect(() => {
     if (!enabled) return;
-    const warm = setTimeout(() => grab().prewarm(), 0);
+    const list = packageKey ? (packageKey.split(',') as StudioPackage[]) : [];
+    const warm = setTimeout(() => grab().prewarm(list), 0);
     return () => clearTimeout(warm);
-  }, [enabled, grab]);
+  }, [enabled, grab, packageKey]);
 
   const run = useCallback(
     async (request: RunRequest) => {
@@ -128,7 +139,10 @@ export function useLessonRun({
 }) {
   /** Kết quả chạy gần nhất của màn sandbox (không lưu vào bản nháp). */
   const [result, setResult] = useState<RunResult | null>(null);
-  const runner = useCodeRunner({ enabled: Boolean(lesson?.step_4) });
+  const runner = useCodeRunner({
+    enabled: Boolean(lesson?.step_4),
+    packages: lesson?.step_4?.packages,
+  });
   const { running, runtimeStatus } = runner;
 
   /**
@@ -150,6 +164,7 @@ export function useLessonRun({
         // lượt). Chưa có UI để học viên tự nhập ở lượt này; khi thêm ô "dữ
         // liệu vào" thì truyền mảng dòng vào đúng chỗ này.
         stdin: [],
+        packages: four.packages ?? [],
       })
       .then((data) => {
         if (data) onDone(data);

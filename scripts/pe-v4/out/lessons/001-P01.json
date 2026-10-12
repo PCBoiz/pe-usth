@@ -1,0 +1,370 @@
+{
+  "lesson_code": "P01",
+  "sort_order": 1,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P01 · Program, process và tài nguyên",
+  "subtitle": "Trung cấp · M1 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "P01 · Program, process và tài nguyên",
+    "subtitle": "Trung cấp · M1 · 25 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#P01",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P01"
+        ],
+        "title": "Program, process và tài nguyên",
+        "goal": "Phân biệt program với process; đọc PID và đi ngược cây process.",
+        "task": "Viết count_processes, ancestors (đi theo ppid) và current_identity.",
+        "predict": "Chạy cùng một script hai lần có nhất thiết cùng PID không?",
+        "code": "TABLE = [(1, 0, \"init\"), (120, 1, \"bash\"), (305, 120, \"python\"), ...]\ndef count_processes(table, program): ...\ndef ancestors(table, pid): ...       # [pid, cha, ông, ...]\ndef current_identity(): ...         # (os.getpid(), os.getppid())",
+        "tests": [
+          "count_processes(TABLE, \"python\") → 3",
+          "ancestors(TABLE, 410) → [410, 305, 120, 1]"
+        ],
+        "reflect": "Vì sao một program có thể ứng với nhiều process?"
+      },
+      "context": {
+        "title": "Phân biệt program với process, đọc PID/PPID và đi ngược cây process.",
+        "body": "TABLE mô phỏng kết quả lệnh ps: mỗi dòng (pid, ppid, program). Viết count_processes(table, program) đếm số PROCESS đang chạy program đó (mỗi dòng là một process); ancestors(table, pid) trả list PID đi ngược theo ppid: [pid, cha, ông, …] tới khi ppid không còn trong bảng (pid không có trong bảng → ValueError); current_identity() trả (os.getpid(), os.getppid()) của chính process đang chạy.",
+        "example": "Với TABLE mẫu: count_processes(TABLE, \"python\") → 3 (một program, ba process); ancestors(TABLE, 410) → [410, 305, 120, 1].",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Chạy cùng một script hai lần liên tiếp. Hai lần đó có nhất thiết cùng PID không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Có — cùng file thì cùng PID",
+            "detail": "PID gắn với process đang chạy, không gắn với program.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Có, nếu chạy trên cùng một máy",
+            "detail": "Cùng máy vẫn là hai lần thực thi khác nhau.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không — mỗi lần chạy là một process mới, hệ điều hành cấp PID mới",
+            "detail": "PID định danh process (một lần thực thi), không định danh file .py.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Program và process là một\"",
+        "body": "Program là mã thụ động; process là một lần thực thi đang hoạt động. Một program có thể có nhiều process cùng lúc (mở ba cửa sổ python là ba process), mỗi process có PID, stack, heap, file descriptor riêng. Vì vậy đếm process phải đếm từng DÒNG trong bảng ps, không đếm tên program."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Program là mã nằm yên trên đĩa (file .py). Process là MỘT LẦN chạy program đó — có PID, bộ nhớ và trạng thái riêng."
+        },
+        {
+          "n": 2,
+          "body": "Chạy cùng một file hai lần → hai process, hai PID. Một program có thể có nhiều process cùng lúc."
+        },
+        {
+          "n": 3,
+          "body": "os.getpid() trả PID của process đang chạy dòng code đó; os.getppid() trả PID của process CHA. Nối ppid → pid ta được cây process."
+        },
+        {
+          "n": 4,
+          "body": "Tài nguyên riêng của process: context (program counter, thanh ghi), stack, data, heap và file descriptor — 0, 1, 2 là stdin, stdout, stderr."
+        },
+        {
+          "n": 5,
+          "body": "Process thường KHÔNG chung không gian địa chỉ: con sửa list của nó, list của cha không đổi. Trao dữ liệu phải qua pipe, file, queue (P04, P07)."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import os\nimport subprocess\nimport sys\n\nprint(\"Tôi là process\", os.getpid(), \"- cha của tôi là\", os.getppid())\n\ncmd = [sys.executable, \"-c\", \"import os; print(os.getpid(), os.getppid())\"]\nfor run in range(2):\n    child_pid, child_ppid = subprocess.check_output(cmd, text=True).split()\n    print(\"Lần\", run + 1, \"- con\", child_pid, \"có cha\", child_ppid)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "os.getppid() trả về gì?",
+          "options": [
+            {
+              "text": "PID của chính process hiện tại",
+              "detail": "Đó là os.getpid().",
+              "correct": false
+            },
+            {
+              "text": "PID của process cha đã tạo ra process hiện tại",
+              "detail": "Nối ppid → pid ta đi ngược được cây process.",
+              "correct": true
+            },
+            {
+              "text": "Số process con đang chạy",
+              "detail": "Không hàm os nào đếm con theo kiểu này.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Nối ppid → pid ta đi ngược được cây process."
+        },
+        {
+          "question": "File descriptor 0, 1, 2 của một process thường là gì?",
+          "options": [
+            {
+              "text": "Ba vùng nhớ stack, data, heap",
+              "detail": "File descriptor tham chiếu tài nguyên I/O, không phải vùng nhớ.",
+              "correct": false
+            },
+            {
+              "text": "Ba process đầu tiên của hệ thống",
+              "detail": "Đó là PID, không phải file descriptor.",
+              "correct": false
+            },
+            {
+              "text": "stdin, stdout, stderr",
+              "detail": "Ba luồng chuẩn mỗi process có sẵn khi khởi động.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Ba luồng chuẩn mỗi process có sẵn khi khởi động."
+        },
+        {
+          "question": "Object tạo trong lúc chạy (vd. list(range(5))) nằm ở vùng nhớ nào của process?",
+          "options": [
+            {
+              "text": "Program counter",
+              "detail": "PC chỉ là vị trí lệnh đang chạy.",
+              "correct": false
+            },
+            {
+              "text": "Heap — vùng cấp phát động",
+              "detail": "Stack chỉ giữ khung lời gọi hàm và tham chiếu tới object.",
+              "correct": true
+            },
+            {
+              "text": "File descriptor",
+              "detail": "File descriptor tham chiếu file, pipe, terminal.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Stack chỉ giữ khung lời gọi hàm và tham chiếu tới object."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao count_processes(TABLE, \"python\") là 3 chứ không phải 1?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Ba dòng có program \"python\" là ba lần thực thi khác nhau với ba PID 305, 306, 410 — tức ba process, dù chỉ có một program \"python\". Đếm tên program khác nhau sẽ ra 1 và bỏ mất hai process đang chạy. Trường hợp đặc biệt: program không có dòng nào thì trả 0."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp chỗ so sánh khi đếm, chỗ dựng bảng cha và bước đi lên cây.",
+        "rule": "Đổi sang bảng của máy khác (PID không tăng dần, dòng con đứng trước dòng cha) và một program không có process nào; thử cả PID không có trong bảng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "ancestors(TABLE, 410) → chain = [410]"
+          },
+          {
+            "label": "Bước 2",
+            "text": "parent_of[410] là 305 → thêm 305"
+          },
+          {
+            "label": "Bước 3",
+            "text": "parent_of[305] là 120, parent_of[120] là 1 → thêm 120 rồi 1"
+          },
+          {
+            "label": "Bước 4",
+            "text": "parent_of[1] là 0, không có trong bảng → dừng, trả [410, 305, 120, 1]"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Bảng [(1, 0, \"init\"), (7, 1, \"code\"), (8, 1, \"code\")]: count_processes(bảng, \"code\") là?",
+        "options": [
+          "2",
+          "3",
+          "1"
+        ],
+        "correct": "2"
+      },
+      "scaffold": {
+        "template": "def count_processes(table, program):\n    count = 0\n    for pid, ppid, name in table:\n        if {{slot1}}:\n            count += 1\n    return count\n\n\ndef ancestors(table, pid):\n    parent_of = {}\n    for row_pid, row_ppid, program in table:\n        {{slot2}}\n    if pid not in parent_of:\n        raise ValueError(f\"không có process {pid} trong bảng\")\n    chain = [pid]\n    while parent_of[pid] in parent_of:\n        pid = {{slot3}}\n        chain.append(pid)\n    return chain\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "name == program"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "parent_of[row_pid] = row_ppid"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "parent_of[pid]"
+          }
+        ],
+        "bank": [
+          {
+            "label": "parent_of[row_ppid] = row_pid",
+            "slot": 2,
+            "trap": "Ngược chiều: một cha nhiều con thì con sau ghi đè con trước."
+          },
+          {
+            "label": "parent_of[pid]",
+            "slot": 3
+          },
+          {
+            "label": "row_ppid",
+            "slot": 3,
+            "trap": "Biến của vòng for đã xong — chỉ là ppid của dòng cuối bảng."
+          },
+          {
+            "label": "name == program",
+            "slot": 1
+          },
+          {
+            "label": "parent_of[row_pid] = row_ppid",
+            "slot": 2
+          },
+          {
+            "label": "name in program",
+            "slot": 1,
+            "trap": "\"py\" in \"python\" là True — đếm nhầm program khác tên."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "TABLE mô phỏng kết quả lệnh ps: mỗi dòng (pid, ppid, program). Viết count_processes(table, program) đếm số PROCESS đang chạy program đó (mỗi dòng là một process); ancestors(table, pid) trả list PID đi ngược theo ppid: [pid, cha, ông, …] tới khi ppid không còn trong bảng (pid không có trong bảng → ValueError); current_identity() trả (os.getpid(), os.getppid()) của chính process đang chạy.\n\nThực hành: Đếm theo DÒNG (mỗi dòng một process). Dựng dict pid → ppid một lần, rồi đi ngược theo ppid tới khi ppid không còn trong bảng.",
+        "io": [
+          {
+            "label": "count_processes(TABLE, \"python\")",
+            "value": "3"
+          },
+          {
+            "label": "ancestors(TABLE, 410)",
+            "value": "[410, 305, 120, 1]"
+          },
+          {
+            "label": "ancestors(TABLE, 999)",
+            "value": "ValueError"
+          }
+        ]
+      },
+      "starterCode": "import os\n\n# Mô phỏng kết quả lệnh ps: mỗi dòng (pid, ppid, program)\nTABLE = [\n    (1, 0, \"init\"),\n    (120, 1, \"bash\"),\n    (305, 120, \"python\"),\n    (306, 120, \"python\"),\n    (410, 305, \"python\"),\n]\n\n\ndef count_processes(table, program):\n    # Mỗi DÒNG là một process; đếm số dòng chạy program.\n    pass\n\n\ndef ancestors(table, pid):\n    # [pid, cha, ông, ...] đi theo ppid tới gốc; pid lạ -> ValueError.\n    pass\n\n\ndef current_identity():\n    # (PID, PPID) của chính process đang chạy dòng này.\n    pass\n\n\nif __name__ == \"__main__\":\n    print(count_processes(TABLE, \"python\"))\n    print(ancestors(TABLE, 410))\n    print(current_identity())\n",
+      "solutionCode": "import os\n\n# Mô phỏng kết quả lệnh ps: mỗi dòng (pid, ppid, program)\nTABLE = [\n    (1, 0, \"init\"),\n    (120, 1, \"bash\"),\n    (305, 120, \"python\"),\n    (306, 120, \"python\"),\n    (410, 305, \"python\"),\n]\n\n\ndef count_processes(table, program):\n    count = 0\n    for pid, ppid, name in table:\n        if name == program:\n            count += 1\n    return count\n\n\ndef ancestors(table, pid):\n    parent_of = {}\n    for row_pid, row_ppid, program in table:\n        parent_of[row_pid] = row_ppid\n    if pid not in parent_of:\n        raise ValueError(f\"không có process {pid} trong bảng\")\n    chain = [pid]\n    while parent_of[pid] in parent_of:\n        pid = parent_of[pid]\n        chain.append(pid)\n    return chain\n\n\ndef current_identity():\n    return os.getpid(), os.getppid()\n\n\nif __name__ == \"__main__\":\n    print(count_processes(TABLE, \"python\"))\n    print(ancestors(TABLE, 410))\n    print(current_identity())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đếm theo DÒNG (mỗi dòng một process). Dựng dict pid → ppid một lần, rồi đi ngược theo ppid tới khi ppid không còn trong bảng."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. count_processes: duyệt từng dòng (pid, ppid, name), cộng 1 khi name == program.\n2. ancestors: dựng parent_of = {pid: ppid}; pid không có trong dict → raise ValueError.\n3. chain = [pid]; khi parent_of[pid] còn trong bảng: pid = parent_of[pid], append.\n4. current_identity: return os.getpid(), os.getppid() — không viết cứng số nào."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    parent_of = {}\n    for row_pid, row_ppid, program in table:\n        parent_of[row_pid] = row_ppid\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "TABLE: \"python\" có 3 process",
+          "call": "count_processes(TABLE, \"python\")",
+          "expect": "3"
+        },
+        {
+          "name": "Bảng khác: \"sshd\" có 1, \"vim\" có 0",
+          "call": "(count_processes([(1, 0, \"systemd\"), (900, 1, \"sshd\"), (77, 900, \"bash\"), (5000, 77, \"python\")], \"sshd\"), count_processes([(1, 0, \"systemd\"), (900, 1, \"sshd\"), (77, 900, \"bash\"), (5000, 77, \"python\")], \"vim\"))",
+          "expect": "(1, 0)"
+        },
+        {
+          "name": "Một program, hai process",
+          "call": "count_processes([(1, 0, \"init\"), (7, 1, \"code\"), (8, 1, \"code\")], \"code\")",
+          "expect": "2"
+        },
+        {
+          "name": "ancestors(TABLE, 410)",
+          "call": "ancestors(TABLE, 410)",
+          "expect": "[410, 305, 120, 1]"
+        },
+        {
+          "name": "Gốc cây: ancestors(TABLE, 1) → [1]",
+          "call": "ancestors(TABLE, 1)",
+          "expect": "[1]"
+        },
+        {
+          "name": "PID không tăng dần",
+          "call": "ancestors([(1, 0, \"systemd\"), (900, 1, \"sshd\"), (77, 900, \"bash\"), (5000, 77, \"python\")], 5000)",
+          "expect": "[5000, 77, 900, 1]"
+        },
+        {
+          "name": "Dòng con đứng trước dòng cha",
+          "call": "ancestors([(50, 7, \"python\"), (7, 1, \"bash\"), (1, 0, \"init\")], 50)",
+          "expect": "[50, 7, 1]"
+        },
+        {
+          "name": "PID không có trong bảng → ValueError",
+          "call": "_studio.call(ancestors, TABLE, 999).error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "current_identity() = (os.getpid(), os.getppid())",
+          "call": "current_identity()",
+          "expect": "(__import__(\"os\").getpid(), __import__(\"os\").getppid())"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "count_processes(table, program)",
+          "does": "Đếm số process đang chạy một program.",
+          "takes": "table: list (pid, ppid, program); program: str",
+          "gives": "int (0 nếu không có)",
+          "effect": "Không in, không sửa table.",
+          "call": "count_processes(TABLE, \"python\") → 3"
+        },
+        {
+          "sig": "ancestors(table, pid)",
+          "does": "Đi ngược cây process theo ppid.",
+          "takes": "table như trên; pid: int",
+          "gives": "list[int] bắt đầu bằng pid; pid lạ → ValueError",
+          "effect": "Không phụ thuộc thứ tự dòng trong table.",
+          "call": "ancestors(TABLE, 410) → [410, 305, 120, 1]"
+        },
+        {
+          "sig": "current_identity()",
+          "does": "Cho biết process hiện tại là ai, cha là ai.",
+          "takes": "không",
+          "gives": "tuple (os.getpid(), os.getppid())",
+          "effect": "Không in.",
+          "call": "current_identity() → (PID, PPID)"
+        }
+      ],
+      "env": "PID trong Studio là số GIẢ nhưng ổn định (process con luôn có PID khác cha); trên máy thật mỗi lần chạy là một số khác. Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG subprocess: lệnh [sys.executable, \"-c\", code] hoặc [sys.executable, \"ten_file.py\", ...] chạy chương trình con trong một vùng nhớ riêng, có stdin/stdout/stderr riêng, returncode lấy từ sys.exit()/ngoại lệ, và time.sleep() của con chỉ đẩy một đồng hồ ảo (timeout vẫn được tính đúng). Lệnh shell khác (ls, dir, ping…) không chạy được ở đây. Hãy chạy lại file trên máy (Windows/Linux) để thấy process thật."
+    }
+  }
+}

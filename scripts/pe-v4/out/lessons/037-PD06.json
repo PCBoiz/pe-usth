@@ -1,0 +1,366 @@
+{
+  "lesson_code": "PD06",
+  "sort_order": 37,
+  "module": "M6 · pandas",
+  "title": "PD06 · Merge, concat và kiểm tra cardinality",
+  "subtitle": "Nâng cao · M6 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "PD06 · Merge, concat và kiểm tra cardinality",
+    "subtitle": "Nâng cao · M6 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#PD06",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD06"
+        ],
+        "title": "Merge, concat và kiểm tra cardinality",
+        "goal": "Ghép bảng tra cứu không làm rơi hay nhân dòng.",
+        "task": "Viết attach_prices(orders, prices) (left, validate, indicator) và stack(frames).",
+        "predict": "Bảng giá trùng sku thì merge ra thêm dòng hay báo lỗi?",
+        "code": "def attach_prices(orders, prices):\n    return orders.merge(prices, on=\"sku\", ...)\n\ndef stack(frames):\n    pass  # kiểm schema rồi concat",
+        "tests": [
+          "sku A, B; giá chỉ có A → 2 dòng, 1 thiếu giá",
+          "Bảng giá trùng sku → MergeError"
+        ],
+        "reflect": "Vì sao phải so số dòng trước và sau merge?"
+      },
+      "context": {
+        "title": "Ghép bảng tra cứu bằng left merge có validate, đánh dấu dòng không ghép được, chồng bảng bằng concat đúng schema.",
+        "body": "Viết attach_prices(orders, prices): orders (order_id, sku, qty) ghép bảng giá prices (sku, price) bằng LEFT merge theo sku, validate=\"many_to_one\" (bảng giá trùng sku phải báo MergeError chứ không nhân dòng) và indicator=True (cột _merge). Kết quả có đúng len(orders) dòng, đúng thứ tự đơn. Viết stack(frames): chồng list DataFrame bằng concat với index mới 0..n-1; nếu một bảng không cùng tập cột với bảng đầu thì raise ValueError.",
+        "example": "orders sku A, B; bảng giá chỉ có A → 2 dòng, đơn B có price NaN và _merge = \"left_only\".",
+        "prereq": "PD05",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "orders có 3 đơn sku PEN; bảng giá có PEN hai lần (4.0 và 4.5). orders.merge(prices, on=\"sku\") ra mấy dòng?",
+        "options": [
+          {
+            "id": "a",
+            "title": "3 — merge giữ số dòng bên trái",
+            "detail": "Chỉ đúng khi khoá bên phải duy nhất.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "MergeError",
+            "detail": "Chỉ khi có validate=\"many_to_one\".",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "6 — mỗi đơn ghép với cả hai giá",
+            "detail": "Khoá lặp bên phải nhân số dòng.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"merge xong thì số dòng vẫn như bảng đơn\"",
+        "body": "Không có gì bảo đảm điều đó: inner (mặc định) làm RƠI đơn không có giá, khoá lặp ở bảng giá làm NHÂN đơn. Chọn how=\"left\", khai validate=\"many_to_one\" và so len trước/sau merge."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "merge ghép theo cột khoá (on=...); how chọn dòng giữ lại: inner (MẶC ĐỊNH) chỉ khoá có ở hai bên, left mọi dòng bên trái, outer tất cả."
+        },
+        {
+          "n": 2,
+          "body": "Gắn thông tin từ bảng tra cứu (giá, phòng học) vào bảng giao dịch: how=\"left\" để không đơn nào biến mất; dòng không ghép được có NaN."
+        },
+        {
+          "n": 3,
+          "body": "Khoá lặp ở bảng tra cứu NHÂN dòng: một đơn ghép với hai giá thành hai dòng, doanh thu bị đếm đôi. validate=\"many_to_one\" biến kỳ vọng \"mỗi sku một giá\" thành phép kiểm: sai là MergeError."
+        },
+        {
+          "n": 4,
+          "body": "indicator=True thêm cột _merge (both / left_only / right_only) để đếm dòng không ghép được. Khác SQL, pandas ghép NaN với NaN — khoá thiếu cần chính sách riêng."
+        },
+        {
+          "n": 5,
+          "body": "concat chồng các bảng cùng schema. ignore_index=True đánh lại index 0..n-1; không có thì index cũ lặp lại (0, 1, 0). Cột lệch tên thì concat không báo lỗi mà điền NaN — tự kiểm schema trước."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\nstudents = pd.DataFrame({\"sid\": [\"S1\", \"S2\", \"S3\"], \"class_id\": [\"K1\", \"K2\", \"K9\"]})\nclasses = pd.DataFrame({\"class_id\": [\"K1\", \"K2\"], \"room\": [\"A101\", \"B204\"]})\nout = students.merge(classes, on=\"class_id\", how=\"left\", validate=\"many_to_one\", indicator=True)\nprint(out[[\"sid\", \"room\", \"_merge\"]])\nprint(len(students), \"->\", len(out))\n\ndup = pd.concat([classes, classes.head(1)], ignore_index=True)\nprint(\"bảng tra trùng K1:\", len(students.merge(dup, on=\"class_id\", how=\"left\")), \"dòng\")\n\na = pd.DataFrame({\"x\": [1, 2]})\nb = pd.DataFrame({\"x\": [3]})\nprint(pd.concat([a, b]).index.tolist(), pd.concat([a, b], ignore_index=True).index.tolist())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "orders.merge(prices, on=\"sku\") không ghi how. Đơn có sku không có trong bảng giá sẽ…",
+          "options": [
+            {
+              "text": "Biến mất — mặc định how=\"inner\"",
+              "detail": "Muốn giữ thì how=\"left\".",
+              "correct": true
+            },
+            {
+              "text": "Có price = NaN",
+              "detail": "Đó là kết quả của how=\"left\".",
+              "correct": false
+            },
+            {
+              "text": "Gây lỗi",
+              "detail": "Không lỗi — chỉ rơi dòng âm thầm.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Muốn giữ thì how=\"left\"."
+        },
+        {
+          "question": "pd.concat([a, b]) với a có index 0, 1 và b có index 0. Index kết quả là?",
+          "options": [
+            {
+              "text": "[0, 1, 0]",
+              "detail": "Giữ index cũ; dùng ignore_index=True để thành [0, 1, 2].",
+              "correct": true
+            },
+            {
+              "text": "[0, 1, 2]",
+              "detail": "Chỉ khi ignore_index=True.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi trùng index",
+              "detail": "concat không kiểm trùng index.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Giữ index cũ; dùng ignore_index=True để thành [0, 1, 2]."
+        },
+        {
+          "question": "validate=\"many_to_one\" kiểm điều gì?",
+          "options": [
+            {
+              "text": "Khoá ở bảng PHẢI là duy nhất (mỗi sku một giá)",
+              "detail": "Bên trái được lặp (nhiều đơn cùng sku).",
+              "correct": true
+            },
+            {
+              "text": "Mọi đơn đều tìm được giá",
+              "detail": "Dòng không ghép được kiểm bằng indicator=True.",
+              "correct": false
+            },
+            {
+              "text": "Bảng trái không có khoá trùng",
+              "detail": "Đó là \"one_to_many\" hoặc \"one_to_one\".",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Bên trái được lặp (nhiều đơn cùng sku)."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao attach_prices dùng how=\"left\" và validate=\"many_to_one\" cùng lúc?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "how=\"left\" bảo đảm không đơn nào rơi mất khi bảng giá thiếu sku — đơn đó có price NaN và _merge = left_only để đếm. validate=\"many_to_one\" bảo đảm không đơn nào bị nhân lên khi bảng giá trùng sku — vi phạm thì MergeError ngay. Cả hai cùng giữ số dòng kết quả đúng bằng số đơn."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: một sku không có giá, bảng giá có thể trùng sku. Lắp ba chỗ.",
+        "rule": "Thêm sku không có giá và một bảng giá bị trùng sku; kiểm số dòng, _merge và lỗi MergeError."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "how=\"left\" → giữ mọi đơn, đơn thiếu giá có NaN."
+          },
+          {
+            "label": "Bước 2",
+            "text": "validate=\"many_to_one\" → bảng giá trùng sku thì MergeError."
+          },
+          {
+            "label": "Bước 3",
+            "text": "indicator=True → cột _merge: both / left_only."
+          },
+          {
+            "label": "Bước 4",
+            "text": "set(frame.columns) → so schema trước khi chồng."
+          },
+          {
+            "label": "Bước 5",
+            "text": "concat(..., ignore_index=True) → index 0..n-1."
+          }
+        ]
+      },
+      "counter": {
+        "question": "orders sku [PEN, CUP, PEN], bảng giá chỉ có PEN. Số dòng left_only?",
+        "options": [
+          "2",
+          "0",
+          "1"
+        ],
+        "correct": "1"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef attach_prices(orders, prices):\n    return orders.merge(\n        prices,\n        on=\"sku\",\n        {{slot1}},\n        {{slot2}},\n        indicator=True,\n    )\n\n\ndef stack(frames):\n    columns = set(frames[0].columns)\n    for frame in frames[1:]:\n        if set(frame.columns) != columns:\n            raise ValueError(\"Các bảng không cùng schema\")\n    return {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "how=\"left\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "validate=\"many_to_one\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "pd.concat(frames, ignore_index=True)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "validate=\"many_to_one\"",
+            "slot": 2
+          },
+          {
+            "label": "validate=\"one_to_many\"",
+            "slot": 2,
+            "trap": "Kiểm sai phía: bảng giá mới phải là phía \"một\"."
+          },
+          {
+            "label": "pd.concat(frames, ignore_index=True)",
+            "slot": 3
+          },
+          {
+            "label": "how=\"left\"",
+            "slot": 1
+          },
+          {
+            "label": "how=\"inner\"",
+            "slot": 1,
+            "trap": "Đơn không có giá bị rơi mất."
+          },
+          {
+            "label": "pd.concat(frames)",
+            "slot": 3,
+            "trap": "Giữ index cũ — 0, 1, 0."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết attach_prices(orders, prices): orders (order_id, sku, qty) ghép bảng giá prices (sku, price) bằng LEFT merge theo sku, validate=\"many_to_one\" (bảng giá trùng sku phải báo MergeError chứ không nhân dòng) và indicator=True (cột _merge). Kết quả có đúng len(orders) dòng, đúng thứ tự đơn. Viết stack(frames): chồng list DataFrame bằng concat với index mới 0..n-1; nếu một bảng không cùng tập cột với bảng đầu thì raise ValueError.\n\nThực hành: Left merge + validate + indicator; so tập cột trước concat; ignore_index=True.",
+        "io": [
+          {
+            "label": "orders D1–D4 (PEN, BOOK, PEN, CUP), giá PEN, BOOK",
+            "value": "4 dòng; D4 left_only, price NaN"
+          },
+          {
+            "label": "Bảng giá trùng PEN",
+            "value": "MergeError"
+          },
+          {
+            "label": "stack([x 1, 2], [x 3])",
+            "value": "x [1, 2, 3], index [0, 1, 2]"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef attach_prices(orders, prices):\n    # Left merge theo sku, validate=\"many_to_one\", indicator=True\n    pass\n\n\ndef stack(frames):\n    # Kiểm mọi bảng cùng tập cột (khác thì ValueError) rồi concat, index mới 0..n-1\n    pass\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\"order_id\": [\"O1\", \"O2\"], \"sku\": [\"A\", \"B\"], \"qty\": [2, 1]})\n    prices = pd.DataFrame({\"sku\": [\"A\"], \"price\": [10]})\n    print(attach_prices(orders, prices))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef attach_prices(orders, prices):\n    return orders.merge(\n        prices,\n        on=\"sku\",\n        how=\"left\",\n        validate=\"many_to_one\",\n        indicator=True,\n    )\n\n\ndef stack(frames):\n    columns = set(frames[0].columns)\n    for frame in frames[1:]:\n        if set(frame.columns) != columns:\n            raise ValueError(\"Các bảng không cùng schema: \" + str(sorted(frame.columns)))\n    return pd.concat(frames, ignore_index=True)\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\"order_id\": [\"O1\", \"O2\"], \"sku\": [\"A\", \"B\"], \"qty\": [2, 1]})\n    prices = pd.DataFrame({\"sku\": [\"A\"], \"price\": [10]})\n    out = attach_prices(orders, prices)\n    print(out)\n    print(len(orders), \"đơn ->\", len(out), \"dòng;\", int(out[\"price\"].isna().sum()), \"đơn thiếu giá\")\n    jan = pd.DataFrame({\"sku\": [\"A\"], \"qty\": [3]})\n    feb = pd.DataFrame({\"sku\": [\"B\"], \"qty\": [5]})\n    print(stack([jan, feb]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Left merge + validate + indicator; so tập cột trước concat; ignore_index=True."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. return orders.merge(prices, on=\"sku\", how=\"left\", validate=\"many_to_one\", indicator=True).\n2. stack: columns = set(frames[0].columns); bảng nào khác tập cột → raise ValueError.\n3. return pd.concat(frames, ignore_index=True)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def attach_prices(orders, prices):\n    return orders.merge(prices, on=\"sku\", how=\"left\", ...)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: giữ cả hai đơn, một đơn thiếu giá",
+          "call": "(lambda o: (len(o), int(o[\"price\"].isna().sum())))(attach_prices(pd.DataFrame({\"sku\": [\"A\", \"B\"]}), pd.DataFrame({\"sku\": [\"A\"], \"price\": [10]})))",
+          "expect": "(2, 1)"
+        },
+        {
+          "name": "Giữ đủ mọi đơn (left), đúng thứ tự",
+          "call": "attach_prices(pd.DataFrame({\"order_id\": [\"D1\", \"D2\", \"D3\", \"D4\"], \"sku\": [\"PEN\", \"BOOK\", \"PEN\", \"CUP\"], \"qty\": [2, 1, 5, 3]}), pd.DataFrame({\"sku\": [\"PEN\", \"BOOK\"], \"price\": [4.0, 12.0]}))[\"order_id\"].tolist()",
+          "expect": "['D1', 'D2', 'D3', 'D4']"
+        },
+        {
+          "name": "Đơn CUP không có giá → left_only",
+          "call": "attach_prices(pd.DataFrame({\"order_id\": [\"D1\", \"D2\", \"D3\", \"D4\"], \"sku\": [\"PEN\", \"BOOK\", \"PEN\", \"CUP\"], \"qty\": [2, 1, 5, 3]}), pd.DataFrame({\"sku\": [\"PEN\", \"BOOK\"], \"price\": [4.0, 12.0]}))[\"_merge\"].astype(str).tolist()",
+          "expect": "['both', 'both', 'both', 'left_only']"
+        },
+        {
+          "name": "Giá gắn đúng đơn",
+          "call": "attach_prices(pd.DataFrame({\"order_id\": [\"D1\", \"D2\", \"D3\", \"D4\"], \"sku\": [\"PEN\", \"BOOK\", \"PEN\", \"CUP\"], \"qty\": [2, 1, 5, 3]}), pd.DataFrame({\"sku\": [\"PEN\", \"BOOK\"], \"price\": [4.0, 12.0]}))[\"price\"].fillna(-1).tolist()",
+          "expect": "[4.0, 12.0, 4.0, -1.0]"
+        },
+        {
+          "name": "Bảng giá trùng sku → MergeError, không nhân dòng",
+          "call": "_studio.call(attach_prices, pd.DataFrame({\"order_id\": [\"D1\", \"D2\", \"D3\", \"D4\"], \"sku\": [\"PEN\", \"BOOK\", \"PEN\", \"CUP\"], \"qty\": [2, 1, 5, 3]}), pd.DataFrame({\"sku\": [\"PEN\", \"PEN\", \"BOOK\"], \"price\": [4.0, 4.5, 12.0]})).error",
+          "expect": "'MergeError'"
+        },
+        {
+          "name": "stack: index mới 0..n-1",
+          "call": "stack([pd.DataFrame({\"x\": [1, 2]}), pd.DataFrame({\"x\": [3]})]).index.tolist()",
+          "expect": "[0, 1, 2]"
+        },
+        {
+          "name": "stack: cùng cột khác thứ tự vẫn chồng đúng",
+          "call": "stack([pd.DataFrame({\"a\": [1], \"b\": [2]}), pd.DataFrame({\"b\": [4], \"a\": [3]})])[\"a\"].tolist()",
+          "expect": "[1, 3]"
+        },
+        {
+          "name": "stack: khác schema → ValueError",
+          "call": "_studio.call(stack, [pd.DataFrame({\"x\": [1]}), pd.DataFrame({\"y\": [2]})]).error",
+          "expect": "'ValueError'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "attach_prices(orders, prices)",
+          "does": "Gắn giá vào từng đơn, không rơi và không nhân dòng.",
+          "takes": "orders: DataFrame có sku; prices: DataFrame sku, price (mỗi sku một dòng)",
+          "gives": "DataFrame len(orders) dòng, thêm price và _merge",
+          "effect": "Bảng giá trùng sku → MergeError.",
+          "call": "attach_prices(orders, prices)[\"_merge\"] → both / left_only"
+        },
+        {
+          "sig": "stack(frames)",
+          "does": "Chồng các bảng cùng schema.",
+          "takes": "frames: list DataFrame (ít nhất một)",
+          "gives": "DataFrame, index 0..n-1",
+          "effect": "Tập cột khác nhau → ValueError.",
+          "call": "stack([a, b]).index.tolist() → [0, 1, 2]"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

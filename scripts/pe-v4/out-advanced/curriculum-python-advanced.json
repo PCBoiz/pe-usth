@@ -1,0 +1,108 @@
+{
+  "requirements": [
+    "Học qua mini-game: ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng",
+    "Đã viết được hàm, vòng lặp, đọc/ghi file và class cơ bản bằng Python",
+    "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để chạy thật subprocess, thread, Tkinter",
+    "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"
+  ],
+  "skills": [
+    "Chạy chương trình con bằng subprocess: returncode, stdout/stderr, timeout, check=True",
+    "Đa luồng với threading: start/join, Lock, Queue và đo thời gian chờ I/O",
+    "Dựng GUI Tkinter: widget, biến, pack/grid, command và tách logic khỏi giao diện",
+    "Nhập dữ liệu, truy vấn SQL với sqlite3 và tra cứu",
+    "NumPy: mảng, vector hoá, lọc bằng mask",
+    "pandas: đọc CSV/Excel, làm sạch, groupby, merge",
+    "Matplotlib: line, bar, scatter, histogram, subplot có nhãn đầy đủ",
+    "Dự án DA: từ dữ liệu bẩn tới báo cáo và biểu đồ"
+  ],
+  "modules": [
+    {
+      "title": "M1 · Tiến trình và subprocess",
+      "lessons": [
+        "P01 · Program, process và tài nguyên",
+        "P02 · Vòng đời, fork, exec và wait",
+        "P03 · Scheduling và context switch",
+        "P04 · stdin, stdout, stderr và pipe",
+        "P05 · subprocess.run và kết quả",
+        "P06 · Popen, communicate và timeout",
+        "P07 · multiprocessing: Process và Queue"
+      ]
+    },
+    {
+      "title": "M2 · Đa luồng",
+      "lessons": [
+        "T01 · Thread, tài nguyên và concurrency",
+        "T02 · Thread target, start và join",
+        "T03 · Subclass Thread",
+        "T04 · GIL, CPU-bound và I/O-bound",
+        "T05 · Lock, race condition và deadlock",
+        "T06 · Queue và tác vụ lưu nền"
+      ]
+    },
+    {
+      "title": "M3 · GUI Tkinter và dự án",
+      "lessons": [
+        "G01 · GUI, CLI và cửa sổ",
+        "G02 · Widget và callback",
+        "G03 · Dữ liệu nhập và lựa chọn",
+        "G04 · Layout: pack, place, grid",
+        "G05 · OOP và tách logic khỏi giao diện",
+        "G06 · Event loop và worker nền",
+        "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI"
+      ]
+    },
+    {
+      "title": "M4 · Nhập dữ liệu, SQL và tra cứu",
+      "lessons": [
+        "X01 · Nhập dữ liệu bằng NumPy và pandas",
+        "X02 · Excel, Stata, SAS, HDF5 và MATLAB",
+        "X03 · SQL với sqlite3 và pandas",
+        "X04 · Matplotlib: dữ liệu và loại biểu đồ",
+        "X05 · Matplotlib: tùy chỉnh và xuất"
+      ]
+    },
+    {
+      "title": "M5 · NumPy",
+      "lessons": [
+        "N01 · Array, dtype, shape và axis",
+        "N02 · Indexing, mask và vectorization",
+        "N03 · Broadcasting và chuẩn hoá dữ liệu",
+        "N04 · Thống kê, NaN và trọng số",
+        "N05 · View, copy và sai số số thực",
+        "N06 · Đọc dữ liệu và mô phỏng tái lập"
+      ]
+    },
+    {
+      "title": "M6 · pandas",
+      "lessons": [
+        "PD01 · Series, DataFrame và index",
+        "PD02 · CSV, Excel và schema",
+        "PD03 · Làm sạch thiếu, trùng và sai kiểu",
+        "PD04 · Lọc, tính cột và cập nhật an toàn",
+        "PD05 · GroupBy và KPI có mẫu số rõ ràng",
+        "PD06 · Merge, concat và kiểm tra cardinality",
+        "PD07 · Long, wide, pivot và melt",
+        "PD08 · Ngày giờ, resample và rolling",
+        "PD09 · EDA, chất lượng dữ liệu và export"
+      ]
+    },
+    {
+      "title": "M7 · Matplotlib",
+      "lessons": [
+        "M01 · Figure, Axes và chọn biểu đồ",
+        "M02 · Phân bố, scatter và outlier",
+        "M03 · Subplot và heatmap đọc được",
+        "M04 · Màu, annotation và kể chuyện dữ liệu",
+        "M05 · Ticks, scale và ngày trên trục",
+        "M06 · Layout, xuất hình và kiểm tra chất lượng"
+      ]
+    },
+    {
+      "title": "M8 · Dự án DA",
+      "lessons": [
+        "DA01 · Mini-project: doanh thu từ raw tới chart",
+        "DA02 · Mini-project: điểm số và GPA"
+      ]
+    }
+  ]
+}

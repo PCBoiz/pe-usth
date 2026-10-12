@@ -1,0 +1,436 @@
+{
+  "lesson_code": "R02",
+  "sort_order": 20,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
+  "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+  "estimated_minutes": 60,
+  "xp_reward": 40,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
+    "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#R02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BOSS",
+          "R02"
+        ],
+        "title": "Dự án PW5–PW9: lưu, shell, thread và GUI",
+        "goal": "Ghép lưu file nén, process con, worker thread và Tkinter thành một ứng dụng.",
+        "task": "Viết validate, save/load_marks (pickle + gzip), run_report (subprocess), start_save và các method của App.",
+        "predict": "Vì sao nút Lưu không được join() worker ngay trong callback?",
+        "code": "def validate(name, raw_mark): ...\ndef save_marks(marks, path): ...  # gzip + pickle\ndef run_report(marks): ...      # [sys.executable, \"report.py\"]\ndef start_save(marks, path, done): ...\nclass App: add / save / poll_save / report",
+        "tests": [
+          "run_report({\"Mai\": 8.5, \"An\": 7.0}) → ... Average: 7.75",
+          "Bấm Lưu → \"Đang lưu...\" rồi \"Đã lưu 2 sinh viên\""
+        ],
+        "reflect": "Dữ liệu đi từ ô nhập tới file nén qua những bước nào?"
+      },
+      "context": {
+        "title": "Ghép lưu file nén, process con, worker thread và Tkinter thành một ứng dụng sổ điểm, logic tách khỏi giao diện.",
+        "body": "Sổ điểm mini PW5–PW9. report.py đã cấp: đọc \"tên,điểm\" từ stdin, in báo cáo; không có dòng dữ liệu nào thì in lỗi ra stderr và thoát mã 1. Viết lần lượt:\n\n1) validate(name, raw_mark) → (tên đã strip, float 0..10), nhận cả \"7,5\"; tên trống, không phải số hoặc ngoài khoảng → ValueError.\n\n2) save_marks(marks, path) lưu dict bằng pickle NÉN gzip; load_marks(path) nạp lại, file chưa có → {}.\n\n3) run_report(marks) chạy [sys.executable, \"report.py\"] bằng subprocess, gửi mỗi sinh viên một dòng \"tên,điểm\" qua stdin, trả stdout (str); con thoát mã khác 0 → RuntimeError(stderr của con).\n\n4) start_save(marks, path, done) start một Thread lưu BẢN SAO marks; xong thì put (\"ok\", số sinh viên) vào done (OSError → (\"error\", thông báo)); trả Thread, không join.\n\n5) App (giao diện đã dựng sẵn): __init__ nạp self.marks = load_marks(path); add → validate, self.marks[tên] = điểm, status \"Có <n> sinh viên\" (sai → showerror); save → status \"Đang lưu...\", self.saver = start_save(...), after(100, self.poll_save); poll_save → get_nowait, rỗng thì hẹn lại, có thì status \"Đã lưu <n> sinh viên\"; report → self.output hiện run_report(self.marks) (lỗi → showerror); wait_for_save → join self.saver nếu có.",
+        "example": "Thêm Mai 8.5, An 7 → bấm Lưu → \"Đang lưu...\" → \"Đã lưu 2 sinh viên\"; Báo cáo → \"Mai: 8.5 / An: 7.0 / Average: 7.75\".",
+        "prereq": "G06",
+        "level": "Nâng cao",
+        "files": [
+          "report.py"
+        ]
+      },
+      "predict": {
+        "question": "Vì sao nút Lưu không được join() worker ngay trong callback?",
+        "options": [
+          {
+            "id": "a",
+            "title": "join làm file bị lưu hai lần",
+            "detail": "join chỉ chờ, không chạy lại target.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "join chặn thread GUI tới khi lưu xong — cửa sổ đứng, mất ý nghĩa của worker",
+            "detail": "Chờ worker để lúc thoát (wait_for_save).",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Không sao, join chạy rất nhanh",
+            "detail": "Lưu file lớn hoặc ổ chậm có thể mất nhiều giây.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "Bốn cái bẫy của PW5–PW9",
+        "body": "Quên text=True nên stdout là bytes (và input= str nổ TypeError); gọi \"python\" thay vì sys.executable nên chạy nhầm Python khác (hoặc không có); lưu pickle mà không nén dù đề yêu cầu nén; join() worker ngay trong nút Lưu làm cửa sổ đứng. Ngoài ra: worker không được tự đổi Label — chỉ put vào queue."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "PW5–PW6: pickle biến dict thành bytes, gzip nén lại. Mở file bằng gzip.open(path, \"wb\"/\"rb\") — chế độ nhị phân."
+        },
+        {
+          "n": 2,
+          "body": "Khởi động: nạp lại file nếu có; FileNotFoundError nghĩa là lần chạy đầu → bắt đầu với {}. Chỉ load pickle từ nguồn tin cậy."
+        },
+        {
+          "n": 3,
+          "body": "PW7: process con chạy bằng sys.executable (đúng Python đang chạy); input= đóng vai \"<\", capture_output như \">\"."
+        },
+        {
+          "n": 4,
+          "body": "text=True để stdout là str; không có thì nhận bytes. returncode khác 0 → báo lỗi bằng stderr của con."
+        },
+        {
+          "n": 5,
+          "body": "PW8: lưu ở worker thread trên BẢN SAO dữ liệu; báo kết quả qua Queue; join trước khi thoát chứ không join trong callback."
+        },
+        {
+          "n": 6,
+          "body": "PW9: App chỉ đọc widget, gọi hàm thuần và hiện kết quả; chỉ lưu dữ liệu đã qua validate."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import gzip\nimport pickle\nimport threading\n\nresult = {}\n\n\ndef save():\n    result[\"blob\"] = gzip.compress(pickle.dumps({\"marks\": [8, 7]}))\n\n\nworker = threading.Thread(target=save)\nworker.start()\nworker.join()\n\nblob = result[\"blob\"]\nprint(blob[:2], len(blob), \"byte\")\nprint(pickle.loads(gzip.decompress(blob)))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "subprocess.run([...], capture_output=True) không có text=True thì result.stdout là gì?",
+          "options": [
+            {
+              "text": "str như thường",
+              "detail": "Mặc định pipe trả bytes.",
+              "correct": false
+            },
+            {
+              "text": "None",
+              "detail": "capture_output=True đã thu stdout.",
+              "correct": false
+            },
+            {
+              "text": "bytes, ví dụ b\"Mai: 8.5\\n...\"",
+              "detail": "text=True mới giải mã thành str.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "text=True mới giải mã thành str."
+        },
+        {
+          "question": "Cần học threading trước khi tạo nút Tkinter đầu tiên không?",
+          "options": [
+            {
+              "text": "Có, Tkinter bắt buộc dùng thread",
+              "detail": "Tkinter chạy tốt trên một thread.",
+              "correct": false
+            },
+            {
+              "text": "Không; cần khi kết hợp nút với tác vụ nền dài",
+              "detail": "Nút đầu tiên chỉ cần callback; thread chỉ cần khi callback phải chờ lâu.",
+              "correct": true
+            },
+            {
+              "text": "Có, mỗi nút một thread",
+              "detail": "Chỉ việc dài mới cần worker.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Nút đầu tiên chỉ cần callback; thread chỉ cần khi callback phải chờ lâu."
+        },
+        {
+          "question": "Vì sao gọi [sys.executable, \"report.py\"] thay vì [\"python\", \"report.py\"]?",
+          "options": [
+            {
+              "text": "sys.executable chạy được lệnh shell",
+              "detail": "Nó chỉ là đường dẫn tới trình thông dịch.",
+              "correct": false
+            },
+            {
+              "text": "\"python\" chạy chậm hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            },
+            {
+              "text": "sys.executable là đúng file Python đang chạy chương trình; \"python\" có thể là bản khác hoặc không tồn tại",
+              "detail": "Trên Windows \"python\" có thể là stub của Store.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Trên Windows \"python\" có thể là stub của Store."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Kể đường đi của dữ liệu từ ô nhập tới file marks.dat và tới báo cáo, nêu thread/process nào làm từng bước.",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Thread GUI: add đọc hai StringVar, validate, ghi vào self.marks. Bấm Lưu: thread GUI start worker với bản sao marks; worker pickle + gzip ra file rồi put (\"ok\", n) vào queue; poll_save (thread GUI, qua after) đổi status. Báo cáo: process con report.py nhận \"tên,điểm\" qua stdin, in báo cáo ra stdout cho cha hiện lên Label. Trường hợp đặc biệt: chưa có file → {}, dữ liệu rỗng → con thoát mã 1 → RuntimeError."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Lập kế hoạch trước khi tự viết",
+        "body": "Đi lại đường dữ liệu của bài trước khi tự viết code.",
+        "rule": "Bộ chấm gọi thẳng các hàm thuần với dữ liệu mới, kiểm file nén gzip, chạy process con với dữ liệu rỗng, rồi bấm Thêm/Lưu/Báo cáo trên App và chạy hàng đợi after() thay event loop."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Ô nhập → validate() → self.marks[tên] = điểm"
+          },
+          {
+            "label": "Bước 2",
+            "text": "Bấm Lưu → start_save() → worker pickle + gzip → put (\"ok\", n)"
+          },
+          {
+            "label": "Bước 3",
+            "text": "poll_save() qua after() → status \"Đã lưu n sinh viên\""
+          },
+          {
+            "label": "Bước 4",
+            "text": "Bấm Báo cáo → subprocess report.py → stdout lên self.output"
+          }
+        ]
+      },
+      "counter": {
+        "question": "run_report({}) (không có sinh viên nào) cho kết quả gì?",
+        "options": [
+          "Chuỗi rỗng \"\"",
+          "RuntimeError với stderr của report.py",
+          "Average: 0.00"
+        ],
+        "correct": "RuntimeError với stderr của report.py"
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+        "body": "Sổ điểm mini PW5–PW9. report.py đã cấp: đọc \"tên,điểm\" từ stdin, in báo cáo; không có dòng dữ liệu nào thì in lỗi ra stderr và thoát mã 1. Viết lần lượt:\n\n1) validate(name, raw_mark) → (tên đã strip, float 0..10), nhận cả \"7,5\"; tên trống, không phải số hoặc ngoài khoảng → ValueError.\n\n2) save_marks(marks, path) lưu dict bằng pickle NÉN gzip; load_marks(path) nạp lại, file chưa có → {}.\n\n3) run_report(marks) chạy [sys.executable, \"report.py\"] bằng subprocess, gửi mỗi sinh viên một dòng \"tên,điểm\" qua stdin, trả stdout (str); con thoát mã khác 0 → RuntimeError(stderr của con).\n\n4) start_save(marks, path, done) start một Thread lưu BẢN SAO marks; xong thì put (\"ok\", số sinh viên) vào done (OSError → (\"error\", thông báo)); trả Thread, không join.\n\n5) App (giao diện đã dựng sẵn): __init__ nạp self.marks = load_marks(path); add → validate, self.marks[tên] = điểm, status \"Có <n> sinh viên\" (sai → showerror); save → status \"Đang lưu...\", self.saver = start_save(...), after(100, self.poll_save); poll_save → get_nowait, rỗng thì hẹn lại, có thì status \"Đã lưu <n> sinh viên\"; report → self.output hiện run_report(self.marks) (lỗi → showerror); wait_for_save → join self.saver nếu có.\n\nThực hành: Viết và thử từng hàm thuần trước (validate → save/load → run_report → start_save), rồi mới nối vào các method của App.",
+        "io": [
+          {
+            "label": "validate(\" Mai \", \"8.5\")",
+            "value": "(\"Mai\", 8.5)"
+          },
+          {
+            "label": "run_report({\"Mai\": 8.5, \"An\": 7.0})",
+            "value": "\"Mai: 8.5\\nAn: 7.0\\nAverage: 7.75\\n\""
+          },
+          {
+            "label": "Bấm Lưu với 2 sinh viên",
+            "value": "\"Đang lưu...\" rồi (event loop) \"Đã lưu 2 sinh viên\"; file nén gzip"
+          }
+        ]
+      },
+      "starterCode": "import gzip\nimport pickle\nimport subprocess\nimport sys\nimport threading\nimport tkinter as tk\nfrom queue import Queue, Empty\nfrom tkinter import messagebox\n\nDATA_FILE = \"marks.dat\"\n\n\ndef validate(name, raw_mark):\n    pass\n\n\ndef save_marks(marks, path):\n    pass\n\n\ndef load_marks(path):\n    pass\n\n\ndef run_report(marks):\n    pass\n\n\ndef start_save(marks, path, done):\n    pass\n\n\nclass App:\n    def __init__(self, root, path=DATA_FILE):\n        self.root = root\n        self.path = path\n        self.marks = {}  # PW5: nạp lại từ file khi khởi động\n        self.done = Queue()\n        self.saver = None\n        self.name_var = tk.StringVar()\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        form = tk.Frame(self.root)\n        form.pack(fill=\"x\")\n        tk.Label(form, text=\"Tên\").grid(row=0, column=0)\n        tk.Entry(form, textvariable=self.name_var).grid(row=0, column=1)\n        tk.Label(form, text=\"Điểm\").grid(row=1, column=0)\n        tk.Entry(form, textvariable=self.mark_var).grid(row=1, column=1)\n        buttons = tk.Frame(self.root)\n        buttons.pack(fill=\"x\")\n        tk.Button(buttons, text=\"Thêm\", command=self.add).pack(side=\"left\")\n        tk.Button(buttons, text=\"Lưu\", command=self.save).pack(side=\"left\")\n        tk.Button(buttons, text=\"Báo cáo\", command=self.report).pack(side=\"left\")\n        self.status = tk.Label(self.root, text=f\"Đã nạp {len(self.marks)} sinh viên\")\n        self.status.pack()\n        self.output = tk.Label(self.root, text=\"\")\n        self.output.pack()\n\n    def add(self):\n        pass\n\n    def save(self):\n        pass\n\n    def poll_save(self):\n        pass\n\n    def report(self):\n        pass\n\n    def wait_for_save(self):\n        pass\n\n\nif __name__ == \"__main__\":\n    root = tk.Tk()\n    root.title(\"Sổ điểm mini\")\n    app = App(root)\n    root.mainloop()\n    app.wait_for_save()\n",
+      "solutionCode": "import gzip\nimport pickle\nimport subprocess\nimport sys\nimport threading\nimport tkinter as tk\nfrom queue import Queue, Empty\nfrom tkinter import messagebox\n\nDATA_FILE = \"marks.dat\"\n\n\ndef validate(name, raw_mark):\n    name = name.strip()\n    if not name:\n        raise ValueError(\"Tên trống\")\n    mark = float(raw_mark.strip().replace(\",\", \".\"))\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Điểm phải trong 0..10\")\n    return name, mark\n\n\ndef save_marks(marks, path):\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(marks, f)\n\n\ndef load_marks(path):\n    try:\n        with gzip.open(path, \"rb\") as f:\n            return pickle.load(f)\n    except FileNotFoundError:\n        return {}\n\n\ndef run_report(marks):\n    lines = \"\".join(f\"{name},{mark}\\n\" for name, mark in marks.items())\n    result = subprocess.run([sys.executable, \"report.py\"], input=lines,\n                            capture_output=True, text=True, timeout=10)\n    if result.returncode != 0:\n        raise RuntimeError(result.stderr.strip())\n    return result.stdout\n\n\ndef save_worker(marks, path, done):\n    try:\n        save_marks(marks, path)\n    except OSError as error:\n        done.put((\"error\", str(error)))\n    else:\n        done.put((\"ok\", len(marks)))\n\n\ndef start_save(marks, path, done):\n    saver = threading.Thread(target=save_worker, args=(dict(marks), path, done))\n    saver.start()\n    return saver\n\n\nclass App:\n    def __init__(self, root, path=DATA_FILE):\n        self.root = root\n        self.path = path\n        self.marks = load_marks(path)\n        self.done = Queue()\n        self.saver = None\n        self.name_var = tk.StringVar()\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        form = tk.Frame(self.root)\n        form.pack(fill=\"x\")\n        tk.Label(form, text=\"Tên\").grid(row=0, column=0)\n        tk.Entry(form, textvariable=self.name_var).grid(row=0, column=1)\n        tk.Label(form, text=\"Điểm\").grid(row=1, column=0)\n        tk.Entry(form, textvariable=self.mark_var).grid(row=1, column=1)\n        buttons = tk.Frame(self.root)\n        buttons.pack(fill=\"x\")\n        tk.Button(buttons, text=\"Thêm\", command=self.add).pack(side=\"left\")\n        tk.Button(buttons, text=\"Lưu\", command=self.save).pack(side=\"left\")\n        tk.Button(buttons, text=\"Báo cáo\", command=self.report).pack(side=\"left\")\n        self.status = tk.Label(self.root, text=f\"Đã nạp {len(self.marks)} sinh viên\")\n        self.status.pack()\n        self.output = tk.Label(self.root, text=\"\")\n        self.output.pack()\n\n    def add(self):\n        try:\n            name, mark = validate(self.name_var.get(), self.mark_var.get())\n        except ValueError as error:\n            messagebox.showerror(\"Dữ liệu không hợp lệ\", str(error))\n            return\n        self.marks[name] = mark\n        self.status.config(text=f\"Có {len(self.marks)} sinh viên\")\n\n    def save(self):\n        self.status.config(text=\"Đang lưu...\")\n        self.saver = start_save(self.marks, self.path, self.done)\n        self.root.after(100, self.poll_save)\n\n    def poll_save(self):\n        try:\n            kind, info = self.done.get_nowait()\n        except Empty:\n            self.root.after(100, self.poll_save)\n            return\n        if kind == \"ok\":\n            self.status.config(text=f\"Đã lưu {info} sinh viên\")\n        else:\n            self.status.config(text=f\"Lỗi lưu: {info}\")\n\n    def report(self):\n        try:\n            text = run_report(self.marks)\n        except (RuntimeError, subprocess.TimeoutExpired) as error:\n            messagebox.showerror(\"Báo cáo\", str(error))\n            return\n        self.output.config(text=text)\n\n    def wait_for_save(self):\n        if self.saver is not None:\n            self.saver.join()\n\n\nif __name__ == \"__main__\":\n    root = tk.Tk()\n    root.title(\"Sổ điểm mini\")\n    app = App(root)\n    root.mainloop()\n    app.wait_for_save()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Viết và thử từng hàm thuần trước (validate → save/load → run_report → start_save), rồi mới nối vào các method của App."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. validate: strip tên, rỗng → ValueError; float(raw.strip().replace(\",\", \".\")); ngoài 0..10 → ValueError.\n2. save_marks: with gzip.open(path, \"wb\") as f: pickle.dump(marks, f). load_marks: gzip.open(path, \"rb\") + pickle.load; FileNotFoundError → {}.\n3. run_report: subprocess.run([sys.executable, \"report.py\"], input=..., capture_output=True, text=True, timeout=10); returncode != 0 → RuntimeError.\n4. start_save: Thread(target=..., args=(dict(marks), path, done)).start(); return thread.\n5. App.save: status \"Đang lưu...\"; self.saver = start_save(...); self.root.after(100, self.poll_save). wait_for_save: join nếu có."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def run_report(marks):\n    lines = \"\".join(f\"{name},{mark}\\n\" for name, mark in marks.items())\n    result = subprocess.run([sys.executable, \"report.py\"], input=lines,\n                            capture_output=True, text=True, timeout=10)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Khởi động chưa có marks.dat → \"Đã nạp 0 sinh viên\"",
+          "call": "app.status.cget('text')",
+          "expect": "'Đã nạp 0 sinh viên'"
+        },
+        {
+          "name": "validate chuẩn hoá tên và điểm",
+          "call": "[validate(\" Mai \", \"8.5\"), validate(\"An\", \"7,25\")]",
+          "expect": "[('Mai', 8.5), ('An', 7.25)]"
+        },
+        {
+          "name": "validate từ chối dữ liệu sai bằng ValueError",
+          "call": "[_studio.call(validate, n, m).error for n, m in [('An', 'abc'), ('  ', '7'), ('Binh', '11'), ('Chi', '-0.5')]]",
+          "expect": "['ValueError', 'ValueError', 'ValueError', 'ValueError']"
+        },
+        {
+          "name": "save_marks rồi load_marks phục hồi đúng dict",
+          "call": "(save_marks({'Lan': 9.25, 'Huy': 6.0}, 't1.dat'), load_marks('t1.dat'))[1]",
+          "expect": "{'Lan': 9.25, 'Huy': 6.0}"
+        },
+        {
+          "name": "File lưu được nén gzip (2 byte đầu 1f 8b)",
+          "call": "(save_marks({'A': 1.0}, 't2.dat'), open('t2.dat', 'rb').read(2))[1]",
+          "expect": "b'\\x1f\\x8b'"
+        },
+        {
+          "name": "Chưa có file → load_marks trả {}",
+          "call": "load_marks('chua_co.dat')",
+          "expect": "{}"
+        },
+        {
+          "name": "run_report: process con in báo cáo",
+          "call": "run_report({'Mai': 8.5, 'An': 7.0})",
+          "expect": "'Mai: 8.5\\nAn: 7.0\\nAverage: 7.75\\n'"
+        },
+        {
+          "name": "Process con lỗi (không có dữ liệu) → RuntimeError",
+          "call": "_studio.call(run_report, {}).error",
+          "expect": "'RuntimeError'"
+        },
+        {
+          "name": "start_save: một worker, ghi file, gửi (\"ok\", 2)",
+          "call": "(lambda box: (lambda r: (r.thread_count, load_marks('t3.dat'), box.get_nowait()))(_studio.call(start_save, {'Mai': 8.0, 'An': 6.5}, 't3.dat', box)))(__import__('queue').Queue())",
+          "expect": "(1, {'Mai': 8.0, 'An': 6.5}, ('ok', 2))"
+        },
+        {
+          "name": "Bấm Thêm: Mai 8.5 rồi An 7",
+          "call": "(app.marks.clear(), app.name_var.set('Mai'), app.mark_var.set('8.5'), _studio.tk.find(type='Button', text='Thêm').invoke(), app.status.cget('text'), app.name_var.set('An'), app.mark_var.set('7'), _studio.tk.find(type='Button', text='Thêm').invoke(), app.status.cget('text'), dict(app.marks))[-2:]",
+          "expect": "('Có 2 sinh viên', {'Mai': 8.5, 'An': 7.0})"
+        },
+        {
+          "name": "Dữ liệu sai → showerror, không thêm",
+          "call": "(lambda n, m: (app.name_var.set('Binh'), app.mark_var.set('12'), _studio.tk.find(type='Button', text='Thêm').invoke(), app.status.cget('text'), len(app.marks) - n, len(_studio.tk.messages) - m)[-2:])(len(app.marks), len(_studio.tk.messages))",
+          "expect": "(0, 1)"
+        },
+        {
+          "name": "Bấm Lưu: worker nền, không join trong callback, \"Đang lưu...\"",
+          "call": "(lambda r: (r.thread_count, r.threads[0].joined, app.status.cget('text'), _studio.tk.run_after(n=5))[:3])(_studio.call(_studio.tk.find(type='Button', text='Lưu').invoke))",
+          "expect": "(1, False, 'Đang lưu...')"
+        },
+        {
+          "name": "Event loop chạy poll_save → \"Đã lưu 1 sinh viên\", file có dữ liệu",
+          "call": "(app.marks.clear(), app.marks.update({'Kim': 9.0}), _studio.tk.find(type='Button', text='Lưu').invoke(), _studio.tk.run_after(n=5), app.status.cget('text'), load_marks(app.path))[-2:]",
+          "expect": "('Đã lưu 1 sinh viên', {'Kim': 9.0})"
+        },
+        {
+          "name": "Bấm Báo cáo → hiện stdout của process con",
+          "call": "(app.marks.clear(), app.marks.update({'Lan': 9.0, 'Huy': 6.0}), _studio.tk.find(type='Button', text='Báo cáo').invoke(), app.output.cget('text'))[-1]",
+          "expect": "'Lan: 9.0\\nHuy: 6.0\\nAverage: 7.50\\n'"
+        },
+        {
+          "name": "Trước khi thoát: wait_for_save() join worker đang lưu",
+          "call": "(lambda r: (app.wait_for_save(), r.threads[0].joined, _studio.tk.run_after(n=5))[1])(_studio.call(_studio.tk.find(type='Button', text='Lưu').invoke))",
+          "expect": "True"
+        },
+        {
+          "name": "Khởi động lại: App mới nạp file đã lưu",
+          "call": "(save_marks({'Tam': 5.5}, 'boot.dat'), (lambda a: (a.marks, a.status.cget('text')))(App(tk.Tk(), 'boot.dat')))[1]",
+          "expect": "({'Tam': 5.5}, 'Đã nạp 1 sinh viên')"
+        },
+        {
+          "name": "Process con chạy bằng sys.executable",
+          "call": "[c['args'][0] == __import__('sys').executable for c in _studio.run(entry=\"run_report({'Mai': 8.0})\").subprocess_calls]",
+          "expect": "[True]"
+        }
+      ],
+      "files": [
+        {
+          "name": "report.py",
+          "content": "\"\"\"Báo cáo điểm — chạy như PROCESS CON.\n\nĐọc stdin, mỗi dòng \"tên,điểm\"; in báo cáo ra stdout. Không có dòng dữ liệu nào thì\nin lỗi ra stderr và thoát mã 1. Chữ in ra không dấu để pipe trên Windows không vấp bảng mã.\n\"\"\"\nimport sys\n\nrows = []\nfor line in sys.stdin:\n    line = line.strip()\n    if not line:\n        continue\n    name, mark = line.rsplit(\",\", 1)\n    rows.append((name, float(mark)))\n\nif not rows:\n    print(\"No data\", file=sys.stderr)\n    sys.exit(1)\n\nfor name, mark in rows:\n    print(f\"{name}: {mark}\")\naverage = sum(mark for name, mark in rows) / len(rows)\nprint(f\"Average: {average:.2f}\")\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "validate(name, raw_mark)",
+          "does": "Kiểm và chuẩn hoá một dòng nhập trước khi đưa vào dữ liệu.",
+          "takes": "name, raw_mark: str như người dùng gõ (raw_mark có thể dùng dấu phẩy \"7,5\")",
+          "gives": "(tên đã strip, float 0..10); tên trống / không phải số / ngoài khoảng → ValueError",
+          "effect": "Hàm thuần.",
+          "call": "validate(\" Mai \", \"8.5\") → (\"Mai\", 8.5)"
+        },
+        {
+          "sig": "save_marks(marks, path) / load_marks(path)",
+          "does": "PW5–PW6: lưu dict điểm bằng pickle, nén gzip; nạp lại.",
+          "takes": "marks: dict tên → điểm; path: tên file",
+          "gives": "load_marks: dict; file chưa có → {}",
+          "effect": "Ghi/đọc file nhị phân nén gzip (2 byte đầu 1f 8b).",
+          "call": "save_marks({\"Lan\": 9.25}, \"t.dat\"); load_marks(\"t.dat\") → {\"Lan\": 9.25}"
+        },
+        {
+          "sig": "run_report(marks)",
+          "does": "PW7: chạy report.py trong process con, gửi dữ liệu qua stdin.",
+          "takes": "marks: dict",
+          "gives": "str — stdout của process con; con thoát mã khác 0 → RuntimeError(stderr)",
+          "effect": "subprocess.run([sys.executable, \"report.py\"], input=..., capture_output=True, text=True, timeout=...)",
+          "call": "run_report({\"Mai\": 8.5, \"An\": 7.0}) → \"Mai: 8.5\\nAn: 7.0\\nAverage: 7.75\\n\""
+        },
+        {
+          "sig": "start_save(marks, path, done)",
+          "does": "PW8: lưu ở worker thread để giao diện không đứng.",
+          "takes": "marks: dict (worker nhận BẢN SAO); path; done: Queue",
+          "gives": "Thread đã start (KHÔNG join)",
+          "effect": "Worker gọi save_marks; xong → done.put((\"ok\", số sinh viên)); OSError → done.put((\"error\", thông báo)).",
+          "call": "t = start_save({\"Mai\": 8.0}, \"t.dat\", q) → q nhận (\"ok\", 1)"
+        },
+        {
+          "sig": "App(root, path=DATA_FILE)",
+          "does": "PW9: giao diện Tkinter gọi các hàm trên.",
+          "takes": "root: Tk; path: file dữ liệu",
+          "gives": "self.marks (nạp từ path), self.status, self.output, self.saver",
+          "effect": "add: validate → self.marks; save: \"Đang lưu...\" + start_save + after(poll_save); poll_save: \"Đã lưu <n> sinh viên\"; report: self.output = run_report(...); wait_for_save: join worker trước khi thoát.",
+          "call": "Bấm Lưu → \"Đang lưu...\" → (event loop) → \"Đã lưu 2 sinh viên\""
+        }
+      ],
+      "gate": true,
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật. Thread và subprocess cũng là mô phỏng: worker chạy xong ngay khi start(); process con chỉ chạy được [sys.executable, \"report.py\"] hoặc [sys.executable, \"-c\", code], có stdin/stdout/stderr riêng — lệnh shell (dir, ls…) không chạy. Chạy trên máy: lưu report.py cùng thư mục với bài và chạy lệnh từ thư mục đó (đường dẫn \"report.py\" là tương đối); trên Windows dữ liệu qua pipe dùng bảng mã mặc định của hệ điều hành, nên thử với tên không dấu."
+    },
+    "play": {
+      "level": "N",
+      "boss": true,
+      "games": [
+        {
+          "id": "trueFalse-0",
+          "type": "trueFalse",
+          "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
+          "prompt": "subprocess.run([...], capture_output=True) không có text=True thì result.stdout là gì?",
+          "items": [
+            {
+              "statement": "str như thường",
+              "answer": false,
+              "explain": "Mặc định pipe trả bytes."
+            },
+            {
+              "statement": "None",
+              "answer": false,
+              "explain": "capture_output=True đã thu stdout."
+            },
+            {
+              "statement": "bytes, ví dụ b\"Mai: 8.5\\n...\"",
+              "answer": true,
+              "explain": "text=True mới giải mã thành str."
+            }
+          ]
+        },
+        {
+          "id": "spotError-1",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    except FileNotFoundError:\n        return {}\n\n\ndef run_report(marks):\n    lines = \"\".join(f\"{name},{mark}\\n\" for name, mark in marks.items())\n    result = subprocess.run([sys.executable, \"report.py\"], input=lines,\n                            capture_output=True, timeout=10)\n    if result.returncode != 0:\n        raise RuntimeError(result.stderr.strip())\n    return result.stdout\n\n\ndef save_worker(marks, path, done):\n    try:",
+          "firstLine": 32,
+          "line": 39,
+          "lines": [
+            39
+          ],
+          "label": "quên text=True",
+          "fix": "                            capture_output=True, text=True, timeout=10)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

@@ -1,0 +1,400 @@
+{
+  "lesson_code": "T05",
+  "sort_order": 12,
+  "module": "M2 · Đa luồng",
+  "title": "T05 · Lock, race condition và deadlock",
+  "subtitle": "Nâng cao · M2 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "T05 · Lock, race condition và deadlock",
+    "subtitle": "Nâng cao · M2 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#T05",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T05"
+        ],
+        "title": "Lock, race condition và deadlock",
+        "goal": "Bảo vệ dữ liệu chung bằng Lock và tránh deadlock.",
+        "task": "Viết deposit/withdraw trong with self.lock và safe_plan(plan, order).",
+        "predict": "Hai thread cùng nạp 50 không có lock — số dư có thể là bao nhiêu?",
+        "code": "def deposit(self, amount):\n    with self.lock:\n        ...\ndef withdraw(self, amount):\n    # kiểm tra + trừ trong CÙNG một with\ndef safe_plan(plan, order): ...",
+        "tests": [
+          "run_deposits(Account(0), [10, 20, 30]) → 60",
+          "withdraw quá số dư → ValueError, khoá đã nhả"
+        ],
+        "reflect": "Vì sao with lock an toàn hơn acquire/release rời nhau?"
+      },
+      "context": {
+        "title": "Bảo vệ dữ liệu dùng chung bằng Lock và tránh deadlock bằng thứ tự khoá thống nhất.",
+        "body": "Account có self.balance và self.lock = threading.Lock(); run_deposits (cấp sẵn) cho mỗi khoản nạp một thread. Viết deposit(amount): đọc-cộng-ghi balance trong with self.lock. Viết withdraw(amount): trong CÙNG một with self.lock, nếu amount > balance thì raise ValueError(\"insufficient funds\"), ngược lại trừ. Viết safe_plan(plan, order): True nếu plan (các lock một thread khoá lồng nhau, theo thứ tự) đi đúng thứ tự chung order — tăng dần, không khoá lại lock đang giữ; tên không có trong order → ValueError.",
+        "example": "run_deposits(Account(0), [10, 20, 30]) → 60. Account(5).withdraw(9) → ValueError, balance vẫn 5. safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False.",
+        "prereq": "T04",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Hai thread cùng chạy deposit(50) trên balance = 100, KHÔNG có lock. Kết quả có thể là?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Luôn 200",
+            "detail": "Không có gì bảo đảm hai lần đọc-sửa-ghi không xen nhau.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "150 hoặc 200 — tuỳ hai thread xen nhau thế nào",
+            "detail": "Đọc-sửa-ghi bị xen giữa thì mất một lần nạp.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Luôn 150",
+            "detail": "Có lúc mỗi thread chạy trọn phần của mình thì ra 200.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Có GIL rồi nên balance += amount đã an toàn\"",
+        "body": "GIL chỉ bảo đảm mỗi lúc một thread chạy bytecode; += gồm nhiều bytecode (đọc, cộng, ghi) và thread có thể bị đổi giữa chúng. Trạng thái của ứng dụng phải tự bảo vệ bằng Lock. Lưu ý: Studio chạy thread lần lượt nên không tái hiện được race — bộ chấm kiểm cấu trúc: mọi lần đọc/ghi balance phải nằm trong lúc giữ self.lock."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "balance += amount không phải một bước: đọc balance → cộng → ghi lại. Ví dụ minh hoạ xen kẽ bằng tay hai thread A, B cùng nạp 50: cả hai đọc 100 trước khi ai kịp ghi, nên một lần nạp bị mất. Kết quả phụ thuộc thứ tự truy cập = race condition."
+        },
+        {
+          "n": 2,
+          "body": "Lock (mutex) chỉ cho MỘT thread giữ tại một thời điểm. Đoạn đọc-sửa-ghi đặt trong with self.lock: là critical section — thread khác tới đó phải chờ khối kết thúc. Lock phải DÙNG CHUNG (self.lock), tạo Lock mới mỗi lần gọi thì không ai phải chờ ai."
+        },
+        {
+          "n": 3,
+          "body": "with lock tự release khi rời khối, kể cả khi có exception. acquire()/release() viết rời nhau thì một lỗi ở giữa làm lock kẹt mãi — mọi thread sau chờ vô hạn."
+        },
+        {
+          "n": 4,
+          "body": "Kiểm tra rồi hành động (if amount > balance … balance -= amount) phải nằm TRỌN trong cùng một lần giữ khoá. Giữ khoá càng ngắn càng tốt: đừng đặt việc chậm (in, ghi file) vào trong."
+        },
+        {
+          "n": 5,
+          "body": "Deadlock: các bên chờ nhau mãi. Thread 1 giữ A chờ B, thread 2 giữ B chờ A. Cách phòng: mọi thread khoá theo CÙNG một thứ tự đã thống nhất; Lock thường không khoá lại được khi chính mình đang giữ; đừng join một worker khi đang giữ lock mà worker đó cần."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "balance = 100\nread_a = balance\nread_b = balance\nbalance = read_a + 50\nbalance = read_b + 50\nprint(\"Mong đợi 200, thực tế\", balance)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Vì sao with lock dễ quản lý hơn acquire/release rời nhau?",
+          "options": [
+            {
+              "text": "Cho nhiều thread cùng giữ khoá",
+              "detail": "Lock luôn chỉ cho một thread giữ.",
+              "correct": false
+            },
+            {
+              "text": "Chạy nhanh hơn",
+              "detail": "Tốc độ như nhau; khác ở chỗ an toàn khi có lỗi.",
+              "correct": false
+            },
+            {
+              "text": "Tự release khi rời khối, kể cả khi có exception",
+              "detail": "Không bao giờ để lock kẹt vì quên release.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Không bao giờ để lock kẹt vì quên release."
+        },
+        {
+          "question": "Thread 1 khoá A rồi B; thread 2 khoá B rồi A. Rủi ro gì?",
+          "options": [
+            {
+              "text": "Chỉ chậm hơn một chút",
+              "detail": "Hai bên chờ nhau mãi, không tiến triển.",
+              "correct": false
+            },
+            {
+              "text": "Deadlock — mỗi bên giữ một lock và chờ lock kia",
+              "detail": "Sửa: cả hai khoá theo cùng thứ tự A rồi B.",
+              "correct": true
+            },
+            {
+              "text": "Không sao vì cuối cùng đều release",
+              "detail": "Có thể không bên nào tới được lệnh release.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Sửa: cả hai khoá theo cùng thứ tự A rồi B."
+        },
+        {
+          "question": "Nên đặt gì vào critical section?",
+          "options": [
+            {
+              "text": "Cả hàm, kể cả in và ghi file, cho chắc",
+              "detail": "Giữ lâu làm các thread khác chờ vô ích.",
+              "correct": false
+            },
+            {
+              "text": "Chỉ các bước đọc-sửa-ghi dữ liệu dùng chung — giữ khoá ngắn nhất có thể",
+              "detail": "Thread khác phải chờ suốt lúc bạn giữ khoá.",
+              "correct": true
+            },
+            {
+              "text": "Không cần, vì GIL đã khoá",
+              "detail": "GIL không bảo vệ trạng thái của ứng dụng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Thread khác phải chờ suốt lúc bạn giữ khoá."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao withdraw phải đặt cả phép kiểm tra lẫn phép trừ trong cùng một with self.lock?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Nếu kiểm tra ngoài khoá, hai thread có thể cùng thấy đủ tiền rồi lần lượt trừ, số dư âm. Đặt kiểm tra và trừ trong một lần giữ khoá thì thread kia chỉ kiểm tra sau khi lần trừ trước đã xong. with còn tự nhả khoá khi raise ValueError. Trường hợp đặc biệt: rút đúng bằng số dư thì được, số dư về 0."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp critical section của deposit, điều kiện của withdraw và phép so vị trí của safe_plan.",
+        "rule": "Thử rút quá số dư, nạp dữ liệu sai kiểu, và một kế hoạch khoá ngược thứ tự; sau mỗi lỗi khoá phải được nhả."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "deposit(5) → with self.lock: đọc, cộng, ghi balance"
+          },
+          {
+            "label": "Bước 2",
+            "text": "withdraw(9) khi balance = 5 → ValueError, with nhả khoá"
+          },
+          {
+            "label": "Bước 3",
+            "text": "run_deposits(Account(0), [10, 20, 30]) → 60"
+          },
+          {
+            "label": "Bước 4",
+            "text": "safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False"
+          }
+        ]
+      },
+      "counter": {
+        "question": "safe_plan([\"cache\", \"log\"], [\"db\", \"cache\", \"log\"]) trả về?",
+        "options": [
+          "False",
+          "ValueError",
+          "True"
+        ],
+        "correct": "True"
+      },
+      "scaffold": {
+        "template": "class Account:\n    def __init__(self, balance=0):\n        self.balance = balance\n        self.lock = threading.Lock()\n\n    def deposit(self, amount):\n        {{slot1}}\n            self.balance += amount\n\n    def withdraw(self, amount):\n        with self.lock:\n            if {{slot2}}:\n                raise ValueError(\"insufficient funds\")\n            self.balance -= amount\n\n\ndef safe_plan(plan, order):\n    positions = [order.index(name) for name in plan]\n    for i in range(1, len(positions)):\n        if {{slot3}}:\n            return False\n    return True\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "with self.lock:"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "amount > self.balance"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "positions[i] <= positions[i - 1]"
+          }
+        ],
+        "bank": [
+          {
+            "label": "amount > self.balance",
+            "slot": 2
+          },
+          {
+            "label": "self.lock.acquire()",
+            "slot": 1,
+            "trap": "Không có release đi kèm: khoá kẹt ngay sau lần gọi đầu."
+          },
+          {
+            "label": "with self.lock:",
+            "slot": 1
+          },
+          {
+            "label": "amount >= self.balance",
+            "slot": 2,
+            "trap": "Rút đúng bằng số dư là hợp lệ."
+          },
+          {
+            "label": "with threading.Lock():",
+            "slot": 1,
+            "trap": "Mỗi lần gọi một Lock MỚI — không thread nào phải chờ ai."
+          },
+          {
+            "label": "positions[i] <= positions[i - 1]",
+            "slot": 3
+          },
+          {
+            "label": "positions[i] < positions[i - 1]",
+            "slot": 3,
+            "trap": "Cho qua [\"db\", \"db\"]: Lock thường không khoá lại được khi đang giữ."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Account có self.balance và self.lock = threading.Lock(); run_deposits (cấp sẵn) cho mỗi khoản nạp một thread. Viết deposit(amount): đọc-cộng-ghi balance trong with self.lock. Viết withdraw(amount): trong CÙNG một with self.lock, nếu amount > balance thì raise ValueError(\"insufficient funds\"), ngược lại trừ. Viết safe_plan(plan, order): True nếu plan (các lock một thread khoá lồng nhau, theo thứ tự) đi đúng thứ tự chung order — tăng dần, không khoá lại lock đang giữ; tên không có trong order → ValueError.\n\nThực hành: Mọi lần đọc/ghi self.balance nằm trong with self.lock; withdraw kiểm tra và trừ trong CÙNG một khối. safe_plan đổi tên lock thành vị trí trong order rồi kiểm dãy vị trí tăng hẳn.",
+        "io": [
+          {
+            "label": "run_deposits(Account(0), [10, 20, 30])",
+            "value": "60"
+          },
+          {
+            "label": "Account(5).withdraw(9)",
+            "value": "ValueError; balance vẫn 5; khoá đã nhả"
+          },
+          {
+            "label": "safe_plan([\"db\", \"log\"], [\"db\", \"cache\", \"log\"])",
+            "value": "True"
+          },
+          {
+            "label": "safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"])",
+            "value": "False — ngược thứ tự chung"
+          }
+        ]
+      },
+      "starterCode": "import threading\n\n\nclass Account:\n    def __init__(self, balance=0):\n        self.balance = balance\n        self.lock = threading.Lock()\n\n    def deposit(self, amount):\n        # Đọc-cộng-ghi balance phải nằm trong critical section.\n        self.balance += amount\n\n    def withdraw(self, amount):\n        # Thiếu tiền -> ValueError(\"insufficient funds\"); đủ thì trừ. Cả hai bước trong lock.\n        pass\n\n\ndef run_deposits(account, amounts):\n    threads = [threading.Thread(target=account.deposit, args=(amount,)) for amount in amounts]\n    for worker in threads:\n        worker.start()\n    for worker in threads:\n        worker.join()\n    return account.balance\n\n\ndef safe_plan(plan, order):\n    # True nếu plan khoá theo đúng thứ tự trong order (tăng dần, không lặp lại).\n    # Tên lock không có trong order -> ValueError.\n    pass\n\n\nif __name__ == \"__main__\":\n    account = Account(100)\n    print(run_deposits(account, [10, 20, 30]))\n    print(safe_plan([\"db\", \"log\"], [\"db\", \"cache\", \"log\"]))\n",
+      "solutionCode": "import threading\n\n\nclass Account:\n    def __init__(self, balance=0):\n        self.balance = balance\n        self.lock = threading.Lock()\n\n    def deposit(self, amount):\n        with self.lock:\n            self.balance += amount\n\n    def withdraw(self, amount):\n        with self.lock:\n            if amount > self.balance:\n                raise ValueError(\"insufficient funds\")\n            self.balance -= amount\n\n\ndef run_deposits(account, amounts):\n    threads = [threading.Thread(target=account.deposit, args=(amount,)) for amount in amounts]\n    for worker in threads:\n        worker.start()\n    for worker in threads:\n        worker.join()\n    return account.balance\n\n\ndef safe_plan(plan, order):\n    positions = [order.index(name) for name in plan]\n    for i in range(1, len(positions)):\n        if positions[i] <= positions[i - 1]:\n            return False\n    return True\n\n\nif __name__ == \"__main__\":\n    account = Account(100)\n    print(run_deposits(account, [10, 20, 30]))\n    print(safe_plan([\"db\", \"log\"], [\"db\", \"cache\", \"log\"]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Mọi lần đọc/ghi self.balance nằm trong with self.lock; withdraw kiểm tra và trừ trong CÙNG một khối. safe_plan đổi tên lock thành vị trí trong order rồi kiểm dãy vị trí tăng hẳn."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. deposit: with self.lock: self.balance += amount.\n2. withdraw: with self.lock: nếu amount > self.balance → raise ValueError(\"insufficient funds\"); ngược lại self.balance -= amount.\n3. safe_plan: positions = [order.index(name) for name in plan]; có vị trí nào ≤ vị trí trước nó → False; còn lại True."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def deposit(self, amount):\n        with self.lock:\n            self.balance += amount\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Ba thread nạp 10, 20, 30 → 60",
+          "call": "run_deposits(Account(0), [10, 20, 30])",
+          "expect": "60"
+        },
+        {
+          "name": "Không có khoản nạp → giữ số dư đầu",
+          "call": "run_deposits(Account(7), [])",
+          "expect": "7"
+        },
+        {
+          "name": "deposit đọc và ghi balance khi đang giữ self.lock",
+          "call": "_studio.check('class Probe:\\n    def __init__(self):\\n        self.held = False\\n\\n    def acquire(self, blocking=True, timeout=-1):\\n        assert not self.held, \"khoá lại self.lock khi đang giữ nó — Lock thật sẽ treo ở đây\"\\n        self.held = True\\n        return True\\n\\n    def release(self):\\n        self.held = False\\n\\n    def locked(self):\\n        return self.held\\n\\n    def __enter__(self):\\n        self.acquire()\\n        return self\\n\\n    def __exit__(self, *exc):\\n        self.release()\\n        return False\\n\\n\\nclass Spy(Account):\\n    log = None\\n\\n    @property\\n    def balance(self):\\n        if self.log is not None:\\n            self.log.append(self.lock.held)\\n        return self._value\\n\\n    @balance.setter\\n    def balance(self, value):\\n        if self.log is not None:\\n            self.log.append(self.lock.held)\\n        self._value = value\\n\\n\\na = Spy(10)\\na.lock = Probe()\\na.log = []\\na.deposit(5)\\nassert a.log, \"deposit không đọc/ghi self.balance\"\\nassert all(a.log), \"deposit đọc hoặc ghi balance khi CHƯA giữ self.lock\"\\nassert not a.lock.held, \"deposit xong mà chưa nhả self.lock\"\\nassert a._value == 15, \"balance sau deposit(5) phải là 15\"\\n')",
+          "expect": "True"
+        },
+        {
+          "name": "withdraw: kiểm tra VÀ trừ cùng trong self.lock",
+          "call": "_studio.check('class Probe:\\n    def __init__(self):\\n        self.held = False\\n\\n    def acquire(self, blocking=True, timeout=-1):\\n        assert not self.held, \"khoá lại self.lock khi đang giữ nó — Lock thật sẽ treo ở đây\"\\n        self.held = True\\n        return True\\n\\n    def release(self):\\n        self.held = False\\n\\n    def locked(self):\\n        return self.held\\n\\n    def __enter__(self):\\n        self.acquire()\\n        return self\\n\\n    def __exit__(self, *exc):\\n        self.release()\\n        return False\\n\\n\\nclass Spy(Account):\\n    log = None\\n\\n    @property\\n    def balance(self):\\n        if self.log is not None:\\n            self.log.append(self.lock.held)\\n        return self._value\\n\\n    @balance.setter\\n    def balance(self, value):\\n        if self.log is not None:\\n            self.log.append(self.lock.held)\\n        self._value = value\\n\\n\\na = Spy(10)\\na.lock = Probe()\\na.log = []\\na.withdraw(4)\\nassert len(a.log) >= 2, \"withdraw phải đọc balance để kiểm tra rồi ghi lại\"\\nassert all(a.log), \"phép KIỂM TRA số dư và phép TRỪ phải cùng nằm trong with self.lock\"\\nassert not a.lock.held, \"withdraw xong mà chưa nhả self.lock\"\\nassert a._value == 6, \"balance sau withdraw(4) phải là 6\"\\n')",
+          "expect": "True"
+        },
+        {
+          "name": "Rút quá số dư → ValueError, số dư không đổi",
+          "call": "(lambda a: (_studio.call(a.withdraw, 9).error, a.balance))(Account(5))",
+          "expect": "('ValueError', 5)"
+        },
+        {
+          "name": "Sau ValueError, khoá đã được nhả",
+          "call": "(lambda a: (_studio.call(a.withdraw, 9).error, a.lock.locked()))(Account(5))",
+          "expect": "('ValueError', False)"
+        },
+        {
+          "name": "Nạp sai kiểu → TypeError, khoá vẫn được nhả",
+          "call": "(lambda a: (_studio.call(a.deposit, \"10\").error, a.lock.locked()))(Account(0))",
+          "expect": "('TypeError', False)"
+        },
+        {
+          "name": "Rút đúng bằng số dư → 0",
+          "call": "(lambda a: (a.withdraw(5), a.balance)[1])(Account(5))",
+          "expect": "0"
+        },
+        {
+          "name": "safe_plan: đúng thứ tự (kể cả bỏ qua lock giữa, plan rỗng)",
+          "call": "[safe_plan([\"db\", \"log\"], [\"db\", \"cache\", \"log\"]), safe_plan([\"cache\"], [\"db\", \"cache\"]), safe_plan([], [\"db\"])]",
+          "expect": "[True, True, True]"
+        },
+        {
+          "name": "safe_plan: ngược thứ tự → False",
+          "call": "[safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]), safe_plan([\"db\", \"log\", \"cache\"], [\"db\", \"cache\", \"log\"])]",
+          "expect": "[False, False]"
+        },
+        {
+          "name": "safe_plan: khoá lại lock đang giữ → False",
+          "call": "safe_plan([\"db\", \"db\"], [\"db\", \"log\"])",
+          "expect": "False"
+        },
+        {
+          "name": "safe_plan theo order đã thống nhất, không theo bảng chữ cái",
+          "call": "safe_plan([\"log\", \"cache\"], [\"log\", \"cache\", \"db\"])",
+          "expect": "True"
+        },
+        {
+          "name": "safe_plan: lock lạ → ValueError",
+          "call": "_studio.call(safe_plan, [\"db\", \"x\"], [\"db\", \"log\"]).error",
+          "expect": "'ValueError'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "Account.deposit(self, amount)",
+          "does": "Nạp tiền an toàn khi nhiều thread cùng gọi.",
+          "takes": "self; amount: số cần cộng",
+          "gives": "None",
+          "effect": "Đọc-cộng-ghi self.balance trong with self.lock; lỗi giữa chừng vẫn nhả khoá.",
+          "call": "Account(10).deposit(5) → balance 15"
+        },
+        {
+          "sig": "Account.withdraw(self, amount)",
+          "does": "Rút tiền: kiểm tra rồi trừ như MỘT bước.",
+          "takes": "self; amount: số cần trừ",
+          "gives": "None; amount > balance → ValueError(\"insufficient funds\")",
+          "effect": "Kiểm tra và trừ trong cùng một with self.lock; rút đúng bằng số dư là hợp lệ.",
+          "call": "Account(5).withdraw(9) → ValueError, balance vẫn 5, khoá đã nhả"
+        },
+        {
+          "sig": "safe_plan(plan, order)",
+          "does": "Kiểm một thread có khoá theo đúng thứ tự đã thống nhất không.",
+          "takes": "plan: list tên lock theo thứ tự thread khoá; order: list tên lock theo thứ tự chung",
+          "gives": "bool; tên lock không có trong order → ValueError",
+          "effect": "Không khoá gì thật, không in.",
+          "call": "safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi."
+    }
+  }
+}

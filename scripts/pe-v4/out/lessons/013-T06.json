@@ -1,0 +1,373 @@
+{
+  "lesson_code": "T06",
+  "sort_order": 13,
+  "module": "M2 · Đa luồng",
+  "title": "T06 · Queue và tác vụ lưu nền",
+  "subtitle": "Nâng cao · M2 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "T06 · Queue và tác vụ lưu nền",
+    "subtitle": "Nâng cao · M2 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#T06",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T06"
+        ],
+        "title": "Queue và tác vụ lưu nền",
+        "goal": "Giao việc lưu cho worker nền qua queue.Queue.",
+        "task": "Viết BackgroundSaver: submit bản sao, _work xả queue bằng get_nowait, flush chạy worker.",
+        "predict": "q.get() khi queue rỗng trả None hay chờ?",
+        "code": "def submit(self, record):\n    self.jobs.put(...)  # bản sao\ndef _work(self):\n    # get_nowait() tới queue.Empty; task_done()\ndef flush(self):\n    # Thread mới → start → join → len(self.lines)",
+        "tests": [
+          "submit An 8, Binh 7 → flush() = 2, đúng thứ tự",
+          "sửa record sau submit → dòng đã lưu không đổi"
+        ],
+        "reflect": "Vì sao phải đưa bản sao record vào queue?"
+      },
+      "context": {
+        "title": "Giao việc lưu cho một worker nền qua queue.Queue, không để nơi gọi phải chờ từng lần lưu.",
+        "body": "Hoàn thành class BackgroundSaver (self.jobs = queue.Queue(), self.lines = [] đã có). submit(record): put BẢN SAO record (dict(record)) vào self.jobs — chưa lưu gì. _work(): lấy từng job bằng self.jobs.get_nowait() tới khi gặp queue.Empty thì return; mỗi job thêm dòng \"name,mark\" vào self.lines rồi gọi self.jobs.task_done(). flush(): tạo Thread MỚI với target=self._work, start, join, trả len(self.lines).",
+        "example": "submit({\"name\": \"An\", \"mark\": 8}), submit({\"name\": \"Binh\", \"mark\": 7}) → flush() trả 2, lines = [\"An,8\", \"Binh,7\"] (đúng thứ tự FIFO).",
+        "prereq": "T05",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Đoạn code sau in gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "a b — vào trước ra trước (FIFO)",
+            "detail": "Queue lấy phần tử ở đầu hàng đợi.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "b a",
+            "detail": "Đó là LifoQueue (ngăn xếp), không phải Queue.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "a a",
+            "detail": "get() lấy phần tử RA khỏi queue.",
+            "correct": false
+          }
+        ],
+        "code": "import queue\n\nq = queue.Queue()\nq.put(\"a\")\nq.put(\"b\")\nprint(q.get(), q.get())"
+      },
+      "misconception": {
+        "title": "\"q.get() khi queue rỗng sẽ trả None\"",
+        "body": "get() mặc định CHỜ tới khi có phần tử — với queue không ai put thêm, chương trình treo. Muốn không chờ thì dùng get_nowait() và bắt queue.Empty; muốn worker dừng thì gửi một sentinel (None) có chủ đích."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "queue.Queue là hàng đợi an toàn cho nhiều thread: put() thêm vào cuối, get() lấy ở đầu (FIFO). Bên trong Queue đã có khoá nên producer và consumer không cần tự dùng Lock."
+        },
+        {
+          "n": 2,
+          "body": "get() mặc định CHỜ khi queue rỗng — không trả None. get_nowait() không chờ: rỗng thì raise queue.Empty. Chọn cách chờ theo tình huống: worker chạy suốt (ví dụ minh hoạ) dùng get() + một sentinel None để báo dừng; xả hết việc đã có sẵn (bài này) dùng get_nowait() tới queue.Empty."
+        },
+        {
+          "n": 3,
+          "body": "Mỗi get() thành công đi với đúng một task_done(); jobs.join() chờ tới khi mọi việc đã task_done. Quên task_done thì jobs.join() chờ mãi; gọi task_done nhiều hơn số việc → ValueError."
+        },
+        {
+          "n": 4,
+          "body": "Tác vụ lưu nền: nơi gọi chỉ submit rồi đi tiếp, worker làm việc chậm (ghi file, pickle, nén — như bài thực hành lưu nền). Dữ liệu giao cho worker phải ổn định: put BẢN SAO dict(record), để nơi gọi sửa record sau đó không làm sai thứ sẽ được lưu."
+        },
+        {
+          "n": 5,
+          "body": "Queue để trong self (self.jobs) để mọi method của object dùng chung. Mỗi lần flush tạo Thread MỚI — một Thread chỉ start được một lần."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import queue\nimport threading\n\njobs = queue.Queue()\nfor mark in [8, 6, 9]:\n    jobs.put(mark)\njobs.put(None)\n\ndef consumer():\n    while True:\n        mark = jobs.get()\n        if mark is None:\n            jobs.task_done()\n            break\n        print(\"saved\", mark)\n        jobs.task_done()\n\nworker = threading.Thread(target=consumer)\nworker.start()\njobs.join()\nworker.join()\nprint(\"queue rỗng:\", jobs.empty())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "q.get() khi queue rỗng có mặc định trả None ngay không?",
+          "options": [
+            {
+              "text": "Có, raise queue.Empty",
+              "detail": "Đó là get_nowait() (hoặc get(block=False)).",
+              "correct": false
+            },
+            {
+              "text": "Không; mặc định nó chờ",
+              "detail": "Chờ tới khi có thread khác put.",
+              "correct": true
+            },
+            {
+              "text": "Có",
+              "detail": "Đó là hiểu nhầm phổ biến — None chỉ có khi ai đó put None.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chờ tới khi có thread khác put."
+        },
+        {
+          "question": "Worker get() 3 việc nhưng chỉ gọi task_done() 2 lần. jobs.join() sẽ…",
+          "options": [
+            {
+              "text": "Raise ValueError",
+              "detail": "ValueError chỉ khi task_done nhiều hơn số việc.",
+              "correct": false
+            },
+            {
+              "text": "Chờ mãi — vẫn còn một việc chưa báo xong",
+              "detail": "Mỗi get() cần đúng một task_done().",
+              "correct": true
+            },
+            {
+              "text": "Trả về ngay",
+              "detail": "join chờ tới khi mọi việc đã task_done.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Mỗi get() cần đúng một task_done()."
+        },
+        {
+          "question": "Vì sao submit đưa dict(record) chứ không đưa record?",
+          "options": [
+            {
+              "text": "Queue không nhận dict",
+              "detail": "Queue nhận mọi object.",
+              "correct": false
+            },
+            {
+              "text": "Để chạy nhanh hơn",
+              "detail": "Sao chép còn tốn thêm một chút.",
+              "correct": false
+            },
+            {
+              "text": "Nơi gọi có thể sửa record trước khi worker lưu; bản sao giữ đúng dữ liệu lúc giao",
+              "detail": "Queue chỉ giữ tham chiếu tới object.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Queue chỉ giữ tham chiếu tới object."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao _work dùng get_nowait() và dừng ở queue.Empty, còn worker chạy suốt lại cần get() và sentinel?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "flush chỉ start worker khi mọi job đã được submit, nên queue rỗng nghĩa là hết việc: get_nowait() raise queue.Empty và worker kết thúc, không bao giờ phải chờ. Worker chạy suốt thì queue rỗng chỉ là \"tạm chưa có việc\", nên dùng get() để chờ và một sentinel None để biết khi nào dừng. Trường hợp đặc biệt: flush khi chưa submit gì → Empty ngay, trả 0."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp bản sao khi submit, cách lấy việc không chờ, lời báo xong việc và Thread của flush.",
+        "rule": "Thử flush khi chưa submit gì, flush hai lần liên tiếp, và sửa record sau khi submit."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "submit(record) → put bản sao vào self.jobs"
+          },
+          {
+            "label": "Bước 2",
+            "text": "flush() → Thread(target=self._work).start()"
+          },
+          {
+            "label": "Bước 3",
+            "text": "get_nowait() → lấy theo FIFO, lưu, task_done()"
+          },
+          {
+            "label": "Bước 4",
+            "text": "queue.Empty → worker kết thúc, join xong"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Submit 2 record rồi flush; submit thêm 1 record rồi flush lần nữa. flush lần hai trả?",
+        "options": [
+          "RuntimeError",
+          "3",
+          "1"
+        ],
+        "correct": "3"
+      },
+      "scaffold": {
+        "template": "    def submit(self, record):\n        self.jobs.put({{slot1}})\n\n    def _work(self):\n        while True:\n            try:\n                record = {{slot2}}\n            except queue.Empty:\n                return\n            self.lines.append(f\"{record['name']},{record['mark']}\")\n            {{slot3}}\n\n    def flush(self):\n        worker = {{slot4}}\n        worker.start()\n        worker.join()\n        return len(self.lines)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "dict(record)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "self.jobs.get_nowait()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "self.jobs.task_done()"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "threading.Thread(target=self._work)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "threading.Thread(target=self._work)",
+            "slot": 4
+          },
+          {
+            "label": "self.jobs.task_done()",
+            "slot": 3
+          },
+          {
+            "label": "self.jobs.join()",
+            "slot": 3,
+            "trap": "join chờ các task_done — gọi trong worker là tự chờ chính mình."
+          },
+          {
+            "label": "self.jobs.get()",
+            "slot": 2,
+            "trap": "Queue rỗng thì get() chờ mãi, không bao giờ tới queue.Empty."
+          },
+          {
+            "label": "self.jobs.get_nowait()",
+            "slot": 2
+          },
+          {
+            "label": "record",
+            "slot": 1,
+            "trap": "Giao chính object của nơi gọi — sửa sau đó là đổi luôn dữ liệu sắp lưu."
+          },
+          {
+            "label": "threading.Thread(target=self._work())",
+            "slot": 4,
+            "trap": "Gọi _work ngay ở thread chính."
+          },
+          {
+            "label": "dict(record)",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hoàn thành class BackgroundSaver (self.jobs = queue.Queue(), self.lines = [] đã có). submit(record): put BẢN SAO record (dict(record)) vào self.jobs — chưa lưu gì. _work(): lấy từng job bằng self.jobs.get_nowait() tới khi gặp queue.Empty thì return; mỗi job thêm dòng \"name,mark\" vào self.lines rồi gọi self.jobs.task_done(). flush(): tạo Thread MỚI với target=self._work, start, join, trả len(self.lines).\n\nThực hành: submit chỉ put bản sao; mọi việc lưu nằm trong _work chạy ở worker. Lấy bằng get_nowait() trong try/except queue.Empty; mỗi job xong gọi task_done(). flush tạo Thread mới mỗi lần.",
+        "io": [
+          {
+            "label": "submit An 8, Binh 7; flush()",
+            "value": "2; lines = [\"An,8\", \"Binh,7\"]"
+          },
+          {
+            "label": "flush() khi chưa submit",
+            "value": "0"
+          },
+          {
+            "label": "sửa record sau submit rồi flush",
+            "value": "dòng đã lưu vẫn là giá trị lúc submit"
+          }
+        ]
+      },
+      "starterCode": "import queue\nimport threading\n\n\nclass BackgroundSaver:\n    def __init__(self):\n        self.jobs = queue.Queue()\n        self.lines = []\n\n    def submit(self, record):\n        # Đưa BẢN SAO record vào self.jobs.\n        pass\n\n    def _work(self):\n        # Lấy từng job bằng get_nowait() tới khi gặp queue.Empty;\n        # mỗi job: thêm \"name,mark\" vào self.lines rồi task_done().\n        pass\n\n    def flush(self):\n        # Tạo Thread chạy self._work, start, join; trả tổng số dòng đã lưu.\n        pass\n\n\nif __name__ == \"__main__\":\n    saver = BackgroundSaver()\n    saver.submit({\"name\": \"An\", \"mark\": 8})\n    saver.submit({\"name\": \"Binh\", \"mark\": 7})\n    print(saver.flush(), saver.lines)\n",
+      "solutionCode": "import queue\nimport threading\n\n\nclass BackgroundSaver:\n    def __init__(self):\n        self.jobs = queue.Queue()\n        self.lines = []\n\n    def submit(self, record):\n        self.jobs.put(dict(record))\n\n    def _work(self):\n        while True:\n            try:\n                record = self.jobs.get_nowait()\n            except queue.Empty:\n                return\n            self.lines.append(f\"{record['name']},{record['mark']}\")\n            self.jobs.task_done()\n\n    def flush(self):\n        worker = threading.Thread(target=self._work)\n        worker.start()\n        worker.join()\n        return len(self.lines)\n\n\nif __name__ == \"__main__\":\n    saver = BackgroundSaver()\n    saver.submit({\"name\": \"An\", \"mark\": 8})\n    saver.submit({\"name\": \"Binh\", \"mark\": 7})\n    print(saver.flush(), saver.lines)\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "submit chỉ put bản sao; mọi việc lưu nằm trong _work chạy ở worker. Lấy bằng get_nowait() trong try/except queue.Empty; mỗi job xong gọi task_done(). flush tạo Thread mới mỗi lần."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. submit: self.jobs.put(dict(record)).\n2. _work: while True → try get_nowait() / except queue.Empty: return → append f\"{name},{mark}\" → task_done().\n3. flush: worker = threading.Thread(target=self._work); start; join; return len(self.lines)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def _work(self):\n        while True:\n            try:\n                record = self.jobs.get_nowait()\n            except queue.Empty:\n                return\n            ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Lưu đúng thứ tự FIFO",
+          "call": "(lambda s: (s.submit({\"name\": 'Lan', \"mark\": 9}), s.submit({\"name\": 'Minh', \"mark\": 6}), s.submit({\"name\": 'Nga', \"mark\": 10}), s.flush(), s.lines,)[-1])(BackgroundSaver())",
+          "expect": "['Lan,9', 'Minh,6', 'Nga,10']"
+        },
+        {
+          "name": "flush trả số dòng đã lưu",
+          "call": "(lambda s: (s.submit({\"name\": 'Lan', \"mark\": 9}), s.submit({\"name\": 'Minh', \"mark\": 6}), s.submit({\"name\": 'Nga', \"mark\": 10}), s.flush(),)[-1])(BackgroundSaver())",
+          "expect": "3"
+        },
+        {
+          "name": "Chưa flush thì chưa lưu (việc nằm ở worker)",
+          "call": "(lambda s: (s.submit({\"name\": 'Lan', \"mark\": 9}), s.submit({\"name\": 'Minh', \"mark\": 6}), (s.lines, s.jobs.qsize()),)[-1])(BackgroundSaver())",
+          "expect": "([], 2)"
+        },
+        {
+          "name": "Sửa record sau submit không đổi dữ liệu đã giao",
+          "call": "(lambda s, r: (s.submit(r), r.update(mark=0), s.flush(), s.lines)[-1])(BackgroundSaver(), {\"name\": \"Oanh\", \"mark\": 8})",
+          "expect": "['Oanh,8']"
+        },
+        {
+          "name": "Chưa submit gì → flush trả 0",
+          "call": "(lambda s: (s.flush(), (s.lines, s.jobs.empty()),)[-1])(BackgroundSaver())",
+          "expect": "([], True)"
+        },
+        {
+          "name": "Mỗi get có đúng một task_done (gọi thêm → ValueError)",
+          "call": "(lambda s: (s.submit({\"name\": 'Lan', \"mark\": 9}), s.submit({\"name\": 'Minh', \"mark\": 6}), s.flush(), _studio.call(s.jobs.task_done).error,)[-1])(BackgroundSaver())",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "flush dùng một worker thread: start, join, target là method",
+          "call": "(lambda r: (r.thread_count, r.all_joined, r.targets_callable, r.value))((lambda s: (s.submit({\"name\": 'Phu', \"mark\": 5}), _studio.call(s.flush),)[-1])(BackgroundSaver()))",
+          "expect": "(1, True, True, 1)"
+        },
+        {
+          "name": "flush hai lần: mỗi lần một Thread mới",
+          "call": "(lambda s: (s.submit({\"name\": 'An', \"mark\": 1}), s.flush(), s.submit({\"name\": 'Binh', \"mark\": 2}), s.flush(), s.lines,)[-1])(BackgroundSaver())",
+          "expect": "['An,1', 'Binh,2']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "BackgroundSaver.submit(self, record)",
+          "does": "Giao một bản ghi cho worker nền.",
+          "takes": "record: dict có \"name\", \"mark\"",
+          "gives": "None",
+          "effect": "put BẢN SAO vào self.jobs; chưa lưu gì — việc lưu là của worker.",
+          "call": "s.submit({\"name\": \"An\", \"mark\": 8})"
+        },
+        {
+          "sig": "BackgroundSaver.flush(self)",
+          "does": "Chạy worker nền xả hết việc trong queue.",
+          "takes": "self",
+          "gives": "int: tổng số dòng trong self.lines",
+          "effect": "Tạo Thread MỚI (target=self._work), start, join. Worker lấy bằng get_nowait() tới queue.Empty, mỗi job thêm \"name,mark\" vào self.lines rồi task_done().",
+          "call": "submit An 8, Binh 7 → flush() → 2; lines = [\"An,8\", \"Binh,7\"]"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì worker chạy ngay lúc start(), bài này cho nơi gọi submit HẾT việc rồi mới flush, và worker xả queue bằng get_nowait() — không bao giờ phải chờ. Trên máy thật, worker chạy suốt thường dùng get() + sentinel None như ví dụ minh hoạ."
+    }
+  }
+}

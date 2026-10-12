@@ -61,9 +61,9 @@ async function expectNoHorizontalOverflow(page: Page, label: string) {
 }
 
 // ── Trang chủ + chi tiết khóa học ───────────────────────────────────────────
-// Một đại diện cho mỗi nhánh render: khóa React thuần (python), khóa dùng JS
+// Một đại diện cho mỗi nhánh render: khóa React thuần (python_advanced), khóa dùng JS
 // legacy (db_design), khóa có giáo trình dài nhất (java — 110 bài, dễ tràn nhất).
-for (const path of ['/', '/courses/python', '/courses/java', '/courses/db_design']) {
+for (const path of ['/', '/courses/python_advanced', '/courses/java', '/courses/db_design']) {
   test(`không tràn ngang: ${path}`, async ({ page }) => {
     await page.goto(path, { waitUntil: 'domcontentloaded' });
     await page.waitForTimeout(1500); // chờ font/script legacy dựng xong nội dung
@@ -74,12 +74,14 @@ for (const path of ['/', '/courses/python', '/courses/java', '/courses/db_design
 test('trang chủ liệt kê đủ khóa và mỗi ô dẫn tới đúng trang chi tiết', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   const tiles = page.locator('a[href^="/courses/"]');
-  await expect(tiles).toHaveCount(8);
+  // Khoá `python` cơ bản đã gỡ (10/2026): còn 7 khoá.
+  await expect(tiles).toHaveCount(7);
   const hrefs = await tiles.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
-  expect(hrefs).toContain('/courses/python');
+  expect(hrefs).toContain('/courses/python_advanced');
+  expect(hrefs).not.toContain('/courses/python');
   expect(hrefs).toContain('/courses/db_design_nc');
 
-  await page.locator('a[href="/courses/python"]').click();
-  await expect(page).toHaveURL(/\/courses\/python$/);
+  await page.locator('a[href="/courses/python_advanced"]').click();
+  await expect(page).toHaveURL(/\/courses\/python_advanced$/);
   await expect(page.getByRole('heading', { level: 1 })).toContainText('Python');
 });

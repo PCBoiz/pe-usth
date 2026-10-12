@@ -1,206 +1,109 @@
 {
   "CURRICULA": {
-    "python": {
-      "requirements": [
-        "Không cần kinh nghiệm lập trình trước — học lần lượt 9 chặng, từ biến tới process",
-        "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để luyện thêm",
-        "Chặng 9 (fork/process) cần Linux hoặc WSL khi nghiệm thu thật; trong bài có bản mô phỏng"
-      ],
-      "skills": [
-        "Biến, chuỗi, điều kiện, vòng lặp và tự viết hàm có return",
-        "Đọc/ghi file UTF-8 và giải Ex1: lọc palindrome từ data.txt ra palindromes.txt",
-        "Class, constructor, __str__ và list riêng cho từng object (Ex2)",
-        "Kế thừa, super() và override (Ex3)",
-        "Thread: tạo n worker, start hết rồi join hết, kiểm dữ liệu n (Ex4)",
-        "Process: fork m child, mỗi child n thread, chờ đủ và đo thời gian đúng (Ex5)"
-      ],
-      "instructor": "Nguyễn Văn An",
-      "modules": [
-        {
-          "title": "M1 · Dữ liệu và điều kiện",
-          "lessons": [
-            "B01 · Biến và kết quả",
-            "B02 · Ghép chuỗi",
-            "B03 · Đảo chuỗi",
-            "B04 · So sánh palindrome",
-            "B05 · if và else"
-          ]
-        },
-        {
-          "title": "M2 · Vòng lặp và hàm",
-          "lessons": [
-            "B06 · Duyệt danh sách",
-            "B07 · Lọc bằng vòng lặp",
-            "B08 · Tự viết một hàm",
-            "B09 · Hàm kiểm tra chuỗi",
-            "B10 · Nối hai hàm"
-          ]
-        },
-        {
-          "title": "M3 · Đọc và ghi file",
-          "lessons": [
-            "B11 · Đọc file đầu tiên",
-            "B12 · Đọc từng dòng",
-            "B13 · Ghi một kết quả",
-            "B14 · Đưa phần đọc vào hàm",
-            "B15 · Đưa phần ghi vào hàm"
-          ]
-        },
-        {
-          "title": "M4 · Ghép bài Ex1",
-          "lessons": [
-            "B16 · Sửa lỗi print và return",
-            "B17 · Nối đọc với lọc",
-            "B18 · Nối lọc với ghi",
-            "B19 · Ex1 có hỗ trợ",
-            "B20 · Ex1 tự làm"
-          ]
-        },
-        {
-          "title": "M5 · Class đầu tiên",
-          "lessons": [
-            "I01 · Đọc thuộc tính object",
-            "I02 · Viết constructor",
-            "I03 · Thêm một paradigm",
-            "I04 · Viết __str__"
-          ]
-        },
-        {
-          "title": "M6 · Trạng thái và lớp cha (Ex2)",
-          "lessons": [
-            "I05 · Hai object độc lập",
-            "I06 · Phân biệt print và str",
-            "I07 · Ex2 tự làm",
-            "I08 · Lớp con đầu tiên"
-          ]
-        },
-        {
-          "title": "M7 · Kế thừa và override (Ex3)",
-          "lessons": [
-            "I09 · super và thuộc tính mới",
-            "I10 · Override __str__",
-            "I11 · Viết compile",
-            "I12 · Ex3 tự làm"
-          ]
-        },
-        {
-          "title": "M8 · Thread và chờ kết thúc (Ex4)",
-          "lessons": [
-            "N01 · Một thread",
-            "N02 · Nhiều thread",
-            "N03 · Ex4 có hỗ trợ",
-            "N04 · Ex4 tự làm và sửa lỗi"
-          ]
-        },
-        {
-          "title": "M9 · Process và đo thời gian (Ex5)",
-          "lessons": [
-            "N05 · Một process con",
-            "N06 · Tạo m process",
-            "N07 · Mỗi process chạy n thread",
-            "N08 · Ex5 tự làm"
-          ]
-        }
-      ]
-    },
     "python_advanced": {
       "requirements": [
-        "Không cần kinh nghiệm lập trình trước — học qua mini-game: ghép code, săn lỗi, theo dõi biến",
-        "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để luyện thêm",
-        "Chặng 9 (fork/process) cần Linux hoặc WSL khi nghiệm thu thật; trong bài có bản mô phỏng"
+        "Học qua mini-game: ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng",
+        "Đã viết được hàm, vòng lặp, đọc/ghi file và class cơ bản bằng Python",
+        "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để chạy thật subprocess, thread, Tkinter",
+        "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"
       ],
       "skills": [
-        "Biến, chuỗi, điều kiện, vòng lặp và tự viết hàm có return",
-        "Đọc/ghi file UTF-8 và giải Ex1: lọc palindrome từ data.txt ra palindromes.txt",
-        "Class, constructor, __str__ và list riêng cho từng object (Ex2)",
-        "Kế thừa, super() và override (Ex3)",
-        "Thread: tạo n worker, start hết rồi join hết, kiểm dữ liệu n (Ex4)",
-        "Process: fork m child, mỗi child n thread, chờ đủ và đo thời gian đúng (Ex5)"
+        "Chạy chương trình con bằng subprocess: returncode, stdout/stderr, timeout, check=True",
+        "Đa luồng với threading: start/join, Lock, Queue và đo thời gian chờ I/O",
+        "Dựng GUI Tkinter: widget, biến, pack/grid, command và tách logic khỏi giao diện",
+        "Nhập dữ liệu, truy vấn SQL với sqlite3 và tra cứu",
+        "NumPy: mảng, vector hoá, lọc bằng mask",
+        "pandas: đọc CSV/Excel, làm sạch, groupby, merge",
+        "Matplotlib: line, bar, scatter, histogram, subplot có nhãn đầy đủ",
+        "Dự án DA: từ dữ liệu bẩn tới báo cáo và biểu đồ"
       ],
       "modules": [
         {
-          "title": "M1 · Dữ liệu và điều kiện",
+          "title": "M1 · Tiến trình và subprocess",
           "lessons": [
-            "B01 · Biến và kết quả",
-            "B02 · Ghép chuỗi",
-            "B03 · Đảo chuỗi",
-            "B04 · So sánh palindrome",
-            "B05 · if và else"
+            "P01 · Program, process và tài nguyên",
+            "P02 · Vòng đời, fork, exec và wait",
+            "P03 · Scheduling và context switch",
+            "P04 · stdin, stdout, stderr và pipe",
+            "P05 · subprocess.run và kết quả",
+            "P06 · Popen, communicate và timeout",
+            "P07 · multiprocessing: Process và Queue"
           ]
         },
         {
-          "title": "M2 · Vòng lặp và hàm",
+          "title": "M2 · Đa luồng",
           "lessons": [
-            "B06 · Duyệt danh sách",
-            "B07 · Lọc bằng vòng lặp",
-            "B08 · Tự viết một hàm",
-            "B09 · Hàm kiểm tra chuỗi",
-            "B10 · Nối hai hàm"
+            "T01 · Thread, tài nguyên và concurrency",
+            "T02 · Thread target, start và join",
+            "T03 · Subclass Thread",
+            "T04 · GIL, CPU-bound và I/O-bound",
+            "T05 · Lock, race condition và deadlock",
+            "T06 · Queue và tác vụ lưu nền"
           ]
         },
         {
-          "title": "M3 · Đọc và ghi file",
+          "title": "M3 · GUI Tkinter và dự án",
           "lessons": [
-            "B11 · Đọc file đầu tiên",
-            "B12 · Đọc từng dòng",
-            "B13 · Ghi một kết quả",
-            "B14 · Đưa phần đọc vào hàm",
-            "B15 · Đưa phần ghi vào hàm"
+            "G01 · GUI, CLI và cửa sổ",
+            "G02 · Widget và callback",
+            "G03 · Dữ liệu nhập và lựa chọn",
+            "G04 · Layout: pack, place, grid",
+            "G05 · OOP và tách logic khỏi giao diện",
+            "G06 · Event loop và worker nền",
+            "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI"
           ]
         },
         {
-          "title": "M4 · Ghép bài Ex1",
+          "title": "M4 · Nhập dữ liệu, SQL và tra cứu",
           "lessons": [
-            "B16 · Sửa lỗi print và return",
-            "B17 · Nối đọc với lọc",
-            "B18 · Nối lọc với ghi",
-            "B19 · Ex1 có hỗ trợ",
-            "B20 · Ex1 tự làm"
+            "X01 · Nhập dữ liệu bằng NumPy và pandas",
+            "X02 · Excel, Stata, SAS, HDF5 và MATLAB",
+            "X03 · SQL với sqlite3 và pandas",
+            "X04 · Matplotlib: dữ liệu và loại biểu đồ",
+            "X05 · Matplotlib: tùy chỉnh và xuất"
           ]
         },
         {
-          "title": "M5 · Class đầu tiên",
+          "title": "M5 · NumPy",
           "lessons": [
-            "I01 · Đọc thuộc tính object",
-            "I02 · Viết constructor",
-            "I03 · Thêm một paradigm",
-            "I04 · Viết __str__"
+            "N01 · Array, dtype, shape và axis",
+            "N02 · Indexing, mask và vectorization",
+            "N03 · Broadcasting và chuẩn hoá dữ liệu",
+            "N04 · Thống kê, NaN và trọng số",
+            "N05 · View, copy và sai số số thực",
+            "N06 · Đọc dữ liệu và mô phỏng tái lập"
           ]
         },
         {
-          "title": "M6 · Trạng thái và lớp cha (Ex2)",
+          "title": "M6 · pandas",
           "lessons": [
-            "I05 · Hai object độc lập",
-            "I06 · Phân biệt print và str",
-            "I07 · Ex2 tự làm",
-            "I08 · Lớp con đầu tiên"
+            "PD01 · Series, DataFrame và index",
+            "PD02 · CSV, Excel và schema",
+            "PD03 · Làm sạch thiếu, trùng và sai kiểu",
+            "PD04 · Lọc, tính cột và cập nhật an toàn",
+            "PD05 · GroupBy và KPI có mẫu số rõ ràng",
+            "PD06 · Merge, concat và kiểm tra cardinality",
+            "PD07 · Long, wide, pivot và melt",
+            "PD08 · Ngày giờ, resample và rolling",
+            "PD09 · EDA, chất lượng dữ liệu và export"
           ]
         },
         {
-          "title": "M7 · Kế thừa và override (Ex3)",
+          "title": "M7 · Matplotlib",
           "lessons": [
-            "I09 · super và thuộc tính mới",
-            "I10 · Override __str__",
-            "I11 · Viết compile",
-            "I12 · Ex3 tự làm"
+            "M01 · Figure, Axes và chọn biểu đồ",
+            "M02 · Phân bố, scatter và outlier",
+            "M03 · Subplot và heatmap đọc được",
+            "M04 · Màu, annotation và kể chuyện dữ liệu",
+            "M05 · Ticks, scale và ngày trên trục",
+            "M06 · Layout, xuất hình và kiểm tra chất lượng"
           ]
         },
         {
-          "title": "M8 · Thread và chờ kết thúc (Ex4)",
+          "title": "M8 · Dự án DA",
           "lessons": [
-            "N01 · Một thread",
-            "N02 · Nhiều thread",
-            "N03 · Ex4 có hỗ trợ",
-            "N04 · Ex4 tự làm và sửa lỗi"
-          ]
-        },
-        {
-          "title": "M9 · Process và đo thời gian (Ex5)",
-          "lessons": [
-            "N05 · Một process con",
-            "N06 · Tạo m process",
-            "N07 · Mỗi process chạy n thread",
-            "N08 · Ex5 tự làm"
+            "DA01 · Mini-project: doanh thu từ raw tới chart",
+            "DA02 · Mini-project: điểm số và GPA"
           ]
         }
       ]
@@ -702,7 +605,6 @@
     }
   },
   "LESSON_URLS": {
-    "python": "/lesson/python",
     "python_advanced": "/lesson/python_advanced",
     "java": "/lesson/java",
     "htmlcss": "/lesson/htmlcss",

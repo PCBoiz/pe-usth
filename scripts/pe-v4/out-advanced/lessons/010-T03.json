@@ -1,0 +1,433 @@
+{
+  "lesson_code": "T03",
+  "sort_order": 10,
+  "module": "M2 · Đa luồng",
+  "title": "T03 · Subclass Thread",
+  "subtitle": "Nâng cao · M2 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "T03 · Subclass Thread",
+    "subtitle": "Nâng cao · M2 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#T03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T03"
+        ],
+        "title": "Subclass Thread",
+        "goal": "Tạo worker có trạng thái bằng class con của Thread.",
+        "task": "Viết SumWorker(Thread): super().__init__(), run() tính self.total; rồi parallel_sum(chunks).",
+        "predict": "Override run() hay start()? Gọi cái nào để chạy?",
+        "code": "class SumWorker(threading.Thread):\n    def __init__(self, numbers): ...\n    def run(self): ...\n\ndef parallel_sum(chunks): ...",
+        "tests": [
+          "SumWorker([1, 2]).total trước start → None",
+          "parallel_sum([[1, 2, 3], [10, 20]]) → 36"
+        ],
+        "reflect": "Vì sao không tính tổng ngay trong __init__?"
+      },
+      "context": {
+        "title": "Tạo worker có trạng thái riêng bằng class con của threading.Thread.",
+        "body": "Viết class SumWorker(threading.Thread): __init__(self, numbers) gọi super().__init__() TRƯỚC, rồi lưu self.numbers (list) và self.total = None; override run(self) để gán self.total = sum(self.numbers). Viết parallel_sum(chunks): mỗi khối một SumWorker, start hết, join hết, trả tổng các total. Không có khối nào → 0.",
+        "example": "parallel_sum([[1, 2, 3], [10, 20]]) → 36 (hai worker: 6 và 30). SumWorker([1, 2]).total trước khi chạy → None.",
+        "prereq": "T02",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "class W(threading.Thread) override run(). Chạy w = W(); w.start(); w.join() — run() chạy mấy lần, ở thread nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Hai lần: ở start và ở join",
+            "detail": "join chỉ chờ, không chạy lại gì.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Một lần, trong thread mới do start() tạo",
+            "detail": "start() gọi run() trong thread con.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Không lần nào — phải tự gọi w.run()",
+            "detail": "Gọi run() trực tiếp thì chạy ở thread hiện tại.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Override start() cho tiện, vì start mới là thứ chạy thread\"",
+        "body": "start() là của Thread: nó dựng thread mới rồi gọi run(). Override start() thì không còn thread nào được tạo, và join() sau đó báo RuntimeError: cannot join thread before it is started. Việc của worker đặt trong run(); nơi dùng gọi start()."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Cách thứ hai để tạo thread: viết class con của threading.Thread và override run() — run() là \"việc của thread\". Vẫn gọi start() để chạy: start() tạo thread mới rồi tự gọi run() trong thread đó."
+        },
+        {
+          "n": 2,
+          "body": "__init__ của class con nhận tham số riêng (who, numbers) nhưng phải gọi super().__init__() trước khi dùng thread: phần khởi tạo của Thread tạo ra trạng thái mà start()/join() cần. Quên → start() báo lỗi (máy thật: RuntimeError: thread.__init__() not called; Studio mô phỏng báo AttributeError về thuộc tính started — cùng một nguyên nhân)."
+        },
+        {
+          "n": 3,
+          "body": "Trạng thái của worker nằm trong self: run() ghi kết quả vào self.message / self.total, nơi gọi đọc nó SAU join(). Trước khi chạy, ví dụ in None."
+        },
+        {
+          "n": 4,
+          "body": "__init__ chạy ở thread TẠO object (thường là main thread); chỉ run() mới chạy trong thread mới. Việc nặng đặt trong __init__ là làm ở main thread."
+        },
+        {
+          "n": 5,
+          "body": "Không bắt buộc dùng cách này: target=hàm đủ cho việc đơn giản. Subclass hợp khi worker mang dữ liệu và kết quả của riêng nó."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\nclass Greeter(threading.Thread):\n    def __init__(self, who):\n        super().__init__()\n        self.who = who\n        self.message = None\n\n    def run(self):\n        self.message = \"Hello \" + self.who\n\nworker = Greeter(\"Mai\")\nprint(worker.message)\nworker.start()\nworker.join()\nprint(worker.message)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Method nào được override, method nào được gọi để khởi chạy?",
+          "options": [
+            {
+              "text": "Override run(); gọi start()",
+              "detail": "start() tạo thread rồi gọi run() bên trong nó.",
+              "correct": true
+            },
+            {
+              "text": "Override __init__; gọi join()",
+              "detail": "join chỉ chờ thread đã start.",
+              "correct": false
+            },
+            {
+              "text": "Override start(); gọi run()",
+              "detail": "Như vậy không có thread mới nào.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "start() tạo thread rồi gọi run() bên trong nó."
+        },
+        {
+          "question": "class W(Thread) có __init__ riêng nhưng quên super().__init__(). Gọi W(...).start() thì…",
+          "options": [
+            {
+              "text": "RuntimeError: thread.__init__() not called",
+              "detail": "Phần khởi tạo của Thread chưa chạy (Studio mô phỏng báo AttributeError … started — cùng nguyên nhân).",
+              "correct": true
+            },
+            {
+              "text": "Chạy bình thường",
+              "detail": "Thread kiểm tra và từ chối start.",
+              "correct": false
+            },
+            {
+              "text": "run() chạy ở main thread",
+              "detail": "Không chạy gì cả — start() báo lỗi trước.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Phần khởi tạo của Thread chưa chạy (Studio mô phỏng báo AttributeError … started — cùng nguyên nhân)."
+        },
+        {
+          "question": "Đọc w.total ngay sau w.start(), chưa join, thì…",
+          "options": [
+            {
+              "text": "Lỗi AttributeError",
+              "detail": "total đã gán None trong __init__.",
+              "correct": false
+            },
+            {
+              "text": "Có thể vẫn là None — worker chưa chắc đã chạy xong",
+              "detail": "Đọc kết quả sau join().",
+              "correct": true
+            },
+            {
+              "text": "Luôn đã có kết quả",
+              "detail": "start() không chờ worker.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Đọc kết quả sau join()."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao total khởi tạo None trong __init__ và chỉ được tính trong run()?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "__init__ chạy ở thread tạo object (main thread), còn run() chạy trong thread mới sau start(). Tính tổng trong __init__ là làm việc ở main thread, worker không còn gì để làm. Để None tới khi run() xong giúp phân biệt \"chưa chạy\" với \"tổng bằng 0\"; nơi gọi đọc total sau join. Trường hợp đặc biệt: khối rỗng → total = 0, không phải None."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp lớp cha, lời gọi khởi tạo của Thread, tên method được override và lệnh khởi chạy.",
+        "rule": "Thử khối rỗng, nhiều khối, và đọc total trước khi start để thấy None."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "SumWorker([1, 2]) → __init__: lưu numbers, total = None"
+          },
+          {
+            "label": "Bước 2",
+            "text": "worker.start() → Thread gọi run() trong thread mới"
+          },
+          {
+            "label": "Bước 3",
+            "text": "run() → self.total = 3"
+          },
+          {
+            "label": "Bước 4",
+            "text": "worker.join() → đọc total an toàn"
+          }
+        ]
+      },
+      "counter": {
+        "question": "parallel_sum([[2, 3], [], [5]]) trả về?",
+        "options": [
+          "5",
+          "10",
+          "None"
+        ],
+        "correct": "10"
+      },
+      "scaffold": {
+        "template": "import threading\n\n\nclass SumWorker({{slot1}}):\n    def __init__(self, numbers):\n        {{slot2}}\n        self.numbers = list(numbers)\n        self.total = None\n\n    def {{slot3}}(self):\n        self.total = sum(self.numbers)\n\n\ndef parallel_sum(chunks):\n    workers = [SumWorker(chunk) for chunk in chunks]\n    for worker in workers:\n        {{slot4}}\n    for worker in workers:\n        worker.join()\n    return sum(worker.total for worker in workers)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "threading.Thread"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "super().__init__()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "run"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "worker.start()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "worker.start()",
+            "slot": 4
+          },
+          {
+            "label": "worker.run()",
+            "slot": 4,
+            "trap": "Chạy run() ngay trong main thread."
+          },
+          {
+            "label": "self.total = sum(self.numbers)",
+            "slot": 2,
+            "trap": "Tính ở __init__ = làm việc ở main thread; lại thiếu super().__init__()."
+          },
+          {
+            "label": "run",
+            "slot": 3
+          },
+          {
+            "label": "super().__init__()",
+            "slot": 2
+          },
+          {
+            "label": "threading.Thread()",
+            "slot": 1,
+            "trap": "Kế thừa CLASS Thread, không phải một object Thread."
+          },
+          {
+            "label": "start",
+            "slot": 3,
+            "trap": "Override start thì không còn thread nào được tạo."
+          },
+          {
+            "label": "threading.Thread",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết class SumWorker(threading.Thread): __init__(self, numbers) gọi super().__init__() TRƯỚC, rồi lưu self.numbers (list) và self.total = None; override run(self) để gán self.total = sum(self.numbers). Viết parallel_sum(chunks): mỗi khối một SumWorker, start hết, join hết, trả tổng các total. Không có khối nào → 0.\n\nThực hành: Kế thừa threading.Thread, gọi super().__init__() đầu tiên, lưu trạng thái vào self; việc tính đặt trong run(). parallel_sum tạo worker, start hết, join hết rồi cộng total.",
+        "io": [
+          {
+            "label": "parallel_sum([[1, 2, 3], [10, 20]])",
+            "value": "36"
+          },
+          {
+            "label": "SumWorker([1, 2]).total trước start",
+            "value": "None"
+          },
+          {
+            "label": "parallel_sum([])",
+            "value": "0 — không tạo worker"
+          }
+        ]
+      },
+      "starterCode": "import threading\n\n\nclass SumWorker(threading.Thread):\n    def __init__(self, numbers):\n        # Gọi khởi tạo của Thread, rồi lưu numbers và total = None.\n        pass\n\n    # Override run(): tính tổng numbers vào self.total.\n\n\ndef parallel_sum(chunks):\n    # Mỗi khối một SumWorker; start hết, join hết, cộng các total.\n    return 0\n\n\nif __name__ == \"__main__\":\n    print(parallel_sum([[1, 2, 3], [10, 20]]))\n",
+      "solutionCode": "import threading\n\n\nclass SumWorker(threading.Thread):\n    def __init__(self, numbers):\n        super().__init__()\n        self.numbers = list(numbers)\n        self.total = None\n\n    def run(self):\n        self.total = sum(self.numbers)\n\n\ndef parallel_sum(chunks):\n    workers = [SumWorker(chunk) for chunk in chunks]\n    for worker in workers:\n        worker.start()\n    for worker in workers:\n        worker.join()\n    return sum(worker.total for worker in workers)\n\n\nif __name__ == \"__main__\":\n    print(parallel_sum([[1, 2, 3], [10, 20]]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Kế thừa threading.Thread, gọi super().__init__() đầu tiên, lưu trạng thái vào self; việc tính đặt trong run(). parallel_sum tạo worker, start hết, join hết rồi cộng total."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. class SumWorker(threading.Thread); __init__ gọi super().__init__() rồi gán self.numbers, self.total = None.\n2. def run(self): self.total = sum(self.numbers).\n3. parallel_sum: một SumWorker cho mỗi khối; start hết; join hết; trả sum các worker.total."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "class SumWorker(threading.Thread):\n    def __init__(self, numbers):\n        super().__init__()\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "SumWorker là một Thread",
+          "call": "isinstance(SumWorker([1]), __import__(\"threading\").Thread)",
+          "expect": "True"
+        },
+        {
+          "name": "Chưa start → total là None",
+          "call": "SumWorker([1, 2]).total",
+          "expect": "None"
+        },
+        {
+          "name": "start + join → total đúng",
+          "call": "(lambda w: (w.start(), w.join(), w.total)[2])(SumWorker([4, 5, 6]))",
+          "expect": "15"
+        },
+        {
+          "name": "parallel_sum ba khối",
+          "call": "parallel_sum([[1, 2], [3], [4, 5, 6]])",
+          "expect": "21"
+        },
+        {
+          "name": "Mỗi khối một worker, start hết rồi join hết",
+          "call": "(lambda r: (r.thread_count, r.starts_before_joins, r.all_joined))(_studio.call(parallel_sum, [[1], [2], [3]]))",
+          "expect": "(3, True, True)"
+        },
+        {
+          "name": "Khối rỗng góp 0; nhận cả range/tuple",
+          "call": "parallel_sum([[], range(5), (1, 1)])",
+          "expect": "12"
+        },
+        {
+          "name": "Không có khối → 0, không tạo worker",
+          "call": "(lambda r: (r.value, r.thread_count))(_studio.call(parallel_sum, []))",
+          "expect": "(0, 0)"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "SumWorker(numbers)  — class con của threading.Thread",
+          "does": "Một worker tự giữ dữ liệu và kết quả của nó.",
+          "takes": "numbers: iterable các số (list, tuple, range…)",
+          "gives": "object Thread; total = None tới khi run() chạy xong",
+          "effect": "run() gán self.total = sum(numbers); không in.",
+          "call": "w = SumWorker([4, 5]); w.start(); w.join(); w.total → 9"
+        },
+        {
+          "sig": "parallel_sum(chunks)",
+          "does": "Cộng nhiều khối số, mỗi khối một SumWorker.",
+          "takes": "chunks: list các khối số (có thể rỗng)",
+          "gives": "int: tổng mọi total",
+          "effect": "Tạo len(chunks) worker, start hết rồi join hết.",
+          "call": "parallel_sum([[1, 2, 3], [10, 20]]) → 36"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "SumWorker([1, 2])",
+              "right": "__init__: lưu numbers, total = None"
+            },
+            {
+              "left": "worker.start()",
+              "right": "Thread gọi run() trong thread mới"
+            },
+            {
+              "left": "run()",
+              "right": "self.total = 3"
+            },
+            {
+              "left": "worker.join()",
+              "right": "đọc total an toàn"
+            }
+          ],
+          "rightOrder": [
+            2,
+            0,
+            1,
+            3
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\nclass SumWorker(threading.Thread):\n    def __init__(self, numbers):\n        super().__init__()\n        self.numbers = list(numbers)\n        self.total = None\n\n    def start(self):\n        self.total = sum(self.numbers)\n\n\ndef parallel_sum(chunks):\n    workers = [SumWorker(chunk) for chunk in chunks]\n    for worker in workers:\n        worker.start()",
+          "firstLine": 3,
+          "line": 10,
+          "lines": [
+            10
+          ],
+          "label": "override start() thay vì run()",
+          "fix": "    def run(self):"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import threading\n\n\nclass SumWorker(threading.Thread):\n    def __init__(self, numbers):\n        self.numbers = list(numbers)\n        self.total = None\n\n    def run(self):\n        self.total = sum(self.numbers)\n\n\ndef parallel_sum(chunks):\n    workers = [SumWorker(chunk) for chunk in chunks]\n    for worker in workers:\n        worker.start()\n    for worker in workers:\n        worker.join()\n    return sum(worker.total for worker in workers)\n\n\nif __name__ == \"__main__\":\n    print(parallel_sum([[1, 2, 3], [10, 20]]))\n",
+          "label": "quên super().__init__()"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao total khởi tạo None trong __init__ và chỉ được tính trong run()?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

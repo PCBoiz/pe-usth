@@ -1,0 +1,428 @@
+{
+  "lesson_code": "PD01",
+  "sort_order": 32,
+  "module": "M6 · pandas",
+  "title": "PD01 · Series, DataFrame và index",
+  "subtitle": "Nâng cao · M6 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "PD01 · Series, DataFrame và index",
+    "subtitle": "Nâng cao · M6 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#PD01",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD01"
+        ],
+        "title": "Series, DataFrame và index",
+        "goal": "Lấy dữ liệu theo nhãn (loc), theo vị trí (iloc) và cộng Series theo nhãn.",
+        "task": "Viết pick(df, sid) và add_bonus(marks, bonus).",
+        "predict": "Index [10, 20]: s.loc[20] và s.iloc[0] là gì?",
+        "code": "def pick(df, sid):\n    pass  # (điểm theo nhãn, điểm hàng đầu)\n\ndef add_bonus(marks, bonus):\n    pass  # cộng theo mã sinh viên",
+        "tests": [
+          "S01, S02 / 7, 9 → pick(df, \"S02\") = (9, 7)",
+          "bonus đảo thứ tự → vẫn cộng đúng mã"
+        ],
+        "reflect": "Vì sao \"hàng đầu\" phải dùng iloc[0] chứ không loc[0]?"
+      },
+      "context": {
+        "title": "Phân biệt nhãn (loc) với vị trí (iloc) và thấy phép tính Series căn theo index.",
+        "body": "Viết hai hàm. pick(df, sid): df có cột \"mark\" và index là mã sinh viên; trả tuple (điểm của sid lấy theo NHÃN bằng loc, điểm của hàng ĐẦU TIÊN lấy theo VỊ TRÍ bằng iloc), cả hai ép về int. add_bonus(marks, bonus): hai Series điểm cùng tập mã sinh viên nhưng có thể khác thứ tự; trả Series marks + bonus cộng đúng theo mã.",
+        "example": "Index S01, S02 với điểm 7, 9: pick(df, \"S02\") → (9, 7). marks {S01: 7, S02: 9} cộng bonus {S02: 1, S01: 0} → {S01: 7, S02: 10}.",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "s.loc[20] và s.iloc[0] lần lượt là?",
+        "options": [
+          {
+            "id": "a",
+            "title": "8 và 8",
+            "detail": "loc theo nhãn, nên 20 trỏ tới phần tử thứ hai.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "9 và 8",
+            "detail": "loc[20] tìm NHÃN 20 (giá trị 9); iloc[0] lấy VỊ TRÍ đầu (giá trị 8).",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "KeyError ở loc[20] vì Series chỉ có 2 phần tử",
+            "detail": "loc tìm nhãn 20, không phải vị trí 20 — nhãn 20 có tồn tại.",
+            "correct": false
+          }
+        ],
+        "code": "s = pd.Series([8, 9], index=[10, 20])"
+      },
+      "misconception": {
+        "title": "\"Index chỉ là số thứ tự hàng 0, 1, 2…\"",
+        "body": "Index là NHÃN. Sau khi lọc, sắp xếp hoặc đặt mã sinh viên làm index, nhãn không còn trùng vị trí: df.loc[0] có thể KeyError hoặc trả nhầm hàng, còn s[0] trên Series index số là tra NHÃN 0. Cần hàng đầu tiên thì iloc[0]; cần đúng mã thì loc[mã]."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Series là một cột có nhãn; DataFrame là bảng nhiều cột, mỗi cột một dtype. Cả hai có index — tập NHÃN của hàng."
+        },
+        {
+          "n": 2,
+          "body": "loc tra theo nhãn, iloc theo vị trí: với index [30, 10, 20], s.loc[10] là 9 còn s.iloc[0] là 8."
+        },
+        {
+          "n": 3,
+          "body": "df[\"mark\"] trả Series; df[[\"mark\"]] (list tên cột) giữ DataFrame một cột, shape (n, 1)."
+        },
+        {
+          "n": 4,
+          "body": "Trước khi phân tích, nhìn shape, dtypes, head(), info(), describe() — biết bảng có bao nhiêu hàng, cột nào kiểu gì."
+        },
+        {
+          "n": 5,
+          "body": "a + b căn theo NHÃN chứ không theo vị trí: x cộng x, y cộng y. Nhãn có ở bên này mà thiếu ở bên kia cho NaN — kiểm nhãn trước khi cộng hay ghép."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\ns = pd.Series([8, 9, 6], index=[30, 10, 20])\nprint(s.loc[10], s.iloc[0])\n\ndf = pd.DataFrame({\"name\": [\"Mai\", \"An\"], \"mark\": [8, 9]}, index=[\"S01\", \"S02\"])\nprint(df.shape)\nprint(df.dtypes.to_dict())\nprint(type(df[\"mark\"]).__name__, type(df[[\"mark\"]]).__name__)\n\na = pd.Series([1, 2], index=[\"x\", \"y\"])\nb = pd.Series([10, 20], index=[\"y\", \"x\"])\nprint((a + b).to_dict())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "df[\"mark\"] và df[[\"mark\"]] khác nhau thế nào?",
+          "options": [
+            {
+              "text": "Giống hệt nhau",
+              "detail": "Kiểu trả về khác nhau: Series và DataFrame.",
+              "correct": false
+            },
+            {
+              "text": "df[[\"mark\"]] là cú pháp lỗi",
+              "detail": "Truyền list tên cột là cách chọn nhiều cột — ở đây list một phần tử.",
+              "correct": false
+            },
+            {
+              "text": "Một cặp [] cho Series; hai cặp [] (list tên cột) cho DataFrame một cột",
+              "detail": "shape lần lượt là (n,) và (n, 1).",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "shape lần lượt là (n,) và (n, 1)."
+        },
+        {
+          "question": "a = Series([1, 2], index=[\"x\", \"y\"]); b = Series([10, 20], index=[\"y\", \"x\"]). (a + b)[\"x\"] = ?",
+          "options": [
+            {
+              "text": "21",
+              "detail": "x của a (1) cộng x của b (20).",
+              "correct": true
+            },
+            {
+              "text": "Lỗi vì index khác thứ tự",
+              "detail": "Cùng tập nhãn thì pandas tự căn.",
+              "correct": false
+            },
+            {
+              "text": "11",
+              "detail": "Đó là cộng theo vị trí — pandas căn theo nhãn.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "x của a (1) cộng x của b (20)."
+        },
+        {
+          "question": "Muốn biết bảng có bao nhiêu hàng, cột và kiểu từng cột, xem gì trước?",
+          "options": [
+            {
+              "text": "df.shape và df.dtypes (hoặc df.info())",
+              "detail": "Đây là bước kiểm tra trước khi phân tích.",
+              "correct": true
+            },
+            {
+              "text": "Chỉ cần df.describe()",
+              "detail": "describe chỉ tóm tắt cột số, không cho biết dtype của cột chữ.",
+              "correct": false
+            },
+            {
+              "text": "print(df) rồi đếm tay",
+              "detail": "Bảng lớn thì print bị rút gọn; shape cho con số chính xác.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Đây là bước kiểm tra trước khi phân tích."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao pick dùng loc cho mã sinh viên nhưng iloc cho \"hàng đầu\"?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mã sinh viên là NHÃN của index nên tra bằng loc[sid]. \"Hàng đầu\" là VỊ TRÍ 0, không phải nhãn 0 — với index S01, S02 thì nhãn 0 không tồn tại, với index [1, 0] thì nhãn 0 lại là hàng thứ hai. iloc[0] luôn lấy hàng đầu dù index là gì."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: index số lộn xộn [30, 10, 20] và bonus đảo thứ tự. Lắp ba chỗ.",
+        "rule": "Đổi sang index số [30, 10, 20] và bonus đảo thứ tự; kiểm loc/iloc và phép cộng vẫn đúng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "df.loc[\"S02\", \"mark\"] → tìm hàng có NHÃN S02 → 9."
+          },
+          {
+            "label": "Bước 2",
+            "text": "df.iloc[0][\"mark\"] → lấy hàng ở VỊ TRÍ đầu → 7."
+          },
+          {
+            "label": "Bước 3",
+            "text": "marks + bonus → căn theo mã sinh viên rồi mới cộng."
+          },
+          {
+            "label": "Bước 4",
+            "text": "df[[\"mark\"]] → DataFrame một cột, shape (n, 1)."
+          }
+        ]
+      },
+      "counter": {
+        "question": "df có index [30, 10, 20], mark [4, 9, 7]. pick(df, 10) = ?",
+        "options": [
+          "(4, 9)",
+          "(9, 4)",
+          "KeyError"
+        ],
+        "correct": "(9, 4)"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef pick(df, sid):\n    by_label = {{slot1}}\n    first = {{slot2}}\n    return int(by_label), int(first)\n\n\ndef add_bonus(marks, bonus):\n    return {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "df.loc[sid, \"mark\"]"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "df.iloc[0][\"mark\"]"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "marks + bonus"
+          }
+        ],
+        "bank": [
+          {
+            "label": "df.loc[sid, \"mark\"]",
+            "slot": 1
+          },
+          {
+            "label": "marks.values + bonus.values",
+            "slot": 3,
+            "trap": ".values bỏ nhãn: cộng theo vị trí, sai khi hai Series khác thứ tự."
+          },
+          {
+            "label": "df.iloc[sid][\"mark\"]",
+            "slot": 1,
+            "trap": "iloc nhận VỊ TRÍ số nguyên; sid là nhãn."
+          },
+          {
+            "label": "df.loc[0, \"mark\"]",
+            "slot": 2,
+            "trap": "Nhãn 0 có thể không tồn tại hoặc không phải hàng đầu."
+          },
+          {
+            "label": "df.iloc[0][\"mark\"]",
+            "slot": 2
+          },
+          {
+            "label": "marks + bonus",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm. pick(df, sid): df có cột \"mark\" và index là mã sinh viên; trả tuple (điểm của sid lấy theo NHÃN bằng loc, điểm của hàng ĐẦU TIÊN lấy theo VỊ TRÍ bằng iloc), cả hai ép về int. add_bonus(marks, bonus): hai Series điểm cùng tập mã sinh viên nhưng có thể khác thứ tự; trả Series marks + bonus cộng đúng theo mã.\n\nThực hành: loc[nhãn, cột] cho mã sinh viên; iloc[0] cho hàng đầu; cộng hai Series trực tiếp để pandas căn nhãn.",
+        "io": [
+          {
+            "label": "index S01, S02; mark 7, 9; sid \"S02\"",
+            "value": "(9, 7)"
+          },
+          {
+            "label": "index [30, 10, 20]; mark [4, 9, 7]; sid 10",
+            "value": "(9, 4)"
+          },
+          {
+            "label": "marks {S01: 7, S02: 9}, bonus {S02: 1, S01: 0}",
+            "value": "{S01: 7, S02: 10}"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef pick(df, sid):\n    # Trả (điểm của sid lấy theo NHÃN, điểm của hàng đầu lấy theo VỊ TRÍ), cả hai ép int\n    pass\n\n\ndef add_bonus(marks, bonus):\n    # Cộng điểm thưởng theo mã sinh viên, không theo vị trí\n    pass\n\n\nif __name__ == \"__main__\":\n    df = pd.DataFrame({\"mark\": [7, 9]}, index=[\"S01\", \"S02\"])\n    print(df.shape, df.dtypes.to_dict())\n    print(pick(df, \"S02\"))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef pick(df, sid):\n    by_label = df.loc[sid, \"mark\"]\n    first = df.iloc[0][\"mark\"]\n    return int(by_label), int(first)\n\n\ndef add_bonus(marks, bonus):\n    return marks + bonus\n\n\nif __name__ == \"__main__\":\n    df = pd.DataFrame({\"mark\": [7, 9]}, index=[\"S01\", \"S02\"])\n    print(df.shape, df.dtypes.to_dict())\n    print(pick(df, \"S02\"))\n    bonus = pd.Series([1, 0], index=[\"S02\", \"S01\"])\n    print(add_bonus(df[\"mark\"], bonus).to_dict())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "loc[nhãn, cột] cho mã sinh viên; iloc[0] cho hàng đầu; cộng hai Series trực tiếp để pandas căn nhãn."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. by_label = df.loc[sid, \"mark\"] — tra theo nhãn.\n2. first = df.iloc[0][\"mark\"] — lấy theo vị trí; ép int(...) cả hai trước khi trả.\n3. add_bonus trả marks + bonus (không dùng .values, không cộng theo vị trí)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def pick(df, sid):\n    by_label = df.loc[sid, \"mark\"]\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: S02 theo nhãn, hàng đầu theo vị trí",
+          "call": "pick(pd.DataFrame({\"mark\": [7, 9]}, index=[\"S01\", \"S02\"]), \"S02\")",
+          "expect": "(9, 7)"
+        },
+        {
+          "name": "Index số lộn xộn [30, 10, 20]",
+          "call": "pick(pd.DataFrame({\"mark\": [4, 9, 7]}, index=[30, 10, 20]), 10)",
+          "expect": "(9, 4)"
+        },
+        {
+          "name": "Index [1, 0]: nhãn 0 KHÔNG phải hàng đầu",
+          "call": "pick(pd.DataFrame({\"mark\": [5, 8]}, index=[1, 0]), 0)",
+          "expect": "(8, 5)"
+        },
+        {
+          "name": "Index chữ, hàng đầu không phải S01",
+          "call": "pick(pd.DataFrame({\"mark\": [5, 8, 6]}, index=[\"B07\", \"A01\", \"C03\"]), \"C03\")",
+          "expect": "(6, 5)"
+        },
+        {
+          "name": "pick trả int thuần",
+          "call": "[type(v).__name__ for v in pick(pd.DataFrame({\"mark\": [7, 9]}, index=[\"S01\", \"S02\"]), \"S01\")]",
+          "expect": "['int', 'int']"
+        },
+        {
+          "name": "add_bonus: đề mẫu",
+          "call": "add_bonus(pd.Series([7, 9], index=[\"S01\", \"S02\"]), pd.Series([1, 0], index=[\"S02\", \"S01\"])).to_dict()",
+          "expect": "{'S01': 7, 'S02': 10}"
+        },
+        {
+          "name": "add_bonus căn theo mã khi bonus đảo thứ tự",
+          "call": "add_bonus(pd.Series([7, 9, 5], index=[\"S01\", \"S02\", \"S03\"]), pd.Series([1, 0, 2], index=[\"S03\", \"S01\", \"S02\"])).to_dict()",
+          "expect": "{'S01': 7, 'S02': 11, 'S03': 6}"
+        },
+        {
+          "name": "add_bonus không sửa marks",
+          "call": "(lambda r: (add_bonus(r, pd.Series([1, 1], index=[\"b\", \"a\"])), r.tolist())[1])(pd.Series([3, 4], index=[\"a\", \"b\"]))",
+          "expect": "[3, 4]"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "pick(df, sid)",
+          "does": "Lấy điểm theo nhãn và điểm của hàng đầu theo vị trí.",
+          "takes": "df: DataFrame có cột \"mark\", index là mã sinh viên; sid: một nhãn có trong index",
+          "gives": "tuple (int, int)",
+          "effect": "Không sửa df.",
+          "call": "pick(df, \"S02\") → (9, 7)"
+        },
+        {
+          "sig": "add_bonus(marks, bonus)",
+          "does": "Cộng điểm thưởng theo đúng mã sinh viên.",
+          "takes": "marks, bonus: Series cùng tập nhãn, thứ tự có thể khác",
+          "gives": "Series có index là mã sinh viên",
+          "effect": "Không sửa hai Series đầu vào.",
+          "call": "add_bonus(marks, bonus).to_dict() → {\"S01\": 7, \"S02\": 10}"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "df.loc[\"S02\", \"mark\"]",
+              "right": "tìm hàng có NHÃN S02 → 9"
+            },
+            {
+              "left": "df.iloc[0][\"mark\"]",
+              "right": "lấy hàng ở VỊ TRÍ đầu → 7"
+            },
+            {
+              "left": "marks + bonus",
+              "right": "căn theo mã sinh viên rồi mới cộng"
+            },
+            {
+              "left": "df[[\"mark\"]]",
+              "right": "DataFrame một cột, shape (n, 1)"
+            }
+          ],
+          "rightOrder": [
+            1,
+            3,
+            0,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import pandas as pd\n\n\ndef pick(df, sid):\n    by_label = df.loc[sid, \"mark\"]\n    first = df.loc[0, \"mark\"]\n    return int(by_label), int(first)\n\n\ndef add_bonus(marks, bonus):\n    return marks + bonus\n\n",
+          "firstLine": 1,
+          "line": 6,
+          "lines": [
+            6
+          ],
+          "label": "lấy hàng đầu bằng nhãn 0",
+          "fix": "    first = df.iloc[0][\"mark\"]"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import pandas as pd\n\n\ndef pick(df, sid):\n    by_label = df.loc[sid, \"mark\"]\n    first = df.iloc[0][\"mark\"]\n    return int(by_label), int(first)\n\n\ndef add_bonus(marks, bonus):\n    return pd.Series(marks.values + bonus.values, index=marks.index)\n\n\nif __name__ == \"__main__\":\n    df = pd.DataFrame({\"mark\": [7, 9]}, index=[\"S01\", \"S02\"])\n    print(df.shape, df.dtypes.to_dict())\n    print(pick(df, \"S02\"))\n    bonus = pd.Series([1, 0], index=[\"S02\", \"S01\"])\n    print(add_bonus(df[\"mark\"], bonus).to_dict())\n",
+          "label": "cộng theo vị trí bằng .values"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao pick dùng loc cho mã sinh viên nhưng iloc cho \"hàng đầu\"?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

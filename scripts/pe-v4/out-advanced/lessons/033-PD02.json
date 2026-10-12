@@ -1,0 +1,461 @@
+{
+  "lesson_code": "PD02",
+  "sort_order": 33,
+  "module": "M6 · pandas",
+  "title": "PD02 · CSV, Excel và schema",
+  "subtitle": "Nâng cao · M6 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "PD02 · CSV, Excel và schema",
+    "subtitle": "Nâng cao · M6 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#PD02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD02"
+        ],
+        "title": "CSV, Excel và schema",
+        "goal": "Đọc file theo schema khai rõ và xuất CSV không cột index.",
+        "task": "Viết load_scores(path) đọc file dấu ; (usecols, dtype, na_values) và export_csv(df, path).",
+        "predict": "Không khai dtype, \"007\" đọc ra thành gì?",
+        "code": "def load_scores(path):\n    return pd.read_csv(path, sep=\";\", ...)\n\ndef export_csv(df, path):\n    pass  # ghi CSV, không cột index",
+        "tests": [
+          "scores.csv → id [\"001\", \"007\", \"010\"], 1 ô thiếu",
+          "export_csv → dòng đầu \"id,mark\""
+        ],
+        "reflect": "Vì sao phải khai dtype cho cột id?"
+      },
+      "context": {
+        "title": "Đọc file với schema khai rõ (sep, usecols, dtype, na_values) và xuất CSV không sinh cột index.",
+        "body": "scores.csv dùng dấu ; và có ba cột id;mark;note. Viết load_scores(path): đọc bằng pd.read_csv với sep=\";\", chỉ lấy hai cột id, mark (usecols), giữ id là chuỗi (dtype \"string\" — không mất số 0 đầu) và coi chữ \"missing\" là ô thiếu (na_values). File thiếu cột id hoặc mark phải báo ValueError. Viết export_csv(df, path): ghi CSV dấu phẩy, KHÔNG có cột index.",
+        "example": "\"007;9;retake\" → id \"007\", mark 9.0; \"010;missing;absent\" → mark NaN. Xuất lại → dòng đầu \"id,mark\".",
+        "prereq": "PD01",
+        "level": "Nâng cao",
+        "files": [
+          "scores.csv"
+        ]
+      },
+      "predict": {
+        "question": "Đọc KHÔNG khai dtype. df.loc[0, \"id\"] là gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Lỗi vì 007 không phải số hợp lệ",
+            "detail": "\"007\" vẫn đọc được thành số 7.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Chuỗi \"007\"",
+            "detail": "Chỉ khi khai dtype chuỗi.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Số 7 — pandas đoán cột id là số, mất số 0 đầu",
+            "detail": "Khai dtype={\"id\": \"string\"} để giữ \"007\".",
+            "correct": true
+          }
+        ],
+        "code": "df = pd.read_csv(StringIO(\"id,mark\\n007,8\"))"
+      },
+      "misconception": {
+        "title": "\"read_csv tự hiểu file, không cần khai gì\"",
+        "body": "pandas chỉ ĐOÁN: mã có số 0 đầu thành số, một ô \"missing\" làm cả cột điểm thành chuỗi, file dấu ; đọc ra một cột duy nhất \"id;mark;note\". parse_dates gặp ngày hỏng cũng không báo lỗi mà để nguyên cột chữ. Khai schema rồi kiểm df.dtypes ngay sau khi đọc."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Đọc một file là khai rõ: dấu phân cách (sep), header, lấy cột nào (usecols), kiểu từng cột (dtype) và chữ nào nghĩa là \"thiếu\" (na_values)."
+        },
+        {
+          "n": 2,
+          "body": "Không khai dtype thì pandas ĐOÁN: \"007\" thành số 7 — mất số 0 đầu, mã không còn khớp với bảng khác. dtype={\"id\": \"string\"} giữ nguyên chuỗi."
+        },
+        {
+          "n": 3,
+          "body": "Một ô chữ lạ (\"missing\", \"n/a\") làm cả cột số thành object (chuỗi). na_values=[\"missing\"] biến ô đó thành NaN, cột còn là số."
+        },
+        {
+          "n": 4,
+          "body": "usecols vừa bỏ cột thừa vừa là phép kiểm schema: file thiếu cột yêu cầu thì read_csv báo ValueError ngay."
+        },
+        {
+          "n": 5,
+          "body": "to_csv mặc định ghi cả index thành một cột không tên; index=False bỏ cột rác đó."
+        },
+        {
+          "n": 6,
+          "body": "Excel: pd.read_excel(path, sheet_name=\"Q1\", usecols=..., dtype=...) cùng ý tưởng, cần engine openpyxl (pip install openpyxl trên máy; trình duyệt của bài chưa có thư viện này). File rất lớn: read_csv(..., chunksize=100_000) đọc từng khúc; luôn in số dòng đã đọc trước khi tổng hợp."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\nfrom io import StringIO\n\ntext = \"code|qty\\n0042|3\\n0107|n/a\\n\"\ndf = pd.read_csv(StringIO(text), sep=\"|\", dtype={\"code\": \"string\"}, na_values=[\"n/a\"])\nprint(df[\"code\"].tolist())\nprint(int(df[\"qty\"].isna().sum()), \"ô thiếu\")\nprint(df.dtypes.to_dict())\n\nguess = pd.read_csv(StringIO(text), sep=\"|\")\nprint(guess[\"code\"].tolist(), guess[\"qty\"].tolist())\n\nprint(df.to_csv(index=False).splitlines()[0])\nprint(df.to_csv().splitlines()[0])",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "File dấu ; nhưng gọi pd.read_csv(path) không có sep. Kết quả?",
+          "options": [
+            {
+              "text": "ValueError",
+              "detail": "Không lỗi — chỉ ra bảng sai.",
+              "correct": false
+            },
+            {
+              "text": "Một cột duy nhất tên \"id;mark;note\"",
+              "detail": "Mặc định sep=\",\".",
+              "correct": true
+            },
+            {
+              "text": "pandas tự nhận ra dấu ;",
+              "detail": "Không — mặc định luôn là dấu phẩy.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Mặc định sep=\",\"."
+        },
+        {
+          "question": "df.to_csv(\"out.csv\") (không index=False) rồi đọc lại. Thấy gì?",
+          "options": [
+            {
+              "text": "Mất cột cuối",
+              "detail": "Không mất cột — thừa cột.",
+              "correct": false
+            },
+            {
+              "text": "Thêm cột \"Unnamed: 0\" chứa index cũ",
+              "detail": "Ghi index=False để không ghi index.",
+              "correct": true
+            },
+            {
+              "text": "Không khác gì",
+              "detail": "Index được ghi thành cột đầu.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Ghi index=False để không ghi index."
+        },
+        {
+          "question": "Cột mark có 8, 9 và \"missing\". Đọc không có na_values thì dtype của mark là?",
+          "options": [
+            {
+              "text": "object — cả cột thành chuỗi vì một ô chữ",
+              "detail": "na_values=[\"missing\"] biến ô đó thành NaN, cột còn là số.",
+              "correct": true
+            },
+            {
+              "text": "float64, ô missing thành NaN",
+              "detail": "Chỉ khi khai na_values.",
+              "correct": false
+            },
+            {
+              "text": "int64, ô missing thành 0",
+              "detail": "pandas không bao giờ tự đổi chữ thành 0.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "na_values=[\"missing\"] biến ô đó thành NaN, cột còn là số."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao phải khai dtype cho cột id dù file \"trông\" đã đúng?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Không khai thì pandas đoán kiểu: \"007\" thành 7, mất số 0 đầu và không còn khớp với mã ở bảng khác. Khai dtype={\"id\": \"string\"} biến kiểu cột thành một phần của cách đọc file; kiểm df.dtypes ngay sau khi đọc để chắc chắn."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: file dấu ; có cột note thừa và ô \"missing\". Lắp bốn chỗ.",
+        "rule": "Thử file có cả ô trống lẫn ô \"missing\", và một file thiếu cột mark; kiểm số ô thiếu và lỗi schema."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "sep=\";\" → tách đúng ba cột id, mark, note."
+          },
+          {
+            "label": "Bước 2",
+            "text": "usecols=[\"id\", \"mark\"] → bỏ note; thiếu cột thì ValueError."
+          },
+          {
+            "label": "Bước 3",
+            "text": "dtype={\"id\": \"string\"} → \"007\" vẫn là \"007\"."
+          },
+          {
+            "label": "Bước 4",
+            "text": "na_values=[\"missing\"] → ô thiếu thành NaN, mark là float."
+          },
+          {
+            "label": "Bước 5",
+            "text": "to_csv(path, index=False) → dòng đầu là id,mark."
+          }
+        ]
+      },
+      "counter": {
+        "question": "File \"id;mark;note\\n0010;missing;x\\n\". load_scores(...)[\"mark\"].isna().sum() = ?",
+        "options": [
+          "ValueError",
+          "0",
+          "1"
+        ],
+        "correct": "1"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef load_scores(path):\n    return pd.read_csv(\n        path,\n        {{slot1}},\n        usecols=[\"id\", \"mark\"],\n        {{slot2}},\n        {{slot3}},\n    )\n\n\ndef export_csv(df, path):\n    df.to_csv(path, {{slot4}})\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "sep=\";\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "dtype={\"id\": \"string\"}"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "na_values=[\"missing\"]"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "index=False"
+          }
+        ],
+        "bank": [
+          {
+            "label": "index=False",
+            "slot": 4
+          },
+          {
+            "label": "na_values=[0]",
+            "slot": 3,
+            "trap": "Ô thiếu được ghi là chữ \"missing\", không phải số 0."
+          },
+          {
+            "label": "dtype={\"id\": \"string\"}",
+            "slot": 2
+          },
+          {
+            "label": "sep=\";\"",
+            "slot": 1
+          },
+          {
+            "label": "sep=\",\"",
+            "slot": 1,
+            "trap": "File dùng dấu ; — đọc bằng dấu phẩy ra một cột duy nhất."
+          },
+          {
+            "label": "index=True",
+            "slot": 4,
+            "trap": "Ghi thêm cột index không tên."
+          },
+          {
+            "label": "dtype={\"id\": \"int\"}",
+            "slot": 2,
+            "trap": "Ép số làm mất số 0 đầu của mã."
+          },
+          {
+            "label": "na_values=[\"missing\"]",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "scores.csv dùng dấu ; và có ba cột id;mark;note. Viết load_scores(path): đọc bằng pd.read_csv với sep=\";\", chỉ lấy hai cột id, mark (usecols), giữ id là chuỗi (dtype \"string\" — không mất số 0 đầu) và coi chữ \"missing\" là ô thiếu (na_values). File thiếu cột id hoặc mark phải báo ValueError. Viết export_csv(df, path): ghi CSV dấu phẩy, KHÔNG có cột index.\n\nThực hành: Khai đủ bốn tham số của read_csv (sep, usecols, dtype, na_values); xuất bằng index=False.",
+        "io": [
+          {
+            "label": "scores.csv (cấp sẵn)",
+            "value": "id [\"001\", \"007\", \"010\"]; mark có 1 ô thiếu"
+          },
+          {
+            "label": "File thiếu cột mark",
+            "value": "ValueError (từ usecols)"
+          },
+          {
+            "label": "export_csv(df, \"out.csv\")",
+            "value": "Dòng đầu file là id,mark"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef load_scores(path):\n    # read_csv với sep, usecols, dtype, na_values khai rõ\n    pass\n\n\ndef export_csv(df, path):\n    # Ghi CSV dấu phẩy, không có cột index\n    pass\n\n\nif __name__ == \"__main__\":\n    print(load_scores(\"scores.csv\"))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef load_scores(path):\n    return pd.read_csv(\n        path,\n        sep=\";\",\n        usecols=[\"id\", \"mark\"],\n        dtype={\"id\": \"string\"},\n        na_values=[\"missing\"],\n    )\n\n\ndef export_csv(df, path):\n    df.to_csv(path, index=False)\n\n\nif __name__ == \"__main__\":\n    scores = load_scores(\"scores.csv\")\n    print(scores.dtypes.to_dict())\n    print(len(scores), \"dòng,\", int(scores[\"mark\"].isna().sum()), \"ô thiếu\")\n    export_csv(scores, \"scores_clean.csv\")\n    print(open(\"scores_clean.csv\", encoding=\"utf-8\").read())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Khai đủ bốn tham số của read_csv (sep, usecols, dtype, na_values); xuất bằng index=False."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. return pd.read_csv(path, sep=\";\", usecols=[\"id\", \"mark\"], dtype={\"id\": \"string\"}, na_values=[\"missing\"]).\n2. Kiểm df.dtypes: id là string, mark là float64 (vì có NaN).\n3. export_csv gọi df.to_csv(path, index=False)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def load_scores(path):\n    return pd.read_csv(path, sep=\";\", usecols=[\"id\", \"mark\"], ...)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "scores.csv: id giữ số 0 đầu",
+          "call": "load_scores(\"scores.csv\")[\"id\"].tolist()",
+          "expect": "['001', '007', '010']"
+        },
+        {
+          "name": "Chỉ còn hai cột id, mark",
+          "call": "load_scores(\"scores.csv\").columns.tolist()",
+          "expect": "['id', 'mark']"
+        },
+        {
+          "name": "Dữ liệu khác: id \"0042\", \"0107\", \"0200\"",
+          "call": "load_scores(_studio.write('t2.csv', 'id;mark;note\\n0042;missing;a\\n0107;6;b\\n0200;7.5;c\\n'))[\"id\"].tolist()",
+          "expect": "['0042', '0107', '0200']"
+        },
+        {
+          "name": "\"missing\" là thiếu, cột mark vẫn là số",
+          "call": "float(load_scores(_studio.write('t2.csv', 'id;mark;note\\n0042;missing;a\\n0107;6;b\\n0200;7.5;c\\n'))[\"mark\"].sum())",
+          "expect": "13.5"
+        },
+        {
+          "name": "Ô trống và \"missing\" đều là thiếu",
+          "call": "int(load_scores(_studio.write('t3.csv', 'id;mark;note\\n0042;missing;a\\n0107;;b\\n0200;7.5;c\\n'))[\"mark\"].isna().sum())",
+          "expect": "2"
+        },
+        {
+          "name": "File thiếu cột mark → ValueError",
+          "call": "_studio.call(load_scores, _studio.write('bad.csv', 'id;score\\n001;8\\n')).error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "export_csv không ghi cột index",
+          "call": "(export_csv(pd.DataFrame({\"id\": [\"007\"], \"mark\": [9]}), \"out.csv\"), _studio.read(\"out.csv\").splitlines())[1]",
+          "expect": "['id,mark', '007,9']"
+        },
+        {
+          "name": "Xuất rồi đọc lại (dtype string) vẫn giữ \"007\"",
+          "call": "(export_csv(load_scores(\"scores.csv\"), \"round.csv\"), pd.read_csv(\"round.csv\", dtype={\"id\": \"string\"})[\"id\"].tolist())[1]",
+          "expect": "['001', '007', '010']"
+        }
+      ],
+      "files": [
+        {
+          "name": "scores.csv",
+          "content": "id;mark;note\n001;8;\n007;9;retake\n010;missing;absent\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "load_scores(path)",
+          "does": "Đọc file điểm dấu ; theo schema cố định.",
+          "takes": "path: tên file CSV dấu ; có cột id, mark (có thể thêm cột khác)",
+          "gives": "DataFrame đúng hai cột: id (string), mark (float, NaN cho \"missing\")",
+          "effect": "Thiếu cột id/mark → ValueError.",
+          "call": "load_scores(\"scores.csv\")[\"id\"].tolist() → [\"001\", \"007\", \"010\"]"
+        },
+        {
+          "sig": "export_csv(df, path)",
+          "does": "Ghi DataFrame ra CSV dấu phẩy.",
+          "takes": "df: DataFrame; path: tên file",
+          "gives": "None",
+          "effect": "Tạo/ghi đè file; không ghi cột index.",
+          "call": "export_csv(df, \"out.csv\") → dòng đầu \"id,mark\""
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "sep=\";\"",
+              "right": "tách đúng ba cột id, mark, note"
+            },
+            {
+              "left": "usecols=[\"id\", \"mark\"]",
+              "right": "bỏ note; thiếu cột thì ValueError"
+            },
+            {
+              "left": "dtype={\"id\": \"string\"}",
+              "right": "\"007\" vẫn là \"007\""
+            },
+            {
+              "left": "na_values=[\"missing\"]",
+              "right": "ô thiếu thành NaN, mark là float"
+            }
+          ],
+          "rightOrder": [
+            0,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\n\ndef load_scores(path):\n    return pd.read_csv(\n        path,\n        sep=\";\",\n        usecols=[\"id\", \"mark\"],\n        dtype={\"id\": \"int\"},\n        na_values=[\"missing\"],\n    )\n\n\ndef export_csv(df, path):\n    df.to_csv(path, index=False)\n",
+          "firstLine": 2,
+          "line": 9,
+          "lines": [
+            9
+          ],
+          "label": "ép id thành số",
+          "fix": "        dtype={\"id\": \"string\"},"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import pandas as pd\n\n\ndef load_scores(path):\n    return pd.read_csv(\n        path,\n        sep=\";\",\n        usecols=[\"id\", \"mark\"],\n        dtype={\"id\": \"string\"},\n        na_values=[\"missing\"],\n    )\n\n\ndef export_csv(df, path):\n    df.to_csv(path)\n\n\nif __name__ == \"__main__\":\n    scores = load_scores(\"scores.csv\")\n    print(scores.dtypes.to_dict())\n    print(len(scores), \"dòng,\", int(scores[\"mark\"].isna().sum()), \"ô thiếu\")\n    export_csv(scores, \"scores_clean.csv\")\n    print(open(\"scores_clean.csv\", encoding=\"utf-8\").read())\n",
+          "label": "xuất kèm index"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao phải khai dtype cho cột id dù file \"trông\" đã đúng?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

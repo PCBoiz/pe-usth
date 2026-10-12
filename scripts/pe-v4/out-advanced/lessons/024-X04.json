@@ -1,0 +1,491 @@
+{
+  "lesson_code": "X04",
+  "sort_order": 24,
+  "module": "M4 · Nhập dữ liệu, SQL và tra cứu",
+  "title": "X04 · Matplotlib: dữ liệu và loại biểu đồ",
+  "subtitle": "Trung cấp · M4 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "X04 · Matplotlib: dữ liệu và loại biểu đồ",
+    "subtitle": "Trung cấp · M4 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#X04",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP TRUNG CẤP",
+          "X04"
+        ],
+        "title": "Matplotlib: dữ liệu và loại biểu đồ",
+        "goal": "Tạo Figure/Axes và chọn line hay histogram theo câu hỏi.",
+        "task": "Viết plot_weekly (line có marker) và plot_histogram (hist với biên cho sẵn); cả hai return fig.",
+        "predict": "Biên [4, 6, 8, 10] chia [4, 5, 5, 7, 8, 9] thành mấy cột, cao bao nhiêu?",
+        "code": "import matplotlib.pyplot as plt\n\ndef plot_weekly(weeks, scores):\n    fig, ax = plt.subplots()\n    # ax.plot(...); ax.set(...)\n    return fig",
+        "tests": [
+          "plot_weekly([1, 2, 3], [7, 8, 6]) → 1 Axes, nhãn Week / Score",
+          "plot_histogram([0, 10, 10], [0, 5, 10]) → cột cao 1 và 2"
+        ],
+        "reflect": "Vì sao vẽ danh sách điểm thi bằng line không cho thấy phân bố?"
+      },
+      "context": {
+        "title": "Tạo Figure/Axes bằng plt.subplots() và chọn đúng loại biểu đồ: line cho diễn tiến, histogram cho phân bố.",
+        "body": "Viết hai hàm, mỗi hàm tạo fig, ax = plt.subplots(), vẽ lên ax rồi RETURN fig (không gọi plt.show() trong hàm). (1) plot_weekly(weeks, scores): line plot có marker \"o\", nhãn trục x \"Week\", trục y \"Score\". (2) plot_histogram(scores, edges): histogram dùng đúng các biên bin edges (bins=edges), nhãn trục x \"Score\", trục y \"Count\".",
+        "example": "plot_weekly([1, 2, 3], [7, 8, 6]) → một Axes, một đường đi qua 7, 8, 6. plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10]) → 3 cột cao 3, 1, 2.",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "ax.hist([4, 5, 5, 7, 8, 9], bins=[4, 6, 8, 10]) tạo mấy cột, cao bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "4 cột: 3, 1, 1, 1",
+            "detail": "Bốn biên tạo ba bin, không phải bốn.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "6 cột, mỗi cột cao 1",
+            "detail": "hist không vẽ một cột cho mỗi giá trị; nó đếm theo bin.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "3 cột: 3, 1, 2",
+            "detail": "[4, 6) có 4, 5, 5; [6, 8) có 7; [8, 10] có 8 và 9 — bin cuối gồm cả biên phải.",
+            "correct": true
+          },
+          {
+            "id": "d",
+            "title": "3 cột: 3, 1, 1",
+            "detail": "8 và 9 cùng rơi vào bin cuối [8, 10].",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Histogram và line plot cùng một mục đích — đều là vẽ các con số\"",
+        "body": "Line nối điểm theo một trục có thứ tự (tuần 1 → 2 → 3); histogram đếm bao nhiêu quan sát rơi vào mỗi khoảng giá trị. Vẽ danh sách điểm thi bằng ax.plot(scores) cho ra một đường zig-zag theo THỨ TỰ NHẬP, không nói gì về việc điểm tập trung ở đâu."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Một biểu đồ đi qua các bước: chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → tùy chỉnh (nhãn, tiêu đề) → lưu → hiển thị. plt.subplots() trả về CẶP (fig, ax): Figure là cả tấm hình, Axes là một vùng toạ độ bên trong để vẽ."
+        },
+        {
+          "n": 2,
+          "body": "Vẽ bằng method của ax (ax.plot, ax.hist, ax.set…) để biết chắc nét vẽ rơi vào Axes nào. Figure là một object Python: fig.axes, ax.lines, ax.patches cho đọc lại những gì đã vẽ — bộ chấm của bài dùng chính các thuộc tính này, không so ảnh."
+        },
+        {
+          "n": 3,
+          "body": "Chọn biểu đồ theo câu hỏi: line nối các điểm theo một trục có thứ tự (tuần, ngày); bar/barh so các category; scatter cho quan hệ giữa hai biến; histogram ĐẾM số quan sát rơi vào từng khoảng (bin) — đó là phân bố, không phải diễn tiến."
+        },
+        {
+          "n": 4,
+          "body": "ax.hist(data, bins=[4, 6, 8, 10]) tạo 3 bin [4, 6), [6, 8), [8, 10] — bin cuối gồm cả biên phải. Không truyền bins thì Matplotlib tự chia 10 bin đều, số cột và chiều cao đổi theo, kết luận về phân bố cũng đổi."
+        },
+        {
+          "n": 5,
+          "body": "Trên máy: script gọi plt.show() ở cuối để mở cửa sổ; notebook tự hiện figure cuối cell. Hàm vẽ nên RETURN fig để nơi gọi tự quyết định hiển thị, lưu file hay kiểm tra. NumPy (linspace, sin…) hay đi kèm để tạo dữ liệu vẽ thử."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\n\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [20, 30, 25], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Visitors\")\n\nprint(type(fig).__name__, len(fig.axes))\nprint(ax.get_xlabel(), \"/\", ax.get_ylabel())\nprint(ax.lines[0].get_ydata().tolist())\n\nfig2, ax2 = plt.subplots()\ncounts, edges, bars = ax2.hist([1, 2, 2, 4, 5], bins=[0, 3, 6])\nprint(counts.tolist(), len(ax2.patches))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "fig, ax = plt.subplots() — fig và ax khác nhau thế nào?",
+          "options": [
+            {
+              "text": "ax là file ảnh, fig là dữ liệu",
+              "detail": "Chưa có file nào cho tới khi gọi savefig.",
+              "correct": false
+            },
+            {
+              "text": "fig là cả tấm hình (Figure), ax là một vùng toạ độ (Axes) bên trong để vẽ",
+              "detail": "Một Figure có thể chứa nhiều Axes: fig.axes là list.",
+              "correct": true
+            },
+            {
+              "text": "Giống nhau, chỉ là hai tên gọi",
+              "detail": "Figure chứa Axes; dữ liệu được vẽ lên Axes.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Một Figure có thể chứa nhiều Axes: fig.axes là list."
+        },
+        {
+          "question": "Muốn xem điểm thi của lớp tập trung ở khoảng nào, chọn biểu đồ nào?",
+          "options": [
+            {
+              "text": "Line plot",
+              "detail": "Line nối các điểm theo thứ tự; thứ tự nhập danh sách điểm không có ý nghĩa.",
+              "correct": false
+            },
+            {
+              "text": "Scatter",
+              "detail": "Scatter cần HAI biến (ví dụ giờ học và điểm).",
+              "correct": false
+            },
+            {
+              "text": "Histogram",
+              "detail": "Histogram đếm số quan sát theo khoảng — đó là phân bố.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Histogram đếm số quan sát theo khoảng — đó là phân bố."
+        },
+        {
+          "question": "Gọi ax.hist(scores) mà không truyền bins thì…",
+          "options": [
+            {
+              "text": "Báo lỗi thiếu bins",
+              "detail": "bins có giá trị mặc định nên không lỗi.",
+              "correct": false
+            },
+            {
+              "text": "Matplotlib tự chia 10 bin đều — số cột và chiều cao phụ thuộc lựa chọn đó",
+              "detail": "Muốn so được giữa các lần vẽ thì chốt biên bin.",
+              "correct": true
+            },
+            {
+              "text": "Mỗi giá trị khác nhau thành một cột",
+              "detail": "Không — mặc định là 10 bin.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Muốn so được giữa các lần vẽ thì chốt biên bin."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao hàm vẽ nên return fig thay vì gọi plt.show() bên trong?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Hàm trả fig thì nơi gọi tự quyết định: hiển thị (plt.show()), lưu file (fig.savefig) hay kiểm tra (fig.axes[0].get_xlabel()). plt.show() bên trong hàm khoá việc dùng lại: trên máy nó chặn chương trình tới khi đóng cửa sổ, và sau khi cửa sổ đóng thì figure đã bị huỷ, không lưu được nữa."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "plot_weekly đã viết sẵn. Lắp ba chỗ của plot_histogram: tạo Figure/Axes, vẽ histogram với biên cho sẵn, ghi nhãn.",
+        "rule": "Đổi dữ liệu: 4 tuần với điểm [5, 9, 4, 6]; điểm [0, 10, 10] với biên [0, 5, 10]. Tự đoán số cột và chiều cao trước khi chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "fig, ax = plt.subplots() → một Figure chứa một Axes"
+          },
+          {
+            "label": "Bước 2",
+            "text": "ax.plot(weeks, scores, marker=\"o\") → đường nối điểm theo tuần"
+          },
+          {
+            "label": "Bước 3",
+            "text": "ax.hist(scores, bins=edges) → đếm số điểm trong từng bin"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ax.set(xlabel=..., ylabel=...) → trục có tên"
+          },
+          {
+            "label": "Bước 5",
+            "text": "return fig → nơi gọi tự show, lưu hoặc kiểm tra"
+          }
+        ]
+      },
+      "counter": {
+        "question": "plot_histogram([0, 10, 10], [0, 5, 10]) cho các cột cao bao nhiêu?",
+        "options": [
+          "1 và 0",
+          "3",
+          "1 và 2"
+        ],
+        "correct": "1 và 2"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\n\n\ndef plot_weekly(weeks, scores):\n    fig, ax = plt.subplots()\n    ax.plot(weeks, scores, marker=\"o\")\n    ax.set(xlabel=\"Week\", ylabel=\"Score\")\n    return fig\n\n\ndef plot_histogram(scores, edges):\n    {{slot1}}\n    {{slot2}}\n    {{slot3}}\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "fig, ax = plt.subplots()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "ax.hist(scores, bins=edges)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "plt.show()",
+            "slot": 3,
+            "trap": "Không ghi nhãn; và hàm vẽ không nên tự show."
+          },
+          {
+            "label": "fig, ax = plt.subplots()",
+            "slot": 1
+          },
+          {
+            "label": "ax.hist(scores, bins=edges)",
+            "slot": 2
+          },
+          {
+            "label": "fig = plt.subplots()",
+            "slot": 1,
+            "trap": "subplots() trả về CẶP (fig, ax); fig sẽ thành tuple."
+          },
+          {
+            "label": "ax.plot(scores)",
+            "slot": 2,
+            "trap": "Nối các điểm theo thứ tự nhập — không đếm theo bin."
+          },
+          {
+            "label": "ax.set(xlabel=\"Score\", ylabel=\"Count\")",
+            "slot": 3
+          },
+          {
+            "label": "ax.hist(scores)",
+            "slot": 2,
+            "trap": "Không truyền bins → 10 bin tự động, không phải biên đề cho."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm, mỗi hàm tạo fig, ax = plt.subplots(), vẽ lên ax rồi RETURN fig (không gọi plt.show() trong hàm). (1) plot_weekly(weeks, scores): line plot có marker \"o\", nhãn trục x \"Week\", trục y \"Score\". (2) plot_histogram(scores, edges): histogram dùng đúng các biên bin edges (bins=edges), nhãn trục x \"Score\", trục y \"Count\".\n\nThực hành: Mỗi hàm: fig, ax = plt.subplots() → vẽ bằng ax → ax.set(...) → return fig. Histogram phải nhận bins=edges.",
+        "io": [
+          {
+            "label": "plot_weekly([1, 2, 3], [7, 8, 6])",
+            "value": "Figure 1 Axes; đường qua 7, 8, 6; nhãn Week / Score"
+          },
+          {
+            "label": "plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10])",
+            "value": "3 cột cao 3, 1, 2; nhãn Score / Count"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\n\n\ndef plot_weekly(weeks, scores):\n    # Tạo fig, ax; vẽ line có marker \"o\"; nhãn Week / Score; return fig\n    pass\n\n\ndef plot_histogram(scores, edges):\n    # Tạo fig, ax; histogram với bins=edges; nhãn Score / Count; return fig\n    pass\n\n\nif __name__ == \"__main__\":\n    plot_weekly([1, 2, 3], [7, 8, 6])\n    plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10])\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\n\n\ndef plot_weekly(weeks, scores):\n    fig, ax = plt.subplots()\n    ax.plot(weeks, scores, marker=\"o\")\n    ax.set(xlabel=\"Week\", ylabel=\"Score\")\n    return fig\n\n\ndef plot_histogram(scores, edges):\n    fig, ax = plt.subplots()\n    ax.hist(scores, bins=edges)\n    ax.set(xlabel=\"Score\", ylabel=\"Count\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_weekly([1, 2, 3], [7, 8, 6])\n    plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10])\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Mỗi hàm: fig, ax = plt.subplots() → vẽ bằng ax → ax.set(...) → return fig. Histogram phải nhận bins=edges."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. plot_weekly: fig, ax = plt.subplots(); ax.plot(weeks, scores, marker=\"o\"); ax.set(xlabel=\"Week\", ylabel=\"Score\"); return fig.\n2. plot_histogram: ax.hist(scores, bins=edges) — biên bin do đề cho, không để Matplotlib tự chọn; nhãn Score / Count.\n3. Không gọi plt.show() trong hàm; muốn xem trên máy thì gọi ở khối if __name__ == \"__main__\"."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def plot_weekly(weeks, scores):\n    fig, ax = plt.subplots()\n    ax.plot(weeks, scores, marker=\"o\")\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "plot_weekly trả về Figure có đúng 1 Axes",
+          "call": "(lambda f: (type(f).__name__, len(f.axes)))(plot_weekly([1, 2, 3, 4], [5, 9, 4, 6]))",
+          "expect": "('Figure', 1)"
+        },
+        {
+          "name": "Line đi qua đúng dữ liệu mới",
+          "call": "[float(v) for v in plot_weekly([1, 2, 3, 4], [5, 9, 4, 6]).axes[0].lines[0].get_ydata()]",
+          "expect": "[5.0, 9.0, 4.0, 6.0]"
+        },
+        {
+          "name": "Line có marker \"o\"",
+          "call": "plot_weekly([1, 2, 3, 4], [5, 9, 4, 6]).axes[0].lines[0].get_marker()",
+          "expect": "'o'"
+        },
+        {
+          "name": "Nhãn trục Week / Score",
+          "call": "(lambda ax: (ax.get_xlabel(), ax.get_ylabel()))(plot_weekly([1, 2, 3, 4], [5, 9, 4, 6]).axes[0])",
+          "expect": "('Week', 'Score')"
+        },
+        {
+          "name": "Histogram: số cột = số bin",
+          "call": "len(plot_histogram([0, 10, 10, 3, 7], [0, 5, 10]).axes[0].patches)",
+          "expect": "2"
+        },
+        {
+          "name": "Histogram đếm đúng; 10 thuộc bin cuối",
+          "call": "[float(v) for v in (p.get_height() for p in plot_histogram([0, 10, 10, 3, 7], [0, 5, 10]).axes[0].patches)]",
+          "expect": "[2.0, 3.0]"
+        },
+        {
+          "name": "Histogram giữ cả bin rỗng",
+          "call": "[float(v) for v in (p.get_height() for p in plot_histogram([1, 1, 2, 9], [0, 2, 4, 6, 8, 10]).axes[0].patches)]",
+          "expect": "[2.0, 1.0, 0.0, 0.0, 1.0]"
+        },
+        {
+          "name": "Histogram có nhãn Score / Count",
+          "call": "(lambda ax: (ax.get_xlabel(), ax.get_ylabel()))(plot_histogram([0, 10, 10, 3, 7], [0, 5, 10]).axes[0])",
+          "expect": "('Score', 'Count')"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_weekly(weeks, scores)",
+          "does": "Vẽ diễn tiến điểm theo tuần.",
+          "takes": "weeks, scores: hai list số cùng độ dài",
+          "gives": "Figure có đúng 1 Axes",
+          "effect": "Line có marker \"o\"; nhãn Week / Score; không gọi plt.show().",
+          "call": "plot_weekly([1, 2, 3], [7, 8, 6]).axes[0].get_xlabel() → \"Week\""
+        },
+        {
+          "sig": "plot_histogram(scores, edges)",
+          "does": "Vẽ phân bố điểm theo các bin cho sẵn.",
+          "takes": "scores: list số; edges: list biên bin tăng dần",
+          "gives": "Figure có 1 Axes, len(edges) - 1 cột",
+          "effect": "Cột thứ i cao bằng số điểm trong bin i; bin cuối gồm cả biên phải.",
+          "call": "plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10]) → cột cao 3, 1, 2"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy"
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "fig, ax = plt.subplots()",
+              "right": "một Figure chứa một Axes"
+            },
+            {
+              "left": "ax.plot(weeks, scores, marker=\"o\")",
+              "right": "đường nối điểm theo tuần"
+            },
+            {
+              "left": "ax.hist(scores, bins=edges)",
+              "right": "đếm số điểm trong từng bin"
+            },
+            {
+              "left": "ax.set(xlabel=..., ylabel=...)",
+              "right": "trục có tên"
+            }
+          ],
+          "rightOrder": [
+            1,
+            3,
+            2,
+            0
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "import matplotlib.pyplot as plt\n\n\ndef plot_weekly(weeks, scores):\n    fig, ax = plt.subplots()\n    ax.plot(weeks, scores, marker=\"o\")",
+          "tail": "    plot_weekly([1, 2, 3], [7, 8, 6])\n    plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10])\n    plt.show()",
+          "lines": [
+            {
+              "id": "L6",
+              "text": "    ax.set(xlabel=\"Week\", ylabel=\"Score\")"
+            },
+            {
+              "id": "L7",
+              "text": "    return fig"
+            },
+            {
+              "id": "L10",
+              "text": "def plot_histogram(scores, edges):"
+            },
+            {
+              "id": "L11",
+              "text": "    fig, ax = plt.subplots()"
+            },
+            {
+              "id": "L12",
+              "text": "    ax.hist(scores, bins=edges)"
+            },
+            {
+              "id": "L13",
+              "text": "    ax.set(xlabel=\"Score\", ylabel=\"Count\")"
+            },
+            {
+              "id": "L14",
+              "text": "    return fig"
+            },
+            {
+              "id": "L17",
+              "text": "if __name__ == \"__main__\":"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    ax.plot(scores)",
+              "reason": "Line cho phân bố"
+            },
+            {
+              "id": "D1",
+              "text": "    ax.hist(scores)",
+              "reason": "Để Matplotlib tự chọn bin"
+            }
+          ],
+          "order": [
+            "L13",
+            "L10",
+            "D1",
+            "L14",
+            "L6",
+            "L17",
+            "L12",
+            "L7",
+            "L11",
+            "D0"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    ax.plot(weeks, scores, marker=\"o\")\n    ax.set(xlabel=\"Week\", ylabel=\"Score\")\n    return fig\n\n\ndef plot_histogram(scores, edges):\n    fig, ax = plt.subplots()\n    ax.plot(scores)\n    ax.set(xlabel=\"Score\", ylabel=\"Count\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_weekly([1, 2, 3], [7, 8, 6])\n    plot_histogram([4, 5, 5, 7, 8, 9], [4, 6, 8, 10])",
+          "firstLine": 6,
+          "line": 13,
+          "lines": [
+            13
+          ],
+          "label": "Line cho phân bố",
+          "fix": "    ax.hist(scores, bins=edges)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

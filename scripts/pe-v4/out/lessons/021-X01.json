@@ -1,0 +1,367 @@
+{
+  "lesson_code": "X01",
+  "sort_order": 21,
+  "module": "M4 · Nhập dữ liệu, SQL và tra cứu",
+  "title": "X01 · Nhập dữ liệu bằng NumPy và pandas",
+  "subtitle": "Trung cấp · M4 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "X01 · Nhập dữ liệu bằng NumPy và pandas",
+    "subtitle": "Trung cấp · M4 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#X01",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP TRUNG CẤP",
+          "X01"
+        ],
+        "title": "Nhập dữ liệu bằng NumPy và pandas",
+        "goal": "Đọc CSV đúng sep, comment, na_values rồi kiểm schema.",
+        "task": "load_marks(path) đọc marks.csv; schema(df) trả rows, columns, missing, mean_mark.",
+        "predict": "Quên sep=\";\" thì DataFrame có mấy cột?",
+        "code": "import pandas as pd\n\ndef load_marks(path):\n    pass  # pd.read_csv(path, sep=..., comment=..., na_values=...)\n\ndef schema(df):\n    pass",
+        "tests": [
+          "marks.csv → 4 dòng, 3 cột, 1 ô thiếu",
+          "mean_mark → 8.17 (bỏ qua ô thiếu)"
+        ],
+        "reflect": "Vì sao read_csv không báo lỗi khi đọc sai delimiter?"
+      },
+      "context": {
+        "title": "Đọc một bảng CSV \"khó tính\" đúng delimiter, dòng chú thích và ký hiệu thiếu, rồi kiểm schema trước khi tính.",
+        "body": "File marks.csv (đã cấp) dùng dấu chấm phẩy \";\" để ngăn cột, dòng đầu là chú thích bắt đầu bằng \"#\", và điểm chưa có ghi là \"-\". Viết load_marks(path) đọc file bằng pd.read_csv với sep, comment và na_values phù hợp. Viết schema(df) trả dict gồm rows (số dòng), columns (list tên cột), missing (số ô thiếu ở cột mark) và mean_mark (trung bình cột mark, bỏ qua ô thiếu, làm tròn 2 chữ số).",
+        "example": "marks.csv → rows 4, columns [\"name\", \"class\", \"mark\"], missing 1, mean_mark 8.17.",
+        "level": "Trung cấp",
+        "files": [
+          "marks.csv"
+        ]
+      },
+      "predict": {
+        "question": "File ngăn cột bằng \";\". Gọi pd.read_csv(path) mà không truyền sep thì DataFrame có mấy cột?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Ba cột name, class, mark",
+            "detail": "read_csv không tự đổi sang \";\" khi sep mặc định là \",\".",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Báo lỗi ngay",
+            "detail": "Không có lỗi nào — sai lặng lẽ mới là điều nguy hiểm.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Một cột duy nhất, tên là cả chuỗi \"name;class;mark\"",
+            "detail": "Mặc định sep=\",\", file không có dấu phẩy nên mỗi dòng là một ô.",
+            "correct": true
+          }
+        ],
+        "code": "name;class;mark\nMai;A;8.5\nBinh;A;7"
+      },
+      "misconception": {
+        "title": "\"read_csv chạy không báo lỗi là đã đọc đúng\"",
+        "body": "Sai delimiter cho ra MỘT cột; quên na_values để \"-\" biến cả cột điểm thành chữ (dtype object); quên comment thì dòng chú thích chiếm chỗ tiêu đề. Không lỗi nào báo đỏ ngay lúc đọc — chỉ lộ ra khi xem df.columns, df.dtypes và số dòng."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "np.loadtxt đọc bảng SỐ sạch thành ndarray: delimiter=\",\" tách cột, skiprows=1 bỏ dòng tiêu đề, usecols chọn cột cần. Gặp chữ hoặc ô trống là ValueError — khi đó dùng np.genfromtxt (học kỹ ở N06)."
+        },
+        {
+          "n": 2,
+          "body": "Mỗi array có shape (kích thước từng chiều) và dtype (kiểu chung của mọi phần tử). len(a) chỉ cho độ dài chiều đầu — số hàng, không phải số phần tử."
+        },
+        {
+          "n": 3,
+          "body": "pd.read_csv đọc bảng có tiêu đề thành DataFrame. Tham số hay dùng: sep (ký tự ngăn cột), header (dòng nào là tiêu đề), comment (bỏ phần sau ký tự chú thích), na_values (chuỗi nào coi là thiếu — \"NA\", ô trống đã có sẵn), nrows (chỉ đọc vài dòng đầu để xem thử)."
+        },
+        {
+          "n": 4,
+          "body": "Khám phá trước khi tính: df.shape, df.columns, df.dtypes, df.head()/tail(), df.info(). Cột điểm mà dtype là object nghĩa là còn chữ lẫn trong số — mean sẽ báo lỗi hoặc cho số vô nghĩa."
+        },
+        {
+          "n": 5,
+          "body": "df.values (hay df.to_numpy()) chuyển bảng sang ndarray khi cần tính bằng NumPy; np.info(...) và help(...) tra nhanh tài liệu ngay trong Python."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\nimport pandas as pd\nfrom io import StringIO\n\ntext = \"x,y\\n1,2\\n3,4\\n5,6\"\na = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(a.shape, len(a), a.sum())\n\nweather = StringIO(\"city|temp\\nHue|31\\nVinh|NA\\nHanoi|29\")\ndf = pd.read_csv(weather, sep=\"|\")\nprint(df.shape, df.columns.tolist())\nprint(df.dtypes)\nprint(df[\"temp\"].isna().sum(), df[\"temp\"].mean())\nprint(df.head(2))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Cột mark đọc ra có dtype object thay vì float64. Nguyên nhân khả dĩ nhất?",
+          "options": [
+            {
+              "text": "Còn ký hiệu thiếu như \"-\" chưa khai trong na_values nên cả cột bị đọc thành chữ",
+              "detail": "Chỉ một ô không phải số là đủ để cả cột thành object.",
+              "correct": true
+            },
+            {
+              "text": "Do file có chữ tiếng Việt có dấu",
+              "detail": "Mã hoá ảnh hưởng cột chữ, không biến cột số thành object.",
+              "correct": false
+            },
+            {
+              "text": "pandas luôn đọc số thực thành object",
+              "detail": "Cột toàn số được đọc thành float64 hoặc int64.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Chỉ một ô không phải số là đủ để cả cột thành object."
+        },
+        {
+          "question": "a = np.loadtxt(...) có shape (5, 3). len(a) bằng bao nhiêu?",
+          "options": [
+            {
+              "text": "3",
+              "detail": "Đó là số cột a.shape[1].",
+              "correct": false
+            },
+            {
+              "text": "5 — len là độ dài chiều thứ nhất (số hàng)",
+              "detail": "Tổng số phần tử là a.size = 15.",
+              "correct": true
+            },
+            {
+              "text": "15",
+              "detail": "Đó là a.size.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Tổng số phần tử là a.size = 15."
+        },
+        {
+          "question": "Muốn xem thử 3 dòng đầu của một file CSV rất lớn mà KHÔNG đọc hết file, dùng gì?",
+          "options": [
+            {
+              "text": "pd.read_csv(path, nrows=3)",
+              "detail": "nrows dừng đọc sau 3 dòng dữ liệu.",
+              "correct": true
+            },
+            {
+              "text": "pd.read_csv(path, header=3)",
+              "detail": "header chọn dòng làm tiêu đề, không giới hạn số dòng đọc.",
+              "correct": false
+            },
+            {
+              "text": "pd.read_csv(path).head(3)",
+              "detail": "Vẫn đọc toàn bộ file rồi mới cắt.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "nrows dừng đọc sau 3 dòng dữ liệu."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao phải xem columns, dtypes và số dòng NGAY sau khi đọc file?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Vì read_csv thường không báo lỗi khi đọc sai: sai sep thì chỉ có một cột, thiếu na_values thì cột số thành object, thiếu comment thì dòng chú thích chiếm chỗ tiêu đề. Kiểm schema ngay giúp phát hiện sớm, trước khi mean hay biểu đồ cho ra kết quả sai mà trông vẫn hợp lý."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp các tham số đọc file và cách đếm số dòng.",
+        "rule": "Đọc một file khác cùng quy ước (hai dòng chú thích, ô thiếu ở dòng cuối) mà không sửa code: load_marks phải dùng tham số path, không viết cứng \"marks.csv\"."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "read_csv(sep=\";\") → tách đúng 3 cột name, class, mark"
+          },
+          {
+            "label": "Bước 2",
+            "text": "comment=\"#\" → dòng chú thích đầu file bị bỏ qua"
+          },
+          {
+            "label": "Bước 3",
+            "text": "na_values=[\"-\"] → \"-\" thành NaN, cột mark là float64"
+          },
+          {
+            "label": "Bước 4",
+            "text": "schema(df) → rows 4, missing 1, mean_mark 8.17"
+          }
+        ]
+      },
+      "counter": {
+        "question": "File \"name;class;mark\\nHoa;C;6\\nLan;C;-\" → schema trả mean_mark bao nhiêu?",
+        "options": [
+          "Lỗi TypeError",
+          "3.0",
+          "6.0"
+        ],
+        "correct": "6.0"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef load_marks(path):\n    return pd.read_csv(path, sep={{slot1}}, comment={{slot2}}, na_values={{slot3}})\n\n\ndef schema(df):\n    return {\n        \"rows\": {{slot4}},\n        \"columns\": df.columns.tolist(),\n        \"missing\": int(df[\"mark\"].isna().sum()),\n        \"mean_mark\": round(float(df[\"mark\"].mean()), 2),\n    }\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\";\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "\"#\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "[\"-\"]"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "len(df)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\";\"",
+            "slot": 1
+          },
+          {
+            "label": "\"#\"",
+            "slot": 2
+          },
+          {
+            "label": "\",\"",
+            "slot": 1,
+            "trap": "Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng \";\"."
+          },
+          {
+            "label": "[\"NA\"]",
+            "slot": 3,
+            "trap": "\"NA\" pandas đã tự coi là thiếu; file này ghi thiếu bằng \"-\"."
+          },
+          {
+            "label": "[\"-\"]",
+            "slot": 3
+          },
+          {
+            "label": "len(df)",
+            "slot": 4
+          },
+          {
+            "label": "df.size",
+            "slot": 4,
+            "trap": "size là tổng số ô = số dòng × số cột, không phải số dòng."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "File marks.csv (đã cấp) dùng dấu chấm phẩy \";\" để ngăn cột, dòng đầu là chú thích bắt đầu bằng \"#\", và điểm chưa có ghi là \"-\". Viết load_marks(path) đọc file bằng pd.read_csv với sep, comment và na_values phù hợp. Viết schema(df) trả dict gồm rows (số dòng), columns (list tên cột), missing (số ô thiếu ở cột mark) và mean_mark (trung bình cột mark, bỏ qua ô thiếu, làm tròn 2 chữ số).\n\nThực hành: Truyền đủ sep, comment, na_values cho read_csv; schema lấy số dòng bằng len(df), số ô thiếu bằng isna().sum(), mean tự bỏ qua NaN.",
+        "io": [
+          {
+            "label": "marks.csv",
+            "value": "rows 4 · columns [name, class, mark] · missing 1 · mean_mark 8.17"
+          },
+          {
+            "label": "File không có ô thiếu",
+            "value": "missing 0; mean_mark là trung bình mọi dòng"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef load_marks(path):\n    pass\n\n\ndef schema(df):\n    pass\n\n\n# Gọi thử: df = load_marks(\"marks.csv\"), rồi xem df.head(), df.dtypes và schema(df).\n",
+      "solutionCode": "import pandas as pd\n\n\ndef load_marks(path):\n    return pd.read_csv(path, sep=\";\", comment=\"#\", na_values=[\"-\"])\n\n\ndef schema(df):\n    return {\n        \"rows\": len(df),\n        \"columns\": df.columns.tolist(),\n        \"missing\": int(df[\"mark\"].isna().sum()),\n        \"mean_mark\": round(float(df[\"mark\"].mean()), 2),\n    }\n\n\ndf = load_marks(\"marks.csv\")\nprint(df.head())\nprint(df.dtypes)\nprint(schema(df))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Truyền đủ sep, comment, na_values cho read_csv; schema lấy số dòng bằng len(df), số ô thiếu bằng isna().sum(), mean tự bỏ qua NaN."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. load_marks: return pd.read_csv(path, sep=\";\", comment=\"#\", na_values=[\"-\"]).\n2. schema: rows = len(df); columns = df.columns.tolist(); missing = int(df[\"mark\"].isna().sum()).\n3. mean_mark = round(float(df[\"mark\"].mean()), 2) — mean bỏ qua NaN, không cần điền 0."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def load_marks(path):\n    return pd.read_csv(path, sep=\";\", ...)"
+        }
+      ],
+      "tests": [
+        {
+          "name": "marks.csv: đúng 3 cột",
+          "call": "load_marks('marks.csv').columns.tolist()",
+          "expect": "['name', 'class', 'mark']"
+        },
+        {
+          "name": "marks.csv: 4 dòng, bỏ dòng chú thích",
+          "call": "len(load_marks('marks.csv'))",
+          "expect": "4"
+        },
+        {
+          "name": "\"-\" thành ô thiếu, cột mark là số thực",
+          "call": "(int(load_marks('marks.csv')['mark'].isna().sum()), str(load_marks('marks.csv')['mark'].dtype))",
+          "expect": "(1, 'float64')"
+        },
+        {
+          "name": "schema của marks.csv",
+          "call": "schema(load_marks('marks.csv'))",
+          "expect": "{'rows': 4, 'columns': ['name', 'class', 'mark'], 'missing': 1, 'mean_mark': 8.17}"
+        },
+        {
+          "name": "File khác: hai dòng chú thích, ô thiếu ở cuối",
+          "call": "schema(load_marks(_studio.write('t1.csv', '# a\\n# b\\nname;class;mark\\nHoa;C;6\\nLan;C;-\\n')))",
+          "expect": "{'rows': 2, 'columns': ['name', 'class', 'mark'], 'missing': 1, 'mean_mark': 6.0}"
+        },
+        {
+          "name": "File không có ô thiếu",
+          "call": "schema(load_marks(_studio.write('t2.csv', 'name;class;mark\\nKa;A;10\\nLy;A;7.5\\n')))",
+          "expect": "{'rows': 2, 'columns': ['name', 'class', 'mark'], 'missing': 0, 'mean_mark': 8.75}"
+        }
+      ],
+      "files": [
+        {
+          "name": "marks.csv",
+          "content": "# Bảng điểm lớp DA, xuất từ hệ thống cũ\nname;class;mark\nMai;A;8.5\nAn;B;-\nBinh;A;7\nChi;B;9\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "load_marks(path)",
+          "does": "Đọc file điểm dùng dấu \";\" ngăn cột, có dòng chú thích \"#\", ghi thiếu là \"-\".",
+          "takes": "path: str — đường dẫn file CSV",
+          "gives": "DataFrame cột name, class, mark (mark là float64, ô \"-\" là NaN)",
+          "effect": "Không in gì.",
+          "call": "load_marks(\"marks.csv\") → DataFrame 4 dòng × 3 cột"
+        },
+        {
+          "sig": "schema(df)",
+          "does": "Tóm tắt bảng vừa đọc để kiểm trước khi tính.",
+          "takes": "df: DataFrame có cột mark",
+          "gives": "dict rows, columns, missing, mean_mark (làm tròn 2 chữ số)",
+          "effect": "Không sửa df.",
+          "call": "schema(load_marks(\"marks.csv\")) → {\"rows\": 4, …, \"mean_mark\": 8.17}"
+        }
+      ],
+      "env": "Bài này chạy numpy và pandas THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy pandas.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

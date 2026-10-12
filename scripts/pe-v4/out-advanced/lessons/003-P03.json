@@ -1,0 +1,524 @@
+{
+  "lesson_code": "P03",
+  "sort_order": 3,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P03 · Scheduling và context switch",
+  "subtitle": "Trung cấp · M1 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "P03 · Scheduling và context switch",
+    "subtitle": "Trung cấp · M1 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#P03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P03"
+        ],
+        "title": "Scheduling và context switch",
+        "goal": "Mô phỏng Round Robin và tính thời gian chờ.",
+        "task": "Viết round_robin(jobs, quantum, switch=0) và waiting_times(jobs, timeline).",
+        "predict": "Quantum 2, burst 5/3/1: process nào xong đầu tiên?",
+        "code": "def round_robin(jobs, quantum, switch=0):\n    # popleft → chạy min(quantum, còn lại) → chưa xong thì về cuối\n    # đổi sang process khác → clock += switch\ndef waiting_times(jobs, timeline): ...",
+        "tests": [
+          "P1 5, P2 3, P3 1, quantum 2 → P1 0–2, P2 2–4, P3 4–5, …",
+          "switch = 1 → P1 0–2, P2 3–5, P1 6–7"
+        ],
+        "reflect": "Vì sao quantum quá nhỏ làm mọi job xong muộn hơn?"
+      },
+      "context": {
+        "title": "Mô phỏng Round Robin có time slice, tính thời gian chờ và chi phí context switch.",
+        "body": "Viết round_robin(jobs, quantum, switch=0): jobs là list (tên, burst) — burst nguyên dương, mọi job đến lúc 0, hàng ready theo đúng thứ tự list. Mỗi lượt lấy process đầu hàng, cho chạy min(quantum, phần còn lại) đơn vị và ghi (tên, bắt đầu, kết thúc) vào timeline; chưa xong thì về CUỐI hàng. Mỗi khi CPU chuyển sang một process KHÁC process vừa chạy, đồng hồ cộng thêm switch đơn vị (context switch, không ai làm việc). quantum <= 0 → ValueError; không sửa list jobs. Rồi viết waiting_times(jobs, timeline): dict tên → lúc hoàn thành − burst.",
+        "example": "jobs = [(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], quantum = 2 → P1 0–2, P2 2–4, P3 4–5, P1 5–7, P2 7–8, P1 8–9; thời gian chờ {\"P1\": 4, \"P2\": 5, \"P3\": 4}.",
+        "prereq": "P02",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "jobs = [(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], quantum = 2. Process nào XONG ĐẦU TIÊN?",
+        "options": [
+          {
+            "id": "a",
+            "title": "P1 — nó đứng đầu hàng",
+            "detail": "Đứng đầu chỉ được chạy trước 2 đơn vị rồi bị ngắt.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "P2",
+            "detail": "P2 cần 3 > quantum nên lượt đầu chưa xong.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "P3, lúc 5 — nó chỉ cần 1 đơn vị, tới lượt ở lần thứ ba",
+            "detail": "P1 0–2, P2 2–4, P3 4–5: P3 xong ngay trong lượt đầu của nó.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Hết quantum thì process vẫn chạy tiếp tới xong\"",
+        "body": "Đó là FCFS (non-preemptive). Round Robin là preemptive: hết time slice, scheduler NGẮT process, lưu ngữ cảnh và đưa nó về cuối hàng ready. Ngộ nhận thứ hai: context switch \"miễn phí\" — mỗi lần đổi process tốn thời gian lưu/nạp PCB mà không làm việc của ứng dụng, nên quantum quá nhỏ làm mọi job xong muộn hơn."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Một lõi CPU chỉ chạy một process tại một thời điểm. Xen kẽ đủ nhanh thì nhiều tác vụ cùng tiến triển (concurrency); nhiều lõi mới chạy song song thật."
+        },
+        {
+          "n": 2,
+          "body": "Round Robin là preemptive: mỗi process được tối đa quantum (time slice); hết lượt mà chưa xong thì bị NGẮT và về CUỐI hàng ready."
+        },
+        {
+          "n": 3,
+          "body": "FCFS là non-preemptive: process đầu hàng chạy tới hết rồi mới tới process sau."
+        },
+        {
+          "n": 4,
+          "body": "Context switch lưu ngữ cảnh (program counter, thanh ghi — trong PCB) của process cũ, nạp của process mới. Lúc đó không ai làm việc: đó là overhead."
+        },
+        {
+          "n": 5,
+          "body": "Thời gian chờ = lúc hoàn thành − burst (mọi job đến lúc 0). deque.popleft() lấy đầu hàng nhanh; list.pop(0) như ví dụ cũng đúng."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "ready = [\"A\", \"B\", \"C\"]\nclock = 0\nquantum = 3\nfor turn in range(4):\n    current = ready.pop(0)\n    clock = clock + quantum\n    print(current, \"chạy tới thời điểm\", clock)\n    ready.append(current)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Concurrency có bắt buộc CPU nhiều lõi không?",
+          "options": [
+            {
+              "text": "Có, ít nhất bằng số process",
+              "detail": "Hệ điều hành chạy hàng trăm process trên vài lõi.",
+              "correct": false
+            },
+            {
+              "text": "Có",
+              "detail": "Một lõi + time slice vẫn cho nhiều tác vụ cùng tiến triển.",
+              "correct": false
+            },
+            {
+              "text": "Không — một lõi xen kẽ các tác vụ cũng tạo concurrency; nhiều lõi mới chạy song song thật",
+              "detail": "Concurrency là cùng tiến triển; parallelism là cùng chạy một lúc.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Concurrency là cùng tiến triển; parallelism là cùng chạy một lúc."
+        },
+        {
+          "question": "Trong lúc context switch, CPU đang làm gì?",
+          "options": [
+            {
+              "text": "Chạy cả hai process cùng lúc",
+              "detail": "Một lõi chỉ chạy một luồng lệnh tại một thời điểm.",
+              "correct": false
+            },
+            {
+              "text": "Lưu ngữ cảnh process cũ, nạp ngữ cảnh process mới (PCB) — không chạy code ứng dụng",
+              "detail": "Vì thế switch là overhead.",
+              "correct": true
+            },
+            {
+              "text": "Chạy tiếp process cũ",
+              "detail": "Process cũ vừa bị ngắt.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Vì thế switch là overhead."
+        },
+        {
+          "question": "Process phần lớn thời gian chờ đĩa/mạng gọi là gì?",
+          "options": [
+            {
+              "text": "Preemptive",
+              "detail": "Preemptive là kiểu scheduler, không phải kiểu process.",
+              "correct": false
+            },
+            {
+              "text": "I/O-bound",
+              "detail": "Nó nằm trong waiting nhiều hơn running.",
+              "correct": true
+            },
+            {
+              "text": "CPU-bound",
+              "detail": "CPU-bound chủ yếu tính toán.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Nó nằm trong waiting nhiều hơn running."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Khi switch > 0, vì sao giảm quantum làm các job xong MUỘN hơn?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Quantum nhỏ cắt mỗi job thành nhiều lượt hơn nên CPU đổi process nhiều lần hơn; mỗi lần đổi tốn switch đơn vị không làm việc của ai. Tổng burst giữ nguyên nhưng cộng thêm nhiều overhead, nên lúc hoàn thành và thời gian chờ đều tăng. Trường hợp đặc biệt: chỉ còn một process thì nó chạy các lượt liền nhau, không tốn switch."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ của vòng Round Robin.",
+        "rule": "Thử quantum lớn hơn mọi burst (thành FCFS), quantum = 1, và switch = 1 khi một process phải chạy hai lượt liền nhau ở cuối."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "ready.popleft() → lấy process đầu hàng ready"
+          },
+          {
+            "label": "Bước 2",
+            "text": "đổi sang process khác → clock += switch (overhead)"
+          },
+          {
+            "label": "Bước 3",
+            "text": "run = min(quantum, left) → chạy tối đa một time slice"
+          },
+          {
+            "label": "Bước 4",
+            "text": "left > run → về cuối hàng với phần còn lại left - run"
+          }
+        ]
+      },
+      "counter": {
+        "question": "[(\"A\", 4), (\"B\", 4)], quantum = 4: timeline là?",
+        "options": [
+          "A 0–4, B 4–8",
+          "B 0–4, A 4–8",
+          "A 0–2, B 2–4, A 4–6, B 6–8"
+        ],
+        "correct": "A 0–4, B 4–8"
+      },
+      "scaffold": {
+        "template": "from collections import deque\n\n\ndef round_robin(jobs, quantum, switch=0):\n    if quantum <= 0:\n        raise ValueError(\"quantum must be positive\")\n    ready = deque(jobs)\n    clock = 0\n    last = None\n    timeline = []\n    while ready:\n        name, left = ready.popleft()\n        if last is not None and name != last:\n            {{slot1}}\n        run = {{slot2}}\n        timeline.append((name, clock, clock + run))\n        clock += run\n        last = name\n        if left > run:\n            {{slot3}}\n    return timeline\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "clock += switch"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "min(quantum, left)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "ready.append((name, left - run))"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ready.appendleft((name, left - run))",
+            "slot": 3,
+            "trap": "Về ĐẦU hàng: process vừa bị ngắt lại chạy tiếp, process khác phải chờ mãi."
+          },
+          {
+            "label": "clock += 1",
+            "slot": 1,
+            "trap": "Chi phí switch là tham số, không cố định 1."
+          },
+          {
+            "label": "clock += switch",
+            "slot": 1
+          },
+          {
+            "label": "left",
+            "slot": 2,
+            "trap": "Chạy tới hết — thành FCFS, không còn preemptive."
+          },
+          {
+            "label": "ready.append((name, left - run))",
+            "slot": 3
+          },
+          {
+            "label": "min(quantum, left)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết round_robin(jobs, quantum, switch=0): jobs là list (tên, burst) — burst nguyên dương, mọi job đến lúc 0, hàng ready theo đúng thứ tự list. Mỗi lượt lấy process đầu hàng, cho chạy min(quantum, phần còn lại) đơn vị và ghi (tên, bắt đầu, kết thúc) vào timeline; chưa xong thì về CUỐI hàng. Mỗi khi CPU chuyển sang một process KHÁC process vừa chạy, đồng hồ cộng thêm switch đơn vị (context switch, không ai làm việc). quantum <= 0 → ValueError; không sửa list jobs. Rồi viết waiting_times(jobs, timeline): dict tên → lúc hoàn thành − burst.\n\nThực hành: Hàng ready là deque các cặp (tên, phần còn lại). Mỗi lượt: popleft, cộng switch nếu đổi process, chạy min(quantum, phần còn lại), chưa xong thì append về cuối.",
+        "io": [
+          {
+            "label": "round_robin([(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], 2)",
+            "value": "P1 0–2, P2 2–4, P3 4–5, P1 5–7, P2 7–8, P1 8–9"
+          },
+          {
+            "label": "round_robin([(\"P1\", 3), (\"P2\", 2)], 2, switch=1)",
+            "value": "P1 0–2, P2 3–5, P1 6–7"
+          },
+          {
+            "label": "round_robin([(\"A\", 1)], 0)",
+            "value": "ValueError"
+          }
+        ]
+      },
+      "starterCode": "from collections import deque\n\n\ndef round_robin(jobs, quantum, switch=0):\n    # jobs: list (tên, burst) cùng đến lúc 0. Trả list (tên, bắt đầu, kết thúc).\n    # Hết quantum mà chưa xong -> về CUỐI hàng; đổi sang process khác -> clock += switch.\n    pass\n\n\ndef waiting_times(jobs, timeline):\n    # {tên: lúc hoàn thành - burst}\n    pass\n\n\nif __name__ == \"__main__\":\n    jobs = [(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)]\n    timeline = round_robin(jobs, 2)\n    print(timeline)\n    print(waiting_times(jobs, timeline))\n",
+      "solutionCode": "from collections import deque\n\n\ndef round_robin(jobs, quantum, switch=0):\n    if quantum <= 0:\n        raise ValueError(\"quantum must be positive\")\n    ready = deque(jobs)\n    clock = 0\n    last = None\n    timeline = []\n    while ready:\n        name, left = ready.popleft()\n        if last is not None and name != last:\n            clock += switch\n        run = min(quantum, left)\n        timeline.append((name, clock, clock + run))\n        clock += run\n        last = name\n        if left > run:\n            ready.append((name, left - run))\n    return timeline\n\n\ndef waiting_times(jobs, timeline):\n    finish = {}\n    for name, start, end in timeline:\n        finish[name] = end\n    return {name: finish[name] - burst for name, burst in jobs}\n\n\nif __name__ == \"__main__\":\n    jobs = [(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)]\n    timeline = round_robin(jobs, 2)\n    print(timeline)\n    print(waiting_times(jobs, timeline))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Hàng ready là deque các cặp (tên, phần còn lại). Mỗi lượt: popleft, cộng switch nếu đổi process, chạy min(quantum, phần còn lại), chưa xong thì append về cuối."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. quantum <= 0 → raise ValueError trước khi chạy.\n2. ready = deque(jobs) (bản sao, không sửa jobs); clock = 0; last = None; timeline = [].\n3. Trong while ready: popleft; last khác None và khác tên hiện tại → clock += switch.\n4. run = min(quantum, left); ghi (tên, clock, clock + run); clock += run; còn dư thì append về cuối.\n5. waiting_times: lúc hoàn thành = kết thúc của lát CUỐI mang tên đó; chờ = hoàn thành − burst."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    while ready:\n        name, left = ready.popleft()\n        ...\n        run = min(quantum, left)\n        timeline.append((name, clock, clock + run))"
+        }
+      ],
+      "tests": [
+        {
+          "name": "Ví dụ đề: quantum = 2",
+          "call": "round_robin([(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], 2)",
+          "expect": "[('P1', 0, 2), ('P2', 2, 4), ('P3', 4, 5), ('P1', 5, 7), ('P2', 7, 8), ('P1', 8, 9)]"
+        },
+        {
+          "name": "quantum ≥ burst → như FCFS",
+          "call": "round_robin([(\"A\", 4), (\"B\", 4)], 4)",
+          "expect": "[('A', 0, 4), ('B', 4, 8)]"
+        },
+        {
+          "name": "quantum = 1, ba job",
+          "call": "round_robin([(\"X\", 2), (\"Y\", 1), (\"Z\", 2)], 1)",
+          "expect": "[('X', 0, 1), ('Y', 1, 2), ('Z', 2, 3), ('X', 3, 4), ('Z', 4, 5)]"
+        },
+        {
+          "name": "switch = 1 mỗi lần đổi process",
+          "call": "round_robin([(\"P1\", 3), (\"P2\", 2)], 2, switch=1)",
+          "expect": "[('P1', 0, 2), ('P2', 3, 5), ('P1', 6, 7)]"
+        },
+        {
+          "name": "Cùng một process chạy liền hai lượt: không tốn switch",
+          "call": "round_robin([(\"P1\", 5), (\"P2\", 1)], 2, switch=1)",
+          "expect": "[('P1', 0, 2), ('P2', 3, 4), ('P1', 5, 7), ('P1', 7, 8)]"
+        },
+        {
+          "name": "Thời gian chờ (ví dụ đề)",
+          "call": "waiting_times([(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], round_robin([(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)], 2))",
+          "expect": "{'P1': 4, 'P2': 5, 'P3': 4}"
+        },
+        {
+          "name": "Thời gian chờ tính cả overhead switch",
+          "call": "waiting_times([(\"P1\", 3), (\"P2\", 2)], round_robin([(\"P1\", 3), (\"P2\", 2)], 2, switch=1))",
+          "expect": "{'P1': 4, 'P2': 3}"
+        },
+        {
+          "name": "Không có job → []",
+          "call": "round_robin([], 3)",
+          "expect": "[]"
+        },
+        {
+          "name": "quantum <= 0 → ValueError",
+          "call": "[_studio.call(round_robin, [(\"A\", 1)], q).error for q in (0, -2)]",
+          "expect": "['ValueError', 'ValueError']"
+        },
+        {
+          "name": "Không sửa list jobs",
+          "call": "_studio.check('j = [(\"A\", 3), (\"B\", 1)]\\nround_robin(j, 1)\\nassert j == [(\"A\", 3), (\"B\", 1)], \"round_robin không được sửa jobs\"')",
+          "expect": "True"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "round_robin(jobs, quantum, switch=0)",
+          "does": "Mô phỏng Round Robin trên một lõi.",
+          "takes": "jobs: list (tên, burst > 0); quantum: int > 0; switch: int >= 0",
+          "gives": "list (tên, bắt đầu, kết thúc) theo thứ tự chạy; quantum <= 0 → ValueError",
+          "effect": "Không sửa jobs, không in.",
+          "call": "round_robin([(\"A\", 4), (\"B\", 4)], 4) → [(\"A\", 0, 4), (\"B\", 4, 8)]"
+        },
+        {
+          "sig": "waiting_times(jobs, timeline)",
+          "does": "Thời gian chờ của từng job.",
+          "takes": "jobs như trên; timeline do round_robin trả",
+          "gives": "dict tên → lúc hoàn thành − burst",
+          "effect": "Không in.",
+          "call": "waiting_times(jobs, round_robin(jobs, 2)) → {\"P1\": 4, ...}"
+        }
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "traceTable-0",
+          "type": "traceTable",
+          "title": "Theo dõi biến: điền giá trị sau mỗi dòng",
+          "code": "ready = [\"A\", \"B\", \"C\"]\nclock = 0\nquantum = 3\nfor turn in range(4):\n    current = ready.pop(0)\n    clock = clock + quantum\n    print(current, \"chạy tới thời điểm\", clock)\n    ready.append(current)",
+          "columns": [
+            "clock",
+            "quantum",
+            "turn"
+          ],
+          "rows": [
+            {
+              "step": "clock = 0",
+              "values": {
+                "clock": "0",
+                "quantum": "—",
+                "turn": "—"
+              }
+            },
+            {
+              "step": "quantum = 3",
+              "values": {
+                "clock": "0",
+                "quantum": null,
+                "turn": "—"
+              }
+            },
+            {
+              "step": "for turn in range(4):",
+              "values": {
+                "clock": "0",
+                "quantum": "3",
+                "turn": null
+              }
+            },
+            {
+              "step": "current = ready.pop(0)",
+              "values": {
+                "clock": "0",
+                "quantum": "3",
+                "turn": "0"
+              }
+            },
+            {
+              "step": "clock = clock + quantum",
+              "values": {
+                "clock": null,
+                "quantum": "3",
+                "turn": "0"
+              }
+            },
+            {
+              "step": "for turn in range(4):",
+              "values": {
+                "clock": "3",
+                "quantum": "3",
+                "turn": null
+              }
+            }
+          ],
+          "answers": {
+            "1-quantum": "3",
+            "2-turn": "0",
+            "4-clock": "3",
+            "5-turn": "1"
+          }
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "from collections import deque\n\n\ndef round_robin(jobs, quantum, switch=0):\n    if quantum <= 0:\n        raise ValueError(\"quantum must be positive\")\n    ready = deque(jobs)\n    clock = 0\n    last = None\n    timeline = []",
+          "tail": "        if left > run:\n            ready.append((name, left - run))\n    return timeline\n\n\ndef waiting_times(jobs, timeline):\n    finish = {}\n    for name, start, end in timeline:\n        finish[name] = end\n    return {name: finish[name] - burst for name, burst in jobs}\n\n\nif __name__ == \"__main__\":\n    jobs = [(\"P1\", 5), (\"P2\", 3), (\"P3\", 1)]\n    timeline = round_robin(jobs, 2)\n    print(timeline)\n    print(waiting_times(jobs, timeline))",
+          "lines": [
+            {
+              "id": "L10",
+              "text": "    while ready:"
+            },
+            {
+              "id": "L11",
+              "text": "        name, left = ready.popleft()"
+            },
+            {
+              "id": "L12",
+              "text": "        if last is not None and name != last:"
+            },
+            {
+              "id": "L13",
+              "text": "            clock += switch"
+            },
+            {
+              "id": "L14",
+              "text": "        run = min(quantum, left)"
+            },
+            {
+              "id": "L15",
+              "text": "        timeline.append((name, clock, clock + run))"
+            },
+            {
+              "id": "L16",
+              "text": "        clock += run"
+            },
+            {
+              "id": "L17",
+              "text": "        last = name"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "        run = left",
+              "reason": "không ngắt khi hết quantum (thành FCFS)"
+            },
+            {
+              "id": "D1",
+              "text": "    return {name: finish[name] for name, burst in jobs}",
+              "reason": "nhầm thời gian chờ với lúc hoàn thành"
+            }
+          ],
+          "order": [
+            "L12",
+            "D1",
+            "L13",
+            "D0",
+            "L11",
+            "L10",
+            "L14",
+            "L15",
+            "L17",
+            "L16"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    clock = 0\n    last = None\n    timeline = []\n    while ready:\n        name, left = ready.popleft()\n        if last is not None and name != last:\n            clock += switch\n        run = left\n        timeline.append((name, clock, clock + run))\n        clock += run\n        last = name\n        if left > run:\n            ready.append((name, left - run))\n    return timeline\n",
+          "firstLine": 8,
+          "line": 15,
+          "lines": [
+            15
+          ],
+          "label": "không ngắt khi hết quantum (thành FCFS)",
+          "fix": "        run = min(quantum, left)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

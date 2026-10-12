@@ -1,0 +1,390 @@
+{
+  "lesson_code": "PD08",
+  "sort_order": 39,
+  "module": "M6 · pandas",
+  "title": "PD08 · Ngày giờ, resample và rolling",
+  "subtitle": "Nâng cao · M6 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "PD08 · Ngày giờ, resample và rolling",
+    "subtitle": "Nâng cao · M6 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#PD08",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD08"
+        ],
+        "title": "Ngày giờ, resample và rolling",
+        "goal": "Tổng theo tháng và trung bình trượt trên ngày đã làm sạch.",
+        "task": "Viết monthly_revenue(df) (coerce, resample \"MS\", tháng trống NaN) và rolling_mean(s, window).",
+        "predict": "Tháng không có đơn: resample().sum() cho 0 hay NaN?",
+        "code": "def monthly_revenue(df):\n    # to_datetime(errors=\"coerce\") → bỏ NaT\n    # set_index → resample(\"MS\") → sum(min_count=1)\n\ndef rolling_mean(s, window):\n    pass",
+        "tests": [
+          "1/1: 5, 2/1: 15 → tháng 1 = 20; rolling(2) = 10",
+          "Tháng 2 trống → NaN, không phải 0"
+        ],
+        "reflect": "Vì sao phải sort_index() trước rolling?"
+      },
+      "context": {
+        "title": "Tách ngày hỏng bằng to_datetime(errors=\"coerce\"), tổng theo tháng bằng resample và trung bình trượt trên chuỗi đã sắp xếp.",
+        "body": "Viết monthly_revenue(df): df có cột date (chuỗi \"YYYY-MM-DD\", có thể hỏng) và revenue. Đổi date bằng pd.to_datetime(..., format=\"%Y-%m-%d\", errors=\"coerce\"), bỏ dòng NaT, đặt date làm index rồi resample(\"MS\") lấy tổng revenue mỗi tháng — tháng không có dòng nào phải là NaN (sum(min_count=1)), không phải 0. Viết rolling_mean(s, window): s là Series có DatetimeIndex có thể chưa sắp xếp; trả trung bình trượt window quan sát trên chuỗi đã sort_index().",
+        "example": "Ngày 1/1 và 2/1 doanh thu 5 và 15 → tháng 1 = 20; rolling(2) ở ngày 2/1 = 10.",
+        "prereq": "PD07",
+        "level": "Nâng cao",
+        "files": [
+          "sales.csv"
+        ]
+      },
+      "predict": {
+        "question": "Doanh thu có ngày 10/1 và 4/3, không có ngày nào trong tháng 2. resample(\"MS\").sum() cho tháng 2 bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Tháng 2 không xuất hiện",
+            "detail": "resample tạo đủ mọi tháng giữa đầu và cuối.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "0 — sum của nhóm rỗng là 0",
+            "detail": "Dùng sum(min_count=1) để thành NaN.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "NaN",
+            "detail": "Chỉ khi sum(min_count=1).",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Tháng không có số liệu thì doanh thu là 0\"",
+        "body": "Có thể là không bán, cũng có thể hệ thống chưa ghi nhận. resample().sum() điền 0 âm thầm, kéo trung bình trượt xuống và vẽ ra một tháng \"sụt giảm\" không có thật. Để NaN bằng sum(min_count=1) rồi quyết định có lý do."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "pd.to_datetime(..., errors=\"coerce\") biến chuỗi không phải ngày thành NaT (ngày thiếu) để đếm và loại; không có errors=\"coerce\" thì một ô \"bad\" làm cả lệnh ValueError."
+        },
+        {
+          "n": 2,
+          "body": "Ghi format=\"%Y-%m-%d\" khi dữ liệu dễ nhập nhằng: \"03/02/2026\" là 3/2 hay 2/3? Có format thì chuỗi sai định dạng thành NaT thay vì bị đoán bừa."
+        },
+        {
+          "n": 3,
+          "body": "resample cần DatetimeIndex: set_index(\"date\") rồi resample(\"MS\") gom theo tháng, nhãn là NGÀY ĐẦU tháng (MS = month start; \"ME\" là cuối tháng)."
+        },
+        {
+          "n": 4,
+          "body": "Tháng không có dòng nào: sum() trả 0, sum(min_count=1) trả NaN. Chưa biết là không bán hay chưa thu thập thì đừng để nó thành 0."
+        },
+        {
+          "n": 5,
+          "body": "rolling(window) tính trên các quan sát LIỀN NHAU theo thứ tự hiện tại — chưa sort_index() thì \"liền nhau\" sai. min_periods quyết định cửa sổ thiếu quan sát ra NaN hay vẫn tính; rolling(\"7D\") là cửa sổ 7 NGÀY, khác cửa sổ 7 dòng."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\nraw = pd.Series([\"2026-02-03\", \"03/02/2026\", \"oops\"])\ndates = pd.to_datetime(raw, format=\"%Y-%m-%d\", errors=\"coerce\")\nprint(dates.tolist())\nprint(int(dates.isna().sum()), \"ngày không đọc được\")\n\nvisits = pd.Series([3, 5, 2], index=pd.to_datetime([\"2026-01-10\", \"2026-01-25\", \"2026-03-04\"]))\nprint(visits.resample(\"MS\").sum().tolist())\nprint(visits.resample(\"MS\").sum(min_count=1).tolist())\n\nsteps = pd.Series([4, 6, 8, 2])\nprint(steps.rolling(2).mean().tolist())\nprint(steps.rolling(2, min_periods=1).mean().tolist())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "s.rolling(2).mean() khi s chưa sắp theo ngày thì…",
+          "options": [
+            {
+              "text": "Tính trên hai dòng liền nhau theo thứ tự hiện tại — sai nghĩa thời gian",
+              "detail": "Gọi sort_index() trước.",
+              "correct": true
+            },
+            {
+              "text": "Lỗi",
+              "detail": "Không lỗi với cửa sổ đếm dòng.",
+              "correct": false
+            },
+            {
+              "text": "pandas tự sắp theo index",
+              "detail": "rolling không sắp lại dữ liệu.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Gọi sort_index() trước."
+        },
+        {
+          "question": "pd.to_datetime(pd.Series([\"2026-01-01\", \"bad\"])) không có errors=... thì…",
+          "options": [
+            {
+              "text": "[2026-01-01, NaT]",
+              "detail": "Chỉ khi errors=\"coerce\".",
+              "correct": false
+            },
+            {
+              "text": "ValueError ở \"bad\"",
+              "detail": "errors=\"coerce\" để thành NaT.",
+              "correct": true
+            },
+            {
+              "text": "Bỏ qua \"bad\"",
+              "detail": "pandas không tự bỏ dòng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "errors=\"coerce\" để thành NaT."
+        },
+        {
+          "question": "pd.Series([2, 4, 8]).rolling(2).mean().tolist() = ?",
+          "options": [
+            {
+              "text": "[3.0, 6.0]",
+              "detail": "rolling giữ nguyên số dòng.",
+              "correct": false
+            },
+            {
+              "text": "[nan, 3.0, 6.0]",
+              "detail": "Cửa sổ đầu chỉ có một quan sát, chưa đủ 2 → NaN.",
+              "correct": true
+            },
+            {
+              "text": "[2.0, 3.0, 6.0]",
+              "detail": "Chỉ khi min_periods=1.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Cửa sổ đầu chỉ có một quan sát, chưa đủ 2 → NaN."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao phải sort_index() trước rolling, còn resample thì không cần?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "resample gom từng dòng vào thùng tháng theo GIÁ TRỊ ngày nên thứ tự dòng không đổi kết quả. rolling lấy các dòng LIỀN NHAU theo thứ tự hiện tại; chuỗi chưa sắp xếp thì cửa sổ ghép những ngày không kề nhau và trung bình trượt sai."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: ngày lộn xộn, có \"bad\" và \"2026-13-01\", tháng 2 không có đơn. Lắp bốn chỗ.",
+        "rule": "Thử ngày lộn xộn, có ngày hỏng và một tháng không có đơn; kiểm tổng tháng, tháng trống và rolling."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "to_datetime(errors=\"coerce\") → \"bad\", \"2026-13-01\" thành NaT."
+          },
+          {
+            "label": "Bước 2",
+            "text": "dropna(subset=[\"date\"]) → bỏ dòng ngày hỏng."
+          },
+          {
+            "label": "Bước 3",
+            "text": "set_index(\"date\") → DatetimeIndex để resample."
+          },
+          {
+            "label": "Bước 4",
+            "text": "resample(\"MS\").sum(min_count=1) → tháng trống là NaN."
+          },
+          {
+            "label": "Bước 5",
+            "text": "sort_index().rolling(2) → cửa sổ hai ngày liền nhau."
+          }
+        ]
+      },
+      "counter": {
+        "question": "Ngày [2026-01-05, bad, 2026-02-10], revenue [10, 99, 30]. monthly_revenue(...).tolist() = ?",
+        "options": [
+          "ValueError",
+          "[109.0, 30.0]",
+          "[10.0, 30.0]"
+        ],
+        "correct": "[10.0, 30.0]"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef monthly_revenue(df):\n    data = df.copy()\n    data[\"date\"] = pd.to_datetime(data[\"date\"], format=\"%Y-%m-%d\", {{slot1}})\n    data = data.dropna(subset=[\"date\"])\n    monthly = data.set_index(\"date\")[\"revenue\"].resample({{slot2}})\n    return {{slot3}}\n\n\ndef rolling_mean(s, window):\n    return {{slot4}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "errors=\"coerce\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "\"MS\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "monthly.sum(min_count=1)"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "s.sort_index().rolling(window).mean()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "s.sort_index().rolling(window).mean()",
+            "slot": 4
+          },
+          {
+            "label": "monthly.sum()",
+            "slot": 3,
+            "trap": "Tháng không có dữ liệu thành 0."
+          },
+          {
+            "label": "s.rolling(window).mean()",
+            "slot": 4,
+            "trap": "Chưa sắp theo ngày."
+          },
+          {
+            "label": "errors=\"coerce\"",
+            "slot": 1
+          },
+          {
+            "label": "errors=\"raise\"",
+            "slot": 1,
+            "trap": "Một ô \"bad\" làm cả lệnh ValueError."
+          },
+          {
+            "label": "\"MS\"",
+            "slot": 2
+          },
+          {
+            "label": "\"ME\"",
+            "slot": 2,
+            "trap": "Nhãn cuối tháng; đề yêu cầu đầu tháng."
+          },
+          {
+            "label": "monthly.sum(min_count=1)",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết monthly_revenue(df): df có cột date (chuỗi \"YYYY-MM-DD\", có thể hỏng) và revenue. Đổi date bằng pd.to_datetime(..., format=\"%Y-%m-%d\", errors=\"coerce\"), bỏ dòng NaT, đặt date làm index rồi resample(\"MS\") lấy tổng revenue mỗi tháng — tháng không có dòng nào phải là NaN (sum(min_count=1)), không phải 0. Viết rolling_mean(s, window): s là Series có DatetimeIndex có thể chưa sắp xếp; trả trung bình trượt window quan sát trên chuỗi đã sort_index().\n\nThực hành: to_datetime(errors=\"coerce\") → dropna → set_index → resample(\"MS\") → sum(min_count=1); rolling sau sort_index().",
+        "io": [
+          {
+            "label": "1/1: 5, 2/1: 15",
+            "value": "Tháng 1 = 20; rolling(2) ngày 2/1 = 10"
+          },
+          {
+            "label": "Có \"bad\", \"2026-13-01\"",
+            "value": "Hai dòng đó bị loại, không lỗi"
+          },
+          {
+            "label": "Tháng 2 không có đơn",
+            "value": "Tháng 2 = NaN, không phải 0"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef monthly_revenue(df):\n    # to_datetime(..., errors=\"coerce\") -> bỏ NaT -> set_index -> resample(\"MS\") -> tổng (tháng trống = NaN)\n    pass\n\n\ndef rolling_mean(s, window):\n    # Sắp theo ngày rồi trung bình trượt window quan sát\n    pass\n\n\nif __name__ == \"__main__\":\n    sales = pd.read_csv(\"sales.csv\")\n    print(sales[[\"date\", \"qty\", \"unit_price\"]])\n",
+      "solutionCode": "import pandas as pd\n\n\ndef monthly_revenue(df):\n    data = df.copy()\n    data[\"date\"] = pd.to_datetime(data[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    data = data.dropna(subset=[\"date\"])\n    monthly = data.set_index(\"date\")[\"revenue\"].resample(\"MS\")\n    return monthly.sum(min_count=1)\n\n\ndef rolling_mean(s, window):\n    return s.sort_index().rolling(window).mean()\n\n\nif __name__ == \"__main__\":\n    sales = pd.read_csv(\"sales.csv\").drop_duplicates(subset=\"order_id\")\n    sales = sales.loc[sales[\"qty\"] > 0].copy()\n    sales[\"revenue\"] = sales[\"qty\"] * sales[\"unit_price\"]\n    monthly = monthly_revenue(sales)\n    print(monthly)\n    print(rolling_mean(monthly, 2))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "to_datetime(errors=\"coerce\") → dropna → set_index → resample(\"MS\") → sum(min_count=1); rolling sau sort_index()."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. data = df.copy(); data[\"date\"] = pd.to_datetime(data[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\").\n2. data = data.dropna(subset=[\"date\"]); monthly = data.set_index(\"date\")[\"revenue\"].resample(\"MS\").\n3. return monthly.sum(min_count=1); rolling_mean trả s.sort_index().rolling(window).mean()."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def monthly_revenue(df):\n    data = df.copy()\n    data[\"date\"] = pd.to_datetime(data[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: 1/1 và 2/1 doanh thu 5, 15 → tháng 1 = 20",
+          "call": "monthly_revenue(pd.DataFrame({\"date\": [\"2026-01-01\", \"2026-01-02\"], \"revenue\": [5, 15]})).tolist()",
+          "expect": "[20.0]"
+        },
+        {
+          "name": "Đề mẫu: rolling(2) ở ngày cuối = 10",
+          "call": "float(rolling_mean(pd.Series([5, 15], index=pd.to_datetime([\"2026-01-01\", \"2026-01-02\"])), 2).iloc[-1])",
+          "expect": "10.0"
+        },
+        {
+          "name": "Ngày hỏng bị loại, không làm lỗi",
+          "call": "float(monthly_revenue(pd.DataFrame({\"date\": [\"2026-03-02\", \"2026-01-05\", \"bad\", \"2026-01-20\", \"2026-03-30\", \"2026-13-01\"], \"revenue\": [40, 10, 99, 20, 5, 7]})).sum())",
+          "expect": "75.0"
+        },
+        {
+          "name": "Tháng 2 không có dữ liệu → NaN, không phải 0",
+          "call": "monthly_revenue(pd.DataFrame({\"date\": [\"2026-03-02\", \"2026-01-05\", \"bad\", \"2026-01-20\", \"2026-03-30\", \"2026-13-01\"], \"revenue\": [40, 10, 99, 20, 5, 7]})).fillna(-1).tolist()",
+          "expect": "[30.0, -1.0, 45.0]"
+        },
+        {
+          "name": "Index là ngày đầu tháng (MS)",
+          "call": "[d.strftime(\"%Y-%m-%d\") for d in monthly_revenue(pd.DataFrame({\"date\": [\"2026-03-02\", \"2026-01-05\", \"bad\", \"2026-01-20\", \"2026-03-30\", \"2026-13-01\"], \"revenue\": [40, 10, 99, 20, 5, 7]})).index]",
+          "expect": "['2026-01-01', '2026-02-01', '2026-03-01']"
+        },
+        {
+          "name": "sales.csv (bỏ trùng, qty > 0): tháng 1 = 110, tháng 2 = 45",
+          "call": "monthly_revenue(pd.read_csv(\"sales.csv\").drop_duplicates(subset=\"order_id\").query(\"qty > 0\").assign(revenue=lambda d: d[\"qty\"] * d[\"unit_price\"])).tolist()",
+          "expect": "[110.0, 45.0]"
+        },
+        {
+          "name": "rolling(2) trên chuỗi chưa sắp xếp",
+          "call": "rolling_mean(pd.Series([8, 2, 4], index=pd.to_datetime([\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"])), 2).fillna(-1).tolist()",
+          "expect": "[-1.0, 3.0, 6.0]"
+        },
+        {
+          "name": "rolling trả chuỗi theo ngày tăng dần",
+          "call": "[d.day for d in rolling_mean(pd.Series([8, 2, 4], index=pd.to_datetime([\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"])), 2).index]",
+          "expect": "[1, 2, 3]"
+        }
+      ],
+      "files": [
+        {
+          "name": "sales.csv",
+          "content": "order_id,date,region,product,qty,unit_price\r\nO01,2026-01-01, North ,Book,2,10\r\nO02,2026-01-02,south,Pen,1,20\r\nO03,2026-01-03,north,Book,,10\r\nO04,bad,south,Pen,2,20\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO06,2026-01-25,South,Pen,2,20\r\nO07,2026-02-01,north,Book,-1,10\r\nO08,2026-02-02,south,Pen,2,\r\nO09,2026-02-03,north,Book,1,15\r\nO10,2026-02-04,south,Pen,3,10\r\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "monthly_revenue(df)",
+          "does": "Tổng revenue theo tháng, bỏ ngày hỏng.",
+          "takes": "df: DataFrame cột date (chuỗi \"YYYY-MM-DD\", có thể hỏng), revenue",
+          "gives": "Series index là ngày đầu tháng; tháng trống là NaN",
+          "effect": "Không sửa df.",
+          "call": "monthly_revenue(df).tolist() → [30.0, nan, 45.0]"
+        },
+        {
+          "sig": "rolling_mean(s, window)",
+          "does": "Trung bình trượt theo thứ tự ngày.",
+          "takes": "s: Series có DatetimeIndex (có thể chưa sắp xếp); window: int",
+          "gives": "Series đã sắp theo ngày; window − 1 giá trị đầu là NaN",
+          "effect": "Không sửa s.",
+          "call": "rolling_mean(s, 2).tolist() → [nan, 3.0, 6.0]"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

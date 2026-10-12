@@ -1,0 +1,461 @@
+{
+  "lesson_code": "G05",
+  "sort_order": 18,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G05 · OOP và tách logic khỏi giao diện",
+  "subtitle": "Nâng cao · M3 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "G05 · OOP và tách logic khỏi giao diện",
+    "subtitle": "Nâng cao · M3 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#G05",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G05"
+        ],
+        "title": "OOP và tách logic khỏi giao diện",
+        "goal": "Gói giao diện vào class App, tách logic thành hàm thuần.",
+        "task": "Viết validate_mark, summary (thuần) và App.add_mark nối chúng với widget.",
+        "predict": "self.result khác biến cục bộ result trong create_widgets thế nào?",
+        "code": "def validate_mark(raw): ...   # raise ValueError\ndef summary(marks): ...\nclass App:\n    def create_widgets(self): ...\n    def add_mark(self): ...",
+        "tests": [
+          "validate_mark(\"8.5\") → 8.5; \"abc\" → ValueError",
+          "Bấm \"Thêm điểm\" với 8 → \"1 điểm, trung bình 8.00\""
+        ],
+        "reflect": "Vì sao validate_mark không nên tự gọi messagebox?"
+      },
+      "context": {
+        "title": "Gói giao diện vào class App, giữ widget trong self và tách phần tính toán thành hàm thuần dùng lại được.",
+        "body": "Viết hai hàm THUẦN (không đụng widget, không messagebox): validate_mark(raw) đổi chuỗi thành float, không phải số hoặc ngoài 0..10 thì raise ValueError; summary(marks) trả \"Chưa có điểm\" khi list rỗng, ngược lại \"<n> điểm, trung bình <tb, 2 chữ số thập phân>\".\n\nHoàn thành class App: __init__ tạo self.marks = [], self.mark_var rồi gọi create_widgets(); create_widgets tạo Entry gắn self.mark_var, nút \"Thêm điểm\" với command=self.add_mark và self.result = Label hiện summary(self.marks); add_mark gọi validate_mark — sai thì messagebox.showerror, đúng thì append vào self.marks và cập nhật self.result.",
+        "example": "validate_mark(\"8.5\") → 8.5; gõ 8 rồi bấm \"Thêm điểm\" → nhãn \"1 điểm, trung bình 8.00\".",
+        "prereq": "G04",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Ô nhập đang là \"abc\", người dùng bấm \"Thêm điểm\". Chuyện gì xảy ra?",
+        "options": [
+          {
+            "id": "a",
+            "title": "self.marks thêm 0",
+            "detail": "Dữ liệu sai không bao giờ được thêm.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "validate_mark raise ValueError; add_mark bắt lỗi, bật showerror; self.marks giữ nguyên",
+            "detail": "Hàm thuần báo lỗi, tầng giao diện quyết định cách hiện.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Chương trình dừng hẳn với ValueError",
+            "detail": "add_mark bắt ValueError bằng try/except nên giao diện vẫn chạy.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Cho validate_mark tự bật messagebox là tiện nhất\"",
+        "body": "Khi đó validate_mark chỉ dùng được trong GUI: gọi từ CLI hay từ test sẽ bật hộp thoại và trả None thay vì báo lỗi rõ ràng, nơi gọi phải đoán vì sao có None. Hàm thuần raise ValueError; App (tầng giao diện) bắt lỗi và chọn cách hiển thị. Đừng quên: command=self.add_mark() vẫn là gọi ngay, và result = tk.Label(...) không có self thì method khác không thấy."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "self.widget giữ tham chiếu tới widget cần cập nhật; biến cục bộ trong create_widgets mất khi hàm kết thúc."
+        },
+        {
+          "n": 2,
+          "body": "__init__ tạo trạng thái (self.marks, self.mark_var) rồi gọi create_widgets() để dựng giao diện."
+        },
+        {
+          "n": 3,
+          "body": "Callback thành method: command=self.add_mark — vẫn không có ngoặc, Tkinter gọi khi bấm."
+        },
+        {
+          "n": 4,
+          "body": "Logic tính/kiểm dữ liệu đặt trong hàm thuần: test được bằng gọi hàm, dùng lại được cho CLI hay web."
+        },
+        {
+          "n": 5,
+          "body": "Hàm thuần báo lỗi bằng raise; GUI bắt lỗi và quyết định cách hiện (messagebox). Mỗi tầng một việc."
+        },
+        {
+          "n": 6,
+          "body": "Tkinter cơ bản không bắt buộc OOP; class giúp quản lý khi ứng dụng có nhiều widget và trạng thái."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import tkinter as tk\n\n\ndef to_grade(mark):\n    \"\"\"Logic thuần: dùng được từ CLI, từ test, từ GUI.\"\"\"\n    if mark >= 8.5:\n        return \"A\"\n    if mark >= 7:\n        return \"B\"\n    return \"C\"\n\n\nclass GradeApp:\n    def __init__(self, root):\n        self.mark = tk.StringVar(value=\"9\")\n        tk.Entry(root, textvariable=self.mark).pack()\n        tk.Button(root, text=\"Xếp loại\", command=self.show).pack()\n        self.answer = tk.Label(root, text=\"?\")       # self: method khác còn dùng\n        self.answer.pack()\n\n    def show(self):\n        self.answer.config(text=to_grade(float(self.mark.get())))\n\n\nprint([to_grade(m) for m in (9, 7.5, 5)])        # chạy được không cần cửa sổ\nroot = tk.Tk()\napp = GradeApp(root)\napp.show()\nprint(app.answer.cget(\"text\"))\nroot.mainloop()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "self.entry giúp gì so với một biến local mất sau hàm?",
+          "options": [
+            {
+              "text": "Giúp widget tự lưu dữ liệu ra file",
+              "detail": "self chỉ là thuộc tính của object.",
+              "correct": false
+            },
+            {
+              "text": "Bắt buộc để widget hiện lên",
+              "detail": "Widget hiện nhờ pack/grid, không nhờ self.",
+              "correct": false
+            },
+            {
+              "text": "Giữ widget để các method khác truy cập",
+              "detail": "add_mark đọc self.mark_var và đổi self.result được vì chúng là thuộc tính của object.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "add_mark đọc self.mark_var và đổi self.result được vì chúng là thuộc tính của object."
+        },
+        {
+          "question": "Vì sao validate_mark nên raise ValueError thay vì gọi messagebox.showerror?",
+          "options": [
+            {
+              "text": "Vì messagebox không chạy trong hàm",
+              "detail": "messagebox gọi được ở đâu cũng được — vấn đề là phụ thuộc GUI.",
+              "correct": false
+            },
+            {
+              "text": "Để hàm dùng lại được ngoài GUI và nơi gọi tự quyết cách báo lỗi",
+              "detail": "Logic tách khỏi giao diện.",
+              "correct": true
+            },
+            {
+              "text": "Vì raise nhanh hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Logic tách khỏi giao diện."
+        },
+        {
+          "question": "Khai marks = [] ở thân class (không trong __init__) thì hai App khác nhau…",
+          "options": [
+            {
+              "text": "Báo lỗi khi chạy",
+              "detail": "Chạy được, chỉ sai âm thầm.",
+              "correct": false
+            },
+            {
+              "text": "Mỗi App có list riêng",
+              "detail": "Chỉ đúng khi tạo self.marks = [] trong __init__.",
+              "correct": false
+            },
+            {
+              "text": "Dùng CHUNG một list — điểm của cửa sổ này hiện ở cửa sổ kia",
+              "detail": "Thuộc tính class được mọi object chia sẻ.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Thuộc tính class được mọi object chia sẻ."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Tách validate_mark/summary khỏi class App được lợi gì khi kiểm thử và khi đổi giao diện?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "validate_mark và summary chỉ nhận dữ liệu và trả kết quả (hoặc raise), nên kiểm được bằng gọi hàm, không cần mở cửa sổ hay bấm nút. App chỉ lo đọc widget, gọi hàm và hiện kết quả. Đổi sang giao diện khác (CLI, web) vẫn dùng lại nguyên hai hàm. Trường hợp đặc biệt: list rỗng → \"Chưa có điểm\", \"abc\" → ValueError."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: ứng dụng đổi °C sang °F. Hàm thuần to_fahrenheit đã có; lắp bốn chỗ trong class App.",
+        "rule": "Bộ chấm gọi thẳng validate_mark/summary với dữ liệu mới (biên 0 và 10, \"abc\", list ba điểm), rồi tạo App mới trên tk.Tk() mới để kiểm self.marks riêng và nút \"Thêm điểm\"."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "App(root) → __init__ tạo self.marks, self.mark_var"
+          },
+          {
+            "label": "Bước 2",
+            "text": "create_widgets() → Entry, nút, self.result"
+          },
+          {
+            "label": "Bước 3",
+            "text": "Bấm \"Thêm điểm\" → add_mark() gọi validate_mark"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ValueError → showerror; hợp lệ → append rồi summary()"
+          }
+        ]
+      },
+      "counter": {
+        "question": "summary([9, 8.5, 6.25]) trả gì?",
+        "options": [
+          "3 điểm, trung bình 7.92",
+          "Chưa có điểm",
+          "3 điểm, trung bình 7.91"
+        ],
+        "correct": "3 điểm, trung bình 7.92"
+      },
+      "scaffold": {
+        "template": "import tkinter as tk\n\n\ndef to_fahrenheit(raw):\n    celsius = float(raw)\n    return round(celsius * 9 / 5 + 32, 1)\n\n\nclass App:\n    def __init__(self, root):\n        self.celsius = tk.StringVar(value=\"0\")\n        tk.Entry(root, textvariable=self.celsius).pack()\n        tk.Button(root, text=\"Đổi\", command={{slot1}}).pack()\n        {{slot2}} = tk.Label(root, text=\"\")\n        self.answer.pack()\n\n    def convert(self):\n        value = to_fahrenheit({{slot3}})\n        {{slot4}}\n\n\nroot = tk.Tk()\napp = App(root)\nroot.mainloop()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "self.convert"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "self.answer"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "self.celsius.get()"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "self.answer.config(text=str(value) + \" °F\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "print(value)",
+            "slot": 4,
+            "trap": "In ra console; nhãn trên cửa sổ không đổi."
+          },
+          {
+            "label": "self.celsius",
+            "slot": 3,
+            "trap": "Truyền object StringVar; float() cần chuỗi → TypeError."
+          },
+          {
+            "label": "self.convert()",
+            "slot": 1,
+            "trap": "Gọi convert ngay trong __init__; nút nhận None."
+          },
+          {
+            "label": "self.celsius.get()",
+            "slot": 3
+          },
+          {
+            "label": "self.convert",
+            "slot": 1
+          },
+          {
+            "label": "answer",
+            "slot": 2,
+            "trap": "Biến cục bộ mất sau __init__; convert không thấy được."
+          },
+          {
+            "label": "self.answer.config(text=str(value) + \" °F\")",
+            "slot": 4
+          },
+          {
+            "label": "self.answer",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm THUẦN (không đụng widget, không messagebox): validate_mark(raw) đổi chuỗi thành float, không phải số hoặc ngoài 0..10 thì raise ValueError; summary(marks) trả \"Chưa có điểm\" khi list rỗng, ngược lại \"<n> điểm, trung bình <tb, 2 chữ số thập phân>\".\n\nHoàn thành class App: __init__ tạo self.marks = [], self.mark_var rồi gọi create_widgets(); create_widgets tạo Entry gắn self.mark_var, nút \"Thêm điểm\" với command=self.add_mark và self.result = Label hiện summary(self.marks); add_mark gọi validate_mark — sai thì messagebox.showerror, đúng thì append vào self.marks và cập nhật self.result.\n\nThực hành: Hai hàm thuần không chạm widget; App giữ widget trong self, bắt ValueError của validate_mark trong add_mark.",
+        "io": [
+          {
+            "label": "validate_mark(\"8.5\") / validate_mark(\"11\")",
+            "value": "8.5 / ValueError"
+          },
+          {
+            "label": "Gõ 8 rồi bấm \"Thêm điểm\"",
+            "value": "self.marks = [8.0]; nhãn \"1 điểm, trung bình 8.00\""
+          }
+        ]
+      },
+      "starterCode": "import tkinter as tk\nfrom tkinter import messagebox\n\n\ndef validate_mark(raw):\n    # Hàm THUẦN: chuỗi -> float trong 0..10; sai thì raise ValueError. Không đụng tới widget.\n    pass\n\n\ndef summary(marks):\n    # Hàm THUẦN: [] -> \"Chưa có điểm\"; [8, 7] -> \"2 điểm, trung bình 7.50\"\n    pass\n\n\nclass App:\n    def __init__(self, root):\n        self.root = root\n        self.marks = []\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        tk.Entry(self.root, textvariable=self.mark_var).pack()\n        # Nút \"Thêm điểm\" gọi self.add_mark; Label self.result hiện summary(self.marks).\n\n    def add_mark(self):\n        # validate_mark(self.mark_var.get()); sai -> messagebox.showerror; đúng -> append, cập nhật nhãn.\n        pass\n\n\nif __name__ == \"__main__\":\n    root = tk.Tk()\n    root.title(\"Điểm trung bình\")\n    app = App(root)\n    root.mainloop()\n",
+      "solutionCode": "import tkinter as tk\nfrom tkinter import messagebox\n\n\ndef validate_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\n\ndef summary(marks):\n    if not marks:\n        return \"Chưa có điểm\"\n    average = sum(marks) / len(marks)\n    return f\"{len(marks)} điểm, trung bình {average:.2f}\"\n\n\nclass App:\n    def __init__(self, root):\n        self.root = root\n        self.marks = []\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        tk.Entry(self.root, textvariable=self.mark_var).pack()\n        tk.Button(self.root, text=\"Thêm điểm\", command=self.add_mark).pack()\n        self.result = tk.Label(self.root, text=summary(self.marks))\n        self.result.pack()\n\n    def add_mark(self):\n        try:\n            mark = validate_mark(self.mark_var.get())\n        except ValueError as error:\n            messagebox.showerror(\"Điểm không hợp lệ\", str(error))\n            return\n        self.marks.append(mark)\n        self.result.config(text=summary(self.marks))\n\n\nif __name__ == \"__main__\":\n    root = tk.Tk()\n    root.title(\"Điểm trung bình\")\n    app = App(root)\n    root.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Hai hàm thuần không chạm widget; App giữ widget trong self, bắt ValueError của validate_mark trong add_mark."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. validate_mark: mark = float(raw); ngoài 0..10 → raise ValueError(...); return mark.\n2. summary: list rỗng → \"Chưa có điểm\"; còn lại f\"{len(marks)} điểm, trung bình {sum(marks) / len(marks):.2f}\".\n3. create_widgets: tk.Button(self.root, text=\"Thêm điểm\", command=self.add_mark); self.result = tk.Label(...).\n4. add_mark: try validate_mark(self.mark_var.get()) except ValueError → showerror, return; append; self.result.config(text=summary(self.marks))."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    def add_mark(self):\n        try:\n            mark = validate_mark(self.mark_var.get())\n        except ValueError as error:\n            ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "validate_mark(\"8.5\") → 8.5",
+          "call": "validate_mark(\"8.5\")",
+          "expect": "8.5"
+        },
+        {
+          "name": "Biên 0 và 10, có khoảng trắng",
+          "call": "[validate_mark(\" 0 \"), validate_mark(\"10\")]",
+          "expect": "[0.0, 10.0]"
+        },
+        {
+          "name": "Dữ liệu sai → ValueError",
+          "call": "[_studio.call(validate_mark, raw).error for raw in ['abc', '10.5', '-1', '']]",
+          "expect": "['ValueError', 'ValueError', 'ValueError', 'ValueError']"
+        },
+        {
+          "name": "validate_mark không tự bật messagebox",
+          "call": "(lambda n: (_studio.call(validate_mark, '11'), len(_studio.tk.messages) - n)[1])(len(_studio.tk.messages))",
+          "expect": "0"
+        },
+        {
+          "name": "summary([]) và summary([8, 7])",
+          "call": "(summary([]), summary([8, 7]))",
+          "expect": "('Chưa có điểm', '2 điểm, trung bình 7.50')"
+        },
+        {
+          "name": "summary làm tròn 2 chữ số",
+          "call": "summary([9, 8.5, 6.25])",
+          "expect": "'3 điểm, trung bình 7.92'"
+        },
+        {
+          "name": "App giữ nhãn trong self.result",
+          "call": "app.result.cget('text')",
+          "expect": "'Chưa có điểm'"
+        },
+        {
+          "name": "Bấm \"Thêm điểm\" với 8",
+          "call": "(app.marks.clear(), app.mark_var.set('8'), _studio.tk.find(type='Button', text='Thêm điểm').invoke(), list(app.marks), app.result.cget('text'))[3:]",
+          "expect": "([8.0], '1 điểm, trung bình 8.00')"
+        },
+        {
+          "name": "\"abc\" → showerror, không thêm",
+          "call": "(lambda n, m: (app.mark_var.set('abc'), _studio.tk.find(type='Button', text='Thêm điểm').invoke(), len(app.marks) - n, len(_studio.tk.messages) - m)[2:])(len(app.marks), len(_studio.tk.messages))",
+          "expect": "(0, 1)"
+        },
+        {
+          "name": "App mới: self.marks riêng, nhãn ban đầu",
+          "call": "(lambda a: (a.marks, a.result.cget('text')))(App(tk.Tk()))",
+          "expect": "([], 'Chưa có điểm')"
+        },
+        {
+          "name": "add_mark gọi trực tiếp hai lần",
+          "call": "(lambda a: (a.mark_var.set('7.5'), a.add_mark(), a.mark_var.set('9'), a.add_mark(), a.result.cget('text'))[-1])(App(tk.Tk()))",
+          "expect": "'2 điểm, trung bình 8.25'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "validate_mark(raw)",
+          "does": "Đổi chuỗi người dùng gõ thành điểm hợp lệ.",
+          "takes": "raw: str (có thể có khoảng trắng hai đầu)",
+          "gives": "float trong 0..10; không phải số hoặc ngoài khoảng → ValueError",
+          "effect": "Hàm thuần: không đọc/ghi widget, không bật messagebox.",
+          "call": "validate_mark(\"8.5\") → 8.5; validate_mark(\"11\") → ValueError"
+        },
+        {
+          "sig": "summary(marks)",
+          "does": "Tạo chữ tóm tắt cho nhãn kết quả.",
+          "takes": "marks: list[float]",
+          "gives": "\"Chưa có điểm\" nếu rỗng; ngược lại \"<n> điểm, trung bình <tb 2 số lẻ>\"",
+          "effect": "Hàm thuần, không sửa marks.",
+          "call": "summary([8, 7]) → \"2 điểm, trung bình 7.50\""
+        },
+        {
+          "sig": "App(root)",
+          "does": "Gói giao diện: Entry gắn self.mark_var, nút \"Thêm điểm\", nhãn self.result.",
+          "takes": "root: cửa sổ Tk",
+          "gives": "object có self.marks (list riêng), self.mark_var, self.result",
+          "effect": "add_mark(): hợp lệ → thêm vào self.marks và cập nhật nhãn; sai → showerror, không thêm.",
+          "call": "App(tk.Tk()).result.cget(\"text\") → \"Chưa có điểm\""
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "App(root)",
+              "right": "__init__ tạo self.marks, self.mark_var"
+            },
+            {
+              "left": "create_widgets()",
+              "right": "Entry, nút, self.result"
+            },
+            {
+              "left": "Bấm \"Thêm điểm\"",
+              "right": "add_mark() gọi validate_mark"
+            },
+            {
+              "left": "ValueError",
+              "right": "showerror; hợp lệ → append rồi summary()"
+            }
+          ],
+          "rightOrder": [
+            0,
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "        self.root = root\n        self.marks = []\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        tk.Entry(self.root, textvariable=self.mark_var).pack()\n        tk.Button(self.root, text=\"Thêm điểm\", command=self.add_mark()).pack()\n        self.result = tk.Label(self.root, text=summary(self.marks))\n        self.result.pack()\n\n    def add_mark(self):\n        try:\n            mark = validate_mark(self.mark_var.get())\n        except ValueError as error:",
+          "firstLine": 21,
+          "line": 28,
+          "lines": [
+            28
+          ],
+          "label": "command=self.add_mark() gọi ngay",
+          "fix": "        tk.Button(self.root, text=\"Thêm điểm\", command=self.add_mark).pack()"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import tkinter as tk\nfrom tkinter import messagebox\n\n\ndef validate_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\n\ndef summary(marks):\n    if not marks:\n        return \"Chưa có điểm\"\n    average = sum(marks) / len(marks)\n    return f\"{len(marks)} điểm, trung bình {average:.2f}\"\n\n\nclass App:\n    def __init__(self, root):\n        self.root = root\n        self.marks = []\n        self.mark_var = tk.StringVar()\n        self.create_widgets()\n\n    def create_widgets(self):\n        tk.Entry(self.root, textvariable=self.mark_var).pack()\n        tk.Button(self.root, text=\"Thêm điểm\", command=self.add_mark).pack()\n        result = tk.Label(self.root, text=summary(self.marks))\n        result.pack()\n\n    def add_mark(self):\n        try:\n            mark = validate_mark(self.mark_var.get())\n        except ValueError as error:\n            messagebox.showerror(\"Điểm không hợp lệ\", str(error))\n            return\n        self.marks.append(mark)\n        self.result.config(text=summary(self.marks))\n\n\nif __name__ == \"__main__\":\n    root = tk.Tk()\n    root.title(\"Điểm trung bình\")\n    app = App(root)\n    root.mainloop()\n",
+          "label": "nhãn kết quả là biến cục bộ"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Tách validate_mark/summary khỏi class App được lợi gì khi kiểm thử và khi đổi giao diện?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

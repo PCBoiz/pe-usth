@@ -1,0 +1,394 @@
+{
+  "lesson_code": "PD09",
+  "sort_order": 40,
+  "module": "M6 · pandas",
+  "title": "PD09 · EDA, chất lượng dữ liệu và export",
+  "subtitle": "Nâng cao · M6 · 45 phút",
+  "estimated_minutes": 45,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "PD09 · EDA, chất lượng dữ liệu và export",
+    "subtitle": "Nâng cao · M6 · 45 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#PD09",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD09"
+        ],
+        "title": "EDA, chất lượng dữ liệu và export",
+        "goal": "Báo cáo chất lượng rồi xuất bản sạch kèm nhật ký.",
+        "task": "Viết quality_report(raw) và export_clean(raw, path) — không sửa raw.",
+        "predict": "order_id [O1, O5, O5]: duplicated().sum() là 1 hay 2?",
+        "code": "def quality_report(raw):\n    pass  # rows, duplicate_ids, missing_qty, ...\n\ndef export_clean(raw, path):\n    pass  # làm sạch bản sao → to_csv(index=False)",
+        "tests": [
+          "sales.csv → 1 trùng, 1 thiếu qty, 1 qty âm, 1 thiếu giá, 1 ngày hỏng",
+          "export_clean → 11 dòng thô, 6 đơn, revenue 155"
+        ],
+        "reflect": "Vì sao không gán kết quả làm sạch ngược vào raw?"
+      },
+      "context": {
+        "title": "Lập báo cáo chất lượng (khoá trùng, thiếu, âm, ngày hỏng) trước khi tin số liệu, rồi xuất bản sạch kèm nhật ký — không sửa dữ liệu thô.",
+        "body": "Viết quality_report(raw) trả dict số nguyên: rows (số dòng), duplicate_ids (số dòng có order_id đã xuất hiện ở dòng trước), missing_qty (qty thiếu hoặc không phải số), negative_qty (qty < 0), missing_price (unit_price thiếu hoặc không phải số), bad_dates (date không đọc được theo \"%Y-%m-%d\"). Viết export_clean(raw, path): trên BẢN SAO, bỏ trùng order_id (giữ dòng đầu), bỏ dòng thiếu qty/giá/ngày và dòng qty <= 0, chuẩn hoá region (strip + lower), thêm cột revenue, ghi CSV không index ra path và trả nhật ký {\"raw_rows\", \"clean_rows\", \"revenue\"}. Cả hai hàm không được sửa raw.",
+        "example": "sales.csv → 1 dòng trùng, 1 qty thiếu, 1 qty âm, 1 giá thiếu, 1 ngày hỏng; export_clean → 11 dòng thô, 6 đơn hợp lệ, revenue 155.0.",
+        "prereq": "PD08",
+        "level": "Nâng cao",
+        "files": [
+          "sales.csv"
+        ]
+      },
+      "predict": {
+        "question": "order_id [\"O1\", \"O5\", \"O5\", \"O9\"]. duplicated().sum() và duplicated(keep=False).sum() lần lượt là?",
+        "options": [
+          {
+            "id": "a",
+            "title": "1 và 2",
+            "detail": "Mặc định chỉ đánh dấu bản thứ hai; keep=False đánh dấu cả hai bản.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "2 và 2",
+            "detail": "Mặc định keep=\"first\" không đánh dấu bản đầu.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "1 và 1",
+            "detail": "keep=False đánh dấu mọi bản sao.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thấy dữ liệu sai thì sửa luôn vào bảng gốc cho gọn\"",
+        "body": "Sửa raw tại chỗ thì không còn gì để đối chiếu: không đếm lại được bao nhiêu dòng hỏng, không chạy lại được với chính sách khác. Báo cáo và làm sạch trên bản sao (copy, assign hoặc biến tạm), xuất file sạch riêng kèm nhật ký, raw giữ nguyên."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "EDA bắt đầu bằng câu hỏi \"một dòng là gì?\" (grain), rồi schema (dtypes), số dòng, thiếu/trùng và phạm vi hợp lệ — trước mọi biểu đồ hay trung bình."
+        },
+        {
+          "n": 2,
+          "body": "describe() cho min/max/mean cột số — qty âm hiện ngay ở min; value_counts() và nunique() cho cột phân loại; nhóm quá nhỏ thì đừng vội diễn giải."
+        },
+        {
+          "n": 3,
+          "body": "duplicated() đánh dấu lần xuất hiện THỨ HAI trở đi của khoá (keep=\"first\"); keep=False đánh dấu mọi bản sao — ra số dòng dính trùng, không phải số dòng thừa."
+        },
+        {
+          "n": 4,
+          "body": "Sau read_csv, ô trống đã là NaN chứ không còn là chuỗi \"\": đếm thiếu bằng isna() sau to_numeric, không so với \"\"."
+        },
+        {
+          "n": 5,
+          "body": "Viết quy tắc chất lượng thành phép kiểm rõ: khoá duy nhất (is_unique), qty không âm (ge(0).all()), tổng sau groupby/merge khớp tổng nguồn. Outlier là tín hiệu để điều tra, không tự động xoá; tương quan không phải nhân quả."
+        },
+        {
+          "n": 6,
+          "body": "Giữ raw riêng: báo cáo và làm sạch trên bản chuyển đổi, không gán ngược vào raw. Xuất bằng to_csv(index=False) kèm nhật ký: số dòng trước/sau, tổng doanh thu, chính sách đã áp."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\ndf = pd.DataFrame({\"id\": [1, 2, 2, 3], \"qty\": [2, 5, 5, -1], \"city\": [\"HN\", \"HN\", \"HN\", \"HUE\"]})\nprint(df.shape)\nprint(df[\"qty\"].describe()[[\"min\", \"max\"]].tolist())\nprint(df[\"city\"].value_counts().to_dict(), df[\"city\"].nunique())\n\nreport = {\n    \"dup_ids\": int(df[\"id\"].duplicated().sum()),\n    \"rows_in_dup\": int(df[\"id\"].duplicated(keep=False).sum()),\n    \"negative\": int(df[\"qty\"].lt(0).sum()),\n}\nprint(report)\n\nsummary = df.groupby(\"city\")[\"qty\"].sum()\nprint(summary.sum() == df[\"qty\"].sum())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Cột qty đọc từ CSV có ô trống. (raw[\"qty\"] == \"\").sum() trả?",
+          "options": [
+            {
+              "text": "Số ô trống",
+              "detail": "Ô trống không còn là \"\" sau read_csv.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi",
+              "detail": "So sánh không lỗi, chỉ ra sai.",
+              "correct": false
+            },
+            {
+              "text": "0 — read_csv đã đổi ô trống thành NaN, không phải chuỗi rỗng",
+              "detail": "Đếm thiếu bằng isna() sau to_numeric.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Đếm thiếu bằng isna() sau to_numeric."
+        },
+        {
+          "question": "describe() cho qty có min = -1. Nên làm gì?",
+          "options": [
+            {
+              "text": "Bỏ qua vì chỉ một dòng",
+              "detail": "Một dòng âm vẫn làm sai tổng doanh thu.",
+              "correct": false
+            },
+            {
+              "text": "Xoá ngay mọi dòng lạ",
+              "detail": "Xoá tự động có thể mất dữ liệu thật (đơn trả hàng).",
+              "correct": false
+            },
+            {
+              "text": "Đếm, điều tra (trả hàng? nhập sai?) rồi ghi chính sách xử lý",
+              "detail": "Giá trị lạ là tín hiệu để điều tra.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Giá trị lạ là tín hiệu để điều tra."
+        },
+        {
+          "question": "Doanh số và nhiệt độ có tương quan mạnh. Kết luận nào đúng?",
+          "options": [
+            {
+              "text": "Hai đại lượng cùng biến thiên; cần thêm bằng chứng mới nói được nhân quả",
+              "detail": "Correlation không phải causation.",
+              "correct": true
+            },
+            {
+              "text": "Nhiệt độ gây ra doanh số",
+              "detail": "Tương quan không chứng minh nhân quả.",
+              "correct": false
+            },
+            {
+              "text": "Tương quan mạnh nghĩa là dữ liệu sai",
+              "detail": "Không liên quan đến chất lượng dữ liệu.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Correlation không phải causation."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao quality_report và export_clean phải làm trên bản chuyển đổi mà không gán ngược vào raw?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "raw là bằng chứng gốc: còn nó thì đếm lại được số dòng trùng, thiếu, âm và chạy lại với chính sách khác. Gán to_numeric hay to_datetime ngược vào raw làm mất chữ gốc (\"x\", \"2026/04/02\") nên không còn biết ô nào đã hỏng. Làm trên biến tạm hoặc copy(), xuất bản sạch riêng kèm nhật ký."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: qty có chữ \"x\", ngày sai định dạng và ngày 31/4, hai đơn gửi lại. Lắp bốn chỗ.",
+        "rule": "Thử bảng có qty là chữ, ngày sai định dạng, ngày không tồn tại và đơn gửi lại; đối chiếu báo cáo với nhật ký xuất."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "duplicated() → đánh dấu bản thứ hai trở đi của khoá."
+          },
+          {
+            "label": "Bước 2",
+            "text": "to_numeric(errors=\"coerce\").isna() → qty thiếu hoặc là chữ."
+          },
+          {
+            "label": "Bước 3",
+            "text": "to_datetime(format=..., errors=\"coerce\") → ngày hỏng thành NaT."
+          },
+          {
+            "label": "Bước 4",
+            "text": "raw.copy() → làm sạch trên bản sao, raw giữ nguyên."
+          },
+          {
+            "label": "Bước 5",
+            "text": "to_csv(path, index=False) + nhật ký → file sạch, số dòng trước/sau."
+          }
+        ]
+      },
+      "counter": {
+        "question": "order_id [A, A, A, B]. quality_report(...)[\"duplicate_ids\"] = ?",
+        "options": [
+          "2",
+          "3",
+          "1"
+        ],
+        "correct": "2"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef _parse(raw):\n    qty = pd.to_numeric(raw[\"qty\"], errors=\"coerce\")\n    price = pd.to_numeric(raw[\"unit_price\"], errors=\"coerce\")\n    dates = pd.to_datetime(raw[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    return qty, price, dates\n\n\ndef quality_report(raw):\n    qty, price, dates = _parse(raw)\n    return {\n        \"rows\": int(len(raw)),\n        \"duplicate_ids\": {{slot1}},\n        \"missing_qty\": {{slot2}},\n        \"negative_qty\": int((qty < 0).sum()),\n        \"missing_price\": int(price.isna().sum()),\n        \"bad_dates\": int(dates.isna().sum()),\n    }\n\n\ndef export_clean(raw, path):\n    qty, price, dates = _parse(raw)\n    df = {{slot3}}\n    df[\"qty\"] = qty\n    df[\"unit_price\"] = price\n    df[\"date\"] = dates\n    df = df.drop_duplicates(subset=\"order_id\", keep=\"first\")\n    df = df.dropna(subset=[\"qty\", \"unit_price\", \"date\"])\n    df = df.loc[df[\"qty\"] > 0].copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"revenue\"] = df[\"qty\"] * df[\"unit_price\"]\n    {{slot4}}\n    return {\"raw_rows\": int(len(raw)), \"clean_rows\": int(len(df)), \"revenue\": float(df[\"revenue\"].sum())}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "int(raw[\"order_id\"].duplicated().sum())"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "int(qty.isna().sum())"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "raw.copy()"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "df.to_csv(path, index=False)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "raw",
+            "slot": 3,
+            "trap": "Gán cột vào df là sửa thẳng raw."
+          },
+          {
+            "label": "df.to_csv(path, index=False)",
+            "slot": 4
+          },
+          {
+            "label": "int(raw[\"order_id\"].duplicated().sum())",
+            "slot": 1
+          },
+          {
+            "label": "raw.copy()",
+            "slot": 3
+          },
+          {
+            "label": "df.to_csv(path)",
+            "slot": 4,
+            "trap": "Thêm cột index không tên."
+          },
+          {
+            "label": "int(raw[\"order_id\"].duplicated(keep=False).sum())",
+            "slot": 1,
+            "trap": "Đếm cả bản đầu — ra số dòng dính trùng."
+          },
+          {
+            "label": "int((raw[\"qty\"] == \"\").sum())",
+            "slot": 2,
+            "trap": "Ô trống đã thành NaN sau read_csv."
+          },
+          {
+            "label": "int(qty.isna().sum())",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết quality_report(raw) trả dict số nguyên: rows (số dòng), duplicate_ids (số dòng có order_id đã xuất hiện ở dòng trước), missing_qty (qty thiếu hoặc không phải số), negative_qty (qty < 0), missing_price (unit_price thiếu hoặc không phải số), bad_dates (date không đọc được theo \"%Y-%m-%d\"). Viết export_clean(raw, path): trên BẢN SAO, bỏ trùng order_id (giữ dòng đầu), bỏ dòng thiếu qty/giá/ngày và dòng qty <= 0, chuẩn hoá region (strip + lower), thêm cột revenue, ghi CSV không index ra path và trả nhật ký {\"raw_rows\", \"clean_rows\", \"revenue\"}. Cả hai hàm không được sửa raw.\n\nThực hành: Một hàm phụ đổi kiểu (to_numeric, to_datetime đều coerce) dùng chung cho báo cáo và xuất; mọi thay đổi làm trên copy; to_csv(index=False).",
+        "io": [
+          {
+            "label": "sales.csv",
+            "value": "rows 11; trùng 1; qty thiếu 1; qty âm 1; giá thiếu 1; ngày hỏng 1"
+          },
+          {
+            "label": "export_clean(sales.csv)",
+            "value": "{\"raw_rows\": 11, \"clean_rows\": 6, \"revenue\": 155.0}"
+          },
+          {
+            "label": "Sau khi gọi",
+            "value": "raw không đổi; file sạch không có cột index"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef quality_report(raw):\n    # dict: rows, duplicate_ids, missing_qty, negative_qty, missing_price, bad_dates — không sửa raw\n    pass\n\n\ndef export_clean(raw, path):\n    # Làm sạch trên bản sao, ghi CSV không index, trả {\"raw_rows\", \"clean_rows\", \"revenue\"}\n    pass\n\n\nif __name__ == \"__main__\":\n    raw = pd.read_csv(\"sales.csv\")\n    print(raw.describe())\n    print(quality_report(raw))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef _parse(raw):\n    qty = pd.to_numeric(raw[\"qty\"], errors=\"coerce\")\n    price = pd.to_numeric(raw[\"unit_price\"], errors=\"coerce\")\n    dates = pd.to_datetime(raw[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    return qty, price, dates\n\n\ndef quality_report(raw):\n    qty, price, dates = _parse(raw)\n    return {\n        \"rows\": int(len(raw)),\n        \"duplicate_ids\": int(raw[\"order_id\"].duplicated().sum()),\n        \"missing_qty\": int(qty.isna().sum()),\n        \"negative_qty\": int((qty < 0).sum()),\n        \"missing_price\": int(price.isna().sum()),\n        \"bad_dates\": int(dates.isna().sum()),\n    }\n\n\ndef export_clean(raw, path):\n    qty, price, dates = _parse(raw)\n    df = raw.copy()\n    df[\"qty\"] = qty\n    df[\"unit_price\"] = price\n    df[\"date\"] = dates\n    df = df.drop_duplicates(subset=\"order_id\", keep=\"first\")\n    df = df.dropna(subset=[\"qty\", \"unit_price\", \"date\"])\n    df = df.loc[df[\"qty\"] > 0].copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"revenue\"] = df[\"qty\"] * df[\"unit_price\"]\n    df.to_csv(path, index=False)\n    return {\"raw_rows\": int(len(raw)), \"clean_rows\": int(len(df)), \"revenue\": float(df[\"revenue\"].sum())}\n\n\nif __name__ == \"__main__\":\n    raw = pd.read_csv(\"sales.csv\")\n    print(raw.describe())\n    print(quality_report(raw))\n    print(export_clean(raw, \"sales_clean.csv\"))\n    print(pd.read_csv(\"sales_clean.csv\"))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Một hàm phụ đổi kiểu (to_numeric, to_datetime đều coerce) dùng chung cho báo cáo và xuất; mọi thay đổi làm trên copy; to_csv(index=False)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. _parse(raw) trả (qty, price, dates) đã đổi kiểu, KHÔNG gán vào raw.\n2. quality_report: đếm duplicated(), isna(), (qty < 0), mỗi số bọc int(...).\n3. export_clean: df = raw.copy() → gán ba cột đã đổi → bỏ trùng → dropna → qty > 0 → region → revenue → to_csv(path, index=False) → trả nhật ký."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def quality_report(raw):\n    qty, price, dates = _parse(raw)\n    return {\n        \"rows\": int(len(raw)),\n        \"duplicate_ids\": int(raw[\"order_id\"].duplicated().sum()),\n        ...\n    }"
+        }
+      ],
+      "tests": [
+        {
+          "name": "sales.csv: báo cáo chất lượng",
+          "call": "quality_report(pd.read_csv(\"sales.csv\"))",
+          "expect": "{'rows': 11, 'duplicate_ids': 1, 'missing_qty': 1, 'negative_qty': 1, 'missing_price': 1, 'bad_dates': 1}"
+        },
+        {
+          "name": "Dữ liệu khác: qty \"x\", ngày sai định dạng, ngày 31/4",
+          "call": "quality_report(pd.read_csv(_studio.write('raw_e.csv', 'order_id,date,region,product,qty,unit_price\\nE1,2026-04-01,Hue,Pen,3,2.5\\nE2,2026-04-01,hue ,Pen,x,2.5\\nE2,2026-04-01,hue ,Pen,x,2.5\\nE3,2026/04/02,Hanoi,Book,1,12\\nE4,2026-04-03,hanoi,Book,-2,12\\nE5,2026-04-31,HANOI,Pen,4,\\nE6,2026-04-05,hue,Book,2,12\\nE6,2026-04-05,hue,Book,5,12\\n')))",
+          "expect": "{'rows': 8, 'duplicate_ids': 2, 'missing_qty': 2, 'negative_qty': 1, 'missing_price': 1, 'bad_dates': 2}"
+        },
+        {
+          "name": "Bảng sạch → báo cáo toàn 0",
+          "call": "quality_report(pd.DataFrame({\"order_id\": [\"Z1\"], \"date\": [\"2026-05-01\"], \"region\": [\"hue\"], \"product\": [\"Pen\"], \"qty\": [1], \"unit_price\": [3.0]}))",
+          "expect": "{'rows': 1, 'duplicate_ids': 0, 'missing_qty': 0, 'negative_qty': 0, 'missing_price': 0, 'bad_dates': 0}"
+        },
+        {
+          "name": "sales.csv: 11 dòng thô → 6 đơn, revenue 155",
+          "call": "export_clean(pd.read_csv(\"sales.csv\"), \"clean.csv\")",
+          "expect": "{'raw_rows': 11, 'clean_rows': 6, 'revenue': 155.0}"
+        },
+        {
+          "name": "Dữ liệu khác: nhật ký làm sạch",
+          "call": "export_clean(pd.read_csv(_studio.write('raw_e.csv', 'order_id,date,region,product,qty,unit_price\\nE1,2026-04-01,Hue,Pen,3,2.5\\nE2,2026-04-01,hue ,Pen,x,2.5\\nE2,2026-04-01,hue ,Pen,x,2.5\\nE3,2026/04/02,Hanoi,Book,1,12\\nE4,2026-04-03,hanoi,Book,-2,12\\nE5,2026-04-31,HANOI,Pen,4,\\nE6,2026-04-05,hue,Book,2,12\\nE6,2026-04-05,hue,Book,5,12\\n')), \"clean_e.csv\")",
+          "expect": "{'raw_rows': 8, 'clean_rows': 2, 'revenue': 31.5}"
+        },
+        {
+          "name": "export_clean không sửa raw",
+          "call": "(lambda r: (export_clean(r, \"clean.csv\"), r[\"date\"].tolist()[:2] + r[\"region\"].tolist()[:1])[1])(pd.read_csv(\"sales.csv\"))",
+          "expect": "['2026-01-01', '2026-01-02', ' North ']"
+        },
+        {
+          "name": "File xuất không có cột index",
+          "call": "(export_clean(pd.read_csv(\"sales.csv\"), \"clean.csv\"), _studio.read(\"clean.csv\").splitlines()[0])[1]",
+          "expect": "'order_id,date,region,product,qty,unit_price,revenue'"
+        },
+        {
+          "name": "File xuất: 6 đơn, vùng đã chuẩn hoá",
+          "call": "(export_clean(pd.read_csv(\"sales.csv\"), \"clean.csv\"), (lambda c: (len(c), sorted(set(c[\"region\"]))))(pd.read_csv(\"clean.csv\")))[1]",
+          "expect": "(6, ['north', 'south'])"
+        }
+      ],
+      "files": [
+        {
+          "name": "sales.csv",
+          "content": "order_id,date,region,product,qty,unit_price\r\nO01,2026-01-01, North ,Book,2,10\r\nO02,2026-01-02,south,Pen,1,20\r\nO03,2026-01-03,north,Book,,10\r\nO04,bad,south,Pen,2,20\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO05,2026-01-04,NORTH,Book,3,10\r\nO06,2026-01-25,South,Pen,2,20\r\nO07,2026-02-01,north,Book,-1,10\r\nO08,2026-02-02,south,Pen,2,\r\nO09,2026-02-03,north,Book,1,15\r\nO10,2026-02-04,south,Pen,3,10\r\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "quality_report(raw)",
+          "does": "Đếm các lỗi chất lượng của bảng bán hàng thô.",
+          "takes": "raw: DataFrame order_id, date, region, product, qty, unit_price (đọc thô)",
+          "gives": "dict int: rows, duplicate_ids, missing_qty, negative_qty, missing_price, bad_dates",
+          "effect": "Không sửa raw.",
+          "call": "quality_report(raw)[\"duplicate_ids\"] → 1"
+        },
+        {
+          "sig": "export_clean(raw, path)",
+          "does": "Áp chính sách làm sạch, ghi CSV sạch và trả nhật ký.",
+          "takes": "raw như trên; path: tên file đầu ra",
+          "gives": "dict {\"raw_rows\": int, \"clean_rows\": int, \"revenue\": float}",
+          "effect": "Ghi file path (không cột index); không sửa raw.",
+          "call": "export_clean(raw, \"clean.csv\") → {\"raw_rows\": 11, \"clean_rows\": 6, \"revenue\": 155.0}"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

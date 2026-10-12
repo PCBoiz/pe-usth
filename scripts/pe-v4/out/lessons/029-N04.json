@@ -1,0 +1,370 @@
+{
+  "lesson_code": "N04",
+  "sort_order": 29,
+  "module": "M5 · NumPy",
+  "title": "N04 · Thống kê, NaN và trọng số",
+  "subtitle": "Trung cấp · M5 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N04 · Thống kê, NaN và trọng số",
+    "subtitle": "Trung cấp · M5 · 35 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#N04",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N04"
+        ],
+        "title": "Thống kê, NaN và trọng số",
+        "goal": "Thống kê bỏ NaN và GPA có trọng số.",
+        "task": "nan_summary(values): valid, mean, median bỏ NaN; weighted_gpa(marks, credits) bỏ môn thiếu điểm.",
+        "predict": "(a == np.nan).sum() với một ô thiếu bằng mấy?",
+        "code": "def nan_summary(values):\n    a = np.asarray(values, dtype=float)\n    pass  # isfinite, nanmean, nanmedian\n\ndef weighted_gpa(marks, credits):\n    pass  # mask ~np.isnan → np.average",
+        "tests": [
+          "[4, nan, 8, 10] → valid 3, mean 7.33",
+          "[7, 8], [2, 3] → 7.6"
+        ],
+        "reflect": "Điền 0 vào ô thiếu làm sai kết quả thế nào?"
+      },
+      "context": {
+        "title": "Tính thống kê bỏ qua NaN đúng cách và trung bình có trọng số.",
+        "body": "Viết nan_summary(values) trả dict: valid (số quan sát hợp lệ — không phải NaN), mean (nanmean), median (nanmedian); KHÔNG thay NaN bằng 0. Viết weighted_gpa(marks, credits): điểm trung bình có trọng số theo số tín chỉ, bỏ các môn có điểm NaN (bỏ luôn tín chỉ của môn đó).",
+        "example": "nan_summary([4, nan, 8, 10]) → valid 3, mean 7.333…, median 8.0; weighted_gpa([7, 8], [2, 3]) → 7.6.",
+        "prereq": "N03",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "a = np.array([7.0, np.nan, 9.0]). (a == np.nan).sum() bằng mấy?",
+        "options": [
+          {
+            "id": "a",
+            "title": "0 — NaN không bằng bất cứ thứ gì, kể cả chính nó",
+            "detail": "Phải dùng np.isnan(a).sum() → 1.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "1",
+            "detail": "Đó là kết quả của np.isnan(a).sum().",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "So sánh chạy bình thường, chỉ là luôn False.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Ô thiếu thì điền 0 cho dễ tính\"",
+        "body": "Điền 0 là thêm một quan sát GIẢ: [4, NaN, 8, 10] thành [4, 0, 8, 10], mean tụt từ 7.33 xuống 5.5 và số quan sát tăng từ 3 lên 4. Dùng nanmean/nanmedian để bỏ ô thiếu; nếu thật sự phải điền thì đó là một quyết định phân tích cần ghi rõ."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "NaN (np.nan) đánh dấu \"thiếu\" trong array số thực. Mọi phép tính dính NaN đều ra NaN: np.mean([7, nan, 9]) là nan."
+        },
+        {
+          "n": 2,
+          "body": "NaN không bằng chính nó: x == np.nan luôn False. Kiểm bằng np.isnan(a) (hoặc np.isfinite(a) để loại cả inf); đếm ô thiếu bằng np.isnan(a).sum()."
+        },
+        {
+          "n": 3,
+          "body": "np.nanmean / np.nanmedian / np.nanstd bỏ NaN rồi mới tính. Thay NaN bằng 0 là BỊA dữ liệu: [4, 0, 8, 10] cho mean 5.5 thay vì 7.33."
+        },
+        {
+          "n": 4,
+          "body": "Mean nhạy với ngoại lai; median và quantile mô tả vị trí theo cách khác: [1, 2, 3, 100] có mean 26.5 nhưng median 2.5."
+        },
+        {
+          "n": 5,
+          "body": "np.average(a, weights=w) = Σ a·w / Σ w — GPA theo tín chỉ. std mặc định ddof=0 (chia n); ddof=1 cho độ lệch chuẩn mẫu (chia n − 1) — ghi rõ đang dùng định nghĩa nào. np.corrcoef đo tương quan, không chứng minh nhân quả."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\n\nwait = np.array([5.0, 7.0, np.nan, 6.0, 60.0])   # phút chờ: 1 ô thiếu, 1 ngoại lai\nprint(np.isnan(wait).sum(), (wait == np.nan).sum())\nprint(wait.mean(), np.nanmean(wait), np.nanmedian(wait))\nprint(round(np.nanstd(wait), 2), round(np.nanstd(wait, ddof=1), 2))\nprint(np.nanquantile(wait, [0.25, 0.5, 0.75]))\nprint(np.average([6.0, 9.0], weights=[1, 3]))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Điểm [7, 8], tín chỉ [2, 3]. np.average(điểm, weights=tín chỉ) bằng bao nhiêu?",
+          "options": [
+            {
+              "text": "38",
+              "detail": "Đó là tổng có trọng số chưa chia Σ trọng số.",
+              "correct": false
+            },
+            {
+              "text": "7.6 = (7·2 + 8·3) / 5",
+              "detail": "Trọng số lớn kéo kết quả về phía điểm đó.",
+              "correct": true
+            },
+            {
+              "text": "7.5",
+              "detail": "Đó là mean thường, bỏ qua tín chỉ.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Trọng số lớn kéo kết quả về phía điểm đó."
+        },
+        {
+          "question": "a = [1, 2, 3, 100]. Thống kê nào mô tả \"điểm giữa\" ít bị 100 kéo lệch?",
+          "options": [
+            {
+              "text": "Mean = 26.5",
+              "detail": "Mean bị ngoại lai kéo lên.",
+              "correct": false
+            },
+            {
+              "text": "Max = 100",
+              "detail": "Max chính là ngoại lai.",
+              "correct": false
+            },
+            {
+              "text": "Median = 2.5",
+              "detail": "Median chỉ phụ thuộc thứ tự.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Median chỉ phụ thuộc thứ tự."
+        },
+        {
+          "question": "np.std(a) và np.std(a, ddof=1) khác nhau thế nào?",
+          "options": [
+            {
+              "text": "ddof=0 chia n (tổng thể), ddof=1 chia n − 1 (mẫu) nên lớn hơn một chút",
+              "detail": "Ghi rõ định nghĩa đang dùng.",
+              "correct": true
+            },
+            {
+              "text": "Giống hệt nhau",
+              "detail": "Mẫu số khác nhau.",
+              "correct": false
+            },
+            {
+              "text": "ddof=1 bỏ qua NaN",
+              "detail": "Bỏ NaN là việc của np.nanstd.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Ghi rõ định nghĩa đang dùng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao không đếm ô thiếu bằng a == np.nan và không điền 0 vào chỗ thiếu?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "NaN không bằng chính nó nên a == np.nan luôn False — đếm ra 0 dù có ô thiếu; phải dùng np.isnan. Điền 0 tạo ra quan sát giả: số quan sát tăng và mean bị kéo xuống. nanmean/nanmedian bỏ ô thiếu và tính trên dữ liệu thật."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: thời gian chờ (phút) có ô thiếu, và GPA ba môn có một môn chưa có điểm.",
+        "rule": "Thử dữ liệu có hai ô thiếu và dữ liệu không có ô thiếu nào; GPA có một môn thiếu điểm phải ra như khi xoá hẳn môn đó."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "np.isfinite([4, nan, 8, 10]).sum() → 3 quan sát"
+          },
+          {
+            "label": "Bước 2",
+            "text": "np.nanmean → (4 + 8 + 10) / 3 = 7.33"
+          },
+          {
+            "label": "Bước 3",
+            "text": "np.nanmedian → 8.0"
+          },
+          {
+            "label": "Bước 4",
+            "text": "~np.isnan(marks) → bỏ môn thiếu điểm cùng tín chỉ của nó"
+          },
+          {
+            "label": "Bước 5",
+            "text": "np.average([7, 8], weights=[2, 3]) → 7.6"
+          }
+        ]
+      },
+      "counter": {
+        "question": "nan_summary([nan, 1, 2, nan, 6])[\"mean\"] = ?",
+        "options": [
+          "1.8",
+          "nan",
+          "3.0"
+        ],
+        "correct": "3.0"
+      },
+      "scaffold": {
+        "template": "import numpy as np\n\nwait = np.array([5.0, np.nan, 6.0, 60.0])\nmissing = {{slot1}}\ntypical = {{slot2}}\nmarks = np.array([6.0, 9.0, np.nan])\ncredits = np.array([1, 3, 2])\nok = {{slot3}}\ngpa = np.average(marks[ok], weights={{slot4}})\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "np.isnan(wait).sum()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "np.nanmedian(wait)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "~np.isnan(marks)"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "credits[ok]"
+          }
+        ],
+        "bank": [
+          {
+            "label": "~np.isnan(marks)",
+            "slot": 3
+          },
+          {
+            "label": "np.median(wait)",
+            "slot": 2,
+            "trap": "Có NaN → kết quả nan."
+          },
+          {
+            "label": "np.nanmedian(wait)",
+            "slot": 2
+          },
+          {
+            "label": "(wait == np.nan).sum()",
+            "slot": 1,
+            "trap": "NaN không bằng chính nó → luôn đếm ra 0."
+          },
+          {
+            "label": "credits[ok]",
+            "slot": 4
+          },
+          {
+            "label": "credits",
+            "slot": 4,
+            "trap": "Thiếu lọc: 3 tín chỉ cho 2 điểm → lỗi lệch shape."
+          },
+          {
+            "label": "np.isnan(wait).sum()",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết nan_summary(values) trả dict: valid (số quan sát hợp lệ — không phải NaN), mean (nanmean), median (nanmedian); KHÔNG thay NaN bằng 0. Viết weighted_gpa(marks, credits): điểm trung bình có trọng số theo số tín chỉ, bỏ các môn có điểm NaN (bỏ luôn tín chỉ của môn đó).\n\nThực hành: Đổi về float, đếm bằng np.isfinite, tính bằng np.nanmean/np.nanmedian; GPA lọc mask ~np.isnan(marks) cho cả điểm lẫn tín chỉ.",
+        "io": [
+          {
+            "label": "nan_summary([4, nan, 8, 10])",
+            "value": "valid 3 · mean 7.333… · median 8.0"
+          },
+          {
+            "label": "weighted_gpa([7, 8, nan], [2, 3, 4])",
+            "value": "7.6 — môn thiếu điểm bị bỏ cùng tín chỉ"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef nan_summary(values):\n    pass\n\n\ndef weighted_gpa(marks, credits):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef nan_summary(values):\n    a = np.asarray(values, dtype=float)\n    return {\n        \"valid\": int(np.isfinite(a).sum()),\n        \"mean\": float(np.nanmean(a)),\n        \"median\": float(np.nanmedian(a)),\n    }\n\n\ndef weighted_gpa(marks, credits):\n    m = np.asarray(marks, dtype=float)\n    c = np.asarray(credits, dtype=float)\n    ok = ~np.isnan(m)\n    return float(np.average(m[ok], weights=c[ok]))\n\n\nprint(nan_summary([4, np.nan, 8, 10]))\nprint(weighted_gpa([7, 8, np.nan], [2, 3, 4]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đổi về float, đếm bằng np.isfinite, tính bằng np.nanmean/np.nanmedian; GPA lọc mask ~np.isnan(marks) cho cả điểm lẫn tín chỉ."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. a = np.asarray(values, dtype=float); valid = int(np.isfinite(a).sum()).\n2. mean = float(np.nanmean(a)); median = float(np.nanmedian(a)).\n3. weighted_gpa: ok = ~np.isnan(m); return float(np.average(m[ok], weights=c[ok]))."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def weighted_gpa(marks, credits):\n    m = np.asarray(marks, dtype=float)\n    c = np.asarray(credits, dtype=float)\n    ok = ~np.isnan(m)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: 3 quan sát hợp lệ",
+          "call": "nan_summary([4, float('nan'), 8, 10])['valid']",
+          "expect": "3"
+        },
+        {
+          "name": "Đề mẫu: mean bỏ NaN",
+          "call": "round(nan_summary([4, float('nan'), 8, 10])['mean'], 4)",
+          "expect": "7.3333"
+        },
+        {
+          "name": "Đề mẫu: median bỏ NaN",
+          "call": "round(nan_summary([4, float('nan'), 8, 10])['median'], 4)",
+          "expect": "8.0"
+        },
+        {
+          "name": "Dữ liệu khác: hai ô thiếu",
+          "call": "(lambda d: (d['valid'], round(d['mean'], 4), round(d['median'], 4)))(nan_summary([float('nan'), 1, 2, float('nan'), 6]))",
+          "expect": "(3, 3.0, 2.0)"
+        },
+        {
+          "name": "Không có ô thiếu (có ngoại lai)",
+          "call": "(lambda d: (d['valid'], round(d['mean'], 4), round(d['median'], 4)))(nan_summary([1, 2, 3, 100]))",
+          "expect": "(4, 26.5, 2.5)"
+        },
+        {
+          "name": "GPA có trọng số",
+          "call": "round(weighted_gpa([7, 8], [2, 3]), 4)",
+          "expect": "7.6"
+        },
+        {
+          "name": "GPA bỏ môn thiếu điểm cùng tín chỉ",
+          "call": "round(weighted_gpa([7, 8, float('nan')], [2, 3, 4]), 4)",
+          "expect": "7.6"
+        },
+        {
+          "name": "GPA dữ liệu khác",
+          "call": "round(weighted_gpa([10, 5, 6], [1, 1, 2]), 4)",
+          "expect": "6.75"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "nan_summary(values)",
+          "does": "Đếm quan sát hợp lệ và tính mean/median bỏ qua NaN.",
+          "takes": "values: list/array số, có thể có nan",
+          "gives": "dict valid (int), mean (float), median (float)",
+          "effect": "Không sửa values; không điền 0 vào ô thiếu.",
+          "call": "nan_summary([4, nan, 8, 10]) → valid 3, mean 7.333…, median 8.0"
+        },
+        {
+          "sig": "weighted_gpa(marks, credits)",
+          "does": "Điểm trung bình có trọng số theo tín chỉ, bỏ môn thiếu điểm.",
+          "takes": "marks: điểm (có thể nan); credits: tín chỉ, cùng độ dài",
+          "gives": "float",
+          "effect": "Không sửa đầu vào.",
+          "call": "weighted_gpa([7, 8, nan], [2, 3, 4]) → 7.6"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy.",
+      "packages": [
+        "numpy"
+      ]
+    }
+  }
+}

@@ -25,3 +25,7 @@ python-studio-qa/
 
 # Nhat ky sua chua noi bo, khong day len git
 NHAT-KY-SUA.md
+
+# CPython 3.12 + đúng phiên bản numpy/pandas/matplotlib của Pyodide 0.27.7, để
+# scripts/pe-v4/build.py chấm thử lúc dựng giống trình duyệt (xem README pe-v4)
+/scripts/pe-v4/.venv/

@@ -8,6 +8,9 @@
  * `curricula.json` — cùng nguồn trang chi tiết đang dùng để vẽ giáo trình, nên
  * hai chỗ không thể lệch số bài.
  *
+ * Khoá `python` cơ bản đã gỡ khỏi trang (10/2026): chỉ còn Python Advanced, giáo
+ * trình 48 bài từ scripts/pe-v4 (đồng bộ bằng scripts/pe-v4/sync_curricula.py).
+ *
  * Sửa seed thì phải sửa cả file này (xem bẫy "hai nguồn danh sách bài" trong
  * AGENTS.md — đây là nguồn thứ ba của cùng một loại lệch).
  */
@@ -56,36 +59,18 @@ function lessonCount(id: string, fallback: number): number {
 
 export const COURSES: CatalogCourse[] = [
   {
-    id: 'python',
-    label: 'Python',
-    title: 'Lập trình Python từ Zero đến Hero',
-    subtitle: 'Từ cú pháp cơ bản đến AI/Machine Learning',
-    description:
-      'Giáo trình 40 bài chạy ngay trong trình duyệt: đọc hiểu từng dòng, lắp ghép mã rồi tự viết '
-      + 'và chạy thử, có chấm tự động. Đi từ biến, vòng lặp, hàm tới file, class, thread và process.',
-    tag: 'NGÔN NGỮ LẬP TRÌNH',
-    level: 'beginner',
-    duration: '~40 giờ',
-    lessons: lessonCount('python', 40),
-    rating: 4.8,
-    image: '/static/images/python.webp',
-    color: '#3776AB',
-    accent: '#FFD43B',
-    mark: 'Py',
-    lessonUrl: '/lesson/python',
-  },
-  {
     id: 'python_advanced',
     label: 'Python Mini-game',
     title: 'Python Advanced — học qua mini-game',
-    subtitle: '40 bài PE Python học qua mini-game',
+    subtitle: '48 bài Python nâng cao học qua mini-game',
     description:
-      'Cùng giáo trình 40 bài PE Python v3 nhưng học bằng game: ghép code rồi chạy thật, săn lỗi, '
-      + 'nối lệnh với ý nghĩa, theo dõi biến, combo điểm và trận Boss cuối mỗi chặng.',
+      'Process và subprocess, đa luồng, GUI Tkinter, SQL, NumPy, pandas, Matplotlib và dự án phân tích '
+      + 'dữ liệu — chạy Python ngay trong trình duyệt, học bằng game: ghép code rồi chạy thật, săn lỗi, '
+      + 'sửa code và trận Boss cuối chặng.',
     tag: 'MINI-GAME',
-    level: 'intermediate',
-    duration: '~40 giờ',
-    lessons: lessonCount('python_advanced', 40),
+    level: 'advanced',
+    duration: '~48 giờ',
+    lessons: lessonCount('python_advanced', 48),
     rating: 4.8,
     image: '/static/images/python.webp',
     color: '#7C3AED',

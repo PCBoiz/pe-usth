@@ -1,0 +1,366 @@
+{
+  "lesson_code": "N02",
+  "sort_order": 27,
+  "module": "M5 · NumPy",
+  "title": "N02 · Indexing, mask và vectorization",
+  "subtitle": "Trung cấp · M5 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N02 · Indexing, mask và vectorization",
+    "subtitle": "Trung cấp · M5 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#N02",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N02"
+        ],
+        "title": "Indexing, mask và vectorization",
+        "goal": "Lọc bằng mask nhiều điều kiện, tính đồng loạt.",
+        "task": "curve(scores, bonus): lọc 0..10, cộng bonus, chặn ở 10; grade_labels bằng np.where.",
+        "predict": "a[(a >= 5) and (a <= 10)] chạy thế nào?",
+        "code": "def curve(scores, bonus):\n    a = np.asarray(scores, dtype=float)\n    pass  # mask & → + bonus → clip\n\ndef grade_labels(scores, cutoff):\n    pass  # np.where",
+        "tests": [
+          "[3, 5, 8, 12], 0.5 → [3.5, 5.5, 8.5]",
+          "[9.8, 7], 0.5 → [10.0, 7.5]"
+        ],
+        "reflect": "Vì sao clip không thay được mask?"
+      },
+      "context": {
+        "title": "Chọn dữ liệu bằng boolean mask nhiều điều kiện và tính đồng loạt không cần vòng lặp.",
+        "body": "Viết curve(scores, bonus): chỉ giữ các điểm hợp lệ trong đoạn 0..10 (bỏ điểm âm và điểm lớn hơn 10), cộng bonus cho từng điểm còn lại rồi chặn tối đa ở 10; trả array số thực. Viết grade_labels(scores, cutoff): trả array nhãn \"pass\" (điểm ≥ cutoff) hoặc \"fail\" cho TỪNG điểm, dùng np.where.",
+        "example": "curve([3, 5, 8, 12], 0.5) → [3.5, 5.5, 8.5]; grade_labels([4, 6, 9], 5) → [\"fail\", \"pass\", \"pass\"].",
+        "prereq": "N01",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "a = np.array([4, 6, 8, 11]). Dòng dưới cho gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "array([6, 8])",
+            "detail": "Đúng nếu dùng & thay cho and.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "ValueError: truth value of an array ... is ambiguous",
+            "detail": "and cần MỘT bool; array có nhiều giá trị.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "array([4, 6, 8, 11])",
+            "detail": "Không phép lọc nào chạy được.",
+            "correct": false
+          }
+        ],
+        "code": "a[(a >= 5) and (a <= 10)]"
+      },
+      "misconception": {
+        "title": "\"np.clip loại bỏ điểm sai\"",
+        "body": "clip không bỏ phần tử nào: 12 bị kéo về 10 và vẫn nằm trong kết quả. Muốn LOẠI điểm ngoài 0..10 thì lọc bằng mask; clip chỉ dùng để chặn giá trị sau khi cộng thưởng."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "a[i, j] lấy một ô; a[:, 1] lấy cả cột thứ hai; a[0:2] lấy hai hàng đầu. Slice dùng start:stop như list."
+        },
+        {
+          "n": 2,
+          "body": "So sánh trên array cho ra array bool cùng shape (mask). a[mask] giữ các phần tử ứng với True — kết quả là array 1 chiều MỚI."
+        },
+        {
+          "n": 3,
+          "body": "Ghép điều kiện dùng & (và), | (hoặc), ~ (phủ định), mỗi điều kiện đặt trong NGOẶC: (a >= 0) & (a <= 10). and/or đòi một giá trị True/False duy nhất nên báo ValueError với array; thiếu ngoặc thì & được tính trước >=."
+        },
+        {
+          "n": 4,
+          "body": "Phép toán trên array chạy element-wise cho mọi phần tử (vectorization): a + 0.5, a * 1.8 — không cần vòng for. Nhưng đừng nhồi mọi thứ vào một dòng khó đọc: đặt tên bước trung gian như valid để pipeline rõ ràng."
+        },
+        {
+          "n": 5,
+          "body": "np.where(điều kiện, x, y) chọn x hoặc y cho TỪNG phần tử; np.clip(a, lo, hi) kéo giá trị ngoài biên về biên — nó không loại phần tử nào."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\n\ntemps = np.array([[28, 35], [31, 40], [22, 30]])\nprint(temps[1, 0], temps[:, 1])          # một ô; cả cột thứ hai\nhot = (temps >= 30) & (temps < 40)\nprint(hot)\nprint(temps[hot])                         # chỉ các ô thỏa CẢ HAI điều kiện\nprint(temps * 1.8 + 32)                   # °C → °F cho mọi ô, không vòng lặp\nprint(np.where(temps > 32, \"nóng\", \"ổn\"))\nprint(np.clip(temps, 25, 35))             # kéo về biên, không bỏ ô nào",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "a = np.array([[6, 8], [7, 9]]). a[:, 1] là gì?",
+          "options": [
+            {
+              "text": "[7, 9] — hàng thứ hai",
+              "detail": "Hàng thứ hai là a[1].",
+              "correct": false
+            },
+            {
+              "text": "[8, 9] — cột thứ hai của mọi hàng",
+              "detail": ": là mọi hàng, 1 là cột có chỉ số 1.",
+              "correct": true
+            },
+            {
+              "text": "8",
+              "detail": "Một ô cần hai chỉ số cụ thể, ví dụ a[0, 1].",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": ": là mọi hàng, 1 là cột có chỉ số 1."
+        },
+        {
+          "question": "np.where(np.array([120, 80]) > 100, \"high\", \"low\") trả gì?",
+          "options": [
+            {
+              "text": "array([\"high\", \"low\"]) — chọn cho từng phần tử",
+              "detail": "where với 3 đối số là \"if/else theo từng phần tử\".",
+              "correct": true
+            },
+            {
+              "text": "\"high\"",
+              "detail": "Không gộp thành một giá trị.",
+              "correct": false
+            },
+            {
+              "text": "(array([0]),)",
+              "detail": "Đó là np.where với MỘT đối số: trả vị trí các phần tử True.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "where với 3 đối số là \"if/else theo từng phần tử\"."
+        },
+        {
+          "question": "a[a > 5] = 0 làm gì?",
+          "options": [
+            {
+              "text": "Gán 0 cho mọi phần tử > 5 ngay trong a",
+              "detail": "Mask ở bên trái dấu = sửa array gốc.",
+              "correct": true
+            },
+            {
+              "text": "Lỗi vì mask không gán được",
+              "detail": "Gán qua mask là cách làm phổ biến.",
+              "correct": false
+            },
+            {
+              "text": "Tạo array mới chỉ gồm số 0",
+              "detail": "Gán qua mask sửa tại chỗ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Mask ở bên trái dấu = sửa array gốc."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao viết (a >= 0) & (a <= 10) mà không viết a >= 0 and a <= 10?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "and/or của Python cần MỘT giá trị True/False, còn a >= 0 là cả array bool nên Python báo ValueError (ambiguous). & so từng cặp phần tử và trả mask mới. Ngoặc bắt buộc vì & được tính trước >= và <=; thiếu ngoặc thì biểu thức thành a >= (0 & a) <= 10, sai nghĩa hoặc lỗi."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: nhiệt độ. Giữ các ngày từ 20 đến 35 độ, đổi sang °F, gắn nhãn.",
+        "rule": "Thử điểm âm, điểm đúng bằng 10 và bonus đẩy điểm vượt 10: lọc trước, cộng sau, chặn cuối."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "a = [3, 5, 8, 12]; a >= 0 → [True, True, True, True]"
+          },
+          {
+            "label": "Bước 2",
+            "text": "a <= 10 → [True, True, True, False]"
+          },
+          {
+            "label": "Bước 3",
+            "text": "(a >= 0) & (a <= 10) → giữ [3, 5, 8]"
+          },
+          {
+            "label": "Bước 4",
+            "text": "valid + 0.5 → [3.5, 5.5, 8.5]"
+          },
+          {
+            "label": "Bước 5",
+            "text": "np.clip(..., 0, 10) → chặn trên ở 10"
+          }
+        ]
+      },
+      "counter": {
+        "question": "curve([9.8, 12], 0.5) → ?",
+        "options": [
+          "[10.0]",
+          "[10.3]",
+          "[10.0, 10.0]"
+        ],
+        "correct": "[10.0]"
+      },
+      "scaffold": {
+        "template": "import numpy as np\n\ntemps = np.array([18.0, 25.0, 33.0, 41.0])\nok = temps[{{slot1}}]\nfahrenheit = {{slot2}}\nlabels = np.where({{slot3}}, \"hot\", \"mild\")\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "(temps >= 20) & (temps <= 35)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "ok * 1.8 + 32"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "ok > 30"
+          }
+        ],
+        "bank": [
+          {
+            "label": "np.clip(temps, 20, 35)",
+            "slot": 1,
+            "trap": "clip kéo về biên chứ không lọc; chỉ số phải là mask bool."
+          },
+          {
+            "label": "ok * 1.8 + 32",
+            "slot": 2
+          },
+          {
+            "label": "temps >= 20 & temps <= 35",
+            "slot": 1,
+            "trap": "Thiếu ngoặc: & được tính trước >=."
+          },
+          {
+            "label": "ok > 30",
+            "slot": 3
+          },
+          {
+            "label": "(temps >= 20) & (temps <= 35)",
+            "slot": 1
+          },
+          {
+            "label": "(temps >= 20) and (temps <= 35)",
+            "slot": 1,
+            "trap": "and với array → ValueError."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết curve(scores, bonus): chỉ giữ các điểm hợp lệ trong đoạn 0..10 (bỏ điểm âm và điểm lớn hơn 10), cộng bonus cho từng điểm còn lại rồi chặn tối đa ở 10; trả array số thực. Viết grade_labels(scores, cutoff): trả array nhãn \"pass\" (điểm ≥ cutoff) hoặc \"fail\" cho TỪNG điểm, dùng np.where.\n\nThực hành: Tạo mask bằng & với hai điều kiện trong ngoặc, lọc, cộng bonus, rồi np.clip(…, 0, 10). grade_labels dùng np.where.",
+        "io": [
+          {
+            "label": "curve([3, 5, 8, 12], 0.5)",
+            "value": "[3.5, 5.5, 8.5]"
+          },
+          {
+            "label": "curve([9.8, 7], 0.5)",
+            "value": "[10.0, 7.5]"
+          },
+          {
+            "label": "grade_labels([4, 6, 9], 5)",
+            "value": "[\"fail\", \"pass\", \"pass\"]"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef curve(scores, bonus):\n    pass\n\n\ndef grade_labels(scores, cutoff):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef curve(scores, bonus):\n    a = np.asarray(scores, dtype=float)\n    valid = a[(a >= 0) & (a <= 10)]\n    return np.clip(valid + bonus, 0, 10)\n\n\ndef grade_labels(scores, cutoff):\n    a = np.asarray(scores)\n    return np.where(a >= cutoff, \"pass\", \"fail\")\n\n\nprint(curve([3, 5, 8, 12], 0.5))\nprint(grade_labels([4, 6, 9], 5))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tạo mask bằng & với hai điều kiện trong ngoặc, lọc, cộng bonus, rồi np.clip(…, 0, 10). grade_labels dùng np.where."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. a = np.asarray(scores, dtype=float); valid = a[(a >= 0) & (a <= 10)].\n2. return np.clip(valid + bonus, 0, 10).\n3. grade_labels: return np.where(np.asarray(scores) >= cutoff, \"pass\", \"fail\")."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def curve(scores, bonus):\n    a = np.asarray(scores, dtype=float)\n    valid = a[(a >= 0) & ...]\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: [3, 5, 8, 12] + 0.5",
+          "call": "[round(float(v), 4) for v in curve([3, 5, 8, 12], 0.5)]",
+          "expect": "[3.5, 5.5, 8.5]"
+        },
+        {
+          "name": "Bỏ điểm âm, 10 + 1 chặn về 10",
+          "call": "[round(float(v), 4) for v in curve([-1, 4, 10], 1)]",
+          "expect": "[5.0, 10.0]"
+        },
+        {
+          "name": "Chặn ở 10 sau khi cộng",
+          "call": "[round(float(v), 4) for v in curve([9.8, 7], 0.5)]",
+          "expect": "[10.0, 7.5]"
+        },
+        {
+          "name": "Giữ đúng biên 0 và 10",
+          "call": "[round(float(v), 4) for v in curve([0, 10, 10.5], 0)]",
+          "expect": "[0.0, 10.0]"
+        },
+        {
+          "name": "Không còn điểm hợp lệ → rỗng",
+          "call": "len(curve([11, -2], 1))",
+          "expect": "0"
+        },
+        {
+          "name": "Không sửa array đầu vào",
+          "call": "(lambda s: (curve(s, 1), s.tolist())[1])(np.array([1.0, 2.0, 12.0]))",
+          "expect": "[1.0, 2.0, 12.0]"
+        },
+        {
+          "name": "Nhãn cho từng điểm",
+          "call": "[str(v) for v in grade_labels([4, 6, 9], 5)]",
+          "expect": "['fail', 'pass', 'pass']"
+        },
+        {
+          "name": "Đúng ngưỡng là pass (dữ liệu khác)",
+          "call": "[str(v) for v in grade_labels([7, 6.99, 10], 7)]",
+          "expect": "['pass', 'fail', 'pass']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "curve(scores, bonus)",
+          "does": "Bỏ điểm ngoài 0..10, cộng thưởng rồi chặn trên ở 10.",
+          "takes": "scores: list/array số; bonus: số",
+          "gives": "ndarray float các điểm hợp lệ sau khi cộng (có thể rỗng)",
+          "effect": "Không sửa scores.",
+          "call": "curve([3, 5, 8, 12], 0.5) → [3.5, 5.5, 8.5]"
+        },
+        {
+          "sig": "grade_labels(scores, cutoff)",
+          "does": "Gắn nhãn đạt/trượt cho từng điểm.",
+          "takes": "scores: list/array số; cutoff: số",
+          "gives": "ndarray chuỗi \"pass\" (≥ cutoff) hoặc \"fail\", cùng độ dài",
+          "effect": "Không in gì.",
+          "call": "grade_labels([4, 6, 9], 5) → [\"fail\", \"pass\", \"pass\"]"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy.",
+      "packages": [
+        "numpy"
+      ]
+    }
+  }
+}

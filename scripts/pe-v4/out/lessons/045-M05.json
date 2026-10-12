@@ -1,0 +1,368 @@
+{
+  "lesson_code": "M05",
+  "sort_order": 45,
+  "module": "M7 · Matplotlib",
+  "title": "M05 · Ticks, scale và ngày trên trục",
+  "subtitle": "Nâng cao · M7 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "M05 · Ticks, scale và ngày trên trục",
+    "subtitle": "Nâng cao · M7 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#M05",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M05"
+        ],
+        "title": "Ticks, scale và ngày trên trục",
+        "goal": "Trục thời gian đúng thứ tự, trục % đúng thang, trục log đúng chỗ.",
+        "task": "plot_rate: to_datetime + sort + PercentFormatter(xmax=1) + DateFormatter. plot_log_sizes: trục log, size <= 0 → ValueError.",
+        "predict": "PercentFormatter() mặc định hiển thị tỷ lệ 0.25 thành gì?",
+        "code": "def plot_rate(df):\n    data = df.assign(date=pd.to_datetime(df[\"date\"]))\n    # sort theo ngày, vẽ line\n    # PercentFormatter(xmax=1), DateFormatter(\"%d/%m\"), ylim 0..1\n    return fig",
+        "tests": [
+          "Ngày xáo trộn → đường đi theo thứ tự ngày",
+          "0.25 trên trục y → \"25%\""
+        ],
+        "reflect": "Trục log đổi ý nghĩa khoảng cách thế nào, và vì sao phải chặn giá trị 0?"
+      },
+      "context": {
+        "title": "Sắp thời gian trước khi vẽ line, định dạng trục ngày và trục phần trăm đúng thang, dùng trục log có kiểm tra giá trị dương.",
+        "body": "Viết hai hàm trả về Figure. (1) plot_rate(df): df có cột \"date\" (chuỗi \"YYYY-MM-DD\", CHƯA sắp) và \"rate\" (tỷ lệ 0..1). Chuyển date bằng pd.to_datetime, sắp theo ngày, vẽ line marker \"o\"; trục y dùng PercentFormatter(xmax=1) và ylim 0..1; trục x dùng mdates.DateFormatter(\"%d/%m\"); nhãn y \"Conversion rate\". (2) plot_log_sizes(names, sizes): bar với trục y log (ax.set_yscale(\"log\")), nhãn y \"Users (log scale)\" để người đọc biết khoảng cách đã đổi nghĩa; nếu có size <= 0 thì raise ValueError TRƯỚC khi tạo figure.",
+        "example": "plot_rate với ngày 03/01, 01/01, 02/01 và rate 0.5, 0.25, 0.4 → đường đi qua 0.25, 0.4, 0.5 theo ngày; trục y ghi 0%, 20%, …, 100%. plot_log_sizes([\"A\", \"B\"], [10, 0]) → ValueError.",
+        "prereq": "M04",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Đã pd.to_datetime nhưng QUÊN sort: ngày 03/01, 01/01, 02/01 với rate 0.5, 0.25, 0.4. Đường line nối các điểm theo thứ tự nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "03/01 → 01/01 → 02/01: đi lùi rồi tới, thành hình zig-zag giả",
+            "detail": "Line nối theo thứ tự hàng trong DataFrame.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Báo lỗi vì ngày chưa sắp",
+            "detail": "Không có lỗi — chính vì im lặng nên dễ sót.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "01/01 → 02/01 → 03/01 vì trục ngày tự sắp",
+            "detail": "Điểm nằm đúng vị trí ngày, nhưng đường nối theo thứ tự hàng.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"PercentFormatter() mặc định là đủ cho mọi dữ liệu phần trăm\"",
+        "body": "Mặc định xmax=100: nó coi 100 là 100%. Dữ liệu tỷ lệ 0..1 (0.25) sẽ hiện \"0.25%\". Với tỷ lệ phải ghi PercentFormatter(xmax=1). Formatter chỉ đổi chữ trên trục; nhầm xmax là sai thông điệp 100 lần mà không có lỗi nào báo."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Line nối điểm theo THỨ TỰ HÀNG trong dữ liệu, không theo thứ tự ngày. Dữ liệu chưa sắp thì đường đi tới, lùi, rồi tới — một hình zig-zag giả. Chuyển cột ngày bằng pd.to_datetime rồi sort_values(\"date\") trước khi vẽ (chuỗi kiểu \"2026-1-10\" so theo chữ còn đứng trước \"2026-1-9\")."
+        },
+        {
+          "n": 2,
+          "body": "Formatter đổi CÁCH VIẾT nhãn, không đổi dữ liệu. PercentFormatter(xmax=1) hiểu 1.0 là 100%: 0.25 → \"25%\". Để mặc định xmax=100 thì 0.25 thành \"0.25%\" — sai 100 lần mà không có lỗi nào. Tỷ lệ 0..1 và số phần trăm 0..100 là hai thứ khác nhau."
+        },
+        {
+          "n": 3,
+          "body": "FuncFormatter(lambda x, pos: f\"{x/1000:g}k\") cho nhãn tự chọn (1000 → \"1k\"); DateFormatter(\"%d/%m\") viết ngày gọn, fig.autofmt_xdate() xoay nhãn ngày để không chồng. Tick label phải đi cùng vị trí tick — đổi nhãn bằng set_xticklabels mà không đặt vị trí là gán chữ cho sai chỗ."
+        },
+        {
+          "n": 4,
+          "body": "Trục log (ax.set_yscale(\"log\")) hợp với dải rất rộng (120 và 300 000): mỗi nấc là GẤP 10, không phải cộng thêm một khoảng bằng nhau — nên phải nói ra trên nhãn trục. log không định nghĩa cho 0 và số âm: Matplotlib lặng lẽ bỏ các cột đó khỏi hình, vì vậy hàm phải tự kiểm và raise ValueError."
+        },
+        {
+          "n": 5,
+          "body": "Giới hạn trục phải giữ dữ liệu cần thấy: ylim(0, 1) cho tỷ lệ giữ cả mốc 0% và 100%. Trước khi xuất, đọc lại nhãn và thử diễn giải hình như người xem."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport pandas as pd\nfrom matplotlib.ticker import PercentFormatter\n\ndf = pd.DataFrame({\"date\": [\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"],\n                   \"rate\": [0.3, 0.1, 0.2]})\ndf[\"date\"] = pd.to_datetime(df[\"date\"])\ndf = df.sort_values(\"date\")\n\nfig, ax = plt.subplots()\nax.plot(df[\"date\"], df[\"rate\"], marker=\"o\")\nax.yaxis.set_major_formatter(PercentFormatter(xmax=1))\nax.xaxis.set_major_formatter(mdates.DateFormatter(\"%d/%m\"))\nax.set_ylim(0, 1)\n\nprint(df[\"rate\"].tolist())\nprint(ax.yaxis.get_major_formatter()(0.3))\nprint(ax.xaxis.get_major_formatter()(mdates.date2num(df[\"date\"].iloc[0])))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Số người dùng 5 cửa hàng: 120, 900, 4 000, 45 000, 300 000. Vẽ bar trục y tuyến tính thì…",
+          "options": [
+            {
+              "text": "Ổn, bar luôn dùng trục tuyến tính",
+              "detail": "Có thể, nhưng mất thông tin về các cửa hàng nhỏ.",
+              "correct": false
+            },
+            {
+              "text": "Mấy cửa hàng nhỏ gần như không thấy — cân nhắc trục log và ghi rõ \"(log scale)\"",
+              "detail": "Dải quá rộng; log cho thấy cấp độ lớn.",
+              "correct": true
+            },
+            {
+              "text": "Dùng trục log, không cần ghi gì",
+              "detail": "Log đổi nghĩa khoảng cách — phải nói rõ.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Dải quá rộng; log cho thấy cấp độ lớn."
+        },
+        {
+          "question": "ax.set_yscale(\"log\") với một cột có giá trị 0 thì…",
+          "options": [
+            {
+              "text": "Cột đó biến mất khỏi hình mà không báo lỗi",
+              "detail": "log(0) không xác định; Matplotlib che giá trị không dương.",
+              "correct": true
+            },
+            {
+              "text": "Python báo ZeroDivisionError",
+              "detail": "Không có lỗi nào — vì vậy hàm phải tự kiểm.",
+              "correct": false
+            },
+            {
+              "text": "Cột cao 0 như bình thường",
+              "detail": "Trên trục log không có vị trí cho 0.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "log(0) không xác định; Matplotlib che giá trị không dương."
+        },
+        {
+          "question": "Vì sao chuyển cột ngày dạng chuỗi bằng pd.to_datetime trước khi sort và vẽ?",
+          "options": [
+            {
+              "text": "Chuỗi so theo từng ký tự; ngày thật so theo thời gian và giữ đúng khoảng cách trên trục",
+              "detail": "Với \"2026-1-9\" và \"2026-1-10\", sắp chuỗi cho thứ tự sai.",
+              "correct": true
+            },
+            {
+              "text": "Để chạy nhanh hơn",
+              "detail": "Lý do là đúng thứ tự và đúng khoảng cách.",
+              "correct": false
+            },
+            {
+              "text": "Matplotlib không vẽ được chuỗi",
+              "detail": "Vẽ được — nhưng thành category, mất khoảng cách thời gian.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Với \"2026-1-9\" và \"2026-1-10\", sắp chuỗi cho thứ tự sai."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao plot_log_sizes kiểm size <= 0 và raise ValueError thay vì cứ vẽ?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Trên trục log không có vị trí cho 0 hay số âm; Matplotlib lặng lẽ không vẽ các cột đó và không báo lỗi, nên người đọc tưởng dữ liệu chỉ có những cột còn lại. Raise ValueError trước khi tạo figure buộc nơi gọi xử lý dữ liệu không dương một cách có chủ đích."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: sắp theo thời gian, formatter phần trăm đúng thang, điều kiện chặn trục log.",
+        "rule": "Thử 4 ngày xáo trộn vắt qua tháng 2 và một bộ sizes có số âm; đoán trước nhãn và lỗi rồi mới chạy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "pd.to_datetime(df[\"date\"]) → chuỗi thành Timestamp"
+          },
+          {
+            "label": "Bước 2",
+            "text": "data.sort_values(\"date\") → hàng theo thứ tự thời gian"
+          },
+          {
+            "label": "Bước 3",
+            "text": "PercentFormatter(xmax=1) → 0.25 hiện \"25%\""
+          },
+          {
+            "label": "Bước 4",
+            "text": "DateFormatter(\"%d/%m\") → nhãn ngày gọn"
+          },
+          {
+            "label": "Bước 5",
+            "text": "any(size <= 0 ...) → ValueError trước khi vẽ log"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Với PercentFormatter(xmax=1) trên trục 0..1, giá trị 0.05 hiện là?",
+        "options": [
+          "0.05%",
+          "5%",
+          "50%"
+        ],
+        "correct": "5%"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport pandas as pd\nfrom matplotlib.ticker import PercentFormatter\n\n\ndef plot_rate(df):\n    data = df.assign(date=pd.to_datetime(df[\"date\"]))\n    data = {{slot1}}\n    fig, ax = plt.subplots()\n    ax.plot(data[\"date\"], data[\"rate\"], marker=\"o\")\n    {{slot2}}\n    ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%d/%m\"))\n    ax.set_ylim(0, 1)\n    ax.set_ylabel(\"Conversion rate\")\n    return fig\n\n\ndef plot_log_sizes(names, sizes):\n    if {{slot3}}:\n        raise ValueError(\"log scale needs positive sizes\")\n    fig, ax = plt.subplots()\n    ax.bar(names, sizes)\n    ax.set_yscale(\"log\")\n    ax.set_ylabel(\"Users (log scale)\")\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "data.sort_values(\"date\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "any(size <= 0 for size in sizes)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))",
+            "slot": 2
+          },
+          {
+            "label": "data.sort_values(\"rate\")",
+            "slot": 1,
+            "trap": "Sắp theo giá trị — đường không còn đi theo thời gian."
+          },
+          {
+            "label": "any(size <= 0 for size in sizes)",
+            "slot": 3
+          },
+          {
+            "label": "ax.yaxis.set_major_formatter(PercentFormatter())",
+            "slot": 2,
+            "trap": "xmax mặc định 100: 0.25 hiện thành 0.25%."
+          },
+          {
+            "label": "all(size <= 0 for size in sizes)",
+            "slot": 3,
+            "trap": "Chỉ chặn khi MỌI giá trị không dương; một số 0 vẫn lọt."
+          },
+          {
+            "label": "data.sort_values(\"date\")",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm trả về Figure. (1) plot_rate(df): df có cột \"date\" (chuỗi \"YYYY-MM-DD\", CHƯA sắp) và \"rate\" (tỷ lệ 0..1). Chuyển date bằng pd.to_datetime, sắp theo ngày, vẽ line marker \"o\"; trục y dùng PercentFormatter(xmax=1) và ylim 0..1; trục x dùng mdates.DateFormatter(\"%d/%m\"); nhãn y \"Conversion rate\". (2) plot_log_sizes(names, sizes): bar với trục y log (ax.set_yscale(\"log\")), nhãn y \"Users (log scale)\" để người đọc biết khoảng cách đã đổi nghĩa; nếu có size <= 0 thì raise ValueError TRƯỚC khi tạo figure.\n\nThực hành: plot_rate: chuyển ngày → sort → vẽ → formatter % (xmax=1) và formatter ngày → ylim → nhãn. plot_log_sizes: kiểm any(size <= 0) TRƯỚC khi tạo figure.",
+        "io": [
+          {
+            "label": "date 03/01, 01/01, 02/01; rate 0.5, 0.25, 0.4",
+            "value": "line qua 0.25, 0.4, 0.5; trục y ghi 0%, 20%, …, 100%; nhãn x dạng 01/01"
+          },
+          {
+            "label": "plot_log_sizes([\"A\", \"B\"], [10, 0])",
+            "value": "ValueError, chưa tạo figure"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport pandas as pd\nfrom matplotlib.ticker import PercentFormatter\n\n\ndef plot_rate(df):\n    # to_datetime + sort theo ngày; line marker \"o\"; PercentFormatter(xmax=1); ylim 0..1\n    # DateFormatter(\"%d/%m\") cho trục x; nhãn y \"Conversion rate\"; return fig\n    pass\n\n\ndef plot_log_sizes(names, sizes):\n    # size <= 0 -> ValueError TRƯỚC khi vẽ; bar; trục y log; nhãn \"Users (log scale)\"\n    pass\n\n\nif __name__ == \"__main__\":\n    df = pd.DataFrame({\"date\": [\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"rate\": [0.5, 0.25, 0.4]})\n    plot_rate(df)\n    plot_log_sizes([\"A\", \"B\", \"C\"], [120, 4000, 45000])\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\nimport matplotlib.dates as mdates\nimport pandas as pd\nfrom matplotlib.ticker import PercentFormatter\n\n\ndef plot_rate(df):\n    data = df.assign(date=pd.to_datetime(df[\"date\"]))\n    data = data.sort_values(\"date\")\n    fig, ax = plt.subplots()\n    ax.plot(data[\"date\"], data[\"rate\"], marker=\"o\")\n    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))\n    ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%d/%m\"))\n    ax.set_ylim(0, 1)\n    ax.set_ylabel(\"Conversion rate\")\n    return fig\n\n\ndef plot_log_sizes(names, sizes):\n    if any(size <= 0 for size in sizes):\n        raise ValueError(\"log scale needs positive sizes\")\n    fig, ax = plt.subplots()\n    ax.bar(names, sizes)\n    ax.set_yscale(\"log\")\n    ax.set_ylabel(\"Users (log scale)\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    df = pd.DataFrame({\"date\": [\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"rate\": [0.5, 0.25, 0.4]})\n    plot_rate(df)\n    plot_log_sizes([\"A\", \"B\", \"C\"], [120, 4000, 45000])\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "plot_rate: chuyển ngày → sort → vẽ → formatter % (xmax=1) và formatter ngày → ylim → nhãn. plot_log_sizes: kiểm any(size <= 0) TRƯỚC khi tạo figure."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. data = df.assign(date=pd.to_datetime(df[\"date\"])).sort_values(\"date\") — không sửa df của nơi gọi.\n2. ax.plot(data[\"date\"], data[\"rate\"], marker=\"o\"); ax.yaxis.set_major_formatter(PercentFormatter(xmax=1)).\n3. ax.xaxis.set_major_formatter(mdates.DateFormatter(\"%d/%m\")); ax.set_ylim(0, 1); ax.set_ylabel(\"Conversion rate\").\n4. plot_log_sizes: if any(size <= 0 for size in sizes): raise ValueError(...); rồi bar, set_yscale(\"log\"), nhãn \"Users (log scale)\"."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def plot_rate(df):\n    data = df.assign(date=pd.to_datetime(df[\"date\"]))\n    data = data.sort_values(\"date\")\n    fig, ax = plt.subplots()\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đường đi theo thứ tự ngày",
+          "call": "[float(v) for v in plot_rate(pd.DataFrame({\"date\": [\"2026-02-02\", \"2026-01-30\", \"2026-02-01\", \"2026-01-31\"], \"rate\": [0.6, 0.2, 0.45, 0.3]})).axes[0].lines[0].get_ydata()]",
+          "expect": "[0.2, 0.3, 0.45, 0.6]"
+        },
+        {
+          "name": "Trục x tăng dần theo thời gian",
+          "call": "[str(v)[:10] for v in plot_rate(pd.DataFrame({\"date\": [\"2026-02-02\", \"2026-01-30\", \"2026-02-01\", \"2026-01-31\"], \"rate\": [0.6, 0.2, 0.45, 0.3]})).axes[0].lines[0].get_xdata()]",
+          "expect": "['2026-01-30', '2026-01-31', '2026-02-01', '2026-02-02']"
+        },
+        {
+          "name": "Trục y là phần trăm của tỷ lệ 0..1",
+          "call": "[plot_rate(pd.DataFrame({\"date\": [\"2026-02-02\", \"2026-01-30\", \"2026-02-01\", \"2026-01-31\"], \"rate\": [0.6, 0.2, 0.45, 0.3]})).axes[0].yaxis.get_major_formatter()(v) for v in (0.25, 0.05, 1)]",
+          "expect": "['25%', '5%', '100%']"
+        },
+        {
+          "name": "ylim 0..1 và nhãn y",
+          "call": "(lambda ax: (tuple(float(v) for v in ax.get_ylim()), ax.get_ylabel()))(plot_rate(pd.DataFrame({\"date\": [\"2026-02-02\", \"2026-01-30\", \"2026-02-01\", \"2026-01-31\"], \"rate\": [0.6, 0.2, 0.45, 0.3]})).axes[0])",
+          "expect": "((0.0, 1.0), 'Conversion rate')"
+        },
+        {
+          "name": "Nhãn ngày dạng ngày/tháng",
+          "call": "plot_rate(pd.DataFrame({\"date\": [\"2026-02-02\", \"2026-01-30\", \"2026-02-01\", \"2026-01-31\"], \"rate\": [0.6, 0.2, 0.45, 0.3]})).axes[0].xaxis.get_major_formatter()(__import__(\"matplotlib.dates\", fromlist=[\"date2num\"]).date2num(pd.Timestamp(\"2026-01-31\")))",
+          "expect": "'31/01'"
+        },
+        {
+          "name": "Trục log có ghi chú \"log\" trên nhãn",
+          "call": "(lambda ax: (ax.get_yscale(), \"log\" in ax.get_ylabel().lower()))(plot_log_sizes([\"A\", \"B\", \"C\"], [120, 4000, 300000]).axes[0])",
+          "expect": "('log', True)"
+        },
+        {
+          "name": "Trục log: cột đúng dữ liệu",
+          "call": "[float(v) for v in (p.get_height() for p in plot_log_sizes([\"A\", \"B\", \"C\"], [120, 4000, 300000]).axes[0].patches)]",
+          "expect": "[120.0, 4000.0, 300000.0]"
+        },
+        {
+          "name": "Có giá trị 0 → ValueError, chưa tạo figure",
+          "call": "(lambda n: (_studio.call(plot_log_sizes, [\"A\", \"B\"], [10, 0]).error, len(plt.get_fignums()) - n))(len(plt.get_fignums()))",
+          "expect": "('ValueError', 0)"
+        },
+        {
+          "name": "Số âm → ValueError",
+          "call": "_studio.call(plot_log_sizes, [\"A\"], [-5]).error",
+          "expect": "'ValueError'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_rate(df)",
+          "does": "Vẽ tỷ lệ chuyển đổi theo ngày.",
+          "takes": "df: DataFrame cột \"date\" (chuỗi YYYY-MM-DD) và \"rate\" (0..1)",
+          "gives": "Figure 1 Axes",
+          "effect": "Line theo thứ tự ngày; trục y PercentFormatter(xmax=1), 0..1; trục x DateFormatter(\"%d/%m\").",
+          "call": "formatter trục y (0.25) → \"25%\""
+        },
+        {
+          "sig": "plot_log_sizes(names, sizes)",
+          "does": "So các cỡ chênh nhau nhiều bậc.",
+          "takes": "names: list tên; sizes: list số DƯƠNG",
+          "gives": "Figure 1 Axes, trục y log",
+          "effect": "size <= 0 → ValueError trước khi tạo figure; nhãn y có chữ \"log\".",
+          "call": "plot_log_sizes([\"A\"], [0]) → ValueError"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

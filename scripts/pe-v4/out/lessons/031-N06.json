@@ -1,0 +1,384 @@
+{
+  "lesson_code": "N06",
+  "sort_order": 31,
+  "module": "M5 · NumPy",
+  "title": "N06 · Đọc dữ liệu và mô phỏng tái lập",
+  "subtitle": "Trung cấp · M5 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "N06 · Đọc dữ liệu và mô phỏng tái lập",
+    "subtitle": "Trung cấp · M5 · 35 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#N06",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M5",
+          "BÀI TẬP TRUNG CẤP",
+          "N06"
+        ],
+        "title": "Đọc dữ liệu và mô phỏng tái lập",
+        "goal": "Đọc CSV có ô trống và mô phỏng tái lập bằng seed.",
+        "task": "load_readings/column_means bằng genfromtxt + nanmean; roll_dice(seed, n) bằng default_rng.",
+        "predict": "default_rng(42) tạo hai lần có cho cùng dãy?",
+        "code": "def load_readings(path):\n    pass  # genfromtxt, skip_header, usecols\ndef column_means(path):\n    pass  # nanmean theo cột\ndef roll_dice(seed, n):\n    pass  # default_rng(seed).integers(1, 7, ...)",
+        "tests": [
+          "readings.csv → shape (4, 2), mean [30.33, 69.0]",
+          "roll_dice(7, 5) hai lần → cùng 5 số"
+        ],
+        "reflect": "Cần ghi lại gì để người khác tái lập được mô phỏng?"
+      },
+      "context": {
+        "title": "Đọc bảng số có ô trống bằng genfromtxt và tạo mô phỏng ngẫu nhiên tái lập được bằng seed.",
+        "body": "readings.csv (đã cấp) có dòng tiêu đề, ba cột day, temp, humidity và vài ô trống. Viết load_readings(path) đọc HAI cột temp, humidity thành array số thực (ô trống → nan) bằng np.genfromtxt. Viết column_means(path) trả mean từng cột, bỏ qua nan. Viết roll_dice(seed, n): tung xúc xắc n lần bằng np.random.default_rng(seed), trả array số nguyên 1..6 — cùng seed phải cho cùng kết quả, và hàm không được đụng tới RNG toàn cục np.random.",
+        "example": "load_readings(\"readings.csv\") có shape (4, 2) và 2 ô nan; column_means → [30.33, 69.0]; roll_dice(7, 5) gọi hai lần cho cùng 5 số.",
+        "prereq": "N05",
+        "level": "Trung cấp",
+        "files": [
+          "readings.csv"
+        ]
+      },
+      "predict": {
+        "question": "Hai dòng dưới in ra hai dãy thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Khác nhau vì là số ngẫu nhiên",
+            "detail": "Chỉ đúng khi không truyền seed.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Giống hệt nhau — mỗi dòng tạo generator mới với cùng seed 42",
+            "detail": "Seed quyết định toàn bộ dãy.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Lỗi vì một seed chỉ dùng được một lần",
+            "detail": "Seed dùng bao nhiêu lần cũng được.",
+            "correct": false
+          }
+        ],
+        "code": "print(np.random.default_rng(42).integers(1, 7, size=3))\nprint(np.random.default_rng(42).integers(1, 7, size=3))"
+      },
+      "misconception": {
+        "title": "\"Đặt np.random.seed(...) ở đầu chương trình là đủ tái lập\"",
+        "body": "RNG toàn cục bị MỌI đoạn code dùng chung: một hàm khác rút thêm số là dãy của bạn lệch theo, và hàm nào gọi seed lại sẽ đổi kết quả của phần khác. default_rng(seed) cho mỗi mô phỏng một generator riêng — nhận seed làm tham số và ghi seed ra cùng kết quả."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "np.loadtxt đọc bảng SỐ SẠCH: delimiter tách cột, skiprows bỏ dòng tiêu đề, usecols chọn cột, dtype ép kiểu. Gặp ô trống hay chữ là ValueError."
+        },
+        {
+          "n": 2,
+          "body": "np.genfromtxt linh hoạt hơn: ô trống hoặc không đọc được thành nan (bỏ tiêu đề bằng skip_header, không phải skiprows). Đọc xong kiểm shape và số nan, rồi tính bằng nanmean như bài N04."
+        },
+        {
+          "n": 3,
+          "body": "np.random.default_rng(seed) tạo một generator RIÊNG. Cùng seed (và cùng phiên bản NumPy) → cùng dãy số: kết quả mô phỏng tái lập được. Không seed thì mỗi lần chạy một khác."
+        },
+        {
+          "n": 4,
+          "body": "rng.integers(low, high) KHÔNG lấy high: xúc xắc là integers(1, 7). Đừng gọi np.random.seed(...) trong hàm — nó đặt lại RNG toàn cục và làm đổi kết quả của mọi phần khác trong chương trình đang dùng RNG đó."
+        },
+        {
+          "n": 5,
+          "body": "np.save/np.load lưu array kèm dtype và shape (.npy); np.savetxt ghi ra text cho người đọc. Ghi lại seed và phiên bản thư viện cùng kết quả. Dữ liệu mô phỏng chỉ để minh hoạ — không phải dữ liệu quan sát hay bằng chứng."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import numpy as np\nfrom io import BytesIO, StringIO\n\nclean = \"x,y\\n1,2\\n3,4\"\nprint(np.loadtxt(StringIO(clean), delimiter=\",\", skiprows=1))\n\nmessy = \"x,y\\n1,\\n3,4\"\na = np.genfromtxt(StringIO(messy), delimiter=\",\", skip_header=1)\nprint(a, np.isnan(a).sum())\n\nrng = np.random.default_rng(2026)\nprint(rng.integers(1, 7, size=5))\nprint(np.random.default_rng(2026).integers(1, 7, size=5))   # cùng seed → cùng dãy\nprint(rng.normal(0, 1, size=2).round(3))                    # rng đi tiếp, số mới\n\nbuffer = BytesIO()\nnp.save(buffer, a)\nbuffer.seek(0)\nprint(np.load(buffer).shape)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "File có ô trống \"1,\\n3,4\". Hàm nào đọc được mà không lỗi?",
+          "options": [
+            {
+              "text": "np.loadtxt(..., delimiter=\",\")",
+              "detail": "loadtxt báo ValueError với ô trống.",
+              "correct": false
+            },
+            {
+              "text": "Cả hai như nhau",
+              "detail": "Chỉ genfromtxt xử lý ô thiếu.",
+              "correct": false
+            },
+            {
+              "text": "np.genfromtxt(..., delimiter=\",\") — ô trống thành nan",
+              "detail": "genfromtxt xử lý giá trị thiếu.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "genfromtxt xử lý giá trị thiếu."
+        },
+        {
+          "question": "rng.integers(1, 6, size=1000) có bao giờ ra 6 không?",
+          "options": [
+            {
+              "text": "Thỉnh thoảng",
+              "detail": "Không bao giờ.",
+              "correct": false
+            },
+            {
+              "text": "Không — high = 6 bị loại; xúc xắc phải là integers(1, 7)",
+              "detail": "Giống range và arange.",
+              "correct": true
+            },
+            {
+              "text": "Có, cả 1 và 6 đều được lấy",
+              "detail": "integers mặc định không lấy high (endpoint=False).",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Giống range và arange."
+        },
+        {
+          "question": "Muốn lưu array để lần sau nạp lại đúng dtype và shape, dùng gì?",
+          "options": [
+            {
+              "text": "print(a) rồi chép lại",
+              "detail": "Mất độ chính xác và cấu trúc.",
+              "correct": false
+            },
+            {
+              "text": "np.savetxt cho array 3 chiều",
+              "detail": "savetxt chỉ ghi array 1D/2D ra text.",
+              "correct": false
+            },
+            {
+              "text": "np.save(\"a.npy\", a) rồi np.load(\"a.npy\")",
+              "detail": "File .npy giữ dtype và shape.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "File .npy giữ dtype và shape."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao dùng default_rng(seed) cục bộ thay vì np.random.seed toàn cục cho một mô phỏng?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "default_rng(seed) tạo generator riêng: cùng seed cho cùng dãy, và không phần code nào khác rút số từ nó nên kết quả không bị lệch. np.random.seed đặt lại RNG dùng chung — vừa dễ bị code khác làm lệch dãy, vừa làm thay đổi kết quả của những phần khác đang dùng RNG toàn cục."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: điểm hai bài kiểm tra có ô trống, và mô phỏng tung đồng xu.",
+        "rule": "Thử file không có ô trống và file có cột day khác; với roll_dice, đổi seed phải đổi dãy, giữ seed phải giữ dãy."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "genfromtxt(skip_header=1, usecols=(1, 2)) → array (4, 2)"
+          },
+          {
+            "label": "Bước 2",
+            "text": "Ô trống trong CSV → nan"
+          },
+          {
+            "label": "Bước 3",
+            "text": "np.nanmean(axis=0) → [30.33, 69.0]"
+          },
+          {
+            "label": "Bước 4",
+            "text": "default_rng(7).integers(1, 7, size=5) → 5 số trong 1..6"
+          },
+          {
+            "label": "Bước 5",
+            "text": "default_rng(7) tạo lại → đúng 5 số đó"
+          }
+        ]
+      },
+      "counter": {
+        "question": "column_means của \"day,temp,humidity\\n1,20,50\\n2,22,54\\n3,24,58\" → ?",
+        "options": [
+          "[22.0, 54.0]",
+          "[2.0, 22.0, 54.0]",
+          "[nan, nan]"
+        ],
+        "correct": "[22.0, 54.0]"
+      },
+      "scaffold": {
+        "template": "import numpy as np\nfrom io import StringIO\n\ntext = \"id,quiz1,quiz2\\n1,7,\\n2,9,6\\n\"\nmarks = np.genfromtxt(StringIO(text), delimiter=\",\", {{slot1}}, usecols=(1, 2))\nmeans = {{slot2}}\nrng = {{slot3}}\ncoins = rng.integers(0, 2, size=10)\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "skip_header=1"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "np.nanmean(marks, axis=0)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "np.random.default_rng(2026)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "skip_header=1",
+            "slot": 1
+          },
+          {
+            "label": "skiprows=1",
+            "slot": 1,
+            "trap": "Đó là tên tham số của loadtxt; genfromtxt dùng skip_header → TypeError."
+          },
+          {
+            "label": "np.random.default_rng()",
+            "slot": 3,
+            "trap": "Không seed → mỗi lần chạy một khác."
+          },
+          {
+            "label": "np.random.default_rng(2026)",
+            "slot": 3
+          },
+          {
+            "label": "marks.mean(axis=0)",
+            "slot": 2,
+            "trap": "Cột có nan → kết quả nan."
+          },
+          {
+            "label": "np.nanmean(marks, axis=0)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "readings.csv (đã cấp) có dòng tiêu đề, ba cột day, temp, humidity và vài ô trống. Viết load_readings(path) đọc HAI cột temp, humidity thành array số thực (ô trống → nan) bằng np.genfromtxt. Viết column_means(path) trả mean từng cột, bỏ qua nan. Viết roll_dice(seed, n): tung xúc xắc n lần bằng np.random.default_rng(seed), trả array số nguyên 1..6 — cùng seed phải cho cùng kết quả, và hàm không được đụng tới RNG toàn cục np.random.\n\nThực hành: genfromtxt(path, delimiter=\",\", skip_header=1, usecols=(1, 2)); np.nanmean(..., axis=0); rng = np.random.default_rng(seed); rng.integers(1, 7, size=n).",
+        "io": [
+          {
+            "label": "load_readings(\"readings.csv\")",
+            "value": "shape (4, 2); 2 ô nan"
+          },
+          {
+            "label": "column_means(\"readings.csv\")",
+            "value": "[30.33, 69.0]"
+          },
+          {
+            "label": "roll_dice(7, 5) gọi hai lần",
+            "value": "cùng 5 số trong 1..6"
+          }
+        ]
+      },
+      "starterCode": "import numpy as np\n\n\ndef load_readings(path):\n    pass\n\n\ndef column_means(path):\n    pass\n\n\ndef roll_dice(seed, n):\n    pass\n",
+      "solutionCode": "import numpy as np\n\n\ndef load_readings(path):\n    return np.genfromtxt(path, delimiter=\",\", skip_header=1, usecols=(1, 2))\n\n\ndef column_means(path):\n    return np.nanmean(load_readings(path), axis=0)\n\n\ndef roll_dice(seed, n):\n    rng = np.random.default_rng(seed)\n    return rng.integers(1, 7, size=n)\n\n\nprint(load_readings(\"readings.csv\"))\nprint(column_means(\"readings.csv\"))\nprint(roll_dice(7, 5), roll_dice(7, 5))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "genfromtxt(path, delimiter=\",\", skip_header=1, usecols=(1, 2)); np.nanmean(..., axis=0); rng = np.random.default_rng(seed); rng.integers(1, 7, size=n)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. load_readings: return np.genfromtxt(path, delimiter=\",\", skip_header=1, usecols=(1, 2)).\n2. column_means: return np.nanmean(load_readings(path), axis=0).\n3. roll_dice: rng = np.random.default_rng(seed); return rng.integers(1, 7, size=n)."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def roll_dice(seed, n):\n    rng = np.random.default_rng(seed)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "readings.csv: shape (4, 2), 2 ô nan",
+          "call": "(lambda a: (tuple(a.shape), int(np.isnan(a).sum())))(load_readings('readings.csv'))",
+          "expect": "((4, 2), 2)"
+        },
+        {
+          "name": "Mean từng cột bỏ nan",
+          "call": "[round(float(v), 2) for v in column_means('readings.csv')]",
+          "expect": "[30.33, 69.0]"
+        },
+        {
+          "name": "Bỏ cột day (dữ liệu khác)",
+          "call": "[[round(float(v), 4) for v in row] for row in load_readings(_studio.write('r2.csv', 'day,temp,humidity\\n7,1.5,2.5\\n8,3.5,4.5\\n'))]",
+          "expect": "[[1.5, 2.5], [3.5, 4.5]]"
+        },
+        {
+          "name": "File không có ô trống",
+          "call": "[round(float(v), 2) for v in column_means(_studio.write('r1.csv', 'day,temp,humidity\\n1,20,50\\n2,22,54\\n3,24,58\\n'))]",
+          "expect": "[22.0, 54.0]"
+        },
+        {
+          "name": "Cùng seed → cùng dãy",
+          "call": "roll_dice(7, 20).tolist() == roll_dice(7, 20).tolist()",
+          "expect": "True"
+        },
+        {
+          "name": "Seed khác → dãy khác",
+          "call": "roll_dice(1, 20).tolist() != roll_dice(2, 20).tolist()",
+          "expect": "True"
+        },
+        {
+          "name": "200 lần: đủ n số, đủ mặt 1..6",
+          "call": "(lambda r: (len(r), sorted(set(int(v) for v in r))))(roll_dice(3, 200))",
+          "expect": "(200, [1, 2, 3, 4, 5, 6])"
+        },
+        {
+          "name": "Không đụng RNG toàn cục np.random",
+          "call": "(np.random.seed(123), roll_dice(1, 5), float(np.random.random()))[2] == (np.random.seed(123), float(np.random.random()))[1]",
+          "expect": "True"
+        }
+      ],
+      "files": [
+        {
+          "name": "readings.csv",
+          "content": "day,temp,humidity\n1,30.5,70\n2,,65\n3,29.0,\n4,31.5,72\n",
+          "kind": "data"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "load_readings(path)",
+          "does": "Đọc hai cột temp, humidity của file CSV có tiêu đề và ô trống.",
+          "takes": "path: str — CSV cột day,temp,humidity",
+          "gives": "ndarray float shape (số dòng, 2); ô trống → nan",
+          "effect": "Không in gì.",
+          "call": "load_readings(\"readings.csv\").shape → (4, 2)"
+        },
+        {
+          "sig": "column_means(path)",
+          "does": "Mean từng cột, bỏ qua nan.",
+          "takes": "path: str",
+          "gives": "ndarray 2 phần tử [mean temp, mean humidity]",
+          "effect": "Không in gì.",
+          "call": "column_means(\"readings.csv\") → [30.33…, 69.0]"
+        },
+        {
+          "sig": "roll_dice(seed, n)",
+          "does": "Mô phỏng n lần tung xúc xắc tái lập được.",
+          "takes": "seed: int; n: int ≥ 0",
+          "gives": "ndarray n số nguyên trong 1..6; cùng seed → cùng dãy",
+          "effect": "Dùng generator riêng, không đụng RNG toàn cục của np.random.",
+          "call": "roll_dice(7, 5) hai lần → hai dãy giống hệt"
+        }
+      ],
+      "env": "Bài này chạy numpy THẬT ngay trong trình duyệt (Pyodide) — không có phần nào là mô phỏng. Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Muốn chạy trên máy: pip install numpy.",
+      "packages": [
+        "numpy"
+      ]
+    }
+  }
+}

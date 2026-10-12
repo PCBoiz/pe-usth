@@ -1,0 +1,348 @@
+{
+  "lesson_code": "T01",
+  "sort_order": 8,
+  "module": "M2 · Đa luồng",
+  "title": "T01 · Thread, tài nguyên và concurrency",
+  "subtitle": "Nâng cao · M2 · 25 phút",
+  "estimated_minutes": 25,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "T01 · Thread, tài nguyên và concurrency",
+    "subtitle": "Nâng cao · M2 · 25 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#T01",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T01"
+        ],
+        "title": "Thread, tài nguyên và concurrency",
+        "goal": "Phân biệt phần thread dùng chung và phần mỗi thread có riêng.",
+        "task": "Viết scope_of(part) → \"shared\" / \"per-thread\"; who_am_i() trả tên thread đang chạy.",
+        "predict": "Worker append vào list toàn cục — main thread có thấy không?",
+        "code": "import threading\n\ndef scope_of(part):\n    pass\n\ndef who_am_i():\n    pass",
+        "tests": [
+          "\"heap\" → \"shared\"",
+          "who_am_i() trong thread \"saver\" → \"saver\""
+        ],
+        "reflect": "Vì sao cùng một hàm lại trả hai tên thread khác nhau?"
+      },
+      "context": {
+        "title": "Phân biệt phần các thread trong một process dùng chung với phần mỗi thread có riêng.",
+        "body": "Một process có thể chạy nhiều thread. Viết scope_of(part): trả \"shared\" cho phần mọi thread trong process dùng chung (\"code\", \"global\", \"heap\", \"file\") và \"per-thread\" cho phần mỗi thread có riêng (\"stack\", \"pc\" — program counter, \"registers\"); tên khác → ValueError. Viết thêm who_am_i() trả tên của thread ĐANG chạy dòng lệnh đó (threading.current_thread().name).",
+        "example": "scope_of(\"heap\") → \"shared\"; who_am_i() gọi ở chương trình chính → \"MainThread\", gọi trong Thread(..., name=\"saver\") → \"saver\".",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Worker thread append vào list toàn cục shared_log rồi kết thúc. Sau join(), main thread in shared_log thấy gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Lúc thấy lúc không, tuỳ máy",
+            "detail": "Thứ tự chạy không xác định, nhưng sau join() worker chắc chắn đã xong.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Không thấy — worker sửa trên bản sao của riêng nó",
+            "detail": "Đó là process con: nó có vùng nhớ riêng. Thread thì không.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Thấy phần tử worker vừa thêm — hai thread dùng chung heap của process",
+            "detail": "List là object trên heap; mọi thread trong process cùng trỏ tới nó.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Mỗi thread có bản sao heap và biến toàn cục riêng, giống process con\"",
+        "body": "Đó là hành vi của process: process con làm việc trên vùng nhớ riêng nên sửa list không ảnh hưởng cha. Thread trong cùng process dùng chung code, biến toàn cục, heap và file đang mở; chỉ stack, program counter và thanh ghi là của riêng từng thread. Vì dùng chung nên trao đổi dữ liệu rẻ — và cũng vì dùng chung mà sinh ra race condition (T05)."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Process là chương trình đang chạy, có vùng nhớ riêng. Thread là một DÒNG THỰC THI bên trong process: process nào cũng có ít nhất main thread (tên \"MainThread\"); multi-thread là nhiều dòng thực thi trong cùng một process."
+        },
+        {
+          "n": 2,
+          "body": "Mỗi thread có stack (biến cục bộ của các lời gọi hàm đang chạy), program counter (đang ở lệnh nào) và thanh ghi riêng. Hai thread chạy cùng một hàm vẫn không lẫn biến cục bộ của nhau."
+        },
+        {
+          "n": 3,
+          "body": "Code, biến toàn cục, heap (mọi object: list, dict…) và file đang mở thì DÙNG CHUNG: trong ví dụ, worker append vào shared_log và main thread thấy ngay, không cần gửi lại."
+        },
+        {
+          "n": 4,
+          "body": "current_thread() trả về thread đang chạy dòng lệnh gọi nó. Cùng một code, chạy trong worker thì ra \"worker-1\", chạy ở main thì ra \"MainThread\"."
+        },
+        {
+          "n": 5,
+          "body": "Process nhấn mạnh CÁCH LY, thread nhấn mạnh CHIA SẺ. Lợi: chương trình phản hồi nhanh (giao diện không đứng), chạy tác vụ nền, chia sẻ dữ liệu rẻ, tận dụng nhiều việc chờ cùng lúc. Giá phải trả: thứ tự chạy không xác định, race condition, deadlock, chi phí đồng bộ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\nshared_log = []\n\ndef worker():\n    step = \"worker\"\n    shared_log.append(threading.current_thread().name)\n\nt = threading.Thread(target=worker, name=\"worker-1\")\nt.start()\nt.join()\nshared_log.append(threading.current_thread().name)\nprint(shared_log)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Hai thread trong cùng process có nhất thiết copy toàn bộ heap không?",
+          "options": [
+            {
+              "text": "Có — mỗi thread một bản heap",
+              "detail": "Đó là process con, không phải thread.",
+              "correct": false
+            },
+            {
+              "text": "Chỉ copy khi thread ghi vào heap",
+              "detail": "Copy-on-write là chuyện của fork process.",
+              "correct": false
+            },
+            {
+              "text": "Không — chúng dùng chung heap của process",
+              "detail": "Chỉ stack, program counter và thanh ghi là riêng.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Chỉ stack, program counter và thanh ghi là riêng."
+        },
+        {
+          "question": "Hai thread cùng chạy hàm f; trong f có biến cục bộ total. Hai biến total đó…",
+          "options": [
+            {
+              "text": "Gây NameError ở thread thứ hai",
+              "detail": "Mỗi thread có lời gọi f riêng, không lỗi gì.",
+              "correct": false
+            },
+            {
+              "text": "Là một biến dùng chung",
+              "detail": "Chỉ biến toàn cục và object trên heap mới dùng chung.",
+              "correct": false
+            },
+            {
+              "text": "Là hai biến khác nhau — mỗi lời gọi nằm trên stack của thread mình",
+              "detail": "Biến cục bộ sống trên stack.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Biến cục bộ sống trên stack."
+        },
+        {
+          "question": "Cái giá nào đi kèm multi-thread?",
+          "options": [
+            {
+              "text": "Các thread không chia sẻ được dữ liệu",
+              "detail": "Ngược lại: chia sẻ là điểm mạnh của thread.",
+              "correct": false
+            },
+            {
+              "text": "Thứ tự chạy không xác định, race condition, deadlock — phải tự đồng bộ",
+              "detail": "Cái giá của việc dùng chung bộ nhớ.",
+              "correct": true
+            },
+            {
+              "text": "Mỗi thread tốn một bản sao bộ nhớ của process",
+              "detail": "Thread dùng chung bộ nhớ của process.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Cái giá của việc dùng chung bộ nhớ."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao cùng một hàm who_am_i lại trả hai tên khác nhau ở hai thread, trong khi hai thread cùng thấy một list toàn cục?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Code của hàm dùng chung, nhưng mỗi thread là một dòng thực thi riêng với stack và program counter riêng; current_thread() trả về thread ĐANG chạy lệnh đó, nên worker \"saver\" nhận \"saver\", main nhận \"MainThread\". List toàn cục là object trên heap dùng chung, nên thay đổi của thread này thread kia thấy được. Trường hợp đặc biệt: tên lạ như \"gpu\" không thuộc nhóm nào → ValueError."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp hai nhóm tài nguyên và lời gọi đọc tên thread hiện tại.",
+        "rule": "Gọi who_am_i trong hai thread đặt tên khác nhau; thử một tên tài nguyên lạ để thấy ValueError."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "scope_of(\"heap\") → \"shared\": mọi thread thấy cùng object"
+          },
+          {
+            "label": "Bước 2",
+            "text": "scope_of(\"stack\") → \"per-thread\": biến cục bộ không lẫn"
+          },
+          {
+            "label": "Bước 3",
+            "text": "who_am_i() ở chương trình chính → \"MainThread\""
+          },
+          {
+            "label": "Bước 4",
+            "text": "who_am_i() trong Thread(name=\"saver\") → \"saver\""
+          }
+        ]
+      },
+      "counter": {
+        "question": "Thread(target=lambda: print(who_am_i()), name=\"bg\") được start — dòng in ra là gì?",
+        "options": [
+          "MainThread",
+          "bg",
+          "Thread-1"
+        ],
+        "correct": "bg"
+      },
+      "scaffold": {
+        "template": "import threading\n\nSHARED = {{slot1}}\nPER_THREAD = {{slot2}}\n\n\ndef scope_of(part):\n    if part in SHARED:\n        return \"shared\"\n    if part in PER_THREAD:\n        return \"per-thread\"\n    raise ValueError(\"unknown part: \" + str(part))\n\n\ndef who_am_i():\n    return {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "(\"code\", \"global\", \"heap\", \"file\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "(\"stack\", \"pc\", \"registers\")"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "threading.current_thread().name"
+          }
+        ],
+        "bank": [
+          {
+            "label": "(\"stack\", \"pc\", \"registers\")",
+            "slot": 2
+          },
+          {
+            "label": "(\"stack\", \"pc\", \"registers\", \"global\")",
+            "slot": 2,
+            "trap": "Biến toàn cục dùng chung — chỉ process con mới có bản riêng."
+          },
+          {
+            "label": "threading.main_thread().name",
+            "slot": 3,
+            "trap": "Luôn là main thread, không phải thread đang chạy."
+          },
+          {
+            "label": "\"MainThread\"",
+            "slot": 3,
+            "trap": "Viết cứng: gọi trong worker vẫn trả MainThread."
+          },
+          {
+            "label": "threading.current_thread().name",
+            "slot": 3
+          },
+          {
+            "label": "(\"code\", \"global\", \"heap\", \"file\")",
+            "slot": 1
+          },
+          {
+            "label": "(\"code\", \"global\", \"file\")",
+            "slot": 1,
+            "trap": "Thiếu heap: các thread dùng chung heap, không copy."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Một process có thể chạy nhiều thread. Viết scope_of(part): trả \"shared\" cho phần mọi thread trong process dùng chung (\"code\", \"global\", \"heap\", \"file\") và \"per-thread\" cho phần mỗi thread có riêng (\"stack\", \"pc\" — program counter, \"registers\"); tên khác → ValueError. Viết thêm who_am_i() trả tên của thread ĐANG chạy dòng lệnh đó (threading.current_thread().name).\n\nThực hành: Gom tên tài nguyên vào hai tuple, scope_of chỉ việc tra; who_am_i đọc tên thread LÚC ĐƯỢC GỌI, không viết cứng.",
+        "io": [
+          {
+            "label": "scope_of(\"heap\")",
+            "value": "\"shared\""
+          },
+          {
+            "label": "scope_of(\"stack\")",
+            "value": "\"per-thread\""
+          },
+          {
+            "label": "who_am_i() trong Thread(name=\"saver\")",
+            "value": "\"saver\""
+          },
+          {
+            "label": "scope_of(\"gpu\")",
+            "value": "ValueError"
+          }
+        ]
+      },
+      "starterCode": "import threading\n\n\ndef scope_of(part):\n    # \"shared\": mọi thread trong process dùng chung; \"per-thread\": mỗi thread có riêng.\n    # Tên khác -> ValueError.\n    pass\n\n\ndef who_am_i():\n    # Trả tên của thread ĐANG chạy dòng lệnh này.\n    pass\n\n\nif __name__ == \"__main__\":\n    print(scope_of(\"heap\"))\n    print(who_am_i())\n",
+      "solutionCode": "import threading\n\nSHARED = (\"code\", \"global\", \"heap\", \"file\")\nPER_THREAD = (\"stack\", \"pc\", \"registers\")\n\n\ndef scope_of(part):\n    if part in SHARED:\n        return \"shared\"\n    if part in PER_THREAD:\n        return \"per-thread\"\n    raise ValueError(\"unknown part: \" + str(part))\n\n\ndef who_am_i():\n    return threading.current_thread().name\n\n\nif __name__ == \"__main__\":\n    print(scope_of(\"heap\"))\n    print(who_am_i())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Gom tên tài nguyên vào hai tuple, scope_of chỉ việc tra; who_am_i đọc tên thread LÚC ĐƯỢC GỌI, không viết cứng."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. SHARED = (\"code\", \"global\", \"heap\", \"file\"); PER_THREAD = (\"stack\", \"pc\", \"registers\").\n2. scope_of: thuộc SHARED → \"shared\"; thuộc PER_THREAD → \"per-thread\"; còn lại raise ValueError.\n3. who_am_i trả threading.current_thread().name."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def scope_of(part):\n    if part in SHARED:\n        return \"shared\"\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "heap → \"shared\" (thread không copy heap)",
+          "call": "scope_of(\"heap\")",
+          "expect": "'shared'"
+        },
+        {
+          "name": "stack → \"per-thread\"",
+          "call": "scope_of(\"stack\")",
+          "expect": "'per-thread'"
+        },
+        {
+          "name": "global và file dùng chung",
+          "call": "[scope_of(\"global\"), scope_of(\"file\")]",
+          "expect": "['shared', 'shared']"
+        },
+        {
+          "name": "code dùng chung; pc, registers riêng",
+          "call": "[scope_of(\"code\"), scope_of(\"pc\"), scope_of(\"registers\")]",
+          "expect": "['shared', 'per-thread', 'per-thread']"
+        },
+        {
+          "name": "Tên lạ → ValueError",
+          "call": "_studio.call(scope_of, \"gpu\").error",
+          "expect": "'ValueError'"
+        },
+        {
+          "name": "Gọi ở chương trình chính → \"MainThread\"",
+          "call": "who_am_i()",
+          "expect": "'MainThread'"
+        },
+        {
+          "name": "Gọi trong Thread(name=\"saver\") → \"saver\"",
+          "call": "_studio.call(lambda box: [(lambda w: (w.start(), w.join()))(__import__(\"threading\").Thread(target=lambda: box.append(who_am_i()), name=n)) for n in ['saver']] and box, []).value",
+          "expect": "['saver']"
+        },
+        {
+          "name": "Hai thread khác tên → hai kết quả",
+          "call": "_studio.call(lambda box: [(lambda w: (w.start(), w.join()))(__import__(\"threading\").Thread(target=lambda: box.append(who_am_i()), name=n)) for n in ['a', 'b']] and box, []).value",
+          "expect": "['a', 'b']"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần."
+    }
+  }
+}

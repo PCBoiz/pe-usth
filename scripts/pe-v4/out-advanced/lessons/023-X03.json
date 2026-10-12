@@ -1,0 +1,497 @@
+{
+  "lesson_code": "X03",
+  "sort_order": 23,
+  "module": "M4 · Nhập dữ liệu, SQL và tra cứu",
+  "title": "X03 · SQL với sqlite3 và pandas",
+  "subtitle": "Trung cấp · M4 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "X03 · SQL với sqlite3 và pandas",
+    "subtitle": "Trung cấp · M4 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#X03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M4",
+          "BÀI TẬP TRUNG CẤP",
+          "X03"
+        ],
+        "title": "SQL với sqlite3 và pandas",
+        "goal": "Truy vấn có tham số và lấy kết quả về pandas.",
+        "task": "find_student(conn, name) dùng ? + params; class_average(conn, class_name) tính AVG trong SQL.",
+        "predict": "Ghép \"x' OR '1'='1\" vào f-string SQL thì lộ bao nhiêu dòng?",
+        "code": "def find_student(conn, name):\n    sql = \"SELECT name, class, mark FROM marks WHERE name = ?\"\n    pass  # pd.read_sql_query(..., params=...)\n\ndef class_average(conn, class_name):\n    pass  # AVG(mark) ... fetchone()",
+        "tests": [
+          "find_student(conn, \"Mai\") → 1 dòng",
+          "\"x' OR '1'='1\" → DataFrame rỗng"
+        ],
+        "reflect": "Vì sao ? + params an toàn hơn ghép chuỗi?"
+      },
+      "context": {
+        "title": "Truy vấn SQLite có tham số và đưa kết quả về pandas, không mở cửa cho SQL injection.",
+        "body": "make_db(rows) đã cấp: tạo database trong RAM có bảng marks(name, class, mark). Viết find_student(conn, name) trả DataFrame các dòng có đúng tên đó (cột name, class, mark), dùng pd.read_sql_query với chỗ giữ ? và params. Viết class_average(conn, class_name) tính AVG(mark) NGAY TRONG SQL cho một lớp và trả con số (None nếu lớp không có ai). Không ghép giá trị người dùng vào chuỗi SQL.",
+        "example": "class_average(conn, \"A\") → 8.25; find_student(conn, \"O'Brien\") → 1 dòng; find_student(conn, \"x' OR '1'='1\") → DataFrame rỗng, không lộ cả bảng.",
+        "prereq": "X02",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Ghép giá trị người dùng vào SQL bằng f-string như dưới. Truy vấn trả về gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Không dòng nào, vì không ai tên như vậy",
+            "detail": "Đúng nếu dùng chỗ giữ ? và params.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Báo lỗi cú pháp SQL",
+            "detail": "Chuỗi được chọn khéo để câu SQL vẫn hợp lệ.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Mọi dòng của bảng — điều kiện thành name = 'x' OR '1'='1', luôn đúng",
+            "detail": "Chuỗi người dùng đã trở thành một phần câu lệnh SQL: đó là SQL injection.",
+            "correct": true
+          }
+        ],
+        "code": "name = \"x' OR '1'='1\"\nsql = f\"SELECT * FROM marks WHERE name = '{name}'\""
+      },
+      "misconception": {
+        "title": "\"Ghép chuỗi SQL bằng f-string là được, miễn dữ liệu của mình sạch\"",
+        "body": "Chỉ cần một tên có dấu nháy (O'Brien) là câu SQL vỡ; một chuỗi cố ý như x' OR '1'='1 biến điều kiện lọc thành luôn đúng và lộ cả bảng — đó là SQL injection. Chỗ giữ ? + params không chỉ an toàn hơn mà còn đúng với MỌI giá trị."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "sqlite3.connect(\":memory:\") mở một database SQLite nằm trong RAM (đưa đường dẫn file .db thì lưu ra đĩa). conn.execute(sql) trả cursor: cursor.description cho tên cột; fetchone(), fetchmany(size), fetchall() lấy một dòng / tối đa size dòng tiếp theo / tất cả."
+        },
+        {
+          "n": 2,
+          "body": "pd.read_sql_query(sql, conn, params=...) chạy truy vấn và trả thẳng DataFrame, tên cột lấy từ SELECT. Slide cũ dùng SQLAlchemy: engine = create_engine(\"sqlite:///data.sqlite\") rồi đưa engine vào read_sql_query; với SQLite, kết nối sqlite3 có sẵn là đủ. Các ví dụ cũ như engine.table_names() đã bị bỏ ở SQLAlchemy mới."
+        },
+        {
+          "n": 3,
+          "body": "Giá trị từ người dùng KHÔNG ghép vào chuỗi SQL. Viết chỗ giữ ? rồi truyền tuple params=(name,): driver gửi giá trị tách khỏi câu lệnh, nên dấu nháy trong \"O'Brien\" hay chuỗi \"x' OR '1'='1\" chỉ là dữ liệu."
+        },
+        {
+          "n": 4,
+          "body": "Để database làm phần tổng hợp: SELECT AVG(mark) … WHERE class = ? trả về MỘT dòng thay vì kéo cả bảng về Python. Không dòng nào khớp thì AVG trả NULL — Python nhận None."
+        },
+        {
+          "n": 5,
+          "body": "with sqlite3.connect(...) as conn: chỉ tự commit (hoặc rollback khi lỗi) giao dịch, KHÔNG đóng kết nối — vẫn phải conn.close(). Ghi dữ liệu xong nhớ conn.commit(), nếu không một lần rollback sẽ xoá mất các dòng vừa thêm."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import sqlite3\nimport pandas as pd\n\nwith sqlite3.connect(\":memory:\") as conn:\n    conn.execute(\"CREATE TABLE sales (city TEXT, amount REAL)\")\n    conn.executemany(\"INSERT INTO sales VALUES (?, ?)\",\n                     [(\"Hue\", 120.0), (\"Vinh\", 80.0), (\"Hue\", 40.0)])\n    cur = conn.execute(\"SELECT city, amount FROM sales ORDER BY amount DESC\")\n    print([column[0] for column in cur.description])\n    print(cur.fetchmany(2))\n    print(cur.fetchmany(2))\n    sql = \"SELECT city, SUM(amount) AS total FROM sales WHERE amount > ? GROUP BY city\"\n    print(pd.read_sql_query(sql, conn, params=(50,)))\nconn.close()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "cursor.fetchmany(size=5) làm gì?",
+          "options": [
+            {
+              "text": "Chạy truy vấn 5 lần",
+              "detail": "Truy vấn đã chạy ở execute; fetch chỉ lấy kết quả.",
+              "correct": false
+            },
+            {
+              "text": "Lấy tối đa 5 dòng tiếp theo của kết quả; gọi lại để lấy nhóm sau",
+              "detail": "Hết dòng thì trả list rỗng.",
+              "correct": true
+            },
+            {
+              "text": "Lấy đúng 5 dòng, thiếu thì báo lỗi",
+              "detail": "Ít hơn 5 dòng vẫn trả bình thường.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Hết dòng thì trả list rỗng."
+        },
+        {
+          "question": "params=(name) với name = \"Mai\" sẽ thế nào?",
+          "options": [
+            {
+              "text": "Lỗi: (name) chỉ là chuỗi \"Mai\" — sqlite3 coi là 3 giá trị cho 1 dấu ?",
+              "detail": "Tuple một phần tử phải có dấu phẩy: (name,).",
+              "correct": true
+            },
+            {
+              "text": "Tìm lần lượt \"M\", \"a\", \"i\"",
+              "detail": "sqlite3 báo lỗi số lượng tham số chứ không tìm ba lần.",
+              "correct": false
+            },
+            {
+              "text": "Chạy bình thường",
+              "detail": "(name) không phải tuple, chỉ là name trong ngoặc.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Tuple một phần tử phải có dấu phẩy: (name,)."
+        },
+        {
+          "question": "Ra khỏi khối with sqlite3.connect(...) as conn: thì kết nối…",
+          "options": [
+            {
+              "text": "Bị xoá database",
+              "detail": "Database trong RAM chỉ mất khi kết nối đóng.",
+              "correct": false
+            },
+            {
+              "text": "Vẫn mở — with chỉ commit/rollback; cần gọi conn.close()",
+              "detail": "Khác với with open(...) của file.",
+              "correct": true
+            },
+            {
+              "text": "Tự đóng như file",
+              "detail": "Đó là hành vi của open(), không phải sqlite3.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Khác với with open(...) của file."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao dùng chỗ giữ ? với params thay vì ghép giá trị vào chuỗi SQL?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Với ? và params, driver gửi câu lệnh và giá trị riêng nhau, nên giá trị chỉ được coi là dữ liệu: dấu nháy trong O'Brien không làm vỡ câu, chuỗi x' OR '1'='1 không thành điều kiện luôn đúng. Ghép chuỗi thì giá trị người dùng trở thành một phần lệnh SQL — vừa lỗi với dữ liệu thật vừa mở cửa SQL injection."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: bảng sales(city, amount). Lắp chỗ giữ, tham số và cách lấy kết quả tổng hợp.",
+        "rule": "Thử tên có dấu nháy (O'Brien) và chuỗi tấn công x' OR '1'='1: truy vấn có tham số phải xử lý cả hai như dữ liệu bình thường."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "make_db(ROWS) → bảng marks 4 dòng trong RAM"
+          },
+          {
+            "label": "Bước 2",
+            "text": "WHERE name = ? + params=(name,) → giá trị đi riêng, chỉ là dữ liệu"
+          },
+          {
+            "label": "Bước 3",
+            "text": "read_sql_query → DataFrame cột name, class, mark"
+          },
+          {
+            "label": "Bước 4",
+            "text": "AVG(mark) … fetchone() → (8.25,), trả 8.25"
+          }
+        ]
+      },
+      "counter": {
+        "question": "class_average(conn, \"Z\") khi không có lớp Z → ?",
+        "options": [
+          "None",
+          "0",
+          "Lỗi ZeroDivisionError"
+        ],
+        "correct": "None"
+      },
+      "scaffold": {
+        "template": "import sqlite3\n\nimport pandas as pd\n\n\ndef city_sales(conn, city):\n    sql = \"SELECT city, amount FROM sales WHERE city = {{slot1}}\"\n    return pd.read_sql_query(sql, conn, params={{slot2}})\n\n\ndef city_total(conn, city):\n    row = conn.execute(\"SELECT {{slot3}} FROM sales WHERE city = ?\", (city,)).{{slot4}}\n    return row[0]\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "?"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "(city,)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "SUM(amount)"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "fetchone()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "?",
+            "slot": 1
+          },
+          {
+            "label": "(city)",
+            "slot": 2,
+            "trap": "Thiếu dấu phẩy: chỉ là chuỗi city trong ngoặc, không phải tuple."
+          },
+          {
+            "label": "(city,)",
+            "slot": 2
+          },
+          {
+            "label": "'{city}'",
+            "slot": 1,
+            "trap": "Ghép giá trị vào chuỗi SQL — mở cửa injection (và thiếu chữ f nên chỉ là chữ \"{city}\")."
+          },
+          {
+            "label": "fetchall()",
+            "slot": 4,
+            "trap": "Trả list các dòng; row[0] khi đó là cả tuple chứ không phải con số."
+          },
+          {
+            "label": "fetchone()",
+            "slot": 4
+          },
+          {
+            "label": "SUM(amount)",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "make_db(rows) đã cấp: tạo database trong RAM có bảng marks(name, class, mark). Viết find_student(conn, name) trả DataFrame các dòng có đúng tên đó (cột name, class, mark), dùng pd.read_sql_query với chỗ giữ ? và params. Viết class_average(conn, class_name) tính AVG(mark) NGAY TRONG SQL cho một lớp và trả con số (None nếu lớp không có ai). Không ghép giá trị người dùng vào chuỗi SQL.\n\nThực hành: Viết SQL có dấu ?, truyền giá trị qua params=(name,) / (class_name,); để AVG chạy trong SQL và lấy kết quả bằng fetchone()[0].",
+        "io": [
+          {
+            "label": "find_student(conn, \"Mai\")",
+            "value": "1 dòng: Mai, A, 8.5"
+          },
+          {
+            "label": "find_student(conn, \"x' OR '1'='1\")",
+            "value": "DataFrame rỗng"
+          },
+          {
+            "label": "class_average(conn, \"A\")",
+            "value": "8.25; lớp không có ai → None"
+          }
+        ]
+      },
+      "starterCode": "import sqlite3\n\nimport pandas as pd\n\n\ndef make_db(rows):\n    \"\"\"Cấp sẵn: database trong RAM có bảng marks(name, class, mark).\"\"\"\n    conn = sqlite3.connect(\":memory:\")\n    conn.execute(\"CREATE TABLE marks (name TEXT, class TEXT, mark REAL)\")\n    conn.executemany(\"INSERT INTO marks VALUES (?, ?, ?)\", rows)\n    conn.commit()\n    return conn\n\n\ndef find_student(conn, name):\n    pass\n\n\ndef class_average(conn, class_name):\n    pass\n\n\nROWS = [(\"Mai\", \"A\", 8.5), (\"An\", \"B\", 9.5), (\"Binh\", \"A\", 8.0), (\"O'Brien\", \"B\", 7.5)]\nconn = make_db(ROWS)\n# Gọi thử find_student(conn, \"Mai\") và class_average(conn, \"A\") rồi in kết quả.\n",
+      "solutionCode": "import sqlite3\n\nimport pandas as pd\n\n\ndef make_db(rows):\n    \"\"\"Cấp sẵn: database trong RAM có bảng marks(name, class, mark).\"\"\"\n    conn = sqlite3.connect(\":memory:\")\n    conn.execute(\"CREATE TABLE marks (name TEXT, class TEXT, mark REAL)\")\n    conn.executemany(\"INSERT INTO marks VALUES (?, ?, ?)\", rows)\n    conn.commit()\n    return conn\n\n\ndef find_student(conn, name):\n    sql = \"SELECT name, class, mark FROM marks WHERE name = ?\"\n    return pd.read_sql_query(sql, conn, params=(name,))\n\n\ndef class_average(conn, class_name):\n    row = conn.execute(\"SELECT AVG(mark) FROM marks WHERE class = ?\", (class_name,)).fetchone()\n    return row[0]\n\n\nROWS = [(\"Mai\", \"A\", 8.5), (\"An\", \"B\", 9.5), (\"Binh\", \"A\", 8.0), (\"O'Brien\", \"B\", 7.5)]\nconn = make_db(ROWS)\nprint(find_student(conn, \"Mai\"))\nprint(class_average(conn, \"A\"))\nconn.close()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Viết SQL có dấu ?, truyền giá trị qua params=(name,) / (class_name,); để AVG chạy trong SQL và lấy kết quả bằng fetchone()[0]."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. find_student: sql = \"SELECT name, class, mark FROM marks WHERE name = ?\"; return pd.read_sql_query(sql, conn, params=(name,)).\n2. class_average: row = conn.execute(\"SELECT AVG(mark) FROM marks WHERE class = ?\", (class_name,)).fetchone(); return row[0]."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def find_student(conn, name):\n    sql = \"SELECT name, class, mark FROM marks WHERE name = ?\"\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Tìm đúng một người",
+          "call": "find_student(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), 'Mai').values.tolist()",
+          "expect": "[['Mai', 'A', 8.5]]"
+        },
+        {
+          "name": "Đủ ba cột name, class, mark",
+          "call": "find_student(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), 'An').columns.tolist()",
+          "expect": "['name', 'class', 'mark']"
+        },
+        {
+          "name": "Tên có dấu nháy: O'Brien",
+          "call": "find_student(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), \"O'Brien\")['mark'].tolist()",
+          "expect": "[7.5]"
+        },
+        {
+          "name": "Chuỗi tấn công không lộ bảng",
+          "call": "len(find_student(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), \"x' OR '1'='1\"))",
+          "expect": "0"
+        },
+        {
+          "name": "Hai người trùng tên (dữ liệu khác)",
+          "call": "find_student(make_db([('Hoa', 'C', 6.0), ('Hoa', 'D', 7.0), ('Ty', 'C', 9.0)]), 'Hoa')['class'].tolist()",
+          "expect": "['C', 'D']"
+        },
+        {
+          "name": "AVG lớp A",
+          "call": "round(class_average(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), 'A'), 2)",
+          "expect": "8.25"
+        },
+        {
+          "name": "AVG dữ liệu khác",
+          "call": "round(class_average(make_db([('Ty', 'C', 6.0), ('Lan', 'C', 7.0), ('Ka', 'C', 9.5)]), 'C'), 2)",
+          "expect": "7.5"
+        },
+        {
+          "name": "Lớp không có ai → None",
+          "call": "class_average(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), 'Z')",
+          "expect": "None"
+        },
+        {
+          "name": "Chuỗi tấn công vào tên lớp → None",
+          "call": "class_average(make_db([('Mai', 'A', 8.5), ('An', 'B', 9.5), ('Binh', 'A', 8.0), (\"O'Brien\", 'B', 7.5)]), \"x' OR '1'='1\")",
+          "expect": "None"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "find_student(conn, name)",
+          "does": "Lấy các dòng của bảng marks có đúng tên name.",
+          "takes": "conn: kết nối sqlite3; name: str (có thể chứa dấu nháy)",
+          "gives": "DataFrame cột name, class, mark (rỗng nếu không ai khớp)",
+          "effect": "Chỉ đọc database.",
+          "call": "find_student(conn, \"Mai\") → 1 dòng Mai, A, 8.5"
+        },
+        {
+          "sig": "class_average(conn, class_name)",
+          "does": "Tính AVG(mark) của một lớp ngay trong SQL.",
+          "takes": "conn: kết nối sqlite3; class_name: str",
+          "gives": "float; lớp không có ai → None",
+          "effect": "Chỉ đọc database.",
+          "call": "class_average(conn, \"A\") → 8.25"
+        }
+      ],
+      "env": "sqlite3 chạy thật trong trình duyệt (Pyodide): database \":memory:\" hoặc file .db nằm trong thư mục tạm của lần chạy và mất khi chạy lại. Lần đầu dùng, trình duyệt tải thêm module sqlite3.",
+      "packages": [
+        "pandas",
+        "sqlite3"
+      ]
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "make_db(ROWS)",
+              "right": "bảng marks 4 dòng trong RAM"
+            },
+            {
+              "left": "WHERE name = ? + params=(name,)",
+              "right": "giá trị đi riêng, chỉ là dữ liệu"
+            },
+            {
+              "left": "read_sql_query",
+              "right": "DataFrame cột name, class, mark"
+            },
+            {
+              "left": "AVG(mark) … fetchone()",
+              "right": "(8.25,), trả 8.25"
+            }
+          ],
+          "rightOrder": [
+            1,
+            2,
+            0,
+            3
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "import sqlite3\n\nimport pandas as pd\n\n\ndef make_db(rows):\n    \"\"\"Cấp sẵn: database trong RAM có bảng marks(name, class, mark).\"\"\"\n    conn = sqlite3.connect(\":memory:\")\n    conn.execute(\"CREATE TABLE marks (name TEXT, class TEXT, mark REAL)\")",
+          "tail": "    return row[0]\n\n\nROWS = [(\"Mai\", \"A\", 8.5), (\"An\", \"B\", 9.5), (\"Binh\", \"A\", 8.0), (\"O'Brien\", \"B\", 7.5)]\nconn = make_db(ROWS)\nprint(find_student(conn, \"Mai\"))\nprint(class_average(conn, \"A\"))\nconn.close()",
+          "lines": [
+            {
+              "id": "L9",
+              "text": "    conn.executemany(\"INSERT INTO marks VALUES (?, ?, ?)\", rows)"
+            },
+            {
+              "id": "L10",
+              "text": "    conn.commit()"
+            },
+            {
+              "id": "L11",
+              "text": "    return conn"
+            },
+            {
+              "id": "L14",
+              "text": "def find_student(conn, name):"
+            },
+            {
+              "id": "L15",
+              "text": "    sql = \"SELECT name, class, mark FROM marks WHERE name = ?\""
+            },
+            {
+              "id": "L16",
+              "text": "    return pd.read_sql_query(sql, conn, params=(name,))"
+            },
+            {
+              "id": "L19",
+              "text": "def class_average(conn, class_name):"
+            },
+            {
+              "id": "L20",
+              "text": "    row = conn.execute(\"SELECT AVG(mark) FROM marks WHERE class = ?\", (class_name,)).fetchone()"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    sql = f\"SELECT name, class, mark FROM marks WHERE name = '{name}'\"",
+              "reason": "ghép tên vào chuỗi SQL"
+            },
+            {
+              "id": "D1",
+              "text": "    return pd.read_sql_query(sql, conn)",
+              "reason": "ghép tên vào chuỗi SQL"
+            }
+          ],
+          "order": [
+            "D1",
+            "L14",
+            "L15",
+            "L20",
+            "L11",
+            "L10",
+            "D0",
+            "L19",
+            "L9",
+            "L16"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    conn.execute(\"CREATE TABLE marks (name TEXT, class TEXT, mark REAL)\")\n    conn.executemany(\"INSERT INTO marks VALUES (?, ?, ?)\", rows)\n    conn.commit()\n    return conn\n\n\ndef find_student(conn, name):\n    sql = f\"SELECT name, class, mark FROM marks WHERE name = '{name}'\"\n    return pd.read_sql_query(sql, conn)\n\n\ndef class_average(conn, class_name):\n    row = conn.execute(\"SELECT AVG(mark) FROM marks WHERE class = ?\", (class_name,)).fetchone()\n    return row[0]\n",
+          "firstLine": 9,
+          "line": 16,
+          "lines": [
+            16,
+            17
+          ],
+          "label": "ghép tên vào chuỗi SQL",
+          "fix": "    sql = \"SELECT name, class, mark FROM marks WHERE name = ?\"\n    return pd.read_sql_query(sql, conn, params=(name,))"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

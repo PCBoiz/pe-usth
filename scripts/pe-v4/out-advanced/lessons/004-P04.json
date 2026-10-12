@@ -1,0 +1,487 @@
+{
+  "lesson_code": "P04",
+  "sort_order": 4,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P04 · stdin, stdout, stderr và pipe",
+  "subtitle": "Trung cấp · M1 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "P04 · stdin, stdout, stderr và pipe",
+    "subtitle": "Trung cấp · M1 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#P04",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P04"
+        ],
+        "title": "stdin, stdout, stderr và pipe",
+        "goal": "Phân biệt stdin, stdout, stderr và nối chúng với process con.",
+        "task": "Viết read_scores (đọc sys.stdin, cảnh báo ra stderr) và run_sum (input= + capture_output).",
+        "predict": "Con in 5 ra stdout và warn ra stderr: r.stdout là gì?",
+        "code": "def read_scores():\n    # for line in sys.stdin ... \"skip: ...\" → sys.stderr\ndef run_sum(lines):\n    # subprocess.run([sys.executable, \"sum_numbers.py\"], input=...,\n    #                capture_output=True, text=True)",
+        "tests": [
+          "stdin 5 / abc / -2 → [5, -2]; stderr: skip: abc",
+          "run_sum([\"10\", \"x\", \"20\"]) → (30, [\"skip: x\"])"
+        ],
+        "reflect": "Vì sao cảnh báo phải ra stderr chứ không ra stdout?"
+      },
+      "context": {
+        "title": "Phân biệt stdin, stdout, stderr và nối chúng với process con qua pipe.",
+        "body": "Hai phía của một process. (1) read_scores(): đọc HẾT các dòng từ stdin (sys.stdin); dòng rỗng bỏ qua, dòng là số nguyên thì giữ (int), dòng khác thì in \"skip: <dòng đã strip>\" ra STDERR — không ra stdout; trả list số. (2) run_sum(lines): chạy sum_numbers.py (đã cấp) làm process con bằng [sys.executable, \"sum_numbers.py\"], đưa các dòng vào stdin của con qua input= (mỗi dòng kết thúc bằng \"\\n\"), thu riêng stdout và stderr dạng chuỗi; trả (tổng: int, list các dòng cảnh báo).",
+        "example": "stdin 5 / abc / -2 → read_scores() trả [5, -2] và stderr nhận \"skip: abc\". run_sum([\"10\", \"x\", \"20\"]) → (30, [\"skip: x\"]).",
+        "prereq": "P03",
+        "level": "Trung cấp",
+        "files": [
+          "sum_numbers.py"
+        ]
+      },
+      "predict": {
+        "question": "Con chạy print(5) rồi print(\"warn\", file=sys.stderr). Với capture_output=True, text=True, r.stdout là gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "\"5\\n\" — \"warn\" nằm riêng trong r.stderr",
+            "detail": "Hai luồng được thu bằng hai pipe khác nhau.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "\"5\\nwarn\\n\"",
+            "detail": "Chỉ gộp khi đặt stderr=subprocess.STDOUT.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "b\"5\\n\"",
+            "detail": "text=True đã đổi bytes thành str.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"stderr cũng là stdout, in đâu cũng được\"",
+        "body": "stderr là luồng RIÊNG (fd 2). In cảnh báo ra stdout làm hỏng kết quả: chương trình đọc stdout của bạn (qua pipe, > out.txt, hay r.stdout) sẽ nhận cả \"skip: abc\" lẫn con số. Chỉ khi cấu hình gộp — 2>&1 trong shell, stderr=subprocess.STDOUT trong Python — hai luồng mới đi chung một đường."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Mỗi process có ba luồng chuẩn: stdin (fd 0) — đầu vào, stdout (fd 1) — kết quả, stderr (fd 2) — báo lỗi. Trên terminal chúng trông lẫn vào nhau nhưng là ba luồng riêng."
+        },
+        {
+          "n": 2,
+          "body": "input() và sys.stdin đọc fd 0; print(x) ghi stdout; print(x, file=sys.stderr) ghi stderr."
+        },
+        {
+          "n": 3,
+          "body": "for line in sys.stdin đọc tới hết dữ liệu (EOF); mỗi dòng còn \"\\n\" ở cuối nên phải strip()."
+        },
+        {
+          "n": 4,
+          "body": "Shell: < file làm stdin, > file nhận stdout, a | b nối stdout của a vào stdin của b bằng một pipe."
+        },
+        {
+          "n": 5,
+          "body": "subprocess: input= đưa chuỗi vào stdin của con; capture_output=True tạo hai PIPE riêng; stderr=subprocess.STDOUT mới gộp. Thiếu text=True thì nhận bytes."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import subprocess\nimport sys\n\nprogram = \"import sys; print(5, flush=True); print('warn', file=sys.stderr)\"\nr = subprocess.run([sys.executable, \"-c\", program],\n                   capture_output=True, text=True)\nprint(\"stdout:\", repr(r.stdout))\nprint(\"stderr:\", repr(r.stderr))\n\nmerged = subprocess.run([sys.executable, \"-c\", program],\n                        stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)\nprint(\"gộp:\", repr(merged.stdout))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Lệnh shell ps aux | grep term làm gì với stdout của ps?",
+          "options": [
+            {
+              "text": "Ghi vào file tên grep",
+              "detail": "Ghi ra file là >.",
+              "correct": false
+            },
+            {
+              "text": "Gộp vào stderr",
+              "detail": "Pipe không đụng tới stderr.",
+              "correct": false
+            },
+            {
+              "text": "Nối nó vào stdin của grep qua một pipe",
+              "detail": "| là pipe giữa hai process.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "| là pipe giữa hai process."
+        },
+        {
+          "question": "subprocess.run(..., capture_output=True) KHÔNG có text=True. r.stdout có kiểu gì?",
+          "options": [
+            {
+              "text": "str",
+              "detail": "Cần text=True.",
+              "correct": false
+            },
+            {
+              "text": "bytes",
+              "detail": "Mặc định dữ liệu qua pipe là bytes; text=True (hoặc encoding=) mới cho str.",
+              "correct": true
+            },
+            {
+              "text": "list các dòng",
+              "detail": "Muốn list thì tự splitlines().",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Mặc định dữ liệu qua pipe là bytes; text=True (hoặc encoding=) mới cho str."
+        },
+        {
+          "question": "for line in sys.stdin dừng khi nào?",
+          "options": [
+            {
+              "text": "Khi hết dữ liệu (EOF): input= đã đọc hết, hoặc Ctrl+D (Linux) / Ctrl+Z rồi Enter (Windows)",
+              "detail": "Dòng rỗng giữa chừng vẫn là một dòng \"\\n\", không làm dừng vòng lặp.",
+              "correct": true
+            },
+            {
+              "text": "Ở dòng rỗng đầu tiên",
+              "detail": "Dòng rỗng vẫn là một dòng.",
+              "correct": false
+            },
+            {
+              "text": "Sau đúng một dòng",
+              "detail": "Vòng for đọc tới EOF.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Dòng rỗng giữa chừng vẫn là một dòng \"\\n\", không làm dừng vòng lặp."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao \"skip: abc\" phải ra stderr chứ không ra stdout?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "stdout là KẾT QUẢ mà bên khác đọc tiếp (qua pipe, > file, hay r.stdout trong subprocess). Nếu cảnh báo lẫn vào stdout, bên đọc gặp \"skip: abc\" thay vì con số và int() báo lỗi. Đặt cảnh báo ở stderr giữ stdout sạch mà người dùng vẫn thấy cảnh báo. Trường hợp đặc biệt: không có dòng hỏng thì stderr rỗng."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp chỗ in cảnh báo và hai tham số của subprocess.run.",
+        "rule": "Thử list rỗng, toàn dòng hỏng, số âm và dòng có khoảng trắng hai đầu; kiểm stdout chỉ chứa con số."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "input=data → các dòng đi vào stdin (fd 0) của con"
+          },
+          {
+            "label": "Bước 2",
+            "text": "con print(total) → con số đi vào pipe stdout"
+          },
+          {
+            "label": "Bước 3",
+            "text": "con print(\"skip: x\", file=sys.stderr) → đi vào pipe stderr riêng"
+          },
+          {
+            "label": "Bước 4",
+            "text": "text=True → r.stdout và r.stderr là str, không phải bytes"
+          }
+        ]
+      },
+      "counter": {
+        "question": "run_sum([\"4\", \"\", \"y\", \"6\"]) trả gì?",
+        "options": [
+          "(10, [\"skip: y\"])",
+          "(10, [])",
+          "(4, [\"skip: y\"])"
+        ],
+        "correct": "(10, [\"skip: y\"])"
+      },
+      "scaffold": {
+        "template": "def read_scores():\n    scores = []\n    for line in sys.stdin:\n        text = line.strip()\n        if text == \"\":\n            continue\n        try:\n            scores.append(int(text))\n        except ValueError:\n            {{slot1}}\n    return scores\n\n\ndef run_sum(lines):\n    data = \"\".join(line + \"\\n\" for line in lines)\n    result = subprocess.run([sys.executable, \"sum_numbers.py\"],\n                            {{slot2}}, capture_output=True, {{slot3}})\n    return int(result.stdout), result.stderr.splitlines()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "print(\"skip:\", text, file=sys.stderr)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "input=data"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "text=True"
+          }
+        ],
+        "bank": [
+          {
+            "label": "stdin=data",
+            "slot": 2,
+            "trap": "stdin= nhận PIPE hoặc file object; chuỗi phải đi qua input=."
+          },
+          {
+            "label": "print(\"skip:\", text)",
+            "slot": 1,
+            "trap": "Ra stdout — lẫn vào kết quả."
+          },
+          {
+            "label": "stderr=subprocess.STDOUT",
+            "slot": 3,
+            "trap": "Không dùng chung với capture_output — và gộp thì int() gặp chữ."
+          },
+          {
+            "label": "input=data",
+            "slot": 2
+          },
+          {
+            "label": "print(\"skip:\", text, file=sys.stderr)",
+            "slot": 1
+          },
+          {
+            "label": "text=True",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hai phía của một process. (1) read_scores(): đọc HẾT các dòng từ stdin (sys.stdin); dòng rỗng bỏ qua, dòng là số nguyên thì giữ (int), dòng khác thì in \"skip: <dòng đã strip>\" ra STDERR — không ra stdout; trả list số. (2) run_sum(lines): chạy sum_numbers.py (đã cấp) làm process con bằng [sys.executable, \"sum_numbers.py\"], đưa các dòng vào stdin của con qua input= (mỗi dòng kết thúc bằng \"\\n\"), thu riêng stdout và stderr dạng chuỗi; trả (tổng: int, list các dòng cảnh báo).\n\nThực hành: Phía con: đọc sys.stdin, cảnh báo ra sys.stderr. Phía cha: input= đưa dữ liệu vào, capture_output=True tách hai pipe, text=True để có str.",
+        "io": [
+          {
+            "label": "stdin: 5 / abc / -2",
+            "value": "read_scores() → [5, -2]; stderr: skip: abc"
+          },
+          {
+            "label": "run_sum([\"10\", \"x\", \"20\"])",
+            "value": "(30, [\"skip: x\"])"
+          },
+          {
+            "label": "run_sum([])",
+            "value": "(0, [])"
+          }
+        ]
+      },
+      "starterCode": "import subprocess\nimport sys\n\n\ndef read_scores():\n    # Đọc mọi dòng của sys.stdin: số nguyên -> giữ; dòng rỗng -> bỏ;\n    # dòng khác -> in \"skip: <dòng>\" ra STDERR.\n    pass\n\n\ndef run_sum(lines):\n    # Chạy sum_numbers.py làm process con, đưa lines vào stdin của con,\n    # thu riêng stdout và stderr; trả (tổng, list dòng cảnh báo).\n    pass\n\n\nif __name__ == \"__main__\":\n    print(run_sum([\"10\", \"x\", \"20\"]))\n",
+      "solutionCode": "import subprocess\nimport sys\n\n\ndef read_scores():\n    scores = []\n    for line in sys.stdin:\n        text = line.strip()\n        if text == \"\":\n            continue\n        try:\n            scores.append(int(text))\n        except ValueError:\n            print(\"skip:\", text, file=sys.stderr)\n    return scores\n\n\ndef run_sum(lines):\n    data = \"\".join(line + \"\\n\" for line in lines)\n    result = subprocess.run([sys.executable, \"sum_numbers.py\"],\n                            input=data, capture_output=True, text=True)\n    return int(result.stdout), result.stderr.splitlines()\n\n\nif __name__ == \"__main__\":\n    print(run_sum([\"10\", \"x\", \"20\"]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Phía con: đọc sys.stdin, cảnh báo ra sys.stderr. Phía cha: input= đưa dữ liệu vào, capture_output=True tách hai pipe, text=True để có str."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. read_scores: for line in sys.stdin; text = line.strip(); bỏ dòng rỗng.\n2. int(text) trong try; ValueError → print(\"skip:\", text, file=sys.stderr).\n3. run_sum: data = mỗi dòng + \"\\n\"; subprocess.run([sys.executable, \"sum_numbers.py\"], input=data, capture_output=True, text=True).\n4. Trả int(result.stdout) và result.stderr.splitlines()."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "        except ValueError:\n            print(\"skip:\", text, file=sys.stderr)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "stdin 7, 8 → [7, 8]",
+          "call": "_studio.run(stdin=['7', '8'], entry='read_scores()').value",
+          "expect": "[7, 8]"
+        },
+        {
+          "name": "Bỏ dòng rỗng, giữ số âm, strip khoảng trắng",
+          "call": "_studio.run(stdin=['5', '', ' -2 ', '40'], entry='read_scores()').value",
+          "expect": "[5, -2, 40]"
+        },
+        {
+          "name": "Cảnh báo ra stderr, stdout sạch",
+          "call": "(lambda r: (r.ns['_got'], r.ns['_err'].getvalue(), r.stdout))(_studio.run(stdin=['5', 'abc', '3.5'], entry='import io, contextlib\\n_err = io.StringIO()\\nwith contextlib.redirect_stderr(_err):\\n    _got = read_scores()'))",
+          "expect": "([5], 'skip: abc\\nskip: 3.5\\n', '')"
+        },
+        {
+          "name": "stdin rỗng → []",
+          "call": "_studio.run(stdin=[], entry='read_scores()').value",
+          "expect": "[]"
+        },
+        {
+          "name": "run_sum: 10, x, 20",
+          "call": "run_sum([\"10\", \"x\", \"20\"])",
+          "expect": "(30, ['skip: x'])"
+        },
+        {
+          "name": "run_sum: số âm, nhiều dòng hỏng, dòng rỗng",
+          "call": "run_sum([\"-4\", \"a\", \"b\", \"9\", \"\"])",
+          "expect": "(5, ['skip: a', 'skip: b'])"
+        },
+        {
+          "name": "run_sum([]) → (0, [])",
+          "call": "run_sum([])",
+          "expect": "(0, [])"
+        },
+        {
+          "name": "Lệnh con là list [sys.executable, \"sum_numbers.py\"]",
+          "call": "[list(c[\"args\"]) for c in _studio.call(run_sum, [\"1\"]).subprocess_calls]",
+          "expect": "[[__import__(\"sys\").executable, \"sum_numbers.py\"]]"
+        }
+      ],
+      "files": [
+        {
+          "name": "sum_numbers.py",
+          "content": "import sys\n\n# Đọc số nguyên từ stdin (mỗi dòng một số), in TỔNG ra stdout.\n# Dòng không phải số nguyên: báo \"skip: <dòng>\" ra stderr.\ntotal = 0\nfor line in sys.stdin:\n    text = line.strip()\n    if text == \"\":\n        continue\n    try:\n        total += int(text)\n    except ValueError:\n        print(\"skip:\", text, file=sys.stderr)\nprint(total)\n",
+          "kind": "module"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "read_scores()",
+          "does": "Đọc số nguyên từ stdin của chính process.",
+          "takes": "không (đọc sys.stdin tới EOF)",
+          "gives": "list[int]",
+          "effect": "Dòng không phải số → \"skip: <dòng>\" ra stderr; stdout không in gì.",
+          "call": "stdin \"5\\nabc\\n\" → [5], stderr \"skip: abc\""
+        },
+        {
+          "sig": "run_sum(lines)",
+          "does": "Chạy sum_numbers.py làm process con và đọc kết quả.",
+          "takes": "lines: list[str] — mỗi phần tử một dòng",
+          "gives": "tuple (int tổng, list[str] cảnh báo)",
+          "effect": "Lệnh con: [sys.executable, \"sum_numbers.py\"]; dữ liệu qua input=.",
+          "call": "run_sum([\"10\", \"x\", \"20\"]) → (30, [\"skip: x\"])"
+        }
+      ],
+      "env": "Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG subprocess: lệnh [sys.executable, \"-c\", code] hoặc [sys.executable, \"ten_file.py\", ...] chạy chương trình con trong một vùng nhớ riêng, có stdin/stdout/stderr riêng, returncode lấy từ sys.exit()/ngoại lệ, và time.sleep() của con chỉ đẩy một đồng hồ ảo (timeout vẫn được tính đúng). Lệnh shell khác (ls, dir, ping…) không chạy được ở đây. Hãy chạy lại file trên máy (Windows/Linux) để thấy process thật."
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "input=data",
+              "right": "các dòng đi vào stdin (fd 0) của con"
+            },
+            {
+              "left": "con print(total)",
+              "right": "con số đi vào pipe stdout"
+            },
+            {
+              "left": "con print(\"skip: x\", file=sys.stderr)",
+              "right": "đi vào pipe stderr riêng"
+            },
+            {
+              "left": "text=True",
+              "right": "r.stdout và r.stderr là str, không phải bytes"
+            }
+          ],
+          "rightOrder": [
+            1,
+            2,
+            0,
+            3
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "import subprocess\nimport sys\n\n\ndef read_scores():\n    scores = []\n    for line in sys.stdin:\n        text = line.strip()\n        if text == \"\":",
+          "tail": "    result = subprocess.run([sys.executable, \"sum_numbers.py\"],\n                            input=data, capture_output=True, text=True)\n    return int(result.stdout), result.stderr.splitlines()\n\n\nif __name__ == \"__main__\":\n    print(run_sum([\"10\", \"x\", \"20\"]))",
+          "lines": [
+            {
+              "id": "L9",
+              "text": "            continue"
+            },
+            {
+              "id": "L10",
+              "text": "        try:"
+            },
+            {
+              "id": "L11",
+              "text": "            scores.append(int(text))"
+            },
+            {
+              "id": "L12",
+              "text": "        except ValueError:"
+            },
+            {
+              "id": "L13",
+              "text": "            print(\"skip:\", text, file=sys.stderr)"
+            },
+            {
+              "id": "L14",
+              "text": "    return scores"
+            },
+            {
+              "id": "L17",
+              "text": "def run_sum(lines):"
+            },
+            {
+              "id": "L18",
+              "text": "    data = \"\".join(line + \"\\n\" for line in lines)"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "            print(\"skip:\", text)",
+              "reason": "cảnh báo in ra stdout"
+            },
+            {
+              "id": "D1",
+              "text": "                            input=data, capture_output=True)",
+              "reason": "quên text=True"
+            }
+          ],
+          "order": [
+            "D1",
+            "L9",
+            "L17",
+            "L13",
+            "L11",
+            "L14",
+            "L12",
+            "L18",
+            "L10",
+            "D0"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    for line in sys.stdin:\n        text = line.strip()\n        if text == \"\":\n            continue\n        try:\n            scores.append(int(text))\n        except ValueError:\n            print(\"skip:\", text)\n    return scores\n\n\ndef run_sum(lines):\n    data = \"\".join(line + \"\\n\" for line in lines)\n    result = subprocess.run([sys.executable, \"sum_numbers.py\"],\n                            input=data, capture_output=True, text=True)",
+          "firstLine": 7,
+          "line": 14,
+          "lines": [
+            14
+          ],
+          "label": "cảnh báo in ra stdout",
+          "fix": "            print(\"skip:\", text, file=sys.stderr)"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

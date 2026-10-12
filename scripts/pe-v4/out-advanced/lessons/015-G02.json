@@ -1,0 +1,412 @@
+{
+  "lesson_code": "G02",
+  "sort_order": 15,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G02 · Widget và callback",
+  "subtitle": "Nâng cao · M3 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "G02 · Widget và callback",
+    "subtitle": "Nâng cao · M3 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#G02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G02"
+        ],
+        "title": "Widget và callback",
+        "goal": "Nối nút với callback và đọc Entry đúng lúc bấm.",
+        "task": "Hoàn thành form đăng nhập: Entry mật khẩu show=\"*\", Label status, nút \"Đăng nhập\" command=login.",
+        "predict": "command=login() khác command=login thế nào?",
+        "code": "password_entry = tk.Entry(frame, show=\"*\")\nstatus = tk.Label(frame, text=\"Chưa đăng nhập\")\ndef login():\n    # get() hai Entry, status.config(text=...)\ntk.Button(frame, text=\"Đăng nhập\", command=login).pack()",
+        "tests": [
+          "Mai + usth2026 → Xin chào Mai, hộp \"Chào mừng Mai!\"",
+          "Sai mật khẩu → Sai mật khẩu, không hộp thông báo"
+        ],
+        "reflect": "Vì sao phải gọi get() bên trong login()?"
+      },
+      "context": {
+        "title": "Tạo widget, nối nút với hàm callback và đọc dữ liệu đúng lúc người dùng bấm.",
+        "body": "Hoàn thành form đăng nhập (đã có root, frame, user_entry): tạo password_entry che ký tự bằng show=\"*\", Label status với chữ \"Chưa đăng nhập\", và Button chữ \"Đăng nhập\" với command=login. Hàm login() đọc hai Entry LÚC ĐƯỢC BẤM: tên bỏ khoảng trắng hai đầu; mật khẩu bằng PASSWORD thì status.config(text=\"Xin chào <tên>\") và messagebox.showinfo(\"Đăng nhập\", \"Chào mừng <tên>!\"); sai thì status.config(text=\"Sai mật khẩu\").",
+        "example": "Gõ \"Mai\" và \"usth2026\", bấm Đăng nhập → status \"Xin chào Mai\" và hộp thông báo \"Chào mừng Mai!\".",
+        "prereq": "G01",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Bấm nút này thì chuyện gì xảy ra?",
+        "options": [
+          {
+            "id": "a",
+            "title": "clicked chạy mỗi lần bấm như bình thường",
+            "detail": "Đó là command=clicked (không ngoặc).",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Báo lỗi mỗi lần bấm",
+            "detail": "command rỗng thì bấm không làm gì, cũng không báo lỗi.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Không có gì: clicked() đã chạy một lần lúc tạo nút, command nhận None",
+            "detail": "Dấu ngoặc là lời gọi ngay.",
+            "correct": true
+          }
+        ],
+        "code": "button = tk.Button(root, text=\"Open\", command=clicked())"
+      },
+      "misconception": {
+        "title": "\"status = tk.Label(...).pack() cho gọn\"",
+        "body": "pack() xếp widget rồi trả về None, nên status thành None và status.config(...) trong callback nổ AttributeError — đúng lúc người dùng bấm nút, không phải lúc chạy chương trình. Giữ widget vào biến trước, pack ở dòng sau. Tương tự, command nhận TÊN hàm: command=login, không phải login()."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Frame chứa widget khác; Label hiện chữ; Entry nhập một dòng (show=\"*\" che mật khẩu); Button gọi callback khi bấm."
+        },
+        {
+          "n": 2,
+          "body": "width, height, bg chỉnh kích thước và màu (tuỳ widget). Tạo xong phải pack() thì widget mới được xếp vào cửa sổ."
+        },
+        {
+          "n": 3,
+          "body": "pack() trả về None: viết status = tk.Label(...) rồi status.pack() ở dòng riêng để còn giữ được widget."
+        },
+        {
+          "n": 4,
+          "body": "command=login giao HÀM cho nút, Tkinter gọi login() mỗi lần bấm. command=login() gọi ngay lúc dựng giao diện."
+        },
+        {
+          "n": 5,
+          "body": "Trong callback: entry.get() đọc chữ đang gõ, label.config(text=...) đổi chữ, cget(\"text\") đọc lại chữ hiện tại."
+        },
+        {
+          "n": 6,
+          "body": "messagebox.showinfo(tiêu đề, nội dung) bật hộp thông báo; showwarning, showerror là dạng cảnh báo và báo lỗi."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import tkinter as tk\nfrom tkinter import messagebox\n\nroot = tk.Tk()\nroot.title(\"Đếm lượt bấm\")\nclicks = 0\n\ncounter = tk.Label(root, text=\"0 lượt\", width=12, bg=\"lightyellow\")\ncounter.pack()\n\n\ndef on_click():\n    global clicks\n    clicks += 1\n    counter.config(text=f\"{clicks} lượt\")\n    if clicks == 3:\n        messagebox.showinfo(\"Info\", \"Đã bấm 3 lần\")\n\n\nbutton = tk.Button(root, text=\"Bấm tôi\", command=on_click)\nbutton.pack()\n\nbutton.invoke()   # \"bấm\" bằng code — bộ chấm cũng làm vậy\nbutton.invoke()\nprint(counter.cget(\"text\"))\nroot.mainloop()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Ở command=clicked có dùng dấu ngoặc gọi hàm không?",
+          "options": [
+            {
+              "text": "Không — truyền tên hàm để Tkinter gọi khi bấm",
+              "detail": "Có ngoặc là gọi ngay lúc tạo nút.",
+              "correct": true
+            },
+            {
+              "text": "Có — phải viết command=clicked()",
+              "detail": "Khi đó clicked chạy một lần lúc dựng giao diện.",
+              "correct": false
+            },
+            {
+              "text": "Tuỳ phiên bản Python",
+              "detail": "Quy tắc callback không đổi theo phiên bản.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Có ngoặc là gọi ngay lúc tạo nút."
+        },
+        {
+          "question": "Entry mật khẩu cần tuỳ chọn nào để hiện dấu * thay cho ký tự?",
+          "options": [
+            {
+              "text": "show=\"*\"",
+              "detail": "Entry vẫn giữ chữ thật; get() trả đúng mật khẩu đã gõ.",
+              "correct": true
+            },
+            {
+              "text": "text=\"*\"",
+              "detail": "Entry không dùng text để che chữ.",
+              "correct": false
+            },
+            {
+              "text": "password=True",
+              "detail": "Tkinter không có tuỳ chọn này.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Entry vẫn giữ chữ thật; get() trả đúng mật khẩu đã gõ."
+        },
+        {
+          "question": "entry.bind(\"<Return>\", handler) khác command=handler ở điểm nào?",
+          "options": [
+            {
+              "text": "bind gọi handler(event) — handler cần một tham số nhận event",
+              "detail": "command gọi handler() không đối số.",
+              "correct": true
+            },
+            {
+              "text": "bind chỉ dùng được cho Button",
+              "detail": "Mọi widget đều bind được sự kiện.",
+              "correct": false
+            },
+            {
+              "text": "Không khác gì",
+              "detail": "bind luôn truyền đối tượng event vào hàm.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "command gọi handler() không đối số."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao login() phải gọi user_entry.get() BÊN TRONG hàm, không đọc sẵn ở ngoài?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Dòng ngoài hàm chạy một lần lúc dựng giao diện, khi Entry còn rỗng, nên giá trị đọc được là \"\". Callback chạy mỗi lần bấm nút, lúc người dùng đã gõ xong, nên phải gọi get() trong callback để lấy chữ hiện tại. Trường hợp đặc biệt: mật khẩu rỗng vẫn phải ra \"Sai mật khẩu\"."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: nút \"Gửi\" chào theo tên trong Entry. Lắp ba chỗ.",
+        "rule": "Bộ chấm gõ tên và mật khẩu khác (đúng, sai, rỗng) vào hai Entry, bấm nút bằng invoke() rồi đọc status.cget(\"text\") và hộp thông báo."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "tk.Entry(frame, show=\"*\") → ô mật khẩu che ký tự"
+          },
+          {
+            "label": "Bước 2",
+            "text": "command=login → nút giữ hàm, chưa gọi"
+          },
+          {
+            "label": "Bước 3",
+            "text": "Bấm nút → Tkinter gọi login()"
+          },
+          {
+            "label": "Bước 4",
+            "text": "login() → get() hai Entry rồi status.config(text=...)"
+          }
+        ]
+      },
+      "counter": {
+        "question": "Gõ tên \"An\", mật khẩu \"abc\" rồi bấm Đăng nhập — status hiện gì?",
+        "options": [
+          "Chưa đăng nhập",
+          "Xin chào An",
+          "Sai mật khẩu"
+        ],
+        "correct": "Sai mật khẩu"
+      },
+      "scaffold": {
+        "template": "import tkinter as tk\n\nroot = tk.Tk()\nname_entry = tk.Entry(root)\nname_entry.pack()\ngreeting = {{slot1}}\ngreeting.pack()\n\n\ndef send():\n    name = {{slot2}}\n    greeting.config(text=\"Hello \" + name)\n\n\ntk.Button(root, text=\"Gửi\", command={{slot3}}).pack()\nroot.mainloop()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "tk.Label(root, text=\"\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "name_entry.get()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "send"
+          }
+        ],
+        "bank": [
+          {
+            "label": "tk.Label(root, text=\"\")",
+            "slot": 1
+          },
+          {
+            "label": "send()",
+            "slot": 3,
+            "trap": "Gọi send ngay lúc dựng giao diện; nút nhận None."
+          },
+          {
+            "label": "name_entry.get()",
+            "slot": 2
+          },
+          {
+            "label": "tk.Label(root, text=\"\").pack()",
+            "slot": 1,
+            "trap": "pack() trả về None nên greeting thành None."
+          },
+          {
+            "label": "send",
+            "slot": 3
+          },
+          {
+            "label": "name_entry",
+            "slot": 2,
+            "trap": "Đó là widget, không phải chữ đã gõ — cần get()."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hoàn thành form đăng nhập (đã có root, frame, user_entry): tạo password_entry che ký tự bằng show=\"*\", Label status với chữ \"Chưa đăng nhập\", và Button chữ \"Đăng nhập\" với command=login. Hàm login() đọc hai Entry LÚC ĐƯỢC BẤM: tên bỏ khoảng trắng hai đầu; mật khẩu bằng PASSWORD thì status.config(text=\"Xin chào <tên>\") và messagebox.showinfo(\"Đăng nhập\", \"Chào mừng <tên>!\"); sai thì status.config(text=\"Sai mật khẩu\").\n\nThực hành: login() gọi user_entry.get() và password_entry.get() ngay trong hàm, so với PASSWORD rồi đổi chữ status bằng config(text=...). Nút dùng command=login (không ngoặc).",
+        "io": [
+          {
+            "label": "Tên \"Mai\", mật khẩu \"usth2026\"",
+            "value": "status: Xin chào Mai; hộp thông báo \"Chào mừng Mai!\""
+          },
+          {
+            "label": "Mật khẩu sai hoặc rỗng",
+            "value": "status: Sai mật khẩu; không bật hộp thông báo"
+          }
+        ]
+      },
+      "starterCode": "import tkinter as tk\nfrom tkinter import messagebox\n\nPASSWORD = \"usth2026\"\n\nroot = tk.Tk()\nroot.title(\"Đăng nhập\")\nframe = tk.Frame(root)\nframe.pack()\n\ntk.Label(frame, text=\"Tên\").pack()\nuser_entry = tk.Entry(frame, width=24)\nuser_entry.pack()\n\ntk.Label(frame, text=\"Mật khẩu\").pack()\n# Tạo password_entry che ký tự bằng *, rồi pack.\n\n# Tạo Label status với chữ \"Chưa đăng nhập\", rồi pack.\n\n\ndef login():\n    pass\n\n\n# Tạo nút \"Đăng nhập\" gọi login khi bấm.\n\nroot.mainloop()\n",
+      "solutionCode": "import tkinter as tk\nfrom tkinter import messagebox\n\nPASSWORD = \"usth2026\"\n\nroot = tk.Tk()\nroot.title(\"Đăng nhập\")\nframe = tk.Frame(root)\nframe.pack()\n\ntk.Label(frame, text=\"Tên\").pack()\nuser_entry = tk.Entry(frame, width=24)\nuser_entry.pack()\n\ntk.Label(frame, text=\"Mật khẩu\").pack()\npassword_entry = tk.Entry(frame, width=24, show=\"*\")\npassword_entry.pack()\n\nstatus = tk.Label(frame, text=\"Chưa đăng nhập\")\nstatus.pack()\n\n\ndef login():\n    user = user_entry.get().strip()\n    if password_entry.get() == PASSWORD:\n        status.config(text=f\"Xin chào {user}\")\n        messagebox.showinfo(\"Đăng nhập\", f\"Chào mừng {user}!\")\n    else:\n        status.config(text=\"Sai mật khẩu\")\n\n\ntk.Button(frame, text=\"Đăng nhập\", command=login).pack()\n\nroot.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "login() gọi user_entry.get() và password_entry.get() ngay trong hàm, so với PASSWORD rồi đổi chữ status bằng config(text=...). Nút dùng command=login (không ngoặc)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. password_entry = tk.Entry(frame, width=24, show=\"*\"); password_entry.pack()\n2. status = tk.Label(frame, text=\"Chưa đăng nhập\") rồi status.pack() ở dòng riêng.\n3. def login(): user = user_entry.get().strip(); đúng mật khẩu → status \"Xin chào ...\" + showinfo; sai → \"Sai mật khẩu\".\n4. tk.Button(frame, text=\"Đăng nhập\", command=login).pack()"
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def login():\n    user = user_entry.get().strip()\n    if password_entry.get() == PASSWORD:\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Chưa bấm: status \"Chưa đăng nhập\"",
+          "call": "status.cget('text')",
+          "expect": "'Chưa đăng nhập'"
+        },
+        {
+          "name": "Có nút \"Đăng nhập\"",
+          "call": "_studio.tk.find(type='Button', text='Đăng nhập') is not None",
+          "expect": "True"
+        },
+        {
+          "name": "Ô mật khẩu che bằng *",
+          "call": "password_entry.cget('show')",
+          "expect": "'*'"
+        },
+        {
+          "name": "Mai + mật khẩu đúng",
+          "call": "(user_entry.delete(0, 'end'), user_entry.insert(0, 'Mai'), password_entry.delete(0, 'end'), password_entry.insert(0, 'usth2026'), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1]",
+          "expect": "'Xin chào Mai'"
+        },
+        {
+          "name": "Mật khẩu sai",
+          "call": "(user_entry.delete(0, 'end'), user_entry.insert(0, 'Mai'), password_entry.delete(0, 'end'), password_entry.insert(0, 'usth'), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1]",
+          "expect": "'Sai mật khẩu'"
+        },
+        {
+          "name": "Tên khác có khoảng trắng \" An \"",
+          "call": "(user_entry.delete(0, 'end'), user_entry.insert(0, ' An '), password_entry.delete(0, 'end'), password_entry.insert(0, 'usth2026'), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1]",
+          "expect": "'Xin chào An'"
+        },
+        {
+          "name": "Mật khẩu rỗng",
+          "call": "(user_entry.delete(0, 'end'), user_entry.insert(0, 'Mai'), password_entry.delete(0, 'end'), password_entry.insert(0, ''), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1]",
+          "expect": "'Sai mật khẩu'"
+        },
+        {
+          "name": "Đúng mật khẩu → showinfo(\"Đăng nhập\", \"Chào mừng Lan!\")",
+          "call": "((user_entry.delete(0, 'end'), user_entry.insert(0, 'Lan'), password_entry.delete(0, 'end'), password_entry.insert(0, 'usth2026'), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1], (lambda m: ('info' in str(m[0]), m[1], m[2]))(tuple(_studio.tk.messages[-1])))[1]",
+          "expect": "(True, 'Đăng nhập', 'Chào mừng Lan!')"
+        },
+        {
+          "name": "Sai mật khẩu → không bật hộp thông báo",
+          "call": "(lambda n: ((user_entry.delete(0, 'end'), user_entry.insert(0, 'Lan'), password_entry.delete(0, 'end'), password_entry.insert(0, 'sai'), _studio.tk.find(type='Button', text='Đăng nhập').invoke(), status.cget('text'))[-1], len(_studio.tk.messages) - n)[1])(len(_studio.tk.messages))",
+          "expect": "0"
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "tk.Entry(frame, show=\"*\")",
+              "right": "ô mật khẩu che ký tự"
+            },
+            {
+              "left": "command=login",
+              "right": "nút giữ hàm, chưa gọi"
+            },
+            {
+              "left": "Bấm nút",
+              "right": "Tkinter gọi login()"
+            },
+            {
+              "left": "login()",
+              "right": "get() hai Entry rồi status.config(text=...)"
+            }
+          ],
+          "rightOrder": [
+            0,
+            2,
+            3,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    if password_entry.get() == PASSWORD:\n        status.config(text=f\"Xin chào {user}\")\n        messagebox.showinfo(\"Đăng nhập\", f\"Chào mừng {user}!\")\n    else:\n        status.config(text=\"Sai mật khẩu\")\n\n\ntk.Button(frame, text=\"Đăng nhập\", command=login()).pack()\n\nroot.mainloop()",
+          "firstLine": 25,
+          "line": 32,
+          "lines": [
+            32
+          ],
+          "label": "command=login() gọi ngay",
+          "fix": "tk.Button(frame, text=\"Đăng nhập\", command=login).pack()"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import tkinter as tk\nfrom tkinter import messagebox\n\nPASSWORD = \"usth2026\"\n\nroot = tk.Tk()\nroot.title(\"Đăng nhập\")\nframe = tk.Frame(root)\nframe.pack()\n\ntk.Label(frame, text=\"Tên\").pack()\nuser_entry = tk.Entry(frame, width=24)\nuser_entry.pack()\n\ntk.Label(frame, text=\"Mật khẩu\").pack()\npassword_entry = tk.Entry(frame, width=24, show=\"*\")\npassword_entry.pack()\n\nstatus = tk.Label(frame, text=\"Chưa đăng nhập\").pack()\n\n\ndef login():\n    user = user_entry.get().strip()\n    if password_entry.get() == PASSWORD:\n        status.config(text=f\"Xin chào {user}\")\n        messagebox.showinfo(\"Đăng nhập\", f\"Chào mừng {user}!\")\n    else:\n        status.config(text=\"Sai mật khẩu\")\n\n\ntk.Button(frame, text=\"Đăng nhập\", command=login).pack()\n\nroot.mainloop()\n",
+          "label": "status = Label(...).pack()"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao login() phải gọi user_entry.get() BÊN TRONG hàm, không đọc sẵn ở ngoài?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

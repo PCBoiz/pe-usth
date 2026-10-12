@@ -1,0 +1,421 @@
+{
+  "lesson_code": "T02",
+  "sort_order": 9,
+  "module": "M2 · Đa luồng",
+  "title": "T02 · Thread target, start và join",
+  "subtitle": "Nâng cao · M2 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "T02 · Thread target, start và join",
+    "subtitle": "Nâng cao · M2 · 30 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#T02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M2",
+          "BÀI TẬP NÂNG CAO",
+          "T02"
+        ],
+        "title": "Thread target, start và join",
+        "goal": "Tạo nhiều Thread với target/args, start hết rồi join hết.",
+        "task": "Viết download_all(urls): mỗi url một Thread(target=download, args=(url, sizes)).",
+        "predict": "Start rồi join ngay từng trang 1 giây — 3 trang mất bao lâu?",
+        "code": "def download_all(urls):\n    sizes = {}\n    # mỗi url một Thread(target=download, args=(url, sizes))\n    # vòng 1: start hết · vòng 2: join hết\n    return sizes",
+        "tests": [
+          "[\"home.html\", \"news.html\"] → {\"home.html\": 11, \"news.html\": 13}",
+          "[] → {} và không tạo thread"
+        ],
+        "reflect": "Vì sao chỉ đọc sizes sau vòng join?"
+      },
+      "context": {
+        "title": "Tạo nhiều Thread với target/args, start hết rồi join hết.",
+        "body": "download(url, sizes) đã cấp: \"tải\" một trang trong PAGES và ghi số ký tự vào dict sizes. Viết download_all(urls): mỗi url một threading.Thread(target=download, args=(url, sizes)); vòng thứ nhất start TẤT CẢ, vòng thứ hai join TẤT CẢ, rồi mới trả sizes. urls rỗng → {} và không tạo thread nào.",
+        "example": "download_all([\"home.html\", \"news.html\"]) → {\"home.html\": 11, \"news.html\": 13}, hai thread.",
+        "prereq": "T01",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Ba trang, mỗi trang chờ mạng 1 giây. Viết \"start rồi join ngay\" trong CÙNG một vòng lặp thì tổng thời gian khoảng bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Gần 0 giây vì thread chạy nền",
+            "detail": "join vẫn chờ từng worker xong.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Khoảng 1 giây",
+            "detail": "Chỉ đúng khi start hết rồi mới join.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Khoảng 3 giây — join chặn nên worker sau chỉ start khi worker trước xong",
+            "detail": "Thành chạy lần lượt; start hết rồi mới join thì khoảng 1 giây.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"join() là lệnh cho thread chạy\"",
+        "body": "join chỉ CHỜ. Thread chỉ chạy khi start(); join một thread chưa start → RuntimeError: cannot join thread before it is started. Ngược lại, gọi run() trực tiếp thì target có chạy nhưng ở thread hiện tại — không có thread mới, không chồng lấp gì cả."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Thread(target=greet, args=(\"Mai\",)) chỉ TẠO đối tượng mô tả công việc, chưa chạy gì. target là tên hàm (không ngoặc); args là tuple đối số — một phần tử thì cần dấu phẩy (\"Mai\",); kwargs là dict đối số theo tên."
+        },
+        {
+          "n": 2,
+          "body": "start() tạo dòng thực thi mới và cho target chạy trong đó; chương trình chính đi tiếp ngay. Gọi worker.run() thì target chạy NGAY trong thread hiện tại — không có thread mới nào."
+        },
+        {
+          "n": 3,
+          "body": "join() CHỜ thread kết thúc; nó không khởi động thread (join khi chưa start → RuntimeError). Muốn nhiều worker chạy chồng lấp: vòng thứ nhất start hết, vòng thứ hai join hết."
+        },
+        {
+          "n": 4,
+          "body": "time.sleep(x) chỉ tạm dừng thread gọi nó — các thread khác vẫn chạy. Đó là lý do nhiều thread cùng \"chờ mạng\" thì tổng thời gian gần bằng lần chờ lâu nhất."
+        },
+        {
+          "n": 5,
+          "body": "Thread daemon=True bị bỏ dở khi chương trình chính thoát. Đừng giao việc phải hoàn tất (lưu dữ liệu) cho daemon thread mà không join."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\n\ndef greet(name, punctuation):\n    print(\"Hello \" + name + punctuation)\n\nworker = threading.Thread(target=greet, args=(\"Mai\",), kwargs={\"punctuation\": \"!\"})\nprint(\"Trước start:\", worker.is_alive())\nworker.start()\nworker.join()\nprint(\"Sau join:\", worker.is_alive())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Gọi t.run() có tạo thread mới không?",
+          "options": [
+            {
+              "text": "Có, nhưng không join được",
+              "detail": "Không có thread mới nào để join.",
+              "correct": false
+            },
+            {
+              "text": "Có, run() và start() như nhau",
+              "detail": "Chỉ start() tạo dòng thực thi mới.",
+              "correct": false
+            },
+            {
+              "text": "Không — target chạy ngay trong thread đang gọi; muốn thread mới phải t.start()",
+              "detail": "run() chỉ là hàm gọi target.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "run() chỉ là hàm gọi target."
+        },
+        {
+          "question": "Thread(target=save, args=(\"data.pkl\")) — chuyện gì xảy ra khi start?",
+          "options": [
+            {
+              "text": "Chạy bình thường",
+              "detail": "Thread gọi save(*args) = save(\"d\", \"a\", \"t\", …).",
+              "correct": false
+            },
+            {
+              "text": "Lỗi ngay lúc tạo Thread",
+              "detail": "Thread chỉ gọi target(*args) khi chạy.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi TypeError trong thread: args là chuỗi nên bị tách thành 8 ký tự",
+              "detail": "(\"data.pkl\") chỉ là chuỗi trong ngoặc; cần (\"data.pkl\",).",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "(\"data.pkl\") chỉ là chuỗi trong ngoặc; cần (\"data.pkl\",)."
+        },
+        {
+          "question": "Worker daemon=True đang ghi file thì chương trình chính kết thúc. Điều gì có thể xảy ra?",
+          "options": [
+            {
+              "text": "Worker bị dừng giữa chừng, file ghi dở",
+              "detail": "Daemon không giữ chương trình sống; cần join nếu việc phải xong.",
+              "correct": true
+            },
+            {
+              "text": "Python báo lỗi DaemonError",
+              "detail": "Không có lỗi nào như vậy.",
+              "correct": false
+            },
+            {
+              "text": "Chương trình chờ worker ghi xong",
+              "detail": "Đó là thread thường (daemon=False).",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Daemon không giữ chương trình sống; cần join nếu việc phải xong."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao download_all phải start hết rồi mới join hết, và vì sao chỉ trả sizes sau vòng join?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "start hết trước để các worker cùng chờ mạng chồng lấp nhau; join ngay sau từng start biến chúng thành chạy lần lượt. sizes là dict dùng chung mà các worker ghi vào; chỉ sau khi join hết mới chắc mọi worker đã ghi xong. Trường hợp đặc biệt: urls rỗng → không tạo thread nào, trả {}."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: tạo Thread đúng target/args, start, join.",
+        "rule": "Đổi danh sách trang (có trang không tồn tại, có list rỗng); kiểm số thread bằng số url và kết quả chỉ đọc sau join."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Thread(target=download, args=(url, sizes)) → mô tả việc, chưa chạy"
+          },
+          {
+            "label": "Bước 2",
+            "text": "worker.start() → download chạy trong thread mới"
+          },
+          {
+            "label": "Bước 3",
+            "text": "worker.join() → main chờ worker đó xong"
+          },
+          {
+            "label": "Bước 4",
+            "text": "return sizes → đọc kết quả sau khi join hết"
+          }
+        ]
+      },
+      "counter": {
+        "question": "download_all([\"a.html\", \"b.html\", \"a.html\"]) tạo mấy Thread?",
+        "options": [
+          "3",
+          "2",
+          "1"
+        ],
+        "correct": "3"
+      },
+      "scaffold": {
+        "template": "def download_all(urls):\n    sizes = {}\n    threads = []\n    for url in urls:\n        worker = {{slot1}}\n        threads.append(worker)\n    for worker in threads:\n        {{slot2}}\n    for worker in threads:\n        {{slot3}}\n    return sizes\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "threading.Thread(target=download, args=(url, sizes))"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "worker.start()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "worker.join()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "threading.Thread(target=download, args=url)",
+            "slot": 1,
+            "trap": "args phải là tuple đủ hai đối số (url, sizes)."
+          },
+          {
+            "label": "worker.join()",
+            "slot": 3
+          },
+          {
+            "label": "threading.Thread(target=download, args=(url, sizes))",
+            "slot": 1
+          },
+          {
+            "label": "worker.start()",
+            "slot": 2
+          },
+          {
+            "label": "worker.run()",
+            "slot": 2,
+            "trap": "run() chạy target trong thread hiện tại, không tạo thread mới."
+          },
+          {
+            "label": "time.sleep(1)",
+            "slot": 3,
+            "trap": "Ngủ không phải chờ: không biết worker đã xong chưa."
+          },
+          {
+            "label": "threading.Thread(target=download(url, sizes))",
+            "slot": 1,
+            "trap": "Gọi download ngay ở thread chính; Thread nhận target=None."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "download(url, sizes) đã cấp: \"tải\" một trang trong PAGES và ghi số ký tự vào dict sizes. Viết download_all(urls): mỗi url một threading.Thread(target=download, args=(url, sizes)); vòng thứ nhất start TẤT CẢ, vòng thứ hai join TẤT CẢ, rồi mới trả sizes. urls rỗng → {} và không tạo thread nào.\n\nThực hành: Mỗi url một Thread MỚI (target=download, args=(url, sizes)); vòng thứ nhất start hết, vòng thứ hai join hết, rồi mới return sizes.",
+        "io": [
+          {
+            "label": "[\"home.html\", \"news.html\"]",
+            "value": "{\"home.html\": 11, \"news.html\": 13} — hai thread"
+          },
+          {
+            "label": "[\"home.html\", \"missing.html\"]",
+            "value": "{\"home.html\": 11, \"missing.html\": 0}"
+          },
+          {
+            "label": "[]",
+            "value": "{} — không tạo thread nào"
+          }
+        ]
+      },
+      "starterCode": "import threading\n\nPAGES = {\n    \"home.html\": \"<h1>Hi</h1>\",\n    \"news.html\": \"<p>Python</p>\",\n    \"empty.html\": \"\",\n}\n\n\ndef download(url, sizes):\n    # Giả lập tải trang (cấp sẵn): ngoài đời đây là lúc chờ mạng.\n    sizes[url] = len(PAGES.get(url, \"\"))\n\n\ndef download_all(urls):\n    sizes = {}\n    # Mỗi url một Thread(target=download, args=(url, sizes)).\n    # Vòng thứ nhất start hết, vòng thứ hai join hết.\n    return sizes\n\n\nif __name__ == \"__main__\":\n    print(download_all([\"home.html\", \"news.html\"]))\n",
+      "solutionCode": "import threading\n\nPAGES = {\n    \"home.html\": \"<h1>Hi</h1>\",\n    \"news.html\": \"<p>Python</p>\",\n    \"empty.html\": \"\",\n}\n\n\ndef download(url, sizes):\n    # Giả lập tải trang (cấp sẵn): ngoài đời đây là lúc chờ mạng.\n    sizes[url] = len(PAGES.get(url, \"\"))\n\n\ndef download_all(urls):\n    sizes = {}\n    threads = []\n    for url in urls:\n        worker = threading.Thread(target=download, args=(url, sizes))\n        threads.append(worker)\n    for worker in threads:\n        worker.start()\n    for worker in threads:\n        worker.join()\n    return sizes\n\n\nif __name__ == \"__main__\":\n    print(download_all([\"home.html\", \"news.html\"]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Mỗi url một Thread MỚI (target=download, args=(url, sizes)); vòng thứ nhất start hết, vòng thứ hai join hết, rồi mới return sizes."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Tạo dict sizes và list threads rỗng.\n2. Mỗi url: threading.Thread(target=download, args=(url, sizes)) rồi append vào threads.\n3. Vòng thứ nhất start từng worker; vòng thứ hai join từng worker; cuối cùng return sizes."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    for url in urls:\n        worker = threading.Thread(target=download, args=(url, sizes))\n        threads.append(worker)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Hai trang → đúng kích thước",
+          "call": "download_all([\"home.html\", \"news.html\"])",
+          "expect": "{'home.html': 11, 'news.html': 13}"
+        },
+        {
+          "name": "Trang rỗng và trang không có → 0",
+          "call": "download_all([\"empty.html\", \"missing.html\"])",
+          "expect": "{'empty.html': 0, 'missing.html': 0}"
+        },
+        {
+          "name": "Mỗi url một Thread (kể cả url trùng)",
+          "call": "_studio.call(download_all, [\"home.html\", \"news.html\", \"home.html\"]).thread_count",
+          "expect": "3"
+        },
+        {
+          "name": "target là hàm download, không gọi sẵn",
+          "call": "(lambda r: (r.targets_callable, [t.target_name for t in r.threads]))(_studio.call(download_all, [\"home.html\", \"news.html\"]))",
+          "expect": "(True, ['download', 'download'])"
+        },
+        {
+          "name": "Start hết rồi mới join",
+          "call": "_studio.call(download_all, [\"home.html\", \"news.html\"]).starts_before_joins",
+          "expect": "True"
+        },
+        {
+          "name": "Join đủ mọi worker",
+          "call": "_studio.call(download_all, [\"home.html\", \"news.html\", \"empty.html\"]).all_joined",
+          "expect": "True"
+        },
+        {
+          "name": "urls rỗng → {} và không tạo thread",
+          "call": "(lambda r: (r.value, r.thread_count))(_studio.call(download_all, []))",
+          "expect": "({}, 0)"
+        },
+        {
+          "name": "Dữ liệu khác (PAGES khác)",
+          "call": "_studio.run(vars={'PAGES': {'x.html': 'abc', 'y.html': 'hello'}}, entry='download_all([\"x.html\", \"y.html\", \"z.html\"])').value",
+          "expect": "{'x.html': 3, 'y.html': 5, 'z.html': 0}"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "download_all(urls)",
+          "does": "Tải nhiều trang, mỗi trang một thread.",
+          "takes": "urls: list tên trang (có thể rỗng, có thể trùng)",
+          "gives": "dict {url: số ký tự}",
+          "effect": "Tạo len(urls) Thread, start hết rồi join hết; không in.",
+          "call": "download_all([\"home.html\", \"news.html\"]) → {\"home.html\": 11, \"news.html\": 13}"
+        }
+      ],
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Thread(target=download, args=(url, sizes))",
+              "right": "mô tả việc, chưa chạy"
+            },
+            {
+              "left": "worker.start()",
+              "right": "download chạy trong thread mới"
+            },
+            {
+              "left": "worker.join()",
+              "right": "main chờ worker đó xong"
+            },
+            {
+              "left": "return sizes",
+              "right": "đọc kết quả sau khi join hết"
+            }
+          ],
+          "rightOrder": [
+            3,
+            2,
+            0,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    sizes[url] = len(PAGES.get(url, \"\"))\n\n\ndef download_all(urls):\n    sizes = {}\n    threads = []\n    for url in urls:\n        worker = threading.Thread(target=download(url, sizes))\n        threads.append(worker)\n    for worker in threads:\n        worker.start()\n    for worker in threads:\n        worker.join()\n    return sizes\n",
+          "firstLine": 12,
+          "line": 19,
+          "lines": [
+            19
+          ],
+          "label": "gọi sẵn target",
+          "fix": "        worker = threading.Thread(target=download, args=(url, sizes))"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import threading\n\nPAGES = {\n    \"home.html\": \"<h1>Hi</h1>\",\n    \"news.html\": \"<p>Python</p>\",\n    \"empty.html\": \"\",\n}\n\n\ndef download(url, sizes):\n    # Giả lập tải trang (cấp sẵn): ngoài đời đây là lúc chờ mạng.\n    sizes[url] = len(PAGES.get(url, \"\"))\n\n\ndef download_all(urls):\n    sizes = {}\n    threads = []\n    for url in urls:\n        worker = threading.Thread(target=download, args=(url, sizes))\n        threads.append(worker)\n    for worker in threads:\n        worker.run()\n    for worker in threads:\n        worker.join()\n    return sizes\n\n\nif __name__ == \"__main__\":\n    print(download_all([\"home.html\", \"news.html\"]))\n",
+          "label": "run() thay vì start()"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao download_all phải start hết rồi mới join hết, và vì sao chỉ trả sizes sau vòng join?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

@@ -1,0 +1,437 @@
+{
+  "lesson_code": "M01",
+  "sort_order": 41,
+  "module": "M7 · Matplotlib",
+  "title": "M01 · Figure, Axes và chọn biểu đồ",
+  "subtitle": "Nâng cao · M7 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "M01 · Figure, Axes và chọn biểu đồ",
+    "subtitle": "Nâng cao · M7 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#M01",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M01"
+        ],
+        "title": "Figure, Axes và chọn biểu đồ",
+        "goal": "Một Figure, hai Axes, hai câu hỏi — luôn vẽ qua biến Axes.",
+        "task": "revenue_dashboard: line doanh thu bên trái, barh số đơn đã xếp hạng bên phải.",
+        "predict": "Sau plt.subplots(1, 2), plt.plot(...) rơi vào Axes nào?",
+        "code": "def revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n    # ax_line.plot(...) — không dùng plt.plot\n    # sắp tăng dần rồi ax_bar.barh(...)\n    return fig",
+        "tests": [
+          "Axes phải không có đường nào",
+          "orders [30, 15, 22] → thanh trên cùng là A"
+        ],
+        "reflect": "Vì sao barh phải sắp TĂNG dần để category lớn nhất nằm trên cùng?"
+      },
+      "context": {
+        "title": "Dựng một Figure hai Axes, mỗi Axes trả lời một câu hỏi bằng đúng loại biểu đồ, và luôn vẽ qua biến Axes.",
+        "body": "Viết revenue_dashboard(days, revenue, categories, orders) trả về Figure gồm 2 Axes cạnh nhau: fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\"). Axes trái: line có marker \"o\" của doanh thu theo ngày, nhãn \"Day\" / \"Revenue\", tiêu đề \"Daily revenue\". Axes phải: barh số đơn theo category, SẮP để category nhiều đơn nhất nằm trên cùng, nhãn trục x \"Orders\", tiêu đề \"Orders by category\". Mọi lệnh vẽ gọi qua ax_line / ax_bar, không qua plt.plot.",
+        "example": "revenue_dashboard([1, 2, 3], [10, 15, 12], [\"A\", \"B\", \"C\"], [30, 15, 22]) → trái: đường qua 10, 15, 12; phải: các thanh từ dưới lên B (15), C (22), A (30).",
+        "prereq": "X05",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Sau fig, (left, right) = plt.subplots(1, 2), lệnh plt.plot([1, 2], [5, 5]) vẽ vào đâu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Vào cả hai",
+            "detail": "Mỗi lệnh vẽ chỉ rơi vào một Axes.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Báo lỗi vì có hai Axes",
+            "detail": "Không lỗi — chính vì im lặng nên dễ nhầm.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Vào left — Axes đầu tiên",
+            "detail": "pyplot không chọn Axes đầu; nó dùng Axes hiện hành.",
+            "correct": false
+          },
+          {
+            "id": "d",
+            "title": "Vào right — Axes được tạo sau cùng là Axes hiện hành",
+            "detail": "pyplot vẽ lên plt.gca(); subplots tạo left trước, right sau.",
+            "correct": true
+          }
+        ],
+        "code": "fig, (left, right) = plt.subplots(1, 2)\nplt.plot([1, 2], [5, 5])"
+      },
+      "misconception": {
+        "title": "\"plt.plot và ax.plot như nhau, dùng cái nào cũng được\"",
+        "body": "Với MỘT Axes thì kết quả giống nhau. Với nhiều Axes, plt.plot vẽ lên Axes hiện hành (thường là Axes tạo sau cùng), không phải Axes bạn đang nghĩ — biểu đồ sai mà không báo lỗi. Trong hàm vẽ, luôn gọi method của biến Axes."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "plt.subplots(1, 2) tạo MỘT Figure với HAI Axes xếp 1 hàng 2 cột; viết fig, (ax_line, ax_bar) = ... để đặt tên từng Axes ngay. layout=\"constrained\" tự dàn khoảng cách để nhãn và tiêu đề hai Axes không chồng nhau."
+        },
+        {
+          "n": 2,
+          "body": "pyplot giữ một \"Axes hiện hành\" — Axes được tạo hoặc chọn gần nhất. Sau subplots(1, 2) đó là Axes BÊN PHẢI, nên plt.plot(...) rơi vào ax_bar dù bạn định vẽ bên trái (ví dụ minh hoạ in ra 1 1). Gọi ax_line.plot(...) thì không thể nhầm."
+        },
+        {
+          "n": 3,
+          "body": "Mỗi Axes một câu hỏi: diễn tiến theo ngày có thứ tự → line; so các category → bar/barh; quan hệ hai biến → scatter; phân bố → histogram. Không nối các category không có thứ tự bằng line — độ dốc giữa \"A\" và \"B\" không mang nghĩa gì."
+        },
+        {
+          "n": 4,
+          "body": "barh vẽ thanh đầu tiên ở DƯỚI cùng. Muốn xếp hạng (nhiều nhất trên cùng) thì sắp TĂNG dần trước khi vẽ: sorted(zip(orders, categories)) sắp theo số đơn. Mỗi thanh phải có metric, đơn vị và mức tổng hợp rõ (tổng đơn theo category)."
+        },
+        {
+          "n": 5,
+          "body": "Notebook tự hiện figure cuối cell; script trên máy gọi plt.show(); chạy hàng loạt (server, CI) dùng backend Agg không có cửa sổ — Studio cũng chạy Agg."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\n\nfig, (left, right) = plt.subplots(1, 2, layout=\"constrained\")\nleft.plot([1, 2, 3], [20, 30, 25], marker=\"o\")\nright.barh([\"Pen\", \"Book\"], [15, 30])\n\nprint(len(fig.axes))\nprint(plt.gca() is right)\nplt.plot([1, 2], [5, 5])\nprint(len(left.lines), len(right.lines))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Doanh thu 7 ngày liên tiếp — loại biểu đồ nào hợp nhất?",
+          "options": [
+            {
+              "text": "Pie",
+              "detail": "Pie so phần của một tổng, không cho thấy diễn tiến theo thời gian.",
+              "correct": false
+            },
+            {
+              "text": "Histogram",
+              "detail": "Histogram đếm phân bố giá trị, mất thứ tự ngày.",
+              "correct": false
+            },
+            {
+              "text": "Line có marker",
+              "detail": "Ngày có thứ tự; line cho thấy diễn tiến, marker đánh dấu từng quan sát.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Ngày có thứ tự; line cho thấy diễn tiến, marker đánh dấu từng quan sát."
+        },
+        {
+          "question": "Số đơn của 5 category không có thứ tự tự nhiên — nên vẽ thế nào?",
+          "options": [
+            {
+              "text": "Scatter category với số đơn",
+              "detail": "Scatter dành cho quan hệ giữa hai biến số.",
+              "correct": false
+            },
+            {
+              "text": "barh, sắp theo số đơn để đọc ngay thứ hạng",
+              "detail": "Sắp category theo câu hỏi (ở đây là xếp hạng).",
+              "correct": true
+            },
+            {
+              "text": "Line nối 5 category theo thứ tự chữ cái",
+              "detail": "Độ dốc giữa hai category không có ý nghĩa.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Sắp category theo câu hỏi (ở đây là xếp hạng)."
+        },
+        {
+          "question": "ax.barh([\"B\", \"C\", \"A\"], [15, 22, 30]) — thanh nào nằm trên cùng?",
+          "options": [
+            {
+              "text": "Tự sắp theo giá trị",
+              "detail": "barh giữ đúng thứ tự bạn đưa vào.",
+              "correct": false
+            },
+            {
+              "text": "A (30)",
+              "detail": "Thanh đầu tiên ở dưới cùng, thanh cuối ở trên cùng.",
+              "correct": true
+            },
+            {
+              "text": "B (15)",
+              "detail": "B là thanh đầu tiên nên nằm dưới cùng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Thanh đầu tiên ở dưới cùng, thanh cuối ở trên cùng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao hàm dashboard gọi ax_line.plot(...) thay vì plt.plot(...)?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "subplots(1, 2) để Axes bên phải làm Axes hiện hành, nên plt.plot vẽ đường doanh thu đè lên biểu đồ barh còn Axes trái trống — không có lỗi nào báo. Gọi qua biến ax_line chỉ đúng vùng vẽ, và hàm vẫn đúng dù trước đó ai đã tạo thêm Axes hay figure khác."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: tạo hai Axes, vẽ line đúng Axes, sắp category trước khi vẽ barh.",
+        "rule": "Đổi sang 4 ngày và 4 category; kiểm Axes phải không có đường nào và thanh trên cùng là category lớn nhất."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "plt.subplots(1, 2, layout=\"constrained\") → 1 Figure, 2 Axes"
+          },
+          {
+            "label": "Bước 2",
+            "text": "ax_line.plot(days, revenue, marker=\"o\") → line bên trái"
+          },
+          {
+            "label": "Bước 3",
+            "text": "sorted(zip(orders, categories)) → cặp (số đơn, tên) tăng dần"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ax_bar.barh(names, counts) → thanh lớn nhất nằm trên cùng"
+          },
+          {
+            "label": "Bước 5",
+            "text": "return fig → nơi gọi đọc fig.axes[0], fig.axes[1]"
+          }
+        ]
+      },
+      "counter": {
+        "question": "categories [\"A\", \"B\", \"C\"], orders [30, 15, 22] — thanh trên cùng là?",
+        "options": [
+          "A",
+          "B",
+          "C"
+        ],
+        "correct": "A"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\n\n\ndef revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = {{slot1}}\n\n    {{slot2}}\n    ax_line.set(xlabel=\"Day\", ylabel=\"Revenue\", title=\"Daily revenue\")\n\n    ranked = {{slot3}}\n    ax_bar.barh([name for count, name in ranked], [count for count, name in ranked])\n    ax_bar.set(xlabel=\"Orders\", title=\"Orders by category\")\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "plt.subplots(1, 2, layout=\"constrained\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "ax_line.plot(days, revenue, marker=\"o\")"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "sorted(zip(orders, categories))"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ax_line.plot(days, revenue, marker=\"o\")",
+            "slot": 2
+          },
+          {
+            "label": "sorted(zip(orders, categories), reverse=True)",
+            "slot": 3,
+            "trap": "Giảm dần → thanh lớn nhất nằm DƯỚI cùng."
+          },
+          {
+            "label": "plt.subplots(1, 2, layout=\"constrained\")",
+            "slot": 1
+          },
+          {
+            "label": "list(zip(orders, categories))",
+            "slot": 3,
+            "trap": "Giữ thứ tự nhập, không xếp hạng."
+          },
+          {
+            "label": "plt.subplots()",
+            "slot": 1,
+            "trap": "Chỉ một Axes, không tách được thành hai."
+          },
+          {
+            "label": "plt.plot(days, revenue, marker=\"o\")",
+            "slot": 2,
+            "trap": "Vẽ lên Axes hiện hành — tức ax_bar."
+          },
+          {
+            "label": "sorted(zip(orders, categories))",
+            "slot": 3
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết revenue_dashboard(days, revenue, categories, orders) trả về Figure gồm 2 Axes cạnh nhau: fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\"). Axes trái: line có marker \"o\" của doanh thu theo ngày, nhãn \"Day\" / \"Revenue\", tiêu đề \"Daily revenue\". Axes phải: barh số đơn theo category, SẮP để category nhiều đơn nhất nằm trên cùng, nhãn trục x \"Orders\", tiêu đề \"Orders by category\". Mọi lệnh vẽ gọi qua ax_line / ax_bar, không qua plt.plot.\n\nThực hành: Đặt tên hai Axes khi tách; vẽ line bằng ax_line, barh bằng ax_bar; sắp tăng dần trước barh để lớn nhất ở trên.",
+        "io": [
+          {
+            "label": "revenue_dashboard([1, 2, 3], [10, 15, 12], [\"A\", \"B\", \"C\"], [30, 15, 22])",
+            "value": "2 Axes; trái: line 10, 15, 12; phải: barh từ dưới lên B, C, A"
+          },
+          {
+            "label": "Một ngày, một category",
+            "value": "Vẫn 2 Axes; barh một thanh"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\n\n\ndef revenue_dashboard(days, revenue, categories, orders):\n    # 1. fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n    # 2. ax_line: line marker \"o\"; Day / Revenue; tiêu đề \"Daily revenue\"\n    # 3. ax_bar: barh đã sắp, lớn nhất trên cùng; Orders; tiêu đề \"Orders by category\"\n    pass\n\n\nif __name__ == \"__main__\":\n    revenue_dashboard([1, 2, 3], [10, 15, 12], [\"A\", \"B\", \"C\"], [30, 15, 22])\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\n\n\ndef revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n\n    ax_line.plot(days, revenue, marker=\"o\")\n    ax_line.set(xlabel=\"Day\", ylabel=\"Revenue\", title=\"Daily revenue\")\n\n    ranked = sorted(zip(orders, categories))\n    ax_bar.barh([name for count, name in ranked], [count for count, name in ranked])\n    ax_bar.set(xlabel=\"Orders\", title=\"Orders by category\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    revenue_dashboard([1, 2, 3], [10, 15, 12], [\"A\", \"B\", \"C\"], [30, 15, 22])\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Đặt tên hai Axes khi tách; vẽ line bằng ax_line, barh bằng ax_bar; sắp tăng dần trước barh để lớn nhất ở trên."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\").\n2. ax_line.plot(days, revenue, marker=\"o\"); ax_line.set(xlabel=\"Day\", ylabel=\"Revenue\", title=\"Daily revenue\").\n3. ranked = sorted(zip(orders, categories)); ax_bar.barh([tên ...], [số đơn ...]) theo thứ tự ranked.\n4. ax_bar.set(xlabel=\"Orders\", title=\"Orders by category\"); return fig."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n    ax_line.plot(days, revenue, marker=\"o\")\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Một Figure, hai Axes",
+          "call": "len(revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes)",
+          "expect": "2"
+        },
+        {
+          "name": "Axes trái: đường qua doanh thu mới",
+          "call": "[float(v) for v in revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[0].lines[0].get_ydata()]",
+          "expect": "[40.0, 25.0, 35.0, 50.0]"
+        },
+        {
+          "name": "Axes trái: marker, nhãn và tiêu đề",
+          "call": "(lambda ax: (ax.lines[0].get_marker(), ax.get_xlabel(), ax.get_ylabel(), ax.get_title()))(revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[0])",
+          "expect": "('o', 'Day', 'Revenue', 'Daily revenue')"
+        },
+        {
+          "name": "Axes phải không có đường nào (không vẽ nhầm bằng plt.plot)",
+          "call": "len(revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[1].lines)",
+          "expect": "0"
+        },
+        {
+          "name": "barh: từ dưới lên tăng dần, lớn nhất trên cùng",
+          "call": "[float(v) for v in (p.get_width() for p in revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[1].patches)]",
+          "expect": "[7.0, 12.0, 25.0, 40.0]"
+        },
+        {
+          "name": "barh: tên category khớp thanh",
+          "call": "[t.get_text() for t in revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[1].get_yticklabels()]",
+          "expect": "['Bag', 'Pen', 'Ink', 'Book']"
+        },
+        {
+          "name": "Axes phải: nhãn Orders và tiêu đề",
+          "call": "(lambda ax: (ax.get_xlabel(), ax.get_title()))(revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).axes[1])",
+          "expect": "('Orders', 'Orders by category')"
+        },
+        {
+          "name": "layout=\"constrained\"",
+          "call": "type(revenue_dashboard([1, 2, 3, 4], [40, 25, 35, 50], [\"Pen\", \"Book\", \"Bag\", \"Ink\"], [12, 40, 7, 25]).get_layout_engine()).__name__",
+          "expect": "'ConstrainedLayoutEngine'"
+        },
+        {
+          "name": "Một ngày, một category",
+          "call": "(lambda f: (len(f.axes), [float(v) for v in (p.get_width() for p in f.axes[1].patches)]))(revenue_dashboard([1], [9], [\"Solo\"], [3]))",
+          "expect": "(2, [3.0])"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "revenue_dashboard(days, revenue, categories, orders)",
+          "does": "Dashboard hai câu hỏi: diễn tiến doanh thu và xếp hạng category.",
+          "takes": "days, revenue: list cùng độ dài; categories, orders: list cùng độ dài",
+          "gives": "Figure: fig.axes[0] là line, fig.axes[1] là barh",
+          "effect": "Axes phải không có Line2D nào; thanh cuối (trên cùng) là category nhiều đơn nhất.",
+          "call": "revenue_dashboard([1, 2], [5, 7], [\"A\", \"B\"], [3, 9]) → barh B ở trên"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "plt.subplots(1, 2, layout=\"constrained\")",
+              "right": "1 Figure, 2 Axes"
+            },
+            {
+              "left": "ax_line.plot(days, revenue, marker=\"o\")",
+              "right": "line bên trái"
+            },
+            {
+              "left": "sorted(zip(orders, categories))",
+              "right": "cặp (số đơn, tên) tăng dần"
+            },
+            {
+              "left": "ax_bar.barh(names, counts)",
+              "right": "thanh lớn nhất nằm trên cùng"
+            }
+          ],
+          "rightOrder": [
+            1,
+            2,
+            0,
+            3
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import matplotlib.pyplot as plt\n\n\ndef revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n\n    plt.plot(days, revenue, marker=\"o\")\n    ax_line.set(xlabel=\"Day\", ylabel=\"Revenue\", title=\"Daily revenue\")\n\n    ranked = sorted(zip(orders, categories))\n    ax_bar.barh([name for count, name in ranked], [count for count, name in ranked])\n    ax_bar.set(xlabel=\"Orders\", title=\"Orders by category\")\n    return fig\n",
+          "firstLine": 1,
+          "line": 7,
+          "lines": [
+            7
+          ],
+          "label": "plt.plot vẽ nhầm Axes",
+          "fix": "    ax_line.plot(days, revenue, marker=\"o\")"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import matplotlib.pyplot as plt\n\n\ndef revenue_dashboard(days, revenue, categories, orders):\n    fig, (ax_line, ax_bar) = plt.subplots(1, 2, layout=\"constrained\")\n\n    ax_line.plot(days, revenue, marker=\"o\")\n    ax_line.set(xlabel=\"Day\", ylabel=\"Revenue\", title=\"Daily revenue\")\n\n    ranked = list(zip(orders, categories))\n    ax_bar.barh([name for count, name in ranked], [count for count, name in ranked])\n    ax_bar.set(xlabel=\"Orders\", title=\"Orders by category\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    revenue_dashboard([1, 2, 3], [10, 15, 12], [\"A\", \"B\", \"C\"], [30, 15, 22])\n    plt.show()\n",
+          "label": "Không sắp category"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao hàm dashboard gọi ax_line.plot(...) thay vì plt.plot(...)?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

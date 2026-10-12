@@ -36,6 +36,9 @@ export interface Mcq {
  * step_4.procedure: các bước quy trình của bài không có mã Python để chạy.
  * step_4.files / contracts / gate / env: thêm cho giáo trình PE v3 (xem
  * scripts/pe-v3/README.md) — kiểu chi tiết ở frontend/src/lib/studio-lesson.ts.
+ * step_4.packages: (khoá Python Advanced pe-v4) thư viện Pyodide bài cần — numpy,
+ * pandas, matplotlib, sqlite3. scripts/pe-v4/build.py đã chặn giá trị lạ; ở đây
+ * không kiểm thêm vì worker tự bỏ qua gói nó không có.
  */
 export interface StudioLesson {
   schema?: string;

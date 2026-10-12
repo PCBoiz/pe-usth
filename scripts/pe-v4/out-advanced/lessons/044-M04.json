@@ -1,0 +1,425 @@
+{
+  "lesson_code": "M04",
+  "sort_order": 44,
+  "module": "M7 · Matplotlib",
+  "title": "M04 · Màu, annotation và kể chuyện dữ liệu",
+  "subtitle": "Nâng cao · M7 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "M04 · Màu, annotation và kể chuyện dữ liệu",
+    "subtitle": "Nâng cao · M7 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#M04",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M04"
+        ],
+        "title": "Màu, annotation và kể chuyện dữ liệu",
+        "goal": "Nhấn đúng một category mà không bóp méo dữ liệu.",
+        "task": "plot_highlight(revenue): bar đủ category, cột lớn nhất màu HIGHLIGHT + annotation, ylim từ 0.",
+        "predict": "A=30, B=40, C=34 với ylim(28, 42): cột B trông gấp mấy lần cột A?",
+        "code": "def plot_highlight(revenue):\n    pos = int(revenue.to_numpy().argmax())\n    # colors: HIGHLIGHT tại pos, BASE còn lại\n    # bar, annotate tại (pos, value), ylim(0, value * 1.2)\n    return fig",
+        "tests": [
+          "[12, 25, 18] → B đậm, chữ \"25\" tại (1, 25)",
+          "Trục y luôn bắt đầu từ 0"
+        ],
+        "reflect": "Vì sao bar chart phải giữ baseline 0?"
+      },
+      "context": {
+        "title": "Vẽ bar chart từ một Series tổng hợp, nhấn đúng category lớn nhất bằng màu và annotation, giữ baseline 0 và đủ mọi category.",
+        "body": "Viết plot_highlight(revenue) với revenue là pandas Series (index = category, giá trị = doanh thu — như kết quả df.groupby(\"category\")[\"revenue\"].sum()). Vẽ ax.bar(revenue.index, revenue.to_numpy(), color=colors) GIỮ nguyên thứ tự và đủ mọi category. pos = vị trí cột lớn nhất (int(revenue.to_numpy().argmax())); cột đó màu HIGHLIGHT, các cột khác màu BASE (hằng cho sẵn). Ghi giá trị cột lớn nhất: ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\"). Trục y từ 0 tới value * 1.2 để chừa chỗ cho chữ. Tiêu đề nói kết quả: f\"{top} has the highest revenue\"; nhãn y \"Revenue\". Return fig.",
+        "example": "plot_highlight(pd.Series([12, 25, 18], index=[\"A\", \"B\", \"C\"])) → B màu HIGHLIGHT, chữ \"25\" tại (1, 25), trục y 0..30, tiêu đề \"B has the highest revenue\".",
+        "prereq": "M03",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Doanh thu A = 30, B = 40, C = 34 vẽ bar với ax.set_ylim(28, 42). Người xem thấy gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Tỷ lệ cột vẫn đúng vì số trên trục y vẫn đúng",
+            "detail": "Mắt so chiều dài cột, ít ai đọc số trên trục.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Matplotlib tự giữ baseline 0",
+            "detail": "set_ylim đã ghi đè giới hạn.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Cột B trông gấp khoảng 6 lần cột A, dù thật ra chỉ hơn 1/3",
+            "detail": "Phần nhìn thấy là 40 − 28 = 12 so với 30 − 28 = 2.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Cắt trục y cho chênh lệch rõ hơn thì biểu đồ dễ đọc hơn\"",
+        "body": "Với bar, người đọc so CHIỀU DÀI cột. Cắt đáy trục làm chênh lệch nhỏ trông khổng lồ — biểu đồ gây hiểu nhầm dù mọi con số đều đúng. Bar luôn bắt đầu từ 0; muốn soi chênh lệch nhỏ thì vẽ chính chênh lệch đó, hoặc dùng line/dot plot và ghi rõ thang."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Tiêu đề nên nói KẾT QUẢ mà dữ liệu ủng hộ (\"B has the highest revenue\"), không chỉ tên biến (\"Revenue by category\"). Phạm vi, đơn vị, cỡ mẫu đưa vào nhãn trục hoặc dòng phụ."
+        },
+        {
+          "n": 2,
+          "body": "Nhấn MỘT thứ quan trọng: cột cần chú ý một màu đậm, còn lại xám nhạt — mắt đi thẳng tới đó. color=[...] nhận một màu cho mỗi cột, theo đúng thứ tự cột."
+        },
+        {
+          "n": 3,
+          "body": "Giữ màu nhất quán cho cùng nhóm giữa các biểu đồ, và đừng để màu là tín hiệu DUY NHẤT: thêm annotation, tiêu đề, marker hay linestyle (legend phân biệt Actual/Target bằng nét đứt) để người mù màu hoặc bản in đen trắng vẫn đọc được."
+        },
+        {
+          "n": 4,
+          "body": "ax.annotate(text, xy=(x, y)) đặt chữ tại một điểm dữ liệu; trục category đặt cột thứ i ở x = i (0, 1, 2…). Chừa chỗ phía trên (ylim trên = max × 1.2) để chữ không bị cắt hay che dữ liệu."
+        },
+        {
+          "n": 5,
+          "body": "Bar so CHIỀU DÀI nên baseline phải là 0. set_ylim(28, 42) làm cột 30 trông chỉ bằng 1/6 cột 40 dù thật ra là 3/4 — trục bị cắt phóng đại chênh lệch. Nếu buộc phải đổi thang thì nói rõ trên hình."
+        },
+        {
+          "n": 6,
+          "body": "Không bỏ category nhỏ hay điểm \"xấu\" chỉ để câu chuyện đẹp. Muốn loại dữ liệu thì có chính sách và ghi lại; biểu đồ vẽ đủ những gì Series có, kèm mức độ không chắc chắn nếu có."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\nimport pandas as pd\n\norders = pd.Series([20, 35, 15], index=[\"A\", \"B\", \"C\"])\npos = int(orders.to_numpy().argmax())\ncolors = [\"#bfc0c0\"] * len(orders)\ncolors[pos] = \"#bf4520\"\n\nfig, ax = plt.subplots()\nax.bar(orders.index, orders.to_numpy(), color=colors)\nax.annotate(str(orders.iloc[pos]), xy=(pos, orders.iloc[pos]), ha=\"center\", va=\"bottom\")\nax.set_ylim(0, orders.max() * 1.2)\nprint(orders.index[pos], pos, colors)\nprint(ax.texts[0].get_text(), [float(v) for v in ax.get_ylim()])",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Muốn người xem thấy ngay category nổi bật nhất, cách nào tốt nhất?",
+          "options": [
+            {
+              "text": "Xoá các category nhỏ cho gọn",
+              "detail": "Bỏ dữ liệu làm câu chuyện sai lệch.",
+              "correct": false
+            },
+            {
+              "text": "Một màu đậm cho cột đó, màu xám cho phần còn lại, kèm annotation giá trị",
+              "detail": "Nhấn một thứ, và không dựa vào màu đơn độc.",
+              "correct": true
+            },
+            {
+              "text": "Mỗi cột một màu cầu vồng",
+              "detail": "Màu nào cũng nổi thì không gì nổi.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Nhấn một thứ, và không dựa vào màu đơn độc."
+        },
+        {
+          "question": "Trục category [\"A\", \"B\", \"C\"] — muốn annotate cột \"B\" thì xy có x bằng bao nhiêu?",
+          "options": [
+            {
+              "text": "2 — vì B là chữ thứ hai",
+              "detail": "Vị trí đếm từ 0.",
+              "correct": false
+            },
+            {
+              "text": "Bằng giá trị của cột B",
+              "detail": "Giá trị là toạ độ y, không phải x.",
+              "correct": false
+            },
+            {
+              "text": "1 — cột thứ i nằm ở x = i, đếm từ 0",
+              "detail": "Category được đặt ở 0, 1, 2…",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Category được đặt ở 0, 1, 2…"
+        },
+        {
+          "question": "Vẽ Actual và Target trên cùng Axes — cách nào vẫn phân biệt được khi in đen trắng?",
+          "options": [
+            {
+              "text": "label cho mỗi đường + ax.legend(); Target nét đứt linestyle=\"--\", Actual có marker",
+              "detail": "Nét và marker vẫn còn khi mất màu.",
+              "correct": true
+            },
+            {
+              "text": "Chỉ đổi màu hai đường",
+              "detail": "Màu đơn độc mất khi in đen trắng hoặc với người mù màu.",
+              "correct": false
+            },
+            {
+              "text": "Ghi số lên mọi điểm",
+              "detail": "Chữ dày đặc che dữ liệu; legend và kiểu nét là đủ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Nét và marker vẫn còn khi mất màu."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao plot_highlight đặt ylim dưới = 0 và vẽ đủ mọi category, dù cắt trục hay bỏ category nhỏ làm hình \"ấn tượng\" hơn?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Người đọc bar so chiều dài cột; baseline khác 0 phóng đại chênh lệch nên hình nói sai dù số đúng. Bỏ category nhỏ là chọn dữ liệu cho hợp câu chuyện. Nhấn cột lớn nhất bằng màu + annotation + tiêu đề nói kết quả là đủ để kể chuyện mà không bóp méo dữ liệu."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: tìm vị trí cột lớn nhất, đặt annotation đúng toạ độ, giữ baseline 0.",
+        "rule": "Thử Series 4 category mà cột lớn nhất nằm cuối; kiểm màu, annotation và ylim theo dữ liệu mới, không theo ví dụ."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "revenue.to_numpy().argmax() → vị trí cột lớn nhất"
+          },
+          {
+            "label": "Bước 2",
+            "text": "colors[pos] = HIGHLIGHT → chỉ một cột đậm, còn lại BASE"
+          },
+          {
+            "label": "Bước 3",
+            "text": "ax.annotate(str(value), xy=(pos, value)) → số ngay trên cột"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ax.set_ylim(0, value * 1.2) → baseline 0, chừa chỗ cho chữ"
+          },
+          {
+            "label": "Bước 5",
+            "text": "title=f\"{top} has the highest revenue\" → tiêu đề nói kết quả"
+          }
+        ]
+      },
+      "counter": {
+        "question": "revenue = Series([12, 25, 18], index=[\"A\", \"B\", \"C\"]) → giới hạn trục y là?",
+        "options": [
+          "(12, 30)",
+          "(0, 25)",
+          "(0, 30)"
+        ],
+        "correct": "(0, 30)"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\nimport pandas as pd\n\nHIGHLIGHT = \"#bf4520\"\nBASE = \"#bfc0c0\"\n\n\ndef plot_highlight(revenue):\n    pos = {{slot1}}\n    top, value = revenue.index[pos], revenue.iloc[pos]\n    colors = [BASE] * len(revenue)\n    colors[pos] = HIGHLIGHT\n\n    fig, ax = plt.subplots()\n    ax.bar(revenue.index, revenue.to_numpy(), color=colors)\n    ax.annotate(str(value), {{slot2}}, ha=\"center\", va=\"bottom\")\n    {{slot3}}\n    ax.set(title=f\"{top} has the highest revenue\", ylabel=\"Revenue\")\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "int(revenue.to_numpy().argmax())"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "xy=(pos, value)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "ax.set_ylim(0, value * 1.2)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ax.set_ylim(0, value * 1.2)",
+            "slot": 3
+          },
+          {
+            "label": "xy=(value, pos)",
+            "slot": 2,
+            "trap": "Đảo x và y: x là vị trí cột, y là giá trị."
+          },
+          {
+            "label": "int(revenue.to_numpy().argmin())",
+            "slot": 1,
+            "trap": "argmin là cột NHỎ nhất."
+          },
+          {
+            "label": "int(revenue.to_numpy().argmax())",
+            "slot": 1
+          },
+          {
+            "label": "1",
+            "slot": 1,
+            "trap": "Viết cứng vị trí cột B của ví dụ — dữ liệu khác sẽ nhấn sai cột."
+          },
+          {
+            "label": "ax.set_ylim(revenue.min() * 0.9, value * 1.2)",
+            "slot": 3,
+            "trap": "Cắt đáy trục — phóng đại chênh lệch giữa các cột."
+          },
+          {
+            "label": "xy=(pos, value)",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết plot_highlight(revenue) với revenue là pandas Series (index = category, giá trị = doanh thu — như kết quả df.groupby(\"category\")[\"revenue\"].sum()). Vẽ ax.bar(revenue.index, revenue.to_numpy(), color=colors) GIỮ nguyên thứ tự và đủ mọi category. pos = vị trí cột lớn nhất (int(revenue.to_numpy().argmax())); cột đó màu HIGHLIGHT, các cột khác màu BASE (hằng cho sẵn). Ghi giá trị cột lớn nhất: ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\"). Trục y từ 0 tới value * 1.2 để chừa chỗ cho chữ. Tiêu đề nói kết quả: f\"{top} has the highest revenue\"; nhãn y \"Revenue\". Return fig.\n\nThực hành: Tính pos bằng argmax trên dữ liệu (không viết cứng); colors theo pos; annotate tại (pos, value); ylim (0, value * 1.2).",
+        "io": [
+          {
+            "label": "Series([12, 25, 18], index=[\"A\", \"B\", \"C\"])",
+            "value": "B đậm; chữ \"25\" tại (1, 25); trục y 0..30; \"B has the highest revenue\""
+          },
+          {
+            "label": "Series([50, 20, 5], index=[\"X\", \"Y\", \"Z\"])",
+            "value": "X đậm (cột đầu); chữ \"50\" tại (0, 50); đủ 3 cột"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\nimport pandas as pd\n\nHIGHLIGHT = \"#bf4520\"\nBASE = \"#bfc0c0\"\n\n\ndef plot_highlight(revenue):\n    # pos = vị trí cột lớn nhất; màu HIGHLIGHT cho cột đó, BASE cho cột khác\n    # bar đủ mọi category; annotate giá trị tại (pos, giá trị); ylim 0..max*1.2\n    # tiêu đề f\"{top} has the highest revenue\"; nhãn y \"Revenue\"; return fig\n    pass\n\n\nif __name__ == \"__main__\":\n    plot_highlight(pd.Series([12, 25, 18], index=[\"A\", \"B\", \"C\"]))\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\nimport pandas as pd\n\nHIGHLIGHT = \"#bf4520\"\nBASE = \"#bfc0c0\"\n\n\ndef plot_highlight(revenue):\n    pos = int(revenue.to_numpy().argmax())\n    top, value = revenue.index[pos], revenue.iloc[pos]\n    colors = [BASE] * len(revenue)\n    colors[pos] = HIGHLIGHT\n\n    fig, ax = plt.subplots()\n    ax.bar(revenue.index, revenue.to_numpy(), color=colors)\n    ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\")\n    ax.set_ylim(0, value * 1.2)\n    ax.set(title=f\"{top} has the highest revenue\", ylabel=\"Revenue\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_highlight(pd.Series([12, 25, 18], index=[\"A\", \"B\", \"C\"]))\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tính pos bằng argmax trên dữ liệu (không viết cứng); colors theo pos; annotate tại (pos, value); ylim (0, value * 1.2)."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. pos = int(revenue.to_numpy().argmax()); top, value = revenue.index[pos], revenue.iloc[pos].\n2. colors = [BASE] * len(revenue); colors[pos] = HIGHLIGHT; ax.bar(revenue.index, revenue.to_numpy(), color=colors).\n3. ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\"); ax.set_ylim(0, value * 1.2).\n4. ax.set(title=f\"{top} has the highest revenue\", ylabel=\"Revenue\"); return fig."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def plot_highlight(revenue):\n    pos = int(revenue.to_numpy().argmax())\n    top, value = revenue.index[pos], revenue.iloc[pos]\n    colors = [BASE] * len(revenue)\n    colors[pos] = HIGHLIGHT\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đủ 4 cột, đúng thứ tự Series",
+          "call": "[float(v) for v in (p.get_height() for p in plot_highlight(pd.Series([18, 9, 31, 22], index=[\"Pen\", \"Ink\", \"Bag\", \"Book\"])).axes[0].patches)]",
+          "expect": "[18.0, 9.0, 31.0, 22.0]"
+        },
+        {
+          "name": "Chỉ cột lớn nhất (Bag) có màu HIGHLIGHT",
+          "call": "[__import__(\"matplotlib.colors\", fromlist=[\"to_hex\"]).to_hex(p.get_facecolor()) for p in plot_highlight(pd.Series([18, 9, 31, 22], index=[\"Pen\", \"Ink\", \"Bag\", \"Book\"])).axes[0].patches]",
+          "expect": "['#bfc0c0', '#bfc0c0', '#bf4520', '#bfc0c0']"
+        },
+        {
+          "name": "Annotation ghi giá trị tại cột lớn nhất",
+          "call": "[(t.get_text(), tuple(float(v) for v in t.xy)) for t in plot_highlight(pd.Series([18, 9, 31, 22], index=[\"Pen\", \"Ink\", \"Bag\", \"Book\"])).axes[0].texts]",
+          "expect": "[('31', (2.0, 31.0))]"
+        },
+        {
+          "name": "Baseline 0, chừa chỗ phía trên",
+          "call": "tuple(round(float(v), 6) for v in plot_highlight(pd.Series([18, 9, 31, 22], index=[\"Pen\", \"Ink\", \"Bag\", \"Book\"])).axes[0].get_ylim())",
+          "expect": "(0.0, 37.2)"
+        },
+        {
+          "name": "Tiêu đề nói kết quả; nhãn y",
+          "call": "(lambda ax: (ax.get_title(), ax.get_ylabel()))(plot_highlight(pd.Series([18, 9, 31, 22], index=[\"Pen\", \"Ink\", \"Bag\", \"Book\"])).axes[0])",
+          "expect": "('Bag has the highest revenue', 'Revenue')"
+        },
+        {
+          "name": "Cột lớn nhất đứng đầu Series",
+          "call": "(lambda ax: ([__import__(\"matplotlib.colors\", fromlist=[\"to_hex\"]).to_hex(p.get_facecolor()) for p in ax.patches], [(t.get_text(), tuple(float(v) for v in t.xy)) for t in ax.texts]))(plot_highlight(pd.Series([50, 20, 5], index=[\"X\", \"Y\", \"Z\"])).axes[0])",
+          "expect": "(['#bf4520', '#bfc0c0', '#bfc0c0'], [('50', (0.0, 50.0))])"
+        },
+        {
+          "name": "Một category duy nhất",
+          "call": "(lambda ax: ([float(v) for v in (p.get_height() for p in ax.patches)], ax.get_title(), tuple(round(float(v), 6) for v in ax.get_ylim())))(plot_highlight(pd.Series([7], index=[\"Only\"])).axes[0])",
+          "expect": "([7.0], 'Only has the highest revenue', (0.0, 8.4))"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_highlight(revenue)",
+          "does": "Kể chuyện \"category nào cao nhất\" mà không bóp méo dữ liệu.",
+          "takes": "revenue: pandas Series số dương, index = tên category",
+          "gives": "Figure 1 Axes, đủ len(revenue) cột theo thứ tự Series",
+          "effect": "Một cột HIGHLIGHT; một annotation tại (pos, value); ylim (0, value * 1.2).",
+          "call": "plot_highlight(pd.Series([1, 3], index=[\"a\", \"b\"])).axes[0].get_title() → \"b has the highest revenue\""
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "revenue.to_numpy().argmax()",
+              "right": "vị trí cột lớn nhất"
+            },
+            {
+              "left": "colors[pos] = HIGHLIGHT",
+              "right": "chỉ một cột đậm, còn lại BASE"
+            },
+            {
+              "left": "ax.annotate(str(value), xy=(pos, value))",
+              "right": "số ngay trên cột"
+            },
+            {
+              "left": "ax.set_ylim(0, value * 1.2)",
+              "right": "baseline 0, chừa chỗ cho chữ"
+            }
+          ],
+          "rightOrder": [
+            3,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "    top, value = revenue.index[pos], revenue.iloc[pos]\n    colors = [BASE] * len(revenue)\n    colors[pos] = HIGHLIGHT\n\n    fig, ax = plt.subplots()\n    ax.bar(revenue.index, revenue.to_numpy(), color=colors)\n    ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\")\n    ax.set_ylim(revenue.min() * 0.9, value * 1.2)\n    ax.set(title=f\"{top} has the highest revenue\", ylabel=\"Revenue\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_highlight(pd.Series([12, 25, 18], index=[\"A\", \"B\", \"C\"]))\n    plt.show()",
+          "firstLine": 10,
+          "line": 17,
+          "lines": [
+            17
+          ],
+          "label": "Cắt đáy trục y",
+          "fix": "    ax.set_ylim(0, value * 1.2)"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import matplotlib.pyplot as plt\nimport pandas as pd\n\nHIGHLIGHT = \"#bf4520\"\nBASE = \"#bfc0c0\"\n\n\ndef plot_highlight(revenue):\n    pos = 1\n    top, value = revenue.index[pos], revenue.iloc[pos]\n    colors = [BASE] * len(revenue)\n    colors[pos] = HIGHLIGHT\n\n    fig, ax = plt.subplots()\n    ax.bar(revenue.index, revenue.to_numpy(), color=colors)\n    ax.annotate(str(value), xy=(pos, value), ha=\"center\", va=\"bottom\")\n    ax.set_ylim(0, value * 1.2)\n    ax.set(title=f\"{top} has the highest revenue\", ylabel=\"Revenue\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_highlight(pd.Series([12, 25, 18], index=[\"A\", \"B\", \"C\"]))\n    plt.show()\n",
+          "label": "Viết cứng vị trí của ví dụ"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao plot_highlight đặt ylim dưới = 0 và vẽ đủ mọi category, dù cắt trục hay bỏ category nhỏ làm hình \"ấn tượng\" hơn?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

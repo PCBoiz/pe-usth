@@ -1,0 +1,365 @@
+{
+  "lesson_code": "G04",
+  "sort_order": 17,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G04 · Layout: pack, place, grid",
+  "subtitle": "Nâng cao · M3 · 30 phút",
+  "estimated_minutes": 30,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "G04 · Layout: pack, place, grid",
+    "subtitle": "Nâng cao · M3 · 30 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#G04",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G04"
+        ],
+        "title": "Layout: pack, place, grid",
+        "goal": "Bố trí form bằng grid trong Frame, khung bằng pack, nhãn góc bằng place.",
+        "task": "Viết build_form(parent, fields) xếp Label/Entry theo hàng; pack form và toolbar; place badge.",
+        "predict": "Có thể pack frame ngoài, grid các con trong frame không?",
+        "code": "def build_form(parent, fields):\n    entries = {}\n    for row, text in enumerate(fields):\n        # Label cột 0, Entry cột 1 sticky=\"ew\"\n    # nút Lưu: row=len(fields), columnspan=2\n    return entries",
+        "tests": [
+          "3 field → Entry ở (0, 1), (1, 1), (2, 1)",
+          "pack thêm Label vào form đang grid → TclError"
+        ],
+        "reflect": "Vì sao không trộn pack và grid trong cùng một parent?"
+      },
+      "context": {
+        "title": "Bố trí giao diện bằng một chiến lược rõ ràng: grid cho form, pack cho khung và thanh nút, place cho nhãn góc.",
+        "body": "Viết build_form(parent, fields): với field thứ row (đếm từ 0) đặt Label(text=field) ở grid(row=row, column=0, sticky=\"w\") và một Entry ở grid(row=row, column=1, sticky=\"ew\"); lưu Entry vào dict entries[field]; cuối cùng đặt Button \"Lưu\" ở grid(row=len(fields), column=0, columnspan=2); trả về entries.\n\nTrong root: form = Frame pack(fill=\"x\") rồi entries = build_form(form, FIELDS); toolbar = Frame pack(side=\"bottom\", fill=\"x\") chứa nút \"Mở\" pack(side=\"left\") và \"Thoát\" pack(side=\"right\"); badge = Label \"v1.0\" đặt bằng place(relx=1.0, rely=0.0, anchor=\"ne\").",
+        "example": "FIELDS = [\"Họ tên\", \"Ngày sinh\", \"Điểm\"] → ba hàng Label/Entry, nút Lưu ở hàng 3 chiếm 2 cột.",
+        "prereq": "G03",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Có thể pack frame ngoài, rồi grid các widget con BÊN TRONG frame đó không?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Có — frame (con của root) và widget con của frame có parent khác nhau",
+            "detail": "Luật chỉ áp dụng trong cùng một parent.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Không — cả chương trình chỉ được dùng một kiểu",
+            "detail": "Mỗi parent chọn kiểu riêng cho các con của nó.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Được, nhưng phải dùng place cho frame",
+            "detail": "pack frame là bình thường.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Thêm một Label bằng pack() vào Frame đang dùng grid cũng chẳng sao\"",
+        "body": "pack và grid cùng tính kích thước của parent và giành nhau quyền quyết định — Tk chặn bằng TclError \"cannot use geometry manager pack inside ... which already has slaves managed by grid\". Muốn phối hợp, tạo Frame riêng cho mỗi kiểu. Một nhầm lẫn khác: gọi grid() không có row/column và tưởng nó tự xếp như pack — Label và Entry sẽ không còn thẳng hàng."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "pack() xếp widget theo cạnh: side=\"top/bottom/left/right\"; fill=\"x\" giãn ngang; expand=True chiếm phần dư."
+        },
+        {
+          "n": 2,
+          "body": "grid() đặt theo ô row, column (đếm từ 0); sticky=\"ew\" cho widget giãn hết bề ngang ô; padx/pady chừa khoảng trống."
+        },
+        {
+          "n": 3,
+          "body": "columnspan/rowspan cho widget chiếm nhiều ô; columnconfigure(1, weight=1) cho cột 1 giãn khi cửa sổ to ra."
+        },
+        {
+          "n": 4,
+          "body": "place() đặt theo toạ độ x/y hoặc tỉ lệ relx/rely (0 tới 1); anchor=\"ne\" chọn góc của widget bám vào điểm đó."
+        },
+        {
+          "n": 5,
+          "body": "KHÔNG dùng pack và grid cho các con của CÙNG một parent — Tk báo TclError. Khác parent (Frame khác) thì được."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import tkinter as tk\n\nroot = tk.Tk()\nheader = tk.Label(root, text=\"Bảng điểm\", bg=\"lightblue\")\nheader.pack(fill=\"x\")                 # root: dùng pack\n\ntable = tk.Frame(root)\ntable.pack(padx=8, pady=8)            # Frame vẫn là con của root: pack\nfor row, (name, mark) in enumerate([(\"Mai\", 8.5), (\"An\", 7.0)]):\n    tk.Label(table, text=name).grid(row=row, column=0, sticky=\"w\")\n    tk.Label(table, text=str(mark)).grid(row=row, column=1)\n\ncorner = tk.Label(root, text=\"beta\")\ncorner.place(relx=1.0, rely=1.0, anchor=\"se\")   # place không tranh chấp với pack\n\ntry:\n    tk.Label(table, text=\"Thêm\").pack()       # table đã có con dùng grid\nexcept tk.TclError as error:\n    print(\"TclError:\", error)\nroot.mainloop()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Trong cùng một Frame, đã có widget dùng grid; thêm widget dùng pack thì…",
+          "options": [
+            {
+              "text": "Tk báo TclError: không được trộn pack và grid trong cùng parent",
+              "detail": "Tách sang Frame khác nếu cần pack.",
+              "correct": true
+            },
+            {
+              "text": "Widget mới tự chuyển sang grid",
+              "detail": "Tk không tự đổi geometry manager.",
+              "correct": false
+            },
+            {
+              "text": "Chạy được, chỉ lệch vị trí",
+              "detail": "Tk chặn hẳn bằng lỗi.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Tách sang Frame khác nếu cần pack."
+        },
+        {
+          "question": "Entry ở cột 1 muốn giãn hết bề ngang ô thì dùng gì?",
+          "options": [
+            {
+              "text": "grid(..., side=\"left\")",
+              "detail": "side cũng là của pack.",
+              "correct": false
+            },
+            {
+              "text": "grid(..., fill=\"x\")",
+              "detail": "fill là tuỳ chọn của pack, grid không nhận.",
+              "correct": false
+            },
+            {
+              "text": "grid(..., sticky=\"ew\")",
+              "detail": "Bám cả cạnh trái (w) và phải (e).",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Bám cả cạnh trái (w) và phải (e)."
+        },
+        {
+          "question": "place(relx=1.0, rely=0.0, anchor=\"ne\") đặt widget ở đâu?",
+          "options": [
+            {
+              "text": "Góc dưới trái",
+              "detail": "Đó là relx=0.0, rely=1.0, anchor=\"sw\".",
+              "correct": false
+            },
+            {
+              "text": "Góc trên phải: góc ne của widget bám vào điểm (100% ngang, 0% dọc)",
+              "detail": "relx/rely là tỉ lệ theo parent.",
+              "correct": true
+            },
+            {
+              "text": "Toạ độ (1, 0) pixel",
+              "detail": "Pixel là x/y; relx/rely là tỉ lệ.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "relx/rely là tỉ lệ theo parent."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao form dùng grid trong một Frame riêng thay vì grid thẳng vào root?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "root còn toolbar dùng pack. Nếu grid các Label/Entry thẳng vào root thì root có con dùng cả grid lẫn pack → TclError. Đặt form vào Frame riêng: root chỉ pack hai Frame, còn bên trong form tự do dùng grid. Trường hợp đặc biệt: place không tranh chấp, nên badge đặt bằng place trong root vẫn được."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: bàn phím 2×2 trong một Frame được pack. Lắp bốn chỗ.",
+        "rule": "Bộ chấm gọi build_form với danh sách field khác (5 field, 1 field) và đọc hàng/cột của từng widget; trộn pack với grid trong cùng parent sẽ làm chương trình dừng ngay bằng TclError."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "form.pack(fill=\"x\") → khung form giãn ngang trong root"
+          },
+          {
+            "label": "Bước 2",
+            "text": "enumerate(fields) → mỗi field một số hàng 0, 1, 2"
+          },
+          {
+            "label": "Bước 3",
+            "text": "Label cột 0, Entry cột 1 sticky=\"ew\" → thẳng hàng"
+          },
+          {
+            "label": "Bước 4",
+            "text": "Nút Lưu grid(row=len(fields), columnspan=2) → hàng cuối"
+          }
+        ]
+      },
+      "counter": {
+        "question": "build_form(frame, [\"Mã SV\", \"Lớp\", \"Email\", \"SĐT\", \"Ghi chú\"]) đặt nút Lưu ở hàng nào?",
+        "options": [
+          "5",
+          "0",
+          "4"
+        ],
+        "correct": "5"
+      },
+      "scaffold": {
+        "template": "import tkinter as tk\n\nroot = tk.Tk()\npad = tk.Frame(root)\npad.{{slot1}}\nfor index, text in enumerate([\"7\", \"8\", \"4\", \"5\"]):\n    button = tk.Button(pad, text=text, width=4)\n    button.grid(row={{slot2}}, column={{slot3}})\ntk.Label(root, text=\"Bàn phím số\").{{slot4}}\nroot.mainloop()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "pack(padx=10, pady=10)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "index // 2"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "index % 2"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "pack(side=\"bottom\")"
+          }
+        ],
+        "bank": [
+          {
+            "label": "pack(side=\"bottom\")",
+            "slot": 4
+          },
+          {
+            "label": "grid(row=0, column=0)",
+            "slot": 1,
+            "trap": "pad dùng grid nhưng Label cùng root lại pack → TclError."
+          },
+          {
+            "label": "grid(row=1, column=0)",
+            "slot": 4,
+            "trap": "root đã có pad dùng pack → trộn với grid → TclError."
+          },
+          {
+            "label": "index",
+            "slot": 2,
+            "trap": "Mỗi nút một hàng: thành một cột dọc bốn nút."
+          },
+          {
+            "label": "index // 2",
+            "slot": 2
+          },
+          {
+            "label": "0",
+            "slot": 3,
+            "trap": "Mọi nút dồn vào cột 0."
+          },
+          {
+            "label": "index % 2",
+            "slot": 3
+          },
+          {
+            "label": "pack(padx=10, pady=10)",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết build_form(parent, fields): với field thứ row (đếm từ 0) đặt Label(text=field) ở grid(row=row, column=0, sticky=\"w\") và một Entry ở grid(row=row, column=1, sticky=\"ew\"); lưu Entry vào dict entries[field]; cuối cùng đặt Button \"Lưu\" ở grid(row=len(fields), column=0, columnspan=2); trả về entries.\n\nTrong root: form = Frame pack(fill=\"x\") rồi entries = build_form(form, FIELDS); toolbar = Frame pack(side=\"bottom\", fill=\"x\") chứa nút \"Mở\" pack(side=\"left\") và \"Thoát\" pack(side=\"right\"); badge = Label \"v1.0\" đặt bằng place(relx=1.0, rely=0.0, anchor=\"ne\").\n\nThực hành: Một parent — một kiểu bố trí: form dùng grid cho con của nó, root dùng pack cho hai Frame, badge dùng place.",
+        "io": [
+          {
+            "label": "FIELDS = [\"Họ tên\", \"Ngày sinh\", \"Điểm\"]",
+            "value": "Entry ở (0, 1), (1, 1), (2, 1); nút Lưu ở hàng 3, columnspan=2"
+          },
+          {
+            "label": "5 field",
+            "value": "Entry ở hàng 0..4; nút Lưu ở hàng 5"
+          }
+        ]
+      },
+      "starterCode": "import tkinter as tk\n\nFIELDS = [\"Họ tên\", \"Ngày sinh\", \"Điểm\"]\n\n\ndef build_form(parent, fields):\n    entries = {}\n    # Mỗi field một hàng: Label ở cột 0 (sticky=\"w\"), Entry ở cột 1 (sticky=\"ew\").\n    # Lưu Entry vào entries[tên field]. Nút \"Lưu\" ở hàng len(fields), chiếm 2 cột.\n    return entries\n\n\nroot = tk.Tk()\nroot.title(\"Hồ sơ sinh viên\")\nroot.geometry(\"360x220\")\n\n# form: Frame trong root, pack(fill=\"x\"); rồi entries = build_form(form, FIELDS)\n# toolbar: Frame trong root, pack(side=\"bottom\", fill=\"x\"); nút \"Mở\" bên trái, \"Thoát\" bên phải\n# badge: Label \"v1.0\" đặt bằng place ở góc trên phải (relx=1.0, rely=0.0, anchor=\"ne\")\n\nroot.mainloop()\n",
+      "solutionCode": "import tkinter as tk\n\nFIELDS = [\"Họ tên\", \"Ngày sinh\", \"Điểm\"]\n\n\ndef build_form(parent, fields):\n    entries = {}\n    for row, text in enumerate(fields):\n        tk.Label(parent, text=text).grid(row=row, column=0, sticky=\"w\", padx=4, pady=2)\n        entry = tk.Entry(parent)\n        entry.grid(row=row, column=1, sticky=\"ew\", padx=4, pady=2)\n        entries[text] = entry\n    tk.Button(parent, text=\"Lưu\").grid(row=len(fields), column=0, columnspan=2, pady=4)\n    return entries\n\n\nroot = tk.Tk()\nroot.title(\"Hồ sơ sinh viên\")\nroot.geometry(\"360x220\")\n\nform = tk.Frame(root)\nform.pack(fill=\"x\", padx=8, pady=8)\nentries = build_form(form, FIELDS)\n\ntoolbar = tk.Frame(root)\ntoolbar.pack(side=\"bottom\", fill=\"x\")\ntk.Button(toolbar, text=\"Mở\").pack(side=\"left\")\ntk.Button(toolbar, text=\"Thoát\").pack(side=\"right\")\n\nbadge = tk.Label(root, text=\"v1.0\")\nbadge.place(relx=1.0, rely=0.0, anchor=\"ne\")\n\nroot.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Một parent — một kiểu bố trí: form dùng grid cho con của nó, root dùng pack cho hai Frame, badge dùng place."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. for row, text in enumerate(fields): Label grid(row=row, column=0, sticky=\"w\"); Entry grid(row=row, column=1, sticky=\"ew\").\n2. entries[text] = entry; sau vòng lặp: Button \"Lưu\" grid(row=len(fields), column=0, columnspan=2); return entries.\n3. form = tk.Frame(root); form.pack(fill=\"x\"); entries = build_form(form, FIELDS).\n4. toolbar pack(side=\"bottom\", fill=\"x\"): \"Mở\" pack(side=\"left\"), \"Thoát\" pack(side=\"right\"); badge.place(relx=1.0, rely=0.0, anchor=\"ne\")."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    for row, text in enumerate(fields):\n        tk.Label(parent, text=text).grid(row=row, column=0, sticky=\"w\")\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "form pack(fill=\"x\") trong root",
+          "call": "(form.manager, form.layout.get('fill'))",
+          "expect": "('pack', 'x')"
+        },
+        {
+          "name": "Mỗi Entry ở cột 1, mỗi field một hàng",
+          "call": "[(e.manager, e.layout.get('row'), e.layout.get('column')) for e in entries.values()]",
+          "expect": "[('grid', 0, 1), ('grid', 1, 1), ('grid', 2, 1)]"
+        },
+        {
+          "name": "Label ở cột 0, cùng hàng với Entry",
+          "call": "[(w.manager, w.layout.get('row'), w.layout.get('column')) for w in (_studio.tk.find(type='Label', text=t) for t in ['Họ tên', 'Ngày sinh', 'Điểm'])]",
+          "expect": "[('grid', 0, 0), ('grid', 1, 0), ('grid', 2, 0)]"
+        },
+        {
+          "name": "Entry giãn ngang: sticky có e và w",
+          "call": "[{'e', 'w'} <= set(''.join(e.layout.get('sticky', ''))) for e in entries.values()]",
+          "expect": "[True, True, True]"
+        },
+        {
+          "name": "Nút Lưu: hàng 3, columnspan=2",
+          "call": "(lambda b: (b.manager, b.layout.get('row'), b.layout.get('columnspan')))(_studio.tk.find(type='Button', text='Lưu'))",
+          "expect": "('grid', 3, 2)"
+        },
+        {
+          "name": "toolbar ở đáy; Mở bên trái, Thoát bên phải",
+          "call": "(toolbar.manager, toolbar.layout.get('side'), _studio.tk.find(type='Button', text='Mở').layout.get('side'), _studio.tk.find(type='Button', text='Thoát').layout.get('side'))",
+          "expect": "('pack', 'bottom', 'left', 'right')"
+        },
+        {
+          "name": "badge đặt bằng place ở góc trên phải",
+          "call": "(badge.manager, badge.layout.get('relx'), badge.layout.get('rely'), badge.layout.get('anchor'))",
+          "expect": "('place', 1.0, 0.0, 'ne')"
+        },
+        {
+          "name": "5 field khác: Entry hàng 0..4, nút Lưu hàng 5",
+          "call": "(lambda es: ([(e.layout.get('row'), e.layout.get('column')) for e in es.values()], _studio.tk.find_all(type='Button', text='Lưu')[-1].layout.get('row')))(build_form(tk.Frame(root), ['Mã SV', 'Lớp', 'Email', 'SĐT', 'Ghi chú']))",
+          "expect": "([(0, 1), (1, 1), (2, 1), (3, 1), (4, 1)], 5)"
+        },
+        {
+          "name": "1 field: Label hàng 0, nút Lưu ngay hàng 1",
+          "call": "(lambda es: (list(es), _studio.tk.find(type='Label', text='Ghi chú riêng').layout.get('row'), _studio.tk.find_all(type='Button', text='Lưu')[-1].layout.get('row')))(build_form(tk.Frame(root), ['Ghi chú riêng']))",
+          "expect": "(['Ghi chú riêng'], 0, 1)"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "build_form(parent, fields)",
+          "does": "Dựng form nhập bằng grid trong parent.",
+          "takes": "parent: Frame chưa có con nào; fields: list[str]",
+          "gives": "dict tên field → Entry, theo thứ tự fields",
+          "effect": "Field thứ i: Label (i, 0) sticky=\"w\", Entry (i, 1) sticky=\"ew\"; Button \"Lưu\" (len(fields), 0) columnspan=2.",
+          "call": "build_form(form, [\"Họ tên\", \"Điểm\"]) → {\"Họ tên\": Entry, \"Điểm\": Entry}"
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật."
+    }
+  }
+}

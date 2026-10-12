@@ -1,0 +1,376 @@
+{
+  "lesson_code": "PD05",
+  "sort_order": 36,
+  "module": "M6 · pandas",
+  "title": "PD05 · GroupBy và KPI có mẫu số rõ ràng",
+  "subtitle": "Nâng cao · M6 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "PD05 · GroupBy và KPI có mẫu số rõ ràng",
+    "subtitle": "Nâng cao · M6 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#PD05",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD05"
+        ],
+        "title": "GroupBy và KPI có mẫu số rõ ràng",
+        "goal": "Tính KPI theo vùng với mẫu số rõ ràng.",
+        "task": "Viết region_kpi(df): orders, qty, revenue, avg_price = revenue / qty, share = revenue / tổng.",
+        "predict": "Giá bình quân vùng: mean(unit_price) hay tổng revenue / tổng qty?",
+        "code": "def region_kpi(df):\n    data = df.assign(...)\n    out = data.groupby(\"region\").agg(...)\n    # avg_price, share, đối chiếu tổng\n    return out",
+        "tests": [
+          "A: 10, 20; B: 40 → revenue A 30, B 40",
+          "A chiếm 3/7 ≈ 0.4286 tổng doanh thu"
+        ],
+        "reflect": "Vì sao trung bình của các giá không bằng giá bình quân?"
+      },
+      "context": {
+        "title": "Tổng hợp theo nhóm bằng named aggregation; tỷ lệ có mẫu số rõ, giá bình quân là tổng chia tổng.",
+        "body": "Bảng đơn (order_id, region, qty, unit_price; region có thể thiếu, qty có thể thiếu). Viết region_kpi(df) trả DataFrame index là region (region thiếu gom thành \"unknown\"), đúng thứ tự cột: orders (số DÒNG đơn của vùng — kể cả đơn thiếu qty), qty (tổng), revenue (tổng qty*unit_price), avg_price = revenue / qty của vùng, share = revenue vùng / TỔNG revenue mọi vùng. Trước khi trả, kiểm tổng revenue các vùng khớp tổng revenue của bảng nguồn.",
+        "example": "Vùng A có rev 10, 20; vùng B có 40 → revenue A 30, B 40; tổng 70; A chiếm 3/7 ≈ 0.4286.",
+        "prereq": "PD04",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Vùng north có hai đơn: 1 cái giá 10 và 3 cái giá 20. Giá bình quân của vùng là?",
+        "options": [
+          {
+            "id": "a",
+            "title": "15 — trung bình của hai giá",
+            "detail": "Đó là mean các giá: coi đơn 1 cái nặng bằng đơn 3 cái.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "17.5 — tổng doanh thu 70 chia tổng số lượng 4",
+            "detail": "Giá bình quân có trọng số theo số lượng.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "35 — doanh thu chia số đơn",
+            "detail": "Đó là doanh thu trung bình mỗi ĐƠN, không phải giá mỗi sản phẩm.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Muốn giá trung bình thì lấy mean của cột giá\"",
+        "body": "mean(unit_price) coi mọi đơn nặng như nhau. Giá bình quân thật là tổng doanh thu / tổng số lượng — ratio of sums, không phải mean of ratios. Tương tự, trung bình của các trung bình theo vùng không bằng trung bình chung khi các vùng có cỡ khác nhau. Mỗi tỷ lệ phải nói rõ tử số và mẫu số."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "GroupBy là split-apply-combine: tách theo khoá, tính trên từng nhóm, ghép lại. agg trả MỘT dòng mỗi nhóm; transform trả kết quả dài bằng bảng gốc."
+        },
+        {
+          "n": 2,
+          "body": "size đếm số dòng của nhóm; count chỉ đếm ô KHÔNG thiếu của một cột. Đơn thiếu qty vẫn là một đơn."
+        },
+        {
+          "n": 3,
+          "body": "Named aggregation agg(orders=(\"order_id\", \"size\"), revenue=(\"revenue\", \"sum\")) đặt tên metric rõ ràng ngay trong kết quả."
+        },
+        {
+          "n": 4,
+          "body": "Tỷ lệ phải nói rõ mẫu số: share = doanh thu vùng / TỔNG doanh thu; giá bình quân = tổng doanh thu / tổng số lượng."
+        },
+        {
+          "n": 5,
+          "body": "Trung bình của các giá (hay trung bình của các trung bình) không bằng giá bình quân khi số lượng mỗi đơn khác nhau: đơn 9 cái và đơn 1 cái không nặng như nhau."
+        },
+        {
+          "n": 6,
+          "body": "groupby mặc định BỎ nhóm có khoá thiếu (dropna=True). Gom thành \"unknown\" (hoặc dropna=False) khi đó là chính sách, và luôn kiểm tổng các nhóm = tổng nguồn để bắt dòng bị mất."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\ndf = pd.DataFrame({\"cls\": [\"A\", \"A\", \"A\", \"B\"], \"score\": [6, 8, None, 9]})\nout = df.groupby(\"cls\").agg(rows=(\"score\", \"size\"), graded=(\"score\", \"count\"), avg=(\"score\", \"mean\"))\nprint(out)\n\ndf[\"share_in_class\"] = df[\"score\"] / df.groupby(\"cls\")[\"score\"].transform(\"sum\")\nprint(df[\"share_in_class\"].round(3).tolist())\n\nshop = pd.DataFrame({\"qty\": [4, 1], \"price\": [5, 20]})\nshop[\"rev\"] = shop[\"qty\"] * shop[\"price\"]\nprint(\"mean các giá:\", shop[\"price\"].mean())\nprint(\"giá bình quân:\", shop[\"rev\"].sum() / shop[\"qty\"].sum())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Nhóm có 3 dòng, một dòng score thiếu. size() và count() lần lượt cho?",
+          "options": [
+            {
+              "text": "3 và 3",
+              "detail": "count không đếm NaN.",
+              "correct": false
+            },
+            {
+              "text": "2 và 3",
+              "detail": "Ngược lại.",
+              "correct": false
+            },
+            {
+              "text": "3 và 2",
+              "detail": "size đếm dòng; count bỏ ô thiếu.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "size đếm dòng; count bỏ ô thiếu."
+        },
+        {
+          "question": "agg và transform khác nhau thế nào?",
+          "options": [
+            {
+              "text": "transform chỉ dùng cho cột chữ",
+              "detail": "transform dùng cho mọi phép tính theo nhóm.",
+              "correct": false
+            },
+            {
+              "text": "Giống nhau",
+              "detail": "Hình dạng kết quả khác nhau.",
+              "correct": false
+            },
+            {
+              "text": "agg một dòng mỗi nhóm; transform trả về đúng số dòng của bảng gốc",
+              "detail": "transform dùng để gắn chỉ số nhóm vào từng dòng (vd. tỷ trọng trong nhóm).",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "transform dùng để gắn chỉ số nhóm vào từng dòng (vd. tỷ trọng trong nhóm)."
+        },
+        {
+          "question": "Có dòng region bị thiếu. df.groupby(\"region\")[\"revenue\"].sum().sum() so với df[\"revenue\"].sum()?",
+          "options": [
+            {
+              "text": "Lớn hơn",
+              "detail": "groupby không nhân dòng.",
+              "correct": false
+            },
+            {
+              "text": "Luôn bằng nhau",
+              "detail": "Dòng khoá thiếu không thuộc nhóm nào nên bị bỏ.",
+              "correct": false
+            },
+            {
+              "text": "Nhỏ hơn — nhóm khoá thiếu bị bỏ (dropna=True mặc định)",
+              "detail": "Gom thành \"unknown\" hoặc dropna=False, rồi đối chiếu tổng.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Gom thành \"unknown\" hoặc dropna=False, rồi đối chiếu tổng."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao avg_price = revenue / qty của vùng mà không dùng mean(unit_price)?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi đơn có số lượng khác nhau: đơn 3 cái giá 20 đóng góp nhiều hơn đơn 1 cái giá 10. Tổng doanh thu chia tổng số lượng cân theo số lượng (17.5); mean các giá coi hai đơn như nhau (15). KPI phải nêu mẫu số — ở đây là tổng số sản phẩm đã bán."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: một đơn thiếu qty, một đơn thiếu region. Lắp bốn chỗ.",
+        "rule": "Thêm một đơn thiếu qty và một đơn thiếu region; kiểm orders, avg_price, share và đối chiếu tổng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "region.fillna(\"unknown\") → không nhóm nào bị bỏ."
+          },
+          {
+            "label": "Bước 2",
+            "text": "(\"order_id\", \"size\") → đếm mọi dòng đơn của vùng."
+          },
+          {
+            "label": "Bước 3",
+            "text": "revenue / qty theo vùng → giá bình quân có trọng số."
+          },
+          {
+            "label": "Bước 4",
+            "text": "revenue / revenue.sum() → tỷ trọng, cộng lại bằng 1."
+          },
+          {
+            "label": "Bước 5",
+            "text": "tổng các vùng = tổng nguồn → không mất dòng."
+          }
+        ]
+      },
+      "counter": {
+        "question": "south: (2 cái, 15), (qty thiếu, 15), (2 cái, 30). orders và avg_price của south?",
+        "options": [
+          "2 và 22.5",
+          "3 và 20.0",
+          "3 và 22.5"
+        ],
+        "correct": "3 và 22.5"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef region_kpi(df):\n    data = df.assign(\n        region={{slot1}},\n        revenue=df[\"qty\"] * df[\"unit_price\"],\n    )\n    out = data.groupby(\"region\").agg(\n        orders={{slot2}},\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    out[\"avg_price\"] = {{slot3}}\n    out[\"share\"] = {{slot4}}\n    lost = data[\"revenue\"].sum() - out[\"revenue\"].sum()\n    assert abs(lost) < 1e-9, \"Tổng theo vùng lệch tổng nguồn: có dòng bị mất khi groupby\"\n    return out\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "df[\"region\"].fillna(\"unknown\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "(\"order_id\", \"size\")"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "out[\"revenue\"] / out[\"qty\"]"
+          },
+          {
+            "n": 4,
+            "placeholder": "[Slot 4]",
+            "answer": "out[\"revenue\"] / out[\"revenue\"].sum()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "data.groupby(\"region\")[\"unit_price\"].mean()",
+            "slot": 3,
+            "trap": "Mean các giá — không cân theo số lượng."
+          },
+          {
+            "label": "out[\"revenue\"] / out[\"revenue\"].sum()",
+            "slot": 4
+          },
+          {
+            "label": "df[\"region\"].fillna(\"unknown\")",
+            "slot": 1
+          },
+          {
+            "label": "out[\"revenue\"] / out[\"qty\"]",
+            "slot": 3
+          },
+          {
+            "label": "(\"order_id\", \"size\")",
+            "slot": 2
+          },
+          {
+            "label": "(\"qty\", \"count\")",
+            "slot": 2,
+            "trap": "count bỏ đơn thiếu qty — đếm hụt đơn."
+          },
+          {
+            "label": "df[\"region\"]",
+            "slot": 1,
+            "trap": "Vùng thiếu bị groupby bỏ — tổng lệch tổng nguồn."
+          },
+          {
+            "label": "out[\"revenue\"] / len(out)",
+            "slot": 4,
+            "trap": "Mẫu số là số vùng, không phải tổng doanh thu."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Bảng đơn (order_id, region, qty, unit_price; region có thể thiếu, qty có thể thiếu). Viết region_kpi(df) trả DataFrame index là region (region thiếu gom thành \"unknown\"), đúng thứ tự cột: orders (số DÒNG đơn của vùng — kể cả đơn thiếu qty), qty (tổng), revenue (tổng qty*unit_price), avg_price = revenue / qty của vùng, share = revenue vùng / TỔNG revenue mọi vùng. Trước khi trả, kiểm tổng revenue các vùng khớp tổng revenue của bảng nguồn.\n\nThực hành: assign region đã gom thiếu và revenue; named aggregation với size/sum; avg_price và share là phép chia hai cột tổng; assert tổng khớp.",
+        "io": [
+          {
+            "label": "Vùng A: 10, 20; B: 40 (qty 1)",
+            "value": "revenue A 30, B 40; share A ≈ 0.4286"
+          },
+          {
+            "label": "north: (1, 10), (3, 20)",
+            "value": "avg_price north = 17.5"
+          },
+          {
+            "label": "Đơn thiếu region",
+            "value": "Vào nhóm \"unknown\"; tổng khớp tổng nguồn"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef region_kpi(df):\n    # Index là region; cột orders, qty, revenue, avg_price, share\n    pass\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\n        \"order_id\": [\"O1\", \"O2\", \"O3\"],\n        \"region\": [\"A\", \"A\", \"B\"],\n        \"qty\": [1, 1, 1],\n        \"unit_price\": [10, 20, 40],\n    })\n    print(region_kpi(orders))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef region_kpi(df):\n    data = df.assign(\n        region=df[\"region\"].fillna(\"unknown\"),\n        revenue=df[\"qty\"] * df[\"unit_price\"],\n    )\n    out = data.groupby(\"region\").agg(\n        orders=(\"order_id\", \"size\"),\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    out[\"avg_price\"] = out[\"revenue\"] / out[\"qty\"]\n    out[\"share\"] = out[\"revenue\"] / out[\"revenue\"].sum()\n    lost = data[\"revenue\"].sum() - out[\"revenue\"].sum()\n    assert abs(lost) < 1e-9, \"Tổng theo vùng lệch tổng nguồn: có dòng bị mất khi groupby\"\n    return out\n\n\nif __name__ == \"__main__\":\n    orders = pd.DataFrame({\n        \"order_id\": [\"O1\", \"O2\", \"O3\"],\n        \"region\": [\"A\", \"A\", \"B\"],\n        \"qty\": [1, 1, 1],\n        \"unit_price\": [10, 20, 40],\n    })\n    kpi = region_kpi(orders)\n    print(kpi)\n    print(\"Vùng A chiếm\", round(kpi.loc[\"A\", \"share\"], 4), \"tổng doanh thu\")\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "assign region đã gom thiếu và revenue; named aggregation với size/sum; avg_price và share là phép chia hai cột tổng; assert tổng khớp."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. data = df.assign(region=df[\"region\"].fillna(\"unknown\"), revenue=df[\"qty\"] * df[\"unit_price\"]).\n2. out = data.groupby(\"region\").agg(orders=(\"order_id\", \"size\"), qty=(\"qty\", \"sum\"), revenue=(\"revenue\", \"sum\")).\n3. out[\"avg_price\"] = out[\"revenue\"] / out[\"qty\"]; out[\"share\"] = out[\"revenue\"] / out[\"revenue\"].sum(); assert tổng khớp rồi return out."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    out = data.groupby(\"region\").agg(\n        orders=(\"order_id\", \"size\"),\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: A = 30, B = 40",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"1\", \"2\", \"3\"], \"region\": [\"A\", \"A\", \"B\"], \"qty\": [1, 1, 1], \"unit_price\": [10, 20, 40]}))[\"revenue\"].to_dict()",
+          "expect": "{'A': 30, 'B': 40}"
+        },
+        {
+          "name": "Đề mẫu: A chiếm 3/7 tổng",
+          "call": "round(float(region_kpi(pd.DataFrame({\"order_id\": [\"1\", \"2\", \"3\"], \"region\": [\"A\", \"A\", \"B\"], \"qty\": [1, 1, 1], \"unit_price\": [10, 20, 40]})).loc[\"A\", \"share\"]), 4)",
+          "expect": "0.4286"
+        },
+        {
+          "name": "Doanh thu theo vùng, vùng thiếu → \"unknown\"",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]}))[\"revenue\"].to_dict()",
+          "expect": "{'north': 70.0, 'south': 90.0, 'unknown': 5.0}"
+        },
+        {
+          "name": "orders đếm dòng (size), kể cả đơn thiếu qty",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]}))[\"orders\"].to_dict()",
+          "expect": "{'north': 2, 'south': 3, 'unknown': 1}"
+        },
+        {
+          "name": "avg_price = tổng revenue / tổng qty",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]}))[\"avg_price\"].round(2).to_dict()",
+          "expect": "{'north': 17.5, 'south': 22.5, 'unknown': 5.0}"
+        },
+        {
+          "name": "share có mẫu số là tổng doanh thu",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]}))[\"share\"].round(4).to_dict()",
+          "expect": "{'north': 0.4242, 'south': 0.5455, 'unknown': 0.0303}"
+        },
+        {
+          "name": "Tổng các vùng khớp tổng nguồn",
+          "call": "round(float(region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]}))[\"revenue\"].sum()), 6)",
+          "expect": "165.0"
+        },
+        {
+          "name": "Đúng thứ tự cột",
+          "call": "region_kpi(pd.DataFrame({\"order_id\": [\"C1\", \"C2\", \"C3\", \"C4\", \"C5\", \"C6\"], \"region\": [\"north\", \"north\", \"south\", \"south\", \"south\", None], \"qty\": [1, 3, 2, None, 2, 1], \"unit_price\": [10.0, 20.0, 15.0, 15.0, 30.0, 5.0]})).columns.tolist()",
+          "expect": "['orders', 'qty', 'revenue', 'avg_price', 'share']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "region_kpi(df)",
+          "does": "KPI theo vùng với mẫu số rõ ràng.",
+          "takes": "df: DataFrame order_id, region, qty, unit_price (region/qty có thể thiếu)",
+          "gives": "DataFrame index region; cột orders, qty, revenue, avg_price, share",
+          "effect": "Không sửa df; tổng lệch → AssertionError.",
+          "call": "region_kpi(df)[\"revenue\"].to_dict() → {\"A\": 30, \"B\": 40}"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    }
+  }
+}

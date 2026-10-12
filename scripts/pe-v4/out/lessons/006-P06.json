@@ -1,0 +1,345 @@
+{
+  "lesson_code": "P06",
+  "sort_order": 6,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P06 · Popen, communicate và timeout",
+  "subtitle": "Trung cấp · M1 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "P06 · Popen, communicate và timeout",
+    "subtitle": "Trung cấp · M1 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#P06",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P06"
+        ],
+        "title": "Popen, communicate và timeout",
+        "goal": "Điều khiển process con bằng Popen: gửi input, chờ có giới hạn, dọn dẹp khi quá giờ.",
+        "task": "Viết talk(code, data, limit): communicate có timeout; quá giờ thì kill rồi communicate lại.",
+        "predict": "TimeoutExpired có tự kill process con không?",
+        "code": "proc = subprocess.Popen([...], stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True)\ntry:\n    out, err = proc.communicate(data, timeout=limit)\nexcept subprocess.TimeoutExpired:\n    # kill() rồi communicate() lại",
+        "tests": [
+          "print(input().upper()) với \"hello\" → (\"ok\", \"HELLO↵\", 0)",
+          "In \"start\" rồi ngủ 10 s, limit 1 → (\"timeout\", \"start↵\", mã ≠ 0)"
+        ],
+        "reflect": "Vì sao sau kill() phải communicate() thêm một lần?"
+      },
+      "context": {
+        "title": "Điều khiển process con bằng Popen: gửi input, chờ có giới hạn và dọn dẹp khi quá giờ.",
+        "body": "Viết talk(code, data, limit=2): mở process con bằng subprocess.Popen([sys.executable, \"-c\", code]) với stdin, stdout, stderr đều là subprocess.PIPE và text=True; gửi data vào stdin và chờ bằng communicate(data, timeout=limit). Xong kịp thì trả (\"ok\", stdout, returncode). Quá giờ (TimeoutExpired) thì KHÔNG bỏ mặc con: kill() rồi communicate() thêm một lần để thu nốt phần đã in và thu hồi con; trả (\"timeout\", phần stdout thu được, returncode).",
+        "example": "talk(\"print(input().upper())\", \"hello\\n\") → (\"ok\", \"HELLO\\n\", 0). Con in \"start\" rồi ngủ 10 giây, limit = 1 → (\"timeout\", \"start\\n\", mã khác 0).",
+        "prereq": "P05",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "p.communicate(timeout=1) ném TimeoutExpired. Lúc đó process con thế nào?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Đã bị kill tự động",
+            "detail": "Đó là hành vi của run(timeout=...), không phải Popen.communicate.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Đã kết thúc bình thường",
+            "detail": "Nếu đã kết thúc thì communicate trả kết quả chứ không ném.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Vẫn đang chạy — phải tự kill() rồi communicate() lại",
+            "detail": "TimeoutExpired chỉ báo cha đã chờ hết giờ; nó không đụng vào con.",
+            "correct": true
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Bắt TimeoutExpired là xong việc\"",
+        "body": "Với Popen.communicate(timeout=…), TimeoutExpired không tự kill process: con vẫn chạy, vẫn giữ pipe và CPU; bỏ mặc nó là rò process. Phải kill() (hoặc terminate()) rồi gọi communicate() thêm một lần để thu phần output còn lại và thu hồi con — lúc đó returncode mới có giá trị."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Popen(args, ...) khởi động con rồi trả object NGAY — con chạy song song với cha. run() = Popen + communicate + chờ, gói sẵn."
+        },
+        {
+          "n": 2,
+          "body": "communicate(input, timeout) gửi input vào stdin, đóng stdin, đọc hết stdout/stderr tới khi con xong, trả (stdout, stderr). Luồng không đặt PIPE → None."
+        },
+        {
+          "n": 3,
+          "body": "poll() hỏi \"xong chưa?\" mà không chặn (None = còn chạy); wait() chặn tới khi xong; terminate()/kill() yêu cầu hệ điều hành dừng con."
+        },
+        {
+          "n": 4,
+          "body": "Bị kill thì returncode khác 0 nhưng tuỳ hệ điều hành: -9 trên Linux (Studio cũng vậy), 1 trên Windows."
+        },
+        {
+          "n": 5,
+          "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG giết con. Mẫu chuẩn trong tài liệu Python: kill() rồi communicate() lần nữa để thu nốt dữ liệu."
+        },
+        {
+          "n": 6,
+          "body": "run(timeout=…) thì tự kill và chờ con trước khi ném TimeoutExpired — Popen để bạn tự làm việc đó."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import subprocess\nimport sys\n\np = subprocess.Popen([sys.executable, \"-c\", \"print(input()[::-1])\"],\n                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, text=True)\nprint(\"Popen trả ngay, poll() =\", p.poll())\nout, err = p.communicate(\"hello\\n\", timeout=5)\nprint(repr(out), err, p.returncode)\n\nslow = subprocess.Popen([sys.executable, \"-c\", \"import time; time.sleep(10)\"])\ntry:\n    slow.communicate(timeout=0.5)\nexcept subprocess.TimeoutExpired:\n    slow.kill()\n    slow.communicate()\n    print(\"Quá giờ, đã kill; returncode =\", slow.returncode)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Popen() và run() khác nhau chính ở đâu?",
+          "options": [
+            {
+              "text": "Popen không chạy được Python",
+              "detail": "Cả hai nhận cùng kiểu args.",
+              "correct": false
+            },
+            {
+              "text": "run chạy song song, Popen chạy tuần tự",
+              "detail": "Ngược lại: Popen không chờ.",
+              "correct": false
+            },
+            {
+              "text": "run chờ xong rồi trả kết quả; Popen trả object ngay để bạn tự điều khiển (gửi input, poll, kill…)",
+              "detail": "run được xây trên Popen.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "run được xây trên Popen."
+        },
+        {
+          "question": "Ngay sau proc = Popen(...) (con đang chờ input), proc.poll() trả?",
+          "options": [
+            {
+              "text": "Chặn tới khi con xong",
+              "detail": "Đó là wait().",
+              "correct": false
+            },
+            {
+              "text": "None — con còn chạy",
+              "detail": "poll không chặn; None nghĩa là chưa kết thúc.",
+              "correct": true
+            },
+            {
+              "text": "0",
+              "detail": "0 chỉ có khi con đã kết thúc thành công.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "poll không chặn; None nghĩa là chưa kết thúc."
+        },
+        {
+          "question": "Muốn communicate trả stdout dạng str (không phải bytes) cần gì?",
+          "options": [
+            {
+              "text": "Không cần gì",
+              "detail": "Mặc định stdout không bị thu và pipe là bytes.",
+              "correct": false
+            },
+            {
+              "text": "stdout=subprocess.PIPE và text=True khi tạo Popen",
+              "detail": "Thiếu PIPE thì phần stdout là None; thiếu text=True thì là bytes.",
+              "correct": true
+            },
+            {
+              "text": "Gọi communicate(text=True)",
+              "detail": "communicate không có tham số text.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Thiếu PIPE thì phần stdout là None; thiếu text=True thì là bytes."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Sau TimeoutExpired, vì sao phải gọi communicate() THÊM một lần sau kill()?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "kill() chỉ yêu cầu hệ điều hành dừng con. communicate() lần hai đọc nốt dữ liệu còn trong pipe (vd. \"start\" con đã in trước khi bị giết) và chờ con thật sự kết thúc để thu hồi, nhờ đó returncode có giá trị và không còn process mồ côi. Trường hợp đặc biệt: con xong kịp thì không vào nhánh này."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp mẫu chuẩn \"timeout → kill → communicate\".",
+        "rule": "Thử con đọc nhiều dòng từ stdin, con in một dòng rồi ngủ lâu, và con ngủ ngắn hơn limit."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Popen(...) → con chạy, cha nhận proc ngay"
+          },
+          {
+            "label": "Bước 2",
+            "text": "communicate(data, timeout=limit) → gửi data, đọc tới khi con xong"
+          },
+          {
+            "label": "Bước 3",
+            "text": "quá limit → TimeoutExpired, con VẪN chạy"
+          },
+          {
+            "label": "Bước 4",
+            "text": "kill() rồi communicate() → thu nốt output, returncode có giá trị"
+          }
+        ]
+      },
+      "counter": {
+        "question": "talk(\"import sys; print(len(sys.stdin.read().split()))\", \"a b c\\n\") trả gì?",
+        "options": [
+          "(\"ok\", \"1\\n\", 0)",
+          "(\"ok\", \"3\\n\", 0)",
+          "(\"timeout\", \"\", 1)"
+        ],
+        "correct": "(\"ok\", \"3\\n\", 0)"
+      },
+      "scaffold": {
+        "template": "def talk(code, data, limit=2):\n    proc = subprocess.Popen([sys.executable, \"-c\", code],\n                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,\n                            stderr=subprocess.PIPE, text=True)\n    try:\n        out, err = {{slot1}}\n    except subprocess.TimeoutExpired:\n        {{slot2}}\n        out, err = {{slot3}}\n        return \"timeout\", out, proc.returncode\n    return \"ok\", out, proc.returncode\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "proc.communicate(data, timeout=limit)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "proc.kill()"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "proc.communicate()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "proc.communicate(data)",
+            "slot": 3,
+            "trap": "Không được gửi input lần hai sau khi đã bắt đầu giao tiếp (ValueError)."
+          },
+          {
+            "label": "proc.kill()",
+            "slot": 2
+          },
+          {
+            "label": "proc.communicate()",
+            "slot": 3
+          },
+          {
+            "label": "proc.wait(timeout=limit)",
+            "slot": 1,
+            "trap": "wait() không gửi data, không đọc pipe; nó trả exit code chứ không phải (out, err)."
+          },
+          {
+            "label": "pass",
+            "slot": 2,
+            "trap": "Con vẫn chạy — TimeoutExpired không tự kill."
+          },
+          {
+            "label": "proc.communicate(data, timeout=limit)",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết talk(code, data, limit=2): mở process con bằng subprocess.Popen([sys.executable, \"-c\", code]) với stdin, stdout, stderr đều là subprocess.PIPE và text=True; gửi data vào stdin và chờ bằng communicate(data, timeout=limit). Xong kịp thì trả (\"ok\", stdout, returncode). Quá giờ (TimeoutExpired) thì KHÔNG bỏ mặc con: kill() rồi communicate() thêm một lần để thu nốt phần đã in và thu hồi con; trả (\"timeout\", phần stdout thu được, returncode).\n\nThực hành: Popen với ba PIPE + text=True; communicate(data, timeout=limit) trong try; except TimeoutExpired: kill(), communicate() lần hai, trả \"timeout\".",
+        "io": [
+          {
+            "label": "talk(\"print(input().upper())\", \"hello\\n\")",
+            "value": "(\"ok\", \"HELLO\\n\", 0)"
+          },
+          {
+            "label": "Con in \"start\" rồi ngủ 10 giây, limit = 1",
+            "value": "(\"timeout\", \"start\\n\", mã khác 0)"
+          }
+        ]
+      },
+      "starterCode": "import subprocess\nimport sys\n\n\ndef talk(code, data, limit=2):\n    # Popen với stdin/stdout/stderr = PIPE và text=True;\n    # communicate(data, timeout=limit); quá giờ -> kill() rồi communicate() lại.\n    pass\n\n\nif __name__ == \"__main__\":\n    print(talk(\"print(input().upper())\", \"hello\\n\"))\n",
+      "solutionCode": "import subprocess\nimport sys\n\n\ndef talk(code, data, limit=2):\n    proc = subprocess.Popen([sys.executable, \"-c\", code],\n                            stdin=subprocess.PIPE, stdout=subprocess.PIPE,\n                            stderr=subprocess.PIPE, text=True)\n    try:\n        out, err = proc.communicate(data, timeout=limit)\n    except subprocess.TimeoutExpired:\n        proc.kill()\n        out, err = proc.communicate()\n        return \"timeout\", out, proc.returncode\n    return \"ok\", out, proc.returncode\n\n\nif __name__ == \"__main__\":\n    print(talk(\"print(input().upper())\", \"hello\\n\"))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Popen với ba PIPE + text=True; communicate(data, timeout=limit) trong try; except TimeoutExpired: kill(), communicate() lần hai, trả \"timeout\"."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. proc = subprocess.Popen([sys.executable, \"-c\", code], stdin=PIPE, stdout=PIPE, stderr=PIPE, text=True).\n2. try: out, err = proc.communicate(data, timeout=limit).\n3. except subprocess.TimeoutExpired: proc.kill(); out, err = proc.communicate(); return \"timeout\", out, proc.returncode.\n4. Xong kịp: return \"ok\", out, proc.returncode."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "    try:\n        out, err = proc.communicate(data, timeout=limit)\n    except subprocess.TimeoutExpired:\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Gửi stdin, nhận stdout",
+          "call": "talk(\"print(input().upper())\", \"hello\\n\")",
+          "expect": "('ok', 'HELLO\\n', 0)"
+        },
+        {
+          "name": "Con đọc nhiều dòng stdin",
+          "call": "talk(\"import sys; print(sum(int(x) for x in sys.stdin))\", \"1\\n2\\n39\\n\")",
+          "expect": "('ok', '42\\n', 0)"
+        },
+        {
+          "name": "Trả đúng exit code của con",
+          "call": "talk(\"import sys; print('bye'); sys.exit(3)\", \"\")",
+          "expect": "('ok', 'bye\\n', 3)"
+        },
+        {
+          "name": "Quá giờ → \"timeout\"",
+          "call": "talk('import time; time.sleep(10)', \"\", 1)[0]",
+          "expect": "'timeout'"
+        },
+        {
+          "name": "Thu nốt phần con đã in trước khi bị kill",
+          "call": "talk(\"import time; print('start', flush=True); time.sleep(10)\", \"\", 1)[:2]",
+          "expect": "('timeout', 'start\\n')"
+        },
+        {
+          "name": "Sau kill, con đã kết thúc (returncode khác None và khác 0)",
+          "call": "(lambda rc: rc is not None and rc != 0)(talk('import time; time.sleep(10)', \"\", 1)[2])",
+          "expect": "True"
+        },
+        {
+          "name": "Ngủ ngắn hơn limit thì vẫn \"ok\"",
+          "call": "talk(\"import time; time.sleep(1); print('done')\", \"\", 3)",
+          "expect": "('ok', 'done\\n', 0)"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "talk(code, data, limit=2)",
+          "does": "Gửi data cho process con, chờ có giới hạn, dọn dẹp khi quá giờ.",
+          "takes": "code, data: str; limit: giây",
+          "gives": "(\"ok\" | \"timeout\", stdout: str, returncode: int)",
+          "effect": "Quá giờ: kill() rồi communicate() lần hai — không để con chạy tiếp.",
+          "call": "talk(\"print(input().upper())\", \"hello\\n\") → (\"ok\", \"HELLO\\n\", 0)"
+        }
+      ],
+      "env": "Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG subprocess: lệnh [sys.executable, \"-c\", code] hoặc [sys.executable, \"ten_file.py\", ...] chạy chương trình con trong một vùng nhớ riêng, có stdin/stdout/stderr riêng, returncode lấy từ sys.exit()/ngoại lệ, và time.sleep() của con chỉ đẩy một đồng hồ ảo (timeout vẫn được tính đúng). Lệnh shell khác (ls, dir, ping…) không chạy được ở đây. Hãy chạy lại file trên máy (Windows/Linux) để thấy process thật."
+    }
+  }
+}

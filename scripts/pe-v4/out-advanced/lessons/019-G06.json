@@ -1,0 +1,420 @@
+{
+  "lesson_code": "G06",
+  "sort_order": 19,
+  "module": "M3 · GUI Tkinter và dự án",
+  "title": "G06 · Event loop và worker nền",
+  "subtitle": "Nâng cao · M3 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "G06 · Event loop và worker nền",
+    "subtitle": "Nâng cao · M3 · 40 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#G06",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M3",
+          "BÀI TẬP NÂNG CAO",
+          "G06"
+        ],
+        "title": "Event loop và worker nền",
+        "goal": "Giữ giao diện phản hồi: việc dài ở worker, kết quả về qua queue + after().",
+        "task": "start_task start Thread (không join); poll_result đọc queue bằng get_nowait, rỗng thì after() hẹn lại.",
+        "predict": "Trong mô hình này ai cập nhật Label?",
+        "code": "def worker(n, q):\n    q.put(slow_total(n))\ndef poll_result():\n    # get_nowait; Empty → root.after(100, poll_result)\ndef start_task():\n    # Thread(...).start(); root.after(100, poll_result)",
+        "tests": [
+          "n = 10 → \"Đang tính...\" rồi \"Tổng = 55\"",
+          "Bấm Tính → 1 thread, không join trong callback"
+        ],
+        "reflect": "Vì sao worker không được tự gọi status.config(...)?"
+      },
+      "context": {
+        "title": "Giữ giao diện phản hồi: việc dài chạy ở worker thread, kết quả về qua queue, thread GUI đọc queue bằng after().",
+        "body": "Hoàn thành ứng dụng \"Tác vụ nền\" (slow_total(n) cộng 1..n đã có): worker(n, q) chạy ở thread nền, tính slow_total(n) rồi q.put(kết quả) — KHÔNG đụng widget.\n\nstart_task(): n_var không phải số nguyên không âm → status \"n phải là số nguyên không âm\"; hợp lệ → status \"Đang tính...\", start một Thread(target=worker, args=(n, q)) (không join) rồi root.after(100, poll_result).\n\npoll_result(): lấy kết quả bằng q.get_nowait(); queue rỗng (Empty) → root.after(100, poll_result) hẹn lại; có kết quả → status \"Tổng = <kết quả>\".",
+        "example": "n = 10, bấm Tính → \"Đang tính...\" → event loop chạy poll_result → \"Tổng = 55\".",
+        "prereq": "G05",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Trong mô hình worker + queue + after(), ai cập nhật Label?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Queue tự cập nhật Label",
+            "detail": "Queue chỉ chứa dữ liệu.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Thread GUI, khi poll_result được event loop gọi qua after()",
+            "detail": "Worker chỉ put kết quả vào queue.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Worker thread, ngay khi tính xong",
+            "detail": "Gọi widget từ thread khác là không an toàn.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Cho worker gọi status.config(...) luôn cho nhanh\"",
+        "body": "Tkinter chỉ an toàn khi widget được gọi từ thread chạy mainloop. Gọi từ worker có lúc chạy, có lúc lỗi \"main thread is not in main loop\" hoặc treo — tuỳ máy, rất khó tái hiện. Worker put vào queue, thread GUI poll bằng after(). Cũng đừng \"chờ cho chắc\" bằng join() trong callback: cửa sổ đứng tới khi worker xong, mất hết lợi ích của thread."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Callback chạy TRÊN thread GUI: callback dài (vòng lặp nặng, sleep, chờ mạng) làm event loop đứng — cửa sổ treo."
+        },
+        {
+          "n": 2,
+          "body": "Việc dài giao cho worker thread; worker chỉ đưa kết quả vào queue.Queue (an toàn giữa các thread), không đụng widget."
+        },
+        {
+          "n": 3,
+          "body": "Thread GUI đọc queue bằng get_nowait() trong hàm được after() hẹn giờ: rỗng thì Empty → hẹn lại; có thì cập nhật widget."
+        },
+        {
+          "n": 4,
+          "body": "Không join() worker trong callback: join chặn thread GUI y như làm việc dài trực tiếp."
+        },
+        {
+          "n": 5,
+          "body": "Tkinter không an toàn khi nhiều thread cùng gọi widget: chỉ thread chạy mainloop được config/insert vào widget."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import threading\nimport tkinter as tk\nfrom queue import Queue, Empty\n\nq = Queue()\n\n\ndef work():\n    q.put({\"status\": \"done\", \"result\": 5})      # worker chỉ gửi thông điệp\n\n\nroot = tk.Tk()\nlabel = tk.Label(root, text=\"Đang chờ...\")\nlabel.pack()\n\n\ndef poll_result():\n    try:\n        message = q.get_nowait()\n    except Empty:\n        root.after(100, poll_result)             # chưa có: hẹn lượt sau\n        return\n    label.config(text=f\"Kết quả: {message['result']}\")\n    print(\"Thread GUI cập nhật Label:\", label.cget(\"text\"))\n\n\nthreading.Thread(target=work).start()\nroot.after(100, poll_result)\nroot.mainloop()",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Trong mô hình này ai cập nhật Label?",
+          "options": [
+            {
+              "text": "Worker thread",
+              "detail": "Worker chỉ gửi thông điệp vào queue.",
+              "correct": false
+            },
+            {
+              "text": "Hệ điều hành",
+              "detail": "Tkinter vẽ lại widget khi thread GUI đổi cấu hình.",
+              "correct": false
+            },
+            {
+              "text": "Thread GUI khi callback poll_result chạy qua event loop",
+              "detail": "after() hẹn poll_result; event loop gọi nó trên thread GUI.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "after() hẹn poll_result; event loop gọi nó trên thread GUI."
+        },
+        {
+          "question": "Vì sao poll_result dùng q.get_nowait() chứ không dùng q.get()?",
+          "options": [
+            {
+              "text": "get() không có trong queue.Queue",
+              "detail": "get() có, nhưng chặn.",
+              "correct": false
+            },
+            {
+              "text": "get() chặn khi queue rỗng — chặn thread GUI là cửa sổ treo",
+              "detail": "get_nowait() báo Empty ngay để hẹn lại.",
+              "correct": true
+            },
+            {
+              "text": "get_nowait() nhanh hơn khi queue có dữ liệu",
+              "detail": "Khác biệt là hành vi khi rỗng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "get_nowait() báo Empty ngay để hẹn lại."
+        },
+        {
+          "question": "Gọi worker_thread.join() ngay trong start_task thì…",
+          "options": [
+            {
+              "text": "Worker chạy nhanh hơn",
+              "detail": "join không tăng tốc worker.",
+              "correct": false
+            },
+            {
+              "text": "Cửa sổ đứng tới khi worker xong — như làm việc dài trong callback",
+              "detail": "join chặn nơi gọi, ở đây là thread GUI.",
+              "correct": true
+            },
+            {
+              "text": "Không ảnh hưởng gì",
+              "detail": "join chặn thread GUI.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "join chặn nơi gọi, ở đây là thread GUI."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Mô tả đường đi của kết quả từ lúc bấm \"Tính\" tới lúc Label đổi chữ, và ai làm bước nào.",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Thread GUI chạy start_task: kiểm n, đổi status \"Đang tính...\", start worker rồi hẹn poll_result bằng after(). Worker tính slow_total(n) rồi put kết quả vào queue. Event loop gọi poll_result trên thread GUI: queue rỗng thì hẹn lại, có kết quả thì status.config. Trường hợp đặc biệt: n = \"abc\" thì không tạo thread nào."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: worker đếm số chẵn rồi gửi về qua queue box. Lắp ba chỗ.",
+        "rule": "Bộ chấm bấm Tính với n khác (10, 100, \"abc\"), đọc nhãn ngay sau khi bấm, rồi chạy hàng đợi after() thay event loop; còn gọi poll_result() khi queue rỗng để xem nó có tự hẹn lại không."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Bấm Tính → start_task() start worker, hẹn poll_result"
+          },
+          {
+            "label": "Bước 2",
+            "text": "Worker → slow_total(n) rồi q.put(kết quả)"
+          },
+          {
+            "label": "Bước 3",
+            "text": "poll_result() rỗng → after(100, poll_result) hẹn lại"
+          },
+          {
+            "label": "Bước 4",
+            "text": "poll_result() có kết quả → status.config trên thread GUI"
+          }
+        ]
+      },
+      "counter": {
+        "question": "n = 100, bấm Tính rồi event loop chạy poll_result — status hiện gì?",
+        "options": [
+          "Tổng = 100",
+          "Đang tính...",
+          "Tổng = 5050"
+        ],
+        "correct": "Tổng = 5050"
+      },
+      "scaffold": {
+        "template": "import threading\nimport tkinter as tk\nfrom queue import Queue, Empty\n\nroot = tk.Tk()\nbox = Queue()\nlabel = tk.Label(root, text=\"...\")\nlabel.pack()\n\n\ndef count_even(limit):\n    box.put(sum(1 for k in range(limit) if k % 2 == 0))\n\n\ndef check_box():\n    try:\n        value = {{slot1}}\n    except Empty:\n        {{slot2}}\n        return\n    label.config(text=f\"Có {value} số chẵn\")\n\n\ndef start():\n    {{slot3}}\n    root.after(100, check_box)\n\n\ntk.Button(root, text=\"Đếm\", command=start).pack()\nroot.mainloop()\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "box.get_nowait()"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "root.after(100, check_box)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "threading.Thread(target=count_even, args=(1000,)).start()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "box.get_nowait()",
+            "slot": 1
+          },
+          {
+            "label": "box.get()",
+            "slot": 1,
+            "trap": "Chặn thread GUI tới khi có dữ liệu — cửa sổ đứng hình."
+          },
+          {
+            "label": "pass",
+            "slot": 2,
+            "trap": "Không hẹn lượt kiểm tra sau: kết quả đến muộn sẽ không bao giờ được hiện."
+          },
+          {
+            "label": "threading.Thread(target=count_even, args=(1000,)).start()",
+            "slot": 3
+          },
+          {
+            "label": "root.after(100, check_box)",
+            "slot": 2
+          },
+          {
+            "label": "count_even(1000)",
+            "slot": 3,
+            "trap": "Chạy việc dài ngay trong callback; giao diện đứng tới khi xong."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Hoàn thành ứng dụng \"Tác vụ nền\" (slow_total(n) cộng 1..n đã có): worker(n, q) chạy ở thread nền, tính slow_total(n) rồi q.put(kết quả) — KHÔNG đụng widget.\n\nstart_task(): n_var không phải số nguyên không âm → status \"n phải là số nguyên không âm\"; hợp lệ → status \"Đang tính...\", start một Thread(target=worker, args=(n, q)) (không join) rồi root.after(100, poll_result).\n\npoll_result(): lấy kết quả bằng q.get_nowait(); queue rỗng (Empty) → root.after(100, poll_result) hẹn lại; có kết quả → status \"Tổng = <kết quả>\".\n\nThực hành: Callback chỉ làm việc ngắn: kiểm n, đổi chữ, start thread, hẹn after. Worker chỉ put vào queue. Chỉ poll_result (thread GUI) đổi widget.",
+        "io": [
+          {
+            "label": "n = 10, bấm Tính",
+            "value": "Ngay sau khi bấm: \"Đang tính...\"; sau khi event loop chạy: \"Tổng = 55\""
+          },
+          {
+            "label": "n = \"abc\"",
+            "value": "\"n phải là số nguyên không âm\"; không tạo thread"
+          }
+        ]
+      },
+      "starterCode": "import threading\nimport tkinter as tk\nfrom queue import Queue, Empty\n\n\ndef slow_total(n):\n    total = 0\n    for number in range(1, n + 1):\n        total += number\n    return total\n\n\ndef worker(n, q):\n    # Chạy ở thread nền: tính slow_total(n) rồi gửi kết quả qua queue q. Không đụng widget.\n    pass\n\n\nroot = tk.Tk()\nroot.title(\"Tác vụ nền\")\nq = Queue()\nn_var = tk.StringVar(value=\"1000000\")\ntk.Entry(root, textvariable=n_var).pack()\nstatus = tk.Label(root, text=\"Sẵn sàng\")\nstatus.pack()\n\n\ndef poll_result():\n    # Chạy ở thread GUI (qua after): lấy kết quả bằng q.get_nowait();\n    # queue rỗng -> hẹn lại root.after(100, poll_result); có kết quả -> status \"Tổng = ...\".\n    pass\n\n\ndef start_task():\n    # n không phải số nguyên không âm -> status \"n phải là số nguyên không âm\".\n    # Hợp lệ -> status \"Đang tính...\", start Thread chạy worker (KHÔNG join), rồi hẹn poll_result.\n    pass\n\n\ntk.Button(root, text=\"Tính\", command=start_task).pack()\n\nroot.mainloop()\n",
+      "solutionCode": "import threading\nimport tkinter as tk\nfrom queue import Queue, Empty\n\n\ndef slow_total(n):\n    total = 0\n    for number in range(1, n + 1):\n        total += number\n    return total\n\n\ndef worker(n, q):\n    q.put(slow_total(n))\n\n\nroot = tk.Tk()\nroot.title(\"Tác vụ nền\")\nq = Queue()\nn_var = tk.StringVar(value=\"1000000\")\ntk.Entry(root, textvariable=n_var).pack()\nstatus = tk.Label(root, text=\"Sẵn sàng\")\nstatus.pack()\n\n\ndef poll_result():\n    try:\n        total = q.get_nowait()\n    except Empty:\n        root.after(100, poll_result)\n        return\n    status.config(text=f\"Tổng = {total}\")\n\n\ndef start_task():\n    raw = n_var.get().strip()\n    if not raw.isdigit():\n        status.config(text=\"n phải là số nguyên không âm\")\n        return\n    status.config(text=\"Đang tính...\")\n    threading.Thread(target=worker, args=(int(raw), q), daemon=True).start()\n    root.after(100, poll_result)\n\n\ntk.Button(root, text=\"Tính\", command=start_task).pack()\n\nroot.mainloop()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Callback chỉ làm việc ngắn: kiểm n, đổi chữ, start thread, hẹn after. Worker chỉ put vào queue. Chỉ poll_result (thread GUI) đổi widget."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. def worker(n, q): q.put(slow_total(n))\n2. start_task: raw = n_var.get().strip(); not raw.isdigit() → báo lỗi, return; status \"Đang tính...\"; Thread(...).start(); root.after(100, poll_result).\n3. poll_result: try total = q.get_nowait() except Empty: root.after(100, poll_result); return — rồi status.config(text=f\"Tổng = {total}\")."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def poll_result():\n    try:\n        total = q.get_nowait()\n    except Empty:\n        root.after(100, poll_result)\n        return\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Chưa bấm: status \"Sẵn sàng\"",
+          "call": "status.cget('text')",
+          "expect": "'Sẵn sàng'"
+        },
+        {
+          "name": "slow_total(10) = 55",
+          "call": "slow_total(10)",
+          "expect": "55"
+        },
+        {
+          "name": "worker đưa KẾT QUẢ vào queue",
+          "call": "(lambda box: (worker(4, box), box.get_nowait())[1])(__import__('queue').Queue())",
+          "expect": "10"
+        },
+        {
+          "name": "Bấm Tính: một thread được start, KHÔNG join trong callback",
+          "call": "(lambda r: (r.thread_count, r.threads[0].started, r.threads[0].joined, _studio.tk.run_after(n=5))[:3])((n_var.set('10'), _studio.call(_studio.tk.find(type='Button', text='Tính').invoke))[1])",
+          "expect": "(1, True, False)"
+        },
+        {
+          "name": "n = 10: \"Đang tính...\" rồi \"Tổng = 55\"",
+          "call": "(lambda r: (r[2], r[4]))((n_var.set('10'), _studio.tk.find(type='Button', text='Tính').invoke(), status.cget('text'), _studio.tk.run_after(n=5), status.cget('text')))",
+          "expect": "('Đang tính...', 'Tổng = 55')"
+        },
+        {
+          "name": "n = 100: \"Tổng = 5050\"",
+          "call": "(n_var.set('100'), _studio.tk.find(type='Button', text='Tính').invoke(), status.cget('text'), _studio.tk.run_after(n=5), status.cget('text'))[4]",
+          "expect": "'Tổng = 5050'"
+        },
+        {
+          "name": "n = \"abc\": báo lỗi, không tạo thread",
+          "call": "(lambda r: (r.thread_count, status.cget('text')))((n_var.set('abc'), _studio.call(_studio.tk.find(type='Button', text='Tính').invoke))[1])",
+          "expect": "(0, 'n phải là số nguyên không âm')"
+        },
+        {
+          "name": "Queue rỗng → poll_result tự hẹn lại, nhận kết quả ở lượt sau",
+          "call": "(poll_result(), q.put(42), _studio.tk.run_after(n=5), status.cget('text'))[-1]",
+          "expect": "'Tổng = 42'"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "worker(n, q)",
+          "does": "Việc nền: tính tổng và gửi về.",
+          "takes": "n: int ≥ 0; q: Queue",
+          "gives": "None",
+          "effect": "q.put(slow_total(n)); không đọc/ghi widget.",
+          "call": "worker(4, q) → q nhận 10"
+        },
+        {
+          "sig": "poll_result()",
+          "does": "Thread GUI kiểm queue.",
+          "takes": "không",
+          "gives": "None",
+          "effect": "Có kết quả → status \"Tổng = ...\"; rỗng → root.after(100, poll_result).",
+          "call": "q rỗng → hẹn lại; q có 42 → status \"Tổng = 42\""
+        }
+      ],
+      "env": "Trình duyệt không mở được cửa sổ Tkinter, nên Studio dùng một tkinter MÔ PHỎNG: widget, biến (StringVar…), pack/grid/place, command=, bind và after() được ghi lại để chấm; mainloop() trả về ngay sau khi chạy hết các lệnh after() đang chờ. Không có màn hình nên bạn không thấy cửa sổ — bộ chấm \"bấm nút\" thay bạn. Chạy file trên máy (python ten_file.py) để thấy giao diện thật. Thread cũng là mô phỏng: worker chạy xong ngay khi start(), còn after() chỉ xếp lời gọi vào hàng đợi — bộ chấm chạy hàng đợi đó thay cho event loop. Trên máy thật worker chạy song song và cửa sổ vẫn bấm, kéo được trong lúc chờ; hãy thử với n lớn để thấy khác biệt."
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Bấm Tính",
+              "right": "start_task() start worker, hẹn poll_result"
+            },
+            {
+              "left": "Worker",
+              "right": "slow_total(n) rồi q.put(kết quả)"
+            },
+            {
+              "left": "poll_result() rỗng",
+              "right": "after(100, poll_result) hẹn lại"
+            },
+            {
+              "left": "poll_result() có kết quả",
+              "right": "status.config trên thread GUI"
+            }
+          ],
+          "rightOrder": [
+            3,
+            2,
+            1,
+            0
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\ndef start_task():\n    raw = n_var.get().strip()\n    if not raw.isdigit():\n        status.config(text=\"n phải là số nguyên không âm\")\n        return\n    status.config(text=\"Đang tính...\")\n    worker(int(raw), q)\n    root.after(100, poll_result)\n\n\ntk.Button(root, text=\"Tính\", command=start_task).pack()\n\nroot.mainloop()",
+          "firstLine": 34,
+          "line": 41,
+          "lines": [
+            41
+          ],
+          "label": "tính ngay trong callback, không thread",
+          "fix": "    threading.Thread(target=worker, args=(int(raw), q), daemon=True).start()"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import threading\nimport tkinter as tk\nfrom queue import Queue, Empty\n\n\ndef slow_total(n):\n    total = 0\n    for number in range(1, n + 1):\n        total += number\n    return total\n\n\ndef worker(n, q):\n    q.put(slow_total(n))\n\n\nroot = tk.Tk()\nroot.title(\"Tác vụ nền\")\nq = Queue()\nn_var = tk.StringVar(value=\"1000000\")\ntk.Entry(root, textvariable=n_var).pack()\nstatus = tk.Label(root, text=\"Sẵn sàng\")\nstatus.pack()\n\n\ndef poll_result():\n    try:\n        total = q.get_nowait()\n    except Empty:\n        root.after(100, poll_result)\n        return\n    status.config(text=f\"Tổng = {total}\")\n\n\ndef start_task():\n    raw = n_var.get().strip()\n    if not raw.isdigit():\n        status.config(text=\"n phải là số nguyên không âm\")\n        return\n    status.config(text=\"Đang tính...\")\n    task = threading.Thread(target=worker, args=(int(raw), q), daemon=True)\n    task.start()\n    task.join()\n    root.after(100, poll_result)\n\n\ntk.Button(root, text=\"Tính\", command=start_task).pack()\n\nroot.mainloop()\n",
+          "label": "join() worker trong callback"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Mô tả đường đi của kết quả từ lúc bấm \"Tính\" tới lúc Label đổi chữ, và ai làm bước nào."
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

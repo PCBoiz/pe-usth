@@ -1,0 +1,433 @@
+{
+  "lesson_code": "PD07",
+  "sort_order": 38,
+  "module": "M6 · pandas",
+  "title": "PD07 · Long, wide, pivot và melt",
+  "subtitle": "Nâng cao · M6 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "PD07 · Long, wide, pivot và melt",
+    "subtitle": "Nâng cao · M6 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#PD07",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M6",
+          "BÀI TẬP NÂNG CAO",
+          "PD07"
+        ],
+        "title": "Long, wide, pivot và melt",
+        "goal": "Đổi long ↔ wide mà không đổi tổng.",
+        "task": "Viết to_long(wide) bằng melt và to_wide(long) bằng pivot_table(aggfunc=\"sum\").",
+        "predict": "Hai dòng cùng (vùng, tháng): pivot hay pivot_table?",
+        "code": "def to_long(wide):\n    return wide.melt(...)\n\ndef to_wide(long):\n    pass  # pivot_table, aggfunc ghi rõ",
+        "tests": [
+          "id 1: A = 5, B = 8 → melt → pivot lại A = 5, B = 8",
+          "Trùng (vùng, tháng) 30 + 20 → ô = 50"
+        ],
+        "reflect": "Khi nào fill_value=0 là hợp lý?"
+      },
+      "context": {
+        "title": "Đổi wide ↔ long bằng melt và pivot_table có aggfunc rõ ràng, không làm đổi tổng.",
+        "body": "Viết to_long(wide): wide có cột region và mỗi tháng một cột (\"2026-01\", \"2026-02\"…); trả bảng long ba cột region, month, revenue (melt với id_vars=\"region\"). Viết to_wide(long): long có thể có NHIỀU dòng cùng (region, month) — trả bảng wide index region, cột là month, ô là TỔNG revenue (pivot_table với aggfunc=\"sum\"); ô không có dữ liệu để NaN, KHÔNG điền 0.",
+        "example": "id 1 với A = 5, B = 8 → melt ra 2 dòng → pivot lại vẫn A = 5, B = 8. Hai dòng (hanoi, 2026-01) 30 và 20 → ô = 50.",
+        "prereq": "PD06",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Bảng long có hai dòng (hanoi, 2026-01) doanh thu 30 và 20. Ô (hanoi, 2026-01) của bảng dưới bằng bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "ValueError vì trùng khoá",
+            "detail": "Đó là pivot; pivot_table thì gộp.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "25 — không ghi aggfunc thì mặc định là mean",
+            "detail": "Ghi aggfunc=\"sum\" để được 50.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "50",
+            "detail": "Chỉ khi aggfunc=\"sum\".",
+            "correct": false
+          }
+        ],
+        "code": "long.pivot_table(index=\"region\", columns=\"month\", values=\"revenue\")"
+      },
+      "misconception": {
+        "title": "\"pivot và pivot_table là một, cái nào cũng được\"",
+        "body": "pivot chỉ XẾP lại, không gộp: gặp (vùng, tháng) trùng là ValueError. pivot_table GỘP, nhưng mặc định bằng mean — tổng doanh thu lặng lẽ thành trung bình. Biết grain của dữ liệu trước, rồi chọn pivot (khoá duy nhất) hoặc pivot_table với aggfunc ghi rõ."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Long: mỗi dòng MỘT quan sát (vùng, tháng, doanh thu). Wide: mỗi tháng một cột. Cùng dữ liệu, hai hình dạng; groupby và vẽ theo nhóm thường cần long, bảng báo cáo thường là wide."
+        },
+        {
+          "n": 2,
+          "body": "melt(id_vars=..., var_name=..., value_name=...) đổi wide → long: cột id giữ nguyên, các cột còn lại thành cặp (tên cột, giá trị). n hàng × k cột tháng → n·k dòng."
+        },
+        {
+          "n": 3,
+          "body": "pivot(index, columns, values) đổi long → wide nhưng ĐÒI mỗi cặp (index, columns) duy nhất; trùng thì ValueError \"Index contains duplicate entries\"."
+        },
+        {
+          "n": 4,
+          "body": "pivot_table gộp các dòng trùng bằng aggfunc. Mặc định aggfunc là mean — muốn tổng doanh thu phải ghi aggfunc=\"sum\"."
+        },
+        {
+          "n": 5,
+          "body": "fill_value=0 chỉ đúng khi ô trống thật sự nghĩa là \"không có giao dịch\". Chưa biết là không bán hay chưa thu thập thì để NaN. Đổi hình dạng không được làm đổi tổng: so sum trước và sau."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import pandas as pd\n\nwide = pd.DataFrame({\"sid\": [\"S1\", \"S2\"], \"math\": [7, 9], \"art\": [8, 6]})\nlong = wide.melt(id_vars=\"sid\", var_name=\"subject\", value_name=\"mark\")\nprint(long)\nprint(len(wide), \"->\", len(long), \"dòng; tổng\", long[\"mark\"].sum())\n\nback = long.pivot(index=\"sid\", columns=\"subject\", values=\"mark\")\nprint(back.loc[\"S2\", \"math\"])\n\nlog = pd.DataFrame({\"sid\": [\"S1\", \"S1\"], \"subject\": [\"math\", \"math\"], \"mark\": [6, 8]})\nprint(log.pivot_table(index=\"sid\", columns=\"subject\", values=\"mark\", aggfunc=\"max\"))\nprint(log.pivot_table(index=\"sid\", columns=\"subject\", values=\"mark\"))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "wide có 3 vùng và 4 cột tháng. melt(id_vars=\"region\") ra mấy dòng?",
+          "options": [
+            {
+              "text": "7",
+              "detail": "melt nhân, không cộng.",
+              "correct": false
+            },
+            {
+              "text": "4",
+              "detail": "Mỗi vùng cho 4 dòng, có 3 vùng.",
+              "correct": false
+            },
+            {
+              "text": "12",
+              "detail": "3 vùng × 4 tháng.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "3 vùng × 4 tháng."
+        },
+        {
+          "question": "Khi nào fill_value=0 trong pivot_table là hợp lý?",
+          "options": [
+            {
+              "text": "Luôn luôn, để bảng đẹp",
+              "detail": "0 là một giá trị: kéo lệch trung bình và che mất dữ liệu thiếu.",
+              "correct": false
+            },
+            {
+              "text": "Khi ô trống chắc chắn nghĩa là \"không có giao dịch\"",
+              "detail": "Chưa chắc thì để NaN.",
+              "correct": true
+            },
+            {
+              "text": "Không bao giờ",
+              "detail": "Có lúc 0 đúng nghĩa: đã ghi nhận đầy đủ và không bán.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chưa chắc thì để NaN."
+        },
+        {
+          "question": "melt(var_name=\"month\", value_name=\"revenue\") quên id_vars=\"region\" thì…",
+          "options": [
+            {
+              "text": "Cột region cũng bị biến thành giá trị trong cột month",
+              "detail": "id_vars giữ cột định danh nguyên vẹn.",
+              "correct": true
+            },
+            {
+              "text": "pandas tự giữ region",
+              "detail": "Không có id_vars thì mọi cột đều bị melt.",
+              "correct": false
+            },
+            {
+              "text": "Lỗi",
+              "detail": "Không lỗi — chỉ ra bảng sai.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "id_vars giữ cột định danh nguyên vẹn."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao to_wide dùng pivot_table(aggfunc=\"sum\") mà không dùng pivot?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Dữ liệu long có thể có nhiều dòng cùng (vùng, tháng) vì mỗi dòng là một đơn. pivot đòi cặp khoá duy nhất nên báo ValueError; pivot_table gộp các dòng đó, và phải ghi aggfunc=\"sum\" vì mặc định là mean. Ô không có đơn để NaN vì chưa biết là không bán hay thiếu dữ liệu."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Dữ liệu mới: long có hai dòng cùng (hanoi, 2026-01) và vài ô không có dữ liệu. Lắp ba chỗ.",
+        "rule": "Thêm dòng trùng (vùng, tháng) và một tháng chỉ một vùng có dữ liệu; kiểm ô gộp, ô NaN và tổng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "melt(id_vars=\"region\") → mỗi (vùng, tháng) một dòng."
+          },
+          {
+            "label": "Bước 2",
+            "text": "var_name / value_name → đặt tên cột month, revenue."
+          },
+          {
+            "label": "Bước 3",
+            "text": "pivot_table(..., aggfunc=\"sum\") → gộp đơn trùng ô."
+          },
+          {
+            "label": "Bước 4",
+            "text": "Không fill_value → ô chưa có dữ liệu là NaN."
+          },
+          {
+            "label": "Bước 5",
+            "text": "sum() trước = sum() sau → hình dạng đổi, tổng giữ nguyên."
+          }
+        ]
+      },
+      "counter": {
+        "question": "long có (hue, 2026-03) = 25 và (hue, 2026-03) = 5. to_wide(long).loc[\"hue\", \"2026-03\"] = ?",
+        "options": [
+          "30",
+          "ValueError",
+          "15"
+        ],
+        "correct": "30"
+      },
+      "scaffold": {
+        "template": "import pandas as pd\n\n\ndef to_long(wide):\n    return wide.melt({{slot1}}, var_name=\"month\", value_name=\"revenue\")\n\n\ndef to_wide(long):\n    table = long.{{slot2}}(index=\"region\", columns=\"month\", values=\"revenue\", {{slot3}})\n    return table\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "id_vars=\"region\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "pivot_table"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "aggfunc=\"sum\""
+          }
+        ],
+        "bank": [
+          {
+            "label": "value_vars=\"region\"",
+            "slot": 1,
+            "trap": "Đó là cột bị melt, không phải cột giữ lại."
+          },
+          {
+            "label": "pivot_table",
+            "slot": 2
+          },
+          {
+            "label": "fill_value=0",
+            "slot": 3,
+            "trap": "Không ghi aggfunc thì mặc định mean; còn ô thiếu bị điền 0."
+          },
+          {
+            "label": "aggfunc=\"sum\"",
+            "slot": 3
+          },
+          {
+            "label": "pivot",
+            "slot": 2,
+            "trap": "Không gộp được (vùng, tháng) trùng — ValueError."
+          },
+          {
+            "label": "id_vars=\"region\"",
+            "slot": 1
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết to_long(wide): wide có cột region và mỗi tháng một cột (\"2026-01\", \"2026-02\"…); trả bảng long ba cột region, month, revenue (melt với id_vars=\"region\"). Viết to_wide(long): long có thể có NHIỀU dòng cùng (region, month) — trả bảng wide index region, cột là month, ô là TỔNG revenue (pivot_table với aggfunc=\"sum\"); ô không có dữ liệu để NaN, KHÔNG điền 0.\n\nThực hành: melt với id_vars; pivot_table với aggfunc=\"sum\", không fill_value.",
+        "io": [
+          {
+            "label": "wide hanoi 100/80, hue 40/60",
+            "value": "long 4 dòng, tổng 280"
+          },
+          {
+            "label": "long (hanoi, 2026-01) 30 và 20",
+            "value": "Ô (hanoi, 2026-01) = 50"
+          },
+          {
+            "label": "(hue, 2026-02) không có dòng nào",
+            "value": "Ô đó là NaN, không phải 0"
+          }
+        ]
+      },
+      "starterCode": "import pandas as pd\n\n\ndef to_long(wide):\n    # wide: cột region + mỗi tháng một cột -> long: region, month, revenue\n    pass\n\n\ndef to_wide(long):\n    # long (có thể trùng region, month) -> wide: index region, cột month, ô = TỔNG revenue\n    pass\n\n\nif __name__ == \"__main__\":\n    wide = pd.DataFrame({\"region\": [\"north\", \"south\"], \"2026-01\": [110, 60], \"2026-02\": [45, 30]})\n    print(to_long(wide))\n",
+      "solutionCode": "import pandas as pd\n\n\ndef to_long(wide):\n    return wide.melt(id_vars=\"region\", var_name=\"month\", value_name=\"revenue\")\n\n\ndef to_wide(long):\n    table = long.pivot_table(index=\"region\", columns=\"month\", values=\"revenue\", aggfunc=\"sum\")\n    return table\n\n\nif __name__ == \"__main__\":\n    wide = pd.DataFrame({\"region\": [\"north\", \"south\"], \"2026-01\": [110, 60], \"2026-02\": [45, 30]})\n    long = to_long(wide)\n    print(long)\n    back = to_wide(long)\n    print(back)\n    print(\"Tổng trước/sau:\", wide[[\"2026-01\", \"2026-02\"]].sum().sum(), back.sum().sum())\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "melt với id_vars; pivot_table với aggfunc=\"sum\", không fill_value."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. to_long: return wide.melt(id_vars=\"region\", var_name=\"month\", value_name=\"revenue\").\n2. to_wide: long.pivot_table(index=\"region\", columns=\"month\", values=\"revenue\", aggfunc=\"sum\").\n3. Kiểm tổng: to_wide(long).sum().sum() bằng long[\"revenue\"].sum()."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def to_long(wide):\n    return wide.melt(id_vars=\"region\", var_name=\"month\", value_name=\"revenue\")\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Đề mẫu: melt rồi pivot lại vẫn A = 5, B = 8",
+          "call": "to_wide(to_long(pd.DataFrame({\"region\": [\"r1\"], \"A\": [5], \"B\": [8]}))).to_dict()",
+          "expect": "{'A': {'r1': 5}, 'B': {'r1': 8}}"
+        },
+        {
+          "name": "to_long: đúng ba cột",
+          "call": "to_long(pd.DataFrame({\"region\": [\"hanoi\", \"hue\"], \"2026-01\": [100, 40], \"2026-02\": [80, 60]})).columns.tolist()",
+          "expect": "['region', 'month', 'revenue']"
+        },
+        {
+          "name": "to_long: 2 vùng × 2 tháng, tổng giữ nguyên",
+          "call": "(lambda d: (len(d), int(d[\"revenue\"].sum())))(to_long(pd.DataFrame({\"region\": [\"hanoi\", \"hue\"], \"2026-01\": [100, 40], \"2026-02\": [80, 60]})))",
+          "expect": "(4, 280)"
+        },
+        {
+          "name": "to_long: đúng từng quan sát",
+          "call": "to_long(pd.DataFrame({\"region\": [\"hanoi\", \"hue\"], \"2026-01\": [100, 40], \"2026-02\": [80, 60]})).sort_values([\"region\", \"month\"]).to_dict(\"records\")",
+          "expect": "[{'region': 'hanoi', 'month': '2026-01', 'revenue': 100}, {'region': 'hanoi', 'month': '2026-02', 'revenue': 80}, {'region': 'hue', 'month': '2026-01', 'revenue': 40}, {'region': 'hue', 'month': '2026-02', 'revenue': 60}]"
+        },
+        {
+          "name": "Trùng (vùng, tháng) → cộng dồn",
+          "call": "float(to_wide(pd.DataFrame({\"region\": [\"hanoi\", \"hanoi\", \"hue\", \"hanoi\", \"hue\"], \"month\": [\"2026-01\", \"2026-01\", \"2026-01\", \"2026-02\", \"2026-03\"], \"revenue\": [30, 20, 15, 40, 25]})).loc[\"hanoi\", \"2026-01\"])",
+          "expect": "50.0"
+        },
+        {
+          "name": "Ô không có dữ liệu giữ NaN (2 ô)",
+          "call": "int(to_wide(pd.DataFrame({\"region\": [\"hanoi\", \"hanoi\", \"hue\", \"hanoi\", \"hue\"], \"month\": [\"2026-01\", \"2026-01\", \"2026-01\", \"2026-02\", \"2026-03\"], \"revenue\": [30, 20, 15, 40, 25]})).isna().sum().sum())",
+          "expect": "2"
+        },
+        {
+          "name": "to_wide giữ tổng",
+          "call": "float(to_wide(pd.DataFrame({\"region\": [\"hanoi\", \"hanoi\", \"hue\", \"hanoi\", \"hue\"], \"month\": [\"2026-01\", \"2026-01\", \"2026-01\", \"2026-02\", \"2026-03\"], \"revenue\": [30, 20, 15, 40, 25]})).sum().sum())",
+          "expect": "130.0"
+        },
+        {
+          "name": "Hàng là vùng, cột là tháng",
+          "call": "(lambda w: (w.index.tolist(), w.columns.tolist()))(to_wide(pd.DataFrame({\"region\": [\"hanoi\", \"hanoi\", \"hue\", \"hanoi\", \"hue\"], \"month\": [\"2026-01\", \"2026-01\", \"2026-01\", \"2026-02\", \"2026-03\"], \"revenue\": [30, 20, 15, 40, 25]})))",
+          "expect": "(['hanoi', 'hue'], ['2026-01', '2026-02', '2026-03'])"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "to_long(wide)",
+          "does": "Đổi bảng wide (mỗi tháng một cột) sang long.",
+          "takes": "wide: DataFrame cột region + các cột tháng",
+          "gives": "DataFrame cột region, month, revenue",
+          "effect": "Không sửa wide; tổng giữ nguyên.",
+          "call": "len(to_long(wide)) → số vùng × số tháng"
+        },
+        {
+          "sig": "to_wide(long)",
+          "does": "Đổi long sang wide, gộp dòng trùng bằng tổng.",
+          "takes": "long: DataFrame region, month, revenue (có thể trùng cặp region, month)",
+          "gives": "DataFrame index region, cột month; ô thiếu là NaN",
+          "effect": "Không sửa long.",
+          "call": "to_wide(long).loc[\"hanoi\", \"2026-01\"] → 50.0"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "melt(id_vars=\"region\")",
+              "right": "mỗi (vùng, tháng) một dòng"
+            },
+            {
+              "left": "var_name / value_name",
+              "right": "đặt tên cột month, revenue"
+            },
+            {
+              "left": "pivot_table(..., aggfunc=\"sum\")",
+              "right": "gộp đơn trùng ô"
+            },
+            {
+              "left": "Không fill_value",
+              "right": "ô chưa có dữ liệu là NaN"
+            }
+          ],
+          "rightOrder": [
+            0,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\n\ndef to_long(wide):\n    return wide.melt(id_vars=\"region\", var_name=\"month\", value_name=\"revenue\")\n\n\ndef to_wide(long):\n    table = long.pivot(index=\"region\", columns=\"month\", values=\"revenue\")\n    return table\n\n\nif __name__ == \"__main__\":\n    wide = pd.DataFrame({\"region\": [\"north\", \"south\"], \"2026-01\": [110, 60], \"2026-02\": [45, 30]})\n    long = to_long(wide)\n    print(long)",
+          "firstLine": 2,
+          "line": 9,
+          "lines": [
+            9
+          ],
+          "label": "pivot khi khoá trùng",
+          "fix": "    table = long.pivot_table(index=\"region\", columns=\"month\", values=\"revenue\", aggfunc=\"sum\")"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import pandas as pd\n\n\ndef to_long(wide):\n    return wide.melt(id_vars=\"region\", var_name=\"month\", value_name=\"revenue\")\n\n\ndef to_wide(long):\n    table = long.pivot_table(index=\"region\", columns=\"month\", values=\"revenue\")\n    return table\n\n\nif __name__ == \"__main__\":\n    wide = pd.DataFrame({\"region\": [\"north\", \"south\"], \"2026-01\": [110, 60], \"2026-02\": [45, 30]})\n    long = to_long(wide)\n    print(long)\n    back = to_wide(long)\n    print(back)\n    print(\"Tổng trước/sau:\", wide[[\"2026-01\", \"2026-02\"]].sum().sum(), back.sum().sum())\n",
+          "label": "pivot_table quên aggfunc"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao to_wide dùng pivot_table(aggfunc=\"sum\") mà không dùng pivot?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

@@ -1,0 +1,421 @@
+{
+  "lesson_code": "M03",
+  "sort_order": 43,
+  "module": "M7 · Matplotlib",
+  "title": "M03 · Subplot và heatmap đọc được",
+  "subtitle": "Nâng cao · M7 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "M03 · Subplot và heatmap đọc được",
+    "subtitle": "Nâng cao · M7 · 40 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#M03",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M03"
+        ],
+        "title": "Subplot và heatmap đọc được",
+        "goal": "Heatmap có nhãn, colorbar có đơn vị và chung một thang.",
+        "task": "plot_heatmaps: một hàng heatmap từ dict DataFrame, vmin=0, vmax chung, cmap viridis, một colorbar.",
+        "predict": "Không đặt vmin/vmax, ô 40 của Jan và ô 60 của Feb có cùng màu không?",
+        "code": "def plot_heatmaps(tables, unit):\n    vmax = ...  # max của MỌI bảng\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    # imshow(..., vmin=0, vmax=vmax), tick cột/hàng, tiêu đề\n    # fig.colorbar(im, ax=list(axes[0]), label=unit)\n    return fig",
+        "tests": [
+          "Jan + Feb → 3 Axes, mọi panel thang 0..max chung",
+          "Colorbar có nhãn \"Orders\""
+        ],
+        "reflect": "Vì sao so màu giữa hai heatmap tự co thang là sai?"
+      },
+      "context": {
+        "title": "Vẽ nhiều heatmap cạnh nhau từ DataFrame: nhãn hàng/cột, colormap sequential, CÙNG thang vmin/vmax và một colorbar có đơn vị.",
+        "body": "Viết plot_heatmaps(tables, unit): tables là dict tiêu đề → DataFrame (index = region, columns = sản phẩm/tháng — như kết quả pivot_table). Tạo fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False). Mỗi bảng một Axes: ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax) với vmax là giá trị LỚN NHẤT của MỌI bảng; tick x là tên cột, tick y là tên hàng; tiêu đề là khoá của dict. Cuối cùng MỘT colorbar cho cả hàng: fig.colorbar(im, ax=list(axes[0]), label=unit). Return fig.",
+        "example": "plot_heatmaps({\"Jan\": jan, \"Feb\": feb}, \"Orders\") với jan = [[10, 20], [30, 40]], feb = [[5, 15], [25, 60]] → 2 heatmap cùng thang 0..60, 1 colorbar \"Orders\" (fig.axes có 3 Axes).",
+        "prereq": "M02",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Hai heatmap vẽ bằng imshow KHÔNG đặt vmin/vmax: Jan có giá trị 10..40, Feb có 5..60. Ô 40 của Jan và ô 60 của Feb có màu gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "Matplotlib tự đồng bộ thang giữa các subplot",
+            "detail": "Không — mỗi imshow có thang riêng.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "Cùng màu đậm nhất — mỗi panel tự co thang theo max của chính nó",
+            "detail": "Cùng màu nhưng khác giá trị: so màu giữa hai panel bị sai.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "Ô 60 sáng hơn ô 40",
+            "detail": "Chỉ đúng khi hai panel dùng chung vmin/vmax.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Mỗi heatmap tự có colorbar riêng là đủ để so sánh\"",
+        "body": "Hai colorbar với hai thang khác nhau buộc người đọc tra số từng ô — mắt vẫn so màu và kết luận sai. Muốn so thì chung vmin/vmax và một colorbar. Và đừng dùng rainbow cho dữ liệu một chiều: dùng sequential như viridis."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Heatmap mã hoá GIÁ TRỊ bằng MÀU. ax.imshow(bảng) vẽ ô hàng i, cột j tại toạ độ (x = j, y = i): cột của bảng nằm ngang, hàng nằm dọc. Thiếu nhãn thì người đọc chỉ thấy ô màu vô danh: set_xticks(range(số cột), tên cột), set_yticks(range(số hàng), tên hàng)."
+        },
+        {
+          "n": 2,
+          "body": "Colorbar là \"thước đo\" của màu: fig.colorbar(im, ..., label=\"Orders\") thêm một Axes nhỏ có đơn vị. Không có colorbar thì không ai biết màu vàng là bao nhiêu."
+        },
+        {
+          "n": 3,
+          "body": "imshow tự co thang màu theo min/max của TỪNG bảng. Hai heatmap tự co thì cùng một màu có thể là 40 ở bảng này và 60 ở bảng kia — so màu giữa hai panel là sai. Đặt vmin/vmax giống nhau cho mọi panel rồi dùng MỘT colorbar chung."
+        },
+        {
+          "n": 4,
+          "body": "Colormap sequential (viridis, Blues…) cho lượng đi một chiều từ thấp tới cao; diverging (coolwarm, RdBu) khi có mốc giữa có nghĩa như 0 của \"thay đổi\", với vmin = -m, vmax = m. Rainbow/jet tạo các dải sáng giả, mắt thấy ranh giới không có trong dữ liệu."
+        },
+        {
+          "n": 5,
+          "body": "plt.subplots(1, k, squeeze=False) luôn trả mảng 2 chiều, kể cả k = 1 — axes[0] là hàng Axes duy nhất, nên một vòng for chạy đúng cho 1 hay nhiều bảng. Subplot để tách câu hỏi; dùng chung thang (sharey, vmin/vmax) khi người đọc cần so trực tiếp. Ghi số vào từng ô chỉ hữu ích khi bảng nhỏ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\nimport pandas as pd\n\ntable = pd.DataFrame([[10, 20, 15], [30, 40, 35]],\n                     index=[\"North\", \"South\"], columns=[\"Jan\", \"Feb\", \"Mar\"])\nfig, ax = plt.subplots(layout=\"constrained\")\nim = ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=40)\nax.set_xticks(range(len(table.columns)), table.columns)\nax.set_yticks(range(len(table.index)), table.index)\nfig.colorbar(im, ax=ax, label=\"Orders\")\n\nprint(table.shape, [float(v) for v in im.get_clim()])\nprint([t.get_text() for t in ax.get_xticklabels()])\nprint(len(fig.axes), fig.axes[-1].get_ylabel())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Bảng \"thay đổi doanh thu so với tháng trước\" có cả số âm và dương — colormap nào hợp?",
+          "options": [
+            {
+              "text": "Sequential viridis với thang tự động",
+              "detail": "Không thấy được đâu là tăng, đâu là giảm.",
+              "correct": false
+            },
+            {
+              "text": "Diverging (vd. coolwarm) với vmin = -m, vmax = m để 0 nằm giữa",
+              "detail": "0 là mốc có nghĩa; hai phía hai màu.",
+              "correct": true
+            },
+            {
+              "text": "jet để nhiều màu cho dễ phân biệt",
+              "detail": "Rainbow tạo ranh giới giả và không có mốc giữa.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "0 là mốc có nghĩa; hai phía hai màu."
+        },
+        {
+          "question": "ax.imshow(table.to_numpy()) với table 2 hàng × 3 cột — set_xticks cần mấy vị trí?",
+          "options": [
+            {
+              "text": "2 — số hàng",
+              "detail": "Hàng nằm trên trục y.",
+              "correct": false
+            },
+            {
+              "text": "6 — số ô",
+              "detail": "Tick đánh dấu cột, không đánh dấu từng ô.",
+              "correct": false
+            },
+            {
+              "text": "3 — số CỘT nằm trên trục x",
+              "detail": "imshow đặt cột theo x, hàng theo y.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "imshow đặt cột theo x, hàng theo y."
+        },
+        {
+          "question": "Vì sao chỉ cần MỘT colorbar cho cả hàng heatmap trong bài?",
+          "options": [
+            {
+              "text": "Vì colorbar không quan trọng",
+              "detail": "Thiếu colorbar thì màu không đọc ra số.",
+              "correct": false
+            },
+            {
+              "text": "Vì mọi panel dùng chung vmin/vmax nên một thước màu đúng cho tất cả",
+              "detail": "Chung thang mới dùng chung thước được.",
+              "correct": true
+            },
+            {
+              "text": "Vì Matplotlib chỉ cho một colorbar mỗi Figure",
+              "detail": "Một Figure có thể có nhiều colorbar.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Chung thang mới dùng chung thước được."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao bài tính vmax từ TẤT CẢ bảng và đặt giống nhau cho mọi panel?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "imshow mặc định co thang màu theo từng bảng, nên cùng một màu có thể là 40 ở panel này và 60 ở panel kia; người đọc so màu sẽ kết luận sai. Chốt vmin = 0 và vmax = max của mọi bảng thì cùng màu là cùng giá trị, và một colorbar có đơn vị đủ để đọc mọi panel."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: vmax chung, thang màu cố định cho mỗi panel, một colorbar có đơn vị.",
+        "rule": "Thử bảng 3 hàng × 2 cột (không vuông) để chắc không đảo hàng/cột; thử dict chỉ một bảng."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "max(... for table in tables.values()) → vmax chung"
+          },
+          {
+            "label": "Bước 2",
+            "text": "plt.subplots(1, k, squeeze=False) → axes[0] luôn là hàng Axes"
+          },
+          {
+            "label": "Bước 3",
+            "text": "ax.imshow(..., vmin=0, vmax=vmax) → mọi panel cùng thang màu"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ax.set_xticks(range(n_cột), table.columns) → tên cột trên trục x"
+          },
+          {
+            "label": "Bước 5",
+            "text": "fig.colorbar(im, ax=list(axes[0]), label=unit) → một thước màu có đơn vị"
+          }
+        ]
+      },
+      "counter": {
+        "question": "tables gồm 3 bảng → fig.axes có mấy Axes?",
+        "options": [
+          "3",
+          "6",
+          "4"
+        ],
+        "correct": "4"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\nimport pandas as pd\n\n\ndef plot_heatmaps(tables, unit):\n    vmax = {{slot1}}\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    for ax, (title, table) in zip(axes[0], tables.items()):\n        im = ax.imshow(table.to_numpy(), cmap=\"viridis\", {{slot2}})\n        ax.set_xticks(range(len(table.columns)), table.columns)\n        ax.set_yticks(range(len(table.index)), table.index)\n        ax.set_title(title)\n    {{slot3}}\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "max(table.to_numpy().max() for table in tables.values())"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "vmin=0, vmax=vmax"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "max(tables)",
+            "slot": 1,
+            "trap": "max của các KHOÁ (tiêu đề), không phải giá trị trong bảng."
+          },
+          {
+            "label": "max(table.to_numpy().max() for table in tables.values())",
+            "slot": 1
+          },
+          {
+            "label": "vmin=0, vmax=vmax",
+            "slot": 2
+          },
+          {
+            "label": "vmin=0",
+            "slot": 2,
+            "trap": "Thiếu vmax → mỗi panel tự co thang theo max của nó."
+          },
+          {
+            "label": "fig.colorbar(im, ax=list(axes[0]), label=unit)",
+            "slot": 3
+          },
+          {
+            "label": "fig.colorbar(im, ax=ax)",
+            "slot": 3,
+            "trap": "Colorbar chỉ gắn vào panel cuối và không có đơn vị."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết plot_heatmaps(tables, unit): tables là dict tiêu đề → DataFrame (index = region, columns = sản phẩm/tháng — như kết quả pivot_table). Tạo fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False). Mỗi bảng một Axes: ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax) với vmax là giá trị LỚN NHẤT của MỌI bảng; tick x là tên cột, tick y là tên hàng; tiêu đề là khoá của dict. Cuối cùng MỘT colorbar cho cả hàng: fig.colorbar(im, ax=list(axes[0]), label=unit). Return fig.\n\nThực hành: Tính vmax chung trước vòng lặp; trong vòng: imshow viridis với vmin=0, vmax=vmax, đặt tick cột/hàng, tiêu đề; sau vòng: một colorbar cho list(axes[0]).",
+        "io": [
+          {
+            "label": "Jan [[10, 20], [30, 40]], Feb [[5, 15], [25, 60]], \"Orders\"",
+            "value": "2 panel cùng thang 0..60; 1 colorbar \"Orders\"; 3 Axes"
+          },
+          {
+            "label": "Một bảng 1×3, \"Units\"",
+            "value": "1 panel + colorbar \"Units\"; tick x đủ 3 cột"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\nimport pandas as pd\n\n\ndef plot_heatmaps(tables, unit):\n    # vmax chung = giá trị lớn nhất của MỌI bảng\n    # fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    # mỗi bảng: imshow viridis, vmin=0, vmax chung; tick = tên cột / tên hàng; tiêu đề = khoá\n    # một colorbar cho cả hàng, label=unit; return fig\n    pass\n\n\nif __name__ == \"__main__\":\n    jan = pd.DataFrame([[10, 20], [30, 40]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    feb = pd.DataFrame([[5, 15], [25, 60]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    plot_heatmaps({\"Jan\": jan, \"Feb\": feb}, \"Orders\")\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\nimport pandas as pd\n\n\ndef plot_heatmaps(tables, unit):\n    vmax = max(table.to_numpy().max() for table in tables.values())\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    for ax, (title, table) in zip(axes[0], tables.items()):\n        im = ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax)\n        ax.set_xticks(range(len(table.columns)), table.columns)\n        ax.set_yticks(range(len(table.index)), table.index)\n        ax.set_title(title)\n    fig.colorbar(im, ax=list(axes[0]), label=unit)\n    return fig\n\n\nif __name__ == \"__main__\":\n    jan = pd.DataFrame([[10, 20], [30, 40]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    feb = pd.DataFrame([[5, 15], [25, 60]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    plot_heatmaps({\"Jan\": jan, \"Feb\": feb}, \"Orders\")\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Tính vmax chung trước vòng lặp; trong vòng: imshow viridis với vmin=0, vmax=vmax, đặt tick cột/hàng, tiêu đề; sau vòng: một colorbar cho list(axes[0])."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. vmax = max(table.to_numpy().max() for table in tables.values()).\n2. fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False); duyệt zip(axes[0], tables.items()).\n3. Mỗi panel: im = ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax); tick x = table.columns, tick y = table.index; ax.set_title(title).\n4. fig.colorbar(im, ax=list(axes[0]), label=unit); return fig."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def plot_heatmaps(tables, unit):\n    vmax = max(table.to_numpy().max() for table in tables.values())\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    for ax, (title, table) in zip(axes[0], tables.items()):\n        im = ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax)\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Hai panel + một colorbar = 3 Axes",
+          "call": "len(plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes)",
+          "expect": "3"
+        },
+        {
+          "name": "Mỗi panel vẽ đúng bảng của nó",
+          "call": "[ax.images[0].get_array().tolist() for ax in plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[:2]]",
+          "expect": "[[[10, 20], [30, 40], [5, 0]], [[15, 70], [25, 35], [8, 2]]]"
+        },
+        {
+          "name": "Mọi panel cùng thang 0..max của MỌI bảng",
+          "call": "[tuple(float(v) for v in ax.images[0].get_clim()) for ax in plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[:2]]",
+          "expect": "[(0.0, 70.0), (0.0, 70.0)]"
+        },
+        {
+          "name": "Tick x = tên cột, tick y = tên hàng (bảng không vuông)",
+          "call": "(lambda ax: ([t.get_text() for t in ax.get_xticklabels()], [t.get_text() for t in ax.get_yticklabels()]))(plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[0])",
+          "expect": "(['Pen', 'Ink'], ['N', 'S', 'E'])"
+        },
+        {
+          "name": "Tiêu đề panel là khoá của dict",
+          "call": "[ax.get_title() for ax in plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[:2]]",
+          "expect": "['Jan', 'Feb']"
+        },
+        {
+          "name": "Colorbar có nhãn đơn vị",
+          "call": "plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[-1].get_ylabel()",
+          "expect": "'Orders'"
+        },
+        {
+          "name": "Colormap sequential viridis",
+          "call": "[ax.images[0].get_cmap().name for ax in plot_heatmaps({\"Jan\": pd.DataFrame([[10, 20], [30, 40], [5, 0]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"]), \"Feb\": pd.DataFrame([[15, 70], [25, 35], [8, 2]], index=[\"N\", \"S\", \"E\"], columns=[\"Pen\", \"Ink\"])}, \"Orders\").axes[:2]]",
+          "expect": "['viridis', 'viridis']"
+        },
+        {
+          "name": "Một bảng duy nhất",
+          "call": "(lambda f: (len(f.axes), tuple(float(v) for v in f.axes[0].images[0].get_clim()), [t.get_text() for t in f.axes[0].get_xticklabels()], f.axes[-1].get_ylabel()))(plot_heatmaps({\"Q1\": pd.DataFrame([[1, 2, 3]], index=[\"All\"], columns=[\"a\", \"b\", \"c\"])}, \"Units\"))",
+          "expect": "(2, (0.0, 3.0), ['a', 'b', 'c'], 'Units')"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_heatmaps(tables, unit)",
+          "does": "Vẽ một hàng heatmap có thể so sánh với nhau.",
+          "takes": "tables: dict tiêu đề → DataFrame số; unit: chuỗi đơn vị",
+          "gives": "Figure: len(tables) panel + 1 Axes colorbar",
+          "effect": "Mọi panel clim = (0, max của mọi bảng); cmap viridis; tick là tên cột/hàng.",
+          "call": "plot_heatmaps({\"Q1\": df}, \"Units\").axes[-1].get_ylabel() → \"Units\""
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy",
+        "pandas"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "max(... for table in tables.values())",
+              "right": "vmax chung"
+            },
+            {
+              "left": "plt.subplots(1, k, squeeze=False)",
+              "right": "axes[0] luôn là hàng Axes"
+            },
+            {
+              "left": "ax.imshow(..., vmin=0, vmax=vmax)",
+              "right": "mọi panel cùng thang màu"
+            },
+            {
+              "left": "ax.set_xticks(range(n_cột), table.columns)",
+              "right": "tên cột trên trục x"
+            }
+          ],
+          "rightOrder": [
+            3,
+            0,
+            2,
+            1
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "import pandas as pd\n\n\ndef plot_heatmaps(tables, unit):\n    vmax = max(table.to_numpy().max() for table in tables.values())\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    for ax, (title, table) in zip(axes[0], tables.items()):\n        im = ax.imshow(table.to_numpy(), cmap=\"viridis\")\n        ax.set_xticks(range(len(table.columns)), table.columns)\n        ax.set_yticks(range(len(table.index)), table.index)\n        ax.set_title(title)\n    fig.colorbar(im, ax=list(axes[0]), label=unit)\n    return fig\n\n",
+          "firstLine": 2,
+          "line": 9,
+          "lines": [
+            9
+          ],
+          "label": "Mỗi panel tự co thang",
+          "fix": "        im = ax.imshow(table.to_numpy(), cmap=\"viridis\", vmin=0, vmax=vmax)"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import matplotlib.pyplot as plt\nimport pandas as pd\n\n\ndef plot_heatmaps(tables, unit):\n    vmax = max(table.to_numpy().max() for table in tables.values())\n    fig, axes = plt.subplots(1, len(tables), layout=\"constrained\", squeeze=False)\n    for ax, (title, table) in zip(axes[0], tables.items()):\n        im = ax.imshow(table.to_numpy(), cmap=\"jet\", vmin=0, vmax=vmax)\n        ax.set_xticks(range(len(table.columns)), table.columns)\n        ax.set_yticks(range(len(table.index)), table.index)\n        ax.set_title(title)\n    fig.colorbar(im, ax=list(axes[0]), label=unit)\n    return fig\n\n\nif __name__ == \"__main__\":\n    jan = pd.DataFrame([[10, 20], [30, 40]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    feb = pd.DataFrame([[5, 15], [25, 60]], index=[\"A\", \"B\"], columns=[\"Pen\", \"Ink\"])\n    plot_heatmaps({\"Jan\": jan, \"Feb\": feb}, \"Orders\")\n    plt.show()\n",
+          "label": "Rainbow cho dữ liệu một chiều"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao bài tính vmax từ TẤT CẢ bảng và đặt giống nhau cho mọi panel?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

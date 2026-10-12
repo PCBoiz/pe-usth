@@ -1,0 +1,457 @@
+{
+  "lesson_code": "P07",
+  "sort_order": 7,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P07 · multiprocessing: Process và Queue",
+  "subtitle": "Trung cấp · M1 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "P07 · multiprocessing: Process và Queue",
+    "subtitle": "Trung cấp · M1 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#P07",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P07"
+        ],
+        "title": "multiprocessing: Process và Queue",
+        "goal": "Chạy hàm ở process riêng và gửi kết quả về qua Queue.",
+        "task": "Viết square (put vào Queue) và run_workers: mỗi số một Process, get đủ, join hết.",
+        "predict": "Con sửa biến toàn cục, cha có thấy không?",
+        "code": "def square(n, results):\n    # gửi (n, n * n) về cha qua Queue\ndef run_workers(numbers): ...   # Queue, Process, start, get, join\nif __name__ == \"__main__\":\n    print(run_workers([2, 3, 4]))",
+        "tests": [
+          "run_workers([2, 3, 4]) → {2: 4, 3: 9, 4: 16}",
+          "run_workers([]) → {}"
+        ],
+        "reflect": "Vì sao kết quả phải đi qua Queue chứ không qua biến toàn cục?"
+      },
+      "context": {
+        "title": "Chạy hàm Python ở process riêng bằng multiprocessing và gửi kết quả về qua Queue.",
+        "body": "Viết square(n, results): tính n * n và put cặp (n, n * n) vào Queue results. Viết run_workers(numbers): tạo một Queue, tạo một Process cho MỖI số (target=square, args=(n, results)), start hết, lấy đủ len(numbers) kết quả bằng results.get(), join hết, trả dict {n: n * n}. Lời gọi tạo process ở cấp ngoài cùng của file phải nằm trong if __name__ == \"__main__\":.",
+        "example": "run_workers([2, 3, 4]) → {2: 4, 3: 9, 4: 16} — ba process, mỗi process gửi một cặp qua Queue.",
+        "prereq": "P06",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Worker chạy counter += 1 trong process con (counter là biến toàn cục bằng 0). Sau join, cha in counter được mấy?",
+        "options": [
+          {
+            "id": "a",
+            "title": "0 — con sửa bản sao của nó, cha không thấy",
+            "detail": "Process có không gian địa chỉ riêng; gửi về phải qua Queue/Pipe.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "1",
+            "detail": "Đó là hành vi của thread (chung bộ nhớ), không phải process.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Báo lỗi",
+            "detail": "Không lỗi — chỉ là hai bản biến khác nhau.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Process cũng chia sẻ biến như thread\"",
+        "body": "Các thread trong cùng một process dùng chung bộ nhớ; các process thì không. Worker ghi vào dict toàn cục hay append vào list của cha chỉ sửa BẢN SAO trong con — cha nhận dict rỗng. Kết quả phải đi qua IPC: Queue, Pipe, Value/Manager. Và subprocess với multiprocessing không phải hai tên của cùng một API."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "subprocess chạy một CHƯƠNG TRÌNH khác và nói chuyện qua stdin/stdout; multiprocessing chạy một HÀM Python của bạn ở process riêng."
+        },
+        {
+          "n": 2,
+          "body": "Process(target=hàm, args=(…)) dùng giống Thread: target là tên hàm (không ngoặc), args là tuple, start() rồi join()."
+        },
+        {
+          "n": 3,
+          "body": "Worker phải là hàm def ở CẤP MODULE (không lambda, không hàm lồng): process con phải tìm lại được nó theo tên."
+        },
+        {
+          "n": 4,
+          "body": "Process con có bộ nhớ riêng: sửa biến toàn cục trong con KHÔNG đổi bản của cha. Gửi kết quả qua Queue: con put(), cha get(); dữ liệu được pickle."
+        },
+        {
+          "n": 5,
+          "body": "Trên Windows/macOS con khởi động bằng cách import lại file của bạn, nên code tạo process phải nằm trong if __name__ == \"__main__\":. Lấy hết kết quả từ Queue rồi mới join."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "from multiprocessing import Process, Queue\n\ncounter = 0\n\n\ndef worker(value, box):\n    global counter\n    counter += 1\n    box.put(value * 2)\n\n\nif __name__ == \"__main__\":\n    box = Queue()\n    p = Process(target=worker, args=(4, box))\n    p.start()\n    print(\"Con gửi về:\", box.get())\n    p.join()\n    print(\"counter của cha vẫn là\", counter)",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "subprocess và multiprocessing có phải hai tên cho cùng một API không?",
+          "options": [
+            {
+              "text": "Không — subprocess chạy chương trình khác; multiprocessing chạy hàm Python ở process riêng",
+              "detail": "Cả hai liên quan process nhưng mục đích và API khác nhau.",
+              "correct": true
+            },
+            {
+              "text": "Có",
+              "detail": "Hai module, hai bộ API.",
+              "correct": false
+            },
+            {
+              "text": "multiprocessing là bản cũ của subprocess",
+              "detail": "Không có quan hệ cũ/mới.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Cả hai liên quan process nhưng mục đích và API khác nhau."
+        },
+        {
+          "question": "Vì sao không dùng target=lambda n: n * n cho Process?",
+          "options": [
+            {
+              "text": "Process con phải tìm/pickle lại target theo tên ở cấp module; lambda không có tên như vậy",
+              "detail": "Định nghĩa worker bằng def ở cấp module.",
+              "correct": true
+            },
+            {
+              "text": "Process không nhận hàm",
+              "detail": "Process nhận hàm qua target.",
+              "correct": false
+            },
+            {
+              "text": "lambda chạy chậm hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Định nghĩa worker bằng def ở cấp module."
+        },
+        {
+          "question": "Bỏ if __name__ == \"__main__\": trên Windows thì…",
+          "options": [
+            {
+              "text": "Chỉ chạy chậm hơn",
+              "detail": "Không phải chuyện tốc độ.",
+              "correct": false
+            },
+            {
+              "text": "Process con import lại file và chạy lại đoạn tạo process — Python báo RuntimeError (bootstrapping)",
+              "detail": "Main guard chặn code tạo process chạy lại khi file bị import.",
+              "correct": true
+            },
+            {
+              "text": "Chạy bình thường",
+              "detail": "Trên Windows (spawn) thì không.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Main guard chặn code tạo process chạy lại khi file bị import."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao worker phải put kết quả vào Queue thay vì ghi vào dict toàn cục?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi process con có bộ nhớ riêng (bản sao), nên ghi vào dict toàn cục chỉ sửa bản của con; cha vẫn thấy dict rỗng. Queue là kênh IPC: con put cặp (n, n * n), dữ liệu được pickle chuyển sang cha, cha get đủ len(numbers) lần. Trường hợp đặc biệt: numbers rỗng thì không tạo process nào và trả {}."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: gửi kết quả, tạo Process, nhận kết quả.",
+        "rule": "Thử một số, list rỗng và số âm; thử cho worker ghi vào biến toàn cục để thấy cha không nhận được gì."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Queue() → kênh IPC dùng chung giữa cha và con"
+          },
+          {
+            "label": "Bước 2",
+            "text": "Process(target=square, args=(n, results)) → mô tả process, chưa chạy"
+          },
+          {
+            "label": "Bước 3",
+            "text": "start() → square chạy ở process con, put (n, n * n)"
+          },
+          {
+            "label": "Bước 4",
+            "text": "cha get() đủ len(numbers) lần → join hết → dict"
+          }
+        ]
+      },
+      "counter": {
+        "question": "run_workers([-3, 5]) trả gì?",
+        "options": [
+          "{-3: -9, 5: 25}",
+          "{-3: 9, 5: 25}",
+          "{}"
+        ],
+        "correct": "{-3: 9, 5: 25}"
+      },
+      "scaffold": {
+        "template": "from multiprocessing import Process, Queue\n\n\ndef square(n, results):\n    {{slot1}}\n\n\ndef run_workers(numbers):\n    results = Queue()\n    workers = [{{slot2}} for n in numbers]\n    for worker in workers:\n        worker.start()\n    squares = {}\n    for _ in numbers:\n        n, value = {{slot3}}\n        squares[n] = value\n    for worker in workers:\n        worker.join()\n    return squares\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "results.put((n, n * n))"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "Process(target=square, args=(n, results))"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "results.get()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "results.get()",
+            "slot": 3
+          },
+          {
+            "label": "Process(target=square, args=(n, results))",
+            "slot": 2
+          },
+          {
+            "label": "results.put((n, n * n))",
+            "slot": 1
+          },
+          {
+            "label": "results",
+            "slot": 3,
+            "trap": "Queue là kênh, không phải kết quả — phải get() từng cặp."
+          },
+          {
+            "label": "return n * n",
+            "slot": 1,
+            "trap": "Giá trị return của target bị bỏ đi — cha không nhận được."
+          },
+          {
+            "label": "Process(target=square(n, results))",
+            "slot": 2,
+            "trap": "Gọi square ngay trong cha; Process nhận target=None."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết square(n, results): tính n * n và put cặp (n, n * n) vào Queue results. Viết run_workers(numbers): tạo một Queue, tạo một Process cho MỖI số (target=square, args=(n, results)), start hết, lấy đủ len(numbers) kết quả bằng results.get(), join hết, trả dict {n: n * n}. Lời gọi tạo process ở cấp ngoài cùng của file phải nằm trong if __name__ == \"__main__\":.\n\nThực hành: Worker cấp module chỉ tính rồi put vào Queue; cha tạo Process cho từng số, start hết, get đủ, join hết. Lời gọi tạo process ở cấp ngoài cùng nằm dưới main guard.",
+        "io": [
+          {
+            "label": "run_workers([2, 3, 4])",
+            "value": "{2: 4, 3: 9, 4: 16}"
+          },
+          {
+            "label": "run_workers([])",
+            "value": "{}"
+          }
+        ]
+      },
+      "starterCode": "from multiprocessing import Process, Queue\n\n\ndef square(n, results):\n    # Gửi cặp (n, n * n) về cha qua Queue results.\n    pass\n\n\ndef run_workers(numbers):\n    # Một Process cho mỗi số; start hết, get đủ kết quả, join hết; trả dict.\n    pass\n\n\nif __name__ == \"__main__\":\n    print(run_workers([2, 3, 4]))\n",
+      "solutionCode": "from multiprocessing import Process, Queue\n\n\ndef square(n, results):\n    results.put((n, n * n))\n\n\ndef run_workers(numbers):\n    results = Queue()\n    workers = [Process(target=square, args=(n, results)) for n in numbers]\n    for worker in workers:\n        worker.start()\n    squares = {}\n    for _ in numbers:\n        n, value = results.get()\n        squares[n] = value\n    for worker in workers:\n        worker.join()\n    return squares\n\n\nif __name__ == \"__main__\":\n    print(run_workers([2, 3, 4]))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Worker cấp module chỉ tính rồi put vào Queue; cha tạo Process cho từng số, start hết, get đủ, join hết. Lời gọi tạo process ở cấp ngoài cùng nằm dưới main guard."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. def square(n, results): results.put((n, n * n)).\n2. results = Queue(); workers = [Process(target=square, args=(n, results)) for n in numbers].\n3. start từng worker; lặp len(numbers) lần results.get() và ghi vào dict.\n4. join từng worker rồi trả dict; print(run_workers(...)) ở cuối file đặt trong if __name__ == \"__main__\":."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def square(n, results):\n    results.put((n, n * n))\n..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "run_workers([2, 3, 4])",
+          "call": "run_workers([2, 3, 4])",
+          "expect": "{2: 4, 3: 9, 4: 16}"
+        },
+        {
+          "name": "Dữ liệu khác, có số âm",
+          "call": "run_workers([7, -3, 10])",
+          "expect": "{7: 49, -3: 9, 10: 100}"
+        },
+        {
+          "name": "List rỗng → {}",
+          "call": "run_workers([])",
+          "expect": "{}"
+        },
+        {
+          "name": "square gửi đúng một cặp qua Queue",
+          "call": "_studio.check('from multiprocessing import Queue\\nq = Queue()\\nsquare(6, q)\\nassert q.get() == (6, 36), \"square phải put cặp (n, n * n)\"')",
+          "expect": "True"
+        },
+        {
+          "name": "Mỗi số một Process; target là hàm; start hết rồi join hết",
+          "call": "(lambda r: (r.process_count, r.process_targets_callable, r.process_starts_before_joins, r.all_processes_joined))(_studio.call(run_workers, [1, 2, 3]))",
+          "expect": "(3, True, True, True)"
+        },
+        {
+          "name": "Import file không tự tạo process (main guard)",
+          "call": "(lambda r: (r.stdout, r.process_count))(_studio.run(entry='None'))",
+          "expect": "('', 0)"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "square(n, results)",
+          "does": "Worker chạy trong process con.",
+          "takes": "n: int; results: Queue",
+          "gives": "None (kết quả đi qua Queue)",
+          "effect": "results.put((n, n * n)).",
+          "call": "square(6, q) → q nhận (6, 36)"
+        },
+        {
+          "sig": "run_workers(numbers)",
+          "does": "Mỗi số một process, gom kết quả qua Queue.",
+          "takes": "numbers: list[int]",
+          "gives": "dict {n: n * n}",
+          "effect": "Tạo len(numbers) Process, start hết, get đủ, join hết.",
+          "call": "run_workers([2, 3]) → {2: 4, 3: 9}"
+        }
+      ],
+      "env": "Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG multiprocessing: target của mỗi Process chạy ngay khi start() trên một BẢN SAO dữ liệu (đổi biến toàn cục trong con không ảnh hưởng cha, đúng như process thật); Queue/Value/Manager là kênh dùng chung. Thời gian đo bằng đồng hồ ảo: các process chạy song song nên tổng thời gian ≈ process lâu nhất. Trên Windows nhớ đặt code tạo process trong if __name__ == \"__main__\": — chạy thật trên máy để thấy khác biệt."
+    },
+    "play": {
+      "level": "I",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "Queue()",
+              "right": "kênh IPC dùng chung giữa cha và con"
+            },
+            {
+              "left": "Process(target=square, args=(n, results))",
+              "right": "mô tả process, chưa chạy"
+            },
+            {
+              "left": "start()",
+              "right": "square chạy ở process con, put (n, n * n)"
+            },
+            {
+              "left": "cha get() đủ len(numbers) lần",
+              "right": "join hết → dict"
+            }
+          ],
+          "rightOrder": [
+            2,
+            1,
+            3,
+            0
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "parsons-2",
+          "type": "parsons",
+          "title": "Ghép các dòng thành chương trình chạy đúng",
+          "head": "from multiprocessing import Process, Queue\n\n\ndef square(n, results):\n    results.put((n, n * n))\n\n\ndef run_workers(numbers):\n    results = Queue()\n    workers = [Process(target=square, args=(n, results)) for n in numbers]\n    for worker in workers:\n        worker.start()\n    squares = {}",
+          "tail": "",
+          "lines": [
+            {
+              "id": "L13",
+              "text": "    for _ in numbers:"
+            },
+            {
+              "id": "L14",
+              "text": "        n, value = results.get()"
+            },
+            {
+              "id": "L15",
+              "text": "        squares[n] = value"
+            },
+            {
+              "id": "L16",
+              "text": "    for worker in workers:"
+            },
+            {
+              "id": "L17",
+              "text": "        worker.join()"
+            },
+            {
+              "id": "L18",
+              "text": "    return squares"
+            },
+            {
+              "id": "L21",
+              "text": "if __name__ == \"__main__\":"
+            },
+            {
+              "id": "L22",
+              "text": "    print(run_workers([2, 3, 4]))"
+            }
+          ],
+          "distractors": [
+            {
+              "id": "D0",
+              "text": "    workers = [Process(target=square(n, results)) for n in numbers]",
+              "reason": "gọi sẵn target trong process cha"
+            }
+          ],
+          "order": [
+            "L15",
+            "L17",
+            "L14",
+            "L13",
+            "D0",
+            "L16",
+            "L22",
+            "L21",
+            "L18"
+          ]
+        },
+        {
+          "id": "spotError-3",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "        n, value = results.get()\n        squares[n] = value\n    for worker in workers:\n        worker.join()\n    return squares\n\n\nprint(run_workers([2, 3, 4]))",
+          "firstLine": 15,
+          "line": 22,
+          "lines": [
+            22
+          ],
+          "label": "thiếu main guard",
+          "fix": "if __name__ == \"__main__\":\n    print(run_workers([2, 3, 4]))"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

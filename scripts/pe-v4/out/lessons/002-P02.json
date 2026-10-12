@@ -1,0 +1,363 @@
+{
+  "lesson_code": "P02",
+  "sort_order": 2,
+  "module": "M1 · Tiến trình và subprocess",
+  "title": "P02 · Vòng đời, fork, exec và wait",
+  "subtitle": "Trung cấp · M1 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 15,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "P02 · Vòng đời, fork, exec và wait",
+    "subtitle": "Trung cấp · M1 · 35 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#P02",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M1",
+          "BÀI TẬP TRUNG CẤP",
+          "P02"
+        ],
+        "title": "Vòng đời, fork, exec và wait",
+        "goal": "Theo dõi vòng đời process; chờ con để lấy exit code.",
+        "task": "Viết next_state theo sơ đồ 5 trạng thái và run_child bằng Popen + wait().",
+        "predict": "Ngay sau Popen, child.returncode là gì?",
+        "code": "def next_state(state, event):\n    # cặp không có trong sơ đồ → ValueError\ndef run_child(code):\n    child = subprocess.Popen([sys.executable, \"-c\", code])\n    # chờ con rồi trả exit code",
+        "tests": [
+          "next_state(\"waiting\", \"io_done\") → \"ready\"",
+          "run_child(\"raise SystemExit(3)\") → 3"
+        ],
+        "reflect": "Vì sao I/O xong thì process về ready chứ không về running?"
+      },
+      "context": {
+        "title": "Theo dõi vòng đời process và chờ process con để lấy exit code.",
+        "body": "Viết next_state(state, event) theo sơ đồ 5 trạng thái: new –admit→ ready, ready –dispatch→ running, running –interrupt→ ready, running –io_wait→ waiting, waiting –io_done→ ready, running –exit→ terminated; cặp (state, event) khác → ValueError. lifecycle(events) đã cấp, dùng next_state. Rồi viết run_child(code): tạo process con bằng subprocess.Popen([sys.executable, \"-c\", code]), chờ con kết thúc bằng wait() và trả exit code.",
+        "example": "next_state(\"waiting\", \"io_done\") → \"ready\"; run_child(\"raise SystemExit(3)\") → 3; run_child(\"pass\") → 0.",
+        "prereq": "P01",
+        "level": "Trung cấp"
+      },
+      "predict": {
+        "question": "Ngay sau child = subprocess.Popen([...]) (chưa gọi wait/poll), child.returncode là gì?",
+        "options": [
+          {
+            "id": "a",
+            "title": "PID của con",
+            "detail": "PID nằm ở child.pid.",
+            "correct": false
+          },
+          {
+            "id": "b",
+            "title": "None — Popen trả object ngay, chưa ai thu trạng thái kết thúc của con",
+            "detail": "returncode chỉ được điền khi poll()/wait()/communicate() thấy con đã kết thúc.",
+            "correct": true
+          },
+          {
+            "id": "c",
+            "title": "0",
+            "detail": "0 chỉ có sau khi con đã kết thúc thành công VÀ đã được thu.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"exec() tạo ra một process mới\"",
+        "body": "exec() thay image chương trình của CHÍNH process đang chạy; PID không đổi. Tạo process mới là việc của fork() (UNIX) hay CreateProcess (Windows); subprocess trên Linux fork rồi exec trong con. Ngộ nhận đi kèm: đọc child.returncode ngay sau Popen để lấy exit code — lúc đó nó còn là None, phải wait() trước."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Vòng đời: new → ready (chờ tới lượt CPU) → running → terminated. Đang chạy mà phải chờ I/O thì sang waiting."
+        },
+        {
+          "n": 2,
+          "body": "I/O xong → về ready, KHÔNG nhảy thẳng vào running: CPU có thể đang chạy process khác, scheduler mới quyết định ai chạy."
+        },
+        {
+          "n": 3,
+          "body": "UNIX fork() nhân bản process: cha nhận PID của con, con nhận 0. exec() THAY chương trình trong chính process đó — PID giữ nguyên."
+        },
+        {
+          "n": 4,
+          "body": "wait() cho cha chờ con kết thúc và thu exit code (con xong mà chưa được thu là zombie). Windows không có fork; nó tạo process bằng CreateProcess."
+        },
+        {
+          "n": 5,
+          "body": "subprocess.Popen(...) tạo con rồi trả object NGAY, returncode còn None. wait() chặn tới khi con xong và trả exit code: 0, n của SystemExit(n), 1 nếu có ngoại lệ."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import subprocess\nimport sys\n\nchild = subprocess.Popen([sys.executable, \"-c\", \"import time; time.sleep(0.5)\"])\nprint(\"Vừa tạo con; returncode =\", child.returncode)\ncode = child.wait()\nprint(\"wait() trả\", code, \"- returncode =\", child.returncode, \"- poll() =\", child.poll())",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Sau os.fork() thành công, giá trị trả về trong process CON là?",
+          "options": [
+            {
+              "text": "0",
+              "detail": "Cha nhận PID của con, con nhận 0 — nhờ vậy if pid == 0 tách được hai nhánh.",
+              "correct": true
+            },
+            {
+              "text": "PID của con",
+              "detail": "Đó là giá trị cha nhận.",
+              "correct": false
+            },
+            {
+              "text": "PID của cha",
+              "detail": "Con muốn biết cha thì gọi os.getppid().",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Cha nhận PID của con, con nhận 0 — nhờ vậy if pid == 0 tách được hai nhánh."
+        },
+        {
+          "question": "Process đang waiting (chờ đọc đĩa) và I/O vừa xong. Nó chuyển sang…",
+          "options": [
+            {
+              "text": "ready — xếp hàng chờ scheduler cho chạy tiếp",
+              "detail": "CPU có thể đang chạy process khác; I/O xong chỉ có nghĩa là SẴN SÀNG.",
+              "correct": true
+            },
+            {
+              "text": "terminated",
+              "detail": "Chờ I/O xong không có nghĩa là kết thúc.",
+              "correct": false
+            },
+            {
+              "text": "running ngay lập tức",
+              "detail": "Phải qua ready và được scheduler chọn (dispatch).",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "CPU có thể đang chạy process khác; I/O xong chỉ có nghĩa là SẴN SÀNG."
+        },
+        {
+          "question": "exec() có luôn tạo PID mới không?",
+          "options": [
+            {
+              "text": "Có",
+              "detail": "exec không tạo thêm process.",
+              "correct": false
+            },
+            {
+              "text": "Chỉ trên Windows",
+              "detail": "Windows không có exec theo nghĩa UNIX; tạo process bằng CreateProcess.",
+              "correct": false
+            },
+            {
+              "text": "Không — nó thay chương trình của process hiện tại, PID giữ nguyên",
+              "detail": "Tạo process mới là fork()/CreateProcess.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Tạo process mới là fork()/CreateProcess."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao I/O xong thì process về ready chứ không về running?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Trong lúc process chờ I/O, scheduler đã giao CPU cho process khác. Khi I/O xong, process chỉ SẴN SÀNG chạy tiếp nên phải xếp vào hàng ready chờ scheduler chọn lại (dispatch). Nhảy thẳng sang running là cướp CPU của process đang chạy — chỉ scheduler quyết định việc đó. Trường hợp đặc biệt: cặp không có trong sơ đồ (vd. waiting + dispatch) thì báo ValueError."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp chuyển trạng thái hay nhầm, cách báo lỗi và lệnh chờ con.",
+        "rule": "Thử chuỗi sự kiện có hai lần bị ngắt và một lần chờ I/O; thử con thoát bằng SystemExit(7) và con ném ZeroDivisionError."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "Popen([sys.executable, \"-c\", code]) → con được tạo, cha chạy tiếp ngay"
+          },
+          {
+            "label": "Bước 2",
+            "text": "child.returncode lúc này → None: chưa ai thu trạng thái"
+          },
+          {
+            "label": "Bước 3",
+            "text": "child.wait() → cha chặn tới khi con terminated"
+          },
+          {
+            "label": "Bước 4",
+            "text": "wait() trả về → exit code: 0, n của SystemExit(n), 1 nếu lỗi"
+          }
+        ]
+      },
+      "counter": {
+        "question": "run_child(\"import sys; sys.exit(7)\") trả gì?",
+        "options": [
+          "None",
+          "0",
+          "7"
+        ],
+        "correct": "7"
+      },
+      "scaffold": {
+        "template": "TRANSITIONS = {\n    (\"new\", \"admit\"): \"ready\",\n    (\"ready\", \"dispatch\"): \"running\",\n    (\"running\", \"interrupt\"): \"ready\",\n    (\"running\", \"io_wait\"): \"waiting\",\n    (\"waiting\", \"io_done\"): {{slot1}},\n    (\"running\", \"exit\"): \"terminated\",\n}\n\n\ndef next_state(state, event):\n    if (state, event) not in TRANSITIONS:\n        {{slot2}}\n    return TRANSITIONS[(state, event)]\n\n\ndef run_child(code):\n    child = subprocess.Popen([sys.executable, \"-c\", code])\n    return {{slot3}}\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "\"ready\""
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "raise ValueError(\"invalid transition\")"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "child.wait()"
+          }
+        ],
+        "bank": [
+          {
+            "label": "\"ready\"",
+            "slot": 1
+          },
+          {
+            "label": "return None",
+            "slot": 2,
+            "trap": "Âm thầm trả None — lỗi chuyển trạng thái bị che mất."
+          },
+          {
+            "label": "\"running\"",
+            "slot": 1,
+            "trap": "I/O xong chưa chắc có CPU: phải về ready chờ dispatch."
+          },
+          {
+            "label": "child.wait()",
+            "slot": 3
+          },
+          {
+            "label": "child.returncode",
+            "slot": 3,
+            "trap": "Đọc ngay sau Popen là None: chưa ai chờ con."
+          },
+          {
+            "label": "raise ValueError(\"invalid transition\")",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết next_state(state, event) theo sơ đồ 5 trạng thái: new –admit→ ready, ready –dispatch→ running, running –interrupt→ ready, running –io_wait→ waiting, waiting –io_done→ ready, running –exit→ terminated; cặp (state, event) khác → ValueError. lifecycle(events) đã cấp, dùng next_state. Rồi viết run_child(code): tạo process con bằng subprocess.Popen([sys.executable, \"-c\", code]), chờ con kết thúc bằng wait() và trả exit code.\n\nThực hành: Viết sơ đồ thành dict {(state, event): trạng thái mới}; cặp không có trong dict thì raise ValueError. Với process con: Popen → wait() → trả giá trị của wait().",
+        "io": [
+          {
+            "label": "next_state(\"waiting\", \"io_done\")",
+            "value": "\"ready\""
+          },
+          {
+            "label": "next_state(\"new\", \"dispatch\")",
+            "value": "ValueError"
+          },
+          {
+            "label": "run_child(\"raise SystemExit(3)\")",
+            "value": "3"
+          }
+        ]
+      },
+      "starterCode": "import subprocess\nimport sys\n\n# Sơ đồ 5 trạng thái (sự kiện ghi trên mũi tên):\n#   new --admit--> ready --dispatch--> running --exit--> terminated\n#   running --interrupt--> ready     (hết time slice, bị ngắt)\n#   running --io_wait--> waiting     (chờ đọc đĩa, chờ mạng...)\n#   waiting --io_done--> ready       (I/O xong: xếp hàng lại)\n\n\ndef next_state(state, event):\n    # Trả trạng thái mới theo sơ đồ; cặp (state, event) không có -> ValueError.\n    pass\n\n\ndef lifecycle(events):\n    states = [\"new\"]\n    for event in events:\n        states.append(next_state(states[-1], event))\n    return states\n\n\ndef run_child(code):\n    # Tạo con bằng subprocess.Popen([sys.executable, \"-c\", code]),\n    # chờ con kết thúc rồi trả exit code.\n    pass\n\n\nif __name__ == \"__main__\":\n    print(lifecycle([\"admit\", \"dispatch\", \"io_wait\", \"io_done\", \"dispatch\", \"exit\"]))\n    print(run_child(\"raise SystemExit(3)\"))\n",
+      "solutionCode": "import subprocess\nimport sys\n\n# Sơ đồ 5 trạng thái (sự kiện ghi trên mũi tên):\n#   new --admit--> ready --dispatch--> running --exit--> terminated\n#   running --interrupt--> ready     (hết time slice, bị ngắt)\n#   running --io_wait--> waiting     (chờ đọc đĩa, chờ mạng...)\n#   waiting --io_done--> ready       (I/O xong: xếp hàng lại)\n\nTRANSITIONS = {\n    (\"new\", \"admit\"): \"ready\",\n    (\"ready\", \"dispatch\"): \"running\",\n    (\"running\", \"interrupt\"): \"ready\",\n    (\"running\", \"io_wait\"): \"waiting\",\n    (\"waiting\", \"io_done\"): \"ready\",\n    (\"running\", \"exit\"): \"terminated\",\n}\n\n\ndef next_state(state, event):\n    if (state, event) not in TRANSITIONS:\n        raise ValueError(f\"không có chuyển {state} --{event}-->\")\n    return TRANSITIONS[(state, event)]\n\n\ndef lifecycle(events):\n    states = [\"new\"]\n    for event in events:\n        states.append(next_state(states[-1], event))\n    return states\n\n\ndef run_child(code):\n    child = subprocess.Popen([sys.executable, \"-c\", code])\n    return child.wait()\n\n\nif __name__ == \"__main__\":\n    print(lifecycle([\"admit\", \"dispatch\", \"io_wait\", \"io_done\", \"dispatch\", \"exit\"]))\n    print(run_child(\"raise SystemExit(3)\"))\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Viết sơ đồ thành dict {(state, event): trạng thái mới}; cặp không có trong dict thì raise ValueError. Với process con: Popen → wait() → trả giá trị của wait()."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. Liệt kê đủ 6 cặp (state, event) hợp lệ vào dict TRANSITIONS.\n2. next_state: cặp không có trong dict → raise ValueError; có thì trả trạng thái mới.\n3. run_child: child = subprocess.Popen([sys.executable, \"-c\", code]).\n4. return child.wait() — không đọc child.returncode trước khi chờ."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def run_child(code):\n    child = subprocess.Popen([sys.executable, \"-c\", code])\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "new --admit--> ready",
+          "call": "next_state(\"new\", \"admit\")",
+          "expect": "'ready'"
+        },
+        {
+          "name": "I/O xong → ready, không phải running",
+          "call": "next_state(\"waiting\", \"io_done\")",
+          "expect": "'ready'"
+        },
+        {
+          "name": "Bị ngắt (hết time slice) → ready",
+          "call": "next_state(\"running\", \"interrupt\")",
+          "expect": "'ready'"
+        },
+        {
+          "name": "Vòng đời có chờ I/O và bị ngắt",
+          "call": "lifecycle([\"admit\", \"dispatch\", \"interrupt\", \"dispatch\", \"io_wait\", \"io_done\", \"dispatch\", \"exit\"])",
+          "expect": "['new', 'ready', 'running', 'ready', 'running', 'waiting', 'ready', 'running', 'terminated']"
+        },
+        {
+          "name": "Chuyển không hợp lệ → ValueError",
+          "call": "[_studio.call(next_state, s, e).error for s, e in [(\"new\", \"dispatch\"), (\"waiting\", \"dispatch\"), (\"terminated\", \"admit\"), (\"ready\", \"exit\")]]",
+          "expect": "['ValueError'] * 4"
+        },
+        {
+          "name": "run_child(\"pass\") → 0",
+          "call": "run_child(\"pass\")",
+          "expect": "0"
+        },
+        {
+          "name": "SystemExit(3) → 3, sys.exit(7) → 7",
+          "call": "(run_child(\"raise SystemExit(3)\"), run_child(\"import sys; sys.exit(7)\"))",
+          "expect": "(3, 7)"
+        },
+        {
+          "name": "Ngoại lệ không bắt trong con → 1",
+          "call": "run_child(\"1/0\")",
+          "expect": "1"
+        },
+        {
+          "name": "Dùng Popen rồi tự chờ (không gọi run)",
+          "call": "[c[\"kind\"] for c in _studio.call(run_child, \"pass\").subprocess_calls]",
+          "expect": "['Popen']"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "next_state(state, event)",
+          "does": "Một bước trong sơ đồ 5 trạng thái.",
+          "takes": "state, event: str",
+          "gives": "str trạng thái mới; cặp không hợp lệ → ValueError",
+          "effect": "Không in.",
+          "call": "next_state(\"running\", \"io_wait\") → \"waiting\""
+        },
+        {
+          "sig": "run_child(code)",
+          "does": "Tạo process con chạy code bằng Python hiện tại và chờ nó.",
+          "takes": "code: str (mã Python)",
+          "gives": "int exit code của con",
+          "effect": "Con in gì thì in thẳng ra màn hình (không thu).",
+          "call": "run_child(\"pass\") → 0"
+        }
+      ],
+      "env": "Trình duyệt không tạo được process thật, nên Studio MÔ PHỎNG subprocess: lệnh [sys.executable, \"-c\", code] hoặc [sys.executable, \"ten_file.py\", ...] chạy chương trình con trong một vùng nhớ riêng, có stdin/stdout/stderr riêng, returncode lấy từ sys.exit()/ngoại lệ, và time.sleep() của con chỉ đẩy một đồng hồ ảo (timeout vẫn được tính đúng). Lệnh shell khác (ls, dir, ping…) không chạy được ở đây. Hãy chạy lại file trên máy (Windows/Linux) để thấy process thật."
+    }
+  }
+}

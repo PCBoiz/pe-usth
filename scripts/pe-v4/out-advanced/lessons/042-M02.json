@@ -1,0 +1,438 @@
+{
+  "lesson_code": "M02",
+  "sort_order": 42,
+  "module": "M7 · Matplotlib",
+  "title": "M02 · Phân bố, scatter và outlier",
+  "subtitle": "Nâng cao · M7 · 35 phút",
+  "estimated_minutes": 35,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v2",
+    "title": "M02 · Phân bố, scatter và outlier",
+    "subtitle": "Nâng cao · M7 · 35 phút",
+    "source": {
+      "kind": "pe-v4-advanced",
+      "filename": "python-learning-data.json#M02",
+      "parser": "pe-v4/build_advanced",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M02"
+        ],
+        "title": "Phân bố, scatter và outlier",
+        "goal": "Đọc phân bố, so nhóm và giữ outlier.",
+        "task": "plot_distribution: histogram gộp (bins=edges, n trên tiêu đề) + boxplot mỗi nhóm. plot_relation: scatter alpha 0.5.",
+        "predict": "{\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, biên [0, 5, 10, 25] → histogram cao bao nhiêu?",
+        "code": "def plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    # histogram gộp, tiêu đề có n\n    # boxplot mỗi nhóm, giữ fliers\n    return fig",
+        "tests": [
+          "Ví dụ → cột 1, 6, 1; tiêu đề \"All scores (n=8)\"",
+          "Hộp B vẫn có điểm ngoài 20"
+        ],
+        "reflect": "Vì sao không được tắt showfliers để biểu đồ \"gọn\" hơn?"
+      },
+      "context": {
+        "title": "Vẽ phân bố bằng histogram có biên bin cố định, so nhóm bằng boxplot GIỮ outlier, và vẽ quan hệ bằng scatter có alpha.",
+        "body": "Viết hai hàm trả về Figure. (1) plot_distribution(groups, edges): groups là dict tên nhóm → list điểm. fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\"). ax_hist: histogram của TẤT CẢ điểm gộp lại với bins=edges, nhãn \"Score\" / \"Count\", tiêu đề f\"All scores (n={n})\" với n là tổng số quan sát. ax_box: boxplot mỗi nhóm một hộp theo thứ tự dict, GIỮ điểm ngoài whisker (không lọc, không tắt showfliers), tick là tên nhóm, nhãn y \"Score\". (2) plot_relation(hours, scores): scatter alpha=0.5, nhãn \"Hours\" / \"Score\".",
+        "example": "plot_distribution({\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, [0, 5, 10, 25]) → histogram 3 cột 1, 6, 1; tiêu đề \"All scores (n=8)\"; hộp B có điểm ngoài 20.",
+        "prereq": "M01",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "groups = {\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, edges = [0, 5, 10, 25]. Histogram gộp có mấy cột, cao bao nhiêu?",
+        "options": [
+          {
+            "id": "a",
+            "title": "3 cột: 1, 6, 1",
+            "detail": "[0, 5) chỉ có 4; [5, 10) có 5, 6, 7, 5, 6, 7; [10, 25] có 20.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "3 cột: 3, 4, 1",
+            "detail": "5 thuộc bin [5, 10) — biên trái đóng, biên phải mở (trừ bin cuối).",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "Hai histogram riêng cho A và B",
+            "detail": "Đề gộp mọi điểm vào một histogram; so nhóm là việc của boxplot.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Điểm ngoài whisker là lỗi nhập liệu — bỏ đi cho biểu đồ gọn\"",
+        "body": "Boxplot chỉ ĐÁNH DẤU điểm xa so với phần lớn dữ liệu; nó không biết điểm đó sai hay thật. Bỏ điểm 20 làm nhóm B trông giống A và che mất thứ đáng điều tra nhất. Muốn loại dữ liệu thì phải có chính sách rõ ràng và ghi lại, không phải tắt showfliers."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "Histogram đếm số quan sát trong từng bin; biên bin là một quyết định: cùng dữ liệu, biên khác → hình khác → kết luận khác. Chốt bins=edges và ghi cỡ mẫu n lên tiêu đề để người đọc biết đang nhìn bao nhiêu quan sát."
+        },
+        {
+          "n": 2,
+          "body": "Boxplot tóm tắt mỗi nhóm bằng median (vạch giữa), tứ phân vị (hộp) và whisker; điểm ngoài whisker được vẽ riêng (fliers). Điểm ngoài KHÔNG tự là lỗi — có thể là kết quả thật đáng chú ý nhất. Giữ nó trên hình rồi điều tra."
+        },
+        {
+          "n": 3,
+          "body": "ax.boxplot(list_các_nhóm) đặt hộp ở x = 1, 2, …; ghi tên bằng ax.set_xticks([1, 2], [\"A\", \"B\"]). Matplotlib 3.8 (trong Studio) còn nhận labels=…; từ 3.9 tham số đổi tên thành tick_labels= — set_xticks chạy được ở mọi phiên bản."
+        },
+        {
+          "n": 4,
+          "body": "Scatter vẽ từng CẶP quan sát (giờ học, điểm). alpha=0.5 làm điểm trong suốt một nửa nên chỗ nhiều điểm chồng nhau hiện đậm hơn. ax.plot sẽ nối các cặp theo thứ tự nhập — đường đó không có nghĩa."
+        },
+        {
+          "n": 5,
+          "body": "Scatter cho thấy tương quan, không chứng minh nhân quả: có thể có biến gây nhiễu hoặc dữ liệu thiếu. So phân bố các nhóm thì báo cỡ mẫu trước."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\n\nfig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\ncounts, edges, bars = ax_hist.hist([1, 2, 2, 4], bins=[0, 3, 5])\nprint(counts.tolist())\n\nparts = ax_box.boxplot([[4, 5, 6, 7], [5, 6, 7, 20]])\nax_box.set_xticks([1, 2], [\"A\", \"B\"])\nprint([line.get_ydata().tolist() for line in parts[\"fliers\"]])\nprint([t.get_text() for t in ax_box.get_xticklabels()])",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "ax.boxplot(data, showfliers=False) làm gì?",
+          "options": [
+            {
+              "text": "Ẩn các điểm ngoài whisker khỏi hình — dữ liệu vẫn còn nhưng người đọc không thấy",
+              "detail": "Hình \"gọn\" hơn nhưng che outlier.",
+              "correct": true
+            },
+            {
+              "text": "Sửa outlier về giá trị whisker",
+              "detail": "Không sửa dữ liệu nào.",
+              "correct": false
+            },
+            {
+              "text": "Xoá outlier khỏi list data",
+              "detail": "List không đổi; chỉ là không vẽ.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Hình \"gọn\" hơn nhưng che outlier."
+        },
+        {
+          "question": "Scatter giờ học – điểm có xu hướng đi lên. Kết luận nào đúng mực?",
+          "options": [
+            {
+              "text": "Học thêm 1 giờ chắc chắn tăng điểm",
+              "detail": "Scatter không chứng minh tác động.",
+              "correct": false
+            },
+            {
+              "text": "Không kết luận được gì vì có điểm chồng nhau",
+              "detail": "Điểm chồng xử lý bằng alpha; vẫn đọc được xu hướng.",
+              "correct": false
+            },
+            {
+              "text": "Hai biến có tương quan dương trong mẫu này; chưa đủ để nói học nhiều GÂY RA điểm cao",
+              "detail": "Tương quan khác nhân quả; còn biến gây nhiễu, cỡ mẫu.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "Tương quan khác nhân quả; còn biến gây nhiễu, cỡ mẫu."
+        },
+        {
+          "question": "Vì sao tiêu đề histogram ghi n=…?",
+          "options": [
+            {
+              "text": "Để đếm số bin",
+              "detail": "Số bin là len(edges) - 1.",
+              "correct": false
+            },
+            {
+              "text": "Để người đọc biết cỡ mẫu trước khi tin vào hình dạng phân bố",
+              "detail": "8 quan sát và 8000 quan sát cho độ tin cậy rất khác nhau.",
+              "correct": true
+            },
+            {
+              "text": "Matplotlib bắt buộc",
+              "detail": "Không bắt buộc; đây là thói quen trình bày đúng.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "8 quan sát và 8000 quan sát cho độ tin cậy rất khác nhau."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao bài giữ outlier trên boxplot và chốt biên bin, thay vì để mặc định hoặc lọc dữ liệu cho đẹp?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Biên bin mặc định đổi theo dữ liệu nên hai lần vẽ không so được; chốt edges thì cùng một thang. Outlier có thể là dữ liệu thật quan trọng nhất — boxplot vẽ riêng nó để người đọc thấy và điều tra; tắt showfliers hay lọc bỏ là đổi dữ liệu mà không báo cho ai."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "plot_relation đã viết sẵn. Lắp ba chỗ của plot_distribution: histogram biên cố định, tiêu đề có n, boxplot đủ nhóm.",
+        "rule": "Thử ba nhóm, một nhóm có điểm rất thấp; kiểm boxplot vẫn vẽ điểm đó và n trên tiêu đề đúng tổng số điểm."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "all_scores = [... của mọi nhóm] → gộp, n = len(all_scores)"
+          },
+          {
+            "label": "Bước 2",
+            "text": "ax_hist.hist(all_scores, bins=edges) → đếm theo biên cố định"
+          },
+          {
+            "label": "Bước 3",
+            "text": "ax_box.boxplot(list(groups.values())) → mỗi nhóm một hộp, giữ fliers"
+          },
+          {
+            "label": "Bước 4",
+            "text": "ax_box.set_xticks(range(1, k + 1), names) → tên nhóm dưới hộp"
+          },
+          {
+            "label": "Bước 5",
+            "text": "ax.scatter(hours, scores, alpha=0.5) → cặp quan sát, chỗ chồng đậm hơn"
+          }
+        ]
+      },
+      "counter": {
+        "question": "groups {\"X\": [1, 2], \"Y\": [3, 4, 5]} → tiêu đề histogram là?",
+        "options": [
+          "All scores (n=3)",
+          "All scores (n=5)",
+          "All scores (n=2)"
+        ],
+        "correct": "All scores (n=5)"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\n\n\ndef plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    all_scores = [score for scores in groups.values() for score in scores]\n    {{slot1}}\n    ax_hist.set(xlabel=\"Score\", ylabel=\"Count\", title={{slot2}})\n\n    {{slot3}}\n    ax_box.set_xticks(range(1, len(groups) + 1), list(groups))\n    ax_box.set(ylabel=\"Score\")\n    return fig\n\n\ndef plot_relation(hours, scores):\n    fig, ax = plt.subplots()\n    ax.scatter(hours, scores, alpha=0.5)\n    ax.set(xlabel=\"Hours\", ylabel=\"Score\")\n    return fig\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "ax_hist.hist(all_scores, bins=edges)"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "f\"All scores (n={len(all_scores)})\""
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "ax_box.boxplot(list(groups.values()))"
+          }
+        ],
+        "bank": [
+          {
+            "label": "ax_box.boxplot(list(groups.values()))",
+            "slot": 3
+          },
+          {
+            "label": "f\"All scores (n={len(groups)})\"",
+            "slot": 2,
+            "trap": "len(groups) là số NHÓM, không phải số quan sát."
+          },
+          {
+            "label": "ax_hist.hist(all_scores)",
+            "slot": 1,
+            "trap": "Bin tự động — không phải biên đề cho."
+          },
+          {
+            "label": "ax_box.boxplot(all_scores)",
+            "slot": 3,
+            "trap": "Gộp mọi nhóm thành một hộp — mất phép so sánh."
+          },
+          {
+            "label": "ax_box.boxplot(list(groups.values()), showfliers=False)",
+            "slot": 3,
+            "trap": "Ẩn outlier khỏi hình."
+          },
+          {
+            "label": "ax_hist.hist(all_scores, bins=edges)",
+            "slot": 1
+          },
+          {
+            "label": "f\"All scores (n={len(all_scores)})\"",
+            "slot": 2
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm trả về Figure. (1) plot_distribution(groups, edges): groups là dict tên nhóm → list điểm. fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\"). ax_hist: histogram của TẤT CẢ điểm gộp lại với bins=edges, nhãn \"Score\" / \"Count\", tiêu đề f\"All scores (n={n})\" với n là tổng số quan sát. ax_box: boxplot mỗi nhóm một hộp theo thứ tự dict, GIỮ điểm ngoài whisker (không lọc, không tắt showfliers), tick là tên nhóm, nhãn y \"Score\". (2) plot_relation(hours, scores): scatter alpha=0.5, nhãn \"Hours\" / \"Score\".\n\nThực hành: Gộp mọi điểm cho histogram (bins=edges, n trên tiêu đề); boxplot nhận list các nhóm, tick là tên nhóm; scatter có alpha.",
+        "io": [
+          {
+            "label": "plot_distribution({\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, [0, 5, 10, 25])",
+            "value": "histogram 1, 6, 1; tiêu đề All scores (n=8); hộp B giữ điểm 20"
+          },
+          {
+            "label": "plot_relation([1, 2, 3, 4], [2, 3, 3, 5])",
+            "value": "4 điểm scatter, alpha 0.5; nhãn Hours / Score"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\n\n\ndef plot_distribution(groups, edges):\n    # Hai Axes: histogram của MỌI điểm (bins=edges, tiêu đề có n) và boxplot mỗi nhóm một hộp\n    pass\n\n\ndef plot_relation(hours, scores):\n    # scatter alpha=0.5; nhãn Hours / Score; return fig\n    pass\n\n\nif __name__ == \"__main__\":\n    plot_distribution({\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, [0, 5, 10, 25])\n    plot_relation([1, 2, 3, 4], [2, 3, 3, 5])\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\n\n\ndef plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    all_scores = [score for scores in groups.values() for score in scores]\n    ax_hist.hist(all_scores, bins=edges)\n    ax_hist.set(xlabel=\"Score\", ylabel=\"Count\", title=f\"All scores (n={len(all_scores)})\")\n\n    ax_box.boxplot(list(groups.values()))\n    ax_box.set_xticks(range(1, len(groups) + 1), list(groups))\n    ax_box.set(ylabel=\"Score\")\n    return fig\n\n\ndef plot_relation(hours, scores):\n    fig, ax = plt.subplots()\n    ax.scatter(hours, scores, alpha=0.5)\n    ax.set(xlabel=\"Hours\", ylabel=\"Score\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_distribution({\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, [0, 5, 10, 25])\n    plot_relation([1, 2, 3, 4], [2, 3, 3, 5])\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "Gộp mọi điểm cho histogram (bins=edges, n trên tiêu đề); boxplot nhận list các nhóm, tick là tên nhóm; scatter có alpha."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. all_scores = [score for scores in groups.values() for score in scores]; n = len(all_scores).\n2. ax_hist.hist(all_scores, bins=edges); ax_hist.set(xlabel=\"Score\", ylabel=\"Count\", title=f\"All scores (n={n})\").\n3. ax_box.boxplot(list(groups.values())) — để mặc định showfliers; ax_box.set_xticks(range(1, len(groups) + 1), list(groups)).\n4. plot_relation: ax.scatter(hours, scores, alpha=0.5); ax.set(xlabel=\"Hours\", ylabel=\"Score\"); return fig."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    all_scores = [score for scores in groups.values() for score in scores]\n    ax_hist.hist(all_scores, bins=edges)\n    ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "Hai Axes",
+          "call": "len(plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes)",
+          "expect": "2"
+        },
+        {
+          "name": "Histogram gộp mọi nhóm, đúng biên",
+          "call": "[float(v) for v in (p.get_height() for p in plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes[0].patches)]",
+          "expect": "[1.0, 9.0, 5.0]"
+        },
+        {
+          "name": "Tiêu đề ghi cỡ mẫu n",
+          "call": "plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes[0].get_title()",
+          "expect": "'All scores (n=15)'"
+        },
+        {
+          "name": "Histogram có nhãn Score / Count",
+          "call": "(lambda ax: (ax.get_xlabel(), ax.get_ylabel()))(plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes[0])",
+          "expect": "('Score', 'Count')"
+        },
+        {
+          "name": "Boxplot: mỗi nhóm một hộp, tick là tên nhóm",
+          "call": "[t.get_text() for t in plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes[1].get_xticklabels()]",
+          "expect": "['North', 'South', 'East']"
+        },
+        {
+          "name": "Boxplot giữ outlier của từng nhóm",
+          "call": "(lambda ax: [[float(v) for v in l.get_ydata()] for l in ax.lines if l.get_linestyle() == \"None\"])(plot_distribution({\"North\": [50, 55, 60, 62, 58], \"South\": [52, 57, 61, 59, 95], \"East\": [10, 56, 58, 60, 57]}, [0, 40, 60, 100]).axes[1])",
+          "expect": "[[], [95.0], [10.0]]"
+        },
+        {
+          "name": "Scatter: đúng các cặp quan sát",
+          "call": "plot_relation([1, 2, 2, 5], [3, 4, 4, 9]).axes[0].collections[0].get_offsets().tolist()",
+          "expect": "[[1.0, 3.0], [2.0, 4.0], [2.0, 4.0], [5.0, 9.0]]"
+        },
+        {
+          "name": "Scatter: alpha 0.5, nhãn Hours / Score, không nối đường",
+          "call": "(lambda ax: (ax.collections[0].get_alpha(), ax.get_xlabel(), ax.get_ylabel(), len(ax.lines)))(plot_relation([1, 2, 2, 5], [3, 4, 4, 9]).axes[0])",
+          "expect": "(0.5, 'Hours', 'Score', 0)"
+        },
+        {
+          "name": "Một nhóm duy nhất",
+          "call": "(lambda f: ([float(v) for v in (p.get_height() for p in f.axes[0].patches)], f.axes[0].get_title(), [t.get_text() for t in f.axes[1].get_xticklabels()]))(plot_distribution({\"Solo\": [1, 2, 3]}, [0, 2, 4]))",
+          "expect": "([1.0, 2.0], 'All scores (n=3)', ['Solo'])"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "plot_distribution(groups, edges)",
+          "does": "So phân bố: histogram gộp + boxplot theo nhóm.",
+          "takes": "groups: dict tên → list điểm; edges: list biên bin",
+          "gives": "Figure 2 Axes",
+          "effect": "Tiêu đề histogram ghi n; boxplot giữ mọi điểm ngoài whisker; tick là tên nhóm.",
+          "call": "plot_distribution({\"A\": [1, 2]}, [0, 2, 4]).axes[0].get_title() → \"All scores (n=2)\""
+        },
+        {
+          "sig": "plot_relation(hours, scores)",
+          "does": "Vẽ quan hệ giữa hai biến.",
+          "takes": "hours, scores: list cùng độ dài",
+          "gives": "Figure 1 Axes",
+          "effect": "Scatter alpha=0.5, không nối đường; nhãn Hours / Score.",
+          "call": "plot_relation([1, 2], [3, 4]).axes[0].collections[0].get_alpha() → 0.5"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy"
+      ]
+    },
+    "play": {
+      "level": "N",
+      "boss": false,
+      "games": [
+        {
+          "id": "match-0",
+          "type": "match",
+          "title": "Nối mỗi dòng lệnh với việc nó làm",
+          "pairs": [
+            {
+              "left": "all_scores = [... của mọi nhóm]",
+              "right": "gộp, n = len(all_scores)"
+            },
+            {
+              "left": "ax_hist.hist(all_scores, bins=edges)",
+              "right": "đếm theo biên cố định"
+            },
+            {
+              "left": "ax_box.boxplot(list(groups.values()))",
+              "right": "mỗi nhóm một hộp, giữ fliers"
+            },
+            {
+              "left": "ax_box.set_xticks(range(1, k + 1), names)",
+              "right": "tên nhóm dưới hộp"
+            }
+          ],
+          "rightOrder": [
+            0,
+            3,
+            1,
+            2
+          ]
+        },
+        {
+          "id": "fill-1",
+          "type": "fill",
+          "title": "Luyện có hỗ trợ"
+        },
+        {
+          "id": "spotError-2",
+          "type": "spotError",
+          "title": "Săn lỗi: dòng nào làm chương trình sai?",
+          "code": "\ndef plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    all_scores = [score for scores in groups.values() for score in scores]\n    ax_hist.hist(all_scores, bins=edges)\n    ax_hist.set(xlabel=\"Score\", ylabel=\"Count\", title=f\"All scores (n={len(all_scores)})\")\n\n    ax_box.boxplot(list(groups.values()), showfliers=False)\n    ax_box.set_xticks(range(1, len(groups) + 1), list(groups))\n    ax_box.set(ylabel=\"Score\")\n    return fig\n\n\ndef plot_relation(hours, scores):\n    fig, ax = plt.subplots()",
+          "firstLine": 3,
+          "line": 10,
+          "lines": [
+            10
+          ],
+          "label": "Ẩn outlier",
+          "fix": "    ax_box.boxplot(list(groups.values()))"
+        },
+        {
+          "id": "debug-3",
+          "type": "debug",
+          "title": "Sửa code cho chạy đúng",
+          "code": "import matplotlib.pyplot as plt\n\n\ndef plot_distribution(groups, edges):\n    fig, (ax_hist, ax_box) = plt.subplots(1, 2, layout=\"constrained\")\n    all_scores = [score for scores in groups.values() for score in scores]\n    ax_hist.hist(all_scores, bins=edges)\n    ax_hist.set(xlabel=\"Score\", ylabel=\"Count\", title=f\"All scores (n={len(groups)})\")\n\n    ax_box.boxplot(list(groups.values()))\n    ax_box.set_xticks(range(1, len(groups) + 1), list(groups))\n    ax_box.set(ylabel=\"Score\")\n    return fig\n\n\ndef plot_relation(hours, scores):\n    fig, ax = plt.subplots()\n    ax.scatter(hours, scores, alpha=0.5)\n    ax.set(xlabel=\"Hours\", ylabel=\"Score\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    plot_distribution({\"A\": [4, 5, 6, 7], \"B\": [5, 6, 7, 20]}, [0, 5, 10, 25])\n    plot_relation([1, 2, 3, 4], [2, 3, 3, 5])\n    plt.show()\n",
+          "label": "Đếm nhóm thay vì quan sát"
+        },
+        {
+          "id": "selfExplain-4",
+          "type": "selfExplain",
+          "title": "Vì sao bài giữ outlier trên boxplot và chốt biên bin, thay vì để mặc định hoặc lọc dữ liệu cho đẹp?"
+        }
+      ],
+      "selfExplainMinWords": 8
+    }
+  }
+}

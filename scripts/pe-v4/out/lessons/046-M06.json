@@ -1,0 +1,359 @@
+{
+  "lesson_code": "M06",
+  "sort_order": 46,
+  "module": "M7 · Matplotlib",
+  "title": "M06 · Layout, xuất hình và kiểm tra chất lượng",
+  "subtitle": "Nâng cao · M7 · 40 phút",
+  "estimated_minutes": 40,
+  "xp_reward": 20,
+  "content_json": {
+    "schema": "studio-lesson/v1",
+    "title": "M06 · Layout, xuất hình và kiểm tra chất lượng",
+    "subtitle": "Nâng cao · M7 · 40 phút",
+    "source": {
+      "kind": "pe-v4",
+      "filename": "python-learning-data.json#M06",
+      "parser": "pe-v4/build",
+      "importedAt": "2026-10-12T00:00:00+00:00"
+    },
+    "step_1": {
+      "brief": {
+        "eyebrow": [
+          "M7",
+          "BÀI TẬP NÂNG CAO",
+          "M06"
+        ],
+        "title": "Layout, xuất hình và kiểm tra chất lượng",
+        "goal": "Xuất hình đúng kích thước và dọn figure khi chạy hàng loạt.",
+        "task": "make_chart: figsize (6, 3) + layout constrained. export_all: savefig PNG theo dpi rồi close từng figure.",
+        "predict": "Figure 6×3 inch, dpi 150 → PNG bao nhiêu pixel?",
+        "code": "def export_all(charts, dpi):\n    result = {}\n    for title, values in charts.items():\n        fig = make_chart(title, values)\n        # savefig vào BytesIO với dpi, rồi close\n    return result",
+        "tests": [
+          "dpi 20 → mỗi PNG 120×60",
+          "Sau export_all không còn figure nào mở"
+        ],
+        "reflect": "Vì sao không dùng bbox_inches=\"tight\" khi đề cần đúng kích thước pixel?"
+      },
+      "context": {
+        "title": "Dựng figure đúng kích thước inch với layout constrained, xuất hàng loạt PNG đúng số pixel và đóng mọi figure sau khi lưu.",
+        "body": "Viết hai hàm. (1) make_chart(title, values): fig, ax = plt.subplots(figsize=(6, 3), layout=\"constrained\"); line marker \"o\" của values theo ngày 1, 2, …, len(values); tiêu đề title, nhãn \"Day\" / \"Revenue\"; return fig. (2) export_all(charts, dpi): charts là dict tiêu đề → list giá trị. Với từng mục: fig = make_chart(...), lưu fig vào io.BytesIO dạng PNG với dpi cho sẵn (KHÔNG dùng bbox_inches=\"tight\" — đề cần ảnh đúng 6·dpi × 3·dpi pixel), rồi plt.close(fig). Trả dict tiêu đề → bytes PNG. Sau export_all, số figure đang mở không đổi.",
+        "example": "make_chart(\"Week 1\", [10, 20, 15]) → figure 6×3 inch, layout constrained. export_all({\"Week 1\": [10, 20, 15]}, 150) → {\"Week 1\": bytes PNG 900×450}, không figure nào còn mở.",
+        "prereq": "M05",
+        "level": "Nâng cao"
+      },
+      "predict": {
+        "question": "Figure figsize=(6, 3) lưu PNG với dpi=150 (không bbox_inches) — ảnh bao nhiêu pixel?",
+        "options": [
+          {
+            "id": "a",
+            "title": "900 × 450",
+            "detail": "6 × 150 và 3 × 150.",
+            "correct": true
+          },
+          {
+            "id": "b",
+            "title": "Tuỳ nội dung hình",
+            "detail": "Chỉ khi có bbox_inches=\"tight\" kích thước mới phụ thuộc nội dung.",
+            "correct": false
+          },
+          {
+            "id": "c",
+            "title": "6 × 3",
+            "detail": "figsize tính bằng inch, không phải pixel.",
+            "correct": false
+          },
+          {
+            "id": "d",
+            "title": "600 × 300",
+            "detail": "Đó là dpi=100.",
+            "correct": false
+          }
+        ]
+      },
+      "misconception": {
+        "title": "\"Tăng dpi là biểu đồ có nhiều thông tin hơn\"",
+        "body": "dpi chỉ là số điểm ảnh mỗi inch: cùng đường, cùng nhãn, chỉ mịn hơn và file nặng hơn. Muốn biểu đồ nói nhiều hơn phải đổi dữ liệu hoặc cách trình bày. Và bbox_inches=\"tight\" đổi kích thước canvas — đề cần đúng kích thước thì đừng dùng."
+      },
+      "explain": [
+        {
+          "n": 1,
+          "body": "figsize tính bằng INCH, dpi là số điểm ảnh mỗi inch: PNG 6×3 inch ở dpi 150 có 900×450 pixel. Tăng dpi làm ảnh mịn hơn khi in hay phóng to nhưng KHÔNG thêm chi tiết dữ liệu nào."
+        },
+        {
+          "n": 2,
+          "body": "layout=\"constrained\" (đặt khi tạo figure) tự dàn lề để tiêu đề, nhãn trục, colorbar không chồng nhau. tight_layout() là cách cũ, chạy một lần mỗi khi gọi; chọn một trong hai, đừng dùng cả hai trên cùng figure."
+        },
+        {
+          "n": 3,
+          "body": "PNG là ảnh raster (điểm ảnh) — hợp cho web, slide. SVG/PDF là vector — phóng to không vỡ, hợp cho báo cáo in. savefig đoán kiểu ảnh từ đuôi tên file (\"chart.svg\"); ghi vào BytesIO/StringIO thì phải nói rõ format=\"png\"/\"svg\". bbox_inches=\"tight\" cắt/thêm lề theo nội dung nên kích thước ảnh ra KHÁC figsize × dpi."
+        },
+        {
+          "n": 4,
+          "body": "Kiểm FILE ĐÃ LƯU, không chỉ cửa sổ trên màn hình: đọc lại bytes (chữ ký PNG, rộng/cao ở byte 16–24) hoặc mở file ra xem. Chốt font, màu, nền, đơn vị trước khi xuất hàng loạt."
+        },
+        {
+          "n": 5,
+          "body": "Thứ tự đúng: vẽ → savefig → close. Vòng lặp xuất 100 biểu đồ mà không plt.close(fig) giữ 100 figure trong bộ nhớ (Matplotlib cảnh báo khi quá 20). Script cần hiển thị thì gọi plt.show() ở CUỐI, sau khi đã lưu."
+        }
+      ],
+      "code": {
+        "filename": "vi_du.py",
+        "version": "Python 3.12",
+        "source": "import matplotlib.pyplot as plt\nfrom io import BytesIO, StringIO\n\nfig, ax = plt.subplots(figsize=(4, 2), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [3, 4])\nax.set_title(\"Orders\")\n\npng = BytesIO()\nfig.savefig(png, format=\"png\", dpi=100)\ndata = png.getvalue()\nprint(int.from_bytes(data[16:20], \"big\"), int.from_bytes(data[20:24], \"big\"))\n\nsvg = StringIO()\nfig.savefig(svg, format=\"svg\")\nprint(\"<svg\" in svg.getvalue())\n\nbefore = len(plt.get_fignums())\nplt.close(fig)\nprint(before, len(plt.get_fignums()))",
+        "kind": "demo"
+      }
+    },
+    "step_2": {
+      "mcq": [
+        {
+          "question": "Báo cáo in A4, người đọc sẽ phóng to biểu đồ. Nên xuất kiểu nào?",
+          "options": [
+            {
+              "text": "PNG dpi=72",
+              "detail": "Raster dpi thấp sẽ vỡ hạt khi phóng to.",
+              "correct": false
+            },
+            {
+              "text": "SVG hoặc PDF (vector)",
+              "detail": "Vector phóng to không vỡ.",
+              "correct": true
+            },
+            {
+              "text": "Chụp màn hình cửa sổ plt.show()",
+              "detail": "Kích thước phụ thuộc màn hình, không lặp lại được.",
+              "correct": false
+            }
+          ],
+          "correct": 1,
+          "explanation": "Vector phóng to không vỡ."
+        },
+        {
+          "question": "Vòng lặp xuất 200 biểu đồ, mỗi vòng plt.subplots() + savefig nhưng không close. Chuyện gì xảy ra?",
+          "options": [
+            {
+              "text": "200 figure vẫn mở, chiếm bộ nhớ; Matplotlib cảnh báo khi quá 20 figure",
+              "detail": "Batch phải plt.close(fig) sau mỗi lần lưu.",
+              "correct": true
+            },
+            {
+              "text": "savefig tự đóng figure",
+              "detail": "savefig không đóng gì cả.",
+              "correct": false
+            },
+            {
+              "text": "Figure cũ tự bị ghi đè",
+              "detail": "Mỗi plt.subplots() tạo một figure mới.",
+              "correct": false
+            }
+          ],
+          "correct": 0,
+          "explanation": "Batch phải plt.close(fig) sau mỗi lần lưu."
+        },
+        {
+          "question": "fig.savefig(buf, dpi=50, bbox_inches=\"tight\") với figure 6×3 inch cho ảnh…",
+          "options": [
+            {
+              "text": "Đúng 300×150",
+              "detail": "Chỉ đúng khi không có bbox_inches=\"tight\".",
+              "correct": false
+            },
+            {
+              "text": "Lỗi vì thiếu layout",
+              "detail": "Không có lỗi nào.",
+              "correct": false
+            },
+            {
+              "text": "Gần nhưng không đúng 300×150 — kích thước theo vùng nội dung",
+              "detail": "tight cắt/thêm lề nên canvas xuất thay đổi.",
+              "correct": true
+            }
+          ],
+          "correct": 2,
+          "explanation": "tight cắt/thêm lề nên canvas xuất thay đổi."
+        }
+      ],
+      "selfExplain": {
+        "prompt": "Vì sao export_all phải gọi plt.close(fig) sau khi lưu, và vì sao gọi SAU savefig chứ không trước?",
+        "placeholder": "Nêu dữ liệu vào → chương trình xử lý thế nào → kết quả ra, rồi thêm một trường hợp đặc biệt (ví dụ dữ liệu rỗng).",
+        "sample": "Mỗi make_chart tạo một figure mới mà pyplot giữ lại tới khi close; xuất hàng loạt không close thì figure dồn lại, tốn bộ nhớ. Close trước rồi plt.savefig thì không còn figure đó: pyplot tạo figure trống mới, ảnh ra trắng, sai kích thước và lại thêm một figure mở. Đúng thứ tự: fig.savefig → plt.close(fig)."
+      }
+    },
+    "step_3": {
+      "task": {
+        "title": "Luyện có hỗ trợ",
+        "body": "Lắp ba chỗ: kích thước + layout của figure, lưu PNG đúng dpi, đóng figure trong vòng lặp.",
+        "rule": "Xuất 3 biểu đồ ở dpi 100 rồi dpi 40; kiểm kích thước từng PNG và số figure đang mở trước/sau."
+      },
+      "trace": {
+        "steps": [
+          {
+            "label": "Bước 1",
+            "text": "plt.subplots(figsize=(6, 3), layout=\"constrained\") → 6×3 inch"
+          },
+          {
+            "label": "Bước 2",
+            "text": "fig.savefig(buf, format=\"png\", dpi=dpi) → PNG 6·dpi × 3·dpi"
+          },
+          {
+            "label": "Bước 3",
+            "text": "plt.close(fig) → figure đóng ngay sau khi lưu"
+          },
+          {
+            "label": "Bước 4",
+            "text": "result[title] = buf.getvalue() → bytes để kiểm hoặc ghi file"
+          }
+        ]
+      },
+      "counter": {
+        "question": "export_all({\"A\": [1, 2]}, 40) — ảnh \"A\" bao nhiêu pixel?",
+        "options": [
+          "600 × 300",
+          "240 × 120",
+          "6 × 3"
+        ],
+        "correct": "240 × 120"
+      },
+      "scaffold": {
+        "template": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef make_chart(title, values):\n    fig, ax = {{slot1}}\n    ax.plot(range(1, len(values) + 1), values, marker=\"o\")\n    ax.set(title=title, xlabel=\"Day\", ylabel=\"Revenue\")\n    return fig\n\n\ndef export_all(charts, dpi):\n    result = {}\n    for title, values in charts.items():\n        fig = make_chart(title, values)\n        buf = BytesIO()\n        {{slot2}}\n        {{slot3}}\n        result[title] = buf.getvalue()\n    return result\n",
+        "slots": [
+          {
+            "n": 1,
+            "placeholder": "[Slot 1]",
+            "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")"
+          },
+          {
+            "n": 2,
+            "placeholder": "[Slot 2]",
+            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
+          },
+          {
+            "n": 3,
+            "placeholder": "[Slot 3]",
+            "answer": "plt.close(fig)"
+          }
+        ],
+        "bank": [
+          {
+            "label": "plt.show()",
+            "slot": 3,
+            "trap": "Không đóng figure; trên máy còn chặn vòng lặp tới khi tắt cửa sổ."
+          },
+          {
+            "label": "plt.close(fig)",
+            "slot": 3
+          },
+          {
+            "label": "fig.savefig(buf, format=\"png\", dpi=dpi)",
+            "slot": 2
+          },
+          {
+            "label": "plt.subplots(figsize=(6, 3), layout=\"constrained\")",
+            "slot": 1
+          },
+          {
+            "label": "fig.savefig(buf, format=\"png\", dpi=dpi, bbox_inches=\"tight\")",
+            "slot": 2,
+            "trap": "Cắt theo nội dung → không đúng 6·dpi × 3·dpi."
+          },
+          {
+            "label": "fig.clf()",
+            "slot": 3,
+            "trap": "Xoá nội dung nhưng figure vẫn mở."
+          },
+          {
+            "label": "plt.subplots(figsize=(600, 300))",
+            "slot": 1,
+            "trap": "figsize tính bằng inch, không phải pixel."
+          }
+        ]
+      }
+    },
+    "step_4": {
+      "task": {
+        "title": "Thử thách độc lập",
+        "body": "Viết hai hàm. (1) make_chart(title, values): fig, ax = plt.subplots(figsize=(6, 3), layout=\"constrained\"); line marker \"o\" của values theo ngày 1, 2, …, len(values); tiêu đề title, nhãn \"Day\" / \"Revenue\"; return fig. (2) export_all(charts, dpi): charts là dict tiêu đề → list giá trị. Với từng mục: fig = make_chart(...), lưu fig vào io.BytesIO dạng PNG với dpi cho sẵn (KHÔNG dùng bbox_inches=\"tight\" — đề cần ảnh đúng 6·dpi × 3·dpi pixel), rồi plt.close(fig). Trả dict tiêu đề → bytes PNG. Sau export_all, số figure đang mở không đổi.\n\nThực hành: make_chart chốt figsize (inch) và layout ngay khi tạo; export_all theo đúng thứ tự make_chart → savefig → close cho từng mục.",
+        "io": [
+          {
+            "label": "make_chart(\"Week 1\", [10, 20, 15])",
+            "value": "figure 6×3 inch, layout constrained; line qua 10, 20, 15"
+          },
+          {
+            "label": "export_all({\"Week 1\": [10, 20, 15]}, 150)",
+            "value": "{\"Week 1\": PNG 900×450}; không figure nào còn mở"
+          }
+        ]
+      },
+      "starterCode": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef make_chart(title, values):\n    # figure 6x3 inch, layout=\"constrained\"; line marker \"o\" theo ngày 1, 2, ...\n    # tiêu đề title; nhãn Day / Revenue; return fig\n    pass\n\n\ndef export_all(charts, dpi):\n    # mỗi (title, values): make_chart -> savefig PNG vào BytesIO với dpi -> close -> lưu bytes\n    pass\n\n\nif __name__ == \"__main__\":\n    make_chart(\"Week 1\", [10, 20, 15])\n    plt.show()\n",
+      "solutionCode": "import matplotlib.pyplot as plt\nfrom io import BytesIO\n\n\ndef make_chart(title, values):\n    fig, ax = plt.subplots(figsize=(6, 3), layout=\"constrained\")\n    ax.plot(range(1, len(values) + 1), values, marker=\"o\")\n    ax.set(title=title, xlabel=\"Day\", ylabel=\"Revenue\")\n    return fig\n\n\ndef export_all(charts, dpi):\n    result = {}\n    for title, values in charts.items():\n        fig = make_chart(title, values)\n        buf = BytesIO()\n        fig.savefig(buf, format=\"png\", dpi=dpi)\n        plt.close(fig)\n        result[title] = buf.getvalue()\n    return result\n\n\nif __name__ == \"__main__\":\n    make_chart(\"Week 1\", [10, 20, 15])\n    plt.show()\n",
+      "hints": [
+        {
+          "title": "Nguyên lý",
+          "body": "make_chart chốt figsize (inch) và layout ngay khi tạo; export_all theo đúng thứ tự make_chart → savefig → close cho từng mục."
+        },
+        {
+          "title": "Cấu trúc",
+          "body": "1. make_chart: fig, ax = plt.subplots(figsize=(6, 3), layout=\"constrained\"); ax.plot(range(1, len(values) + 1), values, marker=\"o\").\n2. ax.set(title=title, xlabel=\"Day\", ylabel=\"Revenue\"); return fig.\n3. export_all: result = {}; với mỗi (title, values): fig = make_chart(...); buf = BytesIO(); fig.savefig(buf, format=\"png\", dpi=dpi).\n4. plt.close(fig) ngay sau savefig; result[title] = buf.getvalue(); cuối cùng return result."
+        },
+        {
+          "title": "Lời giải từng phần",
+          "body": "def export_all(charts, dpi):\n    result = {}\n    for title, values in charts.items():\n        fig = make_chart(title, values)\n        buf = BytesIO()\n        ..."
+        }
+      ],
+      "tests": [
+        {
+          "name": "make_chart: figure 6×3 inch",
+          "call": "make_chart(\"W\", [1, 2, 3]).get_size_inches().tolist()",
+          "expect": "[6.0, 3.0]"
+        },
+        {
+          "name": "make_chart: layout constrained",
+          "call": "type(make_chart(\"W\", [1, 2, 3]).get_layout_engine()).__name__",
+          "expect": "'ConstrainedLayoutEngine'"
+        },
+        {
+          "name": "make_chart: dữ liệu theo ngày, tiêu đề, nhãn",
+          "call": "(lambda ax: ([float(v) for v in ax.lines[0].get_xdata()], [float(v) for v in ax.lines[0].get_ydata()], ax.get_title(), ax.get_xlabel(), ax.get_ylabel()))(make_chart(\"Week 2\", [8, 3, 5, 9]).axes[0])",
+          "expect": "([1.0, 2.0, 3.0, 4.0], [8.0, 3.0, 5.0, 9.0], 'Week 2', 'Day', 'Revenue')"
+        },
+        {
+          "name": "export_all: đủ khoá, mỗi giá trị là PNG 6·dpi × 3·dpi (dpi 20)",
+          "call": "{k: (v[:8], (lambda b: (int.from_bytes(b[16:20], \"big\"), int.from_bytes(b[20:24], \"big\")))(v)) for k, v in export_all({\"A\": [1, 2], \"B\": [3, 1, 2]}, 20).items()}",
+          "expect": "{'A': (b'\\x89PNG\\r\\n\\x1a\\n', (120, 60)), 'B': (b'\\x89PNG\\r\\n\\x1a\\n', (120, 60))}"
+        },
+        {
+          "name": "Pyplot trống: dpi 50 → PNG 300×150 và không figure nào còn mở",
+          "call": "(plt.close(\"all\"), (lambda b: (int.from_bytes(b[16:20], \"big\"), int.from_bytes(b[20:24], \"big\")))(export_all({\"Q\": [5, 1, 4]}, 50)[\"Q\"]), len(plt.get_fignums()))[1:]",
+          "expect": "((300, 150), 0)"
+        },
+        {
+          "name": "Dict rỗng → {} và không tạo figure",
+          "call": "(lambda n: (export_all({}, 50), len(plt.get_fignums()) - n))(len(plt.get_fignums()))",
+          "expect": "({}, 0)"
+        }
+      ],
+      "contracts": [
+        {
+          "sig": "make_chart(title, values)",
+          "does": "Dựng một biểu đồ doanh thu khổ cố định.",
+          "takes": "title: chuỗi; values: list số",
+          "gives": "Figure 6×3 inch, layout constrained",
+          "effect": "Line marker \"o\" theo ngày 1..n; nhãn Day / Revenue.",
+          "call": "make_chart(\"W\", [1, 2]).get_size_inches().tolist() → [6.0, 3.0]"
+        },
+        {
+          "sig": "export_all(charts, dpi)",
+          "does": "Xuất hàng loạt biểu đồ ra PNG trong bộ nhớ.",
+          "takes": "charts: dict tiêu đề → list số; dpi: int",
+          "gives": "dict tiêu đề → bytes PNG (6·dpi × 3·dpi)",
+          "effect": "Đóng mọi figure đã tạo; số figure mở trước/sau như nhau.",
+          "call": "export_all({\"A\": [1, 2]}, 40)[\"A\"] → PNG 240×120"
+        }
+      ],
+      "env": "Bài này dùng numpy / pandas / matplotlib chạy ngay trong trình duyệt (Pyodide). Lần đầu mở bài, trình duyệt tải thêm thư viện (vài MB) nên chờ lâu hơn một chút. Biểu đồ vẽ bằng backend Agg: plt.show() không mở cửa sổ, bộ chấm đọc thẳng tiêu đề, nhãn trục và dữ liệu của Figure. Chạy trên máy để xem hình.",
+      "packages": [
+        "matplotlib",
+        "numpy"
+      ]
+    }
+  }
+}
