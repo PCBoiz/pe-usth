@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#R02",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 54-56, 106-107, 135"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,51 @@
           "Bấm Lưu → \"Đang lưu...\" rồi \"Đã lưu 2 sinh viên\""
         ],
         "reflect": "Dữ liệu đi từ ô nhập tới file nén qua những bước nào?"
+      },
+      "theory": [
+        {
+          "title": "Bài cửa: ghép bốn kỹ thuật của PW5–PW9",
+          "body": "Chuỗi bài thực hành của giảng viên là MỘT chương trình lớn dần: PW5–PW6 thêm lưu dữ liệu (pickle, nén), PW7 làm một shell chạy lệnh và nối vào/ra giữa các process, PW8 chuyển việc lưu sang thread nền, PW9 thay giao diện dòng lệnh bằng Tkinter. Bài này gộp lại: một sổ điểm có GUI, lưu nén, chạy báo cáo ở process con và lưu ở thread nền."
+        },
+        {
+          "title": "Bốn mảnh ghép, mỗi mảnh một lý do",
+          "bullets": [
+            "pickle + gzip: dict Python → bytes → file nén; gzip.open(path, \"wb\"/\"rb\"), luôn nhị phân",
+            "subprocess: báo cáo là CHƯƠNG TRÌNH KHÁC, chạy bằng sys.executable để trúng Python hiện tại",
+            "Thread: lưu file có thể lâu, nên nó không được chạy trên thread của mainloop",
+            "Tkinter: App chỉ đọc widget, gọi hàm thuần, hiện kết quả — mọi quy tắc nằm ngoài giao diện",
+            "Queue + after(100): đường duy nhất để worker báo kết quả về cho widget"
+          ]
+        },
+        {
+          "title": "Ví dụ: một vòng dữ liệu trọn vẹn",
+          "body": "Gõ \"Mai\", \"8,5\" → validate trả (\"Mai\", 8.5), raise ValueError nếu tên trống hoặc điểm ngoài 0..10. Bấm Lưu → status \"Đang lưu...\", worker pickle+gzip BẢN SAO của marks rồi put (\"ok\", 2) vào Queue, after(100) đọc được và đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py chạy ở process con, nhận \"Mai,8.5\" qua stdin, trả về \"Average: 7.75\" qua stdout."
+        },
+        {
+          "title": "Bốn chỗ dễ hỏng nhất",
+          "bullets": [
+            "Lưu thẳng self.marks thay vì bản sao: người dùng gõ tiếp trong lúc worker đang pickle",
+            "join() ngay trong callback Lưu: cửa sổ đứng, worker thành vô nghĩa — join lúc thoát",
+            "Quên text=True: stdout là bytes, so sánh chuỗi trượt hết",
+            "Bỏ qua returncode: con thoát mã 1 vì không có dữ liệu mà GUI vẫn hiện báo cáo rỗng",
+            "load_marks lần chạy đầu: FileNotFoundError là bình thường → trả {}, đừng để nổ"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hình là một vòng khép kín quanh ô GUI. Đi xuống: dữ liệu đã validate → worker thread → pickle+gzip → file .gz trên đĩa, kết quả quay về GUI qua Queue và after(). Đi sang ngang: marks → stdin của process con report.py → stdout quay về ô kết quả. Ranh giới nét đứt là chỗ ĐỔI KHÔNG GIAN: qua nó là sang thread khác hoặc process khác, nên dữ liệu phải đi bằng Queue hoặc pipe chứ không dùng chung biến.",
+          "figure": {
+            "src": "/static/anim/R02-pipeline.svg",
+            "caption": "Đường đi dữ liệu: GUI → thread lưu nén, GUI → process con báo cáo",
+            "alt": "Sơ đồ GUI ở giữa; nhánh dưới qua worker thread, pickle và gzip ra file, kết quả về qua Queue và after(); nhánh ngang qua stdin của process con report.py rồi stdout về GUI"
+          }
+        }
+      ],
+      "figure": {
+        "name": "R02-pipeline",
+        "src": "/static/anim/R02-pipeline.svg",
+        "caption": "Đường đi dữ liệu: GUI → thread lưu nén, GUI → process con báo cáo",
+        "alt": "Sơ đồ GUI ở giữa; nhánh dưới qua worker thread, pickle và gzip ra file, kết quả về qua Queue và after(); nhánh ngang qua stdin của process con report.py rồi stdout về GUI"
       },
       "context": {
         "title": "Ghép lưu file nén, process con, worker thread và Tkinter thành một ứng dụng sổ điểm, logic tách khỏi giao diện.",

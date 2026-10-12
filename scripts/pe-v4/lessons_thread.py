@@ -527,6 +527,40 @@ LESSONS = [
         code='T01', title='Thread, tài nguyên và concurrency', minutes=25,
         goal='Phân biệt phần các thread trong một process dùng chung với phần mỗi thread có riêng.',
         prereq=None, env=THREAD_ENV,
+        theory=[
+            dict(h='Định nghĩa: thread là gì',
+                 body='Thread là MỘT dòng thực thi (single flow of execution) nằm trong một process; slide gọi nó là '
+                      '"lightweight process". Mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực '
+                      'thi cùng chạy trong một process, dùng chung đúng một PCB.',
+                 bullets=['Chung (trong PCB): heap, biến toàn cục, code, file descriptor, scheduling, accounting',
+                          'Riêng từng thread: stack và stack pointer, program counter, registers',
+                          'Heap chung nên trao đổi dữ liệu không cần shm*() hay IPC như giữa hai process']),
+            dict(h='Ví dụ: cùng mục tiêu, khác cách chia',
+                 body='Multi-process và multi-thread đặt ra cùng ba mục tiêu: làm nhiều việc một lúc, tăng mức dùng '
+                      'CPU, tăng responsiveness. Khác nhau ở cách chia tài nguyên — slide gọi tên thẳng: fork() là '
+                      '"resource cloning", process con nhận bản sao vùng nhớ; thread là "resource sharing", mọi thread '
+                      'nhìn cùng một vùng nhớ. Tạo, kết thúc và chuyển giữa các thread đều rẻ hơn process.'),
+            dict(h='Dùng ở đâu',
+                 bullets=['Apache prefork: mỗi HTTP request một child process — cách ly tốt, tốn bộ nhớ',
+                          'Apache worker: ít process hơn, mỗi process nhiều thread, mỗi thread một request',
+                          'Chrome: mỗi tab một process; trong process có main thread, render thread, I/O thread',
+                          'Giao diện: một thread lo UI, thread khác lo việc chờ lâu để cửa sổ không đứng']),
+            dict(h='Cái giá và giới hạn',
+                 bullets=['Nondeterministic: cùng một code, mỗi lần chạy thứ tự các dòng in có thể khác',
+                          'Phải tự đồng bộ: race condition (T05), deadlock, code khó đọc hơn',
+                          'Nhiều lõi thì tăng số thread, nhưng quá nhiều thì overhead và đồng bộ ăn hết lợi',
+                          'Studio chạy các target lần lượt; chạy file trên máy mới thấy thứ tự thật']),
+            dict(h='Đọc sơ đồ', figure='T01-thread-vs-process',
+                 body='Khung lớn là MỘT process. Hàng trên — code, data, heap, file descs — vẽ một lần duy nhất: đó là '
+                      'phần dùng chung. Mỗi cột bên dưới là một thread, có ô stack và registers riêng, đường cong là '
+                      'dòng thực thi của nó. Đối chiếu phần multi-process bên cạnh: ở đó mỗi process có đủ một bộ ô '
+                      'riêng và không ô nào nối sang process khác.'),
+        ],
+        figure=dict(name='T01-thread-vs-process',
+                    caption='Một process nhiều thread: cái gì chung, cái gì riêng',
+                    alt='Process chứa code, data, heap, file descriptor dùng chung; ba thread mỗi thread một stack và '
+                        'registers riêng; bên cạnh là hai process tách rời, không chia gì'),
+        slides='SL 61-72',
         brief='Một process có thể chạy nhiều thread. Viết scope_of(part): trả "shared" cho phần mọi thread trong '
               'process dùng chung ("code", "global", "heap", "file") và "per-thread" cho phần mỗi thread có riêng '
               '("stack", "pc" — program counter, "registers"); tên khác → ValueError. Viết thêm who_am_i() trả tên '
@@ -672,6 +706,37 @@ def who_am_i():
         code='T02', title='Thread target, start và join', minutes=30,
         goal='Tạo nhiều Thread với target/args, start hết rồi join hết.',
         prereq='T01', env=THREAD_ENV,
+        theory=[
+            dict(h='Năm bước dùng thread',
+                 body='Slide rút cách dùng thread thành năm bước. Bài này đi đúng năm bước đó, nhưng cho nhiều worker '
+                      'một lúc chứ không phải một.',
+                 bullets=['1. Dùng module: import threading',
+                          '2. Mô tả việc: Thread(target=hàm, args=…), hoặc class con của Thread (T03)',
+                          '3. Tạo instance — mới chỉ là object mô tả, chưa có dòng thực thi nào',
+                          '4. Khởi chạy bằng start(): hệ điều hành cấp một dòng thực thi mới cho việc đó',
+                          '5. [tuỳ chọn] join(): chờ thread kết thúc rồi mới đi tiếp']),
+            dict(h='start() chứ không phải run()',
+                 body='start() là chỗ DUY NHẤT sinh ra thread, và nó không nhận đối số — đối số đã đưa lúc tạo object. '
+                      'Gọi run() hay gọi thẳng hàm target chỉ là một lời gọi hàm bình thường trong thread hiện tại: '
+                      'kết quả vẫn đúng nhưng tuần tự, không được gì. Một Thread chỉ start được MỘT lần; muốn chạy '
+                      'lại phải tạo object mới.'),
+            dict(h='Dùng ở đâu',
+                 bullets=['Tải nhiều URL, đọc nhiều file: phần lớn thời gian là chờ nên các lần chờ chồng lên nhau',
+                          'Giao diện: thread nền làm việc lâu, thread UI vẫn vẽ lại được (G06)',
+                          'Máy chủ: mỗi kết nối một thread, đúng mô hình Apache worker ở T01',
+                          'Chỉ đáng dùng khi CHỜ là chính — tính Python thuần thì vướng GIL (T04)']),
+            dict(h='Đọc sơ đồ', figure='T02-start-join',
+                 body='Trục ngang là thời gian. Main thread chạy liền mạch; mỗi start() rẽ ra một đường mới bắt đầu '
+                      'đúng tại thời điểm đó, nên hai worker CHỒNG LÊN nhau. join() là đoạn main đứng chờ: đường main '
+                      'chỉ đi tiếp khi đường worker đã chạm vạch kết thúc. So hai cách xếp: start hết rồi join hết '
+                      'thì hai worker song song; start–join từng cái thì chúng nối đuôi, mất hết lợi ích. Studio luôn '
+                      'cho kiểu nối đuôi.'),
+        ],
+        figure=dict(name='T02-start-join',
+                    caption='start() rẽ nhánh, join() chờ nhánh về',
+                    alt='Dòng thời gian: main thread gọi start() hai lần tạo hai đường worker chạy chồng lên nhau, rồi '
+                        'join() chờ cả hai kết thúc trước khi main đi tiếp'),
+        slides='SL 95-102',
         brief='download(url, sizes) đã cấp: "tải" một trang trong PAGES và ghi số ký tự vào dict sizes. Viết '
               'download_all(urls): mỗi url một threading.Thread(target=download, args=(url, sizes)); vòng thứ nhất '
               'start TẤT CẢ, vòng thứ hai join TẤT CẢ, rồi mới trả sizes. urls rỗng → {} và không tạo thread nào.',
@@ -811,6 +876,34 @@ print("Sau join:", worker.is_alive())
         code='T03', title='Subclass Thread', minutes=30,
         goal='Tạo worker có trạng thái riêng bằng class con của threading.Thread.',
         prereq='T02', env=THREAD_ENV,
+        theory=[
+            dict(h='Định nghĩa: hai cách tạo thread',
+                 body='Slide dạy cách OOP trước: định nghĩa một class con của threading.Thread, override run() — '
+                      'run() chính là việc sẽ chạy trong thread — và [tuỳ chọn] viết __init__() để nhận tham số. '
+                      'Cách Thread(target=hàm) nằm ở phần Extras, slide gọi là "simple threading without subclassing". '
+                      'Hai cách tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả của riêng nó.'),
+            dict(h='Ví dụ trong slide',
+                 body='class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi '
+                      'lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10) — '
+                      'đối số đi vào __init__ — rồi .start() không đối số, rồi .join().',
+                 bullets=['threading.Thread.__init__(self) và super().__init__() là cùng một việc',
+                          'Bỏ lời gọi đó thì start() hỏng: trạng thái nội bộ của Thread chưa được dựng']),
+            dict(h='Dùng ở đâu',
+                 bullets=['Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm riêng',
+                          'Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()',
+                          'Thread không trả giá trị — không có chỗ nào nhận được return của run()',
+                          'Việc một lần, không trạng thái thì target=hàm gọn hơn; đừng dựng class cho có']),
+            dict(h='Đọc sơ đồ', figure='T03-subclass-thread',
+                 body='Bên trái là class: __init__ nhận tham số, gọi super().__init__() rồi gán các self.<thuộc tính>; '
+                      'run() đọc chúng và ghi kết quả ngược lại vào self. Mũi tên giữa hình là điểm dễ nhầm: nơi gọi '
+                      'bấm start(), nhưng chạy trong thread con lại là run() — start() là người gọi run(), không ai '
+                      'gọi run() bằng tay. Bên phải: hai instance là hai object riêng, nên hai self.total không lẫn.'),
+        ],
+        figure=dict(name='T03-subclass-thread',
+                    caption='Subclass Thread: __init__ nhận dữ liệu, run() là việc của thread',
+                    alt='Class con của Thread với __init__ gọi super().__init__() và run() ghi kết quả vào self; '
+                        'start() ở thread cha kích hoạt run() chạy trong thread con'),
+        slides='SL 97-102',
         brief='Viết class SumWorker(threading.Thread): __init__(self, numbers) gọi super().__init__() TRƯỚC, rồi lưu '
               'self.numbers (list) và self.total = None; override run(self) để gán self.total = sum(self.numbers). '
               'Viết parallel_sum(chunks): mỗi khối một SumWorker, start hết, join hết, trả tổng các total. Không có '
@@ -956,6 +1049,36 @@ def parallel_sum(chunks):
         code='T04', title='GIL, CPU-bound và I/O-bound', minutes=30,
         goal='Ước lượng thời gian theo loại workload và chọn chạy tuần tự, bằng thread hay bằng process.',
         prereq='T03', env=GIL_ENV,
+        theory=[
+            dict(h='Định nghĩa: GIL',
+                 body='GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread '
+                      'được điều khiển interpreter, tức chỉ một thread chạy bytecode Python. Đây là chi tiết của bản '
+                      'CPython, không phải quy định của ngôn ngữ.',
+                 bullets=['Thắt cổ chai với code Python tính toán thuần (CPU-bound)',
+                          'Không thành vấn đề với chương trình chờ I/O',
+                          'Không thành vấn đề với phần gọi xuống thư viện native — slide lấy NumPy làm ví dụ']),
+            dict(h='Vì sao có GIL, bỏ đi thì mất gì',
+                 bullets=['Có: quản lý bộ nhớ — reference counting và garbage collector cần được bảo vệ',
+                          'Có: gọn thread-safety — một mutex trên interpreter thay cho mutex trên từng object',
+                          'Slide chốt: "that is not a bug but a feature"',
+                          'Bỏ: single-thread chậm đi, sinh nguy cơ deadlock, kém tương thích với extension cũ',
+                          'GIL KHÔNG thay Lock: trạng thái của ứng dụng vẫn phải tự bảo vệ (T05)']),
+            dict(h='Dùng ở đâu',
+                 bullets=['Chờ mạng, đĩa, cơ sở dữ liệu, sleep → thread là đúng chỗ',
+                          'Tính Python thuần mà muốn dùng nhiều lõi → process: mỗi process một interpreter, một GIL',
+                          'Đo trước khi chọn bằng time.perf_counter(), đừng đoán theo số thread']),
+            dict(h='Đọc sơ đồ', figure='T04-gil',
+                 body='Hai dải thời gian trong slide là nền của hình. Một lõi: các lát T1, T2, T3… nối nhau trên cùng '
+                      'một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. Nhiều lõi: mỗi core một hàng, các '
+                      'lát thật sự chồng nhau. GIL ép CPython về dáng hàng thứ nhất cho phần tính toán, dù máy có bao '
+                      'nhiêu lõi. Ô màu nhạt là lúc thread chờ I/O: nó nhả GIL nên lát của thread khác lấp vào '
+                      'được — chỗ đó mới là lãi.'),
+        ],
+        figure=dict(name='T04-gil',
+                    caption='Một GIL, nhiều thread: CPU thì luân phiên, I/O thì chồng lên nhau',
+                    alt='Dải thời gian một lõi với các lát thread nối nhau, so với nhiều lõi chạy song song; phần chờ '
+                        'I/O được tô nhạt để chỉ lúc thread nhả GIL cho thread khác chạy'),
+        slides='SL 85-94',
         brief='Mỗi task là (kind, seconds): "cpu" = tính Python thuần, "io" = chờ (mạng, đĩa). Viết wall_time(tasks, '
               'strategy) theo mô hình lý tưởng (mỗi task một worker, đủ lõi, bỏ qua chi phí tạo): "serial" = cộng mọi '
               'task; "thread" (CPython có GIL) = max(tổng giây CPU, task I/O dài nhất); "process" = task dài nhất; '
@@ -1091,6 +1214,40 @@ print("serial:", serial, "| thread:", threads, "| process:", processes)
         code='T05', title='Lock, race condition và deadlock', minutes=40,
         goal='Bảo vệ dữ liệu dùng chung bằng Lock và tránh deadlock bằng thứ tự khoá thống nhất.',
         prereq='T04', env=LOCK_ENV,
+        theory=[
+            dict(h='Định nghĩa: race condition',
+                 body='Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: cùng một '
+                      'chương trình, lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm vào dữ '
+                      'liệu chung và phải chạy trọn vẹn gọi là critical section.'),
+            dict(h='Lock: đúng những gì slide cho',
+                 bullets=['threading.Lock(), còn gọi là mutex: mỗi lúc chỉ một thread giữ được',
+                          'lock.acquire() … lock.release(): tự quản, và dễ quên release',
+                          'with lock: acquire/release tự động, kể cả khi khối ném exception',
+                          'Slide cảnh báo thẳng: có Lock rồi vẫn phải coi chừng race — Lock đặt sai chỗ là vô dụng']),
+            dict(h='Dùng ở đâu',
+                 bullets=['Số dư, bộ đếm, tồn kho: mọi lần đọc-sửa-ghi một giá trị dùng chung',
+                          'Kiểm tra rồi hành động (đủ tiền thì trừ) phải nằm TRỌN trong một lần giữ khoá',
+                          'File hay kết nối dùng chung: cho một thread ghi một lúc',
+                          'Không cần Lock khi đã dùng queue.Queue (T06) — bên trong nó đã khoá sẵn']),
+            dict(h='Deadlock: vì sao và tránh thế nào',
+                 body='Deadlock là khi các bên chờ nhau mãi, không ai tiến được: thread 1 giữ A chờ B, thread 2 giữ B '
+                      'chờ A. Slide xếp deadlock vào nhóm "vì sao KHÔNG nên đa luồng", cùng với nondeterministic và '
+                      'chi phí đồng bộ.',
+                 bullets=['Thống nhất một thứ tự khoá chung cho cả chương trình, mọi thread khoá theo đúng thứ tự đó',
+                          'Giữ khoá càng ngắn càng tốt; đừng đặt việc chậm (ghi file, in) trong critical section',
+                          'Đừng join một worker trong lúc đang giữ lock mà worker đó cần']),
+            dict(h='Đọc sơ đồ', figure='T05-race-lock',
+                 body='Nửa trên là lần chạy KHÔNG khoá: hai mũi tên đọc cùng chỉ vào một ô balance = 100, hai mũi tên '
+                      'ghi cùng đặt 101 — một lần cộng biến mất, đó là "lost update". Nửa dưới có Lock: thread thứ '
+                      'hai dừng ở hàng rào tới khi thread thứ nhất rời khối with, nên nó đọc 101 và ghi 102. Trong '
+                      'Studio thì nửa trên không bao giờ xảy ra vì các thread chạy lần lượt; chạy file trên máy nhiều '
+                      'lần mới thấy con số nhảy.'),
+        ],
+        figure=dict(name='T05-race-lock',
+                    caption='Mất cập nhật khi không khoá, và hàng rào Lock sửa nó thế nào',
+                    alt='Hai thread cùng đọc balance 100 rồi cùng ghi 101 nên mất một lần cộng; bên dưới, with lock '
+                        'buộc thread thứ hai chờ nên kết quả là 102'),
+        slides='SL 103-105',
         brief='Account có self.balance và self.lock = threading.Lock(); run_deposits (cấp sẵn) cho mỗi khoản nạp một '
               'thread. Viết deposit(amount): đọc-cộng-ghi balance trong with self.lock. Viết withdraw(amount): trong '
               'CÙNG một with self.lock, nếu amount > balance thì raise ValueError("insufficient funds"), ngược lại trừ. '
@@ -1259,6 +1416,33 @@ def safe_plan(plan, order):
         code='T06', title='Queue và tác vụ lưu nền', minutes=40,
         goal='Giao việc lưu cho một worker nền qua queue.Queue, không để nơi gọi phải chờ từng lần lưu.',
         prereq='T05', env=QUEUE_ENV,
+        theory=[
+            dict(h='Định nghĩa: queue.Queue',
+                 body='queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các '
+                      'thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn trong Queue mà hai bên không '
+                      'phải tự dựng Lock như T05 (tài liệu chính thức: module queue).',
+                 bullets=['get() mặc định CHỜ khi queue rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty',
+                          'Mỗi get() thành công đi với đúng một task_done(); join() chờ tới khi mọi việc đã xong']),
+            dict(h='Producer và consumer',
+                 body='Mẫu chuẩn chia chương trình làm hai vai: producer tạo việc và put vào queue rồi đi tiếp ngay; '
+                      'consumer (worker) lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên '
+                      'chúng không cần biết gì về nhau — thêm worker chỉ là chạy thêm một thread cùng đọc một queue.'),
+            dict(h='Dùng ở đâu',
+                 bullets=['Bài thực hành 8 của môn: nâng phần lưu dữ liệu lên dùng pickle + nén ở thread nền',
+                          'Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua một queue khác (G06)',
+                          'Máy chủ: một queue việc, vài worker cùng rút ra làm — thêm worker là tăng thông lượng',
+                          'Dữ liệu giao cho worker phải ổn định: put BẢN SAO, đừng put chính object còn đang sửa']),
+            dict(h='Đọc sơ đồ', figure='T06-queue-worker',
+                 body='Giữa hình là queue, một hàng ô xếp theo thứ tự vào. Bên trái, producer put thêm vào cuối hàng '
+                      'rồi quay về việc của mình ngay — không chờ. Bên phải, worker lấy ở đầu hàng, làm việc chậm, '
+                      'rồi task_done() báo xong; bộ đếm việc chưa xong giảm một. Hai mũi tên không bao giờ chạm nhau: '
+                      'đó là điểm chính — producer và consumer chỉ gặp nhau qua queue, nên không cần Lock nào.'),
+        ],
+        figure=dict(name='T06-queue-worker',
+                    caption='Producer đẩy việc vào queue, worker nền rút ra làm',
+                    alt='Producer gọi put() thêm job vào cuối hàng đợi; worker thread gọi get() lấy ở đầu hàng, xử lý '
+                        'rồi task_done(); hai bên chỉ gặp nhau qua queue'),
+        slides='SL 106-107',
         brief='Hoàn thành class BackgroundSaver (self.jobs = queue.Queue(), self.lines = [] đã có). submit(record): '
               'put BẢN SAO record (dict(record)) vào self.jobs — chưa lưu gì. _work(): lấy từng job bằng '
               'self.jobs.get_nowait() tới khi gặp queue.Empty thì return; mỗi job thêm dòng "name,mark" vào '

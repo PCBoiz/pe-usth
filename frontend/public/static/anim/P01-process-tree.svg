@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="ptr-title ptr-desc">
+  <title id="ptr-title">Cây tiến trình: init → bash → python3</title>
+  <desc id="ptr-desc">Vòng lặp 16 giây, 6 nhịp đọc theo thứ tự xuống cây (mỗi nhịp ~2 giây): 1 init PID 1, 2 cron PID 640, 3 bash PID 2310, 4 python3 PID 2378, 5 ls PID 2390 do subprocess tạo, 6 nhấn quan hệ PPID của con bằng PID của cha; sau đó nghỉ 4 giây. Khung tĩnh đã hiện đủ cây, mọi số PID/PPID, kết xuất pstree và bảng ps.</desc>
+  <defs>
+    <marker id="ptr-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .inner{fill:#0f1626;stroke:#273352;stroke-width:1.5}
+    .node{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .nm{font-size:16px;fill:#e8edf7}
+    .id{font-size:12.5px;fill:#93a0bc}
+    /* Lớp nhấn: mặc định ẩn → tắt hiệu ứng là hình đứng ở trạng thái đầy đủ. */
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}0.6%{opacity:1}11%{opacity:1}11.6%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Cây tiến trình (process tree)</text>
+  <text class="sub" x="48" y="86">Process chỉ sinh ra từ một process khác. Mỗi process giữ PID của mình và PPID — PID của cha.</text>
+
+  <!-- Kết xuất thật trên máy -->
+  <rect class="panel" x="48" y="124" width="440" height="192" rx="12"/>
+  <text class="s" x="70" y="152">Trên Linux</text>
+  <rect class="inner" x="70" y="164" width="396" height="130" rx="6"/>
+  <text xml:space="preserve" class="mono" x="86" y="188" font-size="13" fill="#9fd88f">$ pstree -A</text>
+  <text xml:space="preserve" class="mono" x="86" y="210" font-size="13" fill="#93a0bc">init-+-cron</text>
+  <text xml:space="preserve" class="mono" x="86" y="232" font-size="13" fill="#93a0bc">     |-sshd---bash---python3---ls</text>
+  <text xml:space="preserve" class="mono" x="86" y="254" font-size="13" fill="#93a0bc">     `-dbus-daemon</text>
+  <text xml:space="preserve" class="mono" x="86" y="278" font-size="12" fill="#5b6886">(init là gốc, PID 1)</text>
+
+  <rect class="panel" x="48" y="336" width="440" height="200" rx="12"/>
+  <text class="s" x="70" y="364">Số liệu đi kèm</text>
+  <rect class="inner" x="70" y="376" width="396" height="138" rx="6"/>
+  <text xml:space="preserve" class="mono" x="86" y="400" font-size="13" fill="#9fd88f">$ ps -o pid,ppid,comm</text>
+  <text xml:space="preserve" class="mono" x="86" y="424" font-size="13" fill="#5b6886">  PID  PPID  COMMAND</text>
+  <text xml:space="preserve" class="mono" x="86" y="446" font-size="13" fill="#93a0bc"> 2310     1  bash</text>
+  <text xml:space="preserve" class="mono" x="86" y="468" font-size="13" fill="#93a0bc"> 2378  2310  python3</text>
+  <text xml:space="preserve" class="mono" x="86" y="490" font-size="13" fill="#93a0bc"> 2390  2378  ls</text>
+
+  <!-- Đường nối cây: vẽ trước để nét nằm dưới hộp -->
+  <path d="M560,204 V332" fill="none" stroke="#273352" stroke-width="2"/>
+  <path d="M560,258 H594" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#ptr-ar)"/>
+  <path d="M560,332 H594" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#ptr-ar)"/>
+  <path d="M624,364 V418" fill="none" stroke="#273352" stroke-width="2"/>
+  <path d="M624,418 H674" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#ptr-ar)"/>
+  <path d="M704,450 V504" fill="none" stroke="#273352" stroke-width="2"/>
+  <path d="M704,504 H754" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#ptr-ar)"/>
+
+  <!-- init -->
+  <rect class="node" x="540" y="140" width="230" height="64" rx="8"/>
+  <text class="mono nm" x="558" y="170">init</text>
+  <text class="mono id" x="558" y="190">PID 1 · PPID 0</text>
+  <!-- cron -->
+  <rect class="node" x="600" y="226" width="230" height="64" rx="8"/>
+  <text class="mono nm" x="618" y="256">cron</text>
+  <text class="mono id" x="618" y="276">PID 640 · PPID 1</text>
+  <!-- bash -->
+  <rect class="node" x="600" y="300" width="230" height="64" rx="8"/>
+  <text class="mono nm" x="618" y="330">bash</text>
+  <text class="mono id" x="618" y="350">PID 2310 · PPID 1</text>
+  <!-- python3 -->
+  <rect class="node" x="680" y="386" width="230" height="64" rx="8"/>
+  <text class="mono nm" x="698" y="416" fill="#4c9bff">python3 app.py</text>
+  <text class="mono id" x="698" y="436">PID 2378 · PPID 2310</text>
+  <!-- ls -->
+  <rect class="node" x="760" y="472" width="230" height="64" rx="8"/>
+  <text class="mono nm" x="778" y="502" fill="#9fd88f">ls -l</text>
+  <text class="mono id" x="778" y="522">PID 2390 · PPID 2378</text>
+  <text class="xs" x="998" y="508">do subprocess.run()</text>
+  <text class="xs" x="998" y="524">trong python3 tạo ra</text>
+
+  <!-- Ghi chú đọc hình -->
+  <rect class="panel" x="1016" y="140" width="216" height="300" rx="12"/>
+  <text class="s" x="1036" y="170">Đọc cây thế nào</text>
+  <rect x="1036" y="186" width="176" height="1" fill="#273352"/>
+  <text class="xs" x="1036" y="214">• Mũi tên đi từ CHA</text>
+  <text class="xs" x="1036" y="232">  xuống CON.</text>
+  <text class="xs" x="1036" y="262">• PPID của con luôn</text>
+  <text class="xs" x="1036" y="280">  bằng PID của cha:</text>
+  <text class="mono xs" x="1036" y="300" fill="#4c9bff">  2378 → 2310</text>
+  <text class="xs" x="1036" y="330">• Cha chết trước con</text>
+  <text class="xs" x="1036" y="348">  → con mồ côi, init</text>
+  <text class="xs" x="1036" y="366">  (PID 1) nhận nuôi.</text>
+  <text class="xs" x="1036" y="396">• PID không đoán được</text>
+  <text class="xs" x="1036" y="414">  trước, đừng viết số</text>
+  <text class="xs" x="1036" y="432">  cứng vào code.</text>
+
+  <text class="xs" x="1232" y="612" text-anchor="end">Theo slide USTH 17–18</text>
+
+  <!-- Lớp nhấn theo nhịp -->
+  <rect class="ring" x="536" y="136" width="238" height="72" rx="8" stroke="#93a0bc" style="animation-delay:0s"/>
+  <rect class="ring" x="596" y="222" width="238" height="72" rx="8" stroke="#93a0bc" style="animation-delay:2s"/>
+  <rect class="ring" x="596" y="296" width="238" height="72" rx="8" stroke="#f5b83d" style="animation-delay:4s"/>
+  <rect class="ring" x="676" y="382" width="238" height="72" rx="8" stroke="#4c9bff" style="animation-delay:6s"/>
+  <rect class="ring" x="756" y="468" width="238" height="72" rx="8" stroke="#9fd88f" style="animation-delay:8s"/>
+  <rect class="ring" x="1030" y="250" width="188" height="60" rx="8" stroke="#4c9bff" style="animation-delay:10s"/>
+</svg>

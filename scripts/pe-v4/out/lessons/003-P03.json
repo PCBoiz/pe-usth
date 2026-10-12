@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#P03",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 30-43"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,46 @@
           "switch = 1 → P1 0–2, P2 3–5, P1 6–7"
         ],
         "reflect": "Vì sao quantum quá nhỏ làm mọi job xong muộn hơn?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: scheduler làm gì",
+          "body": "Scheduler trả lời hai câu hỏi slide đặt ra: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó biết danh sách process, trạng thái và thông tin thống kê của từng process, rồi chọn theo độ ưu tiên.",
+          "bullets": [
+            "Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy — Round Robin thuộc nhóm này",
+            "Non-preemption (cooperation): process tự nguyện nhường CPU",
+            "Short-term scheduler đổi process sau vài mili-giây; long-term tính bằng giây/phút cho batch job",
+            "CPU-bound chủ yếu tính toán; I/O-bound chủ yếu chờ đĩa, mạng, máy in"
+          ]
+        },
+        {
+          "title": "Ví dụ: ba hàng đợi và bảng thuật toán",
+          "body": "Slide chia process theo hàng đợi: job queue (vừa vào hệ thống, còn trên đĩa), ready queue (đã ở bộ nhớ chính, chờ CPU), device queue (chờ một thiết bị I/O) — đổi trạng thái là chuyển hàng. Bảng so sánh: FCFS và SJF không preempt; SRTF và Round Robin có; MLQ và MLFQ chia nhiều hàng con, khác nhau ở chỗ process có được chuyển hàng hay không."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Giải thích vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt",
+            "Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch; lớn thì ngược lại",
+            "Đọc số đo: bảng thuật toán cân nhắc thời gian chờ ω và thời gian phản hồi ρ",
+            "round_robin của bài là MÔ PHỎNG bằng Python thuần, không đụng tới scheduler thật của máy"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hai cột ngoài là hai process, cột giữa là hệ điều hành. A đang chạy thì có interrupt: CPU rời A, lưu ngữ cảnh của A vào PCB0, nạp ngữ cảnh của B từ PCB1, rồi B mới chạy. Khoảng tô đậm giữa hai đoạn mang nhãn \"overhead\" — trong khoảng đó không process nào làm được việc của mình, nên đổi càng nhiều lần càng tốn.",
+          "figure": {
+            "src": "/static/anim/P03-context-switch.svg",
+            "caption": "Context switch: lưu PCB của process cũ, nạp PCB của process mới",
+            "alt": "Process A chạy, có interrupt, hệ điều hành lưu PCB0 rồi nạp PCB1, sau đó process B chạy; khoảng giữa ghi nhãn overhead"
+          }
+        }
+      ],
+      "figure": {
+        "name": "P03-context-switch",
+        "src": "/static/anim/P03-context-switch.svg",
+        "caption": "Context switch: lưu PCB của process cũ, nạp PCB của process mới",
+        "alt": "Process A chạy, có interrupt, hệ điều hành lưu PCB0 rồi nạp PCB1, sau đó process B chạy; khoảng giữa ghi nhãn overhead"
       },
       "context": {
         "title": "Mô phỏng Round Robin có time slice, tính thời gian chờ và chi phí context switch.",

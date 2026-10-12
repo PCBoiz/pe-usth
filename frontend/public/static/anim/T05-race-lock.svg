@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t05-title t05-desc">
+<title id="t05-title">Race condition và with lock: mất cập nhật rồi sửa bằng khoá</title>
+<desc id="t05-desc">Bên trái, không khoá: Thread 1 đọc balance bằng 0, Thread 2 cũng đọc bằng 0, rồi cả hai cùng ghi 1 — hai lần cộng mà kết quả chỉ là 1 thay vì 2. Bên phải, có with lock: Thread 2 phải chờ khoá, nên nó đọc được 1 và ghi 2 — kết quả đúng. Vòng lặp 16 giây, 8 bước giữ 1,8 giây mỗi bước theo thứ tự bốn dòng của bảng trái rồi bốn dòng của bảng phải; riêng khoảnh khắc hai thread cùng đọc số 0 được giữ sáng 5,7 giây.</desc>
+<style>
+  text{fill:#e8edf7;font-family:'Segoe UI',system-ui,sans-serif}
+  .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+  .h1{font-size:25px;font-weight:600}
+  .sub{font-size:14px;fill:#93a0bc}
+  .ph{font-size:16px;font-weight:600}
+  .cap{font-size:12px;fill:#5b6886}
+  .bd{font-size:13px;fill:#93a0bc}
+  .cell{font-size:12.5px;fill:#93a0bc}
+  .ring{fill:none;stroke-width:2.5;opacity:0;animation:pulse 16s linear infinite}
+  @keyframes pulse{0%{opacity:0}0.5%{opacity:1}11.5%{opacity:1}12.2%{opacity:0}100%{opacity:0}}
+  .hold{fill:none;stroke-width:2.5;opacity:0;animation:holdpulse 16s linear infinite}
+  @keyframes holdpulse{0%{opacity:0}12.5%{opacity:0}13%{opacity:1}48.5%{opacity:1}49%{opacity:0}100%{opacity:0}}
+  .s1{animation-delay:0s}.s2{animation-delay:2s}.s3{animation-delay:4s}.s4{animation-delay:6s}
+  .s5{animation-delay:8s}.s6{animation-delay:10s}.s7{animation-delay:12s}.s8{animation-delay:14s}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+<rect width="1280" height="640" fill="#0f1626"/>
+
+<text class="h1" x="40" y="50">Race condition: hai thread cùng cộng, mất một lần</text>
+<text class="sub" x="40" y="78">balance += 1 không phải một thao tác liền mạch. Nó là đọc → cộng → ghi, và hệ điều hành có thể cắt luồng ngay ở giữa.</text>
+
+<!-- ============ PANEL A: KHONG KHOA ============ -->
+<rect x="40" y="100" width="584" height="420" rx="10" fill="#162036" stroke="#273352"/>
+<text class="ph" x="60" y="130" fill="#f4a274">Không khoá — mất một lần cộng</text>
+
+<rect x="60" y="146" width="544" height="54" rx="7" fill="#141d33" stroke="#2c3a5c"/>
+<text class="mono" x="76" y="170" font-size="14" fill="#e8edf7">balance += 1</text>
+<text class="cap" x="76" y="190">ba việc: đọc balance · cộng 1 · ghi lại. Bắt đầu balance = 0.</text>
+
+<text class="cap" x="72" y="232">#</text>
+<text class="cap" x="106" y="232">THREAD 1</text>
+<text class="cap" x="290" y="232">THREAD 2</text>
+<text class="cap" x="532" y="232" text-anchor="middle">BALANCE</text>
+
+<rect x="60" y="246" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="92" y1="246" x2="92" y2="286" stroke="#2c3a5c"/>
+<line x1="276" y1="246" x2="276" y2="286" stroke="#2c3a5c"/>
+<line x1="460" y1="246" x2="460" y2="286" stroke="#2c3a5c"/>
+<text class="cell" x="76" y="271">1</text>
+<text class="cell" x="106" y="271" fill="#9cc6ff">đọc balance → 0</text>
+<text class="cell" x="290" y="271" fill="#5b6886">—</text>
+<text class="mono" x="532" y="272" font-size="15" text-anchor="middle" fill="#e8edf7">0</text>
+
+<rect x="60" y="290" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="92" y1="290" x2="92" y2="330" stroke="#2c3a5c"/>
+<line x1="276" y1="290" x2="276" y2="330" stroke="#2c3a5c"/>
+<line x1="460" y1="290" x2="460" y2="330" stroke="#2c3a5c"/>
+<text class="cell" x="76" y="315">2</text>
+<text class="cell" x="106" y="315" fill="#5b6886">—</text>
+<text class="cell" x="290" y="315" fill="#c9a2ff">đọc balance → 0</text>
+<text class="mono" x="532" y="316" font-size="15" text-anchor="middle" fill="#e8edf7">0</text>
+
+<rect x="60" y="334" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="92" y1="334" x2="92" y2="374" stroke="#2c3a5c"/>
+<line x1="276" y1="334" x2="276" y2="374" stroke="#2c3a5c"/>
+<line x1="460" y1="334" x2="460" y2="374" stroke="#2c3a5c"/>
+<text class="cell" x="76" y="359">3</text>
+<text class="cell" x="106" y="359" fill="#9cc6ff">ghi 0 + 1 = 1</text>
+<text class="cell" x="290" y="359" fill="#5b6886">—</text>
+<text class="mono" x="532" y="360" font-size="15" text-anchor="middle" fill="#e8edf7">1</text>
+
+<rect x="60" y="378" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="92" y1="378" x2="92" y2="418" stroke="#2c3a5c"/>
+<line x1="276" y1="378" x2="276" y2="418" stroke="#2c3a5c"/>
+<line x1="460" y1="378" x2="460" y2="418" stroke="#2c3a5c"/>
+<text class="cell" x="76" y="403">4</text>
+<text class="cell" x="106" y="403" fill="#5b6886">—</text>
+<text class="cell" x="290" y="403" fill="#c9a2ff">ghi 0 + 1 = 1</text>
+<text class="mono" x="532" y="404" font-size="15" text-anchor="middle" fill="#f4a274">1</text>
+
+<!-- callout tinh: cho hong -->
+<rect x="94" y="242" width="368" height="92" rx="6" fill="none" stroke="#f5b83d" stroke-width="1.6" stroke-dasharray="5 4"/>
+<rect class="hold" x="94" y="242" width="368" height="92" rx="6" stroke="#f5b83d"/>
+<text class="bd" x="60" y="440" fill="#f5b83d">Chỗ hỏng: cả hai cùng đọc số 0, nên lần cộng của T1 bị T2 ghi đè.</text>
+
+<rect class="ring s1" x="62" y="248" width="540" height="36" rx="4" stroke="#4c9bff"/>
+<rect class="ring s2" x="62" y="292" width="540" height="36" rx="4" stroke="#c9a2ff"/>
+<rect class="ring s3" x="62" y="336" width="540" height="36" rx="4" stroke="#4c9bff"/>
+<rect class="ring s4" x="62" y="380" width="540" height="36" rx="4" stroke="#c9a2ff"/>
+
+<rect x="60" y="452" width="544" height="56" rx="8" fill="#241a1a" stroke="#f4a274"/>
+<text x="76" y="477" font-size="15" font-weight="600" fill="#f4a274">balance = 1 — SAI</text>
+<text class="bd" x="76" y="498" fill="#f4a274">Hai lần cộng từ 0 thì phải ra 2. Một lần đã biến mất.</text>
+<rect class="ring s4" x="64" y="456" width="536" height="48" rx="7" stroke="#f4a274"/>
+
+<!-- ============ PANEL B: CO KHOA ============ -->
+<rect x="656" y="100" width="584" height="420" rx="10" fill="#162036" stroke="#273352"/>
+<text class="ph" x="676" y="130" fill="#9fd88f">Có with lock: — đúng</text>
+
+<rect x="676" y="146" width="544" height="54" rx="7" fill="#141d33" stroke="#2c3a5c"/>
+<text class="mono" x="692" y="170" font-size="14" fill="#9fd88f">with lock:</text>
+<text class="mono" x="692" y="192" font-size="14" fill="#e8edf7">    balance += 1</text>
+
+<text class="cap" x="688" y="232">#</text>
+<text class="cap" x="722" y="232">THREAD 1</text>
+<text class="cap" x="906" y="232">THREAD 2</text>
+<text class="cap" x="1148" y="232" text-anchor="middle">BALANCE</text>
+
+<rect x="676" y="246" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="708" y1="246" x2="708" y2="286" stroke="#2c3a5c"/>
+<line x1="892" y1="246" x2="892" y2="286" stroke="#2c3a5c"/>
+<line x1="1076" y1="246" x2="1076" y2="286" stroke="#2c3a5c"/>
+<text class="cell" x="692" y="271">1</text>
+<text class="cell" x="722" y="271" fill="#9cc6ff">lấy được khoá</text>
+<text class="cell" x="906" y="271" fill="#5b6886">chờ khoá</text>
+<text class="mono" x="1148" y="272" font-size="15" text-anchor="middle" fill="#e8edf7">0</text>
+
+<rect x="676" y="290" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="708" y1="290" x2="708" y2="330" stroke="#2c3a5c"/>
+<line x1="892" y1="290" x2="892" y2="330" stroke="#2c3a5c"/>
+<line x1="1076" y1="290" x2="1076" y2="330" stroke="#2c3a5c"/>
+<text class="cell" x="692" y="315">2</text>
+<text class="cell" x="722" y="315" fill="#9cc6ff">đọc 0 · ghi 0 + 1 = 1</text>
+<text class="cell" x="906" y="315" fill="#5b6886">chờ khoá</text>
+<text class="mono" x="1148" y="316" font-size="15" text-anchor="middle" fill="#e8edf7">1</text>
+
+<rect x="676" y="334" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="708" y1="334" x2="708" y2="374" stroke="#2c3a5c"/>
+<line x1="892" y1="334" x2="892" y2="374" stroke="#2c3a5c"/>
+<line x1="1076" y1="334" x2="1076" y2="374" stroke="#2c3a5c"/>
+<text class="cell" x="692" y="359">3</text>
+<text class="cell" x="722" y="359" fill="#9cc6ff">hết with → nhả khoá</text>
+<text class="cell" x="906" y="359" fill="#c9a2ff">lấy được khoá</text>
+<text class="mono" x="1148" y="360" font-size="15" text-anchor="middle" fill="#e8edf7">1</text>
+
+<rect x="676" y="378" width="544" height="40" rx="5" fill="#141d33" stroke="#2c3a5c"/>
+<line x1="708" y1="378" x2="708" y2="418" stroke="#2c3a5c"/>
+<line x1="892" y1="378" x2="892" y2="418" stroke="#2c3a5c"/>
+<line x1="1076" y1="378" x2="1076" y2="418" stroke="#2c3a5c"/>
+<text class="cell" x="692" y="403">4</text>
+<text class="cell" x="722" y="403" fill="#5b6886">—</text>
+<text class="cell" x="906" y="403" fill="#c9a2ff">đọc 1 · ghi 1 + 1 = 2</text>
+<text class="mono" x="1148" y="404" font-size="15" text-anchor="middle" fill="#9fd88f">2</text>
+
+<text class="bd" x="676" y="440" fill="#9fd88f">Khoá biến ba việc đọc-cộng-ghi thành một khối không ai chen vào được.</text>
+
+<rect class="ring s5" x="678" y="248" width="540" height="36" rx="4" stroke="#4c9bff"/>
+<rect class="ring s6" x="678" y="292" width="540" height="36" rx="4" stroke="#4c9bff"/>
+<rect class="ring s7" x="678" y="336" width="540" height="36" rx="4" stroke="#c9a2ff"/>
+<rect class="ring s8" x="678" y="380" width="540" height="36" rx="4" stroke="#c9a2ff"/>
+
+<rect x="676" y="452" width="544" height="56" rx="8" fill="#15251c" stroke="#9fd88f"/>
+<text x="692" y="477" font-size="15" font-weight="600" fill="#9fd88f">balance = 2 — ĐÚNG</text>
+<text class="bd" x="692" y="498" fill="#9fd88f">T2 bị giữ lại nên nó đọc được số 1 mới nhất, không phải số 0 cũ.</text>
+<rect class="ring s8" x="680" y="456" width="536" height="48" rx="7" stroke="#9fd88f"/>
+
+<!-- ============ GHI CHU ============ -->
+<rect x="40" y="540" width="1200" height="58" rx="8" fill="#162036" stroke="#273352"/>
+<text class="bd" x="60" y="564">with lock: tự gọi lock.acquire() lúc vào và lock.release() lúc ra — kể cả khi thân lệnh ném lỗi, nên không bao giờ quên nhả (SL 104-105).</text>
+<text class="cap" x="60" y="586">Lỗi này không phải lần nào chạy cũng hiện ra: nó phụ thuộc lúc hệ điều hành cắt luồng. Chạy đúng một lần không có nghĩa là code đúng.</text>
+
+<text class="cap" x="40" y="626">Nguồn: slide USTH 103-105 (threading.Lock, acquire/release, with lock) và 81 (vì sao đa luồng khó: nondeterministic, synchronization).</text>
+</svg>

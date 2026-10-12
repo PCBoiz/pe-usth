@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#P04",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 44-48"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,46 @@
           "run_sum([\"10\", \"x\", \"20\"]) → (30, [\"skip: x\"])"
         ],
         "reflect": "Vì sao cảnh báo phải ra stderr chứ không ra stdout?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: ba luồng chuẩn",
+          "body": "Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định cả ba nối với terminal — bàn phím vào, màn hình ra — nên trên màn hình chúng trông như một, dù thực ra là ba đường riêng, đổi đích được độc lập.",
+          "bullets": [
+            "stdin (0): đầu vào — input() và sys.stdin đọc từ đây",
+            "stdout (1): KẾT QUẢ — print(x) ghi vào đây",
+            "stderr (2): báo lỗi và cảnh báo — print(x, file=sys.stderr)",
+            "Mỗi đầu có thể trỏ tới terminal, một file, hoặc một pipe sang process khác"
+          ]
+        },
+        {
+          "title": "Ví dụ: bốn cách nối của slide",
+          "body": "Slide vẽ cùng một hộp Process với bốn cấu hình. (1) Bàn phím → process → màn hình. (2) bc < input.txt: stdin lấy từ file. (3) ls -la > out.txt: stdout ghi ra file, còn stderr vẫn ra màn hình. (4) ps aux | grep term: stdout của process 1 thành stdin của process 2 qua một pipe, còn stderr của cả hai vẫn về màn hình."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Pipeline shell và CI: mỗi công cụ đọc stdin, ghi kết quả ra stdout nên ghép được với nhau",
+            "Giữ stderr riêng để log lỗi không trộn vào dữ liệu đang chuyển tiếp cho bước sau",
+            "Trong Python: subprocess thay terminal bằng PIPE để cha đọc được đầu ra của con",
+            "Studio không có shell nên không viết được | hay >; nó mô phỏng ba luồng riêng cho mỗi con"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hộp giữa là process. Mũi tên vào bên trái là stdin (0); hai mũi tên ra là stdout (1) và stderr (2) — để ý stderr luôn tách thành một đường riêng, kể cả khi stdout đã đổi sang file. Phần dưới hình là biến thể pipe: stdout của process 1 cắm thẳng vào stdin của process 2, dữ liệu chảy qua bộ nhớ chứ không qua đĩa.",
+          "figure": {
+            "src": "/static/anim/P04-io-redirection.svg",
+            "caption": "stdin/stdout/stderr: từ terminal, sang file, rồi thành pipe giữa hai process",
+            "alt": "Hộp process với stdin 0 vào, stdout 1 và stderr 2 ra; các biến thể nối tới bàn phím, màn hình, file và một pipe nối hai process"
+          }
+        }
+      ],
+      "figure": {
+        "name": "P04-io-redirection",
+        "src": "/static/anim/P04-io-redirection.svg",
+        "caption": "stdin/stdout/stderr: từ terminal, sang file, rồi thành pipe giữa hai process",
+        "alt": "Hộp process với stdin 0 vào, stdout 1 và stderr 2 ra; các biến thể nối tới bàn phím, màn hình, file và một pipe nối hai process"
       },
       "context": {
         "title": "Phân biệt stdin, stdout, stderr và nối chúng với process con qua pipe.",

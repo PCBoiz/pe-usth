@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g04-title g04-desc">
+<title id="g04-title">Ba geometry manager: pack, place, grid</title>
+<desc id="g04-desc">Vòng lặp 18 giây, 4 chặng giữ mỗi chặng 4,5 giây: (1) pack xếp ba Frame chồng lên nhau theo đúng thứ tự gọi; (2) place đặt ba Frame theo toạ độ tuyệt đối, cho phép đè nhau; (3) grid điền biểu mẫu đăng nhập theo hàng và cột; (4) nhấn vào dải cảnh báo: trộn pack và grid trong cùng một cha làm Tk ném tkinter.TclError. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả ba bố cục đã điền xong và dải lỗi vẫn đọc được.</desc>
+<style>
+  text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
+  .t{font-size:27px;font-weight:600}
+  .sub{font-size:15px;fill:#93a0bc}
+  .eye{font-size:13px;font-weight:600;letter-spacing:.6px}
+  .nm{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:19px;font-weight:700}
+  .sm{font-size:13px;fill:#93a0bc}
+  .dim{font-size:11px;fill:#5b6886}
+  .m{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:13px;fill:#e8edf7}
+  .mc{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11.5px;fill:#93a0bc}
+  .ms{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11px;fill:#5b6886}
+  .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+  .win{fill:#10192c;stroke:#273352;stroke-width:1.5}
+  .bar{fill:#1d2a46}
+  .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
+  .key{fill:#1a2440;stroke:#3d4a6e;stroke-width:1.2}
+  .guide{stroke:#2f3d60;stroke-width:1.1;stroke-dasharray:4 4}
+  .glow{fill:none;stroke-width:2.6;opacity:0}
+  .ap{opacity:1}
+
+  /* Mỗi chặng 4,5s: widget hiện ra TỪNG CÁI theo đúng thứ tự Tk xếp chúng, rồi ở lại.
+     Khung hoàn chỉnh = tất cả đã hiện, nên tắt hoạt hình vẫn đọc được trọn vẹn. */
+  .pa{animation:pa 18s linear infinite}
+  .pb{animation:pb 18s linear infinite}
+  .pc{animation:pc 18s linear infinite}
+  .pd{animation:pd 18s linear infinite}
+  @keyframes pa{0%,24.5%{opacity:1}25%,100%{opacity:0}}
+  @keyframes pb{0%,24.5%{opacity:0}25%,49.5%{opacity:1}50%,100%{opacity:0}}
+  @keyframes pc{0%,49.5%{opacity:0}50%,74.5%{opacity:1}75%,100%{opacity:0}}
+  @keyframes pd{0%,74.5%{opacity:0}75%,98.5%{opacity:1}99%,100%{opacity:0}}
+
+  .a1{animation:a1 18s linear infinite}.a2{animation:a2 18s linear infinite}.a3{animation:a3 18s linear infinite}
+  .a4{animation:a4 18s linear infinite}.a5{animation:a5 18s linear infinite}.a6{animation:a6 18s linear infinite}
+  .a7{animation:a7 18s linear infinite}.a8{animation:a8 18s linear infinite}.a9{animation:a9 18s linear infinite}
+  @keyframes a1{0%,1.3%{opacity:0}1.7%,100%{opacity:1}}
+  @keyframes a2{0%,9.6%{opacity:0}10%,100%{opacity:1}}
+  @keyframes a3{0%,17.9%{opacity:0}18.3%,100%{opacity:1}}
+  @keyframes a4{0%,27.4%{opacity:0}27.8%,100%{opacity:1}}
+  @keyframes a5{0%,35.7%{opacity:0}36.1%,100%{opacity:1}}
+  @keyframes a6{0%,44%{opacity:0}44.4%,100%{opacity:1}}
+  @keyframes a7{0%,52.4%{opacity:0}52.8%,100%{opacity:1}}
+  @keyframes a8{0%,60.7%{opacity:0}61.1%,100%{opacity:1}}
+  @keyframes a9{0%,69%{opacity:0}69.4%,100%{opacity:1}}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+
+<rect width="1280" height="640" fill="#0f1626"/>
+<defs>
+  <marker id="g04-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#4c9bff"/></marker>
+  <marker id="g04-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#f5b83d"/></marker>
+</defs>
+
+<text class="t" x="48" y="54">Ba cách xếp widget: <tspan fill="#4c9bff">pack</tspan> · <tspan fill="#f5b83d">place</tspan> · <tspan fill="#9fd88f">grid</tspan></text>
+<text class="sub" x="48" y="80">Mỗi widget cha chỉ được dùng MỘT geometry manager. Dưới cùng là lỗi khi trộn hai cái.</text>
+
+<!-- ======================= pack ======================= -->
+<rect class="panel" x="48" y="104" width="378" height="324" rx="10"/>
+<rect x="48" y="104" width="5" height="324" fill="#4c9bff"/>
+<text class="nm" x="72" y="138" fill="#4c9bff">.pack()</text>
+<text class="sm" x="72" y="160">Xếp chồng theo đúng thứ tự gọi</text>
+<text class="mc" x="72" y="186">tk.Frame(w, …).pack()   # A</text>
+<text class="mc" x="72" y="204">tk.Frame(w, …).pack()   # B</text>
+<text class="mc" x="72" y="222">tk.Frame(w, …).pack()   # C</text>
+<rect class="win" x="86" y="240" width="302" height="156" rx="8"/>
+<path class="bar" d="M86,248 a8,8 0 0 1 8,-8 h286 a8,8 0 0 1 8,8 v14 h-302 z"/>
+<text class="ms" x="237" y="256" text-anchor="middle">Tkinter .pack()</text>
+<line x1="132" y1="274" x2="132" y2="380" stroke="#4c9bff" stroke-width="1.4" marker-end="url(#g04-a)"/>
+<text class="dim" x="126" y="296" text-anchor="end">1</text>
+<text class="dim" x="126" y="340" text-anchor="end">2</text>
+<text class="dim" x="126" y="372" text-anchor="end">3</text>
+<rect class="ap a1" x="176" y="272" width="140" height="44" rx="3" fill="#f4a274"/>
+<rect class="ap a2" x="211" y="322" width="70" height="34" rx="3" fill="#9fd88f"/>
+<rect class="ap a3" x="228" y="362" width="36" height="22" rx="3" fill="#4c9bff"/>
+<text class="dim" x="237" y="416" text-anchor="middle">chiều dọc, căn giữa ngang · fill=tk.X cho kéo rộng</text>
+
+<!-- ======================= place ======================= -->
+<rect class="panel" x="450" y="104" width="378" height="324" rx="10"/>
+<rect x="450" y="104" width="5" height="324" fill="#f5b83d"/>
+<text class="nm" x="474" y="138" fill="#f5b83d">.place()</text>
+<text class="sm" x="474" y="160">Toạ độ tuyệt đối, cho phép đè nhau</text>
+<text class="mc" x="474" y="186">.place(x=10,  y=10,  w=100, h=100)</text>
+<text class="mc" x="474" y="204">.place(x=20,  y=30,  w=50,  h=50)</text>
+<text class="mc" x="474" y="222">.place(x=150, y=100, w=25,  h=25)</text>
+<rect class="win" x="488" y="240" width="302" height="156" rx="8"/>
+<path class="bar" d="M488,248 a8,8 0 0 1 8,-8 h286 a8,8 0 0 1 8,8 v14 h-302 z"/>
+<text class="ms" x="639" y="256" text-anchor="middle">Tkinter .place()</text>
+<line x1="498" y1="272" x2="560" y2="272" stroke="#f5b83d" stroke-width="1.2" marker-end="url(#g04-y)"/>
+<line x1="498" y1="272" x2="498" y2="330" stroke="#f5b83d" stroke-width="1.2" marker-end="url(#g04-y)"/>
+<text class="dim" x="566" y="276">x</text>
+<text class="dim" x="502" y="342">y</text>
+<rect class="ap a4" x="508" y="282" width="86" height="72" rx="2" fill="#f4a274"/>
+<rect class="ap a5" x="516" y="298" width="43" height="36" rx="2" fill="#9fd88f"/>
+<rect class="ap a6" x="628" y="350" width="22" height="22" rx="2" fill="#4c9bff"/>
+<rect x="658" y="282" width="14" height="10" fill="#f4a274"/><text class="ms" x="678" y="291">A (10,10) 100×100</text>
+<rect x="658" y="304" width="14" height="10" fill="#9fd88f"/><text class="ms" x="678" y="313">B (20,30) 50×50</text>
+<rect x="658" y="326" width="14" height="10" fill="#4c9bff"/><text class="ms" x="678" y="335">C (150,100) 25×25</text>
+<text class="dim" x="639" y="416" text-anchor="middle">B đè lên A — place không đẩy ai đi chỗ khác</text>
+
+<!-- ======================= grid ======================= -->
+<rect class="panel" x="852" y="104" width="378" height="324" rx="10"/>
+<rect x="852" y="104" width="5" height="324" fill="#9fd88f"/>
+<text class="nm" x="876" y="138" fill="#9fd88f">.grid()</text>
+<text class="sm" x="876" y="160">Hàng × cột, như bảng HTML</text>
+<text class="mc" x="876" y="186">Label("Username").grid(row=0, column=0)</text>
+<text class="mc" x="876" y="204">Entry().grid(row=0, column=1, sticky=EW)</text>
+<text class="mc" x="876" y="222">Button("Login").grid(row=2, column=0)</text>
+<rect class="win" x="890" y="240" width="302" height="156" rx="8"/>
+<path class="bar" d="M890,248 a8,8 0 0 1 8,-8 h286 a8,8 0 0 1 8,8 v14 h-302 z"/>
+<text class="ms" x="1041" y="256" text-anchor="middle">Tkinter .grid()</text>
+<text class="dim" x="958" y="280" text-anchor="middle">cột 0</text>
+<text class="dim" x="1092" y="280" text-anchor="middle">cột 1</text>
+<line class="guide" x1="906" y1="318" x2="1180" y2="318"/>
+<line class="guide" x1="906" y1="352" x2="1180" y2="352"/>
+<line class="guide" x1="1002" y1="286" x2="1002" y2="392"/>
+<text class="dim" x="900" y="304">0</text>
+<text class="dim" x="900" y="338">1</text>
+<text class="dim" x="900" y="374">2</text>
+<rect class="key ap a7" x="914" y="288" width="86" height="26" rx="3"/>
+<text class="ms ap a7" x="957" y="305" text-anchor="middle" fill="#93a0bc">Username</text>
+<rect class="field ap a7" x="1010" y="288" width="164" height="26" rx="3"/>
+<rect class="key ap a8" x="914" y="322" width="86" height="26" rx="3"/>
+<text class="ms ap a8" x="957" y="339" text-anchor="middle" fill="#93a0bc">Password</text>
+<rect class="field ap a8" x="1010" y="322" width="164" height="26" rx="3"/>
+<rect class="ap a9" x="914" y="358" width="118" height="28" rx="4" fill="#1a2440" stroke="#9fd88f" stroke-width="1.3"/>
+<text class="ms ap a9" x="973" y="376" text-anchor="middle" fill="#9fd88f">Login</text>
+<rect class="ap a9" x="1046" y="358" width="118" height="28" rx="4" fill="#1a2440" stroke="#5b6886" stroke-width="1.3"/>
+<text class="ms ap a9" x="1105" y="376" text-anchor="middle">Exit</text>
+<text class="dim" x="1041" y="416" text-anchor="middle">sticky=EW kéo rộng ô · columnspan gộp nhiều cột</text>
+
+<!-- ======================= dải lỗi ======================= -->
+<rect class="panel" x="48" y="448" width="1184" height="156" rx="10" stroke="#f4a274"/>
+<text class="eye" x="72" y="478" fill="#f4a274">✗ TRỘN pack() VÀ grid() TRONG CÙNG MỘT CHA → tkinter.TclError</text>
+<text class="m" x="72" y="508">frame = tk.Frame(window)</text>
+<text class="m" x="72" y="530">tk.Label(frame, text=<tspan fill="#9fd88f">"A"</tspan>).pack()<tspan fill="#5b6886">                  # cha .frame giờ thuộc về pack</tspan></text>
+<text class="m" x="72" y="552">tk.Label(frame, text=<tspan fill="#9fd88f">"B"</tspan>).grid(row=<tspan fill="#79d3ec">0</tspan>, column=<tspan fill="#79d3ec">0</tspan>)<tspan fill="#f4a274">   # ✗ nổ ngay dòng này</tspan></text>
+<text class="dim" x="72" y="580">Lỗi xảy ra lúc CHẠY, không phải lúc viết — chương trình dựng được giao diện rồi mới dừng.</text>
+
+<rect x="700" y="466" width="508" height="76" rx="6" fill="#1a2440" stroke="#f4a274" stroke-width="1.3"/>
+<text class="m" x="716" y="492" fill="#f4a274">_tkinter.TclError: cannot use geometry manager</text>
+<text class="m" x="716" y="512" fill="#f4a274">grid inside .frame which already has slaves</text>
+<text class="m" x="716" y="532" fill="#f4a274">managed by pack</text>
+<text class="sm" x="700" y="564" fill="#9fd88f">Cách đúng: mỗi Frame chọn MỘT manager.</text>
+<text class="ms" x="700" y="584">Cần cả hai thì LỒNG Frame: form.grid(…) bên trong, còn form.pack() ở cha ngoài.</text>
+
+<!-- ======================= nhấn theo chặng ======================= -->
+<rect class="glow pa" x="44" y="100" width="386" height="332" rx="12" stroke="#4c9bff"/>
+<rect class="glow pb" x="446" y="100" width="386" height="332" rx="12" stroke="#f5b83d"/>
+<rect class="glow pc" x="848" y="100" width="386" height="332" rx="12" stroke="#9fd88f"/>
+<rect class="glow pd" x="44" y="444" width="1192" height="164" rx="12" stroke="#f4a274"/>
+</svg>

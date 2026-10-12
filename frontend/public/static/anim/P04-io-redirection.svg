@@ -1,0 +1,120 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="pio-title pio-desc">
+  <title id="pio-title">Đổi hướng vào/ra và nối ống</title>
+  <desc id="pio-desc">Vòng lặp 16 giây, 7 nhịp (mỗi nhịp 2 giây): 1 dữ liệu từ bàn phím vào stdin 0, 2 process xử lý, 3 stdout 1 chảy ra tệp, 4 stderr 2 vẫn chảy ra màn hình, 5 tệp vào Process 1, 6 ống nối stdout của Process 1 sang stdin của Process 2, 7 kết quả ra tệp; rồi nghỉ 2 giây. Khung tĩnh đã hiện đủ ba luồng chuẩn 0/1/2, đích của từng luồng và đường ống giữa hai process.</desc>
+  <defs>
+    <marker id="pio-arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#4c9bff"/>
+    </marker>
+    <marker id="pio-ary" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f5b83d"/>
+    </marker>
+    <marker id="pio-aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f4a274"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .box{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .nm{font-size:16px;fill:#e8edf7;text-anchor:middle}
+    .ev{font-size:12.5px;text-anchor:middle}
+    /* Gói dữ liệu chạy trên đường ống: mặc định ẩn → hình tĩnh vẫn sạch và đủ nghĩa. */
+    .flow{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:16 600;opacity:0;animation:flow 16s linear infinite}
+    @keyframes flow{
+      0%{opacity:0;stroke-dashoffset:0}
+      1%{opacity:1;stroke-dashoffset:0}
+      10%{opacity:1;stroke-dashoffset:-340}
+      11%,100%{opacity:0;stroke-dashoffset:-340}
+    }
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Đổi hướng vào/ra (I/O redirection)</text>
+  <text class="sub" x="48" y="86">Mỗi process sinh ra đã có sẵn ba luồng: stdin (0), stdout (1), stderr (2). Đổi hướng là cắm đầu kia của luồng vào chỗ khác.</text>
+
+  <!-- BĂNG 1: một process -->
+  <rect class="panel" x="48" y="112" width="1184" height="236" rx="12"/>
+  <text class="s" x="72" y="142">Một process — đổi hướng stdout ra tệp, stderr giữ nguyên</text>
+
+  <path d="M246,220 H414" fill="none" stroke="#4c9bff" stroke-width="2.5" marker-end="url(#pio-arb)"/>
+  <path d="M660,206 H844" fill="none" stroke="#f5b83d" stroke-width="2.5" marker-end="url(#pio-ary)"/>
+  <path d="M560,264 V288 Q560,296 568,296 H844" fill="none" stroke="#f4a274" stroke-width="2.5" marker-end="url(#pio-aro)"/>
+
+  <text class="ev" x="330" y="208" fill="#4c9bff">stdin (0)</text>
+  <text class="ev" x="752" y="194" fill="#f5b83d">stdout (1)</text>
+  <text class="ev" x="706" y="286" fill="#f4a274">stderr (2)</text>
+
+  <rect class="box" x="96" y="184" width="150" height="72" rx="8"/>
+  <text class="nm" x="171" y="214">Bàn phím</text>
+  <text class="xs" x="171" y="236" text-anchor="middle">bạn gõ vào</text>
+
+  <rect x="430" y="176" width="230" height="88" rx="10" fill="#4c9bff" fill-opacity="0.1" stroke="#4c9bff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="nm" x="545" y="208">Process</text>
+  <text class="mono" x="545" y="232" font-size="14" fill="#93a0bc" text-anchor="middle">python loc.py</text>
+  <text class="xs" x="545" y="252" text-anchor="middle">code không đổi một dòng</text>
+
+  <rect class="box" x="860" y="184" width="160" height="72" rx="8"/>
+  <text class="mono" x="940" y="214" font-size="15" fill="#f5b83d" text-anchor="middle">ket_qua.txt</text>
+  <text class="xs" x="940" y="236" text-anchor="middle">tệp trên đĩa</text>
+
+  <rect class="box" x="860" y="262" width="160" height="72" rx="8"/>
+  <text class="nm" x="940" y="292" fill="#f4a274">Màn hình</text>
+  <text class="xs" x="940" y="314" text-anchor="middle">terminal</text>
+
+  <text class="xs" x="1036" y="286">stderr KHÔNG bị dấu &gt;</text>
+  <text class="xs" x="1036" y="304">đổi hướng, nên lỗi vẫn</text>
+  <text class="xs" x="1036" y="322">hiện ngay trên màn hình.</text>
+
+  <text xml:space="preserve" class="mono" x="96" y="292" font-size="13.5" fill="#9fd88f">$ python loc.py &gt; ket_qua.txt</text>
+  <text class="xs" x="96" y="314">Dấu &gt; chỉ đổi hướng luồng 1.</text>
+  <text class="xs" x="96" y="332">Muốn gom cả lỗi: 2&gt;&amp;1</text>
+
+  <!-- BĂNG 2: nối ống -->
+  <rect class="panel" x="48" y="364" width="1184" height="192" rx="12"/>
+  <text class="s" x="72" y="394">Nối ống (pipe) — stdout của Process 1 trở thành stdin của Process 2</text>
+
+  <path d="M236,458 H312" fill="none" stroke="#4c9bff" stroke-width="2.5" marker-end="url(#pio-arb)"/>
+  <path d="M490,458 H652" fill="none" stroke="#f5b83d" stroke-width="2.5" marker-end="url(#pio-ary)"/>
+  <path d="M850,458 H932" fill="none" stroke="#f5b83d" stroke-width="2.5" marker-end="url(#pio-ary)"/>
+  <text class="ev" x="274" y="446" fill="#4c9bff">stdin (0)</text>
+  <text class="ev" x="571" y="444" fill="#f5b83d">stdout (1) → stdin (0)</text>
+  <text class="ev" x="891" y="446" fill="#f5b83d">stdout (1)</text>
+
+  <rect class="box" x="96" y="424" width="140" height="68" rx="8"/>
+  <text class="mono" x="166" y="452" font-size="14" fill="#93a0bc" text-anchor="middle">dulieu.txt</text>
+  <text class="xs" x="166" y="474" text-anchor="middle">tệp vào</text>
+
+  <rect x="300" y="420" width="190" height="76" rx="10" fill="#4c9bff" fill-opacity="0.1" stroke="#4c9bff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="nm" x="395" y="450">Process 1</text>
+  <text class="mono" x="395" y="474" font-size="14" fill="#93a0bc" text-anchor="middle">grep ERROR</text>
+
+  <rect x="660" y="420" width="190" height="76" rx="10" fill="#c9a2ff" fill-opacity="0.1" stroke="#c9a2ff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="nm" x="755" y="450">Process 2</text>
+  <text class="mono" x="755" y="474" font-size="14" fill="#93a0bc" text-anchor="middle">wc -l</text>
+
+  <rect class="box" x="940" y="424" width="140" height="68" rx="8"/>
+  <text class="mono" x="1010" y="452" font-size="14" fill="#f5b83d" text-anchor="middle">bao_cao.txt</text>
+  <text class="xs" x="1010" y="474" text-anchor="middle">tệp ra</text>
+
+  <text xml:space="preserve" class="mono" x="72" y="528" font-size="13.5" fill="#9fd88f">$ grep ERROR dulieu.txt | wc -l &gt; bao_cao.txt</text>
+  <text class="xs" x="640" y="528">Ống chỉ chở stdout. stderr của cả hai process vẫn ra thẳng màn hình, không chui vào ống.</text>
+
+  <text class="xs" x="1232" y="600" text-anchor="end">Theo slide USTH 44–48</text>
+
+  <!-- Gói dữ liệu + vòng nhấn theo nhịp -->
+  <path class="flow" d="M246,220 H410" stroke="#4c9bff" style="animation-delay:0s"/>
+  <rect class="ring" x="426" y="172" width="238" height="96" rx="10" stroke="#4c9bff" style="animation-delay:2s"/>
+  <path class="flow" d="M660,206 H840" stroke="#f5b83d" style="animation-delay:4s"/>
+  <path class="flow" d="M560,264 V288 Q560,296 568,296 H840" stroke="#f4a274" style="animation-delay:6s"/>
+  <path class="flow" d="M236,458 H308" stroke="#4c9bff" style="animation-delay:8s"/>
+  <path class="flow" d="M490,458 H648" stroke="#f5b83d" style="animation-delay:10s"/>
+  <path class="flow" d="M850,458 H928" stroke="#f5b83d" style="animation-delay:12s"/>
+</svg>

@@ -17,6 +17,8 @@ CODE_KEYS = {
     'code', 'source', 'solutionCode', 'starterCode', 'template', 'call', 'expect',
     'content', 'sig', 'answer', 'filename', 'schema', 'kind', 'parser', 'importedAt',
     'eyebrow', 'version', 'placeholder_code', 'packages', 'name',
+    # Hình minh hoạ: 'src' là đường dẫn file, 'slides' là mã trang slide ("SL 15-16").
+    'src', 'slides',
 }
 
 RULES: list[tuple[str, object]] = [

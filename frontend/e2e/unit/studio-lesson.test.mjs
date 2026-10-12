@@ -237,6 +237,27 @@ test('buildScreens: cửa tự kiểm tra (boss) bỏ giải thích và dự đo
   assert.ok(b20boss.step_1.predict.options.length >= 2);
 });
 
+test('buildScreens: màn lý thuyết chèn ngay sau brief và trước explain', () => {
+  // Dữ liệu thật của khoá pe-v4 (M1–M3 có theory, M4–M8 không) — xem AGENTS.md:
+  // fixture tự bịa thì test không chứng minh được gì.
+  const p01 = JSON.parse(
+    readFileSync(join(ROOT, 'scripts', 'pe-v4', 'out-advanced', 'lessons', '001-P01.json'), 'utf8'),
+  ).content_json;
+  assert.ok(p01.step_1.theory.length >= 3, 'P01 phải có 3–5 khối lý thuyết');
+  assert.ok(p01.step_1.figure.src.endsWith('.svg'));
+  const keys = buildScreens(p01).map((s) => s.key);
+  assert.equal(keys[0], 's1-brief');
+  assert.equal(keys[1], 's1-theory');
+  assert.ok(keys.indexOf('s1-theory') < keys.indexOf('s1-explain'));
+
+  // Bài M4–M8 không khai theory thì KHÔNG được mọc thêm màn.
+  const m01 = JSON.parse(
+    readFileSync(join(ROOT, 'scripts', 'pe-v4', 'out-advanced', 'lessons', '041-M01.json'), 'utf8'),
+  ).content_json;
+  assert.equal(m01.step_1.theory, undefined);
+  assert.ok(!buildScreens(m01).some((s) => s.kind === 'theory'));
+});
+
 test('buildScreens: game debug thuộc S4 (sandbox), các game khác thuộc S3', () => {
   const screens = buildScreens(n01play);
   assert.equal(screenByKey(screens, 'g-debug-3').origin, 4);

@@ -1,0 +1,114 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="prr-title prr-desc">
+  <title id="prr-title">Round Robin với quantum = 2</title>
+  <desc id="prr-desc">Vòng lặp 16 giây: thanh thời gian quét từ trái sang phải trong 12 giây, mỗi 2 giây nhấn một lát CPU theo thứ tự P1, P2, P3, P1, P2, P1 rồi nghỉ 4 giây. Khung tĩnh đã hiện đủ hàng đợi ready, ô CPU, toàn bộ sáu lát trên trục thời gian 0–10 và các mốc hoàn thành P3 tại t=6, P2 tại t=9, P1 tại t=10.</desc>
+  <defs>
+    <marker id="prr-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .ev{font-size:12.5px;fill:#93a0bc}
+    .tick{font-size:12px;fill:#5b6886;text-anchor:middle}
+    .slc{font-size:16px;text-anchor:middle}
+    /* Thanh quét thời gian: tĩnh là đã quét hết (trạng thái hoàn chỉnh). */
+    .sweep{transform-box:fill-box;transform-origin:0% 50%;animation:sweep 16s linear infinite}
+    @keyframes sweep{0%{transform:scaleX(0)}75%,100%{transform:scaleX(1)}}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Round Robin: chia CPU theo lát thời gian</text>
+  <text class="sub" x="48" y="86">Mỗi process chạy nhiều nhất một quantum (ở đây = 2). Chưa xong thì bị ngắt và xếp lại CUỐI hàng đợi ready.</text>
+
+  <!-- Hàng đợi ready + CPU -->
+  <rect class="panel" x="48" y="112" width="1184" height="212" rx="12"/>
+  <text class="s" x="72" y="224">Hàng đợi</text>
+  <text class="s" x="72" y="246">ready</text>
+
+  <path d="M246,200 V174 Q246,166 254,166 H1054 Q1062,166 1062,174 V184" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#prr-ar)"/>
+  <text class="ev" x="650" y="156" text-anchor="middle">đầu hàng → được cấp CPU</text>
+  <path d="M1062,268 V284 Q1062,292 1054,292 H734 Q726,292 726,284 V262" fill="none" stroke="#f4a274" stroke-width="2" marker-end="url(#prr-ar)"/>
+  <text class="ev" x="880" y="312" text-anchor="middle" fill="#f4a274">hết quantum mà chưa xong → xuống cuối hàng</text>
+
+  <rect x="176" y="200" width="140" height="56" rx="8" fill="#9fd88f" fill-opacity="0.12" stroke="#9fd88f" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="mono" x="246" y="226" font-size="17" fill="#9fd88f" text-anchor="middle">P1</text>
+  <text class="xs" x="246" y="245" text-anchor="middle">cần 5 đơn vị</text>
+  <rect x="336" y="200" width="140" height="56" rx="8" fill="#4c9bff" fill-opacity="0.12" stroke="#4c9bff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="mono" x="406" y="226" font-size="17" fill="#4c9bff" text-anchor="middle">P2</text>
+  <text class="xs" x="406" y="245" text-anchor="middle">cần 3 đơn vị</text>
+  <rect x="496" y="200" width="140" height="56" rx="8" fill="#c9a2ff" fill-opacity="0.12" stroke="#c9a2ff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="mono" x="566" y="226" font-size="17" fill="#c9a2ff" text-anchor="middle">P3</text>
+  <text class="xs" x="566" y="245" text-anchor="middle">cần 2 đơn vị</text>
+  <rect x="656" y="200" width="140" height="56" rx="8" fill="none" stroke="#273352" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text class="xs" x="726" y="232" text-anchor="middle">chỗ xếp lại</text>
+
+  <rect x="944" y="188" width="236" height="80" rx="10" fill="#f5b83d" fill-opacity="0.1" stroke="#f5b83d" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="s" x="1062" y="216" text-anchor="middle" fill="#f5b83d">CPU — một lõi</text>
+  <text class="xs" x="1062" y="240" text-anchor="middle">chạy đúng MỘT process,</text>
+  <text class="xs" x="1062" y="258" text-anchor="middle">tối đa quantum = 2</text>
+
+  <!-- Trục thời gian -->
+  <rect class="panel" x="48" y="344" width="1184" height="206" rx="12"/>
+  <text class="s" x="72" y="374">Thứ tự CPU thật sự chạy (quantum = 2)</text>
+
+  <rect x="120" y="398" width="200" height="56" rx="6" fill="#9fd88f" fill-opacity="0.18" stroke="#9fd88f" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="220" y="432" fill="#9fd88f">P1</text>
+  <rect x="320" y="398" width="200" height="56" rx="6" fill="#4c9bff" fill-opacity="0.18" stroke="#4c9bff" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="420" y="432" fill="#4c9bff">P2</text>
+  <rect x="520" y="398" width="200" height="56" rx="6" fill="#c9a2ff" fill-opacity="0.18" stroke="#c9a2ff" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="620" y="432" fill="#c9a2ff">P3</text>
+  <rect x="720" y="398" width="200" height="56" rx="6" fill="#9fd88f" fill-opacity="0.18" stroke="#9fd88f" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="820" y="432" fill="#9fd88f">P1</text>
+  <rect x="920" y="398" width="100" height="56" rx="6" fill="#4c9bff" fill-opacity="0.18" stroke="#4c9bff" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="970" y="432" fill="#4c9bff">P2</text>
+  <rect x="1020" y="398" width="100" height="56" rx="6" fill="#9fd88f" fill-opacity="0.18" stroke="#9fd88f" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="mono slc" x="1070" y="432" fill="#9fd88f">P1</text>
+
+  <!-- thanh quét -->
+  <rect class="sweep" x="120" y="386" width="1000" height="5" rx="2.5" fill="#f5b83d"/>
+
+  <path d="M120,462 H1120" fill="none" stroke="#273352" stroke-width="1.5"/>
+  <text class="tick" x="120" y="490">0</text>
+  <text class="tick" x="320" y="490">2</text>
+  <text class="tick" x="520" y="490">4</text>
+  <text class="tick" x="720" y="490">6</text>
+  <text class="tick" x="920" y="490">8</text>
+  <text class="tick" x="1020" y="490">9</text>
+  <text class="tick" x="1120" y="490">10</text>
+  <text class="xs" x="120" y="508">thời gian →</text>
+
+  <path d="M720,464 V472" stroke="#c9a2ff" stroke-width="2.5" fill="none"/>
+  <path d="M1020,464 V472" stroke="#4c9bff" stroke-width="2.5" fill="none"/>
+  <path d="M1120,464 V472" stroke="#9fd88f" stroke-width="2.5" fill="none"/>
+  <text class="xs" x="600" y="508" text-anchor="middle">Vạch đậm = process xong hẳn: <tspan fill="#c9a2ff">P3 ở t=6</tspan>, <tspan fill="#4c9bff">P2 ở t=9</tspan>, <tspan fill="#9fd88f">P1 ở t=10</tspan>.</text>
+  <text class="xs" x="72" y="532">Hai lát cuối ngắn hơn quantum vì process chỉ còn 1 đơn vị việc — nó tự trả CPU trước khi hết lượt.</text>
+
+  <!-- Ghi chú đáy -->
+  <rect class="panel" x="48" y="570" width="1184" height="52" rx="10"/>
+  <rect x="72" y="584" width="4" height="24" rx="2" fill="#f5b83d"/>
+  <text class="s" x="90" y="602">Quantum ngắn: ai cũng được chạy sớm nhưng tốn nhiều context switch. Quantum dài: ít switch, nhưng chờ lâu.</text>
+  <text class="xs" x="1212" y="602" text-anchor="end">Theo slide USTH 37–43</text>
+
+  <!-- Nhấn lát đang chạy -->
+  <rect class="ring" x="116" y="394" width="208" height="64" rx="6" stroke="#9fd88f" style="animation-delay:0s"/>
+  <rect class="ring" x="316" y="394" width="208" height="64" rx="6" stroke="#4c9bff" style="animation-delay:2s"/>
+  <rect class="ring" x="516" y="394" width="208" height="64" rx="6" stroke="#c9a2ff" style="animation-delay:4s"/>
+  <rect class="ring" x="716" y="394" width="208" height="64" rx="6" stroke="#9fd88f" style="animation-delay:6s"/>
+  <rect class="ring" x="916" y="394" width="108" height="64" rx="6" stroke="#4c9bff" style="animation-delay:8s"/>
+  <rect class="ring" x="1016" y="394" width="108" height="64" rx="6" stroke="#9fd88f" style="animation-delay:10s"/>
+  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:0s"/>
+  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:2s"/>
+  <rect class="ring" x="492" y="196" width="148" height="64" rx="8" stroke="#c9a2ff" style="animation-delay:4s"/>
+  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:6s"/>
+  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:8s"/>
+  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:10s"/>
+</svg>

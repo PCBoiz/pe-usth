@@ -65,10 +65,37 @@ export type LessonBriefData = {
   reflect?: string;
 };
 
+/**
+ * Hình minh hoạ của bài (khoá python_advanced, chặng M1–M3). `src` là SVG tĩnh
+ * cùng miền (/static/anim/<tên>.svg) nên hiện bằng `<img>` là đủ: animation viết
+ * bằng CSS trong chính file SVG vẫn chạy, và CSP không phải nới thêm gì.
+ */
+export type LessonFigure = {
+  /** Tên file không đuôi — sổ tay PDF dùng để tìm PNG đã chụp. */
+  name?: string;
+  src: string;
+  caption: string;
+  /** Mô tả hình cho người không xem được hình. */
+  alt: string;
+};
+
+/** Một khối LÝ THUYẾT: khái niệm nền, trước khi đọc code từng dòng ở `explain`. */
+export type TheoryBlock = {
+  title: string;
+  body?: string;
+  bullets?: string[];
+  /** Đúng một khối trong bài mang hình chính. */
+  figure?: LessonFigure;
+};
+
 export type Step1 = {
   heading?: string;
   /** Có thì màn đầu của bài là LessonBrief thay cho thẻ "Ngữ cảnh". */
   brief?: LessonBriefData;
+  /** 3–5 khối lý thuyết — có thì chèn một màn `theory` ngay sau `brief`. */
+  theory?: TheoryBlock[];
+  /** Hình chính của bài; màn `explain` dùng khi không có màn `theory`. */
+  figure?: LessonFigure;
   context?: {
     title?: string;
     body?: string;
@@ -245,7 +272,14 @@ export type StudioLesson = {
   play?: Play;
   title?: string;
   subtitle?: string;
-  source?: { kind?: string; filename?: string; parser?: string; importedAt?: string };
+  source?: {
+    kind?: string;
+    filename?: string;
+    parser?: string;
+    importedAt?: string;
+    /** Trang slide gốc của giảng viên ("SL 15-16") — in nguyên văn, không tách. */
+    slides?: string;
+  };
   step_1?: Step1;
   step_2?: Step2;
   step_3?: Step3;
@@ -416,6 +450,8 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
 
 export type ScreenKind =
   | 'brief'
+  /** Lý thuyết nền + hình (step_1.theory) — ngay sau brief, trước explain. */
+  | 'theory'
   | 'context'
   | 'explain'
   | 'memory'
@@ -472,6 +508,9 @@ function buildPlayScreens(lesson: StudioLesson, play: Play): LessonScreen[] {
   const one = lesson.step_1;
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
   else if (one?.context?.body) out.push(screen('s1-context', 'context', 1));
+  // Lý thuyết đứng NGAY SAU màn mở đầu và TRƯỚC explain: khái niệm + hình trước,
+  // rồi mới đọc code từng dòng. Boss cũng được xem (phần nền, không phải lời giải).
+  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (!play.boss) {
     if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
     if ((one?.predict?.options?.length ?? 0) >= 2) out.push(screen('s1-predict', 'predict', 1));
@@ -500,6 +539,7 @@ export function buildScreens(lesson: StudioLesson): LessonScreen[] {
   const one = lesson.step_1;
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
   else if (one?.context?.body || one?.code?.source) out.push(screen('s1-context', 'context', 1));
+  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
   if (one?.memory) out.push(screen('s1-memory', 'memory', 1));
   if (one?.misconception?.body) out.push(screen('s1-misconception', 'misconception', 1));

@@ -7,6 +7,11 @@ liệu đã kiểm chứng của bài, bằng CHÍNH các hàm sinh của script
 * Cấp của bài lấy từ chặng (MODULES trong build.py), không từ chữ cái đầu của mã:
   Trung cấp -> luồng 'I' (fill + parsons), Nâng cao -> luồng 'N' (fill, săn lỗi, sửa
   code, tự giải thích). Boss = bài có step_4.gate (R02, DA01, DA02).
+* `step_1.theory` / `step_1.figure` / `source.slides` (lý thuyết + hình của M1–M3)
+  đi NGUYÊN qua bản v2: content_json được copy cả cụm, và các hàm sinh game chỉ
+  đọc đúng khoá chúng cần (misconception, explain, scaffold, solutionCode…) nên
+  không khối nào biến lý thuyết thành câu hỏi. Đừng đổi sang "chép từng khoá" —
+  thêm khoá mới ở build.py sẽ im lặng rơi mất.
 * Game CHẠY CODE được chấm thử ngay lúc dựng bằng studio-harness.py dưới CPython
   (harness_cpython.py), cùng luật với check-advanced.mjs: ghép parsons đúng thứ tự
   phải đạt mọi ca, thứ tự xáo trộn phải trượt; code của game sửa lỗi phải trượt.

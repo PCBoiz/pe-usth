@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="ppt-title ppt-desc">
+  <title id="ppt-title">Popen, communicate(timeout) và kill()</title>
+  <desc id="ppt-desc">Vòng lặp 16 giây: vạch thời gian quét trong 12 giây, 7 nhịp mỗi nhịp 2 giây: 1 cha đang chạy, 2 Popen() trả về ngay và con bắt đầu chạy, 3 cha chờ trong communicate(timeout=5), 4 chạm hạn giờ nên ném TimeoutExpired, 5 con VẪN CHẠY tiếp sau vạch hạn giờ, 6 p.kill() mới thật sự dừng con, 7 communicate() lần hai thu nốt output. Khung tĩnh đã hiện đủ vạch hạn giờ, đoạn con chạy quá hạn và năm bước mã nguồn.</desc>
+  <defs>
+    <marker id="ppt-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+    <marker id="ppt-aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#f4a274"/>
+    </marker>
+    <pattern id="ppt-hatch" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="10" height="10" fill="#f4a274" fill-opacity="0.08"/>
+      <line x1="0" y1="0" x2="0" y2="10" stroke="#f4a274" stroke-opacity="0.45" stroke-width="2"/>
+    </pattern>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .ev{font-size:12.5px;fill:#93a0bc}
+    .bl{font-size:12.5px;text-anchor:middle}
+    .bdg{font-size:13px;fill:#0f1626;text-anchor:middle;font-weight:700}
+    .head{transform:translate(900px,0px);animation:head 16s linear infinite}
+    @keyframes head{0%{transform:translate(0px,0px)}75%,100%{transform:translate(900px,0px)}}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Popen + communicate(timeout): hạn giờ không tự giết con</text>
+  <text class="sub" x="48" y="86">Popen() trả về NGAY. Chỗ chờ là communicate(timeout=5); hết hạn nó ném TimeoutExpired, nhưng process con vẫn chạy tới khi bạn kill().</text>
+
+  <!-- Nhãn làn -->
+  <rect x="48" y="190" width="130" height="62" rx="10" fill="#9fd88f" fill-opacity="0.1" stroke="#9fd88f" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text class="s" x="66" y="216" fill="#9fd88f">Tiến trình</text>
+  <text class="s" x="66" y="238" fill="#9fd88f">CHA</text>
+  <rect x="48" y="330" width="130" height="62" rx="10" fill="#4c9bff" fill-opacity="0.1" stroke="#4c9bff" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text class="s" x="66" y="356" fill="#4c9bff">Tiến trình</text>
+  <text class="s" x="66" y="378" fill="#4c9bff">CON</text>
+
+  <!-- Vạch hạn giờ -->
+  <path d="M700,152 V420" fill="none" stroke="#f4a274" stroke-width="2" stroke-dasharray="7 5"/>
+  <text class="bl" x="700" y="144" fill="#f4a274">hạn giờ: 5 giây</text>
+
+  <!-- Làn cha -->
+  <rect x="200" y="196" width="100" height="50" rx="6" fill="#9fd88f" fill-opacity="0.2" stroke="#9fd88f" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="bl" x="250" y="226" fill="#9fd88f">đang chạy</text>
+  <rect x="300" y="196" width="120" height="50" rx="6" fill="#9fd88f" fill-opacity="0.2" stroke="#9fd88f" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="bl" x="360" y="226" fill="#9fd88f">chạy tiếp ngay</text>
+  <rect x="420" y="196" width="280" height="50" rx="6" fill="#5b6886" fill-opacity="0.14" stroke="#5b6886" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text class="bl" x="560" y="220" fill="#93a0bc">chờ trong communicate(…)</text>
+  <text class="xs" x="560" y="238" text-anchor="middle">cha bị chặn ở ĐÂY, không phải ở Popen()</text>
+  <rect x="700" y="196" width="160" height="50" rx="6" fill="#f4a274" fill-opacity="0.2" stroke="#f4a274" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="bl" x="780" y="218" fill="#f4a274">TimeoutExpired</text>
+  <text class="xs" x="780" y="236" text-anchor="middle">cha bắt ngoại lệ</text>
+  <rect x="860" y="196" width="220" height="50" rx="6" fill="#9fd88f" fill-opacity="0.2" stroke="#9fd88f" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="bl" x="970" y="220" fill="#9fd88f">communicate() lần hai</text>
+  <text class="xs" x="970" y="238" text-anchor="middle">thu nốt output rồi đi tiếp</text>
+
+  <!-- Làn con -->
+  <rect x="200" y="336" width="100" height="50" rx="6" fill="none" stroke="#273352" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text class="xs" x="250" y="366" text-anchor="middle">chưa có</text>
+  <rect x="300" y="336" width="560" height="50" rx="6" fill="#4c9bff" fill-opacity="0.2" stroke="#4c9bff" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="bl" x="500" y="360" fill="#4c9bff">Process con chạy</text>
+  <text class="mono xs" x="500" y="378" text-anchor="middle">python train.py</text>
+  <rect x="700" y="336" width="160" height="50" rx="6" fill="url(#ppt-hatch)" stroke="#f4a274" stroke-opacity="0.6" stroke-width="1.5"/>
+  <text class="xs" x="780" y="406" text-anchor="middle" fill="#f4a274">vẫn chạy QUÁ hạn giờ</text>
+  <rect x="860" y="336" width="220" height="50" rx="6" fill="none" stroke="#273352" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text class="xs" x="970" y="366" text-anchor="middle">đã bị kill()</text>
+
+  <path d="M860,250 V328" fill="none" stroke="#f4a274" stroke-width="2" marker-end="url(#ppt-aro)"/>
+  <text class="ev" x="872" y="282" fill="#f4a274">p.kill() gửi SIGKILL</text>
+  <text class="xs" x="872" y="300">— đây mới là lúc con dừng</text>
+
+  <!-- Trục thời gian -->
+  <path d="M200,424 H1104" fill="none" stroke="#273352" stroke-width="1.5" marker-end="url(#ppt-ar)"/>
+  <text class="xs" x="200" y="444">thời gian →</text>
+  <rect class="head" x="198" y="176" width="3" height="236" rx="1.5" fill="#f5b83d" fill-opacity="0.85"/>
+
+  <!-- Số bước -->
+  <circle cx="300" cy="176" r="12" fill="#9fd88f"/><text class="bdg" x="300" y="181">1</text>
+  <circle cx="420" cy="176" r="12" fill="#93a0bc"/><text class="bdg" x="420" y="181">2</text>
+  <circle cx="700" cy="176" r="12" fill="#f4a274"/><text class="bdg" x="700" y="181">3</text>
+  <circle cx="860" cy="176" r="12" fill="#f4a274"/><text class="bdg" x="860" y="181">4</text>
+  <circle cx="1000" cy="176" r="12" fill="#9fd88f"/><text class="bdg" x="1000" y="181">5</text>
+
+  <!-- Mã nguồn -->
+  <rect class="panel" x="48" y="456" width="712" height="144" rx="10"/>
+  <text xml:space="preserve" class="mono" x="72" y="484" font-size="13" fill="#e8edf7"><tspan fill="#9fd88f">1 </tspan>p = subprocess.Popen(["python","train.py"], stdout=PIPE, text=True)</text>
+  <text xml:space="preserve" class="mono" x="72" y="506" font-size="13" fill="#e8edf7"><tspan fill="#5b6886">  </tspan>try:</text>
+  <text xml:space="preserve" class="mono" x="72" y="528" font-size="13" fill="#e8edf7"><tspan fill="#93a0bc">2 </tspan>    out, err = p.communicate(timeout=5)</text>
+  <text xml:space="preserve" class="mono" x="72" y="550" font-size="13" fill="#e8edf7"><tspan fill="#f4a274">3 </tspan>except subprocess.TimeoutExpired:</text>
+  <text xml:space="preserve" class="mono" x="72" y="572" font-size="13" fill="#e8edf7"><tspan fill="#f4a274">4 </tspan>    p.kill()</text>
+  <text xml:space="preserve" class="mono" x="72" y="594" font-size="13" fill="#e8edf7"><tspan fill="#9fd88f">5 </tspan>    out, err = p.communicate()</text>
+
+  <rect class="panel" x="780" y="456" width="452" height="144" rx="10"/>
+  <text class="s" x="804" y="484">Hai chỗ hay sai</text>
+  <text class="xs" x="804" y="510">• TimeoutExpired KHÔNG giết con. Bỏ qua kill() là để lại</text>
+  <text class="xs" x="804" y="528">  một process chạy hoang, ăn CPU tới hết buổi.</text>
+  <text class="xs" x="804" y="552">• Sau kill() vẫn phải communicate() lần nữa: để đóng ống</text>
+  <text class="xs" x="804" y="570">  và nhặt nốt output còn kẹt trong bộ đệm.</text>
+  <text class="xs" x="1232" y="624" text-anchor="end">Tài liệu Python: subprocess (slide USTH 53)</text>
+
+  <!-- Nhấn theo nhịp -->
+  <rect class="ring" x="196" y="192" width="108" height="58" rx="6" stroke="#9fd88f" style="animation-delay:0s"/>
+  <rect class="ring" x="296" y="332" width="568" height="58" rx="6" stroke="#4c9bff" style="animation-delay:2s"/>
+  <rect class="ring" x="416" y="192" width="288" height="58" rx="6" stroke="#93a0bc" style="animation-delay:4s"/>
+  <rect class="ring" x="696" y="192" width="168" height="58" rx="6" stroke="#f4a274" style="animation-delay:6s"/>
+  <rect class="ring" x="696" y="332" width="168" height="58" rx="6" stroke="#f4a274" style="animation-delay:8s"/>
+  <rect class="ring" x="848" y="164" width="24" height="24" rx="12" stroke="#f4a274" style="animation-delay:10s"/>
+  <rect class="ring" x="856" y="192" width="228" height="58" rx="6" stroke="#9fd88f" style="animation-delay:12s"/>
+</svg>

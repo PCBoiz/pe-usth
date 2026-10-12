@@ -632,3 +632,103 @@
   background: var(--st-err-bg);
   color: var(--st-err-text);
 }
+
+/* S1 · Lý thuyết: khối khái niệm nền + hình minh hoạ (khoá python_advanced).
+   Cùng ngôn ngữ thị giác với .trace và .note — thẻ nền panel, viền sidebar, bo 10–12px;
+   không thêm màu thương hiệu mới. */
+.theory {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 4px;
+}
+
+.theoryBlock {
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.theoryBlock h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--edu-t1);
+}
+
+.theoryBlock p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--edu-t2);
+}
+
+.theoryBlock ul {
+  margin: 8px 0 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.theoryBlock li {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--edu-t2);
+}
+
+.theoryBlock p + ul {
+  margin-top: 10px;
+}
+
+/* Hình: SVG cùng miền, tỉ lệ 2:1 cố định theo chuẩn vẽ 1280x640. Giữ chỗ bằng
+   aspect-ratio nên khi file hình còn thiếu (ảnh vỡ) khung không co lại làm nhảy layout. */
+.theoryFigure {
+  margin: 12px 0 0;
+}
+
+.theoryFigure img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 1;
+  object-fit: contain;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+}
+
+.theoryFigure a {
+  display: block;
+  cursor: zoom-in;
+}
+
+.theoryFigure figcaption {
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--edu-t3);
+}
+
+/* Link "Xem khổ lớn" nằm ngay sau chú thích, không phải nút riêng: học viên nào
+   đọc được hình ở khổ nhỏ thì bỏ qua, ai cần mới bấm. */
+.theoryFigure figcaption a {
+  display: inline;
+  margin-left: 8px;
+  color: var(--edu-accent);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.theoryFigure figcaption a:hover {
+  text-decoration: underline;
+}
+
+.theorySource {
+  margin: 0;
+  font-size: 12px;
+  color: var(--edu-t3);
+}

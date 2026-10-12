@@ -10,6 +10,12 @@ Cùng khuôn với scripts/pe-v3/build.py (bản đó giữ nguyên cho khoá c�
   Bản dựng đầy đủ đòi đủ 48 mã; thiếu là lỗi.
 * Cửa tự kiểm tra (Boss) lấy từ chính dict bài (`gate=True`, `exam='…'`), không
   còn bảng mã cứng như GATE_EXAM của pe-v3.
+* Bài M1–M3 có thể khai thêm `theory=[...]` (3–5 khối nền: định nghĩa, ví dụ,
+  ứng dụng, đọc sơ đồ), `figure=dict(name=…, caption=…, alt=…)` và `slides='SL 15-16'`
+  — xem CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
+  content_json.source.slides. Hình SVG nằm ở frontend/public/static/anim/<name>.svg;
+  thiếu file chỉ là CẢNH BÁO (tác giả nội dung không phải chờ agent vẽ hình), trừ khi
+  chạy với --strict.
 * Bài có thể khai `packages=[...]` (numpy, pandas, matplotlib, sqlite3); build còn tự dò `import` trong lời giải. Trình duyệt chỉ tải các
   thư viện này cho bài cần — bài khác không chậm thêm.
 * CHẤM THỬ NGAY LÚC DỰNG: lời giải phải đạt mọi ca, code khởi tạo và mỗi biến
@@ -87,6 +93,24 @@ IMPORT_TO_PACKAGE = {mod: pkg for pkg, mod in PACKAGES.items()}
 
 MIN_TESTS = 5
 MIN_BAD = 2
+
+# ---- LÝ THUYẾT + HÌNH (M1–M3, xem CONTRACT-THEORY.md)
+# Hai khoá mới của dict bài: `theory` (3–5 khối nền) và `figure` (hình chính).
+# Giới hạn độ dài KHÔNG phải tuỳ hứng: màn `theory` của frontend là một thẻ, chữ
+# dài hơn mức này thì thẻ tràn và học viên bỏ qua. Bài M4–M8 không khai gì thì
+# build giữ nguyên như trước.
+THEORY_MIN_BLOCKS = 3
+THEORY_MAX_BLOCKS = 5
+THEORY_H_MAX = 40
+THEORY_BODY_MAX = 400
+THEORY_BULLETS_MAX = 5
+THEORY_BULLET_MAX = 160
+FIGURE_CAPTION_MAX = 90
+FIGURE_ALT_MAX = 200
+ANIM_DIR = ROOT / 'frontend' / 'public' / 'static' / 'anim'
+ANIM_URL = '/static/anim'
+# Tên hình thành tên file nên chỉ cho chữ/số/._- (không '/', không '..').
+FIGURE_NAME_RE = re.compile(r'[A-Za-z0-9][\w.-]*')
 
 
 class BuildError(Exception):
@@ -265,7 +289,91 @@ def lesson_files(code, spec, support):
     return files
 
 
-def build_lesson(spec, briefs, support, sort_order):
+def figure_block(code, raw, warnings, strict_figures):
+    """Chuẩn hoá dict `figure` của bài thành {name, src, caption, alt}.
+
+    File SVG do agent vẽ hình sinh ra sau, nên THIẾU FILE chỉ là cảnh báo: tác giả
+    nội dung không bị chặn vì hình chưa vẽ xong. `--strict` (dùng trước khi deploy)
+    biến nó thành lỗi để không đẩy lên bài có <img> hỏng.
+    """
+    check(isinstance(raw, dict), code, 'figure phải là dict(name=…, caption=…, alt=…)')
+    name = str(raw.get('name') or '')
+    check(FIGURE_NAME_RE.fullmatch(name), code,
+          f'figure.name={name!r} phải là tên trơn (chữ, số, . _ -) vì nó thành tên file SVG')
+    caption = str(raw.get('caption') or '')
+    alt = str(raw.get('alt') or '')
+    check(caption, code, 'figure.caption trống — chú thích in dưới hình trong sổ tay')
+    check(len(caption) <= FIGURE_CAPTION_MAX, code,
+          f'figure.caption dài {len(caption)} ký tự, tối đa {FIGURE_CAPTION_MAX}')
+    check(alt, code, 'figure.alt trống — người dùng trình đọc màn hình sẽ không biết hình vẽ gì')
+    check(len(alt) <= FIGURE_ALT_MAX, code, f'figure.alt dài {len(alt)} ký tự, tối đa {FIGURE_ALT_MAX}')
+    unknown = set(raw) - {'name', 'caption', 'alt'}
+    check(not unknown, code, f'figure có khoá lạ {sorted(unknown)}; chỉ dùng name/caption/alt')
+    if not (ANIM_DIR / f'{name}.svg').exists():
+        message = f'{code}: chưa có hình frontend/public/static/anim/{name}.svg'
+        if strict_figures:
+            raise BuildError(message + ' (--strict)')
+        warnings.append(message)
+    return {'name': name, 'src': f'{ANIM_URL}/{name}.svg', 'caption': caption, 'alt': alt}
+
+
+def theory_blocks(code, spec, warnings, strict_figures):
+    """(danh sách khối lý thuyết, hình chính) — cả hai là None nếu bài không khai.
+
+    Khối lý thuyết là phần NỀN (khái niệm, hình, ứng dụng), khác `explain` là đọc
+    từng dòng code; frontend hiện nó thành một màn riêng chèn ngay sau màn mở đầu.
+    """
+    raw_theory = spec.get('theory')
+    raw_figure = spec.get('figure')
+    if not raw_theory:
+        check(not raw_figure, code, 'khai figure nhưng không có theory — hình không có chỗ nào hiện')
+        return None, None
+
+    check(isinstance(raw_theory, (list, tuple)), code, 'theory phải là list các dict(h=…, body=…, bullets=[…])')
+    check(THEORY_MIN_BLOCKS <= len(raw_theory) <= THEORY_MAX_BLOCKS, code,
+          f'theory có {len(raw_theory)} khối, phải {THEORY_MIN_BLOCKS}–{THEORY_MAX_BLOCKS}')
+    check(raw_figure is not None, code, 'có theory thì phải khai figure (một khối phải giải thích hình)')
+    figure = figure_block(code, raw_figure, warnings, strict_figures)
+
+    blocks, with_figure = [], []
+    for i, raw in enumerate(raw_theory, start=1):
+        at = f'theory[{i}]'
+        check(isinstance(raw, dict), code, f'{at} phải là dict')
+        unknown = set(raw) - {'h', 'body', 'bullets', 'figure'}
+        check(not unknown, code, f'{at} có khoá lạ {sorted(unknown)}; chỉ dùng h/body/bullets/figure')
+        h = str(raw.get('h') or '').strip()
+        check(h, code, f'{at} thiếu tiêu đề h')
+        check(len(h) <= THEORY_H_MAX, code, f'{at}.h dài {len(h)} ký tự, tối đa {THEORY_H_MAX}')
+        body = raw.get('body')
+        if body is not None:
+            body = str(body).strip()
+            check(len(body) <= THEORY_BODY_MAX, code,
+                  f'{at}.body dài {len(body)} ký tự, tối đa {THEORY_BODY_MAX}')
+        bullets = raw.get('bullets')
+        if bullets is not None:
+            check(isinstance(bullets, (list, tuple)), code, f'{at}.bullets phải là list chuỗi')
+            bullets = [str(b).strip() for b in bullets]
+            check(bullets, code, f'{at}.bullets rỗng — bỏ khoá này đi nếu không có gạch đầu dòng')
+            check(len(bullets) <= THEORY_BULLETS_MAX, code,
+                  f'{at}.bullets có {len(bullets)} mục, tối đa {THEORY_BULLETS_MAX}')
+            for j, bullet in enumerate(bullets, start=1):
+                check(bullet, code, f'{at}.bullets[{j}] trống')
+                check(len(bullet) <= THEORY_BULLET_MAX, code,
+                      f'{at}.bullets[{j}] dài {len(bullet)} ký tự, tối đa {THEORY_BULLET_MAX}')
+        check(body or bullets, code, f'{at} phải có body hoặc bullets (hoặc cả hai)')
+        block = {'title': h, 'body': body or None, 'bullets': bullets or None, 'figure': None}
+        if raw.get('figure'):
+            check(str(raw['figure']) == figure['name'], code,
+                  f'{at}.figure={raw["figure"]!r} khác figure.name={figure["name"]!r}')
+            block['figure'] = {k: figure[k] for k in ('src', 'caption', 'alt')}
+            with_figure.append(at)
+        blocks.append(block)
+    check(len(with_figure) == 1, code,
+          f'đúng MỘT khối theory được mang figure, đang có {len(with_figure)} ({", ".join(with_figure) or "không khối nào"})')
+    return blocks, figure
+
+
+def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figures=False):
     code = spec['code']
     module_no, module_name, level = MODULE_OF[code]
     gate = bool(spec.get('gate'))
@@ -280,10 +388,15 @@ def build_lesson(spec, briefs, support, sort_order):
               f'prereq={prereq!r} phải là mã một bài ĐỨNG TRƯỚC trong khoá mới')
 
     files = lesson_files(code, spec, support)
+    theory, figure = theory_blocks(code, spec, warnings if warnings is not None else [], strict_figures)
 
     # ---- S1: hiểu và dự đoán
     step1 = {
         'brief': brief_block(code, spec, briefs, module_no, level),
+        # Lý thuyết đứng NGAY SAU màn mở đầu (xem buildPlayScreens của frontend):
+        # học viên cần khái niệm + hình trước khi đọc code từng dòng ở `explain`.
+        'theory': theory,
+        'figure': figure,
         'context': {
             'title': spec['goal'],
             'body': spec['brief'],
@@ -371,11 +484,20 @@ def build_lesson(spec, briefs, support, sort_order):
     if packages:
         step4['packages'] = packages
 
+    # `slides` = trang slide gốc của giảng viên ("SL 15-16"), để sổ tay in được dòng
+    # nguồn dưới khối lý thuyết. Đi cùng `source` vì nó nói về xuất xứ, không phải nội dung.
+    slides = spec.get('slides')
+    if slides is not None:
+        slides = str(slides).strip()
+        check(slides, code, 'slides khai rỗng — bỏ khoá này đi nếu không dẫn được nguồn')
+        check(len(slides) <= 80, code, f'slides dài {len(slides)} ký tự, tối đa 80')
+
     content = {
         'schema': SCHEMA,
         'title': title,
         'subtitle': subtitle,
-        'source': {'kind': 'pe-v4', 'filename': f'{SOURCE}#{code}', 'parser': 'pe-v4/build', 'importedAt': SOURCE_DATE},
+        'source': {'kind': 'pe-v4', 'filename': f'{SOURCE}#{code}', 'parser': 'pe-v4/build',
+                   'importedAt': SOURCE_DATE, 'slides': slides},
         'step_1': step1,
         'step_2': step2,
         'step_3': step3,
@@ -524,6 +646,8 @@ def main(argv=None) -> int:
     ap.add_argument('--no-run', action='store_true', help='Bỏ bước chấm thử bằng CPython.')
     ap.add_argument('--jobs', type=int, default=2, help='Số bài chấm song song (mặc định 2).')
     ap.add_argument('--timeout', type=float, default=10, help='Giây tối đa cho một lần chạy (mặc định 10).')
+    ap.add_argument('--strict', action='store_true',
+                    help='Hình SVG còn thiếu là LỖI, không phải cảnh báo (dùng trước khi deploy).')
     ap.add_argument('--verbose', '-v', action='store_true')
     ap.add_argument('--extra', action='append', default=[],
                     help='Nạp thêm file bài ngoài lessons_*.py (bài thử của hạ tầng); mã lạ được xếp vào chặng "Thử".')
@@ -566,9 +690,11 @@ def main(argv=None) -> int:
 
     rows, qa_rows = [], []
     errors = []
+    figure_warnings: list[str] = []
     for code in wanted:
         try:
-            row, qa = build_lesson(specs[code], briefs, support, ORDER.index(code) + 1)
+            row, qa = build_lesson(specs[code], briefs, support, ORDER.index(code) + 1,
+                                   warnings=figure_warnings, strict_figures=args.strict)
         except BuildError as err:
             errors.append(str(err))
             continue
@@ -578,6 +704,10 @@ def main(argv=None) -> int:
         row['content_json'] = glossary.polish(row['content_json'])
         rows.append(strip_none(row))
         qa_rows.append(qa)
+    if figure_warnings:
+        print(f'! {len(figure_warnings)} hình chưa vẽ (bài vẫn dựng được; --strict để coi là lỗi):', file=sys.stderr)
+        for w in figure_warnings:
+            print('  ' + w, file=sys.stderr)
     if errors:
         print(f'LỖI dựng ({len(errors)}):', file=sys.stderr)
         for e in errors:

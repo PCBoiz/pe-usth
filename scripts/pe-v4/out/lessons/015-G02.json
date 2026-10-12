@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#G02",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 118-120"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,51 @@
           "Sai mật khẩu → Sai mật khẩu, không hộp thông báo"
         ],
         "reflect": "Vì sao phải gọi get() bên trong login()?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: widget và callback",
+          "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa widget khác, Label hiện chữ, Button bấm được, Entry nhập một dòng. Widget nhận thuộc tính ngay lúc tạo (text, width, height, bg). Callback là hàm BẠN viết nhưng TKINTER gọi — khi sự kiện xảy ra. Với Button, tuỳ chọn command giữ hàm đó lại chờ người dùng bấm."
+        },
+        {
+          "title": "Ví dụ: nút gọi hàm",
+          "body": "def onClick(): messagebox.showinfo(message=\"Button 1 clicked\") rồi tk.Button(window, text=\"Button 1\", command=onClick). Lúc dựng giao diện, onClick CHƯA chạy: nút chỉ cất tên hàm. Mỗi lần người dùng bấm, Tkinter mới gọi onClick() và hộp thông báo bật lên. Thêm ngoặc (command=onClick()) là tự tay gọi một lần rồi giao None cho nút."
+        },
+        {
+          "title": "Nối sự kiện: command và bind",
+          "bullets": [
+            "command=f: chỉ Button, Checkbutton, Radiobutton… — Tkinter gọi f() không đối số",
+            "widget.bind(\"<Return>\", f): mọi widget, mọi sự kiện — Tkinter gọi f(event)",
+            "event mang thông tin: phím nào, chuột ở đâu, widget nào phát sinh",
+            "messagebox.showinfo / showwarning / showerror bật hộp thông báo, cảnh báo, lỗi",
+            "Trong callback: entry.get() đọc chữ, label.config(text=…) đổi chữ, cget(\"text\") đọc lại"
+          ]
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Form đăng nhập, form nhập liệu: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
+            "Mọi thao tác người dùng đều đi qua callback — đó là cách GUI thay cho input() của CLI",
+            "Hộp messagebox để báo việc đã xong hoặc dữ liệu sai, thay cho print()",
+            "Studio không vẽ cửa sổ nên bộ chấm \"bấm\" bằng button.invoke() và đọc _studio.tk.messages",
+            "Chạy file trên máy (python ten_file.py) để thật sự bấm nút và thấy hộp thông báo"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hình chia làm hai nhịp. Nhịp dựng giao diện: Button cất tham chiếu tới hàm, chưa gọi. Nhịp người dùng bấm: sự kiện đi vào Tkinter, Tkinter gọi callback, callback đọc Entry rồi gọi label.config(text=…), và chữ trên Label đổi. Mũi tên nét liền là lời gọi, ô nét đứt là dữ liệu đọc tại thời điểm bấm — không phải lúc dựng giao diện.",
+          "figure": {
+            "src": "/static/anim/G02-widget-callback.svg",
+            "caption": "Bấm Button → Tkinter gọi callback → Label đổi chữ",
+            "alt": "Sơ đồ: Button giữ hàm qua command; khi bấm, Tkinter gọi hàm, hàm đọc Entry bằng get() rồi gọi label.config(text=…) làm Label đổi chữ"
+          }
+        }
+      ],
+      "figure": {
+        "name": "G02-widget-callback",
+        "src": "/static/anim/G02-widget-callback.svg",
+        "caption": "Bấm Button → Tkinter gọi callback → Label đổi chữ",
+        "alt": "Sơ đồ: Button giữ hàm qua command; khi bấm, Tkinter gọi hàm, hàm đọc Entry bằng get() rồi gọi label.config(text=…) làm Label đổi chữ"
       },
       "context": {
         "title": "Tạo widget, nối nút với hàm callback và đọc dữ liệu đúng lúc người dùng bấm.",

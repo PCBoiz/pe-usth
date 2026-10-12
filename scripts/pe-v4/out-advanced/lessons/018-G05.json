@@ -14,7 +14,8 @@
       "kind": "pe-v4-advanced",
       "filename": "python-learning-data.json#G05",
       "parser": "pe-v4/build_advanced",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 116, 135"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,51 @@
           "Bấm \"Thêm điểm\" với 8 → \"1 điểm, trung bình 8.00\""
         ],
         "reflect": "Vì sao validate_mark không nên tự gọi messagebox?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: hàm thuần và tầng giao diện",
+          "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng GIAO DIỆN chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả. Ranh giới này không phải chuyện đẹp xấu: hàm thuần test được bằng một lời gọi, còn code dính widget thì muốn test phải dựng cả cửa sổ. Bài tập PW9 chính là nâng giao diện của PW8 lên GUI mà giữ nguyên phần tính toán."
+        },
+        {
+          "title": "Ví dụ: tách một ô nhập điểm",
+          "body": "validate_mark(raw) nhận chuỗi, trả float 0..10, raise ValueError nếu sai — không biết Entry là gì. Method add_mark của App gọi self.mark_var.get(), đưa vào validate_mark trong try, except ValueError thì messagebox.showerror. Đổi giao diện sang web hay CLI thì validate_mark giữ nguyên; chỉ phần bắt lỗi và hiện lỗi viết lại."
+        },
+        {
+          "title": "Vì sao gói giao diện vào class",
+          "bullets": [
+            "self.status, self.mark_var sống cùng App; biến cục bộ trong create_widgets() mất ngay",
+            "__init__ dựng trạng thái rồi gọi create_widgets(); mỗi method là một việc người dùng làm",
+            "Callback thành method: command=self.add_mark — vẫn KHÔNG ngoặc",
+            "Nhiều cửa sổ cùng kiểu thì tạo nhiều đối tượng App, không phải chép code",
+            "Tkinter không bắt buộc OOP; class chỉ đáng khi widget và trạng thái bắt đầu nhiều"
+          ]
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Mọi app có kiểm tra dữ liệu: quy tắc nghiệp vụ nằm ở hàm thuần, thông báo nằm ở GUI",
+            "Dùng lại cùng một lõi cho GUI, cho script dòng lệnh và cho bài test tự động",
+            "Hàm thuần báo lỗi bằng raise; GUI quyết định hiện bằng messagebox hay đổi màu ô nhập",
+            "Studio chấm phần logic bằng cách gọi thẳng hàm thuần — không cần cửa sổ nào",
+            "Đó cũng là lý do bài này chạy được trong Studio dù tkinter ở đây là đồ giả"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hình chia đôi bằng một đường dọc. Bên trái là lớp App: widget, callback, messagebox — phần chỉ chạy được khi có cửa sổ. Bên phải là các hàm thuần: vào là dữ liệu, ra là dữ liệu hoặc exception. Mũi tên chỉ đi một chiều từ trái sang phải; không có mũi tên nào từ hàm thuần chạm vào widget. Bên phải còn có ô \"test gọi thẳng\" để thấy vì sao tách lại dễ kiểm.",
+          "figure": {
+            "src": "/static/anim/G05-logic-vs-ui.svg",
+            "caption": "Ranh giới một chiều giữa lớp giao diện và hàm thuần",
+            "alt": "Sơ đồ chia đôi: bên trái lớp App với widget, callback và messagebox; bên phải hàm thuần nhận dữ liệu, trả kết quả hoặc raise, và được test gọi thẳng"
+          }
+        }
+      ],
+      "figure": {
+        "name": "G05-logic-vs-ui",
+        "src": "/static/anim/G05-logic-vs-ui.svg",
+        "caption": "Ranh giới một chiều giữa lớp giao diện và hàm thuần",
+        "alt": "Sơ đồ chia đôi: bên trái lớp App với widget, callback và messagebox; bên phải hàm thuần nhận dữ liệu, trả kết quả hoặc raise, và được test gọi thẳng"
       },
       "context": {
         "title": "Gói giao diện vào class App, giữ widget trong self và tách phần tính toán thành hàm thuần dùng lại được.",

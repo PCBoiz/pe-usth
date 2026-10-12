@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="ppq-title ppq-desc">
+  <title id="ppq-title">Hai Process con trả kết quả qua Queue</title>
+  <desc id="ppq-desc">Vòng lặp 16 giây, 7 nhịp (mỗi nhịp 2 giây): 1 cha tạo Queue và biến tong = 0, 2 con P-1 bên trái chạy, 3 con P-2 bên phải chạy, 4 P-2 xong trước và q.put kết quả vào ô đầu, 5 P-1 q.put vào ô sau, 6 cha q.get hai lần, 7 nhấn rằng tong của cha vẫn là 0. Khung tĩnh đã hiện đủ: cha ở giữa, hai con hai bên, Queue với hai ô, và kết quả tới theo thứ tự ngược với thứ tự start.</desc>
+  <defs>
+    <marker id="ppq-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .ev{font-size:12.5px;fill:#93a0bc;text-anchor:middle}
+    .flow{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:16 600;opacity:0;animation:flow 16s linear infinite}
+    @keyframes flow{
+      0%{opacity:0;stroke-dashoffset:0}
+      1%{opacity:1;stroke-dashoffset:0}
+      10%{opacity:1;stroke-dashoffset:-240}
+      11%,100%{opacity:0;stroke-dashoffset:-240}
+    }
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">multiprocessing: bộ nhớ không chung, kết quả đi qua Queue</text>
+  <text class="sub" x="48" y="86">Mỗi Process con là một process thật với bản sao bộ nhớ riêng. Gán biến trong con KHÔNG đổi biến của cha — muốn trả về thì phải đẩy qua Queue.</text>
+
+  <!-- Mũi tên (vẽ trước) -->
+  <path d="M356,400 H428" fill="none" stroke="#93a0bc" stroke-width="2.5" marker-end="url(#ppq-ar)"/>
+  <path d="M924,400 H852" fill="none" stroke="#93a0bc" stroke-width="2.5" marker-end="url(#ppq-ar)"/>
+  <path d="M640,348 V320" fill="none" stroke="#9fd88f" stroke-width="2.5" marker-end="url(#ppq-ar)"/>
+
+  <text class="ev" x="392" y="388">q.put()</text>
+  <text class="ev" x="888" y="388">q.put()</text>
+  <text class="ev" x="704" y="340" fill="#9fd88f">q.get() × 2</text>
+
+  <!-- CHA -->
+  <rect x="440" y="112" width="400" height="200" rx="12" fill="#162036" stroke="#4c9bff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="s" x="462" y="144" fill="#4c9bff">Tiến trình CHA</text>
+  <text xml:space="preserve" class="mono" x="462" y="176" font-size="13.5" fill="#e8edf7">q = multiprocessing.Queue()</text>
+  <text xml:space="preserve" class="mono" x="462" y="200" font-size="13.5" fill="#e8edf7">tong = 0   <tspan fill="#f4a274"># vẫn là 0 tới cuối</tspan></text>
+  <rect x="462" y="216" width="356" height="1" fill="#273352"/>
+  <text class="xs" x="462" y="240">Lấy ra bằng q.get(), theo thứ tự ĐẾN:</text>
+  <text xml:space="preserve" class="mono" x="462" y="268" font-size="13.5" fill="#c9a2ff">('P-2', 1275)</text>
+  <text xml:space="preserve" class="mono" x="462" y="294" font-size="13.5" fill="#9fd88f">('P-1', 4950)</text>
+  <text class="xs" x="664" y="268">← xong trước, dù start() sau</text>
+  <text class="xs" x="664" y="294">← start() trước, xong sau</text>
+
+  <!-- QUEUE -->
+  <rect x="440" y="352" width="400" height="96" rx="12" fill="#f5b83d" fill-opacity="0.08" stroke="#f5b83d" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text class="ev" x="640" y="378" fill="#f5b83d">Queue — ống an toàn giữa các process</text>
+  <rect x="464" y="392" width="168" height="40" rx="6" fill="#0f1626" stroke="#273352" stroke-width="1.5"/>
+  <text xml:space="preserve" class="mono" x="548" y="417" font-size="13" fill="#c9a2ff" text-anchor="middle">('P-2', 1275)</text>
+  <rect x="648" y="392" width="168" height="40" rx="6" fill="#0f1626" stroke="#273352" stroke-width="1.5"/>
+  <text xml:space="preserve" class="mono" x="732" y="417" font-size="13" fill="#9fd88f" text-anchor="middle">('P-1', 4950)</text>
+
+  <!-- CON TRÁI -->
+  <rect x="56" y="336" width="300" height="170" rx="12" fill="#162036" stroke="#9fd88f" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="s" x="78" y="368" fill="#9fd88f">Process con P-1</text>
+  <text xml:space="preserve" class="mono" x="78" y="400" font-size="13" fill="#e8edf7">tong = tinh(1, 100)</text>
+  <text xml:space="preserve" class="mono" x="78" y="424" font-size="13" fill="#e8edf7">q.put(("P-1", tong))</text>
+  <text class="xs" x="78" y="454">Bản sao bộ nhớ RIÊNG: gán tong</text>
+  <text class="xs" x="78" y="472">ở đây không đụng tới tong của cha.</text>
+  <text class="xs" x="78" y="492">start() trước, nhưng việc nặng hơn.</text>
+
+  <!-- CON PHẢI -->
+  <rect x="924" y="336" width="300" height="170" rx="12" fill="#162036" stroke="#c9a2ff" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="s" x="946" y="368" fill="#c9a2ff">Process con P-2</text>
+  <text xml:space="preserve" class="mono" x="946" y="400" font-size="13" fill="#e8edf7">tong = tinh(1, 50)</text>
+  <text xml:space="preserve" class="mono" x="946" y="424" font-size="13" fill="#e8edf7">q.put(("P-2", tong))</text>
+  <text class="xs" x="946" y="454">Cũng là một process thật, cũng có</text>
+  <text class="xs" x="946" y="472">bản sao bộ nhớ riêng của nó.</text>
+  <text class="xs" x="946" y="492">Việc nhẹ hơn nên xong trước.</text>
+
+  <!-- Ghi chú đáy -->
+  <rect class="panel" x="48" y="526" width="1184" height="76" rx="10"/>
+  <rect x="72" y="542" width="4" height="44" rx="2" fill="#f5b83d"/>
+  <text class="s" x="90" y="562">Bộ nhớ KHÔNG dùng chung: hết hai con, <tspan class="mono" fill="#f4a274">tong</tspan> của cha vẫn bằng 0 — kết quả chỉ về được bằng Queue.</text>
+  <text class="xs" x="90" y="584">Dữ liệu qua Queue bị pickle rồi gửi (nên chỉ gửi được thứ pickle được), và thứ tự lấy ra là thứ tự ĐẾN, không phải thứ tự start().</text>
+  <text class="xs" x="1232" y="622" text-anchor="end">Tài liệu Python: multiprocessing</text>
+
+  <!-- Nhấn theo nhịp -->
+  <rect class="ring" x="436" y="108" width="408" height="208" rx="12" stroke="#4c9bff" style="animation-delay:0s"/>
+  <rect class="ring" x="52" y="332" width="308" height="178" rx="12" stroke="#9fd88f" style="animation-delay:2s"/>
+  <rect class="ring" x="920" y="332" width="308" height="178" rx="12" stroke="#c9a2ff" style="animation-delay:4s"/>
+  <path class="flow" d="M924,400 H856" stroke="#c9a2ff" style="animation-delay:6s"/>
+  <rect class="ring" x="460" y="388" width="176" height="48" rx="6" stroke="#c9a2ff" style="animation-delay:6s"/>
+  <path class="flow" d="M356,400 H424" stroke="#9fd88f" style="animation-delay:8s"/>
+  <rect class="ring" x="644" y="388" width="176" height="48" rx="6" stroke="#9fd88f" style="animation-delay:8s"/>
+  <path class="flow" d="M640,348 V322" stroke="#9fd88f" style="animation-delay:10s"/>
+  <rect class="ring" x="456" y="250" width="200" height="56" rx="6" stroke="#9fd88f" style="animation-delay:10s"/>
+  <rect class="ring" x="456" y="184" width="200" height="26" rx="6" stroke="#f4a274" style="animation-delay:12s"/>
+</svg>

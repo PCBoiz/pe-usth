@@ -1,0 +1,157 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g06-title g06-desc">
+<title id="g06-title">mainloop, việc nặng và worker thread</title>
+<desc id="g06-desc">Vòng lặp 19 giây, 6 bước: (1) bấm Tính, callback bắt đầu; (2) giữ 4,5 giây trên trạng thái ĐƠ — callback chiếm luồng giao diện nên sự kiện xếp hàng và cửa sổ không vẽ lại; (3) cách đúng: start_task đổi status rồi start Thread và hẹn root.after(100, poll_result); (4) thread nền tính trong khi poll_result lặp mỗi 100 ms; (5) worker q.put(total), đúng MỘT mũi tên Queue đi từ thread nền lên và poll_result đọc nó; (6) status.config hiện kết quả, cửa sổ vẫn mượt. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
+<style>
+  text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
+  .t{font-size:26px;font-weight:600}
+  .sub{font-size:14px;fill:#93a0bc}
+  .eye{font-size:13px;font-weight:600;letter-spacing:.6px}
+  .h{font-size:14px;font-weight:600}
+  .sm{font-size:12.5px;fill:#93a0bc}
+  .dim{font-size:11.5px;fill:#5b6886}
+  .mc{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11.5px;fill:#e8edf7}
+  .ms{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11px;fill:#93a0bc}
+  .band{fill:#141d31;stroke:#273352;stroke-width:1.4}
+  .card{fill:#1a2440;stroke:#2f3d60;stroke-width:1.3}
+  .win{fill:#10192c;stroke:#273352;stroke-width:1.5}
+  .bar{fill:#1d2a46}
+  .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
+  .glow{fill:none;stroke-width:2.6;opacity:0}
+
+  /* 6 chặng, bật tức thời rồi giữ. Chặng ĐƠ giữ 4,5s — lâu nhất — để vấn đề kịp ngấm
+     trước khi hình chuyển sang cách sửa. */
+  .s1{animation:k1 19s linear infinite}.s2{animation:k2 19s linear infinite}
+  .s3{animation:k3 19s linear infinite}.s4{animation:k4 19s linear infinite}
+  .s5{animation:k5 19s linear infinite}.s6{animation:k6 19s linear infinite}
+  @keyframes k1{0%,15.3%{opacity:1}15.8%,100%{opacity:0}}
+  @keyframes k2{0%,15.3%{opacity:0}15.8%,39%{opacity:1}39.5%,100%{opacity:0}}
+  @keyframes k3{0%,39%{opacity:0}39.5%,57.4%{opacity:1}57.9%,100%{opacity:0}}
+  @keyframes k4{0%,57.4%{opacity:0}57.9%,73.2%{opacity:1}73.7%,100%{opacity:0}}
+  @keyframes k5{0%,73.2%{opacity:0}73.7%,86.3%{opacity:1}86.8%,100%{opacity:0}}
+  @keyframes k6{0%,86.3%{opacity:0}86.8%,100%{opacity:1}}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+
+<rect width="1280" height="640" fill="#0f1626"/>
+<defs>
+  <marker id="g06-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#93a0bc"/></marker>
+  <marker id="g06-c" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#79d3ec"/></marker>
+  <marker id="g06-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#f5b83d"/></marker>
+</defs>
+
+<text class="t" x="48" y="50">Việc nặng trong callback làm <tspan fill="#f4a274">đơ cửa sổ</tspan> — worker + Queue + <tspan fill="#79d3ec">after()</tspan> thì không</text>
+<text class="sub" x="48" y="74">mainloop() chạy trên MỘT luồng. Callback chạy ngay trên luồng đó, nên callback chưa trả về thì không gì được vẽ lại.</text>
+
+<!-- ===================== SAI ===================== -->
+<text class="eye" x="48" y="110" fill="#f4a274">✗ SAI — slow_total() chạy thẳng trong callback</text>
+
+<rect class="win" x="48" y="122" width="270" height="170" rx="9"/>
+<path class="bar" d="M48,131 a9,9 0 0 1 9,-9 h252 a9,9 0 0 1 9,9 v22 h-270 z"/>
+<text class="ms" x="183" y="144" text-anchor="middle" fill="#5b6886">Tác vụ nền (Not responding)</text>
+<rect class="field" x="70" y="170" width="226" height="28" rx="4"/>
+<text class="mc" x="80" y="189" fill="#5b6886">1000000</text>
+<rect x="108" y="210" width="150" height="30" rx="5" fill="#1b2334" stroke="#3d4a6e" stroke-width="1.2"/>
+<text class="mc" x="183" y="230" text-anchor="middle" fill="#5b6886">Tính</text>
+<text class="mc" x="183" y="262" text-anchor="middle" fill="#5b6886">Đang tính...</text>
+<text class="eye" x="183" y="284" text-anchor="middle" fill="#f4a274">CỬA SỔ ĐƠ</text>
+
+<rect class="band" x="340" y="122" width="892" height="170" rx="9"/>
+<text class="ms" x="356" y="142" fill="#93a0bc">LUỒNG GIAO DIỆN — chỉ có MỘT</text>
+<rect class="card" x="520" y="156" width="112" height="26" rx="4"/>
+<text class="ms" x="576" y="173" text-anchor="middle">&lt;Expose&gt;</text>
+<rect class="card" x="644" y="156" width="112" height="26" rx="4"/>
+<text class="ms" x="700" y="173" text-anchor="middle">kéo cửa sổ</text>
+<rect class="card" x="768" y="156" width="112" height="26" rx="4"/>
+<text class="ms" x="824" y="173" text-anchor="middle">&lt;Button-1&gt;</text>
+<text class="sm" x="896" y="174" fill="#f4a274">sự kiện xếp hàng, không ai lấy ra</text>
+
+<rect x="356" y="200" width="114" height="34" rx="4" fill="#243352" stroke="#4c9bff" stroke-width="1.2"/>
+<text class="ms" x="413" y="221" text-anchor="middle" fill="#e8edf7">bấm Tính</text>
+<rect x="470" y="200" width="530" height="34" fill="#3a2a24" stroke="#f4a274" stroke-width="1.3"/>
+<text class="mc" x="735" y="221" text-anchor="middle" fill="#f4a274">slow_total(1_000_000) chạy ~8 giây — mainloop ĐỨNG IM</text>
+<rect x="1000" y="200" width="216" height="34" rx="4" fill="#243352" stroke="#4c9bff" stroke-width="1.2"/>
+<text class="ms" x="1108" y="221" text-anchor="middle" fill="#e8edf7">mới quay lại vẽ</text>
+
+<text class="sm" x="356" y="258">Cửa sổ không vẽ lại, không nhận chuột — hệ điều hành dán nhãn “Not responding”.</text>
+<text class="dim" x="356" y="278">Ngay cả status.config("Đang tính...") cũng chưa kịp hiện, vì vẽ lại cũng là một sự kiện.</text>
+
+<!-- ===================== ĐÚNG ===================== -->
+<text class="eye" x="48" y="336" fill="#9fd88f">✓ ĐÚNG — worker thread + Queue + after()</text>
+
+<rect class="win" x="48" y="348" width="270" height="260" rx="9"/>
+<path class="bar" d="M48,357 a9,9 0 0 1 9,-9 h252 a9,9 0 0 1 9,9 v22 h-270 z"/>
+<text class="ms" x="183" y="370" text-anchor="middle" fill="#e8edf7">Tác vụ nền</text>
+<rect class="field" x="70" y="396" width="226" height="28" rx="4"/>
+<text class="mc" x="80" y="415">1000000</text>
+<text class="dim" x="296" y="392" text-anchor="end">Entry (n_var)</text>
+<rect x="108" y="438" width="150" height="32" rx="5" fill="#243352" stroke="#4c9bff" stroke-width="1.3"/>
+<text class="mc" x="183" y="459" text-anchor="middle">Tính</text>
+<rect x="70" y="490" width="226" height="30" rx="5" fill="#1a2440" stroke="#9fd88f" stroke-width="1.3"/>
+<text class="mc" x="183" y="510" text-anchor="middle" fill="#9fd88f">Tổng = 500000500000</text>
+<text class="dim" x="183" y="534" text-anchor="middle">Label status</text>
+<text class="sm" x="183" y="568" text-anchor="middle" fill="#9fd88f">Suốt 8 giây đó cửa sổ</text>
+<text class="sm" x="183" y="588" text-anchor="middle" fill="#9fd88f">vẫn kéo, thu nhỏ, vẽ lại được</text>
+
+<!-- làn 1: luồng giao diện -->
+<rect class="band" x="340" y="348" width="892" height="132" rx="9"/>
+<text class="ms" x="356" y="368" fill="#79d3ec">LUỒNG GIAO DIỆN — mainloop() luôn rảnh</text>
+
+<rect class="card" x="356" y="376" width="200" height="80" rx="6"/>
+<text class="h" x="368" y="396" fill="#79d3ec">(1) start_task()</text>
+<text class="ms" x="368" y="414">status.config("Đang tính...")</text>
+<text class="ms" x="368" y="430">Thread(target=worker,</text>
+<text class="ms" x="368" y="444">       daemon=True).start()</text>
+
+<rect class="card" x="576" y="376" width="200" height="80" rx="6"/>
+<text class="h" x="588" y="396" fill="#79d3ec">(2) poll_result()</text>
+<text class="ms" x="588" y="414">q.get_nowait() → Empty</text>
+<text class="ms" x="588" y="430">root.after(100, poll_result)</text>
+<text class="ms" x="588" y="446" fill="#5b6886">mainloop vẫn vẽ giữa hai lần</text>
+
+<rect class="card" x="796" y="376" width="200" height="80" rx="6"/>
+<text class="h" x="808" y="396" fill="#9fd88f">(3) poll_result()</text>
+<text class="ms" x="808" y="414">lần thứ n: lấy được</text>
+<text class="ms" x="808" y="430">total = q.get_nowait()</text>
+
+<rect class="card" x="1016" y="376" width="200" height="80" rx="6"/>
+<text class="h" x="1028" y="396" fill="#9fd88f">(4) Cập nhật widget</text>
+<text class="ms" x="1028" y="414">status.config(</text>
+<text class="ms" x="1028" y="430">  text=f"Tổng = {total}")</text>
+<text class="ms" x="1028" y="446" fill="#5b6886">chạy trên luồng giao diện</text>
+
+<line x1="560" y1="416" x2="572" y2="416" stroke="#93a0bc" stroke-width="1.5" marker-end="url(#g06-a)"/>
+<line x1="1000" y1="416" x2="1012" y2="416" stroke="#93a0bc" stroke-width="1.5" marker-end="url(#g06-a)"/>
+<path d="M756,460 V468 H596 V460" fill="none" stroke="#79d3ec" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#g06-c)"/>
+<text class="ms" x="790" y="472" fill="#79d3ec">lặp mỗi 100 ms</text>
+
+<!-- làn 2: thread nền -->
+<rect class="band" x="340" y="524" width="892" height="84" rx="9"/>
+<text class="ms" x="356" y="544" fill="#c9a2ff">THREAD NỀN (daemon) — không được đụng widget</text>
+<rect class="card" x="576" y="552" width="404" height="44" rx="6" stroke="#c9a2ff"/>
+<text class="mc" x="590" y="570">def worker(n, q): total = slow_total(n)</text>
+<text class="ms" x="590" y="587" fill="#5b6886">8 giây CPU ở đây — luồng giao diện không hề biết</text>
+<rect class="card" x="1016" y="552" width="200" height="44" rx="6" stroke="#c9a2ff"/>
+<text class="mc" x="1030" y="570" fill="#c9a2ff">q.put(total)</text>
+<text class="ms" x="1030" y="587" fill="#5b6886">xong việc, bỏ vào Queue</text>
+<line x1="984" y1="574" x2="1012" y2="574" stroke="#93a0bc" stroke-width="1.5" marker-end="url(#g06-a)"/>
+
+<!-- ĐÚNG MỘT mũi tên Queue giữa hai làn -->
+<path id="g06-q" d="M1116,548 V502 H896 V460" fill="none" stroke="#f5b83d" stroke-width="2.2" marker-end="url(#g06-y)"/>
+<rect x="836" y="506" width="280" height="18" fill="#0f1626"/>
+<text class="ms" x="1110" y="520" text-anchor="end" fill="#f5b83d">Queue q — chỗ DUY NHẤT hai luồng gặp nhau</text>
+
+<!-- ===================== nhấn theo chặng ===================== -->
+<rect class="glow s1" x="352" y="196" width="122" height="42" rx="6" stroke="#4c9bff"/>
+<rect class="glow s2" x="466" y="196" width="538" height="42" stroke="#f4a274"/>
+<rect class="glow s2" x="516" y="152" width="368" height="34" rx="6" stroke="#f4a274"/>
+<rect class="glow s2" x="44" y="118" width="278" height="178" rx="11" stroke="#f4a274"/>
+<rect class="glow s3" x="352" y="372" width="208" height="88" rx="8" stroke="#79d3ec"/>
+<rect class="glow s4" x="572" y="372" width="208" height="88" rx="8" stroke="#79d3ec"/>
+<rect class="glow s4" x="572" y="548" width="412" height="52" rx="8" stroke="#c9a2ff"/>
+<rect class="glow s5" x="1012" y="548" width="208" height="52" rx="8" stroke="#f5b83d"/>
+<path class="glow s5" d="M1116,548 V502 H896 V460" stroke="#f5b83d" stroke-width="3.6"/>
+<rect class="glow s5" x="792" y="372" width="208" height="88" rx="8" stroke="#f5b83d"/>
+<rect class="glow s6" x="1012" y="372" width="208" height="88" rx="8" stroke="#9fd88f"/>
+<rect class="glow s6" x="64" y="484" width="238" height="42" rx="8" stroke="#9fd88f"/>
+</svg>

@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#P05",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 51-53; DOC subprocess"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,47 @@
           "grade(\"raise SystemExit(2)\", \"\") → ERROR 2"
         ],
         "reflect": "Vì sao phải kiểm returncode trước khi so stdout?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: run() là \"chạy và chờ\"",
+          "body": "Bảng subprocess của slide xếp run() vào đúng ô \"Run and wait\": gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một chương trình khác từ trong Python.",
+          "bullets": [
+            "args là LIST: phần tử đầu là chương trình, các phần tử sau là từng đối số",
+            "CompletedProcess mang returncode, stdout, stderr",
+            "capture_output=True mới thu đầu ra; text=True mới cho str thay vì bytes",
+            "check=True biến exit code khác 0 thành CalledProcessError; timeout= đặt hạn chờ"
+          ]
+        },
+        {
+          "title": "Ví dụ: exit code là lời khai của con",
+          "body": "Mỗi process khi kết thúc trả về hệ điều hành một số nguyên. Quy ước: 0 là thành công, khác 0 là có chuyện. Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha KHÔNG nhận được object exception của con — chỉ nhận con số đó, còn traceback nằm trong stderr của con."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Gọi công cụ ngoài từ Python: git, ffmpeg, pdflatex, hay một script Python khác",
+            "Máy chấm bài và CI: chạy bài nộp, so stdout, lấy returncode làm tín hiệu đạt/trượt",
+            "timeout= chặn chương trình lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired",
+            "Dùng sys.executable thay chữ \"python\": trên Windows \"python\" có thể là stub của Microsoft Store",
+            "Studio mô phỏng subprocess; time.sleep của con chỉ đẩy đồng hồ ảo nên vẫn thử timeout được"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hai đường thời gian: cha ở trên, con ở dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị CHẶN, không làm gì khác. Đường của con chạy liền mạch tới exit. Khi con kết thúc, mũi tên quay lên mang theo hộp CompletedProcess với ba ô returncode, stdout, stderr; từ đó cha mới chạy tiếp.",
+          "figure": {
+            "src": "/static/anim/P05-run-timeline.svg",
+            "caption": "run() chặn process cha cho tới khi con xong và trả CompletedProcess",
+            "alt": "Đường thời gian: cha bị chặn trong khi con chạy; con exit thì cha nhận CompletedProcess gồm returncode, stdout, stderr"
+          }
+        }
+      ],
+      "figure": {
+        "name": "P05-run-timeline",
+        "src": "/static/anim/P05-run-timeline.svg",
+        "caption": "run() chặn process cha cho tới khi con xong và trả CompletedProcess",
+        "alt": "Đường thời gian: cha bị chặn trong khi con chạy; con exit thì cha nhận CompletedProcess gồm returncode, stdout, stderr"
       },
       "context": {
         "title": "Chạy process con bằng subprocess.run và đọc đúng returncode, stdout, lỗi và timeout.",

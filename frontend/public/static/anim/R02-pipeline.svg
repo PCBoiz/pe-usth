@@ -1,0 +1,168 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="r02-title r02-desc">
+<title id="r02-title">Sổ điểm mini: GUI, pickle+gzip, thread và subprocess</title>
+<desc id="r02-desc">Vòng lặp 18 giây, 6 chặng giữ mỗi chặng 3 giây: (1) bấm Lưu, App dựng một Thread; (2) thread nền ghi marks bằng gzip.open và pickle.dump — khác LUỒNG nhưng cùng tiến trình; (3) marks.dat được ghi xong và Queue done nhận ("ok", 12); (4) bấm Báo cáo, subprocess.run mở report.py — khác TIẾN TRÌNH, bộ nhớ riêng, dữ liệu đi qua stdin; (5) report.py trả stdout; (6) root.after đọc Queue và stdout rồi mới gọi .config() trên widget. Hai đường viền đứt phân biệt ranh giới luồng với ranh giới tiến trình. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
+<style>
+  text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
+  .t{font-size:26px;font-weight:600}
+  .sub{font-size:14px;fill:#93a0bc}
+  .eye{font-size:12px;font-weight:600;letter-spacing:.6px}
+  .h{font-size:14px;font-weight:600}
+  .sm{font-size:12.5px;fill:#93a0bc}
+  .dim{font-size:11.5px;fill:#5b6886}
+  .mc{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11.5px;fill:#e8edf7}
+  .ms{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:11px;fill:#93a0bc}
+  .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+  .card{fill:#1a2440;stroke:#2f3d60;stroke-width:1.4}
+  .win{fill:#10192c;stroke:#273352;stroke-width:1.5}
+  .bar{fill:#1d2a46}
+  .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
+  .glow{fill:none;stroke-width:2.6;opacity:0}
+
+  /* 6 chặng × 3 giây. Bật tức thời rồi giữ — hoạt hình chỉ nói THỨ TỰ dữ liệu đi. */
+  .s1{animation:k1 18s linear infinite}.s2{animation:k2 18s linear infinite}
+  .s3{animation:k3 18s linear infinite}.s4{animation:k4 18s linear infinite}
+  .s5{animation:k5 18s linear infinite}.s6{animation:k6 18s linear infinite}
+  @keyframes k1{0%,16.2%{opacity:1}16.7%,100%{opacity:0}}
+  @keyframes k2{0%,16.2%{opacity:0}16.7%,32.8%{opacity:1}33.3%,100%{opacity:0}}
+  @keyframes k3{0%,32.8%{opacity:0}33.3%,49.5%{opacity:1}50%,100%{opacity:0}}
+  @keyframes k4{0%,49.5%{opacity:0}50%,66.2%{opacity:1}66.7%,100%{opacity:0}}
+  @keyframes k5{0%,66.2%{opacity:0}66.7%,82.8%{opacity:1}83.3%,100%{opacity:0}}
+  @keyframes k6{0%,82.8%{opacity:0}83.3%,100%{opacity:1}}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+
+<rect width="1280" height="640" fill="#0f1626"/>
+<defs>
+  <marker id="r02-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#93a0bc"/></marker>
+  <marker id="r02-g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,1 L9,5 L0,9 z" fill="#9fd88f"/></marker>
+</defs>
+
+<text class="t" x="48" y="50">Dự án Sổ điểm mini: dữ liệu đi đâu khi bấm <tspan fill="#c9a2ff">Lưu</tspan> và <tspan fill="#f4a274">Báo cáo</tspan></text>
+<text class="sub" x="48" y="74">Hai ranh giới khác nhau: viền tím là khác LUỒNG (cùng tiến trình), viền cam là khác TIẾN TRÌNH (bộ nhớ riêng).</text>
+
+<!-- ===================== GUI ===================== -->
+<rect class="win" x="48" y="100" width="272" height="412" rx="9"/>
+<path class="bar" d="M48,109 a9,9 0 0 1 9,-9 h254 a9,9 0 0 1 9,9 v22 h-272 z"/>
+<text class="ms" x="184" y="122" text-anchor="middle" fill="#e8edf7">Sổ điểm mini</text>
+<text class="ms" x="64" y="158">Tên</text>
+<rect class="field" x="116" y="140" width="186" height="26" rx="4"/>
+<text class="mc" x="126" y="158">Nguyễn An</text>
+<text class="ms" x="64" y="194">Điểm</text>
+<rect class="field" x="116" y="176" width="186" height="26" rx="4"/>
+<text class="mc" x="126" y="194">8.5</text>
+<rect x="64" y="216" width="72" height="30" rx="5" fill="#1b2334" stroke="#3d4a6e" stroke-width="1.2"/>
+<text class="ms" x="100" y="236" text-anchor="middle">Thêm</text>
+<rect x="146" y="216" width="72" height="30" rx="5" fill="#243352" stroke="#c9a2ff" stroke-width="1.3"/>
+<text class="ms" x="182" y="236" text-anchor="middle" fill="#c9a2ff">Lưu</text>
+<rect x="228" y="216" width="74" height="30" rx="5" fill="#243352" stroke="#f4a274" stroke-width="1.3"/>
+<text class="ms" x="265" y="236" text-anchor="middle" fill="#f4a274">Báo cáo</text>
+<rect x="64" y="264" width="238" height="28" rx="5" fill="#1a2440" stroke="#9fd88f" stroke-width="1.2"/>
+<text class="mc" x="183" y="283" text-anchor="middle" fill="#9fd88f">Đã lưu 12 sinh viên</text>
+<text class="dim" x="302" y="308" text-anchor="end">Label status</text>
+<rect x="64" y="318" width="238" height="106" rx="5" fill="#101a2e" stroke="#3d4a6e" stroke-width="1.2"/>
+<text class="mc" x="78" y="342" fill="#9fd88f">BÁO CÁO</text>
+<text class="mc" x="78" y="364">Số sinh viên: 12</text>
+<text class="mc" x="78" y="386">Điểm trung bình: 7.84</text>
+<text class="mc" x="78" y="410" fill="#5b6886">(stdout của report.py)</text>
+<text class="dim" x="302" y="440" text-anchor="end">Label output</text>
+<text class="dim" x="64" y="470">marks = {"Nguyễn An": 8.5, …}</text>
+<text class="dim" x="64" y="492">Tất cả widget sống trên luồng giao diện</text>
+
+<!-- ===================== nhánh LƯU ===================== -->
+<rect class="card" x="348" y="108" width="252" height="128" rx="8" stroke="#c9a2ff"/>
+<text class="h" x="362" y="132" fill="#c9a2ff">(1) Nút Lưu</text>
+<text class="mc" x="362" y="156">saver = threading.Thread(</text>
+<text class="mc" x="362" y="174" xml:space="preserve">    target=save_worker,</text>
+<text class="mc" x="362" y="192" xml:space="preserve">    args=(dict(marks), path, done))</text>
+<text class="mc" x="362" y="210">saver.start()</text>
+<text class="dim" x="362" y="228">start() trả về ngay — GUI không chờ</text>
+
+<text class="eye" x="628" y="100" fill="#c9a2ff">KHÁC LUỒNG — CÙNG TIẾN TRÌNH (dùng chung bộ nhớ)</text>
+<rect x="628" y="108" width="320" height="128" rx="8" fill="#1a2440" stroke="#c9a2ff" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text class="h" x="642" y="132" fill="#c9a2ff">(2) save_worker() — thread nền</text>
+<text class="mc" x="642" y="156">with gzip.open(path, "wb") as f:</text>
+<text class="mc" x="642" y="174" xml:space="preserve">    pickle.dump(marks, f)</text>
+<text class="mc" x="642" y="192">done.put(("ok", len(marks)))</text>
+<text class="dim" x="642" y="212">Thấy biến marks, nhưng KHÔNG được đụng</text>
+<text class="dim" x="642" y="228">widget — báo về bằng Queue.</text>
+
+<rect class="card" x="976" y="108" width="180" height="128" rx="8"/>
+<text class="h" x="990" y="132" fill="#79d3ec">(3) Kết quả lưu</text>
+<rect class="field" x="990" y="144" width="152" height="40" rx="4"/>
+<text class="mc" x="1066" y="160" text-anchor="middle">marks.dat</text>
+<text class="ms" x="1066" y="176" text-anchor="middle" fill="#5b6886">nhị phân, đã nén</text>
+<rect x="990" y="192" width="152" height="30" rx="4" fill="#243352" stroke="#f5b83d" stroke-width="1.2"/>
+<text class="ms" x="1066" y="211" text-anchor="middle" fill="#f5b83d">done ← ("ok", 12)</text>
+
+<!-- ===================== nhánh BÁO CÁO ===================== -->
+<rect class="card" x="348" y="272" width="252" height="128" rx="8" stroke="#f4a274"/>
+<text class="h" x="362" y="296" fill="#f4a274">(4) Nút Báo cáo</text>
+<text class="mc" x="362" y="320">lines = "".join(</text>
+<text class="mc" x="362" y="338" xml:space="preserve">    f"{name},{mark}\n" …)</text>
+<text class="mc" x="362" y="356">subprocess.run([sys.executable,</text>
+<text class="mc" x="362" y="374" xml:space="preserve">    "report.py"], input=lines,</text>
+<text class="mc" x="362" y="392" xml:space="preserve">    capture_output=True, timeout=10)</text>
+
+<text class="eye" x="628" y="264" fill="#f4a274">KHÁC TIẾN TRÌNH — BỘ NHỚ RIÊNG (không thấy biến marks)</text>
+<rect x="628" y="272" width="320" height="128" rx="8" fill="#1a2440" stroke="#f4a274" stroke-width="1.6" stroke-dasharray="7 5"/>
+<text class="h" x="642" y="296" fill="#f4a274">(5) report.py — tiến trình con</text>
+<text class="mc" x="642" y="320">for line in sys.stdin:</text>
+<text class="mc" x="642" y="338" xml:space="preserve">    name, mark = line.split(",")</text>
+<text class="mc" x="642" y="356">print("BÁO CÁO"); print(…)</text>
+<text class="dim" x="642" y="378">PID riêng. Dữ liệu CHỈ qua được bằng văn bản</text>
+<text class="dim" x="642" y="394">trên stdin/stdout — không chia sẻ biến nào.</text>
+
+<rect class="card" x="976" y="272" width="180" height="128" rx="8"/>
+<text class="h" x="990" y="296" fill="#79d3ec">(6) CompletedProcess</text>
+<rect class="field" x="990" y="308" width="152" height="54" rx="4"/>
+<text class="ms" x="1000" y="326" fill="#9fd88f">BÁO CÁO</text>
+<text class="ms" x="1000" y="342">Số sinh viên: 12</text>
+<text class="ms" x="1000" y="356">Điểm trung bình: 7.84</text>
+<text class="ms" x="990" y="380">.returncode == 0</text>
+<text class="dim" x="990" y="394">khác 0 → raise RuntimeError</text>
+
+<!-- ===================== mũi tên ===================== -->
+<line x1="324" y1="172" x2="344" y2="172" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<line x1="604" y1="172" x2="624" y2="172" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<line x1="952" y1="172" x2="972" y2="172" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<line x1="324" y1="336" x2="344" y2="336" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<line x1="604" y1="336" x2="624" y2="336" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<line x1="952" y1="336" x2="972" y2="336" stroke="#93a0bc" stroke-width="1.6" marker-end="url(#r02-a)"/>
+<text class="ms" x="614" y="424" text-anchor="middle" fill="#f4a274">dữ liệu sang bằng stdin</text>
+
+<!-- đường về: Queue done và stdout cùng quay lại luồng giao diện -->
+<path d="M1156,172 H1200 V476 H1192" fill="none" stroke="#9fd88f" stroke-width="1.8"/>
+<path d="M1156,336 H1200" fill="none" stroke="#9fd88f" stroke-width="1.8"/>
+<text class="ms" x="1162" y="162" fill="#9fd88f">Queue done</text>
+<text class="ms" x="1194" y="326" text-anchor="end" fill="#9fd88f">stdout</text>
+
+<rect class="card" x="860" y="458" width="330" height="36" rx="6" stroke="#9fd88f"/>
+<text class="mc" x="1025" y="481" text-anchor="middle">(7) root.after(100, poll_save)</text>
+<line x1="856" y1="476" x2="814" y2="476" stroke="#9fd88f" stroke-width="1.8" marker-end="url(#r02-g)"/>
+<rect class="card" x="476" y="458" width="334" height="36" rx="6" stroke="#9fd88f"/>
+<text class="mc" x="643" y="481" text-anchor="middle">(8) done.get_nowait() → .config(…)</text>
+<line x1="472" y1="476" x2="330" y2="476" stroke="#9fd88f" stroke-width="1.8" marker-end="url(#r02-g)"/>
+<rect x="334" y="434" width="134" height="18" fill="#0f1626"/>
+<text class="ms" x="468" y="448" text-anchor="end" fill="#9fd88f">cập nhật widget</text>
+
+<!-- ===================== ghi chú ===================== -->
+<rect class="panel" x="48" y="532" width="1184" height="72" rx="10"/>
+<text class="sm" x="72" y="558" fill="#e8edf7">Thread <tspan fill="#93a0bc">chia sẻ bộ nhớ với GUI → trả kết quả bằng Queue.</tspan>  Tiến trình con <tspan fill="#93a0bc">không chia sẻ gì → dữ liệu chỉ qua được bằng stdin/stdout (văn bản) hoặc file.</tspan></text>
+<text class="ms" x="72" y="584">Điểm chung: cả hai nhánh đều phải quay về luồng giao diện bằng root.after() rồi mới được gọi .config() trên widget.</text>
+
+<!-- ===================== nhấn theo chặng ===================== -->
+<rect class="glow s1" x="140" y="210" width="84" height="42" rx="8" stroke="#c9a2ff"/>
+<rect class="glow s1" x="344" y="104" width="260" height="136" rx="10" stroke="#c9a2ff"/>
+<rect class="glow s2" x="624" y="104" width="328" height="136" rx="10" stroke="#c9a2ff"/>
+<rect class="glow s3" x="972" y="104" width="188" height="136" rx="10" stroke="#79d3ec"/>
+<rect class="glow s4" x="222" y="210" width="86" height="42" rx="8" stroke="#f4a274"/>
+<rect class="glow s4" x="344" y="268" width="260" height="136" rx="10" stroke="#f4a274"/>
+<rect class="glow s5" x="624" y="268" width="328" height="136" rx="10" stroke="#f4a274"/>
+<rect class="glow s5" x="972" y="268" width="188" height="136" rx="10" stroke="#79d3ec"/>
+<path class="glow s6" d="M1156,172 H1200 V476 H1192" stroke="#9fd88f" stroke-width="3.4"/>
+<rect class="glow s6" x="856" y="454" width="338" height="44" rx="8" stroke="#9fd88f"/>
+<rect class="glow s6" x="472" y="454" width="342" height="44" rx="8" stroke="#9fd88f"/>
+<rect class="glow s6" x="60" y="260" width="246" height="38" rx="8" stroke="#9fd88f"/>
+<rect class="glow s6" x="60" y="314" width="246" height="114" rx="8" stroke="#9fd88f"/>
+</svg>

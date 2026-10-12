@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#P02",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 15-16, 22-29"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,48 @@
           "run_child(\"raise SystemExit(3)\") → 3"
         ],
         "reflect": "Vì sao I/O xong thì process về ready chứ không về running?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: năm trạng thái",
+          "body": "Slide \"Process States\" định nghĩa đúng năm trạng thái và các sự kiện chuyển. Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường — mọi cặp khác không có nghĩa.",
+          "bullets": [
+            "new: process vừa được tạo",
+            "ready: chờ được scheduler giao cho một processor",
+            "running: đang thực thi lệnh",
+            "waiting: đang chờ một sự kiện (thường là I/O) xảy ra",
+            "terminated: đã chạy xong"
+          ]
+        },
+        {
+          "title": "Ví dụ: fork rồi exec trên UNIX",
+          "body": "Slide nhấn: process mới KHÔNG được tạo từ con số không, mà qua hai bước. fork() nhân bản process đang chạy — open file, thanh ghi, vùng nhớ đều giống, TRỪ process id. Cha nhận về PID của con, con nhận 0, nhờ vậy if (pid == 0) tách được hai nhánh. Con gọi exec() để thay chương trình (PID giữ nguyên), còn cha gọi wait() để thu kết quả."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "subprocess trên Linux làm đúng việc đó: fork rồi exec trong process con",
+            "Windows không có fork; nó tạo process bằng CreateProcess — WinExec là API cũ, đã deprecated",
+            "wait() để lấy exit code, và để con đã xong không nằm lại thành zombie",
+            "os.fork KHÔNG tồn tại trên Windows; trong Studio subprocess cũng chỉ là bản mô phỏng",
+            "Mọi thứ chạy lệnh hộ bạn — shell, CI runner, máy chấm — đều dựng trên chuỗi tạo–chờ–thu mã này"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN. Chấm đen là lúc process ra đời, vòng tròn viền là lúc nó biến mất. Chú ý hai mũi tên rời khỏi running: interrupt (hết time slice) và io_wait (phải chờ). Cả hai nhánh đều quay về ready chứ không về thẳng running — ai chạy tiếp là quyền của scheduler.",
+          "figure": {
+            "src": "/static/anim/P02-lifecycle.svg",
+            "caption": "Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng",
+            "alt": "Sơ đồ new → ready → running; running → ready khi interrupt; running → waiting khi chờ I/O; waiting → ready khi I/O xong; running → terminated khi exit"
+          }
+        }
+      ],
+      "figure": {
+        "name": "P02-lifecycle",
+        "src": "/static/anim/P02-lifecycle.svg",
+        "caption": "Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng",
+        "alt": "Sơ đồ new → ready → running; running → ready khi interrupt; running → waiting khi chờ I/O; waiting → ready khi I/O xong; running → terminated khi exit"
       },
       "context": {
         "title": "Theo dõi vòng đời process và chờ process con để lấy exit code.",

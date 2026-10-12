@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="prt-title prt-desc">
+  <title id="prt-title">subprocess.run() chặn tiến trình cha</title>
+  <desc id="prt-desc">Vòng lặp 16 giây: một vạch thời gian quét từ trái sang phải trong 12 giây, 6 nhịp mỗi nhịp 2 giây: 1 cha đang chạy, 2 cha gọi run() nên bị chặn, 3 và 4 con chạy trong lúc cha đứng im, 5 con exit(0) và cha tỉnh dậy, 6 cha nhận CompletedProcess với returncode 0 và stdout; rồi nghỉ 4 giây. Khung tĩnh đã hiện đủ hai làn, dải bị chặn của cha và thẻ kết quả.</desc>
+  <defs>
+    <marker id="prt-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+    <marker id="prt-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#9fd88f"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .ev{font-size:12.5px;fill:#93a0bc}
+    .barlbl{font-size:14px;text-anchor:middle}
+    /* Vạch thời gian: tĩnh là đã quét hết — khung dừng vẫn là khung đầy đủ. */
+    .head{transform:translate(800px,0px);animation:head 16s linear infinite}
+    @keyframes head{0%{transform:translate(0px,0px)}75%,100%{transform:translate(800px,0px)}}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">subprocess.run(): cha đứng chờ cho tới khi con xong</text>
+  <text class="sub" x="48" y="86">run() là lời gọi CHẶN (blocking). Dòng lệnh ngay sau nó chỉ chạy khi process con đã kết thúc và trả về mã thoát.</text>
+
+  <!-- Nhãn làn -->
+  <rect x="48" y="186" width="140" height="70" rx="10" fill="#9fd88f" fill-opacity="0.1" stroke="#9fd88f" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text class="s" x="68" y="214" fill="#9fd88f">Tiến trình</text>
+  <text class="s" x="68" y="236" fill="#9fd88f">CHA</text>
+  <rect x="48" y="326" width="140" height="70" rx="10" fill="#4c9bff" fill-opacity="0.1" stroke="#4c9bff" stroke-opacity="0.45" stroke-width="1.5"/>
+  <text class="s" x="68" y="354" fill="#4c9bff">Tiến trình</text>
+  <text class="s" x="68" y="376" fill="#4c9bff">CON</text>
+
+  <!-- Làn cha -->
+  <rect x="200" y="196" width="120" height="50" rx="6" fill="#9fd88f" fill-opacity="0.2" stroke="#9fd88f" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="barlbl" x="260" y="226" fill="#9fd88f">đang chạy</text>
+  <rect x="320" y="196" width="440" height="50" rx="6" fill="#5b6886" fill-opacity="0.14" stroke="#5b6886" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text class="barlbl" x="540" y="220" fill="#93a0bc">BỊ CHẶN — cha đứng im</text>
+  <text class="xs" x="540" y="238" text-anchor="middle">không chạy thêm dòng lệnh nào</text>
+  <rect x="760" y="196" width="220" height="50" rx="6" fill="#9fd88f" fill-opacity="0.2" stroke="#9fd88f" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="barlbl" x="870" y="226" fill="#9fd88f">chạy tiếp</text>
+
+  <!-- Làn con -->
+  <rect x="200" y="336" width="120" height="50" rx="6" fill="none" stroke="#273352" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text class="xs" x="260" y="366" text-anchor="middle">chưa tồn tại</text>
+  <rect x="320" y="336" width="440" height="50" rx="6" fill="#4c9bff" fill-opacity="0.2" stroke="#4c9bff" stroke-opacity="0.55" stroke-width="1.5"/>
+  <text class="barlbl" x="540" y="360" fill="#4c9bff">Process con chạy</text>
+  <text class="mono xs" x="540" y="378" text-anchor="middle">ls -l</text>
+  <rect x="760" y="336" width="220" height="50" rx="6" fill="none" stroke="#273352" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text class="xs" x="870" y="366" text-anchor="middle">đã kết thúc</text>
+
+  <!-- Trao qua lại -->
+  <path d="M320,250 V328" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#prt-ar)"/>
+  <text class="ev" x="332" y="284">run([...]) gọi: tạo con</text>
+  <text class="xs" x="332" y="302">(fork + exec), cha ngủ</text>
+  <path d="M760,332 V254" fill="none" stroke="#9fd88f" stroke-width="2" marker-end="url(#prt-arg)"/>
+  <text class="ev" x="748" y="284" text-anchor="end" fill="#9fd88f">con exit(0)</text>
+  <text class="xs" x="748" y="302" text-anchor="end">cha tỉnh dậy ngay sau đó</text>
+
+  <!-- Trục thời gian -->
+  <path d="M200,424 H1000" fill="none" stroke="#273352" stroke-width="1.5" marker-end="url(#prt-ar)"/>
+  <text class="xs" x="200" y="444">thời gian →</text>
+  <rect class="head" x="198" y="176" width="3" height="232" rx="1.5" fill="#f5b83d" fill-opacity="0.85"/>
+
+  <!-- Kết quả -->
+  <path d="M870,192 V168 Q870,160 878,160 H1118 Q1126,160 1126,168 V172" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#prt-ar)"/>
+  <rect class="panel" x="1020" y="176" width="212" height="230" rx="10"/>
+  <text class="mono" x="1126" y="206" font-size="14" fill="#e8edf7" text-anchor="middle">CompletedProcess</text>
+  <rect x="1038" y="218" width="176" height="1" fill="#273352"/>
+  <text class="mono" x="1038" y="246" font-size="12.5" fill="#93a0bc">args=['ls','-l']</text>
+  <text class="mono" x="1038" y="272" font-size="12.5" fill="#9fd88f">returncode=0</text>
+  <text class="mono" x="1038" y="298" font-size="12.5" fill="#93a0bc">stdout='tong.txt...'</text>
+  <text class="mono" x="1038" y="324" font-size="12.5" fill="#93a0bc">stderr=''</text>
+  <text class="xs" x="1038" y="356">Chỉ cầm được thẻ này</text>
+  <text class="xs" x="1038" y="374">SAU khi con kết thúc —</text>
+  <text class="xs" x="1038" y="392">đó là cái giá của việc chặn.</text>
+
+  <!-- Code -->
+  <rect class="panel" x="48" y="480" width="760" height="116" rx="10"/>
+  <text xml:space="preserve" class="mono" x="72" y="512" font-size="13.5" fill="#e8edf7">cp = subprocess.run(["ls", "-l"], capture_output=True, text=True)</text>
+  <text xml:space="preserve" class="mono" x="72" y="538" font-size="13.5" fill="#e8edf7">print(cp.returncode, cp.stdout)</text>
+  <text xml:space="preserve" class="mono" x="72" y="564" font-size="13.5" fill="#5b6886"># dòng print chỉ chạy khi con đã xong — không sớm hơn một mili giây</text>
+  <text class="xs" x="72" y="584">capture_output=True mới có cp.stdout; thiếu nó thì con in thẳng ra màn hình và cp.stdout là None.</text>
+
+  <rect class="panel" x="828" y="480" width="404" height="116" rx="10"/>
+  <text class="s" x="852" y="508">Khi nào run() là đủ</text>
+  <text class="xs" x="852" y="532">Khi bạn chỉ cần kết quả cuối cùng và chờ được.</text>
+  <text class="xs" x="852" y="552">Cần chạy song song, đọc dần output, hoặc đặt hạn</text>
+  <text class="xs" x="852" y="572">giờ rồi tự xử lý → dùng Popen (hình P06).</text>
+  <text class="xs" x="1212" y="620" text-anchor="end">Tài liệu Python: subprocess (slide USTH 53)</text>
+
+  <!-- Nhấn theo nhịp -->
+  <rect class="ring" x="196" y="192" width="128" height="58" rx="6" stroke="#9fd88f" style="animation-delay:0s"/>
+  <rect class="ring" x="316" y="192" width="448" height="58" rx="6" stroke="#5b6886" style="animation-delay:2s"/>
+  <rect class="ring" x="316" y="332" width="448" height="58" rx="6" stroke="#4c9bff" style="animation-delay:4s"/>
+  <rect class="ring" x="316" y="332" width="448" height="58" rx="6" stroke="#4c9bff" style="animation-delay:6s"/>
+  <rect class="ring" x="756" y="192" width="228" height="58" rx="6" stroke="#9fd88f" style="animation-delay:8s"/>
+  <rect class="ring" x="1016" y="172" width="220" height="238" rx="10" stroke="#9fd88f" style="animation-delay:10s"/>
+</svg>

@@ -62,6 +62,7 @@ export function paragraphs(text?: string): React.ReactNode {
 export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: string } {
   const map: Record<string, { icon: React.ReactNode; label: string }> = {
     brief: { icon: ICON.book, label: 'Tổng quan bài' },
+    theory: { icon: ICON.book, label: 'LÝ THUYẾT' },
     context: { icon: ICON.book, label: 'Ngữ cảnh' },
     explain: { icon: ICON.code, label: 'Giải thích từng dòng' },
     memory: { icon: ICON.swap, label: 'Mô hình bộ nhớ' },

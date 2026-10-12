@@ -6,12 +6,16 @@ import { toCodeLines } from '@/lib/py-highlight';
 
 import c from '../studio-chrome.module.css';
 import { ScreenShell } from './chrome';
+import { Figure } from './TheoryScreen';
 import type { ShellProps } from './props';
 
 export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
   const one = lesson.step_1;
   const rows = one?.explain ?? [];
   const demo = one?.code?.kind === 'demo';
+  // Bài có hình nhưng KHÔNG có màn lý thuyết (hình khai lẻ): hiện ở đây, kẻo hình
+  // dựng ra rồi mà không màn nào cho xem.
+  const figure = one?.figure?.src && !one?.theory?.length ? one.figure : null;
 
   // Cửa tự kiểm tra không có mã ví dụ: chỉ còn các ý cần nắm trước khi tự viết.
   if (!one?.code?.source)
@@ -25,6 +29,7 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
             </li>
           ))}
         </ol>
+        {figure && <Figure figure={figure} />}
       </ScreenShell>
     );
 
@@ -58,6 +63,7 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
           detail: row.body,
         }))}
       />
+      {figure && <Figure figure={figure} />}
       {myth}
     </ScreenShell>
   );

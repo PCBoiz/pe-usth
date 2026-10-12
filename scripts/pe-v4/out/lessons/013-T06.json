@@ -14,7 +14,8 @@
       "kind": "pe-v4",
       "filename": "python-learning-data.json#T06",
       "parser": "pe-v4/build",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 106-107"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,44 @@
           "sửa record sau submit → dòng đã lưu không đổi"
         ],
         "reflect": "Vì sao phải đưa bản sao record vào queue?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: queue.Queue",
+          "body": "queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn trong Queue mà hai bên không phải tự dựng Lock như T05 (tài liệu chính thức: module queue).",
+          "bullets": [
+            "get() mặc định CHỜ khi queue rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty",
+            "Mỗi get() thành công đi với đúng một task_done(); join() chờ tới khi mọi việc đã xong"
+          ]
+        },
+        {
+          "title": "Producer và consumer",
+          "body": "Mẫu chuẩn chia chương trình làm hai vai: producer tạo việc và put vào queue rồi đi tiếp ngay; consumer (worker) lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên chúng không cần biết gì về nhau — thêm worker chỉ là chạy thêm một thread cùng đọc một queue."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Bài thực hành 8 của môn: nâng phần lưu dữ liệu lên dùng pickle + nén ở thread nền",
+            "Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua một queue khác (G06)",
+            "Máy chủ: một queue việc, vài worker cùng rút ra làm — thêm worker là tăng thông lượng",
+            "Dữ liệu giao cho worker phải ổn định: put BẢN SAO, đừng put chính object còn đang sửa"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Giữa hình là queue, một hàng ô xếp theo thứ tự vào. Bên trái, producer put thêm vào cuối hàng rồi quay về việc của mình ngay — không chờ. Bên phải, worker lấy ở đầu hàng, làm việc chậm, rồi task_done() báo xong; bộ đếm việc chưa xong giảm một. Hai mũi tên không bao giờ chạm nhau: đó là điểm chính — producer và consumer chỉ gặp nhau qua queue, nên không cần Lock nào.",
+          "figure": {
+            "src": "/static/anim/T06-queue-worker.svg",
+            "caption": "Producer đẩy việc vào queue, worker nền rút ra làm",
+            "alt": "Producer gọi put() thêm job vào cuối hàng đợi; worker thread gọi get() lấy ở đầu hàng, xử lý rồi task_done(); hai bên chỉ gặp nhau qua queue"
+          }
+        }
+      ],
+      "figure": {
+        "name": "T06-queue-worker",
+        "src": "/static/anim/T06-queue-worker.svg",
+        "caption": "Producer đẩy việc vào queue, worker nền rút ra làm",
+        "alt": "Producer gọi put() thêm job vào cuối hàng đợi; worker thread gọi get() lấy ở đầu hàng, xử lý rồi task_done(); hai bên chỉ gặp nhau qua queue"
       },
       "context": {
         "title": "Giao việc lưu cho một worker nền qua queue.Queue, không để nơi gọi phải chờ từng lần lưu.",

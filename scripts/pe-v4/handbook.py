@@ -41,6 +41,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import (
     BaseDocTemplate,
     Frame,
+    Image,
     KeepTogether,
     NextPageTemplate,
     PageBreak,
@@ -55,6 +56,8 @@ from reportlab.platypus.tableofcontents import TableOfContents
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT_DIR = os.path.join(HERE, "out")
+# PNG của hình minh hoạ, do node scripts/pe-v4/anim/shot.mjs chụp từ SVG.
+FIGURE_DIR = os.path.join(OUT_DIR, "figures")
 DEFAULT_PDF = os.path.join(OUT_DIR, "python-advanced-handbook.pdf")
 
 # Ngày build in trên bìa. Hằng số, không dùng datetime.now() — xem docstring.
@@ -517,6 +520,70 @@ PRIORITY_LABEL = {
 # -------------------------------------------------------------------- flowables
 
 
+def figure_flowables(figure: dict, styles, avail):
+    """Ảnh PNG của hình + chú thích. Thiếu PNG thì GHI LÀ THIẾU, không bỏ im lặng.
+
+    Vì sao in từ PNG chứ không từ SVG: reportlab không vẽ được SVG có animation CSS.
+    PNG do `node scripts/pe-v4/anim/shot.mjs` chụp bằng Chromium ở chế độ
+    prefers-reduced-motion, tức đúng khung hình "trạng thái hoàn chỉnh" của hình.
+    """
+    name = figure.get("name") or os.path.basename(figure.get("src") or "").removesuffix(".svg")
+    png = os.path.join(FIGURE_DIR, "%s.png" % name) if name else ""
+    f = []
+    if png and os.path.exists(png):
+        # Hình vẽ theo khổ 1280x640 (tỉ lệ 2:1) — giữ nguyên tỉ lệ, rộng hết khung.
+        f.append(Image(png, width=avail, height=avail / 2))
+    else:
+        f.append(
+            Paragraph(
+                "[Chưa có ảnh %s.png — chạy <font face=\"HBMono\" size=\"7\">node "
+                "scripts/pe-v4/anim/shot.mjs</font> sau khi hình SVG được vẽ xong.]"
+                % esc(name or "(không rõ tên)"),
+                styles["small"],
+            )
+        )
+    caption = figure.get("caption") or ""
+    alt = figure.get("alt") or ""
+    if caption:
+        f.append(Paragraph("<b>Hình %s.</b> %s" % (esc(name), esc(caption)), styles["small"]))
+    if alt:
+        f.append(Paragraph("Mô tả hình: %s" % esc(alt), styles["small"]))
+    return f
+
+
+def theory_flowables(ls: Lesson, styles, avail):
+    """Khối LÝ THUYẾT của bài (step_1.theory) + hình + dòng nguồn slide.
+
+    Bài M4–M8 không khai `theory` nên hàm trả [] và trang bài giữ nguyên như trước.
+    """
+    blocks = ls.s1.get("theory") or []
+    figure = ls.s1.get("figure") or {}
+    if not blocks and not figure:
+        return []
+
+    f = [Paragraph("LÝ THUYẾT", styles["label"])]
+    shown = False
+    for block in blocks:
+        f.append(Paragraph("<b>%s</b>" % esc(block.get("title")), styles["body"]))
+        if block.get("body"):
+            f.append(Paragraph(esc(block["body"]), styles["body"]))
+        for bullet in block.get("bullets") or []:
+            f.append(Paragraph("• %s" % esc(bullet), styles["bullet"], bulletText=""))
+        if block.get("figure"):
+            f.extend(figure_flowables({**block["figure"], "name": figure.get("name")}, styles, avail))
+            shown = True
+    if figure and not shown:
+        f.extend(figure_flowables(figure, styles, avail))
+
+    # Dòng nguồn in NGUYÊN VĂN chuỗi `slides`: nó có thể là nhiều khoảng trang rời
+    # ("SL 95-105, 133") hoặc kèm tài liệu chính thức ("SL 51-53; DOC subprocess").
+    # Tách/chuẩn hoá ở đây là bịa ra một bản đồ trang mà ta không suy ra được.
+    slides = (ls.content.get("source") or {}).get("slides")
+    if slides:
+        f.append(Paragraph("Nguồn lý thuyết: %s (xem chú giải ở bìa)" % esc(slides), styles["small"]))
+    return f
+
+
 def lesson_flowables(ls: Lesson, styles, doc):
     f = []
     avail = FRAME_W
@@ -555,6 +622,8 @@ def lesson_flowables(ls: Lesson, styles, doc):
     if ctx.get("example"):
         f.append(Paragraph("VÍ DỤ MINH HOẠ", styles["label"]))
         f.append(Paragraph(esc(ctx["example"]), styles["body"]))
+
+    f.extend(theory_flowables(ls, styles, avail))
 
     explain = ls.s1.get("explain") or []
     if explain:
@@ -933,6 +1002,14 @@ def cover_flowables(styles, n_lessons, n_modules, missing, build_date):
         "trong lúc dựng PDF: thiếu dữ liệu thì tài liệu ghi là thiếu.",
         "Mã bài (P01, T01, N01, PD01, M01, DA01…) là định danh duy nhất — dùng đúng mã khi đặt tên "
         "asset và khi trao đổi.",
+        # Chú giải nguồn: bắt buộc, vì số trang trong dòng "Nguồn lý thuyết" là số thứ tự
+        # trang trong TỆP slide đã gộp, không phải số in trên mặt slide. Deck không có lớp
+        # text và các slide overlay dùng lại cùng một số in, nên không suy ra bản đồ nào khác.
+        "<b>Chú giải nguồn lý thuyết.</b> "
+        "<font face=\"HBMono\" size=\"8\">SL n</font> = trang thứ n trong tệp slide gốc đã gộp của "
+        "giảng viên (1–56 Multi Processing · 57–107 Multithreading · 108–135 GUI Toolkit). "
+        "Số in trên slide có thể khác vì một slide có nhiều lớp hiện dần. "
+        "<font face=\"HBMono\" size=\"8\">DOC …</font> = tài liệu chính thức của Python.",
     ]
     if missing:
         note.append(

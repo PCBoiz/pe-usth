@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g01-title g01-desc">
+<title id="g01-title">Cửa sổ Tkinter: Tk() và Toplevel</title>
+<desc id="g01-desc">Vòng lặp 14 giây, 4 bước giữ mỗi bước 3,5 giây: (1) tk.Tk() dựng cửa sổ chính, (2) .title() đặt chữ trên thanh tiêu đề, (3) .geometry("800x600") đặt kích thước, (4) tk.Toplevel(window) mở cửa sổ phụ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả hai cửa sổ, thước đo và mã nguồn đều hiện.</desc>
+<style>
+  text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
+  .t{font-size:27px;font-weight:600}
+  .sub{font-size:15px;fill:#93a0bc}
+  .eye{font-size:13px;font-weight:600;letter-spacing:.6px}
+  .lb{font-size:15px}
+  .sm{font-size:13px;fill:#93a0bc}
+  .dim{font-size:12px;fill:#5b6886}
+  .m{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:14px;fill:#e8edf7}
+  .ms{font-family:Consolas,'Cascadia Mono','Courier New',monospace;font-size:12px;fill:#93a0bc}
+  .win{fill:#10192c;stroke:#273352;stroke-width:1.6}
+  .bar{fill:#1d2a46}
+  .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+  .zone{fill:#131d33;stroke:#3d4a6e;stroke-width:1.4;stroke-dasharray:6 5}
+  .rule{stroke:#5b6886;stroke-width:1.4}
+  .glow{fill:none;stroke-width:2.6;opacity:0}
+  .codehl{fill:#4c9bff;opacity:0}
+
+  /* Hoạt hình chỉ làm rõ THỨ TỰ gọi hàm. Mỗi bước bật tức thời (~70ms) rồi GIỮ 3,5s để đọc kịp. */
+  .s1{animation:s1 14s linear infinite}
+  .s2{animation:s2 14s linear infinite}
+  .s3{animation:s3 14s linear infinite}
+  .s4{animation:s4 14s linear infinite}
+  @keyframes s1{0%,24.5%{opacity:1}25%,100%{opacity:0}}
+  @keyframes s2{0%,24.5%{opacity:0}25%,49.5%{opacity:1}50%,100%{opacity:0}}
+  @keyframes s3{0%,49.5%{opacity:0}50%,74.5%{opacity:1}75%,100%{opacity:0}}
+  @keyframes s4{0%,74.5%{opacity:0}75%,97%{opacity:1}97.5%,100%{opacity:0}}
+  .s1.codehl,.s2.codehl,.s3.codehl,.s4.codehl{animation-name:c1}
+  .s2.codehl{animation-name:c2}
+  .s3.codehl{animation-name:c3}
+  .s4.codehl{animation-name:c4}
+  @keyframes c1{0%,24.5%{opacity:.18}25%,100%{opacity:0}}
+  @keyframes c2{0%,24.5%{opacity:0}25%,49.5%{opacity:.18}50%,100%{opacity:0}}
+  @keyframes c3{0%,49.5%{opacity:0}50%,74.5%{opacity:.18}75%,100%{opacity:0}}
+  @keyframes c4{0%,74.5%{opacity:0}75%,97%{opacity:.18}97.5%,100%{opacity:0}}
+
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+
+<rect width="1280" height="640" fill="#0f1626"/>
+
+<text class="t" x="48" y="54">Cửa sổ Tkinter: <tspan fill="#79d3ec">Tk()</tspan> và <tspan fill="#c9a2ff">Toplevel</tspan></text>
+<text class="sub" x="48" y="80">Mọi widget đều phải nằm trong một cửa sổ. Tk() là cửa sổ chính; Toplevel là cửa sổ phụ của nó.</text>
+
+<!-- ================= cửa sổ chính ================= -->
+<text class="eye" x="48" y="112" fill="#79d3ec">(1) CỬA SỔ CHÍNH — window = tk.Tk()</text>
+<rect class="win" x="48" y="124" width="600" height="300" rx="10"/>
+<path class="bar" d="M48,134 a10,10 0 0 1 10,-10 h580 a10,10 0 0 1 10,10 v30 h-600 z"/>
+<circle cx="72" cy="144" r="6.5" fill="#f4a274"/>
+<circle cx="92" cy="144" r="6.5" fill="#f5b83d"/>
+<circle cx="112" cy="144" r="6.5" fill="#9fd88f"/>
+<text class="lb" x="348" y="150" text-anchor="middle">Student Information System</text>
+<text class="ms" x="636" y="150" text-anchor="end" fill="#f5b83d">(2) tiêu đề ← .title()</text>
+<rect class="zone" x="76" y="194" width="544" height="200" rx="6"/>
+<text class="sm" x="348" y="282" text-anchor="middle" fill="#93a0bc">vùng nội dung</text>
+<text class="dim" x="348" y="306" text-anchor="middle">nơi đặt widget: Frame · Label · Button · Entry</text>
+
+<!-- thước đo kích thước: (3) -->
+<line class="rule" x1="48" y1="446" x2="648" y2="446"/>
+<line class="rule" x1="48" y1="438" x2="48" y2="454"/>
+<line class="rule" x1="648" y1="438" x2="648" y2="454"/>
+<rect x="200" y="434" width="296" height="24" fill="#0f1626"/>
+<text class="ms" x="348" y="451" text-anchor="middle" fill="#79d3ec">(3) khung cửa sổ ← .geometry("800x600")</text>
+
+<!-- ================= cửa sổ phụ ================= -->
+<text class="eye" x="792" y="112" fill="#c9a2ff">(4) CỬA SỔ PHỤ — sub = tk.Toplevel(window)</text>
+<rect class="win" x="792" y="190" width="400" height="234" rx="10"/>
+<path class="bar" d="M792,200 a10,10 0 0 1 10,-10 h380 a10,10 0 0 1 10,10 v26 h-400 z"/>
+<circle cx="814" cy="208" r="5.5" fill="#f4a274"/>
+<circle cx="832" cy="208" r="5.5" fill="#f5b83d"/>
+<circle cx="850" cy="208" r="5.5" fill="#9fd88f"/>
+<text class="sm" x="992" y="213" text-anchor="middle" fill="#e8edf7">Students</text>
+<rect class="zone" x="816" y="250" width="352" height="152" rx="6"/>
+<text class="sm" x="992" y="318" text-anchor="middle">cửa sổ phụ, có title và geometry riêng</text>
+<text class="dim" x="992" y="342" text-anchor="middle">đóng cửa sổ chính thì nó đóng theo</text>
+<line class="rule" x1="792" y1="446" x2="1192" y2="446"/>
+<line class="rule" x1="792" y1="438" x2="792" y2="454"/>
+<line class="rule" x1="1192" y1="438" x2="1192" y2="454"/>
+<rect x="902" y="434" width="180" height="24" fill="#0f1626"/>
+<text class="ms" x="992" y="451" text-anchor="middle">geometry("600x400")</text>
+
+<!-- mũi tên cha → con -->
+<defs>
+  <marker id="g01-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#c9a2ff"/>
+  </marker>
+  <marker id="g01-ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+    <path d="M0,1 L9,5 L0,9 z" fill="#5b6886"/>
+  </marker>
+</defs>
+<line x1="652" y1="286" x2="786" y2="286" stroke="#c9a2ff" stroke-width="1.8" marker-end="url(#g01-ar)"/>
+<rect x="650" y="258" width="140" height="22" fill="#0f1626"/>
+<text class="ms" x="720" y="274" text-anchor="middle" fill="#c9a2ff">tạo cửa sổ con</text>
+<line x1="786" y1="334" x2="652" y2="334" stroke="#5b6886" stroke-width="1.6" stroke-dasharray="5 4" marker-end="url(#g01-ar2)"/>
+<rect x="646" y="340" width="148" height="22" fill="#0f1626"/>
+<text class="ms" x="720" y="356" text-anchor="middle" fill="#93a0bc">thuộc cửa sổ chính</text>
+
+<!-- ================= mã nguồn ================= -->
+<rect class="panel" x="48" y="478" width="1184" height="126" rx="10"/>
+<rect class="codehl s1" x="64" y="518" width="596" height="24" rx="4"/>
+<rect class="codehl s2" x="64" y="544" width="596" height="24" rx="4"/>
+<rect class="codehl s3" x="64" y="570" width="596" height="24" rx="4"/>
+<rect class="codehl s4" x="672" y="518" width="544" height="24" rx="4"/>
+<text class="m" x="72" y="510"><tspan fill="#5b6886">import tkinter as tk</tspan></text>
+<text class="m" x="72" y="536">window = tk.Tk()</text>
+<text class="m" x="72" y="562">window.title(<tspan fill="#9fd88f">"Student Information System"</tspan>)</text>
+<text class="m" x="72" y="588">window.geometry(<tspan fill="#9fd88f">"800x600"</tspan>)</text>
+<text class="m" x="680" y="510"><tspan fill="#5b6886"># cửa sổ phụ: Toplevel, không gọi Tk() lần hai</tspan></text>
+<text class="m" x="680" y="536">sub = tk.Toplevel(window)</text>
+<text class="m" x="680" y="562">sub.title(<tspan fill="#9fd88f">"Students"</tspan>); sub.geometry(<tspan fill="#9fd88f">"600x400"</tspan>)</text>
+<text class="m" x="680" y="588"><tspan fill="#5b6886">window.mainloop()   # chặn, chờ sự kiện</tspan></text>
+
+<!-- ================= viền nhấn theo bước ================= -->
+<rect class="glow s1" x="44" y="120" width="608" height="308" rx="12" stroke="#4c9bff"/>
+<rect class="glow s2" x="52" y="128" width="592" height="38" rx="8" stroke="#f5b83d"/>
+<rect class="glow s3" x="44" y="432" width="608" height="28" rx="8" stroke="#79d3ec"/>
+<rect class="glow s4" x="788" y="186" width="408" height="242" rx="12" stroke="#c9a2ff"/>
+</svg>

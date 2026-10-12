@@ -102,6 +102,8 @@ export function validateStudioLesson(value: unknown): string[] {
     }
   }
 
+  if (isObject(one)) errors.push(...validateTheory(one));
+
   const two = lesson.step_2;
   if (isObject(two) && two.mcq !== undefined) {
     if (!Array.isArray(two.mcq)) {
@@ -220,6 +222,56 @@ export function validateStudioLesson(value: unknown): string[] {
 
   if (lesson.play !== undefined) errors.push(...validatePlay(lesson));
 
+  return errors;
+}
+
+/**
+ * step_1.theory + step_1.figure — khối LÝ THUYẾT và hình minh hoạ của khoá
+ * python_advanced (scripts/pe-v4, chặng M1–M3). Chỉ chạy khi bài có khai: bài cũ
+ * và M4–M8 không có hai khoá này nên không bị siết thêm luật nào.
+ *
+ * Kiểm cái gì: frontend dựng màn `theory` rồi vẽ hình bằng
+ * `<img src={figure.src} alt={figure.alt}>`. Thiếu `src` thì ảnh vỡ, thiếu `alt`
+ * thì trình đọc màn hình đọc ra đường dẫn file. Giới hạn ĐỘ DÀI thì không kiểm ở
+ * đây — đó là việc của build.py; chỗ này chỉ chặn dữ liệu không dựng được màn.
+ */
+function validateFigure(value: unknown, at: string): string[] {
+  if (!isObject(value)) return [`${at}: phải là object { src, caption, alt }.`];
+  const errors: string[] = [];
+  const src = value.src;
+  if (!nonEmptyString(src)) errors.push(`${at}.src: thiếu đường dẫn hình.`);
+  else if (!/^\/[\w./-]+\.svg$/.test(String(src)))
+    errors.push(
+      `${at}.src: phải là đường dẫn cùng miền tới file .svg (vd. /static/anim/P02-lifecycle.svg).`,
+    );
+  if (!nonEmptyString(value.caption)) errors.push(`${at}.caption: thiếu chú thích.`);
+  if (!nonEmptyString(value.alt)) errors.push(`${at}.alt: thiếu mô tả cho trình đọc màn hình.`);
+  return errors;
+}
+
+function validateTheory(one: Record<string, unknown>): string[] {
+  const errors: string[] = [];
+  if (one.figure !== undefined) errors.push(...validateFigure(one.figure, 'step_1.figure'));
+  if (one.theory === undefined) return errors;
+  if (!Array.isArray(one.theory)) return [...errors, 'step_1.theory: phải là mảng khối lý thuyết.'];
+  if (one.theory.length === 0)
+    return [...errors, 'step_1.theory: mảng rỗng — bỏ hẳn khoá này nếu bài không có lý thuyết.'];
+  one.theory.forEach((block, i) => {
+    const at = `step_1.theory[${i}]`;
+    if (!isObject(block)) return errors.push(`${at}: phải là object.`);
+    if (!nonEmptyString(block.title)) errors.push(`${at}.title: thiếu tiêu đề khối.`);
+    const bullets = block.bullets;
+    if (bullets !== undefined) {
+      if (!Array.isArray(bullets)) errors.push(`${at}.bullets: phải là mảng chuỗi.`);
+      else if (!bullets.every((b) => nonEmptyString(b)))
+        errors.push(`${at}.bullets: mỗi gạch đầu dòng phải là chuỗi không rỗng.`);
+    }
+    const hasBullets = Array.isArray(bullets) && bullets.length > 0;
+    if (!nonEmptyString(block.body) && !hasBullets)
+      errors.push(`${at}: phải có body hoặc bullets — khối rỗng không hiện được gì.`);
+    if (block.figure !== undefined && block.figure !== null)
+      errors.push(...validateFigure(block.figure, `${at}.figure`));
+  });
   return errors;
 }
 

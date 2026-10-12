@@ -1,0 +1,133 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="pvp-title pvp-desc">
+  <title id="pvp-title">Program và process</title>
+  <desc id="pvp-desc">Vòng lặp 16 giây, 8 nhịp (mỗi nhịp ~2 giây): 1 nêu tệp tinh_tong.py trên đĩa, 2 lần chạy thứ nhất, 3 process PID 4821 hiện vùng nhớ riêng, 4 giữ, 5 lần chạy thứ hai, 6 process PID 4822, 7 nhấn vào text giống nhau, 8 nhấn vào stack/heap/data riêng. Khung tĩnh đã hiện đủ: một tệp .py sinh ra hai process, mỗi process có PID, bốn vùng nhớ text/data/heap/stack và ba file descriptor 0/1/2.</desc>
+  <defs>
+    <marker id="pvp-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .lbl{font-size:17px;fill:#e8edf7;font-weight:600}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .inner{fill:#0f1626;stroke:#273352;stroke-width:1.5}
+    /* Lớp nhấn: mặc định ẩn, nên khi tắt hiệu ứng hình vẫn ở trạng thái đầy đủ. */
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    .dot{opacity:0;animation-duration:16s;animation-timing-function:cubic-bezier(0,0,0.1,1);animation-iteration-count:infinite}
+    .dotA{animation-name:dotA}
+    .dotB{animation-name:dotB}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11%{opacity:1}12%{opacity:0}100%{opacity:0}}
+    @keyframes dotA{
+      0%{opacity:0;transform:translate(0px,0px)}
+      1%{opacity:1;transform:translate(0px,0px)}
+      4%{opacity:1;transform:translate(44px,0px)}
+      7%{opacity:1;transform:translate(44px,-105px)}
+      10%{opacity:1;transform:translate(78px,-105px)}
+      12%{opacity:0;transform:translate(78px,-105px)}
+      100%{opacity:0;transform:translate(78px,-105px)}
+    }
+    @keyframes dotB{
+      0%{opacity:0;transform:translate(0px,0px)}
+      1%{opacity:1;transform:translate(0px,0px)}
+      4%{opacity:1;transform:translate(44px,0px)}
+      7%{opacity:1;transform:translate(44px,105px)}
+      10%{opacity:1;transform:translate(78px,105px)}
+      12%{opacity:0;transform:translate(78px,105px)}
+      100%{opacity:0;transform:translate(78px,105px)}
+    }
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Program và process</text>
+  <text class="sub" x="48" y="86">Program nằm yên trên đĩa. Process là MỘT LẦN chạy của program: có PID riêng và vùng nhớ riêng.</text>
+
+  <!-- mũi tên vẽ trước các khối để nét nằm dưới hộp -->
+  <path d="M348,315 H392" fill="none" stroke="#93a0bc" stroke-width="2"/>
+  <circle cx="392" cy="315" r="3.5" fill="#93a0bc"/>
+  <path d="M392,315 V218 Q392,210 400,210 H422" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pvp-ar)"/>
+  <path d="M392,315 V412 Q392,420 400,420 H422" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pvp-ar)"/>
+
+  <!-- PROGRAM -->
+  <rect class="panel" x="48" y="205" width="300" height="220" rx="12"/>
+  <text class="s" x="72" y="238">Program — tệp trên đĩa</text>
+  <text class="mono" x="72" y="270" font-size="19" fill="#e8edf7">tinh_tong.py</text>
+  <text class="xs" x="72" y="296">Thụ động: không PID, không stack.</text>
+  <rect class="inner" x="72" y="310" width="252" height="96" rx="6"/>
+  <text class="mono" x="88" y="334" font-size="13" fill="#9fd88f">$ python tinh_tong.py</text>
+  <text class="mono" x="88" y="354" font-size="12" fill="#5b6886">→ PID 4821</text>
+  <text class="mono" x="88" y="380" font-size="13" fill="#9fd88f">$ python tinh_tong.py</text>
+  <text class="mono" x="88" y="400" font-size="12" fill="#5b6886">→ PID 4822</text>
+
+  <!-- PROCESS 1 -->
+  <rect class="panel" x="430" y="120" width="800" height="180" rx="12"/>
+  <text class="mono" x="454" y="154" font-size="18" fill="#4c9bff">PID 4821</text>
+  <text class="s" x="1206" y="154" text-anchor="end">Process thứ nhất — đang chạy</text>
+
+  <rect x="454" y="172" width="150" height="66" rx="6" fill="#9fd88f" fill-opacity="0.12" stroke="#9fd88f" stroke-opacity="0.45"/>
+  <text class="mono" x="468" y="198" font-size="15" fill="#9fd88f">text</text>
+  <text class="xs" x="468" y="220">mã lệnh</text>
+  <rect x="616" y="172" width="150" height="66" rx="6" fill="#f5b83d" fill-opacity="0.12" stroke="#f5b83d" stroke-opacity="0.45"/>
+  <text class="mono" x="630" y="198" font-size="15" fill="#f5b83d">data</text>
+  <text class="xs" x="630" y="220">biến toàn cục</text>
+  <rect x="778" y="172" width="150" height="66" rx="6" fill="#c9a2ff" fill-opacity="0.12" stroke="#c9a2ff" stroke-opacity="0.45"/>
+  <text class="mono" x="792" y="198" font-size="15" fill="#c9a2ff">heap</text>
+  <text class="xs" x="792" y="220">cấp phát động</text>
+  <rect x="940" y="172" width="150" height="66" rx="6" fill="#79d3ec" fill-opacity="0.12" stroke="#79d3ec" stroke-opacity="0.45"/>
+  <text class="mono" x="954" y="198" font-size="15" fill="#79d3ec">stack</text>
+  <text class="xs" x="954" y="220">biến cục bộ</text>
+
+  <rect class="inner" x="1104" y="166" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="183" font-size="12" fill="#93a0bc">0 stdin</text>
+  <rect class="inner" x="1104" y="196" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="213" font-size="12" fill="#93a0bc">1 stdout</text>
+  <rect class="inner" x="1104" y="226" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="243" font-size="12" fill="#93a0bc">2 stderr</text>
+  <text class="xs" x="454" y="272">Vùng nhớ riêng — process kia không đọc được.</text>
+
+  <!-- PROCESS 2 -->
+  <rect class="panel" x="430" y="330" width="800" height="180" rx="12"/>
+  <text class="mono" x="454" y="364" font-size="18" fill="#f4a274">PID 4822</text>
+  <text class="s" x="1206" y="364" text-anchor="end">Process thứ hai — cùng tệp .py</text>
+
+  <rect x="454" y="382" width="150" height="66" rx="6" fill="#9fd88f" fill-opacity="0.12" stroke="#9fd88f" stroke-opacity="0.45"/>
+  <text class="mono" x="468" y="408" font-size="15" fill="#9fd88f">text</text>
+  <text class="xs" x="468" y="430">y hệt process trên</text>
+  <rect x="616" y="382" width="150" height="66" rx="6" fill="#f5b83d" fill-opacity="0.12" stroke="#f5b83d" stroke-opacity="0.45"/>
+  <text class="mono" x="630" y="408" font-size="15" fill="#f5b83d">data</text>
+  <text class="xs" x="630" y="430">giá trị khác</text>
+  <rect x="778" y="382" width="150" height="66" rx="6" fill="#c9a2ff" fill-opacity="0.12" stroke="#c9a2ff" stroke-opacity="0.45"/>
+  <text class="mono" x="792" y="408" font-size="15" fill="#c9a2ff">heap</text>
+  <text class="xs" x="792" y="430">cấp phát riêng</text>
+  <rect x="940" y="382" width="150" height="66" rx="6" fill="#79d3ec" fill-opacity="0.12" stroke="#79d3ec" stroke-opacity="0.45"/>
+  <text class="mono" x="954" y="408" font-size="15" fill="#79d3ec">stack</text>
+  <text class="xs" x="954" y="430">ngăn xếp riêng</text>
+
+  <rect class="inner" x="1104" y="376" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="393" font-size="12" fill="#93a0bc">0 stdin</text>
+  <rect class="inner" x="1104" y="406" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="423" font-size="12" fill="#93a0bc">1 stdout</text>
+  <rect class="inner" x="1104" y="436" width="102" height="24" rx="4"/>
+  <text class="mono" x="1114" y="453" font-size="12" fill="#93a0bc">2 stderr</text>
+  <text class="xs" x="454" y="482">Sửa biến ở đây không ảnh hưởng process trên.</text>
+
+  <!-- chú thích đáy -->
+  <rect class="panel" x="48" y="540" width="1184" height="56" rx="10"/>
+  <rect x="72" y="558" width="4" height="20" rx="2" fill="#4c9bff"/>
+  <text class="s" x="90" y="574">Một program chạy hai lần = hai process: <tspan fill="#9fd88f">text giống nhau</tspan>, nhưng <tspan fill="#79d3ec">PID, stack, heap, data là riêng</tspan>.</text>
+  <text class="xs" x="1232" y="620" text-anchor="end">Theo slide USTH 4–14</text>
+
+  <!-- lớp nhấn theo nhịp -->
+  <rect class="ring" x="52" y="209" width="292" height="212" rx="12" stroke="#93a0bc" style="animation-delay:0s"/>
+  <rect class="ring" x="434" y="124" width="792" height="172" rx="12" stroke="#4c9bff" style="animation-delay:4s"/>
+  <rect class="ring" x="434" y="334" width="792" height="172" rx="12" stroke="#f4a274" style="animation-delay:8s"/>
+  <rect class="ring" x="450" y="378" width="158" height="74" rx="8" stroke="#9fd88f" style="animation-delay:12s"/>
+  <rect class="ring" x="936" y="378" width="158" height="74" rx="8" stroke="#79d3ec" style="animation-delay:12s"/>
+  <circle class="dot dotA" cx="352" cy="315" r="6" fill="#4c9bff" style="animation-delay:2s"/>
+  <circle class="dot dotB" cx="352" cy="315" r="6" fill="#f4a274" style="animation-delay:6s"/>
+</svg>

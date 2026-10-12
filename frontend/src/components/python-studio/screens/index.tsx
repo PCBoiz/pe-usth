@@ -17,6 +17,7 @@ import RecapScreen from './RecapScreen';
 import SandboxScreen from './SandboxScreen';
 import ScaffoldScreen from './ScaffoldScreen';
 import SelfExplainScreen from './SelfExplainScreen';
+import TheoryScreen from './TheoryScreen';
 import TraceScreen from './TraceScreen';
 import type { LessonScreenProps } from './props';
 
@@ -29,6 +30,8 @@ export default function LessonScreenView(props: LessonScreenProps) {
     case 'brief':
       // Màn mở đầu "một màn" theo Figma: tự có tiêu đề, không bọc trong ShellB.
       return lesson.step_1?.brief ? <LessonBrief {...lesson.step_1.brief} /> : null;
+    case 'theory':
+      return <TheoryScreen {...props} />;
     case 'context':
       return <ContextScreen {...props} />;
     case 'explain':

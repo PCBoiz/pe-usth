@@ -14,7 +14,8 @@
       "kind": "pe-v4-advanced",
       "filename": "python-learning-data.json#P01",
       "parser": "pe-v4/build_advanced",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 4-18"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,46 @@
           "ancestors(TABLE, 410) → [410, 305, 120, 1]"
         ],
         "reflect": "Vì sao một program có thể ứng với nhiều process?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa",
+          "body": "Slide nói gọn: \"process is a program in execution state (active)\". Program là mã THỤ ĐỘNG nằm trên đĩa — không có gì đang chạy. Process là trạng thái thực thi đang hoạt động của mã đó, và một program có thể đang ứng với nhiều process cùng lúc.",
+          "bullets": [
+            "PID: số hệ điều hành cấp cho từng process, không cấp cho file .py",
+            "PPID: PID của process cha đã tạo ra nó",
+            "Trạng thái thực thi gồm context (program counter, thanh ghi), file descriptor và vùng nhớ",
+            "Vùng nhớ chia ba phần: process stack, data section, heap"
+          ]
+        },
+        {
+          "title": "Ví dụ: cây process trên máy thật",
+          "body": "Lệnh pstree -A ở slide in ra init-+-cron, |-sshd---bash---pstree, |-screen---bash---python2… Mỗi nhánh là một process có PID riêng; bash tạo python, python tạo tiếp con thì thành cháu. TABLE của bài là một lát cắt của cây đó: ba dòng mang tên \"python\" là ba process của cùng một program."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "ps / pstree / Task Manager: xem process nào đang chạy và là con của ai",
+            "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào khi chạy nhiều bản song song",
+            "Giám sát: thấy process treo thì lần theo PPID để tìm cả nhánh cần dừng",
+            "Studio chạy trong trình duyệt nên PID là số GIẢ (ổn định, con khác cha); máy thật mỗi lần một số"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Bên trái là một file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ chính file ấy: mỗi khối có PID riêng và một vùng nhớ riêng (text, data, heap, stack), nên sửa biến trong khối này không đụng tới khối kia. Ba mũi tên 0/1/2 ở đáy mỗi khối là file descriptor stdin, stdout, stderr.",
+          "figure": {
+            "src": "/static/anim/P01-program-vs-process.svg",
+            "caption": "Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng",
+            "alt": "Bên trái file .py trên đĩa; bên phải hai hộp process PID khác nhau, mỗi hộp có text/data/heap/stack và ba file descriptor 0, 1, 2"
+          }
+        }
+      ],
+      "figure": {
+        "name": "P01-program-vs-process",
+        "src": "/static/anim/P01-program-vs-process.svg",
+        "caption": "Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng",
+        "alt": "Bên trái file .py trên đĩa; bên phải hai hộp process PID khác nhau, mỗi hộp có text/data/heap/stack và ba file descriptor 0, 1, 2"
       },
       "context": {
         "title": "Phân biệt program với process, đọc PID/PPID và đi ngược cây process.",

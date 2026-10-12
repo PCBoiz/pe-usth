@@ -14,7 +14,8 @@
       "kind": "pe-v4-advanced",
       "filename": "python-learning-data.json#G04",
       "parser": "pe-v4/build_advanced",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 125-132"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,51 @@
           "pack thêm Label vào form đang grid → TclError"
         ],
         "reflect": "Vì sao không trộn pack và grid trong cùng một parent?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: geometry manager",
+          "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một GEOMETRY MANAGER quyết định widget nằm ở đâu và to bao nhiêu. Tk có ba manager, gọi như method của chính widget: .pack() xếp theo cạnh, .place() đặt theo toạ độ, .grid() đặt vào ô hàng–cột. Khung chứa chính là tk.Frame, nên một cửa sổ lớn thường là nhiều Frame, mỗi Frame xếp kiểu riêng."
+        },
+        {
+          "title": "Ví dụ: ba kiểu, ba cách mô tả vị trí",
+          "bullets": [
+            "pack: mặc định xếp dọc, canh giữa; side=tk.LEFT đổi hướng; fill=tk.X giãn ngang",
+            "place: như position:absolute của HTML — x=10, y=10 hoặc relx=0.1, rely=0.1 (0 tới 1)",
+            "grid: như table của HTML — column=0, row=2, sticky=tk.EW, padx=3, pady=3",
+            "grid còn có columnspan=3, rowspan=2 để một widget chiếm nhiều ô",
+            "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra"
+          ]
+        },
+        {
+          "title": "Trộn pack và grid là lỗi, không phải xấu",
+          "body": "Hai manager tính kích thước theo hai cách khác nhau, nên nếu các con của CÙNG một parent vừa pack() vừa grid(), Tk không hội tụ được và báo TclError (có bản treo trước khi báo). Khác parent thì vô tư: một Frame bên trong dùng grid, Frame đó pack vào cửa sổ. place() trộn được với hai cái kia vì nó không tham gia tính chỗ trống."
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "pack: thanh công cụ, cột nút, bố cục đơn giản xếp chồng hoặc nằm ngang",
+            "grid: form nhãn–ô nhập nhiều dòng, bảng điều khiển — cột nhãn và cột nhập thẳng hàng",
+            "place: chỉ khi cần đúng toạ độ (biểu đồ, ảnh nền), vì nó không tự co giãn theo nội dung",
+            "Studio không vẽ nên bộ chấm đọc widget.manager và widget.layout để biết bạn xếp kiểu gì",
+            "Kích thước thật chỉ thấy trên máy: chạy file rồi kéo giãn cửa sổ để kiểm fill/weight"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Hình đặt ba cửa sổ nhỏ cạnh nhau, CÙNG ba widget nhưng ba manager khác nhau: pack xếp thành chồng (hoặc hàng ngang khi side=LEFT), place ghim theo toạ độ nên có thể chồng lên nhau, grid chia lưới hàng–cột và các ô thẳng hàng. Dải đỏ phía dưới là ca lỗi: hai con của cùng một parent, một pack một grid → TclError.",
+          "figure": {
+            "src": "/static/anim/G04-layouts.svg",
+            "caption": "pack, place, grid: ba cách xếp cùng một bộ widget",
+            "alt": "Ba cửa sổ mẫu cho pack xếp chồng, place theo toạ độ x/y, grid theo hàng và cột; dưới cùng là cảnh báo trộn pack với grid cùng parent gây TclError"
+          }
+        }
+      ],
+      "figure": {
+        "name": "G04-layouts",
+        "src": "/static/anim/G04-layouts.svg",
+        "caption": "pack, place, grid: ba cách xếp cùng một bộ widget",
+        "alt": "Ba cửa sổ mẫu cho pack xếp chồng, place theo toạ độ x/y, grid theo hàng và cột; dưới cùng là cảnh báo trộn pack với grid cùng parent gây TclError"
       },
       "context": {
         "title": "Bố trí giao diện bằng một chiến lược rõ ràng: grid cho form, pack cho khung và thanh nút, place cho nhãn góc.",

@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="pcs-title pcs-desc">
+  <title id="pcs-title">Chuyển ngữ cảnh giữa hai process</title>
+  <desc id="pcs-desc">Vòng lặp 16 giây, 8 nhịp (mỗi nhịp 2 giây): 1 A đang chạy, 2 ngắt, 3 hệ điều hành lưu trạng thái vào PCB0, 4 nạp trạng thái từ PCB1, 5 B chạy, 6 B bị ngắt và lưu vào PCB1, 7 nạp lại PCB0, 8 A chạy tiếp. Khung tĩnh đã hiện đủ ba cột A / hệ điều hành / B, bốn thao tác PCB và dải overhead đánh dấu khoảng CPU không làm việc cho process nào.</desc>
+  <defs>
+    <marker id="pcs-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .osbox{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .hd{font-size:18px;fill:#e8edf7;text-anchor:middle;font-weight:600}
+    .ev{font-size:12.5px;fill:#93a0bc}
+    /* Thanh "đang chạy": trạng thái tĩnh là đã đầy, hiệu ứng chỉ cho thấy THỨ TỰ chạy. */
+    .bar{transform-box:fill-box;transform-origin:50% 0%}
+    .barA1{animation:barA1 16s linear infinite}
+    .barB{animation:barB 16s linear infinite}
+    .barA2{animation:barA2 16s linear infinite}
+    @keyframes barA1{0%,1%{transform:scaleY(0)}10%{transform:scaleY(1)}100%{transform:scaleY(1)}}
+    @keyframes barB{0%,50%{transform:scaleY(0)}59%{transform:scaleY(1)}100%{transform:scaleY(1)}}
+    @keyframes barA2{0%,87%{transform:scaleY(0)}96%{transform:scaleY(1)}100%{transform:scaleY(1)}}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Chuyển ngữ cảnh (context switch)</text>
+  <text class="sub" x="48" y="86">Muốn đổi process đang chạy, CPU phải cất toàn bộ trạng thái của process cũ vào PCB rồi nạp PCB của process mới.</text>
+
+  <text class="hd" x="200" y="132">Process A</text>
+  <text class="hd" x="640" y="132">Hệ điều hành</text>
+  <text class="hd" x="1120" y="132">Process B</text>
+
+  <!-- Dải overhead -->
+  <rect x="466" y="212" width="348" height="282" rx="10" fill="#f4a274" fill-opacity="0.07" stroke="#f4a274" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="6 5"/>
+
+  <!-- Trục thời gian của hai process -->
+  <path d="M200,148 V560" fill="none" stroke="#273352" stroke-width="2" stroke-dasharray="5 6"/>
+  <path d="M1120,148 V560" fill="none" stroke="#273352" stroke-width="2" stroke-dasharray="5 6"/>
+
+  <!-- Mũi tên trao quyền -->
+  <path d="M200,212 V232 Q200,240 208,240 H458" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pcs-ar)"/>
+  <path d="M814,294 H1112 Q1120,294 1120,302 V320" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pcs-ar)"/>
+  <path d="M1120,382 V404 Q1120,412 1112,412 H822" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pcs-ar)"/>
+  <path d="M466,466 H208 Q200,466 200,474 V492" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#pcs-ar)"/>
+  <path d="M640,262 V272" fill="none" stroke="#273352" stroke-width="2"/>
+  <path d="M640,434 V444" fill="none" stroke="#273352" stroke-width="2"/>
+
+  <!-- Thanh đang chạy -->
+  <rect class="bar barA1" x="194" y="156" width="12" height="50" rx="3" fill="#9fd88f"/>
+  <text class="ev" x="222" y="180" fill="#9fd88f">đang chạy</text>
+  <rect class="bar barB" x="1114" y="328" width="12" height="48" rx="3" fill="#4c9bff"/>
+  <text class="ev" x="1098" y="352" text-anchor="end" fill="#4c9bff">đang chạy</text>
+  <rect class="bar barA2" x="194" y="500" width="12" height="48" rx="3" fill="#9fd88f"/>
+  <text class="ev" x="222" y="524" fill="#9fd88f">chạy tiếp từ đúng chỗ cũ</text>
+
+  <!-- Dấu ngắt -->
+  <path d="M176,212 H224" fill="none" stroke="#f4a274" stroke-width="2.5"/>
+  <text class="ev" x="240" y="206" fill="#f4a274">ngắt (hết lượt)</text>
+  <path d="M1096,382 H1144" fill="none" stroke="#f4a274" stroke-width="2.5"/>
+  <text class="ev" x="1078" y="376" text-anchor="end" fill="#f4a274">ngắt (hết lượt)</text>
+
+  <!-- Bốn thao tác của hệ điều hành -->
+  <rect class="osbox" x="466" y="218" width="348" height="44" rx="8"/>
+  <text class="mono" x="640" y="246" font-size="15" fill="#e8edf7" text-anchor="middle">lưu trạng thái A vào PCB0</text>
+  <rect class="osbox" x="466" y="272" width="348" height="44" rx="8"/>
+  <text class="mono" x="640" y="300" font-size="15" fill="#e8edf7" text-anchor="middle">nạp trạng thái B từ PCB1</text>
+  <rect class="osbox" x="466" y="390" width="348" height="44" rx="8"/>
+  <text class="mono" x="640" y="418" font-size="15" fill="#e8edf7" text-anchor="middle">lưu trạng thái B vào PCB1</text>
+  <rect class="osbox" x="466" y="444" width="348" height="44" rx="8"/>
+  <text class="mono" x="640" y="472" font-size="15" fill="#e8edf7" text-anchor="middle">nạp trạng thái A từ PCB0</text>
+
+  <!-- Nhãn overhead -->
+  <path d="M330,296 H458" fill="none" stroke="#f4a274" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="236" y="302" font-size="16" fill="#f4a274" font-weight="600">overhead</text>
+  <text class="xs" x="236" y="324">Khoảng này CPU bận lưu và</text>
+  <text class="xs" x="236" y="342">nạp PCB: không process nào</text>
+  <text class="xs" x="236" y="360">tiến thêm được dòng lệnh nào.</text>
+  <text class="xs" x="236" y="386">Lát thời gian (time slice) càng</text>
+  <text class="xs" x="236" y="404">ngắn thì càng mất nhiều lần như vậy.</text>
+
+  <!-- Ghi chú đáy -->
+  <rect class="panel" x="48" y="574" width="1184" height="52" rx="10"/>
+  <rect x="72" y="588" width="4" height="24" rx="2" fill="#f4a274"/>
+  <text class="s" x="90" y="606">PCB (Process Control Block) giữ con trỏ lệnh, thanh ghi, bản đồ bộ nhớ — nhờ nó A chạy tiếp đúng chỗ bị cắt.</text>
+  <text class="xs" x="1212" y="606" text-anchor="end">Theo slide USTH 34–35</text>
+
+  <!-- Nhấn theo nhịp -->
+  <rect class="ring" x="188" y="150" width="24" height="62" rx="5" stroke="#9fd88f" style="animation-delay:0s"/>
+  <rect class="ring" x="172" y="204" width="56" height="16" rx="4" stroke="#f4a274" style="animation-delay:2s"/>
+  <rect class="ring" x="462" y="214" width="356" height="52" rx="8" stroke="#4c9bff" style="animation-delay:4s"/>
+  <rect class="ring" x="462" y="268" width="356" height="52" rx="8" stroke="#4c9bff" style="animation-delay:6s"/>
+  <rect class="ring" x="1108" y="322" width="24" height="60" rx="5" stroke="#4c9bff" style="animation-delay:8s"/>
+  <rect class="ring" x="462" y="386" width="356" height="52" rx="8" stroke="#4c9bff" style="animation-delay:10s"/>
+  <rect class="ring" x="462" y="440" width="356" height="52" rx="8" stroke="#4c9bff" style="animation-delay:12s"/>
+  <rect class="ring" x="188" y="494" width="24" height="60" rx="5" stroke="#9fd88f" style="animation-delay:14s"/>
+</svg>

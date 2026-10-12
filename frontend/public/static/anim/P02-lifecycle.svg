@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="plc-title plc-desc">
+  <title id="plc-title">Vòng đời process: 5 trạng thái</title>
+  <desc id="plc-desc">Vòng lặp 16 giây, 8 nhịp (mỗi nhịp 2 giây): một token vàng chạy new → ready → running → waiting → ready → running → terminated rồi lặp lại. Khung tĩnh đã hiện đủ 5 ô trạng thái và 6 mũi tên sự kiện: được nhận, được xếp CPU, bị ngắt, chờ I/O, I/O xong, thoát. Cả hai mũi tên rời running đều đổ về ready, không có đường quay thẳng lại running.</desc>
+  <defs>
+    <marker id="plc-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
+    </marker>
+    <marker id="plc-arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 z" fill="#79d3ec"/>
+    </marker>
+  </defs>
+  <style>
+    text{font-family:'Segoe UI',system-ui,-apple-system,'Helvetica Neue',Arial,sans-serif}
+    .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+    .h1{font-size:30px;fill:#e8edf7;font-weight:600}
+    .sub{font-size:16px;fill:#93a0bc}
+    .s{font-size:14px;fill:#93a0bc}
+    .xs{font-size:12px;fill:#5b6886}
+    .panel{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .st{fill:#162036;stroke:#273352;stroke-width:1.5}
+    .nm{font-size:17px;fill:#e8edf7;text-anchor:middle}
+    .gl{font-size:12px;fill:#93a0bc;text-anchor:middle}
+    .ev{font-size:12.5px;fill:#93a0bc}
+    .ev2{font-size:11.5px;fill:#5b6886}
+    /* Token và vòng nhấn: trạng thái tĩnh = đã đi hết vòng (ở terminated). */
+    .tok{transform:translate(965px,0px);animation:tok 16s cubic-bezier(0,0,0.1,1) infinite}
+    @keyframes tok{
+      0%,10%{transform:translate(0px,0px)}
+      12.5%,22.5%{transform:translate(295px,0px)}
+      25%,35%{transform:translate(635px,0px)}
+      37.5%,47.5%{transform:translate(405px,-200px)}
+      50%,60%{transform:translate(295px,0px)}
+      62.5%,72.5%{transform:translate(635px,0px)}
+      75%,100%{transform:translate(965px,0px)}
+    }
+    .ring{fill:none;stroke:#f5b83d;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
+    @media (prefers-reduced-motion: reduce){*{animation:none!important}}
+  </style>
+
+  <rect width="1280" height="640" fill="#0f1626"/>
+  <text class="h1" x="48" y="56">Vòng đời của một process</text>
+  <text class="sub" x="48" y="86">Ô là TRẠNG THÁI, mũi tên là SỰ KIỆN làm đổi trạng thái. Chỉ một process được chạy trên một CPU tại một thời điểm.</text>
+
+  <!-- Mũi tên vẽ trước, hộp đè lên trên -->
+  <path d="M46,362 H64" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#plc-ar)"/>
+  <circle cx="36" cy="362" r="8" fill="#93a0bc"/>
+
+  <path d="M220,362 H354" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#plc-ar)"/>
+  <path d="M520,362 H694" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#plc-ar)"/>
+  <path d="M860,362 H1024" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#plc-ar)"/>
+
+  <!-- running → ready: bị ngắt (đi vòng dưới) -->
+  <path d="M780,394 V442 Q780,450 772,450 H448 Q440,450 440,442 V400" fill="none" stroke="#93a0bc" stroke-width="2" marker-end="url(#plc-ar)"/>
+  <!-- running → waiting: chờ I/O -->
+  <path d="M800,330 V170 Q800,162 792,162 H638" fill="none" stroke="#79d3ec" stroke-width="2" marker-end="url(#plc-arg)"/>
+  <!-- waiting → ready: I/O xong -->
+  <path d="M470,162 H448 Q440,162 440,170 V322" fill="none" stroke="#79d3ec" stroke-width="2" marker-end="url(#plc-arg)"/>
+
+  <!-- Nhãn sự kiện -->
+  <text class="ev" x="287" y="334" text-anchor="middle">được nhận</text>
+  <text class="ev2" x="287" y="350" text-anchor="middle">admitted</text>
+  <text class="ev" x="607" y="334" text-anchor="middle">được xếp CPU</text>
+  <text class="ev2" x="607" y="350" text-anchor="middle">scheduled</text>
+  <text class="ev" x="942" y="334" text-anchor="middle">thoát</text>
+  <text class="ev2" x="942" y="350" text-anchor="middle">exit</text>
+  <text class="ev" x="610" y="472" text-anchor="middle">bị ngắt — hết lượt CPU</text>
+  <text class="ev2" x="610" y="488" text-anchor="middle">interrupt</text>
+  <text class="ev" x="814" y="248" fill="#79d3ec">chờ I/O, chờ sự kiện</text>
+  <text class="ev2" x="814" y="264">event wait</text>
+  <text class="ev" x="426" y="248" text-anchor="end" fill="#79d3ec">I/O xong</text>
+  <text class="ev2" x="426" y="264" text-anchor="end">event finish</text>
+
+  <!-- Trạng thái -->
+  <rect class="st" x="70" y="330" width="150" height="64" rx="10"/>
+  <text class="mono nm" x="145" y="358">new</text>
+  <text class="gl" x="145" y="378">vừa được tạo</text>
+
+  <rect class="st" x="360" y="330" width="160" height="64" rx="10"/>
+  <text class="mono nm" x="440" y="358">ready</text>
+  <text class="gl" x="440" y="378">sẵn sàng, chờ CPU</text>
+
+  <rect x="700" y="330" width="160" height="64" rx="10" fill="#9fd88f" fill-opacity="0.12" stroke="#9fd88f" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="mono nm" x="780" y="358" fill="#9fd88f">running</text>
+  <text class="gl" x="780" y="378">đang chiếm CPU</text>
+
+  <rect x="470" y="130" width="160" height="64" rx="10" fill="#79d3ec" fill-opacity="0.12" stroke="#79d3ec" stroke-opacity="0.5" stroke-width="1.5"/>
+  <text class="mono nm" x="550" y="158" fill="#79d3ec">waiting</text>
+  <text class="gl" x="550" y="178">chờ I/O hoặc sự kiện</text>
+
+  <rect class="st" x="1030" y="330" width="160" height="64" rx="10"/>
+  <text class="mono nm" x="1110" y="358">terminated</text>
+  <text class="gl" x="1110" y="378">đã kết thúc</text>
+  <circle cx="1232" cy="362" r="9" fill="none" stroke="#93a0bc" stroke-width="2"/>
+  <circle cx="1232" cy="362" r="4.5" fill="#93a0bc"/>
+
+  <!-- Ghi chú đáy -->
+  <rect class="panel" x="48" y="534" width="1184" height="62" rx="10"/>
+  <rect x="72" y="550" width="4" height="30" rx="2" fill="#f5b83d"/>
+  <text class="s" x="90" y="566">Cả hai mũi tên rời <tspan fill="#9fd88f">running</tspan> đều đổ về <tspan fill="#e8edf7">ready</tspan> — bị ngắt cũng vậy, I/O xong cũng vậy.</text>
+  <text class="xs" x="90" y="586">Không có đường quay thẳng lại running: muốn chạy tiếp thì phải xếp hàng chờ scheduler cấp CPU lần nữa.</text>
+  <text class="xs" x="1232" y="618" text-anchor="end">Theo slide USTH 15–16</text>
+
+  <!-- Vòng nhấn ô đang hoạt động -->
+  <rect class="ring" x="66" y="326" width="158" height="72" rx="10" style="animation-delay:0s"/>
+  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:2s"/>
+  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:4s"/>
+  <rect class="ring" x="466" y="126" width="168" height="72" rx="10" style="animation-delay:6s"/>
+  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:8s"/>
+  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:10s"/>
+  <rect class="ring" x="1026" y="326" width="168" height="72" rx="10" style="animation-delay:12s"/>
+
+  <!-- Token: một process đi hết vòng đời -->
+  <circle class="tok" cx="145" cy="330" r="9" fill="#f5b83d" stroke="#0f1626" stroke-width="2"/>
+</svg>

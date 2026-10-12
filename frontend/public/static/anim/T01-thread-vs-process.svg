@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t01-title t01-desc">
+<title id="t01-title">Thread và process: cái gì riêng, cái gì chung</title>
+<desc id="t01-desc">Bên trái: một process có ba thread dùng chung code, data, heap và file descriptor, mỗi thread giữ riêng stack và registers. Bên phải: hai process tách rời, mỗi process một bản bộ nhớ riêng. Vòng lặp 16 giây, 8 bước giữ 1,8 giây mỗi bước theo thứ tự: vùng dùng chung, thread 1, thread 2, thread 3, process 4821, process 4822, kết luận chia sẻ, kết luận nhân bản.</desc>
+<style>
+  text{fill:#e8edf7;font-family:'Segoe UI',system-ui,sans-serif}
+  .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
+  .h1{font-size:25px;font-weight:600}
+  .sub{font-size:14px;fill:#93a0bc}
+  .ph{font-size:16px;font-weight:600}
+  .cap{font-size:12.5px;fill:#5b6886}
+  .bd{font-size:13px;fill:#93a0bc}
+  .chip{font-size:13px}
+  .ring{fill:none;stroke-width:2.5;opacity:0}
+  @keyframes pulse{0%{opacity:0}0.5%{opacity:1}11.5%{opacity:1}12.2%{opacity:0}100%{opacity:0}}
+  .ring{animation:pulse 16s linear infinite}
+  .s1{animation-delay:0s}.s2{animation-delay:2s}.s3{animation-delay:4s}.s4{animation-delay:6s}
+  .s5{animation-delay:8s}.s6{animation-delay:10s}.s7{animation-delay:12s}.s8{animation-delay:14s}
+  @media (prefers-reduced-motion: reduce){*{animation:none !important}}
+</style>
+<rect width="1280" height="640" fill="#0f1626"/>
+
+<text class="h1" x="40" y="50">Thread và process: cái gì riêng, cái gì chung</text>
+<text class="sub" x="40" y="78">Mọi thread trong một process dùng chung code · data · heap · file descriptor. Riêng của mỗi thread chỉ có stack và registers (PC).</text>
+
+<!-- ===== PANEL TRAI: 1 process, 3 thread ===== -->
+<rect x="40" y="100" width="600" height="400" rx="10" fill="#162036" stroke="#273352"/>
+<text class="ph" x="60" y="130" fill="#79d3ec">1 process · 3 thread — «resource sharing»</text>
+
+<rect x="60" y="144" width="560" height="92" rx="8" fill="#16233c" stroke="#30406a"/>
+<text class="cap" x="72" y="166">DÙNG CHUNG CHO CẢ PROCESS</text>
+<rect x="72" y="184" width="125" height="40" rx="6" fill="#1b2a47" stroke="#4c9bff"/>
+<text class="chip" x="134" y="209" text-anchor="middle" fill="#9cc6ff">code (text)</text>
+<rect x="209" y="184" width="125" height="40" rx="6" fill="#1b2a47" stroke="#4c9bff"/>
+<text class="chip" x="271" y="209" text-anchor="middle" fill="#9cc6ff">data</text>
+<rect x="346" y="184" width="125" height="40" rx="6" fill="#1b2a47" stroke="#4c9bff"/>
+<text class="chip" x="408" y="209" text-anchor="middle" fill="#9cc6ff">heap</text>
+<rect x="483" y="184" width="125" height="40" rx="6" fill="#1b2a47" stroke="#4c9bff"/>
+<text class="chip" x="545" y="209" text-anchor="middle" fill="#9cc6ff">file descriptor</text>
+<rect class="ring s1" x="64" y="148" width="552" height="84" rx="7" stroke="#4c9bff"/>
+
+<!-- thread 1 -->
+<rect x="60" y="252" width="176" height="180" rx="8" fill="#141d33" stroke="#2c3a5c"/>
+<text class="chip" x="148" y="276" text-anchor="middle" font-weight="600">Thread 1</text>
+<rect x="74" y="288" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="148" y="309" text-anchor="middle" fill="#f4a274">stack</text>
+<rect x="74" y="328" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="148" y="349" text-anchor="middle" fill="#f4a274">registers · PC</text>
+<path d="M100 372 C 114 386 86 400 100 414 C 110 424 92 430 100 440" fill="none" stroke="#93a0bc" stroke-width="1.6"/>
+<text class="cap" x="124" y="408">luồng chạy</text>
+<rect class="ring s2" x="64" y="256" width="168" height="172" rx="7" stroke="#f4a274"/>
+
+<!-- thread 2 -->
+<rect x="252" y="252" width="176" height="180" rx="8" fill="#141d33" stroke="#2c3a5c"/>
+<text class="chip" x="340" y="276" text-anchor="middle" font-weight="600">Thread 2</text>
+<rect x="266" y="288" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="340" y="309" text-anchor="middle" fill="#f4a274">stack</text>
+<rect x="266" y="328" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="340" y="349" text-anchor="middle" fill="#f4a274">registers · PC</text>
+<path d="M292 372 C 306 386 278 400 292 414 C 302 424 284 430 292 440" fill="none" stroke="#93a0bc" stroke-width="1.6"/>
+<text class="cap" x="316" y="408">luồng chạy</text>
+<rect class="ring s3" x="256" y="256" width="168" height="172" rx="7" stroke="#f4a274"/>
+
+<!-- thread 3 -->
+<rect x="444" y="252" width="176" height="180" rx="8" fill="#141d33" stroke="#2c3a5c"/>
+<text class="chip" x="532" y="276" text-anchor="middle" font-weight="600">Thread 3</text>
+<rect x="458" y="288" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="532" y="309" text-anchor="middle" fill="#f4a274">stack</text>
+<rect x="458" y="328" width="148" height="32" rx="5" fill="#2a2119" stroke="#f4a274"/>
+<text class="chip" x="532" y="349" text-anchor="middle" fill="#f4a274">registers · PC</text>
+<path d="M484 372 C 498 386 470 400 484 414 C 494 424 476 430 484 440" fill="none" stroke="#93a0bc" stroke-width="1.6"/>
+<text class="cap" x="508" y="408">luồng chạy</text>
+<rect class="ring s4" x="448" y="256" width="168" height="172" rx="7" stroke="#f4a274"/>
+
+<text class="bd" x="60" y="462">Riêng: stack · stack pointer · program counter · registers · chính sách lập lịch (SL 65)</text>
+<text class="cap" x="60" y="483">Tạo thread rẻ, nhưng sửa cùng một biến thì phải khoá — xem T05.</text>
+
+<!-- ===== PANEL PHAI: nhieu process ===== -->
+<rect x="664" y="100" width="576" height="400" rx="10" fill="#162036" stroke="#273352"/>
+<text class="ph" x="684" y="130" fill="#c9a2ff">2 process (fork) — «resource cloning»</text>
+
+<rect x="684" y="144" width="250" height="288" rx="8" fill="#141d33" stroke="#2c3a5c"/>
+<text class="chip" x="809" y="170" text-anchor="middle" font-weight="600">Process · PID 4821</text>
+<rect x="698" y="188" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="809" y="211" text-anchor="middle" fill="#c9a2ff">code (text)</text>
+<rect x="698" y="232" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="809" y="255" text-anchor="middle" fill="#c9a2ff">data</text>
+<rect x="698" y="276" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="809" y="299" text-anchor="middle" fill="#c9a2ff">heap</text>
+<rect x="698" y="320" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="809" y="343" text-anchor="middle" fill="#c9a2ff">stack</text>
+<rect x="698" y="364" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="809" y="387" text-anchor="middle" fill="#c9a2ff">registers · PC</text>
+<text class="cap" x="809" y="419" text-anchor="middle">một bản bộ nhớ riêng</text>
+<rect class="ring s5" x="688" y="148" width="242" height="280" rx="7" stroke="#c9a2ff"/>
+
+<rect x="970" y="144" width="250" height="288" rx="8" fill="#141d33" stroke="#2c3a5c"/>
+<text class="chip" x="1095" y="170" text-anchor="middle" font-weight="600">Process · PID 4822</text>
+<rect x="984" y="188" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="1095" y="211" text-anchor="middle" fill="#c9a2ff">code (text)</text>
+<rect x="984" y="232" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="1095" y="255" text-anchor="middle" fill="#c9a2ff">data</text>
+<rect x="984" y="276" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="1095" y="299" text-anchor="middle" fill="#c9a2ff">heap</text>
+<rect x="984" y="320" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="1095" y="343" text-anchor="middle" fill="#c9a2ff">stack</text>
+<rect x="984" y="364" width="222" height="36" rx="5" fill="#231c3a" stroke="#c9a2ff"/>
+<text class="chip" x="1095" y="387" text-anchor="middle" fill="#c9a2ff">registers · PC</text>
+<text class="cap" x="1095" y="419" text-anchor="middle">một bản bộ nhớ riêng</text>
+<rect class="ring s6" x="974" y="148" width="242" height="280" rx="7" stroke="#c9a2ff"/>
+
+<text class="bd" x="684" y="462">Hai process KHÔNG thấy biến của nhau: muốn trao đổi phải qua IPC (Queue, Pipe).</text>
+<text class="cap" x="684" y="483">fork() nhân bản tài nguyên — tốn hơn nhưng lỗi của process này không đổ sang process kia.</text>
+
+<!-- ===== DAI KET LUAN ===== -->
+<rect x="40" y="520" width="600" height="72" rx="8" fill="#162036" stroke="#273352"/>
+<text class="chip" x="60" y="546" font-weight="600" fill="#9fd88f">Thread = chia sẻ tài nguyên</text>
+<text class="bd" x="60" y="568">Đổi một biến toàn cục là cả nhóm thấy ngay — nhanh, nhưng dễ tranh chấp.</text>
+<rect class="ring s7" x="44" y="524" width="592" height="64" rx="7" stroke="#9fd88f"/>
+
+<rect x="664" y="520" width="576" height="72" rx="8" fill="#162036" stroke="#273352"/>
+<text class="chip" x="684" y="546" font-weight="600" fill="#f5b83d">Process = nhân bản tài nguyên</text>
+<text class="bd" x="684" y="568">Cách ly tốt, vượt được GIL (T04), nhưng chuyển dữ liệu phải đóng gói.</text>
+<rect class="ring s8" x="668" y="524" width="568" height="64" rx="7" stroke="#f5b83d"/>
+
+<text class="cap" x="40" y="616">Nguồn: slide USTH 61–65 (sơ đồ bộ nhớ), 71–72 («resource cloning» vs «resource sharing»)</text>
+</svg>

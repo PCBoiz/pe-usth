@@ -14,7 +14,8 @@
       "kind": "pe-v4-advanced",
       "filename": "python-learning-data.json#T03",
       "parser": "pe-v4/build_advanced",
-      "importedAt": "2026-10-12T00:00:00+00:00"
+      "importedAt": "2026-10-12T00:00:00+00:00",
+      "slides": "SL 97-102"
     },
     "step_1": {
       "brief": {
@@ -33,6 +34,44 @@
           "parallel_sum([[1, 2, 3], [10, 20]]) → 36"
         ],
         "reflect": "Vì sao không tính tổng ngay trong __init__?"
+      },
+      "theory": [
+        {
+          "title": "Định nghĩa: hai cách tạo thread",
+          "body": "Slide dạy cách OOP trước: định nghĩa một class con của threading.Thread, override run() — run() chính là việc sẽ chạy trong thread — và [tuỳ chọn] viết __init__() để nhận tham số. Cách Thread(target=hàm) nằm ở phần Extras, slide gọi là \"simple threading without subclassing\". Hai cách tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả của riêng nó."
+        },
+        {
+          "title": "Ví dụ trong slide",
+          "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10) — đối số đi vào __init__ — rồi .start() không đối số, rồi .join().",
+          "bullets": [
+            "threading.Thread.__init__(self) và super().__init__() là cùng một việc",
+            "Bỏ lời gọi đó thì start() hỏng: trạng thái nội bộ của Thread chưa được dựng"
+          ]
+        },
+        {
+          "title": "Dùng ở đâu",
+          "bullets": [
+            "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm riêng",
+            "Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()",
+            "Thread không trả giá trị — không có chỗ nào nhận được return của run()",
+            "Việc một lần, không trạng thái thì target=hàm gọn hơn; đừng dựng class cho có"
+          ]
+        },
+        {
+          "title": "Đọc sơ đồ",
+          "body": "Bên trái là class: __init__ nhận tham số, gọi super().__init__() rồi gán các self.<thuộc tính>; run() đọc chúng và ghi kết quả ngược lại vào self. Mũi tên giữa hình là điểm dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run() — start() là người gọi run(), không ai gọi run() bằng tay. Bên phải: hai instance là hai object riêng, nên hai self.total không lẫn.",
+          "figure": {
+            "src": "/static/anim/T03-subclass-thread.svg",
+            "caption": "Subclass Thread: __init__ nhận dữ liệu, run() là việc của thread",
+            "alt": "Class con của Thread với __init__ gọi super().__init__() và run() ghi kết quả vào self; start() ở thread cha kích hoạt run() chạy trong thread con"
+          }
+        }
+      ],
+      "figure": {
+        "name": "T03-subclass-thread",
+        "src": "/static/anim/T03-subclass-thread.svg",
+        "caption": "Subclass Thread: __init__ nhận dữ liệu, run() là việc của thread",
+        "alt": "Class con của Thread với __init__ gọi super().__init__() và run() ghi kết quả vào self; start() ở thread cha kích hoạt run() chạy trong thread con"
       },
       "context": {
         "title": "Tạo worker có trạng thái riêng bằng class con của threading.Thread.",
