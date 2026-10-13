@@ -28,6 +28,7 @@
  * Sửa seed thì phải sửa cả file này (xem bẫy "hai nguồn danh sách bài" trong
  * AGENTS.md — đây là nguồn thứ ba của cùng một loại lệch).
  */
+import type { GlyphKind } from '@/components/CourseGlyph';
 import CURRICULA_JSON from '@/lib/curricula.json';
 
 type Curriculum = { modules?: { title: string; lessons: string[] }[] };
@@ -60,6 +61,8 @@ export type CatalogCourse = {
   accent: string;
   /** 1–3 ký tự in trên biểu tượng. */
   mark: string;
+  /** Hình biểu tượng riêng (xem CourseGlyph); bỏ trống thì dùng hình mặc định. */
+  icon?: GlyphKind;
   /** Trang bài học của khóa. */
   lessonUrl: string;
 };
@@ -93,9 +96,10 @@ export const COURSES: CatalogCourse[] = [
     lessons: lessonCount('python_advanced', 48),
     rating: 4.8,
     image: '/static/images/python.webp',
-    color: '#7C3AED',
-    accent: '#F472B6',
+    color: '#2563eb',
+    accent: '#e5334b',
     mark: 'Py+',
+    icon: 'python',
     lessonUrl: '/lesson/python_advanced',
   },
 ];
@@ -116,17 +120,19 @@ export type CatalogTool = {
   color: string;
   accent: string;
   mark: string;
+  icon?: GlyphKind;
 };
 
 const IDE_TOOL: CatalogTool = {
   id: 'ide',
   label: 'Python IDE',
   href: '/ide',
-  // Xanh lục + vàng chanh: khác hẳn tím/hồng của khoá Python (thẻ duy nhất còn
-  // lại trong lưới) nên hai biểu tượng không lẫn vào nhau.
-  color: '#059669',
-  accent: '#A3E635',
+  // Xanh navy đậm + xanh sáng: cùng bộ xanh–đỏ nhưng tối hơn khoá Python (xanh +
+  // đỏ) nên hai biểu tượng vẫn phân biệt được ngay.
+  color: '#111a2e',
+  accent: '#4f8dff',
   mark: 'IDE',
+  icon: 'ide',
 };
 
 /**

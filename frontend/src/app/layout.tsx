@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 
 import { ALL_PRECEDENCES } from '@/components/PageStyles';
+import { withAssetVersion } from '@/lib/assetVersion';
 
 // Root layout TỐI THIỂU — không import CSS global nào ở đây.
 // Mỗi page/layout con tự import ĐÚNG tổ hợp CSS của template gốc
@@ -24,7 +25,7 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="vi">
+    <html lang="vi" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         {/* Template gốc nào cũng có meta csrf-token; course_detail.js/course_db_design.js
@@ -144,6 +145,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           }}
         />
         {children}
+        {/* Hiệu ứng chuột xanh–đỏ (đèn bám con trỏ, nghiêng 3D ô khóa học). Chỉ đổi biến CSS,
+            không chèn DOM nên không gây lỗi hydration; tự tắt trên cảm ứng/giảm chuyển động. */}
+        <script src={withAssetVersion('/static/js/edu-fx.js')} defer />
       </body>
     </html>
   );
