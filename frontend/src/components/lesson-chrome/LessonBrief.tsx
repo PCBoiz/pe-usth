@@ -14,6 +14,12 @@ export interface LessonBriefProps {
   task: string;
   predict?: string;
   code?: string;
+  /**
+   * Mã gửi sang IDE — KHÁC `code` ở trên, vốn là bản rút gọn để đọc (thân hàm
+   * là `...`), mở trong IDE bấm Chạy thì không in gì. Xem lib/ide-brief-code.ts.
+   * Không truyền → không hiện nút.
+   */
+  tryCode?: string;
   filename?: string;
   langTag?: string;
   tests?: string[];
@@ -27,6 +33,7 @@ export default function LessonBrief({
   task,
   predict,
   code,
+  tryCode,
   filename = 'main.py',
   langTag = 'PYTHON 3',
   tests = [],
@@ -68,7 +75,7 @@ export default function LessonBrief({
       )}
       {/* Khung main.py là thứ người học sẽ gõ: cho họ một chỗ gõ thử ngay, khỏi
           phải bôi đen chép tay sang IDE. Nút tự ẩn khi bài không có khung mã. */}
-      <TryItButton code={code} />
+      <TryItButton code={tryCode} />
 
       {tests.length > 0 && (
         <section className={styles.tests}>

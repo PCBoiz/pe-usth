@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t04-title t04-desc">
 <title id="t04-title">GIL: nhiều thread, một trình thông dịch</title>
-<desc id="t04-desc">Bên trái, việc nặng CPU: các lát thời gian trên một nhân luân phiên T1, T2, T1, T2 vì mỗi lát đều phải giữ GIL; máy bốn nhân thì ba nhân còn lại nằm không; hai thread tốn đúng 4,0 giây như một thread. Bên phải, việc chờ I/O: thread nhả GIL trong suốt lúc chờ nên thread kia chạy chen vào, hai thread chỉ tốn 2,1 giây thay vì 4,0 giây. Vòng lặp 18 giây, 7 bước, hai bước then chốt giữ 3,3 giây: bước kết quả CPU-bound và bước T1 nhả GIL cho T2.</desc>
+<desc id="t04-desc">Bên trái, việc nặng CPU: các lát thời gian trên một nhân luân phiên T1, T2, T1, T2 vì mỗi lát đều phải giữ GIL; máy bốn nhân thì ba nhân còn lại nằm không; hai thread tốn đúng 4,0 giây như một thread. Bên phải, việc chờ I/O: thread nhả GIL trong suốt lúc chờ nên thread kia chạy chen vào, hai thread chỉ tốn 2,1 giây thay vì 4,0 giây. Vòng lặp 12 giây, 7 bước, hai bước then chốt giữ 2,2 giây: bước kết quả CPU-bound và bước T1 nhả GIL cho T2.</desc>
 <defs>
 <pattern id="t04wait" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
   <rect width="8" height="8" fill="#1a2b22"/>
@@ -22,7 +22,10 @@
   .ph{font-size:16px;font-weight:600}
   .cap{font-size:12px;fill:#5b6886}
   .bd{font-size:13px;fill:#93a0bc}
-  .ring{fill:none;stroke-width:2.5;opacity:0;animation-duration:18s;animation-timing-function:linear;animation-iteration-count:infinite}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .ring{fill:none;stroke-width:2.5;opacity:0;animation-duration:12s;animation-timing-function:linear;animation-iteration-count:infinite}
   .k1{animation-name:k1}.k2{animation-name:k2}.k3{animation-name:k3}.k4{animation-name:k4}
   .k5{animation-name:k5}.k6{animation-name:k6}.k7{animation-name:k7}
   @keyframes k1{0%{opacity:1}11.7%{opacity:1}12.2%{opacity:0}100%{opacity:0}}

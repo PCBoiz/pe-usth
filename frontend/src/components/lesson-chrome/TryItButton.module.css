@@ -50,21 +50,9 @@
   outline-offset: 3px;
 }
 
-/* Nói trước là sẽ mở tab mới: người học đang làm bài, bị nhảy trang là mất
-   mạch. Câu này cũng là lời hứa rằng tiến độ không mất. */
-.note {
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--edu-t3);
-}
-
-/* Điện thoại: nút xuống dòng riêng cho đủ chỗ, câu ghi chú nằm dưới. */
+/* Điện thoại: thu khoảng cách, nút vẫn đứng một mình trên dòng của nó. */
 @media (max-width: 560px) {
   .row {
     gap: 6px;
-  }
-
-  .note {
-    flex-basis: 100%;
   }
 }

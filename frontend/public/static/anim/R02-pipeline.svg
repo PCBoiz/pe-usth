@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="r02-title r02-desc">
 <title id="r02-title">Sổ điểm mini: GUI, pickle+gzip, thread và subprocess</title>
-<desc id="r02-desc">Vòng lặp 18 giây, 6 chặng giữ mỗi chặng 3 giây: (1) bấm Lưu, App dựng một Thread; (2) thread nền ghi marks bằng gzip.open và pickle.dump — khác LUỒNG nhưng cùng tiến trình; (3) marks.dat được ghi xong và Queue done nhận ("ok", 12); (4) bấm Báo cáo, subprocess.run mở report.py — khác TIẾN TRÌNH, bộ nhớ riêng, dữ liệu đi qua stdin; (5) report.py trả stdout; (6) root.after đọc Queue và stdout rồi mới gọi .config() trên widget. Hai đường viền đứt phân biệt ranh giới luồng với ranh giới tiến trình. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
+<desc id="r02-desc">Vòng lặp 12 giây, 6 chặng giữ mỗi chặng 2 giây: (1) bấm Lưu, App dựng một Thread; (2) thread nền ghi marks bằng gzip.open và pickle.dump — khác LUỒNG nhưng cùng tiến trình; (3) marks.dat được ghi xong và Queue done nhận ("ok", 12); (4) bấm Báo cáo, subprocess.run mở report.py — khác TIẾN TRÌNH, bộ nhớ riêng, dữ liệu đi qua stdin; (5) report.py trả stdout; (6) root.after đọc Queue và stdout rồi mới gọi .config() trên widget. Hai đường viền đứt phân biệt ranh giới luồng với ranh giới tiến trình. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:26px;font-weight:600}
@@ -18,10 +18,13 @@
   .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
   .glow{fill:none;stroke-width:2.6;opacity:0}
 
-  /* 6 chặng × 3 giây. Bật tức thời rồi giữ — hoạt hình chỉ nói THỨ TỰ dữ liệu đi. */
-  .s1{animation:k1 18s linear infinite}.s2{animation:k2 18s linear infinite}
-  .s3{animation:k3 18s linear infinite}.s4{animation:k4 18s linear infinite}
-  .s5{animation:k5 18s linear infinite}.s6{animation:k6 18s linear infinite}
+  /* 6 chặng × 2 giây. Bật tức thời rồi giữ — hoạt hình chỉ nói THỨ TỰ dữ liệu đi. */
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:k1 12s linear infinite}.s2{animation:k2 12s linear infinite}
+  .s3{animation:k3 12s linear infinite}.s4{animation:k4 12s linear infinite}
+  .s5{animation:k5 12s linear infinite}.s6{animation:k6 12s linear infinite}
   @keyframes k1{0%,16.2%{opacity:1}16.7%,100%{opacity:0}}
   @keyframes k2{0%,16.2%{opacity:0}16.7%,32.8%{opacity:1}33.3%,100%{opacity:0}}
   @keyframes k3{0%,32.8%{opacity:0}33.3%,49.5%{opacity:1}50%,100%{opacity:0}}

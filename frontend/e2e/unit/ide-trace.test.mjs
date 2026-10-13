@@ -26,10 +26,14 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
+  AUTOPLAY_INTERVAL_MS,
   changedNames,
   formatValue,
   nextIndex,
   outputAt,
+  outputDelta,
+  stackDelta,
+  stepMotion,
   stopNotice,
 } from '../../src/lib/trace.ts';
 
@@ -278,4 +282,177 @@ test('nextIndex: không bao giờ ra ngoài mảng', () => {
   // Vết rỗng: mọi phím bấm vẫn phải cho ra một chỉ số hợp lệ.
   assert.equal(nextIndex(0, 0, 'next'), 0);
   assert.equal(nextIndex(0, 0, 'last'), 0);
+});
+
+/* ───────── Chuyển động: quyết định "hiện hiệu ứng nào" ─────────
+ *
+ * Vì sao phần này cũng phải có test: ba hàm dưới đây là chỗ DUY NHẤT quyết
+ * định người học thấy được "vừa có cái gì thay đổi". Chúng nằm trong trace.ts
+ * đúng vì `node --test` không bóc được JSX — logic để trong .tsx là logic
+ * không ai kiểm được.
+ *
+ * Bằng chứng bộ test này bắt được lỗi thật (gỡ bản sửa ra, test phải trượt):
+ *  - stepMotion phân loại theo `event` thay vì theo ĐỘ SÂU stack → 1 ca trượt.
+ *  - stepMotion bỏ trần MOTION_MAX_MS (nhảy xa thì phải chờ) → 1 ca trượt.
+ *  - stepMotion bỏ phần rút theo `paceMs` (hiệu ứng chồng lên nhau khi bấm
+ *    nhanh) → 1 ca trượt.
+ *  - stepMotion bỏ `reduced` (không tôn trọng prefers-reduced-motion) → 1 ca trượt.
+ *  - stackDelta tính độ sâu bằng frames.length, bỏ framesElided → 1 ca trượt.
+ *  - stackDelta so bằng tên hàm thay vì độ sâu (đệ quy) → 2 ca trượt.
+ *  - outputDelta coi mọi đầu ra là "vừa in" (không so với bước trước) → 2 ca trượt.
+ */
+
+/** Một khung: tên hàm, dòng đang đứng, biến cục bộ. */
+function frame(name, line, locals = []) {
+  return { name, line, locals };
+}
+
+test('stepMotion: xuống dòng kế tiếp là nhảy GẦN — nhanh và không bóp con trỏ', () => {
+  const m = stepMotion(step({ line: 3 }), step({ line: 4 }));
+  assert.equal(m.kind, 'step');
+  assert.equal(m.lines, 1);
+  assert.equal(m.travel, false);
+  assert.ok(m.durationMs >= 60 && m.durationMs <= 160, `${m.durationMs}ms`);
+});
+
+test('stepMotion: vòng lặp quay đầu là nhảy XA — vẽ khác, đi lâu hơn một nhịp', () => {
+  const near = stepMotion(step({ line: 3 }), step({ line: 4 }));
+  const back = stepMotion(step({ line: 9 }), step({ line: 3 }));
+  assert.equal(back.kind, 'back');
+  assert.equal(back.travel, true);
+  assert.ok(back.durationMs > near.durationMs, `${back.durationMs} vs ${near.durationMs}`);
+  // Nhảy xa trong cùng hàm (if/else, break) cũng là "travel" nhưng không phải
+  // quay đầu — hai thứ này người học đọc ra khác nhau.
+  assert.equal(stepMotion(step({ line: 3 }), step({ line: 12 })).kind, 'jump');
+});
+
+test('stepMotion: vào hàm / về hàm gọi tính theo ĐỘ SÂU stack, không theo event', () => {
+  const caller = step({ line: 9, frames: [frame('<module>', 9)] });
+  const inside = step({
+    line: 2,
+    event: 'call',
+    frames: [frame('<module>', 9), frame('cong', 2)],
+  });
+  assert.equal(stepMotion(caller, inside).kind, 'call');
+  assert.equal(stepMotion(inside, caller).kind, 'return');
+
+  // Bẫy thật: sự kiện 'return' còn ĐỨNG TRONG hàm bị gọi (độ sâu CHƯA giảm) —
+  // việc về hàm gọi xảy ra ở bước sau. Lấy theo event thì hiệu ứng "bật khung
+  // ra" chạy sớm một bước, tức là sai chỗ người học đang nhìn.
+  const returning = step({
+    line: 3,
+    event: 'return',
+    frames: [frame('<module>', 9), frame('cong', 3)],
+  });
+  assert.equal(stepMotion(inside, returning).kind, 'step');
+});
+
+test('stepMotion: đứng nguyên một dòng thì không có gì để trượt', () => {
+  const m = stepMotion(step({ line: 5 }), step({ line: 5 }));
+  assert.equal(m.kind, 'hold');
+  assert.equal(m.durationMs, 0);
+});
+
+test('stepMotion: bước đầu tiên đặt con trỏ vào chỗ, không trượt từ đâu cả', () => {
+  const m = stepMotion(undefined, step({ line: 7 }));
+  assert.equal(m.kind, 'none');
+  assert.equal(m.durationMs, 0);
+});
+
+test('stepMotion: prefers-reduced-motion thì thời lượng về 0', () => {
+  for (const [from, to] of [[3, 4], [9, 3], [3, 40]]) {
+    const m = stepMotion(step({ line: from }), step({ line: to }), { reduced: true });
+    assert.equal(m.durationMs, 0, `${from}->${to}`);
+  }
+});
+
+test('stepMotion: nhảy 500 dòng vẫn không bắt người dùng chờ', () => {
+  const m = stepMotion(step({ line: 1 }), step({ line: 500 }));
+  assert.ok(m.durationMs <= 220, `${m.durationMs}ms`);
+});
+
+test('stepMotion: bấm nhanh thì hiệu ứng rút lại, không chồng lên bước sau', () => {
+  // Giữ phím →: hai bước cách nhau ~40 ms. Hiệu ứng 200 ms sẽ xếp hàng sau con
+  // trỏ và người học thấy giật.
+  const fast = stepMotion(step({ line: 2 }), step({ line: 20 }), { paceMs: 40 });
+  assert.ok(fast.durationMs <= 60, `${fast.durationMs}ms`);
+  // Nhịp tự chạy: ngược lại, phải đủ chỗ cho hiệu ứng chạy xong trước bước sau.
+  const auto = stepMotion(step({ line: 2 }), step({ line: 20 }), {
+    paceMs: AUTOPLAY_INTERVAL_MS,
+  });
+  assert.ok(
+    auto.durationMs < AUTOPLAY_INTERVAL_MS,
+    `${auto.durationMs}ms >= nhịp ${AUTOPLAY_INTERVAL_MS}ms`,
+  );
+});
+
+test('stackDelta: gọi hàm thì ĐẨY VÀO khung mới, không bật ra khung nào', () => {
+  const prev = step({ frames: [frame('<module>', 9)] });
+  const next = step({ frames: [frame('<module>', 9), frame('cong', 2)] });
+  const d = stackDelta(prev, next);
+  assert.deepEqual(d.pushed.map((f) => f.name), ['cong']);
+  assert.deepEqual(d.popped, []);
+});
+
+test('stackDelta: trả về thì BẬT RA khung vừa rời (lấy được từ bước TRƯỚC)', () => {
+  const prev = step({ frames: [frame('<module>', 9), frame('cong', 3)] });
+  const next = step({ frames: [frame('<module>', 9)] });
+  const d = stackDelta(prev, next);
+  assert.deepEqual(d.pushed, []);
+  // Khung này không còn trong bước hiện tại — không lấy từ prev thì không vẽ
+  // được cú bật ra, mà đó là nửa quan trọng của chữ "stack".
+  assert.deepEqual(d.popped.map((f) => f.name), ['cong']);
+  assert.equal(d.popped[0].line, 3);
+});
+
+test('stackDelta: cùng độ sâu, hoặc chưa có bước trước, thì không có gì động', () => {
+  const a = step({ frames: [frame('<module>', 1), frame('cong', 2)] });
+  const b = step({ frames: [frame('<module>', 1), frame('cong', 3)] });
+  assert.deepEqual(stackDelta(a, b), { pushed: [], popped: [] });
+  assert.deepEqual(stackDelta(undefined, b), { pushed: [], popped: [] });
+});
+
+test('stackDelta: đệ quy cùng tên hàm vẫn đếm đúng khung vào/ra', () => {
+  const d1 = step({ frames: [frame('<module>', 9), frame('giaithua', 4)] });
+  const d2 = step({
+    frames: [frame('<module>', 9), frame('giaithua', 4), frame('giaithua', 4)],
+  });
+  // Cùng tên, cùng dòng — so bằng tên thì ra "không có gì đổi", trong khi đây
+  // đúng là chỗ người học cần thấy stack dày thêm.
+  assert.equal(stackDelta(d1, d2).pushed.length, 1);
+  assert.equal(stackDelta(d2, d1).popped.length, 1);
+});
+
+test('stackDelta: đệ quy sâu bị cắt khung ở giữa thì tính theo ĐỘ SÂU THẬT', () => {
+  // framesElided: tracer chỉ gửi về vài khung đầu/cuối. Đếm bằng frames.length
+  // thì stack dày thêm 1 mà vẫn ra "không đổi".
+  const prev = step({ frames: [frame('<module>', 9), frame('dem', 4)], framesElided: 30 });
+  const next = step({ frames: [frame('<module>', 9), frame('dem', 4)], framesElided: 31 });
+  const d = stackDelta(prev, next);
+  assert.deepEqual(d.popped, []);
+  assert.equal(d.pushed.length, 1);
+});
+
+test('outputDelta: tách phần VỪA in ra khỏi phần đã thấy ở bước trước', () => {
+  const d = doc({
+    stdout: '0\n1\n2\n',
+    steps: [step({ i: 0, out: 0 }), step({ i: 1, out: 2 }), step({ i: 2, out: 4 })],
+  });
+  assert.deepEqual(outputDelta(d, 1), { seen: '', fresh: '0\n' });
+  assert.deepEqual(outputDelta(d, 2), { seen: '0\n', fresh: '1\n' });
+  // Bước đầu: không có bước trước để so, nên không có gì "vừa in".
+  assert.deepEqual(outputDelta(d, 0), { seen: '', fresh: '' });
+});
+
+test('outputDelta: kéo thanh trượt LÙI thì không có dòng nào vừa in', () => {
+  const d = doc({
+    stdout: '0\n1\n',
+    steps: [step({ i: 0, out: 2 }), step({ i: 1, out: 0 })],
+  });
+  assert.deepEqual(outputDelta(d, 1), { seen: '', fresh: '' });
+});
+
+test('outputDelta: không có bước nào (lỗi cú pháp) thì không tô cả khối đầu ra', () => {
+  const d = doc({ stdout: 'rac\n', steps: [] });
+  assert.deepEqual(outputDelta(d, 0), { seen: 'rac\n', fresh: '' });
 });

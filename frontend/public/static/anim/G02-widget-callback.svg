@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g02-title g02-desc">
 <title id="g02-title">Button và callback: lúc dựng khác lúc bấm</title>
-<desc id="g02-desc">Vòng lặp 16 giây, 6 bước giữ mỗi bước khoảng 2,7 giây: (1) lúc dựng, command=onClick trao THAM CHIẾU hàm cho Button chứ không gọi; (2) người dùng bấm chuột; (3) mainloop lấy sự kiện Button-1 khỏi hàng đợi; (4) Tk gọi onClick() trên luồng giao diện; (5) onClick gọi label.config đổi chữ; (6) giữ lâu trên Label đã đổi chữ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: Label đã mang chữ mới.</desc>
+<desc id="g02-desc">Vòng lặp 10,7 giây, 6 bước giữ mỗi bước khoảng 1,8 giây: (1) lúc dựng, command=onClick trao THAM CHIẾU hàm cho Button chứ không gọi; (2) người dùng bấm chuột; (3) mainloop lấy sự kiện Button-1 khỏi hàng đợi; (4) Tk gọi onClick() trên luồng giao diện; (5) onClick gọi label.config đổi chữ; (6) giữ lâu trên Label đã đổi chữ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: Label đã mang chữ mới.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:27px;font-weight:600}
@@ -17,13 +17,16 @@
   .bar{fill:#1d2a46}
   .glow{fill:none;stroke-width:2.6;opacity:0}
 
-  /* Snap ~80ms rồi GIỮ 2,7s: người học kịp đọc từng chặng. Chỉ làm rõ THỨ TỰ. */
-  .s1{animation:k1 16s linear infinite}
-  .s2{animation:k2 16s linear infinite}
-  .s3{animation:k3 16s linear infinite}
-  .s4{animation:k4 16s linear infinite}
-  .s5{animation:k5 16s linear infinite}
-  .s6{animation:k6 16s linear infinite}
+  /* Snap ~53ms rồi GIỮ 1,8s: người học kịp đọc từng chặng. Chỉ làm rõ THỨ TỰ. */
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:k1 10.67s linear infinite}
+  .s2{animation:k2 10.67s linear infinite}
+  .s3{animation:k3 10.67s linear infinite}
+  .s4{animation:k4 10.67s linear infinite}
+  .s5{animation:k5 10.67s linear infinite}
+  .s6{animation:k6 10.67s linear infinite}
   @keyframes k1{0%,16.2%{opacity:1}16.7%,100%{opacity:0}}
   @keyframes k2{0%,16.2%{opacity:0}16.7%,32.8%{opacity:1}33.3%,100%{opacity:0}}
   @keyframes k3{0%,32.8%{opacity:0}33.3%,49.5%{opacity:1}50%,100%{opacity:0}}

@@ -37,12 +37,11 @@ export default function TryItButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        title="Mở Python IDE ở tab mới, đoạn mã này đã nạp sẵn trong trình soạn thảo"
+        title="Mở Python IDE ở tab mới — bài học giữ nguyên tiến độ, đoạn mã này đã nạp sẵn trong trình soạn thảo"
       >
         {label}
         <span aria-hidden="true">↗</span>
       </a>
-      <span className={styles.note}>Mở tab mới — bài học vẫn giữ nguyên tiến độ.</span>
     </p>
   );
 }

@@ -38,50 +38,13 @@
   align-items: center;
   gap: 6px;
   font-size: 20px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.01em;
   text-decoration: none;
 }
 
-/* Dấu logo: ô bo góc nền gradient thương hiệu, chữ P trắng, quầng sáng. */
-.mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  margin-right: 6px;
-  font-size: 19px;
-  font-weight: 800;
-  color: white;
-  background: var(--edu-g-brand);
-  background-size: 180% 180%;
-  background-position: 0% 0%;
-  border-radius: 12px;
-  box-shadow: var(--edu-brand-glow);
-  transition: transform 0.25s ease, background-position 0.45s ease;
-}
-.brand:hover .mark { transform: rotate(-6deg) scale(1.05); background-position: 100% 100%; }
-.brand:focus-visible,
-.theme:focus-visible {
-  outline: 2px solid var(--edu-accent);
-  outline-offset: 3px;
-  border-radius: 8px;
-}
-
-.brandName,
-.brandAccent {
-  background-size: 160% 100%;
-  background-position: 0% 0%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  transition: background-position 0.45s ease;
-}
-.brandName { background-image: var(--edu-g-blue); }
-.brandAccent { background-image: var(--edu-g-red); }
-.brand:hover .brandName,
-.brand:hover .brandAccent { background-position: 100% 0%; }
+.brandName { color: var(--edu-accent); }
+.brandAccent { color: var(--edu-red); }
 
 .theme {
   display: inline-flex;
@@ -103,11 +66,6 @@
 .sun { display: none; }
 :global(body.dark) .moon { display: none; }
 :global(body.dark) .sun { display: block; }
-
-@media (prefers-reduced-motion: reduce) {
-  .mark, .brandName, .brandAccent { transition: none; }
-  .brand:hover .mark { transform: none; }
-}
 
 @media (max-width: 639.98px) {
   .bar { padding: 16px 16px 14px; }

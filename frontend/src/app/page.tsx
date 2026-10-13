@@ -9,7 +9,7 @@ import type { Metadata } from 'next';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { COURSES, LEVEL_LABEL, TOOLS } from '@/lib/catalog';
-import { feedbackHref } from '@/lib/feedback-link';
+import { feedbackFormHref } from '@/lib/feedback-link';
 
 import CatalogTile from './CatalogTile';
 import styles from './home.module.css';
@@ -18,29 +18,8 @@ export const metadata: Metadata = {
   title: 'Programming EDU — Khóa học',
 };
 
-/**
- * Form khảo sát tester (buổi thử nghiệm USTH 14/10/2026).
- *
- * Vì sao để thẳng trong mã chứ không chỉ đặt biến trên Vercel: đây là địa chỉ
- * CÔNG KHAI — chính nó được phát cho người đến thử — nên không có gì phải giấu,
- * mà biến NEXT_PUBLIC_* lại bị Next thay vào mã lúc BUILD. Đặt biến trên bảng
- * điều khiển vẫn phải deploy lại mới có tác dụng, nên để trong mã thì thêm một
- * thứ được kiểm bởi typecheck/test và bớt một bước làm tay dễ quên.
- *
- * Biến môi trường vẫn ĐÈ được lên hằng này: đổi form (hoặc tạm gỡ thẻ bằng cách
- * đặt một chuỗi rỗng) không cần sửa mã.
- */
-const FEEDBACK_FORM_URL =
-  'https://docs.google.com/forms/d/e/1FAIpQLSf_wcVJLeKO9DnNE8UipvRZlhCvJLpmuKihnpX49DVsSv6KJA/viewform';
-
 export default function HomePage() {
-  // Đọc một lần ở đây vì Next thay thẳng biến NEXT_PUBLIC_* vào mã lúc build:
-  // phải viết nguyên dạng `process.env.NEXT_PUBLIC_FEEDBACK_URL`, không gói
-  // được vào hàm đọc env dùng chung. `??` chứ không `||`: biến đặt thành chuỗi
-  // RỖNG là cố ý tắt thẻ, phải tôn trọng ý đó thay vì rơi về hằng.
-  const feedback = feedbackHref(
-    process.env.NEXT_PUBLIC_FEEDBACK_URL ?? FEEDBACK_FORM_URL,
-  );
+  const feedback = feedbackFormHref();
 
   return (
     <>

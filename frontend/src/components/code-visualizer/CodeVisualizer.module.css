@@ -85,6 +85,29 @@
 }
 @keyframes cv-spin { to { transform: rotate(360deg); } }
 
+/* "Đang chạy", không phải "đã được bao nhiêu phần trăm": không ai biết trước
+   chương trình của người học chạy mất bao lâu. Dải con chạy bằng translateX —
+   đổi width thì trình duyệt layout lại mỗi khung hình. */
+.progress {
+  overflow: hidden;
+  height: 3px;
+  margin: 8px 0 0;
+  background: var(--edu-track-bg);
+  border-radius: 999px;
+}
+.progressBar {
+  display: block;
+  width: 34%;
+  height: 100%;
+  background: var(--edu-accent-grad);
+  border-radius: 999px;
+  animation: cv-progress 1.1s ease-in-out infinite;
+}
+@keyframes cv-progress {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(310%); }
+}
+
 .notice {
   margin: 12px 0 0;
   padding: 10px 14px;
@@ -138,6 +161,12 @@
 }
 .ctrl:hover:not(:disabled) { background: var(--edu-accent-soft); }
 .ctrl:disabled { opacity: 0.45; cursor: default; }
+/* Đang tự chạy: nút phải nói ra là nó đang BẬT, không chỉ đổi ký tự ⏩ -> ⏸. */
+.ctrlOn {
+  background: var(--edu-accent-soft-strong);
+  border-color: var(--edu-accent);
+  color: var(--edu-accent-text);
+}
 
 .scrub {
   flex: 1 1 180px;
@@ -180,23 +209,52 @@
 .sidePane .paneTitle:not(:first-child) { margin-top: 14px; }
 
 .code {
+  /* Chiều cao MỘT dòng, khai báo một chỗ: con trỏ trượt phải cao đúng bằng
+     dòng, nếu lệch thì nó lè ra ngoài dòng đang chạy. 12.5px × 1.6 = 20px. */
+  --cv-line-h: 20px;
+  position: relative;
   max-height: 320px;
   overflow: auto;
   font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
   font-size: 12.5px;
-  line-height: 1.6;
+  line-height: var(--cv-line-h);
+}
+
+/* Con trỏ dòng đang chạy: MỘT phần tử, trượt bằng transform (vị trí do
+   CodeVisualizer.tsx đặt qua Web Animations API — nó phải biết offsetTop của
+   dòng, mà CSS thì không). Vì sao không tô nền từng dòng nữa: đổi nền là nhảy
+   cóc, không có đường đi; và một phần tử trượt bằng transform thì trình duyệt
+   không phải layout lại khung mã ở mỗi khung hình.
+   opacity: 0 lúc đầu — hiệu ứng đầu tiên mở nó ra, nên không nháy ở dòng 1. */
+.cursor {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--cv-line-h);
+  background: var(--edu-accent-soft-strong);
+  box-shadow: inset 2px 0 0 0 var(--edu-accent);
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .line {
   display: flex;
   gap: 6px;
+  /* Có position thì chữ vẽ ĐÈ LÊN con trỏ (cùng z-index, xếp theo thứ tự DOM,
+     con trỏ là phần tử đầu). Không có dòng này thì con trỏ phủ mất chữ. */
+  position: relative;
   border-radius: 4px;
 }
-/* Dòng SẮP chạy. Nền pha từ accent (không có màu mới) + viền trái để vẫn phân
-   biệt được khi người dùng không thấy màu. */
-.lineActive {
-  background: var(--edu-accent-soft-strong);
-  box-shadow: inset 2px 0 0 0 var(--edu-accent);
+/* Dòng SẮP chạy. Nền và viền trái nay do .cursor vẽ; ở đây chỉ còn mũi ▶ —
+   dấu hiệu KHÔNG DÙNG MÀU, cần cho người không phân biệt được màu. */
+.lineActive .lineArrow {
+  animation: cv-arrow 160ms cubic-bezier(.33, 1, .68, 1) both;
+}
+@keyframes cv-arrow {
+  from { opacity: 0; transform: translateX(-4px); }
+  to { opacity: 1; transform: none; }
 }
 
 .lineNo {
@@ -216,6 +274,7 @@
 }
 
 .stack {
+  position: relative; /* mốc cho bóng khung vừa bật ra (.framePopped) */
   margin: 0;
   padding: 0;
   list-style: none;
@@ -236,6 +295,33 @@
   font-weight: 600;
   background: var(--edu-accent-soft);
 }
+/* Gọi hàm: khung mới TRÔI VÀO TỪ DƯỚI (từ phía hàm gọi) và chồng lên đầu danh
+   sách. Trả về: bóng của khung vừa rời đi trôi ngược xuống rồi tắt. Hai hiệu
+   ứng ngược chiều nhau là lý do duy nhất để chữ "stack" có nghĩa với người học
+   — nếu không thì đây chỉ là một danh sách đổi nội dung. */
+.framePushed {
+  animation: cv-frame-in 180ms cubic-bezier(.33, 1, .68, 1) both;
+}
+@keyframes cv-frame-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Nằm ngoài luồng: khung đã rời stack không được chiếm chỗ, nếu không danh sách
+   bên dưới bị đẩy xuống suốt thời gian người học đứng ở bước đó. */
+.framePopped {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  pointer-events: none;
+  animation: cv-frame-out 200ms cubic-bezier(.65, 0, .35, 1) both;
+}
+@keyframes cv-frame-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(12px); }
+}
+
 .frameName { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; }
 .frameLine { font-size: 12px; color: var(--edu-t3); }
 .stackElided {
@@ -257,8 +343,21 @@
   padding: 3px 8px;
   border-radius: 8px;
 }
-/* Biến vừa đổi giá trị: không có dấu này thì mỗi bước trông y như bước trước. */
+/* Biến vừa đổi giá trị: không có dấu này thì mỗi bước trông y như bước trước.
+   Nền giữ nguyên (đứng ở bước nào cũng đọc được "biến này vừa đổi"), còn
+   KHOẢNH KHẮC đổi thì do .varNew nói. */
 .varChanged { background: color-mix(in srgb, orange 18%, transparent); }
+/* Giá trị MỚI thay chỗ giá trị cũ: trôi xuống một nhịp rồi rõ dần. Mắt bắt được
+   ô nào vừa bị thay, trong một panel mà mọi ô đều trông như nhau.
+   inline-block vì transform không ăn trên phần tử inline thuần. */
+.varNew {
+  display: inline-block;
+  animation: cv-value-in 190ms cubic-bezier(.33, 1, .68, 1) both;
+}
+@keyframes cv-value-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
 .varName {
   flex: 0 0 auto;
   max-width: 45%;
@@ -306,16 +405,43 @@
   word-break: break-word;
 }
 .stdout { color: var(--edu-t1); }
+/* Phần đầu ra VỪA được in ở bước này: rõ dần ra (chỉ opacity — span này nằm
+   trong <pre> và có thể chứa dấu xuống dòng, đổi nó thành inline-block để
+   transform được là phá luôn cách <pre> xếp dòng). Nền nhạt thì GIỮ, không
+   animate: đứng lại ở bước nào cũng thấy dòng nào là dòng mới. */
+.freshOut {
+  background: var(--edu-accent-soft-strong);
+  border-radius: 3px;
+  animation: cv-fresh-out 200ms ease-out both;
+}
+@keyframes cv-fresh-out {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
 .stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
 
 /* Dòng đang chạy, tô bên trong Monaco (class do decoration của Monaco gắn). */
 .monacoLine { background: var(--edu-accent-soft-strong); }
 .monacoGlyph { background: var(--edu-accent); }
 
+/* Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì tắt hết, chỉ giữ
+   lại thứ mang THÔNG TIN: con trỏ vẫn nhảy đúng dòng (CodeVisualizer.tsx tự
+   kiểm tra matchMedia rồi đặt thời lượng về 0 — media query không với tới Web
+   Animations API), nền "biến vừa đổi" và nền "vừa in ra" vẫn còn vì chúng là
+   màu tĩnh, không phải chuyển động. Dải "đang chạy" đứng lại nhưng vẫn hiện,
+   để lúc chờ 2 giây vẫn có cái nói rằng máy chủ đang làm việc. */
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
   .start { transition: none; }
   .start:hover:not(:disabled) { transform: none; }
+  .progressBar { animation: none; width: 100%; }
+  .lineActive .lineArrow,
+  .framePushed,
+  .varNew,
+  .freshOut { animation: none; }
+  /* Khung vừa bật ra không còn chuyển động thì cũng không nên đứng đó chắn mất
+     khung trên cùng của stack. */
+  .framePopped { display: none; }
 }
 
 /* Máy tính bảng: đầu ra xuống hàng dưới, mã và biến vẫn cạnh nhau. */

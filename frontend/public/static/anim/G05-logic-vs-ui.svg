@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g05-title g05-desc">
 <title id="g05-title">Tách lõi thuần khỏi lớp giao diện</title>
-<desc id="g05-desc">Vòng lặp 15 giây, 5 bước giữ mỗi bước 3 giây: (1) người dùng gõ điểm rồi bấm Thêm điểm; (2) callback add_mark gọi xuống hàm thuần validate_mark; (3) chuỗi sai thì ValueError bật ngược lên và lớp giao diện mở messagebox; (4) hợp lệ thì gọi summary(marks) lấy chuỗi tóm tắt; (5) Label đổi chữ. Dải dưới cho thấy chính hai hàm thuần đó chạy thẳng trong pytest, không cần mở cửa sổ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
+<desc id="g05-desc">Vòng lặp 10 giây, 5 bước giữ mỗi bước 2 giây: (1) người dùng gõ điểm rồi bấm Thêm điểm; (2) callback add_mark gọi xuống hàm thuần validate_mark; (3) chuỗi sai thì ValueError bật ngược lên và lớp giao diện mở messagebox; (4) hợp lệ thì gọi summary(marks) lấy chuỗi tóm tắt; (5) Label đổi chữ. Dải dưới cho thấy chính hai hàm thuần đó chạy thẳng trong pytest, không cần mở cửa sổ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:27px;font-weight:600}
@@ -18,10 +18,13 @@
   .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
   .glow{fill:none;stroke-width:2.6;opacity:0}
 
-  /* Bật tức thời, giữ 3s mỗi bước: mắt đi đúng đường mà lời gọi đi. */
-  .s1{animation:k1 15s linear infinite}.s2{animation:k2 15s linear infinite}
-  .s3{animation:k3 15s linear infinite}.s4{animation:k4 15s linear infinite}
-  .s5{animation:k5 15s linear infinite}
+  /* Bật tức thời, giữ 2s mỗi bước: mắt đi đúng đường mà lời gọi đi. */
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:k1 10s linear infinite}.s2{animation:k2 10s linear infinite}
+  .s3{animation:k3 10s linear infinite}.s4{animation:k4 10s linear infinite}
+  .s5{animation:k5 10s linear infinite}
   @keyframes k1{0%,19.5%{opacity:1}20%,100%{opacity:0}}
   @keyframes k2{0%,19.5%{opacity:0}20%,39.5%{opacity:1}40%,100%{opacity:0}}
   @keyframes k3{0%,39.5%{opacity:0}40%,59.5%{opacity:1}60%,100%{opacity:0}}

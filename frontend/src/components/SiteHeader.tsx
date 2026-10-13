@@ -32,7 +32,6 @@ export default function SiteHeader({ wide = false }: { wide?: boolean }) {
           client-side routing sẽ giữ chúng sống tiếp. */}
       {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
       <a className={styles.brand} href="/" aria-label="Programming EDU — về trang chủ">
-        <span className={styles.mark} aria-hidden="true">P</span>
         <span className={styles.brandName}>Programming</span>
         <span className={styles.brandAccent}>EDU</span>
       </a>

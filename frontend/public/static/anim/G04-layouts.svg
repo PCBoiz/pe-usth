@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g04-title g04-desc">
 <title id="g04-title">Ba geometry manager: pack, place, grid</title>
-<desc id="g04-desc">Vòng lặp 18 giây, 4 chặng giữ mỗi chặng 4,5 giây: (1) pack xếp ba Frame chồng lên nhau theo đúng thứ tự gọi; (2) place đặt ba Frame theo toạ độ tuyệt đối, cho phép đè nhau; (3) grid điền biểu mẫu đăng nhập theo hàng và cột; (4) nhấn vào dải cảnh báo: trộn pack và grid trong cùng một cha làm Tk ném tkinter.TclError. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả ba bố cục đã điền xong và dải lỗi vẫn đọc được.</desc>
+<desc id="g04-desc">Vòng lặp 12 giây, 4 chặng giữ mỗi chặng 3 giây: (1) pack xếp ba Frame chồng lên nhau theo đúng thứ tự gọi; (2) place đặt ba Frame theo toạ độ tuyệt đối, cho phép đè nhau; (3) grid điền biểu mẫu đăng nhập theo hàng và cột; (4) nhấn vào dải cảnh báo: trộn pack và grid trong cùng một cha làm Tk ném tkinter.TclError. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả ba bố cục đã điền xong và dải lỗi vẫn đọc được.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:27px;font-weight:600}
@@ -21,20 +21,23 @@
   .glow{fill:none;stroke-width:2.6;opacity:0}
   .ap{opacity:1}
 
-  /* Mỗi chặng 4,5s: widget hiện ra TỪNG CÁI theo đúng thứ tự Tk xếp chúng, rồi ở lại.
+  /* Mỗi chặng 3s: widget hiện ra TỪNG CÁI theo đúng thứ tự Tk xếp chúng, rồi ở lại.
      Khung hoàn chỉnh = tất cả đã hiện, nên tắt hoạt hình vẫn đọc được trọn vẹn. */
-  .pa{animation:pa 18s linear infinite}
-  .pb{animation:pb 18s linear infinite}
-  .pc{animation:pc 18s linear infinite}
-  .pd{animation:pd 18s linear infinite}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .pa{animation:pa 12s linear infinite}
+  .pb{animation:pb 12s linear infinite}
+  .pc{animation:pc 12s linear infinite}
+  .pd{animation:pd 12s linear infinite}
   @keyframes pa{0%,24.5%{opacity:1}25%,100%{opacity:0}}
   @keyframes pb{0%,24.5%{opacity:0}25%,49.5%{opacity:1}50%,100%{opacity:0}}
   @keyframes pc{0%,49.5%{opacity:0}50%,74.5%{opacity:1}75%,100%{opacity:0}}
   @keyframes pd{0%,74.5%{opacity:0}75%,98.5%{opacity:1}99%,100%{opacity:0}}
 
-  .a1{animation:a1 18s linear infinite}.a2{animation:a2 18s linear infinite}.a3{animation:a3 18s linear infinite}
-  .a4{animation:a4 18s linear infinite}.a5{animation:a5 18s linear infinite}.a6{animation:a6 18s linear infinite}
-  .a7{animation:a7 18s linear infinite}.a8{animation:a8 18s linear infinite}.a9{animation:a9 18s linear infinite}
+  .a1{animation:a1 12s linear infinite}.a2{animation:a2 12s linear infinite}.a3{animation:a3 12s linear infinite}
+  .a4{animation:a4 12s linear infinite}.a5{animation:a5 12s linear infinite}.a6{animation:a6 12s linear infinite}
+  .a7{animation:a7 12s linear infinite}.a8{animation:a8 12s linear infinite}.a9{animation:a9 12s linear infinite}
   @keyframes a1{0%,1.3%{opacity:0}1.7%,100%{opacity:1}}
   @keyframes a2{0%,9.6%{opacity:0}10%,100%{opacity:1}}
   @keyframes a3{0%,17.9%{opacity:0}18.3%,100%{opacity:1}}

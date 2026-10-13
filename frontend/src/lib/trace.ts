@@ -205,6 +205,157 @@ export function changedNames(prev: TraceStep | undefined, next: TraceStep): Set<
   return changed;
 }
 
+/**
+ * Đầu ra tới bước này, TÁCH phần đã thấy ở bước trước và phần vừa in ra.
+ *
+ * Vì sao cần: panel đầu ra chỉ dài thêm vài ký tự mỗi bước, và mắt người không
+ * bắt được chỗ dài thêm trong một khối chữ đơn sắc — đúng lúc người học cần
+ * biết "dòng nào là do lệnh print vừa chạy". Phần `fresh` được tô + hiện dần
+ * nên nó tự chỉ ra mình.
+ *
+ * Vết ghi dồn nên đầu ra bước trước luôn là TIỀN TỐ của bước này; khi không
+ * phải (người học kéo thanh trượt lùi) thì không có gì "vừa in" cả.
+ */
+export function outputDelta(
+  doc: TraceDocument,
+  index: number,
+): { seen: string; fresh: string } {
+  const { stdout } = outputAt(doc, index);
+  // Bước đầu tiên: chưa có "bước trước" để so, nên không đánh dấu gì — kể cả
+  // tài liệu không có bước nào (lúc đó outputAt trả TOÀN BỘ đầu ra, tô hết thì
+  // thành nhấp nháy cả khối).
+  if (index <= 0) return { seen: stdout, fresh: '' };
+  const before = outputAt(doc, index - 1).stdout;
+  if (!stdout.startsWith(before)) return { seen: stdout, fresh: '' };
+  return { seen: before, fresh: stdout.slice(before.length) };
+}
+
+/** Độ sâu THẬT của call stack: `frames` đã bị cắt bớt ở giữa khi đệ quy sâu. */
+function depthOf(step: TraceStep): number {
+  return step.frames.length + (step.framesElided ?? 0);
+}
+
+/**
+ * Khung vừa ĐẨY VÀO và khung vừa BẬT RA giữa hai bước.
+ *
+ * Vì sao cần: không có cái này thì call stack chỉ là một danh sách đổi nội
+ * dung — người học không thấy được "gọi hàm thì chồng thêm một khung, trả về
+ * thì bỏ khung trên cùng", tức là không thấy được cái duy nhất mà chữ "stack"
+ * muốn nói. `pushed` để khung mới trôi vào, `popped` để vẽ bóng khung vừa rời
+ * đi (nó đã không còn trong `next.frames` nên phải lấy từ `prev`).
+ *
+ * So bằng ĐỘ SÂU chứ không bằng tên hàm: đệ quy có nhiều khung cùng tên.
+ */
+export function stackDelta(
+  prev: TraceStep | undefined,
+  next: TraceStep,
+): { pushed: TraceFrame[]; popped: TraceFrame[] } {
+  if (!prev) return { pushed: [], popped: [] };
+  const before = depthOf(prev);
+  const after = depthOf(next);
+  if (after > before) {
+    // Chỉ lấy được những khung CÒN trong mảng (mảng có thể đã bị cắt ở giữa).
+    const n = Math.min(after - before, next.frames.length);
+    return { pushed: next.frames.slice(next.frames.length - n), popped: [] };
+  }
+  if (after < before) {
+    const n = Math.min(before - after, prev.frames.length);
+    return { pushed: [], popped: prev.frames.slice(prev.frames.length - n) };
+  }
+  return { pushed: [], popped: [] };
+}
+
+/** Nhịp tự chạy (nút ⏩). Dài hơn mọi hiệu ứng để hai bước không chồng lên nhau. */
+export const AUTOPLAY_INTERVAL_MS = 460;
+
+/** Khung thời gian cho một lần dịch con trỏ dòng. */
+const MOTION_MIN_MS = 60;
+const MOTION_MAX_MS = 220;
+
+export type StepMotionKind =
+  | 'none' // chưa có bước trước: đặt con trỏ vào chỗ, không trượt
+  | 'hold' // vẫn ở đúng dòng đó
+  | 'step' // xuống dòng kế tiếp
+  | 'back' // quay lên trên (vòng lặp quay đầu)
+  | 'jump' // nhảy xa trong cùng một hàm (if/else, break)
+  | 'call' // vào hàm
+  | 'return'; // về hàm gọi
+
+export type StepMotion = {
+  kind: StepMotionKind;
+  /** Số dòng phải vượt qua — dùng để quyết định nhanh/chậm. */
+  lines: number;
+  durationMs: number;
+  easing: string;
+  /** Nhảy XA: vẽ khác nhảy gần (con trỏ bị bóp lại trên đường đi). */
+  travel: boolean;
+};
+
+/**
+ * Con trỏ dòng trượt thế nào khi sang bước mới.
+ *
+ * Vì sao có hàm này chứ không viết thẳng số vào component: ba quyết định ở đây
+ * đều là quyết định dạy học, và đều test được bằng `node --test` (JSX thì
+ * không).
+ *  1. NHẢY GẦN khác NHẢY XA. Xuống dòng kế tiếp là chuyện thường, cho nó nhanh
+ *     và êm. Vào hàm / trả về / vòng lặp quay đầu là chỗ người học MẤT dấu
+ *     luồng điều khiển, nên đi chậm hơn một nhịp và bóp con trỏ lại để thấy nó
+ *     đã đi qua đâu.
+ *  2. HIỆU ỨNG KHÔNG ĐƯỢC CHỒNG LÊN NHAU. `paceMs` là khoảng cách thật giữa
+ *     hai lần đổi bước (giữ phím →, hoặc nhịp tự chạy); bước nhanh hơn hiệu
+ *     ứng thì rút hiệu ứng lại, không bao giờ bắt người dùng chờ.
+ *  3. `reduced` (prefers-reduced-motion) thì thời lượng về 0 — con trỏ vẫn
+ *     nhảy tới đúng dòng, chỉ là không trượt.
+ */
+export function stepMotion(
+  prev: TraceStep | undefined,
+  next: TraceStep,
+  opts: { reduced?: boolean; paceMs?: number } = {},
+): StepMotion {
+  const lines = prev ? Math.abs(next.line - prev.line) : 0;
+  const kind = motionKind(prev, next);
+  const travel = kind === 'call' || kind === 'return' || lines >= 2;
+
+  let durationMs = 0;
+  if (kind !== 'none' && kind !== 'hold') {
+    // Đi xa thì lâu hơn một chút, nhưng không tỉ lệ thuận: nhảy 200 dòng mà
+    // mất 2 giây thì thành phải CHỜ.
+    durationMs = 110 + 14 * Math.min(lines, 8);
+    if (kind === 'call' || kind === 'return') durationMs = Math.max(durationMs, 170);
+    durationMs = Math.min(MOTION_MAX_MS, Math.max(MOTION_MIN_MS, durationMs));
+    const pace = opts.paceMs;
+    if (pace !== undefined && Number.isFinite(pace) && pace > 0) {
+      durationMs = Math.min(durationMs, Math.max(MOTION_MIN_MS, Math.round(pace * 0.6)));
+    }
+  }
+  if (opts.reduced) durationMs = 0;
+
+  return {
+    kind,
+    lines,
+    durationMs,
+    // Nhảy gần: phanh dần (ease-out) — như con trỏ "đáp" xuống dòng mới.
+    // Nhảy xa: tăng tốc rồi phanh (ease-in-out) — đọc ra thành một chuyến đi.
+    easing: travel ? 'cubic-bezier(.65, 0, .35, 1)' : 'cubic-bezier(.33, 1, .68, 1)',
+    travel,
+  };
+}
+
+function motionKind(prev: TraceStep | undefined, next: TraceStep): StepMotionKind {
+  if (!prev) return 'none';
+  const before = depthOf(prev);
+  const after = depthOf(next);
+  // Phân loại theo ĐỘ SÂU trước, không theo `event`: sự kiện 'return' còn đứng
+  // ở dòng cuối của hàm bị gọi (độ sâu CHƯA giảm), việc về hàm gọi xảy ra ở
+  // bước SAU đó. Lấy theo event thì hiệu ứng "bật ra" chạy sớm một bước.
+  if (after > before) return 'call';
+  if (after < before) return 'return';
+  if (next.line === prev.line) return 'hold';
+  if (next.line === prev.line + 1) return 'step';
+  if (next.line < prev.line) return 'back';
+  return 'jump';
+}
+
 /** Trần số ký tự cho MỘT giá trị khi vẽ một dòng; dài hơn thì cắt và thêm `…`. */
 const INLINE_CAP = 120;
 
