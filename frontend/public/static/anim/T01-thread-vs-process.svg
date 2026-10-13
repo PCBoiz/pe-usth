@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t01-title t01-desc">
 <title id="t01-title">Thread và process: cái gì riêng, cái gì chung</title>
-<desc id="t01-desc">Bên trái: một process có ba thread dùng chung code, data, heap và file descriptor, mỗi thread giữ riêng stack và registers. Bên phải: hai process tách rời, mỗi process một bản bộ nhớ riêng. Vòng lặp 16 giây, 8 bước giữ 1,8 giây mỗi bước theo thứ tự: vùng dùng chung, thread 1, thread 2, thread 3, process 4821, process 4822, kết luận chia sẻ, kết luận nhân bản.</desc>
+<desc id="t01-desc">Bên trái: một process có ba thread dùng chung code, data, heap và file descriptor, mỗi thread giữ riêng stack và registers. Bên phải: hai process tách rời, mỗi process một bản bộ nhớ riêng. Vòng lặp 10,7 giây, 8 bước giữ 1,2 giây mỗi bước theo thứ tự: vùng dùng chung, thread 1, thread 2, thread 3, process 4821, process 4822, kết luận chia sẻ, kết luận nhân bản.</desc>
 <style>
   text{fill:#e8edf7;font-family:'Segoe UI',system-ui,sans-serif}
   .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
@@ -12,9 +12,12 @@
   .chip{font-size:13px}
   .ring{fill:none;stroke-width:2.5;opacity:0}
   @keyframes pulse{0%{opacity:0}0.5%{opacity:1}11.5%{opacity:1}12.2%{opacity:0}100%{opacity:0}}
-  .ring{animation:pulse 16s linear infinite}
-  .s1{animation-delay:0s}.s2{animation-delay:2s}.s3{animation-delay:4s}.s4{animation-delay:6s}
-  .s5{animation-delay:8s}.s6{animation-delay:10s}.s7{animation-delay:12s}.s8{animation-delay:14s}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .ring{animation:pulse 10.67s linear infinite}
+  .s1{animation-delay:0s}.s2{animation-delay:1.33s}.s3{animation-delay:2.67s}.s4{animation-delay:4s}
+  .s5{animation-delay:5.33s}.s6{animation-delay:6.67s}.s7{animation-delay:8s}.s8{animation-delay:9.33s}
   @media (prefers-reduced-motion: reduce){*{animation:none !important}}
 </style>
 <rect width="1280" height="640" fill="#0f1626"/>

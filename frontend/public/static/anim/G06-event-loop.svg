@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g06-title g06-desc">
 <title id="g06-title">mainloop, việc nặng và worker thread</title>
-<desc id="g06-desc">Vòng lặp 19 giây, 6 bước: (1) bấm Tính, callback bắt đầu; (2) giữ 4,5 giây trên trạng thái ĐƠ — callback chiếm luồng giao diện nên sự kiện xếp hàng và cửa sổ không vẽ lại; (3) cách đúng: start_task đổi status rồi start Thread và hẹn root.after(100, poll_result); (4) thread nền tính trong khi poll_result lặp mỗi 100 ms; (5) worker q.put(total), đúng MỘT mũi tên Queue đi từ thread nền lên và poll_result đọc nó; (6) status.config hiện kết quả, cửa sổ vẫn mượt. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
+<desc id="g06-desc">Vòng lặp 12,7 giây, 6 bước: (1) bấm Tính, callback bắt đầu; (2) giữ 3 giây trên trạng thái ĐƠ — callback chiếm luồng giao diện nên sự kiện xếp hàng và cửa sổ không vẽ lại; (3) cách đúng: start_task đổi status rồi start Thread và hẹn root.after(100, poll_result); (4) thread nền tính trong khi poll_result lặp mỗi 100 ms; (5) worker q.put(total), đúng MỘT mũi tên Queue đi từ thread nền lên và poll_result đọc nó; (6) status.config hiện kết quả, cửa sổ vẫn mượt. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:26px;font-weight:600}
@@ -18,11 +18,14 @@
   .field{fill:#101a2e;stroke:#3d4a6e;stroke-width:1.2}
   .glow{fill:none;stroke-width:2.6;opacity:0}
 
-  /* 6 chặng, bật tức thời rồi giữ. Chặng ĐƠ giữ 4,5s — lâu nhất — để vấn đề kịp ngấm
+  /* 6 chặng, bật tức thời rồi giữ. Chặng ĐƠ giữ 3s — lâu nhất — để vấn đề kịp ngấm
      trước khi hình chuyển sang cách sửa. */
-  .s1{animation:k1 19s linear infinite}.s2{animation:k2 19s linear infinite}
-  .s3{animation:k3 19s linear infinite}.s4{animation:k4 19s linear infinite}
-  .s5{animation:k5 19s linear infinite}.s6{animation:k6 19s linear infinite}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:k1 12.67s linear infinite}.s2{animation:k2 12.67s linear infinite}
+  .s3{animation:k3 12.67s linear infinite}.s4{animation:k4 12.67s linear infinite}
+  .s5{animation:k5 12.67s linear infinite}.s6{animation:k6 12.67s linear infinite}
   @keyframes k1{0%,15.3%{opacity:1}15.8%,100%{opacity:0}}
   @keyframes k2{0%,15.3%{opacity:0}15.8%,39%{opacity:1}39.5%,100%{opacity:0}}
   @keyframes k3{0%,39%{opacity:0}39.5%,57.4%{opacity:1}57.9%,100%{opacity:0}}

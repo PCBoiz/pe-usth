@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g03-title g03-desc">
 <title id="g03-title">Widget nhập liệu và cách đọc giá trị</title>
-<desc id="g03-desc">Vòng lặp 15 giây, 5 bước giữ mỗi bước 3 giây, theo thứ tự đọc từ trên xuống: Entry, Checkbutton, cặp Radiobutton cùng trỏ vào MỘT StringVar, Listbox, Combobox; mỗi bước nối widget trong cửa sổ với biến liên kết và câu lệnh .get() tương ứng. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: mọi widget, mọi biến và mọi lệnh đọc đều hiện.</desc>
+<desc id="g03-desc">Vòng lặp 10 giây, 5 bước giữ mỗi bước 2 giây, theo thứ tự đọc từ trên xuống: Entry, Checkbutton, cặp Radiobutton cùng trỏ vào MỘT StringVar, Listbox, Combobox; mỗi bước nối widget trong cửa sổ với biến liên kết và câu lệnh .get() tương ứng. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: mọi widget, mọi biến và mọi lệnh đọc đều hiện.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:27px;font-weight:600}
@@ -19,12 +19,15 @@
   .wire{fill:none;stroke:#4a5a80;stroke-width:1.5}
   .glow{fill:none;stroke-width:2.6;opacity:0}
 
-  /* Bật tức thời rồi GIỮ 3s mỗi chặng — hoạt hình chỉ dẫn mắt theo thứ tự đọc. */
-  .s1{animation:k1 15s linear infinite}
-  .s2{animation:k2 15s linear infinite}
-  .s3{animation:k3 15s linear infinite}
-  .s4{animation:k4 15s linear infinite}
-  .s5{animation:k5 15s linear infinite}
+  /* Bật tức thời rồi GIỮ 2s mỗi chặng — hoạt hình chỉ dẫn mắt theo thứ tự đọc. */
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:k1 10s linear infinite}
+  .s2{animation:k2 10s linear infinite}
+  .s3{animation:k3 10s linear infinite}
+  .s4{animation:k4 10s linear infinite}
+  .s5{animation:k5 10s linear infinite}
   @keyframes k1{0%,19.5%{opacity:1}20%,100%{opacity:0}}
   @keyframes k2{0%,19.5%{opacity:0}20%,39.5%{opacity:1}40%,100%{opacity:0}}
   @keyframes k3{0%,39.5%{opacity:0}40%,59.5%{opacity:1}60%,100%{opacity:0}}

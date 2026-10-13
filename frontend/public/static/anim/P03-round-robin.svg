@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="prr-title prr-desc">
   <title id="prr-title">Round Robin với quantum = 2</title>
-  <desc id="prr-desc">Vòng lặp 16 giây: thanh thời gian quét từ trái sang phải trong 12 giây, mỗi 2 giây nhấn một lát CPU theo thứ tự P1, P2, P3, P1, P2, P1 rồi nghỉ 4 giây. Khung tĩnh đã hiện đủ hàng đợi ready, ô CPU, toàn bộ sáu lát trên trục thời gian 0–10 và các mốc hoàn thành P3 tại t=6, P2 tại t=9, P1 tại t=10.</desc>
+  <desc id="prr-desc">Vòng lặp 10,7 giây: thanh thời gian quét từ trái sang phải trong 8 giây, mỗi 1,3 giây nhấn một lát CPU theo thứ tự P1, P2, P3, P1, P2, P1 rồi nghỉ 2,7 giây. Khung tĩnh đã hiện đủ hàng đợi ready, ô CPU, toàn bộ sáu lát trên trục thời gian 0–10 và các mốc hoàn thành P3 tại t=6, P2 tại t=9, P1 tại t=10.</desc>
   <defs>
     <marker id="prr-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
@@ -18,9 +18,12 @@
     .tick{font-size:12px;fill:#5b6886;text-anchor:middle}
     .slc{font-size:16px;text-anchor:middle}
     /* Thanh quét thời gian: tĩnh là đã quét hết (trạng thái hoàn chỉnh). */
-    .sweep{transform-box:fill-box;transform-origin:0% 50%;animation:sweep 16s linear infinite}
+    /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+       và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+       còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+    .sweep{transform-box:fill-box;transform-origin:0% 50%;animation:sweep 10.67s linear infinite}
     @keyframes sweep{0%{transform:scaleX(0)}75%,100%{transform:scaleX(1)}}
-    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 10.67s linear infinite}
     @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
     @media (prefers-reduced-motion: reduce){*{animation:none!important}}
   </style>
@@ -100,15 +103,15 @@
 
   <!-- Nhấn lát đang chạy -->
   <rect class="ring" x="116" y="394" width="208" height="64" rx="6" stroke="#9fd88f" style="animation-delay:0s"/>
-  <rect class="ring" x="316" y="394" width="208" height="64" rx="6" stroke="#4c9bff" style="animation-delay:2s"/>
-  <rect class="ring" x="516" y="394" width="208" height="64" rx="6" stroke="#c9a2ff" style="animation-delay:4s"/>
-  <rect class="ring" x="716" y="394" width="208" height="64" rx="6" stroke="#9fd88f" style="animation-delay:6s"/>
-  <rect class="ring" x="916" y="394" width="108" height="64" rx="6" stroke="#4c9bff" style="animation-delay:8s"/>
-  <rect class="ring" x="1016" y="394" width="108" height="64" rx="6" stroke="#9fd88f" style="animation-delay:10s"/>
+  <rect class="ring" x="316" y="394" width="208" height="64" rx="6" stroke="#4c9bff" style="animation-delay:1.33s"/>
+  <rect class="ring" x="516" y="394" width="208" height="64" rx="6" stroke="#c9a2ff" style="animation-delay:2.67s"/>
+  <rect class="ring" x="716" y="394" width="208" height="64" rx="6" stroke="#9fd88f" style="animation-delay:4s"/>
+  <rect class="ring" x="916" y="394" width="108" height="64" rx="6" stroke="#4c9bff" style="animation-delay:5.33s"/>
+  <rect class="ring" x="1016" y="394" width="108" height="64" rx="6" stroke="#9fd88f" style="animation-delay:6.67s"/>
   <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:0s"/>
-  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:2s"/>
-  <rect class="ring" x="492" y="196" width="148" height="64" rx="8" stroke="#c9a2ff" style="animation-delay:4s"/>
-  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:6s"/>
-  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:8s"/>
-  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:10s"/>
+  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:1.33s"/>
+  <rect class="ring" x="492" y="196" width="148" height="64" rx="8" stroke="#c9a2ff" style="animation-delay:2.67s"/>
+  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:4s"/>
+  <rect class="ring" x="332" y="196" width="148" height="64" rx="8" stroke="#4c9bff" style="animation-delay:5.33s"/>
+  <rect class="ring" x="172" y="196" width="148" height="64" rx="8" stroke="#9fd88f" style="animation-delay:6.67s"/>
 </svg>

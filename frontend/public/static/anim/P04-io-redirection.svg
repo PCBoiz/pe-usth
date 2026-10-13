@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="pio-title pio-desc">
   <title id="pio-title">Đổi hướng vào/ra và nối ống</title>
-  <desc id="pio-desc">Vòng lặp 16 giây, 7 nhịp (mỗi nhịp 2 giây): 1 dữ liệu từ bàn phím vào stdin 0, 2 process xử lý, 3 stdout 1 chảy ra tệp, 4 stderr 2 vẫn chảy ra màn hình, 5 tệp vào Process 1, 6 ống nối stdout của Process 1 sang stdin của Process 2, 7 kết quả ra tệp; rồi nghỉ 2 giây. Khung tĩnh đã hiện đủ ba luồng chuẩn 0/1/2, đích của từng luồng và đường ống giữa hai process.</desc>
+  <desc id="pio-desc">Vòng lặp 10,7 giây, 7 nhịp (mỗi nhịp 1,3 giây): 1 dữ liệu từ bàn phím vào stdin 0, 2 process xử lý, 3 stdout 1 chảy ra tệp, 4 stderr 2 vẫn chảy ra màn hình, 5 tệp vào Process 1, 6 ống nối stdout của Process 1 sang stdin của Process 2, 7 kết quả ra tệp; rồi nghỉ 1,3 giây. Khung tĩnh đã hiện đủ ba luồng chuẩn 0/1/2, đích của từng luồng và đường ống giữa hai process.</desc>
   <defs>
     <marker id="pio-arb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#4c9bff"/>
@@ -24,14 +24,17 @@
     .nm{font-size:16px;fill:#e8edf7;text-anchor:middle}
     .ev{font-size:12.5px;text-anchor:middle}
     /* Gói dữ liệu chạy trên đường ống: mặc định ẩn → hình tĩnh vẫn sạch và đủ nghĩa. */
-    .flow{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:16 600;opacity:0;animation:flow 16s linear infinite}
+    /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+       và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+       còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+    .flow{fill:none;stroke-width:5;stroke-linecap:round;stroke-dasharray:16 600;opacity:0;animation:flow 10.67s linear infinite}
     @keyframes flow{
       0%{opacity:0;stroke-dashoffset:0}
       1%{opacity:1;stroke-dashoffset:0}
       10%{opacity:1;stroke-dashoffset:-340}
       11%,100%{opacity:0;stroke-dashoffset:-340}
     }
-    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 10.67s linear infinite}
     @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
     @media (prefers-reduced-motion: reduce){*{animation:none!important}}
   </style>
@@ -111,10 +114,10 @@
 
   <!-- Gói dữ liệu + vòng nhấn theo nhịp -->
   <path class="flow" d="M246,220 H410" stroke="#4c9bff" style="animation-delay:0s"/>
-  <rect class="ring" x="426" y="172" width="238" height="96" rx="10" stroke="#4c9bff" style="animation-delay:2s"/>
-  <path class="flow" d="M660,206 H840" stroke="#f5b83d" style="animation-delay:4s"/>
-  <path class="flow" d="M560,264 V288 Q560,296 568,296 H840" stroke="#f4a274" style="animation-delay:6s"/>
-  <path class="flow" d="M236,458 H308" stroke="#4c9bff" style="animation-delay:8s"/>
-  <path class="flow" d="M490,458 H648" stroke="#f5b83d" style="animation-delay:10s"/>
-  <path class="flow" d="M850,458 H928" stroke="#f5b83d" style="animation-delay:12s"/>
+  <rect class="ring" x="426" y="172" width="238" height="96" rx="10" stroke="#4c9bff" style="animation-delay:1.33s"/>
+  <path class="flow" d="M660,206 H840" stroke="#f5b83d" style="animation-delay:2.67s"/>
+  <path class="flow" d="M560,264 V288 Q560,296 568,296 H840" stroke="#f4a274" style="animation-delay:4s"/>
+  <path class="flow" d="M236,458 H308" stroke="#4c9bff" style="animation-delay:5.33s"/>
+  <path class="flow" d="M490,458 H648" stroke="#f5b83d" style="animation-delay:6.67s"/>
+  <path class="flow" d="M850,458 H928" stroke="#f5b83d" style="animation-delay:8s"/>
 </svg>

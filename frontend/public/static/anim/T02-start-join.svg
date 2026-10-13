@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t02-title t02-desc">
 <title id="t02-title">start() và join(): luồng con chạy song song, main chờ ở join</title>
-<desc id="t02-desc">Mã nguồn tám dòng bên trái và dòng thời gian bên phải: main chạy, t1.start() và t2.start() mở hai luồng con ngủ 2 và 3 giây, main vẫn chạy tiếp rồi đứng chờ tại t1.join() và t2.join(), cuối cùng main kết thúc. Hình vẽ hành vi THẬT của CPython: hai luồng chồng thời gian nên tổng chỉ 3 giây. Vòng lặp 16 giây, 8 bước giữ 1,8 giây mỗi bước, con trỏ thời gian nhảy theo đúng dòng mã đang sáng, thứ tự: tạo t1, tạo t2, t1.start, t2.start, main in, t1.join trả về, t2.join trả về, main kết thúc.</desc>
+<desc id="t02-desc">Mã nguồn tám dòng bên trái và dòng thời gian bên phải: main chạy, t1.start() và t2.start() mở hai luồng con ngủ 2 và 3 giây, main vẫn chạy tiếp rồi đứng chờ tại t1.join() và t2.join(), cuối cùng main kết thúc. Hình vẽ hành vi THẬT của CPython: hai luồng chồng thời gian nên tổng chỉ 3 giây. Vòng lặp 10,7 giây, 8 bước giữ 1,2 giây mỗi bước, con trỏ thời gian nhảy theo đúng dòng mã đang sáng, thứ tự: tạo t1, tạo t2, t1.start, t2.start, main in, t1.join trả về, t2.join trả về, main kết thúc.</desc>
 <defs>
 <pattern id="t02hatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
   <rect width="8" height="8" fill="#1c2540"/>
@@ -19,11 +19,14 @@
   .cap{font-size:12px;fill:#5b6886}
   .bd{font-size:13px;fill:#93a0bc}
   .bar{font-size:12.5px}
-  .ring{fill:none;stroke-width:2.5;opacity:0;animation:pulse 16s linear infinite}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .ring{fill:none;stroke-width:2.5;opacity:0;animation:pulse 10.67s linear infinite}
   @keyframes pulse{0%{opacity:0}0.5%{opacity:1}11.5%{opacity:1}12.2%{opacity:0}100%{opacity:0}}
-  .s1{animation-delay:0s}.s2{animation-delay:2s}.s3{animation-delay:4s}.s4{animation-delay:6s}
-  .s5{animation-delay:8s}.s6{animation-delay:10s}.s7{animation-delay:12s}.s8{animation-delay:14s}
-  .cursor{opacity:0;animation:t02sweep 16s linear infinite}
+  .s1{animation-delay:0s}.s2{animation-delay:1.33s}.s3{animation-delay:2.67s}.s4{animation-delay:4s}
+  .s5{animation-delay:5.33s}.s6{animation-delay:6.67s}.s7{animation-delay:8s}.s8{animation-delay:9.33s}
+  .cursor{opacity:0;animation:t02sweep 10.67s linear infinite}
   @keyframes t02sweep{
     0%,12%{opacity:1;transform:translateX(0px)}
     12.5%,24.5%{opacity:1;transform:translateX(0px)}

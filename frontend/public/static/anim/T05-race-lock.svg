@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="t05-title t05-desc">
 <title id="t05-title">Race condition và with lock: mất cập nhật rồi sửa bằng khoá</title>
-<desc id="t05-desc">Bên trái, không khoá: Thread 1 đọc balance bằng 0, Thread 2 cũng đọc bằng 0, rồi cả hai cùng ghi 1 — hai lần cộng mà kết quả chỉ là 1 thay vì 2. Bên phải, có with lock: Thread 2 phải chờ khoá, nên nó đọc được 1 và ghi 2 — kết quả đúng. Vòng lặp 16 giây, 8 bước giữ 1,8 giây mỗi bước theo thứ tự bốn dòng của bảng trái rồi bốn dòng của bảng phải; riêng khoảnh khắc hai thread cùng đọc số 0 được giữ sáng 5,7 giây.</desc>
+<desc id="t05-desc">Bên trái, không khoá: Thread 1 đọc balance bằng 0, Thread 2 cũng đọc bằng 0, rồi cả hai cùng ghi 1 — hai lần cộng mà kết quả chỉ là 1 thay vì 2. Bên phải, có with lock: Thread 2 phải chờ khoá, nên nó đọc được 1 và ghi 2 — kết quả đúng. Vòng lặp 10,7 giây, 8 bước giữ 1,2 giây mỗi bước theo thứ tự bốn dòng của bảng trái rồi bốn dòng của bảng phải; riêng khoảnh khắc hai thread cùng đọc số 0 được giữ sáng 3,8 giây.</desc>
 <style>
   text{fill:#e8edf7;font-family:'Segoe UI',system-ui,sans-serif}
   .mono{font-family:Consolas,'Cascadia Mono','Courier New',monospace}
@@ -10,12 +10,15 @@
   .cap{font-size:12px;fill:#5b6886}
   .bd{font-size:13px;fill:#93a0bc}
   .cell{font-size:12.5px;fill:#93a0bc}
-  .ring{fill:none;stroke-width:2.5;opacity:0;animation:pulse 16s linear infinite}
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .ring{fill:none;stroke-width:2.5;opacity:0;animation:pulse 10.67s linear infinite}
   @keyframes pulse{0%{opacity:0}0.5%{opacity:1}11.5%{opacity:1}12.2%{opacity:0}100%{opacity:0}}
-  .hold{fill:none;stroke-width:2.5;opacity:0;animation:holdpulse 16s linear infinite}
+  .hold{fill:none;stroke-width:2.5;opacity:0;animation:holdpulse 10.67s linear infinite}
   @keyframes holdpulse{0%{opacity:0}12.5%{opacity:0}13%{opacity:1}48.5%{opacity:1}49%{opacity:0}100%{opacity:0}}
-  .s1{animation-delay:0s}.s2{animation-delay:2s}.s3{animation-delay:4s}.s4{animation-delay:6s}
-  .s5{animation-delay:8s}.s6{animation-delay:10s}.s7{animation-delay:12s}.s8{animation-delay:14s}
+  .s1{animation-delay:0s}.s2{animation-delay:1.33s}.s3{animation-delay:2.67s}.s4{animation-delay:4s}
+  .s5{animation-delay:5.33s}.s6{animation-delay:6.67s}.s7{animation-delay:8s}.s8{animation-delay:9.33s}
   @media (prefers-reduced-motion: reduce){*{animation:none !important}}
 </style>
 <rect width="1280" height="640" fill="#0f1626"/>

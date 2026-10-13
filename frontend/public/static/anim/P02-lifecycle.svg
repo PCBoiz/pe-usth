@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="plc-title plc-desc">
   <title id="plc-title">Vòng đời process: 5 trạng thái</title>
-  <desc id="plc-desc">Vòng lặp 16 giây, 8 nhịp (mỗi nhịp 2 giây): một token vàng chạy new → ready → running → waiting → ready → running → terminated rồi lặp lại. Khung tĩnh đã hiện đủ 5 ô trạng thái và 6 mũi tên sự kiện: được nhận, được xếp CPU, bị ngắt, chờ I/O, I/O xong, thoát. Cả hai mũi tên rời running đều đổ về ready, không có đường quay thẳng lại running.</desc>
+  <desc id="plc-desc">Vòng lặp 10,7 giây, 8 nhịp (mỗi nhịp 1,3 giây): một token vàng chạy new → ready → running → waiting → ready → running → terminated rồi lặp lại. Khung tĩnh đã hiện đủ 5 ô trạng thái và 6 mũi tên sự kiện: được nhận, được xếp CPU, bị ngắt, chờ I/O, I/O xong, thoát. Cả hai mũi tên rời running đều đổ về ready, không có đường quay thẳng lại running.</desc>
   <defs>
     <marker id="plc-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
@@ -23,7 +23,10 @@
     .ev{font-size:12.5px;fill:#93a0bc}
     .ev2{font-size:11.5px;fill:#5b6886}
     /* Token và vòng nhấn: trạng thái tĩnh = đã đi hết vòng (ở terminated). */
-    .tok{transform:translate(965px,0px);animation:tok 16s cubic-bezier(0,0,0.1,1) infinite}
+    /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+       và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+       còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+    .tok{transform:translate(965px,0px);animation:tok 10.67s cubic-bezier(0,0,0.1,1) infinite}
     @keyframes tok{
       0%,10%{transform:translate(0px,0px)}
       12.5%,22.5%{transform:translate(295px,0px)}
@@ -33,7 +36,7 @@
       62.5%,72.5%{transform:translate(635px,0px)}
       75%,100%{transform:translate(965px,0px)}
     }
-    .ring{fill:none;stroke:#f5b83d;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    .ring{fill:none;stroke:#f5b83d;stroke-width:2.5;opacity:0;animation:ring 10.67s linear infinite}
     @keyframes ring{0%{opacity:0}1%{opacity:1}11.5%{opacity:1}12.5%{opacity:0}100%{opacity:0}}
     @media (prefers-reduced-motion: reduce){*{animation:none!important}}
   </style>
@@ -103,12 +106,12 @@
 
   <!-- Vòng nhấn ô đang hoạt động -->
   <rect class="ring" x="66" y="326" width="158" height="72" rx="10" style="animation-delay:0s"/>
-  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:2s"/>
-  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:4s"/>
-  <rect class="ring" x="466" y="126" width="168" height="72" rx="10" style="animation-delay:6s"/>
-  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:8s"/>
-  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:10s"/>
-  <rect class="ring" x="1026" y="326" width="168" height="72" rx="10" style="animation-delay:12s"/>
+  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:1.33s"/>
+  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:2.67s"/>
+  <rect class="ring" x="466" y="126" width="168" height="72" rx="10" style="animation-delay:4s"/>
+  <rect class="ring" x="356" y="326" width="168" height="72" rx="10" style="animation-delay:5.33s"/>
+  <rect class="ring" x="696" y="326" width="168" height="72" rx="10" style="animation-delay:6.67s"/>
+  <rect class="ring" x="1026" y="326" width="168" height="72" rx="10" style="animation-delay:8s"/>
 
   <!-- Token: một process đi hết vòng đời -->
   <circle class="tok" cx="145" cy="330" r="9" fill="#f5b83d" stroke="#0f1626" stroke-width="2"/>

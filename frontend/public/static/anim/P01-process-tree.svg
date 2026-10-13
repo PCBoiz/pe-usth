@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="ptr-title ptr-desc">
   <title id="ptr-title">Cây tiến trình: init → bash → python3</title>
-  <desc id="ptr-desc">Vòng lặp 16 giây, 6 nhịp đọc theo thứ tự xuống cây (mỗi nhịp ~2 giây): 1 init PID 1, 2 cron PID 640, 3 bash PID 2310, 4 python3 PID 2378, 5 ls PID 2390 do subprocess tạo, 6 nhấn quan hệ PPID của con bằng PID của cha; sau đó nghỉ 4 giây. Khung tĩnh đã hiện đủ cây, mọi số PID/PPID, kết xuất pstree và bảng ps.</desc>
+  <desc id="ptr-desc">Vòng lặp 10,7 giây, 6 nhịp đọc theo thứ tự xuống cây (mỗi nhịp ~1,3 giây): 1 init PID 1, 2 cron PID 640, 3 bash PID 2310, 4 python3 PID 2378, 5 ls PID 2390 do subprocess tạo, 6 nhấn quan hệ PPID của con bằng PID của cha; sau đó nghỉ 2,7 giây. Khung tĩnh đã hiện đủ cây, mọi số PID/PPID, kết xuất pstree và bảng ps.</desc>
   <defs>
     <marker id="ptr-ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0 0 L10 5 L0 10 z" fill="#93a0bc"/>
@@ -19,7 +19,10 @@
     .nm{font-size:16px;fill:#e8edf7}
     .id{font-size:12.5px;fill:#93a0bc}
     /* Lớp nhấn: mặc định ẩn → tắt hiệu ứng là hình đứng ở trạng thái đầy đủ. */
-    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 16s linear infinite}
+    /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+       và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+       còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+    .ring{fill:none;stroke-width:2.5;opacity:0;animation:ring 10.67s linear infinite}
     @keyframes ring{0%{opacity:0}0.6%{opacity:1}11%{opacity:1}11.6%{opacity:0}100%{opacity:0}}
     @media (prefers-reduced-motion: reduce){*{animation:none!important}}
   </style>
@@ -99,9 +102,9 @@
 
   <!-- Lớp nhấn theo nhịp -->
   <rect class="ring" x="536" y="136" width="238" height="72" rx="8" stroke="#93a0bc" style="animation-delay:0s"/>
-  <rect class="ring" x="596" y="222" width="238" height="72" rx="8" stroke="#93a0bc" style="animation-delay:2s"/>
-  <rect class="ring" x="596" y="296" width="238" height="72" rx="8" stroke="#f5b83d" style="animation-delay:4s"/>
-  <rect class="ring" x="676" y="382" width="238" height="72" rx="8" stroke="#4c9bff" style="animation-delay:6s"/>
-  <rect class="ring" x="756" y="468" width="238" height="72" rx="8" stroke="#9fd88f" style="animation-delay:8s"/>
-  <rect class="ring" x="1030" y="250" width="188" height="60" rx="8" stroke="#4c9bff" style="animation-delay:10s"/>
+  <rect class="ring" x="596" y="222" width="238" height="72" rx="8" stroke="#93a0bc" style="animation-delay:1.33s"/>
+  <rect class="ring" x="596" y="296" width="238" height="72" rx="8" stroke="#f5b83d" style="animation-delay:2.67s"/>
+  <rect class="ring" x="676" y="382" width="238" height="72" rx="8" stroke="#4c9bff" style="animation-delay:4s"/>
+  <rect class="ring" x="756" y="468" width="238" height="72" rx="8" stroke="#9fd88f" style="animation-delay:5.33s"/>
+  <rect class="ring" x="1030" y="250" width="188" height="60" rx="8" stroke="#4c9bff" style="animation-delay:6.67s"/>
 </svg>

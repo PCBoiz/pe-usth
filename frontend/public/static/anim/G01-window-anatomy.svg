@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640" role="img" aria-labelledby="g01-title g01-desc">
 <title id="g01-title">Cửa sổ Tkinter: Tk() và Toplevel</title>
-<desc id="g01-desc">Vòng lặp 14 giây, 4 bước giữ mỗi bước 3,5 giây: (1) tk.Tk() dựng cửa sổ chính, (2) .title() đặt chữ trên thanh tiêu đề, (3) .geometry("800x600") đặt kích thước, (4) tk.Toplevel(window) mở cửa sổ phụ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả hai cửa sổ, thước đo và mã nguồn đều hiện.</desc>
+<desc id="g01-desc">Vòng lặp 9,3 giây, 4 bước giữ mỗi bước 2,3 giây: (1) tk.Tk() dựng cửa sổ chính, (2) .title() đặt chữ trên thanh tiêu đề, (3) .geometry("800x600") đặt kích thước, (4) tk.Toplevel(window) mở cửa sổ phụ. Khi tắt hoạt hình, hình đứng ở trạng thái đầy đủ: cả hai cửa sổ, thước đo và mã nguồn đều hiện.</desc>
 <style>
   text{font-family:'Segoe UI',system-ui,sans-serif;fill:#e8edf7}
   .t{font-size:27px;font-weight:600}
@@ -19,11 +19,14 @@
   .glow{fill:none;stroke-width:2.6;opacity:0}
   .codehl{fill:#4c9bff;opacity:0}
 
-  /* Hoạt hình chỉ làm rõ THỨ TỰ gọi hàm. Mỗi bước bật tức thời (~70ms) rồi GIỮ 3,5s để đọc kịp. */
-  .s1{animation:s1 14s linear infinite}
-  .s2{animation:s2 14s linear infinite}
-  .s3{animation:s3 14s linear infinite}
-  .s4{animation:s4 14s linear infinite}
+  /* Hoạt hình chỉ làm rõ THỨ TỰ gọi hàm. Mỗi bước bật tức thời (~47ms) rồi GIỮ 2,3s để đọc kịp. */
+  /* Nhịp đã chia cho 1,5 so với bản đầu — tester xem bản live nói chậm quá. Vì thế thời lượng
+     và delay là số lẻ (làm tròn 2 chữ số). Mốc % trong @keyframes KHÔNG đổi (đó là tỉ lệ),
+     còn delay chia cùng hệ số để các lớp hình không lệch pha. */
+  .s1{animation:s1 9.33s linear infinite}
+  .s2{animation:s2 9.33s linear infinite}
+  .s3{animation:s3 9.33s linear infinite}
+  .s4{animation:s4 9.33s linear infinite}
   @keyframes s1{0%,24.5%{opacity:1}25%,100%{opacity:0}}
   @keyframes s2{0%,24.5%{opacity:0}25%,49.5%{opacity:1}50%,100%{opacity:0}}
   @keyframes s3{0%,49.5%{opacity:0}50%,74.5%{opacity:1}75%,100%{opacity:0}}
