@@ -13,6 +13,7 @@ import { Public } from 'src/common/decorators/public.decorators';
 import { ThrottleMessage } from 'src/common/decorators/throttle-message.decorator';
 import { PythonRunnerAccessGuard } from './python-runner-access.guard';
 import { RunCodeDto } from './dto/run-code.dto';
+import { TraceCodeDto } from './dto/trace-code.dto';
 import { PythonRunnerService } from './python-runner.service';
 
 // @Public() để JwtAuthGuard TOÀN CỤC bước sang bên; việc công khai hay đòi JWT do
@@ -56,5 +57,34 @@ export class PythonRunnerController {
       if (!res.writableFinished) abort.abort();
     });
     return this.runner.run(dto.code, abort.signal);
+  }
+
+  // Chạy MỘT lượt rồi trả về toàn bộ vết để `/ide` bước từng dòng cục bộ.
+  //
+  // Vì sao không có route "bước tiếp": mỗi lượt chạy là một container dùng một
+  // lần (xem sandbox/docker-sandbox.ts) — không có tiến trình nào sống sót giữa
+  // hai request để mà bước tiếp. Một request = cả vết.
+  //
+  // Ngưỡng throttle TÁCH RIÊNG khỏi /run dù mặc định bằng nhau: ghi vết tốn
+  // nhiều CPU hơn chạy thường (callback Python mỗi dòng), nên người vận hành
+  // phải siết được nó mà không siết nút Chạy. Bộ đếm cũng riêng vì
+  // CustomThrottlerGuard.generateKey có tên handler trong key.
+  @Post('trace')
+  @HttpCode(HttpStatus.OK)
+  @Throttle({
+    ip_hour: {
+      limit: Number(process.env.THROTTLE_PY_TRACE_LIMIT ?? 10),
+      ttl: seconds(Number(process.env.THROTTLE_PY_TRACE_TTL_SECONDS ?? 60)),
+    },
+  })
+  @ThrottleMessage(
+    'Bạn xem từng bước quá nhiều lần, đợi khoảng 1 phút rồi thử lại',
+  )
+  trace(@Body() dto: TraceCodeDto, @Res({ passthrough: true }) res: Response) {
+    const abort = new AbortController();
+    res.on('close', () => {
+      if (!res.writableFinished) abort.abort();
+    });
+    return this.runner.trace(dto.code, abort.signal);
   }
 }

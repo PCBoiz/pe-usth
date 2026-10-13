@@ -1,0 +1,337 @@
+/* Bộ xem từng bước — chỉ dùng token của edu-theme.css (lint:tokens cấm mã màu hex).
+   Giữ cùng ngôn ngữ hình ảnh với ide.module.css: panel bo 16px, viền
+   --edu-panel-border, chữ --edu-t1/t3, nhấn bằng --edu-accent. Không thêm màu
+   thương hiệu mới; chỗ cần "đang ở đây" thì pha từ --edu-accent. */
+
+.panel {
+  margin-top: 16px;
+  padding: 16px 18px;
+  font-family: var(--edu-font);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-panel-border);
+  border-radius: 16px;
+  box-shadow: var(--edu-card-shadow);
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
+}
+
+.title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--edu-t1);
+}
+
+.start {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 18px;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--edu-panel-bg-solid);
+  background: var(--edu-accent-grad);
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.start:hover:not(:disabled) { transform: translateY(-1px); }
+.start:disabled { opacity: 0.6; cursor: progress; }
+.start:focus-visible,
+.ctrl:focus-visible,
+.scrub:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 2px;
+}
+
+.cost {
+  font-size: 12.5px;
+  color: var(--edu-t3);
+}
+
+/* Giá phải trả nằm trên mặt, không gập vào đâu: ghi vết chậm hơn chạy, có trần
+   số bước, sandbox không có mạng/bàn phím. */
+.note {
+  margin: 8px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--edu-t3);
+}
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  color: var(--edu-t3);
+}
+
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border: 2px solid var(--edu-track-bg);
+  border-top-color: var(--edu-accent);
+  border-radius: 50%;
+  animation: cv-spin 0.8s linear infinite;
+}
+@keyframes cv-spin { to { transform: rotate(360deg); } }
+
+.notice {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--edu-t1);
+  border: 1px solid var(--edu-card-border);
+  border-radius: 12px;
+}
+.notice p { margin: 0; }
+.noticeWarn {
+  background: color-mix(in srgb, orange 16%, transparent);
+  border-color: color-mix(in srgb, orange 45%, transparent);
+}
+.noticeError {
+  background: color-mix(in srgb, crimson 12%, transparent);
+  border-color: color-mix(in srgb, crimson 40%, transparent);
+}
+
+.detail { margin-top: 8px; font-size: 13px; }
+.detail summary { cursor: pointer; color: var(--edu-t3); }
+.detailBody {
+  margin: 6px 0 0;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--edu-t3);
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 14px 0 12px;
+}
+
+.buttons { display: flex; gap: 6px; }
+
+.ctrl {
+  width: 40px;
+  height: 36px;
+  font: inherit;
+  font-size: 14px;
+  color: var(--edu-t1);
+  background: var(--edu-pill-bg);
+  border: 1px solid var(--edu-pill-border);
+  border-radius: 10px;
+  cursor: pointer;
+}
+.ctrl:hover:not(:disabled) { background: var(--edu-accent-soft); }
+.ctrl:disabled { opacity: 0.45; cursor: default; }
+
+.scrub {
+  flex: 1 1 180px;
+  min-width: 140px;
+  accent-color: var(--edu-accent);
+}
+
+.counter {
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--edu-t2);
+}
+
+/* Mã | (stack + biến) | đầu ra. Hẹp thì xếp dọc — xem media bên dưới. */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.codePane,
+.sidePane,
+.outPane {
+  min-width: 0;
+  padding: 10px 12px;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-card-border);
+  border-radius: 12px;
+}
+
+.paneTitle {
+  margin: 0 0 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--edu-t3);
+}
+.sidePane .paneTitle:not(:first-child) { margin-top: 14px; }
+
+.code {
+  max-height: 320px;
+  overflow: auto;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+}
+
+.line {
+  display: flex;
+  gap: 6px;
+  border-radius: 4px;
+}
+/* Dòng SẮP chạy. Nền pha từ accent (không có màu mới) + viền trái để vẫn phân
+   biệt được khi người dùng không thấy màu. */
+.lineActive {
+  background: var(--edu-accent-soft-strong);
+  box-shadow: inset 2px 0 0 0 var(--edu-accent);
+}
+
+.lineNo {
+  flex: 0 0 2.5em;
+  text-align: right;
+  color: var(--edu-t4);
+  user-select: none;
+}
+.lineArrow {
+  flex: 0 0 1em;
+  color: var(--edu-accent-text);
+  user-select: none;
+}
+.lineText {
+  white-space: pre;
+  color: var(--edu-t1);
+}
+
+.stack {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+}
+.frame {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 4px 8px;
+  color: var(--edu-t2);
+  border-radius: 8px;
+}
+/* Khung ĐANG chạy nằm trên cùng — đọc từ trên xuống là đọc ngược call stack,
+   đúng thứ tự traceback của Python in ra. */
+.frameTop {
+  color: var(--edu-t1);
+  font-weight: 600;
+  background: var(--edu-accent-soft);
+}
+.frameName { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; }
+.frameLine { font-size: 12px; color: var(--edu-t3); }
+.stackElided {
+  padding: 4px 8px;
+  font-size: 12px;
+  color: var(--edu-t3);
+}
+
+.varGroup { margin-bottom: 10px; }
+.varScope {
+  margin: 0 0 4px;
+  font-size: 12px;
+  color: var(--edu-t3);
+}
+.vars { margin: 0; }
+.varRow {
+  display: flex;
+  gap: 8px;
+  padding: 3px 8px;
+  border-radius: 8px;
+}
+/* Biến vừa đổi giá trị: không có dấu này thì mỗi bước trông y như bước trước. */
+.varChanged { background: color-mix(in srgb, orange 18%, transparent); }
+.varName {
+  flex: 0 0 auto;
+  max-width: 45%;
+  overflow: hidden;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--edu-t1);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.varValue {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin: 0;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  color: var(--edu-t2);
+  word-break: break-word;
+}
+
+.returned,
+.thrown {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--edu-t2);
+}
+.returned code,
+.thrown code {
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  word-break: break-word;
+}
+.thrown { color: color-mix(in srgb, crimson 80%, var(--edu-t1)); }
+
+.stdout,
+.stderr {
+  margin: 0 0 8px;
+  max-height: 300px;
+  overflow: auto;
+  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.stdout { color: var(--edu-t1); }
+.stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
+
+/* Dòng đang chạy, tô bên trong Monaco (class do decoration của Monaco gắn). */
+.monacoLine { background: var(--edu-accent-soft-strong); }
+.monacoGlyph { background: var(--edu-accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
+  .start { transition: none; }
+  .start:hover:not(:disabled) { transform: none; }
+}
+
+/* Máy tính bảng: đầu ra xuống hàng dưới, mã và biến vẫn cạnh nhau. */
+@media (max-width: 1099.98px) {
+  .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .outPane { grid-column: 1 / -1; }
+}
+
+/* Điện thoại: xếp dọc. Dùng được — bước, đọc biến, đọc đầu ra — nhưng chật;
+   khung mã cuộn ngang thay vì xuống dòng để thụt lề Python không bị sai. */
+@media (max-width: 719.98px) {
+  .panel { padding: 14px 12px; }
+  .grid { grid-template-columns: minmax(0, 1fr); }
+  .outPane { grid-column: auto; }
+  .code { max-height: 220px; }
+  .controls { gap: 8px 10px; }
+  .scrub { flex-basis: 100%; order: 3; }
+  .counter { order: 2; }
+}

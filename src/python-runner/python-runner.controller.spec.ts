@@ -32,7 +32,10 @@ const OK_RESULT = {
  * Dựng app Nest thật gồm controller + guard throttle + bộ lọc lỗi của gateway, chỉ
  * giả PythonRunnerService. Mỗi lần dựng có bộ đếm throttle riêng (storage mới).
  */
-async function makeApp(run: jest.Mock): Promise<INestApplication> {
+async function makeApp(
+  run: jest.Mock,
+  trace: jest.Mock = jest.fn(),
+): Promise<INestApplication> {
   const moduleRef = await Test.createTestingModule({
     imports: [
       ThrottlerModule.forRoot({
@@ -48,7 +51,7 @@ async function makeApp(run: jest.Mock): Promise<INestApplication> {
           get: (k: string) => (k === 'PY_RUNNER_PUBLIC' ? true : undefined),
         },
       },
-      { provide: PythonRunnerService, useValue: { run } },
+      { provide: PythonRunnerService, useValue: { run, trace } },
       { provide: APP_GUARD, useClass: CustomThrottlerGuard },
       { provide: APP_FILTER, useClass: AllExceptionsFilter },
     ],
@@ -140,6 +143,89 @@ describe('POST /python/run — client ngắt kết nối', () => {
       await post(app).expect(200);
       await new Promise((r) => setTimeout(r, 100));
       expect(captured.aborted).toBe(false);
+    } finally {
+      await app.close();
+    }
+  });
+});
+
+/**
+ * POST /python/trace — "xem từng bước" trong `/ide`.
+ *
+ * Hai điều phải chốt bằng test, vì cả hai đều âm thầm nếu sai:
+ *  1. BỘ ĐẾM THROTTLE RIÊNG. Hai route cùng đè tier `ip_hour`; nếu key của
+ *     CustomThrottlerGuard không có tên handler thì bấm Chạy 10 lần là nút "xem
+ *     từng bước" cũng chết theo, và ngược lại. Gỡ `route` khỏi generateKey →
+ *     ca dưới trượt.
+ *  2. Ngắt kết nối phải tới được service (container bị giết, nhả chỗ trong hàng
+ *     đợi) — ghi vết chạy lâu hơn chạy thường nên chuyện này hay xảy ra hơn.
+ */
+describe('POST /python/trace', () => {
+  const TRACE_OK = {
+    trace: {
+      v: 1,
+      steps: [],
+      stdout: '',
+      stderr: '',
+      stdoutTruncated: false,
+      stderrTruncated: false,
+      stopReason: 'done',
+      error: null,
+      stats: { steps: 0, events: 0, elapsedMs: 1, valuesTruncated: 0 },
+      limits: { maxSteps: 1000 },
+    },
+    run: {
+      exitCode: 0,
+      timedOut: false,
+      outputTruncated: false,
+      durationMs: 500,
+      queuedMs: 0,
+    },
+  };
+
+  const postTrace = (app: INestApplication) =>
+    request(app.getHttpServer() as Parameters<typeof request>[0])
+      .post('/python/trace')
+      .send({ code: 'print(1)' });
+
+  it('trả về tài liệu vết kèm số đo của lượt chạy thật', async () => {
+    const trace = jest.fn().mockResolvedValue(TRACE_OK);
+    const app = await makeApp(jest.fn(), trace);
+    try {
+      const res = await postTrace(app).expect(200);
+      const body = res.body as typeof TRACE_OK;
+      expect(body.trace.stopReason).toBe('done');
+      expect(body.run.durationMs).toBe(500);
+      expect(trace).toHaveBeenCalledTimes(1);
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('mã rỗng → 400 (không tốn một lượt chạy container)', async () => {
+    const trace = jest.fn();
+    const app = await makeApp(jest.fn(), trace);
+    try {
+      await request(app.getHttpServer() as Parameters<typeof request>[0])
+        .post('/python/trace')
+        .send({ code: '' })
+        .expect(400);
+      expect(trace).not.toHaveBeenCalled();
+    } finally {
+      await app.close();
+    }
+  });
+
+  it('bộ đếm throttle TÁCH RIÊNG khỏi /python/run', async () => {
+    const app = await makeApp(
+      jest.fn().mockResolvedValue(OK_RESULT),
+      jest.fn().mockResolvedValue(TRACE_OK),
+    );
+    try {
+      // Dùng hết quota của /run (10 lượt/phút) rồi kiểm /trace vẫn mở.
+      for (let i = 0; i < 10; i++) await post(app).expect(200);
+      await post(app).expect(429);
+      await postTrace(app).expect(200);
     } finally {
       await app.close();
     }

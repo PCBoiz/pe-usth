@@ -15,6 +15,7 @@
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from 'react';
 
+import CodeVisualizer, { type MonacoHandle } from '@/components/code-visualizer/CodeVisualizer';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { apiFetch } from '@/lib/api';
@@ -123,6 +124,10 @@ export default function IdeClient() {
 
   const running = state.status === 'running';
   const abortRef = useRef<AbortController | null>(null);
+  // Cho CodeVisualizer tô dòng đang chạy ngay trong Monaco. Giữ ở đây vì chỉ
+  // `onMount` của editor mới có hai đối tượng này; mọi việc với decoration nằm
+  // trong CodeVisualizer.
+  const monacoRef = useRef<MonacoHandle | null>(null);
 
   const run = useCallback(async () => {
     if (abortRef.current) return; // đang chạy: bỏ qua cú bấm thứ hai
@@ -253,6 +258,7 @@ export default function IdeClient() {
                 onMount={(editor, monaco) => {
                   // addCommand đè lệnh mặc định của Ctrl+Enter trong Monaco (chèn dòng mới).
                   editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => void run());
+                  monacoRef.current = { editor, monaco };
                 }}
                 options={{
                   minimap: { enabled: false },
@@ -269,6 +275,11 @@ export default function IdeClient() {
               <Output state={state} />
             </section>
           </div>
+
+          {/* Xem từng bước: chạy MỘT lượt trong cùng sandbox rồi bước qua vết
+              cục bộ. Toàn bộ nằm trong component — xem
+              frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
+          <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} />
         </main>
       </div>
     </>
