@@ -732,3 +732,27 @@
   font-size: 12px;
   color: var(--edu-t3);
 }
+
+/* Màn lý thuyết chạy ở CỘT RỘNG (--st-col-wide, xem .contentWide trong
+   LessonChrome.module.css): hình được cả chiều ngang, nhưng chữ thì không nên.
+   Một dòng văn 1200px dài gấp ba mức dễ đọc — mắt mất dòng khi nhảy xuống dòng
+   sau — nên đoạn văn và gạch đầu dòng giữ bề rộng ~78 ký tự, phần còn lại để
+   trống. Dò bằng @media chứ không thêm class: `.theory` chỉ tồn tại ở màn lý
+   thuyết, mà màn lý thuyết thì LUÔN chạy ở cột rộng. */
+@media (min-width: 1000px) {
+  .theoryBlock p,
+  .theoryBlock li {
+    max-width: 78ch;
+  }
+
+  /* Hình thì ngược lại: KHÔNG bị bó theo bề rộng chữ. `.theoryFigure img` vốn
+     đã là width:100%, nên ở cột rộng khung hình ra ~1230px — gần đúng khổ vẽ
+     1280, tức nhãn trong sơ đồ về lại cỡ chữ đã thiết kế thay vì 6–7px. Để
+     dòng này ở đây như một cái chốt: ai thêm max-width cho .theoryBlock * sau
+     này cũng không vô tình kéo hình hẹp lại. */
+  .theoryFigure,
+  .theoryFigure img {
+    width: 100%;
+    max-width: 100%;
+  }
+}

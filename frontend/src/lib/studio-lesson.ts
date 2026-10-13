@@ -92,7 +92,7 @@ export type Step1 = {
   heading?: string;
   /** Có thì màn đầu của bài là LessonBrief thay cho thẻ "Ngữ cảnh". */
   brief?: LessonBriefData;
-  /** 3–5 khối lý thuyết — có thì chèn một màn `theory` ngay sau `brief`. */
+  /** 3–5 khối lý thuyết — có thì chèn một màn `theory` NGAY TRƯỚC `brief`. */
   theory?: TheoryBlock[];
   /** Hình chính của bài; màn `explain` dùng khi không có màn `theory`. */
   figure?: LessonFigure;
@@ -450,7 +450,7 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
 
 export type ScreenKind =
   | 'brief'
-  /** Lý thuyết nền + hình (step_1.theory) — ngay sau brief, trước explain. */
+  /** Lý thuyết nền + hình (step_1.theory) — màn ĐẦU bài, trước brief. */
   | 'theory'
   | 'context'
   | 'explain'
@@ -500,17 +500,21 @@ function screen(
 
 /**
  * Luồng ngắn của bài có `play` (khoá Python Advanced):
- *   brief → giải thích (+ ngộ nhận) → dự đoán → các mini-game → sandbox → tổng kết.
- * Boss bỏ giải thích/dự đoán: chỉ game và sandbox.
+ *   lý thuyết → brief → giải thích (+ ngộ nhận) → dự đoán → các mini-game →
+ *   sandbox → tổng kết.
+ * Boss bỏ giải thích/dự đoán: chỉ lý thuyết, game và sandbox.
  */
 function buildPlayScreens(lesson: StudioLesson, play: Play): LessonScreen[] {
   const out: LessonScreen[] = [];
   const one = lesson.step_1;
+  // LÝ THUYẾT ĐỨNG TRƯỚC ĐỀ BÀI — đổi sau khi xem người học dùng bản chạy thật.
+  // Trước đây bài mở ra là "NHIỆM VỤ" + "DỰ ĐOÁN" + khung main.py, màn "S1 · LÝ
+  // THUYẾT" mới tới sau: người gặp chữ process/thread/widget lần đầu bị đòi viết
+  // code trước khi được kể thứ đó là gì. Boss cũng được xem lý thuyết — đó là
+  // phần nền, không phải lời giải.
+  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
   else if (one?.context?.body) out.push(screen('s1-context', 'context', 1));
-  // Lý thuyết đứng NGAY SAU màn mở đầu và TRƯỚC explain: khái niệm + hình trước,
-  // rồi mới đọc code từng dòng. Boss cũng được xem (phần nền, không phải lời giải).
-  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (!play.boss) {
     if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
     if ((one?.predict?.options?.length ?? 0) >= 2) out.push(screen('s1-predict', 'predict', 1));
@@ -537,9 +541,10 @@ export function buildScreens(lesson: StudioLesson): LessonScreen[] {
   if (lesson.play?.games?.length) return buildPlayScreens(lesson, lesson.play);
   const out: LessonScreen[] = [];
   const one = lesson.step_1;
+  // Cùng thứ tự với buildPlayScreens: lý thuyết trước, rồi mới tới đề bài.
+  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
   else if (one?.context?.body || one?.code?.source) out.push(screen('s1-context', 'context', 1));
-  if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (one?.explain?.length) out.push(screen('s1-explain', 'explain', 1));
   if (one?.memory) out.push(screen('s1-memory', 'memory', 1));
   if (one?.misconception?.body) out.push(screen('s1-misconception', 'misconception', 1));

@@ -1,0 +1,70 @@
+/* Nút "Thử ngay trong IDE". Cùng ngôn ngữ thị giác với nút phụ của khung bài
+   (.secondaryBtn ở LessonChrome.module.css): pill, viền mảnh, nền accent-soft.
+   Không thêm màu thương hiệu mới — chỉ token --edu-* đã có. */
+/* Không có lề trên: ở màn mở đầu bài, `.brief` là flex column có gap 13px nên
+   thêm lề nữa là nút trôi ra giữa hai thẻ, không còn thuộc khối code nào. */
+.row {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* Chỗ nào xếp con bằng lề chứ không bằng gap (vùng nội dung của ShellB) thì
+   dùng biến thể này để nút không dán sát khối code bên trên. */
+.rowSpaced {
+  composes: row;
+  margin-top: 14px;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  /* Vùng chạm 40px cho ngón tay (khung bài dùng 48–52px cho nút chính). */
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--edu-accent);
+  border-radius: 999px;
+  background: var(--edu-accent-soft);
+  color: var(--edu-accent-text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.button:hover {
+  background: var(--edu-accent-soft-strong);
+}
+
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:focus-visible {
+  outline: 3px solid var(--edu-accent-3);
+  outline-offset: 3px;
+}
+
+/* Nói trước là sẽ mở tab mới: người học đang làm bài, bị nhảy trang là mất
+   mạch. Câu này cũng là lời hứa rằng tiến độ không mất. */
+.note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--edu-t3);
+}
+
+/* Điện thoại: nút xuống dòng riêng cho đủ chỗ, câu ghi chú nằm dưới. */
+@media (max-width: 560px) {
+  .row {
+    gap: 6px;
+  }
+
+  .note {
+    flex-basis: 100%;
+  }
+}

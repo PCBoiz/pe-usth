@@ -260,6 +260,9 @@ export default function StudioLesson({
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
+        // Chỉ màn lý thuyết chạy ở cột rộng — xem .contentWide trong
+        // LessonChrome.module.css (hình minh hoạ khổ 1280×640).
+        wide={scr?.kind === 'theory'}
         secondaryLabel={
           hints.length && scr?.kind === 'sandbox' && !boss
             ? hintOpen

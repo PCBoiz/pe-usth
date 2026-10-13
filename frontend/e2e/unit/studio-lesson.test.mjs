@@ -78,6 +78,15 @@ function allLessons(bundle) {
 const V1 = allLessons('out'); // khoá `python` — luồng S1–S4
 const V2 = allLessons('out-advanced'); // khoá `python_advanced` — có khối `play`
 
+/**
+ * Khoá python_advanced ĐANG CHẠY THẬT: 48 bài của pe-v4 (xem memory pe-v4-pipeline).
+ * Chỉ bộ này có `step_1.theory`, nên mọi ca về màn lý thuyết phải đọc từ đây.
+ */
+const v4Dir = join(ROOT, 'scripts', 'pe-v4', 'out-advanced', 'lessons');
+const V4 = readdirSync(v4Dir)
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => [f, JSON.parse(readFileSync(join(v4Dir, f), 'utf8')).content_json]);
+
 const b01 = lesson('out', '001-B01.json');
 const b01play = lesson('out-advanced', '001-B01.json');
 const b04play = lesson('out-advanced', '004-B04.json'); // bài duy nhất có traceTable
@@ -237,7 +246,12 @@ test('buildScreens: cửa tự kiểm tra (boss) bỏ giải thích và dự đo
   assert.ok(b20boss.step_1.predict.options.length >= 2);
 });
 
-test('buildScreens: màn lý thuyết chèn ngay sau brief và trước explain', () => {
+test('buildScreens: màn lý thuyết đứng TRƯỚC đề bài, rồi mới tới explain', () => {
+  // Thứ tự này là một thay đổi CÓ Ý: trước đây bài mở ra bằng brief ("NHIỆM VỤ",
+  // "DỰ ĐOÁN", khung main.py) rồi mới tới "S1 · LÝ THUYẾT" — người gặp
+  // process/thread/widget lần đầu bị đòi viết code trước khi được kể đó là gì.
+  // Ca này chốt lại thứ tự mới để nó không bị đảo lại trong một lần dọn code.
+  //
   // Dữ liệu thật của khoá pe-v4 (M1–M3 có theory, M4–M8 không) — xem AGENTS.md:
   // fixture tự bịa thì test không chứng minh được gì.
   const p01 = JSON.parse(
@@ -246,9 +260,27 @@ test('buildScreens: màn lý thuyết chèn ngay sau brief và trước explain'
   assert.ok(p01.step_1.theory.length >= 3, 'P01 phải có 3–5 khối lý thuyết');
   assert.ok(p01.step_1.figure.src.endsWith('.svg'));
   const keys = buildScreens(p01).map((s) => s.key);
-  assert.equal(keys[0], 's1-brief');
-  assert.equal(keys[1], 's1-theory');
+  assert.equal(keys[0], 's1-theory', 'lý thuyết phải là màn ĐẦU TIÊN của bài');
+  assert.equal(keys[1], 's1-brief');
   assert.ok(keys.indexOf('s1-theory') < keys.indexOf('s1-explain'));
+  // Dữ liệu CÓ cả brief và theory — nếu một trong hai biến mất thì ca trên chỉ
+  // đang nói về một bài thiếu dữ liệu, không nói gì về thứ tự.
+  assert.ok(p01.step_1.brief.task);
+
+  // Cả 20 bài có theory đều phải mở bằng màn lý thuyết, không riêng P01. Chốt
+  // mốc DƯỚI chứ không phải con số chính xác: M4–M8 có thể được viết lý thuyết
+  // sau, và thêm lý thuyết cho một bài không được làm ca này đỏ. Mốc dưới vẫn
+  // đủ để vòng lặp bên dưới không rỗng (ca test rỗng thì xanh mà vô nghĩa).
+  assert.ok(
+    V4.filter(([, l]) => l.step_1?.theory?.length).length >= 20,
+    'bộ pe-v4 phải có ít nhất 20 bài khai lý thuyết',
+  );
+  for (const [f, l] of V4)
+    if (l.step_1?.theory?.length) {
+      const k = buildScreens(l).map((s) => s.key);
+      assert.equal(k[0], 's1-theory', `${f}: bài có lý thuyết mà không mở bằng lý thuyết`);
+      assert.ok(k.indexOf('s1-theory') < k.indexOf('s1-brief'), `${f}: lý thuyết đứng sau đề bài`);
+    }
 
   // Bài M4–M8 không khai theory thì KHÔNG được mọc thêm màn.
   const m01 = JSON.parse(
@@ -256,6 +288,7 @@ test('buildScreens: màn lý thuyết chèn ngay sau brief và trước explain'
   ).content_json;
   assert.equal(m01.step_1.theory, undefined);
   assert.ok(!buildScreens(m01).some((s) => s.kind === 'theory'));
+  assert.equal(buildScreens(m01).map((s) => s.key)[0], 's1-brief');
 });
 
 test('buildScreens: game debug thuộc S4 (sandbox), các game khác thuộc S3', () => {

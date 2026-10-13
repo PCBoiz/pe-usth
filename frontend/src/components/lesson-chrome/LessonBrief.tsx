@@ -4,6 +4,7 @@
 // trả lời (Figma ghi "Giải thích trước khi xem đáp án", nhưng nội dung là một CÂU
 // HỎI để người học tự giải thích, nên nhãn nói đúng việc phải làm). Nằm trong khung LessonChrome (thanh trên + nút "Tiếp tục →").
 import styles from './LessonBrief.module.css';
+import TryItButton from './TryItButton';
 
 export interface LessonBriefProps {
   /** ["M1", "BÀI TẬP CƠ BẢN", "B01"] — hiện thành "M1 / BÀI TẬP CƠ BẢN / B01". */
@@ -65,6 +66,9 @@ export default function LessonBrief({
           <pre className={styles.codeBody}>{code}</pre>
         </section>
       )}
+      {/* Khung main.py là thứ người học sẽ gõ: cho họ một chỗ gõ thử ngay, khỏi
+          phải bôi đen chép tay sang IDE. Nút tự ẩn khi bài không có khung mã. */}
+      <TryItButton code={code} />
 
       {tests.length > 0 && (
         <section className={styles.tests}>

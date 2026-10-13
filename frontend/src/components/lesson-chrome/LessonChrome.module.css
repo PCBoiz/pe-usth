@@ -442,3 +442,32 @@ button.segment:focus-visible,
     padding: 0 10px;
   }
 }
+
+/* ── CỘT RỘNG CHO MÀN LÝ THUYẾT ──────────────────────────────────────────
+   Hình minh hoạ của khoá Python Advanced vẽ ở khổ 1280×640, nhưng trong cột
+   680px (--st-col) nó chỉ còn ~580px bề ngang, tức hiển thị chưa tới một nửa:
+   nhãn trong sơ đồ rơi xuống 6–7px, người học báo là không đọc được.
+
+   Nên NỚI RIÊNG màn lý thuyết (StudioLesson truyền `wide` khi scr.kind ===
+   'theory'), không nới cả bài: mọi màn khác vẫn là cột 680px đúng Figma, và
+   đổi bề rộng cột đọc của câu hỏi/trắc nghiệm là đổi một thứ không ai yêu cầu.
+   1328px + 2×56 lề = đúng frame 1440 của thanh trên/dưới, nên thẻ lý thuyết
+   thẳng mép với hai thanh đó.
+
+   Khai SAU mọi @media ở trên để phần đệm ngang ở đây thắng `padding` viết gộp
+   của .contentContainer trong truy vấn 560px (CSS module không đổi thứ tự khai). */
+.contentWide {
+  max-width: var(--st-col-wide);
+  padding-right: 56px;
+  padding-left: 56px;
+}
+
+/* Dưới 860px thì cột đã hẹp hơn 1328px nên max-width không còn tác dụng; chỉ
+   cần trả lề về đúng mức của hai thanh (16px) để không thừa ra 40px mỗi bên
+   trên điện thoại. */
+@media (max-width: 860px) {
+  .contentWide {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+}

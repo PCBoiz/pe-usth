@@ -38,6 +38,13 @@ export interface LessonChromeProps {
    *  màn đã xong nằm SAU màn đang mở tô nhạt hơn để vẫn thấy mình đang ở đâu.
    *  Không truyền thì mọi đoạn trước bước hiện tại cũng coi như đầy. */
   doneSteps?: boolean[];
+  /**
+   * Nới cột nội dung từ 680px lên --st-col-wide cho MỘT màn. Dùng ở màn lý
+   * thuyết của khoá Python Advanced: hình minh hoạ vẽ khổ 1280×640, trong cột
+   * 680px thì chữ trong sơ đồ chỉ còn 6–7px. Không truyền thì mọi màn giữ đúng
+   * cột 680px của Figma.
+   */
+  wide?: boolean;
   children: React.ReactNode;
 }
 
@@ -58,6 +65,7 @@ export default function LessonChrome({
   onSeek,
   seekMax,
   doneSteps,
+  wide,
   children,
 }: LessonChromeProps) {
   const primaryClass =
@@ -146,7 +154,7 @@ export default function LessonChrome({
       </header>
 
       <main className={styles.main}>
-        <div className={styles.contentContainer}>
+        <div className={wide ? `${styles.contentContainer} ${styles.contentWide}` : styles.contentContainer}>
           {/* key={step} để mỗi lần đổi bước là một lần chạy lại animation vào */}
           <div key={step} className={styles.stepEnter}>
             {children}

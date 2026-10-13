@@ -2,6 +2,7 @@
 
 // S1 · Giải thích từng dòng: mã ví dụ kèm chú giải theo từng ý.
 import CodeAnnotated from '@/components/lesson-chrome/exercises/CodeAnnotated';
+import TryItButton from '@/components/lesson-chrome/TryItButton';
 import { toCodeLines } from '@/lib/py-highlight';
 
 import c from '../studio-chrome.module.css';
@@ -63,6 +64,9 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
           detail: row.body,
         }))}
       />
+      {/* Ví dụ của phần lý thuyết là mã CHẠY ĐƯỢC: đọc xong thì sửa thử một dòng
+          rồi chạy lại là cách hiểu nhanh nhất. Mở ở tab mới nên bài không mất. */}
+      <TryItButton code={one.code.source} spaced />
       {figure && <Figure figure={figure} />}
       {myth}
     </ScreenShell>

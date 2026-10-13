@@ -48,6 +48,11 @@
   --st-chrome-h:    56px;
   --st-action-h:    88px;
   --st-col:         680px;
+  /* Cột RỘNG, chỉ dùng cho màn lý thuyết: 1328px = frame 1440 trừ 2×56 lề của
+     thanh trên/dưới, tức rộng đúng bằng khoảng hai thanh đó chiếm. Hình minh
+     hoạ của bài vẽ ở khổ 1280×640; ở cột 680 nó hiện chưa tới một nửa nên chữ
+     trong sơ đồ xuống còn 6–7px, không đọc nổi. */
+  --st-col-wide:    1328px;
   --st-card-radius: 22px;
 
   /* ── khung bài học PE v3 (Figma "B01–B20 bản một màn") ────── */

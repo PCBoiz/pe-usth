@@ -1,8 +1,11 @@
 'use client';
 
 // S1 · Lý thuyết: phần NỀN của bài — khái niệm, ví dụ, ứng dụng và hình minh hoạ.
-// Đứng ngay sau màn mở đầu và trước `explain` (đọc code từng dòng), vì học viên
-// cần biết process/thread/widget là gì trước khi soi từng dòng lệnh.
+// Là màn ĐẦU TIÊN của bài, đứng trước cả đề bài (`brief`) và `explain`: học viên
+// phải biết process/thread/widget là gì trước khi bị đòi viết code cho nó.
+//
+// Màn này chạy ở CỘT RỘNG (LessonChrome nhận `wide` từ StudioLesson) để hình có
+// chỗ — xem .contentWide trong LessonChrome.module.css.
 //
 // Hình là SVG tĩnh cùng miền, hiện bằng `<img>`: animation viết bằng CSS trong
 // chính file SVG vẫn chạy, không cần nới CSP (img-src 'self' đã cho phép).
@@ -16,10 +19,12 @@ import type { ShellProps } from './props';
 export function Figure({ figure }: { figure: LessonFigure }) {
   return (
     <figure className={c.theoryFigure}>
-      {/* Hình vẽ ở khổ 1280x640 nhưng khung bài chỉ rộng ~580px, tức hiển thị
-          chưa tới một nửa: chữ trong sơ đồ xuống còn 6–7px, không đọc nổi trên
-          laptop. Nên bọc trong <a> mở chính file SVG ở tab mới — xem đúng khổ
-          gốc, vẫn chạy animation, và không phải dựng thêm lightbox. */}
+      {/* Hình vẽ ở khổ 1280x640. Ở cột 680px của Figma nó chỉ còn ~580px bề
+          ngang, tức chưa tới một nửa: chữ trong sơ đồ xuống 6–7px, không đọc nổi
+          trên laptop — nên màn lý thuyết nay chạy ở cột rộng (~1230px cho hình,
+          gần đúng khổ vẽ). Vẫn giữ <a> mở chính file SVG ở tab mới: màn hình nhỏ
+          và người cần phóng to hơn nữa vẫn xem được đúng khổ gốc, animation vẫn
+          chạy, và không phải dựng thêm lightbox. */}
       <a href={figure.src} target="_blank" rel="noopener noreferrer" title="Mở hình ở khổ lớn">
         {/* next/image không hợp ở đây: SVG động, kích thước cố định 1280x640 và đã
             nằm sẵn trong public/ nên tối ưu hoá chỉ thêm một vòng xử lý. Khung giữ

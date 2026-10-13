@@ -18,6 +18,7 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { apiFetch } from '@/lib/api';
+import { readIdeCodeFromHash } from '@/lib/ide-handoff';
 import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
@@ -91,14 +92,30 @@ function errorMessage(body: unknown, fallback: string): string {
   return typeof raw === 'string' && raw ? raw : fallback;
 }
 
+/**
+ * Mã bàn giao từ nút "Thử ngay trong IDE" của trang bài học: /ide#code=…
+ * (xem src/lib/ide-handoff.ts). Tham số méo, quá dài hoặc không có → ví dụ mặc
+ * định, không bao giờ để trang trắng.
+ *
+ * Đọc ngay lúc khởi tạo state (không phải trong effect) để editor mở ra đã có
+ * đúng mã, khỏi nhấp một nhịp ví dụ mặc định. Không gây lệch hydration: máy chủ
+ * không thấy fragment nên nó trả DEFAULT_CODE, nhưng `code` chỉ chảy vào Monaco
+ * — thứ tải động với ssr:false — nên HTML của máy chủ và lần render đầu ở client
+ * đều là khung "Đang tải trình soạn thảo…", không có chữ nào khác nhau.
+ */
+function initialCode(): string {
+  if (typeof window === 'undefined') return DEFAULT_CODE;
+  return readIdeCodeFromHash(window.location.hash) ?? DEFAULT_CODE;
+}
+
 export default function IdeClient() {
-  const [code, setCode] = useState(DEFAULT_CODE);
+  const [code, setCode] = useState(initialCode);
   const [state, setState] = useState<RunState>({ status: 'idle' });
   const dark = useSyncExternalStore(subscribeTheme, getDark, getDarkServer);
   // Nội dung editor MỚI NHẤT, cập nhật đồng bộ trong onChange. Ctrl+Enter được gắn
   // MỘT lần lúc Monaco mount; nếu run() đọc state `code` (chỉ mới sau render kế)
   // thì gõ xong bấm phím tắt ngay có thể chạy bản cũ vài ký tự — đã đo được.
-  const codeRef = useRef(DEFAULT_CODE);
+  const codeRef = useRef(code);
   const updateCode = useCallback((next: string) => {
     codeRef.current = next;
     setCode(next);
