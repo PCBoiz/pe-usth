@@ -3,6 +3,7 @@
 // S1 · Giải thích từng dòng: mã ví dụ kèm chú giải theo từng ý.
 import CodeAnnotated from '@/components/lesson-chrome/exercises/CodeAnnotated';
 import TryItButton from '@/components/lesson-chrome/TryItButton';
+import { chayDuocTrongIde } from '@/lib/ide-brief-code';
 import { toCodeLines } from '@/lib/py-highlight';
 
 import c from '../studio-chrome.module.css';
@@ -65,8 +66,14 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
         }))}
       />
       {/* Ví dụ của phần lý thuyết là mã CHẠY ĐƯỢC: đọc xong thì sửa thử một dòng
-          rồi chạy lại là cách hiểu nhanh nhất. Mở ở tab mới nên bài không mất. */}
-      <TryItButton code={one.code.source} spaced />
+          rồi chạy lại là cách hiểu nhanh nhất. Mở ở tab mới nên bài không mất.
+          Qua chayDuocTrongIde() trước: sandbox của IDE không có matplotlib lẫn
+          Tk, nên ví dụ của bài vẽ biểu đồ/GUI sẽ nổ traceback ngay dòng import
+          — không phải lỗi người học, nên không hiện nút ở đó. */}
+      <TryItButton
+        code={chayDuocTrongIde(one.code.source) ? one.code.source : undefined}
+        spaced
+      />
       {figure && <Figure figure={figure} />}
       {myth}
     </ScreenShell>

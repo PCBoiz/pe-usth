@@ -3,6 +3,7 @@
 // Bộ phân tuyến màn hình: đổi `scr.kind` thành đúng một component trong
 // thư mục này. Trước đây đây là một chuỗi `if` dài trong StudioLesson.tsx.
 import LessonBrief from '@/components/lesson-chrome/LessonBrief';
+import { ideCodeChoDeBai } from '@/lib/ide-brief-code';
 
 import ClassifyScreen from './ClassifyScreen';
 import ContextScreen from './ContextScreen';
@@ -29,7 +30,10 @@ export default function LessonScreenView(props: LessonScreenProps) {
   switch (scr.kind) {
     case 'brief':
       // Màn mở đầu "một màn" theo Figma: tự có tiêu đề, không bọc trong ShellB.
-      return lesson.step_1?.brief ? <LessonBrief {...lesson.step_1.brief} /> : null;
+      // `tryCode` tính từ CẢ bài (cần step_4), nên không nằm trong brief được.
+      return lesson.step_1?.brief ? (
+        <LessonBrief {...lesson.step_1.brief} tryCode={ideCodeChoDeBai(lesson) ?? undefined} />
+      ) : null;
     case 'theory':
       return <TheoryScreen {...props} />;
     case 'context':
