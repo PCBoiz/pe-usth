@@ -47,3 +47,30 @@ export function feedbackHref(raw: string | undefined | null): string | null {
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return null;
   return url.href;
 }
+
+/**
+ * Form khảo sát tester (buổi thử nghiệm USTH 14/10/2026).
+ *
+ * Vì sao để thẳng trong mã chứ không chỉ đặt biến trên Vercel: đây là địa chỉ
+ * CÔNG KHAI — chính nó được phát cho người đến thử — nên không có gì phải giấu,
+ * mà biến NEXT_PUBLIC_* lại bị Next thay vào mã lúc BUILD, nên đặt trên bảng
+ * điều khiển vẫn phải deploy lại mới có tác dụng. Để trong mã thì thêm một thứ
+ * được typecheck và test canh, bớt một bước làm tay dễ quên.
+ */
+export const FEEDBACK_FORM_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSf_wcVJLeKO9DnNE8UipvRZlhCvJLpmuKihnpX49DVsSv6KJA/viewform';
+
+/**
+ * Địa chỉ form để gắn vào nút — dùng chung cho trang chủ và trang khoá học, để
+ * hai nơi không thể trỏ về hai form khác nhau.
+ *
+ * `??` chứ không `||`: đặt biến thành chuỗi RỖNG là cố ý tắt nút (ví dụ sau
+ * buổi thử nghiệm), phải tôn trọng ý đó thay vì rơi về hằng.
+ *
+ * Next thay `process.env.NEXT_PUBLIC_*` vào mã lúc dựng ở BẤT KỲ module nào
+ * được gói, kể cả file lib như file này — miễn là viết nguyên dạng như dưới
+ * đây, không ghép chuỗi, không đọc động.
+ */
+export function feedbackFormHref(): string | null {
+  return feedbackHref(process.env.NEXT_PUBLIC_FEEDBACK_URL ?? FEEDBACK_FORM_URL);
+}

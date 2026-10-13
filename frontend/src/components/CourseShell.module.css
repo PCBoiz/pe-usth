@@ -61,3 +61,27 @@
 @media (max-width: 639.98px) {
   .content { padding: 0 16px 56px; }
 }
+
+/* Nút phụ cạnh "Bắt đầu học" (nút góp ý). Viết ở đây chứ không thêm biến thể
+   vào /static/css/edu-course-detail.css: file đó là CSS legacy nạp qua <link>
+   có tem ?v=, sửa nó là phải bump ASSET_VERSION — mà chỗ này không cần tới.
+   `.edu-cd-btn` gốc đã lo chiều cao/bo tròn/phông, đây chỉ thêm màu nền nhạt
+   và viền; dùng token của edu-theme, không có mã màu mới. */
+.feedbackBtn {
+  background: var(--edu-pill-bg);
+  color: var(--edu-t1);
+  border: 1px solid var(--edu-pill-border);
+  text-decoration: none;
+}
+
+.feedbackBtn:hover {
+  transform: translateY(-2px);
+  border-color: var(--edu-accent-3);
+}
+
+/* Người bật giảm chuyển động: giữ phản hồi bằng viền, bỏ phần nhấc lên. */
+@media (prefers-reduced-motion: reduce) {
+  .feedbackBtn:hover {
+    transform: none;
+  }
+}

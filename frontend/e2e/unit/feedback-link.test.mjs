@@ -23,7 +23,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { feedbackHref } from '../../src/lib/feedback-link.ts';
+import { FEEDBACK_FORM_URL, feedbackFormHref, feedbackHref } from '../../src/lib/feedback-link.ts';
 
 test('chưa đặt biến môi trường thì KHÔNG hiện thẻ', () => {
   // Đây là trạng thái hôm nay (13/10/2026): form chưa tạo, biến chưa đặt.
@@ -125,24 +125,41 @@ test('URL Google Form thật thì hiện thẻ, giữ nguyên địa chỉ', () 
  */
 
 // ── Link form THẬT dùng cho buổi thử nghiệm 14/10/2026 ───────────────────────
-// Hằng FEEDBACK_FORM_URL trong src/app/page.tsx là mặc định khi không đặt biến
-// môi trường. Ca này canh hai thứ dễ hỏng mà không ai nhìn ra: hằng bị sửa
-// thành chuỗi mà feedbackHref() loại bỏ (thẻ im lặng biến mất khỏi trang chủ),
-// và hằng bị rơi mất khỏi file. Không gọi mạng — chỉ kiểm hình dạng.
-test('hằng FEEDBACK_FORM_URL trong page.tsx qua được feedbackHref', async () => {
-  const { readFileSync } = await import('node:fs');
-  const src = readFileSync(new URL('../../src/app/page.tsx', import.meta.url), 'utf8');
-  const m = src.match(/const FEEDBACK_FORM_URL =\s*'([^']+)'/);
-  assert.ok(m, 'không thấy hằng FEEDBACK_FORM_URL — đổi tên thì sửa ca này');
-  const href = feedbackHref(m[1]);
-  assert.ok(href, `hằng không qua được feedbackHref: ${m[1]}`);
+// FEEDBACK_FORM_URL là mặc định khi không đặt biến môi trường, và feedbackFormHref()
+// là thứ CẢ trang chủ lẫn trang khoá học gọi — gom về một chỗ để hai nơi không
+// thể trỏ về hai form khác nhau. Ca dưới canh ba thứ dễ hỏng mà không ai nhìn
+// ra: hằng bị sửa thành chuỗi mà feedbackHref() loại bỏ (nút im lặng biến mất),
+// `??` bị đổi thành `||` (đặt biến rỗng để tắt nút lại rơi về hằng), và một
+// trong hai trang quay về tự đọc env thay vì gọi hàm chung.
+test('FEEDBACK_FORM_URL qua được feedbackHref', () => {
+  const href = feedbackHref(FEEDBACK_FORM_URL);
+  assert.ok(href, `hằng không qua được feedbackHref: ${FEEDBACK_FORM_URL}`);
   assert.match(href, /^https:\/\/(docs\.google\.com\/forms|forms\.gle)\//);
 });
 
-test('biến môi trường đặt chuỗi rỗng là CỐ Ý tắt thẻ, không rơi về hằng', async () => {
+test('không đặt biến môi trường thì feedbackFormHref() trả về hằng', () => {
+  delete process.env.NEXT_PUBLIC_FEEDBACK_URL;
+  assert.equal(feedbackFormHref(), feedbackHref(FEEDBACK_FORM_URL));
+});
+
+test('biến đặt chuỗi rỗng là CỐ Ý tắt nút, không rơi về hằng', () => {
+  process.env.NEXT_PUBLIC_FEEDBACK_URL = '';
+  assert.equal(feedbackFormHref(), null);
+  delete process.env.NEXT_PUBLIC_FEEDBACK_URL;
+});
+
+test('cả trang chủ lẫn trang khoá học đều gọi feedbackFormHref(), không tự đọc env', async () => {
   const { readFileSync } = await import('node:fs');
-  const src = readFileSync(new URL('../../src/app/page.tsx', import.meta.url), 'utf8');
-  // `||` sẽ nuốt chuỗi rỗng và dựng thẻ trở lại — đúng cái không muốn.
-  assert.match(src, /NEXT_PUBLIC_FEEDBACK_URL \?\? FEEDBACK_FORM_URL/);
-  assert.equal(feedbackHref(''), null);
+  for (const f of [
+    '../../src/app/page.tsx',
+    '../../src/app/(standalone)/courses/[courseId]/CourseDetail.tsx',
+  ]) {
+    const src = readFileSync(new URL(f, import.meta.url), 'utf8');
+    assert.match(src, /feedbackFormHref\(\)/, `${f} không gọi feedbackFormHref()`);
+    assert.doesNotMatch(
+      src,
+      /process\.env\.NEXT_PUBLIC_FEEDBACK_URL/,
+      `${f} tự đọc env — hai trang sẽ lệch nhau khi luật đổi`,
+    );
+  }
 });

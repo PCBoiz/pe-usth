@@ -20,6 +20,7 @@ import { findCourse, LEVEL_LABEL } from '@/lib/catalog';
 import CURRICULA_JSON from '@/lib/curricula.json';
 
 import styles from '@/components/CourseShell.module.css';
+import { feedbackFormHref } from '@/lib/feedback-link';
 
 type Curriculum = {
   requirements?: string[];
@@ -86,6 +87,10 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const ratingFill = Math.round((course.rating / 5) * 1000) / 10;
   // ?lesson= là chỉ số từ 0 (xem lesson/python/page.tsx); khóa khác bỏ qua tham số này.
   const startUrl = `${course.lessonUrl}?lesson=0`;
+  // Nút góp ý đứng ngay cạnh "Bắt đầu học" vì đây là trang người thử quay lại
+  // nhiều nhất; để tận trang chủ thì học xong phải lần ngược ra mới tìm thấy.
+  // Không có link hợp lệ thì không dựng nút — xem feedbackHref().
+  const feedback = feedbackFormHref();
 
   let flatIdx = 0;
   return (
@@ -130,6 +135,17 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                   <p className="edu-cd-subtitle">{course.subtitle}</p>
                   <div className="edu-cd-hero-cta">
                     <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}>▶ Bắt đầu học</a>
+                    {feedback && (
+                      <a
+                        className={`edu-cd-btn ${styles.feedbackBtn}`}
+                        href={feedback}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Khảo sát ẩn danh về khoá học, mở ở tab mới"
+                      >
+                        Góp ý cho chúng tôi
+                      </a>
+                    )}
                   </div>
                 </div>
                 <div className="edu-cd-hero-art">
