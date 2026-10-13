@@ -58,12 +58,17 @@ const PUBLISH = process.argv.includes('--publish');
 const BACKUP = process.argv.find((a) => a.startsWith('--backup='))?.slice('--backup='.length);
 const BUNDLE = join(__dirname, 'pe-v4', 'out-advanced', 'lessons.json');
 
+// Tên hiển thị của khoá, phải TRÙNG `frontend/src/lib/catalog.ts` (danh mục tĩnh
+// mà trang chủ/trang chi tiết đang đọc). 13/10/2026 đổi thành "Advanced Python"
+// và bỏ mọi chữ "mini-game" ở phần giới thiệu; `tag` bị bỏ HẲN vì trang chi tiết
+// không còn in dòng nhãn "MINI-GAME · NÂNG CAO". Khoá đã nằm trong DB thì đổi tên
+// bằng `scripts/rename-python-advanced.ts`, không phải seed lại.
+const TITLE = 'Advanced Python';
 const META = {
-  subtitle: '48 bài Python nâng cao học qua mini-game',
+  subtitle: '48 bài Python nâng cao, chạy ngay trong trình duyệt',
   description:
     'Process và subprocess, đa luồng, GUI Tkinter, SQL, NumPy, pandas, Matplotlib và dự án phân tích dữ liệu — ' +
-    'chạy Python ngay trong trình duyệt, học bằng game: ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng.',
-  tag: 'Mini-game',
+    'chạy Python ngay trong trình duyệt: ghép code rồi chạy thật, săn lỗi, sửa code và trận Boss cuối chặng.',
   image: 'static/images/python.webp',
 };
 
@@ -152,7 +157,7 @@ async function main() {
           await tx.course.create({
             data: {
               id: COURSE_ID,
-              title: 'Python Advanced',
+              title: TITLE,
               level: template!.level,
               rating: 0,
               lessonCount: TOTAL,
@@ -167,7 +172,9 @@ async function main() {
         } else {
           await tx.course.update({
             where: { id: COURSE_ID },
-            data: { lessonCount: TOTAL, contentMeta: meta, ...(PUBLISH ? { isPublished: true } : {}) },
+            // title cũng ghi lại: khoá đã tồn tại mang tên cũ thì seed phải kéo
+            // về cùng tên với catalog.ts, không để DB và trang lệch nhau.
+            data: { title: TITLE, lessonCount: TOTAL, contentMeta: meta, ...(PUBLISH ? { isPublished: true } : {}) },
           });
         }
         await tx.lesson.createMany({

@@ -119,7 +119,13 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
               {/* Hero */}
               <div className="edu-cd-hero">
                 <div className="edu-cd-hero-info">
-                  <span className="edu-cd-tag">{[course.tag, LEVEL_LABEL[course.level]].join(' · ')}</span>
+                  {/* Dòng nhãn chỉ hiện khi khoá khai `tag`. Khoá không khai thì
+                      bỏ CẢ dòng — trước đây ghép cứng `[tag, cấp độ].join(' · ')`
+                      nên khoá thiếu thẻ sẽ in ra "undefined · Nâng cao", mà bỏ
+                      riêng thẻ thì còn trơ " · Nâng cao" treo trên tiêu đề. */}
+                  {course.tag && (
+                    <span className="edu-cd-tag">{`${course.tag} · ${LEVEL_LABEL[course.level]}`}</span>
+                  )}
                   <h1 className="edu-cd-title">{course.title}</h1>
                   <p className="edu-cd-subtitle">{course.subtitle}</p>
                   <div className="edu-cd-hero-cta">

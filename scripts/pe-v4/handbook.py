@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Dựng sổ tay PDF cho giáo trình "Python nâng cao" (pe-v4).
+"""Dựng sổ tay PDF cho giáo trình "Advanced Python" (pe-v4).
 
 Vì sao có file này: đội làm motion-graphic/visualization ở ngoài không đọc được
 JSON studio-lesson/v1 và không có repo. Họ cần MỘT tài liệu in được, mỗi bài một
@@ -954,7 +954,7 @@ class HandbookDoc(BaseDocTemplate):
         canv.saveState()
         canv.setFont("HBSans", 7)
         canv.setFillColor(MUTED)
-        canv.drawString(MARGIN_X, PAGE_H - MARGIN_TOP + 7 * mm, "PYTHON NÂNG CAO / SỔ TAY NỘI DUNG")
+        canv.drawString(MARGIN_X, PAGE_H - MARGIN_TOP + 7 * mm, "ADVANCED PYTHON / SỔ TAY NỘI DUNG")
         canv.drawRightString(PAGE_W - MARGIN_X, PAGE_H - MARGIN_TOP + 7 * mm, doc.section[:70])
         canv.setStrokeColor(RULE)
         canv.line(MARGIN_X, PAGE_H - MARGIN_TOP + 5 * mm, PAGE_W - MARGIN_X, PAGE_H - MARGIN_TOP + 5 * mm)
@@ -984,7 +984,7 @@ class HandbookDoc(BaseDocTemplate):
 
 def cover_flowables(styles, n_lessons, n_modules, missing, build_date):
     f = [Spacer(1, 38 * mm)]
-    f.append(Paragraph("PYTHON NÂNG CAO · PE-V4", styles["cover_kicker"]))
+    f.append(Paragraph("ADVANCED PYTHON · PE-V4", styles["cover_kicker"]))
     f.append(Paragraph("Sổ tay nội dung giáo trình", styles["cover_title"]))
     f.append(
         Paragraph(
@@ -1038,7 +1038,7 @@ def build(out_dir: str, pdf_path: str, build_date: str) -> dict:
     doc = HandbookDoc(
         pdf_path,
         leftMargin=MARGIN_X, rightMargin=MARGIN_X, topMargin=MARGIN_TOP, bottomMargin=MARGIN_BOTTOM,
-        title="Python nâng cao · Sổ tay nội dung",
+        title="Advanced Python · Sổ tay nội dung",
         author="pe_usth / scripts/pe-v4/handbook.py",
         subject="Brief nội dung cho thiết kế visualization",
         invariant=1,  # không nhét timestamp vào PDF -> chạy lại ra file y hệt
@@ -1133,7 +1133,7 @@ def build(out_dir: str, pdf_path: str, build_date: str) -> dict:
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(description="Dựng sổ tay PDF giáo trình Python nâng cao (pe-v4)")
+    ap = argparse.ArgumentParser(description="Dựng sổ tay PDF giáo trình Advanced Python (pe-v4)")
     ap.add_argument("--out-dir", default=OUT_DIR, help="thư mục out của pe-v4")
     ap.add_argument("--pdf", default=DEFAULT_PDF, help="đường dẫn PDF đích")
     ap.add_argument("--date", default=BUILD_DATE, help="ngày build in trên bìa (giữ cố định để output tất định)")

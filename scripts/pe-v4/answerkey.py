@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Dựng BẢN ĐÁP ÁN PDF cho 20 bài ĐẦU của giáo trình "Python nâng cao" (pe-v4).
+"""Dựng BẢN ĐÁP ÁN PDF cho 20 bài ĐẦU của giáo trình "Advanced Python" (pe-v4).
 
 Vì sao có file này: buổi chạy thử với người học thật có giảng viên và cố vấn ngồi
 kèm. Họ phải trả lời được "sai ở đâu" ngay tại chỗ, mà không thể tự giải lại 20 bài
@@ -1064,7 +1064,7 @@ class AnswerKeyDoc(BaseDocTemplate):
         canv.setFont("HBSans", 7)
         canv.setFillColor(MUTED)
         canv.drawString(MARGIN_X, MARGIN_BOTTOM - 8 * mm,
-                        "Python nâng cao · bản dựng %s · nguồn scripts/pe-v4/out + out-advanced" % doc.build_date)
+                        "Advanced Python · bản dựng %s · nguồn scripts/pe-v4/out + out-advanced" % doc.build_date)
         canv.drawRightString(PAGE_W - MARGIN_X, MARGIN_BOTTOM - 8 * mm, "trang %d" % doc.page)
         canv.restoreState()
 
@@ -1091,7 +1091,7 @@ class AnswerKeyDoc(BaseDocTemplate):
 
 def cover_flowables(styles, entries, absent, build_date, only):
     f = [Spacer(1, 22 * mm)]
-    f.append(Paragraph("PYTHON NÂNG CAO · PE-V4 · 20 BÀI ĐẦU", styles["cover_kicker"]))
+    f.append(Paragraph("ADVANCED PYTHON · PE-V4 · 20 BÀI ĐẦU", styles["cover_kicker"]))
     f.append(Paragraph("Bản đáp án · 20 bài đầu", styles["cover_title"]))
     f.append(Paragraph("Dành cho giảng viên và cố vấn buổi chạy thử · %d/%d bài · bản dựng %s"
                        % (len(entries), len(SCOPE_CODES), build_date), styles["cover_sub"]))
@@ -1215,7 +1215,7 @@ def build(out_dir: str, adv_dir: str, pdf_path: str, build_date: str, only=None)
     doc = AnswerKeyDoc(
         pdf_path,
         leftMargin=MARGIN_X, rightMargin=MARGIN_X, topMargin=MARGIN_TOP, bottomMargin=MARGIN_BOTTOM,
-        title="Python nâng cao · Bản đáp án 20 bài đầu (không phát cho học viên)",
+        title="Advanced Python · Bản đáp án 20 bài đầu (không phát cho học viên)",
         author="pe_usth / scripts/pe-v4/answerkey.py",
         subject="Đáp án cho giảng viên và cố vấn buổi chạy thử",
         invariant=1,  # không nhét timestamp vào PDF -> chạy lại ra file y hệt

@@ -256,7 +256,7 @@ def main(argv=None) -> int:
         (OUT / 'lessons.json').write_text(json.dumps(packed, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         adv = dict(curriculum)
         adv['requirements'] = [
-            'Học qua mini-game: ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng',
+            'Học bằng cách ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng',
             *curriculum['requirements'],
         ]
         (OUT / 'curriculum-python-advanced.json').write_text(json.dumps(adv, ensure_ascii=False, indent=2) + '\n',

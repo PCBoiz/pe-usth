@@ -2,7 +2,7 @@
   "CURRICULA": {
     "python_advanced": {
       "requirements": [
-        "Học qua mini-game: ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng",
+        "Học bằng cách ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng",
         "Đã viết được hàm, vòng lặp, đọc/ghi file và class cơ bản bằng Python",
         "Trình duyệt có mạng để chạy Python (Pyodide) ngay trong bài; máy cài Python 3.12 để chạy thật subprocess, thread, Tkinter",
         "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"

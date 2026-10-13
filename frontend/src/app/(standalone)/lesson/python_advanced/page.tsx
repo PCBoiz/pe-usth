@@ -6,10 +6,13 @@ import StudioLesson from '@/components/python-studio/StudioLesson';
 // Cùng lý do với /lesson/python: Lighthouse SEO trừ điểm vì thiếu meta
 // description, mà tên bài chỉ có sau khi client tải content_json.
 export const metadata: Metadata = {
-  title: 'Bài học Python Advanced – Programming EDU',
+  // Tên khoá lấy đúng tên đang hiển thị ở danh mục (src/lib/catalog.ts):
+  // "Advanced Python", không còn chữ "mini-game" trong phần giới thiệu. Số bài
+  // là 48 (giáo trình pe-v4), mô tả cũ còn ghi 40 từ thời pe-v3.
+  title: 'Bài học Advanced Python – Programming EDU',
   description:
-    'Python Advanced: 40 bài luyện dưới dạng mini-game — ghép cặp, đúng/sai, '
-    + 'dò lỗi và trận boss cuối chặng, chấm ngay trong trình duyệt.',
+    'Advanced Python: 48 bài luyện tập — ghép cặp, đúng/sai, dò lỗi và trận '
+    + 'Boss cuối chặng, chấm ngay trong trình duyệt.',
 };
 
 const STUDIO_CSS = [

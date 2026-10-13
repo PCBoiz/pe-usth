@@ -3,10 +3,15 @@
  *
  * Vì sao tĩnh: mọi route `/api/courses*` của backend đều đòi JWT, mà giao diện
  * đăng nhập đã bị gỡ khỏi frontend. Đọc danh mục từ API thì khách nào cũng nhận
- * 401 và trang chủ trống trơn. Nội dung dưới đây chép từ `prisma/seed-courses.js`
- * (id, tiêu đề, phụ đề, thẻ, cấp độ, thời lượng) và số bài lấy thẳng từ
- * `curricula.json` — cùng nguồn trang chi tiết đang dùng để vẽ giáo trình, nên
- * hai chỗ không thể lệch số bài.
+ * 401 và trang chủ trống trơn. Nội dung dưới đây chép từ seed (id, tiêu đề, phụ
+ * đề, cấp độ, thời lượng) và số bài lấy thẳng từ `curricula.json` — cùng nguồn
+ * trang chi tiết đang dùng để vẽ giáo trình, nên hai chỗ không thể lệch số bài.
+ *
+ * Seed nào là nguồn: `prisma/seed-courses.js` KHÔNG tạo `python_advanced`. Tiêu
+ * đề khoá này nằm ở `scripts/seed-python-advanced-v4.ts` (`title` + `META`:
+ * subtitle/description ghi vào `courses.content_meta`), còn tên đang hiển thị
+ * trong DB Neon thì đổi bằng `scripts/rename-python-advanced.ts`. Sửa tên khoá
+ * là phải sửa cả ba chỗ, không thì lần seed sau kéo tên cũ trở lại.
  *
  * Khoá `python` cơ bản đã gỡ khỏi trang (10/2026): chỉ còn Python Advanced, giáo
  * trình 48 bài từ scripts/pe-v4 (đồng bộ bằng scripts/pe-v4/sync_curricula.py).
@@ -37,7 +42,13 @@ export type CatalogCourse = {
   title: string;
   subtitle: string;
   description: string;
-  tag: string;
+  /**
+   * Nhãn ngắn in hoa trên tiêu đề ở trang chi tiết, ghép với cấp độ thành
+   * "THẺ · NÂNG CAO". KHÔNG bắt buộc: khoá nào không khai thẻ thì CourseDetail
+   * bỏ HẲN dòng nhãn (13/10/2026 — bỏ nhãn "MINI-GAME · NÂNG CAO" của
+   * python_advanced; để lại mỗi "NÂNG CAO" là còn trơ nửa dòng, nên cả dòng đi).
+   */
+  tag?: string;
   level: Level;
   duration: string;
   lessons: number;
@@ -69,14 +80,14 @@ function lessonCount(id: string, fallback: number): number {
 export const COURSES: CatalogCourse[] = [
   {
     id: 'python_advanced',
-    label: 'Python Mini-game',
-    title: 'Python Advanced — học qua mini-game',
-    subtitle: '48 bài Python nâng cao học qua mini-game',
+    label: 'Advanced Python',
+    title: 'Advanced Python',
+    subtitle: '48 bài Python nâng cao, chạy ngay trong trình duyệt',
     description:
       'Process và subprocess, đa luồng, GUI Tkinter, SQL, NumPy, pandas, Matplotlib và dự án phân tích '
-      + 'dữ liệu — chạy Python ngay trong trình duyệt, học bằng game: ghép code rồi chạy thật, săn lỗi, '
-      + 'sửa code và trận Boss cuối chặng.',
-    tag: 'MINI-GAME',
+      + 'dữ liệu — chạy Python ngay trong trình duyệt: ghép code rồi chạy thật, săn lỗi, sửa code và '
+      + 'trận Boss cuối chặng.',
+    // Không khai `tag`: xem chú thích ở CatalogCourse.tag.
     level: 'advanced',
     duration: '~48 giờ',
     lessons: lessonCount('python_advanced', 48),
