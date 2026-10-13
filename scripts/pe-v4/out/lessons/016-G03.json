@@ -38,35 +38,27 @@
       "theory": [
         {
           "title": "Định nghĩa: widget nhập và biến Tk",
-          "body": "Slide liệt kê năm widget thu dữ liệu: Entry (nhập chữ, show=\"*\" cho mật khẩu), Checkbutton (bật/tắt), Radiobutton (chọn MỘT trong nhiều), Listbox (danh sách chọn được), ttk.Combobox (danh sách thả xuống). Chúng không giữ giá trị trong biến Python thường mà qua BIẾN ĐIỀU KHIỂN của Tk: StringVar, IntVar, DoubleVar, BooleanVar — đọc bằng get(), đặt bằng set()."
-        },
-        {
-          "title": "Ví dụ: Radiobutton dùng chung một biến",
-          "body": "radioValue = tk.StringVar(value=\"op1\"); tk.Radiobutton(window, variable=radioValue, text=\"Radiobutton option 1\", value=\"op1\") và một nút nữa với value=\"op2\". Slide ghi rõ \"Text != Value\": chữ hiện cho người đọc, value là thứ radioValue.get() trả về. Hai nút cùng variable mới thành một nhóm; khác variable thì bấm cái nào cũng không tắt cái kia."
+          "body": "Entry (show=\"*\" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — đọc bằng get()."
         },
         {
           "title": "Mỗi widget một cách đọc",
           "bullets": [
-            "Entry: entry.get() luôn trả CHUỖI — \"8.5\" chưa phải số, phải float() trong try/except",
-            "Checkbutton: gắn BooleanVar, var.get() trả True/False",
-            "Radiobutton: nhóm chung một StringVar, var.get() trả value của nút đang chọn",
-            "Listbox: insert(tk.END, chuỗi) thêm cuối, size() đếm dòng, get(tk.ACTIVE) lấy mục active",
-            "ttk.Combobox(values=[...]): get() lấy mục đang chọn; state=\"readonly\" chặn gõ chữ lạ"
+            "Entry: get() luôn trả CHUỖI — \"8.5\" chưa phải số, phải float() trong try/except",
+            "Hai Radiobutton cùng nhóm phải dùng CHUNG một StringVar, mỗi nút một value",
+            "Checkbutton → BooleanVar; ttk.Combobox(state=\"readonly\") chặn gõ chữ lạ"
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
-            "Form nhập điểm, phiếu khảo sát, hộp thoại lọc dữ liệu: mỗi ô là một widget nhập",
-            "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ cho trước",
-            "Kiểm tra TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
-            "Studio dựng widget giả: bộ chấm set() biến rồi invoke() nút thay cho người gõ",
-            "Trên máy thật hãy tự gõ \"abc\" vào ô điểm để xem nhánh báo lỗi chạy đúng chưa"
+            "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ",
+            "Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
+            "Studio không vẽ cửa sổ: bộ chấm set() biến rồi invoke() nút thay cho người gõ"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Hình xếp năm widget nhập thành một cột, mỗi widget nối sang ô biến điều khiển của nó (StringVar, BooleanVar…). Từ biến có một mũi tên get() đi ra, luôn mang giá trị CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar — đó là chi tiết hay bị vẽ sai nhất. Cuối sơ đồ là chốt kiểm tra: hợp lệ thì dùng, sai thì messagebox.",
+          "body": "Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt kiểm tra.",
           "figure": {
             "src": "/static/anim/G03-input-widgets.svg",
             "caption": "Widget nhập, biến điều khiển và đường đi của get()",

@@ -37,36 +37,28 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: mainloop là vòng lặp chặn",
-          "body": "Slide gọi mainloop() là \"a blocking method\": nó không trả về mà quay vòng — lấy một sự kiện (bấm, gõ, chuột, hẹn giờ), gọi hàm xử lý tương ứng, vẽ lại, rồi lấy sự kiện tiếp theo. Mọi callback của bạn chạy BÊN TRONG vòng lặp đó, trên cùng một thread. Vòng lặp chỉ thoát khi cửa sổ chính đóng."
-        },
-        {
-          "title": "Vì sao cửa sổ \"treo\"",
-          "body": "Vòng lặp đang ở trong callback của bạn thì không lấy được sự kiện nào khác: không vẽ lại, không nhận bấm, hệ điều hành báo \"Not responding\". Một vòng lặp tính 5 giây, một time.sleep, một lời gọi mạng — đều làm đúng như vậy. Cửa sổ không hỏng; nó chỉ đang xếp hàng chờ callback của bạn trả về."
+          "title": "Định nghĩa: mainloop là vòng chặn",
+          "body": "mainloop() không trả về mà quay vòng: lấy một sự kiện, gọi hàm xử lý, vẽ lại, rồi lấy tiếp. Callback của bạn chạy BÊN TRONG vòng lặp đó, nên callback tính 5 giây là 5 giây cửa sổ treo."
         },
         {
           "title": "Ba luật khi ghép thread vào Tkinter",
           "bullets": [
             "Việc dài chạy ở worker thread; callback chỉ start() rồi trả về ngay",
-            "Worker KHÔNG đụng widget — Tk chỉ an toàn với thread đang chạy mainloop",
-            "Kết quả đi về qua queue.Queue, cấu trúc an toàn giữa các thread",
-            "Thread GUI đọc queue trong hàm được after(ms, f) hẹn: Empty thì hẹn lại, có thì cập nhật",
-            "Không join() trong callback: join chặn thread GUI y hệt làm việc dài trực tiếp"
+            "Worker KHÔNG đụng widget — chỉ put kết quả vào queue.Queue",
+            "Thread GUI đọc queue trong hàm after(ms) hẹn: Empty thì hẹn lại, đừng join()"
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
-            "Lưu file lớn, nén, gọi API, quét thư mục — việc có thể mất vài giây",
-            "Thanh tiến độ và nút Huỷ chỉ chạy được khi event loop còn rảnh để vẽ lại",
-            "after(ms, f) cũng là cách làm đồng hồ, tự động làm mới, hoạt ảnh nhẹ — không cần thread",
-            "Studio mô phỏng: worker chạy xong ngay lúc start(), after() chỉ xếp vào hàng đợi rồi bộ chấm chạy thay event loop — nên không thấy được cảnh treo",
-            "Chạy file trên máy với n lớn: bản không thread sẽ đứng, bản có thread vẫn kéo được cửa sổ"
+            "Lưu file lớn, nén, gọi API: nút Huỷ chỉ bấm được khi event loop còn rảnh",
+            "after(ms, f) cũng làm đồng hồ, tự làm mới, hoạt ảnh nhẹ — không cần thread",
+            "Studio không vẽ cửa sổ: worker xong ngay khi start(), bộ chấm chạy hàng đợi after()"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Hình có hai làn. Làn trên là thread GUI: mainloop quay vòng lấy sự kiện; callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên vòng lặp quay tiếp. Làn dưới là worker: tính lâu, xong thì put kết quả vào Queue. Nối hai làn chỉ có một mũi tên duy nhất đi qua Queue; chấm tròn trên làn GUI là các lần after(100) đọc queue, lần cuối mới đổi chữ Label.",
+          "body": "Làn trên là thread GUI: callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên mainloop quay tiếp. Làn dưới là worker; nối hai làn chỉ có một mũi tên qua Queue, chấm tròn là các lần after(100).",
           "figure": {
             "src": "/static/anim/G06-event-loop.svg",
             "caption": "Event loop rảnh tay: worker tính, Queue chuyển, after() cập nhật",

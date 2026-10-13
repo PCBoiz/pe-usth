@@ -38,15 +38,14 @@
       "theory": [
         {
           "title": "Định nghĩa: race condition",
-          "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: cùng một chương trình, lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm vào dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
+          "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
         },
         {
-          "title": "Lock: đúng những gì slide cho",
+          "title": "Lock: một thread một lúc",
           "bullets": [
             "threading.Lock(), còn gọi là mutex: mỗi lúc chỉ một thread giữ được",
-            "lock.acquire() … lock.release(): tự quản, và dễ quên release",
             "with lock: acquire/release tự động, kể cả khi khối ném exception",
-            "Slide cảnh báo thẳng: có Lock rồi vẫn phải coi chừng race — Lock đặt sai chỗ là vô dụng"
+            "Có Lock vẫn race nếu đặt sai chỗ — khoá phải trùm cả đoạn đọc-sửa-ghi"
           ]
         },
         {
@@ -54,22 +53,21 @@
           "bullets": [
             "Số dư, bộ đếm, tồn kho: mọi lần đọc-sửa-ghi một giá trị dùng chung",
             "Kiểm tra rồi hành động (đủ tiền thì trừ) phải nằm TRỌN trong một lần giữ khoá",
-            "File hay kết nối dùng chung: cho một thread ghi một lúc",
-            "Không cần Lock khi đã dùng queue.Queue (T06) — bên trong nó đã khoá sẵn"
+            "Không cần Lock khi đã dùng queue.Queue (T06) — bên trong đã khoá sẵn"
           ]
         },
         {
           "title": "Deadlock: vì sao và tránh thế nào",
-          "body": "Deadlock là khi các bên chờ nhau mãi, không ai tiến được: thread 1 giữ A chờ B, thread 2 giữ B chờ A. Slide xếp deadlock vào nhóm \"vì sao KHÔNG nên đa luồng\", cùng với nondeterministic và chi phí đồng bộ.",
+          "body": "Deadlock là khi các bên chờ nhau mãi, không ai tiến được: thread 1 giữ A chờ B, thread 2 giữ B chờ A.",
           "bullets": [
-            "Thống nhất một thứ tự khoá chung cho cả chương trình, mọi thread khoá theo đúng thứ tự đó",
-            "Giữ khoá càng ngắn càng tốt; đừng đặt việc chậm (ghi file, in) trong critical section",
+            "Thống nhất một thứ tự khoá chung, mọi thread khoá theo đúng thứ tự đó",
+            "Giữ khoá càng ngắn càng tốt; đừng ghi file hay in trong critical section",
             "Đừng join một worker trong lúc đang giữ lock mà worker đó cần"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Nửa trên là lần chạy KHÔNG khoá: hai mũi tên đọc cùng chỉ vào một ô balance = 100, hai mũi tên ghi cùng đặt 101 — một lần cộng biến mất, đó là \"lost update\". Nửa dưới có Lock: thread thứ hai dừng ở hàng rào tới khi thread thứ nhất rời khối with, nên nó đọc 101 và ghi 102. Trong Studio thì nửa trên không bao giờ xảy ra vì các thread chạy lần lượt; chạy file trên máy nhiều lần mới thấy con số nhảy.",
+          "body": "Nửa trên KHÔNG khoá: hai mũi tên đọc cùng ô balance = 100, hai mũi tên ghi cùng đặt 101 — mất một lần cộng. Nửa dưới có Lock nên thread sau đọc 101, ghi 102; trong Studio nửa trên không xảy ra vì thread chạy lần lượt.",
           "figure": {
             "src": "/static/anim/T05-race-lock.svg",
             "caption": "Mất cập nhật khi không khoá, và hàng rào Lock sửa nó thế nào",

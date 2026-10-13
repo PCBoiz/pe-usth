@@ -38,30 +38,28 @@
       "theory": [
         {
           "title": "Định nghĩa",
-          "body": "Slide nói gọn: \"process is a program in execution state (active)\". Program là mã THỤ ĐỘNG nằm trên đĩa — không có gì đang chạy. Process là trạng thái thực thi đang hoạt động của mã đó, và một program có thể đang ứng với nhiều process cùng lúc.",
+          "body": "Program là mã thụ động nằm trên đĩa; process là MỘT lần chạy program đó, đang hoạt động. Cùng một program có thể đang ứng với nhiều process một lúc.",
           "bullets": [
             "PID: số hệ điều hành cấp cho từng process, không cấp cho file .py",
             "PPID: PID của process cha đã tạo ra nó",
-            "Trạng thái thực thi gồm context (program counter, thanh ghi), file descriptor và vùng nhớ",
-            "Vùng nhớ chia ba phần: process stack, data section, heap"
+            "Mỗi process có vùng nhớ riêng: process stack, data section, heap"
           ]
         },
         {
           "title": "Ví dụ: cây process trên máy thật",
-          "body": "Lệnh pstree -A ở slide in ra init-+-cron, |-sshd---bash---pstree, |-screen---bash---python2… Mỗi nhánh là một process có PID riêng; bash tạo python, python tạo tiếp con thì thành cháu. TABLE của bài là một lát cắt của cây đó: ba dòng mang tên \"python\" là ba process của cùng một program."
+          "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program."
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
             "ps / pstree / Task Manager: xem process nào đang chạy và là con của ai",
-            "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào khi chạy nhiều bản song song",
-            "Giám sát: thấy process treo thì lần theo PPID để tìm cả nhánh cần dừng",
-            "Studio chạy trong trình duyệt nên PID là số GIẢ (ổn định, con khác cha); máy thật mỗi lần một số"
+            "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào",
+            "Studio cho PID GIẢ (ổn định, con khác cha); máy thật mỗi lần một số"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Bên trái là một file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ chính file ấy: mỗi khối có PID riêng và một vùng nhớ riêng (text, data, heap, stack), nên sửa biến trong khối này không đụng tới khối kia. Ba mũi tên 0/1/2 ở đáy mỗi khối là file descriptor stdin, stdout, stderr.",
+          "body": "Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.",
           "figure": {
             "src": "/static/anim/P01-program-vs-process.svg",
             "caption": "Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng",

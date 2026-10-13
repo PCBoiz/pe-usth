@@ -38,31 +38,31 @@
       "theory": [
         {
           "title": "Năm bước dùng thread",
-          "body": "Slide rút cách dùng thread thành năm bước. Bài này đi đúng năm bước đó, nhưng cho nhiều worker một lúc chứ không phải một.",
+          "body": "Cách dùng thread gọn lại thành năm bước. Bài này đi đúng năm bước đó, chỉ khác là cho nhiều worker một lúc chứ không phải một.",
           "bullets": [
-            "1. Dùng module: import threading",
-            "2. Mô tả việc: Thread(target=hàm, args=…), hoặc class con của Thread (T03)",
-            "3. Tạo instance — mới chỉ là object mô tả, chưa có dòng thực thi nào",
-            "4. Khởi chạy bằng start(): hệ điều hành cấp một dòng thực thi mới cho việc đó",
+            "1–2. import threading, rồi Thread(target=hàm, args=…) mô tả việc",
+            "3–4. Tạo instance (chưa có dòng thực thi nào), start() mới sinh thread",
             "5. [tuỳ chọn] join(): chờ thread kết thúc rồi mới đi tiếp"
           ]
         },
         {
           "title": "start() chứ không phải run()",
-          "body": "start() là chỗ DUY NHẤT sinh ra thread, và nó không nhận đối số — đối số đã đưa lúc tạo object. Gọi run() hay gọi thẳng hàm target chỉ là một lời gọi hàm bình thường trong thread hiện tại: kết quả vẫn đúng nhưng tuần tự, không được gì. Một Thread chỉ start được MỘT lần; muốn chạy lại phải tạo object mới."
+          "body": "start() là chỗ DUY NHẤT sinh ra thread, và nó không nhận đối số — đối số đã đưa lúc tạo object. Gọi run() hay gọi thẳng hàm target chỉ là một lời gọi hàm bình thường trong thread hiện tại: kết quả vẫn đúng nhưng tuần tự.",
+          "bullets": [
+            "Một Thread chỉ start() được MỘT lần; muốn chạy lại phải tạo object mới"
+          ]
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
             "Tải nhiều URL, đọc nhiều file: phần lớn thời gian là chờ nên các lần chờ chồng lên nhau",
-            "Giao diện: thread nền làm việc lâu, thread UI vẫn vẽ lại được (G06)",
             "Máy chủ: mỗi kết nối một thread, đúng mô hình Apache worker ở T01",
             "Chỉ đáng dùng khi CHỜ là chính — tính Python thuần thì vướng GIL (T04)"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Trục ngang là thời gian. Main thread chạy liền mạch; mỗi start() rẽ ra một đường mới bắt đầu đúng tại thời điểm đó, nên hai worker CHỒNG LÊN nhau. join() là đoạn main đứng chờ: đường main chỉ đi tiếp khi đường worker đã chạm vạch kết thúc. So hai cách xếp: start hết rồi join hết thì hai worker song song; start–join từng cái thì chúng nối đuôi, mất hết lợi ích. Studio luôn cho kiểu nối đuôi.",
+          "body": "Mỗi start() rẽ ra một đường mới ngay tại thời điểm đó, nên hai worker CHỒNG LÊN nhau; join() là đoạn main đứng chờ. Start hết rồi join hết thì song song; start–join từng cái thì nối đuôi — Studio luôn cho kiểu nối đuôi.",
           "figure": {
             "src": "/static/anim/T02-start-join.svg",
             "caption": "start() rẽ nhánh, join() chờ nhánh về",

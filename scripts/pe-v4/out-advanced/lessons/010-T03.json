@@ -38,11 +38,11 @@
       "theory": [
         {
           "title": "Định nghĩa: hai cách tạo thread",
-          "body": "Slide dạy cách OOP trước: định nghĩa một class con của threading.Thread, override run() — run() chính là việc sẽ chạy trong thread — và [tuỳ chọn] viết __init__() để nhận tham số. Cách Thread(target=hàm) nằm ở phần Extras, slide gọi là \"simple threading without subclassing\". Hai cách tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả của riêng nó."
+          "body": "Cách OOP: định nghĩa class con của threading.Thread và override run() — run() chính là việc sẽ chạy trong thread. Cách Thread(target=hàm) tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả riêng."
         },
         {
-          "title": "Ví dụ trong slide",
-          "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10) — đối số đi vào __init__ — rồi .start() không đối số, rồi .join().",
+          "title": "Ví dụ: worker có tham số riêng",
+          "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10), rồi .start(), rồi .join().",
           "bullets": [
             "threading.Thread.__init__(self) và super().__init__() là cùng một việc",
             "Bỏ lời gọi đó thì start() hỏng: trạng thái nội bộ của Thread chưa được dựng"
@@ -51,15 +51,14 @@
         {
           "title": "Dùng ở đâu",
           "bullets": [
-            "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm riêng",
+            "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm",
             "Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()",
-            "Thread không trả giá trị — không có chỗ nào nhận được return của run()",
-            "Việc một lần, không trạng thái thì target=hàm gọn hơn; đừng dựng class cho có"
+            "Thread không trả giá trị — không chỗ nào nhận được return của run()"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Bên trái là class: __init__ nhận tham số, gọi super().__init__() rồi gán các self.<thuộc tính>; run() đọc chúng và ghi kết quả ngược lại vào self. Mũi tên giữa hình là điểm dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run() — start() là người gọi run(), không ai gọi run() bằng tay. Bên phải: hai instance là hai object riêng, nên hai self.total không lẫn.",
+          "body": "Bên trái là class: __init__ gọi super().__init__() rồi gán self.<thuộc tính>, run() đọc chúng và ghi kết quả vào self. Mũi tên giữa hình là chỗ dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run().",
           "figure": {
             "src": "/static/anim/T03-subclass-thread.svg",
             "caption": "Subclass Thread: __init__ nhận dữ liệu, run() là việc của thread",

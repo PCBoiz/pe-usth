@@ -38,31 +38,28 @@
       "theory": [
         {
           "title": "Định nghĩa: hai cách tạo process",
-          "body": "Chương Multi Processing của slide dạy subprocess — chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một process riêng. Hai module, hai bộ API, không phải hai tên của cùng một thứ.",
+          "body": "subprocess chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một process riêng — hai module, hai bộ API.",
           "bullets": [
             "Process(target=hàm, args=(…)) rồi start(), join() — dùng y như Thread",
-            "Worker phải là def ở cấp module: con tìm lại hàm theo tên, nên lambda không dùng được",
-            "Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua",
-            "Trên Windows/macOS con khởi động bằng cách import lại file, nên cần if __name__ == \"__main__\":"
+            "Worker phải là def ở cấp module: con tìm hàm theo tên nên lambda không được",
+            "Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua"
           ]
         },
         {
           "title": "Ví dụ: bộ nhớ không dùng chung",
-          "body": "Slide mô tả fork() là \"clone\" process cha trừ process id — clone, nghĩa là BẢN SAO. Worker chạy counter += 1 hay ghi vào một dict toàn cục chỉ sửa bản của nó; cha đọc lại vẫn thấy số cũ, dict vẫn rỗng. Đây đúng là chỗ process khác thread: thread trong cùng process dùng chung bộ nhớ, process thì không."
+          "body": "fork() tạo một BẢN SAO của process cha, nên worker chạy counter += 1 hay ghi dict toàn cục chỉ sửa bản của nó — cha đọc lại vẫn thấy số cũ. Đây là chỗ process khác thread: thread cùng process thì dùng chung bộ nhớ."
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
-            "Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn như thread",
-            "Chia một tập dữ liệu thành phần, mỗi process một phần, gom kết quả qua Queue",
-            "Cô lập rủi ro: một worker chết không kéo sập cả chương trình",
-            "Giá phải trả: tạo process đắt hơn tạo thread, và mọi thứ gửi đi đều phải pickle được",
-            "Studio mô phỏng multiprocessing: target chạy khi start() trên bản sao, Queue là kênh chung"
+            "Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn",
+            "Giá phải trả: tạo process đắt hơn thread, mọi thứ gửi đi phải pickle được",
+            "Studio mô phỏng multiprocessing: target chạy khi start(), Queue là kênh chung"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Ba hộp: cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối thẳng vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue: mỗi con put một cặp vào hàng, cha get ra đủ số cặp rồi mới join. Thứ tự lấy ra không nhất thiết theo thứ tự start — vì thế phải gom theo khoá n, không theo chỉ số.",
+          "body": "Cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue, và thứ tự lấy ra không nhất thiết theo thứ tự start.",
           "figure": {
             "src": "/static/anim/P07-process-queue.svg",
             "caption": "Hai process con gửi kết quả về cha qua Queue; bộ nhớ không dùng chung",

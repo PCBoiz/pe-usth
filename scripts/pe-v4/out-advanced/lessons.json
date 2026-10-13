@@ -41,30 +41,28 @@
           "theory": [
             {
               "title": "Định nghĩa",
-              "body": "Slide nói gọn: \"process is a program in execution state (active)\". Program là mã THỤ ĐỘNG nằm trên đĩa — không có gì đang chạy. Process là trạng thái thực thi đang hoạt động của mã đó, và một program có thể đang ứng với nhiều process cùng lúc.",
+              "body": "Program là mã thụ động nằm trên đĩa; process là MỘT lần chạy program đó, đang hoạt động. Cùng một program có thể đang ứng với nhiều process một lúc.",
               "bullets": [
                 "PID: số hệ điều hành cấp cho từng process, không cấp cho file .py",
                 "PPID: PID của process cha đã tạo ra nó",
-                "Trạng thái thực thi gồm context (program counter, thanh ghi), file descriptor và vùng nhớ",
-                "Vùng nhớ chia ba phần: process stack, data section, heap"
+                "Mỗi process có vùng nhớ riêng: process stack, data section, heap"
               ]
             },
             {
               "title": "Ví dụ: cây process trên máy thật",
-              "body": "Lệnh pstree -A ở slide in ra init-+-cron, |-sshd---bash---pstree, |-screen---bash---python2… Mỗi nhánh là một process có PID riêng; bash tạo python, python tạo tiếp con thì thành cháu. TABLE của bài là một lát cắt của cây đó: ba dòng mang tên \"python\" là ba process của cùng một program."
+              "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
                 "ps / pstree / Task Manager: xem process nào đang chạy và là con của ai",
-                "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào khi chạy nhiều bản song song",
-                "Giám sát: thấy process treo thì lần theo PPID để tìm cả nhánh cần dừng",
-                "Studio chạy trong trình duyệt nên PID là số GIẢ (ổn định, con khác cha); máy thật mỗi lần một số"
+                "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào",
+                "Studio cho PID GIẢ (ổn định, con khác cha); máy thật mỗi lần một số"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Bên trái là một file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ chính file ấy: mỗi khối có PID riêng và một vùng nhớ riêng (text, data, heap, stack), nên sửa biến trong khối này không đụng tới khối kia. Ba mũi tên 0/1/2 ở đáy mỗi khối là file descriptor stdin, stdout, stderr.",
+              "body": "Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.",
               "figure": {
                 "src": "/static/anim/P01-program-vs-process.svg",
                 "caption": "Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng",
@@ -571,32 +569,28 @@
           "theory": [
             {
               "title": "Định nghĩa: năm trạng thái",
-              "body": "Slide \"Process States\" định nghĩa đúng năm trạng thái và các sự kiện chuyển. Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường — mọi cặp khác không có nghĩa.",
+              "body": "Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường chuyển — mọi cặp (trạng thái, sự kiện) khác đều không có nghĩa.",
               "bullets": [
-                "new: process vừa được tạo",
-                "ready: chờ được scheduler giao cho một processor",
-                "running: đang thực thi lệnh",
-                "waiting: đang chờ một sự kiện (thường là I/O) xảy ra",
+                "new: vừa được tạo — ready: chờ scheduler giao cho một processor",
+                "running: đang thực thi lệnh — waiting: đang chờ một sự kiện I/O",
                 "terminated: đã chạy xong"
               ]
             },
             {
               "title": "Ví dụ: fork rồi exec trên UNIX",
-              "body": "Slide nhấn: process mới KHÔNG được tạo từ con số không, mà qua hai bước. fork() nhân bản process đang chạy — open file, thanh ghi, vùng nhớ đều giống, TRỪ process id. Cha nhận về PID của con, con nhận 0, nhờ vậy if (pid == 0) tách được hai nhánh. Con gọi exec() để thay chương trình (PID giữ nguyên), còn cha gọi wait() để thu kết quả."
+              "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
                 "subprocess trên Linux làm đúng việc đó: fork rồi exec trong process con",
-                "Windows không có fork; nó tạo process bằng CreateProcess — WinExec là API cũ, đã deprecated",
                 "wait() để lấy exit code, và để con đã xong không nằm lại thành zombie",
-                "os.fork KHÔNG tồn tại trên Windows; trong Studio subprocess cũng chỉ là bản mô phỏng",
-                "Mọi thứ chạy lệnh hộ bạn — shell, CI runner, máy chấm — đều dựng trên chuỗi tạo–chờ–thu mã này"
+                "Windows không có fork (dùng CreateProcess); Studio chỉ mô phỏng subprocess"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN. Chấm đen là lúc process ra đời, vòng tròn viền là lúc nó biến mất. Chú ý hai mũi tên rời khỏi running: interrupt (hết time slice) và io_wait (phải chờ). Cả hai nhánh đều quay về ready chứ không về thẳng running — ai chạy tiếp là quyền của scheduler.",
+              "body": "Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN; chấm đen là lúc process ra đời, vòng tròn viền là lúc nó biến mất. Hai mũi tên rời running — interrupt và io_wait — đều quay về ready, không về thẳng running.",
               "figure": {
                 "src": "/static/anim/P02-lifecycle.svg",
                 "caption": "Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng",
@@ -1096,30 +1090,28 @@
           "theory": [
             {
               "title": "Định nghĩa: scheduler làm gì",
-              "body": "Scheduler trả lời hai câu hỏi slide đặt ra: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó biết danh sách process, trạng thái và thông tin thống kê của từng process, rồi chọn theo độ ưu tiên.",
+              "body": "Scheduler trả lời hai câu: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó dựa vào trạng thái và số liệu thống kê của từng process rồi chọn theo độ ưu tiên.",
               "bullets": [
-                "Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy — Round Robin thuộc nhóm này",
-                "Non-preemption (cooperation): process tự nguyện nhường CPU",
-                "Short-term scheduler đổi process sau vài mili-giây; long-term tính bằng giây/phút cho batch job",
+                "Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)",
+                "Non-preemption: process tự nguyện nhường CPU",
                 "CPU-bound chủ yếu tính toán; I/O-bound chủ yếu chờ đĩa, mạng, máy in"
               ]
             },
             {
-              "title": "Ví dụ: ba hàng đợi và bảng thuật toán",
-              "body": "Slide chia process theo hàng đợi: job queue (vừa vào hệ thống, còn trên đĩa), ready queue (đã ở bộ nhớ chính, chờ CPU), device queue (chờ một thiết bị I/O) — đổi trạng thái là chuyển hàng. Bảng so sánh: FCFS và SJF không preempt; SRTF và Round Robin có; MLQ và MLFQ chia nhiều hàng con, khác nhau ở chỗ process có được chuyển hàng hay không."
+              "title": "Ví dụ: ba hàng đợi",
+              "body": "Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không preempt; SRTF và Round Robin có."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Giải thích vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt",
-                "Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch; lớn thì ngược lại",
-                "Đọc số đo: bảng thuật toán cân nhắc thời gian chờ ω và thời gian phản hồi ρ",
-                "round_robin của bài là MÔ PHỎNG bằng Python thuần, không đụng tới scheduler thật của máy"
+                "Vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt",
+                "Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch",
+                "round_robin của bài là MÔ PHỎNG, không đụng scheduler thật của máy"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hai cột ngoài là hai process, cột giữa là hệ điều hành. A đang chạy thì có interrupt: CPU rời A, lưu ngữ cảnh của A vào PCB0, nạp ngữ cảnh của B từ PCB1, rồi B mới chạy. Khoảng tô đậm giữa hai đoạn mang nhãn \"overhead\" — trong khoảng đó không process nào làm được việc của mình, nên đổi càng nhiều lần càng tốn.",
+              "body": "Hai cột ngoài là hai process, cột giữa là hệ điều hành: có interrupt thì CPU lưu ngữ cảnh A vào PCB0, nạp ngữ cảnh B từ PCB1, rồi B mới chạy. Khoảng tô đậm nhãn \"overhead\" là lúc không process nào làm được việc của mình.",
               "figure": {
                 "src": "/static/anim/P03-context-switch.svg",
                 "caption": "Context switch: lưu PCB của process cũ, nạp PCB của process mới",
@@ -1661,30 +1653,28 @@
           "theory": [
             {
               "title": "Định nghĩa: ba luồng chuẩn",
-              "body": "Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định cả ba nối với terminal — bàn phím vào, màn hình ra — nên trên màn hình chúng trông như một, dù thực ra là ba đường riêng, đổi đích được độc lập.",
+              "body": "Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định cả ba nối với terminal nên trông như một, nhưng là ba đường riêng, đổi đích được độc lập.",
               "bullets": [
                 "stdin (0): đầu vào — input() và sys.stdin đọc từ đây",
                 "stdout (1): KẾT QUẢ — print(x) ghi vào đây",
-                "stderr (2): báo lỗi và cảnh báo — print(x, file=sys.stderr)",
-                "Mỗi đầu có thể trỏ tới terminal, một file, hoặc một pipe sang process khác"
+                "stderr (2): báo lỗi và cảnh báo — print(x, file=sys.stderr)"
               ]
             },
             {
-              "title": "Ví dụ: bốn cách nối của slide",
-              "body": "Slide vẽ cùng một hộp Process với bốn cấu hình. (1) Bàn phím → process → màn hình. (2) bc < input.txt: stdin lấy từ file. (3) ls -la > out.txt: stdout ghi ra file, còn stderr vẫn ra màn hình. (4) ps aux | grep term: stdout của process 1 thành stdin của process 2 qua một pipe, còn stderr của cả hai vẫn về màn hình."
+              "title": "Ví dụ: ba cách đổi đích",
+              "body": "bc < input.txt đổi stdin sang file; ls -la > out.txt đổi stdout sang file mà stderr vẫn ra màn hình. ps aux | grep term nối stdout của process 1 vào stdin của process 2 qua một pipe."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Pipeline shell và CI: mỗi công cụ đọc stdin, ghi kết quả ra stdout nên ghép được với nhau",
-                "Giữ stderr riêng để log lỗi không trộn vào dữ liệu đang chuyển tiếp cho bước sau",
-                "Trong Python: subprocess thay terminal bằng PIPE để cha đọc được đầu ra của con",
-                "Studio không có shell nên không viết được | hay >; nó mô phỏng ba luồng riêng cho mỗi con"
+                "Pipeline shell và CI: mỗi công cụ đọc stdin, ghi ra stdout nên ghép được",
+                "Giữ stderr riêng để log lỗi không trộn vào dữ liệu chuyển cho bước sau",
+                "Studio không có shell nên không viết được | hay >; nó mô phỏng ba luồng"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hộp giữa là process. Mũi tên vào bên trái là stdin (0); hai mũi tên ra là stdout (1) và stderr (2) — để ý stderr luôn tách thành một đường riêng, kể cả khi stdout đã đổi sang file. Phần dưới hình là biến thể pipe: stdout của process 1 cắm thẳng vào stdin của process 2, dữ liệu chảy qua bộ nhớ chứ không qua đĩa.",
+              "body": "Hộp giữa là process: mũi tên vào là stdin (0), hai mũi tên ra là stdout (1) và stderr (2) — stderr luôn tách riêng, kể cả khi stdout đã đổi sang file. Phần dưới là biến thể pipe: dữ liệu chảy qua bộ nhớ, không qua đĩa.",
               "figure": {
                 "src": "/static/anim/P04-io-redirection.svg",
                 "caption": "stdin/stdout/stderr: từ terminal, sang file, rồi thành pipe giữa hai process",
@@ -2189,31 +2179,28 @@
           "theory": [
             {
               "title": "Định nghĩa: run() là \"chạy và chờ\"",
-              "body": "Bảng subprocess của slide xếp run() vào đúng ô \"Run and wait\": gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một chương trình khác từ trong Python.",
+              "body": "Gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một chương trình khác từ trong Python.",
               "bullets": [
-                "args là LIST: phần tử đầu là chương trình, các phần tử sau là từng đối số",
-                "CompletedProcess mang returncode, stdout, stderr",
-                "capture_output=True mới thu đầu ra; text=True mới cho str thay vì bytes",
+                "args là LIST: phần tử đầu là chương trình, các phần sau là từng đối số",
+                "CompletedProcess mang returncode, stdout, stderr; capture_output=True mới thu",
                 "check=True biến exit code khác 0 thành CalledProcessError; timeout= đặt hạn chờ"
               ]
             },
             {
               "title": "Ví dụ: exit code là lời khai của con",
-              "body": "Mỗi process khi kết thúc trả về hệ điều hành một số nguyên. Quy ước: 0 là thành công, khác 0 là có chuyện. Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha KHÔNG nhận được object exception của con — chỉ nhận con số đó, còn traceback nằm trong stderr của con."
+              "body": "Quy ước: 0 là thành công, khác 0 là có chuyện — Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha chỉ nhận con số đó, còn traceback nằm trong stderr của con."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Gọi công cụ ngoài từ Python: git, ffmpeg, pdflatex, hay một script Python khác",
-                "Máy chấm bài và CI: chạy bài nộp, so stdout, lấy returncode làm tín hiệu đạt/trượt",
-                "timeout= chặn chương trình lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired",
-                "Dùng sys.executable thay chữ \"python\": trên Windows \"python\" có thể là stub của Microsoft Store",
-                "Studio mô phỏng subprocess; time.sleep của con chỉ đẩy đồng hồ ảo nên vẫn thử timeout được"
+                "Gọi công cụ ngoài: git, ffmpeg, hay chính Python qua sys.executable",
+                "timeout= chặn lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired",
+                "Studio mô phỏng subprocess; sleep của con chỉ đẩy đồng hồ ảo"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hai đường thời gian: cha ở trên, con ở dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị CHẶN, không làm gì khác. Đường của con chạy liền mạch tới exit. Khi con kết thúc, mũi tên quay lên mang theo hộp CompletedProcess với ba ô returncode, stdout, stderr; từ đó cha mới chạy tiếp.",
+              "body": "Cha ở đường trên, con ở đường dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị CHẶN; khi con exit, mũi tên quay lên mang hộp CompletedProcess rồi cha mới chạy tiếp.",
               "figure": {
                 "src": "/static/anim/P05-run-timeline.svg",
                 "caption": "run() chặn process cha cho tới khi con xong và trả CompletedProcess",
@@ -2736,30 +2723,28 @@
           "theory": [
             {
               "title": "Định nghĩa: Popen là \"chạy nền\"",
-              "body": "Trong bảng subprocess của slide, Popen đứng ở ô \"Run in background\": nó khởi động con rồi trả object NGAY, cha không chờ. run() thực ra được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
+              "body": "Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
               "bullets": [
-                "stdin/stdout/stderr=subprocess.PIPE mở đường nói chuyện; luồng không khai thì nhận None",
-                "communicate(input, timeout): gửi input, đóng stdin, đọc hết hai luồng, chờ con xong",
-                "poll() hỏi \"xong chưa\" mà không chặn; wait() chặn tới khi xong",
-                "terminate() xin con dừng tử tế; kill() ép dừng ngay"
+                "stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None",
+                "communicate(input, timeout): gửi input, đọc hết hai luồng, chờ con xong",
+                "poll() hỏi \"xong chưa\" không chặn; terminate() xin dừng, kill() ép dừng"
               ]
             },
             {
               "title": "Ví dụ: timeout không giết ai",
-              "body": "Tài liệu Python nói thẳng: communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn trong tài liệu là bắt lỗi, gọi kill(), rồi gọi communicate() lần thứ hai để đọc nốt phần con đã in và thu hồi con. Khác hẳn run(timeout=…), vốn tự dọn con trước khi ném lỗi."
+              "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Chạy việc dài ở nền trong khi cha vẫn làm việc khác, thỉnh thoảng poll() xem xong chưa",
-                "Đối thoại nhiều lượt với một công cụ qua pipe (bc, một interpreter, một server con)",
-                "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process và không kẹt pipe",
-                "Mã thoát khi bị kill tuỳ hệ điều hành: -9 trên Linux (và trong Studio), 1 trên Windows"
+                "Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa",
+                "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe",
+                "Mã thoát khi bị kill tuỳ hệ: -9 trên Linux (và Studio), 1 trên Windows"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Đọc theo trục thời gian ngang. Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có một vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường của con VẪN kéo dài qua vạch đó — đúng chỗ dễ nhầm. Chỉ sau kill() đường con mới dứt, và communicate() lần hai mới kéo nốt stdout còn trong pipe về cho cha.",
+              "body": "Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau kill() nó mới dứt.",
               "figure": {
                 "src": "/static/anim/P06-popen-timeout.svg",
                 "caption": "Popen trả ngay; communicate quá giờ thì phải kill rồi communicate lần hai",
@@ -3241,31 +3226,28 @@
           "theory": [
             {
               "title": "Định nghĩa: hai cách tạo process",
-              "body": "Chương Multi Processing của slide dạy subprocess — chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một process riêng. Hai module, hai bộ API, không phải hai tên của cùng một thứ.",
+              "body": "subprocess chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một process riêng — hai module, hai bộ API.",
               "bullets": [
                 "Process(target=hàm, args=(…)) rồi start(), join() — dùng y như Thread",
-                "Worker phải là def ở cấp module: con tìm lại hàm theo tên, nên lambda không dùng được",
-                "Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua",
-                "Trên Windows/macOS con khởi động bằng cách import lại file, nên cần if __name__ == \"__main__\":"
+                "Worker phải là def ở cấp module: con tìm hàm theo tên nên lambda không được",
+                "Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua"
               ]
             },
             {
               "title": "Ví dụ: bộ nhớ không dùng chung",
-              "body": "Slide mô tả fork() là \"clone\" process cha trừ process id — clone, nghĩa là BẢN SAO. Worker chạy counter += 1 hay ghi vào một dict toàn cục chỉ sửa bản của nó; cha đọc lại vẫn thấy số cũ, dict vẫn rỗng. Đây đúng là chỗ process khác thread: thread trong cùng process dùng chung bộ nhớ, process thì không."
+              "body": "fork() tạo một BẢN SAO của process cha, nên worker chạy counter += 1 hay ghi dict toàn cục chỉ sửa bản của nó — cha đọc lại vẫn thấy số cũ. Đây là chỗ process khác thread: thread cùng process thì dùng chung bộ nhớ."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn như thread",
-                "Chia một tập dữ liệu thành phần, mỗi process một phần, gom kết quả qua Queue",
-                "Cô lập rủi ro: một worker chết không kéo sập cả chương trình",
-                "Giá phải trả: tạo process đắt hơn tạo thread, và mọi thứ gửi đi đều phải pickle được",
-                "Studio mô phỏng multiprocessing: target chạy khi start() trên bản sao, Queue là kênh chung"
+                "Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn",
+                "Giá phải trả: tạo process đắt hơn thread, mọi thứ gửi đi phải pickle được",
+                "Studio mô phỏng multiprocessing: target chạy khi start(), Queue là kênh chung"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Ba hộp: cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối thẳng vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue: mỗi con put một cặp vào hàng, cha get ra đủ số cặp rồi mới join. Thứ tự lấy ra không nhất thiết theo thứ tự start — vì thế phải gom theo khoá n, không theo chỉ số.",
+              "body": "Cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue, và thứ tự lấy ra không nhất thiết theo thứ tự start.",
               "figure": {
                 "src": "/static/anim/P07-process-queue.svg",
                 "caption": "Hai process con gửi kết quả về cha qua Queue; bộ nhớ không dùng chung",
@@ -3740,38 +3722,36 @@
           "theory": [
             {
               "title": "Định nghĩa: thread là gì",
-              "body": "Thread là MỘT dòng thực thi (single flow of execution) nằm trong một process; slide gọi nó là \"lightweight process\". Mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực thi cùng chạy trong một process, dùng chung đúng một PCB.",
+              "body": "Thread là MỘT dòng thực thi nằm trong một process; mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực thi cùng chạy trong một process, dùng chung đúng một PCB.",
               "bullets": [
-                "Chung (trong PCB): heap, biến toàn cục, code, file descriptor, scheduling, accounting",
+                "Chung: heap, biến toàn cục, code, file descriptor",
                 "Riêng từng thread: stack và stack pointer, program counter, registers",
-                "Heap chung nên trao đổi dữ liệu không cần shm*() hay IPC như giữa hai process"
+                "Heap chung nên trao đổi dữ liệu không cần IPC như giữa hai process"
               ]
             },
             {
               "title": "Ví dụ: cùng mục tiêu, khác cách chia",
-              "body": "Multi-process và multi-thread đặt ra cùng ba mục tiêu: làm nhiều việc một lúc, tăng mức dùng CPU, tăng responsiveness. Khác nhau ở cách chia tài nguyên — slide gọi tên thẳng: fork() là \"resource cloning\", process con nhận bản sao vùng nhớ; thread là \"resource sharing\", mọi thread nhìn cùng một vùng nhớ. Tạo, kết thúc và chuyển giữa các thread đều rẻ hơn process."
+              "body": "Multi-process và multi-thread cùng nhắm ba đích: làm nhiều việc một lúc, tăng mức dùng CPU, tăng responsiveness. Khác ở cách chia tài nguyên — fork() nhân bản (con nhận bản sao vùng nhớ), còn thread thì dùng chung."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
                 "Apache prefork: mỗi HTTP request một child process — cách ly tốt, tốn bộ nhớ",
                 "Apache worker: ít process hơn, mỗi process nhiều thread, mỗi thread một request",
-                "Chrome: mỗi tab một process; trong process có main thread, render thread, I/O thread",
-                "Giao diện: một thread lo UI, thread khác lo việc chờ lâu để cửa sổ không đứng"
+                "Chrome: mỗi tab một process; trong đó có main thread, render thread, I/O thread"
               ]
             },
             {
               "title": "Cái giá và giới hạn",
               "bullets": [
-                "Nondeterministic: cùng một code, mỗi lần chạy thứ tự các dòng in có thể khác",
+                "Nondeterministic: cùng một code, mỗi lần chạy thứ tự dòng in có thể khác",
                 "Phải tự đồng bộ: race condition (T05), deadlock, code khó đọc hơn",
-                "Nhiều lõi thì tăng số thread, nhưng quá nhiều thì overhead và đồng bộ ăn hết lợi",
                 "Studio chạy các target lần lượt; chạy file trên máy mới thấy thứ tự thật"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Khung lớn là MỘT process. Hàng trên — code, data, heap, file descs — vẽ một lần duy nhất: đó là phần dùng chung. Mỗi cột bên dưới là một thread, có ô stack và registers riêng, đường cong là dòng thực thi của nó. Đối chiếu phần multi-process bên cạnh: ở đó mỗi process có đủ một bộ ô riêng và không ô nào nối sang process khác.",
+              "body": "Khung lớn là MỘT process: hàng trên — code, data, heap, file descs — vẽ một lần vì là phần dùng chung. Mỗi cột dưới là một thread có stack và registers riêng; bên phần multi-process, mỗi process có đủ một bộ ô riêng.",
               "figure": {
                 "src": "/static/anim/T01-thread-vs-process.svg",
                 "caption": "Một process nhiều thread: cái gì chung, cái gì riêng",
@@ -4204,31 +4184,31 @@
           "theory": [
             {
               "title": "Năm bước dùng thread",
-              "body": "Slide rút cách dùng thread thành năm bước. Bài này đi đúng năm bước đó, nhưng cho nhiều worker một lúc chứ không phải một.",
+              "body": "Cách dùng thread gọn lại thành năm bước. Bài này đi đúng năm bước đó, chỉ khác là cho nhiều worker một lúc chứ không phải một.",
               "bullets": [
-                "1. Dùng module: import threading",
-                "2. Mô tả việc: Thread(target=hàm, args=…), hoặc class con của Thread (T03)",
-                "3. Tạo instance — mới chỉ là object mô tả, chưa có dòng thực thi nào",
-                "4. Khởi chạy bằng start(): hệ điều hành cấp một dòng thực thi mới cho việc đó",
+                "1–2. import threading, rồi Thread(target=hàm, args=…) mô tả việc",
+                "3–4. Tạo instance (chưa có dòng thực thi nào), start() mới sinh thread",
                 "5. [tuỳ chọn] join(): chờ thread kết thúc rồi mới đi tiếp"
               ]
             },
             {
               "title": "start() chứ không phải run()",
-              "body": "start() là chỗ DUY NHẤT sinh ra thread, và nó không nhận đối số — đối số đã đưa lúc tạo object. Gọi run() hay gọi thẳng hàm target chỉ là một lời gọi hàm bình thường trong thread hiện tại: kết quả vẫn đúng nhưng tuần tự, không được gì. Một Thread chỉ start được MỘT lần; muốn chạy lại phải tạo object mới."
+              "body": "start() là chỗ DUY NHẤT sinh ra thread, và nó không nhận đối số — đối số đã đưa lúc tạo object. Gọi run() hay gọi thẳng hàm target chỉ là một lời gọi hàm bình thường trong thread hiện tại: kết quả vẫn đúng nhưng tuần tự.",
+              "bullets": [
+                "Một Thread chỉ start() được MỘT lần; muốn chạy lại phải tạo object mới"
+              ]
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
                 "Tải nhiều URL, đọc nhiều file: phần lớn thời gian là chờ nên các lần chờ chồng lên nhau",
-                "Giao diện: thread nền làm việc lâu, thread UI vẫn vẽ lại được (G06)",
                 "Máy chủ: mỗi kết nối một thread, đúng mô hình Apache worker ở T01",
                 "Chỉ đáng dùng khi CHỜ là chính — tính Python thuần thì vướng GIL (T04)"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Trục ngang là thời gian. Main thread chạy liền mạch; mỗi start() rẽ ra một đường mới bắt đầu đúng tại thời điểm đó, nên hai worker CHỒNG LÊN nhau. join() là đoạn main đứng chờ: đường main chỉ đi tiếp khi đường worker đã chạm vạch kết thúc. So hai cách xếp: start hết rồi join hết thì hai worker song song; start–join từng cái thì chúng nối đuôi, mất hết lợi ích. Studio luôn cho kiểu nối đuôi.",
+              "body": "Mỗi start() rẽ ra một đường mới ngay tại thời điểm đó, nên hai worker CHỒNG LÊN nhau; join() là đoạn main đứng chờ. Start hết rồi join hết thì song song; start–join từng cái thì nối đuôi — Studio luôn cho kiểu nối đuôi.",
               "figure": {
                 "src": "/static/anim/T02-start-join.svg",
                 "caption": "start() rẽ nhánh, join() chờ nhánh về",
@@ -4667,11 +4647,11 @@
           "theory": [
             {
               "title": "Định nghĩa: hai cách tạo thread",
-              "body": "Slide dạy cách OOP trước: định nghĩa một class con của threading.Thread, override run() — run() chính là việc sẽ chạy trong thread — và [tuỳ chọn] viết __init__() để nhận tham số. Cách Thread(target=hàm) nằm ở phần Extras, slide gọi là \"simple threading without subclassing\". Hai cách tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả của riêng nó."
+              "body": "Cách OOP: định nghĩa class con của threading.Thread và override run() — run() chính là việc sẽ chạy trong thread. Cách Thread(target=hàm) tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả riêng."
             },
             {
-              "title": "Ví dụ trong slide",
-              "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10) — đối số đi vào __init__ — rồi .start() không đối số, rồi .join().",
+              "title": "Ví dụ: worker có tham số riêng",
+              "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10), rồi .start(), rồi .join().",
               "bullets": [
                 "threading.Thread.__init__(self) và super().__init__() là cùng một việc",
                 "Bỏ lời gọi đó thì start() hỏng: trạng thái nội bộ của Thread chưa được dựng"
@@ -4680,15 +4660,14 @@
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm riêng",
+                "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm",
                 "Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()",
-                "Thread không trả giá trị — không có chỗ nào nhận được return của run()",
-                "Việc một lần, không trạng thái thì target=hàm gọn hơn; đừng dựng class cho có"
+                "Thread không trả giá trị — không chỗ nào nhận được return của run()"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Bên trái là class: __init__ nhận tham số, gọi super().__init__() rồi gán các self.<thuộc tính>; run() đọc chúng và ghi kết quả ngược lại vào self. Mũi tên giữa hình là điểm dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run() — start() là người gọi run(), không ai gọi run() bằng tay. Bên phải: hai instance là hai object riêng, nên hai self.total không lẫn.",
+              "body": "Bên trái là class: __init__ gọi super().__init__() rồi gán self.<thuộc tính>, run() đọc chúng và ghi kết quả vào self. Mũi tên giữa hình là chỗ dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run().",
               "figure": {
                 "src": "/static/anim/T03-subclass-thread.svg",
                 "caption": "Subclass Thread: __init__ nhận dữ liệu, run() là việc của thread",
@@ -5139,34 +5118,33 @@
           "theory": [
             {
               "title": "Định nghĩa: GIL",
-              "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được điều khiển interpreter, tức chỉ một thread chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
+              "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
               "bullets": [
                 "Thắt cổ chai với code Python tính toán thuần (CPU-bound)",
                 "Không thành vấn đề với chương trình chờ I/O",
-                "Không thành vấn đề với phần gọi xuống thư viện native — slide lấy NumPy làm ví dụ"
+                "Không thành vấn đề với phần gọi xuống thư viện native, ví dụ NumPy"
               ]
             },
             {
               "title": "Vì sao có GIL, bỏ đi thì mất gì",
+              "body": "GIL không phải lỗi mà là một đánh đổi có chủ ý. Nó cũng KHÔNG thay Lock: trạng thái của ứng dụng vẫn phải tự bảo vệ (T05).",
               "bullets": [
-                "Có: quản lý bộ nhớ — reference counting và garbage collector cần được bảo vệ",
-                "Có: gọn thread-safety — một mutex trên interpreter thay cho mutex trên từng object",
-                "Slide chốt: \"that is not a bug but a feature\"",
-                "Bỏ: single-thread chậm đi, sinh nguy cơ deadlock, kém tương thích với extension cũ",
-                "GIL KHÔNG thay Lock: trạng thái của ứng dụng vẫn phải tự bảo vệ (T05)"
+                "Có: reference counting và garbage collector cần được bảo vệ",
+                "Có: một mutex trên interpreter thay cho mutex trên từng object",
+                "Bỏ: single-thread chậm đi, nguy cơ deadlock, kém tương thích extension cũ"
               ]
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
                 "Chờ mạng, đĩa, cơ sở dữ liệu, sleep → thread là đúng chỗ",
-                "Tính Python thuần mà muốn dùng nhiều lõi → process: mỗi process một interpreter, một GIL",
-                "Đo trước khi chọn bằng time.perf_counter(), đừng đoán theo số thread"
+                "Tính Python thuần mà muốn nhiều lõi → process: mỗi process một GIL",
+                "Đo bằng time.perf_counter() trước khi chọn, đừng đoán theo số thread"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hai dải thời gian trong slide là nền của hình. Một lõi: các lát T1, T2, T3… nối nhau trên cùng một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. Nhiều lõi: mỗi core một hàng, các lát thật sự chồng nhau. GIL ép CPython về dáng hàng thứ nhất cho phần tính toán, dù máy có bao nhiêu lõi. Ô màu nhạt là lúc thread chờ I/O: nó nhả GIL nên lát của thread khác lấp vào được — chỗ đó mới là lãi.",
+              "body": "Một lõi: các lát T1, T2, T3… nối nhau trên một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. GIL ép phần tính toán về dáng đó dù máy bao nhiêu lõi; ô nhạt là lúc thread chờ I/O, nhả GIL cho thread khác lấp vào.",
               "figure": {
                 "src": "/static/anim/T04-gil.svg",
                 "caption": "Một GIL, nhiều thread: CPU thì luân phiên, I/O thì chồng lên nhau",
@@ -5645,15 +5623,14 @@
           "theory": [
             {
               "title": "Định nghĩa: race condition",
-              "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: cùng một chương trình, lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm vào dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
+              "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
             },
             {
-              "title": "Lock: đúng những gì slide cho",
+              "title": "Lock: một thread một lúc",
               "bullets": [
                 "threading.Lock(), còn gọi là mutex: mỗi lúc chỉ một thread giữ được",
-                "lock.acquire() … lock.release(): tự quản, và dễ quên release",
                 "with lock: acquire/release tự động, kể cả khi khối ném exception",
-                "Slide cảnh báo thẳng: có Lock rồi vẫn phải coi chừng race — Lock đặt sai chỗ là vô dụng"
+                "Có Lock vẫn race nếu đặt sai chỗ — khoá phải trùm cả đoạn đọc-sửa-ghi"
               ]
             },
             {
@@ -5661,22 +5638,21 @@
               "bullets": [
                 "Số dư, bộ đếm, tồn kho: mọi lần đọc-sửa-ghi một giá trị dùng chung",
                 "Kiểm tra rồi hành động (đủ tiền thì trừ) phải nằm TRỌN trong một lần giữ khoá",
-                "File hay kết nối dùng chung: cho một thread ghi một lúc",
-                "Không cần Lock khi đã dùng queue.Queue (T06) — bên trong nó đã khoá sẵn"
+                "Không cần Lock khi đã dùng queue.Queue (T06) — bên trong đã khoá sẵn"
               ]
             },
             {
               "title": "Deadlock: vì sao và tránh thế nào",
-              "body": "Deadlock là khi các bên chờ nhau mãi, không ai tiến được: thread 1 giữ A chờ B, thread 2 giữ B chờ A. Slide xếp deadlock vào nhóm \"vì sao KHÔNG nên đa luồng\", cùng với nondeterministic và chi phí đồng bộ.",
+              "body": "Deadlock là khi các bên chờ nhau mãi, không ai tiến được: thread 1 giữ A chờ B, thread 2 giữ B chờ A.",
               "bullets": [
-                "Thống nhất một thứ tự khoá chung cho cả chương trình, mọi thread khoá theo đúng thứ tự đó",
-                "Giữ khoá càng ngắn càng tốt; đừng đặt việc chậm (ghi file, in) trong critical section",
+                "Thống nhất một thứ tự khoá chung, mọi thread khoá theo đúng thứ tự đó",
+                "Giữ khoá càng ngắn càng tốt; đừng ghi file hay in trong critical section",
                 "Đừng join một worker trong lúc đang giữ lock mà worker đó cần"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Nửa trên là lần chạy KHÔNG khoá: hai mũi tên đọc cùng chỉ vào một ô balance = 100, hai mũi tên ghi cùng đặt 101 — một lần cộng biến mất, đó là \"lost update\". Nửa dưới có Lock: thread thứ hai dừng ở hàng rào tới khi thread thứ nhất rời khối with, nên nó đọc 101 và ghi 102. Trong Studio thì nửa trên không bao giờ xảy ra vì các thread chạy lần lượt; chạy file trên máy nhiều lần mới thấy con số nhảy.",
+              "body": "Nửa trên KHÔNG khoá: hai mũi tên đọc cùng ô balance = 100, hai mũi tên ghi cùng đặt 101 — mất một lần cộng. Nửa dưới có Lock nên thread sau đọc 101, ghi 102; trong Studio nửa trên không xảy ra vì thread chạy lần lượt.",
               "figure": {
                 "src": "/static/anim/T05-race-lock.svg",
                 "caption": "Mất cập nhật khi không khoá, và hàng rào Lock sửa nó thế nào",
@@ -6181,28 +6157,27 @@
           "theory": [
             {
               "title": "Định nghĩa: queue.Queue",
-              "body": "queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn trong Queue mà hai bên không phải tự dựng Lock như T05 (tài liệu chính thức: module queue).",
+              "body": "queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn mà hai bên không phải tự dựng Lock như T05.",
               "bullets": [
-                "get() mặc định CHỜ khi queue rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty",
-                "Mỗi get() thành công đi với đúng một task_done(); join() chờ tới khi mọi việc đã xong"
+                "get() mặc định CHỜ khi rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty",
+                "Mỗi get() thành công đi với đúng một task_done(); join() chờ mọi việc xong"
               ]
             },
             {
               "title": "Producer và consumer",
-              "body": "Mẫu chuẩn chia chương trình làm hai vai: producer tạo việc và put vào queue rồi đi tiếp ngay; consumer (worker) lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên chúng không cần biết gì về nhau — thêm worker chỉ là chạy thêm một thread cùng đọc một queue."
+              "body": "Producer tạo việc, put vào queue rồi đi tiếp ngay; consumer lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên thêm worker chỉ là chạy thêm một thread cùng đọc một queue."
             },
             {
               "title": "Dùng ở đâu",
               "bullets": [
-                "Bài thực hành 8 của môn: nâng phần lưu dữ liệu lên dùng pickle + nén ở thread nền",
-                "Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua một queue khác (G06)",
+                "Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua queue khác (G06)",
                 "Máy chủ: một queue việc, vài worker cùng rút ra làm — thêm worker là tăng thông lượng",
-                "Dữ liệu giao cho worker phải ổn định: put BẢN SAO, đừng put chính object còn đang sửa"
+                "put BẢN SAO, đừng put chính object còn đang sửa — dữ liệu worker nhận phải ổn định"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Giữa hình là queue, một hàng ô xếp theo thứ tự vào. Bên trái, producer put thêm vào cuối hàng rồi quay về việc của mình ngay — không chờ. Bên phải, worker lấy ở đầu hàng, làm việc chậm, rồi task_done() báo xong; bộ đếm việc chưa xong giảm một. Hai mũi tên không bao giờ chạm nhau: đó là điểm chính — producer và consumer chỉ gặp nhau qua queue, nên không cần Lock nào.",
+              "body": "Giữa hình là queue, một hàng ô xếp theo thứ tự vào: producer put thêm vào cuối rồi quay về việc của mình ngay, worker lấy ở đầu rồi task_done(). Hai mũi tên không bao giờ chạm nhau — hai bên chỉ gặp nhau qua queue.",
               "figure": {
                 "src": "/static/anim/T06-queue-worker.svg",
                 "caption": "Producer đẩy việc vào queue, worker nền rút ra làm",
@@ -6659,35 +6634,27 @@
           "theory": [
             {
               "title": "Định nghĩa: GUI và CLI",
-              "body": "CLI (Command Line Interface) nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI (Graphical User Interface) vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ. Slide so sánh sáu tiêu chí: CLI khó học nhưng rất linh hoạt, tốn ít bộ nhớ, chạy nhanh, chỉ dùng bàn phím; GUI dễ học, kém linh hoạt hơn, tốn bộ nhớ hơn, chậm hơn, dùng được cả chuột."
+              "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
             },
             {
-              "title": "Tkinter gồm bốn phần",
+              "title": "Bốn phần của một app Tkinter",
               "bullets": [
-                "Window: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
-                "Widgets: Frame, Label, Button, Entry… — mọi thứ người dùng nhìn thấy",
-                "Layout: geometry manager xếp widget vào cửa sổ (pack, place, grid)",
-                "Window event loop: mainloop() nhận sự kiện rồi gọi hàm xử lý",
-                "Tkinter có sẵn trong Python (nền Tcl/Tk); PyQt, Kivy, wxPython phải cài thêm"
+                "Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
+                "Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()",
+                "Event loop: mainloop() chặn tại chỗ, nhận sự kiện rồi gọi hàm xử lý"
               ]
             },
             {
-              "title": "Ví dụ: cửa sổ chính và cửa sổ phụ",
-              "body": "window = tk.Tk(); window.title(\"Student Information System\"); window.geometry(\"800x600\") dựng cửa sổ chính rộng 800, cao 600. sub = tk.Toplevel(window); sub.title(\"Students\"); sub.geometry(\"600x400\") mở thêm một cửa sổ phụ của CÙNG ứng dụng. Đóng cửa sổ chính thì cửa sổ phụ đóng theo, vì nó thuộc về root."
-            },
-            {
-              "title": "Dùng ở đâu",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "Công cụ nội bộ: form nhập liệu, bảng điều khiển nhỏ cho người không quen terminal",
-                "Tkinter đi kèm Python nên một file .py chạy được ngay, không phải cài thêm thư viện",
-                "Cửa sổ phụ hợp với hộp Cài đặt, Trợ giúp, xem chi tiết một bản ghi",
-                "Studio chạy tkinter GIẢ: không cửa sổ nào được vẽ, bộ chấm soi cây widget thay bạn",
-                "Muốn thấy cửa sổ thật thì lưu file rồi chạy trên máy: python ten_file.py"
+                "Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp",
+                "Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn",
+                "mainloop() ở đây trả về ngay; thấy cửa sổ thật thì chạy python ten_file.py"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình vẽ một cửa sổ Tk: thanh tiêu đề mang chuỗi của title(), khung ngoài mang kích thước của geometry(\"800x600\") — rộng x cao, chữ x thường — và vùng nội dung còn rỗng vì chưa có widget nào. Cửa sổ phụ Toplevel nằm bên cạnh, mũi tên trỏ về root nhắc quan hệ phụ thuộc. Cả hai chỉ hiện ra khi mainloop() chạy.",
+              "body": "Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry(\"800x600\") — rộng x cao, chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.",
               "figure": {
                 "src": "/static/anim/G01-window-anatomy.svg",
                 "caption": "Giải phẫu cửa sổ Tk: title, geometry và cửa sổ phụ Toplevel",
@@ -7116,35 +7083,27 @@
           "theory": [
             {
               "title": "Định nghĩa: widget và callback",
-              "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa widget khác, Label hiện chữ, Button bấm được, Entry nhập một dòng. Widget nhận thuộc tính ngay lúc tạo (text, width, height, bg). Callback là hàm BẠN viết nhưng TKINTER gọi — khi sự kiện xảy ra. Với Button, tuỳ chọn command giữ hàm đó lại chờ người dùng bấm."
-            },
-            {
-              "title": "Ví dụ: nút gọi hàm",
-              "body": "def onClick(): messagebox.showinfo(message=\"Button 1 clicked\") rồi tk.Button(window, text=\"Button 1\", command=onClick). Lúc dựng giao diện, onClick CHƯA chạy: nút chỉ cất tên hàm. Mỗi lần người dùng bấm, Tkinter mới gọi onClick() và hộp thông báo bật lên. Thêm ngoặc (command=onClick()) là tự tay gọi một lần rồi giao None cho nút."
+              "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa, Label hiện chữ, Entry nhập một dòng, Button bấm được. Callback là hàm BẠN viết mà TKINTER gọi, khi sự kiện xảy ra."
             },
             {
               "title": "Nối sự kiện: command và bind",
               "bullets": [
-                "command=f: chỉ Button, Checkbutton, Radiobutton… — Tkinter gọi f() không đối số",
+                "command=login giao HÀM cho nút; thêm ngoặc là tự gọi một lần rồi giao None",
                 "widget.bind(\"<Return>\", f): mọi widget, mọi sự kiện — Tkinter gọi f(event)",
-                "event mang thông tin: phím nào, chuột ở đâu, widget nào phát sinh",
-                "messagebox.showinfo / showwarning / showerror bật hộp thông báo, cảnh báo, lỗi",
-                "Trong callback: entry.get() đọc chữ, label.config(text=…) đổi chữ, cget(\"text\") đọc lại"
+                "Trong callback: entry.get() đọc chữ, label.config(text=…) đổi chữ"
               ]
             },
             {
-              "title": "Dùng ở đâu",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "Form đăng nhập, form nhập liệu: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
-                "Mọi thao tác người dùng đều đi qua callback — đó là cách GUI thay cho input() của CLI",
-                "Hộp messagebox để báo việc đã xong hoặc dữ liệu sai, thay cho print()",
-                "Studio không vẽ cửa sổ nên bộ chấm \"bấm\" bằng button.invoke() và đọc _studio.tk.messages",
-                "Chạy file trên máy (python ten_file.py) để thật sự bấm nút và thấy hộp thông báo"
+                "Form đăng nhập: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
+                "messagebox.showinfo / showwarning / showerror thay cho print() của CLI",
+                "Studio không vẽ cửa sổ: bộ chấm \"bấm\" bằng button.invoke() rồi đọc hộp thông báo"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình chia làm hai nhịp. Nhịp dựng giao diện: Button cất tham chiếu tới hàm, chưa gọi. Nhịp người dùng bấm: sự kiện đi vào Tkinter, Tkinter gọi callback, callback đọc Entry rồi gọi label.config(text=…), và chữ trên Label đổi. Mũi tên nét liền là lời gọi, ô nét đứt là dữ liệu đọc tại thời điểm bấm — không phải lúc dựng giao diện.",
+              "body": "Hình chia hai nhịp: lúc dựng giao diện, Button chỉ CẤT tên hàm; lúc bấm, Tkinter gọi callback, callback đọc Entry rồi label.config(text=…) đổi chữ. Ô nét đứt là dữ liệu đọc đúng lúc bấm.",
               "figure": {
                 "src": "/static/anim/G02-widget-callback.svg",
                 "caption": "Bấm Button → Tkinter gọi callback → Label đổi chữ",
@@ -7574,35 +7533,27 @@
           "theory": [
             {
               "title": "Định nghĩa: widget nhập và biến Tk",
-              "body": "Slide liệt kê năm widget thu dữ liệu: Entry (nhập chữ, show=\"*\" cho mật khẩu), Checkbutton (bật/tắt), Radiobutton (chọn MỘT trong nhiều), Listbox (danh sách chọn được), ttk.Combobox (danh sách thả xuống). Chúng không giữ giá trị trong biến Python thường mà qua BIẾN ĐIỀU KHIỂN của Tk: StringVar, IntVar, DoubleVar, BooleanVar — đọc bằng get(), đặt bằng set()."
-            },
-            {
-              "title": "Ví dụ: Radiobutton dùng chung một biến",
-              "body": "radioValue = tk.StringVar(value=\"op1\"); tk.Radiobutton(window, variable=radioValue, text=\"Radiobutton option 1\", value=\"op1\") và một nút nữa với value=\"op2\". Slide ghi rõ \"Text != Value\": chữ hiện cho người đọc, value là thứ radioValue.get() trả về. Hai nút cùng variable mới thành một nhóm; khác variable thì bấm cái nào cũng không tắt cái kia."
+              "body": "Entry (show=\"*\" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — đọc bằng get()."
             },
             {
               "title": "Mỗi widget một cách đọc",
               "bullets": [
-                "Entry: entry.get() luôn trả CHUỖI — \"8.5\" chưa phải số, phải float() trong try/except",
-                "Checkbutton: gắn BooleanVar, var.get() trả True/False",
-                "Radiobutton: nhóm chung một StringVar, var.get() trả value của nút đang chọn",
-                "Listbox: insert(tk.END, chuỗi) thêm cuối, size() đếm dòng, get(tk.ACTIVE) lấy mục active",
-                "ttk.Combobox(values=[...]): get() lấy mục đang chọn; state=\"readonly\" chặn gõ chữ lạ"
+                "Entry: get() luôn trả CHUỖI — \"8.5\" chưa phải số, phải float() trong try/except",
+                "Hai Radiobutton cùng nhóm phải dùng CHUNG một StringVar, mỗi nút một value",
+                "Checkbutton → BooleanVar; ttk.Combobox(state=\"readonly\") chặn gõ chữ lạ"
               ]
             },
             {
-              "title": "Dùng ở đâu",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "Form nhập điểm, phiếu khảo sát, hộp thoại lọc dữ liệu: mỗi ô là một widget nhập",
-                "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ cho trước",
-                "Kiểm tra TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
-                "Studio dựng widget giả: bộ chấm set() biến rồi invoke() nút thay cho người gõ",
-                "Trên máy thật hãy tự gõ \"abc\" vào ô điểm để xem nhánh báo lỗi chạy đúng chưa"
+                "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ",
+                "Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
+                "Studio không vẽ cửa sổ: bộ chấm set() biến rồi invoke() nút thay cho người gõ"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình xếp năm widget nhập thành một cột, mỗi widget nối sang ô biến điều khiển của nó (StringVar, BooleanVar…). Từ biến có một mũi tên get() đi ra, luôn mang giá trị CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar — đó là chi tiết hay bị vẽ sai nhất. Cuối sơ đồ là chốt kiểm tra: hợp lệ thì dùng, sai thì messagebox.",
+              "body": "Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt kiểm tra.",
               "figure": {
                 "src": "/static/anim/G03-input-widgets.svg",
                 "caption": "Widget nhập, biến điều khiển và đường đi của get()",
@@ -8057,35 +8008,23 @@
           "theory": [
             {
               "title": "Định nghĩa: geometry manager",
-              "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một GEOMETRY MANAGER quyết định widget nằm ở đâu và to bao nhiêu. Tk có ba manager, gọi như method của chính widget: .pack() xếp theo cạnh, .place() đặt theo toạ độ, .grid() đặt vào ô hàng–cột. Khung chứa chính là tk.Frame, nên một cửa sổ lớn thường là nhiều Frame, mỗi Frame xếp kiểu riêng."
+              "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một geometry manager của chính widget — .pack() xếp theo cạnh (side, fill), .place() theo toạ độ (x/y, relx), .grid() theo ô row–column."
             },
             {
-              "title": "Ví dụ: ba kiểu, ba cách mô tả vị trí",
+              "title": "Trộn pack với grid là TclError",
+              "body": "Hai manager tính chỗ theo hai cách khác nhau, nên các con của CÙNG một parent vừa pack() vừa grid() làm Tk báo TclError. Khác parent thì vô tư: Frame bên trong grid, Frame đó pack ra ngoài."
+            },
+            {
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "pack: mặc định xếp dọc, canh giữa; side=tk.LEFT đổi hướng; fill=tk.X giãn ngang",
-                "place: như position:absolute của HTML — x=10, y=10 hoặc relx=0.1, rely=0.1 (0 tới 1)",
-                "grid: như table của HTML — column=0, row=2, sticky=tk.EW, padx=3, pady=3",
-                "grid còn có columnspan=3, rowspan=2 để một widget chiếm nhiều ô",
-                "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra"
-              ]
-            },
-            {
-              "title": "Trộn pack và grid là lỗi, không phải xấu",
-              "body": "Hai manager tính kích thước theo hai cách khác nhau, nên nếu các con của CÙNG một parent vừa pack() vừa grid(), Tk không hội tụ được và báo TclError (có bản treo trước khi báo). Khác parent thì vô tư: một Frame bên trong dùng grid, Frame đó pack vào cửa sổ. place() trộn được với hai cái kia vì nó không tham gia tính chỗ trống."
-            },
-            {
-              "title": "Dùng ở đâu",
-              "bullets": [
-                "pack: thanh công cụ, cột nút, bố cục đơn giản xếp chồng hoặc nằm ngang",
-                "grid: form nhãn–ô nhập nhiều dòng, bảng điều khiển — cột nhãn và cột nhập thẳng hàng",
-                "place: chỉ khi cần đúng toạ độ (biểu đồ, ảnh nền), vì nó không tự co giãn theo nội dung",
-                "Studio không vẽ nên bộ chấm đọc widget.manager và widget.layout để biết bạn xếp kiểu gì",
-                "Kích thước thật chỉ thấy trên máy: chạy file rồi kéo giãn cửa sổ để kiểm fill/weight"
+                "grid cho form nhãn–ô nhập; pack cho khung và thanh nút; place khi cần toạ độ",
+                "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra",
+                "Studio không vẽ cửa sổ: bộ chấm đọc widget.manager và widget.layout thay bạn"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình đặt ba cửa sổ nhỏ cạnh nhau, CÙNG ba widget nhưng ba manager khác nhau: pack xếp thành chồng (hoặc hàng ngang khi side=LEFT), place ghim theo toạ độ nên có thể chồng lên nhau, grid chia lưới hàng–cột và các ô thẳng hàng. Dải đỏ phía dưới là ca lỗi: hai con của cùng một parent, một pack một grid → TclError.",
+              "body": "Ba cửa sổ nhỏ, CÙNG ba widget, ba manager: pack xếp chồng, place ghim theo toạ độ nên có thể chồng nhau, grid chia lưới thẳng hàng. Dải đỏ dưới cùng là ca lỗi pack + grid cùng parent.",
               "figure": {
                 "src": "/static/anim/G04-layouts.svg",
                 "caption": "pack, place, grid: ba cách xếp cùng một bộ widget",
@@ -8533,36 +8472,28 @@
           },
           "theory": [
             {
-              "title": "Định nghĩa: hàm thuần và tầng giao diện",
-              "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng GIAO DIỆN chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả. Ranh giới này không phải chuyện đẹp xấu: hàm thuần test được bằng một lời gọi, còn code dính widget thì muốn test phải dựng cả cửa sổ. Bài tập PW9 chính là nâng giao diện của PW8 lên GUI mà giữ nguyên phần tính toán."
-            },
-            {
-              "title": "Ví dụ: tách một ô nhập điểm",
-              "body": "validate_mark(raw) nhận chuỗi, trả float 0..10, raise ValueError nếu sai — không biết Entry là gì. Method add_mark của App gọi self.mark_var.get(), đưa vào validate_mark trong try, except ValueError thì messagebox.showerror. Đổi giao diện sang web hay CLI thì validate_mark giữ nguyên; chỉ phần bắt lỗi và hiện lỗi viết lại."
+              "title": "Định nghĩa: hàm thuần và tầng GUI",
+              "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng giao diện chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả."
             },
             {
               "title": "Vì sao gói giao diện vào class",
               "bullets": [
                 "self.status, self.mark_var sống cùng App; biến cục bộ trong create_widgets() mất ngay",
-                "__init__ dựng trạng thái rồi gọi create_widgets(); mỗi method là một việc người dùng làm",
                 "Callback thành method: command=self.add_mark — vẫn KHÔNG ngoặc",
-                "Nhiều cửa sổ cùng kiểu thì tạo nhiều đối tượng App, không phải chép code",
-                "Tkinter không bắt buộc OOP; class chỉ đáng khi widget và trạng thái bắt đầu nhiều"
+                "Hàm thuần test được bằng một lời gọi; code dính widget phải dựng cả cửa sổ"
               ]
             },
             {
-              "title": "Dùng ở đâu",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "Mọi app có kiểm tra dữ liệu: quy tắc nghiệp vụ nằm ở hàm thuần, thông báo nằm ở GUI",
-                "Dùng lại cùng một lõi cho GUI, cho script dòng lệnh và cho bài test tự động",
-                "Hàm thuần báo lỗi bằng raise; GUI quyết định hiện bằng messagebox hay đổi màu ô nhập",
-                "Studio chấm phần logic bằng cách gọi thẳng hàm thuần — không cần cửa sổ nào",
-                "Đó cũng là lý do bài này chạy được trong Studio dù tkinter ở đây là đồ giả"
+                "Quy tắc nghiệp vụ ở hàm thuần, thông báo ở GUI: lõi dùng lại cho CLI, web, test",
+                "validate_mark(raw) raise ValueError; App bắt lỗi rồi messagebox.showerror",
+                "Studio chấm logic bằng gọi thẳng hàm thuần; tkinter ở đây là đồ giả, không vẽ gì"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình chia đôi bằng một đường dọc. Bên trái là lớp App: widget, callback, messagebox — phần chỉ chạy được khi có cửa sổ. Bên phải là các hàm thuần: vào là dữ liệu, ra là dữ liệu hoặc exception. Mũi tên chỉ đi một chiều từ trái sang phải; không có mũi tên nào từ hàm thuần chạm vào widget. Bên phải còn có ô \"test gọi thẳng\" để thấy vì sao tách lại dễ kiểm.",
+              "body": "Bên trái là lớp App — widget, callback, messagebox; bên phải là hàm thuần: vào dữ liệu, ra dữ liệu hoặc exception. Mũi tên chỉ đi một chiều sang phải, nối vào cả ô \"test gọi thẳng\".",
               "figure": {
                 "src": "/static/anim/G05-logic-vs-ui.svg",
                 "caption": "Ranh giới một chiều giữa lớp giao diện và hàm thuần",
@@ -9040,36 +8971,28 @@
           },
           "theory": [
             {
-              "title": "Định nghĩa: mainloop là vòng lặp chặn",
-              "body": "Slide gọi mainloop() là \"a blocking method\": nó không trả về mà quay vòng — lấy một sự kiện (bấm, gõ, chuột, hẹn giờ), gọi hàm xử lý tương ứng, vẽ lại, rồi lấy sự kiện tiếp theo. Mọi callback của bạn chạy BÊN TRONG vòng lặp đó, trên cùng một thread. Vòng lặp chỉ thoát khi cửa sổ chính đóng."
-            },
-            {
-              "title": "Vì sao cửa sổ \"treo\"",
-              "body": "Vòng lặp đang ở trong callback của bạn thì không lấy được sự kiện nào khác: không vẽ lại, không nhận bấm, hệ điều hành báo \"Not responding\". Một vòng lặp tính 5 giây, một time.sleep, một lời gọi mạng — đều làm đúng như vậy. Cửa sổ không hỏng; nó chỉ đang xếp hàng chờ callback của bạn trả về."
+              "title": "Định nghĩa: mainloop là vòng chặn",
+              "body": "mainloop() không trả về mà quay vòng: lấy một sự kiện, gọi hàm xử lý, vẽ lại, rồi lấy tiếp. Callback của bạn chạy BÊN TRONG vòng lặp đó, nên callback tính 5 giây là 5 giây cửa sổ treo."
             },
             {
               "title": "Ba luật khi ghép thread vào Tkinter",
               "bullets": [
                 "Việc dài chạy ở worker thread; callback chỉ start() rồi trả về ngay",
-                "Worker KHÔNG đụng widget — Tk chỉ an toàn với thread đang chạy mainloop",
-                "Kết quả đi về qua queue.Queue, cấu trúc an toàn giữa các thread",
-                "Thread GUI đọc queue trong hàm được after(ms, f) hẹn: Empty thì hẹn lại, có thì cập nhật",
-                "Không join() trong callback: join chặn thread GUI y hệt làm việc dài trực tiếp"
+                "Worker KHÔNG đụng widget — chỉ put kết quả vào queue.Queue",
+                "Thread GUI đọc queue trong hàm after(ms) hẹn: Empty thì hẹn lại, đừng join()"
               ]
             },
             {
-              "title": "Dùng ở đâu",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
-                "Lưu file lớn, nén, gọi API, quét thư mục — việc có thể mất vài giây",
-                "Thanh tiến độ và nút Huỷ chỉ chạy được khi event loop còn rảnh để vẽ lại",
-                "after(ms, f) cũng là cách làm đồng hồ, tự động làm mới, hoạt ảnh nhẹ — không cần thread",
-                "Studio mô phỏng: worker chạy xong ngay lúc start(), after() chỉ xếp vào hàng đợi rồi bộ chấm chạy thay event loop — nên không thấy được cảnh treo",
-                "Chạy file trên máy với n lớn: bản không thread sẽ đứng, bản có thread vẫn kéo được cửa sổ"
+                "Lưu file lớn, nén, gọi API: nút Huỷ chỉ bấm được khi event loop còn rảnh",
+                "after(ms, f) cũng làm đồng hồ, tự làm mới, hoạt ảnh nhẹ — không cần thread",
+                "Studio không vẽ cửa sổ: worker xong ngay khi start(), bộ chấm chạy hàng đợi after()"
               ]
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình có hai làn. Làn trên là thread GUI: mainloop quay vòng lấy sự kiện; callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên vòng lặp quay tiếp. Làn dưới là worker: tính lâu, xong thì put kết quả vào Queue. Nối hai làn chỉ có một mũi tên duy nhất đi qua Queue; chấm tròn trên làn GUI là các lần after(100) đọc queue, lần cuối mới đổi chữ Label.",
+              "body": "Làn trên là thread GUI: callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên mainloop quay tiếp. Làn dưới là worker; nối hai làn chỉ có một mũi tên qua Queue, chấm tròn là các lần after(100).",
               "figure": {
                 "src": "/static/anim/G06-event-loop.svg",
                 "caption": "Event loop rảnh tay: worker tính, Queue chuyển, after() cập nhật",
@@ -9506,36 +9429,24 @@
           },
           "theory": [
             {
-              "title": "Bài cửa: ghép bốn kỹ thuật của PW5–PW9",
-              "body": "Chuỗi bài thực hành của giảng viên là MỘT chương trình lớn dần: PW5–PW6 thêm lưu dữ liệu (pickle, nén), PW7 làm một shell chạy lệnh và nối vào/ra giữa các process, PW8 chuyển việc lưu sang thread nền, PW9 thay giao diện dòng lệnh bằng Tkinter. Bài này gộp lại: một sổ điểm có GUI, lưu nén, chạy báo cáo ở process con và lưu ở thread nền."
+              "title": "Bài cửa: bốn mảnh của PW5–PW9",
+              "body": "Một sổ điểm ghép bốn việc: pickle + gzip LƯU RA FILE, PROCESS CON report.py in báo cáo, WORKER THREAD lo việc lưu, GUI Tkinter bọc tất cả. Studio chạy GIẢ cả tkinter lẫn thread: không vẽ cửa sổ, bộ chấm gọi hàm thuần."
             },
             {
-              "title": "Bốn mảnh ghép, mỗi mảnh một lý do",
+              "title": "Hai ranh giới phải đi bằng ống",
               "bullets": [
-                "pickle + gzip: dict Python → bytes → file nén; gzip.open(path, \"wb\"/\"rb\"), luôn nhị phân",
-                "subprocess: báo cáo là CHƯƠNG TRÌNH KHÁC, chạy bằng sys.executable để trúng Python hiện tại",
-                "Thread: lưu file có thể lâu, nên nó không được chạy trên thread của mainloop",
-                "Tkinter: App chỉ đọc widget, gọi hàm thuần, hiện kết quả — mọi quy tắc nằm ngoài giao diện",
-                "Queue + after(100): đường duy nhất để worker báo kết quả về cho widget"
+                "Thread: worker lưu BẢN SAO marks, báo về bằng Queue, không đụng widget",
+                "Process: [sys.executable, \"report.py\"], text=True, returncode khác 0 là lỗi",
+                "after(100) là thread GUI đọc Queue; join() trong nút Lưu làm cửa sổ đứng"
               ]
             },
             {
               "title": "Ví dụ: một vòng dữ liệu trọn vẹn",
-              "body": "Gõ \"Mai\", \"8,5\" → validate trả (\"Mai\", 8.5), raise ValueError nếu tên trống hoặc điểm ngoài 0..10. Bấm Lưu → status \"Đang lưu...\", worker pickle+gzip BẢN SAO của marks rồi put (\"ok\", 2) vào Queue, after(100) đọc được và đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py chạy ở process con, nhận \"Mai,8.5\" qua stdin, trả về \"Average: 7.75\" qua stdout."
-            },
-            {
-              "title": "Bốn chỗ dễ hỏng nhất",
-              "bullets": [
-                "Lưu thẳng self.marks thay vì bản sao: người dùng gõ tiếp trong lúc worker đang pickle",
-                "join() ngay trong callback Lưu: cửa sổ đứng, worker thành vô nghĩa — join lúc thoát",
-                "Quên text=True: stdout là bytes, so sánh chuỗi trượt hết",
-                "Bỏ qua returncode: con thoát mã 1 vì không có dữ liệu mà GUI vẫn hiện báo cáo rỗng",
-                "load_marks lần chạy đầu: FileNotFoundError là bình thường → trả {}, đừng để nổ"
-              ]
+              "body": "Bấm Lưu → status \"Đang lưu...\", worker pickle + gzip rồi put (\"ok\", 2) vào Queue, after(100) đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py đọc \"Mai,8.5\" từ stdin, in Average."
             },
             {
               "title": "Đọc sơ đồ",
-              "body": "Hình là một vòng khép kín quanh ô GUI. Đi xuống: dữ liệu đã validate → worker thread → pickle+gzip → file .gz trên đĩa, kết quả quay về GUI qua Queue và after(). Đi sang ngang: marks → stdin của process con report.py → stdout quay về ô kết quả. Ranh giới nét đứt là chỗ ĐỔI KHÔNG GIAN: qua nó là sang thread khác hoặc process khác, nên dữ liệu phải đi bằng Queue hoặc pipe chứ không dùng chung biến.",
+              "body": "Đi xuống từ ô GUI: dữ liệu đã validate → worker thread → pickle + gzip → file .gz, kết quả về qua Queue. Đi ngang: marks → stdin của report.py → stdout; nét đứt là chỗ ĐỔI KHÔNG GIAN.",
               "figure": {
                 "src": "/static/anim/R02-pipeline.svg",
                 "caption": "Đường đi dữ liệu: GUI → thread lưu nén, GUI → process con báo cáo",

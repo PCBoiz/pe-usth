@@ -499,28 +499,21 @@ for run in range(2):
         ],
         theory=[
             dict(h='Định nghĩa',
-                 body='Slide nói gọn: "process is a program in execution state (active)". Program là mã THỤ ĐỘNG nằm '
-                      'trên đĩa — không có gì đang chạy. Process là trạng thái thực thi đang hoạt động của mã đó, và '
-                      'một program có thể đang ứng với nhiều process cùng lúc.',
+                 body='Program là mã thụ động nằm trên đĩa; process là MỘT lần chạy program đó, đang hoạt động. Cùng '
+                      'một program có thể đang ứng với nhiều process một lúc.',
                  bullets=['PID: số hệ điều hành cấp cho từng process, không cấp cho file .py',
                           'PPID: PID của process cha đã tạo ra nó',
-                          'Trạng thái thực thi gồm context (program counter, thanh ghi), file descriptor và vùng nhớ',
-                          'Vùng nhớ chia ba phần: process stack, data section, heap']),
+                          'Mỗi process có vùng nhớ riêng: process stack, data section, heap']),
             dict(h='Ví dụ: cây process trên máy thật',
-                 body='Lệnh pstree -A ở slide in ra init-+-cron, |-sshd---bash---pstree, |-screen---bash---python2… '
-                      'Mỗi nhánh là một process có PID riêng; bash tạo python, python tạo tiếp con thì thành cháu. '
-                      'TABLE của bài là một lát cắt của cây đó: ba dòng mang tên "python" là ba process của cùng một '
-                      'program.'),
+                 body='pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành '
+                      'cháu. TABLE của bài là một lát cắt như vậy — ba dòng "python" là ba process của cùng một program.'),
             dict(h='Dùng ở đâu',
                  bullets=['ps / pstree / Task Manager: xem process nào đang chạy và là con của ai',
-                          'Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào khi chạy nhiều bản song song',
-                          'Giám sát: thấy process treo thì lần theo PPID để tìm cả nhánh cần dừng',
-                          'Studio chạy trong trình duyệt nên PID là số GIẢ (ổn định, con khác cha); máy thật mỗi lần một số']),
+                          'Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào',
+                          'Studio cho PID GIẢ (ổn định, con khác cha); máy thật mỗi lần một số']),
             dict(h='Đọc sơ đồ', figure='P01-program-vs-process',
-                 body='Bên trái là một file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process '
-                      'sinh ra từ chính file ấy: mỗi khối có PID riêng và một vùng nhớ riêng (text, data, heap, '
-                      'stack), nên sửa biến trong khối này không đụng tới khối kia. Ba mũi tên 0/1/2 ở đáy mỗi khối '
-                      'là file descriptor stdin, stdout, stderr.'),
+                 body='Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra '
+                      'từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.'),
         ],
         figure=dict(name='P01-program-vs-process',
                     caption='Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng',
@@ -673,30 +666,23 @@ print("wait() trả", code, "- returncode =", child.returncode, "- poll() =", ch
         ],
         theory=[
             dict(h='Định nghĩa: năm trạng thái',
-                 body='Slide "Process States" định nghĩa đúng năm trạng thái và các sự kiện chuyển. Trạng thái là chỗ '
-                      'process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường — mọi cặp khác không '
-                      'có nghĩa.',
-                 bullets=['new: process vừa được tạo',
-                          'ready: chờ được scheduler giao cho một processor',
-                          'running: đang thực thi lệnh',
-                          'waiting: đang chờ một sự kiện (thường là I/O) xảy ra',
+                 body='Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường '
+                      'chuyển — mọi cặp (trạng thái, sự kiện) khác đều không có nghĩa.',
+                 bullets=['new: vừa được tạo — ready: chờ scheduler giao cho một processor',
+                          'running: đang thực thi lệnh — waiting: đang chờ một sự kiện I/O',
                           'terminated: đã chạy xong']),
             dict(h='Ví dụ: fork rồi exec trên UNIX',
-                 body='Slide nhấn: process mới KHÔNG được tạo từ con số không, mà qua hai bước. fork() nhân bản '
-                      'process đang chạy — open file, thanh ghi, vùng nhớ đều giống, TRỪ process id. Cha nhận về PID '
-                      'của con, con nhận 0, nhờ vậy if (pid == 0) tách được hai nhánh. Con gọi exec() để thay chương '
-                      'trình (PID giữ nguyên), còn cha gọi wait() để thu kết quả.'),
+                 body='fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận '
+                      '0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), '
+                      'cha gọi wait() thu kết quả.'),
             dict(h='Dùng ở đâu',
                  bullets=['subprocess trên Linux làm đúng việc đó: fork rồi exec trong process con',
-                          'Windows không có fork; nó tạo process bằng CreateProcess — WinExec là API cũ, đã deprecated',
                           'wait() để lấy exit code, và để con đã xong không nằm lại thành zombie',
-                          'os.fork KHÔNG tồn tại trên Windows; trong Studio subprocess cũng chỉ là bản mô phỏng',
-                          'Mọi thứ chạy lệnh hộ bạn — shell, CI runner, máy chấm — đều dựng trên chuỗi tạo–chờ–thu mã này']),
+                          'Windows không có fork (dùng CreateProcess); Studio chỉ mô phỏng subprocess']),
             dict(h='Đọc sơ đồ', figure='P02-lifecycle',
-                 body='Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN. Chấm đen là lúc process ra đời, vòng tròn viền '
-                      'là lúc nó biến mất. Chú ý hai mũi tên rời khỏi running: interrupt (hết time slice) và io_wait '
-                      '(phải chờ). Cả hai nhánh đều quay về ready chứ không về thẳng running — ai chạy tiếp là quyền '
-                      'của scheduler.'),
+                 body='Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN; chấm đen là lúc process ra đời, vòng tròn viền là '
+                      'lúc nó biến mất. Hai mũi tên rời running — interrupt và io_wait — đều quay về ready, không về '
+                      'thẳng running.'),
         ],
         figure=dict(name='P02-lifecycle',
                     caption='Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng',
@@ -849,28 +835,23 @@ for turn in range(4):
         ],
         theory=[
             dict(h='Định nghĩa: scheduler làm gì',
-                 body='Scheduler trả lời hai câu hỏi slide đặt ra: chạy process nào tiếp theo, và cho nó chạy bao '
-                      'lâu. Nó biết danh sách process, trạng thái và thông tin thống kê của từng process, rồi chọn '
-                      'theo độ ưu tiên.',
-                 bullets=['Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy — Round Robin thuộc nhóm này',
-                          'Non-preemption (cooperation): process tự nguyện nhường CPU',
-                          'Short-term scheduler đổi process sau vài mili-giây; long-term tính bằng giây/phút cho batch job',
+                 body='Scheduler trả lời hai câu: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó dựa vào trạng '
+                      'thái và số liệu thống kê của từng process rồi chọn theo độ ưu tiên.',
+                 bullets=['Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)',
+                          'Non-preemption: process tự nguyện nhường CPU',
                           'CPU-bound chủ yếu tính toán; I/O-bound chủ yếu chờ đĩa, mạng, máy in']),
-            dict(h='Ví dụ: ba hàng đợi và bảng thuật toán',
-                 body='Slide chia process theo hàng đợi: job queue (vừa vào hệ thống, còn trên đĩa), ready queue (đã '
-                      'ở bộ nhớ chính, chờ CPU), device queue (chờ một thiết bị I/O) — đổi trạng thái là chuyển hàng. '
-                      'Bảng so sánh: FCFS và SJF không preempt; SRTF và Round Robin có; MLQ và MLFQ chia nhiều hàng '
-                      'con, khác nhau ở chỗ process có được chuyển hàng hay không.'),
+            dict(h='Ví dụ: ba hàng đợi',
+                 body='Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ '
+                      'CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không '
+                      'preempt; SRTF và Round Robin có.'),
             dict(h='Dùng ở đâu',
-                 bullets=['Giải thích vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt',
-                          'Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch; lớn thì ngược lại',
-                          'Đọc số đo: bảng thuật toán cân nhắc thời gian chờ ω và thời gian phản hồi ρ',
-                          'round_robin của bài là MÔ PHỎNG bằng Python thuần, không đụng tới scheduler thật của máy']),
+                 bullets=['Vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt',
+                          'Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch',
+                          'round_robin của bài là MÔ PHỎNG, không đụng scheduler thật của máy']),
             dict(h='Đọc sơ đồ', figure='P03-context-switch',
-                 body='Hai cột ngoài là hai process, cột giữa là hệ điều hành. A đang chạy thì có interrupt: CPU rời '
-                      'A, lưu ngữ cảnh của A vào PCB0, nạp ngữ cảnh của B từ PCB1, rồi B mới chạy. Khoảng tô đậm giữa '
-                      'hai đoạn mang nhãn "overhead" — trong khoảng đó không process nào làm được việc của mình, nên '
-                      'đổi càng nhiều lần càng tốn.'),
+                 body='Hai cột ngoài là hai process, cột giữa là hệ điều hành: có interrupt thì CPU lưu ngữ cảnh A vào '
+                      'PCB0, nạp ngữ cảnh B từ PCB1, rồi B mới chạy. Khoảng tô đậm nhãn "overhead" là lúc không '
+                      'process nào làm được việc của mình.'),
         ],
         figure=dict(name='P03-context-switch',
                     caption='Context switch: lưu PCB của process cũ, nạp PCB của process mới',
@@ -1041,27 +1022,21 @@ print("gộp:", repr(merged.stdout))
         theory=[
             dict(h='Định nghĩa: ba luồng chuẩn',
                  body='Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định '
-                      'cả ba nối với terminal — bàn phím vào, màn hình ra — nên trên màn hình chúng trông như một, '
-                      'dù thực ra là ba đường riêng, đổi đích được độc lập.',
+                      'cả ba nối với terminal nên trông như một, nhưng là ba đường riêng, đổi đích được độc lập.',
                  bullets=['stdin (0): đầu vào — input() và sys.stdin đọc từ đây',
                           'stdout (1): KẾT QUẢ — print(x) ghi vào đây',
-                          'stderr (2): báo lỗi và cảnh báo — print(x, file=sys.stderr)',
-                          'Mỗi đầu có thể trỏ tới terminal, một file, hoặc một pipe sang process khác']),
-            dict(h='Ví dụ: bốn cách nối của slide',
-                 body='Slide vẽ cùng một hộp Process với bốn cấu hình. (1) Bàn phím → process → màn hình. '
-                      '(2) bc < input.txt: stdin lấy từ file. (3) ls -la > out.txt: stdout ghi ra file, còn stderr '
-                      'vẫn ra màn hình. (4) ps aux | grep term: stdout của process 1 thành stdin của process 2 qua '
-                      'một pipe, còn stderr của cả hai vẫn về màn hình.'),
+                          'stderr (2): báo lỗi và cảnh báo — print(x, file=sys.stderr)']),
+            dict(h='Ví dụ: ba cách đổi đích',
+                 body='bc < input.txt đổi stdin sang file; ls -la > out.txt đổi stdout sang file mà stderr vẫn ra màn '
+                      'hình. ps aux | grep term nối stdout của process 1 vào stdin của process 2 qua một pipe.'),
             dict(h='Dùng ở đâu',
-                 bullets=['Pipeline shell và CI: mỗi công cụ đọc stdin, ghi kết quả ra stdout nên ghép được với nhau',
-                          'Giữ stderr riêng để log lỗi không trộn vào dữ liệu đang chuyển tiếp cho bước sau',
-                          'Trong Python: subprocess thay terminal bằng PIPE để cha đọc được đầu ra của con',
-                          'Studio không có shell nên không viết được | hay >; nó mô phỏng ba luồng riêng cho mỗi con']),
+                 bullets=['Pipeline shell và CI: mỗi công cụ đọc stdin, ghi ra stdout nên ghép được',
+                          'Giữ stderr riêng để log lỗi không trộn vào dữ liệu chuyển cho bước sau',
+                          'Studio không có shell nên không viết được | hay >; nó mô phỏng ba luồng']),
             dict(h='Đọc sơ đồ', figure='P04-io-redirection',
-                 body='Hộp giữa là process. Mũi tên vào bên trái là stdin (0); hai mũi tên ra là stdout (1) và stderr '
-                      '(2) — để ý stderr luôn tách thành một đường riêng, kể cả khi stdout đã đổi sang file. Phần '
-                      'dưới hình là biến thể pipe: stdout của process 1 cắm thẳng vào stdin của process 2, dữ liệu '
-                      'chảy qua bộ nhớ chứ không qua đĩa.'),
+                 body='Hộp giữa là process: mũi tên vào là stdin (0), hai mũi tên ra là stdout (1) và stderr (2) — '
+                      'stderr luôn tách riêng, kể cả khi stdout đã đổi sang file. Phần dưới là biến thể pipe: dữ liệu '
+                      'chảy qua bộ nhớ, không qua đĩa.'),
         ],
         figure=dict(name='P04-io-redirection',
                     caption='stdin/stdout/stderr: từ terminal, sang file, rồi thành pipe giữa hai process',
@@ -1223,29 +1198,21 @@ print(repr(subprocess.check_output([sys.executable, "-c", "print('hi')"], text=T
         ],
         theory=[
             dict(h='Định nghĩa: run() là "chạy và chờ"',
-                 body='Bảng subprocess của slide xếp run() vào đúng ô "Run and wait": gọi run(args) là cha dừng lại '
-                      'tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một '
-                      'chương trình khác từ trong Python.',
-                 bullets=['args là LIST: phần tử đầu là chương trình, các phần tử sau là từng đối số',
-                          'CompletedProcess mang returncode, stdout, stderr',
-                          'capture_output=True mới thu đầu ra; text=True mới cho str thay vì bytes',
+                 body='Gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là '
+                      'cách đơn giản nhất để chạy một chương trình khác từ trong Python.',
+                 bullets=['args là LIST: phần tử đầu là chương trình, các phần sau là từng đối số',
+                          'CompletedProcess mang returncode, stdout, stderr; capture_output=True mới thu',
                           'check=True biến exit code khác 0 thành CalledProcessError; timeout= đặt hạn chờ']),
             dict(h='Ví dụ: exit code là lời khai của con',
-                 body='Mỗi process khi kết thúc trả về hệ điều hành một số nguyên. Quy ước: 0 là thành công, khác 0 '
-                      'là có chuyện. Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha '
-                      'KHÔNG nhận được object exception của con — chỉ nhận con số đó, còn traceback nằm trong stderr '
-                      'của con.'),
+                 body='Quy ước: 0 là thành công, khác 0 là có chuyện — Python thoát mã n khi gặp SystemExit(n) và mã 1 '
+                      'khi có ngoại lệ không bắt. Cha chỉ nhận con số đó, còn traceback nằm trong stderr của con.'),
             dict(h='Dùng ở đâu',
-                 bullets=['Gọi công cụ ngoài từ Python: git, ffmpeg, pdflatex, hay một script Python khác',
-                          'Máy chấm bài và CI: chạy bài nộp, so stdout, lấy returncode làm tín hiệu đạt/trượt',
-                          'timeout= chặn chương trình lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired',
-                          'Dùng sys.executable thay chữ "python": trên Windows "python" có thể là stub của Microsoft Store',
-                          'Studio mô phỏng subprocess; time.sleep của con chỉ đẩy đồng hồ ảo nên vẫn thử timeout được']),
+                 bullets=['Gọi công cụ ngoài: git, ffmpeg, hay chính Python qua sys.executable',
+                          'timeout= chặn lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired',
+                          'Studio mô phỏng subprocess; sleep của con chỉ đẩy đồng hồ ảo']),
             dict(h='Đọc sơ đồ', figure='P05-run-timeline',
-                 body='Hai đường thời gian: cha ở trên, con ở dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt '
-                      '— cha bị CHẶN, không làm gì khác. Đường của con chạy liền mạch tới exit. Khi con kết thúc, mũi '
-                      'tên quay lên mang theo hộp CompletedProcess với ba ô returncode, stdout, stderr; từ đó cha mới '
-                      'chạy tiếp.'),
+                 body='Cha ở đường trên, con ở đường dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị '
+                      'CHẶN; khi con exit, mũi tên quay lên mang hộp CompletedProcess rồi cha mới chạy tiếp.'),
         ],
         figure=dict(name='P05-run-timeline',
                     caption='run() chặn process cha cho tới khi con xong và trả CompletedProcess',
@@ -1408,28 +1375,22 @@ except subprocess.TimeoutExpired:
         ],
         theory=[
             dict(h='Định nghĩa: Popen là "chạy nền"',
-                 body='Trong bảng subprocess của slide, Popen đứng ở ô "Run in background": nó khởi động con rồi trả '
-                      'object NGAY, cha không chờ. run() thực ra được xây trên Popen — gói sẵn phần giao tiếp và chờ, '
-                      'nên tiện nhưng không cho bạn xen vào giữa.',
-                 bullets=['stdin/stdout/stderr=subprocess.PIPE mở đường nói chuyện; luồng không khai thì nhận None',
-                          'communicate(input, timeout): gửi input, đóng stdin, đọc hết hai luồng, chờ con xong',
-                          'poll() hỏi "xong chưa" mà không chặn; wait() chặn tới khi xong',
-                          'terminate() xin con dừng tử tế; kill() ép dừng ngay']),
+                 body='Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn '
+                      'phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.',
+                 bullets=['stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None',
+                          'communicate(input, timeout): gửi input, đọc hết hai luồng, chờ con xong',
+                          'poll() hỏi "xong chưa" không chặn; terminate() xin dừng, kill() ép dừng']),
             dict(h='Ví dụ: timeout không giết ai',
-                 body='Tài liệu Python nói thẳng: communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới '
-                      'process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn trong tài liệu là bắt lỗi, gọi kill(), rồi '
-                      'gọi communicate() lần thứ hai để đọc nốt phần con đã in và thu hồi con. Khác hẳn '
-                      'run(timeout=…), vốn tự dọn con trước khi ném lỗi.'),
+                 body='communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn '
+                      'giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con.'),
             dict(h='Dùng ở đâu',
-                 bullets=['Chạy việc dài ở nền trong khi cha vẫn làm việc khác, thỉnh thoảng poll() xem xong chưa',
-                          'Đối thoại nhiều lượt với một công cụ qua pipe (bc, một interpreter, một server con)',
-                          'Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process và không kẹt pipe',
-                          'Mã thoát khi bị kill tuỳ hệ điều hành: -9 trên Linux (và trong Studio), 1 trên Windows']),
+                 bullets=['Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa',
+                          'Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe',
+                          'Mã thoát khi bị kill tuỳ hệ: -9 trên Linux (và Studio), 1 trên Windows']),
             dict(h='Đọc sơ đồ', figure='P06-popen-timeout',
-                 body='Đọc theo trục thời gian ngang. Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song '
-                      'song. Hộp communicate(timeout) có một vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường '
-                      'của con VẪN kéo dài qua vạch đó — đúng chỗ dễ nhầm. Chỉ sau kill() đường con mới dứt, và '
-                      'communicate() lần hai mới kéo nốt stdout còn trong pipe về cho cha.'),
+                 body='Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) '
+                      'có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau '
+                      'kill() nó mới dứt.'),
         ],
         figure=dict(name='P06-popen-timeout',
                     caption='Popen trả ngay; communicate quá giờ thì phải kill rồi communicate lần hai',
@@ -1584,29 +1545,23 @@ if __name__ == "__main__":
         ],
         theory=[
             dict(h='Định nghĩa: hai cách tạo process',
-                 body='Chương Multi Processing của slide dạy subprocess — chạy một CHƯƠNG TRÌNH khác rồi nói chuyện '
-                      'qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một '
-                      'process riêng. Hai module, hai bộ API, không phải hai tên của cùng một thứ.',
+                 body='subprocess chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa '
+                      'còn lại: chạy một HÀM Python của chính bạn ở một process riêng — hai module, hai bộ API.',
                  bullets=['Process(target=hàm, args=(…)) rồi start(), join() — dùng y như Thread',
-                          'Worker phải là def ở cấp module: con tìm lại hàm theo tên, nên lambda không dùng được',
-                          'Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua',
-                          'Trên Windows/macOS con khởi động bằng cách import lại file, nên cần if __name__ == "__main__":']),
+                          'Worker phải là def ở cấp module: con tìm hàm theo tên nên lambda không được',
+                          'Queue là kênh IPC: con put(), cha get(); dữ liệu được pickle khi đi qua']),
             dict(h='Ví dụ: bộ nhớ không dùng chung',
-                 body='Slide mô tả fork() là "clone" process cha trừ process id — clone, nghĩa là BẢN SAO. Worker '
-                      'chạy counter += 1 hay ghi vào một dict toàn cục chỉ sửa bản của nó; cha đọc lại vẫn thấy số '
-                      'cũ, dict vẫn rỗng. Đây đúng là chỗ process khác thread: thread trong cùng process dùng chung '
-                      'bộ nhớ, process thì không.'),
+                 body='fork() tạo một BẢN SAO của process cha, nên worker chạy counter += 1 hay ghi dict toàn cục chỉ '
+                      'sửa bản của nó — cha đọc lại vẫn thấy số cũ. Đây là chỗ process khác thread: thread cùng '
+                      'process thì dùng chung bộ nhớ.'),
             dict(h='Dùng ở đâu',
-                 bullets=['Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn như thread',
-                          'Chia một tập dữ liệu thành phần, mỗi process một phần, gom kết quả qua Queue',
-                          'Cô lập rủi ro: một worker chết không kéo sập cả chương trình',
-                          'Giá phải trả: tạo process đắt hơn tạo thread, và mọi thứ gửi đi đều phải pickle được',
-                          'Studio mô phỏng multiprocessing: target chạy khi start() trên bản sao, Queue là kênh chung']),
+                 bullets=['Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn',
+                          'Giá phải trả: tạo process đắt hơn thread, mọi thứ gửi đi phải pickle được',
+                          'Studio mô phỏng multiprocessing: target chạy khi start(), Queue là kênh chung']),
             dict(h='Đọc sơ đồ', figure='P07-process-queue',
-                 body='Ba hộp: cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào '
-                      'nối thẳng vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue: mỗi con put một cặp '
-                      'vào hàng, cha get ra đủ số cặp rồi mới join. Thứ tự lấy ra không nhất thiết theo thứ tự '
-                      'start — vì thế phải gom theo khoá n, không theo chỉ số.'),
+                 body='Cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối vùng '
+                      'nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue, và thứ tự lấy ra không nhất thiết '
+                      'theo thứ tự start.'),
         ],
         figure=dict(name='P07-process-queue',
                     caption='Hai process con gửi kết quả về cha qua Queue; bộ nhớ không dùng chung',

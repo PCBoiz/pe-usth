@@ -38,30 +38,28 @@
       "theory": [
         {
           "title": "Định nghĩa: Popen là \"chạy nền\"",
-          "body": "Trong bảng subprocess của slide, Popen đứng ở ô \"Run in background\": nó khởi động con rồi trả object NGAY, cha không chờ. run() thực ra được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
+          "body": "Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
           "bullets": [
-            "stdin/stdout/stderr=subprocess.PIPE mở đường nói chuyện; luồng không khai thì nhận None",
-            "communicate(input, timeout): gửi input, đóng stdin, đọc hết hai luồng, chờ con xong",
-            "poll() hỏi \"xong chưa\" mà không chặn; wait() chặn tới khi xong",
-            "terminate() xin con dừng tử tế; kill() ép dừng ngay"
+            "stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None",
+            "communicate(input, timeout): gửi input, đọc hết hai luồng, chờ con xong",
+            "poll() hỏi \"xong chưa\" không chặn; terminate() xin dừng, kill() ép dừng"
           ]
         },
         {
           "title": "Ví dụ: timeout không giết ai",
-          "body": "Tài liệu Python nói thẳng: communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn trong tài liệu là bắt lỗi, gọi kill(), rồi gọi communicate() lần thứ hai để đọc nốt phần con đã in và thu hồi con. Khác hẳn run(timeout=…), vốn tự dọn con trước khi ném lỗi."
+          "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con."
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
-            "Chạy việc dài ở nền trong khi cha vẫn làm việc khác, thỉnh thoảng poll() xem xong chưa",
-            "Đối thoại nhiều lượt với một công cụ qua pipe (bc, một interpreter, một server con)",
-            "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process và không kẹt pipe",
-            "Mã thoát khi bị kill tuỳ hệ điều hành: -9 trên Linux (và trong Studio), 1 trên Windows"
+            "Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa",
+            "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe",
+            "Mã thoát khi bị kill tuỳ hệ: -9 trên Linux (và Studio), 1 trên Windows"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Đọc theo trục thời gian ngang. Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có một vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường của con VẪN kéo dài qua vạch đó — đúng chỗ dễ nhầm. Chỉ sau kill() đường con mới dứt, và communicate() lần hai mới kéo nốt stdout còn trong pipe về cho cha.",
+          "body": "Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau kill() nó mới dứt.",
           "figure": {
             "src": "/static/anim/P06-popen-timeout.svg",
             "caption": "Popen trả ngay; communicate quá giờ thì phải kill rồi communicate lần hai",

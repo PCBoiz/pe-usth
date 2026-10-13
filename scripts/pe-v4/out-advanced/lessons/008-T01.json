@@ -38,38 +38,36 @@
       "theory": [
         {
           "title": "Định nghĩa: thread là gì",
-          "body": "Thread là MỘT dòng thực thi (single flow of execution) nằm trong một process; slide gọi nó là \"lightweight process\". Mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực thi cùng chạy trong một process, dùng chung đúng một PCB.",
+          "body": "Thread là MỘT dòng thực thi nằm trong một process; mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực thi cùng chạy trong một process, dùng chung đúng một PCB.",
           "bullets": [
-            "Chung (trong PCB): heap, biến toàn cục, code, file descriptor, scheduling, accounting",
+            "Chung: heap, biến toàn cục, code, file descriptor",
             "Riêng từng thread: stack và stack pointer, program counter, registers",
-            "Heap chung nên trao đổi dữ liệu không cần shm*() hay IPC như giữa hai process"
+            "Heap chung nên trao đổi dữ liệu không cần IPC như giữa hai process"
           ]
         },
         {
           "title": "Ví dụ: cùng mục tiêu, khác cách chia",
-          "body": "Multi-process và multi-thread đặt ra cùng ba mục tiêu: làm nhiều việc một lúc, tăng mức dùng CPU, tăng responsiveness. Khác nhau ở cách chia tài nguyên — slide gọi tên thẳng: fork() là \"resource cloning\", process con nhận bản sao vùng nhớ; thread là \"resource sharing\", mọi thread nhìn cùng một vùng nhớ. Tạo, kết thúc và chuyển giữa các thread đều rẻ hơn process."
+          "body": "Multi-process và multi-thread cùng nhắm ba đích: làm nhiều việc một lúc, tăng mức dùng CPU, tăng responsiveness. Khác ở cách chia tài nguyên — fork() nhân bản (con nhận bản sao vùng nhớ), còn thread thì dùng chung."
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
             "Apache prefork: mỗi HTTP request một child process — cách ly tốt, tốn bộ nhớ",
             "Apache worker: ít process hơn, mỗi process nhiều thread, mỗi thread một request",
-            "Chrome: mỗi tab một process; trong process có main thread, render thread, I/O thread",
-            "Giao diện: một thread lo UI, thread khác lo việc chờ lâu để cửa sổ không đứng"
+            "Chrome: mỗi tab một process; trong đó có main thread, render thread, I/O thread"
           ]
         },
         {
           "title": "Cái giá và giới hạn",
           "bullets": [
-            "Nondeterministic: cùng một code, mỗi lần chạy thứ tự các dòng in có thể khác",
+            "Nondeterministic: cùng một code, mỗi lần chạy thứ tự dòng in có thể khác",
             "Phải tự đồng bộ: race condition (T05), deadlock, code khó đọc hơn",
-            "Nhiều lõi thì tăng số thread, nhưng quá nhiều thì overhead và đồng bộ ăn hết lợi",
             "Studio chạy các target lần lượt; chạy file trên máy mới thấy thứ tự thật"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Khung lớn là MỘT process. Hàng trên — code, data, heap, file descs — vẽ một lần duy nhất: đó là phần dùng chung. Mỗi cột bên dưới là một thread, có ô stack và registers riêng, đường cong là dòng thực thi của nó. Đối chiếu phần multi-process bên cạnh: ở đó mỗi process có đủ một bộ ô riêng và không ô nào nối sang process khác.",
+          "body": "Khung lớn là MỘT process: hàng trên — code, data, heap, file descs — vẽ một lần vì là phần dùng chung. Mỗi cột dưới là một thread có stack và registers riêng; bên phần multi-process, mỗi process có đủ một bộ ô riêng.",
           "figure": {
             "src": "/static/anim/T01-thread-vs-process.svg",
             "caption": "Một process nhiều thread: cái gì chung, cái gì riêng",

@@ -38,34 +38,33 @@
       "theory": [
         {
           "title": "Định nghĩa: GIL",
-          "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được điều khiển interpreter, tức chỉ một thread chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
+          "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
           "bullets": [
             "Thắt cổ chai với code Python tính toán thuần (CPU-bound)",
             "Không thành vấn đề với chương trình chờ I/O",
-            "Không thành vấn đề với phần gọi xuống thư viện native — slide lấy NumPy làm ví dụ"
+            "Không thành vấn đề với phần gọi xuống thư viện native, ví dụ NumPy"
           ]
         },
         {
           "title": "Vì sao có GIL, bỏ đi thì mất gì",
+          "body": "GIL không phải lỗi mà là một đánh đổi có chủ ý. Nó cũng KHÔNG thay Lock: trạng thái của ứng dụng vẫn phải tự bảo vệ (T05).",
           "bullets": [
-            "Có: quản lý bộ nhớ — reference counting và garbage collector cần được bảo vệ",
-            "Có: gọn thread-safety — một mutex trên interpreter thay cho mutex trên từng object",
-            "Slide chốt: \"that is not a bug but a feature\"",
-            "Bỏ: single-thread chậm đi, sinh nguy cơ deadlock, kém tương thích với extension cũ",
-            "GIL KHÔNG thay Lock: trạng thái của ứng dụng vẫn phải tự bảo vệ (T05)"
+            "Có: reference counting và garbage collector cần được bảo vệ",
+            "Có: một mutex trên interpreter thay cho mutex trên từng object",
+            "Bỏ: single-thread chậm đi, nguy cơ deadlock, kém tương thích extension cũ"
           ]
         },
         {
           "title": "Dùng ở đâu",
           "bullets": [
             "Chờ mạng, đĩa, cơ sở dữ liệu, sleep → thread là đúng chỗ",
-            "Tính Python thuần mà muốn dùng nhiều lõi → process: mỗi process một interpreter, một GIL",
-            "Đo trước khi chọn bằng time.perf_counter(), đừng đoán theo số thread"
+            "Tính Python thuần mà muốn nhiều lõi → process: mỗi process một GIL",
+            "Đo bằng time.perf_counter() trước khi chọn, đừng đoán theo số thread"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Hai dải thời gian trong slide là nền của hình. Một lõi: các lát T1, T2, T3… nối nhau trên cùng một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. Nhiều lõi: mỗi core một hàng, các lát thật sự chồng nhau. GIL ép CPython về dáng hàng thứ nhất cho phần tính toán, dù máy có bao nhiêu lõi. Ô màu nhạt là lúc thread chờ I/O: nó nhả GIL nên lát của thread khác lấp vào được — chỗ đó mới là lãi.",
+          "body": "Một lõi: các lát T1, T2, T3… nối nhau trên một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. GIL ép phần tính toán về dáng đó dù máy bao nhiêu lõi; ô nhạt là lúc thread chờ I/O, nhả GIL cho thread khác lấp vào.",
           "figure": {
             "src": "/static/anim/T04-gil.svg",
             "caption": "Một GIL, nhiều thread: CPU thì luân phiên, I/O thì chồng lên nhau",

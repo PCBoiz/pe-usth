@@ -37,36 +37,24 @@
       },
       "theory": [
         {
-          "title": "Bài cửa: ghép bốn kỹ thuật của PW5–PW9",
-          "body": "Chuỗi bài thực hành của giảng viên là MỘT chương trình lớn dần: PW5–PW6 thêm lưu dữ liệu (pickle, nén), PW7 làm một shell chạy lệnh và nối vào/ra giữa các process, PW8 chuyển việc lưu sang thread nền, PW9 thay giao diện dòng lệnh bằng Tkinter. Bài này gộp lại: một sổ điểm có GUI, lưu nén, chạy báo cáo ở process con và lưu ở thread nền."
+          "title": "Bài cửa: bốn mảnh của PW5–PW9",
+          "body": "Một sổ điểm ghép bốn việc: pickle + gzip LƯU RA FILE, PROCESS CON report.py in báo cáo, WORKER THREAD lo việc lưu, GUI Tkinter bọc tất cả. Studio chạy GIẢ cả tkinter lẫn thread: không vẽ cửa sổ, bộ chấm gọi hàm thuần."
         },
         {
-          "title": "Bốn mảnh ghép, mỗi mảnh một lý do",
+          "title": "Hai ranh giới phải đi bằng ống",
           "bullets": [
-            "pickle + gzip: dict Python → bytes → file nén; gzip.open(path, \"wb\"/\"rb\"), luôn nhị phân",
-            "subprocess: báo cáo là CHƯƠNG TRÌNH KHÁC, chạy bằng sys.executable để trúng Python hiện tại",
-            "Thread: lưu file có thể lâu, nên nó không được chạy trên thread của mainloop",
-            "Tkinter: App chỉ đọc widget, gọi hàm thuần, hiện kết quả — mọi quy tắc nằm ngoài giao diện",
-            "Queue + after(100): đường duy nhất để worker báo kết quả về cho widget"
+            "Thread: worker lưu BẢN SAO marks, báo về bằng Queue, không đụng widget",
+            "Process: [sys.executable, \"report.py\"], text=True, returncode khác 0 là lỗi",
+            "after(100) là thread GUI đọc Queue; join() trong nút Lưu làm cửa sổ đứng"
           ]
         },
         {
           "title": "Ví dụ: một vòng dữ liệu trọn vẹn",
-          "body": "Gõ \"Mai\", \"8,5\" → validate trả (\"Mai\", 8.5), raise ValueError nếu tên trống hoặc điểm ngoài 0..10. Bấm Lưu → status \"Đang lưu...\", worker pickle+gzip BẢN SAO của marks rồi put (\"ok\", 2) vào Queue, after(100) đọc được và đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py chạy ở process con, nhận \"Mai,8.5\" qua stdin, trả về \"Average: 7.75\" qua stdout."
-        },
-        {
-          "title": "Bốn chỗ dễ hỏng nhất",
-          "bullets": [
-            "Lưu thẳng self.marks thay vì bản sao: người dùng gõ tiếp trong lúc worker đang pickle",
-            "join() ngay trong callback Lưu: cửa sổ đứng, worker thành vô nghĩa — join lúc thoát",
-            "Quên text=True: stdout là bytes, so sánh chuỗi trượt hết",
-            "Bỏ qua returncode: con thoát mã 1 vì không có dữ liệu mà GUI vẫn hiện báo cáo rỗng",
-            "load_marks lần chạy đầu: FileNotFoundError là bình thường → trả {}, đừng để nổ"
-          ]
+          "body": "Bấm Lưu → status \"Đang lưu...\", worker pickle + gzip rồi put (\"ok\", 2) vào Queue, after(100) đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py đọc \"Mai,8.5\" từ stdin, in Average."
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Hình là một vòng khép kín quanh ô GUI. Đi xuống: dữ liệu đã validate → worker thread → pickle+gzip → file .gz trên đĩa, kết quả quay về GUI qua Queue và after(). Đi sang ngang: marks → stdin của process con report.py → stdout quay về ô kết quả. Ranh giới nét đứt là chỗ ĐỔI KHÔNG GIAN: qua nó là sang thread khác hoặc process khác, nên dữ liệu phải đi bằng Queue hoặc pipe chứ không dùng chung biến.",
+          "body": "Đi xuống từ ô GUI: dữ liệu đã validate → worker thread → pickle + gzip → file .gz, kết quả về qua Queue. Đi ngang: marks → stdin của report.py → stdout; nét đứt là chỗ ĐỔI KHÔNG GIAN.",
           "figure": {
             "src": "/static/anim/R02-pipeline.svg",
             "caption": "Đường đi dữ liệu: GUI → thread lưu nén, GUI → process con báo cáo",

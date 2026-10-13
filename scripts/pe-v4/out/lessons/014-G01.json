@@ -38,35 +38,27 @@
       "theory": [
         {
           "title": "Định nghĩa: GUI và CLI",
-          "body": "CLI (Command Line Interface) nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI (Graphical User Interface) vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ. Slide so sánh sáu tiêu chí: CLI khó học nhưng rất linh hoạt, tốn ít bộ nhớ, chạy nhanh, chỉ dùng bàn phím; GUI dễ học, kém linh hoạt hơn, tốn bộ nhớ hơn, chậm hơn, dùng được cả chuột."
+          "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
         },
         {
-          "title": "Tkinter gồm bốn phần",
+          "title": "Bốn phần của một app Tkinter",
           "bullets": [
-            "Window: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
-            "Widgets: Frame, Label, Button, Entry… — mọi thứ người dùng nhìn thấy",
-            "Layout: geometry manager xếp widget vào cửa sổ (pack, place, grid)",
-            "Window event loop: mainloop() nhận sự kiện rồi gọi hàm xử lý",
-            "Tkinter có sẵn trong Python (nền Tcl/Tk); PyQt, Kivy, wxPython phải cài thêm"
+            "Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
+            "Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()",
+            "Event loop: mainloop() chặn tại chỗ, nhận sự kiện rồi gọi hàm xử lý"
           ]
         },
         {
-          "title": "Ví dụ: cửa sổ chính và cửa sổ phụ",
-          "body": "window = tk.Tk(); window.title(\"Student Information System\"); window.geometry(\"800x600\") dựng cửa sổ chính rộng 800, cao 600. sub = tk.Toplevel(window); sub.title(\"Students\"); sub.geometry(\"600x400\") mở thêm một cửa sổ phụ của CÙNG ứng dụng. Đóng cửa sổ chính thì cửa sổ phụ đóng theo, vì nó thuộc về root."
-        },
-        {
-          "title": "Dùng ở đâu",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
-            "Công cụ nội bộ: form nhập liệu, bảng điều khiển nhỏ cho người không quen terminal",
-            "Tkinter đi kèm Python nên một file .py chạy được ngay, không phải cài thêm thư viện",
-            "Cửa sổ phụ hợp với hộp Cài đặt, Trợ giúp, xem chi tiết một bản ghi",
-            "Studio chạy tkinter GIẢ: không cửa sổ nào được vẽ, bộ chấm soi cây widget thay bạn",
-            "Muốn thấy cửa sổ thật thì lưu file rồi chạy trên máy: python ten_file.py"
+            "Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp",
+            "Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn",
+            "mainloop() ở đây trả về ngay; thấy cửa sổ thật thì chạy python ten_file.py"
           ]
         },
         {
           "title": "Đọc sơ đồ",
-          "body": "Hình vẽ một cửa sổ Tk: thanh tiêu đề mang chuỗi của title(), khung ngoài mang kích thước của geometry(\"800x600\") — rộng x cao, chữ x thường — và vùng nội dung còn rỗng vì chưa có widget nào. Cửa sổ phụ Toplevel nằm bên cạnh, mũi tên trỏ về root nhắc quan hệ phụ thuộc. Cả hai chỉ hiện ra khi mainloop() chạy.",
+          "body": "Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry(\"800x600\") — rộng x cao, chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.",
           "figure": {
             "src": "/static/anim/G01-window-anatomy.svg",
             "caption": "Giải phẫu cửa sổ Tk: title, geometry và cửa sổ phụ Toplevel",
