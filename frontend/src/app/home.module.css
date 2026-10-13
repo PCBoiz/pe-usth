@@ -100,3 +100,64 @@
 @media (max-width: 639.98px) {
   .sectionTitle { margin: 40px 0 20px; font-size: 20px; }
 }
+
+/* Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx).
+   Dùng nền thẻ mờ của theme chứ không dùng ô trắng đặc như .icon: đây không
+   phải một khóa học, không được trông như một ô nữa trong lưới. */
+.feedback {
+  max-width: 520px;
+  margin: 56px 0 0;
+  padding: 24px 26px;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-card-border);
+  border-radius: 20px;
+  box-shadow: var(--edu-card-shadow);
+}
+
+.feedbackTitle {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--edu-t1);
+}
+
+.feedbackText {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--edu-t3);
+}
+
+/* Cùng kiểu nút chính của theme (xem .run trong app/ide/ide.module.css), nhưng
+   chữ để màu trắng thật: nút nằm trên dải gradient tím nên lấy màu nền panel
+   sẽ thành chữ sẫm trên nền sẫm ở chế độ tối. */
+.feedbackButton {
+  display: inline-flex;
+  align-items: center;
+  height: 42px;
+  padding: 0 22px;
+  font-size: 15px;
+  font-weight: 600;
+  color: white;
+  text-decoration: none;
+  background: var(--edu-accent-grad);
+  border-radius: 999px;
+  box-shadow: var(--edu-card-shadow);
+  transition: transform 0.15s ease;
+}
+.feedbackButton:hover { transform: translateY(-1px); }
+.feedbackButton:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedbackButton { transition: none; }
+  .feedbackButton:hover { transform: none; }
+}
+
+@media (max-width: 639.98px) {
+  .feedback { margin-top: 40px; padding: 20px; }
+  .feedbackTitle { font-size: 18px; }
+}
