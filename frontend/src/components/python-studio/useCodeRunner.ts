@@ -19,6 +19,7 @@ import {
 } from '@/lib/studio-lesson';
 
 import { PyodideRunner } from './runner/pyodide-runner';
+import { shouldPrewarm } from './prewarm-gate';
 import type { RunRequest, RunResult, Runner, TestResult } from './runner/types';
 import type { RunVerdict } from './useLessonProgress';
 
@@ -139,8 +140,10 @@ export function useLessonRun({
 }) {
   /** Kết quả chạy gần nhất của màn sandbox (không lưu vào bản nháp). */
   const [result, setResult] = useState<RunResult | null>(null);
+  // Nạp sẵn runtime NGAY khi mở màn, không chờ API trả nội dung — xem
+  // shouldPrewarm() để biết vì sao chờ là mất không 1,0–1,5 s mỗi lần mở bài.
   const runner = useCodeRunner({
-    enabled: Boolean(lesson?.step_4),
+    enabled: shouldPrewarm(lesson),
     packages: lesson?.step_4?.packages,
   });
   const { running, runtimeStatus } = runner;

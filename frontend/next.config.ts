@@ -77,6 +77,22 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=86400, must-revalidate" },
         ],
       },
+      {
+        // CSS legacy: cache CỨNG được vì mọi thẻ <link> đều đi qua PageStyles →
+        // withAssetVersion() gắn `?v=ASSET_VERSION`, nên sửa file là đổi URL.
+        // Trước bản này `public/` trả max-age=0, must-revalidate: đo 13/10/2026,
+        // mỗi lần mở bài là 3 lượt 304 cho 3 file CSS, mỗi lượt 132–143 ms.
+        //
+        // KHÔNG thêm /static/js/:path* vào đây: pyodide-runner.ts dùng
+        // WORKER_URL = '/static/js/studio-lesson.worker.js' TRẦN (không qua
+        // withAssetVersion), và worker tự fetch studio-harness.py cũng trần —
+        // cache cứng hai file đó là ghim học viên vào bộ chấm cũ. Muốn cache thì
+        // phải gắn tem cho chúng trước.
+        source: "/static/css/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
 };
