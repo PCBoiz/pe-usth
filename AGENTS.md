@@ -30,17 +30,30 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo ngày 14/10/2026. Đừng để tụt xuống dưới mức này:
+Đo lại ngày 15/10/2026 (trừ dòng pe-v4, xem cột cuối). Đừng để tụt xuống dưới
+mức này:
 
-| Hạng mục | Mốc |
-|---|---|
-| Backend typecheck | sạch |
-| Backend test | 35 bộ, 390 ca, tất cả đạt |
-| Backend lint | 263 lỗi — **mốc trần trong CI là 283, chỉ được hạ** |
-| Frontend typecheck | sạch |
-| Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → 204 ca đạt |
-| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
+| Hạng mục | Mốc | Đo ngày |
+|---|---|---|
+| Backend typecheck | sạch | 15/10/2026 |
+| Backend test | 35 bộ, 390 ca, tất cả đạt | 15/10/2026 |
+| Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** | 15/10/2026 |
+| Frontend typecheck | sạch | 15/10/2026 |
+| Frontend lint | 0 lỗi, 118 cảnh báo | 15/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 396 ca đạt | 15/10/2026 |
+| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 14/10/2026 |
+
+**CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
+Đã trả giá một lần: phiên 15/10 sửa bảng ở commit ĐẦU rồi 14 commit sau thêm
+test và dọn 124 file mà không sửa lại, nên bảng ghi "204 ca / 178 cảnh báo"
+trong khi thực đo là "390 ca / 118 cảnh báo". Bảng này nói "đừng để tụt xuống
+dưới mức này", nên một con số cũ KHÔNG phải chú thích lỗi thời vô hại: nó là
+mất lưới an toàn cho 186 ca test, và là giấy phép thêm 60 cảnh báo mới mà vẫn
+tưởng đang đạt mốc. Thêm/bớt ca test, dọn lint, xoá file ⇒ đo lại rồi sửa bảng
+TRONG CÙNG commit đó.
+
+`next build` KHÔNG có trong bảng vì chưa ai đo nó thành một con số ổn định;
+đừng thêm dòng nào vào bảng mà không tự chạy lệnh để lấy số.
 
 Số lỗi lint backend phải đo bằng ĐÚNG lệnh CI dùng, KHÔNG bằng `npm run lint` (script đó mang
 `--fix` nên vừa sửa file vừa làm con số lệch). Đo khác lệnh là lý do mốc này từng bị ghi 551

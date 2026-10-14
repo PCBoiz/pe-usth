@@ -40,6 +40,7 @@ import {
   introSeen,
   keySkips,
   markIntroSeen,
+  playGate,
   SANDBOX_CUE_KEY,
   sandboxCueOn,
   sandboxCueSteps,
@@ -121,6 +122,12 @@ export default function BookIntro({
   const bookRef = useRef<HTMLDivElement | null>(null);
   const coverRef = useRef<HTMLDivElement | null>(null);
   const animsRef = useRef<Animation[]>([]);
+  /**
+   * Huỷ cú `play()` còn đang chờ một khung hình. Phải với tới được từ `skip()`:
+   * bỏ qua trong đúng khung hình đó mà chỉ `finish()` thì rAF vẫn `play()` trên
+   * animation đã xong và hoạt cảnh DIỄN LẠI — xem `playGate()` trong lib.
+   */
+  const cancelPlayRef = useRef<(() => void) | null>(null);
 
   // onSettled qua ref: đổi hàm callback không được khởi động lại hoạt cảnh.
   const settledRef = useRef(onSettled);
@@ -172,10 +179,17 @@ export default function BookIntro({
     animsRef.current = anims;
 
     let alive = true;
+    // Cổng RIÊNG cho cú play, không dùng lại `alive`: `alive` còn canh cú
+    // `settle()` ở dưới, nên tắt nó trong `skip()` sẽ làm nút "Bỏ qua" treo
+    // lại trên màn và hình minh hoạ đóng băng vĩnh viễn.
+    const gate = playGate();
     const raf = requestAnimationFrame(() => {
-      if (!alive) return;
+      if (!gate.claim()) return;
       for (const anim of anims) anim.play();
     });
+    cancelPlayRef.current = () => {
+      if (gate.cancel()) cancelAnimationFrame(raf);
+    };
     // Một đường về duy nhất cho MỌI kết cục: xong tự nhiên, bị `finish()` vì
     // bỏ qua, hay bị `cancel()`. `allSettled` chứ không `all`: một animation bị
     // cancel thì `finished` BỊ TỪ CHỐI, và `all` sẽ bỏ luôn cú settle — tức nút
@@ -186,7 +200,9 @@ export default function BookIntro({
 
     return () => {
       alive = false;
+      gate.cancel();
       cancelAnimationFrame(raf);
+      cancelPlayRef.current = null;
       // Rời màn giữa hoạt cảnh (nút ‹ của LessonChrome): kết thúc chứ không
       // bỏ dở. `fill: 'backwards'` nên kết thúc là trả phần tử về trạng thái
       // nghỉ của CSS — nếu màn này được mount lại thì nó mount sạch.
@@ -204,6 +220,10 @@ export default function BookIntro({
   }, [mode]);
 
   const skip = useCallback(() => {
+    // Huỷ cú play() đang chờ TRƯỚC khi finish(). Ngược lại thì finish() xong,
+    // rAF chạy, `play()` trên animation đã finished đặt currentTime về 0 và
+    // hoạt cảnh diễn lại ngay sau cú bấm "cho tôi xem nội dung".
+    cancelPlayRef.current?.();
     finishAnimations(animsRef.current);
   }, []);
 

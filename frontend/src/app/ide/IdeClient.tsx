@@ -432,7 +432,9 @@ export default function IdeClient() {
               </label>
               <span ref={setVisualizeSlot} className={styles.visualizeSlot} />
               <button type="button" className={styles.run} onClick={() => void run()} disabled={running}>
-                {running ? 'Đang chạy…' : '▶ Chạy'}
+                {/* ▶ là trang trí: trong nhãn nút nó bị trình đọc màn hình đọc
+                    thành tên ký tự, nên phải aria-hidden chứ không để trần. */}
+                {running ? 'Đang chạy…' : <><span aria-hidden="true">▶</span> Chạy</>}
                 {!running && <kbd className={styles.kbd}>Ctrl+Enter</kbd>}
               </button>
             </div>

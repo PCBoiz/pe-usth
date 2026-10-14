@@ -154,8 +154,11 @@ function ResumeCard({
         <strong>Vì sao bài này: </strong>
         {resumeReason(plan)}
       </p>
+      {/* Ký tự ▶ là TRANG TRÍ nên phải aria-hidden: để trần thì nó nằm trong
+          tên của liên kết và trình đọc màn hình đọc thành tên ký tự
+          ("black right-pointing triangle") trước mỗi nhãn nút. */}
       <a className={`edu-cd-btn primary ${styles.resumeBtn}`} href={href}>
-        ▶ {resumeButtonLabel(plan)}
+        <span aria-hidden="true">▶</span> {resumeButtonLabel(plan)}
       </a>
       <div className={styles.resumeFoot}>
         <span>Đây là gợi ý, không phải lệnh.</span>
@@ -246,7 +249,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                   <h1 className="edu-cd-title">{course.title}</h1>
                   <p className="edu-cd-subtitle">{course.subtitle}</p>
                   <div className="edu-cd-hero-cta">
-                    <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}>▶ {ctaLabel}</a>
+                    <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}><span aria-hidden="true">▶</span> {ctaLabel}</a>
                     {feedback && (
                       <a
                         className={`edu-cd-btn ${styles.feedbackBtn}`}
@@ -272,7 +275,13 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                   <div className="cd-block-icon">📚</div>
                   <h3>Nội dung khoá học</h3>
                   <span className={styles.blockMeta}>
-                    {modules.length} module · {total} bài học
+                    {/* "chặng" và "bài", không phải "module"/"bài học": bảng
+                        thuật ngữ ở lib/home-copy.ts chốt một việc một từ, trang
+                        chủ in "8 chặng · 48 bài" và màn Thử thách ôn cũng nói
+                        "chặng". Trang khoá nằm GIỮA hai màn đó trên đúng luồng
+                        của người học, nên nó mà gọi tên khác là người học tưởng
+                        đây là hai thứ khác nhau. */}
+                    {modules.length} chặng · {total} bài
                     {/* Chỉ thêm phần "đã xong" khi thật sự biết tiến độ; khách
                         vãng lai vẫn thấy đúng dòng chữ như trước. */}
                     {plan.completedCount > 0 && ` · đã xong ${plan.completedCount}/${total}`}
@@ -394,7 +403,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 <div className="edu-cd-price">Miễn phí</div>
                 <div className="edu-cd-price-free">🎉 Hoàn toàn không mất phí</div>
 
-                <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}>▶ {ctaLabel}</a>
+                <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}><span aria-hidden="true">▶</span> {ctaLabel}</a>
 
                 <div className="edu-cd-includes">
                   <div className="edu-cd-includes-title">KHOÁ HỌC BAO GỒM</div>

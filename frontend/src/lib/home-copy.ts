@@ -62,9 +62,9 @@ export function courseEyebrow(courseLabel: string, shape: CourseShape): string {
 }
 
 /**
- * Nhãn trên thẻ khoá. KHÔNG có nhãn điểm sao: điểm 4,8 trong `catalog.ts` là
- * số viết cứng, không có đánh giá nào ở sau nó (bản thiết kế: hiện số liệu bịa
- * cho người thử là tự bắn vào chân mình).
+ * Nhãn trên thẻ khoá. KHÔNG có nhãn điểm sao, và sẽ không thêm lại: `catalog.ts`
+ * từng có `rating: 4.8` viết cứng, không có đánh giá nào ở sau nó — đã gỡ ở
+ * a04c3cf. Hiện số liệu bịa cho người thử là tự bắn vào chân mình.
  */
 export function courseTileTags(shape: CourseShape, levelLabel: string): string[] {
   return ['Python 3.12', levelLabel, shapeLine(shape)];

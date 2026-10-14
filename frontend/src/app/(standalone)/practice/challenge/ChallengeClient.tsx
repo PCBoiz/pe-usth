@@ -76,6 +76,8 @@ import {
   isPickable,
   lessonIdsOf,
   lockedOptionIndex,
+  optionLetter,
+  runStage,
   runSummary,
   shownPick,
   splitScore,
@@ -111,8 +113,6 @@ import styles from './challenge.module.css';
 const MODULES = (CURRICULA_JSON.CURRICULA as Record<string, { modules?: unknown }>)[
   COURSE_ID
 ]?.modules;
-
-const LETTERS = ['A', 'B', 'C', 'D', 'E'];
 
 /** Lỗi backend có dạng { error: { status, message }, request_id }. */
 function errMessage(body: unknown): string {
@@ -405,6 +405,15 @@ export default function ChallengeClient() {
   /* ── số liệu chung ─────────────────────────────────────────────────────── */
 
   const total = cells.length;
+  /**
+   * Nút chính của lượt chốt. Hàm thuần vì nó phải đúng cả ở đường NỘP HỎNG —
+   * xem `runStage()`: lúc đó mọi ô đã chốt nhưng `phase` quay về 'run', và bản
+   * trước bật lại các nút phương án để rồi âm thầm nộp lại lựa chọn CŨ.
+   */
+  const stage = useMemo(
+    () => runStage(cells, at, sel, phase === 'grading'),
+    [cells, at, sel, phase],
+  );
   const summary = useMemo(() => runSummary(cells), [cells]);
   const score = useMemo(() => splitScore(summary), [summary]);
   const riseClass = reduced ? '' : ` ${styles.rise}`;
@@ -479,7 +488,7 @@ export default function ChallengeClient() {
                 onClick={() => setSel(oi)}
               >
                 <span aria-hidden="true" className={styles.letter}>
-                  {LETTERS[oi] ?? oi + 1}
+                  {optionLetter(oi)}
                 </span>
                 <span className={styles.optionText}>{opt}</span>
                 {/* Đúng / chưa đúng / đã khoá KHÔNG chỉ phân biệt bằng màu —
@@ -680,12 +689,17 @@ export default function ChallengeClient() {
               </span>
             </div>
 
-            <p className={styles.quiet}>
-              Lượt chốt chưa có phản hồi: máy chủ chấm cả đề một lượt sau câu cuối. Chốt xong
-              câu thứ {total} là bạn thấy ngay từng câu đúng hay chưa.
-            </p>
+            {/* Dòng "chưa có phản hồi" chỉ đúng khi còn câu để chốt. Sau một
+                lần nộp hỏng thì cả đề đã chốt xong, nên câu "chốt xong câu thứ
+                N là bạn thấy ngay" thành lời hứa đã trôi qua. */}
+            {stage.action === 'commit' && (
+              <p className={styles.quiet}>
+                Lượt chốt chưa có phản hồi: máy chủ chấm cả đề một lượt sau câu cuối. Chốt xong
+                câu thứ {total} là bạn thấy ngay từng câu đúng hay chưa.
+              </p>
+            )}
 
-            {questionCard(cells[at], at, phase === 'run')}
+            {questionCard(cells[at], at, stage.pickable)}
 
             {notice && (
               <p className={styles.notice} role="status">
@@ -694,19 +708,19 @@ export default function ChallengeClient() {
             )}
 
             <div className={styles.actions}>
+              {/* Một nút, hai việc: chốt câu đang mở, hoặc — khi cả đề đã chốt
+                  mà lần nộp trước thất bại — nộp lại. Phương án đã chốt KHÔNG
+                  mở lại được, và `runStage().hint` nói thẳng điều đó thay vì để
+                  nút phương án sáng lên rồi bỏ qua trong im lặng. */}
               <button
                 type="button"
                 className={styles.primary}
-                disabled={sel === null || phase === 'grading'}
-                onClick={commitRun}
+                disabled={phase === 'grading' || (stage.action === 'commit' && sel === null)}
+                onClick={stage.action === 'resubmit' ? () => void grade(cells) : commitRun}
               >
-                {committedCount(cells) + 1 >= total ? 'Chốt câu cuối và nộp' : 'Chốt'}
+                {stage.label}
               </button>
-              <span className={styles.quiet}>
-                {sel === null
-                  ? 'Nút Chốt mờ tới khi bạn chọn một phương án. Đổi ý bao nhiêu lần cũng được — chưa Chốt là chưa tính.'
-                  : `Đã chọn ${LETTERS[sel] ?? sel + 1}. Chốt rồi thì không đổi được: máy chủ chấm đúng phương án bạn chốt.`}
-              </span>
+              <span className={styles.quiet}>{stage.hint}</span>
               <a className={styles.quietLink} href="/practice">
                 Dừng lượt này
               </a>

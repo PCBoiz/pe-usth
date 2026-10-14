@@ -48,6 +48,7 @@ import {
   introSeen,
   keySkips,
   markIntroSeen,
+  playGate,
   SANDBOX_CUE_KEY,
   SANDBOX_CUE_MS,
   sandboxCueOn,
@@ -352,6 +353,40 @@ test('finishAnimations không dừng nửa đường khi một animation ném l�
 
   assert.equal(finishAnimations([]), 0, 'không có gì để bỏ qua thì trả 0');
   assert.doesNotThrow(() => finishAnimations([bad('a'), bad('b')]));
+});
+
+test('bỏ qua ĐÚNG trong khung hình chờ: cú play() bị huỷ, hoạt cảnh KHÔNG diễn lại', () => {
+  /* Lỗi thật đã sửa: hoạt cảnh được dựng `pause()` rồi mới `play()` trong một
+     rAF (nhường một khung cho lớp GPU). `skip()` chỉ `finish()`, nên bấm phím
+     đúng trong khung hình đó thì rAF vẫn gọi `play()` trên animation ĐÃ
+     finished — WAAPI đặt lại currentTime về 0 và diễn lại 860ms, 560ms đầu lớp
+     chữ về opacity 0. Cửa sổ rộng một khung hình nên mắt không bắt được. */
+  const gate = playGate();
+  assert.equal(gate.claim(), true, 'khung hình đầu được phép play()');
+  assert.equal(gate.claim(), false, 'chỉ MỘT cú play: rAF rơi muộn không khởi động lại gì');
+
+  const skipped = playGate();
+  assert.equal(skipped.cancel(), true, 'còn cú chờ nên phải báo có, để huỷ rAF');
+  assert.equal(skipped.claim(), false, 'ĐÃ BỎ QUA mà khung hình tới vẫn play() = diễn lại');
+  assert.equal(skipped.cancel(), false, 'huỷ lần hai thì không còn gì để huỷ');
+
+  // NỐI DÂY: skip() phải đóng cổng TRƯỚC khi finish(), và rAF phải đi qua cổng.
+  const body = /const skip = useCallback\(\(\) => \{([\s\S]*?)\n {2}\}, \[/.exec(INTRO_SRC);
+  assert.ok(body, 'không đọc được thân skip() của BookIntro');
+  const cancelAt = body[1].indexOf('cancelPlayRef.current');
+  const finishAt = body[1].indexOf('finishAnimations');
+  assert.ok(cancelAt >= 0, 'skip() chỉ finish(): cú play() trong rAF sẽ diễn lại hoạt cảnh');
+  assert.ok(finishAt > cancelAt, 'phải huỷ cú play đang chờ TRƯỚC khi finish()');
+  assert.ok(
+    /requestAnimationFrame\(\(\) => \{[\s\S]{0,160}gate\.claim\(\)/.test(code(INTRO_SRC)),
+    'callback rAF phải hỏi cổng, không được play() thẳng',
+  );
+  // Và cổng KHÔNG được dùng lại cờ `alive`: `alive` còn canh cú settle(), tắt
+  // nó trong skip() là để nút "Bỏ qua" treo lại và hình minh hoạ đóng băng.
+  assert.ok(
+    /if \(alive\) settle\(\)/.test(code(INTRO_SRC)),
+    'cú settle() vẫn phải chạy sau khi bỏ qua',
+  );
 });
 
 test('phím nào tính là bỏ qua: không chặn Tab và không chặn lệnh của trình duyệt', () => {

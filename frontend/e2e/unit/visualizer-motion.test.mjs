@@ -425,8 +425,31 @@ test('lớp phủ ghi vị trí bằng CSSOM, không thêm nợ cho việc bỏ 
 test('tự chạy dài hơn 5 giây nên PHẢI dừng được (WCAG 2.2.2)', () => {
   // 59 bước × 460ms ≈ 27 giây chuyển động tự khởi động.
   assert.ok(AUTOPLAY_INTERVAL_MS * 12 > 5000);
-  assert.match(TSX, /aria-pressed=\{autoRunning\}/);
-  assert.match(TSX, /autoRunning \? 'Dừng tự chạy' : 'Tự chạy'/);
+
+  /* Siết theo CẤU TRÚC, không theo ĐỊNH DẠNG. Bản trước khớp nguyên văn
+     `aria-pressed={autoRunning}` và cả cái ternary của aria-label, nên chỉ cần
+     Prettier ngắt dòng khác (hay đổi tên biến) là ca này ĐỎ OAN dù hành vi y
+     nguyên — nó là ca duy nhất trong phiên khoá vào định dạng mã nguồn. Yêu
+     cầu thật của WCAG 2.2.2 có ba phần, và đó là ba điều hỏi dưới đây: nút nói
+     TRẠNG THÁI ra (aria-pressed), nhãn nói được là nó DỪNG, và có chỗ BẤM. */
+  const at = CODE.indexOf('aria-pressed');
+  assert.ok(at > 0, 'không nút nào mang aria-pressed — nút tự chạy phải là nút bật/tắt');
+  const zone = CODE.slice(Math.max(0, at - 600), at + 600);
+  assert.ok(
+    /<button\b[\s\S]*aria-pressed/.test(zone),
+    'aria-pressed phải nằm trên một <button>, không phải trên thẻ khác',
+  );
+  const state = /aria-pressed=\{\s*!?\s*([A-Za-z_$][\w$]*)/.exec(zone)?.[1];
+  assert.ok(state, 'aria-pressed phải nối vào một biến trạng thái');
+  assert.ok(
+    new RegExp(`const ${state}\\s*=`).test(CODE),
+    `aria-pressed nối vào \`${state}\` mà không có state nào tên vậy — nút nói sai trạng thái`,
+  );
+  assert.ok(
+    /aria-label=\{[\s\S]{0,120}?Dừng tự chạy/.test(zone),
+    'nhãn nút phải nói được "dừng" ở trạng thái đang chạy',
+  );
+  assert.ok(/onClick=\{/.test(zone), 'phải bấm được để dừng, không chỉ nhìn thấy trạng thái');
 });
 
 /*
@@ -449,4 +472,9 @@ test('tự chạy dài hơn 5 giây nên PHẢI dừng được (WCAG 2.2.2)', (
  *  9. Giấu `.lineCursor` ở nhánh giảm chuyển động (`display: none`) → 1 ca trượt.
  * 10. Quay lại đọc `matchMedia` ngay trong component thay cho hook dùng chung
  *     → 1 ca trượt.
+ * 11. `aria-pressed={true}` cứng thay cho state (nút nói sai trạng thái)
+ *     → 1 ca trượt. Và phép đo ngược: ngắt cái ternary của `aria-label` thành
+ *     5 dòng (đúng thứ Prettier làm khi chuỗi dài ra) → **0 ca trượt**, trong
+ *     khi bản cũ khớp nguyên văn một dòng thì đỏ oan. Ca WCAG 2.2.2 nay hỏi
+ *     cấu trúc, không hỏi định dạng.
  */

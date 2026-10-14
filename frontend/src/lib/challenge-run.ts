@@ -13,7 +13,7 @@
  * alias — cùng lý do đã ghi ở practice-plan.ts và course-progress.ts.
  *
  * Vì sao những hàm dưới đây phải là hàm thuần có test, chứ không nằm rải trong
- * JSX: cả bốn cái đều sai một cách IM LẶNG, mở trang bằng mắt không thấy.
+ * JSX: cả năm cái đều sai một cách IM LẶNG, mở trang bằng mắt không thấy.
  *
  *  1. ĐÁP ÁN KHÔNG ĐƯỢC LỘ Ở LẦN SAI ĐẦU. Luật chơi: sai lần đầu thì chưa lộ
  *     đáp án, cho nghĩ lại một lần, sai lần hai mới lộ. Nhưng đáp án đã NẰM
@@ -55,6 +55,13 @@
  *     "Vì sao phương án bạn vừa chọn là sai" KHÔNG dựng được; chỗ duy nhất
  *     chừa sẵn để gắn là `optionFeedback` của practice-plan.ts, hôm nay luôn
  *     null, và màn này KHÔNG đọc nó (test chốt).
+ *
+ *  5. ĐƯỜNG NỘP HỎNG. Nộp cả đề mà mất mạng / 429 / 409 thì màn quay về lượt
+ *     chốt với MỌI ô ĐÃ CHỐT. Suy "câu này còn bấm được không" từ `phase` —
+ *     chứ không từ chính ô đó — làm các nút phương án bật lại, và lựa chọn mới
+ *     sáng lên trong khi lượt nộp lại vẫn gửi lựa chọn CŨ: điểm chính thức ghi
+ *     sai so với thao tác cuối của người học, không một lỗi nào được ném ra.
+ *     Đó là việc của `runStage()`, và nó có ca test đi đúng kịch bản đó.
  */
 
 /* ───────────────────────────── số câu mỗi lượt ──────────────────────────── */
@@ -303,6 +310,77 @@ export function allCommitted(cells: ReadonlyArray<RunCell>): boolean {
 /** Số câu đã chốt ở lượt chốt. */
 export function committedCount(cells: ReadonlyArray<RunCell>): number {
   return cells.filter((c) => c.firstPick !== null).length;
+}
+
+/* ──────────── nút chính của lượt chốt, KỂ CẢ khi nộp bị hỏng ────────────── */
+
+/** Nhãn chữ cái của phương án; hết chữ thì rơi về số. MỘT nguồn cho cả màn. */
+export function optionLetter(index: number): string {
+  return ['A', 'B', 'C', 'D', 'E'][index] ?? String(index + 1);
+}
+
+export type RunStage = {
+  /** Câu đang mở còn bấm chọn được không. */
+  pickable: boolean;
+  /** Nút chính đang làm việc gì: chốt câu này, hay nộp lại cả đề. */
+  action: 'commit' | 'resubmit';
+  label: string;
+  /** Chữ phụ dưới nút — phải nói đúng cái việc nút đang làm. */
+  hint: string;
+};
+
+/**
+ * Nút chính + chữ phụ của lượt chốt.
+ *
+ * Vì sao là MỘT hàm thuần có test chứ không ba điều kiện rải trong JSX: đường
+ * NỘP HỎNG. `grade()` nộp cả đề một lượt; mất mạng / 429 / 409 thì nó đặt lại
+ * `phase: 'run'` với MỌI ô đã chốt. Bản trước truyền `pickable = phase === 'run'`
+ * nên đúng lúc đó các nút phương án BẬT LẠI: người học bấm một phương án khác
+ * thì nó sáng lên như đã chọn, nút chính bật và còn mang nhãn "Chốt câu cuối và
+ * nộp" — nhưng `commitPick` thấy ô đã 'committed' nên trả về mảng KHÔNG ĐỔI, im
+ * lặng, rồi lần nộp lại vẫn gửi `firstPick` CŨ. Điểm chính thức — thứ duy nhất
+ * được lưu vào DB và dùng tính trọng số cho các lượt sau — ghi sai so với thao
+ * tác cuối cùng của người học, mà màn hình thì đang nói ngược lại.
+ *
+ * VÌ SAO CHỌN HƯỚNG "KHOÁ, VÀ NÓI THẲNG" chứ không mở cho đổi đáp án:
+ *   · "chốt rồi thì không đổi được" là luật đã hứa ngay dưới nút từ trước, và
+ *     `commitPick` giữ đúng luật đó (chống bấm đúp, chống tự chấm lại);
+ *   · lần nộp hỏng vẫn có thể đã TỚI máy chủ — 409 "Quiz này đã được nộp" là
+ *     đúng cái ca đề đã được nhận và chấm xong. Cho đổi đáp án sau đó là hứa
+ *     một thứ máy chủ không nhận lại.
+ * Nên lượt nộp hỏng chỉ còn đúng MỘT việc làm được, và nút phải nói đúng chữ
+ * đó: nộp lại. Nút sáng lên để rồi âm thầm bỏ qua là điều tệ hơn cả hai hướng.
+ */
+export function runStage(
+  cells: ReadonlyArray<RunCell>,
+  at: number,
+  sel: number | null,
+  /** Đang có một lượt nộp bay trên đường. Nhãn phải nói đúng việc ĐANG xảy ra. */
+  submitting = false,
+): RunStage {
+  const total = cells.length;
+  if (allCommitted(cells)) {
+    return {
+      pickable: false,
+      action: 'resubmit',
+      label: submitting ? 'Đang nộp cả đề…' : 'Nộp lại cả đề',
+      hint: submitting
+        ? `Đang gửi cả ${total} câu lên máy chủ. Phương án đã chốt không đổi được nữa.`
+        : `Cả ${total} câu đã chốt nên không đổi được nữa — máy chủ chấm đúng những phương `
+          + 'án bạn đã chốt. Lần nộp vừa rồi chưa đi được, bấm "Nộp lại cả đề" để gửi lại.',
+    };
+  }
+  const cell = cells[at];
+  return {
+    pickable: cell ? isPickable(cell) : false,
+    action: 'commit',
+    label: committedCount(cells) + 1 >= total ? 'Chốt câu cuối và nộp' : 'Chốt',
+    hint: sel === null
+      ? 'Nút Chốt mờ tới khi bạn chọn một phương án. Đổi ý bao nhiêu lần cũng được — '
+        + 'chưa Chốt là chưa tính.'
+      : `Đã chọn ${optionLetter(sel)}. Chốt rồi thì không đổi được: máy chủ chấm đúng `
+        + 'phương án bạn chốt.',
+  };
 }
 
 /**

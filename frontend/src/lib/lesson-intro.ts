@@ -317,6 +317,51 @@ export function sandboxCueOn(input: {
 /** Thứ tối thiểu mà `finishAnimations` cần — để test truyền animation giả. */
 export type FinishableAnimation = { finish: () => void };
 
+export type PlayGate = {
+  /**
+   * Khung hình đã tới: trả true nếu CÒN được `play()`. Đúng một lần — lượt sau
+   * luôn false, nên một cú rAF rơi muộn không khởi động lại được gì.
+   */
+  claim: () => boolean;
+  /**
+   * Bỏ qua / dọn dẹp: đóng cổng vĩnh viễn. Trả true nếu lúc đó còn một cú
+   * `play()` đang chờ, để chỗ gọi biết có cần `cancelAnimationFrame` không.
+   */
+  cancel: () => boolean;
+};
+
+/**
+ * Cổng của cú `play()` bị nhường một khung hình.
+ *
+ * BookIntro dựng animation ở trạng thái `pause()` rồi mới `play()` trong một
+ * `requestAnimationFrame` — cố ý, để lớp GPU của `will-change` kịp hình thành
+ * (xem chú thích tại chỗ). Lỗi đã có thật từ đó: `skip()` chỉ gọi
+ * `finishAnimations()`, nên nếu người học bấm phím/chạm ĐÚNG trong khung hình
+ * đang chờ thì callback rAF vẫn chạy và gọi `play()` trên animation ĐÃ
+ * finished — mà theo WAAPI, `play()` ở trạng thái finished đặt lại
+ * `currentTime` về 0 và DIỄN LẠI. Người học vừa nói "cho tôi xem nội dung" thì
+ * phải xem lại 860ms hoạt cảnh, 560ms đầu lớp chữ còn ở `opacity: 0`.
+ *
+ * Cửa sổ chỉ rộng một khung hình nên mở trang bằng mắt gần như không bắt được;
+ * vì vậy câu trả lời "còn được play() không" nằm ở MỘT chỗ có test, chứ không
+ * nằm trong một biến cục bộ của effect.
+ */
+export function playGate(): PlayGate {
+  let pending = true;
+  return {
+    claim() {
+      const allowed = pending;
+      pending = false;
+      return allowed;
+    },
+    cancel() {
+      const had = pending;
+      pending = false;
+      return had;
+    },
+  };
+}
+
 /**
  * BỎ QUA = `finish()` từng animation.
  *

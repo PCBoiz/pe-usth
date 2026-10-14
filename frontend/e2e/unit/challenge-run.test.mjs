@@ -69,7 +69,9 @@ import {
   isPickable,
   lessonIdsOf,
   lockedOptionIndex,
+  optionLetter,
   revealsAnswer,
+  runStage,
   runSummary,
   shownPick,
   splitScore,
@@ -271,6 +273,71 @@ test('câu đã kết thúc thì không chốt lại được (chống tự ch�
   assert.equal(commitPick(run, 0, 0), run, 'câu đúng lần đầu vẫn sửa được');
   const done = commitPick(gradedRun([0, 0]), 0, 2); // 'bad'
   assert.equal(commitPick(done, 0, 1), done, 'câu đã sai hai lần vẫn sửa được');
+});
+
+test('NỘP HỎNG rồi thử đổi đáp án: ô đã chốt KHÔNG mở lại, nút đổi sang "nộp lại"', () => {
+  /* Đúng kịch bản của lỗi đã sửa: chốt đủ cả đề → `grade()` thất bại (mất
+     mạng / 429 / 409 "Quiz này đã được nộp") → `phase` quay về 'run' với MỌI ô
+     đã chốt. Bản trước truyền `pickable = phase === 'run'` nên các nút phương án
+     BẬT LẠI; người học bấm phương án khác thì nó sáng lên, nút chính bật, nhưng
+     `commitPick` thấy ô 'committed' nên trả về mảng KHÔNG ĐỔI và lượt nộp lại
+     gửi `firstPick` CŨ — điểm lưu vào DB lệch hẳn với thao tác cuối của họ. */
+  let cells = createCells(QUESTIONS);
+  cells = commitPick(cells, 0, 0);
+  cells = commitPick(cells, 1, 0);
+  assert.equal(allCommitted(cells), true, 'fixture phải là lượt đã chốt xong');
+
+  const stage = runStage(cells, 1, null);
+  assert.equal(
+    stage.pickable, false,
+    'ô đã chốt mà nút phương án bật lại = mời người học đổi một thứ không đổi được',
+  );
+  assert.equal(stage.action, 'resubmit', 'việc duy nhất còn làm được là nộp lại');
+  assert.ok(/[Nn]ộp lại/.test(stage.label), `nhãn nút không nói đúng việc: ${stage.label}`);
+  assert.ok(
+    /không đổi được/.test(stage.hint),
+    `giao diện phải NÓI THẲNG là đã chốt thì không đổi được: ${stage.hint}`,
+  );
+
+  // Và nếu nút phương án vẫn bật thì đây là cái bẫy: commitPick bỏ qua IM LẶNG.
+  assert.equal(commitPick(cells, 1, 1), cells, 'commitPick phải giữ nguyên ô đã chốt');
+  assert.deepEqual(cells.map((c) => c.firstPick), [0, 0], 'lựa chọn cũ vẫn là thứ sẽ được nộp');
+
+  // Lượt còn câu trống thì nút vẫn là nút Chốt, và ô đang mở vẫn bấm được.
+  const mid = runStage(commitPick(createCells(QUESTIONS), 0, 0), 1, 2);
+  assert.equal(mid.action, 'commit');
+  assert.equal(mid.pickable, true);
+  assert.ok(mid.label.includes('Chốt'), `nhãn nút sai ở lượt còn câu trống: ${mid.label}`);
+  assert.ok(mid.hint.includes('Đã chọn C'), `chữ phụ phải nói phương án đang chọn: ${mid.hint}`);
+  // Chưa chọn gì thì chữ phụ nói vì sao nút mờ, không nói chuyện nộp lại.
+  assert.ok(runStage(createCells(QUESTIONS), 0, null).hint.includes('Nút Chốt mờ'));
+  // Trong lúc lượt nộp còn bay trên đường thì nhãn nói đúng việc ĐANG xảy ra,
+  // chứ không mời "nộp lại" một lượt chưa biết kết quả.
+  const flying = runStage(cells, 1, null, true);
+  assert.ok(/[Đđ]ang nộp/.test(flying.label), `nhãn lúc đang nộp sai: ${flying.label}`);
+  assert.equal(flying.pickable, false);
+  // Nhãn chữ cái dùng CHUNG một hàm, hết chữ thì rơi về số.
+  assert.equal(optionLetter(0), 'A');
+  assert.equal(optionLetter(5), '6');
+});
+
+test('NỐI DÂY: lượt chốt hỏi runStage(), không suy "bấm được" từ phase', () => {
+  const src = codeOnly(read(...CLIENT));
+  const call = /questionCard\(cells\[at\],([^)]*)\)/.exec(src);
+  assert.ok(call, 'không tìm được chỗ dựng thẻ câu của lượt chốt');
+  assert.ok(
+    !/phase/.test(call[1]),
+    '"bấm được" suy từ `phase`: nộp hỏng là ô đã chốt nhưng nút phương án bật lại',
+  );
+  assert.ok(
+    /stage\.pickable|isPickable\(/.test(call[1]),
+    `phải hỏi trạng thái của chính ô đó, nhận được: ${call[1]}`,
+  );
+  assert.ok(/runStage\(cells, at, sel/.test(src), 'nút chính phải đi qua runStage()');
+  assert.ok(
+    /stage\.action === 'resubmit'/.test(src),
+    'phải có đường nộp lại — khoá nút phương án mà không cho nộp lại là ngõ cụt',
+  );
 });
 
 test('chỉ số phương án ngoài khoảng, hoặc câu không có, thì bỏ qua êm', () => {
@@ -707,10 +774,15 @@ test('cỡ chữ: thân ≥17px, nhãn 15px — đúng thang token, không có c
  * ── BẰNG CHỨNG BỘ CA NÀY BẮT ĐƯỢC LỖI (đo 15/10/2026) ─────────────────────
  * ĐÃ CHẠY THẬT: gỡ từng bản sửa khỏi cây làm việc, chạy
  * `node --test e2e/unit/challenge-run.test.mjs`, đếm số ca trượt, rồi trả lại
- * nguyên trạng — 16 mutation. Số đo được, không phải suy đoán:
+ * nguyên trạng — 18 mutation. Số đo được, không phải suy đoán:
  *
  *   gỡ bản sửa                                                     → ca trượt
  *   ──────────────────────────────────────────────────────────────────────────
+ *   ChallengeClient truyền `pickable = phase === 'run'` (bản cũ) —
+ *     nộp hỏng thì ô ĐÃ CHỐT lại bật nút phương án, rồi lượt nộp
+ *     lại gửi lựa chọn CŨ trong im lặng                                  1
+ *   `runStage()` trả `pickable: true` khi cả đề đã chốt — cùng
+ *     cái lỗ, đường khác (hàm thuần)                                     1
  *   `revealsAnswer()` trả true cả ở 'rethinking' — tức SAI LẦN ĐẦU
  *     là lộ đáp án ngay, đúng cái luật chơi cấm, và chỉ thấy được
  *     nếu người xem CHỌN SAI                                             1

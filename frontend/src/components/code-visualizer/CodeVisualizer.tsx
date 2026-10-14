@@ -161,8 +161,10 @@ export default function CodeVisualizer({
           status: 'error',
           kind: 'infra',
           message:
-            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
-            + 'bình thường ngay trong trình duyệt.',
+            // "Bàn thí nghiệm" + "khoá" theo bảng thuật ngữ: màn này không gọi
+            // mình là IDE ở chỗ người học đọc được, và chính tả là "khoá".
+            'Lúc này Bàn thí nghiệm chưa chạy được mã. Các bài học trong khoá vẫn chạy '
+            + 'Python bình thường ngay trong trình duyệt.',
           detail: `HTTP 401 — ${errorMessage(body, 'phiên khách chưa sẵn sàng; tải lại trang.')}`,
         });
       } else if (!res.ok) {
@@ -650,7 +652,11 @@ export default function CodeVisualizer({
                     aria-label="Bước sau"
                     title="Bước sau (→)"
                   >
-                    ▶
+                    {/* aria-hidden dù nút đã có aria-label (tên của nút lấy từ
+                        aria-label, nội dung bị bỏ qua): nói thẳng ra là ký tự
+                        này TRANG TRÍ, để lần sau ai gỡ aria-label thì không
+                        biến nó thành tên nút. */}
+                    <span aria-hidden="true">▶</span>
                   </button>
                   <button
                     type="button"

@@ -55,9 +55,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             preload phải kèm `crossorigin` kể cả khi cùng origin (phông luôn
             được tải ở chế độ CORS).
 
-            Trang /card/[cardId] (cụm db_design cũ) vẫn tự nạp Inter từ Google
-            Fonts bằng thẻ <link> riêng của nó, nên hai origin đó CHƯA bỏ được
-            khỏi CSP trong next.config.ts. */}
+            Cụm db_design cũ vẫn tự nạp Inter từ Google Fonts, nên hai origin
+            đó CHƯA bỏ được khỏi CSP trong next.config.ts. BA chỗ, không phải
+            một — ai sửa /card rồi tưởng đã đủ điều kiện siết CSP là siết vào
+            hai chỗ còn sống:
+              · src/app/(standalone)/card/[cardId]/page.tsx (thẻ <link>)
+              · src/components/LessonDbDesign.tsx (thẻ <link>)
+              · public/static/css/questionaire.css (@import ngay dòng 1)
+            Đếm lại bằng `grep -rn "fonts.googleapis" frontend/src frontend/public`
+            trước khi gỡ origin nào. */}
         {/* Origin backend cho pe-bridge.js — phải có TRƯỚC mọi script legacy */}
         <script
           dangerouslySetInnerHTML={{

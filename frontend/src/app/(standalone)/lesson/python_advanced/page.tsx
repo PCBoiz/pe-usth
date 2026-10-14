@@ -11,8 +11,11 @@ export const metadata: Metadata = {
   // là 48 (giáo trình pe-v4), mô tả cũ còn ghi 40 từ thời pe-v3.
   title: 'Bài học Advanced Python – Programming EDU',
   description:
-    'Advanced Python: 48 bài luyện tập — ghép cặp, đúng/sai, dò lỗi và trận '
-    + 'Boss cuối chặng, chấm ngay trong trình duyệt.',
+    // "bài tổng hợp chặng", KHÔNG phải "trận Boss": bảng thuật ngữ đã bỏ hẳn ẩn
+    // dụ đánh trận (trái triết lý tự học), và chuỗi này là chuỗi NGƯỜI DÙNG
+    // THẤY — nó đi vào thẻ meta description, tức vào cả kết quả tìm kiếm.
+    'Advanced Python: 48 bài luyện tập — ghép cặp, đúng/sai, dò lỗi và bài '
+    + 'tổng hợp cuối chặng, chấm ngay trong trình duyệt.',
 };
 
 const STUDIO_CSS = [

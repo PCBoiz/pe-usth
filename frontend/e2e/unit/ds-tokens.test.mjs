@@ -441,24 +441,41 @@ test('cặp được MIỄN ngưỡng thì phải viết lý do, và chỉ đư�
    `opacity: 0` và `opacity: 1` vẫn được (hiện/ẩn, khung animation). */
 
 /**
- * Danh sách MIỄN cho luật trên, mỗi dòng phải nêu lý do. Đúng một chỗ: lời
- * giải mẫu đang bị giữ lại, nơi chữ KHÔNG ĐỌC ĐƯỢC mới là đúng yêu cầu.
+ * Danh sách MIỄN cho luật trên, mỗi dòng phải nêu lý do.
+ *
+ * 15/10/2026 — danh sách nay RỖNG, và đó là hiện trạng thật: không bề mặt nào
+ * còn hạ độ đục để làm chữ nhạt. Dòng miễn duy nhất từng có là
+ * `studio.module.css | .lockedExplanation` (lời giải mẫu bị giữ lại, nơi chữ
+ * KHÔNG ĐỌC ĐƯỢC mới là đúng yêu cầu) — nhưng file đó đã xoá cùng route demo
+ * ở đợt dọn route chết, và bài cửa nay không nhận `solutionCode` nữa nên cũng
+ * không còn chỗ nào vẽ lời giải mờ. `SURFACE_CSS` ở trên đã bỏ file đó, còn
+ * dòng miễn này thì bị bỏ quên: nó trở thành một khoá KHÔNG BAO GIỜ khớp, kèm
+ * một câu chú thích khẳng định sai về hiện trạng. Ca ngay dưới canh để lần sau
+ * xoá file là biết ngay, thay vì để dòng miễn chết lặng lẽ ở lại.
  */
-const OPACITY_OK = [
-  {
-    file: 'studio.module.css',
-    selector: '.lockedExplanation',
-    reason: 'Lời giải mẫu bị giữ lại tới khi bài được ghi nhận đã xong. Chữ ở '
-      + 'đây PHẢI không đọc được, nên blur + opacity là việc cần làm chứ không '
-      + 'phải lỗi tương phản.',
-  },
-];
+const OPACITY_OK = [];
+
+test('mỗi dòng MIỄN hạ-độ-đục phải trỏ vào file và selector CÓ THẬT', () => {
+  // Lưới an toàn cho đúng cái đã xảy ra: file bị xoá, dòng miễn ở lại. Khoá
+  // chết thì vô hại về bảo mật (luật nghiêm hơn chứ không lỏng hơn) nhưng nó
+  // là một lời khẳng định sai về hiện trạng, và lời khẳng định sai thì không
+  // ai kiểm lại.
+  const surface = new Map(
+    [...SURFACE_CSS, ...surfaceSources()].map((p) => [p[p.length - 1], p]),
+  );
+  for (const x of OPACITY_OK) {
+    const p = surface.get(x.file);
+    assert.ok(p, `${x.file} không còn nằm trong bề mặt được quét — dòng miễn này đã chết`);
+    assert.ok(
+      read(...p).includes(x.selector),
+      `${x.file} không còn selector ${x.selector} — dòng miễn này đã chết`,
+    );
+    assert.ok(x.reason.length >= 60, `miễn ${x.selector} mà không nêu lý do đủ rõ`);
+  }
+});
 
 test('không chỗ nào hạ ĐỘ ĐỤC để làm chữ nhạt đi — phải hạ cấp MÀU', () => {
   const allowed = new Set(OPACITY_OK.map((x) => `${x.file}|${x.selector}`));
-  for (const x of OPACITY_OK) {
-    assert.ok(x.reason.length >= 60, `miễn ${x.selector} mà không nêu lý do đủ rõ`);
-  }
   const offenders = [];
   for (const p of [...SURFACE_CSS, ...surfaceSources()]) {
     const file = p[p.length - 1];
