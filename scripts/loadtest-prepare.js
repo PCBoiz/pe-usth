@@ -22,7 +22,28 @@ const { promisify } = require('util');
 const scryptAsync = promisify(scrypt);
 
 const COUNT = Number(process.argv[2] || 20);
-const PASSWORD = 'LoadTest#2026';
+// Mật khẩu đọc từ env, KHÔNG viết cứng.
+//
+// Vì sao: hằng cũ `'LoadTest#2026'` nằm trong file được git theo dõi, mà repo
+// này có một remote CÔNG KHAI. Cộng với quy luật email ngay bên dưới
+// (`loadtest-001@pe-loadtest.local` … `-020`), ai đọc repo cũng dựng lại được
+// đủ 20 thông tin đăng nhập vào DB production — DB dùng chung với bản Django.
+// Vai trò chỉ là 'Học viên' nên không leo thang được, nhưng vẫn là 20 lối vào
+// không mời.
+//
+// Chạy: PE_LOADTEST_PASSWORD='<chuỗi>' node scripts/loadtest-prepare.js
+// Dọn sau khi đo xong: DELETE FROM users WHERE email LIKE '%@pe-loadtest.local';
+const PASSWORD = process.env.PE_LOADTEST_PASSWORD;
+if (!PASSWORD) {
+  console.error(
+    [
+      'Thiếu PE_LOADTEST_PASSWORD. Đặt một chuỗi ngẫu nhiên rồi chạy lại.',
+      'Cố ý KHÔNG có giá trị mặc định: mật khẩu mặc định nằm trong repo công',
+      'khai chính là lỗ hổng mà chỗ này vừa vá.',
+    ].join(' '),
+  );
+  process.exit(1);
+}
 const DOMAIN = 'pe-loadtest.local';
 
 // Phải khớp ĐÚNG định dạng WerkzeugScryptHasher.encode của backend, nếu không
