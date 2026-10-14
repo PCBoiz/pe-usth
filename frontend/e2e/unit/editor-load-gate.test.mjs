@@ -53,8 +53,9 @@ test('loader.init() từ chối thì hỏng NGAY, không chờ hết trần', ()
 });
 
 test('đã mount rồi thì lời từ chối muộn KHÔNG giật editor khỏi tay người dùng', () => {
-  // Trang gọi loader.init() thêm một lần để biết lỗi sớm; lời gọi đó có thể từ
-  // chối vì lý do vô hại (bị huỷ). Editor đã nằm trong DOM thì đừng che.
+  // Với nối dây hiện tại hai cờ không cùng bật được (cùng một promise của
+  // loader) — ca này ghim phần PHÒNG THỦ, xem chú thích trong editorLoadPhase().
+  // Editor đã nằm trong DOM thì đừng che.
   assert.equal(editorLoadPhase({ mounted: true, rejected: true, elapsedMs: 300 }), 'ready');
 });
 
@@ -68,8 +69,9 @@ test('trần riêng được tôn trọng', () => {
 });
 
 // --- ĐỒNG HỒ TƯỜNG KHÔNG TIN ĐƯỢC -----------------------------------------
-// elapsedMs tính bằng Date.now() - mốc bắt đầu. Máy đổi múi giờ hoặc đồng bộ
-// NTP giữa lúc chờ là ra số âm; một phép tính hụt mốc ra NaN. Cả hai phải
+// elapsedMs từng tính bằng Date.now() - mốc bắt đầu (nay IdeClient dùng
+// performance.now()). Đồng hồ tường bị đồng bộ NTP/chỉnh giờ giữa lúc chờ là
+// ra số âm; một phép tính hụt mốc ra NaN. Cả hai phải
 // nghiêng về "còn chờ": kết luận oan nghĩa là che Monaco đang chạy tốt bằng
 // <textarea> ngay giữa buổi demo.
 

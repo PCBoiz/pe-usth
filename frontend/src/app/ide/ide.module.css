@@ -254,7 +254,11 @@
 
 .fallbackInput {
   flex: 1 1 auto;
-  /* min-height: 0 để ô gõ co được trong flex thay vì đẩy tràn khung. */
+  /* Sàn 160px (khoảng 7 dòng mã), KHÔNG phải 0: ô gõ ăn phần còn lại sau khối
+     thông báo, mà thông báo cao lên đáng kể ở màn hẹp (khung soạn thảo chỉ còn
+     55vh) hay khi hiện thêm đoạn "Chưa tải lại". Để 0 thì flex bóp ô gõ còn một
+     hai dòng — vẫn có chỗ gõ nhưng không dùng được. Đánh đổi: khung thấp hơn
+     thông báo + 160px thì đáy ô gõ bị .editorPane (overflow: hidden) cắt bớt. */
   min-height: 160px;
   box-sizing: border-box;
   padding: 10px 12px;

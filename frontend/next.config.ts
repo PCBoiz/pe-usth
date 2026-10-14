@@ -73,10 +73,23 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        // Monaco Editor của /ide (~9,3 MB trên đĩa; một phiên python tải ~3 MB).
+        // Monaco Editor của /ide (122 tệp, 9,15 MB trên đĩa; mở /ide với editor
+        // python tải 19 tệp, 4,94 MB giải nén / ~1,3 MB gzip — đo 14/10/2026).
         // Cùng lý lẽ với /pyodide ở trên: thư mục ĐÃ GHIM PHIÊN BẢN
         // (public/monaco/v0.57.0/) nên nội dung không bao giờ đổi, nâng cấp là
         // chép sang thư mục mới chứ không ghi đè.
+        //
+        // 404 CÓ bị cache cứng không? (câu hỏi của người chấm, áp cho cả
+        // /pyodide): KHÔNG, ít nhất trên `next start`. Next áp luật header
+        // TRƯỚC filesystem — 404 vẫn mang CSP, nosniff… của luật "/(.*)" — nhưng
+        // trang not-found tự đặt lại Cache-Control. Đo bằng curl -I ngày
+        // 14/10/2026 sau `next build`:
+        //   /monaco/v0.57.0/vs/loader.js         200  public, max-age=31536000, immutable
+        //   /monaco/v0.57.0/vs/khong-ton-tai.js  404  private, no-cache, no-store, max-age=0, must-revalidate
+        //   /pyodide/v0.27.7/khong-ton-tai.whl   404  (như trên)
+        // Chưa đo trên Vercel (CDN của nó tự áp luật header): sau deploy chạy
+        // `curl -sI https://<domain>/monaco/v0.57.0/vs/khong-ton-tai.js` — nếu
+        // thấy immutable thì phải giới hạn `source` vào đúng danh sách tệp có thật.
         //
         // Trước bản này Monaco tải từ cdn.jsdelivr.net (12 script mỗi lần mở
         // /ide) và KHÔNG có bản dự phòng: phòng máy chặn jsdelivr là khung soạn

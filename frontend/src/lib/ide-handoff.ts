@@ -95,3 +95,157 @@ export function readIdeCodeFromHash(hash: string | null | undefined): string | n
   const params = new URLSearchParams(hash.replace(/^#/, ''));
   return decodeIdeCode(params.get(IDE_CODE_PARAM));
 }
+
+/*
+ * ---------------------------------------------------------------------------
+ * GIỮ MÃ QUA MỘT LẦN TẢI LẠI TRANG (nút "Thử lại" của trình soạn thảo dự phòng)
+ * ---------------------------------------------------------------------------
+ *
+ * "Thử lại" ở /ide phải TẢI LẠI TRANG (lý do ở retryEditor trong
+ * src/app/ide/IdeClient.tsx: loader của Monaco giữ lời từ chối cũ suốt vòng đời
+ * trang). Bản đầu chỉ nhét mã vào fragment bằng ideCodeHref() — mà hàm đó trả
+ * null khi mã quá 16.000 ký tự hoặc mã hoá ra quá trần; khi ấy trang vẫn tải lại
+ * và người dùng mất sạch bài, trong khi chú thích hứa "thử lại KHÔNG mất bài"
+ * (người chấm độc lập bắt được, 14/10/2026). Đúng kiểu người hay mất bài nhất:
+ * người đã gõ dài trong ô dự phòng suốt buổi vì Monaco không lên.
+ *
+ * Thứ tự cất mã:
+ *  1. fragment — như nút "Thử ngay trong IDE", sống cả qua F5 về sau;
+ *  2. sessionStorage — tải lại là CÙNG TAB nên vẫn còn. Ở đây không có vấn đề
+ *     "tab mới không thừa hưởng" đã nêu ở đầu file, vì không mở tab mới nào;
+ *  3. không cất được cả hai (trình duyệt chặn bộ nhớ, hết hạn mức) → KHÔNG tải
+ *     lại. Chỗ gọi phải báo người dùng chép mã ra trước — tải lại mù là mất bài.
+ */
+
+/** Khoá sessionStorage giữ mã qua lần tải lại của nút "Thử lại". */
+export const IDE_RELOAD_CODE_KEY = 'pe-ide:reload-code';
+
+/**
+ * Trần của mã cất vào sessionStorage: 200.000 ký tự (~400 KB UTF-16).
+ *
+ * Vì sao phải có trần RIÊNG, không mượn trần 16.000 của fragment: đường
+ * sessionStorage sinh ra chính vì fragment chật, nên nó phải rộng hơn — nhưng
+ * KHÔNG được vô hạn. `setItem` nhận tới hạn mức ~5 MB, nên dán một tệp 4 MB vào
+ * ô gõ dự phòng rồi bấm "Thử lại" là lần tải sau nhồi 4 MB vào <textarea> rồi
+ * vào Monaco: trình duyệt khựng hàng giây, đúng lúc người ta đang cố cứu bài.
+ * 200.000 ký tự đã gấp 12 lần trần fragment và gấp hơn 100 lần đoạn mã dài nhất
+ * trong giáo trình (~1.700 ký tự) — dài hơn thế thì không còn là "bài đang gõ".
+ * Vượt trần thì rơi về `ok: false`: thà bảo người dùng chép mã ra còn hơn tự ý
+ * tải lại rồi treo trang.
+ */
+export const MAX_IDE_SESSION_CODE_CHARS = 200_000;
+
+/** Phần của Storage mà ở đây cần — để test truyền được bộ nhớ giả. */
+export type IdeCodeStorage = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'>;
+
+/**
+ * `ok: true`  — gọi `history.replaceState(null, '', href)` rồi `location.reload()`.
+ *               `via` nói mã nằm ở đâu ('none' = không có gì đáng giữ: ô gõ trống).
+ * `ok: false` — KHÔNG tải lại được mà không mất mã.
+ */
+export type IdeReloadPlan =
+  | { ok: true; href: string; via: 'fragment' | 'session' | 'none' }
+  | { ok: false };
+
+/**
+ * `window.sessionStorage` hoặc null. Chỉ ĐỌC thuộc tính này thôi cũng có thể ném
+ * SecurityError (Chrome chặn dữ liệu trang, iframe bị cô lập) — nên phải bọc,
+ * không thì nút "Thử lại" nổ ngay chỗ đáng lẽ chỉ là "không cất được".
+ */
+export function sessionStorageOrNull(): IdeCodeStorage | null {
+  try {
+    return typeof window === 'undefined' ? null : window.sessionStorage;
+  } catch {
+    // SecurityError. Đây là LÝ DO hàm tồn tại, không phải nhánh phòng xa:
+    // không bọc thì nút "Thử lại" nổ ngay chỗ đáng lẽ chỉ là "không cất được".
+    return null;
+  }
+}
+
+function forget(storage: IdeCodeStorage | null): void {
+  try {
+    storage?.removeItem(IDE_RELOAD_CODE_KEY);
+  } catch {
+    // Không xoá được bản cũ thì thôi: readIdeCodeOnLoad() cho fragment thắng,
+    // và chính trang sẽ thử xoá lại sau khi mount.
+  }
+}
+
+/**
+ * Cất `code` sao cho lần tải lại sau trả về đúng nó. Hàm có tác dụng phụ duy
+ * nhất là ghi/xoá trên `storage` được truyền vào; còn đổi địa chỉ và tải lại là
+ * việc của chỗ gọi, nên test chạy được bằng `node --test` không cần trình duyệt.
+ */
+export function planIdeReload(code: string, storage: IdeCodeStorage | null): IdeReloadPlan {
+  if (!code.trim()) {
+    // Ô gõ trống: không có gì để mất. Bỏ cả fragment cũ (nếu có), không thì
+    // tải lại hiện ra mã của lần bàn giao trước — trông như trang tự gõ hộ.
+    forget(storage);
+    return { ok: true, href: '/ide', via: 'none' };
+  }
+
+  // Kiểm VÒNG ĐI–VỀ chứ không chỉ "mã hoá được": encodeIdeCode() nhận ký tự
+  // điều khiển (form feed dán từ PDF chẳng hạn) nhưng decodeIdeCode() lại chặn
+  // chúng — nên fragment dựng được mà tải lại vẫn ra ví dụ mặc định, mất bài
+  // một cách im lặng. Đi–về không trọn thì xuống sessionStorage.
+  const encoded = encodeIdeCode(code);
+  if (encoded && decodeIdeCode(encoded) === code) {
+    // Bản cũ trong sessionStorage (của một lần thử lại trước) phải bỏ đi, kẻo
+    // nó sống lại ở một lần mở /ide sau trong cùng tab.
+    forget(storage);
+    return { ok: true, href: `/ide#${IDE_CODE_PARAM}=${encoded}`, via: 'fragment' };
+  }
+
+  // Quá trần của đường sessionStorage thì không cất nữa (xem
+  // MAX_IDE_SESSION_CODE_CHARS): tải lại được nhưng trang treo thì cũng như mất.
+  if (!storage || code.length > MAX_IDE_SESSION_CODE_CHARS) return { ok: false };
+  try {
+    storage.setItem(IDE_RELOAD_CODE_KEY, code);
+    // Đọc lại cho chắc: có trình duyệt (Safari riêng tư đời cũ) nhận setItem
+    // mà không lưu gì. Tin lời "đã lưu" rồi tải lại là mất bài.
+    if (storage.getItem(IDE_RELOAD_CODE_KEY) !== code) return { ok: false };
+  } catch {
+    // QuotaExceededError (mã dài hơn hạn mức ~5 MB) hoặc bộ nhớ bị chặn.
+    return { ok: false };
+  }
+  // Địa chỉ trần, BỎ fragment cũ: readIdeCodeOnLoad() cho fragment thắng, nên
+  // để nguyên fragment của lần bàn giao trước thì nó sẽ đè lên mã vừa cất.
+  return { ok: true, href: '/ide', via: 'session' };
+}
+
+/**
+ * Mã để mở /ide: fragment trước, rồi bản cất của nút "Thử lại", không có thì
+ * null (chỗ gọi dùng ví dụ mặc định).
+ *
+ * Vì sao fragment THẮNG: planIdeReload() đi đường sessionStorage thì đã bỏ
+ * fragment khỏi địa chỉ, nên có fragment nghĩa là có một lần bàn giao MỚI HƠN
+ * (người dùng bấm "Thử ngay trong IDE" mở /ide ngay trong tab này) — khi đó bản
+ * cất cũ là đồ thừa, không được đè lên.
+ */
+export function readIdeCodeOnLoad(
+  hash: string | null | undefined,
+  storage: IdeCodeStorage | null,
+): string | null {
+  const fromHash = readIdeCodeFromHash(hash);
+  if (fromHash !== null) return fromHash;
+  try {
+    const saved = storage?.getItem(IDE_RELOAD_CODE_KEY);
+    // Không qua decodeIdeCode(): đây là mã chính người dùng gõ, do chính trang
+    // này ghi, không phải địa chỉ ai cũng sửa được — lọc ký tự điều khiển ở
+    // đây là làm mất đúng cái ca đã buộc phải xuống sessionStorage.
+    return typeof saved === 'string' && saved.trim() ? saved : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Xoá bản cất sau khi đã nạp vào editor. Gọi trong effect, KHÔNG gọi trong hàm
+ * khởi tạo state: hàm đó phải thuần (StrictMode cố ý gọi nó hai lần để lộ tác
+ * dụng phụ), còn effect chạy sau khi giá trị đã nằm trong state. Không xoá thì
+ * F5 hay mở lại /ide trong tab này về sau sẽ hiện lại mã cũ thay cho ví dụ mặc
+ * định, dù người dùng đã gõ sang bài khác.
+ */
+export function forgetIdeReloadCode(storage: IdeCodeStorage | null): void {
+  forget(storage);
+}
