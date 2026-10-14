@@ -3,3 +3,6 @@
 # Không có dòng này, git tự đổi LF thành CRLF khi checkout trên Windows và file
 # vendor lệch khỏi bản gốc.
 frontend/public/pyodide/** -text
+# Monaco cũng là file vendor: giữ đúng từng byte như bản trong node_modules,
+# nếu không core.autocrlf sẽ thêm CR và file không còn khớp bản gốc.
+frontend/public/monaco/** -text

@@ -17,6 +17,7 @@
 // được bằng `node --test` (nó không bóc được JSX).
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import type { OnMount } from '@monaco-editor/react';
 
 import { apiFetch } from '@/lib/api';
@@ -56,18 +57,22 @@ function prefersReducedMotion(): boolean {
 }
 
 /**
- * Con trỏ dòng đang nằm ở đâu NGAY LÚC NÀY, kể cả khi hiệu ứng trước còn đang
- * chạy. Bước liên tiếp phải luôn ăn: hiệu ứng cũ bị cắt ngang thì hiệu ứng mới
- * đi tiếp từ chỗ con trỏ đang thật sự hiện, không giật về điểm đến cũ.
+ * Lớp CSS mang nhịp của cú nhảy, thay cho việc ghi biến `--pe-step-ms` lên nút
+ * gốc Monaco ở mỗi bước.
+ *
+ * Vì sao đổi: ghi một custom property lên nút gốc làm trình duyệt tính lại
+ * style cho CẢ cây Monaco. Đo được khi giữ phím → (200 bước, CPU chậm 4×): đặt
+ * ở nút gốc cho 18–20 khung hình dài và 719–808 ms style+layout; đặt bằng lớp
+ * cục bộ chỉ còn 8–13 khung dài và 207–439 ms. Người học bước nhanh là thấy
+ * khác biệt đó.
+ *
+ * Chia thành vài mức thay vì truyền số chính xác: mắt không phân biệt nổi
+ * 124 ms với 131 ms, mà mỗi giá trị rời rạc lại phải là một lớp CSS tĩnh.
  */
-function currentShiftY(el: HTMLElement): number {
-  const t = getComputedStyle(el).transform;
-  if (!t || t === 'none') return 0;
-  try {
-    return new DOMMatrixReadOnly(t).m42;
-  } catch {
-    return 0;
-  }
+function nhipLop(motion: { durationMs: number; travel: boolean }): string {
+  if (motion.durationMs <= 70) return styles.stepInstant;
+  if (motion.travel) return styles.monacoLineTravel;
+  return motion.durationMs <= 150 ? styles.stepNear : styles.stepFar;
 }
 
 type MountArgs = Parameters<OnMount>;
@@ -91,6 +96,7 @@ function errorMessage(body: unknown, fallback: string): string {
 export default function CodeVisualizer({
   codeRef,
   editorRef,
+  triggerHost,
 }: {
   /**
    * Nội dung editor MỚI NHẤT. Nhận ref chứ không nhận chuỗi `code`: IdeClient
@@ -99,8 +105,18 @@ export default function CodeVisualizer({
    * có thật ở Ctrl+Enter của nút Chạy).
    */
   codeRef: { current: string };
-  /** Có thì dòng đang chạy được tô ngay trong Monaco; không có thì chỉ tô ở khung mã bên dưới. */
+  /** Dòng đang chạy được tô ngay trong Monaco — đó là bản mã DUY NHẤT hiện ra. */
   editorRef?: { current: MonacoHandle | null };
+  /**
+   * Chỗ để đặt nút mở, nếu muốn nó nằm nơi khác (IdeClient đặt cạnh nút Chạy
+   * trên thanh công cụ cho dễ thấy).
+   *
+   * Dùng portal chứ không nâng state lên IdeClient: toàn bộ việc ghi vết —
+   * trạng thái, huỷ request, nhãn nút đổi theo trạng thái — vẫn nằm gọn trong
+   * component này. Nâng lên thì IdeClient phải giữ thêm một bản sao trạng thái
+   * và hai bên dễ lệch nhau.
+   */
+  triggerHost?: HTMLElement | null;
 }) {
   const [state, setState] = useState<State>({ status: 'idle' });
   const [index, setIndex] = useState(0);
@@ -109,8 +125,6 @@ export default function CodeVisualizer({
   const [playing, setPlaying] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
-  const activeLineRef = useRef<HTMLDivElement | null>(null);
-  const cursorRef = useRef<HTMLDivElement | null>(null);
   /** Lần đổi bước gần nhất (performance.now) — để đo nhịp bấm thật của người dùng. */
   const lastMoveRef = useRef<number | null>(null);
 
@@ -227,24 +241,34 @@ export default function CodeVisualizer({
     const handle = editorRef?.current;
     if (!handle || !step) return;
     const { editor, monaco } = handle;
+
+    // Nhịp của cú nhảy đi theo CÙNG luật đã có: xuống dòng kế tiếp là một kiểu,
+    // vào hàm / trả về / quay đầu vòng lặp là kiểu khác (xem stepMotion trong
+    // lib/trace.ts, phân loại theo ĐỘ SÂU call stack chứ không theo tên sự
+    // kiện). Trước đây luật này điều khiển con trỏ trượt trong khung mã riêng;
+    // khung đó đã bỏ, nên nay nó điều khiển hiệu ứng của chính dòng tô trong
+    // Monaco — truyền xuống CSS bằng biến, vì decoration chỉ nhận className.
+    const now = performance.now();
+    const last = lastMoveRef.current;
+    lastMoveRef.current = now;
+    const motion = stepMotion(steps[index - 1], step, {
+      reduced: prefersReducedMotion(),
+      paceMs: last === null ? undefined : now - last,
+    });
+
     const collection = editor.createDecorationsCollection([
       {
         range: new monaco.Range(step.line, 1, step.line, 1),
         options: {
           isWholeLine: true,
-          className: styles.monacoLine,
+          className: `${styles.monacoLine} ${nhipLop(motion)}`,
           glyphMarginClassName: styles.monacoGlyph,
         },
       },
     ]);
     editor.revealLineInCenterIfOutsideViewport(step.line);
     return () => collection.clear();
-  }, [editorRef, step]);
-
-  // Dòng đang chạy phải tự hiện ra trong khung mã, kể cả với chương trình dài.
-  useEffect(() => {
-    activeLineRef.current?.scrollIntoView({ block: 'nearest' });
-  }, [index]);
+  }, [editorRef, step, steps, index]);
 
   const total = steps.length;
   const atEnd = index >= total - 1;
@@ -277,56 +301,12 @@ export default function CodeVisualizer({
     setPlaying(true);
   }, [autoRunning, atEnd]);
 
-  // Con trỏ dòng TRƯỢT từ dòng cũ sang dòng mới.
-  //
-  // Vì sao phải trượt: dải tô nhảy cóc thì người học chỉ thấy "giờ đang ở dòng
-  // 7" mà không thấy "nó vừa từ dòng 12 quay lên" — mà đúng cú quay đầu của
-  // vòng lặp mới là thứ khó hình dung nhất. Con trỏ là MỘT phần tử duy nhất
-  // trượt bằng `transform` (không phải mỗi dòng tự tô), nên trình duyệt không
-  // phải layout lại khung mã ở mỗi khung hình.
-  useEffect(() => {
-    const bar = cursorRef.current;
-    const row = activeLineRef.current;
-    if (!bar || !row || !step) return;
-    const to = row.offsetTop;
-    const now = performance.now();
-    const last = lastMoveRef.current;
-    lastMoveRef.current = now;
-    const motion = stepMotion(steps[index - 1], step, {
-      reduced: prefersReducedMotion(),
-      // Nhịp bấm thật: giữ phím → thì khoảng cách này còn vài chục ms và hiệu
-      // ứng tự rút lại cho khỏi tụt hậu sau con trỏ.
-      paceMs: last === null ? undefined : now - last,
-    });
-    const from = currentShiftY(bar);
-    // Cắt ngang hiệu ứng cũ (đã đọc được vị trí đang thấy của nó ở trên).
-    bar.getAnimations().forEach((a) => a.cancel());
-    bar.animate(
-      [
-        { transform: `translateY(${from}px)` },
-        // Nhảy xa thì bóp con trỏ lại giữa đường: mắt đọc ra thành "nó đi qua
-        // đây", khác hẳn một bước xuống dòng kế tiếp.
-        ...(motion.travel
-          ? [{ transform: `translateY(${(from + to) / 2}px) scaleY(0.72)`, offset: 0.5 }]
-          : []),
-        // Lần đầu: `opacity` ở keyframe đầu lấy giá trị đang có (0 trong CSS)
-        // nên con trỏ hiện dần thay vì nháy ở dòng 1 rồi mới nhảy đi.
-        { transform: `translateY(${to}px)`, opacity: 1 },
-      ],
-      { duration: motion.durationMs, easing: motion.easing, fill: 'forwards' },
-    );
-  }, [index, step, steps]);
-
   const go = useCallback(
     (move: 'first' | 'prev' | 'next' | 'last') =>
       setIndex((i) => nextIndex(i, steps.length, move)),
     [steps.length],
   );
 
-  const codeLines = useMemo(
-    () => (state.status === 'ready' ? state.code.replace(/\n$/, '').split('\n') : []),
-    [state],
-  );
   const changed = useMemo(
     () => (step ? changedNames(steps[index - 1], step) : new Set<string>()),
     [step, steps, index],
@@ -340,6 +320,24 @@ export default function CodeVisualizer({
   const output = doc ? outputAt(doc, index) : { stdout: '', stderr: '' };
   const printed = doc ? outputDelta(doc, index) : { seen: '', fresh: '' };
   const notice = doc ? stopNotice(doc) : null;
+
+  // Nhãn nút nói đúng việc tiếp theo: chưa ghi thì "Xem từng bước", ghi rồi thì
+  // "Ghi vết lại" (vì người học vừa sửa mã xong mới bấm lại).
+  const trigger = (
+    <button
+      type="button"
+      className={styles.start}
+      onClick={() => void start()}
+      disabled={state.status === 'loading'}
+      title="Chạy một lượt rồi bước qua từng dòng của chính đoạn mã đang soạn"
+    >
+      {state.status === 'loading'
+        ? 'Đang ghi vết…'
+        : state.status === 'ready'
+          ? '↻ Ghi vết lại'
+          : '⇥ Xem từng bước'}
+    </button>
+  );
 
   return (
     <section
@@ -375,18 +373,10 @@ export default function CodeVisualizer({
     >
       <header className={styles.head}>
         <h2 className={styles.title}>Xem từng bước</h2>
-        <button
-          type="button"
-          className={styles.start}
-          onClick={() => void start()}
-          disabled={state.status === 'loading'}
-        >
-          {state.status === 'loading'
-            ? 'Đang ghi vết…'
-            : state.status === 'ready'
-              ? '↻ Ghi vết lại'
-              : '⇥ Xem từng bước'}
-        </button>
+        {/* Nút mở: ra thanh công cụ nếu IdeClient đưa chỗ, không thì đứng tại
+            đây. Dựng MỘT LẦN rồi chuyển đi bằng portal — cùng một nút, cùng một
+            trạng thái, không phải hai bản phải giữ cho khớp nhau. */}
+        {triggerHost ? createPortal(trigger, triggerHost) : trigger}
         {state.status === 'ready' && (
           <span className={styles.cost}>
             Ghi vết mất {(state.run.durationMs / 1000).toFixed(2)} s
@@ -547,33 +537,12 @@ export default function CodeVisualizer({
               </div>
 
               <div className={styles.grid}>
-                <div className={styles.codePane}>
-                  <h3 className={styles.paneTitle}>Mã đã ghi vết</h3>
-                  <div className={styles.code}>
-                    {/* MỘT con trỏ duy nhất, trượt bằng transform (xem effect ở
-                        trên). Nằm trước các dòng để chữ vẽ đè lên nó. */}
-                    <div className={styles.cursor} ref={cursorRef} aria-hidden="true" />
-                    {codeLines.map((text, i) => {
-                      const active = step?.line === i + 1;
-                      return (
-                        <div
-                          key={i}
-                          ref={active ? activeLineRef : undefined}
-                          className={active ? `${styles.line} ${styles.lineActive}` : styles.line}
-                        >
-                          <span className={styles.lineNo} aria-hidden="true">
-                            {i + 1}
-                          </span>
-                          <span className={styles.lineArrow} aria-hidden="true">
-                            {active ? '▶' : ''}
-                          </span>
-                          <code className={styles.lineText}>{text || ' '}</code>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
+                {/* KHÔNG in lại mã ở đây. Trước đây panel có cột "Mã đã ghi vết"
+                    chép lại y nguyên nội dung editor ngay phía trên — cùng một
+                    đoạn mã hiện hai lần, bản dưới lại hẹp nên phải cuộn ngang.
+                    Dòng đang chạy nay chỉ tô trong CHÍNH Monaco (xem effect
+                    createDecorationsCollection ở trên), nên người học nhìn đúng
+                    đoạn mã họ vừa gõ, ở đúng chỗ họ đang gõ. */}
                 <div className={styles.sidePane}>
                   <h3 className={styles.paneTitle}>Call stack</h3>
                   <ol className={styles.stack}>

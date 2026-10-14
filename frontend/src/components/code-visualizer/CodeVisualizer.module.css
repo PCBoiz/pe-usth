@@ -181,14 +181,15 @@
 }
 
 /* Mã | (stack + biến) | đầu ra. Hẹp thì xếp dọc — xem media bên dưới. */
+/* Hai cột, không phải ba: cột "Mã đã ghi vết" đã bỏ vì nó chép lại y nguyên
+   nội dung editor ngay phía trên. Dòng đang chạy nay tô thẳng trong Monaco. */
 .grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 14px;
   align-items: start;
 }
 
-.codePane,
 .sidePane,
 .outPane {
   min-width: 0;
@@ -208,70 +209,7 @@
 }
 .sidePane .paneTitle:not(:first-child) { margin-top: 14px; }
 
-.code {
-  /* Chiều cao MỘT dòng, khai báo một chỗ: con trỏ trượt phải cao đúng bằng
-     dòng, nếu lệch thì nó lè ra ngoài dòng đang chạy. 12.5px × 1.6 = 20px. */
-  --cv-line-h: 20px;
-  position: relative;
-  max-height: 320px;
-  overflow: auto;
-  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
-  font-size: 12.5px;
-  line-height: var(--cv-line-h);
-}
 
-/* Con trỏ dòng đang chạy: MỘT phần tử, trượt bằng transform (vị trí do
-   CodeVisualizer.tsx đặt qua Web Animations API — nó phải biết offsetTop của
-   dòng, mà CSS thì không). Vì sao không tô nền từng dòng nữa: đổi nền là nhảy
-   cóc, không có đường đi; và một phần tử trượt bằng transform thì trình duyệt
-   không phải layout lại khung mã ở mỗi khung hình.
-   opacity: 0 lúc đầu — hiệu ứng đầu tiên mở nó ra, nên không nháy ở dòng 1. */
-.cursor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: var(--cv-line-h);
-  background: var(--edu-accent-soft-strong);
-  box-shadow: inset 2px 0 0 0 var(--edu-accent);
-  border-radius: 4px;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.line {
-  display: flex;
-  gap: 6px;
-  /* Có position thì chữ vẽ ĐÈ LÊN con trỏ (cùng z-index, xếp theo thứ tự DOM,
-     con trỏ là phần tử đầu). Không có dòng này thì con trỏ phủ mất chữ. */
-  position: relative;
-  border-radius: 4px;
-}
-/* Dòng SẮP chạy. Nền và viền trái nay do .cursor vẽ; ở đây chỉ còn mũi ▶ —
-   dấu hiệu KHÔNG DÙNG MÀU, cần cho người không phân biệt được màu. */
-.lineActive .lineArrow {
-  animation: cv-arrow 160ms cubic-bezier(.33, 1, .68, 1) both;
-}
-@keyframes cv-arrow {
-  from { opacity: 0; transform: translateX(-4px); }
-  to { opacity: 1; transform: none; }
-}
-
-.lineNo {
-  flex: 0 0 2.5em;
-  text-align: right;
-  color: var(--edu-t4);
-  user-select: none;
-}
-.lineArrow {
-  flex: 0 0 1em;
-  color: var(--edu-accent-text);
-  user-select: none;
-}
-.lineText {
-  white-space: pre;
-  color: var(--edu-t1);
-}
 
 .stack {
   position: relative; /* mốc cho bóng khung vừa bật ra (.framePopped) */
@@ -421,7 +359,57 @@
 .stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
 
 /* Dòng đang chạy, tô bên trong Monaco (class do decoration của Monaco gắn). */
-.monacoLine { background: var(--edu-accent-soft-strong); }
+/* Dòng đang chạy, tô trong CHÍNH Monaco — đây là bản mã duy nhất hiện ra.
+   Hiệu ứng chỉ dùng opacity/transform; nhịp do CodeVisualizer.tsx truyền xuống
+   qua --pe-step-ms (cùng luật stepMotion đã có test), vì decoration của Monaco
+   chỉ nhận className chứ không nhận style. */
+.monacoLine {
+  background: var(--edu-accent-soft-strong);
+}
+
+/* Nhịp là LỚP TĨNH, không phải biến đặt lên nút gốc Monaco ở mỗi bước — xem
+   nhipLop() trong CodeVisualizer.tsx để biết số đo. Ba mức là đủ: mắt không
+   phân biệt nổi 124 ms với 131 ms. */
+.stepNear {
+  animation: cv-line-in 130ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+.stepFar {
+  animation: cv-line-in 200ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+/* Giữ phím → : hiệu ứng phải rút gần hết, không bao giờ bắt người dùng chờ. */
+.stepInstant {
+  animation: cv-line-in 60ms linear both;
+}
+
+/* Nhảy XA — vào hàm, trả về, quay đầu vòng lặp. Vào mạnh hơn một nhịp để mắt
+   đọc ra "nó vừa nhảy tới đây", khác hẳn một bước xuống dòng kế tiếp. */
+.monacoLineTravel {
+  animation: cv-line-travel 200ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+@keyframes cv-line-in {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+@keyframes cv-line-travel {
+  from { opacity: 0; transform: scaleX(0.92); }
+  60% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+
+/* Người bật giảm chuyển động: dòng vẫn tô, chỉ bỏ phần động. */
+@media (prefers-reduced-motion: reduce) {
+  .monacoLine,
+  .monacoLineTravel,
+  .stepNear,
+  .stepFar,
+  .stepInstant {
+    animation: none;
+  }
+}
 .monacoGlyph { background: var(--edu-accent); }
 
 /* Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì tắt hết, chỉ giữ
@@ -435,7 +423,6 @@
   .start { transition: none; }
   .start:hover:not(:disabled) { transform: none; }
   .progressBar { animation: none; width: 100%; }
-  .lineActive .lineArrow,
   .framePushed,
   .varNew,
   .freshOut { animation: none; }
@@ -444,9 +431,9 @@
   .framePopped { display: none; }
 }
 
-/* Máy tính bảng: đầu ra xuống hàng dưới, mã và biến vẫn cạnh nhau. */
+/* Máy tính bảng: đầu ra xuống hàng dưới, call stack đứng một mình. */
 @media (max-width: 1099.98px) {
-  .grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .grid { grid-template-columns: minmax(0, 1fr); }
   .outPane { grid-column: 1 / -1; }
 }
 

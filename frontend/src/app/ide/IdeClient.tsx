@@ -19,19 +19,83 @@ import CodeVisualizer, { type MonacoHandle } from '@/components/code-visualizer/
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { apiFetch } from '@/lib/api';
-import { readIdeCodeFromHash } from '@/lib/ide-handoff';
+import { EDITOR_LOAD_TIMEOUT_MS, editorLoadPhase } from '@/lib/editor-load-gate';
+import { ideCodeHref, readIdeCodeFromHash } from '@/lib/ide-handoff';
 import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
 import styles from './ide.module.css';
 
+/**
+ * Bản Monaco TỰ HOST, cùng origin với trang.
+ *
+ * VÌ SAO KHÔNG DÙNG CDN NỮA: mặc định `@monaco-editor/loader` nạp
+ * `https://cdn.jsdelivr.net/npm/monaco-editor@0.55.1/min/vs` — tức mở /ide là
+ * 12 lượt tải sang jsdelivr. Phòng máy chặn hoặc làm chậm domain đó là mất
+ * trắng trang IDE, mà /ide đang là thứ duy nhất demo được (xem AGENTS.md: DB
+ * dùng chung đang hỏng đăng nhập). Pyodide đã tự host ở
+ * public/pyodide/v0.27.7/ đúng vì lý do này từ trước; Monaco bị bỏ sót.
+ *
+ * Thư mục GHIM PHIÊN BẢN (v0.57.0) nên nội dung không bao giờ đổi → có luật
+ * cache `immutable` trong next.config.ts, giống /pyodide/:path*. Muốn nâng cấp
+ * là chép sang thư mục mới rồi đổi hằng số này, KHÔNG ghi đè file cũ.
+ *
+ * Cách dựng lại thư mục (0.57.0 đã ghim trong package-lock.json vì
+ * @monaco-editor/react khai nó là peer dependency):
+ *     cp -r node_modules/monaco-editor/min/vs frontend/public/monaco/v0.57.0/vs
+ * rồi bỏ ba nhóm KHÔNG bao giờ được tải với editor python (25 MB → 9,3 MB):
+ *     rm -rf …/vs/nls/lang          # chỉ tải khi require.config đặt availableLanguages
+ *     rm -rf …/vs/language/typescript && rm …/vs/assets/ts.worker-*.js
+ *     find …/vs -name '*.d.ts' -delete
+ * Thêm `language="typescript"`/`"json"` hay đổi ngôn ngữ giao diện ở đâu đó
+ * thì phải chép lại ĐỦ, không thì editor treo đúng kiểu đang sửa.
+ */
+const MONACO_VS_PATH = '/monaco/v0.57.0/vs';
+
+/**
+ * Cờ "không nạp được Monaco" do chính `loader.init()` báo.
+ *
+ * Vì sao là biến ở TẦM MODULE chứ không phải state: factory của `dynamic()`
+ * chạy một lần, ngoài React, trước khi component nào kịp mount. `useSyncExternalStore`
+ * bên dưới đọc lại cờ này nên vẫn vào đúng vòng render.
+ */
+let monacoRejected = false;
+const monacoRejectedListeners = new Set<() => void>();
+function subscribeMonacoRejected(onChange: () => void) {
+  monacoRejectedListeners.add(onChange);
+  return () => {
+    monacoRejectedListeners.delete(onChange);
+  };
+}
+const getMonacoRejected = () => monacoRejected;
+const getMonacoRejectedServer = () => false;
+
 // Monaco chỉ chạy được trong trình duyệt (cần window/worker) nên tắt SSR.
-// Mặc định @monaco-editor/react tải Monaco từ cdn.jsdelivr.net — domain đã nằm
-// trong script-src/style-src/font-src của CSP ở next.config.ts.
-const Editor = dynamic(() => import('@monaco-editor/react'), {
-  ssr: false,
-  loading: () => <div className={styles.editorLoading}>Đang tải trình soạn thảo…</div>,
-});
+//
+// `loader.config()` phải gọi TRƯỚC khi <Editor> render lần đầu, vì chính
+// <Editor> gọi `loader.init()` trong effect của nó và lúc đó cấu hình đã đóng.
+// Đặt ngay trong factory của dynamic() là chỗ duy nhất bảo đảm thứ tự đó.
+//
+// Gọi thêm `loader.init()` ở đây KHÔNG phải để lấy monaco (đã có <Editor> lo)
+// mà để bắt được lời TỪ CHỐI: `@monaco-editor/react` bắt lỗi rồi chỉ
+// console.error, không đẩy gì ra giao diện — nên trước bản này 404/bị chặn
+// trông y hệt "đang tải", mãi mãi. Hai lời gọi init() dùng chung một promise
+// trong loader nên không tải hai lần.
+const Editor = dynamic(
+  async () => {
+    const mod = await import('@monaco-editor/react');
+    mod.loader.config({ paths: { vs: MONACO_VS_PATH } });
+    mod.loader.init().catch(() => {
+      monacoRejected = true;
+      for (const notify of monacoRejectedListeners) notify();
+    });
+    return mod.default;
+  },
+  {
+    ssr: false,
+    loading: () => <div className={styles.editorLoading}>Đang tải trình soạn thảo…</div>,
+  },
+);
 
 type RunResult = {
   stdout: string;
@@ -128,6 +192,76 @@ export default function IdeClient() {
   // `onMount` của editor mới có hai đối tượng này; mọi việc với decoration nằm
   // trong CodeVisualizer.
   const monacoRef = useRef<MonacoHandle | null>(null);
+  // Chỗ đặt nút "Xem từng bước" trên thanh công cụ, cạnh nút Chạy — người dùng
+  // bảo để dưới cuối trang thì không ai thấy. Dùng state chứ không dùng ref vì
+  // CodeVisualizer phải render LẠI khi chỗ này có thật (ref thay đổi không báo
+  // cho React biết); nó portal nút vào đây, nên trạng thái nút vẫn do chính nó
+  // giữ, không phải một bản sao ở đây.
+  const [visualizeSlot, setVisualizeSlot] = useState<HTMLSpanElement | null>(null);
+
+  // --- LƯỚI AN TOÀN KHI KHÔNG NẠP ĐƯỢC TRÌNH SOẠN THẢO ---------------------
+  // Ba tín hiệu đi vào editorLoadPhase() (src/lib/editor-load-gate.ts, có test):
+  // mount được chưa, loader đã từ chối chưa, và đã chờ bao lâu.
+  const [editorMounted, setEditorMounted] = useState(false);
+  const monacoLoaderRejected = useSyncExternalStore(
+    subscribeMonacoRejected,
+    getMonacoRejected,
+    getMonacoRejectedServer,
+  );
+  const editorStartedAtRef = useRef(0);
+  const [editorElapsedMs, setEditorElapsedMs] = useState(0);
+  useEffect(() => {
+    if (editorMounted) return;
+    // Mốc đặt trong effect (chạy ở client) chứ không phải lúc khởi tạo module:
+    // trang có thể nằm sẵn trong bộ nhớ đệm back/forward hàng phút trước khi
+    // người dùng mở lại, mốc cũ sẽ ra "đã chờ 3 phút" ngay lần render đầu.
+    // performance.now() chứ không Date.now(): đây là đồng hồ ĐƠN ĐIỆU, không bị
+    // kéo lùi khi máy đồng bộ NTP hay người dùng chỉnh giờ. Người chấm độc lập
+    // bắt được chỗ này: với Date.now(), một lần chỉnh lùi trong 12 giây chờ sẽ
+    // làm hiệu số nhỏ hơn trần, cổng trả 'loading', và vì bộ đếm chỉ bắn MỘT
+    // lần nên trang đứng mãi ở "Đang tải" — đúng cái lỗi bản sửa này đang chữa.
+    editorStartedAtRef.current = performance.now();
+    // Hẹn LẠI chứ không hẹn một lần: nếu lượt bắn đầu vì lý do nào đó chưa đủ
+    // trần (đồng hồ, tab bị treo rồi tỉnh), lượt sau vẫn kiểm tiếp. Dừng hẳn
+    // khi đã quá trần, nên không phải vòng lặp vô hạn.
+    let timer: ReturnType<typeof setTimeout>;
+    const dem = () => {
+      const troi = performance.now() - editorStartedAtRef.current;
+      setEditorElapsedMs(troi);
+      if (troi < EDITOR_LOAD_TIMEOUT_MS) {
+        timer = setTimeout(dem, EDITOR_LOAD_TIMEOUT_MS - troi);
+      }
+    };
+    timer = setTimeout(dem, EDITOR_LOAD_TIMEOUT_MS);
+    return () => clearTimeout(timer);
+  }, [editorMounted]);
+
+  const editorPhase = editorLoadPhase({
+    mounted: editorMounted,
+    rejected: monacoLoaderRejected,
+    elapsedMs: editorElapsedMs,
+  });
+
+  /**
+   * "Thử lại" = TẢI LẠI TRANG, không phải dựng lại <Editor>.
+   *
+   * Vì sao: `@monaco-editor/loader` giữ một promise duy nhất cho cả vòng đời
+   * trang (`isInitialized` + `wrapperPromise` trong monaco-loader.js). Một khi
+   * promise đó đã từ chối thì mọi lần `loader.init()` sau đều nhận lại đúng
+   * lời từ chối cũ — dựng lại component chỉ cho ra khung "đang tải" treo lần
+   * nữa. Chỉ lần tải trang mới mới có loader mới.
+   *
+   * Mã người dùng đang gõ được cất vào fragment trước khi tải lại (cùng cơ chế
+   * nút "Thử ngay trong IDE" của trang bài học, xem src/lib/ide-handoff.ts) nên
+   * thử lại KHÔNG mất bài. `replaceState` đổi địa chỉ mà không điều hướng, rồi
+   * `reload()` nạp lại chính địa chỉ đó — đặt thẳng `location.hash` bằng giá
+   * trị đang có thì trình duyệt coi là không đổi và không tải lại gì.
+   */
+  const retryEditor = useCallback(() => {
+    const href = ideCodeHref(codeRef.current);
+    if (href) window.history.replaceState(null, '', href);
+    window.location.reload();
+  }, []);
 
   const run = useCallback(async () => {
     if (abortRef.current) return; // đang chạy: bỏ qua cú bấm thứ hai
@@ -240,6 +374,7 @@ export default function IdeClient() {
                   ))}
                 </select>
               </label>
+              <span ref={setVisualizeSlot} className={styles.visualizeSlot} />
               <button type="button" className={styles.run} onClick={() => void run()} disabled={running}>
                 {running ? 'Đang chạy…' : '▶ Chạy'}
                 {!running && <kbd className={styles.kbd}>Ctrl+Enter</kbd>}
@@ -249,26 +384,31 @@ export default function IdeClient() {
 
           <div className={styles.split}>
             <section className={styles.editorPane} aria-label="Trình soạn thảo mã Python">
-              <Editor
-                height="100%"
-                language="python"
-                theme={dark ? 'vs-dark' : 'light'}
-                value={code}
-                onChange={(v) => updateCode(v ?? '')}
-                onMount={(editor, monaco) => {
-                  // addCommand đè lệnh mặc định của Ctrl+Enter trong Monaco (chèn dòng mới).
-                  editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => void run());
-                  monacoRef.current = { editor, monaco };
-                }}
-                options={{
-                  minimap: { enabled: false },
-                  fontSize: 14,
-                  tabSize: 4,
-                  insertSpaces: true,
-                  scrollBeyondLastLine: false,
-                  automaticLayout: true,
-                }}
-              />
+              {editorPhase === 'failed' ? (
+                <PlainEditor code={code} onChange={updateCode} onRun={run} onRetry={retryEditor} />
+              ) : (
+                <Editor
+                  height="100%"
+                  language="python"
+                  theme={dark ? 'vs-dark' : 'light'}
+                  value={code}
+                  onChange={(v) => updateCode(v ?? '')}
+                  onMount={(editor, monaco) => {
+                    // addCommand đè lệnh mặc định của Ctrl+Enter trong Monaco (chèn dòng mới).
+                    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => void run());
+                    monacoRef.current = { editor, monaco };
+                    setEditorMounted(true);
+                  }}
+                  options={{
+                    minimap: { enabled: false },
+                    fontSize: 14,
+                    tabSize: 4,
+                    insertSpaces: true,
+                    scrollBeyondLastLine: false,
+                    automaticLayout: true,
+                  }}
+                />
+              )}
             </section>
 
             <section className={styles.outputPane} aria-label="Kết quả" aria-live="polite" aria-busy={running}>
@@ -279,7 +419,7 @@ export default function IdeClient() {
           {/* Xem từng bước: chạy MỘT lượt trong cùng sandbox rồi bước qua vết
               cục bộ. Toàn bộ nằm trong component — xem
               frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
-          <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} />
+          <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
         </main>
       </div>
     </>
@@ -357,5 +497,66 @@ function Output({ state }: { state: RunState }) {
       )}
       {!result.stdout && !result.stderr && <p className={styles.hint}>(Không có đầu ra)</p>}
     </>
+  );
+}
+
+/**
+ * Trình soạn thảo DỰ PHÒNG: một <textarea> trần, hiện khi Monaco không lên.
+ *
+ * Vì sao phải có chứ không chỉ báo lỗi rồi thôi: /ide là thứ duy nhất còn demo
+ * được trong buổi thử nghiệm USTH, và nút Chạy KHÔNG phụ thuộc Monaco — nó gửi
+ * `codeRef.current` lên máy chủ. Mất tô màu cú pháp thì vẫn gõ và chạy được
+ * Python; mất cả ô gõ thì mất trắng.
+ *
+ * Vì sao Monaco bị GỠ HẲN khi rơi vào đây (không giữ ẩn để nó lên sau rồi
+ * đổi lại): editor tự hiện ra giữa lúc người ta đang gõ sẽ cướp con trỏ và
+ * trông như trang hỏng — đúng lúc đang đứng trình bày. Thà đứng yên ở bản dự
+ * phòng; muốn Monaco thì bấm "Thử lại" (tải lại trang, mã được giữ).
+ */
+function PlainEditor({
+  code,
+  onChange,
+  onRun,
+  onRetry,
+}: {
+  code: string;
+  onChange: (next: string) => void;
+  onRun: () => void | Promise<void>;
+  onRetry: () => void;
+}) {
+  return (
+    <div className={styles.fallback}>
+      <div className={`${styles.notice} ${styles.noticeWarn}`} role="alert">
+        <strong>Không tải được trình soạn thảo</strong>
+        <p>
+          Nhiều khả năng mạng ở đây chặn hoặc làm rớt tệp của trình soạn thảo. Ô gõ bên dưới
+          vẫn chạy được: gõ mã rồi bấm “Chạy” như thường (chỉ không có tô màu cú pháp và gợi
+          ý). Thụt dòng bằng 4 dấu cách.
+        </p>
+        <p>
+          <button type="button" className={styles.retry} onClick={onRetry}>
+            Thử lại
+          </button>
+        </p>
+      </div>
+      <textarea
+        className={styles.fallbackInput}
+        aria-label="Mã Python (trình soạn thảo dự phòng)"
+        spellCheck={false}
+        autoComplete="off"
+        autoCorrect="off"
+        autoCapitalize="off"
+        value={code}
+        onChange={(e) => onChange(e.target.value)}
+        // Ctrl+Enter gắn ở đây vì phím tắt kia do Monaco cung cấp, mà Monaco
+        // chính là thứ đang thiếu. Nhãn <kbd> trên nút Chạy vẫn nói đúng sự thật.
+        onKeyDown={(e) => {
+          if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+            e.preventDefault();
+            void onRun();
+          }
+        }}
+      />
+    </div>
   );
 }
