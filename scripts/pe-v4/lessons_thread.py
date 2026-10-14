@@ -42,6 +42,21 @@ LOCK_ENV = THREAD_ENV + (' Vì các thread không bao giờ xen kẽ ở đây, 
                          'self.lock bằng một khoá "ghi nhật ký" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ '
                          'khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi.')
 
+# THREAD_ENV khuyên "chạy thêm file trên máy". Với T05 lời khuyên đó dắt sai: đo trên
+# CPython 3.12.15, 2 thread × 1 triệu lần `n += 1` ra đúng 2.000.000 cả 3 lần — từ 3.10
+# trình thông dịch chỉ đổi thread ở một số điểm (gọi hàm, cuối vòng lặp…), không phải
+# giữa mọi bytecode, nên học viên làm theo sẽ "chứng minh" được += an toàn. Đọc →
+# time.sleep(0) → ghi thì ra 200·150·150, bọc `with lock:` thì 200 (CPython 3.14.4 cũng thế:
+# += trần 2.000.000 cả 3 lần; race_demo.py ra 100·167·200·142·144, có lock thì 200 cả 5).
+# Nên chỉ thẳng cách
+# làm race lộ ra, bằng file race_demo.py hiện ở mục "File trong thư mục bài" (env là
+# chuỗi trơn, xuống dòng bị gộp — code để ở đây thì không đọc được).
+LOCK_ENV += (' Trên máy cũng đừng chờ n += 1 trần lộ race: từ CPython 3.10 thread chỉ bị đổi ở một số điểm '
+             '(gọi hàm, cuối vòng lặp…), nên 2 thread × 1 triệu lần += thường vẫn ra đúng 2.000.000 — hiếm lộ, '
+             'KHÔNG phải nguyên tử. Muốn thấy race thật, chạy python race_demo.py (mục "File trong thư mục bài"): '
+             'file chèn time.sleep(0) giữa đọc và ghi nên thường ra dưới 200; bọc ba dòng đó trong with lock: thì '
+             'luôn 200.')
+
 QUEUE_ENV = THREAD_ENV + (' Vì worker chạy ngay lúc start(), bài này cho nơi gọi submit HẾT việc rồi mới flush, và worker '
                           'xả queue bằng get_nowait() — không bao giờ phải chờ. Trên máy thật, worker chạy suốt thường dùng '
                           'get() + sentinel None như ví dụ minh hoạ.')
@@ -1197,7 +1212,7 @@ print("serial:", serial, "| thread:", threads, "| process:", processes)
     dict(
         code='T05', title='Lock, race condition và deadlock', minutes=40,
         goal='Bảo vệ dữ liệu dùng chung bằng Lock và tránh deadlock bằng thứ tự khoá thống nhất.',
-        prereq='T04', env=LOCK_ENV,
+        prereq='T04', env=LOCK_ENV, support=['race_demo.py'],
         theory=[
             dict(h='Định nghĩa: race condition',
                  body='Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra '
@@ -1272,8 +1287,11 @@ print("Mong đợi 200, thực tế", balance)
                 ('Chạy nhanh hơn', 'Tốc độ như nhau; khác ở chỗ an toàn khi có lỗi.', False),
                 ('Cho nhiều thread cùng giữ khoá', 'Lock luôn chỉ cho một thread giữ.', False),
             ]),
-            dict(q='Thread 1 khoá A rồi B; thread 2 khoá B rồi A. Rủi ro gì?', options=[
-                ('Deadlock — mỗi bên giữ một lock và chờ lock kia', 'Sửa: cả hai khoá theo cùng thứ tự A rồi B.', True),
+            # Tên lock là lock_a/lock_b chứ không phải "A"/"B": màn trắc nghiệm gắn nhãn A/B/C
+            # cho các lựa chọn, nên "khoá A rồi B" đọc nhầm thành lựa chọn A, B.
+            dict(q='Thread 1 khoá lock_a rồi lock_b; thread 2 khoá lock_b rồi lock_a. Rủi ro gì?', options=[
+                ('Deadlock — mỗi bên giữ một lock và chờ lock kia',
+                 'Sửa: cả hai khoá theo cùng thứ tự lock_a rồi lock_b.', True),
                 ('Không sao vì cuối cùng đều release', 'Có thể không bên nào tới được lệnh release.', False),
                 ('Chỉ chậm hơn một chút', 'Hai bên chờ nhau mãi, không tiến triển.', False),
             ]),
@@ -1637,4 +1655,30 @@ BRIEFS = {
         reflect='Vì sao phải đưa bản sao record vào queue?'),
 }
 
-SUPPORT = {}
+# Chỉ để học viên ĐỌC và chạy trên máy (xem LOCK_ENV) — không lời giải hay ca chấm nào
+# import nó. Có `if __name__ == "__main__":` để lỡ bị import trong Studio cũng không chạy.
+RACE_DEMO_PY = r'''# Chạy trên MÁY: python race_demo.py — Studio chạy thread lần lượt nên không thấy race.
+import threading
+import time
+
+balance = 0
+
+
+def deposit_100():
+    global balance
+    for _ in range(100):
+        seen = balance       # đọc
+        time.sleep(0)        # nhường lượt: thread kia chen vào ĐÚNG giữa đọc và ghi
+        balance = seen + 1   # ghi: đè mất phần thread kia vừa cộng
+
+
+if __name__ == "__main__":
+    workers = [threading.Thread(target=deposit_100) for _ in range(2)]
+    for worker in workers:
+        worker.start()
+    for worker in workers:
+        worker.join()
+    print("Mong đợi 200, thực tế", balance)
+'''
+
+SUPPORT = {'race_demo.py': RACE_DEMO_PY}

@@ -86,7 +86,10 @@
         "body": "Account có self.balance và self.lock = threading.Lock(); run_deposits (cấp sẵn) cho mỗi khoản nạp một thread. Viết deposit(amount): đọc-cộng-ghi balance trong with self.lock. Viết withdraw(amount): trong CÙNG một with self.lock, nếu amount > balance thì raise ValueError(\"insufficient funds\"), ngược lại trừ. Viết safe_plan(plan, order): True nếu plan (các lock một thread khoá lồng nhau, theo thứ tự) đi đúng thứ tự chung order — tăng dần, không khoá lại lock đang giữ; tên không có trong order → ValueError.",
         "example": "run_deposits(Account(0), [10, 20, 30]) → 60. Account(5).withdraw(9) → ValueError, balance vẫn 5. safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False.",
         "prereq": "T04",
-        "level": "Nâng cao"
+        "level": "Nâng cao",
+        "files": [
+          "race_demo.py"
+        ]
       },
       "predict": {
         "question": "Hai thread cùng chạy deposit(50) trên balance = 100, KHÔNG có lock. Kết quả có thể là?",
@@ -169,26 +172,26 @@
           "explanation": "Không bao giờ để lock kẹt vì quên release."
         },
         {
-          "question": "Thread 1 khoá A rồi B; thread 2 khoá B rồi A. Rủi ro gì?",
+          "question": "Thread 1 khoá lock_a rồi lock_b; thread 2 khoá lock_b rồi lock_a. Rủi ro gì?",
           "options": [
             {
-              "text": "Chỉ chậm hơn một chút",
-              "detail": "Hai bên chờ nhau mãi, không tiến triển.",
-              "correct": false
-            },
-            {
               "text": "Deadlock — mỗi bên giữ một lock và chờ lock kia",
-              "detail": "Sửa: cả hai khoá theo cùng thứ tự A rồi B.",
+              "detail": "Sửa: cả hai khoá theo cùng thứ tự lock_a rồi lock_b.",
               "correct": true
             },
             {
               "text": "Không sao vì cuối cùng đều release",
               "detail": "Có thể không bên nào tới được lệnh release.",
               "correct": false
+            },
+            {
+              "text": "Chỉ chậm hơn một chút",
+              "detail": "Hai bên chờ nhau mãi, không tiến triển.",
+              "correct": false
             }
           ],
-          "correct": 1,
-          "explanation": "Sửa: cả hai khoá theo cùng thứ tự A rồi B."
+          "correct": 0,
+          "explanation": "Sửa: cả hai khoá theo cùng thứ tự lock_a rồi lock_b."
         },
         {
           "question": "Nên đặt gì vào critical section?",
@@ -415,6 +418,13 @@
           "expect": "'ValueError'"
         }
       ],
+      "files": [
+        {
+          "name": "race_demo.py",
+          "content": "# Chạy trên MÁY: python race_demo.py — Studio chạy thread lần lượt nên không thấy race.\nimport threading\nimport time\n\nbalance = 0\n\n\ndef deposit_100():\n    global balance\n    for _ in range(100):\n        seen = balance       # đọc\n        time.sleep(0)        # nhường lượt: thread kia chen vào ĐÚNG giữa đọc và ghi\n        balance = seen + 1   # ghi: đè mất phần thread kia vừa cộng\n\n\nif __name__ == \"__main__\":\n    workers = [threading.Thread(target=deposit_100) for _ in range(2)]\n    for worker in workers:\n        worker.start()\n    for worker in workers:\n        worker.join()\n    print(\"Mong đợi 200, thực tế\", balance)\n",
+          "kind": "module"
+        }
+      ],
       "contracts": [
         {
           "sig": "Account.deposit(self, amount)",
@@ -441,7 +451,7 @@
           "call": "safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False"
         }
       ],
-      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi."
+      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi. Trên máy cũng đừng chờ n += 1 trần lộ race: từ CPython 3.10 thread chỉ bị đổi ở một số điểm (gọi hàm, cuối vòng lặp…), nên 2 thread × 1 triệu lần += thường vẫn ra đúng 2.000.000 — hiếm lộ, KHÔNG phải nguyên tử. Muốn thấy race thật, chạy python race_demo.py (mục \"File trong thư mục bài\"): file chèn time.sleep(0) giữa đọc và ghi nên thường ra dưới 200; bọc ba dòng đó trong with lock: thì luôn 200."
     }
   }
 }
