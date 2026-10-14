@@ -30,7 +30,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo lại ngày 15/10/2026 (trừ dòng pe-v4, xem cột cuối). Đừng để tụt xuống dưới
+Đo lại ngày 15/10/2026. Đừng để tụt xuống dưới
 mức này:
 
 | Hạng mục | Mốc | Đo ngày |
@@ -41,7 +41,7 @@ mức này:
 | Frontend typecheck | sạch | 15/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 15/10/2026 |
 | Frontend unit test | `cd frontend && npm run test:unit` → 396 ca đạt | 15/10/2026 |
-| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 14/10/2026 |
+| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 15/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
 Đã trả giá một lần: phiên 15/10 sửa bảng ở commit ĐẦU rồi 14 commit sau thêm
