@@ -362,8 +362,8 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-project-diagram"></i> 3 module (ER / Normalization / Application)</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-clock"></i> ~14 giờ học</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-database"></i> Thực hành trên trình duyệt (không cần cài DB)</div>
-                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-infinity"></i> Truy cập vĩnh viễn</div>
-                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-certificate"></i> Chứng chỉ hoàn thành</div>
+                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-unlock"></i> Mọi bài mở sẵn, không khoá theo thứ tự</div>
+                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-floppy-disk"></i> Tiến độ lưu theo phiên của bạn</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-mobile-alt"></i> Học trên mọi thiết bị</div>
                   </div>
                 </div>

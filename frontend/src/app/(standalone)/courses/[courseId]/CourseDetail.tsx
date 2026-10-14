@@ -401,16 +401,28 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
 
               <div className="edu-cd-card">
                 <div className="edu-cd-price">Miễn phí</div>
-                <div className="edu-cd-price-free">🎉 Hoàn toàn không mất phí</div>
 
                 <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}><span aria-hidden="true">▶</span> {ctaLabel}</a>
 
+                {/* KHOÁ HỌC BAO GỒM — hai dòng ở đây từng hứa thứ không có:
+                    · "Chứng chỉ hoàn thành": không có endpoint, không có màn,
+                      không có đường nào phát. Cột `users.certificates` là di sản
+                      bản Django, chỉ được ĐỌC ở `stats.service.ts`, không nơi nào
+                      tăng — nên nó đứng ở 0 với mọi người, mãi mãi.
+                    · "Truy cập vĩnh viễn": frontend không còn đăng nhập, ai vào
+                      cũng là tài khoản khách, mà hạn refresh mặc định là 8 giờ
+                      (cửa sổ TRƯỢT — xem `RefreshTokenService.issue()`). Hết hạn
+                      là mất tiến độ, ngược hẳn với "vĩnh viễn".
+                    Hai dòng thay thế nói đúng thứ đo được: không có cơ chế khoá
+                    bài nào trong repo, và tiến độ gắn với phiên. Cùng lý lẽ đã gỡ
+                    `rating: 4.8` ở a04c3cf — hiện số liệu bịa cho người thử là tự
+                    bắn vào chân mình. Canh bằng `e2e/unit/course-includes.test.mjs`. */}
                 <div className="edu-cd-includes">
                   <div className="edu-cd-includes-title">KHOÁ HỌC BAO GỒM</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-book-open"></i> {course.lessons} bài học</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-clock"></i> {course.duration}</div>
-                  <div className="edu-cd-inc-item"><i className="fas fa-infinity"></i> Truy cập vĩnh viễn</div>
-                  <div className="edu-cd-inc-item"><i className="fas fa-certificate"></i> Chứng chỉ hoàn thành</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-unlock"></i> Mọi bài mở sẵn, không khoá theo thứ tự</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-floppy-disk"></i> Tiến độ lưu theo phiên của bạn</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-mobile-alt"></i> Học trên mọi thiết bị</div>
                 </div>
               </div>
