@@ -20,6 +20,10 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 // script-src và style-src vì lớp legacy còn nạp mermaid, svg-pan-zoom,
 // canvas-confetti và CodeMirror 5 (js + css) từ đó — xem dashboard/page.tsx,
 // interface/page.tsx, lesson/{htmlcss,java}/page.tsx, LessonDbDesign.tsx.
+//
+// /ide thì KHÔNG còn cần jsdelivr nữa: Monaco đã tự host ở
+// public/monaco/v0.57.0/ (14/10/2026). Nhưng chưa bỏ được domain khỏi CSP —
+// chừng nào còn một trang legacy nạp từ đó thì bỏ là trang đó trắng.
 const csp = [
   "default-src 'self'",
   `script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'${isDev ? " 'unsafe-eval'" : ""} https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://cdn.tailwindcss.com`,
@@ -64,6 +68,21 @@ const nextConfig: NextConfig = {
         // Mặc định `public/` được phục vụ với cache ngắn — cả lớp mở bài là mỗi
         // máy tải lại 32 MB, chưa kể mỗi lần vào lại. immutable cắt hẳn việc đó.
         source: "/pyodide/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
+      {
+        // Monaco Editor của /ide (~9,3 MB trên đĩa; một phiên python tải ~3 MB).
+        // Cùng lý lẽ với /pyodide ở trên: thư mục ĐÃ GHIM PHIÊN BẢN
+        // (public/monaco/v0.57.0/) nên nội dung không bao giờ đổi, nâng cấp là
+        // chép sang thư mục mới chứ không ghi đè.
+        //
+        // Trước bản này Monaco tải từ cdn.jsdelivr.net (12 script mỗi lần mở
+        // /ide) và KHÔNG có bản dự phòng: phòng máy chặn jsdelivr là khung soạn
+        // thảo đứng mãi ở chữ "Loading…". Xem MONACO_VS_PATH trong
+        // src/app/ide/IdeClient.tsx.
+        source: "/monaco/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
