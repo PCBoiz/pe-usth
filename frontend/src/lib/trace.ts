@@ -268,6 +268,14 @@ export function stackDelta(
 /** Nhịp tự chạy (nút ⏩). Dài hơn mọi hiệu ứng để hai bước không chồng lên nhau. */
 export const AUTOPLAY_INTERVAL_MS = 460;
 
+/**
+ * Hai đường cong của bảng chuẩn (motion-v2.md §3.2). Lấy nguyên, không nắn lại,
+ * và dùng ĐÚNG hai giá trị mà lib/lesson-intro.ts đã dùng — hai cảnh khác nhau
+ * trong cùng một sản phẩm thì phải chuyển động cùng một giọng.
+ */
+export const EASE_OUT = 'cubic-bezier(0.23, 1, 0.32, 1)';
+export const EASE_MOVE = 'cubic-bezier(0.65, 0, 0.35, 1)';
+
 /** Khung thời gian cho một lần dịch con trỏ dòng. */
 const MOTION_MIN_MS = 60;
 const MOTION_MAX_MS = 220;
@@ -281,31 +289,102 @@ export type StepMotionKind =
   | 'call' // vào hàm
   | 'return'; // về hàm gọi
 
+/**
+ * CÁCH VẼ con trỏ dòng, tách khỏi `kind`.
+ *
+ * Vì sao cần cái thứ hai: `kind` là chuyện của Python (độ sâu stack đổi hay
+ * không), còn cái này là chuyện của mắt. Bản cũ chỉ có cờ `travel` nhị phân nên
+ * vào hàm, trả về và nhảy xa đều rơi vào CÙNG một cách vẽ — đúng lời phàn nàn
+ * "chưa đủ động": vết phân loại kỹ mà người học không đọc ra được gì khác nhau.
+ */
+export type CursorStyle =
+  | 'place' // đặt vào chỗ, không có đường đi (bước đầu, hoặc đứng nguyên dòng)
+  | 'near' // xuống dòng kế tiếp
+  | 'travel' // nhảy xa trong cùng một hàm, hoặc vòng lặp quay đầu
+  | 'enter' // vào hàm: con trỏ thụt vào một nấc, để lại dấu ở dòng gọi
+  | 'leave'; // trả về: con trỏ lùi ra một nấc, đáp xuống đúng dấu đó
+
 export type StepMotion = {
   kind: StepMotionKind;
   /** Số dòng phải vượt qua — dùng để quyết định nhanh/chậm. */
   lines: number;
   durationMs: number;
   easing: string;
-  /** Nhảy XA: vẽ khác nhảy gần (con trỏ bị bóp lại trên đường đi). */
+  /** Nhảy XA: đi bằng đường cong "vật di chuyển" thay vì "đáp xuống". */
   travel: boolean;
+  cursorStyle: CursorStyle;
 };
+
+/**
+ * Thời lượng theo LOẠI bước — năm băng KHÔNG chồng lên nhau.
+ *
+ * Vì sao tách băng chứ không dùng một công thức theo quãng đường như bản cũ:
+ * bản cũ cho `jump` 8 dòng và `call` ra cùng 220ms, nên hai việc rất khác nhau
+ * (đi tới chỗ khác TRONG hàm / rơi vào một hàm khác) đọc ra y hệt. Thời lượng ở
+ * đây mang NGHĨA: càng lâu thì càng "đi xa khỏi chỗ đang đứng".
+ *
+ *   step   110…134  đi tiếp một dòng — chuyện thường, phải nhanh
+ *   back   145…169  vòng lặp quay đầu — vẫn trong hàm, nhưng ngược chiều đọc
+ *   jump   175…199  if/else/break — nhảy trong hàm
+ *   return 205      bật khỏi một khung stack
+ *   call   220      rơi vào một khung stack mới — chỗ MẤT dấu nhất
+ *
+ * Trần 220ms: nhịp tự chạy là 460ms (AUTOPLAY_INTERVAL_MS) nên hiệu ứng dài
+ * nhất vẫn xong trước bước sau. Bảng motion-v2 xếp call/return vào hạng "chuyển
+ * trạng thái 200–320ms" — đúng là vậy: đó là đổi khung thực thi, không phải một
+ * cú dịch con trỏ.
+ */
+function kindDurationMs(kind: StepMotionKind, lines: number): number {
+  switch (kind) {
+    case 'none':
+    case 'hold':
+      return 0;
+    case 'step':
+      return 110 + 6 * Math.min(lines, 4);
+    case 'back':
+      return 145 + 3 * Math.min(lines, 8);
+    case 'jump':
+      return 175 + 3 * Math.min(lines, 8);
+    case 'return':
+      return 205;
+    case 'call':
+      return 220;
+  }
+}
+
+function cursorStyleOf(kind: StepMotionKind): CursorStyle {
+  switch (kind) {
+    case 'none':
+    case 'hold':
+      return 'place';
+    case 'step':
+      return 'near';
+    case 'back':
+    case 'jump':
+      return 'travel';
+    case 'call':
+      return 'enter';
+    case 'return':
+      return 'leave';
+  }
+}
 
 /**
  * Con trỏ dòng trượt thế nào khi sang bước mới.
  *
- * Vì sao có hàm này chứ không viết thẳng số vào component: ba quyết định ở đây
+ * Vì sao có hàm này chứ không viết thẳng số vào component: bốn quyết định ở đây
  * đều là quyết định dạy học, và đều test được bằng `node --test` (JSX thì
  * không).
- *  1. NHẢY GẦN khác NHẢY XA. Xuống dòng kế tiếp là chuyện thường, cho nó nhanh
- *     và êm. Vào hàm / trả về / vòng lặp quay đầu là chỗ người học MẤT dấu
- *     luồng điều khiển, nên đi chậm hơn một nhịp và bóp con trỏ lại để thấy nó
- *     đã đi qua đâu.
+ *  1. MỖI LOẠI BƯỚC MỘT CÁCH ĐỌC. Xuống dòng kế tiếp là chuyện thường, cho nó
+ *     nhanh và êm. Vào hàm / trả về / vòng lặp quay đầu là chỗ người học MẤT
+ *     dấu luồng điều khiển, nên đi chậm hơn và được vẽ khác (xem `cursorStyle`
+ *     và `callSiteLines`).
  *  2. HIỆU ỨNG KHÔNG ĐƯỢC CHỒNG LÊN NHAU. `paceMs` là khoảng cách thật giữa
  *     hai lần đổi bước (giữ phím →, hoặc nhịp tự chạy); bước nhanh hơn hiệu
  *     ứng thì rút hiệu ứng lại, không bao giờ bắt người dùng chờ.
  *  3. `reduced` (prefers-reduced-motion) thì thời lượng về 0 — con trỏ vẫn
- *     nhảy tới đúng dòng, chỉ là không trượt.
+ *     nhảy tới đúng dòng và dấu chỗ gọi vẫn còn, chỉ là không trượt. Không có
+ *     thông tin nào mất đi ở nhánh này.
  */
 export function stepMotion(
   prev: TraceStep | undefined,
@@ -314,14 +393,11 @@ export function stepMotion(
 ): StepMotion {
   const lines = prev ? Math.abs(next.line - prev.line) : 0;
   const kind = motionKind(prev, next);
-  const travel = kind === 'call' || kind === 'return' || lines >= 2;
+  const cursorStyle = cursorStyleOf(kind);
+  const travel = cursorStyle === 'travel' || cursorStyle === 'enter' || cursorStyle === 'leave';
 
-  let durationMs = 0;
-  if (kind !== 'none' && kind !== 'hold') {
-    // Đi xa thì lâu hơn một chút, nhưng không tỉ lệ thuận: nhảy 200 dòng mà
-    // mất 2 giây thì thành phải CHỜ.
-    durationMs = 110 + 14 * Math.min(lines, 8);
-    if (kind === 'call' || kind === 'return') durationMs = Math.max(durationMs, 170);
+  let durationMs = kindDurationMs(kind, lines);
+  if (durationMs > 0) {
     durationMs = Math.min(MOTION_MAX_MS, Math.max(MOTION_MIN_MS, durationMs));
     const pace = opts.paceMs;
     if (pace !== undefined && Number.isFinite(pace) && pace > 0) {
@@ -335,10 +411,167 @@ export function stepMotion(
     lines,
     durationMs,
     // Nhảy gần: phanh dần (ease-out) — như con trỏ "đáp" xuống dòng mới.
-    // Nhảy xa: tăng tốc rồi phanh (ease-in-out) — đọc ra thành một chuyến đi.
-    easing: travel ? 'cubic-bezier(.65, 0, .35, 1)' : 'cubic-bezier(.33, 1, .68, 1)',
+    // Nhảy xa: tăng tốc rồi phanh — đọc ra thành một chuyến đi có đường.
+    easing: travel ? EASE_MOVE : EASE_OUT,
     travel,
+    cursorStyle,
   };
+}
+
+/**
+ * Mỗi nấc stack thụt con trỏ sang phải bấy nhiêu px, tối đa bấy nhiêu nấc.
+ *
+ * Vì sao có thụt lề: nó biến "đang ở độ sâu mấy" thành thứ nhìn thấy được, và
+ * làm cú vào hàm (đi xuống VÀ sang phải) khác hẳn cú trả về (đi lên VÀ sang
+ * trái) — hai cú này trước đây vẽ y như nhau. Chặn ở 3 nấc để đệ quy 20 tầng
+ * không đẩy con trỏ ra khỏi khung.
+ */
+export const CURSOR_INDENT_PX = 5;
+export const CURSOR_MAX_INDENT_LEVELS = 3;
+
+export type CursorPlacement = {
+  /** px tính từ đỉnh vùng nhìn của trình soạn thảo. */
+  topPx: number;
+  heightPx: number;
+  indentPx: number;
+  /** Chuỗi cho `style.transition`; 'none' nghĩa là đặt tức thì. */
+  transition: string;
+  cursorStyle: CursorStyle;
+};
+
+/**
+ * Con trỏ dòng nằm ở đâu và đi tới đó trong bao lâu.
+ *
+ * Vì sao là hàm riêng chứ không viết thẳng trong .tsx: đây là chỗ DUY NHẤT nhịp
+ * mà `stepMotion` tính ra đi được tới DOM. Trước đây nhịp bị dịch sang một
+ * trong bốn tên lớp CSS tĩnh, nên "call 220ms" và "jump 199ms" lại ra cùng một
+ * lớp — tức là toàn bộ việc phân loại rơi mất ở đúng bước cuối. Có hàm này thì
+ * `node --test` kiểm được rằng thời lượng thật sự tới nơi.
+ */
+export function cursorPlacement(
+  step: TraceStep,
+  motion: StepMotion,
+  geom: { topForLine: number; lineHeight: number },
+): CursorPlacement {
+  const level = Math.min(Math.max(depthOf(step) - 1, 0), CURSOR_MAX_INDENT_LEVELS);
+  return {
+    topPx: geom.topForLine,
+    heightPx: geom.lineHeight,
+    indentPx: level * CURSOR_INDENT_PX,
+    // 0ms thì KHÔNG viết 'transform 0ms …': một transition 0ms vẫn là một
+    // transition đang chạy, và thuộc tính transition-* đổi về sau không dừng
+    // được nó (bẫy đã trả giá ở lib/lesson-intro.ts). 'none' là đặt thẳng.
+    transition: motion.durationMs > 0 ? `transform ${motion.durationMs}ms ${motion.easing}` : 'none',
+    cursorStyle: motion.cursorStyle,
+  };
+}
+
+/** Nhiều nhất bấy nhiêu dấu chỗ gọi; sâu hơn thì chỉ còn là nhiễu. */
+export const MAX_CALL_SITES = 6;
+
+/**
+ * Dòng ĐANG CHỜ ở mỗi khung bên dưới khung đang chạy — tức "địa chỉ trả về".
+ *
+ * Vì sao vẽ ra: lúc nhảy vào hàm, người học mất dấu chỗ vừa rời đi. Mỗi khung
+ * chưa chạy xong đang đứng ở đúng dòng gọi của nó, nên chỉ cần đánh dấu những
+ * dòng đó là đường về hiện ra trên chính đoạn mã — và nó tự biến mất khi hàm
+ * trả về, vì khung đó không còn trong vết nữa. Gần nhất xếp trước.
+ *
+ * Bỏ dòng ≤ 0: sự kiện 'call' đầu tiên của `<module>` ghi line 0 (chương trình
+ * chưa vào dòng nào), đánh dấu dòng 0 là vẽ sai chỗ.
+ */
+export function callSiteLines(step: TraceStep | undefined): number[] {
+  if (!step) return [];
+  const out: number[] = [];
+  for (let i = step.frames.length - 2; i >= 0 && out.length < MAX_CALL_SITES; i--) {
+    const line = step.frames[i].line;
+    if (line > 0) out.push(line);
+  }
+  return out;
+}
+
+/* ===========================================================================
+   CALL STACK — ĐẨY VÀO / BẬT RA, ĐÚNG HÌNH ẢNH CÁI CHỒNG
+   ===========================================================================
+   Lỗi đang sửa (đo ngày 15/10/2026 bằng Chrome, bước 31 của vết fib): khung
+   vừa bật ra trôi XUỐNG 12px trong 200ms, mà nó lại nằm `absolute top: 0` —
+   đúng chỗ khung trên cùng MỚI vừa chiếm. Đo được hai hàng cách nhau 2,05px,
+   tức hai tên hàm in chồng lên nhau suốt 200ms ("fib dòng 3" đè "fib dòng 4").
+   Thêm nữa, hướng đi ngược với hình ảnh cái chồng: đỉnh ở trên cùng thì bật ra
+   phải đi LÊN.
+
+   Cách sửa, và vì sao nó không thể đè lại được nữa: bóng khung bật ra và các
+   hàng CÒN LẠI dùng CHUNG một thời lượng, CHUNG một đường cong, và đi CÙNG một
+   quãng đường đúng một hàng. Bóng đi từ hàng 0 lên hàng −1; các hàng còn lại đi
+   từ hàng +1 (chỗ cũ của chúng) về hàng 0. Ở MỌI thời điểm, bóng luôn cách
+   hàng trên cùng đúng một hàng — không phải "ít khi chồng", mà là không chồng
+   được. Cả hai con số đó ra từ MỘT lời gọi stackMove() nên không có đường nào
+   để hai bên lệch nhau.
+
+   Đẩy vào thì cùng một lẽ: khung mới rơi xuống từ hàng −1, các hàng cũ cũng
+   trượt xuống một hàng từ hàng −1 về chỗ của chúng.
+   =========================================================================== */
+
+/** Nhịp của một cú đẩy vào / bật ra. Ngắn hơn con trỏ dòng: đây là hệ quả, không phải chủ ngữ. */
+const STACK_MOTION_MS = 180;
+
+export type StackMove = {
+  pushed: number;
+  popped: number;
+  /** Có vẽ bóng của khung vừa rời stack hay không. */
+  ghost: boolean;
+  durationMs: number;
+  easing: string;
+  /** Hàng CÒN LẠI (và khung mới) đi từ đâu về đâu, tính theo SỐ HÀNG. */
+  rowFromRows: number;
+  rowToRows: number;
+  /** Bóng khung vừa bật ra đi từ đâu về đâu — cùng đơn vị, cùng quãng đường. */
+  ghostFromRows: number;
+  ghostToRows: number;
+};
+
+/**
+ * Cả chồng khung dịch thế nào giữa hai bước. `null` = không có gì đổi.
+ *
+ * `reduced` trả null: ở nhánh giảm chuyển động, danh sách khung đã ở đúng chỗ
+ * ngay từ lần vẽ đầu và bóng khung bật ra không được dựng — thông tin ("stack
+ * sâu mấy, đang ở hàm nào") nằm trong chính danh sách, không nằm trong chuyển
+ * động, nên không mất gì.
+ */
+export function stackMove(
+  delta: { pushed: TraceFrame[]; popped: TraceFrame[] },
+  opts: { reduced?: boolean; paceMs?: number } = {},
+): StackMove | null {
+  const pushed = delta.pushed.length;
+  const popped = delta.popped.length;
+  if (opts.reduced || (pushed === 0 && popped === 0)) return null;
+
+  let durationMs = STACK_MOTION_MS;
+  const pace = opts.paceMs;
+  if (pace !== undefined && Number.isFinite(pace) && pace > 0) {
+    durationMs = Math.min(durationMs, Math.max(MOTION_MIN_MS, Math.round(pace * 0.6)));
+  }
+
+  // Bật ra: cả chồng đi LÊN một hàng. Đẩy vào: cả chồng đi XUỐNG một hàng.
+  const up = popped > 0;
+  const from = up ? 1 : -1;
+  return {
+    pushed,
+    popped,
+    ghost: up,
+    durationMs,
+    easing: EASE_OUT,
+    rowFromRows: from,
+    rowToRows: 0,
+    // Bóng luôn đi TRƯỚC hàng trên cùng đúng một hàng, cùng chiều, cùng quãng.
+    ghostFromRows: from - 1,
+    ghostToRows: -1,
+  };
+}
+
+/** Số hàng -> chuỗi transform. `%` là so với CHÍNH hàng đó nên không phải đo gì. */
+export function rowsTransform(rows: number): string {
+  return rows === 0 ? 'none' : `translateY(${rows * 100}%)`;
 }
 
 function motionKind(prev: TraceStep | undefined, next: TraceStep): StepMotionKind {

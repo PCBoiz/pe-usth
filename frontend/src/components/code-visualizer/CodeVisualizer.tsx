@@ -16,7 +16,7 @@
 // Mọi logic quyết định "hiện cái gì" nằm ở frontend/src/lib/trace.ts để test
 // được bằng `node --test` (nó không bóc được JSX).
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { OnMount } from '@monaco-editor/react';
 
@@ -24,13 +24,17 @@ import { apiFetch } from '@/lib/api';
 import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 import {
   AUTOPLAY_INTERVAL_MS,
+  callSiteLines,
   changedNames,
+  cursorPlacement,
   EVENT_LABELS,
   formatValue,
   nextIndex,
   outputAt,
   outputDelta,
+  rowsTransform,
   stackDelta,
+  stackMove,
   stepMotion,
   stopNotice,
   TRACE_COST_NOTE,
@@ -38,44 +42,9 @@ import {
   type TraceResponse,
   type TraceRunInfo,
 } from '@/lib/trace';
+import { usePrefersReducedMotion } from '@/lib/use-reduced-motion';
 
 import styles from './CodeVisualizer.module.css';
-
-/**
- * Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì phải nghe.
- *
- * Phần hiệu ứng bằng CSS tự tắt nhờ @media (prefers-reduced-motion) trong file
- * .module.css. Hàm này là cho phần quyết định bằng JS: `stepMotion` (lib/trace.ts)
- * chọn thời lượng và easing theo loại bước, và media query không với tới một
- * nhánh if trong JS. (File này ĐÃ KHÔNG còn dùng Web Animations API — chú thích
- * cũ nói vậy là sai: nhịp nay truyền xuống CSS bằng tên lớp, xem `nhipLop`.)
- */
-function prefersReducedMotion(): boolean {
-  return (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  );
-}
-
-/**
- * Lớp CSS mang nhịp của cú nhảy, thay cho việc ghi biến `--pe-step-ms` lên nút
- * gốc Monaco ở mỗi bước.
- *
- * Vì sao đổi: ghi một custom property lên nút gốc làm trình duyệt tính lại
- * style cho CẢ cây Monaco. Đo được khi giữ phím → (200 bước, CPU chậm 4×): đặt
- * ở nút gốc cho 18–20 khung hình dài và 719–808 ms style+layout; đặt bằng lớp
- * cục bộ chỉ còn 8–13 khung dài và 207–439 ms. Người học bước nhanh là thấy
- * khác biệt đó.
- *
- * Chia thành vài mức thay vì truyền số chính xác: mắt không phân biệt nổi
- * 124 ms với 131 ms, mà mỗi giá trị rời rạc lại phải là một lớp CSS tĩnh.
- */
-function nhipLop(motion: { durationMs: number; travel: boolean }): string {
-  if (motion.durationMs <= 70) return styles.stepInstant;
-  if (motion.travel) return styles.monacoLineTravel;
-  return motion.durationMs <= 150 ? styles.stepNear : styles.stepFar;
-}
 
 type MountArgs = Parameters<OnMount>;
 /** Đúng hai thứ `onMount` của Monaco đưa cho IdeClient; không nhận thêm gì. */
@@ -129,6 +98,22 @@ export default function CodeVisualizer({
   const panelRef = useRef<HTMLDivElement | null>(null);
   /** Lần đổi bước gần nhất (performance.now) — để đo nhịp bấm thật của người dùng. */
   const lastMoveRef = useRef<number | null>(null);
+  // Một chỗ duy nhất đọc prefers-reduced-motion cho cả repo (lib/use-reduced-motion.ts).
+  // Theo dõi được cả lúc người dùng đổi tuỳ chọn GIỮA phiên, nên không có trạng
+  // thái bị đóng băng sai như khi đọc matchMedia đúng một lần.
+  const reduced = usePrefersReducedMotion();
+  /** Lớp phủ con trỏ dòng, nằm NGOÀI vòng vẽ của Monaco (xem effect bên dưới). */
+  const layerRef = useRef<HTMLDivElement | null>(null);
+  const cursorRef = useRef<HTMLDivElement | null>(null);
+  const sitesRef = useRef<HTMLDivElement[]>([]);
+  const decorationsRef = useRef<ReturnType<MountArgs[0]['createDecorationsCollection']> | null>(
+    null,
+  );
+  const stackRef = useRef<HTMLOListElement | null>(null);
+  /** Đặt lại con trỏ sau khi Monaco cuộn — do effect theo bước nạp vào. */
+  const replaceCursorRef = useRef<((animated: boolean) => void) | null>(null);
+  /** Con trỏ còn đang trên đường tới mốc này (performance.now). */
+  const movingUntilRef = useRef(0);
 
   const doc = state.status === 'ready' ? state.doc : null;
   // useMemo (không phải `doc?.steps ?? []`): mảng rỗng mới mỗi lần render làm
@@ -237,40 +222,170 @@ export default function CodeVisualizer({
   // Rời trang giữa chừng thì huỷ request đang treo (container tự hết giờ ở máy chủ).
   useEffect(() => () => abortRef.current?.abort(), []);
 
-  // Tô dòng đang chạy trong Monaco. Dọn sạch khi đổi bước/đóng panel, nếu không
-  // các decoration cũ cộng dồn và cả file sáng lên.
+  /* =======================================================================
+     CON TRỎ DÒNG CÓ ĐƯỜNG ĐI
+     =======================================================================
+     Lỗi đang sửa (rà soát chuyển động 14/10/2026, mục A6): dòng đang chạy chỉ
+     HIỆN DẦN tại chỗ mới. Mắt không thấy nó đi TỪ ĐÂU tới ĐÂU, nên bước vào
+     hàm, bước trả về và bước nhảy xa trông y hệt bước xuống dòng kế tiếp — vết
+     đã phân loại sẵn bốn thứ đó (stepMotion) mà không có gì truyền tới mắt
+     người học. Đó là lý do chính khiến bộ xem bị kêu là "chưa đủ động".
+
+     Cách sửa: một lớp phủ nằm NGOÀI vòng vẽ của Monaco. Con trỏ ĐI tới dòng
+     mới bằng translateY, đúng thời lượng và đường cong mà stepMotion trả về
+     (xem cursorPlacement trong lib/trace.ts — đó là chỗ duy nhất nhịp đi tới
+     DOM, và nó test được). Mỗi khung stack chưa chạy xong để lại một dấu mờ ở
+     dòng gọi của nó: đó chính là địa chỉ trả về, và nó tự mất khi hàm trả về.
+
+     Vì sao lớp phủ chứ không phải decoration của Monaco: decoration chỉ nhận
+     className, nên nhịp phải dịch sang một trong bốn lớp CSS tĩnh — "call
+     220ms" và "jump 199ms" rơi vào cùng một lớp, tức toàn bộ việc phân loại
+     rơi mất ở đúng bước cuối. Lớp phủ còn miễn nhiễm với chuyện Monaco vẽ lại
+     overlay lúc cuộn/gõ (mục A8), vì nó không nằm trong vòng render đó.
+
+     Vì sao ghi thẳng vào `el.style` chứ không qua `style={{…}}` của React:
+     (1) nó KHÔNG thêm nợ cho việc bỏ `style-src 'unsafe-inline'` — CSP chỉ
+     chặn thuộc tính style trong MÃ NGUỒN (và setAttribute('style', …)), không
+     chặn CSSOM; (2) ghi qua state thì mỗi khung hình là một lần render React.
+     ======================================================================= */
+
+  /** Lớp phủ + con trỏ, dựng một lần rồi dùng lại. `null` = không dựng được. */
+  const ensureLayer = useCallback((editor: MountArgs[0]): HTMLDivElement | null => {
+    if (layerRef.current) return layerRef.current;
+    const root = editor.getDomNode();
+    // `.overflow-guard` là hộp CẮT của Monaco: đúng cỡ khung nhìn và KHÔNG bị
+    // cuộn theo nội dung. Chèn ngay trước vùng cuộn thì lớp phủ nằm trên nền
+    // gutter nhưng DƯỚI chữ, đúng chỗ của một dấu tô dòng.
+    const guard = root?.querySelector('.overflow-guard');
+    const scroll = guard?.querySelector('.monaco-scrollable-element');
+    // Không tìm được (Monaco đổi cấu trúc DOM ở bản sau): thôi, không dựng gì.
+    // Dòng vẫn được tô bằng decoration, tức trạng thái nghỉ vẫn đầy đủ — mọi
+    // đường hỏng ra cùng một kết quả an toàn.
+    if (!guard || !scroll) return null;
+    const layer = document.createElement('div');
+    layer.className = styles.cursorLayer;
+    layer.setAttribute('aria-hidden', 'true');
+    const cursor = document.createElement('div');
+    cursor.className = styles.lineCursor;
+    layer.appendChild(cursor);
+    guard.insertBefore(layer, scroll);
+    layerRef.current = layer;
+    cursorRef.current = cursor;
+    return layer;
+  }, []);
+
+  // Gỡ lớp phủ + dấu tô khi panel rời khỏi trang: cả hai nằm trong DOM của
+  // Monaco, mà Monaco sống lâu hơn component này.
+  useEffect(
+    () => () => {
+      layerRef.current?.remove();
+      layerRef.current = null;
+      cursorRef.current = null;
+      sitesRef.current = [];
+      decorationsRef.current?.clear();
+      decorationsRef.current = null;
+    },
+    [],
+  );
+
+  // Monaco cuộn (người dùng kéo, hoặc revealLine lúc bước ra ngoài khung nhìn):
+  // toạ độ dòng tính từ đỉnh khung nhìn đã đổi nên phải đặt lại. Trong lúc con
+  // trỏ còn đang đi thì GIỮ transition — transition tự nhắm lại đích mới từ chỗ
+  // nó đang đứng; xong rồi thì đặt tức thì, để kéo thanh cuộn không kéo theo
+  // một con trỏ trễ 200ms.
   useEffect(() => {
     const handle = editorRef?.current;
-    if (!handle || !step) return;
-    const { editor, monaco } = handle;
+    if (!handle || !doc) return;
+    const sub = handle.editor.onDidScrollChange(() => {
+      replaceCursorRef.current?.(performance.now() < movingUntilRef.current);
+    });
+    return () => sub.dispose();
+  }, [editorRef, doc]);
 
-    // Nhịp của cú nhảy đi theo CÙNG luật đã có: xuống dòng kế tiếp là một kiểu,
-    // vào hàm / trả về / quay đầu vòng lặp là kiểu khác (xem stepMotion trong
-    // lib/trace.ts, phân loại theo ĐỘ SÂU call stack chứ không theo tên sự
-    // kiện). Trước đây luật này điều khiển con trỏ trượt trong khung mã riêng;
-    // khung đó đã bỏ, nên nay nó điều khiển hiệu ứng của chính dòng tô trong
-    // Monaco — truyền xuống CSS bằng biến, vì decoration chỉ nhận className.
+  // Tô dòng đang chạy trong Monaco + đưa con trỏ tới đó. Dọn sạch khi đóng
+  // panel, nếu không các decoration cũ cộng dồn và cả file sáng lên.
+  useEffect(() => {
+    const handle = editorRef?.current;
+    if (!handle) return;
+    const { editor, monaco } = handle;
+    if (!step) {
+      // Vết mới / không có bước nào: không để lại dấu tô lẫn con trỏ của vết cũ
+      // đứng trên một đoạn mã nay đã khác.
+      decorationsRef.current?.clear();
+      layerRef.current?.remove();
+      layerRef.current = null;
+      cursorRef.current = null;
+      sitesRef.current = [];
+      return;
+    }
+
     const now = performance.now();
     const last = lastMoveRef.current;
     lastMoveRef.current = now;
     const motion = stepMotion(steps[index - 1], step, {
-      reduced: prefersReducedMotion(),
+      reduced,
       paceMs: last === null ? undefined : now - last,
     });
 
-    const collection = editor.createDecorationsCollection([
+    // MỘT bộ decoration dùng lại, không dựng mới rồi xoá ở MỖI bước: dựng mới
+    // bắt Monaco tháo/lắp lại lớp overlay mỗi lần bấm, mà người học giữ phím →
+    // là bấm hàng trăm lần.
+    const collection
+      = decorationsRef.current ?? (decorationsRef.current = editor.createDecorationsCollection([]));
+    collection.set([
       {
         range: new monaco.Range(step.line, 1, step.line, 1),
         options: {
           isWholeLine: true,
-          className: `${styles.monacoLine} ${nhipLop(motion)}`,
+          className: styles.monacoLine,
           glyphMarginClassName: styles.monacoGlyph,
         },
       },
     ]);
     editor.revealLineInCenterIfOutsideViewport(step.line);
-    return () => collection.clear();
-  }, [editorRef, step, steps, index]);
+
+    const layer = ensureLayer(editor);
+    if (!layer) return;
+    const cursor = cursorRef.current;
+    const lineHeight = editor.getOption(monaco.editor.EditorOption.lineHeight);
+    const sites = callSiteLines(step);
+
+    // Số dấu chỗ gọi đổi theo độ sâu stack; giữ một rổ và chỉ thêm/bớt phần
+    // chênh, để bước nào cũng không phải dựng lại cả cụm.
+    const pool = sitesRef.current;
+    while (pool.length < sites.length) {
+      const mark = document.createElement('div');
+      mark.className = styles.callSite;
+      layer.appendChild(mark);
+      pool.push(mark);
+    }
+    while (pool.length > sites.length) pool.pop()?.remove();
+
+    const place = (animated: boolean) => {
+      const scrollTop = editor.getScrollTop();
+      const where = cursorPlacement(step, motion, {
+        topForLine: editor.getTopForLineNumber(step.line) - scrollTop,
+        lineHeight,
+      });
+      if (cursor) {
+        cursor.style.height = `${where.heightPx}px`;
+        cursor.style.transition = animated ? where.transition : 'none';
+        cursor.style.transform = `translate3d(${where.indentPx}px, ${where.topPx}px, 0)`;
+        cursor.dataset.cvStyle = where.cursorStyle;
+      }
+      // Dấu chỗ gọi không chuyển động: chúng là chú thích tĩnh trên mã, và
+      // bảng motion-v2 nói rõ "chữ và nhãn đứng yên, chỉ dấu nhấn di chuyển".
+      sites.forEach((line, i) => {
+        const mark = pool[i];
+        mark.style.height = `${lineHeight}px`;
+        mark.style.transform = `translate3d(0px, ${editor.getTopForLineNumber(line) - scrollTop}px, 0)`;
+      });
+    };
+
+    movingUntilRef.current = now + motion.durationMs;
+    replaceCursorRef.current = place;
+    place(motion.durationMs > 0);
+  }, [editorRef, step, steps, index, reduced, ensureLayer]);
 
   const total = steps.length;
   const atEnd = index >= total - 1;
@@ -319,6 +434,65 @@ export default function CodeVisualizer({
     () => (step ? stackDelta(steps[index - 1], step) : { pushed: [], popped: [] }),
     [step, steps, index],
   );
+  /* =======================================================================
+     CHỒNG KHUNG — ĐẨY VÀO RƠI TỪ TRÊN, BẬT RA BAY LÊN TRÊN
+     =======================================================================
+     Lỗi đang sửa (mục A5 của bản rà soát, đo lại ngày 15/10/2026): bóng khung
+     vừa bật ra trôi XUỐNG trong khi nó nằm `absolute top: 0` — đúng chỗ khung
+     trên cùng MỚI vừa chiếm. Đo được hai hàng cách nhau 2,05px: "fib dòng 3"
+     in chồng lên "fib dòng 4" suốt 200ms. Và hướng đi ngược với hình ảnh cái
+     chồng: đỉnh ở trên cùng thì bật ra phải đi LÊN.
+
+     Luật mới nằm trong stackMove() (lib/trace.ts) và lý do nó KHÔNG đè lại
+     được nữa viết ở đó: bóng và các hàng còn lại dùng chung một thời lượng,
+     một đường cong, một quãng đường, và bóng luôn đi trước đúng một hàng.
+
+     Vì sao WAAPI chứ không keyframe CSS như bản cũ: hai cú đẩy vào liên tiếp
+     (f() gọi g() ngay) không đổi tên lớp nên animation CSS KHÔNG chạy lại —
+     cú thứ hai im lặng. `el.animate()` chạy lại mọi lần, và vẫn là transform +
+     opacity nên vẫn ở trên compositor. Quãng đường là `translateY(±100%)`:
+     phần trăm tính theo chính hàng đó nên không phải đo gì (không có forced
+     layout trong vòng vẽ).
+     ======================================================================= */
+  useLayoutEffect(() => {
+    const ol = stackRef.current;
+    if (!ol) return;
+    // Đọc (không ghi) mốc của bước TRƯỚC: layout effect chạy trước passive
+    // effect của con trỏ dòng, nên ở đây lastMoveRef còn là bước trước.
+    const last = lastMoveRef.current;
+    const move = stackMove(stack, {
+      reduced,
+      paceMs: last === null ? undefined : performance.now() - last,
+    });
+    if (!move) return;
+
+    const opts = { duration: move.durationMs, easing: move.easing, fill: 'backwards' as const };
+    for (const row of ol.querySelectorAll<HTMLElement>('[data-cv-row]')) {
+      if (typeof row.animate !== 'function') return;
+      const frames: Keyframe[] = [
+        { transform: rowsTransform(move.rowFromRows) },
+        { transform: rowsTransform(move.rowToRows) },
+      ];
+      // Khung MỚI vừa được đẩy vào: trôi cùng cả chồng, nhưng còn hiện dần ra
+      // để phân biệt "cái vừa thêm" với "cái chỉ dịch chỗ".
+      if (row.dataset.cvRow === 'new') {
+        frames[0].opacity = '0';
+        frames[1].opacity = '1';
+      }
+      row.animate(frames, opts);
+    }
+    const ghost = ol.querySelector<HTMLElement>('[data-cv-ghost]');
+    if (ghost && move.ghost && typeof ghost.animate === 'function') {
+      ghost.animate(
+        [
+          { opacity: '1', transform: rowsTransform(move.ghostFromRows) },
+          { opacity: '0', transform: rowsTransform(move.ghostToRows) },
+        ],
+        opts,
+      );
+    }
+  }, [stack, reduced]);
+
   const output = doc ? outputAt(doc, index) : { stdout: '', stderr: '' };
   const printed = doc ? outputDelta(doc, index) : { seen: '', fresh: '' };
   const notice = doc ? stopNotice(doc) : null;
@@ -546,15 +720,18 @@ export default function CodeVisualizer({
                     đoạn mã họ vừa gõ, ở đúng chỗ họ đang gõ. */}
                 <div className={styles.sidePane}>
                   <h3 className={styles.paneTitle}>Call stack</h3>
-                  <ol className={styles.stack}>
+                  <ol className={styles.stack} ref={stackRef}>
                     {/* Bóng của khung VỪA BẬT RA: nó đã không còn trong bước
                         này nên phải lấy từ bước trước (stackDelta). Nằm ngoài
-                        luồng (position: absolute) để lúc nó trôi xuống thì
-                        danh sách bên dưới không bị đẩy đi đâu. Khoá theo
-                        `index` để bước nào cũng diễn lại từ đầu. */}
+                        luồng (position: absolute) để nó không chiếm chỗ của ai,
+                        và ở trạng thái NGHỈ nó vô hình — nên mọi đường hỏng
+                        (không có WAAPI, JS chết giữa chừng, giảm chuyển động)
+                        đều ra cùng một kết quả: không có gì đè lên khung trên
+                        cùng. Khoá theo `index` để bước nào cũng diễn lại. */}
                     {stack.popped.map((f, i) => (
                       <li
                         key={`pop-${index}-${i}`}
+                        data-cv-ghost=""
                         className={`${styles.frame} ${styles.frameTop} ${styles.framePopped}`}
                         aria-hidden="true"
                       >
@@ -563,7 +740,7 @@ export default function CodeVisualizer({
                       </li>
                     ))}
                     {step?.framesElided ? (
-                      <li className={styles.stackElided}>
+                      <li className={styles.stackElided} data-cv-row="">
                         … bỏ {step.framesElided.toLocaleString('vi-VN')} khung ở giữa (đệ quy sâu)
                       </li>
                     ) : null}
@@ -579,11 +756,10 @@ export default function CodeVisualizer({
                             // stack dày thêm, nên chỉ khung MỚI mới chạy hiệu
                             // ứng đẩy vào.
                             key={`${step.frames.length - 1 - i}-${f.name}`}
-                            className={[
-                              styles.frame,
-                              i === 0 ? styles.frameTop : '',
-                              pushed ? styles.framePushed : '',
-                            ]
+                            // Cả chồng trượt CÙNG một quãng; chỉ khung mới
+                            // được đánh dấu riêng để nó còn hiện dần ra.
+                            data-cv-row={pushed ? 'new' : ''}
+                            className={[styles.frame, i === 0 ? styles.frameTop : '']
                               .filter(Boolean)
                               .join(' ')}
                           >
