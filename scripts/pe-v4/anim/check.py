@@ -7,16 +7,23 @@ nên một hình dùng `<script>`, webfont hay `<image href="https://…">` sẽ
 khi mở trực tiếp bằng trình duyệt mà HỎNG trong bài học. Checker này bắt đúng nhóm
 lỗi đó, cộng các quy ước của CONTRACT-THEORY.md.
 
+Checker này cũng đếm số hình THỰC SỰ được bài tham chiếu (đọc out/lessons.json).
+Vì sao: "23/23 hình PASS" từng che mất việc chỉ 20 hình được nối vào bài — ba hình
+(P01-process-tree, P02-fork-exec-wait, P03-round-robin) vẽ xong, kiểm đạt, mà không
+bài nào khai nên không bao giờ lên màn hình.
+
 Chạy:
     py scripts/pe-v4/anim/check.py                  # kiểm mọi hình
     py scripts/pe-v4/anim/check.py P02-lifecycle    # kiểm một/vài hình (tên hoặc đường dẫn)
     py scripts/pe-v4/anim/check.py --quiet          # chỉ in hình FAIL
+    py scripts/pe-v4/anim/check.py --strict         # hình không bài nào dùng cũng là lỗi
 
 Trả 0 khi tất cả PASS, 1 khi có hình FAIL (hoặc không tìm thấy hình nào).
 """
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import sys
 import xml.etree.ElementTree as ET
@@ -25,6 +32,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent
 ANIM_DIR = ROOT / 'frontend' / 'public' / 'static' / 'anim'
+LESSONS_JSON = HERE.parent / 'out' / 'lessons.json'
 
 SVG_NS = 'http://www.w3.org/2000/svg'
 XLINK_NS = 'http://www.w3.org/1999/xlink'
@@ -46,6 +54,29 @@ FONT_ATTR_RE = re.compile(r'''font-family\s*=\s*(["'])(.*?)\1''', re.S)
 FONT_CSS_RE = re.compile(r'font-family\s*:\s*([^;}<>]+)')
 URL_RE = re.compile(r'url\(\s*["\']?([^)"\']+)')
 REDUCED_MOTION_RE = re.compile(r'@media[^{]*prefers-reduced-motion\s*:\s*reduce')
+
+
+def referenced_names() -> set[str] | None:
+    """Tên hình mà bài học thực sự trỏ tới, lấy từ bản dựng out/lessons.json.
+
+    Trả None khi chưa dựng (không có file) — khi đó chỉ bỏ qua phần đếm, không báo lỗi:
+    người vẽ hình chạy checker này trước khi bài được dựng lại là chuyện thường.
+    """
+    if not LESSONS_JSON.exists():
+        return None
+    data = json.loads(LESSONS_JSON.read_text(encoding='utf-8'))
+    names = set()
+
+    def add(src):
+        if isinstance(src, str) and src.endswith('.svg'):
+            names.add(src.rsplit('/', 1)[-1][:-4])
+
+    for row in data.get('lessons') or []:
+        one = (row.get('content_json') or {}).get('step_1') or {}
+        add((one.get('figure') or {}).get('src'))
+        for block in one.get('theory') or []:
+            add((block.get('figure') or {}).get('src'))
+    return names
 
 
 def local_name(tag: str) -> str:
@@ -136,6 +167,8 @@ def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
     ap.add_argument('names', nargs='*', help='Tên hình (P02-lifecycle) hoặc đường dẫn .svg; bỏ trống = tất cả.')
     ap.add_argument('--quiet', '-q', action='store_true', help='Chỉ in hình FAIL.')
+    ap.add_argument('--strict', action='store_true',
+                    help='Coi hình không bài nào tham chiếu là lỗi (dùng trước khi deploy).')
     args = ap.parse_args(argv)
     for stream in (sys.stdout, sys.stderr):
         try:
@@ -172,6 +205,20 @@ def main(argv=None) -> int:
         elif not args.quiet:
             print(f'PASS {path.name}  ({path.stat().st_size / 1024:.0f} KB)')
     print(f'{len(paths) - failed}/{len(paths)} hình PASS' + (f', {failed} FAIL' if failed else ''))
+
+    # Hình đạt mọi quy ước vẫn có thể vô dụng nếu không bài nào trỏ tới nó. In số hình
+    # ĐƯỢC DÙNG ngay cạnh số hình PASS để không ai đọc "23/23 PASS" thành "23 hình lên bài".
+    used = referenced_names()
+    if used is None:
+        print(f'(chưa có {LESSONS_JSON.relative_to(ROOT)} — không đếm được hình nào được bài dùng)')
+    else:
+        names = {path.stem for path in paths}
+        orphan = sorted(names - used)
+        print(f'{len(names) - len(orphan)}/{len(names)} hình được bài tham chiếu'
+              + (f', {len(orphan)} chưa bài nào dùng: {", ".join(orphan)}' if orphan else ''))
+        if orphan and args.strict:
+            print('FAIL: --strict coi hình chưa bài nào dùng là lỗi (khai figure=… ở một khối theory).')
+            failed += 1
     return 1 if failed else 0
 
 

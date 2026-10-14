@@ -11,7 +11,9 @@ Cùng khuôn với scripts/pe-v3/build.py (bản đó giữ nguyên cho khoá c�
 * Cửa tự kiểm tra (Boss) lấy từ chính dict bài (`gate=True`, `exam='…'`), không
   còn bảng mã cứng như GATE_EXAM của pe-v3.
 * Bài M1–M3 có thể khai thêm `theory=[...]` (3–5 khối nền: định nghĩa, ví dụ,
-  ứng dụng, đọc sơ đồ), `figure=dict(name=…, caption=…, alt=…)` và `slides='SL 15-16'`
+  ứng dụng, đọc sơ đồ), `figure=dict(name=…, caption=…, alt=…)` (hoặc một LIST tối đa
+  hai hình, phần tử đầu là hình chính — mỗi hình phải có một khối theory khai
+  `figure='<tên>'`) và `slides='SL 15-16'`
   — xem CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
   content_json.source.slides. Hình SVG nằm ở frontend/public/static/anim/<name>.svg;
   thiếu file chỉ là CẢNH BÁO (tác giả nội dung không phải chờ agent vẽ hình), trừ khi
@@ -105,6 +107,11 @@ THEORY_H_MAX = 40
 THEORY_BODY_MAX = 400
 THEORY_BULLETS_MAX = 5
 THEORY_BULLET_MAX = 160
+# Mỗi bài khai 1 hoặc 2 hình: `figure=dict(...)` hoặc `figure=[dict(...), dict(...)]`.
+# Vì sao cho 2: P01/P02/P03 có hình thứ hai đã vẽ xong (cây process, fork-exec-wait,
+# round robin) mà schema một-hình giữ chúng ngoài bài — hình vẽ rồi không ai thấy.
+# Vì sao không cho nhiều hơn: màn `theory` là MỘT thẻ, thêm hình nữa là lại cuộn dài.
+FIGURES_MAX = 2
 FIGURE_CAPTION_MAX = 90
 FIGURE_ALT_MAX = 200
 ANIM_DIR = ROOT / 'frontend' / 'public' / 'static' / 'anim'
@@ -317,6 +324,21 @@ def figure_block(code, raw, warnings, strict_figures):
     return {'name': name, 'src': f'{ANIM_URL}/{name}.svg', 'caption': caption, 'alt': alt}
 
 
+def figure_list(code, raw, warnings, strict_figures):
+    """`figure` của bài → danh sách hình đã chuẩn hoá; phần tử ĐẦU là hình CHÍNH.
+
+    Hình chính là hình đi vào `step_1.figure`: màn `explain` và sổ tay dùng nó khi bài
+    không có màn lý thuyết. Các hình sau chỉ hiện ở khối `theory` mang tên chúng.
+    """
+    raws = list(raw) if isinstance(raw, (list, tuple)) else [raw]
+    check(1 <= len(raws) <= FIGURES_MAX, code,
+          f'bài khai {len(raws)} hình, phải 1–{FIGURES_MAX} (figure=dict(...) hoặc figure=[dict(...), ...])')
+    figures = [figure_block(code, r, warnings, strict_figures) for r in raws]
+    names = [f['name'] for f in figures]
+    check(len(set(names)) == len(names), code, f'figure khai trùng tên: {names}')
+    return figures
+
+
 def theory_blocks(code, spec, warnings, strict_figures):
     """(danh sách khối lý thuyết, hình chính) — cả hai là None nếu bài không khai.
 
@@ -333,9 +355,11 @@ def theory_blocks(code, spec, warnings, strict_figures):
     check(THEORY_MIN_BLOCKS <= len(raw_theory) <= THEORY_MAX_BLOCKS, code,
           f'theory có {len(raw_theory)} khối, phải {THEORY_MIN_BLOCKS}–{THEORY_MAX_BLOCKS}')
     check(raw_figure is not None, code, 'có theory thì phải khai figure (một khối phải giải thích hình)')
-    figure = figure_block(code, raw_figure, warnings, strict_figures)
+    figures = figure_list(code, raw_figure, warnings, strict_figures)
+    figure = figures[0]
+    by_name = {f['name']: f for f in figures}
 
-    blocks, with_figure = [], []
+    blocks, carried = [], {}
     for i, raw in enumerate(raw_theory, start=1):
         at = f'theory[{i}]'
         check(isinstance(raw, dict), code, f'{at} phải là dict')
@@ -363,13 +387,19 @@ def theory_blocks(code, spec, warnings, strict_figures):
         check(body or bullets, code, f'{at} phải có body hoặc bullets (hoặc cả hai)')
         block = {'title': h, 'body': body or None, 'bullets': bullets or None, 'figure': None}
         if raw.get('figure'):
-            check(str(raw['figure']) == figure['name'], code,
-                  f'{at}.figure={raw["figure"]!r} khác figure.name={figure["name"]!r}')
-            block['figure'] = {k: figure[k] for k in ('src', 'caption', 'alt')}
-            with_figure.append(at)
+            name = str(raw['figure'])
+            check(name in by_name, code,
+                  f'{at}.figure={name!r} không nằm trong figure của bài ({", ".join(by_name)})')
+            check(name not in carried, code,
+                  f'{at}.figure={name!r} đã được {carried.get(name)} mang — mỗi hình hiện ở MỘT khối')
+            carried[name] = at
+            block['figure'] = {k: by_name[name][k] for k in ('src', 'caption', 'alt')}
         blocks.append(block)
-    check(len(with_figure) == 1, code,
-          f'đúng MỘT khối theory được mang figure, đang có {len(with_figure)} ({", ".join(with_figure) or "không khối nào"})')
+    # Hình khai mà không khối nào mang là hình KHÔNG BAO GIỜ lên màn hình: đó đúng là
+    # cách P01/P02/P03 từng mất hình thứ hai (vẽ xong, không bài nào nối vào).
+    orphan = [name for name in by_name if name not in carried]
+    check(not orphan, code,
+          f'hình khai mà không khối theory nào mang: {", ".join(orphan)} — thêm figure="<tên>" vào một khối')
     return blocks, figure
 
 
@@ -629,9 +659,14 @@ def run_checks(qa_rows: list[dict], jobs: int, timeout: float, verbose: bool) ->
             for line in lines:
                 print('  ' + line)
             problems += found
-    variants = sum(len(q['bad']) + 1 for q in qa_rows)
+    # Hai số, không phải một: mỗi bài có N biến thể sai CỘNG một khung trống (starter),
+    # nên tổng "bản phải trượt" luôn lớn hơn số biến thể sai đúng bằng số bài. Trước đây
+    # dòng này in tổng còn dòng tổng kết in số biến thể — đọc nhanh tưởng bản dựng lệch.
+    bads = sum(len(q['bad']) for q in qa_rows)
+    variants = bads + len(qa_rows)
     cases = sum(len(q['tests']) for q in qa_rows)
-    print(f'Chấm thử (CPython qua studio-harness.py): {len(qa_rows)} bài, {cases} ca, {variants} biến thể sai/khung trống '
+    print(f'Chấm thử (CPython qua studio-harness.py): {len(qa_rows)} bài, {cases} ca, '
+          f'{bads} biến thể sai + {len(qa_rows)} khung trống = {variants} bản phải trượt '
           f'— {time.monotonic() - started:.1f}s.')
     return problems
 
@@ -732,7 +767,8 @@ def main(argv=None) -> int:
     bad = sum(len(q['bad']) for q in qa_rows)
     ok = not errors and not problems
     mark = '✓' if ok else '✗'
-    print(f'{mark} {len(rows)} bài dựng được, {tests} ca chấm, {bad} biến thể sai'
+    print(f'{mark} {len(rows)} bài dựng được, {tests} ca chấm, {bad} biến thể sai '
+          f'+ {len(qa_rows)} khung trống'
           + (' — ghi vào scripts/pe-v4/out/' if write and rows else ' (không ghi out/)'))
     return 0 if ok else 1
 

@@ -47,7 +47,12 @@
         },
         {
           "title": "Ví dụ: cây process trên máy thật",
-          "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program."
+          "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program.",
+          "figure": {
+            "src": "/static/anim/P01-process-tree.svg",
+            "caption": "Cây process: PPID của con luôn bằng PID của cha, init là gốc",
+            "alt": "Cây process từ init PID 1 xuống cron, bash, python3 app.py và ls -l do subprocess tạo; mỗi hộp ghi PID và PPID, kèm kết xuất pstree và bảng ps"
+          }
         },
         {
           "title": "Dùng ở đâu",

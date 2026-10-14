@@ -50,7 +50,12 @@
             },
             {
               "title": "Ví dụ: cây process trên máy thật",
-              "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program."
+              "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program.",
+              "figure": {
+                "src": "/static/anim/P01-process-tree.svg",
+                "caption": "Cây process: PPID của con luôn bằng PID của cha, init là gốc",
+                "alt": "Cây process từ init PID 1 xuống cron, bash, python3 app.py và ls -l do subprocess tạo; mỗi hộp ghi PID và PPID, kèm kết xuất pstree và bảng ps"
+              }
             },
             {
               "title": "Dùng ở đâu",
@@ -578,7 +583,12 @@
             },
             {
               "title": "Ví dụ: fork rồi exec trên UNIX",
-              "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả."
+              "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả.",
+              "figure": {
+                "src": "/static/anim/P02-fork-exec-wait.svg",
+                "caption": "fork nhân bản, exec thay chương trình, exit rồi wait thu mã thoát",
+                "alt": "Hai làn cha và con: fork() tách nhánh (cha nhận PID con, con nhận 0), con exec() rồi exit(0), mã thoát đi ngược lên lời gọi wait() của cha"
+              }
             },
             {
               "title": "Dùng ở đâu",
@@ -1099,7 +1109,12 @@
             },
             {
               "title": "Ví dụ: ba hàng đợi",
-              "body": "Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không preempt; SRTF và Round Robin có."
+              "body": "Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không preempt; SRTF và Round Robin có.",
+              "figure": {
+                "src": "/static/anim/P03-round-robin.svg",
+                "caption": "Round Robin quantum 2: hết lượt chưa xong thì xếp lại cuối hàng ready",
+                "alt": "Hàng đợi ready P1, P2, P3 và ô CPU một lõi; trục thời gian 0–10 chia sáu lát theo thứ tự P1, P2, P3, P1, P2, P1, vạch đậm nơi từng process chạy xong"
+              }
             },
             {
               "title": "Dùng ở đâu",
@@ -6637,7 +6652,7 @@
               "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
             },
             {
-              "title": "Bốn phần của một app Tkinter",
+              "title": "Một app Tkinter gồm những gì",
               "bullets": [
                 "Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
                 "Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()",

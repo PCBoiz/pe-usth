@@ -41,7 +41,7 @@
           "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
         },
         {
-          "title": "Bốn phần của một app Tkinter",
+          "title": "Một app Tkinter gồm những gì",
           "bullets": [
             "Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ",
             "Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()",

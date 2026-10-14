@@ -570,8 +570,12 @@ def theory_flowables(ls: Lesson, styles, avail):
         for bullet in block.get("bullets") or []:
             f.append(Paragraph("• %s" % esc(bullet), styles["bullet"], bulletText=""))
         if block.get("figure"):
-            f.extend(figure_flowables({**block["figure"], "name": figure.get("name")}, styles, avail))
-            shown = True
+            # KHÔNG áp tên hình chính lên hình của khối: từ khi một bài khai được hai hình
+            # (P01/P02/P03), khối "Ví dụ" mang hình khác hình chính — áp tên vào là in sai
+            # ảnh PNG. figure_flowables tự suy tên từ `src` khi khối không mang `name`.
+            f.extend(figure_flowables(block["figure"], styles, avail))
+            # `shown` = đã in hình CHÍNH rồi. So bằng src vì khối có thể mang hình thứ hai.
+            shown = shown or block["figure"].get("src") == figure.get("src")
     if figure and not shown:
         f.extend(figure_flowables(figure, styles, avail))
 

@@ -15,26 +15,31 @@ npm run start:dev          # cổng 5000
 cd frontend && npm run typecheck && npm run lint && npm run build
 cd frontend && npm run dev # cổng 3000
 
-# Giáo trình Python
-py scripts/pe-v3/build.py              # dựng lại 40 bài -> scripts/pe-v3/out/
+# Giáo trình Python (khoá đang chạy: Advanced Python, 48 bài — pe-v4)
+py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
+py scripts/pe-v4/build_advanced.py     # sinh mini-game -> scripts/pe-v4/out-advanced/
+py scripts/pe-v4/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
+node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
+py scripts/pe-v4/anim/check.py         # kiểm 23 hình SVG + đếm hình được bài dùng
 npm i --no-save pyodide@0.27.7         # cần cho bước dưới
-node scripts/pe-v3/check-pyodide.mjs   # chấm thử 233 ca bằng chính bộ chấm của trình duyệt
+node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ chấm của trình duyệt
 ```
 
 Trên Windows dùng `py`, không dùng `python` — `python` là stub của Microsoft Store.
 
 ## Mốc nền
 
-Đo ngày 12/10/2026. Đừng để tụt xuống dưới mức này:
+Đo ngày 14/10/2026. Đừng để tụt xuống dưới mức này:
 
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 23 bộ, 164 ca, tất cả đạt |
-| Backend lint | 527 lỗi — **mốc trần trong CI là 600, chỉ được hạ** |
+| Backend test | 33 bộ, 294 ca, tất cả đạt |
+| Backend lint | 551 lỗi — **mốc trần trong CI là 600, chỉ được hạ** |
 | Frontend typecheck | sạch |
-| Frontend lint | 0 lỗi, ~180 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → 32 ca đạt |
+| Frontend lint | 0 lỗi, ~178 cảnh báo |
+| Frontend unit test | `cd frontend && npm run test:unit` → 115 ca đạt |
+| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 
 ## Ràng buộc không được phá
 
@@ -55,7 +60,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   khẳng định "không bao giờ lộ đáp án" bằng fixture `options: ['a','b']`, trong khi dữ liệu
   thật là mảng object mang cờ `correct` — lỗ lộ đáp án sống sót qua mọi lần chạy test. Khi
   viết test cho dữ liệu đọc từ `content_json`, lấy hình dạng thật từ
-  `scripts/pe-v3/out/lessons/*.json`.
+  `scripts/pe-v4/out-advanced/lessons/*.json` (đúng bản đang seed vào DB).
 - **Chấm bài nằm ở trình duyệt.** Server không chấm lại gì; `POST /lessons/:n/complete` tin
   `quizScore` do client gửi. XP bị chặn trần bằng `lessons.xp_reward` nên không farm vô hạn
   được, nhưng đừng nhầm đây là hệ thống chống gian lận.
@@ -70,8 +75,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   CDN. Giới hạn 5 giây hiện dựa vào `worker.terminate()`; nếu dùng lại worker thì phải giữ
   được khả năng cắt vòng lặp vô hạn.
 - **Hai nguồn danh sách bài.** Trang khoá học đọc `frontend/src/lib/curricula.json` (file tĩnh,
-  chép tay từ `scripts/pe-v3/out/curriculum-python.json`), còn nội dung bài đọc từ DB. Sau mỗi
-  lần seed phải kiểm hai nguồn có lệch không.
+  chép từ `scripts/pe-v4/out-advanced/curriculum-python-advanced.json` bằng
+  `py scripts/pe-v4/sync_curricula.py`), còn nội dung bài đọc từ DB. Dựng lại pe-v4 mà quên
+  chạy bước chép thì trang khoá học hiện giáo trình cũ; sau mỗi lần seed phải kiểm hai nguồn
+  có lệch không.
 - **Frontend không còn đăng nhập, nhưng backend vẫn đòi JWT.** Trang chủ `/` và `/courses/*` đọc
   danh mục tĩnh `frontend/src/lib/catalog.ts` (chép từ `prisma/seed-courses.js`, số bài lấy từ
   `curricula.json`) chứ không gọi `/api/courses` — gọi thì khách nhận 401. Sửa seed khoá học thì
@@ -81,11 +88,11 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `GUEST_LOGIN=off`. Deploy khác domain thì phải đặt `REFRESH_COOKIE_SAMESITE=none`, không thì
   hết hạn access token là khách mất phiên và nhận tài khoản mới (mất tiến độ).
 - **`prisma/seed-courses.js` vẫn tạo 40 bài rỗng mã `python-1…python-40`.** Chạy nhầm sau khi
-  seed v3 sẽ sinh bài trùng thứ tự.
-- **527 lỗi lint backend KHÔNG phải lỗi định dạng.** Đã đo: chỉ 6% chạy `--fix` là xong. 89%
-  là nhóm `no-unsafe-*` (290 member-access, 120 call, 59 assignment, 14 return) — `any` chảy
-  xuyên qua code ở các trang chuyển từ bản Django. Dọn là việc đặt lại kiểu ở ranh giới dữ
-  liệu, làm dần từng module rồi hạ mốc trần trong `ci.yml`.
+  seed giáo trình thật sẽ sinh bài trùng thứ tự.
+- **551 lỗi lint backend KHÔNG phải lỗi định dạng.** Đã đo (lúc còn 527 lỗi): chỉ 6% chạy
+  `--fix` là xong. 89% là nhóm `no-unsafe-*` (290 member-access, 120 call, 59 assignment,
+  14 return) — `any` chảy xuyên qua code ở các trang chuyển từ bản Django. Dọn là việc đặt
+  lại kiểu ở ranh giới dữ liệu, làm dần từng module rồi hạ mốc trần trong `ci.yml`.
 - **Server biết "đã hoàn thành", không biết "đã nộp".** Ở bài cửa tự kiểm tra, lời giải mẫu
   bị giữ lại tới khi bài được ghi nhận hoàn thành. Frontend từng chỉ nạp nội dung một lần lúc
   mở bài nên phải tải lại trang mới thấy lời giải; nay `useLessonData.complete` thấy cờ

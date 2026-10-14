@@ -47,7 +47,12 @@
         },
         {
           "title": "Ví dụ: fork rồi exec trên UNIX",
-          "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả."
+          "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả.",
+          "figure": {
+            "src": "/static/anim/P02-fork-exec-wait.svg",
+            "caption": "fork nhân bản, exec thay chương trình, exit rồi wait thu mã thoát",
+            "alt": "Hai làn cha và con: fork() tách nhánh (cha nhận PID con, con nhận 0), con exec() rồi exit(0), mã thoát đi ngược lên lời gọi wait() của cha"
+          }
         },
         {
           "title": "Dùng ở đâu",

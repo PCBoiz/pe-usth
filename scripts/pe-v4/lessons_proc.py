@@ -504,7 +504,7 @@ for run in range(2):
                  bullets=['PID: số hệ điều hành cấp cho từng process, không cấp cho file .py',
                           'PPID: PID của process cha đã tạo ra nó',
                           'Mỗi process có vùng nhớ riêng: process stack, data section, heap']),
-            dict(h='Ví dụ: cây process trên máy thật',
+            dict(h='Ví dụ: cây process trên máy thật', figure='P01-process-tree',
                  body='pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành '
                       'cháu. TABLE của bài là một lát cắt như vậy — ba dòng "python" là ba process của cùng một program.'),
             dict(h='Dùng ở đâu',
@@ -515,10 +515,17 @@ for run in range(2):
                  body='Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra '
                       'từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.'),
         ],
-        figure=dict(name='P01-program-vs-process',
-                    caption='Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng',
-                    alt='Bên trái file .py trên đĩa; bên phải hai hộp process PID khác nhau, mỗi hộp có text/data/heap/'
-                        'stack và ba file descriptor 0, 1, 2'),
+        # Hai hình: phần tử ĐẦU là hình chính (màn explain và sổ tay dùng nó). Hình thứ hai
+        # vẽ cùng đợt nhưng trước đây không khai được vì schema chỉ nhận một hình — nó nằm
+        # trong public/static/anim mà không bài nào nối vào.
+        figure=[dict(name='P01-program-vs-process',
+                     caption='Một file .py sinh hai process, mỗi process có PID và vùng nhớ riêng',
+                     alt='Bên trái file .py trên đĩa; bên phải hai hộp process PID khác nhau, mỗi hộp có text/data/heap/'
+                         'stack và ba file descriptor 0, 1, 2'),
+                dict(name='P01-process-tree',
+                     caption='Cây process: PPID của con luôn bằng PID của cha, init là gốc',
+                     alt='Cây process từ init PID 1 xuống cron, bash, python3 app.py và ls -l do subprocess tạo; mỗi '
+                         'hộp ghi PID và PPID, kèm kết xuất pstree và bảng ps')],
         slides='SL 4-18',
         predict=dict(q='Chạy cùng một script hai lần liên tiếp. Hai lần đó có nhất thiết cùng PID không?', options=[
             ('Không — mỗi lần chạy là một process mới, hệ điều hành cấp PID mới',
@@ -671,7 +678,7 @@ print("wait() trả", code, "- returncode =", child.returncode, "- poll() =", ch
                  bullets=['new: vừa được tạo — ready: chờ scheduler giao cho một processor',
                           'running: đang thực thi lệnh — waiting: đang chờ một sự kiện I/O',
                           'terminated: đã chạy xong']),
-            dict(h='Ví dụ: fork rồi exec trên UNIX',
+            dict(h='Ví dụ: fork rồi exec trên UNIX', figure='P02-fork-exec-wait',
                  body='fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận '
                       '0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), '
                       'cha gọi wait() thu kết quả.'),
@@ -684,10 +691,14 @@ print("wait() trả", code, "- returncode =", child.returncode, "- poll() =", ch
                       'lúc nó biến mất. Hai mũi tên rời running — interrupt và io_wait — đều quay về ready, không về '
                       'thẳng running.'),
         ],
-        figure=dict(name='P02-lifecycle',
-                    caption='Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng',
-                    alt='Sơ đồ new → ready → running; running → ready khi interrupt; running → waiting khi chờ I/O; '
-                        'waiting → ready khi I/O xong; running → terminated khi exit'),
+        figure=[dict(name='P02-lifecycle',
+                     caption='Vòng đời process: 5 trạng thái và sự kiện chuyển giữa chúng',
+                     alt='Sơ đồ new → ready → running; running → ready khi interrupt; running → waiting khi chờ I/O; '
+                         'waiting → ready khi I/O xong; running → terminated khi exit'),
+                dict(name='P02-fork-exec-wait',
+                     caption='fork nhân bản, exec thay chương trình, exit rồi wait thu mã thoát',
+                     alt='Hai làn cha và con: fork() tách nhánh (cha nhận PID con, con nhận 0), con exec() rồi exit(0), '
+                         'mã thoát đi ngược lên lời gọi wait() của cha')],
         slides='SL 15-16, 22-29',
         predict=dict(q='Ngay sau child = subprocess.Popen([...]) (chưa gọi wait/poll), child.returncode là gì?', options=[
             ('None — Popen trả object ngay, chưa ai thu trạng thái kết thúc của con',
@@ -840,7 +851,7 @@ for turn in range(4):
                  bullets=['Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)',
                           'Non-preemption: process tự nguyện nhường CPU',
                           'CPU-bound chủ yếu tính toán; I/O-bound chủ yếu chờ đĩa, mạng, máy in']),
-            dict(h='Ví dụ: ba hàng đợi',
+            dict(h='Ví dụ: ba hàng đợi', figure='P03-round-robin',
                  body='Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ '
                       'CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không '
                       'preempt; SRTF và Round Robin có.'),
@@ -853,10 +864,14 @@ for turn in range(4):
                       'PCB0, nạp ngữ cảnh B từ PCB1, rồi B mới chạy. Khoảng tô đậm nhãn "overhead" là lúc không '
                       'process nào làm được việc của mình.'),
         ],
-        figure=dict(name='P03-context-switch',
-                    caption='Context switch: lưu PCB của process cũ, nạp PCB của process mới',
-                    alt='Process A chạy, có interrupt, hệ điều hành lưu PCB0 rồi nạp PCB1, sau đó process B chạy; '
-                        'khoảng giữa ghi nhãn overhead'),
+        figure=[dict(name='P03-context-switch',
+                     caption='Context switch: lưu PCB của process cũ, nạp PCB của process mới',
+                     alt='Process A chạy, có interrupt, hệ điều hành lưu PCB0 rồi nạp PCB1, sau đó process B chạy; '
+                         'khoảng giữa ghi nhãn overhead'),
+                dict(name='P03-round-robin',
+                     caption='Round Robin quantum 2: hết lượt chưa xong thì xếp lại cuối hàng ready',
+                     alt='Hàng đợi ready P1, P2, P3 và ô CPU một lõi; trục thời gian 0–10 chia sáu lát theo thứ tự P1, '
+                         'P2, P3, P1, P2, P1, vạch đậm nơi từng process chạy xong')],
         slides='SL 30-43',
         predict=dict(q='jobs = [("P1", 5), ("P2", 3), ("P3", 1)], quantum = 2. Process nào XONG ĐẦU TIÊN?', options=[
             ('P3, lúc 5 — nó chỉ cần 1 đơn vị, tới lượt ở lần thứ ba', 'P1 0–2, P2 2–4, P3 4–5: P3 xong ngay trong lượt đầu của nó.', True),

@@ -715,7 +715,12 @@ LESSONS = [
             dict(h='Định nghĩa: GUI và CLI',
                  body='CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập '
                       'rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI.'),
-            dict(h='Bốn phần của một app Tkinter',
+            # Tiêu đề KHÔNG đếm số nữa: bản gốc là "Tkinter gồm bốn phần" (cửa sổ / widget /
+            # layout / event loop), nhưng đợt rút gọn lý thuyết gộp widget và layout vào một
+            # gạch đầu dòng mà giữ chữ "Bốn phần" — học viên đếm được 3 rồi đi tìm phần thứ
+            # tư không có. Giữ 3 gạch (luật "tối đa 3 gạch đầu dòng" ở trên) và bỏ con số:
+            # tiêu đề không hứa số lượng thì lần gộp/tách sau cũng không làm nó sai nữa.
+            dict(h='Một app Tkinter gồm những gì',
                  bullets=['Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ',
                           'Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()',
                           'Event loop: mainloop() chặn tại chỗ, nhận sự kiện rồi gọi hàm xử lý']),

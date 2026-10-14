@@ -7,8 +7,8 @@ File này để soát lại nội dung mà không phải đọc code; bản dự
 - **21 câu**: 20 câu nội dung + 1 ô liên hệ tuỳ chọn.
 - **12 câu bắt buộc**, trong đó 11 câu chỉ cần một lần bấm; câu bắt buộc duy nhất phải viết
   là câu 20 ("sửa MỘT thứ").
-- **Thời gian điền ước tính 3–5 phút** (khoảng 1,5–2 phút cho 18 câu chọn/thang, 1,5–3 phút cho
-  3 câu tự luận).
+- **Thời gian điền ước tính 3–5 phút** (khoảng 1,5–2 phút cho 17 câu chọn/thang, 1,5–3 phút cho
+  3 câu tự luận dài; câu 21 là ô text ngắn tuỳ chọn — 17 + 3 + 1 = 21 câu).
 - **Ẩn danh**: `setCollectEmail(false)`, không hỏi tên hay email bắt buộc.
 - Chia 4 trang (`addPageBreakItem`) để chỉ bấm "Tiếp" 3 lần: gộp 5 phần nội dung vào 4 trang.
 - Lấy xong **LINK ĐIỀN** thì đặt vào biến `NEXT_PUBLIC_FEEDBACK_URL` (trang chủ chỉ dựng thẻ
