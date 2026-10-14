@@ -7,6 +7,7 @@ import { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 import HintSheet from '@/components/lesson-chrome/exercises/HintSheet';
 import SandboxEditor from '@/components/lesson-chrome/exercises/SandboxEditor';
 import ShellB from '@/components/lesson-chrome/ShellB';
+import { gateNotice } from '@/lib/gate-notice';
 import { toCodeLines } from '@/lib/py-highlight';
 
 import { SandboxCue } from '../intro/BookIntro';
@@ -85,6 +86,10 @@ export default function SandboxScreen({
   const contracts = four?.contracts ?? [];
   const gate = Boolean(four?.gate);
   const boss = Boolean(lesson.play?.boss);
+  // Câu chữ của lời nhắc nằm ở `lib/gate-notice.ts` — nó từng hứa "lời giải
+  // mẫu mở sau lần nộp đầu", trong khi server chỉ nhả lời giải khi bài ĐÃ
+  // hoàn thành. Xem chú thích đầu file đó.
+  const notice = gateNotice({ boss, gate, submitted: Boolean(draft.submitted) });
 
   return (
     <ShellB
@@ -95,19 +100,14 @@ export default function SandboxScreen({
       description={paragraphs(four?.task?.body)}
     >
       {four?.env && <div className={`${c.note} ${c.noteWarn}`}>{four.env}</div>}
-      {boss ? (
-        <div className={`${c.note} ${c.boss}`} role="status">
-          <strong>Bài tổng hợp chặng.</strong> Không có gợi ý — tự viết và nộp. Lời giải mẫu chỉ mở
-          sau lần nộp đầu, và xem nó thì điểm trận này bị giới hạn ở 60%.
+      {notice && (
+        <div
+          className={notice.boss ? `${c.note} ${c.boss}` : c.note}
+          role="status"
+        >
+          <strong>{notice.strong}</strong>
+          {notice.rest}
         </div>
-      ) : (
-        gate &&
-        !draft.submitted && (
-          <div className={c.note} role="status">
-            <strong>Cửa tự kiểm tra.</strong> Tự viết và nộp lần đầu trước — lời giải mẫu chỉ mở sau lần nộp
-            đó. Mở gợi ý vẫn được, nhưng lượt này sẽ ghi nhận là có hỗ trợ.
-          </div>
-        )
       )}
       {io.length > 0 && (
         <dl className={c.io}>
