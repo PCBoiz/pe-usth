@@ -112,9 +112,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               /* tiện ích ẩn dùng khắp nơi (dashboard.css / chatbot.css) */
               '.hidden{display:none!important}.chatbot-hidden{display:none!important}',
               /* hộp thoại: ẩn bằng opacity+visibility, mở bằng .active
-                 (dashboard.css .un-overlay/.streak-overlay, ChangePassword.css .cp-overlay) */
-              '.un-overlay,.cp-overlay,.streak-overlay,.edu-rq-overlay{opacity:0;visibility:hidden}',
-              '.un-overlay.active,.cp-overlay.active,.streak-overlay.active,.edu-rq-overlay.active{opacity:1;visibility:visible}',
+                 (dashboard.css .un-overlay, ChangePassword.css .cp-overlay)
+
+                 15/10/2026 — bỏ `.streak-overlay` khỏi hai dòng này. Hộp thoại
+                 chuỗi ngày không còn được dựng ở đâu nữa: không một file nào
+                 trong src/** hay public/static/js/** tạo phần tử mang lớp đó
+                 (chỉ còn khai báo kiểu chết trong dashboard.css). Luật chặn FOUC
+                 cho một lớp không ai dùng chỉ làm người đọc sau tưởng tính năng
+                 còn sống và đi tìm chỗ bật nó. */
+              '.un-overlay,.cp-overlay,.edu-rq-overlay{opacity:0;visibility:hidden}',
+              '.un-overlay.active,.cp-overlay.active,.edu-rq-overlay.active{opacity:1;visibility:visible}',
               /* bảng thông báo + menu người dùng, mở bằng .open (style.css:243/372) */
               '.bell-panel,.user-dropdown{opacity:0;visibility:hidden}',
               '.bell-panel.open,.user-dropdown.open{opacity:1;visibility:visible}',

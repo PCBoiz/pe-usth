@@ -15,13 +15,15 @@
  * `studio-chrome.module.css`, cùng mọi `fontSize` nội tuyến trong
  * `lesson-chrome/exercises/*.tsx`.
  *
- * CHƯA CHUYỂN, cố ý để lại và ĐO ĐƯỢC ở ca cuối file này:
- *   · `python-studio/studio.module.css` — 100 khai báo px, 88 trong đó dưới
- *     14px. File chỉ vẽ trang demo `?demo=list` (PythonStudio.tsx), không
- *     thuộc giáo trình 48 bài. Ca cuối chốt con số đó lại để nợ không PHÌNH
- *     ra, và để lần sau có mốc mà trừ dần.
+ * CHƯA CHUYỂN, cố ý để lại:
  *   · `code-visualizer/CodeVisualizer.module.css` — 12 khai báo, 11 dưới
  *     15px. Thuộc vùng của agent khác, không sửa trong đợt này.
+ *
+ * 15/10/2026 — món nợ lớn nhất ở đây (`python-studio/studio.module.css`, 100
+ * khai báo px) đã TRẢ bằng cách xoá: file chỉ vẽ trang demo
+ * `/lesson/python?demo=list`, mà route đó cùng `PythonStudio.tsx` đã bị dọn.
+ * Ca "nợ cỡ chữ px" vì vậy không còn file nào để đo nên đã gỡ — đừng dựng lại
+ * một ca chạy vòng lặp rỗng, nó luôn xanh và không canh gì.
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -156,32 +158,12 @@ test('đoạn văn lý thuyết — chữ đọc lâu nhất của bài — ở 
   }
 });
 
-/* ── 3 · nợ còn lại: chốt con số để nó không phình ra ────────────────── */
-
-/**
- * Mốc đo ngày 14/10/2026. Ca này KHÔNG đòi dọn sạch — nó chỉ không cho nợ
- * mọc thêm, và cho người dọn một con số để trừ dần. Dọn bớt thì hạ số ở đây.
- */
-const DEBT = [
-  { path: ['src', 'components', 'python-studio', 'studio.module.css'], max: 100, maxTiny: 88 },
-];
-
-test('nợ cỡ chữ px ở file chưa chuyển không được phình thêm', () => {
-  for (const { path, max, maxTiny } of DEBT) {
-    const code = cssCode(read(...path));
-    const sizes = [...code.matchAll(/font-size:\s*(\d+)px/g)].map((m) => Number(m[1]));
-    const tiny = sizes.filter((px) => px < 14);
-    assert.ok(
-      sizes.length <= max,
-      `${path.join('/')} có ${sizes.length} khai báo font-size px (mốc ${max}) — `
-      + 'đừng thêm; nếu vừa dọn bớt thì hạ mốc trong DEBT',
-    );
-    assert.ok(
-      tiny.length <= maxTiny,
-      `${path.join('/')} có ${tiny.length} khai báo dưới 14px (mốc ${maxTiny})`,
-    );
-  }
-});
+/* ── 3 · nợ còn lại ──────────────────────────────────────────────────────
+ * Ca "nợ cỡ chữ px không được phình thêm" (mốc 14/10/2026: 100 khai báo, 88
+ * dưới 14px) đã GỠ ngày 15/10/2026 cùng với file duy nhất nó đo —
+ * `python-studio/studio.module.css`, CSS của trang demo `?demo=list` đã xoá.
+ * Nợ còn lại duy nhất là `code-visualizer/CodeVisualizer.module.css` (vùng của
+ * agent khác); khi vùng đó chuyển sang thang token thì thêm ca mới ở đây. */
 
 /**
  * ── BẰNG CHỨNG BẮT ĐƯỢC LỖI THẬT ──────────────────────────────────────

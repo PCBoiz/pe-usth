@@ -381,7 +381,9 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
         srcs={['/static/js/course_db_design.js']}
         globals={{
           COURSE_ID: courseId,
-          USER_STREAK: 0,
+          // 15/10/2026 — bỏ USER_STREAK. Biến này chỉ dùng cho ô "🔥 Streak"
+          // mà course_db_design.js vẽ lại sau khi đăng ký; ô đó đã gỡ cùng đợt
+          // dọn chuỗi ngày (xem _renderCtaEnrolled trong file JS đó).
           CURRENT_LESSON_IDX: 0,
           LESSON_URL: `/lesson/${courseId}`,
         }}

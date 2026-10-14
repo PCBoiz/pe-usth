@@ -20,10 +20,17 @@
  * db_design, db_design_tc, db_design_nc). Buổi dùng thử với giảng viên và sinh
  * viên chỉ xoay quanh Python Advanced; một thẻ dẫn vào khoá rỗng hoặc dựng nửa
  * vời làm người thử mất lòng tin vào cả buổi. Đây là thay đổi TRÌNH BÀY: bản ghi
- * khoá trong DB và `prisma/seed-courses.js` không bị sửa, các route tự có của
- * chúng (`/courses/db_design*`, `/lesson/java`, `/lesson/htmlcss`, `/interface`)
- * vẫn chạy khi mở bằng đường dẫn trực tiếp — chỉ không còn lối vào từ trang chủ,
- * và `/courses/{cpp,java,htmlcss}` (route động, `dynamicParams = false`) thành 404.
+ * khoá trong DB và `prisma/seed-courses.js` không bị sửa, nên `/courses/db_design*`
+ * (route tĩnh riêng) vẫn mở được bằng đường dẫn trực tiếp, còn
+ * `/courses/{cpp,java,htmlcss}` (route động, `dynamicParams = false`) thành 404.
+ *
+ * 15/10/2026 — gỡ nốt các route chỉ mở được bằng URL trực tiếp: `/lesson/java`,
+ * `/lesson/htmlcss`, `/interface` (mission khoá cpp) và `/lesson/python` (khoá
+ * python cơ bản). Ba trang đầu còn vẽ huy hiệu chuỗi ngày ("0 ngày · Học ngay
+ * để giữ chuỗi", "0 Ngày liên tiếp!") mà sản phẩm đã bỏ ở trang bài học thật,
+ * nên ai gõ trúng URL sẽ thấy sản phẩm tự nói ngược mình. Giữ lại cụm
+ * db_design (`/courses/db_design*` → `/lesson/db_design*` → `/card/<id>`) vì ba
+ * trang đó còn trỏ vào nhau và còn ca e2e đi qua — xem e2e/unit/dead-routes.test.mjs.
  *
  * Sửa seed thì phải sửa cả file này (xem bẫy "hai nguồn danh sách bài" trong
  * AGENTS.md — đây là nguồn thứ ba của cùng một loại lệch).

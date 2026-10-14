@@ -149,7 +149,9 @@ test('mọi màu trong bảng token đều là mã hex 6 chữ số, không có 
 
 /** Mọi file vẽ nên trang bài học (trừ vùng của agent khác). */
 const SURFACE_CSS = [
-  ['src', 'components', 'python-studio', 'studio.module.css'],
+  // 15/10/2026 — bỏ `python-studio/studio.module.css`: file đó chỉ vẽ trang demo
+  // `/lesson/python?demo=list` (PythonStudio.tsx), và cả route lẫn component đã
+  // xoá trong đợt dọn route chết, nên đọc file là ném ENOENT.
   ['src', 'components', 'python-studio', 'studio-chrome.module.css'],
   ['src', 'components', 'lesson-chrome', 'LessonChrome.module.css'],
   ['src', 'components', 'lesson-chrome', 'LessonBrief.module.css'],

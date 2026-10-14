@@ -49,7 +49,10 @@ const RANK: Record<string, number> = {
   'login.css': 19,
   'register.css': 20,
   'questionaire.css': 21,
-  'lesson.css': 22,
+  // Hạng 22 từng là 'lesson.css' (và 44 là 'edu-lesson.css'). Hai file đó chỉ
+  // được nạp bởi /lesson/java, /lesson/htmlcss và /interface — ba trang đã xoá
+  // 15/10/2026 — nên file cũng đã xoá khỏi public/static/css. Để lại tên trong
+  // bảng thì hạng vẫn được ghim ở layout gốc cho một file không còn tồn tại.
   'lesson_db_design.css': 23,
   'chatbot.css': 24,
   'course_detail.css': 25,
@@ -59,7 +62,6 @@ const RANK: Record<string, number> = {
   'edu-dashboard.css': 41,
   'edu-course-detail.css': 42,
   'edu-db.css': 43,
-  'edu-lesson.css': 44,
   'edu-auth.css': 45,
   'edu-forms.css': 46,
   'edu-card.css': 47,

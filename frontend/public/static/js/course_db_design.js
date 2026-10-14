@@ -607,7 +607,7 @@ function goLesson() {
 
 /* ── Enroll không reload trang: swap #cd-cta-area tại chỗ ────────────────
  * Server render lần đầu (Jinja); sau enroll/unenroll JS dựng lại đúng markup
- * đó từ dữ liệu đã có (COURSE_LESSONS, USER_STREAK) — không cần fetch lại trang. */
+ * đó từ dữ liệu đã có (COURSE_LESSONS) — không cần fetch lại trang. */
 function _ctaError(msg) {
   var el = document.getElementById('cd-cta-error');
   if (!el) { if (msg) alert(msg); return; }
@@ -621,7 +621,10 @@ function _renderCtaEnrolled(completedLessons) {
   var total = (typeof COURSE_LESSONS !== 'undefined' && COURSE_LESSONS.length) || 20;
   var done = Math.min(completedLessons || 0, total);
   var pct = done > 0 ? Math.round(done * 1000 / total) / 10 : 0;
-  var streak = (typeof USER_STREAK !== 'undefined') ? USER_STREAK : 0;
+  // 15/10/2026 — bỏ biến `streak` và ô "🔥 Streak" bên dưới. Chuỗi ngày đã gỡ
+  // khỏi trang bài học thật, nên thẻ khoá này vẽ lại ô đó sau khi đăng ký là
+  // dựng lại một tính năng sản phẩm đã bỏ. Markup React (CourseDbDesign.tsx)
+  // vốn chỉ có 3 ô — nay hai bên khớp nhau thật.
   // Bộ class .edu-cd-* — PHẢI khớp với markup React trong CourseDbDesign.tsx,
   // nếu không thì sau khi bấm "Đăng ký" thẻ này đổi hẳn kiểu so với lúc mới vào.
   area.innerHTML =
@@ -636,7 +639,6 @@ function _renderCtaEnrolled(completedLessons) {
       '<div class="edu-cd-stat"><div class="v">' + done + '</div><div class="l">Bài đã học</div></div>' +
       '<div class="edu-cd-stat"><div class="v">' + (total - done) + '</div><div class="l">Còn lại</div></div>' +
       '<div class="edu-cd-stat"><div class="v">0h</div><div class="l">Đã học</div></div>' +
-      '<div class="edu-cd-stat"><div class="v">' + streak + '</div><div class="l">🔥 Streak</div></div>' +
     '</div>' +
     '<button type="button" class="edu-cd-btn primary" style="width:100%;margin-top:18px" onclick="goLesson()">▶ Bắt đầu học</button>' +
     '<button type="button" class="edu-cd-unenroll" id="unenroll-btn" onclick="unenroll()">Hủy đăng ký</button>';

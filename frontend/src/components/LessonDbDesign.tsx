@@ -3,7 +3,14 @@
 // Port lesson_db_design.html — trang bài học DB Design (dùng chung 3 khóa
 // db_design / db_design_tc / db_design_nc; engine lesson_db_design.js 9.171 dòng
 // giữ NGUYÊN, chỉ bọc). Markup 1:1. ?lesson=N / ?lesson_idx=N do engine tự đọc URL.
-// {{ streak }}/{{ xp }} server bơm → hydrate fetch /api/stats + /api/user.
+// {{ xp }} server bơm → hydrate fetch /api/user.
+//
+// 15/10/2026 — gỡ HẾT phần chuỗi ngày (streak) khỏi trang này. Chuỗi ngày đã bị
+// gỡ khỏi trang bài học thật (/lesson/python_advanced, commit 330a469) vì nó
+// thưởng việc đi học đúng ngày chứ không thưởng việc hiểu bài. Trang bài học DB
+// Design mở được bằng đường dẫn trực tiếp, nên để lại pill "🔥 0" và câu "giữ
+// chuỗi streak 🔥" ở đây là để sản phẩm tự nói ngược chính mình. Backend vẫn
+// tính và lưu chuỗi (src/common/streak/) — chỉ mặt giao diện thôi.
 import { useEffect } from 'react';
 
 import LegacyScripts from '@/components/LegacyScripts';
@@ -24,14 +31,9 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
   }, [courseId]);
 
   useEffect(() => {
-    // Hydrate streak (header) + xp (player pill) — thay {{ streak }}/{{ xp }}.
+    // Hydrate xp (player pill) — thay {{ xp }}. Không còn gọi /api/stats: lời
+    // gọi đó chỉ để lấy chuỗi ngày cho pill đã gỡ ở trên.
     // apiFetch (không phải fetch tương đối): pe-bridge chưa chắc đã nạp xong.
-    apiFetch('/api/stats').then((r) => (r.ok ? r.json() : null)).then((s) => {
-      if (!s) return;
-      const el = document.getElementById('streak-count');
-      // /stats trả `streak` (không phải `streakDays`) — xem stats.service.ts
-      if (el) el.textContent = String(s.streak ?? s.streakDays ?? 0);
-    }).catch(() => {});
     apiFetch('/api/user').then((r) => (r.ok ? r.json() : null)).then((u) => {
       if (!u) return;
       const el = document.querySelector('.xp-text');
@@ -114,10 +116,8 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
             <i className="fa-solid fa-heart"></i>
           </div>
 
-          <div className="xp-pill" title="Streak — chuỗi ngày học liên tiếp">
-            <span className="streak-fire">🔥</span>
-            <span id="streak-count">0</span>
-          </div>
+          {/* Pill chuỗi ngày (🔥 + số ngày) từng đứng ở đây — gỡ 15/10/2026,
+              xem chú thích đầu file. */}
 
           <div className="player-pill" id="player-card" title="Code Wizard — SQL Apprentice">
             <div className="player-avatar">
@@ -501,13 +501,8 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
                 <div className="reward-label">Gems</div>
               </div>
             </div>
-            <div className="reward">
-              <div className="reward-icon streak-icon"><i className="fa-solid fa-fire"></i></div>
-              <div className="reward-info">
-                <div className="reward-value" id="reward-streak">+1</div>
-                <div className="reward-label">Streak</div>
-              </div>
-            </div>
+            {/* Ô thưởng "+1 Streak" từng đứng ở đây — gỡ 15/10/2026 cùng pill
+                chuỗi ngày; không có engine nào đọc #reward-streak (đã grep). */}
           </div>
           <div className="success-actions">
             <button className="next-btn ghost" onClick={() => W().closeSuccess()}>Ôn lại</button>
@@ -537,7 +532,9 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
             Tiến độ bài này <strong>chưa được lưu</strong> — bạn sẽ phải làm lại từ
             đầu khi quay lại.
           </p>
-          <p className="exit-note">Hoàn thành cả 4 bước để nhận XP và giữ chuỗi streak 🔥</p>
+          {/* Câu này trước là "Hoàn thành cả 4 bước để nhận XP và giữ chuỗi
+              streak 🔥" — bỏ nửa sau vì chuỗi ngày đã gỡ khỏi sản phẩm. */}
+          <p className="exit-note">Hoàn thành cả 4 bước để nhận XP cho bài này</p>
           <div className="exit-actions">
             <button className="next-btn primary" onClick={() => W().exitLessonCancel?.()} autoFocus>
               Ở lại học tiếp
