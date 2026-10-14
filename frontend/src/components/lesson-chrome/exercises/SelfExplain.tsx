@@ -46,11 +46,11 @@ export default function SelfExplain({
           resize: 'vertical',
           padding: '12px 14px',
           borderRadius: 12,
-          border: '1px solid var(--edu-sidebar-border)',
-          background: 'var(--edu-panel-bg-solid)',
-          color: 'var(--edu-t1)',
+          border: '1px solid var(--ds-line)',
+          background: 'var(--ds-card)',
+          color: 'var(--ds-ink)',
           font: 'inherit',
-          fontSize: 14,
+          fontSize: 'var(--ds-fs-body)',
           lineHeight: 1.6,
         }}
       />

@@ -59,8 +59,12 @@ export default function Assemble({
                       margin: '0 4px',
                       padding: '1px 10px',
                       borderRadius: 6,
-                      border: filled[line.slotId] ? '1px solid var(--st-slot-border)' : '1.5px dashed var(--st-slot-border)',
-                      background: filled[line.slotId] ? 'rgba(255,255,255,.08)' : 'transparent',
+                      // Ô nằm trong khung code (nền tối) nên viền lấy bản
+                      // -on-dark: tím bản ngày chỉ 2,10:1 ở đây.
+                      border: '2px ' + (filled[line.slotId] ? 'solid' : 'dashed') + ' var(--ds-mark-violet)',
+                      // Ô đã lắp: nền lấy đường kẻ của khung code thay cho
+                      // rgba trắng rời — mã màu cuối cùng ngoài bảng token.
+                      background: filled[line.slotId] ? 'var(--ds-code-line)' : 'transparent',
                       color: 'var(--st-syn-plain)',
                       font: 'inherit',
                       fontWeight: 700,
@@ -76,13 +80,13 @@ export default function Assemble({
           ))}
         </div>
       </div>
-      <div style={{ background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14, marginTop: 12 }}>
+      <div style={{ background: 'var(--ds-tint)', borderRadius: 12, padding: 14, marginTop: 12 }}>
         {/* Giống Classify: "đang cầm X" là phản hồi duy nhất của thao tác. */}
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }} role="status">
+        <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--ds-soft)', marginBottom: 8 }} role="status">
           KHO TỪ KHOÁ {heldToken ? `— đang cầm "${heldToken}"` : '(bấm để cầm lên)'}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {bank.length === 0 && <span style={{ fontSize: 12, color: 'var(--edu-t3)' }}>Hết token.</span>}
+          {bank.length === 0 && <span style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)' }}>Hết token.</span>}
           {bank.map((token) => (
             <button
               key={token}
@@ -90,7 +94,7 @@ export default function Assemble({
               className={styles.chip}
               aria-pressed={heldToken === token}
               onClick={() => onHold(token)}
-              style={heldToken === token ? { borderColor: 'var(--edu-accent)', background: 'var(--edu-accent-soft)' } : undefined}
+              style={heldToken === token ? { borderColor: 'var(--ds-violet)', background: 'var(--ds-violet-tint)' } : undefined}
             >
               {token}
             </button>

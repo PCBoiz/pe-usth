@@ -55,7 +55,10 @@ test('kèm chú thích nói rõ cần in ra gì, lấy từ bộ test chấm bà
   const p01 = BAI.find((b) => b.ma === 'P01');
   const gui = ideCodeChoDeBai(p01.c);
   const ca = p01.c.step_4.tests[0];
-  assert.ok(gui.startsWith('# Thử ngay:'));
+  // Câu mở đầu đổi cùng lúc với tên nút: "Thử ngay trong IDE" → "Chạy thử ở
+  // Bàn thí nghiệm" (bảng thuật ngữ design-system-v2), nên nó không còn nhắc
+  // "Thử ngay" nữa.
+  assert.ok(gui.startsWith('# Điền thân hàm rồi bấm Chạy.'), gui.slice(0, 80));
   assert.ok(gui.includes(`${ca.call}  →  ${ca.expect}`), 'không thấy ca kiểm tra đầu tiên');
 });
 
@@ -143,6 +146,88 @@ test('ba bài thiếu file được VÁ bằng đoạn tự tạo file, không b
     // OSError [Errno 30]. Đã đo trên sandbox thật, không phải suy đoán.
     assert.ok(gui.includes('_os.chdir(_tf.mkdtemp())'), `${ma} ghi file vào nơi không ghi được`);
   }
+});
+
+/**
+ * ── CHÚ THÍCH DO CODE SINH RA PHẢI ĐÚNG SỰ THẬT ─────────────────────────
+ * `maTaoFile` từng coi MỌI phần tử `step_4.files` là "file dữ liệu bài cần
+ * ĐỌC". Sai từ lúc T05 được thêm `race_demo.py`: bấm nút ở T05 sinh ra mã mở
+ * đầu bằng "Bài này đọc file dữ liệu" trong khi T05 không `open()` gì cả —
+ * không nổ, nhưng là chú thích sai do code sinh ra cho người học đọc.
+ * Ba bài có file `.py` kèm theo (đếm trên 48 bài thật): P04 `sum_numbers.py`
+ * (chạy làm process con), T05 `race_demo.py`, R02 `report.py` (R02 import
+ * tkinter nên không có nút).
+ */
+const BAI_CO_FILE_MA = ['P04', 'T05'];
+
+test('bài có file .py kèm theo KHÔNG bị nói là "đọc file dữ liệu"', () => {
+  for (const ma of BAI_CO_FILE_MA) {
+    const b = BAI.find((x) => x.ma === ma);
+    assert.ok(b, `không thấy bài ${ma}`);
+    const gui = ideCodeChoDeBai(b.c);
+    assert.ok(gui, `${ma} phải có nút`);
+    const py = (b.c.step_4.files ?? []).filter((f) => f.name.endsWith('.py'));
+    const duLieu = (b.c.step_4.files ?? []).filter((f) => !f.name.endsWith('.py'));
+    assert.equal(duLieu.length, 0, `${ma} nay có cả file dữ liệu — ca này cần viết lại`);
+    assert.ok(
+      !gui.includes('đọc file dữ liệu'),
+      `${ma} chỉ có file mã kèm theo (${py.map((f) => f.name).join(', ')}) nhưng mã sinh ra`
+      + ' vẫn nói "đọc file dữ liệu"',
+    );
+    assert.ok(
+      gui.includes('cần file mã kèm theo'),
+      `${ma}: chú thích phải nói đúng loại file`,
+    );
+    for (const f of py) {
+      assert.ok(gui.includes(f.name), `${ma}: thiếu tên file ${f.name} trong chú thích`);
+    }
+  }
+});
+
+test('file .py kèm theo nằm trong sys.path, nếu không thì import nổ', () => {
+  for (const ma of BAI_CO_FILE_MA) {
+    const gui = ideCodeChoDeBai(BAI.find((x) => x.ma === ma).c);
+    // Sau `_os.chdir(...)`, sys.path[0] vẫn là thư mục của file đang chạy.
+    assert.ok(
+      gui.includes('_sys.path.insert(0, _os.getcwd())'),
+      `${ma}: ghi file .py ra thư mục tạm mà không đưa thư mục đó vào sys.path`,
+    );
+    // Thứ tự phải đúng: chdir trước, rồi mới lấy getcwd().
+    assert.ok(
+      gui.indexOf('_os.chdir(') < gui.indexOf('_sys.path.insert('),
+      `${ma}: chèn sys.path trước khi chdir thì chèn sai thư mục`,
+    );
+  }
+});
+
+test('bài chỉ có file dữ liệu vẫn nói "đọc file dữ liệu", và không chèn sys.path', () => {
+  for (const ma of DO_DUOC_LA_CHET_VI_THIEU_FILE) {
+    const gui = ideCodeChoDeBai(BAI.find((x) => x.ma === ma).c);
+    assert.ok(gui.includes('đọc file dữ liệu'), `${ma}: mất câu nói đúng việc bài làm`);
+    assert.ok(gui.includes('sales.csv'), `${ma}: chú thích không nêu tên file`);
+    assert.ok(
+      !gui.includes('_sys.path.insert'),
+      `${ma} không có file .py nào — chèn sys.path là dòng vô ích trong mã người học đọc`,
+    );
+  }
+});
+
+test('mọi bài còn nút: chú thích sinh ra nêu đúng tên mọi file bài cần', () => {
+  const sai = [];
+  for (const { ma, c } of BAI) {
+    const gui = ideCodeChoDeBai(c);
+    const files = c.step_4?.files ?? [];
+    if (!gui || !files.length) continue;
+    for (const f of files) {
+      if (!gui.includes(f.name)) sai.push(`${ma}: thiếu ${f.name}`);
+    }
+    // Không được nói cả hai loại khi bài chỉ có một loại.
+    const coPy = files.some((f) => f.name.endsWith('.py'));
+    const coDuLieu = files.some((f) => !f.name.endsWith('.py'));
+    if (!coDuLieu && gui.includes('đọc file dữ liệu')) sai.push(`${ma}: nói đọc dữ liệu mà không có`);
+    if (!coPy && gui.includes('file mã kèm theo')) sai.push(`${ma}: nói file mã mà không có`);
+  }
+  assert.deepEqual(sai, [], sai.join('\n'));
 });
 
 test('số bài còn nút khớp số ĐO ĐƯỢC là chạy được, cộng ba bài vừa vá', () => {

@@ -2,6 +2,7 @@
 
 // Chọn đúng mini-game cho màn `kind: 'game'`. Game "fill" không có component
 // riêng: nó LÀ màn lắp ghép khung mã, chỉ đổi tiêu đề.
+import UnknownScreenNotice from '@/components/lesson-chrome/UnknownScreenNotice';
 import type { PlayGame } from '@/lib/studio-lesson';
 
 import DebugGame from './games/DebugGame';
@@ -72,6 +73,18 @@ export default function GameScreen(props: LessonScreenProps & { game: PlayGame }
           draft={props.draft}
           update={props.update}
           clearChecked={props.clearChecked}
+        />
+      );
+    default:
+      // Switch này trước đây KHÔNG có nhánh default: một `type` sai chính tả
+      // (ví dụ "spoterror" thay "spotError") làm component trả `undefined`, tức
+      // màn trắng không log gì — cùng lỗi với nhánh `default` ở ./index.tsx.
+      return (
+        <UnknownScreenNotice
+          what="mini-game"
+          kind={(game as PlayGame).type}
+          lessonLabel={props.metaLabel ?? props.lesson.title}
+          metaLabel={props.metaLabel}
         />
       );
   }

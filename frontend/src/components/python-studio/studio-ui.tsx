@@ -33,7 +33,7 @@ export const STEP_NAMES = [
   'S1: Hiểu & Dự đoán',
   'S2: Bẫy ngộ nhận',
   'S3: Bộ nhớ trực quan',
-  'S4: Sandbox IDE',
+  'S4: Bàn thí nghiệm',
 ];
 
 /** S3's "Stepper Status indicator" frame: S1-S4 progress at a glance. */

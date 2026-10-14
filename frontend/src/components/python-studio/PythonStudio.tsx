@@ -189,7 +189,7 @@ export default function PythonStudio() {
         d.counter === '2'
       )
     ) {
-      setMessage('Hãy hoàn thành cả 3 bước học trước khi nộp bài.');
+      setMessage('Còn bước chưa xong nên chưa nộp được. Làm xong cả 3 bước là nộp được ngay.');
       return;
     }
     setMessage('');
@@ -266,12 +266,12 @@ export default function PythonStudio() {
   }
   function runTrace(all = false) {
     if (d.slots.some((slot) => !slot)) {
-      setMessage('Hãy lắp đủ 3 khối mã trước khi chạy.');
+      setMessage('Còn thiếu khối mã: lắp đủ 3 khối rồi chạy.');
       return;
     }
     if (d.slots[0] === 'result = data') {
       setMessage(
-        'Bẫy alias: thêm vào result cũng sửa data đang được duyệt. Hãy tạo một danh sách mới.',
+        'Bẫy alias: thêm vào result cũng sửa data đang được duyệt. Tạo một danh sách mới là tránh được.',
       );
       setTrace(1);
       update({ traced: false });
@@ -350,7 +350,7 @@ export default function PythonStudio() {
               aria-label="Đánh dấu bài học"
               aria-pressed={d.bookmark}
               onClick={() => update({ bookmark: !d.bookmark })}
-              style={{ background: d.bookmark ? '#eef2ff' : undefined }}
+              style={{ background: d.bookmark ? 'var(--ds-violet-tint)' : undefined }}
             >
               <Icon step={d.step} n={headerIcons[3]} />
             </button>
@@ -367,11 +367,11 @@ export default function PythonStudio() {
       <main className={s.main}>
         {loading ? (
           <Card>
-            <p role="status">Đang tải khóa học và tiến độ…</p>
+            <p role="status">Đang tải khoá học và tiến độ…</p>
           </Card>
         ) : loadError ? (
           <Card>
-            <h1>Chưa kết nối được khóa học</h1>
+            <h1>Chưa kết nối được khoá học</h1>
             <p role="alert">{loadError}</p>
             <button className={s.primary} onClick={() => void load()}>
               Thử lại
@@ -383,14 +383,14 @@ export default function PythonStudio() {
             <h1>List &amp; Mutability</h1>
             <p>
               Khám phá tham chiếu, luyện tập với bộ nhớ trực quan và tự viết
-              Python. Đăng ký khóa học miễn phí để lưu tiến độ.
+              Python. Đăng ký khoá học miễn phí để lưu tiến độ.
             </p>
             <button
               className={s.primary}
               disabled={busy}
               onClick={() => void enroll()}
             >
-              {busy ? 'Đang đăng ký…' : 'Đăng ký khóa Python & bắt đầu'}
+              {busy ? 'Đang đăng ký…' : 'Đăng ký khoá Python & bắt đầu'}
             </button>
           </Card>
         ) : (
@@ -581,7 +581,7 @@ export default function PythonStudio() {
                         );
                       }}
                     >
-                      <Icon n={3} /> Xác nhận dự đoán để mở khóa giải thích
+                      <Icon n={3} /> Xác nhận dự đoán để mở phần giải thích
                     </button>
                   </Card>
                   <aside className={s.warning}>
@@ -687,8 +687,8 @@ export default function PythonStudio() {
                       <small className={s.monoBadge}>
                         <Icon n={10} />{' '}
                         {d.predicted
-                          ? 'Đã mở khóa'
-                          : 'Khóa cho đến khi dự đoán'}
+                          ? 'Đã mở'
+                          : 'Mở sau khi bạn dự đoán'}
                       </small>
                     </div>
                     <div
@@ -788,14 +788,14 @@ export default function PythonStudio() {
                         setMessage(
                           d.quiz === 'b'
                             ? 'Đúng! Slice tạo container mới. Các phần tử lồng nhau vẫn có thể được dùng chung.'
-                            : 'Chưa đúng. Hãy nhớ [:] là shallow copy, tạo container mới.',
+                            : 'Chưa đúng. [:] là shallow copy: nó tạo container mới, không nhân bản phần tử bên trong.',
                         );
                       }}
                     >
                       Xác nhận phân tích <Icon step={2} n={6} />
                     </button>
                     {d.quizDone && (
-                      <p className={s.green}>✓ Đã hoàn thành câu hỏi</p>
+                      <p className={s.green}>✓ Đã xong câu hỏi</p>
                     )}
                   </Card>
                   <Card>
@@ -972,7 +972,7 @@ export default function PythonStudio() {
                   />
                   <div className={s.titleRow}>
                     <small>
-                      <Icon step={2} n={9} /> Kiểm tra từ khóa theo rubric ·{' '}
+                      <Icon step={2} n={9} /> Kiểm tra từ khoá theo rubric ·{' '}
                       {d.explanation.trim().split(/\s+/).filter(Boolean).length}{' '}
                       từ · {d.explanation.length} ký tự{' '}
                       {score !== null ? `· ${score}/2 điểm` : ''}
@@ -987,7 +987,7 @@ export default function PythonStudio() {
                         setMessage(
                           value === 2
                             ? 'Đã nhận đủ 2 ý: tham chiếu dùng chung và đối tượng có thể thay đổi.'
-                            : 'Hãy bổ sung ý còn thiếu: tham chiếu đến cùng đối tượng và tính mutable của list.',
+                            : 'Còn thiếu hai ý: tham chiếu đến cùng đối tượng, và tính mutable của list.',
                         );
                       }}
                     >
@@ -1455,7 +1455,7 @@ export default function PythonStudio() {
                             onClick={() => run(true)}
                           >
                             <Icon step={4} n={13} />{' '}
-                            {busy ? 'Đang lưu…' : 'Nộp & Chấm điểm'}
+                            {busy ? 'Đang lưu…' : 'Nộp để kiểm'}
                           </button>
                         </>
                       )}
@@ -1609,7 +1609,7 @@ export default function PythonStudio() {
               </button>
             ) : (
               <a className={s.primary} href="/courses/python">
-                {completed ? 'Về khóa học' : 'Xem tiến độ khóa học'}{' '}
+                {completed ? 'Về khoá học' : 'Xem tiến độ khoá học'}{' '}
                 <Icon step={4} n={22} />
               </a>
             )}

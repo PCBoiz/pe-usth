@@ -1,48 +1,147 @@
 /* ══════════════════════════════════════════════════════════════
-   STUDIO-TOKENS — lớp mở rộng của edu-theme.css cho Python Studio.
+   STUDIO-TOKENS — lớp mở rộng của edu-theme.css cho trang bài học.
 
    Nạp SAU edu-theme.css. Chỉ khai báo token mà tầng 1 chưa có.
    TUYỆT ĐỐI không khai báo lại bất kỳ --edu-* nào ở đây; cần sửa
    token dùng chung thì sửa thẳng edu-theme.css.
 
-   Tiền tố --st-* để grep ra ngay biến nào là của riêng Studio.
+   Hai tiền tố, hai vai:
+     --ds-*  BẢNG TOKEN của bản thiết kế v2 (nguồn sự thật duy nhất của
+             màu và cỡ chữ ở trang bài học). Đây là chỗ DUY NHẤT trong
+             trang bài học được viết mã màu — mọi *.module.css đều bị
+             `npm run lint:tokens` cấm mã màu.
+     --st-*  token cũ của riêng Studio, nay chỉ còn là BÍ DANH trỏ vào
+             --ds-*. Giữ lại để không phải sửa hết tên ở 40 file một lượt;
+             chỗ nào sửa tới thì nên dùng thẳng --ds-*.
+
+   ── VÌ SAO ĐỔI CẢ BẢNG MÀU (14/10/2026) ───────────────────────
+   Trang bài học trước đây dùng bảng xanh dương kế thừa từ bản Django
+   (--edu-accent #2563eb trên nền #f3f5fa). Bản thiết kế v2 (rà 9 artboard,
+   xem design-system-v2 mục 1.3) chốt một bảng khác hẳn: nền kem, mực nâu
+   đen, bốn họ nhấn có VAI NGỮ NGHĨA DUY NHẤT —
+     violet   = vị trí và lựa chọn (bạn ở đây, đang chọn, liên kết)
+     sanguine = chú ý (đoán trước, ngộ nhận, cẩn thận, CHƯA ĐÚNG)
+     ochre    = đã có (đúng, đã xong, XP, kết quả in ra)
+     action   = CHỈ dùng làm nền nút chính
+   Bảng v2 không có màu xanh lá, nên "đúng/chưa đúng" KHÔNG được phân biệt
+   chỉ bằng màu: mọi chỗ chấm bài đều phải kèm icon + chữ (WCAG 1.4.1).
+   Vì vậy --st-ok-* nay là ochre và --st-err-* là sanguine, chứ không còn
+   là xanh lá / đỏ hồng.
+
+   Mọi cặp chữ/nền trong bảng này đã đo lại bằng công thức độ chói WCAG 2.x
+   và đều đạt AA (chữ ≥ 4,5:1; viền và đồ hoạ cần nhận ra ≥ 3:1).
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── phản hồi bài làm ─────────────────────────────────────── */
-  --st-ok-bg:       rgba(34,197,94,.14);
-  --st-ok-text:     #1f9d59;
-  --st-ok-line:     rgba(34,197,94,.45);
-  --st-err-bg:      rgba(240,82,107,.14);
-  --st-err-text:    #d0344b;
-  --st-err-line:    rgba(240,82,107,.45);
-  --st-warn-bg:     rgba(245,158,11,.14);
-  --st-warn-text:   #b45309;
-  --st-warn-line:   rgba(245,158,11,.45);
-  --st-info-bg:     rgba(2,132,199,.12);
-  --st-info-text:   #0284c7;
-  --st-info-line:   rgba(2,132,199,.40);
+  /* ── BẢNG TOKEN v2 · nền và mực ───────────────────────────── */
+  --ds-page:        #FBF7EE;   /* nền trang */
+  --ds-card:        #FFFFFF;   /* thẻ, ô nhập */
+  --ds-paper:       #FFFCF5;   /* thanh trên/dưới, mặt giấy */
+  --ds-tint:        #F6EFE1;   /* khối ghi chú nhẹ, code nội dòng */
+  --ds-desk:        #EFE6D3;   /* nền bàn, rãnh thanh tiến độ */
+  --ds-line:        #E7DCC6;   /* đường kẻ TRANG TRÍ. 1,36:1 trên thẻ —
+                                  KHÔNG dùng làm viền của thứ bấm được */
+  --ds-sketch:      #8E7652;   /* viền thứ bấm được, nét đứt "chưa học".
+                                  4,21:1 trên paper → đạt 1.4.11 */
+  --ds-ink:         #2A2017;   /* chữ chính · 14,91:1 trên page */
+  --ds-soft:        #5E4630;   /* chữ phụ, nhãn · 8,20:1 trên page */
 
-  /* ── khối code (tối ở cả hai chế độ) ──────────────────────── */
-  --st-code-bg:     #1c2536;
+  /* ── BẢNG TOKEN v2 · bốn họ nhấn ──────────────────────────── */
+  --ds-violet:      #6E2BA8;   /* vị trí, lựa chọn, liên kết · 7,63:1 */
+  --ds-violet-deep: #4F1D7A;   /* chữ tím trên nền tím nhạt · 10,09:1 */
+  --ds-violet-tint: #F5EAFB;
+  --ds-action:      #7A2BB8;   /* CHỈ nền nút chính · chữ trắng 7,33:1 */
+  --ds-on-action:   #FFFFFF;   /* chữ/hình đặt trên nền màu nhấn đậm */
+  --ds-sanguine:    #9C3B22;   /* chú ý, chưa đúng · 6,41:1 */
+  --ds-sanguine-tint: #FBF1EC;
+  --ds-ochre:       #8A5A0F;   /* đã có, đúng, đã xong · 5,53:1 */
+  --ds-ochre-tint:  #FBF4E4;
+
+  /* ── BẢNG TOKEN v2 · khung code (tối ở cả hai chế độ) ─────── */
+  --ds-code-bg:     #221A13;
+  --ds-code-line:   #3D3127;   /* đường kẻ trong khung code */
+  --ds-code-fg:     #EFE6D2;   /* 13,81:1 */
+  --ds-code-meta:   #C9B48C;   /* tên file, nhãn · 8,48:1 */
+  --ds-code-num:    #A8977F;   /* số dòng, chú thích · 6,04:1 */
+  --ds-code-kw:     #F2B880;   /* 9,75:1 */
+  --ds-code-str:    #C8DDA0;   /* 11,68:1 */
+  --ds-mark-violet: #C99BEF;   /* màu nhấn ĐẶT TRÊN NỀN TỐI · 7,69:1 */
+  --ds-mark-sanguine: #EC9277; /* 7,30:1 */
+  --ds-mark-ochre:  #E0B062;   /* 8,62:1 */
+
+  /* ── BẢNG TOKEN v2 · độ nổi ───────────────────────────────── */
+  /* Chỉ MỘT mức nổi, dành cho thẻ đang mở. */
+  --ds-shadow-open: 0 6px 22px rgba(42, 32, 23, .08);
+
+  /* ── BẢNG TOKEN v2 · thang cỡ chữ ─────────────────────────────
+     Luật của bản thiết kế: không có chữ nào nhỏ hơn 15px, và câu nào
+     người học phải đọc để biết làm gì thì từ 17px trở lên.
+
+     Tám cỡ. Đặt thành token để không ai thêm cỡ thứ chín mà không thấy:
+     `e2e/unit/ds-type-scale.test.mjs` trượt nếu một file ĐÃ CHUYỂN viết
+     lại một con số px, hoặc nếu thang ở đây mọc thêm/hụt một cỡ.
+
+     ĐÃ CHUYỂN (test canh): LessonChrome, LessonBrief, ShellA, ShellB,
+     TryItButton, exercises/*.module.css, studio-chrome.module.css, và
+     mọi `fontSize` nội tuyến trong lesson-chrome/exercises/*.tsx.
+
+     CHƯA CHUYỂN — nợ còn lại, đo ngày 14/10/2026:
+       · `python-studio/studio.module.css`: 100 khai báo font-size px, 12
+         cỡ khác nhau, trong đó 88 khai báo dưới 14px (nhỏ nhất 8px).
+         File này chỉ vẽ trang demo `?demo=list` (PythonStudio.tsx) —
+         không nằm trong giáo trình 48 bài — nên để lại cho một đợt
+         riêng: 100 khai báo trong một file 1 785 dòng mà gộp vào đợt
+         này thì không soát nổi.
+       · `code-visualizer/CodeVisualizer.module.css`: 12 khai báo, 11
+         dưới 15px. Nằm trong vùng của agent khác, không được sửa. */
+  --ds-fs-label:    15px;  /* nhãn in hoa, chip, meta, số dòng ghi chú */
+  --ds-fs-code:     16px;  /* khối code (JetBrains Mono) */
+  --ds-fs-ui:       17px;  /* nút, nav, phương án trắc nghiệm */
+  --ds-fs-body:     18px;  /* MỌI câu văn đầy đủ */
+  --ds-fs-lead:     20px;  /* câu dẫn, trích dẫn */
+  --ds-fs-h3:       22px;  /* câu hỏi, tiêu đề thẻ */
+  --ds-fs-h2:       28px;  /* tiêu đề mục */
+  --ds-fs-h1:       36px;  /* tiêu đề màn */
+
+  /* ── phản hồi bài làm — BÍ DANH, không còn mã màu riêng ───────
+     "ok" là ochre (đã có / đúng), "err" và "warn" là sanguine (chú ý).
+     Hai cái sau trùng màu LÀ CÓ Ý: bảng v2 chỉ cho sanguine một vai. */
+  --st-ok-bg:       var(--ds-ochre-tint);
+  --st-ok-text:     var(--ds-ochre);
+  --st-ok-line:     var(--ds-ochre);
+  --st-err-bg:      var(--ds-sanguine-tint);
+  --st-err-text:    var(--ds-sanguine);
+  --st-err-line:    var(--ds-sanguine);
+  --st-warn-bg:     var(--ds-sanguine-tint);
+  --st-warn-text:   var(--ds-sanguine);
+  --st-warn-line:   var(--ds-sanguine);
+  --st-info-bg:     var(--ds-violet-tint);
+  --st-info-text:   var(--ds-violet-deep);
+  --st-info-line:   var(--ds-violet);
+
+  /* ── khối code ────────────────────────────────────────────── */
+  --st-code-bg:     var(--ds-code-bg);
   --st-code-radius: 16px;
-  --st-code-gutter: rgba(255,255,255,.28);
-  --st-syn-keyword: #92b1ea;
-  --st-syn-string:  #ecc48d;
-  --st-syn-number:  #f78c6c;
-  --st-syn-comment: #69717f;
-  --st-syn-plain:   #e3e8f0;
+  /* Trước đây là rgba(255,255,255,.28) và bị dùng LÀM MÀU CHỮ cho số
+     dòng — trộn ra ≈#5B534D, chỉ 2,3:1 trên nền code. Nay chỉ còn là
+     ĐƯỜNG KẺ; màu số dòng dùng --ds-code-num (6,04:1). */
+  --st-code-gutter: var(--ds-code-line);
+  --st-syn-keyword: var(--ds-code-kw);
+  --st-syn-string:  var(--ds-code-str);
+  --st-syn-number:  var(--ds-mark-sanguine);
+  --st-syn-comment: var(--ds-code-num);
+  --st-syn-plain:   var(--ds-code-fg);
 
-  /* ── kéo thả — dẫn xuất từ tầng 1, không viết lại hex ─────── */
-  --st-chip-bg:     var(--edu-pill-bg);
-  --st-chip-border: var(--edu-pill-border);
-  --st-slot-bg:     var(--edu-accent-soft);
-  --st-slot-border: rgba(63,125,240,.40);
-  --st-drag-shadow: 0 12px 28px rgba(63,125,240,.28);
+  /* ── kéo thả ──────────────────────────────────────────────── */
+  --st-chip-bg:     var(--ds-card);
+  --st-chip-border: var(--ds-sketch);
+  --st-slot-bg:     var(--ds-violet-tint);
+  --st-slot-border: var(--ds-violet);
+  --st-drag-shadow: var(--ds-shadow-open);
 
-  /* ── bóng đổ nội bộ Studio ────────────────────────────────── */
-  --st-shadow-sm:   0 2px 6px rgba(30,37,50,.08);
-  --st-shadow-md:   0 6px 18px rgba(30,37,50,.10);
+  /* ── bóng đổ: một mức duy nhất ────────────────────────────── */
+  --st-shadow-sm:   var(--ds-shadow-open);
+  --st-shadow-md:   var(--ds-shadow-open);
 
   /* ── kích thước khung màn học ─────────────────────────────── */
   --st-chrome-h:    56px;
@@ -53,37 +152,44 @@
      hoạ của bài vẽ ở khổ 1280×640; ở cột 680 nó hiện chưa tới một nửa nên chữ
      trong sơ đồ xuống còn 6–7px, không đọc nổi. */
   --st-col-wide:    1328px;
-  --st-card-radius: 22px;
+  --st-card-radius: 16px;
 
-  /* ── khung bài học PE v3 (Figma "B01–B20 bản một màn") ────── */
-  --st-page-bg:     #f3f5fa;   /* nền phẳng của màn học */
-  --st-track:       #d8dee8;   /* rãnh thanh tiến độ */
-  --st-streak-bg:   #e6eefd;
-  --st-predict-bg:  #e8effb;   /* thẻ DỰ ĐOÁN */
-  --st-code-bar:    #293141;   /* thanh tên file trên khối code */
-  --st-code-meta:   #bfc8d9;   /* chữ main.py / PYTHON 3 */
-  --st-reflect-bg:  #e9f7f0;   /* thẻ GIẢI THÍCH TRƯỚC KHI XEM ĐÁP ÁN */
-  --st-reflect-text:#314a3a;
-  --st-code-edge:   transparent; /* viền khối code, chỉ cần ở chế độ tối */
+  /* ── khung bài học ────────────────────────────────────────── */
+  --st-page-bg:     var(--ds-page);
+  --st-track:       var(--ds-desk);   /* rãnh thanh tiến độ */
+  --st-predict-bg:  var(--ds-sanguine-tint);  /* thẻ DỰ ĐOÁN = đoán trước */
+  --st-code-bar:    var(--ds-code-line);      /* thanh tên file */
+  --st-code-meta:   var(--ds-code-meta);
+  --st-reflect-bg:  var(--ds-violet-tint);    /* thẻ GIẢI THÍCH TRƯỚC */
+  --st-reflect-text: var(--ds-violet-deep);
+  --st-code-edge:   var(--ds-code-line);
 }
 
+/* ── Ban đêm ──────────────────────────────────────────────────
+   Chỉ đổi BẢNG --ds-*; mọi bí danh --st-* ở trên là var() nên tự đi theo,
+   không phải khai lại lần nữa. Bốn họ nhấn đổi sang bản sáng hơn: bản ngày
+   đặt lên nền #16120E chỉ còn 2,28:1 (đúng chỗ bản thiết kế bắt lỗi ở màn
+   Main). Khung code KHÔNG đổi — nó đã tối ở cả hai chế độ. */
 body.dark {
-  --st-ok-bg:       rgba(34,197,94,.18);
-  --st-err-bg:      rgba(240,82,107,.18);
-  --st-warn-bg:     rgba(245,158,11,.18);
-  --st-info-bg:     rgba(2,132,199,.18);
-  --st-code-bg:     #13171e;
-  --st-syn-plain:   #ccd2dc;
-  --st-shadow-sm:   0 2px 6px rgba(0,0,0,.40);
-  --st-shadow-md:   0 6px 18px rgba(0,0,0,.45);
+  --ds-page:        #16120E;
+  --ds-card:        #221C16;
+  --ds-paper:       #1B1611;
+  --ds-tint:        #2A231C;
+  --ds-desk:        #3A2F25;
+  --ds-line:        #3A2F25;
+  --ds-sketch:      #A99272;
+  --ds-ink:         #F2EBDD;   /* 15,71:1 trên page */
+  --ds-soft:        #CDBFA6;   /* 9,31:1 trên card */
 
-  --st-page-bg:     var(--edu-bg-solid);
-  --st-track:       rgba(255,255,255,.12);
-  --st-streak-bg:   rgba(63,125,240,.20);
-  --st-predict-bg:  rgba(63,125,240,.14);
-  --st-code-bar:    #1a2231;
-  --st-code-meta:   #a1aabc;
-  --st-reflect-bg:  rgba(34,197,94,.14);
-  --st-reflect-text:#bfe6cc;
-  --st-code-edge:   rgba(255,255,255,.10);
+  --ds-violet:      #C99BEF;   /* 7,56:1 — thay #6E2BA8 (2,28:1) */
+  --ds-violet-deep: #E3C4FA;
+  --ds-violet-tint: #2E2238;
+  --ds-action:      #C99BEF;   /* nền nút chính + chữ #16120E = 8,36:1 */
+  --ds-on-action:   #16120E;
+  --ds-sanguine:    #EC9277;   /* 7,94:1 */
+  --ds-sanguine-tint: #33201A;
+  --ds-ochre:       #E0B062;   /* 8,47:1 */
+  --ds-ochre-tint:  #2B2416;
+
+  --ds-shadow-open: 0 6px 22px rgba(0, 0, 0, .45);
 }

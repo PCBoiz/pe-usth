@@ -27,18 +27,18 @@ export default function CodeAnnotated({ filename, langTag, code, annotations }: 
           <div
             key={i}
             style={{
-              background: 'var(--edu-card-bg)',
-              border: '1px solid var(--edu-sidebar-border)',
+              background: 'var(--ds-tint)',
+              border: '1px solid var(--ds-line)',
               borderRadius: 10,
               padding: '10px 14px',
-              fontSize: 13,
+              fontSize: 'var(--ds-fs-code)',
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--edu-t1)', fontWeight: 600 }}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--edu-accent)', flexShrink: 0 }} />
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--ds-ink)', fontWeight: 600 }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--ds-violet)', flexShrink: 0 }} />
               {a.label}
             </div>
-            <div style={{ color: 'var(--edu-t3)', marginTop: 4 }}>{a.detail}</div>
+            <div style={{ color: 'var(--ds-soft)', marginTop: 4 }}>{a.detail}</div>
           </div>
         ))}
       </div>

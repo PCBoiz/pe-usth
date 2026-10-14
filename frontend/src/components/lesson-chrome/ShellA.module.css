@@ -1,8 +1,11 @@
 .card {
-  background: var(--edu-panel-bg);
-  border: var(--edu-card-border);
+  background: var(--ds-card);
+  /* `border: var(--edu-card-border)` cũ là MỘT MÀU rời (rgba trắng), không
+     phải viết gộp border hợp lệ — trình duyệt bỏ qua cả dòng, thẻ không có
+     viền nào. Nay viền thật, màu `line` (trang trí: thẻ không bấm được). */
+  border: 1px solid var(--ds-line);
   border-radius: var(--st-card-radius);
-  box-shadow: var(--edu-card-shadow);
+  box-shadow: var(--ds-shadow-open);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   padding: 48px 40px;
@@ -17,8 +20,8 @@
   width: 68px;
   height: 68px;
   border-radius: 50%;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -27,17 +30,17 @@
 }
 
 .title {
-  font-size: 22px;
+  font-size: var(--ds-fs-h3);
   font-weight: 700;
   letter-spacing: -0.02em;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   line-height: 1.4;
   margin: 0;
 }
 
 .description {
-  font-size: 14px;
-  color: var(--edu-t3);
+  font-size: var(--ds-fs-body);
+  color: var(--ds-soft);
   line-height: 1.6;
   margin: 12px 0 0;
   max-width: 420px;
@@ -49,19 +52,25 @@
   gap: 6px;
   margin-top: 24px;
 }
+/* `width` KHÔNG nằm trong transition: chấm là anh em trong một flex row, nên
+   chuyển tiếp bề rộng bắt trình duyệt layout lại cả hàng ở mỗi khung hình trong
+   200 ms. Chấm đổi bề rộng tức thì (6 → 24px) và chỉ màu là chuyển dần; cách
+   này không dùng scaleX vì co ngang một viên thuốc bo 999px làm méo hai đầu. */
 .dot,
 .dotActive {
   height: 6px;
   border-radius: 999px;
-  background: var(--edu-track-bg);
-  transition: width 0.2s ease, background 0.2s ease;
+  /* `desk` chỉ 1,24:1 trên thẻ — chấm chưa tới là thông tin ("còn mấy bước"),
+     nên phải nhận ra được (WCAG 1.4.11 ≥ 3:1). `sketch` cho 4,21:1. */
+  background: var(--ds-sketch);
+  transition: background 0.2s ease;
 }
 .dot {
   width: 6px;
 }
 .dotActive {
   width: 24px;
-  background: var(--edu-accent-grad);
+  background: var(--ds-action);  /* 7,33:1 trên thẻ */
 }
 
 @media (max-width: 560px) {
@@ -69,6 +78,6 @@
     padding: 32px 24px;
   }
   .title {
-    font-size: 19px;
+    font-size: var(--ds-fs-lead);
   }
 }

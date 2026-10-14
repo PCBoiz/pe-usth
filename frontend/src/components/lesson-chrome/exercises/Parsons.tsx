@@ -38,10 +38,15 @@ function Line({ line, num }: { line: ParsonsLine; num: number }) {
   return (
     <div
       className={styles.codeLine}
-      style={{ paddingLeft: line.indent * 20, opacity: line.fixed ? 0.55 : 1 }}
+      style={{ paddingLeft: line.indent * 20 }}
     >
       <span className={styles.lineNum}>{num}</span>
-      <span className={styles.codeText}>{line.content}</span>
+      {/* Dòng cho sẵn (fixed) từng làm mờ cả dòng bằng `opacity: .55`: chữ
+          code mờ 55% trên nền khung code chỉ còn ≈3,4:1. Nay đổi MÀU sang
+          --ds-code-num (6,04:1), vẫn nhạt hơn dòng người học phải lắp. */}
+      <span className={styles.codeText} style={line.fixed ? { color: 'var(--ds-code-num)' } : undefined}>
+        {line.content}
+      </span>
     </div>
   );
 }
@@ -75,7 +80,7 @@ export default function Parsons({
               borderRadius: 6,
               padding: '6px 12px',
               margin: '6px 0',
-              fontSize: 11,
+              fontSize: 'var(--ds-fs-label)',
               color: 'var(--st-syn-comment)',
               textAlign: 'center',
             }}
@@ -90,7 +95,7 @@ export default function Parsons({
       {/* Nhóm có tên: không thế thì trình đọc màn hình gặp một dãy nút lệnh
           Python trần, không biết chúng thuộc kho dòng lệnh nào. */}
       <div style={{ marginTop: 14 }} role="group" aria-label="Kho dòng lệnh còn lại, có cả dòng gây nhiễu">
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }}>
+        <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--ds-soft)', marginBottom: 8 }}>
           {revealed ? 'DÒNG LỆNH CÒN LẠI (CÓ DÒNG BẪY)' : <>DÒNG LỆNH CÒN LẠI &amp; DÒNG GÂY NHIỄU</>}
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -101,12 +106,12 @@ export default function Parsons({
               <button
                 key={item.id}
                 type="button"
-                className={styles.optionCard}
+                // Dòng nhiễu đã lộ lý do: .optionDim thay cho `opacity: .6`.
+                className={revealed && showReason ? styles.optionDim : styles.optionCard}
                 disabled={Boolean(revealed && showReason)}
                 onClick={() => (item.distractorReason ? onAttemptDistractor(item.id) : onPick(item.id))}
                 style={{
                   justifyContent: 'space-between',
-                  opacity: revealed && showReason ? 0.6 : 1,
                   minWidth: 0,
                   gap: 8,
                 }}
@@ -116,7 +121,7 @@ export default function Parsons({
                   {item.content}
                 </code>
                 {showReason && (
-                  <span style={{ fontSize: 11, color: 'var(--st-err-text)', background: 'var(--st-err-bg)', borderRadius: 999, padding: '2px 10px', whiteSpace: 'normal' }}>
+                  <span style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--st-err-text)', background: 'var(--st-err-bg)', borderRadius: 999, padding: '2px 10px', whiteSpace: 'normal' }}>
                     Nhiễu: {item.distractorReason}
                   </span>
                 )}

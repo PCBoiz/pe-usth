@@ -96,7 +96,7 @@ export default function SandboxScreen({
       {four?.env && <div className={`${c.note} ${c.noteWarn}`}>{four.env}</div>}
       {boss ? (
         <div className={`${c.note} ${c.boss}`} role="status">
-          <strong>⚔️ Trận Boss của chặng.</strong> Không có gợi ý — tự viết và nộp. Lời giải mẫu chỉ mở
+          <strong>Bài tổng hợp chặng.</strong> Không có gợi ý — tự viết và nộp. Lời giải mẫu chỉ mở
           sau lần nộp đầu, và xem nó thì điểm trận này bị giới hạn ở 60%.
         </div>
       ) : (
@@ -199,14 +199,14 @@ export default function SandboxScreen({
             four?.solutionCode && (!gate || draft.submitted)
               ? () => {
                   update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
-                  setMessage('Đã chèn lời giải mẫu. Hãy đọc hiểu trước khi nộp.');
+                  setMessage('Đã chèn lời giải mẫu. Đọc hiểu rồi nộp thì bạn giữ được kiến thức.');
                 }
               : undefined
           }
           placeholder={
             tests.length
               ? undefined
-              : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
+              : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
           }
           consoleLines={consoleLines(result, draft.code)}
           consoleMeta={result ? `${result.duration} ms` : runtimeStatus}

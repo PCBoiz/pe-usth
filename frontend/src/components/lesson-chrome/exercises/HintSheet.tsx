@@ -6,7 +6,6 @@ export interface HintLevel {
   title: string;
   body?: React.ReactNode;
   locked: boolean;
-  cost?: number;
 }
 
 export interface HintSheetProps {
@@ -28,14 +27,17 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
             <div
               key={i}
               style={{
-                background: 'var(--edu-panel-bg-solid)',
-                border: '1px solid var(--edu-sidebar-border)',
+                background: 'var(--ds-card)',
+                border: '1px solid var(--ds-line)',
                 borderRadius: 12,
                 padding: '14px 16px',
               }}
             >
-              {/* Trước đây chỉ mở khoá được khi có `cost`; bài học thật không
-                  trừ XP nên không truyền cost, và học viên kẹt ở tầng 1. */}
+              {/* Nhãn nút từng là "⚡ Mở khoá (-N XP)" khi mức gợi ý có `cost`.
+                  Bỏ hẳn cả nhãn và trường `cost`: trừ XP của người đi xin giúp
+                  đỡ là phạt đúng lúc họ cần giúp nhất, ngược hẳn tinh thần tự
+                  học đã chốt (design-system-v2 §2.3). Không ai truyền `cost`
+                  nữa, nên để trường đó lại chỉ mời người sau bật lại. */}
               <button
                 type="button"
                 onClick={() => locked && onUnlock(i)}
@@ -53,24 +55,24 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
                   border: 0,
                   font: 'inherit',
                   cursor: locked ? 'pointer' : 'default',
-                  color: 'var(--edu-t1)',
+                  color: 'var(--ds-ink)',
                   fontWeight: 700,
-                  fontSize: 13,
+                  fontSize: 'var(--ds-fs-ui)',
                 }}
               >
                 <span>
                   <span aria-hidden="true">{locked ? '🔒' : '💡'}</span> {level.title}
                 </span>
                 {locked && (
-                  <span style={{ background: 'var(--edu-accent-soft)', color: 'var(--edu-accent-text)', borderRadius: 999, padding: '3px 10px', fontSize: 11 }}>
-                    {level.cost != null ? `⚡ Mở khoá (-${level.cost} XP)` : 'Mở gợi ý này'}
+                  <span style={{ background: 'var(--ds-violet-tint)', color: 'var(--ds-violet-deep)', borderRadius: 999, padding: '3px 10px', fontSize: 'var(--ds-fs-label)' }}>
+                    Mở gợi ý này
                   </span>
                 )}
               </button>
               {/* Bấm "Mở gợi ý" xong thì nội dung hiện ra ở chỗ khác với nút vừa
                   bấm — vùng sống để nó được đọc ngay, khỏi phải đi tìm. */}
               {isOpen && level.body && (
-                <div role="status" style={{ fontSize: 13, color: 'var(--edu-t2)', lineHeight: 1.7, marginTop: 10 }}>{level.body}</div>
+                <div role="status" style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', lineHeight: 1.7, marginTop: 10 }}>{level.body}</div>
               )}
             </div>
           );
@@ -84,14 +86,17 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
             flex: 1,
             padding: '12px 16px',
             borderRadius: 999,
-            border: '1px solid var(--edu-sidebar-border)',
-            background: 'var(--edu-card-bg)',
-            color: 'var(--edu-t1)',
-            fontWeight: 600,
+            // `line` chỉ 1,2:1 trên nền `tint` — không nhận ra là nút
+            // (WCAG 1.4.11). `sketch` cho 3,4:1 trên nền đó.
+            border: '2px solid var(--ds-sketch)',
+            background: 'var(--ds-tint)',
+            color: 'var(--ds-ink)',
+            fontSize: 'var(--ds-fs-ui)',
+            fontWeight: 700,
             cursor: 'pointer',
           }}
         >
-          ✓ Đã hiểu, quay lại làm bài
+          Đã hiểu, quay lại làm bài
         </button>
         <button
           type="button"
@@ -102,8 +107,10 @@ export default function HintSheet({ levels, openIndex, onUnlock, onBackToCode, o
             borderRadius: 999,
             border: 0,
             background: 'transparent',
-            color: 'var(--edu-accent-text)',
-            fontWeight: 600,
+            color: 'var(--ds-violet-deep)',
+            fontSize: 'var(--ds-fs-ui)',
+            fontWeight: 700,
+            textDecoration: 'underline',
             cursor: 'pointer',
           }}
         >

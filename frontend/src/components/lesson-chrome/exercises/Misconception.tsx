@@ -19,10 +19,10 @@ export default function Misconception({ myth, correction, exampleLabel, langTag,
       </span>
       <p
         style={{
-          fontSize: 20,
+          fontSize: 'var(--ds-fs-lead)',
           fontWeight: 700,
           textDecoration: 'line-through',
-          color: 'var(--edu-t3)',
+          color: 'var(--ds-soft)',
           margin: '16px 0 20px',
         }}
       >
@@ -36,15 +36,15 @@ export default function Misconception({ myth, correction, exampleLabel, langTag,
           marginBottom: 16,
         }}
       >
-        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--st-ok-text)', marginBottom: 6 }}>
+        <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--st-ok-text)', marginBottom: 6 }}>
           ✓ THỰC TẾ CHÍNH XÁC
         </div>
-        <div style={{ fontSize: 14, color: 'var(--edu-t1)', lineHeight: 1.6 }}>{correction}</div>
+        <div style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-ink)', lineHeight: 1.6 }}>{correction}</div>
       </div>
       {code && (
         <>
           {exampleLabel && (
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--edu-t3)', marginBottom: 6 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)', marginBottom: 6 }}>
               <span>● {exampleLabel}</span>
               {langTag && <span>{langTag}</span>}
             </div>

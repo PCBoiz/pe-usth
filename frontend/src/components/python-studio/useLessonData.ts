@@ -21,7 +21,6 @@ export type LessonData = {
   lesson: Lesson | null;
   meta: LessonMeta | null;
   user: LessonUser | null;
-  streak: number;
   totalLessons: number;
   enrolled: boolean;
   completed: boolean;
@@ -55,7 +54,6 @@ export function useLessonData({
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [meta, setMeta] = useState<LessonMeta | null>(null);
   const [user, setUser] = useState<LessonUser | null>(null);
-  const [streak, setStreak] = useState(0);
   const [totalLessons, setTotalLessons] = useState(0);
   const [enrolled, setEnrolled] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -118,11 +116,10 @@ export function useLessonData({
       setUser(profile);
       setEnrolled(Boolean(enrollment));
       setTotalLessons(Number(enrollment?.totalLessons) || 0);
-      // Streak chỉ để hiện trên thanh trên cùng — hỏng thì bỏ qua, không chặn bài.
-      void apiFetch('/api/stats')
-        .then((r) => (r.ok ? r.json() : null))
-        .then((stats) => setStreak(Number(stats?.streak) || 0))
-        .catch(() => undefined);
+      // Không gọi /api/stats nữa: lời gọi đó chỉ để lấy số chuỗi ngày hiện lên
+      // thanh trên cùng, mà chuỗi ngày đã gỡ khỏi trang bài học (xem chú thích
+      // trong LessonChrome.tsx). Backend vẫn tính và lưu chuỗi, endpoint vẫn
+      // còn — chỉ là trang bài học không hỏi tới.
 
       // Quản trị viên xem trước bài học mà không cần ghi danh; backend cũng cho
       // đọc content nhưng vẫn chặn nộp bài.
@@ -222,8 +219,8 @@ export function useLessonData({
           setAwards(body.newAchievements as Award[]);
         setMessage(
           body.alreadyCompleted
-            ? 'Bài này đã hoàn thành trước đó — không cộng XP lần hai.'
-            : 'Đã lưu hoàn thành bài học.',
+            ? 'Bài này đã xong trước đó — không cộng XP lần hai.'
+            : 'Đã lưu: bài này đã xong.',
         );
       } catch (error) {
         setMessage(`Chưa lưu được tiến độ: ${(error as Error).message}`);
@@ -238,7 +235,6 @@ export function useLessonData({
     lesson,
     meta,
     user,
-    streak,
     totalLessons,
     enrolled,
     completed,

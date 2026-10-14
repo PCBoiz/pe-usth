@@ -2,7 +2,7 @@
 
 // Dịch từ Stitch "khung_bài_học_python_lesson_chrome_wrapper" (code.html), chỉnh
 // lại theo Figma "PE Python v3 — 20 bài cơ bản B01–B20": top bar 56px trắng (đóng
-// bài + tên bài + thanh tiến độ liền mảnh + 🔥 streak) — vùng nội dung đơn cột
+// bài + tên bài + thanh tiến độ liền mảnh + số bước) — vùng nội dung đơn cột
 // 680px trên nền phẳng — bottom bar 88px ("✓ Tiến độ tự lưu" + 1 nút CTA 480px).
 // Dùng chung cho mọi loại bài học (không riêng Python) nên đặt ngoài
 // components/python-studio; ăn theo token --edu-*/--st-* đã gom ở
@@ -14,7 +14,12 @@ export interface LessonChromeProps {
   /** Bước hiện tại, 1-based. */
   step: number;
   totalSteps: number;
-  streak: number;
+  // KHÔNG có prop `streak` nữa: chuỗi ngày học đã bị gỡ khỏi thanh trên cùng.
+  // Chủ sản phẩm chốt triết lý "tự học + hệ thống dẫn đường + thích ứng", trong
+  // đó chuỗi bị ĐỨT là thứ đẩy người học bỏ cuộc (Silverman & Barasch 2023) nên
+  // nằm trong danh sách "đừng làm"; chỉ số hiển thị phải là loại CHỈ TĂNG.
+  // Backend vẫn tính và lưu chuỗi (src/common/streak/) để bật lại được sau này
+  // — đây chỉ là gỡ phần HIỂN THỊ.
   /** Điểm trong bài (khoá có mini-game). Không truyền thì không hiện ô điểm. */
   points?: number;
   courseLabel?: string;
@@ -51,7 +56,6 @@ export interface LessonChromeProps {
 export default function LessonChrome({
   step,
   totalSteps,
-  streak,
   points,
   courseLabel = 'Python Studio',
   saveLabel = '✓ Tiến độ tự lưu',
@@ -102,14 +106,19 @@ export default function LessonChrome({
               // xong: dừng ở nửa đoạn trông như treo/lỗi. Thanh liền mảnh theo
               // Figma nên không có viền đánh dấu: đoạn đã xong nằm SAU màn đang
               // mở (khi xem lại) tô nhạt hơn để vẫn thấy mình đang ở đâu.
-              const width = doneSteps?.[i] || idx < step || current ? '100%' : '0%';
+              const filled = Boolean(doneSteps?.[i]) || idx < step || current;
               const ahead = !current && idx > step && Boolean(doneSteps?.[i]);
               const className = current
                 ? `${styles.segment} ${styles.segmentCurrent}`
                 : ahead
                   ? `${styles.segment} ${styles.segmentAhead}`
                   : styles.segment;
-              const fill = <div className={styles.segmentFill} style={{ width }} />;
+              // Bằng CLASS, không bằng `style={{ width }}`: thuộc tính style nội
+              // tuyến do SSR sinh ra cũng bị `style-src` của CSP chặn khi bỏ
+              // 'unsafe-inline' (xem AGENTS.md), và scaleX thì không cần số.
+              const fill = (
+                <div className={filled ? `${styles.segmentFill} ${styles.segmentFillOn}` : styles.segmentFill} />
+              );
               // Chỉ những màn đã đi qua mới bấm được: thanh tiến độ không phải
               // đường tắt bỏ qua phần chưa làm.
               if (onSeek && idx <= (seekMax ?? step))
@@ -135,21 +144,17 @@ export default function LessonChrome({
 
           <span className={styles.stepLabel}>{step}/{totalSteps}</span>
 
+          {/* Pill chuỗi ngày (🔥) từng đứng ở đây và là mục neo mép phải. Gỡ rồi
+              thì `.stepLabel` nhận `margin-left: auto` để "3/8" (và ⭐ điểm nếu
+              có) về đúng chỗ đó — thanh không bị hụt một bên. Nhờ vậy cũng bỏ
+              được `style={{ marginLeft: 0 }}` nội tuyến của pill cũ, thứ mà CSP
+              không còn 'unsafe-inline' sẽ chặn (xem AGENTS.md). */}
           {points !== undefined && (
             <div className={styles.scorePill} title="Điểm trong bài này" aria-label={`${points} điểm`}>
               <span aria-hidden="true">⭐</span>
               <span>{points}</span>
             </div>
           )}
-
-          <div
-            className={styles.streakPill}
-            style={points !== undefined ? { marginLeft: 0 } : undefined}
-            title={`Chuỗi ${streak} ngày học liên tiếp`}
-          >
-            <span aria-hidden="true">🔥</span>
-            <span>{streak}</span>
-          </div>
         </div>
       </header>
 

@@ -40,7 +40,7 @@ export default function Repl({ filename, value, onChange, sampleOutput }: ReplPr
           <span className={styles.langTag}>Chế độ tương tác</span>
         </div>
         <div className={styles.codeBody}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--st-syn-comment)', marginBottom: 8 }}>
+          <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--st-syn-comment)', marginBottom: 8 }}>
             DÒNG LỆNH NHẬP LIỆU
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -56,7 +56,7 @@ export default function Repl({ filename, value, onChange, sampleOutput }: ReplPr
                 outline: 'none',
                 color: 'var(--st-syn-string)',
                 font: 'inherit',
-                fontSize: 13,
+                fontSize: 'var(--ds-fs-code)',
               }}
               aria-label="Biểu thức Python"
             />
@@ -66,7 +66,7 @@ export default function Repl({ filename, value, onChange, sampleOutput }: ReplPr
 
       <div className={styles.runRow}>
         <button type="button" className={styles.runBtn} onClick={run} disabled={running || !value.trim()}>
-          {running ? '⟳ Đang chạy…' : '▶ Chạy (Enter)'}
+          {running ? 'Đang chạy…' : 'Chạy (Enter)'}
         </button>
         <span className={styles.runHint}>Ctrl + Enter để chạy nhanh</span>
       </div>

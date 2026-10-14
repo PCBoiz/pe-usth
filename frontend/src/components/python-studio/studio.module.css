@@ -1,7 +1,7 @@
 .studio {
   min-height: 100vh;
   background: transparent;        /* nền do body vẽ, Studio không tự vẽ */
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   font: 14px/1.65 var(--edu-font);
   position: relative;
   margin: -8px;
@@ -34,13 +34,13 @@
   font-weight: 650;
 }
 .studio p {
-  color: var(--edu-t2);
+  color: var(--ds-soft);
   margin-top: 10px;
 }
 .studio small {
   font-size: 11px;
   line-height: 1.5;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
 }
 .studio code,
 .studio pre,
@@ -69,7 +69,11 @@
 }
 .studio button:disabled {
   cursor: not-allowed;
-  opacity: 0.45;
+  /* Hạ cấp MÀU, không hạ độ đục: `opacity: .45` cho chữ mực trên thẻ trắng
+     còn ≈2,6:1 (bản thiết kế v2 cấm cách này). */
+  background: var(--ds-desk);
+  color: var(--ds-soft);
+  border-color: var(--ds-sketch);
 }
 .studio a {
   color: inherit;
@@ -79,7 +83,7 @@
 .studio a:focus-visible,
 .studio input:focus-visible,
 .studio textarea:focus-visible {
-  outline: 3px solid var(--edu-accent-3);
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 .studio button {
@@ -97,8 +101,8 @@
   max-width: none;
 }
 .header {
-  background: var(--edu-nav-bg);
-  border-bottom: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-paper);
+  border-bottom: 1px solid var(--ds-line);
   height: 66px;
   position: sticky;
   top: 0;
@@ -124,16 +128,16 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-card-bg);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-tint);
   padding: 5px 12px;
   border-radius: 6px;
   font-size: 11px;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 .breadcrumb strong {
   font-weight: 650;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
 }
 .headerActions {
   margin-left: auto;
@@ -144,9 +148,9 @@
 .xp,
 .pill {
   border: 1px solid var(--st-slot-border);
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
   border-radius: 999px;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   font-size: 11px;
   padding: 4px 12px;
   white-space: nowrap;
@@ -167,7 +171,7 @@
   border: 1px solid transparent;
   background: transparent;
   border-radius: 8px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
 }
 .avatar {
   width: 32px;
@@ -176,9 +180,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   box-shadow:
-    0 0 0 2px var(--edu-nav-bg),
+    0 0 0 2px var(--ds-paper),
     0 0 0 4px var(--st-slot-border);
 }
 .main {
@@ -188,8 +192,8 @@
   min-height: calc(100vh - 66px);
 }
 .banner {
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -207,7 +211,7 @@
 }
 .bannerTitle {
   font-size: 13px;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 .slimBanner {
   background: transparent;
@@ -218,7 +222,7 @@
 }
 .slimBanner .bannerTitle {
   font-weight: 700;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   font-size: 17px;
 }
 .badges {
@@ -228,11 +232,11 @@
   font-size: 11px;
 }
 .badges > span {
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-card-bg);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-tint);
   padding: 3px 9px;
   border-radius: 5px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
 }
 .badges b {
   font-weight: 600;
@@ -247,10 +251,10 @@
   gap: 8px;
   font-size: 12px;
   font-weight: 600;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 .badgeDot {
-  color: var(--edu-sidebar-border);
+  color: var(--ds-line);
   font-style: normal;
   font-size: 16px;
   line-height: 1;
@@ -261,8 +265,8 @@
   align-items: center;
   gap: 8px;
   flex-shrink: 0;
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   border-radius: 12px;
   padding: 7px 17px;
 }
@@ -298,30 +302,31 @@
   border: 1px solid var(--st-ok-line);
 }
 .stepCurrent {
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   font-weight: 700;
 }
 .stepCurrent .stepMark {
-  background: var(--edu-accent);
-  color: var(--edu-panel-bg-solid);
+  background: var(--ds-violet);
+  color: var(--ds-on-action);
   font-weight: 700;
   box-shadow: var(--st-shadow-sm);
 }
 .stepTodo {
-  color: var(--edu-t3);
+  /* Màu `soft` ĐÃ là mức "chưa tới" (8,2:1 trên nền trang); nhân thêm
+     opacity 0,6 chỉ kéo nó xuống ≈3,6:1 mà không nói thêm điều gì. */
+  color: var(--ds-soft);
   font-weight: 600;
-  opacity: 0.6;
 }
 .stepTodo .stepMark {
-  background: var(--edu-sidebar-border);
-  color: var(--edu-t3);
+  background: var(--ds-line);
+  color: var(--ds-soft);
   font-weight: 600;
 }
 .stepDivider {
   flex: none;
   width: 10px;
   height: 2px;
-  background: var(--edu-sidebar-border);
+  background: var(--ds-line);
 }
 /* Four labelled steps cannot fit a phone; keep the markers, drop the words. */
 @media (max-width: 900px) {
@@ -370,8 +375,8 @@
   min-width: 0;
 }
 .card {
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-card);
   border-radius: 12px;
   padding: 24px;
   box-shadow: var(--st-shadow-sm);
@@ -392,11 +397,11 @@
 }
 .titleRow h1 small {
   display: inline-block;
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   padding: 2px 8px;
   border-radius: 4px;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
   font-weight: 500;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
@@ -409,8 +414,8 @@
   width: 30px;
   height: 30px;
   border: 1px solid var(--st-slot-border);
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
   border-radius: 7px;
   font-weight: 700;
 }
@@ -439,7 +444,7 @@
   width: 112px;
   height: 112px;
   border-radius: 50%;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
 }
 .codeCard {
   background: var(--st-code-bg);
@@ -556,16 +561,16 @@
   display: flex;
   gap: 12px;
   padding: 12px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   cursor: pointer;
   font-size: 13px;
   align-items: flex-start;
   line-height: 1.55;
 }
 .choice input {
-  accent-color: var(--edu-accent);
+  accent-color: var(--ds-violet);
   margin: 4px 0 0;
   width: 16px;
   height: 16px;
@@ -577,8 +582,8 @@
   margin-top: 2px;
 }
 .selected {
-  border-color: var(--edu-accent-3) !important;
-  background: var(--edu-accent-soft) !important;
+  border-color: var(--ds-violet) !important;
+  background: var(--ds-violet-tint) !important;
 }
 .primary,
 .secondary,
@@ -596,16 +601,16 @@
   white-space: normal;
 }
 .studio .primary {
-  background: var(--edu-accent);
-  color: var(--edu-panel-bg-solid);
+  background: var(--ds-violet);
+  color: var(--ds-on-action);
 }
 .studio .primary:hover:not(:disabled) {
-  background: var(--edu-accent);
+  background: var(--ds-violet);
 }
 .secondary {
-  background: var(--edu-panel-bg-solid);
-  border-color: var(--edu-sidebar-border);
-  color: var(--edu-t1);
+  background: var(--ds-card);
+  border-color: var(--ds-line);
+  color: var(--ds-ink);
 }
 .darkButton {
   background: var(--st-code-bg);
@@ -617,7 +622,7 @@
   display: inline-flex;
   gap: 5px;
   align-items: center;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
   font-size: 12px !important;
   padding: 6px 0;
 }
@@ -645,9 +650,9 @@
 }
 .memory {
   margin-top: 16px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 10px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   padding: 24px;
 }
 .memoryGrid {
@@ -663,15 +668,15 @@
   gap: 6px;
   white-space: nowrap;
   font-size: 10px;
-  background: var(--edu-sidebar-border);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-line);
+  border: 1px solid var(--ds-line);
   border-radius: 6px;
   padding: 5px;
   margin-bottom: 24px;
 }
 .pointer {
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
   padding: 12px;
   display: flex;
@@ -693,10 +698,10 @@
   display: table;
   margin: 16px auto;
   border: 1px solid var(--st-slot-border);
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
   padding: 4px 8px;
   border-radius: 20px;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   font:
     10px/1.4 'JetBrains Mono',
     monospace;
@@ -719,8 +724,8 @@
   left: 33px;
 }
 .heap {
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   border-radius: 10px;
   padding: 16px;
   margin-top: 40px;
@@ -730,7 +735,7 @@
   justify-content: space-between;
 }
 .heap .titleRow:first-child {
-  border-bottom: 1px solid var(--edu-sidebar-border);
+  border-bottom: 1px solid var(--ds-line);
   padding-bottom: 12px;
   font-family: 'JetBrains Mono', monospace;
 }
@@ -741,8 +746,8 @@
   padding: 16px 0;
 }
 .cells > div {
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   border-radius: 7px;
   min-width: 0;
   display: flex;
@@ -757,8 +762,8 @@
 }
 .cells .newCell {
   border-color: var(--st-slot-border);
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
 }
 .consoleLine {
   margin-top: 24px;
@@ -787,14 +792,19 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 20px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   padding: 4px 10px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px !important;
   white-space: nowrap;
 }
+/* NGOẠI LỆ CÓ Ý của luật "không làm mờ bằng opacity": đây là lời giải mẫu
+   đang bị GIỮ LẠI — chữ ở đây PHẢI không đọc được, nên blur + opacity chính
+   là việc cần làm, không phải lỗi tương phản. `ds-tokens.test.mjs` có một
+   danh sách miễn đúng một dòng cho lớp này; thêm dòng thứ hai là phải viết
+   lý do như thế này. */
 .lockedExplanation {
   filter: blur(3px);
   opacity: 0.5;
@@ -803,9 +813,9 @@
 }
 .explanation {
   margin-top: 16px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   display: flex;
   gap: 12px;
   padding: 16px;
@@ -813,7 +823,7 @@
 }
 .explanation > b {
   border-radius: 50%;
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   color: white;
   width: 24px;
   height: 24px;
@@ -827,16 +837,16 @@
   line-height: 1.85;
 }
 .copySolution {
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   margin-top: 16px;
   font-size: 12px;
 }
 .copySolution code {
   display: block;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   margin-top: 8px;
   font-size: 11px;
 }
@@ -846,7 +856,7 @@
   gap: 6px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
   margin-bottom: 10px;
 }
 .eyebrow > .icon {
@@ -860,8 +870,8 @@
 }
 .tokenQueue,
 .inset {
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
   padding: 12px;
 }
@@ -869,7 +879,7 @@
   margin: 16px 0;
 }
 .tokenQueue code {
-  color: var(--edu-accent);
+  color: var(--ds-violet);
 }
 .tokens {
   display: flex;
@@ -879,8 +889,8 @@
   min-height: 28px;
 }
 .tokens button {
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   border-radius: 6px;
   padding: 4px 9px;
   font:
@@ -893,9 +903,9 @@
   gap: 10px;
 }
 .bin {
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 10px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   padding: 10px;
   min-width: 0;
 }
@@ -904,28 +914,28 @@
 }
 .bin h3 small {
   display: block;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
 }
 .bin p {
   font-size: 11px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   margin: 4px 0;
 }
 /* The dashed box IS the bin: chips placed in it must sit inside, not below. */
 .dropZone {
-  border: 1px dashed var(--edu-sidebar-border);
+  border: 1px dashed var(--ds-line);
   border-radius: 6px;
   min-height: 52px;
   width: 100%;
   padding: 8px;
-  background: var(--edu-panel-bg-solid);
+  background: var(--ds-card);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 .dropZoneReady {
-  border-color: var(--edu-accent);
-  background: var(--edu-accent-soft);
+  border-color: var(--ds-violet);
+  background: var(--ds-violet-tint);
 }
 .dropZone .tokens {
   margin-top: 0;
@@ -939,15 +949,15 @@
   min-height: 28px;
   padding: 4px;
   background: transparent;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   font-size: 11px !important;
 }
 .dropZoneReady .dropTarget {
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   font-weight: 600;
 }
 .queueEmpty {
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   font-size: 11px;
 }
 /* Admin-only answer key inside the hint popup. */
@@ -956,7 +966,7 @@
 }
 .answerKey {
   margin-top: 12px;
-  border-top: 1px solid var(--edu-sidebar-border);
+  border-top: 1px solid var(--ds-line);
   padding-top: 12px;
   max-height: 46vh;
   overflow-y: auto;
@@ -968,7 +978,7 @@
   font-size: 12px;
 }
 .adminTag {
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   color: white;
   border-radius: 4px;
   padding: 2px 6px;
@@ -978,14 +988,14 @@
 .answerKey section {
   margin-top: 10px;
   padding-left: 10px;
-  border-left: 2px solid var(--edu-sidebar-border);
+  border-left: 2px solid var(--ds-line);
 }
 .answerKeyNow {
-  border-left-color: var(--edu-accent) !important;
+  border-left-color: var(--ds-violet) !important;
 }
 .answerKey h4 {
   font-size: 11px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   margin: 0 0 4px;
   text-transform: uppercase;
   letter-spacing: 0.3px;
@@ -995,7 +1005,7 @@
   font:
     11px/1.6 'JetBrains Mono',
     monospace;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   word-break: break-word;
 }
 .binGrid + .titleRow {
@@ -1016,12 +1026,12 @@
   display: block;
   width: 100%;
   min-height: 80px;
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
   resize: vertical;
   padding: 10px;
-  color: var(--edu-t1);
-  background: var(--edu-panel-bg-solid);
+  color: var(--ds-ink);
+  background: var(--ds-card);
   font-size: 13px !important;
 }
 .probe > .titleRow:last-child {
@@ -1088,15 +1098,15 @@
   align-items: center;
   justify-content: space-between;
   gap: 5px;
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-card);
   border-radius: 6px;
   padding: 7px;
   text-align: left;
 }
 .tokenBank code {
   font-size: 11px;
-  color: var(--edu-accent);
+  color: var(--ds-violet);
 }
 .tokenBank small {
   font-size: 9px;
@@ -1107,10 +1117,10 @@
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-  background: var(--edu-panel-bg-solid);
-  color: var(--edu-t1);
+  background: var(--ds-card);
+  color: var(--ds-ink);
   padding: 12px 16px;
-  border-top: 1px solid var(--edu-sidebar-border);
+  border-top: 1px solid var(--ds-line);
 }
 .runBar > small:first-child {
   margin-right: auto;
@@ -1136,8 +1146,8 @@
   gap: 5px;
 }
 .heapValue {
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   padding: 10px;
   border-radius: 8px;
   margin-top: 16px;
@@ -1153,7 +1163,7 @@
 }
 .heapValue > code {
   float: right;
-  background: var(--edu-panel-bg-solid);
+  background: var(--ds-card);
   color: var(--st-info-text);
   padding: 1px 5px;
   font-size: 10px;
@@ -1161,28 +1171,30 @@
 }
 .heapValue pre {
   margin: 8px 0 4px;
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   padding: 7px;
   border-radius: 4px;
   font-size: 11px;
 }
 .logEntry {
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
   padding: 10px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   font:
     10px/1.8 'JetBrains Mono',
     monospace !important;
 }
 .faded {
-  opacity: 0.45;
+  /* Trước là `opacity: .45` (≈2,6:1). Màu `soft` vẫn nhạt hơn chữ chính mà
+     đọc được: 8,2:1 trên nền trang. */
+  color: var(--ds-soft);
 }
 .contract {
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 7px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   padding: 10px;
 }
 .contract p {
@@ -1196,8 +1208,8 @@
   font-size: 10px;
 }
 .contract p:last-child {
-  border-top: 1px solid var(--edu-sidebar-border);
-  color: var(--edu-accent);
+  border-top: 1px solid var(--ds-line);
+  color: var(--ds-violet);
 }
 .sandboxGrid .card {
   padding: 16px;
@@ -1209,8 +1221,8 @@
   font-size: 13px;
 }
 .sandboxGrid .card > p > code {
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
   line-height: 1.8;
 }
 .sandboxGrid .card > p.green,
@@ -1219,9 +1231,9 @@
   font-size: 10px;
 }
 .hintLevel {
-  border: 1px solid var(--edu-sidebar-border);
+  border: 1px solid var(--ds-line);
   border-radius: 8px;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   margin-top: 8px;
   padding: 8px;
 }
@@ -1241,7 +1253,7 @@
   height: 16px;
   border-radius: 50%;
   color: white;
-  background: var(--edu-t3);
+  background: var(--ds-soft);
   text-align: center;
   font-size: 10px;
 }
@@ -1250,7 +1262,7 @@
 }
 .hintLevel > div {
   padding-top: 8px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   font-size: 11px;
   line-height: 1.6;
 }
@@ -1318,8 +1330,8 @@
   gap: 8px;
   align-items: flex-start;
   padding: 10px;
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-line);
   border-radius: 6px;
   margin-top: 8px;
   font-size: 11px;
@@ -1337,8 +1349,8 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--edu-nav-bg);
-  border-top: 1px solid var(--edu-sidebar-border);
+  background: var(--ds-paper);
+  border-top: 1px solid var(--ds-line);
   backdrop-filter: blur(6px);
   z-index: 20;
   box-shadow: var(--st-shadow-sm);
@@ -1369,11 +1381,11 @@
   gap: 16px;
 }
 .framework {
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-card-bg);
+  border: 1px solid var(--ds-line);
+  background: var(--ds-tint);
   border-radius: 99px;
   padding: 6px 12px;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   font-size: 11px;
   display: flex;
   align-items: center;
@@ -1381,7 +1393,7 @@
   white-space: nowrap;
 }
 .framework b {
-  color: var(--edu-accent);
+  color: var(--ds-violet);
   font-weight: 500;
 }
 .footerRight .textButton {
@@ -1420,7 +1432,7 @@
   width: 340px;
   max-width: calc(100vw - 48px);
   padding: 22px;
-  background: var(--edu-panel-bg-solid);
+  background: var(--ds-card);
   border: 1px solid var(--st-slot-border);
   box-shadow: var(--st-shadow-md);
   border-radius: 12px;
@@ -1451,7 +1463,7 @@
   color: var(--st-err-text) !important;
 }
 .muted {
-  color: var(--edu-t3) !important;
+  color: var(--ds-soft) !important;
   font-size: 11px !important;
 }
 .srOnly {

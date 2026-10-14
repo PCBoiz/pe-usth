@@ -59,13 +59,18 @@ export default function Mcq({
           const isRight = checked && correctKey === opt.key;
           const isWrong = checked && isSelected && correctKey !== opt.key;
 
+          // Sau khi chấm, phương án không liên quan lùi về sau bằng .optionDim
+          // (viền nhạt, bỏ đậm) chứ KHÔNG bằng `opacity: .55` như trước: chữ
+          // `ink` mờ 55% trên thẻ trắng còn ≈4,0:1, trượt AA.
           const cardClass = isRight
             ? styles.optionCorrect
             : isWrong
               ? styles.optionWrong
               : isSelected
                 ? styles.optionSelected
-                : styles.optionCard;
+                : checked
+                  ? styles.optionDim
+                  : styles.optionCard;
           const markClass = isRight
             ? styles.markCorrect
             : isWrong
@@ -82,7 +87,6 @@ export default function Mcq({
               onClick={() => onSelect(opt.key)}
               disabled={checked}
               aria-pressed={isSelected}
-              style={checked && !isRight && !isWrong ? { opacity: 0.55 } : undefined}
             >
               <span className={styles.optionMain}>
                 <code>{opt.key}.</code> {opt.label}

@@ -28,15 +28,15 @@ export default function TraceTable({ filename, code, columns, rows, answers, onA
   return (
     <div>
       <CodeBlock filename={filename} lines={code} />
-      <div style={{ background: 'var(--edu-card-bg)', borderRadius: 12, marginTop: 16, overflow: 'hidden' }}>
+      <div style={{ background: 'var(--ds-tint)', borderRadius: 12, marginTop: 16, overflow: 'hidden' }}>
         <div
           style={{
             display: 'flex',
             justifyContent: 'space-between',
             padding: '10px 14px',
-            fontSize: 12,
+            fontSize: 'var(--ds-fs-label)',
             fontWeight: 700,
-            color: 'var(--edu-t2)',
+            color: 'var(--ds-soft)',
           }}
         >
           <span>
@@ -45,17 +45,17 @@ export default function TraceTable({ filename, code, columns, rows, answers, onA
           {/* Số ô đã điền là phản hồi tiến độ duy nhất của màn này. */}
           <span role="status">{filledCount}/{totalCells} giá trị</span>
         </div>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 'var(--ds-fs-ui)' }}>
           {/* Tên bảng cho trình đọc màn hình: tiêu đề "TRẠNG THÁI BỘ NHỚ" ở trên
               là một div rời, không gắn gì với <table>. */}
           <caption className={styles.srOnly}>
             Trạng thái bộ nhớ qua từng bước — điền giá trị của {columns.join(', ')}
           </caption>
           <thead>
-            <tr style={{ background: 'var(--edu-accent-soft)' }}>
-              <th scope="col" style={{ textAlign: 'left', padding: '8px 14px', fontWeight: 700, color: 'var(--edu-t1)' }}>Bước</th>
+            <tr style={{ background: 'var(--ds-violet-tint)' }}>
+              <th scope="col" style={{ textAlign: 'left', padding: '8px 14px', fontWeight: 700, color: 'var(--ds-ink)' }}>Bước</th>
               {columns.map((c) => (
-                <th key={c} scope="col" style={{ padding: '8px 14px', fontFamily: 'JetBrains Mono, monospace', color: 'var(--edu-accent-text)' }}>
+                <th key={c} scope="col" style={{ padding: '8px 14px', fontFamily: 'JetBrains Mono, monospace', color: 'var(--ds-violet-deep)' }}>
                   {c}
                 </th>
               ))}
@@ -63,15 +63,15 @@ export default function TraceTable({ filename, code, columns, rows, answers, onA
           </thead>
           <tbody>
             {rows.map((row, i) => (
-              <tr key={i} style={{ borderTop: '1px solid var(--edu-sidebar-border)' }}>
-                <td style={{ padding: '8px 14px', color: 'var(--edu-t2)' }}>{row.step}</td>
+              <tr key={i} style={{ borderTop: '1px solid var(--ds-line)' }}>
+                <td style={{ padding: '8px 14px', color: 'var(--ds-soft)' }}>{row.step}</td>
                 {columns.map((c) => {
                   const given = row.values[c];
                   const key = `${i}-${c}`;
                   return (
                     <td key={c} style={{ padding: '8px 14px', textAlign: 'center' }}>
                       {given !== null ? (
-                        <span style={{ background: 'var(--edu-accent-soft)', borderRadius: 999, padding: '2px 12px', fontFamily: 'JetBrains Mono, monospace' }}>
+                        <span style={{ background: 'var(--ds-violet-tint)', borderRadius: 999, padding: '2px 12px', fontFamily: 'JetBrains Mono, monospace' }}>
                           {given}
                         </span>
                       ) : (
@@ -86,8 +86,8 @@ export default function TraceTable({ filename, code, columns, rows, answers, onA
                             padding: '2px 4px',
                             font: 'inherit',
                             fontFamily: 'JetBrains Mono, monospace',
-                            background: 'var(--edu-panel-bg-solid)',
-                            color: 'var(--edu-t1)',
+                            background: 'var(--ds-card)',
+                            color: 'var(--ds-ink)',
                           }}
                           aria-label={`${row.step} - ${c}`}
                         />

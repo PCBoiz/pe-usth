@@ -1,6 +1,6 @@
-/* Nút "Thử ngay trong IDE". Cùng ngôn ngữ thị giác với nút phụ của khung bài
-   (.secondaryBtn ở LessonChrome.module.css): pill, viền mảnh, nền accent-soft.
-   Không thêm màu thương hiệu mới — chỉ token --edu-* đã có. */
+/* Nút "Chạy thử ở Bàn thí nghiệm". Cùng ngôn ngữ thị giác với nút phụ của
+   khung bài (.secondaryBtn ở LessonChrome.module.css): pill, viền 2px, nền
+   tím nhạt. Chỉ dùng BẢNG TOKEN v2 (--ds-*). */
 /* Không có lề trên: ở màn mở đầu bài, `.brief` là flex column có gap 13px nên
    thêm lề nữa là nút trôi ra giữa hai thẻ, không còn thuộc khối code nào. */
 .row {
@@ -22,15 +22,16 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  /* Vùng chạm 40px cho ngón tay (khung bài dùng 48–52px cho nút chính). */
-  min-height: 40px;
+  /* Vùng chạm 44px — mức tối thiểu của bản thiết kế (khung bài dùng 48-52px
+     cho nút chính). Ở cỡ chữ 17px thì 40px cũng không còn đủ chỗ. */
+  min-height: 44px;
   padding: 0 16px;
-  border: 1px solid var(--edu-accent);
+  border: 2px solid var(--ds-violet);
   border-radius: 999px;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   font-family: inherit;
-  font-size: 13px;
+  font-size: var(--ds-fs-ui);
   font-weight: 700;
   text-decoration: none;
   white-space: nowrap;
@@ -38,7 +39,7 @@
 }
 
 .button:hover {
-  background: var(--edu-accent-soft-strong);
+  background: var(--ds-violet-tint);
 }
 
 .button:active {
@@ -46,7 +47,7 @@
 }
 
 .button:focus-visible {
-  outline: 3px solid var(--edu-accent-3);
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 

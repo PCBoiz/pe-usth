@@ -192,7 +192,7 @@ export function useLessonRun({
       .slice(0, sandboxAt < 0 ? 0 : sandboxAt)
       .some((x) => isGraded(x.kind) && !draft.done[x.key]);
     if (submit && blocked) {
-      setMessage('Hãy hoàn thành các màn học phía trước trước khi nộp bài.');
+      setMessage('Còn màn phía trước chưa xong nên chưa nộp được. Quay lại màn đang dở là nộp được ngay.');
       return;
     }
     setResult(null);

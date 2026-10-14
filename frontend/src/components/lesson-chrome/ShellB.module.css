@@ -1,8 +1,9 @@
 .card {
-  background: var(--edu-panel-bg);
-  border: var(--edu-card-border);
+  background: var(--ds-card);
+  /* Xem chú thích cùng chỗ ở ShellA.module.css: viết gộp cũ không hợp lệ. */
+  border: 1px solid var(--ds-line);
   border-radius: var(--st-card-radius);
-  box-shadow: var(--edu-card-shadow);
+  box-shadow: var(--ds-shadow-open);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   padding: 32px;
@@ -26,11 +27,11 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   border-radius: 999px;
   padding: 6px 14px;
-  font-size: 12px;
+  font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -40,23 +41,23 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 13px;
-  color: var(--edu-t3);
+  font-size: var(--ds-fs-label);
+  color: var(--ds-soft);
   font-weight: 600;
 }
 .metaDot {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: var(--edu-accent);
+  background: var(--ds-violet);
   flex-shrink: 0;
 }
 
 .title {
-  font-size: 22px;
+  font-size: var(--ds-fs-h3);
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   line-height: 1.4;
   margin: 0;
 }
@@ -66,8 +67,8 @@
 }
 
 .description {
-  font-size: 14px;
-  color: var(--edu-t3);
+  font-size: var(--ds-fs-body);
+  color: var(--ds-soft);
   line-height: 1.6;
   margin: 8px 0 0;
 }
@@ -85,19 +86,21 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  border: 1px solid var(--edu-sidebar-border);
-  background: var(--edu-panel-bg-solid);
-  color: var(--edu-accent-text);
+  /* Nút bấm được thì viền phải >= 3:1 (WCAG 1.4.11): `line` chỉ 1,36:1 trên
+     thẻ, nên đổi sang `sketch` (4,21:1). */
+  border: 2px solid var(--ds-sketch);
+  background: var(--ds-card);
+  color: var(--ds-violet-deep);
   border-radius: 999px;
   padding: 8px 16px;
   font: inherit;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 .hintToggle:hover {
-  background: var(--edu-accent-soft);
+  background: var(--ds-violet-tint);
   border-color: var(--st-slot-border);
 }
 .hintToggle:active {
@@ -120,7 +123,7 @@
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  background: var(--edu-card-bg);
+  background: var(--ds-tint);
   border-radius: 12px;
   padding: 14px 16px;
   animation: hintIn 0.24s cubic-bezier(0.22, 0.61, 0.36, 1) both;
@@ -145,26 +148,26 @@
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: var(--edu-accent-soft);
-  color: var(--edu-accent-text);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .hintLabel {
-  font-size: 13px;
+  font-size: var(--ds-fs-label);
   font-weight: 700;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   margin-bottom: 2px;
 }
 .hintText {
-  font-size: 13px;
-  color: var(--edu-t2);
+  font-size: var(--ds-fs-body);
+  color: var(--ds-soft);
   line-height: 1.6;
 }
 .hintText code {
   font-family: 'JetBrains Mono', Consolas, monospace;
-  color: var(--edu-accent-text);
+  color: var(--ds-violet-deep);
 }
 
 @media (max-width: 560px) {
@@ -173,6 +176,6 @@
   }
   .title,
   .titleCentered {
-    font-size: 19px;
+    font-size: var(--ds-fs-lead);
   }
 }

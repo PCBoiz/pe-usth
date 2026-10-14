@@ -38,7 +38,7 @@ export default function FeedbackBanner({ correct, title, explanation }: Feedback
           height: 28,
           borderRadius: '50%',
           background: correct ? 'var(--st-ok-text)' : 'var(--st-err-text)',
-          color: 'var(--edu-panel-bg-solid)',
+          color: 'var(--ds-on-action)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -50,7 +50,7 @@ export default function FeedbackBanner({ correct, title, explanation }: Feedback
       </span>
       <div>
         <div style={{ fontWeight: 700, color: correct ? 'var(--st-ok-text)' : 'var(--st-err-text)' }}>{title}</div>
-        <div style={{ fontSize: 13, color: 'var(--edu-t2)', marginTop: 4 }}>{explanation}</div>
+        <div style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', marginTop: 4 }}>{explanation}</div>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ export default function Concept({ termIcon, term, description, code }: ConceptPr
         {termIcon}
         {term}
       </span>
-      <p className={shellStyles.description} style={{ fontSize: 16, marginTop: 0, marginBottom: 20 }}>
+      <p className={shellStyles.description} style={{ fontSize: 'var(--ds-fs-body)', marginTop: 0, marginBottom: 20 }}>
         {description}
       </p>
       {code && <CodeBlock lines={code} showDots={false} />}

@@ -67,7 +67,6 @@ export default function StudioLesson({
     lesson,
     meta,
     user,
-    streak,
     totalLessons,
     enrolled,
     completed,
@@ -242,10 +241,11 @@ export default function StudioLesson({
       <LessonChrome
         step={Math.min(d.step, Math.max(1, screens.length || 1))}
         totalSteps={Math.max(1, screens.length || 1)}
-        streak={streak}
+        // Không truyền `streak` nữa — chuỗi ngày đã gỡ khỏi thanh trên cùng
+        // (xem chú thích trong LessonChrome.tsx).
         points={play ? score.points : undefined}
         courseLabel={
-          (boss ? '⚔️ BOSS · ' : '') +
+          (boss ? 'BÀI TỔNG HỢP CHẶNG · ' : '') +
           (lesson?.step_1?.brief?.title || meta?.title
             ? `${courseName} · ` + (lesson?.step_1?.brief?.title || meta?.title)
             : `${courseName} Studio`)
@@ -316,10 +316,10 @@ export default function StudioLesson({
     return frame(
       info(
         meta?.title || `Bài học ${courseName}`,
-        'Đăng ký khóa học miễn phí để mở bài học và lưu tiến độ.',
+        'Đăng ký khoá học miễn phí để mở bài học và lưu tiến độ.',
       ),
       {
-        primaryLabel: busy ? 'Đang đăng ký…' : `Đăng ký khóa ${courseName} & bắt đầu`,
+        primaryLabel: busy ? 'Đang đăng ký…' : `Đăng ký khoá ${courseName} & bắt đầu`,
         primaryDisabled: busy,
         onPrimaryClick: () => void enroll(),
         onSeek: undefined,
@@ -333,7 +333,7 @@ export default function StudioLesson({
         'Bài học này chưa có nội dung Studio. Quản trị viên có thể nhập nội dung từ file PDF hoặc Markdown trong trang quản trị.',
         'Đang biên soạn',
       ),
-      { primaryLabel: 'Về khóa học →', onPrimaryClick: leave, onSeek: undefined },
+      { primaryLabel: 'Về khoá học →', onPrimaryClick: leave, onSeek: undefined },
     );
 
   return frame(
@@ -346,7 +346,7 @@ export default function StudioLesson({
       )}
       {completed && scr?.kind !== 'recap' && (
         <div className={`${c.note} ${c.noteOk}`} role="status">
-          ✓ Bài này đã hoàn thành và được lưu trên hệ thống. Bạn có thể luyện tập lại.
+          ✓ Bài này đã xong và được lưu trên hệ thống. Bạn có thể luyện tập lại.
         </div>
       )}
       {lesson && scr && (

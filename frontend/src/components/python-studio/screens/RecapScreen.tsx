@@ -50,22 +50,23 @@ export default function RecapScreen({
       <Recap
         xpLabel={xpText}
         title={
-          completed ? (boss ? '⚔️ Đã hạ Boss của chặng!' : 'Đã hoàn thành bài học!') : 'Tổng kết bài học'
+          completed ? (boss ? 'Đã xong bài tổng hợp chặng.' : 'Đã xong bài này.') : 'Tổng kết bài học'
         }
         description={
           (completed
-            ? boss
-              ? 'Chặng tiếp theo đã mở khoá. '
-              : 'Tiến độ và XP đã được lưu. '
+            ? 'Tiến độ và XP đã được lưu. '
             : tests.length
-              ? 'Nộp bài ở màn sandbox để ghi nhận hoàn thành. '
+              ? 'Nộp ở màn Bàn thí nghiệm để ghi nhận là đã xong. '
               : 'Xác nhận khi bạn đã làm xong. ') +
           `XP nhận được tính theo số game bạn làm đúng ngay lần đầu (${firstTry}/${graded.length}).` +
           (draft.assisted ? ' Lượt này có dùng gợi ý/lời giải nên điểm bị giới hạn.' : '')
         }
         stats={[
           { icon: '⭐', value: String(score.points), label: 'Điểm trong bài' },
-          { icon: '🔥', value: `x${score.bestCombo}`, label: 'Combo cao nhất' },
+          /* Ô "🔥 Combo cao nhất" từng đứng ở giữa. Bỏ: combo đo TỐC ĐỘ trả
+             lời liên tiếp, tức một con số tụt xuống khi người học dừng lại
+             suy nghĩ — đúng loại áp lực mà triết lý tự học đã gạt ra. Hai ô
+             còn lại đều chỉ tăng. */
           { icon: '🎯', value: `${firstTry}/${graded.length || 0}`, label: 'Đúng ngay lần đầu' },
         ]}
         facts={[
@@ -84,13 +85,13 @@ export default function RecapScreen({
   return (
     <Recap
       xpLabel={completed ? `+${xpReward} XP` : `${xpReward} XP`}
-      title={completed ? 'Đã hoàn thành bài học!' : 'Tổng kết bài học'}
+      title={completed ? 'Đã xong bài này.' : 'Tổng kết bài học'}
       description={
         (completed
           ? 'Tiến độ và XP đã được lưu. Bạn có thể quay lại luyện tập bất cứ lúc nào.'
           : tests.length
-            ? 'Bài này chấm tự động — nộp bài ở màn sandbox để ghi nhận hoàn thành.'
-            : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.') +
+            ? 'Bài này chấm tự động — nộp ở màn Bàn thí nghiệm để ghi nhận là đã xong.'
+            : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.') +
         (draft.assisted
           ? gate
             ? ' Lượt này có dùng gợi ý/lời giải: cửa tự kiểm tra tính là "có hỗ trợ" — hãy tự làm lại với dữ liệu mới.'

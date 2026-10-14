@@ -1,6 +1,6 @@
 'use client';
 
-// Game · Ghép code ▶: bấm từng dòng theo đúng thứ tự, trong kho có dòng bẫy.
+// Game · Ghép code: bấm từng dòng theo đúng thứ tự, trong kho có dòng bẫy.
 // Ghép xong thì CHẠY THẬT với các ca kiểm thử của bài, đạt hết mới tính đúng.
 import Console from '@/components/lesson-chrome/exercises/Console';
 import Parsons from '@/components/lesson-chrome/exercises/Parsons';
@@ -38,7 +38,7 @@ export default function ParsonsGame({
       scr={scr}
       metaLabel={metaLabel}
       title={game.title}
-      description="Bấm từng dòng theo đúng thứ tự để ghép thành chương trình. Cẩn thận: trong kho có dòng bẫy. Ghép xong bấm ▶ để chạy thật với các ca kiểm thử."
+      description="Bấm từng dòng theo đúng thứ tự để ghép thành chương trình. Cẩn thận: trong kho có dòng bẫy. Ghép xong bấm nút Chạy & kiểm tra để chạy thật với các ca kiểm thử."
       verdict={verdict}
     >
       <Parsons
@@ -76,7 +76,7 @@ export default function ParsonsGame({
         onAttemptDistractor={(id) => {
           const item = game.distractors.find((x) => x.id === id);
           setFlash(
-            `Bẫy! Dòng này sai vì: ${item?.reason ?? 'không đúng yêu cầu'}. Chuỗi combo bị ngắt.`,
+            `Dòng này chưa hợp: ${item?.reason ?? 'không khớp yêu cầu của bài'}.`,
           );
           updateGame(game.id, { revealed: [...revealed, id] });
           onBreakCombo();

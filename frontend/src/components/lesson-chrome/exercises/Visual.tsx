@@ -21,8 +21,8 @@ export interface VisualProps {
 
 export default function Visual({ stack, heap }: VisualProps) {
   const col: React.CSSProperties = {
-    background: 'var(--edu-panel-bg-solid)',
-    border: '1px solid var(--edu-sidebar-border)',
+    background: 'var(--ds-card)',
+    border: '1px solid var(--ds-line)',
     borderRadius: 12,
     padding: 14,
     display: 'flex',
@@ -32,37 +32,37 @@ export default function Visual({ stack, heap }: VisualProps) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
       <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-accent)', marginBottom: 8 }}>● Stack</div>
+        <div style={{ fontSize: 'var(--ds-fs-ui)', fontWeight: 700, color: 'var(--ds-violet)', marginBottom: 8 }}>● Stack</div>
         <div style={col}>
           {stack.map((s, i) => (
-            <div key={i} style={{ borderBottom: i < stack.length - 1 ? '1px solid var(--edu-sidebar-border)' : undefined, paddingBottom: 8 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13 }}>
-                <code style={{ color: 'var(--edu-accent-text)', fontWeight: 700 }}>{s.name}</code>
-                <code style={{ color: 'var(--edu-t3)' }}>{s.address}</code>
+            <div key={i} style={{ borderBottom: i < stack.length - 1 ? '1px solid var(--ds-line)' : undefined, paddingBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 'var(--ds-fs-ui)' }}>
+                <code style={{ color: 'var(--ds-violet-deep)', fontWeight: 700 }}>{s.name}</code>
+                <code style={{ color: 'var(--ds-soft)' }}>{s.address}</code>
               </div>
-              <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 2 }}>{s.note}</div>
+              <div style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)', marginTop: 2 }}>{s.note}</div>
             </div>
           ))}
         </div>
       </div>
       <div>
-        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-accent)', marginBottom: 8 }}>● Heap</div>
+        <div style={{ fontSize: 'var(--ds-fs-ui)', fontWeight: 700, color: 'var(--ds-violet)', marginBottom: 8 }}>● Heap</div>
         <div style={col}>
           {heap.map((h, i) => (
             <div key={i}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 6 }}>
-                <span className={styles.chip} style={{ background: 'var(--edu-accent)', color: 'var(--edu-panel-bg-solid)', border: 0, cursor: 'default' }}>
+                <span className={styles.chip} style={{ background: 'var(--ds-violet)', color: 'var(--ds-on-action)', border: 0, cursor: 'default' }}>
                   {h.tag}
                 </span>
-                <code style={{ fontSize: 11, color: 'var(--edu-t3)' }}>@ {h.address}</code>
+                <code style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)' }}>@ {h.address}</code>
                 <span className={styles.chip} style={{ marginLeft: 'auto', background: 'var(--st-ok-bg)', color: 'var(--st-ok-text)', border: 0, cursor: 'default' }}>
                   Refcount: {h.refcount}
                 </span>
               </div>
               <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
                 {h.rows.map((r, j) => (
-                  <div key={j} style={{ fontSize: 11, color: 'var(--edu-t3)' }}>
-                    {r.label} <code style={{ color: 'var(--edu-t1)', fontWeight: 700 }}>{r.value}</code>
+                  <div key={j} style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)' }}>
+                    {r.label} <code style={{ color: 'var(--ds-ink)', fontWeight: 700 }}>{r.value}</code>
                   </div>
                 ))}
               </div>

@@ -82,9 +82,9 @@ export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: st
     match: { icon: ICON.swap, label: 'Game · Nối cặp' },
     trueFalse: { icon: ICON.help, label: 'Game · Đúng hay sai' },
     fill: { icon: ICON.swap, label: 'Game · Điền mảnh code' },
-    parsons: { icon: ICON.play, label: 'Game · Ghép code ▶' },
+    parsons: { icon: ICON.play, label: 'Game · Ghép code' },
     spotError: { icon: ICON.bulb, label: 'Game · Săn lỗi' },
-    debug: { icon: ICON.play, label: 'Game · Sửa code ▶' },
+    debug: { icon: ICON.play, label: 'Game · Sửa code' },
     selfExplain: { icon: ICON.bulb, label: 'Tự giải thích' },
   };
   if (scr.kind === 'game' && scr.gameType) return games[scr.gameType];
