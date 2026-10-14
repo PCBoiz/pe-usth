@@ -508,6 +508,22 @@ export default function PracticeClient() {
               </div>
             </section>
 
+            {/* Lối sang chế độ thử thách. Cùng kho câu, cùng ba đường backend —
+                chỉ khác luật chơi (một câu một lần, có lượt nghĩ lại). Không có
+                lối vào thì route /practice/challenge không ai tới được. */}
+            <section className={styles.sideCard} aria-labelledby="challengeTitle">
+              <p className={styles.sideLabel} id="challengeTitle">
+                Chế độ thử thách
+              </p>
+              <p className={styles.sideBody}>
+                Cùng kho câu này, khác luật: đi một câu một lần, sai lần đầu thì được nghĩ lại
+                một lần, và cuối lượt mới tổng kết. Vẫn không tính giờ, và sai không trừ gì.
+              </p>
+              <a className={styles.cardLink} href="/practice/challenge">
+                Mở Thử thách ôn
+              </a>
+            </section>
+
             <section className={styles.sideCard} aria-labelledby="pastTitle">
               <p className={styles.sideLabel} id="pastTitle">
                 Những lần ôn gần đây

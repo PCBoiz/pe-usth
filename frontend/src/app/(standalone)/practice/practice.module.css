@@ -164,6 +164,16 @@
   gap: 12px 18px;
 }
 
+/* Liên kết trong thẻ phụ. Khác .quietLink ở chỗ KHÔNG canh giữa: trong thẻ
+   xếp dọc thì canh giữa làm nó trông như một nút lạc chỗ. */
+.cardLink {
+  align-self: flex-start;
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
+  color: var(--ds-violet);
+  text-decoration: underline;
+}
+
 /* ── thanh đếm ─────────────────────────────────────────────────────────── */
 
 .countRow {
