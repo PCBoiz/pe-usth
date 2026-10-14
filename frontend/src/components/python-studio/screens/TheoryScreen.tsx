@@ -31,6 +31,7 @@ import {
 import type { LessonFigure } from '@/lib/studio-lesson';
 import { usePrefersReducedMotion } from '@/lib/use-reduced-motion';
 
+import BookIntro from '../intro/BookIntro';
 import c from '../studio-chrome.module.css';
 import { paragraphs, ScreenShell } from './chrome';
 import type { ShellProps } from './props';
@@ -80,8 +81,21 @@ function useSvgVariants(src: string, enabled: boolean): Variants {
   return variants;
 }
 
-/** Hình + chú thích. Dùng lại ở màn `explain` khi bài không có màn lý thuyết. */
-export function Figure({ figure }: { figure: LessonFigure }) {
+/**
+ * Hình + chú thích. Dùng lại ở màn `explain` khi bài không có màn lý thuyết.
+ *
+ * `frozen` = "đang có việc khác cần main thread, đứng yên đã". Hiện chỉ có một
+ * chỗ bật nó: lúc hoạt cảnh mở sách đang chạy. Lý do là số đo trong
+ * lib/figure-motion.ts — animation CSS trong SVG nhúng dạng `<img>` KHÔNG được
+ * đưa lên compositor, nên mỗi nhịp phải tính lại style rồi vẽ lại ảnh trên
+ * main thread (đo được 2 007ms main thread / 10,5s với hai hình ở CPU 4×). Để
+ * chúng chạy thì 860ms của hoạt cảnh phải chia main thread với hai hình, và
+ * trong lúc đó lớp chữ đang `opacity: 0` nên chẳng ai xem hình.
+ *
+ * Nó cộng vào `inView` chứ không thay thế: ra ngoài khung nhìn thì vẫn phải
+ * dừng, bất kể hoạt cảnh có chạy hay không.
+ */
+export function Figure({ figure, frozen }: { figure: LessonFigure; frozen?: boolean }) {
   const reduced = usePrefersReducedMotion();
   // `null` = người dùng chưa bấm gì, cứ theo tuỳ chọn hệ thống. Giữ riêng ý
   // muốn của người dùng để việc đổi tuỳ chọn hệ thống giữa phiên không ghi đè
@@ -114,7 +128,7 @@ export function Figure({ figure }: { figure: LessonFigure }) {
   const variants = useSvgVariants(figure.src, seen);
   const kind = figureSource({
     playing,
-    inView,
+    inView: inView && !frozen,
     reduced,
     stillReady: variants.still !== null,
     motionReady: variants.motion !== null,
@@ -174,29 +188,50 @@ export default function TheoryScreen({ lesson, scr, metaLabel }: ShellProps) {
   const trailing = !shown && one?.figure?.src ? one.figure : null;
   const slides = lesson.source?.slides;
 
+  // Hình đứng yên tới khi hoạt cảnh mở sách lắng — xem chú thích `frozen` ở
+  // Figure. Khởi tạo `false` (chưa lắng): BookIntro gọi onSettled ngay trong
+  // một effect kể cả khi KHÔNG có hoạt cảnh nào, nên không có bài nào bị kẹt
+  // ở trạng thái đóng băng.
+  const [settled, setSettled] = useState(false);
+  const onSettled = useCallback(() => setSettled(true), []);
+
+  // Chữ trên bìa sách. Lấy từ chính nội dung bài: mã bài + tiêu đề brief, và
+  // chặng/module làm dòng nhỏ. Không bịa chữ trang trí nào.
+  const coverTitle = one?.brief?.title || metaLabel || 'Lý thuyết của bài';
+  // `eyebrow` của brief là ["M1", "ĐA LUỒNG", "T03"] — mã bài nằm sẵn trong đó,
+  // nên không cần nguồn thứ hai (StudioLesson không mang `lesson_code`).
+  const coverEyebrow = one?.brief?.eyebrow?.length ? one.brief.eyebrow.join(' · ') : undefined;
+
   return (
     <ScreenShell scr={scr} metaLabel={metaLabel} title="Lý thuyết của bài">
-      <div className={c.theory}>
-        {blocks.map((block, i) => (
-          <section key={i} className={c.theoryBlock}>
-            <h4>{block.title}</h4>
-            {block.body && <p>{paragraphs(block.body)}</p>}
-            {block.bullets?.length ? (
-              <ul>
-                {block.bullets.map((bullet, j) => (
-                  <li key={j}>{bullet}</li>
-                ))}
-              </ul>
-            ) : null}
-            {block.figure?.src && <Figure figure={block.figure} />}
-          </section>
-        ))}
-        {trailing && (
-          <section className={c.theoryBlock}>
-            <Figure figure={trailing} />
-          </section>
-        )}
-      </div>
+      <BookIntro
+        title={coverTitle}
+        eyebrow={coverEyebrow}
+        hasTheory={blocks.length > 0}
+        onSettled={onSettled}
+      >
+        <div className={c.theory}>
+          {blocks.map((block, i) => (
+            <section key={i} className={c.theoryBlock}>
+              <h4>{block.title}</h4>
+              {block.body && <p>{paragraphs(block.body)}</p>}
+              {block.bullets?.length ? (
+                <ul>
+                  {block.bullets.map((bullet, j) => (
+                    <li key={j}>{bullet}</li>
+                  ))}
+                </ul>
+              ) : null}
+              {block.figure?.src && <Figure figure={block.figure} frozen={!settled} />}
+            </section>
+          ))}
+          {trailing && (
+            <section className={c.theoryBlock}>
+              <Figure figure={trailing} frozen={!settled} />
+            </section>
+          )}
+        </div>
+      </BookIntro>
       {/* In NGUYÊN VĂN chuỗi nguồn: nó có thể là nhiều khoảng trang rời
           ("SL 95-105, 133") hoặc kèm tài liệu chính thức ("SL 51-53; DOC subprocess"). */}
       {slides && <p className={c.theorySource}>Nguồn: {slides}</p>}

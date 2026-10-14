@@ -1,0 +1,285 @@
+/* ===========================================================================
+   HOẠT CẢNH MỞ SÁCH ở màn lý thuyết + dấu hiệu vào màn sandbox.
+
+   Lý do bỏ nửa sau của chuyển cảnh (gập sách → ngẩng lên → IDE) nằm ở đầu
+   src/lib/lesson-intro.ts, không nhắc lại ở đây.
+
+   BỐN QUYẾT ĐỊNH, ghi ở đây vì chúng là lý do file này giữ 60fps và không làm
+   mờ chữ (nguyên mẫu đo: 866–895ms / 57,8–60,2fps ở CPU 1×, 4× và 6×):
+
+   1. CHỮ KHÔNG BAO GIỜ NẰM TRONG CHUỖI 3D. Bìa, giấy, gáy sách là lớp TRANG
+      TRÍ `aria-hidden` trong `.scene` (chỗ duy nhất có `perspective`). Nội
+      dung lý thuyết thật nằm ở `.layer` — lớp 2D phẳng xếp TRÊN sách, không hề
+      bị rotateY/rotateX. Lý do: (a) chữ bị raster một lần rồi xoay 3D thì
+      nhoè; (b) trình đọc màn hình có nội dung ngay từ lần render đầu.
+   2. TRẠNG THÁI NGHỈ TRONG FILE NÀY LÀ TRẠNG THÁI CUỐI. Không có khai báo nào
+      ẩn chữ đi. Hoạt cảnh do JS khởi động bằng Web Animations API và chạy
+      NGƯỢC từ khung đầu về trạng thái nghỉ này (xem INTRO_FILL trong
+      lib/lesson-intro.ts). Hệ quả: CSS này không dựng được, JS không chạy,
+      animation bị bỏ giữa chừng, hay người học bấm "Bỏ qua" — tất cả cho ra
+      MỘT kết quả là chữ hiện bình thường. Không có đường nào ra màn trắng.
+   3. KHÔNG ANIMATE `opacity` TRÊN PHẦN TỬ CÓ `transform-style: preserve-3d`.
+      Theo MDN, `opacity < 1` (cùng `overflow` khác visible, `filter`,
+      `clip-path`, `mask-image`, `mix-blend-mode`, `contain: paint`) buộc
+      `transform-style` về `flat`: sách sẽ "dẹp" đúng lúc đang lật. Vì vậy
+      `.scene`/`.book`/`.cover` CHỈ animate transform, và `.scene` KHÔNG có
+      `overflow: hidden`.
+   4. CHỈ animate `transform` và `opacity`. Mọi `box-shadow` ở đây là TĨNH.
+
+   THOÁI LUI KHI KHÔNG DỰNG ĐƯỢC 3D: toàn bộ cảnh sách nằm trong một khối
+   `@supports`, và JS cũng hỏi `CSS.supports` trước khi dựng `.scene` (xem
+   supportsBook3d). Thiếu `preserve-3d`/`backface-visibility` thì không có
+   `.scene` nào được render và chế độ rơi về `short` — một cú opacity +
+   translateY 240ms. Kiểm NĂNG LỰC, không dò tên trình duyệt: Safari chưa được
+   đo, và hai thuộc tính này đúng là chỗ WebKit hay khác Chrome.
+   =========================================================================== */
+
+.root {
+  position: relative;
+}
+
+/* CẮT KHUNG cho cú lật bìa, và chỉ trong lúc nó chạy.
+   Bản lề của bìa ở cạnh TRÁI, nên lúc đi qua 90° cái bìa quét HẲN sang trái và
+   ra ngoài cột nội dung — đo trong harness ở 1800px: nó phủ từ mép trái màn
+   hình tới bản lề, tức trùm lên cả thanh điều hướng và thanh tiến độ của
+   LessonChrome. Cắt ở ĐÂY chứ không ở `.scene`: `.scene` là chỗ có
+   `perspective`, mà `overflow` khác `visible` ép `transform-style` về `flat` —
+   cắt trong đó là làm dẹp quyển sách đúng lúc đang lật.
+   Chỉ cắt khi đang chạy: để `overflow` thường trực thì cắt luôn những thứ cố ý
+   tràn của nội dung lý thuyết về sau (viền focus, hình khổ lớn). */
+.root[data-running] {
+  overflow: hidden;
+}
+
+/* ====================== SÂN KHẤU SÁCH (3D, TRANG TRÍ) ====================== */
+
+/* Chỉ dựng khi trình duyệt khai nhận đủ ba khai báo. `@supports` ở đây là lưới
+   thứ hai: lưới thứ nhất là JS (supportsBook3d) không render `.scene`. Hai lưới
+   vì một lưới có thể sai theo một chiều khác nhau — `CSS.supports` nói "có" mà
+   engine dựng sai thì khối này cũng không cứu được, nhưng engine nói "không"
+   thì ít nhất không có cảnh nửa vời nào được vẽ. */
+@supports (transform-style: preserve-3d) and (backface-visibility: hidden) {
+  .scene {
+    position: absolute;
+    /* Phủ lên phần ĐẦU của cột nội dung — đúng phần người học đang nhìn khi
+       vừa mở bài. Không phủ cả cột: bài lý thuyết dài hàng nghìn px, dựng một
+       quyển sách cao bằng thế thì bìa lật xong vẫn còn giấy ở tận đáy trang.
+       Khít mép cột (không tràn ra ngoài) vì `.root[data-running]` cắt đúng ở
+       mép đó — tràn ra thì phần tràn bị cắt cụt, trông như sách bị xén. */
+    inset: 0 0 auto;
+    height: clamp(360px, 68vh, 760px);
+    /* perspective-origin hơi cao hơn tâm: góc nhìn thứ nhất, mắt ở trên sách. */
+    perspective: 2400px;
+    perspective-origin: 50% 42%;
+    /* Trang trí thuần: không bao giờ nhận cú bấm, kể cả cú bấm "bỏ qua" (cú đó
+       bắt ở window). */
+    pointer-events: none;
+    /* Dưới lớp chữ. Chỉ dùng z-index chứ không `position: static` cho `.layer`,
+       vì `.layer` phải tạo ngữ cảnh xếp lớp riêng để đứng hẳn trên sách. */
+    z-index: 0;
+  }
+
+  /* HÂM NÓNG LỚP GPU. `data-warm` được đặt sẵn trong JSX ở lần render ĐẦU của
+     `.scene`, tức trước khi JS gọi `.animate()` trong layout effect — đó là
+     thời điểm sớm nhất có được với một cảnh mount và chạy trong cùng một
+     commit. Nhả ngay khi hoạt cảnh lắng (JS xoá `data-warm`), để không giữ lớp
+     GPU vô thời hạn trên trang vốn đã nặng (Monaco + Pyodide + 23 SVG).
+
+     Chỉ hâm `.book` và `.cover` — hai phần tử DUY NHẤT được animate ở cảnh
+     này. Nguyên mẫu đo pha mở sách: 0–1 Layout, 8–9 Paint, task dài nhất
+     9,5–11,3ms ở CPU 4× — tức pha này vốn đã nhẹ; 22 Paint cần `will-change`
+     là của pha gập sách → IDE, pha ĐÃ BỊ BỎ. */
+  .scene[data-warm] .book,
+  .scene[data-warm] .cover {
+    will-change: transform;
+  }
+
+  .book {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    /* TRẠNG THÁI NGHỈ = sách đã dựng trước mặt, transform đơn vị. Lớp chữ 2D
+       nằm ngoài khối 3D và căn theo khổ giấy; hai lớp chỉ khớp khi ở đây là
+       `none`. Khung ĐẦU (scale .74, rotateX 26deg) do JS đặt. */
+    transform: none;
+  }
+
+  /* Bìa sổ nâu nằm dưới cùng: nền tĩnh cho hai trang giấy. */
+  .board {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: var(--ds-soft);
+    box-shadow: var(--ds-shadow-open); /* TĨNH */
+  }
+
+  /* Hai trang giấy. KHÔNG animate gì: chúng nằm sẵn dưới bìa, và chính cái bìa
+     lật đi mới là thứ để lộ chúng ra — đúng như mở sách thật. (Nguyên mẫu từng
+     cho giấy mờ-hiện ở 440ms và đo ra một khung toàn màu nâu ở 320ms, vì bìa
+     đã qua 90° mà giấy chưa kịp hiện.)
+
+     Mặt giấy dùng --ds-page, tức ĐÚNG màu nền trang. Nhờ vậy lúc JS tháo
+     `.scene` khỏi DOM sau khi hoạt cảnh lắng, không có cú đổi tông nào: cái
+     biến mất trùng màu với cái ở dưới. Chất "giấy" của màn lý thuyết vốn do
+     chính các thẻ nội dung (--ds-card) mang, không cần lớp này gánh. */
+  .spread {
+    position: absolute;
+    inset: 14px 14px 18px;
+    display: flex;
+  }
+
+  .sheet {
+    flex: 1 1 0;
+    min-width: 0;
+    background: var(--ds-page);
+  }
+
+  .sheetL {
+    border-radius: 10px 2px 2px 10px;
+    border-right: 1px solid var(--ds-line);
+  }
+
+  .sheetR {
+    border-radius: 2px 10px 10px 2px;
+    border-left: 1px solid var(--ds-line);
+  }
+
+  .spine {
+    flex: 0 0 10px;
+    background: var(--ds-desk);
+  }
+
+  /* BÌA LẬT. Bản lề ở cạnh TRÁI của cả quyển, nên bìa mở hẳn sang trái và ra
+     khỏi khung. `backface-visibility: hidden` trên TỪNG mặt: nếu không, lúc đi
+     qua 90° ta thấy ảnh gương của mặt ngoài in lên mặt trong. */
+  .cover {
+    position: absolute;
+    inset: 0;
+    transform-origin: left center;
+    transform-style: preserve-3d;
+    /* NGHỈ = đã lật xong, ra khỏi khung. Khung đầu rotateY(0) do JS đặt. */
+    transform: rotateY(-172deg);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    backface-visibility: hidden;
+    display: grid;
+    place-items: center;
+    padding: 40px;
+    text-align: center;
+  }
+
+  .faceFront {
+    background: var(--ds-soft);
+    box-shadow: var(--ds-shadow-open); /* TĨNH */
+  }
+
+  .faceBack {
+    transform: rotateY(180deg);
+    background: var(--ds-desk);
+  }
+
+  /* Chữ trên bìa: --ds-paper trên --ds-soft. Cặp này ĐẢO ĐÚNG CHIỀU ở cả hai
+     chế độ — chế độ sáng cho giấy sáng trên bìa nâu, chế độ tối cho giấy tối
+     trên bìa sáng — nên không phải viết đè một màu riêng cho chế độ tối.
+     (Mã màu nằm ở public/static/css/studio-tokens.css; không chép lại vào đây,
+     `npm run lint:tokens` cấm mã hex trong *.module.css, KỂ CẢ trong chú
+     thích — và nó đúng: chú thích chép mã màu là chú thích sẽ lệch.) */
+  .coverTitle {
+    color: var(--ds-paper);
+    font-size: var(--ds-fs-h2);
+    font-weight: 800;
+    line-height: 1.25;
+  }
+
+  .coverEyebrow {
+    margin-bottom: 10px;
+    color: var(--ds-line);
+    font-size: var(--ds-fs-label);
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Vạch trang trí. Tương phản thấp trên bìa là CÓ Ý và không phải lỗi truy
+     cập: nó không mang chữ, không mang thông tin, và cả quyển sách là
+     aria-hidden, sống 860ms. */
+  .coverRule {
+    width: 72px;
+    height: 3px;
+    margin: 16px auto 0;
+    border-radius: 2px;
+    background: var(--ds-ochre);
+  }
+
+  /* Trải sách hai trang không có cách nào thu nhỏ cho vừa điện thoại (đo ở
+     390×844: mỗi trang rộng 142px, chữ 12px). JS đã chặn bằng
+     BOOK_MIN_WIDTH_PX; khối này là lưới thứ hai cho trường hợp người dùng thu
+     cửa sổ lại SAU khi cảnh đã dựng. */
+  @media (max-width: 860px) {
+    .scene {
+      display: none;
+    }
+  }
+}
+
+/* ====================== LỚP CHỮ (2D, NỘI DUNG THẬT) ====================== */
+
+/* Nội dung lý thuyết. KHÔNG có `opacity` hay `transform` ở trạng thái nghỉ:
+   xem quyết định 2 ở đầu file. */
+.layer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ====================== NÚT "BỎ QUA" ====================== */
+
+/* Góc trên bên phải của vùng nội dung, `absolute` chứ KHÔNG `fixed`: CTA và
+   thanh tiến độ là của LessonChrome, nút này không được tranh chỗ với chúng. */
+.skip {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  min-height: 40px;
+  padding: 9px 16px;
+  border: 1px solid var(--ds-line);
+  border-radius: 10px;
+  background: var(--ds-paper);
+  color: var(--ds-violet);
+  font: inherit;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.skip:hover {
+  color: var(--ds-violet-deep);
+}
+
+.skip:focus-visible {
+  outline: 3px solid var(--ds-violet);
+  outline-offset: 3px;
+}
+
+/* ====================== DẤU HIỆU VÀO MÀN SANDBOX ====================== */
+
+/* 240ms, chỉ opacity/transform. Không sách, không 3D — xem lib/lesson-intro.ts
+   mục "DẤU HIỆU VÀO MÀN SANDBOX". Trạng thái nghỉ lại là trạng thái cuối:
+   `.cue` hiện bình thường, `.halo` trong suốt. */
+.cue {
+  position: relative;
+}
+
+.halo {
+  position: absolute;
+  inset: -6px;
+  z-index: 1;
+  border: 2px solid var(--ds-violet);
+  border-radius: 18px;
+  opacity: 0;
+  pointer-events: none;
+}

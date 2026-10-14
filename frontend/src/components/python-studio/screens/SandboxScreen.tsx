@@ -9,6 +9,7 @@ import SandboxEditor from '@/components/lesson-chrome/exercises/SandboxEditor';
 import ShellB from '@/components/lesson-chrome/ShellB';
 import { toCodeLines } from '@/lib/py-highlight';
 
+import { SandboxCue } from '../intro/BookIntro';
 import c from '../studio-chrome.module.css';
 import type { RunResult } from '../runner/types';
 import { eyebrowOf, paragraphs, showEditorOf, testRows } from './chrome';
@@ -186,33 +187,44 @@ export default function SandboxScreen({
           )}
         </div>
       )}
+      {/* Dấu hiệu "giờ là lúc viết code": khung soạn thảo nhấc lên và hiện,
+          240ms, chỉ opacity/transform.
+
+          VÌ SAO KHÔNG PHẢI CẢNH "GẬP SÁCH → NGẨNG LÊN → HIỆN IDE" như nguyên
+          mẫu dựng: giữa màn lý thuyết và màn này có TÁM màn khác (đề bài, giải
+          thích từng dòng, dự đoán, bốn mini-game, tự giải thích). Nối hai cảnh
+          đó là nói "đọc xong là viết code", trong khi luồng thật không phải
+          vậy — và lúc người học tới đây thì trong tay họ không còn quyển sách
+          nào để gập. Lập luận đầy đủ ở đầu lib/lesson-intro.ts. */}
       {showEditorOf(lesson) && (
-        <SandboxEditor
-          filename="main.py"
-          langTag={runtimeStatus || 'CPython 3.12'}
-          code={draft.code}
-          onCodeChange={(code) => update({ code })}
-          running={running}
-          onRun={onRun}
-          onStop={onStop}
-          onShowSolution={
-            four?.solutionCode && (!gate || draft.submitted)
-              ? () => {
-                  update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
-                  setMessage('Đã chèn lời giải mẫu. Đọc hiểu rồi nộp thì bạn giữ được kiến thức.');
-                }
-              : undefined
-          }
-          placeholder={
-            tests.length
-              ? undefined
-              : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
-          }
-          consoleLines={consoleLines(result, draft.code)}
-          consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
-          tests={testRows(lesson, result)}
-          disabled={busy}
-        />
+        <SandboxCue>
+          <SandboxEditor
+            filename="main.py"
+            langTag={runtimeStatus || 'CPython 3.12'}
+            code={draft.code}
+            onCodeChange={(code) => update({ code })}
+            running={running}
+            onRun={onRun}
+            onStop={onStop}
+            onShowSolution={
+              four?.solutionCode && (!gate || draft.submitted)
+                ? () => {
+                    update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
+                    setMessage('Đã chèn lời giải mẫu. Đọc hiểu rồi nộp thì bạn giữ được kiến thức.');
+                  }
+                : undefined
+            }
+            placeholder={
+              tests.length
+                ? undefined
+                : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
+            }
+            consoleLines={consoleLines(result, draft.code)}
+            consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
+            tests={testRows(lesson, result)}
+            disabled={busy}
+          />
+        </SandboxCue>
       )}
       {hint.open && hints.length > 0 && (
         <HintSheet
