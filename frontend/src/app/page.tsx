@@ -1,25 +1,71 @@
-// Trang chủ: hai cột — "Chương trình đào tạo" (khóa học) và "Công cụ" — rồi thẻ góp ý.
-// Dữ liệu từ danh mục tĩnh (src/lib/catalog.ts) — không gọi API vì mọi route
-// /api/courses* đều đòi đăng nhập mà frontend không còn trang đăng nhập.
+// Trang chủ — dựng lại theo bản thiết kế `design/project/Main.dc.html`
+// ("bản đồ thế giới") và `design-system-v2.md`.
 //
-// Từ 13/10/2026 danh mục chỉ còn Python Advanced: buổi dùng thử chỉ xoay quanh
-// khóa đó, các thẻ khác dẫn vào khóa dựng nửa vời (xem catalog.ts).
+// Bố cục: hero (nhãn · tiêu đề · câu dẫn) → cột trái "Khoá đang mở" + "Công cụ"
+// → cột phải thẻ gợi ý bước tiếp + khối ghi chú trung thực → thẻ góp ý.
+//
+// BỐN ĐIỀU BẢN THIẾT KẾ CHỐT, GIỮ Ở ĐÂY (đổi đi là đổi hành vi người dùng thấy):
+//
+//  1. KHÔNG GỌI API, nên cũng không có chỉ số nào. Trang này công khai: gọi
+//     `apiFetch` mà gặp 401 thì nó rơi xuống `ensureGuest()` (src/lib/api.ts) —
+//     mỗi con bot quét web sinh một tài khoản `@guest.local` và ăn một suất của
+//     THROTTLE_GUEST_LIMIT (120 lượt/giờ/IP). Cần đọc phiên ở trang công khai
+//     thì dùng `apiFetchSessionOnly`; ở ĐÂY thì không cần gì cả, vì danh mục là
+//     tĩnh. Hệ quả cố ý: trang chủ không biết người xem học tới đâu, nên nó
+//     KHÔNG hiện tiến độ — và cũng không bịa ra chỉ số nào để lấp chỗ trống.
+//  2. KHÔNG CHUỖI NGÀY, không ngọn lửa, không "5/7 ngày". Chỉ số nào hiện ra
+//     cũng phải là loại CHỈ TĂNG; chuỗi bị đứt là thứ đẩy người học bỏ cuộc.
+//  3. KHÔNG KHOÁ GÌ: không ổ khoá, không "mở khi đủ N bài". Câu dẫn nói thẳng
+//     rằng chặng nào cũng vào được.
+//  4. THẺ GỢI Ý CÓ ĐỦ BỐN PHẦN: nhãn · tiêu đề · "Vì sao bài này" · nút chính,
+//     rồi vạch ngăn + "Đây là gợi ý, không phải lệnh" + lối ra "Tự chọn bài".
+//     Thiếu "Vì sao" và thiếu lối ra thì gợi ý thành lệnh.
+//
+// Câu chữ và các quyết định nằm ở `src/lib/home-copy.ts` (có test:
+// `e2e/unit/home-page.test.mjs`); file này chỉ dựng DOM.
 import type { Metadata } from 'next';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { COURSES, LEVEL_LABEL, TOOLS } from '@/lib/catalog';
+import CURRICULA_JSON from '@/lib/curricula.json';
 import { feedbackFormHref } from '@/lib/feedback-link';
+import {
+  courseEyebrow,
+  courseShape,
+  courseTileTags,
+  FEEDBACK,
+  HONEST_NOTE,
+  INTRO,
+  LAB_TILE,
+  nextStep,
+  SECTIONS,
+  type ModuleLike,
+} from '@/lib/home-copy';
 
 import CatalogTile from './CatalogTile';
 import styles from './home.module.css';
 
+const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, { modules?: ModuleLike[] }>;
+
 export const metadata: Metadata = {
-  title: 'Programming EDU — Khóa học',
+  title: 'Programming EDU — Khoá học',
 };
 
 export default function HomePage() {
   const feedback = feedbackFormHref();
+  // Khoá dẫn đầu danh mục; 13/10/2026 danh mục chỉ còn Advanced Python.
+  const headCourse = COURSES[0];
+  const modules = headCourse ? CURRICULA[headCourse.id]?.modules ?? [] : [];
+  const shape = courseShape(modules);
+  const step = headCourse
+    ? nextStep({
+      courseId: headCourse.id,
+      lessonUrl: headCourse.lessonUrl,
+      firstStage: modules[0]?.title,
+      firstLesson: modules[0]?.lessons[0],
+    })
+    : null;
 
   return (
     <>
@@ -30,67 +76,117 @@ export default function HomePage() {
       <div className={styles.page}>
         <SiteHeader wide />
         <main className={styles.main}>
-          <h1 className={styles.title}>Khóa học</h1>
-          <p className={styles.sub}>Chọn một khóa để xem giáo trình chi tiết.</p>
+          <header className={styles.hero}>
+            {headCourse && (
+              <p className={styles.eyebrow}>{courseEyebrow(headCourse.label, shape)}</p>
+            )}
+            <h1 className={styles.title}>{INTRO.title}</h1>
+            <p className={styles.lead}>{INTRO.lead}</p>
+          </header>
 
           <div className={styles.cols}>
-            <section className={styles.col} aria-labelledby="programTitle">
-              <h2 className={styles.pill} id="programTitle">
-                Chương trình đào tạo
-              </h2>
-              <ul className={styles.list}>
-                {COURSES.map((course) => (
-                  <CatalogTile
-                    key={course.id}
-                    href={`/courses/${course.id}`}
-                    label={course.label}
-                    description={course.subtitle}
-                    tags={[
-                      { text: 'Python 3.12' },
-                      { text: LEVEL_LABEL[course.level], tone: 'red' },
-                    ]}
-                    color={course.color}
-                    accent={course.accent}
-                    mark={course.mark}
-                    icon={course.icon}
-                  />
-                ))}
-              </ul>
-            </section>
-
-            {/* Công cụ nằm NGOÀI cột khóa học: không phải khóa, không ảnh hưởng
-                tiến độ/XP/đăng ký. Mặc định có đúng một mục (Python IDE); tắt bằng
-                NEXT_PUBLIC_IDE_ENABLED=off thì danh sách rỗng, và khi rỗng phải bỏ
-                luôn cả cột — không để một mục "Công cụ" trống trơ trên trang. */}
-            {TOOLS.length > 0 && (
-              <section className={styles.col} aria-labelledby="toolsTitle">
-                <div className={styles.colHead}>
-                  <h2 className={styles.sectionTitle} id="toolsTitle">
-                    Công cụ
-                  </h2>
-                  <span className={styles.colNote}>Môi trường thực hành trực tuyến</span>
-                </div>
+            <div className={styles.col}>
+              <section aria-labelledby="programTitle">
+                <h2 className={styles.pill} id="programTitle">
+                  {SECTIONS.course}
+                </h2>
                 <ul className={styles.list}>
-                  {TOOLS.map((tool) => (
+                  {COURSES.map((course) => (
                     <CatalogTile
-                      key={tool.id}
-                      href={tool.href}
-                      label={tool.label}
-                      description="Viết và chạy code Python ngay trong trình duyệt, xem kết quả tức thì."
-                      tags={[
-                        { text: 'Sẵn sàng sử dụng', tone: 'ok' },
-                        { text: 'Web Compiler' },
-                      ]}
-                      color={tool.color}
-                      accent={tool.accent}
-                      mark={tool.mark}
-                      icon={tool.icon}
-                      external
+                      key={course.id}
+                      href={`/courses/${course.id}`}
+                      label={course.label}
+                      description={course.subtitle}
+                      tags={courseTileTags(
+                        course.id === headCourse?.id ? shape : courseShape(CURRICULA[course.id]?.modules),
+                        LEVEL_LABEL[course.level],
+                      )}
+                      color={course.color}
+                      accent={course.accent}
+                      mark={course.mark}
+                      icon={course.icon}
                     />
                   ))}
                 </ul>
               </section>
-            )}
+
+              {/* Công cụ nằm NGOÀI cột khoá: không phải khoá, không ảnh hưởng
+                  tiến độ/XP/ghi danh. Mặc định có đúng một mục (Bàn thí nghiệm);
+                  tắt bằng NEXT_PUBLIC_IDE_ENABLED=off thì danh sách rỗng, và khi
+                  rỗng phải bỏ luôn cả khối — không để một mục "Công cụ" trống
+                  trơ trên trang. */}
+              {TOOLS.length > 0 && (
+                <section aria-labelledby="toolsTitle">
+                  <div className={styles.colHead}>
+                    <h2 className={styles.pill} id="toolsTitle">
+                      {SECTIONS.tool}
+                    </h2>
+                    <span className={styles.colNote}>{SECTIONS.toolNote}</span>
+                  </div>
+                  <ul className={styles.list}>
+                    {TOOLS.map((tool) => (
+                      <CatalogTile
+                        key={tool.id}
+                        href={tool.href}
+                        label={tool.label}
+                        description={LAB_TILE.description}
+                        tags={[...LAB_TILE.tags]}
+                        color={tool.color}
+                        accent={tool.accent}
+                        mark={tool.mark}
+                        icon={tool.icon}
+                        external
+                      />
+                    ))}
+                  </ul>
+                </section>
+              )}
+            </div>
+
+            <aside className={styles.aside} aria-label="Việc tiếp theo">
+              {step && (
+                <section className={styles.next} aria-labelledby="nextTitle">
+                  {/* (1) nhãn — nói rõ AI đề xuất, để người học biết đây là máy
+                      nói, không phải bổn phận. */}
+                  <p className={styles.nextLabel}>{step.label}</p>
+                  {/* (2) tiêu đề — mã + tên bài, đúng cách gọi bài ở app và DB. */}
+                  <h2 className={styles.nextTitle} id="nextTitle">{step.title}</h2>
+                  {/* (3) vì sao — lý do lấy từ thứ tự giáo trình, thứ duy nhất
+                      trang này biết chắc. */}
+                  <p className={styles.nextWhy}>
+                    <strong>Vì sao bài này: </strong>
+                    {step.why}
+                  </p>
+                  {/* (4) nút chính */}
+                  <a className={styles.nextCta} href={step.ctaHref}>
+                    {step.ctaLabel}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+                  </a>
+                  {/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của
+                      lời mời. */}
+                  <div className={styles.nextFoot}>
+                    <span>{step.note}</span>
+                    <a className={styles.nextExit} href={step.exitHref}>{step.exitLabel}</a>
+                  </div>
+                </section>
+              )}
+
+              {/* Khối ghi chú trung thực: mở đầu bằng câu in đậm nói cái gì là
+                  thật. Bản cũ của thẻ công cụ hứa "chạy ngay trong trình duyệt"
+                  cho cả /ide, trong khi /ide gửi mã lên máy chủ. */}
+              <section className={styles.note} aria-labelledby="noteTitle">
+                <h2 className={styles.noteTitle} id="noteTitle">
+                  <span className={styles.noteIcon} aria-hidden="true">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
+                  </span>
+                  {HONEST_NOTE.title}
+                </h2>
+                <p className={styles.noteText}>
+                  <strong>{HONEST_NOTE.strong}</strong>
+                  {HONEST_NOTE.rest}
+                </p>
+              </section>
+            </aside>
           </div>
 
           {/* Lối góp ý cho buổi thử nghiệm với giảng viên và sinh viên USTH
@@ -107,12 +203,9 @@ export default function HomePage() {
                   <span className={styles.feedbackIcon} aria-hidden="true">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /><path d="M8 9h8M8 13h5" /></svg>
                   </span>
-                  Góp ý cho chúng tôi
+                  {FEEDBACK.title}
                 </h2>
-                <p className={styles.feedbackText}>
-                  Khảo sát ẩn danh, mất khoảng 3–5 phút. Ý kiến của bạn cho chúng tôi
-                  biết phần nào đang khó học.
-                </p>
+                <p className={styles.feedbackText}>{FEEDBACK.text}</p>
               </div>
               {/* Tab mới để người đang học không mất chỗ; rel="noopener
                   noreferrer" vì đây là tên miền ngoài (Google Forms). */}
@@ -122,8 +215,8 @@ export default function HomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Viết đánh giá
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+                {FEEDBACK.cta}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14 21 3" /></svg>
               </a>
             </section>
           )}
