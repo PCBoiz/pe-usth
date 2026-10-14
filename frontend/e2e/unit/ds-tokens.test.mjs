@@ -147,8 +147,22 @@ test('mọi màu trong bảng token đều là mã hex 6 chữ số, không có 
 
 /* ── 2 · không còn mã màu nào NGOÀI bảng token ────────────────────────── */
 
-/** Mọi file vẽ nên trang bài học (trừ vùng của agent khác). */
+/**
+ * Mọi file vẽ nên BỀ MẶT ĐÃ CHUYỂN sang bảng v2 (trừ vùng của agent khác).
+ *
+ * 15/10/2026 — thêm `app/home.module.css` và `components/SiteHeader.module.css`.
+ * Trang chủ và thanh đầu trang trước đó còn ở bảng xanh dương --edu-*, tức sản
+ * phẩm có hai nguồn màu: vào trang chủ thấy nền xanh, bấm vào bài thấy nền kem.
+ * Đưa hai file vào đây để chúng chịu đúng ba luật của trang bài học: không mã
+ * màu, không đọc --edu-* (trừ --edu-font), không hạ độ đục để làm nhạt.
+ *
+ * CHƯA CHUYỂN: `components/CourseShell.module.css` + hai file legacy
+ * `/static/css/{edu-course-detail,course_detail}.css` của trang khoá — xem ghi
+ * chú ở cuối file.
+ */
 const SURFACE_CSS = [
+  ['src', 'app', 'home.module.css'],
+  ['src', 'components', 'SiteHeader.module.css'],
   // 15/10/2026 — bỏ `python-studio/studio.module.css`: file đó chỉ vẽ trang demo
   // `/lesson/python?demo=list` (PythonStudio.tsx), và cả route lẫn component đã
   // xoá trong đợt dọn route chết, nên đọc file là ném ENOENT.
@@ -276,6 +290,35 @@ const WIRING = [
     '.theoryFigureToggle', 'border', '--ds-sketch', 'nút bấm được'],
   [['src', 'components', 'python-studio', 'studio-chrome.module.css'],
     '.theoryFigureOff', 'border', '--ds-sketch', 'nét đứt mang thông tin "hình đang tắt"'],
+
+  // ── trang chủ + thanh đầu trang (15/10/2026)
+  [['src', 'app', 'home.module.css'],
+    '.page', 'background', '--ds-page',
+    'nền xanh của trang chủ do `body` trong edu-theme.css vẽ; không đặt nền ở '
+    + '.page thì đổi hết token vẫn ra thẻ kem trên nền xanh'],
+  [['src', 'app', 'home.module.css'],
+    '.card', 'border', '--ds-sketch',
+    'thẻ khoá là <a> bấm được; `line` chỉ 1,36:1 trên nền thẻ'],
+  [['src', 'app', 'home.module.css'],
+    '.next', 'background', '--ds-ink',
+    'bản thiết kế §1.4: khối hệ thống gợi ý có nền `ink`, chữ `page` — cặp này '
+    + 'tự đảo theo bản nền nên không phải khai riêng cho chế độ tối'],
+  [['src', 'app', 'home.module.css'],
+    '.nextCta', 'color', '--ds-on-action',
+    'bản cũ viết cứng `white`: ở bản đêm nền nút sáng lên, chữ trắng còn 3,19:1'],
+  [['src', 'app', 'home.module.css'],
+    '.note', 'border', '--ds-sketch',
+    'khối ghi chú trung thực = nét đứt `sketch` 2px trên nền `paper`'],
+  [['src', 'app', 'home.module.css'],
+    '.feedbackButton', 'border', '--ds-ink', 'nút phụ = viền ink 2px'],
+  [['src', 'components', 'SiteHeader.module.css'],
+    '.fullBar', 'background', '--ds-paper',
+    'thanh đầu trang chủ: nền `paper`. Bản cũ --edu-nav-bg là trắng 72% trên '
+    + 'nền xanh dương'],
+  [['src', 'components', 'SiteHeader.module.css'],
+    '.theme', 'border', '--ds-ink',
+    'nút icon theo bản thiết kế §1.4 là viền `ink` 2px; bản cũ dùng viền trắng '
+    + '85% nên gần như không thấy'],
 ];
 
 test('NỐI DÂY: những chỗ load-bearing dùng đúng token mà bảng đo giả định', () => {
@@ -352,7 +395,7 @@ test('mọi token --st-* chỉ là bí danh trỏ vào --ds-*, không có mã m�
 
 /* ── 4 · tương phản WCAG AA trên cặp chữ/nền THẬT ────────────────────── */
 
-test('127 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngày', () => {
+test('172 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngày', () => {
   const { light } = readTokens(TOKENS_CSS);
   const rows = audit(light);
   const bad = rows.filter((r) => !r.pass);
@@ -360,10 +403,10 @@ test('127 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngà
     bad.map((r) => `${r.label} = ${r.ratio.toFixed(2)} (cần ${r.need})`), [],
     'cặp trượt WCAG AA (chạy `node e2e/unit/ds-contrast.mjs` để xem cả bảng)',
   );
-  assert.ok(rows.length >= 120, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
+  assert.ok(rows.length >= 170, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
 });
 
-test('127 cặp chữ/nền thật: không cặp nào trượt AA ở bản Ban đêm', () => {
+test('172 cặp chữ/nền thật: không cặp nào trượt AA ở bản Ban đêm', () => {
   const { dark } = readTokens(TOKENS_CSS);
   const bad = audit(dark).filter((r) => !r.pass);
   assert.deepEqual(
@@ -462,4 +505,27 @@ test('không chỗ nào hạ ĐỘ ĐỤC để làm chữ nhạt đi — phải
  *
  * Số đo tương phản: TRƯỚC khi sửa, 77 cặp đo được **28 cặp trượt**; SAU khi
  * sửa, 127 cặp **0 trượt** (4 dòng được miễn, đều có lý do viết kèm).
+ *
+ * ── ĐỢT 15/10/2026: THÊM TRANG CHỦ + THANH ĐẦU TRANG ──────────────────
+ * `PAIRS` thêm 45 cặp (6 của SiteHeader, 39 của trang chủ) → 172 cặp, **0
+ * trượt** ở cả hai bản nền, 7 dòng được miễn (tất cả đều là đường kẻ/viền
+ * THUẦN TRANG TRÍ, mỗi dòng có lý do).
+ *
+ * Trước đó trang chủ được đo bằng script riêng của nhóm thiết kế
+ * (`scratchpad/ds-audit/home-contrast.py`, bảng --edu-*): 24 cặp mỗi bản nền,
+ * **1 cặp trượt** ở mỗi bản — viền nhãn `.tag` dùng --edu-chip-border, 1,20:1
+ * bản ngày và 1,32:1 bản đêm. Bảng v2 có token `sketch` dành riêng cho "viền
+ * thứ bấm được" nên cặp đó nay đạt 4,00:1 và không còn phải miễn ngưỡng.
+ *
+ * ── NỢ CÒN LẠI: TRANG KHOÁ (/courses/[courseId]) ─────────────────────
+ * CHƯA chuyển, và cố ý không làm dở. Nó không vẽ bằng CSS module như trang
+ * chủ mà bằng lớp toàn cục `.edu-cd-*` / `.cd-block*` của HAI file legacy —
+ * `/static/css/edu-course-detail.css` (185 dòng, 16 token --edu-*, 10 mã hex,
+ * 4 rgba) và `/static/css/course_detail.css` (95 dòng, 13 token, 8 hex,
+ * 2 rgba) — cộng `CourseShell.module.css` (17 lời gọi var). Hai file legacy
+ * còn vi phạm thang chữ: cỡ 11–16px ở ~30 chỗ. Chuyển nó là một đợt riêng:
+ * phải sửa file nạp qua <link> (kéo theo bump ASSET_VERSION), và phải xem
+ * được trang thật để biết style.css/dashboard.css/edu-dashboard.css còn tô
+ * vào đâu. Hệ quả đã biết của việc dừng ở đây: thanh đầu trang (dùng chung)
+ * đã là kem, nên ở trang khoá nó đứng trên phần thân vẫn xanh dương.
  */

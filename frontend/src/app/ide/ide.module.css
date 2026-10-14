@@ -175,7 +175,12 @@
 }
 .detailBody {
   margin: 6px 0 0;
-  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  /* Ba chỗ mono của /ide (khối này, .stdout/.stderr và ô soạn mã) trước đây
+     viết tay `ui-monospace, 'Cascadia Code', Consolas, monospace` — tức mỗi
+     máy một dáng chữ, và KHÔNG có JetBrains Mono mà bản thiết kế chốt cho
+     code. `--edu-mono` (edu-theme.css) đặt JetBrains Mono tự lưu trữ lên đầu
+     rồi mới tới đúng chuỗi dự phòng cũ, nên máy thiếu phông vẫn như trước. */
+  font-family: var(--edu-mono);
   font-size: 12.5px;
   line-height: 1.5;
   white-space: pre-wrap;
@@ -186,7 +191,7 @@
 .stdout,
 .stderr {
   margin: 0 0 10px;
-  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-family: var(--edu-mono);
   font-size: 13.5px;
   line-height: 1.55;
   white-space: pre-wrap;
@@ -263,7 +268,7 @@
   box-sizing: border-box;
   padding: 10px 12px;
   resize: none;
-  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
+  font-family: var(--edu-mono);
   font-size: 13.5px;
   line-height: 1.55;
   tab-size: 4;

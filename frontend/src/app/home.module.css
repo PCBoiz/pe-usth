@@ -1,29 +1,40 @@
 /* Trang chủ — hero + (cột trái: Khoá đang mở | Công cụ) + (cột phải: thẻ gợi ý
    bước tiếp | ghi chú trung thực) + thẻ góp ý + chân trang.
-   Dựng theo design/project/Main.dc.html; chỉ dùng token của edu-theme.css.
+   Dựng theo design/project/Main.dc.html; chỉ dùng token --ds-* của bản thiết kế
+   v2 (khai ở public/static/css/studio-tokens.css).
 
    BA LUẬT CỦA BẢN THIẾT KẾ ĐANG ĐƯỢC GIỮ BẰNG CHÍNH CÁC CON SỐ Ở ĐÂY:
 
    1. Chữ thân ≥ 17px, nhãn/chip 15px, KHÔNG có cỡ nào < 15px. Bản cũ dùng 13px
       ở 3 chỗ (.pill, .colNote, .tag) và 15px cho câu mô tả khoá — câu người học
       đọc để biết khoá này dạy gì thì không được nhỏ hơn 17px.
-   2. Mọi cặp chữ/nền ≥ 4,5:1 (đồ hoạ/viền mang thông tin ≥ 3:1). Đo bằng
-      scratchpad/ds-audit/home-contrast.py, cả bản ngày và bản Ban đêm. Hai chỗ
-      bản cũ trượt đã bỏ hẳn: nhãn đỏ (3,72 / 3,41) và nhãn xanh (3,33 / 3,75);
-      nút góp ý nền gradient (chữ trắng trên đầu sáng của gradient chỉ 3,19) đổi
-      thành nút viền.
+   2. Mọi cặp chữ/nền ≥ 4,5:1 (đồ hoạ/viền mang thông tin ≥ 3:1), đo ở CẢ bản
+      ngày và bản Ban đêm. Phép đo nay nằm trong bộ test chứ không còn là script
+      chạy tay: `e2e/unit/ds-contrast.mjs` (mục "trang chủ" trong PAIRS) —
+      `npm run test:unit` trượt nếu một cặp tụt dưới ngưỡng. Xem cả bảng bằng
+      `node e2e/unit/ds-contrast.mjs`.
    3. Làm nhạt bằng MÀU, không bằng `opacity` — hạ độ đục làm cả chữ lẫn viền
       tụt theo và không đo được bằng token.
 
-   Vì sao không mang bộ token `--ds-*` mới sang đây: bảng đó nằm ở
-   public/static/css/studio-tokens.css và chỉ nạp cho trang bài học. Trang chủ
-   nạp edu-theme.css, nên trộn hai bảng là có hai nguồn màu trên một trang. */
+   ── 15/10/2026: ĐỔI SANG BẢNG KEM --ds-* ───────────────────────────────
+   Bản trước dùng bảng xanh dương --edu-* kế thừa từ bản Django, với lý lẽ
+   "studio-tokens.css chỉ nạp cho trang bài học". Lý lẽ đó đã hết đúng: trang
+   bài học chuyển sang bảng kem v2 ở commit 330a469, nên sản phẩm có HAI nguồn
+   màu — vào trang chủ thấy nền xanh, bấm vào bài thấy nền kem. Nay
+   studio-tokens.css nạp ở mọi trang (xem PageStyles) và trang này đọc --ds-*.
+
+   Nền trang: `.page` tự đặt `background: var(--ds-page)`. Phải đặt ở ĐÂY vì
+   nền xanh thực ra do `body` trong edu-theme.css vẽ (mesh gradient
+   --edu-bg-image); `.page` ở đây là lớp CSS module (tên băm) phủ kín khung
+   nhìn nên nó che hẳn nền body mà không phải sửa edu-theme.css — file đó còn
+   vẽ các trang legacy chưa chuyển. */
 .page,
 .page * { box-sizing: border-box; }
 .page {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: var(--ds-page);
 }
 
 .main {
@@ -51,7 +62,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
 .title {
@@ -60,7 +71,7 @@
   line-height: 1.08;
   font-weight: 800;
   letter-spacing: -0.02em;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
 }
 
 .lead {
@@ -68,7 +79,7 @@
   max-width: 62ch;
   font-size: 17px;
   line-height: 1.55;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
 /* ── Hai cột ─────────────────────────────────────────────── */
@@ -103,7 +114,7 @@
 .colNote {
   font-size: 15px;
   line-height: 1.45;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
 }
 
 /* Nhãn viên thuốc của từng khối */
@@ -116,9 +127,9 @@
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--edu-accent-text);
-  background: var(--edu-accent-soft);
-  border: 1px solid var(--edu-accent-soft-strong);
+  color: var(--ds-violet-deep);
+  background: var(--ds-violet-tint);
+  border: 1px solid var(--ds-violet);
   border-radius: 999px;
 }
 /* Trong .colHead thì nhãn đứng cạnh ghi chú, không cần lề dưới riêng. */
@@ -142,21 +153,27 @@
   gap: 22px;
   width: 100%;
   padding: 24px;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   text-decoration: none;
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-panel-border);
+  background: var(--ds-card);
+  /* Viền `sketch`, không `line`: thẻ này là một <a> bấm được, và bảng thiết kế
+     ghi rõ về token `line` — "không dùng làm ranh giới thành phần cần nhận ra"
+     (1,36:1 trên nền thẻ). `sketch` cho 4,32:1 nên ranh giới thật sự thấy. */
+  border: 1px solid var(--ds-sketch);
   border-radius: 20px;
-  box-shadow: var(--edu-card-shadow);
+  box-shadow: var(--ds-shadow-open);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
 .card:hover,
 .card:focus-visible {
   transform: translateY(-3px);
-  box-shadow: var(--edu-panel-shadow), var(--edu-brand-glow);
+  /* Một mức nổi duy nhất (bảng thiết kế: `shadow-open`), nên hover không đổi
+     bóng — bản cũ cộng thêm quầng xanh/đỏ của bảng --edu-*. */
+  box-shadow: var(--ds-shadow-open);
 }
+/* Vòng focus theo bản thiết kế: 3px tím, lệch 3px. */
 .card:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 
@@ -167,7 +184,9 @@
   inset: -1px;
   padding: 1.5px;
   border-radius: inherit;
-  background: var(--edu-g-brand);
+  /* Bản cũ là gradient xanh→đỏ của bộ --edu-*. Bảng v2 không có gradient
+     thương hiệu, và màu ở đây mang nghĩa "đang chọn" → tím. */
+  background: var(--ds-violet);
   -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
   -webkit-mask-composite: xor;
   mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
@@ -189,11 +208,11 @@
 }
 /* Logo Python nằm trong ô sáng; công cụ có biểu tượng tự mang nền nên không bọc. */
 .icon {
-  background: var(--edu-chip-bg);
-  border: 1px solid var(--edu-chip-border);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-sketch);
   border-radius: 20px;
 }
-.iconBare { border-radius: 20px; overflow: hidden; box-shadow: var(--edu-card-shadow); }
+.iconBare { border-radius: 20px; overflow: hidden; box-shadow: var(--ds-shadow-open); }
 
 .body {
   flex: 1;
@@ -209,31 +228,31 @@
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
 }
-.card:hover .label { color: var(--edu-accent-text); }
+.card:hover .label { color: var(--ds-violet-deep); }
 
-/* Câu mô tả khoá là câu văn đầy đủ → cỡ thân 17px, màu --edu-t2 (8,93:1 bản
-   ngày, 9,59:1 bản đêm). Bản cũ 15px/--edu-t3. */
+/* Câu mô tả khoá là câu văn đầy đủ → cỡ thân 17px, màu `soft` (8,77:1 trên nền
+   thẻ bản ngày, 9,31:1 bản đêm). Bản cũ 15px/--edu-t3. */
 .desc {
   font-size: 17px;
   line-height: 1.55;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
 .tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-/* Một kiểu nhãn duy nhất: nền chip + chữ --edu-t2 (8,25:1 ở cả hai bản nền).
-   Viền chip chỉ để tách khỏi nền thẻ — thuần trang trí, vì nhãn đã có nền
-   riêng và chữ của chính nó. */
+/* Một kiểu nhãn duy nhất: nền `tint` + chữ `soft` (7,66:1 bản ngày). Viền dùng
+   `sketch` thay vì `line` để chip vẫn tách khỏi nền thẻ ở mức nhận ra được
+   (4,00:1 trên `tint`), không phải nhờ một đường 1,2:1 như bản cũ. */
 .tag {
   display: inline-flex;
   align-items: center;
   padding: 5px 12px;
   font-size: 15px;
   font-weight: 600;
-  color: var(--edu-t2);
-  background: var(--edu-chip-bg);
-  border: 1px solid var(--edu-chip-border);
+  color: var(--ds-soft);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-sketch);
   border-radius: 999px;
 }
 
@@ -247,30 +266,32 @@
   justify-content: center;
   width: 38px;
   height: 38px;
-  color: var(--edu-t2);
-  background: var(--edu-chip-bg);
-  border: 1px solid var(--edu-chip-border);
+  color: var(--ds-soft);
+  background: var(--ds-tint);
+  border: 1px solid var(--ds-sketch);
   border-radius: 50%;
   transition: color 0.15s ease, background 0.15s ease, transform 0.18s ease;
 }
-/* Nền hover dùng --edu-accent-2 (không đổi theo bản nền) chứ không --edu-accent:
-   ở bản Ban đêm --edu-accent nhạt hơn, chữ trắng trên đó chỉ 3,19:1. */
-.card:hover .go { color: white; background: var(--edu-accent-2); transform: translateX(2px); }
+/* Nền hover là `action` + chữ `on-action` — cặp duy nhất bảng v2 cho phép đặt
+   chữ lên nền nhấn đậm, và nó TỰ ĐẢO theo bản nền (ngày: trắng trên tím 7,33:1;
+   đêm: mực sẫm trên tím nhạt 8,36:1). Bản cũ viết cứng `white`, nên ở bản đêm
+   chữ trắng trên nền xanh nhạt chỉ còn 3,19:1. */
+.card:hover .go { color: var(--ds-on-action); background: var(--ds-action); transform: translateX(2px); }
 
 /* ── Thẻ gợi ý bước tiếp ─────────────────────────────────── */
-/* Nền --edu-t1 + chữ --edu-panel-bg-solid: cặp này TỰ ĐẢO theo bản nền (ngày:
-   chữ trắng trên navy 17,14:1; đêm: chữ sẫm trên nền sáng 13,57:1), nên không
-   phải khai màu riêng cho chế độ tối — chỗ bản thiết kế bắt lỗi ở màn Main là
-   màu code cứng cho một chế độ. */
+/* Bản thiết kế §1.4 chốt "Khối hệ thống gợi ý": nền `ink`, chữ `page`. Cặp này
+   TỰ ĐẢO theo bản nền (ngày: chữ kem trên mực 14,91:1; đêm: chữ sẫm trên kem
+   15,71:1), nên không phải khai màu riêng cho chế độ tối — chỗ bản thiết kế
+   bắt lỗi ở màn Main đúng là màu code cứng cho một chế độ. */
 .next {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 24px;
-  color: var(--edu-panel-bg-solid);
-  background: var(--edu-t1);
+  color: var(--ds-page);
+  background: var(--ds-ink);
   border-radius: 16px;
-  box-shadow: var(--edu-card-shadow);
+  box-shadow: var(--ds-shadow-open);
 }
 
 .nextLabel {
@@ -304,57 +325,63 @@
   padding: 0 28px;
   font-size: 17px;
   font-weight: 800;
-  color: white;
+  color: var(--ds-on-action);
   text-decoration: none;
-  background: var(--edu-accent-2);
+  background: var(--ds-action);
   border-radius: 999px;
 }
-.nextCta:hover { background: var(--edu-accent); }
+.nextCta:hover { background: var(--ds-violet); }
+/* Vòng focus lấy màu CHỮ của thẻ (`page`), không lấy tím: nút nằm trên nền
+   `ink`, mà tím bản ngày trên mực chỉ 2,2:1 nên vòng focus sẽ chìm. */
 .nextCta:focus-visible {
-  outline: 3px solid var(--edu-panel-bg-solid);
+  outline: 3px solid var(--ds-page);
   outline-offset: 3px;
 }
 
-/* Vạch ngăn + lối ra yên tĩnh. Đường kẻ lấy chính màu chữ của thẻ nên nó thấy
-   được ở cả hai bản nền (bảng edu-theme không có token "kẻ trên nền đậm"). */
+/* Vạch ngăn + lối ra yên tĩnh. Đường kẻ dùng `desk`: nó cũng tự đảo theo bản
+   nền và cho 12,85:1 trên `ink` bản ngày, 8,80:1 bản đêm — thấy rõ mà không
+   gắt như lấy nguyên màu chữ của thẻ (bảng v2 chưa có token "kẻ trên nền mực",
+   bản thiết kế đề xuất `on-ink-line` nhưng chưa chốt giá trị cho bản đêm). */
 .nextFoot {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 8px;
   padding-top: 12px;
-  border-top: 1px solid var(--edu-panel-bg-solid);
+  border-top: 1px solid var(--ds-desk);
   font-size: 17px;
   line-height: 1.5;
 }
 
 /* Nút yên: chữ cùng màu thân thẻ + gạch chân (không phải nút nền). Bản thiết kế
-   dùng tím nhạt; bảng edu-theme không có tím nào đạt 4,5:1 trên nền này, nên
-   dùng màu chữ của thẻ — vẫn là "lối ra yên tĩnh" vì không có nền, không viền. */
+   dùng tím cho lối ra, nhưng tím ở đây nằm trên nền `ink` — bản ngày 2,2:1,
+   không đọc được. Dùng màu chữ của thẻ (`page`, 14,91:1) và giữ gạch chân:
+   vẫn là "lối ra yên tĩnh" vì không có nền, không viền. */
 .nextExit {
   font-size: 17px;
   font-weight: 700;
-  color: var(--edu-panel-bg-solid);
+  color: var(--ds-page);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .nextExit:hover { text-decoration-thickness: 2px; }
 .nextExit:focus-visible {
-  outline: 3px solid var(--edu-panel-bg-solid);
+  outline: 3px solid var(--ds-page);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
 /* ── Khối ghi chú trung thực ─────────────────────────────── */
-/* Viền nét đứt 2px màu --edu-t3 (5,46:1 ngày / 5,86:1 đêm ≥ 3:1): nét đứt là
-   cách bản thiết kế phân biệt "ghi chú về sự thật" với thẻ nội dung. */
+/* Bản thiết kế §1.4 "Khối ghi chú trung thực": nền `paper`, viền nét đứt
+   `sketch` 2px (4,21:1 ≥ 3:1). Nét đứt là cách phân biệt "ghi chú về sự thật"
+   với thẻ nội dung. */
 .note {
   display: flex;
   flex-direction: column;
   gap: 8px;
   padding: 20px;
-  background: var(--edu-panel-bg-solid);
-  border: 2px dashed var(--edu-t3);
+  background: var(--ds-paper);
+  border: 2px dashed var(--ds-sketch);
   border-radius: 12px;
 }
 
@@ -366,19 +393,19 @@
   font-size: 17px;
   font-weight: 700;
   line-height: 1.35;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
 }
 .noteIcon {
   flex: none;
   display: inline-flex;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
 .noteText {
   margin: 0;
   font-size: 17px;
   line-height: 1.55;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
 /* ── Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx). ── */
@@ -389,10 +416,13 @@
   gap: 24px;
   margin: 56px 0 0;
   padding: 32px 44px;
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-panel-border);
+  background: var(--ds-card);
+  /* `line` chứ không `sketch`: thẻ này KHÔNG bấm được (nút nằm bên trong), nên
+     viền của nó thuần trang trí — ranh giới do nền và phần đệm 32px nói. Đây
+     đúng vai mà bảng thiết kế dành cho token `line`. */
+  border: 1px solid var(--ds-line);
   border-radius: 20px;
-  box-shadow: var(--edu-card-shadow);
+  box-shadow: var(--ds-shadow-open);
 }
 .feedbackBody { min-width: 0; max-width: 760px; }
 
@@ -404,7 +434,7 @@
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
 }
 .feedbackIcon {
   display: inline-flex;
@@ -412,8 +442,8 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  color: var(--edu-accent-text);
-  background: var(--edu-accent-soft);
+  color: var(--ds-violet-deep);
+  background: var(--ds-violet-tint);
   border-radius: 12px;
 }
 
@@ -421,13 +451,13 @@
   margin: 0;
   font-size: 17px;
   line-height: 1.55;
-  color: var(--edu-t2);
+  color: var(--ds-soft);
 }
 
-/* Nút phụ (viền 2px màu chữ chính): bản cũ dùng nền gradient xanh với chữ
-   trắng, mà đầu sáng của gradient (--edu-accent-3) chỉ cho 3,19:1 — trượt AA ở
-   cả hai bản nền. Góp ý là lựa chọn phụ, không phải việc chính của trang, nên nút phụ
-   cũng đúng thứ bậc hơn. */
+/* Nút phụ = viền `ink` 2px, nền trong suốt — đúng một biến thể duy nhất mà bản
+   thiết kế §1.4 cho nút phụ. Bản cũ dùng nền gradient xanh với chữ trắng, mà
+   đầu sáng của gradient chỉ cho 3,19:1 — trượt AA ở cả hai bản nền. Góp ý là
+   lựa chọn phụ nên nút phụ cũng đúng thứ bậc hơn. */
 .feedbackButton {
   flex: none;
   display: inline-flex;
@@ -437,16 +467,16 @@
   padding: 0 28px;
   font-size: 17px;
   font-weight: 700;
-  color: var(--edu-t1);
+  color: var(--ds-ink);
   text-decoration: none;
   background: transparent;
-  border: 2px solid var(--edu-t1);
+  border: 2px solid var(--ds-ink);
   border-radius: 999px;
   transition: transform 0.15s ease, background 0.15s ease;
 }
-.feedbackButton:hover { transform: translateY(-1px); background: var(--edu-chip-bg); }
+.feedbackButton:hover { transform: translateY(-1px); background: var(--ds-tint); }
 .feedbackButton:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: 3px solid var(--ds-violet);
   outline-offset: 3px;
 }
 
@@ -456,8 +486,10 @@
   font-family: var(--edu-font);
   font-size: 15px;
   text-align: center;
-  color: var(--edu-t3);
-  border-top: 1px solid var(--edu-sidebar-border);
+  color: var(--ds-soft);
+  /* Đường kẻ chân trang: thuần trang trí (chân trang đã tách bằng khoảng
+     trắng), nên đúng vai của token `line`. */
+  border-top: 1px solid var(--ds-line);
 }
 
 @media (prefers-reduced-motion: reduce) {

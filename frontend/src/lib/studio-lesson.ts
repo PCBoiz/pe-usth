@@ -182,7 +182,16 @@ export type Step4 = {
   /** Ghi vào thư mục chạy trước mỗi lần chạy; bộ chấm cho phép thay theo từng ca. */
   files?: LessonFile[];
   contracts?: LessonContract[];
-  /** Cửa tự kiểm tra (B20, I07, I12, N04, N08): lời giải chỉ mở sau lần nộp đầu. */
+  /**
+   * Cửa tự kiểm tra: lời giải chỉ mở sau khi bài được ghi nhận HOÀN THÀNH.
+   *
+   * Khoá đang chạy (Advanced Python) có đúng BA bài cửa: **R02, DA01, DA02** —
+   * đếm `content_json.step_4.gate` trong scripts/pe-v4/out-advanced/lessons/*.json,
+   * tức đúng bản đang seed vào DB. Chú thích cũ nêu NĂM mã bài khác: đó là các
+   * bài cửa của khoá `python` CƠ BẢN, mà khoá đó đã gỡ khỏi sản phẩm (10/2026).
+   * Không mã nào trong năm mã ấy còn tồn tại, nên ai đọc chú thích rồi đi tìm
+   * bài tương ứng sẽ tìm nhầm chỗ — vì vậy không chép lại chúng ở đây.
+   */
   gate?: boolean;
   /** Server đang giữ solutionCode (bài cửa chưa hoàn thành) — xem
    *  withholdSolutionCode ở src/lessons/lessons.service.ts. */

@@ -281,6 +281,65 @@ export const PAIRS = [
   // ── nút "Chạy thử ở Bàn thí nghiệm" (TryItButton.module.css)
   ['bàn thí nghiệm: nút', '--ds-violet-deep', '--ds-violet-tint', 'text'],
   ['bàn thí nghiệm: nút · viền', '--ds-violet', '--ds-violet-tint', 'ui'],
+
+  // ── thanh đầu trang (SiteHeader.module.css) — có ở trang chủ, trang khoá,
+  //    /ide và /practice, nên một cặp trượt ở đây là trượt ở bốn trang
+  ['header: tên sản phẩm (.brandName)', '--ds-ink', '--ds-paper', 'text'],
+  ['header: phần nhấn của tên (.brandAccent)', '--ds-violet', '--ds-paper', 'text'],
+  ['header: nút đổi sáng/tối (.theme icon)', '--ds-ink', '--ds-card', 'text'],
+  ['header: nút đổi sáng/tối · viền 2px', '--ds-ink', '--ds-card', 'ui'],
+  ['header: nút đổi sáng/tối · rê chuột', '--ds-violet-deep', '--ds-violet-tint', 'text'],
+  ['header: vòng focus nút / nền thanh', '--ds-violet', '--ds-paper', 'ui'],
+  ['header: vạch chân thanh (.bar::after)', '--ds-line', '--ds-paper', 'decor',
+    'Đường kẻ dưới thanh đầu trang. Thanh đã tách khỏi nội dung bằng 18–20px '
+    + 'đệm và bằng nền `paper` riêng, nên gỡ đường kẻ đi không mất thông tin '
+    + 'nào — đúng vai mà bảng thiết kế dành cho token `line`.'],
+
+  // ── TRANG CHỦ (home.module.css) ─────────────────────────────────────────
+  ['trang chủ: nhãn hero (.eyebrow)', '--ds-soft', '--ds-page', 'text'],
+  ['trang chủ: tiêu đề 44px (.title)', '--ds-ink', '--ds-page', 'large'],
+  ['trang chủ: câu dẫn (.lead)', '--ds-soft', '--ds-page', 'text'],
+  ['trang chủ: ghi chú cột (.colNote)', '--ds-soft', '--ds-page', 'text'],
+  ['trang chủ: nhãn khối (.pill)', '--ds-violet-deep', '--ds-violet-tint', 'text'],
+  ['trang chủ: nhãn khối · viền', '--ds-violet', '--ds-violet-tint', 'ui'],
+  ['trang chủ: thẻ khoá (.card)', '--ds-ink', '--ds-card', 'text'],
+  ['trang chủ: thẻ khoá · viền (thẻ BẤM ĐƯỢC nên dùng sketch)', '--ds-sketch', '--ds-card', 'ui'],
+  ['trang chủ: vòng focus thẻ / nền trang', '--ds-violet', '--ds-page', 'ui'],
+  ['trang chủ: viền tím hiện khi rê thẻ (.card::before)', '--ds-violet', '--ds-card', 'ui'],
+  ['trang chủ: tên khoá (.label 22px/700)', '--ds-ink', '--ds-card', 'large'],
+  ['trang chủ: tên khoá khi rê chuột', '--ds-violet-deep', '--ds-card', 'text'],
+  ['trang chủ: câu mô tả khoá (.desc)', '--ds-soft', '--ds-card', 'text'],
+  ['trang chủ: nhãn nhỏ trên thẻ (.tag)', '--ds-soft', '--ds-tint', 'text'],
+  ['trang chủ: nhãn nhỏ · viền', '--ds-sketch', '--ds-tint', 'ui'],
+  ['trang chủ: ô logo trên thẻ · viền (.icon)', '--ds-sketch', '--ds-tint', 'ui'],
+  ['trang chủ: mũi tên góc thẻ (.go)', '--ds-soft', '--ds-tint', 'text'],
+  ['trang chủ: mũi tên góc thẻ · viền', '--ds-sketch', '--ds-tint', 'ui'],
+  ['trang chủ: mũi tên khi rê thẻ (nền action)', '--ds-on-action', '--ds-action', 'text'],
+  // Thẻ gợi ý: nền `ink`, chữ `page` — cặp tự đảo theo bản nền.
+  ['trang chủ: thẻ gợi ý · chữ (.next)', '--ds-page', '--ds-ink', 'text'],
+  ['trang chủ: thẻ gợi ý · nút chính (.nextCta)', '--ds-on-action', '--ds-action', 'text'],
+  ['trang chủ: thẻ gợi ý · nút chính khi rê', '--ds-on-action', '--ds-violet', 'text'],
+  ['trang chủ: thẻ gợi ý · vòng focus nút / nền thẻ', '--ds-page', '--ds-ink', 'ui'],
+  ['trang chủ: thẻ gợi ý · vạch ngăn lối ra (.nextFoot)', '--ds-desk', '--ds-ink', 'ui'],
+  ['trang chủ: thẻ gợi ý · lối ra yên tĩnh (.nextExit)', '--ds-page', '--ds-ink', 'text'],
+  ['trang chủ: ghi chú trung thực · tiêu đề (.noteTitle)', '--ds-ink', '--ds-paper', 'text'],
+  ['trang chủ: ghi chú trung thực · chữ (.noteText)', '--ds-soft', '--ds-paper', 'text'],
+  ['trang chủ: ghi chú trung thực · icon', '--ds-soft', '--ds-paper', 'text'],
+  ['trang chủ: ghi chú trung thực · nét đứt 2px', '--ds-sketch', '--ds-paper', 'ui'],
+  ['trang chủ: thẻ góp ý · tiêu đề', '--ds-ink', '--ds-card', 'text'],
+  ['trang chủ: thẻ góp ý · chữ', '--ds-soft', '--ds-card', 'text'],
+  ['trang chủ: thẻ góp ý · ô icon', '--ds-violet-deep', '--ds-violet-tint', 'text'],
+  ['trang chủ: thẻ góp ý · viền thẻ (KHÔNG bấm được)', '--ds-line', '--ds-card', 'decor',
+    'Thẻ góp ý không phải thành phần bấm được — nút nằm BÊN TRONG nó. Ranh giới '
+    + 'thẻ do nền `card` và phần đệm 32px nói, nên viền thuần trang trí; bảng '
+    + 'thiết kế dành đúng vai này cho token `line`.'],
+  ['trang chủ: nút góp ý (nút phụ, viền ink 2px)', '--ds-ink', '--ds-card', 'text'],
+  ['trang chủ: nút góp ý · viền 2px', '--ds-ink', '--ds-card', 'ui'],
+  ['trang chủ: nút góp ý · nền khi rê chuột', '--ds-ink', '--ds-tint', 'text'],
+  ['trang chủ: chữ chân trang (.footer)', '--ds-soft', '--ds-page', 'text'],
+  ['trang chủ: vạch chân trang', '--ds-line', '--ds-page', 'decor',
+    'Chân trang đã tách khỏi nội dung bằng 22px đệm và nằm sau cả khối cuối; '
+    + 'đường kẻ chỉ để mắt nghỉ. Gỡ đi không mất thông tin nào.'],
 ];
 
 const NEED = { text: 4.5, large: 3, ui: 3, decor: 0, inactive: 0 };

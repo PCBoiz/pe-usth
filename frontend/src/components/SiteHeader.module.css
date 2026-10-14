@@ -1,4 +1,13 @@
-/* Thanh đầu trang — chỉ dùng token của edu-theme.css (lint:tokens cấm hex). */
+/* Thanh đầu trang — bảng token --ds-* của bản thiết kế v2 (lint:tokens cấm hex).
+
+   15/10/2026 — chuyển từ bảng xanh dương --edu-* sang bảng kem --ds-*. Thanh này
+   có mặt ở trang chủ, trang khoá, /ide và /practice; trong đó /practice và trang
+   chủ đã là nền kem, nên một thanh xanh dương ở trên là hai bảng màu trên CÙNG
+   MỘT khung nhìn. --ds-* nạp ở mọi trang qua PageStyles (xem chú thích TOKENS_CSS
+   ở đó), nên không trang nào vẽ thanh này bằng biến không tồn tại.
+
+   Trang khoá (/courses/[courseId]) CHƯA chuyển: ở đó thanh kem đứng trên phần
+   thân vẫn xanh. Đó là nợ đã biết, ghi lại để không ai tưởng là lỗi mới. */
 .bar {
   display: flex;
   align-items: center;
@@ -10,25 +19,29 @@
   font-family: var(--edu-font);
   position: relative;
 }
-/* Vạch chân header: gradient mờ dần thay cho viền phẳng. */
+/* Vạch chân header.
+   Bản cũ là gradient xanh→đỏ phủ `opacity: .35`. Hai điều sai: bảng v2 không có
+   gradient thương hiệu, và làm nhạt bằng `opacity` là cách nhanh nhất để một
+   giá trị tụt khỏi bảng mà không ai đo được. Nay là một đường `line` đặc —
+   thuần trang trí (thanh đã tách khỏi nội dung bằng khoảng trắng). */
 .bar::after {
   content: '';
   position: absolute;
   left: 24px; right: 24px; bottom: 0;
   height: 1px;
-  background: linear-gradient(90deg, var(--edu-accent), var(--edu-red-2) 55%, transparent);
-  opacity: 0.35;
+  background: var(--ds-line);
 }
 
-/* Bản trang chủ: thanh phủ hết bề ngang, nền mờ + viền chân phẳng. */
+/* Bản trang chủ: thanh phủ hết bề ngang, nền `paper` + viền chân phẳng.
+   Bỏ `backdrop-filter: blur(12px)`: nền cũ (--edu-nav-bg) là trắng 72% nên blur
+   có việc để làm; `paper` ĐẶC nên blur chỉ còn là một lớp hợp ảnh tốn GPU mà
+   không ai thấy. */
 .fullBar {
   position: sticky;
   top: 0;
   z-index: 20;
-  background: var(--edu-nav-bg);
-  border-bottom: 1px solid var(--edu-sidebar-border);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: var(--ds-paper);
+  border-bottom: 1px solid var(--ds-line);
 }
 .barWide { box-sizing: border-box; max-width: 1280px; padding-top: 16px; padding-bottom: 16px; }
 .barWide::after { display: none; }
@@ -43,29 +56,41 @@
   text-decoration: none;
 }
 
-.brandName { color: var(--edu-accent); }
-.brandAccent { color: var(--edu-red); }
+/* Bản cũ: "Programming" xanh accent + "EDU" đỏ. Bảng v2 cho mỗi họ nhấn ĐÚNG
+   MỘT vai ngữ nghĩa, và đỏ (`sanguine`) là màu "chú ý" — tên sản phẩm không
+   phải lời cảnh báo. Nay: tên bằng mực, phần nhấn bằng tím (`violet` = "vị trí
+   và lựa chọn, liên kết" — và đây đúng là liên kết về trang chủ). */
+.brandName { color: var(--ds-ink); }
+.brandAccent { color: var(--ds-violet); }
 
+/* Nút icon theo bản thiết kế §1.4: 48 × 48, bo tròn, viền `ink` 2px. Bản cũ
+   42 × 42 — dưới vùng chạm tối thiểu 44 × 44 mà bản thiết kế chốt — và viền
+   `pill-border` là trắng 85%, tức gần như không thấy trên nền sáng. */
 .theme {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 48px;
+  height: 48px;
   padding: 0;
-  color: var(--edu-t2);
-  background: var(--edu-pill-bg);
-  border: 1px solid var(--edu-pill-border);
+  color: var(--ds-ink);
+  background: var(--ds-card);
+  border: 2px solid var(--ds-ink);
   border-radius: 999px;
   cursor: pointer;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease, background 0.15s ease;
 }
-.theme:hover { color: var(--edu-accent-text); border-color: var(--edu-accent); box-shadow: var(--edu-brand-glow); }
+.theme:hover { color: var(--ds-violet-deep); background: var(--ds-violet-tint); }
+.theme:focus-visible { outline: 3px solid var(--ds-violet); outline-offset: 3px; }
 
 /* Hành động sẽ xảy ra khi bấm: đang sáng → hiện trăng, đang tối → hiện mặt trời. */
 .sun { display: none; }
 :global(body.dark) .moon { display: none; }
 :global(body.dark) .sun { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .theme { transition: none; }
+}
 
 @media (max-width: 639.98px) {
   .bar { padding: 16px 16px 14px; }

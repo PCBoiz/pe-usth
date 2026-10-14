@@ -82,11 +82,17 @@ test('route chết và component chỉ phục vụ nó đã xoá hẳn khỏi sr
 /**
  * Chỉ gồm file mà loader DUY NHẤT là một trong bốn trang đã xoá — đã grep từng
  * file trước khi xoá (`LegacyScripts`/`PageStyles` là hai chỗ nạp duy nhất).
- * `chatbot.css` KHÔNG có trong danh sách: ba trang /courses/db_design* còn nạp.
+ *
+ * 15/10/2026 — `chatbot.css` vào danh sách. Trước đó nó được giữ lại vì ba trang
+ * /courses/db_design* còn nạp, nhưng đó là 581 dòng CSS cho một thành phần không
+ * còn tồn tại: Chatbot.tsx và chatbot.js đã xoá, và grep public/static/js không
+ * thấy file nào dựng phần tử mang lớp `.chatbot-*`. Bỏ ba dòng nạp thì file
+ * thành mồ côi, nên xoá luôn — đúng "chiều 1" của file test này.
  */
 const REMOVED_STATIC = [
   ['public', 'static', 'js', 'main.js'],
   ['public', 'static', 'js', 'chatbot.js'],
+  ['public', 'static', 'css', 'chatbot.css'],
   ['public', 'static', 'js', 'python-studio.worker.js'],
   ['public', 'static', 'js', 'pages', 'lesson-topbar.hydrate.js'],
   ['public', 'static', 'js', 'pages', 'lesson_java.inline.js'],
@@ -129,6 +135,7 @@ test('src/** không còn nạp hay dẫn tới route/asset đã xoá', () => {
   const GONE = [
     '/static/js/main.js',
     '/static/js/chatbot.js',
+    '/static/css/chatbot.css',
     '/static/js/python-studio.worker.js',
     '/static/js/pages/lesson-topbar.hydrate.js',
     '/static/js/pages/lesson_java',

@@ -1,11 +1,11 @@
 'use client';
 
-// Python IDE: editor Monaco bên trái, kết quả bên phải. Bấm Run (hoặc Ctrl+Enter)
+// Bàn thí nghiệm (/ide): editor Monaco bên trái, kết quả bên phải. Bấm Run (hoặc Ctrl+Enter)
 // gửi mã tới POST /api/python/run; backend chạy trong container Docker cách ly
 // rồi trả stdout/stderr (xem src/python-runner ở backend). Một request đồng bộ,
 // không hàng đợi — nên "đang chạy" kéo dài tới khi chương trình xong hoặc hết giờ.
 //
-// Đây là công cụ, KHÔNG phải khóa học: không ghi tiến độ/XP/đăng ký.
+// Đây là công cụ, KHÔNG phải khoá học: không ghi tiến độ/XP/đăng ký.
 //
 // Lỗi HẠ TẦNG (máy chủ không có Docker, runner tắt, IDE chưa mở) được nói bằng
 // một câu bình thường, nguyên văn thông điệp kỹ thuật thì gập vào <details>. Lỗi
@@ -165,7 +165,9 @@ function clip(text: string): { text: string; clipped: boolean } {
 }
 
 const ERROR_TITLES: Record<Extract<RunState, { status: 'error' }>['kind'], string> = {
-  private: 'IDE chưa mở cho phiên này',
+  // "Bàn thí nghiệm", không "IDE": bảng thuật ngữ của bản thiết kế chốt
+  // MỘT tên cho trình soạn code, và người học chỉ gặp cái tên đó.
+  private: 'Bàn thí nghiệm chưa mở cho phiên này',
   busy: 'Chưa chạy được lúc này',
   unavailable: 'Bộ chạy Python đang được dựng',
   other: 'Lỗi',
@@ -338,7 +340,7 @@ export default function IdeClient() {
           status: 'error',
           kind: 'private',
           message:
-            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
+            'Lúc này Bàn thí nghiệm chưa chạy được mã. Các bài học trong khoá vẫn chạy Python '
             + 'bình thường ngay trong trình duyệt.',
           // KHÔNG gợi ý PY_RUNNER_PUBLIC=true ở đây. Câu cũ mời người vận hành
           // bật một cờ mở toang route chạy mã cho cả internet, trong khi 401
@@ -408,7 +410,7 @@ export default function IdeClient() {
         <SiteHeader />
         <main className={styles.main}>
           <div className={styles.toolbar}>
-            <h1 className={styles.title}>Python IDE</h1>
+            <h1 className={styles.title}>Bàn thí nghiệm</h1>
             <div className={styles.actions}>
               <label className={styles.exampleLabel}>
                 <span className={styles.srOnly}>Ví dụ test</span>

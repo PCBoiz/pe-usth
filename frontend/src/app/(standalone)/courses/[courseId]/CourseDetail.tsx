@@ -1,6 +1,6 @@
 'use client';
 
-// Chi tiết khóa học — giữ khung/class của bản cũ (edu-course-detail.css,
+// Chi tiết khoá học — giữ khung/class của bản cũ (edu-course-detail.css,
 // course_detail.css) để màu sắc và bố cục không đổi, nhưng dữ liệu nay đến từ
 // danh mục tĩnh (src/lib/catalog.ts) thay vì API.
 //
@@ -193,7 +193,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const total = flatTitles.length || course.lessons;
   const plan = planResume(completedRaw, total);
   const doneSet = completedLessonSet(completedRaw, total);
-  // ?lesson= là chỉ số từ 0 (xem lesson/python_advanced/page.tsx); khóa khác bỏ qua tham số này.
+  // ?lesson= là chỉ số từ 0 (xem lesson/python_advanced/page.tsx); khoá khác bỏ qua tham số này.
   const startUrl = `${course.lessonUrl}?lesson=${plan.index}`;
   // Chưa có tiến độ (hoặc chưa biết) thì nhãn giữ NGUYÊN chữ cũ "Bắt đầu học".
   const ctaLabel = resumeButtonLabel(plan);
@@ -227,7 +227,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
           {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
           <a className={styles.back} href="/">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
-            <span>Tất cả khóa học</span>
+            <span>Tất cả khoá học</span>
           </a>
 
           <div className="edu-cd-grid">
@@ -266,11 +266,11 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 </div>
               </div>
 
-              {/* Nội dung khóa học (giáo trình) */}
+              {/* Nội dung khoá học (giáo trình) */}
               <div className="cd-block" id={curriculumAnchor}>
                 <div className="cd-block-hd">
                   <div className="cd-block-icon">📚</div>
-                  <h3>Nội dung khóa học</h3>
+                  <h3>Nội dung khoá học</h3>
                   <span className={styles.blockMeta}>
                     {modules.length} module · {total} bài học
                     {/* Chỉ thêm phần "đã xong" khi thật sự biết tiến độ; khách
@@ -349,7 +349,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
               <div className="cd-block">
                 <div className="cd-block-hd">
                   <div className="cd-block-icon">📋</div>
-                  <h3>Tổng quan khóa học</h3>
+                  <h3>Tổng quan khoá học</h3>
                 </div>
                 <div className="cd-block-body">
                   <p className="cd-desc">{course.description}</p>
@@ -397,7 +397,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}>▶ {ctaLabel}</a>
 
                 <div className="edu-cd-includes">
-                  <div className="edu-cd-includes-title">KHÓA HỌC BAO GỒM</div>
+                  <div className="edu-cd-includes-title">KHOÁ HỌC BAO GỒM</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-book-open"></i> {course.lessons} bài học</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-clock"></i> {course.duration}</div>
                   <div className="edu-cd-inc-item"><i className="fas fa-infinity"></i> Truy cập vĩnh viễn</div>
@@ -406,7 +406,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 </div>
               </div>
 
-              {/* Bạn sẽ học được — ẩn hẳn khi khóa không có curriculum.skills. */}
+              {/* Bạn sẽ học được — ẩn hẳn khi khoá không có curriculum.skills. */}
               {outcomes.length > 0 && (
                 <div className="edu-cd-card">
                   <div className="edu-cd-card-title">Bạn sẽ học được</div>

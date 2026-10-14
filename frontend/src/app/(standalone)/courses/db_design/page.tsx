@@ -10,7 +10,11 @@ const CSS = [
   '/static/css/dashboard.css',
   '/static/css/pages.css',
   '/static/css/dark-mode.css',
-  '/static/css/chatbot.css',
+  // 15/10/2026 — bỏ '/static/css/chatbot.css'. Hộp chat đã xoá hẳn ở đợt dọn
+  // route chết: không còn Chatbot.tsx, không còn chatbot.js, và không file JS
+  // nào trong public/static/js dựng phần tử mang lớp .chatbot-*. Ba trang
+  // db_design là chỗ cuối cùng còn nạp 581 dòng CSS cho một thành phần không
+  // tồn tại, nên chính file CSS cũng đi theo.
   '/static/css/course_db_design.css',
   '/static/css/edu-theme.css',
   '/static/css/edu-dashboard.css',

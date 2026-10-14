@@ -31,35 +31,33 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Template gốc nào cũng có meta csrf-token; course_detail.js/course_db_design.js
             đọc .content KHÔNG guard → meta phải tồn tại (rỗng — auth giờ là JWT). */}
         <meta name="csrf-token" content="" />
-        {/* ── RÚT NGẮN ĐƯỜNG TẢI FONT ──────────────────────────────────────
-            edu-theme.css dòng 14 nạp Poppins bằng `@import url(fonts.
-            googleapis.com/...&display=swap)`. @import nằm BÊN TRONG một file
-            tải qua <link>, nên trình duyệt chỉ biết tới nó sau khi đã tải và
-            phân tích xong edu-theme.css: chuỗi phụ thuộc là HTML → edu-theme
-            .css → CSS của Google Fonts → file .woff2. Với `display=swap`, chữ
-            vẽ bằng font dự phòng trước rồi mới nhảy sang Poppins — mỗi nhịp
-            chậm trong chuỗi đó là một nhịp dịch bố cục (CLS).
+        {/* ── ĐƯỜNG TẢI PHÔNG ──────────────────────────────────────────────
+            15/10/2026 — gỡ hai thẻ preconnect + một thẻ preload trỏ tới Google
+            Fonts. Chúng tồn tại để bù cho một chuỗi phụ thuộc bốn chặng:
+            edu-theme.css nạp Poppins bằng `@import url(fonts.googleapis.com/…)`,
+            mà @import nằm BÊN TRONG một file tải qua <link>, nên trình duyệt
+            chỉ biết tới phông sau khi đã tải + phân tích xong edu-theme.css —
+            HTML → edu-theme.css → CSS của Google → .woff2, hai chặng cuối ở
+            origin khác (thêm DNS + TLS cho mỗi origin).
 
-            preconnect: dựng sẵn DNS + TLS cho hai origin của Google Fonts.
-            preload as=style: nổ phát yêu cầu file CSS của font NGAY khi phân
-            tích HTML, song song với edu-theme.css thay vì phải chờ nó — lúc
-            @import chạy tới thì đã có trong cache.
+            Nay hai họ chữ của bản thiết kế v2 (Be Vietnam Pro + JetBrains Mono)
+            tự lưu trữ trong public/static/fonts/ và khai @font-face ở
+            /static/css/edu-fonts.css, mà PageStyles tự thêm vào mọi trang. Chuỗi
+            còn HAI chặng, CÙNG ORIGIN: HTML → edu-fonts.css → .woff2. Không còn
+            origin nào để preconnect, cũng không còn file CSS trung gian để
+            preload — giữ mấy thẻ đó lại là bắt mọi trang mở thêm hai kết nối
+            TLS không ai dùng.
 
-            Cả hai chỉ là gợi ý tải trước, KHÔNG áp style nào, nên không đổi
-            giao diện. Sửa tận gốc (bỏ @import, đưa <link> font vào thẳng đây)
-            phải sửa edu-theme.css — ngoài phạm vi lần này. */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        {/* no-page-custom-font là luật của Pages Router ("phải đặt trong
-            pages/_document.js"). App Router thì layout gốc CHÍNH LÀ chỗ dùng
-            chung cho mọi trang — đúng điều luật đòi — nên ở đây nó báo oan
-            (7 chỗ khác trong repo cũng đang chịu cảnh báo này). */}
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="preload"
-          as="style"
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
-        />
+            Không thêm `rel="preload"` cho chính tệp .woff2: đoán sai nét nào
+            dùng trên trang nào là tải thừa 20 KB mỗi nét, mà @font-face chia
+            theo `unicode-range` nên trình duyệt đã chỉ lấy đúng phần có chữ.
+            Có số đo cho thấy nhịp đổi phông còn thấy rõ thì hãy preload, và
+            preload phải kèm `crossorigin` kể cả khi cùng origin (phông luôn
+            được tải ở chế độ CORS).
+
+            Trang /card/[cardId] (cụm db_design cũ) vẫn tự nạp Inter từ Google
+            Fonts bằng thẻ <link> riêng của nó, nên hai origin đó CHƯA bỏ được
+            khỏi CSP trong next.config.ts. */}
         {/* Origin backend cho pe-bridge.js — phải có TRƯỚC mọi script legacy */}
         <script
           dangerouslySetInnerHTML={{
@@ -109,8 +107,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                  trang trắng trơn. Trang chi tiết khóa học dùng .page active sẵn
                  nên không phụ thuộc luật này. */
               '[id^="page-"].page{display:none}[id^="page-"].page.active{display:block}',
-              /* tiện ích ẩn dùng khắp nơi (dashboard.css / chatbot.css) */
-              '.hidden{display:none!important}.chatbot-hidden{display:none!important}',
+              /* tiện ích ẩn dùng khắp nơi (dashboard.css)
+
+                 15/10/2026 — bỏ `.chatbot-hidden` khỏi dòng này, cùng lý do đã
+                 bỏ `.streak-overlay` ở dưới: hộp chat không còn được dựng ở đâu
+                 nữa (Chatbot.tsx và chatbot.js xoá ở đợt dọn route chết, và
+                 chatbot.css — nơi khai lớp này — vừa xoá theo khi ba trang
+                 /courses/db_design* thôi nạp nó). Luật chặn FOUC cho một lớp
+                 không ai dùng chỉ làm người đọc sau đi tìm chỗ bật nó. */
+              '.hidden{display:none!important}',
               /* hộp thoại: ẩn bằng opacity+visibility, mở bằng .active
                  (dashboard.css .un-overlay, ChangePassword.css .cp-overlay)
 

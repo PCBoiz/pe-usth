@@ -362,16 +362,26 @@ test('không dùng mã màu trong *.module.css của trang chủ/trang khoá', (
 /* ═══ 8 · tương phản WCAG AA trên cặp chữ/nền THẬT ══════════════════════ */
 
 /**
- * Đọc token của `public/static/css/edu-theme.css` — bảng màu mà trang chủ và
- * trang khoá nạp (trang bài học dùng bảng khác, `studio-tokens.css`).
+ * Đọc token của HAI file mà trang chủ nạp, theo đúng thứ tự nạp:
+ *   · `edu-theme.css`     — bảng --edu-* kế thừa bản Django (còn --edu-font và
+ *                           các trang legacy chưa chuyển đọc tới);
+ *   · `studio-tokens.css` — BẢNG v2 --ds-*, nguồn màu của trang chủ từ
+ *                           15/10/2026.
+ *
+ * Vì sao phải đọc cả hai chứ không chỉ file v2: ca này đo màu LẤY TỪ CSS, và
+ * CSS của trang chủ còn một token của bảng cũ (`--edu-font`). Đọc thiếu một
+ * file là test ném "token chưa khai" cho một trang hoàn toàn bình thường.
+ *
  * Giá trị có thể là hex hoặc rgba(); rgba được trộn lên nền thật khi đo.
  */
 function eduTokens() {
-  const css = readFileSync(join(FE, 'public', 'static', 'css', 'edu-theme.css'), 'utf8')
-    .replace(/\/\*[\s\S]*?\*\//g, ' ');
-  const grab = (selector) => {
+  const files = [
+    ['public', 'static', 'css', 'edu-theme.css'],
+    ['public', 'static', 'css', 'studio-tokens.css'],
+  ];
+  const grab = (css, selector, where) => {
     const at = css.indexOf(selector);
-    assert.ok(at >= 0, `không thấy ${selector} trong edu-theme.css`);
+    assert.ok(at >= 0, `không thấy ${selector} trong ${where}`);
     const open = css.indexOf('{', at);
     let depth = 0;
     for (let i = open; i < css.length; i += 1) {
@@ -387,10 +397,17 @@ function eduTokens() {
         }
       }
     }
-    throw new Error(`khối ${selector} không đóng ngoặc`);
+    throw new Error(`khối ${selector} trong ${where} không đóng ngoặc`);
   };
-  const light = grab(':root');
-  return { light, dark: new Map([...light, ...grab('body.dark')]) };
+  const light = new Map();
+  const dark = new Map();
+  for (const f of files) {
+    const css = readFileSync(join(FE, ...f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, ' ');
+    const root = grab(css, ':root', f.at(-1));
+    for (const [k, v] of root) { light.set(k, v); dark.set(k, v); }
+    for (const [k, v] of grab(css, 'body.dark', f.at(-1))) dark.set(k, v);
+  }
+  return { light, dark };
 }
 
 /** Giải một token thành mã hex, trộn lên `over` nếu nó là rgba(). */
@@ -420,7 +437,13 @@ function cssRule(css, selector) {
   const open = css.indexOf('{', at);
   const close = css.indexOf('}', open);
   const decls = new Map();
-  for (const m of css.slice(open + 1, close).matchAll(/([a-z-]+)\s*:\s*([^;]+);/g)) {
+  // PHẢI bỏ chú thích trước khi dò khai báo. Chú thích trong CSS của repo này
+  // là tiếng Việt và thường có dấu hai chấm ("Viền `sketch`, không `line`: …"),
+  // nên regex `([a-z-]+)\s*:\s*([^;]+);` bắt được "line" làm tên thuộc tính và
+  // ăn luôn tới dấu `;` của khai báo thật phía sau — khai báo đó biến mất khỏi
+  // map, và ca test trượt với "không đọc được màu (không khai)".
+  const body = css.slice(open + 1, close).replace(/\/\*[\s\S]*?\*\//g, ' ');
+  for (const m of body.matchAll(/([a-z-]+)\s*:\s*([^;]+);/g)) {
     decls.set(m[1], m[2].trim());
   }
   return decls;
@@ -445,7 +468,11 @@ function colorOf(tokens, value, over) {
   return alpha === 1 ? hex : blend(hex, alpha, over);
 }
 
-const SURFACE = { page: '--edu-bg-solid', card: '--edu-panel-bg-solid', next: '--edu-t1' };
+/* Nền phía sau từng quy tắc, theo bảng v2. `next` là thẻ gợi ý — bản thiết kế
+   §1.4 chốt nền `ink`, và cặp ink/page tự đảo theo bản nền. */
+const SURFACE = {
+  page: '--ds-page', card: '--ds-card', paper: '--ds-paper', next: '--ds-ink',
+};
 
 /**
  * Cặp chữ/nền THẬT của trang chủ. `on` là nền phía sau quy tắc đó (trang, thẻ,
@@ -473,22 +500,29 @@ const CSS_PAIRS = [
   { sel: '.nextExit', on: 'next', kind: 'text' },
   { sel: '.nextFoot', on: 'next', kind: 'text', from: '.next' },
   { sel: '.nextFoot', on: 'next', kind: 'ui', prop: 'border-top', what: 'vạch ngăn' },
-  { sel: '.noteTitle', on: 'card', kind: 'text' },
-  { sel: '.noteText', on: 'card', kind: 'text' },
-  { sel: '.noteIcon', on: 'card', kind: 'ui' },
-  { sel: '.note', on: 'card', kind: 'ui', prop: 'border', what: 'viền nét đứt' },
+  { sel: '.noteTitle', on: 'paper', kind: 'text' },
+  { sel: '.noteText', on: 'paper', kind: 'text' },
+  { sel: '.noteIcon', on: 'paper', kind: 'ui' },
+  { sel: '.note', on: 'paper', kind: 'ui', prop: 'border', what: 'viền nét đứt' },
   { sel: '.feedbackTitle', on: 'card', kind: 'text' },
   { sel: '.feedbackText', on: 'card', kind: 'text' },
   { sel: '.feedbackIcon', on: 'card', kind: 'ui' },
   { sel: '.feedbackButton', on: 'card', kind: 'text' },
   { sel: '.feedbackButton', on: 'card', kind: 'ui', prop: 'border', what: 'viền nút phụ' },
+  // 15/10/2026 — hai cặp dưới đây TRƯỚC ĐÂY phải miễn ngưỡng (viền `line` của
+  // bảng cũ chỉ 1,20:1 trên nền thẻ). Bảng v2 có token `sketch` dành riêng cho
+  // "viền thứ bấm được", nên nay chúng đo được và ĐẠT — không cần miễn nữa.
+  { sel: '.tag', on: 'card', kind: 'ui', prop: 'border', what: 'viền nhãn' },
+  { sel: '.card', on: 'page', kind: 'ui', prop: 'border', what: 'viền thẻ bấm được' },
   {
-    sel: '.tag', on: 'card', kind: 'decor', prop: 'border', what: 'viền nhãn',
-    why: 'nhãn đã có nền riêng và chữ của chính nó; viền chỉ làm mềm cạnh',
+    sel: '.feedback', on: 'page', kind: 'decor', prop: 'border', what: 'viền thẻ góp ý',
+    why: 'thẻ góp ý KHÔNG bấm được (nút nằm bên trong), ranh giới do nền `card` '
+      + 'và phần đệm 32px nói — đúng vai bảng thiết kế dành cho token `line`',
   },
   {
-    sel: '.card', on: 'page', kind: 'decor', prop: 'border', what: 'viền thẻ',
-    why: 'thẻ đã nổi bằng nền sáng hơn và bóng; viền chỉ là nét trang trí',
+    sel: '.footer', on: 'page', kind: 'decor', prop: 'border-top', what: 'vạch chân trang',
+    why: 'chân trang đã tách bằng 22px đệm và nằm sau khối cuối; đường kẻ chỉ '
+      + 'để mắt nghỉ, gỡ đi không mất thông tin nào',
   },
 ];
 

@@ -1,9 +1,20 @@
 /* ══════════════════════════════════════════════════════════════
-   STUDIO-TOKENS — lớp mở rộng của edu-theme.css cho trang bài học.
+   STUDIO-TOKENS — lớp mở rộng của edu-theme.css.
 
    Nạp SAU edu-theme.css. Chỉ khai báo token mà tầng 1 chưa có.
    TUYỆT ĐỐI không khai báo lại bất kỳ --edu-* nào ở đây; cần sửa
    token dùng chung thì sửa thẳng edu-theme.css.
+
+   ── 15/10/2026: BẢNG NÀY NAY NẠP Ở MỌI TRANG ──────────────────
+   Tên file vẫn là "studio-" vì trang bài học là nơi bảng ra đời,
+   nhưng PageStyles đã tự thêm nó vào MỌI trang (cùng cách với
+   edu-fonts.css và edu-responsive.css). Lý do: thanh đầu trang
+   (SiteHeader) và trang chủ đã chuyển sang bảng kem --ds-*, mà
+   SiteHeader có mặt ở trang chủ, trang khoá, /ide và /practice —
+   sót một trang là trang đó vẽ header bằng biến KHÔNG tồn tại,
+   tức mất hẳn màu. File này chỉ KHAI BIẾN, không có một quy tắc
+   nào áp lên phần tử, nên nạp ở trang chưa chuyển cũng không đổi
+   gì ở đó.
 
    Hai tiền tố, hai vai:
      --ds-*  BẢNG TOKEN của bản thiết kế v2 (nguồn sự thật duy nhất của

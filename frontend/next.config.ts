@@ -125,6 +125,19 @@ const nextConfig: NextConfig = {
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
         ],
       },
+      {
+        // Phông tự lưu trữ (Be Vietnam Pro + JetBrains Mono, 18 tệp .woff2,
+        // 280 KB trên đĩa — trang tiếng Việt chỉ tải subset latin + vietnamese).
+        // Cùng lý lẽ với /pyodide và /monaco: thư mục ĐÃ GHIM PHIÊN BẢN
+        // (/static/fonts/be-vietnam-pro-v12/, jetbrains-mono-v24/) nên nội dung
+        // không bao giờ bị ghi đè, nâng cấp là chép sang thư mục mới. Vì url
+        // nằm trong edu-fonts.css chứ không qua withAssetVersion(), tệp phông
+        // KHÔNG có tem ?v= — chính vì vậy phiên bản phải nằm trong đường dẫn.
+        source: "/static/fonts/:path*",
+        headers: [
+          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
+        ],
+      },
     ];
   },
 };
