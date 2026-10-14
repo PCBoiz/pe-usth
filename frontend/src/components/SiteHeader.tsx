@@ -24,9 +24,9 @@ function toggleTheme() {
   }
 }
 
-export default function SiteHeader() {
-  return (
-    <header className={styles.bar}>
+export default function SiteHeader({ wide = false }: { wide?: boolean }) {
+  const bar = (
+    <header className={wide ? `${styles.bar} ${styles.barWide}` : styles.bar}>
       {/* <a> thường (tải lại trang): về trang chủ từ trang chi tiết khóa CSDL
           phải bỏ các script legacy course_db_design.js/edu-chrome.js đã nạp,
           client-side routing sẽ giữ chúng sống tiếp. */}
@@ -49,4 +49,6 @@ export default function SiteHeader() {
       </button>
     </header>
   );
+  // wide: trang chủ — thanh phủ hết bề ngang, có nền mờ và đường viền chân.
+  return wide ? <div className={styles.fullBar}>{bar}</div> : bar;
 }

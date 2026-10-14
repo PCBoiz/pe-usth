@@ -1,163 +1,310 @@
-/* Trang chủ — lưới biểu tượng khóa học. Chỉ dùng token của edu-theme.css. */
-.page { min-height: 100vh; }
+/* Trang chủ — hai cột (Chương trình đào tạo | Công cụ) + thẻ góp ý + chân trang.
+   Chỉ dùng token của edu-theme.css. */
+.page,
+.page * { box-sizing: border-box; }
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
 
 .main {
-  max-width: 1180px;
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
   margin: 0 auto;
-  padding: 12px 24px 72px;
+  padding: 44px 24px 64px;
   font-family: var(--edu-font);
 }
 
 .title {
-  margin: 8px 0 6px;
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  margin: 0 0 6px;
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
   color: var(--edu-t1);
 }
 
 .sub {
   margin: 0 0 40px;
-  font-size: 15px;
+  font-size: 17px;
   color: var(--edu-t3);
 }
 
-.grid {
+.cols {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 40px 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px;
+  align-items: start;
+}
+/* Chỉ còn một cột (đã tắt công cụ): thẻ khóa học không bị kéo giãn hết bề ngang. */
+.cols:has(> .col:only-child) { grid-template-columns: minmax(0, 1fr); max-width: 620px; }
+
+.col { min-width: 0; }
+
+.colHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.colNote { font-size: 13px; color: var(--edu-t4); }
+
+/* Nhãn viên thuốc của cột khóa học */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0 18px;
+  padding: 7px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--edu-accent-text);
+  background: var(--edu-accent-soft);
+  border: 1px solid var(--edu-accent-soft-strong);
+  border-radius: 999px;
+}
+
+/* Tiêu đề cột phụ (Công cụ) */
+.sectionTitle {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--edu-t1);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
+.cell { display: block; }
 
-.cell { display: flex; justify-content: center; }
-
-.tile {
+/* ── Thẻ ngang ───────────────────────────────────────────── */
+.card {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-start;
+  gap: 22px;
   width: 100%;
-  padding: 4px;
+  padding: 24px;
   color: var(--edu-t1);
-  text-align: center;
   text-decoration: none;
-}
-.tile:focus-visible {
-  outline: 2px solid var(--edu-accent);
-  outline-offset: 4px;
-  border-radius: 20px;
-}
-
-.icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 120px;
-  height: 120px;
   background: var(--edu-panel-bg-solid);
   border: 1px solid var(--edu-panel-border);
-  border-radius: 16px;
+  border-radius: 20px;
   box-shadow: var(--edu-card-shadow);
   transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.tile:hover .icon,
-.tile:focus-visible .icon {
-  transform: translateY(-4px);
-  box-shadow: var(--edu-panel-shadow);
+.card:hover,
+.card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: var(--edu-panel-shadow), var(--edu-brand-glow);
+}
+.card:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 3px;
+}
+
+/* Viền gradient xanh→đỏ chỉ lộ ra khi hover (mặt nạ khoét phần ruột). */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: var(--edu-g-brand);
+  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+.card:hover::before,
+.card:focus-visible::before { opacity: 1; }
+
+.icon,
+.iconBare {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100px;
+  height: 100px;
+}
+/* Logo Python nằm trong ô sáng; công cụ có biểu tượng tự mang nền nên không bọc. */
+.icon {
+  background: var(--edu-chip-bg);
+  border: 1px solid var(--edu-chip-border);
+  border-radius: 20px;
+}
+.iconBare { border-radius: 20px; overflow: hidden; box-shadow: var(--edu-card-shadow); }
+
+.body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-right: 28px;
 }
 
 .label {
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 1.3;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
   color: var(--edu-t1);
 }
-.tile:hover .label { color: var(--edu-accent-text); }
+.card:hover .label { color: var(--edu-accent-text); }
 
-@media (prefers-reduced-motion: reduce) {
-  .icon { transition: none; }
-  .tile:hover .icon,
-  .tile:focus-visible .icon { transform: none; }
+.desc {
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--edu-t3);
 }
 
-@media (max-width: 639.98px) {
-  .main { padding: 8px 16px 56px; }
-  .title { font-size: 28px; }
-  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px 12px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--edu-t2);
+  background: var(--edu-chip-bg);
+  border: 1px solid var(--edu-chip-border);
+  border-radius: 9px;
 }
+.tagRed { color: var(--edu-red); background: rgba(229, 51, 75, 0.1); border-color: rgba(229, 51, 75, 0.14); }
+.tagOk { color: var(--edu-ok); background: var(--edu-ok-soft); border-color: transparent; }
+.dot { width: 7px; height: 7px; background: currentColor; border-radius: 50%; }
 
-/* Tiêu đề mục phụ (Công cụ) — nhỏ hơn h1, cách lưới khóa học phía trên. */
-.sectionTitle {
-  margin: 56px 0 28px;
+/* Nút tròn góc phải thẻ: mũi tên / mở ra */
+.go {
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  color: var(--edu-t3);
+  background: var(--edu-chip-bg);
+  border: 1px solid var(--edu-chip-border);
+  border-radius: 50%;
+  transition: color 0.15s ease, background 0.15s ease, transform 0.18s ease;
+}
+.card:hover .go { color: white; background: var(--edu-accent); transform: translateX(2px); }
+
+/* ── Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx). ── */
+.feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 56px 0 0;
+  padding: 32px 44px;
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-panel-border);
+  border-radius: 20px;
+  box-shadow: var(--edu-card-shadow);
+}
+.feedbackBody { min-width: 0; max-width: 760px; }
+
+.feedbackTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 8px;
   font-size: 22px;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--edu-t1);
 }
-
-@media (max-width: 639.98px) {
-  .sectionTitle { margin: 40px 0 20px; font-size: 20px; }
-}
-
-/* Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx).
-   Dùng nền thẻ mờ của theme chứ không dùng ô trắng đặc như .icon: đây không
-   phải một khóa học, không được trông như một ô nữa trong lưới. */
-.feedback {
-  max-width: 520px;
-  margin: 56px 0 0;
-  padding: 24px 26px;
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-card-border);
-  border-radius: 20px;
-  box-shadow: var(--edu-card-shadow);
-}
-
-.feedbackTitle {
-  margin: 0 0 8px;
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--edu-t1);
+.feedbackIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--edu-accent-text);
+  background: var(--edu-accent-soft);
+  border-radius: 12px;
 }
 
 .feedbackText {
-  margin: 0 0 18px;
-  font-size: 14px;
+  margin: 0;
+  font-size: 17px;
   line-height: 1.55;
   color: var(--edu-t3);
 }
 
-/* Cùng kiểu nút chính của theme (xem .run trong app/ide/ide.module.css), nhưng
-   chữ để màu trắng thật: nút nằm trên dải gradient tím nên lấy màu nền panel
-   sẽ thành chữ sẫm trên nền sẫm ở chế độ tối. */
+/* Chữ trắng thật: nút nằm trên gradient xanh nên lấy màu nền panel sẽ thành chữ
+   sẫm trên nền sẫm ở chế độ tối. */
 .feedbackButton {
+  flex: none;
   display: inline-flex;
   align-items: center;
-  height: 42px;
-  padding: 0 22px;
-  font-size: 15px;
+  gap: 10px;
+  height: 52px;
+  padding: 0 30px;
+  font-size: 16px;
   font-weight: 600;
   color: white;
   text-decoration: none;
   background: var(--edu-accent-grad);
-  border-radius: 999px;
-  box-shadow: var(--edu-card-shadow);
-  transition: transform 0.15s ease;
+  border-radius: 14px;
+  box-shadow: var(--edu-brand-glow);
+  transition: transform 0.15s ease, filter 0.15s ease;
 }
-.feedbackButton:hover { transform: translateY(-1px); }
+.feedbackButton:hover { transform: translateY(-1px); filter: brightness(1.06); }
 .feedbackButton:focus-visible {
   outline: 2px solid var(--edu-accent);
   outline-offset: 3px;
 }
 
+/* ── Chân trang ─────────────────────────────────────────── */
+.footer {
+  padding: 22px 24px 26px;
+  font-family: var(--edu-font);
+  font-size: 14px;
+  text-align: center;
+  color: var(--edu-t4);
+  border-top: 1px solid var(--edu-sidebar-border);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .feedbackButton { transition: none; }
-  .feedbackButton:hover { transform: none; }
+  .card, .go, .feedbackButton { transition: none; }
+  .card:hover, .card:focus-visible, .feedbackButton:hover { transform: none; }
+  .card:hover .go { transform: none; }
+}
+
+@media (max-width: 899.98px) {
+  .cols { grid-template-columns: minmax(0, 1fr); gap: 36px; }
+  .feedback { flex-direction: column; align-items: flex-start; padding: 26px; }
 }
 
 @media (max-width: 639.98px) {
-  .feedback { margin-top: 40px; padding: 20px; }
-  .feedbackTitle { font-size: 18px; }
+  .main { padding: 28px 16px 48px; }
+  .title { font-size: 30px; }
+  .sub { font-size: 15px; margin-bottom: 28px; }
+  .card { padding: 18px; gap: 16px; }
+  .icon, .iconBare { width: 72px; height: 72px; border-radius: 16px; }
+  .body { padding-right: 0; }
+  .label { font-size: 19px; padding-right: 40px; }
+  .go { top: 16px; right: 16px; width: 34px; height: 34px; }
+  .colHead { flex-direction: column; align-items: flex-start; gap: 2px; }
+  .sectionTitle { font-size: 24px; }
+  .feedbackTitle { font-size: 19px; }
+  .feedbackText { font-size: 15px; }
 }

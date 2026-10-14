@@ -17,29 +17,48 @@
   --edu-font: 'Poppins', system-ui, sans-serif;
 
   /* accent — identical in light & dark */
-  --edu-accent: #b93ff0;
-  --edu-accent-2: #c04af5;
-  --edu-accent-3: #e08cf9;
+  --edu-accent: #2563eb;
+  --edu-accent-2: #1f5fe0;
+  --edu-accent-3: #4f8dff;
   --edu-accent-grad: linear-gradient(90deg, var(--edu-accent-2), var(--edu-accent-3));
-  --edu-accent-text: #a34fd0;
+  --edu-accent-text: #1d4ed8;
+  /* đỏ nhấn: chỉ để dẫn mắt (chữ "EDU", vạch nhấn, điểm cuối gradient) */
+  --edu-red: #e5334b;
+  --edu-red-2: #ff5a6e;
+  --edu-ok: #059669;
+  --edu-chip-bg: rgba(15,27,51,.04);
+  --edu-chip-border: rgba(15,27,51,.09);
+  --edu-ok-soft: rgba(5,150,105,.10);
 
-  /* light theme (default) */
+  /* gradient dùng chung — đoạn xanh→đỏ của brand cố ý rất ngắn (52%→64%)
+     để giữa không ra dải tím nhoè */
+  --edu-g-blue: linear-gradient(100deg, #1f5fe0 0%, #4f8dff 100%);
+  --edu-g-red: linear-gradient(100deg, #e5334b 0%, #ff5a6e 100%);
+  --edu-g-brand: linear-gradient(135deg, #1f5fe0 0%, #4f8dff 52%, #ff5a6e 64%, #e5334b 100%);
+  --edu-brand-glow: 0 8px 22px rgba(37,99,235,.34), 0 2px 8px rgba(229,51,75,.22);
+
+  /* lớp bóng của card: vệt sáng góc trên-trái + ám xanh/đỏ rất nhạt góc dưới-phải */
+  --edu-sheen:
+    linear-gradient(135deg, rgba(255,255,255,.55) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(90% 80% at 100% 100%, rgba(37,99,235,.06) 0%, rgba(37,99,235,0) 60%),
+    radial-gradient(60% 50% at 0% 100%, rgba(229,51,75,.04) 0%, rgba(229,51,75,0) 70%);
+
+  /* light theme (default) — mesh: quầng xanh dưới-trái, đỏ trên-phải, xanh nhạt giữa */
   --edu-bg-image:
-    radial-gradient(70% 55% at 78% 12%, rgba(250,247,190,.75) 0%, rgba(250,247,190,0) 60%),
-    radial-gradient(55% 45% at 96% 78%, rgba(226,178,250,.85) 0%, rgba(226,178,250,0) 62%),
-    radial-gradient(50% 40% at 52% 88%, rgba(186,210,250,.7) 0%, rgba(186,210,250,0) 65%),
-    radial-gradient(60% 60% at 6% 20%, rgba(214,240,240,.9) 0%, rgba(214,240,240,0) 70%),
-    linear-gradient(120deg,#e7f4f4 0%,#eef1fa 42%,#f4ecfa 72%,#f6e9f8 100%);
-  --edu-bg-solid: #eef3f6;
-  --edu-t1: #221d33;
-  --edu-t2: #4b4661;
-  --edu-t3: #6b6880;
-  --edu-t4: #6b677f;
-  --edu-t5: #6e6a85;
-  --edu-t6: #5d5875;
+    radial-gradient(48% 42% at 92% 4%, rgba(255,90,110,.20) 0%, rgba(255,90,110,0) 66%),
+    radial-gradient(60% 52% at 4% 96%, rgba(79,141,255,.30) 0%, rgba(79,141,255,0) 68%),
+    radial-gradient(50% 40% at 52% 48%, rgba(190,214,255,.45) 0%, rgba(190,214,255,0) 72%),
+    linear-gradient(160deg, #f1f5fb 0%, #eaeff6 55%, #e4ecf8 100%);
+  --edu-bg-solid: #eaeff6;
+  --edu-t1: #0f1b33;
+  --edu-t2: #3a4a66;
+  --edu-t3: #5b6a85;
+  --edu-t4: #5a6883;
+  --edu-t5: #62718c;
+  --edu-t6: #4d5d7a;
   --edu-card-bg: rgba(255,255,255,.55);
   --edu-card-border: rgba(255,255,255,.85);
-  --edu-card-shadow: 0 10px 30px rgba(120,110,170,.10);
+  --edu-card-shadow: 0 10px 30px rgba(113,132,167,.10);
   --edu-pill-bg: rgba(255,255,255,.55);
   --edu-pill-border: rgba(255,255,255,.85);
   --edu-panel-bg: rgba(255,255,255,.96);
@@ -51,13 +70,13 @@
      alpha<1 dù chỉ 4% là còn lộ trên nền tương phản cao. */
   --edu-panel-bg-solid: #ffffff;
   --edu-panel-border: rgba(255,255,255,.9);
-  --edu-panel-shadow: 0 20px 50px rgba(90,80,140,.24);
-  --edu-track-bg: rgba(140,130,180,.2);
+  --edu-panel-shadow: 0 20px 50px rgba(83,102,137,.24);
+  --edu-track-bg: rgba(133,148,178,.2);
   --edu-sidebar-bg: rgba(255,255,255,.5);
-  --edu-sidebar-border: rgba(160,150,190,.28);
+  --edu-sidebar-border: rgba(152,165,188,.28);
   --edu-nav-bg: rgba(255,255,255,.72);
-  --edu-accent-soft: rgba(185,63,240,.10);
-  --edu-accent-soft-strong: rgba(185,63,240,.14);
+  --edu-accent-soft: rgba(63,125,240,.10);
+  --edu-accent-soft-strong: rgba(63,125,240,.14);
   --edu-input-bg: rgba(255,255,255,.6);
   --edu-input-border: rgba(255,255,255,.9);
 
@@ -120,7 +139,7 @@
    overriding its own light rule further up the file */
 .mini-rm-canvas {
   background-color: rgba(255,255,255,.42);
-  background-image: radial-gradient(circle, rgba(150,140,190,.42) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(circle, rgba(143,158,188,.42) 1.2px, transparent 1.2px);
   background-size: 20px 20px;
   border: 1.5px solid var(--edu-card-border);
   border-radius: 14px;
@@ -139,34 +158,43 @@ body.dark .mini-rm-canvas {
 #main .section-card .section-sub { color: var(--edu-t3); }
 
 body.dark {
+  --edu-chip-bg: rgba(255,255,255,.05);
+  --edu-chip-border: rgba(255,255,255,.10);
+  --edu-accent: #4f8dff;
+  --edu-accent-text: #7db0ff;
+  --edu-g-blue: linear-gradient(100deg, #4f8dff 0%, #8cb8ff 100%);
+  --edu-brand-glow: 0 8px 24px rgba(79,141,255,.40), 0 2px 10px rgba(255,90,110,.26);
+  --edu-sheen:
+    linear-gradient(135deg, rgba(255,255,255,.07) 0%, rgba(255,255,255,0) 42%),
+    radial-gradient(90% 80% at 100% 100%, rgba(79,141,255,.08) 0%, rgba(79,141,255,0) 60%),
+    radial-gradient(60% 50% at 0% 100%, rgba(255,90,110,.05) 0%, rgba(255,90,110,0) 70%);
   --edu-bg-image:
-    radial-gradient(70% 55% at 78% 10%, rgba(120,70,190,.28) 0%, rgba(120,70,190,0) 62%),
-    radial-gradient(55% 45% at 96% 80%, rgba(185,63,240,.20) 0%, rgba(185,63,240,0) 64%),
-    radial-gradient(50% 40% at 46% 92%, rgba(60,90,190,.20) 0%, rgba(60,90,190,0) 66%),
-    radial-gradient(60% 60% at 4% 18%, rgba(40,90,110,.28) 0%, rgba(40,90,110,0) 70%),
-    linear-gradient(120deg,#141220 0%,#171525 44%,#1b1526 74%,#1d1424 100%);
-  --edu-bg-solid: #131019;
-  --edu-t1: #ece9f5;
-  --edu-t2: #c7c3d6;
-  --edu-t3: #9a96ac;
-  --edu-t4: #918ca5;
-  --edu-t5: #8a85a0;
-  --edu-t6: #a8a4bb;
+    radial-gradient(48% 42% at 92% 4%, rgba(229,51,75,.20) 0%, rgba(229,51,75,0) 66%),
+    radial-gradient(60% 52% at 4% 96%, rgba(37,99,235,.30) 0%, rgba(37,99,235,0) 68%),
+    radial-gradient(50% 40% at 52% 50%, rgba(79,141,255,.10) 0%, rgba(79,141,255,0) 72%),
+    linear-gradient(160deg, #0a0f1c 0%, #080c15 55%, #070b14 100%);
+  --edu-bg-solid: #080c15;
+  --edu-t1: #e8eefb;
+  --edu-t2: #c4cad5;
+  --edu-t3: #979eab;
+  --edu-t4: #8d95a4;
+  --edu-t5: #868f9f;
+  --edu-t6: #a5acba;
   --edu-card-bg: rgba(255,255,255,.045);
   --edu-card-border: rgba(255,255,255,.09);
   --edu-card-shadow: 0 10px 30px rgba(0,0,0,.42);
   --edu-pill-bg: rgba(255,255,255,.045);
   --edu-pill-border: rgba(255,255,255,.09);
-  --edu-panel-bg: rgba(32,28,46,.97);
-  --edu-panel-bg-solid: #201c2e;
+  --edu-panel-bg: rgba(29,35,45,.97);
+  --edu-panel-bg-solid: #1d232d;
   --edu-panel-border: rgba(255,255,255,.10);
   --edu-panel-shadow: 0 20px 50px rgba(0,0,0,.55);
   --edu-track-bg: rgba(255,255,255,.13);
   --edu-sidebar-bg: rgba(255,255,255,.03);
   --edu-sidebar-border: rgba(255,255,255,.09);
-  --edu-nav-bg: rgba(19,16,25,.82);
-  --edu-accent-soft: rgba(185,63,240,.14);
-  --edu-accent-soft-strong: rgba(185,63,240,.18);
+  --edu-nav-bg: rgba(16,19,25,.82);
+  --edu-accent-soft: rgba(63,125,240,.14);
+  --edu-accent-soft-strong: rgba(63,125,240,.18);
   --edu-input-bg: rgba(255,255,255,.05);
   --edu-input-border: rgba(255,255,255,.09);
 
@@ -201,6 +229,7 @@ body.dark {
 
 /* ── Base ─────────────────────────────────────────────────────── */
 body {
+  margin: 0;
   font-family: var(--edu-font);
   background: var(--edu-bg-solid);
   background-image: var(--edu-bg-image);
@@ -209,7 +238,7 @@ body {
 }
 body.dark { background: var(--edu-bg-solid); background-image: var(--edu-bg-image); }
 a { color: var(--edu-accent); }
-a:hover { color: #8e2bc0; }
+a:hover { color: var(--edu-accent-2); }
 
 /* ══════════════════════════════════════════════════════════════
    SIDEBAR — .topbar is repurposed from a fixed 50px top strip into
@@ -255,10 +284,10 @@ a:hover { color: #8e2bc0; }
 .edu-sidebar-shell .brand-always::before {
   content: 'P';
   width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
-  background: linear-gradient(140deg,#c04af5,#e396fb);
+  background: linear-gradient(140deg,#4a86f5,#96b9fb);
   color: #fff; font-weight: 800; font-size: 20px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 8px 20px rgba(185,63,240,.32);
+  box-shadow: 0 8px 20px rgba(63,125,240,.32);
 }
 
 .edu-sidebar-shell .topbar-nav {
@@ -390,11 +419,11 @@ body.dark .edu-header-bar .suggestion-pill.active { background: var(--edu-accent
   box-shadow: var(--edu-panel-shadow);
   border-radius: 18px;
 }
-.edu-header-bar .bell-panel-header, .edu-header-bar .user-dropdown-divider { border-color: rgba(160,150,190,.2); }
+.edu-header-bar .bell-panel-header, .edu-header-bar .user-dropdown-divider { border-color: rgba(152,165,188,.2); }
 body.dark .edu-header-bar .bell-panel-header, body.dark .edu-header-bar .user-dropdown-divider { border-color: rgba(255,255,255,.09); }
 .edu-header-bar .bell-panel-title, .edu-header-bar .udh-name { color: var(--edu-t1); }
 .edu-header-bar .bell-mark-all { color: var(--edu-accent-text); }
-.edu-header-bar .bell-item { border-color: rgba(160,150,190,.14); }
+.edu-header-bar .bell-item { border-color: rgba(152,165,188,.14); }
 body.dark .edu-header-bar .bell-item { border-color: rgba(255,255,255,.07); }
 /* dark-mode.css có `body.dark .bell-item.unread:hover { background: rgba(59,130,246,.2) }`
    và `body.dark .bell-item-icon { background: var(--card-border) }` /
@@ -403,9 +432,9 @@ body.dark .edu-header-bar .bell-item { border-color: rgba(255,255,255,.07); }
    nâng specificity vượt qua các rule 2-class phía trên, nên icon chuông hiện
    màu xanh cũ thay vì tím accent. Thêm bản body.dark cho cả ba. */
 .edu-header-bar .bell-item.unread,
-body.dark .edu-header-bar .bell-item.unread { background: rgba(185,63,240,.055); }
+body.dark .edu-header-bar .bell-item.unread { background: rgba(63,125,240,.055); }
 .edu-header-bar .bell-item.unread:hover,
-body.dark .edu-header-bar .bell-item.unread:hover { background: rgba(185,63,240,.09); }
+body.dark .edu-header-bar .bell-item.unread:hover { background: rgba(63,125,240,.09); }
 .edu-header-bar .bell-item-icon,
 body.dark .edu-header-bar .bell-item-icon,
 body.dark .edu-header-bar .bell-item.unread .bell-item-icon { background: var(--edu-accent-soft); }
@@ -427,13 +456,13 @@ body.dark .edu-header-bar .user-chip:hover,
 body.dark .edu-header-bar .user-chip.open { background: transparent; border-color: transparent; }
 .edu-header-bar .chip-avatar {
   width: 52px; height: 52px; font-size: 16px;
-  background: linear-gradient(140deg,#c9a7f5,#a8d5f2);
+  background: linear-gradient(140deg,#a7c2f5,#a8d5f2);
   border: 2px solid rgba(255,255,255,.9);
 }
 body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 .edu-header-bar .user-chip .chip-name { display: none; }
 .edu-header-bar .user-chip #chip-arrow { color: var(--edu-t1); }
-.edu-header-bar .udh-avatar { width: 40px; height: 40px; font-size: 15px; background: linear-gradient(140deg,#c9a7f5,#a8d5f2); }
+.edu-header-bar .udh-avatar { width: 40px; height: 40px; font-size: 15px; background: linear-gradient(140deg,#a7c2f5,#a8d5f2); }
 .edu-header-bar .user-dropdown-item { color: var(--edu-t3); }
 .edu-header-bar .user-dropdown-item:hover { background: var(--edu-accent-soft); color: var(--edu-accent-text); }
 .edu-header-bar .user-dropdown-item.danger:hover { background: rgba(240,82,107,.12); color: #f0526b; }
@@ -460,7 +489,7 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 
 /* ── Dashboard hero + leaderboard teaser ─────────────────────── */
 .dash-hero { color: #fff !important; }
-.dash-hero-overlay { background: linear-gradient(120deg, rgba(185,63,240,.85), rgba(91,141,239,.75)) !important; }
+.dash-hero-overlay { background: linear-gradient(120deg, rgba(63,125,240,.85), rgba(91,141,239,.75)) !important; }
 .dash-hero-btn { background: #fff !important; color: var(--edu-accent-text) !important; border-radius: 999px !important; box-shadow: 0 10px 24px rgba(0,0,0,.18) !important; }
 
 .edu-lb-teaser { display: flex; flex-direction: column; gap: 10px; padding: 26px 28px; text-decoration: none; cursor: pointer; transition: transform .15s ease; }
@@ -477,7 +506,7 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 .lb-tab { border-radius: 999px !important; background: var(--edu-pill-bg); border: 1px solid var(--edu-pill-border); color: var(--edu-t3); }
 .lb-tab.active { background: var(--edu-accent-grad) !important; color: #fff !important; border-color: transparent !important; }
 .lb-row, .lb-me { border-radius: 16px !important; }
-.lb-row-me, .lb-me { background: var(--edu-accent-soft) !important; border: 1px solid rgba(185,63,240,.32) !important; }
+.lb-row-me, .lb-me { background: var(--edu-accent-soft) !important; border: 1px solid rgba(63,125,240,.32) !important; }
 .lb-name { color: var(--edu-t1); }
 .lb-rank-num, .lb-value { color: var(--edu-accent-text); }
 .lb-meta { color: var(--edu-t4); }
@@ -508,7 +537,7 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 .cd-enroll-btn.continue, .quiz-btn.primary {
   background: var(--edu-accent-grad) !important; color: #fff !important;
   border: none !important; border-radius: 999px !important;
-  box-shadow: 0 10px 24px rgba(185,63,240,.28) !important;
+  box-shadow: 0 10px 24px rgba(63,125,240,.28) !important;
 }
 .change-pw-btn, .cd-enroll-btn.continue { box-shadow: none !important; }
 .dash-prog-bar-fill, .prog-bar-fill, .cd-prog-fill, .prof-ci-fill, .prof-xp-bar-fill,
@@ -528,7 +557,7 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 }
 .filter-btn.active, .pill-btn.active {
   background: var(--edu-accent-grad) !important; color: #fff !important; border-color: transparent !important;
-  box-shadow: 0 8px 22px rgba(185,63,240,.28) !important;
+  box-shadow: 0 8px 22px rgba(63,125,240,.28) !important;
 }
 .sort-dropdown-wrap .sort-select, .lang-select {
   background: var(--edu-pill-bg) !important; border: 1px solid var(--edu-pill-border) !important;
@@ -566,12 +595,12 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 .rm-save-btn, .rm-ai-btn {
   background: var(--edu-accent-grad) !important; color: #fff !important;
   border: none !important; border-radius: 999px !important;
-  box-shadow: 0 8px 20px rgba(185,63,240,.26) !important;
+  box-shadow: 0 8px 20px rgba(63,125,240,.26) !important;
 }
-.rm-ai-btn { background: var(--edu-pill-bg) !important; color: var(--edu-accent-text) !important; border: 1px solid rgba(185,63,240,.32) !important; box-shadow: none !important; }
+.rm-ai-btn { background: var(--edu-pill-bg) !important; color: var(--edu-accent-text) !important; border: 1px solid rgba(63,125,240,.32) !important; box-shadow: none !important; }
 .rmv-toolbar { background: transparent !important; border-bottom: 1px solid var(--edu-card-border) !important; }
 .rmv-btn, .rmv-zoom-btn { background: var(--edu-pill-bg) !important; border: 1px solid var(--edu-pill-border) !important; color: var(--edu-t2) !important; border-radius: 999px !important; }
-.rmv-btn:hover, .rmv-zoom-btn:hover { background: var(--edu-accent-soft) !important; border-color: rgba(185,63,240,.35) !important; color: var(--edu-accent-text) !important; }
+.rmv-btn:hover, .rmv-zoom-btn:hover { background: var(--edu-accent-soft) !important; border-color: rgba(63,125,240,.35) !important; color: var(--edu-accent-text) !important; }
 .rmv-zoom-wrap { border-left-color: var(--edu-card-border) !important; }
 .rmv-zoom-label, .rmv-hint { color: var(--edu-t4) !important; }
 
@@ -615,8 +644,8 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
 /* ══════════════════════════════════════════════════════════════
    PROFILE ("Trang của tôi")
    ══════════════════════════════════════════════════════════════ */
-.prof-hero-bg { background: linear-gradient(120deg, rgba(185,63,240,.85), rgba(91,141,239,.75)) !important; }
-.prof-avatar { background: linear-gradient(140deg,#c9a7f5,#a8d5f2) !important; }
+.prof-hero-bg { background: linear-gradient(120deg, rgba(63,125,240,.85), rgba(91,141,239,.75)) !important; }
+.prof-avatar { background: linear-gradient(140deg,#a7c2f5,#a8d5f2) !important; }
 .prof-edit-btn { border: 1.5px solid var(--edu-accent-3) !important; color: var(--edu-accent-text) !important; border-radius: 999px !important; background: transparent !important; }
 .prof-course-item, .prof-post-card { background: var(--edu-pill-bg) !important; border: 1px solid var(--edu-pill-border) !important; border-radius: 16px !important; }
 .prof-xp-row-icon { color: var(--edu-accent); }
@@ -629,7 +658,7 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
   color: var(--edu-t1) !important; border-radius: 12px !important;
 }
 .toggle.on { background: var(--edu-accent-grad) !important; }
-.un-overlay, .cp-overlay, .streak-overlay { background: rgba(20,16,32,.55) !important; backdrop-filter: blur(6px); }
+.un-overlay, .cp-overlay, .streak-overlay { background: rgba(16,22,32,.55) !important; backdrop-filter: blur(6px); }
 .un-card, .cp-modal, .streak-card {
   background: var(--edu-panel-bg) !important; border: 1px solid var(--edu-panel-border) !important;
   box-shadow: var(--edu-panel-shadow) !important; border-radius: 22px !important;
@@ -655,4 +684,104 @@ body.dark .edu-header-bar .chip-avatar { border-color: rgba(255,255,255,.22); }
   .edu-sidebar-shell + #main { padding-left: 84px; }
   .edu-header-bar { padding: 20px 20px 0; flex-wrap: wrap; }
   .edu-header-bar .search-wrap input { width: 220px; }
+}
+
+/* ══════════════════════════════════════════════════════════════
+   XANH–ĐỎ: lớp hoàn thiện giao diện (cuối file để đè lên mọi quy tắc trên)
+   Nguyên tắc: xanh chiếm phần lớn, đỏ chỉ để dẫn mắt. Không dùng tím.
+   Hiệu ứng tự tắt khi hệ điều hành bật "giảm chuyển động".
+   ══════════════════════════════════════════════════════════════ */
+
+::selection { background: rgba(37,99,235,.22); color: inherit; }
+body.dark ::selection { background: rgba(79,141,255,.34); }
+
+html { scrollbar-color: var(--edu-accent) transparent; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--edu-accent-3), var(--edu-red-2));
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Card: lớp bóng sheen + bo góc gọn hơn (22→16px), blur nhẹ hơn */
+.section-card,
+.dash-hero, .study-cal-card, .mini-rm-card, .lb-card, .dash-progress-card,
+.edu-lb-teaser, .edu-leader-side, .settings-section, .sec-lang-card,
+.prof-section, .prof-xp-card, .cd-block, .cd-card {
+  background-image: var(--edu-sheen) !important;
+  border-radius: 16px !important;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.sk-set, .un-card, .cp-modal, .streak-card { border-radius: 16px !important; }
+
+/* Đèn xanh/đỏ bám theo chuột — vẽ bằng pseudo-element của <html> (không chèn DOM,
+   tránh lỗi hydration). edu-fx.js chỉ cập nhật --ax --ay --bx --by. */
+html.edu-fx::before, html.edu-fx::after {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity .5s ease;
+  will-change: transform;
+}
+html.edu-fx.edu-fx-on::before, html.edu-fx.edu-fx-on::after { opacity: 1; }
+html.edu-fx::before {
+  width: 440px; height: 440px;
+  background: radial-gradient(circle, rgba(37,99,235,.22) 0%, rgba(37,99,235,0) 68%);
+  transform: translate3d(calc(var(--ax, -999px) - 220px), calc(var(--ay, -999px) - 220px), 0);
+}
+html.edu-fx::after {
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(229,51,75,.17) 0%, rgba(229,51,75,0) 68%);
+  transform: translate3d(calc(var(--bx, -999px) - 40px), calc(var(--by, -999px) - 30px), 0);
+}
+html.edu-fx:has(body.dark)::before { background: radial-gradient(circle, rgba(79,141,255,.26) 0%, rgba(79,141,255,0) 68%); }
+html.edu-fx:has(body.dark)::after { background: radial-gradient(circle, rgba(255,90,110,.20) 0%, rgba(255,90,110,0) 68%); }
+
+/* Ô/card có data-fx hoặc nằm trong danh sách của edu-fx.js: đốm sáng bám con trỏ */
+.edu-fx-card { position: relative; }
+.edu-fx-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(240px circle at var(--cx, 50%) var(--cy, 50%), rgba(79,141,255,.16), transparent 70%);
+  opacity: 0;
+  transition: opacity .25s ease;
+}
+.edu-fx-card:hover::after { opacity: 1; }
+.edu-fx-tilt {
+  transition: transform .18s ease-out, box-shadow .18s ease;
+  transform: perspective(800px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateY(var(--ty, 0px));
+}
+
+/* Thanh tiến độ: gradient xanh + quầng sáng, chạy từ 0 khi vào trang */
+.edu-cd-progress-fill, .progress-fill, .dash-progress-fill {
+  background: var(--edu-g-blue) !important;
+  box-shadow: 0 0 12px rgba(37,99,235,.45);
+  animation: fxGrow .9s cubic-bezier(.2,.8,.2,1) both;
+  transform-origin: left center;
+}
+@keyframes fxGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Card hiện lần lượt một nhịp khi vào trang */
+.cd-block, .cd-card { animation: fxRise .5s cubic-bezier(.2,.8,.2,1) both; }
+.cd-block:nth-of-type(2) { animation-delay: .06s; }
+.cd-block:nth-of-type(3) { animation-delay: .12s; }
+.cd-block:nth-of-type(4) { animation-delay: .18s; }
+@keyframes fxRise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Nút chính: hút nhẹ về phía chuột (edu-fx.js đặt --mx --my), bấm thì co */
+.edu-fx-btn { transition: transform .15s ease, box-shadow .2s ease, filter .2s ease; transform: translate(var(--mx, 0px), var(--my, 0px)); }
+.edu-fx-btn:active { transform: translate(var(--mx, 0px), var(--my, 0px)) scale(.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.edu-fx::before, html.edu-fx::after { display: none; }
+  .edu-fx-tilt, .edu-fx-btn { transform: none !important; transition: none; }
+  .edu-cd-progress-fill, .progress-fill, .dash-progress-fill, .cd-block, .cd-card { animation: none; }
 }

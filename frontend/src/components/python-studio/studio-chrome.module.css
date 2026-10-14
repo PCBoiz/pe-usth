@@ -646,35 +646,35 @@
 .theoryBlock {
   background: var(--edu-panel-bg-solid);
   border: 1px solid var(--edu-sidebar-border);
-  border-radius: 12px;
-  padding: 14px 16px;
+  border-radius: 14px;
+  padding: 20px 24px;
 }
 
 .theoryBlock h4 {
-  margin: 0 0 6px;
-  font-size: 14px;
+  margin: 0 0 10px;
+  font-size: 18px;
   font-weight: 600;
   color: var(--edu-t1);
 }
 
 .theoryBlock p {
   margin: 0;
-  font-size: 13px;
-  line-height: 1.65;
+  font-size: 16px;
+  line-height: 1.7;
   color: var(--edu-t2);
 }
 
 .theoryBlock ul {
   margin: 8px 0 0;
-  padding-left: 18px;
+  padding-left: 22px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .theoryBlock li {
-  font-size: 13px;
-  line-height: 1.6;
+  font-size: 16px;
+  line-height: 1.65;
   color: var(--edu-t2);
 }
 
@@ -706,8 +706,8 @@
 }
 
 .theoryFigure figcaption {
-  margin-top: 8px;
-  font-size: 12px;
+  margin-top: 10px;
+  font-size: 14px;
   line-height: 1.55;
   color: var(--edu-t3);
 }
@@ -729,7 +729,7 @@
 
 .theorySource {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--edu-t3);
 }
 
