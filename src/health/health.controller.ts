@@ -1,4 +1,5 @@
-import { Controller, HttpCode, Get, HttpStatus, Logger } from '@nestjs/common';
+import { Controller, HttpCode, Get, HttpStatus, Logger, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Public } from 'src/common/decorators/public.decorators';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -45,6 +46,42 @@ export class HealthController {
       status: 200,
       message: 'ok',
       db: this.dbCache.ok ? 'up' : 'down',
+    };
+  }
+
+  /**
+   * Readiness: 503 khi DB không với tới được.
+   *
+   * Vì sao phải TÁCH khỏi /health thay vì sửa /health cho trả 503: hai endpoint
+   * trả lời hai câu hỏi khác nhau, và gộp lại thì câu nào cũng sai.
+   *  · /health là Health Check Path của Render — nó hỏi "tiến trình còn sống
+   *    không". DB chết KHÔNG có nghĩa tiến trình chết. Trả 503 ở đó là mời
+   *    Render restart service giữa lúc DB trục trặc: đá văng toàn bộ người đang
+   *    dùng, mà restart không chữa được DB nên có thể restart vòng lặp. Đó là
+   *    lý do /health cố ý trả 200 (xem chú thích ở trên, có ca test khẳng định).
+   *  · Nhưng vì /health luôn 200, sự cố ngày 14/10/2026 — mật khẩu Neon không
+   *    còn đúng, `db:"down"`, mọi route nghiệp vụ hỏng — KHÔNG phát ra tín hiệu
+   *    tự động nào. Render vẫn báo "healthy". Chỉ có người tự `curl` rồi đọc
+   *    body mới biết. Giám sát đọc mã HTTP, không đọc body.
+   *
+   * Nên: /health giữ nguyên 200 cho trình điều phối, còn đường này trả 503 cho
+   * dịch vụ giám sát ngoài (UptimeRobot, cron-job.org…). Có cảnh báo mà không
+   * có restart.
+   *
+   * ĐỪNG trỏ Health Check Path của Render vào đây.
+   */
+  @Get('ready')
+  @SkipThrottle({ ip_hour: true, ip_day: true })
+  async ready(@Res({ passthrough: true }) res: Response) {
+    await this.ensureDbChecked();
+    const ok = this.dbCache.ok;
+    res.status(ok ? HttpStatus.OK : HttpStatus.SERVICE_UNAVAILABLE);
+    // Không trả `this.dbCache.error` ra ngoài: thông điệp lỗi của Prisma/pg có
+    // thể mang tên vai trò và tên host. Nguyên nhân đã nằm trong log máy chủ.
+    return {
+      status: ok ? 200 : 503,
+      message: ok ? 'ready' : 'DB không với tới được',
+      db: ok ? 'up' : 'down',
     };
   }
 

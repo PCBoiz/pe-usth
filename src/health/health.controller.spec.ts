@@ -72,4 +72,64 @@ describe('HealthController', () => {
 
     expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
   });
+
+  /**
+   * Vì sao có nhóm ca này: ngày 14/10/2026 mật khẩu Neon không còn đúng. DB
+   * chết, `/auth/guest` trả 500, mọi route nghiệp vụ hỏng — nhưng `/health`
+   * vẫn trả HTTP 200 (đúng thiết kế, xem ca ở trên), nên Render vẫn báo
+   * "healthy" và KHÔNG có tín hiệu tự động nào phát ra. Giám sát đọc mã HTTP,
+   * không đọc body. Sự cố im lặng cho tới khi có người tự mở trang.
+   *
+   * `/health/ready` là chỗ trả 503 để giám sát ngoài bắt được, mà không đụng
+   * tới liveness probe của Render.
+   */
+  describe('GET /health/ready — readiness cho giám sát ngoài', () => {
+    const resGia = () => {
+      const r = { status: jest.fn() } as unknown as import('express').Response & {
+        status: jest.Mock;
+      };
+      return r;
+    };
+
+    it('DB sống: 200 và db=up', async () => {
+      const res = resGia();
+      await expect(controller.ready(res)).resolves.toEqual({
+        status: 200,
+        message: 'ready',
+        db: 'up',
+      });
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    // CA BẮT LỖI CHÍNH: đổi 503 thành 200 ở health.controller.ts thì ca này trượt.
+    it('DB chết: trả 503 — KHÁC /health, vốn vẫn 200', async () => {
+      prisma.$queryRaw.mockRejectedValue(new Error('28P01 password authentication failed'));
+      const res = resGia();
+      await expect(controller.ready(res)).resolves.toEqual({
+        status: 503,
+        message: 'DB không với tới được',
+        db: 'down',
+      });
+      expect(res.status).toHaveBeenCalledWith(503);
+    });
+
+    it('cùng một sự cố: /health 200 còn /health/ready 503 — đúng chỗ phân vai', async () => {
+      prisma.$queryRaw.mockRejectedValue(new Error('DB down'));
+      const res = resGia();
+      const [live, ready] = [await controller.check(), await controller.ready(res)];
+      expect(live.status).toBe(200);
+      expect(ready.status).toBe(503);
+    });
+
+    // Thông điệp lỗi của Prisma/pg mang tên vai trò và tên host. Nó phải nằm
+    // trong log máy chủ, không phải trong phản hồi công khai.
+    it('KHÔNG trả thông điệp lỗi gốc ra ngoài', async () => {
+      prisma.$queryRaw.mockRejectedValue(
+        new Error('password authentication failed for user "neondb_owner"'),
+      );
+      const res = resGia();
+      const body = JSON.stringify(await controller.ready(res));
+      expect(body).not.toMatch(/neondb_owner|password|authentication/i);
+    });
+  });
 });

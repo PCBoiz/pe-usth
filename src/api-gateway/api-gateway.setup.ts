@@ -15,11 +15,16 @@ export const API_PREFIX = 'api';
 
 /**
  * Các route KHÔNG mang prefix '/api' (theo đúng path gốc bản Django):
- *  - /health        : endpoint hạ tầng cho monitoring/cron ping
+ *  - /health        : liveness cho trình điều phối (luôn 200)
+ *  - /health/ready  : readiness cho giám sát ngoài (503 khi DB chết)
  *  - /auth/*        : nhóm auth nằm ở root, không thuộc namespace /api
  */
 const PREFIX_EXCLUDED = [
   { path: 'health', method: RequestMethod.GET },
+  // Readiness nằm cạnh liveness ở root cho người vận hành khỏi phải nhớ hai
+  // dạng đường dẫn. Khác /health ở chỗ nó TRẢ 503 khi DB chết — xem chú thích
+  // trong health.controller.ts, và ĐỪNG trỏ Health Check Path của Render vào đây.
+  { path: 'health/ready', method: RequestMethod.GET },
   { path: 'auth/login', method: RequestMethod.POST },
   { path: 'auth/register', method: RequestMethod.POST },
   { path: 'auth/logout', method: RequestMethod.ALL },
