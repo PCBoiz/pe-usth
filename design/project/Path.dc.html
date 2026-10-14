@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Lộ trình chặng Đa luồng</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0;background:#FBF7EE}
+a{color:#6E2BA8}a:hover{color:#4F1D7A}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FBF7EE; color: #2A2017; font-family: 'Be Vietnam Pro', system-ui, sans-serif; display: flex; flex-direction: column; overflow: hidden">
+
+  <header style="flex: none; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #E7DCC6; background: #FFFCF5">
+    <a href="Main.dc.html" aria-label="Về bản đồ" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #2A2017; flex: none">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"></path></svg>
+    </a>
+    <span style="font-size: 20px; font-weight: 800; letter-spacing: -0.01em; text-align: center">Khung cửi song song</span>
+    <span aria-label="Câu đã chắc: 37 câu. Con số này chỉ tăng." style="display: flex; align-items: center; gap: 8px; color: #8A5A0F; font-weight: 700; font-size: 17px; min-width: 44px; justify-content: flex-end; flex: none">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.6 2.6L16 9.5"></path></svg>37
+    </span>
+  </header>
+
+  <section style="flex: none; margin: 8px 16px 0; padding: 8px 16px; border-radius: 16px; background: #2A2017; color: #FBF7EE; display: flex; flex-direction: column; gap: 4px">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px">
+      <span style="font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #E2CFA8">Chặng M2 · Đa luồng</span>
+      <svg width="24" height="24" viewBox="0 0 44 44" fill="none" stroke="#E2CFA8" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="M6 10c6 0 6 8 12 8s6-8 12-8 6 8 8 8"></path><path d="M6 22c6 0 6 8 12 8s6-8 12-8 6 8 8 8"></path><path d="M6 34c6 0 6 4 12 4s6-4 12-4 6 4 8 4"></path></svg>
+    </div>
+    <span style="font-size: 17px; line-height: 1.4; color: #FBF7EE">Dựng cỗ máy làm nhiều việc cùng lúc, không tự cắn đuôi mình.</span>
+    <div role="progressbar" aria-label="Tiến độ chặng" aria-valuemin="0" aria-valuemax="6" aria-valuenow="2" aria-valuetext="Xong 2 trên 6 bài" style="height: 8px; margin-top: 2px; border-radius: 999px; background: #4A3B2C; overflow: hidden">
+      <div style="width: 33%; height: 100%; background: #E2CFA8"></div>
+    </div>
+    <span style="font-size: 15px; font-weight: 600; color: #E2CFA8">Xong 2 / 6 bài · đã lắp 2 bánh răng</span>
+  </section>
+
+  <div style="flex: 1; min-height: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 0">
+
+    <div style="display: flex; align-items: center; gap: 12px; transform: translateX(-24px)">
+      <div style="width: 52px; height: 52px; border-radius: 50%; background: #2A2017; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="#FBF7EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; color: #5E4630">T01 · đã xong</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25">Thread, tài nguyên và concurrency</span></div>
+    </div>
+
+    <div style="display: flex; align-items: center; gap: 12px; transform: translateX(20px)">
+      <div style="width: 52px; height: 52px; border-radius: 50%; background: #2A2017; display: flex; align-items: center; justify-content: center; flex: none">
+        <svg width="26" height="26" viewBox="0 0 16 16" fill="none" stroke="#FBF7EE" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; color: #5E4630">T02 · đã xong</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25">Thread target, start và join</span></div>
+    </div>
+
+    <div style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+      <div style="box-sizing: border-box; width: 330px; padding: 8px 16px; border-radius: 12px; border-left: 4px solid #9C3B22; background: #FBF1EC; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #9C3B22">Đoán trước</span>
+        <span style="font-size: 17px; line-height: 1.4; font-weight: 600; color: #2A2017">Override <span style="font-family: 'JetBrains Mono', monospace; font-size: 16px">run()</span> hay <span style="font-family: 'JetBrains Mono', monospace; font-size: 16px">start()</span>?</span>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translateX(16px)">
+        <a href="Theory.dc.html" aria-label="Bắt đầu T03 Subclass Thread" style="width: 64px; height: 64px; border-radius: 50%; background: #6E2BA8; box-shadow: 0 0 0 8px rgba(185, 63, 240, 0.2); display: flex; align-items: center; justify-content: center; color: #FFFFFF; text-decoration: none">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"></path></svg>
+        </a>
+        <span style="font-size: 17px; font-weight: 800">T03 · Subclass Thread</span>
+      </div>
+    </div>
+
+    <a href="Theory.dc.html" aria-label="T04 GIL, CPU-bound và I/O-bound — chưa học, vẫn mở được" style="display: flex; align-items: center; gap: 12px; transform: translateX(-16px); text-decoration: none; color: #2A2017">
+      <div style="width: 52px; height: 52px; box-sizing: border-box; border-radius: 50%; border: 2px dashed #8E7652; background: #FFFCF5; display: flex; align-items: center; justify-content: center; flex: none; font-size: 17px; font-weight: 700; color: #5E4630">04</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; color: #5E4630">T04 · chưa học</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25; color: #5E4630">GIL, CPU-bound và I/O-bound</span></div>
+    </a>
+
+    <a href="Theory.dc.html" aria-label="T05 Lock, race condition và deadlock — chưa học, vẫn mở được" style="display: flex; align-items: center; gap: 12px; transform: translateX(-28px); text-decoration: none; color: #2A2017">
+      <div style="width: 52px; height: 52px; box-sizing: border-box; border-radius: 50%; border: 2px dashed #8E7652; background: #FFFCF5; display: flex; align-items: center; justify-content: center; flex: none; font-size: 17px; font-weight: 700; color: #5E4630">05</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; color: #5E4630">T05 · chưa học</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25; color: #5E4630">Lock, race condition và deadlock</span></div>
+    </a>
+
+    <a href="Theory.dc.html" aria-label="T06 Queue và tác vụ lưu nền — chưa học, vẫn mở được" style="display: flex; align-items: center; gap: 12px; transform: translateX(0); text-decoration: none; color: #2A2017">
+      <div style="width: 52px; height: 52px; box-sizing: border-box; border-radius: 50%; border: 2px dashed #8E7652; background: #FFFCF5; display: flex; align-items: center; justify-content: center; flex: none; font-size: 17px; font-weight: 700; color: #5E4630">06</div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; color: #5E4630">T06 · chưa học</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25; color: #5E4630">Queue và tác vụ lưu nền</span></div>
+    </a>
+
+    <a href="Theory.dc.html" aria-label="Bản vẽ cỗ máy — bài tổng hợp chặng, mở được bất cứ lúc nào" style="display: flex; align-items: center; gap: 12px; transform: translateX(24px); text-decoration: none; color: #2A2017">
+      <div style="width: 56px; height: 56px; box-sizing: border-box; border-radius: 12px; border: 2px dashed #8A5A0F; background: #FFFCF5; display: flex; align-items: center; justify-content: center; flex: none; transform: rotate(-4deg)">
+        <svg width="32" height="32" viewBox="0 0 42 42" fill="none" stroke="#8A5A0F" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M6 10c6 0 6 8 12 8s6-8 12-8 6 8 6 8"></path><path d="M6 24c6 0 6 8 12 8s6-8 12-8 6 8 6 8"></path><circle cx="21" cy="21" r="18" stroke-dasharray="3 4"></circle></svg>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px; width: 236px"><span style="font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #8A5A0F">Bài tổng hợp chặng</span><span style="font-size: 17px; font-weight: 600; line-height: 1.25">Bản vẽ cỗ máy</span><span style="font-size: 15px; font-weight: 600; line-height: 1.3; color: #5E4630">Nên làm sau 6 bài, nhưng mở được bất cứ lúc nào</span></div>
+    </a>
+  </div>
+
+  <nav aria-label="Điều hướng" style="flex: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #E7DCC6; background: #FFFCF5">
+    <a href="Main.dc.html" aria-current="page" style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 2px; color: #6E2BA8; text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.15; text-align: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"></path><path d="M9 4v14M15 6v14"></path></svg>Bản đồ</a>
+    <a href="Review.dc.html" style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 2px; color: #5E4630; text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.15; text-align: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="M4 12a8 8 0 1 0 2.3-5.6"></path><path d="M4 4v4h4"></path></svg>Ôn tập</a>
+    <a href="Lab.dc.html" style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 2px; color: #5E4630; text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.15; text-align: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 1.8 3h10.4a2 2 0 0 0 1.8-3l-5-9V3"></path></svg>Bàn thí nghiệm</a>
+    <a href="Arena.dc.html" style="min-height: 64px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; padding: 4px 2px; color: #5E4630; text-decoration: none; font-size: 15px; font-weight: 700; line-height: 1.15; text-align: center">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M7 4h10M8 4v5a4 4 0 0 0 8 0V4"></path><path d="M12 13v4M9 20h6"></path></svg>Đấu trường</a>
+  </nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {};
+  }
+}
+</script>
+</body>
+</html>

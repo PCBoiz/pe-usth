@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bản đồ thế giới</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#6E2BA8}a:hover{color:#4F1D7A}
+@media (max-width: 820px){
+  .map{aspect-ratio:auto !important;display:flex !important;flex-direction:column;gap:16px;padding:20px !important}
+  .map-decor{display:none !important}
+  .region{position:static !important;transform:none !important;flex-direction:row !important;text-align:left !important;width:auto !important;gap:16px !important} .region-label{align-items:flex-start !important} } </style> </helmet> <div style="min-height: 1040px; background: {{ p.page }}; color: {{ p.ink }}; font-family: 'Be Vietnam Pro', system-ui, sans-serif">
+
+  <header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 44px; border-bottom: 1px solid {{ p.line }}; background: {{ p.bar }}">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="36" height="36" viewBox="0 0 34 34" fill="none" stroke="{{ p.ink }}" stroke-width="1.6" aria-hidden="true"><circle cx="17" cy="17" r="15"></circle><rect x="7" y="7" width="20" height="20"></rect><circle cx="17" cy="17" r="4" fill="{{ p.violet }}" stroke="none"></circle></svg>
+      <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.01em">Programming EDU</span>
+    </div>
+    <nav aria-label="Điều hướng chính" style="display: flex; flex-wrap: wrap; gap: 8px">
+      <a href="Main.dc.html" aria-current="page" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; background: {{ p.ink }}; color: {{ p.page }}; text-decoration: none; font-weight: 700; font-size: 17px">Bản đồ</a>
+      <a href="Review.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Ôn tập</a>
+      <a href="Lab.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Bàn thí nghiệm</a>
+      <a href="Arena.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Đấu trường</a>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 20px; font-weight: 700; font-size: 17px">
+      <span title="Số câu bạn đã trả lời đúng và giữ được khi gặp lại. Con số này chỉ tăng." style="display: flex; align-items: center; gap: 8px; color: {{ p.ochre }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.6 2.6L16 9.5"></path></svg>
+        <span>Câu đã chắc: 37</span>
+      </span>
+      <span title="Điểm kinh nghiệm" style="display: flex; align-items: center; gap: 8px; color: {{ p.ochre }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.6-5 4.5 1.5 6.6L12 16.6 6 19.9l1.5-6.6-5-4.5 6.6-.6z"></path></svg>
+        <span>1.240 XP</span>
+      </span>
+    </div>
+  </header>
+
+  <main style="max-width: 1440px; margin: 0 auto; padding: 40px 44px 56px; display: flex; flex-wrap: wrap; gap: 32px; box-sizing: border-box">
+
+    <section style="flex: 999 1 680px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+      <div style="display: flex; flex-direction: column; gap: 8px">
+        <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{ p.soft }}">Advanced Python · 8 chặng · 48 bài</p>
+        <h1 style="margin: 0; font-size: 56px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em">Sổ tay nhà phát minh</h1>
+      </div>
+
+      <figure style="margin: 0; padding: 24px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 8px">
+        <blockquote style="margin: 0; font-size: 22px; line-height: 1.5; font-weight: 600">“Để có một trí óc trọn vẹn: hãy học khoa học của nghệ thuật, học nghệ thuật của khoa học. Học cách nhìn. Nhận ra rằng mọi thứ đều kết nối với nhau.”</blockquote>
+        <figcaption style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">— theo tinh thần Leonardo da Vinci</figcaption>
+      </figure>
+
+      <div class="map" style="position: relative; aspect-ratio: 1000 / 660; border: 1.5px solid {{ p.ink }}; border-radius: 16px; background: {{ p.map }}; overflow: hidden">
+        <svg class="map-decor" viewBox="0 0 1000 660" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%" aria-hidden="true">
+          <g stroke="{{ p.grid }}" stroke-width="1" fill="none">
+            <path d="M0 110H1000M0 220H1000M0 330H1000M0 440H1000M0 550H1000M166 0V660M333 0V660M500 0V660M666 0V660M833 0V660" vector-effect="non-scaling-stroke"></path>
+          </g>
+          <path d="M100 462 C140 380 180 290 240 250" stroke="{{ p.ink }}" stroke-width="3.5" fill="none" stroke-linecap="round" vector-effect="non-scaling-stroke"></path>
+          <path d="M240 250 C300 220 340 450 400 435 C460 420 470 220 520 198 C570 176 590 420 640 410 C690 400 690 190 740 172 C790 154 820 395 860 385 C900 375 870 170 900 132" stroke="{{ p.dash }}" stroke-width="2.6" stroke-dasharray="2 10" stroke-linecap="round" fill="none" vector-effect="non-scaling-stroke"></path>
+        </svg>
+
+        <div class="region" style="position: absolute; left: 10%; top: 70%; transform: translate(-50%, -48px); width: 190px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="position: relative; width: 96px; height: 96px; border-radius: 50%; border: 3px solid {{ p.ink }}; background: {{ p.ink }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="46" height="46" viewBox="0 0 42 42" fill="none" stroke="{{ p.page }}" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="21" cy="9" r="5"></circle><circle cx="9" cy="33" r="5"></circle><circle cx="33" cy="33" r="5"></circle><path d="M18 13L11 29M24 13L31 29"></path></svg>
+            <span style="position: absolute; right: -4px; bottom: -2px; width: 32px; height: 32px; box-sizing: border-box; border-radius: 50%; border: 2px solid {{ p.ink }}; background: {{ p.page }}; color: {{ p.ink }}; display: flex; align-items: center; justify-content: center"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg></span>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 800">Xưởng phân thân</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M1 · Tiến trình · đã xong 7 / 7 bài</span>
+          </div>
+        </div>
+
+        <a class="region" href="Path.dc.html" aria-label="M2 Khung cửi song song — bạn đang ở đây, xong 2 trên 6 bài" style="position: absolute; left: 24%; top: 38%; transform: translate(-50%, -48px); width: 190px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; text-decoration: none; color: {{ p.ink }}">
+          <div style="width: 96px; height: 96px; border-radius: 50%; border: 3.5px solid {{ p.violet }}; background: {{ p.here }}; box-shadow: 0 0 0 9px rgba(185, 63, 240, 0.2), 0 0 0 18px rgba(185, 63, 240, 0.08); display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="48" height="48" viewBox="0 0 44 44" fill="none" stroke="{{ p.violet }}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 10c6 0 6 8 12 8s6-8 12-8 6 8 8 8"></path><path d="M6 22c6 0 6 8 12 8s6-8 12-8 6 8 8 8"></path><path d="M6 34c6 0 6 4 12 4s6-4 12-4 6 4 8 4"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="display: inline-flex; align-items: center; min-height: 32px; padding: 0 12px; border-radius: 999px; background: {{ p.violet }}; color: {{ p.onViolet }}; font-size: 15px; font-weight: 700; letter-spacing: 0.08em">BẠN Ở ĐÂY</span>
+            <span style="font-size: 20px; font-weight: 800">Khung cửi song song</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M2 · Đa luồng · xong 2 / 6 bài</span>
+          </div>
+        </a>
+
+        <div class="region" style="position: absolute; left: 40%; top: 66%; transform: translate(-50%, -48px); width: 180px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px dashed {{ p.dash }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="40" height="40" viewBox="0 0 42 42" fill="none" stroke="{{ p.dash }}" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><rect x="5" y="8" width="32" height="26" rx="2"></rect><path d="M5 15H37"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">Ô cửa quan sát</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M3 · GUI Tkinter · chưa học</span>
+          </div>
+        </div>
+
+        <div class="region" style="position: absolute; left: 52%; top: 30%; transform: translate(-50%, -42px); width: 160px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px dashed {{ p.dash }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="38" height="38" viewBox="0 0 36 36" fill="none" stroke="{{ p.dash }}" stroke-width="1.9" aria-hidden="true"><ellipse cx="18" cy="8" rx="12" ry="4"></ellipse><path d="M6 8v20c0 2.2 5.4 4 12 4s12-1.8 12-4V8"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">Thư khố</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M4 · Dữ liệu &amp; SQL · chưa học</span>
+          </div>
+        </div>
+
+        <div class="region" style="position: absolute; left: 64%; top: 62%; transform: translate(-50%, -42px); width: 160px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px dashed {{ p.dash }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="38" height="38" viewBox="0 0 36 36" fill="none" stroke="{{ p.dash }}" stroke-width="1.9" aria-hidden="true"><rect x="5" y="5" width="26" height="26"></rect><path d="M14 5v26M22 5v26M5 14h26M5 22h26"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">Cỗ máy ma trận</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M5 · NumPy · chưa học</span>
+          </div>
+        </div>
+
+        <div class="region" style="position: absolute; left: 74%; top: 26%; transform: translate(-50%, -42px); width: 160px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px dashed {{ p.dash }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="38" height="38" viewBox="0 0 36 36" fill="none" stroke="{{ p.dash }}" stroke-width="1.9" aria-hidden="true"><rect x="4" y="6" width="28" height="24" rx="1"></rect><path d="M4 13h28M13 13v17"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">Bàn sổ cái</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M6 · pandas · chưa học</span>
+          </div>
+        </div>
+
+        <div class="region" style="position: absolute; left: 86%; top: 58%; transform: translate(-50%, -42px); width: 160px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 84px; height: 84px; border-radius: 50%; border: 2.5px dashed {{ p.dash }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="38" height="38" viewBox="0 0 36 36" fill="none" stroke="{{ p.dash }}" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 31V5M5 31h26"></path><path d="M9 25l7-8 5 4 9-11"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 700">Hoạ thất</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M7 · Matplotlib · chưa học</span>
+          </div>
+        </div>
+
+        <div class="region" style="position: absolute; left: 90%; top: 20%; transform: translate(-50%, -48px); width: 170px; display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center">
+          <div style="width: 96px; height: 96px; border-radius: 50%; border: 2.5px dashed {{ p.ochre }}; background: {{ p.map }}; display: flex; align-items: center; justify-content: center; flex: none">
+            <svg width="46" height="46" viewBox="0 0 42 42" fill="none" stroke="{{ p.ochre }}" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><circle cx="21" cy="21" r="7"></circle><path d="M21 4v6M21 32v6M4 21h6M32 21h6M9 9l4 4M29 29l4 4M33 9l-4 4M13 29l-4 4"></path></svg>
+          </div>
+          <div class="region-label" style="display: flex; flex-direction: column; align-items: center; gap: 4px">
+            <span style="font-size: 20px; font-weight: 800">Đại công trình</span>
+            <span style="font-size: 15px; font-weight: 600; color: {{ p.soft }}">M8 · Dự án DA · chưa học</span>
+          </div>
+        </div>
+      </div>
+      <p style="margin: 0; font-size: 18px; line-height: 1.55; color: {{ p.soft }}">Nét đặc là đoạn bạn đã đi, nét chấm là đoạn chưa học. Chặng nào cũng mở được, cứ bắt đầu từ chỗ bạn muốn.</p>
+    </section>
+
+    <aside aria-label="Việc tiếp theo" style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <section aria-labelledby="goiYTitle" style="padding: 24px; border-radius: 16px; background: {{ p.ink }}; color: {{ p.page }}; display: flex; flex-direction: column; gap: 12px">
+        <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85">Gợi ý bước tiếp · hệ thống chọn · khoảng 30 phút</p>
+        <h2 id="goiYTitle" style="margin: 0; font-size: 28px; line-height: 1.2; font-weight: 800">T03 · Subclass Thread</h2>
+        <p style="margin: 0; font-size: 20px; line-height: 1.45; font-weight: 600">Override run() hay start()? Gọi cái nào để chạy?</p>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; opacity: 0.9"><span style="font-weight: 700">Vì sao bài này: </span>bạn vừa xong T02, và T03 dùng tiếp <span style="font-family: 'JetBrains Mono', monospace; font-size: 16px">start()</span> / <span style="font-family: 'JetBrains Mono', monospace; font-size: 16px">join()</span> của T02. Đoán trước rồi mở bài; đoán sai cũng là cách học.</p>
+        <a href="Theory.dc.html" style="align-self: flex-start; margin-top: 4px; display: inline-flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 28px; border-radius: 999px; background: {{ p.action }}; color: {{ p.onAction }}; text-decoration: none; font-weight: 800; font-size: 17px">Mở T03 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"></path></svg></a>
+        <div style="display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid {{ p.onInkLine }}">
+          <span style="font-size: 17px; line-height: 1.5; opacity: 0.85">Đây là gợi ý, không phải lệnh.</span>
+          <a href="Main.dc.html" style="align-self: flex-start; font-size: 17px; font-weight: 700; color: {{ p.onInkLink }}">Tự chọn bài</a>
+        </div>
+      </section>
+
+      <section aria-labelledby="tuanTitle" style="padding: 24px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 12px">
+        <p id="tuanTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Tuần này</p>
+        <p style="margin: 0; font-size: 20px; line-height: 1.45; font-weight: 700">Bạn đã xong 2 bài và ôn 9 thẻ.</p>
+        <p style="margin: 0; font-size: 18px; line-height: 1.55; color: {{ p.soft }}">Nghỉ bao lâu cũng không mất gì: tiến độ và thẻ ôn đợi bạn.</p>
+      </section>
+
+      <section aria-labelledby="theOnTitle" style="padding: 24px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+        <div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+          <p id="theOnTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Thẻ ôn đang chờ</p>
+          <p style="margin: 0; font-size: 18px; line-height: 1.45; font-weight: 700">5 thẻ · khoảng 6 phút</p>
+          <p style="margin: 0; font-size: 15px; font-weight: 600; color: {{ p.soft }}">3 từ Xưởng phân thân, 2 từ Khung cửi song song</p>
+        </div>
+        <a href="Review.dc.html" style="display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; border: 2px solid {{ p.ink }}; color: {{ p.ink }}; text-decoration: none; font-weight: 700; font-size: 17px">Ôn ngay</a>
+      </section>
+
+      <a href="Main.dc.html" style="align-self: flex-start; min-height: 44px; display: flex; align-items: center; font-size: 17px; font-weight: 700; color: {{ p.violet }}">Góp ý cho nhóm làm khoá (khoảng 3 phút)</a>
+    </aside>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"nen":{"editor":"enum","options":["kem","trang","dem"],"default":"kem","section":"Nền"},"$preview":{"width":1440,"height":1040}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var nen = this.props.nen ?? 'kem';
+    var bang = {
+      // Mot bang duy nhat cho ba nen. violet/action/onAction/onViolet doc tu day,
+      // khong code cung nua: ban dem truoc day dung #6E2BA8 nen link chi dat 2,28:1
+      // va vien vong "Ban o day" chi dat 1,84:1.
+      kem:   { page: '#FBF7EE', bar: '#FFFCF5', card: '#FFFFFF', map: '#FFFCF5', line: '#E7DCC6', grid: '#EFE6D3', ink: '#2A2017', soft: '#5E4630', dash: '#8E7652', here: '#F5EAFB', violet: '#6E2BA8', onViolet: '#FFFFFF', action: '#7A2BB8', onAction: '#FFFFFF', onInkLine: 'rgba(251, 247, 238, 0.3)', onInkLink: '#C99BEF', sanguine: '#9C3B22', ochre: '#8A5A0F' },
+      trang: { page: '#FFFFFF', bar: '#FAF8F4', card: '#FAF8F4', map: '#FFFFFF', line: '#E8E2D6', grid: '#F0ECE4', ink: '#22201C', soft: '#55504A', dash: '#8A8378', here: '#F5EAFB', violet: '#6E2BA8', onViolet: '#FFFFFF', action: '#7A2BB8', onAction: '#FFFFFF', onInkLine: 'rgba(255, 255, 255, 0.3)', onInkLink: '#C99BEF', sanguine: '#9C3B22', ochre: '#8A5A0F' },
+      dem:   { page: '#16120E', bar: '#1B1611', card: '#221C16', map: '#1B1611', line: '#3A2F25', grid: '#2A231C', ink: '#F2EBDD', soft: '#CDBFA6', dash: '#A99272', here: '#2E2238', violet: '#C99BEF', onViolet: '#16120E', action: '#C99BEF', onAction: '#16120E', onInkLine: 'rgba(22, 18, 14, 0.3)', onInkLink: '#4F1D7A', sanguine: '#EC9277', ochre: '#E0B062' }
+    };
+    return { p: bang[nen] || bang.kem };
+  }
+}
+</script>
+</body>
+</html>

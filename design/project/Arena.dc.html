@@ -1,0 +1,974 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Thử thách ôn</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#6E2BA8}a:hover{color:#4F1D7A}
+button{font-family:inherit}
+button:disabled{cursor:default}
+:focus-visible{outline:3px solid #6E2BA8;outline-offset:2px}
+@keyframes ar-rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes ar-land{0%{transform:scale(.6)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+.ar-rise{animation:ar-rise .32s ease-out both}
+.ar-land{animation:ar-land .42s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion: reduce){.ar-rise,.ar-land{animation:none !important}}
+@media (max-width: 900px){
+  .ar-pad{padding-left:16px !important;padding-right:16px !important}
+  .ar-h1{font-size:40px !important}
+  .ar-row{flex-direction:column !important;align-items:stretch !important}
+}
+</style>
+</helmet>
+<div style="min-height: 1410px; background: {{ p.page }}; color: {{ p.ink }}; font-family: 'Be Vietnam Pro', system-ui, sans-serif">
+
+  <header class="ar-pad" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 44px; border-bottom: 1px solid {{ p.line }}; background: {{ p.bar }}">
+    <div style="display: flex; align-items: center; gap: 12px">
+      <svg width="36" height="36" viewBox="0 0 34 34" fill="none" stroke="{{ p.ink }}" stroke-width="1.6" aria-hidden="true"><circle cx="17" cy="17" r="15"></circle><rect x="7" y="7" width="20" height="20"></rect><circle cx="17" cy="17" r="4" fill="{{ p.violet }}" stroke="none"></circle></svg>
+      <span style="font-size: 22px; font-weight: 800; letter-spacing: -0.01em">Programming EDU</span>
+    </div>
+    <nav aria-label="Điều hướng chính" style="display: flex; flex-wrap: wrap; gap: 8px">
+      <a href="Main.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Bản đồ</a>
+      <a href="Review.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Ôn tập</a>
+      <a href="Lab.dc.html" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; color: {{ p.ink }}; text-decoration: none; font-weight: 600; font-size: 17px">Bàn thí nghiệm</a>
+      <a href="Arena.dc.html" aria-current="page" style="min-height: 44px; display: flex; align-items: center; padding: 0 20px; border-radius: 999px; background: {{ p.ink }}; color: {{ p.page }}; text-decoration: none; font-weight: 700; font-size: 17px">Đấu trường</a>
+    </nav>
+    <div style="display: flex; align-items: center; gap: 20px; font-weight: 700; font-size: 17px">
+      <span title="Số câu bạn đã trả lời đúng và giữ được khi gặp lại. Con số này chỉ tăng." style="display: flex; align-items: center; gap: 8px; color: {{ p.ochre }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M8 12.5l2.6 2.6L16 9.5"></path></svg>
+        <span>Câu đã chắc: {{ headSure }}</span>
+      </span>
+      <span title="Điểm kinh nghiệm" style="display: flex; align-items: center; gap: 8px; color: {{ p.ochre }}">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l2.9 6.2 6.6.6-5 4.5 1.5 6.6L12 16.6 6 19.9l1.5-6.6-5-4.5 6.6-.6z"></path></svg>
+        <span>1.240 XP</span>
+      </span>
+    </div>
+  </header>
+
+  <div class="ar-pad" role="group" aria-label="Nút của bản thiết kế" style="display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; padding: 12px 44px; border-bottom: 1px dashed {{ p.dash }}; background: {{ p.muted }}">
+    <span style="display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20l4.5-1.5L20 7a2.1 2.1 0 0 0-3-3L5.5 15.5z"></path><path d="M14.5 5.5l3 3"></path></svg>
+      Xem trạng thái
+    </span>
+    <span style="display: flex; flex-wrap: wrap; gap: 8px">
+      <sc-for list="{{ navBtns }}" as="b" hint-placeholder-count="3">
+        <button type="button" onClick="{{ b.go }}" aria-pressed="{{ b.on }}" style="{{ b.style }}">{{ b.label }}</button>
+      </sc-for>
+    </span>
+    <span style="font-size: 15px; line-height: 1.5; color: {{ p.soft }}">Ba nút này là của <span style="font-weight: 700">bản thiết kế</span>, không có trong sản phẩm — chúng chỉ để chuyển qua lại ba trạng thái của cùng một màn.</span>
+  </div>
+
+  <main class="ar-pad" style="max-width: 1440px; margin: 0 auto; padding: 32px 44px 36px; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px">
+
+    <!-- ========== TRANG THAI: BAT DAU ========== -->
+    <sc-if value="{{ isBatdau }}" hint-placeholder-val="{{ false }}">
+      <div class="ar-row" style="display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start">
+
+        <section aria-labelledby="startTitle" style="flex: 999 1 660px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+          <div style="display: flex; flex-direction: column; gap: 12px">
+            <a href="Review.dc.html" style="align-self: flex-start; display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 6l-6 6 6 6"></path></svg>
+              Ôn tập của tôi
+            </a>
+            <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{ p.soft }}">Phóng từ Ôn tập của tôi · chế độ 10 câu liên tiếp</p>
+            <h1 id="startTitle" class="ar-h1" style="margin: 0; font-size: 56px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em">Thử thách ôn</h1>
+            <p style="margin: 0; font-size: 20px; line-height: 1.45; font-weight: 600; color: {{ p.ink }}">10 câu · không tính giờ · không xếp hạng · chỉ so với chính bạn</p>
+            <p style="margin: 0; max-width: 64ch; font-size: 18px; line-height: 1.55; color: {{ p.soft }}">Mười câu rút từ chính những câu bạn đã làm. Sai lần đầu thì được nghĩ lại ngay trong câu đó. Không ai đứng bên kia bàn — bàn so sánh duy nhất ở đây là bạn hôm qua.</p>
+          </div>
+
+          <section aria-labelledby="scopeTitle" style="display: flex; flex-direction: column; gap: 12px; padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}">
+            <p id="scopeTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Phạm vi câu hỏi</p>
+            <div role="radiogroup" aria-labelledby="scopeTitle" style="display: flex; flex-wrap: wrap; gap: 12px">
+              <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="5">
+                <button type="button" role="radio" aria-checked="{{ ch.on }}" onClick="{{ ch.pick }}" disabled="{{ ch.locked }}" aria-label="{{ ch.aria }}" style="{{ ch.style }}">
+                  <sc-if value="{{ ch.sel }}" hint-placeholder-val="{{ true }}">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                  </sc-if>
+                  <span>{{ ch.label }}</span>
+                  <sc-if value="{{ ch.locked }}" hint-placeholder-val="{{ false }}">
+                    <span style="font-size: 15px; font-weight: 700">· Chưa học</span>
+                  </sc-if>
+                </button>
+              </sc-for>
+            </div>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{ p.soft }}">{{ scopeNote }}</p>
+          </section>
+
+          <section aria-labelledby="levelTitle" style="display: flex; flex-direction: column; gap: 16px; padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}">
+            <div style="display: flex; flex-direction: column; gap: 4px">
+              <p id="levelTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Mức của bạn theo chặng</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.5">Một câu được tính là <span style="font-weight: 700">đã chắc</span> khi bạn trả lời đúng nó ngay lần đầu, hai lượt gặp liền nhau. Thanh này chỉ đi lên.</p>
+            </div>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px">
+              <sc-for list="{{ chaps }}" as="c" hint-placeholder-count="3">
+                <li style="display: flex; flex-direction: column; gap: 8px">
+                  <span style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px">
+                    <span style="font-size: 18px; font-weight: 700">{{ c.name }}</span>
+                    <span style="font-size: 17px; font-weight: 700; color: {{ c.numColor }}">{{ c.num }}</span>
+                  </span>
+                  <span role="img" aria-label="{{ c.aria }}" style="{{ c.trackStyle }}">
+                    <span style="{{ c.fillStyle }}"></span>
+                  </span>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+
+          <div class="ar-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px">
+            <button type="button" onClick="{{ start }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 28px; box-sizing: border-box; border-radius: 999px; border: none; background: {{ p.action }}; color: {{ p.onAction }}; font-weight: 800; font-size: 17px; cursor: pointer">
+              Bắt đầu 10 câu
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13"></path><path d="M12 6l6 6-6 6"></path></svg>
+            </button>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{ p.soft }}">Dừng giữa chừng được. Mười câu này không hẹn giờ và không có lượt chơi giới hạn.</p>
+          </div>
+        </section>
+
+        <aside aria-label="Tình trạng của bạn" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+          <section style="padding: 26px; border-radius: 16px; background: {{ p.ink }}; color: {{ p.page }}; display: flex; flex-direction: column; gap: 12px">
+            <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8">Chỉ tăng, không bao giờ tụt</p>
+            <p style="margin: 0; display: flex; align-items: baseline; gap: 12px">
+              <span style="font-size: 56px; font-weight: 800; line-height: 1; letter-spacing: -0.02em">34</span>
+              <span style="font-size: 20px; font-weight: 700">câu đã chắc</span>
+            </p>
+            <p style="margin: 0; font-size: 17px; line-height: 1.55; opacity: 0.9">Con số này không giảm khi bạn sai. Sai chỉ có nghĩa là câu đó chưa vào đây.</p>
+            <p style="margin: 0; padding-top: 14px; border-top: 1px solid {{ p.onInkLine }}; display: flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 700">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"></rect><path d="M3.5 10h17M8 3v4M16 3v4"></path></svg>
+              Lần gần nhất: hôm qua
+            </p>
+            <p style="margin: 0; font-size: 17px; line-height: 1.5; opacity: 0.85">Không có chuỗi ngày để đứt. Nghỉ ba hôm rồi quay lại thì mười câu vẫn ở đây.</p>
+          </section>
+
+          <section style="padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 12px">
+            <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Ở đây không có</p>
+            <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.45">
+              <sc-for list="{{ nots }}" as="n" hint-placeholder-count="4">
+                <li style="display: flex; align-items: flex-start; gap: 12px">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ p.soft }}" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 2px"><circle cx="12" cy="12" r="9"></circle><path d="M6 18L18 6"></path></svg>
+                  <span>{{ n.text }}</span>
+                </li>
+              </sc-for>
+            </ul>
+          </section>
+
+          <p style="margin: 0; display: flex; gap: 12px; align-items: flex-start; font-size: 17px; line-height: 1.55; color: {{ p.soft }}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+            <span>Tiến độ được lưu theo <span style="font-weight: 700">trình duyệt này</span>. Đổi máy hay xoá dữ liệu trình duyệt là mất số câu đã chắc.</span>
+          </p>
+        </aside>
+      </div>
+    </sc-if>
+
+    <!-- ========== TRANG THAI: CAU HOI ========== -->
+    <sc-if value="{{ isCauhoi }}" hint-placeholder-val="{{ true }}">
+      <div style="display: flex; flex-direction: column; gap: 24px">
+
+        <div class="ar-row" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px 24px; padding: 14px 20px; border-radius: 12px; background: {{ p.card }}; border: 1px solid {{ p.line }}">
+          <span style="display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap">
+            <span style="font-size: 18px; font-weight: 800">Thử thách ôn</span>
+            <span aria-live="polite" style="font-size: 18px; font-weight: 700; color: {{ p.soft }}">Câu {{ qNum }}/10</span>
+          </span>
+          <span role="list" aria-label="Tiến độ 10 câu" style="display: flex; gap: 8px">
+            <sc-for list="{{ pips }}" as="pip" hint-placeholder-count="10">
+              <span role="listitem" aria-label="{{ pip.aria }}" style="{{ pip.style }}">
+                <sc-if value="{{ pip.isOk }}" hint-placeholder-val="{{ true }}">
+                  <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                </sc-if>
+                <sc-if value="{{ pip.isAgain }}" hint-placeholder-val="{{ false }}">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg>
+                </sc-if>
+                <sc-if value="{{ pip.isBad }}" hint-placeholder-val="{{ false }}">
+                  <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                </sc-if>
+              </span>
+            </sc-for>
+          </span>
+          <a href="Review.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{ p.ink }}; background: transparent; color: {{ p.ink }}; text-decoration: none; font-weight: 700; font-size: 17px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"></rect></svg>
+            Dừng
+          </a>
+        </div>
+
+        <p style="margin: 0; display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 15px; line-height: 1.5; color: {{ p.soft }}">
+          <sc-for list="{{ legend }}" as="g" hint-placeholder-count="4">
+            <span style="display: flex; align-items: center; gap: 8px">
+              <span aria-hidden="true" style="{{ g.style }}">
+                <sc-if value="{{ g.isOk }}" hint-placeholder-val="{{ true }}">
+                  <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                </sc-if>
+                <sc-if value="{{ g.isAgain }}" hint-placeholder-val="{{ false }}">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg>
+                </sc-if>
+                <sc-if value="{{ g.isBad }}" hint-placeholder-val="{{ false }}">
+                  <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                </sc-if>
+              </span>
+              <span>{{ g.label }}</span>
+            </span>
+          </sc-for>
+        </p>
+
+        <div class="ar-row" style="display: flex; flex-wrap: wrap; gap: 28px; align-items: flex-start">
+
+          <section aria-labelledby="qTitle" style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 16px; padding: 26px 28px; border-radius: 16px; background: {{ p.card }}; border: 2px solid {{ p.ink }}; box-shadow: 0 6px 22px rgba(42, 32, 23, 0.07)">
+
+            <p style="margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"></path><path d="M4 19V5M9 8h6"></path></svg>
+              <span>Từ bài {{ q.lesson }}</span>
+              <span aria-hidden="true">·</span>
+              <span>{{ q.typeLabel }}</span>
+            </p>
+
+            <h1 id="qTitle" style="margin: 0; font-size: 28px; line-height: 1.35; font-weight: 800; overflow-wrap: anywhere">{{ q.question }}</h1>
+
+            <sc-if value="{{ q.hasCode }}" hint-placeholder-val="{{ false }}">
+              <div style="border-radius: 12px; background: #221A13; color: #EFE6D2; overflow-x: auto">
+                <div style="padding: 14px 0; font-family: 'JetBrains Mono', monospace; font-size: 16px; line-height: 1.85; min-width: max-content">
+                  <sc-for list="{{ q.codeLines }}" as="ln" hint-placeholder-count="6">
+                    <div style="padding: 0 20px; white-space: pre"><span style="display: inline-block; width: 30px; color: #A8977F">{{ ln.no }}</span>{{ ln.text }}</div>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ q.showSeenHint }}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; display: flex; align-items: center; gap: 8px; padding: 10px 14px; border-radius: 12px; background: {{ p.muted }}; font-size: 17px; line-height: 1.45; color: {{ p.soft }}">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3.5 12a8.5 8.5 0 1 1 2.5 6"></path><path d="M3.5 19v-6.5H10"></path></svg>
+                <span>{{ q.seenText }}</span>
+              </p>
+            </sc-if>
+
+            <sc-if value="{{ q.showRetryNote }}" hint-placeholder-val="{{ false }}">
+              <p style="margin: 0; display: flex; align-items: flex-start; gap: 12px; padding: 14px 18px; border-radius: 12px; background: {{ p.badBg }}; border-left: 5px solid {{ p.sanguine }}; font-size: 18px; line-height: 1.55">
+                <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="{{ p.sanguine }}" stroke-width="2.8" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 4px"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                <span><span style="font-weight: 800">Vì sao chưa đúng: </span>{{ q.retryNote }} <span style="color: {{ p.soft }}">Đáp án vẫn chưa lộ — chọn lại một phương án khác.</span></span>
+              </p>
+            </sc-if>
+
+            <div role="radiogroup" aria-labelledby="qTitle" style="display: flex; flex-direction: column; gap: 12px">
+              <sc-for list="{{ q.options }}" as="o" hint-placeholder-count="3">
+                <button type="button" role="radio" aria-checked="{{ o.checked }}" onClick="{{ o.pick }}" disabled="{{ o.locked }}" style="{{ o.style }}">
+                  <span aria-hidden="true" style="{{ o.letterStyle }}">{{ o.letter }}</span>
+                  <span style="{{ o.textStyle }}">{{ o.text }}</span>
+                  <sc-if value="{{ o.tagOk }}" hint-placeholder-val="{{ false }}">
+                    <span style="flex: none; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: {{ p.ochre }}"><svg width="19" height="19" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>Đáp án đúng</span>
+                  </sc-if>
+                  <sc-if value="{{ o.tagPicked }}" hint-placeholder-val="{{ false }}">
+                    <span style="flex: none; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 800; color: {{ p.sanguine }}"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"></path></svg>{{ o.tagPickedText }}</span>
+                  </sc-if>
+                  <sc-if value="{{ o.tagLocked }}" hint-placeholder-val="{{ false }}">
+                    <span style="flex: none; display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: {{ p.soft }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>Đã thử — khoá</span>
+                  </sc-if>
+                </button>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{ q.showCommit }}" hint-placeholder-val="{{ true }}">
+              <div class="ar-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 20px">
+                <button type="button" onClick="{{ q.commit }}" disabled="{{ q.commitOff }}" style="{{ q.commitStyle }}">{{ q.commitLabel }}</button>
+                <p style="margin: 0; font-size: 17px; line-height: 1.5; color: {{ p.soft }}">{{ q.commitHint }}</p>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ q.showFb }}" hint-placeholder-val="{{ false }}">
+              <div class="ar-rise" aria-live="polite" style="{{ q.fbStyle }}">
+                <span style="display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: {{ q.fbColor }}">
+                  <sc-if value="{{ q.fbIsOk }}" hint-placeholder-val="{{ true }}">
+                    <svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{ q.fbIsAgain }}" hint-placeholder-val="{{ false }}">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg>
+                  </sc-if>
+                  <sc-if value="{{ q.fbIsBad }}" hint-placeholder-val="{{ false }}">
+                    <svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true" style="flex: none"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                  </sc-if>
+                  <span>{{ q.fbHead }}</span>
+                </span>
+                <p style="margin: 0; font-size: 18px; line-height: 1.55; overflow-wrap: anywhere">{{ q.fbBody }}</p>
+                <sc-if value="{{ q.showAnswer }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin: 0; font-size: 18px; line-height: 1.55; overflow-wrap: anywhere"><span style="font-weight: 800">Đáp án đúng: </span>{{ q.correctText }} — {{ q.correctDetail }}</p>
+                </sc-if>
+                <sc-if value="{{ q.showSeenVerdict }}" hint-placeholder-val="{{ false }}">
+                  <p style="margin: 0; display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 700">
+                    <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M3.5 12a8.5 8.5 0 1 1 2.5 6"></path><path d="M3.5 19v-6.5H10"></path></svg>
+                    <span>{{ q.seenVerdict }}</span>
+                  </p>
+                </sc-if>
+                <sc-if value="{{ q.showMis }}" hint-placeholder-val="{{ false }}">
+                  <a href="Theory.dc.html" style="align-self: flex-start; display: flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 12px; background: {{ p.card }}; border: 1.5px solid {{ p.sanguine }}; color: {{ p.ink }}; text-decoration: none; font-size: 17px; font-weight: 700; line-height: 1.4">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="{{ p.sanguine }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"></path><path d="M4 19V5M9 8h6"></path></svg>
+                    <span>Ôn lại: Ngộ nhận của bài {{ q.code }} — {{ q.mis }}</span>
+                  </a>
+                </sc-if>
+                <div class="ar-row" style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 16px; padding-top: 14px; border-top: 1px solid {{ p.line }}">
+                  <span style="font-size: 17px; line-height: 1.45; color: {{ p.soft }}">{{ q.fbFoot }}</span>
+                  <button type="button" onClick="{{ q.next }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 28px; box-sizing: border-box; border-radius: 999px; border: none; background: {{ p.action }}; color: {{ p.onAction }}; font-weight: 800; font-size: 17px; cursor: pointer">
+                    {{ q.nextLabel }}
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13"></path><path d="M12 6l6 6-6 6"></path></svg>
+                  </button>
+                </div>
+              </div>
+            </sc-if>
+          </section>
+
+          <aside aria-labelledby="whyTitle" style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+            <section style="padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; border-left: 5px solid {{ q.whyColor }}; display: flex; flex-direction: column; gap: 12px">
+              <p id="whyTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Vì sao câu này?</p>
+              <p style="margin: 0; display: flex; align-items: flex-start; gap: 12px; font-size: 20px; line-height: 1.45; font-weight: 700; color: {{ q.whyColor }}">
+                <sc-if value="{{ q.whyMiss }}" hint-placeholder-val="{{ false }}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M9 14L4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg>
+                </sc-if>
+                <sc-if value="{{ q.whyNew }}" hint-placeholder-val="{{ true }}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M12 3v3M12 18v3M4.2 7.5l2.6 1.5M17.2 15l2.6 1.5M4.2 16.5l2.6-1.5M17.2 9l2.6-1.5"></path><circle cx="12" cy="12" r="3.4"></circle></svg>
+                </sc-if>
+                <sc-if value="{{ q.whyHarder }}" hint-placeholder-val="{{ false }}">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 2px"><path d="M4 20h16"></path><path d="M7 20v-5M12 20V9M17 20V4"></path></svg>
+                </sc-if>
+                <span>{{ q.whyText }}</span>
+              </p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; color: {{ p.soft }}">{{ q.whyMore }}</p>
+            </section>
+
+            <section style="padding: 20px 22px; border-radius: 16px; background: {{ p.muted }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Luật của mười câu</p>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; font-size: 17px; line-height: 1.45">
+                <sc-for list="{{ rules }}" as="r" hint-placeholder-count="4">
+                  <li style="display: flex; align-items: flex-start; gap: 12px">
+                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="{{ p.ochre }}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                    <span>{{ r.text }}</span>
+                  </li>
+                </sc-for>
+              </ul>
+            </section>
+
+            <section style="padding: 20px 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 8px">
+              <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Phạm vi</p>
+              <p style="margin: 0; font-size: 18px; font-weight: 700">{{ scopeLabel }}</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.5; color: {{ p.soft }}">Câu đã chắc: 34 · lần gần nhất hôm qua</p>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </sc-if>
+
+    <!-- ========== TRANG THAI: KET QUA ========== -->
+    <sc-if value="{{ isKetqua }}" hint-placeholder-val="{{ false }}">
+      <div style="display: flex; flex-direction: column; gap: 32px">
+
+        <div class="ar-row" style="display: flex; flex-wrap: wrap; gap: 36px; align-items: flex-start">
+
+          <section aria-labelledby="doneTitle" style="flex: 999 1 640px; min-width: 0; display: flex; flex-direction: column; gap: 24px">
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: {{ p.soft }}">Thử thách ôn · thứ Tư 14/10</p>
+              <h1 id="doneTitle" class="ar-h1" style="margin: 0; font-size: 56px; line-height: 1.05; font-weight: 800; letter-spacing: -0.02em">Xong 10 câu</h1>
+              <p style="margin: 0; max-width: 64ch; font-size: 18px; line-height: 1.55; color: {{ p.soft }}">Hai thanh dưới đây là của riêng bạn. Không có bảng xếp hạng nào để đứng vào, và không có ai để so.</p>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 16px; padding: 24px 26px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}">
+              <sc-for list="{{ res }}" as="r" hint-placeholder-count="2">
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <span style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px">
+                    <span style="display: flex; align-items: center; gap: 12px; font-size: 20px; font-weight: 800">
+                      <sc-if value="{{ r.isOk }}" hint-placeholder-val="{{ true }}">
+                        <span aria-hidden="true" style="{{ r.badge }}"><svg width="17" height="17" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5L6.5 12L13 4.5"></path></svg></span>
+                      </sc-if>
+                      <sc-if value="{{ r.isAgain }}" hint-placeholder-val="{{ false }}">
+                        <span aria-hidden="true" style="{{ r.badge }}"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg></span>
+                      </sc-if>
+                      {{ r.label }}
+                    </span>
+                    <span style="font-size: 20px; font-weight: 800; color: {{ r.color }}">{{ r.value }}</span>
+                  </span>
+                  <span role="img" aria-label="{{ r.aria }}" style="{{ r.trackStyle }}">
+                    <span class="ar-land" style="{{ r.fillStyle }}"></span>
+                  </span>
+                  <span style="font-size: 17px; line-height: 1.5; color: {{ p.soft }}">{{ r.note }}</span>
+                </div>
+              </sc-for>
+            </div>
+
+            <section aria-labelledby="redoTitle" style="display: flex; flex-direction: column; gap: 16px">
+              <div style="display: flex; flex-direction: column; gap: 8px">
+                <h2 id="redoTitle" style="margin: 0; font-size: 28px; line-height: 1.2; font-weight: 800">Nên ôn</h2>
+                <p style="margin: 0; max-width: 70ch; font-size: 17px; line-height: 1.55; color: {{ p.soft }}">Gom theo bài, không theo câu — vì ba câu sai lần đầu hôm nay chỉ đụng vào hai chỗ hiểu sai. Đọc lại đúng chỗ đó thường gỡ nhanh hơn làm thêm câu.</p>
+              </div>
+              <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+                <sc-for list="{{ redo }}" as="d" hint-placeholder-count="2">
+                  <article style="flex: 1 1 320px; min-width: 0; padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; border-top: 4px solid {{ p.sanguine }}; display: flex; flex-direction: column; gap: 12px">
+                    <span style="font-size: 20px; font-weight: 800; line-height: 1.3">{{ d.lesson }}</span>
+                    <span style="display: flex; align-items: center; gap: 8px; font-size: 17px; font-weight: 800; color: {{ p.sanguine }}">
+                      <svg width="18" height="18" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                      {{ d.count }}
+                    </span>
+                    <p style="margin: 0; font-size: 17px; line-height: 1.5; overflow-wrap: anywhere"><span style="font-weight: 700">Ngộ nhận: </span>{{ d.mis }}</p>
+                    <p style="margin: 0; font-size: 17px; line-height: 1.5; color: {{ p.soft }}">{{ d.meta }}</p>
+                    <a href="Theory.dc.html" style="margin-top: auto; align-self: flex-start; display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{ p.ink }}; background: transparent; color: {{ p.ink }}; text-decoration: none; font-weight: 700; font-size: 17px">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"></path><path d="M4 19V5M9 8h6"></path></svg>
+                      Mở phần Ngộ nhận
+                    </a>
+                  </article>
+                </sc-for>
+              </div>
+            </section>
+
+            <section aria-labelledby="listTitle" style="display: flex; flex-direction: column; gap: 0; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; overflow: hidden">
+              <button type="button" onClick="{{ toggleList }}" aria-expanded="{{ listOpen }}" style="display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; padding: 20px 22px; background: transparent; border: none; text-align: left; color: {{ p.ink }}; cursor: pointer">
+                <span id="listTitle" style="font-size: 22px; font-weight: 700">Xem lại 10 câu</span>
+                <span style="display: flex; align-items: center; gap: 12px">
+                  <span style="font-size: 17px; font-weight: 700; color: {{ p.soft }}">{{ listHint }}</span>
+                  <span aria-hidden="true" style="{{ listChevStyle }}">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"></path></svg>
+                  </span>
+                </span>
+              </button>
+              <sc-if value="{{ listOpen }}" hint-placeholder-val="{{ false }}">
+                <ol class="ar-rise" style="margin: 0; padding: 0 22px 20px; list-style: none; display: flex; flex-direction: column; gap: 12px">
+                  <sc-for list="{{ review }}" as="r" hint-placeholder-count="10">
+                    <li style="display: flex; align-items: flex-start; gap: 16px; padding: 13px 0; border-top: 1px solid {{ p.line }}">
+                      <span aria-label="{{ r.aria }}" role="img" style="{{ r.pipStyle }}">
+                        <sc-if value="{{ r.isOk }}" hint-placeholder-val="{{ true }}">
+                          <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8.5L6.5 12L13 4.5"></path></svg>
+                        </sc-if>
+                        <sc-if value="{{ r.isAgain }}" hint-placeholder-val="{{ false }}">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg>
+                        </sc-if>
+                        <sc-if value="{{ r.isBad }}" hint-placeholder-val="{{ false }}">
+                          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" aria-hidden="true"><path d="M4 4l8 8M12 4l-8 8"></path></svg>
+                        </sc-if>
+                      </span>
+                      <span style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 4px">
+                        <span style="font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Câu {{ r.n }} · {{ r.lesson }} · {{ r.typeLabel }}</span>
+                        <span style="font-size: 17px; line-height: 1.45; font-weight: 600; overflow-wrap: anywhere">{{ r.question }}</span>
+                        <span style="font-size: 17px; line-height: 1.45; color: {{ r.color }}; font-weight: 700">{{ r.verdict }}</span>
+                      </span>
+                      <a href="Theory.dc.html" style="flex: none; font-size: 17px; font-weight: 700">Mở bài</a>
+                    </li>
+                  </sc-for>
+                </ol>
+              </sc-if>
+            </section>
+
+            <div class="ar-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px">
+              <button type="button" onClick="{{ again }}" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 52px; padding: 0 28px; box-sizing: border-box; border-radius: 999px; border: none; background: {{ p.action }}; color: {{ p.onAction }}; font-weight: 800; font-size: 17px; cursor: pointer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.3 6"></path><path d="M20 4.5V11h-6"></path></svg>
+                Thử thách thêm 10 câu
+              </button>
+              <a href="Review.dc.html" style="display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 24px; box-sizing: border-box; border-radius: 999px; border: 2px solid {{ p.ink }}; background: transparent; color: {{ p.ink }}; text-decoration: none; font-weight: 700; font-size: 17px">Về Ôn tập của tôi</a>
+            </div>
+          </section>
+
+          <aside aria-label="Những con số chỉ tăng" style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+            <section style="padding: 26px; border-radius: 16px; background: {{ p.ink }}; color: {{ p.page }}; display: flex; flex-direction: column; gap: 12px">
+              <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.8">Chỉ tăng, không bao giờ tụt</p>
+              <p style="margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 12px 12px">
+                <span class="ar-land" style="font-size: 56px; font-weight: 800; line-height: 1; letter-spacing: -0.02em">37</span>
+                <span style="font-size: 20px; font-weight: 700">câu đã chắc</span>
+                <span class="ar-rise" style="padding: 5px 12px; border-radius: 999px; background: {{ p.page }}; color: {{ p.ink }}; font-size: 17px; font-weight: 800">+3 hôm nay</span>
+              </p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.55; opacity: 0.9">Ba câu vừa vào ô “đã chắc”. Câu còn sai không lấy đi gì của con số này — nó chỉ chưa vào.</p>
+            </section>
+
+            <section aria-labelledby="chapTitle" style="padding: 22px; border-radius: 16px; background: {{ p.card }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 16px">
+              <div style="display: flex; flex-direction: column; gap: 4px">
+                <p id="chapTitle" style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Mức chặng · trước → sau</p>
+                <p style="margin: 0; font-size: 17px; line-height: 1.5">Phần đậm là mức trước lượt này; phần sáng là phần vừa thêm.</p>
+              </div>
+              <ul style="margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 16px">
+                <sc-for list="{{ chapsAfter }}" as="c" hint-placeholder-count="2">
+                  <li style="display: flex; flex-direction: column; gap: 8px">
+                    <span style="display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px">
+                      <span style="font-size: 18px; font-weight: 700">{{ c.name }}</span>
+                      <span style="font-size: 17px; font-weight: 700; color: {{ p.ochre }}">{{ c.num }}</span>
+                    </span>
+                    <span role="img" aria-label="{{ c.aria }}" style="{{ c.trackStyle }}">
+                      <span style="{{ c.fillStyle }}"></span>
+                      <span class="ar-land" style="{{ c.gainStyle }}"></span>
+                    </span>
+                  </li>
+                </sc-for>
+              </ul>
+            </section>
+
+            <section style="padding: 20px 22px; border-radius: 16px; background: {{ p.muted }}; border: 1px solid {{ p.line }}; display: flex; flex-direction: column; gap: 8px">
+              <p style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: {{ p.soft }}">Ở đây không có</p>
+              <p style="margin: 0; font-size: 17px; line-height: 1.5">Không có chữ “điểm”, không có kỷ lục, không có thứ hạng, không có thời gian làm bài. Mười câu là một lượt ôn, không phải một bài thi.</p>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </sc-if>
+  </main>
+
+  <footer class="ar-pad" style="padding: 20px 44px 28px; border-top: 1px solid {{ p.line }}; background: {{ p.bar }}">
+    <div style="max-width: 1352px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 16px 40px; font-size: 17px; line-height: 1.6; color: {{ p.soft }}">
+      <p style="flex: 1 1 400px; margin: 0; display: flex; gap: 12px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" style="flex: none; margin-top: 3px"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5v.5"></path></svg><span><span style="font-weight: 700">Số liệu là dữ liệu mẫu để minh hoạ.</span> “Câu đã chắc 34 → 37”, mức chặng, “sai 4 ngày trước”, “lần trước bạn chọn B”, kết quả 7/10 và +2 đều là số giả. Câu hỏi, phương án, giải thích từng phương án và tên ngộ nhận chép nguyên từ bài P01, P02, P03, P04, P07, T01, T02, T03, T06.</span></p>
+      <p style="flex: 1 1 400px; margin: 0; display: flex; gap: 12px; align-items: flex-start"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 3px"><rect x="4" y="10" width="16" height="11" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><span><span style="font-weight: 700">Tiến độ lưu theo trình duyệt này.</span> Trạng thái Kết quả hiển thị một lượt mẫu cố định (7/10 và +2), không phải lượt bạn vừa bấm thử ở trạng thái Câu hỏi.</span></p>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"nen":{"editor":"enum","options":["kem","trang","dem"],"default":"kem","section":"Nền"},"$preview":{"width":1440,"height":1410}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    // man: trang thai dang xem. Mac dinh 'cauhoi' vi do la trang thai loi, dang xem nhat.
+    // ans[id] = { f: chỉ số chốt lần đầu, rethink: đã bấm Nghĩ lại, s: chỉ số chốt lần hai }
+    // Hai cau dau da co san ket qua (dung lan dau, va dung sau khi nghi lai) de nguoi xem
+    // thay ngay 10 o tien do co may hinh khac nhau.
+    this.state = {
+      man: 'cauhoi',
+      i: 2,
+      sel: null,
+      ans: { q1: { f: 1 }, q2: { f: 1, rethink: true, s: 0 } },
+      scope: 'auto',
+      listOpen: false
+    };
+  }
+  renderVals() {
+    var self = this;
+    var nen = this.props.nen ?? 'kem';
+    var bang = {
+      kem:   { page: '#FBF7EE', bar: '#FFFCF5', card: '#FFFFFF', line: '#E7DCC6', ink: '#2A2017', soft: '#5E4630', dash: '#8E7652', sketch: '#8E7652', sanguine: '#9C3B22', ochre: '#8A5A0F', violet: '#6E2BA8', here: '#F5EAFB', okBg: '#FBF4E4', badBg: '#FBF1EC', muted: '#F6EFE1', track: '#EFE6D3', onInkLine: 'rgba(251, 247, 238, 0.3)', action: '#7A2BB8', onAction: '#FFFFFF' },
+      trang: { page: '#FFFFFF', bar: '#FAF8F4', card: '#FAF8F4', line: '#E8E2D6', ink: '#22201C', soft: '#55504A', dash: '#8A8378', sketch: '#8A8378', sanguine: '#9C3B22', ochre: '#8A5A0F', violet: '#6E2BA8', here: '#F5EAFB', okBg: '#FBF4E4', badBg: '#FBF1EC', muted: '#F0ECE4', track: '#EDE8DE', onInkLine: 'rgba(255, 255, 255, 0.3)', action: '#7A2BB8', onAction: '#FFFFFF' },
+      dem:   { page: '#16120E', bar: '#1B1611', card: '#221C16', line: '#3A2F25', ink: '#F2EBDD', soft: '#CDBFA6', dash: '#A99272', sketch: '#A99272', sanguine: '#EC9277', ochre: '#E0B062', violet: '#C99BEF', here: '#2E2238', okBg: '#2B2416', badBg: '#33201A', muted: '#2A231C', track: '#3A2F25', onInkLine: 'rgba(22, 18, 14, 0.3)', action: '#C99BEF', onAction: '#16120E' }
+    };
+    var p = bang[nen] || bang.kem;
+
+    // ====== Mười câu. Câu hỏi / phương án / detail / explanation / ngộ nhận: chép NGUYÊN VĂN
+    // từ scripts/pe-v4/out-advanced/lessons/*.json. Lý do chọn câu và số ngày: dữ liệu mẫu.
+    var QS = [
+      { id: 'q1', code: 'P03', lesson: 'P03 · Scheduling và context switch', type: 'mcq',
+        question: 'Trong lúc context switch, CPU đang làm gì?',
+        opts: [
+          { t: 'Chạy cả hai process cùng lúc', d: 'Một lõi chỉ chạy một luồng lệnh tại một thời điểm.', ok: false },
+          { t: 'Lưu ngữ cảnh process cũ, nạp ngữ cảnh process mới (PCB) — không chạy code ứng dụng', d: 'Vì thế switch là overhead.', ok: true },
+          { t: 'Chạy tiếp process cũ', d: 'Process cũ vừa bị ngắt.', ok: false }
+        ],
+        why: 'miss', whyText: 'Bạn chọn sai câu này 4 ngày trước',
+        whyMore: 'Thẻ P03 về hộp 1 hôm đó. Mười câu hôm nay lấy trước những câu như vậy — sai cũ được gặp lại sớm.',
+        mis: '"Hết quantum thì process vẫn chạy tiếp tới xong"' },
+
+      { id: 'q2', code: 'P04', lesson: 'P04 · stdin, stdout, stderr và pipe', type: 'mcq',
+        question: 'for line in sys.stdin dừng khi nào?',
+        opts: [
+          { t: 'Khi hết dữ liệu (EOF): input= đã đọc hết, hoặc Ctrl+D (Linux) / Ctrl+Z rồi Enter (Windows)', d: 'Dòng rỗng giữa chừng vẫn là một dòng "\\n", không làm dừng vòng lặp.', ok: true },
+          { t: 'Ở dòng rỗng đầu tiên', d: 'Dòng rỗng vẫn là một dòng.', ok: false },
+          { t: 'Sau đúng một dòng', d: 'Vòng for đọc tới EOF.', ok: false }
+        ],
+        why: 'harder', whyText: 'Câu khó hơn một chút so với mức hiện tại',
+        whyMore: 'Ba lần gặp trước bạn đều đúng ở các câu dễ hơn của P04, nên hệ thống thử câu này.',
+        mis: '"stderr cũng là stdout, in đâu cũng được"' },
+
+      { id: 'q3', code: 'T03', lesson: 'T03 · Subclass Thread', type: 'mcq',
+        question: 'Method nào được override, method nào được gọi để khởi chạy?',
+        opts: [
+          { t: 'Override run(); gọi start()', d: 'start() tạo thread rồi gọi run() bên trong nó.', ok: true },
+          { t: 'Override __init__; gọi join()', d: 'join chỉ chờ thread đã start.', ok: false },
+          { t: 'Override start(); gọi run()', d: 'Như vậy không có thread mới nào.', ok: false }
+        ],
+        why: 'new', whyText: 'Câu mới từ bài bạn vừa học',
+        whyMore: 'Bạn mở T03 hôm qua. Gặp lại lần đầu sau một ngày là chỗ trí nhớ còn giữ được nhiều nhất.',
+        mis: '"Override start() cho tiện, vì start mới là thứ chạy thread"' },
+
+      { id: 'q4', code: 'T01', lesson: 'T01 · Thread, tài nguyên và concurrency', type: 'mcq',
+        question: 'Hai thread trong cùng process có nhất thiết copy toàn bộ heap không?',
+        opts: [
+          { t: 'Có — mỗi thread một bản heap', d: 'Đó là process con, không phải thread.', ok: false },
+          { t: 'Chỉ copy khi thread ghi vào heap', d: 'Copy-on-write là chuyện của fork process.', ok: false },
+          { t: 'Không — chúng dùng chung heap của process', d: 'Chỉ stack, program counter và thanh ghi là riêng.', ok: true }
+        ],
+        why: 'miss', whyText: 'Bạn chọn sai câu này 3 ngày trước',
+        whyMore: 'Đây là chỗ bạn vấp nhiều nhất: 4 lần chọn phương án coi thread như process con.',
+        seen: 'Lần trước (3 ngày trước) bạn chọn B',
+        mis: '"Mỗi thread có bản sao heap và biến toàn cục riêng, giống process con"' },
+
+      { id: 'q5', code: 'T03', lesson: 'T03 · Subclass Thread', type: 'mcq',
+        question: 'Đọc w.total ngay sau w.start(), chưa join, thì…',
+        opts: [
+          { t: 'Lỗi AttributeError', d: 'total đã gán None trong __init__.', ok: false },
+          { t: 'Có thể vẫn là None — worker chưa chắc đã chạy xong', d: 'Đọc kết quả sau join().', ok: true },
+          { t: 'Luôn đã có kết quả', d: 'start() không chờ worker.', ok: false }
+        ],
+        why: 'new', whyText: 'Câu mới từ bài bạn vừa học',
+        whyMore: 'Câu thứ hai của T03 trong lượt này — hai câu cùng bài nhưng đụng vào hai chỗ khác nhau.',
+        mis: '"Override start() cho tiện, vì start mới là thứ chạy thread"' },
+
+      { id: 'q6', code: 'T06', lesson: 'T06 · Queue và tác vụ lưu nền', type: 'predict',
+        question: 'Đoạn code sau in gì?',
+        src: 'import queue\n\nq = queue.Queue()\nq.put("a")\nq.put("b")\nprint(q.get(), q.get())',
+        opts: [
+          { t: 'a b — vào trước ra trước (FIFO)', d: 'Queue lấy phần tử ở đầu hàng đợi.', ok: true },
+          { t: 'b a', d: 'Đó là LifoQueue (ngăn xếp), không phải Queue.', ok: false },
+          { t: 'a a', d: 'get() lấy phần tử RA khỏi queue.', ok: false }
+        ],
+        why: 'harder', whyText: 'Câu khó hơn một chút so với mức hiện tại',
+        whyMore: 'T06 là bài bạn chưa mở. Câu này chỉ hỏi thứ tự ra vào — đoán được thì bài T06 sẽ nhẹ hơn; đoán sai thì không mất gì.',
+        mis: '"q.get() khi queue rỗng sẽ trả None"' },
+
+      { id: 'q7', code: 'P07', lesson: 'P07 · multiprocessing: Process và Queue', type: 'mcq',
+        question: 'Bỏ if __name__ == "__main__": trên Windows thì…',
+        opts: [
+          { t: 'Chỉ chạy chậm hơn', d: 'Không phải chuyện tốc độ.', ok: false },
+          { t: 'Process con import lại file và chạy lại đoạn tạo process — Python báo RuntimeError (bootstrapping)', d: 'Main guard chặn code tạo process chạy lại khi file bị import.', ok: true },
+          { t: 'Chạy bình thường', d: 'Trên Windows (spawn) thì không.', ok: false }
+        ],
+        why: 'harder', whyText: 'Câu khó hơn một chút so với mức hiện tại',
+        whyMore: 'Bạn đã chắc 5 câu dễ hơn của P07. Câu này là câu khó nhất của bài.',
+        mis: '"Process cũng chia sẻ biến như thread"' },
+
+      { id: 'q8', code: 'P02', lesson: 'P02 · Vòng đời, fork, exec và wait', type: 'mcq',
+        question: 'Process đang waiting (chờ đọc đĩa) và I/O vừa xong. Nó chuyển sang…',
+        opts: [
+          { t: 'ready — xếp hàng chờ scheduler cho chạy tiếp', d: 'CPU có thể đang chạy process khác; I/O xong chỉ có nghĩa là SẴN SÀNG.', ok: true },
+          { t: 'terminated', d: 'Chờ I/O xong không có nghĩa là kết thúc.', ok: false },
+          { t: 'running ngay lập tức', d: 'Phải qua ready và được scheduler chọn (dispatch).', ok: false }
+        ],
+        why: 'miss', whyText: 'Bạn chọn sai câu này 6 ngày trước',
+        whyMore: 'Lần đó bạn chọn “running ngay lập tức”. Sáu ngày là khoảng cách hộp 3 — đủ xa để thử lại.',
+        seen: 'Lần trước (6 ngày trước) bạn chọn C',
+        mis: '"exec() tạo ra một process mới"' },
+
+      { id: 'q9', code: 'P01', lesson: 'P01 · Program, process và tài nguyên', type: 'predict',
+        question: 'Chạy cùng một script hai lần liên tiếp. Hai lần đó có nhất thiết cùng PID không?',
+        opts: [
+          { t: 'Có — cùng file thì cùng PID', d: 'PID gắn với process đang chạy, không gắn với program.', ok: false },
+          { t: 'Có, nếu chạy trên cùng một máy', d: 'Cùng máy vẫn là hai lần thực thi khác nhau.', ok: false },
+          { t: 'Không — mỗi lần chạy là một process mới, hệ điều hành cấp PID mới', d: 'PID định danh process (một lần thực thi), không định danh file .py.', ok: true }
+        ],
+        why: 'miss', whyText: 'Bạn chọn sai câu này 9 ngày trước',
+        whyMore: 'Lần sai đó đã lâu. Nếu lần này đúng ngay, câu vào ô “đã chắc” và sẽ giãn ra 14 ngày.',
+        mis: '"Program và process là một"' },
+
+      { id: 'q10', code: 'T02', lesson: 'T02 · Thread target, start và join', type: 'mcq',
+        question: 'Gọi t.run() có tạo thread mới không?',
+        opts: [
+          { t: 'Có, nhưng không join được', d: 'Không có thread mới nào để join.', ok: false },
+          { t: 'Có, run() và start() như nhau', d: 'Chỉ start() tạo dòng thực thi mới.', ok: false },
+          { t: 'Không — target chạy ngay trong thread đang gọi; muốn thread mới phải t.start()', d: 'run() chỉ là hàm gọi target.', ok: true }
+        ],
+        why: 'miss', whyText: 'Bạn chọn sai câu này 2 ngày trước',
+        whyMore: 'Cùng một ngộ nhận với câu T03 ở đầu lượt: lẫn giữa run() và start().',
+        mis: '"join() là lệnh cho thread chạy"' }
+    ];
+    var TYPE_LABEL = { mcq: 'Trắc nghiệm', predict: 'Dự đoán kết quả' };
+    var LETTER = ['A', 'B', 'C', 'D'];
+
+    var ans = this.state.ans;
+    var idx = this.state.i;
+    var sel = this.state.sel;
+
+    var correctIdx = function (c) { var k = 0; c.opts.forEach(function (o, i) { if (o.ok) k = i; }); return k; };
+    // Kết cục của một câu: null = chưa chốt, 'ok' = đúng lần đầu, 'again' = đúng sau nghĩ lại,
+    // 'bad' = sai cả hai lần, 'mid' = vừa sai lần đầu, đang chờ Nghĩ lại.
+    var outcome = function (c) {
+      var a = ans[c.id];
+      if (!a || a.f === undefined) return null;
+      if (c.opts[a.f].ok) return 'ok';
+      if (a.s === undefined) return a.rethink ? 'mid2' : 'mid';
+      return c.opts[a.s].ok ? 'again' : 'bad';
+    };
+
+    // ====== Màn ======
+    var man = this.state.man;
+    var goMan = function (m) { return function () { self.setState({ man: m }); }; };
+    var navBtns = [
+      { key: 'batdau', label: 'Bắt đầu' },
+      { key: 'cauhoi', label: 'Câu hỏi' },
+      { key: 'ketqua', label: 'Kết quả' }
+    ].map(function (b) {
+      var on = man === b.key;
+      return {
+        label: b.label, on: on ? 'true' : 'false', go: goMan(b.key),
+        style: 'display: flex; align-items: center; min-height: 44px; padding: 0 20px; box-sizing: border-box; border-radius: 999px; font-size: 17px; font-weight: 700; cursor: pointer; ' +
+          (on ? 'background: ' + p.ink + '; color: ' + p.page + '; border: 2px solid ' + p.ink + ';'
+              : 'background: ' + p.card + '; color: ' + p.ink + '; border: 2px solid ' + p.dash + ';')
+      };
+    });
+
+    // ====== Trang thai Bat dau: chip pham vi + muc theo chang ======
+    var SCOPES = [
+      { key: 'auto', label: 'Tự chọn cho tôi (khuyên dùng)', locked: false },
+      { key: 'm1', label: 'M1 · Tiến trình và subprocess', locked: false },
+      { key: 'm2', label: 'M2 · Đa luồng', locked: false },
+      { key: 'm3', label: 'M3 · GUI Tkinter và dự án', locked: true },
+      { key: 'm4', label: 'M4 · Nhập dữ liệu, SQL và tra cứu', locked: true }
+    ];
+    var scope = this.state.scope;
+    var chips = SCOPES.map(function (s) {
+      var on = scope === s.key;
+      var st = 'display: flex; align-items: center; gap: 8px; padding: 13px 18px; border-radius: 999px; min-height: 48px; box-sizing: border-box; font-size: 17px; font-weight: 700; text-align: left; ';
+      if (s.locked) st += 'background: ' + p.muted + '; color: ' + p.soft + '; border: 2px dashed ' + p.dash + ';';
+      else if (on) st += 'background: ' + p.violet + '; color: #FFFFFF; border: 2px solid ' + p.violet + '; cursor: pointer;';
+      else st += 'background: ' + p.card + '; color: ' + p.ink + '; border: 2px solid ' + p.ink + '; cursor: pointer;';
+      return {
+        label: s.label, on: on ? 'true' : 'false', sel: !!on, locked: !!s.locked, style: st,
+        aria: s.label + (s.locked ? ' — chưa học, chưa chọn được' : on ? ' — đang chọn' : ''),
+        pick: function () { if (!s.locked) self.setState({ scope: s.key }); }
+      };
+    });
+    var scopeLabelOf = {};
+    SCOPES.forEach(function (s) { scopeLabelOf[s.key] = s.label; });
+    var scopeNote = scope === 'auto'
+      ? 'Tự chọn: hệ thống trộn câu sai cũ, câu từ bài bạn vừa học và một vài câu khó hơn một chút. Chặng chưa học không bị khoá nội dung — chỉ là chưa có câu nào của bạn ở đó để ôn.'
+      : 'Đang giới hạn trong ' + scopeLabelOf[scope] + '. Chọn lại “Tự chọn cho tôi” nếu muốn hệ thống trộn giúp.';
+
+    // Mỗi bài có 4 câu (1 dự đoán + 3 trắc nghiệm): M1 = 7 bài = 28 câu, M2 = 6 bài = 24, M3 = 7 bài = 28.
+    // Số "đã chắc" là dữ liệu mẫu: 23 + 11 = 34, khớp với ô "Câu đã chắc: 34".
+    var mkBar = function (name, n, tot, locked, lockLabel, gain) {
+      var pct = Math.round(100 * n / tot);
+      var pctAfter = Math.round(100 * (n + (gain || 0)) / tot);
+      return {
+        name: name,
+        num: locked ? lockLabel : (gain ? n + ' → ' + (n + gain) + '/' + tot + ' câu đã chắc' : n + '/' + tot + ' câu đã chắc'),
+        numColor: locked ? p.soft : p.ink,
+        aria: locked ? name + ': ' + lockLabel : name + ': ' + (n + (gain || 0)) + ' trên ' + tot + ' câu đã chắc',
+        trackStyle: 'display: block; position: relative; width: 100%; height: 18px; box-sizing: border-box; border-radius: 999px; background: ' + p.track + '; border: 1.5px ' + (locked ? 'dashed ' : 'solid ') + p.sketch + ';',
+        fillStyle: locked ? 'display: none' : 'display: block; width: ' + pct + '%; height: 100%; border-radius: 999px; background: ' + p.ink + ';',
+        gainStyle: 'display: block; position: absolute; top: 0; left: ' + pct + '%; width: ' + (pctAfter - pct) + '%; height: 100%; border-radius: 0 999px 999px 0; background: ' + p.ochre + ';'
+      };
+    };
+    var chaps = [
+      mkBar('M1 · Tiến trình và subprocess', 23, 28, false, '', 0),
+      mkBar('M2 · Đa luồng', 11, 24, false, '', 0),
+      mkBar('M3 · GUI Tkinter và dự án', 0, 28, true, 'Chưa học', 0)
+    ];
+    var chapsAfter = [
+      mkBar('M1 · Tiến trình và subprocess', 23, 28, false, '', 1),
+      mkBar('M2 · Đa luồng', 11, 24, false, '', 2)
+    ];
+
+    // ====== Trang thai Cau hoi ======
+    var cur = QS[idx];
+    var a = ans[cur.id] || {};
+    var out = outcome(cur);
+    var ci = correctIdx(cur);
+    var phase = out === null ? 'pick' : out === 'mid' ? 'bad1' : out === 'mid2' ? 'pick2' : out === 'ok' ? 'ok1' : out;
+    var locked1 = (phase === 'pick2' || phase === 'bad') ? a.f : -1;
+
+    var pickable = phase === 'pick' || phase === 'pick2';
+    var shown = pickable ? sel : (a.s !== undefined ? a.s : a.f);
+    // Đáp án chỉ lộ khi đã đúng, hoặc khi đã sai hai lần. Ở "sai lần đầu" tuyệt đối không lộ.
+    var revealOk = phase === 'bad' || phase === 'ok1' || phase === 'again';
+
+    var options = cur.opts.map(function (o, i) {
+      var picked = shown === i;
+      var tagOk = revealOk && o.ok;
+      var tagPicked = !pickable && picked && !o.ok;
+      var tagLocked = (phase === 'pick2' || phase === 'bad') && i === locked1;
+      // Da tra loi roi thi phuong an khong lien quan chi HA VIEN va bo chu dam,
+      // khong lam mo bang opacity (0,62 khong dat AA, nhat la o nen dem).
+      var dim = !!((!pickable && !picked && !tagOk) || tagLocked);
+      var border = tagOk ? '2.5px solid ' + p.ochre
+        : tagPicked ? '2.5px solid ' + p.sanguine
+        : (picked && pickable) ? '2.5px solid ' + p.violet
+        : tagLocked ? '2px dashed ' + p.dash
+        : dim ? '2px solid ' + p.line
+        : '2px solid ' + p.ink;
+      var bg = tagOk ? p.okBg : tagPicked ? p.badBg : (picked && pickable) ? p.here : tagLocked ? p.muted : p.card;
+      return {
+        letter: LETTER[i], text: o.t,
+        checked: picked ? 'true' : 'false',
+        locked: !pickable || tagLocked,
+        tagOk: !!tagOk, tagPicked: !!tagPicked,
+        tagPickedText: phase === 'bad' ? 'Bạn chọn lại' : 'Bạn chọn',
+        tagLocked: !!tagLocked,
+        pick: function () { if (pickable && i !== locked1) self.setState({ sel: i }); },
+        style: 'display: flex; align-items: center; gap: 16px; width: 100%; padding: 14px 18px; border-radius: 12px; text-align: left; min-height: 56px; box-sizing: border-box; color: ' + p.ink + '; background: ' + bg + '; border: ' + border + '; ' + (pickable && !tagLocked ? 'cursor: pointer; ' : 'cursor: default; '),
+        letterStyle: 'flex: none; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 17px; font-weight: 800; ' + (tagOk ? 'background: ' + p.ochre + '; color: ' + p.card + ';' : tagPicked ? 'background: ' + p.sanguine + '; color: ' + p.card + ';' : (picked && pickable) ? 'background: ' + p.violet + '; color: #FFFFFF;' : 'border: 1.5px solid ' + p.ink + '; box-sizing: border-box;'),
+        textStyle: 'flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; line-height: 1.45; font-size: 18px; ' + (dim ? 'font-weight: 400; ' : 'font-weight: 600; ') + (cur.type === 'predict' ? "font-family: 'JetBrains Mono', monospace; font-size: 16px;" : '')
+      };
+    });
+
+    var commit = function () {
+      if (sel === null) return;
+      var na = Object.assign({}, ans);
+      var cu = Object.assign({}, na[cur.id] || {});
+      if (cu.f === undefined) cu.f = sel; else cu.s = sel;
+      na[cur.id] = cu;
+      self.setState({ ans: na, sel: null });
+    };
+    var rethink = function () {
+      var na = Object.assign({}, ans);
+      na[cur.id] = Object.assign({}, na[cur.id], { rethink: true });
+      self.setState({ ans: na, sel: null });
+    };
+    var goNext = function () {
+      if (idx >= QS.length - 1) self.setState({ man: 'ketqua' });
+      else self.setState({ i: idx + 1, sel: null });
+    };
+
+    var fb = { head: '', body: '', color: p.ochre, bg: p.okBg, isOk: false, isAgain: false, isBad: false, foot: '', nextLabel: '' };
+    if (phase === 'ok1') {
+      fb.head = 'Đúng ngay lần đầu'; fb.body = cur.opts[ci].d; fb.isOk = true;
+      fb.color = p.ochre; fb.bg = p.okBg;
+      fb.foot = 'Câu này vào ô “đã chắc”. Không có điểm thưởng nào để đếm.';
+    } else if (phase === 'bad1') {
+      fb.head = 'Chưa đúng'; fb.body = 'Vì sao chưa đúng: ' + cur.opts[a.f].d + ' Đáp án đúng vẫn chưa lộ.'; fb.isBad = true;
+      fb.color = p.sanguine; fb.bg = p.badBg;
+      fb.foot = 'Phương án vừa chọn đã bị khoá. Lần nghĩ lại không tính vào phần “đúng lần đầu”, và cũng không trừ gì.';
+    } else if (phase === 'again') {
+      fb.head = 'Đúng ở lần nghĩ lại'; fb.body = cur.opts[ci].d + ' Lần nghĩ lại không tính vào phần “đúng lần đầu”.'; fb.isAgain = true;
+      fb.color = p.ochre; fb.bg = p.okBg;
+      fb.foot = 'Câu này sẽ gặp lại sớm — nghĩ lại ra đúng thì trí nhớ còn chưa chắc.';
+    } else if (phase === 'bad') {
+      fb.head = 'Vẫn chưa đúng'; fb.body = 'Vì sao chưa đúng: ' + cur.opts[a.s].d + ' Đáp án đúng ở ngay dưới.'; fb.isBad = true;
+      fb.color = p.sanguine; fb.bg = p.badBg;
+      fb.foot = 'Câu này đã vào mục “Nên ôn” ở màn cuối. Không có gì bị trừ.';
+    }
+    fb.nextLabel = idx >= QS.length - 1 ? 'Xem kết quả' : 'Câu tiếp';
+
+    var pips = QS.map(function (c, i) {
+      var o = outcome(c);
+      var kind = (o === 'ok') ? 'ok' : (o === 'again') ? 'again' : (o === 'bad') ? 'bad' : 'empty';
+      var st = 'width: 28px; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; ';
+      if (kind === 'ok') st += 'border-radius: 8px; background: ' + p.ochre + '; color: ' + p.card + ';';
+      else if (kind === 'again') st += 'border-radius: 8px; background: ' + p.card + '; color: ' + p.ochre + '; border: 2.5px solid ' + p.ochre + ';';
+      else if (kind === 'bad') st += 'border-radius: 8px; background: ' + p.card + '; color: ' + p.sanguine + '; border: 2.5px solid ' + p.sanguine + ';';
+      else st += 'border-radius: 50%; background: transparent; border: 2px dashed ' + p.dash + ';';
+      if (i === idx) st += ' box-shadow: 0 0 0 3px ' + p.here + ', 0 0 0 5px ' + p.violet + ';';
+      var label = kind === 'ok' ? 'đúng lần đầu' : kind === 'again' ? 'đúng sau nghĩ lại' : kind === 'bad' ? 'chưa đúng' : 'chưa làm';
+      return { style: st, isOk: kind === 'ok', isAgain: kind === 'again', isBad: kind === 'bad',
+        aria: 'Câu ' + (i + 1) + ': ' + label + (i === idx ? ' — đang ở câu này' : '') };
+    });
+
+    var legendPip = function (kind, label) {
+      var st = 'width: 22px; height: 22px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; flex: none; ';
+      if (kind === 'ok') st += 'border-radius: 8px; background: ' + p.ochre + '; color: ' + p.card + ';';
+      else if (kind === 'again') st += 'border-radius: 8px; color: ' + p.ochre + '; border: 2px solid ' + p.ochre + ';';
+      else if (kind === 'bad') st += 'border-radius: 8px; color: ' + p.sanguine + '; border: 2px solid ' + p.sanguine + ';';
+      else st += 'border-radius: 50%; border: 2px dashed ' + p.dash + ';';
+      return { style: st, label: label, isOk: kind === 'ok', isAgain: kind === 'again', isBad: kind === 'bad' };
+    };
+    var legend = [
+      legendPip('empty', 'chưa làm'),
+      legendPip('ok', 'đúng lần đầu'),
+      legendPip('again', 'đúng sau nghĩ lại'),
+      legendPip('bad', 'chưa đúng')
+    ];
+
+    var codeLines = (cur.src || '').split('\n').map(function (t, i) { return { no: i + 1, text: t }; });
+    // Màu: phấn đỏ = chỗ cần chú ý; tím dành riêng cho vị trí/lựa chọn đang chọn; hoàng thổ = đã xong.
+    var whyColor = cur.why === 'miss' ? p.sanguine : p.ink;
+    var seenVerdict = '';
+    if (cur.seen) {
+      if (phase === 'ok1') seenVerdict = 'Lần này bạn đã đúng';
+      else if (phase === 'again' || phase === 'bad') seenVerdict = 'Vẫn là chỗ này — đã thêm vào Nên ôn';
+    }
+
+    var q = {
+      code: cur.code, lesson: cur.lesson, typeLabel: TYPE_LABEL[cur.type], question: cur.question,
+      hasCode: !!cur.src, codeLines: codeLines,
+      showSeenHint: !!cur.seen && pickable, seenText: cur.seen,
+      showRetryNote: phase === 'pick2', retryNote: a.f !== undefined ? cur.opts[a.f].d : '',
+      options: options,
+      showCommit: pickable,
+      commit: phase === 'pick' || phase === 'pick2' ? commit : commit,
+      commitOff: sel === null,
+      commitLabel: phase === 'pick2' ? 'Chốt lần nghĩ lại' : 'Chốt',
+      commitStyle: 'display: flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 28px; border-radius: 999px; font-weight: 800; font-size: 17px; box-sizing: border-box; ' + (sel === null ? 'background: transparent; border: 2px solid ' + p.dash + '; color: ' + p.soft + '; cursor: default;' : 'border: none; background: ' + p.action + '; color: ' + p.onAction + '; cursor: pointer;'),
+      commitHint: sel === null
+        ? (phase === 'pick2' ? 'Chọn một phương án khác rồi Chốt. Phương án đã thử bị khoá.' : 'Nút Chốt mờ tới khi bạn chọn một phương án. Đổi ý bao nhiêu lần cũng được — chưa Chốt là chưa tính.')
+        : 'Đã chọn ' + LETTER[sel] + '. Vẫn đổi được trước khi Chốt.',
+      showFb: phase === 'ok1' || phase === 'bad1' || phase === 'again' || phase === 'bad',
+      fbHead: fb.head, fbBody: fb.body, fbColor: fb.color,
+      fbIsOk: fb.isOk, fbIsAgain: fb.isAgain, fbIsBad: fb.isBad,
+      fbFoot: fb.foot,
+      fbStyle: 'display: flex; flex-direction: column; gap: 12px; padding: 18px 20px; border-radius: 12px; background: ' + fb.bg + '; border-left: 5px solid ' + fb.color + ';',
+      showAnswer: phase === 'bad',
+      correctText: cur.opts[ci].t, correctDetail: cur.opts[ci].d,
+      showMis: phase === 'bad', mis: cur.mis,
+      showSeenVerdict: !!seenVerdict, seenVerdict: seenVerdict,
+      next: phase === 'bad1' ? rethink : goNext,
+      nextLabel: phase === 'bad1' ? 'Nghĩ lại' : fb.nextLabel,
+      whyText: cur.whyText, whyMore: cur.whyMore, whyColor: whyColor,
+      whyMiss: cur.why === 'miss', whyNew: cur.why === 'new', whyHarder: cur.why === 'harder'
+    };
+    // Ở trạng thái "sai lần đầu" nút chính là Nghĩ lại, nên nó dùng chung ô nút với Câu tiếp.
+
+    var rules = [
+      { text: 'Sai lần đầu thì được nghĩ lại ngay, không phải chờ hôm sau.' },
+      { text: 'Không có đồng hồ. Ngồi bao lâu cũng vậy.' },
+      { text: 'Không có điểm tốc độ, không có thứ hạng, không so với ai.' },
+      { text: 'Dừng giữa lượt thì mấy câu đã làm vẫn được tính.' }
+    ];
+
+    // ====== Trang thai Ket qua: mot luot mau CO DINH (7/10 + 2) ======
+    var SAMPLE = ['ok', 'again', 'again', 'ok', 'bad', 'ok', 'ok', 'ok', 'ok', 'ok'];
+    var nFirst = 0, nAgain = 0;
+    SAMPLE.forEach(function (s) { if (s === 'ok') nFirst++; if (s === 'again') nAgain++; });
+    var res = [
+      { key: 'ok', label: 'Đúng lần đầu', value: nFirst + '/10', color: p.ochre, n: nFirst,
+        note: 'Bảy câu bạn nhận ra ngay. Đây là phần đã thành phản xạ.' },
+      { key: 'again', label: 'Đúng sau nghĩ lại', value: '+' + nAgain, color: p.ochre, n: nAgain,
+        note: 'Hai câu cần một nhịp nghĩ lại — biết, nhưng chưa chắc. Hai câu này sẽ gặp lại sớm.' }
+    ].map(function (r) {
+      return {
+        label: r.label, value: r.value, color: r.color,
+        isOk: r.key === 'ok', isAgain: r.key === 'again',
+        badge: 'flex: none; width: 30px; height: 30px; border-radius: 8px; display: flex; align-items: center; justify-content: center; ' + (r.key === 'ok' ? 'background: ' + p.ochre + '; color: ' + p.card + ';' : 'color: ' + p.ochre + '; border: 2.5px solid ' + p.ochre + ';'),
+        aria: r.label + ': ' + r.n + ' trên 10 câu',
+        trackStyle: 'display: block; width: 100%; height: 22px; box-sizing: border-box; border-radius: 999px; background: ' + p.track + '; border: 1.5px solid ' + p.sketch + '; overflow: hidden',
+        fillStyle: 'display: block; width: ' + (r.n * 10) + '%; height: 100%; border-radius: 999px; background: ' + (r.key === 'ok' ? p.ochre : p.ochre) + '; transform-origin: left center;',
+        note: r.note
+      };
+    });
+
+    var redo = [
+      { lesson: 'T03 · Subclass Thread', count: '2 câu sai lần đầu',
+        mis: '"Override start() cho tiện, vì start mới là thứ chạy thread"',
+        meta: 'Hai câu đụng vào cùng một chỗ: ai gọi run(), ai tạo thread.' },
+      { lesson: 'P04 · stdin, stdout, stderr và pipe', count: '1 câu sai lần đầu',
+        mis: '"stderr cũng là stdout, in đâu cũng được"',
+        meta: 'Câu về EOF của sys.stdin — bạn đã nghĩ lại ra đúng.' }
+    ];
+
+    var review = QS.map(function (c, i) {
+      var k = SAMPLE[i];
+      var st = 'flex: none; width: 28px; height: 28px; box-sizing: border-box; display: flex; align-items: center; justify-content: center; margin-top: 2px; ';
+      if (k === 'ok') st += 'border-radius: 8px; background: ' + p.ochre + '; color: ' + p.card + ';';
+      else if (k === 'again') st += 'border-radius: 8px; color: ' + p.ochre + '; border: 2.5px solid ' + p.ochre + ';';
+      else st += 'border-radius: 8px; color: ' + p.sanguine + '; border: 2.5px solid ' + p.sanguine + ';';
+      var verdict = k === 'ok' ? 'Đúng lần đầu' : k === 'again' ? 'Đúng sau nghĩ lại — không tính vào phần lần đầu' : 'Chưa đúng sau hai lần — đã vào Nên ôn';
+      return {
+        n: i + 1, lesson: c.lesson, typeLabel: TYPE_LABEL[c.type], question: c.question,
+        isOk: k === 'ok', isAgain: k === 'again', isBad: k === 'bad',
+        pipStyle: st, verdict: verdict,
+        color: k === 'ok' ? p.ochre : k === 'again' ? p.ochre : p.sanguine,
+        aria: 'Câu ' + (i + 1) + ': ' + verdict
+      };
+    });
+
+    return {
+      p: p,
+      navBtns: navBtns,
+      // Thanh tren hien cung con so voi trang thai dang xem: 34 trước lượt, 37 sau lượt.
+      headSure: man === 'ketqua' ? 37 : 34,
+      isBatdau: man === 'batdau', isCauhoi: man === 'cauhoi', isKetqua: man === 'ketqua',
+      start: function () { self.setState({ man: 'cauhoi' }); },
+      chips: chips, scopeNote: scopeNote, scopeLabel: scopeLabelOf[scope],
+      chaps: chaps, chapsAfter: chapsAfter,
+      nots: [
+        { text: 'Không xếp hạng, không bảng điểm chung' },
+        { text: 'Không đồng hồ, không điểm tốc độ' },
+        { text: 'Không đối thủ — không ai online để ghép cặp, và cũng không cần' },
+        { text: 'Không chuỗi ngày để đứt' }
+      ],
+      qNum: idx + 1, pips: pips, legend: legend, q: q, rules: rules,
+      res: res, redo: redo, review: review,
+      listOpen: this.state.listOpen,
+      listHint: this.state.listOpen ? 'Gập lại' : '7 đúng lần đầu · 2 sau nghĩ lại · 1 chưa đúng',
+      listChevStyle: 'display: flex; color: ' + p.soft + '; transform: rotate(' + (this.state.listOpen ? '180deg' : '0deg') + '); transition: transform .2s ease',
+      toggleList: function () { self.setState({ listOpen: !self.state.listOpen }); },
+      again: function () { self.setState({ man: 'cauhoi', i: 0, sel: null, ans: {}, listOpen: false }); }
+    };
+  }
+}
+</script>
+</body>
+</html>
