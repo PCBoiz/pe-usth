@@ -15,7 +15,6 @@ import { TX_OPTIONS } from 'src/common/prisma-tx.options';
 // Django: gems = gems + xp_earned (CÙNG giá trị với XP), không phải hằng số.
 const DEFAULT_XP = 50; // Django default khi xpEarned không hợp lệ
 const MAX_XP = 500; // Django chặn client gửi XP tuỳ ý
-const DEFAULT_LESSON_MINUTES = 15; // COALESCE(l.estimated_minutes, 15)
 
 /**
  * Khoá có mini-game (Python Advanced) chia XP theo chất lượng làm bài:
@@ -49,10 +48,15 @@ function readStep4(
 /**
  * Bài có "cửa tự kiểm tra": step_4.gate === true.
  *
- * Hiện đúng 5 bài B20, I07, I12, N04, N08 (scripts/pe-v3/lessons_*.py khai
- * `gate=True`, build.py ghi `step4['gate'] = True`). Nhận diện theo CỜ trong
- * nội dung chứ không hard-code 5 mã bài: biên tập thêm cửa mới thì server tự
- * khoá theo, không phải sửa code backend.
+ * Khoá đang chạy (Python Advanced, 48 bài) có ĐÚNG 3 bài: R02 (sort_order 20),
+ * DA01 (47), DA02 (48) — khai `gate=True` trong scripts/pe-v4/lessons_*.py,
+ * build.py ghi `step4['gate'] = True`. Con số 5 bài (B20, I07, I12, N04, N08)
+ * trong chú thích cũ là của khoá cơ bản pe-v3 ĐÃ XOÁ.
+ *
+ * Nhận diện theo CỜ trong nội dung chứ không hard-code mã bài: biên tập thêm
+ * cửa mới thì server tự khoá theo, không phải sửa code backend. Vì vậy đừng
+ * dùng con số 3 ở trên để viết test — đếm lại bằng
+ * `grep '"gate": true' scripts/pe-v4/out-advanced/lessons/*.json`.
  */
 export function isSelfTestGateLesson(
   contentJson: Prisma.JsonValue | null | undefined,

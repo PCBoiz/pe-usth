@@ -1,5 +1,6 @@
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
+import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { StreakService } from 'src/common/streak/streak.service';
 import { AchievementsService } from 'src/achievements/achievements.service';
@@ -23,7 +24,36 @@ import {
 
 const SOLUTION = 'def is_palindrome(text):\n    return text == text[::-1]\n';
 
-function gateContent() {
+/** Những field của `step_4` mà các ca dưới đây thật sự đọc tới. */
+type Step4 = {
+  gate?: boolean;
+  task?: { body: string };
+  starterCode?: string;
+  solutionCode?: string;
+  solutionWithheld?: boolean;
+  hints?: Array<{ title: string; body: string }>;
+  tests?: Array<{ name: string; call: string; expect: string }>;
+};
+
+type LessonContent = {
+  schema?: string;
+  step_1?: { context: { body: string } };
+  step_3?: { scaffold: { slots: Array<{ n: number; answer: string }> } };
+  step_4: Step4;
+};
+
+/**
+ * `content_json` là `Prisma.JsonValue` — JSON tự do, không chấm thẳng `.step_4`
+ * được. Cả file này trước đây giải bằng `: any` ở gần 20 chỗ, và đó đúng là
+ * nguồn của 38 lỗi `no-unsafe-member-access`: gõ `solution_code` thay cho
+ * `solutionCode` vẫn biên dịch, `toBeUndefined()` vẫn ĐẠT, và lỗ lộ lời giải
+ * vẫn còn nguyên. Nay còn MỘT chỗ ép kiểu duy nhất, có tên, có kiểu đích thật.
+ */
+function asContent(value: unknown): LessonContent {
+  return value as LessonContent;
+}
+
+function gateContent(): Prisma.JsonObject {
   return {
     schema: 'studio-lesson/v1',
     step_1: { context: { body: 'ly thuyet' } },
@@ -39,7 +69,7 @@ function gateContent() {
   };
 }
 
-function normalContent() {
+function normalContent(): Prisma.JsonObject {
   return {
     schema: 'studio-lesson/v1',
     step_4: {
@@ -52,62 +82,79 @@ function normalContent() {
 
 describe('withholdSolutionCode / isSelfTestGateLesson', () => {
   it('nhận diện cửa tự kiểm tra qua cờ step_4.gate', () => {
-    expect(isSelfTestGateLesson(gateContent() as any)).toBe(true);
-    expect(isSelfTestGateLesson(normalContent() as any)).toBe(false);
+    expect(isSelfTestGateLesson(gateContent())).toBe(true);
+    expect(isSelfTestGateLesson(normalContent())).toBe(false);
   });
 
   it('không nổ với content_json rác do admin nhập sai', () => {
     expect(isSelfTestGateLesson(null)).toBe(false);
     expect(isSelfTestGateLesson(undefined)).toBe(false);
-    expect(isSelfTestGateLesson('chuoi' as any)).toBe(false);
-    expect(isSelfTestGateLesson([1, 2] as any)).toBe(false);
-    expect(isSelfTestGateLesson({ step_4: 'khong-phai-object' } as any)).toBe(
-      false,
-    );
-    expect(isSelfTestGateLesson({ step_4: { gate: 'true' } } as any)).toBe(
-      false,
-    );
+    expect(isSelfTestGateLesson('chuoi')).toBe(false);
+    expect(isSelfTestGateLesson([1, 2])).toBe(false);
+    expect(isSelfTestGateLesson({ step_4: 'khong-phai-object' })).toBe(false);
+    expect(isSelfTestGateLesson({ step_4: { gate: 'true' } })).toBe(false);
   });
 
   it('bỏ solutionCode nhưng GIỮ mọi thứ FE cần để dựng màn', () => {
-    const out: any = withholdSolutionCode(gateContent() as any);
+    const out = asContent(withholdSolutionCode(gateContent()));
 
     expect(out.step_4.solutionCode).toBeUndefined();
     expect(out.step_4.solutionWithheld).toBe(true);
     // Những trường quyết định "có hiện ô soạn mã / màn sandbox hay không"
     // (StudioLesson.tsx#showEditor, studio-lesson.ts#buildScreens).
     expect(out.step_4.tests).toHaveLength(1);
-    expect(out.step_4.task.body).toBe('de bai');
+    expect(out.step_4.task?.body).toBe('de bai');
     expect(out.step_4.starterCode).toBe('# viet code o day');
     expect(out.step_4.hints).toHaveLength(1);
     expect(out.step_4.gate).toBe(true);
     expect(out.step_1).toEqual({ context: { body: 'ly thuyet' } });
-    expect(out.step_3.scaffold.slots).toHaveLength(1);
+    expect(out.step_3?.scaffold.slots).toHaveLength(1);
   });
 
   it('KHÔNG mutate object đọc từ Prisma', () => {
-    const original: any = gateContent();
+    const original = gateContent();
     withholdSolutionCode(original);
-    expect(original.step_4.solutionCode).toBe(SOLUTION);
-    expect(original.step_4.solutionWithheld).toBeUndefined();
+    expect(asContent(original).step_4.solutionCode).toBe(SOLUTION);
+    expect(asContent(original).step_4.solutionWithheld).toBeUndefined();
   });
 
   it('bài không có solutionCode thì trả về y nguyên', () => {
-    const noSolution: any = { step_4: { gate: true, tests: [] } };
+    const noSolution: Prisma.JsonObject = { step_4: { gate: true, tests: [] } };
     expect(withholdSolutionCode(noSolution)).toBe(noSolution);
   });
 });
 
+/**
+ * Một hàm Prisma giả. `Promise<unknown>` cho giá trị TRẢ VỀ là đủ: mỗi ca tự
+ * `mockResolvedValue()` hình dạng nó cần. Thay cho `prisma: any` cũ — `any` ở đây
+ * làm cả `expect(prisma.user.findUnique).not.toHaveBeenCalled()` mất kiểu.
+ */
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+/** Chỉ các bảng mà getLessonContent() gọi tới. */
+type PrismaMock = {
+  enrollment: { findUnique: AsyncMock };
+  lesson: { findFirst: AsyncMock };
+  lessonProgress: { findFirst: AsyncMock };
+  user: { findUnique: AsyncMock };
+};
+
 describe('LessonsService.getLessonContent — lời giải của cửa tự kiểm tra', () => {
   let service: LessonsService;
-  let prisma: any;
+  let prisma: PrismaMock;
 
   beforeEach(async () => {
     prisma = {
-      enrollment: { findUnique: jest.fn() },
-      lesson: { findFirst: jest.fn() },
-      lessonProgress: { findFirst: jest.fn().mockResolvedValue(null) },
-      user: { findUnique: jest.fn().mockResolvedValue({ role: 'user' }) },
+      enrollment: { findUnique: asyncMock() },
+      lesson: { findFirst: asyncMock() },
+      lessonProgress: { findFirst: asyncMock().mockResolvedValue(null) },
+      user: { findUnique: asyncMock().mockResolvedValue({ role: 'user' }) },
     };
 
     const mod = await Test.createTestingModule({
@@ -142,11 +189,15 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     enrolled();
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
 
-    const res: any = await service.getLessonContent(1, 'python', 20);
+    const res = await service.getLessonContent(1, 'python', 20);
 
     expect(res.completed).toBe(false);
-    expect(res.lesson.contentJson.step_4.solutionCode).toBeUndefined();
-    expect(res.lesson.contentJson.step_4.solutionWithheld).toBe(true);
+    expect(
+      asContent(res.lesson.contentJson).step_4.solutionCode,
+    ).toBeUndefined();
+    expect(asContent(res.lesson.contentJson).step_4.solutionWithheld).toBe(
+      true,
+    );
     // Kiểm cả trên payload đã serialize: lời giải không được lọt ra dưới bất
     // kỳ khoá nào khác trong JSON gửi đi.
     expect(JSON.stringify(res)).not.toContain('is_palindrome');
@@ -157,10 +208,12 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
     prisma.lessonProgress.findFirst.mockResolvedValue({ lessonId: 20 });
 
-    const res: any = await service.getLessonContent(1, 'python', 20);
+    const res = await service.getLessonContent(1, 'python', 20);
 
     expect(res.completed).toBe(true);
-    expect(res.lesson.contentJson.step_4.solutionCode).toBe(SOLUTION);
+    expect(asContent(res.lesson.contentJson).step_4.solutionCode).toBe(
+      SOLUTION,
+    );
     // Không đi vào nhánh kiểm role -> không tốn thêm vòng gọi DB.
     expect(prisma.user.findUnique).not.toHaveBeenCalled();
   });
@@ -169,9 +222,11 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     enrolled();
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(normalContent()));
 
-    const res: any = await service.getLessonContent(1, 'python', 5);
+    const res = await service.getLessonContent(1, 'python', 5);
 
-    expect(res.lesson.contentJson.step_4.solutionCode).toBe(SOLUTION);
+    expect(asContent(res.lesson.contentJson).step_4.solutionCode).toBe(
+      SOLUTION,
+    );
     expect(prisma.user.findUnique).not.toHaveBeenCalled();
   });
 
@@ -180,9 +235,11 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     prisma.user.findUnique.mockResolvedValue({ role: 'admin' });
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
 
-    const res: any = await service.getLessonContent(9, 'python', 20);
+    const res = await service.getLessonContent(9, 'python', 20);
 
-    expect(res.lesson.contentJson.step_4.solutionCode).toBe(SOLUTION);
+    expect(asContent(res.lesson.contentJson).step_4.solutionCode).toBe(
+      SOLUTION,
+    );
     // Đã biết là admin từ nhánh ghi danh -> không truy vấn role lần thứ hai.
     expect(prisma.user.findUnique).toHaveBeenCalledTimes(1);
   });
@@ -192,9 +249,11 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     prisma.user.findUnique.mockResolvedValue({ role: 'admin' });
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
 
-    const res: any = await service.getLessonContent(9, 'python', 20);
+    const res = await service.getLessonContent(9, 'python', 20);
 
-    expect(res.lesson.contentJson.step_4.solutionCode).toBe(SOLUTION);
+    expect(asContent(res.lesson.contentJson).step_4.solutionCode).toBe(
+      SOLUTION,
+    );
   });
 
   it('chưa ghi danh và không phải admin -> 403, không đọc nội dung', async () => {
@@ -225,8 +284,10 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     enrolled();
     prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
 
-    const res: any = await service.getLessonContent(1, 'python', 20);
+    const res = await service.getLessonContent(1, 'python', 20);
 
-    expect(res.lesson.contentJson.step_4.tests[0].expect).toBe('True');
+    expect(asContent(res.lesson.contentJson).step_4.tests?.[0].expect).toBe(
+      'True',
+    );
   });
 });

@@ -10,41 +10,103 @@ import { AchievementsService } from 'src/achievements/achievements.service';
 import { CoursesService } from 'src/courses/courses.service';
 import { LessonsService, scaledXp } from './lessons.service';
 
+/**
+ * Một hàm Prisma giả. `Promise<unknown>` cho giá trị TRẢ VỀ là đủ (mỗi ca tự
+ * `mockResolvedValue()` hình dạng nó cần); phần ĐỐI SỐ mới là chỗ cần kiểu thật
+ * vì test đọc lại `mock.calls` để chứng minh "XP do SERVER quyết".
+ *
+ * Trước đây `prisma` khai `any`: `mock.calls[0][0].data.xp.increment` cũng là
+ * `any`, nên gõ sai đường dẫn (`.data.xp.inc`) vẫn biên dịch được và chỉ so
+ * `undefined` với 50 — test đỏ ở chỗ khó hiểu, hoặc tệ hơn là xanh vô nghĩa.
+ */
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+/** Đối số `prisma.user.update()` ở nhánh cộng XP. */
+type UserUpdateArg = {
+  data: { xp: { increment: number } };
+};
+
+type PrismaMock = {
+  course: { findUnique: AsyncMock };
+  enrollment: { findUnique: AsyncMock };
+  lesson: { findFirst: AsyncMock; create: AsyncMock };
+  lessonProgress: {
+    createMany: AsyncMock;
+    updateMany: AsyncMock;
+    count: AsyncMock;
+  };
+  user: { findUnique: AsyncMock; update: AsyncMock<[UserUpdateArg]> };
+  userDailyXpLog: {
+    findFirst: AsyncMock;
+    create: AsyncMock;
+    update: AsyncMock;
+  };
+  $transaction: AsyncMock<[(tx: PrismaMock) => Promise<unknown>]>;
+};
+
+/** Chỉ hàm của CoursesService mà completeLesson() gọi tới. */
+type CoursesMock = { recomputeProgress: AsyncMock };
+
 describe('LessonsService.completeLesson', () => {
   let service: LessonsService;
-  let prisma: any;
-  let courses: any;
+  let prisma: PrismaMock;
+  let courses: CoursesMock;
 
   beforeEach(async () => {
     prisma = {
-      course: { findUnique: jest.fn() },
-      enrollment: { findUnique: jest.fn() },
-      lesson: { findFirst: jest.fn(), create: jest.fn() },
+      course: { findUnique: asyncMock() },
+      enrollment: { findUnique: asyncMock() },
+      lesson: { findFirst: asyncMock(), create: asyncMock() },
       lessonProgress: {
-        createMany: jest.fn().mockResolvedValue({ count: 1 }),
-        updateMany: jest.fn().mockResolvedValue({ count: 0 }),
-        count: jest.fn().mockResolvedValue(1),
+        createMany: asyncMock().mockResolvedValue({ count: 1 }),
+        updateMany: asyncMock().mockResolvedValue({ count: 0 }),
+        count: asyncMock().mockResolvedValue(1),
       },
       user: {
-        findUnique: jest.fn().mockResolvedValue({ streak: 0, lastStudyDate: null }),
-        update: jest.fn().mockResolvedValue({}),
+        findUnique: asyncMock().mockResolvedValue({
+          streak: 0,
+          lastStudyDate: null,
+        }),
+        update: asyncMock<[UserUpdateArg]>().mockResolvedValue({}),
       },
       userDailyXpLog: {
-        findFirst: jest.fn().mockResolvedValue(null),
-        create: jest.fn().mockResolvedValue({}),
-        update: jest.fn().mockResolvedValue({}),
+        findFirst: asyncMock().mockResolvedValue(null),
+        create: asyncMock().mockResolvedValue({}),
+        update: asyncMock().mockResolvedValue({}),
       },
-      $transaction: jest.fn(async (cb: any) => cb(prisma)),
+      $transaction: jest.fn<
+        Promise<unknown>,
+        [(tx: PrismaMock) => Promise<unknown>]
+      >((cb) => cb(prisma)),
     };
 
-    courses = { recomputeProgress: jest.fn().mockResolvedValue({ completedLessons: 1, progress: 5 }) };
+    courses = {
+      recomputeProgress: asyncMock().mockResolvedValue({
+        completedLessons: 1,
+        progress: 5,
+      }),
+    };
 
     const mod = await Test.createTestingModule({
       providers: [
         LessonsService,
         { provide: PrismaService, useValue: prisma },
-        { provide: StreakService, useValue: { computeNewStreak: jest.fn().mockReturnValue(1) } },
-        { provide: AchievementsService, useValue: { checkAndAwardAchievements: jest.fn().mockResolvedValue([]) } },
+        {
+          provide: StreakService,
+          useValue: { computeNewStreak: jest.fn().mockReturnValue(1) },
+        },
+        {
+          provide: AchievementsService,
+          useValue: {
+            checkAndAwardAchievements: jest.fn().mockResolvedValue([]),
+          },
+        },
         { provide: CoursesService, useValue: courses },
       ],
     }).compile();
@@ -72,10 +134,13 @@ describe('LessonsService.completeLesson', () => {
 
     it('ĐÃ ghi danh -> chạy bình thường, có cộng XP', async () => {
       prisma.course.findUnique.mockResolvedValue(COURSE);
-      prisma.enrollment.findUnique.mockResolvedValue({ userId: 1, courseId: 'python' });
+      prisma.enrollment.findUnique.mockResolvedValue({
+        userId: 1,
+        courseId: 'python',
+      });
       prisma.lesson.findFirst.mockResolvedValue({ id: 10, xpReward: 0 });
 
-      const res: any = await service.completeLesson(1, 1, { courseId: 'python' });
+      const res = await service.completeLesson(1, 1, { courseId: 'python' });
 
       expect(res.ok).toBe(true);
       expect(res.xpGained).toBeGreaterThan(0);
@@ -87,10 +152,16 @@ describe('LessonsService.completeLesson', () => {
 
     it('client gửi xpEarned rất lớn -> vẫn chỉ cộng theo server', async () => {
       prisma.course.findUnique.mockResolvedValue(COURSE);
-      prisma.enrollment.findUnique.mockResolvedValue({ userId: 1, courseId: 'python' });
+      prisma.enrollment.findUnique.mockResolvedValue({
+        userId: 1,
+        courseId: 'python',
+      });
       prisma.lesson.findFirst.mockResolvedValue({ id: 10, xpReward: 0 });
 
-      await service.completeLesson(1, 1, { courseId: 'python', xpEarned: 999999 });
+      await service.completeLesson(1, 1, {
+        courseId: 'python',
+        xpEarned: 999999,
+      });
 
       expect(prisma.user.update.mock.calls[0][0].data.xp.increment).toBe(50);
     });
@@ -114,7 +185,10 @@ describe('LessonsService.completeLesson', () => {
 
     it('lessonNo vượt số bài của khoá -> 400, không tạo bài rác', async () => {
       prisma.course.findUnique.mockResolvedValue(COURSE);
-      prisma.enrollment.findUnique.mockResolvedValue({ userId: 1, courseId: 'python' });
+      prisma.enrollment.findUnique.mockResolvedValue({
+        userId: 1,
+        courseId: 'python',
+      });
 
       await expect(
         service.completeLesson(1, 999999, { courseId: 'python' }),
@@ -127,7 +201,10 @@ describe('LessonsService.completeLesson', () => {
       // Khoá mới tạo mặc định 0 bài; guard cũ (lessonCount > 0 && ...) cho qua
       // hết nên gọi N=1,2,3,... là tự tạo bài rác + cộng 50 XP mỗi lần.
       prisma.course.findUnique.mockResolvedValue({ id: 'moi', lessonCount: 0 });
-      prisma.enrollment.findUnique.mockResolvedValue({ userId: 1, courseId: 'moi' });
+      prisma.enrollment.findUnique.mockResolvedValue({
+        userId: 1,
+        courseId: 'moi',
+      });
 
       await expect(
         service.completeLesson(1, 1, { courseId: 'moi' }),

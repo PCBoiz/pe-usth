@@ -55,7 +55,7 @@ jobs:
             -f json -o "$RUNNER_TEMP/eslint-report.json" || true
           node -e "
           const r = require(process.env.RUNNER_TEMP + '/eslint-report.json');
-          const TRAN = 600; // đo được 528 ngày 12/10/2026; dư chỗ cho spec đang viết dở
+          const TRAN = 283; // đo được 263 ngày 14/10/2026 (quizzes + lessons đã đặt lại kiểu); dư chỗ cho spec đang viết dở
           const loi = r.reduce((s, f) => s + f.errorCount, 0);
           const canhBao = r.reduce((s, f) => s + f.warningCount, 0);
           const top = r.filter((f) => f.errorCount).sort((a, b) => b.errorCount - a.errorCount);
@@ -254,3 +254,23 @@ jobs:
       # 233 ca, còn 110 khung trống/biến thể sai đều phải trượt — nếu khung
       # trống mà đạt thì học viên bấm Nộp ngay là qua bài.
       - run: node scripts/pe-v3/check-pyodide.mjs
+
+  # Hình lý thuyết của khoá pe-v4 (frontend/public/static/anim/*.svg) và việc bài
+  # có trỏ tới chúng không. Tách job riêng, KHÔNG gắn vào `giao-trinh` ở trên, vì:
+  #  · `giao-trinh` chỉ bật khi scripts/pe-v3/ đổi, mà hình và bài pe-v4 nằm ở chỗ
+  #    khác — gắn vào đó thì đúng lúc cần kiểm nó lại bị tắt;
+  #  · checker chỉ dùng thư viện chuẩn Python, đọc file đã commit (SVG +
+  #    scripts/pe-v4/out*/lessons.json), chạy vài giây — rẻ tới mức chạy mọi PR được,
+  #    không cần lọc theo diff.
+  # `--strict` là thứ bắt được lớp lỗi "vẽ xong, kiểm đạt, mà không bài nào khai"
+  # (P01-process-tree/P02-fork-exec-wait từng nằm ngoài bài như thế); build.py không
+  # bắt được vì nó chỉ thấy hình ĐÃ khai. Checker còn so gói out-advanced (thứ được
+  # seed) với out/ — commit bản dựng build.py mà quên build_advanced.py là đỏ ở đây.
+  hinh-ly-thuyet:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python scripts/pe-v4/anim/check.py --strict

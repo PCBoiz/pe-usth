@@ -9,6 +9,22 @@ import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { toStudyDate } from 'src/common/streak/streak.service';
 
+/**
+ * `content_json` là JSON TỰ DO (quản trị dán vào, hoặc do scripts/pe-v4 sinh),
+ * nên mọi bậc đều phải dò chứ không ép kiểu. Trước đây chỗ này ép thẳng
+ * `as Record<string, any>`: `any` chảy từ `collectQuestions()` xuống tận
+ * `normalizeQuestion()` và sinh 13 lỗi `no-unsafe-*` — tệ hơn, gõ sai tên field
+ * (`o.titel`) vẫn biên dịch được và chỉ lặng lẽ cho ra chuỗi rỗng.
+ *
+ * Giữ ĐÚNG luật cũ `value && typeof value === 'object'`: mảng cũng được coi là
+ * record (rồi `.mcq` ra undefined), chỉ `null` bị loại.
+ */
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
 const MIN_POOL = 5;
 const SAMPLE_MIN = 5;
 const SAMPLE_MAX = 10;
@@ -64,7 +80,8 @@ export class QuizzesService {
       select: { answersJson: true },
     });
 
-    const { totalByLesson, wrongByLesson } = this.tallyMistakesByLesson(history);
+    const { totalByLesson, wrongByLesson } =
+      this.tallyMistakesByLesson(history);
 
     // weight ∈ [1, 2]: bài chưa từng làm hoặc luôn đúng = 1; bài luôn sai = 2.
     // Không bao giờ bằng 0 nên không bài nào bị loại hẳn khỏi vòng chọn.
@@ -117,7 +134,8 @@ export class QuizzesService {
       where: { userId },
       select: { answersJson: true },
     });
-    const { totalByLesson, wrongByLesson } = this.tallyMistakesByLesson(history);
+    const { totalByLesson, wrongByLesson } =
+      this.tallyMistakesByLesson(history);
 
     const weights = pool.map((q) => {
       const total = totalByLesson.get(q.lessonId) ?? 0;
@@ -566,11 +584,11 @@ export class QuizzesService {
     const pool: QuizQuestion[] = [];
 
     for (const lesson of lessons) {
-      const step2 = (lesson.contentJson as Record<string, any>)?.step_2;
+      const step2 = asRecord(asRecord(lesson.contentJson)?.step_2);
       if (!step2) continue;
 
       const tag = { lessonId: lesson.id, courseId: lesson.courseId };
-      const list = Array.isArray(step2.mcq) ? step2.mcq : [step2];
+      const list: unknown[] = Array.isArray(step2.mcq) ? step2.mcq : [step2];
       for (const raw of list) {
         const q = this.normalizeQuestion(raw);
         if (q) pool.push({ ...q, ...tag });
@@ -596,11 +614,15 @@ export class QuizzesService {
    * nguyên object, `stripAnswers()` sẽ gửi thẳng cờ `correct: true/false` của
    * từng lựa chọn về trình duyệt.
    */
-  private normalizeQuestion(raw: unknown): QuizQuestion | null {
-    const x = raw as Record<string, any>;
+  private normalizeQuestion(
+    raw: unknown,
+  ): Omit<QuizQuestion, 'lessonId' | 'courseId'> | null {
+    const x = asRecord(raw);
     if (!x || typeof x.question !== 'string' || !Array.isArray(x.options)) {
       return null;
     }
+    // Sau `Array.isArray`, TS mới biết đây là mảng; phần tử vẫn là JSON tự do.
+    const rawOptions: unknown[] = x.options;
 
     // Lựa chọn LUÔN được quy về chuỗi, bất kể `correct` nằm ở đâu. Object lựa
     // chọn mang theo cờ `correct` và lời giải thích của chính nó, mà
@@ -608,30 +630,42 @@ export class QuizzesService {
     // thẳng đáp án về trình duyệt. Nội dung PE v3 có CẢ HAI (`correct: 0` ở cấp
     // câu hỏi VÀ cờ `correct` trong từng lựa chọn) nên trước đây rơi vào nhánh
     // dạng 1 và lộ sạch đáp án của 60 câu trắc nghiệm.
-    const options: string[] = x.options.map((o) =>
-      o && typeof o === 'object' ? String(o.text ?? o.label ?? '') : String(o),
-    );
+    // CHÚ Ý: chỉ đọc `text` và `label`. Lựa chọn của khối "dự đoán" do
+    // scripts/pe-v4/build.py sinh ra lại dùng khoá `title` — đưa loại câu đó
+    // vào kho quiz mà không thêm `?? o.title` thì MỌI lựa chọn thành chuỗi rỗng
+    // và không có lỗi nào được ném ra. Giữ nguyên ở đây vì kho quiz hiện chỉ
+    // lấy `step_2.mcq`; đổi thì phải đổi cùng lúc với nguồn câu hỏi.
+    const options: string[] = rawOptions.map((o) => {
+      const opt = asRecord(o);
+      // Dữ liệu thật luôn là chuỗi; object lọt tới đây là nội dung hỏng và
+      // `String()` cho '[object Object]' — ĐÚNG hành vi cũ (lựa chọn như vậy
+      // không khớp đáp án nào), nên chỉ ép kiểu cho TS chứ không đổi luật.
+      const text = (opt ? (opt.text ?? opt.label ?? '') : o) as
+        string | number | boolean | null;
+      return String(text);
+    });
 
     // Dạng 1 — `correct` đã ở cấp câu hỏi; chỉ cần lọc lại `options`.
     if (x.correct !== undefined) {
       return {
         question: x.question,
+        // `correct` đi thẳng từ JSON vào snapshot lưu DB, KHÔNG được kiểm lại ở
+        // đây (isCorrect() so bằng String() nên số hay chuỗi đều chấm được).
+        correct: x.correct as number | string,
         options,
-        correct: x.correct,
         // Lời giải thích chỉ đi vào bản lưu DB; `stripAnswers()` không trả nó
         // cho FE, và submitQuiz() mới hiện sau khi đã chấm.
         explanation:
-          x.explanation ??
+          (x.explanation as string | undefined) ??
           (typeof x.correct === 'number'
-            ? x.options[x.correct]?.explanation
+            ? (asRecord(rawOptions[x.correct])?.explanation as
+                string | undefined)
             : undefined),
-      } as QuizQuestion;
+      };
     }
 
     // Dạng 2 — tìm lựa chọn được đánh dấu đúng.
-    const idx = x.options.findIndex(
-      (o) => o && typeof o === 'object' && o.correct === true,
-    );
+    const idx = rawOptions.findIndex((o) => asRecord(o)?.correct === true);
     if (idx < 0) return null;
 
     return {
@@ -639,8 +673,10 @@ export class QuizzesService {
       options,
       correct: idx,
       // Giải thích của chính đáp án đúng là thứ đáng hiện sau khi chấm.
-      explanation: x.options[idx]?.explanation ?? x.explanation,
-    } as QuizQuestion;
+      explanation:
+        (asRecord(rawOptions[idx])?.explanation as string | undefined) ??
+        (x.explanation as string | undefined),
+    };
   }
 
   /** Fisher-Yates rồi cắt — tránh sort(() => Math.random()) vốn lệch phân phối. */
@@ -664,9 +700,13 @@ export class QuizzesService {
 
   private isCorrect(expected: number | string, given: unknown): boolean {
     if (given === undefined || given === null) return false;
+    // `given` là câu trả lời THÔ từ client nên có thể là bất cứ gì. Cách so
+    // vẫn là `String()` như trước — object sẽ ra '[object Object]' và không
+    // khớp đáp án nào; ép kiểu ở đây chỉ để nói rằng đó là chủ ý.
+    const answer = given as string | number | boolean;
     return (
       String(expected).trim().toLowerCase() ===
-      String(given).trim().toLowerCase()
+      String(answer).trim().toLowerCase()
     );
   }
 }
