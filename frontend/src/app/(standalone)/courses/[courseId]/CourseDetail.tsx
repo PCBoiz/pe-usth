@@ -12,11 +12,22 @@
 // Cũng không còn nạp course_detail.js/edu-chrome.js: hai file đó chỉ phục vụ nút
 // Đăng ký, goLesson() và chuông thông báo của Sidebar/HeaderBar đã gỡ.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
+import { apiFetchSessionOnly, asList, findEnrollment } from '@/lib/api';
 import { findCourse, LEVEL_LABEL } from '@/lib/catalog';
+import {
+  completedLessonSet,
+  loadCompletedLessons,
+  LS_ACCESS,
+  LS_LEGACY_REFRESH,
+  planResume,
+  resumeButtonLabel,
+  resumeReason,
+  type ResumePlan,
+} from '@/lib/course-progress';
 import CURRICULA_JSON from '@/lib/curricula.json';
 
 import styles from '@/components/CourseShell.module.css';
@@ -29,43 +40,130 @@ type Curriculum = {
 };
 const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, Curriculum>;
 
-const RATE_LABELS: Record<number, string> = {
-  0.5: 'Quá tệ', 1: 'Rất tệ', 1.5: 'Tệ', 2: 'Không tốt',
-  2.5: 'Tạm được', 3: 'Bình thường', 3.5: 'Khá ổn',
-  4: 'Tốt', 4.5: 'Rất tốt', 5: 'Xuất sắc! 🎉',
-};
+/**
+ * 15/10/2026 — GỠ HẲN khối "Đánh giá của học viên".
+ *
+ * Nó gồm hai thứ giả, và cả hai đều giả theo kiểu tệ nhất là người xem không
+ * nhận ra:
+ *  · 4,8 sao "đánh giá trung bình" — con số viết cứng trong `src/lib/catalog.ts`
+ *    (`rating: 4.8`), không có một đánh giá nào ở sau nó. Trường đó cũng đã gỡ.
+ *  · ô chấm sao của người xem (`StarRating`, `RATE_LABELS`) — bấm vào thì sao
+ *    sáng lên rồi mất khi tải lại trang: điểm không gửi đi đâu, không lưu đâu,
+ *    đúng như ghi chú "tính năng đang được phát triển" ngay dưới nó.
+ * Buổi dùng thử với giảng viên và sinh viên: thấy một con số bịa là mất lòng
+ * tin vào mọi con số khác trên trang (48 bài, tiến độ, "đã xong"). Có bảng đánh
+ * giá thật trong DB thì dựng lại; tới lúc đó, không có khối này là trung thực.
+ */
+
+function lsGet(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null; // chế độ riêng tư
+  }
+}
 
 /**
- * Ô chấm sao — do React giữ, không do course_detail.js (file legacy gắn sự kiện
- * một lần lúc nạp nên đổi khóa bằng client-side routing là các sao thành trơ).
- * Điểm chỉ nằm trong trang này, chưa lưu đi đâu (đúng ghi chú "đang phát triển").
+ * Nạp danh sách bài đã xong của người đang xem — hoặc KHÔNG nạp gì cả.
+ *
+ * Trả `null` nghĩa là "chưa biết" (chưa có phiên, hoặc API chưa trả về / lỗi):
+ * trang phải hiện y như trang tĩnh hiện nay. Chỉ khi trả về một mảng thì mới
+ * đổi nhãn nút và đánh dấu bài đã xong — tức thông tin tiến độ chỉ CỘNG THÊM,
+ * không bao giờ làm trang tệ hơn bản tĩnh.
+ *
+ * HAI ĐIỀU TUYỆT ĐỐI KHÔNG ĐƯỢC PHÁ ở đây:
+ *
+ *  1. Chưa có phiên trong máy thì KHÔNG gọi API — thoát trước cả lời gọi đầu
+ *     tiên. Nếu gọi, `/api/enrolled` trả 401 cho khách, và nếu lại dùng
+ *     `apiFetch` thì nó rơi xuống `ensureGuest()`: mọi khách vãng lai và mọi
+ *     con bot mở trang khoá (trang CÔNG KHAI, có trong sitemap) đều sinh một
+ *     tài khoản khách trong bảng `users` và ăn một suất của
+ *     THROTTLE_GUEST_LIMIT (mặc định 120 lượt/giờ/IP) — cả phòng máy chung một
+ *     NAT sẽ bị 429 đúng lúc có người cần tài khoản thật.
+ *  2. Dùng `apiFetchSessionOnly`, không dùng `apiFetch`: ngay cả khi cờ phiên
+ *     nói sai (token cũ đã bị thu hồi), đường này cùng lắm là trả 401 chứ
+ *     không tạo tài khoản mới.
  */
-function StarRating() {
-  const [rating, setRating] = useState(0);
-  const [hover, setHover] = useState(0);
-  const shown = hover || rating;
-  // Nửa trái ngôi sao = nửa điểm (giữ đúng hành vi cũ)
-  const half = (e: React.MouseEvent<HTMLDivElement>, i: number) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    return e.clientX - r.left < r.width / 2 ? i - 0.5 : i;
-  };
+function useCompletedLessons(courseId: string): number[] | null {
+  const [completed, setCompleted] = useState<number[] | null>(null);
+
+  useEffect(() => {
+    // Lượt render đầu trên server không có localStorage/document.cookie.
+    if (typeof window === 'undefined') return;
+
+    let alive = true;
+    void loadCompletedLessons({
+      session: {
+        access: lsGet(LS_ACCESS),
+        legacyRefresh: lsGet(LS_LEGACY_REFRESH),
+        cookie: typeof document === 'undefined' ? null : document.cookie,
+      },
+      // Hàm này CHỈ chạy khi cổng ở loadCompletedLessons xác nhận đã có phiên;
+      // khách vãng lai/bot không đi tới đây, nên không một lời gọi mạng nào.
+      fetchCompleted: async () => {
+        const res = await apiFetchSessionOnly('/api/enrolled');
+        if (!res.ok) return null; // 401 (phiên đã chết) / 5xx: coi như chưa biết
+        const data = (await res.json()) as unknown;
+        const row = findEnrollment(asList(data, 'enrolled'), courseId);
+        const raw = row?.completedLessonNumbers;
+        // Chưa ghi danh khoá này thì không có hàng nào -> vẫn là "chưa biết".
+        if (!Array.isArray(raw)) return null;
+        return raw.filter((n): n is number => typeof n === 'number');
+      },
+    }).then((list) => {
+      if (alive && list) setCompleted(list);
+    });
+
+    return () => {
+      alive = false;
+    };
+  }, [courseId]);
+
+  return completed;
+}
+
+/**
+ * Thẻ gợi ý bước tiếp (bản thiết kế Main.dc.html): nhãn · tiêu đề · "Vì sao bài
+ * này" · nút chính, rồi "Đây là gợi ý, không phải lệnh" + lối ra "Tự chọn bài".
+ *
+ * Vì sao phải có lối ra, không chỉ có nút chính: hệ thống chỉ ĐỀ XUẤT, mọi bài
+ * trong danh sách 48 bài vẫn bấm vào được. Thẻ gợi ý mà không nói điều đó thì
+ * người học tưởng mình bị dẫn theo một đường duy nhất và bỏ hẳn ý định tự chọn.
+ */
+function ResumeCard({
+  plan,
+  title,
+  href,
+  pickHref,
+}: {
+  plan: ResumePlan;
+  title: string;
+  href: string;
+  pickHref: string;
+}) {
   return (
-    <>
-      <div className="star-interactive" id="starInteractive" onMouseLeave={() => setHover(0)}>
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            className={`si-star${shown >= i ? ' star-full' : shown >= i - 0.5 ? ' star-half' : ''}`}
-            data-star={i}
-            key={i}
-            onMouseMove={(e) => setHover(half(e, i))}
-            onClick={(e) => setRating(half(e, i))}
-          >★</div>
-        ))}
+    <section className={styles.resumeCard} aria-labelledby="cd-resume-title">
+      <p className={styles.resumeKicker}>
+        {plan.kind === 'done' ? 'Đã xong cả khoá · mời xem lại' : 'Gợi ý bước tiếp · hệ thống chọn'}
+      </p>
+      <h2 className={styles.resumeTitle} id="cd-resume-title">
+        {`Bài ${plan.lessonNo}`}
+        {title ? ` · ${title}` : ''}
+      </h2>
+      <p className={styles.resumeWhy}>
+        <strong>Vì sao bài này: </strong>
+        {resumeReason(plan)}
+      </p>
+      <a className={`edu-cd-btn primary ${styles.resumeBtn}`} href={href}>
+        ▶ {resumeButtonLabel(plan)}
+      </a>
+      <div className={styles.resumeFoot}>
+        <span>Đây là gợi ý, không phải lệnh.</span>
+        <a className={styles.resumePick} href={pickHref}>
+          Tự chọn bài
+        </a>
       </div>
-      <div className="user-rate-val" id="userRateVal">
-        {rating ? `${rating} ★  ${RATE_LABELS[rating] || ''}` : '—'}
-      </div>
-    </>
+    </section>
   );
 }
 
@@ -76,6 +174,8 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
    * đúng. Khoá theo chỉ số module; module đầu mở sẵn.
    */
   const [openModules, setOpenModules] = useState<Record<number, boolean>>({});
+  // Phải gọi TRƯỚC nhánh `if (!course)` — hook không được nằm sau return.
+  const completedRaw = useCompletedLessons(courseId);
 
   // Trang cha đã trả 404 cho mã lạ; nhánh này chỉ để thu hẹp kiểu.
   if (!course) return null;
@@ -84,9 +184,21 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const modules = curriculum.modules || [];
   const outcomes = curriculum.skills || [];
   const requirements = curriculum.requirements || [];
-  const ratingFill = Math.round((course.rating / 5) * 1000) / 10;
-  // ?lesson= là chỉ số từ 0 (xem lesson/python/page.tsx); khóa khác bỏ qua tham số này.
-  const startUrl = `${course.lessonUrl}?lesson=0`;
+  /**
+   * Tổng số bài lấy từ chính danh sách đang render, không từ `course.lessons`:
+   * hai nguồn này đã từng lệch (xem bẫy "hai nguồn danh sách bài" trong
+   * AGENTS.md) và nếu lệch thì "đã xong 48/40" là con số vô nghĩa.
+   */
+  const flatTitles = modules.flatMap((m) => m.lessons);
+  const total = flatTitles.length || course.lessons;
+  const plan = planResume(completedRaw, total);
+  const doneSet = completedLessonSet(completedRaw, total);
+  // ?lesson= là chỉ số từ 0 (xem lesson/python_advanced/page.tsx); khóa khác bỏ qua tham số này.
+  const startUrl = `${course.lessonUrl}?lesson=${plan.index}`;
+  // Chưa có tiến độ (hoặc chưa biết) thì nhãn giữ NGUYÊN chữ cũ "Bắt đầu học".
+  const ctaLabel = resumeButtonLabel(plan);
+  // Neo tới danh sách 48 bài — đích của lối ra "Tự chọn bài".
+  const curriculumAnchor = 'cd-curriculum';
   // Nút góp ý đứng ngay cạnh "Bắt đầu học" vì đây là trang người thử quay lại
   // nhiều nhất; để tận trang chủ thì học xong phải lần ngược ra mới tìm thấy.
   // Không có link hợp lệ thì không dựng nút — xem feedbackHref().
@@ -134,7 +246,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                   <h1 className="edu-cd-title">{course.title}</h1>
                   <p className="edu-cd-subtitle">{course.subtitle}</p>
                   <div className="edu-cd-hero-cta">
-                    <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}>▶ Bắt đầu học</a>
+                    <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}>▶ {ctaLabel}</a>
                     {feedback && (
                       <a
                         className={`edu-cd-btn ${styles.feedbackBtn}`}
@@ -155,12 +267,15 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
               </div>
 
               {/* Nội dung khóa học (giáo trình) */}
-              <div className="cd-block">
+              <div className="cd-block" id={curriculumAnchor}>
                 <div className="cd-block-hd">
                   <div className="cd-block-icon">📚</div>
                   <h3>Nội dung khóa học</h3>
                   <span className={styles.blockMeta}>
-                    {modules.length} module · {course.lessons} bài học
+                    {modules.length} module · {total} bài học
+                    {/* Chỉ thêm phần "đã xong" khi thật sự biết tiến độ; khách
+                        vãng lai vẫn thấy đúng dòng chữ như trước. */}
+                    {plan.completedCount > 0 && ` · đã xong ${plan.completedCount}/${total}`}
                   </span>
                 </div>
                 <div className="cd-block-body" style={{ paddingTop: 10 }}>
@@ -187,19 +302,37 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                           <div className="edu-cd-lesson-list">
                             {module.lessons.map((title) => {
                               const index = flatIdx++;
+                              const lessonNo = index + 1;
+                              const done = doneSet.has(lessonNo);
+                              // Bài được gợi ý — chỉ ĐÁNH DẤU, không khoá bài nào.
+                              const suggested = plan.kind === 'continue' && plan.lessonNo === lessonNo;
                               // <a href> chứ không <div onClick>: cú bấm này điều
                               // hướng, để trình duyệt lo Tab/Enter/chuột giữa.
                               return (
                                 <a
-                                  className={`edu-cd-lesson ${styles.lessonLink}`}
+                                  className={`edu-cd-lesson ${styles.lessonLink}`
+                                    + `${done ? ` ${styles.lessonDone}` : ''}`
+                                    + `${suggested ? ` ${styles.lessonNext}` : ''}`}
                                   key={index}
                                   data-clickable="1"
+                                  data-done={done ? '1' : undefined}
                                   href={`${course.lessonUrl}?lesson=${index}`}
                                 >
-                                  <div className="edu-cd-lesson-icon" aria-hidden="true">{index + 1}</div>
+                                  {/* Ô số bài đổi thành dấu ✓ khi đã xong. Dấu
+                                      này aria-hidden nên tình trạng phải được
+                                      nói lại bằng CHỮ ở dòng meta dưới — người
+                                      dùng trình đọc màn hình không "thấy" được
+                                      màu hay dấu kiểm. */}
+                                  <div className={`edu-cd-lesson-icon${done ? ` ${styles.lessonIconDone}` : ''}`} aria-hidden="true">
+                                    {done ? '✓' : lessonNo}
+                                  </div>
                                   <div className="edu-cd-lesson-body">
                                     <div className="edu-cd-lesson-title">{title}</div>
-                                    <div className="edu-cd-lesson-meta">Bài {index + 1}</div>
+                                    <div className="edu-cd-lesson-meta">
+                                      Bài {lessonNo}
+                                      {done && ' · đã xong'}
+                                      {suggested && ' · gợi ý học tiếp'}
+                                    </div>
                                   </div>
                                 </a>
                               );
@@ -240,41 +373,28 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 </div>
               )}
 
-              {/* Đánh giá */}
-              <div className="cd-block">
-                <div className="cd-block-hd">
-                  <div className="cd-block-icon">⭐</div>
-                  <h3>Đánh giá của học viên</h3>
-                </div>
-                <div className="cd-block-body">
-                  <div className="cd-reviews-stub">
-                    <div className="star-avg-wrap">
-                      <div className="star-avg">
-                        <div className="star-avg-bg">★★★★★</div>
-                        <div className="star-avg-fill" style={{ width: `${ratingFill}%` }}>★★★★★</div>
-                      </div>
-                    </div>
-                    <div className="score">{course.rating}</div>
-                    <div className="avg-label">Đánh giá trung bình</div>
-
-                    <div className="user-rate-section">
-                      <div className="user-rate-label">Đánh giá của bạn:</div>
-                      <StarRating key={courseId} />
-                    </div>
-
-                    <div className="coming-soon-note">Tính năng lưu đánh giá đang được phát triển. Hãy quay lại sau!</div>
-                  </div>
-                </div>
-              </div>
+              {/* Khối "Đánh giá của học viên" đã gỡ — xem chú thích đầu file. */}
             </div>
 
             {/* ── Cột phải ── */}
             <div className="edu-cd-side">
+              {/* Thẻ gợi ý chỉ dựng khi ĐÃ BIẾT tiến độ (kind !== 'start').
+                  Khách vãng lai không có thẻ này — và cũng không có lời gọi API
+                  nào để biết, xem useCompletedLessons. */}
+              {plan.kind !== 'start' && (
+                <ResumeCard
+                  plan={plan}
+                  title={flatTitles[plan.index] ?? ''}
+                  href={startUrl}
+                  pickHref={`#${curriculumAnchor}`}
+                />
+              )}
+
               <div className="edu-cd-card">
                 <div className="edu-cd-price">Miễn phí</div>
                 <div className="edu-cd-price-free">🎉 Hoàn toàn không mất phí</div>
 
-                <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}>▶ Bắt đầu học</a>
+                <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}>▶ {ctaLabel}</a>
 
                 <div className="edu-cd-includes">
                   <div className="edu-cd-includes-title">KHÓA HỌC BAO GỒM</div>

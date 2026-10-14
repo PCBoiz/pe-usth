@@ -140,7 +140,11 @@ function ensureGuest(): Promise<string | null> {
   return guesting;
 }
 
-export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Response> {
+async function request(
+  path: string,
+  opts: RequestInit,
+  allowGuest: boolean,
+): Promise<Response> {
   const base = origin();
   const send = (access: string | null) => {
     const headers = new Headers(opts.headers || {});
@@ -152,10 +156,29 @@ export async function apiFetch(path: string, opts: RequestInit = {}): Promise<Re
   if (res.status === 401) {
     // Thứ tự: refresh phiên cũ trước (giữ tiến độ của khách đã học hôm qua),
     // chỉ khi không còn phiên nào mới tạo khách mới.
-    const access = (await refreshAccess()) ?? (await ensureGuest());
+    const access = (await refreshAccess()) ?? (allowGuest ? await ensureGuest() : null);
     if (access) res = await send(access);
   }
   return res;
+}
+
+export function apiFetch(path: string, opts: RequestInit = {}): Promise<Response> {
+  return request(path, opts, true);
+}
+
+/**
+ * Như apiFetch nhưng TUYỆT ĐỐI không tạo tài khoản khách — chỉ thử refresh
+ * phiên đã có, hết phiên thì trả nguyên 401 cho nơi gọi tự xử.
+ *
+ * Vì sao cần một biến thể riêng: `ensureGuest()` ở trên hợp lý cho trang BÀI
+ * HỌC (ai mở link cũng học được ngay), nhưng sẽ là tai hoạ ở trang CÔNG KHAI
+ * như /courses/:id — mọi khách vãng lai và mọi con bot mở trang đều sinh một
+ * tài khoản khách, làm phình bảng `users` và ăn hết quota THROTTLE_GUEST_LIMIT
+ * (mặc định 120 lượt/giờ/IP), nên cả phòng máy chung một NAT sẽ bị 429 đúng
+ * lúc cần tài khoản thật. Trang công khai dùng hàm này.
+ */
+export function apiFetchSessionOnly(path: string, opts: RequestInit = {}): Promise<Response> {
+  return request(path, opts, false);
 }
 
 /**

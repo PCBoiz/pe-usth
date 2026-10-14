@@ -16,7 +16,8 @@
   margin-bottom: 20px;
   padding: 0;
   font: inherit;
-  font-size: 14px;
+  /* 14 → 15px: sàn nhãn của bản thiết kế (không có chữ nào < 15px). */
+  font-size: 15px;
   font-weight: 500;
   color: var(--edu-t3);
   text-decoration: none;
@@ -46,7 +47,9 @@
 
 .blockMeta {
   margin-left: auto;
-  font-size: 12px;
+  /* 12 → 15px: dòng "8 module · 48 bài học · đã xong 3/48" là con số người học
+     đọc để biết mình ở đâu, không phải chữ trang trí. */
+  font-size: 15px;
   color: var(--edu-t4);
 }
 
@@ -84,4 +87,109 @@
   .feedbackBtn:hover {
     transform: none;
   }
+}
+
+/* ── Thẻ "Gợi ý bước tiếp" + đánh dấu bài đã xong ──
+   Viết ở đây chứ không thêm vào /static/css/edu-course-detail.css: file đó là
+   CSS legacy nạp qua <link> có tem ?v=, sửa nó là phải bump ASSET_VERSION — mà
+   chỗ này không cần tới (cùng lập luận với .feedbackBtn ở trên).
+   Chỉ dùng token của edu-theme, không thêm mã màu mới. */
+
+/* Nền đậm để thẻ gợi ý nổi hơn thẻ giá bên dưới, đúng bản thiết kế. */
+.resumeCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  margin-bottom: 18px;
+  border: 1px solid var(--edu-panel-border);
+  border-radius: 16px;
+  background: var(--edu-panel-bg);
+  box-shadow: var(--edu-panel-shadow);
+}
+
+.resumeKicker {
+  margin: 0;
+  /* 11 → 15px: nhãn "Gợi ý bước tiếp · hệ thống chọn" là chỗ nói AI đề xuất;
+     bản thiết kế chốt nhãn 15/700/0.08em. */
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--edu-t3);
+}
+
+.resumeTitle {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--edu-t1);
+}
+
+.resumeWhy {
+  margin: 0;
+  /* 13 → 17px: "Vì sao bài này…" là câu người học phải đọc để quyết định, nên
+     nó ở cỡ thân (≥ 17px), không phải cỡ ghi chú. */
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--edu-t2);
+}
+
+.resumeBtn {
+  display: inline-flex;
+  justify-content: center;
+  width: 100%;
+  text-decoration: none;
+}
+
+/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của lời mời. */
+.resumeFoot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 12px;
+  border-top: 1px solid var(--edu-panel-border);
+  /* 12 → 17px: "Đây là gợi ý, không phải lệnh." và lối ra "Tự chọn bài" là câu
+     và nút — đọc không được thì lối ra coi như không có. */
+  font-size: 17px;
+  color: var(--edu-t3);
+}
+
+.resumePick {
+  align-self: flex-start;
+  font-weight: 700;
+  color: var(--edu-accent-text);
+  text-decoration: none;
+}
+.resumePick:hover { text-decoration: underline; }
+.resumePick:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* Bài đã xong: nhạt đi một chút + vạch màu bên trái. KHÔNG dùng
+   `pointer-events: none` hay `opacity` quá thấp — bài đã xong vẫn phải bấm
+   vào xem lại được (hệ thống chỉ đề xuất, không khoá bài). */
+.lessonDone {
+  border-left: 3px solid var(--edu-ok);
+  background: var(--edu-ok-soft);
+}
+
+/* Ô số bài đổi thành dấu ✓. Chỉ đổi màu nền/chữ, giữ nguyên kích thước của
+   .edu-cd-lesson-icon để hàng không nhảy khi tiến độ về sau lượt render đầu. */
+.lessonIconDone {
+  background: var(--edu-ok) !important;
+  /* Từ khoá `white`, không phải mã hex: luật `npm run lint:tokens` cấm mọi mã
+     màu trong *.module.css (grep thô), và ở đây KHÔNG dùng được token nào —
+     --edu-panel-bg-solid đảo thành nền sẫm ở bản Ban đêm, tức dấu ✓ sẽ thành
+     chữ sẫm trên nền xanh --edu-ok. Dấu ✓ cần một màu cố định, sáng. */
+  color: white !important;
+}
+
+/* Bài đang được gợi ý: viền nhấn, không che mất các bài khác. */
+.lessonNext {
+  border-left: 3px solid var(--edu-accent);
+  background: var(--edu-accent-soft);
 }
