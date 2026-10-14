@@ -851,7 +851,13 @@ for turn in range(4):
                  bullets=['Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)',
                           'Non-preemption: process tự nguyện nhường CPU',
                           'CPU-bound chủ yếu tính toán; I/O-bound chủ yếu chờ đĩa, mạng, máy in']),
-            dict(h='Ví dụ: ba hàng đợi', figure='P03-round-robin',
+            # KHÔNG gắn P03-round-robin vào đây: hình vẽ P3 cần 2 đơn vị (P3 xong ở
+            # t=6, P2 t=9, P1 t=10), còn bài dùng ("P3", 1) nên lịch thật là
+            # P1 0–2, P2 2–4, P3 4–5, P1 5–7, P2 7–8, P1 8–9 và đáp án câu dự
+            # đoán ngay bên dưới là "P3, lúc 5". Gắn vào là đặt một hình phản
+            # chứng ngay TRƯỚC câu hỏi. Vẽ lại hình cho khớp ("P3", 1) rồi mới
+            # gắn — xem scripts/pe-v4/anim/ALLOW_ORPHAN.
+            dict(h='Ví dụ: ba hàng đợi',
                  body='Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ '
                       'CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không '
                       'preempt; SRTF và Round Robin có.'),
@@ -868,10 +874,7 @@ for turn in range(4):
                      caption='Context switch: lưu PCB của process cũ, nạp PCB của process mới',
                      alt='Process A chạy, có interrupt, hệ điều hành lưu PCB0 rồi nạp PCB1, sau đó process B chạy; '
                          'khoảng giữa ghi nhãn overhead'),
-                dict(name='P03-round-robin',
-                     caption='Round Robin quantum 2: hết lượt chưa xong thì xếp lại cuối hàng ready',
-                     alt='Hàng đợi ready P1, P2, P3 và ô CPU một lõi; trục thời gian 0–10 chia sáu lát theo thứ tự P1, '
-                         'P2, P3, P1, P2, P1, vạch đậm nơi từng process chạy xong')],
+        ],
         slides='SL 30-43',
         predict=dict(q='jobs = [("P1", 5), ("P2", 3), ("P3", 1)], quantum = 2. Process nào XONG ĐẦU TIÊN?', options=[
             ('P3, lúc 5 — nó chỉ cần 1 đơn vị, tới lượt ở lần thứ ba', 'P1 0–2, P2 2–4, P3 4–5: P3 xong ngay trong lượt đầu của nó.', True),

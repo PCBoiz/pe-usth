@@ -56,6 +56,16 @@ URL_RE = re.compile(r'url\(\s*["\']?([^)"\']+)')
 REDUCED_MOTION_RE = re.compile(r'@media[^{]*prefers-reduced-motion\s*:\s*reduce')
 
 
+# Hình CỐ Ý chưa gắn vào bài nào, kèm lý do. Danh sách này phải NGẮN và mỗi dòng
+# phải nói rõ điều kiện gỡ ra — nếu không nó thành chỗ chôn hình hỏng.
+ALLOW_ORPHAN_LY_DO = {
+    'P03-round-robin': 'hình vẽ P3 cần 2 đơn vị (P3 xong t=6, P2 t=9, P1 t=10) trong khi '
+                       'bài P03 dùng ("P3", 1) → lịch thật P1 0–2, P2 2–4, P3 4–5 và đáp án '
+                       'câu dự đoán là "P3, lúc 5". Vẽ lại cho khớp rồi gỡ khỏi danh sách này.',
+}
+ALLOW_ORPHAN = set(ALLOW_ORPHAN_LY_DO)
+
+
 def referenced_names() -> set[str] | None:
     """Tên hình mà bài học thực sự trỏ tới, lấy từ bản dựng out/lessons.json.
 
@@ -216,9 +226,13 @@ def main(argv=None) -> int:
         orphan = sorted(names - used)
         print(f'{len(names) - len(orphan)}/{len(names)} hình được bài tham chiếu'
               + (f', {len(orphan)} chưa bài nào dùng: {", ".join(orphan)}' if orphan else ''))
-        if orphan and args.strict:
-            print('FAIL: --strict coi hình chưa bài nào dùng là lỗi (khai figure=… ở một khối theory).')
+        con_lai = sorted(set(orphan) - ALLOW_ORPHAN)
+        if con_lai and args.strict:
+            print('FAIL: --strict coi hình chưa bài nào dùng là lỗi (khai figure=… ở một khối theory): '
+                  + ', '.join(con_lai))
             failed += 1
+        for ten in sorted(set(orphan) & ALLOW_ORPHAN):
+            print(f'  (bỏ qua có chủ đích) {ten}: {ALLOW_ORPHAN_LY_DO[ten]}')
     return 1 if failed else 0
 
 

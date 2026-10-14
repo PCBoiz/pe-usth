@@ -19,9 +19,9 @@ cd frontend && npm run dev # cổng 3000
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
 py scripts/pe-v4/build_advanced.py     # sinh mini-game -> scripts/pe-v4/out-advanced/
 py scripts/pe-v4/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
-node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
 py scripts/pe-v4/anim/check.py         # kiểm 23 hình SVG + đếm hình được bài dùng
-npm i --no-save pyodide@0.27.7         # cần cho bước dưới
+npm i --no-save pyodide@0.27.7         # CẢ HAI lệnh dưới đều import pyodide
+node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
 node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ chấm của trình duyệt
 ```
 
@@ -34,7 +34,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 33 bộ, 294 ca, tất cả đạt |
+| Backend test | 33 bộ, 298 ca, tất cả đạt |
 | Backend lint | 551 lỗi — **mốc trần trong CI là 600, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, ~178 cảnh báo |
@@ -87,8 +87,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   khẩu rỗng nên không đăng nhập bằng mật khẩu được), rồi bài học tự ghi danh. Tắt bằng
   `GUEST_LOGIN=off`. Deploy khác domain thì phải đặt `REFRESH_COOKIE_SAMESITE=none`, không thì
   hết hạn access token là khách mất phiên và nhận tài khoản mới (mất tiến độ).
-- **`prisma/seed-courses.js` vẫn tạo 40 bài rỗng mã `python-1…python-40`.** Chạy nhầm sau khi
-  seed giáo trình thật sẽ sinh bài trùng thứ tự.
+- **`prisma/seed-courses.js` nay tạo khoá `python` RỖNG, không phải 40 bài.** Nó đọc
+  `curricula[def.id]`, mà `sync_curricula.py` đã bỏ hẳn khối `python` khỏi `curricula.json`,
+  nên vòng sinh bài không chạy lần nào. Bẫy cũ (sinh `python-1…python-40` trùng sort_order)
+  không còn, nhưng chạy nhầm vẫn dựng lại một khoá rỗng trong danh mục.
 - **551 lỗi lint backend KHÔNG phải lỗi định dạng.** Đã đo (lúc còn 527 lỗi): chỉ 6% chạy
   `--fix` là xong. 89% là nhóm `no-unsafe-*` (290 member-access, 120 call, 59 assignment,
   14 return) — `any` chảy xuyên qua code ở các trang chuyển từ bản Django. Dọn là việc đặt
