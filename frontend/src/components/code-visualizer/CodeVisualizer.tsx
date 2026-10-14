@@ -45,8 +45,10 @@ import styles from './CodeVisualizer.module.css';
  * Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì phải nghe.
  *
  * Phần hiệu ứng bằng CSS tự tắt nhờ @media (prefers-reduced-motion) trong file
- * .module.css; chỗ này là cho phần chạy bằng Web Animations API — media query
- * không với tới được nó.
+ * .module.css. Hàm này là cho phần quyết định bằng JS: `stepMotion` (lib/trace.ts)
+ * chọn thời lượng và easing theo loại bước, và media query không với tới một
+ * nhánh if trong JS. (File này ĐÃ KHÔNG còn dùng Web Animations API — chú thích
+ * cũ nói vậy là sai: nhịp nay truyền xuống CSS bằng tên lớp, xem `nhipLop`.)
  */
 function prefersReducedMotion(): boolean {
   return (
@@ -410,16 +412,15 @@ export default function CodeVisualizer({
       )}
 
       {/* Ghi vết mất 0,2–2 s. Không có gì động trong khoảng đó thì người học
-          tưởng cú bấm bị rơi và bấm lại — nên vừa có con quay, vừa có một dải
-          chạy (translateX, không phải width: đổi width là layout lại mỗi khung
-          hình). Dải này là "đang chạy", KHÔNG phải tiến độ: không ai biết trước
-          chương trình của người học chạy bao lâu. */}
+          tưởng cú bấm bị rơi và bấm lại — nên có một dải chạy (translateX,
+          không phải width: đổi width là layout lại mỗi khung hình). Dải này là
+          "đang chạy", KHÔNG phải tiến độ: không ai biết trước chương trình của
+          người học chạy bao lâu. MỘT chỉ báo là đủ: con quay đứng cạnh dải này
+          nói đúng cùng một điều mà vẫn tốn tính lại style mỗi khung hình, nên
+          đã bỏ. */}
       {state.status === 'loading' && (
         <>
-          <p className={styles.hint}>
-            <span className={styles.spinner} aria-hidden="true" />
-            Đang chạy và ghi vết trong sandbox…
-          </p>
+          <p className={styles.hint}>Đang chạy và ghi vết trong sandbox…</p>
           <div className={styles.progress} aria-hidden="true">
             <span className={styles.progressBar} />
           </div>
