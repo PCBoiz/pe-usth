@@ -46,7 +46,6 @@ import {
   courseTileTags,
   FEEDBACK,
   footerLine,
-  HONEST_NOTE,
   INTRO,
   LAB_TILE,
   nextStep,
@@ -144,53 +143,82 @@ test('nhãn thẻ khoá không có điểm sao, và dùng đơn vị "chặng"/"
   }
 });
 
-/* ═══ 2 · thẻ gợi ý: đủ bốn phần + vạch ngăn + lối ra ═══════════════════ */
+/* ═══ 2 · thẻ bắt đầu: một tên bài, một cái nút ════════════════════════ */
 
-test('thẻ gợi ý có đủ 4 phần, rồi "không phải lệnh" + lối ra yên tĩnh', () => {
+test('thẻ bắt đầu chỉ còn tên bài và nút — không lớp chú giải nào', () => {
   const step = nextStep({
     courseId: 'python_advanced',
     lessonUrl: '/lesson/python_advanced',
-    firstStage: MODULES[0].title,
     firstLesson: MODULES[0].lessons[0],
   });
 
-  // (1) nhãn nói rõ AI đề xuất — thiếu chỗ này thì gợi ý nghe như bổn phận.
-  assert.match(step.label, /hệ thống/i);
-  // (2) tiêu đề là mã + tên bài thật, lấy từ giáo trình.
+  // Đúng ba khoá. Mọc thêm khoá nào là mọc lại một lớp chú giải.
+  assert.deepEqual(Object.keys(step).sort(), ['ctaHref', 'ctaLabel', 'title']);
   assert.equal(step.title, MODULES[0].lessons[0]);
-  // (3) "Vì sao" phải dẫn ra DỮ KIỆN (tên chặng), không phải lời cổ vũ.
-  assert.ok(step.why.includes(MODULES[0].title), `"Vì sao" không dẫn dữ kiện nào: ${step.why}`);
-  // (4) nút chính: động từ + đích, ≤ 4 từ, không dùng ký tự ▶ thay icon.
   assert.ok(step.ctaLabel.split(/\s+/).length <= 4, `nhãn nút quá dài: ${step.ctaLabel}`);
   assert.ok(!/▶|→/.test(step.ctaLabel), 'ký tự mũi tên trong nhãn nút');
   assert.equal(step.ctaHref, '/lesson/python_advanced?lesson=0');
-
-  // Vạch ngăn rồi tới lối ra: hai thứ này là phần phân biệt GỢI Ý với LỆNH.
-  assert.equal(step.note, 'Đây là gợi ý, không phải lệnh.');
-  assert.equal(step.exitLabel, 'Tự chọn bài');
-  assert.match(step.exitHref, /^\/courses\/python_advanced/);
-  // Lối ra dẫn tới danh sách bài, không dẫn vòng về chính bài được gợi ý.
-  assert.notEqual(step.exitHref, step.ctaHref);
 });
 
-test('không có giáo trình thì thẻ gợi ý vẫn đứng được, không in "undefined"', () => {
+test('không có giáo trình thì thẻ vẫn đứng được, không in "undefined"', () => {
   const step = nextStep({ courseId: 'x', lessonUrl: '/lesson/x' });
   for (const value of Object.values(step)) {
-    assert.ok(!/undefined|null|NaN/.test(value), `thẻ gợi ý in ra giá trị rỗng: ${value}`);
+    assert.ok(!/undefined|null|NaN/.test(value), `thẻ in ra giá trị rỗng: ${value}`);
   }
-  assert.ok(step.why.length > 20, 'vẫn phải có câu "vì sao", kể cả khi thiếu dữ liệu');
+});
+
+/**
+ * Luật chống đúng loại AI slop đã có thật trên trang này: KHÔNG KỂ VỀ CƠ CHẾ
+ * CỦA CHÍNH MÌNH, KHÔNG TRẢ LỜI CÂU HỎI CHƯA AI HỎI, KHÔNG RÀO ĐÓN.
+ *
+ * Bản cũ của thẻ này có bốn lớp quanh đúng một cái nút: nhãn "hệ thống chọn",
+ * một đoạn "Vì sao bài này" giải thích vì sao bài 1 là bài 1, câu "Đây là gợi
+ * ý, không phải lệnh", và một lối ra "Tự chọn bài" trong khi danh sách 48 bài
+ * nằm ngay sau thẻ khoá học ở cột bên. Cạnh nó là một khối ghi chú giải thích
+ * rằng bài học và Bàn thí nghiệm chạy Python ở hai nơi — nói trước khi người
+ * đọc gặp sự khác biệt đó, và lặp lại đúng điều `LAB_TILE.description` đã nói.
+ *
+ * Mỗi lớp sinh ra để chống một nỗi lo của người LÀM sản phẩm. Người mở trang
+ * chủ không mang nỗi lo nào trong số đó.
+ */
+test('trang chủ không kể về cơ chế, không rào đón, không giải thích trước', () => {
+  const CAM = [
+    [/hệ thống chọn|do hệ thống|AI (?:chọn|đề xuất)/i, 'kể về cơ chế bên trong'],
+    [/không phải lệnh|chỉ là gợi ý|bạn không bắt buộc/i, 'rào đón cho một gợi ý'],
+    [/vì sao bài này/i, 'trả lời câu hỏi chưa ai hỏi'],
+    [/hai nơi chạy python|không giống nhau/i, 'giải thích trước khi người đọc gặp'],
+  ];
+  const be_mat = [...ALL_COPY, ...vietStrings(PAGE)];
+  for (const [mau, ly_do] of CAM) {
+    const dinh = be_mat.filter((x) => mau.test(x));
+    assert.deepEqual(dinh, [], ly_do + ':\n' + dinh.join('\n'));
+  }
+  // Tự kiểm phép so trên chính câu chữ CŨ — nếu nó không bắt được bản cũ thì
+  // ca này vô dụng, và đó đúng là cách một hàng rào chết mà vẫn báo đạt.
+  const CU = [
+    'Gợi ý bước tiếp · hệ thống chọn',
+    'Đây là gợi ý, không phải lệnh.',
+    'Vì sao bài này: Đây là bài mở đầu chặng M1',
+    'Hai nơi chạy Python, không giống nhau',
+  ];
+  for (let k = 0; k < CAM.length; k += 1) {
+    assert.ok(CAM[k][0].test(CU[k]), `mẫu ${k} không bắt nổi chuỗi cũ: ${CU[k]}`);
+  }
 });
 
 /* ═══ 3 · không chuỗi ngày, không chỉ số bịa, không khoá ════════════════ */
 
 const ALL_COPY = [
   ...Object.values(INTRO), ...Object.values(SECTIONS), ...Object.values(FEEDBACK),
-  ...Object.values(HONEST_NOTE), LAB_TILE.description, ...LAB_TILE.tags,
+  LAB_TILE.description, ...LAB_TILE.tags,
+  // Thẻ khoá học in "8 chặng · 48 bài" — từ lúc thẻ bắt đầu bỏ đoạn
+  // "Vì sao bài này", đây là chỗ DUY NHẤT còn nói hai đơn vị đó trên
+  // trang chủ, nên bề mặt quét phải gồm nó.
+  ...courseTileTags(courseShape(MODULES), 'Nâng cao'),
   footerLine(2026, 'Advanced Python'),
   ...Object.values(nextStep({
     courseId: 'python_advanced',
     lessonUrl: '/lesson/python_advanced',
-    firstStage: MODULES[0].title,
     firstLesson: MODULES[0].lessons[0],
   })),
 ];
@@ -400,8 +428,8 @@ test('nói thật về nơi chạy code: Bàn thí nghiệm chạy trên máy ch
   assert.ok(!/trong trình duyệt/.test(LAB_TILE.description), 'thẻ công cụ hứa sai nơi chạy');
   assert.match(LAB_TILE.description, /máy chủ/);
   assert.ok(LAB_TILE.tags.some((t) => /máy chủ/.test(t)));
-  // Khối ghi chú trung thực mở đầu bằng câu nói CÁI GÌ LÀ THẬT.
-  assert.match(HONEST_NOTE.strong, /trình duyệt/);
+  // Nơi chạy được nói ở CHÍNH thẻ công cụ, không ở một khối ghi chú riêng
+  // trên trang chủ: khối đó lặp lại đúng điều này, trước khi người đọc gặp.
 });
 
 /* ═══ 7 · thang cỡ chữ ═════════════════════════════════════════════════ */

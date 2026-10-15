@@ -36,7 +36,6 @@ import {
   courseTileTags,
   FEEDBACK,
   footerLine,
-  HONEST_NOTE,
   INTRO,
   LAB_TILE,
   nextStep,
@@ -63,7 +62,6 @@ export default function HomePage() {
     ? nextStep({
       courseId: headCourse.id,
       lessonUrl: headCourse.lessonUrl,
-      firstStage: modules[0]?.title,
       firstLesson: modules[0]?.lessons[0],
     })
     : null;
@@ -147,46 +145,17 @@ export default function HomePage() {
             <aside className={styles.aside} aria-label="Việc tiếp theo">
               {step && (
                 <section className={styles.next} aria-labelledby="nextTitle">
-                  {/* (1) nhãn — nói rõ AI đề xuất, để người học biết đây là máy
-                      nói, không phải bổn phận. */}
-                  <p className={styles.nextLabel}>{step.label}</p>
-                  {/* (2) tiêu đề — mã + tên bài, đúng cách gọi bài ở app và DB. */}
+                  {/* Tên bài, rồi nút. Bản cũ có thêm bốn lớp chú giải
+                      quanh đúng cái nút này — xem lý lẽ cắt bỏ ở đầu khối
+                      `nextStep` trong `lib/home-copy.ts`. */}
                   <h2 className={styles.nextTitle} id="nextTitle">{step.title}</h2>
-                  {/* (3) vì sao — lý do lấy từ thứ tự giáo trình, thứ duy nhất
-                      trang này biết chắc. */}
-                  <p className={styles.nextWhy}>
-                    <strong>Vì sao bài này: </strong>
-                    {step.why}
-                  </p>
-                  {/* (4) nút chính */}
                   <a className={styles.nextCta} href={step.ctaHref}>
                     {step.ctaLabel}
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
                   </a>
-                  {/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của
-                      lời mời. */}
-                  <div className={styles.nextFoot}>
-                    <span>{step.note}</span>
-                    <a className={styles.nextExit} href={step.exitHref}>{step.exitLabel}</a>
-                  </div>
                 </section>
               )}
 
-              {/* Khối ghi chú trung thực: mở đầu bằng câu in đậm nói cái gì là
-                  thật. Bản cũ của thẻ công cụ hứa "chạy ngay trong trình duyệt"
-                  cho cả /ide, trong khi /ide gửi mã lên máy chủ. */}
-              <section className={styles.note} aria-labelledby="noteTitle">
-                <h2 className={styles.noteTitle} id="noteTitle">
-                  <span className={styles.noteIcon} aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="9" /><path d="M12 11v5M12 8h.01" /></svg>
-                  </span>
-                  {HONEST_NOTE.title}
-                </h2>
-                <p className={styles.noteText}>
-                  <strong>{HONEST_NOTE.strong}</strong>
-                  {HONEST_NOTE.rest}
-                </p>
-              </section>
             </aside>
           </div>
 

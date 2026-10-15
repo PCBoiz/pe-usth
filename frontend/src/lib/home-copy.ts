@@ -109,80 +109,52 @@ export const LAB_TILE = {
   tags: ['Python 3.12', 'Chạy trên máy chủ'],
 } as const;
 
-/**
- * Khối ghi chú trung thực (design-system-v2 mục 1.4) — mở đầu bằng câu in đậm
- * nói CÁI GÌ LÀ THẬT, rồi mới tới hệ quả.
- *
- * Vì sao có trên trang chủ: trang chủ là chỗ duy nhất hai nơi chạy Python đứng
- * cạnh nhau (bài học ↔ Bàn thí nghiệm). Không nói ra thì người học coi chúng là
- * một và đổ lỗi cho mình khi kết quả khác nhau.
- */
-export const HONEST_NOTE = {
-  title: 'Hai nơi chạy Python, không giống nhau',
-  strong: 'Bài học chạy Python ngay trong trình duyệt bạn đang mở.',
-  rest:
-    ' Bàn thí nghiệm thì gửi mã lên máy chủ. Cùng Python 3.12, nhưng thư viện có '
-    + 'sẵn và thời gian chạy có thể khác nhau.',
-} as const;
 
-/** Bốn phần của thẻ gợi ý, đúng thứ tự bản thiết kế. */
+/**
+ * Thẻ "bắt đầu ở đâu" của trang chủ: một tên bài và một cái nút.
+ *
+ * ===========================================================================
+ * VÌ SAO NÓ TỪNG DÀI GẤP BỐN, VÀ VÌ SAO BỊ CẮT
+ * ===========================================================================
+ * Bản cũ có bốn lớp chú giải quanh đúng một cái nút:
+ *   · nhãn "Gợi ý bước tiếp · hệ thống chọn" — kể về cơ chế bên trong;
+ *   · một đoạn "Vì sao bài này" giải thích rằng bài mở đầu không đòi bài nào
+ *     trước đó — tức là giải thích vì sao bài 1 là bài 1;
+ *   · câu "Đây là gợi ý, không phải lệnh" — lời rào đón cho một gợi ý;
+ *   · một lối ra "Tự chọn bài", trong khi danh sách 48 bài nằm ngay trang khoá
+ *     mà thẻ khoá học ở cột bên trái đã dẫn tới.
+ *
+ * Cả bốn đều sinh ra từ lý lẽ của NGƯỜI LÀM chứ không từ nhu cầu của người
+ * đọc: bản thiết kế dặn "thẻ gợi ý thiếu lý do và lối ra thì thành mệnh lệnh",
+ * nên mỗi lớp được thêm vào để chống một nỗi lo. Nhưng người mở trang chủ
+ * không có nỗi lo nào trong số đó — họ muốn biết bắt đầu ở đâu rồi bấm vào.
+ *
+ * LUẬT RÚT RA, áp cho mọi câu chữ sau này:
+ *  1. Đừng kể về cơ chế của chính mình. "Hệ thống chọn" là chuyện nội bộ.
+ *  2. Đừng trả lời câu hỏi chưa ai hỏi. Không ai thắc mắc vì sao bài 1 đứng
+ *     đầu.
+ *  3. Đừng rào đón. Một gợi ý không cần nói nó là gợi ý; nếu bấm vào là làm
+ *     theo lệnh thì vấn đề nằm ở thiết kế, không ở lời đính chính.
+ *  4. Một lối ra chỉ đáng có khi không còn lối nào khác.
+ */
 export type NextStep = {
-  /** (1) nhãn: ai đề xuất. */
-  label: string;
-  /** (2) tiêu đề: mã + tên bài. */
+  /** Mã + tên bài — thứ duy nhất ở đây là thông tin. */
   title: string;
-  /** (3) "Vì sao bài này" — lý do lấy từ dữ liệu, không phải lời cổ vũ. */
-  why: string;
-  /** (4) nút chính. */
   ctaLabel: string;
   ctaHref: string;
-  /** Vạch ngăn rồi tới lối ra yên tĩnh. */
-  note: string;
-  exitLabel: string;
-  exitHref: string;
 };
 
-/**
- * Thẻ gợi ý bước tiếp của trang chủ.
- *
- * Vì sao gợi ý là BÀI 1 chứ không phải "bài bạn đang học": trang chủ không gọi
- * API nào (nó công khai, và `apiFetch` gặp 401 sẽ TỰ TẠO tài khoản khách — xem
- * bẫy trong AGENTS.md), nên ở đây hệ thống thật sự KHÔNG BIẾT người xem học tới
- * đâu. Thà nói đúng cái mình biết — thứ tự giáo trình — rồi chỉ sang trang khoá,
- * nơi có phiên thì mới nhắc "Tiếp tục ở bài X".
- *
- * Và vì sao vẫn phải có "Vì sao" + lối ra: thẻ gợi ý thiếu hai phần đó biến
- * thành một cái lệnh. Bản thiết kế bắt lỗi này ở chính màn Main (Main thiếu
- * "Vì sao" và thiếu lựa chọn khác).
- */
 export function nextStep(input: {
   courseId: string;
   lessonUrl: string;
-  /** Tên chặng đầu, ví dụ "M1 · Tiến trình và subprocess". */
-  firstStage?: string;
   /** Tên bài đầu, ví dụ "P01 · Program, process và tài nguyên". */
   firstLesson?: string;
 }): NextStep {
-  const stage = input.firstStage?.trim();
-  const lesson = input.firstLesson?.trim();
   return {
-    label: 'Gợi ý bước tiếp · hệ thống chọn',
-    title: lesson || 'Bài 1',
-    why: stage
-      ? `Đây là bài mở đầu chặng ${stage}, nó không đòi bài nào trước đó. `
-        + 'Nếu bạn đã học dở, trang khoá sẽ nhắc bạn đang ở bài nào.'
-      : 'Đây là bài mở đầu của khoá, nó không đòi bài nào trước đó. '
-        + 'Nếu bạn đã học dở, trang khoá sẽ nhắc bạn đang ở bài nào.',
-    ctaLabel: 'Mở bài 1',
+    title: input.firstLesson?.trim() || 'Bài 1',
+    ctaLabel: 'Mở bài',
     // `?lesson=` đếm từ 0 (xem lesson/python_advanced/page.tsx).
     ctaHref: `${input.lessonUrl}?lesson=0`,
-    note: 'Đây là gợi ý, không phải lệnh.',
-    exitLabel: 'Tự chọn bài',
-    /**
-     * Neo `#cd-curriculum` là danh sách 48 bài ở trang khoá. Hash sai thì cùng
-     * lắm là mở đầu trang khoá, nên lối ra này không bao giờ dẫn vào chỗ chết.
-     */
-    exitHref: `/courses/${input.courseId}#cd-curriculum`,
   };
 }
 
