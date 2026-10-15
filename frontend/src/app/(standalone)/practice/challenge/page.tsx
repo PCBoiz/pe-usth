@@ -22,9 +22,9 @@ const CHALLENGE_CSS = ['/static/css/edu-theme.css', '/static/css/studio-tokens.c
 
 export const metadata: Metadata = {
   title: 'Thử thách ôn – Programming EDU',
-  description:
-    'Chế độ ôn một câu một lần của khoá Advanced Python: chốt từng câu, sai lần đầu được '
-    + 'nghĩ lại một lần. Không tính giờ, không xếp hạng, chỉ so với chính bạn.',
+  // Một câu, không dẫn dắt. Câu cũ kể luật chơi rồi liệt kê ba thứ hệ thống
+  // KHÔNG làm — đúng khuôn đã cắt khắp sản phẩm ngày 15/10.
+  description: 'Ôn lại các câu trắc nghiệm của khoá Advanced Python.',
 };
 
 export default function ChallengePage() {

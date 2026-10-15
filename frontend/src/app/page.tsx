@@ -136,7 +136,6 @@ export default function HomePage() {
                     <h2 className={styles.pill} id="toolsTitle">
                       {SECTIONS.tool}
                     </h2>
-                    <span className={styles.colNote}>{SECTIONS.toolNote}</span>
                   </div>
                   <ul className={styles.list}>
                     {TOOLS.map((tool) => (

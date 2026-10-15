@@ -589,7 +589,7 @@ export default function ChallengeClient() {
             <aside className={styles.aside} aria-label="Chỉ số của bạn và mức theo chặng">
               <section className={styles.metric} aria-labelledby="metricTitle">
                 <p className={styles.metricLabel} id="metricTitle">
-                  Chỉ tăng, không bao giờ tụt
+                  Đúng ngay lần đầu
                 </p>
                 <p className={styles.metricBig}>{firstTry.answers}</p>
                 <p className={styles.metricUnit}>lượt trả lời đúng ngay lần đầu</p>
@@ -800,7 +800,7 @@ export default function ChallengeClient() {
             </ul>
 
             <div className={styles.metric}>
-              <p className={styles.metricLabel}>Chỉ tăng, không bao giờ tụt</p>
+              <p className={styles.metricLabel}>Đúng ngay lần đầu</p>
               <p className={styles.metricBig}>{firstTry.answers}</p>
               <p className={styles.metricUnit}>lượt trả lời đúng ngay lần đầu</p>
               {/* Chỉ con số của lượt này. Hai lời trấn an cũ ("Câu còn sai

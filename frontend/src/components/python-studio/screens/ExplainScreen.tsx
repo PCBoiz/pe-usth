@@ -50,11 +50,6 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
       scr={scr}
       metaLabel={metaLabel}
       title={demo ? 'Ví dụ minh hoạ cơ chế' : 'Đọc lại ví dụ theo từng ý'}
-      description={
-        demo
-          ? 'Cùng cơ chế với bài, nhưng dữ liệu khác — đọc hiểu rồi tự áp dụng vào đề.'
-          : undefined
-      }
     >
       <CodeAnnotated
         filename={one.code.filename || 'example.py'}

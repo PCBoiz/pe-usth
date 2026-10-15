@@ -87,12 +87,16 @@ export const INTRO = {
   title: 'Khoá học',
 } as const;
 
-/** Nhãn hai cột ở trang chủ. */
+/**
+ * Nhãn hai cột ở trang chủ. ĐÚNG hai nhãn, không câu dẫn nào.
+ *
+ * `toolNote` ("Dùng được cả khi không mở bài học") đã gỡ 15/10: nó không hứa
+ * gì sai, nhưng nó là một câu MÔ TẢ treo dưới một nhãn — đúng khuôn mà chủ
+ * sản phẩm bảo cắt sạch. Thẻ công cụ ngay bên dưới đã nói nó làm gì.
+ */
 export const SECTIONS = {
   course: 'Khoá đang mở',
   tool: 'Công cụ',
-  /** Không hứa hẹn gì về chất lượng; chỉ nói chỗ dùng. */
-  toolNote: 'Dùng được cả khi không mở bài học',
 } as const;
 
 /**
@@ -168,7 +172,7 @@ export function nextStep(input: {
  *
  * Bản cũ viết thẳng trong JSX: "© 2026 Programming EDU. Học lập trình trực quan
  * và hiệu quả." Nửa sau là một LỜI HỨA VỀ CHẤT LƯỢNG do chính sản phẩm tự
- * phong, đúng loại câu mà `SECTIONS.toolNote` ở trên đã chép lại luật để tránh
+ * phong — đúng loại câu mà cả trang chủ nay đã cắt sạch
  * ("không hứa hẹn gì về chất lượng; chỉ nói chỗ dùng"). Và nó không kiểm được:
  * "trực quan" với "hiệu quả" không có số nào ở sau, không có đo nào — giống
  * `rating: 4.8` đã gỡ ở a04c3cf, chỉ là không có ô sao để ai thấy ngay là bịa.

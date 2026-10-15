@@ -772,3 +772,58 @@ test('nút góp ý ở trang khoá dùng ĐÚNG nhãn của FEEDBACK.title', () 
     `trang khoá không dùng nhãn "${FEEDBACK.title}" — một biểu mẫu mà hai tên`,
   );
 });
+
+/* ═══ 8 · ba câu cuối của đợt cắt văn kể lể ════════════════════════════ */
+
+/**
+ * Chủ sản phẩm chốt chuẩn gắt nhất sau ba lượt cắt: "hơi liên quan đến kể lể
+ * hoặc có chút yếu tố kể lể như thế là xoá".
+ *
+ * Ba câu dưới đây từng được một lượt soát xếp vào "cần chủ sản phẩm quyết" vì
+ * chúng đứng giữa ranh giới — vừa là thông tin, vừa hơi kể lể. Quyết: xoá cả
+ * ba.
+ *
+ *  · `SECTIONS.toolNote` "Dùng được cả khi không mở bài học" — không hứa gì
+ *    sai, nhưng là một câu MÔ TẢ treo dưới một nhãn, mà thẻ công cụ ngay dưới
+ *    đã nói nó làm gì.
+ *  · nhãn chỉ số "Chỉ tăng, không bao giờ tụt" — nói về CÁCH TÍNH thay vì gọi
+ *    tên con số. Nay là "Đúng ngay lần đầu", và dòng đơn vị ngay dưới vẫn in
+ *    "lượt trả lời đúng ngay lần đầu".
+ *  · `ExplainScreen` "Cùng cơ chế với bài, nhưng dữ liệu khác — đọc hiểu rồi
+ *    tự áp dụng vào đề." — giảng giải trước khi người đọc gặp.
+ *
+ * CÒN GIỮ, và đây là ranh giới: câu hiện ra lúc HỎNG ("các phương án bạn chọn
+ * vẫn còn đây", "đây là sự cố bên chúng tôi, không phải phiên học của bạn").
+ * Chúng không mô tả sản phẩm — chúng nói chuyện gì vừa xảy ra và làm gì tiếp,
+ * đúng lúc người học cần biết. Cắt chúng là quay lại đổ lỗi cho người học,
+ * thứ `lib/lesson-load-error.ts` vừa sửa.
+ */
+test('ba câu cuối của đợt cắt đã đi, và không mọc lại', () => {
+  const CAM = [
+    ['Dùng được cả khi không mở bài học', 'mô tả treo dưới một nhãn'],
+    ['Chỉ tăng, không bao giờ tụt', 'nhãn nói về cách tính thay vì tên con số'],
+    ['Cùng cơ chế với bài', 'giảng giải trước khi người đọc gặp'],
+  ];
+  const be_mat = [
+    ...ALL_COPY,
+    ...vietStrings(PAGE),
+    ...vietStrings(read('src', 'app', '(standalone)', 'practice', 'challenge', 'ChallengeClient.tsx')),
+    ...vietStrings(read('src', 'components', 'python-studio', 'screens', 'ExplainScreen.tsx')),
+  ];
+  for (const [chuoi, ly_do] of CAM) {
+    const dinh = be_mat.filter((x) => x.includes(chuoi));
+    assert.deepEqual(dinh, [], ly_do + ': ' + dinh.join(' | '));
+  }
+  // Tự kiểm phép so trên chính ba chuỗi CŨ — không bắt nổi bản cũ thì ca này
+  // là hàng rào chết mà vẫn báo đạt.
+  for (const [chuoi] of CAM) {
+    assert.ok(['Dùng được cả khi không mở bài học',
+      'Chỉ tăng, không bao giờ tụt',
+      'Cùng cơ chế với bài, nhưng dữ liệu khác — đọc hiểu rồi tự áp dụng vào đề.',
+    ].some((cu) => cu.includes(chuoi)), `phép so không bắt nổi chuỗi cũ: ${chuoi}`);
+  }
+});
+
+test('SECTIONS chỉ còn hai nhãn, không câu dẫn nào', () => {
+  assert.deepEqual(Object.keys(SECTIONS).sort(), ['course', 'tool']);
+});

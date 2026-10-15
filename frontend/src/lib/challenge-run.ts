@@ -150,7 +150,7 @@ export function challengeGate(input: {
       body:
         `Bạn đã xong ${done} bài nên kho ôn mới có khoảng ${done * QUESTIONS_PER_LESSON} câu. `
         + `Xong ${LESSONS_FOR_FULL_RUN} bài là mỗi lượt đủ ${SAMPLE_MAX} câu. `
-        + 'Ôn bây giờ vẫn được, luật chơi không đổi.',
+        ,
       expected,
       canStart: true,
       completedCount: done,
@@ -634,7 +634,7 @@ export function stageProgress(modules: unknown, completed: ReadonlyArray<number>
  * sách những thứ không có là lời tự khen trá hình.
  */
 export const RUN_RULES: ReadonlyArray<string> = [
-  'Sai lần đầu thì được nghĩ lại ngay trong lượt, không phải chờ hôm sau.',
+  'Sai lần đầu thì được nghĩ lại ngay trong lượt.',
   'Cả đề được chấm một lượt ở máy chủ sau khi bạn chốt câu cuối, nên phản hồi '
     + 'hiện ở cuối lượt chứ không hiện ngay sau mỗi câu.',
   'Dừng giữa lượt thì lượt đó không được lưu — máy chủ chỉ chấm khi cả đề được nộp.',
