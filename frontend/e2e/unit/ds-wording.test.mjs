@@ -107,8 +107,18 @@ const exemptUsed = new Set();
 function hits(pattern, allow = () => false) {
   const out = [];
   for (const [path, code] of SOURCES) {
-    code.split('\n').forEach((line, i) => {
-      if (!pattern.test(line) || allow(line)) return;
+    code.split('\n').forEach((raw, i) => {
+      // CHUẨN HOÁ trước khi so. Hai thứ từng lọt qua MỌI luật của file này, đo
+      // được bằng cách tự nhồi vi phạm rồi chạy lại:
+      //  · NFD — "khoá" gõ bằng dấu TỔ HỢP (k-h-o-a + U+0301) là dãy ký tự
+      //    khác hẳn "khoá" dựng sẵn, nên /bị khoá/ không khớp. Trình soạn thảo
+      //    trên macOS và chữ dán từ web sinh ra NFD mà nhìn trên màn hình
+      //    không ai phân biệt được.
+      //  · Khoảng trắng không ngắt (U+00A0) và hai dấu cách liền nhau —
+      //    "8  module" và "8 module" đều lọt mẫu /8 module/.
+      // `allow()` vẫn nhận dòng NGUYÊN vì vài luật xét ký tự ngay cạnh mẫu.
+      const line = raw.normalize('NFC').replace(/[^\S\n]+/g, ' ');
+      if (!pattern.test(line) || allow(raw)) return;
       if (EXEMPT_PATHS.includes(path)) {
         exemptUsed.add(path);
         return;
@@ -231,10 +241,12 @@ test('không dỗ dành bằng hạt "nhé", không nhắc "Đừng sai"', () =>
 
      Mẫu: "nhé" KHÔNG đi liền một chữ cái nào nữa — để "nhét" (nhét mã vào địa
      chỉ, ở `ide-handoff`/`IdeClient`) không bị tính. Tự kiểm cả hai phía: */
-  const HAT = /nhé(?!\p{L})/u;
+  // Cờ `i`: "Nhé" đầu câu từng lọt — mẫu cũ chỉ bắt chữ thường.
+  const HAT = /nhé(?!\p{L})/iu;
   assert.ok(HAT.test('Chưa đúng — thử lại nhé'), 'mẫu không bắt nổi chuỗi cũ');
   assert.ok(HAT.test('Đừng sai nhé!'), 'mẫu không bắt nổi nhãn cũ của LessonDbDesign');
   assert.ok(!HAT.test('nhét mã vào địa chỉ'), 'mẫu bắt lầm "nhét"');
+  assert.ok(HAT.test('Nhé, thử lại'), 'mẫu bỏ sót chữ hoa đầu câu');
 
   assertAbsent(
     HAT,

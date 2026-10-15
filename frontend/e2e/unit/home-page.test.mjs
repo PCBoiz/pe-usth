@@ -79,12 +79,43 @@ const SHELL_CSS = read('src', 'components', 'CourseShell.module.css');
 const CURRICULA = JSON.parse(read('src', 'lib', 'curricula.json')).CURRICULA;
 const MODULES = CURRICULA.python_advanced.modules;
 
-/** Mọi chuỗi hiển thị trong một file (nháy đơn/đôi/backtick) có chữ Việt. */
+/**
+ * Chuẩn hoá một chuỗi TRƯỚC khi đem so.
+ *
+ * Hai thứ từng lọt qua mọi luật bên dưới, đo được bằng cách tự gây lỗi:
+ *  · NFD — "khoá" gõ bằng dấu TỔ HỢP (k-h-o-a + U+0301) là dãy ký tự khác hẳn
+ *    "khoá" dựng sẵn, nên /bị khoá/ không khớp. Trình soạn thảo trên macOS và
+ *    dữ liệu dán từ web sinh ra NFD mà không ai thấy khác biệt trên màn hình.
+ *  · Khoảng trắng không ngắt (U+00A0) và hai dấu cách liền nhau — "8  module"
+ *    và "8 module" đều lọt /8 module/.
+ */
+const chuanHoa = (s) => s.normalize('NFC').replace(/\s+/g, ' ').trim();
+
+const CO_DAU_VIET =
+  /[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩậắằẳẵặẹẻẽếềểệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+
+/**
+ * Mọi chuỗi HIỂN THỊ trong một file — cả chuỗi trong dấu nháy LẪN chữ viết
+ * thẳng giữa hai thẻ JSX.
+ *
+ * Phần JSX là bản vá ngày 15/10/2026. Trước đó hàm này chỉ bóc chuỗi trong
+ * nháy, mà chữ viết thẳng giữa hai thẻ là cách TỰ NHIÊN NHẤT để viết câu trong
+ * React. Hậu quả đo được bằng cách tự nhồi vi phạm vào trang: cả ba luật trung
+ * thực của trang chủ — không chuỗi ngày, không ổ khoá, không chỉ số bịa — đều
+ * XANH với `<span>🔒 Chặng 2 mở khi đủ 5 bài</span>` và `<span>320 XP tuần
+ * này</span>`. Luật nghiêm mà bề mặt quét hụt thì luật chỉ nghiêm trên giấy.
+ */
 function vietStrings(code) {
   const out = [];
-  for (const m of code.matchAll(/(['"`])((?:[^\\\n]|\\.)*?)\1/g)) {
-    const s = m[2];
-    if (/[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩậắằẳẵặẹẻẽếềểệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i.test(s)) out.push(s);
+  for (const m of code.matchAll(/(['"`])((?:[^\\n]|\.)*?)\1/g)) {
+    if (CO_DAU_VIET.test(m[2].normalize('NFC'))) out.push(chuanHoa(m[2]));
+  }
+  // Chữ giữa hai thẻ JSX: phần `>…<` không chứa thẻ hay biểu thức `{…}`.
+  // Lấy cả đoạn không dấu tiếng Việt, vì chính emoji và con số là thứ mấy luật
+  // dưới đi tìm (🔥 ổ khoá, "320 XP tuần này").
+  for (const m of code.matchAll(/>([^<>{}]+)</g)) {
+    const s = chuanHoa(m[1]);
+    if (s && (CO_DAU_VIET.test(s) || /[🔥🔒\d]/u.test(s))) out.push(s);
   }
   return out;
 }
