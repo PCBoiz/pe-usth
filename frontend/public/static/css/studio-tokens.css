@@ -83,6 +83,55 @@
   /* ── BẢNG TOKEN v2 · độ nổi ───────────────────────────────── */
   /* Chỉ MỘT mức nổi, dành cho thẻ đang mở. */
   --ds-shadow-open: 0 6px 22px rgba(42, 32, 23, .08);
+  /* Quầng "Bạn ở đây" — §1.3 khai nó cùng chỗ với shadow-open nhưng bảng này
+     bỏ sót, nên mỗi màn tự viết lại một quầng khác. */
+  --ds-halo: 0 0 0 8px rgba(185, 63, 240, .2);
+
+  /* ── BẢNG TOKEN v2 · thang bo góc ─────────────────────────────
+     Sáu bậc, chép nguyên design-system-v2 §1.3 ("Bo góc, nét viền, độ nổi,
+     chuyển động").
+
+     VÌ SAO KHAI MUỘN: bảng này ra đời ngày 14/10 bằng cách chép MỖI bảng màu
+     của §1.3, bỏ cả ba thang còn lại. Hệ quả đo ngày 15/10 trên 13 file
+     *.module.css trong phạm vi: **15 giá trị bo góc khác nhau** (2 3 4 6 8 10
+     12 14 16 17 18 20 26 999 50%) trong khi chỉ có hai token bo góc tồn tại
+     (--st-card-radius, --st-code-radius) và cả hai là 16px viết cứng. Thiếu
+     thang thì không ai BIẾT mình đang thêm bậc thứ mười sáu.
+
+     Thang KHÔNG đổi giá trị thị giác của gì cả: nó chỉ đặt tên cho đúng sáu
+     bậc bản thiết kế đã chốt. Bậc nào không có trong thang (2 3 6 10 14 17 18
+     20 26) thì CỐ Ý để nguyên px và ghi vào danh sách chờ chủ sản phẩm —
+     quy bừa 14 → 12 hay 18 → 16 là đổi hình, không phải dọn token. */
+  --ds-r-xs:        4px;    /* code nội dòng, ô trống trong code */
+  --ds-r-sm:        8px;    /* dòng code, ô biến, chip vuông */
+  --ds-r-md:        12px;   /* khối con, callout, phương án trắc nghiệm */
+  --ds-r-lg:        16px;   /* thẻ, panel, khung code lớn, bìa sổ */
+  --ds-r-pill:      999px;  /* nút, chip */
+  --ds-r-round:     50%;    /* nút trạng thái bài, nút icon tròn */
+
+  /* ── BẢNG TOKEN v2 · thang nét viền ───────────────────────────
+     Bốn bậc theo §1.3. Bản thiết kế đếm được 8 độ dày trong 9 artboard
+     (1 · 1,5 · 2 · 2,5 · 3 · 3,5 · 4 · 5) và chốt lại còn bốn.
+     Trong repo hiện chỉ còn 1 · 2 · 3 · 5px, tức đã gần thang; 5px là chỗ
+     §1.3 (bw-rail 4px) và §1.4 ("Phản hồi sau trả lời: rail 5px") nói khác
+     nhau, nên để nguyên và hỏi chủ sản phẩm. */
+  --ds-bw-1:        1px;    /* viền thẻ, đường chia */
+  --ds-bw-2:        2px;    /* viền thứ bấm được, nét đứt trạng thái */
+  --ds-bw-3:        3px;    /* vòng nhấn trong hình động, focus ring */
+  --ds-bw-rail:     4px;    /* thanh nhấn trái/trên của callout */
+
+  /* ── BẢNG TOKEN v2 · thang chuyển động ────────────────────────
+     Ba bậc theo §1.3: phản hồi / hiện ra / lật trang. Chỉ đổi transform và
+     opacity, và mọi chỗ dùng phải có nhánh `prefers-reduced-motion`.
+
+     Đo ngày 15/10: 17 thời lượng khác nhau đang dùng (0,1 → 1,8 s) và chỉ
+     ba trong số đó (0,2 · 0,32 · 0,45) trùng thang. Những bậc còn lại —
+     nhất là 0,15 s dùng ở 10 chỗ cho đúng vai "phản hồi" của dur-fast —
+     KHÔNG tự đổi ở đợt này: 200 ms chậm hơn 150 ms một phần ba, người dùng
+     thấy được. Ghi vào danh sách chờ chốt. */
+  --ds-dur-fast:    200ms;  /* phản hồi: hover, nhấn, đổi trạng thái */
+  --ds-dur-base:    320ms;  /* hiện ra: thẻ, callout, khối gợi ý */
+  --ds-dur-page:    450ms;  /* lật trang: chuyển màn trong bài */
 
   /* ── BẢNG TOKEN v2 · thang cỡ chữ ─────────────────────────────
      Luật của bản thiết kế: không có chữ nào nhỏ hơn 15px, và câu nào
@@ -132,7 +181,7 @@
 
   /* ── khối code ────────────────────────────────────────────── */
   --st-code-bg:     var(--ds-code-bg);
-  --st-code-radius: 16px;
+  --st-code-radius: var(--ds-r-lg);
   /* Trước đây là rgba(255,255,255,.28) và bị dùng LÀM MÀU CHỮ cho số
      dòng — trộn ra ≈#5B534D, chỉ 2,3:1 trên nền code. Nay chỉ còn là
      ĐƯỜNG KẺ; màu số dòng dùng --ds-code-num (6,04:1). */
@@ -163,7 +212,7 @@
      hoạ của bài vẽ ở khổ 1280×640; ở cột 680 nó hiện chưa tới một nửa nên chữ
      trong sơ đồ xuống còn 6–7px, không đọc nổi. */
   --st-col-wide:    1328px;
-  --st-card-radius: 16px;
+  --st-card-radius: var(--ds-r-lg);
 
   /* ── khung bài học ────────────────────────────────────────── */
   --st-page-bg:     var(--ds-page);
