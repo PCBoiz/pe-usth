@@ -13,7 +13,7 @@
  *
  * BUMP mỗi khi sửa bất kỳ file nào trong public/static/css hoặc public/static/js.
  */
-export const ASSET_VERSION = '2026-10-15c';
+export const ASSET_VERSION = '2026-10-15d';
 
 /** Gắn ?v= cho asset nội bộ; bỏ qua URL tuyệt đối (CDN) và href đã có query. */
 export function withAssetVersion(url: string): string {

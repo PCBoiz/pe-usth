@@ -428,3 +428,36 @@ test('mỗi cặp MIỄN phải còn che một vi phạm THẬT, và nêu lý do
  *   · thêm một cặp MIỄN trỏ vào `table_explorer.js` (file sạch) → **1 ca**:
  *     "mỗi cặp MIỄN phải còn che một vi phạm THẬT".
  */
+
+/* ═════════════════════════════════════════════════════════════════════════
+   Điều kiện tiên quyết ở trang khoá db_design phải CÓ THỂ đúng
+   ═════════════════════════════════════════════════════════════════════════
+   `course_db_design.js` vẽ một ổ khoá cạnh "Biết SQL cơ bản" khi người học
+   chưa ghi danh khoá lập trình nào. Điều kiện cũ hỏi ba mã 'cpp' / 'java' /
+   'python': hai cái đầu đã bị xoá ở 9bc42c1, cái thứ ba nay là khoá RỖNG do
+   seed dựng (bẫy trong AGENTS.md). Nên ổ khoá đó hiện VĨNH VIỄN với mọi
+   người — nó mô tả một cánh cửa không có chìa.
+
+   Ca này đỏ nếu danh sách mã đó không còn giao với danh mục đang chạy. Nó
+   cố ý so với `catalog.ts` chứ không khoá cứng chuỗi 'python_advanced': đổi
+   tên khoá trong danh mục mà quên chỗ này thì ổ khoá lại kẹt, và lần sau sẽ
+   không ai nhớ nó nằm trong một file JS legacy. */
+test('ổ khoá tiên quyết của db_design còn mở được bằng khoá CÓ THẬT', () => {
+  const js = readFileSync(join(FE, 'public', 'static', 'js', 'course_db_design.js'), 'utf8')
+    .replace(/\/\*[\s\S]*?\*\//g, ' ')
+    .replace(/^[ \t]*\/\/.*$/gm, '');
+  const dk = /hasProgrammingBasics[\s\S]{0,400}?return[^;]+;/.exec(js);
+  assert.ok(dk, 'không tìm thấy điều kiện tiên quyết');
+  const maTrongDK = [...dk[0].matchAll(/e\.id === '([a-z0-9_]+)'/g)].map((m) => m[1]);
+  assert.ok(maTrongDK.length > 0, 'điều kiện không hỏi mã khoá nào');
+
+  const cat = readFileSync(join(FE, 'src', 'lib', 'catalog.ts'), 'utf8');
+  const maTrongDanhMuc = [...cat.matchAll(/^\s*id:\s*'([a-z0-9_]+)',/gm)].map((m) => m[1]);
+  const giao = maTrongDK.filter((x) => maTrongDanhMuc.includes(x));
+  assert.ok(
+    giao.length > 0,
+    'điều kiện tiên quyết chỉ hỏi những khoá KHÔNG còn trong danh mục ('
+      + maTrongDK.join(', ') + ' vs ' + maTrongDanhMuc.join(', ')
+      + ') — ổ khoá sẽ hiện vĩnh viễn với mọi người',
+  );
+});

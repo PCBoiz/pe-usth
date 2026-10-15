@@ -396,7 +396,14 @@ function applySkillUnlocks(completedSet) {
 /** C8-3: Prereq indicator — green ✓ if user has SQL basics (proxy: enrolled in cpp/java/python) */
 function applyPrereqStatus(enrolledList) {
   var hasProgrammingBasics = (enrolledList || []).some(function (e) {
-    return e && (e.id === 'cpp' || e.id === 'java' || e.id === 'python');
+    // Ba mã dưới là khoá của bản Django cũ: 'cpp' và 'java' đã bị xoá, còn
+    // 'python' nay là khoá RỖNG do seed dựng (xem bẫy trong AGENTS.md). Nên
+    // trước bản sửa này, điều kiện KHÔNG BAO GIỜ đúng được với người học
+    // hôm nay — ổ khoá cạnh "Biết SQL cơ bản" hiện vĩnh viễn, và nó mô tả
+    // một cánh cửa không có chìa. Thêm 'python_advanced', khoá lập trình
+    // DUY NHẤT còn trong danh mục (frontend/src/lib/catalog.ts).
+    return e && (e.id === 'python_advanced'
+      || e.id === 'cpp' || e.id === 'java' || e.id === 'python');
   });
 
   var item = document.querySelector('[data-prereq="sql"]');
