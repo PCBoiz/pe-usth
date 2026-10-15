@@ -196,17 +196,34 @@ export function nextStep(input: {
  * "trực quan" với "hiệu quả" không có số nào ở sau, không có đo nào — giống
  * `rating: 4.8` đã gỡ ở a04c3cf, chỉ là không có ô sao để ai thấy ngay là bịa.
  *
- * Thay bằng thứ chân trang thật sự dùng được: nói đây là khoá nào và chạy bản
- * Python nào. Cả hai đều lấy TỪ DANH MỤC chứ không chép tay, nên đổi khoá là
- * chân trang đổi theo — không nằm lại thành một câu khẳng định sai.
+ * Nhưng bản sửa ĐẦU TIÊN rơi sang phía ngược lại: `© 2026 Programming EDU ·
+ * Advanced Python · Python 3.12`. Ba mảnh danh từ nối bằng dấu chấm giữa,
+ * không một động từ, chữ "Python" hai lần trong bốn từ — và chân trang của một
+ * sản phẩm tiếng Việt không còn chữ tiếng Việt nào. Nó đọc như dòng footer của
+ * một thư viện npm. Sửa một lời nói sai không có nghĩa là viết như biên bản.
  *
- * Năm cũng KHÔNG viết cứng: bản cũ ghi "© 2026", tới 2027 là tự thành sai.
- * `courseLabel` vắng (danh mục rỗng) thì bỏ hẳn nửa sau, đừng bịa tên khoá.
+ * Bản này giữ nguyên hai ràng buộc (không hứa gì về chất lượng, không bịa số)
+ * nhưng nói ra một VIỆC: khoá nào, và chạy ở đâu. "không cần cài gì" là chỗ duy
+ * nhất còn mang một khẳng định, và nó đo được — bài học nạp Pyodide từ cùng
+ * origin, người học không cài Python; trang khoá cũng đang nói đúng câu đó
+ * trong khối "KHOÁ HỌC BAO GỒM", nên hai chỗ không nói hai kiểu.
+ *
+ * Số bản Python (`3.12`) thì bỏ hẳn: nó VIẾT CỨNG ngay trong template này —
+ * chú thích cũ khẳng định "cả hai đều lấy TỪ DANH MỤC chứ không chép tay", mà
+ * chỉ `label` là thật. Con số đúng ở đâu thì nêu ở đó (`LAB_TILE.tags`), không
+ * ở một chỗ không ai đọc lại.
+ *
+ * Năm KHÔNG viết cứng: bản cũ ghi "© 2026", tới 2027 là tự thành sai.
+ * `courseLabel` vắng (danh mục rỗng) thì bỏ hẳn nửa sau, đừng bịa tên khoá —
+ * và nửa sau mở bằng chính `label`, nên đừng thêm chữ "Khoá" vào template
+ * (tên khoá nào bắt đầu bằng "Khoá" là ra "Khoá Khoá …").
  */
 export function footerLine(year: number, courseLabel?: string): string {
   const head = `© ${year} Programming EDU`;
   const label = courseLabel?.trim();
-  return label ? `${head} · ${label} · Python 3.12` : head;
+  return label
+    ? `${head} · ${label} chạy ngay trong trình duyệt, không cần cài gì`
+    : head;
 }
 
 /** Thẻ góp ý — nói rõ góp ý đi về đâu (bản cũ: "Góp ý cho chúng tôi"). */

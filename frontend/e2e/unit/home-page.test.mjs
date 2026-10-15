@@ -354,6 +354,37 @@ test('chân trang không tự phong chất lượng, và không viết cứng n�
   const nam = PAGE.match(/\b20\d\d\b/g) ?? [];
   assert.deepEqual(nam, [], `app/page.tsx còn năm viết cứng: ${nam.join(', ')}`);
 
+  /* (c2) 15/10/2026 — hai lưới MỚI, vì bản sửa đầu tiên trượt sang phía bên
+     kia: `© 2026 Programming EDU · Advanced Python · Python 3.12`. Nó đạt mọi
+     phép so ở trên (không từ khoe, tên khoá lấy từ danh mục, năm theo tham số)
+     mà vẫn là ba mảnh danh từ không động từ, không còn chữ tiếng Việt nào, và
+     chữ "Python" hai lần trong bốn từ. Hai lưới dưới đây tự kiểm trên ĐÚNG
+     chuỗi đó trước. */
+  const CU2 = '© 2026 Programming EDU · Advanced Python · Python 3.12';
+  const VIET = /[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩậắằẳẵặẹẻẽếềểệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+  // Số bản Python/Pyodide viết cứng trong chân trang: không có nguồn nào ở đây
+  // để đọc lại, nên nâng Pyodide là câu này lệch im lặng.
+  const BAN_CUNG = /\bPython\s*\d|\bPyodide\s*\d|\bv?\d+\.\d+(\.\d+)?\b/;
+  assert.ok(!VIET.test(CU2), 'lưới "có chữ tiếng Việt" không bắt nổi bản khô khốc');
+  assert.ok(BAN_CUNG.test(CU2), 'lưới "số bản viết cứng" không bắt nổi "Python 3.12"');
+
+  assert.ok(
+    VIET.test(now),
+    'chân trang của một sản phẩm tiếng Việt không còn chữ tiếng Việt nào — '
+    + `nó đã thành dòng tem phiên bản: ${now}`,
+  );
+  assert.ok(
+    !BAN_CUNG.test(now),
+    `chân trang viết cứng một số bản, mà ở đây không có nguồn nào để đọc lại: ${now}`,
+  );
+  // Và nửa sau phải NÓI MỘT VIỆC, không chỉ nối thêm danh từ: ít nhất một động
+  // từ của câu. Danh sách hẹp và nêu thẳng, đừng nới thành "có chữ là đạt".
+  assert.match(
+    now,
+    /\b(chạy|học|viết|mở|lưu|chấm)\b/,
+    `nửa sau chân trang không có động từ nào — ba mảnh danh từ không phải một câu: ${now}`,
+  );
+
   // (d) và chân trang phải đi qua hàm, không quay về chuỗi thẳng trong JSX.
   assert.match(PAGE, /footerLine\(/);
   assert.ok(
@@ -664,3 +695,31 @@ for (const mode of ['light', 'dark']) {
  *   `.tag: 4.28 < 4.5` và `.nextCta: 3.19 < 4.5`. (Ca này đọc màu TỪ CSS nên nó
  *   bắt được cả lần đổi màu không đi qua bảng token.)
  */
+
+/* ═══ 8 · thẻ góp ý gọi cùng một tên ở cả hai chỗ ═══════════════════════ */
+
+test('nút góp ý ở trang khoá dùng ĐÚNG nhãn của FEEDBACK.title', () => {
+  /* Lỗi thật đã sửa 15/10/2026. Thẻ góp ý ở trang chủ đã đổi sang "Góp ý cho
+     nhóm làm khoá" (FEEDBACK.title) vì ngôi "chúng tôi" dựng ra một công ty vô
+     hình ở phía kia và không nói góp ý VỀ CÁI GÌ. Nút góp ý ở trang khoá —
+     mở ĐÚNG một biểu mẫu đó, qua cùng `feedbackFormHref()` — thì vẫn ghi "Góp ý
+     cho chúng tôi". Một biểu mẫu, hai cái tên, trên hai trang liền nhau.
+
+     Nhãn đọc TỪ NGUỒN (`home-copy.ts`) chứ không chép tay: đổi nhãn ở đó mà
+     quên trang khoá là ca này đỏ, chứ không trôi đi như lần trước.
+
+     Vì sao KHÔNG cấm trần ngôi "chúng tôi" ở mọi nơi: nó có một chỗ dùng đúng —
+     `components/lesson-chrome/UnknownScreenNotice.tsx` nói "Chỗ này là lỗi của
+     chúng tôi, không phải do bạn làm sai". Ở đó ngôi thứ nhất là để hệ thống
+     NHẬN LỖI, không phải để tự xưng. Cấm trần là làm mất đúng câu đó. */
+  const CU = 'Góp ý cho chúng tôi';
+  assert.ok(FEEDBACK.title !== CU, 'FEEDBACK.title đã quay về bản cũ');
+  assert.ok(
+    COURSE_DETAIL.includes(CU) === false,
+    `trang khoá còn nhãn cũ "${CU}" — ngôi "chúng tôi" đã bỏ khỏi thẻ góp ý`,
+  );
+  assert.ok(
+    COURSE_DETAIL.includes(FEEDBACK.title),
+    `trang khoá không dùng nhãn "${FEEDBACK.title}" — một biểu mẫu mà hai tên`,
+  );
+});

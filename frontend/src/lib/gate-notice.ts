@@ -24,6 +24,26 @@
  *    viết cứng ở đây dưới dạng số rời: test đọc lại chính `quizPercent()` để
  *    so, vì đã ba lần trong repo này một bảng tham chiếu CHÉP TAY làm test
  *    tưởng mình đang canh nguồn thật.
+ *
+ * 15/10/2026 — "hoàn thành" đổi thành "đã xong", và vì sao đây KHÔNG phải nới
+ * luật cho test xanh. Hai ca test ra hai luật trái nhau, chỉ không đụng nhau vì
+ * `src/lib` từng nằm ngoài bề mặt quét của `ds-wording.test.mjs`:
+ *   · `ds-wording` cấm chữ "hoàn thành" trong chuỗi hiển thị, lý do nêu thẳng
+ *     trong ca đó: "hoàn thành" chỉ dùng cho TÊN TRƯỜNG DỮ LIỆU (`completed`,
+ *     `completedLessons`). Nhãn người học đọc là "đã xong" — trang khoá in
+ *     "· đã xong 7/48", màn Tổng kết in "đã xong". Lời nhắc ở màn nộp bài là
+ *     chỗ thứ ba trên CÙNG một luồng, nên nó gọi tên khác là người học phải tự
+ *     đoán hai chữ đó có cùng nghĩa hay không.
+ *   · `gate-notice.test.mjs` thì ĐÒI `/hoàn thành/i`. Nhưng đọc lại lý do của
+ *     ca đó ("nói đúng MỐC mở lời giải"), cái nó cần canh là cái MỐC — mở khi
+ *     bài được tính xong, không phải ngay sau lần nộp đầu — chứ không phải một
+ *     từ cụ thể. Nên ca đó đổi sang `/đã xong/`: vẫn là một assert DƯƠNG (lưới
+ *     bắt cả chuỗi NFD), vẫn trượt nếu ai viết lại lời hứa "mở sau lần nộp
+ *     đầu", mà thôi khoá cứng đúng chữ mà bảng thuật ngữ đã bỏ.
+ * Tức một bên có lý do về sản phẩm, một bên chỉ dùng từ đó làm cái mốc để so.
+ *
+ * Câu chữ cũng gọn lại: bản cũ có bốn mệnh đề, một dấu chấm phẩy, một "tức
+ * khi", và chữ "bài" ba lần trong hai câu — đọc như điều khoản hợp đồng.
  */
 
 /** Trần điểm khi lượt làm có hỗ trợ — phải khớp `quizPercent()` ở `studio-lesson.ts`. */
@@ -56,10 +76,10 @@ export function gateNotice(input: {
     return {
       strong: 'Bài tổng hợp chặng.',
       rest:
-        ' Bài này không có nút gợi ý — tự viết rồi nộp. Lời giải mẫu mở khi bài'
-        + ' được tính hoàn thành, tức khi code đạt hết ca chấm; nộp mà chưa đạt'
-        + ' thì nó vẫn đóng. Nếu bạn mở lời giải rồi làm lại bài, điểm lượt làm'
-        + ` lại tối đa ${ASSIST_CAP_PCT.boss}%.`,
+        ' Không có nút gợi ý — tự viết rồi nộp. Lời giải mẫu mở khi bài được'
+        + ' tính là đã xong, tức khi code đạt hết ca chấm; nộp mà chưa đạt thì'
+        + ' lời giải vẫn đóng. Mở lời giải rồi làm lại thì điểm lượt sau tối đa'
+        + ` ${ASSIST_CAP_PCT.boss}%.`,
       boss: true,
     };
   }
@@ -67,7 +87,7 @@ export function gateNotice(input: {
     return {
       strong: 'Cửa tự kiểm tra.',
       rest:
-        ' Tự viết rồi nộp trước. Lời giải mẫu mở khi bài được tính hoàn thành —'
+        ' Tự viết rồi nộp trước. Lời giải mẫu mở khi bài được tính là đã xong —'
         + ' không phải ngay sau lần nộp đầu. Mở gợi ý vẫn được, nhưng lượt này'
         + ` ghi nhận là có hỗ trợ nên điểm tối đa ${ASSIST_CAP_PCT.normal}%.`,
       boss: false,

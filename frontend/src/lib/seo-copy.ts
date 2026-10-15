@@ -17,6 +17,28 @@
  */
 
 /**
+ * Câu mô tả riêng của `/lesson/python_advanced`.
+ *
+ * 15/10/2026 — tách ra khỏi `page.tsx`, nơi nó ghi cứng "48 bài". Đúng bẫy
+ * "hai nguồn danh sách bài" trong AGENTS.md: dựng lại giáo trình là câu này
+ * lệch, mà `metadata` sai thì không vỡ build, không đỏ test nào, và không ai
+ * thấy khi xem trang — chính con đường mà câu "Python, Java, HTML/CSS" sống
+ * qua cả đợt xoá 124 file. Số bài TRUYỀN VÀO, lấy từ danh mục (vốn đếm từ
+ * `curricula.json`). Canh bằng `e2e/unit/route-metadata.test.mjs`.
+ *
+ * `lessonCount` ≤ 0 ⇒ "nhiều bài", như `seoDescription()` dưới đây.
+ */
+export function lessonSeoDescription(lessonCount: number): string {
+  const soBai = lessonCount > 0 ? `${lessonCount} bài` : 'nhiều bài';
+  return (
+    `Advanced Python, ${soBai} luyện tập: ghép cặp, đúng/sai, dò lỗi, và cuối `
+    + 'mỗi chặng một bài tổng hợp. Code chấm ngay trong trình duyệt.'
+  );
+}
+
+/**
+ * Câu mô tả gốc, thừa hưởng cho mọi route không khai riêng.
+ *
  * `lessonCount` ≤ 0 nghĩa là chưa đọc được giáo trình: nói "nhiều bài" chứ
  * không in ra số 0, và cũng không bịa một con số.
  */

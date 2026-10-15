@@ -339,9 +339,10 @@ export default function IdeClient() {
         setState({
           status: 'error',
           kind: 'private',
-          message:
-            'Lúc này Bàn thí nghiệm chưa chạy được mã. Các bài học trong khoá vẫn chạy Python '
-            + 'bình thường ngay trong trình duyệt.',
+          // Cùng MỘT câu với nhánh 503 và nhánh docker-chết: người học thấy
+          // cùng một hỏng hóc ("không chạy được trên máy chủ") nên không có lý
+          // do nào để ba nhánh nói ba kiểu. Nguyên nhân thật ở `detail`.
+          message: RUNNER_UNAVAILABLE_MESSAGE,
           // KHÔNG gợi ý PY_RUNNER_PUBLIC=true ở đây. Câu cũ mời người vận hành
           // bật một cờ mở toang route chạy mã cho cả internet, trong khi 401
           // gần như luôn có nghĩa khác: phiên khách chưa kịp cấp. apiFetch đã

@@ -73,14 +73,27 @@ test('không hứa mở lời giải sau LẦN NỘP — đó là câu sai của
   }
 });
 
-test('nói đúng mốc mở lời giải: bài được tính HOÀN THÀNH', () => {
+test('nói đúng mốc mở lời giải: bài được tính là ĐÃ XONG', () => {
   // Mốc thật ở server, đọc lại để chắc là nó chưa đổi.
   assert.ok(
     /gated\s*&&\s*!completed/.test(SERVICE_SRC),
     'server đã đổi điều kiện giữ lời giải — phải đọc lại câu chữ trên màn',
   );
+  /* 15/10/2026 — mẫu đổi từ /hoàn thành/i sang /đã xong/i, và đây không phải
+     nới luật. Ca này tồn tại để canh cái MỐC (lời giải mở khi bài được tính
+     xong, KHÔNG phải ngay sau lần nộp đầu); nó chỉ mượn chữ "hoàn thành" làm
+     chỗ neo. Mà chính chữ đó bị `ds-wording.test.mjs` cấm trong chuỗi hiển thị
+     — "hoàn thành" chỉ dùng cho tên trường dữ liệu, nhãn người học đọc là "đã
+     xong" (trang khoá, màn Tổng kết). Hai ca ra hai luật trái nhau và chỉ
+     không đụng nhau vì `src/lib` từng ngoài bề mặt quét; nay nó trong rồi, nên
+     ca này neo vào đúng nhãn mà sản phẩm dùng. Lưới bắt lời hứa sai vẫn nguyên:
+     xem assert `!/chỉ mở sau lần nộp (đầu|đó)/` ở ca trên. */
   for (const n of [BOSS, GATE_ONLY]) {
-    assert.match(textOf(n), /hoàn thành/i);
+    assert.match(textOf(n), /đã xong/i);
+    assert.ok(
+      !/hoàn thành/i.test(textOf(n)),
+      `lời nhắc lại dùng "hoàn thành" — bảng thuật ngữ chốt "đã xong": ${textOf(n)}`,
+    );
   }
   // Bài tổng hợp nói thẳng hệ quả của việc nộp mà chưa đạt.
   assert.match(textOf(BOSS), /chưa đạt/i);

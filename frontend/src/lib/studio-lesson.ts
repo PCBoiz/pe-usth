@@ -299,12 +299,21 @@ export type StepKey = 'step_1' | 'step_2' | 'step_3' | 'step_4';
 
 export const STEP_KEYS: StepKey[] = ['step_1', 'step_2', 'step_3', 'step_4'];
 
-/** Short label per original step, used for the S1-S4 progress bar. */
+/**
+ * Short label per original step, used for the S1-S4 progress bar.
+ *
+ * 15/10/2026 — `step_4` từ 'Sandbox IDE' thành 'Thử thách độc lập'. Hai từ của
+ * người viết code trong một nhãn người học đọc ("sandbox" + "IDE"), và nhãn đó
+ * là NGUỒN DỰ PHÒNG của `ORIGIN_LABEL`: màn nào `chrome.tsx` chưa có dòng
+ * riêng thì eyebrow in đúng chuỗi này ("S4 · Sandbox IDE"). Tên đã chốt của
+ * màn nộp bài là "Thử thách độc lập" — cùng chuỗi `chrome.tsx` đang dùng cho
+ * `kind: 'sandbox'`, nên đường dự phòng và đường thường thôi nói hai kiểu.
+ */
 export const STEP_LABELS: Record<StepKey, string> = {
   step_1: 'Hiểu & Dự đoán',
   step_2: 'Bẫy ngộ nhận',
   step_3: 'Luyện có hỗ trợ',
-  step_4: 'Sandbox IDE',
+  step_4: 'Thử thách độc lập',
 };
 
 export type PresentStep = { key: StepKey; origin: number; label: string };

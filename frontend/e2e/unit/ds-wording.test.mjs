@@ -52,9 +52,23 @@ function codeOnly(src) {
  * xanh, vì trang khoá nằm NGOÀI bề mặt được kiểm. Bảng thuật ngữ nói về sản
  * phẩm, không nói về một thư mục, nên bề mặt phải là cả sản phẩm.
  */
+/*
+ * 15/10/2026 (lượt hai) — thêm `src/lib`. Lý do đo được, và nó đúng là cái bẫy
+ * mà bề mặt cũ tự dựng ra: cách sửa quen tay trong repo này là TÁCH một chuỗi
+ * khỏi `.tsx` sang `src/lib` "cho `node --test` soi được" — nhưng `ROOTS` lại
+ * không có `src/lib`, nên tách ra là ra khỏi tầm của chính bảng thuật ngữ. Ba
+ * chỗ sống sót đúng theo cách đó, và cả ba đã sửa cùng lượt này:
+ *   · `runner-error.ts` — 'nên IDE chưa chạy được mã. … trong khóa …', là bản
+ *     được dùng ở BỐN chỗ gọi, nhiều hơn bản viết đúng trong `IdeClient.tsx`;
+ *   · `gate-notice.ts` — "hoàn thành" ×2 (xem ghi chú ở ca "đã xong");
+ *   · `figure-motion.ts` — '▶ Chạy hình' / '⏸ Dừng hình'.
+ * Đếm chuỗi có dấu tiếng Việt trong `src/lib`: ~180 chuỗi trên 13 file, tức
+ * đây không phải một góc nhỏ — nó là lượng chữ ngang `src/app`.
+ */
 const ROOTS = [
   ['src', 'app'],
   ['src', 'components'],
+  ['src', 'lib'],
 ];
 
 function walk(dir, out = []) {
@@ -343,13 +357,38 @@ test('chính tả thống nhất "khoá", không lẫn "khóa"', () => {
 });
 
 test('nhãn trạng thái dùng "đã xong", không dùng "hoàn thành"', () => {
-  // Chỉ soi chuỗi hiển thị, vì tên biến/prop `completed` vẫn đúng.
+  /* Chỉ soi chuỗi hiển thị, vì tên biến/prop `completed` vẫn đúng.
+
+     MỘT chuỗi được miễn, và miễn ở mức CHUỖI chứ không mức file (bảng EXEMPT
+     đầu file miễn cả file cho mọi luật — quá rộng cho việc này):
+     `practice-plan.ts` so chuỗi của BACKEND để nhận ra lỗi 400 nào là lỗi
+     "kho câu chưa đủ". Nó không hiện ra cho ai; nó là một khoá để so. Sửa nó
+     theo bảng thuật ngữ là làm hỏng phép so, vì chữ nằm ở
+     `src/quizzes/quizzes.service.ts` phía backend.
+
+     Dòng miễn vẫn phải CÒN KHỚP: nếu backend đổi câu kia thì chuỗi này thành
+     rác và ca dưới cùng (`exemptUsed`-kiểu) sẽ đỏ. */
+  const MIEN_CHUOI = [
+    ['src/lib/practice-plan.ts', 'hoàn thành ít nhất một bài'],
+  ];
+  const mienDung = new Set();
   const offenders = [];
   for (const [path, code] of SOURCES) {
     if (EXEMPT_PATHS.includes(path)) continue;
     for (const m of code.matchAll(/(['"`])((?:[^\\\n]|\\.)*?)\1/g)) {
-      if (/hoàn thành/i.test(m[2])) offenders.push(`${path}: ${m[2].slice(0, 110)}`);
+      const s = m[2].normalize('NFC');
+      if (!/hoàn thành/i.test(s)) continue;
+      const mien = MIEN_CHUOI.find(([p, lit]) => p === path && s.includes(lit));
+      if (mien) { mienDung.add(mien.join('|')); continue; }
+      offenders.push(`${path}: ${s.slice(0, 110)}`);
     }
+  }
+  for (const mien of MIEN_CHUOI) {
+    assert.ok(
+      mienDung.has(mien.join('|')),
+      `dòng miễn chuỗi ${mien[0]} → "${mien[1]}" không còn khớp gì — gỡ nó đi `
+      + '(hoặc backend vừa đổi thông điệp và phép so ở đó đã chết)',
+    );
   }
   assert.deepEqual(
     offenders, [],
@@ -428,10 +467,26 @@ test('một nhóm bài gọi là "chặng", không gọi là "module"', () => {
   // Mẫu bắt đúng chỗ NGƯỜI DÙNG ĐỌC: một con số (hoặc một biểu thức JSX vừa
   // đóng ngoặc) rồi tới chữ "module". Tên lớp CSS `edu-cd-module` và biến
   // `modules.map` không khớp, và chúng vẫn đúng.
+  /* 15/10/2026 (lượt hai) — mẫu nới thêm "bài học", vì mẫu cũ chỉ cấm "module"
+     mà bỏ đúng nửa còn lại của cùng một lỗi. Đo được trên trang khoá: cột TRÁI
+     in "{modules.length} chặng · {total} bài" (có sáu dòng chú thích bảo vệ),
+     rồi 150 dòng sau cột PHẢI in "{course.lessons} bài học" — hai cách gọi nằm
+     cạnh nhau trong MỘT khung nhìn, nên đây không phải lệch giữa hai trang mà
+     lệch trong một cái nhìn.
+
+     Mẫu đòi một con số (hoặc một biểu thức JSX vừa đóng ngoặc) ngay trước, nên
+     câu văn kể chuyện ("trang bài học", "các bài học trong khoá") không bị
+     tính — chữ "bài học" ở đó là danh từ chung, không phải ĐƠN VỊ ĐẾM. */
+  const DEM = /(?:\d|\}) (?:module|bài học)\b/;
+  assert.ok(DEM.test('{modules.length} module · {total} bài học'), 'mẫu không bắt nổi dòng cũ');
+  assert.ok(DEM.test('{course.lessons} bài học'), 'mẫu không bắt nổi đơn vị "bài học"');
+  assert.ok(!DEM.test('Các bài học trong khoá vẫn chạy Python'), 'mẫu bắt lầm danh từ chung');
+
   assertAbsent(
-    /(?:\d|\}) module\b/,
+    DEM,
     'Bảng thuật ngữ (lib/home-copy.ts): khoá → chặng → bài → màn. "module" là từ '
-    + 'của người viết code, không phải từ của người học.',
+    + 'của người viết code; "bài học" làm đơn vị đếm thì cùng một trang có hai '
+    + 'cách gọi cho cùng một thứ.',
   );
 });
 

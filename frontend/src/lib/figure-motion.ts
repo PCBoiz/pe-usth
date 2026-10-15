@@ -137,9 +137,19 @@ export function figureToggleLabel(playing: boolean): string {
   return playing ? 'Dừng hoạt hình của hình minh hoạ' : 'Chạy hoạt hình của hình minh hoạ';
 }
 
-/** Chữ hiện trên nút. */
+/**
+ * Chữ hiện trên nút.
+ *
+ * 15/10/2026 — gỡ hai ký tự `⏸` và `▶` khỏi nhãn. `c501f36` đã dọn sạch `▶`
+ * khỏi trang khoá với lý do viết thẳng ra: trình đọc màn hình đọc TÊN KÝ TỰ
+ * trước nhãn nút. Hai chỗ này sống sót vì `src/lib` nằm ngoài bề mặt quét của
+ * `ds-wording.test.mjs` (nay đã nới). Nút ở `TheoryScreen` có `aria-label`
+ * riêng (`figureToggleLabel`) nên đây không phải lỗi trợ năng — nhưng nó là
+ * hai hệ biểu tượng trong một sản phẩm đã chốt dùng icon SVG, và `▶` vừa bị gỡ
+ * ở trang ngay trước đó trên luồng của người học.
+ */
 export function figureToggleText(playing: boolean): string {
-  return playing ? '⏸ Dừng hình' : '▶ Chạy hình';
+  return playing ? 'Dừng hình' : 'Chạy hình';
 }
 
 /** Câu thay cho hình khi không dựng được bản tĩnh (`figureSource` = 'none'). */

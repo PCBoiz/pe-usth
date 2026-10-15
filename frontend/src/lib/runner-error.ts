@@ -17,16 +17,31 @@ export type RunOutcomeLike = {
 };
 
 /**
- * Câu nói với NGƯỜI HỌC khi máy chủ không có chỗ chạy mã.
+ * Câu nói với NGƯỜI HỌC khi máy chủ không có chỗ chạy mã — MỘT bản, dùng cho
+ * MỌI nhánh hỏng của `/ide` và của Xem-từng-bước (401, 503, docker chết sau
+ * HTTP 200).
  *
  * Trước đây trang dán thẳng thông điệp của backend, nên người dùng thử đọc được
  * "failed to connect to the docker API at npipe:////./pipe/dockerDesktopLinuxEngine".
  * Câu đó nói về hạ tầng của chúng ta, không giúp gì người đang học và còn làm họ
  * tưởng mình gõ sai. Nói đúng việc đang xảy ra, rồi chỉ sang chỗ VẪN chạy được.
+ *
+ * 15/10/2026 — vì sao gộp. Repo có hai bản của ĐÚNG MỘT câu này: bản ở đây
+ * ("…nên IDE chưa chạy được mã. Các bài học trong khóa…") và bản viết thẳng
+ * trong nhánh 401 của `IdeClient.tsx` + `CodeVisualizer.tsx` ("…Bàn thí nghiệm…
+ * trong khoá…"). Bản SAI là bản được dùng nhiều hơn — bốn chỗ gọi — và nó trái
+ * hai luật đã chốt cùng lúc: "IDE" thay cho "Bàn thí nghiệm", và "khóa" thay
+ * cho "khoá". `ds-wording.test.mjs` có ca cho cả hai, nhưng chuỗi đã được tách
+ * sang `src/lib` để test soi được, mà `ROOTS` của ca đó lại chỉ có `src/app` +
+ * `src/components` — tách ra khỏi tầm của chính bộ luật. Nay `ROOTS` có thêm
+ * `src/lib`, và hai bản gộp còn một để không ai sửa một nửa nữa.
+ *
+ * Bỏ luôn "đang được dựng": docker không "đang được dựng", nó không trả lời.
+ * Nguyên nhân thật vẫn giữ trong `detail` ở từng chỗ gọi.
  */
 export const RUNNER_UNAVAILABLE_MESSAGE =
-  'Bộ chạy Python trên máy chủ đang được dựng nên IDE chưa chạy được mã. '
-  + 'Các bài học trong khóa vẫn chạy Python bình thường ngay trong trình duyệt.';
+  'Lúc này Bàn thí nghiệm chưa chạy được mã trên máy chủ. '
+  + 'Bài học trong khoá vẫn chạy Python ngay trong trình duyệt, nên bạn cứ học tiếp.';
 
 /**
  * Dấu hiệu "không có bộ chạy" trong stderr của docker CLI (viết thường để so).

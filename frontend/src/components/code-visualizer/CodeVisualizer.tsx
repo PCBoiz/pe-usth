@@ -600,11 +600,9 @@ export default function CodeVisualizer({
         setState({
           status: 'error',
           kind: 'infra',
-          message:
-            // "Bàn thí nghiệm" + "khoá" theo bảng thuật ngữ: màn này không gọi
-            // mình là IDE ở chỗ người học đọc được, và chính tả là "khoá".
-            'Lúc này Bàn thí nghiệm chưa chạy được mã. Các bài học trong khoá vẫn chạy '
-            + 'Python bình thường ngay trong trình duyệt.',
+          // Cùng MỘT câu với nhánh 503 ở trên: trước đây nhánh này viết thẳng
+          // một bản riêng, nên repo có hai cách nói cho cùng một hỏng hóc.
+          message: RUNNER_UNAVAILABLE_MESSAGE,
           detail: `HTTP 401 — ${errorMessage(body, 'phiên khách chưa sẵn sàng; tải lại trang.')}`,
         });
       } else if (!res.ok) {
