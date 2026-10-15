@@ -199,9 +199,6 @@
   outline-offset: 3px;
 }
 
-/* Nút "Bắt đầu học" trong thẻ giá: rộng hết cột. */
-.startBtn { width: 100%; margin-top: 18px; }
-
 .heroArt {
   width: 220px;
   height: 158px;

@@ -278,6 +278,26 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const ctaLabel = resumeButtonLabel(plan);
   // Neo tới danh sách 48 bài — đích của lối ra "Tự chọn bài".
   const curriculumAnchor = 'cd-curriculum';
+  /**
+   * MỘT nút chính trên một màn, và nó nằm ở chỗ có "Vì sao".
+   *
+   * Trước bản này trang có BA nút nền `--ds-action` cùng khung nhìn — hero,
+   * thẻ giá, thẻ gợi ý — và cả ba trỏ CÙNG một `startUrl`; hai trong số đó
+   * trùng nhau cả nhãn (`ctaLabel`) lẫn icon. Nút trong thẻ giá còn
+   * `width: 100%` nên nó là khối tím to nhất trang. Bản thiết kế §1.4 khai
+   * ĐÚNG MỘT `btn-primary` (và liệt "5 biến thể kích thước" là lỗi cần gộp,
+   * không phải giấy phép nhân bản), còn §1.4 "Khối hệ thống gợi ý" chốt phần
+   * (4) của thẻ gợi ý là nút chính.
+   *
+   * Vì sao hero không bị hạ VÔ ĐIỀU KIỆN: `ResumeCard` chỉ dựng khi
+   * `plan.kind !== 'start'`, nên khách mới KHÔNG có thẻ gợi ý — hạ vô điều
+   * kiện là màn hình đầu tiên của người mới không còn nút chính nào.
+   *
+   * Vì sao thẻ gợi ý không hạ xuống `btnSecondary` được: thẻ đó nền `ink`, mà
+   * `btnSecondary` là viền + chữ `ink` → tàng hình. (Cùng lý do đã ghi ở
+   * `CourseShell.module.css` cho vòng focus của `.resumeBtn`.)
+   */
+  const coTheGoiY = plan.kind !== 'start';
   // Nút góp ý đứng ngay cạnh "Bắt đầu học" vì đây là trang người thử quay lại
   // nhiều nhất; để tận trang chủ thì học xong phải lần ngược ra mới tìm thấy.
   // Không có link hợp lệ thì không dựng nút — xem feedbackHref().
@@ -321,7 +341,10 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                     <h1 className={styles.title}>{course.title}</h1>
                     <p className={styles.subtitle}>{course.subtitle}</p>
                     <div className={styles.heroCta}>
-                      <a className={`${styles.btn} ${styles.btnPrimary}`} href={startUrl}>
+                      <a
+                        className={`${styles.btn} ${coTheGoiY ? styles.btnSecondary : styles.btnPrimary}`}
+                        href={startUrl}
+                      >
                         <Icon name="chevronRight" />
                         {ctaLabel}
                       </a>
@@ -478,7 +501,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 {/* Thẻ gợi ý chỉ dựng khi ĐÃ BIẾT tiến độ (kind !== 'start').
                     Khách vãng lai không có thẻ này — và cũng không có lời gọi API
                     nào để biết, xem useCompletedLessons. */}
-                {plan.kind !== 'start' && (
+                {coTheGoiY && (
                   <ResumeCard
                     plan={plan}
                     title={flatTitles[plan.index] ?? ''}
@@ -490,11 +513,11 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 <div className={styles.card}>
                   <div className={styles.price}>Miễn phí</div>
 
-                  <a className={`${styles.btn} ${styles.btnPrimary} ${styles.startBtn}`} href={startUrl}>
-                    <Icon name="chevronRight" />
-                    {ctaLabel}
-                  </a>
-
+                  {/* KHÔNG có nút ở đây. Nút cũ trùng NHÃN + ICON + HREF với nút
+                      hero, nên nó không thêm một lựa chọn nào — chỉ thêm một khối
+                      tím rộng hết cột. Thẻ này nay làm đúng một việc: nói giá rồi
+                      liệt kê khoá học có gì. Lớp `.startBtn` (width 100%) cũng xoá
+                      theo ở CourseShell.module.css vì không còn ai dùng. */}
                   {/* KHOÁ HỌC BAO GỒM — hai dòng ở đây từng hứa thứ không có:
                       · "Chứng chỉ hoàn thành": không có endpoint, không có màn,
                         không có đường nào phát. Cột `users.certificates` là di sản
