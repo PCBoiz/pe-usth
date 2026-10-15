@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 
 import { ALL_PRECEDENCES } from '@/components/PageStyles';
 import { withAssetVersion } from '@/lib/assetVersion';
+import { findCourse } from '@/lib/catalog';
+import { seoDescription } from '@/lib/seo-copy';
 
 // Root layout TỐI THIỂU — không import CSS global nào ở đây.
 // Mỗi page/layout con tự import ĐÚNG tổ hợp CSS của template gốc
@@ -12,9 +14,18 @@ export const metadata: Metadata = {
   // Lighthouse SEO trên bản triển khai chấm 90 vì THIẾU meta description —
   // không trang nào có. Đặt ở layout gốc thì mọi route thừa hưởng; route nào
   // cần câu riêng (ví dụ trang bài học) tự khai lại `description` của nó.
-  description:
-    'Programming EDU — học lập trình Python, Java, HTML/CSS và thiết kế cơ sở dữ liệu '
-    + 'bằng bài tập chạy ngay trong trình duyệt, có chấm tự động và theo dõi tiến độ.',
+  //
+  // 15/10/2026 — viết lại vì câu cũ quảng cáo thứ không còn: "Java, HTML/CSS"
+  // là hai khoá đã bị XOÁ ở 9bc42c1 (route trả 404), và danh mục
+  // (`lib/catalog.ts`) nay chỉ còn `python_advanced` + công cụ `/ide`. Đây là
+  // câu Google in ra dưới MỌI liên kết của site — trang chủ không khai
+  // `description` riêng nên nó thừa hưởng đúng câu này — nên nói sai ở đây là
+  // nói sai ở chỗ đông người đọc nhất.
+  //
+  // Số bài đếm từ `curricula.json` qua danh mục, không viết cứng: bẫy "hai
+  // nguồn danh sách bài" trong AGENTS.md. Viết cứng "48" thì dựng lại giáo
+  // trình là câu này lệch mà không ai biết.
+  description: seoDescription(findCourse('python_advanced')?.lessons ?? 0),
   icons: {
     // favicon rocket 🚀 y hệt base.html
     icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E",
