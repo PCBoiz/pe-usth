@@ -45,6 +45,7 @@ import {
   courseShape,
   courseTileTags,
   FEEDBACK,
+  footerLine,
   HONEST_NOTE,
   INTRO,
   LAB_TILE,
@@ -154,6 +155,7 @@ test('không có giáo trình thì thẻ gợi ý vẫn đứng được, không
 const ALL_COPY = [
   ...Object.values(INTRO), ...Object.values(SECTIONS), ...Object.values(FEEDBACK),
   ...Object.values(HONEST_NOTE), LAB_TILE.description, ...LAB_TILE.tags,
+  footerLine(2026, 'Advanced Python'),
   ...Object.values(nextStep({
     courseId: 'python_advanced',
     lessonUrl: '/lesson/python_advanced',
@@ -284,6 +286,48 @@ test('không thi đua, không đánh trận, không thúc ép ở câu chữ tra
     bad, [],
     'Giọng đã chốt: dẫn đường kiên nhẫn, không thúc ép, không so sánh với ai.\n'
     + bad.join('\n'),
+  );
+});
+
+test('chân trang không tự phong chất lượng, và không viết cứng năm', () => {
+  /* Lỗi thật đã sửa: `app/page.tsx` in thẳng trong JSX "© 2026 Programming EDU.
+     Học lập trình trực quan và hiệu quả." Nửa sau là lời hứa về CHẤT LƯỢNG do
+     sản phẩm tự phong — không có số nào, không có đo nào ở sau, cùng họ với
+     `rating: 4.8` đã gỡ ở a04c3cf. Chính `SECTIONS.toolNote` đã chép luật này
+     vào repo ("không hứa hẹn gì về chất lượng; chỉ nói chỗ dùng") mà chân
+     trang vẫn trái nó, vì nó không nằm ở file nào có test.
+
+     Ba phép so dưới đây đều TỰ KIỂM trên chuỗi cũ trước, để không có ca nào
+     xanh trong khi câu sai còn nguyên. */
+  const CU = '© 2026 Programming EDU. Học lập trình trực quan và hiệu quả.';
+  const KHOE = ['trực quan', 'hiệu quả', 'tốt nhất', 'dễ dàng', 'nhanh chóng', 'chuyên sâu'];
+
+  // (a) phép so có bắt được chuỗi cũ không — tự kiểm.
+  assert.ok(KHOE.some((t) => CU.includes(t)), 'bảng từ khoe không bắt nổi chuỗi cũ');
+  assert.ok(/\b20\d\d\b/.test(CU));
+
+  const now = footerLine(2026, 'Advanced Python');
+  for (const t of KHOE) {
+    assert.ok(!now.includes(t), `chân trang lại tự phong chất lượng ("${t}"): ${now}`);
+  }
+
+  // (b) nội dung còn lại phải LẤY TỪ DANH MỤC, không chép tay.
+  assert.ok(now.includes('Advanced Python'), 'chân trang không nói khoá nào');
+  assert.ok(footerLine(2026, 'Khoá X').includes('Khoá X'), 'tên khoá bị viết cứng');
+  // Danh mục rỗng ⇒ bỏ hẳn nửa sau, đừng bịa tên khoá.
+  assert.equal(footerLine(2026), '© 2026 Programming EDU');
+  assert.equal(footerLine(2026, '   '), '© 2026 Programming EDU');
+
+  // (c) năm đi theo tham số, nên JSX không được ghi cứng một năm nào.
+  assert.ok(footerLine(2031, 'Advanced Python').includes('2031'));
+  const nam = PAGE.match(/\b20\d\d\b/g) ?? [];
+  assert.deepEqual(nam, [], `app/page.tsx còn năm viết cứng: ${nam.join(', ')}`);
+
+  // (d) và chân trang phải đi qua hàm, không quay về chuỗi thẳng trong JSX.
+  assert.match(PAGE, /footerLine\(/);
+  assert.ok(
+    !/Programming EDU\./.test(PAGE),
+    'câu chân trang lại bị viết thẳng vào JSX — chỗ không có test nào soi',
   );
 });
 

@@ -35,6 +35,7 @@ import {
   courseShape,
   courseTileTags,
   FEEDBACK,
+  footerLine,
   HONEST_NOTE,
   INTRO,
   LAB_TILE,
@@ -221,8 +222,13 @@ export default function HomePage() {
             </section>
           )}
         </main>
+        {/* Câu chân trang ở `home-copy.ts` (có test), và NĂM lấy từ đồng hồ chứ
+            không viết cứng "2026" như bản cũ. Trang này là trang tĩnh render ở
+            server, nên `getFullYear()` chạy lúc DỰNG, không phải lúc người xem
+            mở — tức năm đi theo mỗi lần deploy. Vẫn đúng hơn một con số chép
+            tay, vốn chỉ đổi khi có ai nhớ ra mà sửa. */}
         <footer className={styles.footer}>
-          © 2026 Programming EDU. Học lập trình trực quan và hiệu quả.
+          {footerLine(new Date().getFullYear(), headCourse?.label)}
         </footer>
       </div>
     </>

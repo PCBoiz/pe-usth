@@ -186,6 +186,29 @@ export function nextStep(input: {
   };
 }
 
+/**
+ * Chân trang.
+ *
+ * Bản cũ viết thẳng trong JSX: "© 2026 Programming EDU. Học lập trình trực quan
+ * và hiệu quả." Nửa sau là một LỜI HỨA VỀ CHẤT LƯỢNG do chính sản phẩm tự
+ * phong, đúng loại câu mà `SECTIONS.toolNote` ở trên đã chép lại luật để tránh
+ * ("không hứa hẹn gì về chất lượng; chỉ nói chỗ dùng"). Và nó không kiểm được:
+ * "trực quan" với "hiệu quả" không có số nào ở sau, không có đo nào — giống
+ * `rating: 4.8` đã gỡ ở a04c3cf, chỉ là không có ô sao để ai thấy ngay là bịa.
+ *
+ * Thay bằng thứ chân trang thật sự dùng được: nói đây là khoá nào và chạy bản
+ * Python nào. Cả hai đều lấy TỪ DANH MỤC chứ không chép tay, nên đổi khoá là
+ * chân trang đổi theo — không nằm lại thành một câu khẳng định sai.
+ *
+ * Năm cũng KHÔNG viết cứng: bản cũ ghi "© 2026", tới 2027 là tự thành sai.
+ * `courseLabel` vắng (danh mục rỗng) thì bỏ hẳn nửa sau, đừng bịa tên khoá.
+ */
+export function footerLine(year: number, courseLabel?: string): string {
+  const head = `© ${year} Programming EDU`;
+  const label = courseLabel?.trim();
+  return label ? `${head} · ${label} · Python 3.12` : head;
+}
+
 /** Thẻ góp ý — nói rõ góp ý đi về đâu (bản cũ: "Góp ý cho chúng tôi"). */
 export const FEEDBACK = {
   title: 'Góp ý cho nhóm làm khoá',
