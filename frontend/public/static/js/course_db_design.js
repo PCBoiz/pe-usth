@@ -5,6 +5,8 @@
   const totalLessons = allLessons.length;
   const completed = Math.min(CURRENT_LESSON_IDX, totalLessons);
   allLessons.forEach(function(lesson, idx) {
+    // 15/10/2026: ký tự ▶/✓ ở đây là TRANG TRÍ nhưng nằm trong tên mà trình đọc
+    // màn hình đọc cho dòng bài, nên bản hiện tại bọc nó trong <span aria-hidden>.
     const icon = lesson.querySelector('.cd-lesson-icon');
     const title = lesson.querySelector('.cd-lesson-title');
     lesson.classList.remove('done', 'current', 'locked');
@@ -15,7 +17,7 @@
       lesson.onclick = function() { window.location = LESSON_URL + '?lesson=' + (idx + 1); };
     } else if (idx === completed && completed > 0) {
       lesson.classList.add('current');
-      icon.textContent = '▶';
+      icon.innerHTML = '<span aria-hidden="true">▶</span>';
       lesson.id = 'current-lesson';
       lesson.style.cursor = 'pointer';
       lesson.onclick = function() { window.location = LESSON_URL + '?lesson=' + (idx + 1); };
@@ -107,12 +109,12 @@ var COURSE_PAGE_META = {
       '🏆 <strong>Boss Battle — Social Graph Detective</strong>: điều tra hiệu năng toàn hệ Community từ A–Z'
     ],
     requirements: [
-      { text: 'Hoàn thành "Thiết kế CSDL" (Phần 1) — hoặc vững SELECT / JOIN / GROUP BY', status: 'lock' },
+      { text: 'Xong "Thiết kế CSDL" (Phần 1) — hoặc vững SELECT / JOIN / GROUP BY', status: 'lock' },
       { text: 'Hiểu khóa chính/khóa ngoại & chuẩn hóa cơ bản (1NF–3NF)', status: 'info' },
       { text: 'Trình duyệt web hiện đại — không cần cài database', status: 'info' }
     ],
     sagaRefs: [
-      { href: '/courses/db_design', text: 'Diễn đàn GuildBoard bạn từng audit ở <strong>khóa Cơ bản</strong> (Ticket #14)? Chính nó truyền cảm hứng cho Community này' },
+      { href: '/courses/db_design', text: 'Diễn đàn GuildBoard bạn từng audit ở <strong>khoá Cơ bản</strong> (Ticket #14)? Chính nó truyền cảm hứng cho Community này' },
       { href: '/courses/db_design_nc', text: 'Khi Community bùng nổ, GameHub mở chợ — hẹn bạn ở <strong>Bên trong Database Engine</strong>' }
     ],
     achievements: [
@@ -174,12 +176,12 @@ var COURSE_PAGE_META = {
       '🏆 <strong>Boss Battle — Engine Under Fire</strong>: query chậm + 100 user đồng thời + crash giữa thanh toán, xử hết trong 1 trận'
     ],
     requirements: [
-      { text: 'Hoàn thành "SQL nâng cao, Dữ liệu lớn & Hiệu năng" (Phần 2) — hoặc vững Index/EXPLAIN', status: 'lock' },
+      { text: 'Xong "SQL nâng cao, Dữ liệu lớn & Hiệu năng" (Phần 2) — hoặc vững Index/EXPLAIN', status: 'lock' },
       { text: 'Thành thạo JOIN nhiều bảng & GROUP BY', status: 'info' },
       { text: 'Từng gặp deadlock/timeout ngoài đời là một lợi thế (không bắt buộc)', status: 'info' }
     ],
     sagaRefs: [
-      { href: '/courses/db_design', text: 'Bảng <code>game_catalog</code> trong các ví dụ engine? Bạn đã tự tay dựng nó ở <strong>khóa Cơ bản</strong> (Ticket #01)' },
+      { href: '/courses/db_design', text: 'Bảng <code>game_catalog</code> trong các ví dụ engine? Bạn đã tự tay dựng nó ở <strong>khoá Cơ bản</strong> (Ticket #01)' },
       { href: '/courses/db_design_tc', text: 'Index B+-Tree mà optimizer chọn ở đây — bạn đã học cách xây nó ở <strong>SQL nâng cao & Hiệu năng</strong>' }
     ],
     achievements: [
@@ -640,7 +642,7 @@ function _renderCtaEnrolled(completedLessons) {
       '<div class="edu-cd-stat"><div class="v">' + (total - done) + '</div><div class="l">Còn lại</div></div>' +
       '<div class="edu-cd-stat"><div class="v">0h</div><div class="l">Đã học</div></div>' +
     '</div>' +
-    '<button type="button" class="edu-cd-btn primary" style="width:100%;margin-top:18px" onclick="goLesson()">▶ Bắt đầu học</button>' +
+    '<button type="button" class="edu-cd-btn primary" style="width:100%;margin-top:18px" onclick="goLesson()"><span aria-hidden="true">▶</span> Bắt đầu học</button>' +
     '<button type="button" class="edu-cd-unenroll" id="unenroll-btn" onclick="unenroll()">Hủy đăng ký</button>';
 }
 
@@ -681,7 +683,7 @@ function enroll() {
 }
 
 function unenroll() {
-  if (!confirm('Bạn có chắc muốn hủy đăng ký khóa học Database Design?\nToàn bộ tiến độ sẽ bị xóa.')) return;
+  if (!confirm('Bạn có chắc muốn hủy đăng ký khoá học Database Design?\nToàn bộ tiến độ sẽ bị xóa.')) return;
   var btn = document.getElementById('unenroll-btn');
   if (!btn || btn.disabled) return;
   btn.disabled = true;

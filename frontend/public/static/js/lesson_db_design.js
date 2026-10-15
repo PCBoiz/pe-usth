@@ -2665,8 +2665,8 @@
         '<div class="sv-row"><span class="sv-label">💾 TEMP trên đĩa</span><div class="sv-strip" id="fv-temp"><span class="sv-empty" id="fv-temp-note">chưa dùng</span></div></div>' +
         '<div class="sv-row"><span class="sv-label">✅ OUTPUT π (màn hình user)</span><div class="sv-strip sv-outstrip" id="fv-out"></div></div>' +
         '<div class="sv-ctl">' +
-          '<button type="button" class="sv-btn fv-mode" id="fv-mode-mat">▶ Chạy kiểu GHI TẠM</button>' +
-          '<button type="button" class="sv-btn fv-mode" id="fv-mode-pipe">▶ Chạy kiểu PIPELINE</button>' +
+          '<button type="button" class="sv-btn fv-mode" id="fv-mode-mat"><span aria-hidden="true">▶</span> Chạy kiểu GHI TẠM</button>' +
+          '<button type="button" class="sv-btn fv-mode" id="fv-mode-pipe"><span aria-hidden="true">▶</span> Chạy kiểu PIPELINE</button>' +
           '<button type="button" class="sv-btn" id="fv-btn" disabled>Nhịp kế</button>' +
           '<span class="sv-status" id="fv-status">Cùng một cây scan → σ → π — chọn CÁCH NỐI các toán tử rồi bấm từng nhịp.</span>' +
         '</div>' +
@@ -3784,7 +3784,7 @@
           '</div>' +
         '</div>' +
         '<div class="sv-ctl">' +
-          '<button type="button" class="sv-btn" id="ar-btn">▶ Bắt đầu ANALYSIS</button>' +
+          '<button type="button" class="sv-btn" id="ar-btn">Bắt đầu ANALYSIS</button>' +
           '<span class="sv-status" id="ar-status">Máy vừa khởi động sau crash. Ba pass sẽ lần lượt chạy — bấm để bắt đầu.</span>' +
         '</div>' +
         (cfg.caption ? '<p class="pv-caption">' + escapeHtml(cfg.caption) + '</p>' : '') +
@@ -3814,7 +3814,7 @@
       st.i++;
       if (st.i < cfg.steps.length) {
         var nx = cfg.steps[st.i];
-        setBtn(nx.phase !== s.phase ? ('▶ Sang ' + PHASES[nx.phase].replace(/^.\s/, '')) : 'Nhịp kế →');
+        setBtn(nx.phase !== s.phase ? ('Sang ' + PHASES[nx.phase].replace(/^.\s/, '')) : 'Nhịp kế →');
       } else { setBtn('↺ Chạy lại từ đầu'); litRec(undefined); setStatus((cfg.verdict || '') ); }
     });
   }
@@ -3929,7 +3929,7 @@
         <div class="eyebrow-row"><span class="step-pill">Bước 1 / 4</span></div>
         <h1 class="lesson-title">${l.title}</h1>
         <p class="lesson-intro" style="opacity:0.5;font-style:italic;">
-          Nội dung bài học này đang được cập nhật. Hãy thử bài khác trong roadmap.
+          Nội dung bài học này đang được cập nhật. Thử bài khác trong roadmap.
         </p>
         <button class="next-btn primary btn btn-primary" onclick="goToStep(2)">Tạm bỏ qua, tiếp tục <i class="fa-solid fa-arrow-right"></i></button>
       `;
@@ -4449,7 +4449,7 @@
 
     if (opt.correct) {
       btn.classList.add('correct');
-      showMCQExplain('Chính xác! Tuyệt vời 🎉');
+      showMCQExplain('Chính xác.');
       addXP(15);
       celebrate();
     } else {
@@ -4472,7 +4472,7 @@
           if (o.dataset.correct === 'true') o.classList.add('correct');
           else o.classList.add('dimmed', 'disabled');
         });
-        showMCQExplain('Chưa đúng rồi — đáp án đúng đã highlight. Đọc kỹ rồi tiếp tục nhé!');
+        showMCQExplain('Chưa đúng — đáp án đúng đã được tô sáng. Đọc kỹ rồi tiếp tục.');
       }, 600);
     }
 
@@ -4489,7 +4489,7 @@
         const mg = state.currentLesson.step_2.mini_game;
         if (mg && !isMiniGameSolved()) {
           // Mini-game still unsolved → keep button hidden but unlock "Try mini-game"
-          showMCQExplain('Câu hỏi xong rồi! 🎉 Thử mini-game bên dưới để ghi điểm thêm nhé.');
+          showMCQExplain('Xong phần câu hỏi. Mini-game bên dưới ghi thêm điểm.');
           // AUDIT-FIX 2026-07-07: ở viewport thấp (1520×700) mini-game nằm dưới fold — sau khi
           // xong MCQ, kéo mini-game vào tầm nhìn để "đập vào mắt" (tôn trọng reduced-motion).
           const mgEl = document.getElementById('mini-game');
@@ -4782,7 +4782,7 @@
         <span class="pill-hint-label">Thuộc về:</span>
         <span class="pill-hint-val pill-hint-zone">${zoneName || 'chưa rõ'}</span>
       </div>
-      <div class="pill-hint-foot">Kéo thả — không tự động đặt nhé</div>
+      <div class="pill-hint-foot">Kéo thả — không tự động đặt</div>
     `;
     document.body.appendChild(tip);
 
@@ -7147,7 +7147,7 @@
 
     // Reset terminal
     const term = document.getElementById('terminal-output');
-    term.innerHTML = '<span class="prompt-arrow">$</span> Đang chờ bạn hoàn thành thử thách...';
+    term.innerHTML = '<span class="prompt-arrow">$</span> Đang chờ bạn làm xong thử thách…';
     // C4 (STAGE 2d): reset results panel (cột 3) — clean slate cho mỗi bài
     renderStep4Idle();
 
@@ -7412,7 +7412,7 @@
     const s4 = state.currentLesson.step_4;
 
     if (!userCode) {
-      flashTerminal('error', '[!] Bạn chưa nhập query nào. Hãy thử gõ SELECT ... và nhấn Run.');
+      flashTerminal('error', '[!] Bạn chưa nhập query nào. Thử gõ SELECT ... rồi nhấn Run.');
       renderStep4Error('Chưa có query nào để chạy.');
       return;
     }
@@ -7541,7 +7541,7 @@
     }
 
     if (correct === inputs.length) {
-      flashTerminal('success', `✓ Tuyệt vời! Bạn đã điền đúng ${correct}/${inputs.length} ô.\n\n→ ${s4.xp_reward || 50} XP!`);
+      flashTerminal('success', `✓ Đã điền đúng ${correct}/${inputs.length} ô.\n\n→ ${s4.xp_reward || 50} XP!`);
       addXP(s4.xp_reward || 50);
       if (isSubmit) { triggerStep4Success(); setTimeout(showSuccess, 1200); }
     } else {
@@ -8086,7 +8086,7 @@
     var modal = _exitModal();
     if (!modal) {
       // Fallback an toàn nếu trang không có modal
-      if (confirm('Bạn có chắc muốn thoát? Tiến độ bài này sẽ KHÔNG được lưu (chưa hoàn thành).')) {
+      if (confirm('Bạn có chắc muốn thoát? Tiến độ bài này sẽ KHÔNG được lưu (chưa xong).')) {
         window.location.href = '/courses/' + (state.courseId || 'db_design');
       }
       return;
@@ -8160,7 +8160,7 @@
     document.getElementById('success-lesson-num').textContent = `Bài ${lessonNum}/${totalLessons}`;
     document.getElementById('success-lesson-title').textContent = l.title;
     document.getElementById('success-message').textContent =
-      s4.success_message || 'Bạn đã hoàn thành bài học!';
+      s4.success_message || 'Bạn đã xong bài học.';
     // TRẢ-NỢ 2026-07-05: concept card Option-2 (recommendation §5 Hybrid) — bài khai
     // l.concept_cards_after = [cardId,…] → overlay gắn link hồ sơ đọc thêm trước bài kế.
     const oldCardLinks = document.getElementById('success-card-links');
@@ -8221,7 +8221,7 @@
         // nextPreviewEl uses CSS default display:flex — no inline override needed
         nextPreviewEl.onclick = () => window.nextLesson && window.nextLesson();
       } else {
-        nextTitleEl.textContent = 'Bạn đã hoàn thành toàn bộ khóa học! 🎓';
+        nextTitleEl.textContent = 'Bạn đã xong toàn bộ khoá học.';
         nextPreviewEl.classList.add('flagship-cursor-default');
         nextPreviewEl.onclick = null;
       }
@@ -8903,7 +8903,7 @@ target.addEventListener('dragover', e => { e.preventDefault(); target.classList.
     container.querySelector('#mg-match-check').onclick = () => {
       const allMatched = pairs.length === Object.keys(matches).length;
       if (!allMatched) {
-        showMiniFeedback(container, 'mg-match-feedback', false, `Hãy nối đủ ${pairs.length} cặp trước khi kiểm tra.`);
+        showMiniFeedback(container, 'mg-match-feedback', false, `Cần nối đủ ${pairs.length} cặp trước khi kiểm tra.`);
         return;
       }
       // v4 FIX: chấm TỪNG cặp → tô xanh (đúng ✓) / đỏ (sai ✗) rõ ràng, không còn "luôn hiện đúng".

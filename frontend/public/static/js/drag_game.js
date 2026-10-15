@@ -565,7 +565,9 @@
     /* Phase A (Fix 4 v5) — Run Query button */
     runBtnEl = document.createElement('button');
     runBtnEl.className = 'run-query-btn';
-    runBtnEl.innerHTML = '▶ Chạy Query';
+    // Ký tự ▶ bọc aria-hidden: nó là trang trí, nhưng để trần thì trình đọc màn
+    // hình đọc tên ký tự mũi tên TRƯỚC việc nút làm ("Chạy Query").
+    runBtnEl.innerHTML = '<span aria-hidden="true">▶</span> Chạy Query';
     runBtnEl.disabled = true;
     runBtnEl.addEventListener('click', function() { window.runQuery(); });
     root.appendChild(runBtnEl);
@@ -617,7 +619,7 @@
       var rows = manifestBodyEl.querySelectorAll('.station-mini-table tbody tr');
       rows.forEach(function(tr, idx) { tr.style.setProperty('--i', idx); });
     }
-    if (manifestSubEl) manifestSubEl.textContent = table.dataRows.length + ' dòng · ▶ chạy để xem lọc';
+    if (manifestSubEl) manifestSubEl.textContent = table.dataRows.length + ' dòng · chạy để xem lọc';
     manifestEl.classList.add('show');
   }
 
@@ -1170,7 +1172,7 @@
     isRunning = false;
     if (runBtnEl) {
       runBtnEl.disabled = false;
-      runBtnEl.innerHTML = '▶ Thử lại';
+      runBtnEl.innerHTML = '<span aria-hidden="true">▶</span> Thử lại';
     }
   }
 
@@ -1377,7 +1379,9 @@
       }
       if (runBtnEl) {
         runBtnEl.disabled = false;
-        runBtnEl.innerHTML = success ? '↻ Chạy lại' : '▶ Thử lại';
+        runBtnEl.innerHTML = success
+          ? '<span aria-hidden="true">↻</span> Chạy lại'
+          : '<span aria-hidden="true">▶</span> Thử lại';
       }
     }
 
@@ -1557,7 +1561,7 @@
       const current = activeStations[progress];
       const next = activeStations[progress + 1];
       if (next) {
-        text.innerHTML = `✅ Đã hoàn thành <strong>${current.label}</strong>. Tiếp theo: kéo <strong>${next.label}</strong> vào drop-zone.`;
+        text.innerHTML = `✅ Đã xong <strong>${current.label}</strong>. Tiếp theo: kéo <strong>${next.label}</strong> vào drop-zone.`;
       } else {
         text.innerHTML = `📤 Đang hoàn thiện query. Kiểm tra lại thứ tự các khối.`;
       }
@@ -1657,7 +1661,7 @@
     currentIsComplete = false;
     if (runBtnEl) {
       runBtnEl.disabled = true;
-      runBtnEl.innerHTML = '▶ Chạy Query';
+      runBtnEl.innerHTML = '<span aria-hidden="true">▶</span> Chạy Query';
     }
     if (statusEl) {
       statusEl.classList.remove('warn', 'ok');
