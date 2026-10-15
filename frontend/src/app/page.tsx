@@ -42,9 +42,11 @@ import {
   SECTIONS,
   type ModuleLike,
 } from '@/lib/home-copy';
+import { buildRegions } from '@/lib/world-map';
 
 import CatalogTile from './CatalogTile';
 import styles from './home.module.css';
+import WorldMap from './WorldMap';
 
 const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, { modules?: ModuleLike[] }>;
 
@@ -58,6 +60,10 @@ export default function HomePage() {
   const headCourse = COURSES[0];
   const modules = headCourse ? CURRICULA[headCourse.id]?.modules ?? [] : [];
   const shape = courseShape(modules);
+  // Tám nút chặng của bản đồ: tên + số bài ĐẾM từ chính giáo trình đang
+  // render (curricula.json), liên kết tới bài đầu mỗi chặng. Không có tiến độ
+  // nào ở đây — trang này không gọi API, xem điều (1) ở đầu file.
+  const regions = headCourse ? buildRegions(modules, headCourse.lessonUrl) : [];
   const step = headCourse
     ? nextStep({
       courseId: headCourse.id,
@@ -82,6 +88,15 @@ export default function HomePage() {
             <h1 className={styles.title}>{INTRO.title}</h1>
             <p className={styles.lead}>{INTRO.lead}</p>
           </header>
+
+          {/* BẢN ĐỒ THẾ GIỚI (khối `.map` của artboard). Nằm NGOÀI lưới hai cột,
+              khác artboard một chỗ và chỉ một chỗ: khung bản đồ trong artboard
+              rộng ~1000px, còn cột trái của trang này ~812px — tám nhãn chặng
+              không vừa cột đó mà không đè lên nhau. Tỷ lệ 1000 × 660 và tám vị
+              trí thì giữ nguyên. Chi tiết: `src/lib/world-map.ts`. */}
+          {regions.length > 0 && headCourse && (
+            <WorldMap regions={regions} />
+          )}
 
           <div className={styles.cols}>
             <div className={styles.col}>

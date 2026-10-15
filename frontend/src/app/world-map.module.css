@@ -1,0 +1,228 @@
+/* BẢN ĐỒ THẾ GIỚI của trang chủ — dựng theo khối `.map` của
+   `design/project/Main.dc.html`; mọi thang (màu, cỡ chữ, bo góc 6 bậc, nét
+   viền, chuyển động 200/320/450ms, khoảng cách lưới 4) lấy từ
+   `design-system-v2.md` qua token `--ds-*` khai ở
+   `public/static/css/studio-tokens.css`.
+
+   ── BỐN LUẬT CỦA FILE NÀY ──────────────────────────────────────────────
+
+   1. KHÔNG MÃ MÀU NÀO. Không phải chỉ vì `npm run lint:tokens`: BẢNG MÀU CHƯA
+      CHỐT — chủ sản phẩm đang cân nhắc quay về bảng xanh–đỏ của bản gốc, trong
+      khi artboard là nền kem. Mọi màu đi qua token nên đổi bảng màu chỉ phải
+      sửa một chỗ (studio-tokens.css), không phải tám chỗ ở đây.
+
+   2. TRẠNG THÁI NGHỈ LÀ TRẠNG THÁI CUỐI. `.region` và `.decor` ở đây hiện rõ,
+      không dịch, không mờ. Hoạt ảnh (Web Animations API, xem `WorldMap.tsx`)
+      chạy TỪ trạng thái mờ VỀ trạng thái này. Nhờ vậy mọi đường hỏng — JS
+      không chạy, trình duyệt thiếu WAAPI, animation bị `cancel()`, người dùng
+      xin giảm chuyển động — đều dừng ở chỗ an toàn: bản đồ hiện đủ. Đặt
+      `opacity: 0` ở đây là một bản đồ TRẮNG cho mọi đường hỏng đó.
+
+   3. VỊ TRÍ TÁM NÚT nằm ở `.spot1`…`.spot8`, không phải `style={{ left, top }}`
+      trong TSX: SSR tuần tự hoá style nội tuyến thành `style="…"`, và đó là
+      một trong hai nguyên nhân khiến `style-src 'unsafe-inline'` chưa bỏ được
+      (chú thích ở `next.config.ts`). Các con số này PHẢI khớp `REGION_SPOTS`
+      trong `src/lib/world-map.ts` — `e2e/unit/world-map.test.mjs` so trực tiếp
+      hai nơi, nên lệch một con số là đỏ.
+
+   4. MỐC GÃY BỐ CỤC DÙNG `@container`, KHÔNG `@media`. Bản đồ là một KHỐI, và
+      nó có thể bị đặt vào một cột hẹp (trang chủ có lưới hai cột) trên một màn
+      hình rộng. `@media (max-width: …)` đo bề rộng MÀN HÌNH nên trong trường
+      hợp đó nó vẫn giữ bố cục rộng và tám nhãn đè lên nhau. `@container` đo
+      đúng thứ cần đo: bề rộng chính khối này. */
+
+.wrap {
+  /* Nguồn đo cho `@container` ở cuối file, và cho đơn vị `cqw` mà đường kính
+     nút đọc tới. */
+  container-type: inline-size;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0 0 40px;
+}
+.wrap * { box-sizing: border-box; }
+
+/* ── Nhãn trên khung ─────────────────────────────────────── */
+.label {
+  margin: 0;
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-soft);
+}
+/* ── Khung bản đồ ───────────────────────────────────────── */
+.map {
+  position: relative;
+  /* Đúng tỷ lệ khung 1000 × 660 của artboard: đường đi và tám vị trí đều được
+     vẽ trong hệ toạ độ đó, nên đổi tỷ lệ là lệch hết. */
+  aspect-ratio: 1000 / 660;
+  border: var(--ds-bw-2) solid var(--ds-sketch);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-paper);
+  overflow: hidden;
+}
+
+.decor {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.grid {
+  stroke: var(--ds-desk);
+  stroke-width: var(--ds-bw-1);
+}
+/* Đường đi: NÉT ĐỨT đều một kiểu từ đầu tới cuối. Artboard chia nét đặc
+   ("đã đi") và nét chấm ("chưa học") — đó là tiến độ, mà trang chủ không đọc
+   tiến độ của ai, nên vẽ hai kiểu ở đây là chú giải cho một thứ không có. */
+.route {
+  stroke: var(--ds-sketch);
+  stroke-width: var(--ds-bw-2);
+  stroke-dasharray: 2 10;
+  stroke-linecap: round;
+}
+
+/* ── Nút chặng ──────────────────────────────────────────── */
+/* `translate` (thuộc tính riêng) chứ không `transform: translate(…)`: hoạt ảnh
+   chạy trên `transform`, và nếu chỗ căn giữa cũng nằm trong `transform` thì
+   keyframe sẽ ĐÈ nó mất — tám nút nhảy về đúng điểm toạ độ ngay khung đầu.
+   Hai thuộc tính này ghép với nhau, nên tách ra là an toàn. */
+.region {
+  position: absolute;
+  translate: -50% -48px;
+  width: clamp(140px, 19cqw, 190px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ds-ink);
+  border-radius: var(--ds-r-md);
+}
+
+/* Vị trí tám nút — khớp `REGION_SPOTS` trong src/lib/world-map.ts (có test).
+   Đừng "sửa cho đều": đường zig-zag là thứ giữ nhãn hai nút cạnh nhau không đè
+   lên nhau — M7 (86%) và M8 (90%) lệch 4% ngang nhưng lệch 38% dọc. */
+.spot1 { left: 10%; top: 70%; }
+.spot2 { left: 24%; top: 38%; }
+.spot3 { left: 40%; top: 66%; }
+.spot4 { left: 52%; top: 30%; }
+.spot5 { left: 64%; top: 62%; }
+.spot6 { left: 74%; top: 26%; }
+.spot7 { left: 86%; top: 58%; }
+.spot8 { left: 90%; top: 20%; }
+
+/* Đĩa tròn mang icon. Đường kính theo `cqw` để giữ đúng tỷ lệ của artboard
+   (96 / 1000) khi khối co lại, nhưng có SÀN 64px: vùng chạm tối thiểu của bản
+   thiết kế là 44 × 44, và icon nhỏ hơn 64 thì nét vẽ bắt đầu dính nhau. */
+.disc {
+  flex: none;
+  width: clamp(64px, 9.6cqw, 96px);
+  height: clamp(64px, 9.6cqw, 96px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--ds-bw-2) solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  /* 200ms = bậc "phản hồi: hover, nhấn, đổi trạng thái" của thang. Chỉ đổi
+     MÀU, không dịch chuyển: nút nhảy lên khi trỏ vào làm hàng nhãn bên cạnh
+     bị che. */
+  transition: border-color var(--ds-dur-fast) ease, background-color var(--ds-dur-fast) ease,
+    color var(--ds-dur-fast) ease;
+}
+.disc svg {
+  width: 48%;
+  height: 48%;
+}
+
+.region:hover .disc,
+.region:focus-visible .disc {
+  border-color: var(--ds-violet);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet-deep);
+}
+
+/* Vòng focus thấy rõ: bản đồ là lối đi chính vào khoá nên nó phải dùng được
+   bằng Tab, và vòng focus mặc định của trình duyệt biến mất trên nền kem. */
+.region:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 4px;
+}
+
+.regionLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.regionName {
+  font-size: var(--ds-fs-lead);
+  line-height: 1.3;
+  font-weight: 800;
+}
+/* "M1 · Tiến trình và subprocess · 7 bài" — nhãn/meta ở cỡ 15px, không nhỏ
+   hơn: bản thiết kế chốt không có chữ nào dưới 15px. */
+.regionMeta {
+  font-size: var(--ds-fs-label);
+  line-height: 1.45;
+  font-weight: 600;
+  color: var(--ds-soft);
+}
+
+/* Câu dưới bản đồ: đây là CÂU VĂN người học đọc để biết làm gì tiếp, nên cỡ
+   thân (18px), không phải cỡ nhãn. */
+.caption {
+  margin: 0;
+  max-width: 62ch;
+  font-size: var(--ds-fs-body);
+  line-height: 1.55;
+  color: var(--ds-soft);
+}
+
+/* ── Dạng rút gọn: khối hẹp (điện thoại, hoặc cột hẹp) ───── */
+/* 760px là chỗ tám nhãn bắt đầu đè nhau: nhãn rộng tối thiểu 140px, hai nút
+   gần nhau nhất lệch 10% bề rộng, nên dưới mức này khoảng lệch tụt xuống dưới
+   bề rộng một nhãn. Artboard cũng chuyển sang danh sách dọc ở mốc tương tự
+   (@media 820px trong Main.dc.html) — khác ở chỗ ta đo KHỐI, không đo màn.
+   Thà xếp dọc còn hơn để bản đồ tràn ngang. */
+@container (max-width: 760px) {
+  .map {
+    aspect-ratio: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+  }
+  /* Lưới và đường đi biến mất: ở dạng danh sách chúng không còn mô tả đường
+     đi nào, chỉ là nhiễu phía sau chữ. */
+  .decor {
+    display: none;
+  }
+  .region {
+    position: static;
+    translate: none;
+    width: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    text-align: left;
+    padding: 8px;
+    /* Vùng chạm tối thiểu 44 × 44 của bản thiết kế, tính cả hàng. */
+    min-height: 44px;
+  }
+  .disc {
+    width: 64px;
+    height: 64px;
+  }
+  .regionLabel {
+    align-items: flex-start;
+  }
+  .regionName {
+    font-size: var(--ds-fs-ui);
+  }
+}
