@@ -96,3 +96,41 @@
   .bar { padding: 16px 16px 14px; }
   .bar::after { left: 16px; right: 16px; }
 }
+
+/* ── Điều hướng ─────────────────────────────────────────────────────────
+   Ba mục đứng GIỮA tên sản phẩm và nút sáng/tối. `.bar` đã là flex với
+   `justify-content: space-between`, nên nav tự nhận phần giữa mà không phải
+   đổi bố cục sẵn có.
+
+   Lý do thanh này mọc lại ba mục: xem chú thích đầu `lib/site-nav.ts` — hai
+   màn ôn tập từng không có đường vào nào. */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  /* Hẹp thì cuộn ngang thay vì đẩy nút sáng/tối ra khỏi màn. */
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav::-webkit-scrollbar { display: none; }
+
+.navLink {
+  padding: 8px 14px;
+  border-radius: var(--ds-r-pill);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color var(--ds-dur-fast) ease, background var(--ds-dur-fast) ease;
+}
+.navLink:hover { color: var(--ds-ink); background: var(--ds-tint); }
+.navLink:focus-visible { outline: 3px solid var(--ds-violet); outline-offset: 3px; }
+
+/* Mục đang mở: đổi MÀU CHỮ và nền, không chỉ đậm lên — nét đậm một mình khó
+   nhận ra khi hai mục cạnh nhau. `aria-current` lo phần trình đọc màn hình. */
+.navCurrent {
+  color: var(--ds-violet-deep);
+  background: var(--ds-violet-tint);
+}
