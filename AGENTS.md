@@ -37,7 +37,7 @@ mức này:
 |---|---|---|
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 390 ca, tất cả đạt | 15/10/2026 |
-| Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** | 15/10/2026 |
+| Backend lint | 175 lỗi, 2 cảnh báo — **mốc trần trong CI là 190, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 15/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 15/10/2026 |
 | Frontend unit test | `cd frontend && npm run test:unit` → 419 ca đạt | 15/10/2026 |
@@ -141,6 +141,22 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Vì sao đáng làm, chứ không chỉ để con số đẹp:** `any` ở spec làm test nói dối. Gõ
   `solution_code` thay cho `solutionCode` vẫn biên dịch, `toBeUndefined()` vẫn ĐẠT, và lỗ lộ
   lời giải vẫn còn nguyên. Làm dần từng module rồi hạ mốc trần trong `ci.yml` (chỉ được hạ).
+
+  Đã dọn `courses` ngày 15/10/2026: **263 → 175 lỗi** (`-88`), một file duy nhất
+  (`courses.service.spec.ts`) chiếm cả 88. Hai số đo của lần đó, ghi lại vì chúng chỉnh lại
+  câu "test nói dối" cho chính xác hơn:
+  · Gõ sai TÊN HÀM MOCK (`createMnay`) thì bản `any` VẪN trượt — nhưng trượt lúc chạy, với
+    thông báo của Jest về "received value must be a mock", không phải một câu nói rằng service
+    vừa bỏ mất cái cổng. Bản có kiểu trượt ngay ở `tsc` kèm "Did you mean 'createMany'?".
+  · Gõ sai TÊN FIELD trên kết quả (`res.okk`) kèm matcher phủ định thì bản `any` **im lặng
+    đạt 13/13**, còn bản có kiểu báo "Property 'okk' does not exist". Đây mới là trường hợp
+    test nói dối thật sự — và nó chỉ xảy ra khi matcher phủ định, nên đừng tin rằng mọi lỗi
+    gõ sai đều tự lộ ra.
+  Một thứ nữa đáng biết trước khi làm module sau: bỏ `: any` khỏi `const res` làm lộ ra
+  những lỗi `strictNullChecks` thật mà `any` đang che (`whereDaGui()` có thể `undefined`,
+  `Array.find()` có thể `undefined`). Đừng dập chúng bằng `!` — ở đây mỗi chỗ đó là một
+  khẳng định riêng (`expect(where).toBeDefined()`), vì nếu service ngừng gửi `where` thì `!`
+  sẽ ném TypeError vô nghĩa trong khi bản chất là cái cổng `is_published` vừa mất.
 - **Khoá Advanced có ĐÚNG 3 bài cửa tự kiểm tra, không phải 5.** Danh sách 5 bài
   (B20, I07, I12, N04, N08) là của khoá cơ bản pe-v3 ĐÃ XOÁ; chú thích nào còn ghi nó là chú
   thích cũ. Ba bài hiện tại: **R02** (`sort_order` 20), **DA01** (47), **DA02** (48) — đếm bằng
