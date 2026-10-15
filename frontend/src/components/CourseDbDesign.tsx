@@ -111,7 +111,7 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
                     <div className="cd-meta-item">🎯 <span className="val cd-difficulty-gradient">Cơ bản → Nâng cao</span></div>
                   </div>
                   <div className="edu-cd-hero-cta">
-                    <button type="button" className="edu-cd-btn primary" onClick={() => W().goLesson()}>▶ Bắt đầu học</button>
+                    <button type="button" className="edu-cd-btn primary" onClick={() => W().goLesson()}>Bắt đầu học</button>
                   </div>
                 </div>
                 {/* không kèm .cd-hero-visual: class cũ ép ô vuông 150px, chọi
@@ -353,7 +353,7 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
                   <div className="edu-cd-price-free">🎉 Hoàn toàn không mất phí</div>
 
                   <div id="cd-cta-area">
-                    <button type="button" className="edu-cd-btn primary" style={{ width: '100%', marginTop: 18 }} onClick={() => W().goLesson()}>▶ Bắt đầu học</button>
+                    <button type="button" className="edu-cd-btn primary" style={{ width: '100%', marginTop: 18 }} onClick={() => W().goLesson()}>Bắt đầu học</button>
                   </div>
 
                   <div className="edu-cd-includes">
@@ -362,7 +362,13 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-project-diagram"></i> 3 module (ER / Normalization / Application)</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-clock"></i> ~14 giờ học</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-database"></i> Thực hành trên trình duyệt (không cần cài DB)</div>
-                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-unlock"></i> Mọi bài mở sẵn, không khoá theo thứ tự</div>
+                    {/* `fa-unlock` → `fa-route`: ổ khoá (dù đang mở) vẽ ngay cạnh câu
+                        nói KHÔNG có khoá là hình nói ngược chữ, và hình ở lại trong
+                        đầu lâu hơn câu phủ định. Bản thiết kế §0.3 và §2.2 chốt trạng
+                        thái "chưa học" là "nét đứt + số bài", không phải ổ khoá. Sửa
+                        cùng lúc với bản CourseDetail vì `course-includes.test.mjs`
+                        soi CẢ HAI bề mặt — để lệch là tự mở lại cái lỗ vừa bịt. */}
+                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-route"></i> Mọi bài mở sẵn, không khoá theo thứ tự</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-floppy-disk"></i> Tiến độ lưu theo phiên của bạn</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-desktop"></i> Chạy trong trình duyệt, không cần cài gì</div>
                   </div>

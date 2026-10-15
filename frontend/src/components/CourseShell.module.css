@@ -290,8 +290,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 20px;
-  height: 20px;
+  /* 20 → 24px: chevron nay là 18px ở MỌI chỗ (một cỡ duy nhất, bản thiết kế
+     §1.4). Trong hộp 20px thì 18px gần như tràn viền, không còn lề để thấy ô
+     nền `tint` là một ô. 24 = bậc `space-6`, chừa 3px mỗi bên. */
+  width: 24px;
+  height: 24px;
   color: var(--ds-soft);
   background: var(--ds-tint);
   border-radius: var(--ds-r-sm);

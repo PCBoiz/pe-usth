@@ -81,7 +81,6 @@ const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, Curriculum>;
  * được để trần ở đây.
  */
 const ICON_PATHS = {
-  play: 'M7 4.5v15l12-7.5z',
   chevronLeft: 'm15 18-6-6 6-6',
   chevronRight: 'm9 18 6-6-6-6',
   // "Nội dung khoá học" — quyển sách mở
@@ -91,21 +90,38 @@ const ICON_PATHS = {
   // "Yêu cầu" — ghim
   pin: 'M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z',
   clock: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
-  unlock: 'M7 11V7a5 5 0 0 1 9.9-1M5 11h14v10H5z',
+  /* "Mọi bài mở sẵn, không khoá theo thứ tự" — ĐƯỜNG ĐI, không phải ổ khoá.
+
+     Trước bản này dòng đó mang icon `unlock` (`M7 11V7a5 5 0 0 1 9.9-1M5
+     11h14v10H5z`): một ổ KHOÁ vẽ ngay cạnh câu nói KHÔNG có khoá. Hình ở lại
+     trong đầu lâu hơn câu phủ định, nên người học đọc xong vẫn nhớ "có khoá".
+     Bản thiết kế dành hai mục cho đúng chuyện này (§0.3 "Màn này nói không
+     khoá, màn kia vẽ ổ khoá"; §2.2 "Chưa mở = nét đứt + ổ khoá" → "chưa học =
+     nét đứt + số bài"). Đường gấp khúc nối hai chặng nói đúng thứ dòng chữ
+     nói: có một lộ trình, và không chốt nào trên đó. */
+  route: 'M6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM16 6H9a3 3 0 0 0 0 6h6a3 3 0 0 1 0 6H8',
   save: 'M5 3h11l3 3v15H5zM8 3v6h7V3M8 14h8v7H8z',
   device: 'M7 2h10v20H7zM11 18h2',
 } as const;
 
-function Icon({ name, size = 18 }: { name: keyof typeof ICON_PATHS; size?: number }) {
-  // `fill` khác nhau theo icon: `play` là hình đặc, còn lại là nét.
-  const solid = name === 'play';
+/**
+ * MỘT cỡ duy nhất, 18px (bản thiết kế §1.4 "Nút chính": "chevron SVG 18").
+ *
+ * Trước bản này `size` là tham số và trang dùng BA cỡ — 18 mặc định, 15 ở nút
+ * "Tất cả khoá học", 14 ở mũi tên accordion — tức ba cỡ cho cùng một vai (một
+ * chevron đứng cạnh một dòng chữ). Bỏ tham số là cách rẻ nhất để cỡ thứ tư
+ * không mọc thêm; cần cỡ khác thì phải sửa ở đây và nói vì sao.
+ *
+ * Cũng bỏ nhánh `fill` đặc: nó chỉ tồn tại cho icon `play`, mà `play` đã gỡ.
+ */
+function Icon({ name }: { name: keyof typeof ICON_PATHS }) {
   return (
     <svg
-      width={size}
-      height={size}
+      width={18}
+      height={18}
       viewBox="0 0 24 24"
-      fill={solid ? 'currentColor' : 'none'}
-      stroke={solid ? 'none' : 'currentColor'}
+      fill="none"
+      stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
@@ -217,7 +233,7 @@ function ResumeCard({
         {resumeReason(plan)}
       </p>
       <a className={`${styles.btn} ${styles.btnPrimary} ${styles.resumeBtn}`} href={href}>
-        <Icon name="play" />
+        <Icon name="chevronRight" />
         {resumeButtonLabel(plan)}
       </a>
       <div className={styles.resumeFoot}>
@@ -285,7 +301,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
             {/* <a> thường: về trang chủ bằng tải lại trang, xem SiteHeader. */}
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a className={styles.back} href="/">
-              <Icon name="chevronLeft" size={15} />
+              <Icon name="chevronLeft" />
               <span>Tất cả khoá học</span>
             </a>
 
@@ -306,7 +322,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                     <p className={styles.subtitle}>{course.subtitle}</p>
                     <div className={styles.heroCta}>
                       <a className={`${styles.btn} ${styles.btnPrimary}`} href={startUrl}>
-                        <Icon name="play" />
+                        <Icon name="chevronRight" />
                         {ctaLabel}
                       </a>
                       {feedback && (
@@ -317,7 +333,15 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                           rel="noopener noreferrer"
                           title="Khảo sát ẩn danh về khoá học, mở ở tab mới"
                         >
-                          Góp ý cho chúng tôi
+                          {/* Đúng nhãn của `FEEDBACK.title` (lib/home-copy.ts).
+                              Thẻ góp ý ở trang chủ đã bỏ ngôi "chúng tôi" —
+                              góp ý đi về NHÓM LÀM KHOÁ, nói thẳng thế thì người
+                              bấm biết chữ mình viết tới tay ai; "cho chúng tôi"
+                              là khuôn nút góp ý của mọi trang SaaS và không nói
+                              góp ý về cái gì. Nút này là bản còn sót lại, nên
+                              hai chỗ in hai nhãn cho cùng một biểu mẫu.
+                              Canh bằng e2e/unit/home-page.test.mjs. */}
+                          Góp ý cho nhóm làm khoá
                         </a>
                       )}
                     </div>
@@ -362,7 +386,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                             aria-controls={bodyId}
                             onClick={() => setOpenModules((s) => ({ ...s, [mi]: !open }))}
                           >
-                            <div className={styles.moduleArrow}><Icon name="chevronRight" size={14} /></div>
+                            <div className={styles.moduleArrow}><Icon name="chevronRight" /></div>
                             <div className={styles.moduleName}>{module.title}</div>
                             <div className={styles.moduleMeta}>{module.lessons.length} bài</div>
                           </button>
@@ -467,7 +491,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                   <div className={styles.price}>Miễn phí</div>
 
                   <a className={`${styles.btn} ${styles.btnPrimary} ${styles.startBtn}`} href={startUrl}>
-                    <Icon name="play" />
+                    <Icon name="chevronRight" />
                     {ctaLabel}
                   </a>
 
@@ -486,9 +510,14 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                       bắn vào chân mình. Canh bằng `e2e/unit/course-includes.test.mjs`. */}
                   <div className={styles.includes}>
                     <div className={styles.includesTitle}>KHOÁ HỌC BAO GỒM</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="book" /></span> {course.lessons} bài học</div>
+                    {/* "bài", không phải "bài học": cột trái của CHÍNH trang này
+                        in "{modules.length} chặng · {total} bài" và có chú thích
+                        bảo vệ, rồi dòng này gọi cùng một thứ bằng tên khác —
+                        hai đơn vị trong một khung nhìn. Ca "chặng" của
+                        ds-wording.test.mjs nay cấm cả hai. */}
+                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="book" /></span> {course.lessons} bài</div>
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="clock" /></span> {course.duration}</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="unlock" /></span> Mọi bài mở sẵn, không khoá theo thứ tự</div>
+                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="route" /></span> Mọi bài mở sẵn, không khoá theo thứ tự</div>
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="save" /></span> Tiến độ lưu theo phiên của bạn</div>
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="device" /></span> Chạy trong trình duyệt, không cần cài gì</div>
                   </div>
