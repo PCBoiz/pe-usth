@@ -498,7 +498,12 @@ function Output({ state }: { state: RunState }) {
   if (state.status === 'running')
     return (
       <p className={styles.hint}>
-        <span className={styles.spinner} aria-hidden="true" /> Đang chạy trong sandbox…
+        {/* "Đang chạy trong sandbox…" là bản cũ: "sandbox" lọt tiếng Anh, và
+            nó cũng không trả lời câu người học đang thắc mắc lúc chờ — mã đang
+            chạy Ở ĐÂU. Ở trang này là MÁY CHỦ (POST /api/python/run), khác với
+            bài học chạy Pyodide trong trình duyệt; nói ra thì khối ghi chú
+            "Hai nơi chạy Python" ở trang chủ mới có chỗ bám. */}
+        <span className={styles.spinner} aria-hidden="true" /> Đang chạy trên máy chủ…
       </p>
     );
 

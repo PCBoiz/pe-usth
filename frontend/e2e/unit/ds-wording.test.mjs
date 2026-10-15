@@ -346,6 +346,60 @@ test('nhãn trạng thái dùng "đã xong", không dùng "hoàn thành"', () =>
   );
 });
 
+test('Bàn thí nghiệm không nói "sandbox" với người học', () => {
+  /* Lỗi thật đã sửa, hai chỗ trên trang `/ide`:
+       · `app/ide/IdeClient.tsx` — dòng chờ "Đang chạy trong sandbox…";
+       · `app/ide/page.tsx` — `metadata.description` "chạy trong sandbox cách ly
+         trên máy chủ", tức câu Google in dưới liên kết.
+     "sandbox" là từ của người viết code. Nó còn trượt luôn câu người học đang
+     thắc mắc lúc chờ — mã chạy Ở ĐÂU — mà đó mới là chỗ `/ide` khác bài học:
+     trang này gửi mã lên MÁY CHỦ (`POST /api/python/run`), bài học chạy Pyodide
+     trong trình duyệt. "môi trường cách ly" + "trên máy chủ" nói cùng một việc
+     bằng tiếng Việt, và trùng câu của thẻ công cụ trang chủ
+     (`lib/home-copy.ts`, LAB_TILE.description).
+
+     VÌ SAO CA NÀY CHỈ SOI HAI FILE, chưa phải cả bề mặt: `sandbox` còn là TÊN
+     TRONG MÃ ở rất nhiều chỗ đúng (`kind: 'sandbox'`, `SandboxEditor`,
+     `SandboxTest`), nên luật phải tách "chữ người đọc" khỏi "tên của lập
+     trình viên"; và chữ đó HIỆN CÒN hiện ra ở hai chỗ trong cụm Xem-từng-bước
+     (`components/code-visualizer/CodeVisualizer.tsx` và `lib/trace.ts`) đang
+     được sửa trong một đợt riêng. Nới thành `assertAbsent` trên cả bề mặt khi
+     hai chỗ đó xong — lúc này nới là làm đỏ việc của người khác. */
+  const SOI = [
+    ['src', 'app', 'ide', 'page.tsx'],
+    ['src', 'app', 'ide', 'IdeClient.tsx'],
+  ];
+  // Tự kiểm phép so trên đúng hai chuỗi cũ trước khi đem soi chuỗi mới.
+  const CU = [
+    'Đang chạy trong sandbox…',
+    'Viết và chạy thử mã Python ngay trên trang, chạy trong sandbox cách ly trên máy chủ.',
+  ];
+  for (const s of CU) assert.ok(s.includes('sandbox'), `phép so không bắt nổi: ${s}`);
+
+  const offenders = [];
+  for (const p of SOI) {
+    const code = codeOnly(read(...p));
+    code.split('\n').forEach((line, i) => {
+      // Chỉ những dòng có CHỮ TIẾNG VIỆT mới là chữ người đọc; `kind:
+      // 'sandbox'` và `SandboxEditor` không có dấu nào nên không bị tính.
+      const viet = /[àáâãèéêìíòóôõùúýăđĩũơưạảấầẩậắằẳẵặẹẻẽếềểệỉịọỏốồổỗộớờởỡợụủứừửữựỳỵỷỹ]/i;
+      if (viet.test(line) && /sandbox/i.test(line)) {
+        offenders.push(`${p.join('/')}:${i + 1}  ${line.trim().slice(0, 110)}`);
+      }
+    });
+  }
+  assert.deepEqual(
+    offenders, [],
+    'Bảng thuật ngữ là tiếng Việt (khoá · chặng · bài · màn). Nói "môi trường '
+    + 'cách ly" và nói thẳng mã chạy trên máy chủ.\n' + offenders.join('\n'),
+  );
+
+  // Và dòng chờ phải nói NƠI CHẠY, không chỉ "đang chạy".
+  const IDE = codeOnly(read('src', 'app', 'ide', 'IdeClient.tsx'));
+  assert.match(IDE, /Đang chạy trên máy chủ/);
+  assert.match(codeOnly(read('src', 'app', 'ide', 'page.tsx')), /môi trường cách ly/);
+});
+
 test('không gọi máy của người học là "máy lab" hay "máy thật"', () => {
   assertAbsent(
     /máy lab|máy thật/,
