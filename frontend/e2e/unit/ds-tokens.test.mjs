@@ -156,13 +156,17 @@ test('mọi màu trong bảng token đều là mã hex 6 chữ số, không có 
  * Đưa hai file vào đây để chúng chịu đúng ba luật của trang bài học: không mã
  * màu, không đọc --edu-* (trừ --edu-font), không hạ độ đục để làm nhạt.
  *
- * CHƯA CHUYỂN: `components/CourseShell.module.css` + hai file legacy
- * `/static/css/{edu-course-detail,course_detail}.css` của trang khoá — xem ghi
- * chú ở cuối file.
+ * 15/10/2026 (lượt sau) — thêm `components/CourseShell.module.css`. Trang khoá
+ * là bề mặt cuối cùng còn ở bảng xanh: nó không vẽ bằng CSS module mà bằng lớp
+ * TOÀN CỤC `.edu-cd-*` / `.cd-block*` của hai file legacy nạp qua <link>. Nay
+ * markup đã chuyển sang lớp CSS module (tên băm, không selector legacy nào
+ * khớp được) và cả phần vẽ nằm trong file này, nên nó chịu đúng ba luật trên.
+ * Xem ghi chú ở cuối file.
  */
 const SURFACE_CSS = [
   ['src', 'app', 'home.module.css'],
   ['src', 'components', 'SiteHeader.module.css'],
+  ['src', 'components', 'CourseShell.module.css'],
   // 15/10/2026 — bỏ `python-studio/studio.module.css`: file đó chỉ vẽ trang demo
   // `/lesson/python?demo=list` (PythonStudio.tsx), và cả route lẫn component đã
   // xoá trong đợt dọn route chết, nên đọc file là ném ENOENT.
@@ -322,6 +326,52 @@ const WIRING = [
     '.theme', 'border', '--ds-ink',
     'nút icon theo bản thiết kế §1.4 là viền `ink` 2px; bản cũ dùng viền trắng '
     + '85% nên gần như không thấy'],
+
+  // ── trang khoá /courses/[courseId] (15/10/2026)
+  // Đã ĐO thác đổ trên trang thật trước khi sửa (DevTools, duyệt
+  // document.styleSheets + el.matches). Mỗi dòng dưới đây là một khối mà phép
+  // đo đó chỉ ra đang bị một file LEGACY tô màu xanh dương.
+  [['src', 'components', 'CourseShell.module.css'],
+    '.page', 'background', '--ds-page',
+    'nền xanh của trang khoá do `body` trong edu-theme.css vẽ (mesh ba quầng '
+    + '--edu-bg-image). Không đặt nền ở `.page` thì đổi hết token vẫn ra thẻ '
+    + 'kem trên nền xanh — đúng lỗi đã gặp ở trang chủ'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.lesson', 'border', '--ds-sketch',
+    'mỗi bài là một <a> bấm được. Quy tắc thắng cũ là `.edu-cd-lesson` của '
+    + 'edu-course-detail.css, viền --edu-input-border = trắng 90% trên nền '
+    + 'trắng 60%, tức gần như không có viền'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.lessonIconDone', 'background', '--ds-ink',
+    'bản thiết kế §1.4 "Nút trạng thái bài": đã xong = nền `ink` + dấu tích '
+    + '`page`. Bản cũ nền xanh lá #22c55e với `color: white !important` — màu '
+    + 'code cứng không đảo theo bản nền, và bảng v2 không có xanh lá'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.btnPrimary', 'background', '--ds-action',
+    '--ds-action chỉ có một vai: nền nút chính. Bản cũ là --edu-accent-grad '
+    + '(gradient xanh) + box-shadow quầng xanh'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.btnPrimary', 'color', '--ds-on-action',
+    'bản cũ viết cứng `color:#fff`; ở bản đêm nền nút sáng lên nên chữ trắng '
+    + 'tụt dưới ngưỡng'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.btnSecondary', 'border', '--ds-ink', 'bản thiết kế chốt nút phụ = viền ink 2px'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.resumeCard', 'background', '--ds-ink',
+    'bản thiết kế §1.4: khối hệ thống gợi ý có nền `ink`, chữ `page` — cặp này '
+    + 'tự đảo theo bản nền nên không phải khai riêng cho chế độ tối'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.block', 'border', '--ds-line',
+    'khối nội dung KHÔNG bấm được nên `line` là đúng vai. Quy tắc thắng cũ là '
+    + 'hai dòng !important của edu-theme.css (`.section-card,…,.cd-block`) phủ '
+    + 'sheen xanh/đỏ + backdrop-filter lên nó'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.blockIcon', 'background', '--ds-violet-tint',
+    'ô icon tiêu đề mục; bản cũ --edu-accent-soft (xanh 10%) và bên trong là '
+    + 'EMOJI trần, không đổi màu theo bản nền'],
+  [['src', 'components', 'CourseShell.module.css'],
+    '.outcomeDot', 'background', '--ds-violet',
+    'chấm đầu dòng "Bạn sẽ học được"; bản cũ --edu-accent #2563eb'],
 ];
 
 test('NỐI DÂY: những chỗ load-bearing dùng đúng token mà bảng đo giả định', () => {
@@ -398,7 +448,7 @@ test('mọi token --st-* chỉ là bí danh trỏ vào --ds-*, không có mã m�
 
 /* ── 4 · tương phản WCAG AA trên cặp chữ/nền THẬT ────────────────────── */
 
-test('172 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngày', () => {
+test('221 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngày', () => {
   const { light } = readTokens(TOKENS_CSS);
   const rows = audit(light);
   const bad = rows.filter((r) => !r.pass);
@@ -406,10 +456,10 @@ test('172 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngà
     bad.map((r) => `${r.label} = ${r.ratio.toFixed(2)} (cần ${r.need})`), [],
     'cặp trượt WCAG AA (chạy `node e2e/unit/ds-contrast.mjs` để xem cả bảng)',
   );
-  assert.ok(rows.length >= 170, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
+  assert.ok(rows.length >= 219, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
 });
 
-test('172 cặp chữ/nền thật: không cặp nào trượt AA ở bản Ban đêm', () => {
+test('221 cặp chữ/nền thật: không cặp nào trượt AA ở bản Ban đêm', () => {
   const { dark } = readTokens(TOKENS_CSS);
   const bad = audit(dark).filter((r) => !r.pass);
   assert.deepEqual(
@@ -537,15 +587,46 @@ test('không chỗ nào hạ ĐỘ ĐỤC để làm chữ nhạt đi — phải
  * bản ngày và 1,32:1 bản đêm. Bảng v2 có token `sketch` dành riêng cho "viền
  * thứ bấm được" nên cặp đó nay đạt 4,00:1 và không còn phải miễn ngưỡng.
  *
- * ── NỢ CÒN LẠI: TRANG KHOÁ (/courses/[courseId]) ─────────────────────
- * CHƯA chuyển, và cố ý không làm dở. Nó không vẽ bằng CSS module như trang
- * chủ mà bằng lớp toàn cục `.edu-cd-*` / `.cd-block*` của HAI file legacy —
- * `/static/css/edu-course-detail.css` (185 dòng, 16 token --edu-*, 10 mã hex,
- * 4 rgba) và `/static/css/course_detail.css` (95 dòng, 13 token, 8 hex,
- * 2 rgba) — cộng `CourseShell.module.css` (17 lời gọi var). Hai file legacy
- * còn vi phạm thang chữ: cỡ 11–16px ở ~30 chỗ. Chuyển nó là một đợt riêng:
- * phải sửa file nạp qua <link> (kéo theo bump ASSET_VERSION), và phải xem
- * được trang thật để biết style.css/dashboard.css/edu-dashboard.css còn tô
- * vào đâu. Hệ quả đã biết của việc dừng ở đây: thanh đầu trang (dùng chung)
- * đã là kem, nên ở trang khoá nó đứng trên phần thân vẫn xanh dương.
+ * ── ĐỢT 15/10/2026 (lượt sau): TRANG KHOÁ — NỢ ĐÃ TRẢ ────────────────
+ * Ghi chú cũ ở đây nói trang khoá "CHƯA chuyển, và cố ý không làm dở", với
+ * điều kiện để làm là "phải xem được trang thật để biết style.css/
+ * dashboard.css/edu-dashboard.css còn tô vào đâu". Điều kiện đó đã thoả: đo
+ * bằng DevTools trên localhost (duyệt `document.styleSheets`, lọc bằng
+ * `el.matches(selectorText)`, lấy theo thứ tự nạp). Kết quả đo, không phải
+ * suy đoán — quy tắc THẮNG ở từng khối:
+ *
+ *   body                 → edu-theme.css `body` (mesh ba quầng xanh/đỏ)
+ *   .edu-cd-hero/-card   → edu-course-detail.css (--edu-card-bg, trắng 55%)
+ *   .cd-block            → edu-theme.css `.section-card,…,.cd-block` ×2,
+ *                          cả hai !important — ĐÈ `.cd-block` của course_detail.css
+ *   .cd-block-icon       → course_detail.css (--edu-accent-soft)
+ *   .edu-cd-lesson       → edu-course-detail.css (--edu-input-bg)
+ *   .cd-desc / .cd-req-list li → course_detail.css (14px / 13px)
+ *
+ * KHÔNG file nào trong {style.css, dashboard.css, pages.css, dark-mode.css,
+ * edu-dashboard.css} thắng ở bất kỳ khối nào — chúng chỉ tô `body` rồi bị
+ * edu-theme.css đè. Vì vậy trang nay chỉ còn nạp edu-theme.css, giống trang chủ.
+ *
+ * Cách trả nợ: chuyển markup sang CSS MODULE thay vì sửa hai file legacy.
+ * Lý do chọn hướng này, cả hai đều đo được:
+ *   · `edu-course-detail.css` còn được BA trang `/courses/db_design*` nạp, nên
+ *     sửa nó là lặng lẽ đổi màu ba trang khác trong cùng commit;
+ *   · tên lớp CSS module bị băm nên KHÔNG selector legacy nào khớp nữa — kể cả
+ *     hai dòng `!important` của edu-theme.css. Không còn chỗ nào phải đoán.
+ * Kèm theo: không đụng `public/static/css` nên không phải kéo ASSET_VERSION.
+ *
+ * `CourseShell.module.css` nay nằm trong `SURFACE_CSS` và có 10 dòng `WIRING`,
+ * nên ba luật của trang bài học áp cho nó như mọi bề mặt khác.
+ *
+ * NỢ CÒN LẠI sau đợt này — và đây là nợ KHÁC, không phải nợ trên:
+ *   · `/courses/db_design`, `/courses/db_design_nc`, `/courses/db_design_tc` và
+ *     `/card/[cardId]` vẫn vẽ bằng `edu-course-detail.css` + `course_db_design.css`
+ *     ở bảng xanh. Bốn trang này KHÔNG nằm trong `lib/catalog.ts` nên không ai
+ *     đi từ trang chủ tới được; chúng dùng một bảng thuật ngữ khác và được miễn
+ *     trong `ds-wording.test.mjs` với cùng lý do. Hai file legacy vì vậy vẫn
+ *     phải ở lại — đừng xoá chúng khi thấy trang khoá không còn nạp.
+ *   · `CourseDbDesign.tsx` dùng chung `.shell` và `.back` của
+ *     `CourseShell.module.css`, nên `.back` ở đó nay là chữ `soft` kem trên nền
+ *     xanh (7,0:1 — vẫn đạt AA). Nền thì không đổi: nền kem đặt ở `.page`, mà
+ *     trang db_design không dùng lớp đó.
  */

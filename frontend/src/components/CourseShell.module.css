@@ -1,4 +1,66 @@
-/* Khung trang chi tiết — thay cho #main + Sidebar cũ. Chỉ dùng token edu-theme. */
+/* Trang khoá học (/courses/[courseId]) — TOÀN BỘ phần vẽ của trang, bảng kem
+   --ds-* của bản thiết kế v2 (khai ở public/static/css/studio-tokens.css).
+
+   ── VÌ SAO FILE NÀY PHÌNH TO RA (15/10/2026) ──────────────────────────
+   Trước bản này trang khoá KHÔNG vẽ bằng CSS module mà bằng lớp toàn cục
+   `.edu-cd-*` / `.cd-block*` của hai file legacy nạp qua <link>
+   (`edu-course-detail.css`, `course_detail.css`), nên nó là bề mặt cuối cùng
+   còn ở bảng XANH DƯƠNG kế thừa bản Django. Hậu quả người dùng thấy được:
+   thanh đầu trang (SiteHeader, đã kem) đứng trên một thân trang xanh, và đi
+   trang chủ (kem) → trang khoá (xanh) → bài học (kem) là hai cú giật màu.
+
+   Đã ĐO thác đổ trên trang thật (DevTools, duyệt document.styleSheets +
+   el.matches) trước khi sửa. Quy tắc THẮNG ở từng khối:
+
+     body                → edu-theme.css `body`            (mesh 3 quầng xanh/đỏ)
+     .edu-cd-hero/-card  → edu-course-detail.css           (--edu-card-bg .55)
+     .cd-block           → edu-theme.css `.section-card,…` **!important** ×2
+                           (đè cả `.cd-block` của course_detail.css)
+     .cd-block-icon      → course_detail.css               (--edu-accent-soft)
+     .edu-cd-lesson      → edu-course-detail.css           (--edu-input-bg)
+     .cd-desc / .cd-req-list li → course_detail.css        (14px / 13px)
+
+   VÌ SAO CHUYỂN SANG CSS MODULE thay vì sửa hai file legacy đó:
+     1. `edu-course-detail.css` còn được BA trang `/courses/db_design*` nạp;
+        sửa nó là lặng lẽ đổi màu ba trang khác trong cùng một commit.
+     2. Tên lớp CSS module bị băm, nên KHÔNG selector legacy nào khớp nữa —
+        kể cả hai dòng `!important` của edu-theme.css. Không còn chỗ nào phải
+        đoán xem quy tắc nào thắng.
+     3. Không đụng `public/static/css` nên không phải kéo ASSET_VERSION.
+
+   ── BA LUẬT ĐANG ĐƯỢC GIỮ BẰNG CHÍNH CÁC CON SỐ Ở ĐÂY ─────────────────
+   1. Không cỡ chữ nào < 15px; câu người học phải đọc để biết làm gì thì
+      ≥ 17px. Bản legacy dùng 11px (.edu-cd-includes-title), 12px
+      (.edu-cd-inc-item, .edu-cd-module-meta), 13px (.cd-req-list li,
+      .edu-cd-lesson-icon), 14px (.cd-desc, .edu-cd-module-name).
+      Canh bằng `e2e/unit/home-page.test.mjs` ("trang khoá: không cỡ chữ nào
+      < 15px"), nên ở đây CỠ CHỮ VIẾT BẰNG px chứ không bằng var(--ds-fs-*):
+      ca đó đọc con số px từ chính file này.
+   2. Mọi cặp chữ/nền ≥ 4,5:1 (viền/đồ hoạ mang thông tin ≥ 3:1), đo ở CẢ bản
+      ngày lẫn bản Ban đêm — `e2e/unit/ds-contrast.mjs`, mục "trang khoá".
+   3. Làm nhạt bằng MÀU, không bằng `opacity`.
+
+   MÀU thì chỉ được viết bằng var(--ds-*): `npm run lint:tokens` cấm mã hex
+   trong mọi *.module.css, và `ds-tokens.test.mjs` cấm đọc --edu-* (trừ
+   --edu-font) trên bề mặt đã chuyển. */
+
+/* ── Khung trang ─────────────────────────────────────────── */
+
+/* Nền trang. Phải đặt ở ĐÂY, giống `.page` của trang chủ: nền xanh thật ra do
+   `body` trong edu-theme.css vẽ (`--edu-bg-image`, mesh ba quầng xanh/đỏ
+   dòng 57-62). `.page` là lớp CSS module phủ kín khung nhìn nên nó che hẳn
+   nền body mà không phải sửa edu-theme.css — file đó còn vẽ các trang legacy
+   chưa chuyển (/courses/db_design*, /card/*). */
+.page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ds-page);
+}
+
+/* `.shell` và `.back` dùng CHUNG với `CourseDbDesign.tsx` (ba trang khoá
+   db_design cũ), nên đừng đặt nền ở đây — nền là việc của `.page`, mà trang
+   db_design không dùng `.page`. */
 .shell {
   width: 100%;
   max-width: 1180px;
@@ -19,93 +81,393 @@
   /* 14 → 15px: sàn nhãn của bản thiết kế (không có chữ nào < 15px). */
   font-size: 15px;
   font-weight: 500;
-  color: var(--edu-t3);
+  color: var(--ds-soft);
   text-decoration: none;
-  transition: color 0.15s ease, gap 0.15s ease;
+  transition: color var(--ds-dur-fast) ease, gap var(--ds-dur-fast) ease;
 }
-.back:hover { color: var(--edu-accent-text); gap: 11px; }
+.back:hover { color: var(--ds-violet); gap: 11px; }
 .back:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: var(--ds-bw-3) solid var(--ds-violet);
   outline-offset: 3px;
-  border-radius: 6px;
+  border-radius: var(--ds-r-xs);
 }
 
-/* <a> bài học: trung hoà gạch chân/màu mặc định của thẻ liên kết. */
-.lessonLink { color: inherit; text-decoration: none; }
+/* ── Lưới hai cột ────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 26px;
+  align-items: start;
+}
+.main { display: flex; flex-direction: column; gap: 24px; min-width: 0; }
+.side { display: flex; flex-direction: column; gap: 20px; }
 
-/* <button> tiêu đề module: trung hoà style mặc định (CSS của trang viết cho <div>). */
+/* ── Hero ────────────────────────────────────────────────── */
+/* Thẻ KHÔNG bấm được → viền `line` là đủ (bản thiết kế: `line` dành cho viền
+   trang trí). Thứ bấm được ở trong nó tự mang viền `sketch`. */
+.hero {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+  padding: 30px 34px;
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-open);
+}
+.heroInfo { flex: 1; min-width: 0; }
+
+/* Eyebrow theo bản thiết kế §1.4: 15/700, in hoa, giãn 0.08em, màu `soft`.
+   Bản legacy 12px/0.12em và tô --edu-accent (xanh). */
+.tag {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ds-soft);
+}
+
+.title {
+  margin: 10px 0 0;
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+  color: var(--ds-ink);
+}
+
+/* Câu mô tả khoá là câu văn đầy đủ → cỡ thân. Bản legacy 15px/--edu-t3. */
+.subtitle {
+  margin: 10px 0 0;
+  max-width: 62ch;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ds-soft);
+  text-wrap: pretty;
+}
+
+.heroCta { margin-top: 22px; display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* ── Nút ─────────────────────────────────────────────────── */
+/* Bản thiết kế §1.4 chốt ĐÚNG HAI kiểu nút, thay cho 5 biến thể cũ:
+   chính = nền `action` + chữ `on-action`, cao 52, đệm ngang 28, 17/800;
+   phụ  = viền `ink` 2px, nền trong suốt, cao 48, 17/700. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 28px;
+  font-family: var(--edu-font);
+  font-size: 17px;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  border-radius: var(--ds-r-pill);
+  cursor: pointer;
+  transition: background var(--ds-dur-fast) ease, color var(--ds-dur-fast) ease;
+}
+
+/* `--ds-action` + `--ds-on-action` là cặp DUY NHẤT bảng v2 cho phép đặt chữ
+   lên nền nhấn đậm, và nó tự đảo theo bản nền (ngày: trắng trên tím 7,33:1;
+   đêm: mực sẫm trên tím nhạt 8,36:1). Bản legacy viết cứng màu trắng trên
+   gradient xanh — ở bản đêm nền sáng lên thì chữ trắng tụt dưới ngưỡng.
+   (Không viết mã hex ở đây, kể cả trong chú thích: `npm run lint:tokens` và
+   ca "không dùng mã màu trong *.module.css" đều grep thô theo DÒNG.) */
+.btnPrimary {
+  min-height: 52px;
+  font-weight: 800;
+  color: var(--ds-on-action);
+  background: var(--ds-action);
+}
+.btnPrimary:hover { background: var(--ds-violet); }
+.btnPrimary:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 3px;
+}
+
+.btnSecondary {
+  color: var(--ds-ink);
+  background: transparent;
+  border: var(--ds-bw-2) solid var(--ds-ink);
+}
+.btnSecondary:hover { color: var(--ds-on-action); background: var(--ds-ink); }
+.btnSecondary:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 3px;
+}
+
+/* Nút "Bắt đầu học" trong thẻ giá: rộng hết cột. */
+.startBtn { width: 100%; margin-top: 18px; }
+
+.heroArt {
+  width: 220px;
+  height: 158px;
+  flex: none;
+  overflow: hidden;
+  border-radius: var(--ds-r-md);
+  background: var(--ds-tint);
+}
+.heroArt img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ── Khối nội dung (Nội dung khoá học / Tổng quan / Yêu cầu) ── */
+.block {
+  overflow: hidden;
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-open);
+}
+.blockHd {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 26px;
+  border-bottom: var(--ds-bw-1) solid var(--ds-line);
+}
+/* Ô icon tiêu đề mục. Bản legacy đặt EMOJI (📚 📋 📌) trần trong ô này — emoji
+   là một KÝ TỰ nên trình đọc màn hình đọc tên nó ra trước tiêu đề, và nó
+   không đổi màu theo bản nền. Nay là SVG `aria-hidden`, tô `violet` trên
+   `violet-tint` (7,01:1). */
+.blockIcon {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--ds-violet);
+  background: var(--ds-violet-tint);
+  border-radius: var(--ds-r-sm);
+}
+.blockTitle {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ds-ink);
+}
+.blockMeta {
+  margin-left: auto;
+  /* 12 → 15px: dòng "8 chặng · 48 bài · đã xong 3/48" là con số người học đọc
+     để biết mình ở đâu, không phải chữ trang trí. */
+  font-size: 15px;
+  color: var(--ds-soft);
+}
+.blockBody { padding: 22px 26px; }
+
+/* ── Danh sách chặng / bài ───────────────────────────────── */
+.module { border-bottom: var(--ds-bw-1) solid var(--ds-line); }
+.module:last-child { border-bottom: none; }
+
+/* <button> chứ không <div onClick>: tiêu đề chặng là thứ duy nhất mở được
+   danh sách bài, để <div> thì bàn phím không với tới (WCAG 2.1.1). Phải tự
+   trung hoà style mặc định của <button>. */
 .moduleHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
   width: 100%;
   box-sizing: border-box;
+  padding: 13px 4px;
   font: inherit;
-  color: inherit;
   text-align: left;
+  color: inherit;
   background: transparent;
   border: 0;
   cursor: pointer;
+  user-select: none;
 }
-
-.blockMeta {
-  margin-left: auto;
-  /* 12 → 15px: dòng "8 module · 48 bài học · đã xong 3/48" là con số người học
-     đọc để biết mình ở đâu, không phải chữ trang trí. */
-  font-size: 15px;
-  color: var(--edu-t4);
+.moduleHead:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 2px;
+  border-radius: var(--ds-r-xs);
 }
-
-.startBtn {
-  display: inline-flex;
+.moduleArrow {
+  flex: none;
+  display: flex;
+  align-items: center;
   justify-content: center;
-  width: 100%;
-  margin-top: 18px;
+  width: 20px;
+  height: 20px;
+  color: var(--ds-soft);
+  background: var(--ds-tint);
+  border-radius: var(--ds-r-sm);
+  transition: transform var(--ds-dur-fast) ease;
+}
+.moduleOpen .moduleArrow { transform: rotate(90deg); }
+.moduleName { flex: 1; font-size: 17px; font-weight: 700; color: var(--ds-ink); }
+.moduleMeta { font-size: 15px; color: var(--ds-soft); white-space: nowrap; }
+.moduleBody { display: none; padding: 4px 0 14px; }
+.moduleBodyOpen { display: block; }
+
+.lessonList { display: flex; flex-direction: column; gap: 8px; }
+
+/* Mỗi bài là một <a> BẤM ĐƯỢC → viền `sketch` 2px, không phải `line`: bản
+   thiết kế ghi thẳng rằng `line` (1,36:1 trên thẻ) "không dùng làm ranh giới
+   thành phần cần nhận ra". Bản legacy dùng --edu-input-border (trắng 90%),
+   tức gần như không có viền. */
+.lesson {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 18px;
+  color: inherit;
   text-decoration: none;
+  background: var(--ds-paper);
+  border: var(--ds-bw-2) solid var(--ds-sketch);
+  border-radius: var(--ds-r-md);
+  transition: background var(--ds-dur-fast) ease, border-color var(--ds-dur-fast) ease;
+}
+.lesson:hover { border-color: var(--ds-violet); background: var(--ds-violet-tint); }
+.lesson:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 3px;
 }
 
-@media (max-width: 639.98px) {
-  .content { padding: 0 16px 56px; }
+/* Ô số bài. Bản thiết kế §1.4 "Nút trạng thái bài": chưa học = nét đứt
+   `sketch` + số bài; đã xong = nền `ink` + dấu tích. */
+.lessonIcon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  /* 13 → 15px: sàn cỡ chữ. */
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ds-soft);
+  border: var(--ds-bw-2) dashed var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+}
+.lessonBody { flex: 1; min-width: 0; }
+.lessonTitle { font-size: 17px; font-weight: 600; color: var(--ds-ink); }
+.lessonMeta { margin-top: 3px; font-size: 15px; color: var(--ds-soft); }
+
+/* Bài đã xong: nền `ochre-tint` ("đã có"). KHÔNG dùng `pointer-events: none`
+   hay `opacity` — bài đã xong vẫn phải bấm vào xem lại được (hệ thống chỉ đề
+   xuất, không khoá bài), và hạ độ đục là hạ cả chữ lẫn viền. */
+.lessonDone { background: var(--ds-ochre-tint); border-color: var(--ds-ochre); }
+/* Nền `ink` + dấu tích `page`: cặp này tự đảo theo bản nền nên không phải khai
+   riêng cho chế độ tối. Bản cũ viết `color: white !important` đúng vì lý do
+   này — nay không cần nữa. */
+.lessonIconDone {
+  color: var(--ds-page);
+  background: var(--ds-ink);
+  border: var(--ds-bw-2) solid var(--ds-ink);
 }
 
-/* Nút phụ cạnh "Bắt đầu học" (nút góp ý). Viết ở đây chứ không thêm biến thể
-   vào /static/css/edu-course-detail.css: file đó là CSS legacy nạp qua <link>
-   có tem ?v=, sửa nó là phải bump ASSET_VERSION — mà chỗ này không cần tới.
-   `.edu-cd-btn` gốc đã lo chiều cao/bo tròn/phông, đây chỉ thêm màu nền nhạt
-   và viền; dùng token của edu-theme, không có mã màu mới. */
-.feedbackBtn {
-  background: var(--edu-pill-bg);
-  color: var(--edu-t1);
-  border: 1px solid var(--edu-pill-border);
-  text-decoration: none;
+/* Bài đang được gợi ý: `violet` = "vị trí của bạn". */
+.lessonNext { background: var(--ds-violet-tint); border-color: var(--ds-violet); }
+
+/* ── Tổng quan / Yêu cầu ─────────────────────────────────── */
+/* 14 → 18px: đây là đoạn văn mô tả khoá, câu người học đọc để quyết định học
+   hay không. */
+.desc {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.7;
+  color: var(--ds-ink);
 }
 
-.feedbackBtn:hover {
-  transform: translateY(-2px);
-  border-color: var(--edu-accent-3);
+.reqList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+/* 13 → 18px, cùng lý do với .desc. */
+.reqList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ds-ink);
+}
+/* Dấu đầu dòng là TRANG TRÍ (`content` của ::before không vào cây trợ năng ở
+   mọi trình đọc, nhưng nó cũng không mang thông tin nào). */
+.reqList li::before {
+  content: '◆';
+  flex-shrink: 0;
+  margin-top: 4px;
+  font-size: 15px;
+  color: var(--ds-violet);
 }
 
-/* Người bật giảm chuyển động: giữ phản hồi bằng viền, bỏ phần nhấc lên. */
-@media (prefers-reduced-motion: reduce) {
-  .feedbackBtn:hover {
-    transform: none;
-  }
+/* ── Cột phải: thẻ giá / "Bạn sẽ học được" ───────────────── */
+.card {
+  padding: 24px 26px 26px;
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-open);
+}
+.cardTitle { font-size: 22px; font-weight: 700; color: var(--ds-ink); }
+.price { font-size: 22px; font-weight: 800; color: var(--ds-ink); }
+
+.includes {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: var(--ds-bw-1) solid var(--ds-line);
+}
+/* 11 → 15px (sàn nhãn), giãn theo thang nhãn 0.08em. */
+.includesTitle {
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ds-soft);
+}
+/* 12 → 17px: mỗi dòng là một câu nói khoá có gì ("Tiến độ lưu theo phiên của
+   bạn") — câu người học đọc để biết mình được gì, không phải chữ trang trí. */
+.incItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 5px 0;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ds-ink);
+}
+.incIcon { flex: none; color: var(--ds-violet); }
+
+.outcomes { display: flex; flex-direction: column; gap: 12px; margin-top: 14px; }
+.outcome { display: flex; gap: 10px; align-items: flex-start; }
+.outcomeDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 8px;
+  background: var(--ds-violet);
+  border-radius: var(--ds-r-round);
+}
+/* 14 → 17px: mỗi dòng là một kỹ năng viết thành câu. */
+.outcome span {
+  font-size: 17px;
+  line-height: 1.55;
+  color: var(--ds-ink);
+  text-wrap: pretty;
 }
 
-/* ── Thẻ "Gợi ý bước tiếp" + đánh dấu bài đã xong ──
-   Viết ở đây chứ không thêm vào /static/css/edu-course-detail.css: file đó là
-   CSS legacy nạp qua <link> có tem ?v=, sửa nó là phải bump ASSET_VERSION — mà
-   chỗ này không cần tới (cùng lập luận với .feedbackBtn ở trên).
-   Chỉ dùng token của edu-theme, không thêm mã màu mới. */
-
-/* Nền đậm để thẻ gợi ý nổi hơn thẻ giá bên dưới, đúng bản thiết kế. */
+/* ── Thẻ "Gợi ý bước tiếp" ───────────────────────────────── */
+/* Bản thiết kế §1.4 "Khối hệ thống gợi ý": nền `ink`, chữ `page`. Cặp này tự
+   đảo theo bản nền (ngày 14,91:1 · đêm 15,71:1) nên không phải khai màu riêng
+   cho chế độ tối — giống `.next` của trang chủ. */
 .resumeCard {
   display: flex;
   flex-direction: column;
   gap: 12px;
   padding: 22px;
-  margin-bottom: 18px;
-  border: 1px solid var(--edu-panel-border);
-  border-radius: 16px;
-  background: var(--edu-panel-bg);
-  box-shadow: var(--edu-panel-shadow);
+  color: var(--ds-page);
+  background: var(--ds-ink);
+  border-radius: var(--ds-r-lg);
+  box-shadow: var(--ds-shadow-open);
 }
 
 .resumeKicker {
@@ -116,80 +478,83 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--edu-t3);
 }
 
 .resumeTitle {
   margin: 0;
-  font-size: 19px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1.25;
-  color: var(--edu-t1);
 }
 
 .resumeWhy {
   margin: 0;
   /* 13 → 17px: "Vì sao bài này…" là câu người học phải đọc để quyết định, nên
-     nó ở cỡ thân (≥ 17px), không phải cỡ ghi chú. */
+     nó ở cỡ thân, không phải cỡ ghi chú. */
   font-size: 17px;
   line-height: 1.55;
-  color: var(--edu-t2);
 }
 
-.resumeBtn {
-  display: inline-flex;
-  justify-content: center;
-  width: 100%;
-  text-decoration: none;
+.resumeBtn { width: 100%; }
+/* Vòng focus lấy màu CHỮ của thẻ (`page`), không lấy tím: nút nằm trên nền
+   `ink`, mà tím bản ngày trên mực chỉ 2,2:1 nên vòng focus sẽ chìm. */
+.resumeBtn:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-page);
+  outline-offset: 3px;
 }
 
-/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của lời mời. */
+/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của lời mời. Đường kẻ
+   dùng `desk` — nó cũng tự đảo theo bản nền và cho 12,85:1 trên `ink` bản
+   ngày, 8,80:1 bản đêm. */
 .resumeFoot {
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding-top: 12px;
-  border-top: 1px solid var(--edu-panel-border);
+  border-top: var(--ds-bw-1) solid var(--ds-desk);
   /* 12 → 17px: "Đây là gợi ý, không phải lệnh." và lối ra "Tự chọn bài" là câu
      và nút — đọc không được thì lối ra coi như không có. */
   font-size: 17px;
-  color: var(--edu-t3);
+  line-height: 1.5;
 }
 
+/* Nút yên: chữ cùng màu thân thẻ + gạch chân. Bản thiết kế dùng tím cho lối
+   ra, nhưng tím ở đây nằm trên nền `ink` (bản ngày 2,2:1, không đọc được) —
+   cùng kết luận đã ghi ở `.nextExit` của trang chủ. */
 .resumePick {
   align-self: flex-start;
+  font-size: 17px;
   font-weight: 700;
-  color: var(--edu-accent-text);
-  text-decoration: none;
+  color: var(--ds-page);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
-.resumePick:hover { text-decoration: underline; }
+.resumePick:hover { text-decoration-thickness: 2px; }
 .resumePick:focus-visible {
-  outline: 2px solid var(--edu-accent);
+  outline: var(--ds-bw-3) solid var(--ds-page);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--ds-r-xs);
 }
 
-/* Bài đã xong: nhạt đi một chút + vạch màu bên trái. KHÔNG dùng
-   `pointer-events: none` hay `opacity` quá thấp — bài đã xong vẫn phải bấm
-   vào xem lại được (hệ thống chỉ đề xuất, không khoá bài). */
-.lessonDone {
-  border-left: 3px solid var(--edu-ok);
-  background: var(--edu-ok-soft);
+/* ── Khổ hẹp ─────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: 1fr; }
+  .hero { flex-direction: column; align-items: stretch; }
+  .heroArt { width: 100%; height: 160px; }
+  .blockHd, .blockBody { padding-left: 20px; padding-right: 20px; }
 }
 
-/* Ô số bài đổi thành dấu ✓. Chỉ đổi màu nền/chữ, giữ nguyên kích thước của
-   .edu-cd-lesson-icon để hàng không nhảy khi tiến độ về sau lượt render đầu. */
-.lessonIconDone {
-  background: var(--edu-ok) !important;
-  /* Từ khoá `white`, không phải mã hex: luật `npm run lint:tokens` cấm mọi mã
-     màu trong *.module.css (grep thô), và ở đây KHÔNG dùng được token nào —
-     --edu-panel-bg-solid đảo thành nền sẫm ở bản Ban đêm, tức dấu ✓ sẽ thành
-     chữ sẫm trên nền xanh --edu-ok. Dấu ✓ cần một màu cố định, sáng. */
-  color: white !important;
+@media (max-width: 639.98px) {
+  .content { padding: 0 16px 56px; }
 }
 
-/* Bài đang được gợi ý: viền nhấn, không che mất các bài khác. */
-.lessonNext {
-  border-left: 3px solid var(--edu-accent);
-  background: var(--edu-accent-soft);
+/* Người bật "giảm chuyển động": bỏ mọi chuyển cảnh, giữ nguyên màu/viền —
+   phản hồi hover vẫn thấy được vì nó là ĐỔI MÀU, không phải đổi vị trí. */
+@media (prefers-reduced-motion: reduce) {
+  .back,
+  .btn,
+  .moduleArrow,
+  .lesson {
+    transition: none;
+  }
 }

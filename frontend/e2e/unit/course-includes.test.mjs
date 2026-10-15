@@ -94,7 +94,9 @@ test('hạn phiên khách vẫn hữu hạn — tiền đề của bản sửa t
 
 test('không nói "Miễn phí" hai lần, và không confetti', () => {
   const [, detail] = SRC[0];
-  assert.ok(/edu-cd-price">Miễn phí/.test(detail), 'vẫn phải nói giá một lần');
+  // 15/10/2026 — lớp đổi từ `edu-cd-price` (toàn cục, CSS legacy) sang
+  // `styles.price` của CourseShell.module.css khi trang chuyển sang bảng kem.
+  assert.ok(/styles\.price\}>Miễn phí/.test(detail), 'vẫn phải nói giá một lần');
   assert.ok(
     !/Hoàn toàn không mất phí/.test(detail),
     'dòng nhắc lại "miễn phí" kèm 🎉 đã quay lại',

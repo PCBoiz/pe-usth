@@ -340,6 +340,71 @@ export const PAIRS = [
   ['trang chủ: vạch chân trang', '--ds-line', '--ds-page', 'decor',
     'Chân trang đã tách khỏi nội dung bằng 22px đệm và nằm sau cả khối cuối; '
     + 'đường kẻ chỉ để mắt nghỉ. Gỡ đi không mất thông tin nào.'],
+
+  // ── trang khoá /courses/[courseId] (CourseShell.module.css) ───────────
+  // Bề mặt cuối cùng rời bảng xanh dương. Trước đợt này mọi cặp dưới đây đọc
+  // token --edu-* và chưa từng được đo bằng bộ này.
+  ['trang khoá: lối về (.back)', '--ds-soft', '--ds-page', 'text'],
+  ['trang khoá: lối về khi rê chuột', '--ds-violet', '--ds-page', 'text'],
+  ['trang khoá: hero · nhãn cấp độ (.tag)', '--ds-soft', '--ds-card', 'text'],
+  ['trang khoá: hero · tiêu đề 36px (.title)', '--ds-ink', '--ds-card', 'large'],
+  ['trang khoá: hero · câu mô tả (.subtitle)', '--ds-soft', '--ds-card', 'text'],
+  ['trang khoá: hero · viền thẻ (KHÔNG bấm được)', '--ds-line', '--ds-card', 'decor',
+    'Hero không phải thành phần bấm được — hai nút nằm BÊN TRONG nó. Ranh giới '
+    + 'do nền `card` trên nền `page` và phần đệm 30/34px nói, nên viền thuần '
+    + 'trang trí; bảng thiết kế dành đúng vai này cho token `line`.'],
+  ['trang khoá: nút chính (.btnPrimary)', '--ds-on-action', '--ds-action', 'text'],
+  ['trang khoá: nút chính khi rê chuột', '--ds-on-action', '--ds-violet', 'text'],
+  ['trang khoá: nút phụ (.btnSecondary)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: nút phụ · viền 2px', '--ds-ink', '--ds-card', 'ui'],
+  ['trang khoá: nút phụ · nền khi rê chuột', '--ds-on-action', '--ds-ink', 'text'],
+  ['trang khoá: vòng focus / nền trang', '--ds-violet', '--ds-page', 'ui'],
+  ['trang khoá: khối nội dung · viền (KHÔNG bấm được)', '--ds-line', '--ds-card', 'decor',
+    'Khối "Nội dung khoá học"/"Tổng quan"/"Yêu cầu" là hộp chứa, không bấm '
+    + 'được; thứ bấm được bên trong (tiêu đề chặng, từng bài) tự mang viền '
+    + '`sketch`. Cùng vai với viền hero ở trên.'],
+  ['trang khoá: khối nội dung · đường chia đầu khối', '--ds-line', '--ds-card', 'decor',
+    'Đường kẻ dưới hàng tiêu đề mục: hàng đó đã tách khỏi thân bằng đệm 20/22px '
+    + 'và bằng cỡ chữ 22px/700. Gỡ đường kẻ không mất thông tin nào.'],
+  ['trang khoá: tiêu đề mục 22px (.blockTitle)', '--ds-ink', '--ds-card', 'large'],
+  ['trang khoá: số chặng/bài (.blockMeta)', '--ds-soft', '--ds-card', 'text'],
+  ['trang khoá: ô icon tiêu đề mục (.blockIcon)', '--ds-violet', '--ds-violet-tint', 'text'],
+  ['trang khoá: tên chặng (.moduleName)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: số bài của chặng (.moduleMeta)', '--ds-soft', '--ds-card', 'text'],
+  ['trang khoá: mũi tên mở chặng (.moduleArrow)', '--ds-soft', '--ds-tint', 'text'],
+  ['trang khoá: tên bài (.lessonTitle)', '--ds-ink', '--ds-paper', 'text'],
+  ['trang khoá: dòng "Bài n · đã xong" (.lessonMeta)', '--ds-soft', '--ds-paper', 'text'],
+  ['trang khoá: viền bài (thẻ BẤM ĐƯỢC nên dùng sketch)', '--ds-sketch', '--ds-paper', 'ui'],
+  ['trang khoá: ô số bài · số (.lessonIcon)', '--ds-soft', '--ds-paper', 'text'],
+  ['trang khoá: ô số bài · nét đứt', '--ds-sketch', '--ds-paper', 'ui'],
+  ['trang khoá: bài khi rê chuột · chữ', '--ds-ink', '--ds-violet-tint', 'text'],
+  ['trang khoá: bài khi rê chuột · viền', '--ds-violet', '--ds-violet-tint', 'ui'],
+  ['trang khoá: bài ĐÃ XONG · tên bài', '--ds-ink', '--ds-ochre-tint', 'text'],
+  ['trang khoá: bài ĐÃ XONG · dòng meta', '--ds-soft', '--ds-ochre-tint', 'text'],
+  ['trang khoá: bài ĐÃ XONG · viền', '--ds-ochre', '--ds-ochre-tint', 'ui'],
+  ['trang khoá: bài ĐÃ XONG · dấu tích trên nền ink', '--ds-page', '--ds-ink', 'text'],
+  ['trang khoá: bài GỢI Ý · tên bài', '--ds-ink', '--ds-violet-tint', 'text'],
+  ['trang khoá: bài GỢI Ý · dòng meta', '--ds-soft', '--ds-violet-tint', 'text'],
+  ['trang khoá: bài GỢI Ý · viền', '--ds-violet', '--ds-violet-tint', 'ui'],
+  ['trang khoá: đoạn mô tả khoá (.desc)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: dòng yêu cầu (.reqList li)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: dấu ◆ đầu dòng yêu cầu', '--ds-violet', '--ds-card', 'ui'],
+  ['trang khoá: giá "Miễn phí" (.price)', '--ds-ink', '--ds-card', 'large'],
+  ['trang khoá: nhãn KHOÁ HỌC BAO GỒM', '--ds-soft', '--ds-card', 'text'],
+  ['trang khoá: dòng "khoá học bao gồm" (.incItem)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: icon dòng "bao gồm"', '--ds-violet', '--ds-card', 'ui'],
+  ['trang khoá: vạch trên khối "bao gồm"', '--ds-line', '--ds-card', 'decor',
+    'Vạch ngăn giữa nút "Bắt đầu học" và danh sách "KHOÁ HỌC BAO GỒM" trong '
+    + 'cùng một thẻ: nhãn in hoa ngay dưới nó đã nói đây là khối mới, nên vạch '
+    + 'chỉ để mắt nghỉ.'],
+  ['trang khoá: tiêu đề "Bạn sẽ học được" (.cardTitle)', '--ds-ink', '--ds-card', 'large'],
+  ['trang khoá: một kỹ năng (.outcome span)', '--ds-ink', '--ds-card', 'text'],
+  ['trang khoá: chấm đầu dòng kỹ năng', '--ds-violet', '--ds-card', 'ui'],
+  // Thẻ gợi ý: nền `ink`, chữ `page` — cặp tự đảo theo bản nền, như trang chủ.
+  ['trang khoá: thẻ gợi ý · chữ (.resumeCard)', '--ds-page', '--ds-ink', 'text'],
+  ['trang khoá: thẻ gợi ý · vạch ngăn lối ra', '--ds-desk', '--ds-ink', 'ui'],
+  ['trang khoá: thẻ gợi ý · lối ra yên tĩnh (.resumePick)', '--ds-page', '--ds-ink', 'text'],
+  ['trang khoá: thẻ gợi ý · vòng focus nút / nền thẻ', '--ds-page', '--ds-ink', 'ui'],
 ];
 
 const NEED = { text: 4.5, large: 3, ui: 3, decor: 0, inactive: 0 };
