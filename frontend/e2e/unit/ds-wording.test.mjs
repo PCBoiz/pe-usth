@@ -233,6 +233,34 @@ test('trình soạn và chạy Python gọi là "Bàn thí nghiệm", không ph�
   );
 });
 
+test('nhãn nút nói VIỆC nút làm, không reo lên thay cho lời giải thích', () => {
+  /* Lỗi thật đã sửa: nút duy nhất của hộp "THÀNH TÍCH MỚI"
+     (`python-studio/LessonOverlays.tsx`) ghi "Tuyệt vời!". Hộp đó là `role=
+     "dialog" aria-modal`, tức nó CHẶN cả màn bài học — và nhãn không nói bấm
+     vào thì mất danh sách huy hiệu hay đi sang bài sau. Đã đọc: `onDismissAwards`
+     ở `StudioLesson.tsx:288` chỉ `setAwards([])`, nên việc nó làm là ĐÓNG.
+     Trình đọc màn hình đọc đúng nhãn này làm tên của nút, nên "Tuyệt vời!" là
+     một cái nút không có tên.
+
+     Tự kiểm phép so trên chuỗi cũ, để ca này không xanh trong khi lời reo còn
+     nguyên: */
+  const REO = /Tuyệt vời|Xuất sắc|Giỏi lắm|Hoan hô|Quá đỉnh|Cố lên/i;
+  assert.ok(REO.test('Tuyệt vời!'), 'phép so không bắt nổi nhãn cũ');
+
+  assertAbsent(
+    REO,
+    'Giọng đã chốt: hệ thống là người dẫn đường bình thản, không reo hộ người '
+    + 'học. Nhãn nút phải nói việc nó làm ("Đóng", "Bài sau"…) — đó cũng là tên '
+    + 'mà trình đọc màn hình đọc ra.',
+  );
+
+  // Và nút đóng hộp thành tích phải thật sự mang một nhãn nói việc.
+  const OVER = codeOnly(read('src', 'components', 'python-studio', 'LessonOverlays.tsx'));
+  const m = /onClick=\{onDismissAwards\}>\s*([^<\n]+?)\s*</.exec(OVER);
+  assert.ok(m, 'không đọc được nhãn nút đóng hộp thành tích');
+  assert.match(m[1], /^(Đóng|Bài sau|Quay lại bài)$/);
+});
+
 test('"Bàn thí nghiệm" là CÔNG CỤ /ide, không phải một màn trong bài', () => {
   /* Lỗi thật đã sửa: màn Tổng kết (`screens/RecapScreen.tsx`) viết "Nộp ở màn
      Bàn thí nghiệm để ghi nhận là đã xong" ở CẢ HAI bản (khoá có mini-game và

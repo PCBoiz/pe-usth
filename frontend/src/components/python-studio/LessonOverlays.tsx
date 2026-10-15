@@ -117,8 +117,14 @@ export default function LessonOverlays({
                   </div>
                 </div>
               ))}
+              {/* Nhãn nói VIỆC nút làm, không cổ vũ. `onDismissAwards` ở
+                  `StudioLesson.tsx` chỉ `setAwards([])`: nó đóng hộp thành tích
+                  và trả người học về đúng màn đang mở — không đi bài sau, không
+                  lưu gì. Bản cũ ghi "Tuyệt vời!", tức một lời reo thay cho lời
+                  giải thích: người đang đọc huy hiệu không biết bấm vào thì mất
+                  danh sách hay đi tiếp. Canh bởi `e2e/unit/ds-wording.test.mjs`. */}
               <button type="button" onClick={onDismissAwards}>
-                Tuyệt vời!
+                Đóng
               </button>
             </div>
           </div>,
