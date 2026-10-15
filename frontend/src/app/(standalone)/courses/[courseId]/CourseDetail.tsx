@@ -490,7 +490,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="clock" /></span> {course.duration}</div>
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="unlock" /></span> Mọi bài mở sẵn, không khoá theo thứ tự</div>
                     <div className={styles.incItem}><span className={styles.incIcon}><Icon name="save" /></span> Tiến độ lưu theo phiên của bạn</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="device" /></span> Học trên mọi thiết bị</div>
+                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="device" /></span> Chạy trong trình duyệt, không cần cài gì</div>
                   </div>
                 </div>
 

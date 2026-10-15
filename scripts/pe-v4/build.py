@@ -195,7 +195,7 @@ def brief_block(code, spec, briefs, module_no, level):
     for key in ('goal', 'task', 'predict', 'reflect'):
         check(brief.get(key), code, f'màn mở đầu thiếu {key}')
     return {
-        'eyebrow': [f'M{module_no}', 'BOSS' if spec.get('gate') else f'BÀI TẬP {level.upper()}', code],
+        'eyebrow': [f'M{module_no}', 'TỔNG HỢP' if spec.get('gate') else f'BÀI TẬP {level.upper()}', code],
         'title': spec['title'],
         'goal': brief['goal'],
         'task': brief['task'],
@@ -415,7 +415,7 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     title = f"{code} · {spec['title']}"
     subtitle = f"{level} · M{module_no} · {spec['minutes']} phút"
     if gate:
-        subtitle += f" · Boss {spec.get('exam') or module_name}"
+        subtitle += f" · Tổng hợp {spec.get('exam') or module_name}"
 
     prereq = spec.get('prereq')
     if prereq:
@@ -495,7 +495,11 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
         task_body += '\n\nThực hành: ' + spec['practice']
     step4 = {
         'task': {
-            'title': 'Boss — tự viết, nộp lần đầu trước khi xem lời giải' if gate else 'Thử thách độc lập',
+            # Tiêu đề bài cửa KHÔNG được nhắc lại lời hứa "nộp lần đầu": luật thật
+            # là lời giải mở khi bài HOÀN THÀNH (xem lessons.service.ts
+            # `gated && !completed` và frontend/src/lib/gate-notice.ts). Câu cũ
+            # hứa ngược lại, và nó hiện ngay TRÊN lời nhắc đã sửa.
+            'title': 'Bài tổng hợp chặng — tự viết rồi nộp' if gate else 'Thử thách độc lập',
             'body': task_body,
             'io': [{'label': label, 'value': value} for label, value in spec['io']],
         },

@@ -103,6 +103,40 @@ test('không nói "Miễn phí" hai lần, và không confetti', () => {
   );
 });
 
+test('không hứa "mọi thiết bị" — chính repo bác lại', () => {
+  // Dòng CUỐI của khối brochure, và là dòng duy nhất fe2bffa bỏ sót: commit đó
+  // gỡ "Chứng chỉ hoàn thành" + "Truy cập vĩnh viễn", viết 12 dòng chú thích
+  // "không hứa thứ repo không làm được", rồi để nguyên dòng này — mà chính
+  // repo bác nó: `lib/lesson-intro.ts` khai `BOOK_MIN_WIDTH_PX = 861`, tức
+  // dưới 861px hoạt cảnh mở sổ KHÔNG dựng được và bài học rơi về bản rút gọn.
+  // Ca cũ canh 4 trong 5 dòng và bỏ đúng dòng sai — nên bài học ở đây không
+  // phải "thêm một chuỗi cấm", mà là: ca canh một KHỐI thì phải canh CẢ khối.
+  const intro = readFileSync(join(ROOT, 'src/lib/lesson-intro.ts'), 'utf8');
+  assert.match(
+    intro,
+    /BOOK_MIN_WIDTH_PX\s*=\s*\d+/,
+    'mốc bề rộng tối thiểu biến mất — đọc lại lời hứa về thiết bị ở trang khoá',
+  );
+  for (const [rel, code] of SRC) {
+    assert.ok(!/mọi thiết bị/i.test(code), `${rel} còn hứa "mọi thiết bị"`);
+  }
+});
+
+test('mọi dòng của khối "KHOÁ HỌC BAO GỒM" đều được một ca nào đó soi', () => {
+  // Chốt chặn cho đúng lỗi trên: nếu khối mọc thêm dòng mà không ai thêm ca,
+  // ca này đỏ. Số dòng là thứ đếm được; nội dung từng dòng thì các ca khác lo.
+  const [, detail] = SRC[0];
+  const khoi = /edu-cd-includes[\s\S]*?<\/div>\s*<\/div>/.exec(detail)
+    ?? /incItem[\s\S]*$/.exec(detail);
+  assert.ok(khoi, 'không tìm thấy khối "KHOÁ HỌC BAO GỒM"');
+  const soDong = (detail.match(/className=\{styles\.incItem\}/g) ?? []).length;
+  assert.equal(
+    soDong,
+    5,
+    'số dòng trong khối đổi rồi — mỗi dòng phải có một ca soi nội dung của nó',
+  );
+});
+
 test('hai dòng thay thế nói đúng thứ đo được', () => {
   for (const [rel, code] of SRC) {
     assert.ok(/không khoá theo thứ tự/.test(code), `${rel} thiếu dòng "mọi bài mở sẵn"`);

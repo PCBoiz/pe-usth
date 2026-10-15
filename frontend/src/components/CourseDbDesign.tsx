@@ -364,7 +364,7 @@ export default function CourseDbDesign({ courseId }: { courseId: string }) {
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-database"></i> Thực hành trên trình duyệt (không cần cài DB)</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-unlock"></i> Mọi bài mở sẵn, không khoá theo thứ tự</div>
                     <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-floppy-disk"></i> Tiến độ lưu theo phiên của bạn</div>
-                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-mobile-alt"></i> Học trên mọi thiết bị</div>
+                    <div className="edu-cd-inc-item cd-inc-item"><i className="fas fa-desktop"></i> Chạy trong trình duyệt, không cần cài gì</div>
                   </div>
                 </div>
               </div>

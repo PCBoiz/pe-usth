@@ -3,13 +3,13 @@
   "sort_order": 20,
   "module": "M3 · GUI Tkinter và dự án",
   "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-  "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+  "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
   "estimated_minutes": 60,
   "xp_reward": 40,
   "content_json": {
     "schema": "studio-lesson/v2",
     "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-    "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+    "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
     "source": {
       "kind": "pe-v4-advanced",
       "filename": "python-learning-data.json#R02",
@@ -21,7 +21,7 @@
       "brief": {
         "eyebrow": [
           "M3",
-          "BOSS",
+          "TỔNG HỢP",
           "R02"
         ],
         "title": "Dự án PW5–PW9: lưu, shell, thread và GUI",
@@ -251,7 +251,7 @@
     },
     "step_4": {
       "task": {
-        "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+        "title": "Bài tổng hợp chặng — tự viết rồi nộp",
         "body": "Sổ điểm mini PW5–PW9. report.py đã cấp: đọc \"tên,điểm\" từ stdin, in báo cáo; không có dòng dữ liệu nào thì in lỗi ra stderr và thoát mã 1. Viết lần lượt:\n\n1) validate(name, raw_mark) → (tên đã strip, float 0..10), nhận cả \"7,5\"; tên trống, không phải số hoặc ngoài khoảng → ValueError.\n\n2) save_marks(marks, path) lưu dict bằng pickle NÉN gzip; load_marks(path) nạp lại, file chưa có → {}.\n\n3) run_report(marks) chạy [sys.executable, \"report.py\"] bằng subprocess, gửi mỗi sinh viên một dòng \"tên,điểm\" qua stdin, trả stdout (str); con thoát mã khác 0 → RuntimeError(stderr của con).\n\n4) start_save(marks, path, done) start một Thread lưu BẢN SAO marks; xong thì put (\"ok\", số sinh viên) vào done (OSError → (\"error\", thông báo)); trả Thread, không join.\n\n5) App (giao diện đã dựng sẵn): __init__ nạp self.marks = load_marks(path); add → validate, self.marks[tên] = điểm, status \"Có <n> sinh viên\" (sai → showerror); save → status \"Đang lưu...\", self.saver = start_save(...), after(100, self.poll_save); poll_save → get_nowait, rỗng thì hẹn lại, có thì status \"Đã lưu <n> sinh viên\"; report → self.output hiện run_report(self.marks) (lỗi → showerror); wait_for_save → join self.saver nếu có.\n\nThực hành: Viết và thử từng hàm thuần trước (validate → save/load → run_report → start_save), rồi mới nối vào các method của App.",
         "io": [
           {
@@ -430,7 +430,7 @@
         {
           "id": "trueFalse-0",
           "type": "trueFalse",
-          "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
+          "title": "Khởi động: mỗi đáp án đúng hay sai?",
           "prompt": "subprocess.run([...], capture_output=True) không có text=True thì result.stdout là gì?",
           "items": [
             {

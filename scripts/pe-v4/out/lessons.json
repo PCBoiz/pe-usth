@@ -7709,13 +7709,13 @@
    "sort_order": 20,
    "module": "M3 · GUI Tkinter và dự án",
    "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-   "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+   "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
    "estimated_minutes": 60,
    "xp_reward": 40,
    "content_json": {
     "schema": "studio-lesson/v1",
     "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-    "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
+    "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
     "source": {
      "kind": "pe-v4",
      "filename": "python-learning-data.json#R02",
@@ -7727,7 +7727,7 @@
      "brief": {
       "eyebrow": [
        "M3",
-       "BOSS",
+       "TỔNG HỢP",
        "R02"
       ],
       "title": "Dự án PW5–PW9: lưu, shell, thread và GUI",
@@ -7957,7 +7957,7 @@
     },
     "step_4": {
      "task": {
-      "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+      "title": "Bài tổng hợp chặng — tự viết rồi nộp",
       "body": "Sổ điểm mini PW5–PW9. report.py đã cấp: đọc \"tên,điểm\" từ stdin, in báo cáo; không có dòng dữ liệu nào thì in lỗi ra stderr và thoát mã 1. Viết lần lượt:\n\n1) validate(name, raw_mark) → (tên đã strip, float 0..10), nhận cả \"7,5\"; tên trống, không phải số hoặc ngoài khoảng → ValueError.\n\n2) save_marks(marks, path) lưu dict bằng pickle NÉN gzip; load_marks(path) nạp lại, file chưa có → {}.\n\n3) run_report(marks) chạy [sys.executable, \"report.py\"] bằng subprocess, gửi mỗi sinh viên một dòng \"tên,điểm\" qua stdin, trả stdout (str); con thoát mã khác 0 → RuntimeError(stderr của con).\n\n4) start_save(marks, path, done) start một Thread lưu BẢN SAO marks; xong thì put (\"ok\", số sinh viên) vào done (OSError → (\"error\", thông báo)); trả Thread, không join.\n\n5) App (giao diện đã dựng sẵn): __init__ nạp self.marks = load_marks(path); add → validate, self.marks[tên] = điểm, status \"Có <n> sinh viên\" (sai → showerror); save → status \"Đang lưu...\", self.saver = start_save(...), after(100, self.poll_save); poll_save → get_nowait, rỗng thì hẹn lại, có thì status \"Đã lưu <n> sinh viên\"; report → self.output hiện run_report(self.marks) (lỗi → showerror); wait_for_save → join self.saver nếu có.\n\nThực hành: Viết và thử từng hàm thuần trước (validate → save/load → run_report → start_save), rồi mới nối vào các method của App.",
       "io": [
        {
@@ -17830,13 +17830,13 @@
    "sort_order": 47,
    "module": "M8 · Dự án DA",
    "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
-   "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
+   "subtitle": "Nâng cao · M8 · 60 phút · Tổng hợp Dự án DA · doanh thu",
    "estimated_minutes": 60,
    "xp_reward": 40,
    "content_json": {
     "schema": "studio-lesson/v1",
     "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
-    "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
+    "subtitle": "Nâng cao · M8 · 60 phút · Tổng hợp Dự án DA · doanh thu",
     "source": {
      "kind": "pe-v4",
      "filename": "python-learning-data.json#DA01",
@@ -17847,7 +17847,7 @@
      "brief": {
       "eyebrow": [
        "M8",
-       "BOSS",
+       "TỔNG HỢP",
        "DA01"
       ],
       "title": "Mini-project: doanh thu từ raw tới chart",
@@ -17863,7 +17863,7 @@
      },
      "context": {
       "title": "Tự dựng pipeline doanh thu: đọc raw → làm sạch có lý do → báo cáo chất lượng → KPI → biểu đồ.",
-      "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.",
+      "body": "Bài tổng hợp cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.",
       "example": "sales.csv: 11 dòng raw → 6 đơn hợp lệ, revenue = 155 (north 65, south 90; 2026-01: 110, 2026-02: 45).",
       "prereq": "M06",
       "level": "Nâng cao",
@@ -18038,8 +18038,8 @@
     },
     "step_4": {
      "task": {
-      "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
-      "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.\n\nThực hành: Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải.",
+      "title": "Bài tổng hợp chặng — tự viết rồi nộp",
+      "body": "Bài tổng hợp cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.\n\nThực hành: Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm.",
       "io": [
        {
         "label": "sales.csv",
@@ -18051,12 +18051,12 @@
        }
       ]
      },
-     "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Boss DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.\n# Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    pass\n\n\ndef clean_sales(raw):\n    pass\n\n\ndef quality_report(raw, clean, rejected):\n    pass\n\n\ndef kpi_table(clean, by):\n    pass\n\n\ndef revenue_chart(clean):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# raw = load_sales(\"sales.csv\")\n# clean, rejected = clean_sales(raw)\n# print(quality_report(raw, clean, rejected))\n# print(kpi_table(clean, \"region\"))\n",
+     "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Bài tổng hợp DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.\n# Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    pass\n\n\ndef clean_sales(raw):\n    pass\n\n\ndef quality_report(raw, clean, rejected):\n    pass\n\n\ndef kpi_table(clean, by):\n    pass\n\n\ndef revenue_chart(clean):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# raw = load_sales(\"sales.csv\")\n# clean, rejected = clean_sales(raw)\n# print(quality_report(raw, clean, rejected))\n# print(kpi_table(clean, \"region\"))\n",
      "solutionCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    # dtype=str: mọi cột là chữ, giữ nguyên raw để còn kiểm và báo lỗi.\n    return pd.read_csv(path, dtype=str)\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"date\"] = pd.to_datetime(df[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    df[\"qty\"] = pd.to_numeric(df[\"qty\"], errors=\"coerce\")\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n\n    # Mỗi dòng nhận MỘT lý do, theo thứ tự kiểm cố định.\n    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"bad_date\", df[\"date\"].isna()),\n        (\"bad_qty\", df[\"qty\"].isna() | (df[\"qty\"] <= 0)),\n        (\"bad_price\", df[\"unit_price\"].isna() | (df[\"unit_price\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Bỏ trùng theo khoá của grain, chỉ trong các dòng đã hợp lệ.\n    dup_rows = df[reason == \"\"].duplicated(subset=\"order_id\", keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    clean[\"month\"] = clean[\"date\"].dt.strftime(\"%Y-%m\")\n    clean[\"revenue\"] = clean[\"qty\"] * clean[\"unit_price\"]\n\n    rejected = raw[reason != \"\"].copy()\n    rejected[\"reason\"] = reason[reason != \"\"]\n    return clean, rejected\n\n\ndef quality_report(raw, clean, rejected):\n    if len(raw) != len(clean) + len(rejected):\n        raise ValueError(\"raw != clean + rejected: có dòng bị mất hoặc bị đếm hai lần\")\n    report = {\"rows_in\": len(raw), \"rows_out\": len(clean)}\n    for name in REASONS:\n        report[name] = int((rejected[\"reason\"] == name).sum())\n    return report\n\n\ndef kpi_table(clean, by):\n    table = clean.groupby(by).agg(\n        orders=(\"order_id\", \"count\"),\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    # Tỷ số của tổng: đơn mua 5 cái nặng hơn đơn mua 1 cái.\n    table[\"avg_price\"] = table[\"revenue\"] / table[\"qty\"]\n    return table\n\n\ndef revenue_chart(clean):\n    by_region = kpi_table(clean, \"region\")[\"revenue\"].sort_values()\n    by_month = kpi_table(clean, \"month\")[\"revenue\"]\n\n    fig, (ax_region, ax_month) = plt.subplots(1, 2, figsize=(10, 4), layout=\"constrained\")\n    ax_region.barh(by_region.index, by_region.values)\n    ax_region.set(title=\"Doanh thu theo vùng (dữ liệu mô phỏng)\", xlabel=\"Doanh thu\")\n    ax_month.plot(by_month.index, by_month.values, marker=\"o\")\n    ax_month.set(title=\"Doanh thu theo tháng (dữ liệu mô phỏng)\", xlabel=\"Tháng\", ylabel=\"Doanh thu\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    raw = load_sales(\"sales.csv\")\n    clean, rejected = clean_sales(raw)\n    print(quality_report(raw, clean, rejected))\n    print(rejected[[\"order_id\", \"reason\"]].to_string(index=False))\n    print(kpi_table(clean, \"region\").round(2))\n    print(\"Tổng revenue:\", clean[\"revenue\"].sum())\n    revenue_chart(clean)\n    plt.show()\n",
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải."
+       "body": "Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm."
       },
       {
        "title": "Cấu trúc",
@@ -18228,13 +18228,13 @@
    "sort_order": 48,
    "module": "M8 · Dự án DA",
    "title": "DA02 · Mini-project: điểm số và GPA",
-   "subtitle": "Nâng cao · M8 · 50 phút · Boss Dự án DA · GPA",
+   "subtitle": "Nâng cao · M8 · 50 phút · Tổng hợp Dự án DA · GPA",
    "estimated_minutes": 50,
    "xp_reward": 40,
    "content_json": {
     "schema": "studio-lesson/v1",
     "title": "DA02 · Mini-project: điểm số và GPA",
-    "subtitle": "Nâng cao · M8 · 50 phút · Boss Dự án DA · GPA",
+    "subtitle": "Nâng cao · M8 · 50 phút · Tổng hợp Dự án DA · GPA",
     "source": {
      "kind": "pe-v4",
      "filename": "python-learning-data.json#DA02",
@@ -18245,7 +18245,7 @@
      "brief": {
       "eyebrow": [
        "M8",
-       "BOSS",
+       "TỔNG HỢP",
        "DA02"
       ],
       "title": "Mini-project: điểm số và GPA",
@@ -18261,7 +18261,7 @@
      },
      "context": {
       "title": "Làm sạch bảng điểm, tính GPA có trọng số tín chỉ, xếp hạng chữ và vẽ phân bố.",
-      "body": "Boss cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.",
+      "body": "Bài tổng hợp cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.",
       "example": "Sinh viên A có điểm [6, 9], tín chỉ [1, 2] → GPA = (6×1 + 9×2) / 3 = 8.0, không phải 7.5. grades.csv: 18 dòng → 13 dòng hợp lệ, 7 sinh viên, GPA chung 6.67.",
       "prereq": "DA01",
       "level": "Nâng cao",
@@ -18436,8 +18436,8 @@
     },
     "step_4": {
      "task": {
-      "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
-      "body": "Boss cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.\n\nThực hành: Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Nộp lần đầu trước khi xem lời giải.",
+      "title": "Bài tổng hợp chặng — tự viết rồi nộp",
+      "body": "Bài tổng hợp cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.\n\nThực hành: Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm.",
       "io": [
        {
         "label": "grades.csv",
@@ -18449,12 +18449,12 @@
        }
       ]
      },
-     "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Boss DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.\n# Điểm thang 10; thiếu điểm KHÔNG phải điểm 0.\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    pass\n\n\ndef clean_grades(raw):\n    pass\n\n\ndef letter(gpa):\n    pass\n\n\ndef gpa_table(clean):\n    pass\n\n\ndef class_gpa(clean):\n    pass\n\n\ndef grade_chart(table):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# clean, report = clean_grades(load_grades(\"grades.csv\"))\n# print(report)\n# print(gpa_table(clean))\n",
+     "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Bài tổng hợp DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.\n# Điểm thang 10; thiếu điểm KHÔNG phải điểm 0.\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    pass\n\n\ndef clean_grades(raw):\n    pass\n\n\ndef letter(gpa):\n    pass\n\n\ndef gpa_table(clean):\n    pass\n\n\ndef class_gpa(clean):\n    pass\n\n\ndef grade_chart(table):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# clean, report = clean_grades(load_grades(\"grades.csv\"))\n# print(report)\n# print(gpa_table(clean))\n",
      "solutionCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    return pd.read_csv(path, dtype=str)\n\n\ndef clean_grades(raw):\n    df = raw.copy()\n    df[\"student_id\"] = df[\"student_id\"].str.strip().str.upper()\n    df[\"course\"] = df[\"course\"].str.strip().str.upper()\n    df[\"score\"] = pd.to_numeric(df[\"score\"], errors=\"coerce\")\n    df[\"credits\"] = pd.to_numeric(df[\"credits\"], errors=\"coerce\")\n\n    # Thiếu điểm là THIẾU, không phải 0: loại khỏi phép tính và đếm lại.\n    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"missing_score\", df[\"score\"].isna()),\n        (\"out_of_range\", (df[\"score\"] < 0) | (df[\"score\"] > 10)),\n        (\"bad_credits\", df[\"credits\"].isna() | (df[\"credits\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Grain: một sinh viên, một môn, một điểm.\n    dup_rows = df[reason == \"\"].duplicated(subset=[\"student_id\", \"course\"], keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    report = {\"rows_in\": len(raw), \"rows_out\": len(clean)}\n    for name in REASONS:\n        report[name] = int((reason == name).sum())\n    return clean, report\n\n\ndef letter(gpa):\n    if gpa >= 8.5:\n        return \"A\"\n    if gpa >= 7.0:\n        return \"B\"\n    if gpa >= 5.5:\n        return \"C\"\n    if gpa >= 4.0:\n        return \"D\"\n    return \"F\"\n\n\ndef gpa_table(clean):\n    df = clean.assign(points=clean[\"score\"] * clean[\"credits\"])\n    table = df.groupby(\"student_id\").agg(\n        courses=(\"course\", \"count\"),\n        credits=(\"credits\", \"sum\"),\n        points=(\"points\", \"sum\"),\n    )\n    table[\"gpa\"] = (table[\"points\"] / table[\"credits\"]).round(2)\n    table[\"letter\"] = table[\"gpa\"].map(letter)\n    return table.sort_values(\"gpa\", ascending=False)\n\n\ndef class_gpa(clean):\n    total = (clean[\"score\"] * clean[\"credits\"]).sum()\n    return round(float(total / clean[\"credits\"].sum()), 2)\n\n\ndef grade_chart(table):\n    fig, ax = plt.subplots(figsize=(6, 4), layout=\"constrained\")\n    ax.hist(table[\"gpa\"], bins=GRADE_BINS, edgecolor=\"white\")\n    ax.set(title=f\"Phân bố GPA (dữ liệu mô phỏng, n={len(table)})\",\n           xlabel=\"GPA (thang 10)\", ylabel=\"Số sinh viên\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    raw = load_grades(\"grades.csv\")\n    clean, report = clean_grades(raw)\n    print(report)\n    table = gpa_table(clean)\n    print(table)\n    print(\"GPA chung theo tín chỉ:\", class_gpa(clean))\n    grade_chart(table)\n    plt.show()\n",
      "hints": [
       {
        "title": "Nguyên lý",
-       "body": "Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Nộp lần đầu trước khi xem lời giải."
+       "body": "Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm."
       },
       {
        "title": "Cấu trúc",

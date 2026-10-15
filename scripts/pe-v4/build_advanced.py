@@ -82,7 +82,7 @@ def build_play(row: dict, qa: dict, report=None) -> tuple[dict, list[str]]:
     tf = V3.build_true_false(one, rng)
     spots = [s for s in (V3.build_spot_error(solution, b) for b in bads) if s]
     if boss:
-        add('trueFalse', 'Khởi động trận Boss: mỗi đáp án đúng hay sai?',
+        add('trueFalse', 'Khởi động: mỗi đáp án đúng hay sai?',
             V3.build_true_false_from_mcq(c.get('step_2', {})) or tf, 'thiếu trắc nghiệm/ngộ nhận')
         add('spotError', 'Săn lỗi: dòng nào làm chương trình sai?', spots[0] if spots else None,
             'biến thể sai không khoanh được 1 dòng')
@@ -256,7 +256,7 @@ def main(argv=None) -> int:
         (OUT / 'lessons.json').write_text(json.dumps(packed, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         adv = dict(curriculum)
         adv['requirements'] = [
-            'Học bằng cách ghép code rồi chạy thật, săn lỗi, sửa code, trận Boss cuối chặng',
+            'Học bằng cách ghép code rồi chạy thật, săn lỗi, sửa code, làm bài tổng hợp cuối chặng',
             *curriculum['requirements'],
         ]
         (OUT / 'curriculum-python-advanced.json').write_text(json.dumps(adv, ensure_ascii=False, indent=2) + '\n',
