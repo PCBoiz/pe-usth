@@ -129,8 +129,8 @@ export type ResumePlan = {
  * người học hoàn toàn có thể nhảy xuống bài 20 trước. Nếu lấy max+1 thì hệ
  * thống sẽ mời họ sang bài 21 và 18 bài còn trống ở giữa sẽ không bao giờ được
  * nhắc lại — tiến độ rời rạc im lặng trở thành tiến độ bị bỏ quên. Lấy bài
- * trống đầu tiên thì thứ tự giáo trình được giữ, mà người học vẫn có lối ra
- * "Tự chọn bài".
+ * trống đầu tiên thì thứ tự giáo trình được giữ, mà danh sách 48 bài ngay dưới
+ * trên cùng trang vẫn cho người học tự nhảy.
  *
  * Xong hết thì KHÔNG trả chỉ số vượt khỏi khoá (total, tức bài 49 không tồn
  * tại — link `?lesson=48` sẽ mở ra một bài trống). Trả kind 'done' kèm bài
@@ -165,27 +165,4 @@ export function resumeButtonLabel(plan: ResumePlan): string {
   if (plan.kind === 'continue') return `Tiếp tục ở bài ${plan.lessonNo}`;
   if (plan.kind === 'done') return `Xem lại bài ${plan.lessonNo}`;
   return 'Bắt đầu học';
-}
-
-/**
- * Câu "Vì sao bài này" của thẻ gợi ý (xem bản thiết kế Main.dc.html).
- *
- * Nói rõ lý do chọn chứ không chỉ ra lệnh: thẻ này là GỢI Ý, nên người học phải
- * đọc được căn cứ để tự quyết định có theo hay không. Ca tiến độ rời rạc được
- * nói thẳng ("bài trống đầu tiên"), nếu không người từng nhảy bài sẽ tưởng hệ
- * thống đếm sai và mất tin vào mọi con số còn lại trên trang.
- */
-export function resumeReason(plan: ResumePlan): string {
-  const { completedCount, total, lessonNo } = plan;
-  if (plan.kind === 'done') {
-    return `Bạn đã xong cả ${total} bài. Không còn bài mới, nhưng xem lại bài cũ sau vài ngày là cách nhớ lâu nhất.`;
-  }
-  if (plan.kind === 'start') {
-    return `Khoá có ${total} bài, đi từ đầu là vừa. Bài nào cũng mở được, không cần xong bài trước.`;
-  }
-  // Rời rạc: số bài đã xong không bằng (số bài gợi ý − 1).
-  if (completedCount !== lessonNo - 1) {
-    return `Bạn đã xong ${completedCount}/${total} bài nhưng không liền mạch — bài ${lessonNo} là bài còn trống đầu tiên theo thứ tự giáo trình.`;
-  }
-  return `Bạn đã xong ${completedCount}/${total} bài; bài ${lessonNo} là bài kế tiếp theo thứ tự giáo trình.`;
 }

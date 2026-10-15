@@ -77,6 +77,25 @@ const codeOnly = (src) => src
  *  chiều rộng cột, nên tìm chuỗi nguyên văn trong mã nguồn sẽ trượt oan. */
 const textOnly = (src) => codeOnly(src).replace(/\s+/g, ' ');
 
+/**
+ * Chuẩn hoá TRƯỚC khi so: "khoá" gõ bằng dấu TỔ HỢP (o + U+0301) là dãy ký tự
+ * khác hẳn bản dựng sẵn nên regex không khớp, và U+00A0 lọt qua mọi mẫu có
+ * khoảng trắng. Cùng lý do đã ghi ở home-page.test.mjs.
+ */
+const chuanHoa = (x) => x.normalize('NFC').replace(/\s+/g, ' ').trim();
+
+/**
+ * Mọi chuỗi HIỂN THỊ trong một file: cả chuỗi trong nháy LẪN chữ viết thẳng
+ * giữa hai thẻ JSX — viết câu thẳng vào JSX là cách TỰ NHIÊN NHẤT trong React,
+ * nên bề mặt quét thiếu phần đó thì luật chỉ nghiêm trên giấy.
+ */
+function hienThi(code) {
+  const out = [];
+  for (const m of code.matchAll(/(['"`])((?:[^\\\n]|\\.)*?)\1/g)) out.push(chuanHoa(m[2]));
+  for (const m of code.matchAll(/>([^<>{}]+)</g)) out.push(chuanHoa(m[1]));
+  return out.filter(Boolean);
+}
+
 const CLIENT = ['src', 'app', '(standalone)', 'practice', 'PracticeClient.tsx'];
 const CSS = ['src', 'app', '(standalone)', 'practice', 'practice.module.css'];
 
@@ -207,16 +226,21 @@ test('xong ĐÚNG 1 bài: nói trước là chưa ôn được, không để b�
   const gate = planPractice({ completed: [1] });
   assert.equal(gate.kind, 'almost');
   assert.equal(gate.headline, 'Ôn tập mở sau khi bạn xong 2 bài — bạn đã xong 1');
-  assert.match(gate.body, /mỗi bài góp 3 câu/);
+  // Thông tin người học CẦN để hành động (còn thiếu mấy bài) nằm ở tiêu đề;
+  // thân chỉ là lối đi tiếp, MỘT câu. Đoạn "Vì sao: mỗi bài góp 3 câu vào kho
+  // ôn, mà một phần ôn cần ít nhất 5 câu" đã gỡ — đó là phép tính nội bộ.
+  assert.equal(gate.body, 'Xong thêm một bài là đủ.');
   // Lối đi tiếp: bài trống đầu tiên, không phải "bài 1" cứng.
   assert.equal(gate.ctaLessonNo, 2);
 });
 
-test('xong 2 bài: mở phần ôn, và nói vì sao lại là những câu đó', () => {
+test('xong 2 bài: mở phần ôn, nói kho ôn lấy từ mấy bài — không kể cơ chế', () => {
   const gate = planPractice({ completed: [1, 2] });
   assert.equal(gate.kind, 'ready');
   assert.match(gate.body, /2 bài bạn đã xong/);
-  assert.match(gate.body, /hay chọn sai/);
+  // Câu "Hệ thống lấy nhiều câu hơn từ những bài bạn hay chọn sai" đã gỡ: đó
+  // là hệ thống kể về cơ chế của chính mình, và người học không làm gì với nó.
+  assert.ok(!/hay chọn sai|Hệ thống lấy/.test(gate.body), gate.body);
 });
 
 test('tiến độ rời rạc: cổng đếm số bài THẬT, gợi ý bài trống đầu tiên', () => {
@@ -368,10 +392,13 @@ test('không có bảng lịch Leitner nào bị bịa ra trên màn hình', () 
   for (const bad of ['Hộp 1', 'Hộp 2', 'hộp 3', '14 ngày tới', 'gặp lại sau']) {
     assert.ok(!src.includes(bad), `vẽ lịch Leitner chưa có dữ liệu: "${bad}"`);
   }
-  assert.ok(
-    src.includes('Chưa có lịch ôn theo ngày'),
-    'phải nói thẳng là chưa có lịch ôn theo ngày',
-  );
+  // ĐẢO CHIỀU 15/10/2026. Ca cũ ĐÒI màn hình nói "Chưa có lịch ôn theo ngày"
+  // rồi giải thích rằng hệ thống không hẹn ngày gặp lại cho từng câu — tức
+  // một đoạn văn về thứ hệ thống KHÔNG làm, đứng trong một khối viền nét đứt.
+  // Không vẽ lịch Leitner thì không cần nói gì cả: không ai hỏi.
+  for (const nope of ['Chưa có lịch ôn theo ngày', 'không hẹn ngày gặp lại', 'cân lại tỉ lệ']) {
+    assert.ok(!src.includes(nope), `giải thích thứ hệ thống KHÔNG làm: "${nope}"`);
+  }
   assert.ok(src.includes('mã khôi phục'), 'phải nói mã khôi phục là ĐỀ XUẤT chưa có');
 });
 
@@ -390,6 +417,70 @@ test('ngày viết "thứ Tư 14/10"; ngày không đọc được trả null ch
   assert.equal(formatStudyDay(new Date(2026, 9, 14)), 'thứ Tư 14/10');
   assert.equal(formatStudyDay(new Date(2026, 9, 18)), 'Chủ nhật 18/10');
   assert.equal(formatStudyDay('rác'), null);
+});
+
+/**
+ * Luật chống đúng loại AI slop đã có thật trên màn này: KHÔNG KỂ VỀ CƠ CHẾ CỦA
+ * CHÍNH MÌNH · KHÔNG TRẢ LỜI CÂU HỎI CHƯA AI HỎI · KHÔNG RÀO ĐÓN · MỘT LỐI RA
+ * CHỈ ĐÁNG CÓ KHI KHÔNG CÒN LỐI NÀO KHÁC · TRẠNG THÁI RỖNG KHÔNG CẦN MỘT ĐOẠN
+ * VĂN NÓI RẰNG NÓ RỖNG.
+ *
+ * Bản cũ của /practice có bốn chỗ vi phạm, chủ sản phẩm chỉ ra khi xem bản
+ * chạy thật:
+ *  · thẻ cột phải: nhãn "Gợi ý bước tiếp · hệ thống chọn", đoạn "Vì sao: bạn
+ *    đã xong 0/48 bài, và P01 … là bài trống đầu tiên trong giáo trình
+ *    (M1 · …)", rồi "Đây là gợi ý, không phải lệnh. Bạn tự quyết đường đi:" và
+ *    lối ra "Tự chọn bài" — bốn lớp bọc đúng MỘT cái nút;
+ *  · thẻ "Chế độ thử thách": một đoạn giới thiệu luật chơi của một màn mà
+ *    người đọc chưa mở;
+ *  · "Những lần ôn gần đây" khi rỗng: một câu nói rằng nó rỗng;
+ *  · khối viền nét đứt giải thích rằng hệ thống KHÔNG hẹn ngày gặp lại cho
+ *    từng câu (kiểu 1·3·7·14 ngày).
+ *
+ * GIỮ LẠI, vì là thông tin người học cần để HÀNH ĐỘNG chứ không phải triết lý
+ * sản phẩm: cổng "xong 2 bài mới ôn được" — không biết thì bấm rồi nhận 400.
+ * Nhưng nói bằng MỘT câu, không bằng một đoạn.
+ */
+test('/practice không kể về cơ chế, không rào đón, không giải thích trước', () => {
+  const CAM = [
+    [/hệ thống chọn|do hệ thống|Hệ thống lấy|AI (?:chọn|đề xuất)/i, 'kể về cơ chế bên trong'],
+    [/không phải lệnh|chỉ là gợi ý|bạn tự quyết/i, 'rào đón cho một gợi ý'],
+    [/vì sao: bạn đã xong|bài trống đầu tiên|khác luật/i, 'trả lời câu hỏi chưa ai hỏi'],
+    [/tự chọn bài/i, 'lối ra thừa: trang khoá đã ở trên thanh điều hướng'],
+    [/chưa có lần ôn nào|sẽ nằm ở đây|chưa có lịch ôn/i, 'đoạn văn nói rằng rỗng là rỗng'],
+  ];
+  const be_mat = [
+    ...[0, 1, 2, 48].flatMap((n) => {
+      const g = planPractice({ completed: Array.from({ length: n }, (_, i) => i + 1) });
+      return [g.headline, g.body, g.ctaLabel ?? ''];
+    }),
+    gateFromError(planPractice({ completed: [1, 2] }), 'Chưa đủ câu hỏi để tạo quiz').body,
+    ...hienThi(codeOnly(read(...CLIENT))),
+  ];
+  for (const [mau, ly_do] of CAM) {
+    const dinh = be_mat.filter((x) => mau.test(x));
+    assert.deepEqual(dinh, [], ly_do + ':\n' + dinh.join('\n'));
+  }
+
+  // Thông tin phải CÒN: cổng 2 bài, và nói bằng MỘT câu.
+  const trong = planPractice({ completed: [] });
+  assert.ok(trong.body.includes(String(MIN_LESSONS)), 'mất con số "xong 2 bài"');
+  assert.ok(trong.body.length <= 60, `thân dài ${trong.body.length} ký tự — một câu là đủ`);
+
+  // Tự kiểm năm phép so trên chính câu chữ CŨ: một hàng rào không bắt nổi bản
+  // cũ là hàng rào chết mà vẫn báo đạt.
+  const CU = [
+    'Gợi ý bước tiếp · hệ thống chọn',
+    'Đây là gợi ý, không phải lệnh. Bạn tự quyết đường đi:',
+    'Vì sao: bạn đã xong 0/48 bài, và P01 là bài trống đầu tiên trong giáo trình',
+    'Tự chọn bài',
+    'Chưa có lần ôn nào được lưu. Phần ôn đầu tiên của bạn sẽ nằm ở đây.',
+  ];
+  for (let k = 0; k < CAM.length; k += 1) {
+    assert.ok(CAM[k][0].test(CU[k]), `mẫu ${k} không bắt nổi chuỗi cũ: ${CU[k]}`);
+  }
+  // Và đoạn giới thiệu "Chế độ thử thách" cũ phải bị mẫu thứ ba bắt được.
+  assert.ok(CAM[2][0].test('Cùng kho câu này, khác luật: đi một câu một lần'));
 });
 
 /* ─────────────────── 6. Nhãn bài lấy từ giáo trình tĩnh ─────────────────── */

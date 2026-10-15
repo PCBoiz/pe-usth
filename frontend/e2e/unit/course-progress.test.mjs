@@ -34,6 +34,9 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import {
   completedLessonSet,
@@ -41,8 +44,38 @@ import {
   loadCompletedLessons,
   planResume,
   resumeButtonLabel,
-  resumeReason,
 } from '../../src/lib/course-progress.ts';
+
+const FE = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
+const read = (...p) => readFileSync(join(FE, ...p), 'utf8');
+
+/** Bỏ chú thích — chú thích KỂ LẠI câu chữ cũ, và phải giữ được. */
+const codeOnly = (src) => src
+  .replace(/\/\*[\s\S]*?\*\//g, ' ')
+  .replace(/^[ \t]*\/\/.*$/gm, '')
+  .replace(/[ \t]+\/\/.*$/gm, '');
+
+/**
+ * Chuẩn hoá TRƯỚC khi so: "khoá" gõ bằng dấu TỔ HỢP (o + U+0301) là dãy ký tự
+ * khác hẳn bản dựng sẵn nên regex không khớp, và U+00A0 lọt qua mọi mẫu có
+ * khoảng trắng. Cùng lý do đã ghi ở home-page.test.mjs.
+ */
+const chuanHoa = (s) => s.normalize('NFC').replace(/\s+/g, ' ').trim();
+
+/**
+ * Mọi chuỗi HIỂN THỊ trong một file: cả chuỗi trong nháy LẪN chữ viết thẳng
+ * giữa hai thẻ JSX — viết câu thẳng vào JSX là cách TỰ NHIÊN NHẤT trong React,
+ * nên bề mặt quét thiếu phần đó thì luật chỉ nghiêm trên giấy.
+ */
+function vietStrings(code) {
+  const out = [];
+  for (const m of code.matchAll(/(['"`])((?:[^\\\n]|\\.)*?)\1/g)) out.push(chuanHoa(m[2]));
+  for (const m of code.matchAll(/>([^<>{}]+)</g)) {
+    const s = chuanHoa(m[1]);
+    if (s) out.push(s);
+  }
+  return out.filter(Boolean);
+}
 
 const TOTAL = 48; // giáo trình Advanced Python đang chạy (pe-v4)
 const range = (from, to) => Array.from({ length: to - from + 1 }, (_, i) => from + i);
@@ -86,9 +119,6 @@ test('tiến độ RỜI RẠC: gợi ý bài trống ĐẦU TIÊN, không phả
   assert.equal(plan.lessonNo, 3, 'bài trống đầu tiên là 3');
   assert.equal(plan.index, 2);
   assert.equal(plan.completedCount, 3);
-  // Câu "Vì sao bài này" phải nói thẳng là tiến độ không liền mạch, nếu không
-  // người học tưởng trang đếm sai và mất tin vào mọi con số còn lại.
-  assert.match(resumeReason(plan), /không liền mạch/);
 });
 
 test('rời rạc ngay từ đầu: chưa xong bài 1 thì gợi ý vẫn là bài 1', () => {
@@ -108,7 +138,6 @@ test('xong hết 48 bài: không trả chỉ số vượt khỏi khoá', () => {
   assert.equal(plan.index, TOTAL - 1);
   assert.equal(plan.lessonNo, TOTAL);
   assert.equal(resumeButtonLabel(plan), 'Xem lại bài 48');
-  assert.match(resumeReason(plan), /xong cả 48 bài/);
 });
 
 test('thứ tự đến từ API không ảnh hưởng kết quả', () => {
@@ -221,6 +250,53 @@ test('API lỗi hoặc phiên đã chết: trả "chưa biết", không ném l�
     }),
     null,
   );
+});
+
+/**
+ * Luật chống đúng loại AI slop đã có thật trên thẻ này: KHÔNG KỂ VỀ CƠ CHẾ CỦA
+ * CHÍNH MÌNH, KHÔNG TRẢ LỜI CÂU HỎI CHƯA AI HỎI, KHÔNG RÀO ĐÓN, VÀ MỘT LỐI RA
+ * CHỈ ĐÁNG CÓ KHI KHÔNG CÒN LỐI NÀO KHÁC.
+ *
+ * Bản cũ của thẻ "học tiếp" ở trang khoá có bốn lớp quanh đúng một cái nút:
+ * nhãn "Gợi ý bước tiếp · hệ thống chọn", một đoạn `resumeReason()` giải thích
+ * phép tính của chính nó ("bạn đã xong 0/48 bài, và bài X là bài trống đầu
+ * tiên theo thứ tự giáo trình"), câu "Đây là gợi ý, không phải lệnh", và lối
+ * ra "Tự chọn bài" — trong khi danh sách 48 bài nằm NGAY DƯỚI trên cùng trang
+ * và đã đánh dấu bài được gợi ý.
+ *
+ * Mỗi lớp sinh ra để chống một nỗi lo của người LÀM sản phẩm. Người mở trang
+ * khoá không mang nỗi lo nào trong số đó. Luật đầy đủ: đầu khối `nextStep`
+ * trong src/lib/home-copy.ts.
+ */
+test('trang khoá không kể về cơ chế, không rào đón, không giải thích trước', () => {
+  const CAM = [
+    [/hệ thống chọn|do hệ thống|AI (?:chọn|đề xuất)/i, 'kể về cơ chế bên trong'],
+    [/không phải lệnh|chỉ là gợi ý|bạn không bắt buộc/i, 'rào đón cho một gợi ý'],
+    [/vì sao bài này|bài trống đầu tiên|không liền mạch/i, 'trả lời câu hỏi chưa ai hỏi'],
+    [/tự chọn bài|bạn tự quyết/i, 'lối ra thừa: danh sách 48 bài ở ngay dưới'],
+  ];
+  const be_mat = [
+    ...[0, 1, 2, 3, 48].map((n) => resumeButtonLabel(planResume(range(1, n), TOTAL))),
+    ...vietStrings(codeOnly(read('src', 'lib', 'course-progress.ts'))),
+    ...vietStrings(codeOnly(
+      read('src', 'app', '(standalone)', 'courses', '[courseId]', 'CourseDetail.tsx'),
+    )),
+  ];
+  for (const [mau, ly_do] of CAM) {
+    const dinh = be_mat.filter((x) => mau.test(x));
+    assert.deepEqual(dinh, [], ly_do + ':\n' + dinh.join('\n'));
+  }
+  // Tự kiểm phép so trên chính câu chữ CŨ — một hàng rào không bắt nổi bản cũ
+  // là hàng rào chết mà vẫn báo đạt.
+  const CU = [
+    'Gợi ý bước tiếp · hệ thống chọn',
+    'Đây là gợi ý, không phải lệnh.',
+    'Vì sao bài này: Bạn đã xong 2/48 bài nhưng không liền mạch — bài 3 là bài còn trống đầu tiên theo thứ tự giáo trình.',
+    'Tự chọn bài',
+  ];
+  for (let k = 0; k < CAM.length; k += 1) {
+    assert.ok(CAM[k][0].test(CU[k]), `mẫu ${k} không bắt nổi chuỗi cũ: ${CU[k]}`);
+  }
 });
 
 /**

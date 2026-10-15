@@ -455,10 +455,14 @@
   text-wrap: pretty;
 }
 
-/* ── Thẻ "Gợi ý bước tiếp" ───────────────────────────────── */
+/* ── Thẻ "học tiếp" ─────────────────────────────────────── */
 /* Bản thiết kế §1.4 "Khối hệ thống gợi ý": nền `ink`, chữ `page`. Cặp này tự
    đảo theo bản nền (ngày 14,91:1 · đêm 15,71:1) nên không phải khai màu riêng
-   cho chế độ tối — giống `.next` của trang chủ. */
+   cho chế độ tối — giống `.next` của trang chủ.
+
+   Bốn lớp chú giải quanh cái nút này đã gỡ (xem khối chú thích đầu
+   `ResumeCard` trong CourseDetail.tsx), nên `.resumeKicker`, `.resumeWhy`,
+   `.resumeFoot` và `.resumePick` cũng xoá theo — không còn ai dùng. */
 .resumeCard {
   display: flex;
   flex-direction: column;
@@ -470,29 +474,11 @@
   box-shadow: var(--ds-shadow-open);
 }
 
-.resumeKicker {
-  margin: 0;
-  /* 11 → 15px: nhãn "Gợi ý bước tiếp · hệ thống chọn" là chỗ nói AI đề xuất;
-     bản thiết kế chốt nhãn 15/700/0.08em. */
-  font-size: 15px;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .resumeTitle {
   margin: 0;
   font-size: 22px;
   font-weight: 800;
   line-height: 1.25;
-}
-
-.resumeWhy {
-  margin: 0;
-  /* 13 → 17px: "Vì sao bài này…" là câu người học phải đọc để quyết định, nên
-     nó ở cỡ thân, không phải cỡ ghi chú. */
-  font-size: 17px;
-  line-height: 1.55;
 }
 
 .resumeBtn { width: 100%; }
@@ -501,39 +487,6 @@
 .resumeBtn:focus-visible {
   outline: var(--ds-bw-3) solid var(--ds-page);
   outline-offset: 3px;
-}
-
-/* Vạch ngăn: phần dưới là lối ra, không phải phần tiếp của lời mời. Đường kẻ
-   dùng `desk` — nó cũng tự đảo theo bản nền và cho 12,85:1 trên `ink` bản
-   ngày, 8,80:1 bản đêm. */
-.resumeFoot {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-top: 12px;
-  border-top: var(--ds-bw-1) solid var(--ds-desk);
-  /* 12 → 17px: "Đây là gợi ý, không phải lệnh." và lối ra "Tự chọn bài" là câu
-     và nút — đọc không được thì lối ra coi như không có. */
-  font-size: 17px;
-  line-height: 1.5;
-}
-
-/* Nút yên: chữ cùng màu thân thẻ + gạch chân. Bản thiết kế dùng tím cho lối
-   ra, nhưng tím ở đây nằm trên nền `ink` (bản ngày 2,2:1, không đọc được) —
-   cùng kết luận đã ghi ở `.nextExit` của trang chủ. */
-.resumePick {
-  align-self: flex-start;
-  font-size: 17px;
-  font-weight: 700;
-  color: var(--ds-page);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-.resumePick:hover { text-decoration-thickness: 2px; }
-.resumePick:focus-visible {
-  outline: var(--ds-bw-3) solid var(--ds-page);
-  outline-offset: 3px;
-  border-radius: var(--ds-r-xs);
 }
 
 /* ── Khổ hẹp ─────────────────────────────────────────────── */

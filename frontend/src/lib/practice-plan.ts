@@ -173,9 +173,11 @@ export function planPractice(input: {
     return {
       kind: 'empty',
       headline: 'Chưa có câu ôn nào',
-      body:
-        'Câu ôn lấy từ chính những câu bạn trả lời trong bài. '
-        + `Xong ${minLessons} bài là có phần ôn đầu tiên.`,
+      // MỘT câu, và nó là THÔNG TIN ĐỂ HÀNH ĐỘNG: không biết con số này thì
+      // người học bấm "Ôn tập" rồi nhận lỗi 400. Câu "câu ôn lấy từ chính
+      // những câu bạn trả lời trong bài" đứng trước nó đã gỡ — đó là kể về cơ
+      // chế của chính mình.
+      body: `Xong ${minLessons} bài là có phần ôn đầu tiên.`,
       ctaLabel: cta,
       ctaLessonNo: next,
       completedCount: done,
@@ -186,9 +188,9 @@ export function planPractice(input: {
     return {
       kind: 'almost',
       headline: `Ôn tập mở sau khi bạn xong ${minLessons} bài — bạn đã xong ${done}`,
-      body:
-        `Vì sao: mỗi bài góp ${QUESTIONS_PER_LESSON} câu vào kho ôn, mà một phần ôn `
-        + `cần ít nhất ${MIN_POOL} câu. Xong thêm một bài là đủ.`,
+      // Tiêu đề đã nói còn thiếu bao nhiêu bài; phép tính đằng sau
+      // (mỗi bài góp 3 câu, một phần ôn cần 5 câu) là chuyện nội bộ.
+      body: 'Xong thêm một bài là đủ.',
       ctaLabel: cta,
       ctaLessonNo: next,
       completedCount: done,
@@ -198,9 +200,7 @@ export function planPractice(input: {
   return {
     kind: 'ready',
     headline: 'Phần ôn của bạn đã sẵn',
-    body:
-      `Kho ôn đang có câu từ ${done} bài bạn đã xong. Hệ thống lấy nhiều câu hơn `
-      + 'từ những bài bạn hay chọn sai.',
+    body: `Kho ôn đang có câu từ ${done} bài bạn đã xong.`,
     ctaLabel: cta,
     ctaLessonNo: next,
     completedCount: done,
@@ -227,9 +227,7 @@ export function gateFromError(gate: PracticeGate, message: unknown): PracticeGat
   return {
     kind: 'almost',
     headline: 'Kho ôn chưa đủ câu',
-    body:
-      `Một phần ôn cần ít nhất ${MIN_POOL} câu. Bạn đã xong ${gate.completedCount} bài, `
-      + 'nhưng có bài không mang câu trắc nghiệm nào. Xong thêm một bài là đủ.',
+    body: 'Xong thêm một bài là đủ.',
     ctaLabel: gate.ctaLabel,
     ctaLessonNo: gate.ctaLessonNo,
     completedCount: gate.completedCount,

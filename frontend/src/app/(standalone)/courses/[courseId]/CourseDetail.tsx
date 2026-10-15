@@ -41,7 +41,6 @@ import {
   LS_LEGACY_REFRESH,
   planResume,
   resumeButtonLabel,
-  resumeReason,
   type ResumePlan,
 } from '@/lib/course-progress';
 import CURRICULA_JSON from '@/lib/curricula.json';
@@ -201,47 +200,42 @@ function useCompletedLessons(courseId: string): number[] | null {
 }
 
 /**
- * Thẻ gợi ý bước tiếp (bản thiết kế Main.dc.html): nhãn · tiêu đề · "Vì sao bài
- * này" · nút chính, rồi "Đây là gợi ý, không phải lệnh" + lối ra "Tự chọn bài".
+ * Thẻ "học tiếp": một tên bài và một cái nút.
  *
- * Vì sao phải có lối ra, không chỉ có nút chính: hệ thống chỉ ĐỀ XUẤT, mọi bài
- * trong danh sách 48 bài vẫn bấm vào được. Thẻ gợi ý mà không nói điều đó thì
- * người học tưởng mình bị dẫn theo một đường duy nhất và bỏ hẳn ý định tự chọn.
+ * ===========================================================================
+ * VÌ SAO NÓ TỪNG DÀI GẤP BỐN, VÀ VÌ SAO BỊ CẮT
+ * ===========================================================================
+ * Bản cũ có bốn lớp chú giải bao quanh đúng MỘT cái nút:
+ *   · nhãn "Gợi ý bước tiếp · hệ thống chọn" — kể về cơ chế bên trong;
+ *   · đoạn "Vì sao bài này: bạn đã xong 0/48 bài, và bài X là bài trống đầu
+ *     tiên theo thứ tự giáo trình" (`resumeReason()`, đã gỡ khỏi
+ *     `lib/course-progress.ts`) — giải thích phép tính của chính nó;
+ *   · câu "Đây là gợi ý, không phải lệnh" — lời rào đón cho một gợi ý;
+ *   · lối ra "Tự chọn bài", trong khi danh sách 48 bài nằm NGAY DƯỚI trên cùng
+ *     trang này (`#cd-curriculum`) và đã đánh dấu bài được gợi ý.
+ *
+ * Cùng bốn lớp, cùng lý lẽ, cùng cách cắt như thẻ của trang chủ — luật rút ra
+ * ghi đầy đủ ở đầu khối `nextStep` trong `lib/home-copy.ts`.
  */
 function ResumeCard({
   plan,
   title,
   href,
-  pickHref,
 }: {
   plan: ResumePlan;
   title: string;
   href: string;
-  pickHref: string;
 }) {
   return (
     <section className={styles.resumeCard} aria-labelledby="cd-resume-title">
-      <p className={styles.resumeKicker}>
-        {plan.kind === 'done' ? 'Đã xong cả khoá · mời xem lại' : 'Gợi ý bước tiếp · hệ thống chọn'}
-      </p>
       <h2 className={styles.resumeTitle} id="cd-resume-title">
         {`Bài ${plan.lessonNo}`}
         {title ? ` · ${title}` : ''}
       </h2>
-      <p className={styles.resumeWhy}>
-        <strong>Vì sao bài này: </strong>
-        {resumeReason(plan)}
-      </p>
       <a className={`${styles.btn} ${styles.btnPrimary} ${styles.resumeBtn}`} href={href}>
         <Icon name="chevronRight" />
         {resumeButtonLabel(plan)}
       </a>
-      <div className={styles.resumeFoot}>
-        <span>Đây là gợi ý, không phải lệnh.</span>
-        <a className={styles.resumePick} href={pickHref}>
-          Tự chọn bài
-        </a>
-      </div>
     </section>
   );
 }
@@ -276,24 +270,24 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const startUrl = `${course.lessonUrl}?lesson=${plan.index}`;
   // Chưa có tiến độ (hoặc chưa biết) thì nhãn giữ NGUYÊN chữ cũ "Bắt đầu học".
   const ctaLabel = resumeButtonLabel(plan);
-  // Neo tới danh sách 48 bài — đích của lối ra "Tự chọn bài".
+  // Neo của danh sách 48 bài (mục lục đầu trang trỏ vào đây).
   const curriculumAnchor = 'cd-curriculum';
   /**
-   * MỘT nút chính trên một màn, và nó nằm ở chỗ có "Vì sao".
+   * MỘT nút chính trên một màn, và nó nằm trong thẻ "học tiếp".
    *
    * Trước bản này trang có BA nút nền `--ds-action` cùng khung nhìn — hero,
    * thẻ giá, thẻ gợi ý — và cả ba trỏ CÙNG một `startUrl`; hai trong số đó
    * trùng nhau cả nhãn (`ctaLabel`) lẫn icon. Nút trong thẻ giá còn
    * `width: 100%` nên nó là khối tím to nhất trang. Bản thiết kế §1.4 khai
    * ĐÚNG MỘT `btn-primary` (và liệt "5 biến thể kích thước" là lỗi cần gộp,
-   * không phải giấy phép nhân bản), còn §1.4 "Khối hệ thống gợi ý" chốt phần
-   * (4) của thẻ gợi ý là nút chính.
+   * không phải giấy phép nhân bản), còn §1.4 "Khối hệ thống gợi ý" chốt rằng
+   * nút chính của màn nằm trong thẻ này.
    *
    * Vì sao hero không bị hạ VÔ ĐIỀU KIỆN: `ResumeCard` chỉ dựng khi
-   * `plan.kind !== 'start'`, nên khách mới KHÔNG có thẻ gợi ý — hạ vô điều
+   * `plan.kind !== 'start'`, nên khách mới KHÔNG có thẻ đó — hạ vô điều
    * kiện là màn hình đầu tiên của người mới không còn nút chính nào.
    *
-   * Vì sao thẻ gợi ý không hạ xuống `btnSecondary` được: thẻ đó nền `ink`, mà
+   * Vì sao nút trong thẻ không hạ xuống `btnSecondary` được: thẻ nền `ink`, mà
    * `btnSecondary` là viền + chữ `ink` → tàng hình. (Cùng lý do đã ghi ở
    * `CourseShell.module.css` cho vòng focus của `.resumeBtn`.)
    */
@@ -502,12 +496,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                     Khách vãng lai không có thẻ này — và cũng không có lời gọi API
                     nào để biết, xem useCompletedLessons. */}
                 {coTheGoiY && (
-                  <ResumeCard
-                    plan={plan}
-                    title={flatTitles[plan.index] ?? ''}
-                    href={startUrl}
-                    pickHref={`#${curriculumAnchor}`}
-                  />
+                  <ResumeCard plan={plan} title={flatTitles[plan.index] ?? ''} href={startUrl} />
                 )}
 
                 <div className={styles.card}>

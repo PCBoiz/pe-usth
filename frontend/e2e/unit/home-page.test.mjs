@@ -481,16 +481,20 @@ test('trang chủ: mọi CÂU VĂN ở cỡ thân ≥ 17px', () => {
   }
 });
 
-test('trang khoá: không cỡ chữ nào < 15px, và "Vì sao bài này" ở cỡ thân', () => {
+test('trang khoá: không cỡ chữ nào < 15px', () => {
   const small = fontSizes(SHELL_CSS).filter(([, px]) => px < 15);
   assert.deepEqual(
     small, [],
     'CourseShell.module.css từng dùng 11/12/13px.\n'
     + small.map(([c, px]) => `.${c}: ${px}px`).join('\n'),
   );
-  const sizes = new Map(fontSizes(SHELL_CSS));
-  for (const cls of ['resumeWhy', 'resumeFoot']) {
-    assert.ok(sizes.get(cls) >= 17, `.${cls} là câu văn nhưng chỉ ${sizes.get(cls)}px`);
+  // Bốn lớp dưới đây ĐÃ XOÁ cùng bốn lớp chú giải của thẻ "học tiếp" (nhãn
+  // "hệ thống chọn", đoạn "Vì sao bài này", câu "Đây là gợi ý, không phải
+  // lệnh", lối ra "Tự chọn bài"). Ca cũ chốt `.resumeWhy`/`.resumeFoot` ở cỡ
+  // thân ≥ 17px; nay chốt NGƯỢC LẠI: chúng không được mọc lại.
+  const con = fontSizes(SHELL_CSS).map(([c]) => c);
+  for (const cls of ['resumeKicker', 'resumeWhy', 'resumeFoot', 'resumePick']) {
+    assert.ok(!con.includes(cls), `.${cls} mọc lại — một lớp chú giải quay về`);
   }
 });
 

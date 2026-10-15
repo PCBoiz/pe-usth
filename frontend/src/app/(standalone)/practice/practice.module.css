@@ -75,14 +75,6 @@
   letter-spacing: -0.02em;
 }
 
-.lead {
-  margin: 0;
-  max-width: 62ch;
-  font-size: var(--ds-fs-body);
-  line-height: 1.55;
-  color: var(--ds-soft);
-}
-
 .quiet {
   margin: 0;
   font-size: var(--ds-fs-ui);
@@ -162,16 +154,6 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 12px 18px;
-}
-
-/* Liên kết trong thẻ phụ. Khác .quietLink ở chỗ KHÔNG canh giữa: trong thẻ
-   xếp dọc thì canh giữa làm nó trông như một nút lạc chỗ. */
-.cardLink {
-  align-self: flex-start;
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  color: var(--ds-violet);
-  text-decoration: underline;
 }
 
 /* ── thanh đếm ─────────────────────────────────────────────────────────── */
@@ -417,7 +399,11 @@
 
 .doneCard .fbHead { color: var(--ds-ochre); }
 
-/* ── thẻ "hệ thống gợi ý" (lật ngược) ──────────────────────────────────── */
+/* ── thẻ "học tiếp" (lật ngược) ────────────────────────────────────────── */
+/* Bốn lớp chú giải quanh cái nút này đã gỡ (lý do ở chú thích trong
+   PracticeClient.tsx), nên `.suggestLabel`, `.suggestWhy`, `.suggestAlt`,
+   `.suggestAltText` và `.suggestAltLink` cũng xoá theo — không còn ai dùng.
+   `.cardLink`, `.sideBody`, `.honest` và `.lead` xoá cùng lý do. */
 
 .suggest {
   display: flex;
@@ -430,25 +416,11 @@
   color: var(--ds-page);
 }
 
-.suggestLabel {
-  margin: 0;
-  font-size: var(--ds-fs-label);
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
 .suggestHead {
   margin: 0;
   font-size: var(--ds-fs-h2);
   line-height: 1.2;
   font-weight: 800;
-}
-
-.suggestWhy {
-  margin: 0;
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
 }
 
 .suggestBtn {
@@ -462,27 +434,6 @@
   font-size: var(--ds-fs-ui);
   font-weight: 800;
   text-decoration: none;
-}
-
-.suggestAlt {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 100%;
-  padding-top: 12px;
-  border-top: 1px solid var(--ds-page);
-}
-
-.suggestAltText {
-  font-size: var(--ds-fs-ui);
-  line-height: 1.5;
-}
-
-.suggestAltLink {
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  color: var(--ds-page);
-  text-decoration: underline;
 }
 
 /* ── thẻ phụ ───────────────────────────────────────────────────────────── */
@@ -506,10 +457,20 @@
   color: var(--ds-soft);
 }
 
-.sideBody {
-  margin: 0;
+/* Lối sang Thử thách ôn: MỘT cái nút, không lời giới thiệu (lý do ở chú thích
+   trong PracticeClient.tsx). Vẫn mang khung của thẻ phụ để nó thuộc cột phải,
+   nhưng là một liên kết nên chữ lấy --ds-violet + gạch chân — 6,70:1 bản ngày
+   và 7,26:1 bản đêm trên --ds-card, đo bằng e2e/unit/ds-contrast.mjs. */
+.challengeLink {
+  display: block;
+  padding: 22px;
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
+  border: 1px solid var(--ds-line);
   font-size: var(--ds-fs-ui);
-  line-height: 1.55;
+  font-weight: 700;
+  color: var(--ds-violet);
+  text-decoration: underline;
 }
 
 .pastList {
@@ -525,19 +486,6 @@
   font-size: var(--ds-fs-ui);
   font-weight: 700;
   line-height: 1.45;
-}
-
-/* Khối ghi chú trung thực: nền giấy + viền nét đứt, mở đầu bằng câu in đậm nói
-   rõ cái gì CHƯA có (thành phần "Khối ghi chú trung thực" của bảng v2). */
-.honest {
-  margin: 0;
-  padding: 14px 16px;
-  border-radius: var(--ds-r-md);
-  background: var(--ds-paper);
-  border: 2px dashed var(--ds-sketch);
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
-  color: var(--ds-ink);
 }
 
 /* ── chân trang ────────────────────────────────────────────────────────── */

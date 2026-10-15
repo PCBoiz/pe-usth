@@ -22,14 +22,17 @@
  * ── BA CHỖ BẢN THIẾT KẾ VẼ MÀ DỮ LIỆU CHƯA CÓ (cố ý KHÔNG dựng) ────────────
  *  1. Hộp Leitner 1·3·7·14 ngày và biểu đồ "nhịp ôn 14 ngày tới": chưa có bảng
  *     nào lưu hộp/ngày gặp lại của từng câu, nên mọi con số vẽ ra là số bịa.
- *     Thay bằng "Những lần ôn gần đây" — đọc từ `quiz/history`, là số thật.
+ *     Thay bằng "Những lần ôn gần đây" — đọc từ `quiz/history`, là số thật,
+ *     và KHÔNG dựng khối đó khi chưa có lần ôn nào.
  *  2. Phản hồi theo ĐÚNG phương án vừa chọn: `normalizeQuestion()` của backend
  *     bỏ field `detail` của từng phương án (cả 438 phương án trong giáo trình
  *     đều có), nên phản hồi chỉ tới MỨC CÂU. Chỗ gắn `detail` vào đã chừa sẵn
  *     (`optionFeedback`), hôm nay luôn rỗng và màn hình nói thẳng điều đó.
  *  3. "Vì sao hôm nay" và mã bài trên từng thẻ: `stripAnswers()` chỉ gửi
  *     {index, question, options} nên trang không biết câu nào thuộc bài nào.
- *     Lý do chọn câu vì vậy nói MỘT LẦN ở đầu mục, đúng mức hệ thống biết.
+ *     Bản cũ lấp chỗ đó bằng một câu dẫn kể cơ chế ("Hệ thống chọn câu từ
+ *     chính những bài bạn đã xong…") — đã gỡ 15/10/2026; không biết thì
+ *     không nói, chứ không nói về cách mình hoạt động.
  */
 
 import { useCallback, useEffect, useState } from 'react';
@@ -214,10 +217,10 @@ export default function PracticeClient() {
             <h1 className={styles.h1} id="practiceTitle">
               Gặp lại những câu bạn đã làm
             </h1>
-            <p className={styles.lead}>
-              Hệ thống chọn câu từ chính những bài bạn đã xong, và lấy nhiều câu hơn từ những
-              bài bạn hay chọn sai. Sai ở đây không trừ gì cả.
-            </p>
+            {/* Câu dẫn cũ đã gỡ: "Hệ thống chọn câu từ chính những bài bạn đã
+                xong, và lấy nhiều câu hơn từ những bài bạn hay chọn sai. Sai ở
+                đây không trừ gì cả." — nửa đầu kể về cơ chế bên trong, nửa sau
+                rào đón trước khi có gì để rào. Tiêu đề đã nói màn này làm gì. */}
 
             {phase === 'loading' && (
               <p className={styles.quiet} aria-live="polite">
@@ -469,66 +472,47 @@ export default function PracticeClient() {
           </section>
 
           {/* ── Cột phải ──────────────────────────────────────────────── */}
-          <aside className={styles.aside} aria-label="Gợi ý bước tiếp và các lần ôn trước">
+          <aside className={styles.aside} aria-label="Học tiếp và các lần ôn trước">
+            {/* Một tên bài và một cái nút.
+
+                Bản cũ có bốn lớp chú giải bao quanh đúng cái nút này: nhãn
+                "Gợi ý bước tiếp · hệ thống chọn", đoạn "Vì sao: bạn đã xong
+                0/48 bài, và P01 … là bài trống đầu tiên trong giáo trình
+                (M1 · …)", câu "Đây là gợi ý, không phải lệnh. Bạn tự quyết
+                đường đi:", rồi lối ra "Tự chọn bài". Luật rút ra ghi ở đầu
+                khối `nextStep` trong `lib/home-copy.ts`; cùng lúc này thẻ
+                song sinh ở trang khoá (`ResumeCard`) cũng bị cắt y như vậy. */}
             <section className={styles.suggest} aria-labelledby="nextTitle">
-              <p className={styles.suggestLabel}>Gợi ý bước tiếp · hệ thống chọn</p>
-              {nextNo !== null ? (
-                <>
-                  <h2 className={styles.suggestHead} id="nextTitle">
-                    {lessonName(nextNo)}
-                  </h2>
-                  <p className={styles.suggestWhy}>
-                    <span className={styles.fbStrong}>Vì sao: </span>
-                    bạn đã xong {gate?.completedCount ?? 0}/{TOTAL_LESSONS} bài, và {' '}
-                    {lessonName(nextNo)} là bài trống đầu tiên trong giáo trình
-                    {LESSONS.get(nextNo)?.stage ? ` (${LESSONS.get(nextNo)?.stage})` : ''}.
-                  </p>
-                  <a className={styles.suggestBtn} href={lessonHref(nextNo)}>
-                    Mở bài {nextNo}
-                  </a>
-                </>
-              ) : (
-                <>
-                  <h2 className={styles.suggestHead} id="nextTitle">
-                    Bạn đã xong cả {TOTAL_LESSONS} bài
-                  </h2>
-                  <p className={styles.suggestWhy}>
-                    Không còn bài trống nào trong giáo trình. Ôn tập vẫn mở, và bạn tự chọn bài
-                    nào muốn xem lại.
-                  </p>
-                </>
-              )}
-              <div className={styles.suggestAlt}>
-                <span className={styles.suggestAltText}>
-                  Đây là gợi ý, không phải lệnh. Bạn tự quyết đường đi:
-                </span>
-                <a className={styles.suggestAltLink} href={`/courses/${COURSE_ID}`}>
-                  Tự chọn bài
+              <h2 className={styles.suggestHead} id="nextTitle">
+                {nextNo !== null ? lessonName(nextNo) : `Bạn đã xong cả ${TOTAL_LESSONS} bài`}
+              </h2>
+              {nextNo !== null && (
+                <a className={styles.suggestBtn} href={lessonHref(nextNo)}>
+                  Mở bài {nextNo}
                 </a>
-              </div>
+              )}
             </section>
 
-            {/* Lối sang chế độ thử thách. Cùng kho câu, cùng ba đường backend —
-                chỉ khác luật chơi (một câu một lần, có lượt nghĩ lại). Không có
-                lối vào thì route /practice/challenge không ai tới được. */}
-            <section className={styles.sideCard} aria-labelledby="challengeTitle">
-              <p className={styles.sideLabel} id="challengeTitle">
-                Chế độ thử thách
-              </p>
-              <p className={styles.sideBody}>
-                Cùng kho câu này, khác luật: đi một câu một lần, sai lần đầu thì được nghĩ lại
-                một lần, và cuối lượt mới tổng kết. Vẫn không tính giờ, và sai không trừ gì.
-              </p>
-              <a className={styles.cardLink} href="/practice/challenge">
-                Mở Thử thách ôn
-              </a>
-            </section>
+            {/* Lối sang chế độ thử thách — MỘT cái nút, không lời giới
+                thiệu. Khác luật chơi thì màn Thử thách tự nói ở ngay trên
+                nó; nói trước ở đây là giải thích một thứ người đọc chưa gặp.
+                Không có lối vào thì route /practice/challenge không ai tới
+                được, nên cái nút này phải còn. */}
+            <a className={styles.challengeLink} href="/practice/challenge">
+              Mở Thử thách ôn
+            </a>
 
-            <section className={styles.sideCard} aria-labelledby="pastTitle">
-              <p className={styles.sideLabel} id="pastTitle">
-                Những lần ôn gần đây
-              </p>
-              {history.length ? (
+            {/* Chưa có lần ôn nào thì KHÔNG dựng khối: một trạng thái rỗng
+                không cần một câu nói rằng nó rỗng. Bản cũ in "Chưa có lần ôn
+                nào được lưu. Phần ôn đầu tiên của bạn sẽ nằm ở đây." — và
+                dưới nó là một đoạn văn giải thích rằng hệ thống KHÔNG hẹn
+                ngày gặp lại cho từng câu (kiểu 1·3·7·14 ngày). Không ai hỏi
+                điều đó; nó chỉ kể về cơ chế của chính mình. */}
+            {history.length > 0 && (
+              <section className={styles.sideCard} aria-labelledby="pastTitle">
+                <p className={styles.sideLabel} id="pastTitle">
+                  Những lần ôn gần đây
+                </p>
                 <ul className={styles.pastList}>
                   {history.map((h, i) => (
                     <li className={styles.pastItem} key={`${h.day}-${i}`}>
@@ -536,21 +520,8 @@ export default function PracticeClient() {
                     </li>
                   ))}
                 </ul>
-              ) : (
-                <p className={styles.sideBody}>
-                  Chưa có lần ôn nào được lưu. Phần ôn đầu tiên của bạn sẽ nằm ở đây.
-                </p>
-              )}
-              {/* Khối ghi chú trung thực: nói thẳng cái gì CHƯA có. Bản thiết kế
-                  vẽ lịch 14 ngày theo hộp Leitner 1·3·7·14; hệ thống chưa có
-                  bảng nào lưu hộp và ngày gặp lại, nên không vẽ. */}
-              <p className={styles.honest}>
-                <span className={styles.fbStrong}>Chưa có lịch ôn theo ngày. </span>
-                Hệ thống không hẹn ngày gặp lại cho từng câu (kiểu 1 · 3 · 7 · 14 ngày) — nó chỉ
-                cân lại tỉ lệ: bài bạn hay chọn sai thì câu của bài đó xuất hiện nhiều hơn. Bạn ôn
-                lúc nào cũng được; để lâu cũng không có gì bị trừ.
-              </p>
-            </section>
+              </section>
+            )}
           </aside>
         </div>
 
