@@ -504,7 +504,6 @@ export const PAIRS = [
   ['trang chủ: thẻ gợi ý · nút chính (.nextCta)', '--ds-on-action', '--ds-action', 'text'],
   ['trang chủ: thẻ gợi ý · nút chính khi rê', '--ds-on-action', '--ds-violet', 'text'],
   ['trang chủ: thẻ gợi ý · vòng focus nút / nền thẻ', '--ds-page', '--ds-ink', 'ui'],
-  ['trang chủ: thẻ gợi ý · vạch ngăn lối ra (.nextFoot)', '--ds-desk', '--ds-ink', 'ui'],
   ['trang chủ: thẻ gợi ý · lối ra yên tĩnh (.nextExit)', '--ds-page', '--ds-ink', 'text'],
   ['trang chủ: ghi chú trung thực · tiêu đề (.noteTitle)', '--ds-ink', '--ds-paper', 'text'],
   ['trang chủ: ghi chú trung thực · chữ (.noteText)', '--ds-soft', '--ds-paper', 'text'],
@@ -586,8 +585,6 @@ export const PAIRS = [
   ['trang khoá: chấm đầu dòng kỹ năng', '--ds-violet', '--ds-card', 'ui'],
   // Thẻ gợi ý: nền `ink`, chữ `page` — cặp tự đảo theo bản nền, như trang chủ.
   ['trang khoá: thẻ gợi ý · chữ (.resumeCard)', '--ds-page', '--ds-ink', 'text'],
-  ['trang khoá: thẻ gợi ý · vạch ngăn lối ra', '--ds-desk', '--ds-ink', 'ui'],
-  ['trang khoá: thẻ gợi ý · lối ra yên tĩnh (.resumePick)', '--ds-page', '--ds-ink', 'text'],
   ['trang khoá: thẻ gợi ý · vòng focus nút / nền thẻ', '--ds-page', '--ds-ink', 'ui'],
 ];
 

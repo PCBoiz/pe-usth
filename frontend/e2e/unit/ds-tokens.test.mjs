@@ -491,7 +491,61 @@ test('221 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngà
     bad.map((r) => `${r.label} = ${r.ratio.toFixed(2)} (cần ${r.need})`), [],
     'cặp trượt WCAG AA (chạy `node e2e/unit/ds-contrast.mjs` để xem cả bảng)',
   );
-  assert.ok(rows.length >= 219, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
+  // Chặn việc xoá cặp cho test xanh. Mốc này CHỈ ĐƯỢC HẠ khi selector thật sự
+  // biến mất khỏi CSS — và ca "mọi nhãn còn trỏ vào selector có thật" bên dưới
+  // mới là thứ phân biệt "dọn cặp chết" với "giấu cặp trượt".
+  //
+  // 15/10: hạ 219 → 216 sau khi gỡ ba cặp đo vào selector đã xoá cùng đợt cắt
+  // văn kể lể (`.nextFoot` ở trang chủ, hai phần của thẻ gợi ý ở trang khoá).
+  // Mốc cũ chặn đúng việc dọn đó, nên nó tự biến thành lý do giữ lại ba phép
+  // đo không đo gì cả.
+  assert.ok(rows.length >= 216, `danh sách cặp bị thu nhỏ còn ${rows.length} — đừng xoá cặp để test xanh`);
+});
+
+/**
+ * Nhãn của mỗi cặp hay ghi kèm selector trong ngoặc, ví dụ "(.resumePick)".
+ * Ca này đòi selector đó CÒN TỒN TẠI trong một file CSS nào đó.
+ *
+ * Vì sao cần: ba cặp vừa gỡ đã đo tương phản cho `.nextFoot` và `.resumePick`
+ * hàng tháng sau khi hai lớp ấy bị xoá — con số vẫn đẹp, vẫn "0 trượt", và
+ * không ai biết nó đang đo một thứ không còn trên màn hình. Đếm số cặp không
+ * bắt được chuyện đó; chỉ nối nhãn với CSS mới bắt được.
+ */
+/** Nội dung MỌI file *.module.css dưới src/, nối làm một. */
+function moiCssModule() {
+  const ra = [];
+  const di = (d) => {
+    for (const ten of readdirSync(d, { withFileTypes: true })) {
+      const p = join(d, ten.name);
+      if (ten.isDirectory()) di(p);
+      else if (ten.name.endsWith('.module.css')) ra.push(readFileSync(p, 'utf8'));
+    }
+  };
+  di(join(FE, 'src'));
+  return ra.join(String.fromCharCode(10));
+}
+
+test('mọi nhãn cặp tương phản còn trỏ vào selector CÓ THẬT', () => {
+  // Gom MỌI CSS module của sản phẩm, không chỉ danh sách SURFACE_CSS: nhãn có
+  // thể trỏ vào lớp nằm ngoài danh sách đó, và ca này hỏi "lớp còn tồn tại
+  // không", không hỏi "lớp có trong phạm vi soát không".
+  const css = moiCssModule();
+  const chet = [];
+  for (const [label] of PAIRS) {
+    const m = /\((\.[A-Za-z][\w-]*)\)/.exec(label);
+    if (!m) continue;
+    const ten = m[1].slice(1);
+    // `String.raw` chứ KHÔNG phải template literal thường: trong template
+    // literal, `\b` là ký tự BACKSPACE, không phải ranh giới từ — mẫu sẽ không
+    // khớp gì và ca này báo MỌI nhãn là chết. Đúng cái bẫy đã ghi ở đầu
+    // `seo-copy.test.mjs` sáng nay, và tôi vấp lại nó ngay trong ngày.
+    const mau = new RegExp(String.raw`\.${ten}\b`);
+    if (!mau.test(css)) chet.push(`${label} → ${m[1]}`);
+  }
+  assert.deepEqual(
+    chet, [],
+    'nhãn trỏ vào lớp CSS không còn tồn tại — phép đo này không đo gì:\n' + chet.join('\n'),
+  );
 });
 
 test('221 cặp chữ/nền thật: không cặp nào trượt AA ở bản Ban đêm', () => {
