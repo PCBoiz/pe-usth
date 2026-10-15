@@ -27,7 +27,7 @@
   min-height: 44px;
   padding: 0 16px;
   border: 2px solid var(--ds-violet);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   background: var(--ds-violet-tint);
   color: var(--ds-violet-deep);
   font-family: inherit;

@@ -20,7 +20,7 @@
 
 .title {
   margin: 0;
-  font-size: 28px;
+  font-size: var(--ds-fs-h2);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--edu-t1);
@@ -36,7 +36,7 @@
   color: var(--edu-t1);
   background: var(--edu-pill-bg);
   border: 1px solid var(--edu-pill-border);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   cursor: pointer;
 }
 .select:focus-visible,
@@ -54,12 +54,12 @@
   height: 42px;
   padding: 0 22px;
   font: inherit;
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   font-weight: 600;
   color: var(--edu-panel-bg-solid);
   background: var(--edu-accent-grad);
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   cursor: pointer;
   box-shadow: var(--edu-card-shadow);
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -105,7 +105,7 @@
   overflow: hidden;
   background: var(--edu-panel-bg-solid);
   border: 1px solid var(--edu-panel-border);
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   box-shadow: var(--edu-card-shadow);
 }
 .editorPane { padding: 8px 0; }
@@ -127,7 +127,7 @@
   vertical-align: -1px;
   border: 2px solid var(--edu-track-bg);
   border-top-color: var(--edu-accent);
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   animation: ide-spin 0.8s linear infinite;
 }
 @keyframes ide-spin { to { transform: rotate(360deg); } }
@@ -150,7 +150,7 @@
   line-height: 1.5;
   color: var(--edu-t1);
   border: 1px solid var(--edu-card-border);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 .notice p { margin: 4px 0 0; }
 .notice code { font-size: 12.5px; word-break: break-all; }
@@ -248,7 +248,7 @@
   color: var(--edu-t1);
   background: var(--edu-pill-bg);
   border: 1px solid var(--edu-pill-border);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   cursor: pointer;
 }
 .retry:hover { background: var(--edu-track-bg); }
@@ -277,7 +277,7 @@
      người dùng không biết là bấm vào gõ được, đúng lúc đang cần họ gõ). */
   background: var(--edu-track-bg);
   border: 1px solid var(--edu-pill-border);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 .fallbackInput:focus-visible {
   outline: 2px solid var(--edu-accent);

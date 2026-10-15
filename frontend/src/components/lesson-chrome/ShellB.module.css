@@ -29,7 +29,7 @@
   gap: 6px;
   background: var(--ds-violet-tint);
   color: var(--ds-violet-deep);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   padding: 6px 14px;
   font-size: var(--ds-fs-label);
   font-weight: 700;
@@ -48,7 +48,7 @@
 .metaDot {
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   background: var(--ds-violet);
   flex-shrink: 0;
 }
@@ -91,7 +91,7 @@
   border: 2px solid var(--ds-sketch);
   background: var(--ds-card);
   color: var(--ds-violet-deep);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   padding: 8px 16px;
   font: inherit;
   font-size: var(--ds-fs-ui);
@@ -124,7 +124,7 @@
   gap: 12px;
   align-items: flex-start;
   background: var(--ds-tint);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   padding: 14px 16px;
   animation: hintIn 0.24s cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
@@ -147,7 +147,7 @@
   flex-shrink: 0;
   width: 28px;
   height: 28px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   background: var(--ds-violet-tint);
   color: var(--ds-violet-deep);
   display: flex;

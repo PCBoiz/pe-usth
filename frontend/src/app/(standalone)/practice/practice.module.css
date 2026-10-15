@@ -93,7 +93,7 @@
 .notice {
   margin: 0;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-sanguine-tint);
   border-left: 5px solid var(--ds-sanguine);
   font-size: var(--ds-fs-ui);
@@ -109,7 +109,7 @@
   align-items: flex-start;
   gap: 14px;
   padding: 24px 26px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -137,7 +137,7 @@
   min-height: 52px;
   padding: 0 28px;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   background: var(--ds-action);
   color: var(--ds-on-action);
   font-family: inherit;
@@ -183,7 +183,7 @@
   justify-content: space-between;
   gap: 12px 20px;
   padding: 14px 18px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -218,8 +218,8 @@
   box-sizing: border-box;
 }
 
-.pipTodo { border-radius: 50%; border: 2px solid var(--ds-sketch); }
-.pipDone { border-radius: 50%; background: var(--ds-ink); }
+.pipTodo { border-radius: var(--ds-r-round); border: 2px solid var(--ds-sketch); }
+.pipDone { border-radius: var(--ds-r-round); background: var(--ds-ink); }
 .pipOk { border-radius: 3px; background: var(--ds-ochre); }
 .pipBad { border-radius: 3px; background: var(--ds-sanguine); }
 
@@ -239,7 +239,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 20px 22px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -279,7 +279,7 @@
   width: 100%;
   min-height: 58px;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   border: 2px solid var(--ds-ink);
   background: var(--ds-card);
   color: var(--ds-ink);
@@ -319,7 +319,7 @@
   width: 32px;
   height: 32px;
   box-sizing: border-box;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   border: 2px solid var(--ds-ink);
   font-size: var(--ds-fs-label);
   font-weight: 800;
@@ -373,7 +373,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 16px 18px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 
 .fbOk {
@@ -410,7 +410,7 @@
   flex-direction: column;
   gap: 12px;
   padding: 20px 22px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-ochre-tint);
   border: 2px solid var(--ds-ochre);
 }
@@ -425,7 +425,7 @@
   align-items: flex-start;
   gap: 14px;
   padding: 26px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-ink);
   color: var(--ds-page);
 }
@@ -456,7 +456,7 @@
   align-items: center;
   min-height: 52px;
   padding: 0 28px;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   background: var(--ds-action);
   color: var(--ds-on-action);
   font-size: var(--ds-fs-ui);
@@ -492,7 +492,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 22px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -532,7 +532,7 @@
 .honest {
   margin: 0;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-paper);
   border: 2px dashed var(--ds-sketch);
   font-size: var(--ds-fs-ui);

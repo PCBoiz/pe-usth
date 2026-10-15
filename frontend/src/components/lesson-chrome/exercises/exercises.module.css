@@ -4,7 +4,7 @@
 
 .codeCard {
   background: var(--st-code-bg);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   overflow: hidden;
   margin-bottom: 16px;
 }
@@ -26,7 +26,7 @@
 .dots i {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   /* Trang trí thuần. Trước đây ba chấm lấy màu đỏ/vàng/xanh của hệ phản hồi
      — bảng v2 chỉ cho mỗi họ nhấn MỘT vai, nên ba chấm cạnh một khối code
      vừa trùng màu "chưa đúng"/"đúng" vừa gây nhầm. Nay dùng thang của chính
@@ -54,7 +54,7 @@
   content: '';
   width: 6px;
   height: 6px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   background: var(--ds-mark-violet);
 }
 
@@ -100,7 +100,7 @@
 
 .consoleBlock {
   background: var(--st-code-bg);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   padding: 14px 16px;
   font-family: 'JetBrains Mono', monospace;
   font-size: var(--ds-fs-code);
@@ -123,7 +123,7 @@
      `line` chỉ 1,36:1 trên thẻ trắng — đổi sang `sketch` (4,21:1) và dày
      2px theo bản thiết kế. */
   border: 2px solid var(--ds-sketch);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   padding: 14px 16px;
   background: var(--ds-card);
   cursor: pointer;
@@ -176,7 +176,7 @@
 .optionRadio {
   width: 20px;
   height: 20px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   border: 2px solid var(--ds-sketch);
   flex-shrink: 0;
 }
@@ -242,7 +242,7 @@
 .toggleIcon {
   width: 26px;
   height: 26px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -293,7 +293,7 @@
 .chip {
   border: 2px solid var(--ds-sketch);
   background: var(--ds-card);
-  border-radius: 8px;
+  border-radius: var(--ds-r-sm);
   padding: 4px 10px;
   font-family: 'JetBrains Mono', monospace;
   font-size: var(--ds-fs-code);
@@ -365,7 +365,7 @@
   align-items: center;
   gap: 8px;
   border: 0;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   padding: 10px 20px;
   background: var(--ds-action);
   color: var(--ds-on-action);
@@ -397,7 +397,7 @@
 
 .consolePanel {
   background: var(--st-code-bg);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   overflow: hidden;
   font-family: 'JetBrains Mono', monospace;
   font-size: var(--ds-fs-code);

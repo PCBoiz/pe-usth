@@ -230,9 +230,12 @@ test('trang bài học không còn đọc token màu của bảng cũ (--edu-* t
 test('mọi var(--ds-…) được dùng đều đã khai trong bảng token', () => {
   const { light } = readTokens(TOKENS_CSS);
   const declared = new Set(Object.keys(light));
-  // Thang cỡ chữ cũng là --ds-* nhưng không phải màu, nên đọc riêng.
-  for (const m of cssCode(TOKENS_CSS).matchAll(/(--ds-fs-[\w-]+)\s*:/g)) declared.add(m[1]);
-  declared.add('--ds-shadow-open');
+  // Các thang KHÔNG PHẢI MÀU (cỡ chữ, bo góc, nét viền, chuyển động, độ nổi)
+  // cũng mang tiền tố --ds-*, nhưng `readTokens` chỉ đọc mã màu nên phải quét
+  // thêm. Trước đây chỗ này liệt kê tay `--ds-fs-*` + `--ds-shadow-open`; khi
+  // bảng mọc thêm thang bo góc thì mọi `var(--ds-r-md)` hợp lệ lại bị báo là
+  // "token chưa khai". Quét theo KHAI BÁO trong chính bảng token, đừng kể tên.
+  for (const m of cssCode(TOKENS_CSS).matchAll(/(--ds-[\w-]+)\s*:/g)) declared.add(m[1]);
 
   const missing = new Set();
   for (const p of [...SURFACE_CSS, ...surfaceSources()]) {

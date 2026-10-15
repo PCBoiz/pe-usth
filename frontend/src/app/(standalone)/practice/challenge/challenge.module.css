@@ -123,7 +123,7 @@
 .notice {
   margin: 0;
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-sanguine-tint);
   border-left: 5px solid var(--ds-sanguine);
   font-size: var(--ds-fs-ui);
@@ -139,7 +139,7 @@
   align-items: flex-start;
   gap: 14px;
   padding: 24px 26px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -167,7 +167,7 @@
   min-height: 52px;
   padding: 0 28px;
   border: none;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   background: var(--ds-action);
   color: var(--ds-on-action);
   font-family: inherit;
@@ -213,7 +213,7 @@
   align-items: center;
   gap: 12px 20px;
   padding: 14px 18px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -264,17 +264,17 @@
 }
 
 .pipEmpty {
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   border: 2px dashed var(--ds-sketch);
 }
 
 .pipCommitted {
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   background: var(--ds-ink);
 }
 
 .pipOk {
-  border-radius: 8px;
+  border-radius: var(--ds-r-sm);
   background: var(--ds-ochre);
   color: var(--ds-on-action);
 }
@@ -283,7 +283,7 @@
    "đúng lần đầu" và ô góc nhọn của "chưa đúng". Hình phải khác nhau, không
    chỉ màu: bảng v2 không có xanh lá và WCAG 1.4.1 cấm thông tin chỉ-bằng-màu. */
 .pipAgain {
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   border: 2px solid var(--ds-ochre);
   color: var(--ds-ochre);
 }
@@ -332,7 +332,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 24px 26px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 2px solid var(--ds-ink);
   box-shadow: var(--ds-shadow-open);
@@ -368,7 +368,7 @@
   width: 100%;
   min-height: 58px;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   border: 2px solid var(--ds-ink);
   background: var(--ds-card);
   color: var(--ds-ink);
@@ -415,7 +415,7 @@
   justify-content: center;
   width: 32px;
   height: 32px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   border: 2px solid var(--ds-ink);
   font-size: var(--ds-fs-label);
   font-weight: 800;
@@ -473,7 +473,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 16px 18px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 
 .fbOk {
@@ -507,7 +507,7 @@
 
 .why {
   padding: 12px 14px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-tint);
   border: 1px solid var(--ds-line);
 }
@@ -533,7 +533,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 22px 24px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-ochre-tint);
   border: 2px solid var(--ds-ochre);
 }
@@ -550,7 +550,7 @@
   flex-direction: column;
   gap: 8px;
   padding: 24px 26px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-ink);
   color: var(--ds-page);
 }
@@ -589,7 +589,7 @@
   flex-direction: column;
   gap: 14px;
   padding: 22px;
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
   border: 1px solid var(--ds-line);
 }
@@ -659,7 +659,7 @@
 .segTodo {
   width: 22px;
   height: 14px;
-  border-radius: 4px;
+  border-radius: var(--ds-r-xs);
 }
 
 .segDone { background: var(--ds-ink); }
@@ -672,7 +672,7 @@
 .honest {
   margin: 0;
   padding: 14px 16px;
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
   background: var(--ds-paper);
   border: 2px dashed var(--ds-sketch);
   font-size: var(--ds-fs-ui);
@@ -766,7 +766,7 @@
   to { opacity: 1; transform: none; }
 }
 
-.rise { animation: rise 0.32s ease-out both; }
+.rise { animation: rise var(--ds-dur-base) ease-out both; }
 
 @media (prefers-reduced-motion: reduce) {
   .rise { animation: none; }

@@ -300,6 +300,18 @@ test('nói thật về nơi chạy code: Bàn thí nghiệm chạy trên máy ch
 
 /* ═══ 7 · thang cỡ chữ ═════════════════════════════════════════════════ */
 
+/**
+ * Thang cỡ chữ đọc từ chính bảng token, để `fontSizes()` quy được
+ * `var(--ds-fs-ui)` về số px. Không có bước này thì mỗi chỗ chuyển sang token
+ * là một chỗ ca dưới đây thôi nhìn thấy — luật "câu văn ≥ 17px" sẽ im lặng
+ * đúng lúc file làm điều đúng.
+ */
+const FS_SCALE = new Map(
+  [...readFileSync(join(FE, 'public', 'static', 'css', 'studio-tokens.css'), 'utf8')
+    .matchAll(/(--ds-fs-[\w-]+)\s*:\s*(\d+(?:\.\d+)?)px\s*;/g)]
+    .map((m) => [m[1], Number(m[2])]),
+);
+
 /** [tên lớp, px] cho mọi khai báo font-size trong một file CSS module. */
 function fontSizes(css) {
   const out = [];
@@ -308,7 +320,9 @@ function fontSizes(css) {
     const sel = line.match(/^\.([\w-]+)/);
     if (sel) selector = sel[1];
     const size = line.match(/font-size:\s*(\d+(?:\.\d+)?)px/);
-    if (size) out.push([selector, Number(size[1])]);
+    if (size) { out.push([selector, Number(size[1])]); continue; }
+    const tok = line.match(/font-size:\s*var\((--ds-fs-[\w-]+)\)/);
+    if (tok && FS_SCALE.has(tok[1])) out.push([selector, FS_SCALE.get(tok[1])]);
   }
   return out;
 }

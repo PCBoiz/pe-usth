@@ -108,7 +108,7 @@
   .board {
     position: absolute;
     inset: 0;
-    border-radius: 16px;
+    border-radius: var(--ds-r-lg);
     background: var(--ds-soft);
     box-shadow: var(--ds-shadow-open); /* TĨNH */
   }
@@ -164,7 +164,7 @@
   .face {
     position: absolute;
     inset: 0;
-    border-radius: 16px;
+    border-radius: var(--ds-r-lg);
     backface-visibility: hidden;
     display: grid;
     place-items: center;

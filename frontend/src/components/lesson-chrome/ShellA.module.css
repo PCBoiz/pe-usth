@@ -19,7 +19,7 @@
 .icon {
   width: 68px;
   height: 68px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   background: var(--ds-violet-tint);
   color: var(--ds-violet-deep);
   display: flex;
@@ -59,11 +59,11 @@
 .dot,
 .dotActive {
   height: 6px;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   /* `desk` chỉ 1,24:1 trên thẻ — chấm chưa tới là thông tin ("còn mấy bước"),
      nên phải nhận ra được (WCAG 1.4.11 ≥ 3:1). `sketch` cho 4,21:1. */
   background: var(--ds-sketch);
-  transition: background 0.2s ease;
+  transition: background var(--ds-dur-fast) ease;
 }
 .dot {
   width: 6px;

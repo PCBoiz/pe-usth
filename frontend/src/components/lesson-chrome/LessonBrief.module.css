@@ -89,7 +89,7 @@
   min-height: 65px;
   padding: 10px 25px 12px 20px;
   background: var(--st-predict-bg);
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
 }
 
 .predictText {
@@ -173,7 +173,7 @@
   min-height: 66px;
   padding: 11px 21px 12px;
   background: var(--st-reflect-bg);
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
 }
 
 /* Nhãn thẻ "giải thích trước khi xem đáp án": cùng họ màu với nền thẻ

@@ -58,7 +58,7 @@
 .closeBtn {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -141,7 +141,7 @@ button.segment::after {
   background: var(--ds-ink);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: transform var(--ds-dur-page) cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .segmentFillOn {
   transform: scaleX(1);
@@ -334,7 +334,7 @@ button.segment::after {
   flex-shrink: 0;
   height: 52px;
   padding: 0 20px;
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   /* Viền `line` chỉ 1,36:1 trên thẻ — không đủ để nhận ra một thứ bấm được
      (WCAG 1.4.11 đòi ≥ 3:1). Bản thiết kế chốt nút phụ = viền `ink` 2px. */
   border: 2px solid var(--ds-ink);

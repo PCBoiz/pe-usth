@@ -58,7 +58,7 @@
    nguồn mà trang khoá dùng để vẽ giáo trình. */
 .eyebrow {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -77,7 +77,7 @@
 .lead {
   margin: 0;
   max-width: 62ch;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.55;
   color: var(--ds-soft);
 }
@@ -112,7 +112,7 @@
   margin: 0 0 18px;
 }
 .colNote {
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   line-height: 1.45;
   color: var(--ds-soft);
 }
@@ -123,14 +123,14 @@
   align-items: center;
   margin: 0 0 18px;
   padding: 7px 16px;
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ds-violet-deep);
   background: var(--ds-violet-tint);
   border: 1px solid var(--ds-violet);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
 }
 /* Trong .colHead thì nhãn đứng cạnh ghi chú, không cần lề dưới riêng. */
 .colHead .pill { margin: 0; }
@@ -191,7 +191,7 @@
   -webkit-mask-composite: xor;
   mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity var(--ds-dur-fast) ease;
   pointer-events: none;
 }
 .card:hover::before,
@@ -224,7 +224,7 @@
 }
 
 .label {
-  font-size: 22px;
+  font-size: var(--ds-fs-h3);
   font-weight: 700;
   line-height: 1.25;
   letter-spacing: -0.01em;
@@ -235,7 +235,7 @@
 /* Câu mô tả khoá là câu văn đầy đủ → cỡ thân 17px, màu `soft` (8,77:1 trên nền
    thẻ bản ngày, 9,31:1 bản đêm). Bản cũ 15px/--edu-t3. */
 .desc {
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.55;
   color: var(--ds-soft);
 }
@@ -248,12 +248,12 @@
   display: inline-flex;
   align-items: center;
   padding: 5px 12px;
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   font-weight: 600;
   color: var(--ds-soft);
   background: var(--ds-tint);
   border: 1px solid var(--ds-sketch);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
 }
 
 /* Nút tròn góc phải thẻ: mũi tên / mở ra */
@@ -269,7 +269,7 @@
   color: var(--ds-soft);
   background: var(--ds-tint);
   border: 1px solid var(--ds-sketch);
-  border-radius: 50%;
+  border-radius: var(--ds-r-round);
   transition: color 0.15s ease, background 0.15s ease, transform 0.18s ease;
 }
 /* Nền hover là `action` + chữ `on-action` — cặp duy nhất bảng v2 cho phép đặt
@@ -290,13 +290,13 @@
   padding: 24px;
   color: var(--ds-page);
   background: var(--ds-ink);
-  border-radius: 16px;
+  border-radius: var(--ds-r-lg);
   box-shadow: var(--ds-shadow-open);
 }
 
 .nextLabel {
   margin: 0;
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -304,14 +304,14 @@
 
 .nextTitle {
   margin: 0;
-  font-size: 28px;
+  font-size: var(--ds-fs-h2);
   line-height: 1.2;
   font-weight: 800;
 }
 
 .nextWhy {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.55;
 }
 
@@ -323,12 +323,12 @@
   min-height: 52px;
   margin-top: 4px;
   padding: 0 28px;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   font-weight: 800;
   color: var(--ds-on-action);
   text-decoration: none;
   background: var(--ds-action);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
 }
 .nextCta:hover { background: var(--ds-violet); }
 /* Vòng focus lấy màu CHỮ của thẻ (`page`), không lấy tím: nút nằm trên nền
@@ -349,7 +349,7 @@
   gap: 8px;
   padding-top: 12px;
   border-top: 1px solid var(--ds-desk);
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.5;
 }
 
@@ -358,7 +358,7 @@
    không đọc được. Dùng màu chữ của thẻ (`page`, 14,91:1) và giữ gạch chân:
    vẫn là "lối ra yên tĩnh" vì không có nền, không viền. */
 .nextExit {
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   font-weight: 700;
   color: var(--ds-page);
   text-decoration: underline;
@@ -368,7 +368,7 @@
 .nextExit:focus-visible {
   outline: 3px solid var(--ds-page);
   outline-offset: 3px;
-  border-radius: 4px;
+  border-radius: var(--ds-r-xs);
 }
 
 /* ── Khối ghi chú trung thực ─────────────────────────────── */
@@ -382,7 +382,7 @@
   padding: 20px;
   background: var(--ds-paper);
   border: 2px dashed var(--ds-sketch);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 
 .noteTitle {
@@ -390,7 +390,7 @@
   align-items: center;
   gap: 10px;
   margin: 0;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   font-weight: 700;
   line-height: 1.35;
   color: var(--ds-ink);
@@ -403,7 +403,7 @@
 
 .noteText {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.55;
   color: var(--ds-soft);
 }
@@ -431,7 +431,7 @@
   align-items: center;
   gap: 12px;
   margin: 0 0 8px;
-  font-size: 22px;
+  font-size: var(--ds-fs-h3);
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--ds-ink);
@@ -444,12 +444,12 @@
   height: 40px;
   color: var(--ds-violet-deep);
   background: var(--ds-violet-tint);
-  border-radius: 12px;
+  border-radius: var(--ds-r-md);
 }
 
 .feedbackText {
   margin: 0;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   line-height: 1.55;
   color: var(--ds-soft);
 }
@@ -465,13 +465,13 @@
   gap: 10px;
   min-height: 52px;
   padding: 0 28px;
-  font-size: 17px;
+  font-size: var(--ds-fs-ui);
   font-weight: 700;
   color: var(--ds-ink);
   text-decoration: none;
   background: transparent;
   border: 2px solid var(--ds-ink);
-  border-radius: 999px;
+  border-radius: var(--ds-r-pill);
   transition: transform 0.15s ease, background 0.15s ease;
 }
 .feedbackButton:hover { transform: translateY(-1px); background: var(--ds-tint); }
@@ -484,7 +484,7 @@
 .footer {
   padding: 22px 24px 26px;
   font-family: var(--edu-font);
-  font-size: 15px;
+  font-size: var(--ds-fs-label);
   text-align: center;
   color: var(--ds-soft);
   /* Đường kẻ chân trang: thuần trang trí (chân trang đã tách bằng khoảng
@@ -510,7 +510,7 @@
   .title { font-size: 32px; }
   .hero { margin-bottom: 28px; }
   .card { padding: 18px; gap: 16px; }
-  .icon, .iconBare { width: 72px; height: 72px; border-radius: 16px; }
+  .icon, .iconBare { width: 72px; height: 72px; border-radius: var(--ds-r-lg); }
   .body { padding-right: 0; }
   .label { font-size: 19px; padding-right: 40px; }
   .go { top: 16px; right: 16px; width: 34px; height: 34px; }
