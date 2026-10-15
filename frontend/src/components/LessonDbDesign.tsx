@@ -232,7 +232,10 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
             <div className="inline-hint hidden" id="inline-hint">
               <i className="fa-solid fa-lightbulb"></i>
               <div>
-                <strong>AI Hint:</strong>
+                {/* Bản cũ: "AI Hint:". Nhãn kể người học rằng gợi ý do AI sinh
+                    ra — một chi tiết về cơ chế bên trong, lại bằng tiếng Anh,
+                    và nó không đổi được gì ở việc đọc gợi ý. */}
+                <strong>Gợi ý:</strong>
                 <span id="inline-hint-text"></span>
               </div>
             </div>

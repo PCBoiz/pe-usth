@@ -213,9 +213,28 @@ test('bản đồ không khoá gì: không ổ khoá, không "mở khi đủ N b
     'Không có cơ chế khoá chặng nào trong frontend lẫn backend. Vẽ ổ khoá là hứa '
     + 'một cánh cửa không tồn tại và lấy đi quyền tự chọn bài.\n' + bad.join('\n'),
   );
-  // Và phải NÓI THẲNG rằng không khoá: gỡ ổ khoá mà không nói thì người học
-  // vẫn tưởng phải đi tuần tự.
-  assert.match(MAP_COPY.caption, /vào được/);
+  /*
+   * ĐỔI LUẬT ngày 15/10/2026 — ca này TỪNG đòi điều ngược lại:
+   *
+   *     assert.match(MAP_COPY.caption, /vào được/);
+   *
+   * Lý lẽ cũ: gỡ ổ khoá mà không nói thì người học vẫn tưởng phải đi tuần tự.
+   * Chủ sản phẩm quyết ngược — bỏ hẳn câu dưới bản đồ. Tám nút trên hình đều
+   * là liên kết thật và `ariaLabel` của mỗi nút kết thúc bằng "mở bài đầu
+   * chặng", nên cả người dùng chuột và trình đọc màn hình đều biết bấm vào thì
+   * đi đâu. Một dòng chữ lặp lại điều đó là văn kể lể, không phải khả năng
+   * tiếp cận.
+   */
+  assert.ok(
+    !('caption' in MAP_COPY),
+    'MAP_COPY lại mọc `caption` — bản đồ không được kéo theo một câu chú thích dẫn dắt.',
+  );
+  const dan = MAP_TSX.match(/className=\{styles\.caption\}/g) ?? [];
+  assert.deepEqual(dan, [], 'WorldMap lại dựng một <p> chú thích: ' + dan.join(' '));
+  // Phần aria vẫn phải còn — đó là chỗ THẬT nói "bấm vào thì đi đâu".
+  for (const r of REGIONS) {
+    assert.match(r.ariaLabel, /mở bài đầu chặng$/);
+  }
 });
 
 test('câu dưới bản đồ không chú giải một thứ không có trên hình', () => {

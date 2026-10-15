@@ -187,7 +187,7 @@ export default function WorldMap({ regions }: WorldMapProps) {
         ))}
       </div>
 
-      <p className={styles.caption}>{MAP_COPY.caption}</p>
+      {/* Không có chú thích dưới bản đồ — lý lẽ ở MAP_COPY (lib/world-map.ts). */}
     </section>
   );
 }

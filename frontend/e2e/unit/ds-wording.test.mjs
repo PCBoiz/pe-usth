@@ -275,6 +275,58 @@ test('không dỗ dành bằng hạt "nhé", không nhắc "Đừng sai"', () =>
   );
 });
 
+test('không rào đón, không nhãn kể cơ chế — đợt gỡ văn kể lể 15/10/2026', () => {
+  /*
+   * Chủ sản phẩm, nguyên văn: "những phần như này thì bỏ đi, trông tởm lợm
+   * kinh khủng AI slop, bỏ luôn đi, làm 1 cái button là được, đừng cho
+   * narrative gì cả, các phần khác cũng thế" — rồi siết thêm: "Bỏ hết, giữ
+   * title thôi, thêm phần narrative/description đấy làm gì".
+   *
+   * Ba chuỗi dưới đây là phần của đợt gỡ đó nằm NGOÀI màn Thử thách ôn (màn
+   * đó có hàng rào riêng trong `challenge-run.test.mjs`), nên không ca nào
+   * khác che chúng:
+   *
+   *  · `lesson-chrome/exercises/FillBlank.tsx` — "Chạy thử trước khi nộp —
+   *    không trừ điểm." Chạy thử KHÔNG tính điểm ở bất cứ đâu, nên nửa sau
+   *    trả lời một nỗi lo không có; cùng họ với "Đừng sai nhé!" ở ca trên,
+   *    chỉ ngược dấu (ca trên dựng ra một cái giá, câu này đi phủ nhận nó).
+   *  · `python-studio/screens/RecapScreen.tsx` — "Bạn có thể quay lại luyện
+   *    tập bất cứ lúc nào." Không có gì chặn người học quay lại, nên đây là
+   *    lời trấn an cho một quyền không ai lấy đi.
+   *  · `LessonDbDesign.tsx` — nhãn "AI Hint:". Nó kể rằng gợi ý do AI sinh ra:
+   *    một chi tiết về CƠ CHẾ BÊN TRONG, lại bằng tiếng Anh, và nó không đổi
+   *    được gì ở việc đọc gợi ý.
+   */
+  /*
+   * Mẫu CỐ Ý không gồm "lúc nào cũng được": câu đó còn một chỗ nữa ở
+   * `/practice` ("lúc nào cũng được; để lâu cũng không có gì bị trừ"), và
+   * /practice đang được gỡ trong một lượt riêng. Thêm mẫu đó vào đây là dựng
+   * một ca ĐỎ ngay lúc commit, tức buộc hai lượt phải cùng lên một lần —
+   * chuyện đã trả giá rồi. Khi /practice gỡ xong thì thêm vế đó vào mẫu này.
+   */
+  const RAO = /không trừ điểm|bất cứ lúc nào/;
+  const CO_CHE = /\bAI Hint\b|\bAI hint\b|do AI (?:sinh|gợi|chọn)/;
+  // TỰ KIỂM trên chính ba chuỗi CŨ. Một hàng rào không bắt nổi bản cũ là hàng
+  // rào chết mà vẫn báo đạt.
+  for (const [re, cu] of [
+    [RAO, 'Chạy thử trước khi nộp — không trừ điểm.'],
+    [RAO, 'Tiến độ và XP đã được lưu. Bạn có thể quay lại luyện tập bất cứ lúc nào.'],
+    [CO_CHE, '<strong>AI Hint:</strong>'],
+  ]) {
+    assert.ok(re.test(cu.normalize('NFC')), `mẫu không bắt nổi chuỗi cũ: ${cu}`);
+  }
+  assertAbsent(
+    RAO,
+    'Lời rào đón: câu nói về thứ KHÔNG xảy ra, cho một nỗi lo người học chưa có. '
+    + 'Bỏ hẳn — phần còn lại ("Chạy thử trước khi nộp.") đã nói đúng việc.',
+  );
+  assertAbsent(
+    CO_CHE,
+    'Nhãn không được kể về cơ chế bên trong. Người đọc một gợi ý không cần biết '
+    + 'ai sinh ra nó; biết thêm cũng không đổi được gì họ làm.',
+  );
+});
+
 /* ── 4 · một việc, một từ ─────────────────────────────────────────────── */
 
 test('trình soạn và chạy Python gọi là "Bàn thí nghiệm", không phải IDE', () => {

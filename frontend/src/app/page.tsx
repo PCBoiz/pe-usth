@@ -15,11 +15,12 @@
 //     KHÔNG hiện tiến độ — và cũng không bịa ra chỉ số nào để lấp chỗ trống.
 //  2. KHÔNG CHUỖI NGÀY, không ngọn lửa, không "5/7 ngày". Chỉ số nào hiện ra
 //     cũng phải là loại CHỈ TĂNG; chuỗi bị đứt là thứ đẩy người học bỏ cuộc.
-//  3. KHÔNG KHOÁ GÌ: không ổ khoá, không "mở khi đủ N bài". Câu dẫn nói thẳng
-//     rằng chặng nào cũng vào được.
-//  4. THẺ GỢI Ý CÓ ĐỦ BỐN PHẦN: nhãn · tiêu đề · "Vì sao bài này" · nút chính,
-//     rồi vạch ngăn + "Đây là gợi ý, không phải lệnh" + lối ra "Tự chọn bài".
-//     Thiếu "Vì sao" và thiếu lối ra thì gợi ý thành lệnh.
+//  3. KHÔNG KHOÁ GÌ: không ổ khoá, không "mở khi đủ N bài" — và không câu nào
+//     nói ra điều đó nữa. Bản đồ tám nút bấm được là bằng chứng đủ; một câu
+//     dẫn đi kèm chỉ để trấn an là văn kể lể.
+//  4. MỘT TIÊU ĐỀ KHÔNG KÉO THEO MỘT ĐOẠN MÔ TẢ. Thẻ bắt đầu chỉ có tên bài
+//     + một nút; hero chỉ có nhãn + tiêu đề. Bản cũ có "hệ thống chọn", "Vì sao
+//     bài này", "Đây là gợi ý, không phải lệnh" và một lối ra thứ hai — bỏ cả bốn.
 //
 // Câu chữ và các quyết định nằm ở `src/lib/home-copy.ts` (có test:
 // `e2e/unit/home-page.test.mjs`); file này chỉ dựng DOM.
@@ -85,8 +86,8 @@ export default function HomePage() {
             {headCourse && (
               <p className={styles.eyebrow}>{courseEyebrow(headCourse.label, shape)}</p>
             )}
+            {/* Chỉ tiêu đề. Câu dẫn dưới nó đã bỏ — xem INTRO ở home-copy.ts. */}
             <h1 className={styles.title}>{INTRO.title}</h1>
-            <p className={styles.lead}>{INTRO.lead}</p>
           </header>
 
           {/* BẢN ĐỒ THẾ GIỚI (khối `.map` của artboard). Nằm NGOÀI lưới hai cột,

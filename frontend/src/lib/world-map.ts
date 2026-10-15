@@ -136,16 +136,20 @@ export function buildRegions(modules: ModuleLike[] | null | undefined, lessonUrl
 export const MAP_COPY = {
   /** Nhãn nhỏ trên khung bản đồ. */
   label: 'Bản đồ thế giới',
-  /**
-   * Câu dưới bản đồ. Artboard viết "Nét đặc là đoạn bạn đã đi, nét chấm là
-   * đoạn chưa học. Chặng nào cũng mở được, cứ bắt đầu từ chỗ bạn muốn."
-   *
-   * Nửa ĐẦU bị bỏ: nó nói về tiến độ, mà trang này không đọc tiến độ của ai —
-   * giữ lại là chú giải cho một thứ không có trên hình. Nửa SAU giữ nguyên ý,
-   * vì nó là sự thật kiểm được: không có cơ chế khoá chặng nào.
-   */
-  caption: 'Chặng nào cũng vào được — bấm vào một chặng là mở bài đầu của chặng đó.',
 } as const;
+
+/*
+ * KHÔNG CÓ `caption`, và đây là chỗ dễ thêm lại nhất nên phải nói rõ vì sao.
+ *
+ * Artboard viết "Nét đặc là đoạn bạn đã đi, nét chấm là đoạn chưa học. Chặng nào
+ * cũng mở được, cứ bắt đầu từ chỗ bạn muốn." Nửa ĐẦU đã bỏ từ trước: trang này
+ * không đọc tiến độ của ai nên đó là chú giải cho một thứ không có trên hình. Nửa
+ * SAU ("Chặng nào cũng vào được — bấm vào một chặng là mở bài đầu của chặng đó")
+ * nay cũng bỏ: nó đúng sự thật, nhưng tám nút trên hình đều là liên kết thực và mọi
+ * nút đã mang `ariaLabel` kết thúc bằng "mở bài đầu chặng" — ngưệi dùng chuột thấy
+ * con trỏ đổi, trình đọc màn hình đọc được nhãn. Một dòng chữ lặp lại điều cả hai
+ * đã biết là văn kể lể, không phải khả năng tiếp cận.
+ */
 
 /* ═══ Hoạt ảnh ═════════════════════════════════════════════════════════
  *

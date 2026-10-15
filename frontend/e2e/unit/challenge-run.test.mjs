@@ -52,7 +52,6 @@ import {
   SAMPLE_MAX,
   SAMPLE_MIN,
   STATE_LABEL,
-  WHY_THIS_QUESTION,
   allCommitted,
   applyGrading,
   cellState,
@@ -200,12 +199,20 @@ test('xong 2–3 bài: ôn được nhưng nói thẳng là lượt ngắn hơn 
   assert.ok(gate.body.includes(`${LESSONS_FOR_FULL_RUN} bài`), 'phải nói xong mấy bài thì đủ 10');
 });
 
-test('xong 4 bài: lượt đủ 10 câu, và nói đúng ba cái KHÔNG có', () => {
+test('xong 4 bài: tiêu đề chỉ có con số, KHÔNG kéo theo đoạn mô tả nào', () => {
   const gate = challengeGate({ completed: [1, 2, 3, 4] });
   assert.equal(gate.kind, 'ready');
   assert.equal(gate.expected, SAMPLE_MAX);
-  assert.ok(gate.headline.includes('không tính giờ'));
-  assert.ok(gate.headline.includes('không xếp hạng'));
+  assert.equal(gate.headline, `${SAMPLE_MAX} câu`);
+  // Bản cũ: tiêu đề "10 câu, không tính giờ, không xếp hạng" + một đoạn kể cơ
+  // chế trọng số và một lời trấn an. Chủ sản phẩm chốt: giữ title, bỏ mô tả.
+  assert.equal(gate.body, '', `tiêu đề lại kéo theo mô tả: ${gate.body}`);
+  for (const cam of [/không tính giờ/, /không xếp hạng/, /Hệ thống/, /không trừ/]) {
+    assert.ok(
+      !cam.test(gate.headline + gate.body),
+      `cổng vào lại kể thứ hệ thống không làm: ${cam}`,
+    );
+  }
 });
 
 /* ───────── 2. Sai lần đầu KHÔNG lộ đáp án (luật quan trọng nhất) ────────── */
@@ -252,12 +259,17 @@ test('đúng ở lần nghĩ lại: lộ đáp án, và được đánh dấu KH
   assert.notEqual(STATE_LABEL.again, STATE_LABEL.ok, 'hai kết cục phải có hai nhãn');
 });
 
-test('sai cả hai lần: lúc này mới lộ đáp án, và không trừ gì', () => {
+test('sai cả hai lần: lúc này mới lộ đáp án, và phản hồi chỉ nói VIỆC', () => {
   const run = commitPick(gradedRun([0, 0]), 0, 2);
   assert.equal(cellState(run[0]), 'bad');
   assert.equal(visibleCorrectIndex(run[0]), 1);
   assert.equal(visibleExplanation(run[0]), DETAIL[0].explanation);
-  assert.ok(feedbackBody('bad').includes('Không có gì bị trừ'));
+  assert.equal(feedbackBody('bad'), 'Đọc lại chỗ này trong bài.');
+  // Hai trạng thái ĐÃ XONG không còn phần thân: đầu đề đã nói hết, phần thân
+  // cũ chỉ là lời bình ("chưa thành phản xạ") và trấn an ("không có điểm
+  // thưởng nào để đếm").
+  assert.equal(feedbackBody('ok'), null);
+  assert.equal(feedbackBody('again'), null);
 });
 
 test('đúng ngay lần đầu: không có lượt nghĩ lại nào, đáp án hiện luôn', () => {
@@ -433,9 +445,15 @@ test('điểm máy chủ chấm và điểm trình duyệt chấm nằm ở HAI 
   const s = runSummary(run);
   const score = splitScore(s);
   assert.ok(score.officialLine.includes('Đúng lần đầu 1 trên 2'));
-  assert.ok(score.officialNote.includes('Máy chủ chấm cả đề một lượt'));
+  // Hai ghi chú rút xuống còn ĐÚNG phần phân biệt được hai con số. Bản cũ kể
+  // thêm cơ chế trọng số và lặp lại luật nộp một lần.
+  assert.equal(score.officialNote, 'Đã lưu.');
   assert.ok(score.localLine.includes('thêm 1 câu'));
-  assert.ok(score.localNote.includes('KHÔNG được lưu'), 'phải nói thẳng là không lưu');
+  assert.equal(score.localNote, 'Không lưu.');
+  assert.ok(
+    !/Hệ thống|lượt sau|trọng số/.test(score.officialNote + score.localNote),
+    'ghi chú điểm lại kể cơ chế chọn đề',
+  );
   // Hai con số KHÔNG được gộp: 1 đúng lần đầu + 1 sau nghĩ lại ≠ "2 trên 2".
   assert.ok(
     !score.officialLine.includes('2 trên 2'),
@@ -498,51 +516,115 @@ test('không màn nào bịa lịch Leitner, lịch sử theo câu, hay tên bà
   }
 });
 
-test('"câu đã chắc" chỉ được nhắc ở chỗ nói rằng nó CHƯA tính được', () => {
+test('chỉ số đúng-lần-đầu vẫn ghi đúng ĐƠN VỊ là "lượt", không phải "câu"', () => {
   const src = codeOnly(read(...CLIENT));
   const lines = src.split('\n').filter((l) => /câu đã chắc/.test(l));
-  for (const line of lines) {
-    assert.ok(
-      /Bản thiết kế vẽ/.test(line),
-      `"câu đã chắc" hiện ra như một chỉ số thật: ${line.trim()}`,
-    );
-  }
-  // Thay vào đó phải nói đúng chữ: đây là LƯỢT trả lời, không phải câu riêng.
+  assert.deepEqual(
+    lines.map((l) => l.trim()), [],
+    '"câu đã chắc" là chỉ số CHƯA tính được (không có lịch sử theo từng câu) '
+    + 'nên nó không được xuất hiện dưới bất kỳ hình thức nào',
+  );
+  // Nhãn đơn vị là chỗ DUY NHẤT còn nói sự phân biệt lượt/câu. Khối "ghi chú
+  // trung thực" đi giải thích phân biệt đó đã bỏ, nên nếu nhãn này bị gọn hoá
+  // thành "câu" thì không còn gì đỡ.
   assert.ok(src.includes('lượt trả lời đúng ngay lần đầu'));
-  assert.ok(src.includes('Hệ thống không lưu lịch sử theo từng câu'));
 });
 
-test('màn hình nói thẳng mâu thuẫn "máy chủ chấm cả đề một lượt"', () => {
-  const src = codeOnly(read(...CLIENT));
-  assert.ok(
-    /chấm cả đề một lượt/.test(src),
-    'người học phải biết TRƯỚC là lượt chốt không có phản hồi từng câu',
-  );
-  assert.ok(
-    /mỗi đề chỉ nộp được một lần/.test(src),
-    'phải nói vì sao lần nghĩ lại không được lưu',
-  );
-  assert.ok(
-    /trình duyệt tự chấm|trình duyệt chấm/.test(src),
-    'phải nói rõ con số nào do trình duyệt chấm',
-  );
-  // Luật của lượt cũng phải nói đúng điều đó, không hứa phản hồi tức thì.
+test('luật của lượt nói đúng cách chấm, và KHÔNG liệt kê thứ hệ thống không có', () => {
+  // Ba luật này đổi được cách người học làm, nên giữ.
   assert.ok(RUN_RULES.some((r) => r.includes('chấm một lượt ở máy chủ')));
   assert.ok(RUN_RULES.some((r) => r.includes('không được lưu')));
   assert.ok(
     RUN_RULES.some((r) => /không hiện ngay sau mỗi câu/.test(r)),
     'luật của lượt không được hứa phản hồi ngay sau mỗi câu — backend không chấm thế',
   );
+  // Hai dòng cũ chỉ liệt kê những thứ KHÔNG tồn tại.
+  for (const cam of [/Ngồi bao lâu cũng vậy/, /không xếp hạng/, /chuỗi ngày/,
+    /không ai để so/, /điểm tốc độ/]) {
+    const hits = RUN_RULES.filter((r) => cam.test(r));
+    assert.deepEqual(hits, [], `luật của lượt lại liệt kê thứ không có: ${cam}`);
+  }
 });
 
-test('"Vì sao câu này?" nói LÝ DO THẬT: trọng số theo bài hay sai', () => {
-  assert.ok(WHY_THIS_QUESTION.includes('hay chọn sai'));
-  assert.ok(WHY_THIS_QUESTION.includes('trọng số'));
-  assert.ok(
-    !/\d+ ngày/.test(WHY_THIS_QUESTION),
-    'lý do không được nhắc số ngày — không có lịch gặp lại nào',
+/**
+ * HÀNG RÀO cho đợt gỡ văn kể lể ngày 15/10/2026.
+ *
+ * Chủ sản phẩm nói nguyên văn: "những phần như này thì bỏ đi, trông tởm lợm
+ * kinh khủng AI slop, bỏ luôn đi, làm 1 cái button là được, đừng cho narrative
+ * gì cả, các phần khác cũng thế" — rồi siết thêm: "Bỏ hết, giữ title thôi,
+ * thêm phần narrative/description đấy làm gì".
+ *
+ * Màn này là chỗ đọng nhiều nhất: ba khối "ghi chú trung thực", một danh sách
+ * "Ở đây không có", một <details> "Vì sao câu này?", hai câu dẫn dưới tiêu đề
+ * và bốn lời trấn an. Mỗi chuỗi đó rẻ để thêm lại (một dòng JSX trong một PR
+ * về chuyện khác) và không ai thấy trong diff, nên nó phải có hàng rào.
+ *
+ * Phép so chạy trên MÃ ĐÃ BỎ CHÚ THÍCH: chú thích giải thích vì sao bỏ thì
+ * được phép nhắc lại chuỗi cũ, chính nó mới là thứ ngăn người sau thêm lại.
+ */
+const KE_LE = [
+  [/Vì sao câu này/, 'khuôn 2 — trả lời câu hỏi chưa ai hỏi'],
+  [/Hệ thống không (?:chọn|lưu)|Đường sinh đề/, 'khuôn 1 — kể cơ chế bên trong'],
+  [/Ở đây không có|không có chuỗi ngày để đứt|không ghép cặp với ai/,
+    'khuôn 4 — liệt kê thứ hệ thống KHÔNG làm'],
+  [/không trừ gì|không trừ đi gì|không lấy đi gì|không trừ điểm/, 'khuôn 3 — lời rào đón'],
+  [/Bản thiết kế vẽ/, 'khuôn 7 — giải thích một phân biệt trước khi người đọc gặp'],
+  [/bàn so sánh duy nhất|Không ai đứng bên kia bàn/, 'câu dẫn dưới tiêu đề'],
+  // Chuỗi cũ bị ngắt dòng trong JSX, nên phép so phải trúng MỘT dòng — bắt ở
+  // đầu câu. Bản đầu của hàng rào này viết /nói rõ\s+để bạn biết cái nào được
+  // lưu/ và trượt bản cũ đúng vì lý do đó; `\s+` không vượt được ranh giới
+  // dòng khi mình lọc theo từng dòng.
+  [/Hai con số dưới đây/, 'khuôn 7 — dẫn trước hai con số'],
+];
+
+test('màn thử thách không kể cơ chế, không rào đón, không liệt kê thứ KHÔNG có', () => {
+  const src = codeOnly(read(...CLIENT));
+  const lib = codeOnly(read(...LIB)).normalize('NFC');
+  const be_mat = (src.normalize('NFC') + '\n' + lib).split('\n');
+  for (const [mau, ly_do] of KE_LE) {
+    const dinh = be_mat.filter((l) => mau.test(l)).map((l) => l.trim().slice(0, 110));
+    assert.deepEqual(dinh, [], ly_do + ':\n' + dinh.join('\n'));
+  }
+});
+
+test('TỰ KIỂM: bảy phép so trên phải bắt được chính câu chữ CŨ', () => {
+  // Một hàng rào không bắt nổi bản cũ là hàng rào chết mà vẫn báo đạt. Bảy
+  // chuỗi dưới đây lấy nguyên văn từ bản trước commit gỡ văn kể lể.
+  const CU = [
+    '<summary className={styles.whySummary}>Vì sao câu này?</summary>',
+    'Hệ thống không lưu lịch sử theo từng câu, nên nó không biết',
+    '<p className={styles.sideLabel} id="notTitle">Ở đây không có</p>',
+    'Lần nghĩ lại không trừ gì cả.',
+    'Bản thiết kế vẽ “mức câu đã chắc theo chặng”; muốn vậy phải có lịch sử',
+    'Không ai đứng bên kia bàn — bàn so sánh duy nhất ở đây là bạn của những lượt trước.',
+    'Hai con số dưới đây là của riêng bạn, và chúng đến từ hai nơi khác nhau — nói rõ',
+  ];
+  assert.equal(CU.length, KE_LE.length);
+  for (let k = 0; k < KE_LE.length; k += 1) {
+    assert.ok(
+      KE_LE[k][0].test(CU[k].normalize('NFC')),
+      `mẫu ${k} (${KE_LE[k][1]}) không bắt nổi chuỗi cũ: ${CU[k]}`,
+    );
+  }
+});
+
+test('một tiêu đề KHÔNG được kéo theo một đoạn mô tả', () => {
+  // Đếm được: mỗi <h1>/<h2> của màn này phải đi liền nút, con số hoặc danh
+  // sách — không phải một <p className={styles.lead|kicker|gateBody}> chỉ mang
+  // câu dẫn. Cách rẻ nhất để canh: hai lớp `lead`/`kicker` không còn chỗ dùng
+  // nào trong màn mở đầu và màn kết quả, và `gateBody` chỉ hiện khi có nội
+  // dung thật (nhánh 'ready' trả body rỗng).
+  const src = codeOnly(read(...CLIENT));
+  const dan = src.match(/className=\{styles\.(?:lead|kicker)\}/g) ?? [];
+  assert.deepEqual(
+    dan, [],
+    'còn một đoạn dẫn dắt ngay dưới tiêu đề — chủ sản phẩm chốt: giữ title, bỏ mô tả.\n'
+    + dan.join('\n'),
   );
-  assert.ok(codeOnly(read(...CLIENT)).includes('Vì sao câu này?'));
+  assert.ok(
+    /\{gate\.body && <p/.test(src),
+    'gateBody phải có điều kiện, không thì nhánh ready in ra một <p> rỗng',
+  );
 });
 
 test('màn này dùng apiFetch (trang sau đăng nhập) và không tự dựng đường API', () => {

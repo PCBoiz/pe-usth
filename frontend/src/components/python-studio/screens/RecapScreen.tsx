@@ -98,7 +98,9 @@ export default function RecapScreen({
       title={completed ? 'Đã xong bài này.' : 'Tổng kết bài học'}
       description={
         (completed
-          ? 'Tiến độ và XP đã được lưu. Bạn có thể quay lại luyện tập bất cứ lúc nào.'
+          // "Bạn có thể quay lại luyện tập bất cứ lúc nào" đã bỏ — lời trấn an
+          // cho một quyền không ai lấy đi.
+          ? 'Tiến độ và XP đã được lưu.'
           : tests.length
             ? 'Bài này chấm tự động — nộp ở màn Thử thách độc lập để ghi nhận là đã xong.'
             : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.') +

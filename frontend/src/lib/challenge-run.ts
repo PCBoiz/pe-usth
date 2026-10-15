@@ -159,10 +159,12 @@ export function challengeGate(input: {
 
   return {
     kind: 'ready',
-    headline: `${SAMPLE_MAX} câu, không tính giờ, không xếp hạng`,
-    body:
-      `Kho ôn đang có câu từ ${done} bài bạn đã xong. Hệ thống lấy nhiều câu hơn từ `
-      + 'những bài bạn hay chọn sai. Sai ở đây không trừ gì cả.',
+    // Bản cũ: tiêu đề "15 câu, không tính giờ, không xếp hạng" + một đoạn kể
+    // cơ chế trọng số ("Hệ thống lấy nhiều câu hơn từ những bài bạn hay chọn
+    // sai") và một lời trấn an ("Sai ở đây không trừ gì cả"). Giữ lại đúng con
+    // số người học cần biết trước khi bấm Bắt đầu.
+    headline: `${SAMPLE_MAX} câu`,
+    body: '',
     expected,
     canStart: true,
     completedCount: done,
@@ -495,9 +497,11 @@ export type SplitScore = {
 
 export function splitScore(summary: RunSummary): SplitScore {
   const official = `Đúng lần đầu ${summary.firstTry} trên ${summary.total}`;
-  const officialNote =
-    'Máy chủ chấm cả đề một lượt và lưu đúng con số này. Nó cũng là thứ quyết định '
-    + 'những bài nào góp nhiều câu hơn vào các lượt sau.';
+  // Hai ghi chú này rút xuống còn ĐÚNG phần phân biệt được hai con số. Bản cũ
+  // kể thêm cơ chế ("Nó cũng là thứ quyết định những bài nào góp nhiều câu hơn
+  // vào các lượt sau") và lặp lại luật nộp một lần — người học đang xem hai con
+  // số, họ chỉ cần biết cái nào đã lưu.
+  const officialNote = 'Đã lưu.';
   if (summary.afterRethink === 0) {
     return { officialLine: official, officialNote, localLine: null, localNote: null };
   }
@@ -505,10 +509,7 @@ export function splitScore(summary: RunSummary): SplitScore {
     officialLine: official,
     officialNote,
     localLine: `Đúng ở lần nghĩ lại: thêm ${summary.afterRethink} câu`,
-    localNote:
-      'Lần nghĩ lại do trình duyệt chấm (đáp án máy chủ đã gửi về sau khi bạn chốt cả '
-      + 'đề) và KHÔNG được lưu lại: mỗi đề chỉ nộp được một lần. Nên con số này không '
-      + 'cộng vào dòng trên.',
+    localNote: 'Không lưu.',
   };
 }
 
@@ -612,29 +613,28 @@ export function stageProgress(modules: unknown, completed: ReadonlyArray<number>
 
 /* ───────────────────────── câu chữ của màn này ──────────────────────────── */
 
-/**
- * "Vì sao câu này?" — LÝ DO THẬT, giống nhau cho mọi câu.
+/*
+ * ĐÃ BỎ: `WHY_THIS_QUESTION` và `WHY_NO_PER_QUESTION_REASON`, cùng khối
+ * <details>"Vì sao câu này?" dựng chúng ở ChallengeClient.
  *
- * Bản thiết kế vẽ ba lý do riêng ("bạn sai câu này 4 ngày trước", "câu mới từ
- * bài vừa học", "khó hơn một chút") và một dòng "lần trước bạn chọn B". Cả bốn
- * đều cần lịch sử theo TỪNG CÂU, thứ hệ thống không lưu; `stripAnswers()` còn
- * không cho trình duyệt biết câu nào thuộc bài nào. Lý do thật thì chỉ có một,
- * và nó có thật trong mã backend: trọng số theo tỉ lệ sai của từng BÀI.
+ * Hai hằng đó kể cơ chế chọn đề ("Hệ thống không chọn ngẫu nhiên đều: bài nào
+ * bạn hay chọn sai thì câu của bài đó được lấy nhiều hơn, trọng số gấp tối đa
+ * hai lần") rồi kể tiếp thứ hệ thống KHÔNG làm ("không lưu lịch sử theo từng
+ * câu, nên nó không nói được 'bạn sai câu này bốn ngày trước'"). Cả hai đều
+ * đúng, và cả hai đều vô dụng với người đang nhìn một câu trắc nghiệm: biết
+ * trọng số không đổi được phương án nào họ chọn. Chúng trả lời một câu hỏi
+ * chưa ai hỏi — đúng khuôn văn do máy sinh mà chủ sản phẩm đã gạt ở trang chủ.
  */
-export const WHY_THIS_QUESTION =
-  'Câu này rút từ kho câu của những bài bạn đã xong. Hệ thống không chọn ngẫu nhiên '
-  + 'đều: bài nào bạn hay chọn sai thì câu của bài đó được lấy nhiều hơn (trọng số '
-  + 'gấp tối đa hai lần), nhưng không bài nào bị loại hẳn.';
 
-export const WHY_NO_PER_QUESTION_REASON =
-  'Hệ thống không lưu lịch sử theo từng câu, nên nó không nói được "bạn sai câu này '
-  + 'bốn ngày trước" hay "lần trước bạn chọn B". Lý do ở trên là lý do thật và duy nhất.';
-
-/** Luật của lượt — mỗi dòng là một điều ĐANG đúng trong sản phẩm. */
+/**
+ * Luật của lượt — mỗi dòng là một điều ĐANG đúng và ĐỔI được cách người học
+ * làm. Hai dòng cũ đã bỏ: "Không có đồng hồ. Ngồi bao lâu cũng vậy." và "Không
+ * có điểm tốc độ, không xếp hạng, không chuỗi ngày, không ai để so." — chúng
+ * liệt kê những thứ KHÔNG tồn tại, nên không có gì để làm theo, và một danh
+ * sách những thứ không có là lời tự khen trá hình.
+ */
 export const RUN_RULES: ReadonlyArray<string> = [
   'Sai lần đầu thì được nghĩ lại ngay trong lượt, không phải chờ hôm sau.',
-  'Không có đồng hồ. Ngồi bao lâu cũng vậy.',
-  'Không có điểm tốc độ, không xếp hạng, không chuỗi ngày, không ai để so.',
   'Cả đề được chấm một lượt ở máy chủ sau khi bạn chốt câu cuối, nên phản hồi '
     + 'hiện ở cuối lượt chứ không hiện ngay sau mỗi câu.',
   'Dừng giữa lượt thì lượt đó không được lưu — máy chủ chỉ chấm khi cả đề được nộp.',
@@ -662,21 +662,19 @@ export function feedbackHead(state: CellState): string | null {
 /**
  * Thân khối phản hồi. Ở 'rethinking' KHÔNG được nhắc tới đáp án dưới mọi hình
  * thức — kể cả "đáp án là phương án dài hơn".
+ *
+ * Chỉ còn hai trạng thái có thân, và cả hai nói MỘT việc phải làm. 'ok' và
+ * 'again' trả null: đầu đề ("Đúng ngay lần đầu" / "Đúng ở lần nghĩ lại") đã nói
+ * hết, phần thân cũ chỉ là lời bình ("Nghĩ lại ra đúng nghĩa là bạn biết, nhưng
+ * chưa thành phản xạ") và lời trấn an ("Không có điểm thưởng nào để đếm").
  */
 export function feedbackBody(state: CellState): string | null {
-  if (state === 'ok') {
-    return 'Câu này tính vào dòng "đúng lần đầu" của lượt. Không có điểm thưởng nào để đếm.';
-  }
   if (state === 'rethinking') {
     return 'Đáp án chưa lộ. Phương án bạn vừa chọn đã bị khoá — chọn một phương án khác '
-      + 'rồi chốt lại. Lần nghĩ lại không trừ gì cả.';
-  }
-  if (state === 'again') {
-    return 'Nghĩ lại ra đúng nghĩa là bạn biết, nhưng chưa thành phản xạ. Câu của bài này '
-      + 'sẽ còn gặp lại.';
+      + 'rồi chốt lại.';
   }
   if (state === 'bad') {
-    return 'Không có gì bị trừ. Đọc lại chỗ này trong bài thường nhanh hơn làm thêm câu.';
+    return 'Đọc lại chỗ này trong bài.';
   }
   return null;
 }

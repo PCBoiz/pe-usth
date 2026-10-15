@@ -39,37 +39,19 @@ const INSTRUCTORS = {
   db_design: { email: 'leminhtuan@programmingedu.local', name: 'Lê Minh Tuấn' },
 };
 
-// Metadata card — 4 khoá lập trình suy ra từ curricula.json; 3 khoá DB Design
-// lấy nguyên văn từ _DB_DESIGN_CARDS trong main.js (đã ghi chú "khớp seed DB").
+// Metadata card cho 3 khoá DB Design, lấy nguyên văn từ _DB_DESIGN_CARDS
+// trong main.js (đã ghi chú "khớp seed DB").
+//
+// 15/10/2026 — GỠ bốn định nghĩa `python`, `cpp`, `java`, `htmlcss`. Chúng
+// đọc giáo trình từ `curricula.json`, mà file đó nay chỉ còn
+// `python_advanced` và `db_design`. Hệ quả đo được trên DB vừa dựng: bốn
+// khoá RỖNG (0 bài, 0 ghi danh, 0 đánh giá) nhưng `is_published = true`,
+// nên `GET /api/courses` trả về 8 khoá trong khi sản phẩm chỉ có 4 khoá
+// thật. Route của ba khoá kia cũng đã xoá ở 9bc42c1 (trả 404).
+//
+// Khoá `python_advanced` KHÔNG gieo ở đây — nó có script riêng
+// (`scripts/seed-python-advanced-v4.ts`) vì nội dung 48 bài dựng từ pe-v4.
 const COURSES = [
-  {
-    id: 'python', instructorKey: 'python', language: 'python', level: 'beginner',
-    title: 'Lập trình Python từ Zero đến Hero',
-    subtitle: 'Từ cú pháp cơ bản đến AI/Machine Learning',
-    tag: 'NGÔN NGỮ LẬP TRÌNH', color: '#3776AB', accentColor: '#FFD43B',
-    duration: '~40 giờ',
-  },
-  {
-    id: 'cpp', instructorKey: 'cpp', language: 'c++', level: 'beginner',
-    title: 'Lập trình C/C++ nền tảng',
-    subtitle: 'Con trỏ, cấu trúc dữ liệu và OOP từ gốc',
-    tag: 'NGÔN NGỮ LẬP TRÌNH', color: '#00599C', accentColor: '#004482',
-    duration: '~35 giờ',
-  },
-  {
-    id: 'java', instructorKey: 'java', language: 'java', level: 'intermediate',
-    title: 'Java & Spring Boot chuyên nghiệp',
-    subtitle: 'OOP, Spring Boot và kiến trúc Microservices',
-    tag: 'NGÔN NGỮ LẬP TRÌNH', color: '#E76F00', accentColor: '#5382A1',
-    duration: '~45 giờ',
-  },
-  {
-    id: 'htmlcss', instructorKey: 'htmlcss', language: 'html/css', level: 'beginner',
-    title: 'HTML & CSS — Nền tảng Web',
-    subtitle: 'Xây giao diện web responsive từ con số 0',
-    tag: 'FRONTEND', color: '#E44D26', accentColor: '#264DE4',
-    duration: '~30 giờ',
-  },
   {
     id: 'db_design', instructorKey: 'db_design', language: 'sql', level: 'beginner',
     title: 'Thiết kế CSDL: Từ ý tưởng đến hệ dữ liệu hoàn chỉnh',
@@ -171,6 +153,8 @@ async function main() {
         lessonCount,
         contentMeta,
         isPublished: true,
+        // Chạy lại seed thì chuẩn hoá luôn dòng cũ còn mang 4.8.
+        rating: 0,
       },
       create: {
         id: def.id,
@@ -178,7 +162,12 @@ async function main() {
         level: def.level,
         language: def.language,
         accentColor: def.accentColor,
-        rating: 4.8,
+        // rating 0 = CHƯA CÓ ĐÁNH GIÁ NÀO, và bảng `course_ratings` đang
+        // rỗng nên đó là sự thật. Cột này từng viết cứng 4.8; `catalog.ts`
+        // đã gỡ đúng con số đó ở a04c3cf vì không có đánh giá nào ở sau nó,
+        // mà gieo 4.8 vào DB là dựng lại lời nói dối ở tầng dưới. Cột NOT
+        // NULL không có default nên phải ghi rõ, không bỏ trống được.
+        rating: 0,
         lessonCount,
         instructorId: instructorIds[def.instructorKey],
         xp_reward: 100,

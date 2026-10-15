@@ -59,8 +59,6 @@ import { apiFetch, asList, findEnrollment } from '@/lib/api';
 import {
   RUN_RULES,
   STATE_LABEL,
-  WHY_NO_PER_QUESTION_REASON,
-  WHY_THIS_QUESTION,
   allCommitted,
   applyGrading,
   cellState,
@@ -501,13 +499,8 @@ export default function ChallengeClient() {
           })}
         </div>
 
-        {/* "Vì sao câu này?" — lý do THẬT, giống nhau cho mọi câu; xem
-            WHY_THIS_QUESTION. Để trong <details> vì nó không đổi theo câu. */}
-        <details className={styles.why}>
-          <summary className={styles.whySummary}>Vì sao câu này?</summary>
-          <p className={styles.whyBody}>{WHY_THIS_QUESTION}</p>
-          <p className={styles.whyBody}>{WHY_NO_PER_QUESTION_REASON}</p>
-        </details>
+        {/* Khối <details>"Vì sao câu này?" đã bỏ — lý lẽ ở lib/challenge-run.ts,
+            chỗ hai hằng WHY_* từng đứng. */}
       </section>
     );
   };
@@ -530,14 +523,12 @@ export default function ChallengeClient() {
               <h1 className={styles.h1} id="challengeTitle">
                 Thử thách ôn
               </h1>
-              <p className={styles.kicker}>
-                Không tính giờ · không xếp hạng · chỉ so với chính bạn
-              </p>
-              <p className={styles.lead}>
-                Một lượt rút câu từ chính những câu bạn đã làm trong bài. Sai lần đầu thì được
-                nghĩ lại một lần ngay trong lượt. Không ai đứng bên kia bàn — bàn so sánh duy
-                nhất ở đây là bạn của những lượt trước.
-              </p>
+              {/* Tiêu đề đứng một mình. Bản cũ có `kicker` ("Không tính giờ ·
+                  không xếp hạng · chỉ so với chính bạn") và một `lead` ba câu
+                  kể cơ chế rút đề rồi kết bằng "bàn so sánh duy nhất ở đây là
+                  bạn của những lượt trước". Điều duy nhất đổi được cách làm —
+                  sai lần đầu được nghĩ lại — đã nằm trong "Luật của một lượt"
+                  ngay dưới, nên cả hai đoạn chỉ là văn dẫn dắt. */}
 
               {phase === 'loading' && (
                 <p className={styles.quiet} aria-live="polite">
@@ -548,25 +539,23 @@ export default function ChallengeClient() {
               {gate && (
                 <div className={styles.gateCard}>
                   <h2 className={styles.gateHead}>{gate.headline}</h2>
-                  <p className={styles.gateBody}>{gate.body}</p>
+                  {/* `gate.body` rỗng ở nhánh 'ready' — tiêu đề đã nói đủ. */}
+                  {gate.body && <p className={styles.gateBody}>{gate.body}</p>}
 
                   {gate.canStart ? (
-                    <>
-                      <button
-                        type="button"
-                        className={styles.primary}
-                        onClick={start}
-                        disabled={phase === 'generating'}
-                      >
-                        {phase === 'generating'
-                          ? 'Đang dựng lượt…'
-                          : `Bắt đầu ${gate.expected} câu`}
-                      </button>
-                      <p className={styles.quiet}>
-                        Dừng giữa lượt được, nhưng lượt dừng dở không được lưu — máy chủ chỉ
-                        chấm khi cả đề được nộp một lượt.
-                      </p>
-                    </>
+                    // MỘT cái nút. Câu "Dừng giữa lượt được, nhưng lượt dừng
+                    // dở không được lưu…" đã bỏ: nó lặp lại nguyên dòng cuối
+                    // của RUN_RULES đang hiện cách đó vài centimet.
+                    <button
+                      type="button"
+                      className={styles.primary}
+                      onClick={start}
+                      disabled={phase === 'generating'}
+                    >
+                      {phase === 'generating'
+                        ? 'Đang dựng lượt…'
+                        : `Bắt đầu ${gate.expected} câu`}
+                    </button>
                   ) : (
                     nextNo !== null && (
                       <a className={styles.primary} href={lessonHref(nextNo)}>
@@ -604,30 +593,28 @@ export default function ChallengeClient() {
                 </p>
                 <p className={styles.metricBig}>{firstTry.answers}</p>
                 <p className={styles.metricUnit}>lượt trả lời đúng ngay lần đầu</p>
-                <p className={styles.metricNote}>
-                  Con số này không giảm khi bạn sai. Sai chỉ có nghĩa là lượt đó không cộng
-                  thêm gì.
-                </p>
+                {/* Bỏ "Con số này không giảm khi bạn sai…": nhãn ngay trên đã
+                    nói, và lặp lại một lời trấn an không làm nó thật hơn. */}
                 <p className={styles.metricNote}>{firstTryLine(firstTry)}</p>
                 {lastRun && <p className={styles.metricNote}>Lần ôn gần nhất: {lastRun}</p>}
               </section>
 
-              {/* Khối ghi chú trung thực: nói thẳng cái gì CHƯA có. */}
-              <p className={styles.honest}>
-                <span className={styles.strong}>Đây là LƯỢT trả lời, không phải câu khác nhau. </span>
-                Hệ thống không lưu lịch sử theo từng câu, nên nó không biết “cùng một câu bạn
-                đã trả lời đúng ngay lần đầu mấy ngày khác nhau”. Cùng một câu gặp lại và đúng
-                lần nữa thì con số trên tăng thêm một.
-              </p>
+              {/* ĐÃ BỎ khối "ghi chú trung thực" giải thích rằng con số trên
+                  đếm LƯỢT chứ không đếm câu khác nhau, vì hệ thống không lưu
+                  lịch sử theo từng câu. Nhãn đơn vị ngay dưới con số đã ghi
+                  đúng chữ "lượt trả lời"; một đoạn đi giải thích phân biệt đó
+                  TRƯỚC khi người đọc gặp nó là nỗi lo của người làm, không
+                  phải câu hỏi của người học. */}
 
               <section className={styles.sideCard} aria-labelledby="stageTitle">
                 <p className={styles.sideLabel} id="stageTitle">
                   Mức của bạn theo chặng
                 </p>
-                <p className={styles.sideBody}>
-                  Mỗi ô là một bài. Ô đặc là bài đã xong — chặng nào xong nhiều bài thì kho câu
-                  của chặng đó dày hơn, nên lượt thử thách gặp câu ở đó nhiều hơn.
-                </p>
+                {/* Chú giải hình — GIỮ, vì không có nó thì dãy ô là vô nghĩa.
+                    Nửa sau ("chặng nào xong nhiều bài thì kho câu của chặng đó
+                    dày hơn, nên lượt thử thách gặp câu ở đó nhiều hơn") đã bỏ:
+                    đó là cơ chế sinh đề, không giúp đọc hình. */}
+                <p className={styles.sideBody}>Mỗi ô là một bài. Ô đặc là bài đã xong.</p>
                 <ul className={styles.stageList}>
                   {stages.map((s) => (
                     <li className={styles.stageItem} key={s.name}>
@@ -644,32 +631,18 @@ export default function ChallengeClient() {
                     </li>
                   ))}
                 </ul>
-                <p className={styles.honest}>
-                  <span className={styles.strong}>Thanh này đếm BÀI, không đếm câu. </span>
-                  Bản thiết kế vẽ “mức câu đã chắc theo chặng”; muốn vậy phải có lịch sử theo
-                  từng câu, thứ hệ thống chưa lưu. Số bài đã xong thì có thật.
-                </p>
+                {/* ĐÃ BỎ ghi chú "Thanh này đếm BÀI, không đếm câu" — nhãn
+                    "x/y bài đã xong" của từng chặng đã nói đơn vị. */}
               </section>
 
-              <section className={styles.sideCard} aria-labelledby="notTitle">
-                <p className={styles.sideLabel} id="notTitle">
-                  Ở đây không có
-                </p>
-                <ul className={styles.ruleList}>
-                  <li className={styles.ruleItem}>Không xếp hạng, không bảng điểm chung</li>
-                  <li className={styles.ruleItem}>Không đồng hồ, không điểm tốc độ</li>
-                  <li className={styles.ruleItem}>
-                    Không đối thủ — không ghép cặp với ai, và cũng không cần
-                  </li>
-                  <li className={styles.ruleItem}>Không có chuỗi ngày để đứt</li>
-                  <li className={styles.ruleItem}>Không chọn được phạm vi theo chặng</li>
-                </ul>
-                <p className={styles.honest}>
-                  <span className={styles.strong}>Phạm vi: cả khoá, không chọn được. </span>
-                  Đường sinh đề của hệ thống chỉ nhận một khoá, không nhận chặng — nên ở đây
-                  không có chip chọn chặng để bấm.
-                </p>
-              </section>
+              {/* ĐÃ BỎ cả khối "Ở đây không có" (không xếp hạng · không đồng hồ
+                  · không đối thủ · không chuỗi ngày · không chọn phạm vi) cùng
+                  ghi chú "Phạm vi: cả khoá, không chọn được".
+                  Vì sao bỏ hẳn chứ không rút ngắn: một danh sách những thứ
+                  KHÔNG tồn tại không cho người học làm gì khác đi, và nó biến
+                  quyết định sản phẩm thành lời tự khen gửi tới người không hỏi.
+                  Thứ CÓ THẬT và đổi được cách làm thì đã nằm ở "Luật của một
+                  lượt" bên cột trái. */}
             </aside>
           </div>
         )}
@@ -741,11 +714,9 @@ export default function ChallengeClient() {
               </span>
             </div>
 
-            <p className={styles.quiet}>
-              Những câu chưa đúng được chọn lại MỘT lần. Lần này trình duyệt tự chấm bằng đáp
-              án máy chủ vừa gửi về — không gửi lên nữa, vì mỗi đề chỉ nộp được một lần. Nên
-              lần nghĩ lại không đổi điểm đã lưu, và cũng không trừ gì.
-            </p>
+            {/* Giữ luật người học phải biết để chọn (MỘT lần). Phần kể ai chấm,
+                gửi hay không gửi, và "cũng không trừ gì" đã bỏ. */}
+            <p className={styles.quiet}>Những câu chưa đúng được chọn lại MỘT lần.</p>
 
             {questionCard(rethinkCell, rethinkIndex, isPickable(rethinkCell))}
 
@@ -785,10 +756,11 @@ export default function ChallengeClient() {
           <div className={`${styles.runWrap}${riseClass}`}>
             <p className={styles.eyebrow}>Thử thách ôn · xong lượt</p>
             <h1 className={styles.h1}>Xong {total} câu</h1>
-            <p className={styles.lead}>
-              Hai con số dưới đây là của riêng bạn, và chúng đến từ hai nơi khác nhau — nói rõ
-              để bạn biết cái nào được lưu.
-            </p>
+            {/* Không có câu dẫn. Bản cũ mở đầu bằng "Hai con số dưới đây là của
+                riêng bạn, và chúng đến từ hai nơi khác nhau — nói rõ để bạn
+                biết cái nào được lưu": nó giải thích một phân biệt TRƯỚC khi
+                người đọc thấy hai con số, mà hai con số đó nay tự mang nhãn
+                "Đã lưu." / "Không lưu." */}
 
             <div className={styles.resultCard}>
               <span className={styles.fbHead}>{score.officialLine}</span>
@@ -831,11 +803,12 @@ export default function ChallengeClient() {
               <p className={styles.metricLabel}>Chỉ tăng, không bao giờ tụt</p>
               <p className={styles.metricBig}>{firstTry.answers}</p>
               <p className={styles.metricUnit}>lượt trả lời đúng ngay lần đầu</p>
-              <p className={styles.metricNote}>
-                {summary.firstTry > 0
-                  ? `Lượt này cộng thêm ${summary.firstTry}. Câu còn sai không lấy đi gì của con số này — nó chỉ không cộng.`
-                  : 'Lượt này chưa cộng thêm câu nào, và cũng không trừ đi gì.'}
-              </p>
+              {/* Chỉ con số của lượt này. Hai lời trấn an cũ ("Câu còn sai
+                  không lấy đi gì của con số này", "cũng không trừ đi gì") đã
+                  bỏ, và nhánh 0 không in gì cả. */}
+              {summary.firstTry > 0 && (
+                <p className={styles.metricNote}>Lượt này cộng thêm {summary.firstTry}.</p>
+              )}
             </div>
 
             <section className={styles.sideCard} aria-labelledby="redoTitle">
@@ -843,25 +816,22 @@ export default function ChallengeClient() {
                 Nên ôn
               </p>
               {summary.firstTry === total ? (
-                <p className={styles.sideBody}>
-                  Cả {total} câu đúng ngay lần đầu. Không có chỗ nào cần đọc lại từ lượt này.
-                </p>
+                <p className={styles.sideBody}>Cả {total} câu đúng ngay lần đầu.</p>
               ) : (
                 <p className={styles.sideBody}>
+                  {/* Con số thật, không kèm lời khuyên. Câu "Đọc lại đúng mấy
+                      bài đó thường nhanh hơn làm thêm câu" đã bỏ. */}
                   {summary.lessonsToReview > 0
-                    ? `${total - summary.firstTry} câu chưa đúng lần đầu, và chúng đụng vào ${summary.lessonsToReview} bài. `
-                      + 'Đọc lại đúng mấy bài đó thường nhanh hơn làm thêm câu.'
+                    ? `${total - summary.firstTry} câu chưa đúng lần đầu, đụng vào ${summary.lessonsToReview} bài.`
                     : `${total - summary.firstTry} câu chưa đúng lần đầu.`}
                 </p>
               )}
-              <p className={styles.honest}>
-                <span className={styles.strong}>Không gọi được tên bài. </span>
-                Máy chủ gửi về câu hỏi và kết quả, nhưng không gửi câu đó thuộc bài số mấy
-                (id trong kết quả là id bảng dữ liệu, còn bài được tra theo thứ tự trong khoá)
-                — nên ở đây chỉ đếm được số bài, không mở thẳng bài được.
-              </p>
+              {/* ĐÃ BỎ ghi chú "Không gọi được tên bài" (máy chủ không gửi câu
+                  đó thuộc bài số mấy…): nó giải thích một giới hạn kỹ thuật cho
+                  người chỉ cần một đường về danh sách bài — và đường đó là cái
+                  liên kết ngay dưới. */}
               <a className={styles.quietLink} href={`/courses/${COURSE_ID}`}>
-                Tự chọn bài để đọc lại
+                Mở danh sách bài
               </a>
             </section>
 

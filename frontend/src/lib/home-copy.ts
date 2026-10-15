@@ -20,7 +20,8 @@
  *    cũng phải là loại CHỈ TĂNG, và chỉ hiện khi có dữ liệu thật. Trang chủ
  *    không gọi API nào (xem `app/page.tsx`) nên nó KHÔNG có chỉ số nào cả —
  *    thà không có hơn là bịa.
- *  · KHÔNG KHOÁ GÌ. Mọi chặng, mọi bài đều vào được; câu dẫn nói thẳng điều đó.
+ *  · KHÔNG KHOÁ GÌ. Mọi chặng, mọi bài đều vào được — và KHÔNG có câu nào nói ra
+ *    điều đó: bản đồ tám nút bấm được đã là bằng chứng.
  *  · THUẬT NGỮ: khoá · chặng · bài · màn, và trình soạn code gọi là
  *    "Bàn thí nghiệm" (không gọi IDE).
  */
@@ -70,16 +71,20 @@ export function courseTileTags(shape: CourseShape, levelLabel: string): string[]
   return ['Python 3.12', levelLabel, shapeLine(shape)];
 }
 
-/** Hero: nhãn · tiêu đề · câu dẫn. */
+/**
+ * Hero: chỉ còn nhãn và tiêu đề.
+ *
+ * `lead` ĐÃ BỎ, và đây là chỗ dễ thêm lại nhất nên phải nói rõ vì sao. Câu cũ:
+ * "Chặng nào cũng vào được, bài nào cũng vào được — cứ bắt đầu từ chỗ bạn
+ * muốn." Nó sinh ra để chống một nỗi lo của NGƯỜI LÀM ("gỡ ổ khoá mà không nói
+ * thì người học vẫn tưởng phải đi tuần tự"), và `home-page.test.mjs` từng có
+ * một assert ĐÒI nó khớp /vào được/. Nhưng bản đồ thế giới ngay bên dưới có
+ * tám nút bấm được, mỗi nút một `aria-label` đầy đủ — người đọc THẤY là không
+ * khoá, không cần ai nói. Một tiêu đề không được kéo theo một đoạn mô tả chỉ
+ * để dẫn dắt; đó là khuôn dễ nhận nhất của văn do máy sinh.
+ */
 export const INTRO = {
   title: 'Khoá học',
-  /**
-   * Câu dẫn gánh đúng một việc: nói rằng KHÔNG CÓ GÌ BỊ KHOÁ. Bản thiết kế
-   * (Main.dc.html) viết "Chặng nào cũng mở được, cứ bắt đầu từ chỗ bạn muốn" —
-   * và grep cả frontend lẫn backend không thấy cơ chế khoá chặng nào, nên câu
-   * này là sự thật, không phải lời trấn an.
-   */
-  lead: 'Chặng nào cũng vào được, bài nào cũng vào được — cứ bắt đầu từ chỗ bạn muốn.',
 } as const;
 
 /** Nhãn hai cột ở trang chủ. */
@@ -201,6 +206,8 @@ export function footerLine(year: number, courseLabel?: string): string {
 /** Thẻ góp ý — nói rõ góp ý đi về đâu (bản cũ: "Góp ý cho chúng tôi"). */
 export const FEEDBACK = {
   title: 'Góp ý cho nhóm làm khoá',
-  text: 'Khảo sát ẩn danh, khoảng 3 phút. Chỗ nào khó học, bạn nói ở đây là nhóm biết.',
+  // Hai dự kiện ngưỗi đọc cần TRƯỚC khi bấm: ẩn danh, và mất bao lâu. Câu
+  // "Chỗ nào khó học, bạn nói ở đây là nhóm biết" đã bỏ — nó chỉ dẫn dắt.
+  text: 'Khảo sát ẩn danh, khoảng 3 phút.',
   cta: 'Mở khảo sát',
 } as const;

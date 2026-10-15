@@ -125,7 +125,8 @@ export default function FillBlank({
           {running ? 'Đang chạy…' : 'Chạy'}
         </button>
         <span className={styles.runHint}>
-          {value.trim() ? 'Chạy thử trước khi nộp — không trừ điểm.' : 'Điền đáp án vào ô trống để chạy thử.'}
+          {/* "— không trừ điểm" đã bỏ: lời trấn an cho một việc không có rủi ro. */}
+          {value.trim() ? 'Chạy thử trước khi nộp.' : 'Điền đáp án vào ô trống để chạy thử.'}
         </span>
       </div>
 
