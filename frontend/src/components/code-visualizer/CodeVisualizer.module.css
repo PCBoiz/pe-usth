@@ -4,13 +4,19 @@
    thương hiệu mới; chỗ cần "đang ở đây" thì pha từ --edu-accent. */
 
 .panel {
-  margin-top: 16px;
-  padding: 16px 18px;
+  /* Khối này nay nằm TRONG mục kết quả (`.outputPane` của ide.module.css), nên
+     bỏ hết khung của riêng nó: nền, viền, bo góc, đổ bóng đều y hệt khung chứa,
+     giữ lại là vẽ một cái hộp trong một cái hộp cùng màu. Thay bằng một đường
+     kẻ trên để mắt biết đây là phần mới. */
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--edu-panel-border);
   font-family: var(--edu-font);
-  background: var(--edu-panel-bg-solid);
-  border: 1px solid var(--edu-panel-border);
-  border-radius: 16px;
-  box-shadow: var(--edu-card-shadow);
+
+  /* Các mốc gãy bên dưới đo theo bề rộng CỦA CHÍNH KHỐI NÀY, không theo bề
+     rộng màn hình. Từ lúc nó vào cột kết quả, màn 1600px vẫn chỉ cho nó ~700px
+     — mốc theo màn hình sẽ bày hai cột vào chỗ không đủ cho hai cột. */
+  container-type: inline-size;
 }
 
 .head {
@@ -427,16 +433,18 @@
   .lineCursor { transition: none; }
 }
 
-/* Máy tính bảng: đầu ra xuống hàng dưới, call stack đứng một mình. */
-@media (max-width: 1099.98px) {
+/* Hẹp: đầu ra xuống hàng dưới, call stack đứng một mình. Ngưỡng 560px là bề
+   rộng tối thiểu để hai cột còn đọc được — dưới mức đó tên biến bắt đầu xuống
+   dòng giữa chừng. */
+@container (max-width: 560px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
   .outPane { grid-column: 1 / -1; }
 }
 
-/* Điện thoại: xếp dọc. Dùng được — bước, đọc biến, đọc đầu ra — nhưng chật;
-   khung mã cuộn ngang thay vì xuống dòng để thụt lề Python không bị sai. */
-@media (max-width: 719.98px) {
-  .panel { padding: 14px 12px; }
+/* Rất hẹp (điện thoại, hoặc cột kết quả bị bóp): xếp dọc, thanh kéo xuống
+   hàng riêng. Dùng được — bước, đọc biến, đọc đầu ra — nhưng chật; khung mã
+   cuộn ngang thay vì xuống dòng để thụt lề Python không bị sai. */
+@container (max-width: 420px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
   .outPane { grid-column: auto; }
   .code { max-height: 220px; }

@@ -1026,7 +1026,7 @@ export default function CodeVisualizer({
           đã bỏ. */}
       {state.status === 'loading' && (
         <>
-          <p className={styles.hint}>Đang chạy và ghi vết trong sandbox…</p>
+          <p className={styles.hint}>Đang chạy và ghi vết…</p>
           <div className={styles.progress} aria-hidden="true">
             <span className={styles.progressBar} />
           </div>

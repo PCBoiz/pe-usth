@@ -478,13 +478,18 @@ export default function IdeClient() {
 
             <section className={styles.outputPane} aria-label="Kết quả" aria-live="polite" aria-busy={running}>
               <Output state={state} />
+
+              {/* "Xem từng bước" nằm TRONG mục kết quả, không phải một khối
+                  riêng dưới cả hai cột. Lý do: nó cũng là kết quả của việc
+                  chạy — chỉ khác ở chỗ xem được từng bước — nên đặt nó ngoài
+                  mục này buộc người học nhìn xuống một vùng thứ ba để đọc cùng
+                  một thứ. Khối cũ còn kéo dài hết chiều ngang trang nên đẩy
+                  console lên cao và tách rời khỏi vết của chính nó.
+                  Toàn bộ nằm trong component — xem
+                  frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
+              <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
             </section>
           </div>
-
-          {/* Xem từng bước: chạy MỘT lượt trong cùng sandbox rồi bước qua vết
-              cục bộ. Toàn bộ nằm trong component — xem
-              frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
-          <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
         </main>
       </div>
     </>

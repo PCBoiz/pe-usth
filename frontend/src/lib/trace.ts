@@ -97,13 +97,17 @@ export type TraceResponse = { trace: TraceDocument; run: TraceRunInfo };
  * Nói trước cái giá, không để người học tự đoán.
  *
  * Ba điều họ sẽ gặp và sẽ tưởng là lỗi của mình nếu không ai nói: ghi vết chậm
- * hơn chạy (một callback Python cho MỖI dòng), vết có trần số bước, và sandbox
- * không có mạng cũng không có bàn phím.
+ * hơn chạy (một callback Python cho MỖI dòng), vết có trần số bước, và môi
+ * trường chạy không có mạng cũng không có bàn phím.
+ *
+ * Câu này từng dài gấp rưỡi và mở đầu bằng "Xem từng bước" — đúng ba chữ vừa
+ * in ở tiêu đề ngay trên nó. Nó cũng nói "sandbox" hai lần, một từ tiếng Anh
+ * mà người học không cần biết để dùng được tính năng.
  */
 export const TRACE_COST_NOTE =
-  'Xem từng bước chạy chương trình MỘT lần trong sandbox rồi ghi lại toàn bộ '
-  + 'đường đi, nên chậm hơn bấm Chạy. Vết có trần số bước, sandbox không có mạng '
-  + 'và không có bàn phím (input() không dùng được).';
+  'Chạy chương trình một lần rồi ghi lại đường đi, nên chậm hơn bấm Chạy. '
+  + 'Vết có trần số bước; ở đây không có mạng và không gõ được, nên input() '
+  + 'không dùng được.';
 
 /** Nhãn cho từng loại sự kiện, nói bằng tiếng người học chứ không phải tên API. */
 export const EVENT_LABELS: Record<TraceStep['event'], string> = {
