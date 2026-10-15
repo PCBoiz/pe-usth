@@ -298,13 +298,13 @@ test('không rào đón, không nhãn kể cơ chế — đợt gỡ văn kể l
    *    được gì ở việc đọc gợi ý.
    */
   /*
-   * Mẫu CỐ Ý không gồm "lúc nào cũng được": câu đó còn một chỗ nữa ở
-   * `/practice` ("lúc nào cũng được; để lâu cũng không có gì bị trừ"), và
-   * /practice đang được gỡ trong một lượt riêng. Thêm mẫu đó vào đây là dựng
-   * một ca ĐỎ ngay lúc commit, tức buộc hai lượt phải cùng lên một lần —
-   * chuyện đã trả giá rồi. Khi /practice gỡ xong thì thêm vế đó vào mẫu này.
+   * Vế "lúc nào cũng được" có trong mẫu vì nó từng là chỗ thứ TƯ, ở `/practice`
+   * ("lúc nào cũng được; để lâu cũng không có gì bị trừ") — đã gỡ ở d2d4b65.
+   * Ba chuỗi tự kiểm dưới đây không gồm nó, nên thêm luôn một dòng tự kiểm cho
+   * chính nó: một vế mẫu không ai thử là một vế có thể gõ sai mà vẫn báo đạt.
    */
-  const RAO = /không trừ điểm|bất cứ lúc nào/;
+  const RAO = /không trừ điểm|bất cứ lúc nào|lúc nào cũng được/;
+  assert.ok(RAO.test('lúc nào cũng được; để lâu cũng không có gì bị trừ'));
   const CO_CHE = /\bAI Hint\b|\bAI hint\b|do AI (?:sinh|gợi|chọn)/;
   // TỰ KIỂM trên chính ba chuỗi CŨ. Một hàng rào không bắt nổi bản cũ là hàng
   // rào chết mà vẫn báo đạt.

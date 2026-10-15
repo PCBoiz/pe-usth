@@ -242,9 +242,26 @@ test('trang chủ không khoá gì: không ổ khoá, không "mở khi đủ N b
     'Grep cả frontend và backend không thấy cơ chế khoá chặng nào. Vẽ ổ khoá là '
     + 'hứa một cánh cửa không tồn tại và lấy đi quyền tự chọn bài.\n' + bad.join('\n'),
   );
-  // Và phải nói THẲNG rằng không khoá — gỡ ổ khoá mà không nói thì người học
-  // vẫn tưởng phải đi tuần tự.
-  assert.match(INTRO.lead, /vào được/);
+  /*
+   * ĐỔI LUẬT ngày 15/10/2026 — ca này TỪNG đòi điều ngược lại:
+   *
+   *     assert.match(INTRO.lead, /vào được/);
+   *
+   * Lý lẽ cũ: "gỡ ổ khoá mà không nói thì người học vẫn tưởng phải đi tuần
+   * tự", nên trang chủ phải có một câu dẫn nói thẳng là không khoá. Chủ sản
+   * phẩm quyết ngược: không nói gì cả. Bản đồ thế giới ngay dưới hero có tám
+   * nút bấm được, mỗi nút một `aria-label` đầy đủ — người đọc THẤY là không
+   * khoá. Một câu dẫn dưới tiêu đề chỉ để trấn an là đúng khuôn văn do máy
+   * sinh mà cả đợt gỡ này nhắm vào.
+   *
+   * Nên luật mới là: `INTRO` không được có `lead` nào, và hero chỉ in tiêu đề.
+   */
+  assert.deepEqual(
+    Object.keys(INTRO), ['title'],
+    'INTRO lại mọc thêm một câu dẫn dưới tiêu đề — giữ title, bỏ mô tả.',
+  );
+  const dan = PAGE.match(/className=\{styles\.lead\}/g) ?? [];
+  assert.deepEqual(dan, [], 'hero của trang chủ lại có một <p> dẫn dắt: ' + dan.join(' '));
 });
 
 test('không chỉ số nào bịa: trang chủ không có số đo nào ngoài số đếm giáo trình', () => {
