@@ -817,6 +817,16 @@
   text-decoration: underline;
 }
 
+/* Icon "mở ở ngoài" thay cho ký tự ↗ (xem chú thích ở TheoryScreen.tsx). Giữ
+   `display: inline` của liên kết, nên icon phải tự canh theo đường chữ: nó
+   đứng trên baseline thì trông như tụt xuống nửa dòng. `margin-left` là khoảng
+   giữa chữ và icon — không dùng khoảng trắng trong JSX vì gạch chân của liên
+   kết sẽ kéo qua cả chỗ trống đó. */
+.theoryFigure figcaption a svg {
+  margin-left: 4px;
+  vertical-align: -3px;
+}
+
 .theorySource {
   margin: 0;
   font-size: var(--ds-fs-label);

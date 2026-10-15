@@ -166,8 +166,14 @@ export function Figure({ figure, frozen }: { figure: LessonFigure; frozen?: bool
       </a>
       <figcaption>
         {figure.caption}
+        {/* Ký tự ↗ nằm TRONG tên của liên kết thì trình đọc màn hình đọc nó
+            thành tên ký tự ("north east arrow"), tức tên liên kết thành "Xem
+            khổ lớn north east arrow". Bản thiết kế §1.2 chốt mũi tên là ICON
+            SVG — `TryItButton.tsx:43` đã làm đúng (ký tự bọc aria-hidden), chỗ
+            này là bản còn sót. Dùng icon "mở ở ngoài" vì liên kết mở tab mới. */}
         <a href={figure.src} target="_blank" rel="noopener noreferrer">
-          Xem khổ lớn ↗
+          Xem khổ lớn
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" focusable="false"><path d="M7 17L17 7M9 7h8v8" /></svg>
         </a>
         {/* Nút nằm TRONG figcaption để nó luôn đi liền với đúng hình nó điều
             khiển — màn lý thuyết có thể có nhiều hình. */}

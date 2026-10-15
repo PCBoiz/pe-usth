@@ -502,6 +502,22 @@ test('không dùng ký tự ▶ thay cho icon trong nhãn nút', () => {
   );
 });
 
+test('không dùng ký tự ↗ thay cho icon trong tên liên kết', () => {
+  /* Cùng luật với ca ▶ ở trên, nhưng ca đó CHỈ bắt ▶ nên ↗ đi qua được — đo
+     ngày 15/10/2026: `TheoryScreen.tsx` có liên kết tên là "Xem khổ lớn ↗",
+     trình đọc màn hình đọc thành "Xem khổ lớn north east arrow". Bản thiết kế
+     §1.2 ("Mũi tên ký tự → ← ↗ ▶︎ trong nút → Icon SVG") kể ↗ ngang với ▶, nên
+     thiếu ca này là thiếu nửa luật. `TryItButton.tsx:43` giữ ký tự nhưng đã
+     bọc aria-hidden, nên nó hợp lệ và chính nó chứng minh `allow` còn sống. */
+  assertAbsent(
+    /↗/,
+    'Bản thiết kế §1.2 chốt mũi tên là icon SVG. Ký tự ↗ trong tên nút/liên kết '
+    + 'bị trình đọc màn hình đọc thành tên ký tự; còn cần ký tự thì bọc trong '
+    + '<span aria-hidden="true">.',
+    (line) => /aria-hidden/.test(line),
+  );
+});
+
 /* ── 5 · dòng MIỄN không được mục đi ──────────────────────────────────── */
 
 test('mỗi dòng MIỄN phải còn che một chỗ vi phạm THẬT, và nêu lý do', () => {
