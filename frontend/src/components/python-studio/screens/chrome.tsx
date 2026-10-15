@@ -136,10 +136,10 @@ export function ScreenShell({
             scr.kind === 'selfExplain'
               ? verdict.correct
                 ? 'Đã ghi nhận — tự so với lời giải thích mẫu'
-                : 'Chưa đủ ý — viết thêm nhé'
+                : 'Chưa đủ ý — viết thêm'
               : verdict.correct
                 ? 'Chính xác!'
-                : 'Chưa đúng — thử lại nhé'
+                : 'Chưa đúng — thử lại'
           }
           explanation={verdict.explain}
         />

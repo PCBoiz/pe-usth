@@ -217,6 +217,38 @@ test('không câu nào thúc ép bằng "phải" hay mở đầu bằng "Hãy"',
   );
 });
 
+test('không dỗ dành bằng hạt "nhé", không nhắc "Đừng sai"', () => {
+  /* Giọng đã chốt là người dẫn đường BÌNH THẢN. Hạt "nhé" kéo câu về kiểu
+     người lớn dỗ trẻ, và nó bám đúng vào những câu KHÔNG phải lỗi của người
+     học — năm trong tám chỗ là thông báo mạng chập chờn hoặc server chưa tạo
+     được đề ("Mạng đang chập chờn… Thử lại nhé."). Thêm một hạt an ủi vào một
+     lỗi hạ tầng là ngầm nói lỗi ở người đang đọc.
+
+     Chỗ nặng nhất là `LessonDbDesign.tsx`: nhãn bước 2/4 ghi "Kiểm tra nhanh —
+     Đừng sai nhé!" — vừa dỗ dành vừa đặt cược lên một câu trắc nghiệm mà trả
+     lời sai KHÔNG mất gì (không trừ XP, làm lại được). Lời nhắc đó dựng ra một
+     cái giá không có thật.
+
+     Mẫu: "nhé" KHÔNG đi liền một chữ cái nào nữa — để "nhét" (nhét mã vào địa
+     chỉ, ở `ide-handoff`/`IdeClient`) không bị tính. Tự kiểm cả hai phía: */
+  const HAT = /nhé(?!\p{L})/u;
+  assert.ok(HAT.test('Chưa đúng — thử lại nhé'), 'mẫu không bắt nổi chuỗi cũ');
+  assert.ok(HAT.test('Đừng sai nhé!'), 'mẫu không bắt nổi nhãn cũ của LessonDbDesign');
+  assert.ok(!HAT.test('nhét mã vào địa chỉ'), 'mẫu bắt lầm "nhét"');
+
+  assertAbsent(
+    HAT,
+    'Giọng đã chốt: dẫn đường bình thản, không dỗ dành. Bỏ hẳn hạt "nhé" — câu '
+    + 'còn lại ("Thử lại.") nói đúng việc cần làm mà không an ủi hộ ai.',
+  );
+  assertAbsent(
+    /Đừng sai|đừng sai/,
+    'Trả lời sai một câu trắc nghiệm trong bài KHÔNG mất gì: không trừ XP, làm '
+    + 'lại được. Nhắc "Đừng sai" là dựng ra một cái giá không có thật — đúng loại '
+    + 'áp lực mà triết lý tự học đã gạt ra.',
+  );
+});
+
 /* ── 4 · một việc, một từ ─────────────────────────────────────────────── */
 
 test('trình soạn và chạy Python gọi là "Bàn thí nghiệm", không phải IDE', () => {

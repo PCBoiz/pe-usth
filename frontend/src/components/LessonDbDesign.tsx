@@ -218,7 +218,11 @@ export default function LessonDbDesign({ courseId }: { courseId: string }) {
           <article className="step-2-content">
             <div className="eyebrow-row">
               <span className="step-pill">Bước 2 / 4</span>
-              <span className="topic-tag">Kiểm tra nhanh — Đừng sai nhé!</span>
+              {/* Bản cũ: "Kiểm tra nhanh — Đừng sai nhé!" — một lời nhắc dỗ
+                  dành, và nó còn đặt cược sai lên một câu trắc nghiệm mà trả
+                  lời sai không mất gì. Nhãn nay nói bước này là gì.
+                  Canh bởi `e2e/unit/ds-wording.test.mjs`. */}
+              <span className="topic-tag">Kiểm tra nhanh — một câu trắc nghiệm</span>
             </div>
 
             <h2 className="mcq-question" id="mcq-question"></h2>

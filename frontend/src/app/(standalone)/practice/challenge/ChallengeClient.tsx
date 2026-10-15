@@ -298,7 +298,7 @@ export default function ChallengeClient() {
       setListOpen(false);
       setPhase('run');
     } catch {
-      setNotice('Mạng đang chập chờn nên chưa dựng được lượt thử thách. Thử lại nhé.');
+      setNotice('Mạng đang chập chờn nên chưa dựng được lượt thử thách. Thử lại.');
       setPhase('gate');
     }
   }, []);
@@ -325,7 +325,7 @@ export default function ChallengeClient() {
         if (!res.ok) {
           setNotice(
             errMessage(body)
-              || 'Chưa gửi được lượt này. Các phương án bạn đã chốt vẫn còn đây, thử lại nhé.',
+              || 'Chưa gửi được lượt này. Các phương án bạn đã chốt vẫn còn đây, thử lại.',
           );
           setPhase('run');
           return;

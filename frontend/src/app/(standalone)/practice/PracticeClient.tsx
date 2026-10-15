@@ -145,7 +145,7 @@ export default function PracticeClient() {
         // Lỗi "chưa đủ câu" của server → đúng trạng thái trống tử tế, không
         // phải chữ lỗi: hai nguồn số bài có thể lệch nhau (xem practice-plan).
         setGate((g) => (g ? gateFromError(g, errMessage(body)) : g));
-        if (!errMessage(body)) setNotice('Chưa tạo được phần ôn. Thử lại sau một lát nhé.');
+        if (!errMessage(body)) setNotice('Chưa tạo được phần ôn. Thử lại sau một lát.');
         setPhase('gate');
         return;
       }
@@ -160,7 +160,7 @@ export default function PracticeClient() {
       setGraded(null);
       setPhase('quiz');
     } catch {
-      setNotice('Mạng đang chập chờn nên chưa tạo được phần ôn. Thử lại nhé.');
+      setNotice('Mạng đang chập chờn nên chưa tạo được phần ôn. Thử lại.');
       setPhase('gate');
     }
   }, []);
@@ -180,7 +180,7 @@ export default function PracticeClient() {
       if (!res.ok) {
         setNotice(
           errMessage(body)
-            || 'Chưa gửi được phần ôn. Các phương án bạn chọn vẫn còn đây, thử lại nhé.',
+            || 'Chưa gửi được phần ôn. Các phương án bạn chọn vẫn còn đây, thử lại.',
         );
         setPhase('quiz');
         return;
