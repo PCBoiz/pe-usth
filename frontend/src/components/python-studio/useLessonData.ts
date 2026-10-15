@@ -10,7 +10,13 @@
 // loading) nên thứ tự người học thấy không đổi.
 import { useCallback, useEffect, useState } from 'react';
 
-import { apiFetch, asList, findEnrollment } from '@/lib/api';
+import { apiFetch, asList, findEnrollment, probeApiHealth } from '@/lib/api';
+import {
+  classifyLoadFailure,
+  loadFailureCopy,
+  NO_SESSION_MESSAGE,
+  type LoadFailureCopy,
+} from '@/lib/lesson-load-error';
 import { buildScreens, type StudioLesson as Lesson } from '@/lib/studio-lesson';
 
 export type Award = { name?: string | null; description?: string | null; icon?: string | null };
@@ -26,6 +32,11 @@ export type LessonData = {
   completed: boolean;
   loading: boolean;
   loadError: string;
+  /**
+   * Nhan đề + câu giải thích cho màn hỏng, đã phân biệt theo NGUYÊN NHÂN
+   * (DB chết / quá tải / lệch gốc API / 401 thật). `null` khi không có lỗi.
+   */
+  loadFailure: LoadFailureCopy | null;
   /** Bài có hàng trong DB nhưng chưa có nội dung Studio. */
   empty: boolean;
   /** Đang gọi một lệnh ghi (đăng ký / lưu hoàn thành). */
@@ -40,6 +51,17 @@ export type LessonData = {
   /** `quizScore` là điểm do TRÌNH DUYỆT chấm — xem AGENTS.md, server tin nó. */
   complete: (quizScore: number) => Promise<void>;
 };
+
+/**
+ * Lỗi mang theo MÃ HTTP.
+ *
+ * Trước đây `json()` chỉ ném `Error(message)`, nên tới `catch` là mã đã mất và
+ * mọi sự cố — DB chết, 429, 404 vì gốc API sai — đều hiện ra bằng cùng một
+ * câu. Mã là thứ duy nhất phân biệt được chúng (xem `lib/lesson-load-error.ts`).
+ */
+function httpError(message: string, status: number): Error & { status: number } {
+  return Object.assign(new Error(message), { status });
+}
 
 export function useLessonData({
   courseId,
@@ -58,6 +80,7 @@ export function useLessonData({
   const [enrolled, setEnrolled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
+  const [loadFailure, setLoadFailure] = useState<LoadFailureCopy | null>(null);
   const [empty, setEmpty] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -70,17 +93,17 @@ export function useLessonData({
       const response = await apiFetch(path, options);
       // Frontend không còn trang đăng nhập (/login đã gỡ) nên không đá đi đâu
       // được nữa — chuyển hướng sẽ ra 404. Báo lỗi tại chỗ để loadError hiện lên.
-      if (response.status === 401)
-        throw new Error('Bài học này cần phiên đăng nhập hợp lệ từ API.');
+      if (response.status === 401) throw httpError(NO_SESSION_MESSAGE, 401);
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false)
-        throw new Error(
+        throw httpError(
           Array.isArray(body.message)
             ? body.message.join(', ')
             : body.message ||
                 // Bộ lọc lỗi của backend gói lỗi thành { error: { status, message } }.
                 (typeof body.error === 'object' ? body.error?.message : body.error) ||
                 `Không thể kết nối (${response.status}).`,
+          response.status,
         );
       return body;
     },
@@ -90,6 +113,7 @@ export function useLessonData({
   const load = useCallback(async () => {
     setLoading(true);
     setLoadError('');
+    setLoadFailure(null);
     setEmpty(false);
     try {
       // Gọi /api/user TRƯỚC, không song song: với người mới, request đầu tiên
@@ -149,7 +173,16 @@ export function useLessonData({
       setLesson(content);
       onDraftReady?.(content, Number(profile.id), list.length);
     } catch (error) {
-      setLoadError(error instanceof Error ? error.message : 'Không kết nối được backend.');
+      // Nói ĐÚNG nguyên nhân thay vì đổ cho phiên của người học. Mã của lượt
+      // hỏng một mình không đủ (401 ở trên có thể là DB chết), nên hỏi thêm
+      // /health rồi mới chọn câu. Lượt dò này chỉ chạy trên nhánh hỏng.
+      const detail = error instanceof Error ? error.message : 'Không kết nối được backend.';
+      const status = typeof (error as { status?: number }).status === 'number'
+        ? (error as { status: number }).status
+        : 0;
+      const probe = await probeApiHealth();
+      setLoadFailure(loadFailureCopy(classifyLoadFailure({ status, probe }), detail));
+      setLoadError(detail);
     } finally {
       setLoading(false);
     }
@@ -240,6 +273,7 @@ export function useLessonData({
     completed,
     loading,
     loadError,
+    loadFailure,
     empty,
     busy,
     message,

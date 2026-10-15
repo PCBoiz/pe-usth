@@ -13,6 +13,12 @@
  * cũ, đọc một lần để chuyển phiên sang cookie rồi xoá.
  */
 
+import {
+  healthProbeUrls,
+  readProbeDb,
+  type HealthProbe,
+} from '@/lib/lesson-load-error';
+
 const LS_ACCESS = 'pe_access';
 const LS_LEGACY_REFRESH = 'pe_refresh';
 
@@ -179,6 +185,43 @@ export function apiFetch(path: string, opts: RequestInit = {}): Promise<Response
  */
 export function apiFetchSessionOnly(path: string, opts: RequestInit = {}): Promise<Response> {
   return request(path, opts, false);
+}
+
+/**
+ * Dò `/health` để biết VÌ SAO một lượt gọi vừa hỏng.
+ *
+ * Vì sao cần: mã HTTP của chính lượt hỏng không đủ. Khi DB chết, `/auth/guest`
+ * trả 500, `ensureGuest()` ở trên chỉ `return null`, và nơi gọi nhận lại
+ * response 401 của lượt ĐẦU — tức một mã nói về PHIÊN cho một sự cố của MÁY
+ * CHỦ. Cả lý do phân nhánh nằm ở `lib/lesson-load-error.ts`.
+ *
+ * Hai đường, một lượt dò: `{origin}/health` (đúng gốc API mà `request()` dùng)
+ * và `{host}/health`. Lệch nhau ⇒ gốc API cấu hình sai. Gốc đúng thì hai URL
+ * trùng nhau nên chỉ đi một request.
+ *
+ * KHÔNG gửi token và KHÔNG `credentials: 'include'`: đây là đường công khai,
+ * và lượt dò không được phép tự chạm vào phiên của ai. Mọi lỗi mạng đều thành
+ * `null` — nơi gọi hiểu `null` là "không nói được gì".
+ */
+export async function probeApiHealth(): Promise<HealthProbe | null> {
+  const { originUrl, rootUrl } = healthProbeUrls(origin());
+  const ask = async (url: string): Promise<{ status: number; body: unknown }> => {
+    try {
+      const r = await fetch(url, { method: 'GET' });
+      return { status: r.status, body: await r.json().catch(() => null) };
+    } catch {
+      return { status: 0, body: null };
+    }
+  };
+  const first = await ask(originUrl);
+  const second = originUrl === rootUrl ? first : await ask(rootUrl);
+  if (!first.status && !second.status) return null;
+  return {
+    originStatus: first.status,
+    rootStatus: second.status,
+    // `db` lấy từ lượt nào trả lời được; gốc sai thì chỉ lượt thứ hai có body.
+    db: first.status === 200 ? readProbeDb(first.body) : readProbeDb(second.body),
+  };
 }
 
 /**

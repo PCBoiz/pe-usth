@@ -72,6 +72,7 @@ export default function StudioLesson({
     completed,
     loading,
     loadError,
+    loadFailure,
     empty,
     busy,
     message,
@@ -305,8 +306,12 @@ export default function StudioLesson({
       onSeek: undefined,
     });
 
+  // Nhan đề và câu giải thích đến từ `lib/lesson-load-error.ts`: nó phân biệt
+  // DB chết / quá tải / lệch gốc API / 401 thật. Bản cũ dán MỘT nhan đề "Chưa
+  // kết nối được bài học" cho mọi nguyên nhân, và câu bên dưới là thông điệp
+  // 401 — tức đổ lỗi cho phiên của người học khi máy chủ mất cơ sở dữ liệu.
   if (loadError)
-    return frame(info('Chưa kết nối được bài học', loadError), {
+    return frame(info(loadFailure?.title ?? 'Chưa mở được bài học', loadFailure?.body ?? loadError), {
       primaryLabel: 'Thử lại',
       onPrimaryClick: () => void load(),
       onSeek: undefined,
