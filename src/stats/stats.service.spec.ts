@@ -31,15 +31,43 @@ describe('parseTimeSpent (Task 138)', () => {
 });
 
 // ---------- Task 143 ----------
+/**
+ * Hàm Prisma giả. `Promise<unknown>` cho giá trị TRẢ VỀ là đủ: mỗi ca tự
+ * `mockResolvedValue()`. Chỉ phần ĐỐI SỐ cần kiểu thật — xem cùng khuôn ở
+ * `lessons/lesson-content.spec.ts` và `courses/courses.service.spec.ts`, kèm
+ * hai số đo trong AGENTS.md về việc `any` che được lỗi gõ sai tới đâu.
+ */
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+/** Đối số truy vấn mà bộ test này đọc lại qua `mock.calls`. */
+type TruyVan = { where?: Record<string, unknown> };
+
+/** Chỉ những bảng/hàm mà getReviewQuizStatus() gọi tới. */
+type PrismaMock = {
+  user: { findUnique: AsyncMock<[TruyVan]> };
+  lessonProgress: { findMany: AsyncMock<[TruyVan]> };
+  reviewQuizResult: { findFirst: AsyncMock<[TruyVan]> };
+};
+
 describe('getReviewQuizStatus — mở khoá đếm lại từ 0 mỗi ngày', () => {
   let service: StatsService;
-  let prisma: any;
+  let prisma: PrismaMock;
 
   beforeEach(async () => {
     prisma = {
-      user: { findUnique: jest.fn().mockResolvedValue({ streak: 3 }) },
-      lessonProgress: { findMany: jest.fn() },
-      reviewQuizResult: { findFirst: jest.fn().mockResolvedValue(null) },
+      user: {
+        findUnique: asyncMock<[TruyVan]>().mockResolvedValue({ streak: 3 }),
+      },
+      lessonProgress: { findMany: asyncMock<[TruyVan]>() },
+      reviewQuizResult: {
+        findFirst: asyncMock<[TruyVan]>().mockResolvedValue(null),
+      },
     };
 
     const mod = await Test.createTestingModule({
@@ -67,7 +95,7 @@ describe('getReviewQuizStatus — mở khoá đếm lại từ 0 mỗi ngày', (
       { completedAt: homQua },
     ]);
 
-    const res: any = await service.getReviewQuizStatus(1);
+    const res = await service.getReviewQuizStatus(1);
 
     expect(res.lessons_completed).toBe(2);
     expect(res.lessons_remaining).toBe(3);
@@ -79,7 +107,7 @@ describe('getReviewQuizStatus — mở khoá đếm lại từ 0 mỗi ngày', (
       Array.from({ length: 5 }, (_, i) => ({ completedAt: gioHomNay(8 + i) })),
     );
 
-    const res: any = await service.getReviewQuizStatus(1);
+    const res = await service.getReviewQuizStatus(1);
     expect(res.lessons_completed).toBe(5);
     expect(res.is_unlocked).toBe(true);
     expect(res.lessons_remaining).toBe(0);
@@ -90,7 +118,7 @@ describe('getReviewQuizStatus — mở khoá đếm lại từ 0 mỗi ngày', (
       Array.from({ length: 5 }, () => ({ completedAt: homQua })),
     );
 
-    const res: any = await service.getReviewQuizStatus(1);
+    const res = await service.getReviewQuizStatus(1);
     expect(res.lessons_completed).toBe(0);
     expect(res.is_unlocked).toBe(false);
     expect(res.lessons_remaining).toBe(5);
@@ -98,7 +126,7 @@ describe('getReviewQuizStatus — mở khoá đếm lại từ 0 mỗi ngày', (
 
   it('chưa học bài nào -> 0/5, không lỗi', async () => {
     prisma.lessonProgress.findMany.mockResolvedValue([]);
-    const res: any = await service.getReviewQuizStatus(1);
+    const res = await service.getReviewQuizStatus(1);
     expect(res.lessons_completed).toBe(0);
     expect(res.is_unlocked).toBe(false);
   });

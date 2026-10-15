@@ -37,7 +37,7 @@ mức này:
 |---|---|---|
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 390 ca, tất cả đạt | 15/10/2026 |
-| Backend lint | 175 lỗi, 2 cảnh báo — **mốc trần trong CI là 190, chỉ được hạ** | 15/10/2026 |
+| Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 15/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 15/10/2026 |
 | Frontend unit test | `cd frontend && npm run test:unit` → 430 ca đạt | 15/10/2026 |
