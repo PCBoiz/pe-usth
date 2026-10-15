@@ -666,3 +666,126 @@ export function nextIndex(
       return Math.min(total - 1, current + 1);
   }
 }
+
+/* ===========================================================================
+   CHỮ KÝ VẼ LẠI — PANEL NÀO PHẢI VẼ LẠI Ở MỖI BƯỚC
+   ===========================================================================
+   Lỗi đang sửa (đo ở phiên trước bằng Chrome, CPU chậm 4×: ~35 khung dài quanh
+   mỗi ranh giới bước): `index` là state của CHÍNH component gốc, mà toàn bộ
+   panel — tiêu đề, nút mở đưa qua portal, ghi chú giá, lời nhắc dừng, bộ điều
+   khiển, call stack, nhóm biến của TỪNG khung, panel đầu ra, traceback — nằm
+   trong cùng một hàm render. Nên mỗi lần bấm ◀/▶ là dựng lại CẢ cây element và
+   gọi lại `formatValue` cho mọi giá trị của mọi khung, kể cả những khung không
+   đổi gì.
+
+   Cách sửa: mỗi panel là một component `memo`, và quyết định "có đổi gì không"
+   nằm ở ĐÂY — một hàm thuần. Comparator của `memo` chỉ so chữ ký, nên số lần
+   chữ ký đổi khi đi qua N bước CHÍNH LÀ số lần panel vẽ lại. Đó là lý do nó
+   nằm trong lib chứ không nằm trong component: đếm được trong test
+   (`e2e/unit/visualizer-render.test.mjs`) mà không cần mở trình duyệt — bộ test
+   của frontend chạy bằng `node --test`, không có jsdom lẫn bộ dịch JSX nên
+   render thật một component React ở đó là không làm được.
+
+   Luật chung: chữ ký phải chứa MỌI thứ panel đó in ra, và không chứa gì khác.
+   Thiếu một thứ ⇒ panel đứng im với dữ liệu cũ (lỗi nhìn thấy được); thừa một
+   thứ ⇒ vẽ lại vô ích (lại đúng cái lỗi này).
+   =========================================================================== */
+
+export type PanelSignatures = {
+  /** Tiêu đề + nút mở + dòng "ghi vết mất … s". Chỉ đổi theo trạng thái tải. */
+  chrome: string;
+  /** Lời nhắc vết bị dừng giữa chừng (stopNotice) — hằng với một vết. */
+  notice: string;
+  /** Bộ nút + thanh kéo + bộ đếm bước. */
+  controls: string;
+  /** Call stack. */
+  stack: string;
+  /** Nhóm biến của từng khung, THỨ TỰ NHƯ KHI VẼ (khung trên cùng trước). */
+  vars: string[];
+  /** Đầu ra tới bước này + phần vừa in. */
+  output: string;
+  /** Traceback + lời nhắc đầu ra bị cắt — hằng với một vết. */
+  traceback: string;
+};
+
+/** Khung biến in ra: tên hàm + danh sách biến. Dòng `dòng N` không nằm ở panel này. */
+function varsSig(f: TraceFrame): string {
+  return `${f.name}\u0000${JSON.stringify(f.locals)}`;
+}
+
+/**
+ * Chữ ký của từng panel ở bước `index`.
+ *
+ * `changed` nhận từ ngoài vì component đã tính nó (changedNames) để tô biến vừa
+ * đổi — tính lại ở đây là làm đúng hai lần việc đắt nhất của một bước.
+ */
+export function panelSignatures(
+  doc: TraceDocument | null,
+  index: number,
+  opts: {
+    status?: string;
+    autoRunning?: boolean;
+    runDurationMs?: number;
+    runQueuedMs?: number;
+    changed?: ReadonlySet<string>;
+  } = {},
+): PanelSignatures {
+  const chrome = [
+    opts.status ?? '',
+    doc?.stats.steps ?? '',
+    doc?.stats.events ?? '',
+    opts.runDurationMs ?? '',
+    opts.runQueuedMs ?? '',
+  ].join('|');
+  const total = doc?.steps.length ?? 0;
+  const base = {
+    chrome,
+    notice: doc ? (stopNotice(doc)?.text ?? '') : '',
+    // Chữ ký theo NỘI DUNG, không theo tham chiếu `doc`: hai vết in ra cùng một
+    // traceback và cùng một lời nhắc cắt đầu ra thì panel đó vẽ ra y hệt nhau.
+    traceback: doc
+      ? `${doc.stdoutTruncated ? 1 : 0}|${doc.limits.maxOutputChars}|${doc.error?.traceback ?? ''}`
+      : '',
+    controls: `${index}/${total}|${opts.autoRunning ? 1 : 0}`,
+  };
+  const step = doc?.steps[index];
+  if (!doc || !step) {
+    return {
+      ...base,
+      stack: '',
+      vars: [],
+      // Không có bước nào: outputAt trả TOÀN BỘ đầu ra, nên chữ ký là độ dài đó.
+      output: `all|${doc?.stdout.length ?? 0}|${doc?.stderr.length ?? 0}`,
+    };
+  }
+  const prev = index > 0 ? doc.steps[index - 1] : undefined;
+  const delta = stackDelta(prev, step);
+  const changed = opts.changed ?? changedNames(prev, step);
+  const frames = step.frames.slice().reverse();
+  return {
+    ...base,
+    controls: `${base.controls}|${step.event}:${step.line}`,
+    // `index` vào chữ ký ĐÚNG KHI có đẩy vào/bật ra: hiệu ứng được khoá theo
+    // `index` để diễn lại, nên hai bước khác nhau phải là hai lần vẽ khác nhau.
+    stack:
+      `${step.framesElided ?? 0}|${frames.map((f) => `${f.name}@${f.line}`).join(',')}`
+      + (delta.pushed.length + delta.popped.length > 0 ? `|replay${index}` : ''),
+    // Khung TRÊN CÙNG còn phụ thuộc tập biến vừa đổi (nó được tô); các khung
+    // dưới không bao giờ được tô nên không cần.
+    vars: frames.map((f, i) =>
+      i === 0 ? `${varsSig(f)}\u0000${[...changed].sort().join(',')}` : varsSig(f),
+    ),
+    // `prev.out` nằm trong chữ ký vì panel đầu ra tô phần VỪA in (outputDelta so
+    // với bước trước). `index` chỉ vào chữ ký khi THẬT CÓ phần vừa in — phần đó
+    // được khoá theo index để hiện dần lại; bước không in gì thì panel đầu ra
+    // không có gì đổi, và phần lớn bước của một vết không in gì.
+    output:
+      `${step.out}:${step.err}|${prev ? prev.out : 'first'}`
+      + (prev && step.out > prev.out ? `|replay${index}` : ''),
+  };
+}
+
+/** Comparator dùng chung cho `memo` của mọi panel: vẽ lại ĐÚNG khi chữ ký đổi. */
+export function sameSignature(a: { sig: string }, b: { sig: string }): boolean {
+  return a.sig === b.sig;
+}
