@@ -27,6 +27,14 @@
  *    còn chú thích nào dẫn tới bản thiết kế thì ca này nhắc rằng bộ tài liệu
  *    đang nằm đó mà không ai nối vào — lúc đó quyết định giữ hay bỏ là của
  *    chủ sản phẩm, nhưng không được im lặng.
+ *
+ * KIỂM ĐỘT BIẾN 15/10/2026: làm RỖNG `design/project/Main.dc.html` (0 byte) đi
+ * qua cả ba ca, vì chúng chỉ kiểm file CÓ TỒN TẠI. Nay ca đầu kiểm cả kích cỡ
+ * → 1 ca đỏ (đã gây lại rồi phục hồi). Lỗ còn mở, ghi ra để không ai tưởng đã
+ * kín: thang khoảng cách `space-1…space-16` (design-system-v2.md:176) không có
+ * token nào trong CSS nên không ca nào canh được GIÁ TRỊ của nó — muốn canh
+ * thì phải khai thang đó trong studio-tokens.css trước, và đó là việc sản
+ * phẩm, không phải việc của test.
  */
 
 import assert from 'node:assert/strict';
@@ -72,7 +80,14 @@ for (const f of FILES) {
 test('mọi đường dẫn thiết kế trong chú thích đều phân giải được', () => {
   const thieu = [];
   for (const [from, ref] of REFS) {
-    if (!existsSync(join(REPO, ref))) thieu.push(`${from} → ${ref}`);
+    const p = join(REPO, ref);
+    if (!existsSync(p)) { thieu.push(`${from} → ${ref} (không có)`); continue; }
+    // "Có file" không đủ: đột biến làm RỖNG `design/project/Main.dc.html`
+    // (0 byte) và cả ba ca vẫn xanh, trong khi chú thích thì vẫn mời người đọc
+    // mở nó ra. Một artboard thật nặng hàng chục KB; 2 KB là ngưỡng dễ dãi,
+    // chỉ để phân biệt "file có nội dung" với "file bị dọn thành vỏ".
+    const size = statSync(p).size;
+    if (size < 2048) thieu.push(`${from} → ${ref} (chỉ ${size} byte, rỗng hay gần rỗng)`);
   }
   assert.deepEqual(
     thieu,

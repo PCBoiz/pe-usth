@@ -38,6 +38,17 @@
  *     ✖ screens/index.tsx xử lý ĐÚNG danh sách SCREEN_KINDS, không thiếu không thừa
  *     ✖ isScreenKind / isGameKind chặn đúng kiểu sai chính tả đã gặp
  *
+ * ── KIỂM ĐỘT BIẾN 15/10/2026 ─────────────────────────────────────────────
+ * Ba phép nữa đã gây lại thật, rồi phục hồi:
+ *   giữ `case 'theory':` nhưng THÂN `return null` (đúng màn trắng) → 1 ca
+ *     (TRƯỚC: xanh — ca chỉ kiểm `case` CÓ TỒN TẠI, không kiểm nó dựng ra gì)
+ *   `default: if (1) return null;` rồi mới tới UnknownScreenNotice → 1 ca
+ *     (TRƯỚC: xanh — `defaultBody()` cắt tới HẾT FILE nên regex khớp khối báo
+ *     lỗi nằm ở bất kỳ chỗ nào phía sau)
+ *   `/* x *​/ case 'theory':` (chú thích chen trước case) → KHÔNG ca nào đỏ
+ *     (TRƯỚC: đỏ oan — đột biến không đổi hành vi gì; nay bỏ chú thích trước
+ *     khi soi, nên đây là dương tính giả ĐÃ GỠ, không phải lỗ mới)
+ *
  * Chạy: cd frontend && npm run test:unit
  */
 import { test } from 'node:test';
@@ -70,15 +81,58 @@ const LESSONS = readdirSync(LESSON_DIR)
     return { file: f, code: raw.lesson_code, lesson: raw.content_json };
   });
 
+/**
+ * Bỏ chú thích trước khi soi switch. Lý do đo được: đột biến H3 chèn
+ * `/* x *​/ case 'selfExplain':` và ca "xử lý ĐÚNG danh sách" đỏ oan — chú
+ * thích chen trước `case` không đổi hành vi gì, nên đó là DƯƠNG TÍNH GIẢ.
+ */
+const jsCode = (src) => src
+  .replace(/\/\*[\s\S]*?\*\//g, ' ')
+  .replace(/^[ \t]*\/\/.*$/gm, '')
+  .replace(/[ \t]+\/\/.*$/gm, '');
+
 /** Các `case 'x':` của một switch trong file nguồn — lưới chỉ cần đọc tĩnh. */
 function switchCases(source) {
-  return new Set([...source.matchAll(/^\s*case '([^']+)':/gm)].map((m) => m[1]));
+  return new Set([...jsCode(source).matchAll(/\bcase '([^']+)':/g)].map((m) => m[1]));
 }
 
-/** Thân nhánh `default:` cuối cùng của file, để xem nó có im lặng hay không. */
+/**
+ * THÂN của một `case 'x':` — tới `case` kế tiếp, `default:`, hoặc hết switch.
+ *
+ * Vì sao cần: ca cũ chỉ kiểm SỰ TỒN TẠI của `case '<kind>':`. Đột biến H4 giữ
+ * nguyên `case 'theory':` nhưng cho thân `return null` — tức ĐÚNG màn trắng mà
+ * cả file này ra đời để chặn — và cả 10 ca vẫn xanh.
+ */
+function caseBody(source, kind) {
+  const src = jsCode(source);
+  const at = src.search(new RegExp(`\\bcase '${kind}':`));
+  if (at < 0) return null;
+  const rest = src.slice(at);
+  const next = rest.slice(1).search(/\bcase '|\bdefault:/);
+  return next < 0 ? rest : rest.slice(0, next + 1);
+}
+
+/**
+ * Thân nhánh `default:` cuối cùng — CHỈ tới hết switch, không tới hết file.
+ *
+ * Bản cũ `source.slice(at)` cắt tới HẾT FILE, nên `assert.match(body,
+ * /UnknownScreenNotice/)` khớp bất kỳ chỗ nào phía sau: đột biến H5
+ * (`default: if (1) return null;` rồi mới tới khối báo lỗi) đi qua sạch sẽ.
+ */
 function defaultBody(source) {
-  const at = source.lastIndexOf('default:');
-  return at < 0 ? null : source.slice(at + 'default:'.length);
+  const src = jsCode(source);
+  const at = src.lastIndexOf('default:');
+  if (at < 0) return null;
+  const from = at + 'default:'.length;
+  let depth = 0;
+  for (let i = from; i < src.length; i += 1) {
+    if (src[i] === '{') depth += 1;
+    else if (src[i] === '}') {
+      if (depth === 0) return src.slice(from, i); // dấu `}` đóng switch
+      depth -= 1;
+    }
+  }
+  return src.slice(from);
 }
 
 const indexSrc = readFileSync(join(STUDIO_DIR, 'index.tsx'), 'utf8');
@@ -136,6 +190,16 @@ test('screens/index.tsx xử lý ĐÚNG danh sách SCREEN_KINDS, không thiếu 
   const cases = switchCases(indexSrc);
   for (const kind of SCREEN_KINDS) {
     assert.ok(cases.has(kind), `index.tsx thiếu case '${kind}' → rơi vào default, màn trắng`);
+    // …và nhánh đó phải DỰNG RA cái gì. `case 'theory': return null;` cũng là
+    // màn trắng, chỉ là màn trắng có `case` (đột biến H4). Chấp nhận cả
+    // `return cond ? <X…/> : null` — `brief` cố ý làm vậy khi bài không có
+    // step_1.brief — nên luật là "phải có một phần tử để dựng", không phải
+    // "không được xuất hiện chữ null".
+    const body = caseBody(indexSrc, kind);
+    assert.match(
+      body, /<[A-Z]\w+|notice\(/,
+      `index.tsx: case '${kind}' không dựng ra màn nào (thân: ${body.trim().slice(0, 80)}…)`,
+    );
   }
   for (const kind of cases) {
     assert.ok(isScreenKind(kind), `index.tsx có case '${kind}' lạ, không có trong SCREEN_KINDS`);
@@ -146,6 +210,11 @@ test('GameScreen.tsx xử lý ĐÚNG danh sách GAME_KINDS, không thiếu khôn
   const cases = switchCases(gameSrc);
   for (const kind of GAME_KINDS) {
     assert.ok(cases.has(kind), `GameScreen.tsx thiếu case '${kind}' → không dựng được game`);
+    const body = caseBody(gameSrc, kind);
+    assert.match(
+      body, /<[A-Z]\w+/,
+      `GameScreen.tsx: case '${kind}' không dựng ra game nào (thân: ${body.trim().slice(0, 80)}…)`,
+    );
   }
   for (const kind of cases) {
     assert.ok(isGameKind(kind), `GameScreen.tsx có case '${kind}' lạ, không có trong GAME_KINDS`);
@@ -168,8 +237,11 @@ test('chrome.tsx: bảng nhãn game phủ hết GAME_KINDS', () => {
 test('screens/index.tsx: nhánh default phải kêu lên, không được trả null', () => {
   const body = defaultBody(indexSrc);
   assert.ok(body, 'index.tsx không còn nhánh default — switch chưa phủ hết là lỗi runtime');
-  assert.ok(
-    !/^\s*(?:\/\/[^\n]*\n|\s)*return null;/m.test(body),
+  // KHÔNG được có `return null` ở BẤT KỲ đâu trong nhánh default, không chỉ ở
+  // câu lệnh đầu: đột biến H5 viết `default: if (1) return null;` rồi mới tới
+  // khối báo lỗi, và ca cũ (chỉ chặn câu lệnh đầu, lại cắt tới hết file) xanh.
+  assert.doesNotMatch(
+    body, /return\s+(?:null|undefined)\b|return\s*;/,
     'nhánh default trả null = màn trắng im lặng, đúng lỗi đang chặn',
   );
   assert.match(body, /notice\(|UnknownScreenNotice/, 'nhánh default phải hiện khối báo lỗi');
@@ -178,6 +250,10 @@ test('screens/index.tsx: nhánh default phải kêu lên, không được trả 
 test('GameScreen.tsx: switch phải có nhánh default, không im lặng trả undefined', () => {
   const body = defaultBody(gameSrc);
   assert.ok(body, 'GameScreen.tsx thiếu nhánh default → type lạ làm component trả undefined');
+  assert.doesNotMatch(
+    body, /return\s+(?:null|undefined)\b|return\s*;/,
+    'nhánh default trả null/undefined = màn trắng im lặng (cùng đột biến H5 ở index.tsx)',
+  );
   assert.match(body, /UnknownScreenNotice/, 'nhánh default phải hiện khối báo lỗi');
 });
 

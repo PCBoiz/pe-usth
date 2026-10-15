@@ -15,11 +15,22 @@
 // Hai ca ĐẦU là ca bắt lỗi theo đúng hai mảnh đó: trả CSS về
 // `animation-duration: 0.01ms` thì ca 1 trượt; bỏ `statusPopPlan` để lại
 // `onAnimationEnd` vô điều kiện thì ca 2 và 3 trượt.
+//
+// KIỂM ĐỘT BIẾN 15/10/2026 — hai phép từng ĐI QUA, nay cả hai ĐỎ (đã gây lại
+// rồi phục hồi):
+//   nhánh `@media (prefers-reduced-motion: reduce)` THỨ HAI ở cuối file mang
+//     `.pop{animation-duration:0.01ms}` → 1 ca. Nguyên nhân cũ: `atRuleBody`
+//     dùng `headerRe.exec` nên chỉ đọc nhánh ĐẦU, trong khi nhánh sau là nhánh
+//     THẮNG — tức thông báo "+10 điểm" lại biến mất đúng như lỗi đang sửa.
+//   `.pop { opacity: 0 !important }` thêm vào ĐẦU nhánh reduce → 1 ca. Nguyên
+//     nhân cũ: ca chỉ hỏi "có TỒN TẠI `opacity: 1`" chứ không hỏi giá trị
+//     THẮNG. Nay dùng `winningDecl` (ds-contrast.mjs).
 import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import { statusPopPlan, STATUS_POP_REDUCED_MS } from '../../src/lib/status-pop-life.ts';
+import { atRuleBodies, cssBlocks, winningDecl } from './ds-contrast.mjs';
 
 // Bỏ chú thích trước khi phân tích: chú thích trong file có cả dấu phẩy, mà bộ
 // cắt thô dưới đây tách selector theo dấu phẩy.
@@ -32,66 +43,59 @@ const OVERLAYS = readFileSync(
   'utf8',
 );
 
-/** Lấy phần thân của một at-rule (`@media …`, `@keyframes …`) bằng cách đếm ngoặc. */
-function atRuleBody(css, headerRe) {
-  const m = headerRe.exec(css);
-  if (!m) return null;
-  const open = css.indexOf('{', m.index + m[0].length - 1);
-  if (open < 0) return null;
-  let depth = 0;
-  for (let i = open; i < css.length; i++) {
-    if (css[i] === '{') depth++;
-    else if (css[i] === '}' && --depth === 0) return css.slice(open + 1, i);
-  }
-  return null;
-}
+/**
+ * Thân của MỌI at-rule khớp `headerRe`, nối lại theo thứ tự xuất hiện.
+ *
+ * 15/10/2026 — bản cũ (`headerRe.exec(css)`) chỉ lấy khối ĐẦU TIÊN, và đột
+ * biến F6 đã đo: nối thêm một `@media (prefers-reduced-motion: reduce)` thứ
+ * hai ở cuối file với `.pop{animation-duration:0.01ms}` → cả 7 ca vẫn xanh,
+ * trong khi trên trình duyệt khối sau là khối THẮNG, tức thông báo "+10 điểm"
+ * lại biến mất đúng như lỗi đang sửa. Hàm dùng chung nằm ở ds-contrast.mjs
+ * (xem khối chú thích "BỘ ĐỌC CSS DÙNG CHUNG" ở đó).
+ */
+const reduceBodies = () =>
+  atRuleBodies(CSS, /@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/);
 
-/** Cắt một thân CSS thành [{ selector, body }]. Không xử lý at-rule lồng nhau. */
-function rules(body) {
-  const out = [];
-  const re = /([^{}]+)\{([^{}]*)\}/g;
-  let m;
-  while ((m = re.exec(body))) out.push({ selector: m[1].trim(), body: m[2] });
-  return out;
-}
-
-/** Gom mọi khai báo áp lên một selector trong một thân CSS. */
-function declsFor(body, selector) {
-  return rules(body)
-    .filter((r) =>
-      r.selector
-        .split(',')
-        .map((s) => s.trim())
-        .includes(selector),
-    )
-    .map((r) => r.body)
-    .join(';');
-}
+/** Gom mọi khai báo áp lên một selector trong nhiều thân CSS, theo thứ tự. */
+const declsFor = (bodies, selector) =>
+  (Array.isArray(bodies) ? bodies : [bodies]).flatMap((b) => cssBlocks(b, selector)).join(';');
 
 test('keyframe pe-pop KẾT THÚC ở opacity:0 — đây là lý do không được rút thời lượng của nó', () => {
-  const body = atRuleBody(CSS, /@keyframes\s+pe-pop\b/);
-  assert.ok(body, 'không tìm thấy @keyframes pe-pop');
-  const last = rules(body).at(-1);
-  assert.equal(last.selector, '100%');
-  assert.match(last.body, /opacity:\s*0\b/, 'khung cuối của pe-pop phải là opacity:0');
+  // MỌI khai báo `@keyframes pe-pop`, không chỉ cái đầu: khai lại cùng tên ở
+  // cuối file là khai báo THẮNG, và lúc đó khung cuối có thể không còn là
+  // opacity:0 — tức tiền đề của cả ca dưới sụp mà không ai biết.
+  // `\b` sau "pe-pop" cũng khớp `pe-pop-in` (dấu `-` là ranh giới từ), nên
+  // phải chặn bằng `(?![-\w])` — nếu không, ca đếm lẫn animation của `.awards`.
+  const bodies = atRuleBodies(CSS, /@keyframes\s+pe-pop(?![-\w])/);
+  assert.equal(bodies.length, 1, 'pe-pop phải được khai ĐÚNG MỘT LẦN');
+  const last = cssBlocks(bodies[0], '100%');
+  assert.equal(last.length, 1, 'pe-pop phải có đúng một khung 100%');
+  assert.equal(winningDecl(last, 'opacity')?.value, '0', 'khung cuối của pe-pop phải là opacity:0');
 });
 
 test('nhánh giảm chuyển động: .pop và .burst strong ĐỨNG YÊN và HIỆN RÕ, không phải chạy 0,01ms', () => {
-  const rm = atRuleBody(CSS, /@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)/);
-  assert.ok(rm, 'studio-chrome.module.css không còn nhánh prefers-reduced-motion');
+  const rm = reduceBodies();
+  assert.ok(rm.length, 'studio-chrome.module.css không còn nhánh prefers-reduced-motion');
 
   for (const sel of ['.pop', '.burst strong']) {
-    const decls = declsFor(rm, sel);
-    assert.notEqual(decls, '', `${sel} không được khai trong nhánh giảm chuyển động`);
+    const bodies = rm.flatMap((b) => cssBlocks(b, sel));
+    assert.ok(bodies.length, `${sel} không được khai trong nhánh giảm chuyển động`);
     // Đây là ca bắt lỗi: `animation-duration: 0.01ms` trên một animation tắt
-    // dần = thông báo biến mất.
+    // dần = thông báo biến mất. Hỏi ở MỌI nhánh reduce (F6).
     assert.doesNotMatch(
-      decls,
+      bodies.join(';'),
       /animation-duration/,
       `${sel}: rút thời lượng của pe-pop làm thông báo nhảy tới khung opacity:0`,
     );
-    assert.match(decls, /animation:\s*none/, `${sel} phải tắt hẳn animation`);
-    assert.match(decls, /opacity:\s*1\b/, `${sel} phải hiện rõ (opacity 1)`);
+    // Giá trị THẮNG, không phải "có tồn tại một khai báo đúng": đột biến F7
+    // thêm `.pop { opacity: 0 !important }` vào ĐẦU nhánh reduce và ca cũ vẫn
+    // xanh vì `opacity: 1` vẫn còn ở đó — nhưng cái thắng là 0, tức thông báo
+    // vô hình, đúng lỗi đang sửa.
+    assert.equal(
+      winningDecl(bodies, 'animation')?.value, 'none', `${sel} phải tắt hẳn animation`,
+    );
+    const op = winningDecl(bodies, 'opacity');
+    assert.equal(op?.value, '1', `${sel} phải hiện rõ (opacity 1) — quy tắc THẮNG là ${op?.value}`);
   }
 
   // Ngược lại: `.awards` chạy `pe-pop-in` kết thúc ở opacity 1 nên rút thời

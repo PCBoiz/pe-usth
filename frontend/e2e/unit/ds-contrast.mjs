@@ -64,24 +64,196 @@ export function blend(fg, alpha, bg) {
 
 /* ── đọc bảng token ───────────────────────────────────────────────────── */
 
+/* ══════════════════════════════════════════════════════════════════════════
+   BỘ ĐỌC CSS DÙNG CHUNG — bốn file guard thiết kế đều cần, và lỗi nặng nhất
+   của cả bốn là MỘT lỗi lặp lại bốn lần.
+
+   Lượt kiểm đột biến 15/10/2026 đo được: nối thêm một khối `:root` vào cuối
+   studio-tokens.css đặt lại TOÀN BỘ thang bo góc / nét viền / chuyển động sang
+   giá trị vô lý → **87/87 ca vẫn xanh, 0 ca đỏ**. Nguyên nhân: `block()` cũ
+   dùng `css.indexOf(selector)` nên chỉ đọc khối ĐẦU TIÊN; `atRuleBody()` của
+   reduced-motion-status (`headerRe.exec`) và `INTRO_CSS.match(/\n\.layer…/)`
+   của lesson-intro cũng chỉ lấy khớp đầu. Nhưng CSS lấy quy tắc SAU CÙNG, nên
+   "khối đầu tiên nói đúng" không chứng minh gì: mọi đột biến chỉ cần ghi đè ở
+   CUỐI file là đi qua cả bộ test.
+
+   Vì vậy ở đây KHÔNG có hàm nào trả về "khối đó", chỉ có hàm trả về MỌI khối
+   khớp theo thứ tự xuất hiện, cộng `winningDecl()` để hỏi giá trị THẮNG.
+
+   Đặt trong file "contrast" vì nó đã là thư viện dùng chung của nhóm guard
+   (ds-tokens, home-page, challenge-run import nó) và vì bốn bản sao của một
+   bộ cắt CSS là đúng cách để lỗi này mọc lại ở ba chỗ.
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** Bỏ chú thích CSS. Chú thích có chứa cả mã màu và dấu phẩy nên phải bỏ trước. */
+export const cssCode = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ');
+
 /**
- * Cắt một khối `selector { … }` ở mức ngoặc ngoài cùng. Không dùng regex
- * `\{([^}]*)\}` được: file token có `rgba(…)` nhưng cũng có chú thích nhiều
- * dòng; đếm ngoặc là cách chắc chắn.
+ * Mọi quy tắc trong một bảng CSS, theo ĐÚNG thứ tự xuất hiện:
+ * `[{ prelude, body, at }]`, với `at` là chồng quy tắc bao ngoài. Quy tắc nằm
+ * trong `@media` cũng được trả về — đột biến C15 giấu màu sai trong
+ * `@media (max-width:700px)` và không ca nào thấy.
+ *
+ * Đếm ngoặc thay vì `\{([^}]*)\}`: thân có thể lồng (`@media`, `@supports`,
+ * CSS nesting) và `rgba(…)` thì không được cắt giữa.
  */
-function block(css, selector) {
-  const at = css.indexOf(selector);
-  if (at < 0) throw new Error(`không thấy selector ${selector} trong studio-tokens.css`);
-  const open = css.indexOf('{', at);
+export function cssRules(cssText) {
+  const out = [];
+  const walk = (text, at) => {
+    let depth = 0;
+    let open = -1;
+    let start = 0;
+    for (let i = 0; i < text.length; i += 1) {
+      const ch = text[i];
+      if (ch === '{') {
+        if (depth === 0) open = i;
+        depth += 1;
+      } else if (ch === '}') {
+        depth -= 1;
+        if (depth === 0) {
+          const prelude = text.slice(start, open).trim();
+          const body = text.slice(open + 1, i);
+          out.push({ prelude, body, at });
+          if (body.includes('{')) walk(body, [...at, prelude]);
+          start = i + 1;
+        }
+      }
+    }
+  };
+  walk(cssCode(cssText), []);
+  return out;
+}
+
+/**
+ * Thân của MỌI khối có `selector` trong danh sách selector, theo thứ tự xuất
+ * hiện. `.dot, .dotActive { … }` cũng tính cho `.dot`.
+ */
+export function cssBlocks(cssText, selector) {
+  return cssRules(cssText)
+    .filter((r) => r.prelude.split(',').map((x) => x.trim()).includes(selector))
+    .map((r) => r.body);
+}
+
+/** Thân của MỌI at-rule có phần đầu khớp `headerRe` (ví dụ mọi nhánh reduce). */
+export function atRuleBodies(cssText, headerRe) {
+  const re = new RegExp(headerRe.source, headerRe.flags.replace('g', ''));
+  return cssRules(cssText).filter((r) => re.test(r.prelude)).map((r) => r.body);
+}
+
+/**
+ * Mọi khai báo `prop: value` CỦA CHÍNH thân đó, theo thứ tự — khai báo của
+ * quy tắc LỒNG BÊN TRONG bị bỏ. Cần thiết: thân một `@media` chứa cả quy tắc
+ * con, và đếm cả chúng là đếm hai lần (đo được: ide.module.css ra 13 khai báo
+ * cỡ chữ thay vì 12, vì `.title` trong `@media` bị tính cho cả hai).
+ */
+export function declList(body) {
+  const out = [];
   let depth = 0;
-  for (let i = open; i < css.length; i += 1) {
-    if (css[i] === '{') depth += 1;
-    else if (css[i] === '}') {
+  let own = '';
+  for (const ch of cssCode(body)) {
+    if (ch === '{') {
+      if (depth === 0) {
+        // Phần vừa gom từ sau dấu `;` cuối là SELECTOR của quy tắc con, không
+        // phải khai báo — bỏ nó đi để `a:hover {` không hoá thành `a: hover`.
+        own = `${own.slice(0, own.lastIndexOf(';') + 1)};`;
+      }
+      depth += 1;
+    } else if (ch === '}') {
       depth -= 1;
-      if (depth === 0) return css.slice(open + 1, i);
+      if (depth === 0) own += ';';
+    } else if (depth === 0) own += ch;
+  }
+  for (const m of own.matchAll(/(?:^|[;{}])\s*([-\w]+)\s*:\s*([^;{}]+)/g)) {
+    out.push({ prop: m[1].trim().toLowerCase(), value: m[2].trim() });
+  }
+  return out;
+}
+
+/**
+ * Giá trị THẮNG của một thuộc tính trong một (hay nhiều) thân CSS: khai báo
+ * sau thắng khai báo trước, `!important` thắng khai báo thường. `null` nếu
+ * không khai ở đâu.
+ *
+ * Vì sao cần: đột biến F7 thêm `.pop { opacity: 0 !important }` vào ĐẦU nhánh
+ * giảm chuyển động, trong khi ca test chỉ hỏi "có tồn tại `opacity: 1` không".
+ * Tồn tại thì có — nhưng cái THẮNG là `0`, tức thông báo vẫn vô hình.
+ */
+export function winningDecl(bodies, prop) {
+  const all = (Array.isArray(bodies) ? bodies : [bodies]).flatMap((b) => declList(b));
+  let win = null;
+  for (const d of all) {
+    if (d.prop !== prop.toLowerCase()) continue;
+    const important = /!important\s*$/.test(d.value);
+    if (win && win.important && !important) continue;
+    win = { value: d.value.replace(/\s*!important\s*$/, '').trim(), important };
+  }
+  return win;
+}
+
+/* ── nhận diện MÃ MÀU VIẾT CỨNG ────────────────────────────────────────────
+   Bản cũ chỉ grep `#hex` và `rgb(`/`hsl(`, nên đột biến C5–C7 đi qua: tên màu
+   CSS (`magenta`, `white`), `oklch()`, và `color-mix()` mang tên màu. Đây
+   không phải giả định: lượt soát thiết kế đếm được 13 chỗ dùng
+   `orange`/`crimson` THẬT trong CodeVisualizer.module.css + ide.module.css.
+
+   Hai luật tránh DƯƠNG TÍNH GIẢ, mỗi luật do một chỗ thật trong repo:
+     · chỉ quét GIÁ TRỊ, không quét tên thuộc tính — `white-space: nowrap`
+       (ide.module.css:88) không phải màu;
+     · bỏ TÊN TOKEN trước khi quét — `color: var(--ds-violet)` chứa chữ
+       "violet", mà `violet` LÀ một tên màu CSS. Phần fallback của
+       `var(--x, #fff)` thì giữ, vì mã màu ở đó là mã màu thật.
+   `color-mix()` / `light-dark()` KHÔNG tự là mã màu (studio-chrome.module.css
+   trộn `var(--ds-ink)` với `transparent` — đúng cách dùng), nên chỉ nội dung
+   bên trong chúng bị xét. */
+
+/** Hàm màu LUÔN cho ra một màu viết cứng. `color-mix`/`light-dark` không nằm đây. */
+const LITERAL_COLOR_FN = /\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|device-cmyk)\(/gi;
+
+/** Tên màu CSS, trừ `transparent`/`currentcolor` (không phải một màu cố định). */
+export const CSS_NAMED_COLORS = new Set(`aliceblue antiquewhite aqua aquamarine azure beige bisque black
+blanchedalmond blue blueviolet brown burlywood cadetblue chartreuse chocolate coral cornflowerblue cornsilk
+crimson cyan darkblue darkcyan darkgoldenrod darkgray darkgreen darkgrey darkkhaki darkmagenta darkolivegreen
+darkorange darkorchid darkred darksalmon darkseagreen darkslateblue darkslategray darkslategrey darkturquoise
+darkviolet deeppink deepskyblue dimgray dimgrey dodgerblue firebrick floralwhite forestgreen fuchsia gainsboro
+ghostwhite gold goldenrod gray green greenyellow grey honeydew hotpink indianred indigo ivory khaki lavender
+lavenderblush lawngreen lemonchiffon lightblue lightcoral lightcyan lightgoldenrodyellow lightgray lightgreen
+lightgrey lightpink lightsalmon lightseagreen lightskyblue lightslategray lightslategrey lightsteelblue
+lightyellow lime limegreen linen magenta maroon mediumaquamarine mediumblue mediumorchid mediumpurple
+mediumseagreen mediumslateblue mediumspringgreen mediumturquoise mediumvioletred midnightblue mintcream
+mistyrose moccasin navajowhite navy oldlace olive olivedrab orange orangered orchid palegoldenrod palegreen
+paleturquoise palevioletred papayawhip peachpuff peru pink plum powderblue purple rebeccapurple red rosybrown
+royalblue saddlebrown salmon sandybrown seagreen seashell sienna silver skyblue slateblue slategray slategrey
+snow springgreen steelblue tan teal thistle tomato turquoise violet wheat white whitesmoke yellow yellowgreen`
+  .split(/\s+/).filter(Boolean));
+
+/** Giá trị đã bỏ tên token, chuỗi và url() — phần còn lại mới đáng quét màu. */
+const scanReadyValue = (value) => value
+  .replace(/--[\w-]+/g, ' ')
+  .replace(/(["'])(?:\\.|(?!\1)[^\\])*\1/g, ' ')
+  .replace(/\burl\([^)]*\)/gi, ' ');
+
+/**
+ * Mọi mã màu VIẾT CỨNG trong một bảng CSS: `['#fff', 'oklch(', 'orange', …]`.
+ * Rỗng = mọi màu của file đó đi qua token.
+ */
+export function colorLiterals(cssText) {
+  const out = [];
+  for (const r of cssRules(cssText)) {
+    for (const { prop, value } of declList(r.body)) {
+      // `mask`/`-webkit-mask` không tô một pixel nào: màu trong đó chỉ là kênh
+      // alpha ("black 0 0" = đục hoàn toàn). home.module.css:190 dùng đúng
+      // khuôn đó để khoét viền gradient, nên tính nó là "mã màu viết cứng" là
+      // DƯƠNG TÍNH GIẢ — bỏ cả họ thuộc tính mask ra ngoài phép quét.
+      if (prop.includes('mask')) continue;
+      const v = scanReadyValue(value);
+      for (const m of v.match(/#[0-9a-fA-F]{3,8}\b/g) ?? []) out.push(m);
+      for (const m of v.match(LITERAL_COLOR_FN) ?? []) out.push(m);
+      for (const m of v.match(/[A-Za-z][A-Za-z-]*/g) ?? []) {
+        if (CSS_NAMED_COLORS.has(m.toLowerCase())) out.push(m);
+      }
     }
   }
-  throw new Error(`khối ${selector} không đóng ngoặc`);
+  return out;
 }
 
 function declarations(text) {
@@ -103,14 +275,26 @@ function resolve(map, name, seen = new Set()) {
   return alias ? resolve(map, alias[1], seen) : raw;
 }
 
+/** Hai selector DUY NHẤT được phép khai token của bảng v2 — xem ca cùng tên
+ *  trong ds-tokens.test.mjs. Thứ tự là thứ tự thắng của cascade. */
+export const TOKEN_SELECTORS = [':root', 'body.dark'];
+
 /**
  * Trả về { light, dark }: mỗi cái là một object tên-token → giá trị cụ thể.
  * Bản Ban đêm thừa hưởng mọi token của bản ngày rồi ghi đè phần khai lại.
+ *
+ * Gộp MỌI khối `:root` (và mọi khối `body.dark`) theo thứ tự xuất hiện, vì
+ * CSS lấy khai báo sau cùng: đột biến C3 nối thêm một `:root` đặt lại `--ds-ink`
+ * thành #9A8D7E và cả 14 ca màu vẫn xanh, vì bản cũ chỉ đọc khối đầu.
  */
 export function readTokens(cssText) {
   const css = cssText ?? readFileSync(TOKENS_CSS, 'utf8');
-  const root = declarations(block(css, ':root'));
-  const darkRaw = declarations(block(css, 'body.dark'));
+  const rootBodies = cssBlocks(css, ':root');
+  const darkBodies = cssBlocks(css, 'body.dark');
+  if (!rootBodies.length) throw new Error('không thấy khối :root trong studio-tokens.css');
+  if (!darkBodies.length) throw new Error('không thấy khối body.dark trong studio-tokens.css');
+  const root = declarations(rootBodies.join(';'));
+  const darkRaw = declarations(darkBodies.join(';'));
   const darkMap = new Map([...root, ...darkRaw]);
   const flatten = (map) => {
     const out = {};

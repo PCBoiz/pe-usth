@@ -19,17 +19,37 @@
 //
 // Bằng chứng bộ test này bắt được lỗi thật — xem con số ở cuối file.
 //
+// KIỂM ĐỘT BIẾN 15/10/2026. Hai phép từng ĐI QUA cả bộ test, nay cả hai ĐỎ
+// (mỗi phép đã gây lại rồi phục hồi):
+//   gỡ comparator khỏi `StopNotice` NHƯNG thêm chú thích `// sameSignature` để
+//     giữ bộ đếm = 9 → 1 ca. Bài học: đếm chuỗi trong nguồn thì phải đếm trên
+//     nguồn ĐÃ BỎ CHÚ THÍCH, và phải hỏi từng lời gọi memo chứ không hỏi tổng.
+//   `sameSignature` luôn trả `true` (mọi panel đóng băng vĩnh viễn, bộ "Xem
+//     từng bước" thôi đổi theo bước) → 1 ca, ca MỚI gọi thẳng hàm đó. Trước
+//     đây không ca nào GỌI nó, nên hàm một dòng ở src/lib/trace.ts:793 là mắt
+//     xích duy nhất của cả bộ test mà không ai đo.
+//
 // Chạy: cd frontend && npm run test:unit
 import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
-import { panelSignatures } from '../../src/lib/trace.ts';
+import { panelSignatures, sameSignature } from '../../src/lib/trace.ts';
 
-const SOURCE = readFileSync(
+const RAW_SOURCE = readFileSync(
   new URL('../../src/components/code-visualizer/CodeVisualizer.tsx', import.meta.url),
   'utf8',
 );
+/**
+ * Bỏ chú thích TRƯỚC khi đếm chuỗi trong nguồn. Lý do đo được, không phải đề
+ * phòng: đột biến D4 gỡ comparator khỏi một panel rồi thêm một chú thích
+ * `// sameSignature` để giữ bộ đếm bằng 9 — ca "mỗi panel con được bọc memo"
+ * vẫn xanh trong khi panel đó đã vẽ lại mỗi bước như trước bản sửa.
+ */
+const SOURCE = RAW_SOURCE
+  .replace(/\/\*[\s\S]*?\*\//g, ' ')
+  .replace(/^[ \t]*\/\/.*$/gm, '')
+  .replace(/[ \t]+\/\/.*$/gm, '');
 
 /* ── Fixture ────────────────────────────────────────────────────────────────
    Hình dạng bước LẤY ĐÚNG như src/python-runner/tracer/pe_tracer.py sinh ra
@@ -269,4 +289,41 @@ test('mỗi panel con được bọc memo với comparator so chữ ký', () => 
   // phải so `triggerHost`, nhưng nó cũng gọi sameSignature.
   assert.equal(SOURCE.match(/sameSignature/g).length, 9);
   assert.match(SOURCE, /panelSignatures\(doc, index/);
+
+  // Và từng panel phải có comparator THẬT ở lời gọi memo của chính nó. Đếm
+  // tổng số lần xuất hiện không đủ: đột biến D4 gỡ comparator của một panel
+  // rồi bù lại bằng một chuỗi ở chỗ khác, và bộ đếm không đổi.
+  for (const name of [
+    'StopNotice', 'StepControls', 'StackPane', 'VarGroup', 'VarsPane', 'OutputText', 'OutputStatic',
+  ]) {
+    const at = SOURCE.indexOf(`const ${name} = memo(`);
+    const next = SOURCE.slice(at + 1).search(/\nconst [A-Z]/);
+    const slice = next < 0 ? SOURCE.slice(at) : SOURCE.slice(at, at + 1 + next);
+    assert.match(
+      slice, /\}\s*,\s*sameSignature\s*\)/,
+      `${name}: memo() không còn comparator sameSignature — panel này vẽ lại mỗi bước`,
+    );
+  }
+  const chromeAt = SOURCE.indexOf('const VizChrome = memo(');
+  assert.match(
+    SOURCE.slice(chromeAt, SOURCE.indexOf('\nconst ', chromeAt + 1)),
+    /\(a, b\) => sameSignature\(a, b\)/,
+    'VizChrome có comparator riêng, nhưng nó phải bắt đầu từ sameSignature',
+  );
+});
+
+test('sameSignature là một PHÉP SO THẬT — không phải hàm luôn trả true', () => {
+  // Mắt xích cuối mà cả bộ test này đứng trên: mọi con số ở trên (594 lần vẽ
+  // thay vì 1769) đúng chỉ khi comparator so chữ ký THẬT. Đột biến D5b cho
+  // `sameSignature` luôn trả `true` — MỌI panel đóng băng vĩnh viễn, tức bộ
+  // "Xem từng bước" thôi đổi theo bước — và cả 8 ca vẫn xanh, vì không ca nào
+  // GỌI hàm này. `src/lib/trace.ts` một dòng, không có test riêng.
+  assert.equal(sameSignature({ sig: 'a' }, { sig: 'a' }), true, 'chữ ký y nhau thì không vẽ lại');
+  assert.equal(sameSignature({ sig: 'a' }, { sig: 'b' }), false, 'chữ ký đổi thì PHẢI vẽ lại');
+  // Với chính dữ liệu thật: hai bước có chữ ký điều khiển khác nhau.
+  const a = panelSignatures(DOC, 10, { status: 'ready' });
+  const b = panelSignatures(DOC, 11, { status: 'ready' });
+  assert.notEqual(a.controls, b.controls, 'fixture sai: hai bước này phải khác chữ ký');
+  assert.equal(sameSignature({ sig: a.controls }, { sig: b.controls }), false);
+  assert.equal(sameSignature({ sig: a.chrome }, { sig: b.chrome }), true);
 });

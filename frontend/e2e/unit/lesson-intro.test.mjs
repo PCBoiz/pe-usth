@@ -23,6 +23,18 @@
  *    lặp — một animation nổ thì những cái sau không được finish, và đó đúng là
  *    cách sinh ra màn trắng.
  *  - Nhóm "đã nối dây" trượt nếu BookIntro/SandboxCue bị gỡ khỏi màn.
+ *
+ * ── KIỂM ĐỘT BIẾN 15/10/2026 ──────────────────────────────────────────────
+ * Ba phép từng ĐI QUA cả 27 ca, nay cả ba ĐỎ (đã gây lại rồi phục hồi). Cả ba
+ * cùng MỘT nguyên nhân: các ca đọc CSS bằng `INTRO_CSS.match(/…/)`, tức khớp
+ * ĐẦU TIÊN, trong khi CSS lấy quy tắc SAU CÙNG.
+ *   `.layer { opacity: 0 }` nối thêm ở CUỐI file  → 1 ca (lớp chữ vô hình)
+ *   `.scene { overflow: hidden }` nối ở CUỐI file → 1 ca (dẹp cảnh 3D)
+ *   `transition-property` + `transition-duration: 300ms` viết TÁCH ra → 1 ca
+ *     (ca cũ chỉ chặn viết gộp `transition:`, nên `finish()` lại mất quyền
+ *     điều khiển y như lỗi cũ)
+ * Và một DƯƠNG TÍNH GIẢ đã gỡ: `aria-hidden={true}` (thay `"true"`) từng làm
+ * ca "quyển sách là TRANG TRÍ" đỏ oan dù code vẫn đúng.
  */
 
 import assert from 'node:assert/strict';
@@ -57,6 +69,10 @@ import {
   textStep,
 } from '../../src/lib/lesson-intro.ts';
 import { buildScreens } from '../../src/lib/studio-lesson.ts';
+// Bộ đọc CSS dùng chung — xem khối "BỘ ĐỌC CSS DÙNG CHUNG" trong ds-contrast.mjs.
+// Ở đây nó thay cho `INTRO_CSS.match(/\n\.layer\s*\{…\}/)`: khớp ĐẦU TIÊN là
+// cả một họ lỗ hổng (đột biến G2/G7 chỉ cần nối khai báo vào CUỐI file).
+import { cssBlocks, cssRules, declList, winningDecl } from './ds-contrast.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..', '..');
@@ -308,17 +324,24 @@ test('trạng thái NGHỈ trong CSS module không ẩn chữ: không có đư�
   // `.layer` là lớp chữ. Nếu nó mang `opacity`/`transform`/`visibility`/
   // `display: none` ở trạng thái nghỉ thì CSS không dựng được hay JS không
   // chạy = chữ biến mất. Trạng thái nghỉ PHẢI là trạng thái cuối.
-  const layer = INTRO_CSS.match(/\n\.layer\s*\{([^}]*)\}/);
-  assert.ok(layer, 'CSS module phải có .layer');
+  // MỌI khối `.layer`, không chỉ khối đầu: đột biến G2 nối
+  // `.layer { opacity: 0 }` vào CUỐI file và cả 27 ca vẫn xanh, trong khi trên
+  // trang thật khai báo sau là khai báo thắng — tức đúng màn trắng mà ca này
+  // ra đời để chặn.
+  const layer = cssBlocks(INTRO_CSS, '.layer');
+  assert.ok(layer.length, 'CSS module phải có .layer');
   for (const banned of ['opacity', 'transform', 'visibility', 'display']) {
-    assert.ok(
-      !new RegExp(`(^|;|\\s)${banned}\\s*:`).test(layer[1]),
-      `.layer không được khai \`${banned}\` ở trạng thái nghỉ (đây là lớp chữ)`,
+    const win = winningDecl(layer, banned);
+    assert.equal(
+      win, null,
+      `.layer không được khai \`${banned}\` ở trạng thái nghỉ (đây là lớp chữ) — `
+      + `đang là "${win?.value}"`,
     );
   }
   // Và không có khai báo nào ở phạm vi gốc kéo .root/.layer về opacity 0.
-  const root = INTRO_CSS.match(/\n\.root\s*\{([^}]*)\}/);
-  assert.ok(root && !/opacity\s*:/.test(root[1]), '.root không được khai opacity');
+  const root = cssBlocks(INTRO_CSS, '.root');
+  assert.ok(root.length, 'CSS module phải có .root');
+  assert.equal(winningDecl(root, 'opacity'), null, '.root không được khai opacity');
 });
 
 test('bỏ qua KHÔNG dùng mẹo transition-duration: 0s — chỉ dùng finish()', () => {
@@ -327,12 +350,26 @@ test('bỏ qua KHÔNG dùng mẹo transition-duration: 0s — chỉ dùng finish
   // → bỏ qua xong là màn trắng.
   assert.ok(/\.finish\(\)/.test(read(ROOT, 'frontend', 'src', 'lib', 'lesson-intro.ts')));
   assert.ok(
-    !/transition-duration\s*:\s*0s/.test(INTRO_CSS),
+    !/transition-duration\s*:\s*0s/i.test(INTRO_CSS),
     'không được dùng lại mẹo transition-duration: 0s',
   );
   // Cả CSS module không có một `transition` nào: hoạt cảnh chạy bằng Web
   // Animations API, nên `finish()` điều khiển được toàn bộ.
-  assert.ok(!/\btransition\s*:/.test(INTRO_CSS), 'cảnh này không dùng transition');
+  //
+  // Phải chặn CẢ HỌ thuộc tính, không chỉ viết gộp `transition:`. Đột biến G3
+  // tách ra `transition-property: transform` + `transition-duration: 300ms` —
+  // CSS tương đương hoàn toàn, mà ca cũ (`/\btransition\s*:/`) không thấy, nên
+  // `finish()` lại mất quyền điều khiển đúng như lỗi cũ.
+  const transitions = [];
+  for (const r of cssRules(INTRO_CSS)) {
+    for (const d of declList(r.body)) {
+      if (/^transition(-|$)/.test(d.prop)) transitions.push(`${r.prelude} { ${d.prop}: ${d.value} }`);
+    }
+  }
+  assert.deepEqual(
+    transitions, [],
+    `cảnh này không dùng transition (kể cả viết tách thuộc tính):\n${transitions.join('\n')}`,
+  );
 });
 
 test('finishAnimations không dừng nửa đường khi một animation ném lỗi', () => {
@@ -447,8 +484,12 @@ test('dấu hiệu sandbox là cú RIÊNG: không sách, không 3D, trong 240ms'
   // Quầng nghỉ ở opacity 0 — đúng trạng thái nghỉ của `.halo` trong CSS, nên
   // vẫn giữ bất biến "khung cuối = trạng thái nghỉ".
   assert.equal(halo.keyframes.at(-1).opacity, '0');
-  const haloCss = INTRO_CSS.match(/\n\.halo\s*\{([^}]*)\}/);
-  assert.ok(haloCss && /opacity\s*:\s*0\b/.test(haloCss[1]), '.halo nghỉ ở opacity 0');
+  const haloCss = cssBlocks(INTRO_CSS, '.halo');
+  assert.ok(haloCss.length, 'CSS module phải có .halo');
+  assert.equal(
+    winningDecl(haloCss, 'opacity')?.value, '0',
+    '.halo nghỉ ở opacity 0 (quy tắc THẮNG, không phải khai báo đầu tiên)',
+  );
   // Khung soạn thảo nghỉ ở trạng thái HIỆN.
   assert.deepEqual(frame.keyframes.at(-1), { opacity: '1', transform: 'none' });
 });
@@ -488,7 +529,14 @@ test('SandboxScreen đã bọc ô soạn mã trong SandboxCue', () => {
 });
 
 test('quyển sách là TRANG TRÍ: aria-hidden, và cảnh 3D nằm trong @supports', () => {
-  assert.ok(/className=\{s\.scene\}[^>]*aria-hidden="true"/.test(INTRO_SRC), 'cảnh sách phải aria-hidden');
+  // Nhận cả `aria-hidden={true}`: JSX hai cách viết là MỘT thuộc tính, nên
+  // khoá chuỗi `"true"` làm ca này đỏ oan với một bản sửa vô hại (đo được ở
+  // lượt kiểm 15/10/2026 — dương tính giả, code vẫn đúng). Ca nên đỏ khi cảnh
+  // sách THÔI là trang trí, không phải khi ai đổi cách gõ.
+  assert.ok(
+    /className=\{s\.scene\}[^>]*aria-hidden=(?:"true"|\{true\})/.test(INTRO_SRC),
+    'cảnh sách phải aria-hidden',
+  );
   // Toàn bộ cảnh 3D phải nằm trong @supports — đó là lưới thoái lui thứ hai
   // (lưới thứ nhất là JS không render .scene).
   const supports = INTRO_CSS.match(
@@ -512,15 +560,19 @@ test('cú lật bìa bị cắt trong cột nội dung, và chỗ cắt KHÔNG n
   assert.ok(/data-running=\{running && mode === 'full'/.test(INTRO_SRC), 'chỉ cắt trong lúc bìa còn quét');
   // `.scene` là chỗ có `perspective`; `overflow` khác `visible` ở đó ép
   // `transform-style` về `flat` — tức làm DẸP quyển sách đúng lúc đang lật.
-  const scene = INTRO_CSS.match(/\n\s*\.scene\s*\{([^}]*)\}/);
-  assert.ok(scene, 'CSS module phải có .scene');
-  assert.ok(/perspective:/.test(scene[1]), '.scene là chỗ đặt perspective');
-  assert.ok(!/overflow:/.test(scene[1]), '.scene KHÔNG được có overflow — nó sẽ làm dẹp cảnh 3D');
-  for (const sel of ['.book', '.cover'])
-    assert.ok(
-      !/overflow:/.test(INTRO_CSS.match(new RegExp(`\\n\\s*\\${sel}\\s*\\{([^}]*)\\}`))?.[1] ?? ''),
-      `${sel} không được có overflow`,
+  // Lại là MỌI khối, không phải khối đầu: đột biến G7 nối
+  // `.scene { overflow: hidden }` vào cuối file (làm dẹp cảnh 3D đúng lúc
+  // đang lật) và cả 27 ca vẫn xanh.
+  const scene = cssBlocks(INTRO_CSS, '.scene');
+  assert.ok(scene.length, 'CSS module phải có .scene');
+  assert.ok(winningDecl(scene, 'perspective'), '.scene là chỗ đặt perspective');
+  for (const sel of ['.scene', '.book', '.cover']) {
+    const win = winningDecl(cssBlocks(INTRO_CSS, sel), 'overflow');
+    assert.equal(
+      win, null,
+      `${sel} không được có overflow (nó làm dẹp cảnh 3D) — đang là "${win?.value}"`,
     );
+  }
 });
 
 test('dùng lại use-reduced-motion và sessionStorageOrNull đã có, không viết bản thứ hai', () => {
