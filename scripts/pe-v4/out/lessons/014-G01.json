@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: GUI và CLI",
+          "title": "CLI nhận lệnh gõ, GUI chờ người bấm",
           "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "mainloop() ở Studio trả về ngay",
           "bullets": [
             "Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp",
             "Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Đóng root là cửa sổ phụ đóng theo",
           "body": "Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry(\"800x600\") — rộng x cao, chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.",
           "figure": {
             "src": "/static/anim/G01-window-anatomy.svg",

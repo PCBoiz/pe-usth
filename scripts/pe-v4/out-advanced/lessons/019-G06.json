@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: mainloop là vòng chặn",
+          "title": "Callback tính 5 giây là 5 giây treo",
           "body": "mainloop() không trả về mà quay vòng: lấy một sự kiện, gọi hàm xử lý, vẽ lại, rồi lấy tiếp. Callback của bạn chạy BÊN TRONG vòng lặp đó, nên callback tính 5 giây là 5 giây cửa sổ treo."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "Nút Huỷ bấm được khi event loop còn rảnh",
           "bullets": [
             "Lưu file lớn, nén, gọi API: nút Huỷ chỉ bấm được khi event loop còn rảnh",
             "after(ms, f) cũng làm đồng hồ, tự làm mới, hoạt ảnh nhẹ — không cần thread",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Worker chạy, mainloop vẫn quay",
           "body": "Làn trên là thread GUI: callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên mainloop quay tiếp. Làn dưới là worker; nối hai làn chỉ có một mũi tên qua Queue, chấm tròn là các lần after(100).",
           "figure": {
             "src": "/static/anim/G06-event-loop.svg",

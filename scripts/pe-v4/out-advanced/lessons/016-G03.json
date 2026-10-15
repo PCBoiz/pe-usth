@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: widget nhập và biến Tk",
+          "title": "Biến Tk giữ giá trị, get() đọc ra",
           "body": "Entry (show=\"*\" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — đọc bằng get()."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "Kiểm trước, đừng ghi dữ liệu nửa vời",
           "bullets": [
             "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ",
             "Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Hai Radiobutton, một StringVar",
           "body": "Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt kiểm tra.",
           "figure": {
             "src": "/static/anim/G03-input-widgets.svg",

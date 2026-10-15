@@ -98,6 +98,73 @@ test('nội dung không hứa mở lời giải sau LẦN NỘP', () => {
   assert.deepEqual(tim(mau), [], 'nội dung bài hứa ngược với luật của server');
 });
 
+/** Nhan đề mọi thẻ lý thuyết, kèm tên file để báo lỗi cho đúng bài. */
+const NHAN_DE_LY_THUYET = BAI.flatMap(([ten, noiDung]) =>
+  ((noiDung.step_1 ?? {}).theory ?? []).map((the) => [ten, chuanHoa(the.title ?? '')]),
+);
+
+/**
+ * Chữ đầu của nhan đề, đã chuẩn hoá: NFC (đã làm trong `chuanHoa`), về chữ
+ * thường, bỏ dấu câu dính đuôi. Không dùng `new RegExp(` + template literal:
+ * trong template literal `\b` là KÝ TỰ BACKSPACE chứ không phải ranh giới từ,
+ * bẫy này đã trả giá một lần trong phiên 15/10.
+ */
+const chuDau = (nhanDe) => nhanDe.split(' ')[0].toLowerCase().replace(/[:,.;—-]+$/, '');
+
+/** Những chữ đầu xuất hiện quá `nguong` lần, kèm số đo — để báo lỗi tự nói. */
+function chuDauLapQua(danhSachNhanDe, nguong) {
+  const dem = new Map();
+  for (const nhanDe of danhSachNhanDe) {
+    const w = chuDau(nhanDe);
+    dem.set(w, (dem.get(w) ?? 0) + 1);
+  }
+  return [...dem.entries()]
+    .filter(([, n]) => n > nguong)
+    .sort((a, b) => b[1] - a[1])
+    .map(([w, n]) => `${w} × ${n}`);
+}
+
+test('nhan đề thẻ lý thuyết không đóng khuôn — tối đa 3 thẻ cùng chữ đầu', () => {
+  // VÌ SAO: 67 trong 82 thẻ lý thuyết từng mở bằng một trong BỐN nhãn thể loại
+  // — "Định nghĩa" (18), "Đọc sơ đồ" (20), "Dùng ở đâu" (19), "Ví dụ" (10) —
+  // lặp cùng một thứ tự qua 20 bài. Nhãn thể loại nói người đọc SẮP ĐỌC GÌ,
+  // không nói ĐIỀU GÌ LÀ THẬT, nên nhan đề không đọc được một mình và người
+  // lướt lại không tìm được chỗ cần. Sau khi viết lại từ chính thân thẻ:
+  // chữ đầu lặp nhiều nhất là 3 lần (82 thẻ, 68 chữ đầu khác nhau) — TRƯỚC là
+  // 20. Ngưỡng 3 là ĐÚNG SỐ ĐO đó, không phải một con số đẹp: thêm thẻ mới mở
+  // bằng "Một"/"Thread"/"Hai" là ca này đỏ, và đó là ý muốn.
+  const NGUONG = 3;
+
+  // Tự kiểm phép đếm bằng ĐÚNG bảng nhan đề CŨ của bốn bài đầu (P01–P04).
+  // Bẫy đã trả giá trong phiên này: một ca test xanh cả khi vi phạm còn
+  // nguyên. Nếu `chuDauLapQua` hỏng (chuẩn hoá sai, trả mảng rỗng…) thì dòng
+  // dưới xanh oan và cả ca thành đồ trang trí.
+  const BANG_CU = [
+    'Định nghĩa', 'Ví dụ: cây process trên máy thật', 'Dùng ở đâu', 'Đọc sơ đồ',
+    'Định nghĩa: năm trạng thái', 'Ví dụ: fork rồi exec trên UNIX', 'Dùng ở đâu', 'Đọc sơ đồ',
+    'Định nghĩa: scheduler làm gì', 'Ví dụ: ba hàng đợi', 'Dùng ở đâu', 'Đọc sơ đồ',
+    'Định nghĩa: ba luồng chuẩn', 'Ví dụ: ba cách đổi đích', 'Dùng ở đâu', 'Đọc sơ đồ',
+  ];
+  assert.deepEqual(
+    chuDauLapQua(BANG_CU, NGUONG),
+    ['định × 4', 'ví × 4', 'dùng × 4', 'đọc × 4'],
+    'phép đếm không bắt nổi bảng nhan đề cũ — ca này đang không chứng minh gì',
+  );
+
+  // Vòng lặp rỗng lại là một bộ test chết mà vẫn báo đạt.
+  assert.equal(NHAN_DE_LY_THUYET.length, 82, 'số thẻ lý thuyết lệch so với gói 48 bài');
+  assert.deepEqual(
+    NHAN_DE_LY_THUYET.filter(([, t]) => t === ''), [], 'có thẻ lý thuyết không có nhan đề',
+  );
+
+  assert.deepEqual(
+    chuDauLapQua(NHAN_DE_LY_THUYET.map(([, t]) => t), NGUONG), [],
+    'Nhan đề thẻ lý thuyết lại đóng khuôn. Viết một KHẲNG ĐỊNH lấy từ chính '
+    + 'thân thẻ ("GUI chờ người bấm"), đừng dán nhãn thể loại ("Định nghĩa"). '
+    + 'Sửa ở NGUỒN scripts/pe-v4/lessons_*.py rồi dựng lại, đừng sửa JSON.',
+  );
+});
+
 test('giáo trình tĩnh khớp gói bài — bẫy "hai nguồn danh sách bài"', () => {
   const cur = JSON.parse(
     readFileSync(join(REPO, 'frontend', 'src', 'lib', 'curricula.json'), 'utf8'),

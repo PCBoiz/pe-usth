@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa",
+          "title": "Program trên đĩa, process là lần chạy",
           "body": "Program là mã thụ động nằm trên đĩa; process là MỘT lần chạy program đó, đang hoạt động. Cùng một program có thể đang ứng với nhiều process một lúc.",
           "bullets": [
             "PID: số hệ điều hành cấp cho từng process, không cấp cho file .py",
@@ -46,7 +46,7 @@
           ]
         },
         {
-          "title": "Ví dụ: cây process trên máy thật",
+          "title": "Ba dòng python là ba process",
           "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program.",
           "figure": {
             "src": "/static/anim/P01-process-tree.svg",
@@ -55,7 +55,7 @@
           }
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Log kèm PID mới truy được lần chạy",
           "bullets": [
             "ps / pstree / Task Manager: xem process nào đang chạy và là con của ai",
             "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào",
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Một file, hai process, hai vùng nhớ",
           "body": "Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.",
           "figure": {
             "src": "/static/anim/P01-program-vs-process.svg",

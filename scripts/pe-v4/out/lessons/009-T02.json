@@ -53,7 +53,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Thread chỉ đáng dùng khi chờ là chính",
           "bullets": [
             "Tải nhiều URL, đọc nhiều file: phần lớn thời gian là chờ nên các lần chờ chồng lên nhau",
             "Máy chủ: mỗi kết nối một thread, đúng mô hình Apache worker ở T01",
@@ -61,7 +61,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Start hết rồi join mới thật song song",
           "body": "Mỗi start() rẽ ra một đường mới ngay tại thời điểm đó, nên hai worker CHỒNG LÊN nhau; join() là đoạn main đứng chờ. Start hết rồi join hết thì song song; start–join từng cái thì nối đuôi — Studio luôn cho kiểu nối đuôi.",
           "figure": {
             "src": "/static/anim/T02-start-join.svg",

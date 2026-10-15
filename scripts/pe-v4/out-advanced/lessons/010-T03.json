@@ -37,11 +37,11 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: hai cách tạo thread",
+          "title": "Override run(): việc chạy trong thread",
           "body": "Cách OOP: định nghĩa class con của threading.Thread và override run() — run() chính là việc sẽ chạy trong thread. Cách Thread(target=hàm) tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả riêng."
         },
         {
-          "title": "Ví dụ: worker có tham số riêng",
+          "title": "Quên super().__init__() là start() hỏng",
           "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10), rồi .start(), rồi .join().",
           "bullets": [
             "threading.Thread.__init__(self) và super().__init__() là cùng một việc",
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Thread không trả giá trị, ghi vào self",
           "bullets": [
             "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm",
             "Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Gọi start(), nhưng chạy là run()",
           "body": "Bên trái là class: __init__ gọi super().__init__() rồi gán self.<thuộc tính>, run() đọc chúng và ghi kết quả vào self. Mũi tên giữa hình là chỗ dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run().",
           "figure": {
             "src": "/static/anim/T03-subclass-thread.svg",

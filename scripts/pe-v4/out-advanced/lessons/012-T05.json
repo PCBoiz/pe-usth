@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: race condition",
+          "title": "Lần này đúng, lần sau sai",
           "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Đọc-sửa-ghi phải trọn trong một khoá",
           "bullets": [
             "Số dư, bộ đếm, tồn kho: mọi lần đọc-sửa-ghi một giá trị dùng chung",
             "Kiểm tra rồi hành động (đủ tiền thì trừ) phải nằm TRỌN trong một lần giữ khoá",
@@ -66,7 +66,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Mất một lần cộng vì cùng đọc 100",
           "body": "Nửa trên KHÔNG khoá: hai mũi tên đọc cùng ô balance = 100, hai mũi tên ghi cùng đặt 101 — mất một lần cộng. Nửa dưới có Lock nên thread sau đọc 101, ghi 102; trong Studio nửa trên không xảy ra vì thread chạy lần lượt.",
           "figure": {
             "src": "/static/anim/T05-race-lock.svg",

@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: run() là \"chạy và chờ\"",
+          "title": "run() chặn cha tới khi con xong",
           "body": "Gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một chương trình khác từ trong Python.",
           "bullets": [
             "args là LIST: phần tử đầu là chương trình, các phần sau là từng đối số",
@@ -46,11 +46,11 @@
           ]
         },
         {
-          "title": "Ví dụ: exit code là lời khai của con",
+          "title": "Traceback nằm ở stderr, cha chỉ nhận số",
           "body": "Quy ước: 0 là thành công, khác 0 là có chuyện — Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha chỉ nhận con số đó, còn traceback nằm trong stderr của con."
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Quá timeout, run() tự kill con",
           "bullets": [
             "Gọi công cụ ngoài: git, ffmpeg, hay chính Python qua sys.executable",
             "timeout= chặn lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Nét đứt là lúc cha bị chặn",
           "body": "Cha ở đường trên, con ở đường dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị CHẶN; khi con exit, mũi tên quay lên mang hộp CompletedProcess rồi cha mới chạy tiếp.",
           "figure": {
             "src": "/static/anim/P05-run-timeline.svg",

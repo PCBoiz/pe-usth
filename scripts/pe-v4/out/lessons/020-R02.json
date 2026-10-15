@@ -49,11 +49,11 @@
           ]
         },
         {
-          "title": "Ví dụ: một vòng dữ liệu trọn vẹn",
+          "title": "Bấm Lưu, kết quả về qua Queue",
           "body": "Bấm Lưu → status \"Đang lưu...\", worker pickle + gzip rồi put (\"ok\", 2) vào Queue, after(100) đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py đọc \"Mai,8.5\" từ stdin, in Average."
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Nét đứt là chỗ đổi không gian",
           "body": "Đi xuống từ ô GUI: dữ liệu đã validate → worker thread → pickle + gzip → file .gz, kết quả về qua Queue. Đi ngang: marks → stdin của report.py → stdout; nét đứt là chỗ ĐỔI KHÔNG GIAN.",
           "figure": {
             "src": "/static/anim/R02-pipeline.svg",

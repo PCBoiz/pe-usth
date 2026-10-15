@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: Popen là \"chạy nền\"",
+          "title": "Popen trả object ngay, cha không chờ",
           "body": "Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
           "bullets": [
             "stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None",
@@ -46,11 +46,11 @@
           ]
         },
         {
-          "title": "Ví dụ: timeout không giết ai",
+          "title": "TimeoutExpired không đụng tới con",
           "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con."
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Quá hạn phải kill, không thì rò process",
           "bullets": [
             "Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa",
             "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Đường con kéo qua vạch hạn giờ",
           "body": "Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau kill() nó mới dứt.",
           "figure": {
             "src": "/static/anim/P06-popen-timeout.svg",

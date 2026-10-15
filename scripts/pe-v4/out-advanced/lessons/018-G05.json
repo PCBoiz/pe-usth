@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: hàm thuần và tầng GUI",
+          "title": "Hàm thuần không đụng tới widget nào",
           "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng giao diện chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "Lõi dùng lại được cho CLI, web và test",
           "bullets": [
             "Quy tắc nghiệp vụ ở hàm thuần, thông báo ở GUI: lõi dùng lại cho CLI, web, test",
             "validate_mark(raw) raise ValueError; App bắt lỗi rồi messagebox.showerror",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Mũi tên chỉ đi một chiều",
           "body": "Bên trái là lớp App — widget, callback, messagebox; bên phải là hàm thuần: vào dữ liệu, ra dữ liệu hoặc exception. Mũi tên chỉ đi một chiều sang phải, nối vào cả ô \"test gọi thẳng\".",
           "figure": {
             "src": "/static/anim/G05-logic-vs-ui.svg",

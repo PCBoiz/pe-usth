@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: widget và callback",
+          "title": "Callback là hàm bạn viết, Tkinter gọi",
           "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa, Label hiện chữ, Entry nhập một dòng, Button bấm được. Callback là hàm BẠN viết mà TKINTER gọi, khi sự kiện xảy ra."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "messagebox thay cho print() của CLI",
           "bullets": [
             "Form đăng nhập: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
             "messagebox.showinfo / showwarning / showerror thay cho print() của CLI",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Lúc dựng chỉ cất hàm, bấm mới gọi",
           "body": "Hình chia hai nhịp: lúc dựng giao diện, Button chỉ CẤT tên hàm; lúc bấm, Tkinter gọi callback, callback đọc Entry rồi label.config(text=…) đổi chữ. Ô nét đứt là dữ liệu đọc đúng lúc bấm.",
           "figure": {
             "src": "/static/anim/G02-widget-callback.svg",

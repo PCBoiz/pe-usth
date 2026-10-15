@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: GIL",
+          "title": "Một lúc chỉ một thread chạy bytecode",
           "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
           "bullets": [
             "Thắt cổ chai với code Python tính toán thuần (CPU-bound)",
@@ -55,7 +55,7 @@
           ]
         },
         {
-          "title": "Dùng ở đâu",
+          "title": "Đo bằng perf_counter() trước khi chọn",
           "bullets": [
             "Chờ mạng, đĩa, cơ sở dữ liệu, sleep → thread là đúng chỗ",
             "Tính Python thuần mà muốn nhiều lõi → process: mỗi process một GIL",
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Luân phiên, không phải cùng lúc",
           "body": "Một lõi: các lát T1, T2, T3… nối nhau trên một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. GIL ép phần tính toán về dáng đó dù máy bao nhiêu lõi; ô nhạt là lúc thread chờ I/O, nhả GIL cho thread khác lấp vào.",
           "figure": {
             "src": "/static/anim/T04-gil.svg",

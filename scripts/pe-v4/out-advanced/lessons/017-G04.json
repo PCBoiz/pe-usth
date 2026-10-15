@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Định nghĩa: geometry manager",
+          "title": "Tạo widget xong nó vẫn chưa hiện",
           "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một geometry manager của chính widget — .pack() xếp theo cạnh (side, fill), .place() theo toạ độ (x/y, relx), .grid() theo ô row–column."
         },
         {
@@ -45,7 +45,7 @@
           "body": "Hai manager tính chỗ theo hai cách khác nhau, nên các con của CÙNG một parent vừa pack() vừa grid() làm Tk báo TclError. Khác parent thì vô tư: Frame bên trong grid, Frame đó pack ra ngoài."
         },
         {
-          "title": "Dùng ở đâu — và Studio khác gì",
+          "title": "weight=1 cho cột nuốt phần dư",
           "bullets": [
             "grid cho form nhãn–ô nhập; pack cho khung và thanh nút; place khi cần toạ độ",
             "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra",
@@ -53,7 +53,7 @@
           ]
         },
         {
-          "title": "Đọc sơ đồ",
+          "title": "Cùng ba widget, ba manager xếp ba kiểu",
           "body": "Ba cửa sổ nhỏ, CÙNG ba widget, ba manager: pack xếp chồng, place ghim theo toạ độ nên có thể chồng nhau, grid chia lưới thẳng hàng. Dải đỏ dưới cùng là ca lỗi pack + grid cùng parent.",
           "figure": {
             "src": "/static/anim/G04-layouts.svg",
