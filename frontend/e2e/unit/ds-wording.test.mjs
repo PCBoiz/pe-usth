@@ -233,6 +233,35 @@ test('trình soạn và chạy Python gọi là "Bàn thí nghiệm", không ph�
   );
 });
 
+test('"Bàn thí nghiệm" là CÔNG CỤ /ide, không phải một màn trong bài', () => {
+  /* Lỗi thật đã sửa: màn Tổng kết (`screens/RecapScreen.tsx`) viết "Nộp ở màn
+     Bàn thí nghiệm để ghi nhận là đã xong" ở CẢ HAI bản (khoá có mini-game và
+     khoá thường). Người học làm theo thì sang `/ide` — nơi không có nút nộp,
+     không có ca chấm của bài, không ghi tiến độ, và mã còn chạy trên MÁY CHỦ
+     chứ không phải trong trình duyệt như bài học. Tức câu dẫn đẩy người ta ra
+     khỏi đúng chỗ cần tới. Màn nộp bài tên "Thử thách độc lập". */
+  assertAbsent(
+    /màn Bàn thí nghiệm|màn "Bàn thí nghiệm"/,
+    'Bàn thí nghiệm là tên của /ide (một công cụ riêng, chạy trên máy chủ), '
+    + 'không phải một màn trong bài. Màn nộp bài là "Thử thách độc lập".',
+  );
+
+  // Nhãn là NGUỒN THẬT: đọc lại từ chrome.tsx thay vì chép tay, để đổi tên màn
+  // ở đó mà quên câu ở Tổng kết thì ca này đỏ chứ không trôi đi.
+  const CHROME = codeOnly(read('src', 'components', 'python-studio', 'screens', 'chrome.tsx'));
+  const m = /sandbox:\s*\{[^}]*label:\s*'([^']+)'/.exec(CHROME);
+  assert.ok(m, 'không đọc được nhãn của màn sandbox trong chrome.tsx');
+  const label = m[1];
+  assert.equal(label, 'Thử thách độc lập');
+
+  const RECAP = codeOnly(read('src', 'components', 'python-studio', 'screens', 'RecapScreen.tsx'));
+  const dan = RECAP.split('\n').filter((l) => /nộp ở màn/i.test(l));
+  assert.equal(dan.length, 2, 'Tổng kết có hai bản (mini-game / thường), cả hai phải có câu dẫn');
+  for (const l of dan) {
+    assert.ok(l.includes(label), `câu dẫn không gọi đúng tên màn "${label}": ${l.trim()}`);
+  }
+});
+
 test('chính tả thống nhất "khoá", không lẫn "khóa"', () => {
   assertAbsent(
     /khóa|Khóa/,
