@@ -150,7 +150,7 @@ Nhấn chỉ có 4 họ. Mỗi họ gồm: màu đậm, màu nhạt (`-tint`) v�
 | `code-mark-violet` | `#C99BEF` + nền `rgba(185,63,240,.28)` | 7,69:1 (chữ `code-fg` trên dòng tô: 10,08:1) |
 | `code-mark-sanguine` | `#EC9277` | 7,30:1 |
 | `code-mark-ochre` | `#E0B062` | 8,62:1 |
-| `on-ink-soft` | `#E2CFA8` | 10,42:1 trên `ink` |
+| `on-ink-soft` | `#BFD0E8` | 10,94:1 trên `ink` |
 | `on-ink-line` | `#4A3B2C` hoặc `rgba(page, .25)` | (đường kẻ) |
 
 #### Chữ: một họ Be Vietnam Pro, code dùng JetBrains Mono
@@ -205,21 +205,42 @@ Lề trang: `gutter` 44 trên máy tính (giữ lại vì dùng thống nhất �
 | `halo` | `0 0 0 8px rgba(185,63,240,.2)` | "Bạn ở đây" |
 | `dur-fast` / `dur-base` / `dur-page` | 200 / 320 / 450 ms | Phản hồi / hiện ra / lật trang. Chỉ đổi transform và opacity, tắt hết khi người dùng bật `prefers-reduced-motion` |
 
+> **QUYẾT ĐỊNH 15/10/2026 — bảng màu quay về bản gốc xanh–đỏ của Cao Văn Nhân.**
+>
+> Chủ sản phẩm chốt: giữ mọi thứ khác của bản thiết kế này (thang cỡ chữ, bo
+> góc, nét viền, chuyển động, khoảng cách, bố cục, câu chữ) nhưng **màu lấy lại
+> bản gốc** đã gộp ở commit `29b58fa` — nền xanh xám, nhấn xanh dương, đỏ cho
+> "chú ý", lục cho "đã xong".
+>
+> Hai màu phải ĐỔI SẮC so với bản gốc, vì bản gốc dùng chúng làm hình chứ không
+> làm chữ, và làm chữ thì không đạt AA:
+>  · đỏ `#E5334B` → `#CF2338` (4,28:1 → 5,32:1 trên thẻ trắng);
+>  · lục `#059669` → `#047857` (3,77:1 → 5,48:1).
+> Nền đỏ nhạt cũng nâng từ `#FDECEF` lên `#FFF1F3` để chữ đỏ trên nền đỏ đạt
+> 4,84:1 — đây là cặp duy nhất trong 221 cặp cần chỉnh tới hai lần.
+>
+> Đo lại sau khi đổi: **221 cặp, 0 trượt, cả bản ngày lẫn bản đêm.**
+>
+> 12 artboard trong `design/project/*.dc.html` VẪN là nền kem — chúng chưa được
+> vẽ lại, và cố ý không sửa ở đây: chúng là tài liệu về BỐ CỤC và thứ bậc, còn
+> màu thì khối CSS dưới đây mới là nguồn thi hành (`ds-tokens.test.mjs` đọc
+> thẳng khối này). Ai đọc artboard để lấy mã màu là đọc nhầm chỗ.
+
 ```css
 :root{
-  --page:#FBF7EE;--card:#FFFFFF;--paper:#FFFCF5;--tint:#F6EFE1;--desk:#EFE6D3;
-  --line:#E7DCC6;--sketch:#8E7652;--ink:#2A2017;--soft:#5E4630;
-  --violet:#6E2BA8;--violet-deep:#4F1D7A;--violet-tint:#F5EAFB;--action:#7A2BB8;--on-action:#FFFFFF;
-  --sanguine:#9C3B22;--sanguine-tint:#FBF1EC;--ochre:#8A5A0F;--ochre-tint:#FBF4E4;
+  --page:#EAEFF6;--card:#FFFFFF;--paper:#F7FAFD;--tint:#E8F0FE;--desk:#DDE5F0;
+  --line:#CFD9E8;--sketch:#5B6A85;--ink:#0F1B33;--soft:#3A4A66;
+  --violet:#1D4ED8;--violet-deep:#15337A;--violet-tint:#E8F0FE;--action:#1F5FE0;--on-action:#FFFFFF;
+  --sanguine:#CF2338;--sanguine-tint:#FFF1F3;--ochre:#047857;--ochre-tint:#E7F6F0;
   --code-bg:#221A13;--code-line:#3D3127;--code-fg:#EFE6D2;--code-meta:#C9B48C;--code-num:#A8977F;
   --code-kw:#F2B880;--code-str:#C8DDA0;--mark-violet:#C99BEF;--mark-sanguine:#EC9277;--mark-ochre:#E0B062;
-  --on-ink-soft:#E2CFA8;
+  --on-ink-soft:#BFD0E8;
 }
 :root[data-theme="dark"]{
-  --page:#16120E;--card:#221C16;--paper:#1B1611;--tint:#2A231C;--desk:#3A2F25;
-  --line:#3A2F25;--sketch:#A99272;--ink:#F2EBDD;--soft:#CDBFA6;
-  --violet:#C99BEF;--violet-tint:#2E2238;--action:#C99BEF;--on-action:#16120E;
-  --sanguine:#EC9277;--sanguine-tint:#33201A;--ochre:#E0B062;--ochre-tint:#2B2416;
+  --page:#0B1220;--card:#131C2E;--paper:#0F1726;--tint:#1A2437;--desk:#233049;
+  --line:#233049;--sketch:#8FA0BC;--ink:#E8EEF7;--soft:#AFBDD2;
+  --violet:#7FA8FF;--violet-deep:#B9D0FF;--violet-tint:#1B2A47;--action:#7FA8FF;--on-action:#0B1220;
+  --sanguine:#FF8798;--sanguine-tint:#33202A;--ochre:#4FD0A0;--ochre-tint:#10291F;
 }
 ```
 

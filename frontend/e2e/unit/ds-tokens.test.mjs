@@ -62,59 +62,39 @@ const tsCode = (s) => s
 /* ── 1 · bảng token phải khớp ĐÚNG bản thiết kế ───────────────────────── */
 
 /**
- * Chép từ design-system-v2 mục 1.3. Viết lại ở đây có chủ ý: bản thiết kế là
- * file ngoài repo, nên nếu không chốt con số vào test thì "khớp bản thiết kế"
- * chỉ là lời nói. Đổi bảng màu sản phẩm thì phải đổi cả hai chỗ.
+ * Bảng màu ĐỌC TỪ `design-system-v2.md` — khối CSS ở mục 1.3 — chứ không chép
+ * tay vào đây nữa.
+ *
+ * Bản cũ chép tay, với lý do viết kèm: "bản thiết kế là file NGOÀI repo, nên
+ * nếu không chốt con số vào test thì 'khớp bản thiết kế' chỉ là lời nói". Lý
+ * do đó hết đúng từ `4f556c8` — tài liệu nay nằm ở gốc repo. Và chép tay có
+ * giá: đổi bảng màu phải sửa hai chỗ, mà chỗ nào quên thì test đỏ với thông
+ * báo "không khớp bản thiết kế" trong khi sự thật là chính test đang lạc hậu.
+ * Đã trả giá đúng vậy ngày 15/10 khi chủ sản phẩm chốt quay về bảng xanh–đỏ.
+ *
+ * Nay một nguồn: tài liệu. Test canh CSS khớp tài liệu, không canh CSS khớp
+ * một bản sao của tài liệu.
  */
-const DESIGN_LIGHT = {
-  '--ds-page': '#FBF7EE',
-  '--ds-card': '#FFFFFF',
-  '--ds-paper': '#FFFCF5',
-  '--ds-tint': '#F6EFE1',
-  '--ds-desk': '#EFE6D3',
-  '--ds-line': '#E7DCC6',
-  '--ds-sketch': '#8E7652',
-  '--ds-ink': '#2A2017',
-  '--ds-soft': '#5E4630',
-  '--ds-violet': '#6E2BA8',
-  '--ds-violet-deep': '#4F1D7A',
-  '--ds-violet-tint': '#F5EAFB',
-  '--ds-action': '#7A2BB8',
-  '--ds-on-action': '#FFFFFF',
-  '--ds-sanguine': '#9C3B22',
-  '--ds-sanguine-tint': '#FBF1EC',
-  '--ds-ochre': '#8A5A0F',
-  '--ds-ochre-tint': '#FBF4E4',
-  '--ds-code-bg': '#221A13',
-  '--ds-code-line': '#3D3127',
-  '--ds-code-fg': '#EFE6D2',
-  '--ds-code-meta': '#C9B48C',
-  '--ds-code-num': '#A8977F',
-  '--ds-code-kw': '#F2B880',
-  '--ds-code-str': '#C8DDA0',
-  '--ds-mark-violet': '#C99BEF',
-  '--ds-mark-sanguine': '#EC9277',
-  '--ds-mark-ochre': '#E0B062',
-};
-const DESIGN_DARK = {
-  '--ds-page': '#16120E',
-  '--ds-card': '#221C16',
-  '--ds-paper': '#1B1611',
-  '--ds-tint': '#2A231C',
-  '--ds-desk': '#3A2F25',
-  '--ds-line': '#3A2F25',
-  '--ds-sketch': '#A99272',
-  '--ds-ink': '#F2EBDD',
-  '--ds-soft': '#CDBFA6',
-  '--ds-violet': '#C99BEF',
-  '--ds-violet-tint': '#2E2238',
-  '--ds-action': '#C99BEF',
-  '--ds-on-action': '#16120E',
-  '--ds-sanguine': '#EC9277',
-  '--ds-sanguine-tint': '#33201A',
-  '--ds-ochre': '#E0B062',
-  '--ds-ochre-tint': '#2B2416',
-};
+function paletteFromDesignDoc() {
+  const md = readFileSync(join(FE, '..', 'design-system-v2.md'), 'utf8');
+  const khoi = /```css\s*([\s\S]*?)```/.exec(md);
+  if (!khoi) throw new Error('design-system-v2.md không còn khối CSS bảng màu');
+  const doc = khoi[1];
+  const i = doc.indexOf('[data-theme="dark"]');
+  if (i < 0) throw new Error('khối CSS thiếu bộ Ban đêm');
+  const doc_doc = (s) => {
+    const ra = {};
+    for (const m of s.matchAll(/--([a-z0-9-]+)\s*:\s*(#[0-9A-Fa-f]{3,8})/g)) {
+      ra[`--ds-${m[1]}`] = m[2].toUpperCase();
+    }
+    return ra;
+  };
+  return { light: doc_doc(doc.slice(0, i)), dark: doc_doc(doc.slice(i)) };
+}
+
+const DESIGN = paletteFromDesignDoc();
+const DESIGN_LIGHT = DESIGN.light;
+const DESIGN_DARK = DESIGN.dark;
 
 test('bảng token v2 khai đúng từng mã màu bản thiết kế chốt (bản ngày)', () => {
   const { light } = readTokens(TOKENS_CSS);

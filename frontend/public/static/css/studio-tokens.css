@@ -45,28 +45,32 @@
 
 :root {
   /* ── BẢNG TOKEN v2 · nền và mực ───────────────────────────── */
-  --ds-page:        #FBF7EE;   /* nền trang */
+  --ds-page:        #EAEFF6;   /* nền trang */
   --ds-card:        #FFFFFF;   /* thẻ, ô nhập */
-  --ds-paper:       #FFFCF5;   /* thanh trên/dưới, mặt giấy */
-  --ds-tint:        #F6EFE1;   /* khối ghi chú nhẹ, code nội dòng */
-  --ds-desk:        #EFE6D3;   /* nền bàn, rãnh thanh tiến độ */
-  --ds-line:        #E7DCC6;   /* đường kẻ TRANG TRÍ. 1,36:1 trên thẻ —
+  --ds-paper:       #F7FAFD;   /* thanh trên/dưới, mặt giấy */
+  --ds-tint:        #E8F0FE;   /* khối ghi chú nhẹ, code nội dòng */
+  --ds-desk:        #DDE5F0;   /* nền bàn, rãnh thanh tiến độ */
+  --ds-line:        #CFD9E8;   /* đường kẻ TRANG TRÍ. 1,36:1 trên thẻ —
                                   KHÔNG dùng làm viền của thứ bấm được */
-  --ds-sketch:      #8E7652;   /* viền thứ bấm được, nét đứt "chưa học".
+  --ds-sketch:      #5B6A85;   /* viền thứ bấm được, nét đứt "chưa học".
                                   4,21:1 trên paper → đạt 1.4.11 */
-  --ds-ink:         #2A2017;   /* chữ chính · 14,91:1 trên page */
-  --ds-soft:        #5E4630;   /* chữ phụ, nhãn · 8,20:1 trên page */
+  --ds-ink:         #0F1B33;   /* chữ chính · 14,91:1 trên page */
+  --ds-soft:        #3A4A66;
+  /* Chữ phụ đặt TRÊN NỀN ink (thẻ tối trên màn Path). Tài liệu §1.3 khai
+     token này từ đầu nhưng bảng CSS chưa bao giờ hiện thực nó — lộ ra ngày
+     15/10 khi ca test thôi chép tay bảng màu và đọc thẳng từ tài liệu. */
+  --ds-on-ink-soft: #BFD0E8;   /* 10,94:1 trên ink */   /* chữ phụ, nhãn · 8,20:1 trên page */
 
   /* ── BẢNG TOKEN v2 · bốn họ nhấn ──────────────────────────── */
-  --ds-violet:      #6E2BA8;   /* vị trí, lựa chọn, liên kết · 7,63:1 */
-  --ds-violet-deep: #4F1D7A;   /* chữ tím trên nền tím nhạt · 10,09:1 */
-  --ds-violet-tint: #F5EAFB;
-  --ds-action:      #7A2BB8;   /* CHỈ nền nút chính · chữ trắng 7,33:1 */
+  --ds-violet:      #1D4ED8;   /* vị trí, lựa chọn, liên kết · 7,63:1 */
+  --ds-violet-deep: #15337A;   /* chữ tím trên nền tím nhạt · 10,09:1 */
+  --ds-violet-tint: #E8F0FE;
+  --ds-action:      #1F5FE0;   /* CHỈ nền nút chính · chữ trắng 7,33:1 */
   --ds-on-action:   #FFFFFF;   /* chữ/hình đặt trên nền màu nhấn đậm */
-  --ds-sanguine:    #9C3B22;   /* chú ý, chưa đúng · 6,41:1 */
-  --ds-sanguine-tint: #FBF1EC;
-  --ds-ochre:       #8A5A0F;   /* đã có, đúng, đã xong · 5,53:1 */
-  --ds-ochre-tint:  #FBF4E4;
+  --ds-sanguine:    #CF2338;   /* chú ý, chưa đúng · 6,41:1 */
+  --ds-sanguine-tint: #FFF1F3;
+  --ds-ochre:       #047857;   /* đã có, đúng, đã xong · 5,53:1 */
+  --ds-ochre-tint:  #E7F6F0;
 
   /* ── BẢNG TOKEN v2 · khung code (tối ở cả hai chế độ) ─────── */
   --ds-code-bg:     #221A13;
@@ -231,25 +235,25 @@
    đặt lên nền #16120E chỉ còn 2,28:1 (đúng chỗ bản thiết kế bắt lỗi ở màn
    Main). Khung code KHÔNG đổi — nó đã tối ở cả hai chế độ. */
 body.dark {
-  --ds-page:        #16120E;
-  --ds-card:        #221C16;
-  --ds-paper:       #1B1611;
-  --ds-tint:        #2A231C;
-  --ds-desk:        #3A2F25;
-  --ds-line:        #3A2F25;
-  --ds-sketch:      #A99272;
-  --ds-ink:         #F2EBDD;   /* 15,71:1 trên page */
-  --ds-soft:        #CDBFA6;   /* 9,31:1 trên card */
+  --ds-page:        #0B1220;
+  --ds-card:        #131C2E;
+  --ds-paper:       #0F1726;
+  --ds-tint:        #1A2437;
+  --ds-desk:        #233049;
+  --ds-line:        #233049;
+  --ds-sketch:      #8FA0BC;
+  --ds-ink:         #E8EEF7;   /* 15,71:1 trên page */
+  --ds-soft:        #AFBDD2;   /* 9,31:1 trên card */
 
-  --ds-violet:      #C99BEF;   /* 7,56:1 — thay #6E2BA8 (2,28:1) */
-  --ds-violet-deep: #E3C4FA;
-  --ds-violet-tint: #2E2238;
-  --ds-action:      #C99BEF;   /* nền nút chính + chữ #16120E = 8,36:1 */
-  --ds-on-action:   #16120E;
-  --ds-sanguine:    #EC9277;   /* 7,94:1 */
-  --ds-sanguine-tint: #33201A;
-  --ds-ochre:       #E0B062;   /* 8,47:1 */
-  --ds-ochre-tint:  #2B2416;
+  --ds-violet:      #7FA8FF;   /* 7,56:1 — thay #6E2BA8 (2,28:1) */
+  --ds-violet-deep: #B9D0FF;
+  --ds-violet-tint: #1B2A47;
+  --ds-action:      #7FA8FF;   /* nền nút chính + chữ #16120E = 8,36:1 */
+  --ds-on-action:   #0B1220;
+  --ds-sanguine:    #FF8798;   /* 7,94:1 */
+  --ds-sanguine-tint: #33202A;
+  --ds-ochre:       #4FD0A0;   /* 8,47:1 */
+  --ds-ochre-tint:  #10291F;
 
   --ds-shadow-open: 0 6px 22px rgba(0, 0, 0, .45);
 }
