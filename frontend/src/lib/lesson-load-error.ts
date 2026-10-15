@@ -117,9 +117,16 @@ export function readProbeDb(body: unknown): 'up' | 'down' | 'unknown' {
  * Chọn tên cho sự cố.
  *
  * THỨ TỰ LÀ MỘT QUYẾT ĐỊNH, không phải tình cờ:
- *  1. Lệch prefix xét TRƯỚC `db-down`. Hôm 15/10 cả hai cùng xảy ra, mà câu của
- *     `db-down` bảo người ta CHỜ — lời khuyên đó sai khi lỗi là cấu hình: chờ
- *     bao lâu cũng không có đường API nào mọc ra.
+ *  1. Lệch gốc API xét TRƯỚC `db-down`, vì câu của `db-down` bảo người ta CHỜ
+ *     — lời khuyên đó sai khi lỗi là cấu hình: chờ bao lâu cũng không có
+ *     đường API nào mọc ra. Nhánh này CHƯA từng xảy ra thật: bản đầu của chú
+ *     thích ghi "hôm 15/10 cả hai cùng xảy ra", nhưng đó là một chẩn đoán
+ *     hỏng — người dò đã tự gõ `/api/v1/auth/guest`, nhận 404 (đúng, vì
+ *     `enableVersioning` KHÔNG bật và `/auth/*` cố ý nằm ngoài prefix — xem
+ *     `src/api-gateway/api-gateway.setup.ts:10`) rồi coi đó là bằng chứng.
+ *     Đo lại trên production: `/api/courses` trả 401 và `/health` trả 200,
+ *     tức định tuyến vẫn đúng. Giữ nhánh này vì nó rẻ và lưới an toàn thật,
+ *     nhưng ĐỪNG đọc nó như một sự cố đã có.
  *  2. `db-down` xét trước 401, vì 401 ở đây chính là 401 bị `ensureGuest` làm
  *     mất mã 500 (xem đầu file).
  *  3. 429 xét trước 5xx để không gộp "quá tải" vào "sự cố".
