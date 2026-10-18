@@ -166,7 +166,21 @@
   --ds-fs-h3:       22px;  /* câu hỏi, tiêu đề thẻ */
   --ds-fs-h2:       28px;  /* tiêu đề mục */
   --ds-fs-h1:       36px;  /* tiêu đề màn */
+}
 
+/* ── BÍ DANH --st-* — khai trên CẢ :root lẫn body ──────────────
+   var() trong một custom property được thế giá trị NGAY tại phần tử khai
+   nó, rồi con cháu thừa hưởng KẾT QUẢ đã thế. Trước đây khối này nằm trong
+   :root (thẻ <html>), nên mọi --st-* bị chốt bằng bảng NGÀY; body.dark đổi
+   --ds-* ở <body> nhưng không ai tính lại --st-*. Ở Ban đêm, mọi chỗ đọc
+   --st-* vẫn ra màu ngày: nền vùng bài học (.chrome → --st-page-bg) sáng
+   trong khi thanh trên (--ds-paper) tối, băng phản hồi hồng nhạt với chữ
+   sáng (--ds-ink) gần như không đọc được — ảnh chụp ngày 18/10/2026.
+   Khai lại trên `body` thì var() được thế ở chính <body>, nơi body.dark có
+   hiệu lực. Bộ đo tương phản (ds-contrast.mjs) vốn đã GIẢ ĐỊNH bí danh đi
+   theo bảng tối, nên trước bản sửa nó đo đúng trên giấy mà sai trên trang. */
+:root,
+body {
   /* ── phản hồi bài làm — BÍ DANH, không còn mã màu riêng ───────
      "ok" là ochre (đã có / đúng), "err" và "warn" là sanguine (chú ý).
      Hai cái sau trùng màu LÀ CÓ Ý: bảng v2 chỉ cho sanguine một vai. */
@@ -230,8 +244,9 @@
 }
 
 /* ── Ban đêm ──────────────────────────────────────────────────
-   Chỉ đổi BẢNG --ds-*; mọi bí danh --st-* ở trên là var() nên tự đi theo,
-   không phải khai lại lần nữa. Bốn họ nhấn đổi sang bản sáng hơn: bản ngày
+   Chỉ đổi BẢNG --ds-*; mọi bí danh --st-* ở trên tự đi theo, không phải
+   khai lại — NHƯNG chỉ vì khối bí danh khai cả trên `body` (xem chú thích
+   ở khối đó). Đưa nó về riêng :root là Ban đêm lại vỡ. Bốn họ nhấn đổi sang bản sáng hơn: bản ngày
    đặt lên nền #16120E chỉ còn 2,28:1 (đúng chỗ bản thiết kế bắt lỗi ở màn
    Main). Khung code KHÔNG đổi — nó đã tối ở cả hai chế độ. */
 body.dark {

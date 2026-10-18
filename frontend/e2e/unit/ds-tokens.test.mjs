@@ -481,6 +481,24 @@ test('mọi token --st-* chỉ là bí danh trỏ vào --ds-*, không có mã m�
   );
 });
 
+test('bí danh --st-* khai cả trên body, nên Ban đêm (body.dark) tính lại được', () => {
+  // var() trong custom property được thế NGAY tại phần tử khai nó. Khối bí
+  // danh từng chỉ nằm trong :root (<html>) nên --st-* bị chốt bằng bảng ngày:
+  // ở Ban đêm nền vùng bài học (.chrome → --st-page-bg) vẫn sáng và băng phản
+  // hồi hồng nhạt mang chữ sáng — ca đo ở mục 4 vẫn xanh vì `resolve()` gộp
+  // hai bảng như thể trình duyệt tự tính lại. Ca này canh đúng chỗ đó.
+  const thieu = [];
+  for (const r of cssRules(TOKENS_CSS)) {
+    if (!declList(r.body).some((d) => d.prop.startsWith('--st-'))) continue;
+    const sels = r.prelude.split(',').map((x) => x.trim());
+    if (!sels.includes('body')) thieu.push(r.prelude.trim());
+  }
+  assert.deepEqual(
+    thieu, [],
+    'khối khai --st-* phải có selector `body` (bên cạnh :root), không thì Ban đêm kẹt màu ngày',
+  );
+});
+
 /* ── 4 · tương phản WCAG AA trên cặp chữ/nền THẬT ────────────────────── */
 
 test('221 cặp chữ/nền thật: không cặp nào trượt AA ở bản ngày', () => {
