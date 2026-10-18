@@ -1,328 +1,866 @@
-.container {
-  display: flex;
-  flex-direction: column;
+/* /dashboard — Figma node 60:5137. Màu và cỡ chữ đi qua token (studio-tokens.css),
+   không mã hex (`npm run lint:tokens`).
+
+   Figma chỉ có bản TỐI, nhấn TÍM và vàng hổ phách. Bảng token cho "violet" vai
+   xanh dương ở cả hai chế độ, nên tím lấy từ --ds-mark-violet — màu nhấn dành
+   cho nền tối — và CHỈ ở Ban đêm (body.dark). Bản ngày dùng nhấn xanh của bảng
+   token: tím nhạt đặt lên nền sáng không đủ tương phản.
+   --dash-* là biến cục bộ của trang, không phải token: bảng token chỉ được khai
+   ở studio-tokens.css (ds-tokens.test.mjs). */
+.page {
+  --dash-accent: var(--ds-violet);
+  --dash-accent-bg: var(--ds-action);
+  --dash-on-accent: var(--ds-on-action);
+  --dash-accent-tint: var(--ds-violet-tint);
+  --dash-boss: var(--ds-sanguine);
+  --dash-boss-tint: var(--ds-sanguine-tint);
   min-height: 100vh;
   background: var(--ds-page);
   color: var(--ds-ink);
-  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--edu-font);
+  font-size: var(--ds-fs-body);
+}
+:global(body.dark) .page {
+  --dash-accent: var(--ds-mark-violet);
+  --dash-accent-bg: var(--ds-mark-violet);
+  --dash-on-accent: var(--ds-code-bg);
+  --dash-accent-tint: color-mix(in srgb, var(--ds-mark-violet) 14%, var(--ds-card));
+  --dash-boss: var(--ds-mark-ochre);
+  --dash-boss-tint: color-mix(in srgb, var(--ds-mark-ochre) 10%, var(--ds-card));
 }
 
-/* Main Content */
 .main {
-  flex: 1;
-  max-width: 1080px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 40px 24px 80px;
   display: flex;
   flex-direction: column;
-  gap: 56px;
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
 }
 
-/* Hero Section */
-.heroGrid {
-  display: grid;
-  grid-template-columns: 1.2fr 0.8fr;
-  gap: 40px;
-  align-items: center;
-}
-
-@media (max-width: 840px) {
-  .heroGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.eyebrow {
-  font-size: var(--ds-fs-label);
-  font-weight: 700;
-  text-transform: uppercase;
-  color: var(--ds-violet);
-  letter-spacing: 0.05em;
-  margin-bottom: 12px;
-}
-
-.heroTitle {
-  font-size: var(--ds-fs-h1);
-  font-weight: 800;
-  color: var(--ds-ink);
-  line-height: 1.2;
-  margin-bottom: 16px;
-}
-
-.heroDesc {
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
-  line-height: 1.6;
-  margin-bottom: 24px;
-}
-
-.ctaBtn {
+/* ── nút dùng chung ── */
+.primaryBtn,
+.nowCta {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: var(--ds-action);
-  color: var(--ds-on-action) !important;
-  padding: 12px 24px;
-  border-radius: var(--ds-r-pill);
+  padding: 12px 20px;
+  border-radius: var(--ds-r-sm);
+  background: var(--dash-accent-bg);
+  color: var(--dash-on-accent);
   font-size: var(--ds-fs-ui);
   font-weight: 600;
   text-decoration: none;
-  box-shadow: var(--ds-shadow-open);
-  transition: background var(--ds-dur-fast) ease, transform var(--ds-dur-fast) ease;
+  white-space: nowrap;
+}
+.ghostBtn,
+.outlineBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border: 1px solid var(--ds-sketch);
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.primaryBtn:focus-visible,
+.nowCta:focus-visible,
+.ghostBtn:focus-visible,
+.outlineBtn:focus-visible,
+.previewCard:focus-visible {
+  outline: 3px solid var(--dash-accent);
+  outline-offset: 2px;
+}
+.chip {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-tint);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  font-weight: 400;
+}
+.chipAccent {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: var(--ds-r-pill);
+  background: var(--dash-accent-tint);
+  color: var(--dash-accent);
+  font-family: var(--edu-font);
+  font-size: var(--ds-fs-label);
+  text-transform: none;
+  letter-spacing: 0;
 }
 
-.ctaBtn:hover {
-  background: var(--ds-violet);
-  color: var(--ds-on-action) !important;
-  transform: translateY(-1px);
+/* ── hero ── */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+  padding: 24px 0 16px;
 }
-
-.ctaBtn:focus-visible {
-  outline: var(--ds-bw-3) solid var(--ds-violet);
-  outline-offset: 3px;
+.eyebrow {
+  margin: 0 0 12px;
+  color: var(--dash-accent);
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-
-/* Preview Card */
+.heroTitle {
+  margin: 0 0 16px;
+  font-size: var(--ds-fs-h1);
+  font-weight: 700;
+  line-height: 1.2;
+}
+.heroDesc {
+  margin: 0 0 24px;
+  color: var(--ds-soft);
+}
 .previewCard {
-  background: var(--ds-card);
-  border: var(--ds-bw-1) solid var(--ds-line);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--ds-sketch);
   border-radius: var(--ds-r-lg);
-  padding: 24px;
-  box-shadow: var(--ds-shadow-open);
+  background: var(--ds-card);
+  color: var(--ds-ink);
+  text-decoration: none;
 }
-
-.previewBadge {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--ds-mark-ochre);
-  margin-bottom: 8px;
+.previewEyebrow {
+  color: var(--dash-boss);
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
-
 .previewTitle {
   font-size: var(--ds-fs-h3);
-  font-weight: 700;
-  color: var(--ds-ink);
-  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.35;
 }
-
-.previewCodeSnippet {
-  background: var(--ds-code-bg);
-  border-radius: var(--ds-r-md);
+.previewCode {
   padding: 12px 16px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-code-bg);
   color: var(--ds-code-fg);
-  border: var(--ds-bw-1) solid var(--ds-code-line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
 }
 
-/* 3 Learning Steps */
-.stepsContainer {
-  background: var(--ds-card);
-  border: var(--ds-bw-1) solid var(--ds-line);
+/* ── học như thế nào ── */
+.howCard {
+  padding: 24px 28px;
+  border: 1px solid var(--ds-line);
   border-radius: var(--ds-r-lg);
-  padding: 28px 32px;
+  background: var(--ds-card);
 }
-
-.stepsTitle {
-  font-size: var(--ds-fs-lead);
-  font-weight: 700;
-  color: var(--ds-ink);
-  margin-bottom: 24px;
+.howTitle {
+  margin: 0 0 18px;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
 }
-
-.stepsGrid {
+.howGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
-
-@media (max-width: 720px) {
-  .stepsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.stepItem {
+.howItem {
   display: flex;
   align-items: flex-start;
-  gap: 14px;
-}
-
-.stepBadge {
-  width: 28px;
-  height: 28px;
-  border-radius: var(--ds-r-round);
-  background: var(--ds-tint);
-  color: var(--ds-violet);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 13px;
-  flex: none;
-}
-
-.stepHeading {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--ds-ink);
-  margin-bottom: 4px;
-}
-
-.stepText {
-  font-size: 13px;
-  color: var(--ds-soft);
-  line-height: 1.4;
-}
-
-/* Roadmap 8 Steps */
-.roadmapSection {
-  display: flex;
-  flex-direction: column;
   gap: 12px;
 }
-
-.roadmapTitle {
-  font-size: var(--ds-fs-h2);
-  font-weight: 800;
-  color: var(--ds-ink);
+.howItem strong,
+.howItem small {
+  display: block;
 }
-
-.roadmapDesc {
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
-  margin-bottom: 24px;
-}
-
-.roadmapCard {
-  background: var(--ds-card);
-  border: var(--ds-bw-1) solid var(--ds-line);
-  border-radius: var(--ds-r-lg);
-  padding: 40px 24px;
-  box-shadow: var(--ds-shadow-open);
-  position: relative;
-  overflow: hidden;
-}
-
-.trackRow {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  position: relative;
-  z-index: 2;
-}
-
-.trackRowReverse {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
-  position: relative;
-  z-index: 2;
-  margin-top: 60px;
-}
-
-.trackNode {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  text-decoration: none;
-  gap: 12px;
-  transition: transform var(--ds-dur-fast) ease;
-}
-
-.trackNode:hover {
-  transform: translateY(-4px);
-}
-
-.nodeCircle {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--ds-r-round);
-  background: var(--ds-paper);
-  border: var(--ds-bw-2) solid var(--ds-sketch);
-  color: var(--ds-ink);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 700;
-  box-shadow: var(--ds-shadow-open);
-}
-
-.nodeCircleActive {
-  background: var(--ds-action);
-  color: var(--ds-on-action);
-  border-color: var(--ds-action);
-}
-
-.nodeLabel {
-  font-size: 15px;
+.howItem strong {
+  font-size: var(--ds-fs-ui);
   font-weight: 600;
+}
+.howItem small {
+  margin-top: 4px;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.howBadge {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ds-r-round);
+  background: var(--dash-accent-tint);
+  color: var(--dash-accent);
+  font-size: var(--ds-fs-label);
+  font-weight: 600;
+}
+
+/* ── bản đồ + chặng + bài đang chọn (DashboardMap.tsx) ── */
+.journey {
+  overflow: hidden;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
+}
+.mapHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px 0;
+}
+.mapTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+}
+.mapCount {
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  text-transform: uppercase;
+}
+/* Hẹp hơn 720px thì cuộn ngang trong khung, trang không cuộn ngang. */
+.mapScroll {
+  overflow-x: auto;
+  padding: 0 40px;
+}
+.mapCanvas {
+  position: relative;
+  min-width: 720px;
+  height: 200px;
+}
+.mapSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.mapPath,
+.mapPathLit,
+.mapPathBoss {
+  fill: none;
+  stroke: var(--ds-sketch);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.mapPathLit {
+  stroke: var(--dash-accent);
+}
+.mapPathBoss {
+  stroke: var(--dash-boss);
+}
+/* Nút đặt tâm hộp đúng điểm của đường SVG; nhãn treo bên dưới. Toạ độ khớp
+   nodeAt() trong DashboardMap.tsx: x = 70 + i·860/7 trên 1000, y = 112 / 48
+   trên 170. Đổi một bên thì đổi cả bên kia. */
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transform: translate(-50%, -21px);
+}
+.node:nth-of-type(1) { left: 7%; top: 65.88%; }
+.node:nth-of-type(2) { left: 19.29%; top: 28.24%; }
+.node:nth-of-type(3) { left: 31.57%; top: 65.88%; }
+.node:nth-of-type(4) { left: 43.86%; top: 28.24%; }
+.node:nth-of-type(5) { left: 56.14%; top: 65.88%; }
+.node:nth-of-type(6) { left: 68.43%; top: 28.24%; }
+.node:nth-of-type(7) { left: 80.71%; top: 65.88%; }
+.node:nth-of-type(8) { left: 93%; top: 28.24%; }
+.nodeBox {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 42px;
+  padding: 0 8px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-card);
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.nodeLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  white-space: nowrap;
+}
+.nodeHere {
+  color: var(--dash-accent);
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nodeDone .nodeBox {
+  border-color: var(--dash-accent);
+  color: var(--dash-accent);
+}
+.nodeBoss .nodeBox {
+  border-color: var(--dash-boss);
+  background: var(--dash-boss-tint);
+  color: var(--dash-boss);
+}
+.nodeBoss .nodeLabel {
+  color: var(--dash-boss);
+}
+.nodeSel .nodeBox {
+  border-color: var(--dash-accent);
+  background: var(--dash-accent-bg);
+  color: var(--dash-on-accent);
+  box-shadow: 0 0 0 4px var(--dash-accent-tint);
+}
+.nodeSel .nodeLabel {
   color: var(--ds-ink);
-  max-width: 140px;
+  font-weight: 600;
+}
+.node:focus-visible .nodeBox {
+  outline: 2px solid var(--dash-accent);
+  outline-offset: 3px;
+}
+.mapFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 24px 18px;
+  border-bottom: 1px solid var(--ds-line);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.bossNote {
+  color: var(--dash-boss);
+}
+
+.stageHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px 8px;
+}
+.stageTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+}
+.stageCode {
+  color: var(--dash-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.stageSub {
+  margin: 6px 0 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.stageProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 260px;
+}
+.stageProgressRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.stageProgressRow strong {
+  color: var(--ds-ink);
+}
+.bar {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-tint);
+  appearance: none;
+}
+.bar::-webkit-progress-bar {
+  background: var(--ds-tint);
+}
+.bar::-webkit-progress-value {
+  border-radius: var(--ds-r-pill);
+  background: var(--dash-accent);
+}
+.bar::-moz-progress-bar {
+  border-radius: var(--ds-r-pill);
+  background: var(--dash-accent);
+}
+
+/* Một cột cho mỗi bài; chặng 9 bài (M6) thì cuộn ngang trong khung. */
+.lessonScroll {
+  overflow-x: auto;
+  padding: 8px 24px 24px;
+}
+.lessonRow {
+  display: grid;
+  grid-auto-columns: minmax(150px, 1fr);
+  grid-auto-flow: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lessonCol {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stepDot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+/* Đường nối sang bài kế: kéo dài qua khe 12px giữa hai cột. */
+.stepDot::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  margin-right: -12px;
+  background: var(--ds-line);
+}
+.lessonCol:last-child .stepDot::after {
+  display: none;
+}
+.stepDot i {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+}
+.stepDotSel {
+  color: var(--dash-accent);
+}
+.stepDotSel i {
+  border-color: var(--dash-accent);
+  background: var(--dash-accent);
+  box-shadow: inset 0 0 0 4px var(--ds-card);
+}
+.stepDotBoss {
+  color: var(--dash-boss);
+}
+.stepDotBoss i {
+  border-color: var(--dash-boss);
+}
+.lessonCard {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 132px;
+  padding: 14px;
+  border: 1px solid var(--ds-sketch);
+  border-radius: var(--ds-r-md);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.lessonCard:focus-visible {
+  outline: 2px solid var(--dash-accent);
+  outline-offset: 2px;
+}
+.lessonCardBoss {
+  border-color: var(--dash-boss);
+  background: var(--dash-boss-tint);
+}
+.lessonCardSel {
+  border: 1.5px solid var(--dash-accent);
+  background: var(--dash-accent-tint);
+}
+.lessonTitle {
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
   line-height: 1.3;
 }
-
-/* Connectors */
-.connectorLine {
-  position: absolute;
-  top: 64px;
-  left: 10%;
-  right: 10%;
-  height: 2px;
-  background: var(--ds-sketch);
-  z-index: 1;
+.lessonMeta {
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.lessonStatus {
+  margin-top: auto;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.lessonCardSel .lessonStatus {
+  color: var(--dash-accent);
+}
+.lessonCardBoss .lessonStatus {
+  color: var(--dash-boss);
+}
+.lessonCardDone .lessonStatus {
+  color: var(--ds-ochre);
 }
 
-/* Lab & Feedback Banners */
-.bannerCard {
-  background: var(--ds-card);
-  border: var(--ds-bw-1) solid var(--ds-line);
-  border-radius: var(--ds-r-lg);
-  padding: 24px 32px;
+.band {
+  padding: 10px 24px;
+  border-top: 1px solid var(--ds-line);
+  border-bottom: 1px solid var(--ds-line);
+  border-left: 3px solid var(--dash-accent);
+  background: var(--dash-accent-tint);
+  color: var(--dash-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.detail {
+  padding: 24px;
+}
+.detailHead {
   display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ds-line);
+}
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.detailTitle {
+  margin: 10px 0 8px;
+  font-size: var(--ds-fs-h2);
+  font-weight: 700;
+  line-height: 1.25;
+}
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.xp {
+  color: var(--dash-accent);
+  font-weight: 600;
+}
+.detailProgress {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 280px;
+}
+.detailProgressLabel {
+  align-self: flex-end;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.pct {
+  color: var(--dash-accent);
+  font-size: var(--ds-fs-h2);
+  font-weight: 600;
+  line-height: 1;
+}
+.stageProgressRow .pct {
+  color: var(--dash-accent);
+}
+.detailProgressNote {
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  padding: 24px 0;
+}
+.nowCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1.5px solid var(--dash-accent);
+  border-radius: var(--ds-r-lg);
+  background: var(--dash-accent-tint);
+}
+.nowEyebrow {
+  color: var(--dash-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nowTitle {
+  margin: 0;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+}
+.nowText {
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  line-height: 1.5;
+}
+/* Một vạch cho mỗi mục của bài: thay bốn ô "Code / Data / Heap / Stack" của
+   Figma — đó là hình riêng của một bài mẫu, còn vạch này đúng cho mọi bài. */
+.nowStrip {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
+}
+.nowStrip li {
+  flex: 1;
+  height: 8px;
+  border-radius: var(--ds-r-xs);
+  background: var(--ds-line);
+}
+.nowStrip li.stripDone {
+  background: var(--dash-accent);
+}
+.nowStrip li.stripCurrent {
+  box-shadow: inset 0 0 0 1.5px var(--dash-accent);
+}
+.nowCta {
+  align-self: flex-start;
+}
+
+.listCol {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.listTitle {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+}
+.listIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.listCount {
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  font-weight: 400;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.listItem,
+.listItemDone,
+.listItemNow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.listItem strong,
+.listItemDone strong,
+.listItemNow strong,
+.listItem small,
+.listItemDone small,
+.listItemNow small {
+  display: block;
+  font-size: var(--ds-fs-label);
+}
+.listItem strong,
+.listItemDone strong,
+.listItemNow strong {
+  font-weight: 600;
+}
+.listItem small,
+.listItemDone small,
+.listItemNow small {
+  margin-top: 2px;
+  color: var(--ds-soft);
+}
+.listItemNow strong {
+  color: var(--dash-accent);
+}
+.check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--ds-r-round);
+  background: var(--dash-accent-tint);
+  color: var(--dash-accent);
+  font-size: var(--ds-fs-label);
+}
+.dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin: 4px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+}
+.listItemNow .dot {
+  border-color: var(--dash-accent);
+  background: var(--dash-accent);
+  box-shadow: 0 0 0 3px var(--dash-accent-tint);
+}
+.listEmpty,
+.listNote {
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.listNote {
+  padding-top: 12px;
+  border-top: 1px solid var(--ds-line);
+}
+
+.detailFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ds-line);
+}
+.detailFoot p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ── công cụ + góp ý ── */
+.labCard {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  padding: 28px;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
 }
-
-.bannerLabel {
-  font-size: 12px;
+.labTitle {
+  margin: 0 0 8px;
+  font-size: var(--ds-fs-h2);
   font-weight: 700;
-  text-transform: uppercase;
-  color: var(--ds-violet);
-  letter-spacing: 0.05em;
-  margin-bottom: 4px;
 }
-
-.bannerTitle {
-  font-size: var(--ds-fs-h3);
-  font-weight: 700;
-  color: var(--ds-ink);
-  margin-bottom: 6px;
-}
-
-.bannerDesc {
-  font-size: 14px;
+.labText {
+  max-width: 640px;
+  margin: 0;
   color: var(--ds-soft);
 }
-
-.bannerBtn {
+.feedbackCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 28px;
+  border: 1.5px dashed var(--ds-sketch);
+  border-radius: var(--ds-r-lg);
   background: var(--ds-paper);
-  border: var(--ds-bw-1) solid var(--ds-sketch);
-  border-radius: var(--ds-r-pill);
-  padding: 10px 20px;
+}
+.feedbackTitle {
+  margin: 0 0 4px;
   font-size: var(--ds-fs-ui);
   font-weight: 600;
-  color: var(--ds-ink);
-  text-decoration: none;
-  white-space: nowrap;
-  transition: all var(--ds-dur-fast) ease;
+}
+.feedbackText {
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
 }
 
-.bannerBtn:hover {
-  background: var(--ds-tint);
-  border-color: var(--ds-ink);
+@media (max-width: 900px) {
+  .main {
+    padding: 32px 16px 56px;
+  }
+  .hero,
+  .howGrid,
+  .detailGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero {
+    gap: 28px;
+  }
+  .heroTitle {
+    font-size: var(--ds-fs-h2);
+  }
+  .stageProgress,
+  .detailProgress {
+    min-width: 0;
+    width: 100%;
+  }
+  .detailProgressLabel {
+    align-self: flex-start;
+  }
+  .mapScroll {
+    padding: 0 16px;
+  }
 }

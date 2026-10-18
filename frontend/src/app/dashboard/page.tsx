@@ -1,6 +1,24 @@
+// /dashboard — "Bản đồ" khoá Python Advanced, dựng lại theo Figma node 60:5137:
+// hero → "Học như thế nào?" → bản đồ 8 chặng / bài của chặng / bài đang chọn
+// → Bàn thí nghiệm → Góp ý.
+//
+// Phần trên và dưới tĩnh (server). Phần giữa (DashboardMap) là client: chọn
+// chặng/bài và đọc tiến độ. Bản Figma vẽ bằng nội dung mẫu (tên bài, XP, bài
+// BOSS ở chặng 1, "5 mục" trong P01) — ở đây mọi tên và con số lấy từ giáo
+// trình thật, xem src/lib/dashboard-plan.ts.
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
+import { COURSES, TOOLS } from '@/lib/catalog';
+import CURRICULA_JSON from '@/lib/curricula.json';
+import { buildStages, type LessonMetaRow, type ModuleRow } from '@/lib/dashboard-plan';
+import { feedbackFormHref } from '@/lib/feedback-link';
+import { FEEDBACK } from '@/lib/home-copy';
+import { REGION_NAMES } from '@/lib/world-map';
+
+import DashboardMap from './DashboardMap';
 import styles from './dashboard.module.css';
 
 const STUDIO_CSS = [
@@ -9,145 +27,108 @@ const STUDIO_CSS = [
   '/static/css/studio-tokens.css',
 ];
 
-export default function DashboardPage() {
-  const trackRow1 = [
-    { n: 1, title: 'Xưởng phác thảo', active: true, href: '/demo-minigame' },
-    { n: 2, title: 'Khung cửi song song', active: false, href: '/courses/python_advanced' },
-    { n: 3, title: 'Ô cửa quan sát', active: false, href: '/courses/python_advanced' },
-    { n: 4, title: 'Thư viện', active: false, href: '/courses/python_advanced' },
-  ];
+const COURSE_ID = 'python_advanced';
 
-  const trackRow2 = [
-    { n: 8, title: 'Đại công trình', active: false, href: '/courses/python_advanced' },
-    { n: 7, title: 'Hợp nhất', active: false, href: '/courses/python_advanced' },
-    { n: 6, title: 'Bản đồ cái', active: false, href: '/courses/python_advanced' },
-    { n: 5, title: 'Cỗ máy ma trận', active: false, href: '/courses/python_advanced' },
-  ];
+export const metadata: Metadata = {
+  title: 'Programming EDU — Bản đồ',
+};
+
+const STEPS = [
+  { title: 'Đọc bài ngắn', text: 'Mỗi bài giải thích một ý nhỏ, dễ hiểu.' },
+  { title: 'Chạy code ngay', text: 'Gõ và chạy Python trong trình duyệt.' },
+  { title: 'Ôn tập', text: 'Làm lại để nhớ lâu hơn.' },
+] as const;
+
+export default function DashboardPage() {
+  const course = COURSES.find((c) => c.id === COURSE_ID);
+  const curricula = CURRICULA_JSON as unknown as {
+    CURRICULA: Record<string, { modules?: ModuleRow[] }>;
+    LESSON_META?: Record<string, LessonMetaRow[]>;
+  };
+  const modules = curricula.CURRICULA[COURSE_ID]?.modules ?? [];
+  const stages = buildStages(modules, curricula.LESSON_META?.[COURSE_ID], REGION_NAMES);
+  const total = stages.reduce((n, s) => n + s.lessons.length, 0);
+  const lessonUrl = course?.lessonUrl ?? `/lesson/${COURSE_ID}`;
+  const first = stages[0]?.lessons[0];
+  const lab = TOOLS.find((t) => t.id === 'ide');
+  const feedback = feedbackFormHref();
 
   return (
     <>
       <PageStyles hrefs={STUDIO_CSS} />
-      <div className={styles.container}>
-        {/* Thanh header chuẩn hệ thống */}
+      <div className={styles.page}>
         <SiteHeader wide />
 
-        {/* ── MAIN DASHBOARD ── */}
         <main className={styles.main}>
-          {/* HERO GRID */}
-          <section className={styles.heroGrid}>
-            <div>
-              <div className={styles.eyebrow}>PYTHON NÂNG CAO · 8 CHẶNG · 48 BÀI</div>
+          <section className={styles.hero}>
+            <div className={styles.heroText}>
+              <p className={styles.eyebrow}>
+                Python nâng cao · {stages.length} chặng · {total} bài
+              </p>
               <h1 className={styles.heroTitle}>Học Python từng bước, ngay trên trình duyệt</h1>
               <p className={styles.heroDesc}>
                 Không cần cài đặt gì cả. Mở bài, đọc, gõ code và bấm chạy để thấy kết quả liền.
               </p>
-              <Link href="/demo-minigame" className={styles.ctaBtn}>
-                Bắt đầu bài đầu tiên &rarr;
+              <Link href={`${lessonUrl}?lesson=0`} className={styles.primaryBtn}>
+                Bắt đầu bài đầu tiên →
               </Link>
             </div>
-
-            <div className={styles.previewCard}>
-              <div className={styles.previewBadge}>Bài đầu tiên</div>
-              <h3 className={styles.previewTitle}>P01 · Program, process và tài nguyên</h3>
-              <div className={styles.previewCodeSnippet}>
-                <code>print(&quot;xin chào, python!&quot;)</code>
-              </div>
-            </div>
+            {first && (
+              <Link href={`${lessonUrl}?lesson=0`} className={styles.previewCard}>
+                <span className={styles.previewEyebrow}>Bài đầu tiên</span>
+                <span className={styles.previewTitle}>
+                  {first.code} · {first.title}
+                </span>
+                <code className={styles.previewCode}>print(&quot;Xin chào, Python!&quot;)</code>
+              </Link>
+            )}
           </section>
 
-          {/* 3 LEARNING STEPS */}
-          <section className={styles.stepsContainer}>
-            <h2 className={styles.stepsTitle}>Học như thế nào?</h2>
-            <div className={styles.stepsGrid}>
-              <div className={styles.stepItem}>
-                <div className={styles.stepBadge}>1</div>
-                <div>
-                  <div className={styles.stepHeading}>Đọc bài ngắn</div>
-                  <div className={styles.stepText}>Mỗi bài giải thích một ý nhỏ, dễ hiểu.</div>
-                </div>
-              </div>
-
-              <div className={styles.stepItem}>
-                <div className={styles.stepBadge}>2</div>
-                <div>
-                  <div className={styles.stepHeading}>Chạy code ngay</div>
-                  <div className={styles.stepText}>Có sẵn máy Python trong trình duyệt.</div>
-                </div>
-              </div>
-
-              <div className={styles.stepItem}>
-                <div className={styles.stepBadge}>3</div>
-                <div>
-                  <div className={styles.stepHeading}>Ôn tập</div>
-                  <div className={styles.stepText}>Làm sơ đồ nhớ lâu hơn.</div>
-                </div>
-              </div>
-            </div>
+          <section className={styles.howCard}>
+            <h2 className={styles.howTitle}>Học như thế nào?</h2>
+            <ol className={styles.howGrid}>
+              {STEPS.map((s, i) => (
+                <li key={s.title} className={styles.howItem}>
+                  <span className={styles.howBadge}>{i + 1}</span>
+                  <span>
+                    <strong>{s.title}</strong>
+                    <small>{s.text}</small>
+                  </span>
+                </li>
+              ))}
+            </ol>
           </section>
 
-          {/* ROADMAP 8 CHẶNG */}
-          <section className={styles.roadmapSection}>
-            <h2 className={styles.roadmapTitle}>Lộ trình 8 chặng</h2>
-            <p className={styles.roadmapDesc}>
-              Đi lần lượt từ chặng 1 đến chặng 8. Mỗi chặng mở ra một kỹ năng mới.
-            </p>
+          {stages.length > 0 && <DashboardMap stages={stages} lessonUrl={lessonUrl} />}
 
-            <div className={styles.roadmapCard}>
-              {/* Row 1: 1 -> 4 */}
-              <div className={styles.trackRow}>
-                {trackRow1.map((item) => (
-                  <Link key={item.n} href={item.href} className={styles.trackNode}>
-                    <div className={`${styles.nodeCircle} ${item.active ? styles.nodeCircleActive : ''}`}>
-                      {item.n}
-                    </div>
-                    <div className={styles.nodeLabel}>{item.title}</div>
-                  </Link>
-                ))}
+          {lab && (
+            <section className={styles.labCard}>
+              <div>
+                <p className={styles.eyebrow}>Công cụ</p>
+                <h2 className={styles.labTitle}>{lab.label}</h2>
+                <p className={styles.labText}>
+                  Muốn thử một ý tưởng? Viết Python và chạy thử, không cần mở bài nào. Code chạy trên
+                  máy chủ, trong môi trường riêng.
+                </p>
               </div>
+              <Link href={lab.href} className={styles.primaryBtn}>
+                Mở bàn thí nghiệm
+              </Link>
+            </section>
+          )}
 
-              {/* Row 2: 8 <- 5 */}
-              <div className={styles.trackRowReverse}>
-                {trackRow2.map((item) => (
-                  <Link key={item.n} href={item.href} className={styles.trackNode}>
-                    <div className={styles.nodeCircle}>
-                      {item.n}
-                    </div>
-                    <div className={styles.nodeLabel}>{item.title}</div>
-                  </Link>
-                ))}
+          {/* Không có địa chỉ khảo sát thì không hiện thẻ — như trang chủ. */}
+          {feedback && (
+            <section className={styles.feedbackCard}>
+              <div>
+                <h2 className={styles.feedbackTitle}>{FEEDBACK.title}</h2>
+                <p className={styles.feedbackText}>{FEEDBACK.text}</p>
               </div>
-            </div>
-          </section>
-
-          {/* LAB BANNER */}
-          <section className={styles.bannerCard}>
-            <div>
-              <div className={styles.bannerLabel}>CÔNG CỤ</div>
-              <h3 className={styles.bannerTitle}>Bàn thí nghiệm</h3>
-              <p className={styles.bannerDesc}>
-                Muốn thử một ý tưởng? Viết Python và chạy thử, không cần mở bài nào. Code chạy trên máy chủ, trong môi trường riêng.
-              </p>
-            </div>
-            <Link href="/ide" className={styles.bannerBtn}>
-              Mở bàn thí nghiệm
-            </Link>
-          </section>
-
-          {/* FEEDBACK BANNER */}
-          <section className={styles.bannerCard}>
-            <div>
-              <h3 className={styles.bannerTitle}>Góp ý cho nhóm làm khoá</h3>
-              <p className={styles.bannerDesc}>Khảo sát ẩn danh, khoảng 2 phút.</p>
-            </div>
-            <a
-              href="https://forms.gle"
-              target="_blank"
-              rel="noreferrer"
-              className={styles.bannerBtn}
-            >
-              Mở khảo sát
-            </a>
-          </section>
+              <a href={feedback} target="_blank" rel="noreferrer" className={styles.outlineBtn}>
+                {FEEDBACK.cta}
+              </a>
+            </section>
+          )}
         </main>
       </div>
     </>

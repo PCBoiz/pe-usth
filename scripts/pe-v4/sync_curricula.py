@@ -33,6 +33,71 @@ SOURCE = HERE / 'out-advanced' / 'curriculum-python-advanced.json'
 DROPPED_COURSES = ('python', 'cpp', 'java', 'htmlcss')
 
 
+def screen_keys(content: dict, code: str) -> list:
+    """Danh sách màn của một bài, đúng thứ tự `buildPlayScreens` (src/lib/studio-lesson.ts).
+
+    Trang /dashboard cần danh sách này để vẽ "mục đã học / sẽ học tiếp" mà không
+    gọi API lấy content_json. Nó phải KHỚP TỪNG KHOÁ với trình duyệt: tiến độ
+    trong bài đọc từ bản nháp localStorage, mà bản nháp đánh dấu màn đã xong theo
+    chính các khoá này (`draft.done['g-match-0']`…). Lệch một khoá là dashboard
+    báo sai số mục. Test `e2e/unit/dashboard-plan.test.mjs` so cả 48 bài với
+    `buildScreens()` thật, nên sửa luồng màn ở TS mà quên ở đây thì test đỏ.
+
+    Mỗi màn là [khoá, loại]; loại của màn game là `game.type` (match, fill…).
+    """
+    play = content.get('play') or {}
+    games = play.get('games') or []
+    if not games:
+        raise SystemExit(f'LỖI: {code} không có play.games — screen_keys chỉ dựng luồng mini-game '
+                         '(buildPlayScreens); luồng S1–S4 cũ không còn bài nào dùng.')
+    one = content.get('step_1') or {}
+    out = []
+    if one.get('theory'):
+        out.append(['s1-theory', 'theory'])
+    if (one.get('brief') or {}).get('task'):
+        out.append(['s1-brief', 'brief'])
+    elif (one.get('context') or {}).get('body'):
+        out.append(['s1-context', 'context'])
+    if not play.get('boss'):
+        if one.get('explain'):
+            out.append(['s1-explain', 'explain'])
+        if len((one.get('predict') or {}).get('options') or []) >= 2:
+            out.append(['s1-predict', 'predict'])
+    for game in games:
+        if game['type'] == 'fill' and not ((content.get('step_3') or {}).get('scaffold') or {}).get('slots'):
+            continue
+        if game['type'] == 'selfExplain' and not ((content.get('step_2') or {}).get('selfExplain') or {}).get('prompt'):
+            continue
+        out.append([f"g-{game['id']}", game['type']])
+    four = content.get('step_4') or {}
+    if (four.get('task') or {}).get('body') or four.get('starterCode') or four.get('tests') or four.get('solutionCode'):
+        out.append(['s4-sandbox', 'sandbox'])
+    if out:
+        out.append(['recap', 'recap'])
+    return out
+
+
+def lesson_meta(bundle: dict, modules: list) -> list:
+    """Phút, XP, cờ boss và danh sách màn của từng bài — PHẲNG, cùng thứ tự `?lesson=`."""
+    rows = sorted(bundle['lessons'], key=lambda r: r['sort_order'])
+    titles = [t for m in modules for t in m['lessons']]
+    out = []
+    for i, row in enumerate(rows):
+        # Hai nguồn phải cùng thứ tự: tên bài ở modules[] bắt đầu bằng mã bài.
+        if i >= len(titles) or not titles[i].startswith(row['lesson_code'] + ' '):
+            raise SystemExit(f'LỖI: bài thứ {i + 1} là {row["lesson_code"]} trong lessons.json nhưng '
+                             f'giáo trình ghi "{titles[i] if i < len(titles) else "(thiếu)"}".')
+        content = row['content_json']
+        out.append({
+            'code': row['lesson_code'],
+            'minutes': row['estimated_minutes'],
+            'xp': row['xp_reward'],
+            'boss': bool((content.get('play') or {}).get('boss')),
+            'screens': screen_keys(content, row['lesson_code']),
+        })
+    return out
+
+
 def main() -> int:
     bundle = json.loads((HERE / 'out-advanced' / 'lessons.json').read_text(encoding='utf-8'))
     if bundle.get('partial') or len(bundle['lessons']) != 48:
@@ -41,6 +106,11 @@ def main() -> int:
         return 1
     data = json.loads(TARGET.read_text(encoding='utf-8'))
     data['CURRICULA']['python_advanced'] = json.loads(SOURCE.read_text(encoding='utf-8'))
+    # Dữ liệu từng bài cho /dashboard (xem lesson_meta). Khối riêng, không nhét
+    # vào modules[].lessons: chỗ đó là MẢNG CHUỖI mà trang khoá, bản đồ, ôn tập
+    # đều đang đọc — đổi thành object là vỡ cả ba.
+    data.setdefault('LESSON_META', {})['python_advanced'] = lesson_meta(
+        bundle, data['CURRICULA']['python_advanced']['modules'])
     dropped = []
     for course in DROPPED_COURSES:
         if data['CURRICULA'].pop(course, None) is not None:
