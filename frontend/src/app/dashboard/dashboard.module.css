@@ -1,0 +1,328 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background: var(--ds-page);
+  color: var(--ds-ink);
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Main Content */
+.main {
+  flex: 1;
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  gap: 56px;
+}
+
+/* Hero Section */
+.heroGrid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 40px;
+  align-items: center;
+}
+
+@media (max-width: 840px) {
+  .heroGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.eyebrow {
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ds-violet);
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}
+
+.heroTitle {
+  font-size: var(--ds-fs-h1);
+  font-weight: 800;
+  color: var(--ds-ink);
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.heroDesc {
+  font-size: var(--ds-fs-body);
+  color: var(--ds-soft);
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ds-action);
+  color: var(--ds-on-action) !important;
+  padding: 12px 24px;
+  border-radius: var(--ds-r-pill);
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  text-decoration: none;
+  box-shadow: var(--ds-shadow-open);
+  transition: background var(--ds-dur-fast) ease, transform var(--ds-dur-fast) ease;
+}
+
+.ctaBtn:hover {
+  background: var(--ds-violet);
+  color: var(--ds-on-action) !important;
+  transform: translateY(-1px);
+}
+
+.ctaBtn:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 3px;
+}
+
+/* Preview Card */
+.previewCard {
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  padding: 24px;
+  box-shadow: var(--ds-shadow-open);
+}
+
+.previewBadge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ds-mark-ochre);
+  margin-bottom: 8px;
+}
+
+.previewTitle {
+  font-size: var(--ds-fs-h3);
+  font-weight: 700;
+  color: var(--ds-ink);
+  margin-bottom: 16px;
+}
+
+.previewCodeSnippet {
+  background: var(--ds-code-bg);
+  border-radius: var(--ds-r-md);
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--ds-code-fg);
+  border: var(--ds-bw-1) solid var(--ds-code-line);
+}
+
+/* 3 Learning Steps */
+.stepsContainer {
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  padding: 28px 32px;
+}
+
+.stepsTitle {
+  font-size: var(--ds-fs-lead);
+  font-weight: 700;
+  color: var(--ds-ink);
+  margin-bottom: 24px;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 720px) {
+  .stepsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stepItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.stepBadge {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-tint);
+  color: var(--ds-violet);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 13px;
+  flex: none;
+}
+
+.stepHeading {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--ds-ink);
+  margin-bottom: 4px;
+}
+
+.stepText {
+  font-size: 13px;
+  color: var(--ds-soft);
+  line-height: 1.4;
+}
+
+/* Roadmap 8 Steps */
+.roadmapSection {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.roadmapTitle {
+  font-size: var(--ds-fs-h2);
+  font-weight: 800;
+  color: var(--ds-ink);
+}
+
+.roadmapDesc {
+  font-size: var(--ds-fs-body);
+  color: var(--ds-soft);
+  margin-bottom: 24px;
+}
+
+.roadmapCard {
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  padding: 40px 24px;
+  box-shadow: var(--ds-shadow-open);
+  position: relative;
+  overflow: hidden;
+}
+
+.trackRow {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.trackRowReverse {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  position: relative;
+  z-index: 2;
+  margin-top: 60px;
+}
+
+.trackNode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-decoration: none;
+  gap: 12px;
+  transition: transform var(--ds-dur-fast) ease;
+}
+
+.trackNode:hover {
+  transform: translateY(-4px);
+}
+
+.nodeCircle {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-paper);
+  border: var(--ds-bw-2) solid var(--ds-sketch);
+  color: var(--ds-ink);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: var(--ds-shadow-open);
+}
+
+.nodeCircleActive {
+  background: var(--ds-action);
+  color: var(--ds-on-action);
+  border-color: var(--ds-action);
+}
+
+.nodeLabel {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ds-ink);
+  max-width: 140px;
+  line-height: 1.3;
+}
+
+/* Connectors */
+.connectorLine {
+  position: absolute;
+  top: 64px;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: var(--ds-sketch);
+  z-index: 1;
+}
+
+/* Lab & Feedback Banners */
+.bannerCard {
+  background: var(--ds-card);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  padding: 24px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.bannerLabel {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ds-violet);
+  letter-spacing: 0.05em;
+  margin-bottom: 4px;
+}
+
+.bannerTitle {
+  font-size: var(--ds-fs-h3);
+  font-weight: 700;
+  color: var(--ds-ink);
+  margin-bottom: 6px;
+}
+
+.bannerDesc {
+  font-size: 14px;
+  color: var(--ds-soft);
+}
+
+.bannerBtn {
+  background: var(--ds-paper);
+  border: var(--ds-bw-1) solid var(--ds-sketch);
+  border-radius: var(--ds-r-pill);
+  padding: 10px 20px;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  color: var(--ds-ink);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all var(--ds-dur-fast) ease;
+}
+
+.bannerBtn:hover {
+  background: var(--ds-tint);
+  border-color: var(--ds-ink);
+}
