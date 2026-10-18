@@ -791,6 +791,52 @@ export function quizPercent(screens: LessonScreen[], d: LessonDraft, boss: boole
   return Math.max(0, Math.min(100, pct));
 }
 
+/** Một ô của màn lắp khung mã sau khi chấm — đủ để khung kết quả nói "ô nào sai, vì sao". */
+export type ScaffoldSlotReview = {
+  n: number;
+  /** Thẻ học viên đã đặt vào ô ('' nếu ô còn trống). */
+  picked: string;
+  answer: string;
+  correct: boolean;
+  /** Ô sai mà thẻ đã đặt là bẫy viết cho CHÍNH ô này: lý do của bẫy đó. */
+  trap?: string;
+  /** Ô sai mà thẻ đã đặt thuộc về ô KHÁC: số của ô đó (bẫy của nó không áp vào đây). */
+  belongsTo?: number;
+  /** Các bẫy của ô này kèm lý do — giải thích vì sao đáp án đúng là đáp án đúng. */
+  traps: { label: string; trap: string }[];
+};
+
+/**
+ * Đối chiếu từng ô với lời giải, cùng một luật với `screenVerdict` (ô đúng ⇔
+ * thẻ trùng `answer`), nên khung kết quả không thể nói "3/3 đúng" trong khi
+ * nút dưới đáy báo "Thử lại".
+ *
+ * Bộ giáo trình không có câu "vì sao đáp án đúng" riêng cho từng ô — chỉ có
+ * `trap` của mỗi thẻ SAI (154/154 thẻ sai có trap, đo ngày 18/10/2026). Nên
+ * phần giải thích của ô đúng dựng từ các bẫy của ô đó: chọn thẻ kia thì hỏng
+ * ở đâu. Đừng bịa thêm câu giải thích chung chung ở đây.
+ */
+export function scaffoldReview(lesson: StudioLesson, d: LessonDraft): ScaffoldSlotReview[] {
+  const scaffold = lesson.step_3?.scaffold;
+  if (!scaffold) return [];
+  return scaffold.slots.map((slot) => {
+    const picked = d.slots[slot.n] ?? '';
+    const correct = picked === slot.answer;
+    const card = scaffold.bank.find((b) => b.label === picked);
+    return {
+      n: slot.n,
+      picked,
+      answer: slot.answer,
+      correct,
+      trap: !correct && card?.slot === slot.n ? card.trap : undefined,
+      belongsTo: !correct && card && card.slot !== slot.n ? card.slot : undefined,
+      traps: scaffold.bank
+        .filter((b) => b.slot === slot.n && b.label !== slot.answer && b.trap)
+        .map((b) => ({ label: b.label, trap: b.trap as string })),
+    };
+  });
+}
+
 /** Chấm màn hình hiện tại. null = màn chỉ để đọc. Màn sandbox chấm bằng Pyodide. */
 export function screenVerdict(
   lesson: StudioLesson,

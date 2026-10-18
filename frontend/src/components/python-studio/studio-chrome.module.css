@@ -62,6 +62,184 @@
   cursor: pointer;
 }
 
+/* ── Khung kết quả lắp khung mã (ScaffoldReview.tsx) ─────────────────
+   Figma "Lesson card" 15:1642 / 15:2372. Số đo giữ theo Figma (padding 24,
+   khoảng cách 20, emblem 44, icon 24, nút cao 48). Câu văn đầy đủ ở
+   --ds-fs-body chứ không 15px như Figma — thang chữ không cho câu văn nhỏ
+   hơn 17px (ds-type-scale.test.mjs).
+
+   Khung luôn TỐI, ở cả bản ngày lẫn Ban đêm, như Figma và như khung code
+   ngay phía trên: chỉ dùng token họ code/mark (`tối ở cả hai chế độ`).
+   Khung này không theo --st-ok-…/--st-err-… (nền nhạt ở bản ngày) vì Figma
+   vẽ nó tối; đó là chủ ý, không phải né lỗi Ban đêm — lỗi đó đã sửa ở gốc
+   trong studio-tokens.css (khối bí danh --st-*).
+
+   Sắc nền pha bằng color-mix từ màu nhấn trên nền code: ~10% gần đúng mã
+   nền sai/đúng của Figma mà không thêm token mới. "Đúng" dùng
+   --ds-code-str (xanh lá như Figma) thay vì --ds-mark-ochre (hổ
+   phách) — Figma vẽ đúng/sai bằng xanh/đỏ. */
+.review {
+  --review-accent: var(--ds-mark-sanguine);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 20px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--review-accent) 45%, var(--ds-code-bg));
+  border-radius: var(--ds-r-md);
+  background: color-mix(in srgb, var(--review-accent) 10%, var(--ds-code-bg));
+  color: var(--ds-code-fg);
+  animation: reviewIn 0.3s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+.reviewOk {
+  --review-accent: var(--ds-code-str);
+}
+.reviewErr {
+  --review-accent: var(--ds-mark-sanguine);
+}
+.reviewHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.reviewEmblem {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--ds-r-round);
+  background: color-mix(in srgb, var(--review-accent) 22%, var(--ds-code-bg));
+  color: var(--review-accent);
+}
+.reviewMsg {
+  display: flex;
+  flex: 1 0 0;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.reviewTitle {
+  margin: 0;
+  color: var(--review-accent);
+  font-size: var(--ds-fs-h3);
+  line-height: 1.25;
+}
+.reviewSub {
+  margin: 0;
+  color: var(--ds-code-fg);
+  font-size: var(--ds-fs-label);
+  line-height: 1.5;
+}
+.reviewScore {
+  flex-shrink: 0;
+  margin: 0;
+  color: var(--review-accent);
+  font-size: var(--ds-fs-label);
+  font-weight: 600;
+}
+.reviewItem {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.reviewAnswer {
+  margin: 0;
+  color: var(--review-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
+  white-space: pre-wrap;
+}
+.reviewText {
+  margin: 0;
+  color: var(--ds-code-fg);
+  font-size: var(--ds-fs-body);
+  line-height: 1.6;
+}
+.reviewPicked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  color: var(--review-accent);
+  font-size: var(--ds-fs-label);
+}
+.reviewWrong {
+  padding: 8px 12px;
+  border-radius: var(--ds-r-sm);
+  background: color-mix(in srgb, var(--review-accent) 18%, var(--ds-code-bg));
+  color: var(--review-accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
+}
+.reviewInline {
+  color: var(--ds-code-kw);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
+}
+.reviewFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 4px;
+}
+.reviewHint {
+  margin: 0;
+  color: var(--review-accent);
+  font-size: var(--ds-fs-label);
+}
+/* Nút tím chữ tối như Figma: --ds-mark-violet là tím dành
+   cho nền tối, chữ --ds-code-bg trên nó đúng cặp 7,69:1 của bảng token. */
+.reviewAction {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: 48px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: var(--ds-r-md);
+  background: var(--ds-mark-violet);
+  color: var(--ds-code-bg);
+  font: inherit;
+  font-size: var(--ds-fs-ui);
+  cursor: pointer;
+}
+.reviewAction:focus-visible {
+  outline: 3px solid var(--ds-mark-violet);
+  outline-offset: 3px;
+}
+.reviewActionIcon {
+  display: inline-flex;
+}
+@keyframes reviewIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .review {
+    animation: none;
+  }
+}
+/* Màn hẹp: điểm "2 / 3 đúng" xuống dưới tiêu đề thay vì ép tiêu đề gãy chữ. */
+@media (max-width: 560px) {
+  .reviewHead {
+    flex-wrap: wrap;
+  }
+  .reviewScore {
+    width: 100%;
+    padding-left: 58px;
+  }
+}
+
 .trace {
   list-style: none;
   margin: 0;
@@ -854,5 +1032,334 @@
   .theoryFigure img {
     width: 100%;
     max-width: 100%;
+  }
+}
+
+/* ── Màn lắp khung mã dạng sách mở (ScaffoldBook.tsx) ─────────────────
+   Figma "Book layout" 107:6804 / 107:6600. Số đo theo Figma: bìa đệm
+   20px 28px, gáy 16px, thanh công cụ 44px, dòng code 30px (34px khi có ô),
+   thẻ đáp án cao 44px, đệm khay 20px 28px.
+
+   Sách TỐI ở cả hai chế độ, như khung code — chỉ dùng họ token code/mark.
+   Figma có bốn sắc tối khác nhau (trang, thanh, bìa, thẻ) mà bảng token chỉ
+   có --ds-code-bg và --ds-code-line, nên ba sắc còn lại pha bằng color-mix:
+   trang = code-bg (tối nhất, như Figma), thanh/bìa/thẻ sáng dần lên về phía
+   code-line. Thứ tự đậm-nhạt giữ đúng Figma; cả khối sáng hơn Figma một bậc
+   vì code-bg sáng hơn mã trang của Figma. Không thêm token mới: bảng màu
+   lấy từ design-system-v2.md (ds-tokens.test.mjs). */
+.scaffoldScreen {
+  display: flex;
+  flex-direction: column;
+}
+.book {
+  --bk-bar: color-mix(in srgb, var(--ds-code-line) 22%, var(--ds-code-bg));
+  --bk-cover: color-mix(in srgb, var(--ds-code-line) 40%, var(--ds-code-bg));
+  --bk-card: color-mix(in srgb, var(--ds-code-line) 45%, var(--ds-code-bg));
+  --bk-violet-line: color-mix(in srgb, var(--ds-mark-violet) 50%, var(--ds-code-bg));
+  display: grid;
+  grid-template-columns: minmax(0, 684fr) 16px minmax(0, 656fr);
+  padding: 20px 28px;
+  border: 1px solid var(--ds-code-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--bk-cover);
+  box-shadow: var(--ds-shadow-open);
+  color: var(--ds-code-fg);
+}
+.bookLeft,
+.bookRight {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--ds-code-bg);
+}
+.bookLeft {
+  border-radius: var(--ds-r-xs) 0 0 var(--ds-r-xs);
+}
+.bookRight {
+  border-radius: 0 var(--ds-r-xs) var(--ds-r-xs) 0;
+}
+.bookSpine {
+  background: linear-gradient(90deg, var(--ds-code-bg), var(--ds-code-line) 50%, var(--ds-code-bg));
+}
+
+/* ── trang trái: main.py ── */
+.bookToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 44px;
+  padding: 0 20px;
+  border-bottom: 1px solid var(--ds-code-line);
+  background: var(--bk-bar);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.bookFile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--ds-code-fg);
+}
+.bookDots {
+  display: flex;
+  gap: 6px;
+}
+.bookDots i {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-code-num);
+}
+.bookDots i:nth-child(2) {
+  background: var(--ds-code-meta);
+}
+.bookDots i:nth-child(3) {
+  background: var(--ds-code-line);
+}
+.bookRuntime {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ds-code-num);
+}
+.bookRuntime i {
+  width: 5px;
+  height: 5px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-mark-violet);
+}
+.bookSource {
+  padding: 16px 18px 20px;
+  overflow-x: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+.bookLine {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-height: 30px;
+}
+.bookLine:has(.bookSlot) {
+  min-height: 34px;
+}
+.bookNum {
+  flex-shrink: 0;
+  width: 28px;
+  color: var(--ds-code-num);
+  font-size: var(--ds-fs-label);
+  text-align: right;
+}
+.bookCode {
+  color: var(--ds-code-fg);
+  font-size: var(--ds-fs-code);
+  white-space: pre;
+}
+.bookSlot {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 10px;
+  border: 1px solid var(--bk-violet-line);
+  border-radius: var(--ds-r-xs);
+  background: color-mix(in srgb, var(--ds-mark-violet) 18%, var(--ds-code-bg));
+  color: var(--ds-code-fg);
+  vertical-align: middle;
+  transition: background 0.15s ease, outline-color 0.15s ease;
+}
+.bookSlotEmpty {
+  justify-content: center;
+  min-width: 56px;
+  border-style: dashed;
+  border-color: var(--ds-mark-violet);
+  background: transparent;
+  color: var(--ds-mark-violet);
+}
+.bookSlotWrong {
+  border-color: color-mix(in srgb, var(--ds-mark-sanguine) 50%, var(--ds-code-bg));
+  background: color-mix(in srgb, var(--ds-mark-sanguine) 12%, var(--ds-code-bg));
+  color: var(--ds-mark-sanguine);
+}
+/* Đang kéo một thẻ: chỉ ô cùng số sáng lên, để biết thả vào đâu. */
+.bookSlotTarget {
+  outline: 2px dashed var(--ds-mark-violet);
+  outline-offset: 2px;
+}
+.bookSlotOver {
+  background: color-mix(in srgb, var(--ds-mark-violet) 32%, var(--ds-code-bg));
+}
+.bookNote {
+  margin: 0;
+  padding: 0 24px 16px 46px;
+  color: var(--ds-code-num);
+  font-size: var(--ds-fs-label);
+  line-height: 1.5;
+}
+
+/* ── trang phải: khay thẻ ── */
+.bookTrayHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding: 16px 28px;
+  border-bottom: 1px solid var(--ds-code-line);
+  background: var(--bk-bar);
+}
+.bookTrayText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.bookTitle {
+  margin: 0;
+  color: var(--ds-code-fg);
+  font-size: var(--ds-fs-body);
+  font-weight: 600;
+}
+.bookSub {
+  margin: 0;
+  color: var(--ds-code-meta);
+  font-size: var(--ds-fs-label);
+}
+.bookBadge {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border: 1px solid var(--ds-code-line);
+  border-radius: var(--ds-r-pill);
+  background: var(--bk-card);
+  color: var(--ds-mark-violet);
+  font-size: var(--ds-fs-label);
+  white-space: nowrap;
+}
+.bookGroups {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 28px;
+}
+.bookGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.bookGroup + .bookGroup {
+  padding-top: 12px;
+  border-top: 1px solid var(--ds-code-line);
+}
+.bookGroupHead {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.bookSlotBadge {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border: 1px solid var(--bk-violet-line);
+  border-radius: var(--ds-r-xs);
+  background: color-mix(in srgb, var(--ds-mark-violet) 15%, var(--ds-code-bg));
+  color: var(--ds-mark-violet);
+  font-size: var(--ds-fs-label);
+  font-weight: 600;
+}
+.bookGroupLabel {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ds-code-num);
+  font-size: var(--ds-fs-label);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.bookGroupLabel code {
+  font-family: 'JetBrains Mono', monospace;
+}
+.bookChoice {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 1px solid var(--ds-code-line);
+  border-radius: var(--ds-r-sm);
+  background: var(--bk-card);
+  color: var(--ds-code-fg);
+  font: inherit;
+  text-align: left;
+  cursor: grab;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.bookChoice:hover {
+  border-color: var(--bk-violet-line);
+}
+.bookChoice:active {
+  cursor: grabbing;
+}
+.bookChoice:focus-visible {
+  outline: 2px solid var(--ds-mark-violet);
+  outline-offset: 2px;
+}
+/* Thẻ đang nằm trong ô của nó: khay không rút thẻ đã dùng, nên phải tự đánh dấu. */
+.bookChoiceOn {
+  border-color: var(--ds-mark-violet);
+  background: color-mix(in srgb, var(--ds-mark-violet) 15%, var(--ds-code-bg));
+}
+.bookGrip {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--ds-code-num);
+}
+.bookChoiceCode {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.bookFoot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 28px;
+  border-top: 1px solid var(--ds-code-line);
+  background: var(--bk-bar);
+  color: var(--ds-code-meta);
+  font-size: var(--ds-fs-label);
+}
+.bookMove {
+  display: inline-flex;
+  flex-shrink: 0;
+  color: var(--ds-mark-violet);
+}
+@media (prefers-reduced-motion: reduce) {
+  .bookSlot,
+  .bookChoice {
+    transition: none;
+  }
+}
+/* Hẹp hơn hai trang cạnh nhau: xếp trang code lên trên khay, bỏ gáy. */
+@media (max-width: 960px) {
+  .book {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    padding: 12px;
+  }
+  .bookSpine {
+    display: none;
+  }
+  .bookLeft,
+  .bookRight {
+    border-radius: var(--ds-r-xs);
+  }
+  .bookTrayHead,
+  .bookGroups,
+  .bookFoot {
+    padding-right: 16px;
+    padding-left: 16px;
   }
 }

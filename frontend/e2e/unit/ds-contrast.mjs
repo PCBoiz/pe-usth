@@ -449,6 +449,20 @@ export const PAIRS = [
   ['studio: ca kiểm đạt (.runPass)', '--ds-ochre', '--ds-ochre-tint', 'text'],
   ['studio: ca kiểm trượt (.runFail)', '--ds-sanguine', '--ds-sanguine-tint', 'text'],
   ['studio: dải Boss/bài tổng hợp (.boss)', '--ds-violet-deep', '--ds-violet-tint', 'text'],
+  // Khung kết quả lắp khung mã: nền thật là color-mix 10% màu nhấn trên
+  // --ds-code-bg; đo trên --ds-code-bg (đo tay trên nền pha: chữ 11,6:1,
+  // đỏ 6,2:1, xanh 9,2:1 — đều trên ngưỡng AA).
+  ['studio: khung kết quả · câu giải thích (.reviewText)', '--ds-code-fg', '--ds-code-bg', 'text'],
+  ['studio: khung kết quả · tiêu đề sai (.reviewErr)', '--ds-mark-sanguine', '--ds-code-bg', 'text'],
+  ['studio: khung kết quả · tiêu đề đúng (.reviewOk)', '--ds-code-str', '--ds-code-bg', 'text'],
+  ['studio: khung kết quả · nút (.reviewAction)', '--ds-code-bg', '--ds-mark-violet', 'text'],
+  // Sách mở (ScaffoldBook): nền thẻ/thanh là color-mix sáng hơn --ds-code-bg
+  // một chút; đo tay trên nền pha: số dòng 5,3:1, chữ phụ 8,0:1, tím 6,7:1.
+  ['studio: sách · đoạn mã trong thẻ (.bookChoiceCode)', '--ds-code-fg', '--ds-code-bg', 'text'],
+  ['studio: sách · nhãn nhóm ô (.bookGroupLabel)', '--ds-code-num', '--ds-code-bg', 'text'],
+  ['studio: sách · chữ phụ khay (.bookSub)', '--ds-code-meta', '--ds-code-bg', 'text'],
+  ['studio: sách · huy hiệu số ô (.bookBadge)', '--ds-mark-violet', '--ds-code-bg', 'text'],
+  ['studio: sách · ô còn trống (.bookSlotEmpty)', '--ds-mark-violet', '--ds-code-bg', 'ui'],
 
   // ── màn lý thuyết — chữ người học đọc lâu nhất
   ['lý thuyết: tiêu đề khối (.theoryBlock h4)', '--ds-ink', '--ds-card', 'text'],

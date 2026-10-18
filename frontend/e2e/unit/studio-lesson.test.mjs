@@ -55,6 +55,7 @@ import {
   parsonsCode,
   quizPercent,
   sameTraceValue,
+  scaffoldReview,
   scoreCheck,
   screenVerdict,
 } from '../../src/lib/studio-lesson.ts';
@@ -742,4 +743,66 @@ test('đi hết bài B01 v2 như học viên thật: sai một màn thì % khôn
   assert.equal(d.score.bestCombo, 3);
   // Có mở gợi ý: 75 vẫn dưới trần 80 nên không bị hạ thêm.
   assert.equal(quizPercent(screens, { ...d, assisted: true }, false), 75);
+});
+
+// ─────────────────────────────────────────── khung kết quả lắp khung mã (S3)
+// Khung kết quả (ScaffoldReview.tsx, theo Figma 15:1642 / 15:2372) đọc
+// `scaffoldReview` để nói "2 / 3 đúng", "Bạn đã chọn …" và lý do. Fixture là
+// bài P01 của khoá ĐANG CHẠY (pe-v4) — đúng bài trong bản thiết kế.
+
+const P01 = JSON.parse(
+  readFileSync(join(ROOT, 'scripts', 'pe-v4', 'out-advanced', 'lessons', '001-P01.json'), 'utf8'),
+).content_json;
+const p01Answers = () =>
+  Object.fromEntries(P01.step_3.scaffold.slots.map((s) => [s.n, s.answer]));
+
+test('scaffoldReview: điền đúng cả 3 ô → 3/3, khớp screenVerdict, mỗi ô kèm bẫy của nó', () => {
+  const d = { ...initialLessonDraft(P01), slots: p01Answers() };
+  const rv = scaffoldReview(P01, d);
+  assert.equal(rv.length, 3);
+  assert.ok(rv.every((r) => r.correct));
+  assert.equal(screenVerdict(P01, { kind: 'scaffold', key: 's3-scaffold' }, d).correct, true);
+  // Ô ① loại được bẫy `name in program` — giải thích "vì sao đúng" lấy từ đây.
+  assert.deepEqual(
+    rv.find((r) => r.n === 1).traps.map((t) => t.label),
+    ['name in program'],
+  );
+  // Đáp án đúng không bao giờ bị liệt kê như một bẫy.
+  for (const r of rv) assert.ok(!r.traps.some((t) => t.label === r.answer));
+});
+
+test('scaffoldReview: đặt bẫy của chính ô → sai, kèm đúng lý do của bẫy đó; ô khác vẫn đúng', () => {
+  const d = { ...initialLessonDraft(P01), slots: { ...p01Answers(), 1: 'name in program' } };
+  const rv = scaffoldReview(P01, d);
+  const one = rv.find((r) => r.n === 1);
+  assert.equal(one.correct, false);
+  assert.equal(one.picked, 'name in program');
+  assert.match(one.trap, /đếm nhầm program khác tên/);
+  assert.equal(one.belongsTo, undefined);
+  assert.deepEqual(rv.filter((r) => r.correct).map((r) => r.n), [2, 3]);
+  // Cùng luật với nút dưới đáy: khung nói sai thì banner/CTA cũng phải sai.
+  assert.equal(screenVerdict(P01, { kind: 'scaffold', key: 's3-scaffold' }, d).correct, false);
+});
+
+test('scaffoldReview: đặt thẻ của ô KHÁC → không mượn bẫy sai chỗ, chỉ ra ô mà thẻ thuộc về', () => {
+  // Hoán đáp án ô ② và ③ cho nhau: mỗi thẻ đều "đúng" — nhưng ở ô khác.
+  const ans = p01Answers();
+  const d = { ...initialLessonDraft(P01), slots: { ...ans, 2: ans[3], 3: ans[2] } };
+  const rv = scaffoldReview(P01, d);
+  const two = rv.find((r) => r.n === 2);
+  const three = rv.find((r) => r.n === 3);
+  assert.equal(two.correct, false);
+  assert.equal(two.belongsTo, 3);
+  assert.equal(two.trap, undefined);
+  assert.equal(three.belongsTo, 2);
+
+  // Bẫy của ô ③ (`row_ppid`) đặt vào ô ①: lý do của nó nói về vòng for —
+  // chẳng dính gì tới phép so sánh ở ô ①, nên KHÔNG được hiện ở đây.
+  const lac = scaffoldReview(P01, {
+    ...initialLessonDraft(P01),
+    slots: { ...ans, 1: 'row_ppid' },
+  }).find((r) => r.n === 1);
+  assert.equal(lac.correct, false);
+  assert.equal(lac.trap, undefined, 'mượn nhầm lý do của bẫy ô ③');
+  assert.equal(lac.belongsTo, 3);
 });

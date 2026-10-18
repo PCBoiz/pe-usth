@@ -261,9 +261,14 @@ export default function StudioLesson({
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
-        // Chỉ màn lý thuyết chạy ở cột rộng — xem .contentWide trong
-        // LessonChrome.module.css (hình minh hoạ khổ 1280×640).
-        wide={scr?.kind === 'theory'}
+        // Cột rộng — xem .contentWide trong LessonChrome.module.css: màn lý
+        // thuyết (hình minh hoạ khổ 1280×640) và màn lắp khung mã (sách mở
+        // hai trang, Figma 107:6804 rộng 1384px).
+        wide={
+          scr?.kind === 'theory' ||
+          scr?.kind === 'scaffold' ||
+          (scr?.kind === 'game' && scr.gameType === 'fill')
+        }
         secondaryLabel={
           hints.length && scr?.kind === 'sandbox' && !boss
             ? hintOpen

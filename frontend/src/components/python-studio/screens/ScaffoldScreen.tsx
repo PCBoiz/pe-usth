@@ -1,93 +1,64 @@
 'use client';
 
 // S3 · Lắp ghép khung mã: điền các slot {{slotN}} trong template bằng thẻ ở kho.
-// Game "fill" của khoá có mini-game dùng lại đúng màn này, chỉ đổi tiêu đề.
-import Assemble from '@/components/lesson-chrome/exercises/Assemble';
+// Game "fill" của khoá có mini-game dùng lại đúng màn này.
+//
+// Bố cục sách mở (ScaffoldBook) theo Figma 107:6804 thay cho thẻ ShellB: bản
+// thiết kế không có dải nhãn/tiêu đề phía trên — tiêu đề nằm ở đầu trang phải.
+// Màn này chạy ở cột rộng (StudioLesson đặt `wide`).
+import { scaffoldReview } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
-import { ScreenShell } from './chrome';
 import type { LessonScreenProps } from './props';
+import ScaffoldBook from './ScaffoldBook';
+import ScaffoldReview from './ScaffoldReview';
 
 type Props = Pick<
   LessonScreenProps,
-  | 'lesson'
-  | 'scr'
-  | 'metaLabel'
-  | 'draft'
-  | 'update'
-  | 'clearChecked'
-  | 'verdict'
-  | 'held'
-  | 'onHold'
+  'lesson' | 'draft' | 'update' | 'clearChecked' | 'verdict' | 'onFinish'
 > & { title?: string };
 
 export default function ScaffoldScreen({
   lesson,
-  scr,
-  metaLabel,
   draft,
   update,
   clearChecked,
   verdict,
-  held,
-  onHold,
-  title,
+  onFinish,
 }: Props) {
   const three = lesson.step_3;
   const scaffold = three?.scaffold;
   if (!scaffold) return null;
-  const slotOf = (line: string) => /\{\{\s*slot(\d+)\s*\}\}/.exec(line);
-  const placed = new Set(Object.values(draft.slots));
+  // Đã bấm "Kiểm tra" (`verdict` đã lọc theo checked ở StudioLesson).
+  const reviews = verdict ? scaffoldReview(lesson, draft) : [];
+  const reset = () => {
+    clearChecked();
+    update({ slots: {} });
+  };
 
   return (
-    <ScreenShell
-      scr={scr}
-      metaLabel={metaLabel}
-      title={title ?? (three?.task?.title || 'Lắp lại khung mã')}
-      description={three?.task?.body}
-      verdict={verdict}
-    >
-      <Assemble
-        filename="main.py"
-        langTag="Python 3.12"
-        lines={scaffold.template
-          .replace(/\s+$/, '')
-          .split('\n')
-          .map((line, i) => {
-            const hit = slotOf(line);
-            if (!hit) return { num: i + 1, before: line };
-            const n = Number(hit[1]);
-            return {
-              num: i + 1,
-              before: line.slice(0, hit.index),
-              slotId: `slot${n}`,
-              after: line.slice((hit.index ?? 0) + hit[0].length),
-            };
-          })}
-        filled={Object.fromEntries(
-          Object.entries(draft.slots).map(([n, label]) => [`slot${n}`, label]),
-        )}
-        bank={scaffold.bank.filter((b) => !placed.has(b.label)).map((b) => b.label)}
-        heldToken={held}
-        onHold={onHold}
-        onFillSlot={(slotId) => {
-          if (!held) return;
+    <div className={c.scaffoldScreen}>
+      <ScaffoldBook
+        scaffold={scaffold}
+        note={three?.task?.body}
+        slots={draft.slots}
+        wrong={reviews.filter((r) => !r.correct).map((r) => r.n)}
+        checked={Boolean(verdict)}
+        onPlace={(n, label) => {
+          // Đổi thẻ là bỏ kết quả chấm cũ, như mọi màn có "Kiểm tra".
           clearChecked();
-          update({ slots: { ...draft.slots, [Number(slotId.replace('slot', ''))]: held } });
-          onHold(null);
+          update({ slots: { ...draft.slots, [n]: label } });
         }}
       />
-      <button
-        type="button"
-        className={c.resetLink}
-        onClick={() => {
-          clearChecked();
-          update({ slots: {} });
-          onHold(null);
-        }}
-      >
-        Đặt lại các slot
-      </button>
-    </ScreenShell>
+      {verdict ? (
+        // Nút "Tiếp theo" trong khung làm đúng việc nút chính dưới đáy (lúc
+        // này đang là "Tiếp tục →"), để hai nút không bao giờ đi hai ngả.
+        <ScaffoldReview reviews={reviews} onRedo={reset} onNext={onFinish} />
+      ) : (
+        <button type="button" className={c.resetLink} onClick={reset}>
+          Đặt lại các ô
+        </button>
+      )}
+    </div>
   );
 }

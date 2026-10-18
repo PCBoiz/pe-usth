@@ -153,8 +153,10 @@ async function playGame(page: Page, row: Row, g: PlayGame) {
       const order = [...scaffold.template.matchAll(/\{\{\s*slot(\d+)\s*\}\}/g)].map((m) => Number(m[1]));
       for (const n of order) {
         const answer = scaffold.slots.find((s) => s.n === n)!.answer;
-        await page.getByRole('button', { name: answer, exact: true }).first().click();
-        await page.getByRole('button', { name: 'thả vào đây' }).first().click();
+        // Sách mở (ScaffoldBook): bấm thẻ trong nhóm của ô là đặt luôn vào ô đó.
+        await page.getByRole('group', { name: `Thẻ cho ô ${String.fromCodePoint(0x2460 + n - 1)}` })
+          .getByRole('button', { name: answer, exact: true })
+          .click();
       }
       return checkAndNext(page);
     }
