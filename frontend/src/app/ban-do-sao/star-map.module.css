@@ -17,9 +17,11 @@
       nhúng bằng `<img>`). Mười hai tấm, một lớp phủ HTML đổi `opacity`.
 
       Một chỗ CSS VẪN với tới được, và nó là chỗ cả bản này dựa vào: độ mờ của
-      chính THẺ `<img>`. Nhờ đó phần TRỜI chỉ cần dựng một lần — nó mờ đi lúc
-      hover bằng `opacity`, không bằng tám tấm trời nữa. Ranh giới đúng là:
-      không với vào TRONG tài liệu SVG, nhưng với được cái thẻ chứa nó.
+      chính THẺ `<img>`. Ranh giới đúng là: không với vào TRONG tài liệu SVG,
+      nhưng với được cái thẻ chứa nó. Nhờ đó trạng thái hover chỉ là một phép
+      đổi giữa chín tấm CHÒM, và phần trời dựng MỘT lần rồi không ai chạm vào
+      nữa — ba tấm trời không có một quy tắc hover nào, xem khối "TRỜI KHÔNG
+      MỜ ĐI NỮA" dưới đây.
 
    3. TRANG NẠP XONG LÀ ĐỨNG YÊN. Không sao nhấp nháy, không tinh vân trôi,
       không parallax theo chuột, không hoạt ảnh lúc vào trang. Chỉ con trỏ
@@ -59,10 +61,28 @@
 }
 
 /* Khung giữ ĐÚNG tỉ lệ khung bầu trời (1360 × 820) để ô bấm tính bằng %
-   không lệch theo bề rộng màn. */
+   không lệch theo bề rộng màn.
+
+   NỀN LÀ MÀU NỀN TRỜI, KHÔNG PHẢI `--ds-page`. Đây là một lỗi đã sửa, không
+   phải một lựa chọn: `--ds-page` bản sáng là một màu trắng xanh, nên bất cứ
+   lúc nào một tấm trời không kín sáng thì cái nền ấy LỘ XUYÊN QUA bầu trời
+   gần đen. Chủ sản phẩm nhìn thấy nó đúng như nó là: "tại sao khi hover thì
+   nó lại XÁM đi chứ không phải MỜ đi?" — hạ độ mờ một lớp TỐI trên nền SÁNG
+   không làm nó tối hơn, nó làm nó NHẠT thành xám sữa. Đo được: chỗ trời tối
+   nhất đi từ L = 0,0038 lên 0,1226, tức sáng gấp 32 lần.
+
+   Hover nay không hạ độ mờ tấm trời nào nữa (xem khối dưới), nên chỗ còn lộ
+   nền là lúc ảnh CHƯA TẢI XONG — một khung trắng xanh sáng loé lên trước một
+   bầu trời gần đen, ở đúng trang mà cả thiết kế dựa vào mắt đã quen tối.
+
+   `--sky-base` do `py scripts/star/build_sky.py` sinh ra ở
+   `public/map/star/sky-theme.css` từ `SKY_PROFILE_DARK.base`. Không chép mã
+   màu vào đây: `npm run lint:tokens` cấm hex trong mọi `*.module.css`, và cấm
+   đúng chỗ — một mã chép tay là một chỗ bản tối và bản sáng sẽ trôi xa nhau.
+   Một ca test so giá trị trong tệp sinh ra với hồ sơ ở TS. */
 .frame {
   aspect-ratio: 1360 / 820;
-  background: var(--ds-page);
+  background: var(--sky-base);
   border-radius: var(--ds-r-md);
   overflow: hidden;
   position: relative;
@@ -89,10 +109,15 @@
   transition: opacity var(--ds-dur-base) ease;
 }
 
-.chomNghi,
-.troi {
+.chomNghi {
   pointer-events: none;
   transition: opacity var(--ds-dur-base) ease;
+}
+
+/* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
+   không một quy tắc nào. Chúng chỉ cần không ăn con trỏ. */
+.troi {
+  pointer-events: none;
 }
 
 .hit {
@@ -200,13 +225,27 @@
   height: 5.305%;
 }
 
-/* Trỏ vào BẤT KỲ chòm nào: phần TRỜI mờ đi, tấm chòm lúc nghỉ tắt hẳn.
-   0.62 là `SKY_PROFILE_DARK.scale.skyDim` — một ca test so lại con số này với
-   hồ sơ ở TS, vì một con số chép tay ở đây là một con số sẽ lệch. */
-.hit:hover ~ .troi,
-.hit:focus-visible ~ .troi {
-  opacity: 0.62;
-}
+/* TRỜI KHÔNG MỜ ĐI NỮA — và đây là chỗ cần một ca test canh, vì "mờ cả trời
+   cho chòm nổi lên" là phản xạ đầu tiên của bất cứ ai sửa tới đoạn này. Bản
+   trước làm đúng thế: cả ba tấm trời hạ xuống `scale.skyDim` = 0,62.
+
+   Hai lý do bỏ, lý do sau mới là lý do thật:
+
+    1. Nó ra XÁM chứ không ra TỐI, vì nền khung là `--ds-page` (đã sửa ở trên).
+    2. Và sửa nền rồi thì nó VẪN sai: mờ cả trời là mờ luôn tinh vân, dải Ngân
+       Hà và mạch hoàng đạo — tức mờ đúng cái LIÊN KẾT giữa tám chòm, ngay lúc
+       người ta đang chọn. Cả bầu trời được dựng ra là để trả lời câu "chòm
+       này nối với các chòm khác như nào"; làm nó biến đi lúc hover là xoá câu
+       trả lời đúng lúc có người hỏi.
+
+   Đo trên chính bức này: tương phản lõi Ngân Hà / trời trống tụt từ 15,8:1
+   xuống 6,4:1 (mất 59% tín hiệu), còn tỉ số hình/nền mà nó mua được chỉ nhích
+   từ 4,18:1 lên 4,36:1 (+3%, đo ở M1). Và giả thuyết "mờ trời để bảy chòm kia
+   còn giữ 3:1" đo ra là sai: nét mờ / trời là 1,87:1 ở CẢ HAI cách.
+
+   Nên toàn bộ việc làm nổi nằm ở lớp CHÒM, và nó là một thay đổi CỤC BỘ cho
+   một hành động cục bộ: tấm chòm lúc nghỉ tắt hẳn, một tấm tiêu điểm hiện
+   lên, trong đó chòm được trỏ đi 0,55 → 0,85 và bảy chòm kia → 0,28. */
 
 .hit:hover ~ .chomNghi,
 .hit:focus-visible ~ .chomNghi {
@@ -244,7 +283,6 @@
    một để xem, chạm lần hai để đi": luật đó phá kỳ vọng của một liên kết. */
 @media (hover: none) {
   .chomRo { opacity: 0; }
-  .troi { opacity: 1; }
 }
 
 /* GIẢM CHUYỂN ĐỘNG (§11.2). WCAG có một định nghĩa hẹp mà dễ đọc nhầm: đổi
@@ -257,8 +295,7 @@
    hồi, và người dùng `reduce` vẫn phải phân biệt được chòm đang trỏ. */
 @media (prefers-reduced-motion: reduce) {
   .chomRo,
-  .chomNghi,
-  .troi { transition: none; }
+  .chomNghi { transition: none; }
 }
 
 .srOnly {

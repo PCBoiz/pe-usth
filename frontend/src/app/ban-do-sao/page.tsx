@@ -67,7 +67,13 @@ function lessonHref(index: number): string {
 export default function StarMapPreviewPage() {
   return (
     <>
-      <PageStyles hrefs={['/static/css/edu-theme.css']} />
+      {/* `sky-theme.css` SINH RA bởi `build_sky.py`: nó khai đúng một biến,
+          `--sky-base` = màu nền trời của hồ sơ, cho nền của khung bản đồ.
+          Nền ấy từng là `var(--ds-page)` — một màu trắng xanh ở bản sáng —
+          nên bầu trời gần đen lộ nền sáng xuyên qua và "mờ đi" đọc ra thành
+          "xám đi". Màu không chép tay vào `*.module.css` được: lint cấm hex ở
+          đó, và cấm đúng chỗ. */}
+      <PageStyles hrefs={['/static/css/edu-theme.css', '/map/star/sky-theme.css']} />
       <SiteHeader />
       <main className={styles.wrap}>
         <h1>{STAR_COPY.title}</h1>

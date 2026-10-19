@@ -543,6 +543,27 @@ export const SKY_LABEL = {
   subSize: 15,
   subWeight: 500,
   subTracking: 0.04,
+  /**
+   * ĐỘ MỜ CỦA CHỮ bảy nhãn còn lại khi một chòm được trỏ vào.
+   *
+   * Vì sao một con số RIÊNG chứ không dùng lại tỉ số của nét chòm
+   * (`dimOpacity / lineOpacity[0]` = 0,509, vẫn dùng cho đường dẫn và gạch
+   * chân): chữ có một SÀN mà nét không có. WCAG đòi 4,5:1 cho chữ và 3:1 cho
+   * hình, nên hai thứ mờ theo cùng một tỉ số là một thứ sẽ trượt trước.
+   *
+   * Và nó trượt thật — số này là bản sửa một lỗi mà việc bỏ `skyDim` LÀM RA.
+   * Bản cũ mờ cả trời lúc hover, nên nền sau chữ cũng tối theo và chữ mờ được
+   * NÂNG tương phản nhờ đó: nhãn M4 (nằm chỗ trời sáng nhất) đo được 4,66:1,
+   * vừa đủ. Giữ trời nguyên thì nền không tối đi nữa và chính nhãn ấy tụt
+   * xuống **4,36:1** — dưới sàn. 0,55 đưa nó lên **4,83:1**, và nó chỉ đặc hơn
+   * 0,509 có 8% nên chòm được trỏ vẫn nổi hẳn.
+   *
+   * KHÔNG lấy 0,52 (đo ra 4,48:1, tức đúng mép): bộ đo lấy mẫu trên lưới 9×5
+   * trong hộp chữ, nên nó có thể bỏ sót một điểm sáng hơn giữa hai mẫu. Dừng
+   * đúng ở mép ràng buộc là tự đặt mình vào chỗ một phép lấy mẫu dày hơn sẽ
+   * làm đỏ. Script đo cả trạng thái mờ và **TRƯỢT BUILD** nếu dưới 4,5:1.
+   */
+  dimTextOpacity: 0.55,
   /** Mã bài lúc hover (§10 hiệu ứng 7): JetBrains Mono 13px, chéo trên-phải. */
   codeSize: 13,
   codeOffset: 9,
@@ -684,8 +705,32 @@ export type SkyProfile = {
   /** Nhánh nào của `MAP_PALETTE.mN` tám sắc chặng lấy từ: `glow` (đặt được
    *  trên nền tối) hay `ink` (đặt được trên nền sáng). */
   hueBranch: 'glow' | 'ink';
-  /** Hệ số theo hồ sơ. ĐÂY là chỗ duy nhất bán kính/độ dày/độ mờ được phép
-   *  khác nhau giữa hai bản — bảng §19.3, không thêm dòng nào. */
+  /**
+   * Hệ số theo hồ sơ. ĐÂY là chỗ duy nhất bán kính/độ dày/độ mờ được phép
+   * khác nhau giữa hai bản — bảng §19.3, không thêm dòng nào.
+   *
+   * ── KHOÁ `skyDim` ĐÃ BỊ BỎ ngày 19/10/2026 ──────────────────────────
+   *
+   * Nó từng là hệ số mờ áp cho CẢ BA tấm trời lúc trỏ vào (0,62), và đừng
+   * dựng lại — nó đã gây ra đúng lời chê "tại sao khi hover thì nó lại XÁM đi
+   * chứ không phải MỜ đi".
+   *
+   * Nguyên nhân trực tiếp là một cái nền sai: `.frame` tô `var(--ds-page)`,
+   * mà bản sáng của token đó là `#EAEFF6`. Hạ độ mờ của một lớp TỐI trên nền
+   * SÁNG không làm nó tối hơn — nó làm nó NHẠT thành xám sữa. Đo được: chỗ
+   * trời tối nhất đi từ L = 0,0038 lên **0,1226**, tức sáng gấp 32 lần. Nền
+   * đã sửa thành chính `base` của hồ sơ (qua `--sky-base`, xem `--css`).
+   *
+   * Nhưng sửa nền rồi thì cách làm này vẫn SAI, và đây là lý do bỏ hẳn: mờ cả
+   * trời là mờ luôn tinh vân, dải Ngân Hà và mạch hoàng đạo — tức mờ đúng cái
+   * LIÊN KẾT giữa tám chòm, ngay lúc người ta đang chọn. Đo trên chính bức
+   * này: tương phản lõi Ngân Hà / trời trống tụt từ **15,8:1 xuống 6,4:1**
+   * (mất 59% tín hiệu), trong khi tỉ số hình/nền mà nó mua được chỉ nhích từ
+   * 4,18:1 lên 4,36:1 (**+3%**, đo ở M1). Và giả thuyết "mờ trời để bảy chòm
+   * kia còn giữ 3:1" thì đo ra là sai: tương phản xấu nhất của nét mờ với
+   * trời là 1,87:1 ở CẢ HAI cách. Nên toàn bộ việc làm nổi nay nằm ở lớp
+   * CHÒM: chòm được trỏ 0,55 → 0,85, bảy chòm kia → `dimOpacity`.
+   */
   scale: {
     /** Bán kính 48 ngôi: 1,00 (tối) · 1,08 (sáng). */
     star: number;
@@ -695,16 +740,9 @@ export type SkyProfile = {
     lineOpacity: [number, number];
     /** Nét của BẢY CHÒM CÒN LẠI khi một chòm được trỏ vào: 0,55 → 0,28
      *  (§10 hiệu ứng 3). Tách hình khỏi nền bằng TƯƠNG PHẢN, không bằng
-     *  chuyển động. */
+     *  chuyển động. ĐÂY LÀ TOÀN BỘ hiệu ứng làm nổi — xem chú thích "khoá
+     *  `skyDim` đã bị bỏ" ở `SkyProfile` dưới. */
     dimOpacity: number;
-    /** Hệ số mờ cho các lớp TRỜI (tinh vân, sao nền, lưới) lúc hover.
-     *
-     *  Một dòng THÊM so với bảng §19.3, và lý do phải viết ra: bản mẫu chỉ có
-     *  MỘT chòm, nên "các vùng khác" ở đây là chính bầu trời, không phải bảy
-     *  chòm kia. Dùng thẳng `dimOpacity` 0,28 cho trời thì tinh vân (vốn đã ở
-     *  độ mờ 0,15 mỗi bậc) tắt hẳn — mất đúng thứ mà hover phải để người xem
-     *  còn nhìn xuyên qua được (quy ước Bayer, §10 hiệu ứng 2). */
-    skyDim: number;
     /** Độ mờ của hình khắc dụng cụ lúc hover (lớp E — chưa dựng ở bản mẫu). */
     figureOpacity: number;
   };
@@ -774,7 +812,6 @@ export const SKY_PROFILE_DARK: SkyProfile = {
     line: 1.15,
     lineOpacity: [0.55, 0.85],
     dimOpacity: 0.28,
-    skyDim: 0.62,
     figureOpacity: 0.13,
   },
   base: '#0A0C14',

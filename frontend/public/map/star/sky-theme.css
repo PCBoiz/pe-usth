@@ -1,0 +1,12 @@
+/* SINH RA bởi `py scripts/star/build_sky.py` — ĐỪNG SỬA TAY, lần chạy
+   sau xoá sạch. Nguồn: `SKY_PROFILE_DARK.base` trong
+   `frontend/src/lib/star-map.ts`.
+
+   Vì sao một tệp riêng chứ không một dòng trong `star-map.module.css`:
+   `npm run lint:tokens` cấm mã hex trong mọi `*.module.css`, và cấm đúng
+   chỗ — màu chỉ được sống ở hồ sơ TS. Nền của khung PHẢI là màu nền trời:
+   nó từng là `var(--ds-page)`, và hạ độ mờ một lớp tối trên nền sáng làm
+   bầu trời NHẠT thành xám sữa chứ không tối đi. */
+:root {
+  --sky-base: #0A0C14;
+}

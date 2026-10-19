@@ -1770,9 +1770,12 @@ def do_tuong_phan_nhan(P):
     TRUNG BÌNH của hộp chữ với một ngưỡng, tức nó là một thứ XẤP XỈ cho câu
     hỏi thật ("chữ này có đạt 4,5:1 không?"). Trung bình thì một hộp nửa tối
     nửa sáng vẫn qua, trong khi dòng chữ nằm đúng nửa sáng. Và nó không trả
+    lời được gì về trạng thái MỜ, vì ở đó cái đổi là độ mờ của chữ chứ không
+    phải độ chói của nền.
+
     Nên ở đây tính tỉ số tương phản ở TỪNG ĐIỂM lấy mẫu rồi lấy ca xấu nhất,
-    và tính riêng cho từng DÒNG: hai dòng dùng hai màu khác nhau (`text` và
-    `textSub`) và nằm ở hai dải khác nhau trong hộp.
+    và tính riêng cho từng (dòng × trạng thái): ba thứ đó dùng ba màu/độ mờ
+    khác nhau và nằm ở hai dải khác nhau trong hộp.
 
     Đổi câu chữ nhãn là đổi bề rộng hộp, tức đổi chỗ đặt, tức đổi nền sau chữ
     — nên con số này phải đo LẠI mỗi lần dựng, không phải một lần rồi chép vào
@@ -1784,8 +1787,13 @@ def do_tuong_phan_nhan(P):
         da_dat.append((c["key"], g["box"]))
         x0, y0, x1, y1 = g["box"]
         py = g["p2"][1]
-        for ten, mau, op, (by0, by1) in (("chặng", P["text"], 1.0, (y0, py)),
-                                         ("khoá", P["textSub"], 1.0, (py, y1))):
+        # BA phép đo, không hai — trạng thái MỜ là một trạng thái có chữ, nên
+        # nó cũng phải đạt 4,5:1. Bỏ qua nó là bỏ qua đúng chỗ việc thôi mờ
+        # bầu trời đã làm vỡ: nền sau chữ không tối theo nữa.
+        for ten, mau, op, (by0, by1) in (
+                ("chặng", P["text"], 1.0, (y0, py)),
+                ("chặng-mờ", P["text"], LBL["dimTextOpacity"], (y0, py)),
+                ("khoá", P["textSub"], 1.0, (py, y1))):
             chu = hex_rgb(mau)
             xau = 99.0
             for i in range(9):
@@ -1953,8 +1961,13 @@ def ve_nhan(ink, P, focus):
         rule_x0 = box[0]
         ink.poly("nhan", [(rule_x0, p2[1]), (rule_x0 + wn + LBL["rulePad"], p2[1])],
                  hue, LBL["ruleWidth"], lop)
+        # CHỮ mờ theo một con số RIÊNG, không theo `mo` của nét. Chữ có sàn
+        # 4,5:1 còn hình có sàn 3:1, nên hai thứ mờ cùng một tỉ số là một thứ
+        # trượt trước — và nó trượt thật: ở `mo` = 0,509 nhãn M4 chỉ còn
+        # 4,36:1. Xem `SKY_LABEL.dimTextOpacity`.
         ink.text("nhan", rule_x0, p2[1] - LBL["baselineLift"], name, P["text"],
-                 LBL["nameSize"], LBL["nameWeight"], LBL["fontStack"], op=mo)
+                 LBL["nameSize"], LBL["nameWeight"], LBL["fontStack"],
+                 op=1.0 if (focus is None or ro) else LBL["dimTextOpacity"])
         out.append((c["key"], box))
         if ro:
             # Dòng phụ: tên khoá · số bài. CHỈ ở chòm đang được trỏ — bảy chòm
@@ -2054,6 +2067,46 @@ def vung_bam(boxes):
         nh = next(b for k, b in boxes if k == key)
         out[key] = (bl, nh)
     return out
+
+
+def khoi_bien_mau(P, ten_hs):
+    """CSS khai `--sky-base` = `profile.base`, SINH RA chứ không chép tay.
+
+    Vì sao phải có tệp này, và vì sao nó không nằm trong `star-map.module.css`:
+
+    `.frame` của route xem thử từng tô `var(--ds-page)`, mà bản SÁNG của token
+    đó là một màu trắng xanh. Nền ấy chỉ lộ ra ở hai chỗ — lúc ảnh chưa tải
+    xong, và lúc một tấm trời hạ độ mờ — nhưng chỗ thứ hai đã làm chủ sản phẩm
+    chê đúng một câu: "tại sao khi hover thì nó lại XÁM đi chứ không phải MỜ
+    đi?". Hạ độ mờ của một lớp TỐI trên nền SÁNG không làm nó tối hơn, nó làm
+    nó NHẠT: đo được chỗ trời tối nhất đi từ L = 0,0038 lên 0,1226, sáng gấp
+    32 lần. Nền phải là chính màu nền trời.
+
+    Nhưng `npm run lint:tokens` CẤM mọi mã hex trong `*.module.css` (và cấm
+    đúng chỗ: một mã chép tay là một chỗ bản tối và bản sáng sẽ trôi xa nhau).
+    Nên màu đi qua một BIẾN, và cái biến ấy do bộ sinh viết ra từ hồ sơ TS —
+    cùng đường đi với các khối `.hit*`. Ca test so lại giá trị trong tệp này
+    với `SKY_PROFILE_DARK.base`.
+
+    Khi bản SÁNG có hồ sơ, tệp này cần hai khối (một cho mỗi chế độ giao diện,
+    vì bản đồ đổi theo chế độ của trang). Lúc đó sửa ở đây là đủ: `--sky-base`
+    là tên duy nhất mà CSS của trang biết."""
+    return "\n".join([
+        "/* SINH RA bởi `py scripts/star/build_sky.py` — ĐỪNG SỬA TAY, lần chạy",
+        "   sau xoá sạch. Nguồn: `SKY_PROFILE_%s.base` trong"
+        % ten_hs.upper(),
+        "   `frontend/src/lib/star-map.ts`.",
+        "",
+        "   Vì sao một tệp riêng chứ không một dòng trong `star-map.module.css`:",
+        "   `npm run lint:tokens` cấm mã hex trong mọi `*.module.css`, và cấm đúng",
+        "   chỗ — màu chỉ được sống ở hồ sơ TS. Nền của khung PHẢI là màu nền trời:",
+        "   nó từng là `var(--ds-page)`, và hạ độ mờ một lớp tối trên nền sáng làm",
+        "   bầu trời NHẠT thành xám sữa chứ không tối đi. */",
+        ":root {",
+        "  --sky-base: %s;" % P["base"],
+        "}",
+        "",
+    ])
 
 
 def kiem_tile_phu_lop():
@@ -2168,6 +2221,9 @@ def main():
         print()
 
     if args.css:
+        # Biến màu nền TRƯỚC, vì nó là thứ `sky-theme.css` phải mang; các khối
+        # `.hit*` thì chép vào `star-map.module.css`.
+        print(khoi_bien_mau(P, args.profile))
         # `a` = bao lồi chòm, `b` = hộp nhãn. Quy ra % của khung để ô bấm
         # không lệch khi bề rộng màn đổi.
         for key, hai in hit.items():
@@ -2215,8 +2271,15 @@ def main():
         net = sum(len(v) for lop in lops for v in ink.buckets[lop].values())
         rows.append((f.name, net, kb))
 
+    # Biến màu nền của khung, ghi RA TỆP chứ chỉ in ra thì nó sẽ lệch: in ra
+    # là chờ một con người chép, và màu chép tay là màu sẽ trôi.
+    theme = out_dir / "sky-theme.css"
+    theme.write_text(khoi_bien_mau(P, args.profile), encoding="utf-8")
+    tong += len(theme.read_bytes()) / 1024
+
     for n, strokes, kb in rows:
         print("%-22s %6d nét %8.1f KB" % (n, strokes, kb))
+    print("%-22s %6s     %8.1f KB" % (theme.name, "", len(theme.read_bytes()) / 1024))
     print("%-22s %6s     %8.1f KB  (trần %d)" % ("TỔNG", "", tong, MAX_TOTAL_KB))
     over = ["%s %.0f KB" % (n, kb) for n, _s, kb in rows if kb > MAX_KB]
     if over:

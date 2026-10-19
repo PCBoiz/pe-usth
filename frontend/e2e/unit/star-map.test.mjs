@@ -89,6 +89,11 @@ const TAT_CA = [
 ];
 const TEN_TEP = ['sky-troi.svg', 'sky-sao-nen.svg', 'sky-mach.svg', 'sky-chom-nghi.svg',
   ...SKY_CONSTELLATIONS.map((c) => `sky-chom-${c.key}.svg`)];
+/** Mọi tệp bộ sinh ghi ra, KỂ CẢ `sky-theme.css` — biến `--sky-base` cũng là
+ *  tập sinh ra, nên nó cũng phải tất định và cũng không được sửa tay. */
+const TEN_TEP_SINH = [...TEN_TEP, 'sky-theme.css'];
+const THEME = read('public', 'map', 'star', 'sky-theme.css');
+
 /* Hai dòng của một nhãn. Ở đúng MỘT chỗ vì ca test nào cũng cần cả hai, và
    dựng lại chuỗi ở năm chỗ là năm chỗ sẽ lệch khi câu chữ đổi lần nữa. */
 const dongChang = (c) => `${c.key} · ${c.subtitle}`;
@@ -814,6 +819,22 @@ test('nhãn KHÔNG mang tên chòm, và dòng khoá chỉ hiện lúc trỏ vào
     }
   }
 
+  // CHỮ của bảy nhãn kia mờ theo `dimTextOpacity`, KHÔNG theo tỉ số của nét
+  // (`dimOpacity / lineOpacity[0]` = 0,509). Hai sàn khác nhau: chữ 4,5:1,
+  // hình 3:1 — mờ cùng một tỉ số là một thứ trượt trước, và nó đã trượt thật
+  // (nhãn M4 còn 4,36:1 ở 0,509).
+  for (const c of SKY_CONSTELLATIONS) {
+    const nhan = lop(RO[c.key], 'nhan');
+    const re = new RegExp(`font-size="${SKY_LABEL.nameSize}"[^>]*fill-opacity="([\\d.]+)"`);
+    const m = nhan.match(re);
+    assert.ok(m, `tấm ${c.key}: không nhóm chữ chặng nào mờ đi`);
+    assert.equal(+m[1], SKY_LABEL.dimTextOpacity,
+      `tấm ${c.key}: chữ chặng mờ xuống ${m[1]} nhưng SKY_LABEL.dimTextOpacity là`
+      + ` ${SKY_LABEL.dimTextOpacity}`);
+    assert.notEqual(SKY_LABEL.dimTextOpacity, P.scale.dimOpacity / P.scale.lineOpacity[0],
+      'chữ lại mờ theo tỉ số của NÉT — xem chú thích ở `dimTextOpacity`');
+  }
+
   // SỐ BÀI trong dòng khoá đếm từ danh sách ngôi, nên nó không nói sai được.
   for (const c of SKY_CONSTELLATIONS) {
     assert.match(dongKhoa(c), new RegExp(`· ${c.stars.length} bài$`));
@@ -860,12 +881,17 @@ test('chữ trên CẢ TÁM nhãn đạt 4,5:1, và bộ sinh TỰ ĐO rồi tr�
   const ra = execFileSync(PYBIN, [join(ROOT, 'scripts', 'star', 'build_sky.py'), '--do'],
     { cwd: ROOT, encoding: 'utf8' });
   const dong = [...ra.matchAll(/nhãn (M\d)\s+dòng (\S+)\s+([\d.]+):1/g)];
-  assert.equal(dong.length, 16,
-    `đọc được ${dong.length} số đo nhãn, phải có 16 (8 nhãn × 2 dòng)`);
+  // BA phép đo mỗi nhãn: dòng chặng, dòng chặng lúc MỜ (khi một chòm khác
+  // được trỏ), dòng khoá. Trạng thái mờ cũng là trạng thái có chữ — và nó là
+  // đúng chỗ việc thôi làm mờ bầu trời đã làm vỡ một lần: nền sau chữ không
+  // tối theo nữa nên nhãn M4 tụt từ 4,66:1 xuống 4,36:1.
+  assert.equal(dong.length, 24,
+    `đọc được ${dong.length} số đo nhãn, phải có 24 (8 nhãn × 3 trạng thái)`);
   for (const m of dong) {
     assert.ok(+m[3] >= 4.5,
       `nhãn ${m[1]} dòng ${m[2]} chỉ đạt ${m[3]}:1, dưới 4,5:1 của §5.2`);
   }
+  assert.ok(dong.some((m) => m[2] === 'chặng-mờ'), 'không có phép đo nào cho trạng thái mờ');
   // …và chính bộ sinh phải CHẶN, không chỉ in ra: một bảng số in ra mà không
   // ai đọc thì bằng không có.
   assert.ok(/def kiem_tuong_phan_nhan\(P, san=4\.5\)/.test(PY),
@@ -931,8 +957,9 @@ test('chạy script hai lần ra ĐÚNG một bộ mười hai tệp', () => {
     );
     chay(a);
     chay(b);
-    assert.equal(readdirSync(a).length, TEN_TEP.length, 'số tệp sinh ra lệch với danh sách tấm');
-    for (const f of TEN_TEP) {
+    assert.equal(readdirSync(a).length, TEN_TEP_SINH.length,
+      'số tệp sinh ra lệch với danh sách tấm');
+    for (const f of TEN_TEP_SINH) {
       assert.equal(readFileSync(join(a, f), 'utf8'), readFileSync(join(b, f), 'utf8'),
         `${f} đổi giữa hai lần chạy — mỗi lần build sẽ là một diff vô nghĩa`);
       // Và nó phải khớp tệp ĐÃ COMMIT: tranh là tập SINH RA, sửa tay là lần
@@ -1096,12 +1123,71 @@ test('`:focus-visible` cho ra đúng cùng một trạng thái như `:hover`, ch
   // SAU, nên thứ tự DOM là một hợp đồng chứ không phải một cách sắp cho gọn.
   assert.ok(TSX_CODE.lastIndexOf('<a') < TSX_CODE.indexOf('<img'),
     'có một <a> vùng bấm đứng sau <img> — `.hitM1:hover ~ .chomM1` sẽ không khớp');
-  // Hệ số mờ của phần TRỜI lúc hover phải khớp `scale.skyDim` ở hồ sơ.
-  const dim = CSS_CODE.match(/\.hit:hover ~ \.troi,[\s\S]{0,120}?opacity:\s*([\d.]+)/);
-  assert.ok(dim, 'CSS không làm mờ phần trời lúc hover');
-  assert.equal(+dim[1], P.scale.skyDim,
-    `CSS làm mờ trời xuống ${dim[1]} nhưng hồ sơ khai ${P.scale.skyDim} — một con số chép tay`
-    + ' là một con số sẽ lệch');
+});
+
+test('TRỜI KHÔNG MỜ ĐI lúc trỏ vào — liên kết giữa tám chòm không được biến mất', () => {
+  // Bản trước hạ CẢ BA tấm trời xuống `scale.skyDim` = 0,62 lúc hover, và nó
+  // sai theo hai tầng. Ca này canh tầng thứ hai, tầng không ai thấy bằng mắt
+  // được nếu chỉ sửa cái nền:
+  //
+  //  · tầng một là một lỗi màu — nền khung tô `--ds-page` (trắng xanh ở bản
+  //    sáng), nên hạ độ mờ một lớp TỐI trên nền SÁNG làm nó NHẠT thành xám
+  //    sữa chứ không tối đi. Ca `nền khung là màu nền trời` dưới canh tầng ấy;
+  //  · tầng hai: mờ cả trời là mờ luôn tinh vân, dải Ngân Hà và mạch hoàng
+  //    đạo — tức mờ đúng cái LIÊN KẾT giữa tám chòm, ngay lúc người ta đang
+  //    chọn. Cả bầu trời được dựng ra để trả lời "chòm này nối với các chòm
+  //    khác như nào"; làm nó mờ đi lúc hover là xoá câu trả lời đúng lúc có
+  //    người hỏi. Đo được: tương phản lõi Ngân Hà / trời trống 15,8:1 → 6,4:1
+  //    (mất 59%), đổi lấy +3% tỉ số hình/nền. Không đáng.
+  //
+  // Phép kiểm là "không quy tắc nào hạ độ mờ `.troi`", không phải "`.troi`
+  // không xuất hiện": nó vẫn cần `pointer-events: none`.
+  for (const m of CSS_CODE.matchAll(/([^{}]*\.troi[^{}]*)\{([^}]*)\}/g)) {
+    const op = m[2].match(/opacity:\s*([\d.]+)/);
+    assert.ok(!op || +op[1] === 1,
+      `CSS hạ độ mờ phần trời xuống ${op?.[1]} ở "${m[1].trim()}" — cả bầu trời mờ theo thì`
+      + ' tinh vân, Ngân Hà và mạch hoàng đạo biến mất đúng lúc người ta đang chọn một chặng');
+  }
+  // Và hồ sơ không được còn khoá `skyDim`: một hệ số nằm đó không ai đọc là
+  // một lời mời cắm nó trở lại.
+  assert.ok(!('skyDim' in P.scale),
+    'SKY_PROFILE_DARK.scale còn `skyDim` — khoá đó đã bỏ, xem chú thích ở `scale`');
+  // Việc làm nổi phải nằm TRỌN ở lớp chòm, và nó vẫn còn đó.
+  assert.ok(P.scale.dimOpacity < P.scale.lineOpacity[0],
+    'bảy chòm kia không mờ hơn trạng thái nghỉ — không còn hiệu ứng làm nổi nào cả');
+});
+
+test('nền khung là MÀU NỀN TRỜI, sinh ra từ hồ sơ — không phải `--ds-page`', () => {
+  // Đây là lỗi chủ sản phẩm đã định vị: `.frame { background: var(--ds-page) }`
+  // mà `--ds-page` bản sáng là một màu trắng xanh. Nền ấy lộ ra lúc ảnh chưa
+  // tải xong, và trước đây còn lộ ra mỗi lần hover.
+  const frame = CSS_CODE.match(/\.frame\s*\{([^}]*)\}/);
+  assert.ok(frame, 'CSS thiếu .frame');
+  assert.match(frame[1], /background:\s*var\(--sky-base\)/,
+    '.frame không tô bằng `var(--sky-base)`');
+  assert.ok(!/--ds-page/.test(frame[1]),
+    '.frame tô bằng `--ds-page` — token đó SÁNG ở bản sáng, nên bầu trời gần đen sẽ lộ một'
+    + ' nền trắng xanh xuyên qua bất cứ lúc nào một tấm trời không kín sáng');
+
+  // Và giá trị của biến phải ĐÚNG BẰNG `base` của hồ sơ. Tệp này do
+  // `build_sky.py` sinh ra chính vì thế: `lint:tokens` cấm hex trong
+  // `*.module.css`, nên nếu màu không đi qua một tệp SINH RA thì nó sẽ bị chép
+  // tay vào đâu đó, và một mã chép tay là một chỗ bản tối với bản sáng trôi xa
+  // nhau.
+  const v = THEME.match(/--sky-base:\s*(#[0-9A-Fa-f]{6})\s*;/);
+  assert.ok(v, 'sky-theme.css không khai --sky-base');
+  assert.equal(v[1].toUpperCase(), P.base.toUpperCase(),
+    `sky-theme.css nói ${v[1]} nhưng SKY_PROFILE_DARK.base là ${P.base} — chạy lại`
+    + ' `py scripts/star/build_sky.py`');
+  // Trang phải THẬT SỰ nạp tệp đó, không thì `var(--sky-base)` không có giá
+  // trị và thuộc tính `background` bị bỏ hẳn: khung trong suốt, nền trang lộ
+  // ra, tức đúng cái lỗi cũ bằng một đường khác.
+  assert.ok(TSX_CODE.includes('/map/star/sky-theme.css'),
+    'page.tsx không nạp sky-theme.css — `var(--sky-base)` sẽ không phân giải được');
+  // `lint:tokens` cấm hex trong module CSS; canh lại ở đây để lỗi nói ra VÌ SAO
+  // thay vì chỉ là một dòng grep đỏ.
+  assert.ok(!/#[0-9a-fA-F]{3,8}/.test(CSS),
+    'star-map.module.css có một mã màu — màu chỉ được sống ở hồ sơ TS');
 });
 
 test('giảm chuyển động: bỏ CHUYỂN TIẾP nhưng GIỮ tương phản', () => {
