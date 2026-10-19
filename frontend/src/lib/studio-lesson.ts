@@ -139,14 +139,25 @@ export type Step2 = {
   };
 };
 
+/**
+ * Một ô trống của màn điền code. `hint` (ô này làm gì) và `why` (vì sao đáp án
+ * đúng) là TUỲ CHỌN: tới 19/10/2026 chưa bài nào khai — 149 ô của 45 bài chỉ có
+ * `n/placeholder/answer`. build.py chỉ chép hai khoá này khi bài khai thật;
+ * frontend thiếu thì để nhóm thẻ không nhãn và câu "đúng" không có lý do, chứ
+ * không bịa chữ thay người viết bài.
+ */
+export type ScaffoldSlot = { n: number; placeholder?: string; answer: string; hint?: string; why?: string };
+/** Thẻ trong kho: `slot` là ô nó thuộc về; thẻ bẫy mang `trap` = vì sao nó sai. */
+export type ScaffoldCard = { label: string; slot: number; trap?: string };
+
 export type Step3 = {
   heading?: string;
   task?: { title?: string; body?: string; rule?: string };
   scaffold?: {
     /** Uses {{slot1}}, {{slot2}}… as placeholders. */
     template: string;
-    slots: { n: number; placeholder?: string; answer: string }[];
-    bank: { label: string; slot: number; trap?: string }[];
+    slots: ScaffoldSlot[];
+    bank: ScaffoldCard[];
   };
   trace?: { input?: (number | string)[]; steps: { label?: string; text: string }[] };
   counter?: { question: string; options: string[]; correct: string };
@@ -379,6 +390,91 @@ export function assembleScaffold(
       ),
     template,
   );
+}
+
+// ───────────────────────────── Màn điền code (game `fill` / màn `scaffold`)
+//
+// Gộp từ bản Figma của thành viên (design/v3/quyet-dinh.md mục 4) — lấy ba thứ
+// Figma làm tốt hơn, giữ những thứ bản mình đã hơn:
+//  · Ô trống mang SỐ ①②③ ngay trong code. Trước đây ô in "···" không số, trong
+//    khi lời phản hồi lại nói "Ô 2" — người học phải tự đếm ô nào là ô 2.
+//  · Kho thẻ gom theo ô (dữ liệu có sẵn `bank[].slot`), thay cho một kho trộn.
+//  · Phản hồi TỪNG ô, kể cả ô đúng. Bản cũ chỉ báo ô sai ĐẦU TIÊN, nên sửa xong
+//    ô 1 mới biết ô 3 cũng sai.
+// GIỮ: ô sai KHÔNG bao giờ nói đáp án đúng (Figma nói thẳng "ready" ngay lần sai
+// đầu); thay vào đó là lý do của thẻ bẫy (`trap`) hoặc thẻ đó thuộc ô nào.
+
+/** Số khoanh ①…⑳ cho ô thứ n; quá 20 thì về "(n)" (khoá hiện tối đa 4 ô). */
+export function slotMark(n: number): string {
+  return Number.isInteger(n) && n >= 1 && n <= 20 ? String.fromCodePoint(0x2460 + n - 1) : `(${n})`;
+}
+
+export type BankGroup = { n: number; mark: string; hint?: string; labels: string[] };
+
+/**
+ * Kho thẻ gom theo ô, theo thứ tự ô. Thẻ đã đặt vào code thì biến khỏi kho
+ * (giữ hành vi cũ: kho tự bớt thẻ đã dùng, Figma để nguyên cả 9 thẻ). Thứ tự
+ * thẻ TRONG một nhóm giữ nguyên thứ tự đã trộn của build.py — đáp án đúng không
+ * luôn đứng đầu.
+ */
+export function bankGroups(
+  slots: ScaffoldSlot[],
+  bank: ScaffoldCard[],
+  placed: Iterable<string>,
+): BankGroup[] {
+  const used = new Set(placed);
+  const order = slots.map((s) => s.n);
+  // Thẻ trỏ tới ô không có trong `slots` vẫn phải hiện — mất thẻ âm thầm thì
+  // người học không bao giờ lắp đủ được.
+  for (const card of bank) if (!order.includes(card.slot)) order.push(card.slot);
+  return order.map((n) => {
+    const hint = slots.find((s) => s.n === n)?.hint?.trim();
+    return {
+      n,
+      mark: slotMark(n),
+      ...(hint ? { hint } : {}),
+      labels: bank.filter((b) => b.slot === n && !used.has(b.label)).map((b) => b.label),
+    };
+  });
+}
+
+export type FillFeedback = { correct: boolean; summary: string; lines: string[] };
+
+/**
+ * Chấm màn điền code: mỗi ô một dòng, theo thứ tự ô.
+ *  - ô đúng: thẻ đã đặt + `why` nếu bài có khai, không thì chỉ "đúng."
+ *  - ô sai bằng thẻ bẫy của chính ô đó: lý do bẫy (`trap`).
+ *  - ô sai bằng thẻ của ô KHÁC: nói thẻ đó thuộc ô nào — kho đã gom theo ô nên
+ *    điều này người học nhìn thấy được, không lộ thêm gì.
+ *  - ô trống: "chưa có thẻ."
+ * Không nhánh nào in `slot.answer` cho một ô sai.
+ */
+export function fillFeedback(
+  slots: ScaffoldSlot[],
+  bank: ScaffoldCard[],
+  picks: Record<number, string | undefined>,
+): FillFeedback {
+  let ok = 0;
+  const lines = slots.map((slot) => {
+    const mark = slotMark(slot.n);
+    const pick = picks[slot.n];
+    if (!pick) return `${mark} chưa có thẻ.`;
+    if (pick === slot.answer) {
+      ok += 1;
+      const why = slot.why?.trim();
+      return why ? `${mark} ${pick} — ${why}` : `${mark} ${pick} — đúng.`;
+    }
+    const card = bank.find((b) => b.label === pick);
+    if (card && card.slot !== slot.n) return `${mark} ${pick} — thẻ của ô ${slotMark(card.slot)}.`;
+    if (card?.trap) return `${mark} ${pick} — ${card.trap}`;
+    return `${mark} ${pick} — thẻ này không làm đúng việc ô cần.`;
+  });
+  const correct = slots.length > 0 && ok === slots.length;
+  return {
+    correct,
+    summary: correct ? `Cả ${slots.length} ô khớp lời giải.` : `${ok}/${slots.length} ô đúng.`,
+    lines,
+  };
 }
 
 export type LessonDraft = {
@@ -669,7 +765,7 @@ export function gameVerdict(
   lesson: StudioLesson,
   game: PlayGame,
   d: LessonDraft,
-): { correct: boolean; explain?: string } | null {
+): { correct: boolean; explain?: string; lines?: string[] } | null {
   const st = d.games?.[game.id] ?? {};
   switch (game.type) {
     case 'traceTable': {
@@ -705,16 +801,8 @@ export function gameVerdict(
     }
     case 'fill': {
       const scaffold = lesson.step_3?.scaffold;
-      const slots = scaffold?.slots ?? [];
-      const wrong = slots.find((slot) => d.slots[slot.n] !== slot.answer);
-      if (!wrong) return { correct: slots.length > 0, explain: 'Khung mã đã khớp lời giải.' };
-      const trap = scaffold?.bank.find((b) => b.label === d.slots[wrong.n])?.trap;
-      return {
-        correct: false,
-        explain: trap
-          ? `Ô ${wrong.n}: ${d.slots[wrong.n]} — ${trap}`
-          : `Ô ${wrong.n} chưa đúng — thẻ này không làm đúng việc ô cần.`,
-      };
+      const fb = fillFeedback(scaffold?.slots ?? [], scaffold?.bank ?? [], d.slots);
+      return { correct: fb.correct, explain: fb.summary, lines: fb.lines };
     }
     case 'spotError': {
       const hits = game.lines?.length ? game.lines : [game.line];
@@ -796,7 +884,7 @@ export function screenVerdict(
   lesson: StudioLesson,
   scr: LessonScreen,
   d: LessonDraft,
-): { correct: boolean; explain?: string } | null {
+): { correct: boolean; explain?: string; lines?: string[] } | null {
   if (scr.kind === 'predict') {
     const options = lesson.step_1?.predict?.options ?? [];
     const chosen = options[keyIndex(d.predict)];

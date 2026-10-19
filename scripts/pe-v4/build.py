@@ -240,9 +240,28 @@ def scaffold_block(code, spec):
     check(len(labels) == len(set(labels)), code, 'khối trong ngân hàng lắp ghép bị trùng nhãn')
     check(all('\n' not in b for b in labels), code, 'nhãn khối lắp ghép không được xuống dòng')
     random.Random(code).shuffle(bank)
+    # `hints` (ô này làm gì — nhãn của nhóm thẻ) và `whys` (vì sao đáp án đúng —
+    # câu phản hồi khi ô đúng) là TUỲ CHỌN, mỗi phần tử ứng với một slot, None =
+    # bỏ trống. Màn điền code (frontend lib/studio-lesson.ts: bankGroups,
+    # fillFeedback) đọc `slots[].hint/why`; thiếu thì nhóm không nhãn và câu đúng
+    # không lý do. Chỉ chép khi bài khai THẬT — không sinh chữ thay người viết.
+    extra = {}
+    for key, field in (('hints', 'hint'), ('whys', 'why')):
+        vals = spec.get(key)
+        if vals is None:
+            continue
+        check(len(vals) == len(slots), code, f'{key} có {len(vals)} mục nhưng khung có {len(slots)} slot')
+        extra[field] = vals
+    out_slots = []
+    for i, a in enumerate(slots, start=1):
+        slot = {'n': i, 'placeholder': f'[Slot {i}]', 'answer': a}
+        for field, vals in extra.items():
+            if vals[i - 1]:
+                slot[field] = vals[i - 1]
+        out_slots.append(slot)
     return {
         'template': template,
-        'slots': [{'n': i, 'placeholder': f'[Slot {i}]', 'answer': a} for i, a in enumerate(slots, start=1)],
+        'slots': out_slots,
         'bank': bank,
     }
 

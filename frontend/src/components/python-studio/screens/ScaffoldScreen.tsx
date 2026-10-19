@@ -3,6 +3,7 @@
 // S3 · Lắp ghép khung mã: điền các slot {{slotN}} trong template bằng thẻ ở kho.
 // Game "fill" của khoá có mini-game dùng lại đúng màn này, chỉ đổi tiêu đề.
 import Assemble from '@/components/lesson-chrome/exercises/Assemble';
+import { bankGroups, slotMark } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
 import { ScreenShell } from './chrome';
@@ -60,14 +61,19 @@ export default function ScaffoldScreen({
             return {
               num: i + 1,
               before: line.slice(0, hit.index),
-              slotId: `slot${n}`,
+              slot: { id: `slot${n}`, n, mark: slotMark(n) },
               after: line.slice((hit.index ?? 0) + hit[0].length),
             };
           })}
         filled={Object.fromEntries(
           Object.entries(draft.slots).map(([n, label]) => [`slot${n}`, label]),
         )}
-        bank={scaffold.bank.filter((b) => !placed.has(b.label)).map((b) => b.label)}
+        groups={bankGroups(scaffold.slots, scaffold.bank, placed).map((g) => ({
+          n: g.n,
+          mark: g.mark,
+          hint: g.hint,
+          tokens: g.labels,
+        }))}
         heldToken={held}
         onHold={onHold}
         onFillSlot={(slotId) => {
@@ -86,7 +92,7 @@ export default function ScaffoldScreen({
           onHold(null);
         }}
       >
-        Đặt lại các slot
+        Đặt lại các ô
       </button>
     </ScreenShell>
   );

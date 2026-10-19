@@ -13,7 +13,7 @@ import type { SandboxTestRow } from '@/components/lesson-chrome/exercises/Sandbo
 import type { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 
 /** Kết quả chấm của màn đang mở (screenVerdict hoặc kết quả chạy code). */
-export type ScreenVerdict = { correct: boolean; explain?: string };
+export type ScreenVerdict = { correct: boolean; explain?: string; lines?: string[] };
 
 export const ICON = {
   book: (
@@ -142,6 +142,7 @@ export function ScreenShell({
                 : 'Chưa đúng — thử lại'
           }
           explanation={verdict.explain}
+          lines={verdict.lines}
         />
       )}
     </ShellB>

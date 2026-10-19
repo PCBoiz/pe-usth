@@ -8,9 +8,11 @@ export interface FeedbackBannerProps {
   correct: boolean;
   title: string;
   explanation: React.ReactNode;
+  /** Mỗi mục một dòng riêng dưới lời giải thích — màn điền code báo từng ô. */
+  lines?: string[];
 }
 
-export default function FeedbackBanner({ correct, title, explanation }: FeedbackBannerProps) {
+export default function FeedbackBanner({ correct, title, explanation, lines }: FeedbackBannerProps) {
   return (
     <div
       className={styles.feedbackBanner}
@@ -51,6 +53,13 @@ export default function FeedbackBanner({ correct, title, explanation }: Feedback
       <div>
         <div style={{ fontWeight: 700, color: correct ? 'var(--st-ok-text)' : 'var(--st-err-text)' }}>{title}</div>
         <div style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', marginTop: 4 }}>{explanation}</div>
+        {lines && lines.length > 0 && (
+          <ul className={styles.feedbackLines}>
+            {lines.map((line) => (
+              <li key={line}>{line}</li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );

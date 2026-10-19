@@ -532,3 +532,91 @@ textarea.codeBody:focus-visible {
   outline: 3px solid var(--ds-mark-violet);
   outline-offset: -3px;
 }
+
+/* ── Màn điền code (Assemble) ────────────────────────────────────
+   Chuyển từ `style={{…}}` nội tuyến sang lớp: thuộc tính style do SSR sinh ra
+   bị `style-src` của CSP chặn khi bỏ 'unsafe-inline' (xem AGENTS.md). */
+.assembleSlot {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 90px;
+  margin: 0 4px;
+  padding: 1px 10px;
+  border-radius: 6px;
+  /* Ô nằm trong khung code (nền tối) nên viền lấy bản -on-dark: tím bản ngày
+     chỉ 2,10:1 ở đây. */
+  border: 2px dashed var(--ds-mark-violet);
+  background: transparent;
+  color: var(--st-syn-plain);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.assembleSlot:disabled {
+  cursor: default;
+}
+.assembleSlotFilled {
+  composes: assembleSlot;
+  border-style: solid;
+  /* Ô đã lắp: nền lấy đường kẻ của khung code thay cho rgba trắng rời. */
+  background: var(--ds-code-line);
+}
+/* Số ①②③ của ô: cùng tím -on-dark với viền (7,69:1 trên nền code), để số
+   trong code và số ở nhóm thẻ / lời phản hồi đọc là một. */
+.slotMark {
+  color: var(--ds-mark-violet);
+}
+.bankBox {
+  background: var(--ds-tint);
+  border-radius: 12px;
+  padding: 14px;
+  margin-top: 12px;
+}
+.bankStatus {
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  color: var(--ds-soft);
+  margin-bottom: 8px;
+}
+.bankEmpty {
+  font-size: var(--ds-fs-label);
+  color: var(--ds-soft);
+}
+.bankGroup + .bankGroup {
+  margin-top: 12px;
+}
+.bankGroupHead {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  color: var(--ds-soft);
+}
+.bankGroupMark {
+  color: var(--ds-ink);
+}
+.bankGroupCards {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.chipHeld {
+  composes: chip;
+  border-color: var(--ds-violet);
+  background: var(--ds-violet-tint);
+}
+/* Phản hồi từng ô: mỗi ô một dòng, không gạch đầu dòng — số ①②③ ở đầu dòng
+   đã là dấu. */
+.feedbackLines {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  font-size: var(--ds-fs-body);
+  color: var(--ds-ink);
+}
+.feedbackLines li + li {
+  margin-top: 4px;
+}
