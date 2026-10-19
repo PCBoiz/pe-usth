@@ -20,6 +20,11 @@ export const PLAY_GAME_TYPES = [
   'spotError',
   'debug',
   'selfExplain',
+  // Mini-game có động cơ riêng (bài T05 · "Sổ quỹ chung"): frontend chạy
+  // frontend/public/static/js/so-quy.py trong worker Pyodide. Thiếu tên ở đây
+  // thì update-lesson-content.ts từ chối nạp T05 — không phải lỗi im lặng, nhưng
+  // là cửa chặn duy nhất giữa gói đã dựng và DB.
+  'soQuy',
 ] as const;
 
 export type McqOption =
@@ -356,6 +361,29 @@ function validatePlay(lesson: StudioLesson): string[] {
           'cần step_2.selfExplain.',
         );
         break;
+      case 'soQuy': {
+        // Màn vẽ đúng HAI nhân vật và gọi `ham(so_quy, khoa, so_tien)` cho
+        // từng người — thiếu trường nào là frontend chấm vào undefined.
+        need(nonEmptyString(g.code), 'thiếu code khởi đầu.');
+        need(nonEmptyString(g.loiGiai), 'thiếu lời giải mẫu (loiGiai).');
+        need(
+          typeof g.ham === 'string' && /^[A-Za-z_]\w*$/.test(g.ham),
+          'ham phải là tên hàm Python.',
+        );
+        need(Number.isInteger(g.soDu), 'soDu phải là số nguyên.');
+        const nguoi: unknown[] = Array.isArray(g.nguoi) ? g.nguoi : [];
+        need(
+          nguoi.length === 2 &&
+            nguoi.every(
+              (p) =>
+                isObject(p) &&
+                nonEmptyString(p.ten) &&
+                Number.isInteger(p.soTien),
+            ),
+          'nguoi phải gồm đúng 2 người, mỗi người có ten và soTien nguyên.',
+        );
+        break;
+      }
     }
   });
   return errors;

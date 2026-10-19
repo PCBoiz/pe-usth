@@ -542,6 +542,16 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     if packages:
         step4['packages'] = packages
 
+    # Mini-game có động cơ riêng (vd. "Sổ quỹ chung" của T05): build_advanced.py nối
+    # nó vào CUỐI play.games — cuối chứ không chen giữa, vì id game mang số thứ tự
+    # (`fill-1`, `debug-3`…) và bản nháp của người đang học lưu theo id đó.
+    mini_game = spec.get('mini_game')
+    if mini_game:
+        need = {'type', 'title', 'code', 'loiGiai', 'ham', 'soDu', 'nguoi'}
+        check(need <= set(mini_game), code, f'mini_game thiếu {sorted(need - set(mini_game))}')
+        check(mini_game['type'] == 'soQuy', code, f"mini_game type {mini_game['type']!r} chưa có động cơ")
+        check(len(mini_game['nguoi']) == 2, code, 'mini_game soQuy cần đúng 2 người (màn vẽ hai nhân vật)')
+
     # `slides` = trang slide gốc của giảng viên ("SL 15-16"), để sổ tay in được dòng
     # nguồn dưới khối lý thuyết. Đi cùng `source` vì nó nói về xuất xứ, không phải nội dung.
     slides = spec.get('slides')
@@ -561,6 +571,8 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
         'step_3': step3,
         'step_4': step4,
     }
+    if mini_game:
+        content['mini_games'] = [dict(mini_game)]
     xp = XP[level] * (2 if gate else 1)
     row = {
         'lesson_code': code,

@@ -2,7 +2,7 @@
 
 Sinh bởi `scripts/pe-v4/build_advanced.py`. Mỗi dòng: mã bài, cấp, chuỗi game theo thứ tự.
 
-**48 bài.** Tổng số game: debug 27, fill 45, match 42, parsons 18, selfExplain 27, spotError 48, traceTable 3, trueFalse 3
+**48 bài.** Tổng số game: debug 27, fill 45, match 42, parsons 18, selfExplain 27, soQuy 1, spotError 48, traceTable 3, trueFalse 3
 
 | Bài | Cấp | Game | Ghi chú |
 |---|---|---|---|
@@ -17,7 +17,7 @@ Sinh bởi `scripts/pe-v4/build_advanced.py`. Mỗi dòng: mã bài, cấp, chu�
 | T02 | Nâng cao | match → fill → spotError → debug → selfExplain |  |
 | T03 | Nâng cao | match → fill → spotError → debug → selfExplain |  |
 | T04 | Nâng cao | traceTable → fill → spotError → debug → selfExplain |  |
-| T05 | Nâng cao | traceTable → fill → spotError → debug → selfExplain |  |
+| T05 | Nâng cao | traceTable → fill → spotError → debug → selfExplain → soQuy |  |
 | T06 | Nâng cao | match → fill → spotError → debug → selfExplain |  |
 | G01 | Nâng cao | match → fill → spotError → debug → selfExplain |  |
 | G02 | Nâng cao | match → fill → spotError → debug → selfExplain |  |

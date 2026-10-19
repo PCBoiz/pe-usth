@@ -347,6 +347,21 @@ def safe_plan(plan, order):
     return True
 ''' + T05_MAIN
 
+# Mini-game "Sổ quỹ chung" (frontend: SoQuyGame; động cơ: frontend/public/static/js/so-quy.py).
+# Đây là chỗ DUY NHẤT trong bài người học THẤY race condition: Studio chạy thread
+# lần lượt (LOCK_ENV), còn động cơ cho hai người chạy XEN KẼ theo lịch tất định —
+# chưa khoá thì sổ ra 110 thay vì 160 ở đúng một nhịp, lần nào chạy cũng vậy.
+# build_advanced.py chạy động cơ lúc dựng: lời giải phải đạt, code khởi đầu phải trượt.
+T05_SO_QUY_STARTER = '''def nap(so_quy, khoa, so_tien):
+    x = so_quy.doc()
+    so_quy.ghi(x + so_tien)
+'''
+T05_SO_QUY_SOLUTION = '''def nap(so_quy, khoa, so_tien):
+    with khoa:
+        x = so_quy.doc()
+        so_quy.ghi(x + so_tien)
+'''
+
 T05_STARTER = T05_CLASS_HEAD + r'''
     def deposit(self, amount):
         # Đọc-cộng-ghi balance phải nằm trong critical section.
@@ -1213,6 +1228,9 @@ print("serial:", serial, "| thread:", threads, "| process:", processes)
         code='T05', title='Lock, race condition và deadlock', minutes=40,
         goal='Bảo vệ dữ liệu dùng chung bằng Lock và tránh deadlock bằng thứ tự khoá thống nhất.',
         prereq='T04', env=LOCK_ENV, support=['race_demo.py'],
+        mini_game=dict(type='soQuy', title='Sổ quỹ chung', ham='nap', soDu=100,
+                       nguoi=[dict(ten='A', soTien=50), dict(ten='B', soTien=10)],
+                       code=T05_SO_QUY_STARTER, loiGiai=T05_SO_QUY_SOLUTION),
         theory=[
             dict(h='Lần này đúng, lần sau sai',
                  body='Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra '

@@ -536,6 +536,25 @@
           "id": "selfExplain-4",
           "type": "selfExplain",
           "title": "Vì sao withdraw phải đặt cả phép kiểm tra lẫn phép trừ trong cùng một with self.lock?"
+        },
+        {
+          "id": "soQuy-5",
+          "type": "soQuy",
+          "title": "Sổ quỹ chung",
+          "ham": "nap",
+          "soDu": 100,
+          "nguoi": [
+            {
+              "ten": "A",
+              "soTien": 50
+            },
+            {
+              "ten": "B",
+              "soTien": 10
+            }
+          ],
+          "code": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n",
+          "loiGiai": "def nap(so_quy, khoa, so_tien):\n    with khoa:\n        x = so_quy.doc()\n        so_quy.ghi(x + so_tien)\n"
         }
       ],
       "selfExplainMinWords": 8

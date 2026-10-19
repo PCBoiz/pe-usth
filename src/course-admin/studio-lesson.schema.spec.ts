@@ -1,3 +1,6 @@
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
 import { validateStudioLesson } from './studio-lesson.schema';
 
 const base = {
@@ -55,6 +58,43 @@ describe('validateStudioLesson — khối play (studio-lesson/v2)', () => {
     expect(errors).toContain('"boss-fight" không phải loại game hợp lệ');
     expect(errors).toContain('trùng "a"');
     expect(errors).toContain('phải có step_4.tests');
+  });
+
+  // Bài T05 THẬT (đúng gói update-lesson-content.ts nạp vào DB), không fixture
+  // tay — bẫy số 1 của AGENTS.md. Thiếu 'soQuy' trong PLAY_GAME_TYPES thì ca này
+  // đỏ, và đó cũng là lý do update-lesson-content.ts sẽ từ chối nạp T05.
+  const t05 = JSON.parse(
+    readFileSync(
+      join(__dirname, '../../scripts/pe-v4/out-advanced/lessons/012-T05.json'),
+      'utf8',
+    ),
+  ) as { content_json: Record<string, unknown> & { play: { games: Game[] } } };
+  type Game = Record<string, unknown> & { type: string };
+  const soQuy = (): Game => {
+    const g = t05.content_json.play.games.find((x) => x.type === 'soQuy');
+    if (!g)
+      throw new Error('012-T05.json không còn game soQuy — dựng lại pe-v4?');
+    return g;
+  };
+
+  it('chấp nhận bài T05 thật có mini-game soQuy', () => {
+    expect(soQuy().type).toBe('soQuy');
+    expect(validateStudioLesson(t05.content_json)).toEqual([]);
+  });
+
+  it('soQuy thiếu người hoặc sai tên hàm thì báo lỗi', () => {
+    const lesson = (g: Game) => ({
+      ...t05.content_json,
+      play: { ...t05.content_json.play, games: [g] },
+    });
+    const motNguoi = { ...soQuy(), nguoi: [{ ten: 'A', soTien: 50 }] };
+    expect(validateStudioLesson(lesson(motNguoi)).join()).toContain(
+      'đúng 2 người',
+    );
+    const hamSai = { ...soQuy(), ham: 'nap tien' };
+    expect(validateStudioLesson(lesson(hamSai)).join()).toContain(
+      'tên hàm Python',
+    );
   });
 
   it('match phải có rightOrder khớp số cặp', () => {

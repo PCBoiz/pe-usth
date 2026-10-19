@@ -4890,7 +4890,27 @@
       }
      ],
      "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi. Trên máy cũng đừng chờ n += 1 trần lộ race: từ CPython 3.10 thread chỉ bị đổi ở một số điểm (gọi hàm, cuối vòng lặp…), nên 2 thread × 1 triệu lần += thường vẫn ra đúng 2.000.000 — hiếm lộ, KHÔNG phải nguyên tử. Muốn thấy race thật, chạy python race_demo.py (mục \"File trong thư mục bài\"): file chèn time.sleep(0) giữa đọc và ghi nên thường ra dưới 200; bọc ba dòng đó trong with lock: thì luôn 200."
-    }
+    },
+    "mini_games": [
+     {
+      "type": "soQuy",
+      "title": "Sổ quỹ chung",
+      "ham": "nap",
+      "soDu": 100,
+      "nguoi": [
+       {
+        "ten": "A",
+        "soTien": 50
+       },
+       {
+        "ten": "B",
+        "soTien": 10
+       }
+      ],
+      "code": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n",
+      "loiGiai": "def nap(so_quy, khoa, so_tien):\n    with khoa:\n        x = so_quy.doc()\n        so_quy.ghi(x + so_tien)\n"
+     }
+    ]
    }
   },
   {

@@ -122,7 +122,34 @@ def build_play(row: dict, qa: dict, report=None) -> tuple[dict, list[str]]:
             games.append({'id': f'selfExplain-{len(games)}', 'type': 'selfExplain',
                           'title': c['step_2']['selfExplain'].get('prompt', 'Tự giải thích')})
 
+    # 4. Mini-game có động cơ riêng do bài tự khai (build.py → content_json.mini_games).
+    #    Nối CUỐI để id các game sinh tự động ở trên không đổi số thứ tự.
+    for mg in c.get('mini_games', []):
+        games.append({'id': f"{mg['type']}-{len(games)}", **mg})
+
     return {'level': level, 'boss': False, 'games': games, 'selfExplainMinWords': SELF_EXPLAIN_MIN_WORDS}, notes
+
+
+def _dong_co_so_quy():
+    """Động cơ của trình duyệt (frontend/public/static/js/so-quy.py), chạy dưới CPython."""
+    ns = {'__name__': 'so_quy_dong_co'}
+    src = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'js' / 'so-quy.py'
+    exec(compile(src.read_text(encoding='utf-8'), str(src), 'exec'), ns)
+    return ns['chay_so_quy']
+
+
+def verify_so_quy(g: dict) -> list[str]:
+    """Lời giải mẫu phải đạt, code khởi đầu phải trượt — như luật khung trống của sandbox."""
+    chay = _dong_co_so_quy()
+    cfg = {'so_du': g['soDu'], 'ham': g['ham'],
+           'nguoi': [{'ten': p['ten'], 'so_tien': p['soTien']} for p in g['nguoi']]}
+    problems = []
+    giai = chay(g['loiGiai'], cfg)
+    if not giai['dat']:
+        problems.append(f"soQuy: lời giải mẫu không đạt (sổ {giai['so_du']}, lỗi {giai['loi']})")
+    if chay(g['code'], cfg)['dat']:
+        problems.append('soQuy: code khởi đầu đã đạt — người học không phải sửa gì')
+    return problems
 
 
 def verify(row: dict, play: dict) -> list[str]:
@@ -140,6 +167,8 @@ def verify(row: dict, play: dict) -> list[str]:
                 problems.append('spotError: dòng lỗi nằm ngoài đoạn hiển thị')
         if g['type'] == 'traceTable' and not g['answers']:
             problems.append('traceTable: không có ô nào để điền')
+        if g['type'] == 'soQuy':
+            problems.extend(verify_so_quy(g))
     if not play['games']:
         problems.append('không sinh được mini-game nào')
     return problems
@@ -226,6 +255,7 @@ def main(argv=None) -> int:
         if problems:
             failures.append(f'{code}: ' + '; '.join(problems))
         content = dict(row['content_json'])
+        content.pop('mini_games', None)  # đã thành play.games, đừng chở hai lần
         content['schema'] = SCHEMA
         content['source'] = {**content.get('source', {}), 'kind': 'pe-v4-advanced', 'parser': 'pe-v4/build_advanced'}
         content['play'] = play
