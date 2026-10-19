@@ -481,6 +481,66 @@ test('bốn TẤM phủ đúng SKY_LAYERS, đúng thứ tự — một danh sác
     `thứ tự <img> trong trang là ${src.join(', ')} — nó LÀ thứ tự z`);
 });
 
+/* ═══ 7a-bis · BA HÀNH TINH LÀ BA BÀI CỬA ════════════════════════════ */
+
+test('hành tinh mọc ĐÚNG ở chòm có bài cửa — đếm từ cờ `step_4.gate`, không khoá cứng số 3', () => {
+  // VÌ SAO CA NÀY TỒN TẠI: hành tinh được dựng ngày 20/10/2026 kèm cả một lời
+  // khẳng định trong `SKY_PLANET` rằng "một ca test tính lại hướng đó từ hình
+  // học của cung" — mà không ca nào đụng tới `SKY_PLANET` cả. Nó được import
+  // rồi bỏ đó, và chính `@typescript-eslint/no-unused-vars` là thứ duy nhất
+  // kêu lên: một cảnh báo lint hoá ra là dấu của một mảng không có lưới.
+  //
+  // KHÔNG KHOÁ CỨNG SỐ 3. `AGENTS.md` đã ghi: bài cửa nhận diện theo CỜ
+  // `step_4.gate` chứ không theo mã bài, nên thêm một cửa mới là server tự
+  // khoá theo — và bản đồ phải mọc thêm một hành tinh theo. Một ca test viết
+  // `=== 3` sẽ bắt đúng người làm đúng việc.
+  const cuaTheoBai = new Set(
+    readdirSync(LESSON_DIR)
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(join(LESSON_DIR, f), 'utf8')))
+      .filter((d) => (d.content_json ?? d).step_4?.gate === true)
+      .map((d) => d.lesson_code),
+  );
+  assert.ok(cuaTheoBai.size > 0, 'không bài nào khai `step_4.gate` — đọc sai đường dẫn?');
+
+  // Chòm NÀO phải có hành tinh: chòm chứa ít nhất một bài cửa.
+  const chomPhaiCo = new Set(
+    [...cuaTheoBai].map((code) => VI_TRI[code]?.key).filter(Boolean),
+  );
+  assert.equal(chomPhaiCo.size > 0, true,
+    `bài cửa ${[...cuaTheoBai].join(', ')} không ngôi nào trên bản đồ`);
+
+  const chomDangCo = new Set(
+    SKY_CONSTELLATIONS
+      .filter((c) => /<g data-lop="hanh-tinh">\s*(?!<\/g>)\S/.test(NGHI[c.key]))
+      .map((c) => c.key),
+  );
+  assert.deepEqual([...chomDangCo].sort(), [...chomPhaiCo].sort(),
+    'tập chòm có hành tinh lệch tập chòm có bài cửa — hành tinh thôi mang nghĩa');
+
+  for (const key of chomPhaiCo) {
+    for (const [ten, svg] of [[key, NGHI[key]], [`${key}-ro`, RO[key]]]) {
+      const lop = svg.match(/<g data-lop="hanh-tinh">([\s\S]*?)<\/g>/)?.[1] ?? '';
+      assert.ok(lop.includes('<path'),
+        `sky-chom-${ten}.svg: lớp hành tinh rỗng — một lớp rỗng là mấy chục byte chết`);
+
+      // `SKY_PLANET` nói pha vẽ bằng "ĐÚNG HAI cung tròn… Không clip, không
+      // mask, không gradient". Đó là một lời hứa kiểm được, và nó đáng kiểm
+      // vì clip/mask là cách dễ nhất để ai đó "sửa cho nhanh" một cái pha.
+      for (const cam of ['clip-path', '<mask', 'Gradient', '<filter']) {
+        assert.ok(!lop.includes(cam),
+          `sky-chom-${ten}.svg: lớp hành tinh dùng ${cam} — pha phải là hai cung tròn`);
+      }
+
+      // Vành đai phải ĐỌC được từ hồ sơ, không phải một con số gõ trong Python.
+      assert.ok(lop.includes(`stroke-width="${SKY_PLANET.ring.width}"`),
+        `sky-chom-${ten}.svg: không nét nào dày ${SKY_PLANET.ring.width} — vành đai lệch SKY_PLANET`);
+      assert.ok(lop.includes(`stroke-opacity="${SKY_PLANET.ring.opacity}"`),
+        `sky-chom-${ten}.svg: không nét nào mờ ${SKY_PLANET.ring.opacity} — vành đai lệch SKY_PLANET`);
+    }
+  }
+});
+
 /* ═══ 7b · TÁCH TẤM: MỖI CHÒM MỘT TẤM, KHÔNG MỘT BẢN SAO NÀO ══════════ */
 
 test('mỗi tấm chòm vẽ ĐÚNG MỘT chòm — không tấm nào cõng 48 ngôi của bảy chòm kia', () => {
