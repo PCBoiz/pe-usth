@@ -87,8 +87,41 @@
   overflow: hidden;
   position: relative;
   width: 100%;
+  /* TỈ LỆ XA là trạng thái mặc định, và nó phải là phép ĐỒNG NHẤT, không phải
+     "không có transform": mọi tấm và cả lớp con trỏ đều mang
+     `transform: scale(var(--zs)) translate(var(--zx), var(--zy))` một cách vô
+     điều kiện, nên ba biến này phải có mặt ở đây. Khai chúng trong một quy tắc
+     `[data-phong]` thôi thì ở tỉ lệ xa `var(--zs)` không giải được và cả
+     `transform` thành không hợp lệ — tức bức tranh vẫn đúng, nhưng
+     `transition` thì không có gì để nội suy và cú phóng NHẢY. */
+  --zs: 1;
+  --zx: 0%;
+  --zy: 0%;
 }
 
+/* CÚ PHÓNG — tỉ lệ thứ hai, bước 3 của `design/v3/tuong-tac-ban-do.md`.
+
+   ── VÌ SAO TRANSFORM ĐẶT LÊN TỪNG TẤM, KHÔNG LÊN MỘT DIV BỌC ──────────
+
+   Một `<div>` bọc mười sáu tấm là cách gọn nhất để phóng cả bức cùng một
+   lúc — và nó phá đúng cái cơ chế hover: trạng thái đi qua bộ chọn ANH EM
+   (`.hitM1:hover ~ .chomM1`), nên ô bấm và tấm ảnh phải là anh em ruột. Bọc
+   tấm vào một div là cắt mọi quan hệ ấy, và phải dựng lại tám trạng thái hover
+   bằng JS. Mười sáu tấm cộng lớp con trỏ đều `inset: 0` phủ đúng khung, nên
+   CÙNG một transform trên từng tấm cho ra ĐÚNG kết quả của một div bọc.
+
+   ── VÌ SAO KHÔNG PHẢI PARALLAX, VÀ VÌ SAO NÓ TẮT ĐƯỢC ────────────────
+
+   Nghiên cứu §5.3 đặt một phép thử: tắt tween đi thì có còn tới đúng trạng
+   thái đó không? Cú phóng qua được vì nó KHÔNG phải một hiệu ứng — nó là một
+   trạng thái, nó nằm trong URL (`?chang=M1`), và dưới `prefers-reduced-motion`
+   nó tới NGAY mà không mất gì (xem khối reduce ở dưới). Parallax nền thì
+   không: tắt nó đi là mất hẳn thứ nó nói.
+
+   `transform` + `opacity` là hai thuộc tính duy nhất ở đây, nên cả cú phóng
+   nằm trên compositor. Và nó KHÔNG phải animation CSS bên trong tài liệu SVG —
+   thứ đã đo được 2 007 ms luồng chính cho hai hình và trang không tắt được
+   (xem `figure-motion.ts`). */
 .sky {
   display: block;
   height: 100%;
@@ -96,6 +129,14 @@
   object-fit: cover;
   position: absolute;
   top: 0;
+  transform: scale(var(--zs)) translate(var(--zx), var(--zy));
+  /* `--ds-dur-page` (450 ms) — bậc "lật trang" của thang token, và đây đúng
+     là một lần lật trang: biên độ đo được 626 px ở M1 (hệ số 2,791 × lệch
+     tâm 0,21 × bề rộng khung 1 068 px). Lấy `--ds-dur-fast` cho một quãng
+     đường như thế thì mắt mất dấu vật đang theo, mà mất dấu là mất đúng cái
+     cảm giác "tôi vừa đi tới một chỗ khác". `ease-out` chứ không `ease`: cú
+     phóng phải DỪNG hẳn chứ không bò vào đích. */
+  transition: transform var(--ds-dur-page) ease-out;
   width: 100%;
   z-index: 1;
 }
@@ -128,14 +169,27 @@
 .chomRo {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 150ms ease;
+  transition: opacity 150ms ease, transform var(--ds-dur-page) ease-out;
 }
 
-.chomNghi {
+/* TẤM NGHỈ CỦA MỘT CHÒM — nay có TÁM tấm như thế, không một tấm.
+
+   Bản trước có đúng một `sky-chom-nghi.svg` vẽ đủ tám chòm, cộng tám tấm tiêu
+   điểm mỗi tấm CŨNG vẽ đủ tám chòm. Đo ngày 19/10/2026: chín tệp = 446 005
+   byte, tám phần chín là bản sao của cùng 48 ngôi. Nay mỗi chòm có tấm riêng
+   (109 147 byte cả mười sáu tấm), và trạng thái MỜ không có tấm riêng — nó là
+   tấm nghỉ hạ xuống `--sky-mo`.
+
+   `--sky-mo` do `build_sky.py` sinh vào `sky-theme.css`, bằng
+   `dimOpacity / lineOpacity[0]`. KHÔNG chép con số đã chia vào đây: nó là một
+   phép chia trên hồ sơ, và từ lúc tách tấm chính nó mờ luôn CHỮ của nhãn nên
+   nó có một sàn 4,5:1 (`kiem_mo_css` trượt build nếu ai hạ xuống dưới). */
+.chomNen {
   pointer-events: none;
   --nghi-dur: var(--ds-dur-fast);
   --nghi-tre: 0ms;
-  transition: opacity var(--nghi-dur) ease var(--nghi-tre);
+  transition: opacity var(--nghi-dur) ease var(--nghi-tre),
+    transform var(--ds-dur-page) ease-out;
 }
 
 /* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
@@ -283,16 +337,17 @@
    còn giữ 3:1" đo ra là sai: nét mờ / trời là 1,87:1 ở CẢ HAI cách.
 
    Nên toàn bộ việc làm nổi nằm ở lớp CHÒM, và nó là một thay đổi CỤC BỘ cho
-   một hành động cục bộ: tấm chòm lúc nghỉ tắt hẳn, một tấm tiêu điểm hiện
-   lên, trong đó chòm được trỏ đi 0,55 → 0,85 và bảy chòm kia → 0,28. */
+   một hành động cục bộ: tấm NGHỈ của chòm được trỏ tắt hẳn và tấm RÕ của
+   chính nó hiện lên (nét 0,55 → 0,85), còn bảy tấm nghỉ kia hạ xuống
+   `--sky-mo` (nét → 0,31). */
 
-.hit:hover ~ .chomNghi,
-.hit:focus-visible ~ .chomNghi,
-.lop[data-chang] ~ .chomNghi {
-  opacity: 0;
-  /* NHỊP HAI: lùi lại SAU khi chòm được chọn đã tới (xem khối `.chomNghi`).
+.hit:hover ~ .chomNen,
+.hit:focus-visible ~ .chomNen,
+.lop[data-chang] ~ .chomNen {
+  opacity: var(--sky-mo);
+  /* NHỊP HAI: lùi lại SAU khi chòm được chọn đã tới (xem khối `.chomNen`).
      Đi qua BIẾN chứ không viết `transition:` ở đây, và đó là một bản sửa chứ
-     không phải một kiểu viết: quy tắc này đặc trưng hơn `.chomNghi`, nên một
+     không phải một kiểu viết: quy tắc này đặc trưng hơn `.chomNen`, nên một
      `transition:` ở đây sẽ ĐÈ luôn `transition: none` của khối
      `prefers-reduced-motion` dưới cùng — tức người bật giảm chuyển động vẫn
      nhận đủ 320 ms, trong khi ca test đọc khối reduce và báo xanh. */
@@ -300,51 +355,94 @@
   --nghi-tre: 120ms;
 }
 
-/* …và đúng MỘT tấm chòm hiện lên.
+/* …và chòm được trỏ ĐỔI TẤM: bản rõ bật lên, bản nghỉ của CHÍNH NÓ tắt.
+
+   HAI quy tắc cho mỗi chòm, không một, và quy tắc thứ hai không phải để cho
+   đẹp: từ lúc tách tấm, tấm nghỉ của chòm k vẫn đứng đó dưới tấm rõ của nó.
+   Để nguyên thì hai bản của cùng một chòm CỘNG độ mờ với nhau — nét đi lên
+   1 − (1 − 0,85)(1 − 0,55) = 0,93 và quầng sao dày lên theo, tức "rõ lên"
+   thành "đậm lên một cách khác". Tắt bản nghỉ đi là cách giữ cho tấm rõ nói
+   đúng con số nó được dựng ra để nói.
+
+   Hai quy tắc cùng độ đặc trưng với quy tắc `--sky-mo` ở trên, nên chúng
+   thắng nhờ ĐỨNG SAU trong tệp. Đừng đảo thứ tự hai khối.
 
    Nhánh thứ ba của mỗi khối (`.lop[data-chang='M…']`) là ĐƯỜNG BÀN PHÍM: khi
    mũi tên đưa tiêu điểm vào một NGÔI, ngôi ấy nằm TRONG lớp phủ nên
    `:focus-visible` của nó không với tới tấm ảnh được (bộ chọn `~` chỉ đi giữa
    anh em). `SkyCursor.tsx` vì thế đặt một thuộc tính lên chính lớp phủ, và lớp
-   phủ LÀ anh em của mười hai tấm. Không có nhánh này thì đi bằng mũi tên là đi
+   phủ LÀ anh em của mười sáu tấm. Không có nhánh này thì đi bằng mũi tên là đi
    trên một bầu trời không sáng lên — tức đúng cái "bàn phím thấy một bản đồ
    khác" mà luật 4 ở đầu tệp cấm. */
+.hitM1:hover ~ .roM1,
+.hitM1:focus-visible ~ .roM1,
+.lop[data-chang='M1'] ~ .roM1 { opacity: 1; }
 .hitM1:hover ~ .chomM1,
 .hitM1:focus-visible ~ .chomM1,
-.lop[data-chang='M1'] ~ .chomM1 { opacity: 1; }
+.lop[data-chang='M1'] ~ .chomM1 { opacity: 0; }
+.hitM2:hover ~ .roM2,
+.hitM2:focus-visible ~ .roM2,
+.lop[data-chang='M2'] ~ .roM2 { opacity: 1; }
 .hitM2:hover ~ .chomM2,
 .hitM2:focus-visible ~ .chomM2,
-.lop[data-chang='M2'] ~ .chomM2 { opacity: 1; }
+.lop[data-chang='M2'] ~ .chomM2 { opacity: 0; }
+.hitM3:hover ~ .roM3,
+.hitM3:focus-visible ~ .roM3,
+.lop[data-chang='M3'] ~ .roM3 { opacity: 1; }
 .hitM3:hover ~ .chomM3,
 .hitM3:focus-visible ~ .chomM3,
-.lop[data-chang='M3'] ~ .chomM3 { opacity: 1; }
+.lop[data-chang='M3'] ~ .chomM3 { opacity: 0; }
+.hitM4:hover ~ .roM4,
+.hitM4:focus-visible ~ .roM4,
+.lop[data-chang='M4'] ~ .roM4 { opacity: 1; }
 .hitM4:hover ~ .chomM4,
 .hitM4:focus-visible ~ .chomM4,
-.lop[data-chang='M4'] ~ .chomM4 { opacity: 1; }
+.lop[data-chang='M4'] ~ .chomM4 { opacity: 0; }
+.hitM5:hover ~ .roM5,
+.hitM5:focus-visible ~ .roM5,
+.lop[data-chang='M5'] ~ .roM5 { opacity: 1; }
 .hitM5:hover ~ .chomM5,
 .hitM5:focus-visible ~ .chomM5,
-.lop[data-chang='M5'] ~ .chomM5 { opacity: 1; }
+.lop[data-chang='M5'] ~ .chomM5 { opacity: 0; }
+.hitM6:hover ~ .roM6,
+.hitM6:focus-visible ~ .roM6,
+.lop[data-chang='M6'] ~ .roM6 { opacity: 1; }
 .hitM6:hover ~ .chomM6,
 .hitM6:focus-visible ~ .chomM6,
-.lop[data-chang='M6'] ~ .chomM6 { opacity: 1; }
+.lop[data-chang='M6'] ~ .chomM6 { opacity: 0; }
+.hitM7:hover ~ .roM7,
+.hitM7:focus-visible ~ .roM7,
+.lop[data-chang='M7'] ~ .roM7 { opacity: 1; }
 .hitM7:hover ~ .chomM7,
 .hitM7:focus-visible ~ .chomM7,
-.lop[data-chang='M7'] ~ .chomM7 { opacity: 1; }
+.lop[data-chang='M7'] ~ .chomM7 { opacity: 0; }
+.hitM8:hover ~ .roM8,
+.hitM8:focus-visible ~ .roM8,
+.lop[data-chang='M8'] ~ .roM8 { opacity: 1; }
 .hitM8:hover ~ .chomM8,
 .hitM8:focus-visible ~ .chomM8,
-.lop[data-chang='M8'] ~ .chomM8 { opacity: 1; }
+.lop[data-chang='M8'] ~ .chomM8 { opacity: 0; }
 
 .hit:focus-visible {
   outline: var(--ds-bw-3) solid var(--ds-violet-deep);
   outline-offset: 2px;
 }
 
-/* MÁY KHÔNG CÓ HOVER (§11.1): không có hover thì KHÔNG có cách nào xem được
-   lớp giải nghĩa. Ở bản một chòm, trạng thái nghỉ được nâng lên một nấc VĨNH
-   VIỄN; với tám chòm thì không làm thế được — "nâng cả tám" nghĩa là tấm nào
-   cũng hiện, tức tám chòm chồng lên nhau. Nên ở máy chạm, bản đồ giữ nguyên
-   trạng thái nghỉ và chạm một cái là đi tới chặng. Không bao giờ "chạm lần
-   một để xem, chạm lần hai để đi": luật đó phá kỳ vọng của một liên kết. */
+/* MÁY KHÔNG CÓ HOVER (§11.1) — VÀ ĐÂY LÀ CHỖ BƯỚC 3 ĐỔI CÂU TRẢ LỜI.
+
+   Bản trước: không có hover thì không có cách nào xem lớp giải nghĩa, nên máy
+   chạm giữ nguyên trạng thái nghỉ và chạm một cái là đi tới bài 1 của chặng.
+   Tức điện thoại nhận một bản đồ CHỈ ĐỂ NHÌN.
+
+   Nay CHẠM LÀ PHÓNG, và đó là đường CHÍNH chứ không phải đường phụ: cú phóng
+   không cần hover, nó cần một cú bấm — và ở tỉ lệ gần thì tên bài, thứ tự học
+   và số ca hiện ra bằng CHỮ, cho mọi thiết bị như nhau. Bảng bài dưới khung
+   cũng không cần hover. Nên khối này chỉ còn tắt tấm RÕ (thứ duy nhất thật sự
+   dựa vào hover), và điện thoại không mất một tin nào.
+
+   Vẫn KHÔNG BAO GIỜ "chạm lần một để xem, chạm lần hai để đi": chạm một chòm
+   phóng vào chặng, chạm một ngôi ở tỉ lệ gần mở bài. Hai cú chạm khác nhau vào
+   hai thứ khác nhau, không phải hai nghĩa của cùng một cú chạm. */
 @media (hover: none) {
   .chomRo { opacity: 0; }
 }
@@ -353,13 +451,21 @@
    màu hay đổi ĐỘ MỜ KHÔNG tính là hoạt ảnh chuyển động, trừ khi nó làm đổi
    kích thước, hình dạng, vị trí hoặc chiều sâu cảm nhận được.
 
-   Ở đây các tấm khác nhau CHỈ Ở ĐỘ MỜ — không bán kính nào to lên, không nét
-   nào dày lên (xem `build_sky.py`). Nên dưới `reduce` chỉ cần bỏ CHUYỂN TIẾP,
-   còn phản hồi thì GIỮ NGUYÊN: giảm chuyển động không có nghĩa là bỏ phản
-   hồi, và người dùng `reduce` vẫn phải phân biệt được chòm đang trỏ. */
+   Các TẤM khác nhau chỉ ở ĐỘ MỜ — không bán kính nào to lên, không nét nào dày
+   lên (xem `build_sky.py`). CÚ PHÓNG thì đổi cả kích thước lẫn vị trí, tức nó
+   LÀ chuyển động theo đúng định nghĩa ấy. Nên dưới `reduce` nó bỏ CHUYỂN TIẾP
+   và tới NGAY — không phải bị tắt.
+
+   Khác biệt ấy là phép thử của nghiên cứu §5.3: tắt tween đi thì có còn tới
+   đúng trạng thái đó không? Có, và tới đủ: cùng một `transform`, cùng một
+   `?chang=` trong URL, cùng bảng bài dưới khung, cùng tám đường ra. Cú phóng
+   qua được phép thử vì nó là một TRẠNG THÁI chứ không phải một hiệu ứng — và
+   đó là lý do nó được chọn thay vì parallax nền, thứ mà tắt đi là mất hẳn. */
 @media (prefers-reduced-motion: reduce) {
   .chomRo,
-  .chomNghi { transition: none; }
+  .chomNen,
+  .lop,
+  .sky { transition: none; }
 }
 
 .srOnly {
@@ -433,12 +539,24 @@
    các khối `.hit*`: ca test tính lại bằng `placeStar()` của hồ sơ TS rồi so
    từng con số. */
 
+/* LỚP CON TRỎ MANG ĐÚNG TRANSFORM CỦA CÁC TẤM, và nó buộc phải như thế: 48 dấu
+   ngôi đặt bằng % của lớp này, nên nếu tranh phóng mà lớp này không phóng thì
+   mỗi dấu ngôi đứng cách ngôi thật mấy trăm pixel. Cùng một `transform` cho
+   cả mười sáu tấm lẫn lớp này là cách duy nhất giữ hai thứ dán vào nhau.
+
+   Hệ quả: MỌI THỨ TRONG LỚP NÀY BỊ PHÓNG THEO. Chip 13 px thành 36 px, nét
+   1 px thành 2,8 px. Nên các vật bên trong tự ĐẢO hệ số lại —
+   `scale(1 / var(--zs))` cho vật có tâm, và chia `--zs` cho bề dày của hai ke
+   và hai lề (chúng chạy suốt khung nên không đảo bằng scale được, scale sẽ co
+   luôn chiều dài). Nhờ phép đảo ấy, px VIẾT RA = px THẤY ĐƯỢC ở mọi tỉ lệ. */
 .lop {
   --cx: 50%;
   --cy: 50%;
   inset: 0;
   pointer-events: none;
   position: absolute;
+  transform: scale(var(--zs)) translate(var(--zx), var(--zy));
+  transition: transform var(--ds-dur-page) ease-out;
   z-index: 3;
 }
 
@@ -456,11 +574,13 @@
   left: var(--cx);
   top: 0;
   translate: -50% 0;
-  width: var(--ds-bw-1);
+  /* Chia `--zs`: ke chạy SUỐT khung nên không đảo bằng `scale()` được (scale
+     co luôn chiều dài). Chia bề dày là phép đảo duy nhất giữ được cả hai. */
+  width: calc(var(--ds-bw-1) / var(--zs));
 }
 
 .keY {
-  height: var(--ds-bw-1);
+  height: calc(var(--ds-bw-1) / var(--zs));
   left: 0;
   right: 0;
   top: var(--cy);
@@ -479,7 +599,7 @@
 }
 
 .lanX {
-  height: var(--ds-bw-1);
+  height: calc(var(--ds-bw-1) / var(--zs));
   left: 0;
   right: 0;
   top: 0;
@@ -489,7 +609,7 @@
   bottom: 0;
   left: 0;
   top: 0;
-  width: var(--ds-bw-1);
+  width: calc(var(--ds-bw-1) / var(--zs));
 }
 
 .vachX,
@@ -505,6 +625,10 @@
   height: 11px;
   left: var(--cx);
   top: 0;
+  /* `transform` ĐẢO hệ số phóng: vạch có tâm nên scale về được, và nhờ thế
+     11 px viết ra là 11 px thấy được ở cả hai tỉ lệ. `translate` chạy TRƯỚC
+     `transform` theo đặc tả, nên hai thuộc tính không đạp nhau. */
+  transform: scale(calc(1 / var(--zs)));
   translate: -50% 0;
   width: var(--ds-bw-2);
 }
@@ -513,6 +637,7 @@
   height: var(--ds-bw-2);
   left: 0;
   top: var(--cy);
+  transform: scale(calc(1 / var(--zs)));
   translate: 0 -50%;
   width: 11px;
 }
@@ -536,6 +661,7 @@
   outline: var(--ds-bw-1) solid var(--sky-chip);
   position: absolute;
   top: var(--cy);
+  transform: scale(calc(1 / var(--zs)));
   transition: opacity var(--ds-dur-fast) ease;
   translate: -50% -50%;
   width: 34px;
@@ -764,17 +890,28 @@
 .cumM7 { --sac: var(--sky-m7); }
 .cumM8 { --sac: var(--sky-m8); }
 
+/* DẤU NGÔI — và một phép đảo DUY NHẤT lo cho cả cái chip bên trong.
+
+   `.sao` nằm trong `.lop`, mà `.lop` bị phóng `--zs` lần. Thêm
+   `scale(1 / var(--zs))` vào đây là mọi px BÊN TRONG `.sao` — bề dày viền,
+   lề chip, cỡ chữ, bán kính góc — về đúng px viết ra, ở mọi tỉ lệ. Không phải
+   một mẹo: hai phép scale lồng nhau triệt tiêu, nên đây là chỗ RẺ NHẤT và
+   DUY NHẤT phải đảo, thay vì nhân `--zs` vào mười mấy con số của `.chip`. */
 .sao {
   border: var(--ds-bw-2) solid transparent;
   border-radius: 50%;
   box-sizing: border-box;
   display: block;
-  height: 22px;
+  /* `--do` là đường kính THẤY ĐƯỢC. Nó là một biến vì ở tỉ lệ gần nó lên 44 px
+     (ngưỡng vùng chạm) — xem khối `[data-phong]`. */
+  --do: 22px;
+  height: var(--do);
   pointer-events: none;
   position: absolute;
+  transform: scale(calc(1 / var(--zs)));
   transition: border-color var(--ds-dur-fast) ease;
   translate: -50% -50%;
-  width: 22px;
+  width: var(--do);
 }
 
 .chip {
@@ -782,18 +919,21 @@
   background: var(--sky-chip);
   border: var(--ds-bw-1) solid var(--sac);
   border-radius: var(--ds-r-sm);
-  /* 20 px từ mép dưới-trái của ô 22 px = góc chip nằm NGOÀI vòng dấu ngôi
-     (tâm cách mép 11 px, nên góc ở (+9, +9) tức 12,7 px từ tâm). Chip chồng
-     lên chính ngôi là chip che mất cái nó đang nói về — cùng quy ước với nhãn
-     mã bài trong tranh (`SKY_LABEL.codeOffset`, chéo trên-phải). */
-  bottom: 20px;
+  /* NEO THEO TÂM NGÔI, không theo mép ô. `calc(50% + 9px)` = 9 px chéo
+     trên-phải tính từ tâm — đúng `SKY_LABEL.codeOffset`, cùng quy ước với
+     nhãn mã bài mà bản SVG vừa bỏ đi (nó in đè lên chính chip này).
+
+     Trước đây là `bottom/left: 20px`, một con số chỉ đúng khi ô rộng 22 px
+     (11 + 9 = 20). Ở tỉ lệ gần ô lên 44 px và con số ấy đưa góc chip vào
+     (22 − 20) = 2 px quanh tâm, tức chip CHE mất chính cái ngôi nó đang nói
+     về. Neo theo % thì không có con số nào phải sửa theo. */
+  bottom: calc(50% + 9px);
   color: var(--sky-ink);
-  font-family: var(--edu-mono);
   font-size: var(--ds-fs-label);
-  left: 20px;
-  line-height: 1.25;
+  left: calc(50% + 9px);
+  line-height: 1.3;
   opacity: 0;
-  padding: 1px 5px;
+  padding: 2px 6px;
   position: absolute;
   transition: opacity 180ms ease var(--bac);
   white-space: nowrap;
@@ -804,18 +944,60 @@
    `placeStar()`, không gõ tay mã ngôi nào. */
 .sao[data-le='phai'] .chip {
   left: auto;
-  right: 20px;
+  right: calc(50% + 9px);
+  text-align: right;
 }
 
-.ma { font-weight: 600; }
+.ma {
+  font-family: var(--edu-mono);
+  font-weight: 600;
+}
 
-/* SỐ CA CHẤM — chỉ hiện ở ngôi ĐANG được nhận, không hiện ở cả chín chip của
-   một chặng. Đúng bài học Hades trong nghiên cứu §2.5: cho biết HÌNH DẠNG của
-   lựa chọn ở tỉ lệ xa (mã bài), giữ lại NỘI DUNG của nó (con số) cho chỗ tay
-   đang chỉ vào. Chín con số cùng hiện là chín con số không ai đọc. */
+/* THỨ TỰ HỌC TRONG CHẶNG — chỉ hiện ở tỉ lệ gần.
+
+   Nó là một trong ba thứ "bị giữ lại" cho tỉ lệ gần, và là thứ bản đồ KHÔNG
+   nói được bằng hình: chú giải đã khẳng định nét chòm "không nói thứ tự phải
+   học" (nó gom các bài thành một HÌNH, không thành một lộ trình), nên ở tỉ lệ
+   xa thứ tự này không đọc được ở đâu cả. Bậc thang 45 ms kể nó bằng THỜI GIAN,
+   mà thời gian thì người bật `reduce` không nhận được. Một con số thì ai cũng
+   nhận được. */
+.thuTu {
+  color: var(--sky-code);
+  display: none;
+  font-family: var(--edu-mono);
+  margin-right: 5px;
+}
+
+/* TÊN BÀI THẬT — thứ CHỈ có ở tỉ lệ gần, và lý do cú phóng không phải "phóng
+   to một bức ảnh".
+
+   Xuống DÒNG RIÊNG và bọc trong `max-width`, không nối tiếp sau mã bài: đo
+   được khe nhỏ nhất giữa hai ngôi cùng một chặng là 48,4 đơn vị khung
+   (T02–T03 ở M2) ⇒ ~112 px thấy được ở hệ số 2,962 và bề rộng khung 1 068 px.
+   Một cái tên như "Thread, tài nguyên và concurrency" trên MỘT dòng rộng
+   ~210 px, tức hai chip cạnh nhau sẽ chồng nhau. Bọc xuống 15ch thì chúng
+   không chồng.
+
+   `nowrap` của `.chip` phải tắt ở đây, nếu không `max-width` không làm gì. */
+.tenBai {
+  display: none;
+  max-width: 15ch;
+  white-space: normal;
+}
+
+/* SỐ CA CHẤM — ở tỉ lệ XA chỉ hiện ở ngôi ĐANG được nhận. Đúng bài học Hades
+   trong nghiên cứu §2.5: cho biết HÌNH DẠNG của lựa chọn ở tỉ lệ xa (mã bài),
+   giữ lại NỘI DUNG của nó (con số) cho chỗ tay đang chỉ vào. Chín con số cùng
+   hiện ở tỉ lệ xa là chín con số không ai đọc.
+
+   Ở tỉ lệ GẦN thì cả chặng hiện số — xem khối `[data-phong]`. Ở đó nó không
+   còn là chín con số rải trên cả bầu trời, nó là chín con số của MỘT chặng
+   đang được xem, và so chúng với nhau là cả việc người ta vừa phóng vào để
+   làm. */
 .soCa {
   color: var(--sky-code);
   display: none;
+  font-family: var(--edu-mono);
   margin-left: 5px;
 }
 
@@ -929,4 +1111,267 @@
   .vachX,
   .vachY,
   .vong { transition: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TỈ LỆ THỨ HAI — CÚ PHÓNG (`?chang=M<k>`)
+   ═══════════════════════════════════════════════════════════════════════
+
+   Bước 3 của `design/v3/tuong-tac-ban-do.md`. Nghiên cứu đo bảy bản đồ game
+   và tìm ra ba thứ bản đồ này thiếu cả ba: **một động từ có hậu quả · hai tỉ
+   lệ trở lên · cái gì bị giữ lại**. Khối này cấp hai thứ sau.
+
+   ── BỐN ĐIỀU GIỮ Ở ĐÂY ────────────────────────────────────────────────
+
+   1. TRẠNG THÁI NẰM TRONG URL, KHÔNG TRONG MỘT `useState`. `page.tsx` đọc
+      `?chang=` ở SERVER rồi gắn một lớp `.phongM<k>` lên `.frame`. Hệ quả, và
+      cả ba đều là thứ hầu hết bản đồ web làm hỏng: nút LÙI của trình duyệt
+      lùi ra khỏi chặng chứ không văng khỏi trang; gửi được một đường dẫn tới
+      đúng chặng; và không-JS vẫn phóng được (một `<a href>` thật, tải lại
+      trang, server dựng đúng trạng thái).
+
+   2. BA BIẾN, KHÔNG MỘT PHÉP TÍNH NÀO Ở PHÍA CSS. Tám khối `.phongM<k>` do
+      `py scripts/star/build_sky.py --css` in ra; cùng ba con số ấy đóng băng
+      ở `SKY_ZOOM_PLACED` cho `SkyCursor.tsx` đảo lại. ĐỪNG SỬA TAY — ca test
+      so khối CSS với khối TS, và hai chỗ lệch nhau nghĩa là vòng dò nhận ngôi
+      bên cạnh ngôi con trỏ đang chỉ vào.
+
+   3. ĐƯỜNG RA CHẮC HƠN ĐƯỜNG VÀO. Ba đường: Esc (`SkyExit.tsx`), nút Thoát
+      thấy được, và bấm vào khoảng trời trống (`.nenRa` phủ kín khung, nằm
+      DƯỚI các ngôi nên bấm một ngôi vẫn mở bài). Vào thì chỉ một đường.
+
+   4. KHÔNG `display: none` CHO TÁM Ô BẤM — `visibility: hidden`. Ô bấm là anh
+      em TRƯỚC của mười sáu tấm và trạng thái hover đi qua `~`; `display: none`
+      vẫn giữ quan hệ anh em nên nó cũng chạy, nhưng `visibility` giữ luôn cả
+      hộp, nên không có một lượt tính lại bố cục nào ở giữa cú phóng. */
+
+.phongM1 {
+  --zs: 2.791;
+  --zx: 20.988%;
+  --zy: -32.085%;
+}
+.phongM2 {
+  --zs: 2.962;
+  --zx: 3.708%;
+  --zy: -33.119%;
+}
+.phongM3 {
+  --zs: 2.396;
+  --zx: -20.675%;
+  --zy: -29.131%;
+}
+.phongM4 {
+  --zs: 2.633;
+  --zx: -5.629%;
+  --zy: -15.761%;
+}
+.phongM5 {
+  --zs: 2.918;
+  --zx: 27.258%;
+  --zy: 3.380%;
+}
+.phongM6 {
+  --zs: 2.406;
+  --zx: 9.163%;
+  --zy: 12.127%;
+}
+.phongM7 {
+  --zs: 2.728;
+  --zx: -31.671%;
+  --zy: 12.096%;
+}
+.phongM8 {
+  --zs: 3.2;
+  --zx: -25.292%;
+  --zy: 34.375%;
+}
+
+/* Tám ô bấm cả chặng TẮT khi đang phóng: chúng đặt bằng % của KHUNG và khung
+   không bị transform, nên ở tỉ lệ gần chúng nằm lệch hẳn khỏi chòm chúng nói
+   về. Một vùng bấm chỉ sai chỗ còn tệ hơn không có vùng bấm. Lối đi tiếp ở tỉ
+   lệ gần là 48 ngôi (bật `pointer-events` dưới đây) và bảng bài dưới khung. */
+.frame[data-phong] .hit {
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* NGÔI CỦA CHẶNG ĐANG XEM THÀNH VÙNG CHẠM THẬT.
+
+   Ở tỉ lệ xa 48 dấu ngôi KHÔNG phải vùng chạm, và con số nói ra lý do: hai
+   ngôi gần nhau nhất cách 48,4 đơn vị khung ⇒ ~38 px thấy được, nên ô 44 px
+   sẽ chồng nhau. Ở tỉ lệ gần cùng khe ấy giãn ra ~112 px (hệ số 2,962 ở M2,
+   chòm chặt nhất), nên 44 px vừa đủ và KHÔNG chồng — đây là chỗ cú phóng trả
+   lại một thứ mà tỉ lệ xa không có chỗ cho.
+
+   `--do` lên 44 px là 44 px THẤY ĐƯỢC, không phải 44 px trong hệ toạ độ đã
+   phóng: `.sao` tự đảo hệ số bằng `scale(1 / var(--zs))`. */
+.frame[data-phong] .sao {
+  --do: 44px;
+}
+
+/* CHỈ chặng đang xem bật được chạm. Bảy chặng kia phần lớn nằm ngoài khung ở
+   tỉ lệ gần, và một liên kết nằm ngoài khung mà vẫn ăn con trỏ là một cái bẫy
+   vô hình. */
+.frame[data-phong='M1'] .cumM1 .sao,
+.frame[data-phong='M2'] .cumM2 .sao,
+.frame[data-phong='M3'] .cumM3 .sao,
+.frame[data-phong='M4'] .cumM4 .sao,
+.frame[data-phong='M5'] .cumM5 .sao,
+.frame[data-phong='M6'] .cumM6 .sao,
+.frame[data-phong='M7'] .cumM7 .sao,
+.frame[data-phong='M8'] .cumM8 .sao {
+  pointer-events: auto;
+}
+
+/* BA THỨ BỊ GIỮ LẠI, hiện ra ở đây và chỉ ở đây: thứ tự học · tên bài thật ·
+   số ca chấm. Cả chặng cùng lúc, không chờ hover — đây là đường dùng được
+   trên ĐIỆN THOẠI, nơi không có hover, và nghiên cứu nói rõ rằng
+   `@media (hover: none)` không được cho ra một bản đồ chết. */
+.frame[data-phong='M1'] .cumM1 .chip,
+.frame[data-phong='M2'] .cumM2 .chip,
+.frame[data-phong='M3'] .cumM3 .chip,
+.frame[data-phong='M4'] .cumM4 .chip,
+.frame[data-phong='M5'] .cumM5 .chip,
+.frame[data-phong='M6'] .cumM6 .chip,
+.frame[data-phong='M7'] .cumM7 .chip,
+.frame[data-phong='M8'] .cumM8 .chip {
+  opacity: 1;
+}
+
+/* Tên bài xuống DÒNG RIÊNG (`block`), hai thứ kia nối tiếp trên dòng đầu. */
+.frame[data-phong] .tenBai {
+  display: block;
+}
+
+.frame[data-phong] .soCa,
+.frame[data-phong] .thuTu {
+  display: inline;
+}
+
+/* Chip của ngôi ĐANG ĐƯỢC NHẬN nổi lên trên các chip bên cạnh. Ở tỉ lệ gần
+   chip mang tên bài nên nó cao hơn hẳn, và hai chip của hai ngôi gần nhau vẫn
+   có thể giao nhau ở mép; `z-index` quyết chip nào đọc được trọn vẹn, và nó
+   phải là chip mà tay đang chỉ vào. */
+.sao[data-gan],
+.sao:focus-visible {
+  z-index: 1;
+}
+
+/* ── ĐƯỜNG RA ──────────────────────────────────────────────────────────
+
+   NỀN TRỐNG. Phủ kín khung, z-index 2 — tức TRÊN mười sáu tấm (z 1) và DƯỚI
+   lớp con trỏ (z 3). Thứ tự ấy LÀ hợp đồng: bấm một ngôi thì mở bài, bấm
+   khoảng trời còn lại thì lùi ra. Nếu nó lên trên lớp con trỏ thì 48 ngôi
+   thành vật trang trí. */
+.nenRa {
+  display: block;
+  inset: 0;
+  position: absolute;
+  z-index: 2;
+}
+
+/* NÚT THOÁT — phải THẤY ĐƯỢC, không chỉ phải tồn tại. Esc là đường của người
+   biết có Esc; một cái nút là đường của mọi người còn lại, và trên điện thoại
+   nó là đường duy nhất ngoài "bấm ra ngoài".
+
+   Nền ĐẶC `--sky-chip` với chữ `--sky-ink`: cặp này đo được 16,77:1, và nó là
+   cặp ĐÃ CÓ ca test canh — đặt chữ lên một bức tranh có điểm sáng nhất
+   L = 0,8799 mà không có nền đặc là đặt một con số không đo được.
+
+   44 px cả hai chiều: `min-height` cộng `padding` ngang, đúng khuôn `.hit`. */
+.thoat {
+  align-items: center;
+  background: var(--sky-chip);
+  border: var(--ds-bw-1) solid var(--sky-dim);
+  border-radius: var(--ds-r-sm);
+  color: var(--sky-ink);
+  display: inline-flex;
+  font-size: var(--ds-fs-ui);
+  min-height: 44px;
+  padding: 0 16px;
+  position: absolute;
+  right: 12px;
+  text-decoration: none;
+  top: 12px;
+  z-index: 4;
+}
+
+.thoat:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet-deep);
+  outline-offset: 2px;
+}
+
+/* ── BẢNG BÀI, DƯỚI KHUNG ──────────────────────────────────────────────
+
+   NGOÀI khung, không chồng lên tranh, và đó là một lựa chọn có lý do: một
+   bảng chữ đặt trên bầu trời che mất đúng cái vừa được phóng vào, và nó đẩy
+   mọi dòng vào chỗ phải tự chứng minh 4,5:1 trên một bức tranh có điểm sáng
+   nhất L = 0,8799. Dưới khung thì nó dùng token của trang, tức dùng lại
+   những con số đã đo.
+
+   Nó cũng là đường BÀN PHÍM của tỉ lệ gần: 48 dấu ngôi mang `tabIndex={-1}`
+   (tiêu điểm luân phiên), và tám ô bấm cả chặng thì đã tắt. Không có bảng này
+   thì phóng vào bằng Enter là tới một chỗ không đi tiếp được. */
+.bang {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+}
+
+.bangTitle {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-h3);
+  margin: 20px 0 4px;
+}
+
+.bangNote {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  margin: 0 0 8px;
+}
+
+/* Mỗi dòng ≥ 44 px cả hai chiều. `min-height` chứ không `height`: tên bài dài
+   nhất ("Mini-project: doanh thu từ raw tới chart") xuống hai dòng ở màn hẹp,
+   và một `height` cố định sẽ cắt mất nửa sau. */
+.hang {
+  align-items: baseline;
+  border-bottom: var(--ds-bw-1) solid var(--ds-line);
+  color: var(--ds-ink);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 10px;
+  min-height: 44px;
+  padding: 10px 4px;
+  text-decoration: none;
+}
+
+.hang:hover,
+.hang:focus-visible {
+  background: var(--ds-surface-2);
+}
+
+.hang:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet-deep);
+  outline-offset: -2px;
+}
+
+/* Số thứ tự trong chặng, ô cố định để các dòng thẳng cột — một cột lệch là
+   một thứ tự đọc chậm hơn. */
+.hangSo {
+  flex: 0 0 2.5ch;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.hangMa {
+  flex: 0 0 5ch;
+  font-family: var(--edu-mono);
+  font-weight: 600;
+}
+
+.hangTen { flex: 1 1 16ch; }
+
+.hangCa {
+  flex: 0 0 auto;
+  font-family: var(--edu-mono);
 }

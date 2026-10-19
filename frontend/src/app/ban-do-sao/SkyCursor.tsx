@@ -53,10 +53,12 @@ import {
   lessonNumber,
   placeStar,
   starAriaLabel,
+  zoomToFrame,
   SKY_CONSTELLATIONS,
   SKY_CURSOR,
   SKY_FRAME,
   SKY_TESTS,
+  SKY_TITLES,
 } from '@/lib/star-map';
 
 import styles from './star-map.module.css';
@@ -127,11 +129,21 @@ export default function SkyCursor() {
       if (!cho) return;
       const r = khung.getBoundingClientRect();
       if (r.width <= 0 || r.height <= 0) return;
-      const fx = ((cho.x - r.left) / r.width) * SKY_FRAME.width;
-      const fy = ((cho.y - r.top) / r.height) * SKY_FRAME.height;
-      lop.style.setProperty('--cx', `${((fx / SKY_FRAME.width) * 100).toFixed(3)}%`);
-      lop.style.setProperty('--cy', `${((fy / SKY_FRAME.height) * 100).toFixed(3)}%`);
+      const u = (cho.x - r.left) / r.width;
+      const v = (cho.y - r.top) / r.height;
+      // `--cx`/`--cy` là vị trí trong LỚP PHỦ, tức trong hệ toạ độ TRƯỚC khi
+      // transform của cú phóng áp vào — nên chúng vẫn là tỉ lệ thô của khung.
+      lop.style.setProperty('--cx', `${(u * 100).toFixed(3)}%`);
+      lop.style.setProperty('--cy', `${(v * 100).toFixed(3)}%`);
       lop.setAttribute('data-tay', '');
+
+      // …còn phép DÒ thì phải nói bằng toạ độ KHUNG THẬT, và ở tỉ lệ gần hai
+      // thứ đó không còn là một. `zoomToFrame()` đảo đúng phép biến hình mà
+      // CSS đang áp (`.phongM<k>` trong `star-map.module.css`, sinh từ cùng ba
+      // con số ở `SKY_ZOOM_PLACED`). Bỏ bước này thì ở tỉ lệ gần vòng dò nhận
+      // một ngôi cách đó mấy trăm pixel — và triệu chứng đọc ra thành "chuột
+      // hơi lệch", thứ không ai đi tìm trong một phép biến hình.
+      const { x: fx, y: fy } = zoomToFrame(khung.dataset.phong, u, v);
 
       // Ngôi gần nhất TRONG bán kính nhận. Ngoài bán kính thì không ngôi nào
       // nhận — vòng dò trống, và cái trống ấy mang tin: chú giải đã khẳng định
@@ -253,10 +265,22 @@ export default function SkyCursor() {
               tabIndex={-1}
             >
               <span className={styles.chip}>
+                {/* THỨ TỰ HỌC TRONG CHẶNG — chỉ hiện ở TỈ LỆ GẦN. Nét chòm cố
+                    ý không nói thứ tự (chú giải: "nó không nói thứ tự phải
+                    học"), và bậc thang 45 ms kể thứ tự bằng THỜI GIAN — thứ mà
+                    người bật `reduce` không nhận được. Một con số thì ai cũng
+                    nhận được. */}
+                <span className={styles.thuTu}>{j + 1}</span>
                 <span className={styles.ma}>{s.code}</span>
                 {/* Con số mà bán kính ngôi ĐÃ mang từ đầu mà chưa ai đọc được.
                     Số, không phải tính từ: `starMagnitude` tra đúng nó. */}
                 <span className={styles.soCa}>{SKY_TESTS[s.code]} ca</span>
+                {/* TÊN BÀI THẬT — chỉ hiện ở tỉ lệ gần, và nó là lý do cú
+                    phóng không phải "phóng to một bức ảnh". Nó ở trong DOM
+                    ngay từ lượt dựng đầu, không chờ một `useEffect`: nhờ thế
+                    người dùng trình đọc màn hình và máy tìm kiếm thấy nó, và
+                    nó không phải một thứ xuất hiện sau khi JS tải xong. */}
+                <span className={styles.tenBai}>{SKY_TITLES[s.code]}</span>
               </span>
             </a>
           ))}

@@ -544,27 +544,35 @@ export const SKY_LABEL = {
   subWeight: 500,
   subTracking: 0.04,
   /**
-   * ĐỘ MỜ CỦA CHỮ bảy nhãn còn lại khi một chòm được trỏ vào.
+   * SÀN ĐỘ MỜ CỦA CHỮ ở bảy nhãn còn lại khi một chòm được trỏ vào.
    *
-   * Vì sao một con số RIÊNG chứ không dùng lại tỉ số của nét chòm
-   * (`dimOpacity / lineOpacity[0]` = 0,509, vẫn dùng cho đường dẫn và gạch
-   * chân): chữ có một SÀN mà nét không có. WCAG đòi 4,5:1 cho chữ và 3:1 cho
-   * hình, nên hai thứ mờ theo cùng một tỉ số là một thứ sẽ trượt trước.
+   * ── TỪ MỘT CON SỐ RIÊNG THÀNH MỘT CÁI SÀN (19/10/2026) ───────────────
    *
-   * Và nó trượt thật — số này là bản sửa một lỗi mà việc bỏ `skyDim` LÀM RA.
-   * Bản cũ mờ cả trời lúc hover, nên nền sau chữ cũng tối theo và chữ mờ được
-   * NÂNG tương phản nhờ đó: nhãn M4 (nằm chỗ trời sáng nhất) đo được 4,66:1,
-   * vừa đủ. Giữ trời nguyên thì nền không tối đi nữa và chính nhãn ấy tụt
-   * xuống **4,36:1** — dưới sàn. 0,55 đưa nó lên **4,83:1**, và nó chỉ đặc hơn
-   * 0,509 có 8% nên chòm được trỏ vẫn nổi hẳn.
+   * Số này ra đời làm một ĐỘ MỜ RIÊNG cho chữ, vì chữ có một sàn mà nét không
+   * có: WCAG đòi 4,5:1 cho chữ và 3:1 cho hình, nên hai thứ mờ theo cùng một
+   * tỉ số là một thứ sẽ trượt trước. Và nó trượt thật — bản cũ mờ cả trời lúc
+   * hover nên nền sau chữ tối theo và nhãn M4 (chỗ trời sáng nhất) còn
+   * 4,66:1; giữ trời nguyên thì chính nhãn ấy tụt xuống **4,36:1** ở tỉ số
+   * 0,509 của nét. 0,55 đưa nó lên **4,83:1**.
+   *
+   * Từ lúc TÁCH TẤM (xem `build_chom`) nó không còn là một độ mờ đặt được
+   * nữa: bảy chòm mờ đi bằng `opacity` của CSS trên chính thẻ `<img>` của tấm
+   * NGHỈ, và một `opacity` thì mờ ĐỀU cả nét lẫn chữ — không có chỗ nào cho
+   * hai tỉ số. Nên nó đổi vai thành SÀN, và cái sàn ấy quyết `dimOpacity`:
+   * `dimOpacity / lineOpacity[0]` phải ≥ con số này, nên 0,28 lên 0,31
+   * (tỉ số 0,5636). Script **TRƯỢT BUILD** nếu ai hạ `dimOpacity` xuống dưới
+   * mức đó, và đo lại tương phản chữ ở ĐÚNG tỉ số CSS sẽ dùng.
    *
    * KHÔNG lấy 0,52 (đo ra 4,48:1, tức đúng mép): bộ đo lấy mẫu trên lưới 9×5
    * trong hộp chữ, nên nó có thể bỏ sót một điểm sáng hơn giữa hai mẫu. Dừng
    * đúng ở mép ràng buộc là tự đặt mình vào chỗ một phép lấy mẫu dày hơn sẽ
-   * làm đỏ. Script đo cả trạng thái mờ và **TRƯỢT BUILD** nếu dưới 4,5:1.
+   * làm đỏ.
    */
   dimTextOpacity: 0.55,
-  /** Mã bài lúc hover (§10 hiệu ứng 7): JetBrains Mono 13px, chéo trên-phải. */
+  /** Cỡ/lệch của mã bài. KHÔNG còn vẽ vào tranh — bước 2 đã dựng mã bài bằng
+   *  HTML (`.chip`) và hai bản rơi vào đúng một điểm, nên bản SVG bỏ đi (xem
+   *  `ve_nhan`). Giữ hai con số vì `.chip` neo theo chúng: `codeOffset` là
+   *  khoảng chéo trên-phải mà cả hai bản dùng. */
   codeSize: 13,
   codeOffset: 9,
   /** Hộp va chạm của nhãn = hộp chữ nở 10 px mọi phía; hộp không được giao
@@ -691,6 +699,70 @@ export const SKY_TESTS: Record<string, number> = {
 };
 
 /**
+ * TÊN BÀI THẬT của 48 bài — SINH RA, không gõ tay. Chạy
+ * `py scripts/star/build_sky.py --ten-bai` rồi chép khối in ra vào đây.
+ *
+ * ── ĐÂY LÀ "CÁI GÌ BỊ GIỮ LẠI" ────────────────────────────────────────
+ *
+ * `design/v3/tuong-tac-ban-do.md` đo được rằng bảy bản đồ game được khảo đều
+ * giữ lại một thứ cho tỉ lệ gần. Bản đồ này trước nay không giữ gì cả: ở tỉ lệ
+ * xa mỗi ngôi mang MÃ bài (`P03`), và phóng vào thì vẫn đúng cái mã ấy, to
+ * hơn. Tức cú phóng sẽ là phóng to một bức ảnh.
+ *
+ * Tên bài là thứ CHỈ có ở tỉ lệ gần, và nó không vẽ vào tranh được: 48 cái tên
+ * tiếng Việt dài 20–45 ký tự trên một bầu trời 1360 × 820 là một bảng chữ, và
+ * `kiem_tuong_phan_nhan` sẽ trượt build ngay vì không còn chỗ nào đặt được.
+ * Nên nó là CHỮ HTML ở lớp chồng, hiện khi và chỉ khi đang phóng.
+ *
+ * Vì sao chép 48 chuỗi mà vẫn an toàn — cùng lý do `SKY_TESTS` an toàn: trang
+ * này KHÔNG GỌI API nào (`apiFetch` gặp 401 là tự tạo tài khoản khách, và đây
+ * là trang ai cũng vào được), nên dữ liệu phải ở trong mã; và một ca test ĐỌC
+ * LẠI 48 tệp `scripts/pe-v4/out-advanced/lessons/*.json` rồi so TỪNG chuỗi,
+ * nên một cái tên cũ là một ca ĐỎ.
+ *
+ * Tiền tố mã bài ĐÃ CẮT (`P01 · Program…` → `Program…`): chip ở tỉ lệ gần có
+ * một ô riêng cho mã bài, nên để nguyên tiền tố là in `P01` hai lần cạnh nhau.
+ */
+export const SKY_TITLES: Record<string, string> = {
+  /* M1 */ P01: 'Program, process và tài nguyên', P02: 'Vòng đời, fork, exec và wait', P03: 'Scheduling và context switch', P04: 'stdin, stdout, stderr và pipe', P05: 'subprocess.run và kết quả', P06: 'Popen, communicate và timeout', P07: 'multiprocessing: Process và Queue',
+  /* M2 */ T01: 'Thread, tài nguyên và concurrency', T02: 'Thread target, start và join', T03: 'Subclass Thread', T04: 'GIL, CPU-bound và I/O-bound', T05: 'Lock, race condition và deadlock', T06: 'Queue và tác vụ lưu nền',
+  /* M3 */ G01: 'GUI, CLI và cửa sổ', G02: 'Widget và callback', G03: 'Dữ liệu nhập và lựa chọn', G04: 'Layout: pack, place, grid', G05: 'OOP và tách logic khỏi giao diện', G06: 'Event loop và worker nền', R02: 'Dự án PW5–PW9: lưu, shell, thread và GUI',
+  /* M4 */ X01: 'Nhập dữ liệu bằng NumPy và pandas', X02: 'Excel, Stata, SAS, HDF5 và MATLAB', X03: 'SQL với sqlite3 và pandas', X04: 'Matplotlib: dữ liệu và loại biểu đồ', X05: 'Matplotlib: tùy chỉnh và xuất',
+  /* M5 */ N01: 'Array, dtype, shape và axis', N02: 'Indexing, mask và vectorization', N03: 'Broadcasting và chuẩn hoá dữ liệu', N04: 'Thống kê, NaN và trọng số', N05: 'View, copy và sai số số thực', N06: 'Đọc dữ liệu và mô phỏng tái lập',
+  /* M6 */ PD01: 'Series, DataFrame và index', PD02: 'CSV, Excel và schema', PD03: 'Làm sạch thiếu, trùng và sai kiểu', PD04: 'Lọc, tính cột và cập nhật an toàn', PD05: 'GroupBy và KPI có mẫu số rõ ràng', PD06: 'Merge, concat và kiểm tra cardinality', PD07: 'Long, wide, pivot và melt', PD08: 'Ngày giờ, resample và rolling', PD09: 'EDA, chất lượng dữ liệu và export',
+  /* M7 */ M01: 'Figure, Axes và chọn biểu đồ', M02: 'Phân bố, scatter và outlier', M03: 'Subplot và heatmap đọc được', M04: 'Màu, annotation và kể chuyện dữ liệu', M05: 'Ticks, scale và ngày trên trục', M06: 'Layout, xuất hình và kiểm tra chất lượng',
+  /* M8 */ DA01: 'Mini-project: doanh thu từ raw tới chart', DA02: 'Mini-project: điểm số và GPA',
+};
+
+/**
+ * HÌNH HỌC CÚ PHÓNG — ĐÓNG BĂNG, sinh bởi
+ * `py scripts/star/build_sky.py --phong`. Luật sinh ra nó ở `SKY_ZOOM`.
+ *
+ * Ba con số mỗi chòm: `scale` là hệ số, `cx`/`cy` là tâm khung (0..1) sau khi
+ * đã KẸP để cửa sổ thấy được không bao giờ ra ngoài bức tranh.
+ *
+ * Vì sao đóng băng ở đây chứ không tính trong TS: hộp đích gồm cả HỘP NHÃN, mà
+ * hộp nhãn chỉ Python đo được — nó cần bề rộng chữ. Đúng khuôn
+ * `SKY_LABEL_PLACED` và `SKY_TESTS`: một nguồn, một chỗ đọc, một ca test tính
+ * lại từ chính tranh rồi so.
+ *
+ * Và nó phải đọc được từ JS, không chỉ từ CSS: `SkyCursor.tsx` ĐẢO phép biến
+ * hình để biết con trỏ đang ở toạ độ khung nào lúc đang phóng. Không có ba con
+ * số này thì vòng dò nhận SAI ngôi — một bản đồ phóng vào rồi chỉ sai chỗ còn
+ * tệ hơn một bản đồ không phóng.
+ */
+export const SKY_ZOOM_PLACED = [
+  { key: 'M1', scale: 2.791, cx: 0.29012, cy: 0.82085 },
+  { key: 'M2', scale: 2.962, cx: 0.46292, cy: 0.83119 },
+  { key: 'M3', scale: 2.396, cx: 0.70675, cy: 0.79131 },
+  { key: 'M4', scale: 2.633, cx: 0.55629, cy: 0.65761 },
+  { key: 'M5', scale: 2.918, cx: 0.22742, cy: 0.4662 },
+  { key: 'M6', scale: 2.406, cx: 0.40837, cy: 0.37873 },
+  { key: 'M7', scale: 2.728, cx: 0.81671, cy: 0.37904 },
+  { key: 'M8', scale: 3.2, cx: 0.75292, cy: 0.15625 },
+] as const;
+
+/**
  * TÊN KHOÁ, cho dòng phụ hiện lúc trỏ vào (`Advanced Python · 7 bài`).
  *
  * Ở đây chứ không ở `build_sky.py`: luật 1 của tệp này là "hình thái và câu
@@ -705,6 +777,43 @@ export const SKY_COURSE = { name: 'Advanced Python' } as const;
  *  Không phải một ô chia hết bầu trời — khoảng tối giữa hai chòm không thuộc
  *  về ai (đặc tả chọn quy ước Bayer, không chọn IAU). */
 export const SKY_HIT = { hullPad: 20 } as const;
+
+/**
+ * TỈ LỆ THỨ HAI — ba con số cho cú phóng (`?chang=M<k>`).
+ *
+ * ── VÌ SAO CÓ TỈ LỆ THỨ HAI ───────────────────────────────────────────
+ *
+ * `design/v3/tuong-tac-ban-do.md` khảo bảy bản đồ game và tìm ra ba thứ mà
+ * bản đồ này thiếu cả ba: **một động từ có hậu quả · hai tỉ lệ trở lên · cái
+ * gì bị giữ lại**. Bước này cấp hai thứ sau. Và nó phải cấp CẢ HAI cùng lúc,
+ * vì một mình "hai tỉ lệ" là phóng to một bức ảnh: ở tỉ lệ gần phải hiện ra
+ * thứ tỉ lệ xa không có (tên bài thật, thứ tự học, số ca) — xem `SKY_TITLES`.
+ *
+ * ── VÌ SAO BA CON SỐ NÀY Ở ĐÂY, KHÔNG Ở CSS ───────────────────────────
+ *
+ * Hình học của cú phóng (hệ số và tâm từng chòm) ĐÓNG BĂNG ở
+ * `SKY_ZOOM_PLACED`, sinh bởi `py scripts/star/build_sky.py --phong`. Ba con
+ * số dưới đây là LUẬT sinh ra nó, nên chúng ở TS — đúng luật 1 của bộ sinh:
+ * hình thái ở TS, Python không biết gì.
+ */
+export const SKY_ZOOM = {
+  /** Hộp đích nở thêm bấy nhiêu đơn vị khung, để chòm không dính mép. */
+  pad: 34,
+  /**
+   * TRẦN HỆ SỐ. M8 chỉ có hai ngôi nên hộp của nó bé và `min(W/w, H/h)` cho ra
+   * hơn 6 lần — ở mức đó hai ngôi cách nhau nửa màn và cú phóng thành một cú
+   * rơi. Trần giữ cho tám chặng ở CÙNG một bậc tỉ lệ, tức chữ "gần" nghĩa như
+   * nhau ở cả tám.
+   */
+  maxScale: 3.2,
+  /**
+   * SÀN HỆ SỐ. M6 (9 ngôi, cái bàn rộng nhất) tự nhiên chỉ phóng được ~1,9
+   * lần. Sàn tồn tại để một chặng rộng vẫn phải ĐI ĐƯỢC một đoạn: biên độ
+   * dưới ~1,4 lần thì mắt đọc ra "hình nhích một chút", không ra "tôi vừa đi
+   * tới một chỗ khác" — và lúc đó cái động từ mất hậu quả.
+   */
+  minScale: 1.6,
+} as const;
 
 /**
  * LỚP CON TRỎ (`SkyCursor.tsx`) — mọi con số của "con trỏ có mặt trong bức
@@ -817,10 +926,16 @@ export type SkyProfile = {
     line: number;
     /** [nghỉ, hover] của nét chòm. */
     lineOpacity: [number, number];
-    /** Nét của BẢY CHÒM CÒN LẠI khi một chòm được trỏ vào: 0,55 → 0,28
+    /** Nét của BẢY CHÒM CÒN LẠI khi một chòm được trỏ vào: 0,55 → 0,31
      *  (§10 hiệu ứng 3). Tách hình khỏi nền bằng TƯƠNG PHẢN, không bằng
      *  chuyển động. ĐÂY LÀ TOÀN BỘ hiệu ứng làm nổi — xem chú thích "khoá
-     *  `skyDim` đã bị bỏ" ở `SkyProfile` dưới. */
+     *  `skyDim` đã bị bỏ" ở `SkyProfile` dưới.
+     *
+     *  NÓ KHÔNG CÒN ĐẶT TỰ DO ĐƯỢC: từ lúc tách tấm, bảy chòm mờ đi bằng
+     *  `opacity` của CSS trên tấm NGHỈ, nên tỉ số `dimOpacity / lineOpacity[0]`
+     *  mờ luôn cả CHỮ của nhãn — và chữ có sàn 4,5:1. Xem
+     *  `SKY_LABEL.dimTextOpacity`; script trượt build nếu tỉ số xuống dưới sàn
+     *  ấy. 0,28 (giá trị cũ) cho 0,509 và nhãn M4 đo ra 4,36:1. */
     dimOpacity: number;
     /** Độ mờ của hình khắc dụng cụ lúc hover (lớp E — chưa dựng ở bản mẫu). */
     figureOpacity: number;
@@ -890,7 +1005,7 @@ export const SKY_PROFILE_DARK: SkyProfile = {
     star: 1.0,
     line: 1.15,
     lineOpacity: [0.55, 0.85],
-    dimOpacity: 0.28,
+    dimOpacity: 0.31,
     figureOpacity: 0.13,
   },
   base: '#0A0C14',
@@ -1374,7 +1489,19 @@ export const STAR_COPY = {
    * biết để thử thì không tồn tại: rê con trỏ (ngôi gần nhất tự nhận mình),
    * Tab (vào từng chặng), mũi tên (đi giữa các ngôi trong chặng).
    */
-  hint: 'Rê con trỏ trên bầu trời: ngôi gần nhất tự nhận mình và nói ra mã bài cùng số ca chấm của nó. Trỏ vào một chòm thì cả chặng rõ lên — kèm tên khoá và số bài của chặng. Đi bằng bàn phím: Tab qua từng chặng, mũi tên đi giữa các ngôi trong chặng, Esc lùi ra.',
+  hint: 'Bấm (hoặc chạm) một chòm để PHÓNG VÀO chặng ấy: ở tỉ lệ gần mỗi ngôi mang tên bài thật, thứ tự học và số ca chấm. Esc hoặc nút Thoát để lùi ra, và nút Lùi của trình duyệt cũng đúng. Rê con trỏ trên bầu trời: ngôi gần nhất tự nhận mình và nói ra mã bài cùng số ca chấm; trỏ vào một chòm thì cả chặng rõ lên, kèm tên khoá và số bài. Đi bằng bàn phím: Tab qua từng chặng, Enter để phóng vào, mũi tên đi giữa các ngôi trong chặng.',
+  /** ── CÂU CHỮ CỦA TỈ LỆ GẦN ──────────────────────────────────────────
+   *
+   *  `{…}` do `page.tsx` thay. Ở đây chứ không trong TSX vì `node --test` đọc
+   *  được — cùng lý do cả khối này tồn tại. */
+  zoomExit: 'Thoát khỏi chặng',
+  /** `aria-label` của lớp nền trống. Nó là đường ra thứ ba (Esc · nút Thoát ·
+   *  bấm ra ngoài), và đường ra phải CHẮC HƠN đường vào. */
+  zoomBackdrop: 'Bấm vào khoảng trời trống để lùi ra khỏi chặng',
+  zoomPanelTitle: 'Chặng {key} · {sub} — {n} bài, theo thứ tự học',
+  /** Nói ra rằng tỉ lệ gần ĐANG giữ gì: ba thứ không có ở tỉ lệ xa. Không nói
+   *  thì người ta tưởng vừa phóng to một bức ảnh. */
+  zoomNote: 'Đang ở tỉ lệ gần của chặng {key}. Thứ tự dưới đây LÀ thứ tự học — bản đồ cố ý không vẽ mũi tên lộ trình, nên ở tỉ lệ xa thứ tự này không đọc được ở đâu cả.',
   /** `alt` của tấm ảnh ĐẦU. Chỉ một tấm mang mô tả: bốn tấm nền là MỘT bức,
    *  và bốn câu mô tả cho một bức là bốn lần đọc lại cùng một thứ cho người
    *  dùng trình đọc màn hình. */
@@ -1539,4 +1666,63 @@ export function profileColors(p: SkyProfile): string[] {
   }
   for (const v of Object.values(p.hues)) out.push(v.toUpperCase());
   return out;
+}
+
+/**
+ * HÌNH HỌC CÚ PHÓNG của một chặng, hay `null` nếu khoá không phải một chặng.
+ *
+ * Trả `null` chứ không ném: khoá đến từ `?chang=` trong URL, tức từ người lạ.
+ * Một tham số rác phải cho ra bản đồ ở TỈ LỆ XA, không cho ra một trang 500 —
+ * và `?chang=<script>` thì không được đi tới chỗ nào ghép chuỗi cả.
+ */
+export function zoomFor(key: string | null | undefined): typeof SKY_ZOOM_PLACED[number] | null {
+  if (!key) return null;
+  return SKY_ZOOM_PLACED.find((z) => z.key === key) ?? null;
+}
+
+/**
+ * ĐẢO phép biến hình: một điểm ở tỉ lệ `(u, v)` của KHUNG THẤY ĐƯỢC nằm ở toạ
+ * độ khung nào.
+ *
+ * CSS làm `transform: scale(S) translate(dx%, dy%)` với `dx = 0,5 − cx`, nên
+ * cửa sổ thấy được là `[cx − 0,5/S ; cx + 0,5/S]` và phép đảo là một phép nội
+ * suy tuyến tính trên cửa sổ ấy.
+ *
+ * Vì sao hàm này ở TS và không ở `SkyCursor.tsx`: ca test gọi nó rồi so với
+ * chính các khối `.phong*` trong CSS. Một phép đảo sống trong một `useEffect`
+ * là một phép đảo không ai đo được — và lúc nó sai thì triệu chứng là "vòng dò
+ * nhận ngôi bên cạnh", thứ dễ đọc thành "chuột hơi lệch".
+ */
+export function zoomToFrame(key: string | null | undefined, u: number, v: number):
+{ x: number; y: number } {
+  const z = zoomFor(key);
+  if (!z) return { x: u * SKY_FRAME.width, y: v * SKY_FRAME.height };
+  const nua = 0.5 / z.scale;
+  return {
+    x: (z.cx - nua + u * 2 * nua) * SKY_FRAME.width,
+    y: (z.cy - nua + v * 2 * nua) * SKY_FRAME.height,
+  };
+}
+
+/**
+ * Một dòng của bảng bài ở tỉ lệ gần: thứ tự trong chặng, số bài phẳng, mã,
+ * TÊN THẬT, số ca chấm.
+ *
+ * Gộp năm thứ vào một hàm vì cả năm phải cùng một nguồn: `page.tsx` dựng bảng
+ * dưới khung, và `SkyCursor.tsx` dựng chip trong khung. Hai chỗ tự tra
+ * `SKY_TITLES` và tự cộng `lessonNumber` là hai chỗ sẽ lệch, và kiểu lệch tệ
+ * nhất có thể — một cái tên nằm cạnh một số bài của bài khác.
+ */
+export function stageLessons(key: string): {
+  order: number; lesson: number; code: string; title: string; tests: number;
+}[] {
+  const i = SKY_CONSTELLATIONS.findIndex((c) => c.key === key);
+  if (i < 0) return [];
+  return SKY_CONSTELLATIONS[i].stars.map((s, j) => ({
+    order: j + 1,
+    lesson: lessonNumber(i, j),
+    code: s.code,
+    title: SKY_TITLES[s.code] ?? s.code,
+    tests: SKY_TESTS[s.code] ?? 0,
+  }));
 }

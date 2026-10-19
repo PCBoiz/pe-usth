@@ -5,12 +5,21 @@
 // khác như nào?" — câu đó chỉ trả lời được bằng cả bầu trời. Nó vẫn chưa thay
 // bản đồ vực ở trang chủ.
 //
+// NAY CÓ HAI TỈ LỆ. `design/v3/tuong-tac-ban-do.md` khảo bảy bản đồ game và đo
+// được ba thứ mà bản đồ này thiếu cả ba: **một động từ có hậu quả · hai tỉ lệ
+// trở lên · cái gì bị giữ lại**. Bấm một chặng là PHÓNG VÀO chặng ấy
+// (`?chang=M1`), và ở tỉ lệ gần mỗi ngôi mang tên bài thật, thứ tự học và số ca
+// chấm — ba thứ không có ở tỉ lệ xa. Xem khối "TỈ LỆ THỨ HAI" trong
+// `star-map.module.css`.
+//
 // BỐN ĐIỀU GIỮ Ở ĐÂY, đổi đi là đổi hành vi người dùng thấy:
 //
 //  1. KHÔNG GỌI API. Trang này công khai, mà `apiFetch` gặp 401 là TỰ TẠO tài
 //     khoản khách (bẫy trong AGENTS.md) — mỗi con bot quét web sinh một tài
 //     khoản `@guest.local` và ăn một suất của THROTTLE_GUEST_LIMIT. Ở đây
-//     không cần gì cả: giáo trình là tĩnh, và bản đồ không hiện tiến độ.
+//     không cần gì cả: giáo trình là tĩnh (`SKY_TITLES`, `SKY_TESTS` sinh ra
+//     từ `scripts/pe-v4/out-advanced/lessons/*.json` rồi đóng băng vào TS), và
+//     bản đồ không hiện tiến độ.
 //
 //  2. TRANH VÀO BẰNG `<img>`, KHÔNG NỘI TUYẾN. Nhờ thế tài liệu SVG bị cách
 //     ly và luật "đừng thêm `id`/`data-*` thừa vào SVG" TỰ THI HÀNH: không có
@@ -20,7 +29,8 @@
 //
 //  3. KHÔNG `style={{…}}`. SSR tuần tự hoá style nội tuyến thành thuộc tính
 //     `style="…"`, một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa
-//     bỏ được (AGENTS.md). Mọi vị trí nằm ở `star-map.module.css`.
+//     bỏ được (AGENTS.md). Mọi vị trí nằm ở `star-map.module.css`, kể cả ba
+//     biến của cú phóng (`.phongM<k>`, sinh bởi `build_sky.py --css`).
 //
 //  4. THỨ TỰ DOM LÀ MỘT HỢP ĐỒNG, không phải một cách sắp cho gọn. Bốn việc
 //     cùng dựa vào nó:
@@ -31,22 +41,26 @@
 //      · trong số các `<a>`, ô NHÃN đứng trước ô BAO LỒI, nên chỗ hai ô chồng
 //        nhau thì bao lồi thắng: các ngôi sao là cái người ta định trỏ vào;
 //      · `<SkyCursor />` đứng GIỮA — sau tám ô bấm (để `.hitM1:hover ~ .lop …`
-//        với tới nó) và trước mười hai tấm (để `.lop[data-chang] ~ .chomM1`
+//        với tới nó) và trước mười chín tấm (để `.lop[data-chang] ~ .chomM1`
 //        với tới chúng). Nó là chỗ DUY NHẤT trong khung thoả cả hai chiều,
 //        nên đừng dồn nó xuống cuối cho gọn mắt;
-//      · trong số các `<img>`, thứ tự LÀ thứ tự z, và nó phải khớp `SKY_TILES`
-//        → `SKY_LAYERS`. `e2e/unit/star-map.test.mjs` so lại.
+//      · trong số các `<img>`, thứ tự LÀ thứ tự z: ba tấm TRỜI, rồi tám tấm
+//        NGHỈ, rồi tám tấm RÕ. Tấm rõ phải đứng sau tấm nghỉ của chính nó,
+//        nếu không "rõ lên" bị tấm nghỉ vẽ phủ lại.
+//        `e2e/unit/star-map.test.mjs` so lại cả ba nhóm.
 //
 // Câu chữ ở `src/lib/star-map.ts` (`STAR_COPY`) để `node --test` đọc được;
 // file này chỉ dựng DOM.
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { withAssetVersion } from '@/lib/assetVersion';
 import {
-  lessonNumber,
+  stageLessons,
   starScaleLine,
+  zoomFor,
   SKY_CONSTELLATIONS,
   SKY_COURSE,
   SKY_FRAME,
@@ -54,6 +68,7 @@ import {
 } from '@/lib/star-map';
 
 import SkyCursor from './SkyCursor';
+import SkyExit from './SkyExit';
 import styles from './star-map.module.css';
 
 export const metadata: Metadata = {
@@ -66,26 +81,39 @@ export const metadata: Metadata = {
 };
 
 /**
- * Bài đầu của mỗi chặng trong danh sách phẳng 48 bài.
+ * ĐƯỜNG VÀO TỈ LỆ GẦN, và nó là một `href` THẬT chứ không một `onClick`.
  *
- * Phép cộng dồn ĐÃ CHUYỂN sang `lessonNumber()` ở `src/lib/star-map.ts`, vì
- * nay có HAI chỗ cần nó: ô bấm cả chặng ở đây, và 48 liên kết ngôi ở
- * `SkyCursor.tsx`. Hai chỗ tự cộng dồn là hai chỗ sẽ lệch — và kiểu lệch tệ
- * nhất có thể: một liên kết dẫn sang bài của chặng khác, không có gì đỏ lên.
+ * Ba thứ đi kèm miễn phí nhờ thế, và cả ba đều là chỗ bản đồ web hay làm hỏng:
+ * nút LÙI của trình duyệt lùi ra khỏi chặng (không văng khỏi trang), đường dẫn
+ * gửi được, và không-JS vẫn phóng được.
  */
-function lessonHref(index: number): string {
-  return `/lesson/python_advanced/${lessonNumber(index)}`;
+function zoomHref(key: string): string {
+  return `/ban-do-sao?chang=${key}`;
 }
 
-export default function StarMapPreviewPage() {
+/** Đường RA. Cùng một đích cho cả ba đường ra, nên nó ở một chỗ. */
+const RA = '/ban-do-sao';
+
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export default async function StarMapPreviewPage({ searchParams }: Props) {
+  const sp = await searchParams;
+  const tham = sp.chang;
+  // `zoomFor()` trả `null` cho mọi thứ không phải một khoá chặng. Tham số đến
+  // từ URL, tức từ người lạ: `?chang=` rác phải cho ra bản đồ ở TỈ LỆ XA, chứ
+  // không một trang 500 và không một chuỗi nào được ghép vào `className`.
+  const chang = zoomFor(Array.isArray(tham) ? tham[0] : tham)?.key ?? null;
+  const chom = chang ? SKY_CONSTELLATIONS.find((c) => c.key === chang) : null;
+  const bai = chang ? stageLessons(chang) : [];
+
   return (
     <>
-      {/* `sky-theme.css` SINH RA bởi `build_sky.py`: nó khai đúng một biến,
-          `--sky-base` = màu nền trời của hồ sơ, cho nền của khung bản đồ.
-          Nền ấy từng là `var(--ds-page)` — một màu trắng xanh ở bản sáng —
-          nên bầu trời gần đen lộ nền sáng xuyên qua và "mờ đi" đọc ra thành
-          "xám đi". Màu không chép tay vào `*.module.css` được: lint cấm hex ở
-          đó, và cấm đúng chỗ. */}
+      {/* `sky-theme.css` SINH RA bởi `build_sky.py`: nó khai màu nền trời của
+          hồ sơ cho nền khung, chín màu của lớp con trỏ, và `--sky-mo` — hệ số
+          mờ của bảy chòm không được trỏ vào. Nền ấy từng là `var(--ds-page)` —
+          một màu trắng xanh ở bản sáng — nên bầu trời gần đen lộ nền sáng
+          xuyên qua và "mờ đi" đọc ra thành "xám đi". Màu không chép tay vào
+          `*.module.css` được: lint cấm hex ở đó, và cấm đúng chỗ. */}
       <PageStyles hrefs={['/static/css/edu-theme.css', '/map/star/sky-theme.css']} />
       <SiteHeader />
       <main className={styles.wrap}>
@@ -93,51 +121,69 @@ export default function StarMapPreviewPage() {
         <p className={styles.lead}>{STAR_COPY.lead}</p>
         <p className={styles.hint}>{STAR_COPY.hint}</p>
 
-        <div className={styles.frame}>
+        <div
+          className={`${styles.frame} ${chang ? styles[`phong${chang}`] : ''}`}
+          data-phong={chang ?? undefined}
+        >
           {/* Ô bấm — NHÃN trước, BAO LỒI sau (luật 4 ở đầu tệp). Ô nhãn không
               nhận Tab và không nói gì thêm cho trình đọc màn hình: nó là lối
-              vào thứ hai của cùng một chặng, không phải một liên kết khác. */}
-          {SKY_CONSTELLATIONS.map((c, i) => (
-            <a
+              vào thứ hai của cùng một chặng, không phải một liên kết khác.
+
+              `href` nay là `?chang=M<k>` — bấm một chặng là PHÓNG VÀO nó, không
+              còn là đi thẳng tới bài đầu. Đổi này người dùng thấy ngay, và nó
+              là cả điểm của bước 3: một bản đồ mà bấm vào là rời khỏi bản đồ
+              thì không bao giờ có tỉ lệ thứ hai. Bài vẫn mở được, từ tỉ lệ gần
+              — bấm một NGÔI, hoặc một dòng của bảng dưới khung. */}
+          {SKY_CONSTELLATIONS.map((c) => (
+            <Link
               aria-hidden="true"
               className={`${styles.hit} ${styles[`hit${c.key}`]} ${styles[`hit${c.key}b`]}`}
-              href={lessonHref(i)}
+              href={zoomHref(c.key)}
               key={`${c.key}-nhan`}
               tabIndex={-1}
             />
           ))}
-          {SKY_CONSTELLATIONS.map((c, i) => (
-            <a
+          {SKY_CONSTELLATIONS.map((c) => (
+            <Link
               className={`${styles.hit} ${styles[`hit${c.key}`]} ${styles[`hit${c.key}a`]}`}
               data-map-region={c.key}
-              href={lessonHref(i)}
+              href={zoomHref(c.key)}
               key={`${c.key}-chom`}
             >
               {/* Nói ĐÚNG thứ nhãn nói, không hơn: mã chặng, tên phần, tên
-                  khoá, số bài. KHÔNG tên chòm ("Kẹp") — nó đã bỏ khỏi nhãn
-                  vì không trả lời "chặng nào, học gì", và một cái tên vô ích
-                  đọc lên bằng giọng máy thì càng vô ích. */}
+                  khoá, số bài — cộng ĐỘNG TỪ, vì nó vừa đổi. Người dùng trình
+                  đọc màn hình không thấy bức tranh phóng vào, nên nếu nhãn chỉ
+                  nói "Chặng M1" thì họ không có cách nào biết cú bấm này làm
+                  gì. KHÔNG tên chòm ("Kẹp") — nó đã bỏ khỏi nhãn vì không trả
+                  lời "chặng nào, học gì". */}
               <span className={styles.srOnly}>
-                {`Chặng ${c.key} · ${c.subtitle} — ${SKY_COURSE.name}, ${c.stars.length} bài`}
+                {`Phóng vào chặng ${c.key} · ${c.subtitle} — ${SKY_COURSE.name}, ${c.stars.length} bài`}
               </span>
-            </a>
+            </Link>
           ))}
 
-          {/* LỚP CON TRỎ — sau tám ô bấm, trước mười hai tấm (luật 4 ở đầu
+          {/* NỀN TRỐNG = đường ra thứ ba. Chỉ có mặt khi đang phóng, và nằm
+              DƯỚI lớp con trỏ (z 2 so với z 3) nên bấm một ngôi vẫn mở bài;
+              chỉ khoảng trời còn lại mới lùi ra. */}
+          {chang ? (
+            <Link aria-label={STAR_COPY.zoomBackdrop} className={styles.nenRa} href={RA} />
+          ) : null}
+
+          {/* LỚP CON TRỎ — sau tám ô bấm, trước mười chín tấm (luật 4 ở đầu
               tệp). Đây là bước 1 của `design/v3/tuong-tac-ban-do.md`: bản đồ
               phải cho biết TAY TÔI ĐANG Ở ĐÂU, ở độ phân giải 1/48 ngôi thay
-              vì 1/16 hình chữ nhật. Nó là thành phần client duy nhất của
-              trang, và nó KHÔNG gọi API nào — xem luật 1. */}
+              vì 1/16 hình chữ nhật. Nó là thành phần client duy nhất dựng DOM
+              trong khung, và nó KHÔNG gọi API nào — xem luật 1. */}
           <SkyCursor />
 
-          {/* Bốn TẤM nền, theo đúng thứ tự `SKY_TILES`. `next/image` không
+          {/* BA tấm TRỜI, theo đúng thứ tự `SKY_TILES`. `next/image` không
               dùng được ở đây, và không phải vì lười: bộ tối ưu ảnh của Next TỪ
               CHỐI xử lý SVG (nó là vector, nó đã nhỏ sẵn, và nó phải sắc ở mọi
-              tỉ lệ), nên nó sẽ phải chạy `unoptimized` và thành một `<img>` có
-              thêm một lớp bọc.
+              tỉ lệ) — điều này còn đúng HƠN từ lúc có cú phóng, vì ở hệ số
+              2,4–3,2 một bản raster sẽ nhoè.
 
-              Chỉ tấm ĐẦU mang `alt` mô tả: cả bốn tấm là MỘT bức, và bốn câu
-              mô tả cho một bức là bốn lần đọc lại cùng một thứ. */}
+              Chỉ tấm ĐẦU mang `alt` mô tả: cả bức là MỘT bức, và mười chín câu
+              mô tả cho một bức là mười chín lần đọc lại cùng một thứ. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt={STAR_COPY.alt}
@@ -164,33 +210,79 @@ export default function StarMapPreviewPage() {
             src={withAssetVersion('/map/star/sky-mach.svg')}
             width={SKY_FRAME.width}
           />
-          {/* Tấm CHÒM lúc nghỉ: tám chòm cùng một độ mờ. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            alt=""
-            aria-hidden="true"
-            className={`${styles.sky} ${styles.chomNghi}`}
-            height={SKY_FRAME.height}
-            src={withAssetVersion('/map/star/sky-chom-nghi.svg')}
-            width={SKY_FRAME.width}
-          />
-          {/* Tám tấm CHÒM lúc trỏ vào: mỗi tấm vẽ ĐỦ tám chòm, một chòm rõ và
-              bảy chòm mờ. Vẽ đủ tám để đúng MỘT tấm chòm hiện ở mỗi lúc —
-              nếu mỗi tấm chỉ vẽ một chòm thì tấm nghỉ phải nằm dưới và hai
-              bản của cùng một chòm cộng độ mờ với nhau. */}
+          {/* TÁM tấm NGHỈ — mỗi chòm MỘT tấm, chỉ vẽ chòm ấy.
+              Trước đây là một tấm `sky-chom-nghi.svg` vẽ đủ tám chòm cộng tám
+              tấm tiêu điểm cũng vẽ đủ tám chòm: chín tệp, 446 005 byte, tám
+              phần chín là bản sao của cùng 48 ngôi. Mười sáu tấm riêng cân
+              109 147 byte. Trạng thái MỜ không có tấm riêng — nó là tấm nghỉ
+              hạ xuống `--sky-mo`. */}
           {SKY_CONSTELLATIONS.map((c) => (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               alt=""
               aria-hidden="true"
-              className={`${styles.sky} ${styles.chomRo} ${styles[`chom${c.key}`]}`}
+              className={`${styles.sky} ${styles.chomNen} ${styles[`chom${c.key}`]}`}
               height={SKY_FRAME.height}
               key={c.key}
               src={withAssetVersion(`/map/star/sky-chom-${c.key}.svg`)}
               width={SKY_FRAME.width}
             />
           ))}
+          {/* TÁM tấm RÕ, sau tám tấm nghỉ trong DOM nên chúng vẽ ĐÈ lên. Tấm
+              nghỉ của chính chòm được trỏ bị tắt hẳn cùng lúc (xem CSS): hai
+              bản của một chòm cùng hiện là hai độ mờ CỘNG nhau, và "rõ lên"
+              đọc ra thành "đậm lên một cách khác". */}
+          {SKY_CONSTELLATIONS.map((c) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              alt=""
+              aria-hidden="true"
+              className={`${styles.sky} ${styles.chomRo} ${styles[`ro${c.key}`]}`}
+              height={SKY_FRAME.height}
+              key={`${c.key}-ro`}
+              src={withAssetVersion(`/map/star/sky-chom-${c.key}-ro.svg`)}
+              width={SKY_FRAME.width}
+            />
+          ))}
+
+          {/* NÚT THOÁT + phím Esc. Một thành phần client vì Esc là một
+              listener; nút thì là một `<Link>` thật, nên nó chạy cả khi JS
+              chưa tải xong. */}
+          {chang ? <SkyExit label={STAR_COPY.zoomExit} /> : null}
         </div>
+
+        {/* BẢNG BÀI của chặng đang xem — "cái gì bị giữ lại", viết ra bằng
+            chữ. Ba thứ ở đây không có ở tỉ lệ xa: THỨ TỰ HỌC (bản đồ cố ý
+            không vẽ mũi tên lộ trình, nên ở tỉ lệ xa nó không đọc được ở đâu
+            cả), TÊN BÀI THẬT (48 cái tên tiếng Việt không vẽ lên một bầu trời
+            1360 × 820 được), và SỐ CA CHẤM của từng bài (bán kính ngôi đã mang
+            nghĩa này từ đầu — ở đây nó được nói hẳn ra).
+
+            Nó cũng là đường bàn phím và đường điện thoại của tỉ lệ gần: 48 dấu
+            ngôi mang `tabIndex={-1}`, và tám ô bấm cả chặng thì đã tắt. */}
+        {chom ? (
+          <>
+            <h2 className={styles.bangTitle}>
+              {STAR_COPY.zoomPanelTitle
+                .replace('{key}', chom.key)
+                .replace('{sub}', chom.subtitle)
+                .replace('{n}', String(bai.length))}
+            </h2>
+            <p className={styles.bangNote}>{STAR_COPY.zoomNote.replace('{key}', chom.key)}</p>
+            <ol className={styles.bang}>
+              {bai.map((b) => (
+                <li key={b.code}>
+                  <Link className={styles.hang} href={`/lesson/python_advanced/${b.lesson}`}>
+                    <span className={styles.hangSo}>{b.order}</span>
+                    <span className={styles.hangMa}>{b.code}</span>
+                    <span className={styles.hangTen}>{b.title}</span>
+                    <span className={styles.hangCa}>{`${b.tests} ca`}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </>
+        ) : null}
 
         <h2 className={styles.legendTitle}>{STAR_COPY.legendTitle}</h2>
         {/* THANG BÁN KÍNH NÓI BẰNG SỐ. Bán kính mỗi ngôi mang số ca chấm của
@@ -198,8 +290,7 @@ export default function StarMapPreviewPage() {
             ấy — nên một tín hiệu đã vẽ xong vẫn không làm việc gì cả (bài học
             Slay the Spire, nghiên cứu §2.4). Hai đầu thang TÍNH từ
             `SKY_TESTS`, không chép: ba bài hiện cùng ở mức thấp nhất, nên một
-            câu chép tay sẽ sai ngay lần giáo trình đổi. Đây cũng là đường đọc
-            được trên ĐIỆN THOẠI, nơi không có hover. */}
+            câu chép tay sẽ sai ngay lần giáo trình đổi. */}
         <p className={styles.scale}>{starScaleLine()}</p>
         <ul className={styles.legend}>
           {STAR_COPY.legend.map((line) => <li key={line}>{line}</li>)}

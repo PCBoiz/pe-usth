@@ -133,6 +133,7 @@ LINK = grab("SKY_LINK")
 LBL = grab("SKY_LABEL")
 COURSE = grab("SKY_COURSE")
 HIT = grab("SKY_HIT")
+ZOOM = grab("SKY_ZOOM")
 PLACED = grab("SKY_LABEL_PLACED")
 LAYERS = grab("SKY_LAYERS")
 KEYS = grab("SKY_CONSTELLATION_KEYS")
@@ -177,6 +178,28 @@ def doc_so_ca() -> dict[str, int]:
 
 
 SO_CA = doc_so_ca()
+
+
+def doc_ten_bai() -> dict[str, str]:
+    """`{mã bài: tên bài}` từ `title`, ĐÃ BỎ tiền tố mã bài.
+
+    Giáo trình ghi `P01 · Program, process và tài nguyên`; chip ở tỉ lệ gần đã
+    có một ô riêng cho mã bài, nên để nguyên tiền tố là in `P01` hai lần cạnh
+    nhau. Cắt bằng chính MÃ BÀI chứ không bằng "mọi thứ trước dấu ·": một tên
+    bài có dấu `·` trong thân sẽ bị cắt mất nửa đầu, và chuyện đó sẽ không ai
+    thấy cho tới lần giáo trình đặt một cái tên như thế."""
+    out: dict[str, str] = {}
+    for p in sorted(LESSONS.glob("*.json")):
+        d = json.loads(p.read_text(encoding="utf-8"))
+        code, ten = d.get("lesson_code"), d.get("title")
+        if not code or not isinstance(ten, str):
+            continue
+        tien = "%s · " % code
+        out[code] = ten[len(tien):] if ten.startswith(tien) else ten
+    return out
+
+
+TEN_BAI = doc_ten_bai()
 
 
 def bac(tests: int) -> dict:
@@ -1325,7 +1348,7 @@ def ve_mach(ink, P, dim):
              ZOD["width"], ZOD["bandOpacity"] * dim, dash=ZOD["dash"])
 
 
-def ve_net_chom(ink, P, focus):
+def ve_net_chom(ink, P, focus, only=None):
     """Năm mươi nét cho bốn mươi tám ngôi. Nối theo HÌNH, không theo đường ngắn
     nhất: luật của H. A. Rey (1952) — nét nối tồn tại để LÀM RA MỘT HÌNH NHẬN
     RA ĐƯỢC. Cây khung ngắn nhất cho ra một mớ gạch, đúng thứ cần tránh.
@@ -1361,6 +1384,12 @@ def ve_net_chom(ink, P, focus):
         for ab in c["lines"]:
             a, b = segs[i]
             i += 1
+            # `only` cắt tấm xuống còn MỘT chòm. Vòng lặp vẫn chạy đủ tám để
+            # `segs` được tiêu đúng thứ tự — bỏ qua bằng `continue` ở ĐÂY chứ
+            # không bằng một `if` quanh cả vòng, vì `segs` là một danh sách
+            # PHẲNG đánh theo thứ tự khai và nhảy qua một chòm là lệch chỉ số.
+            if only is not None and c["key"] != only:
+                continue
             # Nét ĐẬM HƠN ở hàng/cột nhãn của M6 — chỗ DUY NHẤT trong cả bản
             # đồ mà độ dày nét mang nghĩa riêng (§2). Nó nói ra khác biệt giữa
             # `ndarray` (M5, không nhãn) và `DataFrame` (M6, có nhãn) bằng
@@ -1374,7 +1403,7 @@ def ve_net_chom(ink, P, focus):
                      hue, w, op)
 
 
-def ve_sao(ink, P, focus):
+def ve_sao(ink, P, focus, only=None):
     """Ba vòng tròn đồng tâm, vẽ từ ngoài vào: quầng · thân · lõi.
 
     Quầng dựng bằng VÒNG ĐỒNG TÂM độ mờ ~1/r, không bằng `radialGradient`:
@@ -1387,6 +1416,8 @@ def ve_sao(ink, P, focus):
             "bộ sinh chưa dựng kiểu đó. Nói ra ở đây chứ không âm thầm vẽ quầng "
             "toả rồi xuất ra một tệp mang tên bản sáng." % P["halo"]["kind"])
     for code, x, y, r0, t, ckey in STARS:
+        if only is not None and ckey != only:
+            continue
         hue = P["hues"][next(c["hue"] for c in CONS if c["key"] == ckey)]
         # Chòm KHÔNG được trỏ vào mờ đi theo đúng tỉ lệ của nét chòm, nên hai
         # lớp cùng một chòm không bao giờ lệch trạng thái với nhau.
@@ -1762,6 +1793,43 @@ def kiem_tran_chom(P):
                 "nới `SKY_NEBULA.hullFade`." % (key, worst, at, tran, P["hullCeiling"]))
 
 
+def mo_css(P) -> float:
+    """HỆ SỐ MỜ mà CSS đặt lên tấm NGHỈ của bảy chòm không được trỏ vào.
+
+    Một con số, một chỗ: nó vào phép đo tương phản ở dưới, vào `sky-theme.css`
+    qua `khoi_bien_mau`, và vào ca test qua TS. Ba chỗ tự chia nhau một phép
+    chia là ba chỗ sẽ lệch.
+
+    Làm tròn ở ĐÂY, không ở chỗ in ra: `of()` chỉ giữ hai chữ số nên nó biến
+    0,5636 thành 0,56, và lúc đó phép ĐO tương phản nói về một bức tranh khác
+    bức chạy thật. Bốn chữ số đủ nhỏ để không ai thấy, và đủ để hai chỗ nói
+    cùng một con số."""
+    return round(P["scale"]["dimOpacity"] / P["scale"]["lineOpacity"][0], 4)
+
+
+def kiem_mo_css(P):
+    """Hệ số mờ phải ≥ `SKY_LABEL.dimTextOpacity` — một SÀN, không một gợi ý.
+
+    Vì sao chặn build: trước khi tách tấm, chữ của bảy nhãn mờ theo một độ mờ
+    RIÊNG (0,55) còn nét theo tỉ số của nét (0,509), nên hạ `dimOpacity` chỉ
+    làm nét mờ hơn. Nay một `opacity` của CSS mờ ĐỀU cả hai, nên hạ
+    `dimOpacity` là hạ tương phản CHỮ — và nó đã đo được 4,36:1 ở đúng tỉ số
+    0,509 ấy, dưới sàn 4,5:1 của §5.2. Không có phép kiểm này thì 0,31 là một
+    con số ai cũng "dọn cho tròn" về 0,28 được."""
+    mo = mo_css(P)
+    if mo < LBL["dimTextOpacity"] - 1e-9:
+        raise SystemExit(
+            "dimOpacity %.3f / lineOpacity[0] %.3f = %.4f, dưới sàn chữ %.3f "
+            "(`SKY_LABEL.dimTextOpacity`).\nTừ lúc tách tấm, bảy chòm mờ đi "
+            "bằng MỘT `opacity` của CSS trên tấm nghỉ — nó mờ cả CHỮ của nhãn, "
+            "mà chữ có sàn 4,5:1 (đo được 4,36:1 ở tỉ số 0,509). Nâng "
+            "`dimOpacity` lên ≥ %.3f."
+            % (P["scale"]["dimOpacity"], P["scale"]["lineOpacity"][0], mo,
+               LBL["dimTextOpacity"],
+               LBL["dimTextOpacity"] * P["scale"]["lineOpacity"][0]))
+    return mo
+
+
 def do_tuong_phan_nhan(P):
     """Tương phản THẬT của chữ từng nhãn với chỗ trời nó rơi vào — ĐO, không
     suy ra từ một cái trần.
@@ -1792,7 +1860,12 @@ def do_tuong_phan_nhan(P):
         # bầu trời đã làm vỡ: nền sau chữ không tối theo nữa.
         for ten, mau, op, (by0, by1) in (
                 ("chặng", P["text"], 1.0, (y0, py)),
-                ("chặng-mờ", P["text"], LBL["dimTextOpacity"], (y0, py)),
+                # TỈ SỐ THẬT MÀ CSS SẼ DÙNG, không phải một độ mờ đặt riêng
+                # cho chữ. Từ lúc tách tấm, bảy chòm mờ đi bằng `opacity` trên
+                # thẻ `<img>` của tấm NGHỈ, nên chữ và nét mờ ĐỀU theo cùng
+                # một hệ số. Đo bằng một con số khác con số chạy thật là đo
+                # một bức tranh không tồn tại.
+                ("chặng-mờ", P["text"], mo_css(P), (y0, py)),
                 ("khoá", P["textSub"], 1.0, (py, y1))):
             chu = hex_rgb(mau)
             xau = 99.0
@@ -1927,7 +2000,7 @@ def kiem_ngan_sach(P):
     return d
 
 
-def ve_nhan(ink, P, focus):
+def ve_nhan(ink, P, focus, only=None):
     """Hai tầng nhãn là quy ước THẬT của bản đồ sao, không phải một thoả hiệp
     hiện đại: Bayer in ký hiệu ngắn trên bản khắc và bảng dữ liệu đầy đủ ở bên
     cạnh — bản khắc không bao giờ cõng cả tên đầy đủ.
@@ -1949,6 +2022,13 @@ def ve_nhan(ink, P, focus):
     for c in thu_tu_nhan():
         g = nhan_box(c, P, tuple(da_dat))
         da_dat.append((c["key"], g["box"]))
+        # Vòng ĐẶT nhãn phải chạy ĐỦ TÁM dù tấm chỉ vẽ một chòm: chỗ đứng của
+        # nhãn thứ k phụ thuộc `da_dat` của k−1 nhãn trước (luật NHƯỜNG, §8.4).
+        # Cắt vòng lại là để mỗi tấm tự tìm chỗ, tức tám tấm ra tám chỗ khác
+        # nhau và nhãn NHẢY khi đổi tấm.
+        if only is not None and c["key"] != only:
+            out.append((c["key"], g["box"]))
+            continue
         p0, p1, p2, box = g["p0"], g["p1"], g["p2"], g["box"]
         name, sub, wn = g["name"], g["sub"], g["wn"]
         hue = P["hues"][c["hue"]]
@@ -1976,14 +2056,17 @@ def ve_nhan(ink, P, focus):
             ink.text("nhan", rule_x0, p2[1] + LBL["sublineGap"], sub,
                      P["textSub"], LBL["subSize"], LBL["subWeight"],
                      LBL["fontStack"], tracking=LBL["subTracking"])
-            # Hiệu ứng 7 của §10, rẻ nhất trong cả danh sách: mã bài hiện ra ở
-            # chéo trên-phải. KHÔNG hiện tên bài — tên đầy đủ thuộc về chú giải.
-            for s in STARS:
-                if s[5] != c["key"]:
-                    continue
-                ink.text("nhan", s[1] + s[3] + LBL["codeOffset"],
-                         s[2] - s[3] - LBL["codeOffset"] * 0.4, s[0], P["code"],
-                         LBL["codeSize"], 500, LBL["monoStack"])
+            # MÃ BÀI KHÔNG CÒN VẼ VÀO TRANH. Nó từng là "hiệu ứng 7 của §10",
+            # nhưng bước 1–2 đã dựng mã bài bằng HTML (`.chip` trong
+            # `SkyCursor.tsx`) và hai bản rơi vào ĐÚNG MỘT điểm: chip neo
+            # `calc(50% + 9px)` chéo trên-phải, đúng `LBL["codeOffset"] = 9`.
+            # Tức từ bước 2 tới nay mỗi mã bài được in HAI LẦN chồng lên nhau —
+            # mắt đọc ra "chữ hơi dày", không ai đỏ lên.
+            #
+            # Bỏ bản SVG, giữ bản HTML, vì chỉ bản HTML làm được ba việc mà bản
+            # vẽ không làm được: hiện LẦN LƯỢT theo thứ tự bài (bậc 45 ms), nói
+            # thêm số ca ở ngôi đang được nhận, và phóng lên ở tỉ lệ gần mà
+            # không bị nhoè.
     return out
 
 
@@ -2022,25 +2105,58 @@ def build_troi(P):
     return ink
 
 
-def build_chom(P, focus):
-    """Năm lớp CHÒM — nét, quầng, thân, lõi, nhãn. Một tấm cho trạng thái nghỉ
-    và một tấm cho mỗi chòm được trỏ vào, tức chín tấm.
+def build_chom(P, focus, only=None):
+    """Năm lớp CHÒM — nét, quầng, thân, lõi, nhãn. `only` cắt tấm xuống còn
+    MỘT chòm.
 
-    Chín tấm NHỎ, và đó là cả điểm: lớp chòm không có tinh vân, không có 1 250
-    sao nền, nên một tấm chỉ nặng vài chục KB. Tấm tiêu điểm của chòm Mk vẽ
-    ĐỦ tám chòm — Mk ở độ mờ hover, bảy chòm kia ở `dimOpacity`. Nhờ vẽ đủ
-    tám mà đúng MỘT tấm chòm hiện ở mỗi lúc, nên không có chỗ nào hai bản của
-    cùng một chòm chồng lên nhau và cộng độ mờ với nhau.
+    ── VÌ SAO TÁCH, VÀ CON SỐ ĐÃ TRẢ ────────────────────────────────────
 
-    Và chín tấm KHÁC NHAU CHỈ Ở ĐỘ MỜ: không bán kính nào to lên, không nét
-    nào dày lên. Theo định nghĩa hẹp của WCAG, đổi màu/độ mờ KHÔNG tính là
-    hoạt ảnh chuyển động, còn đổi kích thước thì TÍNH — nên bản này an toàn
-    với `prefers-reduced-motion` ngay từ lúc sinh, không cần một tấm thứ ba."""
+    Bản trước xuất CHÍN tấm, mỗi tấm vẽ ĐỦ tám chòm (một rõ, bảy mờ), vì "vẽ
+    đủ tám" là cách giữ cho đúng MỘT tấm chòm hiện ở mỗi lúc. Giá của nó: cả
+    48 ngôi được vẽ chín lần. Đo ngày 19/10/2026: chín tệp = **446 005 byte**,
+    trong đó tám phần chín là bản sao.
+
+    Nay mỗi chòm có tấm RIÊNG, hai trạng thái:
+      · `sky-chom-M<k>.svg`     — chòm k lúc NGHỈ (nét 0,55 · quầng không
+        boost · đường dẫn 0,5 · chữ nhãn 1,0);
+      · `sky-chom-M<k>-ro.svg`  — chòm k lúc RÕ (nét 0,85 · quầng +0,12 ·
+        đường dẫn 0,85 · thêm dòng khoá·số bài).
+    Trạng thái MỜ của bảy chòm kia KHÔNG có tấm riêng: nó là tấm NGHỈ hạ bằng
+    `opacity` của CSS (`--sky-mo`). Hệ số đúng bằng `dimOpacity /
+    lineOpacity[0]`, nên nét mờ ra đúng `dimOpacity` như trước.
+
+    Một chỗ phải nói ra vì nó có thật: `dim` nhân vào TỪNG phần tử, còn
+    `opacity` của CSS LÀM PHẲNG rồi mới mờ. Với QUẦNG hai phép bằng nhau tuyệt
+    đối — độ mờ cộng dồn của 14 đĩa là `base × r/ρ`, tuyến tính theo `base`.
+    Chỗ lệch là nơi quầng · thân · lõi chồng nhau (lệch vài phần trăm ở đúng
+    cái lõi đường kính 0,8 px của một ngôi ĐANG BỊ GÁC LẠI). Cùng đánh đổi mà
+    `build_troi` đã nhận cho lớp trời, và nhận ở đúng chỗ thiết kế đang cố làm
+    người xem bớt chú ý tới.
+
+    Và các tấm KHÁC NHAU CHỈ Ở ĐỘ MỜ: không bán kính nào to lên, không nét nào
+    dày lên. Theo định nghĩa hẹp của WCAG, đổi màu/độ mờ KHÔNG tính là hoạt
+    ảnh chuyển động, còn đổi kích thước thì TÍNH — nên các tấm an toàn với
+    `prefers-reduced-motion` ngay từ lúc sinh. (Cú PHÓNG thì đổi kích thước,
+    nên nó bỏ chuyển tiếp dưới `reduce` — xem `star-map.module.css`.)"""
     ink = Ink()
-    ve_net_chom(ink, P, focus)
-    ve_sao(ink, P, focus)
-    boxes = ve_nhan(ink, P, focus)
+    ve_net_chom(ink, P, focus, only)
+    ve_sao(ink, P, focus, only)
+    boxes = ve_nhan(ink, P, focus, only)
     return ink, boxes
+
+
+def hop_nhan_tat_ca(P):
+    """Tám hộp nhãn theo thứ tự NHƯỜNG — chỉ ĐẶT chỗ, không vẽ gì.
+
+    Tồn tại vì `vung_bam()` cần cả tám hộp, mà từ lúc tách tấm thì không tấm
+    nào vẽ cả tám nhãn nữa. Gọi `build_chom(P, None)` chỉ để lấy hộp là dựng
+    cả 48 ngôi rồi bỏ đi."""
+    out, da_dat = [], []
+    for c in thu_tu_nhan():
+        g = nhan_box(c, P, tuple(da_dat))
+        da_dat.append((c["key"], g["box"]))
+        out.append((c["key"], g["box"]))
+    return out
 
 
 def vung_bam(boxes):
@@ -2067,6 +2183,130 @@ def vung_bam(boxes):
         nh = next(b for k, b in boxes if k == key)
         out[key] = (bl, nh)
     return out
+
+
+def hinh_phong(hit):
+    """TỈ LỆ THỨ HAI — ba con số cho mỗi chòm: hệ số phóng và tâm khung.
+
+    ── PHÉP BIẾN HÌNH, VIẾT RA ĐỂ BA CHỖ KHÔNG TỰ SUY LẠI ────────────────
+
+    CSS đặt lên mỗi tấm `transform: scale(S) translate(dx%, dy%)` với gốc mặc
+    định 50% 50%. Một điểm ở tỉ lệ `p` (0..1 của bề rộng khung) đi tới
+    `0,5 + S·(p − 0,5 + dx)`, nên muốn tâm chòm `cx` về giữa khung thì
+    `dx = 0,5 − cx`. Cửa sổ thấy được là `[cx − 0,5/S ; cx + 0,5/S]`.
+
+    ĐIỂM DỪNG là chỗ KẸP cái tâm (`kep_tam`). Không kẹp thì phóng vào M8 (chòm
+    hai ngôi ở thiên đỉnh, sát mép trên) để lộ một dải trống ngoài bức tranh —
+    và một bản đồ có mép là một bản đồ nói rằng thế giới hết ở đó. Đây cũng là
+    cái "có điểm dừng" mà nghiên cứu đòi: biên độ do tay người dùng gây ra,
+    nhưng nó dừng ở một chỗ xác định, không trôi tiếp.
+
+    Hộp đích là HỢP của hai ô bấm (bao lồi chòm nở 20 px, và hộp nhãn) nở thêm
+    `ZOOM['pad']`. Lấy cả hộp nhãn vì ở tỉ lệ gần cái nhãn là thứ nói ra ĐANG
+    Ở CHẶNG NÀO; phóng vào rồi mất tên chặng là phóng vào một đám sao lạ.
+
+    Hệ số kẹp trong `[minScale, maxScale]`: M8 chỉ có hai ngôi nên hộp của nó
+    bé, và `min(W/w, H/h)` cho ra hơn 6 lần — ở mức đó hai ngôi cách nhau nửa
+    màn hình và cú phóng thành một cú rơi. Trần giữ cho tám chặng ở cùng một
+    bậc tỉ lệ, tức chữ "gần" nghĩa như nhau ở cả tám."""
+    out = []
+    for key in KEYS:
+        bl, nh = hit[key]
+        pad = ZOOM["pad"]
+        x0 = min(bl[0], nh[0]) - pad
+        y0 = min(bl[1], nh[1]) - pad
+        x1 = max(bl[2], nh[2]) + pad
+        y1 = max(bl[3], nh[3]) + pad
+        s = min(W / max(1.0, x1 - x0), H / max(1.0, y1 - y0))
+        s = round(max(ZOOM["minScale"], min(ZOOM["maxScale"], s)), 3)
+        nua = 0.5 / s
+        out.append({"key": key, "scale": s,
+                    "cx": kep_tam((x0 + x1) / 2 / W, nua),
+                    "cy": kep_tam((y0 + y1) / 2 / H, nua)})
+    return out
+
+
+def kep_tam(c: float, nua: float) -> float:
+    """Kẹp tâm vào `[nua ; 1 − nua]` rồi làm tròn VÀO TRONG, 5 chữ số.
+
+    "Vào trong" là cả điểm, và nó là một lỗi đã xảy ra thật: kẹp xong rồi
+    `round(c, 5)` thô thì M2 (tâm đúng ở mép dưới) ra 0,83120 trong khi mép là
+    0,8311950…, tức cửa sổ thấy được chạm 1,000005 — **vượt bức tranh 5 phần
+    triệu**. Con số ấy nhỏ đến mức một lần xem bằng mắt không bao giờ bắt
+    được, nên nó là đúng loại sai mà một ca test phải chặn; và cái nó phá là
+    một INVARIANT ("cửa sổ nằm trọn trong bức tranh"), thứ chỉ có nghĩa khi nó
+    đúng tuyệt đối."""
+    lo, hi = nua, 1.0 - nua
+    c = min(hi, max(lo, c))
+    r = round(c, 5)
+    if r < lo:
+        r = math.ceil(lo * 1e5) / 1e5
+    if r > hi:
+        r = math.floor(hi * 1e5) / 1e5
+    return r
+
+
+def khoi_phong(hit):
+    """Khối `SKY_ZOOM_PLACED` cho TS — ĐÓNG BĂNG, cùng khuôn `SKY_LABEL_PLACED`.
+
+    Vì sao đóng băng ở TS thay vì chỉ in ra CSS: lớp con trỏ phải ĐẢO phép
+    biến hình lại. Khi đang phóng, con trỏ ở tỉ lệ `u` của khung nằm ở toạ độ
+    khung `cx − 0,5/S + u/S`, và nếu `SkyCursor.tsx` không biết ba con số ấy
+    thì nó nhận SAI ngôi — một bản đồ phóng vào rồi chỉ sai chỗ còn tệ hơn một
+    bản đồ không phóng. Hộp nhãn thì chỉ Python đo được (nó cần bề rộng chữ),
+    nên TS nhận con số đã tính, và ca test tính lại rồi so."""
+    out = ["export const SKY_ZOOM_PLACED = ["]
+    for r in hinh_phong(hit):
+        out.append("  { key: '%s', scale: %g, cx: %g, cy: %g },"
+                   % (r["key"], r["scale"], r["cx"], r["cy"]))
+    out.append("] as const;")
+    return "\n".join(out)
+
+
+def khoi_css_phong(hit):
+    """Tám khối `.phongM<k>` — ba biến CSS, không một phép tính nào ở phía CSS.
+
+    `--zx`/`--zy` in ra dưới dạng %, vì `translate()` lấy % của CHÍNH phần tử
+    và cả tấm lẫn lớp con trỏ đều phủ đúng khung (`inset: 0`), nên một con số
+    dùng được cho cả hai."""
+    out = []
+    for r in hinh_phong(hit):
+        out.append(".phong%s {" % r["key"])
+        out.append("  --zs: %g;" % r["scale"])
+        out.append("  --zx: %.3f%%;" % ((0.5 - r["cx"]) * 100))
+        out.append("  --zy: %.3f%%;" % ((0.5 - r["cy"]) * 100))
+        out.append("}")
+    return "\n".join(out)
+
+
+def khoi_ten_bai():
+    """Khối `SKY_TITLES` cho TS — 48 TÊN BÀI THẬT, đọc từ giáo trình.
+
+    ── VÌ SAO KHỐI NÀY PHẢI TỒN TẠI, VÀ VÌ SAO NÓ ĐƯỢC CHÉP ──────────────
+
+    Tỉ lệ gần phải tiết lộ thứ tỉ lệ xa KHÔNG có; nếu không thì phóng vào chỉ
+    là phóng to một bức ảnh. Ở tỉ lệ xa mỗi ngôi mang MÃ bài (`P03`) — bốn ký
+    tự nói đúng một thứ. Ở tỉ lệ gần nó phải mang TÊN bài.
+
+    Tên bài nằm trong `scripts/pe-v4/out-advanced/lessons/*.json`, mà trang
+    này KHÔNG GỌI API nào (`apiFetch` gặp 401 là tự tạo tài khoản khách, và
+    đây là trang ai cũng vào được), nên nó phải đi vào mã nguồn. Đúng đường mà
+    `SKY_TESTS` đã đi, và an toàn vì cùng một lý do: ca test ĐỌC LẠI 48 tệp
+    giáo trình rồi so từng chuỗi, nên một tên cũ là một ca ĐỎ.
+
+    Và nó KHÔNG vẽ được vào tranh: 48 cái tên tiếng Việt dài 20–45 ký tự trên
+    một bầu trời 1360 × 820 là một bảng chữ, và `kiem_tuong_phan_nhan` sẽ
+    trượt build ngay vì không còn chỗ nào đặt được. Nên nó là chữ HTML."""
+    out = ["export const SKY_TITLES: Record<string, string> = {"]
+    for c in CONS:
+        hang = []
+        for s in c["stars"]:
+            t = TEN_BAI[s["code"]]
+            hang.append("%s: %s," % (s["code"], json.dumps(t, ensure_ascii=False)
+                                     .replace('"', "'")))
+        out.append("  /* %s */ %s" % (c["key"], " ".join(hang)))
+    out.append("};")
+    return "\n".join(out)
 
 
 def khoi_bien_mau(P, ten_hs):
@@ -2117,11 +2357,19 @@ def khoi_bien_mau(P, ten_hs):
         "   nó từng là `var(--ds-page)`, và hạ độ mờ một lớp tối trên nền sáng làm",
         "   bầu trời NHẠT thành xám sữa chứ không tối đi.",
         "",
-        "   Chín biến cuối là của LỚP CON TRỎ — nó là HTML chồng lên tranh nên nó",
-        "   phải tự vẽ, và chip mã bài cần một nền ĐẶC để tương phản tính được",
-        "   bằng hai mã màu thay vì lấy mẫu ảnh. */",
+        "   Chín biến ở giữa là của LỚP CON TRỎ — nó là HTML chồng lên tranh nên",
+        "   nó phải tự vẽ, và chip mã bài cần một nền ĐẶC để tương phản tính được",
+        "   bằng hai mã màu thay vì lấy mẫu ảnh.",
+        "",
+        "   `--sky-mo` là HỆ SỐ MỜ của bảy chòm không được trỏ vào. Nó ở đây chứ",
+        "   không ở `*.module.css` vì nó là một PHÉP CHIA trên hồ sơ",
+        "   (`dimOpacity / lineOpacity[0]`): chép con số đã chia vào CSS là chép",
+        "   một con số sẽ lệch ngay lần ai đó chỉnh `dimOpacity`. Từ lúc tách tấm,",
+        "   chính con số này mờ luôn CHỮ của nhãn, nên nó có một sàn 4,5:1 — xem",
+        "   `kiem_mo_css()`. */",
         ":root {",
         "  --sky-base: %s;" % P["base"],
+        "  --sky-mo: %g;" % mo_css(P),
         "  --sky-chip: %s;" % P["base"],
         "  --sky-ink: %s;" % P["text"],
         "  --sky-dim: %s;" % P["textSub"],
@@ -2194,6 +2442,10 @@ def main():
                     help="chạy bộ máy đặt nhãn và in khối SKY_LABEL_PLACED")
     ap.add_argument("--so-ca", action="store_true",
                     help="in khối SKY_TESTS để chép vào star-map.ts")
+    ap.add_argument("--ten-bai", action="store_true",
+                    help="in khối SKY_TITLES (tên bài thật) để chép vào star-map.ts")
+    ap.add_argument("--phong", action="store_true",
+                    help="in khối SKY_ZOOM_PLACED (hình học cú phóng) cho star-map.ts")
     args = ap.parse_args()
 
     name = "SKY_PROFILE_%s" % args.profile.upper()
@@ -2211,6 +2463,7 @@ def main():
             "tồn tại để chặn." % (args.profile, P["render"]))
 
     kiem_tile_phu_lop()
+    kiem_mo_css(P)
     dat_sao()
     khe = kiem_khe_hai_chom()
     kiem_tran_chom(P)
@@ -2256,23 +2509,44 @@ def main():
     kiem_ngan_sach(P)
     kiem_tuong_phan_nhan(P)
 
+    # HAI KHỐI ĐÓNG BĂNG, in ra TRƯỚC khi dựng tranh: cả hai chỉ cần hình học
+    # nhãn, không cần một nét nào. Dựng cả bức rồi bỏ đi chỉ để in 48 dòng chữ
+    # là mười giây chờ không ai cần.
+    if args.ten_bai:
+        print(khoi_ten_bai())
+        return
+
+    if args.phong:
+        print(khoi_phong(vung_bam(hop_nhan_tat_ca(P))))
+        return
+
     out_dir = Path(args.out) if args.out else OUT
     # `os.makedirs` chứ không `Path.mkdir`: trên Windows + Python 3.14,
     # `mkdir(exist_ok=True)` vẫn ném WinError 183 với một thư mục đã có.
     os.makedirs(out_dir, exist_ok=True)
 
     troi = build_troi(P)
-    chom = {None: build_chom(P, None)}
+    # Hai tấm cho mỗi chòm: nghỉ (`focus=None`) và rõ (`focus=khoá`). Không có
+    # tấm MỜ — xem `build_chom`.
+    chom = {}
     for c in CONS:
-        chom[c["key"]] = build_chom(P, c["key"])
-    hit = vung_bam(chom[None][1])
+        chom[(c["key"], False)] = build_chom(P, None, c["key"])[0]
+        chom[(c["key"], True)] = build_chom(P, c["key"], c["key"])[0]
+    hit = vung_bam(hop_nhan_tat_ca(P))
 
     if args.stats:
         print()
         for lop in LAYERS:
-            b = troi.buckets[lop] or chom[None][0].buckets[lop]
-            n = sum(len(v) for v in b.values())
-            print("  %-18s %6d nét  %3d nhóm" % (lop, n, len(b)))
+            b = troi.buckets[lop]
+            if b:
+                n, g = sum(len(v) for v in b.values()), len(b)
+            else:
+                # Lớp chòm: cộng cả tám tấm nghỉ, vì không tấm nào còn vẽ đủ
+                # tám chòm từ lúc tách tấm.
+                n = sum(sum(len(v) for v in chom[(c["key"], False)].buckets[lop].values())
+                        for c in CONS)
+                g = sum(len(chom[(c["key"], False)].buckets[lop]) for c in CONS)
+            print("  %-18s %6d nét  %3d nhóm" % (lop, n, g))
         print()
 
     if args.css:
@@ -2302,6 +2576,10 @@ def main():
             print("  left: %.3f%%;" % ((x - VX0) / VIEW["width"] * 100))
             print("  top: %.3f%%;" % ((y - VY0) / VIEW["height"] * 100))
             print("}")
+        # TÁM KHỐI CÚ PHÓNG. Cùng ba con số với `SKY_ZOOM_PLACED`, chỉ khác
+        # đơn vị — ca test so hai chỗ, vì CSS lái bức tranh còn TS lái phép đảo
+        # của lớp con trỏ, và hai chỗ lệch nhau là vòng dò nhận sai ngôi.
+        print(khoi_css_phong(hit))
         return
 
     if args.so_ca:
@@ -2316,12 +2594,14 @@ def main():
     viec = []
     for t in TILES:
         if t["file"] == "chom":
-            viec.append(("sky-chom-nghi", chom[None][0], t["layers"],
-                         "Tám chòm sao: %d ngôi, mỗi ngôi là một bài của khoá."
-                         % len(STARS)))
             for c in CONS:
-                viec.append(("sky-chom-%s" % c["key"], chom[c["key"]][0], t["layers"],
-                             "Chòm %s · %s, %d bài — rõ lên, bảy chòm còn lại mờ đi."
+                viec.append(("sky-chom-%s" % c["key"], chom[(c["key"], False)],
+                             t["layers"],
+                             "Chòm %s · %s: %d ngôi, mỗi ngôi là một bài."
+                             % (c["key"], c["subtitle"], len(c["stars"]))))
+                viec.append(("sky-chom-%s-ro" % c["key"], chom[(c["key"], True)],
+                             t["layers"],
+                             "Chòm %s · %s, %d bài — bản rõ lên lúc được trỏ vào."
                              % (c["key"], c["subtitle"], len(c["stars"]))))
         else:
             viec.append(("sky-%s" % t["file"], troi, t["layers"],
