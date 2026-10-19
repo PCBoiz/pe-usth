@@ -243,7 +243,13 @@ body.dark {
   --ds-line:        #233049;
   --ds-sketch:      #8FA0BC;
   --ds-ink:         #E8EEF7;   /* 15,71:1 trên page */
-  --ds-soft:        #AFBDD2;   /* 9,31:1 trên card */
+  --ds-soft:        #AFBDD2;
+  /* Bản tối của chữ phụ TRÊN NỀN ink. Ở chế độ tối `ink` lật thành màu SÁNG
+     (#E8EEF7), nên chữ đặt trên nó phải lật thành màu tối. Bảng này thiếu
+     dòng này từ ngày khai token (774e7d5): chữ phụ #BFD0E8 trên ink sáng
+     chỉ còn 1,34:1. Không ai thấy vì chưa màn nào dùng token đó, và bộ đo
+     tương phản không có cặp nào cho nó. */
+  --ds-on-ink-soft: #3A4A66;   /* 7,66:1 trên ink của bản tối */   /* 9,31:1 trên card */
 
   --ds-violet:      #7FA8FF;   /* 7,56:1 — thay #6E2BA8 (2,28:1) */
   --ds-violet-deep: #B9D0FF;
