@@ -1,5 +1,5 @@
 <!-- SINH BỞI scripts/star/build_sky.py — ĐỪNG SỬA TAY. Sửa dữ liệu ở frontend/src/lib/star-map.ts rồi chạy lại script. -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 820" width="1360" height="820" role="img" aria-label="Chòm M5 · Lưới trần, 6 bài — rõ lên, bảy chòm còn lại mờ đi.">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 820" width="1360" height="820" role="img" aria-label="Chòm M5 · NumPy, 6 bài — rõ lên, bảy chòm còn lại mờ đi.">
 <g data-lop="net-chom">
 <path fill="none" stroke="#F0C795" stroke-width="1.15" stroke-opacity="0.28" stroke-linecap="round" stroke-linejoin="round" d="M245 784l0 -9l0 -10l1 -9l-1 -9l0 -9M242 727l-6 -8l-6 -8l-5 -8l-6 -8M214 684l-2 -11l-2 -11l-2 -10l-2 -11M209 632l8 -6l8 -6l8 -7l8 -6M248 727l6 -8l5 -8l6 -7l6 -8M276 683l1 -11l3 -10l2 -11l2 -11M281 632l-8 -6l-8 -7l-8 -5l-8 -7"/>
 <path fill="none" stroke="#E3D996" stroke-width="1.15" stroke-opacity="0.28" stroke-linecap="round" stroke-linejoin="round" d="M457 726l6 -9l6 -8l6 -9l6 -8l6 -9M495 678l10 -1l9 -1l10 -1l9 -1M541 677l6 7l6 7l5 7l7 7l6 7l6 7l6 7M457 734l6 8l6 7l6 8l6 7l6 8l5 7M502 785l12 1l12 1l11 2M548 784l5 -8l7 -8l6 -8l6 -9l5 -8l6 -9"/>

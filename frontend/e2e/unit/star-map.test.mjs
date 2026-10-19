@@ -793,14 +793,29 @@ test('nhãn KHÔNG mang tên chòm, và dòng khoá chỉ hiện lúc trỏ vào
   // liệu (`name` là một lời khẳng định về HÌNH, có ca kiểm riêng), nên nó nằm
   // sẵn ở đó để ai sửa tới `ve_nhan` lại in ra. Và nó sẽ hỏng im lặng: chữ vẫn
   // đẹp, tệp vẫn ra, chỉ là nhãn dài lại thành hai dòng và hộp va chạm lệch.
+  // SOI CẢ TỆP, KHÔNG CHỈ LỚP `nhan`. Bản đầu của ca này chỉ soi lớp `nhan`,
+  // và tên hình đã sống sót trong `aria-label` của chính tấm đó: chữ nhìn thấy
+  // là "M1 · Tiến trình" trong khi người dùng trình đọc màn hình nghe "Chòm M1
+  // · Kẹp" — một cái tên giao diện không còn dùng và không chỗ nào giải thích.
+  // Hỏng im lặng theo đúng nghĩa đen: nó chỉ phát ra thành tiếng.
   for (const [ten, svg] of TAT_CA) {
-    const nhan = lop(svg, 'nhan');
-    if (!nhan) continue;
     for (const c of SKY_CONSTELLATIONS) {
-      assert.ok(!nhan.includes(`>${c.name}<`),
-        `${ten}: nhãn còn in tên chòm "${c.name}" — tên hình thuộc về tài liệu, không thuộc`
-        + ' về bản đồ');
+      assert.ok(!svg.includes(c.name),
+        `${ten}: còn chữ "${c.name}" trong tệp — tên hình thuộc về tài liệu, không thuộc về`
+        + ' bản đồ, kể cả trong aria-label');
     }
+  }
+
+  // Tên NGHE ĐƯỢC phải trùng tên NHÌN THẤY. Hai đường ra khác nhau trong
+  // `build_sky.py` (`cum_nhan()` và chuỗi `aria-label`) nên chúng trôi khỏi
+  // nhau được mà không ai thấy.
+  for (const c of SKY_CONSTELLATIONS) {
+    const svg = TAT_CA.find(([ten]) => ten === `sky-chom-${c.key}`)?.[1];
+    if (!svg) continue;
+    const nhan = `${c.key} · ${c.subtitle}`;
+    const aria = svg.match(/aria-label="([^"]*)"/)?.[1] ?? '';
+    assert.ok(aria.includes(nhan),
+      `sky-chom-${c.key}: aria-label "${aria}" không chứa tên nhìn thấy "${nhan}"`);
   }
 
   // Tấm TIÊU ĐIỂM: đúng chòm đang trỏ có thêm dòng khoá, bảy chòm kia không.

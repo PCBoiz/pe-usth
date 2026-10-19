@@ -2236,7 +2236,11 @@ def main():
                 print("}")
         return
 
-    ten_chom = {c["key"]: c["name"] for c in CONS}
+    # Tên nghe được PHẢI trùng tên nhìn thấy. `c["name"]` là tên HÌNH ("Kẹp",
+    # "Con thoi") — đã bỏ khỏi nhãn, nhưng từng sống sót ở đây, nên người dùng
+    # trình đọc màn hình vẫn nghe một cái tên mà giao diện không còn dùng và
+    # không chỗ nào giải thích. Dùng `c["subtitle"]`, đúng chuỗi mà dòng nhãn
+    # ở `cum_nhan()` đang in ra.
     viec = []
     for t in TILES:
         if t["file"] == "chom":
@@ -2246,7 +2250,7 @@ def main():
             for c in CONS:
                 viec.append(("sky-chom-%s" % c["key"], chom[c["key"]][0], t["layers"],
                              "Chòm %s · %s, %d bài — rõ lên, bảy chòm còn lại mờ đi."
-                             % (c["key"], ten_chom[c["key"]], len(c["stars"]))))
+                             % (c["key"], c["subtitle"], len(c["stars"]))))
         else:
             viec.append(("sky-%s" % t["file"], troi, t["layers"],
                          {"troi": "Nền trời: tinh vân, một nguồn sáng trội và dải Ngân Hà.",
