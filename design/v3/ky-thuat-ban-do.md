@@ -140,6 +140,134 @@ chiều sâu, không phải một lớp mờ phủ lên. → `draw_far_ranges`.
 
 ---
 
+## 6 · MỘT CÁI VỰC LIỀN MẠCH — chữa "chưa có sự liên kết giữa các màn" (19/10/2026)
+
+Bản sau lần dựng đầu được nhận là khá hơn hẳn, kèm đúng **một** khuyết điểm:
+*"chưa có sự liên kết giữa các màn"*. Chẩn đoán kỹ thuật, viết ra được bằng hình học:
+`vault()` vẽ mỗi gian bằng **một đường khép kín** (22 đỉnh, `close=True`) thả vào bốn
+dải đá chạy ngang hết khung. Tám đường khép kín là tám vật thể rời; mắt gom theo luật
+**khép kín** (closure) nên nó đọc ra tám cái hốc, dù chúng nằm trong cùng một mảng màu.
+
+### 6.1 · Mười luật đã đem vào script
+
+| # | Luật | Chỗ thực thi |
+|---|---|---|
+| 1 | Khối đá là **một hình có LỖ**, tô bằng `fill-rule="evenodd"`: vòng ngoài + vòng lòng vực trong CÙNG một `<path>` | `Ink.fill_rule`, `draw_rock_mass` |
+| 2 | Vách vực là **một polyline liên tục** mỗi bên, ảnh của một hàm liên tục của độ sâu | `Vuc.shaft_half` (nội suy cosin), `Vuc.wall`, `draw_vach` |
+| 3 | Gian là **bướu của chính đường vách ấy** (`sin(pi t)^0.35`, bằng 0 ở hai đầu), không phải hình riêng | `Vuc.bump`, `Vuc.alcoves` |
+| 4 | Phía hốc mở ra lòng vực **không có nét viền** — ở đó không có đá | `vault()` mục 2 |
+| 5 | Cắt bổ chỉ cắt **một phần**: chừa gờ đá che mép trên mỗi hốc | `vault()` mục 3 |
+| 6 | **Một** trường nét cho cả khối đá: một góc (−41°), một pha, một hàm sắc độ theo độ sâu | `da_tone`, `draw_rock_mass` |
+| 7 | Góc gạch chỉ đổi ở **ranh giới vật liệu thật**, và ranh giới ấy chạy **hết bề rộng** | vạch tầng trong `draw_gauge` |
+| 8 | Khoảng **RỖNG phải THƯA NÉT** — lòng vực gạch thưa gấp đôi và nhạt một nửa so với đá | `draw_vach_sau` |
+| 9 | Nét **vắt qua ranh giới** khâu hai bên lại: khe nứt xuyên tầng, rễ cây thò qua mép vực, năm sợi cáp xuyên cả bốn tầng | `draw_rock_mass` (`da-nut`), `draw_surface`, `draw_wells` |
+| 10 | Một dòng **nước** và một **nêm sáng** duy nhất chạy suốt từ miệng xuống đáy | `draw_nuoc`, `draw_tia_sang` |
+
+Hai luật nữa, học được bằng cách làm hỏng trước:
+
+- **Gian phải NHỎ so với cái hố.** Lần dựng đầu cho mỗi gian chiếm 0,72 bề rộng hốc và
+  gần trọn chiều cao; bảy cái vòm to bằng nhau xếp thành hàng, và mắt lại đọc ra bảy
+  căn phòng. Nay mỗi gian 14–17% bề rộng khung (`GIAN_SIZE`).
+- **Bảy cái khung giống hệt nhau cũng là "tám hốc rời" ở dạng khác** (luật tương tự:
+  mắt gom những hình giống nhau). Ba kiểu khung theo cái gian ấy LÀ GÌ: `cuon` (vòm
+  xây — M1, M4), `lanh` (lanh-tô phẳng — M2, M3, M6), `khe` (khe đá tự nhiên, không có
+  gì xây — M5, M7, M8). Bảng ở `VAULT_KIND`.
+
+### 6.2 · Thang độ sâu hai lề — bộ máy chú giải
+
+Dựng theo **quy ước mặt cắt địa chất**, không phải chép bản tham chiếu (ghi chú trung
+thực ở 6.4):
+
+- trục dọc ở **cả hai lề** (`GAUGE_X = (46, W − 46)`), vạch nhỏ đều 11 đơn vị;
+- tại mỗi **mốc tầng**, một vạch lớn hai đầu + một nét đứt `7 6` chạy **từ lề trái sang
+  lề phải**, cắt qua cả đá lẫn lòng vực. Đường đi xuyên phía sau một cái gian là bằng
+  chứng hình học rằng gian ấy nằm trong một thể liên tục;
+- **đường dẫn nét đứt `5 5`** từ lề gần hơn tới từng gian, **dừng trước** khi chạm gian
+  (quy ước bản đồ hang: nét của phần nằm dưới dừng trước nét của phần nằm trên, để chỗ
+  giao nhau đọc ra là CHE KHUẤT — `interposition`, một trong các tín hiệu hình–nền mạnh
+  nhất);
+- **không một con số nào**: script không biết một con số nào về chiều sâu, và số bịa
+  còn tệ hơn không có thước (mục 5 ở trên).
+
+Hai **mực nước cổ** (`draw_muc_nuoc`, nét đứt `9 7` ở độ sâu 508 và 716) chạy hết bề
+rộng. Không phải trang trí: thuỷ văn karst coi mực nước ngầm là **một mặt duy nhất**
+chia đới thoáng khí với đới bão hoà, và hang hình thành theo từng tầng ứng với các mực
+nước cũ khi mực nước hạ dần. Một đường thuộc về cả khối đá buộc mọi gian nó cắt qua vào
+cùng một hệ — đúng thứ "liên kết giữa các màn" đang thiếu. Nó giải thích luôn hình
+dáng: **trên** đường thì lòng vực hẹp và thẳng theo khe nứt (đới thoáng khí), **dưới**
+thì tròn và rộng hơn cao (đới bão hoà).
+
+### 6.3 · HỢP ĐỒNG VỚI LỚP CHUYỂN ĐỘNG — là TOẠ ĐỘ, không phải `id`
+
+Bản đầu của mục này liệt kê một bảng `id`/`data-*` gắn vào SVG cho lớp chuyển động bám
+vào. **Bảng đó sai, và đã gỡ khỏi script.** Lý do kỹ thuật, agent làm lớp chuyển động
+chỉ ra:
+
+`world-map.module.css` nạp tranh bằng `background-image: url('/map/world-map.svg')`.
+Một SVG nạp bằng ảnh nền (hoặc `<img>`) là **một tài liệu riêng, không script, bị cách
+ly khỏi trang**: CSS của trang không khớp được selector nào bên trong nó, JS không
+`querySelector` vào được. Nên `id="vach-trai"` hay `data-nuoc="chinh"` là **byte chết**
+trong một tệp 830 KB tải ở mỗi lượt vào trang chủ — mà tệp ấy đang phải nằm dưới trần
+900 KB. (`src/lib/figure-motion.ts` đã trả giá cho đúng điều này: 23 hình lý thuyết
+nhúng bằng `<img>` nên trang bài học không dừng được hoạt hình bên trong, phải dựng lại
+tệp bằng Blob mới dừng được.)
+
+Trong SVG sinh ra nay chỉ còn **bốn `id`, và cả bốn đều được dùng ngay trong tệp**
+(`clipPath`: `da`, `long-vuc`, `zoom1`, `zoom2`). Có ca test canh: mọi `id` trong tranh
+phải xuất hiện trong một `url(#…)` của chính tranh.
+
+**Hợp đồng thật là TOẠ ĐỘ MỐC trong `frontend/src/lib/world-map.ts`** — cùng những hằng
+mà `build_map.py` đọc qua `read_ts()`, nên hai bên không lệch nhau được. Lớp chuyển
+động là những phần tử HTML **riêng, chồng LÊN** tranh, định vị theo % của `MAP_FRAME`.
+
+| Hằng | Là gì | Dùng để |
+|---|---|---|
+| `MAP_FRAME` | `{width: 1360, height: 820}` | hệ toạ độ chung; mọi % tính từ đây |
+| `MAP_ABYSS.mouthY` `.bottomY` `.cx` | miệng vực, đáy, trục | khoảng độ sâu thật của cái hố |
+| `MAP_ABYSS.tiers[].bottomY` | mép dưới bốn tầng | gán độ sâu cho lớp parallax; mốc thang độ sâu |
+| `MAP_ABYSS.shaft` `.rock` `.alcoves` | mặt cắt lòng vực / khối đá / tám hốc | đặt thứ gì đó đúng trong lòng vực, hoặc bám mép vách |
+| `REGION_LAYOUT[].box` `.band` `.plate` | tám hộp, tầng, chỗ tấm nhãn | ô nước M4, mặt hồ M8, nhãn |
+| `MAP_WELLS[].d` `.x` | năm sợi cáp | sợi sáng vẽ dần xuống; cột bụi dưới tời |
+| `MAP_SUN` | `{cx, cy}` | nguồn sáng: cột bụi đặt dưới mặt trời |
+| `MAP_PALETTE` | bảng màu của tranh | màu lớp chuyển động phải KHỚP tranh |
+
+**Luật, và nó đã được trả giá hai lần trong cùng một ngày:** toạ độ nào mà cả hai bên
+cùng cần thì nó nằm ở `world-map.ts`, không ở đâu khác.
+
+- Lớp chuyển động từng chép bốn mốc địa tầng sang tệp của nó. Bản sao **chết trong hai
+  giờ** khi bức tranh được vẽ lại (238/390/528/710 → 128/378/508/716). Nó đã bỏ bản sao
+  và suy mốc từ `REGION_LAYOUT`.
+- `world-map.test.mjs` từng khoá cứng `"giếng bắt đầu ở y ≈ 236"` — chiều cao mặt đất
+  cũ — và ca ấy đỏ ngay buổi chiều hôm đó. Nay nó đọc `MAP_ABYSS.mouthY`.
+- Vì vậy hình thái cái vực (mặt cắt, mốc tầng, tám hốc) KHÔNG nằm trong `build_map.py`
+  nữa: script dựng `Vuc` từ `MAP_ABYSS`.
+
+Ba điều **đừng phá**, lớp chuyển động phụ thuộc vào:
+
+1. `.decor` giữ `background-size: 100% 100%` và `.map` giữ `aspect-ratio: 1360/820` —
+   hai bên khớp chính xác nhờ đúng hai dòng đó. Đổi sang `cover`/`contain` là mọi mốc
+   của lớp kia lệch.
+2. Đừng đặt `z-index` hay `transform` lên `.decor`: `transform` tạo containing block
+   mới và nhấc cả texture 830 KB thành một lớp hợp ảnh riêng trên GPU.
+3. Mốc gãy `1099px` của `@container` là mốc chung — lớp chuyển động tự tắt ở đúng mốc
+   đó (`MOTION_MIN_WIDTH_PX = 1100`, có ca test so với CSS).
+
+Một điều nữa về chính bức tranh: **tám nhóm `data-lop="gian-M*"` mang
+`transform="translate(…) scale(…)"`** vì tiểu cảnh được dựng trong khung riêng
+(`ART_BOX`) rồi đặt vào hốc. Ai đọc/sửa SVG mà thêm `transform` của mình vào đúng nhóm
+đó sẽ **đè mất** phép biến hình này và tiểu cảnh nhảy về góc trên-trái.
+
+### 6.4 · Ghi chú trung thực về nguồn
+
+Đã tra kỹ và **không tìm được nguồn dẫn được** mô tả bộ máy vạch / đường-dẫn / vòng-soi
+của bản mặt cắt *in* của Made in Abyss; thứ chính thức duy nhất tra được là trang
+アビスガイド của Takeshobo — một trang cuộn dọc có dải độ sâu theo tầng, không phải một
+bản vẽ có thước lề. Nên: **chia tầng theo dải độ sâu** lấy từ đó, còn **thước lề, vạch
+ngang, đường dẫn** dựng theo quy ước mặt cắt địa chất và bản đồ hang (nguồn ở mục
+Nguồn). Chỗ nào trùng với ảnh tham chiếu thì là trùng về QUY ƯỚC, không phải chép.
+
+---
+
 ## 5 · Hai thứ không lấy, và vì sao
 
 - **Số trên thang đo.** Bản tham chiếu ghi độ sâu theo mét vì truyện có hệ thống độ sâu
@@ -214,3 +342,43 @@ Về chính hai bản tham chiếu
   https://weareroyale.com/case-studies/runeterra-map-teaser/
 - Không tìm được bài phân tích kỹ thuật nào của bản đồ Vực Thẳm. Phần mục 2 ở trên là
   **đọc từ chính bức vẽ**, không phải dẫn nguồn — ghi rõ để người sau biết độ chắc.
+
+Thế giới dọc, cắt bổ, hình–nền, liền mạch (thêm 19/10/2026)
+- Li, Ritter, Agrawala, Curless, Salesin, *Interactive Cutaway Illustrations of Complex
+  3D Models*, SIGGRAPH 2007 · https://grail.cs.washington.edu/projects/cutaways —
+  quy ước cắt bổ: cắt theo hình của chính vật bị cắt; cắt MỘT PHẦN để người xem tự dựng
+  lại chỗ bỏ đi; vật ở XA bị cắt ít hơn vật ở GẦN. Luật 4, 5 và vách sau ở mục 6.1.
+- *Figure-ground (cartography)* — Wikipedia ·
+  https://en.wikipedia.org/wiki/Figure-ground_(cartography) — danh sách tín hiệu
+  hình–nền: khép kín, che khuất (interposition), kết cấu (articulation), độ mạnh của
+  đường biên. Luật 1, 8 và quy tắc "đường dẫn dừng trước khi chạm".
+- Axis Maps, *Visual Hierarchy* · https://axismaps.com/guide/visual-hierarchy —
+  phép thử nheo mắt; tương phản yếu thì hình–nền yếu. Lý do vách vực là nét đậm nhất
+  của cả bức (2,4 so với 0,4–1,7).
+- *Hatching* — Wikipedia · https://en.wikipedia.org/wiki/Hatching — sắc độ do số
+  lượng / độ dày / khoảng cách nét; **nét gạch phải bám theo hình**; vùng kề nhau đổi
+  hướng gạch để tách nhau; cảnh báo moiré. Luật 6, 7.
+- Waldron & Snyder, *Geological Structures — Cross-sections and Three-point Problems* ·
+  https://geo.libretexts.org/Bookshelves/Geology/Geological_Structures_-_A_Practical_Introduction_(Waldron_and_Snyder)/02%3A_Labs/2.02%3A_Lab_2_-_Cross-sections_and_Three-point_Problems
+  — dựng mặt cắt: trục độ sâu ở lề, ranh giới vỉa vẽ hết bề rộng bản vẽ, phóng đại
+  chiều đứng phải khai báo. Mục 6.2.
+- *Karst Hydrogeology* (TRU Pressbooks) ·
+  https://environmental-geol.pressbooks.tru.ca/chapter/karst-hydrogeology/ — mực nước
+  ngầm là MỘT mặt chia đới thoáng khí / bão hoà; hang đới bão hoà **rộng hơn cao,
+  tròn**, hang đới thoáng khí **thẳng, bám khe nứt**. Hình mặt cắt ở `Vuc.shaft_half`.
+- Groundwater Project, *Water table decline and fluctuation forms interconnected
+  conduits* ·
+  https://books.gw-project.org/introduction-to-karst-aquifers/chapter/water-table-decline-and-fluctuation-forms-interconnected-conduits/
+  — tầng hang hình thành theo các mực nước cũ khi mực nước hạ dần. Lý lẽ của hai đường
+  `muc-nuoc`.
+- Cavewhere, *Cave mapping — sketch projections* ·
+  https://cavewhere.com/2020/12/15/cave-mapping-sketch-projections/ — bốn phép chiếu
+  bản đồ hang; **running profile** giữ chiều dài thật khi hang ngoặt; nét chấm đánh dấu
+  chỗ lấy mặt cắt ngang.
+- Takeshobo, *DIVE INTO THE ABYSS — アビスガイド* ·
+  https://www.takeshobo.co.jp/sp/made-in-abyss/abyss_guide/ — nguồn CHÍNH THỨC duy nhất
+  tra được cho chuyện chia tầng theo dải độ sâu. Xem ghi chú trung thực ở mục 6.4.
+- Game Informer, *The Making Of Hollow Knight* (2018) ·
+  https://www.gameinformer.com/2018/10/16/the-making-of-hollow-knight — Ari Gibson vẽ
+  tay rồi quét thẳng vào engine; "giữ cho đơn giản"; bản đồ phải *gợi vừa đủ*, không
+  được thành "một mớ chi tiết ngộp". Lý do hạ hẳn mật độ nét trong lòng vực.

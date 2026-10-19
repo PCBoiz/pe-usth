@@ -53,6 +53,7 @@ const LAYOUT = WM.REGION_LAYOUT ?? [];
 const FLOWS = WM.MAP_FLOWS ?? [];
 const WELLS = WM.MAP_WELLS ?? [];
 const PALETTE = WM.MAP_PALETTE ?? {};
+const ABYSS = WM.MAP_ABYSS ?? {};
 const FRAME = WM.MAP_FRAME ?? { width: 0, height: 0 };
 
 const FE = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -90,6 +91,56 @@ const CROPS = Object.fromEntries(
   LAYOUT.map((l) => [l.key, read(...ART_DIR, `scene-${l.key}.svg`)]),
 );
 const artBytes = (...p) => statSync(join(FE, ...p)).size;
+
+/** Nét của MỘT lớp trong tranh: `<g data-lop="vach-trai">…</g>`. */
+const lop = (svg, ten) => {
+  const m = svg.match(new RegExp(`<g data-lop="${ten}"[^>]*>([\\s\\S]*?)</g>`));
+  return m ? m[1] : '';
+};
+
+/** Mọi `d=` của một lớp. */
+const duong = (g) => [...g.matchAll(/<path [^>]*\bd="([^"]*)"/g)].map((m) => m[1]);
+
+/**
+ * `M x y l dx dy l dx dy …` → danh sách điểm tuyệt đối.
+ *
+ * Chỉ hiểu đúng dạng mà `build_map.py` sinh cho đường vách (một `M` tuyệt đối
+ * rồi toàn `l` tương đối — xem chú thích `ln()` trong script, nó dùng lệnh
+ * tương đối để tiết kiệm byte). Gặp dạng khác thì ném, đừng đoán.
+ */
+const diem = (d) => {
+  const t = d.match(/^M(-?[\d.]+) (-?[\d.]+)((?:l-?[\d.]+ -?[\d.]+)+)$/);
+  if (!t) throw new Error(`không phải một đường liền dạng M…l…: ${d.slice(0, 60)}…`);
+  let x = Number(t[1]);
+  let y = Number(t[2]);
+  const out = [[x, y]];
+  for (const s of t[3].matchAll(/l(-?[\d.]+) (-?[\d.]+)/g)) {
+    x += Number(s[1]);
+    y += Number(s[2]);
+    out.push([x, y]);
+  }
+  return out;
+};
+
+/** Đường vách của một bên, dưới dạng điểm. Đây là HÌNH THẬT của cái hố. */
+const vach = (ben) => {
+  const ds = duong(lop(ART, `vach-${ben}`));
+  assert.ok(ds.length > 0, `tranh không có lớp vach-${ben}`);
+  return diem(ds[0]);
+};
+
+/** x của vách tại độ sâu y (nội suy giữa hai điểm liền nhau). */
+const vachTaiY = (pts, y) => {
+  for (let i = 1; i < pts.length; i += 1) {
+    const [x0, y0] = pts[i - 1];
+    const [x1, y1] = pts[i];
+    if ((y0 <= y && y <= y1) || (y1 <= y && y <= y0)) {
+      const t = y1 === y0 ? 0 : (y - y0) / (y1 - y0);
+      return x0 + (x1 - x0) * t;
+    }
+  }
+  return null;
+};
 
 /** Số NÉT trong một tệp: mỗi nhóm thuộc tính là một `<path>` gộp nhiều đoạn
  *  `M…`, nên đếm lệnh `M` mới ra số nét thật, đếm `<path>` thì ra số nhóm. */
@@ -367,14 +418,25 @@ test('đường nối CHỈ có ở M5 → M6 → M7 → M8, và vẽ từ dữ 
   const tay = MAP_TSX.match(/data-flow="[^"]*"/g) ?? [];
   assert.deepEqual(tay, [], `data-flow viết tay, không đi qua dữ liệu: ${tay.join(' ')}`);
 
-  // Giếng KHÔNG phải đường nối: mỗi giếng đi từ mặt đất xuống ĐÚNG một vùng
-  // dưới mặt đất, và không hai giếng chung một vùng.
+  // Cáp thả KHÔNG phải đường nối: mỗi sợi đi từ VÀNH MIỆNG xuống ĐÚNG một gian
+  // dưới miệng vực, và không hai sợi chung một gian.
+  //
+  // Mốc đầu sợi KHÔNG viết cứng ở đây. Ca này từng khoá "y ≈ 236" — chiều cao
+  // mặt đất của bản địa tầng cũ — và nó đỏ ngay buổi chiều bức tranh được vẽ
+  // lại (mặt đất 238 → 128). Một con số chép là một con số sẽ lệch; lấy thẳng
+  // từ `MAP_ABYSS.mouthY`, cùng cái mà `build_map.py` đọc để vẽ.
   const dich = WELLS.map((w) => w.to);
-  assert.equal(new Set(dich).size, dich.length, 'hai giếng xuống cùng một vùng');
+  assert.equal(new Set(dich).size, dich.length, 'hai sợi cáp xuống cùng một gian');
   for (const w of WELLS) {
     const l = LAYOUT.find((x) => x.key === w.to);
-    assert.ok(l && l.band !== 'surface', `giếng xuống ${w.to} — vùng mặt đất không cần giếng`);
-    assert.match(w.d, /^M\d+ 23\d L/, `giếng ${w.to} không bắt đầu từ mặt đất (y ≈ 236)`);
+    assert.ok(l && l.band !== 'surface', `cáp xuống ${w.to} — gian ở miệng vực không cần cáp`);
+    const dau = w.d.match(/^M(-?\d+) (-?\d+) L/);
+    assert.ok(dau, `cáp ${w.to} không bắt đầu bằng một lệnh M…L: ${w.d}`);
+    assert.equal(Number(dau[1]), w.x, `cáp ${w.to}: tời ở x=${w.x} mà sợi bắt đầu ở ${dau[1]}`);
+    assert.ok(
+      Math.abs(Number(dau[2]) - ABYSS.mouthY) <= 12,
+      `cáp ${w.to} không bắt đầu ở vành miệng (y ≈ ${ABYSS.mouthY}), mà ở ${dau[2]}`,
+    );
   }
 });
 
@@ -814,6 +876,187 @@ test('CSS nối tranh vào bằng ảnh nền, và chỉ tải phần bố cục
     'tên vùng vẫn dùng phông giao diện — một trong sáu điểm bị bác ở bản trước');
   // Và không nạp thêm tệp phông nào cho một khối duy nhất của trang chủ.
   assert.doesNotMatch(CSS_CODE, /@font-face|fonts\.googleapis/);
+});
+
+/* ═══ 11 · MỘT CÁI VỰC LIỀN MẠCH ═══════════════════════════════════════
+ *
+ * Chủ sản phẩm nhận bản trước là khá hơn hẳn, kèm đúng MỘT khuyết điểm:
+ * "chưa có sự liên kết giữa các màn". Khuyết điểm ấy có hình dạng kiểm được —
+ * tám ĐƯỜNG KHÉP KÍN rời nhau (`vault()` cũ vẽ mỗi gian bằng một `close=True`)
+ * thả vào bốn dải đá chạy ngang hết khung. Năm ca dưới đây khoá đúng cái hình
+ * dạng đó lại, vì nó là thứ lặng lẽ quay về khi người sau sửa script mà không
+ * mở ảnh ra xem: thêm một `close=True` là xong, và không gì khác đỏ lên.
+ */
+
+test('vách vực là MỘT đường liền mỗi bên, không phải tám hình rời', () => {
+  // Tự kiểm bộ phân tích trước khi tin nó.
+  assert.deepEqual(diem('M10 20l5 0l0 5'), [[10, 20], [15, 20], [15, 25]]);
+  assert.throws(() => diem('M0 0L5 5'), /không phải một đường liền/);
+
+  for (const ben of ['trai', 'phai']) {
+    const ds = duong(lop(ART, `vach-${ben}`));
+    // Đường ĐẦU TIÊN của lớp là hình bóng; các đường sau là hachure bám mép.
+    const pts = diem(ds[0]);
+    assert.ok(
+      pts.length > 250,
+      `vách ${ben} chỉ có ${pts.length} điểm — một đường vài chục điểm không phải`
+      + ' mặt cắt của cả cái vực',
+    );
+    // Một lệnh M duy nhất: `diem()` đã đòi điều đó, nhưng nói thẳng ra vì nó
+    // LÀ khẳng định của ca này.
+    assert.equal((ds[0].match(/M/g) ?? []).length, 1, `vách ${ben} bị cắt thành nhiều đoạn`);
+
+    // Chạy TỪ MIỆNG XUỐNG ĐÁY, không nhảy cóc, không quay ngược.
+    assert.ok(Math.abs(pts[0][1] - ABYSS.mouthY) <= 6, `vách ${ben} không bắt đầu ở miệng vực`);
+    assert.ok(Math.abs(pts.at(-1)[1] - ABYSS.bottomY) <= 6, `vách ${ben} không xuống tới đáy`);
+    for (let i = 1; i < pts.length; i += 1) {
+      assert.ok(pts[i][1] >= pts[i - 1][1] - 0.01, `vách ${ben} quay ngược lên ở điểm ${i}`);
+      assert.ok(
+        Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]) < 70,
+        `vách ${ben} nhảy một bước ${Math.round(Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]))} đơn vị ở điểm ${i}`
+        + ' — một cái hố liền không có chỗ đứt như thế',
+      );
+    }
+    // KHÔNG MỘT NÉT KHÉP KÍN NÀO trong lớp vách. `Z` ở đây nghĩa là ai đó vừa
+    // vẽ lại một cái hốc thành hình riêng.
+    assert.ok(!lop(ART, `vach-${ben}`).includes('Z'), `lớp vach-${ben} có nét khép kín (Z)`);
+  }
+});
+
+test('lòng vực nở ra rồi thắt lại — không phải một cái ống, cũng không phải tám cái bọt', () => {
+  const trai = vach('trai');
+  const phai = vach('phai');
+  const rong = (y) => vachTaiY(phai, y) - vachTaiY(trai, y);
+
+  // (a) CHÍNH BẢNG mặt cắt phải nở ra thắt lại: ít nhất hai chỗ thắt và hai
+  // chỗ phình. Một bảng đơn điệu là một cái ống, và một cái ống thì không có
+  // "tầng" nào để thang độ sâu nói tới.
+  const h = ABYSS.shaft.map(([, v]) => v);
+  let that = 0;
+  let phinh = 0;
+  for (let i = 1; i < h.length - 1; i += 1) {
+    if (h[i] < h[i - 1] && h[i] < h[i + 1]) that += 1;
+    if (h[i] > h[i - 1] && h[i] > h[i + 1]) phinh += 1;
+  }
+  assert.ok(that >= 2 && phinh >= 2,
+    `mặt cắt chỉ có ${that} chỗ thắt và ${phinh} chỗ phình — đó là một cái ống`);
+
+  // (b) BỨC VẼ đi theo bảng: chỗ hẹp nhất của bảng cũng là chỗ hẹp nhất của
+  // vách thật, và hai chỗ phình kề nó rộng hơn hẳn. Không con số độ sâu nào
+  // viết ở đây — tất cả suy từ `MAP_ABYSS.shaft`, cùng bảng mà script đọc.
+  const iMin = h.indexOf(Math.min(...h));
+  const iTruoc = h.slice(0, iMin).lastIndexOf(Math.max(...h.slice(0, iMin)));
+  const iSau = iMin + 1 + h.slice(iMin + 1).indexOf(Math.max(...h.slice(iMin + 1)));
+  const [yMin, yTruoc, ySau] = [iMin, iTruoc, iSau].map((i) => ABYSS.shaft[i][0]);
+
+  const co = { miệng: rong(ABYSS.mouthY + 6), 'chỗ thắt': rong(yMin) };
+  co[`phình trên (${yTruoc})`] = rong(yTruoc);
+  co[`phình dưới (${ySau})`] = rong(ySau);
+  for (const [ten, v] of Object.entries(co)) {
+    assert.ok(v > 40, `${ten}: lòng vực chỉ rộng ${Math.round(v)} — chỗ đó đã bị bịt`);
+  }
+  assert.ok(co['chỗ thắt'] < co[`phình trên (${yTruoc})`] * 0.6,
+    `chỗ thắt ở độ sâu ${yMin} (${Math.round(co['chỗ thắt'])}) không hẹp hơn hẳn chỗ phình`
+    + ` trên nó (${Math.round(co[`phình trên (${yTruoc})`])})`);
+  assert.ok(co[`phình dưới (${ySau})`] > co['chỗ thắt'] * 1.7,
+    'lòng vực không phình trở lại sau chỗ thắt — nó đang thót mãi, không phải một cái vực');
+});
+
+test('tám gian đều thuộc CÙNG cái hố: bốn gian khoét vào vách, bốn gian trong lòng', () => {
+  const trai = vach('trai');
+  const phai = vach('phai');
+  const hoc = { M1: trai, M5: trai, M3: phai, M7: phai };
+
+  for (const l of LAYOUT) {
+    const [x, y, w, h] = l.box;
+    const y0 = Math.max(y, ABYSS.mouthY + 4);
+    const y1 = Math.min(y + h, ABYSS.bottomY - 4);
+    assert.ok(y1 > y0, `${l.key} nằm ngoài khoảng độ sâu của vực`);
+
+    const pts = hoc[l.key];
+    if (pts) {
+      // Gian khoét vào vách: ĐƯỜNG VÁCH phải đi xuyên qua hộp của nó. Đó là
+      // bằng chứng hình học rằng cái gian ấy là một BƯỚU của vách, không phải
+      // một hình đặt cạnh vách.
+      const trong = pts.filter(([px, py]) => py >= y0 && py <= y1 && px >= x && px <= x + w);
+      assert.ok(
+        trong.length > 12,
+        `${l.key}: đường vách chỉ đi qua hộp của nó ở ${trong.length} điểm — gian này`
+        + ' không còn khoét vào vách, nó đang nằm rời',
+      );
+      // Và vách phải PHÌNH RA ở đó: mép tại giữa gian lệch khỏi mép ngay trên
+      // và ngay dưới gian.
+      const giua = vachTaiY(pts, (y0 + y1) / 2);
+      const tren = vachTaiY(pts, Math.max(ABYSS.mouthY + 2, y0 - 40));
+      const buou = pts === trai ? tren - giua : giua - tren;
+      assert.ok(buou > 20, `${l.key}: vách không phình ra ở chỗ gian (lệch ${Math.round(buou)})`);
+    } else {
+      // Gian ở vách sau / chắn ngang / lòng hồ: tâm hộp nằm TRONG lòng vực.
+      const cy = (y0 + y1) / 2;
+      const cx = x + w / 2;
+      const a = vachTaiY(trai, cy);
+      const b = vachTaiY(phai, cy);
+      assert.ok(a !== null && b !== null, `${l.key}: không đọc được vách ở độ sâu ${cy}`);
+      assert.ok(a < cx && cx < b, `${l.key}: tâm gian (${cx}) nằm ngoài lòng vực [${Math.round(a)}, ${Math.round(b)}]`);
+    }
+  }
+});
+
+test('nước và ánh sáng chạy XUYÊN SUỐT, mỗi thứ một nhóm, không đứt theo tầng', () => {
+  for (const [ten, phu] of [['nuoc', 0.72], ['tia-sang', 0.5]]) {
+    const g = lop(ART, ten);
+    assert.ok(g, `tranh không có lớp ${ten}`);
+    const ys = [...g.matchAll(/M(-?[\d.]+) (-?[\d.]+)/g)].map((m) => Number(m[2]));
+    assert.ok(ys.length > 60, `lớp ${ten} chỉ có ${ys.length} nét`);
+    const cao = Math.max(...ys) - Math.min(...ys);
+    const vuc = ABYSS.bottomY - ABYSS.mouthY;
+    assert.ok(
+      cao > vuc * phu,
+      `${ten} chỉ trải ${Math.round(cao)} trên ${vuc} đơn vị độ sâu — nó đang đứt theo tầng`,
+    );
+    assert.ok(Math.min(...ys) < ABYSS.mouthY + 90, `${ten} không bắt đầu từ gần miệng vực`);
+  }
+  // Nước phải xuống tới hồ; ánh sáng thì KHÔNG — nó tắt dần, đó là cái nói "sâu".
+  const yNuoc = [...lop(ART, 'nuoc').matchAll(/M(-?[\d.]+) (-?[\d.]+)/g)].map((m) => Number(m[2]));
+  assert.ok(Math.max(...yNuoc) > 740, 'dòng nước không xuống tới lòng hồ ở đáy');
+});
+
+test('thang độ sâu chạy dọc CẢ HAI lề, và có đường dẫn nét đứt tới từng gian', () => {
+  const g = lop(ART, 'thang-do-sau');
+  assert.ok(g, 'tranh không có thang độ sâu');
+  const xs = [...g.matchAll(/M(-?[\d.]+) (-?[\d.]+)/g)].map((m) => Number(m[1]));
+  const le = 46;
+  assert.ok(xs.some((x) => Math.abs(x - le) < 26), 'không có thang ở lề TRÁI');
+  assert.ok(xs.some((x) => Math.abs(x - (FRAME.width - le)) < 26), 'không có thang ở lề PHẢI');
+  // Vạch tầng là nét ĐỨT chạy hết bề rộng — quy ước mặt cắt địa chất, và là
+  // thứ nói "cái gian này nằm trong một thể liên tục" chứ không nằm rời.
+  assert.match(g, /stroke-dasharray="7 6"/, 'vạch mốc tầng không phải nét đứt');
+  const ngang = duong(g).some((d) => {
+    const m = d.match(/^M(-?[\d.]+) /);
+    return m && Number(m[1]) < le + 10 && d.length > 400;
+  });
+  assert.ok(ngang, 'không có vạch tầng nào chạy từ lề trái sang lề phải');
+
+  // Một đường dẫn cho MỖI gian, và tất cả đều là nét đứt.
+  for (const l of LAYOUT) {
+    const d = lop(ART, `dan-${l.key}`);
+    assert.ok(d, `không có đường dẫn tới ${l.key}`);
+    assert.match(d, /stroke-dasharray="5 /, `đường dẫn tới ${l.key} không phải nét đứt`);
+  }
+});
+
+test('tranh KHÔNG gắn id/data-* cho lớp chuyển động — ảnh nền thì không ai chạm vào được', () => {
+  // Tranh vào trang bằng `background-image`, tức một tài liệu SVG RIÊNG, bị
+  // cách ly: CSS của trang không khớp được selector nào bên trong, JS không
+  // `querySelector` vào được. Mọi `id` đặt cho tầng vách hay dòng nước là byte
+  // chết trong một tệp tải ở mỗi lượt vào trang chủ — mà tệp ấy đang phải nằm
+  // dưới trần 900 KB. Hợp đồng thật với lớp chuyển động là TOẠ ĐỘ trong
+  // `world-map.ts` (`design/v3/ky-thuat-ban-do.md` mục 6.3).
+  assert.match(CSS_CODE, /background-image:\s*url\('\/map\/world-map\.svg'\)/,
+    'tranh không còn vào trang bằng ảnh nền — lý lẽ của ca này phải xem lại');
+  const ids = [...new Set([...ART.matchAll(/\sid="([^"]+)"/g)].map((m) => m[1]))];
+  const dung = ids.filter((id) => !ART.includes(`url(#${id})`));
+  assert.deepEqual(dung, [], `id không ai dùng trong chính tệp SVG: ${dung.join(' ')}`);
 });
 
 /* ═══ 9 · trang chủ có nối bản đồ vào, và vẫn không gọi API ═════════════ */

@@ -52,11 +52,24 @@ export const REGION_NAMES = [
   'Đại công trình',
 ] as const;
 
-/* ═══ Mặt cắt: bốn dải, tám vùng ═══════════════════════════════════════
+/* ═══ MỘT CÁI VỰC: bốn tầng độ sâu, tám gian ═══════════════════════════
  *
- * HAI TRỤC TÁCH NHAU. Ngang = kề nhau, vào đâu cũng được. Dọc = chất liệu đổi
- * dần: mặt đất (M1 M2 M3) · nông (M4) · sâu (M5 M6 M7) · đáy (M8). Bốn dải chứ
- * không tám nấc — tám nấc là một cầu thang, mà cầu thang thì bắt đi từ bậc một.
+ * HAI TRỤC TÁCH NHAU. Ngang = kề nhau, vào đâu cũng được. Dọc = độ sâu, và nó
+ * đổi chất liệu dần: miệng vực (M1 M2 M3) · chỗ thắt (M4) · gallery (M5 M6 M7)
+ * · hồ đáy (M8). Bốn TẦNG chứ không tám nấc — tám nấc là một cầu thang, mà cầu
+ * thang thì bắt đi từ bậc một.
+ *
+ * ── VÌ SAO TOẠ ĐỘ Ở ĐÂY ĐỔI (19/10/2026) ──────────────────────────────
+ * Bản trước bị bác bằng đúng một câu: "chưa có sự liên kết giữa các màn" — tám
+ * gian là tám hốc RỜI trôi trong đá. Bản này có đúng MỘT cái hố: vách vực chạy
+ * liền từ miệng xuống đáy, nở ra ở miệng, thắt lại ở giữa, phình ra thành
+ * gallery, rồi loe ra thành lòng hồ; tám gian là chỗ vách ấy PHÌNH RA, không
+ * phải tám hình khép kín. Hình thái nằm ở `scripts/map/build_map.py` mục 3
+ * (`Vuc`); dưới đây chỉ là tám cái HỘP — ô crop cho điện thoại và hộp liên kết
+ * — nên chúng phải trùng với chỗ hốc thật, và `world-map.test.mjs` so lại.
+ *
+ * Hộp đổi ⇒ `.spot1…8` trong `world-map.module.css` PHẢI đổi theo. Đừng tính
+ * tay: `py scripts/map/build_map.py --css` in ra đúng khối ấy.
  */
 
 /** Khung toạ độ của artboard máy tính. CSS đặt `aspect-ratio` theo đúng nó. */
@@ -164,21 +177,87 @@ export type RegionLayout = {
  * số bài và liên kết đều đếm từ `curricula.json` trong `buildRegions`.
  */
 export const REGION_LAYOUT: readonly RegionLayout[] = [
-  { key: 'M1', band: 'surface', silhouette: 'xưởng có lò, hai ống khói, ống đồng rẽ nhánh', backdrop: 'sky', box: [20, 0, 420, 250], plate: [146, 262] },
-  { key: 'M2', band: 'surface', silhouette: 'khung cửi nhiều sợi song song, một nút thắt', backdrop: 'sky', box: [490, 30, 380, 210], plate: [556, 262] },
-  { key: 'M3', band: 'surface', silhouette: 'mặt tiền lưới ô kính', backdrop: 'sky', box: [940, 30, 380, 210], plate: [1000, 262] },
-  { key: 'M4', band: 'shallow', silhouette: 'nhiều mạch rỉ vào một bể', backdrop: 'shallow', box: [470, 370, 420, 130], plate: [940, 412] },
-  { key: 'M5', band: 'deep', silhouette: 'cụm tinh thể lưới đều', backdrop: 'deep', box: [120, 530, 320, 140], plate: [146, 658] },
-  { key: 'M6', band: 'deep', silhouette: 'vách vỉa tầng kẻ hàng, rêu trên đỉnh', backdrop: 'deep', box: [520, 530, 330, 140], plate: [556, 658] },
-  { key: 'M7', band: 'deep', silhouette: 'hang tối có tinh thể phát sáng thành cột', backdrop: 'deep', box: [930, 530, 330, 140], plate: [1010, 658] },
-  { key: 'M8', band: 'floor', silhouette: 'hang hồ ngầm phản chiếu bảy sắc', backdrop: 'floor', box: [430, 684, 500, 134], plate: [870, 756] },
+  { key: 'M1', band: 'surface', silhouette: 'hốc vách trái miệng vực: xưởng có lò, hai ống khói, ống đồng rẽ nhánh', backdrop: 'sky', box: [150, 10, 360, 330], plate: [186, 350] },
+  { key: 'M2', band: 'surface', silhouette: 'hõm vách sau miệng vực: khung cửi nhiều sợi song song, một nút thắt', backdrop: 'surface', box: [520, 40, 320, 300], plate: [556, 350] },
+  { key: 'M3', band: 'surface', silhouette: 'hốc vách phải miệng vực: mặt tiền lưới ô kính', backdrop: 'surface', box: [850, 10, 360, 330], plate: [898, 350] },
+  { key: 'M4', band: 'shallow', silhouette: 'công trình chắn ngang chỗ thắt: nhiều mạch rỉ vào một bể', backdrop: 'shallow', box: [470, 362, 420, 150], plate: [926, 424] },
+  { key: 'M5', band: 'deep', silhouette: 'hốc vách trái gallery: cụm tinh thể lưới đều', backdrop: 'deep', box: [180, 518, 320, 176], plate: [190, 702] },
+  { key: 'M6', band: 'deep', silhouette: 'hõm vách sau gallery: giá sổ cái kẻ hàng và cột', backdrop: 'deep', box: [520, 518, 330, 176], plate: [556, 702] },
+  { key: 'M7', band: 'deep', silhouette: 'hốc vách phải gallery: vòm sao và bàn vẽ có trục', backdrop: 'deep', box: [860, 518, 320, 176], plate: [896, 702] },
+  { key: 'M8', band: 'floor', silhouette: 'lòng hồ ở đáy vực, phản chiếu bảy sắc', backdrop: 'floor', box: [430, 690, 500, 130], plate: [962, 766] },
 ];
+
+/**
+ * HÌNH THÁI CỦA CÁI VỰC — mặt cắt theo độ sâu, mốc tầng, và tám cái hốc.
+ *
+ * Vì sao nằm ở ĐÂY chứ không trong `build_map.py`: hai bên phải đọc CÙNG một
+ * nguồn. `build_map.py` đọc khối này qua `read_ts()` để vẽ; lớp chuyển động
+ * (`map-motion.ts`, phần tử HTML chồng LÊN tranh) đọc nó để đặt mốc. Đã trả
+ * giá một lần cho chuyện chép: lớp chuyển động từng giữ bản sao bốn mốc địa
+ * tầng, và bản sao chết trong hai giờ khi bức tranh được vẽ lại
+ * (238/390/528/710 → 128/378/508/716). Toạ độ nào mà cả hai bên cùng cần thì
+ * nó ở đây, không ở đâu khác.
+ *
+ * KHÔNG phải mọi nét của bức vẽ đều ở đây — nhiễu, hachure, chấm lấm tấm là
+ * việc của script. Ở đây chỉ có những con số mà một người khác có thể cần để
+ * đặt một thứ gì đó ĐÚNG CHỖ trên khung 1360 × 820.
+ */
+export const MAP_ABYSS = {
+  /** Trục của vực trên khung 1360 rộng. */
+  cx: 680,
+  /** Miệng vực — chỗ mặt đất bị cắt đứt. Mặt đất nằm ngay trên độ sâu này. */
+  mouthY: 120,
+  /** Đáy khung vẽ của vực. */
+  bottomY: 830,
+  /**
+   * Mép dưới của bốn tầng độ sâu. Tên trùng `BandId`, và `REGION_LAYOUT[].band`
+   * nói gian nào ở tầng nào. `build_map.py` lấy chính mảng này làm mốc cho
+   * thang độ sâu ở hai lề và cho vạch tầng cắt ngang bức vẽ.
+   */
+  tiers: [
+    { band: 'surface', bottomY: 378 },
+    { band: 'shallow', bottomY: 508 },
+    { band: 'deep', bottomY: 716 },
+    { band: 'floor', bottomY: 830 },
+  ],
+  /**
+   * MẶT CẮT: `[độ sâu, nửa bề rộng]`, nội suy cosin giữa hai mốc liền nhau.
+   * Đọc từ trên xuống là đọc được dáng cả cái vực — nở ra ở miệng, thắt lại ở
+   * 438, phình thành gallery ở 626, thắt lần hai, rồi loe ra thành lòng hồ.
+   * `shaft` là LÒNG vực (chỗ rỗng), `rock` là hình bóng KHỐI ĐÁ trên giấy.
+   */
+  shaft: [
+    [120, 318], [176, 334], [240, 352], [300, 346], [362, 268],
+    [438, 150], [502, 206], [562, 300], [626, 392],
+    [690, 352], [746, 212], [794, 250], [830, 240],
+  ],
+  rock: [
+    [120, 700], [185, 640], [260, 596], [340, 566], [438, 462],
+    [502, 494], [562, 528], [626, 566], [690, 546],
+    [746, 442], [794, 394], [830, 368],
+  ],
+  /**
+   * TÁM CÁI HỐC: `[gian, bên, y bắt đầu, y kết thúc, chiều sâu]`. Mỗi hốc cộng
+   * vào `shaft` một bướu `sin(πt)^0.35` ở bên của nó — bằng 0 ở hai đầu, nên
+   * đường vách vẫn LIỀN, chỉ là nó đi vòng ra ngoài chỗ có gian. Đó là toàn bộ
+   * mẹo "tám gian thuộc cùng một cái hố"; tám hình khép kín rời nhau chính là
+   * khuyết điểm mà bản 19/10/2026 sinh ra để chữa.
+   */
+  alcoves: [
+    ['M1', 'trai', 196, 344, 130],
+    ['M3', 'phai', 196, 344, 130],
+    ['M4', 'trai', 372, 498, 52], ['M4', 'phai', 372, 498, 52],
+    ['M5', 'trai', 530, 700, 104],
+    ['M7', 'phai', 530, 700, 104],
+    ['M8', 'trai', 734, 830, 94], ['M8', 'phai', 734, 830, 94],
+  ],
+} as const;
 
 /**
  * Mặt trời — nơi sáng nhất của bản vẽ, đứng trong ô của M1. Chỗ bắt đầu báo
  * bằng ÁNH SÁNG: không mũi tên, không số to, không câu "bắt đầu ở đây".
  */
-export const MAP_SUN = { cx: 110, cy: 58 } as const;
+export const MAP_SUN = { cx: 300, cy: 56 } as const;
 
 /**
  * ĐƯỜNG NỐI — CHỈ ở chỗ phụ thuộc thật: M5 → M6 → M7 → M8 (đã kiểm bằng gói
@@ -196,23 +275,29 @@ export const MAP_SUN = { cx: 110, cy: 58 } as const;
  * giữa hai ô, dựng từ chính mảng này (`MAP_FLOWS.find` trong `WorldMap.tsx`).
  */
 export const MAP_FLOWS = [
-  { from: 'M5', to: 'M6', d: 'M384 612 C 440 592 478 632 536 610' },
-  { from: 'M6', to: 'M7', d: 'M834 610 C 870 590 900 632 946 612' },
-  { from: 'M7', to: 'M8', d: 'M1094 656 C 1084 724 950 764 842 770' },
+  { from: 'M5', to: 'M6', d: 'M408 620 C 460 600 510 642 580 618' },
+  { from: 'M6', to: 'M7', d: 'M790 618 C 840 598 900 642 952 620' },
+  { from: 'M7', to: 'M8', d: 'M1050 684 C 980 700 850 714 752 742' },
 ] as const;
 
 /**
- * GIẾNG — mỗi vùng dưới mặt đất có giếng RIÊNG đi thẳng từ mặt đất xuống nó.
- * Giếng không nối vùng với vùng: nó nói "từ mặt đất xuống thẳng chỗ này được",
- * tức chính trục "vào đâu cũng được" vẽ thành hình. `x` là chỗ đầu giếng trên
- * mặt đất.
+ * CÁP THẢ — mỗi gian dưới miệng vực có lối RIÊNG từ vành miệng xuống thẳng nó.
+ * Cáp không nối gian với gian: nó nói "từ mặt đất xuống thẳng chỗ này được",
+ * tức chính trục "vào đâu cũng được" vẽ thành hình. `x` là chỗ đặt tời trên
+ * vành miệng.
+ *
+ * Trước 19/10/2026 đây là năm cái GIẾNG đào thẳng qua đá. Hình thái mới không
+ * chứa được chúng: khối đá thắt lại còn x ∈ [218, 1142] ở độ sâu 438, nên một
+ * trục dọc ở x = 100 chui ra ngoài hình bóng và treo lơ lửng trên giấy. Năm
+ * sợi cáp cùng luồn qua chỗ thắt rồi xoè ra nói thêm được một điều mà năm cái
+ * giếng song song không nói được: năm gian ở dưới nằm trong CÙNG một cái hố.
  */
 export const MAP_WELLS = [
-  { to: 'M8', x: 36, d: 'M36 238 L36 752 L516 752' },
-  { to: 'M5', x: 100, d: 'M100 238 L100 604 L132 604' },
-  { to: 'M4', x: 470, d: 'M470 238 L470 472 L556 472' },
-  { to: 'M6', x: 905, d: 'M905 238 L905 560 L838 560' },
-  { to: 'M7', x: 1300, d: 'M1300 236 L1300 604 L1246 604' },
+  { to: 'M8', x: 1180, d: 'M1180 122 L1040 200 L900 320 L830 420 L800 520 L740 640 L690 730 L666 764' },
+  { to: 'M5', x: 198, d: 'M198 118 L300 170 L430 260 L470 360 L480 440 L430 540 L330 606' },
+  { to: 'M4', x: 1118, d: 'M1118 120 L1010 180 L880 280 L780 370 L716 400' },
+  { to: 'M6', x: 240, d: 'M240 124 L380 190 L540 290 L600 380 L640 470 L672 540 L686 602' },
+  { to: 'M7', x: 1150, d: 'M1150 120 L1000 190 L900 300 L840 400 L900 500 L1012 606' },
 ] as const;
 
 /** Một vùng trên bản đồ. */

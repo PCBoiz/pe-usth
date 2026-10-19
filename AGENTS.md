@@ -43,14 +43,9 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 628 ca, 627 đạt · xem ghi chú dưới bảng | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 634 ca, tất cả đạt | 19/10/2026 |
+| Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
-
-Ca trượt duy nhất của frontend là **`e2e/unit/world-map.test.mjs` → "đường nối CHỈ
-có ở M5 → M6 → M7 → M8, và vẽ từ dữ liệu"**: bức tranh bản đồ đang được vẽ lại ngay
-lúc đo (`scripts/map/build_map.py` còn dở trong cây làm việc), nên giếng trong SVG
-chưa khớp `MAP_WELLS`. Nó KHÔNG phải mốc mới được phép trượt — số đúng của dòng này
-là **628/628**, và người hoàn tất bản vẽ phải đưa nó về 0 rồi sửa lại ô trên.
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
 Đã trả giá một lần: phiên 15/10 sửa bảng ở commit ĐẦU rồi 14 commit sau thêm
@@ -212,12 +207,12 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `JWT_REFRESH_EXPIRES` mà quên bốn chỗ này thì cookie và token lệch nhau: FE tưởng còn phiên
   trong khi token đã hết, hoặc ngược lại.
 - **Bản đồ thế giới ở trang chủ là TRANH SINH RA, không phải SVG vẽ tay — đừng sửa tệp.**
-  `frontend/public/map/world-map.svg` (≈50 000 nét, 857 KB) và tám ô crop `scene-M*.svg`
+  `frontend/public/map/world-map.svg` (46 197 nét, 830 KB) và tám ô crop `scene-M*.svg`
   do `scripts/map/build_map.py` sinh; sửa tay chúng thì lần chạy script sau xoá sạch.
   Script ĐỌC `frontend/src/lib/world-map.ts` (`MAP_PALETTE`, `REGION_LAYOUT`, `MAP_FLOWS`,
-  `MAP_WELLS`, `MAP_SUN`, `MAP_FRAME`) nên muốn đổi màu/toạ độ/đường nối thì sửa ở TS rồi
-  chạy lại `py scripts/map/build_map.py` (và `--css` để lấy khối `.spot1…8`). Ba thứ dễ
-  vấp, cả ba đều lặng lẽ:
+  `MAP_WELLS`, `MAP_SUN`, `MAP_FRAME`, `MAP_ABYSS`) nên muốn đổi màu/toạ độ/hình thái cái
+  vực thì sửa ở TS rồi chạy lại `py scripts/map/build_map.py` (và `--css` để lấy khối
+  `.spot1…8`). Năm thứ dễ vấp, cả năm đều lặng lẽ:
   · **`stroke-width` KHÔNG được đi qua `nf()`** — `nf` làm tròn toạ độ về số nguyên, đúng
     cho toạ độ nhưng biến mọi nét 0,45 đơn vị thành `stroke-width="0"`. Đã xảy ra một lần:
     cả bức render với năm chục nghìn nét vô hình và nhìn ra đúng "mảng phẳng tô gradient",
@@ -225,9 +220,24 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · **Trần 900 KB** là thật (script tự chặn). Thêm chi tiết thì hạ `DENSITY`, đừng bỏ kỹ thuật.
   · **Ảnh nền của ô crop phải nằm TRONG `@container`** ở `world-map.module.css`. Đặt ra
     ngoài thì máy tính tải thêm 1,3 MB mà không ai thấy gì khác.
-  `e2e/unit/world-map.test.mjs` canh cả ba (mục 10): mật độ nét, cấm gradient, mọi mã màu
-  trong SVG phải có tên trong `MAP_PALETTE`, và tập `data-flow` của tranh phải khớp
-  `MAP_FLOWS`. Kỹ thuật và nguồn: `design/v3/ky-thuat-ban-do.md`.
+  · **ĐỪNG THÊM `id`/`data-*` VÀO SVG cho lớp chuyển động.** Tranh vào trang bằng
+    `background-image`, tức một tài liệu SVG RIÊNG, bị cách ly: CSS của trang không khớp
+    được selector nào bên trong, JS không `querySelector` vào được. Mọi `id` đặt cho tầng
+    vách / dòng nước / trục tia sáng là byte chết trong một tệp tải ở mỗi lượt vào trang
+    chủ. Đã thử và đã gỡ ngày 19/10/2026. Hợp đồng với `map-motion.ts` là TOẠ ĐỘ trong
+    `world-map.ts`, xem `design/v3/ky-thuat-ban-do.md` mục 6.3.
+  · **HÌNH THÁI CÁI VỰC Ở TS, không ở Python.** `MAP_ABYSS` (mặt cắt lòng vực, mặt cắt
+    khối đá, mốc bốn tầng, tám cái hốc) là nguồn cho CẢ bức tranh LẪN lớp chuyển
+    động. Chép một con số của nó sang chỗ khác là một con số sẽ lệch — đã xảy ra hai
+    lần trong cùng một ngày (lớp chuyển động chép bốn mốc địa tầng, ca test khoá cứng
+    độ cao mặt đất `y ≈ 236`; cả hai chết trong hai giờ khi bức tranh được vẽ lại).
+  `e2e/unit/world-map.test.mjs` canh cả năm: mục 10 lo mật độ nét, cấm gradient, mọi mã
+  màu trong SVG phải có tên trong `MAP_PALETTE`, tập `data-flow` phải khớp `MAP_FLOWS`;
+  mục 11 lo TÍNH LIỀN MẠCH — vách vực là MỘT đường liền mỗi bên, không nét khép kín
+  nào trong lớp vách, tám gian đều thuộc cùng cái hố, nước và ánh sáng chạy xuyên
+  suốt, thang độ sâu ở cả hai lề. **Gỡ bản sửa ra thì sáu ca trượt** (đo 19/10/2026
+  bằng cách `git checkout` lại chín tệp SVG cũ). Kỹ thuật và nguồn:
+  `design/v3/ky-thuat-ban-do.md` (mục 6 cho hình thái liền mạch).
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
   Gọi nó trên một trang ai cũng vào được nghĩa là **mỗi bot quét web sinh một tài khoản khách**,
