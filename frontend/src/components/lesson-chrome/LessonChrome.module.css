@@ -269,10 +269,24 @@ button.segment::after {
   gap: 16px;
 }
 
-.saveLabel {
+/* Cột trái của thanh dưới: nút "Màn trước" + nhãn lưu. Khoảng đệm 129px
+   trước đây nằm trên .saveLabel, nay chuyển lên ô bọc để nút lùi đứng đúng chỗ
+   nhãn lưu từng đứng. */
+.leftSlot {
   justify-self: start;
   min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   padding-left: 129px;
+}
+
+.prevBtn {
+  composes: secondaryBtn;
+}
+
+.saveLabel {
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   color: var(--ds-soft);
@@ -377,7 +391,7 @@ button.segment:focus-visible,
 
 /* Màn vừa: bỏ khoảng đệm lớn bên trái nhãn lưu. */
 @media (max-width: 1180px) {
-  .saveLabel {
+  .leftSlot {
     padding-left: 0;
   }
 }
@@ -431,6 +445,17 @@ button.segment:focus-visible,
   }
   .secondarySlot {
     order: -1;
+  }
+  /* Điện thoại: nút lùi chỉ còn mũi tên (tên vẫn đọc qua aria-label), nhãn
+     lưu nhường chỗ — 320px không đủ cho cả nút lùi, nút chính và nút phụ. */
+  .leftSlot {
+    gap: 8px;
+  }
+  .prevText {
+    display: none;
+  }
+  .prevBtn ~ .saveLabel {
+    display: none;
   }
   .secondaryBtn {
     height: 48px;

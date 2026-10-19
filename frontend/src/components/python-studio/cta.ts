@@ -15,6 +15,8 @@ import {
   type StudioLesson as Lesson,
 } from '@/lib/studio-lesson';
 
+import { gradedCta } from '@/lib/lesson-nav';
+
 import type { RunResult } from './runner/types';
 import { eyebrowOf, type ScreenVerdict } from './screens/chrome';
 
@@ -120,19 +122,17 @@ export function primaryCta(ctx: CtaContext): Cta {
     };
   }
 
-  if (isGraded(scr.kind)) {
-    if (isRunnableGame(game) && running)
-      return { label: 'Đang chạy code…', tone: 'accent', disabled: true, action: 'check' };
-    if (!checked)
-      return {
-        label: isRunnableGame(game) ? 'Chạy & kiểm tra' : 'Kiểm tra',
-        tone: 'accent',
-        disabled: !isAnswered(ctx),
-        action: 'check',
-      };
-    if (verdict && !verdict.correct) return { label: 'Thử lại', tone: 'err', action: 'retry' };
-    return { label: 'Tiếp tục →', tone: 'ok', action: 'next' };
-  }
+  // Luật của màn có chấm nằm ở lib/lesson-nav.ts (kiểm được bằng node --test):
+  // đúng rồi thì nút đi tiếp BẬT, kể cả khi quay lại một màn đã xong.
+  if (isGraded(scr.kind))
+    return gradedCta({
+      runnable: isRunnableGame(game),
+      running,
+      checked,
+      answered: isAnswered(ctx),
+      correct: verdict ? verdict.correct : null,
+      done: Boolean(draft.done[scr.key]),
+    });
 
   return { label: 'Tiếp tục →', tone: 'accent', action: 'next' };
 }

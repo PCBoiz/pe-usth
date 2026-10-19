@@ -28,6 +28,7 @@ import { useMemo } from 'react';
 
 import LessonChrome from '@/components/lesson-chrome/LessonChrome';
 import ShellB from '@/components/lesson-chrome/ShellB';
+import { prevStep } from '@/lib/lesson-nav';
 import c from './studio-chrome.module.css';
 import AdminAnswerKey from './AdminAnswerKey';
 import LessonOverlays from './LessonOverlays';
@@ -237,6 +238,9 @@ export default function StudioLesson({
     (acc, x, i) => (d.done[x.key] ? Math.max(acc, i + 2) : acc),
     1,
   );
+  // "Màn trước" ở thanh dưới — các màn tải/lỗi/chưa ghi danh tắt nó qua `over`
+  // giống hệt `onSeek`.
+  const prevAt = prevStep(d.step, screens.length);
   function frame(children: React.ReactNode, over?: Partial<React.ComponentProps<typeof LessonChrome>>) {
     return (
       <LessonChrome
@@ -258,6 +262,7 @@ export default function StudioLesson({
         primaryTone={cta.tone}
         primaryDisabled={cta.disabled}
         onPrimaryClick={() => doAction(cta.action)}
+        onPrev={prevAt ? () => goTo(prevAt) : undefined}
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
@@ -304,6 +309,7 @@ export default function StudioLesson({
       primaryDisabled: true,
       onPrimaryClick: () => undefined,
       onSeek: undefined,
+      onPrev: undefined,
     });
 
   // Nhan đề và câu giải thích đến từ `lib/lesson-load-error.ts`: nó phân biệt
@@ -315,6 +321,7 @@ export default function StudioLesson({
       primaryLabel: 'Thử lại',
       onPrimaryClick: () => void load(),
       onSeek: undefined,
+      onPrev: undefined,
     });
 
   if (!enrolled && user?.role !== 'admin')
@@ -328,6 +335,7 @@ export default function StudioLesson({
         primaryDisabled: busy,
         onPrimaryClick: () => void enroll(),
         onSeek: undefined,
+      onPrev: undefined,
       },
     );
 
@@ -338,7 +346,7 @@ export default function StudioLesson({
         'Bài học này chưa có nội dung Studio. Quản trị viên có thể nhập nội dung từ file PDF hoặc Markdown trong trang quản trị.',
         'Đang biên soạn',
       ),
-      { primaryLabel: 'Về khoá học →', onPrimaryClick: leave, onSeek: undefined },
+      { primaryLabel: 'Về khoá học →', onPrimaryClick: leave, onSeek: undefined, onPrev: undefined },
     );
 
   return frame(

@@ -8,6 +8,8 @@
 // components/python-studio; ăn theo token --edu-*/--st-* đã gom ở
 // edu-theme.css + studio-tokens.css (--st-chrome-h/--st-action-h/--st-col/
 // --st-card-radius được tạo sẵn từ trước, dùng ở đây).
+import { PREV_LABEL } from '@/lib/lesson-nav';
+
 import styles from './LessonChrome.module.css';
 
 export interface LessonChromeProps {
@@ -33,6 +35,10 @@ export interface LessonChromeProps {
   /** Nút phụ bên trái nút chính (ví dụ "Gợi ý"). */
   secondaryLabel?: React.ReactNode;
   onSecondaryClick?: () => void;
+  /** Lùi một màn. Không truyền (màn đầu, màn tải/lỗi) thì không có nút.
+   *  Gộp từ Figma: trước đây chỉ lùi được bằng cách bấm đúng một đoạn trên
+   *  thanh tiến độ mảnh ở trên cùng — không chữ, không ai đoán ra. */
+  onPrev?: () => void;
   /** Cho quay lại màn đã qua bằng cách bấm vào đoạn tương ứng trên thanh tiến
    *  độ. Không truyền thì thanh chỉ để xem (đúng như bản Stitch gốc). */
   onSeek?: (step: number) => void;
@@ -66,6 +72,7 @@ export default function LessonChrome({
   primaryTone = 'accent',
   secondaryLabel,
   onSecondaryClick,
+  onPrev,
   onSeek,
   seekMax,
   doneSteps,
@@ -169,7 +176,21 @@ export default function LessonChrome({
 
       <footer className={styles.bottomBar}>
         <div className={styles.bottomBarInner}>
-          <span className={styles.saveLabel} role="status">{saveLabel}</span>
+          <span className={styles.leftSlot}>
+            {onPrev && (
+              <button
+                type="button"
+                className={styles.prevBtn}
+                onClick={onPrev}
+                aria-label={PREV_LABEL}
+                data-cta="prev"
+              >
+                <span aria-hidden="true">←</span>
+                <span className={styles.prevText}>{PREV_LABEL}</span>
+              </button>
+            )}
+            <span className={styles.saveLabel} role="status">{saveLabel}</span>
+          </span>
           <button
             type="button"
             className={primaryClass}
