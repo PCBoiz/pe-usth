@@ -38,9 +38,9 @@ mức này:
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 390 ca, tất cả đạt | 15/10/2026 |
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
-| Frontend typecheck | sạch | 15/10/2026 |
-| Frontend lint | 0 lỗi, 118 cảnh báo | 15/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 571 ca đạt | 19/10/2026 |
+| Frontend typecheck | sạch | 19/10/2026 |
+| Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 579 ca đạt | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 15/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**

@@ -90,11 +90,10 @@ export default function HomePage() {
             <h1 className={styles.title}>{INTRO.title}</h1>
           </header>
 
-          {/* BẢN ĐỒ THẾ GIỚI (khối `.map` của artboard). Nằm NGOÀI lưới hai cột,
-              khác artboard một chỗ và chỉ một chỗ: khung bản đồ trong artboard
-              rộng ~1000px, còn cột trái của trang này ~812px — tám nhãn chặng
-              không vừa cột đó mà không đè lên nhau. Tỷ lệ 1000 × 660 và tám vị
-              trí thì giữ nguyên. Chi tiết: `src/lib/world-map.ts`. */}
+          {/* BẢN ĐỒ THẾ GIỚI — mặt cắt lục địa của thiết kế v3. Nằm NGOÀI lưới
+              hai cột: khung artboard rộng 1360px, cột trái của trang này
+              ~812px — tám tấm nhãn không vừa cột đó mà không đè lên nhau.
+              Chi tiết: `src/lib/world-map.ts`. */}
           {regions.length > 0 && headCourse && (
             <WorldMap regions={regions} />
           )}

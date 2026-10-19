@@ -2,33 +2,35 @@
  * BẢN ĐỒ THẾ GIỚI của trang chủ — ca kiểm cho `src/lib/world-map.ts`,
  * `src/app/WorldMap.tsx` và `src/app/world-map.module.css`.
  *
- * Nguồn thiết kế: `design/project/Main.dc.html` (artboard, khối `.map`) và
- * `design-system-v2.md`.
+ * Nguồn thiết kế: `design/v3/quyet-dinh.md` mục 2–3 (phương án A "Mặt cắt lục
+ * địa") và artboard `project/Main.dc.html` + `project/MapPhone.dc.html` của
+ * canvas thiết kế v3.
  *
  * ── VÌ SAO BẢN ĐỒ CẦN TEST CHỨ KHÔNG CHỈ CẦN XEM ───────────────────────
  *
- *  1. ARTBOARD VẼ BỐN THỨ KHÔNG CÓ DỮ LIỆU THẬT: dấu tích "đã xong 7 / 7 bài",
- *     huy hiệu "BẠN Ở ĐÂY" quầng tím, "1.240 XP" trên thanh trên, và chú giải
- *     "nét đặc là đoạn bạn đã đi". Trang chủ KHÔNG gọi API (nó công khai, và
- *     `apiFetch` gặp 401 là TỰ TẠO tài khoản khách — bẫy trong AGENTS.md), nên
- *     mọi con số về việc học ở đây đều là số bịa. Dựng theo artboard mà không
- *     có lưới này thì bốn thứ đó bò vào từng chút một, và trên màn chúng trông
- *     y như tính năng chạy được.
- *  2. KHÔNG CÓ CƠ CHẾ KHOÁ NÀO. Grep cả frontend lẫn backend: không có khoá
- *     chặng. Một ổ khoá vừa bị gỡ ở dc3620d vì nó nằm cạnh đúng câu "không
- *     khoá theo thứ tự". Bản đồ là chỗ dễ vẽ ổ khoá nhất.
+ *  1. KHÔNG SỐ BỊA. Trang chủ KHÔNG gọi API (nó công khai, và `apiFetch` gặp
+ *     401 là TỰ TẠO tài khoản khách — bẫy trong AGENTS.md), nên mọi con số về
+ *     việc học ở đây đều là số bịa. Tiến độ là giai đoạn 2, và nó chỉ được
+ *     chuẩn bị bằng hai nhóm SVG ẨN.
+ *  2. KHÔNG KHOÁ, VÀ KHÔNG MỘT ĐƯỜNG QUA TÁM NÚT. Không có cơ chế khoá chặng
+ *     nào. Bản cũ không vẽ ổ khoá nhưng vẽ MỘT đường zig-zag qua cả tám nút —
+ *     một lời hứa ngầm về thứ tự. Đường nối nay chỉ ở chỗ phụ thuộc thật.
  *  3. SỐ CHẶNG/BÀI phải ĐẾM từ `curricula.json` — bẫy "hai nguồn danh sách
- *     bài": `catalog.ts` là bản chép tay từ seed, giáo trình thật ở
- *     curricula.json. Viết cứng "8" ở đây thì dựng lại pe-v4 là bản đồ nói sai.
- *  4. HOẠT ẢNH phải tắt khi người dùng xin giảm chuyển động, và trạng thái NGHỈ
- *     trong CSS phải LÀ trạng thái cuối — nếu không thì mỗi đường hỏng (thiếu
- *     WAAPI, animation bị cancel, JS không chạy) để lại một bản đồ TRẮNG.
+ *     bài".
+ *  4. MÀU MINH HOẠ PHẢI ĐO. Bảy trên tám sắc khoáng gốc dưới 3:1 trên nền dải;
+ *     sắc định hình bóng phải đạt, và chữ không bao giờ đặt lên sắc khoáng.
+ *  5. HOẠT ẢNH tắt khi xin giảm chuyển động, và trạng thái NGHỈ trong CSS LÀ
+ *     trạng thái cuối.
  *
  * Mọi phép so dưới đây TỰ KIỂM trên chuỗi/giá trị CŨ (chuỗi của artboard, hoặc
  * một bản sai dựng tay) trước khi soi mã thật — ca xanh vì mẫu hỏng là ca vô
- * dụng. Và không có chỗ nào dựng regex bằng `new RegExp(` + template literal:
- * trong template literal `\b` là ký tự BACKSPACE, nên mẫu đó khớp rỗng và ca
- * xanh cả khi vi phạm còn nguyên.
+ * dụng. Và không có chỗ nào dựng regex bằng `new RegExp(` + template literal
+ * thường: trong template literal `\b` là ký tự BACKSPACE, nên mẫu đó khớp rỗng
+ * và ca xanh cả khi vi phạm còn nguyên. Cần ghép mẫu thì dùng `String.raw`.
+ *
+ * Import kiểu `* as WM`: thiếu một export (vd. chạy bộ ca này trên bản đồ cũ)
+ * thì từng ca trượt với lời giải thích của nó, không phải cả file chết ở dòng
+ * import với một câu SyntaxError.
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -38,20 +40,27 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import {
+import * as WM from '../../src/lib/world-map.ts';
+
+const {
   buildRegions,
   decorStep,
   MAP_COPY,
   REGION_NAMES,
-  REGION_SPOTS,
   regionStep,
-} from '../../src/lib/world-map.ts';
+} = WM;
+const LAYOUT = WM.REGION_LAYOUT ?? [];
+const FLOWS = WM.MAP_FLOWS ?? [];
+const WELLS = WM.MAP_WELLS ?? [];
+const PALETTE = WM.MAP_PALETTE ?? {};
+const FRAME = WM.MAP_FRAME ?? { width: 0, height: 0 };
 
 const FE = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const read = (...p) => readFileSync(join(FE, ...p), 'utf8');
 
 /** Bỏ chú thích: chú thích KỂ LẠI chuỗi cũ và phải được phép nhắc tới nó. */
 const codeOnly = (s) => s
+  .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
   .replace(/^[ \t]*\/\/.*$/gm, '')
   .replace(/[ \t]+\/\/.*$/gm, '');
@@ -93,7 +102,8 @@ function vietStrings(code) {
   return out;
 }
 
-/** Mọi chuỗi mà bản đồ có thể in ra màn. */
+/** Mọi chuỗi mà bản đồ có thể in ra màn. `silhouette` là mô tả cho người
+ *  sửa code, không render — nhưng vẫn soi, phòng ai đó đem nó ra làm nhãn. */
 const ALL_COPY = [
   ...Object.values(MAP_COPY),
   ...REGIONS.flatMap((r) => [r.name, r.meta, r.ariaLabel]),
@@ -101,84 +111,122 @@ const ALL_COPY = [
   ...vietStrings(MAP_TS),
 ];
 
+/** Độ chói tương đối và tỷ lệ tương phản WCAG 2.x — cùng công thức với
+ *  `e2e/unit/ds-contrast.mjs`. */
+function lum(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [n >> 16, (n >> 8) & 255, n & 255]
+    .map((v) => {
+      const c = v / 255;
+      return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
+    })
+    .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+}
+function contrast(a, b) {
+  const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p);
+  return (x + 0.05) / (y + 0.05);
+}
+
+/** Chuỗi dài nhất đi theo các cạnh `MAP_FLOWS` (số nút). Đồ thị nhỏ, DFS đủ. */
+function longestChain(edges) {
+  const next = new Map();
+  for (const { from, to } of edges) {
+    next.set(from, [...(next.get(from) ?? []), to]);
+  }
+  const walk = (node, seen) => {
+    let best = seen.size;
+    for (const to of next.get(node) ?? []) {
+      if (!seen.has(to)) best = Math.max(best, walk(to, new Set([...seen, to])));
+    }
+    return best;
+  };
+  let best = 0;
+  for (const { from } of edges) best = Math.max(best, walk(from, new Set([from])));
+  return best;
+}
+
 /* ═══ 1 · số chặng/bài ĐẾM từ giáo trình ════════════════════════════════ */
 
-test('tám nút chặng dựng từ curricula.json, không viết cứng con số nào', () => {
+test('tám vùng dựng từ curricula.json, không viết cứng con số nào', () => {
   assert.equal(REGIONS.length, MODULES.length);
   assert.equal(REGIONS.length, 8);
 
-  // Số bài trên từng nút là số bài THẬT của chặng đó, và tổng lại đúng 48.
+  // Số bài trên từng vùng là số bài THẬT của chặng đó, và tổng lại đúng 48.
   let tong = 0;
   for (let i = 0; i < REGIONS.length; i += 1) {
     const count = MODULES[i].lessons.length;
     tong += count;
     assert.ok(
       REGIONS[i].meta.includes(`${count} bài`),
-      `nút ${i + 1} không nói đúng số bài của chặng (${count}): ${REGIONS[i].meta}`,
+      `vùng ${i + 1} không nói đúng số bài của chặng (${count}): ${REGIONS[i].meta}`,
     );
-    // Và phải dẫn ra tên chặng THẬT, không chỉ cái tên ẩn dụ của artboard.
+    // Và phải dẫn ra tên chặng THẬT, không chỉ cái tên ẩn dụ.
     assert.ok(
       REGIONS[i].meta.includes(MODULES[i].title.trim()),
-      `nút ${i + 1} không dẫn tên chặng thật: ${REGIONS[i].meta}`,
+      `vùng ${i + 1} không dẫn tên chặng thật: ${REGIONS[i].meta}`,
     );
   }
   assert.equal(tong, 48);
 
   // Con số 8 và 48 không được nằm trong mã: chúng phải đi ra từ giáo trình.
-  // (Bảng vị trí có đúng 8 dòng, nhưng đó là toạ độ, không phải số đếm.)
+  // (Bảng bố cục có đúng 8 dòng, nhưng đó là toạ độ, không phải số đếm.)
   for (const [name, code] of [['WorldMap.tsx', MAP_TSX], ['world-map.ts', MAP_TS]]) {
     const hits = vietStrings(code).filter((s) => /\b(8 chặng|48 bài)\b/.test(s));
     assert.deepEqual(hits, [], `${name} viết cứng hình dạng khoá: ${hits.join(' | ')}`);
   }
 });
 
-test('giáo trình lệch số chặng thì bỏ tên ẩn dụ, không gọi sai tên chặng', () => {
-  // Tên ẩn dụ ("Hoạ thất", "Thư khố") gắn với THỨ TỰ M1→M8. Giáo trình đổi số
-  // chặng mà vẫn dán tên theo chỉ số là gọi chặng pandas là "Hoạ thất".
+test('giáo trình lệch số chặng thì bỏ tên ẩn dụ VÀ bỏ chỗ trên mặt cắt', () => {
+  // Tên ẩn dụ và tiểu cảnh gắn với THỨ TỰ M1→M8. Giáo trình đổi số chặng mà
+  // vẫn dán theo chỉ số là gọi chặng pandas là "Hoạ thất" — hay đặt chặng thứ
+  // chín lên hồ của hai bài dự án.
   const ba = buildRegions(MODULES.slice(0, 3), LESSON_URL);
   assert.equal(ba.length, 3);
   for (const r of ba) {
     assert.ok(
       !REGION_NAMES.includes(r.name),
-      `giáo trình 3 chặng mà vẫn dùng tên ẩn dụ của artboard: ${r.name}`,
+      `giáo trình 3 chặng mà vẫn dùng tên ẩn dụ: ${r.name}`,
     );
+    assert.equal(r.layout, null, `giáo trình 3 chặng mà vẫn mang chỗ trên mặt cắt: ${r.name}`);
   }
   // Và vẫn phải đứng được, không in "undefined".
   for (const r of ba) {
     for (const v of [r.name, r.meta, r.ariaLabel, r.href]) {
-      assert.ok(!/undefined|null|NaN/.test(String(v)), `nút in ra giá trị rỗng: ${v}`);
+      assert.ok(!/undefined|null|NaN/.test(String(v)), `vùng in ra giá trị rỗng: ${v}`);
     }
   }
+  // Tám chặng thật thì vùng nào cũng có chỗ, đúng thứ tự M1→M8.
+  assert.deepEqual(REGIONS.map((r) => r.layout?.key), LAYOUT.map((l) => l.key));
+  assert.equal(LAYOUT.length, REGION_NAMES.length);
   assert.deepEqual(buildRegions(undefined, LESSON_URL), []);
   assert.deepEqual(buildRegions(null, LESSON_URL), []);
+  // Component có nhánh danh sách cho trường hợp đó, không vẽ tranh dở dang.
+  assert.match(MAP_TSX, /regions\.every\(\(r\) => r\.layout !== null\)/);
 });
 
 test('liên kết trỏ tới bài ĐẦU của chặng, tính trên danh sách phẳng 48 bài', () => {
-  // `?lesson=` đếm từ 0 trên danh sách phẳng (CourseDetail.tsx dùng cùng cách),
-  // nên chỉ số bài đầu chặng là tổng số bài của các chặng TRƯỚC nó.
   let flat = 0;
   for (let i = 0; i < REGIONS.length; i += 1) {
     assert.equal(REGIONS[i].href, `${LESSON_URL}?lesson=${flat}`);
     flat += MODULES[i].lessons.length;
   }
-  // Nút cuối không được trỏ về bài 0 — đó là lỗi "mọi nút dẫn về một chỗ".
   const dich = new Set(REGIONS.map((r) => r.href));
-  assert.equal(dich.size, REGIONS.length, 'có hai nút chặng dẫn tới cùng một bài');
+  assert.equal(dich.size, REGIONS.length, 'có hai vùng dẫn tới cùng một bài');
 });
 
 /* ═══ 2 · không tiến độ bịa, không chuỗi ngày, không ổ khoá ═════════════ */
 
-test('không vẽ tiến độ: không "đã xong N / N bài", không "BẠN Ở ĐÂY", không XP', () => {
-  // Bốn chuỗi CỦA ARTBOARD — tự kiểm mẫu trên chính chúng trước.
+test('không vẽ tiến độ: không "đã xong N / N bài", không "BẠN Ở ĐÂY", không XP, không 0/8', () => {
   const CUA_ARTBOARD = [
     'M1 · Tiến trình · đã xong 7 / 7 bài',
     'BẠN Ở ĐÂY',
     '1.240 XP',
     'Câu đã chắc: 37',
     'M2 · Đa luồng · xong 2 / 6 bài',
+    '0/8 chặng',
   ];
   const TIEN_DO =
-    /đã xong \d|xong \d+ ?\/ ?\d|BẠN Ở ĐÂY|bạn đang ở đây|\bXP\b|Câu đã chắc|\d+ ?% hoàn/i;
+    /đã xong \d|xong \d+ ?\/ ?\d|BẠN Ở ĐÂY|bạn đang ở đây|\bXP\b|Câu đã chắc|\d+ ?% hoàn|\b\d+ ?\/ ?\d+ chặng/i;
   for (const s of CUA_ARTBOARD) {
     assert.ok(TIEN_DO.test(chuanHoa(s)), `mẫu không bắt nổi chuỗi artboard: ${s}`);
   }
@@ -187,22 +235,23 @@ test('không vẽ tiến độ: không "đã xong N / N bài", không "BẠN Ở
   assert.deepEqual(
     bad, [],
     'Trang chủ không gọi API nên nó KHÔNG BIẾT người xem học tới đâu. Vẽ tiến độ '
-    + 'ở đây là số bịa, và nó làm mất đáng tin cả những con số thật (8 chặng · 48 '
-    + 'bài). Muốn có tiến độ thật thì đọc bằng apiFetchSessionOnly.\n' + bad.join('\n'),
+    + 'ở đây là số bịa. Tiến độ là giai đoạn 2, phủ lên qua data-lit/data-marker.\n'
+    + bad.join('\n'),
   );
 });
 
-test('không chuỗi ngày, không ngọn lửa trên bản đồ', () => {
-  const CHUOI = /🔥|chuỗi ngày|giữ chuỗi|ngày liên tiếp|liên tiếp|\d ?\/ ?7 ?ngày|streak/i;
+test('không chuỗi ngày, không ngọn lửa, không "Boss" trên bản đồ', () => {
+  const CHUOI = /🔥|chuỗi ngày|giữ chuỗi|ngày liên tiếp|liên tiếp|\d ?\/ ?7 ?ngày|streak|\bboss\b/i;
   assert.ok(CHUOI.test('0 ngày · Học ngay để giữ chuỗi'), 'mẫu không bắt nổi huy hiệu cũ');
+  assert.ok(CHUOI.test('Boss cuối chặng'), 'mẫu không bắt nổi ẩn dụ đánh trận');
   const bad = ALL_COPY.filter((s) => CHUOI.test(s));
   assert.deepEqual(
     bad, [],
-    'Chuỗi ngày là chỉ số TỤT khi người học nghỉ; bản thiết kế đã gỡ hẳn.\n' + bad.join('\n'),
+    'Chuỗi ngày và ẩn dụ đánh trận đều đã bị gỡ khỏi bản thiết kế.\n' + bad.join('\n'),
   );
 });
 
-test('bản đồ không khoá gì: không ổ khoá, không "mở khi đủ N bài"', () => {
+test('bản đồ không khoá gì, và không câu dẫn dắt nào dưới bản đồ', () => {
   const KHOA = /🔒|ổ khoá|ổ khóa|bị khoá|bị khóa|mở khoá|mở khóa|mở khi đủ|chưa mở/i;
   for (const s of ['🔒 Chặng 2 mở khi đủ 5 bài', 'Chặng này bị khoá', 'Đã mở khoá chặng 3']) {
     assert.ok(KHOA.test(chuanHoa(s)), `mẫu không bắt nổi vi phạm dựng tay: ${s}`);
@@ -210,101 +259,304 @@ test('bản đồ không khoá gì: không ổ khoá, không "mở khi đủ N b
   const bad = ALL_COPY.filter((s) => KHOA.test(s));
   assert.deepEqual(
     bad, [],
-    'Không có cơ chế khoá chặng nào trong frontend lẫn backend. Vẽ ổ khoá là hứa '
-    + 'một cánh cửa không tồn tại và lấy đi quyền tự chọn bài.\n' + bad.join('\n'),
+    'Không có cơ chế khoá chặng nào trong frontend lẫn backend.\n' + bad.join('\n'),
   );
   /*
-   * ĐỔI LUẬT ngày 15/10/2026 — ca này TỪNG đòi điều ngược lại:
-   *
-   *     assert.match(MAP_COPY.caption, /vào được/);
-   *
-   * Lý lẽ cũ: gỡ ổ khoá mà không nói thì người học vẫn tưởng phải đi tuần tự.
-   * Chủ sản phẩm quyết ngược — bỏ hẳn câu dưới bản đồ. Tám nút trên hình đều
-   * là liên kết thật và `ariaLabel` của mỗi nút kết thúc bằng "mở bài đầu
-   * chặng", nên cả người dùng chuột và trình đọc màn hình đều biết bấm vào thì
-   * đi đâu. Một dòng chữ lặp lại điều đó là văn kể lể, không phải khả năng
-   * tiếp cận.
+   * ĐỔI LUẬT ngày 15/10/2026 — ca này TỪNG đòi `MAP_COPY.caption` chứa "vào
+   * được". Chủ sản phẩm quyết ngược: bản đồ kể CHỈ bằng hình (thiết kế v3 mục
+   * 1). Tám vùng là liên kết thật, giếng riêng của từng vùng VẼ ra chuyện "vào
+   * đâu cũng được", và `ariaLabel` kết thúc bằng "mở bài đầu chặng".
    */
   assert.ok(
     !('caption' in MAP_COPY),
     'MAP_COPY lại mọc `caption` — bản đồ không được kéo theo một câu chú thích dẫn dắt.',
   );
-  const dan = MAP_TSX.match(/className=\{styles\.caption\}/g) ?? [];
-  assert.deepEqual(dan, [], 'WorldMap lại dựng một <p> chú thích: ' + dan.join(' '));
-  // Phần aria vẫn phải còn — đó là chỗ THẬT nói "bấm vào thì đi đâu".
+  const CAU_CU = 'Chặng nào cũng vào được — bấm vào một chặng là mở bài đầu của chặng đó';
+  const DAN = /vào được|cứ bắt đầu|bắt đầu ở đây|bắt đầu từ/i;
+  assert.ok(DAN.test(CAU_CU), 'mẫu không bắt nổi câu cũ');
+  const dan = ALL_COPY.filter((s) => DAN.test(s));
+  assert.deepEqual(dan, [], 'câu dẫn dắt quanh bản đồ:\n' + dan.join('\n'));
+  // Chỉ MỘT tiêu đề, và không đoạn văn nào trong khối.
+  assert.deepEqual(MAP_TSX.match(/<p[\s>]/g) ?? [], [], 'bản đồ dựng một <p> — câu mô tả/chú thích');
+  assert.deepEqual(MAP_TSX.match(/className=\{styles\.caption\}/g) ?? [], []);
   for (const r of REGIONS) {
     assert.match(r.ariaLabel, /mở bài đầu chặng$/);
   }
 });
 
-test('câu dưới bản đồ không chú giải một thứ không có trên hình', () => {
-  // Artboard: "Nét đặc là đoạn bạn đã đi, nét chấm là đoạn chưa học." Nửa câu
-  // đó nói về TIẾN ĐỘ, mà bản đồ này vẽ một đường nét đứt đều một kiểu.
+test('câu quanh bản đồ không chú giải một thứ không có trên hình', () => {
   const CU = 'Nét đặc là đoạn bạn đã đi, nét chấm là đoạn chưa học.';
   const NET = /nét đặc|đoạn bạn đã đi|đoạn chưa học/i;
-  assert.ok(NET.test(chuanHoa(CU)), 'mẫu không bắt nổi câu artboard');
+  assert.ok(NET.test(chuanHoa(CU)), 'mẫu không bắt nổi câu artboard cũ');
   const bad = ALL_COPY.filter((s) => NET.test(s));
   assert.deepEqual(bad, [], `chú giải cho một thứ không được vẽ:\n${bad.join('\n')}`);
 });
 
 test('bản đồ không chạm vào đường mạng — không có đường rơi xuống ensureGuest()', () => {
   for (const [name, code] of [['WorldMap.tsx', MAP_TSX], ['world-map.ts', MAP_TS]]) {
-    for (const pattern of [/\bapiFetch\b/, /ensureGuest/, /auth\/guest/, /\bfetch\s*\(/]) {
+    for (const pattern of [/\bapiFetch\w*\b/, /ensureGuest/, /auth\/guest/, /\bfetch\s*\(/]) {
       assert.ok(
         !pattern.test(code),
         `${name} chạm vào đường mạng (${pattern}): apiFetch gặp 401 là TỰ TẠO tài `
-        + 'khoản khách cho mọi con bot mở trang chủ.',
+        + 'khoản khách cho mọi con bot mở trang chủ. Kể cả apiFetchSessionOnly — '
+        + 'đó là việc của giai đoạn 2, không phải đợt thử nghiệm.',
       );
     }
   }
 });
 
-/* ═══ 3 · bàn phím + trình đọc màn hình ════════════════════════════════ */
+/* ═══ 3 · đường nối: chỉ ở chỗ phụ thuộc thật ═══════════════════════════ */
 
-test('mỗi nút chặng là một <a href> thật, có nhãn thật', () => {
-  // `<a href>` chứ không `<div onClick>`: bản đồ là lối đi chính vào khoá nên
-  // nó phải đi được bằng Tab, mở được bằng Enter và bấm giữa chuột ra tab mới.
-  assert.match(MAP_TSX, /<a\s/, 'không có liên kết nào trong bản đồ');
-  assert.match(MAP_TSX, /href=\{region\.href\}/, 'liên kết không lấy đích từ dữ liệu');
-  assert.match(MAP_TSX, /aria-label=\{region\.ariaLabel\}/, 'liên kết không có nhãn');
-  const divClick = MAP_TSX.match(/<(div|span)[^>]*onClick/g) ?? [];
-  assert.deepEqual(divClick, [], `nút bắt sự kiện trên thẻ không bấm được: ${divClick.join(' ')}`);
-  assert.ok(!/role="button"/.test(MAP_TSX), 'role="button" trên một thứ thật ra là liên kết');
+test('KHÔNG có đường nối 1→8: không chuỗi nào đi qua cả tám vùng', () => {
+  // Tự kiểm: bản đồ cũ là một đường qua M1→M2→…→M8. Mẫu phải bắt được nó.
+  const keys = LAYOUT.map((l) => l.key);
+  assert.equal(keys.length, 8, 'không đọc được bảng bố cục — mẫu dưới đây vô nghĩa');
+  const CU = keys.slice(1).map((to, i) => ({ from: keys[i], to }));
+  assert.equal(longestChain(CU), keys.length, 'mẫu không nhận ra đường zig-zag cũ');
 
-  // Nhãn phải nói đủ: tên chặng + số bài + bấm vào thì đi đâu.
-  for (let i = 0; i < REGIONS.length; i += 1) {
-    const r = REGIONS[i];
-    assert.ok(r.ariaLabel.includes(r.name), `nhãn nút ${i + 1} không có tên chặng`);
-    assert.ok(/\d+ bài/.test(r.ariaLabel), `nhãn nút ${i + 1} không nói số bài`);
-    assert.match(r.ariaLabel, /mở bài/, `nhãn nút ${i + 1} không nói bấm vào thì đi đâu`);
-    assert.ok(!/🔒|▶/.test(r.ariaLabel), 'ký tự trang trí lọt vào tên của liên kết');
+  assert.ok(
+    longestChain(FLOWS) < keys.length,
+    'các đường nối ghép thành MỘT chuỗi qua cả tám vùng — đúng lời hứa ngầm về '
+    + 'thứ tự mà thiết kế v3 bỏ đi',
+  );
+  // Bốn vùng trên (mặt đất + nông) không dính đường nối nào: vào đâu cũng được.
+  const noi = new Set(FLOWS.flatMap((f) => [f.from, f.to]));
+  for (const l of LAYOUT.filter((x) => x.band === 'surface' || x.band === 'shallow')) {
+    assert.ok(!noi.has(l.key), `${l.key} (${l.band}) bị nối vào chuỗi`);
+  }
+  // Và không còn đường `route` vẽ tay nào trong component hay CSS.
+  assert.doesNotMatch(MAP_TSX, /styles\.route|M100 462/, 'đường zig-zag cũ còn trong WorldMap.tsx');
+  assert.doesNotMatch(CSS_CODE, /\.route\b/, 'lớp .route còn trong CSS');
+});
+
+test('đường nối CHỈ có ở M5 → M6 → M7 → M8, và vẽ từ dữ liệu', () => {
+  assert.deepEqual(
+    FLOWS.map((f) => `${f.from}>${f.to}`),
+    ['M5>M6', 'M6>M7', 'M7>M8'],
+    'đường nối phải đúng ba phụ thuộc thật (gói thư viện từng bài)',
+  );
+  for (const f of FLOWS) {
+    const a = LAYOUT.find((l) => l.key === f.from);
+    const b = LAYOUT.find((l) => l.key === f.to);
+    assert.ok(a && b, `đường nối trỏ tới vùng không có: ${f.from}→${f.to}`);
+    assert.ok(['deep', 'floor'].includes(a.band) && ['deep', 'floor'].includes(b.band));
+  }
+  // Component dựng mạch sáng từ MAP_FLOWS ở CẢ hai bố cục, không vẽ tay.
+  assert.match(MAP_TSX, /MAP_FLOWS\.map\(/, 'nền rộng không dựng mạch sáng từ MAP_FLOWS');
+  assert.match(MAP_TSX, /MAP_FLOWS\.find\(/, 'bản hẹp không dựng mạch dọc từ MAP_FLOWS');
+  const tay = MAP_TSX.match(/data-flow="[^"]*"/g) ?? [];
+  assert.deepEqual(tay, [], `data-flow viết tay, không đi qua dữ liệu: ${tay.join(' ')}`);
+
+  // Giếng KHÔNG phải đường nối: mỗi giếng đi từ mặt đất xuống ĐÚNG một vùng
+  // dưới mặt đất, và không hai giếng chung một vùng.
+  const dich = WELLS.map((w) => w.to);
+  assert.equal(new Set(dich).size, dich.length, 'hai giếng xuống cùng một vùng');
+  for (const w of WELLS) {
+    const l = LAYOUT.find((x) => x.key === w.to);
+    assert.ok(l && l.band !== 'surface', `giếng xuống ${w.to} — vùng mặt đất không cần giếng`);
+    assert.match(w.d, /^M\d+ 23\d L/, `giếng ${w.to} không bắt đầu từ mặt đất (y ≈ 236)`);
   }
 });
 
-test('hình trang trí đều aria-hidden, nên không ai nghe tên chặng hai lần', () => {
-  // Mỗi `<svg>` trong bản đồ là trang trí: nghĩa đã nằm trong `aria-label` của
-  // liên kết. Thiếu `aria-hidden` thì trình đọc màn hình đọc cả đống path.
-  const svgs = MAP_TSX.match(/<svg[^>]*>/g) ?? [];
-  assert.ok(svgs.length >= 2, 'không thấy hình nào trong bản đồ');
-  const tran = svgs.filter((s) => !/aria-hidden/.test(s));
-  assert.deepEqual(tran, [], `hình trang trí chưa aria-hidden: ${tran.join(' ')}`);
-  // Nhãn chữ trong nút cũng ẩn với trình đọc màn hình, vì `aria-label` của
-  // liên kết đã nói y nguyên nội dung đó.
-  assert.match(MAP_TSX, /regionName\}\s+aria-hidden="true"/);
-  assert.match(MAP_TSX, /regionMeta\}\s+aria-hidden="true"/);
+/* ═══ 4 · giai đoạn 2: vẽ sẵn mà ẩn ════════════════════════════════════ */
+
+test('mỗi vùng có nhóm data-lit và data-marker — có mặt nhưng ẨN', () => {
+  // Hai nhóm nằm TRONG vòng dựng từng vùng, mang khoá M1…M8 từ dữ liệu.
+  const lit = MAP_TSX.match(/<g data-lit=\{layout\.key\}[^>]*>/g) ?? [];
+  const marker = MAP_TSX.match(/<g data-marker=\{layout\.key\}[^>]*>/g) ?? [];
+  assert.equal(lit.length, 1, 'không thấy nhóm data-lit dựng theo từng vùng');
+  assert.equal(marker.length, 1, 'không thấy nhóm data-marker dựng theo từng vùng');
+  // Tự kiểm mẫu "ẩn" trên một bản sai dựng tay trước.
+  const AN = /display="none"/;
+  assert.ok(!AN.test('<g data-lit={layout.key}>'), 'mẫu ẩn khớp cả bản không ẩn');
+  for (const g of [...lit, ...marker]) {
+    assert.match(g, AN, `nhóm giai đoạn 2 đang HIỆN: ${g} — đợt thử nghiệm không đọc tiến độ`);
+  }
+  // Mỗi vùng một khoá, đủ tám, không trùng.
+  const keys = LAYOUT.map((l) => l.key);
+  assert.deepEqual(keys, ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8']);
+  // Không chỗ nào khác viết data-lit/data-marker cứng (vd. bật sẵn cho M1).
+  const cung = MAP_TSX.match(/data-(?:lit|marker)="[^"]*"/g) ?? [];
+  assert.deepEqual(cung, [], `data-lit/data-marker viết cứng: ${cung.join(' ')}`);
+  // Và CSS không bật chúng lên.
+  assert.doesNotMatch(CSS_CODE, /data-lit|data-marker/, 'CSS chạm vào lớp tiến độ của giai đoạn 2');
 });
 
-/* ═══ 4 · hoạt ảnh: tắt khi xin giảm chuyển động ════════════════════════ */
+/* ═══ 5 · màu: đo, tách được không cần màu, chữ không lên sắc khoáng ════ */
+
+test('sắc định hình bóng của mỗi vùng đạt ≥ 3:1 trên nền ngay sau nó', () => {
+  // Tự kiểm: tím thạch anh GỐC (#7E68B0) trên dải sâu chỉ 1,42:1 — bảng phác
+  // của báo cáo. Ca phải thấy nó trượt.
+  assert.ok(contrast('#7E68B0', '#5F5A6B') < 3, 'công thức tương phản sai');
+  assert.ok(PALETTE.band, 'không đọc được MAP_PALETTE');
+
+  const bad = [];
+  for (const l of LAYOUT) {
+    const edge = PALETTE[l.key.toLowerCase()]?.edge;
+    const nen = PALETTE.band[l.backdrop];
+    assert.ok(edge && nen, `${l.key} thiếu sắc edge hoặc nền ${l.backdrop}`);
+    const c = contrast(edge, nen);
+    if (c < 3) bad.push(`${l.key} ${edge} trên ${l.backdrop} ${nen}: ${c.toFixed(2)}:1`);
+  }
+  // Mạch sáng chạy trên dải sâu.
+  const flow = contrast(PALETTE.flow, PALETTE.band.deep);
+  if (flow < 3) bad.push(`mạch sáng ${PALETTE.flow}: ${flow.toFixed(2)}:1`);
+  assert.deepEqual(bad, [], 'hình phi văn bản dưới 3:1 (WCAG 1.4.11):\n' + bad.join('\n'));
+});
+
+test('bảng minh hoạ là bảng RIÊNG — không trộn vào --ds-*, không mã màu trong CSS/TSX', () => {
+  // `--ds-*` là bảng GIAO DIỆN. Bảng minh hoạ có tên trong MAP_PALETTE.
+  const tokens = read('public', 'static', 'css', 'studio-tokens.css').toUpperCase();
+  const tron = Object.entries(PALETTE)
+    .filter(([k]) => /^m\d$/.test(k))
+    .map(([, v]) => v.edge)
+    .filter((hex) => tokens.includes(hex.toUpperCase()));
+  assert.deepEqual(tron, [], `sắc minh hoạ bị khai lại trong studio-tokens.css: ${tron.join(' ')}`);
+  assert.doesNotMatch(CSS_CODE, /--ds-(?:map|mineral|region)/);
+
+  // CSS module: không một mã màu (lint:tokens cấm hex; ở đây cấm cả rgb/hsl
+  // — viết `rgb()` để lách lint là cùng một mã màu viết cách khác).
+  const mau = CSS_CODE.match(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|color-mix)\(/g) ?? [];
+  assert.deepEqual(mau, [], `mã màu viết cứng trong CSS: ${mau.join(' ')}`);
+  const edu = (CSS_CODE.match(/--edu-[\w-]+/g) ?? []).filter((t) => t !== '--edu-font');
+  assert.deepEqual(edu, [], `đọc token bảng cũ: ${edu.join(' ')}`);
+  // Làm nhạt GIAO DIỆN bằng màu, không bằng `opacity` CSS.
+  const mo = CSS_CODE.match(/opacity:\s*[\d.]+/g) ?? [];
+  assert.deepEqual(mo, [], `làm nhạt bằng opacity: ${mo.join(' ')}`);
+  // TSX chỉ gọi màu theo TÊN (P.m1.edge…), không viết mã.
+  const hex = MAP_TSX.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
+  assert.deepEqual(hex, [], `mã màu trong WorldMap.tsx: ${hex.join(' ')}`);
+  // Và mọi mã màu trong world-map.ts đều nằm trong MAP_PALETTE.
+  const start = MAP_TS.indexOf('export const MAP_PALETTE');
+  const end = MAP_TS.indexOf('} as const;', start);
+  assert.ok(start > 0 && end > start, 'không tìm thấy khối MAP_PALETTE');
+  const ngoai = (MAP_TS.slice(0, start) + MAP_TS.slice(end)).match(/#[0-9a-fA-F]{6}\b/g) ?? [];
+  assert.deepEqual(ngoai, [], `mã màu nằm ngoài MAP_PALETTE: ${ngoai.join(' ')}`);
+});
+
+test('chữ không bao giờ đặt thẳng lên sắc khoáng: tên vùng nằm trên tấm nền token', () => {
+  // Không `<text>` trong SVG — mọi chữ là HTML trên `.plate`.
+  assert.doesNotMatch(MAP_TSX, /<text[\s>]/, 'chữ vẽ thẳng vào tranh minh hoạ');
+  // Tên và meta nằm trong `.plate`.
+  assert.match(
+    MAP_TSX,
+    /className=\{`\$\{styles\.plate\}[^`]*`\}>\s*<span className=\{styles\.regionName\}/,
+    'tên vùng không nằm trong tấm nhãn',
+  );
+  // `.plate` có nền token giao diện và chữ --ds-ink.
+  const plate = CSS_CODE.match(/^\.plate\s*\{([^}]*)\}/m);
+  assert.ok(plate, 'CSS thiếu .plate');
+  assert.match(plate[1], /background:\s*var\(--ds-(?:card|paper)\)/, '.plate không có nền token');
+  assert.match(plate[1], /color:\s*var\(--ds-ink\)/, '.plate không đặt chữ --ds-ink');
+  // Mọi nền đổi theo dải cũng chỉ là token giao diện.
+  for (const m of CSS_CODE.matchAll(/\.plate[^{]*\{([^}]*)\}/g)) {
+    for (const bg of m[1].matchAll(/background:\s*([^;]+);/g)) {
+      assert.match(bg[1], /^var\(--ds-(?:card|paper)\)$/, `tấm nhãn đổi nền sang thứ không phải token: ${bg[1]}`);
+    }
+  }
+});
+
+test('tám vùng tách được KHÔNG cần màu: mỗi vùng một hình bóng, độ sáng đổi theo dải', () => {
+  // (a) Mô tả hình bóng: tám cái, không trùng.
+  const sil = LAYOUT.map((l) => l.silhouette);
+  assert.equal(new Set(sil).size, LAYOUT.length, `hai vùng chung một hình bóng: ${sil.join(' | ')}`);
+
+  // (b) Hình bóng THẬT trong component: thành phần thẻ SVG của tám tiểu cảnh
+  // phải khác nhau từng đôi. Hai tiểu cảnh chép nhau rồi đổi màu là hai vùng
+  // chỉ tách được bằng sắc — đúng thứ người mù màu không thấy.
+  const scenes = {};
+  const parts = MAP_TSX.split(/<g data-scene="(M\d)"/);
+  for (let i = 1; i < parts.length; i += 2) {
+    let body = parts[i + 1];
+    const cut = body.search(/\n {2}\},\n|\n\};/);
+    if (cut > 0) body = body.slice(0, cut);
+    const tags = {};
+    for (const m of body.matchAll(/<(\w+)[\s/>]/g)) tags[m[1]] = (tags[m[1]] ?? 0) + 1;
+    scenes[parts[i]] = Object.entries(tags).sort().map(([t, n]) => `${t}${n}`).join(' ');
+  }
+  assert.deepEqual(Object.keys(scenes).sort(), LAYOUT.map((l) => l.key).sort(), 'thiếu tiểu cảnh của một vùng');
+  const sigs = Object.values(scenes);
+  // Tự kiểm: hai chữ ký giống hệt nhau thì Set phải co lại.
+  assert.equal(new Set([sigs[0], sigs[0]]).size, 1);
+  assert.equal(new Set(sigs).size, sigs.length, 'hai tiểu cảnh cùng hình:\n'
+    + Object.entries(scenes).map(([k, v]) => `${k}: ${v}`).join('\n'));
+
+  // (c) Độ sáng: trời > mặt đất > nông > sâu > đáy, rồi hồ M8 SÁNG LẠI.
+  const b = PALETTE.band;
+  const thang = [b.sky, b.surface, b.shallow, b.deep, b.floor].map(lum);
+  for (let i = 1; i < thang.length; i += 1) {
+    assert.ok(thang[i] < thang[i - 1], `dải thứ ${i + 1} không tối hơn dải trên nó`);
+  }
+  assert.ok(lum(PALETTE.m8.edge) > lum(b.surface) * 0.6, 'hồ M8 không sáng lại ở đáy');
+  assert.ok(lum(PALETTE.m8.edge) > lum(b.deep) * 3, 'hồ M8 không sáng hơn hẳn dải sâu');
+});
+
+test('chỗ bắt đầu báo bằng ÁNH SÁNG: mặt trời trong ô M1, không mũi tên, không số to', () => {
+  const sun = WM.MAP_SUN;
+  assert.ok(sun, 'không có MAP_SUN');
+  const m1 = LAYOUT[0];
+  const [x, y, w, h] = m1.box;
+  assert.ok(sun.cx >= x && sun.cx <= x + w && sun.cy >= y && sun.cy <= y + h, 'mặt trời không đứng trên M1');
+  // M1 đứng trên nền SÁNG NHẤT của bản vẽ.
+  const nen = LAYOUT.map((l) => lum(PALETTE.band[l.backdrop]));
+  assert.equal(Math.max(...nen), nen[0], 'M1 không đứng ở chỗ sáng nhất');
+  // Mũi tên DUY NHẤT là đầu mạch sáng của MAP_FLOWS; không marker mũi tên,
+  // không ký tự mũi tên, không chữ "bắt đầu".
+  assert.doesNotMatch(MAP_TSX, /<marker[\s>]|marker-end|markerEnd|[→⟶➜▶⬇]/u, 'mũi tên chỉ chỗ bắt đầu');
+  const batDau = ALL_COPY.filter((s) => /bắt đầu|start here/i.test(s));
+  assert.deepEqual(batDau, [], `chữ chỉ chỗ bắt đầu: ${batDau.join(' | ')}`);
+});
+
+/* ═══ 6 · bàn phím + trình đọc màn hình ════════════════════════════════ */
+
+test('mỗi vùng là một <a href> thật, có nhãn thật', () => {
+  assert.match(MAP_TSX, /<a\s/, 'không có liên kết nào trong bản đồ');
+  assert.match(MAP_TSX, /href=\{region\.href\}/, 'liên kết không lấy đích từ dữ liệu');
+  assert.match(MAP_TSX, /aria-label=\{region\.ariaLabel\}/, 'liên kết không có nhãn');
+  const divClick = MAP_TSX.match(/<(div|span|svg|g|path)[^>]*onClick/g) ?? [];
+  assert.deepEqual(divClick, [], `vùng bắt sự kiện trên thẻ không bấm được: ${divClick.join(' ')}`);
+  assert.ok(!/role="button"/.test(MAP_TSX), 'role="button" trên một thứ thật ra là liên kết');
+  // Một bộ liên kết cho cả hai bố cục: đúng MỘT chỗ dựng `<a` có vùng tranh.
+  const anchors = MAP_TSX.match(/<a\s/g) ?? [];
+  assert.ok(anchors.length <= 2, `quá nhiều chỗ dựng liên kết (${anchors.length}) — hai bộ cho hai bố cục?`);
+
+  for (let i = 0; i < REGIONS.length; i += 1) {
+    const r = REGIONS[i];
+    assert.ok(r.ariaLabel.includes(r.name), `nhãn vùng ${i + 1} không có tên chặng`);
+    assert.ok(/\d+ bài/.test(r.ariaLabel), `nhãn vùng ${i + 1} không nói số bài`);
+    assert.match(r.ariaLabel, /mở bài/, `nhãn vùng ${i + 1} không nói bấm vào thì đi đâu`);
+    assert.ok(!/🔒|▶|\bM\d\b.*\bM\d\b/.test(r.ariaLabel), 'ký tự trang trí lọt vào tên của liên kết');
+  }
+});
+
+test('hình trang trí đều aria-hidden, nên không ai nghe tên vùng hai lần', () => {
+  const svgs = MAP_TSX.match(/<svg[^>]*>/g) ?? [];
+  assert.ok(svgs.length >= 3, 'không thấy hình nào trong bản đồ');
+  const tran = svgs.filter((s) => !/aria-hidden="true"/.test(s));
+  assert.deepEqual(tran, [], `hình trang trí chưa aria-hidden: ${tran.join(' ')}`);
+  assert.match(MAP_TSX, /regionName\}\s+aria-hidden="true"/);
+  assert.match(MAP_TSX, /regionMeta\}\s+aria-hidden="true"/);
+  // Tiêu đề khối vẫn có thật cho trình đọc màn hình.
+  assert.match(MAP_TSX, /aria-labelledby="mapTitle"/);
+  assert.match(MAP_TSX, /id="mapTitle">\{MAP_COPY\.label\}/);
+});
+
+test('vòng focus thấy được trên mọi dải và cả chế độ tối', () => {
+  // Bỏ outline của liên kết CHỈ khi tấm nhãn nhận vòng thay.
+  assert.match(CSS_CODE, /\.region:focus-visible\s*>\s*\.plate\s*\{[^}]*outline:\s*var\(--ds-bw-3\) solid var\(--ds-violet\)/);
+  // Vòng kẹp giữa hai viền --ds-card ⇒ đứng cạnh màu thẻ ở cả hai phía.
+  assert.match(CSS_CODE, /\.region:focus-visible\s*>\s*\.plate\s*\{[^}]*box-shadow:\s*0 0 0 \d+px var\(--ds-card\)/);
+  assert.match(CSS_CODE, /@media \(forced-colors: active\)/);
+});
+
+/* ═══ 7 · hoạt ảnh: tắt khi xin giảm chuyển động ════════════════════════ */
 
 test('prefers-reduced-motion ⇒ KHÔNG có bước nào (không phải bước ngắn hơn)', () => {
   assert.equal(regionStep(0, true), null);
   assert.equal(regionStep(7, true), null);
   assert.equal(decorStep(true), null);
-  // Và nhánh thường thì phải có thật — nếu không, ca trên xanh vì hàm luôn null.
   assert.ok(regionStep(0, false), 'nhánh thường không có bước nào: hàm luôn trả null');
   assert.ok(decorStep(false));
-
-  // Component phải ĐỌC tuỳ chọn đó và thoát sớm, chứ không chỉ gọi hàm lib.
   assert.match(MAP_TSX, /usePrefersReducedMotion\(\)/);
   assert.match(MAP_TSX, /if \(reduced\) return;/);
 });
@@ -317,111 +569,92 @@ test('hoạt ảnh chỉ đổi transform/opacity, và theo thang 200/320/450ms'
       for (const key of Object.keys(frame)) {
         assert.ok(
           CHO_PHEP.has(key),
-          `keyframe đổi "${key}" — chỉ transform/opacity chạy được trên lớp `
-          + 'composite; mọi thuộc tính khác buộc trình duyệt tính lại layout.',
+          `keyframe đổi "${key}" — chỉ transform/opacity chạy được trên lớp composite.`,
         );
       }
     }
     assert.ok(
       [200, 320, 450].includes(step.options.duration),
-      `thời lượng ${step.options.duration}ms không nằm trong thang 3 bậc của `
-      + 'design-system-v2 (200 / 320 / 450)',
+      `thời lượng ${step.options.duration}ms không nằm trong thang 200 / 320 / 450`,
     );
-    // `forwards` là mùi của "trạng thái nghỉ chưa phải trạng thái cuối".
     assert.notEqual(
       step.options.fill, 'forwards',
-      'fill: forwards giữ style của animation lại trên phần tử — trạng thái nghỉ '
-      + 'của CSS phải ĐÃ LÀ trạng thái cuối, không cần ai giữ hộ.',
+      'fill: forwards — trạng thái nghỉ của CSS phải ĐÃ LÀ trạng thái cuối.',
     );
   }
-  // Giãn cách tăng theo chỉ số, nên tám nút hiện lần lượt, không hiện một cục.
   assert.ok(regionStep(3, false).options.delay > regionStep(1, false).options.delay);
+  // Gọi đúng Web Animations API, không thư viện chuyển động.
+  assert.match(MAP_TSX, /\.animate\(step\.keyframes, step\.options\)/);
 });
 
-test('trạng thái nghỉ trong CSS LÀ trạng thái cuối — không có opacity: 0', () => {
-  // Nếu `.region` nghỉ ở `opacity: 0` thì mọi đường hỏng (JS không chạy, thiếu
-  // WAAPI, animation bị cancel, người dùng xin giảm chuyển động) để lại một bản
-  // đồ TRẮNG. Tự kiểm mẫu trên một bản sai dựng tay trước.
+test('trạng thái nghỉ trong CSS LÀ trạng thái cuối — không opacity: 0, không transform', () => {
   const SAI = '.region { opacity: 0; transform: translateY(10px); }';
   const AN = /opacity:\s*0(\D|$)|transform:\s*translate/;
   assert.ok(AN.test(SAI), 'mẫu không bắt nổi bản sai dựng tay');
-  // Chạy trên bản ĐÃ BỎ CHÚ THÍCH: chú thích ở đầu file giải thích đúng cái sai
-  // này ("đặt `opacity: 0` ở đây là một bản đồ TRẮNG"), nên soi cả chú thích thì
-  // ca trượt vì chính lời giải thích.
   const hits = CSS_CODE.split('\n').map((l) => l.trim()).filter((l) => AN.test(l));
-  assert.deepEqual(
-    hits, [],
-    'trạng thái nghỉ phải là trạng thái CUỐI (hiện rõ, không dịch).',
-  );
-  // Và chỗ căn giữa nút dùng thuộc tính `translate` riêng, KHÔNG dùng
-  // `transform`: hoạt ảnh chạy trên `transform`, nên nếu căn giữa cũng nằm
-  // trong `transform` thì keyframe ĐÈ mất nó và tám nút nhảy chỗ ở khung đầu.
-  assert.match(CSS_CODE, /translate:\s*-50% -48px/);
+  assert.deepEqual(hits, [], 'trạng thái nghỉ phải là trạng thái CUỐI (hiện rõ, không dịch).');
+  // Vị trí vùng bằng left/top, KHÔNG bằng `transform`: hoạt ảnh chạy trên
+  // `transform`, nên đặt chỗ bằng nó thì keyframe ĐÈ mất và vùng nhảy chỗ.
+  assert.doesNotMatch(CSS_CODE, /\btransform\s*:/);
 });
 
-/* ═══ 5 · bố cục: hẹp thì rút gọn, và đo KHỐI không đo màn ══════════════ */
+/* ═══ 8 · bố cục: rộng là mặt cắt, hẹp là cuộn xuống ═══════════════════ */
 
 test('mốc gãy bố cục đo bề rộng KHỐI (@container), không bề rộng màn', () => {
-  // Bản đồ là một khối và nó có thể bị đặt vào một cột hẹp trên màn hình rộng:
-  // `@media (max-width: …)` đo màn nên trong trường hợp đó nó vẫn giữ bố cục
-  // rộng và tám nhãn đè lên nhau.
   assert.match(CSS_CODE, /container-type:\s*inline-size/);
   assert.match(CSS_CODE, /@container \(max-width:\s*\d+px\)/);
   const media = CSS_CODE.match(/@media[^{]*\(\s*(?:max|min)-width[^{]*\{/g) ?? [];
   assert.deepEqual(media, [], `mốc theo bề rộng MÀN HÌNH: ${media.join(' ')}`);
 });
 
-test('dạng rút gọn: xếp dọc, bỏ hình trang trí, không tràn ngang', () => {
+test('bản hẹp: mỗi dải một khối, cuộn xuống = đi xuống, không pan, không phóng', () => {
   const at = CSS_CODE.indexOf('@container');
   const compact = CSS_CODE.slice(at);
-  assert.match(compact, /aspect-ratio:\s*auto/, 'khung hẹp vẫn giữ tỷ lệ 1000/660 thì tràn');
-  assert.match(compact, /flex-direction:\s*column/, 'dạng hẹp phải xếp dọc');
-  assert.match(compact, /position:\s*static/, 'nút vẫn position:absolute thì chồng lên nhau');
-  assert.match(compact, /\.decor\s*\{\s*display:\s*none/, 'lưới/đường đi phải ẩn ở dạng danh sách');
-  // Vùng chạm tối thiểu 44 × 44 của bản thiết kế.
-  assert.match(compact, /min-height:\s*44px/);
+  assert.match(compact, /aspect-ratio:\s*auto/, 'khung hẹp vẫn giữ tỷ lệ 1360/820 thì tám nhãn đè nhau');
+  assert.match(compact, /\.band\s*\{[^}]*display:\s*flex;[^}]*flex-direction:\s*column/, 'dải không thành khối xếp dọc');
+  assert.match(compact, /position:\s*static/, 'tấm nhãn vẫn position:absolute thì chồng lên nhau');
+  assert.match(compact, /\.decor\s*\{\s*display:\s*none/, 'nền mặt cắt phải ẩn ở bản hẹp');
+  assert.match(compact, /min-height:\s*44px/, 'vùng chạm dưới 44 × 44');
+  // Thứ tự DOM của dải = thứ tự từ trên xuống: điện thoại cuộn theo DOM.
+  assert.deepEqual([...WM.BANDS ?? []], ['surface', 'shallow', 'deep', 'floor']);
+  assert.match(MAP_TSX, /BANDS\.map\(/, 'dải không dựng theo BANDS');
+  // Không pan, không phóng.
+  assert.doesNotMatch(CSS_CODE, /overflow(?:-x)?:\s*(?:auto|scroll)|touch-action|scroll-snap/);
+  assert.doesNotMatch(MAP_TSX, /onWheel|onPointerMove|onTouchMove|onGesture|scale\(/);
 });
 
-test('vị trí tám nút trong CSS khớp REGION_SPOTS, không lệch một con số', () => {
-  // Toạ độ nằm ở CSS (không `style={{ left, top }}`: SSR tuần tự hoá style nội
-  // tuyến thành `style="…"`, đúng thứ đang chặn việc bỏ `style-src
-  // 'unsafe-inline'`). Hai nơi thì phải có người so, không thì chúng lệch im.
-  assert.equal(REGION_SPOTS.length, 8);
-  for (let i = 0; i < REGION_SPOTS.length; i += 1) {
-    const { left, top } = REGION_SPOTS[i];
-    const block = CSS_CODE.match(new RegExp('\\.spot' + (i + 1) + '\\s*\\{([^}]*)\\}'));
-    assert.ok(block, `CSS thiếu .spot${i + 1}`);
+test('hộp tám vùng trong CSS khớp REGION_LAYOUT, không lệch một con số', () => {
+  // Toạ độ nằm ở CSS (không `style={{…}}` — SSR tuần tự hoá thành `style="…"`,
+  // đúng thứ đang chặn việc bỏ `style-src 'unsafe-inline'`). Hai nơi thì phải
+  // có người so, không thì chúng lệch im.
+  assert.equal(FRAME.width, 1360);
+  assert.equal(FRAME.height, 820);
+  assert.match(CSS_CODE, /aspect-ratio:\s*1360 \/ 820/);
+  const pct = (v) => `${+v.toFixed(2)}%`;
+  for (let i = 0; i < LAYOUT.length; i += 1) {
+    const [x, y, w, h] = LAYOUT[i].box;
+    const [px, py] = LAYOUT[i].plate;
+    const n = i + 1;
+    const box = CSS_CODE.match(new RegExp(String.raw`\.spot${n}\s*\{([^}]*)\}`));
+    assert.ok(box, `CSS thiếu .spot${n}`);
+    for (const [prop, v] of [['left', x / FRAME.width], ['top', y / FRAME.height], ['width', w / FRAME.width], ['height', h / FRAME.height]]) {
+      assert.ok(
+        box[1].includes(`${prop}: ${pct(v * 100)}`),
+        `.spot${n} là {${box[1].trim()}} nhưng REGION_LAYOUT cho ${prop} ${pct(v * 100)}`,
+      );
+    }
+    const tam = CSS_CODE.match(new RegExp(String.raw`\.spot${n}\s*>\s*\.plate\s*\{([^}]*)\}`));
+    assert.ok(tam, `CSS thiếu .spot${n} > .plate`);
     assert.ok(
-      block[1].includes(`left: ${left}%`) && block[1].includes(`top: ${top}%`),
-      `.spot${i + 1} là {${block[1].trim()}} nhưng REGION_SPOTS nói ${left}% / ${top}%`,
+      tam[1].includes(`left: ${pct(((px - x) / w) * 100)}`) && tam[1].includes(`top: ${pct(((py - y) / h) * 100)}`),
+      `.spot${n} > .plate là {${tam[1].trim()}}, lệch REGION_LAYOUT.plate`,
     );
   }
-  // Và TSX phải lấy lớp theo chỉ số, không gán tay tám lần.
+  // TSX lấy lớp theo chỉ số, viewBox của tiểu cảnh lấy từ `box`.
   assert.match(MAP_TSX, /styles\[`spot\$\{i \+ 1\}`\]/);
+  assert.match(MAP_TSX, /viewBox=\{`\$\{x\} \$\{y\} \$\{w\} \$\{h\}`\}/);
   const inline = MAP_TSX.match(/style=\{\{/g) ?? [];
   assert.deepEqual(inline, [], 'style nội tuyến trong bản đồ — thêm nợ cho style-src');
-});
-
-/* ═══ 6 · token: màu CHƯA CHỐT nên không mã màu nào ═════════════════════ */
-
-test('không mã màu nào trong CSS bản đồ — mọi màu đi qua token --ds-*', () => {
-  // Không chỉ vì lint:tokens: BẢNG MÀU CHƯA CHỐT (chủ sản phẩm đang cân nhắc
-  // quay về bảng xanh–đỏ của bản gốc, artboard thì nền kem). Mọi màu đi qua
-  // token thì đổi bảng màu chỉ phải sửa studio-tokens.css.
-  const body = MAP_CSS.replace(/\/\*[\s\S]*?\*\//g, ' ');
-  const mau = body.match(/#[0-9a-fA-F]{3,8}\b|\b(?:rgba?|hsla?|oklch|lab|color-mix)\(/g) ?? [];
-  assert.deepEqual(mau, [], `mã màu viết cứng: ${mau.join(' ')}`);
-  // `--edu-*` là bảng xanh kế thừa từ bản Django; trang chủ đã chuyển sang
-  // --ds-*, chỉ `--edu-font` còn được đọc.
-  const edu = (body.match(/--edu-[\w-]+/g) ?? []).filter((t) => t !== '--edu-font');
-  assert.deepEqual(edu, [], `đọc token bảng cũ: ${edu.join(' ')}`);
-  // Và làm nhạt bằng MÀU, không bằng `opacity` — hạ độ đục làm cả chữ lẫn viền
-  // tụt theo và không đo được bằng token.
-  const mo = (body.match(/opacity:\s*[\d.]+/g) ?? []);
-  assert.deepEqual(mo, [], `làm nhạt bằng opacity: ${mo.join(' ')}`);
-  // TSX cũng vậy.
-  const hex = MAP_TSX.match(/#[0-9a-fA-F]{3,8}\b/g) ?? [];
-  assert.deepEqual(hex, [], `mã màu trong WorldMap.tsx: ${hex.join(' ')}`);
 });
 
 test('mọi cỡ chữ đi qua thang --ds-fs-*, không chỗ nào < 15px', () => {
@@ -430,50 +663,22 @@ test('mọi cỡ chữ đi qua thang --ds-fs-*, không chỗ nào < 15px', () =>
       .matchAll(/(--ds-fs-[\w-]+)\s*:\s*(\d+(?:\.\d+)?)px\s*;/g)]
       .map((m) => [m[1], Number(m[2])]),
   );
-  const body = MAP_CSS.replace(/\/\*[\s\S]*?\*\//g, ' ');
-  const px = body.match(/font-size:\s*\d+(?:\.\d+)?px/g) ?? [];
+  const px = CSS_CODE.match(/font-size:\s*\d+(?:\.\d+)?(?:px|rem|em)/g) ?? [];
   assert.deepEqual(px, [], `cỡ chữ không qua thang: ${px.join(' ')}`);
-  const tokens = [...body.matchAll(/font-size:\s*var\((--ds-fs-[\w-]+)\)/g)].map((m) => m[1]);
-  assert.ok(tokens.length >= 4, 'không thấy khai báo cỡ chữ nào — đọc lại mẫu');
+  const tokens = [...CSS_CODE.matchAll(/font-size:\s*var\((--ds-fs-[\w-]+)\)/g)].map((m) => m[1]);
+  assert.ok(tokens.length >= 2, 'không thấy khai báo cỡ chữ nào — đọc lại mẫu');
   for (const t of tokens) {
     assert.ok(SCALE.has(t), `${t} không phải một bậc có thật của thang`);
     assert.ok(SCALE.get(t) >= 15, `${t} = ${SCALE.get(t)}px, dưới sàn 15px`);
   }
-  // Câu dưới bản đồ là CÂU VĂN người học đọc để biết làm gì tiếp ⇒ cỡ thân.
-  const caption = body.match(/\.caption\s*\{[^}]*font-size:\s*var\((--ds-fs-[\w-]+)\)/);
-  assert.ok(caption, '.caption không khai cỡ chữ');
-  assert.ok(
-    SCALE.get(caption[1]) >= 17,
-    `.caption là câu văn nhưng chỉ ${SCALE.get(caption[1])}px (cỡ thân ≥ 17px)`,
-  );
 });
 
-/* ═══ 7 · trang chủ có nối bản đồ vào, và vẫn không gọi API ═════════════ */
+/* ═══ 9 · trang chủ có nối bản đồ vào, và vẫn không gọi API ═════════════ */
 
 test('trang chủ dựng bản đồ từ giáo trình, không từ con số rời', () => {
   assert.match(PAGE, /<WorldMap/, 'trang chủ không dựng bản đồ');
   assert.match(PAGE, /buildRegions\(modules, headCourse\.lessonUrl\)/);
-  // Và trang chủ vẫn phải là trang tĩnh.
   for (const pattern of [/\bapiFetch\b/, /ensureGuest/, /\bfetch\s*\(/]) {
     assert.ok(!pattern.test(PAGE), `trang chủ chạm vào đường mạng: ${pattern}`);
   }
 });
-
-/* ───────────────────────────────────────────────────────────────────────
- * BẰNG CHỨNG CA NÀY BẮT ĐƯỢC LỖI THẬT — 12 phép đột biến chạy ngày 15/10/2026,
- * mỗi phép gây lại rồi phục hồi, KHÔNG phép nào đi qua được (tổng 14 ca đỏ):
- *
- *  1. Thêm lại dòng tiến độ của artboard vào `buildRegions`
- *     ("đã xong 0 / 7 bài")                                      → 1 ca đỏ
- *  2. Thêm huy hiệu "BẠN Ở ĐÂY" vào nhãn nút                      → 1 ca đỏ
- *  3. Dán ổ khoá 🔒 + "mở khi đủ 5 bài" vào nhãn nút              → 1 ca đỏ
- *  4. Đổi `<a href>` thành `<div role="button" onClick>`          → 1 ca đỏ
- *  5. Bỏ `if (reduced) return;` trong component                   → 1 ca đỏ
- *  6. Cho `regionStep` vẫn trả bước khi `reduced`                 → 1 ca đỏ
- *  7. Đặt `.region { opacity: 0 }` làm trạng thái nghỉ            → 2 ca đỏ
- *  8. Đổi `@container` thành `@media`                             → 2 ca đỏ
- *  9. Sửa `.spot7` thành `left: 80%`, lệch REGION_SPOTS           → 1 ca đỏ
- * 10. Viết mã màu `#8E7652` thay `var(--ds-sketch)`               → 1 ca đỏ
- * 11. Hạ `.caption` xuống `var(--ds-fs-label)` (15px)             → 1 ca đỏ
- * 12. Lặp cứng 8 chặng thay vì đếm từ giáo trình                  → 1 ca đỏ
- * ─────────────────────────────────────────────────────────────────────── */
