@@ -1,290 +1,144 @@
-/* LỚP CHUYỂN ĐỘNG của bản đồ thế giới — chồng lên tranh, không bao giờ là tranh.
-   Hình học và nhịp ở `src/lib/map-motion.ts` (có test); file này chỉ dựng hình
-   và khai keyframes.
+/* LỚP HOVER của bản đồ thế giới — hiệu ứng DUY NHẤT còn lại, và nó chỉ chạy khi
+   có người trỏ vào hoặc Tab tới một vùng. Số liệu và hai luật ở
+   `src/lib/map-motion.ts` (có test); file này chỉ nối chúng vào selector.
 
-   ── SÁU LUẬT CỦA FILE NÀY ──────────────────────────────────────────────
+   ── 19/10/2026: ĐÃ BỎ LỚP CHUYỂN ĐỘNG TỰ CHẠY ─────────────────────────
 
-   1. KHÔNG BAO GIỜ CHẠM VÀO `.decor`. Tranh là ảnh nền ~877 KB. Đặt `transform`
-      lên nó là nhấc cả texture đó thành một lớp hợp ảnh riêng trên GPU; đổi
-      `background-position` của nó là vẽ lại 877 KB mỗi khung hình. Mọi chuyển
-      động ở đây nằm trên PHẦN TỬ KHÁC, và tranh là lớp XA NHẤT với hệ số
-      parallax = 0 — chính cái đứng yên đó làm mắt đọc ra chiều sâu.
+   Bản trước (commit `d7b31e7`, 291 dòng) mang bốn `@keyframes` và 11 phần tử
+   phủ cho năm hiệu ứng tự khởi động: màn khí parallax theo cuộn, cột bụi rơi,
+   mạch rỉ, mặt hồ trôi, năm sợi sáng vẽ dần. Chủ sản phẩm chốt: "chỉ cần motion
+   graphic khi hover nào thôi". Cả năm bị bỏ, và `MapMotion.tsx` — component chỉ
+   tồn tại để dựng 11 phần tử đó — bị xoá.
 
-   2. KHÔNG MÃ MÀU NÀO, và cũng KHÔNG TOKEN `--ds-*`. Lint cấm hex trong
-      `*.module.css`; nhưng lý do thật là tranh là một file SVG cố định, màu của
-      nó KHÔNG đổi theo chế độ tối (`MAP_PALETTE.paper` có chú thích đúng về
-      việc này). Lấy `--ds-paper` cho cột sáng thì ở chế độ tối cột sáng thành
-      cột MỰC. Bốn màu ở đây đến từ `MOTION_PALETTE` (TS) qua bốn thuộc tính
-      `--map-*` mà `MapMotion.tsx` đặt bằng CSSOM lúc chạy. Chưa đặt ⇒ dự phòng
-      `transparent` ⇒ lớp vô hình, bản đồ vẫn đủ.
+   Sau khi trang nạp xong, bản đồ ĐỨNG YÊN TUYỆT ĐỐI.
 
-   3. CHỈ `transform` VÀ `opacity` cho thứ chạy. Một ngoại lệ:
-      `stroke-dashoffset` của năm sợi sáng, chạy ĐÚNG MỘT LƯỢT lúc nạp trên năm
-      `<path>` mảnh — không lặp, và không phải trên ảnh nền.
+   ── NĂM LUẬT CỦA FILE NÀY ─────────────────────────────────────────────
 
-   4. KHÔNG `animation-iteration-count: infinite` Ở BẤT CỨ ĐÂU. Mọi hoạt ảnh tự
-      khởi động xong trong dưới năm giây (kể cả độ trễ) — xem `PASS_MS` và
-      `MAX_AUTO_MOTION_MS` trong `map-motion.ts`: dưới năm giây thì WCAG 2.2.2
-      không đòi nút Dừng, nên trang chủ không phải mọc thêm một nút.
+   1. KHÔNG CÓ GÌ CHẠY KHI KHÔNG AI CHẠM VÀO. Không `@keyframes`, không
+      `animation`, không `will-change`. Chỉ `transition` — mà một `transition`
+      không chạy cho tới khi có một trạng thái đổi, và ở đây trạng thái chỉ đổi
+      bằng chuột hoặc bằng Tab.
 
-   5. TRẠNG THÁI NGHỈ LÀ TRẠNG THÁI CUỐI. Giá trị viết thẳng trong các quy tắc
-      dưới đây LÀ khung cuối của mọi hoạt ảnh (`translate3d(0,0,0)`,
-      `stroke-dashoffset: 0`). Hoạt ảnh chạy TỪ khung đầu VỀ đây bằng
-      `animation-fill-mode: backwards`, không `forwards`. Nên mọi đường hỏng —
-      không có CSS animation, animation bị huỷ, xin giảm chuyển động, JS không
-      chạy — đều dừng ở một lớp phủ đặt đúng chỗ.
+   2. KHÔNG DỰNG MỘT PHẦN TỬ NÀO. Lớp này chỉ nhấn mạnh những `<a>` đã có, nên
+      nó KHÔNG THỂ chắn một cú bấm — bản đồ là lối đi chính vào khoá học, và bản
+      trước phải cần hẳn một dòng `pointer-events: none` để không chắn. Vì vậy
+      file này cũng không đổi `pointer-events`, `display`, `visibility`, hay hộp
+      của vùng nào: vùng chạm sau khi hover y nguyên vùng chạm trước khi hover.
 
-   6. KHÔNG BẮT CHUỘT. `pointer-events: none` ở gốc và không phần tử con nào
-      lấy lại. Lớp này nằm giữa tranh và tám liên kết trong thứ tự xếp lớp, nên
-      nó không được đứng chắn một cú bấm vào gian nào. */
+   3. BÁM VÀO CẤU TRÚC, KHÔNG BÁM VÀO HÌNH THÁI. Hợp đồng duy nhất là
+      `[data-map-region]` ("mỗi vùng là một `<a>` có vùng chạm"). Không một toạ
+      độ, không một mã gian (`M4`, `M8`), không một tên dải, không khung
+      1360 × 820.
+      ĐÂY LÀ PHẦN PHẢI XEM LẠI KHI BẢN ĐỒ ĐỔI HÌNH: hướng bản đồ sao đang
+      nghiên cứu (`design/v3/ban-do-sao.md`, 8 chòm × 48 ngôi) dùng lại được
+      nguyên bốn quy tắc dưới đây NẾU mỗi ngôi vẫn là một `<a data-map-region>`.
+      Hai con số phải tính lại khi đó — `REGION_DIM_OPACITY` và `REGION_LIFT_PX`
+      — có lý lẽ ghi ở `map-motion.ts`.
 
-/* Gốc của lớp. Hai trạng thái đi qua `data-map-motion`:
-     thiếu hẳn  — JS chưa chạy / khối hẹp / không dựng: không hiện gì.
-     `still`    — hiện đủ, không hoạt ảnh nào (người xin giảm chuyển động).
-     `on`       — hiện đủ và chạy một lượt.
-   Vì sao gác bằng THUỘC TÍNH do JS đặt chứ không bằng @media trong CSS: bề rộng
-   phải đo KHỐI (`@container`), còn `prefers-reduced-motion` thì `motionMode()`
-   đã phải đọc bằng JS rồi để quyết định có gắn listener cuộn hay không — hai
-   nguồn sự thật cho cùng một quyết định là chỗ chúng lệch nhau. */
-.motion {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-  /* Trên tranh, dưới tám liên kết. `.decor` và `.region` đều không khai
-     `z-index`, nên thứ tự DOM quyết định — nhưng khai thẳng ra ở đây để ai chèn
-     thêm phần tử vào `WorldMap.tsx` cũng không đổi được thứ tự này. */
-  z-index: 0;
-  /* Chưa có JS đặt màu thì mọi lớp vẽ bằng `transparent`: vô hình, không phải
-     một mảng đen. */
-  --map-mote: transparent;
-  --map-beam: transparent;
-  --map-water: transparent;
-  --map-thread: transparent;
-}
-.motion * { box-sizing: border-box; }
+   4. `:focus-visible` CHO ĐÚNG HIỆU ỨNG CỦA `:hover`. Bắt buộc, không phải tuỳ
+      chọn: thông tin ở đây là "con trỏ đang ở đâu", và người dùng bàn phím
+      không được mất nó. CSS không chia sẻ được một khối khai báo giữa hai
+      selector, nên hai cặp khối dưới đây là CHÉP TAY — và `map-motion.test.mjs`
+      so chúng ký tự với ký tự, để bản chép không lệch về sau.
 
-/* Không có `data-map-motion` (JS chưa chạy, hoặc khối hẹp) ⇒ không hiện gì. */
-.motion:not([data-map-motion]) { display: none; }
+   5. CHỈ `transform` VÀ `opacity`, 150–250ms, và KHÔNG MỘT THUỘC TÍNH MÀU NÀO.
+      Hai thuộc tính đó lên thẳng compositor nên tám tấm nhãn đổi cùng lúc không
+      tốn một lượt layout nào. Không màu ⇒ không có gì phải vẽ lại ngay trên ảnh
+      nền 877 KB của `.decor`, và lớp này đứng ngoài mọi chuyện chế độ tối /
+      `forced-colors` mà bản trước phải xử lý bằng một quy tắc `display: none`
+      riêng. */
 
-/* ── 1 · MÀN KHÍ THEO DẢI — parallax mang thông tin chiều sâu ───────── */
+/* TRƯỜNG HOVER. Class này đặt trên phần tử BỌC tất cả các vùng — `.map` ở bản
+   vẽ và `.plain` ở danh sách dự phòng (`WorldMap.tsx`). Phải là một tổ tiên
+   chung vì `:has()` dưới đây hỏi "trong đây có vùng nào đang được trỏ không".
 
-/* Một màn cho mỗi dải. Hộp (`left/top/width/height`) do `MapMotion.tsx` đặt
-   bằng CSSOM từ `veilBox(band)`, không viết ở đây: bốn mép dải là số của tranh
-   (`BAND_TOP_Y`), và một bản sao nữa trong CSS là một bản sao nữa để lệch.
-
-   KẾT CẤU LÀ BẮT BUỘC, không phải trang trí: một mảng màu PHẲNG dịch 12px thì
-   mắt không thấy gì cả — parallax chỉ đọc được khi lớp có hạt để so. Hạt ở đây
-   là chấm lấm tấm, cùng kỹ thuật `stipple_rect` của tranh; cỡ chấm và bước lưới
-   khác tranh đủ xa để không sinh moiré (`ky-thuat-ban-do.md` mục 4 cảnh báo
-   đúng chỗ này).
-
-   TRẠNG THÁI NGHỈ: `translate3d(0,0,0)`. `parallaxShift` cho 0 đúng lúc bản đồ
-   ở GIỮA khung nhìn, nên lúc người ta dừng cuộn để đọc nhãn thì lớp đang ở gần
-   0, không phải ở biên. */
-.veil {
-  position: absolute;
-  background-repeat: repeat;
-  /* Bước lưới 7px và chấm 0,9px: thưa và nhỏ hơn mọi trường chấm của tranh. */
-  background-image: radial-gradient(circle at 50% 50%, var(--map-mote) 0 0.9px, transparent 0.9px);
-  background-size: 7px 7px;
-  transform: translate3d(0, 0, 0);
-  /* `will-change` CHỈ ở đây, và chỉ ở nhánh `on`: bốn lớp này là bốn lớp duy
-     nhất bị JS đổi transform mỗi khung hình khi cuộn. Khai bừa thì mỗi lớp là
-     một texture nữa phải giữ trên GPU. */
-}
-.motion[data-map-motion='on'] .veil { will-change: transform; }
-
-/* Độ mờ theo độ sâu: dải sâu có nhiều khí trước nó hơn nên màn dày hơn. Đây là
-   lớp phủ KHÍ, nên nó phải tối dần theo đúng chiều tranh tối dần. */
-.veil[data-veil='surface'] { opacity: 0.1; }
-.veil[data-veil='shallow'] { opacity: 0.14; }
-.veil[data-veil='deep'] { opacity: 0.18; }
-.veil[data-veil='floor'] { opacity: 0.22; }
-
-/* ── 2 · CỘT BỤI TRONG GIẾNG DƯỚI MẶT TRỜI ─────────────────────────── */
-
-/* Hộp do `MapMotion.tsx` đặt từ `SHAFT_BOX`. Cột sáng là một nêm mờ dần xuống —
-   ánh sáng từ miệng vực TẮT DẦN theo độ sâu, và đó là thông tin: nó nói trên
-   sáng dưới tối, tức nói chiều của cả bức. */
-.shaft {
-  position: absolute;
-  overflow: hidden;
-  background-image: linear-gradient(to bottom, var(--map-beam), transparent);
-  opacity: 0.3;
+   `--map-hover-ms` là MỘT nguồn cho thời lượng của cả lớp; con số gốc là
+   `HOVER_MS` trong `map-motion.ts` và bộ test so hai bên. */
+.spotlight {
+  --map-hover-ms: 180ms;
 }
 
-/* Hạt bụi TRONG cột. Cao 200% và chứa hai lượt lưới giống nhau, nên dịch xuống
-   đúng 50% là trùng khít lượt trên — một lượt rơi liền mạch, không có cú nhảy ở
-   cuối. Trạng thái nghỉ là lượt dưới đã vào chỗ (`translate3d(0,0,0)`). */
-.shaftInk {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: -100%;
-  height: 200%;
-  background-repeat: repeat;
-  background-image: radial-gradient(circle at 50% 50%, var(--map-beam) 0 1.1px, transparent 1.1px);
-  background-size: 11px 13px;
-  opacity: 0.55;
-  transform: translate3d(0, 0, 0);
-}
-.motion[data-map-motion='on'] .shaftInk {
-  animation: mapFall 3600ms linear 450ms backwards;
+/* TRẠNG THÁI NGHỈ KHÔNG CÓ KHAI BÁO NÀO NGOÀI `transition`, và đó là một quyết
+   định, không phải sự thiếu sót: viết `opacity: 0.55` ở đây rồi để `:hover`
+   nâng về 1 cho ra ĐÚNG cùng một hình khi có chuột — nhưng lúc không ai chạm
+   vào thì bản đồ MỜ SẴN, tám tấm nhãn nhạt đi mà không nói gì cả.
+   `emphasisOpacity('rest') === emphasisOpacity('lit')` trong `map-motion.ts` là
+   đúng khẳng định đó; bộ test còn đòi riêng quy tắc này không mang `opacity`. */
+.spotlight [data-map-region] {
+  transition:
+    opacity var(--map-hover-ms) ease-out,
+    transform var(--map-hover-ms) ease-out;
 }
 
-/* Bụi rơi XUỐNG: từ lệch lên một nửa khối về 0. Chỉ `transform`. */
-@keyframes mapFall {
-  from { transform: translate3d(0, -50%, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
+/* ── CHUỘT ────────────────────────────────────────────────────────────
 
-/* ── 3 · MẠCH RỈ VÀO BỂ CỦA M4 ─────────────────────────────────────── */
-
-/* THÔNG TIN: hình bóng của M4 là "nhiều mạch rỉ vào một bể" (`REGION_LAYOUT`).
-   Mấy mạch dọc trôi xuống rồi tắt ở mặt nước nói ra cái NHIỀU → MỘT đó, và nói
-   nước đi xuống. Hộp từ `SEEP_BOX`. */
-.seep {
-  position: absolute;
-  overflow: hidden;
-  /* Tắt dần ở 62% chiều cao hộp — chỗ mặt nước của bể. Mạch không chạy xuyên
-     qua mặt nước: nước rỉ VÀO bể rồi hết. */
-  mask-image: linear-gradient(to bottom, transparent, black 18%, black 48%, transparent 62%);
-  opacity: 0.4;
-}
-.seepInk {
-  position: absolute;
-  left: 0;
-  width: 100%;
-  top: -100%;
-  height: 200%;
-  /* Nét DỌC đứt quãng, bước 34px: mấy mạch rời nhau, không phải một màn nước.
-     Hai lượt theo chiều dọc để dịch 50% là trùng khít (như `.shaftInk`). */
-  background-repeat: repeat;
-  background-image: repeating-linear-gradient(
-    to right,
-    var(--map-water) 0 1px,
-    transparent 1px 34px
-  );
-  background-size: 34px 26px;
-  mask-image: repeating-linear-gradient(to bottom, black 0 13px, transparent 13px 26px);
-  transform: translate3d(0, 0, 0);
-}
-.motion[data-map-motion='on'] .seepInk {
-  animation: mapFall 3800ms linear 560ms backwards;
-}
-
-/* ── 4 · MẶT HỒ Ở ĐÁY VỰC ──────────────────────────────────────────── */
-
-/* THÔNG TIN: đáy vực là CHẤT LỎNG, không phải đá. Trên một bức tranh nét đơn
-   sắc đó là điều rất khó nói bằng hình đứng; một lượt trôi ngang nói xong ngay.
-   Nét sóng GIỮ PHƯƠNG NGANG (`ky-thuat-ban-do.md` mục 4) — phương ngang là thứ
-   phân biệt mặt nước với vách, nên nó không được nghiêng. Hộp từ `LAKE_BOX`. */
-.lake {
-  position: absolute;
-  overflow: hidden;
-  opacity: 0.34;
-}
-.lakeInk {
-  position: absolute;
-  top: 0;
-  height: 100%;
-  left: -100%;
-  width: 300%;
-  background-repeat: repeat;
-  background-image: repeating-linear-gradient(
-    to bottom,
-    var(--map-water) 0 1px,
-    transparent 1px 9px
-  );
-  /* Nét vỡ thành đoạn, và đoạn THƯA DẦN xuống dưới: gần bờ (mép trên của ô, chỗ
-     giáp vách) nét liền, ra giữa hồ thì vỡ — đúng luật nét vọng. */
-  mask-image: repeating-linear-gradient(to right, black 0 26px, transparent 26px 44px);
-  transform: translate3d(0, 0, 0);
-}
-.motion[data-map-motion='on'] .lakeInk {
-  animation: mapDrift 4000ms ease-out 670ms backwards;
-}
-
-/* Trôi NGANG một bước lưới. Biên độ nhỏ (44px = một chu kỳ mặt nạ) vì mục đích
-   là nói "lỏng", không phải nói "có dòng chảy ngang". */
-@keyframes mapDrift {
-  from { transform: translate3d(-44px, 0, 0); }
-  to { transform: translate3d(0, 0, 0); }
-}
-
-/* ── 5 · NĂM SỢI SÁNG VẼ DẦN XUỐNG GIẾNG (một lượt) ────────────────── */
-
-/* THÔNG TIN: năm lối đi THẲNG từ mặt đất xuống năm gian — đúng nghĩa
-   `MAP_WELLS` ("từ mặt đất xuống thẳng chỗ này được", tức trục "vào đâu cũng
-   được" vẽ thành hình). Hướng vẽ từ trên xuống nói chiều của hành trình.
-
-   Đây là chỗ DUY NHẤT chạy `stroke-dashoffset`. Chấp nhận được vì: một lượt,
-   trên năm `<path>` mảnh của một SVG rỗng, KHÔNG phải trên ảnh nền 877 KB. */
-.threads {
-  position: absolute;
-  inset: 0;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-.thread {
-  fill: none;
-  stroke: var(--map-thread);
-  stroke-width: 2.4;
-  stroke-linecap: round;
-  opacity: 0.6;
-  /* `pathLength="100"` trên mỗi `<path>` (đặt trong TSX) làm bề dài đường thành
-     100 với MỌI đường, nên không cần `getTotalLength()` — hiệu ứng này không đo
-     DOM, nhờ đó `map-motion.test.mjs` kiểm được bằng `node --test`.
-     TRẠNG THÁI NGHỈ = 0 = sợi đã vẽ xong. */
-  stroke-dasharray: 100;
-  stroke-dashoffset: 0;
-  vector-effect: non-scaling-stroke;
-}
-.motion[data-map-motion='on'] .thread {
-  animation: mapInk 900ms cubic-bezier(0.3, 0.6, 0.3, 1) backwards;
-  /* Độ trễ của từng sợi do `MapMotion.tsx` đặt từ `threadDelayMs(i)`: thứ tự so
-     le là thông tin (trái sang phải), nên nó thuộc về logic có test, không
-     thuộc về năm quy tắc CSS viết tay. */
-  animation-delay: var(--map-thread-delay, 450ms);
-}
-
-@keyframes mapInk {
-  from { stroke-dashoffset: 100; }
-  to { stroke-dashoffset: 0; }
-}
-
-/* ── Giảm chuyển động, và bản hẹp ──────────────────────────────────── */
-
-/* Lưới an toàn thứ hai cho `prefers-reduced-motion`. Cửa CHÍNH là `motionMode()`
-   bằng JS (nó còn phải quyết định có gắn listener cuộn không, nên nó phải đọc
-   bằng JS dù sao). Quy tắc này đứng sau để che hai khe mà JS không che được:
-   người đổi tuỳ chọn hệ điều hành GIỮA lúc hoạt ảnh một-lượt đang chạy, và
-   khoảng giữa lần render đầu của SSR và lúc effect kịp chạy. */
-@media (prefers-reduced-motion: reduce) {
-  .motion[data-map-motion] *,
-  .motion[data-map-motion] {
-    animation: none !important;
-    transition: none !important;
-    /* Về đúng trạng thái nghỉ, tức trạng thái CUỐI của mọi hoạt ảnh. */
-    transform: translate3d(0, 0, 0) !important;
-    stroke-dashoffset: 0 !important;
-    will-change: auto !important;
+   Gác bằng `@media (hover: hover)` vì hai lý do, và lý do thứ hai là lý do
+   thật:
+     1. thiết bị cảm ứng không có con trỏ, nên không có thông tin nào để nói;
+     2. WebKit trên iOS GIỮ `:hover` sau khi ngón tay rời đi. Không gác thì một
+        cú chạm trượt để lại một vùng sáng và bảy vùng mờ, DÍNH CỨNG cho tới khi
+        người ta chạm vào chỗ khác — tức bản đồ nói sai chỗ con trỏ đang ở.
+   Vùng vẫn bấm được y như trước trên mọi thiết bị: luật 2 ở trên. */
+@media (hover: hover) {
+  /* Các vùng KHÁC lùi lại. `:not(:hover):not(:focus-visible)` không phải để
+     tránh tranh độ ưu tiên (`:has()` làm quy tắc này mạnh hơn quy tắc sáng ở
+     dưới, nên thiếu nó thì chính vùng đang trỏ cũng bị làm mờ) — nó còn là chỗ
+     giữ cho vùng đang được Tab tới KHÔNG bị mờ khi chuột rê sang vùng khác. */
+  .spotlight:has([data-map-region]:hover) [data-map-region]:not(:hover):not(:focus-visible) {
+    opacity: 0.55;
+  }
+  /* Vùng đang được trỏ sáng lên và nhấc 3px về phía người xem.
+     `translateY`, KHÔNG `translate3d(0, -3px, 0)`: bản đầu viết `translate3d`
+     theo lối cũ "ép lớp lên GPU", nhưng lightningcss của `next build` chuẩn hoá
+     nó về đúng `translateY(-3px)` — đã kiểm trong `.next/static/chunks/*.css`.
+     Nên `translate3d` ở đây chỉ là một câu nói về thứ KHÔNG được xuất xưởng. */
+  .spotlight [data-map-region]:hover {
+    opacity: 1;
+    transform: translateY(-3px);
   }
 }
 
-/* Bản hẹp: tắt HẲN, không phải giảm. Dưới mốc này `.decor` bị `display: none`
-   và mỗi dải thành một khối ngang — lớp này định vị theo khung 1360 × 820 nên ở
-   bố cục đó nó không chỉ nặng, nó SAI CHỖ. Mốc 1099px phải trùng
-   `world-map.module.css` và `MOTION_MIN_WIDTH_PX`; test so cả ba. */
-@container (max-width: 1099px) {
-  .motion { display: none; }
+/* ── BÀN PHÍM — ĐÚNG HAI KHỐI TRÊN, NHƯNG NGOÀI `@media (hover: hover)` ──
+
+   Ngoài media query là có chủ ý: bàn phím tồn tại trên cả thiết bị cảm ứng (bàn
+   phím Bluetooth, điều khiển bằng công tắc), nên gác hai quy tắc này sau
+   `hover: hover` là lấy thông tin đi của đúng những người cần nó nhất.
+
+   `:focus-visible`, không `:focus`: bấm chuột vào một liên kết cũng đặt focus,
+   nên dùng `:focus` thì sau một cú bấm (và sau khi quay lại từ bài học) bản đồ
+   còn dính một vùng sáng mà không ai đang trỏ vào.
+
+   Nếu trình duyệt không hiểu `:has()` thì hai quy tắc "lùi lại" bị bỏ cả — và
+   suy biến đó là chấp nhận được: vùng đang trỏ VẪN sáng và VẪN nhấc, chỉ là mấy
+   vùng kia không lùi. Tín hiệu còn, chỉ nhẹ hơn. */
+.spotlight:has([data-map-region]:focus-visible) [data-map-region]:not(:hover):not(:focus-visible) {
+  opacity: 0.55;
+}
+.spotlight [data-map-region]:focus-visible {
+  opacity: 1;
+  transform: translateY(-3px);
 }
 
-/* Chế độ tương phản cao: hệ màu của máy thay hết, nên một lớp phủ mờ ở đây chỉ
-   còn là nhiễu đè lên tám liên kết. Bỏ. */
-@media (forced-colors: active) {
-  .motion { display: none; }
+/* ── XIN GIẢM CHUYỂN ĐỘNG: BỎ CHUYỂN ĐỘNG, GIỮ TÍN HIỆU ───────────────
+
+   Chỗ dễ làm sai nhất của cả file, và cách làm sai trông rất giống cách làm
+   đúng: `.spotlight * { transition: none; opacity: 1 }` — tức tắt luôn cả
+   THÔNG TIN. Người xin giảm chuyển động vẫn phải thấy con trỏ đang ở đâu; họ
+   chỉ không muốn thấy thứ gì DI CHUYỂN.
+
+   Nên ở đây bỏ đúng hai thứ: `transition` (độ đậm đổi TỨC THÌ) và cú nhấc 3px
+   (`transform`). Tương phản 1 so với 0,55 ở trên giữ nguyên — nó là tín hiệu,
+   không phải chuyển động.
+
+   `!important` là lưới an toàn cho người chèn thêm quy tắc vào giữa file: khối
+   này đang đứng cuối nên thứ tự nguồn đã đủ, nhưng "đang đứng cuối" không phải
+   một thứ CSS kiểm được. */
+@media (prefers-reduced-motion: reduce) {
+  .spotlight [data-map-region] {
+    transition: none !important;
+  }
+  .spotlight [data-map-region]:hover,
+  .spotlight [data-map-region]:focus-visible {
+    transform: none !important;
+  }
 }

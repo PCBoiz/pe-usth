@@ -1,81 +1,77 @@
-// LỚP CHUYỂN ĐỘNG của bản đồ thế giới — `src/lib/map-motion.ts`,
-// `src/app/map-motion.module.css`, `src/app/MapMotion.tsx`.
+// LỚP HOVER của bản đồ thế giới — `src/lib/map-motion.ts`,
+// `src/app/map-motion.module.css`, và hai dòng nối dây trong `src/app/WorldMap.tsx`.
+//
+// ── 19/10/2026: BỘ NÀY VỪA ĐƯỢC VIẾT LẠI ────────────────────────────────
+//
+// Bản trước canh một lớp chuyển động TỰ CHẠY (parallax theo cuộn, cột bụi rơi,
+// mạch rỉ, mặt hồ trôi, năm sợi sáng vẽ dần) bằng 34 ca. Chủ sản phẩm chốt lại
+// "chỉ cần motion graphic khi hover nào thôi", nên cả năm hiệu ứng, 11 phần tử
+// phủ và component `MapMotion.tsx` đã bị bỏ — và phần lớn 34 ca đó canh những
+// thứ không còn tồn tại. Những ca GIỮ LẠI vì vẫn đúng: chặn `@keyframes` chạy
+// thứ ngoài transform/opacity, chặn `url(`, chặn chạm `.decor`, nhánh
+// `prefers-reduced-motion`.
 //
 // Bộ này canh SÁU bất biến. Mỗi bất biến có ít nhất một ca trượt khi gỡ bản
-// sửa, và ghi ngay cạnh nó:
+// sửa, ghi ngay cạnh nó:
 //
-//  1. CỬA CHẠY. Bề rộng xét TRƯỚC `prefers-reduced-motion`. Đảo hai nhánh thì
-//     người xin giảm chuyển động, trên điện thoại, nhận một lớp phủ đặt theo
-//     khung 1360 × 820 đè lên bố cục dọc — tức bản đồ hỏng. Và mốc 1100 phải
-//     trùng ba chỗ: hằng TS, `@container` của lớp chuyển động, `@container` của
-//     `world-map.module.css`.
-//  2. PARALLAX MANG THÔNG TIN. Hệ số phải GIẢM NGHIÊM NGẶT theo độ sâu (vách
-//     gần đi nhanh hơn vách xa — không có điều đó thì bốn lớp dịch bằng nhau và
-//     parallax không nói gì), gốc 0 phải ở GIỮA khung nhìn (trạng thái nghỉ =
-//     trạng thái cuối), và biên độ phải bị chặn trần.
-//  3. KHÔNG VÒNG LẶP VÔ HẠN, và mọi hoạt ảnh tự khởi động xong DƯỚI NĂM GIÂY
-//     kể cả độ trễ. Đây là điều kiện (b) của WCAG 2.2.2 (Pause, Stop, Hide —
-//     mức A): quá năm giây là phải có nút Dừng. Repo đã trả giá một lần cho
-//     đúng điều khoản này (`figure-motion.ts`).
-//  4. KHÔNG VẼ LẠI ẢNH NỀN. CSS của lớp chuyển động không được chạm `.decor`,
-//     không được mang `background-image: url(...)`, và mọi thuộc tính chạy
-//     trong `@keyframes` phải nằm trong {transform, opacity, stroke-dashoffset}.
-//  5. KHỚP VỚI TRANH. Màu, bốn mép dải, ba hộp kết cấu và năm đường giếng đều
-//     phải khớp nguồn thật — và khớp bằng cách KHÔNG chép, đọc thẳng
-//     sáng ở chỗ tranh tối, hoặc sợi sáng chạy cạnh giếng chứ không trong giếng.
-//  6. KHÔNG CHẮN CÚ BẤM, KHÔNG SSR INLINE STYLE. Bản đồ là lối đi chính vào
-//     khoá học.
+//  1. KHÔNG CÓ GÌ CHẠY KHI KHÔNG AI CHẠM VÀO. Không `@keyframes`, không
+//     `animation`, không `will-change`, không một phần tử phủ nào, không một
+//     dòng JS nào. Sau khi trang nạp xong bản đồ đứng yên tuyệt đối.
+//  2. `:focus-visible` CHO ĐÚNG HIỆU ỨNG CỦA `:hover`. CSS không chia sẻ được
+//     một khối khai báo giữa hai selector nên hai cặp khối là chép tay; bộ này
+//     so cả hình dáng selector lẫn thân khối, ký tự với ký tự.
+//  3. CHUỘT GÁC SAU `@media (hover: hover)`, BÀN PHÍM KHÔNG. Bàn phím tồn tại
+//     trên cả thiết bị cảm ứng. Và lớp hover không đổi vùng chạm của vùng nào.
+//  4. CHUYỂN TIẾP NGẮN, CHỈ `transform`/`opacity`, 150–250ms. Thêm một thuộc
+//     tính màu vào `transition` là mời trình duyệt vẽ lại NGAY TRÊN ảnh nền
+//     877 KB.
+//  5. XIN GIẢM CHUYỂN ĐỘNG THÌ MẤT CHUYỂN ĐỘNG, KHÔNG MẤT TÍN HIỆU. Cách làm
+//     sai (`opacity: 1 !important` cho tất cả) trông rất giống cách làm đúng.
+//  6. BÁM CẤU TRÚC, KHÔNG BÁM HÌNH THÁI. Hợp đồng duy nhất là
+//     `[data-map-region]`: bản đồ sắp đổi sang hướng bản đồ sao (8 chòm, 48
+//     ngôi) và một lớp bám toạ độ thì chết theo.
 import { strict as assert } from 'node:assert';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import {
-  BAND_BLEED_Y,
-  BAND_DEPTH,
-  bandFootY,
-  bandHeadY,
-  LAKE_REGION,
-  MAX_AUTO_MOTION_MS,
-  MOTION_BANDS,
-  MOTION_FRAME,
-  MOTION_MIN_WIDTH_PX,
-  MOTION_PALETTE,
-  MOTION_VAR,
-  motionAnimates,
-  motionMode,
-  motionVars,
-  motionVisible,
-  nearestWellX,
-  PARALLAX_MAX_PX,
-  PASS_DELAY_MS,
-  PASS_MS,
-  parallaxShift,
-  passTotalMs,
-  SEEP_REGION,
-  shaftBox,
-  THREAD_DURATION_MS,
-  THREAD_LEAD_MS,
-  THREAD_PATH_LENGTH,
-  THREAD_STAGGER_MS,
-  threadDelayMs,
-  threadTotalMs,
-  veilBox,
-  veilFactor,
-  viewProgress,
+  emphasisOpacity,
+  HOVER_MAX_MS,
+  HOVER_MIN_MS,
+  HOVER_MS,
+  HOVER_PROPS,
+  REGION_DIM_OPACITY,
+  REGION_HOOK,
+  REGION_LIFT_PX,
+  REGION_LIT_OPACITY,
+  regionEmphasis,
+  transitionOk,
 } from '../../src/lib/map-motion.ts';
 
 const doc = (p) => readFileSync(new URL(p, import.meta.url), 'utf8');
+const here = (p) => new URL(p, import.meta.url);
 
 const CSS = doc('../../src/app/map-motion.module.css');
-const TSX = doc('../../src/app/MapMotion.tsx');
-const WORLD_MAP_CSS = doc('../../src/app/world-map.module.css');
-const WORLD_MAP_TS = doc('../../src/lib/world-map.ts');
+const LIB = doc('../../src/lib/map-motion.ts');
 const WORLD_MAP_TSX = doc('../../src/app/WorldMap.tsx');
+const WORLD_MAP_CSS = doc('../../src/app/world-map.module.css');
 
-/** Một khung nhìn giả: bản đồ cao `mapHeight`, mép trên ở `mapTop`. */
-function view(mapTop, mapHeight = 800, viewHeight = 900) {
-  return { mapTop, mapHeight, viewHeight };
+/** Bỏ mọi chú thích /* … *\/ — chú thích tiếng Việt ở đây NHẮC TÊN thứ đang bị
+ *  cấm (`@keyframes`, `background-position`, `M4`, `pointer-events`), nên quét
+ *  trên bản còn chú thích là quét ra lỗi giả. Bản trước đã trượt vì đúng chuyện
+ *  này. */
+function stripComments(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, ' ');
 }
+
+/** Bỏ chú thích của một file TS/TSX, cả `/* *\/` lẫn `//`. */
+function stripTs(src) {
+  return src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
+}
+
+const CSS_CODE = stripComments(CSS);
+const LIB_CODE = stripTs(LIB);
+const WORLD_MAP_CODE = stripTs(WORLD_MAP_TSX);
 
 /**
  * Lấy thân của mọi khối `@keyframes`, cắt theo ngoặc CÂN BẰNG.
@@ -102,278 +98,99 @@ function keyframeBlocks(css) {
         if (depth === 0) break;
       }
     }
-    out.push({
-      name: css.slice(start + '@keyframes'.length, open).trim(),
-      body: css.slice(open + 1, i),
-    });
+    out.push({ name: css.slice(start + '@keyframes'.length, open).trim(), body: css.slice(open + 1, i) });
     at = i + 1;
   }
   return out;
 }
 
-/** Bỏ mọi chú thích /* … *\/ — chú thích tiếng Việt ở đây nhắc tên thuộc tính
- *  và tên lớp, nên quét trên bản còn chú thích là quét ra lỗi giả. */
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, ' ');
-}
-
 /**
- * Bỏ chú thích của một file TS/TSX.
+ * Mọi quy tắc của một đoạn CSS: `{ head, body, at }` — `at` là chuỗi at-rule
+ * BAO NGOÀI nó ('' nếu ở mức trên cùng).
  *
- * Cần hẳn một hàm vì chú thích ở đây NHẮC TÊN thứ đang bị cấm — câu "không đặt
- * bằng `style={{…}}`" nằm trong chính chú thích của `MapMotion.tsx`, nên quét
- * trên bản còn chú thích là ca test tự tố cáo bản sửa của nó. Đã trượt một lượt
- * vì đúng chuyện này.
+ * Cũng cắt theo ngoặc cân bằng và cũng vì một lý do có thật: `@media` của file
+ * này bọc hai quy tắc, nên bất cứ cách cắt nào theo `}` đầu tiên sẽ đọc
+ * `@media (hover: hover)` thành một quy tắc có selector là cả câu media và thân
+ * là quy tắc đầu — tức ba ca dưới đây sẽ canh một cấu trúc không tồn tại.
  */
-function stripTs(src) {
-  return src.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/^\s*\/\/.*$/gm, ' ');
+function cssRules(css, at = '') {
+  const out = [];
+  let i = 0;
+  while (i < css.length) {
+    const open = css.indexOf('{', i);
+    if (open < 0) break;
+    const head = css.slice(i, open).trim();
+    let depth = 0;
+    let j = open;
+    for (; j < css.length; j += 1) {
+      if (css[j] === '{') depth += 1;
+      else if (css[j] === '}') {
+        depth -= 1;
+        if (depth === 0) break;
+      }
+    }
+    const body = css.slice(open + 1, j);
+    if (head.startsWith('@keyframes')) {
+      // Đã có `keyframeBlocks` lo; ở đây không đi vào trong.
+    } else if (head.startsWith('@')) {
+      out.push(...cssRules(body, at ? `${at} ${head}` : head));
+    } else {
+      out.push({ head, body, at });
+    }
+    i = j + 1;
+  }
+  return out;
 }
 
-const CSS_CODE = stripComments(CSS);
-const TSX_CODE = stripTs(TSX);
+/** Các khai báo `prop: value` của một thân quy tắc. */
+function decls(body) {
+  return body
+    .split(';')
+    .map((s) => s.trim())
+    .filter((s) => s.includes(':'))
+    .map((s) => {
+      const at = s.indexOf(':');
+      return { prop: s.slice(0, at).trim(), value: s.slice(at + 1).trim() };
+    });
+}
+
+const norm = (s) => s.replace(/\s+/g, ' ').trim();
+const RULES = cssRules(CSS_CODE);
+/** Thời lượng thật của `var(--map-hover-ms)`. */
+const HOVER_VAR_MS = Number((CSS_CODE.match(/--map-hover-ms:\s*(\d+)ms/) ?? [])[1]);
+
+/** Quy tắc có head khớp CHÍNH XÁC (sau khi chuẩn hoá khoảng trắng). */
+const ruleWithHead = (head) => RULES.find((r) => norm(r.head) === head);
+const rulesWhereHead = (re) => RULES.filter((r) => re.test(norm(r.head)));
 
 // ════════════════════════════════════════════════════════════════════════
-// 1 · CỬA CHẠY
+// 1 · KHÔNG CÓ GÌ CHẠY KHI KHÔNG AI CHẠM VÀO
 // ════════════════════════════════════════════════════════════════════════
 
-test('khối hẹp + xin giảm chuyển động ⇒ off, KHÔNG phải still', () => {
-  // Ca bắt lỗi của bất biến 1. Đảo hai nhánh trong `motionMode` (xét `reduced`
-  // trước `width`) thì ca này trượt — và cái nó cứu là: ở bố cục hẹp, `.decor`
-  // bị `display:none` và mỗi dải thành một khối ngang, nên một lớp phủ định vị
-  // theo khung 1360 × 820 nằm SAI CHỖ, không chỉ là "nặng".
-  assert.equal(motionMode({ reduced: true, width: 900 }), 'off');
-  assert.equal(motionMode({ reduced: false, width: 900 }), 'off');
-  // Và ngược lại: khối rộng + xin giảm chuyển động thì lớp vẫn HIỆN, chỉ không
-  // chạy. "Bản đồ vẫn đầy đủ" là yêu cầu, không phải "bản đồ biến mất".
-  assert.equal(motionMode({ reduced: true, width: 1400 }), 'still');
-  assert.equal(motionMode({ reduced: false, width: 1400 }), 'on');
+test('không một `@keyframes` nào, và không một khai báo `animation` nào', () => {
+  // Ca bắt lỗi chính của bất biến 1, và là chính cái chủ sản phẩm vừa chốt:
+  // "chỉ cần motion graphic khi hover". Một `@keyframes` + `animation` ở đây là
+  // chuyển động TỰ KHỞI ĐỘNG quay lại, và nó quay lại rất dễ — nó là cách
+  // "hiển nhiên" để cho một thứ gì đó động.
+  assert.ok(!/@keyframes/.test(CSS_CODE), 'lớp hover không được có @keyframes');
+  assert.ok(
+    !/\banimation(-[a-z]+)?\s*:/.test(CSS_CODE),
+    'không khai báo animation nào — thứ duy nhất còn động là `transition`',
+  );
+  // Và không `will-change`: không có gì chạy khi nghỉ thì không lớp nào đáng
+  // giữ trên GPU của một tab mở cả ngày.
+  assert.ok(!/will-change/.test(CSS_CODE), 'không giữ lớp nào trên GPU khi bản đồ đứng yên');
 });
 
-test('mốc 1100 đúng ở hai bên biên, và bề rộng rác ⇒ off', () => {
-  assert.equal(motionMode({ reduced: false, width: MOTION_MIN_WIDTH_PX - 1 }), 'off');
-  assert.equal(motionMode({ reduced: false, width: MOTION_MIN_WIDTH_PX }), 'on');
-  // `clientWidth` của một phần tử chưa gắn vào DOM là 0; NaN thì không so sánh
-  // được nên `<` trả false và nhánh dưới sẽ cho 'on' nếu thiếu `isFinite`.
-  assert.equal(motionMode({ reduced: false, width: 0 }), 'off');
-  assert.equal(motionMode({ reduced: false, width: Number.NaN }), 'off');
-});
-
-test('mốc gãy trùng cả BA chỗ: hằng TS, CSS lớp chuyển động, CSS bản đồ', () => {
-  // Ca bắt lỗi: đổi `@container (max-width: 1099px)` ở một trong hai file CSS
-  // mà quên hằng TS thì có một khoảng bề rộng mà JS gắn listener cuộn cho một
-  // lớp mà CSS đang `display: none` — chuyển động vô hình, tốn một lượt layout
-  // mỗi khung hình. Regex viết bằng `String.raw`: `\d` trong template literal
-  // thường là một bẫy đã trả giá trong repo này.
-  const q = new RegExp(String.raw`@container \(max-width: (\d+)px\)`);
-  const mine = CSS_CODE.match(q);
-  const theirs = WORLD_MAP_CSS.match(q);
-  assert.ok(mine, 'map-motion.module.css phải tự tắt bằng @container');
-  assert.ok(theirs, 'world-map.module.css phải còn mốc @container của bản hẹp');
-  assert.equal(Number(mine[1]), MOTION_MIN_WIDTH_PX - 1);
-  assert.equal(Number(theirs[1]), MOTION_MIN_WIDTH_PX - 1);
-});
-
-test('ba chế độ đọc ra đúng hai câu hỏi: có hiện không, có chạy không', () => {
-  assert.equal(motionVisible('off'), false);
-  assert.equal(motionVisible('still'), true);
-  assert.equal(motionVisible('on'), true);
-  // `still` HIỆN mà KHÔNG chạy — nếu `motionAnimates('still')` thành true thì
-  // người xin giảm chuyển động nhận cả listener cuộn lẫn parallax.
-  assert.equal(motionAnimates('still'), false);
-  assert.equal(motionAnimates('on'), true);
-  assert.equal(motionAnimates('off'), false);
-});
-
-test('lớp không mang data-map-motion thì CSS ẩn hẳn', () => {
-  // Trạng thái lúc chưa có JS (SSR, JS lỗi, tắt JS): markup đã có 11 phần tử
-  // nhưng chúng chưa có hộp nào. Thiếu quy tắc này thì chúng là mấy mảng dán ở
-  // góc trên-trái bản đồ.
-  assert.match(CSS_CODE, /\.motion:not\(\[data-map-motion\]\)\s*\{\s*display:\s*none/);
-  assert.match(TSX, /removeAttribute\('data-map-motion'\)/);
-});
-
-// ════════════════════════════════════════════════════════════════════════
-// 2 · PARALLAX MANG THÔNG TIN
-// ════════════════════════════════════════════════════════════════════════
-
-test('bốn dải có bốn độ sâu TĂNG nghiêm ngặt, mặt đất gần nhất', () => {
-  // Chiều này là một khẳng định về bức tranh, không phải sở thích: người xem
-  // đứng ở MIỆNG vực nhìn vào, nên mép trên của vết cắt gần mắt nhất và đáy
-  // vực là điểm xa nhất trên đường ngắm.
-  const depths = MOTION_BANDS.map((b) => BAND_DEPTH[b]);
-  assert.equal(depths[0], 0);
-  assert.equal(depths[depths.length - 1], 1);
-  for (let i = 1; i < depths.length; i += 1) {
-    assert.ok(depths[i] > depths[i - 1], `độ sâu phải tăng: ${MOTION_BANDS[i]}`);
-  }
-});
-
-test('hệ số dịch GIẢM nghiêm ngặt theo độ sâu, và bị kẹp trong [0,1]', () => {
-  // Ca bắt lỗi chính của bất biến 2. `veilFactor` trả về một hằng (ví dụ ai đó
-  // "đơn giản hoá" thành `return 1`) thì bốn lớp dịch BẰNG NHAU — và bốn lớp
-  // dịch bằng nhau không phải parallax, nó là cả lớp phủ bị kéo lệch. Không có
-  // ca này thì lỗi đó không có cách nào lộ ra: hình vẫn chạy, chỉ không nói gì.
-  const factors = MOTION_BANDS.map((b) => veilFactor(BAND_DEPTH[b]));
-  for (let i = 1; i < factors.length; i += 1) {
-    assert.ok(factors[i] < factors[i - 1], `hệ số phải giảm theo độ sâu ở ${MOTION_BANDS[i]}`);
-  }
-  assert.equal(veilFactor(0), 1);
-  assert.equal(veilFactor(1), 0);
-  // Kẹp hai đầu: `getBoundingClientRect` cho số lạ ở lúc đang đổi khổ.
-  assert.equal(veilFactor(-5), 1);
-  assert.equal(veilFactor(9), 0);
-  assert.equal(veilFactor(Number.NaN), 0);
-});
-
-test('bản đồ ở GIỮA khung nhìn ⇒ dịch bằng 0 (trạng thái nghỉ = trạng thái cuối)', () => {
-  // Ca bắt lỗi: bỏ phép đưa về tâm (`progress * 2 - 1`) thì ở giữa khung nhìn
-  // lớp đang bị kéo lệch nửa biên độ, nên lúc người ta DỪNG CUỘN để đọc nhãn
-  // thì lớp phủ đứng ở một chỗ không phải trạng thái nghỉ của CSS — và một
-  // `cancel()` hay một lượt tháo component sẽ làm nó NHẢY về 0.
-  // Giữa khung nhìn: mapTop sao cho progress = 0.5.
-  const mapHeight = 800;
-  const viewHeight = 900;
-  const span = viewHeight + mapHeight;
-  const mapTop = viewHeight - span * 0.5;
-  assert.equal(viewProgress(view(mapTop, mapHeight, viewHeight)), 0.5);
-  for (const band of MOTION_BANDS) {
-    assert.equal(parallaxShift(view(mapTop, mapHeight, viewHeight), BAND_DEPTH[band]), 0);
-  }
-});
-
-test('cuộn xuống ⇒ lớp GẦN đi lên nhiều hơn lớp xa, và lớp xa nhất đứng im', () => {
-  // Đây là chính câu "chuyển động mang thông tin": nếu dấu bị đảo thì lớp gần
-  // đi NGƯỢC chiều cuộn và mắt đọc ra một không gian LỘN NGƯỢC — cùng loại lỗi
-  // với `pseudoscopic inversion` mà `ky-thuat-ban-do.md` mục 3 gọi là luật.
-  const v = view(-200); // bản đồ đã trôi lên quá giữa ⇒ progress > 0.5
-  assert.ok(viewProgress(v) > 0.5);
-  const surface = parallaxShift(v, BAND_DEPTH.surface);
-  const shallow = parallaxShift(v, BAND_DEPTH.shallow);
-  const deep = parallaxShift(v, BAND_DEPTH.deep);
-  const floor = parallaxShift(v, BAND_DEPTH.floor);
-  assert.ok(surface < 0, 'cuộn xuống thì lớp gần phải đi LÊN (âm)');
-  assert.ok(surface < shallow && shallow < deep && deep < floor, 'phải so le theo độ sâu');
-  // Tranh là lớp xa nhất với hệ số 0; màn khí của dải đáy cũng 0, nên nó dán
-  // vào tranh. Khác 0 là đáy vực trôi so với chính vách của nó.
-  assert.equal(floor, 0);
-});
-
-test('biên độ bị chặn trần ±PARALLAX_MAX_PX ở mọi vị trí cuộn', () => {
-  // Ca bắt lỗi: bỏ kẹp trong `viewProgress` thì ở đầu/cuối một trang chủ dài,
-  // `mapTop` lớn hơn mọi giới hạn và biên độ chạy tới hàng trăm px — đúng thứ
-  // W3C gọi là nguyên nhân choáng/nôn ở người có rối loạn tiền đình (WCAG
-  // 2.3.3). 12px là trần có chủ ý, không phải một hệ quả tình cờ.
-  for (const top of [-99999, -4000, -800, 0, 450, 900, 5000, 99999]) {
-    for (const band of MOTION_BANDS) {
-      const px = parallaxShift(view(top), BAND_DEPTH[band]);
-      assert.ok(Math.abs(px) <= PARALLAX_MAX_PX + 1e-9, `|${px}| vượt trần ở ${band}/${top}`);
-    }
-  }
-  assert.ok(PARALLAX_MAX_PX <= 16, 'biên độ parallax phải nhỏ — đây là trang để bắt đầu học');
-});
-
-test('bản đồ cao hơn khung nhìn thì tiến trình vẫn trong [0,1]', () => {
-  // Mẫu số phải là `viewHeight + mapHeight`. Đổi thành `viewHeight` thì bản đồ
-  // cao hơn khung nhìn cho tiến trình > 1 ngay lúc vừa hiện ra, tức lớp phủ
-  // dính ở biên suốt cả lượt cuộn và parallax chết — mà không ai thấy lỗi.
-  const tall = { mapTop: -100, mapHeight: 2400, viewHeight: 700 };
-  const p = viewProgress(tall);
-  assert.ok(p > 0 && p < 1, `tiến trình ${p} phải nằm hẳn trong khoảng`);
-  // Và đúng hai đầu mút của định nghĩa.
-  assert.equal(viewProgress({ mapTop: 700, mapHeight: 2400, viewHeight: 700 }), 0);
-  assert.equal(viewProgress({ mapTop: -2400, mapHeight: 2400, viewHeight: 700 }), 1);
-  // Khung nhìn rỗng (SSR, tab ẩn) ⇒ về giữa, tức về trạng thái nghỉ.
-  assert.equal(viewProgress({ mapTop: 0, mapHeight: 0, viewHeight: 0 }), 0.5);
-});
-
-// ════════════════════════════════════════════════════════════════════════
-// 3 · KHÔNG VÒNG LẶP VÔ HẠN — WCAG 2.2.2
-// ════════════════════════════════════════════════════════════════════════
-
-test('CSS không có một `infinite` nào', () => {
-  // Ca bắt lỗi của bất biến 3. Thêm `infinite` cho cột bụi là nợ lại một nút
-  // Dừng trên TRANG CHỦ (WCAG 2.2.2 mức A), đúng món nợ mà `figure-motion.ts`
-  // đã phải trả bằng cách dựng lại 23 file SVG thành Blob.
-  assert.ok(!/infinite/.test(CSS_CODE), 'lớp chuyển động không được lặp vô hạn');
-  assert.ok(!/animation-iteration-count/.test(CSS_CODE));
-});
-
-test('MỌI hoạt ảnh tự khởi động xong dưới năm giây, TÍNH CẢ độ trễ', () => {
-  // Tính cả độ trễ là chỗ dễ sai: WCAG 2.2.2 đo trang còn động bao lâu, nên
-  // một lớp trễ 3s rồi chạy 4s là một trang còn động ở giây thứ 7. Nâng bất kỳ
-  // `PASS_MS` nào lên quá mức là trượt ngay ở đây, trước khi nó thành một nút
-  // Dừng phải thêm vào trang chủ.
-  for (const layer of Object.keys(PASS_MS)) {
-    const total = passTotalMs(layer);
-    assert.equal(total, PASS_DELAY_MS[layer] + PASS_MS[layer]);
-    assert.ok(total < MAX_AUTO_MOTION_MS, `${layer}: ${total}ms ≥ ${MAX_AUTO_MOTION_MS}ms`);
-  }
-  // Năm sợi sáng: trễ 450 + 4 × 110 + 900 = 1790ms.
-  assert.ok(threadTotalMs(5) < MAX_AUTO_MOTION_MS, `năm sợi: ${threadTotalMs(5)}ms`);
-  assert.equal(MAX_AUTO_MOTION_MS, 5000);
-});
-
-test('thời lượng trong CSS khớp từng con số trong TS', () => {
-  // Hai nguồn sự thật cho cùng một thời lượng là chỗ chúng lệch nhau — và lệch
-  // ở đây nghĩa là ca test "dưới năm giây" ở trên canh một con số mà trình
-  // duyệt không dùng.
-  for (const [layer, ms] of Object.entries(PASS_MS)) {
-    assert.ok(
-      CSS_CODE.includes(`${ms}ms`),
-      `CSS phải mang thời lượng ${ms}ms của lớp ${layer}`,
-    );
-  }
-  for (const ms of Object.values(PASS_DELAY_MS)) {
-    assert.ok(CSS_CODE.includes(`${ms}ms`), `CSS phải mang độ trễ ${ms}ms`);
-  }
-  assert.ok(CSS_CODE.includes(`${THREAD_DURATION_MS}ms`), 'CSS phải mang thời lượng sợi sáng');
-});
-
-test('độ trễ năm sợi so le tăng dần, và vào SAU khi nền hiện xong', () => {
-  const delays = [0, 1, 2, 3, 4].map(threadDelayMs);
-  for (let i = 1; i < delays.length; i += 1) {
-    assert.ok(delays[i] > delays[i - 1], 'sợi phải so le, không vẽ cùng lúc');
-  }
-  // 450ms = `decorStep` của `world-map.ts`: sợi không được vẽ trên một bức tranh
-  // còn đang mờ dần vào.
-  assert.equal(delays[0], THREAD_LEAD_MS);
-  assert.match(WORLD_MAP_TS, /duration:\s*450/, 'decorStep vẫn phải là 450ms');
-  // Đầu vào rác về mốc an toàn, không ra NaN (một `animation-delay: NaNms` là
-  // một hoạt ảnh không bao giờ chạy).
-  assert.equal(threadDelayMs(-1), THREAD_LEAD_MS);
-  assert.equal(threadDelayMs(1.5), THREAD_LEAD_MS);
-  assert.equal(threadTotalMs(0), 0);
-});
-
-test('nhánh prefers-reduced-motion trong CSS tắt hết và về trạng thái cuối', () => {
-  // Lưới an toàn thứ hai. Cửa chính là `motionMode` bằng JS, nhưng nó không che
-  // được hai khe: người đổi tuỳ chọn hệ điều hành GIỮA lúc hoạt ảnh một-lượt
-  // đang chạy, và khoảng giữa render đầu của SSR và lúc effect kịp chạy.
-  const at = CSS_CODE.indexOf('@media (prefers-reduced-motion: reduce)');
-  assert.ok(at > 0, 'phải có nhánh giảm chuyển động');
-  const block = CSS_CODE.slice(at, at + 700);
-  assert.match(block, /animation:\s*none\s*!important/);
-  assert.match(block, /transform:\s*translate3d\(0,\s*0,\s*0\)\s*!important/);
-  assert.match(block, /stroke-dashoffset:\s*0\s*!important/);
-  // Và hook sẵn có phải được dùng, không dò `matchMedia` lần nữa.
-  assert.match(TSX_CODE, /usePrefersReducedMotion/);
-  assert.ok(!/matchMedia/.test(TSX_CODE), 'đọc prefers-reduced-motion qua hook, không tự dò');
-});
-
-// ════════════════════════════════════════════════════════════════════════
-// 4 · KHÔNG VẼ LẠI ẢNH NỀN
-// ════════════════════════════════════════════════════════════════════════
-
-test('@keyframes chỉ chạy transform / opacity / stroke-dashoffset', () => {
-  // Ca bắt lỗi quan trọng nhất của bất biến 4. Đổi một `@keyframes` sang
-  // `background-position` (cách "hiển nhiên" để cho bụi rơi) là buộc trình duyệt
-  // VẼ LẠI vùng đó mỗi khung hình; làm thế trên một lớp phủ cỡ cả bản đồ, chồng
-  // lên một ảnh nền 877 KB, là đúng cái giá mà `figure-motion.ts` đã đo được:
+test('nếu sau này có `@keyframes` thì nó chỉ được chạy transform/opacity', () => {
+  // Lưới an toàn cho người SAU, không cho hiện trạng: hiện tại không có khối
+  // nào (ca trên canh điều đó). Nhưng một hoạt ảnh treo vào `:hover` là hợp lệ
+  // về sau, và lúc đó đây là chỗ chặn `background-position` — cách "hiển nhiên"
+  // để cho một lớp trôi, và cũng là cách buộc trình duyệt vẽ lại vùng đó mỗi
+  // khung hình NGAY TRÊN ảnh nền 877 KB. `figure-motion.ts` đã đo giá của nó:
   // UpdateLayoutTree 796ms / 1 084 lần trong một trace 10,5 giây.
-  const allow = new Set(['transform', 'opacity', 'stroke-dashoffset']);
-  const blocks = keyframeBlocks(CSS_CODE);
-  assert.ok(blocks.length >= 3, `phải có ít nhất 3 khối @keyframes, thấy ${blocks.length}`);
-  for (const { name, body } of blocks) {
+  const allow = new Set(HOVER_PROPS);
+  for (const { name, body } of keyframeBlocks(CSS_CODE)) {
     const props = [...body.matchAll(/([a-z-]+)\s*:/g)].map((m) => m[1]);
     assert.ok(props.length > 0, `@keyframes ${name} rỗng`);
     for (const p of props) {
@@ -382,340 +199,333 @@ test('@keyframes chỉ chạy transform / opacity / stroke-dashoffset', () => {
   }
 });
 
-test('lớp chuyển động không chạm `.decor` và không tải thêm ảnh nào', () => {
-  // `.decor` mang ảnh nền 877 KB. Đặt `transform` lên nó là nhấc cả texture đó
-  // thành một lớp hợp ảnh riêng trên GPU; đổi `background-position` của nó là
-  // vẽ lại 877 KB mỗi khung hình. Và một `url(...)` ở đây là một lượt tải nữa
-  // cho một trang chủ đã mang 877 KB tranh.
-  assert.ok(!/decor/.test(CSS_CODE), 'CSS lớp chuyển động không được nhắc .decor');
-  assert.ok(!/\burl\(/.test(CSS_CODE), 'lớp chuyển động vẽ bằng gradient, không tải ảnh');
-  assert.ok(!/decor/.test(TSX_CODE), 'MapMotion không được chạm .decor');
-  // Và chính `world-map.module.css` phải còn giữ hai dòng mà hợp đồng dựa vào:
-  // tranh căng đúng khung, khung đúng tỉ lệ 1360/820.
+test('`MapMotion.tsx` và 11 phần tử phủ đã bị xoá hẳn, không còn JS nào', () => {
+  // Ca bắt lỗi: để lại component thì 11 phần tử phủ vẫn được dựng, vẫn gắn
+  // listener cuộn, vẫn chạy `getBoundingClientRect` mỗi khung hình — một lớp
+  // chuyển động "đã bỏ" mà vẫn chạy, chỉ là không ai đọc CSS của nó nữa.
+  assert.ok(!existsSync(here('../../src/app/MapMotion.tsx')), 'MapMotion.tsx phải bị xoá');
+  assert.ok(!/MapMotion/.test(WORLD_MAP_CODE), 'WorldMap không được nhắc MapMotion nữa');
+  // Và lớp hover không dựng phần tử nào: không lớp phủ, không `position`, không
+  // `inset`. Nhờ thế nó KHÔNG THỂ chắn một cú bấm — bản trước phải cần hẳn một
+  // dòng `pointer-events: none` để không chắn tám liên kết.
+  for (const bad of ['position', 'inset', 'pointer-events', 'z-index', 'content']) {
+    assert.ok(
+      !new RegExp(String.raw`(^|[\s;{])${bad}\s*:`).test(CSS_CODE),
+      `lớp hover không dựng phần tử nào, nên nó không cần '${bad}'`,
+    );
+  }
+  // Mọi thuộc tính đánh dấu của bản cũ phải biến mất khỏi cả hai file.
+  for (const attr of ['data-map-motion', 'data-veil', 'data-shaft', 'data-seep', 'data-lake', 'data-thread']) {
+    assert.ok(!CSS_CODE.includes(attr), `CSS còn sót ${attr}`);
+    assert.ok(!WORLD_MAP_CODE.includes(attr), `WorldMap còn sót ${attr}`);
+  }
+});
+
+test('MỌI khai báo transform/opacity đều treo vào `:hover` hoặc `:focus-visible`', () => {
+  // Ca bắt lỗi dạng tổng: đây là câu "sau khi trang nạp xong, bản đồ đứng yên
+  // hoàn toàn" viết thành một bài kiểm. Một `transform` hay `opacity` trong một
+  // quy tắc KHÔNG có điều kiện tương tác là một thay đổi hình ở trạng thái
+  // nghỉ, tức một thứ người ta thấy mà không làm gì để thấy nó.
+  for (const rule of RULES) {
+    const head = norm(rule.head);
+    if (/:hover|:focus-visible/.test(head)) continue;
+    for (const { prop } of decls(rule.body)) {
+      assert.ok(
+        prop !== 'opacity' && prop !== 'transform',
+        `'${prop}' trong quy tắc không-tương-tác '${head}' — nó đổi hình lúc nghỉ`,
+      );
+    }
+  }
+});
+
+test('quy tắc NGHỈ chỉ mang `transition`, không mang `opacity`', () => {
+  // Ca bắt lỗi của một lỗi IM LẶNG hoàn hảo: viết `opacity: 0.55` cho trạng
+  // thái nghỉ rồi để `:hover` nâng về 1 cho ra ĐÚNG cùng một hình khi có
+  // chuột — nhưng lúc không ai chạm vào thì bản đồ MỜ SẴN, tám tấm nhãn nhạt đi
+  // mà không ai nói gì. Và nó không lộ ra ở ảnh chụp lúc đang hover.
+  const rest = ruleWithHead(`.spotlight ${REGION_HOOK}`);
+  assert.ok(rest, `phải có quy tắc nghỉ '.spotlight ${REGION_HOOK}'`);
+  const props = decls(rest.body).map((d) => d.prop);
+  assert.deepEqual(props, ['transition'], `quy tắc nghỉ chỉ được mang transition, thấy ${props}`);
+  // Phía TS nói đúng cùng một điều: nghỉ và sáng CÙNG độ đậm.
+  assert.equal(emphasisOpacity('rest'), emphasisOpacity('lit'));
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// 2 · `:focus-visible` CHO ĐÚNG HIỆU ỨNG CỦA `:hover`
+// ════════════════════════════════════════════════════════════════════════
+
+/** Bốn quy tắc làm nên cả lớp. Tìm theo HÌNH DÁNG selector, không theo thứ tự
+ *  trong file: thứ tự là chuyện của người viết, hình dáng là hợp đồng. */
+const litHover = ruleWithHead(`.spotlight ${REGION_HOOK}:hover`);
+const litFocus = ruleWithHead(`.spotlight ${REGION_HOOK}:focus-visible`);
+const dimHover = rulesWhereHead(/:has\(\[data-map-region\]:hover\)/)[0];
+const dimFocus = rulesWhereHead(/:has\(\[data-map-region\]:focus-visible\)/)[0];
+
+test('`:focus-visible` có ĐÚNG hai khối khai báo của `:hover`', () => {
+  // Bắt buộc, không tuỳ chọn: thông tin ở đây là "con trỏ đang ở đâu", và người
+  // dùng bàn phím không được mất nó. Ca bắt lỗi: bỏ một trong hai quy tắc
+  // `:focus-visible` thì Tab qua bản đồ không còn nói vùng nào đang được chọn —
+  // và đó là bố cục mà MỘT SỐ người dùng chỉ có bố cục đó.
+  for (const [name, r] of [['lit:hover', litHover], ['lit:focus', litFocus], ['dim:hover', dimHover], ['dim:focus', dimFocus]]) {
+    assert.ok(r, `thiếu quy tắc ${name}`);
+  }
+  // Thân khối giống nhau KÝ TỰ VỚI KÝ TỰ. CSS không chia sẻ được một khối khai
+  // báo giữa hai selector nên đây là bản chép tay, và bản chép tay là chỗ sẽ
+  // lệch: ai đó nâng cú nhấc của hover lên 5px mà quên bản focus.
+  assert.equal(norm(litFocus.body), norm(litHover.body), 'khối focus phải y hệt khối hover');
+  assert.equal(norm(dimFocus.body), norm(dimHover.body), 'khối "lùi lại" phải y hệt ở hai nhánh');
+  // Và hình dáng SELECTOR cũng phải là một bản chép: đổi `:hover` thành
+  // `:focus-visible` ở đúng chỗ kích hoạt, giữ nguyên phần còn lại.
+  assert.equal(norm(litHover.head).replace(/:hover$/, ':focus-visible'), norm(litFocus.head));
+  assert.equal(
+    norm(dimHover.head).replace(':has([data-map-region]:hover)', ':has([data-map-region]:focus-visible)'),
+    norm(dimFocus.head),
+  );
+});
+
+test('quy tắc "lùi lại" loại trừ chính vùng đang được trỏ / đang focus', () => {
+  // Ca bắt lỗi: `:has()` làm quy tắc "lùi lại" MẠNH HƠN quy tắc "sáng lên"
+  // (`.spotlight:has(X) [data-map-region]` cộng độ cụ thể của X vào), nên bỏ
+  // `:not(:hover)` thì chính vùng đang được trỏ cũng bị làm mờ — hover thành
+  // "cả tám vùng mờ đi", đúng ngược thông tin cần nói.
+  for (const [name, r] of [['hover', dimHover], ['focus', dimFocus]]) {
+    assert.ok(norm(r.head).includes(':not(:hover)'), `quy tắc lùi lại (${name}) phải loại trừ :hover`);
+    assert.ok(
+      norm(r.head).includes(':not(:focus-visible)'),
+      `quy tắc lùi lại (${name}) phải loại trừ :focus-visible — chuột rê sang vùng khác không được làm mờ vùng đang Tab tới`,
+    );
+  }
+});
+
+test('độ đậm và cú nhấc trong CSS khớp từng con số trong `map-motion.ts`', () => {
+  // Hai nguồn sự thật cho cùng một con số là chỗ chúng lệch nhau, và lệch ở đây
+  // nghĩa là mọi ca ở trên canh những con số mà trình duyệt không dùng.
+  assert.equal(norm(dimHover.body), `opacity: ${REGION_DIM_OPACITY};`);
+  assert.equal(
+    norm(litHover.body),
+    `opacity: ${REGION_LIT_OPACITY}; transform: translateY(-${REGION_LIFT_PX}px);`,
+  );
+  // Và luật đằng sau hai con số: vùng khác LÙI LẠI, không biến mất.
+  assert.ok(REGION_DIM_OPACITY < REGION_LIT_OPACITY, 'vùng khác phải nhạt hơn vùng đang trỏ');
+  assert.ok(REGION_DIM_OPACITY >= 0.4, 'lùi lại, không biến mất: tên chặng kia phải còn đọc được');
+  assert.ok(REGION_LIFT_PX > 0 && REGION_LIFT_PX <= 6, 'cú nhấc là một gợi ý chiều sâu, không phải một cú nhảy');
+});
+
+test('ba trạng thái: không ai chạm vào ⇒ KHÔNG vùng nào mờ', () => {
+  // Luật thông tin của cả lớp, và ca này canh đúng cái dễ viết sai nhất: "làm
+  // mờ các vùng khác" chỉ có nghĩa khi CÓ một vùng đang được trỏ.
+  assert.equal(regionEmphasis({ anyActive: false, active: false }), 'rest');
+  assert.equal(regionEmphasis({ anyActive: true, active: true }), 'lit');
+  assert.equal(regionEmphasis({ anyActive: true, active: false }), 'dim');
+  assert.equal(emphasisOpacity('rest'), REGION_LIT_OPACITY);
+  assert.equal(emphasisOpacity('dim'), REGION_DIM_OPACITY);
+  assert.ok(emphasisOpacity('dim') < emphasisOpacity('rest'), 'mờ phải nhạt hơn nghỉ');
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// 3 · CHUỘT GÁC SAU `@media (hover: hover)`, BÀN PHÍM KHÔNG
+// ════════════════════════════════════════════════════════════════════════
+
+test('hai quy tắc của CHUỘT nằm trong `@media (hover: hover)`', () => {
+  // Ca bắt lỗi: WebKit trên iOS GIỮ `:hover` sau khi ngón tay rời đi. Không gác
+  // thì một cú chạm trượt để lại một vùng sáng và bảy vùng mờ, DÍNH CỨNG cho
+  // tới khi người ta chạm vào chỗ khác — tức bản đồ nói sai chỗ con trỏ đang ở,
+  // trên đúng thiết bị không có con trỏ.
+  assert.equal(norm(litHover.at), '@media (hover: hover)');
+  assert.equal(norm(dimHover.at), '@media (hover: hover)');
+});
+
+test('hai quy tắc của BÀN PHÍM nằm NGOÀI `@media (hover: hover)`', () => {
+  // Ca bắt lỗi ngược lại, và là lỗi tệ hơn: đưa `:focus-visible` vào trong
+  // `@media (hover: hover)` thì người điều khiển bằng bàn phím hoặc công tắc
+  // TRÊN thiết bị cảm ứng mất hẳn tín hiệu "đang ở vùng nào" — đúng những người
+  // không có cách nào khác để biết.
+  assert.ok(!/hover: hover/.test(litFocus.at), ':focus-visible không được gác sau hover: hover');
+  assert.ok(!/hover: hover/.test(dimFocus.at), 'quy tắc lùi lại của bàn phím cũng vậy');
+  // `:focus-visible`, không `:focus`: bấm chuột vào một liên kết cũng đặt focus,
+  // nên `:focus` để lại một vùng sáng sau mỗi cú bấm và sau mỗi lần quay lại
+  // trang chủ từ bài học.
+  assert.ok(!/:focus(?!-visible)/.test(CSS_CODE), 'dùng :focus-visible, không :focus trần');
+});
+
+test('lớp hover không đổi vùng chạm, không ẩn/hiện gì', () => {
+  // Trên thiết bị cảm ứng không có hover, nên điều phải bảo đảm là vùng VẪN
+  // bấm được và vẫn rõ ràng — cách chắc chắn nhất là lớp này không đụng tới
+  // hộp, tới `display`, tới `visibility` của vùng nào. Ca bắt lỗi: một
+  // `display: none` theo `@media (hover: none)` (cách "hợp lý" để tắt lớp trên
+  // cảm ứng) sẽ ẩn luôn tám liên kết.
+  for (const bad of ['display', 'visibility', 'width', 'height', 'left', 'top', 'margin', 'padding']) {
+    assert.ok(
+      !new RegExp(String.raw`(^|[\s;{])${bad}\s*:`).test(CSS_CODE),
+      `lớp hover không được đổi '${bad}' của vùng nào`,
+    );
+  }
+  // Và `world-map.module.css` phải còn giữ vùng chạm tối thiểu của bản hẹp —
+  // đó là cái bảo đảm "vẫn bấm được" trên cảm ứng, và nó không ở file của tôi.
+  assert.match(WORLD_MAP_CSS, /min-height:\s*44px/, 'vùng chạm 44px của bản hẹp phải còn');
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// 4 · CHUYỂN TIẾP NGẮN, CHỈ `transform`/`opacity`
+// ════════════════════════════════════════════════════════════════════════
+
+test('MỌI `transition` đều ngắn (150–250ms) và chỉ chuyển tiếp transform/opacity', () => {
+  // Ca bắt lỗi: `transition: all 180ms` hoặc thêm `background-color` vào danh
+  // sách là mời trình duyệt VẼ LẠI tấm nhãn mỗi khung hình — và vùng bị vẽ lại
+  // nằm ngay trên ảnh nền 877 KB của `.decor`, nên nó kéo cả tranh vào lượt vẽ.
+  // Luật chỉ viết một lần, ở `transitionOk` trong `map-motion.ts`.
+  assert.ok(Number.isFinite(HOVER_VAR_MS), 'CSS phải khai --map-hover-ms');
+  let seen = 0;
+  for (const rule of RULES) {
+    for (const { prop, value } of decls(rule.body)) {
+      if (prop !== 'transition') continue;
+      // `transition: none` của nhánh giảm chuyển động không phải một chuyển
+      // tiếp — nó là chỗ BỎ chuyển tiếp, và ca riêng ở mục 5 canh nó.
+      if (/^none/.test(value)) continue;
+      seen += 1;
+      const parts = value.split(',').map((s) => s.trim().split(/\s+/));
+      const props = parts.map((t) => t[0]);
+      const times = parts.map((t) => (t[1] === 'var(--map-hover-ms)' ? HOVER_VAR_MS : Number((t[1] ?? '').replace('ms', ''))));
+      for (const ms of times) {
+        assert.ok(
+          transitionOk({ ms, props }),
+          `transition '${value}' trong '${norm(rule.head)}' sai luật: ${ms}ms, [${props}]`,
+        );
+      }
+    }
+  }
+  assert.ok(seen >= 1, 'phải có đúng một chuyển tiếp, ở quy tắc nghỉ');
+  // Và `transitionOk` thật sự bắt được hai cách sai, không chỉ chấp nhận cách đúng.
+  assert.equal(transitionOk({ ms: HOVER_MS, props: ['opacity', 'transform'] }), true);
+  assert.equal(transitionOk({ ms: 400, props: ['opacity'] }), false);
+  assert.equal(transitionOk({ ms: HOVER_MS, props: ['all'] }), false);
+  assert.equal(transitionOk({ ms: HOVER_MS, props: [] }), false);
+});
+
+test('thời lượng khớp `HOVER_MS`, và không một `ms` nào ngoài khoảng 150–250', () => {
+  assert.equal(HOVER_VAR_MS, HOVER_MS, 'CSS và TS phải cùng một thời lượng');
+  assert.ok(HOVER_MS >= HOVER_MIN_MS && HOVER_MS <= HOVER_MAX_MS);
+  // Quét cả file: một `350ms` lọt vào một quy tắc mà ca trên không đọc tới vẫn
+  // là một tín hiệu tới SAU con trỏ.
+  for (const [, ms] of CSS_CODE.matchAll(/(\d+)ms/g)) {
+    const n = Number(ms);
+    assert.ok(n >= HOVER_MIN_MS && n <= HOVER_MAX_MS, `${n}ms ngoài khoảng ${HOVER_MIN_MS}–${HOVER_MAX_MS}`);
+  }
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// 5 · GIẢM CHUYỂN ĐỘNG: MẤT CHUYỂN ĐỘNG, KHÔNG MẤT TÍN HIỆU
+// ════════════════════════════════════════════════════════════════════════
+
+test('nhánh `prefers-reduced-motion` bỏ chuyển động mà KHÔNG chạm độ đậm', () => {
+  // Ca bắt lỗi quan trọng nhất của phiên này, vì cách làm SAI trông rất giống
+  // cách làm đúng: `.spotlight * { transition: none; opacity: 1 !important }`
+  // đọc như "đã tôn trọng tuỳ chọn", nhưng nó tắt luôn cả THÔNG TIN — người xin
+  // giảm chuyển động mất hẳn tín hiệu "con trỏ đang ở đâu". Họ không muốn thấy
+  // thứ gì DI CHUYỂN, không phải không muốn biết mình đang ở đâu.
+  const reduced = RULES.filter((r) => /prefers-reduced-motion/.test(r.at));
+  assert.ok(reduced.length >= 2, 'phải có nhánh giảm chuyển động');
+  const props = new Set();
+  for (const r of reduced) for (const d of decls(r.body)) props.add(d.prop);
+  assert.ok(props.has('transition'), 'phải bỏ chuyển tiếp (đổi độ đậm TỨC THÌ)');
+  assert.ok(props.has('transform'), 'phải bỏ cú nhấc 3px');
+  assert.ok(!props.has('opacity'), 'KHÔNG được chạm opacity — tương phản 1 vs 0,55 là tín hiệu, không phải chuyển động');
+  // Và cả hai phải là `none`, không phải một giá trị nhỏ hơn.
+  for (const r of reduced) {
+    for (const { prop, value } of decls(r.body)) {
+      assert.match(value, /^none\s*!important$/, `${prop} trong nhánh giảm chuyển động phải là 'none !important'`);
+    }
+  }
+  // Nhánh này phải phủ CẢ hover LẪN focus: người xin giảm chuyển động cũng dùng
+  // bàn phím.
+  const heads = reduced.map((r) => norm(r.head)).join(' ');
+  assert.ok(/:hover/.test(heads) && /:focus-visible/.test(heads));
+});
+
+// ════════════════════════════════════════════════════════════════════════
+// 6 · BÁM CẤU TRÚC, KHÔNG BÁM HÌNH THÁI
+// ════════════════════════════════════════════════════════════════════════
+
+test('mọi selector của lớp hover chỉ gồm `.spotlight` và `[data-map-region]`', () => {
+  // Ca bắt lỗi của bất biến 6, và đây là ca đáng nhất trong bộ: bản đồ đang
+  // được nghiên cứu để thay hẳn sang hướng BẢN ĐỒ SAO (8 chòm, 48 ngôi —
+  // `design/v3/ban-do-sao.md`). Một `.spot4` hay một `[data-band='deep']` lọt
+  // vào đây là một dòng sẽ chết im lặng lúc đó: selector không khớp gì nữa,
+  // không lỗi, không log, chỉ là một hiệu ứng không bao giờ chạy.
+  // Bản trước đã trả giá đúng chuyện này ở quy mô nhỏ hơn — nó giữ bản sao bốn
+  // mốc địa tầng, và bản sao sống được đúng hai giờ.
+  assert.ok(RULES.length >= 5, `phải đọc được các quy tắc, thấy ${RULES.length}`);
+  for (const rule of RULES) {
+    const rest = norm(rule.head)
+      .split(/\s*,\s*/)
+      .join(' ')
+      .replaceAll('.spotlight', '')
+      .replaceAll(REGION_HOOK, '');
+    assert.ok(
+      !/[.[]/.test(rest),
+      `selector '${norm(rule.head)}' bám vào hình thái cụ thể — chỉ được .spotlight và ${REGION_HOOK}`,
+    );
+  }
+  // Và không một toạ độ nào: dãy ≥ 3 chữ số duy nhất được phép là thời lượng.
+  const stray = [...CSS_CODE.matchAll(/\b(\d{3,})\b/g)].map((m) => m[1]).filter((n) => Number(n) !== HOVER_MS);
+  assert.deepEqual(stray, [], `số lạ trong CSS — có phải toạ độ của tranh? ${stray}`);
+});
+
+test('`map-motion.ts` thuần: không import, không DOM, không toạ độ', () => {
+  // Bộ test chạy `node --test` và import thẳng file `.ts` (Node bóc kiểu), nên
+  // một `import` ở đó là cả bộ này đỏ. Và "không DOM" là cách nói khác của "lớp
+  // hover không có JS": nếu file này chạm `window` thì ở đâu đó có một effect.
+  assert.ok(!/^import /m.test(LIB_CODE), 'map-motion.ts phải thuần, không import gì');
+  for (const bad of ['document', 'window', 'addEventListener', 'querySelector', 'useEffect', 'setProperty']) {
+    assert.ok(!LIB_CODE.includes(bad), `map-motion.ts không được chạm '${bad}' — lớp hover không có JS`);
+  }
+  const allow = new Set([String(HOVER_MS), String(HOVER_MIN_MS), String(HOVER_MAX_MS)]);
+  const stray = [...LIB_CODE.matchAll(/\b(\d{3,})\b/g)].map((m) => m[1]).filter((n) => !allow.has(n));
+  assert.deepEqual(stray, [], `số lạ trong map-motion.ts ${stray}`);
+  // Và hợp đồng phải là ĐÚNG thuộc tính mà `WorldMap.tsx` đang đặt.
+  assert.equal(REGION_HOOK, '[data-map-region]');
+});
+
+test('lớp hover không chạm `.decor`, không tải thêm ảnh, không một thuộc tính màu nào', () => {
+  // Hai ca giữ lại từ bản trước, vẫn đúng từng chữ: `.decor` mang ảnh nền
+  // 877 KB, nên đặt `transform` lên nó là nhấc cả texture đó lên GPU và đổi màu
+  // ngay trên nó là vẽ lại 877 KB. Một `url(...)` ở đây là một lượt tải nữa cho
+  // một trang chủ đã mang 877 KB tranh.
+  assert.ok(!/decor/.test(CSS_CODE), 'CSS lớp hover không được nhắc .decor');
+  assert.ok(!/\burl\(/.test(CSS_CODE), 'lớp hover không tải ảnh nào');
+  assert.ok(!/#[0-9a-fA-F]{3,8}/.test(CSS_CODE), 'không mã màu hex trong *.module.css');
+  // KHÔNG MỘT THUỘC TÍNH MÀU NÀO, và đây là điều mới so với bản trước: lớp này
+  // nói hết bằng `opacity`/`transform`, nên nó đứng ngoài cả chuyện chế độ tối
+  // lẫn `forced-colors` — bản trước phải xử lý cả hai bằng hai quy tắc riêng.
+  const colorish = ['color', 'background', 'background-image', 'background-color', 'border', 'border-color', 'box-shadow', 'filter', 'fill', 'stroke', 'outline', 'mask-image'];
+  for (const rule of RULES) {
+    for (const { prop } of decls(rule.body)) {
+      assert.ok(!colorish.includes(prop), `'${prop}' trong '${norm(rule.head)}' — lớp hover không dùng màu`);
+    }
+  }
+  // Và `world-map.module.css` phải còn giữ hai dòng mà bản đồ dựa vào.
   assert.match(WORLD_MAP_CSS, /background-size:\s*100%\s*100%/);
   assert.match(WORLD_MAP_CSS, /aspect-ratio:\s*1360\s*\/\s*820/);
 });
 
-test('`will-change` chỉ đặt cho bốn màn khí, và chỉ ở nhánh đang chạy', () => {
-  // Mỗi lớp được nhấc lên là một texture nữa phải giữ trên GPU. Bốn màn khí là
-  // bốn phần tử DUY NHẤT bị JS đổi transform mỗi khung hình khi cuộn; khai
-  // `will-change` cho cả lớp phủ là trả tiền bộ nhớ cho mười một phần tử.
-  const hits = [...CSS_CODE.matchAll(/will-change:\s*([a-z-]+)/g)].map((m) => m[0]);
-  for (const hit of hits) {
-    const at = CSS_CODE.indexOf(hit);
-    const rule = CSS_CODE.slice(Math.max(0, at - 220), at);
-    assert.ok(
-      /will-change:\s*auto/.test(hit) || /data-map-motion='on'/.test(rule),
-      `${hit} phải nằm trong nhánh [data-map-motion='on']`,
-    );
-  }
-  assert.ok(hits.length >= 1, 'bốn màn khí cần một khai will-change');
-});
-
-test('CSS không mang mã màu, và cũng không mang token --ds-*', () => {
-  // Lý do thứ hai mới là lý do thật: bức tranh là một file SVG cố định, màu của
-  // nó KHÔNG đổi theo chế độ tối (`MAP_PALETTE.paper` có chú thích đúng về việc
-  // này). Lấy `--ds-paper` cho cột sáng thì ở chế độ tối cột sáng thành cột MỰC.
-  assert.ok(!/#[0-9a-fA-F]{3,8}/.test(CSS_CODE), 'không mã màu hex trong *.module.css');
-  assert.ok(!/--ds-/.test(CSS_CODE), 'lớp phủ tranh phải đứng NGOÀI chế độ tối, như tranh');
-  // Bốn màu đi qua bốn thuộc tính tuỳ biến, và CSS phải có dự phòng vô hình để
-  // lúc JS chưa chạy nó không là mấy mảng đen.
-  for (const name of Object.values(MOTION_VAR)) {
-    assert.ok(CSS_CODE.includes(name), `CSS phải dùng ${name}`);
-    assert.ok(
-      new RegExp(String.raw`${name}:\s*transparent`).test(CSS_CODE),
-      `${name} phải dự phòng 'transparent'`,
-    );
-  }
-});
-
-// ════════════════════════════════════════════════════════════════════════
-// 5 · KHỚP VỚI TRANH
-// ════════════════════════════════════════════════════════════════════════
-
-test('khung và bốn dải khớp `world-map.ts`', () => {
-  assert.match(
-    WORLD_MAP_TS,
-    new RegExp(
-      String.raw`MAP_FRAME = \{ width: ${MOTION_FRAME.width}, height: ${MOTION_FRAME.height} \}`,
-    ),
-  );
-  const bands = WORLD_MAP_TS.match(/BANDS: readonly BandId\[\] = \[([^\]]+)\]/);
-  assert.ok(bands, 'world-map.ts phải còn export BANDS');
-  const theirs = [...bands[1].matchAll(/'([a-z]+)'/g)].map((m) => m[1]);
-  assert.deepEqual([...MOTION_BANDS], theirs, 'bốn dải phải cùng tên và cùng THỨ TỰ');
-});
-
-test('`map-motion.ts` KHÔNG chép một toạ độ nào của bức tranh', () => {
-  // Ca bắt lỗi của bài học đắt nhất phiên này. Bản đầu giữ hai bản sao đồng bộ
-  // tay — `BAND_TOP_Y` (bốn mép địa tầng, đọc từ thân `horizon()`/`y_*()` của
-  // `build_map.py`) và hai hộp nước đã tính sẵn. CẢ HAI chết trong vòng hai
-  // giờ: agent vẽ tranh dời địa tầng 238/390/528/710 → 128/378/508/716 và dời
-  // hộp M4 `[470,370,420,130]` → `[470,362,420,150]`, ngay trong cùng buổi
-  // chiều. Sửa lại bốn con số là sửa triệu chứng; bản này bỏ hẳn hai bản sao.
-  //
-  // Nên ca này KHÔNG so số nữa — nó canh đúng cái không được quay lại: một dãy
-  // ≥ 3 chữ số trong `map-motion.ts` mà không phải một con số của chính lớp
-  // chuyển động (thời lượng ms, khung 1360 × 820, mốc 1100px).
-  const LIB = stripTs(doc('../../src/lib/map-motion.ts'));
-  const mine = new Set([
-    String(MOTION_FRAME.width),
-    String(MOTION_FRAME.height),
-    String(MOTION_MIN_WIDTH_PX),
-    String(MOTION_MIN_WIDTH_PX - 1),
-    String(MAX_AUTO_MOTION_MS),
-    String(THREAD_DURATION_MS),
-    String(THREAD_LEAD_MS),
-    String(THREAD_STAGGER_MS),
-    // `pathLength="100"` và mẫu số phần trăm — cả hai là 100.
-    String(THREAD_PATH_LENGTH),
-    '100',
-    // Hệ số làm tròn ba chữ số thập phân của `boxToPercent`.
-    '1000',
-    ...Object.values(PASS_MS).map(String),
-    ...Object.values(PASS_DELAY_MS).map(String),
-  ]);
-  const found = [...LIB.matchAll(/\b(\d{3,})\b/g)].map((m) => m[1]).filter((n) => !mine.has(n));
-  assert.deepEqual(found, [], `số lạ trong map-motion.ts — có phải toạ độ của tranh? ${found}`);
-  // Và hai hàm suy mốc y phải nhận MẢNG làm đối số, tức không import gì.
-  assert.ok(!/world-map/.test(LIB), 'map-motion.ts không được import world-map.ts');
-  assert.ok(!/^import /m.test(LIB), 'map-motion.ts phải thuần, không import gì');
-});
-
-test('hai hàm suy mốc y đọc đúng chân và đỉnh của một dải', () => {
-  // `bandFootY` suy MẶT ĐẤT từ chân ba công trình mặt đất, `bandHeadY` suy chỗ
-  // ánh sáng đã tắt từ đỉnh ba gian dải sâu. Nhờ hai hàm này mà cột bụi không
-  // cần biết `horizon()` của Python.
-  const fake = [
-    { band: 'surface', box: [0, 0, 10, 100] },
-    { band: 'surface', box: [20, 30, 10, 90] }, // chân = 120, cao nhất
-    { band: 'deep', box: [0, 500, 10, 40] },
-    { band: 'deep', box: [40, 460, 10, 40] }, // đỉnh = 460, trên nhất
-  ];
-  assert.equal(bandFootY(fake, 'surface'), 120);
-  assert.equal(bandHeadY(fake, 'deep'), 460);
-  // Dải không có gian nào ⇒ NaN, để chỗ gọi BỎ QUA chứ không đặt hộp vào y = 0.
-  assert.ok(Number.isNaN(bandFootY(fake, 'floor')));
-  assert.ok(Number.isNaN(bandHeadY([], 'surface')));
-  // Và trên dữ liệu THẬT, mặt đất phải nằm TRÊN chỗ ánh sáng tắt.
-  const real = [...WORLD_MAP_TS.matchAll(/band: '([a-z]+)'[^\n]*box: \[([^\]]+)\]/g)].map((m) => ({
-    band: m[1],
-    box: m[2].split(',').map((s) => Number(s.trim())),
-  }));
-  assert.ok(real.length >= 8, `phải đọc được tám gian, thấy ${real.length}`);
-  const ground = bandFootY(real, 'surface');
-  const dark = bandHeadY(real, 'deep');
-  assert.ok(ground > 0 && dark > ground, `mặt đất ${ground} phải nằm trên dải sâu ${dark}`);
-});
-
-test('bốn màn khí phủ kín khung và CHỒNG nhau ở mỗi mép', () => {
-  // Bỏ `BAND_BLEED_Y` thì hai màn khí giáp nhau đúng một đường — và vì chúng
-  // dịch những lượng KHÁC NHAU khi cuộn, khe giữa chúng hở ra đúng bằng hiệu
-  // hai độ dịch: một vạch trần chạy ngang bức tranh. Nên nới phải lớn hơn
-  // trường hợp xấu nhất, là hai lớp kề nhau chạy về HAI PHÍA.
+test('lớp hover nối vào CẢ HAI bố cục của `WorldMap`, trên phần tử bọc', () => {
+  // Ca bắt lỗi của bước nối dây, hai nửa:
+  //  · gỡ class khỏi `.map` thì cả lớp thành CSS chết mà mọi ca trên vẫn xanh;
+  //  · gỡ khỏi `.plain` thì bố cục dự phòng (hiện khi giáo trình không còn đúng
+  //    tám chặng) mất hẳn tín hiệu hover — đúng lúc không nên mất thêm gì.
+  assert.match(WORLD_MAP_CODE, /import hoverStyles from '\.\/map-motion\.module\.css'/);
+  assert.match(WORLD_MAP_CODE, /\$\{styles\.map\} \$\{hoverStyles\.spotlight\}/);
+  assert.match(WORLD_MAP_CODE, /\$\{styles\.plain\} \$\{hoverStyles\.spotlight\}/);
+  // `:has()` cần một TỔ TIÊN chung, nên class phải ở phần tử bọc — không ở
+  // chính tám liên kết.
   assert.ok(
-    BAND_BLEED_Y > 2 * PARALLAX_MAX_PX,
-    `nới ${BAND_BLEED_Y} phải > 2 × biên độ parallax (${2 * PARALLAX_MAX_PX})`,
+    !/data-map-region[^>]*hoverStyles\.spotlight/.test(WORLD_MAP_CODE),
+    'class phải ở phần tử bọc, không trên từng vùng',
   );
-  const boxes = MOTION_BANDS.map((b) => ({ band: b, ...veilBox(b) }));
-  // Màn trên cùng chạy từ mép KHUNG, không từ mép dải: phía trên mặt đất là
-  // TRỜI, và ba gian M1–M3 đứng trong khoảng trời đó (hộp của chúng bắt đầu ở
-  // y = 0). Bỏ nhánh đó thì parallax không chạy ở đúng phần bản đồ mà người mới
-  // vào nhìn trước nhất.
-  assert.equal(boxes[0].top, 0, 'màn trên cùng phải chạm mép trên khung');
-  const last = boxes[boxes.length - 1];
-  assert.ok(last.top + last.height >= 100 - 1e-9, 'màn đáy phải chạm mép dưới khung');
-  for (const b of boxes) {
-    assert.equal(b.left, 0);
-    assert.equal(b.width, 100);
-    assert.ok(b.height > 0, `màn ${b.band} rỗng`);
-  }
-  for (let i = 1; i < boxes.length; i += 1) {
-    const prevBottom = boxes[i - 1].top + boxes[i - 1].height;
-    assert.ok(prevBottom > boxes[i].top, `màn ${boxes[i].band} phải chồng lên màn trên nó`);
-  }
-});
-
-test('hai lớp nước bám vào MÃ GIAN, không vào một bản sao toạ độ', () => {
-  // Ca bắt lỗi của một lỗi ĐÃ XẢY RA trong phiên này: bản đầu giữ hai hộp tính
-  // sẵn (`SEEP_BOX = boxToPercent(470, 370, 420, 130)`) và agent vẽ tranh dời
-  // hộp của M4 thành `[470, 362, 420, 150]` trong cùng buổi chiều — bản sao
-  // sống được đúng hai giờ. Nay không còn con số nào để lệch, và ca này canh
-  // đúng điều đó: hai mã gian phải CÒN TỒN TẠI trong `REGION_LAYOUT`, và
-  // `MapMotion.tsx` phải đọc hộp từ đó chứ không mang hộp của riêng nó.
-  for (const key of [SEEP_REGION, LAKE_REGION]) {
-    assert.match(
-      WORLD_MAP_TS,
-      new RegExp(String.raw`key: '${key}'`),
-      `REGION_LAYOUT phải còn gian ${key}`,
-    );
-  }
-  assert.match(TSX_CODE, /REGION_LAYOUT\.find/, 'hộp phải đọc từ REGION_LAYOUT');
-  assert.match(TSX_CODE, /boxToPercent\(/);
-  // `regionBox` phải được GỌI, không chỉ được định nghĩa. Thiếu câu này thì
-  // thay chỗ gọi bằng một hộp cứng (`{ left: 34, top: 44, … }`) vẫn đạt cả bộ:
-  // `REGION_LAYOUT.find` còn nguyên trong thân một hàm không ai gọi nữa. Đã
-  // kiểm bằng cách làm đúng thế — 34/34 xanh.
-  const calls = [...TSX_CODE.matchAll(/regionBox\(/g)].length;
-  assert.ok(calls >= 2, `regionBox phải vừa được khai vừa được GỌI, thấy ${calls} lượt`);
-  // Và không một hộp toạ độ viết tay nào trong component.
-  assert.ok(
-    !/\{\s*left:\s*[\d.]+\s*,\s*top:\s*[\d.]+/.test(TSX_CODE),
-    'không ghi cứng một hộp toạ độ nào trong MapMotion.tsx',
-  );
-  // Và map-motion.ts không được mang lại một hộp toạ độ nào.
-  const LIB = stripTs(doc('../../src/lib/map-motion.ts'));
-  assert.ok(
-    !/boxToPercent\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)/.test(LIB),
-    'không ghi cứng một hộp toạ độ nào trong map-motion.ts',
-  );
-});
-
-test('cột bụi đứng trên giếng gần mặt trời nhất, và dừng ở dải sâu', () => {
-  // Luật, không phải thẩm mỹ: `MAP_SUN` là nguồn sáng duy nhất của bức vẽ, nên
-  // giếng gần nó nhất là giếng duy nhất có lý do để có ánh sáng rọi vào. Ghi
-  // cứng `x = 100` thì agent vẽ tranh dời mặt trời là cột bụi sáng trong một
-  // cái giếng tối.
-  const sun = WORLD_MAP_TS.match(/MAP_SUN = \{ cx: (\d+), cy: (\d+) \}/);
-  assert.ok(sun, 'world-map.ts phải còn MAP_SUN');
-  const wells = [...WORLD_MAP_TS.matchAll(/\{ to: '(M\d)', x: (\d+), d: '([^']+)' \}/g)];
-  assert.ok(wells.length >= 2, `phải còn ít nhất hai giếng, thấy ${wells.length}`);
-  const xs = wells.map((w) => Number(w[2]));
-  const nearest = xs.reduce((a, b) =>
-    Math.abs(b - Number(sun[1])) < Math.abs(a - Number(sun[1])) ? b : a,
-  );
-  assert.equal(nearestWellX(Number(sun[1]), xs), nearest);
-  // Và `MapMotion.tsx` phải THẬT SỰ gọi hàm đó với `MAP_SUN.cx`. Thiếu câu
-  // này thì ghi cứng `const wellX = 100` vẫn đạt cả 33 ca — đã kiểm bằng cách
-  // làm đúng thế: 33/33 xanh, nên đây không phải một ca dư.
-  assert.match(TSX_CODE, /nearestWellX\(\s*MAP_SUN\.cx/);
-  // Hàm phải chọn ĐÚNG cái gần nhất kể cả khi mảng không có thứ tự.
-  assert.equal(nearestWellX(100, [1300, 36, 905, 100, 470]), 100);
-  assert.equal(nearestWellX(480, [1300, 36, 905, 100, 470]), 470);
-  assert.ok(Number.isNaN(nearestWellX(100, [])), 'không có giếng nào ⇒ NaN, không phải 0');
-
-  // Hai mốc y đến từ `REGION_LAYOUT` qua `bandFootY`/`bandHeadY`, giống đúng
-  // cách `MapMotion.tsx` làm — không một con số nào của tranh ở đây.
-  const real = [...WORLD_MAP_TS.matchAll(/band: '([a-z]+)'[^\n]*box: \[([^\]]+)\]/g)].map((m) => ({
-    band: m[1],
-    box: m[2].split(',').map((s) => Number(s.trim())),
-  }));
-  const groundY = bandFootY(real, 'surface');
-  const darkY = bandHeadY(real, 'deep');
-  assert.match(TSX_CODE, /bandFootY\(REGION_LAYOUT, 'surface'\)/);
-  assert.match(TSX_CODE, /bandHeadY\(REGION_LAYOUT, 'deep'\)/);
-
-  const box = shaftBox(nearest, groundY, darkY);
-  const mid = box.left + box.width / 2;
-  assert.ok(
-    Math.abs(mid - (nearest / MOTION_FRAME.width) * 100) < 0.01,
-    `cột bụi (${mid}%) phải đứng giữa giếng x=${nearest}`,
-  );
-  // Bắt đầu ở MẶT ĐẤT và tắt ở ĐỈNH DẢI SÂU. Chỗ ánh sáng tắt là một thông
-  // tin; cho cột chạy tới đáy là nói ngược chính bức tranh, vốn tối dần xuống.
-  const toY = (pct) => (pct * MOTION_FRAME.height) / 100;
-  assert.ok(Math.abs(toY(box.top) - groundY) < 0.5, `cột bụi phải bắt đầu ở mặt đất ${groundY}`);
-  assert.ok(
-    Math.abs(toY(box.top + box.height) - darkY) < 0.5,
-    `cột bụi phải tắt ở đỉnh dải sâu ${darkY}`,
-  );
-  // Hai mốc đưa vào lộn ngược thì hàm vẫn trả một hộp dương, không âm.
-  const flipped = shaftBox(nearest, darkY, groundY);
-  assert.ok(flipped.height > 0, 'hai mốc lộn ngược phải cho hộp dương, không âm');
-  // Và nằm trong khung.
-  assert.ok(box.left >= 0 && box.top >= 0, 'cột bụi ra ngoài mép trên/trái');
-  assert.ok(box.left + box.width <= 100.001, 'cột bụi tràn mép phải');
-  assert.ok(box.top + box.height <= 100.001, 'cột bụi tràn mép dưới');
-});
-
-test('năm sợi sáng vẽ theo chính `MAP_WELLS`, không phải một bản sao', () => {
-  // Nếu ai đó chép năm chuỗi `d` vào `MapMotion.tsx` thì sợi sáng và giếng
-  // trong tranh lệch nhau ngay lần sau agent vẽ tranh dời một giếng — và lệch
-  // một cách im lặng, vì cả hai vẫn là năm đường dọc trông hợp lý.
-  assert.match(TSX, /MAP_WELLS\.map/);
-  assert.ok(!/\bM\d+ \d+ L/.test(TSX), 'không được chép chuỗi đường giếng vào TSX');
-  assert.match(TSX, /viewBox="0 0 1360 820"/, 'SVG sợi sáng phải dùng đúng khung của tranh');
-});
-
-test('bốn màu của lớp phủ lấy từ `MAP_PALETTE` của chính bức tranh', () => {
-  // Lớp phủ sáng hơn/khác tông tranh là một lớp dán lên, không phải ánh sáng
-  // trong tranh — đúng cái làm hai bản trước bị bác bằng bốn chữ "xấu và trẻ con".
-  for (const [name, hex] of Object.entries(MOTION_PALETTE)) {
-    assert.ok(
-      WORLD_MAP_TS.includes(hex),
-      `màu '${name}' (${hex}) không có trong MAP_PALETTE — lớp phủ lệch tông tranh`,
-    );
-  }
-});
-
-test('`pathLength` khớp nhau ở cả ba chỗ: TS, TSX và `stroke-dasharray` trong CSS', () => {
-  // Đây là một lỗi IM LẶNG hoàn hảo nếu không có ca này: để `pathLength={1}`
-  // trong TSX mà `stroke-dasharray: 100` trong CSS thì vạch gạch dài gấp trăm
-  // lần đường, nên sợi hiện ĐỦ ngay từ khung đầu và hiệu ứng vẽ dần biến mất —
-  // không lỗi, không log, chỉ là một hiệu ứng không bao giờ chạy.
-  assert.equal(THREAD_PATH_LENGTH, 100);
-  assert.match(TSX, new RegExp(String.raw`pathLength=\{THREAD_PATH_LENGTH\}`));
-  assert.match(
-    CSS_CODE,
-    new RegExp(String.raw`stroke-dasharray:\s*${THREAD_PATH_LENGTH}\s*;`),
-  );
-  const ink = keyframeBlocks(CSS_CODE).find((b) => /mapInk/.test(b.name));
-  assert.ok(ink, 'phải có @keyframes vẽ dần sợi sáng');
-  assert.match(ink.body, new RegExp(String.raw`stroke-dashoffset:\s*${THREAD_PATH_LENGTH}`));
-  assert.match(ink.body, /stroke-dashoffset:\s*0/);
-});
-
-// ════════════════════════════════════════════════════════════════════════
-// 6 · KHÔNG CHẮN CÚ BẤM, KHÔNG SSR INLINE STYLE
-// ════════════════════════════════════════════════════════════════════════
-
-test('lớp chuyển động không bắt chuột ở bất cứ đâu', () => {
-  // Bản đồ là lối đi CHÍNH vào khoá học. Một lớp phủ trong suốt phủ kín khung
-  // mà bắt chuột thì tám liên kết trở thành tám hình vẽ — và lỗi đó không lộ ra
-  // ở bất cứ ảnh chụp nào.
-  assert.match(CSS_CODE, /\.motion\s*\{[^}]*pointer-events:\s*none/);
-  const back = [...CSS_CODE.matchAll(/pointer-events:\s*(auto|all)/g)];
-  assert.equal(back.length, 0, 'không phần tử con nào được lấy lại chuột');
-});
-
-test('không `style={{…}}` nào — màu và hộp đặt bằng CSSOM lúc chạy', () => {
-  // Bẫy `AGENTS.md`: SSR tuần tự hoá style nội tuyến thành `style="…"`, và 257
-  // chỗ `style={{…}}` ở 40 file React là MỘT TRONG HAI nguyên nhân
-  // `style-src 'unsafe-inline'` chưa bỏ được. Thêm chỗ thứ 258 là đóng thêm một
-  // cái đinh vào chỉ thị đó.
-  assert.ok(!/style=\{\{/.test(TSX_CODE), 'đặt bằng el.style.setProperty, không bằng prop style');
-  assert.match(TSX_CODE, /setProperty\(/);
-  // Và không `setAttribute('style', …)`: CSP CHẶN đúng cái đó, khác với CSSOM.
-  assert.ok(!/setAttribute\(\s*'style'/.test(TSX_CODE));
-});
-
-test('mọi hình đều aria-hidden, và lớp phủ không thêm tab stop nào', () => {
-  assert.match(TSX, /aria-hidden="true"/);
-  // Không `<a>`, `<button>`, `tabIndex` nào: lớp này là không khí, nó không
-  // được chen vào thứ tự Tab giữa tám liên kết.
-  assert.ok(!/tabIndex/.test(TSX));
-  assert.ok(!/<a[\s>]/.test(TSX) && !/<button/.test(TSX));
-});
-
-test('`MapMotion` đã được nối dây vào `WorldMap`, và đứng TRƯỚC tám liên kết', () => {
-  // Ca bắt lỗi của bước nối dây: gỡ một dòng khỏi `WorldMap.tsx` thì cả lớp
-  // chuyển động thành code chết mà mọi ca test khác ở trên vẫn xanh.
-  assert.match(WORLD_MAP_TSX, /import MapMotion from '\.\/MapMotion'/);
-  assert.match(WORLD_MAP_TSX, /<MapMotion \/>/);
-  const at = WORLD_MAP_TSX.indexOf('<MapMotion />');
-  const decorAt = WORLD_MAP_TSX.indexOf('data-map-decor');
-  const bandsAt = WORLD_MAP_TSX.indexOf('{BANDS.map(');
-  assert.ok(decorAt > 0 && at > decorAt, 'lớp chuyển động phải đứng SAU tranh (chồng lên)');
-  assert.ok(bandsAt > 0 && at < bandsAt, 'và TRƯỚC tám liên kết (không chắn cú bấm)');
-});
-
-test('`motionVars` trả đủ bốn cặp tên → màu, không trùng tên', () => {
-  const pairs = motionVars();
-  assert.equal(pairs.length, Object.keys(MOTION_VAR).length);
-  const names = pairs.map(([n]) => n);
-  assert.equal(new Set(names).size, names.length, 'tên thuộc tính trùng là một màu bị ghi đè');
-  for (const [name, value] of pairs) {
-    assert.ok(name.startsWith('--map-'), `${name} phải thuộc không gian tên --map-*`);
-    assert.match(value, /^#[0-9A-Fa-f]{6}$/, `${name} phải là một mã màu đủ`);
-  }
+  // Và hợp đồng phía DOM phải còn: mỗi vùng là một `<a href>` mang
+  // `data-map-region`, ở cả hai bố cục.
+  const hooks = [...WORLD_MAP_CODE.matchAll(/data-map-region/g)].length;
+  assert.ok(hooks >= 2, `mỗi bố cục phải có một vùng mang data-map-region, thấy ${hooks}`);
+  assert.ok(!/tabIndex/.test(WORLD_MAP_CODE), 'lớp hover không thêm tab stop nào');
 });

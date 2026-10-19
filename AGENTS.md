@@ -43,7 +43,7 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 637 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 622 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
@@ -55,6 +55,12 @@ dưới mức này", nên một con số cũ KHÔNG phải chú thích lỗi th�
 mất lưới an toàn cho 186 ca test, và là giấy phép thêm 60 cảnh báo mới mà vẫn
 tưởng đang đạt mốc. Thêm/bớt ca test, dọn lint, xoá file ⇒ đo lại rồi sửa bảng
 TRONG CÙNG commit đó.
+
+Con số frontend TỤT từ 637 xuống 622 ngày 19/10 là tụt CÓ LÝ DO, không phải mất lưới an
+toàn: lớp chuyển động tự chạy của bản đồ bị bỏ theo quyết định sản phẩm ("chỉ cần motion
+graphic khi hover"), nên 34 ca canh parallax/bụi/mạch rỉ/sợi sáng được thay bằng 19 ca canh
+lớp hover. Bớt ca test vì BỚT TÍNH NĂNG thì ghi thẳng lý do ở đây; bớt vì "test khó sửa" thì
+không.
 
 `next build` KHÔNG có trong bảng vì chưa ai đo nó thành một con số ổn định;
 đừng thêm dòng nào vào bảng mà không tự chạy lệnh để lấy số.

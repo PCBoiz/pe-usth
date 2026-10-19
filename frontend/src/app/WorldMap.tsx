@@ -63,7 +63,7 @@ import {
   regionStep,
 } from '@/lib/world-map';
 
-import MapMotion from './MapMotion';
+import hoverStyles from './map-motion.module.css';
 import styles from './world-map.module.css';
 
 /** Mạch sáng ở bản hẹp: một đoạn dọc giữa hai vùng, chảy theo hướng cuộn. */
@@ -146,7 +146,11 @@ export default function WorldMap({ regions }: WorldMapProps) {
     return (
       <section className={styles.wrap} aria-labelledby="mapTitle">
         <h2 className={styles.label} id="mapTitle">{MAP_COPY.label}</h2>
-        <div className={styles.plain} ref={mapRef}>
+        {/* Danh sách dự phòng cũng nhận lớp hover: lớp đó bám vào
+            `[data-map-region]`, không vào hình thái, nên nó đúng y nguyên ở đây
+            — và đây là bố cục mà người ta thấy khi giáo trình đổi, tức đúng lúc
+            không nên mất thêm thông tin nào. */}
+        <div className={`${styles.plain} ${hoverStyles.spotlight}`} ref={mapRef}>
           {regions.map((region, i) => (
             <a key={region.href} className={styles.plainRegion} data-map-region href={region.href} aria-label={region.ariaLabel}>
               {plate(region, i)}
@@ -161,19 +165,17 @@ export default function WorldMap({ regions }: WorldMapProps) {
     <section className={styles.wrap} aria-labelledby="mapTitle">
       <h2 className={styles.label} id="mapTitle">{MAP_COPY.label}</h2>
 
-      <div className={styles.map} ref={mapRef}>
+      {/* LỚP HOVER — `hoverStyles.spotlight`. Nó đặt ở ĐÂY, trên phần tử bọc,
+          vì `:has()` cần một tổ tiên chung để biết "có vùng nào đang được trỏ
+          không"; mọi hiệu ứng thì nằm trên chính tám `<a data-map-region>` bên
+          dưới. Không có phần tử phủ nào, không có JS nào: bản trước dựng 11
+          phần tử và một component `MapMotion` cho năm hiệu ứng TỰ CHẠY, cả năm
+          đã bỏ (xem `src/app/map-motion.module.css`). */}
+      <div className={`${styles.map} ${hoverStyles.spotlight}`} ref={mapRef}>
         {/* Tranh mặt cắt — `public/map/world-map.svg`, đặt bằng CSS. Một `<div>`
             trống chứ không phải `<img>`: ở bản hẹp quy tắc @container tắt nó
             nên trình duyệt không tải 850 KB mà điện thoại không bao giờ hiện. */}
         <div className={styles.decor} data-map-decor aria-hidden="true" />
-
-        {/* LỚP CHUYỂN ĐỘNG — chồng lên tranh, dưới tám liên kết. Nó KHÔNG chạm
-            `.decor`: tranh là ảnh nền 877 KB, nên nó là lớp XA NHẤT với hệ số
-            parallax = 0 và không bị vẽ lại lần nào. Thứ tự ở đây là hợp đồng:
-            sau tranh (để chồng lên), trước tám liên kết (để không chắn cú bấm —
-            lớp còn `pointer-events: none`). Tháo một dòng này ra thì bản đồ vẫn
-            đủ và vẫn bấm được. Xem `src/lib/map-motion.ts`. */}
-        <MapMotion />
 
         {BANDS.map((band) => {
           const seam = SEAMS[band];
