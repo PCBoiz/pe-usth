@@ -1,0 +1,974 @@
+{
+ "khong_khoa": {
+  "phien_ban": 1,
+  "nguoi": [
+   {
+    "ten": "A",
+    "so_tien": 50
+   },
+   {
+    "ten": "B",
+    "so_tien": 10
+   }
+  ],
+  "so_du_dau": 100,
+  "mong_doi": 160,
+  "nhip": [
+   {
+    "n": 1,
+    "ai": 0,
+    "viec": "doc",
+    "dong": 2,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 2,
+    "ai": 1,
+    "viec": "doc",
+    "dong": 2,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 3,
+    "ai": 0,
+    "viec": "ghi",
+    "dong": 3,
+    "gia_tri": 150,
+    "so_du": 150,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 4,
+    "ai": 1,
+    "viec": "ghi",
+    "dong": 3,
+    "gia_tri": 110,
+    "so_du": 110,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "xong",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   }
+  ],
+  "so_du": 110,
+  "dat": false,
+  "loi": {
+   "loai": "ghi_de",
+   "nhip": 4,
+   "dong": 3,
+   "ai": 1,
+   "cau": "B ghi 110 đè lên 150 mà A vừa ghi ở nhịp 3. Kéo thanh tua về lúc B đọc sổ để xem số B đang cầm."
+  },
+  "lich": {
+   "kieu": "luan-phien",
+   "chen": []
+  },
+  "so_lich_da_do": 1,
+  "in_ra": "",
+  "ma": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n"
+ },
+ "co_khoa": {
+  "phien_ban": 1,
+  "nguoi": [
+   {
+    "ten": "A",
+    "so_tien": 50
+   },
+   {
+    "ten": "B",
+    "so_tien": 10
+   }
+  ],
+  "so_du_dau": 100,
+  "mong_doi": 160,
+  "nhip": [
+   {
+    "n": 1,
+    "ai": 0,
+    "viec": "lay",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": null,
+      "bien": {
+       "so_tien": 50
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 2,
+    "ai": 1,
+    "viec": "cho",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": null,
+      "bien": {
+       "so_tien": 50
+      }
+     },
+     {
+      "o": "cho",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 3,
+    "ai": 0,
+    "viec": "doc",
+    "dong": 3,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "cho",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 4,
+    "ai": 1,
+    "viec": "cho",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "cho",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 5,
+    "ai": 0,
+    "viec": "ghi",
+    "dong": 4,
+    "gia_tri": 150,
+    "so_du": 150,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "cho",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 6,
+    "ai": 1,
+    "viec": "cho",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 150,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "cho",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 7,
+    "ai": 0,
+    "viec": "tra",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 150,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 8,
+    "ai": 1,
+    "viec": "lay",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 150,
+    "khoa": 1,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 9,
+    "ai": 1,
+    "viec": "doc",
+    "dong": 3,
+    "gia_tri": 150,
+    "so_du": 150,
+    "khoa": 1,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 150,
+      "bien": {
+       "so_tien": 10,
+       "x": 150
+      }
+     }
+    ]
+   },
+   {
+    "n": 10,
+    "ai": 1,
+    "viec": "ghi",
+    "dong": 4,
+    "gia_tri": 160,
+    "so_du": 160,
+    "khoa": 1,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": 150,
+      "bien": {
+       "so_tien": 10,
+       "x": 150
+      }
+     }
+    ]
+   },
+   {
+    "n": 11,
+    "ai": 1,
+    "viec": "tra",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 160,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "xong",
+      "dong": 2,
+      "cam": 150,
+      "bien": {
+       "so_tien": 10,
+       "x": 150
+      }
+     }
+    ]
+   }
+  ],
+  "so_du": 160,
+  "dat": true,
+  "loi": null,
+  "lich": {
+   "kieu": "luan-phien",
+   "chen": []
+  },
+  "so_lich_da_do": 47,
+  "in_ra": "",
+  "ma": "def nap(so_quy, khoa, so_tien):\n    with khoa:\n        x = so_quy.doc()\n        so_quy.ghi(x + so_tien)\n"
+ },
+ "khoa_chi_luc_doc": {
+  "phien_ban": 1,
+  "nguoi": [
+   {
+    "ten": "A",
+    "so_tien": 50
+   },
+   {
+    "ten": "B",
+    "so_tien": 10
+   }
+  ],
+  "so_du_dau": 100,
+  "mong_doi": 160,
+  "nhip": [
+   {
+    "n": 1,
+    "ai": 0,
+    "viec": "lay",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": null,
+      "bien": {
+       "so_tien": 50
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 2,
+    "ai": 0,
+    "viec": "doc",
+    "dong": 3,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": 0,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 3,
+    "ai": 0,
+    "viec": "tra",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 4,
+    "ai": 1,
+    "viec": "lay",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": 1,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": null,
+      "bien": {
+       "so_tien": 10
+      }
+     }
+    ]
+   },
+   {
+    "n": 5,
+    "ai": 1,
+    "viec": "doc",
+    "dong": 3,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": 1,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 2,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 6,
+    "ai": 1,
+    "viec": "tra",
+    "dong": 2,
+    "gia_tri": null,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 7,
+    "ai": 1,
+    "viec": "ghi",
+    "dong": 4,
+    "gia_tri": 110,
+    "so_du": 110,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 8,
+    "ai": 0,
+    "viec": "ghi",
+    "dong": 4,
+    "gia_tri": 150,
+    "so_du": 150,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   }
+  ],
+  "so_du": 150,
+  "dat": false,
+  "loi": {
+   "loai": "ghi_de",
+   "nhip": 8,
+   "dong": 4,
+   "ai": 0,
+   "cau": "A ghi 150 đè lên 110 mà B vừa ghi ở nhịp 7. Kéo thanh tua về lúc A đọc sổ để xem số A đang cầm."
+  },
+  "lich": {
+   "kieu": "chen",
+   "chen": [
+    3
+   ]
+  },
+  "so_lich_da_do": 5,
+  "in_ra": "",
+  "ma": "def nap(so_quy, khoa, so_tien):\n    with khoa:\n        x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n"
+ },
+ "go_sai_ten": {
+  "phien_ban": 1,
+  "nguoi": [
+   {
+    "ten": "A",
+    "so_tien": 50
+   },
+   {
+    "ten": "B",
+    "so_tien": 10
+   }
+  ],
+  "so_du_dau": 100,
+  "mong_doi": 160,
+  "nhip": [],
+  "so_du": 100,
+  "dat": false,
+  "loi": {
+   "loai": "loi_chay",
+   "nhip": 1,
+   "dong": 3,
+   "ai": 0,
+   "cau": "NameError: name 'so_tein' is not defined"
+  },
+  "lich": {
+   "kieu": "luan-phien",
+   "chen": []
+  },
+  "so_lich_da_do": 1,
+  "in_ra": "",
+  "ma": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tein)\n"
+ },
+ "doc_lai": {
+  "phien_ban": 1,
+  "nguoi": [
+   {
+    "ten": "A",
+    "so_tien": 50
+   },
+   {
+    "ten": "B",
+    "so_tien": 10
+   }
+  ],
+  "so_du_dau": 100,
+  "mong_doi": 160,
+  "nhip": [
+   {
+    "n": 1,
+    "ai": 0,
+    "viec": "doc",
+    "dong": 2,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chua",
+      "dong": null,
+      "cam": null,
+      "bien": {}
+     }
+    ]
+   },
+   {
+    "n": 2,
+    "ai": 1,
+    "viec": "doc",
+    "dong": 2,
+    "gia_tri": 100,
+    "so_du": 100,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 3,
+    "ai": 0,
+    "viec": "ghi",
+    "dong": 3,
+    "gia_tri": 150,
+    "so_du": 150,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 3,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 4,
+    "ai": 1,
+    "viec": "ghi",
+    "dong": 3,
+    "gia_tri": 110,
+    "so_du": 110,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 5,
+    "ai": 0,
+    "viec": "doc",
+    "dong": 4,
+    "gia_tri": 110,
+    "so_du": 110,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 110,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "chay",
+      "dong": 4,
+      "cam": 100,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   },
+   {
+    "n": 6,
+    "ai": 1,
+    "viec": "doc",
+    "dong": 4,
+    "gia_tri": 110,
+    "so_du": 110,
+    "khoa": null,
+    "nguoi": [
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 110,
+      "bien": {
+       "so_tien": 50,
+       "x": 100
+      }
+     },
+     {
+      "o": "xong",
+      "dong": 4,
+      "cam": 110,
+      "bien": {
+       "so_tien": 10,
+       "x": 100
+      }
+     }
+    ]
+   }
+  ],
+  "so_du": 110,
+  "dat": false,
+  "loi": {
+   "loai": "ghi_de",
+   "nhip": 4,
+   "dong": 3,
+   "ai": 1,
+   "cau": "B ghi 110 đè lên 150 mà A vừa ghi ở nhịp 3. Kéo thanh tua về lúc B đọc sổ để xem số B đang cầm."
+  },
+  "lich": {
+   "kieu": "luan-phien",
+   "chen": []
+  },
+  "so_lich_da_do": 1,
+  "in_ra": "",
+  "ma": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n    so_quy.doc()\n"
+ }
+}

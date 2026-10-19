@@ -21,9 +21,12 @@ py scripts/pe-v4/build_advanced.py     # sinh mini-game -> scripts/pe-v4/out-adv
 py scripts/pe-v4/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
 py scripts/pe-v4/anim/check.py         # kiểm 23 hình SVG + đếm hình được bài dùng
 py scripts/pe-v4/anim/check.py --strict # thêm: hình chưa bài nào khai cũng là lỗi (CI chạy bản này)
-npm i --no-save pyodide@0.27.7         # CẢ HAI lệnh dưới đều import pyodide
+py -I scripts/pe-v4/check_so_quy.py    # động cơ mini-game "Sổ quỹ chung" dưới CPython (CI chạy)
+py -I scripts/pe-v4/check_so_quy.py --ghi-mau  # sinh lại vết mẫu cho test phía React sau khi sửa động cơ
+npm i --no-save pyodide@0.27.7         # CẢ BA lệnh dưới đều import pyodide
 node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
 node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ chấm của trình duyệt
+node scripts/pe-v4/check-so-quy.mjs    # cùng bộ ca của check_so_quy.py, chạy trong Pyodide thật
 ```
 
 Trên Windows dùng `py`, không dùng `python` — `python` là stub của Microsoft Store.
@@ -213,6 +216,16 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · mọi trang công khai (trang chủ, `/courses/*`, badge "Tiếp tục ở bài X"…) dùng
     **`apiFetchSessionOnly`**: nó chỉ gửi kèm phiên đang có, 401 thì trả về 401 và để UI hiện
     trạng thái "chưa đăng nhập", KHÔNG tạo tài khoản.
+
+- **Mini-game "Sổ quỹ chung" (T05): một NHỊP là một lần đụng thứ dùng chung, không phải một
+  câu lệnh.** Động cơ `frontend/public/static/js/so-quy.py` biến hàm của người học thành
+  generator dừng TRƯỚC mỗi `so_quy.doc()`/`so_quy.ghi()`/lấy-trả khoá. Cắt theo câu lệnh
+  (như đề xuất ban đầu) thì `so_quy.ghi(so_quy.doc() + so_tien)` viết gộp một dòng đọc-rồi-ghi
+  trong cùng nhịp và lịch luân phiên ra 160 KHÔNG cần khoá — đã đo bằng đột biến: 6/14 ca
+  trượt. Luân phiên đạt cũng CHƯA đủ: động cơ dò thêm mọi lịch chen ngang ≤ 2 lần; bỏ bước dò
+  thì bản "chỉ khoá lúc đọc" được chấm đạt. Sửa động cơ ⇒ chạy `check_so_quy.py` (CPython) VÀ
+  `check-so-quy.mjs` (Pyodide), rồi `--ghi-mau` nếu vết đổi — test phía React phát lại đúng
+  file vết đó.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

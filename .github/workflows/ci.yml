@@ -274,3 +274,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/pe-v4/anim/check.py --strict
+      # Động cơ mini-game "Sổ quỹ chung" (frontend/public/static/js/so-quy.py):
+      # chỉ thư viện chuẩn, vài giây — gắn vào job rẻ này thay vì `giao-trinh`
+      # (job đó chỉ bật khi scripts/pe-v3/ đổi). Bản Pyodide của cùng bộ ca
+      # (check-so-quy.mjs) cần cài pyodide nên chạy tay, xem AGENTS.md.
+      - run: python scripts/pe-v4/check_so_quy.py
