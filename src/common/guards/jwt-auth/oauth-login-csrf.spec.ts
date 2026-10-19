@@ -1,8 +1,8 @@
 import type { ExecutionContext } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { Request } from 'express';
+import type { CookieOptions, Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
-import { OAUTH_STATE_ERROR } from 'src/auth/oauth-state';
+import { OAUTH_STATE_ERROR, type OAuthStateStore } from 'src/auth/oauth-state';
 import { FacebookStrategy } from './facebook.strategy';
 import { GoogleStrategy } from './google.strategy';
 import {
@@ -39,44 +39,96 @@ const CONFIG = {
 
 const AUTH = {} as unknown as AuthService;
 
+/**
+ * `_stateStore` là field nội bộ của passport-oauth2, không có trong kiểu công
+ * khai của strategy — nên phải đào ra. Trả `unknown` (không phải `any`): mỗi ca
+ * tự nói nó cần hình dạng nào, thay vì để `any` lan ra cả file.
+ */
+function stateStoreCua(strategy: GoogleStrategy | FacebookStrategy): unknown {
+  return (strategy as unknown as { _stateStore?: unknown })._stateStore;
+}
+
+/**
+ * Hình dạng TỐI THIỂU mà ca "không phải NullStore" hỏi tới. Cố ý KHÔNG khai là
+ * `OAuthStateStore`: đó chính là điều đang cần chứng minh, khẳng định sẵn thì
+ * ca test không còn kiểm gì. Nhưng cũng không để `any` như bản cũ — `any` làm
+ * `store.konstructor?.name` biên dịch được và matcher PHỦ ĐỊNH
+ * `.not.toBe('NullStore')` im lặng ĐẠT, tức mất hẳn cái chốt chống login CSRF
+ * mà ca này canh.
+ */
+type StoreDaCam = {
+  constructor?: { name?: string };
+  store?: (...args: never[]) => void;
+  verify?: (...args: never[]) => void;
+};
+
+/**
+ * `jest.fn()` trần là `Mock<any, any>`, nên gán vào field đã khai kiểu lại ra
+ * `no-unsafe-assignment`. Khai tham số kiểu ngay ở `jest.fn<…>()`.
+ */
+type FakeRes = {
+  cookie: jest.Mock<void, [string, string, CookieOptions]>;
+  clearCookie: jest.Mock<void, [string, CookieOptions]>;
+};
+
+const fakeRes = (): FakeRes => ({
+  cookie: jest.fn<void, [string, string, CookieOptions]>(),
+  clearCookie: jest.fn<void, [string, CookieOptions]>(),
+});
+
+/** `meta` passport truyền cho store/verify; nội dung không ảnh hưởng ca nào. */
+const META = {
+  authorizationURL: 'https://accounts.google.com/o/oauth2/v2/auth',
+  tokenURL: 'https://oauth2.googleapis.com/token',
+  clientID: 'client-id',
+};
+
 describe('Strategy OAuth phải bật tham số state', () => {
   it.each([
     ['google', () => new GoogleStrategy(CONFIG, AUTH)],
     ['facebook', () => new FacebookStrategy(CONFIG, AUTH)],
   ])('%s: có state store, không phải NullStore', (_name, build) => {
-    const store = (build() as unknown as { _stateStore: any })._stateStore;
+    const store = stateStoreCua(build()) as StoreDaCam;
 
     // NullStore.store có 2 tham số và luôn trả state rỗng -> state không bao
     // giờ được sinh/kiểm. Store của app có 3/4 tham số (arity passport dùng
     // để chọn overload có `meta`).
     expect(store).toBeDefined();
     expect(store.constructor?.name).not.toBe('NullStore');
-    expect(store.store.length).toBe(3);
-    expect(store.verify.length).toBe(4);
+    expect(store.store?.length).toBe(3);
+    expect(store.verify?.length).toBe(4);
   });
 
   it('google và facebook ký state bằng nhãn provider riêng', () => {
-    const google = (new GoogleStrategy(CONFIG, AUTH) as any)._stateStore;
-    const facebook = (new FacebookStrategy(CONFIG, AUTH) as any)._stateStore;
+    // Ca trên đã chứng minh đây là store của app, nên ở đây dùng kiểu thật của
+    // nó (`OAuthStateStore`) để hai lời gọi dưới đi qua đúng overload 3/4 tham
+    // số mà passport chọn.
+    const google = stateStoreCua(
+      new GoogleStrategy(CONFIG, AUTH),
+    ) as OAuthStateStore;
+    const facebook = stateStoreCua(
+      new FacebookStrategy(CONFIG, AUTH),
+    ) as OAuthStateStore;
 
-    const res = {
-      cookie: jest.fn(),
-      clearCookie: jest.fn(),
-    } as any;
+    const res = fakeRes();
 
     let googleState = '';
-    google.store({ headers: {}, res }, {}, (_e: unknown, s: string) => {
-      googleState = s;
-    });
+    google.store(
+      { headers: {}, res } as unknown as Request,
+      META,
+      (_e: Error | null, s?: string) => {
+        googleState = s ?? '';
+      },
+    );
     const nonce = res.cookie.mock.calls[0][1];
 
     // Đem state của google sang luồng facebook (cùng nonce) -> phải bị từ chối.
     const req = {
       headers: { cookie: `pe_oauth_state_facebook=${nonce}` },
-      res: { cookie: jest.fn(), clearCookie: jest.fn() },
-    };
+      res: fakeRes(),
+    } as unknown as Request;
     const calls: unknown[][] = [];
-    facebook.verify(req, googleState, {}, (...args: unknown[]) =>
+    facebook.verify(req, googleState, META, (...args: unknown[]) =>
       calls.push(args),
     );
     expect(calls[0][1]).toBe(false);
@@ -99,7 +151,7 @@ describe('OAuthCallbackGuard — chuyển lý do từ chối về frontend', () 
       const req = { headers: {} } as OAuthErrorRequest;
 
       // Đúng những gì passport-oauth2 truyền khi state store trả ok=false.
-      const user = build().handleRequest(
+      const user = build().handleRequest<unknown>(
         null,
         false,
         { message: OAUTH_STATE_ERROR },
@@ -136,7 +188,7 @@ describe('OAuthCallbackGuard — chuyển lý do từ chối về frontend', () 
   it('đăng nhập thành công -> trả user, không gắn thông báo lỗi', () => {
     const req = { headers: {} } as OAuthErrorRequest;
     const me = { id: 1 };
-    const user = new GoogleCallbackGuard().handleRequest(
+    const user = new GoogleCallbackGuard().handleRequest<unknown>(
       null,
       me,
       { message: 'ghi chu vo hai' },

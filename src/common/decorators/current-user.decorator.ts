@@ -1,4 +1,5 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import type { Request } from 'express';
 import { JwtPayload } from 'src/common/guards/jwt-auth/jwt.strategy';
 
 /**
@@ -8,7 +9,7 @@ import { JwtPayload } from 'src/common/guards/jwt-auth/jwt.strategy';
  */
 export const CurrentUser = createParamDecorator(
   (data: keyof JwtPayload | undefined, ctx: ExecutionContext) => {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<Request>();
     const user = req.user as JwtPayload | undefined;
     return data ? user?.[data] : user;
   },
@@ -17,7 +18,7 @@ export const CurrentUser = createParamDecorator(
 /** Shortcut lấy thẳng id user hiện tại (payload.sub). */
 export const CurrentUserId = createParamDecorator(
   (_data: unknown, ctx: ExecutionContext): number => {
-    const req = ctx.switchToHttp().getRequest();
+    const req = ctx.switchToHttp().getRequest<Request>();
     return (req.user as JwtPayload).sub;
   },
 );

@@ -21,18 +21,39 @@ const UNIQUE_FIELD_MESSAGES: Record<string, string> = {
   user_id: 'Dữ liệu của người dùng này đã tồn tại',
 };
 
+/**
+ * `exception.meta` là `unknown` (Prisma không hứa shape nào), nên bản cũ ép
+ * `as any` rồi đào thẳng `meta?.driverAdapterError?.cause?.constraint?.fields`.
+ * Cái giá: gõ sai một chặng (`driverAdaptorError`) vẫn biên dịch, `extractFields`
+ * trả `[]`, và mọi lỗi trùng dữ liệu rơi về câu chung "Dữ liệu đã tồn tại" —
+ * không ngoại lệ nào, không log nào đỏ. Một helper có kiểu đích thật (cùng
+ * khuôn `asRecord()` ở `quizzes/quizzes.service.ts`) bắt TS kiểm từng chặng.
+ */
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === 'object' && value !== null
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+/** Đào `meta.driverAdapterError.cause.constraint` — shape của @prisma/adapter-neon. */
+function adapterConstraint(
+  exception: Prisma.PrismaClientKnownRequestError,
+): Record<string, unknown> | null {
+  const meta = asRecord(exception.meta);
+  const cause = asRecord(asRecord(meta?.driverAdapterError)?.cause);
+  return asRecord(cause?.constraint);
+}
+
 function extractFields(
   exception: Prisma.PrismaClientKnownRequestError,
 ): string[] {
-  const meta = exception.meta as any;
-
   // Prisma 7 + driver adapter (@prisma/adapter-neon): shape thực tế của project này
-  const fields = meta?.driverAdapterError?.cause?.constraint?.fields;
-  if (Array.isArray(fields)) return fields;
+  const fields = adapterConstraint(exception)?.fields;
+  if (Array.isArray(fields)) return fields as string[];
 
   // Fallback: shape cũ meta.target, phòng khi đổi adapter/engine sau này
-  const target = meta?.target;
-  if (Array.isArray(target)) return target;
+  const target = asRecord(exception.meta)?.target;
+  if (Array.isArray(target)) return target as string[];
   if (typeof target === 'string') return [target];
 
   return [];
@@ -49,7 +70,9 @@ export class PrismaExceptionFilter implements ExceptionFilter {
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Đã có lỗi xảy ra, xin vui lòng thử lại sau';
-    let detail: any = null;
+    // `detail` chỉ từng mang danh sách tên cột vi phạm, nên khai đúng kiểu đó
+    // thay cho `any`: FE đọc `error.detail` như một mảng chuỗi.
+    let detail: string[] | null = null;
 
     if (exception.code === 'P2002') {
       status = HttpStatus.BAD_REQUEST;
@@ -63,15 +86,17 @@ export class PrismaExceptionFilter implements ExceptionFilter {
       // ngay từ cổng vào) — phòng trường hợp bản ghi tham chiếu (khoá học,
       // bài học...) bị xoá đúng lúc request đang xử lý (race hiếm gặp).
       status = HttpStatus.BAD_REQUEST;
-      const meta = exception.meta as any;
-      const constraint: string | undefined =
-        meta?.driverAdapterError?.cause?.constraint?.name ?? meta?.field_name;
+      const ten =
+        adapterConstraint(exception)?.name ??
+        asRecord(exception.meta)?.field_name;
+      const constraint = typeof ten === 'string' ? ten : undefined;
       message = constraint?.includes('user_id')
         ? 'Phiên đăng nhập không hợp lệ, vui lòng đăng nhập lại'
         : 'Dữ liệu liên quan không còn tồn tại, vui lòng tải lại trang';
     }
 
-    const requestId = (request as any).requestId || null;
+    // Giữ `||` (không đổi sang `??`): chuỗi rỗng cũng phải ra null như trước.
+    const requestId = request.requestId || null;
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       this.logger.error(

@@ -71,13 +71,33 @@ export class FixedWindowThrottlerStorage
     this.store.clear();
   }
 
-  async increment(
+  /**
+   * `ThrottlerStorage` khai `increment` trả Promise, nhưng phép đếm ở đây hoàn
+   * toàn ĐỒNG BỘ (một Map trong bộ nhớ, không I/O nào). Bản cũ khai `async`
+   * mà không có `await` nào: eslint báo `require-await`, và tệ hơn là chữ ký
+   * đó hứa sai rằng có chờ I/O — ai đọc sẽ tưởng bỏ `await` ở chỗ gọi là an
+   * toàn. Tách phần tính ra `dem()` đồng bộ rồi bọc Promise đúng một lần.
+   *
+   * Tham số thứ 5 của interface (`throttlerName`) bị bỏ hẳn khỏi chữ ký thay
+   * vì khai một biến `_throttlerName` không ai đọc: mọi tier dùng chung một
+   * Map và `key` do guard tạo đã mang tên tier. TS cho phép implement với ít
+   * tham số hơn, và JS bỏ qua đối số thừa lúc gọi.
+   */
+  increment(
     key: string,
     ttl: number,
     limit: number,
     blockDuration: number,
-    _throttlerName: string,
   ): Promise<ThrottlerStorageRecord> {
+    return Promise.resolve(this.dem(key, ttl, limit, blockDuration));
+  }
+
+  private dem(
+    key: string,
+    ttl: number,
+    limit: number,
+    blockDuration: number,
+  ): ThrottlerStorageRecord {
     const now = Date.now();
     let rec = this.store.get(key);
 
