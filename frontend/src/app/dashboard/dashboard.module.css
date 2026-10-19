@@ -1,17 +1,17 @@
-/* /dashboard — Figma node 60:5137. Màu và cỡ chữ đi qua token (studio-tokens.css),
-   không mã hex (`npm run lint:tokens`).
+/* /dashboard — bố cục theo Figma node 60:5137, MÀU theo trang chủ.
 
-   Figma chỉ có bản TỐI, nhấn TÍM và vàng hổ phách. Bảng token cho "violet" vai
-   xanh dương ở cả hai chế độ, nên tím lấy từ --ds-mark-violet — màu nhấn dành
-   cho nền tối — và CHỈ ở Ban đêm (body.dark). Bản ngày dùng nhấn xanh của bảng
-   token: tím nhạt đặt lên nền sáng không đủ tương phản.
-   --dash-* là biến cục bộ của trang, không phải token: bảng token chỉ được khai
-   ở studio-tokens.css (ds-tokens.test.mjs). */
+   Figma vẽ nhấn tím + vàng hổ phách; bản đầu ép hai màu đó ở Ban đêm
+   (--ds-mark-violet / --ds-mark-ochre trong `body.dark`). Chủ sản phẩm chốt
+   lại 19/10/2026: dashboard phải CÙNG MÀU trang chủ — nhấn xanh của bảng token
+   (--ds-violet: xanh dương ở cả hai chế độ), nhãn nhỏ --ds-soft. Nên ở đây
+   không còn khối `body.dark` nào: mọi màu đi theo bảng token như home.module.css.
+   --dash-* chỉ là bí danh cục bộ cho dễ đọc, không phải token mới. */
 .page {
   --dash-accent: var(--ds-violet);
   --dash-accent-bg: var(--ds-action);
   --dash-on-accent: var(--ds-on-action);
   --dash-accent-tint: var(--ds-violet-tint);
+  /* Bài tổng hợp chặng: sanguine — vai "chú ý" duy nhất của bảng token. */
   --dash-boss: var(--ds-sanguine);
   --dash-boss-tint: var(--ds-sanguine-tint);
   min-height: 100vh;
@@ -19,14 +19,6 @@
   color: var(--ds-ink);
   font-family: var(--edu-font);
   font-size: var(--ds-fs-body);
-}
-:global(body.dark) .page {
-  --dash-accent: var(--ds-mark-violet);
-  --dash-accent-bg: var(--ds-mark-violet);
-  --dash-on-accent: var(--ds-code-bg);
-  --dash-accent-tint: color-mix(in srgb, var(--ds-mark-violet) 14%, var(--ds-card));
-  --dash-boss: var(--ds-mark-ochre);
-  --dash-boss-tint: color-mix(in srgb, var(--ds-mark-ochre) 10%, var(--ds-card));
 }
 
 .main {
@@ -105,17 +97,19 @@
 }
 .eyebrow {
   margin: 0 0 12px;
-  color: var(--dash-accent);
+  color: var(--ds-soft);
   font-size: var(--ds-fs-label);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 .heroTitle {
   margin: 0 0 16px;
+  color: var(--ds-ink);
   font-size: var(--ds-fs-h1);
-  font-weight: 700;
-  line-height: 1.2;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
 .heroDesc {
   margin: 0 0 24px;
@@ -133,7 +127,7 @@
   text-decoration: none;
 }
 .previewEyebrow {
-  color: var(--dash-boss);
+  color: var(--ds-soft);
   font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.06em;
