@@ -1209,6 +1209,13 @@ def horizon_amt(y, x=None):
 
 _GRID: dict = {}
 
+# Sổ đếm của `contours` — cộng dồn qua mọi lượt gọi trong một lần chạy.
+# Vì sao nó phải sống ở đây chứ không ở một script tạm: con số "bao nhiêu
+# đường đồng mức còn HỞ" là chẩn đoán duy nhất của 23 điểm phần trăm bậc giữa
+# bị mất (một đường hở ⇒ vùng bên trong nó KHÔNG được tô). `scripts/star/
+# raster.py` in nó cạnh hai cột số đo.
+CTR_STAT = {"duong": 0, "ho": 0, "khep": 0, "le": 0, "ca_hop": 0}
+
 
 def contours(fn, level, x0, y0, x1, y1, cell):
     """Đường đồng mức của một trường vô hướng. Quy trình giống MapMage: sinh
@@ -1259,32 +1266,51 @@ def contours(fn, level, x0, y0, x1, y1, cell):
     # Nối đoạn thành đường. Khoá là toạ độ LÀM TRÒN — hai đoạn kề nhau sinh ra
     # cùng một điểm nhưng qua hai phép nội suy khác nhau, nên so bằng float
     # thuần là chuỗi đứt vụn thành vài nghìn mảnh (và dung lượng nổ theo).
+    #
+    # LẬP CHỈ MỤC CẢ HAI ĐẦU, và đi CẢ HAI CHIỀU. Bản trước chỉ lập chỉ mục
+    # theo điểm ĐẦU rồi đi xuôi; với một đường KÍN thì bắt đầu ở đâu cũng
+    # được, nhưng với một đường HỞ mà đoạn gặp đầu tiên (thứ tự quét lưới, chứ
+    # không phải thứ tự hình học) nằm ở GIỮA nó thì nửa phía trước rụng ra
+    # thành một mảnh riêng — và mảnh ấy có một đầu KHÔNG ở mép, nên phép khép
+    # mép bên dưới không nhận ra nó là đường hở và để nguyên cho `pl(…, True)`
+    # khép bằng dây cung. Đo được: dải Ngân Hà ở `cell` 5 ra 1 415 đường / 147
+    # hở theo lối cũ, còn 1 303 đường / 35 hở khi đi cả hai chiều.
+    # (`segs.index(cand)` cũng là một phép quét O(n) trong vòng lặp; chỉ mục
+    # theo CHỈ SỐ bỏ luôn được nó.)
     key = lambda p: (round(p[0], 3), round(p[1], 3))
-    start: dict = {}
-    for a, b in segs:
-        start.setdefault(key(a), []).append((a, b))
+    tu: dict = {}
+    den: dict = {}
+    for idx, (a, b) in enumerate(segs):
+        tu.setdefault(key(a), []).append(idx)
+        den.setdefault(key(b), []).append(idx)
     chains = []
     used = set()
-    for idx, (a0, b0) in enumerate(segs):
+    for idx in range(len(segs)):
         if idx in used:
             continue
-        chain = [a0, b0]
         used.add(idx)
-        cur = b0
-        while True:
-            nxt = None
-            for cand in start.get(key(cur), []):
-                ci = segs.index(cand)
-                if ci not in used:
-                    nxt = (ci, cand)
+        a0, b0 = segs[idx]
+        chain = [a0, b0]
+        while True:                                 # xuôi, từ đuôi
+            k = next((c for c in tu.get(key(chain[-1]), []) if c not in used), None)
+            if k is None:
+                break
+            used.add(k)
+            chain.append(segs[k][1])
+            if key(chain[-1]) == key(chain[0]):
+                break
+        if key(chain[0]) != key(chain[-1]):         # ngược, từ đầu
+            truoc, dau = [], chain[0]
+            while True:
+                k = next((c for c in den.get(key(dau), []) if c not in used), None)
+                if k is None:
                     break
-            if nxt is None:
-                break
-            used.add(nxt[0])
-            cur = nxt[1][1]
-            chain.append(cur)
-            if key(cur) == key(a0):
-                break
+                used.add(k)
+                dau = segs[k][0]
+                truoc.append(dau)
+                if key(dau) == key(chain[-1]):
+                    break
+            chain = truoc[::-1] + chain
         if len(chain) >= 4:
             chains.append(chain)
     # ── KHÉP ĐƯỜNG HỞ DỌC MÉP HỘP LẤY MẪU ──────────────────────────────────
@@ -1295,74 +1321,100 @@ def contours(fn, level, x0, y0, x1, y1, cell):
     #
     # Đo được, và chỉ raster hoá mới đo được: mô hình (`do_sang_rgb`, đếm bậc
     # bằng cách so TRƯỜNG với ngưỡng) nói bậc giữa chiếm 47,4 % diện tích,
-    # trong khi raster chính mấy tệp SVG đã ghi ra chỉ đo được 23,7 %. Dải
+    # trong khi raster chính mấy tệp SVG đã ghi ra chỉ đo được 23,8 %. Dải
     # Ngân Hà chạy chéo HẾT khung và `mw_half` kẹp `t` về [0, 1], nên dải
     # KHÔNG BAO GIỜ tự đóng theo chiều ngang — nới hộp lấy mẫu ra bao nhiêu
     # cũng không chữa được. Phải khép theo MÉP.
     #
-    # Hướng khép: bảng marching squares giữ "phần trong ở bên TRÁI" mỗi đoạn,
-    # nên thay vì suy luận chiều quay (dễ sai, và sai thì tô ngược phần trong
-    # ra phần ngoài), ta THỬ CẢ HAI chiều đi vòng mép và giữ chiều nào bao
-    # được một điểm CHẮC CHẮN nằm trong vùng — điểm ấy lấy bằng cách bước một
-    # nửa ô sang trái của đoạn đầu rồi kiểm `fn > level` thật.
-    goc = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+    # KHÉP TỪNG ĐƯỜNG MỘT LÀ SAI, và đó là lý do bản khép trước không thu hẹp
+    # được khoảng lệch. Một dải chạy xuyên khung cho ra HAI đường hở — một cho
+    # mỗi bờ dải — và mỗi bờ đi từ mép này sang mép kia. Khép riêng từng bờ
+    # thành một đa giác thì hai đa giác ấy PHỦ NHAU, và `evenodd` XOR chúng
+    # thành đúng phần BÙ của cái dải. Thuật toán đúng là KHÂU: đi hết một
+    # đường, tới mép thì ĐI DỌC MÉP sang đầu của đường kế, rồi tiếp — cho tới
+    # khi về chỗ xuất phát. Nó xử lý luôn cả lỗ chạm mép, vì lỗ cũng chỉ là
+    # một đường nữa trong cùng vòng khâu.
+    #
+    # CHIỀU đi dọc mép không phải thứ để đoán: bảng marching squares ở trên
+    # luôn đặt phần TRONG về cùng một phía của mỗi đoạn (kiểm được bằng tích
+    # chéo cho cả 16 mã), nên vòng khâu đúng là vòng đi dọc mép theo chiều
+    # GIẢM toạ độ cung — với toạ độ cung đánh 0 ở góc trên-trái rồi tăng theo
+    # trên → phải → dưới → trái. Đi ngược chiều ấy là tô ra phần bù.
+    #
+    # Mép lấy theo MÉP LƯỚI (`gx1`, `gy1`), không theo `x1`/`y1`: lưới chỉ phủ
+    # `x0 … x0 + (nx−1)·cell`, có thể hụt gần một ô so với `x1`, và một dây
+    # cung lệch một ô ở đây là một vệt sáng thừa dọc cả mép.
+    gx1 = x0 + (nx - 1) * cell
+    gy1 = y0 + (ny - 1) * cell
+    Wb, Hb = gx1 - x0, gy1 - y0
+    CV = 2 * (Wb + Hb)
 
-    def tren_mep(p):
+    def mep_s(p):
+        """Toạ độ CUNG trên mép lưới, hay None nếu điểm không nằm trên mép."""
         e = cell * 0.51
-        return (abs(p[0] - x0) < e or abs(p[0] - x1) < e
-                or abs(p[1] - y0) < e or abs(p[1] - y1) < e)
+        x, y = p
+        if abs(y - y0) < e:
+            return min(max(x - x0, 0.0), Wb)
+        if abs(x - gx1) < e:
+            return Wb + min(max(y - y0, 0.0), Hb)
+        if abs(y - gy1) < e:
+            return Wb + Hb + min(max(gx1 - x, 0.0), Wb)
+        if abs(x - x0) < e:
+            return 2 * Wb + Hb + min(max(gy1 - y, 0.0), Hb)
+        return None
 
-    def canh_cua(p):
-        """Chỉ số cạnh hộp (0 trên, 1 phải, 2 dưới, 3 trái) gần `p` nhất."""
-        d = [abs(p[1] - y0), abs(p[0] - x1), abs(p[1] - y1), abs(p[0] - x0)]
-        return d.index(min(d))
+    goc_s = [(0.0, (x0, y0)), (Wb, (gx1, y0)),
+             (Wb + Hb, (gx1, gy1)), (2 * Wb + Hb, (x0, gy1))]
 
-    def di_mep(a, b, chieu):
-        """Các GÓC phải chèn khi đi từ cạnh của `a` tới cạnh của `b`."""
-        ca, cb = canh_cua(a), canh_cua(b)
-        ra = []
-        k = ca
-        for _ in range(4):
-            if k == cb:
-                break
-            # chiều +1: trên → phải → dưới → trái (theo chiều kim đồng hồ trên
-            # màn, vì y hướng xuống).
-            ra.append(goc[k] if chieu > 0 else goc[(k - 1) % 4])
-            k = (k + chieu) % 4
-        return ra
-
-    def trong_da_giac(pts, px, py):
-        c = False
-        m = len(pts)
-        for i in range(m):
-            ax, ay = pts[i]
-            bx, by = pts[(i + 1) % m]
-            if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
-                c = not c
-        return c
-
-    ra = []
+    ra, mep, le = [], [], 0
     for ch in chains:
-        if key(ch[0]) == key(ch[-1]) or not (tren_mep(ch[0]) and tren_mep(ch[-1])):
+        if key(ch[0]) == key(ch[-1]):
             ra.append(ch)
             continue
-        # Điểm THỬ: nửa ô sang TRÁI của đoạn đầu, và chỉ dùng nếu nó thật sự
-        # nằm trong vùng — không thì bỏ qua, giữ nguyên hành vi cũ.
-        ax, ay = ch[0]
-        bx, by = ch[1]
-        L = math.hypot(bx - ax, by - ay) or 1.0
-        tx = (ax + bx) / 2 - (by - ay) / L * cell * 0.5
-        ty = (ay + by) / 2 + (bx - ax) / L * cell * 0.5
-        if not (x0 < tx < x1 and y0 < ty < y1 and fn(tx, ty) > level):
+        sa, sb = mep_s(ch[0]), mep_s(ch[-1])
+        if sa is None or sb is None:
+            # Đầu hở mà không ở mép: chỉ xảy ra ở điểm yên ngựa phân giải lệch
+            # nhau. Giữ hành vi cũ (dây cung) — đếm lại để không ai tưởng là 0.
+            le += 1
             ra.append(ch)
-            continue
-        for chieu in (1, -1):
-            thu = ch + di_mep(ch[-1], ch[0], chieu)
-            if trong_da_giac(thu, tx, ty):
-                ra.append(thu)
-                break
         else:
-            ra.append(ch)
+            mep.append((ch, sa, sb))
+    CTR_STAT["duong"] += len(chains)
+    CTR_STAT["ho"] += len(mep) + le
+    CTR_STAT["le"] += le
+
+    def goc_giua(s_tu, s_den):
+        """Các GÓC gặp khi đi dọc mép theo chiều GIẢM, từ `s_tu` tới `s_den`."""
+        span = (s_tu - s_den) % CV
+        qua = [((s_tu - s) % CV, p) for s, p in goc_s]
+        qua = [(d, p) for d, p in qua if 1e-9 < d < span - 1e-9]
+        return [p for _d, p in sorted(qua)]
+
+    dung = [False] * len(mep)
+    for i0 in range(len(mep)):
+        if dung[i0]:
+            continue
+        vong, i = [], i0
+        while True:
+            dung[i] = True
+            ch, _sa, sb = mep[i]
+            vong.extend(ch[1:] if vong and key(ch[0]) == key(vong[-1]) else ch)
+            # Đường kế: đường có ĐẦU gần nhất khi đi dọc mép theo chiều giảm.
+            j = min(range(len(mep)), key=lambda k: (sb - mep[k][1]) % CV)
+            vong.extend(goc_giua(sb, mep[j][1]))
+            if j == i0 or dung[j]:
+                break
+            i = j
+        if len(vong) >= 4:
+            CTR_STAT["khep"] += 1
+            ra.append(vong)
+    if not chains:
+        # Không một đoạn nào: bậc này hoặc trống hẳn, hoặc phủ KÍN cả hộp. Cả
+        # hai cùng ra "không vẽ gì" nếu không hỏi trường, và cái thứ hai là
+        # một bậc tinh vân bị mất trắng.
+        if fn((x0 + gx1) / 2, (y0 + gy1) / 2) > level:
+            CTR_STAT["ca_hop"] += 1
+            return [[(x0, y0), (gx1, y0), (gx1, gy1), (x0, gy1)]]
     return [simplify(ch, NEB["simplify"]) for ch in ra]
 
 
@@ -3814,6 +3866,13 @@ def main():
         print("%-22s %6d nét %8.1f KB" % (n, strokes, kb))
     print("%-22s %6s     %8.1f KB" % (theme.name, "", len(theme.read_bytes()) / 1024))
     print("%-22s %6s     %8.1f KB  (trần %d)" % ("TỔNG", "", tong, MAX_TOTAL_KB))
+    # SỔ ĐẾM ĐƯỜNG ĐỒNG MỨC — in ở ĐÂY vì đây là chỗ duy nhất `contours()` thật
+    # sự chạy (`--do` chỉ hỏi trường, không vẽ một đường nào). Một đường còn HỞ
+    # là một mảng tinh vân không được tô; con số này từng là 147 và đó là toàn
+    # bộ 20 điểm phần trăm bậc giữa bị mất. `scripts/star/raster.py` đo hệ quả,
+    # dòng này chỉ ra nguyên nhân.
+    print("đường đồng mức        %6d đường · %d khép theo mép · %d còn hở · %d phủ cả hộp"
+          % (CTR_STAT["duong"], CTR_STAT["khep"], CTR_STAT["le"], CTR_STAT["ca_hop"]))
     over = ["%s %.0f KB" % (n, kb) for n, _s, kb in rows if kb > MAX_KB]
     if over:
         raise SystemExit("vượt trần %d KB mỗi tệp — hạ DENSITY hoặc nới "

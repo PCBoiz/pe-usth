@@ -35,6 +35,15 @@ py -I scripts/star/build_sky.py --do   # bảng SỐ ĐO: PHÂN BỐ TÁM BẬC 
 py -I scripts/star/build_sky.py --place-nhan  # xếp tám nhãn CÓ PHÉP LÙI, in khối SKY_LABEL_PLACED
 py -I scripts/star/build_sky.py --css  # in 16 ô bấm .hit*, 48 dấu .sao*, 8 khối .phong*
 py -I scripts/star/build_sky.py --phong  # in khối SKY_ZOOM_PLACED
+py -I scripts/star/raster.py           # CÁI THƯỚC THẬT: raster hoá chính bộ SVG đã ghi rồi
+                                       # đo, in bảng HAI CỘT **raster ‖ mô hình** + khoảng
+                                       # lệch. `--do` ở trên là MỤC TIÊU, cái này là SỰ THẬT —
+                                       # mô hình dựng lại độ chói từ TRƯỜNG nên nó không biết
+                                       # `<path>` có khép không, `fill-rule` có XOR mất bậc
+                                       # không, lớp nào nằm trên lớp nào. Bốn lỗi đã bắt được
+                                       # bằng nó, không ca nào đọc mô hình bắt được.
+py -I scripts/star/raster.py --buoc 1  # đo từng điểm ảnh (~13 s; mặc định bước 2 px, ~3 s)
+py -I scripts/star/raster.py --khong-mo-hinh  # bỏ cột mô hình (không chạy do_ngan_sach, ~47 s)
 
 # Đổi bố cục (hộp chòm, vị trí mặt trời, hình chòm) ⇒ chạy LẠI BA bước này, theo đúng
 # thứ tự, vì mỗi bước đọc kết quả bước trước: --place-nhan (rồi chép vào TS) → build →
@@ -56,11 +65,11 @@ mức này:
 | Backend lint | 2 lỗi, 1 cảnh báo — **mốc trần trong CI là 10, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → **706 ca**, tất cả đạt (~155 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án) | 20/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **710 ca**, tất cả đạt (~310 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s, cộng một lượt `--do` ~47 s và một lượt raster ~6 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +3 ca mục 22 của `star-map.test.mjs` (sàn sắc độ đo bằng raster) | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
-| Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **337 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 175 KB sau khi mặt trời lên 128 vòng và tinh vân lên 14 bậc | 20/10/2026 |
+| Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **338 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 181,5 KB sau khi mặt trời lên 128 vòng, tinh vân lên 14 bậc và 26 đường đồng mức được khép theo mép. Lượt build in thêm dòng **`đường đồng mức … còn hở`** — con số ấy phải là **0** | 20/10/2026 |
 | Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,4 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0254, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** | 20/10/2026 |
-| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (RASTER — con số THẬT) | raster hoá chính bộ SVG rồi đo, và đo CẢ BẢN CŨ bằng cùng một thước: bậc giữa **4,94 % → 23,80 %** (tham chiếu 46,8), ba bậc **2,20 % → 19,51 %** (43,0), trung vị **0,0038 → 0,0090** (0,0284), p99 **0,8006 → 0,9533** (0,955 — ĐẠT), L > 0,5 **2,77 % → 4,55 %** (7,73), đen sâu **92,96 % → 51,78 %** (20,5). Tức bản cũ đúng là một hàm hai giá trị, bản mới đi được **một nửa** đường tới tham chiếu, và phần MẶT TRỜI thì đã tới. Chỗ còn hụt là TINH VÂN — xem bẫy "còn một chỗ lệch chưa chữa". **Mô hình là mục tiêu, raster là sự thật; đừng báo cáo con số mô hình như con số của bức tranh.** | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (RASTER — con số THẬT) | `py -I scripts/star/raster.py` (bước 2 px, 278 800 ô mẫu): bậc giữa **24,15 % → 44,81 %** (tham chiếu 46,8), ba bậc 0,03–0,35 **19,76 % → 40,09 %** (43,0), trung vị **0,0095 → 0,0181** (0,0284), p99 **0,9521 → 0,9550** (0,955 — ĐẠT), L > 0,5 **4,55 % → 4,81 %** (7,73), đen sâu **51,32 % → 28,49 %** (20,5). Hai con số mỗi ô là TRƯỚC → SAU bản khép đường đồng mức 20/10, đo bằng CÙNG một thước (bản cũ dựng lại từ `git show HEAD`). Khoảng lệch mô hình − raster ở bậc giữa còn **+2,6 điểm phần trăm** (từng là +23,5): phần dư là răng cưa và nét mảnh dưới một điểm ảnh. Sàn trong `star-map.test.mjs` mục 22: mid ≥ 42 %, mid3 ≥ 37 %, đen sâu ≤ 32 %, trung vị ≥ 0,015 — **sàn, không phải con số khoá cứng: bức được sáng thêm, không được tối lại.** **Mô hình là mục tiêu, raster là sự thật; đừng báo cáo con số mô hình như con số của bức tranh.** | 20/10/2026 |
 | Bản đồ sao · BỐ CỤC | tỉ lệ cỡ chòm **5,95 : 1** (sàn 5,0; trước 3,53), **0/49** nét nằm trong 10° của một trục (trước 27/50 ở sàn 8°), 0 ngôi trong đĩa cấm r < 170 quanh mặt trời, khe hai chòm 64,1 px (sàn 50), 0 ngôi dưới rìa chân trời | 20/10/2026 |
 | Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
 | Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,22:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 4,83 dù trời sáng hẳn lên, nhờ TẤM NỀN dưới mỗi hộp nhãn. Nét chòm **3,39:1** lúc nghỉ (sàn 3,0), mạch hoàng đạo **4,59:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
@@ -315,8 +324,8 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Bản đồ SAO cũng là TRANH SINH RA, và nó chia làm 19 tệp theo LỚP — đừng sửa tệp.**
   `frontend/public/map/star/sky-*.svg` do `scripts/star/build_sky.py` sinh; script ĐỌC
   `frontend/src/lib/star-map.ts` (toạ độ tám chòm, mạch hoàng đạo, nguồn sáng, bảng màu,
-  ngân sách độ chói) nên muốn đổi gì thì sửa ở TS rồi chạy lại. Năm thứ đã trả giá, cả năm
-  đều lặng lẽ:
+  ngân sách độ chói) nên muốn đổi gì thì sửa ở TS rồi chạy lại. Mười hai thứ đã trả giá, cả
+  mười hai đều lặng lẽ:
   · **Một TẤM = một NHÓM LỚP, không phải cả bức.** Bản mẫu một chòm xuất hai tấm đủ mười
     ba lớp; nhân cách đó lên tám chòm là chín tấm, mỗi tấm cõng lại cả tinh vân và 1 250
     sao nền — ~1,4 MB cho một trang. Hợp của `SKY_TILES` phải phủ ĐÚNG `SKY_LAYERS` theo
@@ -335,10 +344,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     N vòng được tô ĐÚNG MỘT LẦN nên độ mờ thôi cộng dồn (`a_i = 1/(n−i)`, nên 63 vòng
     ngoài của 128 đều tròn về 0,01 và cả nhóm góp 0,01 thay vì 0,47). **Mọi phép kiểm
     trong kho mã đều đọc MÔ HÌNH (`do_sang_rgb`), không đọc TỆP, nên không ca nào bắt
-    được.** Tìm ra bằng cách tự viết một bộ raster PIL đọc chính mấy tệp SVG đã ghi rồi
-    so hai cột: bậc giữa ra **4,3 %** trên tranh thật trong khi mô hình nói 47,3 %, p99
-    ra 0,595 trong khi mô hình nói 0,977. Bài học chung: **một phép đo dựng lại từ trường
-    không phải một phép đo bức tranh.**
+    được.** Tìm ra bằng cách raster hoá chính mấy tệp SVG đã ghi rồi so hai cột (nay là
+    `scripts/star/raster.py`): bậc giữa ra **4,3 %** trên tranh thật trong khi mô hình nói
+    47,3 %, p99 ra 0,595 trong khi mô hình nói 0,977. Bài học chung: **một phép đo dựng lại
+    từ trường không phải một phép đo bức tranh.**
   · **`do_sang_rgb` PHẢI cộng lớp theo ĐÚNG thứ tự `SKY_LAYERS`.** Nó từng cộng nguồn sáng
     SAU CÙNG với một lý lẽ hợp lý lúc ấy: *"lớp của nó nằm dưới tinh vân, mà ở chỗ nó sáng
     nhất thì tinh vân đã loãng — nó nằm ngoài dải Ngân Hà"*. Đúng khi mặt trời ở góc
@@ -349,21 +358,50 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     luôn: mặt trời phải đứng TRƯỚC khối sáng), và phép đo thì đã cộng theo thứ tự ấy.
     **Một chú thích biện hộ cho một phép xấp xỉ là một quả bom hẹn giờ: nó đúng vào ngày
     viết ra và không ai kiểm lại khi tiền đề đổi.**
-  · **CÒN MỘT CHỖ LỆCH CHƯA CHỮA, và nó là một con số, không một cảm giác.** Sau ba bản
-    sửa trên, phần MẶT TRỜI của tranh đã khớp mô hình (raster p99 **0,953** so với mô hình
-    0,977; diện tích L > 0,5 **4,55 %** so với 4,55 %; lõi chói 1,16 % so với 1,10 %).
-    Phần TINH VÂN thì chưa: bậc "tinh vân mờ" (L 0,03–0,08) ra **12,6 %** trên tranh thật
-    trong khi mô hình nói 32,4 %, nên BẬC GIỮA ra **23,8 %** so với 47,3 %. Đã đo và loại
-    được ba giả thuyết: không phải độ phân giải lưới (hạ `cell` 5 → 3 và `simplify`
-    1,6 → 0,6 không đổi con số), không phải `solo` (đã sửa), không phải thứ tự lớp (đã
-    sửa). Thứ còn lại, đo được: đếm trên 300 điểm thì số bậc đồng mức THẬT SỰ phủ một điểm
-    thiếu trung bình **0,39 bậc** so với số bậc mô hình đếm, và `contours()` sinh **86
-    đường HỞ** trên 344 (vùng tràn ra ngoài hộp lấy mẫu). Dải Ngân Hà chạy chéo hết khung
-    và `mw_half` kẹp `t` về [0, 1] nên dải KHÔNG BAO GIỜ tự đóng theo chiều ngang — nới hộp
-    lấy mẫu không chữa được, phải khép theo MÉP (đã thêm một bản khép nhưng nó chưa thu hẹp
-    được khoảng lệch). **Ai làm tiếp: đừng tin con số `--do` cho phần tinh vân; raster hoá
-    rồi so hai cột.** Bộ raster PIL dùng để tìm ra chuyện này không commit (nó là một
-    script tạm ~230 dòng đọc `path`/`circle` và các lệnh `M l h v a Z`).
+  · **ĐƯỜNG ĐỒNG MỨC HỞ PHẢI KHÂU LẠI THEO MÉP, và khép TỪNG ĐƯỜNG MỘT LÀ SAI.** Đây là
+    chỗ 20 điểm phần trăm bậc giữa nằm, và nó là một con số, không một cảm giác. Một đường
+    đồng mức hở thì vùng bên trong nó KHÔNG được tô, nên mỗi đường hở là một mảng tinh vân
+    biến mất; `pl(ch, True)` khép nó bằng một dây cung thẳng cắt mất phần sát mép. Dải Ngân
+    Hà chạy chéo hết khung và `mw_half` kẹp `t` về [0, 1] nên dải KHÔNG BAO GIỜ tự đóng theo
+    chiều ngang — nới hộp lấy mẫu bao nhiêu cũng không chữa được. Ba thứ đã trả giá, cả ba
+    đều lặng lẽ:
+    – **Nối chuỗi phải đi CẢ HAI CHIỀU.** Bản trước lập chỉ mục theo điểm ĐẦU rồi chỉ đi
+      xuôi. Với đường kín thì bắt đầu ở đâu cũng được; với đường HỞ mà đoạn gặp đầu tiên
+      (thứ tự quét LƯỚI, không phải thứ tự hình học) nằm ở GIỮA nó thì nửa phía trước rụng
+      ra thành mảnh riêng — và mảnh ấy có một đầu KHÔNG ở mép, nên phép khép mép không nhận
+      ra nó là đường hở. Đo được: 1 397 đường / **130 hở** theo lối cũ, 1 302 / **0 hở** khi
+      đi cả hai chiều rồi khâu.
+    – **Bảng góc của bản khép trước chèn SAI GÓC** (`goc[k]` khi đi xuôi, đúng phải là
+      `goc[(k+1)%4]`), nên phép thử "điểm trong đa giác" trượt ở CẢ HAI chiều và bản khép ấy
+      khép được đúng **0** đường trên 130. Một bản sửa không chạy lần nào nhìn giống một bản
+      sửa đã chạy: dòng `khep: 0` ở sổ đếm là thứ phân biệt được hai cái.
+    – **Khâu, đừng khép riêng.** Một dải xuyên khung cho ra HAI đường hở (một cho mỗi bờ),
+      mỗi bờ đi từ mép này sang mép kia. Khép riêng từng bờ thành một đa giác thì hai đa
+      giác PHỦ NHAU và `evenodd` XOR chúng thành đúng phần BÙ của cái dải. Cách đúng: đi
+      hết một đường, tới mép thì ĐI DỌC MÉP sang đầu của đường kế, rồi tiếp, tới khi về chỗ
+      xuất phát. Chiều đi dọc mép không phải thứ để đoán — bảng marching squares luôn đặt
+      phần TRONG về cùng một phía của mỗi đoạn (kiểm được bằng tích chéo cho cả 16 mã), nên
+      vòng khâu đúng là chiều GIẢM toạ độ cung (0 ở góc trên-trái, tăng theo trên → phải →
+      dưới → trái). Đi ngược là tô ra phần bù. Mép lấy theo MÉP LƯỚI (`x0 + (nx−1)·cell`),
+      không theo `x1`: lưới có thể hụt gần một ô, và lệch một ô ở đây là một vệt dọc cả mép.
+    Thêm luôn: không một đoạn nào mà trường ở TÂM hộp vẫn trên ngưỡng ⇒ bậc ấy phủ KÍN hộp,
+    phải trả về cả hộp. Không hỏi thì nó ra "không vẽ gì" và mất trắng một bậc.
+    **Ai làm tiếp: đừng tin con số `--do` cho phần tinh vân; chạy `scripts/star/raster.py`
+    rồi đọc cột lệch.** Sau bản khép, raster bậc giữa **24,15 % → 44,81 %** và khoảng lệch
+    mô hình − raster **23,5 → 2,6** điểm phần trăm.
+  · **CÁI THƯỚC PHẢI CHẠY ĐƯỢC Ở MỌI MÁY, không thì lần sau nó lại là script tạm.**
+    `scripts/star/raster.py` đọc chính mấy tệp SVG đã ghi rồi tự vẽ chúng — đó là phép đo
+    duy nhất bắt được cả bốn lỗi ở trên, vì mọi phép kiểm khác trong kho mã đọc
+    `do_sang_rgb`. Bản đầu của nó viết bằng **numpy + PIL** và đúng vì thế mà nó KHÔNG
+    commit được: môi trường chạy `build_sky.py` (job `frontend` của CI, `star-map.test.mjs`
+    tự tìm `py`/`python3`) chỉ có Python trần, không có hai thư viện ấy — nên nó bị vứt đi
+    một lần và người sau đo bằng mô hình. Bản đang chạy là marching-scanline **thuần
+    stdlib**, ~3 s ở bước 2 px, và `star-map.test.mjs` mục 22 có một ca CẤM nó import thư
+    viện ngoài, một ca cấm nó gọi `bs.do_sang_rgb`/`bs.neb_lit`/`bs.contours` (đo lại mô
+    hình là đúng cái thước nói dối nó thay), và hai ca đặt SÀN sắc độ. Lệnh `a` phải vẽ ra
+    cung tròn thật: cả 2 688 cung trong bộ tệp là quầng sao và vành đai, và bản raster tạm
+    nối thẳng tới điểm cuối nên cả lớp `quang-sao` biến thành đa giác suy biến, mất hẳn
+    khỏi phép đo.
   · **Trần độ chói TOÀN CỤC đã bị bỏ, thay bằng NGÂN SÁCH DIỆN TÍCH** (`SKY_BUDGET`).
     Lý do đo được ở `design/v3/chieu-sau-tuong-tac.md` §2.4. Và ngày 20/10/2026 ngân sách
     mọc thêm HAI SÀN gác chiều NGƯỢC — `medianMin` 0,015 và `midShareMin` 0,30 — vì kiểu
@@ -401,8 +439,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     bảy góc nét của M1 chỉ cách nhau vài độ theo modulo 90, nên tập góc xoay ĐẠT chỉ gồm
     hai cửa sổ rộng ~4° — [21°, 25°] và [65°, 69°]. Con số đang chạy là +23° (biên an
     toàn 12,0°, lớn nhất hình này cho phép). Đổi nó 3° theo chiều nào cũng trượt.
-  `frontend/e2e/unit/star-map.test.mjs` canh cả bảy, và mục 21 canh riêng sáu việc của
-  bản VẼ LẠI BỐ CỤC ngày 20/10/2026 (đặc tả `design/v3/bo-cuc-hung-vi.md`).
+  `frontend/e2e/unit/star-map.test.mjs` canh cả chín, mục 21 canh riêng sáu việc của
+  bản VẼ LẠI BỐ CỤC ngày 20/10/2026 (đặc tả `design/v3/bo-cuc-hung-vi.md`), và mục 22
+  là chỗ CÁI THƯỚC được dùng: hai ca đặt sàn sắc độ đo bằng raster, một ca canh chính
+  bộ raster.
 
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.

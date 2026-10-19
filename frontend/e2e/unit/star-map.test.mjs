@@ -1162,9 +1162,7 @@ test('chữ trên CẢ TÁM nhãn đạt 4,5:1, và bộ sinh TỰ ĐO rồi tr�
   // vẫn đáng: đổi câu chữ nhãn là đổi bề rộng hộp → đổi chỗ đặt → đổi nền sau
   // chữ, nên 4,5:1 là một con số phải ĐO LẠI mỗi lần, không phải một con số
   // chép vào chú thích một lần rồi tin mãi. Lần này đã đổi câu chữ cả tám.
-  const ra = execFileSync(PYBIN, [join(ROOT, 'scripts', 'star', 'build_sky.py'), '--do'],
-    { cwd: ROOT, encoding: 'utf8' });
-  const dong = [...ra.matchAll(/nhãn (M\d)\s+dòng (\S+)\s+([\d.]+):1/g)];
+  const dong = [...moHinhDo().matchAll(/nhãn (M\d)\s+dòng (\S+)\s+([\d.]+):1/g)];
   // BA phép đo mỗi nhãn: dòng chặng, dòng chặng lúc MỜ (khi một chòm khác
   // được trỏ), dòng khoá. Trạng thái mờ cũng là trạng thái có chữ — và nó là
   // đúng chỗ việc thôi làm mờ bầu trời đã làm vỡ một lần: nền sau chữ không
@@ -1225,6 +1223,21 @@ const PYBIN = ['py', 'python3', 'python'].find((bin) => {
   const r = spawnSync(bin, ['--version'], { encoding: 'utf8' });
   return r.status === 0;
 });
+
+// `build_sky.py --do` mất ~47 s (bảng số đo quét lưới 4 px bằng chính các
+// trường). NHỚ LẠI kết quả: hai ca đọc cùng một bảng — một ca lo tương phản
+// chữ, một ca lo khoảng lệch mô hình ‖ raster — và chạy hai lượt Python chỉ
+// để đọc hai dòng khác nhau của cùng một bảng là cộng thêm một phút vào bộ
+// test mà không thêm một khẳng định nào. Hàm (không phải const) để được hoist:
+// ca dùng nó nằm TRƯỚC chỗ này trong tệp.
+let _DO_OUT = null;
+function moHinhDo() {
+  if (_DO_OUT === null) {
+    _DO_OUT = execFileSync(PYBIN, [join(ROOT, 'scripts', 'star', 'build_sky.py'), '--do'],
+      { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  }
+  return _DO_OUT;
+}
 
 test('chạy script hai lần ra ĐÚNG một bộ hai mươi tệp', () => {
   assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python (py / python3 / python)');
@@ -3029,4 +3042,108 @@ test('VIỆC 8 · THỨ TỰ LỚP: mặt trời đứng TRƯỚC khối sáng, 
   assert.ok(!/xấp xỉ sát hơn/.test(than),
     'lời biện hộ cũ cho thứ tự cộng đã quay lại — tiền đề của nó (mặt trời nằm ngoài dải)'
     + ' hết đúng từ lúc mặt trời về giữa khung');
+});
+
+/* ═══ 22 · CÁI THƯỚC THẬT — RASTER HOÁ CHÍNH BỘ SVG ═══════════════════
+ *
+ * `scripts/star/raster.py` đọc mấy tệp SVG ĐÃ GHI RA rồi tự vẽ chúng, nên nó
+ * đo BỨC TRANH chứ không đo mô hình. Ba lỗi đã bắt được bằng nó (hình lồng
+ * nhau bị `evenodd` XOR, lõi nguồn sáng suy biến, lớp `tinh-van` nằm trên
+ * `nguon-sang`) đều đi qua mọi ca kiểm cũ mà không ai đỏ, vì mọi ca cũ đọc
+ * `do_sang_rgb`.
+ *
+ * Hai ca dưới đây là chỗ cái thước ấy ĐƯỢC DÙNG, không chỉ tồn tại. Cả hai
+ * đặt SÀN, không khoá con số: bức được phép sáng thêm (tham chiếu còn ở 46,8 %
+ * nên đường đi là một chiều), nhưng không được tối lại.
+ */
+
+const RASTER_PY = join(ROOT, 'scripts', 'star', 'raster.py');
+
+// Đo được 20/10/2026 sau khi khép đường đồng mức, ở bước 2 px:
+// bậc giữa 44,81 % · ba bậc 40,09 % · đen sâu 28,49 % · trung vị 0,0181.
+// Trước khi khép: 24,15 % · 19,76 % · 51,32 % · 0,0095 — cùng cái thước này.
+// Sàn để chừa ~3 điểm phần trăm, đủ cho một lần dịch mặt trời hay đổi câu
+// chữ nhãn, không đủ cho một bậc tinh vân biến mất.
+const SAN_RASTER = { mid: 0.42, mid3: 0.37, denSau: 0.32, trungVi: 0.015 };
+
+let _RASTER = null;
+function soDoRaster() {
+  if (_RASTER !== null) return _RASTER;
+  const d = mkdtempSync(join(tmpdir(), 'sky-raster-'));
+  try {
+    const f = join(d, 'do.json');
+    execFileSync(PYBIN, [
+      '-I', RASTER_PY, '--buoc', '2', '--khong-mo-hinh', '--json', f,
+    ], { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+    _RASTER = JSON.parse(readFileSync(f, 'utf8'));
+    return _RASTER;
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
+}
+
+test('VIỆC 9 · bức đã GHI RA đạt sàn sắc độ, đo bằng raster chứ bằng mô hình', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  const r = soDoRaster();
+  assert.ok(r.o > 200000, `raster chỉ lấy ${r.o} ô mẫu — bước lấy mẫu sai`);
+  assert.ok(r.mid >= SAN_RASTER.mid,
+    `bậc giữa (L 0,03–0,85) trên tranh THẬT chỉ còn ${(r.mid * 100).toFixed(2)} %,`
+    + ` dưới sàn ${SAN_RASTER.mid * 100} %. Mỗi điểm phần trăm ở đây là một mảng tinh vân`
+    + ' không được tô — thường vì một đường đồng mức lại hở (xem dòng "đường đồng mức" ở'
+    + ' cuối lượt build) hoặc một bậc bị `evenodd` XOR mất.');
+  assert.ok(r.mid3 >= SAN_RASTER.mid3,
+    `ba bậc 0,03–0,35 chỉ còn ${(r.mid3 * 100).toFixed(2)} %, dưới sàn`
+    + ` ${SAN_RASTER.mid3 * 100} %. Bậc này bỏ hai bậc quầng ra ngoài nên không ai đạt`
+    + ' được nó bằng cách phóng mặt trời to hơn.');
+  assert.ok(r.bac[0] <= SAN_RASTER.denSau,
+    `${(r.bac[0] * 100).toFixed(2)} % diện tích ở L < 0,01 (trần ${SAN_RASTER.denSau * 100} %).`
+    + ' Kiểu hỏng thật của bức này không phải sáng quá mà TỐI QUÁ Ở GIỮA: bản 19/10 có'
+    + ' 51,3 % đen sâu và vẫn đạt mọi phép kiểm khác.');
+  assert.ok(r.trung_vi >= SAN_RASTER.trungVi,
+    `trung vị độ chói trên tranh thật ${r.trung_vi.toFixed(4)}, dưới sàn`
+    + ` ${SAN_RASTER.trungVi}`);
+});
+
+test('VIỆC 9 · mô hình và raster không được trôi xa nhau — hai cột, một khoảng lệch', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  const r = soDoRaster();
+  const m = moHinhDo().match(/BẬC GIỮA 0,03–0,85\s+([\d.]+)%/);
+  assert.ok(m, '`--do` không còn in dòng BẬC GIỮA — hai cột mất một cột');
+  const lech = Number(m[1]) - r.mid * 100;
+  // Đây là ca bắt được KIỂU lỗi, không bắt một lỗi. `do_sang_rgb` dựng lại độ
+  // chói từ trường; nó không biết `<path>` có khép hay không, `fill-rule` có
+  // XOR mất bậc trong cùng hay không, lớp nào nằm trên lớp nào. Mỗi lần ba thứ
+  // ấy sai thì khoảng lệch này nổ ra trước mọi phép kiểm khác: 43,0 điểm phần
+  // trăm lúc hình lồng nhau bị gộp, 23,5 lúc đường đồng mức còn hở, và 2,6 khi
+  // mọi thứ đúng (phần dư là răng cưa và nét mảnh dưới một điểm ảnh).
+  assert.ok(Math.abs(lech) <= 8,
+    `mô hình nói ${m[1]} % còn tranh thật đo ${(r.mid * 100).toFixed(2)} % — lệch`
+    + ` ${lech.toFixed(1)} điểm phần trăm. Mô hình là MỤC TIÊU, raster là SỰ THẬT:`
+    + ' lệch lớn nghĩa là thứ ghi ra tệp khác thứ hồ sơ đòi. Chạy'
+    + ' `py -I scripts/star/raster.py` để xem bảng hai cột.');
+});
+
+test('VIỆC 9 · bộ raster KHÔNG được dùng thư viện ngoài, và không đọc lại mô hình để đo', () => {
+  const R = readFileSync(RASTER_PY, 'utf8');
+  // Vì sao đây là một khẳng định chứ một sở thích: bản raster tìm ra ba lỗi
+  // đầu viết bằng numpy + PIL, và chính vì thế nó KHÔNG commit được — môi
+  // trường chạy bộ test này chỉ có Python trần. Một cái thước chỉ chạy được
+  // trên một máy thì lần sau lại là script tạm, và người sau lại đo bằng mô
+  // hình.
+  for (const lib of ['numpy', 'PIL', 'Pillow', 'cairosvg', 'resvg']) {
+    assert.ok(!new RegExp(`^\s*(import|from)\s+${lib}\b`, 'm').test(R),
+      `raster.py import \`${lib}\` — nó sẽ không chạy được ở CI, và một cái thước`
+      + ' không chạy được là một cái thước không ai dùng');
+  }
+  // Và nó phải lấy màu/hình từ TỆP, không từ các trường của build_sky: chỉ
+  // `BUDGET` (mốc bậc) với `TILES`/`CONS` (thứ tự z) được phép, vì cả hai là
+  // HỢP ĐỒNG, không phải phép đo.
+  for (const cam of ['do_sang_rgb', 'neb_lit', 'light_alpha', 'contours']) {
+    assert.ok(!new RegExp(`bs\.${cam}\b`).test(R),
+      `raster.py gọi \`bs.${cam}\` — nó đang đo lại MÔ HÌNH, tức đúng cái thước nói dối`
+      + ' mà nó tồn tại để thay');
+  }
+  assert.ok(/thu_tu_tep/.test(R) && /bs\.TILES/.test(R),
+    'raster.py không còn lấy thứ tự tệp từ `SKY_TILES` — thêm một tấm là một lớp'
+    + ' không được đo');
 });
