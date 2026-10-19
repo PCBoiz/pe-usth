@@ -131,6 +131,7 @@ NEB = grab("SKY_NEBULA")
 MAG = grab("SKY_MAGNITUDE")
 LINK = grab("SKY_LINK")
 LBL = grab("SKY_LABEL")
+COURSE = grab("SKY_COURSE")
 HIT = grab("SKY_HIT")
 PLACED = grab("SKY_LABEL_PLACED")
 LAYERS = grab("SKY_LAYERS")
@@ -1456,10 +1457,21 @@ def nhan_hinh_hoc(c, anchor, leg, sx, sy):
     """Hình học §8.3 của một chỗ đặt: ba điểm đường dẫn + hộp chữ + câu chữ.
 
     Tách riêng để đúng MỘT hàm dựng hình học, dùng cho cả lượt TÌM (`--place-
-    nhan`) lẫn lượt KIỂM (mỗi lần build). Hai hàm là hai công thức sẽ lệch."""
+    nhan`) lẫn lượt KIỂM (mỗi lần build). Hai hàm là hai công thức sẽ lệch.
+
+    HAI DÒNG, và dòng dưới CHỈ hiện lúc trỏ vào (xem `ve_nhan`):
+     · `name` = `M1 · Tiến trình` — mã chặng · tên phần. Luôn hiện. Đây là
+       dòng đã THAY tên chòm ("Kẹp") ngày 19/10/2026;
+     · `sub` = `Advanced Python · 7 bài` — tên khoá · số bài. Chỉ lúc hover.
+
+    Nhưng HỘP VA CHẠM tính CẢ HAI dòng dù lúc nghỉ chỉ vẽ một. Một chỗ đặt
+    phải hợp lệ ở cả hai trạng thái: tính hộp theo trạng thái nghỉ thì lúc trỏ
+    vào, dòng phụ (dài hơn dòng chính ở sáu trong tám chòm) mọc ra ngoài hộp
+    và rơi lên một ngôi sao — mà nó chỉ rơi lúc hover nên mở bản tĩnh ra không
+    thấy được. Số bài đếm từ `stars`, tên khoá đọc từ `SKY_COURSE` ở TS."""
     code, ax, ay, ar, _t, _k = anchor
-    name = c["name"]
-    sub = "%s · %s · %d bài" % (c["key"], c["subtitle"], len(c["stars"]))
+    name = "%s · %s" % (c["key"], c["subtitle"])
+    sub = "%s · %d bài" % (COURSE["name"], len(c["stars"]))
     wn, ws = text_w(name, LBL["nameSize"]), text_w(sub, LBL["subSize"])
     bw = max(wn, ws) + LBL["rulePad"]
     ang = math.radians(LBL["legAngle"])
@@ -1750,6 +1762,60 @@ def kiem_tran_chom(P):
                 "nới `SKY_NEBULA.hullFade`." % (key, worst, at, tran, P["hullCeiling"]))
 
 
+def do_tuong_phan_nhan(P):
+    """Tương phản THẬT của chữ từng nhãn với chỗ trời nó rơi vào — ĐO, không
+    suy ra từ một cái trần.
+
+    Vì sao thêm phép đo này khi đã có `textCeiling`: cái trần đó so độ chói
+    TRUNG BÌNH của hộp chữ với một ngưỡng, tức nó là một thứ XẤP XỈ cho câu
+    hỏi thật ("chữ này có đạt 4,5:1 không?"). Trung bình thì một hộp nửa tối
+    nửa sáng vẫn qua, trong khi dòng chữ nằm đúng nửa sáng. Và nó không trả
+    Nên ở đây tính tỉ số tương phản ở TỪNG ĐIỂM lấy mẫu rồi lấy ca xấu nhất,
+    và tính riêng cho từng DÒNG: hai dòng dùng hai màu khác nhau (`text` và
+    `textSub`) và nằm ở hai dải khác nhau trong hộp.
+
+    Đổi câu chữ nhãn là đổi bề rộng hộp, tức đổi chỗ đặt, tức đổi nền sau chữ
+    — nên con số này phải đo LẠI mỗi lần dựng, không phải một lần rồi chép vào
+    chú thích. §5.2 đòi 4,5:1 cho chữ."""
+    ra = []
+    da_dat = []
+    for c in thu_tu_nhan():
+        g = nhan_box(c, P, tuple(da_dat))
+        da_dat.append((c["key"], g["box"]))
+        x0, y0, x1, y1 = g["box"]
+        py = g["p2"][1]
+        for ten, mau, op, (by0, by1) in (("chặng", P["text"], 1.0, (y0, py)),
+                                         ("khoá", P["textSub"], 1.0, (py, y1))):
+            chu = hex_rgb(mau)
+            xau = 99.0
+            for i in range(9):
+                for j in range(5):
+                    nen = do_sang_rgb(x0 + (x1 - x0) * (i + 0.5) / 9,
+                                      by0 + (by1 - by0) * (j + 0.5) / 5, P)
+                    # Độ mờ của SVG trộn trong không gian sRGB đã mã hoá, nên
+                    # trộn trước rồi mới tính độ chói — tính độ chói rồi mới
+                    # trộn là một con số khác và là một con số dễ dãi hơn.
+                    a, b = luminance(over(nen, chu, op)), luminance(nen)
+                    hi, lo = max(a, b), min(a, b)
+                    xau = min(xau, (hi + 0.05) / (lo + 0.05))
+            ra.append((c["key"], ten, xau))
+    return ra
+
+
+def kiem_tuong_phan_nhan(P, san=4.5):
+    """Một nhãn dưới `san` ⇒ **build TRƯỢT**. Cùng tinh thần với mọi phép kiểm
+    khác ở tệp này: một con số trong chú thích không chặn được gì."""
+    ra = do_tuong_phan_nhan(P)
+    te = [r for r in ra if r[2] < san]
+    if te:
+        raise SystemExit(
+            "CHỮ TRÊN NHÃN KHÔNG ĐẠT %.1f:1 (§5.2):\n%s\nĐổi câu chữ nhãn là "
+            "đổi bề rộng hộp, tức đổi chỗ đặt, tức đổi nền sau chữ. Chạy "
+            "`--place-nhan` để tìm lại chỗ, hoặc hạ `textCeiling`."
+            % (san, "\n".join("  %s dòng %s: %.2f:1" % r for r in te)))
+    return ra
+
+
 def thu_tu_nhan():
     """Thứ tự ĐẶT nhãn: chòm có ngôi neo SÁNG NHẤT đặt trước (§8.4).
 
@@ -1856,8 +1922,20 @@ def kiem_ngan_sach(P):
 def ve_nhan(ink, P, focus):
     """Hai tầng nhãn là quy ước THẬT của bản đồ sao, không phải một thoả hiệp
     hiện đại: Bayer in ký hiệu ngắn trên bản khắc và bảng dữ liệu đầy đủ ở bên
-    cạnh — bản khắc không bao giờ cõng cả tên đầy đủ. Nên: tên chòm + một dòng
-    phụ trên bản đồ, MÃ BÀI lúc hover, tên bài đầy đủ ở chú giải."""
+    cạnh — bản khắc không bao giờ cõng cả tên đầy đủ.
+
+    Ngày 19/10/2026 nhãn ĐI XUỐNG CÒN MỘT DÒNG lúc nghỉ, và đó là một thay đổi
+    người dùng thấy ngay: `M1 · Tiến trình`, hết. Tên chòm ("Kẹp") đã bỏ hẳn —
+    học viên tìm "chặng nào, học gì", mà tên hình không trả lời câu nào trong
+    hai câu đó, nên giữ nó là bắt người ta học một hệ tên thứ hai mới dùng
+    được bản đồ.
+
+    Tên khoá và SỐ BÀI thì chuyển xuống một dòng phụ CHỈ HIỆN LÚC TRỎ VÀO —
+    cùng chỗ với mã bài. Nhờ thế bản khắc lúc nghỉ còn đúng cái Bayer in: một
+    ký hiệu ngắn cho mỗi chòm. Và nó không làm vỡ luật "chín tấm chòm chỉ khác
+    nhau ở ĐỘ MỜ": thêm một dòng CHỮ không phải đổi kích thước một vật đang có
+    (WCAG đọc hẹp — đổi kích thước là chuyển động, chữ mới xuất hiện thì
+    không), đúng như mã bài đã làm từ trước."""
     out = []
     da_dat = []
     for c in thu_tu_nhan():
@@ -1877,12 +1955,14 @@ def ve_nhan(ink, P, focus):
                  hue, LBL["ruleWidth"], lop)
         ink.text("nhan", rule_x0, p2[1] - LBL["baselineLift"], name, P["text"],
                  LBL["nameSize"], LBL["nameWeight"], LBL["fontStack"], op=mo)
-        ink.text("nhan", rule_x0, p2[1] + LBL["sublineGap"], sub,
-                 P["text"] if ro else P["textSub"],
-                 LBL["subSize"], LBL["subWeight"], LBL["fontStack"],
-                 op=mo, tracking=LBL["subTracking"])
         out.append((c["key"], box))
         if ro:
+            # Dòng phụ: tên khoá · số bài. CHỈ ở chòm đang được trỏ — bảy chòm
+            # kia không có nó, nên không có chuyện tám dòng phụ cùng hiện và
+            # cái bản khắc thành một bảng chữ.
+            ink.text("nhan", rule_x0, p2[1] + LBL["sublineGap"], sub,
+                     P["textSub"], LBL["subSize"], LBL["subWeight"],
+                     LBL["fontStack"], tracking=LBL["subTracking"])
             # Hiệu ứng 7 của §10, rẻ nhất trong cả danh sách: mã bài hiện ra ở
             # chéo trên-phải. KHÔNG hiện tên bài — tên đầy đủ thuộc về chú giải.
             for s in STARS:
@@ -2044,6 +2124,11 @@ def main():
         print("  khe hai chòm gần nhau nhất %.1f px (sàn %g)" % (khe, LINK["minGap"]))
         print("  mạch hoàng đạo tương phản xấu nhất %.2f:1 (sàn 3,0)" % tp_mach)
         print()
+        # Tám nhãn, hai dòng mỗi nhãn — đo lại MỖI LẦN vì đổi câu chữ nhãn là
+        # đổi bề rộng hộp, tức đổi chỗ đặt, tức đổi nền sau chữ.
+        for key, ten, t in do_tuong_phan_nhan(P):
+            print("  nhãn %-3s dòng %-6s %6.2f:1   (sàn 4,5)" % (key, ten, t))
+        print()
         return
 
     if args.place_nhan:
@@ -2061,6 +2146,7 @@ def main():
         return
 
     kiem_ngan_sach(P)
+    kiem_tuong_phan_nhan(P)
 
     out_dir = Path(args.out) if args.out else OUT
     # `os.makedirs` chứ không `Path.mkdir`: trên Windows + Python 3.14,

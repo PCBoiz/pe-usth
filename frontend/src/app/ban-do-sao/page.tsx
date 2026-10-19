@@ -40,7 +40,7 @@ import type { Metadata } from 'next';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { withAssetVersion } from '@/lib/assetVersion';
-import { SKY_CONSTELLATIONS, SKY_FRAME, STAR_COPY } from '@/lib/star-map';
+import { SKY_CONSTELLATIONS, SKY_COURSE, SKY_FRAME, STAR_COPY } from '@/lib/star-map';
 
 import styles from './star-map.module.css';
 
@@ -94,8 +94,12 @@ export default function StarMapPreviewPage() {
               href={lessonHref(i)}
               key={`${c.key}-chom`}
             >
+              {/* Nói ĐÚNG thứ nhãn nói, không hơn: mã chặng, tên phần, tên
+                  khoá, số bài. KHÔNG tên chòm ("Kẹp") — nó đã bỏ khỏi nhãn
+                  vì không trả lời "chặng nào, học gì", và một cái tên vô ích
+                  đọc lên bằng giọng máy thì càng vô ích. */}
               <span className={styles.srOnly}>
-                {`Chặng ${c.key} · ${c.name} — ${c.subtitle}, ${c.stars.length} bài`}
+                {`Chặng ${c.key} · ${c.subtitle} — ${SKY_COURSE.name}, ${c.stars.length} bài`}
               </span>
             </a>
           ))}

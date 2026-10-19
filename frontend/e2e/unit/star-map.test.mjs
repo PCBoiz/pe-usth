@@ -53,6 +53,7 @@ const {
   SKY_BUDGET,
   SKY_CONSTELLATION_KEYS,
   SKY_CONSTELLATIONS,
+  SKY_COURSE,
   SKY_FIELD,
   SKY_FRAME,
   SKY_HIT,
@@ -88,6 +89,10 @@ const TAT_CA = [
 ];
 const TEN_TEP = ['sky-troi.svg', 'sky-sao-nen.svg', 'sky-mach.svg', 'sky-chom-nghi.svg',
   ...SKY_CONSTELLATIONS.map((c) => `sky-chom-${c.key}.svg`)];
+/* Hai dòng của một nhãn. Ở đúng MỘT chỗ vì ca test nào cũng cần cả hai, và
+   dựng lại chuỗi ở năm chỗ là năm chỗ sẽ lệch khi câu chữ đổi lần nữa. */
+const dongChang = (c) => `${c.key} · ${c.subtitle}`;
+const dongKhoa = (c) => `${SKY_COURSE.name} · ${c.stars.length} bài`;
 
 const PY = readFileSync(join(ROOT, 'scripts', 'star', 'build_sky.py'), 'utf8');
 const CSS = read('src', 'app', 'ban-do-sao', 'star-map.module.css');
@@ -714,30 +719,38 @@ test('tám nhãn: neo vào ngôi sáng nhất còn đặt được, đường d�
       + ' đường chéo điểm ảnh (răng cưa đều đặn) và trùng góc mắt đọc ra "một mũi tên"');
   }
 
-  // Tám tên và tám dòng phụ, và dòng phụ ĐẾM số bài từ danh sách ngôi.
+  // Tám dòng chặng, và KHÔNG MỘT dòng nào khác ở tấm nghỉ.
   const chu = [...nhan.matchAll(/<text x="(-?[\d.]+)" y="(-?[\d.]+)">([^<]*)<\/text>/g)]
     .map((m) => ({ x: +m[1], y: +m[2], s: m[3] }));
   for (const c of SKY_CONSTELLATIONS) {
-    assert.ok(chu.some((t) => t.s === c.name), `không thấy tên chòm "${c.name}"`);
-    assert.ok(chu.some((t) => t.s === `${c.key} · ${c.subtitle} · ${c.stars.length} bài`),
-      `dòng phụ của ${c.key} không khớp`);
+    assert.ok(chu.some((t) => t.s === dongChang(c)),
+      `không thấy dòng chặng "${dongChang(c)}"`);
   }
+  assert.equal(chu.length, 8,
+    `tấm nghỉ có ${chu.length} dòng chữ, phải có đúng 8 — một dòng cho mỗi chặng. Dòng khoá`
+    + ' và mã bài chỉ thuộc tấm TIÊU ĐIỂM.');
 
   // LUẬT NHƯỜNG: không hai hộp chữ nào chồng nhau, và không hộp nào đè ngôi.
+  //
+  // Hộp tính CẢ dòng khoá dù tấm nghỉ chưa vẽ nó: một chỗ đặt phải hợp lệ ở
+  // CẢ HAI trạng thái, không thì hover đẩy dòng khoá (dài hơn dòng chặng ở sáu
+  // trong tám chòm) ra ngoài hộp và lên một ngôi sao — mà nó chỉ rơi lúc
+  // hover nên mở bản tĩnh ra không thấy được.
   const hop = SKY_CONSTELLATIONS.map((c) => {
-    const t = chu.filter((q) => q.s === c.name
-      || q.s === `${c.key} · ${c.subtitle} · ${c.stars.length} bài`);
-    assert.equal(t.length, 2, `${c.key} thiếu một dòng nhãn`);
-    const x0 = Math.min(...t.map((q) => q.x));
-    const bw = Math.max(beRongChu(c.name, SKY_LABEL.nameSize),
-      beRongChu(`${c.key} · ${c.subtitle} · ${c.stars.length} bài`, SKY_LABEL.subSize))
-      + SKY_LABEL.rulePad;
+    const t = chu.filter((q) => q.s === dongChang(c));
+    assert.equal(t.length, 1, `${c.key} phải có đúng một dòng nhãn lúc nghỉ`);
+    const x0 = t[0].x;
+    const bw = Math.max(beRongChu(dongChang(c), SKY_LABEL.nameSize),
+      beRongChu(dongKhoa(c), SKY_LABEL.subSize)) + SKY_LABEL.rulePad;
+    // Dòng chặng ở `p2.y − baselineLift`, nên gạch chân ở `p2.y` và dòng khoá
+    // ở `p2.y + sublineGap`: dựng lại hai mép hộp từ chính baseline đọc được.
+    const py = t[0].y + SKY_LABEL.baselineLift;
     return {
       key: c.key,
       x0,
       x1: x0 + bw,
-      y0: Math.min(...t.map((q) => q.y)) - SKY_LABEL.nameSize * 0.8,
-      y1: Math.max(...t.map((q) => q.y)) + SKY_LABEL.subSize * 0.3,
+      y0: t[0].y - SKY_LABEL.nameSize * 0.8,
+      y1: py + SKY_LABEL.sublineGap + SKY_LABEL.subSize * 0.3,
     };
   });
   for (let i = 0; i < hop.length; i += 1) {
@@ -764,6 +777,101 @@ test('tám nhãn: neo vào ngôi sáng nhất còn đặt được, đường d�
       && h.y0 - SKY_LABEL.boxPad >= 0 && h.y1 + SKY_LABEL.boxPad <= SKY_FRAME.height,
     `hộp chữ ${h.key} tràn khỏi khung`);
   }
+});
+
+test('nhãn KHÔNG mang tên chòm, và dòng khoá chỉ hiện lúc trỏ vào', () => {
+  // Chủ sản phẩm bỏ tên chòm khỏi nhãn ngày 19/10/2026 sau khi xem thật: học
+  // viên tìm "chặng nào, học gì", mà "Kẹp" không trả lời câu nào trong hai câu
+  // đó — giữ nó là bắt mọi người học một hệ tên THỨ HAI mới dùng được bản đồ.
+  //
+  // Vì sao một ca test chứ không chỉ một lần sửa: tên chòm vẫn còn trong dữ
+  // liệu (`name` là một lời khẳng định về HÌNH, có ca kiểm riêng), nên nó nằm
+  // sẵn ở đó để ai sửa tới `ve_nhan` lại in ra. Và nó sẽ hỏng im lặng: chữ vẫn
+  // đẹp, tệp vẫn ra, chỉ là nhãn dài lại thành hai dòng và hộp va chạm lệch.
+  for (const [ten, svg] of TAT_CA) {
+    const nhan = lop(svg, 'nhan');
+    if (!nhan) continue;
+    for (const c of SKY_CONSTELLATIONS) {
+      assert.ok(!nhan.includes(`>${c.name}<`),
+        `${ten}: nhãn còn in tên chòm "${c.name}" — tên hình thuộc về tài liệu, không thuộc`
+        + ' về bản đồ');
+    }
+  }
+
+  // Tấm TIÊU ĐIỂM: đúng chòm đang trỏ có thêm dòng khoá, bảy chòm kia không.
+  for (const c of SKY_CONSTELLATIONS) {
+    const chu = [...lop(RO[c.key], 'nhan')
+      .matchAll(/<text x="-?[\d.]+" y="-?[\d.]+">([^<]*)<\/text>/g)].map((m) => m[1]);
+    assert.ok(chu.includes(dongKhoa(c)),
+      `tấm ${c.key} thiếu dòng khoá "${dongKhoa(c)}"`);
+    for (const k of SKY_CONSTELLATIONS) {
+      assert.ok(chu.includes(dongChang(k)), `tấm ${c.key} thiếu dòng chặng của ${k.key}`);
+      if (k.key === c.key) continue;
+      // Dòng khoá của chòm KHÁC không được hiện — tám dòng khoá cùng lúc là
+      // một bảng chữ, không phải một bản khắc.
+      assert.ok(!chu.includes(dongKhoa(k)) || dongKhoa(k) === dongKhoa(c),
+        `tấm ${c.key} hiện dòng khoá của ${k.key}`);
+    }
+  }
+
+  // SỐ BÀI trong dòng khoá đếm từ danh sách ngôi, nên nó không nói sai được.
+  for (const c of SKY_CONSTELLATIONS) {
+    assert.match(dongKhoa(c), new RegExp(`· ${c.stars.length} bài$`));
+  }
+
+  // TÊN KHOÁ phải khớp danh mục. Đọc `catalog.ts` dạng VĂN BẢN vì nó import
+  // alias `@/…` mà `node --test` không phân giải — cùng cách
+  // `catalog-naming.test.mjs` làm. Tên khoá này đã đổi một lần
+  // (`scripts/rename-python-advanced.ts`) và lần đó phải sửa ba chỗ; bản đồ
+  // sao là chỗ thứ tư, nên nó phải có người canh.
+  const CATALOG = readFileSync(join(FE, 'src', 'lib', 'catalog.ts'), 'utf8');
+  const i = CATALOG.indexOf("id: 'python_advanced'");
+  assert.notEqual(i, -1, 'catalog.ts không còn khoá python_advanced');
+  const tieuDe = CATALOG.slice(i, i + 400).match(/title:\s*'([^']+)'/);
+  assert.ok(tieuDe, 'không đọc được title của python_advanced');
+  assert.equal(SKY_COURSE.name, tieuDe[1],
+    `SKY_COURSE.name = "${SKY_COURSE.name}" nhưng catalog.ts gọi khoá là "${tieuDe[1]}"`);
+
+  // Và câu gợi ý phải nói ra hover CHO GÌ: nhãn lúc nghỉ không còn tên khoá
+  // lẫn số bài, nên nếu không ai nói "trỏ vào thì có" thì chúng là thứ không
+  // ai biết để đi tìm.
+  for (const tu of ['Tab', 'tên khoá', 'số bài', 'mã bài']) {
+    assert.ok(STAR_COPY.hint.includes(tu), `câu gợi ý không nhắc tới "${tu}"`);
+  }
+  // Chú giải KHÔNG được gọi một chòm bằng tên hình nữa: cái tên ấy không còn ở
+  // đâu trên bản đồ để người đọc tìm ra. Đây là cái bẫy của chính lần sửa này
+  // — bỏ tên khỏi nhãn thì mọi câu chữ TRỎ VÀO tên đó thành một lời chỉ dẫn
+  // vào hư không.
+  const cg = STAR_COPY.legend.join(' ');
+  for (const c of SKY_CONSTELLATIONS) {
+    assert.ok(!cg.includes(`"${c.name}"`),
+      `chú giải gọi một chặng bằng tên hình "${c.name}" — gọi bằng mã chặng (M1…M8)`);
+  }
+  assert.ok(/M6/.test(cg) && /M5/.test(cg),
+    'chú giải không còn gọi hai chặng nét đậm/nét trần bằng mã chặng');
+});
+
+test('chữ trên CẢ TÁM nhãn đạt 4,5:1, và bộ sinh TỰ ĐO rồi trượt nếu không', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  // Phép đo thật, chạy bằng chính bộ đo của bộ sinh. Đắt (một lượt Python) và
+  // vẫn đáng: đổi câu chữ nhãn là đổi bề rộng hộp → đổi chỗ đặt → đổi nền sau
+  // chữ, nên 4,5:1 là một con số phải ĐO LẠI mỗi lần, không phải một con số
+  // chép vào chú thích một lần rồi tin mãi. Lần này đã đổi câu chữ cả tám.
+  const ra = execFileSync(PYBIN, [join(ROOT, 'scripts', 'star', 'build_sky.py'), '--do'],
+    { cwd: ROOT, encoding: 'utf8' });
+  const dong = [...ra.matchAll(/nhãn (M\d)\s+dòng (\S+)\s+([\d.]+):1/g)];
+  assert.equal(dong.length, 16,
+    `đọc được ${dong.length} số đo nhãn, phải có 16 (8 nhãn × 2 dòng)`);
+  for (const m of dong) {
+    assert.ok(+m[3] >= 4.5,
+      `nhãn ${m[1]} dòng ${m[2]} chỉ đạt ${m[3]}:1, dưới 4,5:1 của §5.2`);
+  }
+  // …và chính bộ sinh phải CHẶN, không chỉ in ra: một bảng số in ra mà không
+  // ai đọc thì bằng không có.
+  assert.ok(/def kiem_tuong_phan_nhan\(P, san=4\.5\)/.test(PY),
+    'build_sky.py không còn hàm chặn tương phản nhãn ở sàn 4,5');
+  assert.ok(/kiem_tuong_phan_nhan\(P\)/.test(PY_CODE.split('def main')[1] ?? ''),
+    'main() không gọi kiem_tuong_phan_nhan — build sẽ xuất ra nhãn không đọc được');
 });
 
 /* ═══ 12 · CHÍN TẤM CHÒM CHỈ KHÁC NHAU Ở ĐỘ MỜ ════════════════════════ */
@@ -925,22 +1033,35 @@ test('mười sáu ô bấm khớp bao lồi chòm nở 20 px và hộp nhãn, t
         `.hit${c.key}a ${k} = ${so[k]}% nhưng tính lại từ tranh ra ${bl[k].toFixed(2)}% —`
         + ' vùng bấm không còn trùm lên chòm. Chạy `build_sky.py --css`.');
     }
-    // Ô NHÃN phải trùm lên hộp chữ, nếu không "bấm vào nhãn cũng là mở chặng"
-    // chỉ là một lời.
-    const t = chu.filter((q) => q.s === c.name
-      || q.s === `${c.key} · ${c.subtitle} · ${c.stars.length} bài`);
+    // Ô NHÃN phải khớp HỘP CHỮ, tính lại từ chính dòng chữ trong tranh — nếu
+    // không thì "bấm vào nhãn cũng là mở chặng" chỉ là một lời.
+    //
+    // So cả bốn con số chứ không chỉ "có trùm lên dòng chữ không": nhãn vừa
+    // ngắn lại một dòng (19/10/2026), và kiểu lỗi đúng của lần ấy là NHỚ sửa
+    // câu chữ mà QUÊN chạy lại `--css`. Một phép kiểm "có trùm lên" thì một ô
+    // bấm rộng dư 60 px vẫn qua, trong khi nó đang ăn con trỏ của chòm bên.
+    const t = chu.find((q) => q.s === dongChang(c));
+    assert.ok(t, `tấm nghỉ thiếu dòng chặng của ${c.key}`);
+    const bwN = Math.max(beRongChu(dongChang(c), SKY_LABEL.nameSize),
+      beRongChu(dongKhoa(c), SKY_LABEL.subSize)) + SKY_LABEL.rulePad;
+    const pyN = t.y + SKY_LABEL.baselineLift;
+    const hn = {
+      left: t.x / SKY_FRAME.width * 100,
+      top: (t.y - SKY_LABEL.nameSize * 0.8) / SKY_FRAME.height * 100,
+      width: bwN / SKY_FRAME.width * 100,
+      height: (SKY_LABEL.nameSize * 0.8 + SKY_LABEL.baselineLift + SKY_LABEL.sublineGap
+        + SKY_LABEL.subSize * 0.3) / SKY_FRAME.height * 100,
+    };
+    assert.ok(hn.top + hn.height > pyN / SKY_FRAME.height * 100, 'hộp nhãn không bọc gạch chân');
     const nk = CSS_CODE.match(new RegExp(`\\.hit${c.key}b\\s*\\{([^}]*)\\}`));
     assert.ok(nk, `thiếu .hit${c.key}b`);
     const ns = Object.fromEntries(
       [...nk[1].matchAll(/(left|top|width|height):\s*([\d.]+)%/g)].map((m) => [m[1], +m[2]]),
     );
-    const x = ns.left / 100 * SKY_FRAME.width;
-    const y = ns.top / 100 * SKY_FRAME.height;
-    const w = ns.width / 100 * SKY_FRAME.width;
-    const h = ns.height / 100 * SKY_FRAME.height;
-    for (const q of t) {
-      assert.ok(q.x >= x - 1 && q.x <= x + w + 1 && q.y >= y - 1 && q.y <= y + h + 1,
-        `.hit${c.key}b không trùm dòng "${q.s}"`);
+    for (const k of ['left', 'top', 'width', 'height']) {
+      assert.ok(Math.abs(ns[k] - hn[k]) < 0.5,
+        `.hit${c.key}b ${k} = ${ns[k]}% nhưng hộp chữ trong tranh ra ${hn[k].toFixed(2)}% —`
+        + ' câu chữ nhãn đổi mà chưa chạy lại `build_sky.py --css`.');
     }
   }
   // TÁM ô BAO LỒI không được chồng nhau: ô nào nằm sau trong DOM sẽ nuốt con

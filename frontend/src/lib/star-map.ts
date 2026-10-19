@@ -519,6 +519,25 @@ export const SKY_LABEL = {
   sublineGap: 19,
   leaderOpacity: 0.5,
   leaderFocusOpacity: 0.85,
+  /**
+   * HAI DÒNG, VÀ CHÚNG ĐÃ ĐỔI NGHĨA ngày 19/10/2026 — `nameSize`/`subSize`
+   * giữ tên khoá cũ, nhưng đọc ở đây để không ai hiểu nhầm:
+   *  · `name*` = dòng CHÍNH, **luôn hiện**: `M1 · Tiến trình` (mã chặng ·
+   *    tên phần). Nó từng là tên chòm ("Kẹp", "Con thoi"…);
+   *  · `sub*` = dòng PHỤ, **chỉ hiện lúc trỏ vào**: `Advanced Python · 7 bài`
+   *    (tên khoá · số bài).
+   *
+   * Vì sao bỏ tên chòm khỏi nhãn (chủ sản phẩm chốt sau khi xem thật): học
+   * viên tìm "chặng nào, học gì", và "Kẹp" không trả lời câu nào trong hai
+   * câu đó — giữ nó là bắt mọi người học một hệ tên THỨ HAI mới dùng được
+   * bản đồ. Hình chòm vẫn mang ẩn dụ (xem `name` của từng chòm); chỉ là chữ
+   * không phải gánh thêm nó.
+   *
+   * HỘP VA CHẠM VẪN TÍNH CẢ DÒNG PHỤ, dù lúc nghỉ nó chưa hiện — một chỗ đặt
+   * phải hợp lệ ở CẢ HAI trạng thái. Tính hộp theo trạng thái nghỉ thì lúc
+   * trỏ vào, dòng phụ dài hơn dòng chính sẽ mọc ra ngoài hộp và rơi lên một
+   * ngôi sao; mà nó chỉ rơi lúc hover nên không ai mở bản tĩnh ra thấy được.
+   */
   nameSize: 20,
   nameWeight: 600,
   subSize: 15,
@@ -600,6 +619,13 @@ export const SKY_LABEL = {
  *  · M1 có đoạn dẫn **90 px** — dài gần gấp ba M2 — vì nó tới sau M3 và M8,
  *    và phải đi ra khỏi vùng hai chòm kia đã giữ. Đó chính là cái giá của
  *    luật nhường, nhìn thấy được bằng một con số.
+ *
+ * CHẠY LẠI 19/10/2026 sau khi nhãn bỏ tên chòm và ngắn lại còn một dòng, và
+ * khối ra ĐÚNG NHƯ CŨ — tám hàng không đổi một con số. Ghi lại vì một khối
+ * không đổi dễ bị đọc thành "người ta quên chạy lại": hộp chữ thì có đổi (bề
+ * rộng của năm trong tám chòm, vì nay nó là `max` của dòng chặng ở cỡ 20 và
+ * dòng khoá ở cỡ 15), nhưng chỗ đặt RẺ NHẤT CÒN HỢP LỆ vẫn là chỗ cũ. Vùng
+ * bấm `.hit*b` thì đổi theo và đã sinh lại.
  */
 export const SKY_LABEL_PLACED = [
   { key: 'M3', anchor: 'G05', dir: [-1, -1], leg: 54 },
@@ -611,6 +637,17 @@ export const SKY_LABEL_PLACED = [
   { key: 'M7', anchor: 'M01', dir: [1, 1], leg: 48 },
   { key: 'M6', anchor: 'PD01', dir: [-1, -1], leg: 68 },
 ] as const;
+
+/**
+ * TÊN KHOÁ, cho dòng phụ hiện lúc trỏ vào (`Advanced Python · 7 bài`).
+ *
+ * Ở đây chứ không ở `build_sky.py`: luật 1 của tệp này là "hình thái và câu
+ * chữ ở TS, bộ sinh không biết gì". Và phải KHỚP `COURSES` trong
+ * `src/lib/catalog.ts` — một ca test so hai chỗ, vì tên khoá đã từng đổi một
+ * lần (`scripts/rename-python-advanced.ts`) và lần đó phải sửa ba chỗ; bản đồ
+ * sao là chỗ thứ tư. Một tên chép tay là một tên sẽ lệch.
+ */
+export const SKY_COURSE = { name: 'Advanced Python' } as const;
 
 /** Vùng bấm (§4.4 · §10): bao lồi của chòm nở ra bấy nhiêu, CỘNG hộp nhãn.
  *  Không phải một ô chia hết bầu trời — khoảng tối giữa hai chòm không thuộc
@@ -818,9 +855,24 @@ export type SkyStar = { code: string; x: number; y: number; role: string };
 export type SkyConstellation = {
   key: string;
   hue: keyof SkyProfile['hues'];
+  /**
+   * TÊN HÌNH — ẩn dụ của hình chòm ("Kẹp", "Con thoi", "Lưới trần"…).
+   *
+   * **KHÔNG BAO GIỜ in lên nhãn.** Chủ sản phẩm bỏ nó khỏi nhãn ngày
+   * 19/10/2026: học viên tìm "chặng nào, học gì", và "Kẹp" không trả lời câu
+   * nào trong hai câu đó. Nó còn ở đây vì nó là một LỜI KHẲNG ĐỊNH VỀ HÌNH mà
+   * ca test đo lại được — ca `hình M1 "Kẹp"` kiểm rằng hình thật có một cán,
+   * hai càng rời nhau rồi gặp lại; đổi hình mà quên đổi tên là một ca đỏ. Nên
+   * nó là tài liệu có người canh, không phải chữ hiển thị.
+   *
+   * Hệ quả cho câu chữ ở chỗ khác: chú giải KHÔNG được gọi một chòm bằng tên
+   * hình nữa (nó từng viết 'chòm "Bàn có nhãn"'), vì cái tên ấy không còn ở
+   * đâu trên bản đồ để người đọc tìm ra. Gọi bằng MÃ CHẶNG.
+   */
   name: string;
-  /** Dòng phụ của nhãn là `M1 · <subtitle> · <số ngôi> bài` — SỐ BÀI đếm từ
-   *  `stars`, không viết cứng, nên nó không nói sai được. */
+  /** Tên phần. Dòng CHÍNH của nhãn là `M1 · <subtitle>`, và dòng PHỤ hiện lúc
+   *  trỏ vào là `<tên khoá> · <số ngôi> bài` — SỐ BÀI đếm từ `stars`, không
+   *  viết cứng, nên nó không nói sai được. */
   subtitle: string;
   box: readonly [number, number, number, number];
   grid: readonly [number, number];
@@ -1194,7 +1246,10 @@ export const SKY_LAYERS = [
 export const STAR_COPY = {
   title: 'Bản đồ sao — tám chòm',
   lead: 'Bốn mươi tám ngôi là bốn mươi tám bài. Tám chòm là tám chặng. Ngôi càng sáng, bài càng đòi nhiều ca chấm phải qua.',
-  hint: 'Trỏ hoặc Tab vào một chòm để nó rõ lên.',
+  /** Nói ra hover CHO GÌ, không chỉ nói là có hover: nhãn lúc nghỉ chỉ còn
+   *  `M1 · Tiến trình`, nên tên khoá và số bài phải được giới thiệu ở đâu đó
+   *  là "trỏ vào thì có", không thì chúng là một thứ không ai biết để đi tìm. */
+  hint: 'Trỏ hoặc Tab vào một chòm để nó rõ lên — và để thấy tên khoá, số bài của chặng, cùng mã bài của từng ngôi.',
   /** `alt` của tấm ảnh ĐẦU. Chỉ một tấm mang mô tả: bốn tấm nền là MỘT bức,
    *  và bốn câu mô tả cho một bức là bốn lần đọc lại cùng một thứ cho người
    *  dùng trình đọc màn hình. */
@@ -1208,7 +1263,10 @@ export const STAR_COPY = {
     'Nét ĐỨT xanh lam đi qua bốn chòm trên-phải: phụ thuộc thật duy nhất của khoá — NumPy → pandas → Matplotlib → dự án. Không có mũi tên vì nó là một quan hệ, không phải một lộ trình.',
     'Dải bụi sáng chạy chéo cả bầu trời là Ngân Hà. Mọi chòm đều nằm trong nó hoặc ngoài nó — và đó đã là một quan hệ. Nó cũng là lý do trời dày sao ở giữa và thưa ở hai góc.',
     'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ số ca chấm của bài đó, không ai chọn cho đẹp.',
-    'Ở chòm "Bàn có nhãn" (pandas), hàng trên và cột trái có nét ĐẬM HƠN: đó là nhãn của bảng. Chòm "Lưới trần" (NumPy) không có nét nào đậm hơn nét nào — vì một ndarray không có nhãn. Đây là chỗ duy nhất trong cả bản đồ mà độ dày nét mang nghĩa.',
+    // Gọi bằng MÃ CHẶNG, không bằng tên hình: nhãn trên bản đồ chỉ còn
+    // `M6 · pandas`, nên một câu chú giải nói 'chòm "Bàn có nhãn"' là chỉ vào
+    // một cái tên không còn ở đâu để tìm.
+    'Ở chặng M6 (pandas), hàng trên và cột trái của cái bàn có nét ĐẬM HƠN: đó là nhãn của bảng. Chặng M5 (NumPy) là một cái lưới trần — không nét nào đậm hơn nét nào, vì một ndarray không có nhãn. Đây là chỗ duy nhất trong cả bản đồ mà độ dày nét mang nghĩa.',
     'Chấm trắng xám nhỏ, không quầng = sao nền. Nó không mang tin.',
     'Lưới toạ độ mờ = chất liệu, không mang nghĩa. Nó đứt ở chỗ một ngôi đi qua.',
     'Khoảng tối giữa hai chòm không thuộc về chặng nào — ở đó không có bài nào. Vì thế bản đồ không vẽ ranh giới chòm.',

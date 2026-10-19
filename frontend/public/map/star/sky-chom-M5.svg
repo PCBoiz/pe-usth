@@ -52,18 +52,17 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="176" cy="317" r="1.38"/><circle cx="255" cy="307" r="1.1"/><circle cx="334" cy="296" r="0.88"/><circle cx="183" cy="443" r="1.1"/><circle cx="262" cy="433" r="1.1"/><circle cx="341" cy="422" r="1.1"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="none" stroke="#CFE3EA" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1040 589l-47 -27l-16 0M742 562l118 0"/>
-<g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill-opacity="0.51"><text x="742" y="558">Khung cửa</text><text x="865" y="88">Song tinh</text><text x="384" y="635">Kẹp</text><text x="605" y="763">Con thoi</text><text x="677" y="449">Phễu</text><text x="1106" y="400">Trục và đường</text><text x="344" y="203">Bàn có nhãn</text></g>
-<g fill="#AFBDD2" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="500" fill-opacity="0.51" letter-spacing="0.6"><text x="742" y="581">M3 · GUI Tkinter · 7 bài</text><text x="865" y="111">M8 · Dự án DA · 2 bài</text><text x="384" y="658">M1 · Tiến trình · 7 bài</text><text x="605" y="786">M2 · Đa luồng · 6 bài</text><text x="677" y="472">M4 · Nhập dữ liệu và SQL · 5 bài</text><text x="1106" y="423">M7 · Matplotlib · 6 bài</text><text x="344" y="226">M6 · pandas · 9 bài</text></g>
-<path fill="none" stroke="#FBF6E6" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1118 109l-30 -17l-16 0M865 92l118 0"/>
-<path fill="none" stroke="#F0C795" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M284 684l78 -45l16 0M384 639l43 0"/>
-<path fill="none" stroke="#E3D996" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M554 784l29 -17l16 0M605 767l105 0"/>
-<path fill="none" stroke="#9ACFC3" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M624 471l31 -18l16 0M677 453l56 0"/>
-<path fill="none" stroke="#D7D0EE" stroke-width="0.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="M191 448l30 17l16 0M243 465l117 0"/>
-<g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="243" y="461">Lưới trần</text></g>
-<g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="500" letter-spacing="0.6"><text x="243" y="484">M5 · NumPy · 6 bài</text></g>
+<path fill="none" stroke="#CFE3EA" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1040 589l-47 -27l-16 0M752 562l204 0"/>
+<g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill-opacity="0.51"><text x="752" y="558">M3 · GUI Tkinter</text><text x="847" y="88">M8 · Dự án DA</text><text x="384" y="635">M1 · Tiến trình</text><text x="605" y="763">M2 · Đa luồng</text><text x="677" y="449">M4 · Nhập dữ liệu và SQL</text><text x="1106" y="400">M7 · Matplotlib</text><text x="307" y="203">M6 · pandas</text></g>
+<path fill="none" stroke="#FBF6E6" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1118 109l-30 -17l-16 0M847 92l167 0"/>
+<path fill="none" stroke="#F0C795" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M284 684l78 -45l16 0M384 639l192 0"/>
+<path fill="none" stroke="#E3D996" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M554 784l29 -17l16 0M605 767l167 0"/>
+<path fill="none" stroke="#9ACFC3" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M624 471l31 -18l16 0M677 453l304 0"/>
+<path fill="none" stroke="#D7D0EE" stroke-width="0.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="M191 448l30 17l16 0M243 465l130 0"/>
+<g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="243" y="461">M5 · NumPy</text></g>
+<g fill="#AFBDD2" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="500" letter-spacing="0.6"><text x="243" y="484">Advanced Python · 6 bài</text></g>
 <g fill="#C9A646" font-family="JetBrains Mono, Consolas, Menlo, monospace" font-size="13" font-weight="500"><text x="188" y="310">N01</text><text x="267" y="300">N02</text><text x="345" y="290">N03</text><text x="195" y="437">N04</text><text x="274" y="426">N05</text><text x="353" y="415">N06</text></g>
-<path fill="none" stroke="#ECC4DC" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1042 380l42 24l16 0M1106 404l167 0"/>
-<path fill="none" stroke="#E4EDC6" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M608 241l-59 -34l-16 0M344 207l142 0"/>
+<path fill="none" stroke="#ECC4DC" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M1042 380l42 24l16 0M1106 404l192 0"/>
+<path fill="none" stroke="#E4EDC6" stroke-width="0.8" stroke-opacity="0.25" stroke-linecap="round" stroke-linejoin="round" d="M608 241l-59 -34l-16 0M307 207l142 0"/>
 </g>
 </svg>
