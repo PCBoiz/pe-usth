@@ -627,9 +627,13 @@ test('mỗi chòm ≤ 12 nét, tổng đúng 50, và số nét vẽ ra khớp s�
   assert.equal(tong, 49, `cả bản đồ có ${tong} nét trong chòm — đếm lại 49 sau khi M3 mở`);
   // Mỗi nét vẽ ra THÀNH BA KHÚC, vì LUẬT ĐƯỜNG CHÓI (§10.3) quyết tông theo
   // nền ở từng khúc: phần của một chòm gần mặt trời nhất sậm lại thành BÓNG
-  // còn phần xa thì sáng. Nên đếm theo `M` là đếm khúc, không đếm nét.
-  assert.equal(lop(CHOM, 'net-chom').match(/M-?\d/g).length, 49 * 3,
-    'số KHÚC nét vẽ ra lệch với 3 × số nét khai — luật đường chói cắt mỗi nét làm ba');
+  // còn phần xa thì sáng. Và mỗi khúc được vẽ HAI LƯỢT từ 20/10/2026 — một
+  // VỎ BỌC rộng hơn ở dưới, một lõi ở trên (`SKY_LINK.casing`) — nên con số
+  // là 49 × 3 × 2. Hệ số 2 ở đây là chỗ ca này gác được chuyện vỏ bọc biến
+  // mất: mất nó thì tương phản nét lại phụ thuộc vào việc dìm bầu trời.
+  assert.equal(lop(CHOM, 'net-chom').match(/M-?\d/g).length, 49 * 3 * 2,
+    'số KHÚC nét vẽ ra lệch với 3 × 2 × số nét khai — luật đường chói cắt mỗi nét'
+    + ' làm ba, và vỏ bọc vẽ mỗi khúc hai lượt');
 });
 
 test('hình M1 "Kẹp": một cán, hai càng RỜI NHAU rồi GẶP LẠI', () => {
@@ -679,13 +683,22 @@ test('M6 "Bàn có nhãn" có nét ĐẬM ở hàng/cột nhãn; M5 "Lưới tr�
     assert.equal(c.lines.filter((ab) => ab.length > 2).length, 0,
       `${c.key} có nét đậm — độ dày nét mang nghĩa riêng CHỈ ở M6`);
   }
-  // …và nó phải ra tới tranh: đúng hai bề rộng nét trong lớp nét chòm.
+  // …và nó phải ra tới tranh: BỐN bề rộng nét trong lớp nét chòm — lõi
+  // thường · lõi đậm, mỗi cái có một VỎ BỌC rộng hơn đúng `casing.grow`
+  // (`SKY_LINK.casing`, 20/10/2026). Đọc theo CẶP chứ không theo thứ tự tăng
+  // dần: vỏ của nét thường có thể rộng hơn lõi của nét đậm, và lúc ấy một
+  // phép so `ws[1]/ws[0]` nói về hai thứ không liên quan tới nhau.
   const ws = [...new Set(beRong(lop(CHOM, 'net-chom')))].sort((a, b) => a - b);
-  assert.equal(ws.length, 2, `lớp nét chòm có ${ws.length} bề rộng, phải có đúng 2`);
-  assert.ok(Math.abs(ws[1] / ws[0] - SKY_LINK.emphasis) < 0.05,
-    `tỉ lệ nét đậm/nét thường là ${(ws[1] / ws[0]).toFixed(2)}, khai ${SKY_LINK.emphasis}`);
-  assert.ok(lop(CHOM, 'net-chom').includes(`stroke="${P.hues.m6}" stroke-width="${ws[1]}"`)
-    || new RegExp(`stroke="${P.hues.m6}"[^/]*stroke-width="${ws[1]}"`).test(lop(CHOM, 'net-chom')),
+  const loi = ws.filter((w) => ws.includes(+(w + SKY_LINK.casing.grow).toFixed(2)));
+  const vo = ws.filter((w) => ws.includes(+(w - SKY_LINK.casing.grow).toFixed(2)));
+  assert.equal(ws.length, 4,
+    `lớp nét chòm có ${ws.length} bề rộng, phải có đúng 4 — lõi thường/đậm và vỏ của chúng`);
+  assert.equal(loi.length, 2, 'không đọc ra hai bề rộng LÕI có vỏ bọc đi kèm');
+  assert.equal(vo.length, 2, 'không đọc ra hai bề rộng VỎ — vỏ phải rộng hơn lõi `casing.grow`');
+  assert.ok(Math.abs(loi[1] / loi[0] - SKY_LINK.emphasis) < 0.05,
+    `tỉ lệ nét đậm/nét thường là ${(loi[1] / loi[0]).toFixed(2)}, khai ${SKY_LINK.emphasis}`);
+  assert.ok(new RegExp(`stroke="${P.hues.m6}"[^/]*stroke-width="${loi[1]}"`)
+    .test(lop(CHOM, 'net-chom')),
     'nét đậm không mang sắc của M6 — tức nó đang ở nhầm chòm');
 });
 
@@ -701,8 +714,12 @@ test('nét nối không chạm vào sao — sao là một vật thể, không ph
   // về khe tới sao — chỉ khúc đầu và khúc cuối của mỗi nét mới nói, và khúc
   // cuối thì bắt đầu ở 2/3 nét. Nên lọc: chỉ lấy điểm bắt đầu của khúc ĐẦU,
   // tức mỗi nét một điểm.
-  assert.equal(ds.length, 49 * 3, `đọc được ${ds.length} khúc nét, chờ ${49 * 3}`);
-  for (const d of ds.filter((_, i) => i % 3 === 0)) {
+  // × 2 vì mỗi khúc có một vỏ bọc vẽ TRÊN CÙNG đường (`SKY_LINK.casing`).
+  // Vỏ và lõi trùng toạ độ nên lọc trùng là cách đúng để quay về một điểm
+  // cho mỗi khúc — đếm `i % 6` thì phụ thuộc vào thứ tự nhóm của `Ink`.
+  assert.equal(ds.length, 49 * 3 * 2, `đọc được ${ds.length} khúc nét, chờ ${49 * 3 * 2}`);
+  const dau = [...new Map(ds.map((d) => [`${d.x},${d.y}`, d])).values()];
+  for (const d of dau.filter((_, i) => i % 3 === 0)) {
     const gan = sao.map((s) => Math.hypot(s.x - d.x, s.y - d.y) - s.r).sort((a, b) => a - b)[0];
     assert.ok(gan >= SKY_LINK.gap - 1.5,
       `một nét bắt đầu cách rìa sao gần nhất ${gan.toFixed(1)} đơn vị, dưới khe hở`
@@ -831,7 +848,8 @@ test('KHÔNG một `<path>` ranh giới chòm nào — đó là quy ước Bayer
   // Mỗi nét vẽ ra phải là một nét ĐÃ KHAI, không có nét thừa. Nhân BA vì luật
   // đường chói (§10.3) cắt mỗi nét làm ba khúc để tông đổi được giữa một nét
   // dài — ba khúc của cùng một nét, không ba nét.
-  assert.equal(lop(CHOM, 'net-chom').match(/M-?\d/g).length, canh.size * 3);
+  // Nhân thêm HAI vì vỏ bọc vẽ mỗi khúc hai lượt (`SKY_LINK.casing`).
+  assert.equal(lop(CHOM, 'net-chom').match(/M-?\d/g).length, canh.size * 3 * 2);
   // …và vùng bấm KHÔNG chia hết bầu trời: tổng diện tích tám ô bao lồi phải
   // nhỏ hơn hẳn diện tích khung, nếu không thì ta đang vẽ ranh giới IAU bằng
   // một cách khác.
@@ -973,8 +991,15 @@ test('tám nhãn: neo vào ngôi sáng nhất còn đặt được, đường d�
   }
 
   // Tám dòng chặng, và KHÔNG MỘT dòng nào khác ở tấm nghỉ.
-  const chu = [...nhan.matchAll(/<text x="(-?[\d.]+)" y="(-?[\d.]+)">([^<]*)<\/text>/g)]
+  //
+  // MỖI dòng ra tranh thành HAI `<text>` từ 20/10/2026: một VIỀN `base` tô
+  // và kẻ bằng `haloWidth`, rồi mặt chữ lên trên (`SKY_LABEL.haloWidth`).
+  // Nên đếm chuỗi RIÊNG BIỆT, không đếm thẻ — và kiểm luôn rằng mỗi chuỗi có
+  // đúng hai thẻ, vì một dòng mất viền là một dòng tụt xuống dưới 4,5 : 1 mà
+  // không ai mở ra xem.
+  const theChu = [...nhan.matchAll(/<text x="(-?[\d.]+)" y="(-?[\d.]+)">([^<]*)<\/text>/g)]
     .map((m) => ({ x: +m[1], y: +m[2], s: m[3] }));
+  const chu = [...new Map(theChu.map((t) => [`${t.x},${t.y},${t.s}`, t])).values()];
   for (const c of SKY_CONSTELLATIONS) {
     assert.ok(chu.some((t) => t.s === dongChang(c)),
       `không thấy dòng chặng "${dongChang(c)}"`);
@@ -982,6 +1007,15 @@ test('tám nhãn: neo vào ngôi sáng nhất còn đặt được, đường d�
   assert.equal(chu.length, 8,
     `tấm nghỉ có ${chu.length} dòng chữ, phải có đúng 8 — một dòng cho mỗi chặng. Dòng khoá`
     + ' và mã bài chỉ thuộc tấm TIÊU ĐIỂM.');
+  assert.equal(theChu.length, 16,
+    `tấm nghỉ có ${theChu.length} thẻ <text> cho 8 dòng, phải có 16 — mỗi dòng là một VIỀN`
+    + ' `base` rồi mặt chữ lên trên. Mất viền là mất thứ THAY cho tấm nền đặc, và tương'
+    + ' phản chữ lại phụ thuộc vào mặt trời.');
+  // VIỀN phải mang màu NỀN và một `stroke-width` — không thì nó chỉ là chữ
+  // vẽ hai lần, tức dày hơn mà không có gì làm nền.
+  assert.ok(new RegExp(`fill="${P.base}"[^>]*stroke="${P.base}"[^>]*stroke-width="`).test(nhan)
+    || new RegExp(`fill="${P.base}"[^>]*stroke-width="[\d.]+"`).test(nhan),
+    'lớp nhãn không có nhóm chữ nào tô-và-kẻ bằng `profile.base` — viền chữ đã biến mất');
 
   // LUẬT NHƯỜNG: không hai hộp chữ nào chồng nhau, và không hộp nào đè ngôi.
   //
@@ -1113,8 +1147,14 @@ test('nhãn KHÔNG mang tên chòm, và dòng khoá chỉ hiện lúc trỏ vào
   // nay thuộc về CSS. Một `fill-opacity` trên nhóm chữ là dấu của bản cũ.
   for (const c of SKY_CONSTELLATIONS) {
     for (const [ten, svg] of [[c.key, NGHI[c.key]], [`${c.key}-ro`, RO[c.key]]]) {
-      const re = new RegExp(`font-size="${SKY_LABEL.nameSize}"[^>]*fill-opacity=`);
-      assert.ok(!re.test(lop(svg, 'nhan')),
+      // Chỉ xét nhóm MẶT CHỮ. Nhóm VIỀN cũng mang `font-size` ấy nhưng nó
+      // CÓ `fill-opacity` theo thiết kế (`SKY_LABEL.haloOpacity`) — phân biệt
+      // bằng `stroke=`, thứ chỉ nhóm viền có.
+      const nhom = [...lop(svg, 'nhan').matchAll(/<g ([^>]*font-size="[\d.]+"[^>]*)>/g)]
+        .map((m) => m[1])
+        .filter((a) => a.includes(`font-size="${SKY_LABEL.nameSize}"`) && !a.includes('stroke='));
+      assert.ok(nhom.length > 0, `tấm ${ten} không còn nhóm MẶT CHỮ nào cho dòng chặng`);
+      assert.ok(!nhom.some((a) => a.includes('fill-opacity=')),
         `tấm ${ten} còn vẽ chữ chặng ở một độ mờ < 1 — trạng thái mờ thuộc về CSS`);
     }
   }
@@ -1207,11 +1247,19 @@ test('tấm tiêu điểm chỉ đổi ĐỘ MỜ: không bán kính nào to lê
   // nghỉ xuống `--sky-mo`, nên `dimOpacity` KHÔNG được xuất hiện trong tranh.
   const op = (s) => [...s.matchAll(/stroke-opacity="([\d.]+)"/g)].map((m) => +m[1]);
   const [nghi, ro] = P.scale.lineOpacity;
+  // VỎ BỌC mang độ mờ RIÊNG (`SKY_LINK.casing.opacity`), và nó phải đổi theo
+  // trạng thái ĐÚNG TỈ LỆ với lõi — không thì tấm rõ và tấm nghỉ khác nhau ở
+  // nhiều hơn một con số, và phép đo tương phản (đo lõi với vỏ) nói về một
+  // bức tranh không tồn tại.
+  const voNghi = +(SKY_LINK.casing.opacity).toFixed(2);
+  const voRo = +Math.min(1, SKY_LINK.casing.opacity * (ro / nghi)).toFixed(2);
   for (const c of SKY_CONSTELLATIONS) {
-    assert.deepEqual([...new Set(op(lop(NGHI[c.key], 'net-chom')))], [nghi],
-      `${c.key}: tấm nghỉ không vẽ nét ở ${nghi}`);
-    assert.deepEqual([...new Set(op(lop(RO[c.key], 'net-chom')))], [ro],
-      `${c.key}: tấm rõ không vẽ nét ở ${ro}`);
+    assert.deepEqual([...new Set(op(lop(NGHI[c.key], 'net-chom')))].sort(),
+      [nghi, voNghi].sort(),
+      `${c.key}: tấm nghỉ không vẽ nét ở ${nghi} kèm vỏ bọc ở ${voNghi}`);
+    assert.deepEqual([...new Set(op(lop(RO[c.key], 'net-chom')))].sort(),
+      [ro, voRo].sort(),
+      `${c.key}: tấm rõ không vẽ nét ở ${ro} kèm vỏ bọc ở ${voRo}`);
     assert.ok(!op(lop(NGHI[c.key], 'net-chom')).includes(P.scale.dimOpacity),
       `${c.key}: tấm nghỉ vẽ sẵn độ mờ ${P.scale.dimOpacity} — trạng thái mờ thuộc về CSS`);
   }
@@ -2875,18 +2923,39 @@ test('VIỆC 4 · VẬT RẮN: rìa thiên thể, hành tinh đếm từ `step_4
     `chỉ có ${(tia.match(/Z/g) ?? []).length} nêm tia sáng, khai ${SKY_LIGHT.ray.count}`);
 });
 
-test('VIỆC 5 · NHÃN dưới mặt trời chói: tấm nền, đĩa cấm, và PHÉP LÙI thay chọn tham lam', () => {
+test('VIỆC 5 · NHÃN dưới mặt trời chói: viền chữ, đĩa cấm, và PHÉP LÙI thay chọn tham lam', () => {
   // Va chạm #1 mà đặc tả §10.2 báo trước: bộ máy đặt nhãn KHÔNG biết gì về độ
   // chói, và nhãn xấu nhất của bản cũ đạt 4,99 : 1 trên sàn 4,5 — còn 0,49
   // biên, mà một mặt trời giữa khung cộng một tinh vân được chiếu sáng ăn hết
   // biên đó.
-  assert.ok(SKY_LABEL.plateOpacity >= 0.6 && SKY_LABEL.plateAt > 0,
-    'mất TẤM NỀN dưới hộp nhãn — tương phản chữ lại phụ thuộc mặt trời');
-  assert.ok(/def tam_nen_can/.test(PY) && (PY.match(/tam_nen_can\(/g) ?? []).length >= 2,
-    '`tam_nen_can` không dùng ở cả lượt vẽ lẫn lượt đo — phép đo sẽ nói nhãn đạt 11 : 1'
-    + ' trong khi tệp SVG không có tấm nền nào');
-  assert.ok(/def do_sang_sau_tam/.test(PY),
-    'phép đo tương phản nhãn không tính tấm nền — nó đang đo một bức tranh không tồn tại');
+  //
+  // ── TỪ TẤM NỀN SANG VIỀN CHỮ, 20/10/2026 ───────────────────────────────
+  //
+  // Bản sửa đầu là một TẤM NỀN `base` 0,9 phủ trọn hộp chữ. Nó giữ được
+  // tương phản và nó hỏng bức tranh: trên nền trời đã sáng, chín tấm ấy đọc
+  // ra là chín thẻ đen dán đè — và năm lớp tán mép của vòng sau chỉ đổi hình
+  // chứ không đổi việc. Nó còn là nguyên nhân của một con số đã treo cờ:
+  // khoảng lệch mô hình − raster nhảy 2,6 → 7,8 điểm phần trăm, vì
+  // `do_sang_rgb` không biết gì về tấm nền còn tệp SVG thì có. Bỏ đúng 80
+  // `<path>` tấm nền rồi raster lại: bậc giữa 50,54 → 59,30 %.
+  //
+  // Thứ thay nó CỘNG một đường biên quanh glyph thay vì TRỪ ánh sáng trên cả
+  // một mảng: màu kề nét chữ vẫn là `base` nên tương phản không giảm (đo
+  // được 5,55 : 1 ở ca xấu nhất, trước là 5,47), mà cái mép thì không còn.
+  assert.ok(SKY_LABEL.haloWidth > 0 && SKY_LABEL.haloOpacity >= 0.6,
+    'mất VIỀN dưới nét chữ nhãn — tương phản chữ lại phụ thuộc mặt trời');
+  assert.ok(!('plateOpacity' in SKY_LABEL) && !('plateFeather' in SKY_LABEL),
+    'tấm nền đặc quay lại — nó là chín thẻ đen dán đè, và nó ăn 8,8 điểm phần trăm'
+    + ' mid-tone của cả bức');
+  assert.ok(/def ve_vien_chu/.test(PY) && /def do_sang_sau_vien/.test(PY),
+    'bộ sinh không còn cặp `ve_vien_chu` / `do_sang_sau_vien` — một bên vẽ, một bên đo,'
+    + ' và thiếu bên nào thì con số nói về một bức tranh khác bức được ghi ra');
+  assert.ok(/do_sang_sau_vien\(/.test(PY_CODE),
+    'phép đo tương phản nhãn không tính viền chữ — nó đang đo một bức tranh không tồn tại');
+  // Viền phải dày hơn ~1/6 cỡ chữ nhỏ nhất, không thì nó không phủ kín khe
+  // giữa hai nét chữ và "màu ngay cạnh nét chữ" lại là bầu trời.
+  assert.ok(SKY_LABEL.haloWidth >= SKY_LABEL.subSize / 6,
+    `viền ${SKY_LABEL.haloWidth} px quá mảnh cho chữ cỡ ${SKY_LABEL.subSize}`);
   // Không hộp nhãn nào cắt đĩa quanh mặt trời. Đây là hàng rào BỐ CỤC, không
   // tiếp cận: tấm nền giữ được tương phản ngay cả giữa quầng, nên không phép đo
   // độ chói nào bắt được chuyện một nhãn ngồi lên ĐIỂM TỤ của cả bức.
@@ -3075,8 +3144,20 @@ const RASTER_PY = join(ROOT, 'scripts', 'star', 'raster.py');
 // một nguồn sáng"*. Khung tham chiếu có 15,4 % ở hai bậc ấy; bản 20/10 sáng
 // đi từ 5,89 lên 10,78 %.
 const SAN_RASTER = {
-  mid: 0.47, mid3: 0.40, denSau: 0.28, trungVi: 0.025, tren018: 0.08,
+  mid: 0.58, mid3: 0.49, denSau: 0.20, trungVi: 0.033, tren018: 0.10,
 };
+
+// ĐO LẠI 20/10/2026 sau bản CỘNG ÁNH SÁNG (bỏ hào quanh chòm, bỏ tấm nền
+// nhãn, nới quầng mặt trời): bậc giữa 63,31 % · ba bậc 53,81 % · đen sâu
+// 14,64 % · trung vị 0,0399 · hai bậc 0,18–0,60 11,81 %. Hai nguồn của bước
+// nhảy, và cả hai là cùng một bản sửa:
+//  · bỏ CÁI HÀO trả mid-tone lại cho ~32 % diện tích mà tám bao lồi chiếm;
+//  · bỏ TẤM NỀN nhãn trả lại 8,8 điểm phần trăm nữa — tám tấm cộng năm lớp
+//    tán mép phủ một phần sáu khung, và cả bảng tám bậc lẫn mô hình đều
+//    không thấy chúng.
+// Giá đã trả ở `SKY_NEBULA.floorMix` (0,30 → 0,16): bỏ một thủ pháp dìm CỤC
+// BỘ thì phải bù ở chỗ TOÀN BỨC, không thì trung vị leo lên sát trần
+// `medianMax` và bức đổi từ "có một cái lỗ" sang "một màn sương xám đều".
 
 let _RASTER = null;
 function soDoRaster() {
@@ -3164,7 +3245,12 @@ test('VIỆC 9 · mô hình và raster không được trôi xa nhau — hai c�
   // ấy sai thì khoảng lệch này nổ ra trước mọi phép kiểm khác: 43,0 điểm phần
   // trăm lúc hình lồng nhau bị gộp, 23,5 lúc đường đồng mức còn hở, và 2,6 khi
   // mọi thứ đúng (phần dư là răng cưa và nét mảnh dưới một điểm ảnh).
-  assert.ok(Math.abs(lech) <= 8,
+  // TRẦN HẠ 8 → 3 ngày 20/10/2026, và việc hạ được nó mới là tin: khoảng
+  // lệch đo ra **−0,22** điểm phần trăm sau khi tấm nền nhãn bị bỏ. Nó từng
+  // là +7,8 và chạm mép trần cũ — tám tấm `base` cộng năm lớp tán mép phủ
+  // một phần sáu khung mà `do_sang_rgb` không biết gì về chúng. Một cái trần
+  // mà hiện trạng đang chạm là một cái trần không gác được gì nữa.
+  assert.ok(Math.abs(lech) <= 3,
     `mô hình nói ${m[1]} % còn tranh thật đo ${(r.mid * 100).toFixed(2)} % — lệch`
     + ` ${lech.toFixed(1)} điểm phần trăm. Mô hình là MỤC TIÊU, raster là SỰ THẬT:`
     + ' lệch lớn nghĩa là thứ ghi ra tệp khác thứ hồ sơ đòi. Chạy'
@@ -3194,4 +3280,83 @@ test('VIỆC 9 · bộ raster KHÔNG được dùng thư viện ngoài, và khô
   assert.ok(/thu_tu_tep/.test(R) && /bs\.TILES/.test(R),
     'raster.py không còn lấy thứ tự tệp từ `SKY_TILES` — thêm một tấm là một lớp'
     + ' không được đo');
+});
+
+/* ═══ 23 · CỘNG ÁNH SÁNG, KHÔNG TRỪ ĐI ════════════════════════════════
+ *
+ * Lời chê thứ sáu gộp hai khuyết tật cuối thành MỘT nguyên nhân, và nó đúng:
+ * cả hào quanh chòm lẫn tấm nền nhãn đều **mua tương phản bằng bóng tối**.
+ * Cách ấy luôn đạt phép đo và luôn hỏng bức tranh, vì một chỗ bị trừ ánh
+ * sáng giữa một vùng sáng đọc ra là một **vết khoét** hay một **tấm thẻ dán
+ * đè** — và một bức tranh không có lỗ.
+ *
+ * Ba ca dưới đây gác chiều ấy. Chúng không đo độ chói (mục 22 lo việc đó);
+ * chúng đo rằng **cơ chế** giữ tương phản không quay về chỗ trừ đi ánh sáng.
+ */
+
+test('VIỆC 10 · KHÔNG CÒN HÀO quanh chòm — độ loãng tinh vân đã bị gỡ', () => {
+  // Cái hào từng sửa HÌNH hai lần (bao lồi → hình chòm, mép gợn theo nhiễu)
+  // và cả hai lần người xem vẫn gọi nó là một cái hào: thứ bị nhìn thấy
+  // không phải MÉP mà là VIỆC. `floor: 1` nghĩa là hệ số loãng bằng 1 ở mọi
+  // điểm, tức không còn phép nhân nào.
+  assert.equal(SKY_NEBULA.hullFade.floor, 1,
+    `tinh vân lại bị làm loãng quanh chòm (floor ${SKY_NEBULA.hullFade.floor}) — đó là`
+    + ' cái hào, và nó đọc ra là một vết khoét trong bức tranh. Tương phản nét chòm nay'
+    + ' do `SKY_LINK.casing` giữ, không do việc dìm bầu trời.');
+  assert.equal(SKY_NEBULA.dust.hullFade, 1, 'lớp bụi xa lại bị làm loãng quanh chòm');
+  // Lớp DUY NHẤT còn được dùng `hull_atten` là mật độ SAO NỀN: thưa chấm thì
+  // không phải dìm ánh sáng, nên nó không có kiểu hỏng trên. Nhưng thưa gấp
+  // ba lần thì chính nó cũng thành một vùng trống nhìn ra được.
+  assert.ok(SKY_FIELD.density.hull >= 0.6,
+    `sao nền quanh chòm thưa còn ${SKY_FIELD.density.hull} lần — dưới 0,6 thì chính chỗ`
+    + ' thưa ấy đọc ra là một cái hố trong trường sao');
+});
+
+test('VIỆC 10 · NÉT CHÒM có VỎ BỌC tông NGƯỢC — tương phản thôi phụ thuộc bầu trời', () => {
+  assert.ok(SKY_LINK.casing && SKY_LINK.casing.grow > 0 && SKY_LINK.casing.opacity > 0,
+    'mất VỎ BỌC của nét chòm — và không có nó thì cái hào phải quay lại, vì nét chòm'
+    + ' không còn cách nào khác để giữ 3 : 1');
+  // Và nó phải ra tới TỆP, với CẢ HAI tông: vỏ TỐI dưới vệt sắc khoáng, vỏ
+  // SÁNG dưới vệt đã đổi sang `dustLane` theo LUẬT ĐƯỜNG CHÓI. Một tông duy
+  // nhất nghĩa là `net_vo_tong` đã thôi nhìn vào tông của lõi, và lúc ấy
+  // hiệu ứng hai tông — phần chòm gần mặt trời sậm lại thành bóng — biến mất.
+  const nc = lop(CHOM, 'net-chom');
+  assert.ok(nc.includes(P.dustLane) && nc.includes(P.glowCore),
+    'lớp nét chòm chỉ có MỘT tông vỏ bọc — vỏ phải ngược tông với lõi, không thì nó'
+    + ' xoá luôn hiệu ứng hai tông của LUẬT ĐƯỜNG CHÓI');
+  // MỘT hàm cho lượt vẽ lẫn lượt đo. Hai công thức là hai con số sẽ lệch, và
+  // lệch ở đây nghĩa là phép đo nói nét đạt 4 : 1 trong khi tệp vẽ một cặp
+  // màu khác.
+  assert.ok(/def net_vo_tong/.test(PY) && (PY_CODE.match(/net_vo_tong\(/g) ?? []).length >= 2,
+    '`net_vo_tong` không dùng ở cả lượt vẽ lẫn lượt đo');
+  // Và phép ĐO phải so LÕI với VỎ, không lõi với NỀN — cùng bản sửa đã làm
+  // cho mạch hoàng đạo. So với nền là so một cặp màu mà bức tranh không có.
+  assert.ok(/vo = over\(nen, vo_mau/.test(PY),
+    '`do_tuong_phan_net` vẫn đo lõi với NỀN — cặp màu mà mắt so là lõi với VỎ');
+});
+
+test('VIỆC 10 · mạch hoàng đạo KHÔNG rời khung — hai sợi tóc lạc ở góc trên-phải', () => {
+  // Mốc thứ hai của cung từng rơi đúng (1361, 327) — ngoài mép phải 1 px —
+  // nên Catmull–Rom vồng thêm 14 px và 13 điểm liền nằm ngoài khung.
+  // `viewBox` cắt chúng, và cái còn lại trên tranh là một cung ĐỨT LÀM HAI
+  // MẨU bám mép. Hai mẩu vì dải có hai nét (`bandOffset`).
+  for (const q of zodiacAnchors()) {
+    assert.ok(q.x >= 0 && q.x <= SKY_FRAME.width && q.y >= 0 && q.y <= SKY_FRAME.height,
+      `mốc mạch hoàng đạo ở (${q.x.toFixed(0)}, ${q.y.toFixed(0)}) nằm NGOÀI khung`
+      + ` ${SKY_FRAME.width}×${SKY_FRAME.height} — cung sẽ bị viewBox cắt làm hai mẩu`);
+  }
+  // Đo trên TỆP ĐÃ GHI RA, không trên mô hình: cái phải kiểm là bức tranh.
+  const mach = lop(MACH, 'mach-hoang-dao');
+  const so = [...mach.matchAll(/[Ml](-?[\d.]+) (-?[\d.]+)/g)];
+  assert.ok(so.length > 20, `chỉ đọc được ${so.length} điểm của mạch — regex sai?`);
+  let x = 0; let y = 0;
+  for (const m of so) {
+    if (m[0][0] === 'M') { x = +m[1]; y = +m[2]; } else { x += +m[1]; y += +m[2]; }
+    assert.ok(x >= -1 && x <= SKY_FRAME.width + 1 && y >= -1 && y <= SKY_FRAME.height + 1,
+      `mạch hoàng đạo ra ngoài khung tại (${x.toFixed(0)}, ${y.toFixed(0)})`);
+  }
+  // Và bộ sinh phải GÁC, không CẮT: cắt là lặng lẽ làm mất đoạn cung đi sát
+  // một mốc, tức chữa cái nhìn thấy bằng cách bỏ cái mang tin.
+  assert.ok(/ra NGOÀI khung tại/.test(PY),
+    '`kiem_mach` không còn gác điều kiện "không rời khung"');
 });

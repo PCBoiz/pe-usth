@@ -540,8 +540,18 @@ class Ink:
         self._add(layer, ("c", color, round(op, 2)), (cx, cy, r))
 
     def text(self, layer, x, y, s, color, size, weight, family, anchor="start",
-             op=1.0, tracking=None):
-        self._add(layer, ("t", color, round(op, 2), size, weight, family, anchor, tracking),
+             op=1.0, tracking=None, vien=None):
+        """`vien=(màu, bề rộng)` ⇒ chữ được vẽ với một NÉT VIỀN cùng màu bao
+        quanh glyph, dày `bề rộng` px.
+
+        Đây là thứ THAY cho tấm nền chữ nhật (xem `ve_nhan`). Hai lớp `<text>`
+        chồng nhau chứ KHÔNG `paint-order`: lớp dưới tô-và-viền bằng màu nền,
+        lớp trên là chữ thật. Cách ấy không phụ thuộc một thuộc tính mà trình
+        duyệt cũ có thể bỏ qua — mà nếu nó bị bỏ qua thì chữ bị chính cái viền
+        của mình bít lại, tức một kiểu hỏng im lặng ở đúng chỗ không ai mở
+        ra xem."""
+        self._add(layer,
+                  ("t", color, round(op, 2), size, weight, family, anchor, tracking, vien),
                   (x, y, s))
 
     def render(self, lops=None, aria="") -> str:
@@ -603,7 +613,7 @@ class Ink:
                         "".join('<circle cx="%s" cy="%s" r="%s"/>'
                                 % (nf(cx), nf(cy), wf(r)) for cx, cy, r in items)))
                 else:
-                    _, color, op, size, weight, family, anchor, tracking = key
+                    _, color, op, size, weight, family, anchor, tracking, vien = key
                     a = ['fill="%s"' % color, 'font-family="%s"' % family,
                          'font-size="%s"' % wf(size), 'font-weight="%d"' % weight]
                     if anchor != "start":
@@ -612,6 +622,13 @@ class Ink:
                         a.append('fill-opacity="%s"' % of(op))
                     if tracking:
                         a.append('letter-spacing="%s"' % wf(tracking * size))
+                    if vien:
+                        # BỀ RỘNG QUA `wf()` — luật 2, y như mọi nét khác.
+                        a.append('stroke="%s"' % vien[0])
+                        a.append('stroke-width="%s"' % wf(vien[1]))
+                        a.append('stroke-linejoin="round"')
+                        if op < 1:
+                            a.append('stroke-opacity="%s"' % of(op))
                     out.append("<g %s>%s</g>" % (
                         " ".join(a),
                         "".join('<text x="%s" y="%s">%s</text>'
@@ -1195,6 +1212,29 @@ def kiem_mach(P):
         nhất của cả bức sau khi có nguồn sáng trội, vì cung chạy xuyên nửa
         trên bầu trời qua nhiều vùng độ chói khác nhau."""
     pts = mach_duong()
+    # 0 · KHÔNG ĐƯỢC RỜI KHUNG. `viewBox` cắt phần ngoài, nên một cung vồng ra
+    #     ngoài mép rồi quay vào KHÔNG đọc ra là "cung đi hết bầu trời": nó đọc
+    #     ra là HAI MẨU NÉT RỜI bám mép, đúng hai sợi tóc lạc mà lời chê thứ
+    #     sáu chỉ ra. Và nó đã xảy ra vì một lý do nhìn thấy được ngay khi in
+    #     bốn mốc ra: mốc thứ hai (PD09 + offset) rơi đúng **(1361, 327)** —
+    #     ngoài mép phải 1 px — nên Catmull–Rom vồng thêm 14 px nữa, 13 điểm
+    #     liền nằm ngoài khung.
+    #
+    #     Gác ở ĐÂY chứ không cắt ở `mach_duong`: cắt là lặng lẽ làm mất đoạn
+    #     cung đi sát mốc M06, tức chữa cái nhìn thấy bằng cách bỏ cái mang
+    #     tin. Đo cả nét LỀ (`bandOffset`) vì dải có hai sợi và sợi ngoài là
+    #     sợi ra khỏi khung trước.
+    bien = [pts, mach_le(pts, ZOD["bandOffset"])]
+    for duong in bien:
+        for x, y in duong:
+            if not (VX0 <= x <= VX1 and VY0 <= y <= VY1):
+                raise SystemExit(
+                    "mạch hoàng đạo ra NGOÀI khung tại (%.0f, %.0f) — khung là "
+                    "%g×%g. `viewBox` cắt chỗ ấy, nên trên tranh nó thành hai "
+                    "mẩu nét rời bám mép chứ không thành một cung. Dịch "
+                    "`offset` của mốc gần đó trong `SKY_ZODIAC.anchors` vào "
+                    "trong; bốn mốc in ra bằng `mach_moc()`."
+                    % (x, y, VIEW["width"], VIEW["height"]))
     for code, x, y, _r, _t, _k in STARS:
         d = min(seg_dist(x, y, pts[i][0], pts[i][1], pts[i + 1][0], pts[i + 1][1])
                 for i in range(len(pts) - 1))
@@ -2251,12 +2291,23 @@ def ve_net_chom(ink, P, focus, only=None):
             for t0, t1 in ((0.0, 1 / 3), (1 / 3, 2 / 3), (2 / 3, 1.0)):
                 qa = (a[0] + (b[0] - a[0]) * t0, a[1] + (b[1] - a[1]) * t0)
                 qb = (a[0] + (b[0] - a[0]) * t1, a[1] + (b[1] - a[1]) * t1)
-                mau = hue
-                if do_sang((qa[0] + qb[0]) / 2, (qa[1] + qb[1]) / 2, P) > LIGHT["litFlip"]["at"]:
-                    mau = P["dustLane"]
-                ink.poly("net-chom",
-                         wobble_line(qa[0], qa[1], qb[0], qb[1], LINK["wobble"]),
-                         mau, w, op)
+                mx, my = (qa[0] + qb[0]) / 2, (qa[1] + qb[1]) / 2
+                mau = net_tong(mx, my, hue, P)
+                # VỎ BỌC, tông NGƯỢC với lõi — và nó phải dùng CHÍNH đường
+                # rung ấy, không một đường rung thứ hai: `wobble_line` là một
+                # hàm nhiễu theo toạ độ nên gọi hai lần cho ra hai đường khác
+                # nhau, tức vỏ lệch khỏi lõi vài phần mười px và lộ ra một
+                # bên. Dựng MỘT lần rồi vẽ hai lượt.
+                #
+                # Vỏ vẽ TRƯỚC lõi trong cùng lớp `net-chom`: `Ink` giữ thứ tự
+                # chèn khoá, nên mọi vỏ của mọi chòm ra trước mọi lõi. Đó là
+                # thứ tự ĐÚNG — vỏ của chòm này không được nằm trên lõi của
+                # chòm kia ở chỗ hai chòm giao nhau.
+                duong = wobble_line(qa[0], qa[1], qb[0], qb[1], LINK["wobble"])
+                cs = LINK["casing"]
+                ink.poly("net-chom", duong, net_vo_tong(mau, P),
+                         w + cs["grow"], cs["opacity"] * (op / nghi))
+                ink.poly("net-chom", duong, mau, w, op)
 
 
 def ve_sao(ink, P, focus, only=None):
@@ -2725,77 +2776,24 @@ def do_sang(x, y, P) -> float:
     return luminance(do_sang_rgb(x, y, P))
 
 
-def tam_nen_can(box, P) -> bool:
-    """Hộp nhãn này có CẦN một tấm nền không — nền sau nó có chỗ nào sáng hơn
-    `SKY_LABEL.plateAt`?
+def do_sang_sau_vien(x, y, P):
+    """Màu NGAY CẠNH một nét chữ — tức màu mà mắt THẬT SỰ so chữ với.
 
-    MỘT hàm cho ba chỗ: lượt vẽ (`ve_nhan`), lượt đo tương phản
-    (`do_tuong_phan_nhan`) và ca test. Ba chỗ tự quyết là ba chỗ sẽ lệch, và
-    lệch ở đây nghĩa là phép đo nói nhãn đạt 11 : 1 trong khi tệp SVG không có
-    tấm nền nào."""
-    x0, y0, x1, y1 = box
-    for i in range(7):
-        for j in range(5):
-            if do_sang(x0 + (x1 - x0) * (i + 0.5) / 7,
-                       y0 + (y1 - y0) * (j + 0.5) / 5, P) > LBL["plateAt"]:
-                return True
-    return False
+    ── VÌ SAO NÓ THAY `do_sang_sau_tam`, 20/10/2026 ────────────────────────
 
+    Bản cũ trả về "trời đã bị TẤM NỀN ghim xuống", vì nền sau chữ lúc đó là
+    một hình chữ nhật `base` phủ trọn hộp. Tấm nền ấy đã bị bỏ (xem
+    `SKY_LABEL.haloWidth`): nó là chín vệt bôi đen trên PNG, và nó một mình
+    ăn 8,8 điểm phần trăm mid-tone của cả bức.
 
-def hcn_bo_goc(x0, y0, x1, y1, r, seg=5):
-    """Hình chữ nhật BO GÓC thành một danh sách điểm — không `<rect rx>`, vì
-    cả tệp này chỉ xuất `<path>` và `raster.py` chỉ đọc `<path>`/`<circle>`."""
-    r = max(0.0, min(r, (x1 - x0) / 2, (y1 - y0) / 2))
-    pts = []
-    for cx, cy, a0 in ((x1 - r, y1 - r, 0.0), (x0 + r, y1 - r, math.pi / 2),
-                       (x0 + r, y0 + r, math.pi), (x1 - r, y0 + r, -math.pi / 2)):
-        for k in range(seg + 1):
-            a = a0 + math.pi / 2 * k / seg
-            pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
-    return pts
+    Thứ thay nó là một VIỀN ôm lấy glyph, nên màu kề nét chữ là trời đã bị
+    chính cái viền ấy phủ — `over(trời, base, haloOpacity)`. Khác tấm nền ở
+    DIỆN TÍCH (một đường biên thay vì một hình chữ nhật), KHÔNG khác ở cặp
+    màu mà WCAG hỏi về.
 
-
-def ve_tam_nen(ink, box, P, mo=1.0):
-    """TẤM NỀN của một hộp nhãn — BA lớp bo góc lồng nhau, không một hình chữ
-    nhật đặc.
-
-    ── VÌ SAO ĐỔI, ngày 20/10/2026 ────────────────────────────────────────
-
-    Bản cũ là đúng một `<path>`: chữ nhật vuông góc, `base` ở độ mờ 0,9, cỡ
-    230 × 53. Lúc bầu trời còn tối thì không ai thấy nó. Sau khi tinh vân lên
-    L 0,45 thì tám cái ấy đọc ra trên PNG là **tám vệt bôi đen** — cái khuyết
-    tật thứ ba trong bốn cái mà bảng tám bậc không bắt được (tám hộp cộng lại
-    chưa tới 1 % diện tích).
-
-    KHÔNG xoá chúng: chúng là thứ giữ chữ ở 5,2 : 1 khi trời sáng, và xoá là
-    quay về đúng chỗ xuất phát. Đổi HÌNH của chúng:
-     · lớp TRONG CÙNG giữ nguyên `plateOpacity` và phủ TRỌN hộp chữ nở
-       `plateR` — nên `do_sang_sau_tam` (và cả 24 phép đo tương phản) vẫn nói
-       đúng về chỗ chữ thật sự nằm;
-     · hai lớp NGOÀI rộng thêm `plateFeather` px mỗi lớp và mờ đi theo
-       `plateFeatherFade` ⇒ mép TÁN thay vì một cạnh cắt;
-     · cả ba bo góc `plateCorner` px.
-    Tán bằng lớp phủ chồng chứ không bằng gradient — cùng kỹ thuật với quầng
-    sao, bậc tinh vân và nêm tia bụi. Vẽ từ NGOÀI vào trong, nên phần giữa
-    cộng dồn cả ba và còn đậm hơn `plateOpacity` một chút: cái đó chỉ làm
-    phép đo tương phản thành dè dặt hơn thực tế, không ngược lại."""
-    x0, y0, x1, y1 = box
-    n = LBL["plateLayers"]
-    for q in range(n - 1, -1, -1):
-        g = LBL["plateR"] + LBL["plateFeather"] * q
-        a = LBL["plateOpacity"] / (1.0 + LBL["plateFeatherFade"] * q)
-        ink.fill("nhan", pl(hcn_bo_goc(x0 - g, y0 - g, x1 + g, y1 + g,
-                                       LBL["plateCorner"] + g * 0.5), True),
-                 P["base"], a * mo)
-
-
-def do_sang_sau_tam(x, y, P, co_tam: bool):
-    """Màu nền SAU tấm nền, nếu hộp này có tấm. Tấm tô `base` ở
-    `plateOpacity`, nên nó KÉO mọi thứ về phía màu nền tuyệt đối."""
-    nen = do_sang_rgb(x, y, P)
-    if not co_tam:
-        return nen
-    return over(nen, hex_rgb(P["base"]), LBL["plateOpacity"])
+    Không còn tham số `co_tam`: viền vẽ ở MỌI nhãn, nên lượt vẽ và lượt đo
+    không còn một nhánh nào để lệch nhau."""
+    return over(do_sang_rgb(x, y, P), hex_rgb(P["base"]), LBL["haloOpacity"])
 
 
 def box_sang_qua(box, P) -> bool:
@@ -2869,6 +2867,20 @@ def net_tong(x, y, hue, P):
     return P["dustLane"] if do_sang(x, y, P) > LIGHT["litFlip"]["at"] else hue
 
 
+def net_vo_tong(mau, P):
+    """Tông của VỎ BỌC dưới một vệt đã biết tông — luôn NGƯỢC với lõi.
+
+    Vệt sắc khoáng (sáng) ⇒ vỏ `dustLane`; vệt đã đổi sang `dustLane` (tối)
+    ⇒ vỏ `glowCore` (ngà). Chọn cùng tông là xoá hiệu ứng hai tông của LUẬT
+    ĐƯỜNG CHÓI, tức mất đúng chỗ đẹp nhất của bức: phần một chòm gần mặt trời
+    SẬM LẠI THÀNH BÓNG còn phần xa thì sáng.
+
+    MỘT hàm cho lượt vẽ (`ve_net_chom`) lẫn lượt đo (`do_tuong_phan_net`) —
+    hai công thức là hai con số sẽ lệch, và lệch ở đây nghĩa là phép đo nói
+    nét đạt 4 : 1 trong khi tệp vẽ một cặp màu khác."""
+    return P["glowCore"] if mau == P["dustLane"] else P["dustLane"]
+
+
 def do_tuong_phan_net(P):
     """TƯƠNG PHẢN CỦA TỪNG NÉT CHÒM với nền tại đúng chỗ nó nằm — WCAG 1.4.11
     cho thành phần đồ hoạ mang tin: sàn 3 : 1.
@@ -2883,10 +2895,24 @@ def do_tuong_phan_net(P):
     chặn oan.
 
     Đo cả hai trạng thái: nghỉ và MỜ (bảy chòm không được trỏ). Trạng thái mờ
-    là trạng thái mà nét mỏng nhất, nên bỏ qua nó là bỏ qua đúng ca xấu nhất."""
+    là trạng thái mà nét mỏng nhất, nên bỏ qua nó là bỏ qua đúng ca xấu nhất.
+
+    ── ĐO LÕI VỚI VỎ, KHÔNG LÕI VỚI NỀN, 20/10/2026 ────────────────────────
+
+    Từ lúc nét chòm có VỎ BỌC (`SKY_LINK.casing`), cặp màu mà mắt so KHÔNG
+    còn là "vệt với bầu trời" mà là "lõi với vỏ" — vỏ rộng hơn lõi `grow` px
+    nên nó lộ ra một dải mỗi bên, và chính dải ấy là thứ kề nét. So lõi với
+    nền là so một cặp màu mà bức tranh không có; đó đúng là phép đo đã chặn
+    build ở nét M3 (2,96 : 1) trong khi chỗ ấy đọc rất rõ. Cùng bản sửa đã
+    làm cho mạch hoàng đạo (`kiem_mach`), cùng lý lẽ.
+
+    Và chính vì tương phản thôi phụ thuộc nền mà HAI thứ mở ra cùng lúc: cái
+    hào quanh chòm bỏ được (`SKY_NEBULA.hullFade`), và quầng mặt trời nới
+    được (`SKY_LIGHT.profile`). Hai chỗ TRỪ đi ánh sáng đổi lấy một chỗ CỘNG
+    vào."""
     ra = []
     nghi = P["scale"]["lineOpacity"][0]
-    mo = P["scale"]["dimOpacity"]
+    cs = LINK["casing"]
     segs = net_chom_segs()
     i = 0
     for c in CONS:
@@ -2898,10 +2924,17 @@ def do_tuong_phan_net(P):
                 t = (k + 0.5) / 7
                 x, y = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
                 nen = do_sang_rgb(x, y, P)
-                mau = hex_rgb(net_tong(x, y, hue, P))
-                for ten, op in (("nghỉ", nghi), ("mờ", mo)):
-                    L1 = luminance(over(nen, mau, op))
-                    L2 = luminance(nen)
+                ton = net_tong(x, y, hue, P)
+                mau = hex_rgb(ton)
+                vo_mau = hex_rgb(net_vo_tong(ton, P))
+                # `k` là HỆ SỐ MỜ của cả tấm, không một độ mờ riêng cho lõi:
+                # trạng thái mờ chạy thật bằng `opacity` CSS trên thẻ `<img>`,
+                # nên vỏ mờ đi ĐÚNG BẰNG lõi. Đo bằng hai hệ số khác nhau là
+                # đo một bức tranh không tồn tại.
+                for ten, kmo in (("nghỉ", 1.0), ("mờ", mo_css(P))):
+                    vo = over(nen, vo_mau, min(1.0, cs["opacity"] * kmo))
+                    L1 = luminance(over(vo, mau, nghi * kmo))
+                    L2 = luminance(vo)
                     tp = (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
                     ra.append((c["key"], ten, tp, (round(x), round(y))))
     return ra
@@ -2915,8 +2948,9 @@ def kiem_tuong_phan_net(P, san=3.0):
         raise SystemExit(
             "NÉT CHÒM KHÔNG ĐẠT %.1f:1 (WCAG 1.4.11): %s chỉ còn %.2f:1 tại %s "
             "— %d điểm trượt. Nét MANG TIN phải đọc được ở MỌI chỗ nó đi qua. "
-            "Hạ `SKY_LIGHT.litFlip.at` để vệt đổi tông sớm hơn, hay làm loãng "
-            "tinh vân quanh bao lồi (`SKY_NEBULA.hullFade`)."
+            "Tương phản ở đây đo giữa LÕI và VỎ BỌC nên nó KHÔNG chữa bằng "
+            "cách dìm bầu trời: nới `SKY_LINK.casing.opacity` hay "
+            "`casing.grow`, hoặc `SKY_LINK.opacity` của chính lõi."
             % (san, xau[0], xau[2], xau[3], len(te)))
     return min(r[2] for r in ra if r[1] == "nghỉ"), min(r[2] for r in ra)
 
@@ -2987,11 +3021,11 @@ def do_tuong_phan_nhan(P):
         # nó cũng phải đạt 4,5:1. Bỏ qua nó là bỏ qua đúng chỗ việc thôi mờ
         # bầu trời đã làm vỡ: nền sau chữ không tối theo nữa.
         #
-        # TẤM NỀN vào phép đo ở đây, và nó phải vào: từ lúc có nó, "nền sau
-        # chữ" không còn là trời mà là trời ĐÃ BỊ TẤM NỀN ghim xuống. Đo trên
-        # trời trần là đo một bức tranh không tồn tại — và là đo một bức tranh
-        # TỆ HƠN, nên nó sẽ chặn build vì một lý do không thật.
-        co_tam = tam_nen_can(g["box"], P)
+        # VIỀN CHỮ vào phép đo ở đây, và nó phải vào: màu mà mắt so với nét
+        # chữ là màu NGAY CẠNH nét chữ, và từ 20/10/2026 màu ấy là trời đã bị
+        # viền `base` phủ (`do_sang_sau_vien`). Đo trên trời trần là đo một
+        # bức tranh không tồn tại — và là một bức TỆ HƠN, nên nó sẽ chặn build
+        # vì một lý do không thật.
         for ten, mau, op, (by0, by1) in (
                 ("chặng", P["text"], 1.0, (y0, py)),
                 # TỈ SỐ THẬT MÀ CSS SẼ DÙNG, không phải một độ mờ đặt riêng
@@ -3005,9 +3039,8 @@ def do_tuong_phan_nhan(P):
             xau = 99.0
             for i in range(9):
                 for j in range(5):
-                    nen = do_sang_sau_tam(x0 + (x1 - x0) * (i + 0.5) / 9,
-                                          by0 + (by1 - by0) * (j + 0.5) / 5,
-                                          P, co_tam)
+                    nen = do_sang_sau_vien(x0 + (x1 - x0) * (i + 0.5) / 9,
+                                           by0 + (by1 - by0) * (j + 0.5) / 5, P)
                     # Độ mờ của SVG trộn trong không gian sRGB đã mã hoá, nên
                     # trộn trước rồi mới tính độ chói — tính độ chói rồi mới
                     # trộn là một con số khác và là một con số dễ dãi hơn.
@@ -3308,6 +3341,32 @@ def kiem_ngan_sach(P):
     return d
 
 
+def ve_vien_chu(ink, x, y, chuoi, co, dam, P, op=1.0, tracking=None):
+    """VIỀN của một dòng chữ — cùng chuỗi, cùng toạ độ, tô-và-viền bằng `base`.
+
+    Vì sao hai lớp `<text>` chứ không `paint-order="stroke"` trên một lớp:
+    thuộc tính ấy là thứ một trình duyệt cũ bỏ qua được, và khi nó bị bỏ qua
+    thì nét viền vẽ ĐÈ lên mặt chữ — chữ bị chính cái viền của mình bít lại.
+    Hai lớp không có kiểu hỏng đó: lớp dưới xấu nhất là một vệt chữ dày, lớp
+    trên vẫn đọc được.
+
+    Gọi RIÊNG khỏi `ve_mat_chu` vì thứ tự trong lớp `nhan` mang nghĩa: viền
+    của CẢ HAI dòng phải nằm dưới GẠCH CHÂN, không thì đuôi chữ "ế"/"g" ăn
+    mất mấy khúc của một gạch rộng 0,8 px — và gạch chân cũng được hưởng cái
+    nền tối ấy. Mặt chữ thì vẽ sau cùng."""
+    ink.text("nhan", x, y, chuoi, P["base"], co, dam, LBL["fontStack"],
+             op=op * LBL["haloOpacity"], tracking=tracking,
+             vien=(P["base"], LBL["haloWidth"]))
+
+
+def ve_mat_chu(ink, x, y, chuoi, mau, co, dam, op=1.0, tracking=None):
+    """MẶT chữ — lớp trên của cặp. Luôn đi cùng một `ve_vien_chu` cùng toạ độ:
+    một dòng có viền và một dòng không là đúng chỗ dòng kia trượt 4,5 : 1 mà
+    không ai mở ra xem."""
+    ink.text("nhan", x, y, chuoi, mau, co, dam, LBL["fontStack"],
+             op=op, tracking=tracking)
+
+
 def ve_nhan(ink, P, focus, only=None):
     """Hai tầng nhãn là quy ước THẬT của bản đồ sao, không phải một thoả hiệp
     hiện đại: Bayer in ký hiệu ngắn trên bản khắc và bảng dữ liệu đầy đủ ở bên
@@ -3345,32 +3404,45 @@ def ve_nhan(ink, P, focus, only=None):
         if focus is not None and not ro:
             mo = P["scale"]["dimOpacity"] / P["scale"]["lineOpacity"][0]
         lop = (LBL["leaderFocusOpacity"] if ro else LBL["leaderOpacity"]) * mo
-        # TẤM NỀN trước mọi thứ khác trong lớp nhãn (§10.2 luật 2): một hình
-        # chữ nhật `base` ghim nền hiệu dụng xuống L ≤ 0,02, nên tương phản
-        # chữ ĐỘC LẬP với mặt trời và với tinh vân được chiếu sáng. Chỉ rắc ở
-        # chỗ nền đo được sáng hơn `plateAt` — tám tấm là ~0,5 KB, nhưng tám
-        # tấm ở chỗ không cần là tám vệt tối vô cớ trên trời trống.
-        if tam_nen_can(box, P):
-            ve_tam_nen(ink, box, P, mo)
-        ink.poly("nhan", [p0, p1, p2], hue, LBL["ruleWidth"], lop)
         rule_x0 = box[0]
+        # VIỀN ÔM NÉT CHỮ, KHÔNG MỘT TẤM NỀN ĐẶC (20/10/2026).
+        #
+        # Tấm nền cũ là một hình chữ nhật `base` phủ trọn hộp chữ; nó giữ chữ
+        # ở 5,2 : 1 và nó đọc ra trên PNG là một tấm thẻ đen dán đè. Viền chữ
+        # giải cùng bài toán bằng cách CỘNG một đường biên quanh glyph thay vì
+        # TRỪ ánh sáng trên cả một mảng — màu kề nét chữ vẫn là `base`, nên
+        # tương phản không giảm, mà cái mép thì không còn tồn tại để nhìn
+        # thấy. Xem `SKY_LABEL.haloWidth` cho cả phép đo đi kèm.
+        #
+        # VẼ Ở MỌI NHÃN, không còn điều kiện `plateAt`: điều kiện ấy có vì tám
+        # vệt đen trên trời đã tối là tám vệt vô cớ, mà một viền ôm nét chữ
+        # thì ở đâu cũng đúng. Bỏ nhánh ấy là bỏ chỗ lượt VẼ và lượt ĐO lệch
+        # nhau được.
+        op_ten = 1.0 if (focus is None or ro) else LBL["dimTextOpacity"]
+        ve_vien_chu(ink, rule_x0, p2[1] - LBL["baselineLift"], name,
+                    LBL["nameSize"], LBL["nameWeight"], P, op=op_ten)
+        if ro:
+            ve_vien_chu(ink, rule_x0, p2[1] + LBL["sublineGap"], sub,
+                        LBL["subSize"], LBL["subWeight"], P,
+                        tracking=LBL["subTracking"])
+        # ĐƯỜNG DẪN và GẠCH CHÂN nằm GIỮA viền và mặt chữ — xem `ve_vien_chu`.
+        ink.poly("nhan", [p0, p1, p2], hue, LBL["ruleWidth"], lop)
         ink.poly("nhan", [(rule_x0, p2[1]), (rule_x0 + wn + LBL["rulePad"], p2[1])],
                  hue, LBL["ruleWidth"], lop)
         # CHỮ mờ theo một con số RIÊNG, không theo `mo` của nét. Chữ có sàn
         # 4,5:1 còn hình có sàn 3:1, nên hai thứ mờ cùng một tỉ số là một thứ
         # trượt trước — và nó trượt thật: ở `mo` = 0,509 nhãn M4 chỉ còn
         # 4,36:1. Xem `SKY_LABEL.dimTextOpacity`.
-        ink.text("nhan", rule_x0, p2[1] - LBL["baselineLift"], name, P["text"],
-                 LBL["nameSize"], LBL["nameWeight"], LBL["fontStack"],
-                 op=1.0 if (focus is None or ro) else LBL["dimTextOpacity"])
+        ve_mat_chu(ink, rule_x0, p2[1] - LBL["baselineLift"], name, P["text"],
+                   LBL["nameSize"], LBL["nameWeight"], op=op_ten)
         out.append((c["key"], box))
         if ro:
             # Dòng phụ: tên khoá · số bài. CHỈ ở chòm đang được trỏ — bảy chòm
             # kia không có nó, nên không có chuyện tám dòng phụ cùng hiện và
             # cái bản khắc thành một bảng chữ.
-            ink.text("nhan", rule_x0, p2[1] + LBL["sublineGap"], sub,
-                     P["textSub"], LBL["subSize"], LBL["subWeight"],
-                     LBL["fontStack"], tracking=LBL["subTracking"])
+            ve_mat_chu(ink, rule_x0, p2[1] + LBL["sublineGap"], sub,
+                       P["textSub"], LBL["subSize"], LBL["subWeight"],
+                       tracking=LBL["subTracking"])
             # MÃ BÀI KHÔNG CÒN VẼ VÀO TRANH. Nó từng là "hiệu ứng 7 của §10",
             # nhưng bước 1–2 đã dựng mã bài bằng HTML (`.chip` trong
             # `SkyCursor.tsx`) và hai bản rơi vào ĐÚNG MỘT điểm: chip neo

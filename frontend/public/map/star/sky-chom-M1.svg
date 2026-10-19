@@ -1,7 +1,10 @@
 <!-- SINH BỞI scripts/star/build_sky.py — ĐỪNG SỬA TAY. Sửa dữ liệu ở frontend/src/lib/star-map.ts rồi chạy lại script. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 820" width="1360" height="820" role="img" aria-label="Chòm M1 · Tiến trình: 7 ngôi, mỗi ngôi là một bài.">
 <g data-lop="net-chom">
-<path fill="none" stroke="#F0C795" stroke-width="1.15" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round" d="M91 727l4 -10l4 -9l4 -9l4 -9M107 690l4 -10l3 -9l5 -9l4 -9M123 653l3 -10l4 -9l4 -9l4 -9M139 604l-2 -11l-2 -12l-3 -11M132 570l-3 -11l-2 -12l-2 -11M125 536l-3 -12l-2 -11l-3 -12M117 489l3 -9l1 -10l2 -9l2 -9M125 452l2 -10l2 -9l2 -10l3 -9M134 414l2 -10l1 -9l3 -10l2 -9M148 369l11 -3l12 -3l11 -3M182 360l12 -3l11 -3l11 -3M216 351l12 -3l11 -4l12 -3M146 607l9 -6l10 -6l10 -6M175 589l10 -6l10 -6l10 -7M205 570l10 -6l10 -6l9 -6M244 542l5 -8l5 -8l6 -8l5 -8M265 510l6 -8l5 -8l6 -8l5 -8M287 478l5 -8l6 -8l5 -8l6 -8M309 438l-6 -11l-5 -10l-6 -10M292 407l-5 -11l-7 -10l-5 -11M275 375l-6 -10l-6 -10l-6 -11"/>
+<path fill="none" stroke="#0D101C" stroke-width="2.75" stroke-opacity="0.62" stroke-linecap="round" stroke-linejoin="round" d="M91 727l4 -10l4 -9l4 -9l4 -9M107 690l4 -10l3 -9l5 -9l4 -9M139 604l-2 -11l-2 -12l-3 -11M125 536l-3 -12l-2 -11l-3 -12M117 489l3 -9l1 -10l2 -9l2 -9M125 452l2 -10l2 -9l2 -10l3 -9M134 414l2 -10l1 -9l3 -10l2 -9M148 369l11 -3l12 -3l11 -3M182 360l12 -3l11 -3l11 -3M216 351l12 -3l11 -4l12 -3M175 589l10 -6l10 -6l10 -7M205 570l10 -6l10 -6l9 -6M309 438l-6 -11l-5 -10l-6 -10M292 407l-5 -11l-7 -10l-5 -11M275 375l-6 -10l-6 -10l-6 -11"/>
+<path fill="none" stroke="#F0C795" stroke-width="1.15" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round" d="M91 727l4 -10l4 -9l4 -9l4 -9M107 690l4 -10l3 -9l5 -9l4 -9M139 604l-2 -11l-2 -12l-3 -11M125 536l-3 -12l-2 -11l-3 -12M117 489l3 -9l1 -10l2 -9l2 -9M125 452l2 -10l2 -9l2 -10l3 -9M134 414l2 -10l1 -9l3 -10l2 -9M148 369l11 -3l12 -3l11 -3M182 360l12 -3l11 -3l11 -3M216 351l12 -3l11 -4l12 -3M175 589l10 -6l10 -6l10 -7M205 570l10 -6l10 -6l9 -6M309 438l-6 -11l-5 -10l-6 -10M292 407l-5 -11l-7 -10l-5 -11M275 375l-6 -10l-6 -10l-6 -11"/>
+<path fill="none" stroke="#F6F1E2" stroke-width="2.75" stroke-opacity="0.62" stroke-linecap="round" stroke-linejoin="round" d="M123 653l3 -10l4 -9l4 -9l4 -9M132 570l-3 -11l-2 -12l-2 -11M146 607l9 -6l10 -6l10 -6M244 542l5 -8l5 -8l6 -8l5 -8M265 510l6 -8l5 -8l6 -8l5 -8M287 478l5 -8l6 -8l5 -8l6 -8"/>
+<path fill="none" stroke="#0D101C" stroke-width="1.15" stroke-opacity="0.55" stroke-linecap="round" stroke-linejoin="round" d="M123 653l3 -10l4 -9l4 -9l4 -9M132 570l-3 -11l-2 -12l-2 -11M146 607l9 -6l10 -6l10 -6M244 542l5 -8l5 -8l6 -8l5 -8M265 510l6 -8l5 -8l6 -8l5 -8M287 478l5 -8l6 -8l5 -8l6 -8"/>
 </g>
 <g data-lop="quang-sao">
 <path fill="#F0C795" fill-opacity="0.06" d="M79 732a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0ZM131 610a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0ZM106 495a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0ZM227 548a12.9 12.9 0 1 0 25.8 0a12.9 12.9 0 1 0 -25.8 0Z"/>
@@ -16,11 +19,7 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="89" cy="732" r="1.38"/><circle cx="141" cy="610" r="1.38"/><circle cx="116" cy="495" r="1.38"/><circle cx="143" cy="371" r="1.1"/><circle cx="240" cy="548" r="1.72"/><circle cx="311" cy="442" r="0.88"/><circle cx="255" cy="340" r="0.88"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="#0A0C14" fill-opacity="0.07" d="M414 788l-1 11l-5 9l-8 8l-10 5l-10 2l-241 0l-11 -2l-9 -5l-8 -8l-5 -9l-2 -11l0 -64l2 -11l5 -10l8 -7l9 -5l11 -2l241 0l10 2l10 5l8 7l5 10l1 11Z"/>
-<path fill="#0A0C14" fill-opacity="0.09" d="M404 783l-1 9l-4 9l-7 6l-8 4l-9 2l-231 0l-9 -2l-9 -4l-6 -6l-4 -9l-2 -9l0 -54l2 -9l4 -9l6 -6l9 -4l9 -2l231 0l9 2l8 4l7 6l4 9l1 9Z"/>
-<path fill="#0A0C14" fill-opacity="0.13" d="M394 778l-1 8l-3 7l-6 5l-7 4l-7 1l-221 0l-8 -1l-7 -4l-5 -5l-3 -7l-2 -8l0 -44l2 -8l3 -7l5 -5l7 -4l8 -1l221 0l7 1l7 4l6 5l3 7l1 8Z"/>
-<path fill="#0A0C14" fill-opacity="0.22" d="M384 773l-1 6l-3 6l-4 4l-5 3l-6 1l-211 0l-6 -1l-6 -3l-4 -4l-3 -6l-1 -6l0 -34l1 -6l3 -6l4 -4l6 -3l6 -1l211 0l6 1l5 3l4 4l3 6l1 6Z"/>
-<path fill="#0A0C14" fill-opacity="0.9" d="M374 768l0 5l-3 4l-3 3l-4 2l-4 1l-201 0l-5 -1l-4 -2l-3 -3l-2 -4l-1 -5l0 -24l1 -5l2 -4l3 -3l4 -2l5 -1l201 0l4 1l4 2l3 3l3 4l0 5Z"/>
+<g fill="#0A0C14" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600" fill-opacity="0.92" stroke="#0A0C14" stroke-width="3.2" stroke-linejoin="round" stroke-opacity="0.92"><text x="149" y="750">M1 · Tiến trình</text></g>
 <path fill="none" stroke="#F0C795" stroke-width="0.8" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" d="M98 737l29 17l16 0M149 754l192 0"/>
 <g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="149" y="750">M1 · Tiến trình</text></g>
 </g>
