@@ -98,10 +98,7 @@ function prose(lines: string[]): string {
 }
 
 function stripTicks(text: string): string {
-  return text
-    .trim()
-    .replace(/^`+|`+$/g, '')
-    .trim();
+  return text.trim().replace(/^`+|`+$/g, '').trim();
 }
 
 /** `- [x] A. Tiêu đề — mô tả` */
@@ -166,11 +163,7 @@ export class LessonImportService {
     mimetype?: string;
   }): Promise<string> {
     const name = (file.originalname || '').toLowerCase();
-    if (
-      name.endsWith('.md') ||
-      name.endsWith('.markdown') ||
-      name.endsWith('.txt')
-    ) {
+    if (name.endsWith('.md') || name.endsWith('.markdown') || name.endsWith('.txt')) {
       return file.buffer.toString('utf8');
     }
     if (name.endsWith('.pdf')) {
@@ -274,9 +267,7 @@ export class LessonImportService {
     if (explainBody) {
       const rows: { n: number; title?: string; body: string }[] = [];
       for (const line of explainBody) {
-        const m = /^\s*(\d+)\.\s*(?:\*\*(.+?)\*\*\s*[:：]?\s*)?(.+)$/.exec(
-          line,
-        );
+        const m = /^\s*(\d+)\.\s*(?:\*\*(.+?)\*\*\s*[:：]?\s*)?(.+)$/.exec(line);
         if (m) rows.push({ n: Number(m[1]), title: m[2], body: m[3].trim() });
       }
       if (rows.length) step.explain = rows;
@@ -341,12 +332,7 @@ export class LessonImportService {
         const head = m[1].split('|').map((x) => x.trim());
         const key = head[0];
         if (!key) continue;
-        bins.push({
-          key,
-          title: head[1] || key,
-          subtitle: head[2],
-          desc: head[3],
-        });
+        bins.push({ key, title: head[1] || key, subtitle: head[2], desc: head[3] });
         for (const token of m[2].split(',')) {
           const label = stripTicks(token);
           if (label) tokens.push({ label, bin: key });
@@ -369,10 +355,7 @@ export class LessonImportService {
         if (!m) continue;
         rubric.push({
           label: m[1].trim(),
-          keywords: m[2]
-            .split(',')
-            .map((k) => stripTicks(k))
-            .filter(Boolean),
+          keywords: m[2].split(',').map((k) => stripTicks(k)).filter(Boolean),
         });
       }
       const prompt = questionBefore(explainBody);
@@ -421,10 +404,7 @@ export class LessonImportService {
         const m = /^(.*?)\[([^\]]+)\]\s*$/.exec(line.trim());
         if (!m) continue;
         const options = m[2].split('|').map((x) => x.trim());
-        const correct = options
-          .find((x) => x.startsWith('*'))
-          ?.slice(1)
-          .trim();
+        const correct = options.find((x) => x.startsWith('*'))?.slice(1).trim();
         if (options.length >= 2 && correct) {
           step.counter = {
             question: m[1].trim(),
@@ -483,10 +463,7 @@ export class LessonImportService {
       for (const line of testBody) {
         const t = line.trim();
         if (!t.startsWith('|')) continue;
-        const cells = t
-          .split('|')
-          .slice(1, -1)
-          .map((c) => c.trim());
+        const cells = t.split('|').slice(1, -1).map((c) => c.trim());
         if (cells.length < 2) continue;
         // Bỏ dòng tiêu đề và dòng kẻ ngang của bảng Markdown.
         if (/^-{3,}$/.test(cells[0].replace(/[: ]/g, '-'))) continue;
@@ -513,7 +490,10 @@ export class LessonImportService {
 
   // ---------- Gemini dự phòng ----------
 
-  async parseWithGemini(text: string, filename: string): Promise<StudioLesson> {
+  async parseWithGemini(
+    text: string,
+    filename: string,
+  ): Promise<StudioLesson> {
     if (!this.config.apiKey) {
       throw new BadRequestException(
         'File không theo mẫu template và chưa cấu hình GEMINI_API_KEY, nên không ' +

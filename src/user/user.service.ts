@@ -12,27 +12,6 @@ import { CachedUserService } from 'src/auth/cached-user.service';
 import { ChangePasswordDto, SurveyDto, UpdateProfileDto } from './dto/user.dto';
 import { pickRoadmapTemplate } from './pick-roadmap-template';
 
-/**
- * Bỏ hash mật khẩu khỏi bản ghi user trước khi trả ra ngoài.
- *
- * Khuôn cũ `const { password: _password, ...safe } = user` lặp ở hai chỗ, và
- * typescript-eslint v8 đặt `ignoreRestSiblings: false` nên cả hai chỗ đều là
- * lỗi `no-unused-vars`. Gom về MỘT hàm được nhiều hơn là một con số lint: câu
- * hỏi "API có bao giờ trả hash ra ngoài không" chỉ còn MỘT chỗ phải đọc, và
- * `Omit<T, 'password'>` biến câu trả lời thành một KIỂU — đọc `safe.password`
- * ở chỗ gọi là lỗi biên dịch, không phải một lỗ chờ ai đó phát hiện.
- *
- * Xoá trên một bản COPY nông: y hệt kết quả của rest-destructuring (cùng tập
- * thuộc tính own + enumerable), nên không đổi hành vi.
- */
-function boPassword<T extends { password: unknown }>(
-  user: T,
-): Omit<T, 'password'> {
-  const ban: T & { password?: unknown } = { ...user };
-  delete ban.password;
-  return ban;
-}
-
 @Injectable()
 export class UserService {
   constructor(
@@ -46,7 +25,7 @@ export class UserService {
     if (!user) throw new NotFoundException('Không tìm thấy người dùng');
 
     // Loại bỏ password khỏi response — không bao giờ trả hash ra ngoài.
-    const safe = boPassword(user);
+    const { password: _password, ...safe } = user;
     return {
       ...safe,
       needs_questionnaire: !user.questionnaireCompleted,
@@ -95,7 +74,7 @@ export class UserService {
     });
     this.cachedUsers.invalidate(userId);
 
-    const safe = boPassword(updated);
+    const { password: _password, ...safe } = updated;
     return { ok: true, user: safe };
   }
 
