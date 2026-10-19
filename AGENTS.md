@@ -27,6 +27,12 @@ npm i --no-save pyodide@0.27.7         # CẢ BA lệnh dưới đều import py
 node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
 node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ chấm của trình duyệt
 node scripts/pe-v4/check-so-quy.mjs    # cùng bộ ca của check_so_quy.py, chạy trong Pyodide thật
+
+# Bản đồ sao (route xem thử /ban-do-sao — 8 chòm, 48 ngôi = 48 bài)
+py scripts/star/build_sky.py           # sinh 12 tệp SVG -> frontend/public/map/star/
+py scripts/star/build_sky.py --do      # bảng SỐ ĐO: độ chói, bão hoà, tỉ lệ, khe giữa hai chòm
+py scripts/star/build_sky.py --place-nhan  # chạy bộ đặt nhãn, in khối SKY_LABEL_PLACED để chép vào TS
+py scripts/star/build_sky.py --css     # in 16 ô bấm .hit* cho star-map.module.css
 ```
 
 Trên Windows dùng `py`, không dùng `python` — `python` là stub của Microsoft Store.
@@ -43,8 +49,9 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 646 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 654 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
+| Bản đồ sao | `py scripts/star/build_sky.py` → 12 tệp SVG, 530 KB cả bộ (**trần 420 KB mỗi tệp · 900 KB tổng**), chạy hai lần ra đúng một tệp. `--do` → 2,76% diện tích L > 0,5 (sàn 2,0%), trung vị độ chói 0,0065 (trần 0,05) | 19/10/2026 |
 | Bản đồ sao (mẫu M1) | `py scripts/star/build_sky.py` → 2 tệp SVG, 874 + 881 nét / 48,2 + 47,1 KB (**trần 240 KB**, script tự chặn), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
@@ -257,6 +264,35 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   suốt, thang độ sâu ở cả hai lề. **Gỡ bản sửa ra thì sáu ca trượt** (đo 19/10/2026
   bằng cách `git checkout` lại chín tệp SVG cũ). Kỹ thuật và nguồn:
   `design/v3/ky-thuat-ban-do.md` (mục 6 cho hình thái liền mạch).
+- **Bản đồ SAO cũng là TRANH SINH RA, và nó chia làm 12 tệp theo LỚP — đừng sửa tệp.**
+  `frontend/public/map/star/sky-*.svg` do `scripts/star/build_sky.py` sinh; script ĐỌC
+  `frontend/src/lib/star-map.ts` (toạ độ tám chòm, mạch hoàng đạo, nguồn sáng, bảng màu,
+  ngân sách độ chói) nên muốn đổi gì thì sửa ở TS rồi chạy lại. Năm thứ đã trả giá, cả năm
+  đều lặng lẽ:
+  · **Một TẤM = một NHÓM LỚP, không phải cả bức.** Bản mẫu một chòm xuất hai tấm đủ mười
+    ba lớp; nhân cách đó lên tám chòm là chín tấm, mỗi tấm cõng lại cả tinh vân và 1 250
+    sao nền — ~1,4 MB cho một trang. Hợp của `SKY_TILES` phải phủ ĐÚNG `SKY_LAYERS` theo
+    đúng thứ tự (thứ tự tệp trong DOM LÀ thứ tự z); một lớp bị bỏ quên biến mất khỏi bức
+    mà không có gì đỏ lên. Script tự chặn.
+  · **Nguồn sáng trội dựng bằng ĐA GIÁC LỒNG NHAU, không bằng đường đồng mức.** Hai bản
+    trước đều dùng đường đồng mức và cả hai hỏng nhìn thấy được: bản 1 có vùng phẳng ở tâm
+    nên chín mức rơi cùng một chỗ ⇒ một cái đĩa xám viền mấy vòng tròn; bản 2 nhân trường
+    với kết cấu fBm nên mỗi mức sinh ra cả đảo bên trong, và `fill-rule="evenodd"` biến
+    tâm nguồn sáng thành một LỖ TỐI.
+  · **Trần độ chói TOÀN CỤC đã bị bỏ, thay bằng NGÂN SÁCH DIỆN TÍCH** (`SKY_BUDGET`:
+    ≥ 2,0% diện tích trên L > 0,5, trung vị ≤ 0,05). Lý do đo được ở
+    `design/v3/chieu-sau-tuong-tac.md` §2.4. Hai trần CỤC BỘ (`hullCeiling`,
+    `textCeiling`) thì GIỮ — chúng là ràng buộc tiếp cận ở đúng chỗ có nét mang tin và có
+    chữ. Thêm nguồn sáng ⇒ phải đo lại cả tám nhãn, đừng tin số đo cũ.
+  · **Ba lớp liên kết phải phân biệt được BẰNG MẮT** (nét chòm liền · mạch hoàng đạo đứt,
+    sắc riêng · dải Ngân Hà). Mạch đổi thành nét liền, hay dùng chung sắc với một chặng,
+    hay chạm vào một ngôi, thì nó đọc ra là "nét của chòm" và câu trả lời cho "các chòm
+    kết nối với nhau như nào" biến mất — trong khi tệp vẫn ra bình thường.
+  · **Bảng hộp §15 của đặc tả CHỒNG NHAU.** Đặt đúng theo nó thì PD07 (M6) và X03 (M4)
+    cách nhau 21 px và mắt đọc ra một cặp sao đôi không ai định vẽ. `SKY_LINK.minGap` giữ
+    cho lần sau; script trượt build.
+  `frontend/e2e/unit/star-map.test.mjs` canh cả năm (31 ca).
+
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
   Gọi nó trên một trang ai cũng vào được nghĩa là **mỗi bot quét web sinh một tài khoản khách**,

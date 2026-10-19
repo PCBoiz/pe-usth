@@ -1,10 +1,11 @@
-// BẢN ĐỒ SAO — route XEM THỬ của bản mẫu chòm M1 "Chạc".
+// BẢN ĐỒ SAO — route XEM THỬ: cả bầu trời, tám chòm, 48 ngôi = 48 bài.
 //
-// Đặc tả: `design/v3/ban-do-sao.md`. Đây là một bản MẪU: một chòm trên tám,
-// để xem hình có đọc ra được không trước khi dựng cả bầu trời (§20 của đặc tả
-// gọi đó là "phép thử nhận dạng"). Nó chưa thay bản đồ vực ở trang chủ.
+// Đặc tả: `design/v3/ban-do-sao.md`. Mở rộng từ bản mẫu một chòm (M1) ngày
+// 19/10/2026, khi chủ sản phẩm xem mẫu rồi hỏi "chòm này kết nối với các chòm
+// khác như nào?" — câu đó chỉ trả lời được bằng cả bầu trời. Nó vẫn chưa thay
+// bản đồ vực ở trang chủ.
 //
-// BA ĐIỀU GIỮ Ở ĐÂY, đổi đi là đổi hành vi người dùng thấy:
+// BỐN ĐIỀU GIỮ Ở ĐÂY, đổi đi là đổi hành vi người dùng thấy:
 //
 //  1. KHÔNG GỌI API. Trang này công khai, mà `apiFetch` gặp 401 là TỰ TẠO tài
 //     khoản khách (bẫy trong AGENTS.md) — mỗi con bot quét web sinh một tài
@@ -21,6 +22,17 @@
 //     `style="…"`, một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa
 //     bỏ được (AGENTS.md). Mọi vị trí nằm ở `star-map.module.css`.
 //
+//  4. THỨ TỰ DOM LÀ MỘT HỢP ĐỒNG, không phải một cách sắp cho gọn. Ba việc
+//     cùng dựa vào nó:
+//      · mọi `<a>` vùng bấm phải đứng TRƯỚC mọi `<img>`, vì trạng thái hover
+//        đi qua bộ chọn anh em `~` (`.hitM1:hover ~ .chomM1`) — `~` chỉ nhìn
+//        về phía SAU. Chúng vẫn nằm TRÊN tranh nhờ `z-index`, không nhờ thứ
+//        tự;
+//      · trong số các `<a>`, ô NHÃN đứng trước ô BAO LỒI, nên chỗ hai ô chồng
+//        nhau thì bao lồi thắng: các ngôi sao là cái người ta định trỏ vào;
+//      · trong số các `<img>`, thứ tự LÀ thứ tự z, và nó phải khớp `SKY_TILES`
+//        → `SKY_LAYERS`. `e2e/unit/star-map.test.mjs` so lại.
+//
 // Câu chữ ở `src/lib/star-map.ts` (`STAR_COPY`) để `node --test` đọc được;
 // file này chỉ dựng DOM.
 import type { Metadata } from 'next';
@@ -28,25 +40,31 @@ import type { Metadata } from 'next';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { withAssetVersion } from '@/lib/assetVersion';
-import { SKY_CONSTELLATIONS, STAR_COPY } from '@/lib/star-map';
+import { SKY_CONSTELLATIONS, SKY_FRAME, STAR_COPY } from '@/lib/star-map';
 
 import styles from './star-map.module.css';
 
 export const metadata: Metadata = {
-  title: 'Bản đồ sao — mẫu chòm M1 · Programming EDU',
-  // KHÔNG cho máy tìm kiếm lập chỉ mục. Trang này là một BẢN MẪU chưa dựng
-  // xong (một chòm trên tám), cố ý không có lối vào từ thanh điều hướng —
+  title: 'Bản đồ sao — tám chòm · Programming EDU',
+  // KHÔNG cho máy tìm kiếm lập chỉ mục. Trang này là một BẢN XEM THỬ chưa
+  // thay bản đồ vực ở trang chủ, cố ý không có lối vào từ thanh điều hướng —
   // xem `XEM_THU` trong `e2e/unit/site-nav.test.mjs`. Miễn lối vào mà vẫn để
   // Google dẫn người lạ vào đây thì ngoại lệ ấy vô nghĩa.
   robots: { index: false, follow: false },
 };
 
-/** Bài đầu của chặng M1 trong danh sách phẳng 48 bài. M1 là chặng đầu nên bài
- *  đầu của nó là bài 1 — viết ra chứ không giấu trong một con số trần. */
-const M1_LESSON = '/lesson/python_advanced/1';
+/**
+ * Bài đầu của mỗi chặng trong danh sách phẳng 48 bài — cộng dồn số bài của
+ * các chặng trước, KHÔNG viết cứng tám con số. Thêm một bài vào M2 là liên
+ * kết của M3…M8 tự dịch theo; chép tám con số ra đây là tám con số sẽ lệch.
+ */
+function lessonHref(index: number): string {
+  let n = 1;
+  for (let i = 0; i < index; i += 1) n += SKY_CONSTELLATIONS[i].stars.length;
+  return `/lesson/python_advanced/${n}`;
+}
 
 export default function StarMapPreviewPage() {
-  const m1 = SKY_CONSTELLATIONS[0];
   return (
     <>
       <PageStyles hrefs={['/static/css/edu-theme.css']} />
@@ -57,39 +75,91 @@ export default function StarMapPreviewPage() {
         <p className={styles.hint}>{STAR_COPY.hint}</p>
 
         <div className={styles.frame}>
-          {/* Tấm NGHỈ. `alt` mô tả bức, không nhắc tới "ảnh" — nó là nội dung,
-              không phải trang trí.
+          {/* Ô bấm — NHÃN trước, BAO LỒI sau (luật 4 ở đầu tệp). Ô nhãn không
+              nhận Tab và không nói gì thêm cho trình đọc màn hình: nó là lối
+              vào thứ hai của cùng một chặng, không phải một liên kết khác. */}
+          {SKY_CONSTELLATIONS.map((c, i) => (
+            <a
+              aria-hidden="true"
+              className={`${styles.hit} ${styles[`hit${c.key}`]} ${styles[`hit${c.key}b`]}`}
+              href={lessonHref(i)}
+              key={`${c.key}-nhan`}
+              tabIndex={-1}
+            />
+          ))}
+          {SKY_CONSTELLATIONS.map((c, i) => (
+            <a
+              className={`${styles.hit} ${styles[`hit${c.key}`]} ${styles[`hit${c.key}a`]}`}
+              data-map-region={c.key}
+              href={lessonHref(i)}
+              key={`${c.key}-chom`}
+            >
+              <span className={styles.srOnly}>
+                {`Chặng ${c.key} · ${c.name} — ${c.subtitle}, ${c.stars.length} bài`}
+              </span>
+            </a>
+          ))}
 
-              `next/image` không dùng được ở đây, và không phải vì lười: bộ tối
-              ưu ảnh của Next TỪ CHỐI xử lý SVG (nó là vector, nó đã nhỏ sẵn —
-              48 KB — và nó phải sắc ở mọi tỉ lệ), nên nó sẽ phải chạy
-              `unoptimized` và thành một `<img>` có thêm một lớp bọc. */}
+          {/* Bốn TẤM nền, theo đúng thứ tự `SKY_TILES`. `next/image` không
+              dùng được ở đây, và không phải vì lười: bộ tối ưu ảnh của Next TỪ
+              CHỐI xử lý SVG (nó là vector, nó đã nhỏ sẵn, và nó phải sắc ở mọi
+              tỉ lệ), nên nó sẽ phải chạy `unoptimized` và thành một `<img>` có
+              thêm một lớp bọc.
+
+              Chỉ tấm ĐẦU mang `alt` mô tả: cả bốn tấm là MỘT bức, và bốn câu
+              mô tả cho một bức là bốn lần đọc lại cùng một thứ. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            alt={`${m1.name} — ${m1.stars.length} ngôi sao, mỗi ngôi là một bài của chặng ${m1.key}`}
-            className={styles.sky}
-            height={390}
-            src={withAssetVersion('/map/star/m1-rest.svg')}
-            width={660}
+            alt={STAR_COPY.alt}
+            className={`${styles.sky} ${styles.troi}`}
+            height={SKY_FRAME.height}
+            src={withAssetVersion('/map/star/sky-troi.svg')}
+            width={SKY_FRAME.width}
           />
-          {/* Vùng bấm nằm GIỮA hai tấm: tấm hover là anh em ĐỨNG SAU nó nên
-              `.hit:hover ~ .skyFocus` khớp được mà không cần `:has()`. */}
-          <a className={`${styles.hit} ${styles.hitM1}`} data-map-region={m1.key} href={M1_LESSON}>
-            <span className={styles.srOnly}>{STAR_COPY.regionLabel}</span>
-          </a>
-          {/* Tấm HOVER — cùng bức, chỉ khác ĐỘ MỜ (và thêm mã bài). Không bán
-              kính nào to lên, không nét nào dày lên, nên nó an toàn với
-              `prefers-reduced-motion` ngay từ lúc sinh. `aria-hidden` vì nó
-              không nói thêm điều gì cho trình đọc màn hình. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             alt=""
             aria-hidden="true"
-            className={styles.skyFocus}
-            height={390}
-            src={withAssetVersion('/map/star/m1-focus.svg')}
-            width={660}
+            className={`${styles.sky} ${styles.troi}`}
+            height={SKY_FRAME.height}
+            src={withAssetVersion('/map/star/sky-sao-nen.svg')}
+            width={SKY_FRAME.width}
           />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            aria-hidden="true"
+            className={`${styles.sky} ${styles.troi}`}
+            height={SKY_FRAME.height}
+            src={withAssetVersion('/map/star/sky-mach.svg')}
+            width={SKY_FRAME.width}
+          />
+          {/* Tấm CHÒM lúc nghỉ: tám chòm cùng một độ mờ. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            alt=""
+            aria-hidden="true"
+            className={`${styles.sky} ${styles.chomNghi}`}
+            height={SKY_FRAME.height}
+            src={withAssetVersion('/map/star/sky-chom-nghi.svg')}
+            width={SKY_FRAME.width}
+          />
+          {/* Tám tấm CHÒM lúc trỏ vào: mỗi tấm vẽ ĐỦ tám chòm, một chòm rõ và
+              bảy chòm mờ. Vẽ đủ tám để đúng MỘT tấm chòm hiện ở mỗi lúc —
+              nếu mỗi tấm chỉ vẽ một chòm thì tấm nghỉ phải nằm dưới và hai
+              bản của cùng một chòm cộng độ mờ với nhau. */}
+          {SKY_CONSTELLATIONS.map((c) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              alt=""
+              aria-hidden="true"
+              className={`${styles.sky} ${styles.chomRo} ${styles[`chom${c.key}`]}`}
+              height={SKY_FRAME.height}
+              key={c.key}
+              src={withAssetVersion(`/map/star/sky-chom-${c.key}.svg`)}
+              width={SKY_FRAME.width}
+            />
+          ))}
         </div>
 
         <h2 className={styles.legendTitle}>{STAR_COPY.legendTitle}</h2>

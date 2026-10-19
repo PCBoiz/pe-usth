@@ -1,9 +1,9 @@
-/* BẢN ĐỒ SAO — route xem thử `/ban-do-sao`, bản mẫu chòm M1 "Chạc".
+/* BẢN ĐỒ SAO — route xem thử `/ban-do-sao`, cả bầu trời tám chòm.
 
    Đặc tả: `design/v3/ban-do-sao.md` §10 (hover) và §11 (điện thoại · giảm
    chuyển động). Dữ liệu và mọi mã màu: `src/lib/star-map.ts`.
 
-   ── BỐN LUẬT CỦA FILE NÀY ─────────────────────────────────────────────
+   ── NĂM LUẬT CỦA FILE NÀY ─────────────────────────────────────────────
 
    1. KHÔNG MÃ MÀU NÀO. `npm run lint:tokens` cấm hex trong mọi `*.module.css`.
       Bảng màu của bầu trời nằm ở `SKY_PROFILE_DARK` và đi vào tranh qua thuộc
@@ -14,7 +14,12 @@
       trang không khớp được selector nào bên trong, JS không `querySelector`
       vào được. Nên mọi `id`/`data-*` đặt trong SVG là BYTE CHẾT tải ở mỗi lượt
       vào trang (`figure-motion.ts` đã trả giá cho đúng điều này với 23 hình
-      nhúng bằng `<img>`). Hai tấm, một lớp phủ HTML đổi `opacity` giữa chúng.
+      nhúng bằng `<img>`). Mười hai tấm, một lớp phủ HTML đổi `opacity`.
+
+      Một chỗ CSS VẪN với tới được, và nó là chỗ cả bản này dựa vào: độ mờ của
+      chính THẺ `<img>`. Nhờ đó phần TRỜI chỉ cần dựng một lần — nó mờ đi lúc
+      hover bằng `opacity`, không bằng tám tấm trời nữa. Ranh giới đúng là:
+      không với vào TRONG tài liệu SVG, nhưng với được cái thẻ chứa nó.
 
    3. TRANG NẠP XONG LÀ ĐỨNG YÊN. Không sao nhấp nháy, không tinh vân trôi,
       không parallax theo chuột, không hoạt ảnh lúc vào trang. Chỉ con trỏ
@@ -25,14 +30,18 @@
    4. `:focus-visible` CHO RA ĐÚNG CÙNG MỘT TRẠNG THÁI như `:hover`, cộng vòng
       tiêu điểm. Người đi bằng Tab phải thấy đúng thứ người đi bằng chuột thấy.
 
-   Vị trí vùng bấm (`.hitM1`) do `py scripts/star/build_sky.py --css` in ra —
-   nó là bao lồi của chòm nở 20 px HỢP hộp nhãn, tính trong khung 1360 × 820
-   rồi quy ra % của ô cắt. ĐỪNG sửa tay: `e2e/unit/star-map.test.mjs` tính lại
-   từ chính SVG đã sinh và so từng con số. */
+   5. Ô BẤM ĐỨNG TRƯỚC TRANH TRONG DOM, và nằm trên nó bằng `z-index`. Bộ chọn
+      anh em `~` chỉ nhìn về phía SAU, nên `.hitM1:hover ~ .chomM1` đòi mọi
+      `<a>` đi trước mọi `<img>`. Thứ tự thị giác thì do `z-index` lo.
+
+   Vị trí ô bấm (`.hit*a` bao lồi chòm, `.hit*b` hộp nhãn) do
+   `py scripts/star/build_sky.py --css` in ra, tính trong khung 1360 × 820 rồi
+   quy ra %. ĐỪNG SỬA TAY: `e2e/unit/star-map.test.mjs` tính lại từ chính SVG
+   đã sinh và so từng con số. */
 
 .wrap {
   margin: 0 auto;
-  max-width: 980px;
+  max-width: 1100px;
   padding: 32px 16px 64px;
 }
 
@@ -49,10 +58,10 @@
   opacity: 0.75;
 }
 
-/* Khung giữ ĐÚNG tỉ lệ ô cắt (660 × 390) để vùng bấm tính bằng % không lệch
-   theo bề rộng màn. */
+/* Khung giữ ĐÚNG tỉ lệ khung bầu trời (1360 × 820) để ô bấm tính bằng %
+   không lệch theo bề rộng màn. */
 .frame {
-  aspect-ratio: 660 / 390;
+  aspect-ratio: 1360 / 820;
   background: var(--ds-page);
   border-radius: var(--ds-r-md);
   overflow: hidden;
@@ -60,8 +69,7 @@
   width: 100%;
 }
 
-.sky,
-.skyFocus {
+.sky {
   display: block;
   height: 100%;
   left: 0;
@@ -69,13 +77,20 @@
   position: absolute;
   top: 0;
   width: 100%;
+  z-index: 1;
 }
 
-/* Tấm hover nằm TRÊN vùng bấm trong thứ tự DOM, nên `.hit:hover ~ .skyFocus`
-   khớp được mà không cần `:has()`. Nó phải `pointer-events: none`, nếu không
-   nó che mất chính cái liên kết đang làm nó hiện ra. */
-.skyFocus {
+/* Tám tấm chòm lúc trỏ vào, và tấm chòm lúc nghỉ, đều đổi bằng ĐỘ MỜ. Chúng
+   phải `pointer-events: none`, nếu không chúng che mất chính cái liên kết
+   đang làm chúng hiện ra. */
+.chomRo {
   opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ds-dur-base) ease;
+}
+
+.chomNghi,
+.troi {
   pointer-events: none;
   transition: opacity var(--ds-dur-base) ease;
 }
@@ -84,20 +99,137 @@
   border-radius: var(--ds-r-sm);
   display: block;
   position: absolute;
+  z-index: 2;
 }
 
-/* Bao lồi chòm M1 nở 20 px, hợp hộp nhãn — sinh bởi `--css`. */
-.hitM1 {
-  height: 57.91%;
-  left: 21.985%;
-  top: 39.462%;
-  width: 56.126%;
+/* ── vùng bấm, sinh bởi `--css` ─────────────────────────────────────── */
+.hitM1a {
+  left: 13.610%;
+  top: 71.207%;
+  width: 8.809%;
+  height: 27.543%;
+}
+.hitM1b {
+  left: 28.245%;
+  top: 75.530%;
+  width: 16.169%;
+  height: 5.305%;
+}
+.hitM2a {
+  left: 31.912%;
+  top: 79.634%;
+  width: 12.647%;
+  height: 19.146%;
+}
+.hitM2b {
+  left: 44.502%;
+  top: 91.140%;
+  width: 14.801%;
+  height: 5.305%;
+}
+.hitM3a {
+  left: 68.324%;
+  top: 70.024%;
+  width: 17.765%;
+  height: 29.463%;
+}
+.hitM3b {
+  left: 54.577%;
+  top: 66.043%;
+  width: 16.853%;
+  height: 5.305%;
+}
+.hitM4a {
+  left: 39.140%;
+  top: 55.683%;
+  width: 12.162%;
+  height: 22.988%;
+}
+.hitM4b {
+  left: 49.795%;
+  top: 52.851%;
+  width: 22.324%;
+  height: 5.305%;
+}
+.hitM5a {
+  left: 11.456%;
+  top: 33.634%;
+  width: 15.118%;
+  height: 22.878%;
+}
+.hitM5b {
+  left: 17.859%;
+  top: 54.302%;
+  width: 12.750%;
+  height: 5.305%;
+}
+.hitM6a {
+  left: 43.824%;
+  top: 25.610%;
+  width: 15.294%;
+  height: 27.317%;
+}
+.hitM6b {
+  left: 25.292%;
+  top: 22.820%;
+  width: 13.434%;
+  height: 5.305%;
+}
+.hitM7a {
+  left: 74.493%;
+  top: 23.720%;
+  width: 15.559%;
+  height: 24.378%;
+}
+.hitM7b {
+  left: 81.302%;
+  top: 46.783%;
+  width: 16.169%;
+  height: 5.305%;
+}
+.hitM8a {
+  left: 81.515%;
+  top: 11.585%;
+  width: 6.824%;
+  height: 4.878%;
+}
+.hitM8b {
+  left: 63.613%;
+  top: 8.758%;
+  width: 14.801%;
+  height: 5.305%;
 }
 
-.hit:hover ~ .skyFocus,
-.hit:focus-visible ~ .skyFocus {
-  opacity: 1;
+/* Trỏ vào BẤT KỲ chòm nào: phần TRỜI mờ đi, tấm chòm lúc nghỉ tắt hẳn.
+   0.62 là `SKY_PROFILE_DARK.scale.skyDim` — một ca test so lại con số này với
+   hồ sơ ở TS, vì một con số chép tay ở đây là một con số sẽ lệch. */
+.hit:hover ~ .troi,
+.hit:focus-visible ~ .troi {
+  opacity: 0.62;
 }
+
+.hit:hover ~ .chomNghi,
+.hit:focus-visible ~ .chomNghi {
+  opacity: 0;
+}
+
+/* …và đúng MỘT tấm chòm hiện lên. */
+.hitM1:hover ~ .chomM1,
+.hitM1:focus-visible ~ .chomM1 { opacity: 1; }
+.hitM2:hover ~ .chomM2,
+.hitM2:focus-visible ~ .chomM2 { opacity: 1; }
+.hitM3:hover ~ .chomM3,
+.hitM3:focus-visible ~ .chomM3 { opacity: 1; }
+.hitM4:hover ~ .chomM4,
+.hitM4:focus-visible ~ .chomM4 { opacity: 1; }
+.hitM5:hover ~ .chomM5,
+.hitM5:focus-visible ~ .chomM5 { opacity: 1; }
+.hitM6:hover ~ .chomM6,
+.hitM6:focus-visible ~ .chomM6 { opacity: 1; }
+.hitM7:hover ~ .chomM7,
+.hitM7:focus-visible ~ .chomM7 { opacity: 1; }
+.hitM8:hover ~ .chomM8,
+.hitM8:focus-visible ~ .chomM8 { opacity: 1; }
 
 .hit:focus-visible {
   outline: var(--ds-bw-3) solid var(--ds-violet-deep);
@@ -105,23 +237,28 @@
 }
 
 /* MÁY KHÔNG CÓ HOVER (§11.1): không có hover thì KHÔNG có cách nào xem được
-   lớp giải nghĩa, nên trạng thái nghỉ được nâng lên một nấc VĨNH VIỄN. Chạm
-   một cái là đi tới chặng — không bao giờ "chạm lần một để xem, chạm lần hai
-   để đi", luật đó phá kỳ vọng của một liên kết. */
+   lớp giải nghĩa. Ở bản một chòm, trạng thái nghỉ được nâng lên một nấc VĨNH
+   VIỄN; với tám chòm thì không làm thế được — "nâng cả tám" nghĩa là tấm nào
+   cũng hiện, tức tám chòm chồng lên nhau. Nên ở máy chạm, bản đồ giữ nguyên
+   trạng thái nghỉ và chạm một cái là đi tới chặng. Không bao giờ "chạm lần
+   một để xem, chạm lần hai để đi": luật đó phá kỳ vọng của một liên kết. */
 @media (hover: none) {
-  .skyFocus { opacity: 1; }
+  .chomRo { opacity: 0; }
+  .troi { opacity: 1; }
 }
 
 /* GIẢM CHUYỂN ĐỘNG (§11.2). WCAG có một định nghĩa hẹp mà dễ đọc nhầm: đổi
    màu hay đổi ĐỘ MỜ KHÔNG tính là hoạt ảnh chuyển động, trừ khi nó làm đổi
    kích thước, hình dạng, vị trí hoặc chiều sâu cảm nhận được.
 
-   Ở đây hai tấm ảnh khác nhau CHỈ Ở ĐỘ MỜ — không bán kính nào to lên, không
-   nét nào dày lên (xem `build_sky.py`). Nên dưới `reduce` chỉ cần bỏ CHUYỂN
-   TIẾP, còn phản hồi thì GIỮ NGUYÊN: giảm chuyển động không có nghĩa là bỏ
-   phản hồi, và người dùng `reduce` vẫn phải phân biệt được chòm đang trỏ. */
+   Ở đây các tấm khác nhau CHỈ Ở ĐỘ MỜ — không bán kính nào to lên, không nét
+   nào dày lên (xem `build_sky.py`). Nên dưới `reduce` chỉ cần bỏ CHUYỂN TIẾP,
+   còn phản hồi thì GIỮ NGUYÊN: giảm chuyển động không có nghĩa là bỏ phản
+   hồi, và người dùng `reduce` vẫn phải phân biệt được chòm đang trỏ. */
 @media (prefers-reduced-motion: reduce) {
-  .skyFocus { transition: none; }
+  .chomRo,
+  .chomNghi,
+  .troi { transition: none; }
 }
 
 .srOnly {

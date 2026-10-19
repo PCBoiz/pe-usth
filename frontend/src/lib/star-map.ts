@@ -4,8 +4,24 @@
  * Đặc tả: `design/v3/ban-do-sao.md` (ĐỪNG sửa tệp đó từ đây — nó là nguồn, và
  * một agent khác đang viết phần bản SÁNG vào chính nó).
  *
- * Đây là bản dựng MỘT MẪU: chòm **M1 · Chạc** (7 bài của chặng Tiến trình và
- * subprocess), trường sao nền, tinh vân, một nhãn. Bảy chòm còn lại chưa dựng.
+ * CẢ BẦU TRỜI: **tám chòm · 48 ngôi · 50 nét trong chòm · một mạch hoàng đạo
+ * nét đứt · một dải Ngân Hà**. Mở rộng từ bản mẫu một chòm (M1) ngày
+ * 19/10/2026, khi chủ sản phẩm xem mẫu rồi hỏi "chòm này kết nối với các chòm
+ * khác như nào?" — câu đó chỉ trả lời được bằng cả bầu trời.
+ *
+ * BA LỚP LIÊN KẾT, và chúng phải phân biệt được bằng MẮT (đặc tả §4):
+ *  · `lines` của mỗi chòm — nét LIỀN, sắc của chặng: gom các bài của một chặng
+ *    thành MỘT hình. Không nói thứ tự phải học.
+ *  · `SKY_ZODIAC` — MỘT cung nét ĐỨT qua M5→M6→M7→M8, sắc riêng
+ *    (`profile.zodiac`): phụ thuộc THẬT duy nhất của khoá (NumPy → pandas →
+ *    Matplotlib → dự án). Không nét nào nối 1→8: khoá này không có thứ tự đó.
+ *  · `SKY_MILKYWAY` — thể LIÊN TỤC duy nhất mà mọi chòm đều thuộc về hoặc
+ *    không thuộc về. Đây là thứ chữa lời chê "chưa có sự liên kết giữa các
+ *    màn": bản vực trước thất bại vì tám gian là tám mảnh RỜI.
+ *
+ * KHÔNG có lớp ranh giới chòm (§4.4) — chọn quy ước Bayer 1603, không chọn
+ * IAU 1930: ranh giới chia TRỌN bầu trời là một lời khẳng định rằng mọi thứ
+ * đều thuộc về một chặng nào đó, mà điều đó không đúng với một khoá học.
  *
  * ── BỐN LUẬT CỦA FILE NÀY ─────────────────────────────────────────────
  *
@@ -40,12 +56,36 @@
 export const SKY_FRAME = { width: 1360, height: 820 } as const;
 
 /**
- * Ô CROP của bản mẫu. Bản mẫu không vẽ cả bầu trời — nó vẽ dải chân trời quanh
- * hộp M1, đúng cách `scene-M*.svg` của bản vực là một ô crop của cùng một bức.
- * Toạ độ sao vẫn là toạ độ THẬT trong khung 1360 × 820, nên khi dựng nốt bảy
- * chòm thì chỉ `SKY_VIEW` bị bỏ, không có con số nào phải tính lại.
+ * CHIA TỆP THEO LỚP — và đây là một hợp đồng, không phải một chi tiết xuất tệp.
+ *
+ * Bản mẫu một chòm xuất HAI tấm (nghỉ · hover) chứa đủ mười ba lớp. Nhân cách
+ * đó lên tám chòm là chín tấm đầy đủ: mỗi tấm cõng lại cả tinh vân, cả 1 250
+ * sao nền, cả lưới — đo được **~160 KB mỗi tấm**, tức ~1,4 MB cho một trang,
+ * trong khi mốc §9.2 là 900 KB cho TẤT CẢ. Nên lớp trời tách ra thành tệp
+ * RIÊNG, tải một lần, và chỉ lớp chòm mới có bản nghỉ/bản rõ cho từng chòm.
+ *
+ * Cái được thứ hai, và nó là lý do viết hợp đồng này ra chứ không chỉ cắt tệp
+ * cho nhẹ: một agent khác đang NGHIÊN CỨU chuyện thêm chiều sâu bằng parallax
+ * theo con trỏ. Parallax đòi các lớp trôi ở TỐC ĐỘ KHÁC NHAU, tức đòi chúng là
+ * những phần tử DOM khác nhau. Nếu bầu trời là một tấm duy nhất thì việc đó
+ * phải vẽ lại từ đầu; chia sẵn thì nó chỉ còn là mấy dòng CSS.
+ *
+ * `layers` của tất cả các tấm GỘP LẠI phải đúng bằng `SKY_LAYERS`, theo đúng
+ * thứ tự — thứ tự tệp trong DOM LÀ thứ tự z. Ca test so lại, vì một lớp bị bỏ
+ * quên là một lớp biến mất khỏi bức mà không có gì đỏ lên.
  */
-export const SKY_VIEW = { x: 40, y: 430, width: 660, height: 390 } as const;
+export const SKY_TILES = [
+  {
+    file: 'troi',
+    layers: [
+      'nen', 'bui-xa', 'nguon-sang', 'loe-ngang', 'tinh-van', 'khe-bui',
+      'soi-sang', 'quang-chan-troi',
+    ],
+  },
+  { file: 'sao-nen', layers: ['truong-sao', 'luoi'] },
+  { file: 'mach', layers: ['mach-hoang-dao'] },
+  { file: 'chom', layers: ['net-chom', 'quang-sao', 'sao-bai', 'loi-sao', 'nhan'] },
+] as const;
 
 /** Dải Ngân Hà (đặc tả §4.3): một dải chạy chéo từ (0, 650) tới (1360, 230).
  *  Ở ô crop của bản mẫu ta chỉ thấy mép dưới của nó. */
@@ -56,6 +96,198 @@ export const SKY_MILKYWAY = {
   halfWidth: { ends: 85, mid: 130 },
   /** Khe bụi tối chẻ dọc dải, lệch khỏi trục một chút cho khỏi đối xứng. */
   lane: { offset: -22, halfWidth: 26 },
+} as const;
+
+/**
+ * MẠCH PHỤ THUỘC — cung hoàng đạo nét đứt qua M5 → M6 → M7 → M8 (§4.2).
+ *
+ * Phụ thuộc THẬT của khoá chỉ có một: NumPy → pandas → Matplotlib → dự án, đã
+ * kiểm bằng gói thư viện từng bài. **Không một nét nào nối 1→8** — khoá này
+ * không có thứ tự đó, vẽ ra là nói sai.
+ *
+ * Bầu trời thật có sẵn đúng một vật như vậy: hoàng đạo, một cung lớn nét đứt
+ * xuyên qua một TẬP CON chòm sao và bỏ qua mọi chòm khác. Không ai nhìn hoàng
+ * đạo mà nghĩ "phải đi theo thứ tự này": nó là một quan hệ, không phải một lộ
+ * trình. Nên: không mũi tên, không chữ trên cung.
+ *
+ * NEO VÀO SAO, KHÔNG VÀO TOẠ ĐỘ. Mỗi mốc là `stars` + `offset`, nên dịch một
+ * hộp chòm là cung TỰ đi theo. Chép bốn con số toạ độ sang đây là bốn con số
+ * sẽ lệch — bản vực đã trả giá cho đúng điều đó.
+ *
+ * `stars` hai mã ⇒ lấy TRUNG ĐIỂM: ở M8 cung phải đi GIỮA hai ngôi, không sát
+ * một ngôi.
+ *
+ * Một chỗ đặc tả §4.2 nói "đi sát sao SÁNG NHẤT của M5, M6, M7" mà hình học
+ * không cho: ba ngôi sáng nhất M7 (M01 · M02 · M05, cùng 9 ca chấm) đều ở nửa
+ * DƯỚI của chòm, còn M8 ở thiên đỉnh — không cung trơn nào vừa vục xuống
+ * y ≈ 374 ở x ≈ 1033 vừa vươn lên y = 115 ở x = 1155 mà còn đọc ra là một cung
+ * lớn. Giải bằng cách giữ đúng cái ràng buộc ĐO ĐƯỢC: cung phải đi trong
+ * `nearMax` của ngôi neo đã khai cho mỗi chòm, và không bao giờ gần HƠN
+ * `clearMin` tới bất kỳ ngôi nào trong 48 (§4.2 cho 14 px). Script tự đo cả
+ * hai và TRƯỢT nếu vỡ. Ngôi neo của M6 và M7 chọn trong số các ngôi ĐỒNG hạng
+ * sáng nhất (M6 cả chín bài cùng 8 ca) hoặc ngôi mà cung đi qua thật (M7 ·
+ * M03, đỉnh trục đứng) — nói ra ở đây thay vì để một con số không ai giải
+ * thích được.
+ */
+export const SKY_ZODIAC = {
+  anchors: [
+    { stars: ['N01'], offset: [-6, -25] },
+    { stars: ['PD03'], offset: [2, -25] },
+    { stars: ['M03'], offset: [-1, 24] },
+    { stars: ['DA01', 'DA02'], offset: [0, 0] },
+  ],
+  /** Mịn hoá Catmull–Rom: số đoạn giữa hai mốc. */
+  steps: 24,
+  /** Nối dài theo TIẾP TUYẾN ở hai đầu [đầu, cuối] — một vòng tròn lớn không
+   *  bắt đầu và kết thúc ở giữa trời. Cắt bởi viewBox, nên nối quá cũng chỉ
+   *  tốn vài byte. */
+  extend: [240, 150],
+  width: 1.0,
+  dash: '8 7',
+  /**
+   * ĐỘ MỜ 0,48, KHÔNG PHẢI 0,34 — và đây là một số đo sửa lại đặc tả.
+   *
+   * §4.2 ghi "1,0 px, đứt `8 7`, màu `#B9D0FF` ở độ mờ 0,34 → 4,1:1 trên nền
+   * trời". Đo lại trên bức này thì 0,34 chỉ cho **2,37:1** ở chỗ trời TỐI
+   * nhất (nền `#070C17`, Y = 0,0045) — dưới 3:1 của WCAG 1.4.11, và script
+   * TRƯỢT ở đó. Con số 4,1:1 của đặc tả hợp lý với một "nền trời" đã được
+   * tinh vân nâng sáng; nhưng mạch hoàng đạo chạy qua cả những vùng KHÔNG có
+   * tinh vân nào, và chỗ tối nhất mới là chỗ quyết định.
+   *
+   * Nghịch lý đáng ghi lại vì nó đi ngược trực giác: thứ làm một nét sáng
+   * trượt tương phản ở đây là TRỜI QUÁ TỐI, không phải trời quá sáng. 0,48
+   * cho 3,6:1 ở chỗ tối nhất, và script đo lại dọc cả cung mỗi lần build nên
+   * chỗ SÁNG nhất cũng không lọt.
+   */
+  opacity: 0.48,
+  /** Bề rộng DẢI: một nét thứ hai song song, lệch theo pháp tuyến. Atlas cổ vẽ
+   *  hoàng đạo là một DẢI chứ không phải một vạch. */
+  bandOffset: 9,
+  bandOpacity: 0.26,
+  /** Cung phải đi trong bấy nhiêu px của ngôi neo — "đi SÁT" đo được. */
+  nearMax: 34,
+  /** …và không bao giờ gần hơn bấy nhiêu px tới MỘT ngôi nào trong 48 (§4.2). */
+  clearMin: 14,
+} as const;
+
+/**
+ * MỘT NGUỒN SÁNG TRỘI — và đây là thay đổi lớn nhất so với bản mẫu một chòm.
+ *
+ * Bản đánh giá `design/v3/chieu-sau-tuong-tac.md` §2 đo khung hình tham chiếu
+ * (`design/tham-chieu/ban-do-sao-game.png`) rồi đo lại bản mẫu của mình, và
+ * bốn con số nói cùng một điều:
+ *
+ *  | | tham chiếu | bản mẫu M1 |
+ *  |---|---|---|
+ *  | % diện tích L > 0,5 | **7,73%** | **0,10%** |
+ *  | trung vị độ chói    | 0,0284 | bị CẤM vượt 0,0748 ở mọi điểm |
+ *  | vật sáng lớn nhất   | Ø 19,7% bề rộng | Ø 0,63% bề rộng |
+ *  | tỉ lệ lớn nhất : nhỏ nhất | ~45 : 1 | 3,6 : 1 |
+ *
+ * Tức bức tham chiếu TỐI HƠN ta ở phần lớn diện tích, nhưng dám để gần 8%
+ * diện tích lên gần trắng. Thứ ta thiếu là **DẢI ĐỘ CHÓI**, không phải số
+ * chiều — và thứ ép cái dải đó lại chính là trần độ chói TOÀN CỤC của §3.1.
+ * Cái trần ấy tồn tại để chữ đọc được ở bất cứ chỗ nào chữ rơi vào; nhưng §8
+ * đã có một bộ máy đặt nhãn TỰ ĐO độ chói và TRƯỢT BUILD nếu không tìm được
+ * chỗ đủ tối. Ràng buộc "chữ đọc được" đã được giải CỤC BỘ rồi, nên trần toàn
+ * cục đang làm việc mà một bộ máy khác đã làm xong. Nó bị bỏ; thay vào là
+ * `SKY_BUDGET` ở dưới.
+ *
+ * VÌ SAO Ở ĐÚNG CHỖ NÀY. Toạ độ không chọn cho đẹp — nó là chỗ DUY NHẤT còn
+ * lại sau ba ràng buộc đo được:
+ *  · cách MỌI bao lồi chòm ≥ `outer` + `SKY_FIELD.ceilingPad`, nếu không độ
+ *    chói trong bao lồi vượt `hullCeiling` và nét chòm ở đó tụt dưới 3:1;
+ *  · cách mạch hoàng đạo ≥ `outer` — nét MANG TIN cũng phải giữ 3:1, và cung
+ *    đó chạy xuyên cả nửa trên bầu trời nên nó là chỗ dễ trượt nhất;
+ *  · lõi phải nằm TRỌN trong khung, vì ngân sách diện tích tính trên phần
+ *    THẤY ĐƯỢC: một nguồn sáng bị mép khung cắt mất một phần ba là một nguồn
+ *    sáng không đạt ngân sách.
+ * Script đo cả ba và TRƯỢT nếu vỡ, nên "dịch nó cho đẹp" là một ca đỏ.
+ *
+ * Và nó ở đúng chỗ bầu trời thật có một vật như vậy: **Đám Mây Magellan Lớn**
+ * — một đám sáng lớn nằm XA mặt phẳng Ngân Hà, trên trời nam bán cầu. Chính
+ * Lacaille đặt tên *Mensa* (cái bàn) cho chòm bên dưới nó, vì đám mây ấy
+ * trông như mây phủ trên Núi Bàn ở mũi Hảo Vọng. Nên một đám sáng lớn ngoài
+ * dải Ngân Hà không phải một thứ bịa cho đẹp: nó là thứ người vẽ bầu trời
+ * Lacaille nhìn thấy mỗi đêm.
+ */
+export const SKY_LIGHT = {
+  at: { x: 124, y: 104 },
+  /** Bán kính LÕI (vùng gần như kín sáng) và bán kính TẮT HẲN.
+   *
+   *  `outer` là con số quyết định khe tới bao lồi chòm nói ở trên, nên nó đã
+   *  bị kéo xuống tới mức vừa đủ: nới nó là phải dịch cả bố cục tám chòm. */
+  core: 92,
+  outer: 150,
+  /** Dựng bằng `levels` ĐA GIÁC LỒNG NHAU, tô đặc, bán kính giảm dần từ
+   *  `outer` về `core` — ĐÚNG kỹ thuật của quầng sao (`SKY_MAGNITUDE
+   *  .haloRings`), không phải đường đồng mức của tinh vân.
+   *
+   *  Hai bản trước đều dựng bằng đường đồng mức và cả hai đều hỏng NHÌN THẤY
+   *  ĐƯỢC, nên ghi lại cả hai:
+   *   · bản 1 trả thẳng 1,0 cho mọi điểm trong lõi ⇒ chín đường đồng mức rơi
+   *     cùng một chỗ ⇒ một cái ĐĨA XÁM PHẲNG viền mấy vòng tròn;
+   *   · bản 2 nhân trường với một kết cấu fBm mạnh để phá vòng tròn ⇒ trường
+   *     thôi đơn điệu theo bán kính, nên mỗi mức sinh ra cả đường bao NGOÀI
+   *     lẫn những đảo bên trong, và `fill-rule="evenodd"` biến tâm nguồn sáng
+   *     thành một cái LỖ TỐI. Đúng loại hỏng im lặng: tệp vẫn ra, kích thước
+   *     vẫn đúng, chỉ là nguồn sáng tối ở giữa.
+   *  Đa giác lồng nhau không có kiểu hỏng nào trong hai kiểu đó: chúng không
+   *  cắt nhau được, và thứ tự tô là thứ tự bán kính. */
+  levels: 16,
+  /** Bấy nhiêu vòng TRONG CÙNG tô bằng `glowCore`, số còn lại bằng `glow`. */
+  coreLevels: 6,
+  /** Độ mờ CỘNG DỒN ở lõi, và số mũ của sườn: `A(f) = alphaMax × f^falloff`
+   *  với `f` = 0 ở `outer`, 1 ở `core`. Độ mờ của từng vòng được tính NGƯỢC
+   *  từ hồ sơ này, y như cách quầng sao làm — nhờ thế "một vòng" không phải
+   *  một bậc mà mắt đếm được. */
+  alphaMax: 0.97,
+  falloff: 1.9,
+  /** Rìa MÉO theo góc: cùng một sóng cho mọi vòng (nên chúng không cắt nhau
+   *  được), nhưng biên độ tăng theo bán kính — rìa ngoài xơ xác, lõi tròn
+   *  hơn. Đó là hình của một đám mây sáng thật, và nó cũng là thứ giữ cho vật
+   *  to nhất bức khỏi đọc ra là "cái đèn flash của phần mềm". */
+  warp: 0.2,
+  seg: 96,
+  /** Lấm tấm trong quầng — cùng lý lẽ với lấm tấm của tinh vân: thứ giữ cho
+   *  mười sáu vòng phẳng khỏi đọc ra là mười sáu cái vòng. */
+  stipple: { count: 4200, size: 0.5, opacity: 0.18, at: 0.12, gain: 1.4 },
+  /** Vệt loé NGANG qua nguồn sáng — đọc được bằng mắt trên khung hình tham
+   *  chiếu (`chieu-sau-tuong-tac.md` §2.2) và đặc tả §3.3 đã chép nó. Nó
+   *  không phải trang trí: một vệt ngang là thứ nói ra "đây là một NGUỒN
+   *  SÁNG, không phải một mảng sơn sáng". */
+  flare: { span: 3.4, width: 2.4, opacity: 0.26, steps: 40 },
+} as const;
+
+/**
+ * NGÂN SÁCH ĐỘ CHÓI THEO DIỆN TÍCH — thay cho trần độ chói toàn cục.
+ *
+ * Một cái trần nói "không điểm nào được sáng hơn X". Một ngân sách nói "được
+ * phép bấy nhiêu phần trăm diện tích sáng hơn X, và phần còn lại phải tối
+ * hơn". Hai câu đó cho ra hai bức tranh khác nhau hẳn, và bức thứ hai là bức
+ * mà khung tham chiếu đang là.
+ *
+ * Mốc 7,73% của khung tham chiếu là mốc để NHẮM, không phải một luật — nên
+ * sàn ở đây là 2,0% (ngưỡng đi/dừng của bản đánh giá §5 bước 2) và trần 12%.
+ * `medianMax` là dòng quan trọng nhất và cũng là dòng dễ phá nhất: **sáng
+ * thêm ở ĐUÔI, không sáng thêm nói chung.** Nới `medianMax` là làm hỏng đúng
+ * thứ đang đi tìm.
+ *
+ * Script đo trên lưới `sampleStep` px bằng chính các trường mà các lớp dùng,
+ * cộng diện tích hình tròn của 48 ngôi, và TRƯỢT nếu ra ngoài khoảng — đúng
+ * cách nó đang chặn dung lượng. Một con số trong chú thích thì không chặn
+ * được gì.
+ */
+export const SKY_BUDGET = {
+  brightAt: 0.5,
+  brightShareMin: 0.02,
+  brightShareMax: 0.12,
+  medianMax: 0.05,
+  sampleStep: 4,
+  /** Tỉ lệ ĐƯỜNG KÍNH vật sáng lớn nhất : sao nền. Tham chiếu ~45:1, ngưỡng
+   *  đi/dừng của bản đánh giá là 15:1. Đạt được KHÔNG BẰNG cách phóng to ngôi
+   *  nào — bán kính 48 ngôi vẫn do số ca chấm quyết (luật 4 ở đầu tệp). */
+  scaleRatioMin: 15,
 } as const;
 
 /** Quầng chân trời (§3.1 lớp 5 · §5.3): 170 px dưới cùng của khung. */
@@ -168,10 +400,10 @@ export const SKY_NEBULA = {
    *  nó KHÔNG được hồ sơ hoá (§19.2 dòng 5): Ngân Hà phải cùng một hình dạng ở
    *  cả hai bản, và nhờ dùng đường đồng mức thì nó không thể lệch — hình học
    *  là một, chỉ cách TÔ là hai. */
-  levelLo: 0.3,
-  levelHi: 0.62,
+  levelLo: 0.2,
+  levelHi: 0.6,
   /** Lớp bụi xa: dải rộng gấp bấy nhiêu, hai ngưỡng, độ mờ mỗi bậc. */
-  dust: { spread: 1.9, levels: [0.34, 0.46], opacity: 0.21 },
+  dust: { spread: 2.2, levels: [0.24, 0.34, 0.44], opacity: 0.2 },
   /** Khe bụi tối: ba ngưỡng, độ mờ mỗi bậc. Nó NHÂN vào, không cộng. */
   lane: { levels: [0.3, 0.46, 0.6], opacity: 0.3 },
   /** Lưới lấy mẫu cho marching squares. 5 px/ô ở khung 1360 là đủ mềm cho một
@@ -245,6 +477,20 @@ export const SKY_LINK = {
    *  được. Script TỰ CHẶN — đây là con số giữ cho cái chạc còn đọc ra là cái
    *  chạc chứ không thành một mớ gạch nối. */
   maxLines: 12,
+  /** Nét ĐẬM HƠN của hàng/cột nhãn ở M6 (§2): chỗ DUY NHẤT trong cả bản đồ mà
+   *  độ dày nét mang nghĩa riêng — nó nói ra khác biệt giữa `ndarray` (M5,
+   *  không nhãn) và `DataFrame` (M6, có nhãn) bằng HÌNH chứ không bằng chữ.
+   *  Phải có trong chú giải, không được để người xem đoán. */
+  emphasis: 1.9,
+  /** KHE NHỎ NHẤT giữa một ngôi của chòm này và một ngôi của chòm khác.
+   *
+   *  Đây là một ca chặn build, và nó có lý do cụ thể: bảng hộp §15 CHỒNG NHAU
+   *  (M4 chiếm y 430–630, M2 chiếm y 600–780 và cả hai đụng nhau ở x 470–700;
+   *  M4 và M6 chồng ở y 430–450). Đặt theo bảng đó thì PD07 của M6 và X03 của
+   *  M4 cách nhau 21 px — hai ngôi của HAI chặng khác nhau đọc ra thành một
+   *  cặp sao đôi. Hộp ở `SKY_<chòm>.box` đã dịch cho hết chồng; con số này là
+   *  thứ giữ cho lần sau ai dịch lại cũng không dựng lại cái lỗi ấy. */
+  minGap: 50,
 } as const;
 
 /** Nhãn — mọi con số của luật neo (§8.2 → §8.5). Không một giá trị nào ở đây
@@ -285,7 +531,17 @@ export const SKY_LABEL = {
    *  bao lồi chòm nở 8 px, và không được đè một ngôi nở 6 px. */
   boxPad: 10,
   hullPad: 8,
-  starPad: 6,
+  /** Khe nhỏ nhất giữa hộp chữ và một ngôi. Đặc tả §8.4 nói 6 px; ở đây 9.
+   *
+   *  Vì sao nới: với TÁM nhãn, chỗ đặt của M3 rơi đúng 6,2 px trên ngôi G01 —
+   *  tức qua được luật 6 px với dư 0,2 px. Toạ độ trong SVG lại làm tròn về
+   *  số nguyên (`nf()`), nên bức VẼ RA có khe 5,8 px và ca test đo trên tranh
+   *  đỏ lên trong khi bộ đặt nhãn báo đạt. Nới khe KHÔNG tự nó chữa được
+   *  chuyện làm tròn — bộ đặt nhãn chọn chỗ RẺ NHẤT còn hợp lệ nên nó luôn
+   *  dừng đúng ở mép ràng buộc, mép nào cũng vậy; ca test vì thế trừ 1 px
+   *  cho phép làm tròn, và nói ra điều đó ở chỗ nó trừ. Nới khe vẫn đáng
+   *  làm vì một lý do khác: 6 px là khe mà mắt đọc ra "chữ dính vào sao". */
+  starPad: 9,
   /** Quét tia kiểu Azgaar: mỗi 9°, chấm điểm ưu tiên tia gần phương ngang. */
   raySweep: 9,
   /** Trọng số chấm điểm bốn hướng. Ở Azgaar, che một BIỂU TƯỢNG đắt gấp ~3
@@ -325,9 +581,35 @@ export const SKY_LABEL = {
  *
  * `dir` là `[sx, sy]`: `sx` +1 nhãn ở bên phải ngôi neo, −1 bên trái; `sy` −1
  * đi lên, +1 đi xuống. `leg` là độ dài đoạn xiên 30° (px).
+ *
+ * THỨ TỰ CÁC DÒNG LÀ THỨ TỰ NHƯỜNG, không phải M1…M8 — và nó mang tin, đừng
+ * sắp lại cho gọn mắt. §8.4: chòm có ngôi neo SÁNG NHẤT đặt trước và GIỮ CHỖ,
+ * chòm tới sau phải tránh mọi hộp đã giữ. Đọc được ngay trong khối này: M8
+ * (DA01 · 19 ca) và M3 (R02 · 17 ca) đi trước, còn M1 — tới thứ ba — phải
+ * nới đoạn dẫn tới **90 px**, gần gấp ba đoạn 34 px mà M2, M5 và M6 lấy
+ * được.
+ *
+ * Ba chỗ đáng biết, cả ba là bộ máy §8.4 đang làm việc chứ không phải lỗi:
+ *  · M3 neo vào **G05**, không vào R02 — R02 là ngôi sáng nhất chòm nhưng nó
+ *    ở TÂM một hình kín, nên mọi đường dẫn từ đó đều cắt qua nét của chính
+ *    chòm. Bộ máy thử ngôi sáng thứ nhì đúng như §8.4 bước 2 nói.
+ *  · M5 neo vào **N04**, ngôi thứ BA của nó. N01 và N02 đều ở nửa trái cái
+ *    lưới, mà bên trái chúng chỉ còn 176 px tới mép khung — hẹp hơn hộp chữ;
+ *    còn phía trên thì mạch hoàng đạo chạy ngang. Đây là ca buộc bộ máy phải
+ *    thử tới ngôi neo thứ ba thay vì thứ hai như §8.4 viết.
+ *  · M1 có đoạn dẫn **90 px** — dài gần gấp ba M2 — vì nó tới sau M3 và M8,
+ *    và phải đi ra khỏi vùng hai chòm kia đã giữ. Đó chính là cái giá của
+ *    luật nhường, nhìn thấy được bằng một con số.
  */
 export const SKY_LABEL_PLACED = [
-  { key: 'M1', anchor: 'P05', dir: [1, 1], leg: 34 },
+  { key: 'M3', anchor: 'G05', dir: [-1, -1], leg: 54 },
+  { key: 'M8', anchor: 'DA01', dir: [-1, -1], leg: 34 },
+  { key: 'M1', anchor: 'P05', dir: [1, -1], leg: 90 },
+  { key: 'M2', anchor: 'T05', dir: [1, -1], leg: 34 },
+  { key: 'M4', anchor: 'X02', dir: [1, -1], leg: 36 },
+  { key: 'M5', anchor: 'N04', dir: [1, 1], leg: 34 },
+  { key: 'M7', anchor: 'M01', dir: [1, 1], leg: 48 },
+  { key: 'M6', anchor: 'PD01', dir: [-1, -1], leg: 68 },
 ] as const;
 
 /** Vùng bấm (§4.4 · §10): bao lồi của chòm nở ra bấy nhiêu, CỘNG hộp nhãn.
@@ -398,8 +680,16 @@ export type SkyProfile = {
   dustLane: string;
   filament: string;
   horizon: string;
-  /** Trần độ chói: không điểm nào của bức được sáng hơn màu này. */
-  ceiling: string;
+  /** Nguồn sáng trội (`SKY_LIGHT`): sắc của quầng và của lõi cháy.
+   *
+   *  Khoá `ceiling` ĐÃ BỊ BỎ ở đây, và nói ra chứ đừng để ai dựng lại: nó là
+   *  trần độ chói TOÀN CỤC của §3.1, và nó chính là thứ ép dải độ chói của cả
+   *  bức lại (`chieu-sau-tuong-tac.md` §2.4). Thay nó là `SKY_BUDGET` — một
+   *  ngân sách theo DIỆN TÍCH, không phải một trần theo ĐIỂM. Hai trần CỤC BỘ
+   *  (`hullCeiling`, `textCeiling`) thì giữ nguyên: chúng là ràng buộc tiếp
+   *  cận ở đúng chỗ có nét mang tin và có chữ. */
+  glow: string;
+  glowCore: string;
   /** Trần độ chói CỤC BỘ trong bao lồi mỗi chòm — dưới ngưỡng này nét chòm
    *  mới đạt 3:1. */
   hullCeiling: string;
@@ -414,6 +704,11 @@ export type SkyProfile = {
    *  trắng tuyệt đối. Bản SÁNG không có lõi (§18.3) ⇒ `null`. */
   core: string | null;
   grid: string;
+  /** Mạch phụ thuộc (§4.2). SẮC RIÊNG, không chia với nét chòm: luật rút từ
+   *  Stellarium — nó dành `#CC4C4C` riêng cho đường ranh giới, khác hẳn sắc
+   *  nét chòm. Mỗi LOẠI nét một sắc, không chia sắc giữa hai loại, nếu không
+   *  ba lớp liên kết của §4 không phân biệt được bằng mắt. */
+  zodiac: string;
   text: string;
   textSub: string;
   code: string;
@@ -445,25 +740,43 @@ export const SKY_PROFILE_DARK: SkyProfile = {
     skyDim: 0.62,
     figureOpacity: 0.13,
   },
-  base: '#070C17',
-  dustFar: '#141C34',
-  nebula: '#1E2B4E',
-  nebulaCore: '#3C4166',
-  dustLane: '#0A1020',
+  base: '#0A0C14',
+  dustFar: '#1A1E2E',
+  nebula: '#272D42',
+  nebulaCore: '#434559',
+  dustLane: '#0D101C',
   filament: '#4A4A6E',
   horizon: '#2A2416',
-  ceiling: '#4A4A6E',
+  glow: '#4E5468',
+  glowCore: '#F6F1E2',
   hullCeiling: '#232C4A',
   textCeiling: '#2F3B63',
   field: '#C6D2E8',
   core: '#FFFFFF',
   grid: '#5A6B93',
+  zodiac: '#B9D0FF',
   text: '#E8EEF7',
   textSub: '#AFBDD2',
   code: '#C9A646',
+  /** Tám sắc khoáng. m1 và m2 ĐÃ HẠ BÃO HOÀ ngày 19/10/2026, và đây là một
+   *  số đo chứ không phải một gu: `chieu-sau-tuong-tac.md` §2.3 đo m1
+   *  `#F0B35A` ra bão hoà HSV **0,625**, trong khi cả khung hình tham chiếu
+   *  trung bình **0,196** — tức một sắc của mình no hơn 90% khung hình ấy.
+   *  Màu no là một trong những dấu hiệu "máy vẽ" rõ nhất.
+   *
+   *  Đo lại cả tám thì chỉ m1 (0,625) và m2 (0,476) cao; sáu sắc còn lại
+   *  0,084–0,256. Nên hạ đúng hai sắc đó: m1 → 0,379, m2 → 0,339, và trung
+   *  bình tám sắc đi từ 0,252 xuống **0,204** — ngang 0,196 của tham chiếu.
+   *
+   *  KHÔNG hạ tới 0,196 cho từng sắc, và lý do là một ràng buộc chứ không
+   *  phải sự dè dặt: m1 (33°) và m2 (45°) chỉ cách nhau 12° sắc độ, hạ bão
+   *  hoà cả hai xuống 0,2 thì chúng thành một màu — mà M1 và M2 nằm KỀ NHAU ở
+   *  dải chân trời. Một bản đồ mà hai chặng cạnh nhau cùng màu là một bản đồ
+   *  nói sai. Nên m2 cũng được nới sắc độ sang 52° (vàng-lục hơn) để giữ
+   *  khoảng cách khi cả hai đã nhạt đi. */
   hues: {
-    m1: '#F0B35A',
-    m2: '#E3C877',
+    m1: '#F0C795',
+    m2: '#E3D996',
     m3: '#CFE3EA',
     m4: '#9ACFC3',
     m5: '#D7D0EE',
@@ -491,17 +804,17 @@ export const SKY_PROFILES: { dark: SkyProfile; light?: SkyProfile } = { dark: SK
 export type SkyStar = { code: string; x: number; y: number; role: string };
 
 /**
- * Lưới cục bộ của một chòm: 100 đơn vị ngang × 200 đơn vị dọc, y đi XUỐNG.
+ * Một chòm. `box` là hộp của nó trong khung 1360 × 820 (§15), `grid` là lưới
+ * CỤC BỘ mà toạ độ sao của nó cho theo, y đi XUỐNG.
  *
- * Đặc tả §2 viết "toạ độ cho theo hệ 0–100 trong hộp của chính chòm đó", nhưng
- * bảng M1 của chính nó có y tới 195 — hai câu không khớp nhau. Giải theo hướng
- * GIỮ ĐƯỢC HÌNH: lưới là 100 × 200 và nó được đặt vào hộp bằng tỉ lệ ĐỒNG
- * DẠNG (`min`), căn giữa. Nếu bóp theo từng trục cho khít hộp 310 × 210 thì
- * cái chạc cao 186 đơn vị thành một hình bè ra — tức mất đúng thứ phải đọc ra.
+ * VÌ SAO `grid` LÀ CỦA TỪNG CHÒM, không phải một hằng dùng chung: bảng §2 cho
+ * M2…M8 toạ độ y trong 0…100, còn bảng M1 của chính nó có y tới 195. Bản mẫu
+ * một chòm giải bằng một lưới 100 × 200 dùng chung, và với một chòm thì không
+ * sao. Với tám thì nó sai hẳn: `min(300/100, 180/200)` = 0,9 nên M2 co lại còn
+ * 90 × 90 đơn vị, dán vào nửa TRÊN của một hộp 300 × 180 và chừa trống nửa
+ * dưới. Khai lưới thật của từng chòm là chỗ duy nhất giữ được cả hai: tỉ lệ
+ * ĐỒNG DẠNG (hình không bè ra) và hộp được lấp (chòm không teo lại).
  */
-export const SKY_LOCAL = { width: 100, height: 200 } as const;
-
-/** Một chòm. `box` là hộp của nó trong khung 1360 × 820 (§15). */
 export type SkyConstellation = {
   key: string;
   hue: keyof SkyProfile['hues'];
@@ -510,17 +823,37 @@ export type SkyConstellation = {
    *  `stars`, không viết cứng, nên nó không nói sai được. */
   subtitle: string;
   box: readonly [number, number, number, number];
+  grid: readonly [number, number];
   stars: readonly SkyStar[];
-  lines: readonly (readonly [string, string])[];
+  /** `[a, b]` hoặc `[a, b, 'dam']` — `dam` là nét ĐẬM HƠN của hàng/cột nhãn ở
+   *  M6 (§2), chỗ duy nhất độ dày nét mang nghĩa riêng. */
+  lines: readonly (readonly [string, string] | readonly [string, string, 'dam'])[];
 };
 
 /**
- * M1 · CHẠC — Tiến trình và subprocess, 7 bài (§2).
+ * M1 · KẸP — Tiến trình và subprocess, 7 bài (§2).
  *
- * Hình: một thân mọc lên, RẼ ĐÔI, hai nhánh CHỤM LẠI ở đỉnh. `fork()` tách
- * một tiến trình thành hai, `wait()` chụm chúng lại — đó là hình vẽ mà mọi
- * sách hệ điều hành đều vẽ cho vòng đời tiến trình, không phải một ẩn dụ xa
- * xôi. Phần kín giữa hai nhánh là khoảng thời gian cả hai cùng sống.
+ * TÊN ĐÃ ĐỔI ngày 19/10/2026, và đổi TÊN chứ không đổi HÌNH. Người dựng bản
+ * mẫu gọi chòm này là "Chạc" theo đặc tả §2, rồi tự kết luận là hình không đọc
+ * ra được cái chạc: nhánh của một cái chạc KHÔNG gặp lại nhau, mà ở đây hai
+ * nhánh chụm lại ở P07 nên trên cán mọc ra một VÒNG KÍN. Hình thì đúng — thứ
+ * phải đọc ra là ngữ nghĩa `fork()` rồi `wait()`, và một vòng kín trên cán là
+ * đúng thứ đó. Sai là cái tên.
+ *
+ * "Kẹp" đọc đúng hình: một cái kẹp (kẹp gắp, kẹp lò) nhìn chính diện lúc khép
+ * là MỘT cán ở dưới (hai lá ép vào nhau nên mắt đọc ra một nét), hai càng bung
+ * ra, rồi hai mũi gặp nhau ở đỉnh. Đúng ba đoạn của hình này, theo đúng thứ tự
+ * ấy.
+ *
+ * Và nó đọc đúng cả NGHĨA, chứ không chỉ đúng đường nét: một cái kẹp có HAI
+ * càng nhưng là MỘT vật — đúng như hai tiến trình sau một `fork()` là hai
+ * luồng thi hành của một chương trình. Cái chạc thì mỗi nhánh đi một đường và
+ * không bao giờ quay lại.
+ *
+ * Nó cũng ở đúng trong quy ước mà §1 dựa vào: Lacaille đã treo *Fornax*, cái
+ * lò, lên trời nam bán cầu năm 1751 — cái kẹp là dụng cụ người ta dùng để gắp
+ * thứ ra khỏi chính cái lò ấy. Dụng cụ trên bàn người thợ, không phải một vật
+ * đi mượn.
  *
  * Hai nhánh không chia tuỳ tiện: nhánh TRÁI là việc hệ điều hành làm (lập
  * lịch, ống dẫn), nhánh PHẢI là việc Python gọi (`run`, `Popen`). Chúng gặp
@@ -534,16 +867,17 @@ export type SkyConstellation = {
 export const SKY_M1: SkyConstellation = {
   key: 'M1',
   hue: 'm1',
-  name: 'Chạc',
+  name: 'Kẹp',
   subtitle: 'Tiến trình',
   box: [90, 585, 310, 210],
+  grid: [100, 200],
   stars: [
-    { code: 'P01', x: 50, y: 195, role: 'gốc thân' },
+    { code: 'P01', x: 50, y: 195, role: 'gốc cán' },
     { code: 'P02', x: 50, y: 140, role: 'chỗ rẽ' },
-    { code: 'P03', x: 22, y: 100, role: 'nhánh trái' },
-    { code: 'P04', x: 12, y: 48, role: 'nhánh trái' },
-    { code: 'P05', x: 78, y: 100, role: 'nhánh phải' },
-    { code: 'P06', x: 88, y: 48, role: 'nhánh phải' },
+    { code: 'P03', x: 22, y: 100, role: 'càng trái' },
+    { code: 'P04', x: 12, y: 48, role: 'càng trái' },
+    { code: 'P05', x: 78, y: 100, role: 'càng phải' },
+    { code: 'P06', x: 88, y: 48, role: 'càng phải' },
     { code: 'P07', x: 50, y: 18, role: 'chỗ chụm' },
   ],
   lines: [
@@ -558,17 +892,275 @@ export const SKY_M1: SkyConstellation = {
 };
 
 /**
- * Khoá các chòm của bản mẫu. Bảy chòm còn lại (§2) chưa dựng.
+ * M2 · CON THOI — Đa luồng, 6 bài (§2).
+ *
+ * Hình: một thấu kính nhọn hai đầu — con thoi của khung cửi. `thread` nghĩa
+ * đen là SỢI, và vật dùng để đưa sợi qua khung cửi là con thoi. Nhưng hình
+ * không dừng ở chữ: hai cung RỜI NHAU ở một mũi và GẶP LẠI ở mũi kia — đó
+ * đúng là `start()` … `join()`, và khoảng phình giữa hai cung là quãng hai
+ * luồng cùng chạy.
+ *
+ * Cung TRÊN là cách tạo một luồng (target/start/join, subclass); cung DƯỚI là
+ * cái hỏng khi có hai luồng (GIL, lock/race). T05 là ngôi sáng nhất chòm (13
+ * ca chấm, bậc 2) vì nó là bài nặng nhất — đúng chỗ đáng sáng, và không ai
+ * chọn cho nó sáng: số ca chấm nói thế.
+ */
+export const SKY_M2: SkyConstellation = {
+  key: 'M2',
+  hue: 'm2',
+  name: 'Con thoi',
+  subtitle: 'Đa luồng',
+  box: [370, 655, 300, 150],
+  grid: [100, 100],
+  stars: [
+    { code: 'T01', x: 6, y: 50, role: 'mũi trái — chỗ tách' },
+    { code: 'T02', x: 30, y: 16, role: 'cung trên' },
+    { code: 'T03', x: 62, y: 12, role: 'cung trên' },
+    { code: 'T04', x: 34, y: 86, role: 'cung dưới' },
+    { code: 'T05', x: 66, y: 90, role: 'cung dưới' },
+    { code: 'T06', x: 94, y: 50, role: 'mũi phải — chỗ gặp' },
+  ],
+  lines: [
+    ['T01', 'T02'],
+    ['T02', 'T03'],
+    ['T03', 'T06'],
+    ['T01', 'T04'],
+    ['T04', 'T05'],
+    ['T05', 'T06'],
+  ],
+};
+
+/**
+ * M3 · KHUNG CỬA — GUI Tkinter và dự án, 7 bài (§2).
+ *
+ * Hình: một khung cửa sổ có một thanh đứng chia đôi. GUI là cái khung ta nhìn
+ * qua. Thanh đứng không phải trang trí: G05 đúng là bài "OOP và tách logic
+ * khỏi giao diện", nên nó đứng ở ĐẦU thanh chia — cái thanh ấy LÀ sự tách đó.
+ *
+ * R02 ở tâm, nơi thanh chia cắt qua: dự án là chỗ mọi mảnh gặp nhau. Nó là
+ * bài cửa (`step_4.gate`) và có 17 ca chấm — bậc 1, sáng nhất chòm, không phải
+ * vì ta muốn thế mà vì dữ liệu nói thế.
+ */
+export const SKY_M3: SkyConstellation = {
+  key: 'M3',
+  hue: 'm3',
+  name: 'Khung cửa',
+  subtitle: 'GUI Tkinter',
+  box: [900, 575, 300, 240],
+  grid: [100, 100],
+  stars: [
+    { code: 'G01', x: 8, y: 8, role: 'góc trên-trái' },
+    { code: 'G02', x: 92, y: 8, role: 'góc trên-phải' },
+    { code: 'G03', x: 92, y: 92, role: 'góc dưới-phải' },
+    { code: 'G04', x: 8, y: 92, role: 'góc dưới-trái' },
+    { code: 'G05', x: 50, y: 8, role: 'đầu thanh chia' },
+    { code: 'G06', x: 50, y: 92, role: 'chân thanh chia' },
+    { code: 'R02', x: 50, y: 50, role: 'tâm — bài cửa' },
+  ],
+  lines: [
+    ['G01', 'G05'],
+    ['G05', 'G02'],
+    ['G02', 'G03'],
+    ['G03', 'G06'],
+    ['G06', 'G04'],
+    ['G04', 'G01'],
+    ['G05', 'R02'],
+    ['R02', 'G06'],
+  ],
+};
+
+/**
+ * M4 · PHỄU — Nhập dữ liệu, SQL và tra cứu, 5 bài (§2).
+ *
+ * Hình: ba miệng chụm vào một cổ, rồi một vòi. Cả chặng là "dữ liệu từ nhiều
+ * nơi đổ về một chỗ rồi ra thành hình". Và nó là hình NGHỊCH ĐẢO của M1: M1
+ * tách ra, M4 gộp vào — hai chòm đối nhau qua bầu trời là một quan hệ mắt đọc
+ * được mà không cần chú thích.
+ *
+ * Nó nằm TRONG vùng dày sao nhất của Ngân Hà, và đó là vị trí mang nghĩa
+ * (§4.3 điểm 4): chặng "dữ liệu từ khắp nơi đổ về" đứng đúng chỗ trời dày
+ * nhất.
+ */
+export const SKY_M4: SkyConstellation = {
+  key: 'M4',
+  hue: 'm4',
+  name: 'Phễu',
+  subtitle: 'Nhập dữ liệu và SQL',
+  box: [495, 470, 240, 165],
+  grid: [100, 100],
+  stars: [
+    { code: 'X01', x: 12, y: 10, role: 'miệng trái' },
+    { code: 'X02', x: 50, y: 4, role: 'miệng giữa' },
+    { code: 'X03', x: 88, y: 10, role: 'miệng phải' },
+    { code: 'X04', x: 50, y: 58, role: 'cổ phễu' },
+    { code: 'X05', x: 50, y: 94, role: 'vòi — thứ chảy ra' },
+  ],
+  lines: [
+    ['X01', 'X04'],
+    ['X02', 'X04'],
+    ['X03', 'X04'],
+    ['X04', 'X05'],
+  ],
+};
+
+/**
+ * M5 · LƯỚI TRẦN — NumPy, 6 bài (§2).
+ *
+ * Hình: lưới 2 × 3, ô đều nhau, KHÔNG nhãn. Phải đọc cùng M6, vì khác biệt
+ * giữa hai chòm chính là khác biệt giữa `ndarray` và `DataFrame`: một cái có
+ * nhãn, một cái không. Đó là câu trả lời ngắn nhất cho "pandas khác NumPy chỗ
+ * nào", và nó được nói bằng HÌNH, không bằng chữ.
+ *
+ * Hệ quả cho người dựng: ở M5 KHÔNG nét nào được đậm hơn nét nào. Một nét đậm
+ * ở đây là một cái nhãn, tức là xoá mất chính câu nói trên.
+ */
+export const SKY_M5: SkyConstellation = {
+  key: 'M5',
+  hue: 'm5',
+  name: 'Lưới trần',
+  subtitle: 'NumPy',
+  box: [90, 285, 330, 180],
+  grid: [100, 100],
+  stars: [
+    { code: 'N01', x: 6, y: 18, role: 'ô 1-1' },
+    { code: 'N02', x: 50, y: 12, role: 'ô 1-2' },
+    { code: 'N03', x: 94, y: 6, role: 'ô 1-3' },
+    { code: 'N04', x: 10, y: 88, role: 'ô 2-1' },
+    { code: 'N05', x: 54, y: 82, role: 'ô 2-2' },
+    { code: 'N06', x: 98, y: 76, role: 'ô 2-3' },
+  ],
+  lines: [
+    ['N01', 'N02'],
+    ['N02', 'N03'],
+    ['N04', 'N05'],
+    ['N05', 'N06'],
+    ['N01', 'N04'],
+    ['N02', 'N05'],
+    ['N03', 'N06'],
+  ],
+};
+
+/**
+ * M6 · BÀN CÓ NHÃN — pandas, 9 bài (§2).
+ *
+ * Hình: bàn 3 × 3 — hàng trên là tên cột, cột trái là index, bốn ô trong là
+ * thân bảng. PD01 ở ô GÓC, nơi index gặp columns.
+ *
+ * PD07 (pivot/melt — bài đổi hình bảng) nằm trên CỘT NHÃN, vì pivot/melt chính
+ * là việc đổi cái gì làm nhãn. PD04 (lọc, tính cột) cũng ở cột nhãn vì nó chọn
+ * hàng theo nhãn.
+ *
+ * Bốn nét `dam` là hàng nhãn trên và cột nhãn trái. Đây là chỗ DUY NHẤT trong
+ * cả bản đồ mà độ dày nét mang nghĩa riêng, nên nó phải có trong chú giải —
+ * không được để người xem đoán.
+ */
+export const SKY_M6: SkyConstellation = {
+  key: 'M6',
+  hue: 'm6',
+  name: 'Bàn có nhãn',
+  subtitle: 'pandas',
+  box: [520, 230, 360, 200],
+  grid: [100, 100],
+  stars: [
+    { code: 'PD01', x: 8, y: 8, role: 'ô góc — index gặp columns' },
+    { code: 'PD02', x: 46, y: 4, role: 'hàng nhãn trên' },
+    { code: 'PD03', x: 84, y: 0, role: 'hàng nhãn trên' },
+    { code: 'PD04', x: 12, y: 50, role: 'cột nhãn trái' },
+    { code: 'PD05', x: 50, y: 46, role: 'thân' },
+    { code: 'PD06', x: 88, y: 42, role: 'thân' },
+    { code: 'PD07', x: 16, y: 92, role: 'cột nhãn trái' },
+    { code: 'PD08', x: 54, y: 88, role: 'thân' },
+    { code: 'PD09', x: 92, y: 84, role: 'thân' },
+  ],
+  lines: [
+    ['PD01', 'PD02', 'dam'],
+    ['PD02', 'PD03', 'dam'],
+    ['PD01', 'PD04', 'dam'],
+    ['PD04', 'PD07', 'dam'],
+    ['PD04', 'PD05'],
+    ['PD05', 'PD06'],
+    ['PD07', 'PD08'],
+    ['PD08', 'PD09'],
+    ['PD02', 'PD05'],
+    ['PD05', 'PD08'],
+    ['PD03', 'PD06'],
+    ['PD06', 'PD09'],
+  ],
+};
+
+/**
+ * M7 · TRỤC VÀ ĐƯỜNG — Matplotlib, 6 bài (§2).
+ *
+ * Hình: hai trục vuông góc, và một đường đi lên từ gốc. M05 ở ĐẦU TRỤC NGANG
+ * vì nó đúng là bài về cái trục ấy (ticks, scale, ngày trên trục); M03 ở đỉnh
+ * trục đứng vì subplot là xếp chồng theo chiều đứng.
+ */
+export const SKY_M7: SkyConstellation = {
+  key: 'M7',
+  hue: 'm7',
+  name: 'Trục và đường',
+  subtitle: 'Matplotlib',
+  box: [955, 195, 320, 195],
+  grid: [100, 100],
+  stars: [
+    { code: 'M01', x: 8, y: 92, role: 'gốc toạ độ' },
+    { code: 'M02', x: 30, y: 66, role: 'đường dữ liệu' },
+    { code: 'M03', x: 8, y: 10, role: 'đỉnh trục đứng' },
+    { code: 'M04', x: 58, y: 44, role: 'đường dữ liệu' },
+    { code: 'M05', x: 96, y: 92, role: 'đầu trục ngang' },
+    { code: 'M06', x: 86, y: 18, role: 'đường dữ liệu' },
+  ],
+  lines: [
+    ['M01', 'M03'],
+    ['M01', 'M05'],
+    ['M01', 'M02'],
+    ['M02', 'M04'],
+    ['M04', 'M06'],
+  ],
+};
+
+/**
+ * M8 · SONG TINH — Dự án DA, 2 bài (§2).
+ *
+ * Hai bài. Không vẽ được "hình" gì từ hai điểm, và đừng cố: ép hai điểm thành
+ * một hình là đúng loại bịa mà đặc tả cấm. Thay vào đó dùng đúng thứ bầu trời
+ * thật có — SAO ĐÔI: hai ngôi gần nhau, sáng nhất bản đồ.
+ *
+ * Đặt ở THIÊN ĐỈNH — chỗ cao nhất, trời tối nhất và trong nhất, không tinh vân
+ * nào chắn. Không phải vì "khó nhất" mà vì đó là chỗ nhìn rõ nhất: bản quyết
+ * định cũ đã chốt "đáy sáng lại — bỏ cái nghĩa càng sâu càng nguy hiểm", và
+ * trên trời điều đó thành "đỉnh là chỗ quang nhất".
+ *
+ * Cả hai là bài cửa (`step_4.gate`) và cùng bậc 1 (19 và 14 ca chấm).
+ */
+export const SKY_M8: SkyConstellation = {
+  key: 'M8',
+  hue: 'm8',
+  name: 'Song tinh',
+  subtitle: 'Dự án DA',
+  box: [1055, 60, 200, 110],
+  grid: [100, 100],
+  stars: [
+    { code: 'DA01', x: 26, y: 50, role: 'ngôi thứ nhất' },
+    { code: 'DA02', x: 74, y: 50, role: 'ngôi thứ hai' },
+  ],
+  lines: [['DA01', 'DA02']],
+};
+
+/**
+ * Khoá tám chòm, theo thứ tự chặng.
  *
  * Mảng này là thứ `build_sky.py` đọc, rồi với mỗi khoá nó tra hằng `SKY_<khoá>`
  * — nên thêm một chòm là thêm một hằng VÀ một khoá ở đây, không phải sửa
  * Python. `SKY_CONSTELLATIONS` dưới đây phải khớp mảng này; ca test so lại, vì
  * TypeScript không dựng được danh sách kia từ danh sách này.
  */
-export const SKY_CONSTELLATION_KEYS = ['M1'] as const;
+export const SKY_CONSTELLATION_KEYS = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8'] as const;
 
-/** Danh sách chòm của bản mẫu, cho phía React/test dùng. */
-export const SKY_CONSTELLATIONS: readonly SkyConstellation[] = [SKY_M1];
+/** Tám chòm, cho phía React/test dùng. */
+export const SKY_CONSTELLATIONS: readonly SkyConstellation[] = [
+  SKY_M1, SKY_M2, SKY_M3, SKY_M4, SKY_M5, SKY_M6, SKY_M7, SKY_M8,
+];
 
 /**
  * THỨ TỰ LỚP LÀ MỘT DANH SÁCH DUY NHẤT (§9.1).
@@ -582,12 +1174,15 @@ export const SKY_CONSTELLATIONS: readonly SkyConstellation[] = [SKY_M1];
 export const SKY_LAYERS = [
   'nen',
   'bui-xa',
+  'nguon-sang',
+  'loe-ngang',
   'tinh-van',
   'khe-bui',
   'soi-sang',
   'quang-chan-troi',
   'truong-sao',
   'luoi',
+  'mach-hoang-dao',
   'net-chom',
   'quang-sao',
   'sao-bai',
@@ -597,16 +1192,26 @@ export const SKY_LAYERS = [
 
 /** Câu chữ của route xem thử. Ở đây, không trong TSX: `node --test` đọc được. */
 export const STAR_COPY = {
-  title: 'Bản đồ sao — mẫu chòm M1',
-  lead: 'Bảy ngôi là bảy bài của chặng Tiến trình và subprocess. Ngôi càng sáng, bài càng đòi nhiều ca chấm phải qua.',
-  hint: 'Trỏ hoặc Tab vào chòm để nó rõ lên.',
-  regionLabel: 'Chặng M1 · Tiến trình và subprocess — 7 bài',
+  title: 'Bản đồ sao — tám chòm',
+  lead: 'Bốn mươi tám ngôi là bốn mươi tám bài. Tám chòm là tám chặng. Ngôi càng sáng, bài càng đòi nhiều ca chấm phải qua.',
+  hint: 'Trỏ hoặc Tab vào một chòm để nó rõ lên.',
+  /** `alt` của tấm ảnh ĐẦU. Chỉ một tấm mang mô tả: bốn tấm nền là MỘT bức,
+   *  và bốn câu mô tả cho một bức là bốn lần đọc lại cùng một thứ cho người
+   *  dùng trình đọc màn hình. */
+  alt: 'Bản đồ sao: tám chòm, bốn mươi tám ngôi — mỗi ngôi là một bài. Một dải Ngân Hà chạy chéo qua cả bầu trời, và một cung nét đứt nối bốn chặng NumPy, pandas, Matplotlib và dự án.',
   legendTitle: 'Chú giải',
+  /** Chú giải nói ra DẤU NÀO MANG NGHĨA và dấu nào là chất liệu (§12). Ba dòng
+   *  đầu là ba lớp liên kết của §4 — chúng phải phân biệt được bằng mắt, nên
+   *  chúng cũng phải phân biệt được bằng chữ. */
   legend: [
-    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ số ca chấm của bài đó.',
+    'Nét LIỀN, sắc của chặng: gom các bài của một chặng thành MỘT hình. Nó không nói thứ tự phải học.',
+    'Nét ĐỨT xanh lam đi qua bốn chòm trên-phải: phụ thuộc thật duy nhất của khoá — NumPy → pandas → Matplotlib → dự án. Không có mũi tên vì nó là một quan hệ, không phải một lộ trình.',
+    'Dải bụi sáng chạy chéo cả bầu trời là Ngân Hà. Mọi chòm đều nằm trong nó hoặc ngoài nó — và đó đã là một quan hệ. Nó cũng là lý do trời dày sao ở giữa và thưa ở hai góc.',
+    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ số ca chấm của bài đó, không ai chọn cho đẹp.',
+    'Ở chòm "Bàn có nhãn" (pandas), hàng trên và cột trái có nét ĐẬM HƠN: đó là nhãn của bảng. Chòm "Lưới trần" (NumPy) không có nét nào đậm hơn nét nào — vì một ndarray không có nhãn. Đây là chỗ duy nhất trong cả bản đồ mà độ dày nét mang nghĩa.',
     'Chấm trắng xám nhỏ, không quầng = sao nền. Nó không mang tin.',
     'Lưới toạ độ mờ = chất liệu, không mang nghĩa. Nó đứt ở chỗ một ngôi đi qua.',
-    'Nét nối chỉ gom bảy ngôi thành MỘT hình; nó không nói thứ tự phải học.',
+    'Khoảng tối giữa hai chòm không thuộc về chặng nào — ở đó không có bài nào. Vì thế bản đồ không vẽ ranh giới chòm.',
   ],
 } as const;
 
@@ -623,13 +1228,43 @@ export function starMagnitude(tests: number): { tier: number; radius: number } {
   return { tier: t.tier, radius: Math.max(SKY_MAGNITUDE.floor, Math.round(raw * 100) / 100) };
 }
 
-/** Toạ độ lưới cục bộ → khung 1360 × 820, tỉ lệ ĐỒNG DẠNG, căn giữa hộp. */
+/**
+ * Toạ độ lưới cục bộ → khung 1360 × 820, tỉ lệ ĐỒNG DẠNG (`min` của hai tỉ
+ * lệ), căn giữa hộp.
+ *
+ * `min` chứ không bóp theo từng trục, và đó là một ràng buộc chứ không phải
+ * một sở thích: bóp theo từng trục cho khít hộp 310 × 210 thì cái kẹp cao 186
+ * đơn vị thành một hình bè ra — tức mất đúng thứ phải đọc ra ở phép thử nhận
+ * dạng (§20). Cùng công thức ở `dat_sao()` phía Python; ca test so lại từng
+ * ngôi, nên hai chỗ không lệch nhau được.
+ */
 export function placeStar(c: SkyConstellation, s: SkyStar): { x: number; y: number } {
   const [bx, by, bw, bh] = c.box;
-  const k = Math.min(bw / SKY_LOCAL.width, bh / SKY_LOCAL.height);
-  const ox = bx + (bw - SKY_LOCAL.width * k) / 2;
-  const oy = by + (bh - SKY_LOCAL.height * k) / 2;
+  const [gw, gh] = c.grid;
+  const k = Math.min(bw / gw, bh / gh);
+  const ox = bx + (bw - gw * k) / 2;
+  const oy = by + (bh - gh * k) / 2;
   return { x: ox + s.x * k, y: oy + s.y * k };
+}
+
+/** Toạ độ bốn mốc của mạch hoàng đạo (§4.2) — NEO VÀO SAO, nên dịch một hộp
+ *  chòm là cung tự đi theo. Hai mã ⇒ trung điểm (ở M8 cung đi GIỮA hai ngôi).
+ *  Cùng công thức ở `mach_moc()` phía Python. */
+export function zodiacAnchors(): { x: number; y: number }[] {
+  const pos = new Map<string, { x: number; y: number }>();
+  for (const c of SKY_CONSTELLATIONS) for (const s of c.stars) pos.set(s.code, placeStar(c, s));
+  return SKY_ZODIAC.anchors.map((a) => {
+    const ps = a.stars.map((code) => {
+      const p = pos.get(code);
+      if (!p) throw new Error(`SKY_ZODIAC neo vào ${code} — không có ngôi nào mã đó`);
+      return p;
+    });
+    const [dx, dy] = a.offset;
+    return {
+      x: ps.reduce((t, p) => t + p.x, 0) / ps.length + dx,
+      y: ps.reduce((t, p) => t + p.y, 0) / ps.length + dy,
+    };
+  });
 }
 
 /**

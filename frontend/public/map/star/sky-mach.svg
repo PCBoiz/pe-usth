@@ -1,0 +1,7 @@
+<!-- SINH BỞI scripts/star/build_sky.py — ĐỪNG SỬA TAY. Sửa dữ liệu ở frontend/src/lib/star-map.ts rồi chạy lại script. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 820" width="1360" height="820" role="img" aria-label="Mạch phụ thuộc: cung nét đứt qua bốn chặng NumPy, pandas, Matplotlib và dự án.">
+<g data-lop="mach-hoang-dao">
+<path fill="none" stroke="#B9D0FF" stroke-width="1" stroke-opacity="0.48" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" d="M-68 328l238 -36l14 -2l16 -2l18 -3l21 -4l22 -3l25 -4l25 -4l27 -5l28 -4l28 -5l30 -5l30 -4l29 -5l30 -5l30 -4l30 -5l29 -4l28 -4l27 -3l26 -3l24 -3l23 -3l21 -2l19 -1l18 -1l16 0l16 0l15 1l14 2l14 2l12 2l13 2l11 3l11 2l11 3l10 3l10 3l9 3l9 2l9 2l8 3l8 1l8 2l8 1l8 0l8 0l8 -1l8 -2l8 -2l8 -3l7 -3l7 -4l7 -5l6 -5l7 -6l6 -6l6 -6l5 -6l6 -7l5 -6l5 -7l5 -6l4 -7l4 -6l4 -6l4 -6l4 -6l3 -5l3 -4l4 -5l2 -3l3 -3l101 -111"/>
+<path fill="none" stroke="#B9D0FF" stroke-width="1" stroke-opacity="0.26" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="8 7" d="M-66 337l237 -36l14 -2l16 -2l19 -3l20 -4l23 -3l24 -4l26 -4l26 -5l28 -4l29 -5l29 -5l30 -5l30 -4l30 -5l30 -4l29 -5l29 -4l28 -4l27 -3l26 -3l24 -3l23 -3l21 -2l19 -1l17 -1l16 0l15 0l15 1l14 2l13 1l13 3l12 2l11 2l11 3l10 3l10 3l10 2l9 3l9 3l9 2l9 2l9 2l8 2l9 1l8 0l9 0l8 -1l9 -2l9 -2l8 -3l8 -4l8 -5l7 -5l7 -5l7 -6l6 -6l6 -7l6 -6l6 -7l5 -7l5 -6l5 -7l4 -7l5 -6l4 -6l4 -6l3 -6l4 -5l3 -4l3 -4l2 -3l3 -3l101 -111"/>
+</g>
+</svg>
