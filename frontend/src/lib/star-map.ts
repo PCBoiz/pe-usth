@@ -365,6 +365,45 @@ export const SKY_LIGHT = {
    *    một vỏ cầu mỏng quang học. Khớp luỹ thừa trên cả dải thì SAI ở hai
    *    đầu, nên dùng BẢNG.
    *
+   * ── ĐÃ THỬ BỎ PHÉP THU NHỎ 0,84 NGÀY 20/10/2026 RỒI GỠ RA ───────────────
+   *
+   * Phép nhân 0,84 trông ĐÚNG như một lỗi, và đã bị gỡ ra một lần trước khi
+   * hiểu nó gánh gì. Ghi cả hai nửa, vì nửa sau mới là nửa đáng giá.
+   *
+   * **Nó trông như lỗi, và lý lẽ ấy vẫn đúng.** Chia 0,84 thì mười bốn bán
+   * kính 59 · 67 · 76 · 101 · 109 · 118 · 126 · 134 · 143 · 151 · 160 · 168 ·
+   * 185 · 210 ra đúng lưới 10 px của phép đo (70 · 80 · 90 · 120 · 130 · 140 ·
+   * 150 · 160 · 170 · 180 · 190 · 200 · 220 · 250), và với bảng ĐÃ thu nhỏ thì
+   * quầng tụt dưới L = 0,1 từ r ≈ 160 — *ngắn hơn chính `outer` 50 px*. Bỏ
+   * 0,84 đưa các mốc L sang (0,85 ở 77 · 0,60 ở 139 · 0,35 ở 171 · 0,18 ở
+   * 209), khớp khung tham chiếu (94 · 148 · 191 · 255), và nó nhấc **L > 0,5
+   * từ 4,81 % lên 7,50 %** đo bằng raster — tham chiếu 7,73 %.
+   *
+   * **NHƯNG 0,84 là thứ giữ cho M3 đọc được, và đó là lý do nó ở lại.** M3
+   * đứng cách tâm mặt trời **215 px** CÓ Ý (xem `hullCeiling`), tức bao lồi
+   * của nó nằm vắt ngang đúng chỗ quầng tàn. Quầng rộng ra đưa nền tại nét
+   * M3 từ L ≈ 0,055 lên 0,086, và `kiem_tuong_phan_net` trượt ở **2,96 : 1**.
+   * Chỗ đó không chữa được bằng cách vặn một núm, vì LUẬT ĐƯỜNG CHÓI có một
+   * **VÙNG CHẾT** chưa ai đo: vệt sáng nhất (`#CFE3EA` ở độ mờ 0,55) hợp
+   * thành L ≈ 0,35 nên chỉ đạt 3 : 1 khi nền ≤ ~0,085, còn vệt ĐÃ ĐỔI TÔNG
+   * (`dustLane`, L 0,0054) chỉ đạt 3 : 1 khi nền ≥ **0,116**. Khoảng
+   * [0,085 ; 0,116] không nhánh nào đạt, và `litFlip.at` = 0,12 nằm ở mép
+   * TRÊN của nó. Hố ấy đi qua mọi lần dựng trước đây chỉ vì chưa đoạn nét nào
+   * rơi vào — không vì nó không có.
+   * Hai cách né đều trả giá đo được: hạ `SKY_NEBULA.hullFade.floor` xuống 0,03
+   * đưa nét lên 3,2 : 1 nhưng lấy mid-tone khỏi 32 % khung và làm ba bậc
+   * 0,03–0,35 tụt **dưới sàn** (36,81 % so với sàn 37 %); nới `lineOpacity`
+   * cho nhánh sáng với tới 0,116 cần ~0,80 và xoá luôn khác biệt nghỉ/mờ
+   * (`mo_css = dimOpacity / lineOpacity[0]` còn phải ≥ `dimTextOpacity`).
+   *
+   * **Việc mở được chỗ này là CHO NÉT CHÒM MỘT VỎ BỌC**, đúng thứ mạch hoàng
+   * đạo đã có (`SKY_ZODIAC.casing`: tương phản đo giữa LÕI và VỎ, nên nó độc
+   * lập với nền) và đúng tinh thần tấm nền của nhãn. Khi có vỏ bọc thì bảng
+   * này bỏ được 0,84 và bậc "rìa quầng" lên thêm ~1,1 điểm phần trăm nữa.
+   * Chưa làm ở bản này: vỏ bọc phải chọn tông NGƯỢC với `litFlip` (vỏ sáng
+   * dưới vệt tối, vỏ tối dưới vệt sáng) để không xoá hiệu ứng hai tông, và nó
+   * nhân đôi số nét trong mười sáu tấm chòm.
+   *
    * MỘT CHỖ ĐI CHỆCH PHÉP ĐO, nói ra để không ai tưởng là lỗi gõ: §3.2 đo
    * r = 76 → 0,847 rồi r = 84 → 0,851, tức độ mờ tích luỹ TĂNG khi đi RA.
    * Vòng tô từ ngoài vào không bỏ mực ra được, nên r = 76 đặt thành 0,851.
@@ -434,6 +473,12 @@ export const SKY_LIGHT = {
    *  hơn. Đó là hình của một đám mây sáng thật, và nó cũng là thứ giữ cho vật
    *  to nhất bức khỏi đọc ra là "cái đèn flash của phần mềm". */
   warp: 0.2,
+  /** Biên độ méo tăng theo `(r / outer)^warpRamp`. Số mũ này từng là 0,5
+   *  (căn bậc hai), và với nó thì ở mép lõi bão hoà (r = 62) hệ số đã là
+   *  0,54: lõi méo ±11 % bán kính và trên PNG đọc ra là **một đa giác méo,
+   *  không một đĩa**. 1,8 cho 0,12 ở cùng chỗ — lõi gần tròn — mà vẫn bằng 1
+   *  ở `outer`, nên rìa ngoài xơ xác đúng như cũ. */
+  warpRamp: 1.8,
   /** Dao động TẦN SỐ CAO riêng cho TỪNG vòng, biên độ = hệ số này × khoảng
    *  cách hai vòng liền nhau. Dưới một nửa, nên hai vòng **vẫn không thể cắt
    *  nhau** (ràng buộc cũ còn nguyên) nhưng biên giới của chúng thôi trùng
@@ -484,7 +529,31 @@ export const SKY_LIGHT = {
     spread: [4, 9],
     length: [180, 420],
     opacity: [0.1, 0.22],
-    jitter: 2.5,
+    /**
+     * `jitter` 2,5 → 9 và BA NÊM LỒNG NHAU thay một — 20/10/2026, và lý do
+     * là một bức ảnh, không một con số.
+     *
+     * Bản một-nêm đọc ra trên PNG là **chín vạch kẻ kỹ thuật**: mép sắc
+     * tuyệt đối, bề rộng đều, toả đều từ tâm. Đó là dấu hiệu "máy vẽ" rõ
+     * nhất của cả bức, và bảng tám bậc không thấy nó — chín đa giác mờ 0,1
+     * chiếm chưa tới một phần trăm diện tích nên chúng không đổi một chữ số
+     * thập phân nào. Chỉ `raster.py --png` thấy.
+     *
+     * Ba thứ sửa cùng lúc, cả ba đều giữ luật cấm gradient (tán làm bằng
+     * lớp phủ chồng, như quầng sao và như bậc tinh vân):
+     *  · `layers` 3 nêm lồng nhau, mỗi nêm ngoài rộng thêm `layerSpread` và
+     *    mờ đi theo `layerFade` ⇒ MÉP TÁN;
+     *  · bề rộng nhân một nhiễu dọc trục ⇒ tia PHÌNH RA THÓP VÀO, không còn
+     *    là một cái nêm thẳng;
+     *  · `jitter` lấy theo nhiễu LIÊN TỤC theo chiều dài (không phải `rnd`
+     *    theo chỉ số điểm) và biên độ lớn dần ra ngoài ⇒ gốc gọn, ngọn tướp.
+     * `steps` 11 thay 7: mép rung cần đủ điểm, không thì rung thành gãy.
+     */
+    jitter: 9,
+    steps: 11,
+    layers: 3,
+    layerSpread: 0.55,
+    layerFade: 1.5,
   },
   /**
    * LUẬT ĐƯỜNG CHÓI (§10.3) — vật trong vùng sáng thành BÓNG ĐEN.
@@ -498,6 +567,18 @@ export const SKY_LIGHT = {
    * bản: phần của một chòm gần mặt trời nhất **sậm lại thành bóng** còn phần
    * xa thì sáng. Một chòm có hai tông vì nó nằm trong một không gian CÓ ánh
    * sáng.
+   *
+   * **LUẬT NÀY CÓ MỘT VÙNG CHẾT, và `at` = 0,12 nằm ở mép TRÊN của nó.** Đo
+   * ngày 20/10/2026: vệt SÁNG nhất trong tám sắc (`#CFE3EA` ở độ mờ 0,55) hợp
+   * thành L ≈ 0,35 nên chỉ đạt 3 : 1 khi nền ≤ ~0,085; vệt ĐÃ ĐỔI TÔNG
+   * (`dustLane`, L 0,0054) chỉ đạt 3 : 1 khi nền ≥ **0,116**. Nền trong
+   * khoảng **[0,085 ; 0,116]** thì KHÔNG nhánh nào đạt — câu "nét trên nền
+   * sáng không trượt vì luật đường chói" đúng ở trên 0,116, không đúng ở
+   * trong khoảng ấy. Cái hố đi qua mọi lần dựng trước đây chỉ vì chưa đoạn
+   * nét nào rơi vào; lần đầu có một đoạn rơi vào (nét M3 ở nền 0,086 khi thử
+   * nới quầng) thì `kiem_tuong_phan_net` trượt ở 2,96 : 1 và không núm nào
+   * trong tệp này chữa được. Bịt nó = cho nét chòm một VỎ BỌC như mạch hoàng
+   * đạo — xem khối chú thích dài ở `profile` ngay trên.
    */
   litFlip: { at: 0.12, dither: 24 },
   /**
@@ -678,8 +759,15 @@ export const SKY_FIELD = {
   overSample: 3.0,
   /** Bán kính loại trừ của nhiễu xanh = hệ số × khoảng cách trung bình. */
   blueNoise: 0.72,
-  /** Nở bao lồi chòm ra bao nhiêu khi làm loãng trời (§7.1). */
-  hullPad: 18,
+  /** Trời loãng đi trong bấy nhiêu px quanh HÌNH chòm — nét và ngôi (§7.1).
+   *
+   *  18 → 44 ngày 20/10/2026 vì cái đo đã đổi: trước đó khoảng cách tính tới
+   *  BAO LỒI đã nở, nên 18 px là "nở thêm 18 ngoài bao lồi" và cả ruột bao
+   *  lồi tối phẳng. Nay tính tới chính nét và ngôi (`fig_dist`), nên con số
+   *  này là BỀ RỘNG THẬT của lối sáng mà chòm rẽ qua tinh vân — xem
+   *  `hull_atten`. 44 px là chỗ chòm còn đọc được mà tinh vân thôi bị khoét
+   *  thành đa giác. */
+  hullPad: 44,
   /** Nở bao lồi ra bao nhiêu khi ĐO trần độ chói cục bộ (§3.1). */
   ceilingPad: 24,
 } as const;
@@ -702,9 +790,26 @@ export const SKY_NEBULA = {
    * tục, tô nó bằng 5 bậc cho ra 5 vệt dải nhìn thấy được — bước sRGB mỗi bậc
    * ≈ 34 mã màu, gấp 17 lần ngưỡng 2 mã. 14 bậc hạ xuống ~12 mã, và
    * `levelDither` ở dưới hạ tiếp xuống ~3 mã hiệu dụng.
+   *
+   * ── 20/10/2026: **14 → 22 BẬC, và độ mờ mỗi bậc 0,15 → 0,12** ───────────
+   *
+   * Lý do là một con số TÍNH ĐƯỢC chứ không một cảm giác, và nó giải thích
+   * đúng câu chê còn lại ("vẫn là *tối, với một nguồn sáng*, chưa là *sáng
+   * khắp, có tầng*"). Tô từ ngoài vào trên nền `base` với bản 14 bậc —
+   * 7 × `nebula`, 4 × `nebulaCore`, 3 × `nebulaLit`, mỗi lớp α 0,15 — hợp
+   * thành **rgb(105, 115, 139) = L 0,173**. Tức TRẦN độ chói của cả lớp tinh
+   * vân nằm NGAY DƯỚI mốc 0,18: **không một điểm tinh vân nào rơi được vào
+   * bậc 0,18–0,35**, và 3,70 % đo được ở bậc ấy là của riêng mặt trời. Hai
+   * bậc 0,18–0,60 hụt 9,5 điểm phần trăm so với khung tham chiếu vì thế.
+   *
+   * 22 bậc không phải để mịn hơn — nó là để có đủ BẬC THANG. Dốc độ chói của
+   * một ramp α đều là dốc LỒI: bước nhỏ ở đáy, lớn ở đỉnh. Với 14 bậc, bậc
+   * 0,08–0,18 chỉ được hai nấc thang nên nó nhận 3,7 % diện tích trong khi
+   * tham chiếu đòi 11 %. 22 nấc trải đều hơn: 0,08 · 0,10 · 0,13 · 0,16 ·
+   * 0,19 · 0,22 · 0,24 · 0,27 · 0,29 · 0,31 · 0,33 · 0,36 · 0,41 · 0,45.
    */
-  levels: 14,
-  levelOpacity: 0.15,
+  levels: 22,
+  levelOpacity: 0.12,
   /**
    * CHIẾU SÁNG TINH VÂN — Lambert trên mặt ẩn (§8.1). Đây là cái "đổ bóng"
    * mà chủ sản phẩm đòi, và nó là thứ lấp phần lớn cái lỗ 46 điểm phần trăm.
@@ -786,21 +891,60 @@ export const SKY_NEBULA = {
    *  Λ ∈ [0,22 ; 1,0], nên dải giá trị co lại gần ba phần. Giữ 0,2–0,6 thì
    *  mười một bậc trong cùng không đường nào cắt được gì — tức đúng cái bẫy
    *  "chuẩn hoá lại dải giá trị" ghi ở `normalize` ngay trên, chỉ ở một tầng
-   *  khác. */
-  levelLo: 0.045,
-  levelHi: 0.34,
-  /** BA TÔNG cho mười bốn bậc, và bậc nào đổi tông.
+   *  khác.
+   *
+   *  `levelLo` HẠ 0,045 → 0,012 ngày 20/10/2026, và đó cũng là một phép đo:
+   *  hình học của dải (`mw_half`) cho trường KHÁC 0 trên **47,5 %** diện tích
+   *  khung, nhưng đường đồng mức ngoài cùng ở 0,045 chỉ bao **29,5 %**. Tức
+   *  gần một PHẦN BA dải Ngân Hà nằm trong khung mà KHÔNG được tô lớp nào —
+   *  và đó là chỗ phần "đen sâu" thừa 8 điểm phần trăm đang ở. Hạ xuống 0,012
+   *  đưa mép tinh vân ra tới 37,5 %. Không hạ tới 0: bậc ngoài cùng khi ấy là
+   *  một đường bám đúng mép dải, dài mà vô hình.
+   *
+   *  `levelHi` HẠ 0,34 → 0,30: trường chỉ vượt 0,34 ở 2,9 % diện tích, nên
+   *  bậc TRONG CÙNG (bậc sáng nhất, nay L ≈ 0,45) không thể phủ hơn 2,9 %. Ở
+   *  0,30 nó phủ 3,5 % và cả thang dịch xuống theo — tức nửa TRÊN của dải
+   *  giữa có thêm diện tích mà không phải sáng thêm. */
+  levelLo: 0.012,
+  levelHi: 0.3,
+  /** BỐN TÔNG cho hai mươi hai bậc, và bậc nào đổi tông.
    *
    *  Vì sao phải thêm `nebulaLit` chứ không giãn hai tông cũ: `nebulaCore`
    *  `#434559` tô ĐẶC mới chỉ đạt L = 0,062, tức hai khoá cũ không có cách
    *  nào với tới bậc "tinh vân sáng" 0,18–0,35 mà ngân sách §5.2 đòi 5,4 %
    *  diện tích. Trần vật lý của bảng màu cũ thấp hơn cái sàn phải đạt. Màu
    *  vẫn chỉ sống ở hồ sơ TS — đây là một khoá mới ở hồ sơ, không một mã màu
-   *  nào ở Python. */
-  ramp: ['nebula', 'nebulaCore', 'nebulaLit'],
-  rampAt: [0, 7, 11],
-  /** Lớp bụi xa: dải rộng gấp bấy nhiêu, hai ngưỡng, độ mờ mỗi bậc. */
-  dust: { spread: 2.6, levels: [0.24, 0.42, 0.58], opacity: 0.2, hullFade: 0.5 },
+   *  nào ở Python.
+   *
+   *  `nebulaPeak` thêm ngày 20/10/2026 là **ĐÚNG lý lẽ ấy, lùi lên một bậc**:
+   *  `nebulaLit` `#AFBCD4` tô ĐẶC đạt L = 0,498, nên một chồng bậc α 0,12
+   *  không với tới bậc "rìa quầng" 0,35–0,60 được — hợp thực tế của nó dừng ở
+   *  ~0,36. Ba bậc trong cùng tô bằng tông mới đưa đỉnh lên **L 0,448**, tức
+   *  mở bậc 0,35–0,60 ra cho tinh vân. Tông mới phải NHẠT mà không NO:
+   *  `#E6ECF6` đo bão hoà HSV 0,085, dưới cả 0,196 của khung tham chiếu —
+   *  xem §10.4, một tông mới no hơn là một tông sai.
+   *
+   *  NĂM bậc ngoài cùng GIỮ `nebula`, và đây là chỗ bảng số bị BÁC có chủ ý:
+   *  phép dò muốn chỉ 3 bậc sẫm (được thêm ~2 điểm phần trăm ở hai bậc giữa),
+   *  nhưng khi ấy nửa trong của dải đã là xám nhạt ngay từ nấc thứ tám — mép
+   *  dải thôi là xanh sẫm và cả khối đọc ra "bệt, đục", đúng cái phải tránh.
+   *  Một bảng số khớp trên một bức bệt là thất bại. */
+  ramp: ['nebula', 'nebulaCore', 'nebulaLit', 'nebulaPeak'],
+  rampAt: [0, 5, 9, 19],
+  /** Lớp bụi xa: dải rộng gấp bấy nhiêu, ba ngưỡng, độ mờ mỗi bậc.
+   *
+   *  `spread` 2,6 → 3,2 ngày 20/10/2026. Đây là lớp DUY NHẤT với tới mấy góc
+   *  khung, nên nó là lớp duy nhất nói được gì về bậc "đen sâu": khung tham
+   *  chiếu có 20,5 % diện tích ở L < 0,01 còn bản này 31,9 %, và chênh lệch
+   *  nằm nguyên ở bốn góc ngoài dải Ngân Hà. Nới dải đưa bậc bụi THẤP NHẤT
+   *  (một lớp phủ, L 0,018) ra xa hơn: 78 % → 86 % diện tích.
+   *
+   *  ĐÃ THỬ THÊM BẬC THỨ TƯ RỒI BỎ. Nó nâng MỌI vùng lên một nấc, nên vùng
+   *  đang có hai lớp phủ nhảy L 0,018 → 0,039 và bậc 0,03–0,08 phình
+   *  **24 → 38 %** (tham chiếu 24) kèm trung vị 0,0396 — gần `medianMax`.
+   *  Một bậc thêm vào một thang đều là một phép dịch cả thang, không phải
+   *  một chi tiết thêm ở đầu nào. */
+  dust: { spread: 3.2, freq: 4.2, levels: [0.24, 0.42, 0.58], opacity: 0.2, hullFade: 0.5 },
   /** Khe bụi tối: ba ngưỡng, độ mờ mỗi bậc. Nó NHÂN vào, không cộng. */
   lane: { levels: [0.3, 0.46, 0.6], opacity: 0.3 },
   /** Lưới lấy mẫu cho marching squares. 5 px/ô ở khung 1360 là đủ mềm cho một
@@ -815,8 +959,38 @@ export const SKY_NEBULA = {
   /** Tinh vân cũng LOÃNG đi quanh một chòm, hệ số này × `SKY_FIELD.hullPad`.
    *  Nó không phải thẩm mỹ: nó là thứ giữ cho TRẦN ĐỘ CHÓI CỤC BỘ của §3.1
    *  (bao lồi nở 24 px không được sáng hơn `hullCeiling`) khỏi vỡ — dưới
-   *  ngưỡng đó nét chòm mới đạt 3:1. Script tự đo và TRƯỢT nếu vỡ. */
-  hullFade: { pad: 1.9, floor: 0.12 },
+   *  ngưỡng đó nét chòm mới đạt 3:1. Script tự đo và TRƯỢT nếu vỡ.
+   *
+   *  ── ĐÃ THỬ HẠ `floor` 0,12 → 0,03 NGÀY 20/10/2026 RỒI GỠ RA ────────────
+   *
+   *  Ghi lại vì nó là một phép đánh đổi đo được, không một ý tưởng bỏ dở. Bản
+   *  nới quầng mặt trời (bỏ phép thu nhỏ 0,84 ở `SKY_LIGHT.profile`) làm
+   *  `kiem_tuong_phan_net` trượt ở nét M3, và chính thông báo lỗi gợi ý hạ
+   *  `hullFade` — hạ xuống 0,03 thì nét lên lại 3,2 : 1 và build qua.
+   *
+   *  Nhưng tổng diện tích TÁM bao lồi là ~32 % khung (M1 một mình Ø 426 px).
+   *  Làm loãng tinh vân ở đó bốn lần là lấy mid-tone ra khỏi một phần ba bức:
+   *  đo bằng raster, **ba bậc 0,03–0,35 tụt 40,09 → 36,81 %**, tức XUỐNG DƯỚI
+   *  sàn 37 % của `star-map.test.mjs` mục 22, và đen sâu leo 28,49 → 31,42 %
+   *  (trần 32). Một bản sửa làm trượt chính cái sàn mà cả phiên đang nâng là
+   *  một bản sửa sai chỗ. Nên quầng được gỡ về bản cũ và `floor` ở lại 0,12.
+   *
+   *  BẤT ĐỐI XỨNG đáng biết, và nó là lý do tinh vân gánh được phần việc mà
+   *  mặt trời không gánh được: tinh vân sáng lên tuỳ ý vì `hullFade` giữ nó
+   *  RA KHỎI tám bao lồi (ở nét M3 nó chỉ góp 0,015 trong tổng nền 0,086),
+   *  còn mặt trời thì KHÔNG có lớp nào làm loãng nó. Mỗi điểm phần trăm thêm
+   *  vào bậc "rìa quầng" bằng cách nới quầng là một điểm phần trăm trả bằng
+   *  biên tương phản của nét chòm — xem `SKY_LIGHT.litFlip`.
+   *
+   *  `warp` / `warpFreq` thêm 20/10/2026 — xem `hull_atten`. Mép của tám cái
+   *  loãng này từng là MÉP CỦA MỘT BAO LỒI NỞ, tức một đa giác lồi cạnh
+   *  thẳng; trên PNG nó đọc ra là tám ô chữ nhật bị cắt khỏi tinh vân. Nhiễu
+   *  NHÂN vào độ dốc (không cộng vào khoảng cách) nên ruột bao lồi vẫn tối
+   *  đúng như cũ — tức tương phản nét chòm không đổi một phần nghìn — mà mép
+   *  thì thôi là một đường thẳng. `pad` 1,9 → 2,4 để dốc rộng hơn mép sắc.
+   *  `warpFreq` 16 cho hoa văn cỡ ~85 px: đủ nhỏ để mép gợn, đủ lớn để không
+   *  thành răng cưa. */
+  hullFade: { pad: 1.0, floor: 0.12, warp: 0.6, warpFreq: 16 },
 } as const;
 
 /**
@@ -1091,10 +1265,50 @@ export const SKY_LABEL = {
    * `plateAt` thấp (0,018) chứ không bằng `textCeiling`: tấm nền chỉ tốn
    * byte, còn một nhãn trượt 4,5 : 1 là một nhãn không đọc được — nên ngưỡng
    * đặt về phía RẮC nhiều tấm hơn cần.
+   *
+   * ── 0,72 → 0,90 ngày 20/10/2026, và lý do là đúng chỗ phải sửa ──────────
+   *
+   * Bản đẩy sắc độ (tinh vân lên L 0,45, quầng mặt trời nới ra tới `soft`)
+   * làm nền sau nhãn M3 lên ~L 0,37, và dòng "chặng-mờ" của nó tụt
+   * **5,22 → 4,36 : 1**, dưới sàn 4,5. Ở đây có HAI cách và chỉ một cách
+   * đúng: hạ sáng tinh vân để né thì quay về đúng chỗ xuất phát (bức lại là
+   * "tối, với một nguồn sáng"), còn ghim tấm nền sâu hơn thì giữ cả hai. Tấm
+   * ở 0,90 kéo nền hiệu dụng sau chữ từ rgb(52, 57, 69) xuống rgb(25, 28, 37)
+   * — L 0,041 → 0,011 — và cả 24 phép đo lên lại trên 5 : 1. Đó là cả LÝ DO
+   * tấm nền tồn tại: "tương phản nhãn ĐỘC LẬP với mặt trời" chỉ đúng nếu tấm
+   * được phép đậm theo khi bầu trời sáng lên.
+   *
+   * CÒN MỘT LỖ CHƯA BỊT, ghi ra để người sau không phải tìm lại: phép đo
+   * `do_tuong_phan_nhan` mô hình trạng thái MỜ bằng cách hạ độ mờ của CHỮ,
+   * nhưng trạng thái ấy chạy thật bằng `opacity` CSS trên cả thẻ `<img>` của
+   * tấm — tức TẤM NỀN cũng mờ theo (0,90 × 0,5636 ≈ 0,51 hiệu dụng) trong khi
+   * phép đo vẫn tính tấm ở độ mờ đầy. Nên con số "chặng-mờ" là một con số LẠC
+   * QUAN, không phải một con số sai hướng. Bịt đúng cách là đưa tấm nền sang
+   * tấm TRỜI (tấm không bao giờ mờ) chứ không phải nới `dimOpacity`; chưa làm
+   * ở bản này vì nó đổi cấu trúc tấm, và đổi cấu trúc tấm phải đi cùng
+   * `kiem_tile_phu_lop`.
    */
-  plateOpacity: 0.72,
+  plateOpacity: 0.9,
   plateAt: 0.018,
   plateR: 5,
+  /**
+   * HÌNH của tấm nền — ba lớp bo góc lồng nhau, không một chữ nhật đặc.
+   *
+   * Lý do là một bức ảnh: sau khi trời sáng lên, tám tấm `base` 0,9 hình chữ
+   * nhật vuông góc đọc ra trên PNG (`raster.py --png`) là **tám vệt bôi
+   * đen**. Bảng tám bậc không thấy — tám hộp cộng lại chưa tới 1 % diện
+   * tích. Xoá tấm thì chữ tụt dưới 4,5 : 1; nên đổi HÌNH, không đổi việc.
+   *
+   * Lớp trong cùng giữ nguyên `plateOpacity` và phủ trọn hộp nở `plateR`,
+   * nên cả 24 phép đo tương phản vẫn nói đúng về chỗ chữ nằm. Hai lớp ngoài
+   * rộng thêm `plateFeather` px và mờ đi theo `plateFeatherFade` — mép TÁN
+   * làm bằng lớp phủ chồng, không bằng gradient (luật cấm gradient còn
+   * nguyên, và đây là cùng kỹ thuật với quầng sao và bậc tinh vân).
+   */
+  plateLayers: 5,
+  plateFeather: 10,
+  plateFeatherFade: 3.0,
+  plateCorner: 12,
   /**
    * BÁN KÍNH mà hộp nhãn phải tránh quanh mặt trời (§10.2 luật 1).
    *
@@ -1528,10 +1742,15 @@ export type SkyProfile = {
   dustFar: string;
   nebula: string;
   nebulaCore: string;
-  /** Tông tinh vân SÁNG NHẤT, cho ba bậc trong cùng của mười bốn
+  /** Tông tinh vân SÁNG, cho mười bậc giữa của hai mươi hai
    *  (`SKY_NEBULA.ramp`). Khoá MỚI: hai tông cũ tô đặc mới đạt L = 0,062, tức
    *  không với tới bậc 0,18–0,35 mà ngân sách §5.2 đòi 5,4 % diện tích. */
   nebulaLit: string;
+  /** Tông tinh vân SÁNG NHẤT, cho ba bậc trong cùng. Cùng lý lẽ với
+   *  `nebulaLit`, lùi lên một bậc: `nebulaLit` tô ĐẶC mới đạt L = 0,498, nên
+   *  một chồng bậc α 0,12 dừng ở ~0,36 và bậc "rìa quầng" 0,35–0,60 nằm ngoài
+   *  tầm của bảng màu cũ. */
+  nebulaPeak: string;
   dustLane: string;
   filament: string;
   horizon: string;
@@ -1618,6 +1837,13 @@ export const SKY_PROFILE_DARK: SkyProfile = {
    *  `SKY_NEBULA.ramp`). Lạnh và nhạt chứ không no: §10.4 đo bão hoà bản này
    *  0,387 so với 0,197 của tham chiếu, nên một tông mới KHÔNG được no thêm. */
   nebulaLit: '#AFBCD4',
+  /** Tông tinh vân SÁNG NHẤT — khoá MỚI 20/10/2026.
+   *
+   *  Ba bậc trong cùng của hai mươi hai tô bằng nó, và nó là thứ đưa đỉnh
+   *  tinh vân từ L 0,173 lên 0,448 — tức ra khỏi bậc 0,08–0,18 và vào tận bậc
+   *  "rìa quầng" 0,35–0,60, chỗ bức hụt nặng nhất (−5,2 điểm phần trăm).
+   *  Bão hoà HSV 0,085: nhạt chứ không no, theo đúng luật ở `nebulaLit`. */
+  nebulaPeak: '#E6ECF6',
   dustLane: '#0D101C',
   filament: '#8E92BE',
   horizon: '#2A2416',

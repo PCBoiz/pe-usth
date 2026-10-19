@@ -16,7 +16,11 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="894" cy="472" r="1.38"/><circle cx="985" cy="496" r="1.1"/><circle cx="1076" cy="520" r="0.88"/><circle cx="976" cy="380" r="1.1"/><circle cx="1050" cy="396" r="1.1"/><circle cx="1111" cy="412" r="1.1"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="#0A0C14" fill-opacity="0.72" d="M1083 518l230 0l0 53l-230 0Z"/>
+<path fill="#0A0C14" fill-opacity="0.07" d="M1353 577l-1 10l-5 10l-8 7l-10 5l-10 2l-241 0l-11 -2l-9 -5l-8 -7l-5 -10l-2 -10l0 -65l2 -11l5 -9l8 -8l9 -5l11 -1l241 0l10 1l10 5l8 8l5 9l1 11Z"/>
+<path fill="#0A0C14" fill-opacity="0.09" d="M1343 572l-1 9l-4 8l-7 6l-8 5l-9 1l-231 0l-9 -1l-9 -5l-6 -6l-4 -8l-2 -9l0 -55l2 -9l4 -8l6 -7l9 -4l9 -1l231 0l9 1l8 4l7 7l4 8l1 9Z"/>
+<path fill="#0A0C14" fill-opacity="0.13" d="M1333 567l-1 7l-3 7l-6 5l-7 4l-7 1l-221 0l-8 -1l-7 -4l-5 -5l-3 -7l-2 -7l0 -45l2 -8l3 -6l5 -6l7 -3l8 -1l221 0l7 1l7 3l6 6l3 6l1 8Z"/>
+<path fill="#0A0C14" fill-opacity="0.22" d="M1323 562l-1 6l-2 5l-5 4l-5 3l-6 1l-211 0l-6 -1l-6 -3l-4 -4l-3 -5l-1 -6l0 -35l1 -6l3 -5l4 -5l6 -2l6 -1l211 0l6 1l5 2l5 5l2 5l1 6Z"/>
+<path fill="#0A0C14" fill-opacity="0.9" d="M1313 557l0 4l-3 4l-3 3l-4 2l-4 1l-201 0l-5 -1l-4 -2l-3 -3l-2 -4l-1 -4l0 -25l1 -4l2 -4l3 -4l4 -2l5 0l201 0l4 0l4 2l3 4l3 4l0 4Z"/>
 <path fill="none" stroke="#D7D0EE" stroke-width="0.8" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" d="M994 501l72 42l16 0M1088 543l130 0"/>
 <g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="1088" y="539">M5 · NumPy</text></g>
 </g>

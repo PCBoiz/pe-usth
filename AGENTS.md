@@ -44,6 +44,8 @@ py -I scripts/star/raster.py           # CÁI THƯỚC THẬT: raster hoá chín
                                        # bằng nó, không ca nào đọc mô hình bắt được.
 py -I scripts/star/raster.py --buoc 1  # đo từng điểm ảnh (~13 s; mặc định bước 2 px, ~3 s)
 py -I scripts/star/raster.py --khong-mo-hinh  # bỏ cột mô hình (không chạy do_ngan_sach, ~47 s)
+py -I scripts/star/raster.py --png a.png --buoc 1       # NHÌN BỨC TRANH (1360 × 820)
+py -I scripts/star/raster.py --png b.png --lop troi     # chỉ vài tệp, để khoanh lớp hỏng
 
 # Đổi bố cục (hộp chòm, vị trí mặt trời, hình chòm) ⇒ chạy LẠI BA bước này, theo đúng
 # thứ tự, vì mỗi bước đọc kết quả bước trước: --place-nhan (rồi chép vào TS) → build →
@@ -65,14 +67,14 @@ mức này:
 | Backend lint | 2 lỗi, 1 cảnh báo — **mốc trần trong CI là 10, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → **710 ca**, tất cả đạt (~310 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s, cộng một lượt `--do` ~47 s và một lượt raster ~6 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +3 ca mục 22 của `star-map.test.mjs` (sàn sắc độ đo bằng raster) | 20/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **711 ca**, tất cả đạt (~255 s; riêng `star-map.test.mjs` 74 ca / ~250 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~100 s sau khi tinh vân lên 22 bậc, cộng một lượt `--do` ~50 s và hai lượt raster ~8 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +4 ca mục 22 của `star-map.test.mjs` (sàn sắc độ đo bằng raster, và một ca canh cờ `--png`) | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
-| Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **338 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 181,5 KB sau khi mặt trời lên 128 vòng, tinh vân lên 14 bậc và 26 đường đồng mức được khép theo mép. Lượt build in thêm dòng **`đường đồng mức … còn hở`** — con số ấy phải là **0** | 20/10/2026 |
-| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,4 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0254, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** | 20/10/2026 |
-| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (RASTER — con số THẬT) | `py -I scripts/star/raster.py` (bước 2 px, 278 800 ô mẫu): bậc giữa **24,15 % → 44,81 %** (tham chiếu 46,8), ba bậc 0,03–0,35 **19,76 % → 40,09 %** (43,0), trung vị **0,0095 → 0,0181** (0,0284), p99 **0,9521 → 0,9550** (0,955 — ĐẠT), L > 0,5 **4,55 % → 4,81 %** (7,73), đen sâu **51,32 % → 28,49 %** (20,5). Hai con số mỗi ô là TRƯỚC → SAU bản khép đường đồng mức 20/10, đo bằng CÙNG một thước (bản cũ dựng lại từ `git show HEAD`). Khoảng lệch mô hình − raster ở bậc giữa còn **+2,6 điểm phần trăm** (từng là +23,5): phần dư là răng cưa và nét mảnh dưới một điểm ảnh. Sàn trong `star-map.test.mjs` mục 22: mid ≥ 42 %, mid3 ≥ 37 %, đen sâu ≤ 32 %, trung vị ≥ 0,015 — **sàn, không phải con số khoá cứng: bức được sáng thêm, không được tối lại.** **Mô hình là mục tiêu, raster là sự thật; đừng báo cáo con số mô hình như con số của bức tranh.** | 20/10/2026 |
+| Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **421 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình **251,5 KB** sau khi mặt trời lên 128 vòng, tinh vân lên **22 bậc** và 43 đường đồng mức được khép theo mép. Lượt build in thêm dòng **`đường đồng mức … còn hở`** — con số ấy phải là **0** | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 58,1 %** diện tích, ba bậc 0,03–0,35 **50,3 %** (sàn 30 %), trung vị **0,0393** (trần 0,05 — biên còn 0,011), p99 0,985, L > 0,5 5,19 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (RASTER — con số THẬT) | `py -I scripts/star/raster.py` (bước 2 px, 278 800 ô mẫu): bậc giữa **44,81 % → 50,54 %** (tham chiếu 46,8), ba bậc 0,03–0,35 **40,09 % → 42,87 %** (43,0), trung vị **0,0181 → 0,0325** (0,0284), p99 **0,9550 → 0,9553** (0,955 — ĐẠT), L > 0,5 **4,81 % → 5,39 %** (7,73), đen sâu **28,49 % → 24,95 %** (20,5). Hai bậc mà lời chê thứ sáu chỉ đích danh: t.vân sáng 0,18–0,35 **3,70 → 5,92 %** (8,0) và rìa quầng 0,35–0,60 **2,19 → 4,86 %** (7,4). Hai con số mỗi ô là TRƯỚC → SAU bản đẩy sắc độ 20/10 (tinh vân 14 → 22 bậc, tông thứ tư `nebulaPeak`, chỗ loãng đo theo HÌNH thay vì bao lồi), đo bằng CÙNG một thước. Sàn trong `star-map.test.mjs` mục 22: mid ≥ 42 %, mid3 ≥ 37 %, đen sâu ≤ 32 %, trung vị ≥ 0,015 — **sàn, không phải con số khoá cứng: bức được sáng thêm, không được tối lại.** **Mô hình là mục tiêu, raster là sự thật; đừng báo cáo con số mô hình như con số của bức tranh — và cả hai đều KHÔNG nhìn thấy hình, nên còn phải `--png` và NHÌN.** | 20/10/2026 |
 | Bản đồ sao · BỐ CỤC | tỉ lệ cỡ chòm **5,95 : 1** (sàn 5,0; trước 3,53), **0/49** nét nằm trong 10° của một trục (trước 27/50 ở sàn 8°), 0 ngôi trong đĩa cấm r < 170 quanh mặt trời, khe hai chòm 64,1 px (sàn 50), 0 ngôi dưới rìa chân trời | 20/10/2026 |
 | Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
-| Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,22:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 4,83 dù trời sáng hẳn lên, nhờ TẤM NỀN dưới mỗi hộp nhãn. Nét chòm **3,39:1** lúc nghỉ (sàn 3,0), mạch hoàng đạo **4,59:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
+| Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,47:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 5,22 dù trời sáng thêm một bậc nữa, vì `plateOpacity` lên 0,90 cùng lúc. Nét chòm **3,22:1** lúc nghỉ (sàn 3,0 — biên MỎNG, xem vùng chết của `SKY_LIGHT.litFlip`), mạch hoàng đạo **4,61:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt; màn điền chỗ trống: **149/149 ô có `slots[].hint`** trên 45 bài, không ô nào lộ đáp án | 20/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
@@ -389,6 +391,21 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     **Ai làm tiếp: đừng tin con số `--do` cho phần tinh vân; chạy `scripts/star/raster.py`
     rồi đọc cột lệch.** Sau bản khép, raster bậc giữa **24,15 % → 44,81 %** và khoảng lệch
     mô hình − raster **23,5 → 2,6** điểm phần trăm.
+  · **BẢNG TÁM BẬC KHÔNG NHÌN THẤY HÌNH — PHẢI XUẤT PNG VÀ NHÌN.** Năm vòng đánh giá
+    liên tiếp không ai mở bức tranh ra xem; mọi agent dừng ở câu *"tôi chưa chạy được
+    trình duyệt"* rồi vặn số theo bảng. Lần đầu bức được xuất ra PNG (20/10/2026) có
+    **bốn khuyết tật mà không một con số nào bắt được**, hai cái đủ để bị loại ngay từ
+    cái nhìn đầu: tám mảng tối hình BAO LỒI khoét thủng tinh vân, chín tia bụi là chín
+    vạch kẻ thẳng, tám tấm nền nhãn là tám vệt bôi đen, lõi mặt trời là một đa giác méo.
+    Cả bốn đều chiếm quá ít diện tích để đổi một chữ số thập phân nào của bảng.
+    Nay `raster.py --png <tệp>` xuất đúng bộ SVG đã ghi ra ảnh (thuần `zlib` + `struct`,
+    cùng lý do "chạy được ở mọi máy" với chính bộ raster), và `--lop troi,sao-nen` giới
+    hạn tệp để khoanh xem lỗi nằm ở lớp nào. **Đổi hồ sơ ⇒ xuất PNG và NHÌN.**
+    Bài học hình học của lần ấy, vì nó lặp lại được: *một chỗ "làm loãng" đo theo BAO LỒI
+    thì cái lỗ nó để lại mang hình bao lồi*, và làm mềm mép bằng nhiễu KHÔNG chữa được —
+    mắt đọc KHỐI chứ không đọc cạnh. Chữa bằng cách đổi cơ sở đo sang chính HÌNH
+    (`fig_dist`: khoảng cách tới nét và ngôi). Lợi kép: tối đúng chỗ tương phản được đo,
+    mà trả lại mid-tone cho phần ruột bao lồi không có nét nào đi qua.
   · **CÁI THƯỚC PHẢI CHẠY ĐƯỢC Ở MỌI MÁY, không thì lần sau nó lại là script tạm.**
     `scripts/star/raster.py` đọc chính mấy tệp SVG đã ghi rồi tự vẽ chúng — đó là phép đo
     duy nhất bắt được cả bốn lỗi ở trên, vì mọi phép kiểm khác trong kho mã đọc
@@ -408,6 +425,17 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     hỏng thật không phải sáng quá mà TỐI QUÁ Ở GIỮA: bản trước có **89,7 %** diện tích ở
     L < 0,01 và **0,73 %** ở ba bậc giữa (khung tham chiếu: 20,5 % và 43,0 %) mà vẫn đạt
     mọi phép kiểm. Một ngân sách chỉ có trần là ngân sách gác được một nửa.
+  · **LUẬT ĐƯỜNG CHÓI CÓ MỘT VÙNG CHẾT: nền L ∈ [0,085 ; 0,116].** Vệt chòm sáng nhất
+    (`#CFE3EA` ở độ mờ 0,55) hợp thành L ≈ 0,35 nên chỉ đạt 3 : 1 khi nền ≤ 0,085; vệt
+    ĐÃ ĐỔI TÔNG (`dustLane`) chỉ đạt 3 : 1 khi nền ≥ 0,116. `litFlip.at` = 0,12 nằm ở
+    mép TRÊN của cái hố ấy, nên câu "nét trên nền sáng không trượt vì luật đường chói"
+    chỉ đúng TRÊN 0,116. Hố này đi qua mọi lần dựng trước 20/10 vì chưa đoạn nét nào rơi
+    vào. Hệ quả thực tế: **quầng mặt trời không nới ra được** — bỏ phép thu nhỏ 0,84 của
+    `SKY_LIGHT.profile` (đúng về phép đo, và nó nhấc L > 0,5 từ 4,81 lên 7,50 %) đưa nền
+    tại nét M3 lên 0,086 và build trượt ở 2,96 : 1. Hai cách né đều trả giá đo được, cả
+    hai đã thử và đã gỡ. Việc mở được chỗ này là cho nét chòm một **VỎ BỌC** như mạch
+    hoàng đạo đã có (`SKY_ZODIAC.casing` — tương phản đo giữa LÕI và VỎ nên độc lập với
+    nền), vỏ chọn tông NGƯỢC với `litFlip` để không xoá hiệu ứng hai tông.
   · **Hai trần CỤC BỘ không còn ngang nhau.** `textCeiling` thôi làm điều kiện LOẠI chỗ
     đặt nhãn (mọi hộp nhãn nay có một TẤM NỀN `base` α 0,72 ghim nền xuống L ≤ 0,02, nên
     tương phản chữ độc lập với mặt trời), và `hullCeiling` thôi chặn build hẳn — M3 đứng

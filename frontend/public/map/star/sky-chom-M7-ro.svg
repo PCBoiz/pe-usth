@@ -16,7 +16,11 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="1219" cy="136" r="1.38"/><circle cx="1232" cy="106" r="1.38"/><circle cx="1196" cy="60" r="1.1"/><circle cx="1252" cy="77" r="0.88"/><circle cx="1301" cy="111" r="1.38"/><circle cx="1271" cy="45" r="0.88"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="#0A0C14" fill-opacity="0.72" d="M934 133l230 0l0 54l-230 0Z"/>
+<path fill="#0A0C14" fill-opacity="0.07" d="M1204 192l-2 11l-5 9l-7 8l-10 5l-11 2l-241 0l-10 -2l-10 -5l-8 -8l-4 -9l-2 -11l0 -64l2 -11l4 -10l8 -7l10 -5l10 -2l241 0l11 2l10 5l7 7l5 10l2 11Z"/>
+<path fill="#0A0C14" fill-opacity="0.09" d="M1194 187l-2 9l-4 9l-6 6l-9 4l-9 2l-231 0l-9 -2l-8 -4l-7 -6l-4 -9l-1 -9l0 -54l1 -9l4 -9l7 -6l8 -4l9 -2l231 0l9 2l9 4l6 6l4 9l2 9Z"/>
+<path fill="#0A0C14" fill-opacity="0.13" d="M1184 182l-1 8l-4 7l-5 5l-7 4l-8 1l-221 0l-7 -1l-7 -4l-5 -5l-4 -7l-1 -8l0 -44l1 -8l4 -7l5 -5l7 -4l7 -1l221 0l8 1l7 4l5 5l4 7l1 8Z"/>
+<path fill="#0A0C14" fill-opacity="0.22" d="M1174 177l-1 6l-3 6l-4 4l-6 3l-6 1l-211 0l-6 -1l-5 -3l-4 -4l-3 -6l-1 -6l0 -34l1 -6l3 -6l4 -4l5 -3l6 -1l211 0l6 1l6 3l4 4l3 6l1 6Z"/>
+<path fill="#0A0C14" fill-opacity="0.9" d="M1164 172l-1 5l-2 4l-3 3l-4 2l-5 1l-201 0l-4 -1l-4 -2l-3 -3l-2 -4l-1 -5l0 -24l1 -5l2 -4l3 -3l4 -2l4 -1l201 0l5 1l4 2l3 3l2 4l1 5Z"/>
 <path fill="none" stroke="#ECC4DC" stroke-width="0.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="M1210 141l-29 17l-16 0M939 158l192 0"/>
 <g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="939" y="154">M7 · Matplotlib</text></g>
 <g fill="#AFBDD2" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="500" letter-spacing="0.6"><text x="939" y="177">Advanced Python · 6 bài</text></g>

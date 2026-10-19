@@ -16,7 +16,11 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="1170" cy="240" r="1.1"/><circle cx="1244" cy="219" r="1.1"/><circle cx="1313" cy="201" r="1.1"/><circle cx="1192" cy="301" r="1.1"/><circle cx="1261" cy="275" r="1.1"/><circle cx="1326" cy="253" r="1.1"/><circle cx="1218" cy="366" r="1.1"/><circle cx="1282" cy="335" r="1.1"/><circle cx="1343" cy="309" r="1.1"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="#0A0C14" fill-opacity="0.72" d="M885 237l230 0l0 54l-230 0Z"/>
+<path fill="#0A0C14" fill-opacity="0.07" d="M1155 296l-2 11l-4 9l-8 8l-10 5l-10 2l-241 0l-11 -2l-10 -5l-7 -8l-5 -9l-2 -11l0 -64l2 -11l5 -10l7 -7l10 -5l11 -2l241 0l10 2l10 5l8 7l4 10l2 11Z"/>
+<path fill="#0A0C14" fill-opacity="0.09" d="M1145 291l-1 9l-5 8l-6 7l-8 4l-9 2l-231 0l-9 -2l-9 -4l-6 -7l-4 -8l-2 -9l0 -54l2 -9l4 -9l6 -6l9 -4l9 -2l231 0l9 2l8 4l6 6l5 9l1 9Z"/>
+<path fill="#0A0C14" fill-opacity="0.13" d="M1135 286l-1 8l-4 7l-5 5l-7 3l-7 2l-221 0l-8 -2l-7 -3l-5 -5l-4 -7l-1 -8l0 -44l1 -8l4 -7l5 -5l7 -4l8 -1l221 0l7 1l7 4l5 5l4 7l1 8Z"/>
+<path fill="#0A0C14" fill-opacity="0.22" d="M1125 281l-1 6l-3 6l-4 4l-5 3l-6 1l-211 0l-6 -1l-6 -3l-4 -4l-3 -6l-1 -6l0 -34l1 -6l3 -6l4 -4l6 -3l6 -1l211 0l6 1l5 3l4 4l3 6l1 6Z"/>
+<path fill="#0A0C14" fill-opacity="0.9" d="M1115 276l-1 5l-2 4l-3 3l-4 2l-4 1l-201 0l-5 -1l-4 -2l-3 -3l-2 -4l-1 -5l0 -24l1 -5l2 -4l3 -3l4 -2l5 -1l201 0l4 1l4 2l3 3l2 4l1 5Z"/>
 <path fill="none" stroke="#E4EDC6" stroke-width="0.8" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="M1162 245l-30 17l-16 0M890 262l143 0"/>
 <g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="890" y="258">M6 · pandas</text></g>
 <g fill="#AFBDD2" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="15" font-weight="500" letter-spacing="0.6"><text x="890" y="281">Advanced Python · 9 bài</text></g>

@@ -3059,12 +3059,24 @@ test('VIỆC 8 · THỨ TỰ LỚP: mặt trời đứng TRƯỚC khối sáng, 
 
 const RASTER_PY = join(ROOT, 'scripts', 'star', 'raster.py');
 
-// Đo được 20/10/2026 sau khi khép đường đồng mức, ở bước 2 px:
-// bậc giữa 44,81 % · ba bậc 40,09 % · đen sâu 28,49 % · trung vị 0,0181.
-// Trước khi khép: 24,15 % · 19,76 % · 51,32 % · 0,0095 — cùng cái thước này.
+// Đo được 20/10/2026 SAU bản đẩy sắc độ (tinh vân 14 → 22 bậc, tông thứ tư
+// `nebulaPeak`, chỗ loãng đo theo HÌNH chòm thay vì theo bao lồi), ở bước
+// 2 px: bậc giữa 50,54 % · ba bậc 42,87 % · đen sâu 24,95 % · trung vị
+// 0,0325 · hai bậc trên của dải giữa (0,18–0,60) 10,78 %.
+// Trước bản ấy: 44,81 · 40,09 · 28,49 · 0,0181 · 5,89 — cùng cái thước này.
+// Trước bản khép đường đồng mức: 24,15 · 19,76 · 51,32 · 0,0095.
 // Sàn để chừa ~3 điểm phần trăm, đủ cho một lần dịch mặt trời hay đổi câu
 // chữ nhãn, không đủ cho một bậc tinh vân biến mất.
-const SAN_RASTER = { mid: 0.42, mid3: 0.37, denSau: 0.32, trungVi: 0.015 };
+//
+// `tren018` là sàn MỚI, và nó có lý do riêng: `mid`/`mid3` đếm cả bậc
+// 0,03–0,08, nên một bức tô một màn sương xám đều khắp khung vẫn đạt cả hai.
+// Lời chê thứ sáu chỉ đích danh HAI bậc — t.vân sáng 0,18–0,35 và rìa quầng
+// 0,35–0,60 — vì đó là chỗ phân biệt *"sáng khắp, CÓ TẦNG"* với *"tối, với
+// một nguồn sáng"*. Khung tham chiếu có 15,4 % ở hai bậc ấy; bản 20/10 sáng
+// đi từ 5,89 lên 10,78 %.
+const SAN_RASTER = {
+  mid: 0.47, mid3: 0.40, denSau: 0.28, trungVi: 0.025, tren018: 0.08,
+};
 
 let _RASTER = null;
 function soDoRaster() {
@@ -3102,6 +3114,42 @@ test('VIỆC 9 · bức đã GHI RA đạt sàn sắc độ, đo bằng raster c
   assert.ok(r.trung_vi >= SAN_RASTER.trungVi,
     `trung vị độ chói trên tranh thật ${r.trung_vi.toFixed(4)}, dưới sàn`
     + ` ${SAN_RASTER.trungVi}`);
+  // HAI BẬC TRÊN của dải giữa — bậc 4 (0,18–0,35) và bậc 5 (0,35–0,60) trong
+  // tám bậc của `SKY_BUDGET.bands`.
+  const tren = r.bac[4] + r.bac[5];
+  assert.ok(tren >= SAN_RASTER.tren018,
+    `hai bậc 0,18–0,60 chỉ còn ${(tren * 100).toFixed(2)} %, dưới sàn`
+    + ` ${SAN_RASTER.tren018 * 100} % (tham chiếu 15,4 %). Đây là hai bậc mà lời chê`
+    + ' thứ sáu chỉ đích danh: `mid`/`mid3` còn đếm cả bậc 0,03–0,08 nên một màn sương'
+    + ' xám đều khắp khung vẫn đạt chúng, còn hai bậc này chỉ đạt được bằng tinh vân'
+    + ' CÓ TẦNG và một quầng mặt trời có rìa.');
+});
+
+test('VIỆC 9 · cái thước XUẤT ĐƯỢC PNG — nhìn bức tranh là một lệnh, không một lời hứa', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  // Vì sao ca này tồn tại: năm vòng đánh giá liên tiếp không ai NHÌN bức
+  // tranh — mọi lần đều dừng ở "tôi chưa chạy được trình duyệt" rồi vặn số
+  // theo bảng tám bậc. Lần đầu bức được xuất ra ảnh, có BỐN khuyết tật mà
+  // không một con số nào trong bảng bắt được (mảng tối hình bao lồi khoét
+  // thủng tinh vân, chín tia bụi là chín vạch kẻ, tấm nền nhãn là vệt bôi
+  // đen, lõi mặt trời là đa giác méo). Ca này giữ cho cái cờ ấy không rụng
+  // mất trong một lần dọn tham số.
+  const d = mkdtempSync(join(tmpdir(), 'sky-png-'));
+  try {
+    const f = join(d, 'xem.png');
+    execFileSync(PYBIN, [
+      '-I', RASTER_PY, '--buoc', '8', '--khong-mo-hinh', '--png', f,
+    ], { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+    const b = readFileSync(f);
+    assert.deepEqual([...b.subarray(0, 8)], [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+      '`--png` không ghi ra một tệp PNG thật');
+    // IHDR: bề rộng ở byte 16..19, bề cao 20..23 — ở bước 8 thì 1360/8 = 170.
+    assert.equal(b.readUInt32BE(16), 170, 'ảnh sai bề rộng — `--buoc` không vào IHDR');
+    assert.equal(b.readUInt32BE(20), 102, 'ảnh sai bề cao');
+    assert.ok(b.length > 1000, `ảnh chỉ ${b.length} byte — khung trống`);
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
 });
 
 test('VIỆC 9 · mô hình và raster không được trôi xa nhau — hai cột, một khoảng lệch', () => {

@@ -5,6 +5,11 @@
     py -I scripts/star/raster.py --buoc 1   # đo từng điểm ảnh (chậm hơn ~4×)
     py -I scripts/star/raster.py --json x   # ghi số đo ra JSON cho ca test
     py -I scripts/star/raster.py --out DIR  # đo một thư mục khác
+    py -I scripts/star/raster.py --png a.png --buoc 1          # XEM bức tranh
+    py -I scripts/star/raster.py --png b.png --lop troi,sao-nen  # chỉ vài lớp
+
+**ĐỔI HỒ SƠ THÌ XUẤT PNG VÀ NHÌN, ĐỪNG CHỈ ĐỌC BẢNG.** Xem `ghi_png` cho
+bốn khuyết tật mà bảng tám bậc không bắt được một cái nào.
 
 VÌ SAO TỆP NÀY TỒN TẠI, và vì sao nó không được là một script tạm nữa.
 
@@ -350,14 +355,69 @@ def thu_tu_tep():
     return ra
 
 
-def do_raster(out_dir: Path, buoc: int = 2):
+def ghi_png(kh: Khung, tep: Path):
+    """GHI KHUNG RA PNG — thuần stdlib (`zlib` + `struct`), không thư viện ngoài.
+
+    ── VÌ SAO MƯỜI LĂM DÒNG NÀY ĐÁNG GIÁ HƠN CẢ BẢNG SỐ ───────────────────
+
+    Năm vòng đánh giá liên tiếp không ai NHÌN bức tranh: mọi agent đều dừng ở
+    câu "tôi chưa chạy được trình duyệt", rồi vặn số theo bảng tám bậc. Lần
+    đầu bức được xuất ra PNG và mở lên, có BỐN khuyết tật mà **không một con
+    số nào trong bảng bắt được** — mười mảng tối hình bao lồi khoét thủng tinh
+    vân, chín tia bụi là chín vạch kẻ thẳng, tám tấm nền nhãn là tám vệt bôi
+    đen, lõi mặt trời là một đa giác méo. Bảng số vẫn đạt mọi sàn trong khi
+    hai khuyết tật đầu đủ để bị loại ngay từ cái nhìn đầu tiên.
+
+    `Khung` đã giữ sẵn ba kênh R/G/B ở đúng độ phân giải của bức, nên cái
+    THIẾU chưa bao giờ là phép raster — chỉ là một hàm ghi tệp. Nay nó là một
+    cờ: `--png <tệp>`. **Đổi bất cứ thứ gì trong hồ sơ thì xuất PNG và NHÌN,
+    đừng chỉ đọc bảng.**
+
+    `--buoc 1` cho đúng 1360 × 820; bước lớn hơn cho ảnh nhỏ hơn theo tỉ lệ.
+    """
+    import struct
+    import zlib
+    raw = bytearray()
+    for j in range(kh.ny):
+        raw.append(0)                     # bộ lọc 0 (None) cho mỗi hàng
+        k = j * kh.nx
+        for i in range(kh.nx):
+            raw.append(int(min(max(kh.R[k + i], 0.0), 255.0) + 0.5))
+            raw.append(int(min(max(kh.G[k + i], 0.0), 255.0) + 0.5))
+            raw.append(int(min(max(kh.B[k + i], 0.0), 255.0) + 0.5))
+
+    def khoi(ten: bytes, than: bytes) -> bytes:
+        return (struct.pack(">I", len(than)) + ten + than
+                + struct.pack(">I", zlib.crc32(ten + than) & 0xFFFFFFFF))
+
+    png = (b"\x89PNG\r\n\x1a\n"
+           + khoi(b"IHDR", struct.pack(">IIBBBBB", kh.nx, kh.ny, 8, 2, 0, 0, 0))
+           + khoi(b"IDAT", zlib.compress(bytes(raw), 6))
+           + khoi(b"IEND", b""))
+    tep.write_bytes(png)
+    return kh.nx, kh.ny
+
+
+def do_raster(out_dir: Path, buoc: int = 2, png: Path = None, lop: str = None):
     tep = thu_tu_tep()
     vb = (out_dir / tep[0]).read_text(encoding="utf-8")
     m = re.search(r'viewBox="([-\d.]+) ([-\d.]+) ([\d.]+) ([\d.]+)"', vb)
     W, H = float(m.group(3)), float(m.group(4))
     kh = Khung(W, H, buoc)
+    # `--lop` giữ lại một TẬP CON tệp: ba lớp trời riêng là cách duy nhất nói
+    # được "cái lỗ kia nằm ở lớp nào" — đã dùng đúng một lần để chứng minh
+    # mười mảng tối thuộc `sky-troi.svg` chứ không thuộc tấm chòm.
+    if lop:
+        giu = [t for t in tep if any(k in t for k in lop.split(","))]
+        if not giu:
+            raise SystemExit("--lop %r không khớp tệp nào trong %s"
+                             % (lop, ", ".join(tep)))
+        tep = giu
     for t in tep:
         ve(out_dir / t, kh)
+    if png:
+        w, h = ghi_png(kh, png)
+        print("  đã ghi %s (%d × %d px, %d tệp SVG)" % (png, w, h, len(tep)))
     # sRGB → tuyến tính → Y. Cùng công thức với `luminance()` ở build_sky.py.
     Ls = []
     for i in range(len(kh.R)):
@@ -395,10 +455,16 @@ def main():
     ap.add_argument("--json", default=None, help="ghi số đo ra tệp JSON")
     ap.add_argument("--khong-mo-hinh", action="store_true",
                     help="bỏ cột mô hình (nhanh hơn — không chạy do_ngan_sach)")
+    ap.add_argument("--png", default=None,
+                    help="XUẤT BỨC TRANH ra PNG — dùng nó, đừng chỉ đọc bảng")
+    ap.add_argument("--lop", default=None,
+                    help="chỉ vẽ tệp có tên chứa một trong các chuỗi này "
+                         "(ngăn bằng dấu phẩy), ví dụ --lop troi,sao-nen")
     args = ap.parse_args()
 
     out = Path(args.out) if args.out else MAC_DINH
-    r = do_raster(out, max(1, args.buoc))
+    r = do_raster(out, max(1, args.buoc),
+                  Path(args.png) if args.png else None, args.lop)
 
     mo = None
     if not args.khong_mo_hinh:

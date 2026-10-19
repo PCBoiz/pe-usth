@@ -747,9 +747,70 @@ def kiem_khe_hai_chom():
 def hull_atten(x, y, pad):
     """0 ở giữa bao lồi → 1 ngoài `pad`. Dùng để LOÃNG trời ngay chỗ có một
     chòm: đó là cách một bản khắc cổ chừa chỗ cho hình thần thoại, và nó cũng
-    là thứ giữ cho trần độ chói cục bộ của §3.1 không bị vỡ."""
-    d = min(dist_to_hull(x, y, h) for _, h in HULLS)
-    return smoothstep(d / pad) if pad > 0 else 1.0
+    là thứ giữ cho trần độ chói cục bộ của §3.1 không bị vỡ.
+
+    ── THÔI ĐO THEO BAO LỒI, ĐO THEO HÌNH, ngày 20/10/2026 ────────────────
+
+    Khuyết tật NẶNG NHẤT của bản 20/10, và không một con số nào trong bảng
+    tám bậc bắt được nó — nó chỉ lộ ra khi bức được xuất ra PNG và NHÌN
+    (`raster.py --png`). Tinh vân đã sáng hẳn lên, nên tám cái loãng này thôi
+    là "trời hơi nhạt quanh chòm" và trở thành **tám mảng tối cạnh thẳng góc
+    bo nằm giữa vùng sáng** — đọc ra là ai đó cắt mấy ô chữ nhật ra khỏi bức
+    tranh. Bao lồi M1 một mình Ø 426 px.
+
+    Nguyên nhân là chọn HÌNH DẠNG, không phải chọn con số: một BAO LỒI nở
+    `pad` là một đa giác LỒI, và bên trong nó `dist_to_hull` âm nên cả ruột
+    tô một màu đen phẳng — tức cái lỗ mang ĐÚNG hình đa giác ấy. Đã thử làm
+    mềm mép bằng nhiễu: mép hết thẳng nhưng hình vẫn đọc ra là một đa giác
+    lồi, vì cái bị nhìn thấy là KHỐI chứ không phải cạnh.
+
+    Nay đo theo `fig_dist` — khoảng cách tới chính NÉT và NGÔI của chòm. Ba
+    cái được cùng lúc:
+     · chỗ loãng ÔM LẤY hình que, nên nó đọc ra là "chòm rẽ một lối qua tinh
+       vân" chứ không là một ô bị cắt;
+     · nó tối ĐÚNG CHỖ tương phản được đo — `kiem_tuong_phan_net` lấy mẫu
+       trên chính các nét, và ở đó `fig_dist` = 0 nên độ loãng sâu y như bản
+       bao lồi; biên 3 : 1 không đổi một phần nghìn;
+     · và nó TRẢ LẠI mid-tone cho phần ruột bao lồi không có nét nào đi qua —
+       tức phần lớn trong 32 % diện tích mà bản cũ bỏ tối.
+    Nhiễu NHÂN vào độ dốc (không cộng vào khoảng cách) giữ cho `d = 0 ⇒ 0`,
+    nên mép gợn mà chỗ sát nét vẫn tối tuyệt đối."""
+    if pad <= 0:
+        return 1.0
+    hf = NEB["hullFade"]
+    n = NZ.fbm(x * hf["warpFreq"] / W, y * hf["warpFreq"] / W, 3,
+               NEB["lacunarity"], NEB["gain"])
+    return smoothstep(fig_dist(x, y)
+                      / (pad * max(0.2, 1.0 + hf["warp"] * (n * 2 - 1))))
+
+
+_FIG = None
+_FIGD: dict = {}
+
+
+def fig_bits():
+    """Các ĐOẠN nét và tâm NGÔI của cả tám chòm. Dựng một lần."""
+    global _FIG
+    if _FIG is None:
+        _FIG = (net_chom_segs(),
+                [(x, y) for _c, x, y, _r, _t, _k in STARS])
+    return _FIG
+
+
+def fig_dist(x, y) -> float:
+    """Khoảng cách tới HÌNH chòm gần nhất — nét và ngôi, không bao lồi.
+
+    Nhớ lại theo toạ độ làm tròn 0,1 đơn vị, cùng lý do với `neb_field`: mỗi
+    lần hỏi màu một điểm là năm lần gọi (một cho trường, bốn cho ∇F), và lưới
+    đường đồng mức hỏi đúng những toạ độ ấy ở cả hai mươi hai bậc."""
+    k = (round(x, 1), round(y, 1))
+    v = _FIGD.get(k)
+    if v is None:
+        segs, pts = fig_bits()
+        v = min(min(seg_dist(x, y, a[0], a[1], b[0], b[1]) for a, b in segs),
+                min(math.hypot(x - px, y - py) for px, py in pts))
+        _FIGD[k] = v
+    return v
 
 
 _NEB_MEMO: dict = {}
@@ -902,11 +963,21 @@ def dust_field(x, y):
     một lớp mờ không ảnh hưởng gì — và một lớp sáng phủ đều lên tám bao lồi là
     tám cái hình chòm chìm vào nền. Hệ số loãng NHẸ hơn của tinh vân (0,55 so
     với 0,12): bụi xa là lớp XA NHẤT, nên nó phải mờ chứ không được biến mất,
-    không thì tám bao lồi thành tám cái lỗ đen có hình chữ nhật."""
+    không thì tám bao lồi thành tám cái lỗ đen có hình chữ nhật.
+
+    TẦN SỐ NHIỄU 1,6 → `dust.freq` ngày 20/10/2026, và lý do là một bức ảnh.
+    Ở 1,6 trên khung 1 360 px thì một quãng nhiễu dài ~850 px, tức LỚN HƠN
+    nửa khung: ba bậc đồng mức của lớp này ra ba cái MẢNG PHẲNG có mép gần
+    thẳng, và sau khi `spread` nới ra 3,2 thì mép ngoài cùng của chúng thành
+    một đường chéo cứng chạy qua góc trên-trái — nhìn thấy ngay trên PNG, mà
+    bảng tám bậc thì không: diện tích và độ chói y hệt, chỉ HÌNH là khác.
+    Ở 4,2 quãng nhiễu còn ~320 px nên ba bậc đan vào nhau thành mây, và mép
+    ngoài thôi là một đường."""
     t, s = mw_coords(x, y)
     hw = mw_half(t) * NEB["dust"]["spread"]
     band = smoothstep(1.0 - abs(s) / hw) if hw > 0 else 0.0
-    n = NZ.fbm(x * 1.6 / W, y * 1.6 / W, 5, NEB["lacunarity"], NEB["gain"])
+    f = NEB["dust"]["freq"] / W
+    n = NZ.fbm(x * f, y * f, 5, NEB["lacunarity"], NEB["gain"])
     fm = NEB["floorMix"]
     hf = NEB["dust"]["hullFade"]
     mo = hf + (1 - hf) * hull_atten(x, y, FIELD["hullPad"])
@@ -926,8 +997,16 @@ def light_wave(th: float) -> float:
 
 def light_m(th: float, r: float) -> float:
     """Biên độ méo TĂNG theo bán kính: rìa ngoài xơ xác, lõi tròn hơn. Đơn
-    điệu theo r nên hai vòng không bao giờ cắt nhau."""
-    k = math.sqrt(max(0.0, min(1.0, r / LIGHT["outer"])))
+    điệu theo r nên hai vòng không bao giờ cắt nhau.
+
+    Số mũ `warpRamp` thay căn bậc hai (tức mũ 0,5) ngày 20/10/2026, và lý do
+    là một bức ảnh: với mũ 0,5, ở mép lõi bão hoà (r = 62) hệ số đã là
+    √(62/210) = 0,54, tức lõi méo ±11 % bán kính và **đọc ra là một đa giác
+    méo, không một đĩa**. Phóng to trên PNG thấy rõ sáu bảy cạnh. Mũ 1,8 cho
+    0,12 ở cùng chỗ — lõi gần tròn — mà vẫn bằng 1 ở `outer`, nên rìa ngoài
+    xơ xác đúng như cũ. `light_re` là phép đảo của chính hàm này nên lượt vẽ
+    và lượt đo vẫn nói một hình."""
+    k = max(0.0, min(1.0, r / LIGHT["outer"])) ** LIGHT["warpRamp"]
     return 1.0 + LIGHT["warp"] * k * light_wave(th)
 
 
@@ -1835,27 +1914,45 @@ def ve_tia_bui(ink, P, dim):
     g0, g1 = ry["spread"]
     l0, l1 = ry["length"]
     o0, o1 = ry["opacity"]
+    # BA NÊM LỒNG NHAU cho mỗi tia, không một. Trên PNG bản một-nêm, chín tia
+    # đọc ra là **chín vạch kẻ kỹ thuật**: mép sắc tuyệt đối, bề rộng đều,
+    # toả đều từ tâm — dấu hiệu "máy vẽ" rõ nhất trong cả bức, và không con số
+    # nào trong bảng tám bậc nhìn thấy nó. Ánh sáng thật qua bụi có mép TÁN và
+    # bề rộng KHÔNG ĐỀU. Luật cấm gradient còn nguyên: cái tán ở đây làm bằng
+    # ba lớp phủ chồng (nêm ngoài rộng hơn và mờ hơn), đúng kỹ thuật của quầng
+    # sao và của bậc tinh vân.
+    lop = ry["layers"]
     for i, th in enumerate(sorted(chon)):
         u = i / max(1, len(chon) - 1)
         mo = math.radians(g0 + (g1 - g0) * rnd(i * 2.3, 7.1))
         dai = l0 + (l1 - l0) * rnd(i * 4.7, 3.3)
         r0 = LIGHT["core"] * 1.1
-        pts = []
-        for s in (-1, 1):
-            for k in range(7):
-                t = k / 6
-                rr = r0 + (r0 + dai) * t
-                a = th + s * mo / 2 * (0.3 + 0.7 * t)
-                x = cx + math.cos(a) * rr + (rnd(k * 1.7, i * 5.1) - 0.5) * ry["jitter"]
-                y = cy + math.sin(a) * rr + (rnd(k * 3.1, i * 2.7) - 0.5) * ry["jitter"]
-                # CẮT ở rìa chân trời — nêm là một lớp của TRỜI, và trời dừng
-                # ở mép khối.
-                y = min(y, chan_troi_y(x))
-                pts.append((x, y))
-            if s < 0:
-                pts.reverse()
-        ink.fill("tia-bui", pl(pts, True), P["dustLane"],
-                 (o0 + (o1 - o0) * u) * dim)
+        for q in range(lop):
+            # Nêm q: rộng hơn và mờ hơn khi ra ngoài. `q = 0` là lõi tia.
+            rong = 1.0 + ry["layerSpread"] * q
+            amo = (o0 + (o1 - o0) * u) / (1.0 + ry["layerFade"] * q)
+            pts = []
+            for s in (-1, 1):
+                for k in range(ry["steps"]):
+                    t = k / (ry["steps"] - 1)
+                    rr = r0 + (r0 + dai) * t
+                    # BỀ RỘNG KHÔNG ĐỀU theo chiều dài: một nhiễu dọc trục,
+                    # nên tia phình ra thóp vào thay vì là một cái nêm thẳng.
+                    phinh = 0.55 + 0.9 * NZ.v(t * 3.1 + i * 7.7, q * 2.3 + 1.9)
+                    a = th + s * mo / 2 * rong * phinh * (0.3 + 0.7 * t)
+                    # Rung MÉP: biên độ lớn dần ra ngoài — gốc tia còn gọn,
+                    # ngọn thì tướp. Nhiễu liên tục theo `t` (không phải
+                    # `rnd` theo chỉ số) nên mép gợn chứ không gãy khúc.
+                    j = ry["jitter"] * (0.25 + t) * rong
+                    x = cx + math.cos(a) * rr + (NZ.v(t * 5.3 + i * 3.3, s + q * 4.1) - 0.5) * 2 * j
+                    y = cy + math.sin(a) * rr + (NZ.v(t * 4.1 + i * 9.1, s * 2 + q) - 0.5) * 2 * j
+                    # CẮT ở rìa chân trời — nêm là một lớp của TRỜI, và trời
+                    # dừng ở mép khối.
+                    y = min(y, chan_troi_y(x))
+                    pts.append((x, y))
+                if s < 0:
+                    pts.reverse()
+            ink.fill("tia-bui", pl(pts, True), P["dustLane"], amo * dim)
 
 
 def ve_quang_chan_troi(ink, P, dim):
@@ -2645,6 +2742,53 @@ def tam_nen_can(box, P) -> bool:
     return False
 
 
+def hcn_bo_goc(x0, y0, x1, y1, r, seg=5):
+    """Hình chữ nhật BO GÓC thành một danh sách điểm — không `<rect rx>`, vì
+    cả tệp này chỉ xuất `<path>` và `raster.py` chỉ đọc `<path>`/`<circle>`."""
+    r = max(0.0, min(r, (x1 - x0) / 2, (y1 - y0) / 2))
+    pts = []
+    for cx, cy, a0 in ((x1 - r, y1 - r, 0.0), (x0 + r, y1 - r, math.pi / 2),
+                       (x0 + r, y0 + r, math.pi), (x1 - r, y0 + r, -math.pi / 2)):
+        for k in range(seg + 1):
+            a = a0 + math.pi / 2 * k / seg
+            pts.append((cx + math.cos(a) * r, cy + math.sin(a) * r))
+    return pts
+
+
+def ve_tam_nen(ink, box, P, mo=1.0):
+    """TẤM NỀN của một hộp nhãn — BA lớp bo góc lồng nhau, không một hình chữ
+    nhật đặc.
+
+    ── VÌ SAO ĐỔI, ngày 20/10/2026 ────────────────────────────────────────
+
+    Bản cũ là đúng một `<path>`: chữ nhật vuông góc, `base` ở độ mờ 0,9, cỡ
+    230 × 53. Lúc bầu trời còn tối thì không ai thấy nó. Sau khi tinh vân lên
+    L 0,45 thì tám cái ấy đọc ra trên PNG là **tám vệt bôi đen** — cái khuyết
+    tật thứ ba trong bốn cái mà bảng tám bậc không bắt được (tám hộp cộng lại
+    chưa tới 1 % diện tích).
+
+    KHÔNG xoá chúng: chúng là thứ giữ chữ ở 5,2 : 1 khi trời sáng, và xoá là
+    quay về đúng chỗ xuất phát. Đổi HÌNH của chúng:
+     · lớp TRONG CÙNG giữ nguyên `plateOpacity` và phủ TRỌN hộp chữ nở
+       `plateR` — nên `do_sang_sau_tam` (và cả 24 phép đo tương phản) vẫn nói
+       đúng về chỗ chữ thật sự nằm;
+     · hai lớp NGOÀI rộng thêm `plateFeather` px mỗi lớp và mờ đi theo
+       `plateFeatherFade` ⇒ mép TÁN thay vì một cạnh cắt;
+     · cả ba bo góc `plateCorner` px.
+    Tán bằng lớp phủ chồng chứ không bằng gradient — cùng kỹ thuật với quầng
+    sao, bậc tinh vân và nêm tia bụi. Vẽ từ NGOÀI vào trong, nên phần giữa
+    cộng dồn cả ba và còn đậm hơn `plateOpacity` một chút: cái đó chỉ làm
+    phép đo tương phản thành dè dặt hơn thực tế, không ngược lại."""
+    x0, y0, x1, y1 = box
+    n = LBL["plateLayers"]
+    for q in range(n - 1, -1, -1):
+        g = LBL["plateR"] + LBL["plateFeather"] * q
+        a = LBL["plateOpacity"] / (1.0 + LBL["plateFeatherFade"] * q)
+        ink.fill("nhan", pl(hcn_bo_goc(x0 - g, y0 - g, x1 + g, y1 + g,
+                                       LBL["plateCorner"] + g * 0.5), True),
+                 P["base"], a * mo)
+
+
 def do_sang_sau_tam(x, y, P, co_tam: bool):
     """Màu nền SAU tấm nền, nếu hộp này có tấm. Tấm tô `base` ở
     `plateOpacity`, nên nó KÉO mọi thứ về phía màu nền tuyệt đối."""
@@ -3207,10 +3351,7 @@ def ve_nhan(ink, P, focus, only=None):
         # chỗ nền đo được sáng hơn `plateAt` — tám tấm là ~0,5 KB, nhưng tám
         # tấm ở chỗ không cần là tám vệt tối vô cớ trên trời trống.
         if tam_nen_can(box, P):
-            pr = LBL["plateR"]
-            ink.fill("nhan", pl([(box[0] - pr, box[1] - pr), (box[2] + pr, box[1] - pr),
-                                 (box[2] + pr, box[3] + pr), (box[0] - pr, box[3] + pr)],
-                                True), P["base"], LBL["plateOpacity"] * mo)
+            ve_tam_nen(ink, box, P, mo)
         ink.poly("nhan", [p0, p1, p2], hue, LBL["ruleWidth"], lop)
         rule_x0 = box[0]
         ink.poly("nhan", [(rule_x0, p2[1]), (rule_x0 + wn + LBL["rulePad"], p2[1])],

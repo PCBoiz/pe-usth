@@ -16,7 +16,11 @@
 <g fill="#FFFFFF" fill-opacity="0.92"><circle cx="1006" cy="629" r="1.1"/><circle cx="1079" cy="584" r="1.1"/><circle cx="1143" cy="602" r="0.88"/><circle cx="1030" cy="720" r="1.38"/><circle cx="1088" cy="753" r="1.72"/><circle cx="1173" cy="700" r="1.1"/></g>
 </g>
 <g data-lop="nhan">
-<path fill="#0A0C14" fill-opacity="0.72" d="M745 717l230 0l0 53l-230 0Z"/>
+<path fill="#0A0C14" fill-opacity="0.07" d="M1015 776l-2 11l-5 9l-7 8l-10 5l-11 1l-241 0l-10 -1l-10 -5l-8 -8l-4 -9l-2 -11l0 -65l2 -10l4 -10l8 -7l10 -5l10 -2l241 0l11 2l10 5l7 7l5 10l2 10Z"/>
+<path fill="#0A0C14" fill-opacity="0.09" d="M1005 771l-2 9l-4 8l-6 7l-9 4l-9 1l-231 0l-9 -1l-8 -4l-6 -7l-5 -8l-1 -9l0 -55l1 -9l5 -8l6 -6l8 -5l9 -1l231 0l9 1l9 5l6 6l4 8l2 9Z"/>
+<path fill="#0A0C14" fill-opacity="0.13" d="M995 766l-1 8l-4 6l-5 6l-7 3l-8 1l-221 0l-7 -1l-7 -3l-5 -6l-4 -6l-1 -8l0 -45l1 -7l4 -7l5 -5l7 -4l7 -1l221 0l8 1l7 4l5 5l4 7l1 7Z"/>
+<path fill="#0A0C14" fill-opacity="0.22" d="M985 761l-1 6l-3 5l-4 5l-6 2l-6 1l-211 0l-6 -1l-5 -2l-4 -5l-3 -5l-1 -6l0 -35l1 -6l3 -5l4 -4l5 -3l6 -1l211 0l6 1l6 3l4 4l3 5l1 6Z"/>
+<path fill="#0A0C14" fill-opacity="0.9" d="M975 756l-1 4l-2 4l-3 4l-4 2l-5 0l-201 0l-4 0l-4 -2l-3 -4l-2 -4l-1 -4l0 -25l1 -4l2 -4l3 -3l4 -2l4 -1l201 0l5 1l4 2l3 3l2 4l1 4Z"/>
 <path fill="none" stroke="#E3D996" stroke-width="0.8" stroke-opacity="0.5" stroke-linecap="round" stroke-linejoin="round" d="M1021 725l-29 17l-16 0M750 742l167 0"/>
 <g fill="#E8EEF7" font-family="Be Vietnam Pro, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="20" font-weight="600"><text x="750" y="738">M2 · Đa luồng</text></g>
 </g>
