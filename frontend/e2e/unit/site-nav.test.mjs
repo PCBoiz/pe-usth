@@ -47,11 +47,27 @@ function routes(dir, prefix = '', out = []) {
 
 const ROUTES = routes(join(FE, 'src', 'app'));
 
+/**
+ * Route XEM THỬ của một bản thiết kế chưa dựng xong — cố ý KHÔNG có lối vào.
+ *
+ * Luật chống trang mồ côi tồn tại vì "một tính năng không có đường vào thì
+ * bằng không". Ở đây ngược lại: đưa một bản MẪU chưa xong lên thanh điều
+ * hướng là đẩy nó cho người học xem như thể nó đã là sản phẩm. Nên ngoại lệ
+ * phải (a) có tên viết ra ở đây kèm lý do, và (b) khai `robots: noindex` —
+ * ca dưới canh điều kiện (b), để một trang lọt vào danh sách này không đồng
+ * thời lọt vào Google.
+ *
+ * Dựng xong tám chòm thì bản đồ sao THAY bản đồ vực ở trang chủ, và dòng này
+ * bị xoá chứ không được đổi thành một mục trên thanh trên.
+ */
+const XEM_THU = ['/ban-do-sao'];
+
 test('mọi route đứng một mình đều có lối vào từ thanh trên', () => {
   // Route động (`[courseId]`) tới từ danh sách bài/khoá, không cần mục riêng.
   // `/practice/challenge` tới từ `/practice`, nên chỉ cần gốc có lối vào.
   const canLoiVao = ROUTES.filter(
-    (r) => r !== '/' && !r.includes('[') && !r.split('/').slice(2).length,
+    (r) => r !== '/' && !r.includes('[') && !r.split('/').slice(2).length
+      && !XEM_THU.includes(r),
   );
   assert.ok(canLoiVao.length > 0, 'không đọc được route nào — hàm quét hỏng');
 
@@ -63,6 +79,20 @@ test('mọi route đứng một mình đều có lối vào từ thanh trên', (
     'route không có lối vào nào từ thanh trên — một tính năng không có đường '
       + 'vào thì bằng không:\n' + moCoi.join('\n'),
   );
+});
+
+test('route xem thử phải tự khai `noindex` — miễn lối vào thì cũng miễn Google', () => {
+  assert.ok(XEM_THU.length > 0, 'danh sách rỗng mà ca này vẫn xanh thì nó vô dụng');
+  for (const r of XEM_THU) {
+    assert.ok(ROUTES.includes(r), `${r} không còn tồn tại — xoá nó khỏi XEM_THU`);
+    const src = read('src', 'app', ...r.slice(1).split('/'), 'page.tsx');
+    assert.match(
+      src,
+      /robots:\s*\{[^}]*index:\s*false/,
+      `${r} được miễn lối vào từ thanh trên nhưng không khai \`robots: { index: false }\` —`
+      + ' một bản mẫu chưa xong lọt vào kết quả tìm kiếm là đúng thứ ngoại lệ này né',
+    );
+  }
 });
 
 test('ẩn "Bàn thí nghiệm" cùng lúc với thẻ công cụ ở trang chủ', () => {

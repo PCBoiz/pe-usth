@@ -1,0 +1,149 @@
+/* BẢN ĐỒ SAO — route xem thử `/ban-do-sao`, bản mẫu chòm M1 "Chạc".
+
+   Đặc tả: `design/v3/ban-do-sao.md` §10 (hover) và §11 (điện thoại · giảm
+   chuyển động). Dữ liệu và mọi mã màu: `src/lib/star-map.ts`.
+
+   ── BỐN LUẬT CỦA FILE NÀY ─────────────────────────────────────────────
+
+   1. KHÔNG MÃ MÀU NÀO. `npm run lint:tokens` cấm hex trong mọi `*.module.css`.
+      Bảng màu của bầu trời nằm ở `SKY_PROFILE_DARK` và đi vào tranh qua thuộc
+      tính `fill=`/`stroke=` của SVG; ở đây chỉ còn token `--ds-*`.
+
+   2. TRẠNG THÁI HOVER LÀ MỘT TẤM ẢNH KHÁC, không phải một bộ lọc CSS. Tranh
+      vào trang bằng `<img>`, tức một tài liệu SVG RIÊNG bị cách ly: CSS của
+      trang không khớp được selector nào bên trong, JS không `querySelector`
+      vào được. Nên mọi `id`/`data-*` đặt trong SVG là BYTE CHẾT tải ở mỗi lượt
+      vào trang (`figure-motion.ts` đã trả giá cho đúng điều này với 23 hình
+      nhúng bằng `<img>`). Hai tấm, một lớp phủ HTML đổi `opacity` giữa chúng.
+
+   3. TRANG NẠP XONG LÀ ĐỨNG YÊN. Không sao nhấp nháy, không tinh vân trôi,
+      không parallax theo chuột, không hoạt ảnh lúc vào trang. Chỉ con trỏ
+      (hoặc tiêu điểm bàn phím) đặt lên một chòm mới có gì đổi. Hệ quả: bản đồ
+      nằm hoàn toàn NGOÀI tiêu chí WCAG 2.2.2 (Dừng/Ngừng/Ẩn) — không có gì
+      phải cho người dùng tắt, vì không có gì tự chạy.
+
+   4. `:focus-visible` CHO RA ĐÚNG CÙNG MỘT TRẠNG THÁI như `:hover`, cộng vòng
+      tiêu điểm. Người đi bằng Tab phải thấy đúng thứ người đi bằng chuột thấy.
+
+   Vị trí vùng bấm (`.hitM1`) do `py scripts/star/build_sky.py --css` in ra —
+   nó là bao lồi của chòm nở 20 px HỢP hộp nhãn, tính trong khung 1360 × 820
+   rồi quy ra % của ô cắt. ĐỪNG sửa tay: `e2e/unit/star-map.test.mjs` tính lại
+   từ chính SVG đã sinh và so từng con số. */
+
+.wrap {
+  margin: 0 auto;
+  max-width: 980px;
+  padding: 32px 16px 64px;
+}
+
+.lead {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-lead);
+  margin: 0 0 8px;
+}
+
+.hint {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  margin: 0 0 20px;
+  opacity: 0.75;
+}
+
+/* Khung giữ ĐÚNG tỉ lệ ô cắt (660 × 390) để vùng bấm tính bằng % không lệch
+   theo bề rộng màn. */
+.frame {
+  aspect-ratio: 660 / 390;
+  background: var(--ds-page);
+  border-radius: var(--ds-r-md);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.sky,
+.skyFocus {
+  display: block;
+  height: 100%;
+  left: 0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+/* Tấm hover nằm TRÊN vùng bấm trong thứ tự DOM, nên `.hit:hover ~ .skyFocus`
+   khớp được mà không cần `:has()`. Nó phải `pointer-events: none`, nếu không
+   nó che mất chính cái liên kết đang làm nó hiện ra. */
+.skyFocus {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ds-dur-base) ease;
+}
+
+.hit {
+  border-radius: var(--ds-r-sm);
+  display: block;
+  position: absolute;
+}
+
+/* Bao lồi chòm M1 nở 20 px, hợp hộp nhãn — sinh bởi `--css`. */
+.hitM1 {
+  height: 57.91%;
+  left: 21.985%;
+  top: 39.462%;
+  width: 56.126%;
+}
+
+.hit:hover ~ .skyFocus,
+.hit:focus-visible ~ .skyFocus {
+  opacity: 1;
+}
+
+.hit:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet-deep);
+  outline-offset: 2px;
+}
+
+/* MÁY KHÔNG CÓ HOVER (§11.1): không có hover thì KHÔNG có cách nào xem được
+   lớp giải nghĩa, nên trạng thái nghỉ được nâng lên một nấc VĨNH VIỄN. Chạm
+   một cái là đi tới chặng — không bao giờ "chạm lần một để xem, chạm lần hai
+   để đi", luật đó phá kỳ vọng của một liên kết. */
+@media (hover: none) {
+  .skyFocus { opacity: 1; }
+}
+
+/* GIẢM CHUYỂN ĐỘNG (§11.2). WCAG có một định nghĩa hẹp mà dễ đọc nhầm: đổi
+   màu hay đổi ĐỘ MỜ KHÔNG tính là hoạt ảnh chuyển động, trừ khi nó làm đổi
+   kích thước, hình dạng, vị trí hoặc chiều sâu cảm nhận được.
+
+   Ở đây hai tấm ảnh khác nhau CHỈ Ở ĐỘ MỜ — không bán kính nào to lên, không
+   nét nào dày lên (xem `build_sky.py`). Nên dưới `reduce` chỉ cần bỏ CHUYỂN
+   TIẾP, còn phản hồi thì GIỮ NGUYÊN: giảm chuyển động không có nghĩa là bỏ
+   phản hồi, và người dùng `reduce` vẫn phải phân biệt được chòm đang trỏ. */
+@media (prefers-reduced-motion: reduce) {
+  .skyFocus { transition: none; }
+}
+
+.srOnly {
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+.legend {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  margin: 20px 0 0;
+  padding: 0 0 0 20px;
+}
+
+.legend li { margin: 0 0 6px; }
+
+.legendTitle {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-h3);
+  margin: 24px 0 8px;
+}
