@@ -43,8 +43,14 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 594 ca đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 628 ca, 627 đạt · xem ghi chú dưới bảng | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
+
+Ca trượt duy nhất của frontend là **`e2e/unit/world-map.test.mjs` → "đường nối CHỈ
+có ở M5 → M6 → M7 → M8, và vẽ từ dữ liệu"**: bức tranh bản đồ đang được vẽ lại ngay
+lúc đo (`scripts/map/build_map.py` còn dở trong cây làm việc), nên giếng trong SVG
+chưa khớp `MAP_WELLS`. Nó KHÔNG phải mốc mới được phép trượt — số đúng của dòng này
+là **628/628**, và người hoàn tất bản vẽ phải đưa nó về 0 rồi sửa lại ô trên.
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
 Đã trả giá một lần: phiên 15/10 sửa bảng ở commit ĐẦU rồi 14 commit sau thêm

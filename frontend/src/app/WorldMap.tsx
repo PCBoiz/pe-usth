@@ -63,6 +63,7 @@ import {
   regionStep,
 } from '@/lib/world-map';
 
+import MapMotion from './MapMotion';
 import styles from './world-map.module.css';
 
 /** Mạch sáng ở bản hẹp: một đoạn dọc giữa hai vùng, chảy theo hướng cuộn. */
@@ -165,6 +166,14 @@ export default function WorldMap({ regions }: WorldMapProps) {
             trống chứ không phải `<img>`: ở bản hẹp quy tắc @container tắt nó
             nên trình duyệt không tải 850 KB mà điện thoại không bao giờ hiện. */}
         <div className={styles.decor} data-map-decor aria-hidden="true" />
+
+        {/* LỚP CHUYỂN ĐỘNG — chồng lên tranh, dưới tám liên kết. Nó KHÔNG chạm
+            `.decor`: tranh là ảnh nền 877 KB, nên nó là lớp XA NHẤT với hệ số
+            parallax = 0 và không bị vẽ lại lần nào. Thứ tự ở đây là hợp đồng:
+            sau tranh (để chồng lên), trước tám liên kết (để không chắn cú bấm —
+            lớp còn `pointer-events: none`). Tháo một dòng này ra thì bản đồ vẫn
+            đủ và vẫn bấm được. Xem `src/lib/map-motion.ts`. */}
+        <MapMotion />
 
         {BANDS.map((band) => {
           const seam = SEAMS[band];
