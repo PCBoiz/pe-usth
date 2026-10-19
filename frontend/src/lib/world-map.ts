@@ -190,13 +190,16 @@ export const REGION_LAYOUT: readonly RegionLayout[] = [
 /**
  * HÌNH THÁI CỦA CÁI VỰC — mặt cắt theo độ sâu, mốc tầng, và tám cái hốc.
  *
- * Vì sao nằm ở ĐÂY chứ không trong `build_map.py`: hai bên phải đọc CÙNG một
- * nguồn. `build_map.py` đọc khối này qua `read_ts()` để vẽ; lớp chuyển động
- * (`map-motion.ts`, phần tử HTML chồng LÊN tranh) đọc nó để đặt mốc. Đã trả
- * giá một lần cho chuyện chép: lớp chuyển động từng giữ bản sao bốn mốc địa
- * tầng, và bản sao chết trong hai giờ khi bức tranh được vẽ lại
- * (238/390/528/710 → 128/378/508/716). Toạ độ nào mà cả hai bên cùng cần thì
- * nó ở đây, không ở đâu khác.
+ * Vì sao nằm ở ĐÂY chứ không trong `build_map.py`: `build_map.py` đọc khối này
+ * qua `read_ts()` để vẽ, nên mọi toạ độ mà cả TS lẫn script cùng cần thì ở đây,
+ * không ở đâu khác. Đã trả giá một lần cho chuyện chép: lớp chuyển động từng
+ * giữ bản sao bốn mốc địa tầng, và bản sao chết trong hai giờ khi bức tranh
+ * được vẽ lại (238/390/528/710 → 128/378/508/716).
+ *
+ * Lớp chuyển động nay KHÔNG còn đọc khối này: `map-motion.ts` xuống chỉ còn
+ * hiệu ứng hover và bám `[data-map-region]`, không bám toạ độ nào
+ * (commit 5b3d282). Chú thích cũ nói nó "đọc nó để đặt mốc" là chú thích của
+ * bản có năm hiệu ứng tự chạy, đã gỡ.
  *
  * KHÔNG phải mọi nét của bức vẽ đều ở đây — nhiễu, hachure, chấm lấm tấm là
  * việc của script. Ở đây chỉ có những con số mà một người khác có thể cần để
