@@ -58,6 +58,7 @@ export const GAME_KINDS = [
   'spotError',
   'debug',
   'selfExplain',
+  'soQuy',
 ] as const;
 
 export type ScreenKindName = (typeof SCREEN_KINDS)[number];

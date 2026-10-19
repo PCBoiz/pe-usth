@@ -8,6 +8,7 @@
 // chấm chạy trong Docker, chỉ cần đổi lớp dựng trong `grab()` dưới đây.
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { cauCham, docVet } from '@/lib/so-quy-replay';
 import {
   isGraded,
   parsonsCode,
@@ -218,8 +219,57 @@ export function useLessonRun({
   function gameCode(g: PlayGame): string {
     const st = draft.games?.[g.id] ?? {};
     if (g.type === 'parsons') return parsonsCode(g, st.picked ?? []);
-    if (g.type === 'debug') return st.code ?? g.code;
+    if (g.type === 'debug' || g.type === 'soQuy') return st.code ?? g.code;
     return '';
+  }
+
+  /**
+   * Mini-game có động cơ (soQuy): KHÔNG chạy bộ test của bài — động cơ tự chấm
+   * bằng vết (sổ quỹ ra đúng tổng, không ai ghi đè, ở mọi lịch đã dò). Vẫn đi
+   * qua cùng `runner.run()` nên vẫn chung đồng hồ 5 giây + terminate().
+   */
+  function runEngineGame(key: string, g: Extract<PlayGame, { type: 'soQuy' }>, grade: boolean) {
+    setMessage('');
+    void runner
+      .run({
+        code: gameCode(g),
+        tests: [],
+        forbid: [],
+        files: [],
+        stdin: [],
+        packages: [],
+        engine: {
+          kind: 'so-quy',
+          config: {
+            so_du: g.soDu,
+            ham: g.ham,
+            nguoi: g.nguoi.map((p) => ({ ten: p.ten, so_tien: p.soTien })),
+          },
+        },
+      })
+      .then((data) => {
+        if (!data) return;
+        setGameRuns((prev) => ({ ...prev, [key]: data }));
+        if (!grade) return;
+        const vet = docVet(data.trace);
+        const correct = Boolean(vet?.dat) && !data.error;
+        setRunVerdicts((prev) => ({
+          ...prev,
+          [key]: {
+            correct,
+            result: data,
+            explain: vet
+              ? cauCham(vet)
+              : (data.error ?? 'Không đọc được kết quả chạy. Bấm Chạy lại.'),
+          },
+        }));
+        setCheckedKey(key);
+        award(key, correct);
+        if (correct) {
+          markDone(key);
+          setCelebrate((n) => n + 1);
+        }
+      });
   }
 
   /** "Kiểm tra" ở game chạy code: chạy thật, đạt hết test mới tính đúng. */
@@ -230,6 +280,7 @@ export function useLessonRun({
       delete next[key];
       return next;
     });
+    if (g.type === 'soQuy') return runEngineGame(key, g, grade);
     execute(gameCode(g), (data) => {
       setGameRuns((prev) => ({ ...prev, [key]: data }));
       if (!grade) return;

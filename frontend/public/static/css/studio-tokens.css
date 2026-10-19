@@ -72,6 +72,16 @@
   --ds-ochre:       #047857;   /* đã có, đúng, đã xong · 5,53:1 */
   --ds-ochre-tint:  #E7F6F0;
 
+  /* ── HÌNH MINH HOẠ · vàng tơ của chặng đa luồng (M2) ────────
+     Bảng minh hoạ TÁCH khỏi xanh–đỏ của giao diện (design/v3/quyet-dinh.md
+     mục 2): mini-game "Sổ quỹ chung" của bài T05 vẽ bằng ba token này. Mã gốc
+     #C9A646 của báo cáo bản đồ chỉ 2,33:1 trên thẻ — không đủ cho nét mang
+     nghĩa (cửa, khoá, nhân vật cần ≥ 3:1) — nên nó lùi về mảng trang trí,
+     còn nét dùng bản đậm. Đã đo, cặp nằm trong e2e/unit/ds-contrast.mjs. */
+  --ds-silk:        #8A6D1E;   /* nét hình · 4,50:1 trên silk-tint */
+  --ds-silk-soft:   #C9A646;   /* mảng trang trí, không mang nghĩa */
+  --ds-silk-tint:   #FBF5E3;   /* nền sân khấu · chữ ink 15,73:1 */
+
   /* ── BẢNG TOKEN v2 · khung code (tối ở cả hai chế độ) ─────── */
   --ds-code-bg:     #221A13;
   --ds-code-line:   #3D3127;   /* đường kẻ trong khung code */
@@ -260,6 +270,10 @@ body.dark {
   --ds-sanguine-tint: #33202A;
   --ds-ochre:       #4FD0A0;   /* 8,47:1 */
   --ds-ochre-tint:  #10291F;
+  /* Vàng tơ ban đêm: mã gốc đủ sáng làm nét (6,63:1 trên silk-tint đêm). */
+  --ds-silk:        #C9A646;
+  --ds-silk-soft:   #7A6427;
+  --ds-silk-tint:   #2A2416;   /* chữ ink đêm 13,22:1 */
 
   --ds-shadow-open: 0 6px 22px rgba(0, 0, 0, .45);
 }

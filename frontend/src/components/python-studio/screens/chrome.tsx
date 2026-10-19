@@ -86,6 +86,7 @@ export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: st
     spotError: { icon: ICON.bulb, label: 'Game · Săn lỗi' },
     debug: { icon: ICON.play, label: 'Game · Sửa code' },
     selfExplain: { icon: ICON.bulb, label: 'Tự giải thích' },
+    soQuy: { icon: ICON.play, label: 'Mô phỏng · Hai luồng' },
   };
   if (scr.kind === 'game' && scr.gameType) return games[scr.gameType];
   const found = map[scr.kind] ?? { icon: ICON.book, label: scr.label };

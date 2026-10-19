@@ -9,6 +9,7 @@ import DebugGame from './games/DebugGame';
 import MatchGame from './games/MatchGame';
 import ParsonsGame from './games/ParsonsGame';
 import SelfExplainGame from './games/SelfExplainGame';
+import SoQuyGame from './games/SoQuyGame';
 import SpotErrorGame from './games/SpotErrorGame';
 import TraceTableGame from './games/TraceTableGame';
 import TrueFalseGame from './games/TrueFalseGame';
@@ -56,6 +57,19 @@ export default function GameScreen(props: LessonScreenProps & { game: PlayGame }
           {...shared}
           game={game}
           lesson={props.lesson}
+          gameRun={props.gameRun}
+          onRunGame={props.onRunGame}
+          onStop={props.onStop}
+          running={props.running}
+          runtimeStatus={props.runtimeStatus}
+          busy={props.busy}
+        />
+      );
+    case 'soQuy':
+      return (
+        <SoQuyGame
+          {...shared}
+          game={game}
           gameRun={props.gameRun}
           onRunGame={props.onRunGame}
           onStop={props.onStop}

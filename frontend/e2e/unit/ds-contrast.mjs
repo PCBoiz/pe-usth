@@ -586,6 +586,32 @@ export const PAIRS = [
   // Thẻ gợi ý: nền `ink`, chữ `page` — cặp tự đảo theo bản nền, như trang chủ.
   ['trang khoá: thẻ gợi ý · chữ (.resumeCard)', '--ds-page', '--ds-ink', 'text'],
   ['trang khoá: thẻ gợi ý · vòng focus nút / nền thẻ', '--ds-page', '--ds-ink', 'ui'],
+
+  // ── mini-game "Sổ quỹ chung" (screens/games/SoQuyGame.module.css), bài T05.
+  // Sân khấu vẽ bằng vàng tơ (--ds-silk*), bảng minh hoạ riêng của chặng đa
+  // luồng. Đo ngày 19/10/2026 trước khi đặt chữ lên đó: mã gốc #C9A646 chỉ
+  // 2,33:1 trên thẻ nên chỉ làm mảng trang trí; nét mang nghĩa dùng bản đậm.
+  ['sổ quỹ: số dư trong sổ (.bookNum)', '--ds-ink', '--ds-card', 'text'],
+  ['sổ quỹ: số vừa bị ghi đè, gạch ngang (.oldNum)', '--ds-soft', '--ds-card', 'text'],
+  ['sổ quỹ: số trong bong bóng (.bubbleNum)', '--ds-ink', '--ds-card', 'text'],
+  ['sổ quỹ: tên và số tiền dưới nhân vật (.name)', '--ds-ink', '--ds-silk-tint', 'text'],
+  ['sổ quỹ: nét tường, cửa, khoá, nhân vật trên sân khấu (.wall)', '--ds-silk', '--ds-silk-tint', 'ui'],
+  ['sổ quỹ: viền bong bóng trên sân khấu (.bubble)', '--ds-silk', '--ds-silk-tint', 'ui'],
+  ['sổ quỹ: viền sổ lúc bị ghi đè (.bookHong)', '--ds-sanguine', '--ds-silk-tint', 'ui'],
+  ['sổ quỹ: mảng cánh cửa và mặt bàn (.desk)', '--ds-silk-soft', '--ds-silk-tint', 'decor',
+    'Mảng tô của cửa, bàn, gáy sổ: hình nào mang nghĩa (cửa đóng/mở, khoá) đều có '
+    + 'NÉT --ds-silk 4,50:1 bao quanh, mảng tô chỉ làm hình đầy đặn.'],
+  ['sổ quỹ: ô lịch của người thứ nhất (.lichA)', '--ds-ink', '--ds-silk-soft', 'text'],
+  ['sổ quỹ: ô lịch của người thứ hai (.lichB)', '--ds-ink', '--ds-silk-tint', 'text'],
+  ['sổ quỹ: mục tiêu đạt (.goalOk)', '--ds-ochre', '--ds-ochre-tint', 'text'],
+  ['sổ quỹ: mục tiêu chưa đạt (.goalBad)', '--ds-sanguine', '--ds-sanguine-tint', 'text'],
+  ['sổ quỹ: bộ đếm nhịp (.counter)', '--ds-soft', '--ds-card', 'text'],
+  ['sổ quỹ: hộp lỗi cạnh dòng hỏng · chữ (.hopLoi)', '--ds-ink', '--ds-sanguine-tint', 'text'],
+  ['sổ quỹ: hộp lỗi · nhãn "nhịp · dòng" (.hopLoiNhan)', '--ds-sanguine', '--ds-sanguine-tint', 'text'],
+  ['sổ quỹ: mốc người thứ nhất trong code (.markA)', '--ds-code-bg', '--ds-mark-ochre', 'text'],
+  ['sổ quỹ: mốc người thứ hai trong code (.markB)', '--ds-mark-ochre', '--ds-code-bg', 'text'],
+  ['sổ quỹ: dòng vừa chạy (.codeLineOn)', '--ds-code-fg', '--ds-code-line', 'text'],
+  ['sổ quỹ: nút tua · chữ và viền (.iconBtn)', '--ds-ink', '--ds-paper', 'ui'],
 ];
 
 const NEED = { text: 4.5, large: 3, ui: 3, decor: 0, inactive: 0 };

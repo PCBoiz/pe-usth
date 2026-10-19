@@ -1,0 +1,419 @@
+/* Game · Sổ quỹ chung (bài T05).
+   Giao diện (nút, thanh tua, bảng biến, khung code) dùng bảng --ds-* như mọi màn.
+   Sân khấu minh hoạ dùng vàng tơ (--ds-silk*) của chặng đa luồng — tách khỏi
+   xanh–đỏ của giao diện (design/v3/quyet-dinh.md mục 2). Mọi cặp chữ/nền và
+   nét/nền ở đây đã đo, nằm trong e2e/unit/ds-contrast.mjs. */
+
+.game {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ── sân khấu ─────────────────────────────────────────────── */
+.stage {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: var(--ds-silk-tint);
+  border: var(--ds-bw-1) solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  font-family: inherit;
+}
+.floor,
+.wall {
+  fill: none;
+  stroke: var(--ds-silk);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.door {
+  fill: var(--ds-silk-soft);
+  stroke: var(--ds-silk);
+  stroke-width: 2;
+}
+.shackle {
+  fill: none;
+  stroke: var(--ds-silk);
+  stroke-width: 3;
+}
+.lockBody {
+  fill: var(--ds-silk);
+}
+.desk {
+  fill: var(--ds-silk-soft);
+}
+.book {
+  fill: var(--ds-card);
+  stroke: var(--ds-silk);
+  stroke-width: 2;
+}
+.bookHong {
+  stroke: var(--ds-sanguine);
+  stroke-width: 3;
+}
+.spine {
+  stroke: var(--ds-silk-soft);
+  stroke-width: 2;
+}
+.bookNum {
+  fill: var(--ds-ink);
+  font-size: 26px;
+  font-weight: 700;
+}
+.oldNum {
+  fill: var(--ds-soft);
+  font-size: 16px;
+  text-decoration: line-through;
+}
+
+.nguoi {
+  transition: transform var(--ds-dur-base) ease;
+}
+/* Ô đứng: ngoài cửa (chưa vào) · sát cửa (đang chờ khoá) · bên bàn. */
+.oNgoai0 { transform: translate(52px, 210px); }
+.oNgoai1 { transform: translate(112px, 210px); }
+.oCua    { transform: translate(152px, 210px); }
+.oBan0   { transform: translate(296px, 210px); }
+.oBan1   { transform: translate(484px, 210px); }
+
+.head,
+.body {
+  stroke: var(--ds-silk);
+  stroke-width: 2;
+}
+.nguoiA .head,
+.nguoiA .body {
+  fill: var(--ds-silk-soft);
+}
+.nguoiB .head,
+.nguoiB .body {
+  fill: var(--ds-silk-tint);
+}
+.dangLam .head,
+.dangLam .body {
+  stroke-width: 4;
+}
+/* Đã xong: nét đứt — không hạ độ đục (luật của bảng v2: làm nhạt bằng opacity
+   là làm hỏng tương phản đã đo). */
+.xong .head,
+.xong .body {
+  stroke-dasharray: 4 3;
+}
+.name {
+  fill: var(--ds-ink);
+  font-size: 14px;
+  font-weight: 700;
+}
+.bubble {
+  fill: var(--ds-card);
+  stroke: var(--ds-silk);
+  stroke-width: 2;
+}
+.bubbleNum {
+  fill: var(--ds-ink);
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* ── mục tiêu ─────────────────────────────────────────────── */
+.goal {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
+}
+.goalLabel {
+  color: var(--ds-soft);
+  font-weight: 500;
+}
+.goalOk,
+.goalBad {
+  border-radius: var(--ds-r-pill);
+  padding: 2px 10px;
+}
+.goalOk {
+  color: var(--ds-ochre);
+  background: var(--ds-ochre-tint);
+}
+.goalBad {
+  color: var(--ds-sanguine);
+  background: var(--ds-sanguine-tint);
+}
+
+/* ── thanh tua ────────────────────────────────────────────── */
+.scrub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.iconBtn,
+.playBtn {
+  min-width: 44px;
+  min-height: 44px;
+  border: var(--ds-bw-2) solid var(--ds-ink);
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.playBtn {
+  padding: 0 18px;
+}
+.iconBtn:disabled,
+.playBtn:disabled {
+  border-color: var(--ds-sketch);
+  background: var(--ds-desk);
+  color: var(--ds-soft);
+  cursor: default;
+}
+.iconBtn:focus-visible,
+.playBtn:focus-visible,
+.range:focus-visible,
+.runBtn:focus-visible,
+.textarea:focus-visible {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 2px;
+}
+.range {
+  flex: 1 1 160px;
+  min-width: 0;
+  min-height: 44px;
+  accent-color: var(--ds-violet);
+}
+.counter {
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dải lịch: mỗi nhịp một ô. */
+.lich {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lichO {
+  min-width: 26px;
+  border: var(--ds-bw-2) solid transparent;
+  border-radius: var(--ds-r-xs);
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
+  text-align: center;
+}
+.lichA {
+  background: var(--ds-silk-soft);
+}
+.lichB {
+  background: var(--ds-silk-tint);
+  border-color: var(--ds-silk);
+}
+/* Nhịp đứng chờ: chỉ viền đứt, không nền. */
+.lichCho {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--ds-silk);
+}
+.lichDang {
+  outline: var(--ds-bw-3) solid var(--ds-violet);
+  outline-offset: 1px;
+}
+.lichHong {
+  border-bottom: var(--ds-bw-rail) solid var(--ds-sanguine);
+}
+
+/* ── code đã chạy + bảng biến ─────────────────────────────── */
+.panels {
+  display: grid;
+  grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  gap: 12px;
+}
+@media (max-width: 640px) {
+  .panels {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.code {
+  overflow-x: auto;
+  padding: 10px 0;
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-code-bg);
+  color: var(--ds-code-fg);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--ds-fs-code);
+  line-height: 1.7;
+}
+.codeLine {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 0 12px;
+  border-left: var(--ds-bw-rail) solid transparent;
+}
+.codeLineOn {
+  border-left-color: var(--ds-mark-ochre);
+  background: var(--ds-code-line);
+}
+.lineNo {
+  min-width: 2ch;
+  color: var(--ds-code-num);
+  text-align: right;
+  user-select: none;
+}
+.marks {
+  display: inline-flex;
+  gap: 2px;
+  min-width: 3ch;
+}
+.markA,
+.markB {
+  padding: 0 4px;
+  border-radius: var(--ds-r-xs);
+  font-weight: 700;
+}
+.markA {
+  color: var(--ds-code-bg);
+  background: var(--ds-mark-ochre);
+}
+.markB {
+  color: var(--ds-mark-ochre);
+  border: var(--ds-bw-1) solid var(--ds-mark-ochre);
+}
+.codeText {
+  white-space: pre;
+  font: inherit;
+}
+.code :global(.kw) {
+  color: var(--ds-code-kw);
+}
+.code :global(.str) {
+  color: var(--ds-code-str);
+}
+.code :global(.num) {
+  color: var(--ds-code-fg);
+}
+.code :global(.cm) {
+  color: var(--ds-code-num);
+}
+/* Hộp lỗi gắn ngay dưới dòng hỏng (kiểu CodeCombat). */
+.hopLoi {
+  margin: 4px 12px 6px;
+  padding: 8px 10px;
+  border-left: var(--ds-bw-rail) solid var(--ds-sanguine);
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-sanguine-tint);
+  color: var(--ds-ink);
+  font-family: inherit;
+  font-size: var(--ds-fs-ui);
+  line-height: 1.5;
+  white-space: normal;
+}
+.hopLoiNhan {
+  color: var(--ds-sanguine);
+}
+
+.vars {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  font-variant-numeric: tabular-nums;
+}
+.vars th,
+.vars td {
+  padding: 6px 8px;
+  border-bottom: var(--ds-bw-1) solid var(--ds-line);
+  text-align: left;
+}
+.vars thead th {
+  color: var(--ds-soft);
+  font-weight: 700;
+}
+
+.inRa {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: var(--ds-r-md);
+  background: var(--ds-code-bg);
+  color: var(--ds-code-fg);
+  font-size: var(--ds-fs-code);
+  white-space: pre-wrap;
+}
+
+/* ── ô soạn ───────────────────────────────────────────────── */
+.editor {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.editorLabel {
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
+}
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border: var(--ds-bw-1) solid var(--ds-code-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-code-bg);
+  color: var(--ds-code-fg);
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--ds-fs-code);
+  line-height: 1.7;
+  tab-size: 4;
+  resize: vertical;
+}
+.runRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.runBtn {
+  min-height: 44px;
+  padding: 0 22px;
+  border: 0;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-action);
+  color: var(--ds-on-action);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.runBtn:disabled {
+  background: var(--ds-desk);
+  color: var(--ds-soft);
+  cursor: default;
+}
+.runStatus {
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* Tắt chuyển động: nhân vật đổi chỗ tức thì. Thanh tua vẫn dùng được như cũ. */
+@media (prefers-reduced-motion: reduce) {
+  .nguoi {
+    transition: none;
+  }
+}

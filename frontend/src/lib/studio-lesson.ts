@@ -267,6 +267,23 @@ export type SpotErrorGame = {
 };
 export type DebugGame = { type: 'debug'; code: string; label: string };
 export type SelfExplainGame = { type: 'selfExplain' };
+/**
+ * Mini-game có ĐỘNG CƠ riêng (bài T05 · "Sổ quỹ chung"): người học viết thân
+ * hàm mà mọi người cùng chạy; động cơ Python (public/static/js/so-quy.py) cho
+ * họ chạy xen kẽ theo lịch TẤT ĐỊNH và trả vết từng nhịp để phát lại.
+ * Đạt = sổ quỹ ra đúng tổng và không ai ghi đè, ở MỌI lịch động cơ đã dò.
+ */
+export type SoQuyGame = {
+  type: 'soQuy';
+  /** Code khởi đầu trong ô soạn. */
+  code: string;
+  /** Lời giải mẫu — chỉ bảng đáp án của admin đọc. */
+  loiGiai: string;
+  /** Tên hàm mọi người cùng chạy, gọi `ham(so_quy, khoa, so_tien)`. */
+  ham: string;
+  soDu: number;
+  nguoi: { ten: string; soTien: number }[];
+};
 
 export type PlayGame = { id: string; title: string } & (
   | TraceTableGame
@@ -277,6 +294,7 @@ export type PlayGame = { id: string; title: string } & (
   | SpotErrorGame
   | DebugGame
   | SelfExplainGame
+  | SoQuyGame
 );
 
 export type Play = {
@@ -712,7 +730,7 @@ export function isGraded(kind: ScreenKind): boolean {
 
 /** Game chấm bằng CHẠY code trong Pyodide (bất đồng bộ) thay vì so đáp án. */
 export function isRunnableGame(game: PlayGame | undefined): boolean {
-  return game?.type === 'parsons' || game?.type === 'debug';
+  return game?.type === 'parsons' || game?.type === 'debug' || game?.type === 'soQuy';
 }
 
 /** Ghép chương trình từ các dòng đã xếp — khớp scripts/pe-v3/check-advanced.mjs. */
@@ -754,6 +772,7 @@ export function gameAnswered(lesson: StudioLesson, game: PlayGame, d: LessonDraf
     case 'spotError':
       return st.line != null;
     case 'debug':
+    case 'soQuy':
       return true;
     case 'selfExplain':
       return d.explanation.trim().length > 0;

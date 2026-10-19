@@ -97,7 +97,71 @@ async function getRuntime() {
   return runtime;
 }
 
+// Động cơ mini-game: file Python riêng, nạp LƯỜI vào chính runtime này (không
+// dựng Pyodide thứ hai — hai bản là gấp đôi ~13 MB và gấp đôi RAM của máy học
+// viên). Mỗi động cơ sống trong namespace riêng để tên của nó không đè lên tên
+// của bộ chấm studio-harness.py. Vì đi qua cùng worker và cùng thông điệp
+// 'ready'/'result'/'idle', phía React (runner/pyodide-runner.ts) vẫn bấm 5 giây
+// rồi terminate() như mọi lượt chạy: vòng lặp vô hạn mà động cơ không tự cắt
+// được (một BIỂU THỨC chạy mãi) vẫn bị cắt.
+const ENGINES = {
+  'so-quy': { file: '/static/js/so-quy.py', main: '_so_quy_main' },
+};
+/** Tên động cơ → hàm main (PyProxy) đã nạp. */
+const engineMains = new Map();
+let pythonVersion = '';
+
+async function engineMain(py, kind) {
+  if (engineMains.has(kind)) return engineMains.get(kind);
+  const spec = ENGINES[kind];
+  if (!spec) throw new Error(`không có động cơ mini-game "${kind}"`);
+  const res = await fetch(spec.file, { cache: 'no-cache' });
+  if (!res.ok) throw new Error(`không tải được động cơ mini-game (${res.status})`);
+  const ns = py.globals.get('dict')();
+  py.runPython(await res.text(), { globals: ns });
+  const main = ns.get(spec.main);
+  ns.destroy();
+  engineMains.set(kind, main);
+  return main;
+}
+
+async function runEngine(engine, code) {
+  try {
+    const { py, box } = await getRuntime();
+    const main = await engineMain(py, String(engine.kind));
+    if (!pythonVersion) pythonVersion = py.runPython('__import__("sys").version.split()[0]');
+    box.stray = '';
+    self.postMessage({ type: 'ready' });
+    const started = performance.now();
+    // Động cơ tự bắt mọi lỗi của code người học và trả vết có `loi`.
+    const trace = JSON.parse(main(String(code), JSON.stringify(engine.config ?? {})));
+    self.postMessage({
+      type: 'result',
+      tests: [],
+      output: (trace.in_ra || '') + box.stray,
+      trace,
+      duration: Math.round(performance.now() - started),
+      version: pythonVersion,
+    });
+    self.postMessage({ type: 'idle' });
+  } catch (error) {
+    self.postMessage({
+      type: 'result',
+      tests: [],
+      output: '',
+      error: `Không chạy được mini-game: ${error.message}`,
+      duration: 0,
+      version: '',
+    });
+  }
+}
+
 self.onmessage = async ({ data }) => {
+  // Mini-game có động cơ riêng (bài T05 · Sổ quỹ chung): không chấm ca nào.
+  if (data && data.engine && data.type !== 'warmup') {
+    await runEngine(data.engine, data.code);
+    return;
+  }
   // Làm ấm: nạp runtime rồi báo rảnh, KHÔNG chấm gì. Phía React gửi tin này
   // lúc học viên vừa mở bài, trong khi họ còn đang đọc các màn đầu.
   if (data && data.type === 'warmup') {

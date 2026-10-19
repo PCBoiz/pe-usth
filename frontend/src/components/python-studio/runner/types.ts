@@ -15,6 +15,12 @@ export type RunResult = {
   error?: string;
   /** Tóm tắt của bộ chấm về thread/process mô phỏng — hiện mờ dưới console. */
   notes?: string[];
+  /**
+   * Vết của mini-game có động cơ riêng (khi lượt chạy gửi `engine`). Để
+   * `unknown`: nó đi qua postMessage từ worker, nên phía nhận phải tự kiểm
+   * hình (vd `docVet()` ở lib/so-quy-replay.ts) chứ không tin kiểu.
+   */
+  trace?: unknown;
   duration: number;
   version: string;
 };
@@ -42,7 +48,16 @@ export type RunRequest = {
    * báo 'ready', nên thời gian tải không bị tính vào 5 giây chạy code.
    */
   packages?: StudioPackage[];
+  /**
+   * Chạy bằng một ĐỘNG CƠ mini-game thay cho bộ chấm (tests/forbid/files bị bỏ
+   * qua). Worker nạp lười file Python của động cơ vào cùng runtime, rồi trả
+   * `trace` trong RunResult. Giới hạn 5 giây giữ nguyên.
+   */
+  engine?: RunEngine;
 };
+
+/** Động cơ mini-game — khớp ENGINES trong studio-lesson.worker.js. */
+export type RunEngine = { kind: 'so-quy'; config: unknown };
 
 /** Hai mốc thời gian chờ, tách ra để lớp gọi đọc được chứ không chôn số. */
 export type RunLimits = {
