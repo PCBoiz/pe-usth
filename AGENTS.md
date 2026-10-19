@@ -43,8 +43,9 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 623 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 646 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
+| Bản đồ sao (mẫu M1) | `py scripts/star/build_sky.py` → 2 tệp SVG, 874 + 881 nét / 48,2 + 47,1 KB (**trần 240 KB**, script tự chặn), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
