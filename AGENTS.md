@@ -53,7 +53,7 @@ mức này:
 |---|---|---|
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 392 ca, tất cả đạt | 19/10/2026 |
-| Backend lint | 119 lỗi, 1 cảnh báo — **mốc trần trong CI là 130, chỉ được hạ** | 20/10/2026 |
+| Backend lint | 2 lỗi, 1 cảnh báo — **mốc trần trong CI là 10, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
 | Frontend unit test | `cd frontend && npm run test:unit` → **706 ca**, tất cả đạt (~155 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án) | 20/10/2026 |
@@ -186,6 +186,30 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `Array.find()` có thể `undefined`). Đừng dập chúng bằng `!` — ở đây mỗi chỗ đó là một
   khẳng định riêng (`expect(where).toBeDefined()`), vì nếu service ngừng gửi `where` thì `!`
   sẽ ném TypeError vô nghĩa trong khi bản chất là cái cổng `is_published` vừa mất.
+  Đã dọn `auth` + `common` (filter/guard/middleware/decorator) + `user` + `course-admin`
+  + `health` ngày 20/10/2026: **155 → 2 lỗi**. Năm khuôn `any` mới gặp, ngoài bốn khuôn
+  đã ghi ở trên — ghi lại để module sau không phải tìm lại:
+  · `jest.Mock` TRẦN trong một type đã khai (`create: jest.Mock`) vẫn là `Mock<any, any>`:
+    nó không ồn ào như `let prisma: any` nhưng gây đúng hậu quả đó.
+  · `ctx.getResponse()` / `getRequest()` KHÔNG kèm tham số kiểu trả `any` — hai exception
+    filter mất kiểm tra trên mọi phép đọc `request.method` / `request.requestId`.
+  · `(req as any).requestId` lặp ở BA chỗ (middleware ghi, hai filter đọc). Mỗi lần ép là
+    một lỗ riêng. Nay khai một lần ở `src/common/types/express-request.d.ts`.
+  · `expect.any(Date)` khai `any` trong @types/jest → `expect.any(Date) as Date`.
+  · `const { password: _password, ...safe } = user` là lỗi `no-unused-vars` vì
+    typescript-eslint v8 đặt `ignoreRestSiblings: false` (ESLint gốc đặt `true`). Đừng
+    nới config: gom về một hàm `boPassword()` trả `Omit<T, 'password'>` thì "API không
+    bao giờ trả hash" thành một KIỂU, `safe.password` ở chỗ gọi là lỗi biên dịch.
+- **CÒN HAI LỖI LINT CỐ Ý KHÔNG SỬA, và chúng chỉ ra MỘT LỖI THẬT chưa chữa.**
+  `src/course-admin/studio-lesson.schema.ts:307,311` — `String(g.id ?? '')` và
+  `String(g.type ?? '')` với `g.id`/`g.type` kiểu `unknown`. `no-base-to-string` đang nói
+  đúng: nếu `g.id` là một object/mảng thì `String()` cho ra `"[object Object]"`, chuỗi đó
+  **lọt qua `nonEmptyString()`** và bài học được chấm là hợp lệ với một id rác; `g.type`
+  thì ra `"[object Object]"` và trượt khỏi `PLAY_GAME_TYPES` nên ít nguy hơn. Đây là lỗi
+  VALIDATION thật, không phải lỗi kiểu — sửa nó là đổi hành vi (một `id` số hiện đang
+  được chấp nhận qua `String(123)`), nên **đừng chữa lẫn vào một commit dọn lint**. Ai
+  sửa: quyết rõ `id` có buộc phải là chuỗi hay không, rồi thêm ca test cho object id.
+  Dập hai lỗi này bằng `as string` là vùi mất chỗ duy nhất đang chỉ ra nó.
 - **Khoá Advanced có ĐÚNG 3 bài cửa tự kiểm tra, không phải 5.** Danh sách 5 bài
   (B20, I07, I12, N04, N08) là của khoá cơ bản pe-v3 ĐÃ XOÁ; chú thích nào còn ghi nó là chú
   thích cũ. Ba bài hiện tại: **R02** (`sort_order` 20), **DA01** (47), **DA02** (48) — đếm bằng

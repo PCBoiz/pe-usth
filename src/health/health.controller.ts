@@ -1,4 +1,11 @@
-import { Controller, HttpCode, Get, HttpStatus, Logger, Res } from '@nestjs/common';
+import {
+  Controller,
+  HttpCode,
+  Get,
+  HttpStatus,
+  Logger,
+  Res,
+} from '@nestjs/common';
 import type { Response } from 'express';
 import { SkipThrottle } from '@nestjs/throttler';
 import { Public } from 'src/common/decorators/public.decorators';
