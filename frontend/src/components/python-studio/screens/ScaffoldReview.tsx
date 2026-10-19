@@ -11,14 +11,14 @@
 //
 // Câu chữ theo Figma, trừ hạt "nhé" ("Thử lại nhé!", "Cùng xem lại vì sao
 // nhé."): giọng đã chốt bỏ hẳn hạt này — xem ds-wording.test.mjs.
+//
+// Chữ cùng kiểu với hộp phản hồi của các game (FlashNote: `Chưa khớp: "…"
+// không làm "…"`): đoạn mã nằm trong ngoặc kép bằng CHÍNH font thân bài, không
+// đổi sang font code giữa câu. Ô gọi bằng số thường (Ô 1, Ô 2) chứ không ①②③
+// của Figma — chủ sản phẩm chốt 19/10/2026.
 import type { ScaffoldSlotReview } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
-
-/** ①…⑳ — đúng ký hiệu Figma dùng để gọi tên ô. */
-export function circled(n: number): string {
-  return n >= 1 && n <= 20 ? String.fromCodePoint(0x2460 + n - 1) : `(${n})`;
-}
 
 const ICON_X = (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -70,7 +70,7 @@ export default function ScaffoldReview({
           <p className={c.reviewSub}>
             {ok
               ? `Cả ${total} đoạn mã đều chính xác. Xem lại vì sao.`
-              : `Ô ${wrong.map((r) => circled(r.n)).join(', ')} chưa đúng.`}
+              : `Ô ${wrong.map((r) => r.n).join(', ')} chưa đúng.`}
           </p>
         </div>
         <p className={c.reviewScore}>
@@ -82,11 +82,11 @@ export default function ScaffoldReview({
         ? reviews.map((r) => (
             <div key={r.n} className={c.reviewItem}>
               <p className={c.reviewAnswer}>
-                {circled(r.n)}  {r.answer}
+                Ô {r.n}: &quot;{r.answer}&quot;
               </p>
               {r.traps.map((t) => (
                 <p key={t.label} className={c.reviewText}>
-                  Chọn <code className={c.reviewInline}>{t.label}</code> thì sai: {t.trap}
+                  Chọn &quot;{t.label}&quot; thì sai: {t.trap}
                 </p>
               ))}
             </div>
@@ -94,17 +94,17 @@ export default function ScaffoldReview({
         : wrong.map((r) => (
             <div key={r.n} className={c.reviewItem}>
               <div className={c.reviewPicked}>
-                <span>{wrong.length > 1 ? `Ô ${circled(r.n)}: bạn đã chọn` : 'Bạn đã chọn'}</span>
-                <code className={c.reviewWrong}>{r.picked || '(để trống)'}</code>
+                <span>{wrong.length > 1 ? `Ô ${r.n}: bạn đã chọn` : 'Bạn đã chọn'}</span>
+                <span className={c.reviewWrong}>{r.picked ? `"${r.picked}"` : '(để trống)'}</span>
               </div>
               <p className={c.reviewText}>
                 {r.trap ??
                   (r.belongsTo
-                    ? `Thẻ này dành cho ô ${circled(r.belongsTo)}, không phải ô ${circled(r.n)}.`
+                    ? `Thẻ này dành cho ô ${r.belongsTo}, không phải ô ${r.n}.`
                     : 'Thẻ này không làm đúng việc ô cần.')}
               </p>
               <p className={c.reviewText}>
-                Cần dùng <code className={c.reviewInline}>{r.answer}</code>.
+                Cần dùng &quot;{r.answer}&quot;.
               </p>
             </div>
           ))}

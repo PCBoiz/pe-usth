@@ -154,7 +154,7 @@ async function playGame(page: Page, row: Row, g: PlayGame) {
       for (const n of order) {
         const answer = scaffold.slots.find((s) => s.n === n)!.answer;
         // Sách mở (ScaffoldBook): bấm thẻ trong nhóm của ô là đặt luôn vào ô đó.
-        await page.getByRole('group', { name: `Thẻ cho ô ${String.fromCodePoint(0x2460 + n - 1)}` })
+        await page.getByRole('group', { name: `Thẻ cho ô ${n}` })
           .getByRole('button', { name: answer, exact: true })
           .click();
       }

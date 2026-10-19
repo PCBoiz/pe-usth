@@ -1,7 +1,7 @@
 'use client';
 
 // Màn lắp khung mã dạng SÁCH MỞ, theo Figma "Book layout" (node 107:6804 — đã
-// điền đủ, 107:6600 — có ô sai). Trang trái là main.py với các ô ①②③ nằm
+// điền đủ, 107:6600 — có ô sai). Trang trái là main.py với các ô 1, 2, 3 nằm
 // ngay trong dòng code; trang phải là khay thẻ, NHÓM THEO Ô: thẻ nào thuộc ô
 // nào lấy từ `bank[].slot` của giáo trình.
 //
@@ -22,7 +22,6 @@ import { useState } from 'react';
 import type { Step3 } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
-import { circled } from './ScaffoldReview';
 
 type Scaffold = NonNullable<Step3['scaffold']>;
 
@@ -123,7 +122,7 @@ export default function ScaffoldBook({
                     <span
                       key={j}
                       className={cls}
-                      aria-label={`Ô ${circled(n)}: ${label ?? 'còn trống'}`}
+                      aria-label={`Ô ${n}: ${label ?? 'còn trống'}`}
                       onDragOver={(e) => {
                         if (drag?.slot !== n) return;
                         e.preventDefault();
@@ -138,7 +137,7 @@ export default function ScaffoldBook({
                         setOver(null);
                       }}
                     >
-                      {label ?? circled(n)}
+                      {label ?? n}
                     </span>
                   );
                 })}
@@ -170,13 +169,13 @@ export default function ScaffoldBook({
           {scaffold.slots.map((slot) => {
             const at = lineOf(slot.n);
             return (
-              <div key={slot.n} className={c.bookGroup} role="group" aria-label={`Thẻ cho ô ${circled(slot.n)}`}>
+              <div key={slot.n} className={c.bookGroup} role="group" aria-label={`Thẻ cho ô ${slot.n}`}>
                 <div className={c.bookGroupHead}>
-                  <span className={c.bookSlotBadge}>{circled(slot.n)}</span>
+                  <span className={c.bookSlotBadge}>{slot.n}</span>
                   {at >= 0 && (
                     <span className={c.bookGroupLabel}>
                       Dòng {at + 1} ·{' '}
-                      <code>{lines[at].trim().replace(SLOT, (_m, k) => (Number(k) === slot.n ? '…' : circled(Number(k))))}</code>
+                      <code>{lines[at].trim().replace(SLOT, (_m, k) => (Number(k) === slot.n ? '…' : `[${k}]`))}</code>
                     </span>
                   )}
                 </div>

@@ -147,9 +147,8 @@
 .reviewAnswer {
   margin: 0;
   color: var(--review-accent);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: var(--ds-fs-code);
-  white-space: pre-wrap;
+  font-size: var(--ds-fs-body);
+  font-weight: 600;
 }
 .reviewText {
   margin: 0;
@@ -170,13 +169,7 @@
   border-radius: var(--ds-r-sm);
   background: color-mix(in srgb, var(--review-accent) 18%, var(--ds-code-bg));
   color: var(--review-accent);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: var(--ds-fs-code);
-}
-.reviewInline {
-  color: var(--ds-code-kw);
-  font-family: 'JetBrains Mono', monospace;
-  font-size: var(--ds-fs-code);
+  font-size: var(--ds-fs-body);
 }
 .reviewFoot {
   display: flex;

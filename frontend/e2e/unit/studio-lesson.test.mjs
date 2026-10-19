@@ -762,7 +762,7 @@ test('scaffoldReview: điền đúng cả 3 ô → 3/3, khớp screenVerdict, m�
   assert.equal(rv.length, 3);
   assert.ok(rv.every((r) => r.correct));
   assert.equal(screenVerdict(P01, { kind: 'scaffold', key: 's3-scaffold' }, d).correct, true);
-  // Ô ① loại được bẫy `name in program` — giải thích "vì sao đúng" lấy từ đây.
+  // Ô 1 loại được bẫy `name in program` — giải thích "vì sao đúng" lấy từ đây.
   assert.deepEqual(
     rv.find((r) => r.n === 1).traps.map((t) => t.label),
     ['name in program'],
@@ -785,7 +785,7 @@ test('scaffoldReview: đặt bẫy của chính ô → sai, kèm đúng lý do c
 });
 
 test('scaffoldReview: đặt thẻ của ô KHÁC → không mượn bẫy sai chỗ, chỉ ra ô mà thẻ thuộc về', () => {
-  // Hoán đáp án ô ② và ③ cho nhau: mỗi thẻ đều "đúng" — nhưng ở ô khác.
+  // Hoán đáp án ô 2 và 3 cho nhau: mỗi thẻ đều "đúng" — nhưng ở ô khác.
   const ans = p01Answers();
   const d = { ...initialLessonDraft(P01), slots: { ...ans, 2: ans[3], 3: ans[2] } };
   const rv = scaffoldReview(P01, d);
@@ -796,13 +796,13 @@ test('scaffoldReview: đặt thẻ của ô KHÁC → không mượn bẫy sai c
   assert.equal(two.trap, undefined);
   assert.equal(three.belongsTo, 2);
 
-  // Bẫy của ô ③ (`row_ppid`) đặt vào ô ①: lý do của nó nói về vòng for —
-  // chẳng dính gì tới phép so sánh ở ô ①, nên KHÔNG được hiện ở đây.
+  // Bẫy của ô 3 (`row_ppid`) đặt vào ô 1: lý do của nó nói về vòng for —
+  // chẳng dính gì tới phép so sánh ở ô 1, nên KHÔNG được hiện ở đây.
   const lac = scaffoldReview(P01, {
     ...initialLessonDraft(P01),
     slots: { ...ans, 1: 'row_ppid' },
   }).find((r) => r.n === 1);
   assert.equal(lac.correct, false);
-  assert.equal(lac.trap, undefined, 'mượn nhầm lý do của bẫy ô ③');
+  assert.equal(lac.trap, undefined, 'mượn nhầm lý do của bẫy ô 3');
   assert.equal(lac.belongsTo, 3);
 });
