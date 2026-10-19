@@ -53,13 +53,14 @@ mức này:
 |---|---|---|
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 392 ca, tất cả đạt | 19/10/2026 |
-| Backend lint | 51 lỗi, 1 cảnh báo — **mốc trần trong CI là 60, chỉ được hạ** | 20/10/2026 |
+| Backend lint | 119 lỗi, 1 cảnh báo — **mốc trần trong CI là 130, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 684 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **694 ca**, tất cả đạt (~155 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s) | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
-| Bản đồ sao (xem thử) | `py scripts/star/build_sky.py` → 20 tệp, **331 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 175 KB sau khi mặt trời lên 128 vòng và tinh vân lên 14 bậc | 20/10/2026 |
-| Bản đồ sao · PHÂN BỐ SẮC ĐỘ | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,3 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0248, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** — tức một hàm hai giá trị, và đó là cả nội dung của lời chê "chưa hùng vĩ" | 20/10/2026 |
+| Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **337 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 175 KB sau khi mặt trời lên 128 vòng và tinh vân lên 14 bậc | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,4 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0254, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ (RASTER — con số THẬT) | raster hoá chính bộ SVG rồi đo, và đo CẢ BẢN CŨ bằng cùng một thước: bậc giữa **4,94 % → 23,80 %** (tham chiếu 46,8), ba bậc **2,20 % → 19,51 %** (43,0), trung vị **0,0038 → 0,0090** (0,0284), p99 **0,8006 → 0,9533** (0,955 — ĐẠT), L > 0,5 **2,77 % → 4,55 %** (7,73), đen sâu **92,96 % → 51,78 %** (20,5). Tức bản cũ đúng là một hàm hai giá trị, bản mới đi được **một nửa** đường tới tham chiếu, và phần MẶT TRỜI thì đã tới. Chỗ còn hụt là TINH VÂN — xem bẫy "còn một chỗ lệch chưa chữa". **Mô hình là mục tiêu, raster là sự thật; đừng báo cáo con số mô hình như con số của bức tranh.** | 20/10/2026 |
 | Bản đồ sao · BỐ CỤC | tỉ lệ cỡ chòm **5,95 : 1** (sàn 5,0; trước 3,53), **0/49** nét nằm trong 10° của một trục (trước 27/50 ở sàn 8°), 0 ngôi trong đĩa cấm r < 170 quanh mặt trời, khe hai chòm 64,1 px (sàn 50), 0 ngôi dưới rìa chân trời | 20/10/2026 |
 | Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
 | Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,22:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 4,83 dù trời sáng hẳn lên, nhờ TẤM NỀN dưới mỗi hộp nhãn. Nét chòm **3,39:1** lúc nghỉ (sàn 3,0), mạch hoàng đạo **4,59:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
@@ -301,6 +302,31 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     so hai cột: bậc giữa ra **4,3 %** trên tranh thật trong khi mô hình nói 47,3 %, p99
     ra 0,595 trong khi mô hình nói 0,977. Bài học chung: **một phép đo dựng lại từ trường
     không phải một phép đo bức tranh.**
+  · **`do_sang_rgb` PHẢI cộng lớp theo ĐÚNG thứ tự `SKY_LAYERS`.** Nó từng cộng nguồn sáng
+    SAU CÙNG với một lý lẽ hợp lý lúc ấy: *"lớp của nó nằm dưới tinh vân, mà ở chỗ nó sáng
+    nhất thì tinh vân đã loãng — nó nằm ngoài dải Ngân Hà"*. Đúng khi mặt trời ở góc
+    (124, 104); SAI HẲN từ lúc nó về giữa khung, vì dải chạy ngay sau nó và mười bốn bậc
+    tinh vân cộng dồn 0,90 **phủ gần kín cái lõi trắng** — tâm mặt trời trên tranh thật đo
+    ra `rgb(120, 127, 146)`, L = 0,21, trong khi hồ sơ đòi 1,0. Chữa bằng cách đưa
+    `nguon-sang` + `loe-ngang` lên TRÊN `tinh-van` trong `SKY_LAYERS` (đúng nghĩa §8.2
+    luôn: mặt trời phải đứng TRƯỚC khối sáng), và phép đo thì đã cộng theo thứ tự ấy.
+    **Một chú thích biện hộ cho một phép xấp xỉ là một quả bom hẹn giờ: nó đúng vào ngày
+    viết ra và không ai kiểm lại khi tiền đề đổi.**
+  · **CÒN MỘT CHỖ LỆCH CHƯA CHỮA, và nó là một con số, không một cảm giác.** Sau ba bản
+    sửa trên, phần MẶT TRỜI của tranh đã khớp mô hình (raster p99 **0,953** so với mô hình
+    0,977; diện tích L > 0,5 **4,55 %** so với 4,55 %; lõi chói 1,16 % so với 1,10 %).
+    Phần TINH VÂN thì chưa: bậc "tinh vân mờ" (L 0,03–0,08) ra **12,6 %** trên tranh thật
+    trong khi mô hình nói 32,4 %, nên BẬC GIỮA ra **23,8 %** so với 47,3 %. Đã đo và loại
+    được ba giả thuyết: không phải độ phân giải lưới (hạ `cell` 5 → 3 và `simplify`
+    1,6 → 0,6 không đổi con số), không phải `solo` (đã sửa), không phải thứ tự lớp (đã
+    sửa). Thứ còn lại, đo được: đếm trên 300 điểm thì số bậc đồng mức THẬT SỰ phủ một điểm
+    thiếu trung bình **0,39 bậc** so với số bậc mô hình đếm, và `contours()` sinh **86
+    đường HỞ** trên 344 (vùng tràn ra ngoài hộp lấy mẫu). Dải Ngân Hà chạy chéo hết khung
+    và `mw_half` kẹp `t` về [0, 1] nên dải KHÔNG BAO GIỜ tự đóng theo chiều ngang — nới hộp
+    lấy mẫu không chữa được, phải khép theo MÉP (đã thêm một bản khép nhưng nó chưa thu hẹp
+    được khoảng lệch). **Ai làm tiếp: đừng tin con số `--do` cho phần tinh vân; raster hoá
+    rồi so hai cột.** Bộ raster PIL dùng để tìm ra chuyện này không commit (nó là một
+    script tạm ~230 dòng đọc `path`/`circle` và các lệnh `M l h v a Z`).
   · **Trần độ chói TOÀN CỤC đã bị bỏ, thay bằng NGÂN SÁCH DIỆN TÍCH** (`SKY_BUDGET`).
     Lý do đo được ở `design/v3/chieu-sau-tuong-tac.md` §2.4. Và ngày 20/10/2026 ngân sách
     mọc thêm HAI SÀN gác chiều NGƯỢC — `medianMin` 0,015 và `midShareMin` 0,30 — vì kiểu

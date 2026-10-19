@@ -31,8 +31,18 @@
    `[data-map-region]`, và nó đổi trạng thái bằng cách đổi giữa HAI tấm ảnh.
 
 4. KHÔNG GRADIENT, KHÔNG `<filter>`. Quầng sao dựng bằng vòng đồng tâm mật độ
-   ~1/r, tinh vân bằng năm đường đồng mức lồng nhau (đặc tả §9.5). Một ngoại lệ
-   "chỉ cho quầng sao" là một cái lỗ để đúng cái lỗi gốc quay lại.
+   ~1/r, tinh vân bằng MƯỜI BỐN đường đồng mức lồng nhau, mặt trời bằng 128
+   vòng chia đều theo ĐỘ MỜ TÍCH LUỸ. Một ngoại lệ "chỉ cho quầng sao" là một
+   cái lỗ để đúng cái lỗi gốc quay lại.
+
+   Và luật này KHÔNG phải thứ đang hỏng khi bức bị chê "mảng phẳng tô
+   gradient" — ngược lại. Phép đo ở `bo-cuc-hung-vi.md` §3.2 cho thấy mặt trời
+   tham chiếu là một lõi phẳng bão hoà cộng một đuôi ~1/r^2,9, tức đúng thứ mà
+   đĩa đồng tâm tái hiện chính xác được. Con số khép câu hỏi là BƯỚC LƯỢNG TỬ:
+   128 vòng cho 1,78/255 mã màu mỗi vòng, dưới ngưỡng thấy dải (≈ 2 mã), trong
+   khi 16 vòng của bản cũ cho 14,3 mã — thấy rõ, và đó là một PHẦN của cái
+   "mảng phẳng". Chỗ luật thật sự cắn là DỐC LAMBERT trên tinh vân (14 bậc =
+   ~12 mã), và nó được chữa bằng LẤM TẤM BIÊN chứ không bằng một ngoại lệ.
 
 5. TẤT ĐỊNH. Chạy hai lần phải ra ĐÚNG một tệp — nhiễu đi qua hàm băm theo
    toạ độ, không qua `random`. Không thì mỗi lần build là một diff vô nghĩa.
@@ -134,6 +144,7 @@ LBL = grab("SKY_LABEL")
 COURSE = grab("SKY_COURSE")
 HIT = grab("SKY_HIT")
 ZOOM = grab("SKY_ZOOM")
+PLANET = grab("SKY_PLANET")
 PLACED = grab("SKY_LABEL_PLACED")
 LAYERS = grab("SKY_LAYERS")
 KEYS = grab("SKY_CONSTELLATION_KEYS")
@@ -200,6 +211,31 @@ def doc_ten_bai() -> dict[str, str]:
 
 
 TEN_BAI = doc_ten_bai()
+
+
+def doc_bai_cua() -> list[str]:
+    """MÃ các bài CỬA TỰ KIỂM TRA — ĐẾM TỪ CỜ `step_4.gate`, không viết cứng.
+
+    Đây là nguồn duy nhất cho ba hành tinh của §7.2, và nó là CHÍNH chỗ backend
+    (`isSelfTestGateLesson`) và frontend đang đọc. AGENTS.md dặn đúng chuyện
+    này: *"đừng viết test khoá cứng con số 3 — thêm cửa mới là server tự khoá
+    theo"*. Ở đây hệ quả là bản đồ TỰ MỌC thêm một hành tinh, không phải một
+    người phải nhớ sửa một con số thứ hai.
+
+    (Hiện đếm được ba: R02 ở `sort_order` 20, DA01 ở 47, DA02 ở 48. Con số ấy
+    ghi ra đây làm MỘT PHÉP ĐO ngày 19/10/2026, không làm một hằng.)"""
+    out = []
+    for p in sorted(LESSONS.glob("*.json")):
+        d = json.loads(p.read_text(encoding="utf-8"))
+        code = d.get("lesson_code")
+        body = d.get("content_json", d)
+        s4 = body.get("step_4") or {}
+        if code and s4.get("gate"):
+            out.append(code)
+    return out
+
+
+BAI_CUA = doc_bai_cua()
 
 
 def bac(tests: int) -> dict:
@@ -441,6 +477,9 @@ class Ink:
     def __init__(self):
         self.buckets: dict[str, dict] = {k: {} for k in LAYERS}
         self.n = 0
+        # Bộ đếm cho `fill(solo=True)`: mỗi hình LỒNG NHAU phải có một `<path>`
+        # riêng, không thì gộp nhóm làm sai độ mờ tích luỹ. Xem `fill`.
+        self._solo = 0
 
     def _add(self, layer, key, d):
         if layer not in self.buckets:
@@ -453,9 +492,40 @@ class Ink:
         op = max(self.STEP_OP, min(1.0, round(op / self.STEP_OP) * self.STEP_OP))
         self._add(layer, ("s", color, round(w, 2), round(op, 2), cap, dash), d)
 
-    def fill(self, layer, d, color, op=1.0, rule=None):
+    def fill(self, layer, d, color, op=1.0, rule=None, solo=False):
+        """`solo=True` ⇒ hình này được MỘT `<path>` RIÊNG, không gộp nhóm.
+
+        ── CÁI LỖI ĐẮT NHẤT CỦA TỆP NÀY, tìm ra 20/10/2026 ──────────────────
+
+        Gộp nhóm là lossless khi các hình KHÔNG CHỒNG NHAU. Với hình LỒNG NHAU
+        thì nó sai, và sai theo hai kiểu khác nhau, cả hai im lặng:
+
+         · **`fill-rule="evenodd"`** (tinh vân, bụi xa, khe bụi): mười bốn bậc
+           đồng mức lồng nhau gộp vào MỘT `<path>` thì evenodd XOR chúng với
+           nhau — ra một dãy vành TÔ / KHÔNG TÔ xen kẽ, không ra một dốc. Bậc
+           trong cùng (lẽ ra đậm nhất) có thể thành TRỐNG.
+         · **nonzero** (128 vòng mặt trời): mười vòng cùng độ mờ sau khi làm
+           tròn về bậc 0,01 gộp vào một `<path>`, và hợp của chúng được tô
+           ĐÚNG MỘT LẦN ở độ mờ ấy. Độ mờ tích luỹ vì thế không cộng dồn:
+           `a_i = 1/(n − i)` nên 63 vòng ngoài cùng của 128 đều tròn về 0,01 và
+           cả nhóm chỉ đóng góp 0,01 thay vì `1 − 0,99⁶³ = 0,47`.
+
+        Đo được bằng cách RASTER HOÁ chính bộ tệp đã ghi ra rồi so với
+        `do_sang_rgb`: bậc giữa ra **4,3 %** trên tranh thật trong khi mô hình
+        nói 47,3 %, p99 ra 0,595 trong khi mô hình nói 0,977. Hai con số lệch
+        mười lần, và không một phép kiểm nào trong kho mã bắt được — vì MỌI
+        phép kiểm đọc mô hình, không đọc tệp.
+
+        Lỗi này có từ trước bản vẽ lại (16 vòng cũng gộp, năm bậc tinh vân cũng
+        gộp), nên nó là một phần của chính cái "mảng phẳng" bị chê bốn lần.
+        Giá của bản sửa: ~60 byte thuộc tính mỗi hình, tức +8 KB cho mặt trời
+        và +1 KB cho tinh vân."""
         op = max(self.STEP_OP, min(1.0, round(op / self.STEP_OP) * self.STEP_OP))
-        self._add(layer, ("f", color, round(op, 2), rule), d)
+        if solo:
+            self._solo += 1
+            self._add(layer, ("f", color, round(op, 2), rule, self._solo), d)
+        else:
+            self._add(layer, ("f", color, round(op, 2), rule), d)
 
     def poly(self, layer, pts, color, w=0.6, op=1.0, close=False, dash=None):
         self.stroke(layer, pl(pts, close), color, w, op, "round", dash)
@@ -514,7 +584,9 @@ class Ink:
                         a.append('stroke-dasharray="%s"' % dash)
                     out.append('<path %s d="%s"/>' % (" ".join(a), "".join(items)))
                 elif key[0] == "f":
-                    _, color, op, rule = key
+                    # Khoá có BỐN hay NĂM phần tử: phần thứ năm là số thứ tự
+                    # `solo`, chỉ để khoá KHÔNG TRÙNG, không đi vào thuộc tính.
+                    _, color, op, rule = key[:4]
                     a = ['fill="%s"' % color]
                     if rule:
                         a.append('fill-rule="%s"' % rule)
@@ -567,14 +639,46 @@ def mw_coords(x, y):
     return (px * _UX + py * _UY) / _DL, px * _NX + py * _NY
 
 
-def mw_half(t):
-    """Dải PHÌNH ở giữa — nửa bề rộng 85 ở hai đầu, 130 ở giữa (§4.3)."""
+def mw_half(t, x=None, y=None):
+    """Dải PHÌNH ở giữa — nửa bề rộng ở hai đầu và ở giữa (§4.3).
+
+    Và THẮT LẠI quanh mặt trời khi biết toạ độ (`MW.nearSun`): đó là VÀNH
+    TRỐNG đo được ở `bo-cuc-hung-vi.md` §3.4 — trong khung tham chiếu tinh vân
+    KHÔNG chạm mặt trời, có một vành tối rộng ~110 px cô lập nó. Đây là thiết
+    bị bố cục mạnh nhất của khung ấy và nó miễn phí: tương phản cục bộ tối đa
+    ở đúng chỗ mắt phải nhìn trước."""
     e, m = MW["halfWidth"]["ends"], MW["halfWidth"]["mid"]
-    return e + (m - e) * math.sin(math.pi * max(0.0, min(1.0, t)))
+    hw = e + (m - e) * math.sin(math.pi * max(0.0, min(1.0, t)))
+    if x is None:
+        return hw
+    ns = MW["nearSun"]
+    d = math.hypot(x - LIGHT["at"]["x"], y - LIGHT["at"]["y"])
+    if d >= ns["radius"]:
+        return hw
+    k = smoothstep(d / ns["radius"])
+    return hw * (ns["shrink"] + (1 - ns["shrink"]) * k)
 
 
 HULLS = []   # bao lồi của từng chòm, trong khung đầy đủ
 STARS = []   # [(mã, x, y, r, bậc, chòm)]
+
+
+def xoay_sao(c, s):
+    """Toạ độ lưới sau khi XOAY quanh tâm lưới (`SkyConstellation.rotate`).
+
+    Phép chữa cho tính CĂN TRỤC: bản cũ có 27/50 nét nằm trong 8° của một
+    trục. Xoay bảo toàn hình hoàn toàn nên nó không đổi NGHĨA một chòm nào —
+    đó là lý do nó được ưu tiên hơn vẽ lại ở năm chòm. Ba chòm phải đọc ra là
+    lưới/bảng/khung thì xoay KHÔNG chữa được (một hình chữ nhật xoay vẫn là
+    hình chữ nhật) nên chúng được vẽ lại bằng hội tụ."""
+    deg = c.get("rotate", 0) or 0
+    if not deg:
+        return s["x"], s["y"]
+    gw, gh = c["grid"]
+    th = math.radians(deg)
+    co, si = math.cos(th), math.sin(th)
+    dx, dy = s["x"] - gw / 2, s["y"] - gh / 2
+    return gw / 2 + dx * co - dy * si, gh / 2 + dx * si + dy * co
 
 
 def dat_sao():
@@ -587,18 +691,23 @@ def dat_sao():
     `placeStar()` phía TS; ca test so lại từng ngôi."""
     for c in CONS:
         bx, by, bw, bh = c["box"]
-        gw, gh = c["grid"]
-        k = min(bw / gw, bh / gh)
-        ox = bx + (bw - gw * k) / 2
-        oy = by + (bh - gh * k) / 2
+        # XOAY trước, rồi khớp theo BAO CỦA TẬP NGÔI (không theo bao của lưới).
+        # Cùng công thức ở `placeStar()` phía TS, và ca test so lại từng ngôi.
+        q = [xoay_sao(c, s) for s in c["stars"]]
+        x0, x1 = min(p[0] for p in q), max(p[0] for p in q)
+        y0, y1 = min(p[1] for p in q), max(p[1] for p in q)
+        ew, eh = max(1e-6, x1 - x0), max(1e-6, y1 - y0)
+        k = min(bw / ew, bh / eh)
+        ox = bx + (bw - ew * k) / 2
+        oy = by + (bh - eh * k) / 2
         pts = []
-        for s in c["stars"]:
+        for s, (qx, qy) in zip(c["stars"], q):
             code = s["code"]
             if code not in SO_CA:
                 raise SystemExit(
                     "mã bài %s không có trong out-advanced/lessons — bản đồ đang "
                     "vẽ một bài không tồn tại" % code)
-            x, y = ox + s["x"] * k, oy + s["y"] * k
+            x, y = ox + (qx - x0) * k, oy + (qy - y0) * k
             STARS.append((code, x, y, ban_kinh(SO_CA[code]),
                           bac(SO_CA[code]), c["key"]))
             pts.append((x, y))
@@ -643,15 +752,39 @@ def hull_atten(x, y, pad):
     return smoothstep(d / pad) if pad > 0 else 1.0
 
 
+_NEB_MEMO: dict = {}
+
+
 def neb_field(x, y):
     """Trường tinh vân 0..1: dải Ngân Hà × fBm BÓP MÉO MIỀN bậc hai.
+
+    NHỚ LẠI theo toạ độ làm tròn 0,1 đơn vị, và đây là một con số hiệu năng
+    chứ không một chi tiết: từ lúc có dốc Lambert (§8.1), mỗi lần hỏi màu một
+    điểm là NĂM lần gọi hàm này — một lần cho trường, bốn lần cho sai phân
+    trung tâm lấy ∇F. Mà `do_ngan_sach` hỏi màu ~70 000 điểm trên lưới 4 px, và
+    mỗi lần gọi là 13 quãng nhiễu (hai lượt bóp méo × bốn quãng, cộng năm quãng
+    của fBm cuối). Không nhớ lại thì một lệnh `--do` đi từ vài giây lên nhiều
+    phút. Lưới 4 px với sai phân ±2 px còn làm các điểm biên TRÙNG nhau giữa
+    hai mẫu kề, nên tỉ lệ trúng bộ nhớ không nhỏ.
+
+    Tất định không đổi: khoá là toạ độ đã làm tròn, nên hai lần chạy vẫn ra
+    đúng một tệp (luật 5 ở đầu tệp)."""
+    k = (round(x, 1), round(y, 1))
+    v = _NEB_MEMO.get(k)
+    if v is None:
+        v = _NEB_MEMO[k] = _neb_field(x, y)
+    return v
+
+
+def _neb_field(x, y):
+    """Thân thật của `neb_field` — xem chú thích ở đó.
 
     CÁI BẪY LỚN NHẤT của bóp méo miền: phải CHUẨN HOÁ LẠI dải giá trị. fBm sau
     khi bóp méo chỉ chiếm một dải hẹp (một bản port đo được [0,39 ; 0,83]);
     không ánh xạ lại về [0, 1] thì tinh vân ra MỘT MÀN SƯƠNG XÁM ĐỀU, không
     phải một đám mây — đúng cái "mảng phẳng không có chiều sâu" bị chê."""
     t, s = mw_coords(x, y)
-    hw = mw_half(t)
+    hw = mw_half(t, x, y)
     band = smoothstep(1.0 - abs(s) / hw) if hw > 0 else 0.0
     if band <= 0:
         return 0.0
@@ -678,6 +811,76 @@ def neb_fade(x, y):
                               + (1 - hf["floor"]) * hull_atten(x, y, FIELD["hullPad"] * hf["pad"]))
 
 
+def neb_ton(i: int) -> str:
+    """Khoá màu của bậc tinh vân thứ `i` — MỘT chỗ cho cả lượt vẽ lẫn lượt đo.
+
+    Mười bốn bậc chia ba tông (`SKY_NEBULA.ramp` / `rampAt`). Trước khi có hàm
+    này, việc chia tông viết thẳng trong `ve_tinh_van` là `i < n - 2` và chép
+    lại trong `do_sang_rgb` là `max(0, lv - (n - 2))`: hai công thức cho cùng
+    một việc, tức hai con số sẽ lệch khi số bậc đổi — và lệch ở đây nghĩa là
+    ngân sách diện tích đang đo một bức tranh khác với bức được ghi ra tệp."""
+    ten = NEB["ramp"][0]
+    for k, at in enumerate(NEB["rampAt"]):
+        if i >= at:
+            ten = NEB["ramp"][k]
+    return ten
+
+
+def lambert(x, y):
+    """HỆ SỐ CHIẾU SÁNG của tinh vân tại một điểm — Lambert trên mặt ẩn (§8.1).
+
+    ĐÂY LÀ BƯỚC ĐÁNG GIÁ NHẤT của cả bản vẽ lại, và nó không đụng tới mặt
+    trời. Chẩn đoán của lời chê thứ năm là một cái lỗ ~46 điểm phần trăm ở các
+    bậc độ chói GIỮA; và chỗ thiếu KHÔNG phải mặt trời — trong khung tham
+    chiếu mặt trời gánh ~70 % ngân sách sáng, tinh vân ~30 %, còn phần bản này
+    hụt nằm nguyên ở **tinh vân chưa được chiếu sáng**. Tinh vân cũ không biết
+    mặt trời ở đâu nên nó là một tấm vải tối ĐỀU, và một tấm vải tối đều không
+    có bậc giữa nào để đóng góp.
+
+        Λ = floor + (1 − floor) · D · S
+        D = (dRef / max(d, dRef))^dSlope      — suy giảm theo khoảng cách
+        S = clamp(sMin, sMax, sBias + sGain · (n̂ · ŝ))   — TỰ ĐỔ BÓNG
+
+    `S` mới là thứ cho ra "đổ bóng các kiểu": chỗ gradient mật độ quay VỀ mặt
+    trời thì sáng, chỗ quay ĐI thì tối, nên cùng một đám mây có sườn sáng và
+    sườn tối — và hai sườn ấy nhất quán với mọi vật khác trong bức, vì cả bức
+    chỉ có một nguồn sáng.
+
+    Giá: một lần lấy ∇F thêm cho mỗi mẫu. `F` là hàm thuần tuý tất định nên ∇
+    lấy bằng sai phân trung tâm; không đổi dung lượng, không đổi hình học
+    đường đồng mức."""
+    lb = NEB["lambert"]
+    sx, sy = LIGHT["at"]["x"] - x, LIGHT["at"]["y"] - y
+    d = math.hypot(sx, sy)
+    if d <= 1e-6:
+        return 1.0
+    sx, sy = sx / d, sy / d
+    D = (lb["dRef"] / max(d, lb["dRef"])) ** lb["dSlope"]
+    h = lb["grad"]
+    gx = neb_field(x + h, y) - neb_field(x - h, y)
+    gy = neb_field(x, y + h) - neb_field(x, y - h)
+    gl = math.hypot(gx, gy)
+    # Chỗ trường PHẲNG (gl ≈ 0) không có mặt nào để nhận sáng, nên S về giá
+    # trị giữa `sBias` thay vì về 0 hay 1 — không thì mọi vùng mịn của tinh
+    # vân nhảy sang một đầu cực và cái dốc Lambert đọc ra là một vết cắt.
+    dotp = 0.0 if gl < 1e-9 else (gx / gl * sx + gy / gl * sy)
+    S = max(lb["sMin"], min(lb["sMax"], lb["sBias"] + lb["sGain"] * dotp))
+    return lb["floor"] + (1 - lb["floor"]) * D * S
+
+
+def neb_lit(x, y):
+    """Trường tinh vân ĐÃ CHIẾU SÁNG — nguồn duy nhất cho cả lượt vẽ lẫn lượt
+    đo, nên hai chỗ không lệch nhau được.
+
+    Λ GẤP VÀO TRƯỜNG, không nhân vào độ mờ. Đặc tả §8.1 viết "nhân độ mờ của
+    mỗi mẫu", nhưng `contours()` cho ra đa giác độ mờ PHẲNG — không có chỗ nào
+    để nhân một hệ số theo ĐIỂM vào. Gấp vào trường thì sườn quay về mặt trời
+    leo lên bậc đồng mức CAO hơn (tức sáng hơn, vì nhiều lớp phủ chồng hơn),
+    và `do_sang_rgb` — vốn đếm số bậc phủ một điểm — tự đúng theo mà không
+    phải viết lại một dòng. §10.6 cũng chốt đúng cách ấy cho bản sáng."""
+    return neb_fade(x, y) * lambert(x, y)
+
+
 def lane_field(x, y):
     """Khe bụi tối chẻ dọc dải. Nó NHÂN vào, không cộng — bụi ở GẦN, sao ở XA,
     và đó là tín hiệu chiều sâu mạnh nhất trong bảy tín hiệu của §3.2."""
@@ -691,13 +894,23 @@ def lane_field(x, y):
 
 
 def dust_field(x, y):
-    """Lớp 1 — bụi xa: một dải rộng hơn, KHÔNG bóp méo miền (§3.1)."""
+    """Lớp 1 — bụi xa: một dải rộng hơn, KHÔNG bóp méo miền (§3.1).
+
+    LOÃNG ĐI quanh bao lồi chòm từ 19/10/2026, cùng lúc `dustFar` sáng lên.
+    Hai thay đổi ấy là một: lớp này nay gánh phần lớn bậc "nền trời" và "tinh
+    vân mờ" (23 % + 24 % diện tích của khung tham chiếu), nên nó không còn là
+    một lớp mờ không ảnh hưởng gì — và một lớp sáng phủ đều lên tám bao lồi là
+    tám cái hình chòm chìm vào nền. Hệ số loãng NHẸ hơn của tinh vân (0,55 so
+    với 0,12): bụi xa là lớp XA NHẤT, nên nó phải mờ chứ không được biến mất,
+    không thì tám bao lồi thành tám cái lỗ đen có hình chữ nhật."""
     t, s = mw_coords(x, y)
     hw = mw_half(t) * NEB["dust"]["spread"]
     band = smoothstep(1.0 - abs(s) / hw) if hw > 0 else 0.0
     n = NZ.fbm(x * 1.6 / W, y * 1.6 / W, 5, NEB["lacunarity"], NEB["gain"])
     fm = NEB["floorMix"]
-    return band * (fm + (1 - fm) * n)
+    hf = NEB["dust"]["hullFade"]
+    mo = hf + (1 - hf) * hull_atten(x, y, FIELD["hullPad"])
+    return band * (fm + (1 - fm) * n) * mo
 
 
 def light_wave(th: float) -> float:
@@ -718,41 +931,111 @@ def light_m(th: float, r: float) -> float:
     return 1.0 + LIGHT["warp"] * k * light_wave(th)
 
 
-def light_f(x, y) -> float:
-    """`f` của một điểm: 0 ở rìa quầng, 1 ở trong lõi. Nghịch đảo của phép
-    dựng vòng, nên lượt VẼ và lượt ĐO nói đúng cùng một hình."""
+def light_re(x, y) -> float:
+    """BÁN KÍNH HIỆU DỤNG của một điểm — bán kính thật chia hệ số méo rìa.
+
+    Nghịch đảo của phép dựng vòng, nên lượt VẼ và lượt ĐO nói đúng cùng một
+    hình."""
     dx, dy = x - LIGHT["at"]["x"], y - LIGHT["at"]["y"]
     d = math.hypot(dx, dy)
     if d <= 0:
-        return 1.0
-    th = math.atan2(dy, dx)
-    # Bán kính hiệu dụng: chia cho hệ số méo tại chính bán kính đó. Hai vòng
-    # lặp thô là đủ — `light_m` biến thiên chậm theo r.
-    de = d / light_m(th, d)
-    de = d / light_m(th, de)
-    if de >= LIGHT["outer"]:
         return 0.0
-    if de <= LIGHT["core"]:
-        return 1.0
-    return (LIGHT["outer"] - de) / (LIGHT["outer"] - LIGHT["core"])
+    th = math.atan2(dy, dx)
+    # Hai vòng lặp thô là đủ — `light_m` biến thiên chậm theo r.
+    de = d / light_m(th, d)
+    return d / light_m(th, de)
 
 
-def light_alpha(f: float):
-    """`(độ mờ sắc quầng, độ mờ sắc lõi)` CỘNG DỒN tại `f`.
+def light_A(re: float) -> float:
+    """ĐỘ MỜ TÍCH LUỸ tại bán kính hiệu dụng `re` — TRA BẢNG `SKY_LIGHT.profile`,
+    nội suy tuyến tính giữa các mốc.
 
-    MỘT hàm cho cả lượt vẽ lẫn lượt ĐO: `ve_nguon_sang` tô mười sáu vòng theo
-    hồ sơ này, `do_sang_rgb` đọc lại chính hồ sơ ấy. Hai công thức là hai con
-    số sẽ lệch, và lệch ở đây nghĩa là ngân sách diện tích đang đo một bức
-    tranh khác với bức được ghi ra tệp."""
-    if f <= 0:
-        return 0.0, 0.0
-    n, nc = LIGHT["levels"], LIGHT["coreLevels"]
-    fs = (n - nc) / n
-    A = lambda u: LIGHT["alphaMax"] * u ** LIGHT["falloff"]
-    if f <= fs:
-        return A(f), 0.0
-    a0 = A(fs)
-    return a0, (A(f) - a0) / max(1e-6, 1.0 - a0)
+    Bảng chứ không công thức, và lý do là phép đo ở §3.2: hồ sơ thật có một
+    LÕI PHẲNG BÃO HOÀ, một THỀM ở r = 76…101, rồi một đầu gối dốc ~1/r³. Khớp
+    một luỹ thừa trên cả dải thì sai ở hai đầu — bản cũ dùng
+    `alphaMax × f^falloff` và cho ra đúng cái "đĩa bán kính 90 px viền xuyến
+    30 px" mà §1.1 đo được.
+
+    Nội suy TUYẾN TÍNH chứ không cubic đơn điệu như đặc tả đề xuất, và nói ra
+    chỗ đi chệch: mười sáu mốc cách nhau 8–25 px, trong khi bước độ mờ mỗi
+    vòng đã là 1,78/255 mã màu — dưới ngưỡng thấy dải. Một đường cubic sẽ làm
+    mềm mười sáu cái gãy mà không đổi được MỘT giá trị độ mờ nào sau khi làm
+    tròn về bậc 0,01 của `Ink`. Đổi nó là thêm một thứ không ai đo lại được."""
+    tb = LIGHT["profile"]
+    if re <= tb[0][0]:
+        return tb[0][1]
+    for i in range(1, len(tb)):
+        r1, a1 = tb[i]
+        if re <= r1:
+            r0, a0 = tb[i - 1]
+            t = (re - r0) / (r1 - r0) if r1 > r0 else 0.0
+            return a0 + (a1 - a0) * t
+    return 0.0
+
+
+def light_r_of_A(a: float) -> float:
+    """BÁN KÍNH mà tại đó độ mờ tích luỹ bằng `a` — phép đảo của `light_A`.
+
+    Vòng chia đều theo ĐỘ MỜ, không theo bán kính, nên phép dựng 128 vòng cần
+    chính phép đảo này. Và đó mới là chỗ con số 1,78/255 mã màu mỗi vòng đến
+    từ: chia đều theo bán kính thì vùng đuôi (A đổi chậm) được quá nhiều vòng
+    còn vùng đầu gối (A đổi nhanh) được quá ít — tức dải vẫn thấy ở đúng chỗ
+    dốc nhất."""
+    tb = LIGHT["profile"]
+    if a >= tb[0][1]:
+        # MÉP NGOÀI của thềm bão hoà, không tâm. Bảng mở đầu bằng `[0, 1.0]`
+        # rồi `[59, 1.0]`, tức cả lõi r ≤ 59 có A = 1,0; trả về `tb[0][0]` = 0
+        # thì vòng trong cùng có BÁN KÍNH 0 — một đa giác suy biến, diện tích
+        # không, và cái lõi bão hoà KHÔNG ĐƯỢC TÔ.
+        #
+        # Đã xảy ra, và chỉ raster hoá mới bắt được: mô hình nói p99 = 0,977
+        # (nó tra `light_A`, thấy A = 1,0 ở r < 59 và tin là có mực ở đó) còn
+        # tranh thật đo ra **0,572**. Hai con số lệch vì chúng nói về hai thứ:
+        # một cái nói hồ sơ PHẢI thế nào, một cái nói tệp CÓ gì.
+        r = tb[0][0]
+        for rr, aa in tb:
+            if aa >= a:
+                r = rr
+            else:
+                break
+        return r
+    # Bảng đi từ A cao (r nhỏ) xuống A thấp (r lớn) và đã được làm cho ĐƠN
+    # ĐIỆU ở TS, nên quét một lượt là đủ.
+    for i in range(1, len(tb)):
+        r0, a0 = tb[i - 1]
+        r1, a1 = tb[i]
+        if a1 <= a <= a0:
+            if a0 == a1:
+                return r1          # giữa một THỀM: lấy mép ngoài
+            t = (a0 - a) / (a0 - a1)
+            return r0 + (r1 - r0) * t
+    return tb[-1][0]
+
+
+def light_alpha(re: float):
+    """`(độ mờ rìa, độ mờ ngà, độ mờ lõi)` ĐÃ QUY VỀ TỪNG DẢI tại `re`.
+
+    MỘT hàm cho cả lượt vẽ lẫn lượt ĐO: `ve_nguon_sang` tô 128 vòng theo hồ sơ
+    này, `do_sang_rgb` đọc lại chính hồ sơ ấy. Hai công thức là hai con số sẽ
+    lệch, và lệch ở đây nghĩa là ngân sách diện tích đang đo một bức tranh
+    khác với bức được ghi ra tệp.
+
+    Ba dải màu nối tiếp nhau theo ĐỘ MỜ (`rimAt`, `coreAt`), và thứ tự tô là
+    thứ tự bán kính giảm, tức thứ tự A tăng — nên ba dải liền mạch trong thời
+    gian. Giá trị trả về là độ mờ mà mỗi dải phải đạt KHI TÔ LÊN kết quả của
+    dải trước: `a2 = (A₂ − A₁) / (1 − A₁)`. Không chia như thế thì ba lần phủ
+    cộng dồn ra một con số khác với bảng, và cái "bão hoà ở lõi" không bao giờ
+    tới được 1,0."""
+    A = light_A(re)
+    if A <= 0:
+        return 0.0, 0.0, 0.0
+    r_at, c_at = LIGHT["rimAt"], LIGHT["coreAt"]
+    a1 = min(A, r_at)
+    a2 = max(0.0, min(A, c_at) - r_at)
+    a3 = max(0.0, A - c_at)
+    return (a1,
+            a2 / max(1e-6, 1.0 - a1),
+            a3 / max(1e-6, 1.0 - a1 - a2))
 
 
 # ─── mạch hoàng đạo (§4.2) ────────────────────────────────────────────────
@@ -853,31 +1136,70 @@ def kiem_mach(P):
                 "mạch hoàng đạo đi cách mốc %s tới %.1f px, quá %g — nó không "
                 "còn 'đi sát' chòm đó nữa, tức mạch phụ thuộc hết đọc ra."
                 % ("+".join(a["stars"]), d, ZOD["nearMax"]))
-    # 3 · tương phản dọc cung
-    mau = hex_rgb(P["zodiac"])
+    # 3 · tương phản dọc cung — đo giữa LÕI và VỎ BỌC, không giữa lõi và NỀN.
+    #
+    # Đó là cả điểm của vỏ bọc (xem `ve_mach`): một lõi sáng trên một vỏ tối
+    # đọc được trên MỌI nền, nên con số phải đo đúng cặp màu mà mắt so. Đo
+    # lõi với nền là đo một cặp mà bức tranh không có — và nó là phép đo đã
+    # chặn build ở (844, 552) trong khi cung ở đó thật ra đọc rất rõ.
+    cs = ZOD["casing"]
     xau, at = 99.0, None
     for i in range(0, len(pts), 3):
         x, y = pts[i]
         if not (0 <= x <= W and 0 <= y <= H):
             continue
         nen = do_sang_rgb(x, y, P)
-        tren = over(nen, mau, ZOD["opacity"])
-        L1, L2 = luminance(tren), luminance(nen)
+        vo = over(nen, hex_rgb(P["dustLane"]), cs["opacity"])
+        loi = over(vo, hex_rgb(P["zodiac"]), ZOD["opacity"])
+        L1, L2 = luminance(loi), luminance(vo)
         tp = (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
         if tp < xau:
             xau, at = tp, (round(x), round(y))
     if xau < 3.0:
         raise SystemExit(
             "mạch hoàng đạo chỉ còn %.2f:1 tại %s — dưới 3:1 của WCAG 1.4.11. "
-            "Nét MANG TIN phải đọc được ở MỌI chỗ nó đi qua; dịch "
-            "`SKY_LIGHT.at` ra xa cung, hay hạ `SKY_LIGHT.levels`." % (xau, at))
+            "Nét MANG TIN phải đọc được ở MỌI chỗ nó đi qua. Nới "
+            "`SKY_ZODIAC.casing.opacity` hay `SKY_ZODIAC.opacity`: tương phản "
+            "ở đây là giữa LÕI và VỎ BỌC, nên nó không chữa bằng cách dịch mặt "
+            "trời." % (xau, at))
     return xau
 
 
-def horizon_amt(y):
-    """Quầng chân trời: chỉ ở `SKY_HORIZON.height` px dưới cùng của KHUNG."""
-    top = H - HORIZON["height"]
-    return smoothstep((y - top) / HORIZON["height"]) if y > top else 0.0
+def chan_troi_y(x):
+    """ĐỘ CAO RÌA thiên thể tại `x` — một cung tròn, không một đường thẳng.
+
+    `y = cy − sqrt(R² − (x − cx)²)`. Với R = 3 800 trên khung rộng 1 360, độ
+    võng là 61 px: đỉnh ở y = 752 giữa khung, y = 813 ở hai mép. Đủ để mép đọc
+    ra là một CUNG (tức một vật tròn rất lớn) mà chưa thành một cái bát."""
+    R = HORIZON["radius"]
+    dx = x - HORIZON["at"]["x"]
+    h = R * R - dx * dx
+    return HORIZON["at"]["y"] - (math.sqrt(h) if h > 0 else 0.0)
+
+
+def chan_troi_cos(x):
+    """`cos θ` giữa PHÁP TUYẾN rìa tại `x` và hướng tới mặt trời.
+
+    Một luật, ba chỗ dùng (§8.4): mọi vật thể rắn nhận vành sáng CHỈ ở nửa
+    quay về mặt trời. Đó là thứ làm cả bức có MỘT hướng sáng — mục thứ tư
+    trong công thức hùng vĩ, và mục mà bản cũ có 0 trên 4."""
+    y = chan_troi_y(x)
+    nx = (x - HORIZON["at"]["x"]) / HORIZON["radius"]
+    ny = (y - HORIZON["at"]["y"]) / HORIZON["radius"]
+    sx, sy = LIGHT["at"]["x"] - x, LIGHT["at"]["y"] - y
+    d = math.hypot(sx, sy)
+    return 0.0 if d <= 0 else max(0.0, nx * sx / d + ny * sy / d)
+
+
+def horizon_amt(y, x=None):
+    """Bề dày LỚP KHÍ trên rìa, 0…1 — dùng cho phối cảnh khí quyển của sao nền.
+
+    Nó KHÔNG còn là hồ sơ độ mờ của một dải gạch ngang: khối chân trời nay tô
+    ĐẶC (xem `ve_quang_chan_troi`), nên thứ duy nhất cần một con số liên tục là
+    hai hệ số `SKY_FIELD.horizonFade` / `horizonSwell`."""
+    rim = chan_troi_y(x if x is not None else W / 2)
+    top = rim - HORIZON["haze"]
+    return smoothstep((y - top) / HORIZON["haze"]) if y > top else 0.0
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -965,7 +1287,83 @@ def contours(fn, level, x0, y0, x1, y1, cell):
                 break
         if len(chain) >= 4:
             chains.append(chain)
-    return [simplify(ch, NEB["simplify"]) for ch in chains]
+    # ── KHÉP ĐƯỜNG HỞ DỌC MÉP HỘP LẤY MẪU ──────────────────────────────────
+    #
+    # Một vùng tràn ra NGOÀI hộp lấy mẫu cho ra một đường HỞ: hai đầu nằm trên
+    # mép hộp. `pl(ch, True)` khép nó bằng một DÂY CUNG thẳng từ cuối về đầu —
+    # và cái dây cung ấy cắt mất phần vùng nằm sát mép, đôi khi gần hết.
+    #
+    # Đo được, và chỉ raster hoá mới đo được: mô hình (`do_sang_rgb`, đếm bậc
+    # bằng cách so TRƯỜNG với ngưỡng) nói bậc giữa chiếm 47,4 % diện tích,
+    # trong khi raster chính mấy tệp SVG đã ghi ra chỉ đo được 23,7 %. Dải
+    # Ngân Hà chạy chéo HẾT khung và `mw_half` kẹp `t` về [0, 1], nên dải
+    # KHÔNG BAO GIỜ tự đóng theo chiều ngang — nới hộp lấy mẫu ra bao nhiêu
+    # cũng không chữa được. Phải khép theo MÉP.
+    #
+    # Hướng khép: bảng marching squares giữ "phần trong ở bên TRÁI" mỗi đoạn,
+    # nên thay vì suy luận chiều quay (dễ sai, và sai thì tô ngược phần trong
+    # ra phần ngoài), ta THỬ CẢ HAI chiều đi vòng mép và giữ chiều nào bao
+    # được một điểm CHẮC CHẮN nằm trong vùng — điểm ấy lấy bằng cách bước một
+    # nửa ô sang trái của đoạn đầu rồi kiểm `fn > level` thật.
+    goc = [(x0, y0), (x1, y0), (x1, y1), (x0, y1)]
+
+    def tren_mep(p):
+        e = cell * 0.51
+        return (abs(p[0] - x0) < e or abs(p[0] - x1) < e
+                or abs(p[1] - y0) < e or abs(p[1] - y1) < e)
+
+    def canh_cua(p):
+        """Chỉ số cạnh hộp (0 trên, 1 phải, 2 dưới, 3 trái) gần `p` nhất."""
+        d = [abs(p[1] - y0), abs(p[0] - x1), abs(p[1] - y1), abs(p[0] - x0)]
+        return d.index(min(d))
+
+    def di_mep(a, b, chieu):
+        """Các GÓC phải chèn khi đi từ cạnh của `a` tới cạnh của `b`."""
+        ca, cb = canh_cua(a), canh_cua(b)
+        ra = []
+        k = ca
+        for _ in range(4):
+            if k == cb:
+                break
+            # chiều +1: trên → phải → dưới → trái (theo chiều kim đồng hồ trên
+            # màn, vì y hướng xuống).
+            ra.append(goc[k] if chieu > 0 else goc[(k - 1) % 4])
+            k = (k + chieu) % 4
+        return ra
+
+    def trong_da_giac(pts, px, py):
+        c = False
+        m = len(pts)
+        for i in range(m):
+            ax, ay = pts[i]
+            bx, by = pts[(i + 1) % m]
+            if (ay > py) != (by > py) and px < ax + (py - ay) * (bx - ax) / (by - ay):
+                c = not c
+        return c
+
+    ra = []
+    for ch in chains:
+        if key(ch[0]) == key(ch[-1]) or not (tren_mep(ch[0]) and tren_mep(ch[-1])):
+            ra.append(ch)
+            continue
+        # Điểm THỬ: nửa ô sang TRÁI của đoạn đầu, và chỉ dùng nếu nó thật sự
+        # nằm trong vùng — không thì bỏ qua, giữ nguyên hành vi cũ.
+        ax, ay = ch[0]
+        bx, by = ch[1]
+        L = math.hypot(bx - ax, by - ay) or 1.0
+        tx = (ax + bx) / 2 - (by - ay) / L * cell * 0.5
+        ty = (ay + by) / 2 + (bx - ax) / L * cell * 0.5
+        if not (x0 < tx < x1 and y0 < ty < y1 and fn(tx, ty) > level):
+            ra.append(ch)
+            continue
+        for chieu in (1, -1):
+            thu = ch + di_mep(ch[-1], ch[0], chieu)
+            if trong_da_giac(thu, tx, ty):
+                ra.append(thu)
+                break
+        else:
+            ra.append(ch)
+    return [simplify(ch, NEB["simplify"]) for ch in ra]
 
 
 def simplify(pts, eps):
@@ -1013,9 +1411,19 @@ def ve_nen(ink, P, dim):
 def ve_bui_xa(ink, P, dim):
     """Lớp 1 — bụi xa: một dải rộng hơn, mờ hơn, KHÔNG bóp méo miền."""
     for lv in NEB["dust"]["levels"]:
-        for ch in contours(dust_field, lv, MX0, MY0, MX1, MY1, NEB["cell"] * 2):
-            ink.fill("bui-xa", pl(ch, True), P["dustFar"],
-                     NEB["dust"]["opacity"] * dim, "evenodd")
+        # MỘT `<path>` cho MỖI BẬC, gom hết vòng của bậc ấy vào trong — và cả
+        # hai nửa của câu đó đều cần thiết:
+        #  · gom hết vòng CỦA MỘT BẬC vào một path là cách `evenodd` KHOÉT LỖ
+        #    (chỗ trường tụt xuống dưới ngưỡng) đúng;
+        #  · tách các BẬC ra là cách độ mờ CỘNG DỒN đúng — gộp hai bậc lồng
+        #    nhau vào một path thì evenodd XOR chúng và ra vành tô/không-tô xen
+        #    kẽ. Xem chú thích dài ở `Ink.fill`.
+        d = "".join(pl(ch, True)
+                    for ch in contours(dust_field, lv, MX0, MY0, MX1, MY1,
+                                       NEB["cell"] * 2))
+        if d:
+            ink.fill("bui-xa", d, P["dustFar"],
+                     NEB["dust"]["opacity"] * dim, "evenodd", solo=True)
 
 
 def ve_nguon_sang(ink, P, dim):
@@ -1031,40 +1439,52 @@ def ve_nguon_sang(ink, P, dim):
     cho cái vật sáng nhất bức. Một ngoại lệ "chỉ cho nguồn sáng" là một cái lỗ
     để đúng cái lỗi 'mảng phẳng tô gradient' quay lại — mà lần này nó quay lại
     ở chỗ to nhất và dễ thấy nhất."""
-    n, nc = LIGHT["levels"], LIGHT["coreLevels"]
+    n = LIGHT["levels"]
     cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
-    tich_g = tich_c = 0.0
+    ban = [light_r_of_A((i + 1) / n) for i in range(n)]
+    tich = 0.0       # độ mờ tích luỹ đã đạt, dùng chung cho cả ba dải
     for i in range(n):
-        f = (i + 1) / n
-        r = LIGHT["outer"] + (LIGHT["core"] - LIGHT["outer"]) * f
-        ag, ac = light_alpha(f)
-        if i < n - nc:
-            a, tich_g = (ag - tich_g) / max(1e-6, 1.0 - tich_g), ag
-            col = P["glow"]
-        else:
-            a, tich_c = (ac - tich_c) / max(1e-6, 1.0 - tich_c), ac
-            col = P["glowCore"]
+        r = ban[i]
+        if r <= 0:
+            continue
+        muc = (i + 1) / n
+        col = (P["core"] if muc >= LIGHT["coreAt"]
+               else P["glowCore"] if muc >= LIGHT["rimAt"] else P["glowRim"])
+        a, tich = (muc - tich) / max(1e-6, 1.0 - tich), muc
         if a <= 0.004:
             continue
+        # Số điểm theo BÁN KÍNH: vòng trong cùng (r ≈ 5) không cần 128 điểm,
+        # và chênh lệch ấy là vài chục KB trên 128 vòng.
+        seg = max(LIGHT["segMin"], min(LIGHT["segMax"],
+                                       int(round(r / LIGHT["segPer"]))))
+        # Khoảng cách tới vòng kế — biên độ dao động riêng của vòng này lấy
+        # theo nó, nên hệ số dưới 0,5 là hai vòng KHÔNG THỂ cắt nhau (ràng
+        # buộc cũ còn nguyên) mà biên giới của chúng thôi trùng pha.
+        khe = abs(r - (ban[i + 1] if i + 1 < n else LIGHT["core"] * 0.5))
+        jit = LIGHT["ringJitter"] * khe
         pts = []
-        for k in range(LIGHT["seg"]):
-            th = math.tau * k / LIGHT["seg"]
+        for k in range(seg):
+            th = math.tau * k / seg
             rr = r * light_m(th, r)
+            if jit > 0:
+                rr += (RN.v(th * 7.3 + i * 2.1, i * 3.7) - 0.5) * 2 * jit
             pts.append((cx + math.cos(th) * rr, cy + math.sin(th) * rr))
-        ink.fill("nguon-sang", pl(pts, True), col, a * dim)
+        ink.fill("nguon-sang", pl(pts, True), col, a * dim, solo=True)
     # LẤM TẤM trong quầng — cùng lý lẽ với lấm tấm của tinh vân: nó là thứ giữ
     # cho mười sáu vòng phẳng khỏi đọc ra là mười sáu cái vòng. Ở đây nó cần
     # hơn ở tinh vân, vì nguồn sáng là vật TO nhất bức nên mỗi vòng của nó là
     # một mảng to.
     st = LIGHT["stipple"]
-    R = LIGHT["outer"] * (1 + LIGHT["warp"])
+    R = LIGHT["tail"] * (1 + LIGHT["warp"])
     for i in range(int(st["count"] * DENSITY)):
         a = rnd(i * 3.1, 1.7) * math.tau
         r = math.sqrt(rnd(i * 5.3, 9.1)) * R
         x, y = cx + math.cos(a) * r, cy + math.sin(a) * r
         if not (VX0 <= x <= VX1 and VY0 <= y <= VY1):
             continue
-        f = light_f(x, y)
+        # Lọc theo ĐỘ MỜ TÍCH LUỸ, không theo `f` cũ (0 ở rìa, 1 ở lõi) — hồ
+        # sơ nay là một bảng theo bán kính nên `f` không còn tồn tại.
+        f = light_A(light_re(x, y))
         if f < st["at"] or rnd(x * 1.9, y * 4.1) > (f - st["at"]) * st["gain"]:
             continue
         ink.stroke("nguon-sang", dot(x, y), P["glowCore"],
@@ -1072,26 +1492,37 @@ def ve_nguon_sang(ink, P, dim):
 
 
 def ve_loe_ngang(ink, P, dim):
-    """VỆT LOÉ NGANG qua nguồn sáng — đọc được bằng mắt trên khung hình tham
-    chiếu (`chieu-sau-tuong-tac.md` §2.2) và đặc tả §3.3 đã chép nó.
+    """HAI VỆT LOÉ VUÔNG GÓC qua nguồn sáng — đọc được bằng mắt trên khung
+    hình tham chiếu (`chieu-sau-tuong-tac.md` §2.2).
 
     Nó không phải trang trí: một vệt ngang là thứ nói ra "đây là một NGUỒN
     SÁNG, không phải một mảng sơn sáng" — mắt đọc vệt loé ra là ánh sáng tràn
-    qua một thấu kính. Thuôn về hai đầu bằng ĐỘ MỜ, không bằng gradient."""
+    qua một thấu kính. Thuôn về hai đầu bằng ĐỘ MỜ, không bằng gradient.
+
+    VỆT DỌC thêm ngày 19/10/2026: hai vệt vuông góc là chữ ký đọc-ra-ngay của
+    "một nguồn sáng qua thấu kính", còn một vệt đơn độc thì đọc ra là một nét
+    kẻ. Và đây là chỗ DUY NHẤT trong bản đồ được phép có hình căn trục —
+    `SKY_LINK.axisMin` cấm góc vuông cho CHÒM, vệt loé không phải một chòm."""
     fl = LIGHT["flare"]
     cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
-    half = LIGHT["outer"] * fl["span"] / 2
-    for i in range(fl["steps"]):
-        t = (i + 0.5) / fl["steps"]
-        u = (t - 0.5) * 2                     # −1 … +1
-        x0 = cx + u * half
-        seg = half * 2 / fl["steps"]
-        thuon = max(0.0, 1.0 - abs(u)) ** 1.6
-        if thuon <= 0.02:
-            continue
-        ink.poly("loe-ngang", [(x0 - seg / 2, cy), (x0 + seg / 2, cy)],
-                 P["glowCore"], fl["width"] * (0.4 + 0.6 * thuon),
-                 fl["opacity"] * thuon * dim)
+    # `span` đọc là NỬA vệt theo đơn vị `outer` (xem chú thích ở TS): 2,6 × 210
+    # = 546 px mỗi bên, vệt dài 1 092 px = 80 % bề rộng khung.
+    half = LIGHT["outer"] * fl["span"]
+    for truc, dai in (("ngang", half), ("doc", half * fl["cross"])):
+        for i in range(fl["steps"]):
+            t = (i + 0.5) / fl["steps"]
+            u = (t - 0.5) * 2                     # −1 … +1
+            seg = dai * 2 / fl["steps"]
+            thuon = max(0.0, 1.0 - abs(u)) ** 1.6
+            if thuon <= 0.02:
+                continue
+            if truc == "ngang":
+                p = [(cx + u * dai - seg / 2, cy), (cx + u * dai + seg / 2, cy)]
+            else:
+                p = [(cx, cy + u * dai - seg / 2), (cx, cy + u * dai + seg / 2)]
+            ink.poly("loe-ngang", p, P["glowCore"],
+                     fl["width"] * (0.4 + 0.6 * thuon),
+                     fl["opacity"] * thuon * dim)
 
 
 def ve_tinh_van(ink, P, dim):
@@ -1105,13 +1536,58 @@ def ve_tinh_van(ink, P, dim):
     mật độ sao nền đổi theo chính trường này."""
     lo, hi = NEB["levelLo"], NEB["levelHi"]
     n = NEB["levels"]
-    fn = neb_fade
+    fn = neb_lit
+    muc = [lo + (hi - lo) * i / (n - 1) for i in range(n)]
     for i in range(n):
-        lv = lo + (hi - lo) * i / (n - 1)
-        col = P["nebula"] if i < n - 2 else P["nebulaCore"]
-        for ch in contours(fn, lv, MX0, MY0, MX1, MY1, NEB["cell"]):
-            ink.fill("tinh-van", pl(ch, True), col,
-                     NEB["levelOpacity"] * dim, "evenodd")
+        col = P[neb_ton(i)]
+        # MỘT `<path>` RIÊNG cho mỗi bậc, gom hết vòng của bậc ấy vào trong.
+        # Xem chú thích dài ở `Ink.fill`: gộp hai bậc LỒNG NHAU vào một path
+        # thì `evenodd` XOR chúng, và mười bốn bậc ra một dãy vành tô/không-tô
+        # xen kẽ thay vì một dốc — bậc trong cùng có thể thành TRỐNG.
+        d = "".join(pl(ch, True)
+                    for ch in contours(fn, muc[i], MX0, MY0, MX1, MY1, NEB["cell"]))
+        if d:
+            ink.fill("tinh-van", d, col, NEB["levelOpacity"] * dim, "evenodd",
+                     solo=True)
+    # LẤM TẤM Ở BIÊN mỗi bậc — chỗ luật cấm gradient thật sự CẮN, và cách rẻ
+    # nhất giữ được luật.
+    #
+    # Một dốc Lambert là liên tục; tô nó bằng 14 bậc vẫn cho ~12 mã màu sRGB
+    # mỗi bậc, gấp sáu lần ngưỡng thấy dải (≈ 2 mã). Ba phương án đã cân: 14
+    # bậc trần (thấy dải ở vùng rộng), 24 bậc (+88 KB, vẫn 7 mã), hay 14 bậc
+    # cộng lấm tấm biên (~3 mã hiệu dụng, +52 KB). Chọn cách ba. Chấm mang
+    # tông của bậc CAO HƠN và rắc trong dải `band` NGAY DƯỚI ngưỡng, nên mắt
+    # đọc ra một chuyển tiếp thay vì một đường biên.
+    dt = NEB["levelDither"]
+    # Mật độ chấm/1000 px² → số mẫu trên cả khung; lọc theo điều kiện "đang ở
+    # trong dải biên của bậc nào" nên mẫu bị loại phần lớn.
+    tong = int(dt["per1000"] * VIEW["width"] * VIEW["height"] / 1000 * DENSITY)
+    cols = max(1, int(math.sqrt(tong * VIEW["width"] / VIEW["height"])))
+    rows = max(1, tong // cols)
+    for i in range(cols):
+        for j in range(rows):
+            x = VX0 + VIEW["width"] * (i + 0.5) / cols \
+                + (rnd(i * 1.3, j * 4.7) - 0.5) * VIEW["width"] / cols * 1.8
+            y = VY0 + VIEW["height"] * (j + 0.5) / rows \
+                + (rnd(i * 6.1, j * 2.3) - 0.5) * VIEW["height"] / rows * 1.8
+            if not (VX0 <= x <= VX1 and VY0 <= y <= VY1):
+                continue
+            g = fn(x, y)
+            # Bậc kế tiếp mà điểm này CHƯA tới. Dải biên tính theo GIÁ TRỊ
+            # trường, quy từ `band` px bằng độ dốc cục bộ — nhưng một phép xấp
+            # xỉ rẻ hơn đủ dùng: bề rộng một bậc chia theo tỉ lệ `band` trên
+            # khoảng cách trung bình giữa hai đường đồng mức (~`cell` × 4).
+            k = sum(1 for lv in muc if g > lv)
+            if k >= n:
+                continue
+            thieu = muc[k] - g
+            rong = (hi - lo) / (n - 1) * (dt["band"] / (NEB["cell"] * 8))
+            if thieu > rong or thieu < 0:
+                continue
+            if rnd(x * 3.7, y * 2.9) > 1 - thieu / rong:
+                continue
+            ink.stroke("tinh-van", dot(x, y), P[neb_ton(k)],
+                       NEB["stipple"]["size"] * 2, NEB["levelOpacity"] * dim)
     # Lấm tấm TRONG LÕI: thứ giữ cho năm bậc phẳng khỏi đọc ra là năm mảng.
     st = NEB["stipple"]
     cnt = int(st["count"] * DENSITY)
@@ -1133,9 +1609,12 @@ def ve_tinh_van(ink, P, dim):
 
 def ve_khe_bui(ink, P, dim):
     for lv in NEB["lane"]["levels"]:
-        for ch in contours(lane_field, lv, MX0, MY0, MX1, MY1, NEB["cell"]):
-            ink.fill("khe-bui", pl(ch, True), P["dustLane"],
-                     NEB["lane"]["opacity"] * dim, "evenodd")
+        # MỘT `<path>` cho mỗi bậc — xem `ve_bui_xa` và `Ink.fill`.
+        d = "".join(pl(ch, True)
+                    for ch in contours(lane_field, lv, MX0, MY0, MX1, MY1, NEB["cell"]))
+        if d:
+            ink.fill("khe-bui", d, P["dustLane"],
+                     NEB["lane"]["opacity"] * dim, "evenodd", solo=True)
 
 
 def ve_soi_sang(ink, P, dim):
@@ -1165,20 +1644,204 @@ def ve_soi_sang(ink, P, dim):
         done += 1
 
 
+def vanh_sang_rim(ink, lop, cx, cy, r, P, dim, w=None, op=None):
+    """VÀNH SÁNG RÌA — một luật, ba chỗ dùng, không ngoại lệ (§8.4).
+
+    Một cung `glowCore` mỏng CHỈ trên nửa quay về mặt trời, độ mờ giảm theo
+    `max(0, cos θ)^falloff`. Đó là thứ làm cả bức có MỘT hướng sáng — mục thứ
+    tư trong công thức hùng vĩ, và mục mà bản cũ có 0 trên 4. Dùng cho khối
+    chân trời, ba hành tinh, và vành đai; viết một lần ở đây để ba chỗ không
+    thể lệch nhau."""
+    rm = LIGHT["rim"]
+    sx, sy = LIGHT["at"]["x"] - cx, LIGHT["at"]["y"] - cy
+    d = math.hypot(sx, sy) or 1.0
+    sx, sy = sx / d, sy / d
+    n = max(24, int(r * 1.6))
+    for k in range(n):
+        th0 = math.tau * k / n
+        th1 = math.tau * (k + 1) / n
+        tm = (th0 + th1) / 2
+        co = math.cos(tm) * sx + math.sin(tm) * sy      # n̂ · ŝ
+        if co <= 0:
+            continue
+        a = (op or rm["opacity"]) * co ** rm["falloff"]
+        if a <= 0.01:
+            continue
+        ink.poly(lop, [(cx + math.cos(th0) * r, cy + math.sin(th0) * r),
+                       (cx + math.cos(th1) * r, cy + math.sin(th1) * r)],
+                 P["glowCore"], w or rm["width"], a * dim)
+
+
+def ve_hanh_tinh(ink, P, dim, only=None):
+    """BA HÀNH TINH = BA BÀI CỬA (§7.2) — vật thể RẮN đầu tiên của bản đồ.
+
+    Bản cũ chỉ có MỘT thể loại vật (sao nền · 48 ngôi · nét chòm · tinh vân ·
+    lưới · mạch), tức không một vật RẮN nào, tức không một chỗ CHE KHUẤT nào —
+    và che khuất là tín hiệu chiều sâu rẻ nhất mà bức tranh có thể có. Ở đây
+    có hai lần che trong MỘT vật: nửa gần của vành đai phủ lên hành tinh, hành
+    tinh phủ lên nửa xa của vành.
+
+    Pha ĐỌC RA được hướng mặt trời: viền sáng của cả ba quay về (680, 313).
+    Không một ký hiệu nào làm được điều đó, và đó là lý do bài cửa được vẽ
+    bằng một vật chứ không bằng một ngôi to hơn."""
+    ph = PLANET["phase"]
+    rg = PLANET["ring"]
+    cx0, cy0 = LIGHT["at"]["x"], LIGHT["at"]["y"]
+    dk_chom = {}
+    for key, _h in HULLS:
+        ps = [(x, y) for _c, x, y, _r, _t, k in STARS if k == key]
+        dk_chom[key] = max((math.hypot(a[0] - b[0], a[1] - b[1])
+                            for i, a in enumerate(ps) for b in ps[i + 1:]), default=0.0)
+    for code, x, y, _r, _t, key in STARS:
+        if code not in BAI_CUA:
+            continue
+        if only is not None and key != only:
+            continue
+        dk = max(PLANET["sizeMin"],
+                 min(PLANET["sizeMax"], PLANET["sizeRatio"] * dk_chom[key]))
+        R = dk / 2
+        d = math.hypot(x - cx0, y - cy0)
+        phi = math.radians(ph["base"] - ph["span"] * min(1.0, d / ph["ref"]))
+        # Góc của hướng TỚI mặt trời — trục của phép phân giới sáng/tối.
+        al = math.atan2(cy0 - y, cx0 - x)
+        # ── VÀNH ĐAI, NỬA XA trước (bị hành tinh phủ lên) ────────────────
+        amaj, amin = R * rg["major"], R * rg["major"] * math.cos(math.radians(rg["tilt"]))
+        nghieng = math.radians(18)
+        def vanh(t0, t1, n=28):
+            pts = []
+            for k in range(n + 1):
+                t = t0 + (t1 - t0) * k / n
+                ex, ey = amaj * math.cos(t), amin * math.sin(t)
+                pts.append((x + ex * math.cos(nghieng) - ey * math.sin(nghieng),
+                            y + ex * math.sin(nghieng) + ey * math.cos(nghieng)))
+            return pts
+        ink.poly("hanh-tinh", vanh(math.pi, math.tau), P["glowRim"],
+                 rg["width"], rg["opacity"] * dim)
+        # ── MẶT TỐI: một đĩa gần đặc ──────────────────────────────────────
+        ink.fill("hanh-tinh", pl([(x + math.cos(math.tau * k / 48) * R,
+                                   y + math.sin(math.tau * k / 48) * R)
+                                  for k in range(48)], True),
+                 P["dustLane"], PLANET["nightOpacity"] * dim)
+        # ── MẶT SÁNG: ĐÚNG HAI CUNG ───────────────────────────────────────
+        #
+        # Cung rìa hành tinh (nửa quay về mặt trời) + cung đường phân giới,
+        # một ellipse bán trục `R·|cos φ|`. Hai cung tròn là TOÀN BỘ hình học
+        # của một pha — không clip, không mask, không gradient, và đó là vì sao
+        # luật cấm gradient không cắn ở đây.
+        b = R * abs(math.cos(phi))
+        dau = -1.0 if math.cos(phi) < 0 else 1.0
+        pts = []
+        for k in range(25):          # cung rìa, từ cực này sang cực kia
+            t = -math.pi / 2 + math.pi * k / 24
+            pts.append((x + math.cos(al + t) * R, y + math.sin(al + t) * R))
+        for k in range(25):          # cung phân giới, quay về
+            t = math.pi / 2 - math.pi * k / 24
+            ex, ey = dau * b * math.cos(t), R * math.sin(t)
+            pts.append((x + ex * math.cos(al) - ey * math.sin(al),
+                        y + ex * math.sin(al) + ey * math.cos(al)))
+        ink.fill("hanh-tinh", pl(pts, True), P["hues"][next(
+            c["hue"] for c in CONS if c["key"] == key)],
+            PLANET["litOpacity"] * dim)
+        # ── VÀNH ĐAI, NỬA GẦN (phủ LÊN hành tinh) ─────────────────────────
+        ink.poly("hanh-tinh", vanh(0.0, math.pi), P["glowRim"],
+                 rg["width"], rg["opacity"] * dim)
+        # ── VÀNH SÁNG RÌA, cùng luật với khối chân trời ────────────────────
+        vanh_sang_rim(ink, "hanh-tinh", x, y, R, P, dim)
+
+
+def ve_tia_bui(ink, P, dim):
+    """CHÍN NÊM TIA SÁNG XUYÊN BỤI (§8.3).
+
+    Nó nói gì: một nêm TỐI là bằng chứng có thứ CHẮN giữa mặt trời và người
+    xem, tức giữa hai vật có KHÔNG GIAN. Đây là tín hiệu "có một mặt trời ở
+    kia" mạnh thứ hai sau vệt loé, và nó rẻ — chín đa giác.
+
+    Nêm bắt đầu từ các nút BỤI DÀY trong `within` px quanh mặt trời và toả
+    theo hướng xuyên tâm; mọi nêm bị CẮT ở rìa khối chân trời, vì dưới rìa thì
+    không lớp nào sống sót."""
+    ry = LIGHT["ray"]
+    cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
+    # Chọn chín hướng bằng cách quét góc và lấy chỗ trường bụi dày nhất —
+    # tất định, và nó neo nêm vào HÌNH của tinh vân chứ không vào một danh
+    # sách góc viết tay (một danh sách như thế sẽ lệch ngay lần dải Ngân Hà
+    # dịch, và lệch im lặng).
+    ung = []
+    for k in range(72):
+        th = math.tau * k / 72
+        r = ry["within"] * 0.55
+        x, y = cx + math.cos(th) * r, cy + math.sin(th) * r
+        ung.append((neb_field(x, y) + dust_field(x, y) * 0.5, th))
+    ung.sort(reverse=True)
+    # Lọc cho chín hướng CÁCH NHAU: lấy dày nhất rồi loại mọi hướng trong 18°.
+    chon = []
+    for _g, th in ung:
+        if all(abs((th - t + math.pi) % math.tau - math.pi) > math.radians(18)
+               for t in chon):
+            chon.append(th)
+        if len(chon) >= ry["count"]:
+            break
+    g0, g1 = ry["spread"]
+    l0, l1 = ry["length"]
+    o0, o1 = ry["opacity"]
+    for i, th in enumerate(sorted(chon)):
+        u = i / max(1, len(chon) - 1)
+        mo = math.radians(g0 + (g1 - g0) * rnd(i * 2.3, 7.1))
+        dai = l0 + (l1 - l0) * rnd(i * 4.7, 3.3)
+        r0 = LIGHT["core"] * 1.1
+        pts = []
+        for s in (-1, 1):
+            for k in range(7):
+                t = k / 6
+                rr = r0 + (r0 + dai) * t
+                a = th + s * mo / 2 * (0.3 + 0.7 * t)
+                x = cx + math.cos(a) * rr + (rnd(k * 1.7, i * 5.1) - 0.5) * ry["jitter"]
+                y = cy + math.sin(a) * rr + (rnd(k * 3.1, i * 2.7) - 0.5) * ry["jitter"]
+                # CẮT ở rìa chân trời — nêm là một lớp của TRỜI, và trời dừng
+                # ở mép khối.
+                y = min(y, chan_troi_y(x))
+                pts.append((x, y))
+            if s < 0:
+                pts.reverse()
+        ink.fill("tia-bui", pl(pts, True), P["dustLane"],
+                 (o0 + (o1 - o0) * u) * dim)
+
+
 def ve_quang_chan_troi(ink, P, dim):
-    """Lớp 5 — quầng chân trời, dựng bằng MẬT ĐỘ NÉT chứ không bằng gradient
-    dọc. Bầu trời chạm đất, không phải một cái hố đen dán giữa trang (§5.3).
-    Và đây cũng là chỗ bắt đầu của bản đồ báo bằng ÁNH SÁNG VÙNG (§15)."""
-    far, near = HORIZON["step"]
-    o0, o1 = HORIZON["opacity"]
-    y = max(VY0, H - HORIZON["height"])
-    while y < VY1:
-        amt = horizon_amt(y)
-        pts = wobble_line(VX0 - 4, y, VX1 + 4, y + (NZ.v(y * 0.05, 1.1) - 0.5) * 6,
-                          HORIZON["wobble"])
-        ink.poly("quang-chan-troi", pts, P["horizon"], HORIZON["width"],
-                 (o0 + o1 * amt) * dim)
-        y += near + (far - near) * (1 - amt)
+    """Lớp 5 — KHỐI CHÂN TRỜI: rìa một thiên thể, tô ĐẶC (§7.1).
+
+    Thay cho dải 170 px gạch ngang cũ, thứ vừa mờ vừa không có mép vừa không
+    phải một vật. Bốn việc nó làm, và không việc nào thay được bằng thứ khác:
+    một mép CỨNG LIỀN chạy hết bề rộng (tín hiệu chiều sâu mạnh nhất có thể có
+    với một nét duy nhất); một cái THƯỚC (1 250 sao nền dừng đột ngột ở mép
+    đó); một khối TỐI LỚN đối trọng với mặt trời chói ở giữa; và HƯỚNG SÁNG —
+    vành sáng chỉ xuất hiện ở nửa quay về mặt trời, nên nó CHỨNG MINH có một
+    nguồn sáng chứ không chỉ hiển thị một nguồn sáng."""
+    n = 160
+    xs = [VX0 + (VX1 - VX0) * i / n for i in range(n + 1)]
+    # KHỐI TỐI: một đa giác đi theo cung rồi khép qua đáy khung. `base` ĐẶC —
+    # không một ngôi, không một nét tinh vân nào sống sót bên dưới nó, và đó
+    # là toàn bộ sức mạnh của lớp này (xem `ve_truong_sao`, `contours`).
+    than = [(x, chan_troi_y(x)) for x in xs] + [(VX1, VY1 + 4), (VX0, VY1 + 4)]
+    ink.fill("quang-chan-troi", pl(than, True), P["base"], 1.0)
+    # LỚP KHÍ rồi VÀNH SÁNG, theo thứ tự đó: lớp khí dày và mờ nằm TRÊN mép,
+    # vành sáng mảnh và rõ nằm ĐÚNG trên mép. Vẽ khí trước thì vành sáng không
+    # bị nó làm nhoè.
+    for ten in ("air", "rim"):
+        c = HORIZON[ten]
+        for i in range(n):
+            x0, x1 = xs[i], xs[i + 1]
+            co = chan_troi_cos((x0 + x1) / 2)
+            if ten == "air":
+                a = c["opacity"] * (0.4 + 0.6 * co)
+            else:
+                a = c["opacity"] * co ** HORIZON["rim"]["falloff"]
+            if a <= 0.004:
+                continue
+            dy = -c["width"] / 2 if ten == "air" else 0.0
+            ink.poly("quang-chan-troi",
+                     [(x0, chan_troi_y(x0) + dy), (x1, chan_troi_y(x1) + dy)],
+                     P["glowRim"] if ten == "air" else P["glowCore"],
+                     c["width"], a * dim)
 
 
 def mat_do_sao(x, y):
@@ -1230,6 +1893,13 @@ def ve_truong_sao(ink, P, dim):
             y = VY0 + VIEW["height"] * v + (rnd(i * 2.7, j * 8.9) - 0.5) * VIEW["height"] / rows * jit * 2
             if not (VX0 + 1 <= x <= VX1 - 1 and VY0 + 1 <= y <= VY1 - 1):
                 continue
+            # DƯỚI RÌA KHỐI CHÂN TRỜI thì KHÔNG một sao nào. Đây là cả sức
+            # mạnh của lớp §7.1: 1 250 sao nền dừng lại ĐỘT NGỘT ở một mép
+            # cứng, và mắt suy ra ngay cái này ở gần, kia ở xa. Vẽ rồi để khối
+            # tô đặc che đi thì đúng kết quả nhưng tốn byte của mấy trăm nét
+            # không ai thấy.
+            if y > chan_troi_y(x):
+                continue
             if rnd(x * 1.3, y * 3.7) * over_sample > mat_do_sao(x, y):
                 continue
             # Hàng rào 4 + không đè lên một ngôi mang nghĩa.
@@ -1252,7 +1922,7 @@ def ve_truong_sao(ink, P, dim):
             # — nhìn qua một lớp khí dày. Bán kính vẫn bị kẹp ở `FIELD.radius`
             # (luật Stellarium), nên "to hơn" đi vào bề rộng nét, không vào
             # một bán kính mới làm vỡ khe trống 1,20–2,20.
-            h = horizon_amt(y)
+            h = horizon_amt(y, x)
             op *= 1.0 - FIELD["horizonFade"] * h
             ink.stroke("truong-sao", dot(x, y), P["field"],
                        FIELD["radius"] * 2 * (1 + FIELD["horizonSwell"] * h), op * dim)
@@ -1342,10 +2012,33 @@ def ve_mach(ink, P, dim):
     không cần mũi tên, vì bốn chòm xếp theo thứ tự dọc cung và chòm cuối (M8)
     là chòm sáng nhất — mắt đi về phía sáng."""
     pts = mach_duong()
-    ink.poly("mach-hoang-dao", pts, P["zodiac"], ZOD["width"],
-             ZOD["opacity"] * dim, dash=ZOD["dash"])
-    ink.poly("mach-hoang-dao", mach_le(pts, ZOD["bandOffset"]), P["zodiac"],
-             ZOD["width"], ZOD["bandOpacity"] * dim, dash=ZOD["dash"])
+    # ──── VỎ BỌC TỐI DƯỚI MỘT LÕI SÁNG ────────────────────────────────────
+    #
+    # Mạch là vệt DỄ TRƯỢT 3 : 1 NHẤT của cả bức — đặc tả báo trước đúng điều
+    # đó ở va chạm #3 — vì cung chạy xuyên nửa trên bầu trời qua nhiều vùng độ
+    # chói khác nhau. Sau khi tinh vân được chiếu sáng, nó trượt thật: 2,39 : 1
+    # tại (844, 552), chỗ nền đo được L = 0,085.
+    #
+    # LUẬT ĐƯỜNG CHÓI (§10.3) KHÔNG chữa được chỗ này, và nói ra vì sao để
+    # không ai thử lại: ở nền L = 0,085, tông SÁNG cho 2,39 : 1 còn tông TỐI
+    # cho **1,65 : 1** — tệ hơn. Đổi tông chỉ chữa được hai đầu dải; giữa dải
+    # có một VÙNG CHẾT mà không tông nào đạt, vì độ mờ 0,48 không đủ kéo màu
+    # ra xa nền theo bất cứ chiều nào. Luật ấy vẫn đúng cho NÉT CHÒM (sắc
+    # khoáng sáng hơn hẳn, và nét chòm nằm trong bao lồi nơi nền đã bị làm
+    # loãng), nhưng mạch thì cần một thứ khác.
+    #
+    # Thứ đó là một thủ pháp bản đồ cổ: **một lõi sáng trên một vỏ bọc tối**.
+    # Tương phản được đo giữa LÕI và VỎ, nên nó KHÔNG phụ thuộc vào nền — đo
+    # được 4,7 : 1 trên trời trống và 4,1 : 1 giữa tinh vân sáng. Đây cũng là
+    # khuôn đã dùng cho vòng hai nét của chip mã bài ("vòng HAI NÉT không thể
+    # cùng trượt 3:1"), nên nó không phải một cơ chế mới phải tin.
+    cs = ZOD["casing"]
+    for duong, op in ((pts, ZOD["opacity"]),
+                      (mach_le(pts, ZOD["bandOffset"]), ZOD["bandOpacity"])):
+        ink.poly("mach-hoang-dao", duong, P["dustLane"],
+                 ZOD["width"] + cs["grow"], cs["opacity"] * dim, dash=ZOD["dash"])
+        ink.poly("mach-hoang-dao", duong, P["zodiac"], ZOD["width"],
+                 op * dim, dash=ZOD["dash"])
 
 
 def ve_net_chom(ink, P, focus, only=None):
@@ -1399,8 +2092,22 @@ def ve_net_chom(ink, P, focus, only=None):
             # định nghĩa hẹp của WCAG, nên nó phải bỏ dưới `reduce`. Hai tấm
             # ảnh chỉ khác nhau ở ĐỘ MỜ ⇒ bản này an toàn với `reduce` ngay từ
             # lúc sinh, không cần một tấm thứ ba.
-            ink.poly("net-chom", wobble_line(a[0], a[1], b[0], b[1], LINK["wobble"]),
-                     hue, w, op)
+            # LUẬT ĐƯỜNG CHÓI (§10.3): vệt nào nằm trên nền ĐỦ SÁNG thì đổi từ
+            # tông sắc khoáng sang tông TỐI. Nó đúng về vật lý (một vật trước
+            # nền sáng đọc ra là bóng đen), nó là thứ giữ sàn 3 : 1 ở vùng mềm
+            # quanh mặt trời, và nó cho ra hiệu ứng đẹp nhất của cả bản: phần
+            # của một chòm gần mặt trời nhất SẬM LẠI THÀNH BÓNG còn phần xa thì
+            # sáng — một chòm có hai tông vì nó nằm trong một không gian CÓ ánh
+            # sáng. Chia đoạn làm ba để chuyển tông bắt được giữa một nét dài.
+            for t0, t1 in ((0.0, 1 / 3), (1 / 3, 2 / 3), (2 / 3, 1.0)):
+                qa = (a[0] + (b[0] - a[0]) * t0, a[1] + (b[1] - a[1]) * t0)
+                qb = (a[0] + (b[0] - a[0]) * t1, a[1] + (b[1] - a[1]) * t1)
+                mau = hue
+                if do_sang((qa[0] + qb[0]) / 2, (qa[1] + qb[1]) / 2, P) > LIGHT["litFlip"]["at"]:
+                    mau = P["dustLane"]
+                ink.poly("net-chom",
+                         wobble_line(qa[0], qa[1], qb[0], qb[1], LINK["wobble"]),
+                         mau, w, op)
 
 
 def ve_sao(ink, P, focus, only=None):
@@ -1559,8 +2266,26 @@ def nhan_vi_pham(c, g, P, da_dat=()):
         if (box[0] - pad < b[2] + pad and box[2] + pad > b[0] - pad
                 and box[1] - pad < b[3] + pad and box[3] + pad > b[1] - pad):
             return "hộp chữ (nở %g) chồng hộp nhãn chòm %s đã giữ chỗ" % (pad, key)
-    if box_sang_qua(box, P):
-        return "độ chói trung bình trong hộp chữ vượt trần %s" % P["textCeiling"]
+    # ĐĨA MỀM QUANH MẶT TRỜI — thay cho điều kiện `textCeiling` cũ, và hai thứ
+    # đó gác hai việc khác nhau:
+    #
+    # `textCeiling` gác TIẾP CẬN ("chữ này có đọc được không?"), nhưng từ lúc
+    # mọi hộp nhãn có một TẤM NỀN `base` α 0,72 (§10.2 luật 2) thì nền sau chữ
+    # bị ghim xuống L ≤ 0,02 bất kể trời sáng bao nhiêu — nên cái trần ấy thôi
+    # gác được gì, và `do_tuong_phan_nhan` đo thẳng câu hỏi thật ở từng điểm.
+    # Giữ nó làm điều kiện loại là tự chặn mình: với một tinh vân được chiếu
+    # sáng thì KHÔNG hướng nào của một số chòm còn đạt, và build trượt vì một
+    # lý do không còn thật.
+    #
+    # Thứ `textCeiling` KHÔNG gác được là BỐ CỤC: một nhãn đặt giữa quầng mặt
+    # trời là một nhãn đặt lên điểm tụ của cả bức. Nên luật nay nói theo HÌNH
+    # HỌC, và nó kiểm được bằng một phép đo không phụ thuộc màu.
+    if LBL["keepOffSun"]:
+        cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
+        qx = min(max(cx, box[0]), box[2])
+        qy = min(max(cy, box[1]), box[3])
+        if math.hypot(qx - cx, qy - cy) < LBL["keepOffSun"]:
+            return "hộp chữ cắt đĩa r < %g quanh mặt trời" % LBL["keepOffSun"]
     return None
 
 
@@ -1598,7 +2323,7 @@ def nhan_box(c, P, da_dat=()):
     return g
 
 
-def tim_nhan(c, P, da_dat=()):
+def tim_nhan(c, P, da_dat=(), tra_het=False):
     """Bộ máy §8.4–§8.5 — chạy MỘT LẦN, kết quả đóng băng vào TS.
 
     Neo vào ngôi SÁNG NHẤT của chòm, không vào trọng tâm (§8.2): trọng tâm của
@@ -1621,6 +2346,7 @@ def tim_nhan(c, P, da_dat=()):
 
     thu = []
     best = None
+    moi = []     # MỌI chỗ hợp lệ, đã chấm điểm — nguồn cho phép lùi (`xep_nhan`)
     # BA ngôi neo, không hai. §8.4 nói "đổi sang ngôi sáng thứ nhì"; với tám
     # nhãn thì hai là không đủ, và M5 là ca chứng minh: cả N01 lẫn N02 đều ở
     # nửa TRÁI của cái lưới, mà bên trái chúng chỉ còn 176 px tới mép khung —
@@ -1658,13 +2384,19 @@ def tim_nhan(c, P, da_dat=()):
                     horiz = 1.0 - abs(math.degrees(math.atan2(abs(dy), abs(dx)))) / 90.0
                     score = (clear + LBL["wAway"] * away + LBL["wHoriz"] * horiz
                              - LBL["wLeg"] * leg)
+                    moi.append((score, g))
                     if best is None or score > best[0]:
                         best = (score, g)
             # Nới đoạn 1 theo bước 2 px tới `legMax`, rồi theo bước 6 px tới
             # `legHardMax` (§8.4 "khi hết chỗ").
             leg += LBL["legStep"] if leg < LBL["legMax"] else LBL["legGrow"]
-        if best:
-            break
+        # KHÔNG `break` khi đã có chỗ: `xep_nhan` cần CẢ danh sách để lùi được.
+        # Thứ tự ngôi neo vẫn nằm trong điểm số (ngôi mờ hơn cho `clear` nhỏ
+        # hơn), nên "ưu tiên ngôi sáng nhất" không mất — nó chỉ thôi là một
+        # lần `break` không quay lại được.
+    if tra_het:
+        moi.sort(key=lambda t: -t[0])
+        return moi, thu
     if best is None:
         raise SystemExit(
             "KHÔNG ĐẶT ĐƯỢC NHÃN cho chòm %s — đặc tả §8.4 nói build phải "
@@ -1675,6 +2407,82 @@ def tim_nhan(c, P, da_dat=()):
                           % (g["code"], g["leg"], g["sx"], g["sy"], r)
                           for g, r in thu[:16])))
     return best[1]
+
+
+_XEP: dict = {}
+
+
+def xep_nhan(P):
+    """TÁM CHỖ ĐẶT NHÃN CÙNG MỘT LÚC, có PHÉP LÙI — không tám lần chọn tham lam.
+
+    ── VÌ SAO PHẢI LÙI, ngày 19/10/2026 ────────────────────────────────────
+
+    Bộ máy §8.4 chọn tham lam: xếp tám chòm theo thứ tự nhường, rồi mỗi chòm
+    lấy chỗ điểm cao nhất còn hợp lệ. Với một bố cục rộng thì không sao. Với
+    một mặt trời chói giữa khung thì chỗ trống hiếm, và tham lam **hỏng có hệ
+    thống**: một chòm lấy đúng cái chỗ DUY NHẤT của chòm sau nó, rồi build
+    trượt với một thông báo chỉ vào chòm sau — tức chỉ vào nạn nhân, không
+    vào nguyên nhân.
+
+    Đã đo ba lần trong một phiên, ba cặp khác nhau: M7 chiếm chỗ của M6; rồi
+    (sau khi đổi sang thứ tự ít-chỗ-nhất-đi-trước) M6 chiếm chỗ của M7; rồi M5
+    chiếm chỗ của M3. Mỗi lần "sửa" bằng cách dịch một hộp chòm là đổi nạn
+    nhân, không chữa bệnh — và mỗi lần dịch hộp lại phải chạy lại bốn phép
+    kiểm bố cục. Đó là dấu hiệu của một thuật toán sai, không của một bố cục
+    sai.
+
+    Phép lùi chữa cả lớp lỗi ấy: nếu chòm thứ k không còn chỗ, bỏ chỗ của chòm
+    k−1 và thử chỗ tốt NHÌ của nó. Thứ tự nhường của §8.4 vẫn còn nguyên — nó
+    là thứ tự THĂM và là điểm số ưu tiên, nên nghiệm tìm được vẫn là nghiệm mà
+    nhãn sáng hơn giữ chỗ tốt hơn; chỉ khác là nay có nghiệm.
+
+    `nut` chặn cho tìm kiếm không bùng nổ. Nếu vượt mà vẫn chưa xong thì build
+    TRƯỢT như cũ — "không xuất ra được một bản đồ có nhãn chồng" không đổi."""
+    if P["base"] in _XEP:
+        return _XEP[P["base"]]
+    thu_tu = thu_tu_nhan(P)
+    cho, vi_pham = {}, {}
+    for c in thu_tu:
+        moi, thu = tim_nhan(c, P, (), tra_het=True)
+        cho[c["key"]] = moi
+        vi_pham[c["key"]] = thu
+    gioi_han = LBL["branch"]
+    nut = [0]
+
+    def chong(box, b):
+        pad = LBL["boxPad"]
+        return (box[0] - pad < b[2] + pad and box[2] + pad > b[0] - pad
+                and box[1] - pad < b[3] + pad and box[3] + pad > b[1] - pad)
+
+    def di(i, da_dat):
+        if i == len(thu_tu):
+            return list(da_dat)
+        key = thu_tu[i]["key"]
+        for _s, g in cho[key][:gioi_han]:
+            nut[0] += 1
+            if nut[0] > LBL["nodeMax"]:
+                return None
+            if any(chong(g["box"], b) for _k, b, _g in da_dat):
+                continue
+            ra = di(i + 1, da_dat + [(key, g["box"], g)])
+            if ra is not None:
+                return ra
+        return None
+
+    ra = di(0, [])
+    if ra is None:
+        te = min(thu_tu, key=lambda c: len(cho[c["key"]]))
+        raise SystemExit(
+            "KHÔNG XẾP ĐƯỢC TÁM NHÃN, kể cả khi lùi (%d nút, trần %d). Chòm bó "
+            "nhất là %s với %d chỗ hợp lệ; nếu là 0 thì 16 lý do đầu:\n%s\n"
+            "Đặc tả §8.4 nói build phải TRƯỢT ở đây chứ không đẩy một bản đồ có "
+            "chữ chồng ra cho mắt người soi."
+            % (nut[0], LBL["nodeMax"], te["key"], len(cho[te["key"]]),
+               "\n".join("  neo %s · đoạn %g · hướng %+d%+d · %s"
+                         % (g["code"], g["leg"], g["sx"], g["sy"], r)
+                         for g, r in vi_pham[te["key"]][:16])))
+    _XEP[P["base"]] = {k: g for k, _b, g in ra}
+    return _XEP[P["base"]]
 
 
 def box_hits_hull(box, hull) -> bool:
@@ -1711,42 +2519,87 @@ def do_sang_rgb(x, y, P):
     if nd:
         col = over(col, hex_rgb(P["dustFar"]),
                    1 - (1 - NEB["dust"]["opacity"]) ** nd)
-    # thân Ngân Hà — năm bậc, hai bậc trong cùng dùng sắc lõi
-    g = neb_fade(x, y)
+    # thân Ngân Hà — MƯỜI BỐN bậc trên trường ĐÃ CHIẾU SÁNG, ba tông.
+    #
+    # Đếm số bậc phủ điểm này rồi gộp theo TÔNG, đúng thứ tự tô (tông ngoài
+    # trước). Nhờ `neb_ton()` là một hàm dùng chung, phép đo không thể lệch
+    # cách chia tông của lượt vẽ — mà lệch ở đây là đo một bức tranh khác với
+    # bức được ghi ra tệp.
+    g = neb_lit(x, y)
     lo, hi, n = NEB["levelLo"], NEB["levelHi"], NEB["levels"]
     lv = sum(1 for i in range(n) if g > lo + (hi - lo) * i / (n - 1))
     if lv:
-        core = max(0, lv - (n - 2))
-        col = over(col, hex_rgb(P["nebula"]),
-                   1 - (1 - NEB["levelOpacity"]) ** (lv - core))
-        if core:
-            col = over(col, hex_rgb(P["nebulaCore"]),
-                       1 - (1 - NEB["levelOpacity"]) ** core)
+        dem: dict[str, int] = {}
+        for i in range(lv):
+            t = neb_ton(i)
+            dem[t] = dem.get(t, 0) + 1
+        for ten in NEB["ramp"]:
+            if dem.get(ten):
+                col = over(col, hex_rgb(P[ten]),
+                           1 - (1 - NEB["levelOpacity"]) ** dem[ten])
     # khe bụi NHÂN vào — nó làm TỐI đi, nên nó chỉ giúp đạt trần
     nl = sum(1 for lv in NEB["lane"]["levels"] if lane_field(x, y) > lv)
     if nl:
         col = over(col, hex_rgb(P["dustLane"]),
                    1 - (1 - NEB["lane"]["opacity"]) ** nl)
-    # quầng chân trời: các nét chồng nhau, cộng dồn theo số nét phủ một điểm
-    h = horizon_amt(y)
-    if h > 0:
-        lop = HORIZON["opacity"][0] + HORIZON["opacity"][1] * h
-        col = over(col, hex_rgb(P["horizon"]),
-                   min(1.0, 1 - (1 - lop) ** HORIZON["overlap"]))
-    # NGUỒN SÁNG TRỘI, cộng cuối cùng vì lớp của nó nằm trên bụi xa và dưới
-    # tinh vân, mà ở chỗ nó sáng nhất thì tinh vân đã loãng (nó nằm ngoài dải
-    # Ngân Hà) — nên xếp sau là xấp xỉ sát hơn, và nó là xấp xỉ ĐẮT hơn, tức
-    # an toàn hơn cho ba phép kiểm tiếp cận dựa vào hàm này.
-    ag, ac = light_alpha(light_f(x, y))
-    if ag > 0:
-        col = over(col, hex_rgb(P["glow"]), ag)
-    if ac > 0:
-        col = over(col, hex_rgb(P["glowCore"]), ac)
+    # KHỐI CHÂN TRỜI tô ĐẶC bằng `base`: dưới rìa thì không lớp nào sống sót,
+    # nên phép đo trả về thẳng màu nền và THOÁT. Không thoát sớm thì mặt trời ở
+    # dưới cùng còn được cộng vào, và ngân sách sẽ đếm một vùng sáng mà tệp
+    # SVG không có.
+    if y > chan_troi_y(x):
+        return hex_rgb(P["base"])
+    # NGUỒN SÁNG TRỘI, cộng cuối cùng — và nay đó là THỨ TỰ THẬT, không còn
+    # một phép xấp xỉ.
+    #
+    # Chú thích cũ ở đây biện hộ cho việc cộng sau bằng một lý lẽ đã hết đúng:
+    # *"lớp của nó nằm trên bụi xa và DƯỚI tinh vân, mà ở chỗ nó sáng nhất thì
+    # tinh vân đã loãng — nó nằm ngoài dải Ngân Hà"*. Đúng khi mặt trời còn ở
+    # góc (124, 104). Từ lúc nó về giữa khung thì dải chạy ngay SAU nó, và
+    # mười bốn bậc tinh vân cộng dồn 0,90 phủ gần kín cái lõi trắng: đo trên
+    # tranh thật, tâm mặt trời ra `rgb(120, 127, 146)` trong khi hàm này trả
+    # về trắng tinh. Lệch 0,21 so với 1,0, và nó là nguồn lệch LỚN NHẤT giữa
+    # mô hình và tệp.
+    #
+    # `SKY_LAYERS` đã đưa `nguon-sang` lên TRÊN `tinh-van`, nên thứ tự ở đây
+    # và thứ tự vẽ nay là một.
+    a1, a2, a3 = light_alpha(light_re(x, y))
+    if a1 > 0:
+        col = over(col, hex_rgb(P["glowRim"]), a1)
+    if a2 > 0:
+        col = over(col, hex_rgb(P["glowCore"]), a2)
+    if a3 > 0:
+        col = over(col, hex_rgb(P["core"]), a3)
     return col
 
 
 def do_sang(x, y, P) -> float:
     return luminance(do_sang_rgb(x, y, P))
+
+
+def tam_nen_can(box, P) -> bool:
+    """Hộp nhãn này có CẦN một tấm nền không — nền sau nó có chỗ nào sáng hơn
+    `SKY_LABEL.plateAt`?
+
+    MỘT hàm cho ba chỗ: lượt vẽ (`ve_nhan`), lượt đo tương phản
+    (`do_tuong_phan_nhan`) và ca test. Ba chỗ tự quyết là ba chỗ sẽ lệch, và
+    lệch ở đây nghĩa là phép đo nói nhãn đạt 11 : 1 trong khi tệp SVG không có
+    tấm nền nào."""
+    x0, y0, x1, y1 = box
+    for i in range(7):
+        for j in range(5):
+            if do_sang(x0 + (x1 - x0) * (i + 0.5) / 7,
+                       y0 + (y1 - y0) * (j + 0.5) / 5, P) > LBL["plateAt"]:
+                return True
+    return False
+
+
+def do_sang_sau_tam(x, y, P, co_tam: bool):
+    """Màu nền SAU tấm nền, nếu hộp này có tấm. Tấm tô `base` ở
+    `plateOpacity`, nên nó KÉO mọi thứ về phía màu nền tuyệt đối."""
+    nen = do_sang_rgb(x, y, P)
+    if not co_tam:
+        return nen
+    return over(nen, hex_rgb(P["base"]), LBL["plateOpacity"])
 
 
 def box_sang_qua(box, P) -> bool:
@@ -1765,12 +2618,36 @@ def box_sang_qua(box, P) -> bool:
     return acc / k > tran
 
 
-def kiem_tran_chom(P):
-    """Trần độ chói CỤC BỘ: trong bao lồi mỗi chòm nở 24 px, độ chói không
-    được vượt `hullCeiling`. Lý do ở §4.1: dưới ngưỡng đó nét chòm mới đạt
-    3:1 — tức đây là một ràng buộc TIẾP CẬN, không phải một gu thẩm mỹ."""
-    tran = luminance(hex_rgb(P["hullCeiling"]))
+def do_tran_chom(P):
+    """Độ chói NỀN LỚN NHẤT trong bao lồi mỗi chòm (nở `ceilingPad`), và chỗ nó
+    xảy ra — ĐO, không gác.
+
+    ── VÌ SAO NÓ THÔI LÀM MỘT PHÉP GÁC, ngày 19/10/2026 ─────────────────────
+
+    Nó từng là một ca chặn build: "trong bao lồi nở 24 px, độ chói không được
+    vượt `hullCeiling`", với lý lẽ "dưới ngưỡng đó nét chòm mới đạt 3 : 1".
+    Nhưng nó là một XẤP XỈ cho câu hỏi ấy, và từ bố cục mới thì xấp xỉ đó
+    KHÔNG CÒN ĐÚNG ĐƯỢC — không phải vì nó khắt khe quá, mà vì tiền đề của nó
+    đã sai theo cả hai chiều:
+
+    · **Không thoả được.** M3 đứng cách tâm mặt trời 176 px, và đó là một
+      quyết định bố cục CÓ Ý (`bo-cuc-hung-vi.md` §5.4: *"đây là chỗ hẹp nhất
+      của cả bố cục"*). Nền trong bao lồi M3 vì thế đo được **L = 0,2935** —
+      không một trần nào vừa cho phép chuyện đó vừa còn nói được gì về bảy
+      chòm kia.
+    · **Không cần thoả.** Từ lúc có LUẬT ĐƯỜNG CHÓI (§10.3), một vệt trên nền
+      sáng ĐỔI sang tông tối và vẫn đạt 3 : 1 — nên nền sáng không còn hàm ý
+      nét trượt. Đo thẳng: nét chòm xấu nhất **3,13 : 1** lúc nghỉ, với M3
+      nằm trong vùng sáng ấy.
+
+    Nên câu hỏi thật nay do `kiem_tuong_phan_net` trả lời, ở đúng từng đoạn
+    nét, bằng đúng cái tông mà đoạn ấy được tô. `hullCeiling` còn trong hồ sơ
+    và còn được IN RA ở `--do` làm một con số theo dõi — "nền chỗ có hình đang
+    sáng tới đâu" là một thứ đáng biết — nhưng nó không chặn build nữa, vì một
+    phép gác mà phải nới mỗi lần bố cục đổi thì nó đang đo bố cục, không đo
+    tiếp cận."""
     pad = FIELD["ceilingPad"]
+    ra = []
     for key, hull in HULLS:
         box_x0 = min(p[0] for p in hull) - pad
         box_x1 = max(p[0] for p in hull) + pad
@@ -1786,11 +2663,66 @@ def kiem_tran_chom(P):
                 L = do_sang(x, y, P)
                 if L > worst:
                     worst, at = L, (round(x), round(y))
-        if worst > tran:
-            raise SystemExit(
-                "chòm %s: độ chói nền trong bao lồi đạt %.4f tại %s, vượt trần "
-                "%.4f (%s) — nét chòm ở đó tụt dưới 3:1. Hạ mật độ tinh vân hoặc "
-                "nới `SKY_NEBULA.hullFade`." % (key, worst, at, tran, P["hullCeiling"]))
+        ra.append((key, worst, at))
+    return ra
+
+
+def net_tong(x, y, hue, P):
+    """Tông THẬT của một vệt tại `(x, y)` — sắc khoáng, hay `dustLane` nếu nền
+    ở đó sáng hơn `litFlip.at`. MỘT hàm cho lượt vẽ lẫn lượt đo."""
+    return P["dustLane"] if do_sang(x, y, P) > LIGHT["litFlip"]["at"] else hue
+
+
+def do_tuong_phan_net(P):
+    """TƯƠNG PHẢN CỦA TỪNG NÉT CHÒM với nền tại đúng chỗ nó nằm — WCAG 1.4.11
+    cho thành phần đồ hoạ mang tin: sàn 3 : 1.
+
+    Vì sao phép đo này THAY cho `kiem_tran_chom` làm cái gác chính (§10.2 luật
+    4): cái trần bao lồi là một XẤP XỈ cho câu hỏi thật. Nó nói "trong bao lồi
+    nở 24 px, không điểm nào được sáng hơn `hullCeiling`", và lý lẽ của nó là
+    "dưới ngưỡng đó nét chòm mới đạt 3 : 1". Nhưng từ lúc có LUẬT ĐƯỜNG CHÓI
+    (§10.3) thì tiền đề ấy sai theo cả hai chiều: một vệt trên nền sáng KHÔNG
+    trượt, vì nó đã đổi sang tông tối; và cái trần vẫn chặn build ở những chỗ
+    chẳng có nét nào đi qua. Đo thẳng cái phải đạt thì vừa chặt hơn vừa không
+    chặn oan.
+
+    Đo cả hai trạng thái: nghỉ và MỜ (bảy chòm không được trỏ). Trạng thái mờ
+    là trạng thái mà nét mỏng nhất, nên bỏ qua nó là bỏ qua đúng ca xấu nhất."""
+    ra = []
+    nghi = P["scale"]["lineOpacity"][0]
+    mo = P["scale"]["dimOpacity"]
+    segs = net_chom_segs()
+    i = 0
+    for c in CONS:
+        hue = P["hues"][c["hue"]]
+        for _ab in c["lines"]:
+            a, b = segs[i]
+            i += 1
+            for k in range(7):
+                t = (k + 0.5) / 7
+                x, y = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+                nen = do_sang_rgb(x, y, P)
+                mau = hex_rgb(net_tong(x, y, hue, P))
+                for ten, op in (("nghỉ", nghi), ("mờ", mo)):
+                    L1 = luminance(over(nen, mau, op))
+                    L2 = luminance(nen)
+                    tp = (max(L1, L2) + 0.05) / (min(L1, L2) + 0.05)
+                    ra.append((c["key"], ten, tp, (round(x), round(y))))
+    return ra
+
+
+def kiem_tuong_phan_net(P, san=3.0):
+    ra = do_tuong_phan_net(P)
+    te = [r for r in ra if r[1] == "nghỉ" and r[2] < san]
+    if te:
+        xau = min(te, key=lambda r: r[2])
+        raise SystemExit(
+            "NÉT CHÒM KHÔNG ĐẠT %.1f:1 (WCAG 1.4.11): %s chỉ còn %.2f:1 tại %s "
+            "— %d điểm trượt. Nét MANG TIN phải đọc được ở MỌI chỗ nó đi qua. "
+            "Hạ `SKY_LIGHT.litFlip.at` để vệt đổi tông sớm hơn, hay làm loãng "
+            "tinh vân quanh bao lồi (`SKY_NEBULA.hullFade`)."
+            % (san, xau[0], xau[2], xau[3], len(te)))
+    return min(r[2] for r in ra if r[1] == "nghỉ"), min(r[2] for r in ra)
 
 
 def mo_css(P) -> float:
@@ -1850,7 +2782,7 @@ def do_tuong_phan_nhan(P):
     chú thích. §5.2 đòi 4,5:1 cho chữ."""
     ra = []
     da_dat = []
-    for c in thu_tu_nhan():
+    for c in thu_tu_nhan(P):
         g = nhan_box(c, P, tuple(da_dat))
         da_dat.append((c["key"], g["box"]))
         x0, y0, x1, y1 = g["box"]
@@ -1858,6 +2790,12 @@ def do_tuong_phan_nhan(P):
         # BA phép đo, không hai — trạng thái MỜ là một trạng thái có chữ, nên
         # nó cũng phải đạt 4,5:1. Bỏ qua nó là bỏ qua đúng chỗ việc thôi mờ
         # bầu trời đã làm vỡ: nền sau chữ không tối theo nữa.
+        #
+        # TẤM NỀN vào phép đo ở đây, và nó phải vào: từ lúc có nó, "nền sau
+        # chữ" không còn là trời mà là trời ĐÃ BỊ TẤM NỀN ghim xuống. Đo trên
+        # trời trần là đo một bức tranh không tồn tại — và là đo một bức tranh
+        # TỆ HƠN, nên nó sẽ chặn build vì một lý do không thật.
+        co_tam = tam_nen_can(g["box"], P)
         for ten, mau, op, (by0, by1) in (
                 ("chặng", P["text"], 1.0, (y0, py)),
                 # TỈ SỐ THẬT MÀ CSS SẼ DÙNG, không phải một độ mờ đặt riêng
@@ -1871,8 +2809,9 @@ def do_tuong_phan_nhan(P):
             xau = 99.0
             for i in range(9):
                 for j in range(5):
-                    nen = do_sang_rgb(x0 + (x1 - x0) * (i + 0.5) / 9,
-                                      by0 + (by1 - by0) * (j + 0.5) / 5, P)
+                    nen = do_sang_sau_tam(x0 + (x1 - x0) * (i + 0.5) / 9,
+                                          by0 + (by1 - by0) * (j + 0.5) / 5,
+                                          P, co_tam)
                     # Độ mờ của SVG trộn trong không gian sRGB đã mã hoá, nên
                     # trộn trước rồi mới tính độ chói — tính độ chói rồi mới
                     # trộn là một con số khác và là một con số dễ dãi hơn.
@@ -1897,20 +2836,68 @@ def kiem_tuong_phan_nhan(P, san=4.5):
     return ra
 
 
-def thu_tu_nhan():
-    """Thứ tự ĐẶT nhãn: chòm có ngôi neo SÁNG NHẤT đặt trước (§8.4).
+_THU_TU: dict = {}
 
-    Quy ước bản đồ sao: nhãn sáng hơn GIỮ CHỖ, nhãn mờ hơn NHƯỜNG. Với một
-    nhãn thì thứ tự không có nghĩa gì — đó là lý do bản mẫu một chòm không thử
-    được luật này. Với tám nhãn nó quyết định bản đồ nào ra: đổi thứ tự là đổi
-    chỗ đứng của vài cái nhãn, và những cái nhường sẽ phải đi ra xa hơn.
 
-    Phá hoà bằng KHOÁ chòm, không bằng thứ tự khai: hai chòm có ngôi neo cùng
-    bậc thì phải xếp theo một thứ gì ổn định, và `M1 < M2 < …` ổn định hơn một
-    thứ tự khai mà ai cũng có thể hoán đổi khi thêm chòm."""
+def thu_tu_nhan(P=None):
+    """Thứ tự ĐẶT nhãn: chòm BỊ BÓ NHẤT đặt trước, rồi tới chòm có ngôi neo
+    sáng nhất.
+
+    ── VÌ SAO ĐỔI THỨ TỰ, ngày 19/10/2026 ──────────────────────────────────
+
+    Luật cũ chỉ có một tiêu chí — "nhãn sáng hơn GIỮ CHỖ, nhãn mờ hơn NHƯỜNG",
+    quy ước bản đồ sao của §8.4. Nó đúng về quy ước và SAI về thuật toán: với
+    một mặt trời chói giữa khung, số chỗ đặt hợp lệ của các chòm chênh nhau
+    hàng chục lần, và một chòm "sáng hơn" nhưng có 40 chỗ hợp lệ sẽ chiếm đúng
+    cái chỗ DUY NHẤT của một chòm mờ hơn.
+
+    Đã xảy ra, và đo được: M7 (ngôi neo 9 ca chấm) đặt trước M6 (cả chín bài 8
+    ca) và lấy khoảng trống dưới-trái của nó; M6 khi ấy còn **0 trên 288** chỗ
+    hợp lệ — phía phải tràn khung, phía trái chồng hộp M7, phía trên-trái cắt
+    đĩa 210 quanh mặt trời. Build trượt, và không một con số nào chỉ ra rằng
+    nguyên nhân là THỨ TỰ chứ không phải bố cục.
+
+    Nên tiêu chí đầu tiên nay là **ít chỗ hợp lệ nhất đi trước** — ràng buộc
+    chặt nhất giải trước, luật quen của mọi bài toán xếp chỗ. Độ sáng ngôi neo
+    xuống làm tiêu chí THỨ HAI, nên quy ước §8.4 vẫn quyết mọi lần hoà (và nó
+    hoà thường xuyên: bảy trong tám chòm có cùng số chỗ hợp lệ trong một bố
+    cục rộng rãi). Phá hoà cuối bằng KHOÁ chòm, không bằng thứ tự khai: `M1 <
+    M2 < …` ổn định hơn một thứ tự mà ai cũng có thể hoán đổi khi thêm chòm.
+
+    `P` tuỳ chọn: không có hồ sơ thì không đếm được chỗ hợp lệ, và hàm lùi về
+    đúng luật cũ. Hai chỗ gọi nó mà chưa cần hồ sơ (`--phong`, ca test) vì thế
+    không phải đổi."""
+    if P is None:
+        return sorted(CONS, key=lambda c: (-max(s[3] for s in STARS if s[5] == c["key"]),
+                                           c["key"]))
+
     def sang_nhat(c):
         return max(s[3] for s in STARS if s[5] == c["key"])
-    return sorted(CONS, key=lambda c: (-sang_nhat(c), c["key"]))
+
+    def so_cho(c):
+        n = 0
+        for s in sorted((q for q in STARS if q[5] == c["key"]), key=lambda q: -q[3])[:3]:
+            leg = LBL["legMin"]
+            while leg <= LBL["legHardMax"]:
+                for sx in (1, -1):
+                    for sy in (-1, 1):
+                        g = nhan_hinh_hoc(c, s, leg, sx, sy)
+                        # Đếm với `da_dat` TRỐNG: con số phải nói "chòm này bị
+                        # bó bởi HÌNH HỌC đến đâu", không phải "ai đã lấy chỗ
+                        # trước" — không thì thứ tự lại phụ thuộc chính nó.
+                        if nhan_vi_pham(c, g, P) is None:
+                            n += 1
+                leg += LBL["legStep"] if leg < LBL["legMax"] else LBL["legGrow"]
+        return n
+
+    # NHỚ LẠI theo hồ sơ: `so_cho` chạy 8 × 3 × 20 × 4 lần `nhan_vi_pham`, mỗi
+    # lần đo bao lồi, mạch và tám hộp — và `thu_tu_nhan` được gọi bốn chỗ
+    # trong một lượt dựng. Không nhớ lại thì một lệnh `--css` tốn thêm vài
+    # phút cho đúng một danh sách tám khoá không đổi.
+    if P["base"] not in _THU_TU:
+        _THU_TU[P["base"]] = sorted(
+            CONS, key=lambda c: (so_cho(c), -sang_nhat(c), c["key"]))
+    return _THU_TU[P["base"]]
 
 
 def do_ngan_sach(P):
@@ -1960,6 +2947,30 @@ def do_ngan_sach(P):
     # sáng; nó không đổi một bán kính ngôi nào, nên ca "bán kính khớp số ca
     # chấm" vẫn xanh — đó là điều kiện của bước 3 trong bản đánh giá §5.
     ti_le = (LIGHT["core"] * 2) / (FIELD["radius"] * 2)
+    # ── HISTOGRAM TÁM BẬC — cái thước của `bo-cuc-hung-vi.md` §1 ─────────────
+    #
+    # Vì sao nó phải ở đây chứ không ở một script tạm: chẩn đoán của lời chê
+    # thứ năm là MỘT con số — "bản hiện tại là một hàm hai giá trị, 89,7 % ở
+    # L < 0,01 và 2,55 % ở mảng phẳng 0,60–0,85, 0,95 % ở năm bậc GIỮA". Khung
+    # tham chiếu có 46,8 % ở bậc giữa. Cái lỗ ~46 điểm phần trăm đó CHÍNH LÀ
+    # "sơ đồ chứ không phải bức tranh", và trước khi có dòng này thì không một
+    # phép kiểm nào trong cả kho mã đo được nó: `medianMax` chỉ chặn chiều
+    # SÁNG QUÁ, còn kiểu hỏng thật là TỐI QUÁ Ở GIỮA.
+    moc = BUDGET["bands"]
+    dem = [0] * (len(moc) + 1)
+    for L in Ls:                      # Ls đã sắp, nên quét một lượt là đủ
+        k = 0
+        while k < len(moc) and L > moc[k]:
+            k += 1
+        dem[k] += 1
+    bac_pc = [c / o for c in dem]
+    # Bậc GIỮA = từ `midLo` tới `midHi`. Hai con số, hai việc: `mid` (0,03–0,85)
+    # là con số của bảng §1 để báo cáo, `mid3` (0,03–0,35) là con số CHẶN BUILD
+    # (`midShareMin`) — nó bỏ hai bậc quầng ra ngoài, nên không ai đạt được nó
+    # bằng cách phóng mặt trời to hơn.
+    lo, hi = BUDGET["midLo"], BUDGET["midHi"]
+    mid = sum(1 for L in Ls if lo < L <= hi) / o
+    mid3 = sum(1 for L in Ls if lo < L <= BUDGET["mid3Hi"]) / o
     return {
         "trung_vi": Ls[o // 2],
         "p99": Ls[int(o * 0.99)],
@@ -1967,7 +2978,87 @@ def do_ngan_sach(P):
         "bao_hoa": sum(sat) / len(sat),
         "bao_hoa_w": sat_w / w_tong,
         "ti_le": ti_le,
+        "bac": bac_pc,
+        "mid": mid,
+        "mid3": mid3,
     }
+
+
+def do_bo_cuc():
+    """ĐO BỐ CỤC — năm con số của §12 bước 3 và bước 4, trong một hàm.
+
+    Trước bản này không phép kiểm nào đo bốn thứ đầu, nên "mọi chòm một cỡ",
+    "ba chòm chữ nhật" và "không có điểm tụ" sống sót qua bốn lần chê: không
+    có thước thì không ai thấy chúng là số, chỉ thấy chúng là cảm giác."""
+    # 1 · đường kính bao từng chòm, và TỈ LỆ lớn nhất : nhỏ nhất
+    dk = {}
+    for key, _h in HULLS:
+        ps = [(x, y) for _c, x, y, _r, _t, k in STARS if k == key]
+        dk[key] = max((math.hypot(a[0] - b[0], a[1] - b[1])
+                       for i, a in enumerate(ps) for b in ps[i + 1:]), default=0.0)
+    ti_le_chom = max(dk.values()) / max(1e-6, min(dk.values()))
+    # 2 · khe tới mặt trời: đĩa CẤM r < forbid và đĩa MỀM r < soft
+    cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
+    khe_sao = [(math.hypot(x - cx, y - cy), code) for code, x, y, _r, _t, _k in STARS]
+    gan_nhat = min(khe_sao)
+    trong_cam = [c for d, c in khe_sao if d < LIGHT["forbid"]]
+    trong_mem = [c for d, c in khe_sao if d < LIGHT["soft"]]
+    # 3 · nét CĂN TRỤC: cách trục ngang hay trục dọc dưới `axisMin` độ
+    truc = []
+    # Đo trên TOẠ ĐỘ NGÔI, không trên đoạn đã vẽ: hai đầu đoạn vẽ bị trừ khe
+    # `r + gap` nên hướng của nó lệch một chút so với hướng nối hai ngôi, và
+    # cái phải đo là hình — không phải cái nét.
+    pos = {code: (x, y) for code, x, y, _r, _t, _k in STARS}
+    for c in CONS:
+        for ab in c["lines"]:
+            (x1, y1), (x2, y2) = pos[ab[0]], pos[ab[1]]
+            a = math.degrees(math.atan2(y2 - y1, x2 - x1)) % 180.0
+            lech = min(a, abs(a - 90.0), abs(a - 180.0))
+            if lech < LINK["axisMin"]:
+                truc.append((c["key"], ab[0], ab[1], lech))
+    # 4 · ngôi nào CHÌM dưới rìa chân trời
+    duoi = [code for code, x, y, _r, _t, _k in STARS if y > chan_troi_y(x)]
+    return {
+        "dk": dk,
+        "ti_le_chom": ti_le_chom,
+        "gan_mat_troi": gan_nhat,
+        "trong_cam": trong_cam,
+        "trong_mem": trong_mem,
+        "truc": truc,
+        "duoi_chan_troi": duoi,
+    }
+
+
+def kiem_bo_cuc():
+    b = do_bo_cuc()
+    if b["trong_cam"]:
+        raise SystemExit(
+            "ĐĨA CẤM BỊ XÂM: %s nằm trong r < %g của mặt trời. Vành trống quanh "
+            "nguồn sáng là thiết bị bố cục mạnh nhất chép từ khung tham chiếu "
+            "(§3.4) — tương phản cục bộ tối đa ở đúng chỗ mắt phải nhìn trước. "
+            "Dịch `box` của chòm, đừng nới `SKY_LIGHT.forbid`."
+            % (", ".join(b["trong_cam"]), LIGHT["forbid"]))
+    if b["ti_le_chom"] < LINK["scaleRatioMin"]:
+        raise SystemExit(
+            "TỈ LỆ CỠ CHÒM chỉ %.2f : 1, dưới sàn %g : 1. Đây là con số mà lời "
+            "chê 'mọi chòm một cỡ' hỏi tới — bản cũ đo được 3,53 : 1 và chỉ "
+            "1,86 : 1 nếu bỏ M8 ra. Mắt đọc 'rải gần đều' chủ yếu từ việc MỌI "
+            "THỨ BẰNG NHAU, không từ toạ độ."
+            % (b["ti_le_chom"], LINK["scaleRatioMin"]))
+    if b["truc"]:
+        raise SystemExit(
+            "%d NÉT CĂN TRỤC (dưới %g° của trục ngang hay trục dọc): %s. Một "
+            "bầu trời mà phần lớn nét là ngang hoặc dọc là hình học của một sơ "
+            "đồ. Chữa bằng XOAY (chòm mà hình vốn không phải lưới) hay bằng HỘI "
+            "TỤ (chòm phải đọc ra là lưới/bảng/khung)."
+            % (len(b["truc"]), LINK["axisMin"],
+               ", ".join("%s %s–%s %.1f°" % (k, a, c, d) for k, a, c, d in b["truc"])))
+    if b["duoi_chan_troi"]:
+        raise SystemExit(
+            "%s NẰM DƯỚI RÌA CHÂN TRỜI — khối chân trời tô đặc nên những ngôi ấy "
+            "biến mất hẳn, tức mất bài. Dịch `box` lên."
+            % ", ".join(b["duoi_chan_troi"]))
+    return b
 
 
 def kiem_ngan_sach(P):
@@ -1991,6 +3082,27 @@ def kiem_ngan_sach(P):
             "con số này là làm hỏng đúng thứ đang đi tìm — hạ `nebula` /"
             "`dustFar` / `horizon` thay vì nới nó."
             % (d["trung_vi"], BUDGET["medianMax"]))
+    # SÀN trung vị và SÀN bậc giữa — hai cái gác MỚI, và chúng gác chiều NGƯỢC
+    # với `medianMax`. Lời chê thứ năm là về chiều này: không một ca nào đang
+    # bắt được "quá tối ở giữa", nên bản cũ đạt mọi phép kiểm trong khi 89,7 %
+    # diện tích nằm ở L < 0,01. Một ngân sách chỉ có trần là một ngân sách chỉ
+    # gác được một nửa.
+    if d["trung_vi"] < BUDGET["medianMin"]:
+        raise SystemExit(
+            "TRUNG VỊ ĐỘ CHÓI CHỈ %.4f, dưới sàn %g (tham chiếu 0,0284). Bức "
+            "này là một hàm hai giá trị: đen tuyệt đối cộng một mảng sáng, "
+            "không có phần TRUNG GIAN — tức một sơ đồ, không phải một bức "
+            "tranh. Chữa bằng CHIẾU SÁNG tinh vân (`SKY_NEBULA.lambert`), "
+            "không bằng cách nâng độ sáng nền."
+            % (d["trung_vi"], BUDGET["medianMin"]))
+    if d["mid3"] < BUDGET["midShareMin"]:
+        raise SystemExit(
+            "BẬC GIỮA chỉ %.2f%% diện tích (L %g–%g), dưới sàn %.0f%% (tham "
+            "chiếu 43,0%%). Đây là cái lỗ ~46 điểm phần trăm mà bốn lời chê "
+            "trước đều đang chỉ vào bằng những chữ khác nhau. Lấp bằng ÁNH "
+            "SÁNG CÓ HƯỚNG trên tinh vân, không bằng một mặt trời to hơn."
+            % (d["mid3"] * 100, BUDGET["midLo"], BUDGET["mid3Hi"],
+               BUDGET["midShareMin"] * 100))
     if d["ti_le"] < BUDGET["scaleRatioMin"]:
         raise SystemExit(
             "TỈ LỆ VẬT LỚN NHẤT : SAO NỀN chỉ %.1f:1, dưới %g:1 — người xem "
@@ -2019,7 +3131,7 @@ def ve_nhan(ink, P, focus, only=None):
     không), đúng như mã bài đã làm từ trước."""
     out = []
     da_dat = []
-    for c in thu_tu_nhan():
+    for c in thu_tu_nhan(P):
         g = nhan_box(c, P, tuple(da_dat))
         da_dat.append((c["key"], g["box"]))
         # Vòng ĐẶT nhãn phải chạy ĐỦ TÁM dù tấm chỉ vẽ một chòm: chỗ đứng của
@@ -2037,6 +3149,16 @@ def ve_nhan(ink, P, focus, only=None):
         if focus is not None and not ro:
             mo = P["scale"]["dimOpacity"] / P["scale"]["lineOpacity"][0]
         lop = (LBL["leaderFocusOpacity"] if ro else LBL["leaderOpacity"]) * mo
+        # TẤM NỀN trước mọi thứ khác trong lớp nhãn (§10.2 luật 2): một hình
+        # chữ nhật `base` ghim nền hiệu dụng xuống L ≤ 0,02, nên tương phản
+        # chữ ĐỘC LẬP với mặt trời và với tinh vân được chiếu sáng. Chỉ rắc ở
+        # chỗ nền đo được sáng hơn `plateAt` — tám tấm là ~0,5 KB, nhưng tám
+        # tấm ở chỗ không cần là tám vệt tối vô cớ trên trời trống.
+        if tam_nen_can(box, P):
+            pr = LBL["plateR"]
+            ink.fill("nhan", pl([(box[0] - pr, box[1] - pr), (box[2] + pr, box[1] - pr),
+                                 (box[2] + pr, box[3] + pr), (box[0] - pr, box[3] + pr)],
+                                True), P["base"], LBL["plateOpacity"] * mo)
         ink.poly("nhan", [p0, p1, p2], hue, LBL["ruleWidth"], lop)
         rule_x0 = box[0]
         ink.poly("nhan", [(rule_x0, p2[1]), (rule_x0 + wn + LBL["rulePad"], p2[1])],
@@ -2098,6 +3220,7 @@ def build_troi(P):
     ve_tinh_van(ink, P, 1.0)
     ve_khe_bui(ink, P, 1.0)
     ve_soi_sang(ink, P, 1.0)
+    ve_tia_bui(ink, P, 1.0)
     ve_quang_chan_troi(ink, P, 1.0)
     ve_truong_sao(ink, P, 1.0)
     ve_luoi(ink, P, 1.0)
@@ -2139,6 +3262,12 @@ def build_chom(P, focus, only=None):
     `prefers-reduced-motion` ngay từ lúc sinh. (Cú PHÓNG thì đổi kích thước,
     nên nó bỏ chuyển tiếp dưới `reduce` — xem `star-map.module.css`.)"""
     ink = Ink()
+    # Hành tinh mờ theo CÙNG hệ số với nét của chòm nó thuộc về: nó là một vật
+    # CỦA chặng ấy, nên nó phải nghỉ và rõ cùng chặng ấy. Tấm `-ro` dùng độ mờ
+    # hover, tấm nghỉ dùng độ mờ nghỉ, và bảy chòm kia mờ bằng `opacity` của
+    # CSS trên chính thẻ `<img>` — không có một hệ số thứ ba ở đây.
+    ve_hanh_tinh(ink, P, 1.0 if focus is None or focus == only
+                 else P["scale"]["dimOpacity"] / P["scale"]["lineOpacity"][0], only)
     ve_net_chom(ink, P, focus, only)
     ve_sao(ink, P, focus, only)
     boxes = ve_nhan(ink, P, focus, only)
@@ -2152,7 +3281,7 @@ def hop_nhan_tat_ca(P):
     nào vẽ cả tám nhãn nữa. Gọi `build_chom(P, None)` chỉ để lấy hộp là dựng
     cả 48 ngôi rồi bỏ đi."""
     out, da_dat = [], []
-    for c in thu_tu_nhan():
+    for c in thu_tu_nhan(P):
         g = nhan_box(c, P, tuple(da_dat))
         da_dat.append((c["key"], g["box"]))
         out.append((c["key"], g["box"]))
@@ -2466,11 +3595,23 @@ def main():
     kiem_mo_css(P)
     dat_sao()
     khe = kiem_khe_hai_chom()
-    kiem_tran_chom(P)
+    bc = do_bo_cuc()
+    if not args.do:
+        # `--do` in bảng TRƯỚC rồi mới gác: nó là cái kính hiển vi của người
+        # đang dựng, và trượt trước khi in bảng là lấy đi đúng cái bảng cần
+        # đọc. Đường dựng tệp thì gác trước khi ghi một byte nào.
+        kiem_bo_cuc()
+        kiem_tuong_phan_net(P)
+    tp_net = do_tuong_phan_net(P)
+    tp_net_nghi = min(r[2] for r in tp_net if r[1] == "nghỉ")
+    tp_net_mo = min(r[2] for r in tp_net)
     tp_mach = kiem_mach(P)
 
     if args.do:
-        d = kiem_ngan_sach(P)
+        # ĐO rồi IN rồi mới GÁC. `--do` là cái kính hiển vi của người đang
+        # dựng: trượt sàn trước khi in bảng là lấy đi đúng cái bảng cần đọc để
+        # biết phải sửa chỗ nào. `main` (đường dựng tệp) vẫn gác TRƯỚC khi ghi.
+        d = do_ngan_sach(P)
         print()
         print("  trung vị độ chói   %.4f   (tham chiếu 0,0284 · trần %g)"
               % (d["trung_vi"], BUDGET["medianMax"]))
@@ -2484,23 +3625,59 @@ def main():
               % (d["ti_le"], BUDGET["scaleRatioMin"]))
         print("  khe hai chòm gần nhau nhất %.1f px (sàn %g)" % (khe, LINK["minGap"]))
         print("  mạch hoàng đạo tương phản xấu nhất %.2f:1 (sàn 3,0)" % tp_mach)
+        print("  nét chòm tương phản xấu nhất %.2f:1 lúc nghỉ · %.2f:1 lúc mờ "
+              "(sàn 3,0 lúc nghỉ)" % (tp_net_nghi, tp_net_mo))
+        print("  nền sáng nhất trong bao lồi  " + "  ".join(
+            "%s %.3f" % (k, v) for k, v, _at in do_tran_chom(P)))
+        print()
+        print("  đk bao chòm  " + "  ".join("%s %.0f" % (k, v) for k, v in bc["dk"].items()))
+        print("  tỉ lệ cỡ chòm      %.2f:1  (cũ 3,53 · sàn %g)"
+              % (bc["ti_le_chom"], LINK["scaleRatioMin"]))
+        print("  ngôi gần mặt trời nhất %s ở %.0f px (đĩa cấm %g · đĩa mềm %g)"
+              % (bc["gan_mat_troi"][1], bc["gan_mat_troi"][0],
+                 LIGHT["forbid"], LIGHT["soft"]))
+        print("  ngôi trong đĩa cấm %d · trong đĩa mềm %d · dưới chân trời %d"
+              % (len(bc["trong_cam"]), len(bc["trong_mem"]), len(bc["duoi_chan_troi"])))
+        print("  nét căn trục       %d / %d  (cũ 27/50 ở sàn 8° · sàn nay %g°)%s"
+              % (len(bc["truc"]), sum(len(c["lines"]) for c in CONS),
+                 LINK["axisMin"],
+                 "" if not bc["truc"] else
+                 "\n      " + ", ".join("%s %s–%s %.1f°" % t for t in bc["truc"])))
+        print()
+        # BẢNG TÁM BẬC — cột tham chiếu là phép đo của `bo-cuc-hung-vi.md` §1
+        # trên `design/tham-chieu/ban-do-sao-game.png` (đã bỏ 24 % UI chrome).
+        # In cả hai cột cạnh nhau vì một con số của mình không nói được gì khi
+        # đứng một mình: cái phải đọc là HÌNH DẠNG của phân bố.
+        tc = [0.205, 0.231, 0.240, 0.110, 0.080, 0.074, 0.037, 0.025]
+        ten = ["đen sâu  < 0,01", "nền trời 0,01–0,03", "t.vân mờ 0,03–0,08",
+               "tinh vân 0,08–0,18", "t.vân sáng 0,18–0,35", "rìa quầng 0,35–0,60",
+               "quầng    0,60–0,85", "lõi chói > 0,85"]
+        print("  bậc độ chói              của mình   tham chiếu")
+        for i, t in enumerate(ten):
+            print("  %-22s %7.2f%%     %6.1f%%" % (t, d["bac"][i] * 100, tc[i] * 100))
+        print("  %-22s %7.2f%%     %6.1f%%   ← con số của lời chê thứ năm"
+              % ("BẬC GIỮA 0,03–0,85", d["mid"] * 100, 46.8))
+        print("  %-22s %7.2f%%     %6.1f%%   (sàn %.0f%%)"
+              % ("ba bậc 0,03–0,35", d["mid3"] * 100, 43.0,
+                 BUDGET["midShareMin"] * 100))
         print()
         # Tám nhãn, hai dòng mỗi nhãn — đo lại MỖI LẦN vì đổi câu chữ nhãn là
         # đổi bề rộng hộp, tức đổi chỗ đặt, tức đổi nền sau chữ.
         for key, ten, t in do_tuong_phan_nhan(P):
             print("  nhãn %-3s dòng %-6s %6.2f:1   (sàn 4,5)" % (key, ten, t))
         print()
+        kiem_ngan_sach(P)
         return
 
     if args.place_nhan:
         # Bộ máy §8.4–§8.5 chạy MỘT LẦN, kết quả đóng băng vào TS rồi cả hai
-        # hồ sơ đọc CÙNG một chỗ (§19.2 dòng 4). Thứ tự là thứ tự NHƯỜNG:
-        # chòm có ngôi neo sáng nhất giữ chỗ trước.
+        # hồ sơ đọc CÙNG một chỗ (§19.2 dòng 4). Thứ tự THĂM là thứ tự NHƯỜNG
+        # — chòm bó nhất trước, rồi chòm có ngôi neo sáng nhất — nhưng tám chỗ
+        # được tìm CÙNG MỘT LÚC và có phép LÙI (xem `xep_nhan`).
         print("export const SKY_LABEL_PLACED = [")
-        da_dat = []
-        for c in thu_tu_nhan():
-            g = tim_nhan(c, P, tuple(da_dat))
-            da_dat.append((c["key"], g["box"]))
+        xep = xep_nhan(P)
+        for c in thu_tu_nhan(P):
+            g = xep[c["key"]]
             print("  { key: '%s', anchor: '%s', dir: [%d, %d], leg: %g },"
                   % (c["key"], g["code"], g["sx"], g["sy"], g["leg"]))
         print("] as const;")
