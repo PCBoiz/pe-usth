@@ -49,10 +49,11 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 658 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 666 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
-| Bản đồ sao | `py scripts/star/build_sky.py` → 12 tệp SVG, 530 KB cả bộ (**trần 420 KB mỗi tệp · 900 KB tổng**), chạy hai lần ra đúng một tệp. `--do` → 2,76% diện tích L > 0,5 (sàn 2,0%), trung vị độ chói 0,0065 (trần 0,05) | 19/10/2026 |
-| Bản đồ sao (mẫu M1) | `py scripts/star/build_sky.py` → 2 tệp SVG, 874 + 881 nét / 48,2 + 47,1 KB (**trần 240 KB**, script tự chặn), chạy hai lần ra đúng một tệp | 19/10/2026 |
+| Bản đồ sao | `py scripts/star/build_sky.py` → 12 tệp SVG + `sky-theme.css`, 526,4 KB cả bộ (**trần 420 KB mỗi tệp · 900 KB tổng**), chạy hai lần ra đúng một bộ. `--do` → 2,76% diện tích L > 0,5 (sàn 2,0%), trung vị độ chói 0,0065 (trần 0,05) | 19/10/2026 |
+| Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
+| Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **4,83:1** (dòng chặng lúc mờ, 24 phép đo đều ≥ 4,5). Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền — nét sáng chỉ trượt khi nền L > 0,250, nét tối chỉ trượt khi nền L < 0,111 | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**

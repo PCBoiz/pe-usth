@@ -2090,22 +2090,75 @@ def khoi_bien_mau(P, ten_hs):
 
     Khi bản SÁNG có hồ sơ, tệp này cần hai khối (một cho mỗi chế độ giao diện,
     vì bản đồ đổi theo chế độ của trang). Lúc đó sửa ở đây là đủ: `--sky-base`
-    là tên duy nhất mà CSS của trang biết."""
+    là tên duy nhất mà CSS của trang biết.
+
+    ── VÌ SAO TỆP NÀY NAY MANG MƯỜI HAI BIẾN, KHÔNG MỘT ──────────────────
+
+    Lớp con trỏ (`SkyCursor.tsx`) là HTML chồng lên tranh, nên nó phải tự vẽ:
+    một vòng dò, hai vạch lề, và một chip mã bài. Cả ba mang tin, nên cả ba
+    phải đo được tương phản — và cách DUY NHẤT đo được bằng hai con số thay vì
+    lấy mẫu ảnh là cho chip một nền ĐẶC. Nền ấy là chính `base`.
+
+    Mười hai biến, ba nhóm:
+     · `--sky-base` nền khung (cũ);
+     · `--sky-chip` nền chip + nét TỐI của vòng dò, `--sky-ink` chữ,
+       `--sky-code` mã bài, `--sky-dim` chữ phụ;
+     · `--sky-m1…m8` tám sắc chặng, cho vòng dò của một ngôi lấy đúng sắc chặng
+       nó thuộc về — nếu không thì "ngôi này của chặng nào" phải đọc bằng chữ."""
     return "\n".join([
         "/* SINH RA bởi `py scripts/star/build_sky.py` — ĐỪNG SỬA TAY, lần chạy",
-        "   sau xoá sạch. Nguồn: `SKY_PROFILE_%s.base` trong"
+        "   sau xoá sạch. Nguồn: `SKY_PROFILE_%s` trong"
         % ten_hs.upper(),
         "   `frontend/src/lib/star-map.ts`.",
         "",
-        "   Vì sao một tệp riêng chứ không một dòng trong `star-map.module.css`:",
+        "   Vì sao một tệp riêng chứ không mấy dòng trong `star-map.module.css`:",
         "   `npm run lint:tokens` cấm mã hex trong mọi `*.module.css`, và cấm đúng",
         "   chỗ — màu chỉ được sống ở hồ sơ TS. Nền của khung PHẢI là màu nền trời:",
         "   nó từng là `var(--ds-page)`, và hạ độ mờ một lớp tối trên nền sáng làm",
-        "   bầu trời NHẠT thành xám sữa chứ không tối đi. */",
+        "   bầu trời NHẠT thành xám sữa chứ không tối đi.",
+        "",
+        "   Chín biến cuối là của LỚP CON TRỎ — nó là HTML chồng lên tranh nên nó",
+        "   phải tự vẽ, và chip mã bài cần một nền ĐẶC để tương phản tính được",
+        "   bằng hai mã màu thay vì lấy mẫu ảnh. */",
         ":root {",
         "  --sky-base: %s;" % P["base"],
+        "  --sky-chip: %s;" % P["base"],
+        "  --sky-ink: %s;" % P["text"],
+        "  --sky-dim: %s;" % P["textSub"],
+        "  --sky-code: %s;" % P["code"],
+    ] + [
+        "  --sky-%s: %s;" % (k, P["hues"][k]) for k in sorted(P["hues"])
+    ] + [
         "}",
         "",
+    ])
+
+
+def khoi_so_ca():
+    """Khối `SKY_TESTS` cho TS — 48 con số ca chấm, ĐÓNG BĂNG.
+
+    Vì sao một khối sinh ra chứ không đọc trực tiếp: số ca chấm nằm trong
+    `scripts/pe-v4/out-advanced/lessons/*.json`, mà trang bản đồ KHÔNG gọi API
+    và không đọc tệp lúc chạy (nó công khai, và `apiFetch` gặp 401 là tự tạo
+    tài khoản khách). Python đọc được giáo trình, trình duyệt thì không.
+
+    Vì sao vẫn an toàn dù là số chép: ca test `bán kính mỗi ngôi khớp số ca
+    chấm` ĐẾM LẠI từ chính giáo trình rồi so với khối này, nên một con số cũ là
+    một ca ĐỎ, không phải một con số im lặng sai. Đúng khuôn `SKY_LABEL_PLACED`.
+
+    Và nó mua được một thứ cụ thể: bán kính ngôi ĐÃ mang nghĩa (số ca chấm của
+    bài) nhưng trước đây không chỗ nào NÓI RA con số ấy, nên nó không làm việc
+    gì cả — người xem thấy ngôi to ngôi nhỏ mà không biết to theo cái gì. Có
+    khối này thì lớp con trỏ in được `P05 · 12 ca` ngay cạnh ngôi."""
+    rows = []
+    for c in CONS:
+        rows.append("  /* %s */ %s" % (
+            c["key"], " ".join("%s: %d," % (s["code"], SO_CA[s["code"]])
+                               for s in c["stars"])))
+    return "\n".join([
+        "export const SKY_TESTS: Record<string, number> = {",
+        *rows,
+        "};",
     ])
 
 
@@ -2139,6 +2192,8 @@ def main():
                     help="in bảng số đo độ chói / bão hoà / tỉ lệ, không ghi tệp")
     ap.add_argument("--place-nhan", action="store_true",
                     help="chạy bộ máy đặt nhãn và in khối SKY_LABEL_PLACED")
+    ap.add_argument("--so-ca", action="store_true",
+                    help="in khối SKY_TESTS để chép vào star-map.ts")
     args = ap.parse_args()
 
     name = "SKY_PROFILE_%s" % args.profile.upper()
@@ -2234,6 +2289,23 @@ def main():
                 print("  width: %.3f%%;" % ((x1 - x0) / VIEW["width"] * 100))
                 print("  height: %.3f%%;" % ((y1 - y0) / VIEW["height"] * 100))
                 print("}")
+        # 48 DẤU NGÔI của lớp con trỏ — TÂM của ngôi, quy ra % khung.
+        #
+        # Vì sao in ra đây chứ không tính trong React: `star-map.module.css`
+        # không được mang `style={{…}}` (SSR tuần tự hoá nó thành thuộc tính
+        # `style="…"`, một trong hai nguyên nhân `style-src 'unsafe-inline'`
+        # chưa bỏ được), nên vị trí phải là CSS tĩnh. Và đây đúng đường đi của
+        # `.hit*`: con số sinh ra từ `placeStar()`, ca test tính lại từ hồ sơ
+        # TS và so từng số — chép tay một toạ độ là một toạ độ sẽ lệch.
+        for code, x, y, _r, _b, _key in STARS:
+            print(".sao%s {" % code)
+            print("  left: %.3f%%;" % ((x - VX0) / VIEW["width"] * 100))
+            print("  top: %.3f%%;" % ((y - VY0) / VIEW["height"] * 100))
+            print("}")
+        return
+
+    if args.so_ca:
+        print(khoi_so_ca())
         return
 
     # Tên nghe được PHẢI trùng tên nhìn thấy. `c["name"]` là tên HÌNH ("Kẹp",

@@ -1,0 +1,267 @@
+// LỚP CON TRỎ — bước 1 của `design/v3/tuong-tac-ban-do.md` §6.1–§6.2:
+// "con trỏ phải có mặt trong bức tranh".
+//
+// Nghiên cứu ngày 19/10/2026 lật ngược tiền đề của lời chê thứ tư ("chưa có tí
+// animation nào"): màn bản đồ của Echo of Starsong ĐỨNG YÊN, và cảm xúc ở đó
+// đến từ việc người chơi VẬN HÀNH MỘT KHÍ CỤ — rê một vòng ngắm, dò, rồi quyết.
+// Nên tệp này không thêm một hiệu ứng nền nào. Nó thêm một thiết bị.
+//
+// ── SÁU ĐIỀU GIỮ Ở ĐÂY ────────────────────────────────────────────────
+//
+//  1. CHUYỂN ĐỘNG KHÔNG BAO GIỜ VÀO TRONG TÀI LIỆU SVG. `figure-motion.ts` đã
+//     trả giá cho đúng chuyện đó: animation CSS bên trong một SVG nhúng bằng
+//     `<img>` KHÔNG được đưa lên compositor — đo được 2 007 ms main thread
+//     (19% trace) cho HAI hình, ~103 lượt tính lại style mỗi giây, và cuộn ra
+//     ngoài khung nhìn cũng không rẻ hơn. Bản đồ này có MƯỜI HAI tấm phủ kín
+//     khung. Nên mọi thứ ở đây là HTML chồng lên, và chỉ `opacity`/`translate`.
+//
+//  2. KHÔNG `style={{…}}`. SSR tuần tự hoá style nội tuyến thành thuộc tính
+//     `style="…"` — một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa
+//     bỏ được (AGENTS.md). Toạ độ con trỏ đi vào CSS bằng `style.setProperty`
+//     LÚC CHẠY, tức qua CSSOM: `style-src` không chi phối CSSOM (nó chi phối
+//     thuộc tính `style` có trong MARKUP và thẻ `<style>`), nên cách này không
+//     thêm một byte nợ nào cho việc bỏ `unsafe-inline`. Vị trí TĨNH của 48 dấu
+//     ngôi thì là CSS thật, sinh bởi `build_sky.py --css`.
+//
+//  3. 48 DẤU NGÔI KHÔNG PHẢI VÙNG CHẠM. Đo được: hai ngôi gần nhau nhất cách
+//     48,4 px trong khung 1360 (T02–T03), tức ~38 px CSS ở bề rộng khung thật
+//     — vùng chạm 44 px sẽ CHỒNG NHAU. Nên chúng `pointer-events: none`, và
+//     vùng chạm vẫn là tám ô bao lồi của `page.tsx` (ô nhỏ nhất vẫn rộng 6,8%
+//     × 4,9% khung ≈ 73 × 40 px). Chuột và ngón tay không thấy 48 ngôi;
+//     CON TRỎ thì thấy (ngôi gần nhất tự nhận mình), và BÀN PHÍM thì thấy
+//     (mũi tên đi giữa các ngôi) — đó là hai đường mà một ô bấm không làm được.
+//
+//  4. MÁY CHẠM KHÔNG GẮN MỘT LISTENER NÀO. Không có con trỏ thì không có gì để
+//     dò; thêm listener chỉ để nó không bao giờ chạy là tốn pin và tốn một
+//     đường mã không ai đi. Đường dùng được trên điện thoại vẫn là: chạm một
+//     chòm là đi tới chặng, và con số của thang bán kính nằm trong CHÚ GIẢI
+//     (`STAR_COPY.scaleNote`) — chữ, không phải hover.
+//
+//  5. TIẾT LỘ CÓ THỨ TỰ LÀ CSS THUẦN, không phải JS. `.hit*:hover ~ .lop …`
+//     làm cả việc đó, nên nó chạy khi JS chưa tải xong, và `:focus-visible`
+//     cho ra ĐÚNG cùng trạng thái. JS ở đây chỉ thêm ba thứ mà CSS không với
+//     tới: toạ độ con trỏ, ngôi gần nhất, và mũi tên.
+//
+//  6. KHÔNG `cursor: none`. Con trỏ hệ điều hành là cái duy nhất tôn trọng cỡ
+//     con trỏ phóng to, chế độ tương phản cao và "lắc để tìm" của macOS. Vòng
+//     dò là một lớp CHỒNG THÊM, không phải một lớp thay thế.
+'use client';
+
+import { useEffect, useRef } from 'react';
+
+import {
+  lessonNumber,
+  placeStar,
+  starAriaLabel,
+  SKY_CONSTELLATIONS,
+  SKY_CURSOR,
+  SKY_FRAME,
+  SKY_TESTS,
+} from '@/lib/star-map';
+
+import styles from './star-map.module.css';
+
+/**
+ * 48 ngôi với toạ độ KHUNG, dựng MỘT LẦN lúc nạp module.
+ *
+ * Toạ độ do `placeStar()` tính, đúng hàm mà `build_sky.py` gọi lại và ca test
+ * so từng ngôi — nên bảng này không lệch được với tranh. Chép toạ độ sang đây
+ * là một toạ độ sẽ lệch (bài học `MAP_ABYSS` trong AGENTS.md).
+ */
+const SAO = SKY_CONSTELLATIONS.flatMap((c, i) => c.stars.map((s, j) => {
+  const p = placeStar(c, s);
+  return { code: s.code, chang: c.key, x: p.x, y: p.y, lesson: lessonNumber(i, j) };
+}));
+
+/**
+ * Chip của ngôi ở một phần ba bên phải phải lật sang TRÁI, nếu không
+ * `overflow: hidden` của khung cắt mất nó ở màn hẹp.
+ *
+ * Tính từ chính toạ độ `placeStar()`, không liệt kê mã ngôi: liệt kê là một
+ * danh sách sẽ cũ ngay lần một hộp chòm dịch sang phải.
+ */
+const lePhai = (x: number) => x > SKY_FRAME.width * (2 / 3);
+
+export default function SkyCursor() {
+  const root = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const lop = root.current;
+    // Lớp phủ là CON TRỰC TIẾP của `.frame` — xem thứ tự DOM ở `page.tsx`. Nó
+    // phải nghe trên khung chứ không trên chính nó: chính nó
+    // `pointer-events: none` (nếu không nó che mất tám ô bấm), nên con trỏ
+    // không bao giờ "ở trên" nó.
+    const khung = lop?.parentElement;
+    if (!lop || !khung) return undefined;
+
+    const o = new Map<string, HTMLElement>();
+    for (const el of lop.querySelectorAll<HTMLElement>('[data-sao]')) {
+      o.set(el.dataset.sao ?? '', el);
+    }
+
+    let dangNhan: HTMLElement | null = null;
+    const nhan = (el: HTMLElement | null) => {
+      if (dangNhan === el) return;
+      dangNhan?.removeAttribute('data-gan');
+      el?.setAttribute('data-gan', '');
+      dangNhan = el;
+    };
+
+    const bo = () => {
+      lop.removeAttribute('data-tay');
+      nhan(null);
+    };
+
+    /* ── con trỏ ────────────────────────────────────────────────────── */
+
+    // Máy chạm: không gắn gì (điều 4 ở đầu tệp).
+    const coTro = window.matchMedia('(hover: hover)').matches;
+    let khung_raf = 0;
+    let cho: { x: number; y: number } | null = null;
+
+    // MỘT lượt ghi mỗi khung hình, và ghi THẲNG vào lớp phủ chứ không vào cha:
+    // ghi vào cha là kéo cả cây con vào lượt tính lại style, mà cây con ở đây
+    // là mười hai tấm ảnh phủ kín khung.
+    const ve = () => {
+      khung_raf = 0;
+      if (!cho) return;
+      const r = khung.getBoundingClientRect();
+      if (r.width <= 0 || r.height <= 0) return;
+      const fx = ((cho.x - r.left) / r.width) * SKY_FRAME.width;
+      const fy = ((cho.y - r.top) / r.height) * SKY_FRAME.height;
+      lop.style.setProperty('--cx', `${((fx / SKY_FRAME.width) * 100).toFixed(3)}%`);
+      lop.style.setProperty('--cy', `${((fy / SKY_FRAME.height) * 100).toFixed(3)}%`);
+      lop.setAttribute('data-tay', '');
+
+      // Ngôi gần nhất TRONG bán kính nhận. Ngoài bán kính thì không ngôi nào
+      // nhận — vòng dò trống, và cái trống ấy mang tin: chú giải đã khẳng định
+      // khoảng tối giữa hai chòm không thuộc chặng nào.
+      const tran = SKY_CURSOR.claimRadius * SKY_CURSOR.claimRadius;
+      let gan: typeof SAO[number] | null = null;
+      let min = tran;
+      for (const s of SAO) {
+        const d = (s.x - fx) * (s.x - fx) + (s.y - fy) * (s.y - fy);
+        if (d <= min) { min = d; gan = s; }
+      }
+      nhan(gan ? o.get(gan.code) ?? null : null);
+    };
+
+    const diChuyen = (e: PointerEvent) => {
+      // Ngón tay trên máy có cả chuột: một cú chạm không phải một lần rê, và
+      // để nó bật vòng dò lên rồi đứng đó là để lại một con trỏ không có tay.
+      if (e.pointerType === 'touch') return;
+      cho = { x: e.clientX, y: e.clientY };
+      if (!khung_raf) khung_raf = requestAnimationFrame(ve);
+    };
+
+    if (coTro) {
+      khung.addEventListener('pointermove', diChuyen);
+      khung.addEventListener('pointerleave', bo);
+    }
+
+    /* ── bàn phím ───────────────────────────────────────────────────── */
+
+    // Gắn dù máy có hover hay không: một chiếc điện thoại cắm bàn phím vẫn
+    // phải đi được, và đây là đường DUY NHẤT tới từng ngôi mà không cần chuột.
+    const trong = (key: string) => SAO.filter((s) => s.chang === key);
+
+    const dat = (s: typeof SAO[number] | undefined) => {
+      if (!s) return;
+      o.get(s.code)?.focus();
+    };
+
+    const bam = (e: KeyboardEvent) => {
+      const act = document.activeElement as HTMLElement | null;
+      if (!act || !khung.contains(act)) return;
+      const sao = act.dataset?.sao;
+      const chang = sao ? act.dataset.chang : act.dataset.mapRegion;
+      if (!chang) return;
+      const ds = trong(chang);
+      const i = sao ? ds.findIndex((s) => s.code === sao) : -1;
+
+      if (e.key === 'Escape' && sao) {
+        e.preventDefault();
+        khung.querySelector<HTMLElement>(`[data-map-region="${chang}"]`)?.focus();
+        return;
+      }
+      if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        dat(e.key === 'Home' ? ds[0] : ds[ds.length - 1]);
+        return;
+      }
+      const buoc = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }[e.key];
+      if (!buoc) return;
+      e.preventDefault();
+      // Từ ô bấm cả chặng: mũi tên "tiến" vào ngôi ĐẦU, mũi tên "lùi" vào ngôi
+      // CUỐI — cùng quy ước với Tab/Shift+Tab, nên không phải học thêm gì.
+      if (i < 0) { dat(buoc > 0 ? ds[0] : ds[ds.length - 1]); return; }
+      // KHÔNG vòng lại ở hai đầu: một chặng có đầu và có cuối, và thứ tự ấy là
+      // thứ tự bài. Vòng lại làm mất đúng cái tin mà lớp này vừa mua được.
+      dat(ds[Math.min(ds.length - 1, Math.max(0, i + buoc))]);
+    };
+
+    // Tiêu điểm bàn phím vào một ngôi phải làm tấm chòm hiện lên y như con trỏ
+    // đặt trên chòm. `:focus-visible` của chính ngôi không với tới tấm ảnh
+    // được (ngôi nằm TRONG lớp phủ, tấm ảnh là anh em của lớp phủ), nên trạng
+    // thái đi qua một thuộc tính trên lớp phủ và CSS đọc nó bằng `~`.
+    const vao = (e: FocusEvent) => {
+      const el = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-sao]');
+      if (el?.dataset.chang) lop.setAttribute('data-chang', el.dataset.chang);
+      else lop.removeAttribute('data-chang');
+    };
+
+    khung.addEventListener('keydown', bam);
+    khung.addEventListener('focusin', vao);
+
+    return () => {
+      if (khung_raf) cancelAnimationFrame(khung_raf);
+      khung.removeEventListener('pointermove', diChuyen);
+      khung.removeEventListener('pointerleave', bo);
+      khung.removeEventListener('keydown', bam);
+      khung.removeEventListener('focusin', vao);
+    };
+  }, []);
+
+  return (
+    <div className={styles.lop} ref={root}>
+      {/* Hai ke mảnh và hai vạch lề = THANG TOẠ ĐỘ. Phân vai rõ: hai ke là
+          CHẤT LIỆU (độ mờ 0,14, cố ý dưới ngưỡng đọc, đúng vai của lưới toạ độ
+          trong tranh), còn vòng dò và hai vạch lề là TÍN HIỆU — chúng mới phải
+          đạt 3:1, và chúng đạt bằng hai nét (xem `.vong` trong CSS). */}
+      <div aria-hidden="true" className={styles.keX} />
+      <div aria-hidden="true" className={styles.keY} />
+      <div aria-hidden="true" className={styles.lanX} />
+      <div aria-hidden="true" className={styles.lanY} />
+      <div aria-hidden="true" className={styles.vachX} />
+      <div aria-hidden="true" className={styles.vachY} />
+      <div aria-hidden="true" className={styles.vong} />
+
+      {SKY_CONSTELLATIONS.map((c, i) => (
+        <div className={`${styles.cum} ${styles[`cum${c.key}`]}`} key={c.key}>
+          {c.stars.map((s, j) => (
+            <a
+              aria-label={starAriaLabel(c.key, s.code, lessonNumber(i, j))}
+              className={`${styles.sao} ${styles[`sao${s.code}`]}`}
+              data-chang={c.key}
+              data-le={lePhai(placeStar(c, s).x) ? 'phai' : undefined}
+              data-sao={s.code}
+              href={`/lesson/python_advanced/${lessonNumber(i, j)}`}
+              key={s.code}
+              // Tiêu điểm LUÂN PHIÊN (roving): 48 chặng dừng Tab mới sẽ nhấn
+              // chìm tám ô bấm thật. Tab vào chặng, mũi tên vào ngôi — đúng
+              // khuôn một widget ghép, và `bam()` ở trên là bộ máy của nó.
+              tabIndex={-1}
+            >
+              <span className={styles.chip}>
+                <span className={styles.ma}>{s.code}</span>
+                {/* Con số mà bán kính ngôi ĐÃ mang từ đầu mà chưa ai đọc được.
+                    Số, không phải tính từ: `starMagnitude` tra đúng nó. */}
+                <span className={styles.soCa}>{SKY_TESTS[s.code]} ca</span>
+              </span>
+            </a>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}

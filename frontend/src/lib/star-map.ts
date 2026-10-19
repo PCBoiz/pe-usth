@@ -660,6 +660,37 @@ export const SKY_LABEL_PLACED = [
 ] as const;
 
 /**
+ * SỐ CA CHẤM của từng bài — SINH RA, không gõ tay. Chạy
+ * `py scripts/star/build_sky.py --so-ca` rồi chép khối in ra vào đây.
+ *
+ * ── VÌ SAO KHỐI NÀY PHẢI TỒN TẠI ──────────────────────────────────────
+ *
+ * Bán kính mỗi ngôi ĐÃ mang nghĩa từ đầu (`starMagnitude`), nhưng con số sinh
+ * ra nó thì nằm trong `scripts/pe-v4/out-advanced/lessons/*.json` — Python đọc
+ * được, trình duyệt thì không: trang bản đồ công khai và KHÔNG gọi API nào
+ * (`apiFetch` gặp 401 là tự tạo tài khoản khách). Nên 48 con số nằm trong
+ * tranh mà **không chỗ nào nói ra**, và một tín hiệu không ai đọc được thì
+ * không làm việc gì cả — đúng bài học Slay the Spire trong
+ * `design/v3/tuong-tac-ban-do.md` §2.4: một bản đồ tĩnh vẫn đáng khám phá
+ * nếu mỗi điểm trên đó mang một con số người xem phải cân.
+ *
+ * Vì sao chép số mà vẫn an toàn: ca test `bán kính mỗi ngôi khớp số ca chấm`
+ * ĐẾM LẠI từ chính giáo trình rồi so với khối này, nên một con số cũ là một ca
+ * ĐỎ. Đúng khuôn `SKY_LABEL_PLACED` ở trên — một nguồn, một chỗ đọc, một ca
+ * canh.
+ */
+export const SKY_TESTS: Record<string, number> = {
+  /* M1 */ P01: 9, P02: 9, P03: 10, P04: 8, P05: 12, P06: 7, P07: 6,
+  /* M2 */ T01: 8, T02: 8, T03: 7, T04: 9, T05: 13, T06: 8,
+  /* M3 */ G01: 7, G02: 9, G03: 9, G04: 9, G05: 11, G06: 8, R02: 17,
+  /* M4 */ X01: 6, X02: 10, X03: 9, X04: 8, X05: 9,
+  /* M5 */ N01: 9, N02: 8, N03: 7, N04: 8, N05: 8, N06: 8,
+  /* M6 */ PD01: 8, PD02: 8, PD03: 8, PD04: 8, PD05: 8, PD06: 8, PD07: 8, PD08: 8, PD09: 8,
+  /* M7 */ M01: 9, M02: 9, M03: 8, M04: 7, M05: 9, M06: 6,
+  /* M8 */ DA01: 19, DA02: 14,
+};
+
+/**
  * TÊN KHOÁ, cho dòng phụ hiện lúc trỏ vào (`Advanced Python · 7 bài`).
  *
  * Ở đây chứ không ở `build_sky.py`: luật 1 của tệp này là "hình thái và câu
@@ -674,6 +705,54 @@ export const SKY_COURSE = { name: 'Advanced Python' } as const;
  *  Không phải một ô chia hết bầu trời — khoảng tối giữa hai chòm không thuộc
  *  về ai (đặc tả chọn quy ước Bayer, không chọn IAU). */
 export const SKY_HIT = { hullPad: 20 } as const;
+
+/**
+ * LỚP CON TRỎ (`SkyCursor.tsx`) — mọi con số của "con trỏ có mặt trong bức
+ * tranh". Ở TS chứ không ở CSS vì ca test phải so được hai chỗ: `stagger` sinh
+ * ra tám dòng `transition-delay` trong CSS, và một con số lệch ở đó là một thứ
+ * tự người xem thấy mà không ai đỏ.
+ *
+ * Nghiên cứu: `design/v3/tuong-tac-ban-do.md` §3 (phản hồi · chuyển cảnh · sự
+ * sống nền) và §6.1–§6.2. Đây là NHÓM A — phản hồi, do tay người dùng khởi
+ * động và kết thúc đúng lúc tay rời đi. Không một con số nào ở đây tạo ra một
+ * hiệu ứng tự chạy: trang nạp xong vẫn đứng yên tuyệt đối.
+ */
+export const SKY_CURSOR = {
+  /**
+   * BÁN KÍNH NHẬN, tính trong khung 1360 × 820: ngoài khoảng này thì KHÔNG
+   * ngôi nào tự nhận mình, và vòng dò nói ra điều đó bằng cách trống.
+   *
+   * Vì sao có một bán kính chứ không "luôn lấy ngôi gần nhất": chú giải đã
+   * khẳng định "khoảng tối giữa hai chòm không thuộc về chặng nào — ở đó không
+   * có bài nào". Nhận một ngôi cách 400 px là nói ngược lại câu đó. 64 px ≈
+   * 1,3 lần khe nhỏ nhất giữa hai ngôi (đo được 48,4 px, T02–T03), nên trong
+   * một chòm thì luôn có ngôi nhận, còn giữa hai chòm thì có chỗ trống thật.
+   */
+  claimRadius: 64,
+  /** Bán kính vòng dò, px CSS. Lớn hơn quầng sao lớn nhất (r 5,37 × 3,2 ≈ 17
+   *  px khung ≈ 13 px CSS) để nó bao được ngôi chứ không nằm trong ngôi. */
+  ringRadius: 17,
+  /** Dấu ngôi: đường kính px CSS của vòng mảnh vẽ quanh ngôi được nhận. */
+  markSize: 22,
+  /**
+   * TIẾT LỘ CÓ THỨ TỰ — ba con số, và thứ tự của chúng LÀ cái tin.
+   *
+   * `tileIn` (150 ms): tấm chòm được trỏ hiện lên TRƯỚC, nhanh. Việc đầu tiên
+   * bản đồ phải trả lời là "tay tôi đang ở chặng nào".
+   *
+   * `tileOutDelay` (120 ms): bảy chòm kia mới bắt đầu lùi lại, SAU khi cái
+   * được chọn đã tới. Trước đây hai việc này xảy ra cùng một nhịp 320 ms với
+   * cùng một đường cong — tức một cái công tắc có bóng đèn chậm, đúng như
+   * nghiên cứu §3 gọi tên.
+   *
+   * `stagger` (45 ms): mã bài của từng ngôi bật lên LẦN LƯỢT, theo THỨ TỰ BÀI.
+   * Đây là chuyển động duy nhất ở đây mang một tin mới: bản đồ cố ý không vẽ
+   * mũi tên lộ trình (chú giải: "nó không nói thứ tự phải học"), nên thứ tự
+   * trong một chặng trước nay KHÔNG đọc được ở đâu cả. Chòm dày nhất có 9 ngôi
+   * ⇒ bậc cuối tới ở 150 + 8 × 45 = 510 ms, dưới một cú nhìn.
+   */
+  lead: { tileIn: 150, tileOutDelay: 120, codeDelay: 150, stagger: 45 },
+} as const;
 
 /**
  * Một bậc mật độ chấm của bản SÁNG (đặc tả §18.2): giữa hai đường đồng mức
@@ -1286,12 +1365,27 @@ export const STAR_COPY = {
   /** Nói ra hover CHO GÌ, không chỉ nói là có hover: nhãn lúc nghỉ chỉ còn
    *  `M1 · Tiến trình`, nên tên khoá và số bài phải được giới thiệu ở đâu đó
    *  là "trỏ vào thì có", không thì chúng là một thứ không ai biết để đi tìm. */
-  hint: 'Trỏ hoặc Tab vào một chòm để nó rõ lên — và để thấy tên khoá, số bài của chặng, cùng mã bài của từng ngôi.',
+  /**
+   * CÂU NÀY PHẢI NÓI RA CÁI ĐỘNG TỪ, không chỉ nói là "có hover".
+   *
+   * Nghiên cứu §2.8 đo được rằng cả bảy bản đồ đối chiếu đều cho người chơi
+   * **một động từ có hậu quả**, còn bản đồ này chỉ có "trỏ". Nay nó có ba
+   * việc làm được bằng tay, nên câu dẫn phải dạy cả ba — một thao tác không ai
+   * biết để thử thì không tồn tại: rê con trỏ (ngôi gần nhất tự nhận mình),
+   * Tab (vào từng chặng), mũi tên (đi giữa các ngôi trong chặng).
+   */
+  hint: 'Rê con trỏ trên bầu trời: ngôi gần nhất tự nhận mình và nói ra mã bài cùng số ca chấm của nó. Trỏ vào một chòm thì cả chặng rõ lên — kèm tên khoá và số bài của chặng. Đi bằng bàn phím: Tab qua từng chặng, mũi tên đi giữa các ngôi trong chặng, Esc lùi ra.',
   /** `alt` của tấm ảnh ĐẦU. Chỉ một tấm mang mô tả: bốn tấm nền là MỘT bức,
    *  và bốn câu mô tả cho một bức là bốn lần đọc lại cùng một thứ cho người
    *  dùng trình đọc màn hình. */
   alt: 'Bản đồ sao: tám chòm, bốn mươi tám ngôi — mỗi ngôi là một bài. Một dải Ngân Hà chạy chéo qua cả bầu trời, và một cung nét đứt nối bốn chặng NumPy, pandas, Matplotlib và dự án.',
   legendTitle: 'Chú giải',
+  /**
+   * THANG BÁN KÍNH NÓI BẰNG SỐ. `{…}` do `starScaleLine()` thay, vì ba bài
+   * hiện cùng ở mức thấp nhất (6 ca) và một câu chép tay sẽ sai ngay lần giáo
+   * trình đổi — mà sai im lặng: chữ vẫn đọc trôi.
+   */
+  scaleNote: 'Thang bán kính: {min} ca chấm ở ngôi nhỏ nhất ({minCodes}) tới {max} ca ở ngôi lớn nhất ({maxCodes}) — bán kính chênh {ratio} lần. Đó là cả thang, không có bậc nào nằm ngoài.',
   /** Chú giải nói ra DẤU NÀO MANG NGHĨA và dấu nào là chất liệu (§12). Ba dòng
    *  đầu là ba lớp liên kết của §4 — chúng phải phân biệt được bằng mắt, nên
    *  chúng cũng phải phân biệt được bằng chữ. */
@@ -1299,7 +1393,12 @@ export const STAR_COPY = {
     'Nét LIỀN, sắc của chặng: gom các bài của một chặng thành MỘT hình. Nó không nói thứ tự phải học.',
     'Nét ĐỨT xanh lam đi qua bốn chòm trên-phải: phụ thuộc thật duy nhất của khoá — NumPy → pandas → Matplotlib → dự án. Không có mũi tên vì nó là một quan hệ, không phải một lộ trình.',
     'Dải bụi sáng chạy chéo cả bầu trời là Ngân Hà. Mọi chòm đều nằm trong nó hoặc ngoài nó — và đó đã là một quan hệ. Nó cũng là lý do trời dày sao ở giữa và thưa ở hai góc.',
-    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ số ca chấm của bài đó, không ai chọn cho đẹp.',
+    // DÒNG NÀY NAY NÓI RA CON SỐ, và đó là bản sửa cho một tín hiệu đã vẽ
+    // nhưng chưa làm việc: bán kính mang số ca chấm từ đầu, mà không chỗ nào
+    // trên trang nói "bao nhiêu ca". Một thang không có đơn vị thì người xem
+    // chỉ thấy "ngôi to ngôi nhỏ". `scaleNote` dưới đây in hai đầu thang, và
+    // lớp con trỏ in con số của từng ngôi.
+    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ SỐ CA CHẤM của bài đó, không ai chọn cho đẹp — rê con trỏ tới một ngôi là thấy con số ấy.',
     // Gọi bằng MÃ CHẶNG, không bằng tên hình: nhãn trên bản đồ chỉ còn
     // `M6 · pandas`, nên một câu chú giải nói 'chòm "Bàn có nhãn"' là chỉ vào
     // một cái tên không còn ở đâu để tìm.
@@ -1360,6 +1459,68 @@ export function zodiacAnchors(): { x: number; y: number }[] {
       y: ps.reduce((t, p) => t + p.y, 0) / ps.length + dy,
     };
   });
+}
+
+/**
+ * SỐ BÀI trong danh sách phẳng 48 bài của ngôi thứ `j` ở chặng thứ `i`.
+ *
+ * Cộng dồn số bài của các chặng trước, KHÔNG viết cứng tám con số: thêm một
+ * bài vào M2 là liên kết của M3…M8 tự dịch theo. Hàm này ở TS vì nay có HAI
+ * chỗ cần nó (ô bấm cả chặng ở `page.tsx`, và 48 liên kết ngôi ở
+ * `SkyCursor.tsx`) — và hai chỗ tự cộng dồn là hai chỗ sẽ lệch.
+ */
+export function lessonNumber(stage: number, star = 0): number {
+  let n = 1;
+  for (let i = 0; i < stage; i += 1) n += SKY_CONSTELLATIONS[i].stars.length;
+  return n + star;
+}
+
+/**
+ * HAI ĐẦU CỦA THANG BÁN KÍNH, tính từ `SKY_TESTS` — cho câu chú giải nói ra
+ * thang bằng con số thật thay vì bằng tính từ.
+ *
+ * Tính chứ không chép: ba bài hiện cùng ở mức thấp nhất (6 ca) nên "ngôi nhỏ
+ * nhất là P07" là một câu sẽ sai ngay lần giáo trình đổi. Trả về cả danh sách
+ * mã ở hai đầu và tỉ số bán kính, vì tỉ số mới là thứ mắt đọc được.
+ */
+export function starScaleRange(): {
+  min: number; max: number; minCodes: string[]; maxCodes: string[]; ratio: number;
+} {
+  const codes = SKY_CONSTELLATIONS.flatMap((c) => c.stars.map((s) => s.code));
+  const nums = codes.map((code) => SKY_TESTS[code] ?? 0);
+  const min = Math.min(...nums);
+  const max = Math.max(...nums);
+  return {
+    min,
+    max,
+    minCodes: codes.filter((code) => SKY_TESTS[code] === min),
+    maxCodes: codes.filter((code) => SKY_TESTS[code] === max),
+    ratio: Math.round((starMagnitude(max).radius / starMagnitude(min).radius) * 100) / 100,
+  };
+}
+
+/** `STAR_COPY.scaleNote` với bốn chỗ `{…}` thay bằng số đo thật. */
+export function starScaleLine(): string {
+  const r = starScaleRange();
+  return STAR_COPY.scaleNote
+    .replace('{min}', String(r.min))
+    .replace('{minCodes}', r.minCodes.join(', '))
+    .replace('{max}', String(r.max))
+    .replace('{maxCodes}', r.maxCodes.join(', '))
+    .replace('{ratio}', String(r.ratio).replace('.', ','));
+}
+
+/**
+ * Tên nghe được của một ngôi, cho `aria-label` của 48 liên kết bài.
+ *
+ * Phải nói ĐỦ bốn thứ mà lớp con trỏ nói bằng mắt — chặng, số bài, mã bài, số
+ * ca chấm — vì người dùng trình đọc màn hình không thấy chip nào hiện ra. Đây
+ * là chỗ "giảm chuyển động nhưng GIỮ NGUYÊN tin" được thi hành ở mức sâu nhất:
+ * tin không nằm trong hiệu ứng, nó nằm trong DOM.
+ */
+export function starAriaLabel(stageKey: string, code: string, lesson: number): string {
+  const n = SKY_TESTS[code];
+  return `Bài ${lesson} · ${code} — chặng ${stageKey}, ${n} ca chấm`;
 }
 
 /**

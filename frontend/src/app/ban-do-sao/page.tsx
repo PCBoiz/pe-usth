@@ -22,7 +22,7 @@
 //     `style="…"`, một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa
 //     bỏ được (AGENTS.md). Mọi vị trí nằm ở `star-map.module.css`.
 //
-//  4. THỨ TỰ DOM LÀ MỘT HỢP ĐỒNG, không phải một cách sắp cho gọn. Ba việc
+//  4. THỨ TỰ DOM LÀ MỘT HỢP ĐỒNG, không phải một cách sắp cho gọn. Bốn việc
 //     cùng dựa vào nó:
 //      · mọi `<a>` vùng bấm phải đứng TRƯỚC mọi `<img>`, vì trạng thái hover
 //        đi qua bộ chọn anh em `~` (`.hitM1:hover ~ .chomM1`) — `~` chỉ nhìn
@@ -30,6 +30,10 @@
 //        tự;
 //      · trong số các `<a>`, ô NHÃN đứng trước ô BAO LỒI, nên chỗ hai ô chồng
 //        nhau thì bao lồi thắng: các ngôi sao là cái người ta định trỏ vào;
+//      · `<SkyCursor />` đứng GIỮA — sau tám ô bấm (để `.hitM1:hover ~ .lop …`
+//        với tới nó) và trước mười hai tấm (để `.lop[data-chang] ~ .chomM1`
+//        với tới chúng). Nó là chỗ DUY NHẤT trong khung thoả cả hai chiều,
+//        nên đừng dồn nó xuống cuối cho gọn mắt;
 //      · trong số các `<img>`, thứ tự LÀ thứ tự z, và nó phải khớp `SKY_TILES`
 //        → `SKY_LAYERS`. `e2e/unit/star-map.test.mjs` so lại.
 //
@@ -40,8 +44,16 @@ import type { Metadata } from 'next';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { withAssetVersion } from '@/lib/assetVersion';
-import { SKY_CONSTELLATIONS, SKY_COURSE, SKY_FRAME, STAR_COPY } from '@/lib/star-map';
+import {
+  lessonNumber,
+  starScaleLine,
+  SKY_CONSTELLATIONS,
+  SKY_COURSE,
+  SKY_FRAME,
+  STAR_COPY,
+} from '@/lib/star-map';
 
+import SkyCursor from './SkyCursor';
 import styles from './star-map.module.css';
 
 export const metadata: Metadata = {
@@ -54,14 +66,15 @@ export const metadata: Metadata = {
 };
 
 /**
- * Bài đầu của mỗi chặng trong danh sách phẳng 48 bài — cộng dồn số bài của
- * các chặng trước, KHÔNG viết cứng tám con số. Thêm một bài vào M2 là liên
- * kết của M3…M8 tự dịch theo; chép tám con số ra đây là tám con số sẽ lệch.
+ * Bài đầu của mỗi chặng trong danh sách phẳng 48 bài.
+ *
+ * Phép cộng dồn ĐÃ CHUYỂN sang `lessonNumber()` ở `src/lib/star-map.ts`, vì
+ * nay có HAI chỗ cần nó: ô bấm cả chặng ở đây, và 48 liên kết ngôi ở
+ * `SkyCursor.tsx`. Hai chỗ tự cộng dồn là hai chỗ sẽ lệch — và kiểu lệch tệ
+ * nhất có thể: một liên kết dẫn sang bài của chặng khác, không có gì đỏ lên.
  */
 function lessonHref(index: number): string {
-  let n = 1;
-  for (let i = 0; i < index; i += 1) n += SKY_CONSTELLATIONS[i].stars.length;
-  return `/lesson/python_advanced/${n}`;
+  return `/lesson/python_advanced/${lessonNumber(index)}`;
 }
 
 export default function StarMapPreviewPage() {
@@ -109,6 +122,13 @@ export default function StarMapPreviewPage() {
               </span>
             </a>
           ))}
+
+          {/* LỚP CON TRỎ — sau tám ô bấm, trước mười hai tấm (luật 4 ở đầu
+              tệp). Đây là bước 1 của `design/v3/tuong-tac-ban-do.md`: bản đồ
+              phải cho biết TAY TÔI ĐANG Ở ĐÂU, ở độ phân giải 1/48 ngôi thay
+              vì 1/16 hình chữ nhật. Nó là thành phần client duy nhất của
+              trang, và nó KHÔNG gọi API nào — xem luật 1. */}
+          <SkyCursor />
 
           {/* Bốn TẤM nền, theo đúng thứ tự `SKY_TILES`. `next/image` không
               dùng được ở đây, và không phải vì lười: bộ tối ưu ảnh của Next TỪ
@@ -173,6 +193,14 @@ export default function StarMapPreviewPage() {
         </div>
 
         <h2 className={styles.legendTitle}>{STAR_COPY.legendTitle}</h2>
+        {/* THANG BÁN KÍNH NÓI BẰNG SỐ. Bán kính mỗi ngôi mang số ca chấm của
+            bài từ đầu, nhưng trước đây không chỗ nào trên trang nói ra con số
+            ấy — nên một tín hiệu đã vẽ xong vẫn không làm việc gì cả (bài học
+            Slay the Spire, nghiên cứu §2.4). Hai đầu thang TÍNH từ
+            `SKY_TESTS`, không chép: ba bài hiện cùng ở mức thấp nhất, nên một
+            câu chép tay sẽ sai ngay lần giáo trình đổi. Đây cũng là đường đọc
+            được trên ĐIỆN THOẠI, nơi không có hover. */}
+        <p className={styles.scale}>{starScaleLine()}</p>
         <ul className={styles.legend}>
           {STAR_COPY.legend.map((line) => <li key={line}>{line}</li>)}
         </ul>

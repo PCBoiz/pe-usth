@@ -46,10 +46,16 @@ import { fileURLToPath } from 'node:url';
 import * as SM from '../../src/lib/star-map.ts';
 
 const {
+  lessonNumber,
   placeStar,
   profileColors,
+  starAriaLabel,
   starMagnitude,
+  starScaleLine,
+  starScaleRange,
   zodiacAnchors,
+  SKY_CURSOR,
+  SKY_TESTS,
   SKY_BUDGET,
   SKY_CONSTELLATION_KEYS,
   SKY_CONSTELLATIONS,
@@ -109,11 +115,16 @@ const PAGE = read('src', 'app', 'ban-do-sao', 'page.tsx');
  * được có nhánh ấy — tức ca test phạt đúng người viết tài liệu.
  */
 const CSS_CODE = CSS.replace(/\/\*[\s\S]*?\*\//g, ' ');
-const TSX_CODE = PAGE
+const boChuThich = (s) => s
   .replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ')
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
   .replace(/^[ \t]*\/\/.*$/gm, '')
   .replace(/[ \t]+\/\/.*$/gm, '');
+const TSX_CODE = boChuThich(PAGE);
+/** Lớp con trỏ — thành phần client duy nhất của trang. Mọi ca cấm áp cho
+ *  `page.tsx` (không API, không `style={{…}}`, không hiệu ứng tự chạy) phải áp
+ *  cho CẢ tệp này, nếu không thì chúng chỉ còn canh một nửa trang. */
+const CUR_CODE = boChuThich(read('src', 'app', 'ban-do-sao', 'SkyCursor.tsx'));
 const PY_CODE = PY
   .replace(/"""[\s\S]*?"""/g, ' ')
   .replace(/^[ \t]*#.*$/gm, '')
@@ -1220,9 +1231,32 @@ test('không hiệu ứng TỰ CHẠY nào: trang nạp xong là bản đồ đ�
   // Và không `style={{…}}` trong TSX: SSR tuần tự hoá nó thành `style="…"`,
   // một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa bỏ được.
   assert.ok(!/style=\{\{/.test(TSX_CODE), 'trang dùng style nội tuyến');
+  // LỚP CON TRỎ phải chịu đúng hai luật ấy. Nó là chỗ dễ vi phạm nhất, vì nó
+  // là tệp duy nhất có JavaScript chạy trên trang này: một `setInterval` ở đây
+  // là một hiệu ứng tự chạy mà CSS không biết, và trang sẽ rơi vào WCAG 2.2.2
+  // mà không có nút Dừng nào.
+  assert.ok(!/style=\{\{/.test(CUR_CODE), 'lớp con trỏ dùng style nội tuyến');
+  assert.ok(!/setInterval|requestAnimationFrame\(\s*function|@keyframes/.test(CUR_CODE),
+    'lớp con trỏ có một vòng chạy theo ĐỒNG HỒ — nhóm C của nghiên cứu §3, tức thứ phải cho'
+    + ' người dùng tắt và không mua được một tin nào');
+  // `requestAnimationFrame` CÓ được dùng, nhưng chỉ để gộp các lượt
+  // `pointermove` thành một lượt ghi mỗi khung hình — nó phải được gọi TỪ
+  // trình xử lý sự kiện, tức tay người dùng là cái khởi động, không phải đồng
+  // hồ. Phép thử: không lượt nào tự hẹn lượt sau.
+  const ve = CUR_CODE.slice(CUR_CODE.indexOf('const ve ='), CUR_CODE.indexOf('const diChuyen'));
+  assert.ok(ve.length > 100, 'không tìm thấy hàm vẽ một khung của lớp con trỏ');
+  assert.ok(!/requestAnimationFrame/.test(ve),
+    'hàm vẽ tự hẹn khung sau — đó là một vòng lặp vô hạn mang lốt phản hồi');
+  // Toạ độ con trỏ đi vào CSS qua CSSOM (`setProperty`), KHÔNG qua một thuộc
+  // tính `style` trong markup: `style-src` chi phối cái sau, không chi phối
+  // cái trước, nên cách này không thêm nợ cho việc bỏ `unsafe-inline`.
+  assert.match(CUR_CODE, /style\.setProperty\('--cx'/);
 });
 
 test('route xem thử không gọi API nào — nó công khai', () => {
+  assert.ok(!/apiFetch|fetch\(/.test(CUR_CODE),
+    'lớp con trỏ gọi API — nó chạy ở client trên một trang công khai, tức đúng chỗ mỗi con'
+    + ' bot sinh một tài khoản khách');
   assert.ok(!/apiFetch|fetch\(/.test(TSX_CODE),
     'trang công khai mà gọi API: `apiFetch` gặp 401 là TỰ TẠO tài khoản khách, tức mỗi con'
     + ' bot quét web sinh một `@guest.local` và ăn một suất của THROTTLE_GUEST_LIMIT');
@@ -1236,4 +1270,331 @@ test('route xem thử không gọi API nào — nó công khai', () => {
   for (const tu of ['LIỀN', 'ĐỨT', 'Ngân Hà', 'ĐẬM HƠN', 'sao nền']) {
     assert.ok(cg.includes(tu), `chú giải không nhắc tới "${tu}"`);
   }
+});
+
+/* ═══ 18 · LỚP CON TRỎ — "con trỏ có mặt trong bức tranh" ══════════════
+
+   Nghiên cứu: `design/v3/tuong-tac-ban-do.md` §6.1–§6.2. Lớp này hỏng theo
+   những cách KHÁC hẳn bức tranh, nên nó cần ca canh riêng — và cả bốn cách
+   dưới đây đều hỏng IM LẶNG:
+
+    1. Một lớp `.sao<MÃ>` thiếu trong CSS: CSS module trả về `undefined`, React
+       bỏ luôn className, và ngôi ấy dán ở GÓC TRÊN-TRÁI khung. Không lỗi, không
+       cảnh báo — chỉ là một ngôi sai chỗ giữa 48 ngôi đúng chỗ.
+    2. Một con số toạ độ lệch: dấu ngôi không còn nằm trên ngôi, nên "ngôi gần
+       con trỏ nhất tự nhận mình" nhận SAI ngôi. Vẫn mượt, vẫn đẹp, vẫn nói sai.
+    3. `SKY_TESTS` cũ: chip in ra một con số ca chấm không còn đúng, trong khi
+       bán kính ngôi (tính từ giáo trình) thì đúng. Hai thứ cùng nói về một bài
+       mà nói khác nhau, và chỉ cái CHỮ là sai.
+    4. Bậc thang 45 ms kể "thứ tự bài" trong khi `stars` xếp theo thứ tự khác:
+       một chuyển động nói dối, chạy đúng nhịp. */
+
+test('48 dấu ngôi khớp `placeStar()` từng con số — một lớp thiếu là một ngôi dán ở góc', () => {
+  const doc = (css, cls) => {
+    const m = css.match(new RegExp(`\\.${cls}\\s*\\{([^}]*)\\}`));
+    if (!m) return null;
+    return Object.fromEntries(
+      [...m[1].matchAll(/(left|top):\s*([\d.]+)%/g)].map((x) => [x[1], +x[2]]),
+    );
+  };
+  // Tự kiểm: một bộ đọc câm làm cả ca này vô dụng.
+  assert.deepEqual(doc('.saoZZ9 { left: 1.5%; top: 2.5%; }', 'saoZZ9'), { left: 1.5, top: 2.5 });
+  assert.equal(doc('.saoP01 { left: 1%; }', 'saoXX9'), null);
+
+  for (const c of SKY_CONSTELLATIONS) {
+    for (const s of c.stars) {
+      const p = placeStar(c, s);
+      const k = doc(CSS_CODE, `sao${s.code}`);
+      assert.ok(k, `star-map.module.css thiếu .sao${s.code} — CSS module sẽ trả về undefined,`
+        + ' className rơi mất và ngôi ấy dán ở góc trên-trái. Chạy `build_sky.py --css`.');
+      assert.ok(Math.abs(k.left - (p.x / SKY_FRAME.width) * 100) < 0.01,
+        `.sao${s.code} left = ${k.left}% nhưng placeStar() ra`
+        + ` ${((p.x / SKY_FRAME.width) * 100).toFixed(3)}%`);
+      assert.ok(Math.abs(k.top - (p.y / SKY_FRAME.height) * 100) < 0.01,
+        `.sao${s.code} top = ${k.top}% nhưng placeStar() ra`
+        + ` ${((p.y / SKY_FRAME.height) * 100).toFixed(3)}%`);
+    }
+  }
+  // …và không một lớp `.sao*` LẠ nào: một mã bài đã bỏ mà còn vị trí trong CSS
+  // là một con số sẽ được chép tiếp qua mỗi lần sửa sau.
+  const co = [...CSS_CODE.matchAll(/\.sao([A-Z]+\d+)\s*\{/g)].map((m) => m[1]);
+  assert.deepEqual([...co].sort(), Object.keys(VI_TRI).sort(),
+    'danh sách lớp `.sao*` trong CSS lệch với 48 ngôi của hồ sơ TS');
+});
+
+test('`SKY_TESTS` khớp số ca chấm ĐẾM LẠI từ giáo trình — khối đóng băng không được cũ', () => {
+  assert.equal(Object.keys(SKY_TESTS).length, 48);
+  for (const code of Object.keys(VI_TRI)) {
+    assert.equal(SKY_TESTS[code], SO_CA[code],
+      `SKY_TESTS.${code} = ${SKY_TESTS[code]} nhưng giáo trình đếm được ${SO_CA[code]} ca chấm`
+      + ' — chạy `py scripts/star/build_sky.py --so-ca` rồi chép lại khối. Bán kính ngôi tính'
+      + ' từ giáo trình nên nó vẫn ĐÚNG; chỉ con số IN RA cạnh ngôi là sai.');
+  }
+  for (const code of Object.keys(SKY_TESTS)) {
+    assert.ok(VI_TRI[code], `SKY_TESTS có ${code} mà bản đồ không vẽ ngôi nào mã đó`);
+  }
+  // Câu chú giải nói ra thang phải nói ra thang THẬT, và không còn chỗ `{…}`
+  // nào chưa thay — một placeholder sót lại là một câu đọc trôi mà vô nghĩa.
+  const r = starScaleRange();
+  const nums = Object.keys(VI_TRI).map((code) => SO_CA[code]);
+  assert.equal(r.min, Math.min(...nums));
+  assert.equal(r.max, Math.max(...nums));
+  assert.ok(r.minCodes.length >= 1 && r.maxCodes.length >= 1);
+  const line = starScaleLine();
+  assert.ok(!/[{}]/.test(line), `câu thang còn placeholder chưa thay: ${line}`);
+  assert.ok(line.includes(String(r.min)) && line.includes(String(r.max)));
+  for (const code of [...r.minCodes, ...r.maxCodes]) assert.ok(line.includes(code));
+  // Và nó phải được DÙNG — một câu chữ đúng nằm trong thư viện mà không ai in
+  // ra thì con số vẫn không ai đọc được, tức cái lỗi gốc còn nguyên.
+  assert.match(TSX_CODE, /starScaleLine\(\)/,
+    'page.tsx không in câu thang bán kính — con số ca chấm lại thành thứ không ai đọc được');
+});
+
+test('thứ tự `stars` LÀ thứ tự bài của giáo trình — bậc thang 45 ms kể đúng thứ tự đó', () => {
+  // Ca `48 ngôi khớp 48 mã bài` ở trên so hai danh sách đã SẮP, nên nó không
+  // bắt được thứ tự. Thứ tự nay mang tin: mã bài bật lên lần lượt theo đúng
+  // thứ tự này, và đó là thứ duy nhất trên bản đồ nói ra thứ tự trong một
+  // chặng (bản đồ cố ý không vẽ mũi tên lộ trình).
+  SKY_CONSTELLATIONS.forEach((c, i) => {
+    assert.deepEqual(c.stars.map((s) => s.code), MODULES[i],
+      `thứ tự ngôi của ${c.key} lệch thứ tự bài trong curricula.json — bậc thang của lớp`
+      + ' con trỏ sẽ kể một thứ tự không có thật');
+  });
+  // `lessonNumber` phải đếm đúng danh sách phẳng 48 bài: hai chỗ tự cộng dồn
+  // (ô bấm cả chặng, và 48 liên kết ngôi) là hai chỗ sẽ lệch, và kiểu lệch là
+  // một liên kết dẫn sang bài của chặng khác.
+  let n = 0;
+  SKY_CONSTELLATIONS.forEach((c, i) => {
+    c.stars.forEach((s, j) => {
+      n += 1;
+      assert.equal(lessonNumber(i, j), n, `lessonNumber(${i}, ${j}) phải ra ${n} (${s.code})`);
+    });
+  });
+  assert.equal(n, 48);
+  // Tên nghe được phải nói đủ bốn thứ mà chip nói bằng mắt: người dùng trình
+  // đọc màn hình không thấy chip nào hiện ra.
+  const nhan = starAriaLabel('M3', 'R02', 20);
+  for (const tu of ['Bài 20', 'R02', 'M3', `${SO_CA.R02} ca chấm`]) {
+    assert.ok(nhan.includes(tu), `aria-label của ngôi không nhắc "${tu}": ${nhan}`);
+  }
+});
+
+test('tiết lộ CÓ THỨ TỰ: chín bậc thang khớp `SKY_CURSOR`, và độ trễ không dính vào lượt VỀ', () => {
+  const { lead } = SKY_CURSOR;
+  const np = CSS_CODE.match(/@media \(prefers-reduced-motion: no-preference\)\s*\{([\s\S]*?)\n\}/);
+  assert.ok(np, 'CSS không khai bậc thang trong nhánh `no-preference` — khai ngoài rồi tắt'
+    + ' trong `reduce` thì quy tắc nth-child đặc trưng hơn mọi cách tắt viết gọn');
+  const bac = [...np[1].matchAll(/nth-child\((\d+)\) \.chip \{ --bac: (\d+)ms/g)];
+  const day = Math.max(...SKY_CONSTELLATIONS.map((c) => c.stars.length));
+  assert.equal(bac.length, day,
+    `có ${bac.length} bậc thang cho chòm dày nhất ${day} ngôi — ngôi thiếu bậc sẽ hiện NGAY,`
+    + ' tức đứng sai chỗ trong chính cái thứ tự mà bậc thang sinh ra để kể');
+  bac.forEach(([, i, ms]) => {
+    assert.equal(+ms, lead.codeDelay + lead.stagger * (+i - 1),
+      `bậc ${i} trễ ${ms}ms, nhưng SKY_CURSOR.lead ra`
+      + ` ${lead.codeDelay + lead.stagger * (+i - 1)}ms`);
+  });
+  // Trạng thái NGHỈ phải trễ 0: CSS lấy `transition-*` của trạng thái ĐÍCH, nên
+  // một `--bac` khác 0 ở đây là con trỏ rời đi rồi mà bức tranh còn kể nốt.
+  const base = CSS_CODE.match(/\n\.chip\s*\{([^}]*)\}/);
+  assert.ok(base, 'thiếu quy tắc gốc .chip');
+  assert.match(base[1], /--bac:\s*0ms/, 'quy tắc gốc .chip không đặt --bac về 0');
+  assert.match(base[1], /transition:\s*opacity\s+\d+ms\s+ease\s+var\(--bac\)/);
+  // HAI NHỊP của tấm chòm: cái được chọn tới TRƯỚC (150 ms), bảy cái kia lùi
+  // SAU (+120 ms). Trước đây cả hai cùng một nhịp 320 ms — một cái công tắc có
+  // bóng đèn chậm.
+  assert.match(CSS_CODE, new RegExp(`\\.chomRo\\s*\\{[^}]*transition:\\s*opacity\\s+${lead.tileIn}ms`),
+    `.chomRo không còn hiện lên trong ${lead.tileIn}ms`);
+  assert.match(CSS_CODE, new RegExp(`--nghi-tre:\\s*${lead.tileOutDelay}ms`),
+    `tấm nghỉ không còn lùi lại SAU ${lead.tileOutDelay}ms`);
+  // …và quy tắc hover của tấm nghỉ KHÔNG được viết `transition:` trực tiếp: nó
+  // đặc trưng hơn `.chomNghi`, nên nó sẽ đè luôn `transition: none` của nhánh
+  // `reduce` — người bật giảm chuyển động vẫn nhận đủ 320 ms, trong khi ca test
+  // đọc nhánh reduce và báo xanh. Đúng kiểu hỏng im lặng.
+  const hv = CSS_CODE.match(/\.hit:hover ~ \.chomNghi,[\s\S]*?\{([^}]*)\}/);
+  assert.ok(hv, 'thiếu quy tắc tắt tấm nghỉ lúc hover');
+  assert.ok(!/transition:/.test(hv[1]),
+    'quy tắc hover của tấm nghỉ viết `transition:` trực tiếp — nó sẽ đè nhánh reduce');
+});
+
+test('ngôi được NHẬN và ngôi được TIÊU ĐIỂM cho ra ĐÚNG một trạng thái, cả tám chặng', () => {
+  for (const re of [
+    /\.sao\[data-gan\],\s*\n\.sao:focus-visible\s*\{/,
+    /\.sao\[data-gan\] \.chip,\s*\n\.sao:focus-visible \.chip\s*\{/,
+    /\.sao\[data-gan\] \.soCa,\s*\n\.sao:focus-visible \.soCa\s*\{/,
+  ]) {
+    assert.match(CSS_CODE, re,
+      'trạng thái con trỏ và trạng thái bàn phím không chung một khối — người đi bằng Tab/mũi'
+      + ' tên sẽ thấy một bản đồ khác người đi bằng chuột');
+  }
+  for (const c of SKY_CONSTELLATIONS) {
+    const k = c.key;
+    assert.match(CSS_CODE, new RegExp(`\\.lop\\[data-chang='${k}'\\] ~ \\.chom${k}`),
+      `${k}: thiếu đường BÀN PHÍM tới tấm chòm. Ngôi nằm TRONG lớp phủ nên :focus-visible của`
+      + ' nó không với tới tấm ảnh được — trạng thái phải đi qua thuộc tính trên lớp phủ');
+    assert.match(CSS_CODE, new RegExp(`\\.lop\\[data-chang='${k}'\\] \\.cum${k} \\.chip`),
+      `${k}: đi bằng mũi tên không làm hiện mã bài của chặng`);
+    assert.match(CSS_CODE, new RegExp(`\\.cum${k} \\{ --sac: var\\(--sky-${k.toLowerCase()}\\)`),
+      `${k}: vòng quanh ngôi không lấy sắc của chặng — "ngôi này của chặng nào" lại phải đọc`
+      + ' bằng chữ');
+  }
+  // Ba chục dòng CSS trên là chữ chết nếu JS không đặt hai thuộc tính ấy.
+  assert.match(CUR_CODE, /setAttribute\('data-chang'/);
+  assert.match(CUR_CODE, /setAttribute\('data-gan'/);
+  // Mũi tên · Home/End · Esc, và phải chặn cuộn trang.
+  for (const k of ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Escape', 'Home', 'End']) {
+    assert.ok(CUR_CODE.includes(k), `lớp con trỏ không xử lý ${k}`);
+  }
+  assert.match(CUR_CODE, /preventDefault/, 'mũi tên không chặn cuộn trang');
+  // Tiêu điểm LUÂN PHIÊN: 48 chặng dừng Tab mới sẽ nhấn chìm tám ô bấm thật.
+  assert.match(CUR_CODE, /tabIndex=\{-1\}/,
+    '48 dấu ngôi nhận Tab — tám ô bấm chặng sẽ chìm trong 48 chặng dừng');
+  assert.equal((TSX_CODE.match(/tabIndex/g) ?? []).length, 1,
+    'page.tsx có thêm/bớt một chỗ đặt tabIndex — ô nhãn là chỗ duy nhất');
+});
+
+test('chip đo được bằng HAI mã màu, và vòng HAI NÉT không thể cùng trượt 3:1', () => {
+  const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const Lum = (hex) => {
+    const v = [1, 3, 5].map((i) => lin(parseInt(hex.slice(i, i + 2), 16) / 255));
+    return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2];
+  };
+  const tp = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  // Tự kiểm bộ đo trên hai cặp đã biết trước.
+  assert.ok(Math.abs(tp(Lum('#FFFFFF'), Lum('#000000')) - 21) < 0.01);
+  assert.ok(Math.abs(Lum('#FFFFFF') - 1) < 1e-9);
+  // Hai ngưỡng của phép chứng minh dưới đây, ghim lại bằng số: nét sáng
+  // (L = 0,8502) chỉ tụt dưới 3:1 khi nền sáng hơn L = 0,250; nét tối
+  // (L = 0,0038) chỉ tụt khi nền tối hơn L = 0,111.
+  assert.ok(Math.abs((Lum(P.text) + 0.05) / 3 - 0.05 - 0.2501) < 0.001);
+  assert.ok(Math.abs((Lum(P.base) + 0.05) * 3 - 0.05 - 0.1113) < 0.001);
+
+  // CHỮ: nền chip ĐẶC, nên tương phản là một phép tính, không phải một phép
+  // lấy mẫu ảnh. Đây là lý do chip có nền thay vì chữ đặt thẳng lên tranh —
+  // điểm sáng nhất của bức là L = 0,88, và chữ sáng trên đó thì không có số đo
+  // nào cứu được.
+  const nen = Lum(P.base);
+  for (const [ten, mau, san] of [['--sky-ink', P.text, 4.5], ['--sky-code', P.code, 4.5],
+    ['--sky-dim', P.textSub, 4.5]]) {
+    const t = tp(Lum(mau), nen);
+    assert.ok(t >= san, `${ten} trên nền chip chỉ đạt ${t.toFixed(2)}:1, dưới ${san}:1`);
+  }
+
+  // VÒNG DÒ: một nét sáng kèm một nét tối, và phép chứng minh là phép quét —
+  // không tồn tại độ chói nền nào làm CẢ HAI nét dưới 3:1. (Nét sáng chỉ tụt
+  // dưới 3:1 khi nền sáng hơn L = 0,250; nét tối chỉ tụt khi nền tối hơn
+  // L = 0,111. Hai điều kiện loại nhau.) Nhờ thế vòng dò đạt 3:1 trên MỌI chỗ
+  // của bầu trời, kể cả giữa vệt loé.
+  const sang = Lum(P.text);
+  for (let i = 0; i <= 1000; i += 1) {
+    const bg = i / 1000;
+    assert.ok(Math.max(tp(sang, bg), tp(nen, bg)) >= 3,
+      `nền L = ${bg.toFixed(3)} làm cả hai nét của vòng dò dưới 3:1`);
+  }
+  // …và cả hai nét phải CÓ THẬT trong CSS của ba vật mang tin. Gỡ `outline`
+  // tối đi "cho gọn" là gỡ đúng nửa phép chứng minh trên.
+  const vong = CSS_CODE.match(/\n\.vong\s*\{([^}]*)\}/);
+  assert.ok(vong, 'thiếu quy tắc .vong');
+  assert.match(vong[1], /border:[^;]*var\(--sky-ink\)/);
+  assert.match(vong[1], /outline:[^;]*var\(--sky-chip\)/);
+  const vach = CSS_CODE.match(/\n\.vachX,\s*\n\.vachY\s*\{([^}]*)\}/);
+  assert.ok(vach, 'thiếu quy tắc chung của hai vạch lề');
+  assert.match(vach[1], /background:\s*var\(--sky-ink\)/);
+  assert.match(vach[1], /outline:[^;]*var\(--sky-chip\)/);
+  // Mười ba biến của `sky-theme.css` phải đúng hồ sơ — ca "nền khung là màu
+  // nền trời" so cả tệp, ở đây chỉ canh rằng chúng CÓ MẶT và lớp CSS đọc đúng
+  // tên, vì một `var(--sky-ink)` gõ sai thành `var(--sky-in)` là chữ KHÔNG MÀU
+  // trên nền đặc: vẫn đọc được, vẫn sai.
+  const theme = readFileSync(join(FE, 'public', 'map', 'star', 'sky-theme.css'), 'utf8');
+  for (const bien of [...[...CSS_CODE.matchAll(/var\((--sky-[a-z0-9]+)\)/g)].map((m) => m[1])]) {
+    assert.ok(theme.includes(`${bien}:`),
+      `CSS đọc ${bien} mà sky-theme.css không khai — một biến không tồn tại làm thuộc tính bị`
+      + ' bỏ, tức chữ rơi về màu thừa hưởng');
+  }
+});
+
+test('MƯỜI SÁU ô bấm đều ≥ 44 px ở bề rộng khung thật — chín ô từng dưới mức đó', () => {
+  // Con số này ĐO LẠI, không tin bảng %: bề rộng thì dư sức ở mọi ô (hẹp nhất
+  // 72,9 px) nên nhìn % thì mọi ô đều "to", trong khi CHIỀU CAO của chín ô
+  // (tám ô nhãn 34,2 px và bao lồi M8 31,4 px) nằm dưới 44.
+  const W = 1100 - 32; // `.wrap` max-width trừ 2 × 16 padding
+  const H = (W * SKY_FRAME.height) / SKY_FRAME.width; // khung giữ aspect-ratio
+  const hitBase = CSS_CODE.match(/\n\.hit\s*\{([^}]*)\}/);
+  assert.ok(hitBase, 'thiếu quy tắc gốc .hit');
+  const mh = hitBase[1].match(/min-height:\s*(\d+)px/);
+  assert.ok(mh, 'ô bấm không còn `min-height` — chín ô sẽ tụt lại dưới 44 px');
+  const san = +mh[1];
+  assert.ok(san >= 44, `min-height chỉ ${san}px`);
+
+  const o = [];
+  for (const m of CSS_CODE.matchAll(/\.hit(M\d)([ab])\s*\{([^}]*)\}/g)) {
+    const s = Object.fromEntries(
+      [...m[3].matchAll(/(left|top|width|height):\s*([\d.]+)%/g)].map((x) => [x[1], +x[2]]),
+    );
+    o.push({
+      ten: `hit${m[1]}${m[2]}`,
+      key: m[1],
+      hau: m[2],
+      x: (s.left / 100) * W,
+      y: (s.top / 100) * H,
+      w: (s.width / 100) * W,
+      h: Math.max((s.height / 100) * H, san),
+    });
+  }
+  assert.equal(o.length, 16, `đọc được ${o.length} ô bấm, phải có 16`);
+  for (const b of o) {
+    assert.ok(b.w >= 44 && b.h >= 44,
+      `${b.ten} chỉ ${b.w.toFixed(1)} × ${b.h.toFixed(1)} px — dưới vùng chạm 44 px`);
+  }
+  // …và `min-height` không được tạo ra một cặp BAO LỒI chồng nhau mới: ô nào
+  // nằm sau trong DOM thì nuốt con trỏ của ô kia, tức trỏ vào chòm này lại làm
+  // chòm khác sáng lên. (Ô NHÃN phủ lên bao lồi thì không sao — luật nhường đã
+  // đặt nhãn trước bao lồi trong DOM.)
+  const bl = o.filter((b) => b.hau === 'a');
+  for (let i = 0; i < bl.length; i += 1) {
+    for (let j = i + 1; j < bl.length; j += 1) {
+      const a = bl[i]; const b = bl[j];
+      assert.ok(!(a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y),
+        `min-height làm bao lồi ${a.key} chồng bao lồi ${b.key}`);
+    }
+  }
+  // 48 DẤU NGÔI thì KHÔNG phải vùng chạm, và con số nói ra lý do: hai ngôi gần
+  // nhau nhất cách nhau dưới 44 px CSS, nên 48 ô 44 px sẽ chồng nhau.
+  const vt = Object.values(VI_TRI);
+  let khe = Infinity;
+  for (let i = 0; i < vt.length; i += 1) {
+    for (let j = i + 1; j < vt.length; j += 1) {
+      khe = Math.min(khe, Math.hypot(vt[i].x - vt[j].x, vt[i].y - vt[j].y));
+    }
+  }
+  const khePx = (khe / SKY_FRAME.width) * W;
+  assert.ok(khePx < 44,
+    `khe hai ngôi gần nhau nhất đã là ${khePx.toFixed(1)} px CSS — nếu nó thật sự ≥ 44 thì`
+    + ' 48 ngôi ĐÁNG được là vùng chạm và chú thích trong SkyCursor.tsx phải viết lại');
+  const sao = CSS_CODE.match(/\n\.sao\s*\{([^}]*)\}/);
+  assert.ok(sao, 'thiếu quy tắc gốc .sao');
+  assert.match(sao[1], /pointer-events:\s*none/,
+    `48 dấu ngôi ăn con trỏ, mà khe giữa hai ngôi chỉ ${khePx.toFixed(1)} px CSS — chúng sẽ`
+    + ' chồng nhau VÀ nuốt con trỏ của tám ô bấm thật');
+});
+
+test('máy chạm: thiết bị tắt hẳn, nhưng bản đồ KHÔNG chết — và 48 ngôi vẫn ở đó cho bàn phím', () => {
+  const kho = CSS_CODE.match(/@media \(hover: none\)\s*\{([\s\S]*?)\n\}/g);
+  assert.ok(kho && kho.length >= 1, 'CSS không còn nhánh (hover: none)');
+  const het = kho.join('\n');
+  for (const v of ['.vong', '.vachX', '.vachY', '.keX', '.keY', '.lanX', '.lanY']) {
+    assert.ok(het.includes(v), `nhánh (hover: none) không tắt ${v} — một vật không bao giờ bật`
+      + ' mà vẫn ở trong cây là một vật sẽ bật vì một lỗi khác');
+  }
+  // 48 dấu ngôi KHÔNG được tắt: một chiếc điện thoại cắm bàn phím vẫn phải đi
+  // được bằng mũi tên.
+  assert.ok(!/\.sao\b[^{]*\{[^}]*display:\s*none/.test(het),
+    'nhánh (hover: none) tắt luôn 48 dấu ngôi — bàn phím trên máy chạm mất đường đi');
+  // Và JS phải THẬT SỰ không gắn listener con trỏ ở đó: tắt bằng CSS mà vẫn
+  // tính 48 khoảng cách mỗi khung hình là tốn pin cho một thứ không ai thấy.
+  assert.match(CUR_CODE, /matchMedia\('\(hover: hover\)'\)/,
+    'lớp con trỏ không hỏi máy có con trỏ hay không');
+  // Đường dùng được trên máy chạm là CHỮ, không phải hover: thang bán kính
+  // phải nằm trong câu chú giải, nơi không cần tay nào.
+  assert.ok(/ca chấm/.test(STAR_COPY.scaleNote) && /{min}/.test(STAR_COPY.scaleNote));
 });

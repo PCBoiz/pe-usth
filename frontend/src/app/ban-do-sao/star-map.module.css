@@ -102,16 +102,40 @@
 
 /* Tám tấm chòm lúc trỏ vào, và tấm chòm lúc nghỉ, đều đổi bằng ĐỘ MỜ. Chúng
    phải `pointer-events: none`, nếu không chúng che mất chính cái liên kết
-   đang làm chúng hiện ra. */
+   đang làm chúng hiện ra.
+
+   ── HAI NHỊP, KHÔNG MỘT NHỊP ──────────────────────────────────────────
+
+   Hai tấm này TỪNG đổi cùng một nhịp 320 ms với cùng một đường cong và không
+   độ trễ nào. `design/v3/tuong-tac-ban-do.md` §3 gọi đúng tên thứ đó: không
+   phải một chuyển cảnh, mà "một cái công tắc có bóng đèn chậm" — và đó chính
+   là lời chê thứ tư ("chưa có tí motion graphic gì cả") đọc được bằng CSS.
+
+   Nay có thứ tự, và thứ tự ấy trả lời một câu hỏi theo đúng mức cấp bách của
+   nó:
+     1. 150 ms — chòm ĐƯỢC TRỎ hiện lên trước, nhanh. Câu đầu bản đồ phải trả
+        lời là "tay tôi đang ở chặng nào", không phải "còn những chặng nào".
+     2. +120 ms — bảy chòm kia mới bắt đầu lùi. Cái được chọn tới TRƯỚC, cái
+        gác lại đi SAU; đảo thứ tự này là nói rằng việc bỏ bớt quan trọng hơn
+        việc chọn.
+   Con số ở `SKY_CURSOR.lead` phía TS, và một ca test so lại — nếu không thì
+   chúng là hai con số sống trong CSS mà không ai đo được.
+
+   Độ trễ nằm trong quy tắc TRẠNG THÁI (`:hover`), không nằm ở đây: CSS lấy
+   `transition-*` của trạng thái ĐÍCH, nên đặt ở đây là trễ cả lượt đi VÀ lượt
+   về — tức con trỏ rời đi rồi mà bức tranh còn kể nốt câu chuyện. Lượt về phải
+   gọn: `--ds-dur-fast`, không trễ. */
 .chomRo {
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--ds-dur-base) ease;
+  transition: opacity 150ms ease;
 }
 
 .chomNghi {
   pointer-events: none;
-  transition: opacity var(--ds-dur-base) ease;
+  --nghi-dur: var(--ds-dur-fast);
+  --nghi-tre: 0ms;
+  transition: opacity var(--nghi-dur) ease var(--nghi-tre);
 }
 
 /* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
@@ -120,9 +144,24 @@
   pointer-events: none;
 }
 
+/* VÙNG CHẠM 44 px — một con số ĐO LẠI ngày 19/10/2026 và nó đang vỡ.
+
+   Chín trong mười sáu ô bấm cao DƯỚI 44 px ở bề rộng khung thật (`.wrap`
+   max-width 1100 trừ 2 × 16 padding = 1068 px ⇒ khung cao 643,9 px): cả tám ô
+   NHÃN cao 34,2 px, và bao lồi M8 — chòm hai ngôi, nằm ở thiên đỉnh — chỉ cao
+   31,4 px. Không ai đo con số này trước đây vì bề rộng thì dư sức (72,9 px ở ô
+   hẹp nhất), nên nhìn bảng % thì mọi ô đều "to".
+
+   `min-height` sửa đúng chín ô ấy và không đụng bảy ô còn lại (ô thấp thứ nhì
+   trong số đó cao 123 px). Nó nở xuống DƯỚI vì `top` do `--css` ấn định; chỗ
+   nở ra có thể phủ lên một bao lồi bên cạnh, và luật nhường đã có sẵn cho
+   đúng tình huống đó: ô nhãn đứng TRƯỚC ô bao lồi trong DOM, nên chỗ chồng
+   nhau thuộc về bao lồi (luật 5 ở đầu tệp). Một ca test tính lại cả mười sáu ô
+   ra px và đòi ≥ 44 ở cả hai chiều. */
 .hit {
   border-radius: var(--ds-r-sm);
   display: block;
+  min-height: 44px;
   position: absolute;
   z-index: 2;
 }
@@ -248,27 +287,52 @@
    lên, trong đó chòm được trỏ đi 0,55 → 0,85 và bảy chòm kia → 0,28. */
 
 .hit:hover ~ .chomNghi,
-.hit:focus-visible ~ .chomNghi {
+.hit:focus-visible ~ .chomNghi,
+.lop[data-chang] ~ .chomNghi {
   opacity: 0;
+  /* NHỊP HAI: lùi lại SAU khi chòm được chọn đã tới (xem khối `.chomNghi`).
+     Đi qua BIẾN chứ không viết `transition:` ở đây, và đó là một bản sửa chứ
+     không phải một kiểu viết: quy tắc này đặc trưng hơn `.chomNghi`, nên một
+     `transition:` ở đây sẽ ĐÈ luôn `transition: none` của khối
+     `prefers-reduced-motion` dưới cùng — tức người bật giảm chuyển động vẫn
+     nhận đủ 320 ms, trong khi ca test đọc khối reduce và báo xanh. */
+  --nghi-dur: var(--ds-dur-base);
+  --nghi-tre: 120ms;
 }
 
-/* …và đúng MỘT tấm chòm hiện lên. */
+/* …và đúng MỘT tấm chòm hiện lên.
+
+   Nhánh thứ ba của mỗi khối (`.lop[data-chang='M…']`) là ĐƯỜNG BÀN PHÍM: khi
+   mũi tên đưa tiêu điểm vào một NGÔI, ngôi ấy nằm TRONG lớp phủ nên
+   `:focus-visible` của nó không với tới tấm ảnh được (bộ chọn `~` chỉ đi giữa
+   anh em). `SkyCursor.tsx` vì thế đặt một thuộc tính lên chính lớp phủ, và lớp
+   phủ LÀ anh em của mười hai tấm. Không có nhánh này thì đi bằng mũi tên là đi
+   trên một bầu trời không sáng lên — tức đúng cái "bàn phím thấy một bản đồ
+   khác" mà luật 4 ở đầu tệp cấm. */
 .hitM1:hover ~ .chomM1,
-.hitM1:focus-visible ~ .chomM1 { opacity: 1; }
+.hitM1:focus-visible ~ .chomM1,
+.lop[data-chang='M1'] ~ .chomM1 { opacity: 1; }
 .hitM2:hover ~ .chomM2,
-.hitM2:focus-visible ~ .chomM2 { opacity: 1; }
+.hitM2:focus-visible ~ .chomM2,
+.lop[data-chang='M2'] ~ .chomM2 { opacity: 1; }
 .hitM3:hover ~ .chomM3,
-.hitM3:focus-visible ~ .chomM3 { opacity: 1; }
+.hitM3:focus-visible ~ .chomM3,
+.lop[data-chang='M3'] ~ .chomM3 { opacity: 1; }
 .hitM4:hover ~ .chomM4,
-.hitM4:focus-visible ~ .chomM4 { opacity: 1; }
+.hitM4:focus-visible ~ .chomM4,
+.lop[data-chang='M4'] ~ .chomM4 { opacity: 1; }
 .hitM5:hover ~ .chomM5,
-.hitM5:focus-visible ~ .chomM5 { opacity: 1; }
+.hitM5:focus-visible ~ .chomM5,
+.lop[data-chang='M5'] ~ .chomM5 { opacity: 1; }
 .hitM6:hover ~ .chomM6,
-.hitM6:focus-visible ~ .chomM6 { opacity: 1; }
+.hitM6:focus-visible ~ .chomM6,
+.lop[data-chang='M6'] ~ .chomM6 { opacity: 1; }
 .hitM7:hover ~ .chomM7,
-.hitM7:focus-visible ~ .chomM7 { opacity: 1; }
+.hitM7:focus-visible ~ .chomM7,
+.lop[data-chang='M7'] ~ .chomM7 { opacity: 1; }
 .hitM8:hover ~ .chomM8,
-.hitM8:focus-visible ~ .chomM8 { opacity: 1; }
+.hitM8:focus-visible ~ .chomM8,
+.lop[data-chang='M8'] ~ .chomM8 { opacity: 1; }
 
 .hit:focus-visible {
   outline: var(--ds-bw-3) solid var(--ds-violet-deep);
@@ -307,6 +371,15 @@
   width: 1px;
 }
 
+/* THANG BÁN KÍNH, nói bằng số. Không mờ đi như `.hint`: đây là đơn vị của
+   thang mà cả bức tranh dựa vào, và nó là đường DUY NHẤT đọc được con số ấy
+   trên máy chạm (ở đó không có hover để chip hiện ra). */
+.scale {
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  margin: 16px 0 0;
+}
+
 .legend {
   color: var(--ds-ink);
   font-size: var(--ds-fs-ui);
@@ -320,4 +393,540 @@
   color: var(--ds-ink);
   font-size: var(--ds-fs-h3);
   margin: 24px 0 8px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   LỚP CON TRỎ — bước 1 của `design/v3/tuong-tac-ban-do.md` §6.1–§6.2
+   ═══════════════════════════════════════════════════════════════════════
+
+   Bộ máy ở `SkyCursor.tsx`; đầu tệp đó có sáu điều phải giữ. Ở đây chỉ nói
+   những gì thuộc về CSS.
+
+   VÌ SAO LỚP NÀY TỒN TẠI. Nghiên cứu đo được bề mặt tương tác cũ: 16 hình chữ
+   nhật và một thuộc tính. Con trỏ ở đâu trong một bao lồi rộng 8–18% khung
+   cũng cho ra ĐÚNG một trạng thái, nên độ phân giải phản hồi là 1/16 khung —
+   trong khi bản đồ có sẵn 48 toạ độ. Lớp này đưa nó lên 1/48 ngôi.
+
+   BA VAI, ĐỪNG TRỘN:
+    · `.keX` `.keY` là CHẤT LIỆU — hai ke mảnh độ mờ 0,14, cố ý dưới ngưỡng
+      đọc, đúng vai của lưới toạ độ trong tranh (`SKY_GRID.opacity` 0,16). Vì
+      không mang tin, chúng KHÔNG phải đạt 3:1.
+    · `.vong` `.vachX` `.vachY` là TÍN HIỆU — chúng nói tay đang ở đâu, nên
+      chúng phải đạt 3:1 trên MỌI nền của bầu trời. Đạt bằng HAI NÉT: một nét
+      sáng (`--sky-ink`, L = 0,8502) kèm một nét tối (`--sky-chip`,
+      L = 0,0037). Chứng minh được chứ không phải hy vọng: nét sáng chỉ tụt
+      dưới 3:1 khi nền sáng hơn L = 0,250, nét tối chỉ tụt dưới 3:1 khi nền
+      tối hơn L = 0,111 — hai điều kiện loại nhau, nên luôn còn ít nhất một
+      nét đạt. Đó là lý do mỗi vật ở đây có cả nét sáng lẫn một `outline` tối,
+      và vì sao đừng gỡ cái `outline` đi cho gọn.
+    · `.chip` là CHỮ — nền ĐẶC `--sky-chip`, nên tương phản tính được bằng hai
+      mã màu thay vì lấy mẫu ảnh: `--sky-ink` 16,77:1 và `--sky-code` 8,40:1.
+      Đây là cách duy nhất đặt chữ lên một bức tranh có điểm sáng nhất
+      L = 0,8799 mà vẫn nói được một con số. Ca test tính lại cả hai.
+
+   48 DẤU NGÔI KHÔNG PHẢI VÙNG CHẠM, và con số nói ra lý do: hai ngôi gần nhau
+   nhất cách 48,4 px trong khung 1360 (T02–T03) ≈ 38 px CSS ở bề rộng thật, nên
+   vùng chạm 44 px sẽ chồng nhau. Chúng `pointer-events: none`; vùng chạm vẫn
+   là tám ô bao lồi.
+
+   VỊ TRÍ 48 DẤU NGÔI DO `build_sky.py --css` IN RA — ĐỪNG SỬA TAY, đúng như
+   các khối `.hit*`: ca test tính lại bằng `placeStar()` của hồ sơ TS rồi so
+   từng con số. */
+
+.lop {
+  --cx: 50%;
+  --cy: 50%;
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+  z-index: 3;
+}
+
+/* Hai ke đi qua con trỏ: chất liệu, không tín hiệu (xem trên). */
+.keX,
+.keY {
+  background: var(--sky-ink);
+  opacity: 0;
+  position: absolute;
+  transition: opacity var(--ds-dur-fast) ease;
+}
+
+.keX {
+  bottom: 0;
+  left: var(--cx);
+  top: 0;
+  translate: -50% 0;
+  width: var(--ds-bw-1);
+}
+
+.keY {
+  height: var(--ds-bw-1);
+  left: 0;
+  right: 0;
+  top: var(--cy);
+  translate: 0 -50%;
+}
+
+/* Hai lề = cái THANG. Chúng chỉ hiện lúc có tay trên bản đồ: một cái thang
+   luôn đứng đó là một đường viền trang trí, còn một cái thang bật lên lúc
+   người ta với vào là một thiết bị đang mở. */
+.lanX,
+.lanY {
+  background: var(--sky-dim);
+  opacity: 0;
+  position: absolute;
+  transition: opacity var(--ds-dur-fast) ease;
+}
+
+.lanX {
+  height: var(--ds-bw-1);
+  left: 0;
+  right: 0;
+  top: 0;
+}
+
+.lanY {
+  bottom: 0;
+  left: 0;
+  top: 0;
+  width: var(--ds-bw-1);
+}
+
+.vachX,
+.vachY {
+  background: var(--sky-ink);
+  opacity: 0;
+  outline: var(--ds-bw-1) solid var(--sky-chip);
+  position: absolute;
+  transition: opacity var(--ds-dur-fast) ease;
+}
+
+.vachX {
+  height: 11px;
+  left: var(--cx);
+  top: 0;
+  translate: -50% 0;
+  width: var(--ds-bw-2);
+}
+
+.vachY {
+  height: var(--ds-bw-2);
+  left: 0;
+  top: var(--cy);
+  translate: 0 -50%;
+  width: 11px;
+}
+
+/* VÒNG DÒ. Đường kính 34 px = 2 × `SKY_CURSOR.ringRadius`, chọn để nó BAO
+   được ngôi chứ không nằm trong ngôi: quầng của ngôi lớn nhất rộng
+   5,37 × 3,2 ≈ 17 px khung ≈ 13 px CSS.
+
+   KHÔNG có `transition` cho vị trí — và đó là một lựa chọn, không phải một
+   thiếu sót: một cái đuôi trễ đuổi theo con trỏ làm vòng dò nói sai chỗ tay
+   đang ở, mà nói sai chỗ là mất đúng cái việc nó sinh ra để làm. Nhờ thế
+   `prefers-reduced-motion` cũng không phải tắt gì ở đây. */
+.vong {
+  border: var(--ds-bw-2) solid var(--sky-ink);
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 var(--ds-bw-1) var(--sky-chip);
+  box-sizing: border-box;
+  height: 34px;
+  left: var(--cx);
+  opacity: 0;
+  outline: var(--ds-bw-1) solid var(--sky-chip);
+  position: absolute;
+  top: var(--cy);
+  transition: opacity var(--ds-dur-fast) ease;
+  translate: -50% -50%;
+  width: 34px;
+}
+
+/* Cả thiết bị bật lên khi có tay trên bản đồ, tắt khi tay rời đi. Người dùng
+   khởi động, người dùng kết thúc — nhóm A của nghiên cứu §3, nên nó nằm ngoài
+   WCAG 2.2.2 (không có gì tự chạy để phải cho tắt). */
+.lop[data-tay] .vong { opacity: 0.9; }
+.lop[data-tay] .vachX,
+.lop[data-tay] .vachY { opacity: 1; }
+.lop[data-tay] .lanX,
+.lop[data-tay] .lanY { opacity: 0.22; }
+.lop[data-tay] .keX,
+.lop[data-tay] .keY { opacity: 0.14; }
+
+/* ── 48 dấu ngôi ───────────────────────────────────────────────────── */
+
+.saoP01 {
+  left: 18.015%;
+  top: 96.311%;
+}
+.saoP02 {
+  left: 18.015%;
+  top: 89.268%;
+}
+.saoP03 {
+  left: 15.853%;
+  top: 84.146%;
+}
+.saoP04 {
+  left: 15.081%;
+  top: 77.488%;
+}
+.saoP05 {
+  left: 20.176%;
+  top: 84.146%;
+}
+.saoP06 {
+  left: 20.949%;
+  top: 77.488%;
+}
+.saoP07 {
+  left: 18.015%;
+  top: 73.646%;
+}
+.saoT01 {
+  left: 33.382%;
+  top: 89.024%;
+}
+.saoT02 {
+  left: 36.029%;
+  top: 82.805%;
+}
+.saoT03 {
+  left: 39.559%;
+  top: 82.073%;
+}
+.saoT04 {
+  left: 36.471%;
+  top: 95.610%;
+}
+.saoT05 {
+  left: 40.000%;
+  top: 96.341%;
+}
+.saoT06 {
+  left: 43.088%;
+  top: 89.024%;
+}
+.saoG01 {
+  left: 69.794%;
+  top: 72.463%;
+}
+.saoG02 {
+  left: 84.618%;
+  top: 72.463%;
+}
+.saoG03 {
+  left: 84.618%;
+  top: 97.049%;
+}
+.saoG04 {
+  left: 69.794%;
+  top: 97.049%;
+}
+.saoG05 {
+  left: 77.206%;
+  top: 72.463%;
+}
+.saoG06 {
+  left: 77.206%;
+  top: 97.049%;
+}
+.saoR02 {
+  left: 77.206%;
+  top: 84.756%;
+}
+.saoX01 {
+  left: 40.610%;
+  top: 59.329%;
+}
+.saoX02 {
+  left: 45.221%;
+  top: 58.122%;
+}
+.saoX03 {
+  left: 49.831%;
+  top: 59.329%;
+}
+.saoX04 {
+  left: 45.221%;
+  top: 68.988%;
+}
+.saoX05 {
+  left: 45.221%;
+  top: 76.232%;
+}
+.saoN01 {
+  left: 12.926%;
+  top: 38.707%;
+}
+.saoN02 {
+  left: 18.750%;
+  top: 37.390%;
+}
+.saoN03 {
+  left: 24.574%;
+  top: 36.073%;
+}
+.saoN04 {
+  left: 13.456%;
+  top: 54.073%;
+}
+.saoN05 {
+  left: 19.279%;
+  top: 52.756%;
+}
+.saoN06 {
+  left: 25.103%;
+  top: 51.439%;
+}
+.saoPD01 {
+  left: 45.294%;
+  top: 30.000%;
+}
+.saoPD02 {
+  left: 50.882%;
+  top: 29.024%;
+}
+.saoPD03 {
+  left: 56.471%;
+  top: 28.049%;
+}
+.saoPD04 {
+  left: 45.882%;
+  top: 40.244%;
+}
+.saoPD05 {
+  left: 51.471%;
+  top: 39.268%;
+}
+.saoPD06 {
+  left: 57.059%;
+  top: 38.293%;
+}
+.saoPD07 {
+  left: 46.471%;
+  top: 50.488%;
+}
+.saoPD08 {
+  left: 52.059%;
+  top: 49.512%;
+}
+.saoPD09 {
+  left: 57.647%;
+  top: 48.537%;
+}
+.saoM01 {
+  left: 75.963%;
+  top: 45.659%;
+}
+.saoM02 {
+  left: 79.118%;
+  top: 39.476%;
+}
+.saoM03 {
+  left: 75.963%;
+  top: 26.159%;
+}
+.saoM04 {
+  left: 83.132%;
+  top: 34.244%;
+}
+.saoM05 {
+  left: 88.581%;
+  top: 45.659%;
+}
+.saoM06 {
+  left: 87.147%;
+  top: 28.061%;
+}
+.saoDA01 {
+  left: 82.985%;
+  top: 14.024%;
+}
+.saoDA02 {
+  left: 86.868%;
+  top: 14.024%;
+}
+
+.cum {
+  inset: 0;
+  position: absolute;
+}
+
+/* Sắc của chặng, để vòng quanh một ngôi nói ra ngôi ấy thuộc chặng nào mà
+   không cần một chữ nào. Màu sinh ra từ `SKY_PROFILE_DARK.hues` qua
+   `sky-theme.css` — hex ở đây là điều `lint:tokens` cấm, và cấm đúng chỗ. */
+.cumM1 { --sac: var(--sky-m1); }
+.cumM2 { --sac: var(--sky-m2); }
+.cumM3 { --sac: var(--sky-m3); }
+.cumM4 { --sac: var(--sky-m4); }
+.cumM5 { --sac: var(--sky-m5); }
+.cumM6 { --sac: var(--sky-m6); }
+.cumM7 { --sac: var(--sky-m7); }
+.cumM8 { --sac: var(--sky-m8); }
+
+.sao {
+  border: var(--ds-bw-2) solid transparent;
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: block;
+  height: 22px;
+  pointer-events: none;
+  position: absolute;
+  transition: border-color var(--ds-dur-fast) ease;
+  translate: -50% -50%;
+  width: 22px;
+}
+
+.chip {
+  --bac: 0ms;
+  background: var(--sky-chip);
+  border: var(--ds-bw-1) solid var(--sac);
+  border-radius: var(--ds-r-sm);
+  /* 20 px từ mép dưới-trái của ô 22 px = góc chip nằm NGOÀI vòng dấu ngôi
+     (tâm cách mép 11 px, nên góc ở (+9, +9) tức 12,7 px từ tâm). Chip chồng
+     lên chính ngôi là chip che mất cái nó đang nói về — cùng quy ước với nhãn
+     mã bài trong tranh (`SKY_LABEL.codeOffset`, chéo trên-phải). */
+  bottom: 20px;
+  color: var(--sky-ink);
+  font-family: var(--edu-mono);
+  font-size: var(--ds-fs-label);
+  left: 20px;
+  line-height: 1.25;
+  opacity: 0;
+  padding: 1px 5px;
+  position: absolute;
+  transition: opacity 180ms ease var(--bac);
+  white-space: nowrap;
+}
+
+/* Ngôi ở một phần ba bên phải lật chip sang trái, nếu không `overflow: hidden`
+   của khung cắt mất nó ở màn hẹp. Cờ do `SkyCursor.tsx` tính từ chính
+   `placeStar()`, không gõ tay mã ngôi nào. */
+.sao[data-le='phai'] .chip {
+  left: auto;
+  right: 20px;
+}
+
+.ma { font-weight: 600; }
+
+/* SỐ CA CHẤM — chỉ hiện ở ngôi ĐANG được nhận, không hiện ở cả chín chip của
+   một chặng. Đúng bài học Hades trong nghiên cứu §2.5: cho biết HÌNH DẠNG của
+   lựa chọn ở tỉ lệ xa (mã bài), giữ lại NỘI DUNG của nó (con số) cho chỗ tay
+   đang chỉ vào. Chín con số cùng hiện là chín con số không ai đọc. */
+.soCa {
+  color: var(--sky-code);
+  display: none;
+  margin-left: 5px;
+}
+
+/* ── TIẾT LỘ CÓ THỨ TỰ ─────────────────────────────────────────────────
+
+   Mã bài của cả chặng bật lên LẦN LƯỢT, theo THỨ TỰ BÀI. Đây là chuyển động
+   duy nhất trong cả bản đồ mang một tin MỚI: bản đồ cố ý không vẽ mũi tên lộ
+   trình (chú giải: "nó không nói thứ tự phải học"), nên trước đây thứ tự các
+   bài trong một chặng KHÔNG đọc được ở đâu cả. Nay nó đọc được bằng thời gian.
+
+   Thứ tự ấy là một hợp đồng với dữ liệu: `SKY_<chòm>.stars` phải xếp đúng thứ
+   tự bài của `curricula.json`, và một ca test so lại — nếu không thì cái
+   "thứ tự" này là một lời nói dối chạy ở 45 ms một bậc.
+
+   Bậc thang khai TRONG `no-preference`, không khai ngoài rồi tắt trong
+   `reduce`: khai ngoài thì quy tắc `.cum .sao:nth-child(n) .chip` đặc trưng
+   hơn mọi quy tắc tắt viết gọn, nên "tắt" sẽ phải dùng `!important` hoặc chín
+   dòng nữa. Khai ở đây thì dưới `reduce` biến `--bac` đơn giản là không tồn
+   tại và rơi về 0 ms. */
+@media (prefers-reduced-motion: no-preference) {
+  .cum .sao:nth-child(1) .chip { --bac: 150ms; }
+  .cum .sao:nth-child(2) .chip { --bac: 195ms; }
+  .cum .sao:nth-child(3) .chip { --bac: 240ms; }
+  .cum .sao:nth-child(4) .chip { --bac: 285ms; }
+  .cum .sao:nth-child(5) .chip { --bac: 330ms; }
+  .cum .sao:nth-child(6) .chip { --bac: 375ms; }
+  .cum .sao:nth-child(7) .chip { --bac: 420ms; }
+  .cum .sao:nth-child(8) .chip { --bac: 465ms; }
+  .cum .sao:nth-child(9) .chip { --bac: 510ms; }
+}
+
+.hitM1:hover ~ .lop .cumM1 .chip,
+.hitM1:focus-visible ~ .lop .cumM1 .chip,
+.lop[data-chang='M1'] .cumM1 .chip { opacity: 1; }
+.hitM2:hover ~ .lop .cumM2 .chip,
+.hitM2:focus-visible ~ .lop .cumM2 .chip,
+.lop[data-chang='M2'] .cumM2 .chip { opacity: 1; }
+.hitM3:hover ~ .lop .cumM3 .chip,
+.hitM3:focus-visible ~ .lop .cumM3 .chip,
+.lop[data-chang='M3'] .cumM3 .chip { opacity: 1; }
+.hitM4:hover ~ .lop .cumM4 .chip,
+.hitM4:focus-visible ~ .lop .cumM4 .chip,
+.lop[data-chang='M4'] .cumM4 .chip { opacity: 1; }
+.hitM5:hover ~ .lop .cumM5 .chip,
+.hitM5:focus-visible ~ .lop .cumM5 .chip,
+.lop[data-chang='M5'] .cumM5 .chip { opacity: 1; }
+.hitM6:hover ~ .lop .cumM6 .chip,
+.hitM6:focus-visible ~ .lop .cumM6 .chip,
+.lop[data-chang='M6'] .cumM6 .chip { opacity: 1; }
+.hitM7:hover ~ .lop .cumM7 .chip,
+.hitM7:focus-visible ~ .lop .cumM7 .chip,
+.lop[data-chang='M7'] .cumM7 .chip { opacity: 1; }
+.hitM8:hover ~ .lop .cumM8 .chip,
+.hitM8:focus-visible ~ .lop .cumM8 .chip,
+.lop[data-chang='M8'] .cumM8 .chip { opacity: 1; }
+
+/* NGÔI GẦN CON TRỎ NHẤT TỰ NHẬN MÌNH. `[data-gan]` do JS đặt theo khoảng cách
+   thật (`SKY_CURSOR.claimRadius`), `:focus-visible` là đường bàn phím — và hai
+   thứ cho ra ĐÚNG cùng một trạng thái, đúng luật 4 ở đầu tệp.
+
+   KHÔNG trễ: cái này đi theo tay, nên nó phải tới ngay. Bậc thang 45 ms ở trên
+   là để kể thứ tự của một chặng, không phải để làm chậm phản hồi. */
+.sao[data-gan],
+.sao:focus-visible {
+  border-color: var(--sac);
+  outline: var(--ds-bw-1) solid var(--sky-chip);
+}
+
+.sao[data-gan] .chip,
+.sao:focus-visible .chip {
+  --bac: 0ms;
+  opacity: 1;
+}
+
+.sao[data-gan] .soCa,
+.sao:focus-visible .soCa { display: inline; }
+
+/* MÁY KHÔNG CÓ HOVER: `SkyCursor.tsx` không gắn một listener con trỏ nào, nên
+   bảy vật của thiết bị không bao giờ bật. Tắt hẳn cho chắc — một thứ không bao
+   giờ bật mà vẫn ở trong cây là một thứ sẽ bật vì một lỗi khác.
+
+   48 dấu ngôi thì GIỮ: một chiếc điện thoại cắm bàn phím vẫn đi được bằng mũi
+   tên. Và đường dùng được trên máy chạm không phải hover: chạm một chòm là đi
+   tới chặng, còn con số của thang bán kính nằm trong CHÚ GIẢI (`scaleNote`) —
+   chữ, đọc được không cần tay. */
+@media (hover: none) {
+  .keX,
+  .keY,
+  .lanX,
+  .lanY,
+  .vachX,
+  .vachY,
+  .vong { display: none; }
+}
+
+/* GIẢM CHUYỂN ĐỘNG: bỏ chuyển tiếp, GIỮ NGUYÊN TIN.
+   · bậc thang 45 ms không tồn tại ở đây — nó khai trong `no-preference`;
+   · nên dưới `reduce` mọi mã bài của chặng hiện CÙNG LÚC, và thứ tự bài vẫn
+     đọc được vì nó nằm trong CHỮ (`P01`…`P07`), không nằm trong thời gian.
+     Đó là phép thử của nghiên cứu §5.3 áp cho chính bước này: tắt tween đi
+     thì vẫn tới đúng trạng thái đó.
+   · vòng dò không có `transition` vị trí nên không phải tắt gì — nó nhảy
+     thẳng tới toạ độ con trỏ ở cả hai chế độ. */
+@media (prefers-reduced-motion: reduce) {
+  .chip,
+  .keX,
+  .keY,
+  .lanX,
+  .lanY,
+  .sao,
+  .vachX,
+  .vachY,
+  .vong { transition: none; }
 }
