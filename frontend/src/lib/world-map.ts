@@ -77,52 +77,64 @@ export const BANDS: readonly BandId[] = ['surface', 'shallow', 'deep', 'floor'];
  * bày, không phải `style=`, CSP không chặn — và nhờ nằm trong một file TS mà
  * `e2e/unit/world-map.test.mjs` ĐO tương phản thẳng trên chính các giá trị này.
  *
- * Giá trị chép đúng từ artboard v3. Sắc khoáng GỐC của báo cáo bản đồ (đồng
- * nung #C27A3E, vàng tơ #C9A646, kính trời #86B4C4, lục lam #4F9A8C, tím thạch
- * anh #7E68B0, lục rêu #7A8F44, hồng lân quang #C76BA8, ngà #E6DFC8) thì bảy
- * trên tám dưới 3:1 trên nền dải của nó; người vẽ artboard đã chỉnh để sắc
- * ĐỊNH HÌNH BÓNG (`edge`) của mỗi vùng đạt ≥ 3:1 (WCAG 1.4.11, hình phi văn
- * bản). Sắc gốc vẫn còn, nhưng chỉ ở những mảng nằm TRONG hình bóng đã có viền.
+ * Sắc khoáng GỐC của báo cáo bản đồ (đồng nung #C27A3E, vàng tơ #C9A646, kính
+ * trời #86B4C4, lục lam #4F9A8C, tím thạch anh #7E68B0, lục rêu #7A8F44, hồng
+ * lân quang #C76BA8, ngà #E6DFC8) thì bảy trên tám dưới 3:1 trên nền dải của
+ * nó. Nên chúng ở lại đúng chỗ của màu trong hai bản tham chiếu — LỚP PHỦ dưới
+ * mực (`wash`) — còn sắc ĐỊNH HÌNH BÓNG (`edge`) được chọn riêng để đạt ≥ 3:1
+ * (WCAG 1.4.11, hình phi văn bản).
+ *
+ * `scripts/map/build_map.py` ĐỌC CHÍNH BẢNG NÀY để sinh tranh: không một mã màu
+ * nào được viết trong script, và ca test so lại từng mã trong SVG sinh ra với
+ * bảng này. Đổi một dòng ở đây rồi chạy lại script là đổi cả bức vẽ.
  *
  * VÀ KHÔNG CHỮ NÀO ĐẶT LÊN SẮC KHOÁNG. Tên vùng nằm trên tấm nền dùng token
  * giao diện (`--ds-card`/`--ds-paper` + chữ `--ds-ink`) — xem CSS.
  */
 export const MAP_PALETTE = {
   /**
-   * Nền giấy của artboard — lộ ra ở khe giữa hai mép dải lượn. Vẽ trong tranh,
-   * không lấy `--ds-paper`: ở chế độ tối token đó thành xanh than và mỗi khe
-   * thành một vệt đen cắt ngang bản đồ.
+   * Nền giấy — giấy CŨ, không phải giấy trắng. Vẽ trong tranh, không lấy
+   * `--ds-paper`: ở chế độ tối token đó thành xanh than và mỗi khe giữa hai
+   * dải thành một vệt đen cắt ngang bản đồ.
    */
-  paper: '#FBF7EE',
+  paper: '#F1E7D0',
+  /**
+   * BỐN TÔNG MỰC. Toàn bộ sắc độ của bức vẽ làm bằng MẬT ĐỘ NÉT ở bốn tông này
+   * — không một gradient nào (`build_map.py` cấm, và có ca test). Đó là điểm
+   * khác duy nhất giữa một bản đồ vẽ tay và một hình tô mảng phẳng.
+   */
+  ink: { deep: '#2A2118', mid: '#4C3C2B', soft: '#6E5B45', pale: '#9A8468', wash: '#C4B394' },
   band: {
-    sky: '#F6F1E6',
-    surface: '#F3EBDD',
-    shallow: '#D9D2C3',
-    deep: '#5F5A6B',
-    floor: '#3A3646',
+    sky: '#E9DCBE',
+    surface: '#CFBD96',
+    shallow: '#A28C68',
+    deep: '#544D41',
+    floor: '#2E2B24',
   },
   /** Ánh sáng: mặt trời đứng trên M1 — chỗ bắt đầu báo bằng ánh sáng. */
-  light: { halo: '#FFF3D1', glow: '#FFEDB8', sun: '#F2BE4E', ray: '#FFF0C4' },
-  ground: '#CDBB9C',
-  well: { head: '#7D6F5A', shaft: '#9A8C74', rope: '#B9AD98' },
-  /** Mạch sáng chỉ ở chỗ phụ thuộc thật. 5,08:1 trên dải sâu. */
-  flow: '#EADCF5',
-  m1: {
-    edge: '#C27A3E',
-    roof: '#A8622C',
-    chimney: '#7A4520',
-    ink: '#5A2E10',
-    window: '#FFD27A',
-    smoke: '#E9DDCB',
-    smokeLight: '#EFE5D6',
-  },
-  m2: { edge: '#9C8231', thread: '#C9A646', knot: '#7A6420' },
-  m3: { edge: '#56737E', glass: '#86B4C4', sky: '#CFE3EA', side: '#6F929E' },
-  m4: { edge: '#2F7366', rim: '#3F7F73', water: '#4F9A8C', shine: '#86C2B5' },
-  m5: { edge: '#BEB0EA', front: '#CFC3F2', facet: '#E6DFF8', base: '#4A4556' },
-  m6: { edge: '#B4C978', top: '#C2D68A', low: '#A6BC68', grid: '#4A5A26', moss: '#D4E59E' },
-  m7: { edge: '#F2BDE0', cave: '#1A1722', halo: '#C76BA8', glow: '#E58FC8' },
-  m8: { edge: '#E6DFC8', water: '#F4EFE0' },
+  light: { halo: '#FBF3DA', glow: '#F6E7B6', sun: '#E8B445', ray: '#F3E2B0' },
+  ground: '#A8906C',
+  /** Đá: vân, khe nứt, bóng, màn phủ nhạt ở xa. */
+  rock: { grain: '#8A7657', crack: '#5B4A34', shade: '#43382A', veil: '#D3C3A1' },
+  /** Lòng gian đã khoét — sáng hơn đá quanh nó, nên gian đọc ra là MỘT KHOẢNG RỖNG. */
+  room: { lit: '#CDBC98', dim: '#7C7363', dark: '#4A463C' },
+  well: { head: '#5C4A33', shaft: '#7A6647', rope: '#A89070' },
+  /** Mạch sáng chỉ ở chỗ phụ thuộc thật. 4,76:1 trên dải sâu. */
+  flow: '#E7D9F3',
+  /*
+   * Tám sắc khoáng của `quyet-dinh.md` mục 2 nằm ở `wash` — chúng là LỚP PHỦ
+   * dưới mực, đúng cách hai bản tham chiếu làm màu. `edge` là tông ĐỊNH HÌNH
+   * BÓNG, thứ duy nhất phải đạt ≥ 3:1 trên nền dải của nó (WCAG 1.4.11); `glow`
+   * là chỗ sáng nhất trong gian; `ink` là nét đậm nhất của riêng gian đó.
+   */
+  m1: { edge: '#5E3F22', wash: '#C27A3E', glow: '#F0B35A', ink: '#3A2410' },
+  m2: { edge: '#574B1E', wash: '#C9A646', glow: '#E3C877', ink: '#3A3113' },
+  m3: { edge: '#2F444E', wash: '#86B4C4', glow: '#CFE3EA', ink: '#1E2E36' },
+  m4: { edge: '#16382F', wash: '#4F9A8C', glow: '#9ACFC3', ink: '#0D241D' },
+  m5: { edge: '#D7D0EE', wash: '#7E68B0', glow: '#EDE7FA', ink: '#3B3357' },
+  m6: { edge: '#CBD9A2', wash: '#7A8F44', glow: '#E4EDC6', ink: '#3C4620' },
+  m7: { edge: '#ECC4DC', wash: '#C76BA8', glow: '#F7E2EE', ink: '#4A2340' },
+  m8: { edge: '#F2E9CE', wash: '#E6DFC8', glow: '#FBF6E6', ink: '#4A4433' },
 } as const;
 
 /** Nền ngay sau hình bóng của vùng — chỗ đo tương phản của `edge`. */
@@ -159,7 +171,7 @@ export const REGION_LAYOUT: readonly RegionLayout[] = [
   { key: 'M5', band: 'deep', silhouette: 'cụm tinh thể lưới đều', backdrop: 'deep', box: [120, 530, 320, 140], plate: [146, 658] },
   { key: 'M6', band: 'deep', silhouette: 'vách vỉa tầng kẻ hàng, rêu trên đỉnh', backdrop: 'deep', box: [520, 530, 330, 140], plate: [556, 658] },
   { key: 'M7', band: 'deep', silhouette: 'hang tối có tinh thể phát sáng thành cột', backdrop: 'deep', box: [930, 530, 330, 140], plate: [1010, 658] },
-  { key: 'M8', band: 'floor', silhouette: 'hồ ngầm phản chiếu bảy sắc', backdrop: 'floor', box: [440, 700, 480, 166], plate: [870, 756] },
+  { key: 'M8', band: 'floor', silhouette: 'hang hồ ngầm phản chiếu bảy sắc', backdrop: 'floor', box: [430, 684, 500, 134], plate: [870, 756] },
 ];
 
 /**
@@ -177,11 +189,16 @@ export const MAP_SUN = { cx: 110, cy: 58 } as const;
  * một đường duy nhất là lời hứa ngầm về thứ tự — đúng điều mà "vào đâu cũng
  * được" phủ nhận. Thêm một phần tử vào mảng này là khẳng định một phụ thuộc
  * mới giữa hai chặng; test đòi đúng ba cạnh này.
+ *
+ * `d` là đường tim của mạch ở bản RỘNG: `build_map.py` đọc nó, bám theo rồi
+ * trải thành một bó nét lệch nhau cộng đầu mũi tên — nên hình mạch sáng trong
+ * tranh và ba cạnh phụ thuộc này KHÔNG THỂ lệch nhau. Bản HẸP vẽ một đoạn dọc
+ * giữa hai ô, dựng từ chính mảng này (`MAP_FLOWS.find` trong `WorldMap.tsx`).
  */
 export const MAP_FLOWS = [
-  { from: 'M5', to: 'M6', d: 'M384 612 C 440 592 478 632 536 610', head: '456,606 468,612 456,618' },
-  { from: 'M6', to: 'M7', d: 'M834 610 C 870 590 900 632 946 612', head: '884,606 896,612 884,618' },
-  { from: 'M7', to: 'M8', d: 'M1094 656 C 1084 724 950 764 842 770', head: '972,746 960,756 974,758' },
+  { from: 'M5', to: 'M6', d: 'M384 612 C 440 592 478 632 536 610' },
+  { from: 'M6', to: 'M7', d: 'M834 610 C 870 590 900 632 946 612' },
+  { from: 'M7', to: 'M8', d: 'M1094 656 C 1084 724 950 764 842 770' },
 ] as const;
 
 /**
@@ -191,7 +208,7 @@ export const MAP_FLOWS = [
  * mặt đất.
  */
 export const MAP_WELLS = [
-  { to: 'M8', x: 36, d: 'M36 238 L36 780 L520 780' },
+  { to: 'M8', x: 36, d: 'M36 238 L36 752 L516 752' },
   { to: 'M5', x: 100, d: 'M100 238 L100 604 L132 604' },
   { to: 'M4', x: 470, d: 'M470 238 L470 472 L556 472' },
   { to: 'M6', x: 905, d: 'M905 238 L905 560 L838 560' },

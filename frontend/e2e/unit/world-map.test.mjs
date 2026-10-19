@@ -36,7 +36,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, statSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -80,6 +80,20 @@ const MAP_CSS = read('src', 'app', 'world-map.module.css');
  *  thích làm vi phạm. */
 const CSS_CODE = MAP_CSS.replace(/\/\*[\s\S]*?\*\//g, ' ');
 const PAGE = codeOnly(read('src', 'app', 'page.tsx'));
+
+/* TRANH SINH RA — `scripts/map/build_map.py`. Đọc thẳng tệp đã commit: cái mà
+   trình duyệt tải về chính là cái này, nên mọi khẳng định về mật độ nét, về
+   bảng màu và về ba mạch phụ thuộc đều đo trên NÓ, không trên script. */
+const ART_DIR = ['public', 'map'];
+const ART = read(...ART_DIR, 'world-map.svg');
+const CROPS = Object.fromEntries(
+  LAYOUT.map((l) => [l.key, read(...ART_DIR, `scene-${l.key}.svg`)]),
+);
+const artBytes = (...p) => statSync(join(FE, ...p)).size;
+
+/** Số NÉT trong một tệp: mỗi nhóm thuộc tính là một `<path>` gộp nhiều đoạn
+ *  `M…`, nên đếm lệnh `M` mới ra số nét thật, đếm `<path>` thì ra số nhóm. */
+const demNet = (svg) => (svg.match(/M-?\d/g) ?? []).length;
 
 /** Giáo trình thật — cùng file mà trang khoá đọc để vẽ 48 bài. */
 const MODULES = JSON.parse(read('src', 'lib', 'curricula.json')).CURRICULA.python_advanced.modules;
@@ -341,8 +355,14 @@ test('đường nối CHỈ có ở M5 → M6 → M7 → M8, và vẽ từ dữ 
     assert.ok(a && b, `đường nối trỏ tới vùng không có: ${f.from}→${f.to}`);
     assert.ok(['deep', 'floor'].includes(a.band) && ['deep', 'floor'].includes(b.band));
   }
-  // Component dựng mạch sáng từ MAP_FLOWS ở CẢ hai bố cục, không vẽ tay.
-  assert.match(MAP_TSX, /MAP_FLOWS\.map\(/, 'nền rộng không dựng mạch sáng từ MAP_FLOWS');
+  // Mạch sáng dựng từ MAP_FLOWS ở CẢ hai bố cục, không vẽ tay. Bản RỘNG nay
+  // nằm trong tranh sinh ra (`build_map.py` đọc `MAP_FLOWS.d` rồi trải thành
+  // bó nét), nên chỗ phải soi là chính tệp SVG — xem mục 10.
+  assert.deepEqual(
+    [...ART.matchAll(/data-flow="([^"]+)"/g)].map((m) => m[1]),
+    FLOWS.map((f) => `${f.from}-${f.to}`),
+    'nhóm data-flow trong tranh không khớp MAP_FLOWS',
+  );
   assert.match(MAP_TSX, /MAP_FLOWS\.find\(/, 'bản hẹp không dựng mạch dọc từ MAP_FLOWS');
   const tay = MAP_TSX.match(/data-flow="[^"]*"/g) ?? [];
   assert.deepEqual(tay, [], `data-flow viết tay, không đi qua dữ liệu: ${tay.join(' ')}`);
@@ -461,19 +481,19 @@ test('tám vùng tách được KHÔNG cần màu: mỗi vùng một hình bóng
   const sil = LAYOUT.map((l) => l.silhouette);
   assert.equal(new Set(sil).size, LAYOUT.length, `hai vùng chung một hình bóng: ${sil.join(' | ')}`);
 
-  // (b) Hình bóng THẬT trong component: thành phần thẻ SVG của tám tiểu cảnh
-  // phải khác nhau từng đôi. Hai tiểu cảnh chép nhau rồi đổi màu là hai vùng
-  // chỉ tách được bằng sắc — đúng thứ người mù màu không thấy.
-  const scenes = {};
-  const parts = MAP_TSX.split(/<g data-scene="(M\d)"/);
-  for (let i = 1; i < parts.length; i += 2) {
-    let body = parts[i + 1];
-    const cut = body.search(/\n {2}\},\n|\n\};/);
-    if (cut > 0) body = body.slice(0, cut);
-    const tags = {};
-    for (const m of body.matchAll(/<(\w+)[\s/>]/g)) tags[m[1]] = (tags[m[1]] ?? 0) + 1;
-    scenes[parts[i]] = Object.entries(tags).sort().map(([t, n]) => `${t}${n}`).join(' ');
-  }
+  // (b) Hình bóng THẬT trong tranh: tám ô crop phải khác nhau từng đôi. Hai
+  // tiểu cảnh chép nhau rồi đổi màu là hai vùng chỉ tách được bằng sắc — đúng
+  // thứ người mù màu không thấy. Chữ ký lấy từ HÌNH HỌC (số đoạn, số nhóm, bề
+  // rộng nét dùng tới), không từ màu: đổi bảng màu không được làm ca này xanh.
+  const sigOf = (svg) => {
+    const widths = [...new Set([...svg.matchAll(/stroke-width="([\d.]+)"/g)].map((m) => m[1]))];
+    return [
+      (svg.match(/M-?\d/g) ?? []).length,
+      (svg.match(/<path /g) ?? []).length,
+      widths.sort().join(','),
+    ].join('|');
+  };
+  const scenes = Object.fromEntries(LAYOUT.map((l) => [l.key, sigOf(CROPS[l.key])]));
   assert.deepEqual(Object.keys(scenes).sort(), LAYOUT.map((l) => l.key).sort(), 'thiếu tiểu cảnh của một vùng');
   const sigs = Object.values(scenes);
   // Tự kiểm: hai chữ ký giống hệt nhau thì Set phải co lại.
@@ -671,6 +691,129 @@ test('mọi cỡ chữ đi qua thang --ds-fs-*, không chỗ nào < 15px', () =>
     assert.ok(SCALE.has(t), `${t} không phải một bậc có thật của thang`);
     assert.ok(SCALE.get(t) >= 15, `${t} = ${SCALE.get(t)}px, dưới sàn 15px`);
   }
+});
+
+/* ═══ 10 · tranh sinh ra: mật độ, bảng màu, không gradient ══════════════
+ *
+ * Chủ sản phẩm bác hai bản đồ trước bằng đúng bốn chữ "xấu và trẻ con", và
+ * chẩn đoán sau đó chỉ ra một nguyên nhân kỹ thuật chứ không phải gu: tranh
+ * được TÔ MẢNG PHẲNG bằng gradient, trong khi hai bản tham chiếu là TRANH NÉT.
+ * Bốn ca dưới đây canh đúng chỗ đó — mật độ nét, cấm gradient, bảng màu một
+ * nguồn, và trần dung lượng — vì cả bốn đều là thứ lặng lẽ tụt lại khi người
+ * sau sửa script mà không mở ảnh ra xem.
+ */
+
+test('tranh là TRANH NÉT: hàng chục nghìn nét, và không một gradient nào', () => {
+  // Tự kiểm mẫu đếm nét trên một chuỗi dựng tay trước khi tin nó.
+  assert.equal(demNet('M1 2l3 4M5 6l7 8'), 2, 'mẫu đếm nét sai');
+
+  const net = demNet(ART);
+  assert.ok(
+    net > 30000,
+    `bản rộng chỉ còn ${net} nét. Mảng phẳng + vài chục đường viền chính là bản `
+    + 'đã bị bác; mật độ là thứ duy nhất làm nó ra tranh vẽ tay.',
+  );
+  for (const l of LAYOUT) {
+    const n = demNet(CROPS[l.key]);
+    assert.ok(n > 2500, `ô crop ${l.key} chỉ có ${n} nét — bản hẹp loãng hơn hẳn bản rộng`);
+  }
+  // Gradient bị cấm HẲN: sắc độ phải làm bằng mật độ nét. Một `<linearGradient>`
+  // lọt vào là cả bộ kỹ thuật ở trên bắt đầu bị thay bằng tô mảng.
+  for (const [name, svg] of [['world-map.svg', ART], ...Object.entries(CROPS)]) {
+    assert.doesNotMatch(svg, /<(?:linear|radial)Gradient|url\(#grad/i, `${name} dùng gradient`);
+    assert.doesNotMatch(svg, /<filter[\s>]|feGaussianBlur/, `${name} dùng filter làm mờ`);
+    assert.doesNotMatch(svg, /<image[\s>]|xlink:href|href="data:/, `${name} nhúng ảnh bitmap`);
+  }
+});
+
+test('mọi mã màu trong tranh đều có tên trong MAP_PALETTE', () => {
+  // Script KHÔNG được viết mã màu của riêng nó: nếu được thì bảng màu trong TS
+  // (nơi ca đo tương phản chạy) và bảng màu thật của bức vẽ là hai thứ khác
+  // nhau, và phép đo 3:1 ở mục 5 thành vô nghĩa.
+  const bang = new Set();
+  const gom = (o) => {
+    for (const v of Object.values(o)) {
+      if (typeof v === 'string') bang.add(v.toUpperCase());
+      else if (v && typeof v === 'object') gom(v);
+    }
+  };
+  gom(PALETTE);
+  assert.ok(bang.size > 20, 'không đọc được MAP_PALETTE — các phép so dưới đây vô nghĩa');
+  assert.ok(!bang.has('#123456'), 'tự kiểm: bảng không được chứa mã bịa');
+
+  for (const [name, svg] of [['world-map.svg', ART], ...Object.entries(CROPS)]) {
+    const la = [...new Set([...svg.matchAll(/#[0-9a-fA-F]{6}\b/g)].map((m) => m[0].toUpperCase()))];
+    const ngoai = la.filter((hex) => !bang.has(hex));
+    assert.deepEqual(ngoai, [], `${name} dùng mã màu không có trong MAP_PALETTE: ${ngoai.join(' ')}`);
+  }
+});
+
+test('tranh do script sinh, không sửa tay, và nằm dưới trần 900 KB', () => {
+  // Dấu đầu tệp là bằng chứng duy nhất phân biệt "sinh ra" với "ai đó mở
+  // Illustrator rồi lưu đè" — mà lưu đè thì lần chạy script sau xoá sạch.
+  for (const [name, svg] of [['world-map.svg', ART], ...Object.entries(CROPS)]) {
+    assert.match(svg, /SINH BỞI scripts\/map\/build_map\.py/, `${name} thiếu dấu "sinh bởi script"`);
+    assert.match(svg, /aria-hidden="true"/, `${name} không tự khai là hình trang trí`);
+  }
+  const kb = (p) => artBytes(...ART_DIR, p) / 1024;
+  const qua = ['world-map.svg', ...LAYOUT.map((l) => `scene-${l.key}.svg`)]
+    .map((f) => [f, kb(f)])
+    .filter(([, v]) => v > 900);
+  assert.deepEqual(qua.map(([f, v]) => `${f} ${v.toFixed(0)} KB`), [],
+    'vượt trần 900 KB của AGENTS.md — hạ DENSITY trong build_map.py');
+  // Và script phải còn đó: tranh không sửa lại được nếu mất nguồn sinh.
+  assert.ok(
+    readFileSync(join(FE, '..', 'scripts', 'map', 'build_map.py'), 'utf8').includes('def build_full'),
+    'mất scripts/map/build_map.py — tranh thành tệp chết, không ai sửa lại được',
+  );
+});
+
+test('tranh KHÔNG vẽ đường nào nối hai vùng trên mặt đất, và ô crop đúng ô của nó', () => {
+  // Ở mục 3 ca kiểm chuyện này trên DỮ LIỆU. Đây là trên chính BỨC VẼ: một
+  // người sửa script có thể thêm một nét nối M1→M8 mà dữ liệu không hay biết.
+  const trongTranh = [...ART.matchAll(/data-flow="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(trongTranh.length, FLOWS.length, 'số mạch trong tranh khác MAP_FLOWS');
+  const tren = new Set(LAYOUT.filter((l) => l.band === 'surface' || l.band === 'shallow').map((l) => l.key));
+  for (const g of trongTranh) {
+    const [a, b] = g.split('-');
+    assert.ok(!tren.has(a) && !tren.has(b), `tranh vẽ mạch chạm vùng trên mặt đất: ${g}`);
+  }
+  assert.ok(longestChain(trongTranh.map((g) => {
+    const [from, to] = g.split('-');
+    return { from, to };
+  })) < LAYOUT.length, 'các mạch trong tranh ghép thành một chuỗi qua cả tám vùng');
+
+  // Mỗi ô crop phải mang ĐÚNG viewBox của `REGION_LAYOUT.box` — lệch một con
+  // số là ô tiểu cảnh trên điện thoại cắt nhầm chỗ, mà không ai thấy đỏ.
+  for (const l of LAYOUT) {
+    const [x, y, w, h] = l.box;
+    assert.match(
+      CROPS[l.key], new RegExp(String.raw`viewBox="${x} ${y} ${w} ${h}"`),
+      `scene-${l.key}.svg không cắt đúng ô của REGION_LAYOUT (${l.box.join(' ')})`,
+    );
+  }
+});
+
+test('CSS nối tranh vào bằng ảnh nền, và chỉ tải phần bố cục đó cần', () => {
+  // Bản rộng tải bản rộng, bản hẹp tải tám ô crop — KHÔNG máy nào tải cả hai.
+  // Mẹo duy nhất giữ được điều đó là: quy tắc ảnh nền của ô crop phải nằm
+  // TRONG @container. Đặt nhầm ra ngoài thì máy tính tải thêm 1,3 MB im lặng.
+  const at = CSS_CODE.indexOf('@container');
+  assert.ok(at > 0, 'CSS không còn mốc @container');
+  const rong = CSS_CODE.slice(0, at);
+  const hep = CSS_CODE.slice(at);
+  assert.match(rong, /\.decor\s*\{[^}]*background-image:\s*url\('\/map\/world-map\.svg'\)/,
+    '.decor không lấy tranh mặt cắt');
+  assert.doesNotMatch(rong, /scene-M\d\.svg/, 'ô crop của bản hẹp bị khai ngoài @container');
+  for (const l of LAYOUT) {
+    assert.ok(hep.includes(`url('/map/scene-${l.key}.svg')`), `bản hẹp thiếu ô crop ${l.key}`);
+  }
+  assert.match(hep, /\.decor\s*\{\s*display:\s*none/, 'bản hẹp vẫn tải tranh mặt cắt');
+  // Chữ trên tấm nhãn là CHỮ BẢN ĐỒ, không phải phông sans của giao diện.
+  assert.match(CSS_CODE, /\.regionName\s*\{[^}]*font-family:[^;]*serif/,
+    'tên vùng vẫn dùng phông giao diện — một trong sáu điểm bị bác ở bản trước');
+  // Và không nạp thêm tệp phông nào cho một khối duy nhất của trang chủ.
+  assert.doesNotMatch(CSS_CODE, /@font-face|fonts\.googleapis/);
 });
 
 /* ═══ 9 · trang chủ có nối bản đồ vào, và vẫn không gọi API ═════════════ */

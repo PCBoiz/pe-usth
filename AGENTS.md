@@ -43,7 +43,7 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 589 ca đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 594 ca đạt | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
@@ -205,6 +205,23 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (thêm một chú thích nhắc tới 8 giờ ở `frontend/src/lib/course-progress.ts`). Đổi
   `JWT_REFRESH_EXPIRES` mà quên bốn chỗ này thì cookie và token lệch nhau: FE tưởng còn phiên
   trong khi token đã hết, hoặc ngược lại.
+- **Bản đồ thế giới ở trang chủ là TRANH SINH RA, không phải SVG vẽ tay — đừng sửa tệp.**
+  `frontend/public/map/world-map.svg` (≈50 000 nét, 857 KB) và tám ô crop `scene-M*.svg`
+  do `scripts/map/build_map.py` sinh; sửa tay chúng thì lần chạy script sau xoá sạch.
+  Script ĐỌC `frontend/src/lib/world-map.ts` (`MAP_PALETTE`, `REGION_LAYOUT`, `MAP_FLOWS`,
+  `MAP_WELLS`, `MAP_SUN`, `MAP_FRAME`) nên muốn đổi màu/toạ độ/đường nối thì sửa ở TS rồi
+  chạy lại `py scripts/map/build_map.py` (và `--css` để lấy khối `.spot1…8`). Ba thứ dễ
+  vấp, cả ba đều lặng lẽ:
+  · **`stroke-width` KHÔNG được đi qua `nf()`** — `nf` làm tròn toạ độ về số nguyên, đúng
+    cho toạ độ nhưng biến mọi nét 0,45 đơn vị thành `stroke-width="0"`. Đã xảy ra một lần:
+    cả bức render với năm chục nghìn nét vô hình và nhìn ra đúng "mảng phẳng tô gradient",
+    tức chính cái lỗi mà bản này sinh ra để chữa.
+  · **Trần 900 KB** là thật (script tự chặn). Thêm chi tiết thì hạ `DENSITY`, đừng bỏ kỹ thuật.
+  · **Ảnh nền của ô crop phải nằm TRONG `@container`** ở `world-map.module.css`. Đặt ra
+    ngoài thì máy tính tải thêm 1,3 MB mà không ai thấy gì khác.
+  `e2e/unit/world-map.test.mjs` canh cả ba (mục 10): mật độ nét, cấm gradient, mọi mã màu
+  trong SVG phải có tên trong `MAP_PALETTE`, và tập `data-flow` của tranh phải khớp
+  `MAP_FLOWS`. Kỹ thuật và nguồn: `design/v3/ky-thuat-ban-do.md`.
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
   Gọi nó trên một trang ai cũng vào được nghĩa là **mỗi bot quét web sinh một tài khoản khách**,
