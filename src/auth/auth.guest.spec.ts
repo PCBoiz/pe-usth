@@ -18,7 +18,12 @@ describe('AuthService.guest', () => {
   };
   const jwt = { signAsync: jest.fn(() => Promise.resolve('access-token')) };
   const refresh = { issue: jest.fn(() => Promise.resolve('refresh-token')) };
-  const service = new AuthService(prisma as never, jwt as never, refresh as never, {} as never);
+  const service = new AuthService(
+    prisma as never,
+    jwt as never,
+    refresh as never,
+    {} as never,
+  );
 
   afterEach(() => {
     delete process.env.GUEST_LOGIN;
@@ -28,11 +33,19 @@ describe('AuthService.guest', () => {
   it('tạo user riêng cho mỗi lần gọi, có cặp token, bỏ bảng hỏi', async () => {
     const a = await service.guest();
     const b = await service.guest();
-    expect(a).toMatchObject({ ok: true, guest: true, needs_questionnaire: false, access: 'access-token', refresh: 'refresh-token' });
+    expect(a).toMatchObject({
+      ok: true,
+      guest: true,
+      needs_questionnaire: false,
+      access: 'access-token',
+      refresh: 'refresh-token',
+    });
     expect(b.access).toBe('access-token');
     expect(created).toHaveLength(2);
     expect(created[0].email).not.toBe(created[1].email);
-    expect(String(created[0].email)).toMatch(/^guest_[0-9a-f-]{36}@guest\.local$/);
+    expect(String(created[0].email)).toMatch(
+      /^guest_[0-9a-f-]{36}@guest\.local$/,
+    );
     expect(created[0].questionnaireCompleted).toBe(true);
     expect(created[0].role).toBe('Học viên');
   });

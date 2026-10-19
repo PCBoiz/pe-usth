@@ -5,19 +5,59 @@ import { createHash } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RefreshTokenService } from './refresh-token.service';
 
+/**
+ * `jest.Mock` trần là `Mock<any, any>`, nên mọi phép đọc `mock.calls` dưới đây
+ * mất kiểu: `stored.tokenn` vẫn biên dịch và `expect(...).not.toBe(rawToken)`
+ * vẫn ĐẠT — tức ca "chỉ lưu HASH xuống DB" im lặng không kiểm gì. Bộ test này
+ * sống bằng `mock.calls`, nên phần ĐỐI SỐ phải có kiểu thật; giá trị trả về để
+ * `Promise<unknown>` là đủ vì mỗi ca tự `mockResolvedValue()`.
+ * Cùng khuôn đã dùng ở `courses/courses.service.spec.ts`.
+ */
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+/** Đúng hình dạng mà RefreshTokenService gửi xuống `authSession.create`. */
+type TaoPhien = {
+  data: {
+    userId: number;
+    token: string;
+    familyId: string;
+    expiresAt: Date;
+  };
+};
+
+/** `findFirst` luôn tra theo HASH của token, không bao giờ theo token thô. */
+type TraPhien = {
+  where: { token: string };
+  select?: Record<string, boolean>;
+};
+
+type ThuHoi = {
+  where: Record<string, unknown>;
+  data: { revokedAt: Date };
+};
+
+/** Chỉ bảng/hàm mà RefreshTokenService thật sự gọi. */
+type AuthSessionMock = {
+  create: AsyncMock<[TaoPhien]>;
+  findFirst: AsyncMock<[TraPhien]>;
+  updateMany: AsyncMock<[ThuHoi]>;
+};
+
 describe('RefreshTokenService', () => {
   let service: RefreshTokenService;
-  let authSession: {
-    create: jest.Mock;
-    findFirst: jest.Mock;
-    updateMany: jest.Mock;
-  };
+  let authSession: AuthSessionMock;
 
   beforeEach(async () => {
     authSession = {
-      create: jest.fn().mockResolvedValue({ id: 1 }),
-      findFirst: jest.fn(),
-      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      create: asyncMock<[TaoPhien]>().mockResolvedValue({ id: 1 }),
+      findFirst: asyncMock<[TraPhien]>(),
+      updateMany: asyncMock<[ThuHoi]>().mockResolvedValue({ count: 1 }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -94,9 +134,11 @@ describe('RefreshTokenService', () => {
       const rotated = await service.rotateAndBlacklist('raw-token-abc');
 
       // CAS: điều kiện revokedAt:null bảo đảm chỉ 1 request song song thắng.
+      // `expect.any()` khai kiểu trả về là `any` trong @types/jest; ép về đúng
+      // kiểu của field nó so sánh để chỗ này không mở lại một lỗ `any`.
       expect(authSession.updateMany).toHaveBeenCalledWith({
         where: { id: 7, revokedAt: null },
-        data: { revokedAt: expect.any(Date) },
+        data: { revokedAt: expect.any(Date) as Date },
       });
       const created = authSession.create.mock.calls[0][0].data;
       expect(created.userId).toBe(42);
@@ -160,7 +202,7 @@ describe('RefreshTokenService', () => {
       );
       expect(authSession.updateMany).toHaveBeenCalledWith({
         where: { familyId: 'fam-1', revokedAt: null },
-        data: { revokedAt: expect.any(Date) },
+        data: { revokedAt: expect.any(Date) as Date },
       });
       expect(authSession.create).not.toHaveBeenCalled();
     });
@@ -174,7 +216,7 @@ describe('RefreshTokenService', () => {
 
       expect(authSession.updateMany).toHaveBeenCalledWith({
         where: { familyId: 'fam-1', revokedAt: null },
-        data: { revokedAt: expect.any(Date) },
+        data: { revokedAt: expect.any(Date) as Date },
       });
     });
 
@@ -185,7 +227,7 @@ describe('RefreshTokenService', () => {
 
       expect(authSession.updateMany).toHaveBeenCalledWith({
         where: { id: 7, revokedAt: null },
-        data: { revokedAt: expect.any(Date) },
+        data: { revokedAt: expect.any(Date) as Date },
       });
     });
   });

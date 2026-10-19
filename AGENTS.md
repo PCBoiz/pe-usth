@@ -29,10 +29,17 @@ node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ 
 node scripts/pe-v4/check-so-quy.mjs    # cùng bộ ca của check_so_quy.py, chạy trong Pyodide thật
 
 # Bản đồ sao (route xem thử /ban-do-sao — 8 chòm, 48 ngôi = 48 bài)
-py scripts/star/build_sky.py           # sinh 12 tệp SVG -> frontend/public/map/star/
-py scripts/star/build_sky.py --do      # bảng SỐ ĐO: độ chói, bão hoà, tỉ lệ, khe giữa hai chòm
-py scripts/star/build_sky.py --place-nhan  # chạy bộ đặt nhãn, in khối SKY_LABEL_PLACED để chép vào TS
-py scripts/star/build_sky.py --css     # in 16 ô bấm .hit* cho star-map.module.css
+py -I scripts/star/build_sky.py         # sinh 19 tệp SVG + sky-theme.css -> frontend/public/map/star/
+py -I scripts/star/build_sky.py --do   # bảng SỐ ĐO: PHÂN BỐ TÁM BẬC độ chói (cột tham chiếu
+                                       # cạnh cột của mình), bố cục, tương phản nhãn và nét
+py -I scripts/star/build_sky.py --place-nhan  # xếp tám nhãn CÓ PHÉP LÙI, in khối SKY_LABEL_PLACED
+py -I scripts/star/build_sky.py --css  # in 16 ô bấm .hit*, 48 dấu .sao*, 8 khối .phong*
+py -I scripts/star/build_sky.py --phong  # in khối SKY_ZOOM_PLACED
+
+# Đổi bố cục (hộp chòm, vị trí mặt trời, hình chòm) ⇒ chạy LẠI BA bước này, theo đúng
+# thứ tự, vì mỗi bước đọc kết quả bước trước: --place-nhan (rồi chép vào TS) → build →
+# --css + --phong (rồi chép vào star-map.module.css và TS). Chép tay một toạ độ là một
+# toạ độ sẽ lệch, và ô bấm lệch thì trỏ vào chòm này lại làm chòm khác sáng lên.
 ```
 
 Trên Windows dùng `py`, không dùng `python` — `python` là stub của Microsoft Store.
@@ -46,15 +53,16 @@ mức này:
 |---|---|---|
 | Backend typecheck | sạch | 15/10/2026 |
 | Backend test | 35 bộ, 392 ca, tất cả đạt | 19/10/2026 |
-| Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
+| Backend lint | 119 lỗi, 1 cảnh báo — **mốc trần trong CI là 130, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
 | Frontend unit test | `cd frontend && npm run test:unit` → 684 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
-| Bản đồ sao (xem thử) | `py scripts/star/build_sky.py` → 20 tệp, 198 KB tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); mười sáu tấm chòm cân 109 KB (**trần 160 KB** trong test) | 19/10/2026 |
-| Bản đồ sao | `py scripts/star/build_sky.py` → 12 tệp SVG + `sky-theme.css`, 526,4 KB cả bộ (**trần 420 KB mỗi tệp · 900 KB tổng**), chạy hai lần ra đúng một bộ. `--do` → 2,76% diện tích L > 0,5 (sàn 2,0%), trung vị độ chói 0,0065 (trần 0,05) | 19/10/2026 |
+| Bản đồ sao (xem thử) | `py scripts/star/build_sky.py` → 20 tệp, **331 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 175 KB sau khi mặt trời lên 128 vòng và tinh vân lên 14 bậc | 20/10/2026 |
+| Bản đồ sao · PHÂN BỐ SẮC ĐỘ | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,3 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0248, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** — tức một hàm hai giá trị, và đó là cả nội dung của lời chê "chưa hùng vĩ" | 20/10/2026 |
+| Bản đồ sao · BỐ CỤC | tỉ lệ cỡ chòm **5,95 : 1** (sàn 5,0; trước 3,53), **0/49** nét nằm trong 10° của một trục (trước 27/50 ở sàn 8°), 0 ngôi trong đĩa cấm r < 170 quanh mặt trời, khe hai chòm 64,1 px (sàn 50), 0 ngôi dưới rìa chân trời | 20/10/2026 |
 | Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
-| Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **4,83:1** (dòng chặng lúc mờ, 24 phép đo đều ≥ 4,5). Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền — nét sáng chỉ trượt khi nền L > 0,250, nét tối chỉ trượt khi nền L < 0,111 | 19/10/2026 |
+| Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,22:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 4,83 dù trời sáng hẳn lên, nhờ TẤM NỀN dưới mỗi hộp nhãn. Nét chòm **3,39:1** lúc nghỉ (sàn 3,0), mạch hoàng đạo **4,59:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
@@ -266,7 +274,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   suốt, thang độ sâu ở cả hai lề. **Gỡ bản sửa ra thì sáu ca trượt** (đo 19/10/2026
   bằng cách `git checkout` lại chín tệp SVG cũ). Kỹ thuật và nguồn:
   `design/v3/ky-thuat-ban-do.md` (mục 6 cho hình thái liền mạch).
-- **Bản đồ SAO cũng là TRANH SINH RA, và nó chia làm 12 tệp theo LỚP — đừng sửa tệp.**
+- **Bản đồ SAO cũng là TRANH SINH RA, và nó chia làm 19 tệp theo LỚP — đừng sửa tệp.**
   `frontend/public/map/star/sky-*.svg` do `scripts/star/build_sky.py` sinh; script ĐỌC
   `frontend/src/lib/star-map.ts` (toạ độ tám chòm, mạch hoàng đạo, nguồn sáng, bảng màu,
   ngân sách độ chói) nên muốn đổi gì thì sửa ở TS rồi chạy lại. Năm thứ đã trả giá, cả năm
@@ -281,19 +289,57 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
     nên chín mức rơi cùng một chỗ ⇒ một cái đĩa xám viền mấy vòng tròn; bản 2 nhân trường
     với kết cấu fBm nên mỗi mức sinh ra cả đảo bên trong, và `fill-rule="evenodd"` biến
     tâm nguồn sáng thành một LỖ TỐI.
-  · **Trần độ chói TOÀN CỤC đã bị bỏ, thay bằng NGÂN SÁCH DIỆN TÍCH** (`SKY_BUDGET`:
-    ≥ 2,0% diện tích trên L > 0,5, trung vị ≤ 0,05). Lý do đo được ở
-    `design/v3/chieu-sau-tuong-tac.md` §2.4. Hai trần CỤC BỘ (`hullCeiling`,
-    `textCeiling`) thì GIỮ — chúng là ràng buộc tiếp cận ở đúng chỗ có nét mang tin và có
-    chữ. Thêm nguồn sáng ⇒ phải đo lại cả tám nhãn, đừng tin số đo cũ.
+  · **HÌNH LỒNG NHAU PHẢI ĐI RIÊNG `<path>` — `Ink.fill(solo=True)`.** Đây là cái lỗi đắt
+    nhất của cả tệp, và nó sống im lặng từ bản đầu. `Ink` gộp mọi hình cùng (màu, độ mờ,
+    fill-rule) vào MỘT `<path>`; gộp là lossless khi hình không chồng nhau, và SAI khi
+    hình lồng nhau — theo hai kiểu: với `evenodd` thì các bậc đồng mức XOR nhau thành vành
+    tô/không-tô xen kẽ (bậc trong cùng có thể thành TRỐNG), còn với `nonzero` thì hợp của
+    N vòng được tô ĐÚNG MỘT LẦN nên độ mờ thôi cộng dồn (`a_i = 1/(n−i)`, nên 63 vòng
+    ngoài của 128 đều tròn về 0,01 và cả nhóm góp 0,01 thay vì 0,47). **Mọi phép kiểm
+    trong kho mã đều đọc MÔ HÌNH (`do_sang_rgb`), không đọc TỆP, nên không ca nào bắt
+    được.** Tìm ra bằng cách tự viết một bộ raster PIL đọc chính mấy tệp SVG đã ghi rồi
+    so hai cột: bậc giữa ra **4,3 %** trên tranh thật trong khi mô hình nói 47,3 %, p99
+    ra 0,595 trong khi mô hình nói 0,977. Bài học chung: **một phép đo dựng lại từ trường
+    không phải một phép đo bức tranh.**
+  · **Trần độ chói TOÀN CỤC đã bị bỏ, thay bằng NGÂN SÁCH DIỆN TÍCH** (`SKY_BUDGET`).
+    Lý do đo được ở `design/v3/chieu-sau-tuong-tac.md` §2.4. Và ngày 20/10/2026 ngân sách
+    mọc thêm HAI SÀN gác chiều NGƯỢC — `medianMin` 0,015 và `midShareMin` 0,30 — vì kiểu
+    hỏng thật không phải sáng quá mà TỐI QUÁ Ở GIỮA: bản trước có **89,7 %** diện tích ở
+    L < 0,01 và **0,73 %** ở ba bậc giữa (khung tham chiếu: 20,5 % và 43,0 %) mà vẫn đạt
+    mọi phép kiểm. Một ngân sách chỉ có trần là ngân sách gác được một nửa.
+  · **Hai trần CỤC BỘ không còn ngang nhau.** `textCeiling` thôi làm điều kiện LOẠI chỗ
+    đặt nhãn (mọi hộp nhãn nay có một TẤM NỀN `base` α 0,72 ghim nền xuống L ≤ 0,02, nên
+    tương phản chữ độc lập với mặt trời), và `hullCeiling` thôi chặn build hẳn — M3 đứng
+    cách tâm mặt trời 215 px CÓ Ý nên nền trong bao lồi nó đo được L = 0,29, không trần
+    nào vừa cho phép chuyện đó vừa nói được gì về bảy chòm kia. Cái gác THẬT nay là
+    `kiem_tuong_phan_net`: đo tương phản TỪNG ĐOẠN nét với nền tại đúng chỗ nó nằm, sàn
+    3 : 1. Nét trên nền sáng không trượt vì LUẬT ĐƯỜNG CHÓI (`SKY_LIGHT.litFlip`) đổi nó
+    sang tông tối. Thêm/dịch nguồn sáng ⇒ đo lại cả tám nhãn, đừng tin số đo cũ.
+  · **Bộ máy đặt nhãn CÓ PHÉP LÙI, đừng đổi lại thành chọn tham lam.** Chọn tham lam hỏng
+    có hệ thống khi chỗ trống hiếm: một chòm lấy đúng cái chỗ DUY NHẤT của chòm sau nó,
+    rồi build trượt với một thông báo chỉ vào NẠN NHÂN. Đã đo ba lần với ba cặp chòm khác
+    nhau trong một phiên (M7→M6, M6→M7, M5→M3), và mỗi lần "sửa" bằng cách dịch một hộp
+    chòm chỉ đổi nạn nhân — rồi lại phải chạy lại cả bốn phép kiểm bố cục. Xem `xep_nhan`.
   · **Ba lớp liên kết phải phân biệt được BẰNG MẮT** (nét chòm liền · mạch hoàng đạo đứt,
     sắc riêng · dải Ngân Hà). Mạch đổi thành nét liền, hay dùng chung sắc với một chặng,
     hay chạm vào một ngôi, thì nó đọc ra là "nét của chòm" và câu trả lời cho "các chòm
     kết nối với nhau như nào" biến mất — trong khi tệp vẫn ra bình thường.
-  · **Bảng hộp §15 của đặc tả CHỒNG NHAU.** Đặt đúng theo nó thì PD07 (M6) và X03 (M4)
-    cách nhau 21 px và mắt đọc ra một cặp sao đôi không ai định vẽ. `SKY_LINK.minGap` giữ
-    cho lần sau; script trượt build.
-  `frontend/e2e/unit/star-map.test.mjs` canh cả năm (31 ca).
+  · **Bảng hộp §15 của đặc tả CHỒNG NHAU, và bảng hộp §5.4 của đặc tả BỐ CỤC HÙNG VĨ thì
+    KHÔNG DÙNG ĐƯỢC NGUYÊN.** Cái thứ nhất: đặt đúng theo nó thì PD07 (M6) và X03 (M4)
+    cách nhau 21 px và mắt đọc ra một cặp sao đôi không ai định vẽ. Cái thứ hai: bốn tâm
+    nó cho ở cánh phải (M5 1030,450 · M6 1175,250 · M7 985,105 · M8 1220,95) làm MẠCH
+    PHỤ THUỘC đi phải, quặt sang TRÁI 190 px, rồi quặt lại — một chữ S tự cắt, không
+    phải một cung lớn, mà "một cung lớn nét đứt" là toàn bộ lý do mạch được vẽ như hoàng
+    đạo (một cung đọc ra là một QUAN HỆ, một đường gấp khúc đọc ra là một LỘ TRÌNH).
+    Cánh phải nay xếp sao cho bốn mốc ĐƠN ĐIỆU theo thứ tự M5 → M6 → M7 → M8.
+    `SKY_LINK.minGap` và `kiem_mach` giữ cho lần sau; script trượt build.
+  · **Góc xoay năm chòm KHÔNG phải con số của đặc tả §6.4.** Dựng rồi đo lại thì +48° cho
+    M1 còn BA nét vi phạm (9,7° · 7,0° · 3,7°) và +15° cho M2 còn một nét ở 7,9°. Lý do:
+    bảy góc nét của M1 chỉ cách nhau vài độ theo modulo 90, nên tập góc xoay ĐẠT chỉ gồm
+    hai cửa sổ rộng ~4° — [21°, 25°] và [65°, 69°]. Con số đang chạy là +23° (biên an
+    toàn 12,0°, lớn nhất hình này cho phép). Đổi nó 3° theo chiều nào cũng trượt.
+  `frontend/e2e/unit/star-map.test.mjs` canh cả bảy, và mục 21 canh riêng sáu việc của
+  bản VẼ LẠI BỐ CỤC ngày 20/10/2026 (đặc tả `design/v3/bo-cuc-hung-vi.md`).
 
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
