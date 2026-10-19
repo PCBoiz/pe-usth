@@ -267,7 +267,7 @@
           {
             "label": "\"h5py.File\"",
             "slot": 2,
-            "trap": "h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat."
+            "trap": "h5py.File dành cho HDF5 (.h5), không mở được .mat của MATLAB."
           },
           {
             "label": "df.to_stata(path)",

@@ -1018,8 +1018,8 @@ def parallel_sum(chunks):
 ''',
             slots=['threading.Thread', 'super().__init__()', 'run', 'worker.start()'],
             traps=[('threading.Thread()', 1, 'Kế thừa CLASS Thread, không phải một object Thread.'),
-                   ('self.total = sum(self.numbers)', 2, 'Tính ở __init__ = làm việc ở main thread; lại thiếu '
-                                                         'super().__init__().'),
+                   ('self.total = sum(self.numbers)', 2, 'Tính ở __init__ = làm việc ở main thread, xong trước khi '
+                                                         'có thread nào; và constructor của lớp cha vẫn chưa chạy.'),
                    ('start', 3, 'Override start thì không còn thread nào được tạo.'),
                    ('worker.run()', 4, 'Chạy run() ngay trong main thread.')]),
         flow=['SumWorker([1, 2]) → __init__: lưu numbers, total = None',

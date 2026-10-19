@@ -819,7 +819,7 @@
               {
                 "label": "\"running\"",
                 "slot": 1,
-                "trap": "I/O xong chưa chắc có CPU: phải về ready chờ dispatch."
+                "trap": "I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa."
               },
               {
                 "label": "child.wait()",
@@ -4901,7 +4901,7 @@
               {
                 "label": "self.total = sum(self.numbers)",
                 "slot": 2,
-                "trap": "Tính ở __init__ = làm việc ở main thread; lại thiếu super().__init__()."
+                "trap": "Tính ở __init__ = làm việc ở main thread, xong trước khi có thread nào; và constructor của lớp cha vẫn chưa chạy."
               },
               {
                 "label": "run",
@@ -7361,7 +7361,7 @@
               {
                 "label": "send()",
                 "slot": 3,
-                "trap": "Gọi send ngay lúc dựng giao diện; nút nhận None."
+                "trap": "Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là None."
               },
               {
                 "label": "name_entry.get()",
@@ -7379,7 +7379,7 @@
               {
                 "label": "name_entry",
                 "slot": 2,
-                "trap": "Đó là widget, không phải chữ đã gõ — cần get()."
+                "trap": "Đó là widget, không phải chữ đang nằm trong nó."
               }
             ]
           }
@@ -10147,12 +10147,12 @@
               {
                 "label": "\",\"",
                 "slot": 1,
-                "trap": "Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng \";\"."
+                "trap": "Dấu phẩy là mặc định của read_csv, nhưng dòng đầu file cho thấy cột được ngăn bằng ký tự khác."
               },
               {
                 "label": "[\"NA\"]",
                 "slot": 3,
-                "trap": "\"NA\" pandas đã tự coi là thiếu; file này ghi thiếu bằng \"-\"."
+                "trap": "\"NA\" thì pandas đã tự coi là thiếu; file này đánh dấu thiếu bằng ký tự khác."
               },
               {
                 "label": "[\"-\"]",
@@ -10654,7 +10654,7 @@
               {
                 "label": "\"h5py.File\"",
                 "slot": 2,
-                "trap": "h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat."
+                "trap": "h5py.File dành cho HDF5 (.h5), không mở được .mat của MATLAB."
               },
               {
                 "label": "df.to_stata(path)",

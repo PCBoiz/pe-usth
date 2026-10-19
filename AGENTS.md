@@ -43,7 +43,7 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 634 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 637 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
 
@@ -183,6 +183,18 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   executor đi tới `execFile`, trong khi trước đó còn `mkdtemp`+`writeFile` thật — nay chờ theo
   ĐIỀU KIỆN (`spawned`/`killed`). Chờ theo đồng hồ còn làm lời gọi muộn rơi vào mock của ca
   SAU và lệch bộ đếm của nó.
+- **Lý do bẫy ở màn điền chỗ trống từng NÓI RA đáp án của chính ô đó.** `step_3.scaffold.bank[].trap`
+  là câu hiện ra khi kéo mảnh SAI vào ô, nên nó phải nói vì sao LỰA CHỌN VỪA RỒI sai — vậy mà sáu
+  câu viết thẳng đáp án đúng ra (`"…phải về ready chờ dispatch"` trong khi đáp án ô đó đúng là
+  `"ready"`). Ô chỉ có 2–3 ứng viên nên chọn bừa một mảnh sai là ĐƯỢC PHÁT đáp án; server không
+  chấm lại gì nên không chỗ nào khác chặn. Đã sửa cả sáu trong `lessons_{proc,thread,gui,data}.py`
+  (19/10/2026), lưới ở `frontend/e2e/unit/trap-leak.test.mjs`.
+  **Hai điều đáng biết trước khi thêm trap mới:** (1) ca cũ trong `fill-slots.test.mjs` so nguyên
+  văn bằng `includes(answer)` nên chỉ thấy 3/6 — ba chỗ kia lọt vì đáp án có dấu nháy
+  (`"ready"`) mà câu trap thì không; muốn bắt được phải bỏ nháy ở CẢ HAI phía trước khi so.
+  (2) Ngay cả khi bỏ nháy, luật vẫn mù với đáp án là biểu thức bọc quanh một giá trị: `["-"]` so
+  với câu trap ghi `"-"` là không khớp — chỗ X01 ô3 phải tìm bằng mắt. Test này chỉ đỡ phần
+  nguyên văn, thêm trap mới vẫn phải tự đọc lại.
 - **Kho quiz chỉ đọc khoá `text`/`label` của lựa chọn — câu "dự đoán" dùng `title`.**
   `normalizeQuestion` (`src/quizzes/quizzes.service.ts`, nhánh quy đổi `options`) làm
   `String(o.text ?? o.label ?? '')`, trong khi `predict_block()` ở `scripts/pe-v4/build.py:210`

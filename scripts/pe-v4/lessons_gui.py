@@ -976,8 +976,9 @@ root.mainloop()
 ''',
             slots=['tk.Label(root, text="")', 'name_entry.get()', 'send'],
             traps=[('tk.Label(root, text="").pack()', 1, 'pack() trả về None nên greeting thành None.'),
-                   ('name_entry', 2, 'Đó là widget, không phải chữ đã gõ — cần get().'),
-                   ('send()', 3, 'Gọi send ngay lúc dựng giao diện; nút nhận None.')]),
+                   ('name_entry', 2, 'Đó là widget, không phải chữ đang nằm trong nó.'),
+                   ('send()', 3, 'Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là '
+                                 'None.')]),
         flow=['tk.Entry(frame, show="*") → ô mật khẩu che ký tự',
               'command=login → nút giữ hàm, chưa gọi',
               'Bấm nút → Tkinter gọi login()',

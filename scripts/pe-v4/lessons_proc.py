@@ -756,7 +756,7 @@ def run_child(code):
     return {{slot3}}
 ''',
             slots=['"ready"', 'raise ValueError("invalid transition")', 'child.wait()'],
-            traps=[('"running"', 1, 'I/O xong chưa chắc có CPU: phải về ready chờ dispatch.'),
+            traps=[('"running"', 1, 'I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa.'),
                    ('return None', 2, 'Âm thầm trả None — lỗi chuyển trạng thái bị che mất.'),
                    ('child.returncode', 3, 'Đọc ngay sau Popen là None: chưa ai chờ con.')]),
         flow=['Popen([sys.executable, "-c", code]) → con được tạo, cha chạy tiếp ngay',

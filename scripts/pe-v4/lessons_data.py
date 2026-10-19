@@ -528,8 +528,9 @@ def schema(df):
     }
 ''',
             slots=['";"', '"#"', '["-"]', 'len(df)'],
-            traps=[('","', 1, 'Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng ";".'),
-                   ('["NA"]', 3, '"NA" pandas đã tự coi là thiếu; file này ghi thiếu bằng "-".'),
+            traps=[('","', 1, 'Dấu phẩy là mặc định của read_csv, nhưng dòng đầu file cho thấy cột được ngăn '
+                              'bằng ký tự khác.'),
+                   ('["NA"]', 3, '"NA" thì pandas đã tự coi là thiếu; file này đánh dấu thiếu bằng ký tự khác.'),
                    ('df.size', 4, 'size là tổng số ô = số dòng × số cột, không phải số dòng.')]),
         flow=['read_csv(sep=";") → tách đúng 3 cột name, class, mark',
               'comment="#" → dòng chú thích đầu file bị bỏ qua',
@@ -687,7 +688,7 @@ def stata_roundtrip(df, path):
             slots=['"pd.read_stata"', '"scipy.io.loadmat"', 'Path(path).suffix.lower()',
                    'df.to_stata(path, write_index=False)'],
             traps=[('"pd.read_sas"', 1, '.dta là Stata; read_sas dành cho .sas7bdat của SAS.'),
-                   ('"h5py.File"', 2, 'h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat.'),
+                   ('"h5py.File"', 2, 'h5py.File dành cho HDF5 (.h5), không mở được .mat của MATLAB.'),
                    ('path.split(".")[1]', 3, 'Lấy phần sau dấu chấm ĐẦU TIÊN, không kèm dấu chấm: "exp.v2.h5" → "v2".'),
                    ('df.to_stata(path)', 4, 'Ghi thêm cột index — đọc lại thừa một cột.')]),
         flow=['Path("Lab/Marks.XLSX").suffix.lower() → ".xlsx"',

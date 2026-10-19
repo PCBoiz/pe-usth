@@ -246,12 +246,12 @@
           {
             "label": "\",\"",
             "slot": 1,
-            "trap": "Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng \";\"."
+            "trap": "Dấu phẩy là mặc định của read_csv, nhưng dòng đầu file cho thấy cột được ngăn bằng ký tự khác."
           },
           {
             "label": "[\"NA\"]",
             "slot": 3,
-            "trap": "\"NA\" pandas đã tự coi là thiếu; file này ghi thiếu bằng \"-\"."
+            "trap": "\"NA\" thì pandas đã tự coi là thiếu; file này đánh dấu thiếu bằng ký tự khác."
           },
           {
             "label": "[\"-\"]",

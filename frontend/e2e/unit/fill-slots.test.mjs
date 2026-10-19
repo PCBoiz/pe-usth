@@ -192,10 +192,16 @@ test('KHÔNG lộ đáp án: quét mọi thẻ sai ở mọi ô của cả 45 b�
   assert.deepEqual(leaks, []);
 });
 
-test('lý do bẫy tự nói đáp án: đúng 3 chỗ trong dữ liệu — mốc chỉ được hạ', () => {
+test('lý do bẫy tự nói đáp án: đã hết — mốc chỉ được hạ', () => {
   // Không phải lỗi của màn: chữ do người viết bài khai trong `traps` của
-  // lessons_*.py, và bản cũ (chỉ báo ô sai đầu) cũng in nguyên câu này. Ghi lại
-  // để lần sửa nội dung sau gỡ được, và để không ai thêm chỗ thứ tư.
+  // lessons_*.py. Mốc này từng là 3 chỗ (G02 ô3, T03 ô2, X01 ô1); nội dung đã
+  // sửa nên hạ về 0.
+  //
+  // LUẬT SO KHỚP Ở ĐÂY YẾU HƠN THỰC TẾ, đừng tin nó là đủ: `includes(answer)`
+  // so nguyên văn kể cả dấu nháy, nên nó KHÔNG thấy đáp án `"ready"` nằm trong
+  // câu "…phải về ready…" — ba chỗ nữa cùng loại đã lọt qua ca này suốt. Bản
+  // bỏ dấu nháy trước khi so nằm ở e2e/unit/trap-leak.test.mjs; giữ cả hai vì
+  // ca này còn canh thêm đường đi qua `fillFeedback`.
   const found = [];
   for (const [f, c] of WITH_FILL) {
     const sc = c.step_3.scaffold;
@@ -204,7 +210,7 @@ test('lý do bẫy tự nói đáp án: đúng 3 chỗ trong dữ liệu — m�
       if (card.trap && answer && card.trap.includes(answer)) found.push(`${f.slice(4, -5)} ô ${card.slot}`);
     }
   }
-  assert.deepEqual(found.sort(), ['G02 ô 3', 'T03 ô 2', 'X01 ô 1']);
+  assert.deepEqual(found.sort(), []);
 });
 
 test('gameVerdict nối fillFeedback: game fill thật trả `lines` từng ô', () => {
