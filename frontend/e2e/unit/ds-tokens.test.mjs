@@ -329,21 +329,20 @@ const WIRING = [
     '.page', 'background', '--ds-page',
     'nền xanh của trang chủ do `body` trong edu-theme.css vẽ; không đặt nền ở '
     + '.page thì đổi hết token vẫn ra thẻ kem trên nền xanh'],
+  // 19/10/2026: trang chủ là dashboard (Figma 60:5137) — .card/.next/.note
+  // của trang cũ đi cùng trang cũ.
   [['src', 'app', 'home.module.css'],
-    '.card', 'border', '--ds-sketch',
-    'thẻ khoá là <a> bấm được; `line` chỉ 1,36:1 trên nền thẻ'],
+    '.previewCard', 'border', '--ds-sketch',
+    'thẻ "Bài đầu tiên" là <a> bấm được; `line` chỉ 1,36:1 trên nền trang'],
   [['src', 'app', 'home.module.css'],
-    '.next', 'background', '--ds-ink',
-    'bản thiết kế §1.4: khối hệ thống gợi ý có nền `ink`, chữ `page` — cặp này '
-    + 'tự đảo theo bản nền nên không phải khai riêng cho chế độ tối'],
+    '.lessonCard', 'border', '--ds-sketch', 'thẻ bài là <button> bấm được'],
   [['src', 'app', 'home.module.css'],
-    '.nextCta', 'color', '--ds-on-action',
-    'bản cũ viết cứng `white`: ở bản đêm nền nút sáng lên, chữ trắng còn 3,19:1'],
+    '.primaryBtn', 'background', '--ds-action', '--ds-action chỉ có một vai: nền nút chính'],
   [['src', 'app', 'home.module.css'],
-    '.note', 'border', '--ds-sketch',
-    'khối ghi chú trung thực = nét đứt `sketch` 2px trên nền `paper`'],
+    '.primaryBtn', 'color', '--ds-on-action',
+    'chữ trên nút chính phải đọc được ở CẢ hai chế độ (bản cũ viết cứng `white`)'],
   [['src', 'app', 'home.module.css'],
-    '.feedbackButton', 'border', '--ds-ink', 'nút phụ = viền ink 2px'],
+    '.outlineBtn', 'border', '--ds-ink', 'nút phụ = viền ink 2px'],
   [['src', 'components', 'SiteHeader.module.css'],
     '.fullBar', 'background', '--ds-paper',
     'thanh đầu trang chủ: nền `paper`. Bản cũ --edu-nav-bg là trắng 72% trên '

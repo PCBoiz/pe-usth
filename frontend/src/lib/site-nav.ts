@@ -34,7 +34,8 @@ export type NavItem = {
 export function navItems(ideEnabled: boolean): NavItem[] {
   const items: NavItem[] = [
     { href: '/', label: 'Khoá học', match: '/' },
-    { href: '/dashboard', label: 'Bản đồ', match: '/dashboard' },
+    // Màn ôn tự chặn khi chưa đủ dữ liệu (xem `lib/practice-plan.ts`), nên cứ
+    // dẫn sang — chính màn đó giải thích cần gì, tốt hơn là giấu lối đi.
     { href: '/practice', label: 'Ôn tập', match: '/practice' },
   ];
   if (ideEnabled) {

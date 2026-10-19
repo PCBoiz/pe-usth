@@ -1,5 +1,6 @@
 /**
- * Unit test cho /dashboard (src/lib/dashboard-plan.ts + nối dây DashboardMap.tsx).
+ * Unit test cho trang chủ `/` (src/lib/dashboard-plan.ts + nối dây DashboardMap.tsx).
+ * Trang này từng ở /dashboard; 19/10/2026 nó thay trang chủ cũ.
  *
  * Fixture là dữ liệu THẬT: curricula.json đang ship và gói bài pe-v4 đang seed
  * (scripts/pe-v4/out-advanced/lessons.json) — bẫy "fixture không giống dữ liệu
@@ -19,6 +20,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
+  REGION_NAMES,
   buildStages,
   defaultSelection,
   draftDone,
@@ -28,7 +30,6 @@ import {
 } from '../../src/lib/dashboard-plan.ts';
 import { planResume } from '../../src/lib/course-progress.ts';
 import { buildScreens } from '../../src/lib/studio-lesson.ts';
-import { REGION_NAMES } from '../../src/lib/world-map.ts';
 
 const FE = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const CURRICULA = JSON.parse(readFileSync(join(FE, 'src', 'lib', 'curricula.json'), 'utf8'));
@@ -121,7 +122,7 @@ test('defaultSelection + stageDoneCount: chọn sẵn bài chưa xong nhỏ nh�
 });
 
 test('NỐI DÂY: DashboardMap không tạo tài khoản khách và không viết style nội tuyến', () => {
-  const src = readFileSync(join(FE, 'src', 'app', 'dashboard', 'DashboardMap.tsx'), 'utf8');
+  const src = readFileSync(join(FE, 'src', 'app', 'DashboardMap.tsx'), 'utf8');
   // Trang công khai: apiFetch gặp 401 sẽ gọi ensureGuest() (bẫy trong AGENTS.md).
   assert.ok(!/\bapiFetch\(/.test(src), 'dùng apiFetchSessionOnly, không dùng apiFetch');
   assert.ok(/loadCompletedLessons\(/.test(src), 'mọi lời gọi API phải đi qua cổng phiên loadCompletedLessons');

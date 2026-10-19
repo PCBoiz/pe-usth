@@ -1,6 +1,11 @@
 /**
- * Câu chữ và các quyết định của TRANG CHỦ — tách ra khỏi `app/page.tsx` để test
- * được bằng `node --test` (xem `frontend/e2e/unit/home-page.test.mjs`).
+ * Câu chữ dùng chung của TRANG CHỦ — tách ra khỏi `app/page.tsx` để test được
+ * bằng `node --test` (xem `frontend/e2e/unit/home-page.test.mjs`).
+ *
+ * 19/10/2026: trang chủ cũ (bản đồ thế giới + thẻ khoá + thẻ "bắt đầu ở đâu" +
+ * chân trang) đã thay bằng dashboard theo Figma 60:5137. Gỡ theo nó: INTRO,
+ * SECTIONS, courseTileTags, nextStep, footerLine, LAB_TILE.tags. Phần còn lại
+ * vẫn là câu chữ trang mới đang in.
  *
  * Vì sao phải là file riêng, không nằm trong component:
  *
@@ -17,13 +22,22 @@
  * `design-system-v2.md`. Ba thứ bản thiết kế chốt mà file này giữ:
  *
  *  · KHÔNG CHUỖI NGÀY. Không có "5/7 ngày", không ngọn lửa. Chỉ số nào hiện ra
- *    cũng phải là loại CHỈ TĂNG, và chỉ hiện khi có dữ liệu thật. Trang chủ
- *    không gọi API nào (xem `app/page.tsx`) nên nó KHÔNG có chỉ số nào cả —
- *    thà không có hơn là bịa.
- *  · KHÔNG KHOÁ GÌ. Mọi chặng, mọi bài đều vào được — và KHÔNG có câu nào nói ra
- *    điều đó: bản đồ tám nút bấm được đã là bằng chứng.
+ *    cũng phải là loại CHỈ TĂNG, và chỉ hiện khi có dữ liệu thật. (Trang chủ
+ *    cũ không gọi API nên không có chỉ số nào; trang mới đọc tiến độ thật qua
+ *    `apiFetchSessionOnly`, chỉ khi đã có phiên — xem `app/page.tsx`.)
+ *  · KHÔNG KHOÁ GÌ. Mọi chặng, mọi bài đều vào được — bản đồ tám nút và hàng
+ *    bài bấm được đã là bằng chứng.
  *  · THUẬT NGỮ: khoá · chặng · bài · màn, và trình soạn code gọi là
  *    "Bàn thí nghiệm" (không gọi IDE).
+ *
+ * LUẬT VIẾT CÂU CHỮ — rút ra từ thẻ "bắt đầu ở đâu" của trang chủ cũ, thẻ từng
+ * có bốn lớp chú giải quanh đúng một cái nút ("hệ thống chọn", "Vì sao bài
+ * này", "Đây là gợi ý, không phải lệnh", lối ra "Tự chọn bài"). Cả bốn sinh ra
+ * từ nỗi lo của NGƯỜI LÀM, không từ nhu cầu của người đọc. Áp cho mọi câu sau:
+ *  1. Đừng kể về cơ chế của chính mình. "Hệ thống chọn" là chuyện nội bộ.
+ *  2. Đừng trả lời câu hỏi chưa ai hỏi.
+ *  3. Đừng rào đón. Một gợi ý không cần nói nó là gợi ý.
+ *  4. Một lối ra chỉ đáng có khi không còn lối nào khác.
  */
 
 /** Một chặng trong giáo trình (`curricula.json`): `{ title, lessons[] }`. */
@@ -63,43 +77,6 @@ export function courseEyebrow(courseLabel: string, shape: CourseShape): string {
 }
 
 /**
- * Nhãn trên thẻ khoá. KHÔNG có nhãn điểm sao, và sẽ không thêm lại: `catalog.ts`
- * từng có `rating: 4.8` viết cứng, không có đánh giá nào ở sau nó — đã gỡ ở
- * a04c3cf. Hiện số liệu bịa cho người thử là tự bắn vào chân mình.
- */
-export function courseTileTags(shape: CourseShape, levelLabel: string): string[] {
-  return ['Python 3.12', levelLabel, shapeLine(shape)];
-}
-
-/**
- * Hero: chỉ còn nhãn và tiêu đề.
- *
- * `lead` ĐÃ BỎ, và đây là chỗ dễ thêm lại nhất nên phải nói rõ vì sao. Câu cũ:
- * "Chặng nào cũng vào được, bài nào cũng vào được — cứ bắt đầu từ chỗ bạn
- * muốn." Nó sinh ra để chống một nỗi lo của NGƯỜI LÀM ("gỡ ổ khoá mà không nói
- * thì người học vẫn tưởng phải đi tuần tự"), và `home-page.test.mjs` từng có
- * một assert ĐÒI nó khớp /vào được/. Nhưng bản đồ thế giới ngay bên dưới có
- * tám nút bấm được, mỗi nút một `aria-label` đầy đủ — người đọc THẤY là không
- * khoá, không cần ai nói. Một tiêu đề không được kéo theo một đoạn mô tả chỉ
- * để dẫn dắt; đó là khuôn dễ nhận nhất của văn do máy sinh.
- */
-export const INTRO = {
-  title: 'Khoá học',
-} as const;
-
-/**
- * Nhãn hai cột ở trang chủ. ĐÚNG hai nhãn, không câu dẫn nào.
- *
- * `toolNote` ("Dùng được cả khi không mở bài học") đã gỡ 15/10: nó không hứa
- * gì sai, nhưng nó là một câu MÔ TẢ treo dưới một nhãn — đúng khuôn mà chủ
- * sản phẩm bảo cắt sạch. Thẻ công cụ ngay bên dưới đã nói nó làm gì.
- */
-export const SECTIONS = {
-  course: 'Khoá đang mở',
-  tool: 'Công cụ',
-} as const;
-
-/**
  * Thẻ "Bàn thí nghiệm" (trước đây gọi là "Python IDE").
  *
  * Hai chỗ sửa, cả hai đều vì sự thật:
@@ -115,97 +92,7 @@ export const LAB_TILE = {
   description:
     'Viết Python rồi chạy thử, không cần mở bài nào. Mã được gửi lên máy chủ và '
     + 'chạy trong môi trường cách ly.',
-  tags: ['Python 3.12', 'Chạy trên máy chủ'],
 } as const;
-
-
-/**
- * Thẻ "bắt đầu ở đâu" của trang chủ: một tên bài và một cái nút.
- *
- * ===========================================================================
- * VÌ SAO NÓ TỪNG DÀI GẤP BỐN, VÀ VÌ SAO BỊ CẮT
- * ===========================================================================
- * Bản cũ có bốn lớp chú giải quanh đúng một cái nút:
- *   · nhãn "Gợi ý bước tiếp · hệ thống chọn" — kể về cơ chế bên trong;
- *   · một đoạn "Vì sao bài này" giải thích rằng bài mở đầu không đòi bài nào
- *     trước đó — tức là giải thích vì sao bài 1 là bài 1;
- *   · câu "Đây là gợi ý, không phải lệnh" — lời rào đón cho một gợi ý;
- *   · một lối ra "Tự chọn bài", trong khi danh sách 48 bài nằm ngay trang khoá
- *     mà thẻ khoá học ở cột bên trái đã dẫn tới.
- *
- * Cả bốn đều sinh ra từ lý lẽ của NGƯỜI LÀM chứ không từ nhu cầu của người
- * đọc: bản thiết kế dặn "thẻ gợi ý thiếu lý do và lối ra thì thành mệnh lệnh",
- * nên mỗi lớp được thêm vào để chống một nỗi lo. Nhưng người mở trang chủ
- * không có nỗi lo nào trong số đó — họ muốn biết bắt đầu ở đâu rồi bấm vào.
- *
- * LUẬT RÚT RA, áp cho mọi câu chữ sau này:
- *  1. Đừng kể về cơ chế của chính mình. "Hệ thống chọn" là chuyện nội bộ.
- *  2. Đừng trả lời câu hỏi chưa ai hỏi. Không ai thắc mắc vì sao bài 1 đứng
- *     đầu.
- *  3. Đừng rào đón. Một gợi ý không cần nói nó là gợi ý; nếu bấm vào là làm
- *     theo lệnh thì vấn đề nằm ở thiết kế, không ở lời đính chính.
- *  4. Một lối ra chỉ đáng có khi không còn lối nào khác.
- */
-export type NextStep = {
-  /** Mã + tên bài — thứ duy nhất ở đây là thông tin. */
-  title: string;
-  ctaLabel: string;
-  ctaHref: string;
-};
-
-export function nextStep(input: {
-  courseId: string;
-  lessonUrl: string;
-  /** Tên bài đầu, ví dụ "P01 · Program, process và tài nguyên". */
-  firstLesson?: string;
-}): NextStep {
-  return {
-    title: input.firstLesson?.trim() || 'Bài 1',
-    ctaLabel: 'Mở bài',
-    // `?lesson=` đếm từ 0 (xem lesson/python_advanced/page.tsx).
-    ctaHref: `${input.lessonUrl}?lesson=0`,
-  };
-}
-
-/**
- * Chân trang.
- *
- * Bản cũ viết thẳng trong JSX: "© 2026 Programming EDU. Học lập trình trực quan
- * và hiệu quả." Nửa sau là một LỜI HỨA VỀ CHẤT LƯỢNG do chính sản phẩm tự
- * phong — đúng loại câu mà cả trang chủ nay đã cắt sạch
- * ("không hứa hẹn gì về chất lượng; chỉ nói chỗ dùng"). Và nó không kiểm được:
- * "trực quan" với "hiệu quả" không có số nào ở sau, không có đo nào — giống
- * `rating: 4.8` đã gỡ ở a04c3cf, chỉ là không có ô sao để ai thấy ngay là bịa.
- *
- * Nhưng bản sửa ĐẦU TIÊN rơi sang phía ngược lại: `© 2026 Programming EDU ·
- * Advanced Python · Python 3.12`. Ba mảnh danh từ nối bằng dấu chấm giữa,
- * không một động từ, chữ "Python" hai lần trong bốn từ — và chân trang của một
- * sản phẩm tiếng Việt không còn chữ tiếng Việt nào. Nó đọc như dòng footer của
- * một thư viện npm. Sửa một lời nói sai không có nghĩa là viết như biên bản.
- *
- * Bản này giữ nguyên hai ràng buộc (không hứa gì về chất lượng, không bịa số)
- * nhưng nói ra một VIỆC: khoá nào, và chạy ở đâu. "không cần cài gì" là chỗ duy
- * nhất còn mang một khẳng định, và nó đo được — bài học nạp Pyodide từ cùng
- * origin, người học không cài Python; trang khoá cũng đang nói đúng câu đó
- * trong khối "KHOÁ HỌC BAO GỒM", nên hai chỗ không nói hai kiểu.
- *
- * Số bản Python (`3.12`) thì bỏ hẳn: nó VIẾT CỨNG ngay trong template này —
- * chú thích cũ khẳng định "cả hai đều lấy TỪ DANH MỤC chứ không chép tay", mà
- * chỉ `label` là thật. Con số đúng ở đâu thì nêu ở đó (`LAB_TILE.tags`), không
- * ở một chỗ không ai đọc lại.
- *
- * Năm KHÔNG viết cứng: bản cũ ghi "© 2026", tới 2027 là tự thành sai.
- * `courseLabel` vắng (danh mục rỗng) thì bỏ hẳn nửa sau, đừng bịa tên khoá —
- * và nửa sau mở bằng chính `label`, nên đừng thêm chữ "Khoá" vào template
- * (tên khoá nào bắt đầu bằng "Khoá" là ra "Khoá Khoá …").
- */
-export function footerLine(year: number, courseLabel?: string): string {
-  const head = `© ${year} Programming EDU`;
-  const label = courseLabel?.trim();
-  return label
-    ? `${head} · ${label} chạy ngay trong trình duyệt, không cần cài gì`
-    : head;
-}
 
 /** Thẻ góp ý — nói rõ góp ý đi về đâu (bản cũ: "Góp ý cho chúng tôi"). */
 export const FEEDBACK = {

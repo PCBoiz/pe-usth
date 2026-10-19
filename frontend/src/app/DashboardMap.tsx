@@ -1,6 +1,6 @@
 'use client';
 
-// Phần tương tác của /dashboard theo Figma 60:5137: bản đồ 8 chặng (đường sóng)
+// Phần tương tác của trang chủ `/` theo Figma 60:5137: bản đồ 8 chặng (đường sóng)
 // → bài của chặng đang chọn → khung "bài đang chọn" với các màn đã học / sẽ học.
 // Figma gọi chúng là "mục"; bảng thuật ngữ chốt khoá → chặng → bài → màn.
 //
@@ -31,7 +31,7 @@ import {
   type DashStage,
 } from '@/lib/dashboard-plan';
 
-import styles from './dashboard.module.css';
+import styles from './home.module.css';
 
 const COURSE_ID = 'python_advanced';
 
@@ -423,7 +423,7 @@ export default function DashboardMap({
         </div>
 
         <div className={styles.detailFoot}>
-          <p>
+          <p className={styles.detailNote}>
             Số màn đã học đọc từ bản nháp lưu trên máy này; học ở máy khác thì số ở đây có thể thấp
             hơn. Xong đủ {steps.total} màn là xong {lesson.code}
             {lesson.xp ? ` và nhận +${lesson.xp} XP` : ''}.

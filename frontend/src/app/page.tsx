@@ -1,219 +1,141 @@
-// Trang chủ — dựng lại theo bản thiết kế `design/project/Main.dc.html`
-// ("bản đồ thế giới") và `design-system-v2.md`.
+// Trang chủ `/` — dựng theo Figma node 60:5137 (19/10/2026):
+// hero → "Học như thế nào?" → bản đồ 8 chặng / bài của chặng / bài đang chọn
+// → Bàn thí nghiệm → Góp ý.
 //
-// Bố cục: hero (nhãn · tiêu đề · câu dẫn) → cột trái "Khoá đang mở" + "Công cụ"
-// → cột phải thẻ gợi ý bước tiếp + khối ghi chú trung thực → thẻ góp ý.
+// ĐỔI QUYẾT ĐỊNH SẢN PHẨM (19/10/2026). Trang chủ cũ (bản đồ thế giới + thẻ
+// khoá, `design/project/Main.dc.html`) chốt bốn điều mà trang này bỏ, theo
+// thiết kế mới:
+//  1. Trang chủ từng KHÔNG gọi API nào. Nay nó đọc tiến độ — nhưng CHỈ khi máy
+//     đã có phiên, qua `loadCompletedLessons` + `apiFetchSessionOnly`
+//     (DashboardMap.tsx). Khách vãng lai và bot: 0 lời gọi mạng, và không bao
+//     giờ tạo tài khoản khách — luật đó vẫn giữ nguyên (home-page.test.mjs).
+//  2. Trang chủ từng không hiện XP / "đã xong N bài". Nay có, vì số đó là THẬT:
+//     XP và phút từ gói bài (LESSON_META), bài đã xong từ server.
+//  3. Hero từng chỉ có nhãn + tiêu đề. Nay có một câu dẫn và khối "Học như thế
+//     nào?" như Figma.
+//  4. Chân trang (footerLine) bỏ — Figma không có.
+// Những luật KHÔNG đổi (không chuỗi ngày, không ổ khoá, không "Boss", một việc
+// một từ, cỡ chữ ≥ 15px, tương phản AA) vẫn canh trang này trong
+// home-page.test.mjs.
 //
-// BỐN ĐIỀU BẢN THIẾT KẾ CHỐT, GIỮ Ở ĐÂY (đổi đi là đổi hành vi người dùng thấy):
-//
-//  1. KHÔNG GỌI API, nên cũng không có chỉ số nào. Trang này công khai: gọi
-//     `apiFetch` mà gặp 401 thì nó rơi xuống `ensureGuest()` (src/lib/api.ts) —
-//     mỗi con bot quét web sinh một tài khoản `@guest.local` và ăn một suất của
-//     THROTTLE_GUEST_LIMIT (120 lượt/giờ/IP). Cần đọc phiên ở trang công khai
-//     thì dùng `apiFetchSessionOnly`; ở ĐÂY thì không cần gì cả, vì danh mục là
-//     tĩnh. Hệ quả cố ý: trang chủ không biết người xem học tới đâu, nên nó
-//     KHÔNG hiện tiến độ — và cũng không bịa ra chỉ số nào để lấp chỗ trống.
-//  2. KHÔNG CHUỖI NGÀY, không ngọn lửa, không "5/7 ngày". Chỉ số nào hiện ra
-//     cũng phải là loại CHỈ TĂNG; chuỗi bị đứt là thứ đẩy người học bỏ cuộc.
-//  3. KHÔNG KHOÁ GÌ: không ổ khoá, không "mở khi đủ N bài" — và không câu nào
-//     nói ra điều đó nữa. Bản đồ tám nút bấm được là bằng chứng đủ; một câu
-//     dẫn đi kèm chỉ để trấn an là văn kể lể.
-//  4. MỘT TIÊU ĐỀ KHÔNG KÉO THEO MỘT ĐOẠN MÔ TẢ. Thẻ bắt đầu chỉ có tên bài
-//     + một nút; hero chỉ có nhãn + tiêu đề. Bản cũ có "hệ thống chọn", "Vì sao
-//     bài này", "Đây là gợi ý, không phải lệnh" và một lối ra thứ hai — bỏ cả bốn.
-//
-// Câu chữ và các quyết định nằm ở `src/lib/home-copy.ts` (có test:
-// `e2e/unit/home-page.test.mjs`); file này chỉ dựng DOM.
+// Phần trên và dưới tĩnh (server). Phần giữa (DashboardMap) là client: chọn
+// chặng/bài và đọc tiến độ. Mọi tên và con số lấy từ giáo trình thật — xem
+// src/lib/dashboard-plan.ts.
 import type { Metadata } from 'next';
+import Link from 'next/link';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
-import { COURSES, LEVEL_LABEL, TOOLS } from '@/lib/catalog';
+import { COURSES, TOOLS } from '@/lib/catalog';
 import CURRICULA_JSON from '@/lib/curricula.json';
+import { buildStages, REGION_NAMES, type LessonMetaRow, type ModuleRow } from '@/lib/dashboard-plan';
 import { feedbackFormHref } from '@/lib/feedback-link';
-import {
-  courseEyebrow,
-  courseShape,
-  courseTileTags,
-  FEEDBACK,
-  footerLine,
-  INTRO,
-  LAB_TILE,
-  nextStep,
-  SECTIONS,
-  type ModuleLike,
-} from '@/lib/home-copy';
-import { buildRegions } from '@/lib/world-map';
+import { courseEyebrow, courseShape, FEEDBACK, LAB_TILE } from '@/lib/home-copy';
 
-import CatalogTile from './CatalogTile';
+import DashboardMap from './DashboardMap';
 import styles from './home.module.css';
-import WorldMap from './WorldMap';
 
-const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, { modules?: ModuleLike[] }>;
+// edu-fonts.css và studio-tokens.css KHÔNG khai ở đây: PageStyles tự thêm vào
+// mọi trang (ds-fonts test "NỐI DÂY: PageStyles tự thêm edu-fonts.css").
+const PAGE_CSS = ['/static/css/edu-theme.css'];
+
+const COURSE_ID = 'python_advanced';
 
 export const metadata: Metadata = {
   title: 'Programming EDU — Khoá học',
 };
 
+const STEPS = [
+  { title: 'Đọc bài ngắn', text: 'Mỗi bài giải thích một ý nhỏ, dễ hiểu.' },
+  { title: 'Chạy code ngay', text: 'Gõ và chạy Python trong trình duyệt.' },
+  { title: 'Ôn tập', text: 'Làm lại để nhớ lâu hơn.' },
+] as const;
+
 export default function HomePage() {
+  const course = COURSES.find((c) => c.id === COURSE_ID);
+  const curricula = CURRICULA_JSON as unknown as {
+    CURRICULA: Record<string, { modules?: ModuleRow[] }>;
+    LESSON_META?: Record<string, LessonMetaRow[]>;
+  };
+  const modules = curricula.CURRICULA[COURSE_ID]?.modules ?? [];
+  const stages = buildStages(modules, curricula.LESSON_META?.[COURSE_ID], REGION_NAMES);
+  const lessonUrl = course?.lessonUrl ?? `/lesson/${COURSE_ID}`;
+  const first = stages[0]?.lessons[0];
+  const lab = TOOLS.find((t) => t.id === 'ide');
   const feedback = feedbackFormHref();
-  // Khoá dẫn đầu danh mục; 13/10/2026 danh mục chỉ còn Advanced Python.
-  const headCourse = COURSES[0];
-  const modules = headCourse ? CURRICULA[headCourse.id]?.modules ?? [] : [];
-  const shape = courseShape(modules);
-  // Tám nút chặng của bản đồ: tên + số bài ĐẾM từ chính giáo trình đang
-  // render (curricula.json), liên kết tới bài đầu mỗi chặng. Không có tiến độ
-  // nào ở đây — trang này không gọi API, xem điều (1) ở đầu file.
-  const regions = headCourse ? buildRegions(modules, headCourse.lessonUrl) : [];
-  const step = headCourse
-    ? nextStep({
-      courseId: headCourse.id,
-      lessonUrl: headCourse.lessonUrl,
-      firstLesson: modules[0]?.lessons[0],
-    })
-    : null;
 
   return (
     <>
-      <PageStyles hrefs={['/static/css/edu-theme.css']} />
-      {/* .page cao tối thiểu bằng khung nhìn: style.css (đặt min-height cho body)
-          không nạp ở trang này, body co theo nội dung thì nền gradient bị đứt
-          một đường ngang ở đáy khối nội dung. */}
+      <PageStyles hrefs={PAGE_CSS} />
       <div className={styles.page}>
         <SiteHeader wide />
-        <main className={styles.main}>
-          <header className={styles.hero}>
-            {headCourse && (
-              <p className={styles.eyebrow}>{courseEyebrow(headCourse.label, shape)}</p>
-            )}
-            {/* Chỉ tiêu đề. Câu dẫn dưới nó đã bỏ — xem INTRO ở home-copy.ts. */}
-            <h1 className={styles.title}>{INTRO.title}</h1>
-          </header>
 
-          {/* BẢN ĐỒ THẾ GIỚI (khối `.map` của artboard). Nằm NGOÀI lưới hai cột,
-              khác artboard một chỗ và chỉ một chỗ: khung bản đồ trong artboard
-              rộng ~1000px, còn cột trái của trang này ~812px — tám nhãn chặng
-              không vừa cột đó mà không đè lên nhau. Tỷ lệ 1000 × 660 và tám vị
-              trí thì giữ nguyên. Chi tiết: `src/lib/world-map.ts`. */}
-          {regions.length > 0 && headCourse && (
-            <WorldMap regions={regions} />
+        <main className={styles.main}>
+          <section className={styles.hero}>
+            <div className={styles.heroText}>
+              <p className={styles.eyebrow}>{courseEyebrow('Python nâng cao', courseShape(modules))}</p>
+              <h1 className={styles.heroTitle}>Học Python từng bước, ngay trên trình duyệt</h1>
+              <p className={styles.heroDesc}>
+                Không cần cài đặt gì cả. Mở bài, đọc, gõ code và bấm chạy để thấy kết quả liền.
+              </p>
+              <Link href={`${lessonUrl}?lesson=0`} className={styles.primaryBtn}>
+                Bắt đầu bài đầu tiên →
+              </Link>
+            </div>
+            {first && (
+              <Link href={`${lessonUrl}?lesson=0`} className={styles.previewCard}>
+                <span className={styles.previewEyebrow}>Bài đầu tiên</span>
+                <span className={styles.previewTitle}>
+                  {first.code} · {first.title}
+                </span>
+                <code className={styles.previewCode}>print(&quot;Xin chào, Python!&quot;)</code>
+              </Link>
+            )}
+          </section>
+
+          <section className={styles.howCard}>
+            <h2 className={styles.howTitle}>Học như thế nào?</h2>
+            <ol className={styles.howGrid}>
+              {STEPS.map((s, i) => (
+                <li key={s.title} className={styles.howItem}>
+                  <span className={styles.howBadge}>{i + 1}</span>
+                  <span>
+                    <strong>{s.title}</strong>
+                    <small>{s.text}</small>
+                  </span>
+                </li>
+              ))}
+            </ol>
+          </section>
+
+          {stages.length > 0 && <DashboardMap stages={stages} lessonUrl={lessonUrl} />}
+
+          {lab && (
+            <section className={styles.labCard}>
+              <div>
+                <p className={styles.eyebrow}>Công cụ</p>
+                <h2 className={styles.labTitle}>{lab.label}</h2>
+                <p className={styles.labText}>{LAB_TILE.description}</p>
+              </div>
+              <Link href={lab.href} className={styles.primaryBtn}>
+                Mở bàn thí nghiệm
+              </Link>
+            </section>
           )}
 
-          <div className={styles.cols}>
-            <div className={styles.col}>
-              <section aria-labelledby="programTitle">
-                <h2 className={styles.pill} id="programTitle">
-                  {SECTIONS.course}
-                </h2>
-                <ul className={styles.list}>
-                  {COURSES.map((course) => (
-                    <CatalogTile
-                      key={course.id}
-                      href={`/courses/${course.id}`}
-                      label={course.label}
-                      description={course.subtitle}
-                      tags={courseTileTags(
-                        course.id === headCourse?.id ? shape : courseShape(CURRICULA[course.id]?.modules),
-                        LEVEL_LABEL[course.level],
-                      )}
-                      color={course.color}
-                      accent={course.accent}
-                      mark={course.mark}
-                      icon={course.icon}
-                    />
-                  ))}
-                </ul>
-              </section>
-
-              {/* Công cụ nằm NGOÀI cột khoá: không phải khoá, không ảnh hưởng
-                  tiến độ/XP/ghi danh. Mặc định có đúng một mục (Bàn thí nghiệm);
-                  tắt bằng NEXT_PUBLIC_IDE_ENABLED=off thì danh sách rỗng, và khi
-                  rỗng phải bỏ luôn cả khối — không để một mục "Công cụ" trống
-                  trơ trên trang. */}
-              {TOOLS.length > 0 && (
-                <section aria-labelledby="toolsTitle">
-                  <div className={styles.colHead}>
-                    <h2 className={styles.pill} id="toolsTitle">
-                      {SECTIONS.tool}
-                    </h2>
-                  </div>
-                  <ul className={styles.list}>
-                    {TOOLS.map((tool) => (
-                      <CatalogTile
-                        key={tool.id}
-                        href={tool.href}
-                        label={tool.label}
-                        description={LAB_TILE.description}
-                        tags={[...LAB_TILE.tags]}
-                        color={tool.color}
-                        accent={tool.accent}
-                        mark={tool.mark}
-                        icon={tool.icon}
-                        external
-                      />
-                    ))}
-                  </ul>
-                </section>
-              )}
-            </div>
-
-            <aside className={styles.aside} aria-label="Việc tiếp theo">
-              {step && (
-                <section className={styles.next} aria-labelledby="nextTitle">
-                  {/* Tên bài, rồi nút. Bản cũ có thêm bốn lớp chú giải
-                      quanh đúng cái nút này — xem lý lẽ cắt bỏ ở đầu khối
-                      `nextStep` trong `lib/home-copy.ts`. */}
-                  <h2 className={styles.nextTitle} id="nextTitle">{step.title}</h2>
-                  <a className={styles.nextCta} href={step.ctaHref}>
-                    {step.ctaLabel}
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
-                  </a>
-                </section>
-              )}
-
-            </aside>
-          </div>
-
-          {/* Lối góp ý cho buổi thử nghiệm với giảng viên và sinh viên USTH
-              (14/10/2026). CHỈ đặt ở trang chủ — gắn ở cuối bài hay trong khung
-              bài học thì chen ngang lúc người ta đang học.
-
-              Ẩn hẳn khi chưa đặt NEXT_PUBLIC_FEEDBACK_URL hoặc giá trị không
-              phải URL http/https: xem feedbackHref() để biết vì sao thà không
-              có thẻ còn hơn có nút bấm vào không đi đâu. */}
+          {/* Không có địa chỉ khảo sát thì không hiện thẻ. */}
           {feedback && (
-            <section className={styles.feedback} aria-labelledby="feedbackTitle">
-              <div className={styles.feedbackBody}>
-                <h2 className={styles.feedbackTitle} id="feedbackTitle">
-                  <span className={styles.feedbackIcon} aria-hidden="true">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2Z" /><path d="M8 9h8M8 13h5" /></svg>
-                  </span>
-                  {FEEDBACK.title}
-                </h2>
+            <section className={styles.feedbackCard}>
+              <div>
+                <h2 className={styles.feedbackTitle}>{FEEDBACK.title}</h2>
                 <p className={styles.feedbackText}>{FEEDBACK.text}</p>
               </div>
-              {/* Tab mới để người đang học không mất chỗ; rel="noopener
-                  noreferrer" vì đây là tên miền ngoài (Google Forms). */}
-              <a
-                className={styles.feedbackButton}
-                href={feedback}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={feedback} target="_blank" rel="noreferrer" className={styles.outlineBtn}>
                 {FEEDBACK.cta}
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /><path d="M15 3h6v6" /><path d="M10 14 21 3" /></svg>
               </a>
             </section>
           )}
         </main>
-        {/* Câu chân trang ở `home-copy.ts` (có test), và NĂM lấy từ đồng hồ chứ
-            không viết cứng "2026" như bản cũ. Trang này là trang tĩnh render ở
-            server, nên `getFullYear()` chạy lúc DỰNG, không phải lúc người xem
-            mở — tức năm đi theo mỗi lần deploy. Vẫn đúng hơn một con số chép
-            tay, vốn chỉ đổi khi có ai nhớ ra mà sửa. */}
-        <footer className={styles.footer}>
-          {footerLine(new Date().getFullYear(), headCourse?.label)}
-        </footer>
       </div>
     </>
   );

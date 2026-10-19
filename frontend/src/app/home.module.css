@@ -1,521 +1,857 @@
-/* Trang chủ — hero + (cột trái: Khoá đang mở | Công cụ) + (cột phải: thẻ gợi ý
-   bước tiếp | ghi chú trung thực) + thẻ góp ý + chân trang.
-   Dựng theo design/project/Main.dc.html; chỉ dùng token --ds-* của bản thiết kế
-   v2 (khai ở public/static/css/studio-tokens.css).
+/* Trang chủ `/` — bố cục theo Figma node 60:5137, MÀU theo bảng token.
 
-   BA LUẬT CỦA BẢN THIẾT KẾ ĐANG ĐƯỢC GIỮ BẰNG CHÍNH CÁC CON SỐ Ở ĐÂY:
-
-   1. Chữ thân ≥ 17px, nhãn/chip 15px, KHÔNG có cỡ nào < 15px. Bản cũ dùng 13px
-      ở 3 chỗ (.pill, .colNote, .tag) và 15px cho câu mô tả khoá — câu người học
-      đọc để biết khoá này dạy gì thì không được nhỏ hơn 17px.
-   2. Mọi cặp chữ/nền ≥ 4,5:1 (đồ hoạ/viền mang thông tin ≥ 3:1), đo ở CẢ bản
-      ngày và bản Ban đêm. Phép đo nay nằm trong bộ test chứ không còn là script
-      chạy tay: `e2e/unit/ds-contrast.mjs` (mục "trang chủ" trong PAIRS) —
-      `npm run test:unit` trượt nếu một cặp tụt dưới ngưỡng. Xem cả bảng bằng
-      `node e2e/unit/ds-contrast.mjs`.
-   3. Làm nhạt bằng MÀU, không bằng `opacity` — hạ độ đục làm cả chữ lẫn viền
-      tụt theo và không đo được bằng token.
-
-   ── 15/10/2026: ĐỔI SANG BẢNG KEM --ds-* ───────────────────────────────
-   Bản trước dùng bảng xanh dương --edu-* kế thừa từ bản Django, với lý lẽ
-   "studio-tokens.css chỉ nạp cho trang bài học". Lý lẽ đó đã hết đúng: trang
-   bài học chuyển sang bảng kem v2 ở commit 330a469, nên sản phẩm có HAI nguồn
-   màu — vào trang chủ thấy nền xanh, bấm vào bài thấy nền kem. Nay
-   studio-tokens.css nạp ở mọi trang (xem PageStyles) và trang này đọc --ds-*.
-
-   Nền trang: `.page` tự đặt `background: var(--ds-page)`. Phải đặt ở ĐÂY vì
-   nền xanh thực ra do `body` trong edu-theme.css vẽ (mesh gradient
-   --edu-bg-image); `.page` ở đây là lớp CSS module (tên băm) phủ kín khung
-   nhìn nên nó che hẳn nền body mà không phải sửa edu-theme.css — file đó còn
-   vẽ các trang legacy chưa chuyển. */
-.page,
-.page * { box-sizing: border-box; }
+   19/10/2026: dashboard này THAY trang chủ cũ (bản đồ thế giới + thẻ khoá).
+   Màu đi thẳng qua token --ds-* như mọi trang (không biến cục bộ nào, để
+   bộ đo tương phản home-page.test.mjs đọc được màu thật): nhấn --ds-violet
+   (xanh dương ở cả hai chế độ), nhãn nhỏ --ds-soft, bài tổng hợp chặng
+   --ds-sanguine — vai "chú ý" duy nhất của bảng token. Figma vẽ tím + hổ
+   phách; chủ sản phẩm chốt theo màu trang chủ. */
 .page {
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   background: var(--ds-page);
+  color: var(--ds-ink);
+  font-family: var(--edu-font);
+  font-size: var(--ds-fs-body);
 }
 
 .main {
-  flex: 1;
-  width: 100%;
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 44px 24px 64px;
-  font-family: var(--edu-font);
-}
-
-/* ── Hero ────────────────────────────────────────────────── */
-.hero {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin: 0 0 40px;
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 56px 24px 72px;
 }
 
-/* Nhãn "Advanced Python · 8 chặng · 48 bài": số đếm từ curricula.json, cùng
-   nguồn mà trang khoá dùng để vẽ giáo trình. */
+/* ── nút dùng chung ── */
+.primaryBtn,
+.nowCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-action);
+  color: var(--ds-on-action);
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* Nút phụ: viền `ink` 2px — bảng thiết kế chốt (cùng .secondaryBtn của khung
+   bài học), không theo viền xám mảnh của Figma. */
+.ghostBtn,
+.outlineBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 16px;
+  border: 2px solid var(--ds-ink);
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font-size: var(--ds-fs-ui);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.primaryBtn:focus-visible,
+.nowCta:focus-visible,
+.ghostBtn:focus-visible,
+.outlineBtn:focus-visible,
+.previewCard:focus-visible {
+  outline: 3px solid var(--ds-violet);
+  outline-offset: 2px;
+}
+.chip {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-tint);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  font-weight: 400;
+}
+.chipAccent {
+  display: inline-flex;
+  padding: 2px 10px;
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
+  font-family: var(--edu-font);
+  font-size: var(--ds-fs-label);
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+/* ── hero ── */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+  padding: 24px 0 16px;
+}
 .eyebrow {
-  margin: 0;
+  margin: 0 0 12px;
+  color: var(--ds-soft);
   font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ds-soft);
 }
-
-.title {
-  margin: 0;
-  font-size: 44px;
-  line-height: 1.08;
-  font-weight: 800;
-  letter-spacing: -0.02em;
+.heroTitle {
+  margin: 0 0 16px;
   color: var(--ds-ink);
+  font-size: var(--ds-fs-h1);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
 }
-
-.lead {
-  margin: 0;
-  max-width: 62ch;
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
+.heroDesc {
+  margin: 0 0 24px;
   color: var(--ds-soft);
+  font-size: var(--ds-fs-body);
 }
-
-/* ── Hai cột ─────────────────────────────────────────────── */
-.cols {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
-  gap: 40px;
-  align-items: start;
-}
-
-.col {
-  min-width: 0;
+.previewCard {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 14px;
+  padding: 28px;
+  border: 1px solid var(--ds-sketch);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
+  color: var(--ds-ink);
+  text-decoration: none;
 }
-
-.aside {
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.colHead {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 18px;
-}
-.colNote {
-  font-size: var(--ds-fs-label);
-  line-height: 1.45;
+.previewEyebrow {
   color: var(--ds-soft);
-}
-
-/* Nhãn viên thuốc của từng khối */
-.pill {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0 18px;
-  padding: 7px 16px;
   font-size: var(--ds-fs-label);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ds-violet-deep);
-  background: var(--ds-violet-tint);
-  border: 1px solid var(--ds-violet);
-  border-radius: var(--ds-r-pill);
 }
-/* Trong .colHead thì nhãn đứng cạnh ghi chú, không cần lề dưới riêng. */
-.colHead .pill { margin: 0; }
+.previewTitle {
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.previewCode {
+  padding: 12px 16px;
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-code-bg);
+  color: var(--ds-code-fg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-code);
+}
 
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+/* ── học như thế nào ── */
+.howCard {
+  padding: 24px 28px;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
+}
+.howTitle {
+  margin: 0 0 18px;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+}
+.howGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
-.cell { display: block; }
-
-/* ── Thẻ ngang ───────────────────────────────────────────── */
-.card {
-  position: relative;
+.howItem {
   display: flex;
   align-items: flex-start;
-  gap: 22px;
-  width: 100%;
-  padding: 24px;
-  color: var(--ds-ink);
-  text-decoration: none;
+  gap: 12px;
+}
+.howItem strong,
+.howItem small {
+  display: block;
+}
+.howItem strong {
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+}
+.howItem small {
+  margin-top: 4px;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.howBadge {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
+  font-size: var(--ds-fs-label);
+  font-weight: 600;
+}
+
+/* ── bản đồ + chặng + bài đang chọn (DashboardMap.tsx) ── */
+.journey {
+  overflow: hidden;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
   background: var(--ds-card);
-  /* Viền `sketch`, không `line`: thẻ này là một <a> bấm được, và bảng thiết kế
-     ghi rõ về token `line` — "không dùng làm ranh giới thành phần cần nhận ra"
-     (1,36:1 trên nền thẻ). `sketch` cho 4,32:1 nên ranh giới thật sự thấy. */
-  border: 1px solid var(--ds-sketch);
-  border-radius: 20px;
-  box-shadow: var(--ds-shadow-open);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
 }
-.card:hover,
-.card:focus-visible {
-  transform: translateY(-3px);
-  /* Một mức nổi duy nhất (bảng thiết kế: `shadow-open`), nên hover không đổi
-     bóng — bản cũ cộng thêm quầng xanh/đỏ của bảng --edu-*. */
-  box-shadow: var(--ds-shadow-open);
+.mapHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px 24px 0;
 }
-/* Vòng focus theo bản thiết kế: 3px tím, lệch 3px. */
-.card:focus-visible {
-  outline: 3px solid var(--ds-violet);
-  outline-offset: 3px;
-}
-
-/* Viền gradient xanh→đỏ chỉ lộ ra khi hover (mặt nạ khoét phần ruột). */
-.card::before {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  padding: 1.5px;
-  border-radius: inherit;
-  /* Bản cũ là gradient xanh→đỏ của bộ --edu-*. Bảng v2 không có gradient
-     thương hiệu, và màu ở đây mang nghĩa "đang chọn" → tím. */
-  background: var(--ds-violet);
-  -webkit-mask: linear-gradient(black 0 0) content-box, linear-gradient(black 0 0);
-  -webkit-mask-composite: xor;
-  mask: linear-gradient(black 0 0) content-box exclude, linear-gradient(black 0 0);
-  opacity: 0;
-  transition: opacity var(--ds-dur-fast) ease;
-  pointer-events: none;
-}
-.card:hover::before,
-.card:focus-visible::before { opacity: 1; }
-
-.icon,
-.iconBare {
-  flex: none;
+.mapTitle {
   display: flex;
   align-items: center;
-  justify-content: center;
-  width: 100px;
-  height: 100px;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
 }
-/* Logo Python nằm trong ô sáng; công cụ có biểu tượng tự mang nền nên không bọc. */
-.icon {
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-sketch);
-  border-radius: 20px;
+.mapCount {
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  text-transform: uppercase;
 }
-.iconBare { border-radius: 20px; overflow: hidden; box-shadow: var(--ds-shadow-open); }
+/* Hẹp hơn 720px thì cuộn ngang trong khung, trang không cuộn ngang. */
+.mapScroll {
+  overflow-x: auto;
+  padding: 0 40px;
+}
+.mapCanvas {
+  position: relative;
+  min-width: 720px;
+  height: 200px;
+}
+.mapSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.mapPath,
+.mapPathLit,
+.mapPathBoss {
+  fill: none;
+  stroke: var(--ds-sketch);
+  stroke-width: 3;
+  vector-effect: non-scaling-stroke;
+}
+.mapPathLit {
+  stroke: var(--ds-violet);
+}
+.mapPathBoss {
+  stroke: var(--ds-sanguine);
+}
+/* Nút đặt tâm hộp đúng điểm của đường SVG; nhãn treo bên dưới. Toạ độ khớp
+   nodeAt() trong DashboardMap.tsx: x = 70 + i·860/7 trên 1000, y = 112 / 48
+   trên 170. Đổi một bên thì đổi cả bên kia. */
+.node {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transform: translate(-50%, -21px);
+}
+.node:nth-of-type(1) { left: 7%; top: 65.88%; }
+.node:nth-of-type(2) { left: 19.29%; top: 28.24%; }
+.node:nth-of-type(3) { left: 31.57%; top: 65.88%; }
+.node:nth-of-type(4) { left: 43.86%; top: 28.24%; }
+.node:nth-of-type(5) { left: 56.14%; top: 65.88%; }
+.node:nth-of-type(6) { left: 68.43%; top: 28.24%; }
+.node:nth-of-type(7) { left: 80.71%; top: 65.88%; }
+.node:nth-of-type(8) { left: 93%; top: 28.24%; }
+.nodeBox {
+  display: grid;
+  place-items: center;
+  min-width: 56px;
+  height: 42px;
+  padding: 0 8px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-sm);
+  background: var(--ds-card);
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.nodeLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  white-space: nowrap;
+}
+.nodeHere {
+  color: var(--ds-violet);
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nodeDone .nodeBox {
+  border-color: var(--ds-violet);
+  color: var(--ds-violet);
+}
+.nodeBoss .nodeBox {
+  border-color: var(--ds-sanguine);
+  background: var(--ds-sanguine-tint);
+  color: var(--ds-sanguine);
+}
+.nodeBoss .nodeLabel {
+  color: var(--ds-sanguine);
+}
+.nodeSel .nodeBox {
+  border-color: var(--ds-violet);
+  background: var(--ds-action);
+  color: var(--ds-on-action);
+  box-shadow: 0 0 0 4px var(--ds-violet-tint);
+}
+.nodeSel .nodeLabel {
+  color: var(--ds-ink);
+  font-weight: 600;
+}
+.node:focus-visible .nodeBox {
+  outline: 2px solid var(--ds-violet);
+  outline-offset: 3px;
+}
+.mapFoot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  padding: 10px 24px 18px;
+  border-bottom: 1px solid var(--ds-line);
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.bossNote {
+  color: var(--ds-sanguine);
+}
 
-.body {
-  flex: 1;
-  min-width: 0;
+.stageHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 24px 8px;
+}
+.stageTitle {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+}
+.stageCode {
+  color: var(--ds-violet);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.stageSub {
+  margin: 6px 0 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.stageProgress {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-right: 28px;
+  min-width: 260px;
 }
-
-.label {
-  font-size: var(--ds-fs-h3);
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.01em;
+.stageProgressRow {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.stageProgressRow strong {
   color: var(--ds-ink);
 }
-.card:hover .label { color: var(--ds-violet-deep); }
-
-/* Câu mô tả khoá là câu văn đầy đủ → cỡ thân 17px, màu `soft` (8,77:1 trên nền
-   thẻ bản ngày, 9,31:1 bản đêm). Bản cũ 15px/--edu-t3. */
-.desc {
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
-  color: var(--ds-soft);
-}
-
-.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
-/* Một kiểu nhãn duy nhất: nền `tint` + chữ `soft` (7,66:1 bản ngày). Viền dùng
-   `sketch` thay vì `line` để chip vẫn tách khỏi nền thẻ ở mức nhận ra được
-   (4,00:1 trên `tint`), không phải nhờ một đường 1,2:1 như bản cũ. */
-.tag {
-  display: inline-flex;
-  align-items: center;
-  padding: 5px 12px;
-  font-size: var(--ds-fs-label);
-  font-weight: 600;
-  color: var(--ds-soft);
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-sketch);
+.bar {
+  width: 100%;
+  height: 6px;
+  overflow: hidden;
+  border: 0;
   border-radius: var(--ds-r-pill);
-}
-
-/* Nút tròn góc phải thẻ: mũi tên / mở ra */
-.go {
-  position: absolute;
-  top: 22px;
-  right: 22px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  color: var(--ds-soft);
   background: var(--ds-tint);
-  border: 1px solid var(--ds-sketch);
-  border-radius: var(--ds-r-round);
-  transition: color 0.15s ease, background 0.15s ease, transform 0.18s ease;
+  appearance: none;
 }
-/* Nền hover là `action` + chữ `on-action` — cặp duy nhất bảng v2 cho phép đặt
-   chữ lên nền nhấn đậm, và nó TỰ ĐẢO theo bản nền (ngày: trắng trên tím 7,33:1;
-   đêm: mực sẫm trên tím nhạt 8,36:1). Bản cũ viết cứng `white`, nên ở bản đêm
-   chữ trắng trên nền xanh nhạt chỉ còn 3,19:1. */
-.card:hover .go { color: var(--ds-on-action); background: var(--ds-action); transform: translateX(2px); }
+.bar::-webkit-progress-bar {
+  background: var(--ds-tint);
+}
+.bar::-webkit-progress-value {
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-violet);
+}
+.bar::-moz-progress-bar {
+  border-radius: var(--ds-r-pill);
+  background: var(--ds-violet);
+}
 
-/* ── Thẻ gợi ý bước tiếp ─────────────────────────────────── */
-/* Bản thiết kế §1.4 chốt "Khối hệ thống gợi ý": nền `ink`, chữ `page`. Cặp này
-   TỰ ĐẢO theo bản nền (ngày: chữ kem trên mực 14,91:1; đêm: chữ sẫm trên kem
-   15,71:1), nên không phải khai màu riêng cho chế độ tối — chỗ bản thiết kế
-   bắt lỗi ở màn Main đúng là màu code cứng cho một chế độ. */
-.next {
+/* Một cột cho mỗi bài; chặng 9 bài (M6) thì cuộn ngang trong khung. */
+.lessonScroll {
+  overflow-x: auto;
+  padding: 8px 24px 24px;
+}
+.lessonRow {
+  display: grid;
+  grid-auto-columns: minmax(150px, 1fr);
+  grid-auto-flow: column;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.lessonCol {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 24px;
-  color: var(--ds-page);
-  background: var(--ds-ink);
-  border-radius: var(--ds-r-lg);
-  box-shadow: var(--ds-shadow-open);
+  gap: 10px;
+}
+.stepDot {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+/* Đường nối sang bài kế: kéo dài qua khe 12px giữa hai cột. */
+.stepDot::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  margin-right: -12px;
+  background: var(--ds-line);
+}
+.lessonCol:last-child .stepDot::after {
+  display: none;
+}
+.stepDot i {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+}
+.stepDotSel {
+  color: var(--ds-violet);
+}
+.stepDotSel i {
+  border-color: var(--ds-violet);
+  background: var(--ds-violet);
+  box-shadow: inset 0 0 0 4px var(--ds-card);
+}
+.stepDotBoss {
+  color: var(--ds-sanguine);
+}
+.stepDotBoss i {
+  border-color: var(--ds-sanguine);
+}
+.lessonCard {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 132px;
+  padding: 14px;
+  border: 1px solid var(--ds-sketch);
+  border-radius: var(--ds-r-md);
+  background: var(--ds-paper);
+  color: var(--ds-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.lessonCard:focus-visible {
+  outline: 2px solid var(--ds-violet);
+  outline-offset: 2px;
+}
+.lessonCardBoss {
+  border-color: var(--ds-sanguine);
+  background: var(--ds-sanguine-tint);
+}
+.lessonCardSel {
+  border: 1.5px solid var(--ds-violet);
+  background: var(--ds-violet-tint);
+}
+.lessonTitle {
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+  line-height: 1.3;
+}
+.lessonMeta {
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+}
+.lessonStatus {
+  margin-top: auto;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.lessonCardSel .lessonStatus {
+  color: var(--ds-violet);
+}
+.lessonCardBoss .lessonStatus {
+  color: var(--ds-sanguine);
+}
+.lessonCardDone .lessonStatus {
+  color: var(--ds-ochre);
 }
 
-.nextLabel {
-  margin: 0;
+.band {
+  padding: 10px 24px;
+  border-top: 1px solid var(--ds-line);
+  border-bottom: 1px solid var(--ds-line);
+  border-left: 3px solid var(--ds-violet);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
+  font-family: 'JetBrains Mono', monospace;
   font-size: var(--ds-fs-label);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-.nextTitle {
-  margin: 0;
-  font-size: var(--ds-fs-h2);
-  line-height: 1.2;
-  font-weight: 800;
+.detail {
+  padding: 24px;
 }
-
-.nextWhy {
-  margin: 0;
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
+.detailHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--ds-line);
 }
-
-.nextCta {
-  align-self: flex-start;
-  display: inline-flex;
+.crumb {
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
-  min-height: 52px;
-  margin-top: 4px;
-  padding: 0 28px;
-  font-size: var(--ds-fs-ui);
-  font-weight: 800;
-  color: var(--ds-on-action);
-  text-decoration: none;
-  background: var(--ds-action);
-  border-radius: var(--ds-r-pill);
+  gap: 10px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
-.nextCta:hover { background: var(--ds-violet); }
-/* Vòng focus lấy màu CHỮ của thẻ (`page`), không lấy tím: nút nằm trên nền
-   `ink`, mà tím bản ngày trên mực chỉ 2,2:1 nên vòng focus sẽ chìm. */
-.nextCta:focus-visible {
-  outline: 3px solid var(--ds-page);
-  outline-offset: 3px;
+.detailTitle {
+  margin: 10px 0 8px;
+  font-size: var(--ds-fs-h2);
+  font-weight: 700;
+  line-height: 1.25;
 }
-
-/* Vạch ngăn + lối ra yên tĩnh. Đường kẻ dùng `desk`: nó cũng tự đảo theo bản
-   nền và cho 12,85:1 trên `ink` bản ngày, 8,80:1 bản đêm — thấy rõ mà không
-   gắt như lấy nguyên màu chữ của thẻ (bảng v2 chưa có token "kẻ trên nền mực",
-   bản thiết kế đề xuất `on-ink-line` nhưng chưa chốt giá trị cho bản đêm). */
-.nextFoot {
+.detailMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.xp {
+  color: var(--ds-violet);
+  font-weight: 600;
+}
+.detailProgress {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 8px;
-  padding-top: 12px;
-  border-top: 1px solid var(--ds-desk);
+  min-width: 280px;
+}
+.detailProgressLabel {
+  align-self: flex-end;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.pct {
+  color: var(--ds-violet);
+  font-size: var(--ds-fs-h2);
+  font-weight: 600;
+  line-height: 1;
+}
+.stageProgressRow .pct {
+  color: var(--ds-violet);
+}
+.detailProgressNote {
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+
+.detailGrid {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 28px;
+  padding: 24px 0;
+}
+.nowCard {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 22px;
+  border: 1.5px solid var(--ds-violet);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-violet-tint);
+}
+.nowEyebrow {
+  color: var(--ds-violet);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.nowTitle {
+  margin: 0;
+  font-size: var(--ds-fs-h3);
+  font-weight: 600;
+}
+.nowText {
+  margin: 0;
+  color: var(--ds-soft);
   font-size: var(--ds-fs-ui);
   line-height: 1.5;
 }
-
-/* Nút yên: chữ cùng màu thân thẻ + gạch chân (không phải nút nền). Bản thiết kế
-   dùng tím cho lối ra, nhưng tím ở đây nằm trên nền `ink` — bản ngày 2,2:1,
-   không đọc được. Dùng màu chữ của thẻ (`page`, 14,91:1) và giữ gạch chân:
-   vẫn là "lối ra yên tĩnh" vì không có nền, không viền. */
-.nextExit {
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  color: var(--ds-page);
-  text-decoration: underline;
-  text-underline-offset: 3px;
+/* Một vạch cho mỗi mục của bài: thay bốn ô "Code / Data / Heap / Stack" của
+   Figma — đó là hình riêng của một bài mẫu, còn vạch này đúng cho mọi bài. */
+.nowStrip {
+  display: flex;
+  gap: 4px;
+  margin: 4px 0;
+  padding: 0;
+  list-style: none;
 }
-.nextExit:hover { text-decoration-thickness: 2px; }
-.nextExit:focus-visible {
-  outline: 3px solid var(--ds-page);
-  outline-offset: 3px;
+.nowStrip li {
+  flex: 1;
+  height: 8px;
   border-radius: var(--ds-r-xs);
+  background: var(--ds-line);
+}
+.nowStrip li.stripDone {
+  background: var(--ds-violet);
+}
+.nowStrip li.stripCurrent {
+  box-shadow: inset 0 0 0 1.5px var(--ds-violet);
+}
+.nowCta {
+  align-self: flex-start;
 }
 
-/* ── Khối ghi chú trung thực ─────────────────────────────── */
-/* Bản thiết kế §1.4 "Khối ghi chú trung thực": nền `paper`, viền nét đứt
-   `sketch` 2px (4,21:1 ≥ 3:1). Nét đứt là cách phân biệt "ghi chú về sự thật"
-   với thẻ nội dung. */
-.note {
+.listCol {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 20px;
-  background: var(--ds-paper);
-  border: 2px dashed var(--ds-sketch);
-  border-radius: var(--ds-r-md);
+  gap: 14px;
 }
-
-.noteTitle {
+.listTitle {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 0;
   font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  line-height: 1.35;
-  color: var(--ds-ink);
+  font-weight: 600;
 }
-.noteIcon {
-  flex: none;
-  display: inline-flex;
+.listIcon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
   color: var(--ds-soft);
-}
-
-.noteText {
-  margin: 0;
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
-  color: var(--ds-soft);
-}
-
-/* ── Thẻ góp ý — chỉ hiện khi đã đặt NEXT_PUBLIC_FEEDBACK_URL (xem page.tsx). ── */
-.feedback {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  margin: 56px 0 0;
-  padding: 32px 44px;
-  background: var(--ds-card);
-  /* `line` chứ không `sketch`: thẻ này KHÔNG bấm được (nút nằm bên trong), nên
-     viền của nó thuần trang trí — ranh giới do nền và phần đệm 32px nói. Đây
-     đúng vai mà bảng thiết kế dành cho token `line`. */
-  border: 1px solid var(--ds-line);
-  border-radius: 20px;
-  box-shadow: var(--ds-shadow-open);
-}
-.feedbackBody { min-width: 0; max-width: 760px; }
-
-.feedbackTitle {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 0 0 8px;
-  font-size: var(--ds-fs-h3);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ds-ink);
-}
-.feedbackIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  color: var(--ds-violet-deep);
-  background: var(--ds-violet-tint);
-  border-radius: var(--ds-r-md);
-}
-
-.feedbackText {
-  margin: 0;
-  font-size: var(--ds-fs-ui);
-  line-height: 1.55;
-  color: var(--ds-soft);
-}
-
-/* Nút phụ = viền `ink` 2px, nền trong suốt — đúng một biến thể duy nhất mà bản
-   thiết kế §1.4 cho nút phụ. Bản cũ dùng nền gradient xanh với chữ trắng, mà
-   đầu sáng của gradient chỉ cho 3,19:1 — trượt AA ở cả hai bản nền. Góp ý là
-   lựa chọn phụ nên nút phụ cũng đúng thứ bậc hơn. */
-.feedbackButton {
-  flex: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 0 28px;
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  color: var(--ds-ink);
-  text-decoration: none;
-  background: transparent;
-  border: 2px solid var(--ds-ink);
-  border-radius: var(--ds-r-pill);
-  transition: transform 0.15s ease, background 0.15s ease;
-}
-.feedbackButton:hover { transform: translateY(-1px); background: var(--ds-tint); }
-.feedbackButton:focus-visible {
-  outline: 3px solid var(--ds-violet);
-  outline-offset: 3px;
-}
-
-/* ── Chân trang ─────────────────────────────────────────── */
-.footer {
-  padding: 22px 24px 26px;
-  font-family: var(--edu-font);
   font-size: var(--ds-fs-label);
-  text-align: center;
+}
+.listCount {
   color: var(--ds-soft);
-  /* Đường kẻ chân trang: thuần trang trí (chân trang đã tách bằng khoảng
-     trắng), nên đúng vai của token `line`. */
+  font-family: 'JetBrains Mono', monospace;
+  font-size: var(--ds-fs-label);
+  font-weight: 400;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.listItem,
+.listItemDone,
+.listItemNow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.listItem strong,
+.listItemDone strong,
+.listItemNow strong,
+.listItem small,
+.listItemDone small,
+.listItemNow small {
+  display: block;
+  font-size: var(--ds-fs-label);
+}
+.listItem strong,
+.listItemDone strong,
+.listItemNow strong {
+  font-weight: 600;
+}
+.listItem small,
+.listItemDone small,
+.listItemNow small {
+  margin-top: 2px;
+  color: var(--ds-soft);
+}
+.listItemNow strong {
+  color: var(--ds-violet);
+}
+.check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: var(--ds-r-round);
+  background: var(--ds-violet-tint);
+  color: var(--ds-violet);
+  font-size: var(--ds-fs-label);
+}
+.dot {
+  flex-shrink: 0;
+  width: 14px;
+  height: 14px;
+  margin: 4px;
+  border: 1.5px solid var(--ds-sketch);
+  border-radius: var(--ds-r-round);
+}
+.listItemNow .dot {
+  border-color: var(--ds-violet);
+  background: var(--ds-violet);
+  box-shadow: 0 0 0 3px var(--ds-violet-tint);
+}
+.listEmpty,
+.listNote {
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-label);
+}
+.listNote {
+  padding-top: 12px;
   border-top: 1px solid var(--ds-line);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .card, .go, .feedbackButton { transition: none; }
-  .card:hover, .card:focus-visible, .feedbackButton:hover { transform: none; }
-  .card:hover .go { transform: none; }
+.detailFoot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ds-line);
+}
+.detailNote {
+  max-width: 640px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
+}
+.detailActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-@media (max-width: 1023.98px) {
-  /* Thẻ gợi ý xuống dưới danh sách: trên khung hẹp nó không còn là "cột phải"
-     mà là khối tiếp theo, nên để nó chiếm hết bề ngang. */
-  .cols { grid-template-columns: minmax(0, 1fr); gap: 36px; }
-  .feedback { flex-direction: column; align-items: flex-start; padding: 26px; }
+/* ── công cụ + góp ý ── */
+.labCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 28px;
+  border: 1px solid var(--ds-line);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-card);
+}
+.labTitle {
+  margin: 0 0 8px;
+  font-size: var(--ds-fs-h2);
+  font-weight: 700;
+}
+.labText {
+  max-width: 640px;
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-body);
+}
+.feedbackCard {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 22px 28px;
+  border: 1.5px dashed var(--ds-sketch);
+  border-radius: var(--ds-r-lg);
+  background: var(--ds-paper);
+}
+.feedbackTitle {
+  margin: 0 0 4px;
+  font-size: var(--ds-fs-ui);
+  font-weight: 600;
+}
+.feedbackText {
+  margin: 0;
+  color: var(--ds-soft);
+  font-size: var(--ds-fs-ui);
 }
 
-@media (max-width: 639.98px) {
-  .main { padding: 28px 16px 48px; }
-  .title { font-size: 32px; }
-  .hero { margin-bottom: 28px; }
-  .card { padding: 18px; gap: 16px; }
-  .icon, .iconBare { width: 72px; height: 72px; border-radius: var(--ds-r-lg); }
-  .body { padding-right: 0; }
-  .label { font-size: 19px; padding-right: 40px; }
-  .go { top: 16px; right: 16px; width: 34px; height: 34px; }
-  .colHead { flex-direction: column; align-items: flex-start; gap: 6px; }
-  .next { padding: 20px; }
-  .nextTitle { font-size: 24px; }
-  .feedbackTitle { font-size: 19px; }
+@media (max-width: 900px) {
+  .main {
+    padding: 32px 16px 56px;
+  }
+  .hero,
+  .howGrid,
+  .detailGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero {
+    gap: 28px;
+  }
+  .heroTitle {
+    font-size: var(--ds-fs-h2);
+  }
+  .stageProgress,
+  .detailProgress {
+    min-width: 0;
+    width: 100%;
+  }
+  .detailProgressLabel {
+    align-self: flex-start;
+  }
+  .mapScroll {
+    padding: 0 16px;
+  }
 }

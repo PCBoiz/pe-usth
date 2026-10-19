@@ -1,5 +1,6 @@
 /**
- * dashboard-plan.ts — dữ liệu cho trang /dashboard (bản đồ 8 chặng → bài → mục).
+ * dashboard-plan.ts — dữ liệu cho trang chủ `/` (bản đồ 8 chặng → bài → màn).
+ * Trang này từng nằm ở /dashboard; 19/10/2026 nó thay trang chủ cũ.
  *
  * Hàm thuần, không import theo alias '@/…', để `node --test` chạy thẳng được
  * (cùng lý do với course-progress.ts).
@@ -14,6 +15,27 @@
  *  · màn đã xong trong một bài  ← bản nháp localStorage của trang bài học
  *    (useLessonDraft), tức CHỈ máy này — trang phải nói rõ điều đó.
  */
+/**
+ * Tên ẩn dụ của tám chặng, chép từ artboard (`.region-label` trong
+ * `Main.dc.html`) theo đúng thứ tự M1 → M8. Chuyển từ `world-map.ts` (bản đồ
+ * thế giới của trang chủ cũ, đã gỡ 19/10/2026) — dashboard in tên chặng này.
+ *
+ * Đây là CÂU CHỮ của bản thiết kế, không phải dữ liệu đo được — nên nó được
+ * phép viết thẳng ở đây. Nhưng nó gắn với THỨ TỰ chặng, nên nếu giáo trình đổi
+ * số chặng thì `buildStages` bỏ hẳn tên ẩn dụ (xem dưới): thà thiếu một cái
+ * tên thơ còn hơn gọi chặng pandas là "Hoạ thất".
+ */
+export const REGION_NAMES = [
+  'Xưởng phân thân',
+  'Khung cửi song song',
+  'Ô cửa quan sát',
+  'Thư khố',
+  'Cỗ máy ma trận',
+  'Bàn sổ cái',
+  'Hoạ thất',
+  'Đại công trình',
+] as const;
+
 export type ModuleRow = { title: string; lessons: string[] };
 /** [khoá màn, loại]; loại của màn game là game.type (match, fill…). */
 export type ScreenRow = [string, string];
@@ -57,8 +79,8 @@ const two = (n: number) => String(n).padStart(2, '0');
 /**
  * Ghép giáo trình với LESSON_META thành danh sách chặng.
  *
- * `names` là tên ẩn dụ (world-map.ts REGION_NAMES); chỉ dùng khi số chặng khớp,
- * cùng luật với `buildRegions` — thà thiếu tên thơ còn hơn gán nhầm chặng.
+ * `names` là tên ẩn dụ (REGION_NAMES ở trên); chỉ dùng khi số chặng khớp —
+ * thà thiếu tên thơ còn hơn gán nhầm chặng.
  * Bài thiếu meta (curricula.json cũ, chưa chạy lại sync) vẫn hiện, chỉ không
  * có phút/XP/màn: thà thiếu số còn hơn bịa số.
  */

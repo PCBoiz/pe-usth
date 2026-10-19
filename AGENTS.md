@@ -40,7 +40,7 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 15/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 558 ca, 552 đạt; 6 ca trượt có sẵn từ `cd206ad` (demo-minigame, mục "Bản đồ" trên thanh trên) | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 534 ca, 529 đạt; 5 ca trượt có sẵn từ `cd206ad` (đều chỉ vào trang `/demo-minigame`) | 19/10/2026 |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 15/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
@@ -110,7 +110,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   chạy bước chép thì trang khoá học hiện giáo trình cũ; sau mỗi lần seed phải kiểm hai nguồn
   có lệch không.
   Từ 19/10/2026 bước chép còn ghi khối `LESSON_META` (phút, XP, cờ boss, danh sách màn từng
-  bài) cho `/dashboard`. Danh sách màn do `screen_keys()` trong `sync_curricula.py` dựng bằng
+  bài) cho trang chủ `/` (dashboard). Danh sách màn do `screen_keys()` trong `sync_curricula.py` dựng bằng
   Python, phải KHỚP TỪNG KHOÁ với `buildScreens()` (TS) vì dashboard đếm "màn đã học" bằng
   cách so khoá với bản nháp localStorage. Sửa luồng màn ở `studio-lesson.ts` thì sửa cả
   `screen_keys()` rồi chạy lại sync — `e2e/unit/dashboard-plan.test.mjs` so cả 48 bài và đỏ

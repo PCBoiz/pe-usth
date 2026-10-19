@@ -265,8 +265,8 @@ test('API lỗi hoặc phiên đã chết: trả "chưa biết", không ném l�
  * và đã đánh dấu bài được gợi ý.
  *
  * Mỗi lớp sinh ra để chống một nỗi lo của người LÀM sản phẩm. Người mở trang
- * khoá không mang nỗi lo nào trong số đó. Luật đầy đủ: đầu khối `nextStep`
- * trong src/lib/home-copy.ts.
+ * khoá không mang nỗi lo nào trong số đó. Luật đầy đủ: khối "LUẬT VIẾT CÂU
+ * CHỮ" ở đầu src/lib/home-copy.ts.
  */
 test('trang khoá không kể về cơ chế, không rào đón, không giải thích trước', () => {
   const CAM = [
