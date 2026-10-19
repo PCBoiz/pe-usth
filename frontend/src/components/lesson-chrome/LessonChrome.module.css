@@ -380,6 +380,32 @@ button.segment:focus-visible,
   outline-offset: 3px;
 }
 
+/* ── VÒNG TIÊU ĐIỂM DỰ PHÒNG CHO CẢ MÀN HỌC BÀI (WCAG 2.4.7) ──────────────
+   Lỗi đang chữa: trang bài học `/lesson/python_advanced` chỉ nạp
+   `edu-theme.css` + `studio-tokens.css` (xem STUDIO_CSS trong
+   `app/(standalone)/lesson/python_advanced/page.tsx`). Quy tắc
+   `button:focus-visible` toàn cục thì nằm ở `public/static/css/auth.css` và
+   `lesson_db_design.css` — HAI file màn học bài KHÔNG nạp, và layout gốc cũng
+   không import CSS global nào. Hệ quả đo được: chỉ bốn nút của khung này (đóng
+   bài, đoạn tiến độ, CTA chính, nút phụ) cộng vài chỗ tự khai (ô soạn mã,
+   SoQuyGame, nút mở hình lý thuyết) là có vòng tiêu điểm. MỌI thứ còn lại trong
+   16 loại màn — thẻ token của "Phân loại", ô trống ①②③ của "Lắp ghép khung mã",
+   dòng lệnh trong kho của "Ghép code", phương án trắc nghiệm, dòng code của
+   "Săn lỗi", nút "Đặt lại các ô"/"Gỡ dòng cuối" — Tab tới được nhưng KHÔNG VẼ
+   GÌ. Người dùng bàn phím đi được nhưng không biết mình đang ở đâu: cả bài học
+   thành một mê cung không con trỏ.
+
+   Viết bằng `:where()` cho CẢ hai vế nên độ đặc hiệu chỉ là (0,1,0) của
+   `:focus-visible` — mọi quy tắc tự khai ở trên và ở các module khác
+   (`.closeBtn:focus-visible`, `textarea.codeBody:focus-visible`,
+   `.playBtn:focus-visible`…) đều THẮNG. Đây là lưới an toàn, không phải lớp đè.
+   Bọc trong `.chrome` nên không rò sang trang khác. */
+:where(.chrome)
+  :where(button, a, input, textarea, select, summary, [tabindex]):focus-visible {
+  outline: 3px solid var(--ds-violet);
+  outline-offset: 3px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .stepEnter {
     animation: none;

@@ -8,6 +8,8 @@
 // components/python-studio; ăn theo token --edu-*/--st-* đã gom ở
 // edu-theme.css + studio-tokens.css (--st-chrome-h/--st-action-h/--st-col/
 // --st-card-radius được tạo sẵn từ trước, dùng ở đây).
+import { useEffect, useRef } from 'react';
+
 import { PREV_LABEL } from '@/lib/lesson-nav';
 
 import styles from './LessonChrome.module.css';
@@ -85,6 +87,32 @@ export default function LessonChrome({
       : primaryTone === 'err'
         ? styles.primaryBtnErr
         : styles.primaryBtn;
+
+  // ── TIÊU ĐIỂM KHI SANG MÀN MỚI ────────────────────────────────────────
+  // Lỗi đang chữa: bấm "Tiếp tục" thay TOÀN BỘ nội dung thẻ (div `key={step}`
+  // bên dưới bị dựng lại), nhưng nút CTA nằm ở THANH DƯỚI — ngoài vùng bị
+  // dựng lại — nên tiêu điểm đứng nguyên trên nút đó và KHÔNG có gì được loan
+  // báo. Với người dùng trình đọc màn hình, bấm "Tiếp tục" là im lặng tuyệt
+  // đối: không biết đã sang màn khác, không biết màn mới nói gì, phải tự mò
+  // ngược lên. Với người dùng bàn phím, muốn đọc nội dung mới phải Shift+Tab
+  // qua một số điều khiển không đoán trước được. Cả 10 màn mỗi bài, 48 bài.
+  //
+  // Cách chữa là mẫu chuẩn của điều hướng trong ứng dụng một trang: dời tiêu
+  // điểm vào chính khối nội dung (tabIndex -1, có TÊN) — trình đọc màn hình
+  // đọc tên khối rồi đọc tiếp nội dung, con trỏ đọc nằm đúng chỗ.
+  const stepRef = useRef<HTMLDivElement | null>(null);
+  // Lần dựng ĐẦU không được cướp tiêu điểm: lúc đó người học vừa mở trang,
+  // chưa thao tác gì, kéo tiêu điểm vào giữa trang là cướp con trỏ đọc và làm
+  // trình duyệt cuộn trang.
+  const mounted = useRef(false);
+  useEffect(() => {
+    if (!mounted.current) {
+      mounted.current = true;
+      return;
+    }
+    stepRef.current?.focus();
+  }, [step]);
+
   return (
     <div className={styles.chrome}>
       <header className={styles.topBar}>
@@ -167,8 +195,19 @@ export default function LessonChrome({
 
       <main className={styles.main}>
         <div className={wide ? `${styles.contentContainer} ${styles.contentWide}` : styles.contentContainer}>
-          {/* key={step} để mỗi lần đổi bước là một lần chạy lại animation vào */}
-          <div key={step} className={styles.stepEnter}>
+          {/* key={step} để mỗi lần đổi bước là một lần chạy lại animation vào.
+              `tabIndex={-1}` + `aria-label`: đích đến của tiêu điểm sau mỗi lần
+              sang màn (xem khối chú thích ở đầu hàm). Nhãn nói SỐ MÀN vì tiêu
+              đề bên trong mới nói nội dung — nghe liền nhau thành "Màn 4 trên
+              10 … Dự đoán kết quả". */}
+          <div
+            key={step}
+            ref={stepRef}
+            tabIndex={-1}
+            role="group"
+            aria-label={`Màn ${step} trên ${totalSteps}`}
+            className={styles.stepEnter}
+          >
             {children}
           </div>
         </div>

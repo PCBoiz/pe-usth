@@ -16,10 +16,13 @@ export default function FeedbackBanner({ correct, title, explanation, lines }: F
   return (
     <div
       className={styles.feedbackBanner}
-      // Thẻ này là KẾT QUẢ CHẤM BÀI, chỉ xuất hiện sau khi bấm "Kiểm tra": phải
-      // là vùng sống, nếu không thì thông tin đúng/sai chỉ tới được người nhìn
-      // thấy màu của nó.
-      role="status"
+      // KHÔNG đặt `role="status"` ở đây. Thẻ này là KẾT QUẢ CHẤM BÀI và phải
+      // được đọc lên — nhưng nó chỉ được DỰNG RA lúc bấm "Kiểm tra", nên bản
+      // thân nó làm vùng sống là vùng sống sinh ra cùng lúc với nội dung: có
+      // máy đọc, có máy im. Vùng sống nay là cái vỏ RỖNG đứng sẵn quanh chỗ
+      // này — xem khối chú thích ở `python-studio/screens/chrome.tsx`
+      // (ScreenShell). Lồng thêm một `role="status"` vào trong nó thì thành
+      // hai vùng sống chồng nhau: đọc hai lần, hoặc không lần nào.
       style={{
         display: 'flex',
         alignItems: 'flex-start',

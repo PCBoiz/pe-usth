@@ -130,7 +130,20 @@ export function ScreenShell({
       centered={centered}
     >
       {children}
-      {verdict && (
+      {/* ── VÙNG SỐNG PHẢI CÓ TRƯỚC NỘI DUNG CỦA NÓ ────────────────────────
+          Lỗi đang chữa: băng kết quả chấm tự mang `role="status"`, nhưng nó
+          chỉ được DỰNG RA lúc bấm "Kiểm tra" — tức vùng sống và nội dung của
+          vùng sống sinh ra trong CÙNG một lần cập nhật DOM. Trình đọc màn hình
+          theo dõi THAY ĐỔI bên trong một vùng sống đã có sẵn; một vùng sống
+          vừa mới chèn vào thì có máy đọc, có máy im (VoiceOver/Safari im), nên
+          kết quả đúng/sai là thứ CHỈ người nhìn thấy màu mới chắc chắn nhận
+          được — đúng cái lỗ mà `role="status"` được đặt ra để bịt.
+          Nay cái vỏ này đứng sẵn từ lúc màn mở (rỗng), chỉ RUỘT đổi khi chấm:
+          đó là thay đổi trong vùng sống, và được đọc lên chắc chắn.
+          `role="status"` đã gỡ khỏi FeedbackBanner để không lồng hai vùng
+          sống vào nhau (hai lần đọc, hoặc không lần nào). */}
+      <div role="status" aria-live="polite">
+        {verdict && (
         <FeedbackBanner
           correct={verdict.correct}
           title={
@@ -145,7 +158,8 @@ export function ScreenShell({
           explanation={verdict.explain}
           lines={verdict.lines}
         />
-      )}
+        )}
+      </div>
     </ShellB>
   );
 }
