@@ -5,9 +5,10 @@
  * Ba thứ lấy của Figma, và một thứ GIỮ của mình:
  *  · Ô trống mang số ①②③ ngay trong code. Trước đây ô in "···" không số, trong
  *    khi lời phản hồi nói "Ô 2" — người học phải tự đếm.
- *  · Kho thẻ gom theo ô (`bank[].slot`), mỗi nhóm một nhãn `slots[].hint` —
- *    NHƯNG tới 19/10/2026 chưa bài nào khai `hint` (149 ô / 45 bài), nên nhóm
- *    không nhãn. Ca "không bịa nhãn" canh đúng chỗ này.
+ *  · Kho thẻ gom theo ô (`bank[].slot`), mỗi nhóm một nhãn `slots[].hint`. Tới
+ *    19/10/2026 chưa bài nào khai `hint` (149 ô / 45 bài) nên nhóm không nhãn;
+ *    ngày 20/10/2026 cả 149 ô được viết gợi ý một lượt. Ca "nhãn nhóm" canh cả
+ *    hai nhánh, và `trap-leak.test.mjs` canh việc gợi ý KHÔNG nói ra đáp án.
  *  · Phản hồi TỪNG ô, kể cả ô đúng. Bản cũ chỉ báo ô sai ĐẦU TIÊN.
  *  · GIỮ: ô sai không bao giờ nói đáp án đúng (Figma nói thẳng "ready" ngay lần
  *    sai đầu). Ca này quét MỌI thẻ sai của MỌI bài thật, không một bài mẫu.
@@ -27,7 +28,10 @@
  *    — "số trong ô: ScaffoldScreen…", "kho gom theo ô", "chữ mới…".
  *  - fillFeedback thêm `Cần: ${slot.answer}` vào dòng ô bẫy: trượt 1 ca
  *    "KHÔNG lộ đáp án".
- *  - bankGroups bỏ qua `hint`: trượt 1 ca "không bịa nhãn nhóm".
+ *  - bankGroups bỏ qua `hint`: trượt 1 ca "nhãn nhóm".
+ *  - bỏ `hints=[…]` khỏi scripts/pe-v4/lessons_*.py rồi dựng lại: trượt 1 ca
+ *    "nhãn nhóm" ở đây + 1 ca "có đủ dữ liệu để kiểm — 149 ô của 45 bài" của
+ *    trap-leak.test.mjs (đo 20/10/2026).
  *
  * Chạy: cd frontend && npm run test:unit
  */
@@ -118,17 +122,31 @@ test('kho tự bớt thẻ đã dùng, và không bài nào mất thẻ khi gom'
   }
 });
 
-test('không bịa nhãn nhóm: dữ liệu chưa có `hint` thì nhóm KHÔNG có nhãn; có thì chép đúng', () => {
-  const hinted = WITH_FILL.flatMap(([, c]) => c.step_3.scaffold.slots).filter((s) => s.hint);
-  // Ngày bài đầu tiên khai `hint`, ca này trượt để người sửa đọc lại câu chữ
-  // của nhãn trên màn thật — và cập nhật chú thích "chưa bài nào khai".
-  assert.equal(hinted.length, 0, 'đã có bài khai slots[].hint — xem lại nhãn nhóm trên màn');
-  for (const g of bankGroups(P02_SC.slots, P02_SC.bank, [])) assert.equal('hint' in g, false);
+test('nhãn nhóm: 149 ô thật đều có `hint` và được chép đúng; thiếu thì nhóm KHÔNG có nhãn', () => {
+  // Bản trước của ca này khẳng định `hinted.length === 0` — một cái bẫy ĐẶT CỐ
+  // Ý để trượt vào ngày bài đầu tiên khai `hint`, buộc người sửa đọc lại nhãn
+  // trên màn thật. Ngày đó là 20/10/2026: cả 149 ô của 45 bài được viết gợi ý
+  // một lượt, nên khẳng định đảo chiều — giờ THIẾU hint mới là lỗi.
+  const slotsThat = WITH_FILL.flatMap(([, c]) => c.step_3.scaffold.slots);
+  assert.equal(slotsThat.length, 149);
+  assert.deepEqual(slotsThat.filter((s) => !s.hint?.trim()), [], 'còn ô chưa có gợi ý');
 
-  const slots = P02_SC.slots.map((s) => (s.n === 2 ? { ...s, hint: 'Báo lỗi khi không có chuyển' } : s));
-  const groups = bankGroups(slots, P02_SC.bank, []);
-  assert.equal(groups[1].hint, 'Báo lỗi khi không có chuyển');
+  // Chép ĐÚNG, không xào lại: nhãn nhóm phải là chính chuỗi của ô cùng số.
+  for (const [f, c] of WITH_FILL) {
+    const sc = c.step_3.scaffold;
+    for (const g of bankGroups(sc.slots, sc.bank, [])) {
+      const slot = sc.slots.find((s) => s.n === g.n);
+      if (slot) assert.equal(g.hint, slot.hint, `${f} ô${g.n}: nhãn nhóm không khớp slots[].hint`);
+    }
+  }
+
+  // Nửa còn lại của hợp đồng: bài KHÔNG khai thì nhóm không có khoá `hint` —
+  // một nhãn rỗng treo trên kho đọc như thẻ bị mất. Không còn bài thật nào
+  // thiếu hint, nên gỡ hint khỏi một ô để kiểm nhánh đó.
+  const trong = P02_SC.slots.map((s) => (s.n === 1 ? { ...s, hint: undefined } : s));
+  const groups = bankGroups(trong, P02_SC.bank, []);
   assert.equal('hint' in groups[0], false);
+  assert.equal(groups[1].hint, P02_SC.slots[1].hint);
 });
 
 test('mỗi ô một dòng khi đúng: đủ ba dòng ①②③, không bịa lý do khi bài chưa khai `why`', () => {

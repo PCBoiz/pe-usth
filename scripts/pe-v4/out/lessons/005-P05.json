@@ -252,17 +252,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "timeout=limit"
+            "answer": "timeout=limit",
+            "hint": "Tham số chặn code chạy quá giờ cho phép"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "subprocess.TimeoutExpired"
+            "answer": "subprocess.TimeoutExpired",
+            "hint": "Loại ngoại lệ mà run() ném khi hết giờ"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "result.returncode != 0"
+            "answer": "result.returncode != 0",
+            "hint": "Điều kiện coi là chạy lỗi — đọc tín hiệu chính thức, không đọc chữ in ra"
           }
         ],
         "bank": [

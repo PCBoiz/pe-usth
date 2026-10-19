@@ -225,17 +225,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "df[\"region\"].str.strip().str.lower()"
+            "answer": "df[\"region\"].str.strip().str.lower()",
+            "hint": "Chuẩn hoá nhãn vùng: bỏ khoảng trắng, về chữ thường — qua bộ truy cập chuỗi"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")"
+            "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")",
+            "hint": "Đổi qty sang số; ô không đổi được thì thành thiếu, đừng điền 0"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")"
+            "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")",
+            "hint": "Bỏ đơn gửi lại, nhận diện theo KHOÁ đơn, giữ bản đầu"
           }
         ],
         "bank": [

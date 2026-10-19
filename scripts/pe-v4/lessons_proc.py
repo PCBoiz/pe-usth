@@ -582,6 +582,9 @@ def ancestors(table, pid):
     return chain
 ''',
             slots=['name == program', 'parent_of[row_pid] = row_ppid', 'parent_of[pid]'],
+            hints=['Điều kiện tính một dòng — so TRỌN tên, không phải tên chứa nhau',
+                   'Ghi một dòng vào bảng tra cha: khoá là con, giá trị là cha',
+                   'Cha của pid đang đứng, tra từ bảng — không phải biến còn sót sau vòng for'],
             traps=[('name in program', 1, '"py" in "python" là True — đếm nhầm program khác tên.'),
                    ('parent_of[row_ppid] = row_pid', 2, 'Ngược chiều: một cha nhiều con thì con sau ghi đè con trước.'),
                    ('row_ppid', 3, 'Biến của vòng for đã xong — chỉ là ppid của dòng cuối bảng.')]),
@@ -756,6 +759,9 @@ def run_child(code):
     return {{slot3}}
 ''',
             slots=['"ready"', 'raise ValueError("invalid transition")', 'child.wait()'],
+            hints=['Trạng thái sau khi I/O xong — còn một bước dispatch nữa mới được CPU',
+                   'Cách báo cặp (trạng thái, sự kiện) không hợp lệ — phải ồn, không âm thầm',
+                   'Cha chặn lại tới khi con xong, rồi mới có mã thoát'],
             traps=[('"running"', 1, 'I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa.'),
                    ('return None', 2, 'Âm thầm trả None — lỗi chuyển trạng thái bị che mất.'),
                    ('child.returncode', 3, 'Đọc ngay sau Popen là None: chưa ai chờ con.')]),
@@ -935,6 +941,9 @@ def round_robin(jobs, quantum, switch=0):
     return timeline
 ''',
             slots=['clock += switch', 'min(quantum, left)', 'ready.append((name, left - run))'],
+            hints=['Cộng chi phí đổi ngữ cảnh vào đồng hồ — mức lấy từ tham số',
+                   'Lượt này chạy bao lâu: không quá suất, cũng không quá phần việc còn lại',
+                   'Phần việc còn dư quay lại hàng chờ, xếp ở CUỐI'],
             traps=[('clock += 1', 1, 'Chi phí switch là tham số, không cố định 1.'),
                    ('left', 2, 'Chạy tới hết — thành FCFS, không còn preemptive.'),
                    ('ready.appendleft((name, left - run))', 3, 'Về ĐẦU hàng: process vừa bị ngắt lại chạy tiếp, process khác phải chờ mãi.')]),
@@ -1116,6 +1125,9 @@ def run_sum(lines):
     return int(result.stdout), result.stderr.splitlines()
 ''',
             slots=['print("skip:", text, file=sys.stderr)', 'input=data', 'text=True'],
+            hints=['Báo dòng bỏ qua ra luồng lỗi, để không lẫn vào kết quả',
+                   'Tham số đưa một chuỗi sẵn có vào stdin của con',
+                   'Tham số cho out/err về dạng chuỗi thay vì bytes'],
             traps=[('print("skip:", text)', 1, 'Ra stdout — lẫn vào kết quả.'),
                    ('stdin=data', 2, 'stdin= nhận PIPE hoặc file object; chuỗi phải đi qua input=.'),
                    ('stderr=subprocess.STDOUT', 3, 'Không dùng chung với capture_output — và gộp thì int() gặp chữ.')]),
@@ -1285,6 +1297,9 @@ print(repr(subprocess.check_output([sys.executable, "-c", "print('hi')"], text=T
     return "FAIL"
 ''',
             slots=['timeout=limit', 'subprocess.TimeoutExpired', 'result.returncode != 0'],
+            hints=['Tham số chặn code chạy quá giờ cho phép',
+                   'Loại ngoại lệ mà run() ném khi hết giờ',
+                   'Điều kiện coi là chạy lỗi — đọc tín hiệu chính thức, không đọc chữ in ra'],
             traps=[('check=True', 1, 'Mã khác 0 thành CalledProcessError — không ai bắt, và mất timeout.'),
                    ('subprocess.CalledProcessError', 2, 'Không có check=True thì run() không ném lỗi này; quá giờ là TimeoutExpired.'),
                    ('result.stderr', 3, 'Có chữ trong stderr chưa chắc là lỗi; tín hiệu chính thức là returncode.')]),
@@ -1462,6 +1477,9 @@ except subprocess.TimeoutExpired:
     return "ok", out, proc.returncode
 ''',
             slots=['proc.communicate(data, timeout=limit)', 'proc.kill()', 'proc.communicate()'],
+            hints=['Một lời gọi: gửi dữ liệu vào, đọc hai luồng ra, và có hạn giờ',
+                   'Hết giờ thì phải tự tay dừng con — ngoại lệ không dừng hộ',
+                   'Thu nốt những gì con đã in, lần này KHÔNG gửi gì thêm'],
             traps=[('proc.wait(timeout=limit)', 1, 'wait() không gửi data, không đọc pipe; nó trả exit code chứ không phải (out, err).'),
                    ('pass', 2, 'Con vẫn chạy — TimeoutExpired không tự kill.'),
                    ('proc.communicate(data)', 3, 'Không được gửi input lần hai sau khi đã bắt đầu giao tiếp (ValueError).')]),
@@ -1644,6 +1662,9 @@ def run_workers(numbers):
     return squares
 ''',
             slots=['results.put((n, n * n))', 'Process(target=square, args=(n, results))', 'results.get()'],
+            hints=['Con gửi cặp (số, bình phương) về cha qua kênh dùng chung',
+                   'Dựng một process con: trỏ tới hàm và GIAO đối số, đừng gọi tại đây',
+                   'Lấy ra một cặp kết quả từ kênh, mỗi lượt một cặp'],
             traps=[('return n * n', 1, 'Giá trị return của target bị bỏ đi — cha không nhận được.'),
                    ('Process(target=square(n, results))', 2, 'Gọi square ngay trong cha; Process nhận target=None.'),
                    ('results', 3, 'Queue là kênh, không phải kết quả — phải get() từng cặp.')]),

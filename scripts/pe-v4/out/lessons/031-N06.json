@@ -221,17 +221,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "skip_header=1"
+            "answer": "skip_header=1",
+            "hint": "Tham số bỏ dòng tiêu đề — tên riêng của genfromtxt"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "np.nanmean(marks, axis=0)"
+            "answer": "np.nanmean(marks, axis=0)",
+            "hint": "Trung bình từng cột, bỏ qua ô trống"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "np.random.default_rng(2026)"
+            "answer": "np.random.default_rng(2026)",
+            "hint": "Nguồn số ngẫu nhiên CÓ seed, để chạy lại ra đúng kết quả cũ"
           }
         ],
         "bank": [

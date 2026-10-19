@@ -217,22 +217,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "np.isnan(wait).sum()"
+            "answer": "np.isnan(wait).sum()",
+            "hint": "Đếm ô thiếu — NaN phải nhận bằng hàm, không bằng phép so bằng"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "np.nanmedian(wait)"
+            "answer": "np.nanmedian(wait)",
+            "hint": "Giá trị điển hình, chịu được cả ô thiếu lẫn một số lệch hẳn"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "~np.isnan(marks)"
+            "answer": "~np.isnan(marks)",
+            "hint": "Mask chọn các môn ĐÃ có điểm"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "credits[ok]"
+            "answer": "credits[ok]",
+            "hint": "Trọng số phải lọc cùng mask với điểm, không thì lệch shape"
           }
         ],
         "bank": [

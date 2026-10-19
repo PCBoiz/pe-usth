@@ -277,17 +277,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "shift_var"
+            "answer": "shift_var",
+            "hint": "Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "laptop_var.get()"
+            "answer": "laptop_var.get()",
+            "hint": "Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "shift_var.get()"
+            "answer": "shift_var.get()",
+            "hint": "Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl"
           }
         ],
         "bank": [

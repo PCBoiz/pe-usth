@@ -255,17 +255,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "print(\"skip:\", text, file=sys.stderr)"
+            "answer": "print(\"skip:\", text, file=sys.stderr)",
+            "hint": "Báo dòng bỏ qua ra luồng lỗi, để không lẫn vào kết quả"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "input=data"
+            "answer": "input=data",
+            "hint": "Tham số đưa một chuỗi sẵn có vào stdin của con"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "text=True"
+            "answer": "text=True",
+            "hint": "Tham số cho out/err về dạng chuỗi thay vì bytes"
           }
         ],
         "bank": [

@@ -255,17 +255,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "threading.Thread(target=download, args=(url, sizes))"
+            "answer": "threading.Thread(target=download, args=(url, sizes))",
+            "hint": "Dựng thread cho url này: trỏ tới hàm, giao đủ đối số, chưa chạy"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "worker.start()"
+            "answer": "worker.start()",
+            "hint": "Lệnh đẩy thread ra chạy song song, không chạy tại chỗ"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "worker.join()"
+            "answer": "worker.join()",
+            "hint": "Chờ tới khi thread thật sự xong — không đoán bằng thời gian"
           }
         ],
         "bank": [

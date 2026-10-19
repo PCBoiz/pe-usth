@@ -247,22 +247,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "pack(padx=10, pady=10)"
+            "answer": "pack(padx=10, pady=10)",
+            "hint": "Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "index // 2"
+            "answer": "index // 2",
+            "hint": "Số hàng tính từ thứ tự nút: hai nút một hàng"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "index % 2"
+            "answer": "index % 2",
+            "hint": "Số cột tính từ thứ tự nút: luân phiên 0 rồi 1"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "pack(side=\"bottom\")"
+            "answer": "pack(side=\"bottom\")",
+            "hint": "Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng"
           }
         ],
         "bank": [

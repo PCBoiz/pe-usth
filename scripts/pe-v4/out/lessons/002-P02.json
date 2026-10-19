@@ -257,17 +257,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\"ready\""
+            "answer": "\"ready\"",
+            "hint": "Trạng thái sau khi I/O xong — còn một bước dispatch nữa mới được CPU"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "raise ValueError(\"invalid transition\")"
+            "answer": "raise ValueError(\"invalid transition\")",
+            "hint": "Cách báo cặp (trạng thái, sự kiện) không hợp lệ — phải ồn, không âm thầm"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "child.wait()"
+            "answer": "child.wait()",
+            "hint": "Cha chặn lại tới khi con xong, rồi mới có mã thoát"
           }
         ],
         "bank": [

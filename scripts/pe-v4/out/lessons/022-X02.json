@@ -236,22 +236,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\"pd.read_stata\""
+            "answer": "\"pd.read_stata\"",
+            "hint": "Tên hàm pandas đọc file .dta"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "\"scipy.io.loadmat\""
+            "answer": "\"scipy.io.loadmat\"",
+            "hint": "Tên hàm đọc .mat của MATLAB — không thuộc pandas, cũng không phải thư viện HDF5"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "Path(path).suffix.lower()"
+            "answer": "Path(path).suffix.lower()",
+            "hint": "Đuôi file kèm dấu chấm, hạ chữ thường, lấy từ dấu chấm CUỐI"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "df.to_stata(path, write_index=False)"
+            "answer": "df.to_stata(path, write_index=False)",
+            "hint": "Ghi bảng ra định dạng Stata mà KHÔNG kèm cột index"
           }
         ],
         "bank": [

@@ -257,17 +257,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "sum(cpu) + sum(io)"
+            "answer": "sum(cpu) + sum(io)",
+            "hint": "Chạy nối tiếp: mọi phần việc xếp hàng, không ai chồng lên ai"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "max(sum(cpu), max(io, default=0))"
+            "answer": "max(sum(cpu), max(io, default=0))",
+            "hint": "Nhiều thread, một GIL: phần CPU vẫn nối tiếp, các lần chờ I/O chồng lên nhau"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "max(cpu + io, default=0)"
+            "answer": "max(cpu + io, default=0)",
+            "hint": "Mỗi process một GIL riêng: tất cả cùng chạy, chỉ chờ phần việc dài nhất"
           }
         ],
         "bank": [

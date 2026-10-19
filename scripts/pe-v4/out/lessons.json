@@ -260,17 +260,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "name == program"
+        "answer": "name == program",
+        "hint": "Điều kiện tính một dòng — so TRỌN tên, không phải tên chứa nhau"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "parent_of[row_pid] = row_ppid"
+        "answer": "parent_of[row_pid] = row_ppid",
+        "hint": "Ghi một dòng vào bảng tra cha: khoá là con, giá trị là cha"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "parent_of[pid]"
+        "answer": "parent_of[pid]",
+        "hint": "Cha của pid đang đứng, tra từ bảng — không phải biến còn sót sau vòng for"
        }
       ],
       "bank": [
@@ -675,17 +678,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "\"ready\""
+        "answer": "\"ready\"",
+        "hint": "Trạng thái sau khi I/O xong — còn một bước dispatch nữa mới được CPU"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "raise ValueError(\"invalid transition\")"
+        "answer": "raise ValueError(\"invalid transition\")",
+        "hint": "Cách báo cặp (trạng thái, sự kiện) không hợp lệ — phải ồn, không âm thầm"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "child.wait()"
+        "answer": "child.wait()",
+        "hint": "Cha chặn lại tới khi con xong, rồi mới có mã thoát"
        }
       ],
       "bank": [
@@ -1077,17 +1083,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "clock += switch"
+        "answer": "clock += switch",
+        "hint": "Cộng chi phí đổi ngữ cảnh vào đồng hồ — mức lấy từ tham số"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "min(quantum, left)"
+        "answer": "min(quantum, left)",
+        "hint": "Lượt này chạy bao lâu: không quá suất, cũng không quá phần việc còn lại"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "ready.append((name, left - run))"
+        "answer": "ready.append((name, left - run))",
+        "hint": "Phần việc còn dư quay lại hàng chờ, xếp ở CUỐI"
        }
       ],
       "bank": [
@@ -1486,17 +1495,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "print(\"skip:\", text, file=sys.stderr)"
+        "answer": "print(\"skip:\", text, file=sys.stderr)",
+        "hint": "Báo dòng bỏ qua ra luồng lỗi, để không lẫn vào kết quả"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "input=data"
+        "answer": "input=data",
+        "hint": "Tham số đưa một chuỗi sẵn có vào stdin của con"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "text=True"
+        "answer": "text=True",
+        "hint": "Tham số cho out/err về dạng chuỗi thay vì bytes"
        }
       ],
       "bank": [
@@ -1890,17 +1902,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "timeout=limit"
+        "answer": "timeout=limit",
+        "hint": "Tham số chặn code chạy quá giờ cho phép"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "subprocess.TimeoutExpired"
+        "answer": "subprocess.TimeoutExpired",
+        "hint": "Loại ngoại lệ mà run() ném khi hết giờ"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "result.returncode != 0"
+        "answer": "result.returncode != 0",
+        "hint": "Điều kiện coi là chạy lỗi — đọc tín hiệu chính thức, không đọc chữ in ra"
        }
       ],
       "bank": [
@@ -2319,17 +2334,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "proc.communicate(data, timeout=limit)"
+        "answer": "proc.communicate(data, timeout=limit)",
+        "hint": "Một lời gọi: gửi dữ liệu vào, đọc hai luồng ra, và có hạn giờ"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "proc.kill()"
+        "answer": "proc.kill()",
+        "hint": "Hết giờ thì phải tự tay dừng con — ngoại lệ không dừng hộ"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "proc.communicate()"
+        "answer": "proc.communicate()",
+        "hint": "Thu nốt những gì con đã in, lần này KHÔNG gửi gì thêm"
        }
       ],
       "bank": [
@@ -2699,17 +2717,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "results.put((n, n * n))"
+        "answer": "results.put((n, n * n))",
+        "hint": "Con gửi cặp (số, bình phương) về cha qua kênh dùng chung"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "Process(target=square, args=(n, results))"
+        "answer": "Process(target=square, args=(n, results))",
+        "hint": "Dựng một process con: trỏ tới hàm và GIAO đối số, đừng gọi tại đây"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "results.get()"
+        "answer": "results.get()",
+        "hint": "Lấy ra một cặp kết quả từ kênh, mỗi lượt một cặp"
        }
       ],
       "bank": [
@@ -3089,17 +3110,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "(\"code\", \"global\", \"heap\", \"file\")"
+        "answer": "(\"code\", \"global\", \"heap\", \"file\")",
+        "hint": "Nhóm tài nguyên mọi thread trong process dùng chung"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "(\"stack\", \"pc\", \"registers\")"
+        "answer": "(\"stack\", \"pc\", \"registers\")",
+        "hint": "Nhóm mà mỗi thread giữ một bản riêng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "threading.current_thread().name"
+        "answer": "threading.current_thread().name",
+        "hint": "Tên của thread ĐANG chạy lời gọi này, đọc lúc chạy"
        }
       ],
       "bank": [
@@ -3480,17 +3504,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "threading.Thread(target=download, args=(url, sizes))"
+        "answer": "threading.Thread(target=download, args=(url, sizes))",
+        "hint": "Dựng thread cho url này: trỏ tới hàm, giao đủ đối số, chưa chạy"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "worker.start()"
+        "answer": "worker.start()",
+        "hint": "Lệnh đẩy thread ra chạy song song, không chạy tại chỗ"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "worker.join()"
+        "answer": "worker.join()",
+        "hint": "Chờ tới khi thread thật sự xong — không đoán bằng thời gian"
        }
       ],
       "bank": [
@@ -3873,22 +3900,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "threading.Thread"
+        "answer": "threading.Thread",
+        "hint": "Lớp cha để kế thừa — bản thân lớp, chưa phải một object"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "super().__init__()"
+        "answer": "super().__init__()",
+        "hint": "Việc đầu tiên của hàm khởi tạo: chạy khởi tạo của lớp cha"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "run"
+        "answer": "run",
+        "hint": "Tên method mà thread gọi khi bắt đầu — ghi đè đúng method đó"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "worker.start()"
+        "answer": "worker.start()",
+        "hint": "Lệnh khởi chạy từng worker trong một thread riêng"
        }
       ],
       "bank": [
@@ -4284,17 +4315,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "sum(cpu) + sum(io)"
+        "answer": "sum(cpu) + sum(io)",
+        "hint": "Chạy nối tiếp: mọi phần việc xếp hàng, không ai chồng lên ai"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "max(sum(cpu), max(io, default=0))"
+        "answer": "max(sum(cpu), max(io, default=0))",
+        "hint": "Nhiều thread, một GIL: phần CPU vẫn nối tiếp, các lần chờ I/O chồng lên nhau"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "max(cpu + io, default=0)"
+        "answer": "max(cpu + io, default=0)",
+        "hint": "Mỗi process một GIL riêng: tất cả cùng chạy, chỉ chờ phần việc dài nhất"
        }
       ],
       "bank": [
@@ -4701,17 +4735,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "with self.lock:"
+        "answer": "with self.lock:",
+        "hint": "Mở critical section bằng chính khoá của account này, và tự nhả khi ra"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "amount > self.balance"
+        "answer": "amount > self.balance",
+        "hint": "Điều kiện tiền trong tài khoản không đủ để rút"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "positions[i] <= positions[i - 1]"
+        "answer": "positions[i] <= positions[i - 1]",
+        "hint": "Điều kiện thấy kế hoạch có thể kẹt: so vị trí hai khoá liền nhau"
        }
       ],
       "bank": [
@@ -5167,22 +5204,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "dict(record)"
+        "answer": "dict(record)",
+        "hint": "Đưa vào hàng đợi một BẢN SAO, để nơi gọi sửa tiếp cũng không ảnh hưởng"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "self.jobs.get_nowait()"
+        "answer": "self.jobs.get_nowait()",
+        "hint": "Lấy việc mà KHÔNG chờ — hàng rỗng thì ném ngoại lệ ngay"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "self.jobs.task_done()"
+        "answer": "self.jobs.task_done()",
+        "hint": "Báo đã xử lý xong một việc, cho bên đang chờ biết"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "threading.Thread(target=self._work)"
+        "answer": "threading.Thread(target=self._work)",
+        "hint": "Dựng thread chạy vòng xử lý: trỏ tới method, chưa gọi nó"
        }
       ],
       "bank": [
@@ -5577,22 +5618,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "tk.Tk()"
+        "answer": "tk.Tk()",
+        "hint": "Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "root.geometry(size)"
+        "answer": "root.geometry(size)",
+        "hint": "Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "tk.Toplevel(root)"
+        "answer": "tk.Toplevel(root)",
+        "hint": "Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "root.mainloop()"
+        "answer": "root.mainloop()",
+        "hint": "Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi"
        }
       ],
       "bank": [
@@ -5965,17 +6010,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "tk.Label(root, text=\"\")"
+        "answer": "tk.Label(root, text=\"\")",
+        "hint": "Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "name_entry.get()"
+        "answer": "name_entry.get()",
+        "hint": "Lấy chữ người dùng đã gõ ra khỏi ô nhập"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "send"
+        "answer": "send",
+        "hint": "Giao cho nút chính hàm xử lý, chưa gọi nó ở đây"
        }
       ],
       "bank": [
@@ -6370,17 +6418,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "shift_var"
+        "answer": "shift_var",
+        "hint": "Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "laptop_var.get()"
+        "answer": "laptop_var.get()",
+        "hint": "Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "shift_var.get()"
+        "answer": "shift_var.get()",
+        "hint": "Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl"
        }
       ],
       "bank": [
@@ -6749,22 +6800,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "pack(padx=10, pady=10)"
+        "answer": "pack(padx=10, pady=10)",
+        "hint": "Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "index // 2"
+        "answer": "index // 2",
+        "hint": "Số hàng tính từ thứ tự nút: hai nút một hàng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "index % 2"
+        "answer": "index % 2",
+        "hint": "Số cột tính từ thứ tự nút: luân phiên 0 rồi 1"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "pack(side=\"bottom\")"
+        "answer": "pack(side=\"bottom\")",
+        "hint": "Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng"
        }
       ],
       "bank": [
@@ -7156,22 +7211,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "self.convert"
+        "answer": "self.convert",
+        "hint": "Giao method xử lý cho nút — tên method, không phải kết quả gọi nó"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "self.answer"
+        "answer": "self.answer",
+        "hint": "Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "self.celsius.get()"
+        "answer": "self.celsius.get()",
+        "hint": "Chuỗi đang nằm trong biến của ô nhập — float() không nhận object"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "self.answer.config(text=str(value) + \" °F\")"
+        "answer": "self.answer.config(text=str(value) + \" °F\")",
+        "hint": "Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console"
        }
       ],
       "bank": [
@@ -7585,17 +7644,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "box.get_nowait()"
+        "answer": "box.get_nowait()",
+        "hint": "Lấy kết quả mà không chặn thread giao diện — rỗng thì ném ngoại lệ"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "root.after(100, check_box)"
+        "answer": "root.after(100, check_box)",
+        "hint": "Chưa có kết quả thì hẹn kiểm lại lượt sau qua vòng lặp sự kiện"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "threading.Thread(target=count_even, args=(1000,)).start()"
+        "answer": "threading.Thread(target=count_even, args=(1000,)).start()",
+        "hint": "Đẩy việc dài sang thread riêng rồi trả quyền ngay cho giao diện"
        }
       ],
       "bank": [
@@ -8369,22 +8431,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "\";\""
+        "answer": "\";\"",
+        "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "\"#\""
+        "answer": "\"#\"",
+        "hint": "Ký tự mở đầu dòng ghi chú cần bỏ qua"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "[\"-\"]"
+        "answer": "[\"-\"]",
+        "hint": "Danh sách chuỗi mà file này dùng để đánh dấu ô thiếu"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "len(df)"
+        "answer": "len(df)",
+        "hint": "Số DÒNG của bảng, không phải tổng số ô"
        }
       ],
       "bank": [
@@ -8756,22 +8822,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "\"pd.read_stata\""
+        "answer": "\"pd.read_stata\"",
+        "hint": "Tên hàm pandas đọc file .dta"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "\"scipy.io.loadmat\""
+        "answer": "\"scipy.io.loadmat\"",
+        "hint": "Tên hàm đọc .mat của MATLAB — không thuộc pandas, cũng không phải thư viện HDF5"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "Path(path).suffix.lower()"
+        "answer": "Path(path).suffix.lower()",
+        "hint": "Đuôi file kèm dấu chấm, hạ chữ thường, lấy từ dấu chấm CUỐI"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "df.to_stata(path, write_index=False)"
+        "answer": "df.to_stata(path, write_index=False)",
+        "hint": "Ghi bảng ra định dạng Stata mà KHÔNG kèm cột index"
        }
       ],
       "bank": [
@@ -9142,22 +9212,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "?"
+        "answer": "?",
+        "hint": "Chỗ giữ cho giá trị để sqlite3 tự chèn — đừng ghép vào chuỗi SQL"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "(city,)"
+        "answer": "(city,)",
+        "hint": "Dãy tham số của câu SQL — một phần tử vẫn phải là tuple"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "SUM(amount)"
+        "answer": "SUM(amount)",
+        "hint": "Biểu thức tổng hợp cộng cả cột tiền ngay trong SQL"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "fetchone()"
+        "answer": "fetchone()",
+        "hint": "Lấy MỘT dòng kết quả, để row[0] là con số"
        }
       ],
       "bank": [
@@ -9527,17 +9601,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "fig, ax = plt.subplots()"
+        "answer": "fig, ax = plt.subplots()",
+        "hint": "Tạo Figure và Axes — lời gọi trả về một CẶP"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "ax.hist(scores, bins=edges)"
+        "answer": "ax.hist(scores, bins=edges)",
+        "hint": "Vẽ phân bố theo biên đề cho sẵn, đếm theo khoảng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")"
+        "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")",
+        "hint": "Ghi nhãn hai trục — hàm vẽ không tự mở cửa sổ"
        }
       ],
       "bank": [
@@ -9890,17 +9967,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "BytesIO()"
+        "answer": "BytesIO()",
+        "hint": "Bộ đệm bytes trong bộ nhớ, không phải file trên đĩa"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
+        "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
+        "hint": "Lưu ĐÚNG figure được truyền vào, kèm định dạng và dpi"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "plt.close(fig)"
+        "answer": "plt.close(fig)",
+        "hint": "Giải phóng figure hẳn, không chỉ xoá nội dung"
        }
       ],
       "bank": [
@@ -10256,22 +10336,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "7"
+        "answer": "7",
+        "hint": "Điểm dừng của arange — reshape(2, 3) quyết định cần bao nhiêu số"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "temps.size"
+        "answer": "temps.size",
+        "hint": "Tổng số phần tử của array, không phải số hàng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "axis=0"
+        "answer": "axis=0",
+        "hint": "Cộng theo chiều thành phố, để ra tổng TỪNG NGÀY"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "axis=1"
+        "answer": "axis=1",
+        "hint": "Cộng theo chiều ngày, để ra tổng TỪNG THÀNH PHỐ"
        }
       ],
       "bank": [
@@ -10636,17 +10720,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "(temps >= 20) & (temps <= 35)"
+        "answer": "(temps >= 20) & (temps <= 35)",
+        "hint": "Mask bool giữ các ngày trong khoảng — mỗi phép so một cặp ngoặc"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "ok * 1.8 + 32"
+        "answer": "ok * 1.8 + 32",
+        "hint": "Công thức đổi độ C sang độ F, áp lên cả array đã lọc"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "ok > 30"
+        "answer": "ok > 30",
+        "hint": "Điều kiện bool chọn nhãn nóng, tính trên array đã lọc"
        }
       ],
       "bank": [
@@ -10997,17 +11084,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "axis=1, keepdims=True"
+        "answer": "axis=1, keepdims=True",
+        "hint": "Mean theo TỪNG HỌC VIÊN, và giữ lại chiều để còn trừ được"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "np.where(row_std == 0, 1, row_std)"
+        "answer": "np.where(row_std == 0, 1, row_std)",
+        "hint": "Thay độ lệch 0 bằng một số chia được, giữ nguyên các giá trị khác"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "(marks - row_mean) / safe"
+        "answer": "(marks - row_mean) / safe",
+        "hint": "Công thức z, chia cho mẫu số đã chống 0"
        }
       ],
       "bank": [
@@ -11353,22 +11443,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "np.isnan(wait).sum()"
+        "answer": "np.isnan(wait).sum()",
+        "hint": "Đếm ô thiếu — NaN phải nhận bằng hàm, không bằng phép so bằng"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "np.nanmedian(wait)"
+        "answer": "np.nanmedian(wait)",
+        "hint": "Giá trị điển hình, chịu được cả ô thiếu lẫn một số lệch hẳn"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "~np.isnan(marks)"
+        "answer": "~np.isnan(marks)",
+        "hint": "Mask chọn các môn ĐÃ có điểm"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "credits[ok]"
+        "answer": "credits[ok]",
+        "hint": "Trọng số phải lọc cùng mask với điểm, không thì lệch shape"
        }
       ],
       "bank": [
@@ -11724,12 +11818,14 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": ".copy()"
+        "answer": ".copy()",
+        "hint": "Tách hẳn khỏi bảng gốc — lát cắt vẫn chia chung bộ nhớ"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "np.isclose(first.sum(), 14.6)"
+        "answer": "np.isclose(first.sum(), 14.6)",
+        "hint": "So tổng số thực theo SAI SỐ, không so bằng tuyệt đối"
        }
       ],
       "bank": [
@@ -12079,17 +12175,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "skip_header=1"
+        "answer": "skip_header=1",
+        "hint": "Tham số bỏ dòng tiêu đề — tên riêng của genfromtxt"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "np.nanmean(marks, axis=0)"
+        "answer": "np.nanmean(marks, axis=0)",
+        "hint": "Trung bình từng cột, bỏ qua ô trống"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "np.random.default_rng(2026)"
+        "answer": "np.random.default_rng(2026)",
+        "hint": "Nguồn số ngẫu nhiên CÓ seed, để chạy lại ra đúng kết quả cũ"
        }
       ],
       "bank": [
@@ -12455,17 +12554,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "df.loc[sid, \"mark\"]"
+        "answer": "df.loc[sid, \"mark\"]",
+        "hint": "Tra theo NHÃN hàng, lấy ô cột mark"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "df.iloc[0][\"mark\"]"
+        "answer": "df.iloc[0][\"mark\"]",
+        "hint": "Lấy hàng ĐẦU theo vị trí, vì nhãn có thể lộn xộn"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "marks + bonus"
+        "answer": "marks + bonus",
+        "hint": "Cộng hai Series theo NHÃN, để thứ tự khác nhau vẫn khớp"
        }
       ],
       "bank": [
@@ -12829,22 +12931,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "sep=\";\""
+        "answer": "sep=\";\"",
+        "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "dtype={\"id\": \"string\"}"
+        "answer": "dtype={\"id\": \"string\"}",
+        "hint": "Khai kiểu cho cột mã đơn — mã của file này có số 0 đứng đầu"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "na_values=[\"missing\"]"
+        "answer": "na_values=[\"missing\"]",
+        "hint": "Khai chuỗi mà file dùng để ghi ô thiếu"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "index=False"
+        "answer": "index=False",
+        "hint": "Tham số quyết định CSV xuất ra có cột index hay không"
        }
       ],
       "bank": [
@@ -13224,17 +13330,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "df[\"region\"].str.strip().str.lower()"
+        "answer": "df[\"region\"].str.strip().str.lower()",
+        "hint": "Chuẩn hoá nhãn vùng: bỏ khoảng trắng, về chữ thường — qua bộ truy cập chuỗi"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")"
+        "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")",
+        "hint": "Đổi qty sang số; ô không đổi được thì thành thiếu, đừng điền 0"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")"
+        "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")",
+        "hint": "Bỏ đơn gửi lại, nhận diện theo KHOÁ đơn, giữ bản đầu"
        }
       ],
       "bank": [
@@ -13607,22 +13716,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "df.copy()"
+        "answer": "df.copy()",
+        "hint": "Làm việc trên bản riêng, đừng thêm cột vào bảng của nơi gọi"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\""
+        "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\"",
+        "hint": "Đánh dấu đơn qty không dương — gán thẳng vào bảng, không qua bảng tạm"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)"
+        "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)",
+        "hint": "Mask ba điều kiện cùng lúc, nối bằng toán tử dùng được với Series"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)"
+        "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)",
+        "hint": "Lọc theo mask rồi xếp doanh thu GIẢM dần"
        }
       ],
       "bank": [
@@ -13991,22 +14104,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "df[\"region\"].fillna(\"unknown\")"
+        "answer": "df[\"region\"].fillna(\"unknown\")",
+        "hint": "Vùng thiếu phải có nhãn riêng, không thì groupby đánh rơi dòng đó"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "(\"order_id\", \"size\")"
+        "answer": "(\"order_id\", \"size\")",
+        "hint": "Đếm SỐ ĐƠN — kể cả đơn thiếu qty"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "out[\"revenue\"] / out[\"qty\"]"
+        "answer": "out[\"revenue\"] / out[\"qty\"]",
+        "hint": "Giá trung bình có mẫu số là số lượng, không phải mean các giá"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "out[\"revenue\"] / out[\"revenue\"].sum()"
+        "answer": "out[\"revenue\"] / out[\"revenue\"].sum()",
+        "hint": "Tỉ trọng của vùng: mẫu số là tổng doanh thu toàn bộ"
        }
       ],
       "bank": [
@@ -14363,17 +14480,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "how=\"left\""
+        "answer": "how=\"left\"",
+        "hint": "Kiểu nối giữ nguyên mọi đơn, kể cả sku chưa có giá"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "validate=\"many_to_one\""
+        "answer": "validate=\"many_to_one\"",
+        "hint": "Khai cardinality: nhiều đơn ứng MỘT dòng giá, để merge tự chặn khi bảng giá trùng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "pd.concat(frames, ignore_index=True)"
+        "answer": "pd.concat(frames, ignore_index=True)",
+        "hint": "Nối các bảng rồi đánh lại index liên tục"
        }
       ],
       "bank": [
@@ -14730,17 +14850,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "id_vars=\"region\""
+        "answer": "id_vars=\"region\"",
+        "hint": "Khai cột GIỮ NGUYÊN khi chuyển sang dạng dài"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "pivot_table"
+        "answer": "pivot_table",
+        "hint": "Hàm dựng bảng rộng CÓ gộp — dữ liệu có (vùng, tháng) trùng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "aggfunc=\"sum\""
+        "answer": "aggfunc=\"sum\"",
+        "hint": "Khai cách gộp ô trùng là CỘNG; mặc định không phải vậy"
        }
       ],
       "bank": [
@@ -15099,22 +15222,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "errors=\"coerce\""
+        "answer": "errors=\"coerce\"",
+        "hint": "Ngày không đọc được thì thành NaT, không làm vỡ cả lệnh"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "\"MS\""
+        "answer": "\"MS\"",
+        "hint": "Mã tần suất gộp theo tháng, nhãn đặt ở ĐẦU tháng"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "monthly.sum(min_count=1)"
+        "answer": "monthly.sum(min_count=1)",
+        "hint": "Tổng theo tháng, nhưng tháng không có đơn phải để trống chứ không thành 0"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "s.sort_index().rolling(window).mean()"
+        "answer": "s.sort_index().rolling(window).mean()",
+        "hint": "Trung bình trượt — sắp theo ngày TRƯỚC khi trượt"
        }
       ],
       "bank": [
@@ -15493,22 +15620,26 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "int(raw[\"order_id\"].duplicated().sum())"
+        "answer": "int(raw[\"order_id\"].duplicated().sum())",
+        "hint": "Đếm số đơn gửi LẠI, không tính bản đầu tiên"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "int(qty.isna().sum())"
+        "answer": "int(qty.isna().sum())",
+        "hint": "Đếm ô qty thiếu, sau khi đã đổi sang số"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "raw.copy()"
+        "answer": "raw.copy()",
+        "hint": "Bản riêng để gán cột, giữ bảng nguồn nguyên vẹn"
        },
        {
         "n": 4,
         "placeholder": "[Slot 4]",
-        "answer": "df.to_csv(path, index=False)"
+        "answer": "df.to_csv(path, index=False)",
+        "hint": "Ghi bảng sạch ra CSV, không kèm cột index"
        }
       ],
       "bank": [
@@ -15887,17 +16018,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "plt.subplots(1, 2, layout=\"constrained\")"
+        "answer": "plt.subplots(1, 2, layout=\"constrained\")",
+        "hint": "Tạo HAI Axes cạnh nhau, và để matplotlib tự dàn khoảng"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "ax_line.plot(days, revenue, marker=\"o\")"
+        "answer": "ax_line.plot(days, revenue, marker=\"o\")",
+        "hint": "Vẽ đường lên ĐÚNG panel bên trái, không lên panel hiện hành"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "sorted(zip(orders, categories))"
+        "answer": "sorted(zip(orders, categories))",
+        "hint": "Ghép số đơn với tên rồi xếp hạng — barh vẽ từ dưới lên"
        }
       ],
       "bank": [
@@ -16251,17 +16385,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "ax_hist.hist(all_scores, bins=edges)"
+        "answer": "ax_hist.hist(all_scores, bins=edges)",
+        "hint": "Vẽ phân bố mọi điểm lên panel trái, theo biên đề cho"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "f\"All scores (n={len(all_scores)})\""
+        "answer": "f\"All scores (n={len(all_scores)})\"",
+        "hint": "Tiêu đề kèm số QUAN SÁT, không phải số nhóm"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "ax_box.boxplot(list(groups.values()))"
+        "answer": "ax_box.boxplot(list(groups.values()))",
+        "hint": "Một hộp cho MỖI nhóm, và giữ outlier hiện ra"
        }
       ],
       "bank": [
@@ -16623,17 +16760,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "max(table.to_numpy().max() for table in tables.values())"
+        "answer": "max(table.to_numpy().max() for table in tables.values())",
+        "hint": "Giá trị lớn nhất trên TOÀN BỘ các bảng, lấy từ số liệu chứ không từ tiêu đề"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "vmin=0, vmax=vmax"
+        "answer": "vmin=0, vmax=vmax",
+        "hint": "Chốt CẢ HAI đầu thang màu, để các panel so sánh được với nhau"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)"
+        "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)",
+        "hint": "Một thanh màu duy nhất cho mọi panel, có ghi đơn vị"
        }
       ],
       "bank": [
@@ -16982,17 +17122,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "int(revenue.to_numpy().argmax())"
+        "answer": "int(revenue.to_numpy().argmax())",
+        "hint": "Vị trí cột LỚN nhất, tính từ dữ liệu chứ không viết cứng"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "xy=(pos, value)"
+        "answer": "xy=(pos, value)",
+        "hint": "Toạ độ chú thích: x là vị trí cột, y là giá trị"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "ax.set_ylim(0, value * 1.2)"
+        "answer": "ax.set_ylim(0, value * 1.2)",
+        "hint": "Giữ đáy trục ở 0, chừa chỗ trên cho chú thích"
        }
       ],
       "bank": [
@@ -17337,17 +17480,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "data.sort_values(\"date\")"
+        "answer": "data.sort_values(\"date\")",
+        "hint": "Sắp theo thời gian trước khi vẽ, không theo giá trị"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))"
+        "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))",
+        "hint": "Formatter phần trăm cho trục y, khai rằng 1 là 100 phần trăm"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "any(size <= 0 for size in sizes)"
+        "answer": "any(size <= 0 for size in sizes)",
+        "hint": "Điều kiện chặn vì trục log không nhận giá trị không dương"
        }
       ],
       "bank": [
@@ -17707,17 +17853,20 @@
        {
         "n": 1,
         "placeholder": "[Slot 1]",
-        "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")"
+        "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")",
+        "hint": "Tạo Figure cỡ 6×3 inch và bật dàn khoảng tự động"
        },
        {
         "n": 2,
         "placeholder": "[Slot 2]",
-        "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
+        "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
+        "hint": "Lưu vào bộ đệm đúng dpi, và KHÔNG cắt theo nội dung"
        },
        {
         "n": 3,
         "placeholder": "[Slot 3]",
-        "answer": "plt.close(fig)"
+        "answer": "plt.close(fig)",
+        "hint": "Đóng figure sau mỗi lượt, đừng mở cửa sổ"
        }
       ],
       "bank": [

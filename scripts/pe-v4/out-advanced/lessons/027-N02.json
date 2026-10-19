@@ -218,17 +218,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "(temps >= 20) & (temps <= 35)"
+            "answer": "(temps >= 20) & (temps <= 35)",
+            "hint": "Mask bool giữ các ngày trong khoảng — mỗi phép so một cặp ngoặc"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "ok * 1.8 + 32"
+            "answer": "ok * 1.8 + 32",
+            "hint": "Công thức đổi độ C sang độ F, áp lên cả array đã lọc"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ok > 30"
+            "answer": "ok > 30",
+            "hint": "Điều kiện bool chọn nhãn nóng, tính trên array đã lọc"
           }
         ],
         "bank": [

@@ -252,22 +252,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "dict(record)"
+            "answer": "dict(record)",
+            "hint": "Đưa vào hàng đợi một BẢN SAO, để nơi gọi sửa tiếp cũng không ảnh hưởng"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "self.jobs.get_nowait()"
+            "answer": "self.jobs.get_nowait()",
+            "hint": "Lấy việc mà KHÔNG chờ — hàng rỗng thì ném ngoại lệ ngay"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "self.jobs.task_done()"
+            "answer": "self.jobs.task_done()",
+            "hint": "Báo đã xử lý xong một việc, cho bên đang chờ biết"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "threading.Thread(target=self._work)"
+            "answer": "threading.Thread(target=self._work)",
+            "hint": "Dựng thread chạy vòng xử lý: trỏ tới method, chưa gọi nó"
           }
         ],
         "bank": [

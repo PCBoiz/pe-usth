@@ -256,17 +256,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "tk.Label(root, text=\"\")"
+            "answer": "tk.Label(root, text=\"\")",
+            "hint": "Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "name_entry.get()"
+            "answer": "name_entry.get()",
+            "hint": "Lấy chữ người dùng đã gõ ra khỏi ô nhập"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "send"
+            "answer": "send",
+            "hint": "Giao cho nút chính hàm xử lý, chưa gọi nó ở đây"
           }
         ],
         "bank": [

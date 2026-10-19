@@ -217,17 +217,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "max(table.to_numpy().max() for table in tables.values())"
+            "answer": "max(table.to_numpy().max() for table in tables.values())",
+            "hint": "Giá trị lớn nhất trên TOÀN BỘ các bảng, lấy từ số liệu chứ không từ tiêu đề"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "vmin=0, vmax=vmax"
+            "answer": "vmin=0, vmax=vmax",
+            "hint": "Chốt CẢ HAI đầu thang màu, để các panel so sánh được với nhau"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)"
+            "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)",
+            "hint": "Một thanh màu duy nhất cho mọi panel, có ghi đơn vị"
           }
         ],
         "bank": [

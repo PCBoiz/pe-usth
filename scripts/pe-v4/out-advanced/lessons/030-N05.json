@@ -218,12 +218,14 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": ".copy()"
+            "answer": ".copy()",
+            "hint": "Tách hẳn khỏi bảng gốc — lát cắt vẫn chia chung bộ nhớ"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "np.isclose(first.sum(), 14.6)"
+            "answer": "np.isclose(first.sum(), 14.6)",
+            "hint": "So tổng số thực theo SAI SỐ, không so bằng tuyệt đối"
           }
         ],
         "bank": [

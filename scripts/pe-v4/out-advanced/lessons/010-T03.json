@@ -251,22 +251,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "threading.Thread"
+            "answer": "threading.Thread",
+            "hint": "Lớp cha để kế thừa — bản thân lớp, chưa phải một object"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "super().__init__()"
+            "answer": "super().__init__()",
+            "hint": "Việc đầu tiên của hàm khởi tạo: chạy khởi tạo của lớp cha"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "run"
+            "answer": "run",
+            "hint": "Tên method mà thread gọi khi bắt đầu — ghi đè đúng method đó"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "worker.start()"
+            "answer": "worker.start()",
+            "hint": "Lệnh khởi chạy từng worker trong một thread riêng"
           }
         ],
         "bank": [

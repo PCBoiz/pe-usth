@@ -217,17 +217,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "how=\"left\""
+            "answer": "how=\"left\"",
+            "hint": "Kiểu nối giữ nguyên mọi đơn, kể cả sku chưa có giá"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "validate=\"many_to_one\""
+            "answer": "validate=\"many_to_one\"",
+            "hint": "Khai cardinality: nhiều đơn ứng MỘT dòng giá, để merge tự chặn khi bảng giá trùng"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "pd.concat(frames, ignore_index=True)"
+            "answer": "pd.concat(frames, ignore_index=True)",
+            "hint": "Nối các bảng rồi đánh lại index liên tục"
           }
         ],
         "bank": [

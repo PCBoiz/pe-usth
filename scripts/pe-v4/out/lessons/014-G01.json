@@ -251,22 +251,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "tk.Tk()"
+            "answer": "tk.Tk()",
+            "hint": "Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "root.geometry(size)"
+            "answer": "root.geometry(size)",
+            "hint": "Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "tk.Toplevel(root)"
+            "answer": "tk.Toplevel(root)",
+            "hint": "Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "root.mainloop()"
+            "answer": "root.mainloop()",
+            "hint": "Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi"
           }
         ],
         "bank": [

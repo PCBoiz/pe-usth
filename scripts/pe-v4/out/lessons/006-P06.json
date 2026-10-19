@@ -256,17 +256,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "proc.communicate(data, timeout=limit)"
+            "answer": "proc.communicate(data, timeout=limit)",
+            "hint": "Một lời gọi: gửi dữ liệu vào, đọc hai luồng ra, và có hạn giờ"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "proc.kill()"
+            "answer": "proc.kill()",
+            "hint": "Hết giờ thì phải tự tay dừng con — ngoại lệ không dừng hộ"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "proc.communicate()"
+            "answer": "proc.communicate()",
+            "hint": "Thu nốt những gì con đã in, lần này KHÔNG gửi gì thêm"
           }
         ],
         "bank": [

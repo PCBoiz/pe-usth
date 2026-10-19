@@ -251,17 +251,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "box.get_nowait()"
+            "answer": "box.get_nowait()",
+            "hint": "Lấy kết quả mà không chặn thread giao diện — rỗng thì ném ngoại lệ"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "root.after(100, check_box)"
+            "answer": "root.after(100, check_box)",
+            "hint": "Chưa có kết quả thì hẹn kiểm lại lượt sau qua vòng lặp sự kiện"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "threading.Thread(target=count_even, args=(1000,)).start()"
+            "answer": "threading.Thread(target=count_even, args=(1000,)).start()",
+            "hint": "Đẩy việc dài sang thread riêng rồi trả quyền ngay cho giao diện"
           }
         ],
         "bank": [

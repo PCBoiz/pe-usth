@@ -245,6 +245,9 @@ def scaffold_block(code, spec):
     # bỏ trống. Màn điền code (frontend lib/studio-lesson.ts: bankGroups,
     # fillFeedback) đọc `slots[].hint/why`; thiếu thì nhóm không nhãn và câu đúng
     # không lý do. Chỉ chép khi bài khai THẬT — không sinh chữ thay người viết.
+    # LUẬT VIẾT `hints`: nhãn nằm trên kho TRƯỚC khi người học chọn gì, nên nó
+    # phải nói LOẠI thứ cần điền hoặc VIỆC nó làm, KHÔNG nói ra chính đáp án —
+    # lộ ở đây là phát sẵn bảng đáp án. Lưới: frontend/e2e/unit/trap-leak.test.mjs.
     extra = {}
     for key, field in (('hints', 'hint'), ('whys', 'why')):
         vals = spec.get(key)

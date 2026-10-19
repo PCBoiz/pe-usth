@@ -259,17 +259,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "(\"code\", \"global\", \"heap\", \"file\")"
+            "answer": "(\"code\", \"global\", \"heap\", \"file\")",
+            "hint": "Nhóm tài nguyên mọi thread trong process dùng chung"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "(\"stack\", \"pc\", \"registers\")"
+            "answer": "(\"stack\", \"pc\", \"registers\")",
+            "hint": "Nhóm mà mỗi thread giữ một bản riêng"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "threading.current_thread().name"
+            "answer": "threading.current_thread().name",
+            "hint": "Tên của thread ĐANG chạy lời gọi này, đọc lúc chạy"
           }
         ],
         "bank": [

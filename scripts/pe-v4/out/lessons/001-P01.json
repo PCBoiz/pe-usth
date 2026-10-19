@@ -256,17 +256,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "name == program"
+            "answer": "name == program",
+            "hint": "Điều kiện tính một dòng — so TRỌN tên, không phải tên chứa nhau"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "parent_of[row_pid] = row_ppid"
+            "answer": "parent_of[row_pid] = row_ppid",
+            "hint": "Ghi một dòng vào bảng tra cha: khoá là con, giá trị là cha"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "parent_of[pid]"
+            "answer": "parent_of[pid]",
+            "hint": "Cha của pid đang đứng, tra từ bảng — không phải biến còn sót sau vòng for"
           }
         ],
         "bank": [

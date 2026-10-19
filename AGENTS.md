@@ -56,7 +56,7 @@ mức này:
 | Backend lint | 119 lỗi, 1 cảnh báo — **mốc trần trong CI là 130, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → **706 ca**, tất cả đạt (~155 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài) | 20/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **706 ca**, tất cả đạt (~155 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~48 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án) | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **337 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình 175 KB sau khi mặt trời lên 128 vòng và tinh vân lên 14 bậc | 20/10/2026 |
 | Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 47,4 %** diện tích, ba bậc 0,03–0,35 **43,2 %** (sàn 30 %), trung vị 0,0254, p99 0,977, L > 0,5 4,55 % (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. **Trước bản 20/10 là 3,50 % · 0,73 % · 0,0065 · 0,7996** | 20/10/2026 |
@@ -64,7 +64,7 @@ mức này:
 | Bản đồ sao · BỐ CỤC | tỉ lệ cỡ chòm **5,95 : 1** (sàn 5,0; trước 3,53), **0/49** nét nằm trong 10° của một trục (trước 27/50 ở sàn 8°), 0 ngôi trong đĩa cấm r < 170 quanh mặt trời, khe hai chòm 64,1 px (sàn 50), 0 ngôi dưới rìa chân trời | 20/10/2026 |
 | Bản đồ sao · vùng chạm | 16 ô bấm đều ≥ 44 px ở bề rộng khung thật (1 068 × 643,9 px) — **chín ô từng dưới mức đó** (tám ô nhãn 34,2 px, bao lồi M8 31,4 px), nay có `min-height` | 19/10/2026 |
 | Bản đồ sao · tương phản | chip lớp con trỏ trên nền ĐẶC: chữ 16,74:1 · mã bài 8,39:1 · chữ phụ 10,26:1. Nhãn trong tranh: thấp nhất **5,22:1** (M3, dòng chặng lúc mờ; 24 phép đo đều ≥ 4,5) — nó TĂNG từ 4,83 dù trời sáng hẳn lên, nhờ TẤM NỀN dưới mỗi hộp nhãn. Nét chòm **3,39:1** lúc nghỉ (sàn 3,0), mạch hoàng đạo **4,59:1** nhờ vỏ bọc tối. Vòng dò hai nét: ≥ 3:1 trên MỌI độ chói nền | 20/10/2026 |
-| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt | 19/10/2026 |
+| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt; màn điền chỗ trống: **149/149 ô có `slots[].hint`** trên 45 bài, không ô nào lộ đáp án | 20/10/2026 |
 
 **CẬP NHẬT BẢNG NÀY MỖI KHI SỐ ĐO ĐỔI ĐÁNG KỂ, không chỉ ở commit đầu phiên.**
 Đã trả giá một lần: phiên 15/10 sửa bảng ở commit ĐẦU rồi 14 commit sau thêm
@@ -220,6 +220,19 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (2) Ngay cả khi bỏ nháy, luật vẫn mù với đáp án là biểu thức bọc quanh một giá trị: `["-"]` so
   với câu trap ghi `"-"` là không khớp — chỗ X01 ô3 phải tìm bằng mắt. Test này chỉ đỡ phần
   nguyên văn, thêm trap mới vẫn phải tự đọc lại.
+  **Cùng luật đó nay áp cho `slots[].hint` — nhãn nhóm thẻ ở kho.** Trước 20/10/2026 cả **149 ô
+  của 45 bài** đều KHÔNG có hint, nên nhóm thẻ chỉ có số khoanh ①②③ và người học phải tự đoán ô
+  nào cần gì — `bankGroups()` (`frontend/src/lib/studio-lesson.ts`) chỉ gắn nhãn khi bài khai
+  thật, `Assemble.tsx` in nó ra kèm `aria-label`. Đã viết đủ 149 câu trong `hints=[…]` của từng
+  `scaffold=dict(...)` ở `scripts/pe-v4/lessons_*.py` (song song `slots=`, build.py kiểm khớp số
+  lượng). **Lộ ở hint đắt hơn lộ ở trap:** trap chỉ hiện SAU một lần chọn sai, còn hint nằm ngay
+  trên kho TRƯỚC khi người học chọn gì — một hint nói ra đáp án là một bảng đáp án có sẵn. Luật
+  viết: nói **loại thứ cần điền** hoặc **việc nó phải làm**, không nói chính nó (`child.wait()` →
+  "Cha chặn lại tới khi con xong, rồi mới có mã thoát" đạt; "Dùng wait()" thì hỏng). Ba ca mới
+  trong `trap-leak.test.mjs` canh: lộ đáp án của ô MÌNH, lộ đáp án của ô KHÁC trong cùng khung
+  (nhãn các nhóm nằm cạnh nhau nên hint ô 1 lọt vào mắt người đang làm ô 3), và giọng (không reo,
+  không hạt `nhé`). Thêm một ca khoá cứng `149 ô / 45 bài` vì ba ca kia lọc trên `slot.hint`: bỏ
+  hint đi là vòng lặp rỗng và cả ba XANH mà không kiểm gì.
 - **Kho quiz chỉ đọc khoá `text`/`label` của lựa chọn — câu "dự đoán" dùng `title`.**
   `normalizeQuestion` (`src/quizzes/quizzes.service.ts`, nhánh quy đổi `options`) làm
   `String(o.text ?? o.label ?? '')`, trong khi `predict_block()` ở `scripts/pe-v4/build.py:210`

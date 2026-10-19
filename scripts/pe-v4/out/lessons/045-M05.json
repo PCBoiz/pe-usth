@@ -217,17 +217,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "data.sort_values(\"date\")"
+            "answer": "data.sort_values(\"date\")",
+            "hint": "Sắp theo thời gian trước khi vẽ, không theo giá trị"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))"
+            "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))",
+            "hint": "Formatter phần trăm cho trục y, khai rằng 1 là 100 phần trăm"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "any(size <= 0 for size in sizes)"
+            "answer": "any(size <= 0 for size in sizes)",
+            "hint": "Điều kiện chặn vì trục log không nhận giá trị không dương"
           }
         ],
         "bank": [

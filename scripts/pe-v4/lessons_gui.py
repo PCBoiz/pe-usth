@@ -810,6 +810,10 @@ details.title("Details")
 {{slot4}}
 ''',
             slots=['tk.Tk()', 'root.geometry(size)', 'tk.Toplevel(root)', 'root.mainloop()'],
+            hints=['Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp',
+                   'Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x',
+                   'Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa',
+                   'Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi'],
             traps=[('tk.Tk', 1, 'Thiếu ngoặc: root là class Tk chứ chưa phải cửa sổ.'),
                    ('root.geometry = size', 2, 'Ghi đè method bằng chuỗi; kích thước không đổi.'),
                    ('root.geometry("640*480")', 2, 'Kích thước dùng chữ x: "640x480" — dấu * làm Tk báo TclError.'),
@@ -975,6 +979,9 @@ tk.Button(root, text="Gửi", command={{slot3}}).pack()
 root.mainloop()
 ''',
             slots=['tk.Label(root, text="")', 'name_entry.get()', 'send'],
+            hints=['Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó',
+                   'Lấy chữ người dùng đã gõ ra khỏi ô nhập',
+                   'Giao cho nút chính hàm xử lý, chưa gọi nó ở đây'],
             traps=[('tk.Label(root, text="").pack()', 1, 'pack() trả về None nên greeting thành None.'),
                    ('name_entry', 2, 'Đó là widget, không phải chữ đang nằm trong nó.'),
                    ('send()', 3, 'Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là '
@@ -1165,6 +1172,9 @@ tk.Button(root, text="Xem", command=show).pack()
 root.mainloop()
 ''',
             slots=['shift_var', 'laptop_var.get()', 'shift_var.get()'],
+            hints=['Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau',
+                   'Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến',
+                   'Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl'],
             traps=[('tk.StringVar(value="Sáng")', 1, 'Mỗi nút một biến mới: hai Radiobutton không còn chung nhóm.'),
                    ('laptop_var', 2, 'Object BooleanVar luôn được coi là đúng — phải gọi get().'),
                    ('str(shift_var)', 3, 'str() của StringVar là TÊN biến Tcl (PY_VAR0), không phải giá trị.')]),
@@ -1339,6 +1349,10 @@ tk.Label(root, text="Bàn phím số").{{slot4}}
 root.mainloop()
 ''',
             slots=['pack(padx=10, pady=10)', 'index // 2', 'index % 2', 'pack(side="bottom")'],
+            hints=['Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới',
+                   'Số hàng tính từ thứ tự nút: hai nút một hàng',
+                   'Số cột tính từ thứ tự nút: luân phiên 0 rồi 1',
+                   'Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng'],
             traps=[('grid(row=0, column=0)', 1, 'pad dùng grid nhưng Label cùng root lại pack → TclError.'),
                    ('index', 2, 'Mỗi nút một hàng: thành một cột dọc bốn nút.'),
                    ('0', 3, 'Mọi nút dồn vào cột 0.'),
@@ -1543,6 +1557,10 @@ app = App(root)
 root.mainloop()
 ''',
             slots=['self.convert', 'self.answer', 'self.celsius.get()', 'self.answer.config(text=str(value) + " °F")'],
+            hints=['Giao method xử lý cho nút — tên method, không phải kết quả gọi nó',
+                   'Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy',
+                   'Chuỗi đang nằm trong biến của ô nhập — float() không nhận object',
+                   'Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console'],
             traps=[('self.convert()', 1, 'Gọi convert ngay trong __init__; nút nhận None.'),
                    ('answer', 2, 'Biến cục bộ mất sau __init__; convert không thấy được.'),
                    ('self.celsius', 3, 'Truyền object StringVar; float() cần chuỗi → TypeError.'),
@@ -1740,6 +1758,9 @@ tk.Button(root, text="Đếm", command=start).pack()
 root.mainloop()
 ''',
             slots=['box.get_nowait()', 'root.after(100, check_box)', 'threading.Thread(target=count_even, args=(1000,)).start()'],
+            hints=['Lấy kết quả mà không chặn thread giao diện — rỗng thì ném ngoại lệ',
+                   'Chưa có kết quả thì hẹn kiểm lại lượt sau qua vòng lặp sự kiện',
+                   'Đẩy việc dài sang thread riêng rồi trả quyền ngay cho giao diện'],
             traps=[('box.get()', 1, 'Chặn thread GUI tới khi có dữ liệu — cửa sổ đứng hình.'),
                    ('pass', 2, 'Không hẹn lượt kiểm tra sau: kết quả đến muộn sẽ không bao giờ được hiện.'),
                    ('count_even(1000)', 3, 'Chạy việc dài ngay trong callback; giao diện đứng tới khi xong.')]),

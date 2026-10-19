@@ -1,6 +1,7 @@
 /**
- * Lưới an toàn cho lời giải thích ở màn "Điền chỗ trống": LỜI CHÊ BẪY SAI
- * KHÔNG ĐƯỢC NÓI RA ĐÁP ÁN CỦA CHÍNH Ô ĐÓ.
+ * Lưới an toàn cho CHỮ QUANH Ô TRỐNG ở màn "Điền chỗ trống": cả LỜI CHÊ BẪY
+ * SAI (`bank[].trap`) lẫn NHÃN NHÓM THẺ (`slots[].hint`) đều KHÔNG ĐƯỢC NÓI RA
+ * ĐÁP ÁN CỦA CHÍNH Ô ĐÓ.
  *
  * LỖI ĐANG CHẶN (đã có thật, 6 chỗ, sửa cùng commit này). Ở `step_3.scaffold`,
  * mỗi mảnh trong `bank` có thể mang `trap`: câu hiện ra khi người học kéo mảnh
@@ -132,4 +133,104 @@ test('không trap nào nói ra đáp án của ô mình', () => {
     .filter((p) => mentions(p.trap, p.answer))
     .map((p) => `${p.code} ô${p.slot}: đáp án ${p.answer} — "${p.trap}"`);
   assert.deepEqual(leaks, []);
+});
+
+/* ────────────────────────────────────────────────────────────────────────────
+ * `slots[].hint` — NHÃN NHÓM THẺ, cùng luật, nhưng lộ thì đắt hơn trap
+ *
+ * `hint` hiện ra ở đâu: `bankGroups()` (src/lib/studio-lesson.ts) gắn nó vào
+ * nhóm thẻ của từng ô, `ScaffoldScreen` chuyển xuống `Assemble`, và `Assemble`
+ * in nó thành nhãn của nhóm kèm `aria-label` ("Thẻ cho ô 2: …"). Bài nào không
+ * khai thì nhóm KHÔNG có nhãn — trước đợt này cả 149 ô của 45 bài đều không có,
+ * nên nhóm thẻ chỉ có số khoanh ①②③ và người học phải tự đoán ô nào cần gì.
+ *
+ * VÌ SAO LỘ Ở ĐÂY ĐẮT HƠN Ở TRAP: trap chỉ hiện SAU khi chọn sai một lần, còn
+ * hint nằm ngay trên kho thẻ TRƯỚC khi người học chọn gì. Một hint nói ra đáp
+ * án thì màn điền chỗ trống không còn là một bài tập — nó là một bảng đáp án có
+ * sẵn, và server không chấm lại gì (bẫy "Chấm bài nằm ở trình duyệt" trong
+ * AGENTS.md) nên không chỗ nào khác chặn.
+ *
+ * LUẬT GIỐNG HẲN TRAP: bỏ dấu nháy hai phía rồi so, có ranh giới từ ở đầu/cuối
+ * nào là chữ-số. Dùng lại `mentions()` chứ không viết luật thứ hai — hai luật
+ * song song là hai luật sẽ lệch nhau.
+ *
+ * CHỖ LUẬT NÀY CÒN MÙ (giống trap, nói lại để không ai tin quá): đáp án là biểu
+ * thức BỌC QUANH một giá trị thì không bắt được — `["-"]` so với một hint ghi
+ * `"-"` là không khớp vì khác cặp ngoặc. Đã đọc lại BẰNG MẮT đúng những ô ấy
+ * (X01 ô3 `["-"]`, P02 ô2 `raise ValueError("invalid transition")`, T06 ô1
+ * `dict(record)`, N05 ô2 `np.isclose(first.sum(), 14.6)`, M02 ô2 chuỗi f, PD05
+ * ô2 `("order_id", "size")`) và không hint nào nhắc giá trị bên trong.
+ *
+ * CÓ THÊM CA "Ô KHÁC" vì nhãn nhóm nằm CẠNH NHAU trong cùng một kho: hint của ô
+ * 1 lọt vào mắt người đang làm ô 3. Nói ra đáp án của ô khác cũng mở sẵn một ô,
+ * chỉ là không phải ô của mình — ca `trapPairs` phía trên không soi được chuyện
+ * này vì mỗi trap chỉ gắn với một ô.
+ * ──────────────────────────────────────────────────────────────────────────── */
+
+/** Mọi (hint, các đáp án của khung chứa nó) — kèm đáp án của chính ô đó. */
+function hintPairs() {
+  const out = [];
+  for (const { file, code, content } of LESSONS) {
+    const scaffold = content?.step_3?.scaffold;
+    if (!scaffold) continue;
+    const slots = scaffold.slots ?? [];
+    for (const slot of slots) {
+      if (!slot.hint) continue;
+      out.push({
+        file,
+        code,
+        slot: slot.n,
+        hint: slot.hint,
+        answer: slot.answer,
+        others: slots.filter((s) => s.n !== slot.n).map((s) => [s.n, s.answer]),
+      });
+    }
+  }
+  return out;
+}
+
+test('có đủ dữ liệu để kiểm — 149 ô của 45 bài đều có nhãn nhóm', () => {
+  // Số đo ngày 20/10/2026. Khoá cứng ở đây vì ca lộ-đáp-án bên dưới lọc trên
+  // `slot.hint`: bỏ hint đi là vòng lặp rỗng và mọi ca dưới XANH mà không kiểm
+  // gì — đúng kiểu chết lặng mà ca "quét đúng 48 bài" ở lesson-content-wording
+  // sinh ra để chặn.
+  const pairs = hintPairs();
+  assert.equal(pairs.length, 149, `chỉ thấy ${pairs.length} ô có gợi ý, không phải 149`);
+  const lessons = new Set(pairs.map((p) => p.code));
+  assert.equal(lessons.size, 45, `gợi ý rải trên ${lessons.size} bài, không phải 45`);
+  // Mọi hint phải thuộc một ô CÓ đáp án, không thì ca dưới bỏ qua trong im lặng.
+  assert.deepEqual(pairs.filter((p) => !p.answer), []);
+});
+
+test('không gợi ý nào nói ra đáp án của ô mình', () => {
+  const leaks = hintPairs()
+    .filter((p) => mentions(p.hint, p.answer))
+    .map((p) => `${p.code} ô${p.slot}: đáp án ${p.answer} — "${p.hint}"`);
+  assert.deepEqual(leaks, []);
+});
+
+test('không gợi ý nào nói ra đáp án của ô KHÁC trong cùng khung', () => {
+  const leaks = [];
+  for (const p of hintPairs()) {
+    for (const [n, answer] of p.others) {
+      if (mentions(p.hint, answer)) {
+        leaks.push(`${p.code} gợi ý ô${p.slot} nói đáp án ô${n} (${answer}): "${p.hint}"`);
+      }
+    }
+  }
+  assert.deepEqual(leaks, []);
+});
+
+test('gợi ý giữ giọng dẫn đường: không reo, không hạt "nhé"', () => {
+  // Cùng luật mà `fill-slots.test.mjs` áp cho chữ giao diện của màn này, nay áp
+  // cho 149 nhãn đến từ giáo trình. `nhé` không dùng `\b` — ranh giới từ của
+  // regex JS chỉ hiểu ASCII nên "é" không phải chữ với nó.
+  const REO = /nhé(?!\p{L})|Chúc mừng|Tuyệt vời|Xuất sắc|Giỏi lắm|Hoan hô|Cố lên/iu;
+  assert.ok(REO.test('thử lại nhé'), 'phép so không bắt nổi hạt cũ');
+  assert.ok(REO.test('Tuyệt vời!'), 'phép so không bắt nổi lời reo');
+  assert.ok(!REO.test('nhét thẻ vào ô'), 'phép so bắt lầm "nhét"');
+  const hits = hintPairs()
+    .filter((p) => REO.test(p.hint))
+    .map((p) => `${p.code} ô${p.slot}: "${p.hint}"`);
+  assert.deepEqual(hits, []);
 });

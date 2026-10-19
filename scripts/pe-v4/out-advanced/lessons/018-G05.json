@@ -255,22 +255,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "self.convert"
+            "answer": "self.convert",
+            "hint": "Giao method xử lý cho nút — tên method, không phải kết quả gọi nó"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "self.answer"
+            "answer": "self.answer",
+            "hint": "Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "self.celsius.get()"
+            "answer": "self.celsius.get()",
+            "hint": "Chuỗi đang nằm trong biến của ô nhập — float() không nhận object"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "self.answer.config(text=str(value) + \" °F\")"
+            "answer": "self.answer.config(text=str(value) + \" °F\")",
+            "hint": "Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console"
           }
         ],
         "bank": [

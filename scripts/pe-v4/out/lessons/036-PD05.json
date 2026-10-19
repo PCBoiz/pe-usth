@@ -221,22 +221,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "df[\"region\"].fillna(\"unknown\")"
+            "answer": "df[\"region\"].fillna(\"unknown\")",
+            "hint": "Vùng thiếu phải có nhãn riêng, không thì groupby đánh rơi dòng đó"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "(\"order_id\", \"size\")"
+            "answer": "(\"order_id\", \"size\")",
+            "hint": "Đếm SỐ ĐƠN — kể cả đơn thiếu qty"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "out[\"revenue\"] / out[\"qty\"]"
+            "answer": "out[\"revenue\"] / out[\"qty\"]",
+            "hint": "Giá trung bình có mẫu số là số lượng, không phải mean các giá"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "out[\"revenue\"] / out[\"revenue\"].sum()"
+            "answer": "out[\"revenue\"] / out[\"revenue\"].sum()",
+            "hint": "Tỉ trọng của vùng: mẫu số là tổng doanh thu toàn bộ"
           }
         ],
         "bank": [

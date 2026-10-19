@@ -252,17 +252,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "clock += switch"
+            "answer": "clock += switch",
+            "hint": "Cộng chi phí đổi ngữ cảnh vào đồng hồ — mức lấy từ tham số"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "min(quantum, left)"
+            "answer": "min(quantum, left)",
+            "hint": "Lượt này chạy bao lâu: không quá suất, cũng không quá phần việc còn lại"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ready.append((name, left - run))"
+            "answer": "ready.append((name, left - run))",
+            "hint": "Phần việc còn dư quay lại hàng chờ, xếp ở CUỐI"
           }
         ],
         "bank": [

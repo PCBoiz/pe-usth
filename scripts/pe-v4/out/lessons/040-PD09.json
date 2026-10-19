@@ -224,22 +224,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "int(raw[\"order_id\"].duplicated().sum())"
+            "answer": "int(raw[\"order_id\"].duplicated().sum())",
+            "hint": "Đếm số đơn gửi LẠI, không tính bản đầu tiên"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "int(qty.isna().sum())"
+            "answer": "int(qty.isna().sum())",
+            "hint": "Đếm ô qty thiếu, sau khi đã đổi sang số"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "raw.copy()"
+            "answer": "raw.copy()",
+            "hint": "Bản riêng để gán cột, giữ bảng nguồn nguyên vẹn"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "df.to_csv(path, index=False)"
+            "answer": "df.to_csv(path, index=False)",
+            "hint": "Ghi bảng sạch ra CSV, không kèm cột index"
           }
         ],
         "bank": [

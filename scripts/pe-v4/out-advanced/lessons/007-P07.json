@@ -252,17 +252,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "results.put((n, n * n))"
+            "answer": "results.put((n, n * n))",
+            "hint": "Con gửi cặp (số, bình phương) về cha qua kênh dùng chung"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "Process(target=square, args=(n, results))"
+            "answer": "Process(target=square, args=(n, results))",
+            "hint": "Dựng một process con: trỏ tới hàm và GIAO đối số, đừng gọi tại đây"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "results.get()"
+            "answer": "results.get()",
+            "hint": "Lấy ra một cặp kết quả từ kênh, mỗi lượt một cặp"
           }
         ],
         "bank": [

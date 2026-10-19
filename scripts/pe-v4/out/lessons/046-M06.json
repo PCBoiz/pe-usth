@@ -219,17 +219,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")"
+            "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")",
+            "hint": "Tạo Figure cỡ 6×3 inch và bật dàn khoảng tự động"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
+            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
+            "hint": "Lưu vào bộ đệm đúng dpi, và KHÔNG cắt theo nội dung"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "plt.close(fig)"
+            "answer": "plt.close(fig)",
+            "hint": "Đóng figure sau mỗi lượt, đừng mở cửa sổ"
           }
         ],
         "bank": [

@@ -216,22 +216,26 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\";\""
+            "answer": "\";\"",
+            "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "\"#\""
+            "answer": "\"#\"",
+            "hint": "Ký tự mở đầu dòng ghi chú cần bỏ qua"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "[\"-\"]"
+            "answer": "[\"-\"]",
+            "hint": "Danh sách chuỗi mà file này dùng để đánh dấu ô thiếu"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "len(df)"
+            "answer": "len(df)",
+            "hint": "Số DÒNG của bảng, không phải tổng số ô"
           }
         ],
         "bank": [

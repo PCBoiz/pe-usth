@@ -263,17 +263,20 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "with self.lock:"
+            "answer": "with self.lock:",
+            "hint": "Mở critical section bằng chính khoá của account này, và tự nhả khi ra"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "amount > self.balance"
+            "answer": "amount > self.balance",
+            "hint": "Điều kiện tiền trong tài khoản không đủ để rút"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "positions[i] <= positions[i - 1]"
+            "answer": "positions[i] <= positions[i - 1]",
+            "hint": "Điều kiện thấy kế hoạch có thể kẹt: so vị trí hai khoá liền nhau"
           }
         ],
         "bank": [
