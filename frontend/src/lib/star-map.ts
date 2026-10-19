@@ -861,6 +861,48 @@ export const SKY_CURSOR = {
    * ⇒ bậc cuối tới ở 150 + 8 × 45 = 510 ms, dưới một cú nhìn.
    */
   lead: { tileIn: 150, tileOutDelay: 120, codeDelay: 150, stagger: 45 },
+  /**
+   * CÚ PHÓNG LÀ MỘT CHUYẾN ĐI, không phải một lần đổi ảnh.
+   *
+   * Chủ sản phẩm xem màn phóng gần ngày 19/10/2026: "cải tiến cả hoạt ảnh khi
+   * bấm vào này nữa". Bản trước là MỘT bước chuyển đơn — cả mười chín tấm và
+   * lớp con trỏ cùng chạy một `transform` 450 ms `ease-out`, tức đúng cái mà
+   * nghiên cứu §3 gọi là "một cái công tắc có bóng đèn chậm", chỉ ở quy mô cả
+   * bức tranh. Nay nó có BA NHỊP, và thứ tự ba nhịp ấy LÀ cái tin:
+   *
+   *  1. `recede` (130 ms, trễ 0) — bảy chòm kia lùi về `--sky-mo` NGAY. Việc
+   *     đầu tiên của một chuyến đi là rời chỗ cũ.
+   *  2. `travel` (360 ms) sau `travelDelay` (70 ms) — cú đi. Trễ 70 ms để mắt
+   *     kịp thấy bảy chòm kia bắt đầu lùi TRƯỚC khi khung bắt đầu chạy; không
+   *     có nó thì ba nhịp thành một nhịp.
+   *  3. `arrive` (180 ms) sau `arriveDelay` (190 ms) — chòm ĐÍCH rõ lên (tấm
+   *     nghỉ tắt, tấm rõ hiện) khi cú đi đã qua nửa đường. Tới một chỗ thì
+   *     chỗ ấy phải sáng lên lúc ta tới, không phải lúc ta còn đang đi.
+   *
+   * `curve` là đường cong "KHỞI HÀNH RỒI DỪNG LẠI": vào có gia tốc (0,34 ở
+   * đầu) và ra dừng hẳn (0,2 → 1). `ease-out` của bản trước xuất phát ở tốc
+   * độ cao nhất, tức bức tranh đã đang chạy trước khi tay kịp rời chuột — một
+   * cú giật, không một cú khởi hành.
+   *
+   * `chipDelay`/`chipStagger`: thẻ bài vào SAU CHÒM ĐÍCH, theo THỨ TỰ BÀI
+   * (thẻ thứ 9 tới ở 230 + 8 × 20 = 390 ms, xong ở 570 ms). Chòm dày nhất 9
+   * ngôi nên cả cú phóng đóng lại dưới 0,6 s — người ta sẽ bấm nhiều lần, và
+   * một hoạt ảnh dài là một hoạt ảnh phiền ở lần thứ ba.
+   *
+   * `out` là lượt VỀ, và nó CỐ Ý gọn hơn lượt đi (320 ms, không trễ, không
+   * nhịp): lùi ra là một việc muốn xong, không một chuyến đi.
+   */
+  zoom: {
+    recede: 130,
+    travel: 360,
+    travelDelay: 70,
+    arrive: 180,
+    arriveDelay: 190,
+    chipDelay: 230,
+    chipStagger: 20,
+    curve: 'cubic-bezier(0.34, 0.03, 0.2, 1)',
+    out: 320,
+  },
 } as const;
 
 /**
@@ -1489,7 +1531,7 @@ export const STAR_COPY = {
    * biết để thử thì không tồn tại: rê con trỏ (ngôi gần nhất tự nhận mình),
    * Tab (vào từng chặng), mũi tên (đi giữa các ngôi trong chặng).
    */
-  hint: 'Bấm (hoặc chạm) một chòm để PHÓNG VÀO chặng ấy: ở tỉ lệ gần mỗi ngôi mang tên bài thật, thứ tự học và số ca chấm. Esc hoặc nút Thoát để lùi ra, và nút Lùi của trình duyệt cũng đúng. Rê con trỏ trên bầu trời: ngôi gần nhất tự nhận mình và nói ra mã bài cùng số ca chấm; trỏ vào một chòm thì cả chặng rõ lên, kèm tên khoá và số bài. Đi bằng bàn phím: Tab qua từng chặng, Enter để phóng vào, mũi tên đi giữa các ngôi trong chặng.',
+  hint: 'Bấm (hoặc chạm) một chòm để PHÓNG VÀO chặng ấy: ở tỉ lệ gần mỗi ngôi mang tên bài thật và thứ tự học. Esc hoặc nút Thoát để lùi ra, và nút Lùi của trình duyệt cũng đúng. Rê con trỏ trên bầu trời: ngôi gần nhất tự nhận mình và nói ra mã bài; trỏ vào một chòm thì cả chặng rõ lên, kèm tên khoá và số bài. Đi bằng bàn phím: Tab qua từng chặng, Enter để phóng vào, mũi tên đi giữa các ngôi trong chặng.',
   /** ── CÂU CHỮ CỦA TỈ LỆ GẦN ──────────────────────────────────────────
    *
    *  `{…}` do `page.tsx` thay. Ở đây chứ không trong TSX vì `node --test` đọc
@@ -1501,18 +1543,27 @@ export const STAR_COPY = {
   zoomPanelTitle: 'Chặng {key} · {sub} — {n} bài, theo thứ tự học',
   /** Nói ra rằng tỉ lệ gần ĐANG giữ gì: ba thứ không có ở tỉ lệ xa. Không nói
    *  thì người ta tưởng vừa phóng to một bức ảnh. */
-  zoomNote: 'Đang ở tỉ lệ gần của chặng {key}. Thứ tự dưới đây LÀ thứ tự học — bản đồ cố ý không vẽ mũi tên lộ trình, nên ở tỉ lệ xa thứ tự này không đọc được ở đâu cả.',
+  /** `{key}` do `page.tsx` thay. Câu thứ ba là ĐƯỜNG DÙNG ĐƯỢC TRÊN ĐIỆN
+   *  THOẠI của liên kết hai chiều: ở đó không có hover, nên nếu cái nối giữa
+   *  một dòng và một ngôi chỉ sống trong `:hover` thì nửa số người dùng không
+   *  bao giờ biết dòng nào ứng với ngôi nào. Con số thứ tự thì có mặt ở CẢ
+   *  HAI chỗ cùng lúc, không cần một cái tay nào. */
+  zoomNote: 'Đang ở tỉ lệ gần của chặng {key}. Thứ tự dưới đây LÀ thứ tự học — bản đồ cố ý không vẽ mũi tên lộ trình, nên ở tỉ lệ xa thứ tự này không đọc được ở đâu cả. Con số đầu mỗi dòng cũng in trên ngôi tương ứng: trỏ (hoặc Tab) vào một dòng thì ngôi ấy phát sáng, và ngược lại.',
   /** `alt` của tấm ảnh ĐẦU. Chỉ một tấm mang mô tả: bốn tấm nền là MỘT bức,
    *  và bốn câu mô tả cho một bức là bốn lần đọc lại cùng một thứ cho người
    *  dùng trình đọc màn hình. */
   alt: 'Bản đồ sao: tám chòm, bốn mươi tám ngôi — mỗi ngôi là một bài. Một dải Ngân Hà chạy chéo qua cả bầu trời, và một cung nét đứt nối bốn chặng NumPy, pandas, Matplotlib và dự án.',
   legendTitle: 'Chú giải',
-  /**
-   * THANG BÁN KÍNH NÓI BẰNG SỐ. `{…}` do `starScaleLine()` thay, vì ba bài
-   * hiện cùng ở mức thấp nhất (6 ca) và một câu chép tay sẽ sai ngay lần giáo
-   * trình đổi — mà sai im lặng: chữ vẫn đọc trôi.
-   */
-  scaleNote: 'Thang bán kính: {min} ca chấm ở ngôi nhỏ nhất ({minCodes}) tới {max} ca ở ngôi lớn nhất ({maxCodes}) — bán kính chênh {ratio} lần. Đó là cả thang, không có bậc nào nằm ngoài.',
+  /* KHÔNG CÒN `scaleNote`, và đó là một việc BỎ chứ không phải một việc quên.
+     Chủ sản phẩm xem màn phóng gần ngày 19/10/2026 và nói đúng một câu: "bỏ
+     phần ca đi". Con số ca chấm thôi in thành CHỮ — ở chip trên ngôi và ở
+     bảng bài — nên câu "Thang bán kính: 6 ca … tới 14 ca …" trở thành một
+     chú giải cho một con số không còn hiện ở đâu, tức đúng loại chữ mà trang
+     này phải ít nhất có thể.
+     Bán kính thì VẪN mang số ca chấm (`starMagnitude`): đó là HÌNH, không
+     phải chữ, và `legend` dưới đây vẫn nói ra nó. `starScaleRange()` cũng
+     giữ — nó là phép đo mà ca test dùng để canh thang bán kính của bức
+     tranh, không phải một câu chữ. */
   /** Chú giải nói ra DẤU NÀO MANG NGHĨA và dấu nào là chất liệu (§12). Ba dòng
    *  đầu là ba lớp liên kết của §4 — chúng phải phân biệt được bằng mắt, nên
    *  chúng cũng phải phân biệt được bằng chữ. */
@@ -1520,12 +1571,13 @@ export const STAR_COPY = {
     'Nét LIỀN, sắc của chặng: gom các bài của một chặng thành MỘT hình. Nó không nói thứ tự phải học.',
     'Nét ĐỨT xanh lam đi qua bốn chòm trên-phải: phụ thuộc thật duy nhất của khoá — NumPy → pandas → Matplotlib → dự án. Không có mũi tên vì nó là một quan hệ, không phải một lộ trình.',
     'Dải bụi sáng chạy chéo cả bầu trời là Ngân Hà. Mọi chòm đều nằm trong nó hoặc ngoài nó — và đó đã là một quan hệ. Nó cũng là lý do trời dày sao ở giữa và thưa ở hai góc.',
-    // DÒNG NÀY NAY NÓI RA CON SỐ, và đó là bản sửa cho một tín hiệu đã vẽ
-    // nhưng chưa làm việc: bán kính mang số ca chấm từ đầu, mà không chỗ nào
-    // trên trang nói "bao nhiêu ca". Một thang không có đơn vị thì người xem
-    // chỉ thấy "ngôi to ngôi nhỏ". `scaleNote` dưới đây in hai đầu thang, và
-    // lớp con trỏ in con số của từng ngôi.
-    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ SỐ CA CHẤM của bài đó, không ai chọn cho đẹp — rê con trỏ tới một ngôi là thấy con số ấy.',
+    // DÒNG NÀY NÓI NGUỒN CỦA BÁN KÍNH, và KHÔNG hứa một con số nào nữa. Mệnh
+    // đề cuối từng là "rê con trỏ tới một ngôi là thấy con số ấy" — từ lúc
+    // chip thôi in số ca (19/10/2026) nó là một lời hứa không giữ được, và
+    // một chú giải sai còn tệ hơn không có chú giải: người ta sẽ rê con trỏ
+    // đi tìm. Thang vẫn đọc được bằng mắt (ngôi nào to hơn ngôi nào), chỉ
+    // không đọc được bằng số — và đó là điều câu này nói thẳng ra.
+    'Ngôi có SẮC và có quầng = một bài. Bán kính lấy từ SỐ CA CHẤM của bài đó, không ai chọn cho đẹp — nên nó nói bài nào nặng hơn bài nào, chứ không nói nặng bao nhiêu.',
     // Gọi bằng MÃ CHẶNG, không bằng tên hình: nhãn trên bản đồ chỉ còn
     // `M6 · pandas`, nên một câu chú giải nói 'chòm "Bàn có nhãn"' là chỉ vào
     // một cái tên không còn ở đâu để tìm.
@@ -1603,12 +1655,14 @@ export function lessonNumber(stage: number, star = 0): number {
 }
 
 /**
- * HAI ĐẦU CỦA THANG BÁN KÍNH, tính từ `SKY_TESTS` — cho câu chú giải nói ra
- * thang bằng con số thật thay vì bằng tính từ.
+ * HAI ĐẦU CỦA THANG BÁN KÍNH, tính từ `SKY_TESTS`.
  *
- * Tính chứ không chép: ba bài hiện cùng ở mức thấp nhất (6 ca) nên "ngôi nhỏ
- * nhất là P07" là một câu sẽ sai ngay lần giáo trình đổi. Trả về cả danh sách
- * mã ở hai đầu và tỉ số bán kính, vì tỉ số mới là thứ mắt đọc được.
+ * Trước đây nó cấp số cho một câu chú giải (`scaleNote`); câu ấy đã bỏ cùng
+ * với chữ "ca" ngày 19/10/2026. Hàm thì GIỮ, và không phải vì tiếc code: nó
+ * là phép đo mà ca test dùng để chứng minh thang bán kính của BỨC TRANH còn
+ * mở (`SKY_BUDGET.scaleRatioMin`) và còn khớp giáo trình. Bán kính vẫn là chỗ
+ * duy nhất số ca chấm còn sống, nên nó cần một phép đo canh — chỉ là phép đo
+ * ấy nay nói với ca test, không nói với người đọc trang.
  */
 export function starScaleRange(): {
   min: number; max: number; minCodes: string[]; maxCodes: string[]; ratio: number;
@@ -1626,24 +1680,19 @@ export function starScaleRange(): {
   };
 }
 
-/** `STAR_COPY.scaleNote` với bốn chỗ `{…}` thay bằng số đo thật. */
-export function starScaleLine(): string {
-  const r = starScaleRange();
-  return STAR_COPY.scaleNote
-    .replace('{min}', String(r.min))
-    .replace('{minCodes}', r.minCodes.join(', '))
-    .replace('{max}', String(r.max))
-    .replace('{maxCodes}', r.maxCodes.join(', '))
-    .replace('{ratio}', String(r.ratio).replace('.', ','));
-}
-
 /**
  * Tên nghe được của một ngôi, cho `aria-label` của 48 liên kết bài.
  *
- * Phải nói ĐỦ bốn thứ mà lớp con trỏ nói bằng mắt — chặng, số bài, mã bài, số
- * ca chấm — vì người dùng trình đọc màn hình không thấy chip nào hiện ra. Đây
- * là chỗ "giảm chuyển động nhưng GIỮ NGUYÊN tin" được thi hành ở mức sâu nhất:
+ * Phải nói ĐỦ những gì bức tranh nói bằng mắt — chặng, số bài, mã bài, số ca
+ * chấm — vì người dùng trình đọc màn hình không thấy chip nào hiện ra. Đây là
+ * chỗ "giảm chuyển động nhưng GIỮ NGUYÊN tin" được thi hành ở mức sâu nhất:
  * tin không nằm trong hiệu ứng, nó nằm trong DOM.
+ *
+ * SỐ CA CHẤM Ở ĐÂY LÀ CHỦ Ý, không phải chỗ sót lại sau khi chip bỏ chữ "ca"
+ * ngày 19/10/2026. Chip bỏ vì nó in LẠI bằng chữ một con số mà bức tranh đã
+ * nói bằng BÁN KÍNH; câu này thì là bản CHỮ DUY NHẤT của chính cái bán kính
+ * ấy — người dùng trình đọc màn hình không đo được ngôi nào to hơn ngôi nào.
+ * Bỏ nốt nó là lấy đi của họ một tin mà người sáng vẫn còn.
  */
 export function starAriaLabel(stageKey: string, code: string, lesson: number): string {
   const n = SKY_TESTS[code];
@@ -1706,15 +1755,22 @@ export function zoomToFrame(key: string | null | undefined, u: number, v: number
 
 /**
  * Một dòng của bảng bài ở tỉ lệ gần: thứ tự trong chặng, số bài phẳng, mã,
- * TÊN THẬT, số ca chấm.
+ * TÊN THẬT.
  *
- * Gộp năm thứ vào một hàm vì cả năm phải cùng một nguồn: `page.tsx` dựng bảng
+ * Gộp bốn thứ vào một hàm vì cả bốn phải cùng một nguồn: `page.tsx` dựng bảng
  * dưới khung, và `SkyCursor.tsx` dựng chip trong khung. Hai chỗ tự tra
  * `SKY_TITLES` và tự cộng `lessonNumber` là hai chỗ sẽ lệch, và kiểu lệch tệ
- * nhất có thể — một cái tên nằm cạnh một số bài của bài khác.
+ * nhất có thể — một cái tên nằm cạnh một số bài của bài khác. Nay còn một
+ * việc thứ hai dựa vào chỗ chung ấy: `order` là CHÌA KHOÁ nối một dòng với
+ * một ngôi (xem `zoomNote`), nên con số ở bảng và con số in trên ngôi phải
+ * đến từ cùng một phép đếm.
+ *
+ * KHÔNG CÒN `tests`: bảng bài thôi in cột "9 ca" ngày 19/10/2026, nên một
+ * trường không ai đọc là một trường sẽ cũ mà không ai thấy. Số ca chấm còn
+ * sống ở `SKY_TESTS` (bán kính ngôi) và ở `starAriaLabel`.
  */
 export function stageLessons(key: string): {
-  order: number; lesson: number; code: string; title: string; tests: number;
+  order: number; lesson: number; code: string; title: string;
 }[] {
   const i = SKY_CONSTELLATIONS.findIndex((c) => c.key === key);
   if (i < 0) return [];
@@ -1723,6 +1779,5 @@ export function stageLessons(key: string): {
     lesson: lessonNumber(i, j),
     code: s.code,
     title: SKY_TITLES[s.code] ?? s.code,
-    tests: SKY_TESTS[s.code] ?? 0,
   }));
 }

@@ -54,7 +54,6 @@ const {
   profileColors,
   starAriaLabel,
   starMagnitude,
-  starScaleLine,
   starScaleRange,
   zodiacAnchors,
   SKY_CURSOR,
@@ -1486,26 +1485,23 @@ test('`SKY_TESTS` khớp số ca chấm ĐẾM LẠI từ giáo trình — khố
     assert.equal(SKY_TESTS[code], SO_CA[code],
       `SKY_TESTS.${code} = ${SKY_TESTS[code]} nhưng giáo trình đếm được ${SO_CA[code]} ca chấm`
       + ' — chạy `py scripts/star/build_sky.py --so-ca` rồi chép lại khối. Bán kính ngôi tính'
-      + ' từ giáo trình nên nó vẫn ĐÚNG; chỉ con số IN RA cạnh ngôi là sai.');
+      + ' từ giáo trình nên nó vẫn ĐÚNG; chỉ `aria-label` của ngôi là sai.');
   }
   for (const code of Object.keys(SKY_TESTS)) {
     assert.ok(VI_TRI[code], `SKY_TESTS có ${code} mà bản đồ không vẽ ngôi nào mã đó`);
   }
-  // Câu chú giải nói ra thang phải nói ra thang THẬT, và không còn chỗ `{…}`
-  // nào chưa thay — một placeholder sót lại là một câu đọc trôi mà vô nghĩa.
+  // THANG BÁN KÍNH vẫn phải đo được, dù không còn câu chữ nào in nó ra.
+  // `scaleNote`/`starScaleLine()` đã bỏ ngày 19/10/2026 cùng với chữ "ca";
+  // `starScaleRange()` thì giữ, vì bán kính VẪN là chỗ số ca chấm còn sống và
+  // một thang không ai đo là một thang sẽ phẳng ra mà không ai thấy.
   const r = starScaleRange();
   const nums = Object.keys(VI_TRI).map((code) => SO_CA[code]);
   assert.equal(r.min, Math.min(...nums));
   assert.equal(r.max, Math.max(...nums));
   assert.ok(r.minCodes.length >= 1 && r.maxCodes.length >= 1);
-  const line = starScaleLine();
-  assert.ok(!/[{}]/.test(line), `câu thang còn placeholder chưa thay: ${line}`);
-  assert.ok(line.includes(String(r.min)) && line.includes(String(r.max)));
-  for (const code of [...r.minCodes, ...r.maxCodes]) assert.ok(line.includes(code));
-  // Và nó phải được DÙNG — một câu chữ đúng nằm trong thư viện mà không ai in
-  // ra thì con số vẫn không ai đọc được, tức cái lỗi gốc còn nguyên.
-  assert.match(TSX_CODE, /starScaleLine\(\)/,
-    'page.tsx không in câu thang bán kính — con số ca chấm lại thành thứ không ai đọc được');
+  assert.ok(r.ratio > 1,
+    `thang bán kính phẳng (tỉ số ${r.ratio}) — ngôi to ngôi nhỏ thôi mang tin, và từ lúc chip`
+    + ' bỏ chữ "ca" thì bán kính là chỗ DUY NHẤT số ca chấm còn nói được bằng hình');
 });
 
 test('thứ tự `stars` LÀ thứ tự bài của giáo trình — bậc thang 45 ms kể đúng thứ tự đó', () => {
@@ -1542,16 +1538,40 @@ test('tiết lộ CÓ THỨ TỰ: chín bậc thang khớp `SKY_CURSOR`, và đ�
   const np = CSS_CODE.match(/@media \(prefers-reduced-motion: no-preference\)\s*\{([\s\S]*?)\n\}/);
   assert.ok(np, 'CSS không khai bậc thang trong nhánh `no-preference` — khai ngoài rồi tắt'
     + ' trong `reduce` thì quy tắc nth-child đặc trưng hơn mọi cách tắt viết gọn');
-  const bac = [...np[1].matchAll(/nth-child\((\d+)\) \.chip \{ --bac: (\d+)ms/g)];
+  // HAI bậc thang trong cùng nhánh này: một cho HOVER (bức tranh đứng yên) và
+  // một cho CÚ PHÓNG (bức tranh đang chạy, nên thẻ bài phải đợi). Đọc riêng
+  // từng cái bằng tiền tố của bộ chọn — một regex chung sẽ trộn 18 con số của
+  // hai thang vào nhau và ca test thành vô nghĩa.
+  const docBac = (re) => [...np[1].matchAll(re)].map(([, i, ms]) => [+i, +ms]);
   const day = Math.max(...SKY_CONSTELLATIONS.map((c) => c.stars.length));
+  const bac = docBac(/\n {2}\.cum \.sao:nth-child\((\d+)\) \.chip \{ --bac: (\d+)ms/g);
   assert.equal(bac.length, day,
     `có ${bac.length} bậc thang cho chòm dày nhất ${day} ngôi — ngôi thiếu bậc sẽ hiện NGAY,`
     + ' tức đứng sai chỗ trong chính cái thứ tự mà bậc thang sinh ra để kể');
-  bac.forEach(([, i, ms]) => {
-    assert.equal(+ms, lead.codeDelay + lead.stagger * (+i - 1),
+  bac.forEach(([i, ms]) => {
+    assert.equal(ms, lead.codeDelay + lead.stagger * (i - 1),
       `bậc ${i} trễ ${ms}ms, nhưng SKY_CURSOR.lead ra`
-      + ` ${lead.codeDelay + lead.stagger * (+i - 1)}ms`);
+      + ` ${lead.codeDelay + lead.stagger * (i - 1)}ms`);
   });
+  // …và thang của CÚ PHÓNG, đủ chín bậc, khớp `SKY_CURSOR.zoom`.
+  const { zoom } = SKY_CURSOR;
+  const bacP = docBac(
+    /\n {2}\.frame\[data-phong\] \.cum \.sao:nth-child\((\d+)\) \.chip \{ --bac: (\d+)ms/g,
+  );
+  assert.equal(bacP.length, day,
+    `thang thẻ bài của cú phóng có ${bacP.length} bậc cho chòm dày nhất ${day} ngôi`);
+  bacP.forEach(([i, ms]) => {
+    assert.equal(ms, zoom.chipDelay + zoom.chipStagger * (i - 1),
+      `bậc phóng ${i} trễ ${ms}ms, nhưng SKY_CURSOR.zoom ra`
+      + ` ${zoom.chipDelay + zoom.chipStagger * (i - 1)}ms`);
+  });
+  // Thẻ bài vào SAU chòm đích: "tới một chỗ" thì chỗ ấy phải sáng lên trước,
+  // rồi mới tới chữ. Thang của hover bắt đầu ở 150 ms, và một thẻ bài hiện ở
+  // 150 ms trong cú phóng là một thẻ TRÔI ngang màn hình cùng bầu trời suốt
+  // 280 ms còn lại — chữ đang chạy là chữ không đọc được.
+  assert.ok(zoom.chipDelay >= zoom.arriveDelay,
+    `thẻ bài vào ở ${zoom.chipDelay}ms, TRƯỚC khi chòm đích bắt đầu sáng ở`
+    + ` ${zoom.arriveDelay}ms — thứ tự ba nhịp là cả cái tin`);
   // Trạng thái NGHỈ phải trễ 0: CSS lấy `transition-*` của trạng thái ĐÍCH, nên
   // một `--bac` khác 0 ở đây là con trỏ rời đi rồi mà bức tranh còn kể nốt.
   const base = CSS_CODE.match(/\n\.chip\s*\{([^}]*)\}/);
@@ -1561,8 +1581,14 @@ test('tiết lộ CÓ THỨ TỰ: chín bậc thang khớp `SKY_CURSOR`, và đ�
   // HAI NHỊP của tấm chòm: cái được chọn tới TRƯỚC (150 ms), bảy cái kia lùi
   // SAU (+120 ms). Trước đây cả hai cùng một nhịp 320 ms — một cái công tắc có
   // bóng đèn chậm.
-  assert.match(CSS_CODE, new RegExp(`\\.chomRo\\s*\\{[^}]*transition:\\s*opacity\\s+${lead.tileIn}ms`),
+  // `--ro-dur` thay cho một con số viết thẳng vào `transition`: trạng thái
+  // PHÓNG đặt lại biến ấy (chòm đích "tiến vào" sau cú đi), và một
+  // `transition:` trong quy tắc trạng thái sẽ đè nhánh reduce — xem dưới.
+  assert.match(CSS_CODE, new RegExp(`\\.chomRo\\s*\\{[^}]*--ro-dur:\\s*${lead.tileIn}ms`),
     `.chomRo không còn hiện lên trong ${lead.tileIn}ms`);
+  assert.match(CSS_CODE, /\.chomRo\s*\{[^}]*transition:\s*opacity var\(--ro-dur\) ease var\(--ro-tre\)/,
+    '.chomRo không đọc hai biến nhịp — một con số viết thẳng vào đây là một con số mà trạng'
+    + ' thái phóng không đổi được mà không viết `transition:` lần nữa');
   assert.match(CSS_CODE, new RegExp(`--nghi-tre:\\s*${lead.tileOutDelay}ms`),
     `tấm nghỉ không còn lùi lại SAU ${lead.tileOutDelay}ms`);
   // …và quy tắc hover của tấm nghỉ KHÔNG được viết `transition:` trực tiếp: nó
@@ -1576,14 +1602,19 @@ test('tiết lộ CÓ THỨ TỰ: chín bậc thang khớp `SKY_CURSOR`, và đ�
 });
 
 test('ngôi được NHẬN và ngôi được TIÊU ĐIỂM cho ra ĐÚNG một trạng thái, cả tám chặng', () => {
-  for (const re of [
-    /\.sao\[data-gan\],\s*\n\.sao:focus-visible\s*\{/,
-    /\.sao\[data-gan\] \.chip,\s*\n\.sao:focus-visible \.chip\s*\{/,
-    /\.sao\[data-gan\] \.soCa,\s*\n\.sao:focus-visible \.soCa\s*\{/,
-  ]) {
-    assert.match(CSS_CODE, re,
-      'trạng thái con trỏ và trạng thái bàn phím không chung một khối — người đi bằng Tab/mũi'
-      + ' tên sẽ thấy một bản đồ khác người đi bằng chuột');
+  // BA đường tới cùng một trạng thái, không hai: `[data-gan]` (con trỏ),
+  // `[data-sang]` (trỏ/Tab vào một dòng BẢNG BÀI — liên kết hai chiều thêm
+  // ngày 19/10/2026) và `:focus-visible` (bàn phím trong khung). Cả ba phải
+  // nằm chung MỘT khối cho từng vật, nếu không chúng là ba chỗ sẽ trôi xa
+  // nhau — và triệu chứng là "đi bằng Tab thấy một bản đồ khác đi bằng
+  // chuột".
+  for (const vat of ['', ' \\.chip', ' \\.quang']) {
+    assert.match(
+      CSS_CODE,
+      new RegExp(`\\.sao\\[data-gan\\]${vat},\\s*\\n\\.sao\\[data-sang\\]${vat},`
+        + `\\s*\\n\\.sao:focus-visible${vat}\\s*\\{`),
+      `ba đường tới trạng thái của \`.sao${vat.replace('\\', '')}\` không chung một khối`,
+    );
   }
   for (const c of SKY_CONSTELLATIONS) {
     const k = c.key;
@@ -1752,9 +1783,24 @@ test('máy chạm: thiết bị tắt hẳn, nhưng bản đồ KHÔNG chết �
   // tính 48 khoảng cách mỗi khung hình là tốn pin cho một thứ không ai thấy.
   assert.match(CUR_CODE, /matchMedia\('\(hover: hover\)'\)/,
     'lớp con trỏ không hỏi máy có con trỏ hay không');
-  // Đường dùng được trên máy chạm là CHỮ, không phải hover: thang bán kính
-  // phải nằm trong câu chú giải, nơi không cần tay nào.
-  assert.ok(/ca chấm/.test(STAR_COPY.scaleNote) && /{min}/.test(STAR_COPY.scaleNote));
+  // Đường dùng được trên máy chạm là CHỮ, không phải hover. Từ 19/10/2026 câu
+  // chú giải thang bán kính đã bỏ (cùng với chữ "ca"), nên chỗ phải canh là
+  // chỗ KHÁC: liên kết dòng ↔ ngôi của tỉ lệ gần không được chỉ sống trong
+  // quầng sáng. Nó phải nói được bằng con số thứ tự in ở cả hai chỗ, và
+  // `zoomNote` phải DẠY điều đó — một chỗ nối không ai biết để tìm thì không
+  // tồn tại.
+  assert.ok(!('scaleNote' in STAR_COPY),
+    'STAR_COPY còn `scaleNote` — câu ấy giải thích một con số không còn in ra ở đâu');
+  assert.match(STAR_COPY.zoomNote, /Con số đầu mỗi dòng cũng in trên ngôi/,
+    'zoomNote không nói ra chỗ nối dòng ↔ ngôi — trên điện thoại không có hover, nên quầng'
+    + ' sáng không bao giờ bật và liên kết hai chiều thành một tính năng chết');
+  // Và listener CON TRỎ của liên kết hai chiều phải nằm TRONG nhánh `coTro`:
+  // gắn nó trên máy chạm là gắn một đường mã không ai đi. Hai listener TIÊU
+  // ĐIỂM thì gắn dù gì — một chiếc điện thoại cắm bàn phím vẫn phải đi được.
+  assert.match(CUR_CODE, /if \(coTro\) trang\.addEventListener\('pointerover'/,
+    'liên kết bảng ↔ bầu trời gắn listener con trỏ ngoài nhánh `coTro`');
+  assert.match(CUR_CODE, /\n\s+trang\.addEventListener\('focusin'/,
+    'liên kết bảng ↔ bầu trời không có đường bàn phím');
 });
 
 /* ═══ 20 · TỈ LỆ THỨ HAI — CÚ PHÓNG ═══════════════════════════════════
@@ -2024,13 +2070,13 @@ test('GIẢM CHUYỂN ĐỘNG tắt HOẠT ẢNH, không tắt TÍNH NĂNG — v
 
 test('ĐIỆN THOẠI KHÔNG NHẬN MỘT BẢN ĐỒ CHẾT: chạm để phóng là đường CHÍNH', () => {
   // `@media (hover: none)` chỉ được tắt những thứ THẬT SỰ dựa vào hover. Cú
-  // phóng cần một cú BẤM, không cần hover; tên bài, thứ tự học và số ca ở tỉ lệ
-  // gần hiện ra bằng CHỮ cho mọi thiết bị như nhau; bảng bài dưới khung cũng
+  // phóng cần một cú BẤM, không cần hover; tên bài và thứ tự học ở tỉ lệ gần
+  // hiện ra bằng CHỮ cho mọi thiết bị như nhau; bảng bài dưới khung cũng
   // không cần hover.
   const kh = [...CSS_CODE.matchAll(/@media \(hover: none\)\s*\{([\s\S]*?)\n\}/g)]
     .map((m) => m[1]).join('\n');
   assert.ok(kh.length > 0, 'CSS không còn nhánh `(hover: none)`');
-  for (const tu of ['phong', 'nenRa', 'thoat', 'chip', 'tenBai', 'thuTu', 'soCa', 'hang', 'bang']) {
+  for (const tu of ['phong', 'nenRa', 'thoat', 'chip', 'tenBai', 'thuTu', 'hang', 'bang']) {
     assert.ok(!new RegExp(`\\.${tu}\\b`).test(kh),
       `nhánh (hover: none) đụng vào \`.${tu}\` — nó cho ra một bản đồ chết trên điện thoại,`
       + ' đúng thứ nghiên cứu §11.1 cấm');
@@ -2053,20 +2099,25 @@ test('TỈ LỆ GẦN GIỮ LẠI BA THỨ, và cả ba đọc được KHÔNG C
     }
   }
   assert.match(CSS_CODE, /\.frame\[data-phong\] \.tenBai\s*\{[^}]*display:\s*block/);
-  assert.match(CSS_CODE, /\.frame\[data-phong\] \.soCa,\s*\n\.frame\[data-phong\] \.thuTu\s*\{[^}]*display:\s*inline/);
+  assert.match(CSS_CODE, /\.frame\[data-phong\] \.thuTu\s*\{[^}]*display:\s*inline/);
   // THỨ TỰ HỌC bằng một CON SỐ, không chỉ bằng bậc thang 45 ms: thời gian là
   // thứ người bật `reduce` không nhận được.
   assert.match(CUR_CODE, /className=\{styles\.thuTu\}>\{j \+ 1\}/,
     'chip không in thứ tự học — ở tỉ lệ xa thứ tự ấy không đọc được ở đâu cả, vì bản đồ'
     + ' cố ý không vẽ mũi tên lộ trình');
-  // Bảng bài dưới khung: bốn ô mỗi dòng, và cả bốn lấy từ MỘT hàm.
-  for (const o of ['hangSo', 'hangMa', 'hangTen', 'hangCa']) {
+  // Bảng bài dưới khung: BA ô mỗi dòng, và cả ba lấy từ MỘT hàm. Ô thứ tư
+  // từng là "9 ca"; nó đã bỏ ngày 19/10/2026 và `stageLessons()` thôi trả
+  // `tests` cùng lúc — một trường không ai đọc là một trường sẽ cũ mà không
+  // ai thấy.
+  for (const o of ['hangSo', 'hangMa', 'hangTen']) {
     assert.match(TSX_CODE, new RegExp(`styles\\.${o}`), `bảng bài thiếu ô \`${o}\``);
   }
+  assert.ok(!/hangCa/.test(TSX_CODE) && !/hangCa/.test(CSS_CODE),
+    'ô "N ca" còn sống ở bảng bài — chủ sản phẩm đã bỏ nó khỏi màn phóng gần');
   assert.match(TSX_CODE, /stageLessons\(chang\)/);
-  // `stageLessons()` nối tên · thứ tự · số bài phẳng · số ca vào MỘT chỗ: hai
-  // chỗ tự tra `SKY_TITLES` và tự cộng `lessonNumber` là hai chỗ sẽ lệch, và
-  // kiểu lệch tệ nhất — một cái tên cạnh số bài của bài khác.
+  // `stageLessons()` nối tên · thứ tự · số bài phẳng vào MỘT chỗ: hai chỗ tự
+  // tra `SKY_TITLES` và tự cộng `lessonNumber` là hai chỗ sẽ lệch, và kiểu
+  // lệch tệ nhất — một cái tên cạnh số bài của bài khác.
   let n = 1;
   for (const c of SKY_CONSTELLATIONS) {
     const ds = stageLessons(c.key);
@@ -2076,7 +2127,7 @@ test('TỈ LỆ GẦN GIỮ LẠI BA THỨ, và cả ba đọc được KHÔNG C
       assert.equal(b.lesson, n + i, `${c.key}/${b.code}: số bài phẳng lệch`);
       assert.equal(b.code, c.stars[i].code);
       assert.equal(b.title, SKY_TITLES[b.code]);
-      assert.equal(b.tests, SO_CA[b.code], `${b.code}: số ca lệch với giáo trình`);
+      assert.ok(!('tests' in b), `${b.code}: stageLessons còn trả \`tests\` — không ai in nó`);
     });
     n += ds.length;
   }
@@ -2135,5 +2186,293 @@ test('CÚ PHÓNG LÀ LỚP HTML, KHÔNG phải hoạt ảnh trong tài liệu SV
       assert.ok(['opacity', 'transform', 'border-color', 'background', 'none'].includes(tp),
         `CSS nội suy \`${tp}\` — chỉ opacity/transform chạy trên compositor`);
     }
+  }
+});
+
+/* ═══ 21 · MÀN PHÓNG GẦN — BỐN VIỆC NGÀY 19/10/2026 ═══════════════════
+
+   Chủ sản phẩm xem màn phóng gần của chặng M5 (NumPy) và đặt bốn việc, nguyên
+   văn: "Bỏ phần ca đi, và cải tiến cả hoạt ảnh khi bấm vào này nữa, có thể cho
+   to ra hơn nữa trên máy tính, và khi tôi hover vào 1 bài thì cái ngôi sao đấy
+   sẽ phát sáng".
+
+   BỐN CÁCH BỐN VIỆC ẤY HỎNG IM LẶNG, và đó là lý do khối này tồn tại:
+
+    1. Bỏ con số mà QUÊN chú giải của nó. "Thang bán kính: 6 ca chấm ở ngôi
+       nhỏ nhất…" vẫn đọc trôi, vẫn đúng ngữ pháp, chỉ là nó nói về một con số
+       không còn ở đâu để xem — nên nó thành một lời sai dẫn người đọc đi rê
+       con trỏ khắp bầu trời.
+    2. Liên kết hai chiều chỉ sống trong `:hover`. Trên điện thoại nó là một
+       tính năng chết, và cái chết ấy không đỏ ở đâu cả.
+    3. Nới khung mà nới luôn CHỮ: ở 1 528 px một dòng chú giải ra ~150 ký tự,
+       gần hai lần trần 80 của WCAG 1.4.8 — mắt mất chỗ khi quay về đầu dòng.
+    4. Ba nhịp viết bằng `transition:` TRONG quy tắc `[data-phong]`. Quy tắc
+       ấy đặc trưng hơn nhánh `prefers-reduced-motion`, nên nó đè
+       `transition: none` và người bật giảm chuyển động nhận đủ hoạt ảnh —
+       trong khi ca test đọc nhánh reduce và báo xanh. Cái bẫy này đã trả giá
+       một lần ở `.hit:hover ~ .chomNen`. */
+
+test('VIỆC 1 · chữ "ca" rời thẻ bài, và chú giải của nó rời CÙNG LÚC', () => {
+  // Thẻ bài in `1 N01 9 ca` tới hôm nay. Bỏ ô cuối là một dòng; bỏ cho HẾT là
+  // bốn chỗ, và ba chỗ còn lại đều là chữ nói về con số vừa biến mất.
+  assert.ok(!/\bsoCa\b/.test(CSS_CODE) && !/\bsoCa\b/.test(CUR_CODE),
+    'ô "N ca" của thẻ bài còn sống');
+  assert.ok(!/\.scale\s*\{/.test(CSS_CODE) && !/styles\.scale\b/.test(TSX_CODE),
+    'trang còn in câu thang bán kính — một chú giải cho một con số không còn hiện');
+  assert.ok(!('scaleNote' in STAR_COPY), 'STAR_COPY còn `scaleNote`');
+  assert.ok(!('starScaleLine' in SM), 'thư viện còn `starScaleLine()` — không ai in nó nữa');
+  assert.ok(!/ca chấm/.test(STAR_COPY.hint),
+    'câu gợi ý còn hứa "số ca chấm" ở tỉ lệ gần và ở ngôi được trỏ — cả hai đã bỏ');
+  // …nhưng BA thứ phải CÒN, và chúng là lý do việc này không phải "xoá cho
+  // sạch": bán kính ngôi VẪN mang số ca chấm (đó là hình, không phải chữ).
+  assert.match(STAR_COPY.legend[3], /SỐ CA CHẤM/,
+    'chú giải thôi nói nguồn của bán kính — một thang không ai giải thích thì người xem chỉ'
+    + ' thấy "ngôi to ngôi nhỏ", đúng cái lỗi mà con số sinh ra để chữa');
+  assert.ok(!/rê con trỏ/.test(STAR_COPY.legend[3]),
+    'chú giải còn hứa "rê con trỏ tới một ngôi là thấy con số ấy" — một lời hứa không giữ'
+    + ' được nữa, và một chú giải sai còn tệ hơn không có chú giải');
+  assert.equal(starMagnitude(SO_CA.M03).radius > starMagnitude(SO_CA.P07).radius, true,
+    'bán kính thôi phân biệt bài nặng bài nhẹ — chữ đã bỏ, nên đây là chỗ DUY NHẤT còn lại');
+  // `aria-label` GIỮ con số, và đó là chủ ý: nó là bản CHỮ của chính cái bán
+  // kính ấy cho người không thấy hình. Bỏ nốt nó là lấy đi của người dùng
+  // trình đọc màn hình một tin mà người sáng vẫn còn.
+  assert.match(starAriaLabel('M3', 'R02', 20), new RegExp(`${SO_CA.R02} ca chấm`),
+    'aria-label của ngôi thôi nói số ca chấm — người mù không đo được bán kính, nên với họ'
+    + ' tin ấy biến mất hẳn chứ không chuyển sang hình');
+  // Và thẻ bài còn ĐÚNG ba thứ, không hai không bốn.
+  for (const o of ['thuTu', 'ma', 'tenBai']) {
+    assert.match(CUR_CODE, new RegExp(`styles\\.${o}`), `thẻ bài thiếu \`${o}\``);
+  }
+});
+
+test('VIỆC 2 · một dòng bảng và một ngôi là HAI ĐẦU của một thứ, cả hai chiều', () => {
+  // Trước đây bảng bài và bầu trời là hai thứ rời nhau: chín dòng chữ và chín
+  // ngôi, không gì nói dòng nào ứng với ngôi nào.
+  assert.match(TSX_CODE, /<ol[^>]*data-bang=""/, 'bảng bài không có móc `data-bang`');
+  assert.match(TSX_CODE, /data-bai=\{b\.code\}/, 'dòng bảng không mang mã bài');
+  // Bộ máy phải ở LỚP CON TRỎ: nó là chỗ duy nhất biết "ngôi nào đang sống",
+  // và hai bộ máy cho một trạng thái là một trạng thái sẽ dính.
+  assert.equal((CUR_CODE.match(/setAttribute\('data-sang', ''\)/g) ?? []).length, 2,
+    'phải có ĐÚNG hai chỗ đặt `data-sang`: một cho dòng (ngôi → bảng) và một cho ngôi'
+    + ' (bảng → ngôi). Một chỗ nghĩa là liên kết chỉ chạy một chiều');
+  // VÀ NÓ KHÔNG ĐƯỢC GIỮ MỘT THAM CHIẾU TỚI BẢNG. Ở tỉ lệ xa bảng bài không
+  // tồn tại, thành phần mount MỘT LẦN với `deps: []`, và cú phóng là điều
+  // hướng phía client — nên một `querySelector('[data-bang]')` lúc mount trả
+  // `null` mãi mãi và liên kết hai chiều chết im lặng với mọi ai bấm từ bản
+  // đồ (chỉ ai dán thẳng `?chang=M5` mới thấy nó chạy). Đây là một lỗi đã
+  // sửa, và ca này là thứ giữ cho nó không quay lại.
+  assert.ok(!/const bang\b/.test(CUR_CODE),
+    'lớp con trỏ lại giữ một tham chiếu tới bảng bài lúc mount — ở tỉ lệ xa bảng chưa tồn tại');
+  assert.match(CUR_CODE, /closest<HTMLElement>\('\[data-bang\] \[data-bai\]'\)/,
+    'liên kết không đi qua uỷ quyền trên `<main>` — nó phải tra bảng ĐÚNG LÚC có việc');
+  // Mọi listener uỷ quyền phải được tháo: trang này điều hướng bằng `<Link>`,
+  // nên một listener sót lại là một listener trên một cây DOM đã bỏ.
+  for (const sk of ['pointerover', 'focusin', 'focusout']) {
+    assert.match(CUR_CODE, new RegExp(`trang\\?\\.removeEventListener\\('${sk}'`),
+      `listener \`${sk}\` uỷ quyền không được tháo khi thành phần rời đi`);
+  }
+  // QUẦNG SÁNG: `box-shadow` phải TĨNH. Nội suy nó là một lượt VẼ LẠI mỗi
+  // khung hình — đúng thứ mà ca "cú phóng là lớp HTML" cấm, chỉ ở một chỗ
+  // không ai nghĩ tới.
+  const q = CSS_CODE.match(/\n\.quang\s*\{([^}]*)\}/);
+  assert.ok(q, 'thiếu quy tắc .quang — không có gì để "phát sáng"');
+  assert.match(q[1], /box-shadow:[^;]*var\(--sac\)/, 'quầng không lấy sắc của chặng');
+  assert.match(q[1], /transition:\s*opacity[^;]*,\s*transform[^;]*;/,
+    'quầng nội suy một thuộc tính khác opacity/transform');
+  const batQuang = CSS_CODE.match(/\.sao:focus-visible \.quang\s*\{([^}]*)\}/);
+  assert.ok(batQuang && !/box-shadow/.test(batQuang[1]),
+    'quy tắc BẬT quầng đổi luôn `box-shadow` — nó phải chỉ đổi opacity/transform');
+  // Dòng bảng dùng ĐÚNG nền mà `:hover` dùng: "dòng này là ngôi bạn đang chỉ
+  // vào" và "dòng này là dòng chuột đang trên" là cùng một câu, nên không có
+  // cặp màu nào phải đo lại.
+  assert.match(CSS_CODE, /\.hang:hover,\s*\n\.hang:focus-visible,\s*\n\.hang\[data-sang\]\s*\{/,
+    'ba đường tới trạng thái của một dòng bảng không chung một khối');
+  // ĐƯỜNG CỦA ĐIỆN THOẠI: con số thứ tự in ở CẢ HAI chỗ, cùng một nguồn.
+  assert.match(CUR_CODE, /className=\{styles\.thuTu\}>\{j \+ 1\}/);
+  assert.match(TSX_CODE, /className=\{styles\.hangSo\}>\{b\.order\}/);
+  SKY_CONSTELLATIONS.forEach((c, i) => {
+    stageLessons(c.key).forEach((b, j) => {
+      assert.equal(b.order, j + 1,
+        `${c.key}/${b.code}: số in trên ngôi (j + 1) và số in ở bảng (order) không cùng một`
+        + ' phép đếm — chỗ nối duy nhất dùng được trên điện thoại chỉ sang bài khác');
+      assert.equal(b.lesson, lessonNumber(i, j));
+    });
+  });
+  // QUẦNG LÀ MỘT NÉT MANG TIN, nên nó phải đạt 3:1 — và con số ấy phải ĐO,
+  // vì độ mờ 0,55 là chỗ cả phép đo nằm: hạ xuống 0,25 "cho nó dịu" là hạ
+  // một tín hiệu xuống dưới ngưỡng, và không gì đỏ lên. Đo trên nền TỐI NHẤT
+  // của bầu trời (`base`), chỗ xấu nhất cho một vệt sáng mờ.
+  const mo = +batQuang[1].match(/opacity:\s*([\d.]+)/)[1];
+  const lin = (c) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
+  const kenh = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+  const Lum = (v) => 0.2126 * lin(v[0] / 255) + 0.7152 * lin(v[1] / 255) + 0.0722 * lin(v[2] / 255);
+  const phu = (f, b, a) => kenh(f).map((c, i) => c * a + kenh(b)[i] * (1 - a));
+  const tp = (a, b) => (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  const nen = Lum(kenh(P.base));
+  for (const [k, hue] of Object.entries(P.hues)) {
+    const t = tp(Lum(phu(hue, P.base, mo)), nen);
+    assert.ok(t >= 3,
+      `quầng của chặng ${k} ở độ mờ ${mo} chỉ đạt ${t.toFixed(2)}:1 trên nền trời — dưới sàn`
+      + ' 3:1 của một nét MANG TIN, và "ngôi nào đang được trỏ" là tin');
+  }
+  // Và nhánh `reduce` phải tắt chuyển tiếp của quầng: nó đổi KÍCH THƯỚC
+  // (`scale`), tức là chuyển động theo đúng định nghĩa hẹp của WCAG.
+  const kh = [...CSS_CODE.matchAll(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/g)]
+    .map((m) => m[1]).join('\n');
+  assert.ok(/\.quang[,\s]/.test(kh), 'nhánh reduce không tắt chuyển tiếp của quầng sáng');
+});
+
+test('VIỆC 3 · khung nới ra trên màn rộng, nhưng CHỮ không nở theo', () => {
+  const doRong = (cls) => {
+    const m = CSS_CODE.match(new RegExp(`\\n\\.${cls}\\s*\\{([^}]*)\\}`));
+    assert.ok(m, `thiếu quy tắc .${cls}`);
+    const w = m[1].match(/max-width:\s*(\d+)px/);
+    assert.ok(w, `.${cls} không khai max-width bằng px`);
+    return +w[1];
+  };
+  const xa = doRong('wrap');
+  const gan = doRong('rong');
+  assert.ok(gan > xa, `tỉ lệ gần (${gan}px) không rộng hơn tỉ lệ xa (${xa}px)`);
+  // …và chỉ ở tỉ lệ gần: ở tỉ lệ xa bức tranh đã vừa khung, nới thêm chỉ làm
+  // tám ô bấm phải với xa hơn.
+  assert.match(TSX_CODE, /styles\.wrap\} \$\{chang \? styles\.rong : ''\}/,
+    '`.rong` gắn vô điều kiện — nó phải theo `?chang=`');
+
+  // THẺ BÀI rộng ra ĐÚNG hệ số khung nở ra, không hơn. 15ch là con số đo cho
+  // khung 1 068 px; lấy tròn 30ch "cho đỡ gãy dòng" là lấy lại đúng chỗ chồng
+  // nhau mà 15ch mua được, chỉ ở một bề rộng khác.
+  const chRong = (re) => {
+    const m = CSS_CODE.match(re);
+    assert.ok(m, `không đọc được max-width của ${re}`);
+    return +m[1];
+  };
+  const chXa = chRong(/\n\.tenBai\s*\{[^}]*max-width:\s*(\d+)ch/);
+  const chGan = chRong(/\.rong \.tenBai\s*\{[^}]*max-width:\s*(\d+)ch/);
+  const he = (gan - 32) / (xa - 32);
+  assert.ok(chGan > chXa, `thẻ bài không rộng thêm (${chXa}ch → ${chGan}ch) — tên bài vẫn gãy`
+    + ' vụn đúng như ảnh chụp cho thấy');
+  assert.ok(chGan <= chXa * he,
+    `thẻ bài rộng gấp ${(chGan / chXa).toFixed(2)} lần trong khi khung chỉ rộng gấp`
+    + ` ${he.toFixed(2)} lần — hai thẻ cạnh nhau sẽ che nhau, đúng chỗ 15ch mua được`);
+  // …và chỉ ở màn ĐỦ RỘNG: `max-width` tự hạ xuống bề rộng màn, nên trên điện
+  // thoại `.rong` vẫn cho ra khung 358 px và một thẻ 21ch ở đó chồng lên ba
+  // thẻ bên cạnh.
+  const mq = CSS_CODE.match(/@media \(min-width: (\d+)px\)\s*\{([\s\S]*?)\n\}/);
+  assert.ok(mq && /\.rong \.tenBai/.test(mq[2]),
+    'thẻ bài nới ra không bị một `min-width` canh — điện thoại sẽ nhận bề rộng của màn rộng');
+  assert.ok(+mq[1] >= 1000, `ngưỡng nới thẻ bài chỉ ${mq[1]}px`);
+
+  // CHỮ KHÔNG NỞ THEO. WCAG 1.4.8 đặt trần 80 ký tự một dòng.
+  const vx = CSS_CODE.match(/\.rong \.lead,[\s\S]*?\{([^}]*)\}/);
+  assert.ok(vx, 'văn xuôi ở tỉ lệ gần không bị kẹp thước đo nào');
+  const do80 = vx[1].match(/max-width:\s*(\d+)ch/);
+  assert.ok(do80 && +do80[1] <= 80,
+    `văn xuôi được phép dài ${do80 ? do80[1] : '∞'}ch — trần của WCAG 1.4.8 là 80`);
+  for (const cls of ['lead', 'hint', 'bangNote', 'legend']) {
+    assert.ok(new RegExp(`\\.rong \\.${cls}[,\\s]`).test(CSS_CODE),
+      `.${cls} không bị kẹp thước đo ở tỉ lệ gần`);
+  }
+
+  // VÙNG CHẠM đo lại ở bề rộng MỚI: khung rộng ra thì khe hai ngôi giãn theo,
+  // nên 44 px chỉ dễ hơn — nhưng con số phải đo, không đoán.
+  const W = gan - 32;
+  for (const z of SKY_ZOOM_PLACED) {
+    const p = byKey[z.key].stars.map((s) => VI_TRI[s.code]);
+    let khe = Infinity;
+    for (let i = 0; i < p.length; i += 1) {
+      for (let j = i + 1; j < p.length; j += 1) {
+        khe = Math.min(khe, Math.hypot(p[i].x - p[j].x, p[i].y - p[j].y));
+      }
+    }
+    assert.ok(khe / SKY_FRAME.width * W * z.scale >= 44, `${z.key}: khe hai ngôi dưới 44 px`);
+  }
+});
+
+test('VIỆC 4 · cú phóng có BA NHỊP, và không `transition:` nào trong quy tắc trạng thái', () => {
+  const { zoom } = SKY_CURSOR;
+  // Ba biến khai ở `.frame` (lượt VỀ) và đặt lại ở `.frame[data-phong]` (lượt
+  // ĐI). Hai chỗ, vì transition lấy giá trị của trạng thái ĐÍCH: viết một bộ
+  // số là lượt về cũng dài, cũng trễ, cũng có nhịp — tức lùi ra cũng thành
+  // một chuyến đi.
+  const khung = CSS_CODE.match(/\n\.frame\s*\{([^}]*)\}/);
+  assert.ok(khung, 'thiếu quy tắc .frame');
+  assert.match(khung[1], new RegExp(`--phong-dur:\\s*${zoom.out}ms`),
+    `lượt VỀ không còn ${zoom.out}ms của SKY_CURSOR.zoom.out`);
+  assert.match(khung[1], /--phong-tre:\s*0ms/, 'lượt về có độ trễ — lùi ra là việc muốn xong');
+  const di = CSS_CODE.match(/\.frame\[data-phong\]\s*\{([^}]*)\}/);
+  assert.ok(di, 'thiếu khối ba nhịp của cú phóng');
+  assert.match(di[1], new RegExp(`--phong-dur:\\s*${zoom.travel}ms`));
+  assert.match(di[1], new RegExp(`--phong-tre:\\s*${zoom.travelDelay}ms`));
+  assert.ok(di[1].includes(zoom.curve),
+    `đường cong trong CSS không phải \`${zoom.curve}\` của SKY_CURSOR.zoom`);
+  assert.ok(zoom.out < zoom.travelDelay + zoom.travel,
+    `lượt về (${zoom.out}ms) không gọn hơn lượt đi (${zoom.travelDelay + zoom.travel}ms)`);
+
+  // ĐƯỜNG CONG PHẢI KHỞI HÀNH RỒI DỪNG LẠI. `ease-out` của bản trước xuất
+  // phát ở tốc độ cao nhất — bức tranh đã đang chạy trước khi tay rời chuột,
+  // một cú giật chứ không một cú khởi hành. Đo bằng chính bốn số của bezier:
+  // x1 > y1 là vào CHẬM, y2 = 1 với x2 nhỏ là ra DỪNG HẲN.
+  const bz = zoom.curve.match(/cubic-bezier\(([\d.]+),\s*([\d.]+),\s*([\d.]+),\s*([\d.]+)\)/);
+  assert.ok(bz, `SKY_CURSOR.zoom.curve không phải một cubic-bezier: ${zoom.curve}`);
+  const [x1, y1, x2, y2] = bz.slice(1).map(Number);
+  assert.ok(x1 > y1, `đường cong vào ở tốc độ ${(y1 / x1).toFixed(2)} — không phải một cú khởi`
+    + ' hành. `ease-out` (0, 0, 0.58, 1) trượt ca này, và nó trượt đúng');
+  assert.ok(y2 >= 1 && x2 < 0.5, 'đường cong không dừng hẳn ở đích — nó bò vào');
+
+  // NHỊP 1 — bảy chòm kia lùi ra NGAY. NHỊP 3 — chòm đích tới SAU.
+  const lui = CSS_CODE.match(/\.frame\[data-phong\] \.chomNen\s*\{([^}]*)\}/);
+  assert.ok(lui, 'bảy chòm kia không lùi ra — cú phóng vẫn là một bước chuyển đơn');
+  assert.match(lui[1], /opacity:\s*var\(--sky-mo\)/,
+    'chòm không được chọn lùi về một độ mờ khác hover — "gác lại" phải đọc ra một nghĩa ở cả'
+    + ' hai tỉ lệ');
+  assert.match(lui[1], new RegExp(`--nghi-dur:\\s*${zoom.recede}ms`));
+  assert.match(lui[1], /--nghi-tre:\s*0ms/, 'bảy chòm kia lùi ra có độ trễ — chúng phải đi đầu');
+  for (const c of SKY_CONSTELLATIONS) {
+    const tat = CSS_CODE.indexOf(`.frame[data-phong='${c.key}'] .chom${c.key}`);
+    const ro = CSS_CODE.indexOf(`.frame[data-phong='${c.key}'] .ro${c.key}`);
+    assert.ok(tat > 0 && ro > 0, `${c.key}: thiếu nhịp "chòm đích tới"`);
+    // THỨ TỰ TRONG TỆP là cái quyết: hai quy tắc cùng độ đặc trưng (0,3,0),
+    // nên đảo lại là chòm ĐÍCH cũng mờ đi cùng bảy chòm kia — phóng vào một
+    // chặng để thấy nó mờ nhất.
+    assert.ok(tat > CSS_CODE.indexOf('.frame[data-phong] .chomNen'),
+      `${c.key}: nhịp "chòm đích tới" đứng TRƯỚC nhịp "bảy chòm kia lùi ra", và hai quy tắc`
+      + ' cùng độ đặc trưng nên chòm đích sẽ bị mờ theo');
+  }
+  assert.match(CSS_CODE, new RegExp("\\.frame\\[data-phong='M5'\\] \\.chomM5,?[\\s\\S]{0,400}?"
+    + `--nghi-tre:\\s*${zoom.arriveDelay}ms`));
+  assert.match(CSS_CODE, new RegExp("\\.frame\\[data-phong='M5'\\] \\.roM5,?[\\s\\S]{0,400}?"
+    + `--ro-tre:\\s*${zoom.arriveDelay}ms`));
+  // Chòm đích phải tới TRONG LÚC còn đang đi, không sau khi đã đến hẳn: tới
+  // một chỗ thì chỗ ấy sáng lên lúc ta tới, không phải một nhịp sau đó.
+  assert.ok(zoom.arriveDelay > zoom.travelDelay
+    && zoom.arriveDelay < zoom.travelDelay + zoom.travel,
+  `chòm đích sáng ở ${zoom.arriveDelay}ms, ngoài quãng đi`
+    + ` ${zoom.travelDelay}–${zoom.travelDelay + zoom.travel}ms`);
+
+  // TỔNG THỜI LƯỢNG — người ta sẽ bấm nhiều lần, và một hoạt ảnh dài là một
+  // hoạt ảnh phiền ở lần thứ ba. Thẻ bài cuối (chòm dày nhất 9 ngôi) phải
+  // xong trong 650 ms.
+  const day = Math.max(...SKY_CONSTELLATIONS.map((c) => c.stars.length));
+  const chip = CSS_CODE.match(/\n\.chip\s*\{[^}]*transition:\s*opacity\s+(\d+)ms/);
+  assert.ok(chip, 'không đọc được thời lượng của thẻ bài');
+  const het = Math.max(zoom.travelDelay + zoom.travel, zoom.arriveDelay + zoom.arrive,
+    zoom.chipDelay + zoom.chipStagger * (day - 1) + +chip[1]);
+  assert.ok(het <= 650, `cú phóng kéo ${het}ms — trần 650ms`);
+
+  // VÀ CÁI BẪY: không một `transition:` nào trong quy tắc mang `[data-phong]`.
+  // Quy tắc ấy đặc trưng hơn nhánh `reduce`, nên một `transition:` ở đó đè
+  // `transition: none` — người bật giảm chuyển động nhận đủ ba nhịp, trong
+  // khi ca "GIẢM CHUYỂN ĐỘNG" đọc nhánh reduce và báo xanh.
+  for (const m of CSS_CODE.matchAll(/([^{}]*\[data-phong\][^{}]*)\{([^}]*)\}/g)) {
+    assert.ok(!/transition:/.test(m[2]),
+      `quy tắc \`${m[1].trim().split('\n').pop()}\` viết \`transition:\` — nó sẽ đè nhánh`
+      + ' prefers-reduced-motion, và ca test đọc nhánh ấy nên nó vẫn báo xanh');
+  }
+  // Ba nhịp phải THẬT SỰ tắt được: cả bốn vật mang nhịp đều có mặt trong
+  // nhánh reduce.
+  const kh = [...CSS_CODE.matchAll(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/g)]
+    .map((m) => m[1]).join('\n');
+  for (const cls of ['.sky', '.lop', '.chomNen', '.chomRo']) {
+    assert.ok(new RegExp(`\\${cls}[,\\s]`).test(kh), `nhánh reduce không tắt nhịp của ${cls}`);
   }
 });

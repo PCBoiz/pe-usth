@@ -47,6 +47,32 @@
   padding: 32px 16px 64px;
 }
 
+/* KHUNG NỚI RA Ở TỈ LỆ GẦN — và chỉ ở tỉ lệ gần.
+   Chủ sản phẩm xem màn phóng gần trên màn rộng: "có thể cho to ra hơn nữa
+   trên máy tính". Đo được chỗ chật: ở `max-width: 1100px` khung thật rộng
+   1 068 px, nên chòm chặt nhất (M2, hệ số 2,962) chỉ giãn khe hai ngôi ra
+   112 px — mà một thẻ bài mang tên bài thật rộng hơn thế, nên tên bài phải
+   bọc xuống 15ch và "Array, dtype, shape và axis" vỡ thành bốn dòng.
+   1 560 px cho khung 1 528 px, tức cùng khe ấy thành 161 px.
+   `max-width` TỰ hạ xuống bề rộng màn, nên không cần một `@media` nào để
+   điện thoại vẫn đúng: ở màn 390 px cả hai giá trị cùng cho ra 390 px.
+   Lớp này chỉ gắn khi `?chang=` hợp lệ (`page.tsx`), vì ở tỉ lệ xa bức tranh
+   đã vừa khung và nới thêm chỉ làm tám ô bấm phải với xa hơn. */
+.rong {
+  max-width: 1560px;
+}
+
+/* …nhưng CHỮ thì không được nở theo. WCAG 1.4.8 đặt trần 80 ký tự một dòng,
+   và ở 1 528 px câu chú giải dài nhất ra ~150 ký tự — một dòng mà mắt mất chỗ
+   khi quay về đầu. Chỉ bức tranh và bảng bài hưởng chỗ rộng; văn xuôi giữ
+   thước đo cũ. */
+.rong .lead,
+.rong .hint,
+.rong .bangNote,
+.rong .legend {
+  max-width: 72ch;
+}
+
 .lead {
   color: var(--ds-ink);
   font-size: var(--ds-fs-lead);
@@ -97,6 +123,13 @@
   --zs: 1;
   --zx: 0%;
   --zy: 0%;
+  /* BA NHỊP CỦA CÚ PHÓNG, khai ở đây để cả mười chín tấm LẪN lớp con trỏ
+     thừa hưởng cùng một bộ số — xem khối "CÚ PHÓNG CÓ BA NHỊP" ở dưới. Giá
+     trị ở đây là LƯỢT VỀ (`SKY_CURSOR.zoom.out`): không trễ, không nhịp,
+     `ease-out`. Lùi ra là một việc muốn xong, không một chuyến đi. */
+  --phong-dur: 320ms;
+  --phong-tre: 0ms;
+  --phong-cong: ease-out;
 }
 
 /* CÚ PHÓNG — tỉ lệ thứ hai, bước 3 của `design/v3/tuong-tac-ban-do.md`.
@@ -130,13 +163,18 @@
   position: absolute;
   top: 0;
   transform: scale(var(--zs)) translate(var(--zx), var(--zy));
-  /* `--ds-dur-page` (450 ms) — bậc "lật trang" của thang token, và đây đúng
-     là một lần lật trang: biên độ đo được 626 px ở M1 (hệ số 2,791 × lệch
-     tâm 0,21 × bề rộng khung 1 068 px). Lấy `--ds-dur-fast` cho một quãng
-     đường như thế thì mắt mất dấu vật đang theo, mà mất dấu là mất đúng cái
-     cảm giác "tôi vừa đi tới một chỗ khác". `ease-out` chứ không `ease`: cú
-     phóng phải DỪNG hẳn chứ không bò vào đích. */
-  transition: transform var(--ds-dur-page) ease-out;
+  /* BA BIẾN, KHÔNG BA CON SỐ — và không `transition:` nào trong quy tắc
+     trạng thái. Lý do là một cái bẫy đã trả giá một lần ở `.chomNen`: quy tắc
+     `[data-phong]` đặc trưng hơn quy tắc này, nên một `transition:` viết
+     trong đó sẽ ĐÈ luôn `transition: none` của nhánh `prefers-reduced-motion`
+     — người bật giảm chuyển động vẫn nhận đủ hoạt ảnh, trong khi ca test đọc
+     nhánh reduce và báo xanh. Đi qua biến thì nhánh reduce vẫn thắng.
+
+     Biên độ ở đây là HÀNG TRĂM PIXEL (đo 626 px ở M1: hệ số 2,791 × lệch tâm
+     0,21 × bề rộng khung 1 068 px), nên quãng đi phải đủ dài để mắt theo được
+     vật — mất dấu vật là mất đúng cảm giác "tôi vừa đi tới một chỗ khác".
+     Con số và đường cong ở `SKY_CURSOR.zoom`. */
+  transition: transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
   width: 100%;
   z-index: 1;
 }
@@ -169,7 +207,14 @@
 .chomRo {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 150ms ease, transform var(--ds-dur-page) ease-out;
+  /* `--ro-dur`/`--ro-tre` là cùng một mẹo với `--nghi-*` của tấm nghỉ: trạng
+     thái HOVER giữ 150 ms không trễ (`SKY_CURSOR.lead.tileIn`), còn trạng
+     thái PHÓNG đặt lại hai biến này để chòm đích "tiến vào" sau cú đi. Cả hai
+     chỉ đặt BIẾN, nên nhánh reduce vẫn tắt được. */
+  --ro-dur: 150ms;
+  --ro-tre: 0ms;
+  transition: opacity var(--ro-dur) ease var(--ro-tre),
+    transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
 }
 
 /* TẤM NGHỈ CỦA MỘT CHÒM — nay có TÁM tấm như thế, không một tấm.
@@ -189,7 +234,7 @@
   --nghi-dur: var(--ds-dur-fast);
   --nghi-tre: 0ms;
   transition: opacity var(--nghi-dur) ease var(--nghi-tre),
-    transform var(--ds-dur-page) ease-out;
+    transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
 }
 
 /* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
@@ -435,10 +480,15 @@
    Tức điện thoại nhận một bản đồ CHỈ ĐỂ NHÌN.
 
    Nay CHẠM LÀ PHÓNG, và đó là đường CHÍNH chứ không phải đường phụ: cú phóng
-   không cần hover, nó cần một cú bấm — và ở tỉ lệ gần thì tên bài, thứ tự học
-   và số ca hiện ra bằng CHỮ, cho mọi thiết bị như nhau. Bảng bài dưới khung
-   cũng không cần hover. Nên khối này chỉ còn tắt tấm RÕ (thứ duy nhất thật sự
-   dựa vào hover), và điện thoại không mất một tin nào.
+   không cần hover, nó cần một cú bấm — và ở tỉ lệ gần thì tên bài và thứ tự
+   học hiện ra bằng CHỮ, cho mọi thiết bị như nhau. Bảng bài dưới khung cũng
+   không cần hover, và nó nối với bầu trời bằng CON SỐ thứ tự in ở cả hai chỗ
+   (xem `.hangSo`) chứ không bằng quầng sáng. Nên khối này chỉ còn tắt tấm RÕ
+   (thứ duy nhất thật sự dựa vào hover), và điện thoại không mất một tin nào.
+
+   Lưu ý một chỗ dễ đọc nhầm: `.chomRo { opacity: 0 }` dưới đây KHÔNG tắt nhịp
+   "chòm đích tới" của cú phóng — quy tắc phóng là `.frame[data-phong='M5']
+   .roM5` (0,3,0), đặc trưng hơn hẳn, và `@media` không cộng độ đặc trưng nào.
 
    Vẫn KHÔNG BAO GIỜ "chạm lần một để xem, chạm lần hai để đi": chạm một chòm
    phóng vào chặng, chạm một ngôi ở tỉ lệ gần mở bài. Hai cú chạm khác nhau vào
@@ -477,14 +527,10 @@
   width: 1px;
 }
 
-/* THANG BÁN KÍNH, nói bằng số. Không mờ đi như `.hint`: đây là đơn vị của
-   thang mà cả bức tranh dựa vào, và nó là đường DUY NHẤT đọc được con số ấy
-   trên máy chạm (ở đó không có hover để chip hiện ra). */
-.scale {
-  color: var(--ds-ink);
-  font-size: var(--ds-fs-ui);
-  margin: 16px 0 0;
-}
+/* KHÔNG CÒN `.scale` — câu "Thang bán kính: 6 ca chấm … tới 14 ca …" đã bỏ
+   cùng với chữ "ca" ngày 19/10/2026. Nó là chú giải của một con số không còn
+   in ra ở đâu, nên để lại là để lại một dòng chữ dẫn người đọc đi tìm. Bán
+   kính vẫn mang số ca chấm, và `.legend` vẫn nói ra điều đó bằng lời. */
 
 .legend {
   color: var(--ds-ink);
@@ -556,7 +602,10 @@
   pointer-events: none;
   position: absolute;
   transform: scale(var(--zs)) translate(var(--zx), var(--zy));
-  transition: transform var(--ds-dur-page) ease-out;
+  /* CÙNG ba biến với mười chín tấm, và đó là bắt buộc: lớp này mang 48 dấu
+     ngôi đặt bằng % của chính nó, nên một nhịp lệch là 48 dấu ngôi trượt khỏi
+     48 ngôi thật suốt 360 ms. */
+  transition: transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
   z-index: 3;
 }
 
@@ -985,20 +1034,41 @@
   white-space: normal;
 }
 
-/* SỐ CA CHẤM — ở tỉ lệ XA chỉ hiện ở ngôi ĐANG được nhận. Đúng bài học Hades
-   trong nghiên cứu §2.5: cho biết HÌNH DẠNG của lựa chọn ở tỉ lệ xa (mã bài),
-   giữ lại NỘI DUNG của nó (con số) cho chỗ tay đang chỉ vào. Chín con số cùng
-   hiện ở tỉ lệ xa là chín con số không ai đọc.
+/* KHÔNG CÒN `.soCa`. Thẻ bài từng in `1 N01 9 ca`; chủ sản phẩm xem màn phóng
+   gần ngày 19/10/2026 và nói đúng một câu: "bỏ phần ca đi". Con số ấy là con
+   số mà BÁN KÍNH ngôi đã nói rồi — in lại bằng chữ ngay cạnh cái hình đang
+   nói nó là trả hai lần cho một tin, trong một cái thẻ chỉ có chỗ cho ba
+   dòng. Bán kính KHÔNG đụng tới (xem `starMagnitude`), và `starAriaLabel`
+   giữ con số cho người không thấy bán kính.
 
-   Ở tỉ lệ GẦN thì cả chặng hiện số — xem khối `[data-phong]`. Ở đó nó không
-   còn là chín con số rải trên cả bầu trời, nó là chín con số của MỘT chặng
-   đang được xem, và so chúng với nhau là cả việc người ta vừa phóng vào để
-   làm. */
-.soCa {
-  color: var(--sky-code);
-  display: none;
-  font-family: var(--edu-mono);
-  margin-left: 5px;
+   QUẦNG SÁNG CỦA NGÔI — việc thứ hai chủ sản phẩm đặt ra cùng lúc: "khi tôi
+   hover vào 1 bài thì cái ngôi sao đấy sẽ phát sáng".
+
+   Trước đây bảng bài dưới khung và bầu trời trong khung là HAI THỨ RỜI NHAU:
+   chín dòng chữ và chín ngôi, không gì nói dòng nào ứng với ngôi nào. Nay
+   chúng nối bằng một thuộc tính `data-sang` mà `SkyCursor.tsx` đặt, cho CẢ
+   HAI CHIỀU.
+
+   VÌ SAO LÀ MỘT PHẦN TỬ RIÊNG, KHÔNG PHẢI `box-shadow` TRÊN `.sao`: `box-
+   shadow` không chạy trên compositor, nên nội suy nó là một lượt VẼ LẠI mỗi
+   khung hình — và ca test "cú phóng là lớp HTML" chỉ cho `opacity`/`transform`
+   đi vào `transition` đúng vì thế. Ở đây `box-shadow` là TĨNH (nó nằm trên
+   phần tử, không bao giờ đổi), còn thứ nội suy là `opacity` + `transform` của
+   chính phần tử ấy. Cùng một vẻ ngoài, không một lượt vẽ lại nào.
+
+   `inset: 22%` + `scale(0.55)` → quầng mọc TỪ TRONG ngôi ra, không phải từ
+   không khí: nó là ngôi sáng lên, không một vật thứ hai xuất hiện cạnh ngôi.
+   Và nó nằm DƯỚI chip (chip có nền ĐẶC `--sky-chip`), nên chữ trên chip không
+   mất một phần mười tương phản nào — đó là lý do chip có nền đặc ngay từ đầu. */
+.quang {
+  background: var(--sac);
+  border-radius: 50%;
+  box-shadow: 0 0 12px 4px var(--sac);
+  inset: 22%;
+  opacity: 0;
+  position: absolute;
+  transform: scale(0.55);
+  transition: opacity 150ms ease, transform 150ms ease;
 }
 
 /* ── TIẾT LỘ CÓ THỨ TỰ ─────────────────────────────────────────────────
@@ -1027,6 +1097,28 @@
   .cum .sao:nth-child(7) .chip { --bac: 420ms; }
   .cum .sao:nth-child(8) .chip { --bac: 465ms; }
   .cum .sao:nth-child(9) .chip { --bac: 510ms; }
+
+  /* CÙNG THỨ TỰ ẤY, NHƯNG Ở TỈ LỆ GẦN NÓ XUẤT PHÁT SAU CÚ ĐI (nhịp 3 của
+     `SKY_CURSOR.zoom`). Bậc thang của hover bắt đầu ở 150 ms vì lúc đó bức
+     tranh đứng yên; ở cú phóng thì khung đang chạy từ 70 ms tới 430 ms, nên
+     một thẻ bài hiện ở 150 ms là một thẻ bài TRÔI ngang màn hình cùng bầu
+     trời — chữ chạy là chữ không đọc được. 230 ms + 20 ms một bậc: thẻ đầu
+     tới SAU khi chòm đích đã bắt đầu sáng (190 ms), thẻ thứ chín ở 390 ms, cả
+     loạt xong ở 570 ms.
+     Bậc cũng NGẮN hơn (20 ms thay vì 45): ở tỉ lệ gần cả chặng vào MỘT lượt
+     nên thứ tự đọc được bằng chín con số đứng cạnh nhau, bậc thang chỉ còn
+     việc nói "theo thứ tự" — còn ở tỉ lệ xa nó là thứ DUY NHẤT nói ra thứ tự.
+     Khai trong CÙNG nhánh `no-preference`: dưới `reduce` cả hai bậc thang đơn
+     giản không tồn tại và `--bac` rơi về 0 ms. */
+  .frame[data-phong] .cum .sao:nth-child(1) .chip { --bac: 230ms; }
+  .frame[data-phong] .cum .sao:nth-child(2) .chip { --bac: 250ms; }
+  .frame[data-phong] .cum .sao:nth-child(3) .chip { --bac: 270ms; }
+  .frame[data-phong] .cum .sao:nth-child(4) .chip { --bac: 290ms; }
+  .frame[data-phong] .cum .sao:nth-child(5) .chip { --bac: 310ms; }
+  .frame[data-phong] .cum .sao:nth-child(6) .chip { --bac: 330ms; }
+  .frame[data-phong] .cum .sao:nth-child(7) .chip { --bac: 350ms; }
+  .frame[data-phong] .cum .sao:nth-child(8) .chip { --bac: 370ms; }
+  .frame[data-phong] .cum .sao:nth-child(9) .chip { --bac: 390ms; }
 }
 
 .hitM1:hover ~ .lop .cumM1 .chip,
@@ -1054,26 +1146,39 @@
 .hitM8:focus-visible ~ .lop .cumM8 .chip,
 .lop[data-chang='M8'] .cumM8 .chip { opacity: 1; }
 
-/* NGÔI GẦN CON TRỎ NHẤT TỰ NHẬN MÌNH. `[data-gan]` do JS đặt theo khoảng cách
-   thật (`SKY_CURSOR.claimRadius`), `:focus-visible` là đường bàn phím — và hai
-   thứ cho ra ĐÚNG cùng một trạng thái, đúng luật 4 ở đầu tệp.
+/* NGÔI GẦN CON TRỎ NHẤT TỰ NHẬN MÌNH, và BA ĐƯỜNG TỚI CÙNG MỘT TRẠNG THÁI.
+   `[data-gan]` do JS đặt theo khoảng cách thật (`SKY_CURSOR.claimRadius`),
+   `:focus-visible` là đường bàn phím, `[data-sang]` là đường TỪ BẢNG BÀI (trỏ
+   hoặc Tab vào một dòng dưới khung). Cả ba trong MỘT khối, không ba khối: ba
+   khối là ba chỗ sẽ trôi xa nhau, và triệu chứng là "đi bằng Tab thấy một bản
+   đồ khác đi bằng chuột".
 
    KHÔNG trễ: cái này đi theo tay, nên nó phải tới ngay. Bậc thang 45 ms ở trên
    là để kể thứ tự của một chặng, không phải để làm chậm phản hồi. */
 .sao[data-gan],
+.sao[data-sang],
 .sao:focus-visible {
   border-color: var(--sac);
   outline: var(--ds-bw-1) solid var(--sky-chip);
 }
 
 .sao[data-gan] .chip,
+.sao[data-sang] .chip,
 .sao:focus-visible .chip {
   --bac: 0ms;
   opacity: 1;
 }
 
-.sao[data-gan] .soCa,
-.sao:focus-visible .soCa { display: inline; }
+/* QUẦNG SÁNG bật ở cả ba đường. Vòng viền `--sac` + `outline --sky-chip` vẫn
+   là cặp MANG TIN (hai nét, đã đo: không có độ chói nền nào làm cả hai dưới
+   3:1); quầng là lớp chồng thêm, đủ to để thấy được từ cuối một dòng bảng
+   cách đó mấy trăm pixel. */
+.sao[data-gan] .quang,
+.sao[data-sang] .quang,
+.sao:focus-visible .quang {
+  opacity: 0.55;
+  transform: scale(1);
+}
 
 /* MÁY KHÔNG CÓ HOVER: `SkyCursor.tsx` không gắn một listener con trỏ nào, nên
    bảy vật của thiết bị không bao giờ bật. Tắt hẳn cho chắc — một thứ không bao
@@ -1107,6 +1212,7 @@
   .keY,
   .lanX,
   .lanY,
+  .quang,
   .sao,
   .vachX,
   .vachY,
@@ -1186,6 +1292,74 @@
   --zy: 34.375%;
 }
 
+/* ── CÚ PHÓNG CÓ BA NHỊP ───────────────────────────────────────────────
+
+   Bản trước là MỘT bước chuyển đơn: mười chín tấm cộng lớp con trỏ cùng chạy
+   một `transform` 450 ms `ease-out`, hết. Chủ sản phẩm xem rồi nói "cải tiến
+   cả hoạt ảnh khi bấm vào này nữa" — và lời chê ấy đọc được bằng CSS: một
+   cú phóng không có thứ tự thì không phải đi tới một chỗ, nó là đổi một bức
+   ảnh.
+
+   Ba nhịp, và thứ tự ba nhịp LÀ cái tin (con số ở `SKY_CURSOR.zoom`, một ca
+   test so lại — nếu không thì chúng là ba con số sống trong CSS mà không ai
+   đo được):
+
+     1.   0 ms — BẢY CHÒM KIA LÙI RA. Rời chỗ cũ trước đã.
+     2.  70 ms — KHUNG BẮT ĐẦU ĐI, 360 ms, đường cong khởi hành-rồi-dừng.
+     3. 190 ms — CHÒM ĐÍCH TỚI: tấm nghỉ tắt, tấm rõ hiện (nét 0,55 → 0,85).
+
+   Đây là KHỐI DUY NHẤT đặt ba biến `--phong-*`, và nó chỉ đặt BIẾN: một
+   `transition:` ở đây sẽ đè `transition: none` của nhánh `reduce` (xem chú
+   thích ở `.sky`). Dưới `prefers-reduced-motion` cả ba nhịp biến mất và
+   trạng thái tới NGAY — cùng `transform`, cùng chòm sáng, cùng bảng bài. */
+.frame[data-phong] {
+  --phong-dur: 360ms;
+  --phong-tre: 70ms;
+  --phong-cong: cubic-bezier(0.34, 0.03, 0.2, 1);
+}
+
+/* NHỊP 1 — bảy chòm kia lùi về `--sky-mo`, ngay, nhanh (130 ms). Cùng độ mờ
+   mà hover dùng, nên "gác lại" đọc ra một nghĩa ở cả hai tỉ lệ. */
+.frame[data-phong] .chomNen {
+  opacity: var(--sky-mo);
+  --nghi-dur: 130ms;
+  --nghi-tre: 0ms;
+}
+
+/* NHỊP 3 — chòm ĐÍCH tới. Phải đứng SAU quy tắc trên: hai quy tắc cùng độ
+   đặc trưng (0,3,0) nên chỉ thứ tự quyết, và đảo lại thì chòm đích cũng mờ
+   đi cùng bảy chòm kia — tức phóng vào một chặng để thấy nó mờ nhất.
+
+   Tấm nghỉ tắt HẲN thay vì để nguyên: hai bản của một chòm cùng hiện là hai
+   độ mờ CỘNG nhau, và "rõ lên" đọc ra thành "đậm lên một cách khác". Hai tấm
+   đổi cùng một nhịp (180 ms, trễ 190 ms) nên nó là một phép hoà, không một
+   khoảng tối ở giữa. */
+.frame[data-phong='M1'] .chomM1,
+.frame[data-phong='M2'] .chomM2,
+.frame[data-phong='M3'] .chomM3,
+.frame[data-phong='M4'] .chomM4,
+.frame[data-phong='M5'] .chomM5,
+.frame[data-phong='M6'] .chomM6,
+.frame[data-phong='M7'] .chomM7,
+.frame[data-phong='M8'] .chomM8 {
+  opacity: 0;
+  --nghi-dur: 180ms;
+  --nghi-tre: 190ms;
+}
+
+.frame[data-phong='M1'] .roM1,
+.frame[data-phong='M2'] .roM2,
+.frame[data-phong='M3'] .roM3,
+.frame[data-phong='M4'] .roM4,
+.frame[data-phong='M5'] .roM5,
+.frame[data-phong='M6'] .roM6,
+.frame[data-phong='M7'] .roM7,
+.frame[data-phong='M8'] .roM8 {
+  opacity: 1;
+  --ro-dur: 180ms;
+  --ro-tre: 190ms;
+}
+
 /* Tám ô bấm cả chặng TẮT khi đang phóng: chúng đặt bằng % của KHUNG và khung
    không bị transform, nên ở tỉ lệ gần chúng nằm lệch hẳn khỏi chòm chúng nói
    về. Một vùng bấm chỉ sai chỗ còn tệ hơn không có vùng bấm. Lối đi tiếp ở tỉ
@@ -1223,10 +1397,13 @@
   pointer-events: auto;
 }
 
-/* BA THỨ BỊ GIỮ LẠI, hiện ra ở đây và chỉ ở đây: thứ tự học · tên bài thật ·
-   số ca chấm. Cả chặng cùng lúc, không chờ hover — đây là đường dùng được
-   trên ĐIỆN THOẠI, nơi không có hover, và nghiên cứu nói rõ rằng
-   `@media (hover: none)` không được cho ra một bản đồ chết. */
+/* HAI THỨ BỊ GIỮ LẠI, hiện ra ở đây và chỉ ở đây: thứ tự học · tên bài thật.
+   (Thứ ba từng là số ca chấm; nó đã bỏ ngày 19/10/2026 — xem `.quang`. Bán
+   kính ngôi vẫn mang nó, và bán kính thì to ra cùng cú phóng.)
+
+   Cả chặng cùng lúc, không chờ hover — đây là đường dùng được trên ĐIỆN
+   THOẠI, nơi không có hover, và nghiên cứu nói rõ rằng `@media (hover: none)`
+   không được cho ra một bản đồ chết. */
 .frame[data-phong='M1'] .cumM1 .chip,
 .frame[data-phong='M2'] .cumM2 .chip,
 .frame[data-phong='M3'] .cumM3 .chip,
@@ -1238,14 +1415,38 @@
   opacity: 1;
 }
 
-/* Tên bài xuống DÒNG RIÊNG (`block`), hai thứ kia nối tiếp trên dòng đầu. */
+/* Tên bài xuống DÒNG RIÊNG (`block`), thứ tự học nối tiếp sau mã bài trên
+   dòng đầu. (Dòng đầu từng là `1 N01 9 ca`; chữ "ca" đã bỏ — xem `.quang`.) */
 .frame[data-phong] .tenBai {
   display: block;
 }
 
-.frame[data-phong] .soCa,
 .frame[data-phong] .thuTu {
   display: inline;
+}
+
+/* THẺ BÀI RỘNG RA CÙNG VỚI KHUNG, và rộng ra ĐÚNG HỆ SỐ ấy — không hơn.
+
+   15ch là con số đo cho khung 1 068 px: ở đó khe nhỏ nhất giữa hai ngôi cùng
+   chặng (M2, hệ số 2,962) chỉ 112 px, nên tên bài phải bọc chặt. Ở khung
+   1 528 px (`.rong`) cùng khe ấy là 161 px — rộng gấp 1,43 lần, nên thẻ được
+   rộng gấp 1,43 lần: 15 × 1,43 = 21,4 ⇒ 21ch. Lấy tròn 24ch hay 30ch "cho đỡ
+   gãy" là lấy lại đúng chỗ chồng nhau mà 15ch mua được, chỉ ở một bề rộng
+   khác.
+
+   `min-width: 1200px` canh BỀ RỘNG MÀN, không canh `.rong`: `max-width` tự
+   hạ xuống bề rộng màn, nên trên điện thoại `.rong` vẫn cho ra khung 358 px
+   và một thẻ 21ch ở đó thì chồng lên ba thẻ bên cạnh. Chỗ rộng mới được
+   dùng chỗ rộng.
+
+   Hai dòng vẫn là hai dòng, và đó là cố ý: tên dài nhất ("Mini-project: doanh
+   thu từ raw tới chart") trên MỘT dòng rộng ~330 px, tức gấp đôi khe 161 px —
+   `nowrap` ở đây là hai thẻ cạnh nhau che nhau. 21ch đưa "Array, dtype, shape
+   và axis" từ bốn dòng về hai. */
+@media (min-width: 1200px) {
+  .rong .tenBai {
+    max-width: 21ch;
+  }
 }
 
 /* Chip của ngôi ĐANG ĐƯỢC NHẬN nổi lên trên các chip bên cạnh. Ở tỉ lệ gần
@@ -1253,6 +1454,7 @@
    có thể giao nhau ở mép; `z-index` quyết chip nào đọc được trọn vẹn, và nó
    phải là chip mà tay đang chỉ vào. */
 .sao[data-gan],
+.sao[data-sang],
 .sao:focus-visible {
   z-index: 1;
 }
@@ -1345,8 +1547,15 @@
   text-decoration: none;
 }
 
+/* BA ĐƯỜNG, MỘT TRẠNG THÁI — chiều ngược của liên kết hai chiều. `[data-sang]`
+   do `SkyCursor.tsx` đặt khi con trỏ (hoặc tiêu điểm bàn phím) nhận ngôi của
+   bài này trong khung. Dùng ĐÚNG cái nền mà `:hover` dùng, không một màu mới:
+   "dòng này là ngôi bạn đang chỉ vào" và "dòng này là dòng chuột đang trên"
+   là cùng một câu, nên chúng phải trông giống nhau — và không có cặp màu nào
+   phải đo lại. */
 .hang:hover,
-.hang:focus-visible {
+.hang:focus-visible,
+.hang[data-sang] {
   background: var(--ds-surface-2);
 }
 
@@ -1356,7 +1565,13 @@
 }
 
 /* Số thứ tự trong chặng, ô cố định để các dòng thẳng cột — một cột lệch là
-   một thứ tự đọc chậm hơn. */
+   một thứ tự đọc chậm hơn.
+
+   Con số này cũng là CHÌA KHOÁ NỐI một dòng với một ngôi, và là chìa khoá duy
+   nhất dùng được trên điện thoại: ở đó không có hover, nên quầng sáng không
+   bao giờ bật, nhưng cùng con số có mặt ở cả hai chỗ cùng lúc (xem `.thuTu`
+   trong chip và `zoomNote`). Hai chỗ in nó nhận `order` từ cùng một
+   `stageLessons()`. */
 .hangSo {
   flex: 0 0 2.5ch;
   font-variant-numeric: tabular-nums;
@@ -1369,9 +1584,7 @@
   font-weight: 600;
 }
 
+/* Tên bài ăn hết chỗ còn lại. Trước đây nó phải nhường một ô "9 ca" ở cuối
+   dòng; ô ấy đã bỏ (xem `.quang`), nên ở khung rộng 1 528 px tên bài dài nhất
+   nằm gọn một dòng. */
 .hangTen { flex: 1 1 16ch; }
-
-.hangCa {
-  flex: 0 0 auto;
-  font-family: var(--edu-mono);
-}

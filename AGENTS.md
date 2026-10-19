@@ -49,7 +49,7 @@ mức này:
 | Backend lint | 155 lỗi, 2 cảnh báo — **mốc trần trong CI là 170, chỉ được hạ** | 15/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → 680 ca, tất cả đạt | 19/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → 684 ca, tất cả đạt | 19/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Bản đồ sao (xem thử) | `py scripts/star/build_sky.py` → 20 tệp, 198 KB tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); mười sáu tấm chòm cân 109 KB (**trần 160 KB** trong test) | 19/10/2026 |
 | Bản đồ sao | `py scripts/star/build_sky.py` → 12 tệp SVG + `sky-theme.css`, 526,4 KB cả bộ (**trần 420 KB mỗi tệp · 900 KB tổng**), chạy hai lần ra đúng một bộ. `--do` → 2,76% diện tích L > 0,5 (sàn 2,0%), trung vị độ chói 0,0065 (trần 0,05) | 19/10/2026 |

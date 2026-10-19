@@ -8,9 +8,14 @@
 // NAY CÓ HAI TỈ LỆ. `design/v3/tuong-tac-ban-do.md` khảo bảy bản đồ game và đo
 // được ba thứ mà bản đồ này thiếu cả ba: **một động từ có hậu quả · hai tỉ lệ
 // trở lên · cái gì bị giữ lại**. Bấm một chặng là PHÓNG VÀO chặng ấy
-// (`?chang=M1`), và ở tỉ lệ gần mỗi ngôi mang tên bài thật, thứ tự học và số ca
-// chấm — ba thứ không có ở tỉ lệ xa. Xem khối "TỈ LỆ THỨ HAI" trong
+// (`?chang=M1`), và ở tỉ lệ gần mỗi ngôi mang tên bài thật cùng thứ tự học —
+// hai thứ không có ở tỉ lệ xa. Xem khối "TỈ LỆ THỨ HAI" trong
 // `star-map.module.css`.
+//
+// NGÀY 19/10/2026 chủ sản phẩm xem màn phóng gần của M5 và đặt bốn việc: bỏ
+// chữ "ca" khỏi thẻ bài, nối bảng bài với bầu trời bằng một quầng sáng, nới
+// khung trên màn rộng, và cho cú phóng ba nhịp thay vì một bước chuyển đơn.
+// Cả bốn nằm ở tệp này, `SkyCursor.tsx` và `star-map.module.css`.
 //
 // BỐN ĐIỀU GIỮ Ở ĐÂY, đổi đi là đổi hành vi người dùng thấy:
 //
@@ -59,7 +64,6 @@ import SiteHeader from '@/components/SiteHeader';
 import { withAssetVersion } from '@/lib/assetVersion';
 import {
   stageLessons,
-  starScaleLine,
   zoomFor,
   SKY_CONSTELLATIONS,
   SKY_COURSE,
@@ -116,7 +120,11 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
           `*.module.css` được: lint cấm hex ở đó, và cấm đúng chỗ. */}
       <PageStyles hrefs={['/static/css/edu-theme.css', '/map/star/sky-theme.css']} />
       <SiteHeader />
-      <main className={styles.wrap}>
+      {/* KHUNG NỚI RA Ở TỈ LỆ GẦN — `.rong` chỉ gắn khi đang phóng. Ở tỉ lệ
+          xa bức tranh đã vừa khung 1 100 px, nên nới thêm chỉ làm tám ô bấm
+          phải với xa hơn; ở tỉ lệ gần thì chỗ rộng là chỗ cho tên bài thật.
+          `max-width` tự hạ xuống bề rộng màn nên điện thoại không đổi gì. */}
+      <main className={`${styles.wrap} ${chang ? styles.rong : ''}`}>
         <h1>{STAR_COPY.title}</h1>
         <p className={styles.lead}>{STAR_COPY.lead}</p>
         <p className={styles.hint}>{STAR_COPY.hint}</p>
@@ -252,14 +260,21 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
         </div>
 
         {/* BẢNG BÀI của chặng đang xem — "cái gì bị giữ lại", viết ra bằng
-            chữ. Ba thứ ở đây không có ở tỉ lệ xa: THỨ TỰ HỌC (bản đồ cố ý
+            chữ. Hai thứ ở đây không có ở tỉ lệ xa: THỨ TỰ HỌC (bản đồ cố ý
             không vẽ mũi tên lộ trình, nên ở tỉ lệ xa nó không đọc được ở đâu
-            cả), TÊN BÀI THẬT (48 cái tên tiếng Việt không vẽ lên một bầu trời
-            1360 × 820 được), và SỐ CA CHẤM của từng bài (bán kính ngôi đã mang
-            nghĩa này từ đầu — ở đây nó được nói hẳn ra).
+            cả) và TÊN BÀI THẬT (48 cái tên tiếng Việt không vẽ lên một bầu
+            trời 1360 × 820 được). Thứ ba từng là SỐ CA CHẤM; nó đã bỏ ngày
+            19/10/2026 cùng với chữ "ca" ở chip — bán kính ngôi vẫn mang nghĩa
+            ấy, và một con số in lại cạnh cái hình đang nói nó là trả hai lần
+            cho một tin.
 
             Nó cũng là đường bàn phím và đường điện thoại của tỉ lệ gần: 48 dấu
-            ngôi mang `tabIndex={-1}`, và tám ô bấm cả chặng thì đã tắt. */}
+            ngôi mang `tabIndex={-1}`, và tám ô bấm cả chặng thì đã tắt.
+
+            `data-bang` và `data-bai` là HAI MÓC của liên kết hai chiều: trỏ
+            (hoặc Tab) vào một dòng thì ngôi của bài ấy phát sáng, và ngược
+            lại. Bộ máy ở `SkyCursor.tsx` — nó phải là JS vì bảng là anh em
+            ĐỨNG SAU `.frame`, và bộ chọn `~` chỉ nhìn về phía sau. */}
         {chom ? (
           <>
             <h2 className={styles.bangTitle}>
@@ -269,14 +284,22 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
                 .replace('{n}', String(bai.length))}
             </h2>
             <p className={styles.bangNote}>{STAR_COPY.zoomNote.replace('{key}', chom.key)}</p>
-            <ol className={styles.bang}>
+            <ol className={styles.bang} data-bang="">
               {bai.map((b) => (
                 <li key={b.code}>
-                  <Link className={styles.hang} href={`/lesson/python_advanced/${b.lesson}`}>
+                  <Link
+                    className={styles.hang}
+                    data-bai={b.code}
+                    href={`/lesson/python_advanced/${b.lesson}`}
+                  >
+                    {/* Con số này in Ở CẢ HAI CHỖ — ở đây và trên chính ngôi
+                        (`.thuTu` trong chip) — và cả hai lấy `order` từ cùng
+                        một `stageLessons()`. Nó là chỗ nối dòng ↔ ngôi dùng
+                        được trên điện thoại, nơi quầng sáng không bao giờ
+                        bật. */}
                     <span className={styles.hangSo}>{b.order}</span>
                     <span className={styles.hangMa}>{b.code}</span>
                     <span className={styles.hangTen}>{b.title}</span>
-                    <span className={styles.hangCa}>{`${b.tests} ca`}</span>
                   </Link>
                 </li>
               ))}
@@ -285,13 +308,12 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
         ) : null}
 
         <h2 className={styles.legendTitle}>{STAR_COPY.legendTitle}</h2>
-        {/* THANG BÁN KÍNH NÓI BẰNG SỐ. Bán kính mỗi ngôi mang số ca chấm của
-            bài từ đầu, nhưng trước đây không chỗ nào trên trang nói ra con số
-            ấy — nên một tín hiệu đã vẽ xong vẫn không làm việc gì cả (bài học
-            Slay the Spire, nghiên cứu §2.4). Hai đầu thang TÍNH từ
-            `SKY_TESTS`, không chép: ba bài hiện cùng ở mức thấp nhất, nên một
-            câu chép tay sẽ sai ngay lần giáo trình đổi. */}
-        <p className={styles.scale}>{starScaleLine()}</p>
+        {/* KHÔNG CÒN CÂU THANG BÁN KÍNH ("6 ca chấm ở ngôi nhỏ nhất … tới 14
+            ca…"). Nó là chú giải của một con số không còn in ra ở đâu kể từ
+            khi chip bỏ chữ "ca" ngày 19/10/2026, và một chú giải cho một thứ
+            không hiện là một dòng chữ dẫn người đọc đi tìm. Bán kính vẫn mang
+            số ca chấm; dòng thứ tư của `legend` dưới đây vẫn nói ra nguồn ấy,
+            chỉ không hứa một con số nào. */}
         <ul className={styles.legend}>
           {STAR_COPY.legend.map((line) => <li key={line}>{line}</li>)}
         </ul>

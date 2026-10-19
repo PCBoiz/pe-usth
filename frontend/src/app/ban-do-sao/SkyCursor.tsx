@@ -31,11 +31,13 @@
 //     CON TRỎ thì thấy (ngôi gần nhất tự nhận mình), và BÀN PHÍM thì thấy
 //     (mũi tên đi giữa các ngôi) — đó là hai đường mà một ô bấm không làm được.
 //
-//  4. MÁY CHẠM KHÔNG GẮN MỘT LISTENER NÀO. Không có con trỏ thì không có gì để
-//     dò; thêm listener chỉ để nó không bao giờ chạy là tốn pin và tốn một
-//     đường mã không ai đi. Đường dùng được trên điện thoại vẫn là: chạm một
-//     chòm là đi tới chặng, và con số của thang bán kính nằm trong CHÚ GIẢI
-//     (`STAR_COPY.scaleNote`) — chữ, không phải hover.
+//  4. MÁY CHẠM KHÔNG GẮN MỘT LISTENER CON TRỎ NÀO. Không có con trỏ thì không
+//     có gì để dò; thêm listener chỉ để nó không bao giờ chạy là tốn pin và
+//     tốn một đường mã không ai đi. Hai listener TIÊU ĐIỂM thì vẫn gắn — một
+//     chiếc điện thoại cắm bàn phím phải đi được. Đường dùng được trên điện
+//     thoại: chạm một chòm là phóng vào chặng, và chỗ nối một dòng bảng với
+//     một ngôi là CON SỐ thứ tự in ở cả hai chỗ (`STAR_COPY.zoomNote` nói ra
+//     điều đó) — chữ, không phải hover.
 //
 //  5. TIẾT LỘ CÓ THỨ TỰ LÀ CSS THUẦN, không phải JS. `.hit*:hover ~ .lop …`
 //     làm cả việc đó, nên nó chạy khi JS chưa tải xong, và `:focus-visible`
@@ -57,7 +59,6 @@ import {
   SKY_CONSTELLATIONS,
   SKY_CURSOR,
   SKY_FRAME,
-  SKY_TESTS,
   SKY_TITLES,
 } from '@/lib/star-map';
 
@@ -101,12 +102,60 @@ export default function SkyCursor() {
       o.set(el.dataset.sao ?? '', el);
     }
 
+    /* ── LIÊN KẾT HAI CHIỀU với BẢNG BÀI dưới khung ──────────────────
+     *
+     * Bảng bài và bầu trời là HAI THỨ RỜI NHAU cho tới đây: chín dòng chữ và
+     * chín ngôi, không gì nói dòng nào ứng với ngôi nào. Chủ sản phẩm đặt
+     * đúng chiều cần nhất ("hover vào 1 bài thì cái ngôi sao đấy sẽ phát
+     * sáng"); chiều ngược lại rẻ như cho vì chỗ đổi trạng thái đã có sẵn.
+     *
+     * VÌ SAO JS CHỨ KHÔNG CSS, khi mọi thứ khác ở trang này là CSS thuần:
+     * bảng bài là ANH EM ĐỨNG SAU `.frame` trong DOM, và trạng thái hover đi
+     * qua bộ chọn `~` — thứ chỉ nhìn về phía SAU. Không có bộ chọn nào đi từ
+     * một dòng bảng NGƯỢC vào trong khung. Đổi thứ tự DOM thì phá bốn hợp
+     * đồng khác (xem luật 4 ở đầu `page.tsx`), nên chỗ rẻ nhất là ở đây.
+     *
+     * VÌ SAO Ở TỆP NÀY chứ không một thành phần mới: `nhan()` dưới đây là chỗ
+     * DUY NHẤT trong cả trang biết "ngôi nào đang sống". Một thành phần thứ
+     * hai sẽ phải quan sát lại chính kết luận ấy (MutationObserver trên
+     * `data-gan`), tức hai bộ máy cho một trạng thái — và hai bộ máy cho một
+     * trạng thái là một trạng thái sẽ dính.
+     *
+     * VÌ SAO KHÔNG GIỮ MỘT THAM CHIẾU TỚI BẢNG, và đây là một LỖI ĐÃ SỬA chứ
+     * không một kiểu viết: ở TỈ LỆ XA bảng bài KHÔNG TỒN TẠI (`page.tsx` chỉ
+     * dựng nó khi có `?chang=`). Thành phần này mount một lần ở tỉ lệ xa với
+     * `deps: []`, nên một `querySelector('[data-bang]')` lúc mount trả `null`
+     * MÃI MÃI — và cú phóng là điều hướng phía client, không tải lại trang,
+     * nên effect không chạy lại. Liên kết hai chiều sẽ chỉ chạy khi người ta
+     * vào thẳng `?chang=M5` bằng URL, và chết im lặng với mọi ai bấm từ bản
+     * đồ. Nên mọi thứ đi qua UỶ QUYỀN trên `<main>` — phần tử duy nhất chắc
+     * chắn sống suốt đời thành phần này — và tra bảng ĐÚNG LÚC có việc.
+     */
+    const trang = khung.parentElement;
+
+    let dangSang: HTMLElement | null = null;
+    /** Dòng bảng ứng với ngôi đang sống NỔI LÊN. Cùng khuôn `nhan()`: một
+     *  biến giữ cái đang bật, nên không bao giờ có hai dòng cùng sáng. Tra
+     *  bằng `querySelector` mỗi lần ĐỔI (không mỗi khung hình), và mã bài là
+     *  chuỗi của chính `SKY_CONSTELLATIONS` nên không có gì để chèn vào bộ
+     *  chọn. */
+    const sangHang = (code: string | undefined) => {
+      const el = code
+        ? trang?.querySelector<HTMLElement>(`[data-bang] [data-bai="${code}"]`) ?? null
+        : null;
+      if (dangSang === el) return;
+      dangSang?.removeAttribute('data-sang');
+      el?.setAttribute('data-sang', '');
+      dangSang = el;
+    };
+
     let dangNhan: HTMLElement | null = null;
     const nhan = (el: HTMLElement | null) => {
       if (dangNhan === el) return;
       dangNhan?.removeAttribute('data-gan');
       el?.setAttribute('data-gan', '');
       dangNhan = el;
+      sangHang(el?.dataset.sao);
     };
 
     const bo = () => {
@@ -220,10 +269,52 @@ export default function SkyCursor() {
       const el = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-sao]');
       if (el?.dataset.chang) lop.setAttribute('data-chang', el.dataset.chang);
       else lop.removeAttribute('data-chang');
+      // Tiêu điểm bàn phím vào một ngôi cũng phải làm nổi dòng của nó: nếu
+      // không thì người đi bằng Tab/mũi tên thấy một bản đồ khác người đi
+      // bằng chuột, đúng thứ luật 5 ở đầu tệp cấm.
+      sangHang(el?.dataset.sao);
     };
 
     khung.addEventListener('keydown', bam);
     khung.addEventListener('focusin', vao);
+
+    /* ── chiều NGƯỢC: một dòng bảng làm NGÔI của nó phát sáng ───────── */
+
+    let dangNgoi: HTMLElement | null = null;
+    const sangNgoi = (el: HTMLElement | null) => {
+      if (dangNgoi === el) return;
+      dangNgoi?.removeAttribute('data-sang');
+      el?.setAttribute('data-sang', '');
+      dangNgoi = el;
+    };
+    // Uỷ quyền trên `<main>`: `pointerover` nổi bọt lên từ mọi hậu duệ, nên
+    // cùng một listener lo cả "vào một dòng" và "rời khỏi dòng" (ra khỏi dòng
+    // là vào một phần tử khác, và phần tử khác không có `[data-bai]` nào ở
+    // trên nó ⇒ tắt). Không cần một `pointerleave` thứ hai, và không cần bảng
+    // phải tồn tại lúc gắn.
+    const tuHang = (e: Event) => {
+      const d = (e.target as HTMLElement | null)?.closest<HTMLElement>('[data-bang] [data-bai]');
+      sangNgoi(d?.dataset.bai ? o.get(d.dataset.bai) ?? null : null);
+    };
+    // Tiêu điểm ĐI RA: `relatedTarget` của `focusout` là phần tử SẮP nhận tiêu
+    // điểm, nên "còn trong bảng" đọc được ngay mà không cần một `setTimeout`
+    // nào — và một `setTimeout` ở đây là một quầng sáng dính lại sau khi Tab
+    // đã đi khỏi bảng.
+    const roiTieu = (e: FocusEvent) => {
+      const kia = (e.relatedTarget as HTMLElement | null)
+        ?.closest<HTMLElement>('[data-bang] [data-bai]');
+      if (!kia) sangNgoi(null);
+    };
+    if (trang) {
+      // Máy chạm KHÔNG gắn listener con trỏ (điều 4 ở đầu tệp): ở đó không có
+      // hover, nên chỗ nối một dòng với một ngôi là CON SỐ thứ tự in ở cả hai
+      // chỗ (`.hangSo` và `.thuTu`), không phải quầng sáng. Hai listener tiêu
+      // điểm thì GẮN DÙ GÌ — một chiếc điện thoại cắm bàn phím vẫn phải đi
+      // được.
+      if (coTro) trang.addEventListener('pointerover', tuHang);
+      trang.addEventListener('focusin', tuHang);
+      trang.addEventListener('focusout', roiTieu);
+    }
 
     return () => {
       if (khung_raf) cancelAnimationFrame(khung_raf);
@@ -231,6 +322,9 @@ export default function SkyCursor() {
       khung.removeEventListener('pointerleave', bo);
       khung.removeEventListener('keydown', bam);
       khung.removeEventListener('focusin', vao);
+      trang?.removeEventListener('pointerover', tuHang);
+      trang?.removeEventListener('focusin', tuHang);
+      trang?.removeEventListener('focusout', roiTieu);
     };
   }, []);
 
@@ -264,6 +358,18 @@ export default function SkyCursor() {
               // khuôn một widget ghép, và `bam()` ở trên là bộ máy của nó.
               tabIndex={-1}
             >
+              {/* QUẦNG SÁNG — "khi tôi hover vào 1 bài thì cái ngôi sao đấy sẽ
+                  phát sáng". Một phần tử riêng chứ không `box-shadow` trên
+                  chính `.sao`: chỉ `opacity`/`transform` chạy trên compositor,
+                  nên quầng để `box-shadow` TĨNH rồi nội suy độ mờ của chính
+                  nó.
+
+                  ĐỨNG TRƯỚC CHIP, và thứ tự ấy là một hợp đồng: hai phần tử
+                  cùng `position: absolute` và không `z-index` thì cái SAU vẽ
+                  đè cái trước. Đảo lại là quầng phủ lên nền đặc của chip, tức
+                  nhuộm sắc chặng lên chữ — đúng chỗ mà nền đặc của chip sinh
+                  ra để tránh. */}
+              <span aria-hidden="true" className={styles.quang} />
               <span className={styles.chip}>
                 {/* THỨ TỰ HỌC TRONG CHẶNG — chỉ hiện ở TỈ LỆ GẦN. Nét chòm cố
                     ý không nói thứ tự (chú giải: "nó không nói thứ tự phải
@@ -272,9 +378,14 @@ export default function SkyCursor() {
                     nhận được. */}
                 <span className={styles.thuTu}>{j + 1}</span>
                 <span className={styles.ma}>{s.code}</span>
-                {/* Con số mà bán kính ngôi ĐÃ mang từ đầu mà chưa ai đọc được.
-                    Số, không phải tính từ: `starMagnitude` tra đúng nó. */}
-                <span className={styles.soCa}>{SKY_TESTS[s.code]} ca</span>
+                {/* KHÔNG CÒN Ô "9 ca". Thẻ in `1 N01 9 ca` tới ngày
+                    19/10/2026, khi chủ sản phẩm xem màn phóng gần và nói "bỏ
+                    phần ca đi". Con số ấy là con số mà BÁN KÍNH ngôi đã nói
+                    rồi — in lại bằng chữ ngay cạnh cái hình đang nói nó là
+                    trả hai lần cho một tin, trong một cái thẻ chỉ có chỗ cho
+                    ba dòng. `starAriaLabel` giữ con số cho người không thấy
+                    bán kính; `.scale` và `scaleNote` (chú giải của chính con
+                    số này) đã bỏ cùng lúc. */}
                 {/* TÊN BÀI THẬT — chỉ hiện ở tỉ lệ gần, và nó là lý do cú
                     phóng không phải "phóng to một bức ảnh". Nó ở trong DOM
                     ngay từ lượt dựng đầu, không chờ một `useEffect`: nhờ thế
