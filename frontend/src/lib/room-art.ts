@@ -75,6 +75,7 @@ export const ROOM_LAYERS = [
   'bong-xa',    // bóng của thẻ đồng và thước
   'the-dong',   // tấm thẻ đồng khắc chú giải
   'thuoc',      // thước
+  'but-chi',    // bút chì + vụn tẩy (chỉ khổ dọc — xem `ROOM_PENCIL`)
   'bong-giua',  // bóng của sổ tay và chân đèn — rơi lên cả bàn, thước, thẻ
   'so-tay',     // sổ quan trắc
   'bong-gan',   // bóng com-pa — rơi lên sổ tay
@@ -218,6 +219,30 @@ export const ROOM_LAMP = {
    * thứ chỉ ra cái thước đang sai. Xem `pool_rgb_re`.
    */
   levels: 152,
+  /**
+   * ĐỘ TRẢI của vệt sáng — HỆ SỐ NHÂN vào BÁN KÍNH của `profile`, không vào
+   * độ mờ. Một ngọn đèn ở xa hơn (hay cao hơn) trên cùng một mặt bàn cho một
+   * vũng sáng RỘNG HƠN và dốc THOẢI HƠN, chứ không phải một vũng sáng mạnh
+   * hơn: hình dạng của dốc là của cái chao, còn bề rộng là của khoảng cách.
+   *
+   * ── VÌ SAO CON SỐ NÀY PHẢI THEO KHỔ ─────────────────────────────────────
+   *
+   * Bảng `profile` được đo trên khung NGANG, nơi điểm xa đèn nhất cách tâm
+   * vũng sáng ~900 đơn vị và cái đuôi bảng (A ≈ 0,03) vừa đủ chạm tới đó.
+   * Khổ DỌC có điểm xa nhất ~1 070 đơn vị **tính theo trục đã bỏ nén**, và
+   * quan trọng hơn: 2/3 diện tích của nó nằm NGOÀI r = 500, tức nằm trong
+   * phần đuôi mà ở khổ ngang gần như không có điểm ảnh nào. Giữ nguyên
+   * `spread` = 1 ở đó cho ra 37 % diện tích mặt bàn ở L < 0,01 — đo được, và
+   * nhìn ra đúng "hai phần ba dưới chìm hẳn thành đen". Không một phép gác
+   * nào kêu, vì `midShareMin` đếm bậc GIỮA (43 %, đạt) chứ không đếm phần
+   * ĐEN. Nay `ROOM_BUDGET.deepShareMax` đếm phần đen.
+   *
+   * Chữa ở phía VẬT LÝ chứ phía tông: nâng `ambient` sẽ xoá cái nguồn sáng
+   * duy nhất (và `medianMax` gác đúng chiều ấy), còn kéo `deskRamp` lên là
+   * bôi sáng một chỗ không có ánh sáng. Một cái đèn ở xa hơn thì vẫn là MỘT
+   * cái đèn: mọi bóng vẫn lệch xuống-phải, lõi vẫn ở trên-trái.
+   */
+  spread: 1,
   rimAt: 0.3,
   coreAt: 0.76,
   /** [bán kính hiệu dụng, độ mờ TÍCH LUỸ]. Phải ĐƠN ĐIỆU giảm. */
@@ -533,6 +558,62 @@ export const ROOM_TOOLS = {
 } as const;
 
 /**
+ * BÚT CHÌ VÀ VỤN TẨY — vật thứ ba của khổ DỌC, và vật duy nhất của cả hai
+ * bức ghi lại một cái SAI.
+ *
+ * ── VÌ SAO NÓ MANG NGHĨA, chứ không phải đồ rải thêm ────────────────────
+ *
+ * Ba dụng cụ của bức này nói ba việc khác nhau: thước ĐO (nó là ẩn dụ của
+ * `raster.py`), com-pa VẼ ra 152 vòng đồng tâm của chính cái vũng sáng nó
+ * nằm trong, còn bút chì VIẾT. Và mấy hạt vụn tẩy cạnh đầu chì là thứ duy
+ * nhất trong cả hai khổ nói rằng ở đây có người đã viết SAI rồi xoá đi rồi
+ * viết lại — tức đúng cái vòng mà mỗi bài trong 48 bài bắt người học đi qua.
+ * Một mặt bàn chỉ có dụng cụ sạch sẽ là một mặt bàn chưa ai làm việc trên đó.
+ *
+ * ── HÌNH HỌC: SÁU THỨ, và cả sáu là hình chứ độ đậm ─────────────────────
+ *
+ * Bài học của cái đèn và tấm thẻ đồng (xem `ROOM_LAMP.shade`, `ROOM_PLATE`)
+ * là mọi vật đọc ra "hình kỹ thuật" vì thiếu HÌNH, không vì thiếu tông:
+ *
+ *  1. **THÂN SÁU CẠNH, nhìn thấy BA MẶT.** Một hình chữ nhật tô đều là một
+ *     que. `facets` chia bề ngang thân làm ba dải, mặt ngửa về đèn sáng
+ *     hơn hẳn hai mặt kia — `facetGain` là biên độ ấy.
+ *  2. **ĐẦU GỌT LÀ MỘT HÌNH NÓN có múi.** Người gọt bằng dao để lại các
+ *     vạt phẳng; `tip.facets` vạt ấy, hội tụ về mũi.
+ *  3. **LÕI CHÌ** chỉ chiếm `coreAt` phần bề rộng ở mũi — một đầu nón tô
+ *     đen cả là một cây bút chì bị cháy.
+ *  4. **ĐAI KIM LOẠI CÓ GỜ.** `ridges` gờ ngang; đai trơn đọc ra một khúc
+ *     sơn màu khác. Dùng chính `steelRamp` của com-pa, vì nó LÀ cùng một
+ *     chất — đó là chỗ duy nhất bức này được phép dùng lại một thang tông.
+ *  5. **TẨY MÒN KHÔNG ĐỀU** (`eraser.taper` < 1): một khối trụ vuông vức
+ *     là một cái tẩy chưa ai dùng, mà cả cái vật này tồn tại để nói ngược.
+ *  6. **VỤN TẨY LÀ CHẤM, không chấm tròn đều.** `crumbs` rải quanh `at`
+ *     với bán kính `spread`, cỡ và độ mờ rung.
+ */
+export const ROOM_PENCIL = {
+  /**
+   * Nằm NGHIÊNG NGƯỢC với thước (thước dốc xuống-phải, bút dốc lên-phải):
+   * hai vật song song trên một dải hẹp đọc ra là một hoa văn, không ra hai
+   * vật bị đặt xuống bởi hai lần với tay khác nhau.
+   */
+  from: { x: 74, y: 712 }, to: { x: 242, y: 676 },
+  half: 5.2,
+  facets: 3, facetGain: 0.24,
+  /** Vệt sơn mảnh dọc thân — sơn phủ vẫn ánh lên theo chiều gỗ bên dưới. */
+  lacquer: { count: 46, width: 0.3, opacity: 0.3 },
+  /** ĐAI: `len` đơn vị ở đuôi, `ridges` gờ ngang. Cùng `steelRamp` với com-pa. */
+  ferrule: { len: 13, ridges: 4, width: 0.5 },
+  /** TẨY sau đai: dài `len`, đầu mòn còn `taper` lần bán kính thân. */
+  eraser: { len: 10, taper: 0.84 },
+  /** ĐẦU GỌT: nón dài `len`, lõi chì `coreAt` phần bề rộng, `facets` vạt dao. */
+  tip: { len: 25, coreAt: 0.36, facets: 5, width: 0.4 },
+  /** VỤN TẨY — quanh `at`, trong bán kính `spread`. */
+  crumbs: { count: 30, at: { x: 290, y: 722 }, spread: 42, size: 1.0, opacity: 0.55 },
+  /** Độ cao biểu kiến trên mặt bàn (cho bóng đổ) — mảnh hơn thước. */
+  height: 4.6,
+} as const;
+
+/**
  * BÓNG ĐỔ — MỘT NGUỒN, nên mọi bóng chỉ về một hướng.
  *
  * Mỗi điểm bóng = điểm vật + hướng (ĐI RA KHỎI đèn) × `h` × `len`, với `h` là
@@ -583,7 +664,11 @@ export const ROOM_SHADOW = {
   fade: { at: 240, floor: 0.34 },
   contact: { width: 2.2, opacity: 0.8 },
   /** Độ cao biểu kiến (đơn vị khung) của từng vật trên mặt bàn. */
-  height: { plate: 3.0, ruler: 8.0, book: 11.0, divider: 7.0, lampBase: 3.2 },
+  height: {
+    plate: 3.0, ruler: 8.0, book: 11.0, divider: 7.0, lampBase: 3.2,
+    /** Bút chì nằm nghiêng: dày nhất ở đai kim loại, mảnh hơn hẳn thước. */
+    pencil: 2.0,
+  },
 } as const;
 
 /**
@@ -629,6 +714,13 @@ export const ROOM_LIT = {
   brassGain: 0.3,
   rulerBase: 0.2,
   rulerGain: 0.8,
+  /**
+   * BÚT CHÌ — `base` cao hơn thước vì mặt SƠN phản xạ mạnh hơn gỗ trần, và
+   * `gain` thấp hơn vì sơn bóng bão hoà sớm: một mặt sơn đi hết thang tông
+   * của nó ở quãng giữa dốc sáng, còn gỗ thì không.
+   */
+  pencilBase: 0.26,
+  pencilGain: 0.74,
 } as const;
 
 /**
@@ -646,6 +738,34 @@ export const ROOM_BUDGET = {
   midLo: 0.03,
   midHi: 0.85,
   midShareMin: 0.3,
+  /**
+   * PHẦN ĐEN TỐI ĐA CỦA MỘT BĂNG NGANG — cái sàn đã thiếu, và nó thiếu đúng
+   * chỗ `midShareMin` không nhìn tới.
+   *
+   * Bản dọc ngày 20/10 đo **bậc giữa 43,3 % (đạt sàn 30)**, bước dải đạt,
+   * tương phản đạt, dung lượng đạt — và nhìn vào thì nó là một mảng gỗ gần
+   * như trống: 37 % diện tích ở L < 0,01, dồn hết vào HAI PHẦN BA DƯỚI. Một
+   * con số trung bình trên cả khung không thể nói ra chuyện đó, vì nó cộng
+   * một nửa rất sáng với một nửa đen rồi báo một con số lành. Đó là lý do
+   * phép gác này hỏi TỪNG BĂNG chứ cả bức.
+   *
+   * Và nó là phép đo "DIỆN TÍCH MANG NỘI DUNG" chứ một phép đo độ sáng:
+   * dưới L = 0,01 (`bands[0]`), thớ gỗ, khe ván, mắt gỗ và mọi phản chiếu
+   * khẽ đều nằm dưới ngưỡng thấy được — nên đếm nét trong tệp KHÔNG bắt
+   * được khuyết tật này (bản hỏng vẫn có ~3 000 vệt thớ rải đều khắp dải,
+   * tất cả đều vô hình). Phải đếm diện tích CÒN ĐỌC ĐƯỢC.
+   *
+   * Hai phép đo chọn ra con số 0,35, và chúng cách nhau rất xa:
+   * · khổ NGANG đo `14% 9% 6% 13% 19% 31%` — băng cuối (mép GẦN, xa đèn
+   *   nhất, nơi tấm thẻ đồng nằm trên gỗ gần đen) là CHỦ Ý, xem
+   *   `ROOM_PLATE.spec`. Trần phải nằm trên 31 % để không ép bỏ nó.
+   * · bản dọc HỎNG đo `0% 0% 4% 23% 97% 100%`.
+   * Giữa 31 và 97 không có gì cần phân biệt tinh tế, nên 0,35 không phải
+   * một con số đặt sát mép: nó chặn đúng cái khuyết tật và tha đúng cái chủ
+   * ý. Hạ nó xuống là ép khổ ngang vẽ lại, mà khổ ngang thì đã đạt.
+   */
+  deepBands: 6,
+  deepShareMax: 0.35,
   medianMax: 0.3,
   brightShareMin: 0.006,
   /** Bước lượng tử tối đa giữa hai vòng ánh đèn, theo MÃ MÀU 0..255. */
@@ -710,6 +830,11 @@ export interface RoomProfile {
   rulerRamp: readonly string[];
   rulerTick: string;
   steelRamp: readonly string[];
+  /** BÚT CHÌ: thang SƠN thân, thang gỗ ĐẦU GỌT, lõi chì, cục tẩy. */
+  pencilRamp: readonly string[];
+  pencilBare: readonly string[];
+  graphite: string;
+  eraser: string;
 }
 
 /**
@@ -750,6 +875,13 @@ export const ROOM_PROFILE_DARK: RoomProfile = {
   rulerRamp: ['#4B3B1F', '#7B6331', '#AA8844', '#D4AE66'],
   rulerTick: '#221808',
   steelRamp: ['#282521', '#564F47', '#90887B', '#D3C7B1'],
+  // SƠN thân bút tách hẳn khỏi `rulerRamp`: sơn bóng bắt đèn mạnh hơn và đỏ
+  // hơn gỗ hoàng dương, nên dùng chung một thang là hai vật liệu khác nhau
+  // nhận cùng một mặt phản xạ — chính cái lỗi mà `ROOM_LIT` tồn tại để tránh.
+  pencilRamp: ['#3B2609', '#6E4710', '#A36E1A', '#D2982C'],
+  pencilBare: ['#5E4828', '#95764A', '#C8A571'],
+  graphite: '#1C1813',
+  eraser: '#9E6A52',
 };
 
 /**
@@ -808,7 +940,7 @@ export const ROOM_FORMATS = [
     file: 'room-ban-doc.svg',
     frame: { width: 390, height: 1000 },
     maxKb: 200,
-    density: 0.72,
+    density: 0.62,
     /**
      * NGƯỠNG "CÓ CHỖ RỰC" — 0,35 chứ 0,5, và con số đến từ VẬT LIỆU trong
      * khung chứ một cái gu. Ở bản ngang, thứ duy nhất vượt L = 0,5 là GIẤY
@@ -835,11 +967,24 @@ export const ROOM_FORMATS = [
      *
      * Bản này đặt thước ở y ≈ 190, trong lõi vũng sáng, và đổi giao diện
      * Hub để dải điện thoại chừa một băng bàn TRỐNG ở đầu — nơi vành sáng
-     * mép bàn, vũng sáng và cái thước đọc được. Com-pa bỏ hẳn: chỗ duy nhất
-     * còn trống cho nó là đáy dải, và một vật kim loại trong bóng tối là
-     * byte chết chứ không phải một vật.
+     * mép bàn, vũng sáng và cái thước đọc được.
+     *
+     * ── VÀ COM-PA ĐÃ QUAY LẠI (20/10/2026, lượt nhìn thứ hai) ────────────
+     *
+     * Bản 20/10 sáng bỏ com-pa với lý do "chỗ duy nhất còn trống cho nó là
+     * đáy dải, mà một vật kim loại trong bóng tối là byte chết". Lý do ấy
+     * ĐÚNG với ngọn đèn lúc đó (`spread` = 1): ở y ≈ 400, `lamp_A` mới có
+     * 0,12. Nhưng cái tối ấy chính là khuyết tật — hai phần ba dưới chìm
+     * hẳn — và khi `spread` = 1,8 chữa nó thì chỗ y ≈ 280…400 trở thành
+     * vùng SÁNG THỨ HAI của dải, đủ để thép đọc được. Nên bỏ com-pa là hệ
+     * quả của một lỗi, không phải một quyết định bố cục.
+     *
+     * Nó ở đây vì nó mang nghĩa, không để lấp chỗ: com-pa là thứ vẽ ra
+     * chính 152 vòng đồng tâm của cái vũng sáng nó đang nằm trong. Và nó là
+     * vật KIM LOẠI duy nhất của khổ dọc — một dải chỉ có gỗ là một dải chỉ
+     * có một chất liệu, tức lại gần với "một mẫu vân gỗ".
      */
-    draw: ['thuoc'],
+    draw: ['thuoc', 'com-pa', 'but-chi'],
     over: {
       desk: {
         edgeY: 36,
@@ -858,6 +1003,31 @@ export const ROOM_FORMATS = [
       lamp: {
         at: { x: 40, y: -44 },
         pool: { x: 150, y: 146, squash: 0.8 },
+        /**
+         * ĐÈN XA HƠN ⇒ VŨNG SÁNG RỘNG HƠN. `spread` 1,8 kéo cả bảng ra
+         * 1,8 lần, nên cái đuôi của nó (A ≈ 0,03 ở r ≈ 930) rơi vào khoảng
+         * r ≈ 1 670 — tức phủ hết 1 000 đơn vị chiều sâu của dải này. Phần
+         * đen theo băng đi từ `0% 0% 4% 23% 97% 100%` xuống
+         * `0% 0% 0% 0% 1% 0%`.
+         *
+         * Với `spread` = 1 (bản 20/10 sáng), 37 % diện tích mặt bàn nằm ở
+         * L < 0,01: hai phần ba dưới của dải chìm hẳn thành ĐEN, và không
+         * một phép gác nào kêu vì `midShareMin` đếm bậc giữa (43 %, đạt)
+         * chứ không đếm phần đen.
+         *
+         * Và 1,8 chứ 2,5: ở 2,5 thì trung vị độ chói lên 0,146 và 27,7 %
+         * diện tích vượt L = 0,35 — cả mặt bàn sáng đều, tức cái dốc sáng
+         * biến mất cùng với lý do cái đèn tồn tại. 1,8 giữ được dốc (trung
+         * vị 0,078; đáy dải ở bậc "nền 0,01–0,03") mà không còn chỗ nào
+         * rơi xuống đen.
+         *
+         * Và nó KHÔNG phải "bật đèn sáng hơn": lõi vẫn ở trên-trái, trung vị
+         * độ chói vẫn dưới `medianMax`, mọi bóng vẫn lệch xuống-phải theo
+         * `at`. Thứ đổi là KHOẢNG CÁCH tới ngọn đèn ngoài khung — mà ở khổ
+         * này cái đèn vốn đã ở ngoài khung, nên đặt nó xa thêm là một câu
+         * nhất quán với chính bố cục, không phải một số hiệu chỉnh.
+         */
+        spread: 1.8,
       },
       tools: {
         /**
@@ -868,6 +1038,21 @@ export const ROOM_FORMATS = [
          * Đẩy thước xuống dưới 176 là đẩy nó ra sau thẻ "Sổ quan trắc".
          */
         ruler: { from: { x: 14, y: 112 }, to: { x: 302, y: 150 }, half: 12 },
+        /**
+         * COM-PA mở rộng hơn ở khổ này (chân cách nhau 160 đơn vị trên một
+         * dải rộng 390), vì nó phải BẮC QUA hai khe ván chứ nằm gọn trong
+         * một ô: một dụng cụ nằm lọt giữa hai đường ghép đọc ra là một hình
+         * dán lên, còn một dụng cụ vắt qua đường ghép thì có mặt bàn chạy
+         * BÊN DƯỚI nó.
+         *
+         * Khớp ở y 286 — trong vành vũng sáng, dưới cái thước một quãng
+         * bằng đúng chiều cao của nó, nên hai vật không chạm nhau mà vẫn
+         * đọc ra là hai vật cùng nằm trên một mặt.
+         */
+        divider: {
+          hinge: { x: 214, y: 374 },
+          legs: [{ x: 126, y: 486 }, { x: 298, y: 468 }],
+        },
       },
     },
   },
@@ -904,15 +1089,21 @@ export function deskRowY(t: number): number {
   return h + 1 / (a - (a - b) * t);
 }
 
-/** ĐỘ MỜ TÍCH LUỸ của ánh đèn tại bán kính hiệu dụng `re` — tra bảng. */
-export function lampCumAlpha(re: number): number {
+/**
+ * ĐỘ MỜ TÍCH LUỸ của ánh đèn tại bán kính hiệu dụng `re` — tra bảng, với
+ * bán kính của bảng đã nhân `spread`. Mọi chỗ đọc bảng phải đi qua đây (và
+ * qua `lampRadiusOf`), vì một chỗ quên `spread` là lượt VẼ và lượt ĐO nói về
+ * hai ngọn đèn khác nhau.
+ */
+export function lampCumAlpha(re: number, spread: number = ROOM_LAMP.spread): number {
   const tb = ROOM_LAMP.profile;
-  if (re <= tb[0][0]) return tb[0][1];
+  const r = re / Math.max(1e-6, spread);
+  if (r <= tb[0][0]) return tb[0][1];
   for (let i = 1; i < tb.length; i += 1) {
     const [r1, a1] = tb[i];
-    if (re <= r1) {
+    if (r <= r1) {
       const [r0, a0] = tb[i - 1];
-      const t = r1 > r0 ? (re - r0) / (r1 - r0) : 0;
+      const t = r1 > r0 ? (r - r0) / (r1 - r0) : 0;
       return a0 + (a1 - a0) * t;
     }
   }
@@ -927,7 +1118,7 @@ export function lampCumAlpha(re: number): number {
  * lõi bão hoà KHÔNG ĐƯỢC TÔ. Bản đồ sao đã mất đúng cái lõi ấy một lần, và
  * chỉ raster hoá mới bắt được.
  */
-export function lampRadiusOf(a: number): number {
+export function lampRadiusOf(a: number, spread: number = ROOM_LAMP.spread): number {
   const tb = ROOM_LAMP.profile;
   if (a >= tb[0][1]) {
     // `: number` tường minh — `as const` làm `tb[0][0]` mang kiểu LITERAL `0`,
@@ -937,22 +1128,22 @@ export function lampRadiusOf(a: number): number {
       if (aa >= a) r = rr;
       else break;
     }
-    return r;
+    return r * spread;
   }
   for (let i = 1; i < tb.length; i += 1) {
     const [r0, a0] = tb[i - 1];
     const [r1, a1] = tb[i];
     if (a1 <= a && a <= a0) {
-      if (a0 === a1) return r1;
-      return r0 + (r1 - r0) * ((a0 - a) / (a0 - a1));
+      if (a0 === a1) return r1 * spread;
+      return (r0 + (r1 - r0) * ((a0 - a) / (a0 - a1))) * spread;
     }
   }
-  return tb[tb.length - 1][0];
+  return tb[tb.length - 1][0] * spread;
 }
 
 /** Bán kính của `levels` vòng, chia đều theo ĐỘ MỜ (không theo bán kính). */
-export function lampRings(levels = ROOM_LAMP.levels): number[] {
-  return Array.from({ length: levels }, (_, i) => lampRadiusOf((i + 1) / levels));
+export function lampRings(levels = ROOM_LAMP.levels, spread = ROOM_LAMP.spread): number[] {
+  return Array.from({ length: levels }, (_, i) => lampRadiusOf((i + 1) / levels, spread));
 }
 
 /**

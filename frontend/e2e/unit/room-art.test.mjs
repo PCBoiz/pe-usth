@@ -24,6 +24,13 @@
  *     lại, tức đúng cái CSS làm mà bức này sinh ra để không làm.
  *  7. Một nét lọt lên TRÊN mép bàn là một vệt sơn trên bầu trời: chỗ ấy để
  *     tấm sao lọt qua, và cái mép CHÍNH LÀ vết cắt nóng-lạnh của bố cục.
+ *  8. Và cái im lặng nhất, bắt được ngày 20/10/2026: một khổ có thể ĐẠT MỌI
+ *     CON SỐ Ở TRÊN mà vẫn là một khung gần như trống. Bản dọc đo 5 634 nét,
+ *     197,5/200 KB, bậc giữa 43,3 % (sàn 30), tương phản vượt sàn — với HAI
+ *     PHẦN BA DƯỚI chìm hẳn thành đen. Không phép đo nào kêu vì mọi phép đo
+ *     ở trên hoặc lấy TRUNG BÌNH trên cả khung, hoặc ĐẾM NÉT (ba nghìn vệt
+ *     thớ vẫn nằm trong tệp, tất cả đều vô hình), hoặc chỉ đo ở chỗ CÓ VẬT.
+ *     Xem mục 13b.
  *
  * Mỗi phép so dưới đây đã được thử bằng cách GỠ bản sửa ra — số ca trượt ghi
  * trong mô tả commit.
@@ -142,9 +149,11 @@ test('mọi màu trong hồ sơ là mã hex hợp lệ, và SVG không dùng mà
       thu.push(c.toUpperCase());
     }
   }
-  const dung = new Set(so(SVG, /(?:fill|stroke)="(#[0-9A-Fa-f]{6})"/g)
-    .map(String)
-    .concat([...SVG.matchAll(/(?:fill|stroke)="(#[0-9A-Fa-f]{6})"/g)].map((m) => m[1].toUpperCase())));
+  // CẢ HAI tệp: khổ dọc có những vật khổ ngang không vẽ (bút chì, lõi chì,
+  // cục tẩy), nên chỉ soi tệp ngang là bốn tông mới chưa từng được kiểm —
+  // và một tông lạ lọt vào tệp mà nửa số người xem thấy thì không ai hay.
+  const dung = new Set([SVG, SVG_DOC].flatMap(
+    (s) => [...s.matchAll(/(?:fill|stroke)="(#[0-9A-Fa-f]{6})"/g)].map((m) => m[1].toUpperCase())));
   dung.delete('NaN');
   const co = new Set(thu);
   // Ngoại lệ DUY NHẤT: màu NỘI SUY giữa hai tông của hồ sơ (`ton_muot`,
@@ -200,11 +209,46 @@ test('0 gradient · 0 filter · 0 id · không data-* nào ngoài data-lop', () 
 
 /* ═══ 4 · LỚP: đúng tập, đúng THỨ TỰ ══════════════════════════════════ */
 
+/**
+ * Lớp nào CHỈ có mặt khi khổ ấy vẽ vật tương ứng (`ROOM_FORMATS[].draw`), và
+ * `null` = lớp nền, khổ nào cũng có.
+ *
+ * Bảng này có vì bản dọc không vẽ sổ, thẻ đồng và đèn: so thẳng danh sách lớp
+ * của MỘT tệp với cả `ROOM_LAYERS` chỉ đúng với khổ vẽ đủ mọi vật, nên nó
+ * KHÔNG kiểm được tệp thứ hai — và tệp thứ hai là tệp mà nửa số người xem
+ * thấy. Viết ra tập phụ thuộc rồi lọc là cách kiểm được CẢ HAI tệp bằng cùng
+ * một danh sách thứ tự z duy nhất.
+ */
+const LOP_CAN = {
+  'bong-xa': ['the-dong', 'thuoc', 'but-chi'],
+  'the-dong': ['the-dong'],
+  thuoc: ['thuoc'],
+  'but-chi': ['but-chi'],
+  'bong-giua': ['so-tay', 'den'],
+  'so-tay': ['so-tay'],
+  'bong-gan': ['com-pa'],
+  'com-pa': ['com-pa'],
+  den: ['den'],
+  chu: ['the-dong'],
+};
+const lop_cua_kho = (kho) => ROOM_LAYERS.filter(
+  (l) => !LOP_CAN[l] || LOP_CAN[l].some((v) => kho.draw.includes(v)));
+
 test('lớp trong SVG đúng tập và đúng THỨ TỰ của ROOM_LAYERS', () => {
-  const co = [...SVG.matchAll(/<g data-lop="([^"]+)">/g)].map((m) => m[1]);
-  assert.deepEqual(co, [...ROOM_LAYERS],
-    'thứ tự lớp trong tệp lệch với ROOM_LAYERS — thứ tự đăng ký LÀ thứ tự z, LÀ thứ tự'
-    + ' vẽ, và chép nó ở chỗ thứ hai là hai chỗ sẽ lệch');
+  for (const [kho, svg] of [[KHO_NGANG, SVG], [KHO_DOC, SVG_DOC]]) {
+    const co = [...svg.matchAll(/<g data-lop="([^"]+)">/g)].map((m) => m[1]);
+    assert.deepEqual(co, lop_cua_kho(kho),
+      `khổ ${kho.key}: thứ tự lớp trong tệp lệch với ROOM_LAYERS — thứ tự đăng ký LÀ`
+      + ' thứ tự z, LÀ thứ tự vẽ, và chép nó ở chỗ thứ hai là hai chỗ sẽ lệch');
+  }
+  // HỢP của hai khổ phải phủ TRỌN `ROOM_LAYERS`: một lớp không khổ nào sinh
+  // ra là một dòng chết trong danh sách thứ tự z, và nó sẽ lặng lẽ đẩy sai
+  // chỗ của mọi lớp dưới nó trong `che_boi` (hàm ấy đọc CHỈ SỐ trong danh
+  // sách, không đọc tên).
+  const phu = new Set(ROOM_FORMATS.flatMap((k) => lop_cua_kho(k)));
+  assert.deepEqual([...ROOM_LAYERS].filter((l) => !phu.has(l)), [],
+    'có lớp trong ROOM_LAYERS mà không khổ nào vẽ ra — một dòng chết trong danh sách'
+    + ' thứ tự z');
   // BA lớp bóng, không một: bóng phải nằm TRÊN vật nó đổ lên và DƯỚI vật đổ
   // ra nó. Gộp lại thì bóng com-pa rơi xuống dưới sổ tay, tức biến mất.
   const z = Object.fromEntries(ROOM_LAYERS.map((l, i) => [l, i]));
@@ -573,6 +617,62 @@ test('BẢN DỌC đi qua CÙNG bộ sàn — một khổ không được gác l
   assert.ok(net.length >= 1, 'bản dọc không đo được nét mang tin nào — mất cái thước?');
   assert.ok(Math.min(...net) >= ROOM_BUDGET.inkMin,
     `bản dọc: nét mang tin tệ nhất ${Math.min(...net)}:1, dưới sàn ${ROOM_BUDGET.inkMin}:1`);
+});
+
+/* ═══ 13b · DIỆN TÍCH MANG NỘI DUNG — cái sàn đã THIẾU ════════════════
+ *
+ * Lượt nhìn thứ ba (20/10/2026) chỉ ra một khuyết tật mà MỌI con số ở trên
+ * đều nói là ĐẠT: bản dọc đo **5 634 nét, 197,5/200 KB, bậc giữa 43,3 %
+ * (sàn 30), bước dải 1,87 (trần 2), vạch thước 4,41 : 1 (sàn 3)** — và nhìn
+ * vào thì nó là một mảng gỗ gần như trống, với HAI PHẦN BA DƯỚI chìm hẳn
+ * thành đen.
+ *
+ * Vì sao không phép đo nào kêu, và đây mới là chỗ đáng học:
+ *
+ *  · `midShareMin` đếm bậc GIỮA trên CẢ mặt bàn. Nó cộng một phần ba rất
+ *    sáng với hai phần ba đen rồi báo 43 % — một con số lành nói về một bức
+ *    không lành. Mọi phép gác trung bình trên cả khung đều mù theo kiểu này.
+ *  · ĐẾM NÉT cũng không bắt được: bản hỏng có ~3 000 vệt thớ rải ĐỀU khắp
+ *    dải, kể cả ở đáy. Chúng có trong tệp, chúng tốn byte, và chúng vô
+ *    hình. "Có nét" không đồng nghĩa với "mang nội dung".
+ *  · Tương phản chỉ đo ở chỗ có VẬT. Đáy dải không có vật nào, nên không
+ *    một phép đo tương phản nào đi qua đó.
+ *
+ * Nên phép đo phải hỏi: ở TỪNG TẦNG của bức, bao nhiêu phần diện tích tối
+ * tới mức không nét nào còn đọc được? Dưới L = 0,01 thì thớ gỗ, khe ván,
+ * mắt gỗ và mọi phản chiếu khẽ đều nằm dưới ngưỡng thấy — một băng như vậy
+ * là một băng TRỐNG dù tệp có bao nhiêu nét.
+ */
+
+test('mỗi BĂNG của mặt bàn phải còn diện tích mang nội dung — không băng nào chìm hẳn', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  assert.ok(ROOM_BUDGET.deepBands >= 4,
+    `chia ${ROOM_BUDGET.deepBands} băng là quá thô — với 2 băng, "hai phần ba dưới đen"`
+    + ' lại tan vào một con số trung bình, đúng cái lỗ mà phép đo này sinh ra để bịt');
+  for (const kho of ROOM_FORMATS) {
+    const out = bangDo(kho.key);
+    const dong = out.match(/PHẦN ĐEN mỗi băng\s+([\d% ]+?)\s+\(trần/);
+    assert.ok(dong, `khổ ${kho.key}: bảng --do không in "PHẦN ĐEN mỗi băng" — phép đo`
+      + ' diện tích mang nội dung đã bị gỡ khỏi bộ sinh');
+    const bang = dong[1].trim().split(/\s+/).map((s) => Number(s.replace('%', '')) / 100);
+    assert.equal(bang.length, ROOM_BUDGET.deepBands,
+      `khổ ${kho.key}: đo được ${bang.length} băng, khai ${ROOM_BUDGET.deepBands} —`
+      + ' một phép đo gộp về ÍT băng hơn là một phép đo lại bắt đầu lấy trung bình');
+    const te = bang.map((v, i) => [i, v]).filter(([, v]) => v > ROOM_BUDGET.deepShareMax);
+    assert.deepEqual(te, [],
+      `khổ ${kho.key}: băng ${te.map(([i, v]) => `${i + 1} (${(v * 100).toFixed(0)}%)`)}`
+      + ` vượt trần ${(ROOM_BUDGET.deepShareMax * 100).toFixed(0)}% diện tích ở L<`
+      + `${ROOM_BUDGET.bands[0]} — chỗ ấy không nét nào đọc được, nên nó là diện tích`
+      + ' TRỐNG. Bản dọc hỏng đo `0% 0% 4% 23% 97% 100%`; khổ ngang đạt với'
+      + ' `14% 9% 6% 13% 19% 31%`.');
+  }
+  // …và phép gác phải CHẶN BUILD, không chỉ in ra. Một con số được in mà
+  // không ai đọc là đúng cái đã để lọt bản dọc: bảng `--do` lúc ấy vẫn in
+  // "đen sâu 37,27 %" ngay trên dòng "BẬC GIỮA 43,32 % (sàn 30 %)".
+  assert.match(PY, /den_bang/,
+    'build_room.py không còn đo phần đen theo băng — phép đo đã bị gỡ');
+  assert.match(PY, /BUDGET\["deepShareMax"\]/,
+    'build_room.py không còn đọc deepShareMax — phép đo còn đó nhưng không chặn gì');
 });
 
 /* ═══ 14 · ÁNH SÁNG LÁI MỌI TÔNG ══════════════════════════════════════ */

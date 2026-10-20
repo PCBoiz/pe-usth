@@ -157,6 +157,7 @@ LAMP = grab("ROOM_LAMP")
 BOOK = grab("ROOM_BOOK")
 PLATE = grab("ROOM_PLATE")
 TOOLS = grab("ROOM_TOOLS")
+PENCIL = grab("ROOM_PENCIL")
 SHADOW = grab("ROOM_SHADOW")
 BUDGET = grab("ROOM_BUDGET")
 LIT = grab("ROOM_LIT")
@@ -623,8 +624,12 @@ def lamp_A(re: float) -> float:
     Bảng chứ không công thức, và lý do giống `SKY_LIGHT.profile`: đèn có một
     LÕI PHẲNG bão hoà ngay dưới chao, một thềm, rồi một đầu gối dốc. Khớp một
     luỹ thừa trên cả dải thì sai ở hai đầu và cho ra đúng cái "đĩa viền
-    xuyến" mà bản gradient đang là."""
+    xuyến" mà bản gradient đang là.
+
+    BÁN KÍNH CỦA BẢNG nhân `spread` (theo KHỔ): đèn ở xa hơn cho vũng sáng
+    rộng hơn và dốc thoải hơn, chứ không mạnh hơn. Xem `ROOM_LAMP.spread`."""
     tb = LAMP["profile"]
+    re = re / max(1e-6, LAMP["spread"])
     if re <= tb[0][0]:
         return tb[0][1]
     for i in range(1, len(tb)):
@@ -649,6 +654,7 @@ def lamp_r_of_A(a: float) -> float:
     lõi bão hoà không được tô. Bản đồ sao đã mất đúng cái lõi ấy một lần, và
     chỉ raster hoá mới bắt được (mô hình nói p99 = 0,977, tranh thật 0,572)."""
     tb = LAMP["profile"]
+    k = LAMP["spread"]
     if a >= tb[0][1]:
         r = tb[0][0]
         for rr, aa in tb:
@@ -656,15 +662,15 @@ def lamp_r_of_A(a: float) -> float:
                 r = rr
             else:
                 break
-        return r
+        return r * k
     for i in range(1, len(tb)):
         r0, a0 = tb[i - 1]
         r1, a1 = tb[i]
         if a1 <= a <= a0:
             if a0 == a1:
-                return r1
-            return r0 + (r1 - r0) * ((a0 - a) / (a0 - a1))
-    return tb[-1][0]
+                return r1 * k
+            return (r0 + (r1 - r0) * ((a0 - a) / (a0 - a1))) * k
+    return tb[-1][0] * k
 
 
 def sang(x, y) -> float:
@@ -822,6 +828,78 @@ THUOC_CANH = thuoc_canh_quad()
 # đọc nó: một điểm trên mặt bên mà mô hình gọi là GỖ là đúng kiểu lệch mô hình
 # ‖ tranh mà cả bộ sinh này tồn tại để không mắc.
 THUOC_KHOI = bao_loi(THUOC + THUOC_CANH)
+
+
+# ── BÚT CHÌ ────────────────────────────────────────────────────────────
+#
+# Trục của bút chạy từ ĐUÔI (cục tẩy) tới MŨI, và mọi phần đều dựng trên
+# cùng một hệ `(dọc, ngang)` lấy từ trục ấy — không phần nào tự tính lại góc.
+# Chép góc sang chỗ thứ hai là một trong hai chỗ sẽ lệch, đúng cái bẫy mà mặt
+# bên của thước đã mắc.
+
+
+def but_truc():
+    """`(gốc đuôi, vector đơn vị DỌC, vector đơn vị NGANG, chiều dài)`."""
+    a, b = PENCIL["from"], PENCIL["to"]
+    dx, dy = b["x"] - a["x"], b["y"] - a["y"]
+    L = math.hypot(dx, dy) or 1.0
+    ux, uy = dx / L, dy / L
+    return (a["x"], a["y"]), (ux, uy), (-uy, ux), L
+
+
+def _but_p(t, s, k=1.0):
+    """Điểm trên bút: `t` đơn vị dọc từ đuôi, `s` ∈ −1..1 ngang, `k` lần bán
+    kính thân."""
+    (ax, ay), (ux, uy), (nx, ny), _L = but_truc()
+    h = PENCIL["half"] * k
+    return (ax + ux * t + nx * h * s, ay + uy * t + ny * h * s)
+
+
+def but_quad():
+    """THÂN SƠN — từ sau đai tới chân đầu gọt, theo thứ tự (đuôi-trên,
+    mũi-trên, mũi-dưới, đuôi-dưới): `quad_pt(q, u, v)` cho `u` chạy DỌC thân
+    và `v` chạy NGANG, tức đúng hệ mà ba mặt của thân sáu cạnh cần."""
+    if "but-chi" not in VE:
+        return []
+    _o, _u, _n, L = but_truc()
+    u0, u1 = PENCIL["ferrule"]["len"], L - PENCIL["tip"]["len"]
+    return [_but_p(u0, -1), _but_p(u1, -1), _but_p(u1, 1), _but_p(u0, 1)]
+
+
+def but_dai_quad():
+    """ĐAI KIM LOẠI — khúc giữa cục tẩy và thân sơn."""
+    if "but-chi" not in VE:
+        return []
+    f = PENCIL["ferrule"]["len"]
+    return [_but_p(0, -1), _but_p(f, -1), _but_p(f, 1), _but_p(0, 1)]
+
+
+def but_tay_quad():
+    """CỤC TẨY — thò ra SAU đuôi, đầu đã MÒN nên hẹp hơn thân (`taper`)."""
+    if "but-chi" not in VE:
+        return []
+    e = PENCIL["eraser"]
+    return [_but_p(-e["len"], -1, e["taper"]), _but_p(0, -1),
+            _but_p(0, 1), _but_p(-e["len"], 1, e["taper"])]
+
+
+def but_dau_poly():
+    """ĐẦU GỌT — tam giác từ chân nón tới mũi."""
+    if "but-chi" not in VE:
+        return []
+    _o, _u, _n, L = but_truc()
+    u1 = L - PENCIL["tip"]["len"]
+    return [_but_p(u1, -1), _but_p(L, 0), _but_p(u1, 1)]
+
+
+BUT_THAN = but_quad()
+BUT_DAI = but_dai_quad()
+BUT_TAY = but_tay_quad()
+BUT_DAU = but_dau_poly()
+# Hình CHE của cả cây bút — `che_boi` và `nen_rgb` đọc nó. Một điểm trên thân
+# bút mà mô hình gọi là GỖ BÀN là đúng kiểu lệch mô hình ‖ tranh mà cả bộ
+# sinh này tồn tại để không mắc.
+BUT_KHOI = bao_loi(BUT_THAN + BUT_DAI + BUT_TAY + BUT_DAU) if BUT_THAN else []
 
 
 def tren_ban(x, y) -> bool:
@@ -997,6 +1075,10 @@ def thuoc_t(x, y) -> float:
     return LIT["rulerBase"] + LIT["rulerGain"] * sang(x, y)
 
 
+def but_t(x, y) -> float:
+    return LIT["pencilBase"] + LIT["pencilGain"] * sang(x, y)
+
+
 def che_boi(x, y, lop: str) -> bool:
     """Điểm `(x, y)` của lớp `lop` có bị một lớp TRÊN nó che hẳn không?
 
@@ -1027,6 +1109,8 @@ def che_boi(x, y, lop: str) -> bool:
         return True
     if z < tt["thuoc"] and trong_da_giac(x, y, THUOC_KHOI):
         return True
+    if z < tt["but-chi"] and trong_da_giac(x, y, BUT_KHOI):
+        return True
     return False
 
 
@@ -1038,6 +1122,14 @@ def nen_rgb(x, y, P):
     trên thước) vì ở cả ba chỗ bóng nằm TRÊN mặt vật."""
     if trong_da_giac(x, y, TRANG_PHAI) or trong_da_giac(x, y, TRANG_TRAI):
         rgb = ton_rgb(P["paperRamp"], giay_t(x, y))
+    elif trong_da_giac(x, y, BUT_THAN):
+        rgb = ton_rgb(P["pencilRamp"], but_t(x, y))
+    elif trong_da_giac(x, y, BUT_DAU):
+        rgb = ton_rgb(P["pencilBare"], but_t(x, y))
+    elif trong_da_giac(x, y, BUT_DAI):
+        rgb = ton_rgb(P["steelRamp"], but_t(x, y))
+    elif trong_da_giac(x, y, BUT_TAY):
+        rgb = hex_rgb(P["eraser"])
     elif trong_da_giac(x, y, THUOC):
         rgb = ton_rgb(P["rulerRamp"], thuoc_t(x, y))
     elif trong_da_giac(x, y, THUOC_CANH):
@@ -2045,6 +2137,125 @@ def ve_thuoc(ink, P):
     ink.poly("thuoc", [q[3], q[2]], P["rulerRamp"][3], 1.2, 0.8)
 
 
+def ve_but_chi(ink, P):
+    """BÚT CHÌ — và nó phải đọc ra một cây bút chì, không một que sơn vàng.
+
+    Bài học của cái đèn và tấm thẻ đồng: mọi vật đọc ra "hình kỹ thuật" là vì
+    thiếu HÌNH chứ thiếu tông. Sáu thứ dưới đây là sáu thứ hình học khác
+    nhau, không sáu bản sao của một nét:
+
+     1. **BA MẶT của thân sáu cạnh** — mặt ngửa về đèn sáng hơn hẳn hai mặt
+        bên. Một tứ giác tô đều là một cái que, và cái que ấy sẽ hợp lệ ở mọi
+        phép đo độ chói.
+     2. **ĐẦU GỌT CÓ MÚI** — người gọt bằng dao để lại các vạt phẳng hội tụ về
+        mũi, nên nón không trơn.
+     3. **LÕI CHÌ CHỈ Ở MŨI** — `coreAt` phần bề rộng. Tô đen cả nón là một
+        cây bút cháy.
+     4. **ĐAI CÓ GỜ** — `steelRamp`, cùng chất với com-pa (chỗ DUY NHẤT bức
+        này dùng lại một thang tông, và nó dùng lại vì vật liệu trùng nhau
+        chứ không vì tiện tay).
+     5. **TẨY MÒN KHÔNG ĐỀU** — đầu hẹp hơn thân.
+     6. **VỤN TẨY** quanh đầu chì: thứ duy nhất trong cả hai khổ ghi lại một
+        cái SAI đã được xoá đi."""
+    q, dai, tay, dau = BUT_THAN, BUT_DAI, BUT_TAY, BUT_DAU
+    _o, (ux, uy), (nx, ny), L = but_truc()
+    # MẶT NÀO NGỬA VỀ ĐÈN: tích vô hướng của pháp tuyến ngang với hướng TỪ
+    # đèn tới bút. Tính ra chứ không ghi cứng — đổi `from`/`to` mà quên đổi
+    # dấu là cái bút được chiếu sáng từ phía sau, và không con số nào kêu.
+    cx, cy = quad_pt(q, 0.5, 0.5)
+    ve_den_x, ve_den_y = LAMP["at"]["x"] - cx, LAMP["at"]["y"] - cy
+    ngua = 1.0 if (nx * ve_den_x + ny * ve_den_y) < 0 else -1.0
+
+    # ══ THÂN: ba mặt dọc, mỗi mặt lại chia 14 khúc theo chiều dài để nó lùi
+    # xa đèn dần — cùng kỹ thuật mà thước và thẻ đồng dùng.
+    n = PENCIL["facets"]
+    g = PENCIL["facetGain"]
+    ink.fill("but-chi", pl(q, True), ton_muot(P["pencilRamp"], but_t(cx, cy)))
+    for f in range(n):
+        v0, v1 = f / n, (f + 1) / n
+        # −1 ở mặt khuất, +1 ở mặt ngửa; mặt giữa gần 0.
+        huong = ((v0 + v1) - 1.0) * ngua
+        for i in range(14):
+            u0, u1 = i / 14, (i + 1) / 14
+            xm, ym = quad_pt(q, (u0 + u1) / 2, (v0 + v1) / 2)
+            ink.fill("but-chi", pl([quad_pt(q, u0, v0), quad_pt(q, u1, v0),
+                                    quad_pt(q, u1, v1), quad_pt(q, u0, v1)], True),
+                     ton_muot(P["pencilRamp"], but_t(xm, ym) * (1.0 + g * huong)),
+                     1.0, solo=True)
+    # GỜ GIỮA HAI MẶT: nét mảnh ở ranh, vì một cạnh sáu cạnh là một cạnh THẬT
+    # — không có nó, ba dải tông đọc ra ba vệt sơn.
+    for f in range(1, n):
+        v = f / n
+        ink.poly("but-chi", [quad_pt(q, 0.0, v), quad_pt(q, 1.0, v)],
+                 P["pencilRamp"][3] if f / n > 0.5 * (1 + ngua) * 0.5 else P["pencilRamp"][0],
+                 0.45, 0.5)
+    # VỆT SƠN dọc thân — sơn phủ vẫn ánh lên theo chiều gỗ bên dưới.
+    lq = PENCIL["lacquer"]
+    for i in range(int(lq["count"] * DENSITY)):
+        u, v = rnd(i * 2.3, 4.1), rnd(i * 6.1, 1.7)
+        a = quad_pt(q, u, v)
+        b = quad_pt(q, min(1.0, u + 0.05 + rnd(i * 3.7, 9.1) * 0.09), v)
+        ink.poly("but-chi", [a, b], P["pencilRamp"][3] if rnd(i * 5.3, 2.9) < 0.5
+                 else P["pencilRamp"][0], lq["width"], lq["opacity"])
+
+    # ══ ĐAI KIM LOẠI — cùng `steelRamp` với com-pa, và có GỜ.
+    ink.fill("but-chi", pl(dai, True),
+             ton_muot(P["steelRamp"], but_t(*quad_pt(dai, 0.5, 0.5))))
+    fr = PENCIL["ferrule"]
+    for i in range(fr["ridges"]):
+        u = (i + 0.5) / fr["ridges"]
+        ink.poly("but-chi", [quad_pt(dai, u, 0.0), quad_pt(dai, u, 1.0)],
+                 P["steelRamp"][0], fr["width"], 0.55)
+        ink.poly("but-chi", [quad_pt(dai, min(1.0, u + 0.07), 0.0),
+                             quad_pt(dai, min(1.0, u + 0.07), 1.0)],
+                 P["steelRamp"][3], fr["width"] * 0.8, 0.45)
+
+    # ══ TẨY — một tông đều (cao su không có thớ), nhưng MÉP MÒN không thẳng.
+    ink.fill("but-chi", pl(tay, True), P["eraser"])
+    ink.poly("but-chi", [tay[0], tay[3]], P["steelRamp"][0], 0.8, 0.45)
+
+    # ══ ĐẦU GỌT: vạt dao hội tụ về mũi, rồi lõi chì.
+    ink.fill("but-chi", pl(dau, True),
+             ton_muot(P["pencilBare"], but_t(*dau[1])))
+    tp = PENCIL["tip"]
+    chan, mui = (dau[0], dau[2]), dau[1]
+    for i in range(tp["facets"] + 1):
+        t = i / tp["facets"]
+        a = (chan[0][0] + (chan[1][0] - chan[0][0]) * t,
+             chan[0][1] + (chan[1][1] - chan[0][1]) * t)
+        ink.poly("but-chi", [a, mui],
+                 P["pencilBare"][2] if abs(t - 0.5 - 0.22 * ngua) < 0.2
+                 else P["pencilBare"][0], tp["width"], 0.6)
+    # LÕI CHÌ — chỉ `coreAt` phần cuối nón.
+    u1 = L - tp["len"]
+    lo = tp["coreAt"]
+    ink.fill("but-chi", pl([_but_p(L - tp["len"] * lo, -lo), _but_p(L, 0),
+                            _but_p(L - tp["len"] * lo, lo)], True), P["graphite"])
+    # Một nét SÁNG trên cạnh ngửa về đèn: gỗ mới gọt bắt đèn mạnh, và đó là
+    # thứ nói ra cái nón có BỀ MẶT chứ chỉ có đường bao.
+    ink.poly("but-chi", [_but_p(u1, ngua), _but_p(L, 0)], P["pencilBare"][2], 0.6, 0.8)
+    # ══ MÉP NGỬA VỀ ĐÈN của cả thân — một nét sáng mảnh chạy suốt từ đai tới
+    # chân nón. Không có nó, mặt sơn tối ở cạnh dưới hoà thẳng vào cái bóng
+    # của chính cây bút và cả vật đọc ra NỬA cây bút: cùng khuyết tật mà mặt
+    # bên của thước đã phải chữa bằng một nét ở `[3] → [2]`.
+    ink.poly("but-chi", [_but_p(PENCIL["ferrule"]["len"], ngua), _but_p(u1, ngua)],
+             P["pencilRamp"][3], 0.7, 0.85)
+
+    # ══ VỤN TẨY — chấm, rải quanh đầu chì. Chúng KHÔNG đổ bóng: ở cỡ dưới
+    # một đơn vị, một cái bóng là một chấm thứ hai đặt cạnh chấm thứ nhất.
+    cr = PENCIL["crumbs"]
+    for i in range(int(cr["count"] * DENSITY)):
+        th = rnd(i * 3.7, 2.1) * math.tau
+        r = math.sqrt(rnd(i * 5.9, 7.3)) * cr["spread"]
+        x = cr["at"]["x"] + math.cos(th) * r
+        y = cr["at"]["y"] + math.sin(th) * r * 0.62
+        if not (0 <= x <= W and tren_ban(x, y) and y <= H) or trong_da_giac(x, y, BUT_KHOI):
+            continue
+        ink.stroke("but-chi", dot(x, y), P["eraser"],
+                   cr["size"] * 2 * (0.6 + rnd(i * 1.3, 8.7) * 0.8),
+                   cr["opacity"] * (0.5 + 0.5 * sang(x, y)))
+
+
 def com_pa_poly():
     d = TOOLS["divider"]
     hx, hy = d["hinge"]["x"], d["hinge"]["y"]
@@ -2280,6 +2491,20 @@ def do_tuong_phan_net(P):
             nen = nen_rgb(x, y, P)
             mau = over(nen, hex_rgb(P["rulerTick"]), 0.9)
             ra.append(("vạch thước", tuong_phan(nen, mau), (round(x), round(y))))
+    if "but-chi" in VE:
+        # LÕI CHÌ là thứ làm cây bút thành cây bút — cùng hạng với vạch thước.
+        # Nền của nó là MẶT NÓN GỖ MỚI GỌT ngay sau nó, không phải mặt bàn:
+        # đo trên gỗ bàn (tối hơn nhiều) là một con số dễ đạt nói về một cặp
+        # màu bức tranh không có — đúng cái bẫy `che_boi` sinh ra để chặn.
+        tp = PENCIL["tip"]
+        _o, _u, _n, L = but_truc()
+        for k in range(3):
+            t = 0.45 + k * 0.18
+            x, y = _but_p(L - tp["len"] * tp["coreAt"] * (0.2 + 0.3 * k), 0.0)
+            nx_, ny_ = _but_p(L - tp["len"] * t, 0.0)
+            nen = nen_rgb(nx_, ny_, P)
+            ra.append(("lõi chì", tuong_phan(nen, hex_rgb(P["graphite"])),
+                       (round(x), round(y))))
     return ra
 
 
@@ -2386,14 +2611,25 @@ def do_ngan_sach(P):
     TRỐNG để trời lọt qua, đếm nó vào là đếm một thứ bức này không vẽ — và nó
     sẽ nhồi bậc "đen sâu" một cách vô nghĩa."""
     step = BUDGET["sampleStep"]
+    nb = BUDGET["deepBands"]
     Ls = []
+    # PHẦN ĐEN theo BĂNG NGANG: tổng số mẫu và số mẫu dưới `bands[0]` của
+    # từng băng. Một con số cho CẢ khung không bắt được "hai phần ba dưới
+    # chìm hẳn" — xem `ROOM_BUDGET.deepShareMax`.
+    bang_o, bang_den = [0] * nb, [0] * nb
+    y0 = DESK["edgeY"]
     for i in range(0, int(W), step):
         x = i + step / 2
         for j in range(0, int(H), step):
             y = j + step / 2
             if not tren_ban(x, y):
                 continue
-            Ls.append(luminance(nen_rgb(x, y, P)))
+            L = luminance(nen_rgb(x, y, P))
+            Ls.append(L)
+            k = min(nb - 1, max(0, int((y - y0) / max(1e-6, H - y0) * nb)))
+            bang_o[k] += 1
+            if L < BUDGET["bands"][0]:
+                bang_den[k] += 1
     Ls.sort()
     o = len(Ls)
     moc = BUDGET["bands"]
@@ -2411,6 +2647,7 @@ def do_ngan_sach(P):
         "sang": sum(1 for L in Ls if L > BRIGHT_AT) / o,
         "bac": [c / o for c in dem],
         "mid": sum(1 for L in Ls if lo < L <= hi) / o,
+        "den_bang": [(d / n if n else 0.0) for d, n in zip(bang_den, bang_o)],
     }
 
 
@@ -2423,6 +2660,30 @@ def kiem_ngan_sach(P):
             "tranh (đúng chẩn đoán của lời chê thứ năm ở bản đồ sao: 89,7%% ở L<0,01). "
             "Nới `ROOM_LAMP.profile` ở phần đuôi, hay nâng `ROOM_LIT.ambient`."
             % (d["mid"] * 100, BUDGET["midShareMin"] * 100))
+    # ── PHẦN ĐEN THEO BĂNG NGANG ────────────────────────────────────────
+    #
+    # Cái sàn `midShareMin` ở trên đếm bậc GIỮA trên CẢ mặt bàn, và chính vì
+    # vậy nó đã để lọt bản dọc ngày 20/10: bức ấy đo bậc giữa 43 % (đạt) với
+    # 37 % diện tích ở L < 0,01 — tức một dải mà hai phần ba DƯỚI chìm hẳn
+    # thành đen, nhìn ra là "một mẫu vân gỗ" chứ một cái cảnh. Một con số
+    # trung bình trên cả khung KHÔNG thể nói ra chuyện ấy: nó cộng một nửa
+    # rất sáng với một nửa đen rồi báo một con số lành.
+    #
+    # Nên phép gác phải hỏi TỪNG BĂNG: ở mỗi tầng của bức, bao nhiêu phần
+    # diện tích tối tới mức không nét nào còn đọc được? Đó cũng là định
+    # nghĩa của "diện tích KHÔNG mang nội dung" — dưới L = 0,01, thớ gỗ,
+    # khe ván và mọi phản chiếu khẽ đều nằm dưới ngưỡng thấy được, nên một
+    # băng đen là một băng trống dù có bao nhiêu nét trong tệp.
+    te = [(k, v) for k, v in enumerate(d["den_bang"]) if v > BUDGET["deepShareMax"]]
+    if te:
+        k, v = max(te, key=lambda r: r[1])
+        raise SystemExit(
+            "BĂNG %d/%d của mặt bàn có %.1f%% diện tích ở L<%g, vượt trần %.0f%% — "
+            "chỗ ấy không nét nào đọc được, nên nó là diện tích TRỐNG dù tệp có bao "
+            "nhiêu nét đi nữa (%d/%d băng trượt). Nới `ROOM_LAMP.spread` của khổ này, "
+            "hay thu ngắn khung lại cho vừa tầm ngọn đèn."
+            % (k + 1, BUDGET["deepBands"], v * 100, BUDGET["bands"][0],
+               BUDGET["deepShareMax"] * 100, len(te), BUDGET["deepBands"]))
     if d["trung_vi"] > BUDGET["medianMax"]:
         raise SystemExit(
             "TRUNG VỊ ĐỘ CHÓI %.3f vượt trần %g — cả mặt bàn đang sáng đều, tức cái "
@@ -2470,7 +2731,7 @@ def dung_kho(kho):
     độ khổ ngang sẽ che mất một vùng của khổ dọc trong MỌI phép đo."""
     global DESK, LAMP, BOOK, PLATE, TOOLS, W, H, HORIZON, _UA, _UB, DENSITY, VE
     global SP, LF, RT, TRANG_TRAI, TRANG_PHAI, THE_DONG, THUOC, THUOC_CANH, THUOC_KHOI
-    global _STACK, BRIGHT_AT
+    global _STACK, BRIGHT_AT, BUT_THAN, BUT_DAI, BUT_TAY, BUT_DAU, BUT_KHOI
     o = kho["over"]
     DESK = _tron(_GOC["desk"], o.get("desk", {}))
     LAMP = _tron(_GOC["lamp"], o.get("lamp", {}))
@@ -2499,6 +2760,12 @@ def dung_kho(kho):
         THUOC_KHOI = bao_loi(THUOC + THUOC_CANH)
     else:
         THUOC, THUOC_CANH, THUOC_KHOI = [], [], []
+    # Bút chì: bốn hình con + hình CHE. Khổ nào không vẽ nó phải cho hình
+    # RỖNG chứ giữ toạ độ cũ — `che_boi`/`nen_rgb` đọc chúng, nên một cây bút
+    # "vô hình" vẫn che một vùng của khổ kia trong MỌI phép đo.
+    BUT_THAN, BUT_DAI = but_quad(), but_dai_quad()
+    BUT_TAY, BUT_DAU = but_tay_quad(), but_dau_poly()
+    BUT_KHOI = bao_loi(BUT_THAN + BUT_DAI + BUT_TAY + BUT_DAU) if BUT_THAN else []
     # Chồng vòng ánh đèn phụ thuộc `LAMP` — không xoá là khổ sau dùng lại vũng
     # sáng của khổ trước, và nó sẽ TRÙNG KHỚP với mọi phép đo (chúng cũng đọc
     # cái chồng ấy), tức không một con số nào kêu.
@@ -2537,6 +2804,10 @@ def build(P) -> Ink:
         # Bóng thước dựng từ MẶT TRÊN (hình và mép tiếp đất của nó), nhưng
         # hình CHE là cả khối: mặt bên không nằm trong bóng của chính thước.
         ("thước", THUOC, h["ruler"], "bong-xa", (2, 3), THUOC_KHOI),
+        # Bút chì đổ bóng từ CẢ cây (hình che), không từ riêng thân sơn: cục
+        # tẩy và đầu gọt cũng chặn ánh sáng, và một cái bóng ngắn hơn vật là
+        # thứ nói ra vật đang lơ lửng.
+        ("bút chì", BUT_KHOI, h["pencil"], "bong-xa", None, BUT_KHOI),
     ):
         if not poly:
             continue
@@ -2546,6 +2817,8 @@ def build(P) -> Ink:
         ve_the_dong(ink, P)
     if "thuoc" in VE:
         ve_thuoc(ink, P)
+    if "but-chi" in VE:
+        ve_but_chi(ink, P)
 
     cho_bong = []
     if "so-tay" in VE:
@@ -2646,6 +2919,10 @@ def mot_kho(kho, P, args):
             print("  %-20s %7.2f%%" % (t, d["bac"][i] * 100))
         print("  %-20s %7.2f%%   (sàn %.0f%%)"
               % ("BẬC GIỮA 0,03–0,85", d["mid"] * 100, BUDGET["midShareMin"] * 100))
+        print("  %-20s %s   (trần %.0f%% MỖI BĂNG)"
+              % ("PHẦN ĐEN mỗi băng",
+                 " ".join("%.0f%%" % (v * 100) for v in d["den_bang"]),
+                 BUDGET["deepShareMax"] * 100))
         print()
         for s, tp, tai in do_tuong_phan_chu(P):
             print("  chữ %-28s %6.2f:1 tại %s  (sàn %g)"
