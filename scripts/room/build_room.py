@@ -87,9 +87,14 @@ OUT = ROOT / "frontend" / "public" / "map" / "room"
 #    thứ bức này tồn tại để có. Một cái trần ép bỏ đúng cái lý do tồn tại thì
 #    nó là một cái trần sai, không phải một ràng buộc đáng giữ.
 # Khoảng trống còn lại ~8 %, đủ hẹp để trần vẫn CẮN khi ai đó thêm một lớp.
-MAX_KB = 380
+#
+# TRẦN NAY SỐNG Ở `ROOM_FORMATS[].maxKb`, MỘT CON SỐ MỖI KHỔ — không một hằng
+# chung. Bản dọc hiển thị 390 đơn vị trên 390 px (bản ngang: 1 360 đơn vị trên
+# 2 350 px), nên cùng một mật độ nét cho bản dọc là chi tiết dưới một điểm ảnh,
+# tức byte chết trên mạng điện thoại. Hai khổ, hai ngân sách, hai lý lẽ.
 
-# Một con số duy nhất để hạ/nâng mật độ cả bức, như `DENSITY` của build_sky.py.
+# Mật độ cả bức, hạ/nâng theo KHỔ (`ROOM_FORMATS[].density`) — `dung_kho` gán
+# lại. Vẫn là một con số duy nhất như `DENSITY` của build_sky.py.
 DENSITY = 1.0
 
 
@@ -156,8 +161,22 @@ SHADOW = grab("ROOM_SHADOW")
 BUDGET = grab("ROOM_BUDGET")
 LIT = grab("ROOM_LIT")
 COPY = grab("ROOM_COPY")
+FORMATS = grab("ROOM_FORMATS")
+
+# Hồ sơ GỐC, giữ nguyên để `dung_kho` luôn trộn từ nó chứ từ bản đã trộn lần
+# trước — trộn chồng lên nhau thì khổ thứ hai thừa hưởng những gì khổ thứ nhất
+# ghi đè, và thứ tự sinh tệp sẽ đổi được bức tranh.
+_GOC = {"desk": DESK, "lamp": LAMP, "book": BOOK, "plate": PLATE, "tools": TOOLS}
 
 W, H = FRAME["width"], FRAME["height"]
+# Tập vật được VẼ ở khổ đang dựng. Bản dọc bỏ sổ và thẻ đồng — xem
+# `ROOM_FORMATS` ở TS để biết vì sao, và nhớ rằng MỌI phép đo cũng phải đọc
+# tập này: một phép đo tương phản chạy trên một cuốn sổ không được vẽ là một
+# con số nói về một bức tranh không tồn tại.
+VE = {"den", "so-tay", "the-dong", "thuoc", "com-pa"}
+# Ngưỡng "có chỗ RỰC" — theo KHỔ, vì nó phụ thuộc vật liệu có trong khung.
+# Xem `ROOM_FORMATS[].brightAt` ở TS.
+BRIGHT_AT = 0.5
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -777,6 +796,34 @@ def thuoc_quad():
 THUOC = thuoc_quad()
 
 
+def thuoc_canh_quad():
+    """MẶT BÊN của thước — tứ giác tụt xuống dưới MÉP GẦN.
+
+    MÉP GẦN LÀ `[0] → [1]`, không `[3] → [2]`, và chỗ này đã sai một lần.
+    `thuoc_quad` dựng tứ giác theo `(a+n, b+n, b−n, a−n)` với `n = (−dy, dx)`,
+    mà thước dốc XUỐNG-phải nên `n` chỉ xuống — `[0]`, `[1]` là mép DƯỚI. Lấy
+    nhầm `[3] → [2]` thì mặt bên tụt xuống từ mép TRÊN, tức nó nằm ĐÈ LÊN mặt
+    trên của chính cái thước: trên PNG ra một dải tối chạy dọc giữa thanh, và
+    không một con số nào kêu — diện tích, tông, bề rộng đều hợp lệ, chỉ cái
+    CHỖ là sai. (Chú thích cũ ở `ve_thuoc` gọi `[0] → [1]` là "mép trên" chính
+    là thứ đã dẫn đi nhầm; nó đã sửa.)
+
+    Mặt này quay XUỐNG-TRƯỚC nên nó gần như không nhận gì từ một ngọn đèn ở
+    trên-trái — đó là lý do nó có một thang tông riêng (`sideGain`) chứ không
+    tô cùng tông với mặt trên."""
+    r = TOOLS["ruler"]
+    t, dx = r["thick"], r["thick"] * r["sideDx"]
+    a, b = THUOC[0], THUOC[1]
+    return [a, b, (b[0] + dx, b[1] + t), (a[0] + dx, a[1] + t)]
+
+
+THUOC_CANH = thuoc_canh_quad()
+# Hình CHE của cả thanh thước = mặt trên + mặt bên. `che_boi` và `nen_rgb`
+# đọc nó: một điểm trên mặt bên mà mô hình gọi là GỖ là đúng kiểu lệch mô hình
+# ‖ tranh mà cả bộ sinh này tồn tại để không mắc.
+THUOC_KHOI = bao_loi(THUOC + THUOC_CANH)
+
+
 def tren_ban(x, y) -> bool:
     return y >= mep_y(x)
 
@@ -816,7 +863,7 @@ def mo_bong(x, y) -> float:
     return f["floor"] + (1 - f["floor"]) * max(0.0, 1 - max(0.0, d - f["at"]) / 900.0)
 
 
-def ve_bong(ink, lop, poly, h, P, tiep_xuc=None):
+def ve_bong(ink, lop, poly, h, P, tiep_xuc=None, chu=None):
     """BÓNG của một hình, hai tầng + lấm tấm ở vành — bóng mềm KHÔNG `<filter>`.
 
     UMBRA ở `umbra` phần độ lệch (đậm) và PENUMBRA ở trọn độ lệch (nhạt): hai
@@ -826,7 +873,14 @@ def ve_bong(ink, lop, poly, h, P, tiep_xuc=None):
     tấm là vệt bôi đen thứ chín.
 
     `tiep_xuc` là mép TIẾP ĐẤT của vật (chỉ số các đỉnh chạm mặt bàn): một nét
-    đậm sát mép ấy là thứ nói ra vật ĐẶT TRÊN bàn chứ không nổi lơ lửng."""
+    đậm sát mép ấy là thứ nói ra vật ĐẶT TRÊN bàn chứ không nổi lơ lửng.
+
+    `chu` là hình CHE của vật, mặc định bằng chính `poly`. Nó tách ra vì một
+    vật có BỀ DÀY che nhiều hơn cái mặt đổ bóng của nó: thước đổ bóng theo mặt
+    TRÊN, nhưng mặt BÊN của nó cũng không nằm trong bóng của chính nó. Gộp hai
+    vai trò vào một đa giác thì hoặc bóng dựng sai hình, hoặc `bong_phu` dìm
+    mặt bên — mà chiều thứ hai đã có tiền lệ: nó kéo một phép đo tương phản từ
+    5,13 : 1 xuống 1,08 : 1 trong khi tranh không đổi một điểm ảnh nào."""
     # Hệ số mờ lấy ở TÂM hình, không ở đỉnh đầu: đỉnh đầu là một điểm tuỳ ý
     # trong danh sách, nên cùng một hình khai theo thứ tự khác sẽ ra một cái
     # bóng đậm nhạt khác — một thứ không ai nhìn ra mà vẫn đổi bức tranh.
@@ -845,7 +899,7 @@ def ve_bong(ink, lop, poly, h, P, tiep_xuc=None):
         # nhau và đa giác nối tự cắt chính nó. Trên PNG nó ra một cái chổi xể
         # tua rua dưới chân đèn — thấy ngay, mà không một con số nào báo.
         hop = bao_loi(poly + q)
-        BONG.append((hop, op * mo, poly))
+        BONG.append((hop, op * mo, chu or poly))
         ink.fill(lop, pl(hop, True), P["shadow"], op * mo, rule="nonzero", solo=True)
         if ten == "pen":
             # LẤM TẤM ở vành ngoài: mật độ giảm theo khoảng cách ra ngoài mép,
@@ -854,7 +908,17 @@ def ve_bong(ink, lop, poly, h, P, tiep_xuc=None):
             # đơn vị — vẫn nhận đủ số chấm, và chúng toả 360° quanh chân đế
             # thành một cái chổi xể. Thấy ngay trên PNG, không con số nào báo.
             dai = math.hypot(*lech_bong(poly[0][0], poly[0][1], h))
-            n = int(SHADOW["stipple"]["per"] * len(poly) * DENSITY / 4
+            # SỐ CHẤM theo CHU VI hình, không theo SỐ ĐỈNH — và đây là một cái
+            # bẫy đã bắt được. Bản trước nhân với `len(poly)`, nên một đĩa nhỏ
+            # khai bằng 16 đỉnh (khớp com-pa, rộng 8 đơn vị) nhận GẤP BỐN số
+            # chấm của cả một trang sổ rộng 250 đơn vị: cùng một vật, khai
+            # bằng 4 đỉnh hay 16 đỉnh là hai cái bóng khác hẳn nhau, mà số
+            # đỉnh là một chi tiết dựng hình chứ một thuộc tính của vật. Nó
+            # đẩy tệp vượt trần 380 KB ngay lần đầu có một bóng tròn.
+            cv = sum(math.hypot(poly[(j + 1) % len(poly)][0] - poly[j][0],
+                                poly[(j + 1) % len(poly)][1] - poly[j][1])
+                     for j in range(len(poly)))
+            n = int(SHADOW["stipple"]["per"] * DENSITY * cv / 760.0
                     * min(1.0, dai / 22.0))
             for i in range(n):
                 t = rnd(i * 2.7, 31.1) * len(poly)
@@ -961,7 +1025,7 @@ def che_boi(x, y, lop: str) -> bool:
         return True
     if z < tt["the-dong"] and trong_da_giac(x, y, THE_DONG):
         return True
-    if z < tt["thuoc"] and trong_da_giac(x, y, THUOC):
+    if z < tt["thuoc"] and trong_da_giac(x, y, THUOC_KHOI):
         return True
     return False
 
@@ -976,6 +1040,9 @@ def nen_rgb(x, y, P):
         rgb = ton_rgb(P["paperRamp"], giay_t(x, y))
     elif trong_da_giac(x, y, THUOC):
         rgb = ton_rgb(P["rulerRamp"], thuoc_t(x, y))
+    elif trong_da_giac(x, y, THUOC_CANH):
+        # MẶT BÊN của thước, không phải gỗ bàn — xem `thuoc_canh_quad`.
+        rgb = ton_rgb(P["rulerRamp"], thuoc_t(x, y) * TOOLS["ruler"]["sideGain"])
     elif trong_da_giac(x, y, THE_DONG):
         rgb = ton_rgb(P["brassRamp"], dong_t(x, y))
     elif tren_ban(x, y):
@@ -1616,32 +1683,103 @@ def ton_hex(ramp, quad, P) -> str:
     return ton(ramp, giay_t(xm, ym), xm, ym)
 
 
-def ve_chu_tay(ink, P, quad):
-    """CHỮ VIẾT TAY — vệt rung ngắn nối nhau, KHÔNG phải chữ thật.
+def _net_mot_tu(quad, u0, u1, v, rong, cao, hat):
+    """Dãy điểm của MỘT TỪ viết tay — trả về danh sách NÉT (nhấc bút cắt đôi).
 
-    Chữ thật ở cỡ 7 px là một hàng mực nhoè, và nó sẽ là một câu không ai dịch
-    nổi trên một bức tranh. Vệt rung đọc ra "có người đã viết ở đây", mà đó
-    đúng là thứ cần nói. Dòng cuối mỗi khổ ngắn hơn, vì một khối chữ mà mọi
-    dòng dài bằng nhau đọc ra là một hoa văn."""
+    Thân chữ là một nhịp lên-xuống giữa ĐƯỜNG NỀN và `xHeight`: hai bước là
+    một chữ cái, y như nét `m` nối nhau trong chữ thảo. Trên cái nhịp ấy mới
+    cộng ba thứ làm nó thành chữ chứ thành sóng:
+
+     · nét LÊN ở `riseAt` phần số chữ cái và nét XUỐNG ở `dropAt` — không có
+       chúng thì cả dòng cao đều một mức, tức không có chữ cái nào;
+     · NGHIÊNG PHẢI (`slant`): đỉnh nét đi TRƯỚC chân nét, vì cây bút nghiêng;
+     · ĐƯỜNG NỀN TRÔI (`drift`) rất chậm dọc dòng — biên độ phải nhỏ hơn hẳn
+       khoảng dòng, vì giấy này CÓ kẻ nên chữ bám theo đường kẻ.
+
+    Nhấc bút cắt ở MỐC CHẴN, tức ranh giữa hai chữ cái: cắt giữa một nét cho
+    ra hai nửa chữ lơ lửng, đọc ra là một vệt đứt chứ không ra một lần nhấc."""
+    hd = BOOK["hand"]
+    buoc_u = hd["step"] / rong
+    n = max(4, int((u1 - u0) / max(1e-9, buoc_u)))
+    cat = -1
+    if rnd(hat * 1.3, 4.7) < hd["lift"] and n >= 8:
+        cat = 2 * int(2 + rnd(hat * 5.9, 1.1) * (n / 2 - 3))
+    doan, cur = [], []
+    for k in range(n + 1):
+        u = u0 + (u1 - u0) * k / n
+        tren = (k % 2) == 1
+        chu = k // 2
+        # THÂN CHỮ cao thấp khác nhau TỪNG CHỮ: mọi đỉnh bằng nhau cho ra một
+        # hàng răng lược đều tăm tắp — cùng họ với cái mã vạch, chỉ dựng đứng.
+        dy = -hd["xHeight"] * (0.66 + 0.52 * rnd(hat * 1.9 + chu, 5.7)) if tren else 0.0
+        if tren and rnd(hat * 3.1 + chu, 9.7) < hd["riseAt"]:
+            dy -= hd["ascend"]
+        elif (not tren) and rnd(hat * 7.7 + chu, 2.3) < hd["dropAt"]:
+            dy += hd["descend"]
+        dy += (rnd(hat + k * 1.9, 6.1) - 0.5) * hd["jitter"]
+        dy += (NZ.v(u * 9.0, hat * 0.31) - 0.5) * hd["drift"]
+        du = (-dy * hd["slant"] + (rnd(hat + k * 2.7, 3.3) - 0.5) * hd["jitter"]) / rong
+        if k == cat:
+            doan.append(cur)
+            cur = []
+        cur.append(quad_pt(quad, u + du, v + dy / cao))
+    doan.append(cur)
+    return [d for d in doan if len(d) > 1]
+
+
+def ve_chu_tay(ink, P, quad):
+    """CHỮ VIẾT TAY — chữ TAY, không một hàng gạch.
+
+    Không phải chữ ĐỌC ĐƯỢC: ở cỡ thân chữ 2,5 đơn vị, chữ thật là một hàng
+    mực nhoè, và nó sẽ là một câu không ai dịch nổi trên một bức tranh. Thứ
+    phải dựng là cái HÌNH của một dòng chữ tay — xem `ROOM_BOOK.hand` để biết
+    bốn thứ bản "vệt rung" thiếu, và `_net_mot_tu` cho hình một từ.
+
+    Dòng cuối mỗi khổ ngắn hơn (giữ từ bản trước): một khối chữ mà mọi dòng
+    dài bằng nhau đọc ra là một hoa văn. Lề trái so le nhẹ vì không ai đặt bút
+    đúng một chỗ chín lần."""
     hd = BOOK["hand"]
     ru = BOOK["rule"]
+    # ĐƠN VỊ KHUNG → (u, v): mọi con số của `hand` là bề rộng/bề cao THẬT trên
+    # mặt giấy. Hai trang trái/phải là hai tứ giác khác cỡ, nên quy đổi phải
+    # tính từ CHÍNH tứ giác đang vẽ, không từ một hằng chép sẵn.
+    ax, ay = quad_pt(quad, 0.0, 0.5)
+    bx, by = quad_pt(quad, 1.0, 0.5)
+    rong = math.hypot(bx - ax, by - ay) or 1.0
+    cx0, cy0 = quad_pt(quad, 0.5, 0.0)
+    cx1, cy1 = quad_pt(quad, 0.5, 1.0)
+    cao = math.hypot(cx1 - cx0, cy1 - cy0) or 1.0
+    u_lo = ru["inset"] + 0.055
+    u_hi = 1 - ru["inset"] - 0.045
     for r in range(hd["rows"]):
+        # ĐƯỜNG NỀN trùng đường kẻ của dòng: chữ ngồi TRÊN đường kẻ, nét xuống
+        # thò qua nó. Bản trước đặt vệt ở `v − 0,012`, tức lơ lửng giữa hai
+        # dòng kẻ — một dòng chữ không chạm đường kẻ nào là một dòng chữ không
+        # ai viết ra.
         v = (r + 1) / (ru["count"] + 1)
-        dai = 1.0 if (r + 1) % 4 else 0.42 + 0.3 * rnd(r * 3.1, 1.9)
-        n = max(2, int(hd["per"] * dai))
-        for k in range(n):
-            u0 = ru["inset"] + 0.06 + (1 - 2 * ru["inset"] - 0.1) * (k / hd["per"])
-            u1 = u0 + (1 - 2 * ru["inset"] - 0.1) / hd["per"] * (0.3 + 0.62
-                                                                 * rnd(k * 5.3, r * 1.1))
-            a = quad_pt(quad, u0, v - 0.012)
-            b = quad_pt(quad, u1, v - 0.012)
-            s = sang(*a)
-            pts = wobble(a[0], a[1], b[0], b[1], hd["jitter"], r * 5.3 + k)
-            # Mỗi vệt một độ dài và một độ đậm riêng, và cả hai lệch NHIỀU:
-            # chín dòng vệt đều tăm tắp đọc ra một mã vạch, không ra chữ tay.
-            ink.poly("so-tay", pts, P["paperInk"],
-                     hd["width"] * (0.55 + 0.8 * rnd(k * 1.7, r * 2.3)),
-                     (0.3 + 0.35 * rnd(k * 3.1, r)) * (0.5 + 0.6 * s))
+        dai = 1.0 if (r + 1) % 4 else 0.40 + 0.3 * rnd(r * 3.1, 1.9)
+        u_het = u_lo + (u_hi - u_lo) * dai
+        u = u_lo + (rnd(r * 1.7, 8.3) - 0.5) * 0.012
+        for k in range(hd["words"] + 3):
+            if u >= u_het:
+                break
+            L = hd["wordLen"] / rong * (1 - hd["wordJitter"] / 2
+                                        + rnd(r * 7.3 + k, 2.9) * hd["wordJitter"])
+            L = min(L, u_het - u)
+            # Một mẩu ngắn hơn hai chữ cái không phải một từ — nó là một vết
+            # mực, và chín vết mực cuối chín dòng lại thành một hoa văn.
+            if L * rong < hd["step"] * 4:
+                break
+            x, y = quad_pt(quad, u + L / 2, v)
+            s = sang(x, y)
+            # ĐỘ ĐẬM theo TỪ, không theo nét: một lần chấm bút viết hết một
+            # từ rồi mới nhạt dần, nên hai nét trong cùng một từ cùng độ đậm.
+            muc = 0.34 + 0.3 * rnd(r * 2.9 + k * 1.3, 7.1)
+            w = hd["width"] * (0.78 + 0.44 * rnd(r * 5.1 + k, 3.7))
+            for net in _net_mot_tu(quad, u, u + L, v, rong, cao, r * 13 + k):
+                ink.poly("so-tay", net, P["paperInk"], w, muc * (0.5 + 0.6 * s))
+            u += L + hd["gap"] / rong * (1 - hd["gapJitter"] / 2
+                                         + rnd(r * 2.1 + k * 3.7, 5.3) * hd["gapJitter"])
 
 
 def ve_phac_chom(ink, P, quad):
@@ -1873,9 +2011,38 @@ def ve_thuoc(ink, P):
         a = quad_pt(q, u, 0.06)
         b = quad_pt(q, u, 0.06 + L)
         ink.poly("thuoc", [a, b], P["rulerTick"], tk["width"] * (1.5 if lon else 1.0), 0.9)
-    # Mép trên bắt đèn, mép dưới trong bóng của chính thân thước.
-    ink.poly("thuoc", [q[0], q[1]], P["rulerRamp"][3], 1.2, 0.8)
-    ink.poly("thuoc", [q[3], q[2]], P["rulerTick"], 1.4, 0.5)
+    # ══ MẶT BÊN — thứ biến một hình chữ nhật có vạch thành một VẬT NẰM TRÊN
+    # bàn. Bản trước có bóng đổ nhưng không có bề dày, nên thước đọc ra đúng
+    # cái `box-shadow` của CSS: một hình phẳng với một vệt tối dưới chân.
+    #
+    # Mười dải dọc theo trục dài chứ một mảng tô: mặt bên cũng lùi xa đèn dần
+    # như mặt trên, và một mảng phẳng ở đây là chỗ DUY NHẤT của cả thanh không
+    # có dốc — tức chỗ mắt đọc ra "dán lên".
+    cq = THUOC_CANH
+    g = TOOLS["ruler"]["sideGain"]
+    ink.fill("thuoc", pl(cq, True),
+             ton_muot(P["rulerRamp"], thuoc_t(*quad_pt(cq, 0.5, 0.5)) * g))
+    for i in range(10):
+        u0, u1 = i / 10, (i + 1) / 10
+        xm, ym = quad_pt(cq, (u0 + u1) / 2, 0.5)
+        ink.fill("thuoc", pl([quad_pt(cq, u0, 0.0), quad_pt(cq, u1, 0.0),
+                              quad_pt(cq, u1, 1.0), quad_pt(cq, u0, 1.0)], True),
+                 ton_muot(P["rulerRamp"], thuoc_t(xm, ym) * g), 1.0, solo=True)
+    # Thớ gỗ chạy TIẾP sang mặt bên — gỗ không đổi thớ ở một cái cạnh, và một
+    # mặt bên trơn cạnh một mặt trên có thớ đọc ra hai vật liệu khác nhau.
+    for i in range(int(gr["count"] * DENSITY * 0.22)):
+        u, v = rnd(i * 2.3, 9.1), rnd(i * 4.7, 1.3)
+        a = quad_pt(cq, u, v)
+        b = quad_pt(cq, min(1.0, u + 0.03 + rnd(i * 5.1, 2.7) * 0.06), v)
+        ink.poly("thuoc", [a, b], P["rulerTick"], gr["width"], gr["opacity"] * 0.8)
+    # MÉP GẤP giữa hai mặt: một nét sáng mảnh — cạnh trên của mặt bên là chỗ
+    # duy nhất của mặt ấy còn ngửa lên đèn. Và mép ĐÁY một nét tối: chỗ thước
+    # chạm bàn, tức bóng tiếp xúc của chính nó.
+    ink.poly("thuoc", [cq[0], cq[1]], P["rulerRamp"][3], 1.0, 0.9)
+    ink.poly("thuoc", [cq[3], cq[2]], P["rulerTick"], 1.3, 0.75)
+    # MÉP XA (`[3] → [2]`) bắt đèn: nó là cạnh ngửa nhất về phía trên-trái, và
+    # nó cũng là đường viền của thanh trên nền gỗ tối hơn.
+    ink.poly("thuoc", [q[3], q[2]], P["rulerRamp"][3], 1.2, 0.8)
 
 
 def com_pa_poly():
@@ -1887,21 +2054,39 @@ def com_pa_poly():
     return out
 
 
-def com_pa_quads():
-    """Tứ giác CHE của hai chân com-pa, cộng đĩa khớp xoay (xấp xỉ bằng một
-    tứ giác). `che_boi` đọc danh sách này — xem chú thích ở đó."""
+def com_pa_than(a, b):
+    """Đa giác THÂN của một chân com-pa — THON, không một thanh đều bề rộng.
+
+    Rộng `taperHi` ở khớp, nhỏ còn `taperLo` ở mũi. Thon là thứ đầu tiên mắt
+    đọc ra "một chân com-pa" chứ "một đoạn thẳng": một thanh thép đều bề rộng
+    từ khớp tới mũi là một que, và cái que ấy đã là lời chê.
+
+    Thứ tự đỉnh: hai đỉnh đầu ở phía `+n`, hai đỉnh sau ở `−n` — `ve_com_pa`
+    đọc lại đúng thứ tự ấy để biết cạnh nào quay về đèn."""
     d = TOOLS["divider"]
-    ra = []
-    for a, b in com_pa_poly():
-        dx, dy = b[0] - a[0], b[1] - a[1]
-        L = math.hypot(dx, dy) or 1.0
-        nx, ny = -dy / L * d["width"], dx / L * d["width"]
-        ra.append([(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny),
-                   (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)])
-    r = d["knurl"]["r"]
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    L = math.hypot(dx, dy) or 1.0
+    nx, ny = -dy / L, dx / L
+    wh, wl = d["width"] * d["taperHi"], d["width"] * d["taperLo"]
+    return [(a[0] + nx * wh, a[1] + ny * wh), (b[0] + nx * wl, b[1] + ny * wl),
+            (b[0] - nx * wl, b[1] - ny * wl), (a[0] - nx * wh, a[1] - ny * wh)]
+
+
+def khop_poly(k=1.0):
+    """Đa giác ĐĨA KHỚP XOAY, nén nhẹ theo trục dọc như mọi vật nằm trên mặt
+    bàn nhìn xiên. `k` nhân bán kính (bóng đổ dùng đúng hình này)."""
+    d = TOOLS["divider"]
+    r = d["knurl"]["r"] * k
     hx, hy = d["hinge"]["x"], d["hinge"]["y"]
-    ra.append([(hx - r, hy - r), (hx + r, hy - r), (hx + r, hy + r), (hx - r, hy + r)])
-    return ra
+    return [(hx + math.cos(math.tau * j / 16) * r,
+             hy + math.sin(math.tau * j / 16) * r * 0.9) for j in range(16)]
+
+
+def com_pa_quads():
+    """Hình CHE của com-pa: hai thân THON + đĩa khớp. `che_boi` đọc danh sách
+    này, nên nó phải là đúng hình được VẼ — một hình che rộng hơn thân thật
+    là một phép đo tương phản bỏ qua những nét không hề bị che."""
+    return [com_pa_than(a, b) for a, b in com_pa_poly()] + [khop_poly()]
 
 
 def ve_com_pa(ink, P):
@@ -1911,52 +2096,88 @@ def ve_com_pa(ink, P):
     chỗ duy nhất trong bức chứng minh được bóng đổ bám theo vật BÊN DƯỚI chứ
     không phải một vệt đen dán lên mặt bàn.
 
-    Mỗi chân ba nét: sáng ở phía quay về đèn (trên-trái), tối ở phía kia, một
-    nét giữa. Ba nét thay cho một hình tô là cách rẻ nhất để một thanh kim
-    loại mảnh có khối."""
+    ── VÌ SAO BA NÉT SONG SONG KHÔNG ĐỦ ────────────────────────────────────
+
+    Bản trước vẽ mỗi chân bằng BA NÉT (sáng / giữa / tối) đặt cạnh nhau. Ở xa
+    nó đọc được; ở gần nó là ba đường kẻ cách đều, tức đúng cái "hình kỹ
+    thuật" mà cả bức sinh ra để thôi là. Một thanh thép có BỐN thứ, và cả bốn
+    là hình học chứ độ đậm:
+
+     1. **THÂN THON** — rộng ở khớp, nhỏ về mũi. Một thanh đều bề rộng là một
+        que, và ba nét song song thì luôn đều bề rộng.
+     2. **DỐC DỌC THÂN** — thép phản xạ mạnh, nên nửa gần đèn sáng hơn hẳn
+        nửa xa. Sáu dải theo chiều dài, cùng kỹ thuật mà thước và thẻ đồng
+        dùng, ở cỡ nhỏ.
+     3. **HAI CẠNH KHÁC NHAU VỀ CHẤT** — cạnh quay về đèn là một đường SẮC
+        (kim loại mài), cạnh kia chìm hẳn. Nét sáng phải nằm ĐÚNG trên mép,
+        không song song cách mép một quãng.
+     4. **VỆT LOÉ** chạy dọc bên trong cạnh sáng, ngắn hơn thân — đó là thứ
+        duy nhất nói "mặt này cong", vì một mặt trụ bắt sáng thành một dải
+        hẹp chứ không sáng đều.
+
+    Và khớp xoay là một VẬT TRÒN CÓ BÓNG RIÊNG (`hingeShadowH`), không một
+    chấm sơn: nó dày gấp ba thân, nên dùng chung độ cao biểu kiến với thân là
+    chép một con số sang chỗ nó sai."""
     d = TOOLS["divider"]
     for (a, b) in com_pa_poly():
         dx, dy = b[0] - a[0], b[1] - a[1]
         L = math.hypot(dx, dy) or 1.0
+        q = com_pa_than(a, b)
+        # Cạnh nào quay VỀ đèn — không ghi cứng "bên trên", vì `ROOM_LAMP.at`
+        # đổi là hướng ấy đổi theo. `q[0:2]` là phía `+n` (xem `com_pa_than`).
         nx, ny = -dy / L, dx / L
-        # Pháp tuyến nào quay VỀ đèn thì mang nét sáng — không ghi cứng "bên
-        # trên", vì `ROOM_LAMP.at` đổi là hướng ấy đổi theo.
         lx, ly = LAMP["at"]["x"] - (a[0] + b[0]) / 2, LAMP["at"]["y"] - (a[1] + b[1]) / 2
         lL = math.hypot(lx, ly) or 1.0
-        if nx * lx / lL + ny * ly / lL < 0:
-            nx, ny = -nx, -ny
-        w = d["width"]
-        for off, mau, ww in ((-w * 0.34, P["steelRamp"][3], w * 0.34),
-                             (0.0, P["steelRamp"][2], w * 0.42),
-                             (w * 0.36, P["steelRamp"][0], w * 0.38)):
-            ink.poly("com-pa",
-                     wobble(a[0] + nx * off, a[1] + ny * off,
-                            b[0] + nx * off * 0.5, b[1] + ny * off * 0.5, 0.6, off * 3),
-                     mau, ww, 0.95)
+        sang_tren = nx * lx / lL + ny * ly / lL > 0
+        canh_sang = (q[0], q[1]) if sang_tren else (q[3], q[2])
+        canh_toi = (q[3], q[2]) if sang_tren else (q[0], q[1])
+        ink.fill("com-pa", pl(q, True), P["steelRamp"][1])
+        for i in range(6):
+            u0, u1 = i / 6, (i + 1) / 6
+            xm, ym = quad_pt(q, (u0 + u1) / 2, 0.5)
+            t = 0.12 + 0.8 * sang(xm, ym)
+            ink.fill("com-pa", pl([quad_pt(q, u0, 0.0), quad_pt(q, u1, 0.0),
+                                   quad_pt(q, u1, 1.0), quad_pt(q, u0, 1.0)], True),
+                     ton_muot(P["steelRamp"], t), 1.0, solo=True)
+        ink.poly("com-pa", list(canh_sang), P["steelRamp"][3], 0.7, 0.95)
+        ink.poly("com-pa", list(canh_toi), P["steelRamp"][0], 0.9, 0.9)
+        # VỆT LOÉ: lùi vào `specAt` bề rộng kể từ cạnh sáng, dài `specLen`.
+        v = d["specAt"] if sang_tren else 1 - d["specAt"]
+        ink.poly("com-pa", [quad_pt(q, 0.08, v), quad_pt(q, 0.08 + d["specLen"], v)],
+                 P["steelRamp"][3], 0.5, 0.55)
         # KIM: mũi nhọn, nét mảnh dần — và nó CHẠM mặt giấy, nên có một chấm
         # tối ngay dưới mũi (bóng tiếp xúc nhỏ nhất của bức).
         ux, uy = dx / L, dy / L
         ink.poly("com-pa", [(b[0] - ux * d["needle"], b[1] - uy * d["needle"]), b],
                  P["steelRamp"][3], 1.5, 0.95)
         ink.stroke("com-pa", dot(b[0] + 1.4, b[1] + 1.2), P["shadow"], 2.6, 0.6)
-    # KHỚP XOAY: đĩa có khía. `teeth` nét ngắn toả ra từ tâm.
+    # KHỚP XOAY: đĩa có khía, và nó có KHỐI — vành quay về đèn là một cung
+    # sáng, vành đối diện một cung tối, giữa là một núm lồi.
     kn = d["knurl"]
     hx, hy = d["hinge"]["x"], d["hinge"]["y"]
-    seg = 18
-    ink.fill("com-pa", pl([(hx + math.cos(math.tau * k / seg) * kn["r"],
-                            hy + math.sin(math.tau * k / seg) * kn["r"] * 0.9)
-                           for k in range(seg)], True), P["steelRamp"][1])
+    th_den = math.atan2(LAMP["at"]["y"] - hy, LAMP["at"]["x"] - hx)
+    ink.fill("com-pa", pl(khop_poly(), True), P["steelRamp"][1])
     for k in range(kn["teeth"]):
         th = math.tau * k / kn["teeth"]
-        f = 0.5 + 0.5 * math.cos(th - math.atan2(LAMP["at"]["y"] - hy, LAMP["at"]["x"] - hx))
+        f = 0.5 + 0.5 * math.cos(th - th_den)
         ink.poly("com-pa", [(hx + math.cos(th) * kn["r"] * 0.5,
                              hy + math.sin(th) * kn["r"] * 0.45),
                             (hx + math.cos(th) * kn["r"] * 0.97,
                              hy + math.sin(th) * kn["r"] * 0.88)],
                  P["steelRamp"][3] if f > 0.6 else P["steelRamp"][0], 0.9, 0.5 + 0.4 * f)
-    ink.fill("com-pa", pl([(hx + math.cos(math.tau * k / 12) * kn["r"] * 0.3,
-                            hy + math.sin(math.tau * k / 12) * kn["r"] * 0.28)
+    # Hai cung vành: mỗi cung nửa đĩa, dựng quanh HƯỚNG TỚI ĐÈN chứ quanh một
+    # góc ghi cứng — đổi chỗ đèn là hai cung tự xoay theo.
+    for goc, mau, w in ((th_den, P["steelRamp"][3], 1.3),
+                        (th_den + math.pi, P["steelRamp"][0], 1.5)):
+        ink.poly("com-pa", [(hx + math.cos(goc + (j / 8 - 0.5) * 2.0) * kn["r"] * 0.95,
+                             hy + math.sin(goc + (j / 8 - 0.5) * 2.0) * kn["r"] * 0.86)
+                            for j in range(9)], mau, w, 0.85)
+    ink.fill("com-pa", pl([(hx + math.cos(math.tau * k / 12) * kn["r"] * 0.32,
+                            hy + math.sin(math.tau * k / 12) * kn["r"] * 0.3)
                            for k in range(12)], True), P["steelRamp"][0], 0.9)
+    ink.stroke("com-pa", dot(hx + math.cos(th_den) * kn["r"] * 0.17,
+                             hy + math.sin(th_den) * kn["r"] * 0.15),
+               P["steelRamp"][3], 1.8, 0.8)
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -1994,6 +2215,8 @@ def do_tuong_phan_chu(P):
     khác dùng: hai công thức là hai con số sẽ lệch, và lệch ở đây nghĩa là
     phép đo nói 4,7 : 1 trong khi chữ nằm trên một chỗ đồng khác."""
     ra = []
+    if "the-dong" not in VE:
+        return ra
     for x, y, s, size, _w in dong_chu():
         # Bề rộng xấp xỉ: 0,52 em mỗi ký tự cho serif hoa + tracking.
         wid = len(s) * size * (0.52 + PLATE["text"]["tracking"])
@@ -2020,7 +2243,7 @@ def kiem_tuong_phan_chu(P, san=None):
             "trượt. Chú giải là thứ MANG TIN của bức, nên nó không chữa bằng cách dìm "
             "chữ cho đẹp: nâng `ROOM_LIT.brassBase`, `ROOM_PLATE.spec.gain`, hay đổi "
             "`plateCut`." % (san, x[0], x[1], x[2], len(te)))
-    return min(r[1] for r in ra)
+    return min((r[1] for r in ra), default=float('inf'))
 
 
 def do_tuong_phan_net(P):
@@ -2033,28 +2256,30 @@ def do_tuong_phan_net(P):
     sàn này — chúng là chất liệu, và một sàn tương phản áp cho chất liệu là
     cách chắc chắn nhất để xoá chất liệu."""
     ra = []
-    sk = BOOK["sketch"]
-    pts = [quad_pt(TRANG_PHAI, 0.12 + p[0] * 0.78, 0.1 + p[1] * 0.74) for p in sk["stars"]]
-    for a, b in sk["links"]:
-        for k in range(5):
-            t = (k + 0.5) / 5
-            x = pts[a][0] + (pts[b][0] - pts[a][0]) * t
-            y = pts[a][1] + (pts[b][1] - pts[a][1]) * t
-            if che_boi(x, y, "so-tay"):
+    if "so-tay" in VE:
+        sk = BOOK["sketch"]
+        pts = [quad_pt(TRANG_PHAI, 0.12 + p[0] * 0.78, 0.1 + p[1] * 0.74)
+               for p in sk["stars"]]
+        for a, b in sk["links"]:
+            for k in range(5):
+                t = (k + 0.5) / 5
+                x = pts[a][0] + (pts[b][0] - pts[a][0]) * t
+                y = pts[a][1] + (pts[b][1] - pts[a][1]) * t
+                if che_boi(x, y, "so-tay"):
+                    continue
+                nen = nen_rgb(x, y, P)
+                mau = over(nen, hex_rgb(P["paperInk"]), sk["opacity"])
+                ra.append(("phác chòm", tuong_phan(nen, mau), (round(x), round(y))))
+    if "thuoc" in VE:
+        tk = TOOLS["ruler"]["ticks"]
+        for i in range(tk["per"] + 1):
+            u = i / tk["per"]
+            x, y = quad_pt(THUOC, u, 0.1)
+            if che_boi(x, y, "thuoc"):
                 continue
             nen = nen_rgb(x, y, P)
-            mau = over(nen, hex_rgb(P["paperInk"]), sk["opacity"])
-            ra.append(("phác chòm", tuong_phan(nen, mau), (round(x), round(y))))
-    r = TOOLS["ruler"]
-    tk = r["ticks"]
-    for i in range(tk["per"] + 1):
-        u = i / tk["per"]
-        x, y = quad_pt(THUOC, u, 0.1)
-        if che_boi(x, y, "thuoc"):
-            continue
-        nen = nen_rgb(x, y, P)
-        mau = over(nen, hex_rgb(P["rulerTick"]), 0.9)
-        ra.append(("vạch thước", tuong_phan(nen, mau), (round(x), round(y))))
+            mau = over(nen, hex_rgb(P["rulerTick"]), 0.9)
+            ra.append(("vạch thước", tuong_phan(nen, mau), (round(x), round(y))))
     return ra
 
 
@@ -2068,7 +2293,7 @@ def kiem_tuong_phan_net(P, san=None):
             "NÉT MANG TIN KHÔNG ĐẠT %.1f:1 (WCAG 1.4.11): %s chỉ còn %.2f:1 tại %s — "
             "%d điểm trượt. Nét mang tin phải đọc được ở MỌI chỗ nó đi qua."
             % (san, x[0], x[1], x[2], len(te)))
-    return min(r[1] for r in ra)
+    return min((r[1] for r in ra), default=float('inf'))
 
 
 def kiem_bong_mot_nguon():
@@ -2183,7 +2408,7 @@ def do_ngan_sach(P):
         "o": o,
         "trung_vi": Ls[o // 2],
         "p99": Ls[int(o * 0.99)],
-        "sang": sum(1 for L in Ls if L > 0.5) / o,
+        "sang": sum(1 for L in Ls if L > BRIGHT_AT) / o,
         "bac": [c / o for c in dem],
         "mid": sum(1 for L in Ls if lo < L <= hi) / o,
     }
@@ -2205,7 +2430,7 @@ def kiem_ngan_sach(P):
             % (d["trung_vi"], BUDGET["medianMax"]))
     if d["sang"] < BUDGET["brightShareMin"]:
         raise SystemExit(
-            "chỉ %.3f%% diện tích trên L>0,5, dưới sàn %.1f%% — không có chỗ nào RỰC, "
+            "chỉ %.3f%% diện tích trên L>%g, dưới sàn %.1f%% — không có chỗ nào RỰC, "
             "nên cái đèn không đọc ra là một nguồn sáng. Nới `ROOM_LAMP.profile` ở "
             "phần lõi." % (d["sang"] * 100, BUDGET["brightShareMin"] * 100))
     return d
@@ -2218,6 +2443,67 @@ def kiem_ngan_sach(P):
 # (tên, đa giác, độ cao biểu kiến) — `kiem_bong_mot_nguon` đọc lại danh sách
 # này, nên một vật được vẽ bóng mà không khai ở đây là một vật không được kiểm.
 VAT_BONG: list[tuple[str, list, float]] = []
+
+
+def _tron(goc, moi):
+    """Trộn SÂU `moi` lên `goc`. Khổ dọc khai một DELTA, không khai lại cả hồ
+    sơ: chép lại trọn `ROOM_DESK` cho khổ thứ hai là hai bản sẽ trôi xa nhau ở
+    đúng chỗ một con số bị sửa một bên — cùng cái bẫy mà bản đồ vực trả giá
+    khi lớp chuyển động chép bốn mốc địa tầng."""
+    ra = dict(goc)
+    for k, v in moi.items():
+        ra[k] = _tron(goc[k], v) if isinstance(v, dict) and isinstance(goc.get(k), dict) else v
+    return ra
+
+
+def dung_kho(kho):
+    """Chuyển bộ sinh sang một KHỔ — và rebind MỌI hằng dẫn xuất.
+
+    Đây là chỗ một lỗi im lặng dễ nằm nhất của cả tệp: `HORIZON`, `_UA`,
+    `TRANG_TRAI`, `THUOC`, `_STACK`… đều tính MỘT LẦN lúc nạp module từ hồ sơ
+    khổ ngang. Quên rebind một trong số chúng thì khổ dọc vẽ bằng phối cảnh
+    (hay bằng chồng vòng ánh đèn) của khổ ngang — ra một tệp hợp lệ, đúng kích
+    thước, không ngoại lệ nào, và sai ở đúng thứ không ai đi tìm.
+
+    Vật KHÔNG được vẽ thì hình của nó về RỖNG, chứ không giữ toạ độ cũ:
+    `che_boi` và `nen_rgb` đọc những hình ấy, nên một cuốn sổ "vô hình" ở toạ
+    độ khổ ngang sẽ che mất một vùng của khổ dọc trong MỌI phép đo."""
+    global DESK, LAMP, BOOK, PLATE, TOOLS, W, H, HORIZON, _UA, _UB, DENSITY, VE
+    global SP, LF, RT, TRANG_TRAI, TRANG_PHAI, THE_DONG, THUOC, THUOC_CANH, THUOC_KHOI
+    global _STACK, BRIGHT_AT
+    o = kho["over"]
+    DESK = _tron(_GOC["desk"], o.get("desk", {}))
+    LAMP = _tron(_GOC["lamp"], o.get("lamp", {}))
+    BOOK = _tron(_GOC["book"], o.get("book", {}))
+    PLATE = _tron(_GOC["plate"], o.get("plate", {}))
+    TOOLS = _tron(_GOC["tools"], o.get("tools", {}))
+    W, H = kho["frame"]["width"], kho["frame"]["height"]
+    DENSITY = kho["density"]
+    VE = set(kho["draw"])
+    BRIGHT_AT = kho["brightAt"]
+    HORIZON = DESK["edgeY"] - DESK["horizonLift"]
+    _UA = 1.0 / (DESK["edgeY"] - HORIZON)
+    _UB = 1.0 / (H - HORIZON)
+    SP, LF, RT = BOOK["spine"], BOOK["left"], BOOK["right"]
+    if "so-tay" in VE:
+        TRANG_TRAI = [(SP["farX"], SP["farY"]), (LF["farX"], LF["farY"]),
+                      (LF["nearX"], LF["nearY"]), (SP["nearX"], SP["nearY"])]
+        TRANG_PHAI = [(SP["farX"], SP["farY"]), (RT["farX"], RT["farY"]),
+                      (RT["nearX"], RT["nearY"]), (SP["nearX"], SP["nearY"])]
+    else:
+        TRANG_TRAI, TRANG_PHAI = [], []
+    THE_DONG = [tuple(p) for p in PLATE["quad"]] if "the-dong" in VE else []
+    if "thuoc" in VE:
+        THUOC = thuoc_quad()
+        THUOC_CANH = thuoc_canh_quad()
+        THUOC_KHOI = bao_loi(THUOC + THUOC_CANH)
+    else:
+        THUOC, THUOC_CANH, THUOC_KHOI = [], [], []
+    # Chồng vòng ánh đèn phụ thuộc `LAMP` — không xoá là khổ sau dùng lại vũng
+    # sáng của khổ trước, và nó sẽ TRÙNG KHỚP với mọi phép đo (chúng cũng đọc
+    # cái chồng ấy), tức không một con số nào kêu.
+    _STACK = None
+    _REV[:] = []
 
 
 def de_den_poly():
@@ -2243,38 +2529,57 @@ def build(P) -> Ink:
 
     # Bóng vật XA trước, rồi vật xa; bóng vật GẦN sau, nên nó rơi ĐƯỢC lên vật
     # xa. Gộp cả vào một lớp là bóng com-pa biến mất dưới sổ tay.
-    for ten, poly, hh, lop, tx in (
-        ("thẻ đồng", THE_DONG, h["plate"], "bong-xa", (2, 3)),
-        ("thước", THUOC, h["ruler"], "bong-xa", (2, 3)),
+    # Mỗi vật chỉ được dựng khi KHỔ đang vẽ có khai nó (`ROOM_FORMATS.draw`).
+    # Khổ dọc bỏ sổ và thẻ đồng vì giao diện điện thoại ĐÃ LÀ cuốn sổ và tấm
+    # thẻ — xem chú thích `ROOM_FORMATS` ở TS.
+    for ten, poly, hh, lop, tx, chu in (
+        ("thẻ đồng", THE_DONG, h["plate"], "bong-xa", (2, 3), None),
+        # Bóng thước dựng từ MẶT TRÊN (hình và mép tiếp đất của nó), nhưng
+        # hình CHE là cả khối: mặt bên không nằm trong bóng của chính thước.
+        ("thước", THUOC, h["ruler"], "bong-xa", (2, 3), THUOC_KHOI),
     ):
+        if not poly:
+            continue
         VAT_BONG.append((ten, poly, hh))
-        ve_bong(ink, lop, poly, hh, P, tx)
-    ve_the_dong(ink, P)
-    ve_thuoc(ink, P)
+        ve_bong(ink, lop, poly, hh, P, tx, chu)
+    if "the-dong" in VE:
+        ve_the_dong(ink, P)
+    if "thuoc" in VE:
+        ve_thuoc(ink, P)
 
-    for ten, poly, hh, tx in (
-        ("sổ tay trái", TRANG_TRAI, h["book"], (2, 3)),
-        ("sổ tay phải", TRANG_PHAI, h["book"], (2, 3)),
-        ("đế đèn", de_den_poly(), h["lampBase"], None),
-    ):
+    cho_bong = []
+    if "so-tay" in VE:
+        cho_bong += [("sổ tay trái", TRANG_TRAI, h["book"], (2, 3)),
+                     ("sổ tay phải", TRANG_PHAI, h["book"], (2, 3))]
+    if "den" in VE:
+        cho_bong.append(("đế đèn", de_den_poly(), h["lampBase"], None))
+    for ten, poly, hh, tx in cho_bong:
         VAT_BONG.append((ten, poly, hh))
         ve_bong(ink, "bong-giua", poly, hh, P, tx)
-    ve_so_tay(ink, P)
+    if "so-tay" in VE:
+        ve_so_tay(ink, P)
 
-    for i, (a, b) in enumerate(com_pa_poly()):
-        d = TOOLS["divider"]
-        dx, dy = b[0] - a[0], b[1] - a[1]
-        L = math.hypot(dx, dy) or 1.0
-        nx, ny = -dy / L * d["width"] * 0.6, dx / L * d["width"] * 0.6
-        poly = [(a[0] + nx, a[1] + ny), (b[0] + nx, b[1] + ny),
-                (b[0] - nx, b[1] - ny), (a[0] - nx, a[1] - ny)]
-        VAT_BONG.append(("com-pa chân %d" % (i + 1), poly, h["divider"]))
-        ve_bong(ink, "bong-gan", poly, h["divider"], P, None)
-    ve_com_pa(ink, P)
+    if "com-pa" in VE:
+        # Bóng com-pa dựng từ ĐÚNG hình thân thon được vẽ, không từ một hình
+        # chữ nhật xấp xỉ: một cái bóng rộng đều trong khi vật thon dần là thứ
+        # nói ra bóng không thuộc về vật nào.
+        for i, (a, b) in enumerate(com_pa_poly()):
+            poly = com_pa_than(a, b)
+            VAT_BONG.append(("com-pa chân %d" % (i + 1), poly, h["divider"]))
+            ve_bong(ink, "bong-gan", poly, h["divider"], P, None)
+        # KHỚP XOAY đổ bóng RIÊNG, và cao hơn thân: nó là vật tròn dày nhất
+        # của com-pa, nên một cái đĩa không có bóng của chính nó đọc ra là một
+        # chấm sơn trên giấy.
+        khop = khop_poly(0.92)
+        VAT_BONG.append(("com-pa khớp", khop, TOOLS["divider"]["hingeShadowH"]))
+        ve_bong(ink, "bong-gan", khop, TOOLS["divider"]["hingeShadowH"], P, None)
+        ve_com_pa(ink, P)
 
-    ve_quang_den(ink, P)
-    ve_den(ink, P)
-    ve_chu(ink, P)
+    if "den" in VE:
+        ve_quang_den(ink, P)
+        ve_den(ink, P)
+    if "the-dong" in VE:
+        ve_chu(ink, P)
     return ink
 
 
@@ -2291,6 +2596,8 @@ def main():
     ap.add_argument("--stats", action="store_true", help="in bảng đếm nét từng lớp")
     ap.add_argument("--do", action="store_true",
                     help="in bảng số đo (độ chói, tương phản, bước dải), không ghi tệp")
+    ap.add_argument("--kho", default=None,
+                    help="chỉ dựng một khổ (ngang | doc); mặc định dựng cả hai")
     args = ap.parse_args()
 
     name = "ROOM_PROFILE_%s" % args.profile.upper()
@@ -2300,7 +2607,20 @@ def main():
             "ở TS là chạy được ngay, không phải sửa tệp này." % name)
     P = grab(name)
 
+    khos = [k for k in FORMATS if args.kho in (None, k["key"])]
+    if not khos:
+        raise SystemExit("không có khổ '%s' trong ROOM_FORMATS (room-art.ts)" % args.kho)
+    for kho in khos:
+        dung_kho(kho)
+        mot_kho(kho, P, args)
+
+
+def mot_kho(kho, P, args):
+    """Dựng MỘT khổ — đo, gác, rồi ghi. Mọi phép gác chạy lại cho TỪNG khổ:
+    một cái sàn chỉ kiểm bản ngang là một cái sàn không gác bản mà nửa số
+    người xem sẽ thấy."""
     ink = build(P)
+    MAX = kho["maxKb"]
 
     if args.do:
         # ĐO rồi IN rồi mới GÁC: `--do` là cái kính hiển vi của người đang
@@ -2309,11 +2629,12 @@ def main():
         d = do_ngan_sach(P)
         buoc, tai = do_buoc_dai(P)
         print()
+        print("  ══ KHỔ %s · %d × %d ══" % (kho["key"].upper(), W, H))
         print("  nét tổng           %d" % ink.n)
         print("  trung vị độ chói   %.4f   (trần %g)" % (d["trung_vi"], BUDGET["medianMax"]))
         print("  phân vị 99         %.4f" % d["p99"])
-        print("  %% diện tích L>0,5  %.3f%%  (sàn %.1f%%)"
-              % (d["sang"] * 100, BUDGET["brightShareMin"] * 100))
+        print("  %% diện tích L>%.2f %.3f%%  (sàn %.1f%%)" % (BRIGHT_AT,
+                 d["sang"] * 100, BUDGET["brightShareMin"] * 100))
         print("  bước dải xấu nhất  %.2f/255 mã màu tại r=%.0f  (trần %g — bản đồ sao đo "
               "1,78 với 128 vòng, 14,3 với 16 vòng)" % (buoc, tai, BUDGET["bandStepMax"]))
         print("  bóng đã kiểm       %d vật" % len(VAT_BONG))
@@ -2363,7 +2684,7 @@ def main():
             "vòng ánh đèn, tức cái dốc sáng đọc ra là %d cái vòng. Nâng "
             "`ROOM_LAMP.levels`." % (buoc, tai, BUDGET["bandStepMax"], LAMP["levels"]))
 
-    svg = ink.render(COPY["alt"])
+    svg = ink.render(kho["alt"])
     for xau_tu in ("Gradient", "gradient", "<filter", "feTurbulence", ' id="', "data-"):
         if xau_tu in svg.replace('data-lop="', ""):
             raise SystemExit(
@@ -2377,19 +2698,20 @@ def main():
     # tệp quá khổ trong `public/` là một tệp sẽ lên production qua commit sau,
     # và thông báo lỗi thì đã cuộn mất khỏi màn hình từ lâu.
     kb = len(svg.encode("utf-8")) / 1024
-    if kb > MAX_KB:
+    if kb > MAX:
         raise SystemExit(
-            "vượt trần %d KB — hạ DENSITY, hay hạ `ROOM_DESK.grain.per`. Tiền cảnh nằm "
-            "NGAY TRÊN màn hình đầu tiên nên nó vào LCP cùng tấm trời, và tấm trời đã "
-            "lấy 285 KB của ngân sách 900 KB. (đang %.1f KB)" % (MAX_KB, kb))
+            "khổ %s vượt trần %d KB — hạ `density` của khổ ấy, hay hạ "
+            "`ROOM_DESK.grain.per`. Tiền cảnh nằm NGAY TRÊN màn hình đầu tiên nên nó "
+            "vào LCP cùng tấm trời, và tấm trời đã lấy 285 KB của ngân sách 900 KB. "
+            "(đang %.1f KB)" % (kho["key"], MAX, kb))
 
     out_dir = Path(args.out) if args.out else OUT
     # `os.makedirs` chứ không `Path.mkdir`: trên Windows + Python 3.14,
     # `mkdir(exist_ok=True)` vẫn ném WinError 183 với một thư mục đã có.
     os.makedirs(out_dir, exist_ok=True)
-    f = out_dir / "room-ban.svg"
+    f = out_dir / kho["file"]
     f.write_text(svg, encoding="utf-8")
-    print("%-22s %7d nét %8.1f KB  (trần %d)" % (f.name, ink.n, kb, MAX_KB))
+    print("%-22s %7d nét %8.1f KB  (trần %d)" % (f.name, ink.n, kb, MAX))
     print("  bước dải %.2f/255 mã màu · bậc giữa %.1f%% · %d vật có bóng"
           % (buoc, do_ngan_sach(P)["mid"] * 100, len(VAT_BONG)))
 

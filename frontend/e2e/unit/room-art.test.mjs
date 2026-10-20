@@ -53,6 +53,7 @@ const {
   ROOM_BUDGET,
   ROOM_COPY,
   ROOM_DESK,
+  ROOM_FORMATS,
   ROOM_FRAME,
   ROOM_LAMP,
   ROOM_LAYERS,
@@ -69,6 +70,9 @@ const ROOT = join(FE, '..');
 const PY_PATH = join(ROOT, 'scripts', 'room', 'build_room.py');
 const PY = readFileSync(PY_PATH, 'utf8');
 const SVG = readFileSync(join(FE, 'public', 'map', 'room', 'room-ban.svg'), 'utf8');
+const KHO_NGANG = ROOM_FORMATS.find((k) => k.key === 'ngang');
+const KHO_DOC = ROOM_FORMATS.find((k) => k.key === 'doc');
+const SVG_DOC = readFileSync(join(FE, 'public', 'map', 'room', KHO_DOC.file), 'utf8');
 
 /** Thân của một lớp theo `data-lop`. */
 const lop = (ten) => {
@@ -467,40 +471,65 @@ test('chạy script hai lần ra ĐÚNG một tệp, và khớp tệp đã commi
       { cwd: ROOT, encoding: 'utf8' });
     chay(a);
     chay(b);
-    const ta = readFileSync(join(a, 'room-ban.svg'), 'utf8');
-    assert.equal(ta, readFileSync(join(b, 'room-ban.svg'), 'utf8'),
-      'tệp đổi giữa hai lần chạy — mỗi lần build sẽ là một diff vô nghĩa');
-    assert.equal(ta, SVG,
-      'room-ban.svg trong public/ lệch với thứ script sinh ra — hoặc ai đó sửa tay (tranh'
-      + ' là tập SINH RA, sửa tay là lần chạy sau xoá sạch), hoặc quên chạy lại'
-      + ' `py scripts/room/build_room.py`');
+    // CẢ HAI KHỔ: một lượt chạy sinh ra hai tệp, và cả hai phải tất định —
+    // `dung_kho` gán lại hàng chục hằng dẫn xuất, nên một hằng quên rebind là
+    // khổ thứ hai dựng bằng phối cảnh của khổ thứ nhất.
+    for (const kho of ROOM_FORMATS) {
+      const ta = readFileSync(join(a, kho.file), 'utf8');
+      assert.equal(ta, readFileSync(join(b, kho.file), 'utf8'),
+        `${kho.file} đổi giữa hai lần chạy — mỗi lần build sẽ là một diff vô nghĩa`);
+      assert.equal(ta, kho.key === 'doc' ? SVG_DOC : SVG,
+        `${kho.file} trong public/ lệch với thứ script sinh ra — hoặc ai đó sửa tay`
+        + ' (tranh là tập SINH RA, sửa tay là lần chạy sau xoá sạch), hoặc quên chạy'
+        + ' lại `py scripts/room/build_room.py`');
+    }
   } finally {
     rmSync(a, { recursive: true, force: true });
     rmSync(b, { recursive: true, force: true });
   }
 });
 
-test('tệp dưới trần dung lượng, và script TỰ CHẶN trước khi ghi', () => {
-  const tran = Number(PY.match(/^MAX_KB = (\d+)/m)[1]);
-  assert.ok(tran > 0 && tran <= 420, `trần ${tran} KB vô lý cho một tấm tiền cảnh`);
-  const kb = statSync(join(FE, 'public', 'map', 'room', 'room-ban.svg')).size / 1024;
-  assert.ok(kb < tran, `room-ban.svg nặng ${kb.toFixed(0)} KB, vượt trần ${tran} KB`);
-  // …và trần phải CẮN: để lại quá nhiều khoảng trống thì nó không chặn được
-  // gì cho tới lúc đã muộn.
-  assert.ok(kb > tran * 0.6,
-    `tệp chỉ ${kb.toFixed(0)} KB trên trần ${tran} KB — trần nới quá rộng, nó sẽ không`
-    + ' chặn được lớp thừa nào');
+test('MỖI KHỔ một trần dung lượng, và script TỰ CHẶN trước khi ghi', () => {
+  for (const kho of ROOM_FORMATS) {
+    const tran = kho.maxKb;
+    assert.ok(tran > 0 && tran <= 420, `trần ${tran} KB vô lý cho một tấm tiền cảnh`);
+    const kb = statSync(join(FE, 'public', 'map', 'room', kho.file)).size / 1024;
+    assert.ok(kb < tran, `${kho.file} nặng ${kb.toFixed(0)} KB, vượt trần ${tran} KB`);
+    // …và trần phải CẮN: để lại quá nhiều khoảng trống thì nó không chặn được
+    // gì cho tới lúc đã muộn.
+    assert.ok(kb > tran * 0.6,
+      `${kho.file} chỉ ${kb.toFixed(0)} KB trên trần ${tran} KB — trần nới quá rộng, nó`
+      + ' sẽ không chặn được lớp thừa nào');
+  }
+  // Bản DỌC phải nhẹ hơn hẳn: nó tải trên mạng điện thoại và hiển thị ở 1 px
+  // mỗi đơn vị (bản ngang: 1,73), nên cùng một mật độ nét ở đó là chi tiết
+  // dưới một điểm ảnh, tức byte chết.
+  assert.ok(KHO_DOC.maxKb <= KHO_NGANG.maxKb * 0.6,
+    'trần bản dọc không nhỏ hơn hẳn bản ngang — bản điện thoại đang được cấp ngân sách'
+    + ' của bản máy tính');
   // Gác TRƯỚC khi ghi: một lần chạy trượt mà vẫn để lại tệp quá khổ trong
   // public/ là một tệp sẽ lên production qua commit sau.
-  const than = PY.match(/^def main\(\)[\s\S]*$/m)[0];
+  const than = PY.match(/^def mot_kho\([\s\S]*$/m)[0];
   assert.ok(than.indexOf('vượt trần %d KB') < than.indexOf('f.write_text'),
     'build_room.py ghi tệp TRƯỚC khi kiểm trần');
 });
 
+/** Bảng `--do` của MỘT khổ. Bộ sinh in một khối mỗi khổ, mở đầu bằng `══ KHỔ`. */
+let _DO = null;
+function bangDo(key) {
+  if (_DO === null) {
+    const out = execFileSync(PYBIN, ['-I', PY_PATH, '--do'],
+      { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+    _DO = {};
+    for (const k of out.split('══ KHỔ ').slice(1)) _DO[k.split(' ')[0].toLowerCase()] = k;
+  }
+  assert.ok(_DO[key], `bảng --do không có khối cho khổ ${key}`);
+  return _DO[key];
+}
+
 test('bảng số đo của bộ sinh đạt mọi sàn — chữ 4,5:1, nét 3:1, không thấy dải', () => {
   assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
-  const out = execFileSync(PYBIN, ['-I', PY_PATH, '--do'],
-    { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+  const out = bangDo('ngang');
   const buoc = Number(out.match(/bước dải xấu nhất\s+([\d.]+)/)[1]);
   assert.ok(buoc <= ROOM_BUDGET.bandStepMax,
     `bước dải ${buoc}/255 mã màu vượt trần ${ROOM_BUDGET.bandStepMax} — mắt đếm được`
@@ -522,6 +551,28 @@ test('bảng số đo của bộ sinh đạt mọi sàn — chữ 4,5:1, nét 3:
   assert.ok(tv <= ROOM_BUDGET.medianMax,
     `trung vị ${tv} vượt trần — cả mặt bàn sáng đều, tức nguồn sáng duy nhất thôi là một`
     + ' nguồn sáng và mọi bóng đổ mất nghĩa');
+});
+
+test('BẢN DỌC đi qua CÙNG bộ sàn — một khổ không được gác là nửa số người xem', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  const out = bangDo('doc');
+  const buoc = Number(out.match(/bước dải xấu nhất\s+([\d.]+)/)[1]);
+  assert.ok(buoc <= ROOM_BUDGET.bandStepMax, `bản dọc: bước dải ${buoc}/255 vượt trần`);
+  const mid = Number(out.match(/BẬC GIỮA [\d,–]+\s+([\d.]+)%/)[1]) / 100;
+  assert.ok(mid >= ROOM_BUDGET.midShareMin,
+    `bản dọc: bậc giữa ${(mid * 100).toFixed(1)}% dưới sàn — một dải chỉ có đen sâu và`
+    + ' một mảng chói là một hàm HAI giá trị, tức lại là gradient');
+  const tv = Number(out.match(/trung vị độ chói\s+([\d.]+)/)[1]);
+  assert.ok(tv <= ROOM_BUDGET.medianMax, `bản dọc: trung vị ${tv} vượt trần`);
+  // VẠCH THƯỚC vẫn phải đọc được — và đây là ca đã CHẶN một bản dựng thật:
+  // bản đầu đặt thước ở đáy dải (y ≈ 800), cách tâm vũng sáng 820 đơn vị, và
+  // vạch chia đo 1,05 : 1 ở 14 điểm. Cách duy nhất làm con số ấy đạt mà giữ
+  // chỗ ấy là bôi sáng một vật nằm trong bóng tối, tức dựng một nguồn sáng
+  // thứ hai không có.
+  const net = [...out.matchAll(/^\s+nét .*?([\d.]+):1/gm)].map((m) => Number(m[1]));
+  assert.ok(net.length >= 1, 'bản dọc không đo được nét mang tin nào — mất cái thước?');
+  assert.ok(Math.min(...net) >= ROOM_BUDGET.inkMin,
+    `bản dọc: nét mang tin tệ nhất ${Math.min(...net)}:1, dưới sàn ${ROOM_BUDGET.inkMin}:1`);
 });
 
 /* ═══ 14 · ÁNH SÁNG LÁI MỌI TÔNG ══════════════════════════════════════ */
@@ -810,4 +861,248 @@ test('raster_room.py vẽ được <text> — không thì chú giải chưa ai N
   assert.equal((r.stdout.match(/M/g) || []).length, 2,
     'hai chữ cái phải cho HAI khung — một khung cho cả dòng thì không trả lời được câu'
     + ' "chữ tràn khỏi tấm ở chữ thứ mấy"');
+});
+
+/* ═══ 19 · BẢN DỌC CHO ĐIỆN THOẠI — bố cục lại, không cắt từ bản ngang ══ */
+
+test('hai khổ, và bản dọc là một BỐ CỤC KHÁC chứ một ô cắt ra từ bản ngang', () => {
+  // Lời chê đã nhận: dải điện thoại cao gấp đôi mà hẹp bằng một phần tư, nên
+  // mọi cách căn bản ngang đều đẩy CUỐN SỔ VẼ xuống dưới CUỐN SỔ UI — hai
+  // cuốn sổ chồng nghĩa lên nhau, và bản 390 phải quay lại ba mảng gradient.
+  assert.equal(ROOM_FORMATS.length, 2, 'mất một khổ — hoặc ai đó thêm khổ mà quên ca này');
+  assert.ok(KHO_DOC.frame.height > KHO_DOC.frame.width * 2,
+    'khổ "dọc" không dọc — nó phải cao hơn gấp đôi bề ngang, như dải của điện thoại');
+  assert.ok(KHO_DOC.frame.width <= KHO_NGANG.frame.width / 3,
+    'khổ dọc rộng ngang tầm bản máy tính — vậy thì nó không giải việc gì cả');
+  assert.notEqual(KHO_DOC.file, KHO_NGANG.file, 'hai khổ ghi đè lên nhau một tệp');
+  // Hai thứ bản dọc KHÔNG được vẽ, và đây là cả lý do nó tồn tại: giao diện
+  // điện thoại ĐÃ CÓ một thẻ "Sổ quan trắc" và một thẻ "Chú giải".
+  for (const v of ['so-tay', 'the-dong']) {
+    assert.ok(!KHO_DOC.draw.includes(v),
+      `bản dọc vẽ "${v}" — nó nằm ngay dưới chính nó ở lớp giao diện, tức nói cùng một`
+      + ' điều hai lần bằng hai thứ không khớp nhau');
+  }
+  // …và tệp sinh ra phải THẬT SỰ không có lớp ấy, không chỉ hồ sơ nói thế.
+  for (const v of ['so-tay', 'the-dong', 'chu']) {
+    assert.ok(!SVG_DOC.includes(`<g data-lop="${v}">`),
+      `room-ban-doc.svg vẫn có lớp ${v} — build() không đọc ROOM_FORMATS[].draw`);
+  }
+  // ĐÈN NGOÀI KHUNG: cái chao cao 160 đơn vị, trên một dải rộng 390 nó chiếm
+  // gần nửa bề ngang. Thứ phải giữ là ÁNH SÁNG, không phải cái vật phát ra nó.
+  assert.ok(!KHO_DOC.draw.includes('den'), 'bản dọc vẽ cả cái đèn — nó nuốt mất dải');
+  assert.ok(KHO_DOC.over.lamp.at.y < 0,
+    'đèn của bản dọc không ở ngoài khung — nếu nó ở trong mà không được vẽ thì bóng đổ'
+    + ' chỉ về một chỗ trống, và mắt đọc ra ngay là sai');
+  assert.ok(KHO_DOC.over.lamp.pool.y > 0
+    && KHO_DOC.over.lamp.pool.y < KHO_DOC.frame.height / 3,
+    'vũng sáng của bản dọc không nằm ở ĐẦU dải — chỗ duy nhất giao diện chừa trống');
+  // PHỐI CẢNH PHẲNG HƠN: cùng độ xiên với bản ngang thì 90 % chiều sâu dồn
+  // vào 10 % trên cùng, và 850 đơn vị dưới cùng thành một mảng không thớ.
+  assert.ok(KHO_DOC.over.desk.horizonLift > ROOM_DESK.horizonLift * 5,
+    'bản dọc dùng lại độ xiên của bản ngang — đáy dải sẽ là một mảng gần như trống');
+  const vb = SVG_DOC.match(/viewBox="0 0 (\d+) (\d+)"/);
+  assert.deepEqual([Number(vb[1]), Number(vb[2])],
+    [KHO_DOC.frame.width, KHO_DOC.frame.height]);
+  assert.match(SVG_DOC, /aria-label="[^"]{30,}"/, 'bản dọc thiếu nhãn aria');
+  assert.notEqual(SVG_DOC.match(/aria-label="([^"]*)"/)[1],
+    SVG.match(/aria-label="([^"]*)"/)[1],
+    'hai khổ dùng chung một nhãn aria — bản dọc không có sổ và thẻ đồng, nên nhãn ấy'
+    + ' mô tả hai vật không có trong tranh');
+  // Khổ ngang KHÔNG được trôi khỏi `ROOM_FRAME`: ca "khung khớp khung trời"
+  // đọc `ROOM_FRAME`, còn bộ sinh đọc `ROOM_FORMATS` — hai chỗ là hai con số
+  // sẽ lệch.
+  assert.deepEqual({ ...KHO_NGANG.frame }, { ...ROOM_FRAME },
+    'ROOM_FORMATS.ngang.frame lệch ROOM_FRAME — bộ sinh và ca test đang đọc hai khung');
+});
+
+test('bản dọc KHÔNG dùng lại hằng dẫn xuất của bản ngang', () => {
+  // `HORIZON`, `_UA`, `TRANG_TRAI`, `THUOC`, chồng vòng ánh đèn `_STACK`… đều
+  // tính MỘT LẦN lúc nạp module. Quên rebind một trong số chúng thì khổ dọc
+  // vẽ bằng phối cảnh (hay bằng vũng sáng) của khổ ngang — ra một tệp hợp lệ,
+  // đúng kích thước, không ngoại lệ nào, và sai ở đúng thứ không ai đi tìm.
+  // Khoảng giữa hai hàm trong kho này xuống dòng bằng CR-LF, nên phép so phải
+  // nhận cả CR — không thì nó trả về null và ca này "trượt" vì ném TypeError,
+  // tức một thông báo nói về đúng chỗ nó không hỏng.
+  const than = PY.match(/def dung_kho\([\s\S]*?[\r\n]{2,}def /)[0];
+  for (const ten of ['HORIZON', '_UA', '_UB', 'TRANG_TRAI', 'TRANG_PHAI', 'THE_DONG',
+    'THUOC', 'THUOC_CANH', 'THUOC_KHOI', '_STACK', 'DENSITY', 'VE', 'BRIGHT_AT']) {
+    assert.ok(new RegExp(`\\b${ten}\\b`).test(than),
+      `dung_kho không gán lại ${ten} — khổ sau sẽ dựng bằng hằng của khổ trước`);
+  }
+  // Hình của vật KHÔNG được vẽ phải về RỖNG: `che_boi` và `nen_rgb` đọc chúng,
+  // nên một cuốn sổ "vô hình" ở toạ độ khổ ngang che mất một vùng của khổ dọc
+  // trong MỌI phép đo.
+  assert.match(than, /TRANG_TRAI, TRANG_PHAI = \[\], \[\]/,
+    'sổ không được vẽ mà hình của nó vẫn giữ toạ độ cũ');
+  // `_STACK` phải được XOÁ, không chỉ khai `global`: chồng 152 vòng ánh đèn
+  // tính một lần rồi nhớ lại. Hôm nay hai khổ dùng chung `ROOM_LAMP.profile`
+  // nên cái cache ấy tình cờ đúng cho cả hai — tức gỡ dòng xoá ra KHÔNG đổi
+  // một byte nào của tệp, và đó chính là lý do phải gác bằng cấu trúc: ngày
+  // một khổ khai `profile` hay `levels` riêng, khổ thứ hai sẽ lặng lẽ dùng
+  // vũng sáng của khổ thứ nhất và MỌI phép đo cũng đọc đúng cái cache ấy.
+  assert.match(than, /_STACK = None/,
+    'dung_kho chỉ khai `global _STACK` mà không xoá nó');
+  assert.match(than, /_GOC\["desk"\]/,
+    'dung_kho trộn từ hồ sơ đã trộn lần trước, không từ hồ sơ GỐC — thứ tự sinh tệp sẽ'
+    + ' đổi được bức tranh');
+});
+
+/* ═══ 20 · MÔ HÌNH ‖ RASTER — hai cái trần, và cái chặt mới là cái gác ══ */
+
+test('mô hình và tranh ĐÃ GHI RA không trôi xa nhau — đo bằng raster', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  const RAS = join(ROOT, 'scripts', 'room', 'raster_room.py');
+  const SRC = readFileSync(RAS, 'utf8');
+  const tran = Number(SRC.match(/^TRAN_LECH = ([\d.]+)/m)[1]);
+  const tranSang = Number(SRC.match(/^TRAN_LECH_SANG = ([\d.]+)/m)[1]);
+  assert.ok(tranSang < tran / 3,
+    'hai cái trần gần bằng nhau — cái chặt mất nghĩa, và nó mới là cái gác được');
+  const d = mkdtempSync(join(tmpdir(), 'room-ras-'));
+  try {
+    for (const kho of ROOM_FORMATS) {
+      const f = join(d, `${kho.key}.json`);
+      execFileSync(PYBIN, ['-I', RAS, '--kho', kho.key, '--buoc', '2', '--json', f],
+        { cwd: ROOT, encoding: 'utf8', maxBuffer: 8 * 1024 * 1024 });
+      const r = JSON.parse(readFileSync(f, 'utf8'));
+      assert.ok(r.o > 40000, `${kho.key}: raster chỉ lấy ${r.o} ô mẫu — bước lấy mẫu sai`);
+      // TRẦN RỘNG, và nó rộng vì một lý do đã truy ra chứ vì chịu thua: khoảng
+      // lệch tổng của bức này là THỚ GỖ. `nen_rgb` dựng lại MÀU NỀN và không
+      // có một nét nào, còn tranh có bảy nghìn vệt thớ; mốc dưới của bậc giữa
+      // (L = 0,03) cắt ngang đúng giữa `deskRamp` (bốn bậc đầu đều dưới 0,03),
+      // nên ở vành vũng sáng mỗi vệt sẫm là một điểm ảnh rơi khỏi bậc giữa.
+      // Bóc theo lớp, đo 20/10/2026: nền+vòng sáng +0,15 · thêm thớ +3,09 ·
+      // thêm khe ván +2,65 · thêm ba lớp bóng +6,36 · đủ lớp +4,64.
+      // Và lời giải thích sẵn có ("chữ khắc raster thành khung chữ nhật đặc")
+      // SAI: bóc riêng lớp `chu` ra chỉ đổi 0,36 điểm.
+      assert.ok(Math.abs(r.lech) <= tran,
+        `${kho.key}: lệch bậc giữa mô hình ‖ raster ${r.lech.toFixed(2)} điểm, vượt trần`
+        + ` ${tran}. Mô hình là MỤC TIÊU, raster là SỰ THẬT: lệch lớn nghĩa là thứ ghi`
+        + ' ra tệp khác thứ hồ sơ đòi. Chạy `py -I scripts/room/raster_room.py` để xem'
+        + ' bảng hai cột.');
+      // TRẦN CHẶT — chỗ mô hình KHẲNG ĐỊNH nó dựng lại được bức tranh: nền mặt
+      // bàn cộng 152 đĩa ánh đèn, trên gỗ không vật nào che. Đây là chỗ cả ba
+      // lỗi im lặng của bản đồ sao đã nằm (hình lồng nhau bị `evenodd` XOR,
+      // lõi suy biến, một lớp sai thứ tự z). Đo được +0,15 và +0,17; gỡ
+      // `solo=True` của 152 đĩa ra thì nó nhảy lên −19,97.
+      assert.ok(Math.abs(r.lech_anh_sang) <= tranSang,
+        `${kho.key}: NỀN + VÒNG SÁNG trên gỗ trần lệch ${r.lech_anh_sang.toFixed(2)} điểm,`
+        + ` vượt trần ${tranSang}. Đây là chỗ mô hình nói nó dựng lại được bức tranh —`
+        + ' lệch ở đây là <path> không khép, fill-rule XOR mất bậc trong cùng, hay hình'
+        + ' lồng nhau bị gộp nhóm.');
+    }
+  } finally {
+    rmSync(d, { recursive: true, force: true });
+  }
+});
+
+/* ═══ 21 · BA VẬT PHẢI ĐỌC RA VẬT, KHÔNG RA HÌNH KỸ THUẬT ═════════════ */
+
+test('CHỮ VIẾT TAY có đường nền, chữ cao thấp, khoảng trắng không đều, nhấc bút', () => {
+  const hd = ROOM_BOOK.hand;
+  // Bản trước rải mỗi dòng `per` = 13 VỆT RUNG rời nhau: nó chữa được độ đậm
+  // của bản đầu, nhưng hình thì vẫn là mười ba gạch nằm ngang cách nhau, tức
+  // một mã vạch THƯA. Bốn thứ dưới đây là bốn thứ chữ tay có mà một hàng gạch
+  // không có, và cả bốn là hình học.
+  assert.ok(!('per' in hd),
+    'ROOM_BOOK.hand còn `per` — mô hình "mỗi dòng N vệt rung" quay lại, và nó đọc ra'
+    + ' một mã vạch thưa');
+  for (const k of ['words', 'wordLen', 'gap', 'gapJitter', 'xHeight', 'ascend',
+    'descend', 'riseAt', 'dropAt', 'lift', 'slant', 'drift', 'step']) {
+    assert.ok(typeof hd[k] === 'number', `ROOM_BOOK.hand thiếu \`${k}\``);
+  }
+  assert.ok(hd.gapJitter > 1,
+    `gapJitter ${hd.gapJitter} ≤ 1 — khoảng cách giữa các từ không bao giờ xuống dưới`
+    + ' một nửa, tức vẫn là một dãy gạch cách đều');
+  assert.ok(hd.ascend > 0 && hd.descend > 0 && hd.riseAt > 0 && hd.dropAt > 0,
+    'không có nét lên / nét xuống — cả dòng cao đều một mức, tức không có chữ cái nào');
+  assert.ok(hd.lift > 0, 'không bao giờ nhấc bút — chữ thảo thật cũng không liền một mạch');
+  assert.ok(hd.drift > 0 && hd.drift < 2,
+    'đường nền trôi quá mạnh hay không trôi — giấy này CÓ kẻ, nên chữ bám đường kẻ');
+  // ĐƯỜNG NỀN: bản trước đặt vệt ở `v − 0,012`, tức lơ lửng GIỮA hai dòng kẻ.
+  assert.match(PY, /v = \(r \+ 1\) \/ \(ru\["count"\] \+ 1\)/,
+    've_chu_tay không đặt chữ trên ĐÚNG đường kẻ của dòng');
+  assert.ok(!/v - 0\.012/.test(PY), 'chữ lại lơ lửng giữa hai dòng kẻ');
+  // Nhấc bút phải cắt ở MỐC CHẴN — ranh giữa hai chữ cái. Cắt giữa một nét
+  // cho ra hai nửa chữ lơ lửng, đọc ra một vệt đứt chứ không ra một lần nhấc.
+  assert.match(PY, /cat = 2 \* int\(/, 'nhấc bút cắt giữa một nét chứ ở ranh chữ cái');
+  // Và hình học phải đổi THẬT trong tệp: một từ là một nét GẤP KHÚC nhiều
+  // đoạn, không một vệt hai đầu. Đếm số `l` trên mỗi `M` của lớp sổ tay.
+  const than = lop('so-tay');
+  const duong = [...than.matchAll(/d="([^"]+)"/g)].map((m) => m[1]);
+  const khuc = duong.join('').split('M').slice(1)
+    .map((d) => (d.match(/l/g) || []).length);
+  const dai = khuc.filter((n) => n >= 8).length;
+  assert.ok(dai >= 40,
+    `chỉ ${dai} nét dài ≥ 8 khúc trong lớp sổ tay — chữ tay là những nét GẤP KHÚC, một`
+    + ' hàng vệt hai đầu là cái mã vạch quay lại');
+});
+
+test('COM-PA có KHỐI: thân thon, hai cạnh khác chất, vệt loé, khớp có bóng riêng', () => {
+  const d = ROOM_TOOLS.divider;
+  assert.ok(d.taperHi > d.taperLo * 1.5,
+    `thân com-pa không thon (${d.taperHi} → ${d.taperLo}) — một thanh đều bề rộng là`
+    + ' một cái que, và ba nét song song thì luôn đều bề rộng');
+  assert.ok(d.hingeShadowH > ROOM_SHADOW.height.divider,
+    'khớp xoay không cao hơn thân — nó dày gấp đôi, và dùng chung một độ cao biểu kiến'
+    + ' cho hai vật dày khác nhau là chép một con số sang chỗ nó sai');
+  assert.ok(d.specLen > 0 && d.specLen < 1, 'vệt loé phải NGẮN hơn thân, không chạy hết');
+  // Thân là một HÌNH TÔ, không ba nét: lớp com-pa phải có `<path fill=` đủ
+  // nhiều (thân + 6 dải dốc dọc mỗi chân + đĩa khớp).
+  const than = lop('com-pa');
+  const to = (than.match(/<path fill="#/g) || []).length;
+  assert.ok(to >= 14,
+    `lớp com-pa chỉ có ${to} mảng tô — thân thon và dốc dọc của nó là hình TÔ; ba nét`
+    + ' song song đã là lời chê "hình kỹ thuật"');
+  // …và bóng của com-pa phải có BA vật, không hai: hai chân + đĩa khớp.
+  assert.match(PY, /VAT_BONG\.append\(\("com-pa khớp"/,
+    'khớp xoay không đổ bóng riêng — một cái đĩa không có bóng của chính nó đọc ra là'
+    + ' một chấm sơn trên giấy');
+  // Hình CHE phải là ĐÚNG hình được vẽ: `che_boi` đọc `com_pa_quads`, nên một
+  // hình che rộng hơn thân thật là một phép đo bỏ qua những nét không hề bị che.
+  assert.match(PY, /def com_pa_quads\(\):[\s\S]*?com_pa_than\(a, b\)/,
+    'com_pa_quads vẫn dựng hình chữ nhật xấp xỉ thay cho thân thon đã vẽ');
+});
+
+test('THƯỚC có BỀ DÀY — một mặt bên, và mô hình cũng biết nó là gỗ hoàng dương', () => {
+  const r = ROOM_TOOLS.ruler;
+  assert.ok(r.thick > 3, `bề dày ${r.thick} quá mỏng để đọc ra một thanh`);
+  assert.ok(r.sideGain > 0 && r.sideGain < 0.6,
+    'mặt bên sáng ngang mặt trên — nó quay XUỐNG-TRƯỚC, nó không nhận gì từ một ngọn'
+    + ' đèn ở trên-trái');
+  // MÉP GẦN LÀ `[0] → [1]`, và chỗ này đã sai một lần: lấy nhầm `[3] → [2]`
+  // thì mặt bên tụt xuống từ mép TRÊN, tức nằm ĐÈ LÊN mặt trên của chính cái
+  // thước — một dải tối chạy dọc giữa thanh, mà diện tích, tông và bề rộng
+  // đều hợp lệ nên không một con số nào kêu.
+  assert.match(PY, /a, b = THUOC\[0\], THUOC\[1\]/,
+    'mặt bên của thước lại dựng từ mép TRÊN — nó sẽ đè lên mặt trên của chính nó');
+  // MÔ HÌNH phải biết mặt bên: nếu chỉ lượt VẼ biết thì `nen_rgb` gọi chỗ ấy
+  // là GỖ BÀN trong khi tranh vẽ gỗ hoàng dương — đúng kiểu lệch mô hình ‖
+  // tranh mà cả bộ sinh này tồn tại để không mắc.
+  assert.match(PY, /elif trong_da_giac\(x, y, THUOC_CANH\)/,
+    'nen_rgb không biết mặt bên của thước — mô hình và tranh đang nói hai vật khác nhau');
+  assert.match(PY, /z < tt\["thuoc"\] and trong_da_giac\(x, y, THUOC_KHOI\)/,
+    'che_boi chỉ biết mặt TRÊN của thước');
+  // Và bóng của thước phải tách hai vai: hình ĐỔ BÓNG là mặt trên, hình CHE
+  // là cả khối. Gộp một đa giác thì `bong_phu` dìm chính mặt bên — chiều sai
+  // ấy đã có tiền lệ: nó kéo một phép đo tương phản từ 5,13 xuống 1,08 : 1.
+  assert.match(PY, /\("thước", THUOC, h\["ruler"\], "bong-xa", \(2, 3\), THUOC_KHOI\)/,
+    'bóng thước không tách hình ĐỔ BÓNG khỏi hình CHE');
+  // Mặt bên phải THẬT SỰ có trong tệp: lớp thước có ít nhất 10 dải tô của nó.
+  const than = lop('thuoc');
+  const to = (than.match(/<path fill="#/g) || []).length;
+  assert.ok(to >= 34,
+    `lớp thước chỉ có ${to} mảng tô — 24 dải mặt trên + 10 dải mặt bên là mốc; ít hơn`
+    + ' nghĩa là mặt bên lại biến mất');
+});
+
+test('số CHẤM lấm tấm của bóng theo CHU VI, không theo số đỉnh khai hình', () => {
+  // Bản trước nhân với `len(poly)`, nên một đĩa nhỏ khai bằng 16 đỉnh (khớp
+  // com-pa, rộng 8 đơn vị) nhận GẤP BỐN số chấm của cả một trang sổ rộng 250
+  // đơn vị. Số đỉnh là một chi tiết DỰNG HÌNH, không một thuộc tính của vật —
+  // cùng một vật khai bằng 4 hay 16 đỉnh phải ra cùng một cái bóng. Nó đẩy
+  // tệp vượt trần 380 KB ngay lần đầu có một bóng tròn.
+  assert.ok(!/stipple"\]\["per"\] \* len\(poly\)/.test(PY),
+    'số chấm lấm tấm lại tính theo số ĐỈNH — một bóng tròn sẽ nổ ngân sách');
+  assert.match(PY, /cv = sum\(math\.hypot/,
+    've_bong không còn tính chu vi hình bóng');
 });

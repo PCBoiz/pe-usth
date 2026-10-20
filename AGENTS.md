@@ -48,9 +48,11 @@ py -I scripts/star/raster.py --png a.png --buoc 1       # NHÌN BỨC TRANH (136
 py -I scripts/star/raster.py --png b.png --lop troi     # chỉ vài tệp, để khoanh lớp hỏng
 
 # Tiền cảnh bàn quan trắc (trang chủ, nằm DƯỚI bản đồ sao — mép bàn là vết cắt nóng/lạnh)
-py scripts/room/build_room.py            # sinh frontend/public/map/room/room-ban.svg
-py scripts/room/build_room.py --do       # bảng SỐ ĐO (bậc độ chói, bước dải, tương phản), không ghi tệp
+py scripts/room/build_room.py            # sinh CẢ HAI khổ vào frontend/public/map/room/
+py scripts/room/build_room.py --kho doc  # chỉ bản điện thoại 390 × 1000
+py scripts/room/build_room.py --do       # bảng SỐ ĐO từng khổ (bậc độ chói, bước dải, tương phản), không ghi tệp
 py -I scripts/room/raster_room.py --png a.png --buoc 1   # XEM bức tranh — đừng kết luận khi chưa nhìn
+py -I scripts/room/raster_room.py --kho doc --png b.png --buoc 1   # …bản dọc
 
 # Đổi bố cục (hộp chòm, vị trí mặt trời, hình chòm) ⇒ chạy LẠI BA bước này, theo đúng
 # thứ tự, vì mỗi bước đọc kết quả bước trước: --place-nhan (rồi chép vào TS) → build →
@@ -72,8 +74,9 @@ mức này:
 | Backend lint | 2 lỗi, 1 cảnh báo — **mốc trần trong CI là 10, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → **748 ca**, tất cả đạt (~306 s; riêng `star-map.test.mjs` 79 ca / ~294 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~100 s sau khi tinh vân lên 22 bậc, cộng một lượt `--do` ~50 s và hai lượt raster ~8 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +4 ca mục 22 của `star-map.test.mjs` (sắc độ đo bằng raster, và một ca canh cờ `--png`), +3 ca mục 23 (CỘNG ÁNH SÁNG: không còn hào quanh chòm, nét chòm có vỏ bọc tông ngược, mạch hoàng đạo không rời khung), +2 ca "VIỆC 11" của bản KÉO LẠI (nét chòm phải HƠN HẲN sàn 3:1, nêm tia bụi mỗi vỏ đúng một bậc lượng tử 0,01), +8 ca của `sky-zoom.test.mjs` (trỏ vào một chặng thôi phát hết tên bài; một tên bài mở một lúc ở tỉ lệ gần; cột bài cạnh bản đồ; ba tấm trời có lớp hợp thành riêng; vòng dò thôi đo hộp khung mỗi khung hình), **+24 ca của `room-art.test.mjs`** (tiền cảnh bàn quan trắc: bề rộng nét không về 0, 0 mã màu trong Python, 0 gradient/id, thứ tự lớp, mép bàn trống, 152 đĩa ánh đèn mỗi đĩa một `<path>`, bóng một nguồn, phối cảnh mặt bàn, chữ khắc hai lượt, tất định + trần 380 KB — ca cuối chạy bộ sinh hai lượt ~13 s và một lượt `--do` ~6 s; **mục 15** đo HÌNH chứ độ chói: chữ khắc nằm trọn trên tấm thẻ, vân đồng là vệt chải MỘT hướng dọc trục tấm, thớ gỗ đi vòng quanh mắt, chao đèn có dốc dọc + miệng ê-líp + bóng đèn có quầng, đế đèn sáng ở tâm, `raster_room.py` vẽ được `<text>`) | 20/10/2026 |
-| Tiền cảnh bàn quan trắc | `py scripts/room/build_room.py` → 1 tệp SVG, 13 542 nét / 378,3 KB thô (**trần 380 KB**), bước dải 1,87/255 mã màu, bậc giữa 68,4 %, chữ khắc **5,46:1**, nét mang tin **4,23:1**, chạy hai lần ra đúng một tệp | 20/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **756 ca**, tất cả đạt (~306 s; riêng `star-map.test.mjs` 79 ca / ~294 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~100 s sau khi tinh vân lên 22 bậc, cộng một lượt `--do` ~50 s và hai lượt raster ~8 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +4 ca mục 22 của `star-map.test.mjs` (sắc độ đo bằng raster, và một ca canh cờ `--png`), +3 ca mục 23 (CỘNG ÁNH SÁNG: không còn hào quanh chòm, nét chòm có vỏ bọc tông ngược, mạch hoàng đạo không rời khung), +2 ca "VIỆC 11" của bản KÉO LẠI (nét chòm phải HƠN HẲN sàn 3:1, nêm tia bụi mỗi vỏ đúng một bậc lượng tử 0,01), +8 ca của `sky-zoom.test.mjs` (trỏ vào một chặng thôi phát hết tên bài; một tên bài mở một lúc ở tỉ lệ gần; cột bài cạnh bản đồ; ba tấm trời có lớp hợp thành riêng; vòng dò thôi đo hộp khung mỗi khung hình), **+32 ca của `room-art.test.mjs`** (tiền cảnh bàn quan trắc: bề rộng nét không về 0, 0 mã màu trong Python, 0 gradient/id, thứ tự lớp, mép bàn trống, 152 đĩa ánh đèn mỗi đĩa một `<path>`, bóng một nguồn, phối cảnh mặt bàn, chữ khắc hai lượt, tất định + trần dung lượng MỖI KHỔ — ca ấy chạy bộ sinh hai lượt ~27 s và một lượt `--do` ~12 s; **mục 19–21** (thêm 20/10): bản dọc là một bố cục khác chứ một ô cắt, `dung_kho` gán lại mọi hằng dẫn xuất, hai cái trần cho khoảng lệch mô hình ‖ raster (~20 s), và ba vật đọc ra VẬT — chữ tay có đường nền/nhấc bút, com-pa có thân thon và khớp đổ bóng riêng, thước có mặt bên; **mục 15** đo HÌNH chứ độ chói: chữ khắc nằm trọn trên tấm thẻ, vân đồng là vệt chải MỘT hướng dọc trục tấm, thớ gỗ đi vòng quanh mắt, chao đèn có dốc dọc + miệng ê-líp + bóng đèn có quầng, đế đèn sáng ở tâm, `raster_room.py` vẽ được `<text>`) | 20/10/2026 |
+| Tiền cảnh bàn quan trắc | `py scripts/room/build_room.py` → **HAI tệp SVG, một khổ mỗi tệp**. `room-ban.svg` 1360 × 360: 13 393 nét / 378,4 KB thô (**trần 380 KB**), bậc giữa 68,8 %, chữ khắc **5,46:1**, nét mang tin **4,23:1**. `room-ban-doc.svg` 390 × 1000 (bản điện thoại, bố cục lại — không sổ, không thẻ đồng, đèn ngoài khung): 5 634 nét / 197,5 KB (**trần 200 KB**), bậc giữa 43,3 %, vạch thước **4,41:1**. Cả hai: bước dải 1,87/255 mã màu, chạy hai lần ra đúng một bộ | 20/10/2026 |
+| Tiền cảnh · mô hình ‖ raster | `py -I scripts/room/raster_room.py [--kho doc]` → lệch bậc giữa **+4,64** (ngang) và **+0,93** (dọc), trần 7; phép gác CHẶT — chỉ nền + vòng sáng, trên gỗ trần — **+0,15** và **−0,01**, trần 1,5. Trần rộng ở con số TỔNG là có lý do đã truy ra, không phải chịu thua: xem bẫy "lệch mô hình ‖ raster của tiền cảnh là THỚ GỖ" | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **450,7 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình **278,3 KB** sau khi mặt trời lên 128 vòng, tinh vân lên **22 bậc**, 41 đường đồng mức được khép theo mép và lớp `tia-bui` lên **83 vỏ** (5 tia × 11–22 vỏ, mỗi vỏ một `<path>` riêng ở độ mờ 0,01 — xem mục tia bụi dưới). Lượt build in thêm dòng **`đường đồng mức … còn hở`** — con số ấy phải là **0** | 20/10/2026 |
 | Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 48,98 %** diện tích, ba bậc 0,03–0,35 **38,30 %** (sàn 30 %), trung vị **0,0311** (trần 0,05), p99 1,000, L > 0,5 **6,98 %** (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. Bản KÉO LẠI 20/10 tối: bậc giữa đi 62,8 → 48,98 % vì **46,8 % là một ĐÍCH, không một mốc để vượt** — xem mục raster dưới | 20/10/2026 |
@@ -353,6 +356,49 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   suốt, thang độ sâu ở cả hai lề. **Gỡ bản sửa ra thì sáu ca trượt** (đo 19/10/2026
   bằng cách `git checkout` lại chín tệp SVG cũ). Kỹ thuật và nguồn:
   `design/v3/ky-thuat-ban-do.md` (mục 6 cho hình thái liền mạch).
+- **Tiền cảnh bàn quan trắc nay có HAI KHỔ, và lệch mô hình ‖ raster của nó là THỚ GỖ
+  chứ một cái lỗi.** `scripts/room/build_room.py` sinh `room-ban.svg` (1360 × 360, máy
+  tính) VÀ `room-ban-doc.svg` (390 × 1000, điện thoại) từ `ROOM_FORMATS` ở
+  `frontend/src/lib/room-art.ts`. Bốn thứ đã trả giá, ghi lại để khỏi vấp lại:
+  · **Khoảng lệch mô hình ‖ raster đo +4,64 điểm, gấp rưỡi trần 3 của bản đồ sao — và
+    lời giải thích sẵn có ("chữ khắc được raster vẽ thành khung chữ nhật đặc") LÀ SAI.**
+    Bóc riêng lớp `chu` chỉ đổi 0,36 điểm. Bóc theo VÙNG thì gỗ gánh +3,8/+4,9; bóc theo
+    LỚP thì ra nguyên nhân: nền + vòng sáng **+0,15**, thêm thớ gỗ **+3,09**, thêm khe
+    ván +2,65, thêm ba lớp bóng +6,36. `nen_rgb` dựng lại MÀU NỀN và không có một nét
+    nào, còn tranh có bảy nghìn vệt thớ; mốc dưới của bậc giữa (L = 0,03) cắt ngang đúng
+    giữa `deskRamp` (bốn bậc đầu đều dưới 0,03), nên ở vành vũng sáng mỗi vệt sẫm là một
+    điểm ảnh rơi khỏi bậc giữa. Vì vậy có HAI cái trần ở `raster_room.py`:
+    `TRAN_LECH` 7 cho con số tổng, và `TRAN_LECH_SANG` **1,5** cho phép gác thật — chỉ
+    `nen-ban` + `vung-sang`, chỉ trên gỗ không vật nào che, tức đúng chỗ mô hình KHẲNG
+    ĐỊNH nó dựng lại được bức tranh (và đúng chỗ cả ba lỗi im lặng của bản đồ sao đã
+    nằm). Gỡ `solo=True` của 152 đĩa ánh đèn ra: con số tổng đi −8,85, con số chặt đi
+    **−19,97**. Đừng hạ trần tổng về 3 — nó sẽ ép bỏ thớ gỗ, tức thứ đầu tiên trong bốn
+    thứ bức này tồn tại để có.
+  · **Số chấm lấm tấm của bóng phải theo CHU VI hình, không theo SỐ ĐỈNH.** Bản cũ nhân
+    `SHADOW.stipple.per × len(poly)`, nên khớp com-pa (đĩa rộng 8 đơn vị, khai bằng 16
+    đỉnh) nhận gấp bốn số chấm của cả một trang sổ rộng 250 đơn vị. Số đỉnh là chi tiết
+    dựng hình, không phải thuộc tính của vật — và nó đẩy tệp vượt trần 380 KB ngay lần
+    đầu có một cái bóng tròn.
+  · **`thuoc_quad()` trả về mép DƯỚI ở `[0] → [1]`, không phải mép trên** (pháp tuyến
+    `(−dy, dx)` chỉ xuống vì thước dốc xuống-phải). Dựng mặt bên của thước từ `[3] → [2]`
+    thì nó tụt xuống từ mép TRÊN, tức nằm đè lên mặt trên của chính cái thước: một dải
+    tối chạy dọc giữa thanh, mà diện tích, tông và bề rộng đều hợp lệ nên không một con
+    số nào kêu. Chỉ PNG thấy. Chú thích cũ gọi `[0] → [1]` là "mép trên" chính là thứ
+    dẫn đi nhầm.
+  · **`dung_kho()` phải gán lại MỌI hằng dẫn xuất** (`HORIZON`, `_UA`, `_UB`,
+    `TRANG_TRAI`, `THUOC`, `THUOC_KHOI`, `_STACK`, `DENSITY`, `VE`, `BRIGHT_AT`). Chúng
+    tính một lần lúc nạp module từ hồ sơ khổ ngang; quên một cái thì khổ dọc dựng bằng
+    phối cảnh (hay bằng chồng vòng ánh đèn) của khổ ngang — ra tệp hợp lệ, đúng kích
+    thước, không ngoại lệ nào. Vật KHÔNG được vẽ phải cho hình RỖNG, không giữ toạ độ
+    cũ: `che_boi`/`nen_rgb` đọc những hình ấy.
+  Và một luật bố cục, không phải một con số: **bản dọc không vẽ sổ và không vẽ thẻ
+  đồng** vì giao diện điện thoại đã có thẻ "Sổ quan trắc" và thẻ "Chú giải" — vẽ thêm là
+  nói cùng một điều hai lần bằng hai thứ không khớp. Đèn nằm NGOÀI khung (chao cao 160
+  đơn vị trên một dải rộng 390). Ảnh vào trang bằng `background-image` đặt lệch lên đúng
+  `edgeY`, nên hàng điểm ảnh trên cùng của dải chính là vành sáng mép bàn — đừng vẽ thêm
+  một vạch đồng giả. Toạ độ cái thước ở `ROOM_FORMATS.doc` và `padding-top: 140px` của
+  dải điện thoại ở artboard Hub là MỘT ràng buộc: đẩy thước xuống dưới y = 176 là đẩy nó
+  ra sau thẻ đầu tiên.
 - **Bản đồ SAO cũng là TRANH SINH RA, và nó chia làm 19 tệp theo LỚP — đừng sửa tệp.**
   `frontend/public/map/star/sky-*.svg` do `scripts/star/build_sky.py` sinh; script ĐỌC
   `frontend/src/lib/star-map.ts` (toạ độ tám chòm, mạch hoàng đạo, nguồn sáng, bảng màu,

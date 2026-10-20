@@ -323,14 +323,44 @@ export const ROOM_BOOK = {
   rule: { count: 13, inset: 0.085, width: 0.55, opacity: 0.6 },
   fiber: { strokes: 1100, dots: 1300, len: 5.4, width: 0.4, opacity: 0.4 },
   /**
-   * CHỮ VIẾT TAY — `width` 0,7 và độ mờ hạ hẳn ở Python.
+   * CHỮ VIẾT TAY — và đây là vật mắt dừng lâu nhất của bức, vì nó nằm giữa
+   * vũng sáng.
    *
-   * Bản đầu vẽ nét 1,05 đơn vị gần như đặc: chín dòng ra chín VỆT ĐEN dài
-   * bằng nhau, đọc trên PNG ra một mã vạch. Chữ tay thật thì nét mảnh, đứt
-   * quãng, dài ngắn khác nhau từng dòng — và quan trọng hơn, nó NHẠT hơn
-   * đường kẻ ngang chứ không đậm hơn.
+   * ── VÌ SAO BẢN "VỆT RUNG" ĐỌC RA MÃ VẠCH THƯA ───────────────────────────
+   *
+   * Bản trước rải mỗi dòng `per` = 13 VỆT RUNG rời nhau, mỗi vệt một độ dài
+   * và một độ đậm riêng. Nó chữa được cái "mã vạch ĐẶC" của bản đầu tiên,
+   * nhưng chỉ chữa được độ đậm — hình thì vẫn là mười ba gạch nằm ngang cách
+   * nhau, tức một mã vạch thưa. Bốn thứ chữ tay có mà một hàng gạch không
+   * có, và cả bốn là HÌNH HỌC chứ độ đậm:
+   *
+   *  1. **ĐƯỜNG NỀN.** Chữ NGỒI TRÊN một đường; thân chữ ở trên nó, nét
+   *     xuống thò qua nó. Chính cái đường ấy là thứ mắt đọc ra "một dòng
+   *     chữ". Mười ba gạch nằm GIỮA dòng thì không có đường nền nào cả.
+   *  2. **CHỮ CAO CHỮ THẤP.** `xHeight` là thân chữ; `ascend` là nét lên
+   *     (`l`, `h`, `b`) ở `riseAt` phần số chữ cái, `descend` là nét xuống
+   *     (`g`, `y`, `p`) ở `dropAt`. Một dòng chữ cao đều nhau là một dòng
+   *     chữ không có chữ cái nào.
+   *  3. **KHOẢNG TRẮNG GIỮA TỪ KHÔNG ĐỀU.** `gapJitter` 1,5 cho khoảng
+   *     cách chạy từ 0,25 tới 1,75 lần `gap`. Khoảng đều nhau đọc ra ngay
+   *     là máy xếp — đó đúng là thứ đã làm bản cũ ra mã vạch.
+   *  4. **NHẤC BÚT GIỮA TỪ.** `lift` phần số từ bị cắt làm hai nét, cắt ở
+   *     RANH GIỮA HAI CHỮ CÁI chứ không giữa một nét.
+   *
+   * Cộng hai thứ nhỏ hơn: `slant` (chữ tay nghiêng phải, đỉnh nét đi trước
+   * chân nét) và `drift` (đường nền trôi lên xuống rất chậm — không ai viết
+   * thẳng tuyệt đối trên giấy không kẻ, mà ở đây giấy CÓ kẻ nên biên độ phải
+   * nhỏ hơn hẳn khoảng dòng).
+   *
+   * Mọi con số dưới đây là ĐƠN VỊ KHUNG trên mặt giấy, không phần số của
+   * trang: một thân chữ cao "0,02 trang" là một thân chữ đổi cỡ khi trang
+   * đổi cỡ, và hai trang trái/phải không cùng cỡ.
    */
-  hand: { rows: 9, per: 13, jitter: 1.25, width: 0.7 },
+  hand: {
+    rows: 9, words: 8, wordLen: 23, wordJitter: 1.15, gap: 6.2, gapJitter: 1.5,
+    step: 1.6, xHeight: 2.5, ascend: 2.1, descend: 1.7, riseAt: 0.3, dropAt: 0.24,
+    lift: 0.32, slant: 0.26, drift: 0.9, jitter: 0.38, width: 0.62,
+  },
   sketch: {
     /**
      * Toạ độ TƯƠNG ĐỐI trong trang phải (0..1 theo hai trục của tứ giác).
@@ -446,6 +476,21 @@ export const ROOM_TOOLS = {
     from: { x: 288, y: 266 }, to: { x: 612, y: 292 }, half: 15,
     ticks: { per: 13, major: 5, len: 7, majorLen: 11, width: 0.6 },
     grain: { count: 340, width: 0.4, opacity: 0.4 },
+    /**
+     * BỀ DÀY — mặt bên của thanh thước, và nó là thứ biến một hình chữ nhật
+     * có vạch thành một VẬT NẰM TRÊN bàn.
+     *
+     * Bản trước có bóng đổ nhưng không có mặt bên, nên thước đọc ra một
+     * hình dán phẳng có bóng — đúng cái `box-shadow` của CSS làm. Mặt bên
+     * là MỘT đa giác tụt xuống `thick` đơn vị dưới mép gần, tô bằng chính
+     * `rulerRamp` ở `sideGain` phần ánh sáng: mặt ấy quay XUỐNG, gần như
+     * không nhận gì từ một ngọn đèn ở trên-trái.
+     *
+     * `sideGain` cũng vào `nen_rgb` ở Python: nếu chỉ lượt VẼ biết tới mặt
+     * bên thì mô hình gọi chỗ ấy là GỖ trong khi tranh vẽ gỗ hoàng dương —
+     * đúng kiểu lệch mô hình ‖ tranh mà cả bộ sinh này tồn tại để không mắc.
+     */
+    thick: 5.6, sideGain: 0.3, sideDx: 0.22,
   },
   divider: {
     /**
@@ -461,6 +506,29 @@ export const ROOM_TOOLS = {
     hinge: { x: 878, y: 288 },
     legs: [{ x: 806, y: 348 }, { x: 964, y: 340 }],
     width: 3.4, knurl: { r: 8.2, teeth: 18 }, needle: 11,
+    /**
+     * KHỐI của hai chân, và vì sao ba nét thẳng không đủ.
+     *
+     * Bản trước vẽ mỗi chân bằng BA NÉT song song (sáng / giữa / tối). Ở xa
+     * nó đọc được, ở gần nó là ba đường kẻ — thép thật có BỀ DÀY: một thân
+     * THON (rộng ở khớp, nhỏ dần về mũi), một cạnh quay về đèn bắt sáng
+     * thành một đường mảnh sắc, cạnh kia chìm, và một vệt loé chạy dọc bên
+     * trong cạnh sáng. Bốn thứ ấy là bốn thứ khác nhau, không phải ba bản
+     * sao của một nét.
+     *
+     * `taperHi`/`taperLo` là nửa bề rộng ở khớp và ở mũi, theo phần của
+     * `width`. `specAt` là chỗ đặt vệt loé (phần bề rộng tính từ cạnh
+     * sáng), `specLen` là phần chiều dài chân mà nó chạy.
+     */
+    taperHi: 0.62, taperLo: 0.2, specAt: 0.3, specLen: 0.62,
+    /**
+     * KHỚP XOAY ĐỔ BÓNG RIÊNG. Nó là vật tròn dày nhất của com-pa (`r` 8,2
+     * so với thân 3,4), nên một cái đĩa không có bóng của chính nó đọc ra là
+     * một chấm sơn trên giấy. `shadowH` là độ cao biểu kiến của riêng đĩa —
+     * `ROOM_SHADOW.height.divider` là của THÂN, và dùng chung một con số cho
+     * hai vật dày khác nhau là chép một con số sang chỗ nó sai.
+     */
+    hingeShadowH: 9.5,
   },
 } as const;
 
@@ -683,6 +751,127 @@ export const ROOM_PROFILE_DARK: RoomProfile = {
   rulerTick: '#221808',
   steelRamp: ['#282521', '#564F47', '#90887B', '#D3C7B1'],
 };
+
+/**
+ * HAI KHỔ — NGANG cho máy tính, DỌC cho điện thoại. Và bản dọc KHÔNG phải một
+ * ô cắt ra từ bản ngang: nó là một BỐ CỤC KHÁC dựng từ cùng bộ sinh.
+ *
+ * ── VÌ SAO PHẢI CÓ BẢN THỨ HAI, chứ không căn lại bản ngang ──────────────
+ *
+ * Bản ngang là một khung hình cho bề ngang 1440: mép bàn ở trên, cuốn sổ MỞ
+ * nằm giữa vũng sáng, thẻ đồng bên phải. Dải của điện thoại cao gấp đôi mà
+ * hẹp bằng một phần tư, nên mọi cách căn ảnh ấy đều đẩy CUỐN SỔ VẼ vào giữa
+ * dải — tức nằm ngay dưới CUỐN SỔ UI, và hai cuốn sổ chồng nghĩa lên nhau.
+ * Hệ quả đo được: nửa số người xem concept thấy một bản KHÔNG CÓ TRANH, vì
+ * bản 390 phải quay lại ba mảng `linear-gradient`.
+ *
+ * Bản đồ sao đã gặp đúng việc này và giải bằng tám ô crop `scene-M*.svg` sinh
+ * từ cùng bộ sinh. Đây là cùng cách làm, với một khác biệt: ô crop của bản đồ
+ * sao cắt ra từ MỘT bầu trời (toạ độ ngôi phải khớp giữa các ô), còn ở đây
+ * không có gì bắt hai khổ phải trùng toạ độ — nên bản dọc được BỐ CỤC LẠI.
+ *
+ * ── BA QUYẾT ĐỊNH CỦA BẢN DỌC, và cả ba đến từ chỗ nó được dùng ──────────
+ *
+ *  1. **KHÔNG VẼ SỔ, KHÔNG VẼ THẺ ĐỒNG.** Trên điện thoại, thẻ "Sổ quan
+ *     trắc" và thẻ "Chú giải" của giao diện CHÍNH LÀ cuốn sổ và tấm thẻ. Vẽ
+ *     thêm một cuốn sổ sau lưng chúng là nói cùng một điều hai lần bằng hai
+ *     thứ không khớp nhau.
+ *  2. **ĐÈN NẰM NGOÀI KHUNG** (`at` có `y` âm). Cái chao đèn cao 160 đơn vị;
+ *     trên một dải rộng 390 nó chiếm gần nửa bề ngang và che mất chỗ của thẻ
+ *     đầu tiên. Thứ phải giữ là ÁNH SÁNG — vũng sáng, hướng bóng đổ, vành
+ *     sáng ở mép bàn — chứ không phải cái vật phát ra nó. Mọi bóng vẫn lệch
+ *     xuống-phải vì `lech_bong` đọc `at`, và `kiem_bong_mot_nguon` vẫn gác.
+ *  3. **PHỐI CẢNH PHẲNG HƠN** (`horizonLift` 520 thay 30). Bản ngang nhìn
+ *     xiên gắt vì nó chỉ có 250 đơn vị chiều sâu; bản dọc có 960, và cùng
+ *     một độ xiên dồn 90 % chiều sâu vào 10 % trên cùng của dải — tức 850
+ *     đơn vị dưới cùng thành một mảng gần như không có thớ nào.
+ *
+ * `density` nhỏ hơn hẳn vì CHỖ HIỂN THỊ khác: bản ngang 1 360 đơn vị trải
+ * trên 2 350 px (1,73 px mỗi đơn vị), bản dọc 390 đơn vị trên 390 px (1,0).
+ * Chi tiết dưới một điểm ảnh là byte chết — và đây là tệp tải trên mạng điện
+ * thoại, nên trần của nó là 200 KB chứ 380.
+ */
+export const ROOM_FORMATS = [
+  {
+    key: 'ngang',
+    file: 'room-ban.svg',
+    frame: { width: 1360, height: 360 },
+    maxKb: 380,
+    density: 1,
+    brightAt: 0.5,
+    alt: 'Bàn quan trắc dưới một ngọn đèn hổ phách — sổ quan trắc mở, thẻ đồng khắc chú giải, thước và com-pa.',
+    draw: ['den', 'so-tay', 'the-dong', 'thuoc', 'com-pa'],
+    over: {},
+  },
+  {
+    key: 'doc',
+    file: 'room-ban-doc.svg',
+    frame: { width: 390, height: 1000 },
+    maxKb: 200,
+    density: 0.72,
+    /**
+     * NGƯỠNG "CÓ CHỖ RỰC" — 0,35 chứ 0,5, và con số đến từ VẬT LIỆU trong
+     * khung chứ một cái gu. Ở bản ngang, thứ duy nhất vượt L = 0,5 là GIẤY
+     * (`paperRamp[4]` đo 0,663); gỗ dưới vũng sáng mạnh nhất chỉ tới 0,488
+     * vì `core` của ánh đèn đo đúng 0,488. Bản dọc không vẽ sổ, nên một sàn
+     * 0,5 ở đây không đòi "có chỗ rực" mà đòi "vẽ thêm một tờ giấy" — tức
+     * một phép gác ép bỏ đúng quyết định bố cục của khổ này.
+     *
+     * 0,35 là ~72 % đường tới lõi: nó vẫn trượt nếu vũng sáng không chạm
+     * được lõi trong khung (đúng việc cái sàn này sinh ra để làm), mà không
+     * đòi một vật liệu không có ở đây.
+     */
+    brightAt: 0.35,
+    alt: 'Mặt bàn gỗ dưới ánh đèn hổ phách hắt từ ngoài khung — thước gỗ và com-pa thép nằm ở mép dưới.',
+    /**
+     * CHỈ CÁI THƯỚC, và nó nằm TRONG vũng sáng ở đầu dải.
+     *
+     * Bản dựng đầu đặt thước và com-pa ở ĐÁY dải (y ≈ 800), chỗ giao diện
+     * điện thoại còn trống. Phép đo chặn build ngay: vạch chia đo **1,05 : 1**
+     * ở 14 điểm, trên sàn 3 : 1. Nguyên nhân không phải màu — đáy dải cách
+     * tâm vũng sáng 820 đơn vị, tức `lamp_A` ≈ 0,03, nên CẢ cái thước lẫn
+     * vạch của nó đều chìm; cách duy nhất làm con số ấy đạt là bôi sáng một
+     * vật nằm trong bóng tối, tức dựng một nguồn sáng thứ hai không có.
+     *
+     * Bản này đặt thước ở y ≈ 190, trong lõi vũng sáng, và đổi giao diện
+     * Hub để dải điện thoại chừa một băng bàn TRỐNG ở đầu — nơi vành sáng
+     * mép bàn, vũng sáng và cái thước đọc được. Com-pa bỏ hẳn: chỗ duy nhất
+     * còn trống cho nó là đáy dải, và một vật kim loại trong bóng tối là
+     * byte chết chứ không phải một vật.
+     */
+    draw: ['thuoc'],
+    over: {
+      desk: {
+        edgeY: 36,
+        horizonLift: 520,
+        planks: { count: 9 },
+        wash: { rows: 232, per: 7 },
+        grain: { rows: 300, per: 20, len: 44, wave: 9, lenJitter: 0.8 },
+        checks: { count: 120 },
+        pores: { count: 620 },
+        knots: [
+          { x: 86, y: 352, r: 26, rings: 9, squash: 0.46, tilt: 0.2 },
+          { x: 318, y: 648, r: 38, rings: 10, squash: 0.4, tilt: -0.28 },
+          { x: 150, y: 902, r: 21, rings: 8, squash: 0.52, tilt: 0.1 },
+        ],
+      },
+      lamp: {
+        at: { x: 40, y: -44 },
+        pool: { x: 150, y: 146, squash: 0.8 },
+      },
+      tools: {
+        /**
+         * Thước nằm ở BĂNG BÀN TRỐNG mà giao diện Hub chừa ra ở đầu dải
+         * (padding-top 140 px). Toạ độ ở đây và con số padding ấy là MỘT
+         * ràng buộc: ảnh được đặt lệch lên đúng `edgeY` = 36, nên thước ở
+         * y 112…150 rơi vào 76…114 px trên màn — trọn trong băng trống.
+         * Đẩy thước xuống dưới 176 là đẩy nó ra sau thẻ "Sổ quan trắc".
+         */
+        ruler: { from: { x: 14, y: 112 }, to: { x: 302, y: 150 }, half: 12 },
+      },
+    },
+  },
+] as const;
 
 export const ROOM_PROFILES: { dark: RoomProfile; light?: RoomProfile } = {
   dark: ROOM_PROFILE_DARK,
