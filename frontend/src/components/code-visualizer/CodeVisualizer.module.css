@@ -33,28 +33,33 @@
   color: var(--edu-t1);
 }
 
+/* Nút phụ của bản thiết kế §1.4, cùng chiều cao 52px với nút Chạy bên cạnh:
+   viền `ink` 2px, nền trong suốt. Bản cũ cao 38px, nền GRADIENT XANH và chữ
+   14px nên đứng lệch hẳn nút Chạy (nó được portal vào cùng hàng, xem
+   `.visualizeSlot` ở ide.module.css). */
 .start {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  height: 38px;
-  padding: 0 18px;
+  min-height: 52px;
+  padding: 0 24px;
   font: inherit;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--edu-panel-bg-solid);
-  background: var(--edu-accent-grad);
-  border: 0;
-  border-radius: 999px;
+  font-size: var(--ds-fs-ui);
+  font-weight: 700;
+  color: var(--ds-ink);
+  background: transparent;
+  border: var(--ds-bw-2) solid var(--ds-ink);
+  border-radius: var(--ds-r-pill);
   cursor: pointer;
-  transition: transform 0.15s ease, opacity 0.15s ease;
+  transition: transform var(--ds-dur-fast) ease;
 }
+.start:hover:not(:disabled) { color: var(--ds-on-action); background: var(--ds-ink); }
 /* Chỉ nhấc nút khi thiết bị THẬT có con trỏ: trên màn cảm ứng, :hover dính lại
    sau cú chạm nên nút kẹt ở trạng thái "đang trỏ vào". */
 @media (hover: hover) and (pointer: fine) {
   .start:hover:not(:disabled) { transform: translateY(-1px); }
 }
-.start:disabled { opacity: 0.6; cursor: progress; }
+.start:disabled { color: var(--ds-soft); border-color: var(--ds-sketch); cursor: progress; }
 .start:focus-visible,
 .ctrl:focus-visible,
 .scrub:focus-visible {

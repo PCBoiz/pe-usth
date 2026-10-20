@@ -57,6 +57,7 @@
 }
 
 .toolbar {
+  padding-top: 16px;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -149,7 +150,10 @@
   font-size: var(--ds-fs-label);
   font-weight: 700;
   color: inherit;
-  background: var(--ds-tint);
+  background: transparent;
+  border: var(--ds-bw-1) solid currentColor;
+  /* Viền chữ thay cho nền tint: tint sáng đặt trên nền nút xanh đậm làm chữ
+     Ctrl+Enter mờ đi (thấy rõ ở ảnh chụp 19/10). */
   /* 6px không nằm trên thang bo góc; chip vuông là `r-sm`. */
   border-radius: var(--ds-r-sm);
 }
@@ -169,10 +173,10 @@
 /* Editor trái, output phải; hẹp thì xếp dọc (xem media bên dưới). */
 .split {
   display: grid;
-  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 16px;
-  height: calc(100vh - 190px);
-  min-height: 460px;
+  height: calc(100vh - 200px);
+  min-height: 480px;
 }
 
 .editorPane,
@@ -185,8 +189,31 @@
   border-radius: var(--ds-r-lg);
   box-shadow: var(--ds-shadow-open);
 }
-.editorPane { padding: 8px 0; }
-.outputPane { padding: 16px 20px; overflow: auto; }
+.editorPane,
+.outputPane { display: flex; flex-direction: column; }
+.editorBody { flex: 1 1 auto; min-height: 0; }
+.outputBody { flex: 1 1 auto; min-height: 0; padding: 16px 20px 20px; overflow: auto; }
+
+/* Thanh tiêu đề của hai khung: cho mắt biết đây là tệp soạn và đây là kết quả,
+   thay vì hai tấm thẻ trắng trống không. Chữ `label` 15px (sàn của bảng v2). */
+.paneHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+  padding: 10px 20px;
+  font-size: var(--ds-fs-label);
+  font-weight: 700;
+  color: var(--ds-soft);
+  background: var(--ds-tint);
+  border-bottom: var(--ds-bw-1) solid var(--ds-line);
+}
+.paneDot {
+  width: 10px;
+  height: 10px;
+  background: var(--ds-action);
+  border-radius: var(--ds-r-round);
+}
 
 .editorLoading,
 .hint {

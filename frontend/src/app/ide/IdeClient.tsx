@@ -443,6 +443,11 @@ export default function IdeClient() {
 
           <div className={styles.split}>
             <section className={styles.editorPane} aria-label="Trình soạn thảo mã Python">
+              <div className={styles.paneHead} aria-hidden="true">
+                <span className={styles.paneDot} />
+                main.py
+              </div>
+              <div className={styles.editorBody}>
               {editorPhase === 'failed' ? (
                 <PlainEditor
                   code={code}
@@ -467,7 +472,11 @@ export default function IdeClient() {
                   }}
                   options={{
                     minimap: { enabled: false },
-                    fontSize: 14,
+                    fontSize: 15,
+                    lineHeight: 24,
+                    padding: { top: 12, bottom: 12 },
+                    renderLineHighlight: 'none',
+                    overviewRulerLanes: 0,
                     tabSize: 4,
                     insertSpaces: true,
                     scrollBeyondLastLine: false,
@@ -475,9 +484,12 @@ export default function IdeClient() {
                   }}
                 />
               )}
+              </div>
             </section>
 
             <section className={styles.outputPane} aria-label="Kết quả" aria-live="polite" aria-busy={running}>
+              <div className={styles.paneHead}>Kết quả</div>
+              <div className={styles.outputBody}>
               <Output state={state} />
 
               {/* "Xem từng bước" nằm TRONG mục kết quả, không phải một khối
@@ -489,6 +501,7 @@ export default function IdeClient() {
                   Toàn bộ nằm trong component — xem
                   frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
               <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
+              </div>
             </section>
           </div>
         </main>
