@@ -6,7 +6,7 @@
 //
 //   1. nút Thoát THẤY ĐƯỢC, dựng ở đây;
 //   2. phím Esc, listener ở đây;
-//   3. bấm vào khoảng trời trống (`.nenRa` ở `page.tsx`).
+//   3. bấm vào khoảng trời trống (`.nenRa` ở `StarMap.tsx`).
 //
 // ── BỐN ĐIỀU GIỮ Ở ĐÂY ────────────────────────────────────────────────
 //
@@ -17,10 +17,10 @@
 //
 //  2. `push`, KHÔNG `back()`. `router.back()` nghe tự nhiên hơn nhưng nó sai ở
 //     đúng trường hợp cú phóng được dựng ra để phục vụ: một người mở ĐƯỜNG DẪN
-//     ĐƯỢC GỬI (`/ban-do-sao?chang=M6`) chưa có lịch sử nào trong tab, nên
-//     `back()` đưa họ ra khỏi trang — tức "thoát khỏi chặng" thành "thoát khỏi
-//     bản đồ". `push` thì luôn tới bản đồ ở tỉ lệ xa, và nó giữ cho phím Lùi
-//     của trình duyệt vẫn quay được vào chặng vừa xem.
+//     ĐƯỢC GỬI (`/?chang=M6`) chưa có lịch sử nào trong tab, nên `back()` đưa
+//     họ ra khỏi trang — tức "thoát khỏi chặng" thành "thoát khỏi bản đồ".
+//     `push` thì luôn tới bản đồ ở tỉ lệ xa, và nó giữ cho phím Lùi của trình
+//     duyệt vẫn quay được vào chặng vừa xem.
 //
 //  3. `scroll: false`. Bảng bài biến mất khi lùi ra, nên trang ngắn lại; để
 //     Next tự cuộn lên đầu là giật một cái ở giữa cú phóng ra. Khung bản đồ
@@ -41,10 +41,17 @@ import { useEffect } from 'react';
 
 import styles from './star-map.module.css';
 
-/** Cùng một đích cho cả ba đường ra. Một chuỗi, một chỗ. */
-const RA = '/ban-do-sao';
-
-export default function SkyExit({ label }: { label: string }) {
+/**
+ * ĐÍCH LÀ MỘT THAM SỐ, KHÔNG MỘT HẰNG — và đó là một bản sửa, không một kiểu
+ * viết. Tới 20/10/2026 tệp này ghi cứng `'/ban-do-sao'`, đúng khi bản đồ chỉ
+ * dựng ở route xem thử. Từ lúc trang chủ cũng dựng nó, một hằng ở đây là nút
+ * "Thoát khỏi chặng" NÉM người đang ở trang chủ sang route xem thử — tức một
+ * đường ra đưa họ ra khỏi cả trang, đúng cái mà điều 2 dưới đây cấm.
+ *
+ * `StarMap.tsx` tính nó MỘT lần cho cả ba đường ra, nên không có hai chuỗi để
+ * trôi xa nhau.
+ */
+export default function SkyExit({ label, ra }: { label: string; ra: string }) {
   const router = useRouter();
 
   useEffect(() => {
@@ -54,14 +61,14 @@ export default function SkyExit({ label }: { label: string }) {
       // thì một cú Esc làm CẢ HAI việc, và người dùng bàn phím mất một bậc
       // trong cái thang mà bước 1 vừa dựng.
       if (e.key !== 'Escape' || e.defaultPrevented) return;
-      router.push(RA, { scroll: false });
+      router.push(ra, { scroll: false });
     };
     window.addEventListener('keydown', bam);
     return () => window.removeEventListener('keydown', bam);
-  }, [router]);
+  }, [ra, router]);
 
   return (
-    <Link className={styles.thoat} href={RA} scroll={false}>
+    <Link className={styles.thoat} href={ra} scroll={false}>
       {label}
     </Link>
   );

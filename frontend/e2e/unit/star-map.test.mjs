@@ -130,8 +130,20 @@ const dongChang = (c) => `${c.key} · ${c.subtitle}`;
 const dongKhoa = (c) => `${SKY_COURSE.name} · ${c.stars.length} bài`;
 
 const PY = readFileSync(join(ROOT, 'scripts', 'star', 'build_sky.py'), 'utf8');
-const CSS = read('src', 'app', 'ban-do-sao', 'star-map.module.css');
-const PAGE = read('src', 'app', 'ban-do-sao', 'page.tsx');
+/* BẢN ĐỒ RỜI `app/ban-do-sao/` SANG `components/star-map/` ngày 20/10/2026, vì
+   TRANG CHỦ nay cũng dựng nó (chủ sản phẩm: "đưa bản đồ sao lên khóa học
+   luôn"). Nên từ đây có BA tệp TSX, và chúng không thay nhau được:
+    · `StarMap.tsx` — cả bản đồ: khung, 19 tấm, cú phóng, cột bài. Mọi ca soi
+      CẤU TRÚC đọc tệp này.
+    · `ban-do-sao/page.tsx` — route xem thử: tiêu đề, chú giải, `?chang=`.
+    · `app/page.tsx` — trang chủ: cũng đọc `?chang=`, cũng truyền `base`.
+   Hai tệp trang phải chịu CÙNG các luật cấm (không API, không `style={{…}}`),
+   nên `TRANG` gom cả hai lại — một luật cấm chỉ áp cho một trang là một luật
+   mà trang kia được miễn, và trang được miễn ở đây là trang chủ. */
+const CSS = read('src', 'components', 'star-map', 'star-map.module.css');
+const MAP = read('src', 'components', 'star-map', 'StarMap.tsx');
+const PREVIEW = read('src', 'app', 'ban-do-sao', 'page.tsx');
+const HOME = read('src', 'app', 'page.tsx');
 /**
  * Bỏ chú thích TRƯỚC khi soi: chú thích KỂ LẠI luật và phải được phép nhắc
  * tới chính thứ mà ca test đang cấm. Không có bước này thì ca "không có nhánh
@@ -144,14 +156,21 @@ const boChuThich = (s) => s
   .replace(/\/\*[\s\S]*?\*\//g, ' ')
   .replace(/^[ \t]*\/\/.*$/gm, '')
   .replace(/[ \t]+\/\/.*$/gm, '');
-const TSX_CODE = boChuThich(PAGE);
-/** Lớp con trỏ — thành phần client duy nhất của trang. Mọi ca cấm áp cho
- *  `page.tsx` (không API, không `style={{…}}`, không hiệu ứng tự chạy) phải áp
- *  cho CẢ tệp này, nếu không thì chúng chỉ còn canh một nửa trang. */
-const CUR_CODE = boChuThich(read('src', 'app', 'ban-do-sao', 'SkyCursor.tsx'));
-/** Đường ra của cú phóng — thành phần client thứ hai của trang, và mọi ca cấm
- *  áp cho `page.tsx` cũng phải áp cho nó. */
-const EXIT_CODE = boChuThich(read('src', 'app', 'ban-do-sao', 'SkyExit.tsx'));
+/** CẢ BẢN ĐỒ — mọi ca soi cấu trúc DOM, thứ tự tấm, ô bấm, cột bài. */
+const TSX_CODE = boChuThich(MAP);
+/** HAI TRANG dựng bản đồ, nối lại. Chỉ dùng cho các luật CẤM (không API,
+ *  không `style={{…}}`) và cho các phép `match` — ĐỪNG dùng `indexOf` trên
+ *  chuỗi này: hai tệp nối nhau thì một vị trí không còn nghĩa gì. */
+const TRANG = [boChuThich(PREVIEW), boChuThich(HOME)].join('\n/* ── */\n');
+const PREVIEW_CODE = boChuThich(PREVIEW);
+const HOME_CODE = boChuThich(HOME);
+/** Lớp con trỏ — thành phần client duy nhất của bản đồ. Mọi ca cấm áp cho
+ *  `StarMap.tsx` (không API, không `style={{…}}`, không hiệu ứng tự chạy) phải
+ *  áp cho CẢ tệp này, nếu không thì chúng chỉ còn canh một nửa bản đồ. */
+const CUR_CODE = boChuThich(read('src', 'components', 'star-map', 'SkyCursor.tsx'));
+/** Đường ra của cú phóng — thành phần client thứ hai, và mọi ca cấm áp cho
+ *  `StarMap.tsx` cũng phải áp cho nó. */
+const EXIT_CODE = boChuThich(read('src', 'components', 'star-map', 'SkyExit.tsx'));
 const PY_CODE = PY
   .replace(/"""[\s\S]*?"""/g, ' ')
   .replace(/^[ \t]*#.*$/gm, '')
@@ -1508,31 +1527,100 @@ test('`:focus-visible` cho ra đúng cùng một trạng thái như `:hover`, ch
     // nó. Cả hai phải mang `:focus-visible` — thiếu ở khối thứ hai thì người
     // đi bằng Tab nhận hai bản của một chòm CỘNG độ mờ với nhau.
     for (const lop2 of [`ro${c.key}`, `chom${c.key}`]) {
-      const re = new RegExp(`\\.hit${c.key}:hover ~ \\.${lop2},\\s*\\.hit${c.key}:focus-visible ~ \\.${lop2}`);
+      const re = new RegExp(`\\.frame:has\\(\\.hit${c.key}:hover\\) \\.${lop2},`
+        + `\\s*\\.frame:has\\(\\.hit${c.key}:focus-visible\\) \\.${lop2}`);
       assert.match(CSS_CODE, re,
         `${c.key}/${lop2}: hover và focus-visible không chung một khối — người đi bằng Tab`
         + ' thấy một bản đồ khác');
     }
     // …và khối TẮT tấm nghỉ phải đưa nó về 0, không về `--sky-mo`: chòm được
     // trỏ không phải một chòm bị gác lại.
-    const re0 = new RegExp(`\\.lop\\[data-chang='${c.key}'\\] ~ \\.chom${c.key} \\{ opacity: 0; \\}`);
+    const re0 = new RegExp(
+      `\\.frame:has\\(\\.lop\\[data-chang='${c.key}'\\]\\) \\.chom${c.key} \\{ opacity: 0; \\}`,
+    );
     assert.match(CSS_CODE, re0, `${c.key}: tấm nghỉ không tắt hẳn khi chòm được trỏ`);
   }
-  assert.match(CSS_CODE, /\.hit:hover ~ \.chomNen,\s*\.hit:focus-visible ~ \.chomNen/);
+  assert.match(CSS_CODE,
+    /\.frame:has\(\.hit:hover\) \.chomNen,\s*\.frame:has\(\.hit:focus-visible\) \.chomNen/);
   assert.match(CSS_CODE, /\.hit:focus-visible\s*\{[^}]*outline:/, 'thiếu vòng tiêu điểm');
-  // TÁM Ô BẤM phải đứng TRƯỚC mọi `<img>`: bộ chọn anh em `~` chỉ nhìn về
-  // phía SAU, nên thứ tự DOM là một hợp đồng chứ không phải một cách sắp cho
-  // gọn. Soi theo `styles.hit`, không theo `<a`/`<Link`: từ bước 3 trong khung
-  // còn nút Thoát và dưới khung còn bảng bài, và CẢ HAI phải đứng sau tranh
-  // (nút Thoát nằm trên tranh bằng `z-index`, không bằng thứ tự).
-  const cuoiHit = TSX_CODE.lastIndexOf('styles.hit');
-  assert.ok(cuoiHit > 0 && cuoiHit < TSX_CODE.indexOf('<img'),
-    'có một ô bấm đứng sau <img> — `.hitM1:hover ~ .chomM1` sẽ không khớp');
-  // Và lớp con trỏ phải đứng GIỮA: sau tám ô bấm, trước mười chín tấm.
+
+  /* ── KHÔNG CÒN BỘ CHỌN ANH EM NÀO, và đây là chỗ ca này ĐỔI (20/10/2026).
+   *
+   * Tới hôm qua ca này đòi tám ô bấm đứng TRƯỚC mọi `<img>` và `<SkyCursor />`
+   * đứng GIỮA hai nhóm — ba hợp đồng thứ tự DOM, tất cả vì `~` chỉ nhìn về
+   * phía SAU. Cái giá của chúng là cú phóng phải đặt `transform` lên TỪNG tấm
+   * trong 19 tấm cộng lớp con trỏ (một `<div>` bọc cắt mọi quan hệ anh em),
+   * tức hai mươi lớp hợp thành mỗi cú bấm — "hơi lag".
+   *
+   * `:has()` bỏ cả ba hợp đồng ấy. Nên ca này nay canh điều NGƯỢC LẠI: không
+   * một `~` nào được quay lại trong tệp, vì một `~` quay lại là cái bọc phải
+   * bỏ đi và hai mươi lớp quay về cùng nó. */
+  const anhEm = CSS_CODE.match(/[^{}\s][^{}]*\s~\s[^{}]*\{/g) ?? [];
+  assert.deepEqual(anhEm, [],
+    `CSS còn bộ chọn anh em: ${anhEm.join(' | ')} — `
+    + 'nó đòi ô bấm và tấm ảnh là anh em ruột, tức cái bọc `.canh` phải bỏ, tức cú phóng'
+    + ' quay về 20 phần tử cùng nội suy một transform');
+
+  /* ── MỘT TRANSFORM, KHÔNG HAI MƯƠI ─────────────────────────────────────
+   * Hợp đồng thay cho ba hợp đồng thứ tự DOM vừa bỏ. Hai phép scale lồng nhau
+   * là hệ số BÌNH PHƯƠNG: mỗi tấm sẽ phóng 2,56–10,2 lần thay vì 1,6–3,2, và
+   * 48 dấu ngôi bay ra ngoài khung. Nó hỏng TO nên dễ thấy — nhưng nó cũng
+   * hỏng ÊM theo chiều ngược lại: chép `transform` trở lại `.sky` mà QUÊN
+   * `.lop` thì tranh phóng bình phương còn 48 dấu ngôi phóng một lần, và triệu
+   * chứng đọc ra là "chuột hơi lệch". */
+  const khoi = (cls) => CSS_CODE.match(new RegExp(`\\n\\${cls}\\s*\\{([^}]*)\\}`));
+  const canh = khoi('.canh');
+  assert.ok(canh, 'không còn phần tử bọc `.canh` — cú phóng đang đặt transform lên đâu?');
+  assert.match(canh[1], /transform:\s*scale\(var\(--zs\)\) translate\(var\(--zx\), var\(--zy\)\)/,
+    '`.canh` không mang phép biến hình của cú phóng');
+  assert.match(canh[1], /transition:\s*transform var\(--phong-dur\)/);
+  for (const cls of ['.sky', '.lop']) {
+    const k = khoi(cls);
+    assert.ok(k, `thiếu quy tắc gốc ${cls}`);
+    assert.ok(!/transform:|transition:/.test(k[1]),
+      `${cls} mang lại \`transform\`/\`transition\` — cộng với \`.canh\` thì hệ số phóng là`
+      + ' BÌNH PHƯƠNG, và nếu chỉ một trong hai mang thì tranh và 48 dấu ngôi trôi xa nhau');
+  }
+  // `.canh` phải PHỦ KÍN khung và KHÔNG ăn con trỏ: nó nằm giữa tám ô bấm
+  // (z 3) và nền trống (z 1), nên một `pointer-events: auto` ở đây che mất cả
+  // hai cùng lúc.
+  assert.match(canh[1], /inset:\s*0/);
+  assert.match(canh[1], /pointer-events:\s*none/,
+    '`.canh` ăn con trỏ — nó phủ kín khung, nên nó che tám ô bấm chặng ở tỉ lệ xa và nền'
+    + ' trống (đường ra thứ ba) ở tỉ lệ gần');
+  // THỨ TỰ Z, và nó là thứ tự duy nhất còn lại. `transform` làm `.canh` thành
+  // một ngữ cảnh xếp lớp, nên nền trống KHÔNG chen được vào giữa tranh và lớp
+  // con trỏ nữa — nó phải xuống DƯỚI `.canh`.
+  const z = (cls) => +(khoi(cls)?.[1].match(/z-index:\s*(\d+)/)?.[1] ?? NaN);
+  assert.ok(z('.nenRa') < z('.canh'), `nền trống (z ${z('.nenRa')}) không ở DƯỚI \`.canh\``
+    + ` (z ${z('.canh')}) — ở trên thì nó phủ cả 48 ngôi và 48 ngôi thành vật trang trí`);
+  assert.ok(z('.canh') < z('.hit'), `\`.canh\` (z ${z('.canh')}) không ở DƯỚI tám ô bấm`
+    + ` (z ${z('.hit')}) — vòng \`:focus-visible\` của ô bấm sẽ bị tinh vân vẽ phủ lên`);
+  assert.ok(z('.canh') < z('.thoat'), 'nút Thoát không ở trên tranh');
+  // …VÀ BỐN MỨC ẤY PHẢI ĐÓNG TRONG KHUNG. `.frame` có `position: relative`
+  // nhưng `z-index: auto`, nên nếu không `isolation: isolate` thì bốn mức bên
+  // trong so trực tiếp với anh em của `.frame` — ở route xem thử vô hại, ở
+  // TRANG CHỦ thì không (thanh trên z 20, và trang còn thêm nữa). Một phần tử
+  // của trang lọt vào giữa bốn mức là nền trống hoặc nút Thoát ngừng ăn cú
+  // bấm, tức một đường ra chết im lặng.
+  assert.match(khoi('.frame')[1], /isolation:\s*isolate/,
+    '`.frame` không đóng ngữ cảnh xếp lớp — bốn mức z của bản đồ rò ra trang chủ, và thứ'
+    + ' lọt vào giữa chúng sẽ che một đường ra mà không gì đỏ lên');
+
+  // HỢP ĐỒNG THỨ TỰ DOM CÒN LẠI ĐÚNG MỘT ĐIỀU, và nó là thứ tự z giữa 16 tấm
+  // chòm: tấm RÕ của chòm k phải đứng SAU tấm NGHỈ của chính nó, nếu không
+  // "rõ lên" bị tấm nghỉ vẽ phủ lại. Ca "bốn TẤM phủ đúng SKY_LAYERS" so lại
+  // cả năm nhóm `<img>` theo đúng thứ tự ấy.
+  //
+  // Lớp con trỏ thì chỉ còn một ràng buộc: nó phải ở TRONG `.canh` cùng 19
+  // tấm. 48 dấu ngôi đặt bằng % của nó, nên ở ngoài cái bọc là ở ngoài cú
+  // phóng — dấu ngôi đứng im trong khi bầu trời đi.
+  const iCanh = TSX_CODE.indexOf('styles.canh');
   const iLop = TSX_CODE.indexOf('<SkyCursor');
-  assert.ok(cuoiHit < iLop && iLop < TSX_CODE.indexOf('<img'),
-    '<SkyCursor /> không còn nằm giữa ô bấm và tranh — nó là chỗ DUY NHẤT thoả cả hai'
-    + ' chiều của bộ chọn `~`');
+  const iCot = TSX_CODE.indexOf('styles.cot');
+  assert.ok(iCanh > 0 && iCanh < iLop && iLop < iCot,
+    '<SkyCursor /> không còn nằm trong cái bọc `.canh` — 48 dấu ngôi sẽ đứng im trong khi'
+    + ' bầu trời phóng đi');
 });
 
 test('TRỜI KHÔNG MỜ ĐI lúc trỏ vào — liên kết giữa tám chòm không được biến mất', () => {
@@ -1589,11 +1677,20 @@ test('nền khung là MÀU NỀN TRỜI, sinh ra từ hồ sơ — không phải
   assert.equal(v[1].toUpperCase(), P.base.toUpperCase(),
     `sky-theme.css nói ${v[1]} nhưng SKY_PROFILE_DARK.base là ${P.base} — chạy lại`
     + ' `py scripts/star/build_sky.py`');
-  // Trang phải THẬT SỰ nạp tệp đó, không thì `var(--sky-base)` không có giá
-  // trị và thuộc tính `background` bị bỏ hẳn: khung trong suốt, nền trang lộ
-  // ra, tức đúng cái lỗi cũ bằng một đường khác.
-  assert.ok(TSX_CODE.includes('/map/star/sky-theme.css'),
-    'page.tsx không nạp sky-theme.css — `var(--sky-base)` sẽ không phân giải được');
+  // MỖI TRANG dựng bản đồ phải THẬT SỰ nạp tệp đó, không thì `var(--sky-base)`
+  // không có giá trị và thuộc tính `background` bị bỏ hẳn: khung trong suốt,
+  // nền trang lộ ra, tức đúng cái lỗi cũ bằng một đường khác.
+  //
+  // CẢ HAI, không một: bản đồ nay dựng ở trang chủ VÀ ở route xem thử, và
+  // `sky-theme.css` không đi theo thành phần (nó là một `<link>` do trang nạp
+  // qua `PageStyles`). Một trang quên nó là một trang vỡ, và nó vỡ IM LẶNG —
+  // không ngoại lệ, không log đỏ, chỉ một bầu trời gần đen nằm trên nền trắng
+  // xanh. Ca này là thứ duy nhất canh.
+  for (const [ten, code] of [['ban-do-sao/page.tsx', PREVIEW_CODE], ['app/page.tsx', HOME_CODE]]) {
+    assert.ok(code.includes('/map/star/sky-theme.css'),
+      `${ten} không nạp sky-theme.css — \`var(--sky-base)\` sẽ không phân giải được, và`
+      + ' `background` bị bỏ hẳn chứ không rơi về một màu dự phòng nào');
+  }
   // `lint:tokens` cấm hex trong module CSS; canh lại ở đây để lỗi nói ra VÌ SAO
   // thay vì chỉ là một dòng grep đỏ.
   assert.ok(!/#[0-9a-fA-F]{3,8}/.test(CSS),
@@ -1614,7 +1711,10 @@ test('không hiệu ứng TỰ CHẠY nào: trang nạp xong là bản đồ đ�
     + ' nằm hoàn toàn ngoài tiêu chí WCAG 2.2.2 (Dừng/Ngừng/Ẩn)');
   // Và không `style={{…}}` trong TSX: SSR tuần tự hoá nó thành `style="…"`,
   // một trong hai nguyên nhân `style-src 'unsafe-inline'` chưa bỏ được.
-  assert.ok(!/style=\{\{/.test(TSX_CODE), 'trang dùng style nội tuyến');
+  // CẢ thành phần LẪN hai trang dựng nó — một luật cấm chỉ áp cho một nửa là
+  // một luật mà nửa kia được miễn.
+  assert.ok(!/style=\{\{/.test(TSX_CODE), 'bản đồ dùng style nội tuyến');
+  assert.ok(!/style=\{\{/.test(TRANG), 'một trang dựng bản đồ dùng style nội tuyến');
   // LỚP CON TRỎ phải chịu đúng hai luật ấy. Nó là chỗ dễ vi phạm nhất, vì nó
   // là tệp duy nhất có JavaScript chạy trên trang này: một `setInterval` ở đây
   // là một hiệu ứng tự chạy mà CSS không biết, và trang sẽ rơi vào WCAG 2.2.2
@@ -1642,8 +1742,14 @@ test('route xem thử không gọi API nào — nó công khai', () => {
     'lớp con trỏ gọi API — nó chạy ở client trên một trang công khai, tức đúng chỗ mỗi con'
     + ' bot sinh một tài khoản khách');
   assert.ok(!/apiFetch|fetch\(/.test(TSX_CODE),
-    'trang công khai mà gọi API: `apiFetch` gặp 401 là TỰ TẠO tài khoản khách, tức mỗi con'
-    + ' bot quét web sinh một `@guest.local` và ăn một suất của THROTTLE_GUEST_LIMIT');
+    'bản đồ gọi API: nó dựng ở HAI trang công khai, và `apiFetch` gặp 401 là TỰ TẠO tài khoản'
+    + ' khách — mỗi con bot quét web sinh một `@guest.local` và ăn một suất của'
+    + ' THROTTLE_GUEST_LIMIT');
+  // VÀ CẢ HAI TRANG, kể cả trang chủ — nơi cái giá của việc này cao nhất, vì
+  // nó là trang mà mọi con bot quét web vào trước tiên.
+  assert.ok(!/apiFetch|fetch\(/.test(TRANG),
+    'một trang dựng bản đồ gọi API — xem bẫy `apiFetch` tự tạo tài khoản khách trong AGENTS.md;'
+    + ' đường đúng ở trang công khai là `apiFetchSessionOnly`');
   assert.ok(!/apiFetch|fetch\(/.test(EXIT_CODE),
     'đường ra của cú phóng gọi API — nó cũng chạy ở client trên trang công khai');
   // Câu chữ ở TS để `node --test` đọc được, không nằm rải trong JSX.
@@ -1824,7 +1930,7 @@ test('tiết lộ CÓ THỨ TỰ: chín bậc thang khớp `SKY_CURSOR`, và đ�
   // đặc trưng hơn `.chomNen`, nên nó sẽ đè luôn `transition: none` của nhánh
   // `reduce` — người bật giảm chuyển động vẫn nhận đủ 320 ms, trong khi ca test
   // đọc nhánh reduce và báo xanh. Đúng kiểu hỏng im lặng.
-  const hv = CSS_CODE.match(/\.hit:hover ~ \.chomNen,[\s\S]*?\{([^}]*)\}/);
+  const hv = CSS_CODE.match(/\.frame:has\(\.hit:hover\) \.chomNen,[\s\S]*?\{([^}]*)\}/);
   assert.ok(hv, 'thiếu quy tắc tắt tấm nghỉ lúc hover');
   assert.ok(!/transition:/.test(hv[1]),
     'quy tắc hover của tấm nghỉ viết `transition:` trực tiếp — nó sẽ đè nhánh reduce');
@@ -1847,7 +1953,7 @@ test('ngôi được NHẬN và ngôi được TIÊU ĐIỂM cho ra ĐÚNG một
   }
   for (const c of SKY_CONSTELLATIONS) {
     const k = c.key;
-    assert.match(CSS_CODE, new RegExp(`\\.lop\\[data-chang='${k}'\\] ~ \\.chom${k}`),
+    assert.match(CSS_CODE, new RegExp(`\\.frame:has\\(\\.lop\\[data-chang='${k}'\\]\\) \\.chom${k}`),
       `${k}: thiếu đường BÀN PHÍM tới tấm chòm. Ngôi nằm TRONG lớp phủ nên :focus-visible của`
       + ' nó không với tới tấm ảnh được — trạng thái phải đi qua thuộc tính trên lớp phủ');
     assert.match(CSS_CODE, new RegExp(`\\.lop\\[data-chang='${k}'\\] \\.cum${k} \\.chip`),
@@ -2159,13 +2265,17 @@ test('ba con số của phép biến hình: CSS và TS nói CÙNG MỘT THỨ', 
         + ` ${((0.5 - c) * 100).toFixed(3)}%`);
     }
   }
-  // Và transform phải nằm trên TỪNG tấm cộng lớp con trỏ, không trên một div
-  // bọc: trạng thái hover đi qua bộ chọn ANH EM, nên bọc tấm vào một div là
-  // cắt mọi quan hệ `~` và phải dựng lại tám trạng thái hover bằng JS.
-  for (const cls of ['sky', 'lop']) {
-    assert.match(CSS_CODE, new RegExp(`\\.${cls}\\s*\\{[^}]*transform:\\s*scale\\(var\\(--zs\\)\\) translate\\(var\\(--zx\\), var\\(--zy\\)\\)`),
-      `.${cls} không mang phép biến hình của cú phóng`);
-  }
+  // Và transform nằm trên ĐÚNG MỘT phần tử bọc (`.canh`), không trên từng tấm.
+  // Ca này đòi điều NGƯỢC LẠI tới 20/10/2026, nên nói ra vì sao nó đổi: bản
+  // trước đặt `transform` lên 19 tấm cộng lớp con trỏ, vì hover đi qua bộ chọn
+  // ANH EM và một `<div>` bọc cắt mọi quan hệ `~`. Hover nay đi qua `:has()`,
+  // nên cái bọc dựng được — và hai mươi phần tử cùng nội suy một `transform`
+  // (hai mươi lớp hợp thành mỗi cú bấm) là đúng cái mà "hơi lag" chỉ vào.
+  // Ca `:focus-visible cho ra đúng cùng một trạng thái` canh cả ba mặt của hợp
+  // đồng mới (`.canh` mang transform · `.sky`/`.lop` KHÔNG mang · thứ tự z).
+  assert.match(CSS_CODE,
+    /\.canh\s*\{[^}]*transform:\s*scale\(var\(--zs\)\) translate\(var\(--zx\), var\(--zy\)\)/,
+    '`.canh` không mang phép biến hình của cú phóng');
   // Tỉ lệ XA phải là phép ĐỒNG NHẤT khai tường minh: không khai `--zs: 1` thì
   // `var(--zs)` không giải được, cả `transform` thành không hợp lệ, và
   // `transition` không có gì để nội suy — cú phóng NHẢY.
@@ -2219,21 +2329,42 @@ test('TRẠNG THÁI NẰM TRONG URL: nút Lùi đúng việc, đường dẫn g�
   // Đây là chỗ hầu hết bản đồ web làm hỏng: phóng vào bằng một `useState` rồi
   // bấm Lùi thì văng khỏi cả trang. Ba thứ dưới đây là ba hệ quả của việc đọc
   // trạng thái ở SERVER từ `searchParams`.
-  assert.match(TSX_CODE, /searchParams:\s*Promise</,
-    'trang không nhận `searchParams` — trạng thái sẽ phải sống trong một `useState`,'
-    + ' và lúc đó nút Lùi văng khỏi trang');
-  assert.match(TSX_CODE, /await searchParams/);
-  assert.match(TSX_CODE, /sp\.chang/, 'trang không đọc tham số `chang`');
-  // Khoá PHẢI đi qua `zoomFor()` trước khi ghép vào className: `?chang=` là
-  // dữ liệu của người lạ, và `styles[\`phong${…}\`]` ghép chuỗi.
-  assert.match(TSX_CODE, /const chang = zoomFor\([\s\S]{0,80}?\)\?\.key \?\? null;/,
-    'khoá chặng không đi qua `zoomFor()` — một `?chang=` rác sẽ ghép thẳng vào className');
+  // CẢ HAI TRANG, không một. Từ 20/10/2026 bản đồ dựng ở trang chủ VÀ ở route
+  // xem thử; một trang đọc `?chang=` ở server còn trang kia không thì cú phóng
+  // ở đó phải sống trong một `useState`, và lúc đó đúng ba thứ dưới đây mất —
+  // ở ĐÚNG trang mà ai cũng vào.
+  for (const [ten, code] of [['ban-do-sao/page.tsx', PREVIEW_CODE], ['app/page.tsx', HOME_CODE]]) {
+    assert.match(code, /searchParams:\s*Promise</,
+      `${ten} không nhận \`searchParams\` — trạng thái sẽ phải sống trong một \`useState\`,`
+      + ' và lúc đó nút Lùi văng khỏi trang');
+    assert.match(code, /await searchParams/, `${ten} không đợi \`searchParams\``);
+    assert.match(code, /\.chang/, `${ten} không đọc tham số \`chang\``);
+    // Khoá PHẢI đi qua `zoomFor()` trước khi tới thành phần: `?chang=` là dữ
+    // liệu của người lạ, và `StarMap` ghép nó vào `styles[\`phong${…}\`]`.
+    assert.match(code, /const chang = zoomFor\([\s\S]{0,80}?\)\?\.key \?\? null;/,
+      `${ten}: khoá chặng không đi qua \`zoomFor()\` — một \`?chang=\` rác sẽ ghép thẳng`
+      + ' vào className');
+    // …và mỗi trang phải nói ĐƯỜNG DẪN CỦA CHÍNH NÓ. Một hằng `'/ban-do-sao'`
+    // trong thành phần là cú bấm đầu tiên ở trang chủ ném người ta sang route
+    // xem thử; thiếu `base` thì TS đỏ, nhưng truyền SAI thì không.
+    assert.match(code, /<StarMap base=\{DUONG\} chang=\{chang\}/,
+      `${ten} không truyền \`base\` cho bản đồ`);
+    assert.ok(!/onClick/.test(code), `${ten} dùng onClick cho cú phóng — nó không gửi được`);
+  }
+  assert.match(PREVIEW_CODE, /const DUONG = '\/ban-do-sao';/);
+  assert.match(HOME_CODE, /const DUONG = '\/';/,
+    'trang chủ không khai `/` làm gốc của `?chang=` — cú phóng sẽ rời trang chủ');
+
+  // Phía thành phần: lớp phóng dựng từ `chang`, và ô bấm là một `href` THẬT
+  // ghép từ `base` chứ không một hằng.
   assert.match(TSX_CODE, /styles\[`phong\$\{chang\}`\]/,
     'lớp phóng không dựng từ `chang` đã qua `zoomFor()`');
-  // Ô bấm là `href` THẬT, không `onClick`.
-  assert.match(TSX_CODE, /\/ban-do-sao\?chang=\$\{key\}/,
-    'ô bấm không dẫn tới `?chang=` — mất cả ba thứ: nút Lùi, đường dẫn gửi được, không-JS');
-  assert.ok(!/onClick/.test(TSX_CODE), 'trang dùng onClick cho cú phóng — nó không gửi được');
+  assert.match(TSX_CODE, /\$\{base\}\?chang=\$\{key\}/,
+    'ô bấm không dẫn tới `?chang=` của chính trang đang dựng — mất cả ba thứ: nút Lùi,'
+    + ' đường dẫn gửi được, không-JS');
+  assert.ok(!/'\/ban-do-sao'/.test(TSX_CODE),
+    '`StarMap.tsx` ghi cứng `/ban-do-sao` — ở trang chủ nó ném người dùng sang route xem thử');
+  assert.ok(!/onClick/.test(TSX_CODE), 'bản đồ dùng onClick cho cú phóng — nó không gửi được');
 });
 
 test('BA ĐƯỜNG RA, và đường ra chắc hơn đường vào', () => {
@@ -2252,7 +2383,7 @@ test('BA ĐƯỜNG RA, và đường ra chắc hơn đường vào', () => {
   // `push`, KHÔNG `back()`: một người mở đường dẫn ĐƯỢC GỬI chưa có lịch sử
   // nào trong tab, nên `back()` đưa họ ra khỏi trang — "thoát khỏi chặng"
   // thành "thoát khỏi bản đồ".
-  assert.match(EXIT_CODE, /router\.push\(RA, \{ scroll: false \}\)/);
+  assert.match(EXIT_CODE, /router\.push\(ra, \{ scroll: false \}\)/);
   assert.ok(!/router\.back\(\)/.test(EXIT_CODE),
     '`router.back()` sai ở đúng trường hợp cú phóng phục vụ: một đường dẫn được gửi');
   // Nút THẤY ĐƯỢC, và nó là một `<Link>` thật nên nó chạy khi JS chưa tải xong.
@@ -2261,17 +2392,37 @@ test('BA ĐƯỜNG RA, và đường ra chắc hơn đường vào', () => {
   assert.ok(STAR_COPY.zoomExit.length > 3 && STAR_COPY.zoomBackdrop.length > 10);
   // Nền trống, với một tên nghe được.
   assert.match(TSX_CODE, /aria-label=\{STAR_COPY\.zoomBackdrop\} className=\{styles\.nenRa\}/);
-  // …và nó phải nằm DƯỚI lớp con trỏ: bấm một ngôi thì mở bài, chỉ khoảng trời
-  // còn lại mới lùi ra. Thứ tự z LÀ hợp đồng ấy.
-  const z = (cls) => Number(CSS_CODE.match(new RegExp(`\\.${cls}\\s*\\{[^}]*z-index:\\s*(\\d+)`))?.[1]);
-  assert.ok(z('nenRa') < z('lop'),
-    `nền trống (z ${z('nenRa')}) không nằm dưới lớp con trỏ (z ${z('lop')}) — 48 ngôi sẽ`
-    + ' thành vật trang trí');
-  assert.ok(z('sky') < z('nenRa'), 'nền trống nằm dưới tranh — nó sẽ không ăn được cú bấm nào');
-  assert.ok(z('thoat') > z('lop'), 'nút Thoát nằm dưới lớp con trỏ');
-  // Cả ba đường tới CÙNG một đích.
-  assert.equal((EXIT_CODE.match(/'\/ban-do-sao'/g) ?? []).length, 1,
-    'đích của đường ra viết ở nhiều chỗ trong SkyExit — một chuỗi, một chỗ');
+  /* …và nó phải nằm DƯỚI cả bức tranh, không giữa tranh và lớp con trỏ. ĐÂY LÀ
+   * CHIỀU ĐÃ ĐẢO (20/10/2026) và hợp đồng thì KHÔNG: bấm một ngôi thì mở bài,
+   * chỉ khoảng trời còn lại mới lùi ra.
+   *
+   * Bản trước chen `.nenRa` vào giữa `.sky` (z 1) và `.lop` (z 3), và chen được
+   * vì cả ba là anh em ruột. Nay tranh và lớp con trỏ cùng nằm trong `.canh`,
+   * mà `.canh` mang `transform` nên nó là một NGỮ CẢNH XẾP LỚP — mọi thứ bên
+   * trong vẽ cùng một mức, không còn khe nào để chen. Nên nền trống xuống DƯỚI
+   * `.canh`, và nó vẫn ăn được cú bấm vì `.canh` cùng cả cây con
+   * `pointer-events: none` trừ 48 ngôi.
+   *
+   * Phép kiểm vì thế có HAI nửa, và nửa thứ hai mới là nửa dễ mất: thứ tự z,
+   * VÀ `pointer-events: none` trên cái bọc. Chỉ kiểm thứ tự z thì một
+   * `pointer-events: auto` lạc vào `.canh` làm nền trống chết im lặng — bấm
+   * khoảng trời trống không lùi ra nữa, và không gì đỏ lên. */
+  const khoi = (cls) => CSS_CODE.match(new RegExp(`\\n\\.${cls}\\s*\\{([^}]*)\\}`));
+  const z = (cls) => Number(khoi(cls)?.[1].match(/z-index:\s*(\d+)/)?.[1]);
+  assert.ok(z('nenRa') < z('canh'),
+    `nền trống (z ${z('nenRa')}) không nằm dưới cái bọc tranh (z ${z('canh')}) — ở trên thì`
+    + ' nó phủ cả 48 ngôi và 48 ngôi thành vật trang trí');
+  assert.match(khoi('canh')[1], /pointer-events:\s*none/,
+    '`.canh` ăn con trỏ — nó phủ kín khung và nằm TRÊN nền trống, nên bấm khoảng trời trống'
+    + ' sẽ không lùi ra nữa, và không gì đỏ lên');
+  assert.ok(z('thoat') > z('canh'), 'nút Thoát nằm dưới tranh');
+  // Cả ba đường tới CÙNG một đích, và đích đó là THAM SỐ chứ không hằng: một
+  // hằng `/ban-do-sao` ở đây là nút Thoát ném người ở trang chủ sang route xem
+  // thử — tức "thoát khỏi chặng" lại thành "thoát khỏi trang".
+  assert.ok(!/'\/ban-do-sao'/.test(EXIT_CODE),
+    'SkyExit ghi cứng một đích — nó dựng ở hai trang, nên đích phải là `ra` do StarMap truyền');
+  assert.equal((EXIT_CODE.match(/\bra\b/g) ?? []).length >= 3, true,
+    'SkyExit không dùng `ra` cho cả nút, Esc và kiểu tham số');
 });
 
 test('GIẢM CHUYỂN ĐỘNG tắt HOẠT ẢNH, không tắt TÍNH NĂNG — và tới đúng trạng thái đó', () => {
@@ -2281,9 +2432,18 @@ test('GIẢM CHUYỂN ĐỘNG tắt HOẠT ẢNH, không tắt TÍNH NĂNG — v
   const kh = [...CSS_CODE.matchAll(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/g)]
     .map((m) => m[1]).join('\n');
   assert.ok(kh.length > 0, 'CSS không còn nhánh `prefers-reduced-motion: reduce`');
+  // MỘT vật mang `transform` của cú phóng, không hai: `.sky` và `.lop` rời
+  // nhánh này ngày 20/10/2026 cùng lúc với việc chúng thôi mang `transition`
+  // nào (cú phóng gộp về `.canh`). Danh sách này phải khớp danh sách thật, vì
+  // một tên ở đây cho một quy tắc không có `transition` là một dòng CSS chết
+  // mà ai đọc cũng tưởng là một cái lưới.
+  assert.ok(new RegExp('\\.canh[,\\s]').test(kh) || kh.includes('.canh {'),
+    'nhánh reduce không tắt chuyển tiếp của `.canh` — cú phóng vẫn chạy 360 ms với người bật'
+    + ' giảm chuyển động');
   for (const cls of ['.sky', '.lop']) {
-    assert.ok(new RegExp(`\\${cls}[,\\s]`).test(kh) || kh.includes(`${cls} {`),
-      `nhánh reduce không tắt chuyển tiếp của ${cls} — cú phóng vẫn chạy 450 ms`);
+    assert.ok(!new RegExp(`\\${cls}[,\\s]`).test(kh),
+      `nhánh reduce còn nhắc ${cls} — nó thôi mang \`transition\` nào kể từ lúc cú phóng gộp`
+      + ' về `.canh`, nên dòng đó không tắt được gì');
   }
   // …nhưng KHÔNG được đụng vào `transform`, `--zs` hay bất cứ khối `.phong*`:
   // đụng vào là người bật giảm chuyển động không phóng được, và cả bước này
@@ -2564,8 +2724,17 @@ test('VIỆC 3 · khung nới ra trên màn rộng, nhưng CHỮ không nở the
   assert.ok(gan > xa, `tỉ lệ gần (${gan}px) không rộng hơn tỉ lệ xa (${xa}px)`);
   // …và chỉ ở tỉ lệ gần: ở tỉ lệ xa bức tranh đã vừa khung, nới thêm chỉ làm
   // tám ô bấm phải với xa hơn.
-  assert.match(TSX_CODE, /styles\.wrap\} \$\{chang \? styles\.rong : ''\}/,
+  //
+  // Nó soi ROUTE XEM THỬ, không soi thành phần, và đó là một phân vai cố ý từ
+  // 20/10/2026: `.rong` nới `<main>` của `/ban-do-sao`, chỗ `<main>` không có
+  // gì khác ngoài bản đồ và vài đoạn văn. Trang chủ có `max-width` riêng
+  // (1 280 px) và KHÔNG gắn lớp này — nới một trang đã có bố cục riêng là xô
+  // lệch mọi khối khác trên đó. Bản đồ chỉ sở hữu `.khung` và hai con của nó.
+  assert.match(PREVIEW_CODE, /styles\.wrap\} \$\{chang \? styles\.rong : ''\}/,
     '`.rong` gắn vô điều kiện — nó phải theo `?chang=`');
+  assert.ok(!/styles\.rong/.test(HOME_CODE) && !/styles\.wrap/.test(HOME_CODE),
+    'trang chủ gắn `.wrap`/`.rong` của route xem thử — hai lớp ấy đặt `max-width` lên `<main>`,'
+    + ' tức xô lệch cả bố cục trang chủ');
 
   // THẺ BÀI rộng ra ĐÚNG hệ số khung nở ra, không hơn. 15ch là con số đo cho
   // khung 1 068 px; lấy tròn 30ch "cho đỡ gãy dòng" là lấy lại đúng chỗ chồng
@@ -2701,7 +2870,10 @@ test('VIỆC 4 · cú phóng có BA NHỊP, và không `transition:` nào trong 
   // nhánh reduce.
   const kh = [...CSS_CODE.matchAll(/@media \(prefers-reduced-motion: reduce\)\s*\{([\s\S]*?)\n\}/g)]
     .map((m) => m[1]).join('\n');
-  for (const cls of ['.sky', '.lop', '.chomNen', '.chomRo']) {
+  // BA vật, không bốn: `.sky`/`.lop` thay bằng MỘT `.canh` từ 20/10/2026, khi
+  // cú phóng gộp `transform` về một cái bọc — xem ca `GIẢM CHUYỂN ĐỘNG` ở trên,
+  // chỗ đòi hai tên kia KHÔNG được quay lại nhánh này.
+  for (const cls of ['.canh', '.chomNen', '.chomRo']) {
     assert.ok(new RegExp(`\\${cls}[,\\s]`).test(kh), `nhánh reduce không tắt nhịp của ${cls}`);
   }
 });

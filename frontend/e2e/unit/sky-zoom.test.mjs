@@ -49,15 +49,19 @@ import { SKY_CONSTELLATIONS } from '../../src/lib/star-map.ts';
 const FE = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const read = (...p) => readFileSync(join(FE, ...p), 'utf8');
 
-const CSS = read('src', 'app', 'ban-do-sao', 'star-map.module.css');
+/* BẢN ĐỒ RỜI `app/ban-do-sao/` SANG `components/star-map/` ngày 20/10/2026, vì
+   trang chủ nay cũng dựng nó — xem chú thích đường dẫn ở đầu
+   `star-map.test.mjs`. `TSX` ở đây là THÀNH PHẦN (`StarMap.tsx`), vì mọi ca
+   trong tệp này soi cấu trúc bản đồ chứ không soi văn của trang. */
+const CSS = read('src', 'components', 'star-map', 'star-map.module.css');
 /** CSS đã bỏ chú thích. Tệp này giải thích rất nhiều bằng tiếng Việt, và một
  *  bộ chọn nằm trong chú thích ("tám quy tắc từng nằm ở đây…") sẽ làm mọi phép
  *  kiểm "không còn quy tắc X" báo xanh trong khi quy tắc ấy vẫn sống, hoặc báo
  *  đỏ trong khi nó đã chết. Cùng một mẹo với `star-map.test.mjs`. */
 const CSS_CODE = CSS.replace(/\/\*[\s\S]*?\*\//g, ' ');
 const boChuThich = (s) => s.replace(/\/\*[\s\S]*?\*\//g, ' ').replace(/\{\/\*[\s\S]*?\*\/\}/g, ' ');
-const TSX = boChuThich(read('src', 'app', 'ban-do-sao', 'page.tsx'));
-const CUR = boChuThich(read('src', 'app', 'ban-do-sao', 'SkyCursor.tsx'));
+const TSX = boChuThich(read('src', 'components', 'star-map', 'StarMap.tsx'));
+const CUR = boChuThich(read('src', 'components', 'star-map', 'SkyCursor.tsx'));
 const doc = (f) => read('public', 'map', 'star', f);
 
 /** Mọi dòng chữ của một tấm SVG, theo thứ tự. */
@@ -198,31 +202,51 @@ test('tên 48 bài có một chỗ ở ĐỌC ĐƯỢC: cột đứng CẠNH b�
   assert.match(TSX, /<div className=\{styles\.cot\}>/,
     'bảng bài không còn được bọc — không có gì để đặt vào cột thứ hai của lưới');
   assert.ok(TSX.indexOf('styles.cot') > TSX.lastIndexOf('<img'),
-    'cái bọc đứng TRƯỚC tranh — nó phải là anh em ĐỨNG SAU `.frame`, nếu không nó chen vào'
-    + ' giữa hợp đồng thứ tự DOM (luật 4 của page.tsx)');
+    'cái bọc đứng TRƯỚC tranh — nó phải là anh em ĐỨNG SAU `.frame`, nếu không lưới hai cột'
+    + ' xếp nó vào hàng trên');
   assert.ok(TSX.indexOf('data-bang=""') > TSX.indexOf('styles.cot'),
     'bảng bài nằm ngoài cái bọc');
 
-  // Lưới chỉ bật ở màn ĐỦ RỘNG: dưới 1 200 px một cột 22rem ăn hết chỗ của
-  // bức tranh, và `max-width` của `.rong` tự hạ xuống bề rộng màn nên điện
-  // thoại phải giữ nguyên bố cục một cột.
+  /* LƯỚI CHUYỂN TỪ `<main>` SANG `.khungRong` ngày 20/10/2026, và lý do là
+   * trang chủ: tới hôm đó lưới đặt trên `.rong`, tức trên chính `<main>` của
+   * route xem thử, và ở đó nó đúng vì `<main>` ấy không có gì khác ngoài bản
+   * đồ và vài đoạn văn. `<main>` của trang chủ thì đã có bố cục riêng (hai cột
+   * khoá/công cụ, thẻ góp ý), nên một `display: grid` đặt lên nó là dựng lại
+   * cả trang chủ.
+   *
+   * Hai thứ ca này canh không đổi: lưới chỉ bật ở màn ĐỦ RỘNG (dưới 1 200 px
+   * một cột 22rem ăn hết chỗ bức tranh, và điện thoại phải giữ một cột), và
+   * cột chứa khung phải là `minmax(0, 1fr)`.
+   *
+   * Một thứ BỎ ĐƯỢC: luật `> * { grid-column: 1 / -1 }`. Nó có mặt để tiêu đề
+   * và chú giải — con của `<main>` — không rơi vào cột hẹp. `.khung` bọc ĐÚNG
+   * hai phần tử, nên không còn gì để rơi. */
   const mq = [...CSS_CODE.matchAll(/@media \(min-width: (\d+)px\)\s*\{([\s\S]*?)\n\}/g)]
-    .find((m) => /\.rong\s*\{[^}]*display:\s*grid/.test(m[2]));
-  assert.ok(mq, '`.rong` không thành lưới trong một `@media (min-width: …)` nào — cột bài sẽ'
-    + ' hiện ở cả màn 390 px, nơi nó ăn hết chỗ của bức tranh');
+    .find((m) => /\.khungRong\s*\{[^}]*display:\s*grid/.test(m[2]));
+  assert.ok(mq, '`.khungRong` không thành lưới trong một `@media (min-width: …)` nào — cột bài'
+    + ' sẽ hiện ở cả màn 390 px, nơi nó ăn hết chỗ của bức tranh');
   assert.ok(+mq[1] >= 1200, `ngưỡng lưới hai cột chỉ ${mq[1]}px`);
   assert.match(mq[2], /grid-template-columns:\s*minmax\(0, 1fr\) \d+rem/,
     'cột chứa khung không dùng `minmax(0, 1fr)` — `.frame` có `aspect-ratio`, nên một `1fr`'
-    + ' trần lấy `min-width: auto` và khung đẩy lưới rộng hơn cả `main`');
-  assert.match(mq[2], /\.rong > \* \{[^}]*grid-column:\s*1 \/ -1/,
-    'không có luật mặc định "chiếm cả hai cột" — tiêu đề và chú giải sẽ rơi vào cột hẹp');
-  assert.match(mq[2], /\.rong > \.frame \{[^}]*grid-column:\s*1/);
-  assert.match(mq[2], /\.rong > \.cot \{[^}]*grid-column:\s*2/);
-  // `.cot` phải có một quy tắc RIÊNG ngoài khối media: CSS module chỉ xuất lớp
-  // nào xuất hiện trong tệp, và `styles.cot` là `undefined` thì React lặng lẽ
-  // dựng `class="undefined"`.
-  assert.match(CSS_CODE, /\n\.cot \{/,
-    '`.cot` chỉ tồn tại trong khối media — gỡ khối đó ra là `styles.cot` thành `undefined`');
+    + ' trần lấy `min-width: auto` và khung đẩy lưới rộng hơn cả cái bọc');
+  assert.match(mq[2], /\.khungRong > \.frame \{[^}]*grid-column:\s*1/);
+  assert.match(mq[2], /\.khungRong > \.cot \{[^}]*grid-column:\s*2/);
+  // Lưới KHÔNG được đặt lên `<main>` nữa — ở trang chủ `<main>` là bố cục của
+  // cả trang.
+  assert.ok(!/\.rong\s*\{[^}]*display:\s*grid/.test(CSS_CODE),
+    '`.rong` (tức `<main>` của route xem thử) lại thành lưới — ở trang chủ `<main>` đã có bố'
+    + ' cục riêng, nên lưới phải nằm trên cái bọc của bản đồ');
+  // `.cot` và `.khung` phải có một quy tắc RIÊNG ngoài khối media: CSS module
+  // chỉ xuất lớp nào xuất hiện trong tệp, và `styles.cot` là `undefined` thì
+  // React lặng lẽ dựng `class="undefined"`.
+  for (const cls of ['.cot', '.khung'])  {
+    assert.ok(new RegExp(`\\n\\${cls} \\{`).test(CSS_CODE),
+      `\`${cls}\` chỉ tồn tại trong khối media — gỡ khối đó ra là lớp thành \`undefined\``);
+  }
+  // …và `.khungRong` chỉ gắn khi ĐANG PHÓNG: ở tỉ lệ xa không có cột bài nào,
+  // nên một lưới hai cột ở đó là bức tranh tự co lại nhường chỗ cho hư không.
+  assert.match(TSX, /styles\.khung\} \$\{chang \? styles\.khungRong : ''\}/,
+    '`.khungRong` gắn vô điều kiện — ở tỉ lệ xa bức tranh sẽ nhường 22rem cho một cột rỗng');
 });
 
 /* ─────────────────────────────────────────────────────────────────────────

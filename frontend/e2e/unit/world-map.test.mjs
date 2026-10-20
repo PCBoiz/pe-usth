@@ -1059,11 +1059,40 @@ test('tranh KHÔNG gắn id/data-* cho lớp chuyển động — ảnh nền th
   assert.deepEqual(dung, [], `id không ai dùng trong chính tệp SVG: ${dung.join(' ')}`);
 });
 
-/* ═══ 9 · trang chủ có nối bản đồ vào, và vẫn không gọi API ═════════════ */
+/* ═══ 9 · trang chủ KHÔNG còn dựng bản đồ này, và vẫn không gọi API ════
 
-test('trang chủ dựng bản đồ từ giáo trình, không từ con số rời', () => {
-  assert.match(PAGE, /<WorldMap/, 'trang chủ không dựng bản đồ');
-  assert.match(PAGE, /buildRegions\(modules, headCourse\.lessonUrl\)/);
+   CA NÀY ĐỔI CHIỀU NGÀY 20/10/2026, và nó đổi vì SỰ THẬT đổi, không vì nó
+   phiền: bản đồ SAO (`components/star-map/StarMap.tsx`) thay bản đồ vực ở
+   trang chủ. Chủ sản phẩm xem bản deploy và nói "đưa bản đồ sao lên khóa học
+   luôn, vẫn là bản cũ này".
+
+   VÌ SAO NÓ KHÔNG BỊ XOÁ cùng với lời khẳng định cũ. Hai việc, và cả hai vẫn
+   là việc thật:
+
+    1. `WorldMap` CÒN NGUYÊN và còn dựng được. Cả `WorldMap.tsx`,
+       `world-map.ts`, `scripts/map/**`, `public/map/world-map.svg`,
+       `map-motion.*` và 40+ ca test của chúng ở lại tại chỗ, cố ý: nếu bản đồ
+       sao có vấn đề trên production thì quay lại phải là sửa MỘT dòng `import`
+       ở `app/page.tsx`. Mọi ca khác trong tệp này vì thế vẫn đúng và vẫn phải
+       xanh — chúng canh bức tranh và thành phần, không canh chỗ dựng.
+    2. Và đây là chỗ ca này còn mua được một thứ: trang chủ KHÔNG ĐƯỢC dựng
+       CẢ HAI bản đồ. Hai bức tranh cùng lúc là 850 KB cộng 460 KB tải về cho
+       hai thứ nói đúng cùng một điều, trên trang mà ai cũng vào. Đó là cách
+       lần quay lại dễ hỏng nhất: thêm `<StarMap>` mà quên gỡ `<WorldMap>` —
+       hoặc ngược lại — thì trang vẫn chạy, vẫn đẹp, chỉ nặng gấp đôi.
+
+   Luật KHÔNG GỌI API thì không đổi một chữ, và nó phải ở lại đây dù bản đồ
+   nào đang dựng: trang chủ công khai, `apiFetch` gặp 401 là TỰ TẠO tài khoản
+   khách. Ca trong `star-map.test.mjs` canh lại cùng luật cho thành phần mới. */
+
+test('trang chủ dựng ĐÚNG MỘT bản đồ, và nay là bản đồ sao', () => {
+  assert.match(PAGE, /<StarMap /, 'trang chủ không dựng bản đồ nào');
+  assert.ok(!/<WorldMap/.test(PAGE),
+    'trang chủ dựng CẢ HAI bản đồ — 850 KB của bản đồ vực cộng 460 KB của bản đồ sao, cho'
+    + ' hai bức tranh nói đúng cùng một điều, trên trang mà ai cũng vào');
+  // …và thành phần cũ vẫn còn đó để quay lại được: ca này canh "thôi được
+  // dựng", không canh "đã xoá".
+  assert.ok(MAP_TSX.length > 1000, '`WorldMap.tsx` đã bị xoá — đường quay lại mất rồi');
   for (const pattern of [/\bapiFetch\b/, /ensureGuest/, /\bfetch\s*\(/]) {
     assert.ok(!pattern.test(PAGE), `trang chủ chạm vào đường mạng: ${pattern}`);
   }

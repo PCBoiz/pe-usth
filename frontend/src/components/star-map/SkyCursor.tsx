@@ -26,7 +26,7 @@
 //  3. 48 DẤU NGÔI KHÔNG PHẢI VÙNG CHẠM. Đo được: hai ngôi gần nhau nhất cách
 //     48,4 px trong khung 1360 (T02–T03), tức ~38 px CSS ở bề rộng khung thật
 //     — vùng chạm 44 px sẽ CHỒNG NHAU. Nên chúng `pointer-events: none`, và
-//     vùng chạm vẫn là tám ô bao lồi của `page.tsx` (ô nhỏ nhất vẫn rộng 6,8%
+//     vùng chạm vẫn là tám ô bao lồi của `StarMap.tsx` (ô nhỏ nhất vẫn rộng 6,8%
 //     × 4,9% khung ≈ 73 × 40 px). Chuột và ngón tay không thấy 48 ngôi;
 //     CON TRỎ thì thấy (ngôi gần nhất tự nhận mình), và BÀN PHÍM thì thấy
 //     (mũi tên đi giữa các ngôi) — đó là hai đường mà một ô bấm không làm được.
@@ -39,8 +39,8 @@
 //     một ngôi là CON SỐ thứ tự in ở cả hai chỗ (`STAR_COPY.zoomNote` nói ra
 //     điều đó) — chữ, không phải hover.
 //
-//  5. TIẾT LỘ CÓ THỨ TỰ LÀ CSS THUẦN, không phải JS. `.hit*:hover ~ .lop …`
-//     làm cả việc đó, nên nó chạy khi JS chưa tải xong, và `:focus-visible`
+//  5. TIẾT LỘ CÓ THỨ TỰ LÀ CSS THUẦN, không phải JS. `.frame:has(.hitM1:hover)
+//     …` làm cả việc đó, nên nó chạy khi JS chưa tải xong, và `:focus-visible`
 //     cho ra ĐÚNG cùng trạng thái. JS ở đây chỉ thêm ba thứ mà CSS không với
 //     tới: toạ độ con trỏ, ngôi gần nhất, và mũi tên.
 //
@@ -89,12 +89,20 @@ export default function SkyCursor() {
   const root = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // LỚP PHỦ NAY Ở SÂU HƠN MỘT TẦNG, và đó là bản sửa "hơi lag" 20/10/2026:
+    // nó nằm trong `.canh`, cái bọc mang MỘT `transform` cho cả bức thay cho
+    // hai mươi (xem điều 4 ở đầu `StarMap.tsx`). Nên `khung` phải là `.frame`
+    // — ÔNG của lớp phủ, không CHA của nó.
+    //
+    // `.frame` là phần tử đúng cho cả ba việc dưới đây, và không phải vì nó
+    // tiện: nó là phần tử mang `data-phong` (tức `zoomToFrame()` đọc được
+    // trạng thái phóng ở đó), nó là hộp mà `--cx`/`--cy` tính theo (`.canh`
+    // thì đã bị transform, nên một `getBoundingClientRect()` trên nó trả về
+    // hộp ĐÃ PHÓNG và mọi tỉ lệ thô sẽ sai), và nó là phần tử mà tám ô bấm
+    // cùng thuộc về.
     const lop = root.current;
-    // Lớp phủ là CON TRỰC TIẾP của `.frame` — xem thứ tự DOM ở `page.tsx`. Nó
-    // phải nghe trên khung chứ không trên chính nó: chính nó
-    // `pointer-events: none` (nếu không nó che mất tám ô bấm), nên con trỏ
-    // không bao giờ "ở trên" nó.
-    const khung = lop?.parentElement;
+    const canh = lop?.parentElement;
+    const khung = canh?.parentElement;
     if (!lop || !khung) return undefined;
 
     const o = new Map<string, HTMLElement>();
@@ -109,11 +117,12 @@ export default function SkyCursor() {
      * đúng chiều cần nhất ("hover vào 1 bài thì cái ngôi sao đấy sẽ phát
      * sáng"); chiều ngược lại rẻ như cho vì chỗ đổi trạng thái đã có sẵn.
      *
-     * VÌ SAO JS CHỨ KHÔNG CSS, khi mọi thứ khác ở trang này là CSS thuần:
-     * bảng bài là ANH EM ĐỨNG SAU `.frame` trong DOM, và trạng thái hover đi
-     * qua bộ chọn `~` — thứ chỉ nhìn về phía SAU. Không có bộ chọn nào đi từ
-     * một dòng bảng NGƯỢC vào trong khung. Đổi thứ tự DOM thì phá bốn hợp
-     * đồng khác (xem luật 4 ở đầu `page.tsx`), nên chỗ rẻ nhất là ở đây.
+     * VÌ SAO JS CHỨ KHÔNG CSS, khi mọi thứ khác ở đây là CSS thuần: cột bài
+     * là ANH EM của `.frame`, nên một bộ chọn thuần phải đi NGANG rồi XUỐNG
+     * (`.khung:has([data-bai]:hover) .frame … .saoP01`) — và `:has()` không
+     * nói được "ngôi của ĐÚNG mã bài đang được trỏ" mà không viết 48 quy tắc,
+     * mỗi quy tắc nhắc mã bài hai lần. Bốn mươi tám quy tắc sinh từ một vòng
+     * lặp là bốn mươi tám chỗ lệch được; một `querySelector` thì không.
      *
      * VÌ SAO Ở TỆP NÀY chứ không một thành phần mới: `nhan()` dưới đây là chỗ
      * DUY NHẤT trong cả trang biết "ngôi nào đang sống". Một thành phần thứ
@@ -122,14 +131,21 @@ export default function SkyCursor() {
      * trạng thái là một trạng thái sẽ dính.
      *
      * VÌ SAO KHÔNG GIỮ MỘT THAM CHIẾU TỚI BẢNG, và đây là một LỖI ĐÃ SỬA chứ
-     * không một kiểu viết: ở TỈ LỆ XA bảng bài KHÔNG TỒN TẠI (`page.tsx` chỉ
-     * dựng nó khi có `?chang=`). Thành phần này mount một lần ở tỉ lệ xa với
+     * không một kiểu viết: ở TỈ LỆ XA bảng bài KHÔNG TỒN TẠI (`StarMap.tsx`
+     * chỉ dựng nó khi có `chang`). Thành phần này mount một lần ở tỉ lệ xa với
      * `deps: []`, nên một `querySelector('[data-bang]')` lúc mount trả `null`
      * MÃI MÃI — và cú phóng là điều hướng phía client, không tải lại trang,
      * nên effect không chạy lại. Liên kết hai chiều sẽ chỉ chạy khi người ta
      * vào thẳng `?chang=M5` bằng URL, và chết im lặng với mọi ai bấm từ bản
-     * đồ. Nên mọi thứ đi qua UỶ QUYỀN trên `<main>` — phần tử duy nhất chắc
-     * chắn sống suốt đời thành phần này — và tra bảng ĐÚNG LÚC có việc.
+     * đồ. Nên mọi thứ đi qua UỶ QUYỀN trên CÁI BỌC của bản đồ (`.khung`) —
+     * phần tử duy nhất chắc chắn sống suốt đời thành phần này — và tra bảng
+     * ĐÚNG LÚC có việc.
+     *
+     * `.khung` chứ không `<main>` từ 20/10/2026: bản đồ nay dựng ở HAI trang
+     * (trang chủ và route xem thử) với hai cái `<main>` khác nhau, nên "cha
+     * của khung" thôi là một phần tử đoán được. `.khung` là phần tử mà chính
+     * `StarMap` dựng, và cột bài LÀ con của nó — tức phạm vi uỷ quyền nay hẹp
+     * đúng bằng bản đồ, không rộng bằng cả trang.
      */
     const trang = khung.parentElement;
 
@@ -187,8 +203,9 @@ export default function SkyCursor() {
      *
      * Hộp này đổi vì ĐÚNG BA nguyên nhân, nên có đúng ba chỗ xoá nó:
      *  · KÍCH CỠ đổi — `ResizeObserver` trên chính khung. Nó lo cả cú phóng:
-     *    `.rong` nới `main` từ 1 100 lên 1 560 px và lưới hai cột chia lại chỗ,
-     *    nên khung ĐỔI CỠ. Chỗ này là lý do phải dùng `ResizeObserver` chứ
+     *    lưới hai cột của `.khungRong` chia lại chỗ (và ở route xem thử `.rong`
+     *    còn nới `main` từ 1 100 lên 1 560 px), nên khung ĐỔI CỠ ngay lúc
+     *    `?chang=` đổi. Chỗ này là lý do phải dùng `ResizeObserver` chứ
      *    không chỉ `window.resize`: cú phóng là điều hướng phía client, effect
      *    có `deps: []` nên không chạy lại, và không một sự kiện `resize` nào
      *    của cửa sổ xảy ra — một hộp cũ ở đây nghĩa là vòng dò nhận ngôi cách

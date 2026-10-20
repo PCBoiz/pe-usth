@@ -1,4 +1,5 @@
-/* BẢN ĐỒ SAO — route xem thử `/ban-do-sao`, cả bầu trời tám chòm.
+/* BẢN ĐỒ SAO — cả bầu trời tám chòm. Dựng ở TRANG CHỦ (`app/page.tsx`) và ở
+   route xem thử `/ban-do-sao`; thành phần ở `components/star-map/StarMap.tsx`.
 
    Đặc tả: `design/v3/ban-do-sao.md` §10 (hover) và §11 (điện thoại · giảm
    chuyển động). Dữ liệu và mọi mã màu: `src/lib/star-map.ts`.
@@ -32,9 +33,28 @@
    4. `:focus-visible` CHO RA ĐÚNG CÙNG MỘT TRẠNG THÁI như `:hover`, cộng vòng
       tiêu điểm. Người đi bằng Tab phải thấy đúng thứ người đi bằng chuột thấy.
 
-   5. Ô BẤM ĐỨNG TRƯỚC TRANH TRONG DOM, và nằm trên nó bằng `z-index`. Bộ chọn
-      anh em `~` chỉ nhìn về phía SAU, nên `.hitM1:hover ~ .chomM1` đòi mọi
-      `<a>` đi trước mọi `<img>`. Thứ tự thị giác thì do `z-index` lo.
+   5. TRẠNG THÁI HOVER ĐI QUA `:has()`, KHÔNG QUA BỘ CHỌN ANH EM `~` — và đây
+      là một bản sửa ngày 20/10/2026, không một kiểu viết.
+
+      Tới hôm đó quy tắc là `.hitM1:hover ~ .chomM1`, thứ đòi mọi `<a>` ô bấm
+      phải là ANH EM RUỘT đứng TRƯỚC mọi `<img>`. Cái đòi hỏi ấy có một giá mà
+      người dùng trả được: không dựng được một phần tử bọc, nên cú phóng phải
+      đặt `transform` lên TỪNG tấm trong 19 tấm cộng lớp con trỏ — hai mươi
+      phần tử nội suy cùng một `transform`, tức hai mươi lớp hợp thành dựng
+      lên rồi hạ xuống mỗi cú bấm. Chủ sản phẩm gọi nó là "hơi lag".
+
+      `.frame:has(.hitM1:hover) .roM1` nói đúng cùng một thứ và không quan tâm
+      hai bên là anh em hay không, nên cái bọc `.canh` dựng được và MỘT
+      `transform` thay cho hai mươi. Hợp đồng thứ tự DOM còn lại đúng MỘT
+      điều: tấm rõ của chòm k phải đứng sau tấm nghỉ của chính nó (thứ tự z).
+
+      ĐỘ ĐẶC TRƯNG ĐỔI THEO, và nó đã được tính: `:has()` lấy độ đặc trưng của
+      đối số đặc trưng nhất, nên `.frame:has(.hitM1:hover) .roM1` là (0,4,0) —
+      hơn (0,3,0) của `.frame[data-phong='M1'] .roM1`. Không có xung đột nào
+      vì hai trạng thái loại nhau (lúc phóng, tám ô bấm đã `visibility:
+      hidden` + `pointer-events: none` nên `:hover` không khớp được), và chỗ
+      hai bên cùng khớp — bàn phím vào một ngôi TRONG lúc đang phóng — thì cả
+      hai đặt CÙNG một `opacity`.
 
    Vị trí ô bấm (`.hit*a` bao lồi chòm, `.hit*b` hộp nhãn) do
    `py scripts/star/build_sky.py --css` in ra, tính trong khung 1360 × 820 rồi
@@ -56,8 +76,14 @@
    1 560 px cho khung 1 528 px, tức cùng khe ấy thành 161 px.
    `max-width` TỰ hạ xuống bề rộng màn, nên không cần một `@media` nào để
    điện thoại vẫn đúng: ở màn 390 px cả hai giá trị cùng cho ra 390 px.
-   Lớp này chỉ gắn khi `?chang=` hợp lệ (`page.tsx`), vì ở tỉ lệ xa bức tranh
-   đã vừa khung và nới thêm chỉ làm tám ô bấm phải với xa hơn. */
+   Lớp này chỉ gắn khi `?chang=` hợp lệ, vì ở tỉ lệ xa bức tranh đã vừa khung
+   và nới thêm chỉ làm tám ô bấm phải với xa hơn.
+
+   NÓ THUỘC VỀ ROUTE XEM THỬ, không về bản đồ: nó nới `<main>` của
+   `/ban-do-sao`. Trang chủ có `max-width` của riêng nó
+   (`home.module.css`, 1 280 px) và không gắn lớp này — nới một trang đã có
+   bố cục riêng là xô lệch mọi khối khác trên đó. Bản đồ chỉ sở hữu `.khung`
+   và hai con của nó. */
 .rong {
   max-width: 1560px;
 }
@@ -71,6 +97,28 @@
 .rong .bangNote,
 .rong .legend {
   max-width: 72ch;
+}
+
+/* ── CÁI BỌC CỦA CẢ BẢN ĐỒ ─────────────────────────────────────────────
+
+   Gốc của `StarMap.tsx`, và nó bọc ĐÚNG HAI thứ: bức tranh (`.frame`) và cột
+   bài của chặng đang xem (`.cot`).
+
+   VÌ SAO NÓ TỒN TẠI, vì nó mới có từ 20/10/2026: tới hôm đó lưới hai cột nằm
+   trên chính `<main>` của route xem thử (`.rong`), và khi bản đồ lên trang
+   chủ thì `<main>` ở đó là bố cục của TRANG — hai cột khoá/công cụ, thẻ góp
+   ý. Một `display: grid` đặt lên nó là dựng lại cả trang chủ. Lưới vì thế
+   chuyển vào đây, nơi nó chỉ nói về hai phần tử mà bản đồ thật sự sở hữu.
+
+   Mặc định nó TRONG SUỐT về bố cục — một `<div>` khối, đúng dòng chảy cũ của
+   `.frame` rồi `.cot` — nên dưới 1 200 px (và trên điện thoại) không một
+   pixel nào đổi. `min-width: 0` vì nó cũng là con của một lưới ở trang chủ.
+
+   `.khung` phải có một quy tắc RIÊNG ngoài khối media: CSS module chỉ xuất
+   lớp nào xuất hiện trong tệp, và `styles.khung` thành `undefined` thì React
+   lặng lẽ dựng `class="undefined"`. */
+.khung {
+  min-width: 0;
 }
 
 .lead {
@@ -110,6 +158,21 @@
   aspect-ratio: 1360 / 820;
   background: var(--sky-base);
   border-radius: var(--ds-r-md);
+  /* BỐN MỨC Z CỦA KHUNG KHÔNG ĐƯỢC RÒ RA TRANG — thêm 20/10/2026, cùng lúc
+     với việc bản đồ lên trang chủ, và nó là phòng xa chứ không phải chữa một
+     lỗi đã thấy.
+
+     `.frame` có `position: relative` nhưng `z-index: auto`, nên nó KHÔNG tạo
+     ngữ cảnh xếp lớp: bốn mức bên trong (`.nenRa` 1 · `.canh` 2 · `.hit` 3 ·
+     `.thoat` 4) trước nay so trực tiếp với anh em của chính `.frame`. Ở route
+     xem thử điều đó vô hại — `<main>` ở đó không có phần tử nào mang z-index.
+     Trang chủ thì có (thanh trên z 20), và nó sẽ còn thêm nữa. Một thứ trên
+     trang lọt vào giữa bốn mức ấy là nền trống hoặc nút Thoát ngừng ăn cú bấm,
+     tức một đường ra chết im lặng.
+
+     `isolation: isolate` dựng ngữ cảnh mà KHÔNG đặt z-index nào lên `.frame`,
+     nên nó không tự tranh chỗ với thanh trên: thanh trên vẫn vẽ trên bản đồ. */
+  isolation: isolate;
   overflow: hidden;
   position: relative;
   width: 100%;
@@ -134,14 +197,27 @@
 
 /* CÚ PHÓNG — tỉ lệ thứ hai, bước 3 của `design/v3/tuong-tac-ban-do.md`.
 
-   ── VÌ SAO TRANSFORM ĐẶT LÊN TỪNG TẤM, KHÔNG LÊN MỘT DIV BỌC ──────────
+   ── MỘT TRANSFORM TRÊN MỘT CÁI BỌC, KHÔNG HAI MƯƠI ───────────────────
 
-   Một `<div>` bọc mười sáu tấm là cách gọn nhất để phóng cả bức cùng một
-   lúc — và nó phá đúng cái cơ chế hover: trạng thái đi qua bộ chọn ANH EM
-   (`.hitM1:hover ~ .chomM1`), nên ô bấm và tấm ảnh phải là anh em ruột. Bọc
-   tấm vào một div là cắt mọi quan hệ ấy, và phải dựng lại tám trạng thái hover
-   bằng JS. Mười sáu tấm cộng lớp con trỏ đều `inset: 0` phủ đúng khung, nên
-   CÙNG một transform trên từng tấm cho ra ĐÚNG kết quả của một div bọc.
+   ĐÂY LÀ BẢN SỬA CHO "HƠI LAG" (20/10/2026), và chỗ trống phải mang chú thích
+   vì tới hôm qua tệp này còn khẳng định điều NGƯỢC LẠI.
+
+   Bản trước đặt `transform: scale() translate()` lên từng tấm trong 19 tấm
+   CỘNG lớp con trỏ, và lý lẽ của nó đúng trong khuôn của nó: trạng thái hover
+   đi qua bộ chọn ANH EM (`.hitM1:hover ~ .chomM1`), nên ô bấm và tấm ảnh BUỘC
+   phải là anh em ruột, và một `<div>` bọc cắt mọi quan hệ ấy. Giá phải trả là
+   hai mươi phần tử cùng nội suy MỘT phép biến hình giống nhau trong 360 ms —
+   hai mươi lớp hợp thành dựng lên rồi hạ xuống ở mỗi cú bấm, mỗi lớp cỡ cả
+   khung vì tấm nào cũng `inset: 0`.
+
+   Khuôn ấy đã bỏ: hover nay đi qua `:has()` trên chính `.frame` (xem luật 5 ở
+   đầu tệp), thứ không đòi quan hệ anh em nào. Nên `.canh` dựng được, và cú
+   phóng là MỘT `transform` trên MỘT phần tử.
+
+   ĐỪNG DỰNG LẠI `transform` TRÊN `.sky` HAY `.lop`: hai phép scale lồng nhau
+   là hệ số BÌNH PHƯƠNG, nên mỗi tấm sẽ phóng 2,56–10,2 lần thay vì 1,6–3,2, và
+   48 dấu ngôi bay ra ngoài khung. Một ca test đòi hai quy tắc ấy không mang
+   `transform` nào.
 
    ── VÌ SAO KHÔNG PHẢI PARALLAX, VÀ VÌ SAO NÓ TẮT ĐƯỢC ────────────────
 
@@ -155,13 +231,15 @@
    nằm trên compositor. Và nó KHÔNG phải animation CSS bên trong tài liệu SVG —
    thứ đã đo được 2 007 ms luồng chính cho hai hình và trang không tắt được
    (xem `figure-motion.ts`). */
-.sky {
-  display: block;
-  height: 100%;
-  left: 0;
-  object-fit: cover;
+.canh {
+  inset: 0;
+  /* CẢ CÂY CON KHÔNG ĂN CON TRỎ, và đó là một ràng buộc chứ không một phép
+     dọn: `.canh` phủ kín khung, nên nếu nó nhận con trỏ thì nó che mất tám ô
+     bấm chặng (z 3) ở tỉ lệ xa VÀ nền trống `.nenRa` (z 1) ở tỉ lệ gần. 48
+     dấu ngôi tự bật `pointer-events: auto` lại, và chỉ cho chặng đang xem —
+     xem khối `[data-phong] .cum<k> .sao`. */
+  pointer-events: none;
   position: absolute;
-  top: 0;
   transform: scale(var(--zs)) translate(var(--zx), var(--zy));
   /* BA BIẾN, KHÔNG BA CON SỐ — và không `transition:` nào trong quy tắc
      trạng thái. Lý do là một cái bẫy đã trả giá một lần ở `.chomNen`: quy tắc
@@ -175,6 +253,21 @@
      vật — mất dấu vật là mất đúng cảm giác "tôi vừa đi tới một chỗ khác".
      Con số và đường cong ở `SKY_CURSOR.zoom`. */
   transition: transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
+  /* TRÊN nền trống `.nenRa` (z 1), DƯỚI tám ô bấm `.hit` (z 3) và nút Thoát
+     (z 4). `transform` làm phần tử này thành một NGỮ CẢNH XẾP LỚP, nên z-index
+     của mọi thứ bên trong (`.sky` z 1, `.lop` z 3) chỉ còn so với nhau — đó là
+     lý do nền trống phải ra NGOÀI và xuống DƯỚI, không như bản trước khi nó
+     chen được vào giữa tranh và lớp con trỏ. */
+  z-index: 2;
+}
+
+.sky {
+  display: block;
+  height: 100%;
+  left: 0;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
   width: 100%;
   z-index: 1;
 }
@@ -213,8 +306,9 @@
      chỉ đặt BIẾN, nên nhánh reduce vẫn tắt được. */
   --ro-dur: 150ms;
   --ro-tre: 0ms;
-  transition: opacity var(--ro-dur) ease var(--ro-tre),
-    transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
+  /* CHỈ `opacity`. `transform` của cú phóng nay nằm trên cái bọc `.canh` — một
+     nhịp thứ hai ở đây là hệ số phóng BÌNH PHƯƠNG. */
+  transition: opacity var(--ro-dur) ease var(--ro-tre);
 }
 
 /* TẤM NGHỈ CỦA MỘT CHÒM — nay có TÁM tấm như thế, không một tấm.
@@ -233,8 +327,8 @@
   pointer-events: none;
   --nghi-dur: var(--ds-dur-fast);
   --nghi-tre: 0ms;
-  transition: opacity var(--nghi-dur) ease var(--nghi-tre),
-    transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
+  /* CHỈ `opacity` — xem lý do ở `.chomRo`. */
+  transition: opacity var(--nghi-dur) ease var(--nghi-tre);
 }
 
 /* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
@@ -261,9 +355,18 @@
    vẽ lại: trong khung, lớp chung không còn gì để vẽ, và tinh vân raster MỘT
    lần cho cả phiên.
 
-   `transform` chứ không `opacity` trong `will-change`, và đúng là
-   `transform` mà ba tấm này THẬT SỰ đổi: cú phóng chạy `transform` trên từng
-   tấm (`.sky`), nên đây là một lời khai đúng chứ không một cái mẹo nâng lớp.
+   NÓ CÒN CẦN SAU KHI TRANSFORM ĐÃ GỘP VÀO `.canh` (20/10/2026) — và lý do
+   đáng viết ra, vì nửa còn lại của chú thích này vừa hết đúng. `.canh` được
+   nâng lớp TRONG LÚC cú phóng chạy, tức đúng 360 ms mỗi lần bấm; nhưng lượt
+   HOVER thì `.canh` đứng yên và chín tấm chòm vẫn đổi `opacity` ngay trong
+   lớp chung. Cái đắt mà bản sửa này lấy ra khỏi đường vẽ lại là lượt HOVER,
+   không phải cú phóng.
+
+   ĐÂY LÀ MỘT LỜI XIN NÂNG LỚP, KHÔNG MỘT LỜI KHAI "tôi sắp đổi transform" —
+   nói rõ vì tới hôm qua nó là lời khai thật (`.sky` mang `transform` của cú
+   phóng, nay không còn). `will-change: transform` vẫn là cách đúng để xin:
+   trình duyệt nâng lớp theo nó dù phần tử có đổi `transform` hay không, còn
+   `translateZ(0)` thì là cùng một việc viết bằng một phép biến hình giả.
 
    GIÁ PHẢI TRẢ, nói ra để ai định rải thêm thì biết: ba lớp 1 360 × 820 × 4 B
    ≈ 13,4 MB bộ nhớ hình. Đó là lý do bản sửa dừng ở BA tấm — mười sáu tấm chòm
@@ -301,7 +404,10 @@
   display: block;
   min-height: 44px;
   position: absolute;
-  z-index: 2;
+  /* TRÊN cái bọc tranh (`.canh`, z 2). Ô bấm không vẽ gì, nên "trên" ở đây
+     nghĩa là hai thứ: nó nhận được con trỏ, và vòng `:focus-visible` của nó
+     không bị tinh vân vẽ phủ lên. */
+  z-index: 3;
 }
 
 /* ── vùng bấm, sinh bởi `--css` ─────────────────────────────────────── */
@@ -425,9 +531,9 @@
    chính nó hiện lên (nét 0,55 → 0,85), còn bảy tấm nghỉ kia hạ xuống
    `--sky-mo` (nét → 0,31). */
 
-.hit:hover ~ .chomNen,
-.hit:focus-visible ~ .chomNen,
-.lop[data-chang] ~ .chomNen {
+.frame:has(.hit:hover) .chomNen,
+.frame:has(.hit:focus-visible) .chomNen,
+.frame:has(.lop[data-chang]) .chomNen {
   opacity: var(--sky-mo);
   /* NHỊP HAI: lùi lại SAU khi chòm được chọn đã tới (xem khối `.chomNen`).
      Đi qua BIẾN chứ không viết `transition:` ở đây, và đó là một bản sửa chứ
@@ -458,54 +564,54 @@
    phủ LÀ anh em của mười sáu tấm. Không có nhánh này thì đi bằng mũi tên là đi
    trên một bầu trời không sáng lên — tức đúng cái "bàn phím thấy một bản đồ
    khác" mà luật 4 ở đầu tệp cấm. */
-.hitM1:hover ~ .roM1,
-.hitM1:focus-visible ~ .roM1,
-.lop[data-chang='M1'] ~ .roM1 { opacity: 1; }
-.hitM1:hover ~ .chomM1,
-.hitM1:focus-visible ~ .chomM1,
-.lop[data-chang='M1'] ~ .chomM1 { opacity: 0; }
-.hitM2:hover ~ .roM2,
-.hitM2:focus-visible ~ .roM2,
-.lop[data-chang='M2'] ~ .roM2 { opacity: 1; }
-.hitM2:hover ~ .chomM2,
-.hitM2:focus-visible ~ .chomM2,
-.lop[data-chang='M2'] ~ .chomM2 { opacity: 0; }
-.hitM3:hover ~ .roM3,
-.hitM3:focus-visible ~ .roM3,
-.lop[data-chang='M3'] ~ .roM3 { opacity: 1; }
-.hitM3:hover ~ .chomM3,
-.hitM3:focus-visible ~ .chomM3,
-.lop[data-chang='M3'] ~ .chomM3 { opacity: 0; }
-.hitM4:hover ~ .roM4,
-.hitM4:focus-visible ~ .roM4,
-.lop[data-chang='M4'] ~ .roM4 { opacity: 1; }
-.hitM4:hover ~ .chomM4,
-.hitM4:focus-visible ~ .chomM4,
-.lop[data-chang='M4'] ~ .chomM4 { opacity: 0; }
-.hitM5:hover ~ .roM5,
-.hitM5:focus-visible ~ .roM5,
-.lop[data-chang='M5'] ~ .roM5 { opacity: 1; }
-.hitM5:hover ~ .chomM5,
-.hitM5:focus-visible ~ .chomM5,
-.lop[data-chang='M5'] ~ .chomM5 { opacity: 0; }
-.hitM6:hover ~ .roM6,
-.hitM6:focus-visible ~ .roM6,
-.lop[data-chang='M6'] ~ .roM6 { opacity: 1; }
-.hitM6:hover ~ .chomM6,
-.hitM6:focus-visible ~ .chomM6,
-.lop[data-chang='M6'] ~ .chomM6 { opacity: 0; }
-.hitM7:hover ~ .roM7,
-.hitM7:focus-visible ~ .roM7,
-.lop[data-chang='M7'] ~ .roM7 { opacity: 1; }
-.hitM7:hover ~ .chomM7,
-.hitM7:focus-visible ~ .chomM7,
-.lop[data-chang='M7'] ~ .chomM7 { opacity: 0; }
-.hitM8:hover ~ .roM8,
-.hitM8:focus-visible ~ .roM8,
-.lop[data-chang='M8'] ~ .roM8 { opacity: 1; }
-.hitM8:hover ~ .chomM8,
-.hitM8:focus-visible ~ .chomM8,
-.lop[data-chang='M8'] ~ .chomM8 { opacity: 0; }
+.frame:has(.hitM1:hover) .roM1,
+.frame:has(.hitM1:focus-visible) .roM1,
+.frame:has(.lop[data-chang='M1']) .roM1 { opacity: 1; }
+.frame:has(.hitM1:hover) .chomM1,
+.frame:has(.hitM1:focus-visible) .chomM1,
+.frame:has(.lop[data-chang='M1']) .chomM1 { opacity: 0; }
+.frame:has(.hitM2:hover) .roM2,
+.frame:has(.hitM2:focus-visible) .roM2,
+.frame:has(.lop[data-chang='M2']) .roM2 { opacity: 1; }
+.frame:has(.hitM2:hover) .chomM2,
+.frame:has(.hitM2:focus-visible) .chomM2,
+.frame:has(.lop[data-chang='M2']) .chomM2 { opacity: 0; }
+.frame:has(.hitM3:hover) .roM3,
+.frame:has(.hitM3:focus-visible) .roM3,
+.frame:has(.lop[data-chang='M3']) .roM3 { opacity: 1; }
+.frame:has(.hitM3:hover) .chomM3,
+.frame:has(.hitM3:focus-visible) .chomM3,
+.frame:has(.lop[data-chang='M3']) .chomM3 { opacity: 0; }
+.frame:has(.hitM4:hover) .roM4,
+.frame:has(.hitM4:focus-visible) .roM4,
+.frame:has(.lop[data-chang='M4']) .roM4 { opacity: 1; }
+.frame:has(.hitM4:hover) .chomM4,
+.frame:has(.hitM4:focus-visible) .chomM4,
+.frame:has(.lop[data-chang='M4']) .chomM4 { opacity: 0; }
+.frame:has(.hitM5:hover) .roM5,
+.frame:has(.hitM5:focus-visible) .roM5,
+.frame:has(.lop[data-chang='M5']) .roM5 { opacity: 1; }
+.frame:has(.hitM5:hover) .chomM5,
+.frame:has(.hitM5:focus-visible) .chomM5,
+.frame:has(.lop[data-chang='M5']) .chomM5 { opacity: 0; }
+.frame:has(.hitM6:hover) .roM6,
+.frame:has(.hitM6:focus-visible) .roM6,
+.frame:has(.lop[data-chang='M6']) .roM6 { opacity: 1; }
+.frame:has(.hitM6:hover) .chomM6,
+.frame:has(.hitM6:focus-visible) .chomM6,
+.frame:has(.lop[data-chang='M6']) .chomM6 { opacity: 0; }
+.frame:has(.hitM7:hover) .roM7,
+.frame:has(.hitM7:focus-visible) .roM7,
+.frame:has(.lop[data-chang='M7']) .roM7 { opacity: 1; }
+.frame:has(.hitM7:hover) .chomM7,
+.frame:has(.hitM7:focus-visible) .chomM7,
+.frame:has(.lop[data-chang='M7']) .chomM7 { opacity: 0; }
+.frame:has(.hitM8:hover) .roM8,
+.frame:has(.hitM8:focus-visible) .roM8,
+.frame:has(.lop[data-chang='M8']) .roM8 { opacity: 1; }
+.frame:has(.hitM8:hover) .chomM8,
+.frame:has(.hitM8:focus-visible) .chomM8,
+.frame:has(.lop[data-chang='M8']) .chomM8 { opacity: 0; }
 
 .hit:focus-visible {
   outline: var(--ds-bw-3) solid var(--ds-violet-deep);
@@ -551,10 +657,15 @@
    qua được phép thử vì nó là một TRẠNG THÁI chứ không phải một hiệu ứng — và
    đó là lý do nó được chọn thay vì parallax nền, thứ mà tắt đi là mất hẳn. */
 @media (prefers-reduced-motion: reduce) {
+  /* BA VẬT, KHÔNG BỐN. `.sky` và `.lop` rời danh sách này ngày 20/10/2026 vì
+     chúng thôi mang `transition` nào: cú phóng gộp về cái bọc `.canh`, nên
+     `.canh` vào thay đúng chỗ của chúng. Để `.sky`/`.lop` ở lại là hai dòng
+     CSS chết, và một dòng chết ở nhánh reduce là một dòng không ai dám bỏ vì
+     không ai biết nó còn canh gì. Hợp đồng thật nằm ở ca test: `.sky` và
+     `.lop` phải KHÔNG mang `transform`/`transition` nào. */
+  .canh,
   .chomRo,
-  .chomNen,
-  .lop,
-  .sky { transition: none; }
+  .chomNen { transition: none; }
 }
 
 .srOnly {
@@ -624,10 +735,11 @@
    các khối `.hit*`: ca test tính lại bằng `placeStar()` của hồ sơ TS rồi so
    từng con số. */
 
-/* LỚP CON TRỎ MANG ĐÚNG TRANSFORM CỦA CÁC TẤM, và nó buộc phải như thế: 48 dấu
-   ngôi đặt bằng % của lớp này, nên nếu tranh phóng mà lớp này không phóng thì
-   mỗi dấu ngôi đứng cách ngôi thật mấy trăm pixel. Cùng một `transform` cho
-   cả mười sáu tấm lẫn lớp này là cách duy nhất giữ hai thứ dán vào nhau.
+/* LỚP CON TRỎ PHÓNG CÙNG CÁC TẤM, và nó buộc phải như thế: 48 dấu ngôi đặt
+   bằng % của lớp này, nên nếu tranh phóng mà lớp này không phóng thì mỗi dấu
+   ngôi đứng cách ngôi thật mấy trăm pixel. Từ 20/10/2026 nó phóng theo vì nó
+   là CON của `.canh` cùng mười chín tấm — bản trước giữ hai thứ dán vào nhau
+   bằng cách chép cùng một `transform` vào cả hai.
 
    Hệ quả: MỌI THỨ TRONG LỚP NÀY BỊ PHÓNG THEO. Chip 13 px thành 36 px, nét
    1 px thành 2,8 px. Nên các vật bên trong tự ĐẢO hệ số lại —
@@ -640,11 +752,16 @@
   inset: 0;
   pointer-events: none;
   position: absolute;
-  transform: scale(var(--zs)) translate(var(--zx), var(--zy));
-  /* CÙNG ba biến với mười chín tấm, và đó là bắt buộc: lớp này mang 48 dấu
-     ngôi đặt bằng % của chính nó, nên một nhịp lệch là 48 dấu ngôi trượt khỏi
-     48 ngôi thật suốt 360 ms. */
-  transition: transform var(--phong-dur) var(--phong-cong) var(--phong-tre);
+  /* KHÔNG `transform`, KHÔNG `transition` — và đó là bản sửa "hơi lag"
+     20/10/2026, không một chỗ bỏ sót. Tới hôm đó lớp này CHÉP cùng một
+     `transform` với mười chín tấm, vì nó phải phóng cùng nhịp với chúng, và
+     chép là cách duy nhất khi không có cái bọc nào. Nay nó là CON của `.canh`
+     nên nó phóng theo miễn phí, và một `transform` thứ hai ở đây là hệ số
+     BÌNH PHƯƠNG (48 dấu ngôi bay ra ngoài khung).
+
+     `--zs` vẫn đọc được trong này: nó khai ở `.frame`, tức một tổ tiên, nên
+     phép ĐẢO hệ số của các vật bên trong (`scale(1 / var(--zs))`, và chia
+     `--zs` cho bề dày hai ke) không đổi một dòng nào. */
   z-index: 3;
 }
 
@@ -1179,8 +1296,8 @@
  *
  * TRỎ VÀO NAY CHO ĐÚNG HAI THỨ, và cả hai đã có sẵn trong tranh — không một
  * byte CSS nào phải thêm: tấm NGHỈ in `M5 · NumPy`, tấm RÕ (hiện lúc hover,
- * xem khối `.hit:hover ~ .chomNen` ở trên) in THÊM dòng `Advanced Python ·
- * 6 bài`. Tức hover = tên chặng + SỐ bài; nội dung = tên 48 bài thì chờ cú
+ * xem khối `.frame:has(.hit:hover) .chomNen` ở trên) in THÊM dòng
+ * `Advanced Python · 6 bài`. Tức hover = tên chặng + SỐ bài; nội dung = tên 48 bài thì chờ cú
  * phóng. Hình dạng thì cho, nội dung thì giữ.
  *
  * BÀN PHÍM ĐI CÙNG ĐƯỜNG: nhánh thứ ba của mỗi quy tắc cũ
@@ -1569,7 +1686,14 @@
    Hai dòng vẫn là hai dòng, và đó là cố ý: tên dài nhất ("Mini-project: doanh
    thu từ raw tới chart") trên MỘT dòng rộng ~330 px, tức gấp đôi khe 161 px —
    `nowrap` ở đây là hai thẻ cạnh nhau che nhau. 21ch đưa "Array, dtype, shape
-   và axis" từ bốn dòng về hai. */
+   và axis" từ bốn dòng về hai.
+
+   NÓ CỐ Ý CHỈ ÁP Ở ROUTE XEM THỬ, và nói ra để không ai "sửa" cho đều: `.rong`
+   gắn trên `<main>` của `/ban-do-sao`, chỗ `<main>` được nới tới 1 560 px.
+   Trang chủ thì có `max-width: 1280px` của riêng nó (`home.module.css`), nên ở
+   đó khung lúc phóng rộng 1 232 − 24 − 352 = 856 px và khe hai ngôi gần nhau
+   nhất là ~90 px — tức ĐÚNG khuôn mà 15ch đo cho, không phải khuôn 1 528 px.
+   15ch ở trang chủ là con số đúng, không phải con số bị bỏ quên. */
 @media (min-width: 1200px) {
   .rong .tenBai {
     max-width: 21ch;
@@ -1601,33 +1725,36 @@
    * ở màn 1 200–1 300 px.
    *
    * Chỉ ở ≥ 1 200 px, cùng ngưỡng với thẻ 21ch và cùng lý do: dưới mức đó
-   * một cột 22rem ăn hết chỗ của bức tranh, và `max-width` của `.rong` tự hạ
-   * xuống bề rộng màn nên điện thoại giữ nguyên bố cục một cột. */
-  .rong {
+   * một cột 22rem ăn hết chỗ của bức tranh, và bề rộng khung tự hạ xuống bề
+   * rộng màn nên điện thoại giữ nguyên bố cục một cột.
+   *
+   * LƯỚI ĐẶT TRÊN `.khungRong`, KHÔNG TRÊN `<main>` — và đó là bản sửa ngày
+   * 20/10/2026 khi bản đồ lên trang chủ. Tới hôm đó nó đặt trên `.rong`, tức
+   * trên chính `<main>` của route xem thử, và ở đó nó đúng vì `<main>` ấy
+   * KHÔNG có gì khác ngoài bản đồ và vài đoạn văn. `<main>` của trang chủ thì
+   * đã có bố cục riêng (hai cột khoá/công cụ, thẻ góp ý), nên một
+   * `display: grid` đặt lên nó là dựng lại cả trang chủ.
+   *
+   * Nhờ chuyển vào đây, quy tắc "mọi con chiếm cả hai cột" (`.rong > *`) cũng
+   * bỏ được: `.khung` bọc ĐÚNG hai phần tử, nên không còn tiêu đề hay chú
+   * giải nào để rơi vào cột hẹp. */
+  .khungRong {
     align-items: start;
     column-gap: 24px;
     display: grid;
     grid-template-columns: minmax(0, 1fr) 22rem;
   }
 
-  /* Mặc định MỌI con của `main` vẫn chiếm cả hai cột — tiêu đề, câu dẫn, chú
-     giải không có việc gì ở một cột hẹp. Chỉ hai phần tử được chia đôi hàng,
-     và chúng nằm cùng một hàng nhờ tự xếp: `.cot` là con đứng NGAY SAU
-     `.frame` trong DOM, nên nó rơi vào ô trống bên phải cùng hàng. */
-  .rong > * {
-    grid-column: 1 / -1;
-  }
-
-  .rong > .frame {
+  .khungRong > .frame {
     grid-column: 1;
   }
 
-  .rong > .cot {
+  .khungRong > .cot {
     grid-column: 2;
   }
 
   /* Tiêu đề bảng thôi cần lề trên 20px: ở cột bên nó đã thẳng mép trên khung. */
-  .rong > .cot .bangTitle {
+  .khungRong > .cot .bangTitle {
     margin-top: 0;
   }
 }
@@ -1644,15 +1771,25 @@
 
 /* ── ĐƯỜNG RA ──────────────────────────────────────────────────────────
 
-   NỀN TRỐNG. Phủ kín khung, z-index 2 — tức TRÊN mười sáu tấm (z 1) và DƯỚI
-   lớp con trỏ (z 3). Thứ tự ấy LÀ hợp đồng: bấm một ngôi thì mở bài, bấm
-   khoảng trời còn lại thì lùi ra. Nếu nó lên trên lớp con trỏ thì 48 ngôi
-   thành vật trang trí. */
+   NỀN TRỐNG. Phủ kín khung, và từ 20/10/2026 nó ở z-index 1 — tức DƯỚI cái
+   bọc tranh `.canh` (z 2), không trên nó.
+
+   THỨ TỰ NÀY ĐÃ ĐẢO, nên nói rõ vì sao nó vẫn đúng. Hợp đồng không đổi: bấm
+   một ngôi thì mở bài, bấm khoảng trời còn lại thì lùi ra. Bản trước giữ nó
+   bằng cách chen `.nenRa` vào GIỮA tranh (z 1) và lớp con trỏ (z 3), và chen
+   được vì cả ba là anh em ruột. Nay tranh và lớp con trỏ cùng nằm trong
+   `.canh`, mà `.canh` mang `transform` nên nó là một NGỮ CẢNH XẾP LỚP: mọi
+   thứ bên trong vẽ cùng một mức, không có khe nào để chen vào. Để `.nenRa`
+   lên TRÊN `.canh` là để nó lên trên cả 48 ngôi, và lúc đó 48 ngôi thành vật
+   trang trí.
+
+   Nên nó xuống DƯỚI, và nó vẫn nhận được cú bấm vì `.canh` cùng cả cây con
+   `pointer-events: none` — trừ 48 ngôi của chặng đang xem, vốn tự bật lại. */
 .nenRa {
   display: block;
   inset: 0;
   position: absolute;
-  z-index: 2;
+  z-index: 1;
 }
 
 /* NÚT THOÁT — phải THẤY ĐƯỢC, không chỉ phải tồn tại. Esc là đường của người
@@ -1700,10 +1837,10 @@
 /* CỘT BÀI — chỉ là một cái bọc, và nó cố ý KHÔNG có kiểu gì ở đây. Dưới
    1 200 px nó phải trong suốt về bố cục: một `<div>` khối, đúng dòng chảy cũ
    của ba phần tử nó bọc, nên điện thoại không đổi một pixel nào. Toàn bộ việc
-   của nó nằm trong `@media (min-width: 1200px)` phía dưới, nơi nó thành cột
-   bên phải bức tranh. Quy tắc trống này có mặt để lớp được XUẤT ra khỏi CSS
-   module ngay cả khi ai đó gỡ khối media kia — `styles.cot` thành `undefined`
-   thì React lặng lẽ dựng `class="undefined"`. */
+   của nó nằm trong `@media (min-width: 1200px)` phía trên, nơi nó thành cột
+   bên phải bức tranh của `.khungRong`. Quy tắc trống này có mặt để lớp được
+   XUẤT ra khỏi CSS module ngay cả khi ai đó gỡ khối media kia — `styles.cot`
+   thành `undefined` thì React lặng lẽ dựng `class="undefined"`. */
 .cot {
   min-width: 0;
 }

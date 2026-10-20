@@ -1,8 +1,12 @@
-// Trang chủ — dựng lại theo bản thiết kế `design/project/Main.dc.html`
-// ("bản đồ thế giới") và `design-system-v2.md`.
+// Trang chủ — và nó LÀ trang khoá học. Dựng lại theo bản thiết kế
+// `design/project/Main.dc.html` và `design-system-v2.md`.
 //
-// Bố cục: hero (nhãn · tiêu đề · câu dẫn) → cột trái "Khoá đang mở" + "Công cụ"
-// → cột phải thẻ gợi ý bước tiếp + khối ghi chú trung thực → thẻ góp ý.
+// Bố cục: hero (nhãn · tiêu đề) → BẢN ĐỒ SAO → cột trái "Khoá đang mở" +
+// "Công cụ" → cột phải thẻ gợi ý bước tiếp → thẻ góp ý.
+//
+// Bản đồ ở giữa ĐÃ ĐỔI ngày 20/10/2026: bản đồ sao (tám chòm, 48 ngôi) thay
+// bản đồ vực (mặt cắt lục địa). Lý lẽ, con số tải về và đường quay lại nằm ở
+// khối `<StarMap>` dưới đây; `WorldMap` không xoá, chỉ thôi được dựng ở đây.
 //
 // BỐN ĐIỀU BẢN THIẾT KẾ CHỐT, GIỮ Ở ĐÂY (đổi đi là đổi hành vi người dùng thấy):
 //
@@ -13,14 +17,18 @@
 //     thì dùng `apiFetchSessionOnly`; ở ĐÂY thì không cần gì cả, vì danh mục là
 //     tĩnh. Hệ quả cố ý: trang chủ không biết người xem học tới đâu, nên nó
 //     KHÔNG hiện tiến độ — và cũng không bịa ra chỉ số nào để lấp chỗ trống.
+//     Bản đồ sao không đổi điều này: 48 bài của nó là `SKY_TITLES`/`SKY_TESTS`,
+//     đóng băng ở TS từ `scripts/pe-v4/out-advanced/lessons/*.json`.
 //  2. KHÔNG CHUỖI NGÀY, không ngọn lửa, không "5/7 ngày". Chỉ số nào hiện ra
 //     cũng phải là loại CHỈ TĂNG; chuỗi bị đứt là thứ đẩy người học bỏ cuộc.
 //  3. KHÔNG KHOÁ GÌ: không ổ khoá, không "mở khi đủ N bài" — và không câu nào
-//     nói ra điều đó nữa. Bản đồ tám nút bấm được là bằng chứng đủ; một câu
+//     nói ra điều đó nữa. Bản đồ tám chặng bấm được là bằng chứng đủ; một câu
 //     dẫn đi kèm chỉ để trấn an là văn kể lể.
 //  4. MỘT TIÊU ĐỀ KHÔNG KÉO THEO MỘT ĐOẠN MÔ TẢ. Thẻ bắt đầu chỉ có tên bài
 //     + một nút; hero chỉ có nhãn + tiêu đề. Bản cũ có "hệ thống chọn", "Vì sao
 //     bài này", "Đây là gợi ý, không phải lệnh" và một lối ra thứ hai — bỏ cả bốn.
+//     Bản đồ sao cũng không mang một câu dẫn nào vào đây: tiêu đề và chú giải
+//     của nó thuộc về route xem thử `/ban-do-sao`, không về trang này.
 //
 // Câu chữ và các quyết định nằm ở `src/lib/home-copy.ts` (có test:
 // `e2e/unit/home-page.test.mjs`); file này chỉ dựng DOM.
@@ -28,6 +36,7 @@ import type { Metadata } from 'next';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
+import StarMap from '@/components/star-map/StarMap';
 import { COURSES, LEVEL_LABEL, TOOLS } from '@/lib/catalog';
 import CURRICULA_JSON from '@/lib/curricula.json';
 import { feedbackFormHref } from '@/lib/feedback-link';
@@ -43,11 +52,10 @@ import {
   SECTIONS,
   type ModuleLike,
 } from '@/lib/home-copy';
-import { buildRegions } from '@/lib/world-map';
+import { zoomFor } from '@/lib/star-map';
 
 import CatalogTile from './CatalogTile';
 import styles from './home.module.css';
-import WorldMap from './WorldMap';
 
 const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, { modules?: ModuleLike[] }>;
 
@@ -55,16 +63,34 @@ export const metadata: Metadata = {
   title: 'Programming EDU — Khoá học',
 };
 
-export default function HomePage() {
+/** Đường dẫn của CHÍNH trang này: gốc của `?chang=` và của cả ba đường ra. */
+const DUONG = '/';
+
+type Props = { searchParams: Promise<Record<string, string | string[] | undefined>> };
+
+export default async function HomePage({ searchParams }: Props) {
   const feedback = feedbackFormHref();
+  // CÚ PHÓNG CỦA BẢN ĐỒ SAO NẰM TRONG URL (`/?chang=M5`), không trong một
+  // `useState`. Ba hệ quả, và cả ba đều là chỗ bản đồ web hay làm hỏng: nút
+  // LÙI lùi ra khỏi chặng chứ không văng khỏi trang, đường dẫn gửi được, và
+  // không-JS vẫn phóng được.
+  //
+  // GIÁ PHẢI TRẢ, nói thẳng vì nó là một đánh đổi thật: đọc `searchParams` ở
+  // server làm route này thành ĐỘNG (`ƒ` trong `next build`) — trước 20/10/2026
+  // nó là tĩnh (`○`), tức HTML dựng sẵn lúc build và phát từ CDN. Nay mỗi lượt
+  // vào trang chủ là một lượt render ở server. Nó không đọc gì ngoài hai tệp
+  // tĩnh (`catalog.ts`, `curricula.json`) và không gọi API nào, nên lượt render
+  // ấy không có I/O; đổi lại, bản đồ sao nhẹ hơn bản đồ vực 114 KB (gzip) trên
+  // máy tính và 315 KB trên điện thoại — xem chú thích ở khối bản đồ dưới.
+  const tham = (await searchParams).chang;
+  // `zoomFor()` trả `null` cho mọi thứ không phải một khoá chặng. Tham số đến
+  // từ URL, tức từ người lạ: `?chang=` rác phải cho ra bản đồ ở TỈ LỆ XA, chứ
+  // không một trang 500 và không một chuỗi nào được ghép vào `className`.
+  const chang = zoomFor(Array.isArray(tham) ? tham[0] : tham)?.key ?? null;
   // Khoá dẫn đầu danh mục; 13/10/2026 danh mục chỉ còn Advanced Python.
   const headCourse = COURSES[0];
   const modules = headCourse ? CURRICULA[headCourse.id]?.modules ?? [] : [];
   const shape = courseShape(modules);
-  // Tám nút chặng của bản đồ: tên + số bài ĐẾM từ chính giáo trình đang
-  // render (curricula.json), liên kết tới bài đầu mỗi chặng. Không có tiến độ
-  // nào ở đây — trang này không gọi API, xem điều (1) ở đầu file.
-  const regions = headCourse ? buildRegions(modules, headCourse.lessonUrl) : [];
   const step = headCourse
     ? nextStep({
       courseId: headCourse.id,
@@ -75,7 +101,15 @@ export default function HomePage() {
 
   return (
     <>
-      <PageStyles hrefs={['/static/css/edu-theme.css']} />
+      {/* `sky-theme.css` LÀ BẮT BUỘC từ lúc bản đồ sao lên đây, và nó hỏng
+          IM LẶNG nếu quên: tệp ấy do `build_sky.py` sinh và nó khai `--sky-base`
+          (nền khung), chín màu chặng, `--sky-ink`/`--sky-chip`/`--sky-dim`/
+          `--sky-code` và `--sky-mo`. Một `background: var(--sky-base)` không
+          có giá trị thì thuộc tính bị BỎ — nền rơi về trong suốt và bầu trời
+          gần đen nằm trên nền trắng xanh của trang, đúng cái lỗi "hover thì nó
+          XÁM đi chứ không MỜ đi" mà `.frame` sinh ra để chữa. Không có ngoại
+          lệ hay cảnh báo nào ở giữa. */}
+      <PageStyles hrefs={['/static/css/edu-theme.css', '/map/star/sky-theme.css']} />
       {/* .page cao tối thiểu bằng khung nhìn: style.css (đặt min-height cho body)
           không nạp ở trang này, body co theo nội dung thì nền gradient bị đứt
           một đường ngang ở đáy khối nội dung. */}
@@ -90,13 +124,35 @@ export default function HomePage() {
             <h1 className={styles.title}>{INTRO.title}</h1>
           </header>
 
-          {/* BẢN ĐỒ THẾ GIỚI — mặt cắt lục địa của thiết kế v3. Nằm NGOÀI lưới
-              hai cột: khung artboard rộng 1360px, cột trái của trang này
-              ~812px — tám tấm nhãn không vừa cột đó mà không đè lên nhau.
-              Chi tiết: `src/lib/world-map.ts`. */}
-          {regions.length > 0 && headCourse && (
-            <WorldMap regions={regions} />
-          )}
+          {/* BẢN ĐỒ SAO — tám chòm, 48 ngôi = 48 bài. Nằm NGOÀI lưới hai cột:
+              khung artboard rộng 1360 px, cột trái của trang này ~812px —
+              tám tấm nhãn không vừa cột đó mà không đè lên nhau. Thành phần
+              và mọi điều phải giữ: `components/star-map/StarMap.tsx`.
+
+              ── NÓ THAY BẢN ĐỒ VỰC Ở ĐÂY NGÀY 20/10/2026 ─────────────────
+
+              Chủ sản phẩm xem bản deploy và nói "đưa bản đồ sao lên khóa học
+              luôn, vẫn là bản cũ này". `WorldMap` KHÔNG xoá — `WorldMap.tsx`,
+              `world-map.ts`, `scripts/map/**`, `public/map/world-map.svg`,
+              `map-motion.*` và mọi ca test của chúng còn nguyên tại chỗ, chỉ
+              thôi được dựng ở đây. Lý do: nhiều ngày công, và nếu bản đồ sao
+              có vấn đề trên production thì quay lại phải là sửa MỘT dòng
+              `import` chứ không phải dựng lại một tính năng.
+
+              ── TRANG CHỦ NHẸ ĐI, và con số đi theo chiều ngược với dự đoán ─
+
+              Bản đồ vực vào trang bằng `background-image`, và nó tải hai bộ
+              khác nhau theo bề rộng (quy tắc ngoài/trong `@container`):
+                · máy tính: `world-map.svg` 850 525 B (229 047 gzip)
+                · điện thoại: tám ô crop `scene-M*.svg` 1 624 396 B (438 341)
+              Bản đồ sao vào bằng 19 thẻ `<img>`, cùng một bộ cho mọi thiết bị:
+              460 776 B (115 349 gzip).
+              ⇒ máy tính NHẸ đi 114 KB gzip, điện thoại NHẸ đi 315 KB gzip.
+              Nên 19 tệp không cần nạp lười: cái bị thay còn nặng hơn.
+
+              `?chang=` làm route này thành ĐỘNG — xem chú thích ở `searchParams`
+              phía trên, chỗ nói ra giá của việc đó. */}
+          <StarMap base={DUONG} chang={chang} />
 
           <div className={styles.cols}>
             <div className={styles.col}>

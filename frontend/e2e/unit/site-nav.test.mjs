@@ -48,17 +48,32 @@ function routes(dir, prefix = '', out = []) {
 const ROUTES = routes(join(FE, 'src', 'app'));
 
 /**
- * Route XEM THỬ của một bản thiết kế chưa dựng xong — cố ý KHÔNG có lối vào.
+ * Route cố ý KHÔNG có lối vào từ thanh điều hướng.
  *
  * Luật chống trang mồ côi tồn tại vì "một tính năng không có đường vào thì
- * bằng không". Ở đây ngược lại: đưa một bản MẪU chưa xong lên thanh điều
- * hướng là đẩy nó cho người học xem như thể nó đã là sản phẩm. Nên ngoại lệ
- * phải (a) có tên viết ra ở đây kèm lý do, và (b) khai `robots: noindex` —
- * ca dưới canh điều kiện (b), để một trang lọt vào danh sách này không đồng
- * thời lọt vào Google.
+ * bằng không". Ngoại lệ phải (a) có tên viết ra ở đây kèm lý do, và (b) khai
+ * `robots: noindex` — ca dưới canh điều kiện (b), để một trang lọt vào danh
+ * sách này không đồng thời lọt vào Google.
  *
- * Dựng xong tám chòm thì bản đồ sao THAY bản đồ vực ở trang chủ, và dòng này
- * bị xoá chứ không được đổi thành một mục trên thanh trên.
+ * ── LÝ DO CỦA `/ban-do-sao` ĐÃ ĐỔI NGÀY 20/10/2026 ───────────────────
+ *
+ * Tới hôm đó nó là "bản xem thử của một thiết kế chưa dựng xong", và chú thích
+ * ở đây dặn rằng dựng xong thì bản đồ sao THAY bản đồ vực ở trang chủ và DÒNG
+ * NÀY BỊ XOÁ. Nửa đầu đã xảy ra — trang chủ nay dựng `StarMap` — nhưng nửa
+ * sau thì sai, và nó sai vì một lý do mà bản trước không thấy trước: xoá dòng
+ * này KHÔNG làm ca test xanh, nó làm `/ban-do-sao` thành một trang mồ côi thật
+ * và ca đầu tệp đỏ lên. Hai đường đi tiếp, và chỉ một đường đúng:
+ *
+ *  · THÊM một mục "Bản đồ sao" lên thanh trên — SAI. Nó dẫn tới một trang nói
+ *    đúng cùng một thứ với trang chủ, tức một mục điều hướng trỏ vào chỗ người
+ *    ta vừa đi khỏi.
+ *  · GIỮ ngoại lệ, đổi LÝ DO — đúng, và lý do mới là hai việc thật: (1) đường
+ *    QUAY LẠI, nếu bản đồ sao có vấn đề trên production thì trang chủ về bản
+ *    đồ vực bằng một dòng `import` và đây vẫn là chỗ xem bản mới; (2) chỗ xem
+ *    bản đồ MỘT MÌNH, nơi `<main>` nới tới 1 560 px (`.rong`) chứ không 1 280
+ *    px của trang chủ.
+ *
+ * Xoá dòng này chỉ đúng khi `/ban-do-sao` bị xoá cùng lúc.
  */
 const XEM_THU = ['/ban-do-sao'];
 
