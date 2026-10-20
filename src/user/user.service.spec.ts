@@ -4,22 +4,63 @@ import { CachedUserService } from 'src/auth/cached-user.service';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UserService } from './user.service';
 
+/**
+ * `let prisma: any` cũ làm cả bộ test này mất kiểm tra kiểu. Hai hậu quả thật:
+ * gõ sai tên bảng/hàm (`prisma.usr.findUnique`) vẫn biên dịch, và ca
+ * "getProfile không bao giờ trả field password" đọc `res.needs_questionnaire`
+ * trên một `any` — đổi tên field ở service thì ca test vẫn xanh.
+ * Cùng khuôn `courses/courses.service.spec.ts`.
+ */
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+/**
+ * Đối số của các lời gọi mà bộ test này đọc lại qua `mock.calls` — phần where
+ * phải có kiểu thật vì ca "chặn email đã thuộc về NGƯỜI KHÁC" chứng minh mình
+ * bằng chính mệnh đề `id: { not: userId }` trong đó.
+ */
+type TruyVan = { where?: Record<string, unknown>; data?: unknown };
+
+/** Chỉ bảng/hàm mà UserService thật sự gọi. */
+type PrismaMock = {
+  user: {
+    findUnique: AsyncMock<[TruyVan]>;
+    findFirst: AsyncMock<[TruyVan]>;
+    update: AsyncMock<[TruyVan]>;
+  };
+  userFollow: {
+    findUnique: AsyncMock<[TruyVan]>;
+    create: AsyncMock<[TruyVan]>;
+    deleteMany: AsyncMock<[TruyVan]>;
+    findMany: AsyncMock<[TruyVan]>;
+  };
+};
+
 describe('UserService', () => {
   let service: UserService;
-  let prisma: any;
-  let cachedUsers: { invalidate: jest.Mock };
+  let prisma: PrismaMock;
+  let cachedUsers: { invalidate: jest.Mock<void, [number]> };
 
   beforeEach(async () => {
     prisma = {
-      user: { findUnique: jest.fn(), findFirst: jest.fn(), update: jest.fn() },
+      user: {
+        findUnique: asyncMock<[TruyVan]>(),
+        findFirst: asyncMock<[TruyVan]>(),
+        update: asyncMock<[TruyVan]>(),
+      },
       userFollow: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        deleteMany: jest.fn(),
-        findMany: jest.fn(),
+        findUnique: asyncMock<[TruyVan]>(),
+        create: asyncMock<[TruyVan]>(),
+        deleteMany: asyncMock<[TruyVan]>(),
+        findMany: asyncMock<[TruyVan]>(),
       },
     };
-    cachedUsers = { invalidate: jest.fn() };
+    cachedUsers = { invalidate: jest.fn<void, [number]>() };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -44,7 +85,10 @@ describe('UserService', () => {
       questionnaireCompleted: false,
     });
 
-    const res: any = await service.getProfile(1);
+    // KHÔNG khai `: any`: `getProfile` để TS tự suy return type, nên chính
+    // dòng `const res: any` cũ mới là chỗ tạo ra `any`. Bỏ nó đi thì
+    // `res.needs_questionnaire` được tsc kiểm theo kiểu thật của service.
+    const res = await service.getProfile(1);
     expect(res).not.toHaveProperty('password');
     expect(res.needs_questionnaire).toBe(true);
   });
@@ -58,7 +102,14 @@ describe('UserService', () => {
 
     // Điều kiện loại trừ chính mình phải có mặt, nếu không user tự submit lại
     // email của chính mình cũng bị chặn nhầm.
-    expect(prisma.user.findFirst.mock.calls[0][0].where.id).toEqual({ not: 1 });
+    //
+    // Hai khẳng định, KHÔNG dùng `!`: `where` có thể thiếu là một khả năng thật
+    // mà `any` đang che. Nếu service ngừng gửi `where` thì thứ vừa mất là CÁI
+    // CỔNG lọc — `!` sẽ ném TypeError vô nghĩa ở dòng dưới thay vì nói ra điều
+    // đó.
+    const where = prisma.user.findFirst.mock.calls[0][0].where;
+    expect(where).toBeDefined();
+    expect(where?.id).toEqual({ not: 1 });
   });
 
   it('followUser từ chối tự theo dõi chính mình', async () => {

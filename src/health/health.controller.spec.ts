@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import type { Response } from 'express';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { HealthController } from './health.controller';
+
+/** Response giả cho `ready()`: nó chỉ gọi `res.status(code)`, không chaining. */
+type ResGia = { status: jest.Mock<void, [number]> };
 
 describe('HealthController', () => {
   let controller: HealthController;
@@ -84,16 +88,20 @@ describe('HealthController', () => {
    * tới liveness probe của Render.
    */
   describe('GET /health/ready — readiness cho giám sát ngoài', () => {
-    const resGia = () => {
-      const r = { status: jest.fn() } as unknown as import('express').Response & {
-        status: jest.Mock;
-      };
-      return r;
-    };
+    /**
+     * Fake chỉ có `status` — đúng cái `ready()` dùng (không chaining). Bản cũ
+     * khai `Response & { status: jest.Mock }`: giao nhau với `Response.status`
+     * thật làm `expect(res.status)` vướng `unbound-method`, tức cảnh báo rằng
+     * phương thức tách khỏi object có thể mất `this`. Giữ một kiểu riêng cho
+     * fake, chỉ ép sang `Response` ở ĐÚNG chỗ truyền vào controller.
+     */
+    const resGia = (): ResGia => ({ status: jest.fn<void, [number]>() });
 
     it('DB sống: 200 và db=up', async () => {
       const res = resGia();
-      await expect(controller.ready(res)).resolves.toEqual({
+      await expect(
+        controller.ready(res as unknown as Response),
+      ).resolves.toEqual({
         status: 200,
         message: 'ready',
         db: 'up',
@@ -103,9 +111,13 @@ describe('HealthController', () => {
 
     // CA BẮT LỖI CHÍNH: đổi 503 thành 200 ở health.controller.ts thì ca này trượt.
     it('DB chết: trả 503 — KHÁC /health, vốn vẫn 200', async () => {
-      prisma.$queryRaw.mockRejectedValue(new Error('28P01 password authentication failed'));
+      prisma.$queryRaw.mockRejectedValue(
+        new Error('28P01 password authentication failed'),
+      );
       const res = resGia();
-      await expect(controller.ready(res)).resolves.toEqual({
+      await expect(
+        controller.ready(res as unknown as Response),
+      ).resolves.toEqual({
         status: 503,
         message: 'DB không với tới được',
         db: 'down',
@@ -116,7 +128,10 @@ describe('HealthController', () => {
     it('cùng một sự cố: /health 200 còn /health/ready 503 — đúng chỗ phân vai', async () => {
       prisma.$queryRaw.mockRejectedValue(new Error('DB down'));
       const res = resGia();
-      const [live, ready] = [await controller.check(), await controller.ready(res)];
+      const [live, ready] = [
+        await controller.check(),
+        await controller.ready(res as unknown as Response),
+      ];
       expect(live.status).toBe(200);
       expect(ready.status).toBe(503);
     });
@@ -128,7 +143,9 @@ describe('HealthController', () => {
         new Error('password authentication failed for user "neondb_owner"'),
       );
       const res = resGia();
-      const body = JSON.stringify(await controller.ready(res));
+      const body = JSON.stringify(
+        await controller.ready(res as unknown as Response),
+      );
       expect(body).not.toMatch(/neondb_owner|password|authentication/i);
     });
   });

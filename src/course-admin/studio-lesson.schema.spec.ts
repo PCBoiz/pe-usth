@@ -130,12 +130,22 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
     ...base,
     step_1: {
       theory: [
-        { title: 'Định nghĩa: GUI và CLI', body: 'CLI nhận lệnh gõ trong terminal…' },
+        {
+          title: 'Định nghĩa: GUI và CLI',
+          body: 'CLI nhận lệnh gõ trong terminal…',
+        },
         {
           title: 'Tkinter gồm bốn phần',
-          bullets: ['Window: tk.Tk() là cửa sổ chính', 'Widgets: Frame, Label, Button…'],
+          bullets: [
+            'Window: tk.Tk() là cửa sổ chính',
+            'Widgets: Frame, Label, Button…',
+          ],
         },
-        { title: 'Đọc sơ đồ', body: 'Thanh tiêu đề mang chuỗi của title()…', figure },
+        {
+          title: 'Đọc sơ đồ',
+          body: 'Thanh tiêu đề mang chuỗi của title()…',
+          figure,
+        },
       ],
       figure: { ...figure, name: 'G01-window-anatomy' },
     },
@@ -146,7 +156,9 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
   });
 
   it('bài không khai theory/figure vẫn hợp lệ như cũ (M4–M8, khoá cũ)', () => {
-    expect(validateStudioLesson({ ...base, step_1: { context: { body: 'a' } } })).toEqual([]);
+    expect(
+      validateStudioLesson({ ...base, step_1: { context: { body: 'a' } } }),
+    ).toEqual([]);
   });
 
   it('bắt khối rỗng, thiếu tiêu đề và hình thiếu alt/src ngoài miền', () => {
@@ -156,7 +168,11 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
         theory: [
           { title: 'Chỉ có tiêu đề' },
           { body: 'Thiếu title.' },
-          { title: 'Hình hỏng', body: 'x', figure: { src: 'https://cdn.example.com/a.svg', caption: 'c' } },
+          {
+            title: 'Hình hỏng',
+            body: 'x',
+            figure: { src: 'https://cdn.example.com/a.svg', caption: 'c' },
+          },
         ],
         figure: { src: '/static/anim/x.png', caption: 'c', alt: 'a' },
       },
@@ -169,14 +185,14 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
   });
 
   it('theory sai kiểu bị từ chối', () => {
-    expect(validateStudioLesson({ ...base, step_1: { theory: 'ba khối' } }).join()).toContain(
-      'step_1.theory: phải là mảng',
-    );
-    expect(validateStudioLesson({ ...base, step_1: { theory: [] } }).join()).toContain(
-      'step_1.theory: mảng rỗng',
-    );
-    expect(validateStudioLesson({ ...base, step_1: { figure: 'P01' } }).join()).toContain(
-      'step_1.figure: phải là object',
-    );
+    expect(
+      validateStudioLesson({ ...base, step_1: { theory: 'ba khối' } }).join(),
+    ).toContain('step_1.theory: phải là mảng');
+    expect(
+      validateStudioLesson({ ...base, step_1: { theory: [] } }).join(),
+    ).toContain('step_1.theory: mảng rỗng');
+    expect(
+      validateStudioLesson({ ...base, step_1: { figure: 'P01' } }).join(),
+    ).toContain('step_1.figure: phải là object');
   });
 });
