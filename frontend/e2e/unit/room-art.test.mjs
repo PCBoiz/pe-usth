@@ -153,11 +153,18 @@ test('mọi màu trong hồ sơ là mã hex hợp lệ, và SVG không dùng mà
       for (const b of co) {
         if (a === b) continue;
         const [A, B] = [rgb(a), rgb(b)];
-        const den = B[0] - A[0] || B[1] - A[1] || B[2] - A[2];
-        if (!den) continue;
-        const t = ((p[0] - A[0]) || (p[1] - A[1]) || (p[2] - A[2])) / den;
+        const d = [0, 1, 2].map((i) => B[i] - A[i]);
+        const dd = d.reduce((s, v) => s + v * v, 0);
+        if (!dd) continue;
+        // CHIẾU VUÔNG GÓC lên đoạn, không giải `t` từ MỘT kênh. Bản đầu lấy
+        // kênh đầu tiên có hiệu khác 0, và với thang bóng đèn
+        // (#E3B257 → #FFEEC4) kênh đỏ chỉ đổi 28 mã trong khi kênh lam đổi
+        // 109: làm tròn kênh đỏ nửa mã làm `t` lệch 1,8 %, tức kênh lam lệch
+        // 2 mã — và hai màu NẰM ĐÚNG trên đoạn bị báo là màu lạ. Phép chiếu
+        // không chặt hơn hay lỏng hơn, nó chỉ đặt `t` vào đúng chỗ.
+        const t = [0, 1, 2].reduce((s, i) => s + (p[i] - A[i]) * d[i], 0) / dd;
         if (t < -0.02 || t > 1.02) continue;
-        if (p.every((v, i) => Math.abs(v - (A[i] + (B[i] - A[i]) * t)) <= 1.5)) return true;
+        if (p.every((v, i) => Math.abs(v - (A[i] + d[i] * t)) <= 1.5)) return true;
       }
     }
     return false;
@@ -537,4 +544,270 @@ test('mỗi vật một cặp (base, gain) riêng, và ambient phải NHỎ', ()
   const xa = lampCumAlpha(900);
   assert.ok(gan > xa * 8,
     `gần đèn ${gan.toFixed(3)} so với xa đèn ${xa.toFixed(3)} — ánh sáng gần như không rơi`);
+});
+
+/* ═══ 15 · BA VẬT ĐÃ ĐỌC RA "HÌNH KỸ THUẬT", và phép đo của từng cái ═══
+ *
+ * Lượt nhìn thứ hai (20/10/2026) chỉ ra ba vật mà mọi bảng số ở trên đều
+ * nói là ĐẠT trong khi mắt nói là chưa vẽ xong:
+ *
+ *  · CÁI ĐÈN — "một hình nón đen kẻ sọc, dưới có một thanh trắng mảnh", tức
+ *    vật PHÁT RA toàn bộ ánh sáng của bức là vật trông ít giống thật nhất.
+ *  · TẤM THẺ ĐỒNG — "một hình chữ nhật gạch chéo", đúng họ với chín tấm nền
+ *    nhãn đã phải gỡ khỏi bản đồ sao.
+ *  · THỚ GỖ — "kim loại chải": vệt dài, song song, cách đều, không mắt gỗ.
+ *
+ * Không một ca nào trong mười bốn mục trên bắt được cả ba, vì cả ba là
+ * khuyết tật HÌNH HỌC còn mọi ca đều đo ĐỘ CHÓI và TƯƠNG PHẢN. Sáu ca dưới
+ * đây đo hình: hướng nét, độ cong nét, số bậc tông, thứ tự sáng-tối, và một
+ * câu hỏi mà phép đo tương phản không thể hỏi — chữ có nằm TRÊN tấm thẻ
+ * không.
+ */
+
+/** Mọi subpath của một lớp, đã giải `M l h v Z` → [[x, y], …]. */
+const duong = (than) => {
+  const ra = [];
+  for (const m of than.matchAll(/\sd="([^"]*)"/g)) {
+    let x = 0; let y = 0; let cur = null;
+    for (const t of m[1].matchAll(/([MlhvZ])\s*(-?[\d.]+)?(?:[ ,]+(-?[\d.]+))?/g)) {
+      const c = t[1];
+      if (c === 'M') {
+        if (cur && cur.length > 1) ra.push(cur);
+        x = +t[2]; y = +t[3]; cur = [[x, y]];
+      } else if (!cur) continue;
+      else if (c === 'l') { x += +t[2]; y += +t[3]; cur.push([x, y]); }
+      else if (c === 'h') { x += +t[2]; cur.push([x, y]); }
+      else if (c === 'v') { y += +t[2]; cur.push([x, y]); }
+      else if (c === 'Z') { if (cur.length > 1) ra.push(cur); cur = null; }
+    }
+    if (cur && cur.length > 1) ra.push(cur);
+  }
+  return ra;
+};
+const trung_vi = (a) => a.slice().sort((p, q) => p - q)[a.length >> 1];
+const hop = (p) => ({
+  x0: Math.min(...p.map((q) => q[0])), x1: Math.max(...p.map((q) => q[0])),
+  y0: Math.min(...p.map((q) => q[1])), y1: Math.max(...p.map((q) => q[1])),
+});
+/** Khoảng cách tới tâm một mắt gỗ, TRONG HỆ CỦA MẮT (bỏ xoay và nén). */
+const xa_mat = (x, y, kn) => {
+  const ca = Math.cos(kn.tilt); const sa = Math.sin(kn.tilt);
+  const dx = x - kn.x; const dy = y - kn.y;
+  return Math.hypot(dx * ca + dy * sa, (-dx * sa + dy * ca) / kn.squash);
+};
+const do_choi = (h) => {
+  const c = [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255)
+    .map((s) => (s <= 0.04045 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2];
+};
+
+test('chữ khắc nằm TRỌN trên tấm thẻ đồng, không lơ lửng ra ngoài trên gỗ', () => {
+  // ── PHÉP ĐO MÀ `do_tuong_phan_chu` KHÔNG THỂ LÀ ──────────────────────
+  // Với `lead` 19 và `y` 199 của bản đầu, dòng thứ tư rơi xuống baseline
+  // 258 trong khi mép dưới tấm ở y ≈ 247: cả dòng nằm trên GỖ. Phép đo
+  // tương phản không kêu — nó đo nền tại đúng chỗ chữ nằm, và gỗ ở đó TỐI
+  // HƠN đồng nên tỉ số còn tốt hơn (8,59 : 1). Một dòng chữ lơ lửng ngoài
+  // vật mang nó, với một bảng số đạt mọi sàn.
+  // Nó sống sót thêm một vòng nữa vì `raster_room.py` bỏ qua thẻ `<text>`,
+  // nên chữ khắc chưa từng lọt vào một lượt NHÌN nào.
+  const q = ROOM_PLATE.quad;
+  const trong = (x, y) => {
+    let k = false;
+    for (let i = 0; i < q.length; i += 1) {
+      const j = (i + q.length - 1) % q.length;
+      if ((q[i][1] > y) !== (q[j][1] > y)
+        && x < q[j][0] + ((y - q[i][1]) / (q[j][1] - q[i][1])) * (q[i][0] - q[j][0])) k = !k;
+    }
+    return k;
+  };
+  const t = ROOM_PLATE.text;
+  const dong = [[t.x, t.y, ROOM_COPY.title, t.titleSize]];
+  ROOM_COPY.rows.forEach((s, i) => dong.push([t.x, t.y + t.lead * (i + 1) + 2, s, t.size]));
+  for (const [x, y, s, size] of dong) {
+    // Cùng công thức bề rộng mà `do_tuong_phan_chu` dùng (0,52 em + tracking):
+    // hai ước lượng là hai con số sẽ lệch, và lệch ở đây nghĩa là ca này canh
+    // một hộp chữ khác với hộp mà phép đo tương phản đọc.
+    const w = s.length * size * (0.52 + t.tracking);
+    for (const [px, py] of [[x, y], [x + w, y], [x, y - size * 0.7], [x + w, y - size * 0.7]]) {
+      assert.ok(trong(px, py),
+        `dòng "${s}" có góc (${px.toFixed(0)}, ${py.toFixed(0)}) NGOÀI tấm thẻ đồng —`
+        + ' chú giải khắc trên một tấm đồng không được rơi xuống mặt bàn. Hạ'
+        + ' `ROOM_PLATE.text.lead` hay `size`, đừng nới `quad`.');
+    }
+  }
+  // Và đường viền chìm phải ôm được cả khối chữ, không cắt ngang nó.
+  const day = dong[dong.length - 1][1];
+  const vien_duoi = q[3][1] + (q[2][1] - q[3][1]) * 0.5
+    - (q[3][1] - q[0][1]) * ROOM_PLATE.groove.v;
+  assert.ok(day < vien_duoi,
+    `dòng cuối (baseline ${day}) nằm DƯỚI đường viền chìm (${vien_duoi.toFixed(0)}) — cái`
+    + ' viền cắt ngang chữ thay vì đóng khung nó');
+});
+
+test('vân trên thẻ đồng là vệt CHẢI dọc trục tấm, và phép dò cụm thật sự lọc', () => {
+  // Bản đầu rải 3 400 vệt ở −41° và 2 180 vệt (64 %) sống sót, vì phép dò
+  // cụm viết `rnd() > 0,18 + 1,5 × cum` mà `cum` là fbm chuẩn hoá quanh 0,5:
+  // ngưỡng ≈ 0,93, tức nó không lọc gì cả. Kết quả là một ô bị bôi chéo.
+  const sc = ROOM_PLATE.scratch;
+  const vach = duong(lop('the-dong')).filter((p) => p.length === 2)
+    .map((p) => ({
+      L: Math.hypot(p[1][0] - p[0][0], p[1][1] - p[0][1]),
+      a: Math.atan2(p[1][1] - p[0][1], p[1][0] - p[0][0]),
+    }))
+    .filter((o) => o.L > 12 && o.L < 100);
+  assert.ok(vach.length > 150, `chỉ ${vach.length} vệt chải — mặt đồng mất chất liệu`);
+  assert.ok(vach.length < sc.count * 0.45,
+    `${vach.length}/${sc.count} vệt sống sót (${(vach.length / sc.count * 100).toFixed(0)} %)`
+    + ' — phép dò cụm không lọc, nên vân rải ĐỀU và mặt đồng đọc ra một ô bị gạch');
+  // MỘT HƯỚNG, và hướng ấy là trục dài của tấm. Kim loại được CHẢI; vệt chéo
+  // cắt qua cả hai mép nên mắt đọc ra hoa văn chồng lên vật.
+  const doc = Math.atan2(ROOM_PLATE.quad[1][1] - ROOM_PLATE.quad[0][1],
+    ROOM_PLATE.quad[1][0] - ROOM_PLATE.quad[0][0]);
+  assert.ok(Math.abs(sc.angle - doc) < 0.06,
+    `góc vân ${sc.angle} lệch ${Math.abs(sc.angle - doc).toFixed(3)} rad khỏi trục dài của`
+    + ` tấm (${doc.toFixed(4)}) — vân chải phải song song với tấm, không với khung ảnh`);
+  const lech = vach.filter((o) => Math.abs(o.a - sc.angle) > 0.2);
+  assert.equal(lech.length, 0,
+    `${lech.length} vệt lệch quá 0,2 rad khỏi hướng chải — hai hướng trên một mặt kim`
+    + ' loại là gạch chéo, không phải vết đánh bóng');
+  assert.ok(Math.abs(trung_vi(vach.map((o) => o.a))) < 0.1,
+    'hướng trung vị của vân không nằm ngang theo tấm');
+});
+
+test('thớ gỗ ĐI VÒNG quanh mắt gỗ, không đi xuyên qua', () => {
+  // Ba cái mắt đã có từ bản đầu, nhưng thớ đi XUYÊN chúng — nên chúng đọc ra
+  // ba vết bẩn hình ê-líp nằm trên một mặt chải. Đo bằng ĐỘ CONG: độ lệch lớn
+  // nhất của vệt khỏi dây cung nối hai đầu, chia cho chiều dài vệt.
+  //
+  // Gỡ `uon_quanh_mat` ra thì tỉ số tụt từ 9,8 về 0,83 — tức thớ gần mắt cong
+  // BẰNG thớ ở giữa mặt bàn, vì cả hai chỉ còn cái rung của `wobble`.
+  const cong = (p) => {
+    const [ax, ay] = p[0];
+    const [bx, by] = p[p.length - 1];
+    const L = Math.hypot(bx - ax, by - ay) || 1;
+    let m = 0;
+    for (const [x, y] of p) {
+      m = Math.max(m, Math.abs((bx - ax) * (ay - y) - (ax - x) * (by - ay)) / L);
+    }
+    return { L, c: m / L };
+  };
+  const gan = []; const xa = [];
+  for (const p of duong(lop('tho-go'))) {
+    if (p.length < 3) continue;
+    const o = cong(p);
+    if (o.L < 40) continue;
+    // "GẦN" = trong 1,6 lần bán kính mắt, tức chỗ phép đẩy thật sự lớn. Lấy
+    // cả vùng ảnh hưởng (3,4 lần) là pha loãng phép đo bằng những vệt mà bản
+    // sửa cố tình gần như không đụng tới.
+    (p.some(([x, y]) => ROOM_DESK.knots.some((kn) => xa_mat(x, y, kn) < kn.r * 1.6))
+      ? gan : xa).push(o.c);
+  }
+  assert.ok(gan.length > 30, `chỉ ${gan.length} vệt thớ đi gần mắt gỗ — mắt nằm chỗ khuất?`);
+  const tg = trung_vi(gan);
+  const tx = trung_vi(xa);
+  assert.ok(tg > tx * 4,
+    `thớ gần mắt cong ${tg.toFixed(4)} so với thớ xa ${tx.toFixed(4)} (tỉ số`
+    + ` ${(tg / tx).toFixed(2)}) — thớ đang đi XUYÊN qua mắt gỗ, nên ba cái mắt đọc ra ba`
+    + ' vết bẩn trên một mặt chải, không ra gỗ');
+  // Và sóng vân lớn phải được các hàng KỀ NHAU cùng đọc, không thì nó triệt
+  // tiêu ở cỡ cả mặt bàn và còn lại đúng những vệt song song cách đều.
+  assert.ok(ROOM_DESK.grain.waveRow < 0.15 && ROOM_DESK.grain.wave > 8,
+    'vân sóng lớn lấy nhiễu theo hàng quá nhanh (hay biên độ quá nhỏ) — mỗi hàng uốn một'
+    + ' kiểu thì ở cỡ cả mặt bàn chúng triệt tiêu nhau và gỗ lại thành kim loại chải');
+  // Vệt sẫm cắt ngang là PHƯƠNG THỨ HAI của mặt gỗ.
+  assert.ok(ROOM_DESK.checks.count > 100
+    && Math.abs(ROOM_DESK.checks.tilt) > ROOM_DESK.grain.tilt * 8,
+  'vệt cắt ngang quá ít hay quá thoải — một mặt chỉ có MỘT phương là một mặt chải');
+});
+
+test('cái đèn không phải hình nón phẳng: dốc dọc, miệng Ê-LÍP, bóng đèn có QUẦNG', () => {
+  const den = lop('den');
+  const sh = ROOM_LAMP.shade;
+  // 1 · DỐC DỌC: mỗi dải một mảng tô riêng. Bản đầu có ĐÚNG MỘT mảng
+  // `shadeDark` phẳng cho cả cái chao.
+  const mang = [...den.matchAll(/<path fill="#/g)].length;
+  assert.ok(mang >= sh.bands + sh.mouthLevels + sh.bulb.levels,
+    `lớp đèn chỉ có ${mang} mảng tô — cần ít nhất ${sh.bands} dải chao +`
+    + ` ${sh.mouthLevels} vòng miệng + ${sh.bulb.levels} đĩa bóng đèn. Một mảng phẳng cho`
+    + ' cả cái chao là thứ làm nó đọc ra "hình nón đen kẻ sọc".');
+  const kin = duong(den).filter((p) => p.length > 8);
+  // 2 · MIỆNG LÀ Ê-LÍP. Miệng ở y = 118, dưới chân trời ảo (y = 80), nên
+  // người xem nhìn XUỐNG vào trong chao. Hai nét THẲNG nằm ngang ở đó là một
+  // cái chao không có bề dày — và chính chúng đọc ra "một thanh trắng mảnh".
+  const ry = sh.mouthHalf * sh.mouthSquash;
+  assert.ok(sh.mouthSquash > 0.05, 'miệng chao gần như dẹt — nó lại thành một đoạn thẳng');
+  const mieng = kin.filter((p) => {
+    const b = hop(p);
+    return Math.abs((b.x1 - b.x0) - 2 * sh.mouthHalf) < 5
+      && b.y1 - b.y0 > 2 * ry * 0.7
+      && Math.abs((b.y0 + b.y1) / 2 - ROOM_LAMP.at.y) < 5;
+  });
+  assert.ok(mieng.length >= 1,
+    'không tìm thấy mảng tô nào có bề ngang bằng miệng chao và bề cao của một ê-líp —'
+    + ' miệng đèn đang là một đoạn thẳng');
+  // 3 · BÓNG ĐÈN CÓ QUẦNG: đĩa lồng nhau, không ba cạnh sắc.
+  const by = ROOM_LAMP.at.y + sh.bulb.drop;
+  const bong = kin.filter((p) => {
+    const b = hop(p);
+    return Math.abs((b.x0 + b.x1) / 2 - ROOM_LAMP.at.x) < 4
+      && Math.abs((b.y0 + b.y1) / 2 - by) < 4
+      && b.x1 - b.x0 <= 2 * sh.bulb.r + 3;
+  });
+  assert.ok(bong.length >= sh.bulb.levels - 3,
+    `bóng đèn chỉ có ${bong.length} đĩa (khai ${sh.bulb.levels}) — ba đĩa cho ba cạnh sắc`
+    + ' đếm được bằng mắt, mà một bóng đèn thật có quầng');
+  // 4 · NAN CHAO phải DÀY và MỜ, không thưa và đục: 26 nan đục đọc ra SỌC.
+  assert.ok(sh.ribs >= 60, `chỉ ${sh.ribs} nan chao — thưa thế thì chúng là sọc kẻ`);
+});
+
+test('đế đèn sáng ở TÂM — một cái hố ngay dưới nguồn sáng là một cái hố', () => {
+  // Bản đầu cho vòng NGOÀI `shadeLit` và vòng trong `shadeDark`, nên cái đế
+  // đọc ra một cái hố có vành sáng — ngay dưới nguồn sáng duy nhất của bức.
+  const sh = ROOM_LAMP.shade;
+  const vong = [];
+  for (const m of lop('den').matchAll(/<path fill="(#[0-9A-Fa-f]{6})"[^>]*d="([^"]*)"/g)) {
+    for (const p of duong(` d="${m[2]}"`)) {
+      const b = hop(p);
+      if (Math.abs((b.x0 + b.x1) / 2 - ROOM_LAMP.at.x) < 4
+        && Math.abs((b.y0 + b.y1) / 2 - sh.base.y) < sh.base.ry
+        && b.x1 - b.x0 > sh.base.rx) vong.push([b.x1 - b.x0, do_choi(m[1])]);
+    }
+  }
+  assert.ok(vong.length >= 4, `chỉ thấy ${vong.length} vòng của đế đèn`);
+  vong.sort((a, b) => b[0] - a[0]);
+  assert.ok(vong[vong.length - 1][1] > vong[0][1] * 3,
+    `đế đèn: vòng trong L = ${vong[vong.length - 1][1].toFixed(4)} so với vòng ngoài`
+    + ` L = ${vong[0][1].toFixed(4)} — tâm không sáng hơn vành, tức cái đế là một CÁI HỐ`);
+  // Và vòng trong không được suy biến: `nf()` làm tròn toạ độ về số nguyên,
+  // nên một ê-líp cao 0,8 đơn vị biến mất và cái dốc dừng giữa chừng.
+  assert.ok(sh.base.rings >= 12, 'quá ít vòng, cái dốc của đế sẽ thấy bậc');
+});
+
+test('raster_room.py vẽ được <text> — không thì chú giải chưa ai NHÌN thấy', () => {
+  // `raster.ve` chỉ bắt `path|g|circle|/g`. Bầu trời không có chữ nào nên ở
+  // đó không ai thấy thiếu; bức này có CHÚ GIẢI KHẮC, tức đúng thứ MANG TIN,
+  // và nó chỉ được canh bằng một phép đo tương phản — cùng loại thước đã nói
+  // 47,3 % trong khi tranh thật là 4,3 %.
+  const RAS = readFileSync(join(ROOT, 'scripts', 'room', 'raster_room.py'), 'utf8');
+  assert.match(RAS, /def chu_thanh_net/,
+    'raster_room.py không có bước đổi <text> thành nét — lớp `chu` vô hình trong mọi'
+    + ' lượt nhìn, và ba câu mà chỉ mắt trả lời được (chữ có tràn khỏi tấm không, có đè'
+    + ' lên đinh tán không, bốn dòng có chồng nhau không) không ai hỏi');
+  assert.match(RAS, /tam\.write_text\(chu_thanh_net\(/,
+    'chu_thanh_net có mà không được gọi trước `ve` — một hàm không ai chạy');
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  // Và nó phải THẬT SỰ ra nét: một `<g font-…>` với hai chữ cái → một `<path>`
+  // mang đủ hai khung chữ.
+  const mau = '<g fill="#FFFFFF" font-family="serif" font-size="12">'
+    + '<text x="10" y="20">AB</text></g>';
+  const r = spawnSync(PYBIN, ['-I', '-c',
+    'import sys; sys.path.insert(0, "scripts/room"); import raster_room as rr;'
+    + ' print(rr.chu_thanh_net(sys.argv[1]))', mau],
+  { cwd: ROOT, encoding: 'utf8', maxBuffer: 4 * 1024 * 1024 });
+  assert.equal(r.status, 0, `chu_thanh_net ném lỗi:\n${r.stderr}`);
+  assert.match(r.stdout, /<path fill="none" stroke="#FFFFFF"/,
+    `chu_thanh_net không ra nét nào: ${r.stdout.slice(0, 200)}`);
+  assert.equal((r.stdout.match(/M/g) || []).length, 2,
+    'hai chữ cái phải cho HAI khung — một khung cho cả dòng thì không trả lời được câu'
+    + ' "chữ tràn khỏi tấm ở chữ thứ mấy"');
 });

@@ -129,17 +129,44 @@ export const ROOM_DESK = {
    * từng vệt, 14 000 vượt trần dung lượng. Mật độ cả bức hạ/nâng bằng
    * `DENSITY` ở Python, không bằng cách sửa con số này.
    */
-  grain: { rows: 92, per: 54, len: 116, lenJitter: 0.62, tilt: 0.055, width: 0.5 },
+  grain: {
+    rows: 92, per: 54, len: 116, lenJitter: 0.62, tilt: 0.055, width: 0.5,
+    /**
+     * VÂN SÓNG LỚN — `wave` đơn vị, lấy từ một nhiễu mà HÀNG KỀ NHAU CÙNG
+     * ĐỌC (`waveRow` nhỏ). Bản đầu lấy nhiễu theo `j × 0,31`, tức mỗi hàng
+     * một giá trị không liên quan hàng trên: thớ rung lên xuống nhưng rung
+     * ĐỘC LẬP, nên ở cỡ cả mặt bàn nó triệt tiêu và còn lại đúng những vệt
+     * dài song song cách đều — tức "kim loại chải", không ra gỗ. Gỗ thật có
+     * vân CHẠY THEO NHAU: cả một bó thớ cùng uốn lên rồi cùng uốn xuống.
+     */
+    wave: 15, waveRow: 0.085, waveX: 0.0032,
+  },
+  /**
+   * VỆT SẪM NGẮN CẮT NGANG (tia gỗ / vết nứt thớ) — dốc hơn thớ nhiều lần,
+   * ngắn, thưa. Không có chúng thì mặt gỗ chỉ có MỘT phương, và một mặt chỉ
+   * có một phương là một mặt chải.
+   */
+  checks: { count: 300, len: 13, tilt: 0.85, width: 0.55, opacity: 0.45 },
   /** Lỗ chân gỗ — chấm, không nét. Thứ cho gỗ cái mặt rỗ li ti. */
-  pores: { count: 2000, size: 0.42, opacity: 0.5 },
+  pores: { count: 1700, size: 0.42, opacity: 0.5 },
   /**
    * MẮT GỖ: mỗi mắt là `rings` vòng ê-líp LỒNG NHAU, méo theo góc. Đúng kỹ
    * thuật mà tinh vân dùng (đường đồng mức lồng nhau), ở cỡ nhỏ.
+   *
+   * ── VÀ THỚ PHẢI ĐI VÒNG QUANH CHÚNG ─────────────────────────────────────
+   *
+   * Ba cái mắt đã có từ bản đầu, nhưng thớ ĐI XUYÊN QUA chúng — nên chúng
+   * đọc ra ba vết bẩn hình ê-líp nằm trên một mặt chải, không ra ba cái mắt.
+   * Mắt gỗ là mặt cắt của một CÀNH: thớ thân cây phải tách ra ôm lấy nó rồi
+   * khép lại phía sau, và chính cái tách-ôm-khép ấy là thứ mắt người nhận ra
+   * "gỗ" ở khoảng cách một mét. `bend` là biên độ đẩy ra (phần của `r`),
+   * `reach` là tầm ảnh hưởng (lần `r`) — xem `uon_quanh_mat` ở Python.
    */
+  knotFlow: { bend: 1.25, reach: 3.4 },
   knots: [
-    { x: 523, y: 236, r: 34, rings: 9, squash: 0.44, tilt: 0.22 },
+    { x: 330, y: 334, r: 30, rings: 9, squash: 0.44, tilt: 0.22 },
     { x: 1142, y: 318, r: 46, rings: 11, squash: 0.38, tilt: -0.3 },
-    { x: 836, y: 148, r: 19, rings: 7, squash: 0.5, tilt: 0.12 },
+    { x: 836, y: 172, r: 22, rings: 8, squash: 0.5, tilt: 0.12 },
   ],
   /** MÉP BÀN: vành sáng bắt đèn, cộng một nét tối ngay trên nó. */
   rim: { width: 2.3, dark: 1.5, drop: 2.6, opacity: 0.95 },
@@ -226,14 +253,52 @@ export const ROOM_LAMP = {
    */
   halo: { levels: 26, r: 104, opacity: 0.2 },
   /**
-   * CHAO ĐÈN: hình thang, đỉnh `topY`, miệng ở `at.y`. Mặt ngoài tối (đèn
-   * sáng từ TRONG), vành miệng trong nóng rực — đó là chỗ nói ra "nguồn sáng
-   * ở đây", và nó phải là điểm sáng nhất bức.
+   * CHAO ĐÈN: hình thang, đỉnh `topY`, miệng ở `at.y`.
+   *
+   * ── VÌ SAO BẢN ĐẦU HỎNG, VÀ HỎNG Ở ĐÚNG VẬT KHÔNG ĐƯỢC PHÉP HỎNG ───────
+   *
+   * Bản đầu vẽ chao bằng MỘT mảng `shadeDark` phẳng + 26 nan dọc, và miệng
+   * chao bằng HAI NÉT THẲNG nằm ngang. Trên PNG nó đọc ra "một hình nón đen
+   * kẻ sọc, dưới có một thanh trắng mảnh" — tức vật PHÁT RA toàn bộ ánh sáng
+   * của bức lại là vật trông ít giống thật nhất, nên mắt dừng ở đó và cả bức
+   * mất tin. Mọi vật khác có thể hơi thô; cái đèn thì không.
+   *
+   * Ba thứ đã thiếu, và cả ba là hình học chứ không phải màu:
+   *
+   *  1. **MIỆNG CHAO LÀ MỘT Ê-LÍP, KHÔNG MỘT ĐOẠN THẲNG.** Miệng ở y = 118,
+   *     dưới đường chân trời ảo của mặt bàn (y = 80), nên người xem nhìn
+   *     XUỐNG vào trong chao và THẤY mặt trong được chiếu sáng. Một đoạn
+   *     thẳng ở đó là một cái chao không có bề dày, tức một hình vẽ.
+   *     `mouthSquash` là tỉ số nén của ê-líp ấy, `mouthLevels` là số vòng
+   *     lồng nhau dựng vũng sáng bên trong — cùng kỹ thuật với 152 đĩa của
+   *     vệt sáng, ở cỡ nhỏ.
+   *  2. **MÉP DƯỚI LÀ MỘT VÀNH SÁNG, KHÔNG MỘT CẠNH SẮC.** `rimArcs` cung
+   *     lồng nhau dọc nửa dưới ê-líp, mờ dần ra ngoài.
+   *  3. **MẶT NGOÀI CÓ KHỐI.** `bands` dải ngang cho dốc dọc (tối ở đỉnh,
+   *     ấm dần xuống miệng nơi ánh sáng rò ra), `ribs` nan dọc MỜ cho khối
+   *     tròn — 26 nan đục đọc ra SỌC, 88 nan mờ đọc ra một mặt cong. Và một
+   *     dải chuyển tiếp mảnh ở hai rìa (`edge`), vì kim loại nhìn gần phương
+   *     tiếp tuyến thì phản xạ mạnh hơn hẳn.
    */
   shade: {
-    topY: 22, topHalf: 23, mouthHalf: 63, ribs: 26, hammer: 380,
+    topY: 22, topHalf: 23, mouthHalf: 63, ribs: 88, hammer: 300,
+    /** Dốc dọc mặt ngoài: `bands` dải, tông `vLo`…`vHi` theo `v ** vPow`. */
+    bands: 22, vLo: 0.03, vHi: 0.66, vPow: 3.1,
+    /** Dải sáng mảnh ở hai rìa bóng (phản xạ gần phương tiếp tuyến). */
+    edge: { at: 0.84, gain: 0.5 },
+    /** MIỆNG: ê-líp nén `mouthSquash`, `mouthLevels` vòng lồng, `rimArcs` cung. */
+    mouthSquash: 0.135, mouthLevels: 16, rimArcs: 5,
+    /** BÓNG ĐÈN: `levels` đĩa lồng nhau — QUẦNG, không một cạnh sắc. */
+    bulb: { r: 17, drop: 5.5, levels: 24, squash: 0.82 },
     stem: { width: 5.2, toY: 176 },
-    base: { rx: 47, ry: 13, y: 182, rings: 14 },
+    /**
+     * ĐẾ: `rings` vòng ê-líp lồng nhau. Vòng TRONG sáng, vòng ngoài tối —
+     * bản đầu làm ngược và cái đế đọc ra một CÁI HỐ có vành sáng. Đế nằm ngay
+     * dưới bóng đèn nên chỗ gần bóng nhất (tâm, hơi lệch về phía đèn) là chỗ
+     * sáng nhất; không có cách nào để tâm tối hơn vành mà vẫn còn một nguồn
+     * sáng duy nhất ở trên.
+     */
+    base: { rx: 47, ry: 13, y: 182, rings: 16 },
   },
 } as const;
 
@@ -278,7 +343,13 @@ export const ROOM_BOOK = {
       [0.66, 0.39], [0.78, 0.2], [0.26, 0.46], [0.6, 0.52],
     ],
     links: [[0, 1], [1, 2], [2, 4], [4, 5], [2, 3], [3, 6], [3, 7]],
-    r: 1.9, width: 0.7, opacity: 0.8,
+    /**
+     * `opacity` 0,95 chứ 0,8: bản phác là NÉT MANG TIN (sàn 3 : 1) và nó đo
+     * được **3,44 : 1** — sát sàn tới mức một lần chỉnh tông giấy bất kỳ là
+     * build trượt. Nét mực đặc hơn kéo nó lên **4,23 : 1** mà không phải đụng
+     * vào tông giấy, tức không kéo theo cả hai trang.
+     */
+    r: 1.9, width: 0.7, opacity: 0.95,
   },
 } as const;
 
@@ -296,8 +367,31 @@ export const ROOM_PLATE = {
     [1002, 170], [1298, 176], [1314, 252], [1012, 246],
   ],
   bevel: { width: 1.4, inset: 5.5 },
-  /** Vân xước: `count` vệt song song ở góc `angle` rad. −41°, KHÔNG −45°. */
-  scratch: { count: 3400, angle: -0.7156, len: 26, lenJitter: 1.1, width: 0.3, opacity: 0.15 },
+  /**
+   * VÂN XƯỚC — **vệt CHẢI theo TRỤC DÀI của tấm**, không gạch chéo.
+   *
+   * ── CÁI HÌNH CHỮ NHẬT GẠCH CHÉO, và vì sao nó không phải lỗi màu ────────
+   *
+   * Bản đầu rải 3 400 vệt ở −41° và **2 180 vệt sống sót** (phép dò cụm viết
+   * `rnd() > 0,18 + 1,5 × cum`, mà `cum` quanh 0,5 nên ngưỡng ≈ 0,93 — tức
+   * nó KHÔNG lọc gì cả). Kết quả trên PNG là một ô bị bôi chéo: đúng họ với
+   * chín tấm nền nhãn đã phải gỡ khỏi bản đồ sao, và đọc ra "chưa vẽ xong".
+   *
+   * Hai chỗ sai, và chỗ thứ nhất là HÌNH HỌC chứ mật độ: kim loại được CHẢI
+   * theo MỘT hướng, và hướng ấy chạy dọc trục dài của tấm. Vệt chéo cắt qua
+   * cả hai mép nên mắt đọc ra hoa văn chồng lên vật; vệt chạy dọc trục hoà
+   * vào 44 dải phản quang (cũng chạy ngang) và đọc ra MẶT KIM LOẠI.
+   *
+   * `angle` 0,0203 rad chính là độ dốc mép trên của `quad` (6 / 296) — vân
+   * chải song song với tấm, không song song với khung ảnh. Nó cũng tránh
+   * đúng cái bẫy "góc chẵn xếp thẳng hàng với lưới điểm ảnh" mà góc −45°
+   * mắc: 0 độ chẵn sẽ cho ra những hàng điểm ảnh liền nhau.
+   */
+  scratch: {
+    count: 3400, angle: 0.0203, len: 52, lenJitter: 1.3, width: 0.3, opacity: 0.13,
+    /** Dò CỤM: giữ vệt khi `rnd() < keep × smoothstep((fbm − lo) / wide)`. */
+    clumpLo: 0.44, clumpWide: 0.2, keep: 0.5,
+  },
   /**
    * DẢI PHẢN QUANG — dải sáng chạy NGANG tấm, tâm ở `at` (phần của chiều dọc
    * tấm), nửa bề rộng `half`.
@@ -311,8 +405,27 @@ export const ROOM_PLATE = {
    */
   spec: { at: 0.34, half: 0.46, gain: 0.9 },
   rivets: { r: 2.6, inset: 11 },
+  /**
+   * ĐƯỜNG VIỀN CHÌM — một rãnh khắc chạy vòng trong mép vát, nét tối ở trên
+   * và nét sáng ngay dưới. Nó nói ra tấm thẻ được GIA CÔNG chứ chỉ được cắt
+   * ra, và nó là thứ đóng khung bốn dòng chữ lại thành một chú giải.
+   */
+  groove: { u: 0.035, v: 0.07, width: 0.9 },
+  /**
+   * CHỮ KHẮC — **bốn dòng phải nằm TRỌN trên tấm**, và bản đầu thì không.
+   *
+   * Với `lead` 19 và `y` 199, dòng thứ tư rơi xuống baseline 258 trong khi
+   * mép dưới tấm ở y ≈ 247: cả dòng "NÉT MỜ LÀ CHẶNG CHƯA MỞ" nằm trên GỖ,
+   * không trên đồng. `do_tuong_phan_chu` không hề kêu — nó đo nền bằng
+   * `nen_rgb` tại đúng chỗ chữ nằm, và gỗ ở đó tối hơn đồng nên tương phản
+   * còn TỐT HƠN. Một phép đo đạt 5,03 : 1 cho một dòng chữ lơ lửng ngoài vật
+   * mang nó.
+   *
+   * Nó sống sót vì `raster_room.py` bỏ qua thẻ `<text>`, nên chữ khắc chưa
+   * từng lọt vào một lượt NHÌN nào. Nay nó có (xem mục 0b ở tệp ấy).
+   */
   text: {
-    size: 13.5, lead: 19, titleSize: 11, tracking: 0.1, x: 1026, y: 199,
+    size: 12, lead: 15, titleSize: 10.5, tracking: 0.1, x: 1028, y: 191,
     /** Khắc = một vệt TỐI lệch lên-trái (về phía đèn), rồi nét sáng phủ lên. */
     reliefDx: -0.8, reliefDy: -0.8,
   },
@@ -502,6 +615,12 @@ export interface RoomProfile {
   glowRim: string;
   glowCore: string;
   core: string;
+  /**
+   * SÁU TÔNG CỦA CHAO ĐÈN, tối → sáng. Một mảng `shadeDark` phẳng là thứ làm
+   * cái chao đọc ra "hình nón đen kẻ sọc"; dốc dọc và khối tròn của nó cần
+   * một THANG, y như mặt bàn cần `deskRamp`.
+   */
+  shadeRamp: readonly string[];
   shadeDark: string;
   shadeMid: string;
   shadeLit: string;
@@ -542,6 +661,7 @@ export const ROOM_PROFILE_DARK: RoomProfile = {
   glowRim: '#6B4318',
   glowCore: '#A9701F',
   core: '#E3B257',
+  shadeRamp: ['#0C0905', '#171208', '#271C0F', '#3C2D1B', '#5C4524', '#8E6C34'],
   shadeDark: '#171208',
   shadeMid: '#3C2D1B',
   shadeLit: '#8E6C34',

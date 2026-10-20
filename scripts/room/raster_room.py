@@ -33,11 +33,20 @@ NỀN KIỂM: phía trên mép bàn tiền cảnh KHÔNG vẽ gì (chỗ ấy đ
 qua), nên khung được tô sẵn `checkSky` trước khi vẽ. Không có bước ấy thì nửa
 trên PNG là đen tuyệt đối và không ai thấy được cái mép bàn CẮT vào đâu — tức
 mất đúng thứ thứ tư trong bốn thứ bức này tồn tại để có.
+
+CHỮ: `raster.ve` không biết thẻ `<text>`, nên lớp `chu` (chú giải khắc trên thẻ
+đồng) từng VÔ HÌNH trong mọi lượt nhìn — và một dòng trong bốn dòng đã nằm hẳn
+ngoài tấm thẻ suốt thời gian ấy, với một bảng tương phản đạt 5,03 : 1. Mục 0b
+đổi mỗi chữ cái thành một KHUNG CHỮ NHẬT trước khi raster. Thô, và nói rõ nó
+thô: đây không phải một bộ font, nó chỉ trả lời ba câu mà phép đo tương phản
+không hỏi được — chữ có TRÀN khỏi vật mang nó không, có ĐÈ lên vật khác không,
+các dòng có CHỒNG nhau không.
 """
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -102,6 +111,67 @@ def _net_thanh_hinh(subs, w, cap):
 raster.net_thanh_hinh = _net_thanh_hinh
 
 
+# ═══════════════════════════════════════════════════════════════════════
+# 0b · CHỮ → NÉT, vì `raster.ve` không biết thẻ `<text>`
+# ═══════════════════════════════════════════════════════════════════════
+#
+# `raster._THE` chỉ bắt `path|g|circle|/g`. Bầu trời không có một chữ nào nên
+# ở đó không ai thấy thiếu; bức này có CHÚ GIẢI KHẮC trên thẻ đồng, tức đúng
+# thứ MANG TIN của bức — và nó chưa từng lọt vào một lượt NHÌN nào. Nó chỉ
+# được canh bằng `do_tuong_phan_chu`, một phép đo dựng lại nền từ hàm: cùng
+# loại thước đã nói 47,3 % trong khi tranh thật là 4,3 %.
+#
+# Phép đo ấy KHÔNG trả lời được ba câu mà chỉ mắt trả lời được: chữ có TRÀN
+# khỏi tấm thẻ không, có ĐÈ lên đinh tán / mép vát không, và bốn dòng có
+# chồng lên nhau không. Cả ba đều là lỗi hình học, và cả ba đều lọt qua một
+# phép đo tương phản đạt 5,03 : 1.
+#
+# KHÔNG dựng một bộ font: mỗi chữ cái thành một KHUNG CHỮ NHẬT rỗng, nét dày
+# bằng thân chữ serif (≈ 0,09 em). Thô, và nói rõ nó thô — nhưng một khung
+# đúng chỗ, đúng cỡ, đúng bề rộng dòng trả lời đủ ba câu trên, và nó TÔ CÙNG
+# MỘT MÃ MÀU với chữ thật nên vùng ảnh quanh nó vẫn đọc được bằng mắt.
+#
+# Chiều rộng mỗi chữ lấy ĐÚNG công thức `do_tuong_phan_chu` dùng (0,52 em +
+# tracking): hai ước lượng bề rộng là hai con số sẽ lệch, và lệch ở đây nghĩa
+# là cái khung vẽ ra một chỗ còn phép đo đọc một chỗ khác.
+
+_THE_CHU = re.compile(r'<g ([^>]*font-family[^>]*)>([\s\S]*?)</g>')
+_MOT_CHU = re.compile(r'<text x="(-?[\d.]+)" y="(-?[\d.]+)">([^<]*)</text>')
+
+
+def _attr(s: str, ten: str, mac_dinh=None):
+    m = re.search(r'%s="([^"]*)"' % ten, s)
+    return m.group(1) if m else mac_dinh
+
+
+def chu_thanh_net(svg: str) -> str:
+    """Thay mỗi `<g font-…>…</g>` bằng một `<path>` khung chữ — xem chú thích."""
+    def thay(m):
+        a, than = m.group(1), m.group(2)
+        mau = _attr(a, "fill", "#FFFFFF")
+        size = float(_attr(a, "font-size", "12"))
+        track = float(_attr(a, "letter-spacing", "0"))
+        op = _attr(a, "fill-opacity")
+        d = []
+        for g in _MOT_CHU.finditer(than):
+            x, y = float(g.group(1)), float(g.group(2))
+            for ch in g.group(3):
+                buoc = size * 0.52 + track
+                if not ch.isspace():
+                    x0, x1 = x + size * 0.06, x + buoc - size * 0.06
+                    y0, y1 = y - size * 0.70, y
+                    d.append("M%.1f %.1fh%.1fv%.1fh%.1fZ"
+                             % (x0, y0, x1 - x0, y1 - y0, x0 - x1))
+                x += buoc
+        if not d:
+            return ""
+        return ('<path fill="none" stroke="%s" stroke-width="%.2f"%s d="%s"/>'
+                % (mau, size * 0.09,
+                   '' if op is None else ' stroke-opacity="%s"' % op, "".join(d)))
+
+    return _THE_CHU.sub(thay, svg)
+
+
 def loc_lop(svg: str, giu: set[str]) -> str:
     """Giữ lại một TẬP CON lớp. Dùng để trả lời "cái lỗ kia nằm ở lớp nào" —
     ở bản đồ sao đúng một lượt như thế đã chứng minh mười mảng tối thuộc tấm
@@ -130,16 +200,18 @@ def do_raster(out_dir: Path, buoc: int = 2, png: Path | None = None,
     troi = hex_rgb(P["checkSky"])
     for i in range(len(kh.R)):
         kh.R[i], kh.G[i], kh.B[i] = troi
+    # LUÔN đi qua một tệp tạm, kể cả khi không lọc lớp: `chu_thanh_net` phải
+    # chạy TRƯỚC `ve`, không thì lớp `chu` (chú giải khắc) vô hình trong mọi
+    # lượt nhìn — xem chú thích mục 0b.
+    s = tep.read_text(encoding="utf-8")
     if lop:
-        tam = out_dir / "_loc.svg"
-        tam.write_text(loc_lop(tep.read_text(encoding="utf-8"), set(lop.split(","))),
-                       encoding="utf-8")
-        try:
-            ve(tam, kh)
-        finally:
-            tam.unlink(missing_ok=True)
-    else:
-        ve(tep, kh)
+        s = loc_lop(s, set(lop.split(",")))
+    tam = out_dir / "_raster.svg"
+    tam.write_text(chu_thanh_net(s), encoding="utf-8")
+    try:
+        ve(tam, kh)
+    finally:
+        tam.unlink(missing_ok=True)
     if png:
         w, h = ghi_png(kh, png)
         print("  đã ghi %s (%d × %d px)" % (png, w, h))

@@ -1041,6 +1041,78 @@ def ve_mat_ban(ink, P):
                      ton(P["deskRamp"], ban_t(xm, ym), xm, ym), w, wa["width"])
 
 
+def uon_quanh_mat(pts):
+    """ĐẨY các điểm RA KHỎI mắt gỗ — thớ đi vòng, không đi xuyên.
+
+    Làm việc trong hệ toạ độ RIÊNG của từng mắt (xoay theo `tilt`, bỏ nén
+    theo `squash`), nên cái mắt dù dẹt và nghiêng vẫn được ôm bằng một phép
+    đẩy TRÒN — rồi đổi ngược về khung. Viết thẳng phép đẩy trong khung ảnh
+    thì thớ ôm một hình tròn trong khi mắt là một ê-líp nghiêng, và hai hình
+    lệch nhau đúng ở chỗ ai cũng nhìn: ngay rìa mắt.
+
+    Điểm ở TÂM bị đẩy ra tới rìa (`bend × r`): thớ không chui qua được một
+    cành cây. Hiệu ứng tắt dần tới `reach × r` để không có một vòng gợn nào
+    ở chỗ phép đẩy kết thúc."""
+    kf = DESK["knotFlow"]
+    # CHIA NHỎ ĐOẠN đi qua vùng ảnh hưởng TRƯỚC khi đẩy. `wobble` cho vệt thớ
+    # đi `buoc = 68`, tức một vệt dài 160 đơn vị chỉ có BA điểm — đẩy ba điểm
+    # của một đường thẳng dài thì hoặc không có điểm nào rơi vào vùng mắt
+    # (không uốn gì cả), hoặc đúng một điểm giữa bị đẩy và ra một cái GÃY
+    # KHÚC. Lượt nhìn đầu sau khi thêm phép đẩy cho ra đúng cái thứ nhất: mắt
+    # gỗ vẽ xong mà thớ quanh nó vẫn chạy thẳng tắp.
+    # Chỉ chia những đoạn thật sự đi gần mắt, nên dung lượng chỉ tăng ở ba
+    # chỗ trong bức chứ không ở bảy nghìn vệt.
+    day = []
+    for i in range(len(pts) - 1):
+        a, b = pts[i], pts[i + 1]
+        day.append(a)
+        L = math.hypot(b[0] - a[0], b[1] - a[1])
+        gan = False
+        if L > 10:
+            for k in range(7):
+                t = k / 6
+                px, py = a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t
+                for kn in DESK["knots"]:
+                    # Thử bằng KHOẢNG CÁCH TRONG HỆ CỦA MẮT, không bằng một
+                    # hộp chữ nhật: hộp `tam × tam` của cái mắt r = 46 phủ
+                    # 156 đơn vị mỗi phía, tức một phần tám bức — và mọi vệt
+                    # trong đó bị chia nhỏ dù phép đẩy ở rìa bằng không. Đo
+                    # được: 33 KB, mà không một điểm ảnh nào đổi màu.
+                    ca, sa = math.cos(kn["tilt"]), math.sin(kn["tilt"])
+                    dx, dy = px - kn["x"], py - kn["y"]
+                    if math.hypot(dx * ca + dy * sa,
+                                  (-dx * sa + dy * ca) / kn["squash"]) \
+                            < kn["r"] * kf["reach"]:
+                        gan = True
+                        break
+                if gan:
+                    break
+        if gan:
+            n = min(12, int(L / 11) + 2)
+            for k in range(1, n):
+                t = k / n
+                day.append((a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t))
+    day.append(pts[-1])
+    ra = []
+    for x, y in day:
+        for kn in DESK["knots"]:
+            ca, sa = math.cos(kn["tilt"]), math.sin(kn["tilt"])
+            dx, dy = x - kn["x"], y - kn["y"]
+            ex = dx * ca + dy * sa
+            ey = (-dx * sa + dy * ca) / kn["squash"]
+            d = math.hypot(ex, ey)
+            tam = kn["r"] * kf["reach"]
+            if d >= tam or d < 1e-6:
+                continue
+            f = 1.0 - d / tam
+            k = (d + kn["r"] * kf["bend"] * f * f) / d
+            ex, ey = ex * k, ey * k
+            x = kn["x"] + ex * ca - ey * kn["squash"] * sa
+            y = kn["y"] + ex * sa + ey * kn["squash"] * ca
+        ra.append((x, y))
+    return ra
+
+
 def ve_tho_go(ink, P):
     """THỚ GỖ — thứ CSS không làm được, và thứ chiếm phần lớn số nét của bức.
 
@@ -1066,13 +1138,19 @@ def ve_tho_go(ink, P):
             x0 = (i + rnd(j * 3.1 + i * 0.7, 2.3)) / per * (W + 160) - 80
             L = g["len"] * scale * (1 - g["lenJitter"] / 2 + rnd(i * 1.9, j * 4.1) * g["lenJitter"])
             tilt = (rnd(i * 5.7, j * 2.9) - 0.5) * 2 * g["tilt"]
-            y1 = y0 + (NZ.v(x0 * 0.004, j * 0.31) - 0.5) * 9 * scale
+            # SÓNG LỚN dùng chung cho các hàng kề nhau (`waveRow` nhỏ) — xem
+            # chú thích `ROOM_DESK.grain.wave`.
+            y1 = y0 + (NZ.v(x0 * g["waveX"], j * g["waveRow"]) - 0.5) * g["wave"] * scale
             x2, y2 = x0 + L, y1 + L * tilt
-            # Lề 2,5 và kiểm CẢ HAI đầu: một vệt dài 112 đơn vị có độ nghiêng
-            # `tilt` nên đầu kia có thể cao hơn đầu này vài đơn vị, và
-            # `kiem_mep_trong` đã bắt đúng ca ấy (một vệt ở y = 106 trong khi
-            # mép thấp nhất ở 107).
-            if min(y1, y2) < mep_y(x0) + 2.5 or max(y1, y2) > H - 1:
+            if max(y1, y2) > H - 1:
+                continue
+            # UỐN QUANH MẮT GỖ xong MỚI kiểm mép: phép đẩy làm vệt nhô lên
+            # vài đơn vị, nên kiểm trước khi uốn là kiểm một vệt khác với vệt
+            # được ghi ra tệp — đúng kiểu lệch mô hình ‖ tranh mà cả bộ sinh
+            # này tồn tại để không mắc. `kiem_mep_trong` đọc TỆP, nên nó sẽ
+            # bắt được, nhưng lúc ấy nó chặn build chứ không bỏ một vệt.
+            pts = uon_quanh_mat(wobble(x0, y1, x2, y2, 1.5 * scale, j * 0.7, 68))
+            if min(p[1] for p in pts) < mep_y(x0) + 2.5:
                 continue
             xm, ym = (x0 + x2) / 2, (y1 + y2) / 2
             s = sang(xm, ym)
@@ -1083,8 +1161,22 @@ def ve_tho_go(ink, P):
             else:
                 mau = ton(P["grainRamp"], LIT["grainBase"] + LIT["grainGain"] * s, xm, ym)
                 w, op = g["width"] * (0.7 + 0.6 * scale), 0.4 + 0.5 * s
-            ink.poly("tho-go", wobble(x0, y1, x2, y2, 1.5 * scale, j * 0.7, 68),
-                     mau, w, op)
+            ink.poly("tho-go", pts, mau, w, op)
+    # VỆT SẪM NGẮN CẮT NGANG — tia gỗ. Dốc gấp mười lần thớ, nên chúng là
+    # phương THỨ HAI của mặt gỗ; một mặt chỉ có một phương là một mặt chải.
+    ck = DESK["checks"]
+    for i in range(int(ck["count"] * DENSITY)):
+        x = rnd(i * 2.1, 3.7) * (W + 60) - 30
+        y = hang_y(rnd(i * 4.3, 6.1))
+        L = ck["len"] * (0.4 + rnd(i * 6.7, 2.3))
+        th = ck["tilt"] * (1 if rnd(i * 8.9, 5.1) < 0.5 else -1) \
+            * (0.6 + rnd(i * 3.3, 7.1) * 0.8)
+        pts = uon_quanh_mat([(x, y), (x + L * math.cos(th * 0.4), y + L * math.sin(th))])
+        if min(p[1] for p in pts) < mep_y(x) + 2.5 or max(p[1] for p in pts) > H - 1:
+            continue
+        s = sang(x, y)
+        ink.poly("tho-go", pts, ton(P["grainRamp"], 0.04 + 0.4 * s, x, y),
+                 ck["width"], ck["opacity"] * (0.35 + 0.65 * s))
     # LỖ CHÂN GỖ — chấm, không nét. Thứ cho gỗ cái mặt rỗ li ti mà vệt dài
     # không bao giờ cho được.
     pr = DESK["pores"]
@@ -1129,20 +1221,48 @@ def ve_mat_go(ink, P):
         if cy < DESK["edgeY"] + 8:
             continue
         s = sang(cx, cy)
+        ca, sa = math.cos(kn["tilt"]), math.sin(kn["tilt"])
+        # LÕI MẮT: một mảng tô sẫm. Không có nó thì cái mắt là mấy vòng rỗng
+        # và thớ phía sau vẫn đọc xuyên qua — tức vẫn là một hoa văn, không
+        # một cái cành bị cắt ngang.
+        ink.fill("tho-go", pl([(cx + math.cos(th) * kn["r"] * 0.3 * ca
+                                - math.sin(th) * kn["r"] * 0.3 * kn["squash"] * sa,
+                                cy + math.cos(th) * kn["r"] * 0.3 * sa
+                                + math.sin(th) * kn["r"] * 0.3 * kn["squash"] * ca)
+                               for th in [math.tau * k / 16 for k in range(16)]], True),
+                 P["grainRamp"][0], 0.75)
         for r in range(kn["rings"], 0, -1):
             rr = kn["r"] * r / kn["rings"]
             seg = max(12, int(rr * 1.4))
             pts = []
             for i in range(seg):
                 th = math.tau * i / seg
-                w = 1.0 + 0.16 * math.sin(th * 3 + r * 0.7) * (r / kn["rings"])
+                # Méo NHẸ (0,07, không 0,16): biên độ lớn làm vòng năm lượn
+                # ba múi và cả cái mắt đọc ra một nét NGUỆCH NGOẠC vẽ lên mặt
+                # bàn — đo được trên PNG ở lượt nhìn thứ hai.
+                w = 1.0 + 0.07 * math.sin(th * 3 + r * 0.7) * (r / kn["rings"])
                 ex = rr * w * math.cos(th)
                 ey = rr * w * kn["squash"] * math.sin(th)
-                ca, sa = math.cos(kn["tilt"]), math.sin(kn["tilt"])
                 pts.append((cx + ex * ca - ey * sa, cy + ex * sa + ey * ca))
-            ink.poly("tho-go", pts, ton(P["grainRamp"], LIT["grainBase"] + 0.3 * s, cx, cy),
-                     0.55 if r > 1 else 0.9, (0.3 + 0.45 * s) * (0.5 + 0.5 * r / kn["rings"]),
-                     close=True)
+            # MỌI VÒNG ĐỀU SẪM, dày mỏng xen kẽ. Bản trước cho vòng chẵn tông
+            # `grainLit` và cái mắt thành một hình xoắn ốc SÁNG nổi trên gỗ —
+            # một cái mắt gỗ là chỗ thớ ĐẶC LẠI, nên nó tối hơn mặt gỗ quanh
+            # nó, không sáng hơn. Nét sáng duy nhất là một cung ở rìa dưới-phải
+            # (gờ mắt bắt đèn), vẽ sau vòng ngoài cùng.
+            chan = r % 2 == 0
+            ink.poly("tho-go", pts,
+                     ton(P["grainRamp"], (0.02 if chan else 0.22) + 0.3 * s, cx, cy),
+                     (0.5 if chan else 1.0) * (0.8 + 0.5 * (1 - r / kn["rings"])),
+                     (0.4 if chan else 0.75) + 0.25 * s, close=True)
+        # Gờ mắt bắt đèn — cung ngắn ở rìa DƯỚI-PHẢI, cùng hướng với mọi vành
+        # sáng khác trong bức (đèn ở trên-trái).
+        ink.poly("tho-go", [
+            (cx + (kn["r"] * 1.02 * math.cos(th)) * ca
+             - (kn["r"] * 1.02 * kn["squash"] * math.sin(th)) * sa,
+             cy + (kn["r"] * 1.02 * math.cos(th)) * sa
+             + (kn["r"] * 1.02 * kn["squash"] * math.sin(th)) * ca)
+            for th in [math.pi * (0.1 + 0.75 * k / 10) for k in range(11)]],
+            P["grainLit"], 0.8, 0.2 + 0.5 * s)
 
 
 def ve_vung_sang(ink, P):
@@ -1261,70 +1381,176 @@ def ve_quang_den(ink, P):
                  P["core"] if muc > hl["opacity"] * 0.72 else P["glowCore"], a, solo=True)
 
 
-def ve_den(ink, P):
-    """CHAO, THÂN, ĐẾ. Mặt ngoài chao TỐI (đèn sáng từ TRONG) với một dải sáng
-    bên trái-trên; VÀNH MIỆNG trong nóng rực — đó là chỗ nói ra "nguồn sáng ở
-    đây", và nó là điểm sáng nhất bức."""
+def chao_canh(v: float):
+    """Hai mép và `y` của chao ở độ cao `v` (0 = đỉnh, 1 = miệng). MỘT hàm cho
+    cả dải ngang, nan dọc lẫn vết búa — ba công thức là ba hình sẽ lệch."""
     sh = LAMP["shade"]
     cx, my = LAMP["at"]["x"], LAMP["at"]["y"]
-    poly = chao_poly()
-    ink.fill("den", pl(poly, True), P["shadeDark"])
-    # NAN CHAO: `ribs` nét dọc nối đỉnh với miệng, tông theo góc tới của đèn
-    # phòng (không có) — tức theo khoảng cách tới dải sáng bên trái.
+    half = sh["topHalf"] + (sh["mouthHalf"] - sh["topHalf"]) * v
+    return cx - half, cx + half, sh["topY"] + (my - sh["topY"]) * v
+
+
+def _e_lip(cx, cy, rx, ry, seg=40):
+    return [(cx + math.cos(math.tau * k / seg) * rx,
+             cy + math.sin(math.tau * k / seg) * ry) for k in range(seg)]
+
+
+def ve_den(ink, P):
+    """CHAO, MIỆNG, BÓNG ĐÈN, THÂN, ĐẾ — xem `ROOM_LAMP.shade` để biết bản đầu
+    hỏng ở đâu. Tóm tắt: cái chao là MỘT MẶT CONG có dốc dọc, cái miệng là một
+    Ê-LÍP mà người xem nhìn XUỐNG vào trong, mép dưới là một VÀNH SÁNG, và
+    bóng đèn có QUẦNG chứ không một cạnh sắc."""
+    sh = LAMP["shade"]
+    cx, my = LAMP["at"]["x"], LAMP["at"]["y"]
+    mh = sh["mouthHalf"]
+    ry = mh * sh["mouthSquash"]
+
+    # ── 1 · DỐC DỌC mặt ngoài: `bands` dải hình thang, tô ĐẶC, mỗi dải một
+    # `<path>` riêng. Ánh sáng rò ra ở mép dưới nên tông dồn vào phần dưới
+    # (`vPow` > 1); một dốc tuyến tính làm nửa trên chao sáng bằng nửa dưới,
+    # tức một cái chao được chiếu từ NGOÀI.
+    nb = sh["bands"]
+    for i in range(nb):
+        v0, v1 = i / nb, (i + 1) / nb
+        l0, r0, y0 = chao_canh(v0)
+        l1, r1, y1 = chao_canh(v1)
+        vm = (v0 + v1) / 2
+        t = sh["vLo"] + (sh["vHi"] - sh["vLo"]) * vm ** sh["vPow"]
+        ink.fill("den", pl([(l0, y0), (r0, y0), (r1, y1), (l1, y1)], True),
+                 ton_muot(P["shadeRamp"], t), 1.0, solo=True)
+
+    # ── 2 · KHỐI TRÒN: `ribs` nan dọc MỜ. Chúng không tô lại cái dốc ở trên
+    # (độ mờ thấp), chúng chỉ cộng thêm chiều NGANG — tối ở giữa thân, và một
+    # dải sáng MẢNH ở hai rìa bóng, vì kim loại nhìn gần phương tiếp tuyến
+    # phản xạ mạnh hơn hẳn. 26 nan đục của bản đầu đọc ra SỌC; nan mờ và dày
+    # gấp ba thì chồng mép nhau và đọc ra một mặt cong.
+    eg = sh["edge"]
     for i in range(sh["ribs"] + 1):
         u = i / sh["ribs"]
-        xt = cx - sh["topHalf"] + 2 * sh["topHalf"] * u
-        xb = cx - sh["mouthHalf"] + 2 * sh["mouthHalf"] * u
-        f = max(0.0, 1.0 - abs(u - 0.34) / 0.5)
-        mau = P["shadeLit"] if f > 0.72 else P["shadeMid"] if f > 0.3 else P["shadeDark"]
-        ink.poly("den", wobble(xt, sh["topY"], xb, my, 0.8, i * 1.3, 24), mau,
-                 1.5, 0.3 + 0.5 * f)
-    # Búa gõ: chấm lấm tấm trên mặt chao, đậm hơn ở dải sáng. Đồng gò thì có
-    # vết búa; một mặt chao mịn tuyệt đối là một mặt nhựa.
+        lt, rt, yt = chao_canh(0.0)
+        lb, rb, yb = chao_canh(1.0)
+        canh = abs(u - 0.5) * 2
+        ria = smoothstep((canh - eg["at"]) / max(1e-6, 1 - eg["at"]))
+        # Thân chao: TỐI dần vào giữa (mặt quay thẳng về người xem nhận ít
+        # ánh rò nhất), rồi bật lên ở rìa.
+        if ria > 0.25:
+            mau, op, w = P["shadeLit"], 0.18 + eg["gain"] * ria, 1.9
+        else:
+            khoi = 1.0 - canh ** 2
+            mau = ton_muot(P["shadeRamp"], 0.5 - 0.42 * khoi)
+            op, w = 0.1 + 0.26 * khoi, 2.2
+        ink.poly("den", wobble(lt + (rt - lt) * u, yt, lb + (rb - lb) * u, yb,
+                               0.8, i * 1.3, 30), mau, w, op)
+
+    # ── 3 · VẾT BÚA — đồng gò thì có vết búa; một mặt chao mịn tuyệt đối là
+    # một mặt nhựa. Đậm hơn ở phần dưới, nơi có ánh sáng để bắt.
     for i in range(int(sh["hammer"] * DENSITY)):
         u, v = rnd(i * 1.7, 3.1), rnd(i * 2.3, 8.9)
-        x = (cx - sh["topHalf"] + 2 * sh["topHalf"] * u) * (1 - v) + \
-            (cx - sh["mouthHalf"] + 2 * sh["mouthHalf"] * u) * v
-        y = sh["topY"] + (my - sh["topY"]) * v
-        f = max(0.0, 1.0 - abs(u - 0.34) / 0.5)
-        ink.stroke("den", dot(x, y), P["shadeLit"] if f > 0.6 else P["shadeDark"],
-                   1.1, 0.14 + 0.3 * f)
-    # VÀNH MIỆNG — hai nét: vành ngoài kim loại sáng, vành trong NÓNG RỰC.
-    ink.poly("den", [(cx - sh["mouthHalf"], my), (cx + sh["mouthHalf"], my)],
-             P["shadeRim"], 2.6, 0.95)
-    ink.poly("den", [(cx - sh["mouthHalf"] + 4, my + 2.2),
-                     (cx + sh["mouthHalf"] - 4, my + 2.2)], P["bulb"], 3.4, 0.9)
-    # BÓNG ĐÈN: ba đĩa nhỏ lồng nhau dưới miệng chao. Điểm sáng nhất bức.
-    for k, (rr, col, op) in enumerate(((13, P["core"], 0.5), (8, P["bulb"], 0.7),
-                                       (4.5, P["bulb"], 1.0))):
-        seg = 20
-        pts = [(cx + math.cos(math.tau * i / seg) * rr,
-                my + 5 + math.sin(math.tau * i / seg) * rr * 0.8) for i in range(seg)]
-        ink.fill("den", pl(pts, True), col, op, solo=True)
-    # THÂN: hai nét song song, sáng bên trái tối bên phải — thân kim loại tròn
-    # dưới một nguồn sáng ở trên-trái thì phải thế, và đó là chỗ rẻ nhất để
-    # nói "vật này có khối".
+        l, r, y = chao_canh(v)
+        x = l + (r - l) * u
+        f = v ** 1.6 * (1.0 - 0.5 * abs(u - 0.5) * 2)
+        # Độ mờ THẤP và đường kính dưới một đơn vị: vết búa là thứ phải ĐOÁN
+        # ra khi nhìn gần, không phải thứ đếm được từ xa. Bản trước để 0,44 và
+        # mặt chao đọc ra một trận mưa hạt vàng.
+        ink.stroke("den", dot(x, y), P["shadeLit"] if rnd(i * 4.1, 1.3) < 0.4 + f
+                   else P["shadeRamp"][0], 0.9, 0.06 + 0.17 * f)
+
+    # ── 4 · MIỆNG CHAO — ê-líp, và người xem nhìn XUỐNG vào trong nó.
+    # Vòng ngoài là thành trong phía xa (sáng vừa), rồi `mouthLevels` vòng lồng
+    # nhau LỆCH DẦN LÊN TRÊN và nóng dần: vũng sáng trong lòng chao. Lệch lên
+    # vì thành phía XA là thứ bóng đèn rọi thẳng vào, còn thành phía GẦN quay
+    # lưng lại người xem và nằm trong bóng của chính cái mép.
+    ink.fill("den", pl(_e_lip(cx, my, mh, ry, 44), True),
+             ton_muot(P["shadeRamp"], 0.42), 1.0, solo=True)
+    nm = sh["mouthLevels"]
+    for j in range(nm):
+        k = 1.0 - (j + 1) / (nm + 1)
+        dy = -(1 - k) * ry * 0.5
+        t = (j + 1) / nm
+        mau = ton_muot((P["shadeRamp"][3], P["shadeLit"], P["shadeRim"],
+                        P["bulb"]), t)
+        seg = max(12, int(mh * k * 0.7))
+        ink.fill("den", pl(_e_lip(cx, my + dy, mh * k, ry * k, seg), True),
+                 mau, 0.62, solo=True)
+
+    # ── 5 · VÀNH SÁNG MÉP DƯỚI — `rimArcs` cung lồng nhau dọc NỬA DƯỚI ê-líp,
+    # mờ dần ra ngoài. Đây là chỗ bản đầu đặt một ĐOẠN THẲNG trắng, và chính
+    # đoạn thẳng ấy đọc ra "một thanh trắng mảnh". Một mép kim loại dày 2 mm
+    # dưới ánh đèn của chính nó không có cạnh sắc nào.
+    na = sh["rimArcs"]
+    for j in range(na):
+        f = j / max(1, na - 1)
+        rr, rry = mh * (1 + 0.012 * j), ry * (1 + 0.012 * j)
+        cung = [(cx + math.cos(th) * rr, my + math.sin(th) * rry)
+                for th in [math.pi * (0.04 + 0.92 * k / 26) for k in range(27)]]
+        ink.poly("den", cung, P["shadeRim"] if f < 0.5 else P["core"],
+                 2.6 - 1.4 * f, 0.9 - 0.62 * f)
+    # Mép TRÊN của miệng: nét tối mảnh — nó là cạnh ngoài của chao nhìn gần
+    # phương tiếp tuyến, không phải một chỗ bắt sáng.
+    ink.poly("den", [(cx + math.cos(th) * mh, my + math.sin(th) * ry)
+                     for th in [math.pi * (1.06 + 0.88 * k / 18) for k in range(19)]],
+             P["shadeRamp"][1], 1.6, 0.8)
+
+    # ── 6 · BÓNG ĐÈN — `levels` đĩa lồng nhau theo ĐỘ MỜ TÍCH LUỸ, cùng kỹ
+    # thuật với 152 đĩa của vệt sáng. Ba đĩa của bản đầu cho ba cạnh sắc nhìn
+    # đếm được; một bóng đèn thật có QUẦNG, vì chính không khí quanh nó tán xạ.
+    bl = sh["bulb"]
+    by = my + bl["drop"]
+    tich = 0.0
+    for i in range(bl["levels"]):
+        f = 1.0 - i / bl["levels"]
+        r = bl["r"] * f ** 0.78
+        muc = (i + 1) / bl["levels"]
+        a, tich = (muc - tich) / max(1e-6, 1.0 - tich), muc
+        mau = ton_muot((P["glowCore"], P["core"], P["bulb"]),
+                       min(1.0, (1 - f) ** 0.6 * 1.25))
+        ink.fill("den", pl(_e_lip(cx, by, r, r * bl["squash"],
+                                  max(10, int(r * 1.5))), True), mau, a, solo=True)
+
+    # ── 7 · THÂN: ba nét song song, sáng bên trái tối bên phải — thân kim loại
+    # tròn dưới một nguồn sáng ở trên-trái thì phải thế, và đó là chỗ rẻ nhất
+    # để nói "vật này có khối".
+    # Ba nét CHỒNG MÉP nhau, không ba nét rời: bản trước đặt tâm cách nhau
+    # `width` nhưng vẽ nét rộng 0,42 `width`, nên giữa chúng có khe — và trên
+    # vũng sáng chói, hai nét tối cách nhau một khe đọc ra HAI SỢI DÂY, không
+    # ra một cái thân đèn.
     st = sh["stem"]
-    for off, mau, w in ((-st["width"] / 2, P["shadeLit"], st["width"] * 0.42),
-                        (0, P["shadeMid"], st["width"] * 0.5),
-                        (st["width"] / 2, P["shadeDark"], st["width"] * 0.42)):
+    for k, t in ((-1, 0.9), (0, 0.46), (1, 0.12)):
+        off = k * st["width"] / 3
         ink.poly("den", wobble(cx + off, my + 10, cx + off * 1.4, st["toY"], 0.7, off),
-                 mau, w, 0.9)
-    # ĐẾ: `rings` vòng ê-líp lồng nhau, nửa trên-trái sáng.
+                 ton_muot(P["shadeRamp"], t), st["width"] * 0.45, 0.95)
+
+    # ── 8 · ĐẾ: vòng TRONG sáng, vòng ngoài tối, tâm lệch nhẹ VỀ PHÍA ĐÈN.
+    # Bản đầu làm ngược (vành sáng, tâm `shadeDark`) và cái đế đọc ra một CÁI
+    # HỐ — một cái hố ngay dưới nguồn sáng duy nhất của bức.
     bs = sh["base"]
     for k in range(bs["rings"], 0, -1):
         f = k / bs["rings"]
-        seg = 34
-        pts = []
-        for i in range(seg):
-            th = math.tau * i / seg
-            pts.append((cx + math.cos(th) * bs["rx"] * f,
-                        bs["y"] + math.sin(th) * bs["ry"] * f))
-        mau = P["shadeLit"] if f > 0.82 else P["shadeMid"] if f > 0.45 else P["shadeDark"]
-        ink.fill("den", pl(pts, True), mau, 1.0 if f > 0.95 else 0.5, solo=True)
-    ink.poly("den", [(cx - bs["rx"] * 0.88, bs["y"] - bs["ry"] * 0.5),
-                     (cx - bs["rx"] * 0.2, bs["y"] - bs["ry"] * 0.95)],
-             P["shadeRim"], 1.8, 0.75)
+        # ĐỤC HẾT, không 0,55: vòng lồng nhau tô đè nhau thì độ mờ cộng dồn
+        # và vòng trong cùng nhận tích của mười lăm lượt phủ — đúng cái lỗi
+        # "gộp nhóm hình lồng nhau" ở `Ink.fill`, chỉ khác là lần này nó nằm
+        # ở phía người gọi. Dốc đi qua TÔNG, không qua độ mờ.
+        # Vòng trong giữ lại 40 % chiều cao: `nf()` làm tròn toạ độ về số
+        # nguyên, nên một ê-líp cao 0,8 đơn vị suy biến thành một đoạn thẳng
+        # và BIẾN MẤT — sáu vòng trong cùng của bản trước không bao giờ được
+        # vẽ, nên cái đế dừng ở tông #49371F và đọc ra một cái hố. Giữ chiều
+        # cao cũng đúng hình: đây là một cái đế VÒM, không một tấm đĩa dẹt.
+        rx = bs["rx"] * f * (1 + 0.012 * math.sin(k * 2.1))
+        ry_ = bs["ry"] * (0.4 + 0.6 * f)
+        ink.fill("den", pl(_e_lip(cx, bs["y"] - (1 - f) * bs["ry"] * 0.45,
+                                  rx, ry_, 34), True),
+                 ton_muot((P["shadeRamp"][1], P["shadeRamp"][3], P["shadeLit"],
+                           P["shadeRim"]), 1.0 - f ** 1.35), 1.0, solo=True)
+    # Cung sáng ở vành trên-trái (mép đế quay về đèn) và nét tối ở mép dưới
+    # (chỗ đế chạm bàn) — hai nét, hai phía, một nguồn.
+    ink.poly("den", [(cx + math.cos(th) * bs["rx"] * 0.94,
+                      bs["y"] + math.sin(th) * bs["ry"] * 0.94)
+                     for th in [math.pi * (1.08 + 0.6 * k / 12) for k in range(13)]],
+             P["shadeRim"], 1.8, 0.8)
+    ink.poly("den", [(cx + math.cos(th) * bs["rx"] * 0.99,
+                      bs["y"] + math.sin(th) * bs["ry"] * 0.99)
+                     for th in [math.pi * (0.1 + 0.8 * k / 12) for k in range(13)]],
+             P["shadeRamp"][0], 2.0, 0.7)
 
 
 # ═══════════════════════════════════════════════════════════════════════
@@ -1492,32 +1718,35 @@ def ve_the_dong(ink, P):
         xm, ym = quad_pt(q, 0.5, (v0 + v1) / 2)
         ink.fill("the-dong", pl(p, True), ton_muot(P["brassRamp"], dong_t(xm, ym)),
                  1.0, solo=True)
-    # VÂN XƯỚC: vệt song song ở −41°, KHÔNG −45°. Góc chẵn xếp thẳng hàng với
-    # lưới điểm ảnh và đọc ra là hoa văn máy, không ra vết đánh bóng.
+    # VÂN CHẢI: vệt chạy dọc TRỤC DÀI của tấm — xem `ROOM_PLATE.scratch` để
+    # biết vì sao bản gạch chéo đọc ra "ô bị bôi đen".
     sc = PLATE["scratch"]
     for i in range(int(sc["count"] * DENSITY)):
         u, v = rnd(i * 1.7, 2.3), rnd(i * 3.1, 7.9)
         x, y = quad_pt(q, u, v)
         L = sc["len"] * (1 - sc["lenJitter"] / 2 + rnd(i * 5.3, 1.1) * sc["lenJitter"])
-        th = sc["angle"] + (rnd(i * 2.9, 4.7) - 0.5) * 0.06
+        th = sc["angle"] + (rnd(i * 2.9, 4.7) - 0.5) * 0.05
         x2, y2 = x + math.cos(th) * L, y + math.sin(th) * L
         # Cắt về trong tấm: một vệt xước chạy ra ngoài mép là một vệt xước
         # trên mặt bàn, và mặt bàn không có đồng.
         if not (trong_da_giac(x, y, q) and trong_da_giac(x2, y2, q)):
             continue
-        # VÊT XƯỚC ĐI THÀNH CỤM, không rải đều. Đồng đánh bóng bằng tay thì
-        # vết xước tụ lại theo đường tay đi — rải đều cho ra một hình chữ nhật
-        # GẠCH CHÉO, tức một hoa văn máy. Đọc được ngay trên PNG, và nó là
-        # khuyết tật còn lại rõ nhất của vật này.
-        cum = NZ.fbm(x * 0.022, y * 0.05, 3, 2.01, 0.55)
-        if rnd(i * 9.1, 2.3) > 0.18 + 1.5 * cum:
+        # VẾT CHẢI ĐI THÀNH CỤM, không rải đều — và phép dò cụm phải THẬT SỰ
+        # lọc. Bản đầu viết `rnd() > 0,18 + 1,5 × cum`, mà `cum` là fbm chuẩn
+        # hoá nên nó quanh 0,5, tức ngưỡng ≈ 0,93: 2 180/3 400 vệt sống sót và
+        # mặt đồng thành một ô gạch chéo. Dạng smoothstep ở đây cho một ngưỡng
+        # ĐỌC ĐƯỢC: dưới `clumpLo` không có vệt nào, trên `clumpLo + clumpWide`
+        # thì `keep` phần được giữ.
+        cum = NZ.fbm(x * 0.03, y * 0.1, 3, 2.01, 0.55)
+        if rnd(i * 9.1, 2.3) > sc["keep"] * smoothstep(
+                (cum - sc["clumpLo"]) / sc["clumpWide"]):
             continue
         s = dong_t(x, y)
         # ~9 % là vệt SÁNG DÀI — một đường miết bắt đèn. Không có nó thì mặt
         # đồng chỉ có vết tối, tức mắt đọc ra đá mài chứ không ra kim loại.
-        if rnd(i * 7.7, 3.3) < 0.09 + 0.22 * s:
+        if rnd(i * 7.7, 3.3) < 0.05 + 0.13 * s:
             ink.poly("the-dong", [(x, y), (x2, y2)], P["brassScratchLit"],
-                     sc["width"] * 1.6, min(0.75, sc["opacity"] * (1.4 + 2.2 * s)))
+                     sc["width"] * 1.5, min(0.4, sc["opacity"] * (1.2 + 1.8 * s)))
         else:
             ink.poly("the-dong", [(x, y), (x2, y2)], P["brassScratchDark"],
                      sc["width"], sc["opacity"] * (0.4 + 0.6 * min(1.0, s)))
@@ -1543,6 +1772,18 @@ def ve_the_dong(ink, P):
         ink.poly("the-dong", wobble(a[0], a[1], b[0], b[1], 0.5, k * 3.1),
                  P["brassScratchLit"] if dp > 0 else P["brassScratchDark"],
                  bv["width"], 0.45 + 0.4 * abs(dp))
+    # ĐƯỜNG VIỀN CHÌM — một RÃNH khắc chạy vòng bên trong mép vát. Nó dùng
+    # ĐÚNG luật ánh sáng của chữ khắc (nét tối ở trên, nét sáng ngay dưới, vì
+    # đèn ở trên-trái), nên hai thứ đọc ra cùng một kỹ thuật gia công; và nó
+    # đóng khung bốn dòng chú giải lại thành MỘT tấm biển, không bốn dòng chữ
+    # rơi trên một mảng đồng.
+    gr = PLATE["groove"]
+    vien = [quad_pt(q, gr["u"], gr["v"]), quad_pt(q, 1 - gr["u"], gr["v"]),
+            quad_pt(q, 1 - gr["u"], 1 - gr["v"]), quad_pt(q, gr["u"], 1 - gr["v"])]
+    for dy, mau, op in ((0.0, P["brassScratchDark"], 0.85),
+                        (1.0, P["brassScratchLit"], 0.5)):
+        ink.poly("the-dong", [(p[0], p[1] + dy) for p in vien] + [
+            (vien[0][0], vien[0][1] + dy)], mau, gr["width"], op)
     # ĐINH TÁN bốn góc — vật nhỏ, nhưng là thứ nói ra tấm thẻ được VÍT vào
     # một cái gì, không phải một hình chữ nhật dán lên.
     rv = PLATE["rivets"]
@@ -2140,7 +2381,7 @@ def main():
         raise SystemExit(
             "vượt trần %d KB — hạ DENSITY, hay hạ `ROOM_DESK.grain.per`. Tiền cảnh nằm "
             "NGAY TRÊN màn hình đầu tiên nên nó vào LCP cùng tấm trời, và tấm trời đã "
-            "lấy 285 KB của ngân sách 900 KB." % MAX_KB)
+            "lấy 285 KB của ngân sách 900 KB. (đang %.1f KB)" % (MAX_KB, kb))
 
     out_dir = Path(args.out) if args.out else OUT
     # `os.makedirs` chứ không `Path.mkdir`: trên Windows + Python 3.14,
