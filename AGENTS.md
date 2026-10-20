@@ -47,6 +47,11 @@ py -I scripts/star/raster.py --khong-mo-hinh  # bỏ cột mô hình (không ch�
 py -I scripts/star/raster.py --png a.png --buoc 1       # NHÌN BỨC TRANH (1360 × 820)
 py -I scripts/star/raster.py --png b.png --lop troi     # chỉ vài tệp, để khoanh lớp hỏng
 
+# Tiền cảnh bàn quan trắc (trang chủ, nằm DƯỚI bản đồ sao — mép bàn là vết cắt nóng/lạnh)
+py scripts/room/build_room.py            # sinh frontend/public/map/room/room-ban.svg
+py scripts/room/build_room.py --do       # bảng SỐ ĐO (bậc độ chói, bước dải, tương phản), không ghi tệp
+py -I scripts/room/raster_room.py --png a.png --buoc 1   # XEM bức tranh — đừng kết luận khi chưa nhìn
+
 # Đổi bố cục (hộp chòm, vị trí mặt trời, hình chòm) ⇒ chạy LẠI BA bước này, theo đúng
 # thứ tự, vì mỗi bước đọc kết quả bước trước: --place-nhan (rồi chép vào TS) → build →
 # --css + --phong (rồi chép vào star-map.module.css và TS). Chép tay một toạ độ là một
@@ -67,7 +72,8 @@ mức này:
 | Backend lint | 2 lỗi, 1 cảnh báo — **mốc trần trong CI là 10, chỉ được hạ** | 20/10/2026 |
 | Frontend typecheck | sạch | 19/10/2026 |
 | Frontend lint | 0 lỗi, 118 cảnh báo | 19/10/2026 |
-| Frontend unit test | `cd frontend && npm run test:unit` → **724 ca**, tất cả đạt (~306 s; riêng `star-map.test.mjs` 79 ca / ~294 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~100 s sau khi tinh vân lên 22 bậc, cộng một lượt `--do` ~50 s và hai lượt raster ~8 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +4 ca mục 22 của `star-map.test.mjs` (sắc độ đo bằng raster, và một ca canh cờ `--png`), +3 ca mục 23 (CỘNG ÁNH SÁNG: không còn hào quanh chòm, nét chòm có vỏ bọc tông ngược, mạch hoàng đạo không rời khung), +2 ca "VIỆC 11" của bản KÉO LẠI (nét chòm phải HƠN HẲN sàn 3:1, nêm tia bụi mỗi vỏ đúng một bậc lượng tử 0,01), +8 ca của `sky-zoom.test.mjs` (trỏ vào một chặng thôi phát hết tên bài; một tên bài mở một lúc ở tỉ lệ gần; cột bài cạnh bản đồ; ba tấm trời có lớp hợp thành riêng; vòng dò thôi đo hộp khung mỗi khung hình) | 20/10/2026 |
+| Frontend unit test | `cd frontend && npm run test:unit` → **742 ca**, tất cả đạt (~306 s; riêng `star-map.test.mjs` 79 ca / ~294 s: ca "chạy hai lần ra đúng một bộ" dựng bản đồ sao hai lượt, mỗi lượt ~100 s sau khi tinh vân lên 22 bậc, cộng một lượt `--do` ~50 s và hai lượt raster ~8 s). +10 ca của `lesson-a11y.test.mjs` (trợ năng màn học bài), +4 ca của `trap-leak.test.mjs` (gợi ý ô trống không lộ đáp án), +4 ca mục 22 của `star-map.test.mjs` (sắc độ đo bằng raster, và một ca canh cờ `--png`), +3 ca mục 23 (CỘNG ÁNH SÁNG: không còn hào quanh chòm, nét chòm có vỏ bọc tông ngược, mạch hoàng đạo không rời khung), +2 ca "VIỆC 11" của bản KÉO LẠI (nét chòm phải HƠN HẲN sàn 3:1, nêm tia bụi mỗi vỏ đúng một bậc lượng tử 0,01), +8 ca của `sky-zoom.test.mjs` (trỏ vào một chặng thôi phát hết tên bài; một tên bài mở một lúc ở tỉ lệ gần; cột bài cạnh bản đồ; ba tấm trời có lớp hợp thành riêng; vòng dò thôi đo hộp khung mỗi khung hình), **+18 ca của `room-art.test.mjs`** (tiền cảnh bàn quan trắc: bề rộng nét không về 0, 0 mã màu trong Python, 0 gradient/id, thứ tự lớp, mép bàn trống, 152 đĩa ánh đèn mỗi đĩa một `<path>`, bóng một nguồn, phối cảnh mặt bàn, chữ khắc hai lượt, tất định + trần 380 KB — ca cuối chạy bộ sinh hai lượt ~13 s và một lượt `--do` ~6 s) | 20/10/2026 |
+| Tiền cảnh bàn quan trắc | `py scripts/room/build_room.py` → 1 tệp SVG, 15 071 nét / 367 KB thô (**trần 380 KB**, ~92 KB sau gzip), bước dải 1,87/255 mã màu, bậc giữa 68,4 %, chữ khắc 5,03:1, chạy hai lần ra đúng một tệp | 20/10/2026 |
 | Bản đồ thế giới | `py scripts/map/build_map.py` → 9 tệp SVG, bản rộng 46 197 nét / 830 KB (**trần 900 KB**), chạy hai lần ra đúng một tệp | 19/10/2026 |
 | Bản đồ sao (xem thử) | `py -I scripts/star/build_sky.py` → 20 tệp, **450,7 KB** tổng (**trần 900 KB tổng · 420 KB mỗi tệp**); `sky-troi.svg` một mình **278,3 KB** sau khi mặt trời lên 128 vòng, tinh vân lên **22 bậc**, 41 đường đồng mức được khép theo mép và lớp `tia-bui` lên **83 vỏ** (5 tia × 11–22 vỏ, mỗi vỏ một `<path>` riêng ở độ mờ 0,01 — xem mục tia bụi dưới). Lượt build in thêm dòng **`đường đồng mức … còn hở`** — con số ấy phải là **0** | 20/10/2026 |
 | Bản đồ sao · PHÂN BỐ SẮC ĐỘ (mô hình) | `py -I scripts/star/build_sky.py --do` → **bậc giữa (L 0,03–0,85) 48,98 %** diện tích, ba bậc 0,03–0,35 **38,30 %** (sàn 30 %), trung vị **0,0311** (trần 0,05), p99 1,000, L > 0,5 **6,98 %** (sàn 4,5 %). Khung tham chiếu: 46,8 % · 43,0 % · 0,0284 · 0,955 · 7,73 %. Bản KÉO LẠI 20/10 tối: bậc giữa đi 62,8 → 48,98 % vì **46,8 % là một ĐÍCH, không một mốc để vượt** — xem mục raster dưới | 20/10/2026 |
@@ -99,6 +105,7 @@ không.
 Số lỗi lint backend phải đo bằng ĐÚNG lệnh CI dùng, KHÔNG bằng `npm run lint` (script đó mang
 `--fix` nên vừa sửa file vừa làm con số lệch). Đo khác lệnh là lý do mốc này từng bị ghi 551
 trong khi thực tế là 557:
+
 
 ```bash
 npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
@@ -292,6 +299,18 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   (thêm một chú thích nhắc tới 8 giờ ở `frontend/src/lib/course-progress.ts`). Đổi
   `JWT_REFRESH_EXPIRES` mà quên bốn chỗ này thì cookie và token lệch nhau: FE tưởng còn phiên
   trong khi token đã hết, hoặc ngược lại.
+- **`scripts/star/raster.py` TỰ NÓ có một lỗ, và nó làm ra khuyết tật KHÔNG CÓ trong tệp.**
+  Nét dày đầu tròn: `net_thanh_hinh` dựng mỗi ĐOẠN thành hình chữ nhật (chiều quay theo
+  HƯỚNG đoạn) và mỗi MỐI NỐI thành đa giác tròn (chiều quay cố định). Hai chiều ngược nhau
+  thì `nonzero` TRỪ chúng cho nhau, nên chỗ chồng — tức đúng mối nối — ra số vòng 0 và
+  KHÔNG ĐƯỢC TÔ. Đo bằng một nét thẳng dày 20 px, bốn mối nối: lát cắt ngang ra
+  `##########..........####…`, mười điểm ảnh TRỐNG mỗi mối nối trên một nét liền. Hệ quả:
+  lớp lót của tiền cảnh (vệt bản rộng) lên PNG thủng lỗ chỗ hình thạch nhũ, trong khi tệp
+  SVG hoàn toàn lành — trình duyệt vẽ nét dày theo hình nét, không theo phép cộng vòng này.
+  Tin vào PNG lúc ấy là dựng lại một lớp đang đúng để chữa một lỗi không có. `raster_room.py`
+  bọc hàm ấy lúc chạy (ép mọi đa giác cùng chiều quay) chứ không sửa tệp; ai mượn
+  `raster.py` cho một bức khác phải bọc lại, hoặc đọc PNG với cái lỗ này trong đầu.
+
 - **Bản đồ thế giới ở trang chủ là TRANH SINH RA, không phải SVG vẽ tay — đừng sửa tệp.**
   `frontend/public/map/world-map.svg` (46 197 nét, 830 KB) và tám ô crop `scene-M*.svg`
   do `scripts/map/build_map.py` sinh; sửa tay chúng thì lần chạy script sau xoá sạch.
