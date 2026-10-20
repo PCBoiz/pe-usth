@@ -1,8 +1,8 @@
 <!-- SINH BỞI scripts/star/build_sky.py — ĐỪNG SỬA TAY. Sửa dữ liệu ở frontend/src/lib/star-map.ts rồi chạy lại script. -->
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1360 820" width="1360" height="820" role="img" aria-label="Chòm M7 · Matplotlib, 6 bài — bản rõ lên lúc được trỏ vào.">
 <g data-lop="net-chom">
-<path fill="none" stroke="#0D101C" stroke-width="2.75" stroke-opacity="0.96" stroke-linecap="round" stroke-linejoin="round" d="M1218 130l-3 -11l-4 -11M1211 108l-4 -10l-3 -11M1204 87l-3 -11l-4 -11M1225 134l12 -3l11 -4M1248 127l12 -3l12 -4M1272 120l12 -3l11 -4M1222 131l2 -7M1224 124l3 -6M1227 118l3 -7M1236 101l4 -7M1240 94l5 -6M1245 88l4 -7M1254 73l5 -8M1259 65l5 -8M1264 57l4 -8"/>
-<path fill="none" stroke="#ECC4DC" stroke-width="1.15" stroke-opacity="0.85" stroke-linecap="round" stroke-linejoin="round" d="M1218 130l-3 -11l-4 -11M1211 108l-4 -10l-3 -11M1204 87l-3 -11l-4 -11M1225 134l12 -3l11 -4M1248 127l12 -3l12 -4M1272 120l12 -3l11 -4M1222 131l2 -7M1224 124l3 -6M1227 118l3 -7M1236 101l4 -7M1240 94l5 -6M1245 88l4 -7M1254 73l5 -8M1259 65l5 -8M1264 57l4 -8"/>
+<path fill="none" stroke="#0D101C" stroke-width="2.75" stroke-opacity="0.98" stroke-linecap="round" stroke-linejoin="round" d="M1218 130l-3 -11l-4 -11M1211 108l-4 -10l-3 -11M1204 87l-3 -11l-4 -11M1225 134l12 -3l11 -4M1248 127l12 -3l12 -4M1272 120l12 -3l11 -4M1222 131l2 -7M1224 124l3 -6M1227 118l3 -7M1236 101l4 -7M1240 94l5 -6M1245 88l4 -7M1254 73l5 -8M1259 65l5 -8M1264 57l4 -8"/>
+<path fill="none" stroke="#ECC4DC" stroke-width="1.15" stroke-opacity="0.88" stroke-linecap="round" stroke-linejoin="round" d="M1218 130l-3 -11l-4 -11M1211 108l-4 -10l-3 -11M1204 87l-3 -11l-4 -11M1225 134l12 -3l11 -4M1248 127l12 -3l12 -4M1272 120l12 -3l11 -4M1222 131l2 -7M1224 124l3 -6M1227 118l3 -7M1236 101l4 -7M1240 94l5 -6M1245 88l4 -7M1254 73l5 -8M1259 65l5 -8M1264 57l4 -8"/>
 </g>
 <g data-lop="quang-sao">
 <path fill="#ECC4DC" fill-opacity="0.1" d="M1210 136a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0ZM1223 106a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0ZM1189 60a7.15 7.15 0 1 0 14.3 0a7.15 7.15 0 1 0 -14.3 0ZM1291 111a9.63 9.63 0 1 0 19.26 0a9.63 9.63 0 1 0 -19.26 0Z"/>

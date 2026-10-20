@@ -1920,79 +1920,120 @@ def ve_hanh_tinh(ink, P, dim, only=None):
         vanh_sang_rim(ink, "hanh-tinh", x, y, R, P, dim)
 
 
-def ve_tia_bui(ink, P, dim):
-    """CHÍN NÊM TIA SÁNG XUYÊN BỤI (§8.3).
+def huong_tia():
+    """NĂM HƯỚNG tia bụi — chỗ bụi dày nhất quanh mặt trời, khe KHÔNG ĐỀU.
 
-    Nó nói gì: một nêm TỐI là bằng chứng có thứ CHẮN giữa mặt trời và người
-    xem, tức giữa hai vật có KHÔNG GIAN. Đây là tín hiệu "có một mặt trời ở
-    kia" mạnh thứ hai sau vệt loé, và nó rẻ — chín đa giác.
+    Bản cũ quét 72 góc rồi loại mọi ứng viên trong **18°** quanh một hướng đã
+    lấy. Hằng số ấy là thứ làm chín tia toả đều: trên lưới quét 5°, sáu trong
+    chín khe ra ĐÚNG 20° ([20, 25, 45, 20, 30, 20, 20, 160, 20]). Tức cái đều
+    là của PHÉP LỌC, không của bụi — mà "toả đều chín hướng" chính là dấu hiệu
+    máy vẽ mà cả lớp này bị chê.
 
-    Nêm bắt đầu từ các nút BỤI DÀY trong `within` px quanh mặt trời và toả
-    theo hướng xuyên tâm; mọi nêm bị CẮT ở rìa khối chân trời, vì dưới rìa thì
-    không lớp nào sống sót."""
+    Nay khe tối thiểu lấy theo nhiễu trong `gapDeg`, một giá trị khác cho mỗi
+    lần nhận: hai tia được phép sát nhau thành một chùm, rồi bỏ trống một
+    quãng rộng. Tất định y như cũ (`rnd` theo chỉ số), chỉ thôi đều."""
     ry = LIGHT["ray"]
     cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
-    # Chọn chín hướng bằng cách quét góc và lấy chỗ trường bụi dày nhất —
-    # tất định, và nó neo nêm vào HÌNH của tinh vân chứ không vào một danh
-    # sách góc viết tay (một danh sách như thế sẽ lệch ngay lần dải Ngân Hà
-    # dịch, và lệch im lặng).
     ung = []
-    for k in range(72):
-        th = math.tau * k / 72
+    for k in range(144):
+        th = math.tau * k / 144
         r = ry["within"] * 0.55
         x, y = cx + math.cos(th) * r, cy + math.sin(th) * r
         ung.append((neb_field(x, y) + dust_field(x, y) * 0.5, th))
     ung.sort(reverse=True)
-    # Lọc cho chín hướng CÁCH NHAU: lấy dày nhất rồi loại mọi hướng trong 18°.
-    chon = []
+    k0, k1 = ry["gapDeg"]
+    chon: list[float] = []
     for _g, th in ung:
-        if all(abs((th - t + math.pi) % math.tau - math.pi) > math.radians(18)
-               for t in chon):
+        khe = math.radians(k0 + (k1 - k0) * rnd(len(chon) * 3.7, 5.1))
+        if all(abs((th - t + math.pi) % math.tau - math.pi) > khe for t in chon):
             chon.append(th)
         if len(chon) >= ry["count"]:
             break
+    return sorted(chon)
+
+
+def ve_tia_bui(ink, P, dim):
+    """NĂM NÊM TIA SÁNG XUYÊN BỤI (§8.3).
+
+    Nó nói gì: một nêm TỐI là bằng chứng có thứ CHẮN giữa mặt trời và người
+    xem, tức giữa hai vật có KHÔNG GIAN. Đây là tín hiệu "có một mặt trời ở
+    kia" mạnh thứ hai sau vệt loé.
+
+    Nêm bắt đầu từ các nút BỤI DÀY trong `within` px quanh mặt trời và toả
+    theo hướng xuyên tâm; mọi nêm bị CẮT ở rìa khối chân trời, vì dưới rìa thì
+    không lớp nào sống sót.
+
+    ── VÌ SAO BẢN BA VỎ KHÔNG LÀM MỀM ĐƯỢC MÉP ────────────────────────────
+
+    Ba lỗi, cả ba ở đây chứ không ở hồ sơ:
+
+    **(a) Ba vỏ "lồng nhau" thì cắt chéo nhau.** Nhiễu bề rộng lấy ở
+    `NZ.v(t·3,1 + i·7,7, q·2,3 + 1,9)` và nhiễu rung mép ở
+    `NZ.v(…, s + q·4,1)` — cả hai mang `q` trong toạ độ, nên MỖI VỎ có một
+    đường trục riêng. Vỏ ngoài chui vào trong vỏ lõi ở chỗ này, thò ra ở chỗ
+    kia, và mỗi lần cắt nhau là một mảnh sắc cạnh. Bản "làm mềm mép" tự đẻ
+    thêm mép. Nay nhiễu chỉ phụ thuộc `(t, i)`: mọi vỏ của một tia đi trên
+    CÙNG một trục, chỉ khác nửa-góc, nên chúng thật sự lồng nhau.
+
+    **(b) `Ink.fill` GỘP NHÓM các hình cùng (màu, độ mờ).** Mười bốn vỏ lồng
+    nhau cùng độ mờ gộp vào một `<path>` thì hợp của chúng được tô ĐÚNG MỘT
+    LẦN — cả cái dốc biến mất (xem docstring `Ink.fill`). Nên mỗi vỏ phải
+    `solo=True`.
+
+    **(c) Độ mờ GIẢM DẦN ra ngoài vẫn cho một cái bậc.** Bản thứ ba thử
+    `0,038 → 0,01` theo `q` với bề rộng tăng đều, và PNG vẫn ra bốn THANH
+    TỐI mép sắc. Tính ra được vì sao: 70 % tổng độ mờ dồn vào năm vỏ trong
+    cùng, mà năm vỏ ấy chỉ trải trên ~4 px — cái dốc vẫn là một bậc, chỉ có
+    cái đuôi là mềm.
+
+    Nên mỗi vỏ nay cộng ĐÚNG MỘT BẬC LƯỢNG TỬ `Ink.STEP_OP` = 0,01: bậc nhỏ
+    nhất ghi ra tệp được, và ~1 mã sRGB trên nền sáng. Mười một tới hai mươi
+    hai vỏ, mỗi vỏ rộng thêm `layerStep`, cho một mặt cắt độ mờ gần TAM GIÁC
+    trải trên 30–70 px. Tia đậm hơn = nhiều vỏ hơn = cũng rộng hơn, và hai
+    thứ ấy đi cùng nhau là đúng vật lý: một cột bụi dày hơn thì vừa tối hơn
+    vừa to hơn."""
+    ry = LIGHT["ray"]
+    cx, cy = LIGHT["at"]["x"], LIGHT["at"]["y"]
+    chon = huong_tia()
     g0, g1 = ry["spread"]
     l0, l1 = ry["length"]
-    o0, o1 = ry["opacity"]
-    # BA NÊM LỒNG NHAU cho mỗi tia, không một. Trên PNG bản một-nêm, chín tia
-    # đọc ra là **chín vạch kẻ kỹ thuật**: mép sắc tuyệt đối, bề rộng đều,
-    # toả đều từ tâm — dấu hiệu "máy vẽ" rõ nhất trong cả bức, và không con số
-    # nào trong bảng tám bậc nhìn thấy nó. Ánh sáng thật qua bụi có mép TÁN và
-    # bề rộng KHÔNG ĐỀU. Luật cấm gradient còn nguyên: cái tán ở đây làm bằng
-    # ba lớp phủ chồng (nêm ngoài rộng hơn và mờ hơn), đúng kỹ thuật của quầng
-    # sao và của bậc tinh vân.
-    lop = ry["layers"]
-    for i, th in enumerate(sorted(chon)):
-        u = i / max(1, len(chon) - 1)
+    n0, n1 = ry["layers"]
+    r0 = LIGHT["core"] * 1.1
+    for i, th in enumerate(chon):
         mo = math.radians(g0 + (g1 - g0) * rnd(i * 2.3, 7.1))
         dai = l0 + (l1 - l0) * rnd(i * 4.7, 3.3)
-        r0 = LIGHT["core"] * 1.1
+        lop = int(round(n0 + (n1 - n0) * rnd(i * 6.1, 2.7)))
         for q in range(lop):
-            # Nêm q: rộng hơn và mờ hơn khi ra ngoài. `q = 0` là lõi tia.
-            rong = 1.0 + ry["layerSpread"] * q
-            amo = (o0 + (o1 - o0) * u) / (1.0 + ry["layerFade"] * q)
+            # MỘT BẬC LƯỢNG TỬ mỗi vỏ — không một tham số, một tính chất của
+            # `Ink`: dưới bậc này thì `fill` tự nâng lên, trên bậc này thì
+            # cái mép nhìn thấy được.
+            amo = Ink.STEP_OP
+            rong = 1.0 + ry["layerStep"] * q
             pts = []
             for s in (-1, 1):
                 for k in range(ry["steps"]):
                     t = k / (ry["steps"] - 1)
                     rr = r0 + (r0 + dai) * t
-                    # BỀ RỘNG KHÔNG ĐỀU theo chiều dài: một nhiễu dọc trục,
-                    # nên tia phình ra thóp vào thay vì là một cái nêm thẳng.
-                    phinh = 0.55 + 0.9 * NZ.v(t * 3.1 + i * 7.7, q * 2.3 + 1.9)
+                    # BỀ RỘNG KHÔNG ĐỀU theo chiều dài, và có chỗ THÓP HẲN:
+                    # dưới `pinch` thì nêm khép lại ⇒ tia đứt quãng, như ánh
+                    # sáng qua mây thật. Nhiễu KHÔNG mang `q` — xem (a).
+                    n = NZ.v(t * 3.1 + i * 7.7, 1.9)
+                    phinh = max(0.0, (n - ry["pinch"]) * ry["swell"])
                     a = th + s * mo / 2 * rong * phinh * (0.3 + 0.7 * t)
                     # Rung MÉP: biên độ lớn dần ra ngoài — gốc tia còn gọn,
                     # ngọn thì tướp. Nhiễu liên tục theo `t` (không phải
-                    # `rnd` theo chỉ số) nên mép gợn chứ không gãy khúc.
-                    j = ry["jitter"] * (0.25 + t) * rong
-                    x = cx + math.cos(a) * rr + (NZ.v(t * 5.3 + i * 3.3, s + q * 4.1) - 0.5) * 2 * j
-                    y = cy + math.sin(a) * rr + (NZ.v(t * 4.1 + i * 9.1, s * 2 + q) - 0.5) * 2 * j
+                    # `rnd` theo chỉ số) nên mép gợn chứ không gãy khúc, và
+                    # KHÔNG mang `q` nên mọi vỏ của một tia rung cùng nhau.
+                    j = ry["jitter"] * (0.25 + t)
+                    x = cx + math.cos(a) * rr + (NZ.v(t * 5.3 + i * 3.3, s) - 0.5) * 2 * j
+                    y = cy + math.sin(a) * rr + (NZ.v(t * 4.1 + i * 9.1, s * 2) - 0.5) * 2 * j
                     # CẮT ở rìa chân trời — nêm là một lớp của TRỜI, và trời
                     # dừng ở mép khối.
                     y = min(y, chan_troi_y(x))
                     pts.append((x, y))
                 if s < 0:
                     pts.reverse()
-            ink.fill("tia-bui", pl(pts, True), P["dustLane"], amo * dim)
+            ink.fill("tia-bui", pl(pts, True), P["dustLane"], amo * dim, solo=True)
 
 
 def ve_quang_chan_troi(ink, P, dim):

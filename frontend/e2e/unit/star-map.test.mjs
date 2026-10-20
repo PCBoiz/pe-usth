@@ -1222,6 +1222,35 @@ test('chữ trên CẢ TÁM nhãn đạt 4,5:1, và bộ sinh TỰ ĐO rồi tr�
     'main() không gọi kiem_tuong_phan_nhan — build sẽ xuất ra nhãn không đọc được');
 });
 
+/** Sàn RIÊNG cho nét chòm, CAO HƠN sàn WCAG mà bộ sinh chặn ở (3 : 1).
+ *
+ *  Vì sao hai con số, không một: 3 : 1 của WCAG 1.4.11 là mức TỐI THIỂU ĐỌC
+ *  ĐƯỢC cho một thành phần đồ hoạ mang tin. Nét chòm không phải một thành
+ *  phần bất kỳ — nó là tám chặng của khoá học, thứ mang nghĩa duy nhất trong
+ *  cả bức. Đo 20/10/2026 trên bản 2a0cf9b: **3,44 : 1**, tức một yếu tố
+ *  chính đang sống ở đúng mép sàn tối thiểu — và trên PNG nó đọc ra đúng như
+ *  thế, M2 và M7 gần như chìm vào tinh vân. Bộ sinh vẫn chặn ở 3 : 1 (đó là
+ *  ràng buộc pháp lý); ca này giữ chỗ CAO HƠN mà bản sửa đã mua được, nên
+ *  hạ `casing.opacity` hay `lineOpacity` về mức cũ là đỏ ở đây chứ không
+ *  phải đỏ ở lượt build. */
+const SAN_NET_CHOM = 4.5;
+
+test('VIỆC 11 · nét chòm không chỉ ĐẠT 3:1 — nó là yếu tố CHÍNH, nên phải hơn hẳn sàn', () => {
+  assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
+  const m = moHinhDo().match(/nét chòm tương phản xấu nhất ([\d.]+):1 lúc nghỉ/);
+  assert.ok(m, '`--do` không còn in tương phản nét chòm — mất cái thước');
+  assert.ok(+m[1] >= SAN_NET_CHOM,
+    `nét chòm xấu nhất chỉ ${m[1]} : 1 lúc nghỉ, dưới sàn ${SAN_NET_CHOM} : 1 của ca này.`
+    + ' Bộ sinh chặn ở 3 : 1 (WCAG) và sẽ KHÔNG đỏ — nhưng 3 : 1 là mức tối thiểu đọc'
+    + ' được, không phải mức mà tám chặng của khoá học nên có. Chữa bằng ÁNH SÁNG:'
+    + ' `SKY_LINK.casing.opacity` (tương phản lõi↔vỏ) hoặc `scale.lineOpacity`. KHÔNG'
+    + ' chữa bằng cách dìm trời quanh chòm — đó là cái hào đã gỡ bỏ ngày 20/10/2026.');
+  // Và hai nguồn phải nói cùng một con số: `SKY_LINK` là LUẬT, `scale` là thứ
+  // bộ sinh ĐỌC. Lệch nhau thì ca trên đo một bức mà tệp vẽ một bức khác.
+  assert.deepEqual(SKY_PROFILE_DARK.scale.lineOpacity,
+    [SKY_LINK.opacity, SKY_LINK.focusOpacity]);
+});
+
 /* ═══ 12 · CHÍN TẤM CHÒM CHỈ KHÁC NHAU Ở ĐỘ MỜ ════════════════════════ */
 
 test('tấm tiêu điểm chỉ đổi ĐỘ MỜ: không bán kính nào to lên, không nét nào dày lên', () => {
@@ -2916,11 +2945,43 @@ test('VIỆC 4 · VẬT RẮN: rìa thiên thể, hành tinh đếm từ `step_4
   assert.ok(lop(TROI, 'quang-chan-troi').includes(P.glowCore),
     'rìa chân trời không có vành sáng — nó là thứ CHỨNG MINH có một nguồn sáng, không chỉ'
     + ' hiển thị một nguồn sáng');
-  // CHÍN NÊM TIA SÁNG — bằng chứng có thứ CHẮN giữa mặt trời và người xem, tức
+  // NĂM NÊM TIA SÁNG — bằng chứng có thứ CHẮN giữa mặt trời và người xem, tức
   // giữa hai vật có KHÔNG GIAN.
   const tia = lop(TROI, 'tia-bui');
   assert.ok((tia.match(/Z/g) ?? []).length >= SKY_LIGHT.ray.count - 1,
     `chỉ có ${(tia.match(/Z/g) ?? []).length} nêm tia sáng, khai ${SKY_LIGHT.ray.count}`);
+});
+
+test('VIỆC 11 · nêm tia bụi có MÉP TÁN — mỗi vỏ đúng một bậc lượng tử, không hơn', () => {
+  // ĐÂY LÀ CA CHỈ MỘT BỨC ẢNH TÌM RA, và nó tồn tại vì bảng tám bậc mù với
+  // nó: cả lớp `tia-bui` chiếm dưới 1 % diện tích nên dù mép sắc hay mép tán,
+  // không một chữ số thập phân nào trong bảng đổi. Hai vòng sửa trước đều
+  // "làm mềm mép" mà PNG vẫn ra mấy THANH TỐI mép sắc; vòng ba tính ra được
+  // vì sao và ca này khoá lại cái lý do đó.
+  //
+  // Luật: cái dốc của một mép tán phải RẢI ĐỀU trên cả bề rộng, nên mỗi vỏ
+  // cộng ĐÚNG một bậc lượng tử của `Ink` (0,01 — ~1 mã sRGB, không nhìn ra
+  // được). Một vỏ 0,02 là một bước gấp đôi; một vỏ 0,04 (bản vòng ba) dồn
+  // 70 % tổng độ mờ vào ~4 px trong cùng và ra lại đúng cái thanh cũ.
+  const tia = lop(TROI, 'tia-bui');
+  const mo = [...new Set([...tia.matchAll(/fill-opacity="([\d.]+)"/g)].map((m) => m[1]))];
+  assert.deepEqual(mo, ['0.01'],
+    `lớp tia-bui dùng độ mờ ${mo.join(', ')} — chỉ được dùng 0,01, bậc nhỏ nhất mà`
+    + ' `Ink` ghi ra được. Độ mờ lớn hơn ở một vỏ là một BƯỚC nhìn thấy được, tức một'
+    + ' cái mép — và mép sắc toả đều từ mặt trời là dấu hiệu "máy vẽ" rõ nhất của bức.');
+  // …và phải có ĐỦ vỏ: `count × layers[0]` là chồng mỏng nhất hợp lệ. Ít hơn
+  // nghĩa là ai đó quay lại mấy nêm đặc.
+  const n = (tia.match(/<path/g) ?? []).length;
+  const it = SKY_LIGHT.ray.count * SKY_LIGHT.ray.layers[0];
+  assert.ok(n >= it,
+    `chỉ ${n} vỏ cho ${SKY_LIGHT.ray.count} tia, phải ≥ ${it}. Số vỏ LÀ độ đậm và LÀ bề`
+    + ' rộng của tia (mỗi vỏ 0,01 và rộng thêm `layerStep`), nên ít vỏ là tia nhạt VÀ'
+    + ' hẹp VÀ mép cứng cùng lúc.');
+  // Mỗi vỏ phải là MỘT `<path>` riêng. Gộp nhóm thì `Ink` tô hợp của chúng
+  // đúng một lần ở 0,01 và cả chồng biến thành một cái bóng mờ tịt — xem
+  // docstring `Ink.fill`. Chín vỏ cùng (màu, độ mờ) là chín hình LỒNG NHAU.
+  assert.ok(n >= (tia.match(/Z/g) ?? []).length,
+    'nhiều nêm gộp chung một `<path>` — `Ink.fill` tô hợp của chúng ĐÚNG MỘT LẦN');
 });
 
 test('VIỆC 5 · NHÃN dưới mặt trời chói: viền chữ, đĩa cấm, và PHÉP LÙI thay chọn tham lam', () => {
@@ -3143,8 +3204,42 @@ const RASTER_PY = join(ROOT, 'scripts', 'star', 'raster.py');
 // 0,35–0,60 — vì đó là chỗ phân biệt *"sáng khắp, CÓ TẦNG"* với *"tối, với
 // một nguồn sáng"*. Khung tham chiếu có 15,4 % ở hai bậc ấy; bản 20/10 sáng
 // đi từ 5,89 lên 10,78 %.
-const SAN_RASTER = {
-  mid: 0.58, mid3: 0.49, denSau: 0.20, trungVi: 0.033, tren018: 0.10,
+//
+// ═══ SÀN MỘT PHÍA → KHOẢNG HAI ĐẦU, 20/10/2026 ═══════════════════════════
+//
+// Bản trước ghi `mid: 0.58` làm SÀN, với lý lẽ "tham chiếu còn ở 46,8 % nên
+// đường đi là một chiều". Lý lẽ ấy sai, và cái sai của nó tốn đúng một vòng
+// đánh giá: 46,8 % là một **ĐÍCH**, không phải một mốc để vượt qua. Sàn một
+// phía thì bảng số thưởng cho mọi bước đi lên, kể cả bước thứ mười sáu — và
+// bản 2a0cf9b đã đi tới **63,31 %**, vượt đích 16,5 điểm, trong khi đen sâu
+// tụt 24,95 → 14,64 % (tham chiếu 20,5) và bậc "tinh vân mờ" phình tới
+// 36,90 % (tham chiếu 24,0). Tức bức đã ĐỔI CHIỀU SÂU LẤY ĐỘ SÁNG, ra một
+// bức đục như sữa — và mọi ca ở đây vẫn xanh, vì mọi ca chỉ gác một đầu.
+//
+// Nên: mỗi con số là một KHOẢNG, neo vào cột tham chiếu, và trượt ở CẢ HAI
+// đầu. Vượt quá cũng là hỏng.
+//
+// `tvanMo` (bậc 0,03–0,08) là khoá MỚI và nó là khoá đắt nhất của lần này:
+// đó là bậc đã phình 12,9 điểm mà không một ca nào nhìn thấy, vì `mid` và
+// `mid3` ĐẾM CẢ nó — phình bậc ấy làm hai con số kia đẹp lên. Một chỉ số
+// gộp không gác được thành phần của chính nó.
+//
+// Số đo 20/10/2026 sau bản KÉO LẠI (bụi xa `spread` 3,2 → 2,75 · `opacity`
+// 0,20 → 0,15 · tinh vân `levelHi` 0,30 → 0,26), bước 2 px — cột cuối là
+// khung tham chiếu `design/tham-chieu/ban-do-sao-game.png`:
+//   bậc giữa  50,53 % (tham chiếu 46,8)   ba bậc    40,45 % (43,0)
+//   đen sâu   19,63 % (20,5)              t.vân mờ  25,02 % (24,0)
+//   trung vị  0,0316 (0,0284)             0,18–0,60 12,84 % (15,4)
+// Khoảng để rộng ~±6 điểm quanh phép đo: đủ cho một lần dịch mặt trời hay
+// đổi câu chữ nhãn, không đủ cho một bậc tinh vân biến mất — và chặt đủ để
+// MỌI con số của bản 2a0cf9b đều trượt.
+const KHOANG_RASTER = {
+  mid: [0.44, 0.56],
+  mid3: [0.34, 0.5],
+  denSau: [0.16, 0.26],
+  tvanMo: [0.18, 0.3],
+  trungVi: [0.024, 0.038],
+  tren018: [0.11, 0.21],
 };
 
 // ĐO LẠI 20/10/2026 sau bản CỘNG ÁNH SÁNG (bỏ hào quanh chòm, bỏ tấm nền
@@ -3175,35 +3270,58 @@ function soDoRaster() {
   }
 }
 
-test('VIỆC 9 · bức đã GHI RA đạt sàn sắc độ, đo bằng raster chứ bằng mô hình', () => {
+/** Một con số đo trên tranh THẬT phải nằm TRONG khoảng — hai đầu, không một.
+ *
+ *  `vuot` là câu nói vì sao đầu TRÊN cũng là hỏng. Nó phải khác câu của đầu
+ *  dưới, vì hai đầu là hai kiểu hỏng khác hẳn nhau: dưới sàn là "một mảng
+ *  tinh vân biến mất", trên trần là "một màn sương phủ đều khắp khung". Một
+ *  thông báo chung chung cho cả hai đầu là thứ làm người sửa đi nhầm chiều. */
+function trongKhoang(ten, v, [lo, hi], duoi, vuot) {
+  const pc = (v * 100).toFixed(2);
+  assert.ok(v >= lo, `${ten} trên tranh THẬT chỉ còn ${pc} (dưới ${lo * 100}). ${duoi}`);
+  assert.ok(v <= hi, `${ten} trên tranh THẬT đã lên ${pc} (vượt ${hi * 100}). ${vuot}`);
+}
+
+test('VIỆC 9 · bức đã GHI RA nằm TRONG KHOẢNG sắc độ, đo bằng raster chứ bằng mô hình', () => {
   assert.ok(PYBIN, 'không tìm thấy trình thông dịch Python');
   const r = soDoRaster();
   assert.ok(r.o > 200000, `raster chỉ lấy ${r.o} ô mẫu — bước lấy mẫu sai`);
-  assert.ok(r.mid >= SAN_RASTER.mid,
-    `bậc giữa (L 0,03–0,85) trên tranh THẬT chỉ còn ${(r.mid * 100).toFixed(2)} %,`
-    + ` dưới sàn ${SAN_RASTER.mid * 100} %. Mỗi điểm phần trăm ở đây là một mảng tinh vân`
-    + ' không được tô — thường vì một đường đồng mức lại hở (xem dòng "đường đồng mức" ở'
-    + ' cuối lượt build) hoặc một bậc bị `evenodd` XOR mất.');
-  assert.ok(r.mid3 >= SAN_RASTER.mid3,
-    `ba bậc 0,03–0,35 chỉ còn ${(r.mid3 * 100).toFixed(2)} %, dưới sàn`
-    + ` ${SAN_RASTER.mid3 * 100} %. Bậc này bỏ hai bậc quầng ra ngoài nên không ai đạt`
-    + ' được nó bằng cách phóng mặt trời to hơn.');
-  assert.ok(r.bac[0] <= SAN_RASTER.denSau,
-    `${(r.bac[0] * 100).toFixed(2)} % diện tích ở L < 0,01 (trần ${SAN_RASTER.denSau * 100} %).`
-    + ' Kiểu hỏng thật của bức này không phải sáng quá mà TỐI QUÁ Ở GIỮA: bản 19/10 có'
+  const K = KHOANG_RASTER;
+  trongKhoang('bậc giữa (L 0,03–0,85) %', r.mid, K.mid,
+    'Mỗi điểm phần trăm ở đây là một mảng tinh vân không được tô — thường vì một'
+    + ' đường đồng mức lại hở (xem dòng "đường đồng mức" ở cuối lượt build) hoặc một'
+    + ' bậc bị `evenodd` XOR mất.',
+    'Khung tham chiếu có 46,8 % và đó là một ĐÍCH, không một mốc để vượt: bản'
+    + ' 2a0cf9b lên 63,31 % và bức ra ĐỤC NHƯ SỮA — đen sâu tụt còn 14,64 % trong khi'
+    + ' tham chiếu là 20,5. Vượt đích ở đây nghĩa là đã đổi chiều sâu lấy độ sáng.');
+  trongKhoang('ba bậc 0,03–0,35 %', r.mid3, K.mid3,
+    'Bậc này bỏ hai bậc quầng ra ngoài nên không ai đạt được nó bằng cách phóng mặt'
+    + ' trời to hơn.',
+    'Tham chiếu 43,0 %. Trên mức này thì phần lớn khung đang nằm trong ba bậc thấp'
+    + ' của dải giữa, tức một màn sương chứ không một tinh vân có tầng.');
+  trongKhoang('đen sâu L < 0,01 %', r.bac[0], K.denSau,
+    'Khung tham chiếu có 20,5 % ở đây. Dưới mức này thì bức mất BÓNG SÂU: không còn'
+    + ' chỗ nào thật sự tối để phần sáng đo mình vào — đúng chỗ bản 2a0cf9b hỏng'
+    + ' (14,64 %).',
+    'Kiểu hỏng thật của bức này không phải sáng quá mà TỐI QUÁ Ở GIỮA: bản 19/10 có'
     + ' 51,3 % đen sâu và vẫn đạt mọi phép kiểm khác.');
-  assert.ok(r.trung_vi >= SAN_RASTER.trungVi,
-    `trung vị độ chói trên tranh thật ${r.trung_vi.toFixed(4)}, dưới sàn`
-    + ` ${SAN_RASTER.trungVi}`);
+  // BẬC 0,03–0,08 — khoá mà `mid`/`mid3` KHÔNG gác được, vì chúng đếm cả nó.
+  trongKhoang('bậc t.vân mờ 0,03–0,08 %', r.bac[2], K.tvanMo,
+    'Tham chiếu 24,0 %. Dưới mức này thì mép ngoài dải Ngân Hà đang không được tô.',
+    'Tham chiếu 24,0 %; bản 2a0cf9b phình tới 36,90 % và KHÔNG ca nào thấy, vì'
+    + ' `mid`/`mid3` đếm cả bậc này nên phình nó làm hai con số kia ĐẸP LÊN. Đây là'
+    + ' bậc mà một lớp phủ mờ trải đều khắp khung rơi vào — tức chỗ "đục" đo được.');
+  trongKhoang('trung vị độ chói', r.trung_vi, K.trungVi,
+    'Tham chiếu 0,0284.',
+    'Sáng thêm phải ở ĐUÔI, không sáng thêm nói chung — xem `SKY_BUDGET.medianMax`.');
   // HAI BẬC TRÊN của dải giữa — bậc 4 (0,18–0,35) và bậc 5 (0,35–0,60) trong
   // tám bậc của `SKY_BUDGET.bands`.
-  const tren = r.bac[4] + r.bac[5];
-  assert.ok(tren >= SAN_RASTER.tren018,
-    `hai bậc 0,18–0,60 chỉ còn ${(tren * 100).toFixed(2)} %, dưới sàn`
-    + ` ${SAN_RASTER.tren018 * 100} % (tham chiếu 15,4 %). Đây là hai bậc mà lời chê`
-    + ' thứ sáu chỉ đích danh: `mid`/`mid3` còn đếm cả bậc 0,03–0,08 nên một màn sương'
-    + ' xám đều khắp khung vẫn đạt chúng, còn hai bậc này chỉ đạt được bằng tinh vân'
-    + ' CÓ TẦNG và một quầng mặt trời có rìa.');
+  trongKhoang('hai bậc 0,18–0,60 %', r.bac[4] + r.bac[5], K.tren018,
+    'Tham chiếu 15,4 %. Đây là hai bậc mà lời chê thứ sáu chỉ đích danh: `mid`/`mid3`'
+    + ' còn đếm cả bậc 0,03–0,08 nên một màn sương xám đều khắp khung vẫn đạt chúng,'
+    + ' còn hai bậc này chỉ đạt được bằng tinh vân CÓ TẦNG và một quầng có rìa.',
+    'Trên mức này thì tinh vân đang cạnh tranh độ chói với chính mặt trời, và bức'
+    + ' mất cái NGUỒN SÁNG TRỘI vốn là trục của cả bố cục.');
 });
 
 test('VIỆC 9 · cái thước XUẤT ĐƯỢC PNG — nhìn bức tranh là một lệnh, không một lời hứa', () => {

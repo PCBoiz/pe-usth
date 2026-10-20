@@ -525,47 +525,81 @@ export const SKY_LIGHT = {
    */
   flare: { span: 2.6, width: 2.4, opacity: 0.26, steps: 40, cross: 0.45 },
   /**
-   * CHÍN NÊM TIA SÁNG XUYÊN BỤI (§8.3).
+   * NÊM TIA SÁNG XUYÊN BỤI (§8.3).
    *
    * Nó nói gì: một nêm TỐI là bằng chứng có thứ CHẮN giữa mặt trời và người
    * xem, tức giữa hai vật có KHÔNG GIAN. Đây là tín hiệu "có một mặt trời ở
-   * kia" mạnh thứ hai sau vệt loé, và nó rẻ — chín đa giác.
+   * kia" mạnh thứ hai sau vệt loé, và nó rẻ — mấy chục đa giác mờ.
    *
-   * `count` 9 là một PHÁN ĐOÁN, không một phép đo: dưới 6 thì mắt đọc ra là
-   * lỗi vẽ, trên 12 thì thành hình ngôi sao đồ hoạ. Nêm tô bằng `dustLane` và
-   * NHÂN vào chứ không cộng, và mọi nêm bị CẮT ở rìa khối chân trời.
+   * ── VÒNG SỬA THỨ BA, 20/10/2026: BA NGUYÊN NHÂN, KHÔNG MỘT ────────────
+   *
+   * Vòng hai (`layers: 3`, `jitter: 9`) KHÔNG chữa được gì: trên PNG chúng
+   * vẫn đọc ra là **chín mảnh hình học mép sắc toả đều**. Ba lý do, và cả
+   * ba phải sửa cùng lúc — sửa một cái thì hai cái kia giữ nguyên triệu
+   * chứng, nên vòng hai mới trông như không làm gì.
+   *
+   *  1 **Ba vỏ lồng nhau KHÔNG lồng nhau.** Mỗi vỏ lấy nhiễu bề rộng và
+   *    nhiễu rung mép theo một hạt RIÊNG (`q` nằm trong toạ độ nhiễu), nên
+   *    ba vỏ cắt chéo nhau thay vì bọc nhau. Chỗ vỏ ngoài chui vào trong vỏ
+   *    lõi là một mảnh sắc cạnh — tức bản "làm mềm mép" tự đẻ thêm mép.
+   *    Nay nhiễu dọc trục và rung mép chỉ phụ thuộc `(t, i)`, KHÔNG phụ
+   *    thuộc `q`: mọi vỏ của một tia dùng chung một đường trục, chỉ khác
+   *    nửa-góc. Lồng nhau là một tính chất của HÌNH, không phải một cái tên.
+   *  2 **Ba bậc là ba cái mép.** Tán một biên bằng ba lớp phủ thì bước độ mờ
+   *    ở vỏ ngoài cùng vẫn là `opacity/4` ≈ 0,05 — nhìn thấy rõ. Cái tán chỉ
+   *    vô hình khi BƯỚC nhỏ hơn ngưỡng ~2 mã sRGB, tức ≈ 0,01 độ mờ, đúng
+   *    bậc lượng tử của `Ink` (`STEP_OP`). Nên: `layers` 14, và độ mờ mỗi vỏ
+   *    GIẢM DẦN ra ngoài (`shellAlpha` × `(1 − u)^shellPow`) chứ không chia
+   *    đều — vỏ ngoài cùng đúng 0,01, vỏ trong dày hơn. Dốc nằm ở ĐỘ MỜ,
+   *    không ở một `gradient` nào: cùng kỹ thuật với quầng sao 14 vòng.
+   *  3 **Chín hướng toả đều là do PHÉP LỌC, không do dữ liệu.** Bộ chọn cũ
+   *    loại mọi ứng viên trong 18° quanh hướng đã lấy, trên một lưới quét
+   *    5° — nên sáu trong chín khe ra ĐÚNG 20°. Đo được: khe
+   *    [20, 25, 45, 20, 30, 20, 20, 160, 20]. Cái đều ấy là của cái hằng số,
+   *    không của bụi. Nay khe tối thiểu LẤY THEO NHIỄU trong `gapDeg`, nên
+   *    hai tia có thể sát nhau (chùm) và chỗ khác thưa hẳn.
+   *
+   * `count` 9 → **5**: năm cái không đều đọc ra là ánh sáng, chín cái đều
+   * đọc ra là một biểu tượng mặt trời. Và `pinch` cho nêm THÓP HẲN về 0 ở
+   * chỗ nhiễu xuống thấp — tia có chỗ ĐỨT, như ánh sáng qua mây thật.
    */
   ray: {
-    count: 9,
+    count: 5,
     within: 520,
-    spread: [4, 9],
-    length: [180, 420],
-    opacity: [0.1, 0.22],
+    /** Nửa góc mở của vỏ LÕI, độ. Dải rộng gấp hơn ba lần dải cũ [4, 9]:
+     *  bề rộng không đều là nửa còn lại của "không phải máy vẽ". */
+    spread: [3.5, 17],
+    length: [120, 520],
+    /** Khe tối thiểu giữa hai hướng, độ — một KHOẢNG lấy theo nhiễu, không
+     *  một hằng số. Xem lý do 3 ở trên. */
+    gapDeg: [6, 30],
     /**
-     * `jitter` 2,5 → 9 và BA NÊM LỒNG NHAU thay một — 20/10/2026, và lý do
-     * là một bức ảnh, không một con số.
+     * SỐ VỎ của một tia — và nó là MỘT con số cho cả độ đậm LẪN bề rộng.
      *
-     * Bản một-nêm đọc ra trên PNG là **chín vạch kẻ kỹ thuật**: mép sắc
-     * tuyệt đối, bề rộng đều, toả đều từ tâm. Đó là dấu hiệu "máy vẽ" rõ
-     * nhất của cả bức, và bảng tám bậc không thấy nó — chín đa giác mờ 0,1
-     * chiếm chưa tới một phần trăm diện tích nên chúng không đổi một chữ số
-     * thập phân nào. Chỉ `raster.py --png` thấy.
+     * Vòng sửa thứ ba thử một chồng vỏ có độ mờ GIẢM DẦN (0,038 ở lõi →
+     * 0,01 ở rìa) và bề rộng tăng đều. Trên PNG nó vẫn ra **bốn thanh tối
+     * mép sắc** — và lý do tính được: với độ mờ giảm tuyến tính còn bề rộng
+     * tăng tuyến tính, 70 % tổng độ mờ dồn vào năm vỏ TRONG CÙNG, mà năm vỏ
+     * ấy chỉ trải trên ~4 px. Tức cái dốc vẫn là một bậc, chỉ có cái đuôi là
+     * mềm. Một cái dốc mềm đòi độ mờ RẢI ĐỀU trên cả bề rộng.
      *
-     * Ba thứ sửa cùng lúc, cả ba đều giữ luật cấm gradient (tán làm bằng
-     * lớp phủ chồng, như quầng sao và như bậc tinh vân):
-     *  · `layers` 3 nêm lồng nhau, mỗi nêm ngoài rộng thêm `layerSpread` và
-     *    mờ đi theo `layerFade` ⇒ MÉP TÁN;
-     *  · bề rộng nhân một nhiễu dọc trục ⇒ tia PHÌNH RA THÓP VÀO, không còn
-     *    là một cái nêm thẳng;
-     *  · `jitter` lấy theo nhiễu LIÊN TỤC theo chiều dài (không phải `rnd`
-     *    theo chỉ số điểm) và biên độ lớn dần ra ngoài ⇒ gốc gọn, ngọn tướp.
-     * `steps` 11 thay 7: mép rung cần đủ điểm, không thì rung thành gãy.
+     * Nên: **mỗi vỏ cộng đúng một bậc lượng tử `Ink.STEP_OP` = 0,01** (bậc
+     * nhỏ nhất `Ink` ghi ra được, và ~1 mã sRGB trên nền sáng — không nhìn
+     * ra được), và tia đậm hơn thì có NHIỀU vỏ hơn, tức cũng RỘNG hơn. Hai
+     * thứ đi cùng nhau là đúng vật lý: một cột bụi dày hơn vừa tối hơn vừa
+     * to hơn. 11 vỏ ⇒ độ mờ cộng dồn 0,105; 22 vỏ ⇒ 0,199.
      */
+    layers: [11, 22],
+    /** Mỗi vỏ rộng thêm bấy nhiêu lần nửa-góc của vỏ lõi. 0,3 cho bước
+     *  ~2,7 px giữa hai vỏ ở giữa thân tia — đủ dày để cái dốc trải ra
+     *  30–70 px thay vì 13 px của vòng trước. */
+    layerStep: 0.3,
+    /** Nhiễu bề rộng dọc trục: `phinh = max(0, (n − pinch) × swell)` với
+     *  `n` là nhiễu 0..1. Dưới `pinch` thì nêm thóp về 0 ⇒ tia ĐỨT. */
+    pinch: 0.24,
+    swell: 1.9,
     jitter: 9,
-    steps: 11,
-    layers: 3,
-    layerSpread: 0.55,
-    layerFade: 1.5,
+    steps: 15,
   },
   /**
    * LUẬT ĐƯỜNG CHÓI (§10.3) — vật trong vùng sáng thành BÓNG ĐEN.
@@ -939,9 +973,17 @@ export const SKY_NEBULA = {
    *  `levelHi` HẠ 0,34 → 0,30: trường chỉ vượt 0,34 ở 2,9 % diện tích, nên
    *  bậc TRONG CÙNG (bậc sáng nhất, nay L ≈ 0,45) không thể phủ hơn 2,9 %. Ở
    *  0,30 nó phủ 3,5 % và cả thang dịch xuống theo — tức nửa TRÊN của dải
-   *  giữa có thêm diện tích mà không phải sáng thêm. */
+   *  giữa có thêm diện tích mà không phải sáng thêm.
+   *
+   *  `levelHi` HẠ TIẾP 0,30 → 0,26 cùng lượt kéo bụi lại (xem `dust`). Kéo
+   *  bụi về làm cả bức tối đi ĐỀU, nên nếu chỉ làm mỗi thế thì hai bậc
+   *  0,18–0,60 — vốn đã hụt — còn mỏng thêm. 0,26 nén cái thang 22 bậc vào
+   *  một dải trường hẹp hơn, tức mỗi bậc phủ rộng hơn: bậc "rìa quầng"
+   *  0,35–0,60 đi 5,53 → 6,53 % (tham chiếu 7,4) mà `L > 0,5` chỉ nhích
+   *  6,74 → 6,83 %. Chỗ sáng thêm nằm Ở LÕI TINH VÂN, không ở một lớp phủ
+   *  nào trải đều — đó là khác nhau giữa "sâu hơn" và "sáng hơn". */
   levelLo: 0.012,
-  levelHi: 0.3,
+  levelHi: 0.26,
   /** BỐN TÔNG cho hai mươi hai bậc, và bậc nào đổi tông.
    *
    *  Vì sao phải thêm `nebulaLit` chứ không giãn hai tông cũ: `nebulaCore`
@@ -978,11 +1020,32 @@ export const SKY_NEBULA = {
    *  đang có hai lớp phủ nhảy L 0,018 → 0,039 và bậc 0,03–0,08 phình
    *  **24 → 38 %** (tham chiếu 24) kèm trung vị 0,0396 — gần `medianMax`.
    *  Một bậc thêm vào một thang đều là một phép dịch cả thang, không phải
-   *  một chi tiết thêm ở đầu nào. */
+   *  một chi tiết thêm ở đầu nào.
+   *
+   *  ── KÉO LẠI, 20/10/2026: `spread` 3,2 → 2,75 · `opacity` 0,20 → 0,15 ──
+   *
+   *  Hai dòng ngay trên là một lịch sử ĐUỔI THEO MỘT CON SỐ, và đây là chỗ
+   *  trả giá. Bậc giữa là một ĐÍCH (46,8 % ở khung tham chiếu), không phải
+   *  một thứ càng cao càng tốt; đẩy nó lên 63 % đã VƯỢT đích 16 điểm, và
+   *  cái giá trả bằng chiều sâu: đen sâu tụt 24,95 → 14,64 % (tham chiếu
+   *  20,5) còn bậc "tinh vân mờ" phình 36,90 % (tham chiếu 24,0). Bức ra
+   *  đục như sữa — nhìn thấy ngay trên PNG.
+   *
+   *  Vì sao sửa Ở ĐÂY chứ không ở tinh vân: cả hai khuyết tật là MỘT lớp.
+   *   · `spread` một mình quyết bậc "đen sâu", vì đen sâu đúng bằng phần
+   *     khung nằm NGOÀI bậc bụi thấp nhất — 2,75 cho 20,5 %, khớp tham
+   *     chiếu tới chữ số thập phân;
+   *   · `opacity` quyết chỗ cái thang bụi RƠI VÀO bậc nào. Ở 0,20 thì hai
+   *     lớp phủ ra L 0,0393, nằm giữa bậc 0,03–0,08 — và `nebula` `#303852`
+   *     tô đặc chỉ đạt L 0,0377, tức **năm bậc tinh vân ngoài cùng chồng
+   *     lên bụi mà chỉ nhích 0,0393 → 0,0399**: một mảng phẳng rộng, đúng
+   *     nghĩa đục. Ở 0,15 hai lớp phủ ra 0,0272 (về bậc "nền trời") và năm
+   *     bậc ngoài leo đều 0,0272 → 0,0331. Vân tinh vân ĐỌC ĐƯỢC trên nền
+   *     bụi, chứ không chỉ là 10 điểm phần trăm đổi chỗ trong bảng. */
   /** `hullFade: 1` = bụi xa KHÔNG loãng đi quanh chòm nữa. Cùng lý do với
    *  `hullFade` ở dưới: hai lớp này cộng lại là cái hào mà lời chê thứ sáu
    *  gọi đúng tên — bớt đi ánh sáng quanh một hình là khoét một cái lỗ. */
-  dust: { spread: 3.2, freq: 4.2, levels: [0.24, 0.42, 0.58], opacity: 0.2, hullFade: 1.0 },
+  dust: { spread: 2.75, freq: 4.2, levels: [0.24, 0.42, 0.58], opacity: 0.15, hullFade: 1.0 },
   /** Khe bụi tối: ba ngưỡng, độ mờ mỗi bậc. Nó NHÂN vào, không cộng. */
   lane: { levels: [0.3, 0.46, 0.6], opacity: 0.3 },
   /** Lưới lấy mẫu cho marching squares. 5 px/ô ở khung 1360 là đủ mềm cho một
@@ -1067,8 +1130,19 @@ export const SKY_MAGNITUDE = {
 /** Nét nối trong một chòm (§4.1). */
 export const SKY_LINK = {
   width: 1.15,
-  opacity: 0.55,
-  focusOpacity: 0.85,
+  /** 0,55 → 0,70 · 0,85 → 0,88 ngày 20/10/2026 — lý do đầy đủ ở
+   *  `SKY_PROFILE_DARK.scale.lineOpacity`, và hai chỗ PHẢI khớp nhau (một
+   *  ca test so lại; `SKY_LINK` là LUẬT, `profile.scale` là thứ bộ sinh đọc).
+   *
+   *  `focusOpacity` KHÔNG được đẩy tới 0,95, và trần của nó là một phép
+   *  tính chứ không một gu: vỏ bọc đậm theo tỉ số `focusOpacity / opacity`
+   *  (`ve_net_chom`), nên 0,78 × 0,95 / 0,70 = 1,06 ⇒ vỏ bão hoà ở 1,0.
+   *  Lúc ấy `Ink` BỎ HẲN thuộc tính độ mờ (1,0 là mặc định của SVG) và tấm
+   *  RÕ chỉ còn một bề rộng nét thay vì cặp lõi↔vỏ — tức hiệu ứng hai tông
+   *  của LUẬT ĐƯỜNG CHÓI biến mất đúng ở trạng thái người ta đang nhìn.
+   *  0,88 cho vỏ 0,98, còn nguyên cặp. */
+  opacity: 0.7,
+  focusOpacity: 0.88,
   /** Nét DỪNG CÁCH TÂM SAO `r + gap`: quy ước bản đồ sao — nét nối không được
    *  chạm vào sao, nếu không sao thành một cái nút của nét thay vì một vật
    *  thể. Đây cũng là lý do bản vực cũ nhìn rối. */
@@ -1110,8 +1184,23 @@ export const SKY_LINK = {
    * mắt có một dải so sánh, chưa đủ để nó đọc ra là một nét thứ hai.
    * `opacity` 0,62 là con số nhỏ nhất còn giữ cả 700 điểm đo trên 3 : 1 ở
    * trạng thái NGHỈ sau khi hào bị bỏ và quầng được nới.
+   *
+   * ── 0,62 → 0,78, 20/10/2026: 3 : 1 LÀ SÀN, KHÔNG LÀ MỤC TIÊU ───────────
+   *
+   * "Con số nhỏ nhất còn giữ 3 : 1" là đúng cách chọn một con số khi thứ
+   * đang mua là tương phản cho một nét PHỤ. Nét chòm không phải nét phụ: nó
+   * là tám chặng của khoá học, thứ MANG NGHĨA duy nhất trong cả bức. Đo
+   * được sau khi nền sáng lên: 3,44 : 1 — tức một yếu tố chính đang sống ở
+   * đúng mép sàn tối thiểu, và trên PNG nó đọc ra đúng như thế: M2 và M7
+   * gần như chìm vào tinh vân.
+   *
+   * 0,78 cho vỏ một tông gần thuần hơn, nên dải lộ ra hai bên lõi thật sự
+   * là một tông NGƯỢC chứ không phải trời pha loãng. Một mình nó chỉ đưa
+   * 3,44 → 3,72; phần còn lại ở `scale.lineOpacity` (xem đó). Cả hai đều
+   * CỘNG ánh sáng vào nét, không trừ ánh sáng khỏi trời — cùng nguyên tắc
+   * đã bỏ được cái hào.
    */
-  casing: { grow: 1.6, opacity: 0.62 },
+  casing: { grow: 1.6, opacity: 0.78 },
   /** Trần số nét cho MỘT chòm (§4.1): trên mức đó hình bắt đầu không nhớ
    *  được. Script TỰ CHẶN — đây là con số giữ cho cái chạc còn đọc ra là cái
    *  chạc chứ không thành một mớ gạch nối. */
@@ -1865,8 +1954,28 @@ export const SKY_PROFILE_DARK: SkyProfile = {
   scale: {
     star: 1.0,
     line: 1.15,
-    lineOpacity: [0.55, 0.85],
-    dimOpacity: 0.31,
+    /**
+     * [nghỉ, hover] — 0,55 → **0,70** ngày 20/10/2026, cùng lượt với
+     * `SKY_LINK.casing.opacity`.
+     *
+     * Nét chòm đo được 3,44 : 1 lúc nghỉ, vừa trên sàn 3 : 1 của WCAG
+     * 1.4.11 — và một sàn là mức TỐI THIỂU ĐỌC ĐƯỢC, không phải mức mà
+     * thứ MANG NGHĨA chính của bức nên có. Trên PNG nó đọc ra đúng thế:
+     * M2 (giữa-dưới) và M7 (phải) gần như chìm vào tinh vân.
+     *
+     * Đây là lever MẠNH NHẤT và cũng là lever đúng chỗ nhất: tương phản
+     * đo giữa LÕI và VỎ, nên nó là độ mờ của chính cái lõi. 0,70 đưa chỗ
+     * tệ nhất lên 5,2 : 1 và trung vị 4,37 → 5,91. Không một điểm trời
+     * nào bị dìm để đổi lấy con số ấy.
+     *
+     * `dimOpacity` PHẢI lên theo: `kiem_mo_css` đòi
+     * `dimOpacity / lineOpacity[0] ≥ SKY_LABEL.dimTextOpacity` (0,55), vì
+     * cùng một `opacity` CSS mờ cả nét lẫn CHỮ của bảy chòm không được
+     * trỏ. 0,40 / 0,70 = 0,5714 — nhỉnh hơn 0,5636 cũ, tức chữ lúc mờ
+     * còn đọc tốt hơn một chút.
+     */
+    lineOpacity: [0.7, 0.88],
+    dimOpacity: 0.4,
     figureOpacity: 0.13,
   },
   base: '#0A0C14',
@@ -2545,7 +2654,7 @@ export const SKY_LAYERS = [
    */
   'nguon-sang',
   'loe-ngang',
-  /** Chín nêm tia sáng xuyên bụi (`SKY_LIGHT.ray`) — TRÊN tinh vân vì chúng
+  /** Năm nêm tia sáng xuyên bụi (`SKY_LIGHT.ray`) — TRÊN tinh vân vì chúng
    *  là thứ CHẮN ánh sáng, và DƯỚI khối chân trời vì mọi nêm bị nó cắt. */
   'tia-bui',
   'quang-chan-troi',
