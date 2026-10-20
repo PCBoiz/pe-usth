@@ -275,8 +275,21 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
             (hoặc Tab) vào một dòng thì ngôi của bài ấy phát sáng, và ngược
             lại. Bộ máy ở `SkyCursor.tsx` — nó phải là JS vì bảng là anh em
             ĐỨNG SAU `.frame`, và bộ chọn `~` chỉ nhìn về phía sau. */}
+        {/* MỘT CÁI BỌC, và nó là bố cục chứ không trang trí: ở ≥ 1 200 px
+            `.rong` thành lưới hai cột và `.cot` là cột PHẢI, đứng cạnh bức
+            tranh thay vì nằm dưới nó (xem `.rong > .cot` trong CSS). Lý do nó
+            đáng một phần tử mới: từ 20/10/2026 tên bài KHÔNG còn in trên chín
+            thẻ neo vào chín ngôi (chúng chồng nhau, chữ cắt giữa chừng, một
+            thẻ đè cả nút Thoát — chủ sản phẩm gửi ảnh chụp M6), nên danh sách
+            này là chỗ DUY NHẤT còn đọc được 9 cái tên cùng lúc. Một chỗ như
+            thế không được nằm ngoài màn hình đúng lúc người ta vừa phóng vào.
+
+            Nó không đụng vào hợp đồng thứ tự DOM ở luật 4: cả ba phần tử nó
+            bọc vẫn đứng SAU `.frame`, và `SkyCursor` uỷ quyền trên `<main>`
+            (`khung.parentElement`) nên `[data-bang] [data-bai]` vẫn tra tới
+            được qua một tầng bọc. */}
         {chom ? (
-          <>
+          <div className={styles.cot}>
             <h2 className={styles.bangTitle}>
               {STAR_COPY.zoomPanelTitle
                 .replace('{key}', chom.key)
@@ -304,7 +317,7 @@ export default async function StarMapPreviewPage({ searchParams }: Props) {
                 </li>
               ))}
             </ol>
-          </>
+          </div>
         ) : null}
 
         <h2 className={styles.legendTitle}>{STAR_COPY.legendTitle}</h2>

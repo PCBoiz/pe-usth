@@ -170,13 +170,49 @@ export default function SkyCursor() {
     let khung_raf = 0;
     let cho: { x: number; y: number } | null = null;
 
+    /* ── HỘP CỦA KHUNG, ĐO LẠI KHI NÓ ĐỔI — KHÔNG MỖI KHUNG HÌNH ───────
+     *
+     * Bản sửa cho lời chê "hơi lag" (20/10/2026), và cơ chế đáng viết ra vì
+     * `getBoundingClientRect()` trông như một phép ĐỌC vô hại.
+     *
+     * Nó vô hại chỉ khi bố cục đang SẠCH. Ở đây nó không bao giờ sạch: cuối
+     * mỗi khung hình, `nhan()` đặt/bỏ `data-gan` và `sangHang()` đặt/bỏ
+     * `data-sang` — mà `.sao[data-gan]` đổi `border-color`, `outline` VÀ
+     * `z-index`, còn `.chip` của nó đổi `opacity`. Tức mỗi khung hình làm bẩn
+     * style, rồi lời gọi `getBoundingClientRect()` của khung hình SAU buộc
+     * trình duyệt tính lại style và bố cục ngay tại chỗ (forced synchronous
+     * layout) trước khi trả về con số — trên một cây có 19 tấm ảnh phủ kín
+     * khung, 48 thẻ neo và 48 quầng sáng. Một lượt như thế mỗi khung hình,
+     * suốt thời gian con trỏ còn di chuyển.
+     *
+     * Hộp này đổi vì ĐÚNG BA nguyên nhân, nên có đúng ba chỗ xoá nó:
+     *  · KÍCH CỠ đổi — `ResizeObserver` trên chính khung. Nó lo cả cú phóng:
+     *    `.rong` nới `main` từ 1 100 lên 1 560 px và lưới hai cột chia lại chỗ,
+     *    nên khung ĐỔI CỠ. Chỗ này là lý do phải dùng `ResizeObserver` chứ
+     *    không chỉ `window.resize`: cú phóng là điều hướng phía client, effect
+     *    có `deps: []` nên không chạy lại, và không một sự kiện `resize` nào
+     *    của cửa sổ xảy ra — một hộp cũ ở đây nghĩa là vòng dò nhận ngôi cách
+     *    đó mấy trăm pixel, đúng triệu chứng "chuột hơi lệch" mà
+     *    `zoomToFrame()` sinh ra để chữa.
+     *  · VỊ TRÍ đổi vì CUỘN — `scroll` ở pha capture, nên cuộn trong bất kỳ
+     *    tổ tiên nào cũng tới.
+     *  · VỊ TRÍ đổi vì một thứ khác trên trang xê dịch (phông, ảnh tải xong) —
+     *    không có sự kiện nào cho việc đó, nên đo lại MỘT lần mỗi lúc con trỏ
+     *    vào khung. Một lượt cho cả quãng rê, không một lượt mỗi khung hình. */
+    let hop: DOMRect | null = null;
+    const xoaHop = () => { hop = null; };
+    const layHop = () => {
+      if (!hop) hop = khung.getBoundingClientRect();
+      return hop;
+    };
+
     // MỘT lượt ghi mỗi khung hình, và ghi THẲNG vào lớp phủ chứ không vào cha:
     // ghi vào cha là kéo cả cây con vào lượt tính lại style, mà cây con ở đây
     // là mười hai tấm ảnh phủ kín khung.
     const ve = () => {
       khung_raf = 0;
       if (!cho) return;
-      const r = khung.getBoundingClientRect();
+      const r = layHop();
       if (r.width <= 0 || r.height <= 0) return;
       const u = (cho.x - r.left) / r.width;
       const v = (cho.y - r.top) / r.height;
@@ -215,9 +251,16 @@ export default function SkyCursor() {
       if (!khung_raf) khung_raf = requestAnimationFrame(ve);
     };
 
+    // Ba chỗ xoá hộp đã đệm — xem chú thích ở `layHop()`. `ResizeObserver`
+    // gắn DÙ máy có hover hay không: nó rẻ, và nó là thứ duy nhất biết cú
+    // phóng vừa đổi cỡ khung.
+    const doCo = new ResizeObserver(xoaHop);
+    doCo.observe(khung);
     if (coTro) {
       khung.addEventListener('pointermove', diChuyen);
       khung.addEventListener('pointerleave', bo);
+      khung.addEventListener('pointerenter', xoaHop);
+      window.addEventListener('scroll', xoaHop, { capture: true, passive: true });
     }
 
     /* ── bàn phím ───────────────────────────────────────────────────── */
@@ -318,8 +361,11 @@ export default function SkyCursor() {
 
     return () => {
       if (khung_raf) cancelAnimationFrame(khung_raf);
+      doCo.disconnect();
       khung.removeEventListener('pointermove', diChuyen);
       khung.removeEventListener('pointerleave', bo);
+      khung.removeEventListener('pointerenter', xoaHop);
+      window.removeEventListener('scroll', xoaHop, { capture: true });
       khung.removeEventListener('keydown', bam);
       khung.removeEventListener('focusin', vao);
       trang?.removeEventListener('pointerover', tuHang);

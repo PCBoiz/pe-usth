@@ -238,9 +238,48 @@
 }
 
 /* BA TẤM TRỜI KHÔNG ĐỔI GÌ LÚC HOVER — không `transition`, không `opacity`,
-   không một quy tắc nào. Chúng chỉ cần không ăn con trỏ. */
+   không một quy tắc nào. Chúng chỉ cần không ăn con trỏ…
+
+   …VÀ MỘT LỚP HỢP THÀNH RIÊNG, đây mới là chỗ chữa lời chê "hơi lag"
+   (20/10/2026). Cơ chế, vì `will-change` không bao giờ được rải cho "chắc":
+
+   `sky-troi.svg` cân 284 613 byte và chứa **325 nét, 238 trong số đó có
+   `fill-opacity`** — tức 238 vùng tô BÁN TRONG SUỐT phủ kín 1 360 × 820 (14
+   bậc đường đồng mức của tinh vân). Raster hoá chúng một lần là đắt; raster
+   lại thì đắt đúng thế lần nữa.
+
+   Và trước bản sửa này, raster lại là chuyện xảy ra MỖI LẦN con trỏ đi vào
+   hoặc ra khỏi một ô bấm. Lý do: mười sáu tấm chòm đổi `opacity` bằng
+   `transition`, nên Chrome NÂNG tấm đang đổi lên một lớp riêng trong suốt
+   quãng chuyển tiếp rồi HẠ nó xuống khi xong. Mỗi lần nâng/hạ, vùng tấm ấy
+   vừa chiếm trong lớp chung phải vẽ lại — mà tấm nào ở đây cũng `inset: 0`,
+   tức VÙNG ẤY LÀ CẢ KHUNG, tức cả 238 vùng tô mờ của tinh vân. Chín tấm đổi
+   mỗi lượt hover (một tấm rõ bật, tám tấm nghỉ hạ xuống `--sky-mo`) nên lớp
+   chung bị băm liên tục đúng lúc tay đang di chuyển.
+
+   Đẩy ba tấm trời sang lớp của chúng là lấy toàn bộ phần đắt RA KHỎI đường
+   vẽ lại: trong khung, lớp chung không còn gì để vẽ, và tinh vân raster MỘT
+   lần cho cả phiên.
+
+   `transform` chứ không `opacity` trong `will-change`, và đúng là
+   `transform` mà ba tấm này THẬT SỰ đổi: cú phóng chạy `transform` trên từng
+   tấm (`.sky`), nên đây là một lời khai đúng chứ không một cái mẹo nâng lớp.
+
+   GIÁ PHẢI TRẢ, nói ra để ai định rải thêm thì biết: ba lớp 1 360 × 820 × 4 B
+   ≈ 13,4 MB bộ nhớ hình. Đó là lý do bản sửa dừng ở BA tấm — mười sáu tấm chòm
+   cũng nâng được, nhưng 16 × 4,4 MB ≈ 71 MB thì chính "máy rẻ" mà ràng buộc 3
+   nói tới là chỗ vỡ đầu tiên. Ba tấm này được chọn vì chúng là ba tấm
+   KHÔNG BAO GIỜ ĐỔI `opacity`, nên lớp của chúng không bao giờ phải vẽ lại.
+
+   CHƯA ĐO BẰNG DEVTOOLS — nói thẳng: phiên này không chạy được trình duyệt
+   (MCP chrome-devtools không kết nối). Đây là giả thuyết khả nghi nhất, và nó
+   dựa trên hai con số đo được thật: 284 613 byte / 238 vùng tô mờ trong tấm
+   trời, và chín tấm `inset: 0` đổi `opacity` mỗi lượt hover. Ai chạy được
+   Performance thì đo `Rasterize` trước/sau một cú rê chuột — đó là cột mà bản
+   sửa này phải làm xuống, không phải `Recalculate Style`. */
 .troi {
   pointer-events: none;
+  will-change: transform;
 }
 
 /* VÙNG CHẠM 44 px — một con số ĐO LẠI ngày 19/10/2026 và nó đang vỡ.
@@ -1121,29 +1160,51 @@
   .frame[data-phong] .cum .sao:nth-child(9) .chip { --bac: 390ms; }
 }
 
-.hitM1:hover ~ .lop .cumM1 .chip,
-.hitM1:focus-visible ~ .lop .cumM1 .chip,
+/* ── TRỎ VÀO MỘT CHẶNG KHÔNG CÒN PHÁT HẾT NỘI DUNG CỦA NÓ ─────────────
+ *
+ * ĐÂY LÀ MỘT KHỐI ĐÃ BỊ XOÁ, và chỗ trống phải mang chú thích vì nó là thứ
+ * người dùng thấy đổi. Tám quy tắc từng nằm ở đây
+ * (`.hitM<k>:hover ~ .lop .cum<k> .chip { opacity: 1 }`) bật MỌI thẻ mã bài
+ * của chặng được trỏ: sáu tới chín thẻ cùng lúc, trên một khung 1 360 px, nên
+ * ở ba chòm chặt nhất chúng chồng lên nhau thành một mớ. Chủ sản phẩm gửi ảnh
+ * chụp và nói đúng cái hậu quả: *"khi hover đã hiện luôn các bài của phần đấy
+ * rồi, sao không phải khi tôi bấm vào M1-M8 thì nó sẽ zoom vào… rồi lúc đấy
+ * mới hiện lên các khóa"*.
+ *
+ * Nó cũng là lỗi mà `design/v3/tuong-tac-ban-do.md` §2.5 đã chỉ ra mà chưa ai
+ * áp: luật của Hades là *cho biết HÌNH DẠNG của lựa chọn, giữ lại NỘI DUNG của
+ * nó* — và §2.8 dòng ba xếp bản đồ này vào cột "không giữ lại gì". Phát hết
+ * nội dung ở tỉ lệ xa làm cú phóng mất hẳn thứ để tiết lộ: bấm vào rồi thì
+ * không còn gì chưa thấy.
+ *
+ * TRỎ VÀO NAY CHO ĐÚNG HAI THỨ, và cả hai đã có sẵn trong tranh — không một
+ * byte CSS nào phải thêm: tấm NGHỈ in `M5 · NumPy`, tấm RÕ (hiện lúc hover,
+ * xem khối `.hit:hover ~ .chomNen` ở trên) in THÊM dòng `Advanced Python ·
+ * 6 bài`. Tức hover = tên chặng + SỐ bài; nội dung = tên 48 bài thì chờ cú
+ * phóng. Hình dạng thì cho, nội dung thì giữ.
+ *
+ * BÀN PHÍM ĐI CÙNG ĐƯỜNG: nhánh thứ ba của mỗi quy tắc cũ
+ * (`.lop[data-chang='M<k>']`) cũng bỏ theo, nên Tab tới một chặng cho ra ĐÚNG
+ * trạng thái hover, không nhiều hơn. Mũi tên vào một NGÔI thì vẫn mở thẻ của
+ * riêng ngôi ấy — qua `:focus-visible` ở khối ngay dưới, một thẻ một lúc.
+ *
+ * BÀN PHÍM ĐI CÙNG ĐƯỜNG, và tám quy tắc dưới đây LÀ đường ấy — chúng là
+ * nhánh thứ ba của khối cũ, và chúng ở lại có lý do, không vì sót:
+ * `.lop[data-chang]` do `SkyCursor.tsx` đặt khi tiêu điểm rơi vào một NGÔI
+ * (`vao()` đọc `closest('[data-sao]')`), KHÔNG khi Tab tới ô bấm cả chặng. Tức
+ * Tab tới một chặng cho ra ĐÚNG trạng thái hover — tấm rõ, nhãn, số bài, hết;
+ * còn mũi tên ĐI VÀO trong chòm thì người đi bằng bàn phím đã làm đúng cái
+ * việc mà người đi bằng chuột làm bằng một cú bấm, nên ở đó họ được thấy nội
+ * dung. Bỏ nốt tám dòng này là bắt người dùng bàn phím mò 48 ngôi mà không thẻ
+ * nào mở ra, và `e2e/unit/star-map.test.mjs` canh đúng chuyện đó
+ * ("đi bằng mũi tên không làm hiện mã bài của chặng"). */
 .lop[data-chang='M1'] .cumM1 .chip { opacity: 1; }
-.hitM2:hover ~ .lop .cumM2 .chip,
-.hitM2:focus-visible ~ .lop .cumM2 .chip,
 .lop[data-chang='M2'] .cumM2 .chip { opacity: 1; }
-.hitM3:hover ~ .lop .cumM3 .chip,
-.hitM3:focus-visible ~ .lop .cumM3 .chip,
 .lop[data-chang='M3'] .cumM3 .chip { opacity: 1; }
-.hitM4:hover ~ .lop .cumM4 .chip,
-.hitM4:focus-visible ~ .lop .cumM4 .chip,
 .lop[data-chang='M4'] .cumM4 .chip { opacity: 1; }
-.hitM5:hover ~ .lop .cumM5 .chip,
-.hitM5:focus-visible ~ .lop .cumM5 .chip,
 .lop[data-chang='M5'] .cumM5 .chip { opacity: 1; }
-.hitM6:hover ~ .lop .cumM6 .chip,
-.hitM6:focus-visible ~ .lop .cumM6 .chip,
 .lop[data-chang='M6'] .cumM6 .chip { opacity: 1; }
-.hitM7:hover ~ .lop .cumM7 .chip,
-.hitM7:focus-visible ~ .lop .cumM7 .chip,
 .lop[data-chang='M7'] .cumM7 .chip { opacity: 1; }
-.hitM8:hover ~ .lop .cumM8 .chip,
-.hitM8:focus-visible ~ .lop .cumM8 .chip,
 .lop[data-chang='M8'] .cumM8 .chip { opacity: 1; }
 
 /* NGÔI GẦN CON TRỎ NHẤT TỰ NHẬN MÌNH, và BA ĐƯỜNG TỚI CÙNG MỘT TRẠNG THÁI.
@@ -1167,6 +1228,31 @@
 .sao:focus-visible .chip {
   --bac: 0ms;
   opacity: 1;
+}
+
+/* BA DÒNG LẶP LẠI, VÀ CHÚNG LÀ MỘT BẢN SỬA LỖI — lỗi chỉ LỘ RA khi cú
+   phát-hết-lúc-hover bị bỏ ở khối trên.
+
+   Bậc thang là `.cum .sao:nth-child(n) .chip` = bốn mức lớp (0,4,0); khối ngay
+   trên là `.sao[data-gan] .chip` = ba mức (0,3,0). Tức bậc thang THẮNG, và
+   `--bac: 0ms` viết ở trên CHƯA BAO GIỜ có hiệu lực: thẻ của ngôi con trỏ đang
+   chỉ vào đến sau 150–510 ms tuỳ nó là ngôi thứ mấy trong chặng. Trước đây
+   không ai thấy, vì cú hover đã bật sẵn cả chín thẻ nên thẻ của ngôi được nhận
+   đã nằm đó rồi. Bỏ cú hover đi thì nó thành thứ DUY NHẤT còn hiện khi trỏ vào
+   bầu trời — và một phản hồi đi theo tay mà trễ nửa giây đọc ra thành "chuột
+   không ăn", thứ không ai đi tìm trong một bảng độ đặc trưng.
+
+   VÌ SAO LÀ MỘT KHỐI THỨ HAI chứ không thêm `.cum` vào khối trên:
+   `e2e/unit/star-map.test.mjs` ("ngôi được NHẬN và ngôi được TIÊU ĐIỂM cho ra
+   ĐÚNG một trạng thái") khớp ĐÚNG ba dòng `.sao[data-gan] .chip,` …
+   `.sao:focus-visible .chip {` — thêm một tiền tố là ca ấy đỏ, và tệp test đó
+   đang do một agent khác giữ. Khối này cân bằng về (0,4,0) và đứng SAU bậc
+   thang, nên nó thắng mà không đụng vào dòng nào ca test đọc. Không
+   `!important`: nhánh `reduce` còn phải tắt được `transition`. */
+.cum .sao[data-gan] .chip,
+.cum .sao[data-sang] .chip,
+.cum .sao:focus-visible .chip {
+  --bac: 0ms;
 }
 
 /* QUẦNG SÁNG bật ở cả ba đường. Vòng viền `--sac` + `outline --sky-chip` vẫn
@@ -1421,6 +1507,47 @@
   display: block;
 }
 
+/* …NHƯNG MỘT TÊN MỘT LÚC, KHÔNG CHÍN. Đây là bản sửa cho lời chê 20/10/2026:
+   *"cả cái này nữa cũng hơi xấu/bó lại với nhau"*, kèm ảnh chụp M6 (pandas,
+   CHÍN bài) với chín thẻ đè lên nhau, chữ cắt giữa chừng (*"Seri… DataFra… và
+   ind…"*, *"Merge, conca… kiểm… cardin…"*) và một thẻ nằm đè lên chính nút
+   "Thoát khỏi chặng".
+
+   VÌ SAO KHÔNG MƯỢN LUẬT NHƯỜNG §8 của `build_sky.py` (hướng thứ hai): bộ máy
+   ấy giải bài toán TÁM nhãn trên cả bầu trời và nó được quyền TRƯỢT BUILD khi
+   không tìm ra chỗ sạch. Ở đây là CHÍN thẻ hai dòng trong một chòm đã co vào
+   ~112–161 px giữa hai ngôi gần nhau nhất — một cách xếp sạch có thể KHÔNG
+   TỒN TẠI, và một bộ máy chạy lúc chạy (không lúc build) thì không có cái
+   quyền trượt ấy. Nó sẽ phải chọn giữa đè nhau và đẩy thẻ xa khỏi ngôi của
+   nó, tức mất cái nối duy nhất giữa chữ và hình.
+
+   VÌ SAO KHÔNG BỎ HẲN THẺ (hướng thứ nhất, chỗ điều phối nghiêng về): nửa
+   đúng, và nửa ấy LÀM RỒI — tên bài chuyển sang CỘT BÊN CẠNH bản đồ (xem
+   `.cot` dưới đây), nơi chín cái tên nằm trên chín dòng và không bao giờ
+   tranh chỗ. Nhưng thẻ thì không bỏ được hết: `thuTu` + `ma` là thứ nói
+   "ngôi NÀY là bài nào", và bỏ nó đi là quay về đúng cái bản đồ mà bấm vào
+   chẳng tiết lộ gì — chỗ mà lời chê thứ nhất của cùng ngày đang chỉ vào. Thẻ
+   còn lại MỘT DÒNG (`6 PD03`), ~45 px, nên nó không với tới thẻ bên cạnh ở
+   bất kỳ bề rộng nào.
+
+   CÒN TÊN BÀI thì hiện ở ĐÚNG ngôi tay đang chỉ vào — ba đường quen thuộc
+   (`[data-gan]` con trỏ · `[data-sang]` một dòng của cột bên · `:focus-visible`
+   bàn phím), tức đúng "tiết lộ theo CHÚ Ý" của
+   `design/v3/tuong-tac-ban-do.md` §7 mục 2. Một thẻ mở một lúc thì không có
+   gì để chồng, và `z-index: 1` của ngôi được nhận (khối dưới) đưa nó lên trên
+   mọi thẻ còn lại.
+
+   ĐIỆN THOẠI KHÔNG MẤT GÌ, và đây là chỗ phải kiểm trước khi tin bản sửa này:
+   máy chạm không có `[data-gan]` (lớp con trỏ không gắn listener nào), nên
+   trên đó KHÔNG thẻ nào mở tên bài. Nhưng chín cái tên bị cắt làm bốn khúc
+   cũng chưa bao giờ đọc được trên một màn 358 px — còn cột bên cạnh thì đọc
+   được, nó mang cả tên LẪN thứ tự học, và `STAR_COPY.zoomNote` đã nói ra chỗ
+   nối: con số thứ tự in ở CẢ dòng lẫn thẻ. Tức đường điện thoại không đi qua
+   hover, đúng như trước. */
+.frame[data-phong] .sao:not([data-gan]):not([data-sang]):not(:focus-visible) .tenBai {
+  display: none;
+}
+
 .frame[data-phong] .thuTu {
   display: inline;
 }
@@ -1446,6 +1573,62 @@
 @media (min-width: 1200px) {
   .rong .tenBai {
     max-width: 21ch;
+  }
+
+  /* ── CỘT BÀI ĐỨNG CẠNH BẢN ĐỒ, KHÔNG NẰM DƯỚI NÓ ─────────────────────
+   *
+   * Nửa thứ hai của bản sửa cho *"cũng hơi xấu/bó lại với nhau"*
+   * (20/10/2026). Nửa thứ nhất gỡ chín cái tên ra khỏi chín cái thẻ chồng
+   * nhau (xem `.frame[data-phong] .sao:not(...) .tenBai`); nửa này phải cho
+   * chúng một chỗ ở, nếu không bản sửa kia là một vụ xoá thông tin.
+   *
+   * Và chỗ ở ấy là một CỘT, vì cột là chỗ chữ không bao giờ phải tranh nhau:
+   * chín dòng xếp dọc, thứ tự học đọc từ trên xuống, mỗi tên trên một dòng
+   * của riêng nó. Danh sách này đã tồn tại và đã nối hai chiều với bầu trời
+   * từ 19/10 (`data-sang`) — nó chỉ đang nằm DƯỚI khung, tức ngoài màn hình ở
+   * hầu hết màn laptop đúng lúc người ta vừa phóng vào và cần nó nhất.
+   *
+   * GIÁ: khung từ 1 528 px xuống ~1 184 px ở màn 1 560 px. Đó là một phần của
+   * chỗ rộng mà chủ sản phẩm xin hôm 19/10 ("có thể cho to ra hơn nữa trên
+   * máy tính"), nên nói thẳng con số: nó VẪN rộng hơn 1 068 px của bản lúc
+   * họ xin, và đổi lại thì danh sách bài không còn phải cuộn mới thấy. Thẻ
+   * bài giữ 21ch dù khung hẹp lại — con số ấy đo cho chỗ KHÔNG CHỒNG, mà từ
+   * nửa sửa thứ nhất thì chỉ MỘT thẻ mở tên bài một lúc, nên không còn gì để
+   * chồng.
+   *
+   * `minmax(0, 1fr)` chứ không `1fr`: cột chứa `.frame` có `aspect-ratio`, và
+   * một `1fr` trần lấy `min-width: auto` nên khung đẩy lưới rộng hơn cả `main`
+   * ở màn 1 200–1 300 px.
+   *
+   * Chỉ ở ≥ 1 200 px, cùng ngưỡng với thẻ 21ch và cùng lý do: dưới mức đó
+   * một cột 22rem ăn hết chỗ của bức tranh, và `max-width` của `.rong` tự hạ
+   * xuống bề rộng màn nên điện thoại giữ nguyên bố cục một cột. */
+  .rong {
+    align-items: start;
+    column-gap: 24px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 22rem;
+  }
+
+  /* Mặc định MỌI con của `main` vẫn chiếm cả hai cột — tiêu đề, câu dẫn, chú
+     giải không có việc gì ở một cột hẹp. Chỉ hai phần tử được chia đôi hàng,
+     và chúng nằm cùng một hàng nhờ tự xếp: `.cot` là con đứng NGAY SAU
+     `.frame` trong DOM, nên nó rơi vào ô trống bên phải cùng hàng. */
+  .rong > * {
+    grid-column: 1 / -1;
+  }
+
+  .rong > .frame {
+    grid-column: 1;
+  }
+
+  .rong > .cot {
+    grid-column: 2;
+  }
+
+  /* Tiêu đề bảng thôi cần lề trên 20px: ở cột bên nó đã thẳng mép trên khung. */
+  .rong > .cot .bangTitle {
+    margin-top: 0;
   }
 }
 
@@ -1514,6 +1697,17 @@
    Nó cũng là đường BÀN PHÍM của tỉ lệ gần: 48 dấu ngôi mang `tabIndex={-1}`
    (tiêu điểm luân phiên), và tám ô bấm cả chặng thì đã tắt. Không có bảng này
    thì phóng vào bằng Enter là tới một chỗ không đi tiếp được. */
+/* CỘT BÀI — chỉ là một cái bọc, và nó cố ý KHÔNG có kiểu gì ở đây. Dưới
+   1 200 px nó phải trong suốt về bố cục: một `<div>` khối, đúng dòng chảy cũ
+   của ba phần tử nó bọc, nên điện thoại không đổi một pixel nào. Toàn bộ việc
+   của nó nằm trong `@media (min-width: 1200px)` phía dưới, nơi nó thành cột
+   bên phải bức tranh. Quy tắc trống này có mặt để lớp được XUẤT ra khỏi CSS
+   module ngay cả khi ai đó gỡ khối media kia — `styles.cot` thành `undefined`
+   thì React lặng lẽ dựng `class="undefined"`. */
+.cot {
+  min-width: 0;
+}
+
 .bang {
   list-style: none;
   margin: 16px 0 0;
