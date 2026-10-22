@@ -111,7 +111,11 @@ export const COURSES: CatalogCourse[] = [
       + 'bài tổng hợp cuối mỗi chặng.',
     // Không khai `tag`: xem chú thích ở CatalogCourse.tag.
     level: 'advanced',
-    duration: '~48 giờ',
+    // Tổng `estimated_minutes` của 48 bài là 1 725 phút ≈ 28,8 giờ. Con số cũ
+    // "~48 giờ" trông như lấy 48 bài × 1 giờ rồi ghi cứng — phóng đại ~67% trên
+    // trang ai cũng vào. `e2e/unit/catalog-duration.test.mjs` cộng lại từ giáo
+    // trình và đòi chuỗi này khớp, để thêm/bớt bài là con số không trôi nữa.
+    duration: '~29 giờ',
     lessons: lessonCount('python_advanced', 48),
     image: '/static/images/python.webp',
     color: '#2563eb',
