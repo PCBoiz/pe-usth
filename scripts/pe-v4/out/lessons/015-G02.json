@@ -277,7 +277,7 @@
           {
             "label": "send()",
             "slot": 3,
-            "trap": "Gọi send ngay lúc dựng giao diện; nút nhận None."
+            "trap": "Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là None."
           },
           {
             "label": "name_entry.get()",
@@ -295,7 +295,7 @@
           {
             "label": "name_entry",
             "slot": 2,
-            "trap": "Đó là widget, không phải chữ đã gõ — cần get()."
+            "trap": "Đó là widget, không phải chữ đang nằm trong nó."
           }
         ]
       }

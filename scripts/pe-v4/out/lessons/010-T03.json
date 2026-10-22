@@ -282,7 +282,7 @@
           {
             "label": "self.total = sum(self.numbers)",
             "slot": 2,
-            "trap": "Tính ở __init__ = làm việc ở main thread; lại thiếu super().__init__()."
+            "trap": "Tính ở __init__ = làm việc ở main thread, xong trước khi có thread nào; và constructor của lớp cha vẫn chưa chạy."
           },
           {
             "label": "run",

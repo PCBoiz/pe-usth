@@ -283,7 +283,7 @@
           {
             "label": "\"running\"",
             "slot": 1,
-            "trap": "I/O xong chưa chắc có CPU: phải về ready chờ dispatch."
+            "trap": "I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa."
           },
           {
             "label": "child.wait()",

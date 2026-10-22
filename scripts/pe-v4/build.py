@@ -14,7 +14,7 @@ Cùng khuôn với scripts/pe-v3/build.py (bản đó giữ nguyên cho khoá c�
   ứng dụng, đọc sơ đồ), `figure=dict(name=…, caption=…, alt=…)` (hoặc một LIST tối đa
   hai hình, phần tử đầu là hình chính — mỗi hình phải có một khối theory khai
   `figure='<tên>'`) và `slides='SL 15-16'`
-  — xem CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
+  — xem scripts/pe-v4/CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
   content_json.source.slides. Hình SVG nằm ở frontend/public/static/anim/<name>.svg;
   thiếu file chỉ là CẢNH BÁO (tác giả nội dung không phải chờ agent vẽ hình), trừ khi
   chạy với --strict.
@@ -96,7 +96,7 @@ IMPORT_TO_PACKAGE = {mod: pkg for pkg, mod in PACKAGES.items()}
 MIN_TESTS = 5
 MIN_BAD = 2
 
-# ---- LÝ THUYẾT + HÌNH (M1–M3, xem CONTRACT-THEORY.md)
+# ---- LÝ THUYẾT + HÌNH (M1–M3, xem scripts/pe-v4/CONTRACT-THEORY.md)
 # Hai khoá mới của dict bài: `theory` (3–5 khối nền) và `figure` (hình chính).
 # Giới hạn độ dài KHÔNG phải tuỳ hứng: màn `theory` của frontend là một thẻ, chữ
 # dài hơn mức này thì thẻ tràn và học viên bỏ qua. Bài M4–M8 không khai gì thì
@@ -110,6 +110,7 @@ THEORY_BULLET_MAX = 160
 # Mỗi bài khai 1 hoặc 2 hình: `figure=dict(...)` hoặc `figure=[dict(...), dict(...)]`.
 # Vì sao cho 2: P01/P02/P03 có hình thứ hai đã vẽ xong (cây process, fork-exec-wait,
 # round robin) mà schema một-hình giữ chúng ngoài bài — hình vẽ rồi không ai thấy.
+# (P03-round-robin sau đó bị gỡ lại vì lệch dữ liệu bài, xem ALLOW_ORPHAN ở anim/check.py.)
 # Vì sao không cho nhiều hơn: màn `theory` là MỘT thẻ, thêm hình nữa là lại cuộn dài.
 FIGURES_MAX = 2
 FIGURE_CAPTION_MAX = 90
@@ -395,8 +396,12 @@ def theory_blocks(code, spec, warnings, strict_figures):
             carried[name] = at
             block['figure'] = {k: by_name[name][k] for k in ('src', 'caption', 'alt')}
         blocks.append(block)
-    # Hình khai mà không khối nào mang là hình KHÔNG BAO GIỜ lên màn hình: đó đúng là
-    # cách P01/P02/P03 từng mất hình thứ hai (vẽ xong, không bài nào nối vào).
+    # Hình khai mà không khối nào mang là hình KHÔNG BAO GIỜ lên màn hình — bắt tại đây
+    # vì từ khi `figure` nhận list, đó là cách mới để một hình rơi khỏi bài.
+    # Đừng nhầm đây là check đã bắt vụ P01/P02/P03: ba hình đó CHƯA TỪNG được khai ở
+    # bài nào (`git log -S P01-process-tree -- scripts/pe-v4` chỉ ra commit nối chúng
+    # vào), nên build.py không có gì để so. Thứ bắt được lớp lỗi "vẽ xong mà không bài
+    # nào khai" là `anim/check.py --strict`, đọc ngược từ file SVG sang gói bài.
     orphan = [name for name in by_name if name not in carried]
     check(not orphan, code,
           f'hình khai mà không khối theory nào mang: {", ".join(orphan)} — thêm figure="<tên>" vào một khối')
@@ -423,8 +428,8 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     # ---- S1: hiểu và dự đoán
     step1 = {
         'brief': brief_block(code, spec, briefs, module_no, level),
-        # Lý thuyết đứng NGAY SAU màn mở đầu (xem buildPlayScreens của frontend):
-        # học viên cần khái niệm + hình trước khi đọc code từng dòng ở `explain`.
+        # Lý thuyết là màn ĐẦU TIÊN của bài, đứng trước cả `brief` (xem buildPlayScreens
+        # của frontend): học viên cần khái niệm + hình trước khi bị đòi viết code.
         'theory': theory,
         'figure': figure,
         'context': {

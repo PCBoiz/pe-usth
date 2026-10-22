@@ -30,17 +30,28 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo ngày 14/10/2026. Đừng để tụt xuống dưới mức này:
+Đo lại ngày 22/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
 
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
 | Backend test | 35 bộ, 390 ca, tất cả đạt |
-| Backend lint | 263 lỗi — **mốc trần trong CI là 283, chỉ được hạ** |
+| Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → 204 ca đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **132 ca** / 11 tệp, tất cả đạt |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
+
+**Dòng "Frontend unit test" vừa được sửa từ 204 xuống 132, và đó là sửa một con số SAI chứ
+không phải chấp nhận tụt mốc.** Tự chạy `npm run test:unit` trên đúng cây này ra 132 ca trên
+11 tệp (trong đó 3 ca là của `trap-leak.test.mjs` vừa thêm, nên trước đó là 129). Con số 204
+chưa bao giờ ứng với cây mã này — đây đúng cái bẫy mà mục dưới cảnh báo: một con số cũ trong
+bảng không phải chú thích lỗi thời vô hại, nó là 72 ca test tưởng có mà không có. Thêm/bớt ca
+⇒ chạy lệnh, lấy số thật, sửa bảng TRONG CÙNG commit.
+
+Backend chạy riêng mới ra số đúng: chạy `npx jest --ci` song song với bộ test frontend thì
+15/15 bộ báo trượt với 0 ca chạy — tranh CPU, không phải lỗi thật (xem bẫy "Test
+`python-runner` trượt khi chạy CẢ BỘ" ở dưới).
 
 Số lỗi lint backend phải đo bằng ĐÚNG lệnh CI dùng, KHÔNG bằng `npm run lint` (script đó mang
 `--fix` nên vừa sửa file vừa làm con số lệch). Đo khác lệnh là lý do mốc này từng bị ghi 551
