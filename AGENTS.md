@@ -39,12 +39,13 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **132 ca** / 11 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **134 ca** / 12 tệp, tất cả đạt |
 | Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 
-**Dòng "Frontend unit test" vừa được sửa từ 204 xuống 132, và đó là sửa một con số SAI chứ
-không phải chấp nhận tụt mốc.** Tự chạy `npm run test:unit` trên đúng cây này ra 132 ca trên
-11 tệp (trong đó 3 ca là của `trap-leak.test.mjs` vừa thêm, nên trước đó là 129). Con số 204
+**Dòng "Frontend unit test" vừa được sửa từ 204 xuống 134, và đó là sửa một con số SAI chứ
+không phải chấp nhận tụt mốc.** Tự chạy `npm run test:unit` trên đúng cây này ra 134 ca trên
+12 tệp (trong đó 3 ca là của `trap-leak.test.mjs` và 2 ca của `catalog-duration.test.mjs`
+vừa thêm, nên trước đó là 129). Con số 204
 chưa bao giờ ứng với cây mã này — đây đúng cái bẫy mà mục dưới cảnh báo: một con số cũ trong
 bảng không phải chú thích lỗi thời vô hại, nó là 72 ca test tưởng có mà không có. Thêm/bớt ca
 ⇒ chạy lệnh, lấy số thật, sửa bảng TRONG CÙNG commit.
