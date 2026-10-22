@@ -213,20 +213,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "BytesIO()",
-            "hint": "Bộ đệm bytes trong bộ nhớ, không phải file trên đĩa"
+            "answer": "BytesIO()"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
-            "hint": "Lưu ĐÚNG figure được truyền vào, kèm định dạng và dpi"
+            "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "plt.close(fig)",
-            "hint": "Giải phóng figure hẳn, không chỉ xoá nội dung"
+            "answer": "plt.close(fig)"
           }
         ],
         "bank": [

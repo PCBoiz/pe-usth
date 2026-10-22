@@ -1,10 +1,12 @@
 import 'dotenv/config';
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+// Kiểu NestExpressApplication (không phải INestApplication chung) mới có
+// useBodyParser — cần để đặt trần kích thước body.
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import compression from 'compression';
 import { AppModule } from './app.module';
 import { setupApiGateway } from './api-gateway/api-gateway.setup';
-import { setupHttpApp } from './config/http-app.setup';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -33,9 +35,15 @@ async function bootstrap() {
     rawBody: false,
   });
 
-  // Trần body, nén, tắt X-Powered-By — gom một chỗ để test dựng lại được
-  // đúng cấu hình này (xem chú thích trong http-app.setup.ts).
-  setupHttpApp(app);
+  app.useBodyParser('json', { limit: process.env.BODY_LIMIT || '1mb' });
+  app.useBodyParser('urlencoded', {
+    limit: process.env.BODY_LIMIT || '1mb',
+    extended: true,
+  });
+
+  // Nén gzip/brotli cho response JSON lớn (courses, skills, forum feed...) —
+  // giảm băng thông đáng kể khi nhiều client cùng poll badge/feed.
+  app.use(compression());
 
   setupApiGateway(app);
 

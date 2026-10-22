@@ -11,9 +11,7 @@ export class RequestIdMiddleware implements NestMiddleware {
     const incoming = req.headers[REQUEST_ID_HEADER];
     const incomingId = Array.isArray(incoming) ? incoming[0] : incoming;
     const requestId = incomingId && isUuid(incomingId) ? incomingId : uuidv4();
-    // Kiểu của `requestId` khai ở `src/common/types/express-request.d.ts` —
-    // cùng một khai báo cho chỗ ghi này và hai exception filter đọc lại.
-    req.requestId = requestId;
+    (req as any).requestId = requestId;
 
     res.setHeader('X-Request-Id', requestId);
 

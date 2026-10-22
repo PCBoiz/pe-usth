@@ -9,8 +9,7 @@ const CSS = [
   '/static/css/dashboard.css',
   '/static/css/pages.css',
   '/static/css/dark-mode.css',
-  // Không nạp chatbot.css: hộp chat đã xoá hẳn 15/10/2026 — xem chú thích ở
-  // courses/db_design/page.tsx.
+  '/static/css/chatbot.css',
   '/static/css/course_db_design.css',
   '/static/css/edu-theme.css',
   '/static/css/edu-dashboard.css',

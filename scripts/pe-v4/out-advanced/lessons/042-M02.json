@@ -217,20 +217,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "ax_hist.hist(all_scores, bins=edges)",
-            "hint": "Vẽ phân bố mọi điểm lên panel trái, theo biên đề cho"
+            "answer": "ax_hist.hist(all_scores, bins=edges)"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "f\"All scores (n={len(all_scores)})\"",
-            "hint": "Tiêu đề kèm số QUAN SÁT, không phải số nhóm"
+            "answer": "f\"All scores (n={len(all_scores)})\""
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ax_box.boxplot(list(groups.values()))",
-            "hint": "Một hộp cho MỖI nhóm, và giữ outlier hiện ra"
+            "answer": "ax_box.boxplot(list(groups.values()))"
           }
         ],
         "bank": [

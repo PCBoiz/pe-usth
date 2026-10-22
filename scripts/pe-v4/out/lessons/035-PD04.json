@@ -222,26 +222,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "df.copy()",
-            "hint": "Làm việc trên bản riêng, đừng thêm cột vào bảng của nơi gọi"
+            "answer": "df.copy()"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\"",
-            "hint": "Đánh dấu đơn qty không dương — gán thẳng vào bảng, không qua bảng tạm"
+            "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\""
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)",
-            "hint": "Mask ba điều kiện cùng lúc, nối bằng toán tử dùng được với Series"
+            "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)",
-            "hint": "Lọc theo mask rồi xếp doanh thu GIẢM dần"
+            "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)"
           }
         ],
         "bank": [

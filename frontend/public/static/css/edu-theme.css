@@ -11,21 +11,10 @@
    working unchanged.
    ══════════════════════════════════════════════════════════════ */
 
-/* Phông không còn nạp bằng @import từ Google Fonts. Hai họ chữ của bản thiết
-   kế v2 (Be Vietnam Pro + JetBrains Mono) tự lưu trữ trong repo và khai
-   @font-face ở edu-fonts.css — file đó PageStyles tự thêm vào mọi trang, cùng
-   cách với edu-responsive.css. Lý do đầy đủ nằm ở đầu edu-fonts.css. */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
 :root {
-  /* Be Vietnam Pro: họ chữ duy nhất cho chữ thường (bản thiết kế v2 §1.3).
-     Chuỗi dự phòng xếp theo thứ tự "giống nhất trước": `system-ui` là phông
-     giao diện của hệ điều hành (Segoe UI / SF Pro / Roboto) — đủ nét và CÓ
-     dấu tiếng Việt, nên phông chính hỏng thì bố cục không vỡ, chỉ đổi dáng. */
-  --edu-font: 'Be Vietnam Pro', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  /* Code. Trước bản này 30 chỗ CSS gọi 'JetBrains Mono' mà không ai nạp nó;
-     nay nạp thật, và những chỗ đó nên đổi sang đọc token này. `ui-monospace`
-     là phông code của hệ điều hành, đứng trước các tên cụ thể. */
-  --edu-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+  --edu-font: 'Poppins', system-ui, sans-serif;
 
   /* accent — identical in light & dark */
   --edu-accent: #2563eb;

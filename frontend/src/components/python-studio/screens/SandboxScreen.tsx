@@ -7,10 +7,8 @@ import { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 import HintSheet from '@/components/lesson-chrome/exercises/HintSheet';
 import SandboxEditor from '@/components/lesson-chrome/exercises/SandboxEditor';
 import ShellB from '@/components/lesson-chrome/ShellB';
-import { gateNotice } from '@/lib/gate-notice';
 import { toCodeLines } from '@/lib/py-highlight';
 
-import { SandboxCue } from '../intro/BookIntro';
 import c from '../studio-chrome.module.css';
 import type { RunResult } from '../runner/types';
 import { eyebrowOf, paragraphs, showEditorOf, testRows } from './chrome';
@@ -86,10 +84,6 @@ export default function SandboxScreen({
   const contracts = four?.contracts ?? [];
   const gate = Boolean(four?.gate);
   const boss = Boolean(lesson.play?.boss);
-  // Câu chữ của lời nhắc nằm ở `lib/gate-notice.ts` — nó từng hứa "lời giải
-  // mẫu mở sau lần nộp đầu", trong khi server chỉ nhả lời giải khi bài ĐÃ
-  // hoàn thành. Xem chú thích đầu file đó.
-  const notice = gateNotice({ boss, gate, submitted: Boolean(draft.submitted) });
 
   return (
     <ShellB
@@ -100,14 +94,19 @@ export default function SandboxScreen({
       description={paragraphs(four?.task?.body)}
     >
       {four?.env && <div className={`${c.note} ${c.noteWarn}`}>{four.env}</div>}
-      {notice && (
-        <div
-          className={notice.boss ? `${c.note} ${c.boss}` : c.note}
-          role="status"
-        >
-          <strong>{notice.strong}</strong>
-          {notice.rest}
+      {boss ? (
+        <div className={`${c.note} ${c.boss}`} role="status">
+          <strong>⚔️ Trận Boss của chặng.</strong> Không có gợi ý — tự viết và nộp. Lời giải mẫu chỉ mở
+          sau lần nộp đầu, và xem nó thì điểm trận này bị giới hạn ở 60%.
         </div>
+      ) : (
+        gate &&
+        !draft.submitted && (
+          <div className={c.note} role="status">
+            <strong>Cửa tự kiểm tra.</strong> Tự viết và nộp lần đầu trước — lời giải mẫu chỉ mở sau lần nộp
+            đó. Mở gợi ý vẫn được, nhưng lượt này sẽ ghi nhận là có hỗ trợ.
+          </div>
+        )
       )}
       {io.length > 0 && (
         <dl className={c.io}>
@@ -187,44 +186,33 @@ export default function SandboxScreen({
           )}
         </div>
       )}
-      {/* Dấu hiệu "giờ là lúc viết code": khung soạn thảo nhấc lên và hiện,
-          240ms, chỉ opacity/transform.
-
-          VÌ SAO KHÔNG PHẢI CẢNH "GẬP SÁCH → NGẨNG LÊN → HIỆN IDE" như nguyên
-          mẫu dựng: giữa màn lý thuyết và màn này có TÁM màn khác (đề bài, giải
-          thích từng dòng, dự đoán, bốn mini-game, tự giải thích). Nối hai cảnh
-          đó là nói "đọc xong là viết code", trong khi luồng thật không phải
-          vậy — và lúc người học tới đây thì trong tay họ không còn quyển sách
-          nào để gập. Lập luận đầy đủ ở đầu lib/lesson-intro.ts. */}
       {showEditorOf(lesson) && (
-        <SandboxCue>
-          <SandboxEditor
-            filename="main.py"
-            langTag={runtimeStatus || 'CPython 3.12'}
-            code={draft.code}
-            onCodeChange={(code) => update({ code })}
-            running={running}
-            onRun={onRun}
-            onStop={onStop}
-            onShowSolution={
-              four?.solutionCode && (!gate || draft.submitted)
-                ? () => {
-                    update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
-                    setMessage('Đã chèn lời giải mẫu. Đọc hiểu rồi nộp thì bạn giữ được kiến thức.');
-                  }
-                : undefined
-            }
-            placeholder={
-              tests.length
-                ? undefined
-                : 'Bài này thực hành trên máy tính của bạn nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
-            }
-            consoleLines={consoleLines(result, draft.code)}
-            consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
-            tests={testRows(lesson, result)}
-            disabled={busy}
-          />
-        </SandboxCue>
+        <SandboxEditor
+          filename="main.py"
+          langTag={runtimeStatus || 'CPython 3.12'}
+          code={draft.code}
+          onCodeChange={(code) => update({ code })}
+          running={running}
+          onRun={onRun}
+          onStop={onStop}
+          onShowSolution={
+            four?.solutionCode && (!gate || draft.submitted)
+              ? () => {
+                  update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
+                  setMessage('Đã chèn lời giải mẫu. Hãy đọc hiểu trước khi nộp.');
+                }
+              : undefined
+          }
+          placeholder={
+            tests.length
+              ? undefined
+              : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
+          }
+          consoleLines={consoleLines(result, draft.code)}
+          consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
+          tests={testRows(lesson, result)}
+          disabled={busy}
+        />
       )}
       {hint.open && hints.length > 0 && (
         <HintSheet

@@ -225,26 +225,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "sep=\";\"",
-            "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
+            "answer": "sep=\";\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "dtype={\"id\": \"string\"}",
-            "hint": "Khai kiểu cho cột mã đơn — mã của file này có số 0 đứng đầu"
+            "answer": "dtype={\"id\": \"string\"}"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "na_values=[\"missing\"]",
-            "hint": "Khai chuỗi mà file dùng để ghi ô thiếu"
+            "answer": "na_values=[\"missing\"]"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "index=False",
-            "hint": "Tham số quyết định CSV xuất ra có cột index hay không"
+            "answer": "index=False"
           }
         ],
         "bank": [

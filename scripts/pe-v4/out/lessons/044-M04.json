@@ -221,20 +221,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "int(revenue.to_numpy().argmax())",
-            "hint": "Vị trí cột LỚN nhất, tính từ dữ liệu chứ không viết cứng"
+            "answer": "int(revenue.to_numpy().argmax())"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "xy=(pos, value)",
-            "hint": "Toạ độ chú thích: x là vị trí cột, y là giá trị"
+            "answer": "xy=(pos, value)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ax.set_ylim(0, value * 1.2)",
-            "hint": "Giữ đáy trục ở 0, chừa chỗ trên cho chú thích"
+            "answer": "ax.set_ylim(0, value * 1.2)"
           }
         ],
         "bank": [

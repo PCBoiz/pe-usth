@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Scheduler chọn ai chạy, và bao lâu",
+          "title": "Định nghĩa: scheduler làm gì",
           "body": "Scheduler trả lời hai câu: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó dựa vào trạng thái và số liệu thống kê của từng process rồi chọn theo độ ưu tiên.",
           "bullets": [
             "Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)",
@@ -46,11 +46,11 @@
           ]
         },
         {
-          "title": "Đổi trạng thái là chuyển hàng đợi",
+          "title": "Ví dụ: ba hàng đợi",
           "body": "Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không preempt; SRTF và Round Robin có."
         },
         {
-          "title": "Phản hồi nhanh thì switch nhiều",
+          "title": "Dùng ở đâu",
           "bullets": [
             "Vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt",
             "Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "title": "Overhead: không ai làm được việc gì",
+          "title": "Đọc sơ đồ",
           "body": "Hai cột ngoài là hai process, cột giữa là hệ điều hành: có interrupt thì CPU lưu ngữ cảnh A vào PCB0, nạp ngữ cảnh B từ PCB1, rồi B mới chạy. Khoảng tô đậm nhãn \"overhead\" là lúc không process nào làm được việc của mình.",
           "figure": {
             "src": "/static/anim/P03-context-switch.svg",
@@ -252,20 +252,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "clock += switch",
-            "hint": "Cộng chi phí đổi ngữ cảnh vào đồng hồ — mức lấy từ tham số"
+            "answer": "clock += switch"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "min(quantum, left)",
-            "hint": "Lượt này chạy bao lâu: không quá suất, cũng không quá phần việc còn lại"
+            "answer": "min(quantum, left)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ready.append((name, left - run))",
-            "hint": "Phần việc còn dư quay lại hàng chờ, xếp ở CUỐI"
+            "answer": "ready.append((name, left - run))"
           }
         ],
         "bank": [

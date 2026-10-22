@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Biến Tk giữ giá trị, get() đọc ra",
+          "title": "Định nghĩa: widget nhập và biến Tk",
           "body": "Entry (show=\"*\" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — đọc bằng get()."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Kiểm trước, đừng ghi dữ liệu nửa vời",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
             "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ",
             "Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Hai Radiobutton, một StringVar",
+          "title": "Đọc sơ đồ",
           "body": "Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt kiểm tra.",
           "figure": {
             "src": "/static/anim/G03-input-widgets.svg",
@@ -277,20 +277,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "shift_var",
-            "hint": "Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau"
+            "answer": "shift_var"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "laptop_var.get()",
-            "hint": "Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến"
+            "answer": "laptop_var.get()"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "shift_var.get()",
-            "hint": "Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl"
+            "answer": "shift_var.get()"
           }
         ],
         "bank": [

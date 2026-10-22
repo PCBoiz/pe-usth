@@ -16,16 +16,14 @@ export default function TrueFalse({ snippet, selected, onSelect, correctValue, c
     const isRight = checked && correctValue === value;
     const isWrong = checked && isSelected && correctValue !== value;
 
-    // Nút không liên quan sau khi chấm dùng .toggleDim (viền nhạt, bỏ đậm)
-    // thay cho `opacity: .55` — xem chú thích ở Mcq.tsx.
-    const cls = isSelected || isRight
-      ? styles.toggleSelected
-      : checked ? styles.toggleDim : styles.toggleBtn;
+    const cls = isSelected || isRight ? styles.toggleSelected : styles.toggleBtn;
     const tone = isRight
       ? { borderColor: 'var(--st-ok-line)', background: 'var(--st-ok-bg)', color: 'var(--st-ok-text)' }
       : isWrong
         ? { borderColor: 'var(--st-err-line)', background: 'var(--st-err-bg)', color: 'var(--st-err-text)' }
-        : undefined;
+        : checked
+          ? { opacity: 0.55 }
+          : undefined;
 
     return (
       <button

@@ -224,20 +224,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "plt.subplots(1, 2, layout=\"constrained\")",
-            "hint": "Tạo HAI Axes cạnh nhau, và để matplotlib tự dàn khoảng"
+            "answer": "plt.subplots(1, 2, layout=\"constrained\")"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "ax_line.plot(days, revenue, marker=\"o\")",
-            "hint": "Vẽ đường lên ĐÚNG panel bên trái, không lên panel hiện hành"
+            "answer": "ax_line.plot(days, revenue, marker=\"o\")"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "sorted(zip(orders, categories))",
-            "hint": "Ghép số đơn với tên rồi xếp hạng — barh vẽ từ dưới lên"
+            "answer": "sorted(zip(orders, categories))"
           }
         ],
         "bank": [

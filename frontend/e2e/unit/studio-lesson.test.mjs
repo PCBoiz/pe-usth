@@ -580,12 +580,7 @@ test('gameVerdict/fill: khớp slots thật mới đạt; chọn thẻ bẫy th�
   assert.ok(trap, 'N01 phải có thẻ bẫy trong bank');
   const v = gameVerdict(n01play, game, draftOf(n01play, { slots: { ...filled, [trap.slot]: trap.label } }));
   assert.equal(v.correct, false);
-  // Từ 19/10/2026 lý do bẫy nằm ở dòng của ĐÚNG ô đó (`lines`), `explain` chỉ
-  // còn câu đếm "x/y ô đúng" — xem fill-slots.test.mjs.
-  assert.ok(
-    v.lines.some((l) => l.includes(trap.trap)),
-    `phản hồi từng ô không nêu bẫy: ${v.lines.join(' | ')}`,
-  );
+  assert.ok(v.explain.includes(trap.trap), `giải thích không nêu bẫy: ${v.explain}`);
 });
 
 test('gameVerdict/match: nối sai bị chặn tại chỗ nên đủ cặp là đạt, nhưng đếm số lần nhầm', () => {

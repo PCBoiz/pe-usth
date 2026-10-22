@@ -23,8 +23,8 @@ export default function OrderSteps({ items, onMove }: OrderStepsProps) {
             display: 'flex',
             alignItems: 'center',
             gap: 12,
-            background: 'var(--ds-card)',
-            border: '1px solid var(--ds-line)',
+            background: 'var(--edu-panel-bg-solid)',
+            border: '1px solid var(--edu-sidebar-border)',
             borderRadius: 10,
             padding: '10px 14px',
           }}
@@ -34,38 +34,37 @@ export default function OrderSteps({ items, onMove }: OrderStepsProps) {
               width: 22,
               height: 22,
               borderRadius: '50%',
-              background: 'var(--ds-violet-tint)',
-              color: 'var(--ds-violet-deep)',
+              background: 'var(--edu-accent-soft)',
+              color: 'var(--edu-accent-text)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: 'var(--ds-fs-label)',
+              fontSize: 11,
               fontWeight: 700,
               flexShrink: 0,
             }}
           >
             {i + 1}
           </span>
-          <code style={{ flex: 1, fontSize: 'var(--ds-fs-code)' }}>{item.content}</code>
+          <code style={{ flex: 1, fontSize: 13 }}>{item.content}</code>
           <div style={{ display: 'flex', gap: 4, flexShrink: 0 }}>
             <button
               type="button"
-              // Nút ở đầu/cuối danh sách dùng .chipOff (nền `desk`, chữ
-              // `soft`, viền `line`) chứ không `opacity: .35` — mờ tới mức
-              // 2,0:1 thì không còn nhận ra là nút (WCAG 1.4.11).
-              className={i === 0 ? styles.chipOff : styles.chip}
+              className={styles.chip}
               disabled={i === 0}
               onClick={() => onMove(i, -1)}
               aria-label="Chuyển lên trên"
+              style={{ opacity: i === 0 ? 0.35 : 1 }}
             >
               ↑
             </button>
             <button
               type="button"
-              className={i === items.length - 1 ? styles.chipOff : styles.chip}
+              className={styles.chip}
               disabled={i === items.length - 1}
               onClick={() => onMove(i, 1)}
               aria-label="Chuyển xuống dưới"
+              style={{ opacity: i === items.length - 1 ? 0.35 : 1 }}
             >
               ↓
             </button>

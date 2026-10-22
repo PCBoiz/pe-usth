@@ -213,20 +213,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "df.loc[sid, \"mark\"]",
-            "hint": "Tra theo NHÃN hàng, lấy ô cột mark"
+            "answer": "df.loc[sid, \"mark\"]"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "df.iloc[0][\"mark\"]",
-            "hint": "Lấy hàng ĐẦU theo vị trí, vì nhãn có thể lộn xộn"
+            "answer": "df.iloc[0][\"mark\"]"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "marks + bonus",
-            "hint": "Cộng hai Series theo NHÃN, để thứ tự khác nhau vẫn khớp"
+            "answer": "marks + bonus"
           }
         ],
         "bank": [

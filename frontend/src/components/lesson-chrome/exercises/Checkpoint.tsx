@@ -32,13 +32,13 @@ export default function Checkpoint({
           width: 96,
           height: 96,
           borderRadius: '50%',
-          background: 'var(--ds-action)',
+          background: 'var(--edu-accent-grad)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           margin: '0 auto 20px',
-          fontSize: 'var(--ds-fs-h1)',
-          color: 'var(--ds-on-action)',
+          fontSize: 40,
+          color: 'var(--edu-panel-bg-solid)',
         }}
       >
         🏆
@@ -48,34 +48,34 @@ export default function Checkpoint({
           display: 'inline-flex',
           alignItems: 'center',
           gap: 6,
-          background: 'var(--ds-violet-tint)',
-          color: 'var(--ds-violet-deep)',
+          background: 'var(--edu-accent-soft)',
+          color: 'var(--edu-accent-text)',
           borderRadius: 999,
           padding: '4px 12px',
-          fontSize: 'var(--ds-fs-label)',
+          fontSize: 11,
           fontWeight: 700,
           textTransform: 'uppercase',
         }}
       >
         ● Cột mốc bài học
       </span>
-      <h2 style={{ fontSize: 'var(--ds-fs-h2)', fontWeight: 800, margin: '14px 0 8px', color: 'var(--ds-ink)' }}>{title}</h2>
-      <p style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', maxWidth: 460, margin: '0 auto 20px' }}>{description}</p>
+      <h2 style={{ fontSize: 26, fontWeight: 800, margin: '14px 0 8px', color: 'var(--edu-t1)' }}>{title}</h2>
+      <p style={{ fontSize: 14, color: 'var(--edu-t3)', maxWidth: 460, margin: '0 auto 20px' }}>{description}</p>
       <div
         style={{
           display: 'inline-flex',
           alignItems: 'center',
           gap: 10,
-          background: 'var(--ds-card)',
-          border: '1px solid var(--ds-line)',
+          background: 'var(--edu-panel-bg-solid)',
+          border: '1px solid var(--edu-sidebar-border)',
           borderRadius: 999,
           padding: '8px 16px',
-          fontSize: 'var(--ds-fs-ui)',
+          fontSize: 13,
           marginBottom: 24,
         }}
       >
         🎯 {accuracyLabel}
-        <span style={{ background: 'var(--ds-tint)', borderRadius: 999, padding: '2px 10px', fontWeight: 700 }}>
+        <span style={{ background: 'var(--edu-card-bg)', borderRadius: 999, padding: '2px 10px', fontWeight: 700 }}>
           {accuracyValue}
         </span>
       </div>
@@ -87,20 +87,20 @@ export default function Checkpoint({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              background: 'var(--ds-card)',
-              border: '1px solid var(--ds-line)',
+              background: 'var(--edu-panel-bg-solid)',
+              border: '1px solid var(--edu-sidebar-border)',
               borderRadius: 12,
               padding: '14px 18px',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <span style={{ color: 'var(--st-ok-text)', fontSize: 'var(--ds-fs-body)' }}>✓</span>
+              <span style={{ color: 'var(--st-ok-text)', fontSize: 18 }}>✓</span>
               <div>
-                <div style={{ fontWeight: 700, fontSize: 'var(--ds-fs-body)', color: 'var(--ds-ink)' }}>{item.title}</div>
-                <div style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--st-ok-text)' }}>{item.meta}</div>
+                <div style={{ fontWeight: 700, fontSize: 14, color: 'var(--edu-t1)' }}>{item.title}</div>
+                <div style={{ fontSize: 12, color: 'var(--st-ok-text)' }}>{item.meta}</div>
               </div>
             </div>
-            <span style={{ background: 'var(--ds-tint)', color: 'var(--ds-soft)', borderRadius: 999, padding: '4px 10px', fontSize: 'var(--ds-fs-label)', fontFamily: 'JetBrains Mono, monospace' }}>
+            <span style={{ background: 'var(--edu-card-bg)', color: 'var(--edu-t2)', borderRadius: 999, padding: '4px 10px', fontSize: 11, fontFamily: 'JetBrains Mono, monospace' }}>
               {item.xp} XP
             </span>
           </div>
@@ -115,13 +115,13 @@ export default function Checkpoint({
             height: 48,
             borderRadius: 999,
             border: 0,
-            background: 'var(--ds-action)',
-            color: 'var(--ds-on-action)',
+            background: 'var(--edu-accent-grad)',
+            color: 'var(--edu-panel-bg-solid)',
             fontWeight: 700,
             cursor: 'pointer',
           }}
         >
-          Học tiếp
+          ▶ Học tiếp
         </button>
         {onPause && (
           <button
@@ -131,9 +131,9 @@ export default function Checkpoint({
               padding: '0 20px',
               height: 48,
               borderRadius: 999,
-              border: '1px solid var(--ds-line)',
-              background: 'var(--ds-card)',
-              color: 'var(--ds-soft)',
+              border: '1px solid var(--edu-sidebar-border)',
+              background: 'var(--edu-panel-bg-solid)',
+              color: 'var(--edu-t2)',
               fontWeight: 600,
               cursor: 'pointer',
             }}

@@ -40,7 +40,7 @@
           },
           "theory": [
             {
-              "title": "Program trên đĩa, process là lần chạy",
+              "title": "Định nghĩa",
               "body": "Program là mã thụ động nằm trên đĩa; process là MỘT lần chạy program đó, đang hoạt động. Cùng một program có thể đang ứng với nhiều process một lúc.",
               "bullets": [
                 "PID: số hệ điều hành cấp cho từng process, không cấp cho file .py",
@@ -49,7 +49,7 @@
               ]
             },
             {
-              "title": "Ba dòng python là ba process",
+              "title": "Ví dụ: cây process trên máy thật",
               "body": "pstree -A in ra init-+-cron, |-sshd---bash---pstree: bash tạo python, python tạo con thì thành cháu. TABLE của bài là một lát cắt như vậy — ba dòng \"python\" là ba process của cùng một program.",
               "figure": {
                 "src": "/static/anim/P01-process-tree.svg",
@@ -58,7 +58,7 @@
               }
             },
             {
-              "title": "Log kèm PID mới truy được lần chạy",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "ps / pstree / Task Manager: xem process nào đang chạy và là con của ai",
                 "Ghi log kèm os.getpid() để biết dòng log đến từ lần chạy nào",
@@ -66,7 +66,7 @@
               ]
             },
             {
-              "title": "Một file, hai process, hai vùng nhớ",
+              "title": "Đọc sơ đồ",
               "body": "Bên trái là file .py nằm yên trên đĩa — đó là program. Hai khối bên phải là hai process sinh ra từ nó: PID riêng, vùng nhớ riêng (text, data, heap, stack), ba file descriptor 0/1/2 ở đáy.",
               "figure": {
                 "src": "/static/anim/P01-program-vs-process.svg",
@@ -259,20 +259,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "name == program",
-                "hint": "Điều kiện tính một dòng — so TRỌN tên, không phải tên chứa nhau"
+                "answer": "name == program"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "parent_of[row_pid] = row_ppid",
-                "hint": "Ghi một dòng vào bảng tra cha: khoá là con, giá trị là cha"
+                "answer": "parent_of[row_pid] = row_ppid"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "parent_of[pid]",
-                "hint": "Cha của pid đang đứng, tra từ bảng — không phải biến còn sót sau vòng for"
+                "answer": "parent_of[pid]"
               }
             ],
             "bank": [
@@ -576,7 +573,7 @@
           },
           "theory": [
             {
-              "title": "Sự kiện mới làm process đi tiếp",
+              "title": "Định nghĩa: năm trạng thái",
               "body": "Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường chuyển — mọi cặp (trạng thái, sự kiện) khác đều không có nghĩa.",
               "bullets": [
                 "new: vừa được tạo — ready: chờ scheduler giao cho một processor",
@@ -585,7 +582,7 @@
               ]
             },
             {
-              "title": "Cha nhận PID con, con nhận 0",
+              "title": "Ví dụ: fork rồi exec trên UNIX",
               "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả.",
               "figure": {
                 "src": "/static/anim/P02-fork-exec-wait.svg",
@@ -594,7 +591,7 @@
               }
             },
             {
-              "title": "Thiếu wait(), con xong thành zombie",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "subprocess trên Linux làm đúng việc đó: fork rồi exec trong process con",
                 "wait() để lấy exit code, và để con đã xong không nằm lại thành zombie",
@@ -602,7 +599,7 @@
               ]
             },
             {
-              "title": "Rời running luôn quay về ready",
+              "title": "Đọc sơ đồ",
               "body": "Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN; chấm đen là lúc process ra đời, vòng tròn viền là lúc nó biến mất. Hai mũi tên rời running — interrupt và io_wait — đều quay về ready, không về thẳng running.",
               "figure": {
                 "src": "/static/anim/P02-lifecycle.svg",
@@ -796,20 +793,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "\"ready\"",
-                "hint": "Trạng thái sau khi I/O xong — còn một bước dispatch nữa mới được CPU"
+                "answer": "\"ready\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "raise ValueError(\"invalid transition\")",
-                "hint": "Cách báo cặp (trạng thái, sự kiện) không hợp lệ — phải ồn, không âm thầm"
+                "answer": "raise ValueError(\"invalid transition\")"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "child.wait()",
-                "hint": "Cha chặn lại tới khi con xong, rồi mới có mã thoát"
+                "answer": "child.wait()"
               }
             ],
             "bank": [
@@ -825,7 +819,7 @@
               {
                 "label": "\"running\"",
                 "slot": 1,
-                "trap": "I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa."
+                "trap": "I/O xong chưa chắc có CPU: phải về ready chờ dispatch."
               },
               {
                 "label": "child.wait()",
@@ -1105,7 +1099,7 @@
           },
           "theory": [
             {
-              "title": "Scheduler chọn ai chạy, và bao lâu",
+              "title": "Định nghĩa: scheduler làm gì",
               "body": "Scheduler trả lời hai câu: chạy process nào tiếp theo, và cho nó chạy bao lâu. Nó dựa vào trạng thái và số liệu thống kê của từng process rồi chọn theo độ ưu tiên.",
               "bullets": [
                 "Preemption: hệ điều hành CƯỠNG BỨC dừng process đang chạy (Round Robin)",
@@ -1114,11 +1108,11 @@
               ]
             },
             {
-              "title": "Đổi trạng thái là chuyển hàng đợi",
+              "title": "Ví dụ: ba hàng đợi",
               "body": "Process xếp theo hàng đợi: job queue (vừa vào, còn trên đĩa), ready queue (ở bộ nhớ chính, chờ CPU), device queue (chờ thiết bị I/O) — đổi trạng thái là chuyển hàng. FCFS và SJF không preempt; SRTF và Round Robin có."
             },
             {
-              "title": "Phản hồi nhanh thì switch nhiều",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Vì sao máy chạy hàng trăm process trên vài lõi mà giao diện vẫn mượt",
                 "Chọn quantum: nhỏ thì phản hồi nhanh nhưng tốn nhiều lần switch",
@@ -1126,7 +1120,7 @@
               ]
             },
             {
-              "title": "Overhead: không ai làm được việc gì",
+              "title": "Đọc sơ đồ",
               "body": "Hai cột ngoài là hai process, cột giữa là hệ điều hành: có interrupt thì CPU lưu ngữ cảnh A vào PCB0, nạp ngữ cảnh B từ PCB1, rồi B mới chạy. Khoảng tô đậm nhãn \"overhead\" là lúc không process nào làm được việc của mình.",
               "figure": {
                 "src": "/static/anim/P03-context-switch.svg",
@@ -1320,20 +1314,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "clock += switch",
-                "hint": "Cộng chi phí đổi ngữ cảnh vào đồng hồ — mức lấy từ tham số"
+                "answer": "clock += switch"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "min(quantum, left)",
-                "hint": "Lượt này chạy bao lâu: không quá suất, cũng không quá phần việc còn lại"
+                "answer": "min(quantum, left)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "ready.append((name, left - run))",
-                "hint": "Phần việc còn dư quay lại hàng chờ, xếp ở CUỐI"
+                "answer": "ready.append((name, left - run))"
               }
             ],
             "bank": [
@@ -1671,7 +1662,7 @@
           },
           "theory": [
             {
-              "title": "Trông như một, thật ra ba đường riêng",
+              "title": "Định nghĩa: ba luồng chuẩn",
               "body": "Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định cả ba nối với terminal nên trông như một, nhưng là ba đường riêng, đổi đích được độc lập.",
               "bullets": [
                 "stdin (0): đầu vào — input() và sys.stdin đọc từ đây",
@@ -1680,11 +1671,11 @@
               ]
             },
             {
-              "title": "Pipe nối stdout vào stdin bên kia",
+              "title": "Ví dụ: ba cách đổi đích",
               "body": "bc < input.txt đổi stdin sang file; ls -la > out.txt đổi stdout sang file mà stderr vẫn ra màn hình. ps aux | grep term nối stdout của process 1 vào stdin của process 2 qua một pipe."
             },
             {
-              "title": "Log lỗi không trộn vào dữ liệu",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Pipeline shell và CI: mỗi công cụ đọc stdin, ghi ra stdout nên ghép được",
                 "Giữ stderr riêng để log lỗi không trộn vào dữ liệu chuyển cho bước sau",
@@ -1692,7 +1683,7 @@
               ]
             },
             {
-              "title": "stderr tách riêng dù stdout đã sang file",
+              "title": "Đọc sơ đồ",
               "body": "Hộp giữa là process: mũi tên vào là stdin (0), hai mũi tên ra là stdout (1) và stderr (2) — stderr luôn tách riêng, kể cả khi stdout đã đổi sang file. Phần dưới là biến thể pipe: dữ liệu chảy qua bộ nhớ, không qua đĩa.",
               "figure": {
                 "src": "/static/anim/P04-io-redirection.svg",
@@ -1889,20 +1880,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "print(\"skip:\", text, file=sys.stderr)",
-                "hint": "Báo dòng bỏ qua ra luồng lỗi, để không lẫn vào kết quả"
+                "answer": "print(\"skip:\", text, file=sys.stderr)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "input=data",
-                "hint": "Tham số đưa một chuỗi sẵn có vào stdin của con"
+                "answer": "input=data"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "text=True",
-                "hint": "Tham số cho out/err về dạng chuỗi thay vì bytes"
+                "answer": "text=True"
               }
             ],
             "bank": [
@@ -2200,7 +2188,7 @@
           },
           "theory": [
             {
-              "title": "run() chặn cha tới khi con xong",
+              "title": "Định nghĩa: run() là \"chạy và chờ\"",
               "body": "Gọi run(args) là cha dừng lại tới khi con kết thúc, rồi nhận về một CompletedProcess. Đây là cách đơn giản nhất để chạy một chương trình khác từ trong Python.",
               "bullets": [
                 "args là LIST: phần tử đầu là chương trình, các phần sau là từng đối số",
@@ -2209,11 +2197,11 @@
               ]
             },
             {
-              "title": "Traceback nằm ở stderr, cha chỉ nhận số",
+              "title": "Ví dụ: exit code là lời khai của con",
               "body": "Quy ước: 0 là thành công, khác 0 là có chuyện — Python thoát mã n khi gặp SystemExit(n) và mã 1 khi có ngoại lệ không bắt. Cha chỉ nhận con số đó, còn traceback nằm trong stderr của con."
             },
             {
-              "title": "Quá timeout, run() tự kill con",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Gọi công cụ ngoài: git, ffmpeg, hay chính Python qua sys.executable",
                 "timeout= chặn lặp vô hạn — run() tự kill con rồi mới ném TimeoutExpired",
@@ -2221,7 +2209,7 @@
               ]
             },
             {
-              "title": "Nét đứt là lúc cha bị chặn",
+              "title": "Đọc sơ đồ",
               "body": "Cha ở đường trên, con ở đường dưới. Lúc gọi run(), đường của cha chuyển sang nét đứt — cha bị CHẶN; khi con exit, mũi tên quay lên mang hộp CompletedProcess rồi cha mới chạy tiếp.",
               "figure": {
                 "src": "/static/anim/P05-run-timeline.svg",
@@ -2415,20 +2403,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "timeout=limit",
-                "hint": "Tham số chặn code chạy quá giờ cho phép"
+                "answer": "timeout=limit"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "subprocess.TimeoutExpired",
-                "hint": "Loại ngoại lệ mà run() ném khi hết giờ"
+                "answer": "subprocess.TimeoutExpired"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "result.returncode != 0",
-                "hint": "Điều kiện coi là chạy lỗi — đọc tín hiệu chính thức, không đọc chữ in ra"
+                "answer": "result.returncode != 0"
               }
             ],
             "bank": [
@@ -2747,7 +2732,7 @@
           },
           "theory": [
             {
-              "title": "Popen trả object ngay, cha không chờ",
+              "title": "Định nghĩa: Popen là \"chạy nền\"",
               "body": "Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
               "bullets": [
                 "stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None",
@@ -2756,11 +2741,11 @@
               ]
             },
             {
-              "title": "TimeoutExpired không đụng tới con",
+              "title": "Ví dụ: timeout không giết ai",
               "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con."
             },
             {
-              "title": "Quá hạn phải kill, không thì rò process",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa",
                 "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe",
@@ -2768,7 +2753,7 @@
               ]
             },
             {
-              "title": "Đường con kéo qua vạch hạn giờ",
+              "title": "Đọc sơ đồ",
               "body": "Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau kill() nó mới dứt.",
               "figure": {
                 "src": "/static/anim/P06-popen-timeout.svg",
@@ -2966,20 +2951,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "proc.communicate(data, timeout=limit)",
-                "hint": "Một lời gọi: gửi dữ liệu vào, đọc hai luồng ra, và có hạn giờ"
+                "answer": "proc.communicate(data, timeout=limit)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "proc.kill()",
-                "hint": "Hết giờ thì phải tự tay dừng con — ngoại lệ không dừng hộ"
+                "answer": "proc.kill()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "proc.communicate()",
-                "hint": "Thu nốt những gì con đã in, lần này KHÔNG gửi gì thêm"
+                "answer": "proc.communicate()"
               }
             ],
             "bank": [
@@ -3253,7 +3235,7 @@
           },
           "theory": [
             {
-              "title": "multiprocessing chạy hàm của chính bạn",
+              "title": "Định nghĩa: hai cách tạo process",
               "body": "subprocess chạy một CHƯƠNG TRÌNH khác rồi nói chuyện qua stdin/stdout. multiprocessing là cửa còn lại: chạy một HÀM Python của chính bạn ở một process riêng — hai module, hai bộ API.",
               "bullets": [
                 "Process(target=hàm, args=(…)) rồi start(), join() — dùng y như Thread",
@@ -3262,11 +3244,11 @@
               ]
             },
             {
-              "title": "Worker cộng vào bản sao của nó",
+              "title": "Ví dụ: bộ nhớ không dùng chung",
               "body": "fork() tạo một BẢN SAO của process cha, nên worker chạy counter += 1 hay ghi dict toàn cục chỉ sửa bản của nó — cha đọc lại vẫn thấy số cũ. Đây là chỗ process khác thread: thread cùng process thì dùng chung bộ nhớ."
             },
             {
-              "title": "Mọi thứ gửi qua Queue phải pickle được",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Việc CPU-bound: nhiều process chạy trên nhiều lõi thật, không bị GIL chặn",
                 "Giá phải trả: tạo process đắt hơn thread, mọi thứ gửi đi phải pickle được",
@@ -3274,7 +3256,7 @@
               ]
             },
             {
-              "title": "Chỉ Queue đi qua, vùng nhớ thì không",
+              "title": "Đọc sơ đồ",
               "body": "Cha ở giữa, hai con hai bên, mỗi hộp có vùng nhớ riêng vẽ tách hẳn — không mũi tên nào nối vùng nhớ con sang vùng nhớ cha. Đường duy nhất đi qua là Queue, và thứ tự lấy ra không nhất thiết theo thứ tự start.",
               "figure": {
                 "src": "/static/anim/P07-process-queue.svg",
@@ -3468,20 +3450,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "results.put((n, n * n))",
-                "hint": "Con gửi cặp (số, bình phương) về cha qua kênh dùng chung"
+                "answer": "results.put((n, n * n))"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "Process(target=square, args=(n, results))",
-                "hint": "Dựng một process con: trỏ tới hàm và GIAO đối số, đừng gọi tại đây"
+                "answer": "Process(target=square, args=(n, results))"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "results.get()",
-                "hint": "Lấy ra một cặp kết quả từ kênh, mỗi lượt một cặp"
+                "answer": "results.get()"
               }
             ],
             "bank": [
@@ -3752,7 +3731,7 @@
           },
           "theory": [
             {
-              "title": "Thread là một dòng thực thi của process",
+              "title": "Định nghĩa: thread là gì",
               "body": "Thread là MỘT dòng thực thi nằm trong một process; mặc định mỗi process chỉ có một thread. Multi-thread là nhiều dòng thực thi cùng chạy trong một process, dùng chung đúng một PCB.",
               "bullets": [
                 "Chung: heap, biến toàn cục, code, file descriptor",
@@ -3761,11 +3740,11 @@
               ]
             },
             {
-              "title": "Cùng ba đích, khác cách chia tài nguyên",
+              "title": "Ví dụ: cùng mục tiêu, khác cách chia",
               "body": "Multi-process và multi-thread cùng nhắm ba đích: làm nhiều việc một lúc, tăng mức dùng CPU, tăng responsiveness. Khác ở cách chia tài nguyên — fork() nhân bản (con nhận bản sao vùng nhớ), còn thread thì dùng chung."
             },
             {
-              "title": "Chrome: mỗi tab một process",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Apache prefork: mỗi HTTP request một child process — cách ly tốt, tốn bộ nhớ",
                 "Apache worker: ít process hơn, mỗi process nhiều thread, mỗi thread một request",
@@ -3781,7 +3760,7 @@
               ]
             },
             {
-              "title": "Hàng trên vẽ một lần vì là phần chung",
+              "title": "Đọc sơ đồ",
               "body": "Khung lớn là MỘT process: hàng trên — code, data, heap, file descs — vẽ một lần vì là phần dùng chung. Mỗi cột dưới là một thread có stack và registers riêng; bên phần multi-process, mỗi process có đủ một bộ ô riêng.",
               "figure": {
                 "src": "/static/anim/T01-thread-vs-process.svg",
@@ -3974,20 +3953,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "(\"code\", \"global\", \"heap\", \"file\")",
-                "hint": "Nhóm tài nguyên mọi thread trong process dùng chung"
+                "answer": "(\"code\", \"global\", \"heap\", \"file\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "(\"stack\", \"pc\", \"registers\")",
-                "hint": "Nhóm mà mỗi thread giữ một bản riêng"
+                "answer": "(\"stack\", \"pc\", \"registers\")"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "threading.current_thread().name",
-                "hint": "Tên của thread ĐANG chạy lời gọi này, đọc lúc chạy"
+                "answer": "threading.current_thread().name"
               }
             ],
             "bank": [
@@ -4233,7 +4209,7 @@
               ]
             },
             {
-              "title": "Thread chỉ đáng dùng khi chờ là chính",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Tải nhiều URL, đọc nhiều file: phần lớn thời gian là chờ nên các lần chờ chồng lên nhau",
                 "Máy chủ: mỗi kết nối một thread, đúng mô hình Apache worker ở T01",
@@ -4241,7 +4217,7 @@
               ]
             },
             {
-              "title": "Start hết rồi join mới thật song song",
+              "title": "Đọc sơ đồ",
               "body": "Mỗi start() rẽ ra một đường mới ngay tại thời điểm đó, nên hai worker CHỒNG LÊN nhau; join() là đoạn main đứng chờ. Start hết rồi join hết thì song song; start–join từng cái thì nối đuôi — Studio luôn cho kiểu nối đuôi.",
               "figure": {
                 "src": "/static/anim/T02-start-join.svg",
@@ -4435,20 +4411,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "threading.Thread(target=download, args=(url, sizes))",
-                "hint": "Dựng thread cho url này: trỏ tới hàm, giao đủ đối số, chưa chạy"
+                "answer": "threading.Thread(target=download, args=(url, sizes))"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "worker.start()",
-                "hint": "Lệnh đẩy thread ra chạy song song, không chạy tại chỗ"
+                "answer": "worker.start()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "worker.join()",
-                "hint": "Chờ tới khi thread thật sự xong — không đoán bằng thời gian"
+                "answer": "worker.join()"
               }
             ],
             "bank": [
@@ -4683,11 +4656,11 @@
           },
           "theory": [
             {
-              "title": "Override run(): việc chạy trong thread",
+              "title": "Định nghĩa: hai cách tạo thread",
               "body": "Cách OOP: định nghĩa class con của threading.Thread và override run() — run() chính là việc sẽ chạy trong thread. Cách Thread(target=hàm) tương đương; chọn subclass khi worker cần mang dữ liệu và kết quả riêng."
             },
             {
-              "title": "Quên super().__init__() là start() hỏng",
+              "title": "Ví dụ: worker có tham số riêng",
               "body": "class BackgroundThread(threading.Thread): __init__(self, sleepTime) gọi khởi tạo lớp cha rồi lưu self.__sleepTime; run() ngủ đúng chừng ấy giây rồi in. Nơi gọi viết BackgroundThread(10), rồi .start(), rồi .join().",
               "bullets": [
                 "threading.Thread.__init__(self) và super().__init__() là cùng một việc",
@@ -4695,7 +4668,7 @@
               ]
             },
             {
-              "title": "Thread không trả giá trị, ghi vào self",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Worker có cấu hình riêng: đường dẫn file, phần dữ liệu được chia, bộ đếm",
                 "Cần lấy kết quả: run() ghi vào self.<thuộc tính>, nơi gọi đọc SAU join()",
@@ -4703,7 +4676,7 @@
               ]
             },
             {
-              "title": "Gọi start(), nhưng chạy là run()",
+              "title": "Đọc sơ đồ",
               "body": "Bên trái là class: __init__ gọi super().__init__() rồi gán self.<thuộc tính>, run() đọc chúng và ghi kết quả vào self. Mũi tên giữa hình là chỗ dễ nhầm: nơi gọi bấm start(), nhưng chạy trong thread con lại là run().",
               "figure": {
                 "src": "/static/anim/T03-subclass-thread.svg",
@@ -4897,26 +4870,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "threading.Thread",
-                "hint": "Lớp cha để kế thừa — bản thân lớp, chưa phải một object"
+                "answer": "threading.Thread"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "super().__init__()",
-                "hint": "Việc đầu tiên của hàm khởi tạo: chạy khởi tạo của lớp cha"
+                "answer": "super().__init__()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "run",
-                "hint": "Tên method mà thread gọi khi bắt đầu — ghi đè đúng method đó"
+                "answer": "run"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "worker.start()",
-                "hint": "Lệnh khởi chạy từng worker trong một thread riêng"
+                "answer": "worker.start()"
               }
             ],
             "bank": [
@@ -4932,7 +4901,7 @@
               {
                 "label": "self.total = sum(self.numbers)",
                 "slot": 2,
-                "trap": "Tính ở __init__ = làm việc ở main thread, xong trước khi có thread nào; và constructor của lớp cha vẫn chưa chạy."
+                "trap": "Tính ở __init__ = làm việc ở main thread; lại thiếu super().__init__()."
               },
               {
                 "label": "run",
@@ -5158,7 +5127,7 @@
           },
           "theory": [
             {
-              "title": "Một lúc chỉ một thread chạy bytecode",
+              "title": "Định nghĩa: GIL",
               "body": "GIL (Global Interpreter Lock) là một mutex bên trong CPython: tại một thời điểm chỉ MỘT thread được chạy bytecode Python. Đây là chi tiết của bản CPython, không phải quy định của ngôn ngữ.",
               "bullets": [
                 "Thắt cổ chai với code Python tính toán thuần (CPU-bound)",
@@ -5176,7 +5145,7 @@
               ]
             },
             {
-              "title": "Đo bằng perf_counter() trước khi chọn",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Chờ mạng, đĩa, cơ sở dữ liệu, sleep → thread là đúng chỗ",
                 "Tính Python thuần mà muốn nhiều lõi → process: mỗi process một GIL",
@@ -5184,7 +5153,7 @@
               ]
             },
             {
-              "title": "Luân phiên, không phải cùng lúc",
+              "title": "Đọc sơ đồ",
               "body": "Một lõi: các lát T1, T2, T3… nối nhau trên một hàng — concurrency là LUÂN PHIÊN, không phải cùng lúc. GIL ép phần tính toán về dáng đó dù máy bao nhiêu lõi; ô nhạt là lúc thread chờ I/O, nhả GIL cho thread khác lấp vào.",
               "figure": {
                 "src": "/static/anim/T04-gil.svg",
@@ -5378,20 +5347,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "sum(cpu) + sum(io)",
-                "hint": "Chạy nối tiếp: mọi phần việc xếp hàng, không ai chồng lên ai"
+                "answer": "sum(cpu) + sum(io)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "max(sum(cpu), max(io, default=0))",
-                "hint": "Nhiều thread, một GIL: phần CPU vẫn nối tiếp, các lần chờ I/O chồng lên nhau"
+                "answer": "max(sum(cpu), max(io, default=0))"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "max(cpu + io, default=0)",
-                "hint": "Mỗi process một GIL riêng: tất cả cùng chạy, chỉ chờ phần việc dài nhất"
+                "answer": "max(cpu + io, default=0)"
               }
             ],
             "bank": [
@@ -5666,7 +5632,7 @@
           },
           "theory": [
             {
-              "title": "Lần này đúng, lần sau sai",
+              "title": "Định nghĩa: race condition",
               "body": "Race condition là khi kết quả phụ thuộc THỨ TỰ các thread chạm vào dữ liệu chung: lần này ra đúng, lần sau ra sai, và không lần nào báo lỗi. Đoạn code chạm dữ liệu chung và phải chạy trọn vẹn gọi là critical section."
             },
             {
@@ -5678,7 +5644,7 @@
               ]
             },
             {
-              "title": "Đọc-sửa-ghi phải trọn trong một khoá",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Số dư, bộ đếm, tồn kho: mọi lần đọc-sửa-ghi một giá trị dùng chung",
                 "Kiểm tra rồi hành động (đủ tiền thì trừ) phải nằm TRỌN trong một lần giữ khoá",
@@ -5695,7 +5661,7 @@
               ]
             },
             {
-              "title": "Mất một lần cộng vì cùng đọc 100",
+              "title": "Đọc sơ đồ",
               "body": "Nửa trên KHÔNG khoá: hai mũi tên đọc cùng ô balance = 100, hai mũi tên ghi cùng đặt 101 — mất một lần cộng. Nửa dưới có Lock nên thread sau đọc 101, ghi 102; trong Studio nửa trên không xảy ra vì thread chạy lần lượt.",
               "figure": {
                 "src": "/static/anim/T05-race-lock.svg",
@@ -5715,10 +5681,7 @@
             "body": "Account có self.balance và self.lock = threading.Lock(); run_deposits (cấp sẵn) cho mỗi khoản nạp một thread. Viết deposit(amount): đọc-cộng-ghi balance trong with self.lock. Viết withdraw(amount): trong CÙNG một with self.lock, nếu amount > balance thì raise ValueError(\"insufficient funds\"), ngược lại trừ. Viết safe_plan(plan, order): True nếu plan (các lock một thread khoá lồng nhau, theo thứ tự) đi đúng thứ tự chung order — tăng dần, không khoá lại lock đang giữ; tên không có trong order → ValueError.",
             "example": "run_deposits(Account(0), [10, 20, 30]) → 60. Account(5).withdraw(9) → ValueError, balance vẫn 5. safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False.",
             "prereq": "T04",
-            "level": "Nâng cao",
-            "files": [
-              "race_demo.py"
-            ]
+            "level": "Nâng cao"
           },
           "predict": {
             "question": "Hai thread cùng chạy deposit(50) trên balance = 100, KHÔNG có lock. Kết quả có thể là?",
@@ -5801,26 +5764,26 @@
               "explanation": "Không bao giờ để lock kẹt vì quên release."
             },
             {
-              "question": "Thread 1 khoá lock_a rồi lock_b; thread 2 khoá lock_b rồi lock_a. Rủi ro gì?",
+              "question": "Thread 1 khoá A rồi B; thread 2 khoá B rồi A. Rủi ro gì?",
               "options": [
                 {
+                  "text": "Chỉ chậm hơn một chút",
+                  "detail": "Hai bên chờ nhau mãi, không tiến triển.",
+                  "correct": false
+                },
+                {
                   "text": "Deadlock — mỗi bên giữ một lock và chờ lock kia",
-                  "detail": "Sửa: cả hai khoá theo cùng thứ tự lock_a rồi lock_b.",
+                  "detail": "Sửa: cả hai khoá theo cùng thứ tự A rồi B.",
                   "correct": true
                 },
                 {
                   "text": "Không sao vì cuối cùng đều release",
                   "detail": "Có thể không bên nào tới được lệnh release.",
                   "correct": false
-                },
-                {
-                  "text": "Chỉ chậm hơn một chút",
-                  "detail": "Hai bên chờ nhau mãi, không tiến triển.",
-                  "correct": false
                 }
               ],
-              "correct": 0,
-              "explanation": "Sửa: cả hai khoá theo cùng thứ tự lock_a rồi lock_b."
+              "correct": 1,
+              "explanation": "Sửa: cả hai khoá theo cùng thứ tự A rồi B."
             },
             {
               "question": "Nên đặt gì vào critical section?",
@@ -5892,20 +5855,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "with self.lock:",
-                "hint": "Mở critical section bằng chính khoá của account này, và tự nhả khi ra"
+                "answer": "with self.lock:"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "amount > self.balance",
-                "hint": "Điều kiện tiền trong tài khoản không đủ để rút"
+                "answer": "amount > self.balance"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "positions[i] <= positions[i - 1]",
-                "hint": "Điều kiện thấy kế hoạch có thể kẹt: so vị trí hai khoá liền nhau"
+                "answer": "positions[i] <= positions[i - 1]"
               }
             ],
             "bank": [
@@ -6050,13 +6010,6 @@
               "expect": "'ValueError'"
             }
           ],
-          "files": [
-            {
-              "name": "race_demo.py",
-              "content": "# Chạy trên MÁY: python race_demo.py — Studio chạy thread lần lượt nên không thấy race.\nimport threading\nimport time\n\nbalance = 0\n\n\ndef deposit_100():\n    global balance\n    for _ in range(100):\n        seen = balance       # đọc\n        time.sleep(0)        # nhường lượt: thread kia chen vào ĐÚNG giữa đọc và ghi\n        balance = seen + 1   # ghi: đè mất phần thread kia vừa cộng\n\n\nif __name__ == \"__main__\":\n    workers = [threading.Thread(target=deposit_100) for _ in range(2)]\n    for worker in workers:\n        worker.start()\n    for worker in workers:\n        worker.join()\n    print(\"Mong đợi 200, thực tế\", balance)\n",
-              "kind": "module"
-            }
-          ],
           "contracts": [
             {
               "sig": "Account.deposit(self, amount)",
@@ -6083,7 +6036,7 @@
               "call": "safe_plan([\"log\", \"db\"], [\"db\", \"cache\", \"log\"]) → False"
             }
           ],
-          "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi. Trên máy cũng đừng chờ n += 1 trần lộ race: từ CPython 3.10 thread chỉ bị đổi ở một số điểm (gọi hàm, cuối vòng lặp…), nên 2 thread × 1 triệu lần += thường vẫn ra đúng 2.000.000 — hiếm lộ, KHÔNG phải nguyên tử. Muốn thấy race thật, chạy python race_demo.py (mục \"File trong thư mục bài\"): file chèn time.sleep(0) giữa đọc và ghi nên thường ra dưới 200; bọc ba dòng đó trong with lock: thì luôn 200."
+          "env": "Trình duyệt không chạy được thread thật, nên Studio MÔ PHỎNG threading: target chạy lần lượt ngay khi start() và bộ chấm ghi lại thứ tự tạo / start / join. time.sleep() là đồng hồ ảo: các thread \"ngủ\" song song nên đo thời gian vẫn thấy lợi ích của thread với việc chờ I/O. Vì chạy lần lượt, producer phải start TRƯỚC consumer; một lệnh chờ không bao giờ được đáp (get() trên Queue rỗng, Event.wait() không ai set) sẽ dừng với thông báo deadlock thay vì treo. Hãy chạy thêm file trên máy — thứ tự dòng in của thread thật có thể khác mỗi lần. Vì các thread không bao giờ xen kẽ ở đây, race condition không tái hiện được: bộ chấm thay self.lock bằng một khoá \"ghi nhật ký\" để kiểm mọi lần đọc/ghi balance đều nằm trong lúc giữ khoá. Khoá lại một Lock đang giữ thì trên máy thật chương trình treo mãi."
         },
         "play": {
           "level": "N",
@@ -6168,25 +6121,6 @@
               "id": "selfExplain-4",
               "type": "selfExplain",
               "title": "Vì sao withdraw phải đặt cả phép kiểm tra lẫn phép trừ trong cùng một with self.lock?"
-            },
-            {
-              "id": "soQuy-5",
-              "type": "soQuy",
-              "title": "Sổ quỹ chung",
-              "ham": "nap",
-              "soDu": 100,
-              "nguoi": [
-                {
-                  "ten": "A",
-                  "soTien": 50
-                },
-                {
-                  "ten": "B",
-                  "soTien": 10
-                }
-              ],
-              "code": "def nap(so_quy, khoa, so_tien):\n    x = so_quy.doc()\n    so_quy.ghi(x + so_tien)\n",
-              "loiGiai": "def nap(so_quy, khoa, so_tien):\n    with khoa:\n        x = so_quy.doc()\n        so_quy.ghi(x + so_tien)\n"
             }
           ],
           "selfExplainMinWords": 8
@@ -6232,7 +6166,7 @@
           },
           "theory": [
             {
-              "title": "queue.Queue đã khoá sẵn bên trong",
+              "title": "Định nghĩa: queue.Queue",
               "body": "queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn mà hai bên không phải tự dựng Lock như T05.",
               "bullets": [
                 "get() mặc định CHỜ khi rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty",
@@ -6244,7 +6178,7 @@
               "body": "Producer tạo việc, put vào queue rồi đi tiếp ngay; consumer lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên thêm worker chỉ là chạy thêm một thread cùng đọc một queue."
             },
             {
-              "title": "put bản sao, đừng put object đang sửa",
+              "title": "Dùng ở đâu",
               "bullets": [
                 "Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua queue khác (G06)",
                 "Máy chủ: một queue việc, vài worker cùng rút ra làm — thêm worker là tăng thông lượng",
@@ -6252,7 +6186,7 @@
               ]
             },
             {
-              "title": "Hai bên chỉ gặp nhau qua queue",
+              "title": "Đọc sơ đồ",
               "body": "Giữa hình là queue, một hàng ô xếp theo thứ tự vào: producer put thêm vào cuối rồi quay về việc của mình ngay, worker lấy ở đầu rồi task_done(). Hai mũi tên không bao giờ chạm nhau — hai bên chỉ gặp nhau qua queue.",
               "figure": {
                 "src": "/static/anim/T06-queue-worker.svg",
@@ -6447,26 +6381,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "dict(record)",
-                "hint": "Đưa vào hàng đợi một BẢN SAO, để nơi gọi sửa tiếp cũng không ảnh hưởng"
+                "answer": "dict(record)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "self.jobs.get_nowait()",
-                "hint": "Lấy việc mà KHÔNG chờ — hàng rỗng thì ném ngoại lệ ngay"
+                "answer": "self.jobs.get_nowait()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "self.jobs.task_done()",
-                "hint": "Báo đã xử lý xong một việc, cho bên đang chờ biết"
+                "answer": "self.jobs.task_done()"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "threading.Thread(target=self._work)",
-                "hint": "Dựng thread chạy vòng xử lý: trỏ tới method, chưa gọi nó"
+                "answer": "threading.Thread(target=self._work)"
               }
             ],
             "bank": [
@@ -6713,7 +6643,7 @@
           },
           "theory": [
             {
-              "title": "CLI nhận lệnh gõ, GUI chờ người bấm",
+              "title": "Định nghĩa: GUI và CLI",
               "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
             },
             {
@@ -6725,7 +6655,7 @@
               ]
             },
             {
-              "title": "mainloop() ở Studio trả về ngay",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp",
                 "Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn",
@@ -6733,7 +6663,7 @@
               ]
             },
             {
-              "title": "Đóng root là cửa sổ phụ đóng theo",
+              "title": "Đọc sơ đồ",
               "body": "Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry(\"800x600\") — rộng x cao, chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.",
               "figure": {
                 "src": "/static/anim/G01-window-anatomy.svg",
@@ -6927,26 +6857,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "tk.Tk()",
-                "hint": "Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp"
+                "answer": "tk.Tk()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "root.geometry(size)",
-                "hint": "Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x"
+                "answer": "root.geometry(size)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "tk.Toplevel(root)",
-                "hint": "Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa"
+                "answer": "tk.Toplevel(root)"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "root.mainloop()",
-                "hint": "Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi"
+                "answer": "root.mainloop()"
               }
             ],
             "bank": [
@@ -7166,7 +7092,7 @@
           },
           "theory": [
             {
-              "title": "Callback là hàm bạn viết, Tkinter gọi",
+              "title": "Định nghĩa: widget và callback",
               "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa, Label hiện chữ, Entry nhập một dòng, Button bấm được. Callback là hàm BẠN viết mà TKINTER gọi, khi sự kiện xảy ra."
             },
             {
@@ -7178,7 +7104,7 @@
               ]
             },
             {
-              "title": "messagebox thay cho print() của CLI",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "Form đăng nhập: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
                 "messagebox.showinfo / showwarning / showerror thay cho print() của CLI",
@@ -7186,7 +7112,7 @@
               ]
             },
             {
-              "title": "Lúc dựng chỉ cất hàm, bấm mới gọi",
+              "title": "Đọc sơ đồ",
               "body": "Hình chia hai nhịp: lúc dựng giao diện, Button chỉ CẤT tên hàm; lúc bấm, Tkinter gọi callback, callback đọc Entry rồi label.config(text=…) đổi chữ. Ô nét đứt là dữ liệu đọc đúng lúc bấm.",
               "figure": {
                 "src": "/static/anim/G02-widget-callback.svg",
@@ -7385,20 +7311,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "tk.Label(root, text=\"\")",
-                "hint": "Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó"
+                "answer": "tk.Label(root, text=\"\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "name_entry.get()",
-                "hint": "Lấy chữ người dùng đã gõ ra khỏi ô nhập"
+                "answer": "name_entry.get()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "send",
-                "hint": "Giao cho nút chính hàm xử lý, chưa gọi nó ở đây"
+                "answer": "send"
               }
             ],
             "bank": [
@@ -7409,7 +7332,7 @@
               {
                 "label": "send()",
                 "slot": 3,
-                "trap": "Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là None."
+                "trap": "Gọi send ngay lúc dựng giao diện; nút nhận None."
               },
               {
                 "label": "name_entry.get()",
@@ -7427,7 +7350,7 @@
               {
                 "label": "name_entry",
                 "slot": 2,
-                "trap": "Đó là widget, không phải chữ đang nằm trong nó."
+                "trap": "Đó là widget, không phải chữ đã gõ — cần get()."
               }
             ]
           }
@@ -7619,7 +7542,7 @@
           },
           "theory": [
             {
-              "title": "Biến Tk giữ giá trị, get() đọc ra",
+              "title": "Định nghĩa: widget nhập và biến Tk",
               "body": "Entry (show=\"*\" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — đọc bằng get()."
             },
             {
@@ -7631,7 +7554,7 @@
               ]
             },
             {
-              "title": "Kiểm trước, đừng ghi dữ liệu nửa vời",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ",
                 "Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời",
@@ -7639,7 +7562,7 @@
               ]
             },
             {
-              "title": "Hai Radiobutton, một StringVar",
+              "title": "Đọc sơ đồ",
               "body": "Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt kiểm tra.",
               "figure": {
                 "src": "/static/anim/G03-input-widgets.svg",
@@ -7859,20 +7782,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "shift_var",
-                "hint": "Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau"
+                "answer": "shift_var"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "laptop_var.get()",
-                "hint": "Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến"
+                "answer": "laptop_var.get()"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "shift_var.get()",
-                "hint": "Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl"
+                "answer": "shift_var.get()"
               }
             ],
             "bank": [
@@ -8097,7 +8017,7 @@
           },
           "theory": [
             {
-              "title": "Tạo widget xong nó vẫn chưa hiện",
+              "title": "Định nghĩa: geometry manager",
               "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một geometry manager của chính widget — .pack() xếp theo cạnh (side, fill), .place() theo toạ độ (x/y, relx), .grid() theo ô row–column."
             },
             {
@@ -8105,7 +8025,7 @@
               "body": "Hai manager tính chỗ theo hai cách khác nhau, nên các con của CÙNG một parent vừa pack() vừa grid() làm Tk báo TclError. Khác parent thì vô tư: Frame bên trong grid, Frame đó pack ra ngoài."
             },
             {
-              "title": "weight=1 cho cột nuốt phần dư",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "grid cho form nhãn–ô nhập; pack cho khung và thanh nút; place khi cần toạ độ",
                 "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra",
@@ -8113,7 +8033,7 @@
               ]
             },
             {
-              "title": "Cùng ba widget, ba manager xếp ba kiểu",
+              "title": "Đọc sơ đồ",
               "body": "Ba cửa sổ nhỏ, CÙNG ba widget, ba manager: pack xếp chồng, place ghim theo toạ độ nên có thể chồng nhau, grid chia lưới thẳng hàng. Dải đỏ dưới cùng là ca lỗi pack + grid cùng parent.",
               "figure": {
                 "src": "/static/anim/G04-layouts.svg",
@@ -8307,26 +8227,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "pack(padx=10, pady=10)",
-                "hint": "Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới"
+                "answer": "pack(padx=10, pady=10)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "index // 2",
-                "hint": "Số hàng tính từ thứ tự nút: hai nút một hàng"
+                "answer": "index // 2"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "index % 2",
-                "hint": "Số cột tính từ thứ tự nút: luân phiên 0 rồi 1"
+                "answer": "index % 2"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "pack(side=\"bottom\")",
-                "hint": "Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng"
+                "answer": "pack(side=\"bottom\")"
               }
             ],
             "bank": [
@@ -8566,7 +8482,7 @@
           },
           "theory": [
             {
-              "title": "Hàm thuần không đụng tới widget nào",
+              "title": "Định nghĩa: hàm thuần và tầng GUI",
               "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng giao diện chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả."
             },
             {
@@ -8578,7 +8494,7 @@
               ]
             },
             {
-              "title": "Lõi dùng lại được cho CLI, web và test",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "Quy tắc nghiệp vụ ở hàm thuần, thông báo ở GUI: lõi dùng lại cho CLI, web, test",
                 "validate_mark(raw) raise ValueError; App bắt lỗi rồi messagebox.showerror",
@@ -8586,7 +8502,7 @@
               ]
             },
             {
-              "title": "Mũi tên chỉ đi một chiều",
+              "title": "Đọc sơ đồ",
               "body": "Bên trái là lớp App — widget, callback, messagebox; bên phải là hàm thuần: vào dữ liệu, ra dữ liệu hoặc exception. Mũi tên chỉ đi một chiều sang phải, nối vào cả ô \"test gọi thẳng\".",
               "figure": {
                 "src": "/static/anim/G05-logic-vs-ui.svg",
@@ -8784,26 +8700,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "self.convert",
-                "hint": "Giao method xử lý cho nút — tên method, không phải kết quả gọi nó"
+                "answer": "self.convert"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "self.answer",
-                "hint": "Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy"
+                "answer": "self.answer"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "self.celsius.get()",
-                "hint": "Chuỗi đang nằm trong biến của ô nhập — float() không nhận object"
+                "answer": "self.celsius.get()"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "self.answer.config(text=str(value) + \" °F\")",
-                "hint": "Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console"
+                "answer": "self.answer.config(text=str(value) + \" °F\")"
               }
             ],
             "bank": [
@@ -9069,7 +8981,7 @@
           },
           "theory": [
             {
-              "title": "Callback tính 5 giây là 5 giây treo",
+              "title": "Định nghĩa: mainloop là vòng chặn",
               "body": "mainloop() không trả về mà quay vòng: lấy một sự kiện, gọi hàm xử lý, vẽ lại, rồi lấy tiếp. Callback của bạn chạy BÊN TRONG vòng lặp đó, nên callback tính 5 giây là 5 giây cửa sổ treo."
             },
             {
@@ -9081,7 +8993,7 @@
               ]
             },
             {
-              "title": "Nút Huỷ bấm được khi event loop còn rảnh",
+              "title": "Dùng ở đâu — và Studio khác gì",
               "bullets": [
                 "Lưu file lớn, nén, gọi API: nút Huỷ chỉ bấm được khi event loop còn rảnh",
                 "after(ms, f) cũng làm đồng hồ, tự làm mới, hoạt ảnh nhẹ — không cần thread",
@@ -9089,7 +9001,7 @@
               ]
             },
             {
-              "title": "Worker chạy, mainloop vẫn quay",
+              "title": "Đọc sơ đồ",
               "body": "Làn trên là thread GUI: callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên mainloop quay tiếp. Làn dưới là worker; nối hai làn chỉ có một mũi tên qua Queue, chấm tròn là các lần after(100).",
               "figure": {
                 "src": "/static/anim/G06-event-loop.svg",
@@ -9283,20 +9195,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "box.get_nowait()",
-                "hint": "Lấy kết quả mà không chặn thread giao diện — rỗng thì ném ngoại lệ"
+                "answer": "box.get_nowait()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "root.after(100, check_box)",
-                "hint": "Chưa có kết quả thì hẹn kiểm lại lượt sau qua vòng lặp sự kiện"
+                "answer": "root.after(100, check_box)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "threading.Thread(target=count_even, args=(1000,)).start()",
-                "hint": "Đẩy việc dài sang thread riêng rồi trả quyền ngay cho giao diện"
+                "answer": "threading.Thread(target=count_even, args=(1000,)).start()"
               }
             ],
             "bank": [
@@ -9496,13 +9405,13 @@
       "sort_order": 20,
       "module": "M3 · GUI Tkinter và dự án",
       "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-      "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
+      "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
       "estimated_minutes": 60,
       "xp_reward": 40,
       "content_json": {
         "schema": "studio-lesson/v2",
         "title": "R02 · Dự án PW5–PW9: lưu, shell, thread và GUI",
-        "subtitle": "Nâng cao · M3 · 60 phút · Tổng hợp PW5–PW9 · lưu, shell, thread, GUI",
+        "subtitle": "Nâng cao · M3 · 60 phút · Boss PW5–PW9 · lưu, shell, thread, GUI",
         "source": {
           "kind": "pe-v4-advanced",
           "filename": "python-learning-data.json#R02",
@@ -9514,7 +9423,7 @@
           "brief": {
             "eyebrow": [
               "M3",
-              "TỔNG HỢP",
+              "BOSS",
               "R02"
             ],
             "title": "Dự án PW5–PW9: lưu, shell, thread và GUI",
@@ -9542,11 +9451,11 @@
               ]
             },
             {
-              "title": "Bấm Lưu, kết quả về qua Queue",
+              "title": "Ví dụ: một vòng dữ liệu trọn vẹn",
               "body": "Bấm Lưu → status \"Đang lưu...\", worker pickle + gzip rồi put (\"ok\", 2) vào Queue, after(100) đổi status thành \"Đã lưu 2 sinh viên\". Bấm Báo cáo → report.py đọc \"Mai,8.5\" từ stdin, in Average."
             },
             {
-              "title": "Nét đứt là chỗ đổi không gian",
+              "title": "Đọc sơ đồ",
               "body": "Đi xuống từ ô GUI: dữ liệu đã validate → worker thread → pickle + gzip → file .gz, kết quả về qua Queue. Đi ngang: marks → stdin của report.py → stdout; nét đứt là chỗ ĐỔI KHÔNG GIAN.",
               "figure": {
                 "src": "/static/anim/R02-pipeline.svg",
@@ -9744,7 +9653,7 @@
         },
         "step_4": {
           "task": {
-            "title": "Bài tổng hợp chặng — tự viết rồi nộp",
+            "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
             "body": "Sổ điểm mini PW5–PW9. report.py đã cấp: đọc \"tên,điểm\" từ stdin, in báo cáo; không có dòng dữ liệu nào thì in lỗi ra stderr và thoát mã 1. Viết lần lượt:\n\n1) validate(name, raw_mark) → (tên đã strip, float 0..10), nhận cả \"7,5\"; tên trống, không phải số hoặc ngoài khoảng → ValueError.\n\n2) save_marks(marks, path) lưu dict bằng pickle NÉN gzip; load_marks(path) nạp lại, file chưa có → {}.\n\n3) run_report(marks) chạy [sys.executable, \"report.py\"] bằng subprocess, gửi mỗi sinh viên một dòng \"tên,điểm\" qua stdin, trả stdout (str); con thoát mã khác 0 → RuntimeError(stderr của con).\n\n4) start_save(marks, path, done) start một Thread lưu BẢN SAO marks; xong thì put (\"ok\", số sinh viên) vào done (OSError → (\"error\", thông báo)); trả Thread, không join.\n\n5) App (giao diện đã dựng sẵn): __init__ nạp self.marks = load_marks(path); add → validate, self.marks[tên] = điểm, status \"Có <n> sinh viên\" (sai → showerror); save → status \"Đang lưu...\", self.saver = start_save(...), after(100, self.poll_save); poll_save → get_nowait, rỗng thì hẹn lại, có thì status \"Đã lưu <n> sinh viên\"; report → self.output hiện run_report(self.marks) (lỗi → showerror); wait_for_save → join self.saver nếu có.\n\nThực hành: Viết và thử từng hàm thuần trước (validate → save/load → run_report → start_save), rồi mới nối vào các method của App.",
             "io": [
               {
@@ -9923,7 +9832,7 @@
             {
               "id": "trueFalse-0",
               "type": "trueFalse",
-              "title": "Khởi động: mỗi đáp án đúng hay sai?",
+              "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
               "prompt": "subprocess.run([...], capture_output=True) không có text=True thì result.stdout là gì?",
               "items": [
                 {
@@ -10179,26 +10088,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "\";\"",
-                "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
+                "answer": "\";\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "\"#\"",
-                "hint": "Ký tự mở đầu dòng ghi chú cần bỏ qua"
+                "answer": "\"#\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "[\"-\"]",
-                "hint": "Danh sách chuỗi mà file này dùng để đánh dấu ô thiếu"
+                "answer": "[\"-\"]"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "len(df)",
-                "hint": "Số DÒNG của bảng, không phải tổng số ô"
+                "answer": "len(df)"
               }
             ],
             "bank": [
@@ -10213,12 +10118,12 @@
               {
                 "label": "\",\"",
                 "slot": 1,
-                "trap": "Dấu phẩy là mặc định của read_csv, nhưng dòng đầu file cho thấy cột được ngăn bằng ký tự khác."
+                "trap": "Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng \";\"."
               },
               {
                 "label": "[\"NA\"]",
                 "slot": 3,
-                "trap": "\"NA\" thì pandas đã tự coi là thiếu; file này đánh dấu thiếu bằng ký tự khác."
+                "trap": "\"NA\" pandas đã tự coi là thiếu; file này ghi thiếu bằng \"-\"."
               },
               {
                 "label": "[\"-\"]",
@@ -10689,26 +10594,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "\"pd.read_stata\"",
-                "hint": "Tên hàm pandas đọc file .dta"
+                "answer": "\"pd.read_stata\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "\"scipy.io.loadmat\"",
-                "hint": "Tên hàm đọc .mat của MATLAB — không thuộc pandas, cũng không phải thư viện HDF5"
+                "answer": "\"scipy.io.loadmat\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "Path(path).suffix.lower()",
-                "hint": "Đuôi file kèm dấu chấm, hạ chữ thường, lấy từ dấu chấm CUỐI"
+                "answer": "Path(path).suffix.lower()"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "df.to_stata(path, write_index=False)",
-                "hint": "Ghi bảng ra định dạng Stata mà KHÔNG kèm cột index"
+                "answer": "df.to_stata(path, write_index=False)"
               }
             ],
             "bank": [
@@ -10724,7 +10625,7 @@
               {
                 "label": "\"h5py.File\"",
                 "slot": 2,
-                "trap": "h5py.File dành cho HDF5 (.h5), không mở được .mat của MATLAB."
+                "trap": "h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat."
               },
               {
                 "label": "df.to_stata(path)",
@@ -11198,26 +11099,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "?",
-                "hint": "Chỗ giữ cho giá trị để sqlite3 tự chèn — đừng ghép vào chuỗi SQL"
+                "answer": "?"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "(city,)",
-                "hint": "Dãy tham số của câu SQL — một phần tử vẫn phải là tuple"
+                "answer": "(city,)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "SUM(amount)",
-                "hint": "Biểu thức tổng hợp cộng cả cột tiền ngay trong SQL"
+                "answer": "SUM(amount)"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "fetchone()",
-                "hint": "Lấy MỘT dòng kết quả, để row[0] là con số"
+                "answer": "fetchone()"
               }
             ],
             "bank": [
@@ -11707,20 +11604,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "fig, ax = plt.subplots()",
-                "hint": "Tạo Figure và Axes — lời gọi trả về một CẶP"
+                "answer": "fig, ax = plt.subplots()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "ax.hist(scores, bins=edges)",
-                "hint": "Vẽ phân bố theo biên đề cho sẵn, đếm theo khoảng"
+                "answer": "ax.hist(scores, bins=edges)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")",
-                "hint": "Ghi nhãn hai trục — hàm vẽ không tự mở cửa sổ"
+                "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")"
               }
             ],
             "bank": [
@@ -12192,20 +12086,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "BytesIO()",
-                "hint": "Bộ đệm bytes trong bộ nhớ, không phải file trên đĩa"
+                "answer": "BytesIO()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
-                "hint": "Lưu ĐÚNG figure được truyền vào, kèm định dạng và dpi"
+                "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "plt.close(fig)",
-                "hint": "Giải phóng figure hẳn, không chỉ xoá nội dung"
+                "answer": "plt.close(fig)"
               }
             ],
             "bank": [
@@ -12680,26 +12571,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "7",
-                "hint": "Điểm dừng của arange — reshape(2, 3) quyết định cần bao nhiêu số"
+                "answer": "7"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "temps.size",
-                "hint": "Tổng số phần tử của array, không phải số hàng"
+                "answer": "temps.size"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "axis=0",
-                "hint": "Cộng theo chiều thành phố, để ra tổng TỪNG NGÀY"
+                "answer": "axis=0"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "axis=1",
-                "hint": "Cộng theo chiều ngày, để ra tổng TỪNG THÀNH PHỐ"
+                "answer": "axis=1"
               }
             ],
             "bank": [
@@ -13184,20 +13071,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "(temps >= 20) & (temps <= 35)",
-                "hint": "Mask bool giữ các ngày trong khoảng — mỗi phép so một cặp ngoặc"
+                "answer": "(temps >= 20) & (temps <= 35)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "ok * 1.8 + 32",
-                "hint": "Công thức đổi độ C sang độ F, áp lên cả array đã lọc"
+                "answer": "ok * 1.8 + 32"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "ok > 30",
-                "hint": "Điều kiện bool chọn nhãn nóng, tính trên array đã lọc"
+                "answer": "ok > 30"
               }
             ],
             "bank": [
@@ -13667,20 +13551,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "axis=1, keepdims=True",
-                "hint": "Mean theo TỪNG HỌC VIÊN, và giữ lại chiều để còn trừ được"
+                "answer": "axis=1, keepdims=True"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "np.where(row_std == 0, 1, row_std)",
-                "hint": "Thay độ lệch 0 bằng một số chia được, giữ nguyên các giá trị khác"
+                "answer": "np.where(row_std == 0, 1, row_std)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "(marks - row_mean) / safe",
-                "hint": "Công thức z, chia cho mẫu số đã chống 0"
+                "answer": "(marks - row_mean) / safe"
               }
             ],
             "bank": [
@@ -14145,26 +14026,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "np.isnan(wait).sum()",
-                "hint": "Đếm ô thiếu — NaN phải nhận bằng hàm, không bằng phép so bằng"
+                "answer": "np.isnan(wait).sum()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "np.nanmedian(wait)",
-                "hint": "Giá trị điển hình, chịu được cả ô thiếu lẫn một số lệch hẳn"
+                "answer": "np.nanmedian(wait)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "~np.isnan(marks)",
-                "hint": "Mask chọn các môn ĐÃ có điểm"
+                "answer": "~np.isnan(marks)"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "credits[ok]",
-                "hint": "Trọng số phải lọc cùng mask với điểm, không thì lệch shape"
+                "answer": "credits[ok]"
               }
             ],
             "bank": [
@@ -14639,14 +14516,12 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": ".copy()",
-                "hint": "Tách hẳn khỏi bảng gốc — lát cắt vẫn chia chung bộ nhớ"
+                "answer": ".copy()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "np.isclose(first.sum(), 14.6)",
-                "hint": "So tổng số thực theo SAI SỐ, không so bằng tuyệt đối"
+                "answer": "np.isclose(first.sum(), 14.6)"
               }
             ],
             "bank": [
@@ -15115,20 +14990,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "skip_header=1",
-                "hint": "Tham số bỏ dòng tiêu đề — tên riêng của genfromtxt"
+                "answer": "skip_header=1"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "np.nanmean(marks, axis=0)",
-                "hint": "Trung bình từng cột, bỏ qua ô trống"
+                "answer": "np.nanmean(marks, axis=0)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "np.random.default_rng(2026)",
-                "hint": "Nguồn số ngẫu nhiên CÓ seed, để chạy lại ra đúng kết quả cũ"
+                "answer": "np.random.default_rng(2026)"
               }
             ],
             "bank": [
@@ -15613,20 +15485,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "df.loc[sid, \"mark\"]",
-                "hint": "Tra theo NHÃN hàng, lấy ô cột mark"
+                "answer": "df.loc[sid, \"mark\"]"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "df.iloc[0][\"mark\"]",
-                "hint": "Lấy hàng ĐẦU theo vị trí, vì nhãn có thể lộn xộn"
+                "answer": "df.iloc[0][\"mark\"]"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "marks + bonus",
-                "hint": "Cộng hai Series theo NHÃN, để thứ tự khác nhau vẫn khớp"
+                "answer": "marks + bonus"
               }
             ],
             "bank": [
@@ -16056,26 +15925,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "sep=\";\"",
-                "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
+                "answer": "sep=\";\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "dtype={\"id\": \"string\"}",
-                "hint": "Khai kiểu cho cột mã đơn — mã của file này có số 0 đứng đầu"
+                "answer": "dtype={\"id\": \"string\"}"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "na_values=[\"missing\"]",
-                "hint": "Khai chuỗi mà file dùng để ghi ô thiếu"
+                "answer": "na_values=[\"missing\"]"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "index=False",
-                "hint": "Tham số quyết định CSV xuất ra có cột index hay không"
+                "answer": "index=False"
               }
             ],
             "bank": [
@@ -16521,20 +16386,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "df[\"region\"].str.strip().str.lower()",
-                "hint": "Chuẩn hoá nhãn vùng: bỏ khoảng trắng, về chữ thường — qua bộ truy cập chuỗi"
+                "answer": "df[\"region\"].str.strip().str.lower()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")",
-                "hint": "Đổi qty sang số; ô không đổi được thì thành thiếu, đừng điền 0"
+                "answer": "pd.to_numeric(df[\"qty\"], errors=\"coerce\")"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")",
-                "hint": "Bỏ đơn gửi lại, nhận diện theo KHOÁ đơn, giữ bản đầu"
+                "answer": "df.drop_duplicates(subset=\"order_id\", keep=\"first\")"
               }
             ],
             "bank": [
@@ -16973,26 +16835,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "df.copy()",
-                "hint": "Làm việc trên bản riêng, đừng thêm cột vào bảng của nơi gọi"
+                "answer": "df.copy()"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\"",
-                "hint": "Đánh dấu đơn qty không dương — gán thẳng vào bảng, không qua bảng tạm"
+                "answer": "out.loc[out[\"qty\"] <= 0, \"status\"] = \"check\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)",
-                "hint": "Mask ba điều kiện cùng lúc, nối bằng toán tử dùng được với Series"
+                "answer": "(data[\"region\"] == region) & (data[\"status\"] == \"ok\") & (data[\"revenue\"] >= min_revenue)"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)",
-                "hint": "Lọc theo mask rồi xếp doanh thu GIẢM dần"
+                "answer": "data.loc[mask].sort_values(\"revenue\", ascending=False)"
               }
             ],
             "bank": [
@@ -17427,26 +17285,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "df[\"region\"].fillna(\"unknown\")",
-                "hint": "Vùng thiếu phải có nhãn riêng, không thì groupby đánh rơi dòng đó"
+                "answer": "df[\"region\"].fillna(\"unknown\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "(\"order_id\", \"size\")",
-                "hint": "Đếm SỐ ĐƠN — kể cả đơn thiếu qty"
+                "answer": "(\"order_id\", \"size\")"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "out[\"revenue\"] / out[\"qty\"]",
-                "hint": "Giá trung bình có mẫu số là số lượng, không phải mean các giá"
+                "answer": "out[\"revenue\"] / out[\"qty\"]"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "out[\"revenue\"] / out[\"revenue\"].sum()",
-                "hint": "Tỉ trọng của vùng: mẫu số là tổng doanh thu toàn bộ"
+                "answer": "out[\"revenue\"] / out[\"revenue\"].sum()"
               }
             ],
             "bank": [
@@ -17869,20 +17723,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "how=\"left\"",
-                "hint": "Kiểu nối giữ nguyên mọi đơn, kể cả sku chưa có giá"
+                "answer": "how=\"left\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "validate=\"many_to_one\"",
-                "hint": "Khai cardinality: nhiều đơn ứng MỘT dòng giá, để merge tự chặn khi bảng giá trùng"
+                "answer": "validate=\"many_to_one\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "pd.concat(frames, ignore_index=True)",
-                "hint": "Nối các bảng rồi đánh lại index liên tục"
+                "answer": "pd.concat(frames, ignore_index=True)"
               }
             ],
             "bank": [
@@ -18305,20 +18156,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "id_vars=\"region\"",
-                "hint": "Khai cột GIỮ NGUYÊN khi chuyển sang dạng dài"
+                "answer": "id_vars=\"region\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "pivot_table",
-                "hint": "Hàm dựng bảng rộng CÓ gộp — dữ liệu có (vùng, tháng) trùng"
+                "answer": "pivot_table"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "aggfunc=\"sum\"",
-                "hint": "Khai cách gộp ô trùng là CỘNG; mặc định không phải vậy"
+                "answer": "aggfunc=\"sum\""
               }
             ],
             "bank": [
@@ -18743,26 +18591,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "errors=\"coerce\"",
-                "hint": "Ngày không đọc được thì thành NaT, không làm vỡ cả lệnh"
+                "answer": "errors=\"coerce\""
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "\"MS\"",
-                "hint": "Mã tần suất gộp theo tháng, nhãn đặt ở ĐẦU tháng"
+                "answer": "\"MS\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "monthly.sum(min_count=1)",
-                "hint": "Tổng theo tháng, nhưng tháng không có đơn phải để trống chứ không thành 0"
+                "answer": "monthly.sum(min_count=1)"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "s.sort_index().rolling(window).mean()",
-                "hint": "Trung bình trượt — sắp theo ngày TRƯỚC khi trượt"
+                "answer": "s.sort_index().rolling(window).mean()"
               }
             ],
             "bank": [
@@ -19207,26 +19051,22 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "int(raw[\"order_id\"].duplicated().sum())",
-                "hint": "Đếm số đơn gửi LẠI, không tính bản đầu tiên"
+                "answer": "int(raw[\"order_id\"].duplicated().sum())"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "int(qty.isna().sum())",
-                "hint": "Đếm ô qty thiếu, sau khi đã đổi sang số"
+                "answer": "int(qty.isna().sum())"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "raw.copy()",
-                "hint": "Bản riêng để gán cột, giữ bảng nguồn nguyên vẹn"
+                "answer": "raw.copy()"
               },
               {
                 "n": 4,
                 "placeholder": "[Slot 4]",
-                "answer": "df.to_csv(path, index=False)",
-                "hint": "Ghi bảng sạch ra CSV, không kèm cột index"
+                "answer": "df.to_csv(path, index=False)"
               }
             ],
             "bank": [
@@ -19671,20 +19511,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "plt.subplots(1, 2, layout=\"constrained\")",
-                "hint": "Tạo HAI Axes cạnh nhau, và để matplotlib tự dàn khoảng"
+                "answer": "plt.subplots(1, 2, layout=\"constrained\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "ax_line.plot(days, revenue, marker=\"o\")",
-                "hint": "Vẽ đường lên ĐÚNG panel bên trái, không lên panel hiện hành"
+                "answer": "ax_line.plot(days, revenue, marker=\"o\")"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "sorted(zip(orders, categories))",
-                "hint": "Ghép số đơn với tên rồi xếp hạng — barh vẽ từ dưới lên"
+                "answer": "sorted(zip(orders, categories))"
               }
             ],
             "bank": [
@@ -20104,20 +19941,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "ax_hist.hist(all_scores, bins=edges)",
-                "hint": "Vẽ phân bố mọi điểm lên panel trái, theo biên đề cho"
+                "answer": "ax_hist.hist(all_scores, bins=edges)"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "f\"All scores (n={len(all_scores)})\"",
-                "hint": "Tiêu đề kèm số QUAN SÁT, không phải số nhóm"
+                "answer": "f\"All scores (n={len(all_scores)})\""
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "ax_box.boxplot(list(groups.values()))",
-                "hint": "Một hộp cho MỖI nhóm, và giữ outlier hiện ra"
+                "answer": "ax_box.boxplot(list(groups.values()))"
               }
             ],
             "bank": [
@@ -20545,20 +20379,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "max(table.to_numpy().max() for table in tables.values())",
-                "hint": "Giá trị lớn nhất trên TOÀN BỘ các bảng, lấy từ số liệu chứ không từ tiêu đề"
+                "answer": "max(table.to_numpy().max() for table in tables.values())"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "vmin=0, vmax=vmax",
-                "hint": "Chốt CẢ HAI đầu thang màu, để các panel so sánh được với nhau"
+                "answer": "vmin=0, vmax=vmax"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)",
-                "hint": "Một thanh màu duy nhất cho mọi panel, có ghi đơn vị"
+                "answer": "fig.colorbar(im, ax=list(axes[0]), label=unit)"
               }
             ],
             "bank": [
@@ -20973,20 +20804,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "int(revenue.to_numpy().argmax())",
-                "hint": "Vị trí cột LỚN nhất, tính từ dữ liệu chứ không viết cứng"
+                "answer": "int(revenue.to_numpy().argmax())"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "xy=(pos, value)",
-                "hint": "Toạ độ chú thích: x là vị trí cột, y là giá trị"
+                "answer": "xy=(pos, value)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "ax.set_ylim(0, value * 1.2)",
-                "hint": "Giữ đáy trục ở 0, chừa chỗ trên cho chú thích"
+                "answer": "ax.set_ylim(0, value * 1.2)"
               }
             ],
             "bank": [
@@ -21397,20 +21225,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "data.sort_values(\"date\")",
-                "hint": "Sắp theo thời gian trước khi vẽ, không theo giá trị"
+                "answer": "data.sort_values(\"date\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))",
-                "hint": "Formatter phần trăm cho trục y, khai rằng 1 là 100 phần trăm"
+                "answer": "ax.yaxis.set_major_formatter(PercentFormatter(xmax=1))"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "any(size <= 0 for size in sizes)",
-                "hint": "Điều kiện chặn vì trục log không nhận giá trị không dương"
+                "answer": "any(size <= 0 for size in sizes)"
               }
             ],
             "bank": [
@@ -21836,20 +21661,17 @@
               {
                 "n": 1,
                 "placeholder": "[Slot 1]",
-                "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")",
-                "hint": "Tạo Figure cỡ 6×3 inch và bật dàn khoảng tự động"
+                "answer": "plt.subplots(figsize=(6, 3), layout=\"constrained\")"
               },
               {
                 "n": 2,
                 "placeholder": "[Slot 2]",
-                "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)",
-                "hint": "Lưu vào bộ đệm đúng dpi, và KHÔNG cắt theo nội dung"
+                "answer": "fig.savefig(buf, format=\"png\", dpi=dpi)"
               },
               {
                 "n": 3,
                 "placeholder": "[Slot 3]",
-                "answer": "plt.close(fig)",
-                "hint": "Đóng figure sau mỗi lượt, đừng mở cửa sổ"
+                "answer": "plt.close(fig)"
               }
             ],
             "bank": [
@@ -22048,13 +21870,13 @@
       "sort_order": 47,
       "module": "M8 · Dự án DA",
       "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
-      "subtitle": "Nâng cao · M8 · 60 phút · Tổng hợp Dự án DA · doanh thu",
+      "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
       "estimated_minutes": 60,
       "xp_reward": 40,
       "content_json": {
         "schema": "studio-lesson/v2",
         "title": "DA01 · Mini-project: doanh thu từ raw tới chart",
-        "subtitle": "Nâng cao · M8 · 60 phút · Tổng hợp Dự án DA · doanh thu",
+        "subtitle": "Nâng cao · M8 · 60 phút · Boss Dự án DA · doanh thu",
         "source": {
           "kind": "pe-v4-advanced",
           "filename": "python-learning-data.json#DA01",
@@ -22065,7 +21887,7 @@
           "brief": {
             "eyebrow": [
               "M8",
-              "TỔNG HỢP",
+              "BOSS",
               "DA01"
             ],
             "title": "Mini-project: doanh thu từ raw tới chart",
@@ -22081,7 +21903,7 @@
           },
           "context": {
             "title": "Tự dựng pipeline doanh thu: đọc raw → làm sạch có lý do → báo cáo chất lượng → KPI → biểu đồ.",
-            "body": "Bài tổng hợp cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.",
+            "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.",
             "example": "sales.csv: 11 dòng raw → 6 đơn hợp lệ, revenue = 155 (north 65, south 90; 2026-01: 110, 2026-02: 45).",
             "prereq": "M06",
             "level": "Nâng cao",
@@ -22256,8 +22078,8 @@
         },
         "step_4": {
           "task": {
-            "title": "Bài tổng hợp chặng — tự viết rồi nộp",
-            "body": "Bài tổng hợp cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.\n\nThực hành: Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm.",
+            "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+            "body": "Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý do theo thứ tự bad_date → bad_qty → bad_price; trong các dòng hợp lệ, order_id gặp lại thì giữ dòng đầu, dòng sau là duplicate. clean thêm month (\"YYYY-MM\") và revenue = qty × unit_price; rejected là các dòng raw bị loại kèm cột reason. (3) quality_report(raw, clean, rejected): đếm dòng vào/ra và từng lý do; tổng không khớp thì ValueError. (4) kpi_table(clean, by) theo \"region\" hoặc \"month\": orders, qty, revenue và avg_price = revenue / qty. (5) revenue_chart(clean) → Figure hai Axes: barh doanh thu theo vùng (tăng dần) và line doanh thu theo tháng, có tiêu đề ghi rõ dữ liệu mô phỏng và nhãn trục.\n\nThực hành: Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải.",
             "io": [
               {
                 "label": "sales.csv",
@@ -22269,12 +22091,12 @@
               }
             ]
           },
-          "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Bài tổng hợp DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.\n# Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    pass\n\n\ndef clean_sales(raw):\n    pass\n\n\ndef quality_report(raw, clean, rejected):\n    pass\n\n\ndef kpi_table(clean, by):\n    pass\n\n\ndef revenue_chart(clean):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# raw = load_sales(\"sales.csv\")\n# clean, rejected = clean_sales(raw)\n# print(quality_report(raw, clean, rejected))\n# print(kpi_table(clean, \"region\"))\n",
+          "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Boss DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.\n# Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    pass\n\n\ndef clean_sales(raw):\n    pass\n\n\ndef quality_report(raw, clean, rejected):\n    pass\n\n\ndef kpi_table(clean, by):\n    pass\n\n\ndef revenue_chart(clean):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# raw = load_sales(\"sales.csv\")\n# clean, rejected = clean_sales(raw)\n# print(quality_report(raw, clean, rejected))\n# print(kpi_table(clean, \"region\"))\n",
           "solutionCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nREASONS = [\"bad_date\", \"bad_qty\", \"bad_price\", \"duplicate\"]\n\n\ndef load_sales(path):\n    # dtype=str: mọi cột là chữ, giữ nguyên raw để còn kiểm và báo lỗi.\n    return pd.read_csv(path, dtype=str)\n\n\ndef clean_sales(raw):\n    df = raw.copy()\n    df[\"region\"] = df[\"region\"].str.strip().str.lower()\n    df[\"date\"] = pd.to_datetime(df[\"date\"], format=\"%Y-%m-%d\", errors=\"coerce\")\n    df[\"qty\"] = pd.to_numeric(df[\"qty\"], errors=\"coerce\")\n    df[\"unit_price\"] = pd.to_numeric(df[\"unit_price\"], errors=\"coerce\")\n\n    # Mỗi dòng nhận MỘT lý do, theo thứ tự kiểm cố định.\n    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"bad_date\", df[\"date\"].isna()),\n        (\"bad_qty\", df[\"qty\"].isna() | (df[\"qty\"] <= 0)),\n        (\"bad_price\", df[\"unit_price\"].isna() | (df[\"unit_price\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Bỏ trùng theo khoá của grain, chỉ trong các dòng đã hợp lệ.\n    dup_rows = df[reason == \"\"].duplicated(subset=\"order_id\", keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    clean[\"month\"] = clean[\"date\"].dt.strftime(\"%Y-%m\")\n    clean[\"revenue\"] = clean[\"qty\"] * clean[\"unit_price\"]\n\n    rejected = raw[reason != \"\"].copy()\n    rejected[\"reason\"] = reason[reason != \"\"]\n    return clean, rejected\n\n\ndef quality_report(raw, clean, rejected):\n    if len(raw) != len(clean) + len(rejected):\n        raise ValueError(\"raw != clean + rejected: có dòng bị mất hoặc bị đếm hai lần\")\n    report = {\"rows_in\": len(raw), \"rows_out\": len(clean)}\n    for name in REASONS:\n        report[name] = int((rejected[\"reason\"] == name).sum())\n    return report\n\n\ndef kpi_table(clean, by):\n    table = clean.groupby(by).agg(\n        orders=(\"order_id\", \"count\"),\n        qty=(\"qty\", \"sum\"),\n        revenue=(\"revenue\", \"sum\"),\n    )\n    # Tỷ số của tổng: đơn mua 5 cái nặng hơn đơn mua 1 cái.\n    table[\"avg_price\"] = table[\"revenue\"] / table[\"qty\"]\n    return table\n\n\ndef revenue_chart(clean):\n    by_region = kpi_table(clean, \"region\")[\"revenue\"].sort_values()\n    by_month = kpi_table(clean, \"month\")[\"revenue\"]\n\n    fig, (ax_region, ax_month) = plt.subplots(1, 2, figsize=(10, 4), layout=\"constrained\")\n    ax_region.barh(by_region.index, by_region.values)\n    ax_region.set(title=\"Doanh thu theo vùng (dữ liệu mô phỏng)\", xlabel=\"Doanh thu\")\n    ax_month.plot(by_month.index, by_month.values, marker=\"o\")\n    ax_month.set(title=\"Doanh thu theo tháng (dữ liệu mô phỏng)\", xlabel=\"Tháng\", ylabel=\"Doanh thu\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    raw = load_sales(\"sales.csv\")\n    clean, rejected = clean_sales(raw)\n    print(quality_report(raw, clean, rejected))\n    print(rejected[[\"order_id\", \"reason\"]].to_string(index=False))\n    print(kpi_table(clean, \"region\").round(2))\n    print(\"Tổng revenue:\", clean[\"revenue\"].sum())\n    revenue_chart(clean)\n    plt.show()\n",
           "hints": [
             {
               "title": "Nguyên lý",
-              "body": "Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm."
+              "body": "Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. Nộp lần đầu trước khi xem lời giải."
             },
             {
               "title": "Cấu trúc",
@@ -22446,7 +22268,7 @@
             {
               "id": "trueFalse-0",
               "type": "trueFalse",
-              "title": "Khởi động: mỗi đáp án đúng hay sai?",
+              "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
               "prompt": "Đơn P7 bị nhập hai lần: \" west,Book\" và \"West,book\". Hai đơn P8, P9 giống nhau mọi cột trừ order_id. Lệnh bỏ trùng nào đúng với grain \"một dòng = một đơn\"?",
               "items": [
                 {
@@ -22489,13 +22311,13 @@
       "sort_order": 48,
       "module": "M8 · Dự án DA",
       "title": "DA02 · Mini-project: điểm số và GPA",
-      "subtitle": "Nâng cao · M8 · 50 phút · Tổng hợp Dự án DA · GPA",
+      "subtitle": "Nâng cao · M8 · 50 phút · Boss Dự án DA · GPA",
       "estimated_minutes": 50,
       "xp_reward": 40,
       "content_json": {
         "schema": "studio-lesson/v2",
         "title": "DA02 · Mini-project: điểm số và GPA",
-        "subtitle": "Nâng cao · M8 · 50 phút · Tổng hợp Dự án DA · GPA",
+        "subtitle": "Nâng cao · M8 · 50 phút · Boss Dự án DA · GPA",
         "source": {
           "kind": "pe-v4-advanced",
           "filename": "python-learning-data.json#DA02",
@@ -22506,7 +22328,7 @@
           "brief": {
             "eyebrow": [
               "M8",
-              "TỔNG HỢP",
+              "BOSS",
               "DA02"
             ],
             "title": "Mini-project: điểm số và GPA",
@@ -22522,7 +22344,7 @@
           },
           "context": {
             "title": "Làm sạch bảng điểm, tính GPA có trọng số tín chỉ, xếp hạng chữ và vẽ phân bố.",
-            "body": "Bài tổng hợp cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.",
+            "body": "Boss cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.",
             "example": "Sinh viên A có điểm [6, 9], tín chỉ [1, 2] → GPA = (6×1 + 9×2) / 3 = 8.0, không phải 7.5. grades.csv: 18 dòng → 13 dòng hợp lệ, 7 sinh viên, GPA chung 6.67.",
             "prereq": "DA01",
             "level": "Nâng cao",
@@ -22697,8 +22519,8 @@
         },
         "step_4": {
           "task": {
-            "title": "Bài tổng hợp chặng — tự viết rồi nộp",
-            "body": "Bài tổng hợp cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.\n\nThực hành: Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm.",
+            "title": "Boss — tự viết, nộp lần đầu trước khi xem lời giải",
+            "body": "Boss cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các dòng hợp lệ, cặp (student_id, course) gặp lại → duplicate, giữ dòng đầu; report đếm rows_in, rows_out và từng lý do. (3) letter(gpa): A ≥ 8.5, B ≥ 7.0, C ≥ 5.5, D ≥ 4.0, còn lại F. (4) gpa_table(clean): mỗi sinh viên một dòng — courses, credits, gpa = Σ(điểm × tín chỉ) / Σ tín chỉ (làm tròn 2 chữ số), letter — sắp gpa giảm dần. (5) class_gpa(clean): GPA chung theo tín chỉ của cả lớp. (6) grade_chart(table) → Figure: hist GPA với bins [0, 4, 5.5, 7, 8.5, 10], tiêu đề ghi cỡ mẫu n, có nhãn hai trục.\n\nThực hành: Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Nộp lần đầu trước khi xem lời giải.",
             "io": [
               {
                 "label": "grades.csv",
@@ -22710,12 +22532,12 @@
               }
             ]
           },
-          "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Bài tổng hợp DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.\n# Điểm thang 10; thiếu điểm KHÔNG phải điểm 0.\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    pass\n\n\ndef clean_grades(raw):\n    pass\n\n\ndef letter(gpa):\n    pass\n\n\ndef gpa_table(clean):\n    pass\n\n\ndef class_gpa(clean):\n    pass\n\n\ndef grade_chart(table):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# clean, report = clean_grades(load_grades(\"grades.csv\"))\n# print(report)\n# print(gpa_table(clean))\n",
+          "starterCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\n# Boss DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.\n# Điểm thang 10; thiếu điểm KHÔNG phải điểm 0.\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    pass\n\n\ndef clean_grades(raw):\n    pass\n\n\ndef letter(gpa):\n    pass\n\n\ndef gpa_table(clean):\n    pass\n\n\ndef class_gpa(clean):\n    pass\n\n\ndef grade_chart(table):\n    pass\n\n\n# Chạy thử (bỏ dấu # khi các hàm đã viết xong):\n# clean, report = clean_grades(load_grades(\"grades.csv\"))\n# print(report)\n# print(gpa_table(clean))\n",
           "solutionCode": "import pandas as pd\nimport matplotlib.pyplot as plt\n\nREASONS = [\"missing_score\", \"out_of_range\", \"bad_credits\", \"duplicate\"]\nGRADE_BINS = [0, 4, 5.5, 7, 8.5, 10]\n\n\ndef load_grades(path):\n    return pd.read_csv(path, dtype=str)\n\n\ndef clean_grades(raw):\n    df = raw.copy()\n    df[\"student_id\"] = df[\"student_id\"].str.strip().str.upper()\n    df[\"course\"] = df[\"course\"].str.strip().str.upper()\n    df[\"score\"] = pd.to_numeric(df[\"score\"], errors=\"coerce\")\n    df[\"credits\"] = pd.to_numeric(df[\"credits\"], errors=\"coerce\")\n\n    # Thiếu điểm là THIẾU, không phải 0: loại khỏi phép tính và đếm lại.\n    reason = pd.Series(\"\", index=df.index)\n    checks = [\n        (\"missing_score\", df[\"score\"].isna()),\n        (\"out_of_range\", (df[\"score\"] < 0) | (df[\"score\"] > 10)),\n        (\"bad_credits\", df[\"credits\"].isna() | (df[\"credits\"] <= 0)),\n    ]\n    for name, bad in checks:\n        reason[(reason == \"\") & bad] = name\n\n    # Grain: một sinh viên, một môn, một điểm.\n    dup_rows = df[reason == \"\"].duplicated(subset=[\"student_id\", \"course\"], keep=\"first\")\n    reason.loc[dup_rows[dup_rows].index] = \"duplicate\"\n\n    clean = df[reason == \"\"].copy()\n    report = {\"rows_in\": len(raw), \"rows_out\": len(clean)}\n    for name in REASONS:\n        report[name] = int((reason == name).sum())\n    return clean, report\n\n\ndef letter(gpa):\n    if gpa >= 8.5:\n        return \"A\"\n    if gpa >= 7.0:\n        return \"B\"\n    if gpa >= 5.5:\n        return \"C\"\n    if gpa >= 4.0:\n        return \"D\"\n    return \"F\"\n\n\ndef gpa_table(clean):\n    df = clean.assign(points=clean[\"score\"] * clean[\"credits\"])\n    table = df.groupby(\"student_id\").agg(\n        courses=(\"course\", \"count\"),\n        credits=(\"credits\", \"sum\"),\n        points=(\"points\", \"sum\"),\n    )\n    table[\"gpa\"] = (table[\"points\"] / table[\"credits\"]).round(2)\n    table[\"letter\"] = table[\"gpa\"].map(letter)\n    return table.sort_values(\"gpa\", ascending=False)\n\n\ndef class_gpa(clean):\n    total = (clean[\"score\"] * clean[\"credits\"]).sum()\n    return round(float(total / clean[\"credits\"].sum()), 2)\n\n\ndef grade_chart(table):\n    fig, ax = plt.subplots(figsize=(6, 4), layout=\"constrained\")\n    ax.hist(table[\"gpa\"], bins=GRADE_BINS, edgecolor=\"white\")\n    ax.set(title=f\"Phân bố GPA (dữ liệu mô phỏng, n={len(table)})\",\n           xlabel=\"GPA (thang 10)\", ylabel=\"Số sinh viên\")\n    return fig\n\n\nif __name__ == \"__main__\":\n    raw = load_grades(\"grades.csv\")\n    clean, report = clean_grades(raw)\n    print(report)\n    table = gpa_table(clean)\n    print(table)\n    print(\"GPA chung theo tín chỉ:\", class_gpa(clean))\n    grade_chart(table)\n    plt.show()\n",
           "hints": [
             {
               "title": "Nguyên lý",
-              "body": "Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm."
+              "body": "Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Nộp lần đầu trước khi xem lời giải."
             },
             {
               "title": "Cấu trúc",
@@ -22870,7 +22692,7 @@
             {
               "id": "trueFalse-0",
               "type": "trueFalse",
-              "title": "Khởi động: mỗi đáp án đúng hay sai?",
+              "title": "Khởi động trận Boss: mỗi đáp án đúng hay sai?",
               "prompt": "grades.csv có \"S03,Chi,CS101,4,4.0\" và \"S03,Chi,cs101 ,4,4\". Làm sạch thế nào cho đúng grain?",
               "items": [
                 {

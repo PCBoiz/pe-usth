@@ -178,17 +178,6 @@ export function answerKeyFor({ lesson, scr, game, draft }: AnswerKeyContext): {
             ? fillGame({ code: lesson.step_4.solutionCode })
             : undefined,
         };
-      case 'soQuy':
-        return {
-          rows: [
-            {
-              label: 'Mục tiêu',
-              value: `Sổ quỹ = ${game.soDu + game.nguoi.reduce((s, p) => s + p.soTien, 0)}`,
-            },
-          ],
-          code: game.loiGiai,
-          fill: fillGame({ code: game.loiGiai }),
-        };
       case 'selfExplain': {
         const sample = lesson.step_2?.selfExplain?.sample ?? '';
         return {

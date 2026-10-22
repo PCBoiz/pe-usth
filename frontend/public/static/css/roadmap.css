@@ -1,7 +1,7 @@
 /* ══════════════════════════════════════════════════════════════
    ROADMAP — mạch học TUYẾN TÍNH.
 
-   Ngôn ngữ thị giác lấy nguyên từ edu-theme.css (họ chữ --edu-font, accent tím
+   Ngôn ngữ thị giác lấy nguyên từ edu-theme.css (Poppins, accent tím
    #3f7df0, thẻ kính bo tròn, nền gradient của body) chứ KHÔNG bắt
    chước layout hộp vàng + lưới gạch của roadmap.sh:
      · một cột duy nhất, rail số thứ tự bên trái
@@ -23,11 +23,7 @@
   max-width: none !important;
   margin: 0 !important;
   width: 100% !important;
-  /* Giá trị dự phòng của var() bỏ tên phông cụ thể: 15/10/2026 Poppins đã rời
-     repo (bản thiết kế chốt Be Vietnam Pro), nên nêu tên nó ở đây chỉ còn là
-     một dấu vết dẫn người đọc đi tìm thứ không có. --edu-font luôn được khai
-     ở edu-theme.css; nhánh dự phòng chỉ chạy khi file đó không nạp. */
-  font-family: var(--edu-font, system-ui, sans-serif);
+  font-family: var(--edu-font, 'Poppins', system-ui, sans-serif);
 }
 #page-roadmap.active {
   display: flex !important;

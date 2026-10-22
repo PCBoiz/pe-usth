@@ -222,20 +222,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "fig, ax = plt.subplots()",
-            "hint": "Tạo Figure và Axes — lời gọi trả về một CẶP"
+            "answer": "fig, ax = plt.subplots()"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "ax.hist(scores, bins=edges)",
-            "hint": "Vẽ phân bố theo biên đề cho sẵn, đếm theo khoảng"
+            "answer": "ax.hist(scores, bins=edges)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")",
-            "hint": "Ghi nhãn hai trục — hàm vẽ không tự mở cửa sổ"
+            "answer": "ax.set(xlabel=\"Score\", ylabel=\"Count\")"
           }
         ],
         "bank": [

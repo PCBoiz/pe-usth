@@ -233,7 +233,7 @@ export class LessonsService {
     // TÍNH NĂNG có chủ đích (gợi ý bậc cuối, bấm vào là FE ghi solutionUsed /
     // assisted) — cắt hết thì phá trải nghiệm học mà không bịt thêm lỗ nào.
     //
-    // Truy vấn role chỉ nằm trong nhánh này: 3/48 bài, và chỉ tới khi học viên
+    // Truy vấn role chỉ nằm trong nhánh này: 5/40 bài, và chỉ tới khi học viên
     // làm xong. Đường nóng (mọi bài khác) KHÔNG phải thêm vòng gọi DB nào —
     // mỗi vòng tới Neon ~237ms nên không đặt nó ở ngoài.
     // ĐÁNH ĐỔI NGƯỜI DÙNG THẤY ĐƯỢC, ghi lại để không ai tưởng là lỗi:
@@ -241,15 +241,12 @@ export class LessonsService {
     // nạp content), còn nút "Hiện lời giải" của bài cửa bật theo cờ tại chỗ
     // `!gate || d.submitted`. Mốc của server là `completed` (có
     // LessonProgress), KHÔNG phải "đã nộp" — server không có tín hiệu nào cho
-    // trạng thái đó. Nên ở BA bài cửa (R02/DA01/DA02 — con số "5" trong chú
-    // thích cũ là của khoá cơ bản pe-v3 ĐÃ XOÁ), nộp xong mà lượt đó CHƯA ĐẠT
-    // thì vẫn không thấy lời giải mẫu: phải đạt hết ca chấm để bài được tính
-    // hoàn thành. Câu trên màn hình từng hứa ngược lại ("mở sau lần nộp đầu");
-    // nay nó nói đúng mốc này — xem `frontend/src/lib/gate-notice.ts`.
-    // Khoảng trống "nộp đạt rồi vẫn phải tải lại trang" thì
-    // `useLessonData.complete` đã lấp: thấy cờ `solutionWithheld` là xin lại
-    // nội dung ngay sau POST /lessons/:n/complete. Cố tình KHÔNG nới lỏng
-    // điều kiện ở server, vì nới ra là mở lại đúng cái lỗ vừa bịt.
+    // trạng thái đó. Nên ở 5 bài cửa, học viên nộp xong trong cùng phiên vẫn
+    // chưa thấy lời giải mẫu: phải tải lại trang sau khi bài được tính hoàn
+    // thành. Khoảng trống này nằm ở FE (gọi lại content sau POST
+    // /lessons/:n/complete, hoặc đọc cờ `solutionWithheld` để xin lời giải khi
+    // cần) — cố tình KHÔNG lấp bằng cách nới lỏng điều kiện ở server, vì nới ra
+    // là mở lại đúng cái lỗ vừa bịt.
     const gated = isSelfTestGateLesson(lesson.contentJson);
     if (gated && !completed) {
       const isAdmin =

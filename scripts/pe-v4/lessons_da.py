@@ -225,7 +225,7 @@ if __name__ == "__main__":
 DA01_STARTER = r'''import pandas as pd
 import matplotlib.pyplot as plt
 
-# Bài tổng hợp DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.
+# Boss DA01: tự viết 5 hàm theo bảng hợp đồng. sales.csv nằm cùng thư mục.
 # Viết xong hàm nào, chạy thử hàm đó và đối chiếu với 6 đơn / revenue 155.
 
 REASONS = ["bad_date", "bad_qty", "bad_price", "duplicate"]
@@ -380,7 +380,7 @@ DA01 = dict(
     code='DA01', title='Mini-project: doanh thu từ raw tới chart', minutes=60, gate=True, exam='Dự án DA · doanh thu',
     goal='Tự dựng pipeline doanh thu: đọc raw → làm sạch có lý do → báo cáo chất lượng → KPI → biểu đồ.',
     prereq='M06', support=['sales.csv'], packages=PACKAGES, env=DA_ENV,
-    brief='Bài tổng hợp cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, '
+    brief='Boss cuối khoá, phần 1. sales.csv (cấp sẵn) là 11 giao dịch mô phỏng có lỗi cố ý; grain: một dòng = một đơn, '
           'khoá order_id. Tự viết năm hàm thuần, không hàm nào được sửa dữ liệu đầu vào. (1) load_sales(path): đọc mọi '
           'cột dưới dạng chữ (dtype=str). (2) clean_sales(raw) → (clean, rejected): region bỏ khoảng trắng hai đầu và '
           'viết thường; date phải là ngày YYYY-MM-DD có thật; qty và unit_price phải là số > 0; mỗi dòng lỗi mang MỘT lý '
@@ -456,7 +456,7 @@ DA01 = dict(
     counter=dict(q='Thêm đơn hợp lệ "O11,2026-02-10, South,Pen,1,20" vào cuối sales.csv. Revenue của south thành bao nhiêu?',
                  options=['110', '90', '20'], correct='110'),
     practice='Viết và chạy từng hàm trên sales.csv, in kết quả ra đối chiếu (11 dòng → 6 đơn → 155) rồi mới sang hàm sau. '
-             'Lời giải mẫu mở khi bài được tính hoàn thành, tức khi code đạt hết ca chấm.',
+             'Nộp lần đầu trước khi xem lời giải.',
     steps=['load_sales: pd.read_csv(path, dtype=str) — chưa ép kiểu lúc đọc.',
            'clean_sales: df = raw.copy(); region .str.strip().str.lower(); pd.to_datetime(..., format="%Y-%m-%d", '
            'errors="coerce"); pd.to_numeric(..., errors="coerce") cho qty và unit_price.',
@@ -588,7 +588,7 @@ if __name__ == "__main__":
 DA02_STARTER = r'''import pandas as pd
 import matplotlib.pyplot as plt
 
-# Bài tổng hợp DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.
+# Boss DA02: tự viết 6 hàm theo bảng hợp đồng. grades.csv nằm cùng thư mục.
 # Điểm thang 10; thiếu điểm KHÔNG phải điểm 0.
 
 REASONS = ["missing_score", "out_of_range", "bad_credits", "duplicate"]
@@ -736,7 +736,7 @@ DA02 = dict(
     code='DA02', title='Mini-project: điểm số và GPA', minutes=50, gate=True, exam='Dự án DA · GPA',
     goal='Làm sạch bảng điểm, tính GPA có trọng số tín chỉ, xếp hạng chữ và vẽ phân bố.',
     prereq='DA01', support=['grades.csv'], packages=PACKAGES, env=DA_ENV,
-    brief='Bài tổng hợp cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. '
+    brief='Boss cuối khoá, phần 2. grades.csv (cấp sẵn, thang 10) có lỗi cố ý; grain: một sinh viên, một môn, một điểm. '
           'Tự viết sáu hàm thuần. (1) load_grades(path): mọi cột là chữ. (2) clean_grades(raw) → (clean, report): '
           'student_id và course bỏ khoảng trắng hai đầu và viết HOA; score thiếu hoặc không phải số → missing_score (KHÔNG '
           'thay bằng 0); score ngoài [0, 10] → out_of_range; credits thiếu, không phải số hoặc ≤ 0 → bad_credits; trong các '
@@ -805,8 +805,8 @@ DA02 = dict(
              'cách đầu, và GPA rơi đúng các mốc 8.5, 5.5, 4.0, 3.99 — lệch một dấu >= là trượt.',
     counter=dict(q='Sinh viên có MATH101 = 9.0 (3 tín chỉ) và CS101 = "abs" (4 tín chỉ). GPA theo chính sách của bài?',
                  options=['9.0', '3.86', '4.5'], correct='9.0'),
-    practice='Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Lời giải mẫu mở khi bài được '
-             'tính hoàn thành, tức khi code đạt hết ca chấm.',
+    practice='Làm từng hàm và in ra đối chiếu với grades.csv (18 → 13 dòng; S01 = 8.11) trước khi sang hàm sau. Nộp lần '
+             'đầu trước khi xem lời giải.',
     steps=['load_grades: pd.read_csv(path, dtype=str).',
            'clean_grades: df = raw.copy(); student_id, course .str.strip().str.upper(); pd.to_numeric(..., errors="coerce") '
            'cho score và credits — KHÔNG fillna(0).',

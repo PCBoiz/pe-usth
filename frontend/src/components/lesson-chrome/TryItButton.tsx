@@ -22,7 +22,7 @@ export interface TryItButtonProps {
 
 export default function TryItButton({
   code,
-  label = 'Chạy thử ở Bàn thí nghiệm',
+  label = 'Thử ngay trong IDE',
   spaced,
 }: TryItButtonProps) {
   // Bài quy trình (dựng môi trường, Git) không có mã, và mã dài quá trần thì
@@ -37,7 +37,7 @@ export default function TryItButton({
         href={href}
         target="_blank"
         rel="noopener noreferrer"
-        title="Mở Bàn thí nghiệm ở tab mới — bài học giữ nguyên tiến độ, đoạn mã này đã nạp sẵn trong trình soạn thảo"
+        title="Mở Python IDE ở tab mới — bài học giữ nguyên tiến độ, đoạn mã này đã nạp sẵn trong trình soạn thảo"
       >
         {label}
         <span aria-hidden="true">↗</span>

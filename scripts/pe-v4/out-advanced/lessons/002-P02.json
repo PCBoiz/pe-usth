@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Sự kiện mới làm process đi tiếp",
+          "title": "Định nghĩa: năm trạng thái",
           "body": "Trạng thái là chỗ process đang đứng; sự kiện là cái làm nó đi tiếp. Sơ đồ chỉ có sáu đường chuyển — mọi cặp (trạng thái, sự kiện) khác đều không có nghĩa.",
           "bullets": [
             "new: vừa được tạo — ready: chờ scheduler giao cho một processor",
@@ -46,7 +46,7 @@
           ]
         },
         {
-          "title": "Cha nhận PID con, con nhận 0",
+          "title": "Ví dụ: fork rồi exec trên UNIX",
           "body": "fork() nhân bản process đang chạy, mọi thứ giống TRỪ process id: cha nhận PID của con, con nhận 0, nên if (pid == 0) tách được hai nhánh. Con gọi exec() thay chương trình (PID giữ nguyên), cha gọi wait() thu kết quả.",
           "figure": {
             "src": "/static/anim/P02-fork-exec-wait.svg",
@@ -55,7 +55,7 @@
           }
         },
         {
-          "title": "Thiếu wait(), con xong thành zombie",
+          "title": "Dùng ở đâu",
           "bullets": [
             "subprocess trên Linux làm đúng việc đó: fork rồi exec trong process con",
             "wait() để lấy exit code, và để con đã xong không nằm lại thành zombie",
@@ -63,7 +63,7 @@
           ]
         },
         {
-          "title": "Rời running luôn quay về ready",
+          "title": "Đọc sơ đồ",
           "body": "Ô là TRẠNG THÁI, chữ trên mũi tên là SỰ KIỆN; chấm đen là lúc process ra đời, vòng tròn viền là lúc nó biến mất. Hai mũi tên rời running — interrupt và io_wait — đều quay về ready, không về thẳng running.",
           "figure": {
             "src": "/static/anim/P02-lifecycle.svg",
@@ -257,20 +257,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\"ready\"",
-            "hint": "Trạng thái sau khi I/O xong — còn một bước dispatch nữa mới được CPU"
+            "answer": "\"ready\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "raise ValueError(\"invalid transition\")",
-            "hint": "Cách báo cặp (trạng thái, sự kiện) không hợp lệ — phải ồn, không âm thầm"
+            "answer": "raise ValueError(\"invalid transition\")"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "child.wait()",
-            "hint": "Cha chặn lại tới khi con xong, rồi mới có mã thoát"
+            "answer": "child.wait()"
           }
         ],
         "bank": [
@@ -286,7 +283,7 @@
           {
             "label": "\"running\"",
             "slot": 1,
-            "trap": "I/O xong chưa chắc được CPU ngay: còn phải qua một bước dispatch nữa."
+            "trap": "I/O xong chưa chắc có CPU: phải về ready chờ dispatch."
           },
           {
             "label": "child.wait()",

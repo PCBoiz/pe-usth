@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Callback là hàm bạn viết, Tkinter gọi",
+          "title": "Định nghĩa: widget và callback",
           "body": "Trong Tkinter \"everything is widget\": Frame là khung chứa, Label hiện chữ, Entry nhập một dòng, Button bấm được. Callback là hàm BẠN viết mà TKINTER gọi, khi sự kiện xảy ra."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "messagebox thay cho print() của CLI",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
             "Form đăng nhập: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái",
             "messagebox.showinfo / showwarning / showerror thay cho print() của CLI",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Lúc dựng chỉ cất hàm, bấm mới gọi",
+          "title": "Đọc sơ đồ",
           "body": "Hình chia hai nhịp: lúc dựng giao diện, Button chỉ CẤT tên hàm; lúc bấm, Tkinter gọi callback, callback đọc Entry rồi label.config(text=…) đổi chữ. Ô nét đứt là dữ liệu đọc đúng lúc bấm.",
           "figure": {
             "src": "/static/anim/G02-widget-callback.svg",
@@ -256,20 +256,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "tk.Label(root, text=\"\")",
-            "hint": "Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó"
+            "answer": "tk.Label(root, text=\"\")"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "name_entry.get()",
-            "hint": "Lấy chữ người dùng đã gõ ra khỏi ô nhập"
+            "answer": "name_entry.get()"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "send",
-            "hint": "Giao cho nút chính hàm xử lý, chưa gọi nó ở đây"
+            "answer": "send"
           }
         ],
         "bank": [
@@ -280,7 +277,7 @@
           {
             "label": "send()",
             "slot": 3,
-            "trap": "Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là None."
+            "trap": "Gọi send ngay lúc dựng giao diện; nút nhận None."
           },
           {
             "label": "name_entry.get()",
@@ -298,7 +295,7 @@
           {
             "label": "name_entry",
             "slot": 2,
-            "trap": "Đó là widget, không phải chữ đang nằm trong nó."
+            "trap": "Đó là widget, không phải chữ đã gõ — cần get()."
           }
         ]
       }

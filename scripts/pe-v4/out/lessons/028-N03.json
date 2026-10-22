@@ -213,20 +213,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "axis=1, keepdims=True",
-            "hint": "Mean theo TỪNG HỌC VIÊN, và giữ lại chiều để còn trừ được"
+            "answer": "axis=1, keepdims=True"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "np.where(row_std == 0, 1, row_std)",
-            "hint": "Thay độ lệch 0 bằng một số chia được, giữ nguyên các giá trị khác"
+            "answer": "np.where(row_std == 0, 1, row_std)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "(marks - row_mean) / safe",
-            "hint": "Công thức z, chia cho mẫu số đã chống 0"
+            "answer": "(marks - row_mean) / safe"
           }
         ],
         "bank": [

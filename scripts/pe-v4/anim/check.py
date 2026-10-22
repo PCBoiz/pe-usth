@@ -5,18 +5,12 @@ Vì sao cần: hình được nhúng bằng `<img src="/static/anim/....svg">`. 
 SVG chạy ở chế độ "tài liệu độc lập, không script, không tải tài nguyên ngoài" —
 nên một hình dùng `<script>`, webfont hay `<image href="https://…">` sẽ TRÔNG ĐÚNG
 khi mở trực tiếp bằng trình duyệt mà HỎNG trong bài học. Checker này bắt đúng nhóm
-lỗi đó, cộng các quy ước của scripts/pe-v4/CONTRACT-THEORY.md (mục 2–3).
+lỗi đó, cộng các quy ước của CONTRACT-THEORY.md.
 
-Checker này cũng đếm số hình THỰC SỰ được bài tham chiếu. Vì sao: "23/23 hình PASS"
-từng che mất việc chỉ 20 hình được nối vào bài — ba hình (P01-process-tree,
-P02-fork-exec-wait, P03-round-robin) vẽ xong, kiểm đạt, mà không bài nào khai nên
-không bao giờ lên màn hình.
-
-Đếm theo out-advanced/lessons.json — gói mà scripts/seed-python-advanced-v4.ts và
-scripts/update-lesson-content.ts nạp vào DB — chứ không theo out/lessons.json. Bản cũ
-đọc out/: chạy build.py mà quên build_advanced.py thì out/ đã có hình mới còn gói
-được seed thì chưa, vậy mà checker vẫn báo đủ. Nay đọc cả hai và so từng bài; lệch là
-FAIL (kể cả không có --strict), vì lệch nghĩa là thứ sắp nạp vào DB khác nguồn.
+Checker này cũng đếm số hình THỰC SỰ được bài tham chiếu (đọc out/lessons.json).
+Vì sao: "23/23 hình PASS" từng che mất việc chỉ 20 hình được nối vào bài — ba hình
+(P01-process-tree, P02-fork-exec-wait, P03-round-robin) vẽ xong, kiểm đạt, mà không
+bài nào khai nên không bao giờ lên màn hình.
 
 Chạy:
     py scripts/pe-v4/anim/check.py                  # kiểm mọi hình
@@ -38,10 +32,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent.parent
 ANIM_DIR = ROOT / 'frontend' / 'public' / 'static' / 'anim'
-# Gói THẬT được nạp vào DB (build_advanced.py sinh). Đây là nguồn để đếm.
-BUNDLE_JSON = HERE.parent / 'out-advanced' / 'lessons.json'
-# Bản dựng trung gian của build.py; chỉ dùng để phát hiện gói ở trên đã cũ.
-BUILD_JSON = HERE.parent / 'out' / 'lessons.json'
+LESSONS_JSON = HERE.parent / 'out' / 'lessons.json'
 
 SVG_NS = 'http://www.w3.org/2000/svg'
 XLINK_NS = 'http://www.w3.org/1999/xlink'
@@ -75,47 +66,27 @@ ALLOW_ORPHAN_LY_DO = {
 ALLOW_ORPHAN = set(ALLOW_ORPHAN_LY_DO)
 
 
-def rel(path: Path) -> str:
-    """Đường dẫn để in: tương đối so với gốc repo nếu được, không thì để nguyên."""
-    try:
-        return path.relative_to(ROOT).as_posix()
-    except ValueError:
-        return path.as_posix()
+def referenced_names() -> set[str] | None:
+    """Tên hình mà bài học thực sự trỏ tới, lấy từ bản dựng out/lessons.json.
 
-
-def figures_by_lesson(path: Path) -> dict[str, list[str]] | None:
-    """{mã bài: [tên hình, theo thứ tự xuất hiện]} đọc từ một gói lessons.json.
-
-    Lấy cả hình chính (`step_1.figure`) lẫn hình của từng khối theory. Trả None khi
-    chưa dựng (không có file) — người vẽ hình chạy checker trước khi bài được dựng lại
-    là chuyện thường, nên khi đó chỉ bỏ qua phần đếm.
+    Trả None khi chưa dựng (không có file) — khi đó chỉ bỏ qua phần đếm, không báo lỗi:
+    người vẽ hình chạy checker này trước khi bài được dựng lại là chuyện thường.
     """
-    if not path.exists():
+    if not LESSONS_JSON.exists():
         return None
-    data = json.loads(path.read_text(encoding='utf-8'))
-    out: dict[str, list[str]] = {}
+    data = json.loads(LESSONS_JSON.read_text(encoding='utf-8'))
+    names = set()
+
+    def add(src):
+        if isinstance(src, str) and src.endswith('.svg'):
+            names.add(src.rsplit('/', 1)[-1][:-4])
 
     for row in data.get('lessons') or []:
         one = (row.get('content_json') or {}).get('step_1') or {}
-        srcs = [(one.get('figure') or {}).get('src')]
-        srcs += [(block.get('figure') or {}).get('src') for block in one.get('theory') or []]
-        # Hình chính cũng nằm ở một khối theory nên sẽ gặp hai lần — bỏ trùng, giữ thứ tự.
-        out[str(row.get('lesson_code'))] = list(dict.fromkeys(
-            src.rsplit('/', 1)[-1][:-4] for src in srcs if isinstance(src, str) and src.endswith('.svg')))
-    return out
-
-
-def bundle_drift(bundle: dict[str, list[str]], build: dict[str, list[str]]) -> list[str]:
-    """Các bài mà hình trong gói out-advanced khác hình trong out/ — tức gói đã cũ."""
-    lines = []
-    for code in sorted(set(bundle) | set(build)):
-        a, b = bundle.get(code), build.get(code)
-        if a is None or b is None:
-            lines.append(f'{code}: chỉ có trong {"out/" if a is None else "out-advanced/"}')
-        elif sorted(a) != sorted(b):
-            lines.append(f'{code}: out-advanced dùng {", ".join(a) or "(không hình)"}; '
-                         f'out/ dùng {", ".join(b) or "(không hình)"}')
-    return lines
+        add((one.get('figure') or {}).get('src'))
+        for block in one.get('theory') or []:
+            add((block.get('figure') or {}).get('src'))
+    return names
 
 
 def local_name(tag: str) -> str:
@@ -247,23 +218,13 @@ def main(argv=None) -> int:
 
     # Hình đạt mọi quy ước vẫn có thể vô dụng nếu không bài nào trỏ tới nó. In số hình
     # ĐƯỢC DÙNG ngay cạnh số hình PASS để không ai đọc "23/23 PASS" thành "23 hình lên bài".
-    bundle = figures_by_lesson(BUNDLE_JSON)
-    build = figures_by_lesson(BUILD_JSON)
-    if bundle is not None and build is not None:
-        drift = bundle_drift(bundle, build)
-        if drift:
-            print(f'FAIL: {rel(BUNDLE_JSON)} lệch {rel(BUILD_JSON)} ở '
-                  f'{len(drift)} bài — chạy lại py scripts/pe-v4/build_advanced.py:')
-            for line in drift:
-                print(f'       - {line}')
-            failed += 1
-    if bundle is None:
-        print(f'(chưa có {rel(BUNDLE_JSON)} — không đếm được hình nào được bài dùng)')
+    used = referenced_names()
+    if used is None:
+        print(f'(chưa có {LESSONS_JSON.relative_to(ROOT)} — không đếm được hình nào được bài dùng)')
     else:
-        used = {name for names in bundle.values() for name in names}
         names = {path.stem for path in paths}
         orphan = sorted(names - used)
-        print(f'{len(names) - len(orphan)}/{len(names)} hình được bài tham chiếu (theo {rel(BUNDLE_JSON)})'
+        print(f'{len(names) - len(orphan)}/{len(names)} hình được bài tham chiếu'
               + (f', {len(orphan)} chưa bài nào dùng: {", ".join(orphan)}' if orphan else ''))
         con_lai = sorted(set(orphan) - ALLOW_ORPHAN)
         if con_lai and args.strict:

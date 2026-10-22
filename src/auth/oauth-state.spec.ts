@@ -1,4 +1,4 @@
-import type { CookieOptions, Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   OAUTH_STATE_ERROR,
   OAUTH_STATE_TTL_MS,
@@ -21,28 +21,21 @@ import {
 
 const SECRET = 'secret-du-32-ky-tu-cho-hmac-oauth-state-test';
 
-/**
- * `options: any` (bản cũ) làm mọi khẳng định về cookie mất kiểu: gõ
- * `options.sameSit` vẫn biên dịch và `toBe('lax')` chỉ trượt lúc chạy với một
- * thông báo vô nghĩa, trong khi bản chất là cookie state vừa mất thuộc tính
- * bảo vệ. `CookieOptions` của express chính là kiểu mà `res.cookie()` nhận,
- * nên dùng nó là kiểu đích thật chứ không phải một lớp `as` cho đẹp lint.
- */
 type FakeRes = Response & {
-  _cookies: Record<string, { value: string; options: CookieOptions }>;
-  _cleared: { name: string; options: CookieOptions }[];
+  _cookies: Record<string, { value: string; options: any }>;
+  _cleared: { name: string; options: any }[];
 };
 
 function fakeRes(): FakeRes {
-  const cookies: Record<string, { value: string; options: CookieOptions }> = {};
-  const cleared: { name: string; options: CookieOptions }[] = [];
+  const cookies: Record<string, { value: string; options: any }> = {};
+  const cleared: { name: string; options: any }[] = [];
   return {
     _cookies: cookies,
     _cleared: cleared,
-    cookie: jest.fn((name: string, value: string, options: CookieOptions) => {
+    cookie: jest.fn((name: string, value: string, options: any) => {
       cookies[name] = { value, options };
     }),
-    clearCookie: jest.fn((name: string, options: CookieOptions) => {
+    clearCookie: jest.fn((name: string, options: any) => {
       cleared.push({ name, options });
     }),
   } as unknown as FakeRes;
@@ -67,12 +60,7 @@ function roundTrip(provider = 'google') {
   const res = fakeRes();
   const state = issueOAuthState(res, provider, SECRET);
   const nonce = res._cookies[oauthStateCookieName(provider)].value;
-  return {
-    res,
-    state,
-    nonce,
-    req: fakeReq({ [oauthStateCookieName(provider)]: nonce }),
-  };
+  return { res, state, nonce, req: fakeReq({ [oauthStateCookieName(provider)]: nonce }) };
 }
 
 describe('issueOAuthState', () => {
@@ -186,13 +174,7 @@ describe('verifyOAuthState', () => {
   it('ký bằng secret khác -> TỪ CHỐI', () => {
     const { req, state } = roundTrip();
     expect(
-      verifyOAuthState(
-        req,
-        fakeRes(),
-        'google',
-        'secret-khac-hoan-toan',
-        state,
-      ),
+      verifyOAuthState(req, fakeRes(), 'google', 'secret-khac-hoan-toan', state),
     ).toBe(false);
   });
 

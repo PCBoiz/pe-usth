@@ -712,7 +712,7 @@ LESSONS = [
         goal='Tạo cửa sổ chính, cửa sổ phụ và giao quyền điều khiển cho vòng lặp sự kiện.',
         prereq=None, env=GUI_ENV,
         theory=[
-            dict(h='CLI nhận lệnh gõ, GUI chờ người bấm',
+            dict(h='Định nghĩa: GUI và CLI',
                  body='CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập '
                       'rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI.'),
             # Tiêu đề KHÔNG đếm số nữa: bản gốc là "Tkinter gồm bốn phần" (cửa sổ / widget /
@@ -724,11 +724,11 @@ LESSONS = [
                  bullets=['Cửa sổ: tk.Tk() là cửa sổ chính, tk.Toplevel(root) là cửa sổ phụ',
                           'Widget + layout: Label, Button, Entry… xếp bằng pack(), place() hoặc grid()',
                           'Event loop: mainloop() chặn tại chỗ, nhận sự kiện rồi gọi hàm xử lý']),
-            dict(h='mainloop() ở Studio trả về ngay',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp',
                           'Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn',
                           'mainloop() ở đây trả về ngay; thấy cửa sổ thật thì chạy python ten_file.py']),
-            dict(h='Đóng root là cửa sổ phụ đóng theo',
+            dict(h='Đọc sơ đồ',
                  body='Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry("800x600") — rộng x cao, '
                       'chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.',
                  figure='G01-window-anatomy'),
@@ -810,10 +810,6 @@ details.title("Details")
 {{slot4}}
 ''',
             slots=['tk.Tk()', 'root.geometry(size)', 'tk.Toplevel(root)', 'root.mainloop()'],
-            hints=['Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp',
-                   'Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x',
-                   'Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa',
-                   'Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi'],
             traps=[('tk.Tk', 1, 'Thiếu ngoặc: root là class Tk chứ chưa phải cửa sổ.'),
                    ('root.geometry = size', 2, 'Ghi đè method bằng chuỗi; kích thước không đổi.'),
                    ('root.geometry("640*480")', 2, 'Kích thước dùng chữ x: "640x480" — dấu * làm Tk báo TclError.'),
@@ -866,18 +862,18 @@ size = "800x600"
         goal='Tạo widget, nối nút với hàm callback và đọc dữ liệu đúng lúc người dùng bấm.',
         prereq='G01', env=GUI_ENV,
         theory=[
-            dict(h='Callback là hàm bạn viết, Tkinter gọi',
+            dict(h='Định nghĩa: widget và callback',
                  body='Trong Tkinter "everything is widget": Frame là khung chứa, Label hiện chữ, Entry nhập '
                       'một dòng, Button bấm được. Callback là hàm BẠN viết mà TKINTER gọi, khi sự kiện xảy ra.'),
             dict(h='Nối sự kiện: command và bind',
                  bullets=['command=login giao HÀM cho nút; thêm ngoặc là tự gọi một lần rồi giao None',
                           'widget.bind("<Return>", f): mọi widget, mọi sự kiện — Tkinter gọi f(event)',
                           'Trong callback: entry.get() đọc chữ, label.config(text=…) đổi chữ']),
-            dict(h='messagebox thay cho print() của CLI',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['Form đăng nhập: Entry thu dữ liệu, Button xác nhận, Label báo trạng thái',
                           'messagebox.showinfo / showwarning / showerror thay cho print() của CLI',
                           'Studio không vẽ cửa sổ: bộ chấm "bấm" bằng button.invoke() rồi đọc hộp thông báo']),
-            dict(h='Lúc dựng chỉ cất hàm, bấm mới gọi',
+            dict(h='Đọc sơ đồ',
                  body='Hình chia hai nhịp: lúc dựng giao diện, Button chỉ CẤT tên hàm; lúc bấm, Tkinter gọi '
                       'callback, callback đọc Entry rồi label.config(text=…) đổi chữ. Ô nét đứt là dữ liệu đọc '
                       'đúng lúc bấm.',
@@ -979,13 +975,9 @@ tk.Button(root, text="Gửi", command={{slot3}}).pack()
 root.mainloop()
 ''',
             slots=['tk.Label(root, text="")', 'name_entry.get()', 'send'],
-            hints=['Widget hiện chữ, để trống lúc đầu — và giữ lại chính widget đó',
-                   'Lấy chữ người dùng đã gõ ra khỏi ô nhập',
-                   'Giao cho nút chính hàm xử lý, chưa gọi nó ở đây'],
             traps=[('tk.Label(root, text="").pack()', 1, 'pack() trả về None nên greeting thành None.'),
-                   ('name_entry', 2, 'Đó là widget, không phải chữ đang nằm trong nó.'),
-                   ('send()', 3, 'Dấu () gọi hàm ngay lúc dựng giao diện; nút chỉ nhận lại giá trị trả về là '
-                                 'None.')]),
+                   ('name_entry', 2, 'Đó là widget, không phải chữ đã gõ — cần get().'),
+                   ('send()', 3, 'Gọi send ngay lúc dựng giao diện; nút nhận None.')]),
         flow=['tk.Entry(frame, show="*") → ô mật khẩu che ký tự',
               'command=login → nút giữ hàm, chưa gọi',
               'Bấm nút → Tkinter gọi login()',
@@ -1047,7 +1039,7 @@ root.mainloop()
         goal='Đọc trạng thái Entry, Combobox, Radiobutton, Checkbutton bằng get(), đổi kiểu và kiểm tra trước khi dùng.',
         prereq='G02', env=GUI_ENV,
         theory=[
-            dict(h='Biến Tk giữ giá trị, get() đọc ra',
+            dict(h='Định nghĩa: widget nhập và biến Tk',
                  body='Entry (show="*" cho mật khẩu), Checkbutton, Radiobutton, Listbox và ttk.Combobox là năm '
                       'widget thu dữ liệu. Chúng giữ giá trị trong biến Tk — StringVar, IntVar, BooleanVar — '
                       'đọc bằng get().'),
@@ -1055,11 +1047,11 @@ root.mainloop()
                  bullets=['Entry: get() luôn trả CHUỖI — "8.5" chưa phải số, phải float() trong try/except',
                           'Hai Radiobutton cùng nhóm phải dùng CHUNG một StringVar, mỗi nút một value',
                           'Checkbutton → BooleanVar; ttk.Combobox(state="readonly") chặn gõ chữ lạ']),
-            dict(h='Kiểm trước, đừng ghi dữ liệu nửa vời',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['Combobox/Radiobutton thay cho gõ tay nên dữ liệu chỉ nằm trong tập hợp lệ',
                           'Kiểm TRƯỚC khi dùng: sai thì messagebox rồi return, đừng ghi dữ liệu nửa vời',
                           'Studio không vẽ cửa sổ: bộ chấm set() biến rồi invoke() nút thay cho người gõ']),
-            dict(h='Hai Radiobutton, một StringVar',
+            dict(h='Đọc sơ đồ',
                  body='Mỗi widget nhập nối sang biến điều khiển của nó, rồi mũi tên get() đi ra mang CHUỖI hoặc '
                       'bool chứ chưa phải số. Hai Radiobutton chụm vào CÙNG một StringVar; cuối sơ đồ là chốt '
                       'kiểm tra.',
@@ -1172,9 +1164,6 @@ tk.Button(root, text="Xem", command=show).pack()
 root.mainloop()
 ''',
             slots=['shift_var', 'laptop_var.get()', 'shift_var.get()'],
-            hints=['Biến Tcl DÙNG CHUNG cho cả nhóm nút chọn, có chung mới loại trừ nhau',
-                   'Giá trị bool đang nằm trong biến ô đánh dấu, không phải object biến',
-                   'Giá trị chuỗi của ca đang chọn, không phải tên biến Tcl'],
             traps=[('tk.StringVar(value="Sáng")', 1, 'Mỗi nút một biến mới: hai Radiobutton không còn chung nhóm.'),
                    ('laptop_var', 2, 'Object BooleanVar luôn được coi là đúng — phải gọi get().'),
                    ('str(shift_var)', 3, 'str() của StringVar là TÊN biến Tcl (PY_VAR0), không phải giá trị.')]),
@@ -1245,7 +1234,7 @@ root.mainloop()
         goal='Bố trí giao diện bằng một chiến lược rõ ràng: grid cho form, pack cho khung và thanh nút, place cho nhãn góc.',
         prereq='G03', env=GUI_ENV,
         theory=[
-            dict(h='Tạo widget xong nó vẫn chưa hiện',
+            dict(h='Định nghĩa: geometry manager',
                  body='Tạo widget xong nó vẫn chưa hiện: phải giao cho một geometry manager của chính widget — '
                       '.pack() xếp theo cạnh (side, fill), .place() theo toạ độ (x/y, relx), .grid() theo ô '
                       'row–column.'),
@@ -1253,11 +1242,11 @@ root.mainloop()
                  body='Hai manager tính chỗ theo hai cách khác nhau, nên các con của CÙNG một parent vừa pack() '
                       'vừa grid() làm Tk báo TclError. Khác parent thì vô tư: Frame bên trong grid, Frame đó '
                       'pack ra ngoài.'),
-            dict(h='weight=1 cho cột nuốt phần dư',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['grid cho form nhãn–ô nhập; pack cho khung và thanh nút; place khi cần toạ độ',
                           'columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra',
                           'Studio không vẽ cửa sổ: bộ chấm đọc widget.manager và widget.layout thay bạn']),
-            dict(h='Cùng ba widget, ba manager xếp ba kiểu',
+            dict(h='Đọc sơ đồ',
                  body='Ba cửa sổ nhỏ, CÙNG ba widget, ba manager: pack xếp chồng, place ghim theo toạ độ nên có '
                       'thể chồng nhau, grid chia lưới thẳng hàng. Dải đỏ dưới cùng là ca lỗi pack + grid cùng '
                       'parent.',
@@ -1349,10 +1338,6 @@ tk.Label(root, text="Bàn phím số").{{slot4}}
 root.mainloop()
 ''',
             slots=['pack(padx=10, pady=10)', 'index // 2', 'index % 2', 'pack(side="bottom")'],
-            hints=['Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới',
-                   'Số hàng tính từ thứ tự nút: hai nút một hàng',
-                   'Số cột tính từ thứ tự nút: luân phiên 0 rồi 1',
-                   'Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng'],
             traps=[('grid(row=0, column=0)', 1, 'pad dùng grid nhưng Label cùng root lại pack → TclError.'),
                    ('index', 2, 'Mỗi nút một hàng: thành một cột dọc bốn nút.'),
                    ('0', 3, 'Mọi nút dồn vào cột 0.'),
@@ -1427,7 +1412,7 @@ root.mainloop()
         goal='Gói giao diện vào class App, giữ widget trong self và tách phần tính toán thành hàm thuần dùng lại được.',
         prereq='G04', env=GUI_ENV,
         theory=[
-            dict(h='Hàm thuần không đụng tới widget nào',
+            dict(h='Định nghĩa: hàm thuần và tầng GUI',
                  body='Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng giao '
                       'diện chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả.'),
             dict(h='Vì sao gói giao diện vào class',
@@ -1435,11 +1420,11 @@ root.mainloop()
                           'ngay',
                           'Callback thành method: command=self.add_mark — vẫn KHÔNG ngoặc',
                           'Hàm thuần test được bằng một lời gọi; code dính widget phải dựng cả cửa sổ']),
-            dict(h='Lõi dùng lại được cho CLI, web và test',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['Quy tắc nghiệp vụ ở hàm thuần, thông báo ở GUI: lõi dùng lại cho CLI, web, test',
                           'validate_mark(raw) raise ValueError; App bắt lỗi rồi messagebox.showerror',
                           'Studio chấm logic bằng gọi thẳng hàm thuần; tkinter ở đây là đồ giả, không vẽ gì']),
-            dict(h='Mũi tên chỉ đi một chiều',
+            dict(h='Đọc sơ đồ',
                  body='Bên trái là lớp App — widget, callback, messagebox; bên phải là hàm thuần: vào dữ liệu, '
                       'ra dữ liệu hoặc exception. Mũi tên chỉ đi một chiều sang phải, nối vào cả ô "test gọi '
                       'thẳng".',
@@ -1557,10 +1542,6 @@ app = App(root)
 root.mainloop()
 ''',
             slots=['self.convert', 'self.answer', 'self.celsius.get()', 'self.answer.config(text=str(value) + " °F")'],
-            hints=['Giao method xử lý cho nút — tên method, không phải kết quả gọi nó',
-                   'Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy',
-                   'Chuỗi đang nằm trong biến của ô nhập — float() không nhận object',
-                   'Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console'],
             traps=[('self.convert()', 1, 'Gọi convert ngay trong __init__; nút nhận None.'),
                    ('answer', 2, 'Biến cục bộ mất sau __init__; convert không thấy được.'),
                    ('self.celsius', 3, 'Truyền object StringVar; float() cần chuỗi → TypeError.'),
@@ -1627,7 +1608,7 @@ root.mainloop()
         goal='Giữ giao diện phản hồi: việc dài chạy ở worker thread, kết quả về qua queue, thread GUI đọc queue bằng after().',
         prereq='G05', env=GUI_THREAD_ENV,
         theory=[
-            dict(h='Callback tính 5 giây là 5 giây treo',
+            dict(h='Định nghĩa: mainloop là vòng chặn',
                  body='mainloop() không trả về mà quay vòng: lấy một sự kiện, gọi hàm xử lý, vẽ lại, rồi lấy '
                       'tiếp. Callback của bạn chạy BÊN TRONG vòng lặp đó, nên callback tính 5 giây là 5 giây '
                       'cửa sổ treo.'),
@@ -1635,11 +1616,11 @@ root.mainloop()
                  bullets=['Việc dài chạy ở worker thread; callback chỉ start() rồi trả về ngay',
                           'Worker KHÔNG đụng widget — chỉ put kết quả vào queue.Queue',
                           'Thread GUI đọc queue trong hàm after(ms) hẹn: Empty thì hẹn lại, đừng join()']),
-            dict(h='Nút Huỷ bấm được khi event loop còn rảnh',
+            dict(h='Dùng ở đâu — và Studio khác gì',
                  bullets=['Lưu file lớn, nén, gọi API: nút Huỷ chỉ bấm được khi event loop còn rảnh',
                           'after(ms, f) cũng làm đồng hồ, tự làm mới, hoạt ảnh nhẹ — không cần thread',
                           'Studio không vẽ cửa sổ: worker xong ngay khi start(), bộ chấm chạy hàng đợi after()']),
-            dict(h='Worker chạy, mainloop vẫn quay',
+            dict(h='Đọc sơ đồ',
                  body='Làn trên là thread GUI: callback Tính bắt đầu worker rồi TRẢ VỀ NGAY nên mainloop quay '
                       'tiếp. Làn dưới là worker; nối hai làn chỉ có một mũi tên qua Queue, chấm tròn là các lần '
                       'after(100).',
@@ -1758,9 +1739,6 @@ tk.Button(root, text="Đếm", command=start).pack()
 root.mainloop()
 ''',
             slots=['box.get_nowait()', 'root.after(100, check_box)', 'threading.Thread(target=count_even, args=(1000,)).start()'],
-            hints=['Lấy kết quả mà không chặn thread giao diện — rỗng thì ném ngoại lệ',
-                   'Chưa có kết quả thì hẹn kiểm lại lượt sau qua vòng lặp sự kiện',
-                   'Đẩy việc dài sang thread riêng rồi trả quyền ngay cho giao diện'],
             traps=[('box.get()', 1, 'Chặn thread GUI tới khi có dữ liệu — cửa sổ đứng hình.'),
                    ('pass', 2, 'Không hẹn lượt kiểm tra sau: kết quả đến muộn sẽ không bao giờ được hiện.'),
                    ('count_even(1000)', 3, 'Chạy việc dài ngay trong callback; giao diện đứng tới khi xong.')]),
@@ -1836,11 +1814,11 @@ root.mainloop()
                  bullets=['Thread: worker lưu BẢN SAO marks, báo về bằng Queue, không đụng widget',
                           'Process: [sys.executable, "report.py"], text=True, returncode khác 0 là lỗi',
                           'after(100) là thread GUI đọc Queue; join() trong nút Lưu làm cửa sổ đứng']),
-            dict(h='Bấm Lưu, kết quả về qua Queue',
+            dict(h='Ví dụ: một vòng dữ liệu trọn vẹn',
                  body='Bấm Lưu → status "Đang lưu...", worker pickle + gzip rồi put ("ok", 2) vào Queue, '
                       'after(100) đổi status thành "Đã lưu 2 sinh viên". Bấm Báo cáo → report.py đọc "Mai,8.5" '
                       'từ stdin, in Average.'),
-            dict(h='Nét đứt là chỗ đổi không gian',
+            dict(h='Đọc sơ đồ',
                  body='Đi xuống từ ô GUI: dữ liệu đã validate → worker thread → pickle + gzip → file .gz, kết '
                       'quả về qua Queue. Đi ngang: marks → stdin của report.py → stdout; nét đứt là chỗ ĐỔI '
                       'KHÔNG GIAN.',

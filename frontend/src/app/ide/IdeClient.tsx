@@ -1,11 +1,11 @@
 'use client';
 
-// Bàn thí nghiệm (/ide): editor Monaco bên trái, kết quả bên phải. Bấm Run (hoặc Ctrl+Enter)
+// Python IDE: editor Monaco bên trái, kết quả bên phải. Bấm Run (hoặc Ctrl+Enter)
 // gửi mã tới POST /api/python/run; backend chạy trong container Docker cách ly
 // rồi trả stdout/stderr (xem src/python-runner ở backend). Một request đồng bộ,
 // không hàng đợi — nên "đang chạy" kéo dài tới khi chương trình xong hoặc hết giờ.
 //
-// Đây là công cụ, KHÔNG phải khoá học: không ghi tiến độ/XP/đăng ký.
+// Đây là công cụ, KHÔNG phải khóa học: không ghi tiến độ/XP/đăng ký.
 //
 // Lỗi HẠ TẦNG (máy chủ không có Docker, runner tắt, IDE chưa mở) được nói bằng
 // một câu bình thường, nguyên văn thông điệp kỹ thuật thì gập vào <details>. Lỗi
@@ -20,13 +20,7 @@ import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { apiFetch } from '@/lib/api';
 import { EDITOR_LOAD_TIMEOUT_MS, editorLoadPhase } from '@/lib/editor-load-gate';
-import { nextEditorCheckDelayMs } from '@/lib/editor-load-recheck';
-import {
-  forgetIdeReloadCode,
-  planIdeReload,
-  readIdeCodeOnLoad,
-  sessionStorageOrNull,
-} from '@/lib/ide-handoff';
+import { ideCodeHref, readIdeCodeFromHash } from '@/lib/ide-handoff';
 import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
@@ -46,31 +40,15 @@ import styles from './ide.module.css';
  * cache `immutable` trong next.config.ts, giống /pyodide/:path*. Muốn nâng cấp
  * là chép sang thư mục mới rồi đổi hằng số này, KHÔNG ghi đè file cũ.
  *
- * Cách dựng lại thư mục — chạy TỪ `frontend/`, trong Git Bash (bốn lệnh dưới
- * là POSIX, máy làm việc của repo này là Windows). node_modules/monaco-editor
- * chỉ có ở `frontend/`; 0.57.0 đã ghim trong frontend/package-lock.json vì
- * @monaco-editor/react khai nó là peer dependency:
- *     rm -rf public/monaco/v0.57.0/vs && mkdir -p public/monaco/v0.57.0
- *     cp -r node_modules/monaco-editor/min/vs public/monaco/v0.57.0/vs
- *     rm -rf public/monaco/v0.57.0/vs/nls
- *     rm -rf public/monaco/v0.57.0/vs/language/typescript
- *     rm public/monaco/v0.57.0/vs/assets/ts.worker-*.js
- * (Không cần dọn `*.d.ts`: cả 13 tệp .d.ts của bản 0.57.0 đều nằm trong
- * `nls/lang/`, nên `rm -rf nls` ở trên đã cuốn hết — một lệnh `find … -delete`
- * thêm vào đây xoá đúng 0 tệp.)
- * Ra 122 tệp, 9 152 631 byte (bản gốc 151 tệp, 25 564 261 byte). Đã kiểm ngày
- * 14/10/2026: dựng theo đúng các lệnh trên vào thư mục tạm rồi `diff -r` với
- * bản trong repo — trùng từng byte.
- *
- * Hai nhóm bị bỏ và hậu quả THẬT nếu sau này cần tới chúng:
- *  - `nls/` chỉ chứa bản dịch giao diện, chỉ tải khi require.config đặt
- *    availableLanguages — ở đây không đặt.
- *  - TypeScript: worker ở `assets/ts.worker-*.js` và `language/typescript/`.
- *    Đặt `language="typescript"` thì editor KHÔNG treo — tô màu cú pháp vẫn có
- *    (phần đó nằm ở basic-languages, còn giữ) — chỉ lượt tải TS worker bị 404,
- *    tức mất gợi ý/báo lỗi kiểu. Cần những thứ đó thì chép lại hai nhóm này.
- * JSON KHÔNG bị tỉa (còn `assets/json.worker-*.js`, `language/json/`), nên
- * `language="json"` chạy đủ như bản gốc.
+ * Cách dựng lại thư mục (0.57.0 đã ghim trong package-lock.json vì
+ * @monaco-editor/react khai nó là peer dependency):
+ *     cp -r node_modules/monaco-editor/min/vs frontend/public/monaco/v0.57.0/vs
+ * rồi bỏ ba nhóm KHÔNG bao giờ được tải với editor python (25 MB → 9,3 MB):
+ *     rm -rf …/vs/nls/lang          # chỉ tải khi require.config đặt availableLanguages
+ *     rm -rf …/vs/language/typescript && rm …/vs/assets/ts.worker-*.js
+ *     find …/vs -name '*.d.ts' -delete
+ * Thêm `language="typescript"`/`"json"` hay đổi ngôn ngữ giao diện ở đâu đó
+ * thì phải chép lại ĐỦ, không thì editor treo đúng kiểu đang sửa.
  */
 const MONACO_VS_PATH = '/monaco/v0.57.0/vs';
 
@@ -165,9 +143,7 @@ function clip(text: string): { text: string; clipped: boolean } {
 }
 
 const ERROR_TITLES: Record<Extract<RunState, { status: 'error' }>['kind'], string> = {
-  // "Bàn thí nghiệm", không "IDE": bảng thuật ngữ của bản thiết kế chốt
-  // MỘT tên cho trình soạn code, và người học chỉ gặp cái tên đó.
-  private: 'Bàn thí nghiệm chưa mở cho phiên này',
+  private: 'IDE chưa mở cho phiên này',
   busy: 'Chưa chạy được lúc này',
   unavailable: 'Bộ chạy Python đang được dựng',
   other: 'Lỗi',
@@ -194,10 +170,7 @@ function errorMessage(body: unknown, fallback: string): string {
  */
 function initialCode(): string {
   if (typeof window === 'undefined') return DEFAULT_CODE;
-  // Sau fragment còn bản cất của nút "Thử lại" (sessionStorage) — đường dành
-  // cho mã quá dài để nhét vào địa chỉ. Thứ tự ưu tiên và lý do: xem
-  // readIdeCodeOnLoad() trong src/lib/ide-handoff.ts (có test).
-  return readIdeCodeOnLoad(window.location.hash, sessionStorageOrNull()) ?? DEFAULT_CODE;
+  return readIdeCodeFromHash(window.location.hash) ?? DEFAULT_CODE;
 }
 
 export default function IdeClient() {
@@ -212,9 +185,6 @@ export default function IdeClient() {
     codeRef.current = next;
     setCode(next);
   }, []);
-  // Bản cất của nút "Thử lại" đã nằm trong state ở trên → xoá nó đi, kẻo mở lại
-  // /ide trong tab này về sau hiện mã cũ thay cho ví dụ mặc định.
-  useEffect(() => forgetIdeReloadCode(sessionStorageOrNull()), []);
 
   const running = state.status === 'running';
   const abortRef = useRef<AbortController | null>(null);
@@ -252,22 +222,17 @@ export default function IdeClient() {
     // lần nên trang đứng mãi ở "Đang tải" — đúng cái lỗi bản sửa này đang chữa.
     editorStartedAtRef.current = performance.now();
     // Hẹn LẠI chứ không hẹn một lần: nếu lượt bắn đầu vì lý do nào đó chưa đủ
-    // trần (bộ hẹn giờ bắn sớm vài phần mười ms so với performance.now(), tab
-    // bị treo rồi tỉnh), lượt sau vẫn kiểm tiếp. Khi nào hẹn, khi nào thôi do
-    // nextEditorCheckDelayMs() quyết (src/lib/editor-load-recheck.ts, có test):
-    // nó hỏi lại CHỪNG NÀO cổng còn nói 'loading', và thôi ngay khi cổng kết
-    // luận — nên vừa không đứng im, vừa không phải vòng lặp vô hạn.
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const check = () => {
-      const elapsedMs = performance.now() - editorStartedAtRef.current;
-      setEditorElapsedMs(elapsedMs);
-      const phase = editorLoadPhase({ mounted: false, rejected: getMonacoRejected(), elapsedMs });
-      const delay = nextEditorCheckDelayMs(phase, elapsedMs, EDITOR_LOAD_TIMEOUT_MS);
-      if (delay !== null) timer = setTimeout(check, delay);
+    // trần (đồng hồ, tab bị treo rồi tỉnh), lượt sau vẫn kiểm tiếp. Dừng hẳn
+    // khi đã quá trần, nên không phải vòng lặp vô hạn.
+    let timer: ReturnType<typeof setTimeout>;
+    const dem = () => {
+      const troi = performance.now() - editorStartedAtRef.current;
+      setEditorElapsedMs(troi);
+      if (troi < EDITOR_LOAD_TIMEOUT_MS) {
+        timer = setTimeout(dem, EDITOR_LOAD_TIMEOUT_MS - troi);
+      }
     };
-    // Lượt đầu hẹn thẳng một trần (không gọi check() ngay): vừa mở thì đã chờ
-    // 0 ms, hỏi cổng lúc này chắc chắn ra 'loading' — chỉ tốn một lần render.
-    timer = setTimeout(check, EDITOR_LOAD_TIMEOUT_MS);
+    timer = setTimeout(dem, EDITOR_LOAD_TIMEOUT_MS);
     return () => clearTimeout(timer);
   }, [editorMounted]);
 
@@ -286,36 +251,15 @@ export default function IdeClient() {
    * lời từ chối cũ — dựng lại component chỉ cho ra khung "đang tải" treo lần
    * nữa. Chỉ lần tải trang mới mới có loader mới.
    *
-   * Mã đang gõ được cất TRƯỚC khi tải lại, bằng planIdeReload()
-   * (src/lib/ide-handoff.ts, có test): vào fragment nếu vừa (cùng cơ chế nút
-   * "Thử ngay trong IDE"), không vừa — quá 16.000 ký tự — thì vào
-   * sessionStorage. Bản đầu chỉ có fragment: mã dài là tải lại MẤT BÀI, trong
-   * khi chú thích chỗ này hứa ngược lại. Nếu cả hai đều không cất được (bộ nhớ
-   * bị chặn, hết hạn mức) thì KHÔNG tải lại: hiện lời nhắn bảo chép mã ra trước,
-   * người dùng tự bấm tải lại khi đã chép xong.
-   *
-   * `replaceState` đổi địa chỉ mà không điều hướng, rồi `reload()` nạp lại
-   * chính địa chỉ đó — đặt thẳng `location.hash` bằng giá trị đang có thì trình
-   * duyệt coi là không đổi và không tải lại gì.
+   * Mã người dùng đang gõ được cất vào fragment trước khi tải lại (cùng cơ chế
+   * nút "Thử ngay trong IDE" của trang bài học, xem src/lib/ide-handoff.ts) nên
+   * thử lại KHÔNG mất bài. `replaceState` đổi địa chỉ mà không điều hướng, rồi
+   * `reload()` nạp lại chính địa chỉ đó — đặt thẳng `location.hash` bằng giá
+   * trị đang có thì trình duyệt coi là không đổi và không tải lại gì.
    */
-  const [retryBlocked, setRetryBlocked] = useState(false);
   const retryEditor = useCallback(() => {
-    const plan = planIdeReload(codeRef.current, sessionStorageOrNull());
-    if (!plan.ok) {
-      setRetryBlocked(true);
-      return;
-    }
-    window.history.replaceState(null, '', plan.href);
-    window.location.reload();
-  }, []);
-  // Người dùng đã thấy lời nhắn và tự xác nhận đã chép mã. THỬ CẤT LẠI MỘT LẦN
-  // NỮA trước khi tải lại: giữa lúc đọc lời nhắn họ thường xoá bớt mã cho ngắn
-  // lại (ngắn tới mức vừa fragment), hoặc bộ nhớ của trình duyệt hồi lại. Bản
-  // đầu gọi thẳng reload() nên hai trường hợp đó vẫn mất bài một cách vô ích —
-  // `retryBlocked` một khi bật thì không bao giờ tắt.
-  const forceReload = useCallback(() => {
-    const plan = planIdeReload(codeRef.current, sessionStorageOrNull());
-    if (plan.ok) window.history.replaceState(null, '', plan.href);
+    const href = ideCodeHref(codeRef.current);
+    if (href) window.history.replaceState(null, '', href);
     window.location.reload();
   }, []);
 
@@ -339,10 +283,9 @@ export default function IdeClient() {
         setState({
           status: 'error',
           kind: 'private',
-          // Cùng MỘT câu với nhánh 503 và nhánh docker-chết: người học thấy
-          // cùng một hỏng hóc ("không chạy được trên máy chủ") nên không có lý
-          // do nào để ba nhánh nói ba kiểu. Nguyên nhân thật ở `detail`.
-          message: RUNNER_UNAVAILABLE_MESSAGE,
+          message:
+            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
+            + 'bình thường ngay trong trình duyệt.',
           // KHÔNG gợi ý PY_RUNNER_PUBLIC=true ở đây. Câu cũ mời người vận hành
           // bật một cờ mở toang route chạy mã cho cả internet, trong khi 401
           // gần như luôn có nghĩa khác: phiên khách chưa kịp cấp. apiFetch đã
@@ -411,7 +354,7 @@ export default function IdeClient() {
         <SiteHeader />
         <main className={styles.main}>
           <div className={styles.toolbar}>
-            <h1 className={styles.title}>Bàn thí nghiệm</h1>
+            <h1 className={styles.title}>Python IDE</h1>
             <div className={styles.actions}>
               <label className={styles.exampleLabel}>
                 <span className={styles.srOnly}>Ví dụ test</span>
@@ -433,9 +376,7 @@ export default function IdeClient() {
               </label>
               <span ref={setVisualizeSlot} className={styles.visualizeSlot} />
               <button type="button" className={styles.run} onClick={() => void run()} disabled={running}>
-                {/* ▶ là trang trí: trong nhãn nút nó bị trình đọc màn hình đọc
-                    thành tên ký tự, nên phải aria-hidden chứ không để trần. */}
-                {running ? 'Đang chạy…' : <><span aria-hidden="true">▶</span> Chạy</>}
+                {running ? 'Đang chạy…' : '▶ Chạy'}
                 {!running && <kbd className={styles.kbd}>Ctrl+Enter</kbd>}
               </button>
             </div>
@@ -444,14 +385,7 @@ export default function IdeClient() {
           <div className={styles.split}>
             <section className={styles.editorPane} aria-label="Trình soạn thảo mã Python">
               {editorPhase === 'failed' ? (
-                <PlainEditor
-                  code={code}
-                  onChange={updateCode}
-                  onRun={run}
-                  onRetry={retryEditor}
-                  retryBlocked={retryBlocked}
-                  onForceReload={forceReload}
-                />
+                <PlainEditor code={code} onChange={updateCode} onRun={run} onRetry={retryEditor} />
               ) : (
                 <Editor
                   height="100%"
@@ -479,18 +413,13 @@ export default function IdeClient() {
 
             <section className={styles.outputPane} aria-label="Kết quả" aria-live="polite" aria-busy={running}>
               <Output state={state} />
-
-              {/* "Xem từng bước" nằm TRONG mục kết quả, không phải một khối
-                  riêng dưới cả hai cột. Lý do: nó cũng là kết quả của việc
-                  chạy — chỉ khác ở chỗ xem được từng bước — nên đặt nó ngoài
-                  mục này buộc người học nhìn xuống một vùng thứ ba để đọc cùng
-                  một thứ. Khối cũ còn kéo dài hết chiều ngang trang nên đẩy
-                  console lên cao và tách rời khỏi vết của chính nó.
-                  Toàn bộ nằm trong component — xem
-                  frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
-              <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
             </section>
           </div>
+
+          {/* Xem từng bước: chạy MỘT lượt trong cùng sandbox rồi bước qua vết
+              cục bộ. Toàn bộ nằm trong component — xem
+              frontend/src/components/code-visualizer/CodeVisualizer.tsx. */}
+          <CodeVisualizer codeRef={codeRef} editorRef={monacoRef} triggerHost={visualizeSlot} />
         </main>
       </div>
     </>
@@ -504,12 +433,7 @@ function Output({ state }: { state: RunState }) {
   if (state.status === 'running')
     return (
       <p className={styles.hint}>
-        {/* "Đang chạy trong sandbox…" là bản cũ: "sandbox" lọt tiếng Anh, và
-            nó cũng không trả lời câu người học đang thắc mắc lúc chờ — mã đang
-            chạy Ở ĐÂU. Ở trang này là MÁY CHỦ (POST /api/python/run), khác với
-            bài học chạy Pyodide trong trình duyệt; nói ra thì khối ghi chú
-            "Hai nơi chạy Python" ở trang chủ mới có chỗ bám. */}
-        <span className={styles.spinner} aria-hidden="true" /> Đang chạy trên máy chủ…
+        <span className={styles.spinner} aria-hidden="true" /> Đang chạy trong sandbox…
       </p>
     );
 
@@ -587,25 +511,18 @@ function Output({ state }: { state: RunState }) {
  * Vì sao Monaco bị GỠ HẲN khi rơi vào đây (không giữ ẩn để nó lên sau rồi
  * đổi lại): editor tự hiện ra giữa lúc người ta đang gõ sẽ cướp con trỏ và
  * trông như trang hỏng — đúng lúc đang đứng trình bày. Thà đứng yên ở bản dự
- * phòng; muốn Monaco thì bấm "Thử lại" (tải lại trang; mã được cất vào địa
- * chỉ hoặc sessionStorage trước, không cất được thì trang KHÔNG tự tải lại —
- * xem retryEditor).
+ * phòng; muốn Monaco thì bấm "Thử lại" (tải lại trang, mã được giữ).
  */
 function PlainEditor({
   code,
   onChange,
   onRun,
   onRetry,
-  retryBlocked,
-  onForceReload,
 }: {
   code: string;
   onChange: (next: string) => void;
   onRun: () => void | Promise<void>;
   onRetry: () => void;
-  /** "Thử lại" vừa không cất được mã → hỏi lại người dùng thay vì tải lại mù. */
-  retryBlocked: boolean;
-  onForceReload: () => void;
 }) {
   return (
     <div className={styles.fallback}>
@@ -616,29 +533,11 @@ function PlainEditor({
           vẫn chạy được: gõ mã rồi bấm “Chạy” như thường (chỉ không có tô màu cú pháp và gợi
           ý). Thụt dòng bằng 4 dấu cách.
         </p>
-        {retryBlocked ? (
-          // Đến được đây nghĩa là mã quá dài để nhét vào địa chỉ VÀ trình duyệt
-          // không cho ghi sessionStorage. Tải lại lúc này là mất bài, nên để
-          // người dùng tự quyết sau khi đã chép mã ra chỗ khác.
-          <>
-            <p>
-              <strong>Chưa tải lại:</strong> mã của bạn quá dài để giữ qua lần tải lại, và trình
-              duyệt đang chặn bộ nhớ tạm của trang. Hãy chép mã ra chỗ khác trước (bấm vào ô gõ,
-              Ctrl+A rồi Ctrl+C), sau đó mới tải lại.
-            </p>
-            <p>
-              <button type="button" className={styles.retry} onClick={onForceReload}>
-                Đã chép mã — tải lại
-              </button>
-            </p>
-          </>
-        ) : (
-          <p>
-            <button type="button" className={styles.retry} onClick={onRetry}>
-              Thử lại
-            </button>
-          </p>
-        )}
+        <p>
+          <button type="button" className={styles.retry} onClick={onRetry}>
+            Thử lại
+          </button>
+        </p>
       </div>
       <textarea
         className={styles.fallbackInput}

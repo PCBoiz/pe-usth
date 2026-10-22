@@ -1,15 +1,7 @@
-import type { ThrottlerStorage } from '@nestjs/throttler';
 import { FixedWindowThrottlerStorage } from './fixed-window-throttler.storage';
 
 describe('FixedWindowThrottlerStorage', () => {
-  /**
-   * Khai kèm `ThrottlerStorage` để các lời gọi dưới đây đi qua ĐÚNG chữ ký mà
-   * @nestjs/throttler dùng — 5 đối số, có cả tên tier ('ip_hour'). Bản cài đặt
-   * bỏ tham số thứ 5 (mọi tier dùng chung một Map, `key` đã mang tên tier),
-   * nhưng test phải gọi y như thư viện gọi, nếu không nó mô phỏng sai cách
-   * dùng thật.
-   */
-  let storage: FixedWindowThrottlerStorage & ThrottlerStorage;
+  let storage: FixedWindowThrottlerStorage;
 
   beforeEach(() => {
     storage = new FixedWindowThrottlerStorage();
@@ -80,8 +72,7 @@ describe('FixedWindowThrottlerStorage', () => {
 
   it('có TRẦN số key để kẻ tấn công đổi IP liên tục không làm cạn RAM', async () => {
     process.env.THROTTLE_MAX_KEYS = '50';
-    const bounded: FixedWindowThrottlerStorage & ThrottlerStorage =
-      new FixedWindowThrottlerStorage();
+    const bounded = new FixedWindowThrottlerStorage();
     try {
       for (let i = 0; i < 300; i++) {
         await bounded.increment('ip-' + i, 3_600_000, 1000, 0, 'ip_hour');

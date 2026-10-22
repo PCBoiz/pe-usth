@@ -236,26 +236,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\"pd.read_stata\"",
-            "hint": "Tên hàm pandas đọc file .dta"
+            "answer": "\"pd.read_stata\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "\"scipy.io.loadmat\"",
-            "hint": "Tên hàm đọc .mat của MATLAB — không thuộc pandas, cũng không phải thư viện HDF5"
+            "answer": "\"scipy.io.loadmat\""
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "Path(path).suffix.lower()",
-            "hint": "Đuôi file kèm dấu chấm, hạ chữ thường, lấy từ dấu chấm CUỐI"
+            "answer": "Path(path).suffix.lower()"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "df.to_stata(path, write_index=False)",
-            "hint": "Ghi bảng ra định dạng Stata mà KHÔNG kèm cột index"
+            "answer": "df.to_stata(path, write_index=False)"
           }
         ],
         "bank": [
@@ -271,7 +267,7 @@
           {
             "label": "\"h5py.File\"",
             "slot": 2,
-            "trap": "h5py.File dành cho HDF5 (.h5), không mở được .mat của MATLAB."
+            "trap": "h5py.File dành cho HDF5 (.h5); .mat thông thường đọc bằng scipy.io.loadmat."
           },
           {
             "label": "df.to_stata(path)",

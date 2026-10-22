@@ -216,26 +216,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "\";\"",
-            "hint": "Ký tự ngăn cột mà file này dùng — xem dòng đầu của dữ liệu"
+            "answer": "\";\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "\"#\"",
-            "hint": "Ký tự mở đầu dòng ghi chú cần bỏ qua"
+            "answer": "\"#\""
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "[\"-\"]",
-            "hint": "Danh sách chuỗi mà file này dùng để đánh dấu ô thiếu"
+            "answer": "[\"-\"]"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "len(df)",
-            "hint": "Số DÒNG của bảng, không phải tổng số ô"
+            "answer": "len(df)"
           }
         ],
         "bank": [
@@ -250,12 +246,12 @@
           {
             "label": "\",\"",
             "slot": 1,
-            "trap": "Dấu phẩy là mặc định của read_csv, nhưng dòng đầu file cho thấy cột được ngăn bằng ký tự khác."
+            "trap": "Dấu phẩy là mặc định của read_csv; file này ngăn cột bằng \";\"."
           },
           {
             "label": "[\"NA\"]",
             "slot": 3,
-            "trap": "\"NA\" thì pandas đã tự coi là thiếu; file này đánh dấu thiếu bằng ký tự khác."
+            "trap": "\"NA\" pandas đã tự coi là thiếu; file này ghi thiếu bằng \"-\"."
           },
           {
             "label": "[\"-\"]",

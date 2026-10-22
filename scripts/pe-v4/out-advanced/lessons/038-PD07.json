@@ -218,20 +218,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "id_vars=\"region\"",
-            "hint": "Khai cột GIỮ NGUYÊN khi chuyển sang dạng dài"
+            "answer": "id_vars=\"region\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "pivot_table",
-            "hint": "Hàm dựng bảng rộng CÓ gộp — dữ liệu có (vùng, tháng) trùng"
+            "answer": "pivot_table"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "aggfunc=\"sum\"",
-            "hint": "Khai cách gộp ô trùng là CỘNG; mặc định không phải vậy"
+            "answer": "aggfunc=\"sum\""
           }
         ],
         "bank": [

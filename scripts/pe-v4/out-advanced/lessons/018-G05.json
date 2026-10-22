@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Hàm thuần không đụng tới widget nào",
+          "title": "Định nghĩa: hàm thuần và tầng GUI",
           "body": "Hàm THUẦN nhận đối số, trả kết quả hoặc raise, và không đụng tới widget nào. Tầng giao diện chỉ làm ba việc: đọc widget, gọi hàm thuần, hiện kết quả."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "Lõi dùng lại được cho CLI, web và test",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
             "Quy tắc nghiệp vụ ở hàm thuần, thông báo ở GUI: lõi dùng lại cho CLI, web, test",
             "validate_mark(raw) raise ValueError; App bắt lỗi rồi messagebox.showerror",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Mũi tên chỉ đi một chiều",
+          "title": "Đọc sơ đồ",
           "body": "Bên trái là lớp App — widget, callback, messagebox; bên phải là hàm thuần: vào dữ liệu, ra dữ liệu hoặc exception. Mũi tên chỉ đi một chiều sang phải, nối vào cả ô \"test gọi thẳng\".",
           "figure": {
             "src": "/static/anim/G05-logic-vs-ui.svg",
@@ -255,26 +255,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "self.convert",
-            "hint": "Giao method xử lý cho nút — tên method, không phải kết quả gọi nó"
+            "answer": "self.convert"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "self.answer",
-            "hint": "Nhãn phải thành thuộc tính của object; biến cục bộ thì method khác không thấy"
+            "answer": "self.answer"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "self.celsius.get()",
-            "hint": "Chuỗi đang nằm trong biến của ô nhập — float() không nhận object"
+            "answer": "self.celsius.get()"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "self.answer.config(text=str(value) + \" °F\")",
-            "hint": "Viết kết quả kèm đơn vị lên nhãn trên cửa sổ, không in ra console"
+            "answer": "self.answer.config(text=str(value) + \" °F\")"
           }
         ],
         "bank": [

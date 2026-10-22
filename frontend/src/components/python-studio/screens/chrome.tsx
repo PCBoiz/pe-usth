@@ -13,7 +13,7 @@ import type { SandboxTestRow } from '@/components/lesson-chrome/exercises/Sandbo
 import type { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 
 /** Kết quả chấm của màn đang mở (screenVerdict hoặc kết quả chạy code). */
-export type ScreenVerdict = { correct: boolean; explain?: string; lines?: string[] };
+export type ScreenVerdict = { correct: boolean; explain?: string };
 
 export const ICON = {
   book: (
@@ -82,11 +82,10 @@ export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: st
     match: { icon: ICON.swap, label: 'Game · Nối cặp' },
     trueFalse: { icon: ICON.help, label: 'Game · Đúng hay sai' },
     fill: { icon: ICON.swap, label: 'Game · Điền mảnh code' },
-    parsons: { icon: ICON.play, label: 'Game · Ghép code' },
+    parsons: { icon: ICON.play, label: 'Game · Ghép code ▶' },
     spotError: { icon: ICON.bulb, label: 'Game · Săn lỗi' },
-    debug: { icon: ICON.play, label: 'Game · Sửa code' },
+    debug: { icon: ICON.play, label: 'Game · Sửa code ▶' },
     selfExplain: { icon: ICON.bulb, label: 'Tự giải thích' },
-    soQuy: { icon: ICON.play, label: 'Mô phỏng · Hai luồng' },
   };
   if (scr.kind === 'game' && scr.gameType) return games[scr.gameType];
   const found = map[scr.kind] ?? { icon: ICON.book, label: scr.label };
@@ -130,36 +129,21 @@ export function ScreenShell({
       centered={centered}
     >
       {children}
-      {/* ── VÙNG SỐNG PHẢI CÓ TRƯỚC NỘI DUNG CỦA NÓ ────────────────────────
-          Lỗi đang chữa: băng kết quả chấm tự mang `role="status"`, nhưng nó
-          chỉ được DỰNG RA lúc bấm "Kiểm tra" — tức vùng sống và nội dung của
-          vùng sống sinh ra trong CÙNG một lần cập nhật DOM. Trình đọc màn hình
-          theo dõi THAY ĐỔI bên trong một vùng sống đã có sẵn; một vùng sống
-          vừa mới chèn vào thì có máy đọc, có máy im (VoiceOver/Safari im), nên
-          kết quả đúng/sai là thứ CHỈ người nhìn thấy màu mới chắc chắn nhận
-          được — đúng cái lỗ mà `role="status"` được đặt ra để bịt.
-          Nay cái vỏ này đứng sẵn từ lúc màn mở (rỗng), chỉ RUỘT đổi khi chấm:
-          đó là thay đổi trong vùng sống, và được đọc lên chắc chắn.
-          `role="status"` đã gỡ khỏi FeedbackBanner để không lồng hai vùng
-          sống vào nhau (hai lần đọc, hoặc không lần nào). */}
-      <div role="status" aria-live="polite">
-        {verdict && (
+      {verdict && (
         <FeedbackBanner
           correct={verdict.correct}
           title={
             scr.kind === 'selfExplain'
               ? verdict.correct
                 ? 'Đã ghi nhận — tự so với lời giải thích mẫu'
-                : 'Chưa đủ ý — viết thêm'
+                : 'Chưa đủ ý — viết thêm nhé'
               : verdict.correct
                 ? 'Chính xác!'
-                : 'Chưa đúng — thử lại'
+                : 'Chưa đúng — thử lại nhé'
           }
           explanation={verdict.explain}
-          lines={verdict.lines}
         />
-        )}
-      </div>
+      )}
     </ShellB>
   );
 }

@@ -8,21 +8,16 @@ export interface FeedbackBannerProps {
   correct: boolean;
   title: string;
   explanation: React.ReactNode;
-  /** Mỗi mục một dòng riêng dưới lời giải thích — màn điền code báo từng ô. */
-  lines?: string[];
 }
 
-export default function FeedbackBanner({ correct, title, explanation, lines }: FeedbackBannerProps) {
+export default function FeedbackBanner({ correct, title, explanation }: FeedbackBannerProps) {
   return (
     <div
       className={styles.feedbackBanner}
-      // KHÔNG đặt `role="status"` ở đây. Thẻ này là KẾT QUẢ CHẤM BÀI và phải
-      // được đọc lên — nhưng nó chỉ được DỰNG RA lúc bấm "Kiểm tra", nên bản
-      // thân nó làm vùng sống là vùng sống sinh ra cùng lúc với nội dung: có
-      // máy đọc, có máy im. Vùng sống nay là cái vỏ RỖNG đứng sẵn quanh chỗ
-      // này — xem khối chú thích ở `python-studio/screens/chrome.tsx`
-      // (ScreenShell). Lồng thêm một `role="status"` vào trong nó thì thành
-      // hai vùng sống chồng nhau: đọc hai lần, hoặc không lần nào.
+      // Thẻ này là KẾT QUẢ CHẤM BÀI, chỉ xuất hiện sau khi bấm "Kiểm tra": phải
+      // là vùng sống, nếu không thì thông tin đúng/sai chỉ tới được người nhìn
+      // thấy màu của nó.
+      role="status"
       style={{
         display: 'flex',
         alignItems: 'flex-start',
@@ -43,7 +38,7 @@ export default function FeedbackBanner({ correct, title, explanation, lines }: F
           height: 28,
           borderRadius: '50%',
           background: correct ? 'var(--st-ok-text)' : 'var(--st-err-text)',
-          color: 'var(--ds-on-action)',
+          color: 'var(--edu-panel-bg-solid)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -55,14 +50,7 @@ export default function FeedbackBanner({ correct, title, explanation, lines }: F
       </span>
       <div>
         <div style={{ fontWeight: 700, color: correct ? 'var(--st-ok-text)' : 'var(--st-err-text)' }}>{title}</div>
-        <div style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', marginTop: 4 }}>{explanation}</div>
-        {lines && lines.length > 0 && (
-          <ul className={styles.feedbackLines}>
-            {lines.map((line) => (
-              <li key={line}>{line}</li>
-            ))}
-          </ul>
-        )}
+        <div style={{ fontSize: 13, color: 'var(--edu-t2)', marginTop: 4 }}>{explanation}</div>
       </div>
     </div>
   );

@@ -1,6 +1,5 @@
-/* Màn mở đầu bài học — số đo lấy từ Figma (frame 1440 × 900, cột 680px).
-   Màu và cỡ chữ đi qua BẢNG TOKEN v2 (--ds-* trong studio-tokens.css); không
-   viết số px cỡ chữ ở đây nữa, xem thang 8 cỡ trong file token. */
+/* Màn mở đầu bài học — số đo lấy từ Figma (frame 1440 × 900, cột 680px). Mọi màu
+   đi qua token: --edu-* (edu-theme.css) và --st-* (studio-tokens.css). */
 
 /* Số đo trong Figma là kích thước NGOÀI của thẻ — trang dùng content-box. */
 .brief,
@@ -17,10 +16,10 @@
 
 .eyebrow {
   margin: 0;
-  font-size: var(--ds-fs-label);
+  font-size: 14px;
   font-weight: 700;
   line-height: 1.5;
-  color: var(--ds-violet-deep);
+  color: var(--edu-accent-text);
   text-transform: uppercase;
 }
 
@@ -30,17 +29,17 @@
 
 .title {
   margin: -5px 0 0;
-  font-size: var(--ds-fs-h1);
+  font-size: 36px;
   font-weight: 700;
   line-height: 1.3;
-  color: var(--ds-ink);
+  color: var(--edu-t1);
 }
 
 .goal {
   margin: -11px 0 9px;
-  font-size: var(--ds-fs-body);
+  font-size: 17px;
   line-height: 1.5;
-  color: var(--ds-soft);
+  color: var(--edu-t2);
 }
 
 /* Nhãn in hoa nhỏ đầu mỗi thẻ (NHIỆM VỤ, DỰ ĐOÁN…). */
@@ -49,18 +48,18 @@
 .testsLabel,
 .reflectLabel {
   margin: 0;
-  font-size: var(--ds-fs-label);
+  font-size: 13px;
   font-weight: 700;
   line-height: 1.5;
   text-transform: uppercase;
-  color: var(--ds-violet-deep);
+  color: var(--edu-accent-text);
 }
 
 .task {
   position: relative;
   min-height: 112px;
   padding: 16px 30px 18px 25px;
-  background: var(--ds-card);
+  background: var(--edu-panel-bg-solid);
   border-radius: var(--st-card-radius);
   overflow: hidden;
 }
@@ -71,15 +70,15 @@
   inset: 0 auto 0 0;
   width: 7px;
   border-radius: 3px;
-  background: var(--ds-violet);
+  background: var(--edu-accent);
 }
 
 .taskText {
   margin: 9px 0 0;
-  font-size: var(--ds-fs-body);
+  font-size: 17px;
   font-weight: 600;
   line-height: 1.5;
-  color: var(--ds-ink);
+  color: var(--edu-t1);
 }
 
 .predict {
@@ -89,15 +88,19 @@
   min-height: 65px;
   padding: 10px 25px 12px 20px;
   background: var(--st-predict-bg);
-  border-radius: var(--ds-r-lg);
+  border-radius: 16px;
+}
+
+.predictLabel {
+  font-size: 12px;
 }
 
 .predictText {
   margin: 0;
-  font-size: var(--ds-fs-ui);
+  font-size: 15px;
   font-weight: 600;
   line-height: 1.6;
-  color: var(--ds-soft);
+  color: var(--edu-t2);
 }
 
 .code {
@@ -116,23 +119,21 @@
   padding: 0 64px 0 20px;
   background: var(--st-code-bar);
   border-radius: var(--st-code-radius);
-  font-size: var(--ds-fs-label);
+  font-size: 13px;
   font-weight: 600;
   color: var(--st-code-meta);
 }
 
 .codeBar span:last-child {
-  font-size: var(--ds-fs-label);
+  font-size: 12px;
 }
 
 .codeBody {
   margin: 0;
   padding: 12px 22px 6px;
   font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: var(--ds-fs-code);
-  /* 1,32 là khoảng dòng của khối code ở cỡ 14px cũ; ở 16px các dòng gần như
-     dán vào nhau, nên nới theo thang 1,6-1,9 của bản thiết kế. */
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.32;
   color: var(--st-syn-plain);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
@@ -141,12 +142,12 @@
 .tests {
   min-height: 92px;
   padding: 13px 22px 10px;
-  background: var(--ds-card);
+  background: var(--edu-panel-bg-solid);
   border-radius: 18px;
 }
 
 .testsLabel {
-  color: var(--ds-soft);
+  color: var(--edu-t3);
 }
 
 .testList {
@@ -156,10 +157,10 @@
 }
 
 .testList li {
-  font-size: var(--ds-fs-ui);
-  font-weight: 600;
-  line-height: 1.6;
-  color: var(--ds-ink);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 26px;
+  color: var(--edu-t1);
   overflow-wrap: anywhere;
 }
 
@@ -173,18 +174,17 @@
   min-height: 66px;
   padding: 11px 21px 12px;
   background: var(--st-reflect-bg);
-  border-radius: var(--ds-r-lg);
+  border-radius: 16px;
 }
 
-/* Nhãn thẻ "giải thích trước khi xem đáp án": cùng họ màu với nền thẻ
-   (--st-reflect-bg = tím nhạt), chứ không phải màu "đã xong". */
 .reflectLabel {
-  color: var(--st-reflect-text);
+  font-size: 12px;
+  color: var(--st-ok-text);
 }
 
 .reflectText {
   margin: 2px 0 0;
-  font-size: var(--ds-fs-body);
+  font-size: 14px;
   font-weight: 600;
   line-height: 1.5;
   color: var(--st-reflect-text);
@@ -192,15 +192,15 @@
 
 @media (max-width: 560px) {
   .title {
-    font-size: var(--ds-fs-h2);
+    font-size: 28px;
   }
 
   .goal {
-    font-size: var(--ds-fs-body);
+    font-size: 15px;
   }
 
   .taskText {
-    font-size: var(--ds-fs-body);
+    font-size: 15px;
   }
 
   .predict {
@@ -213,6 +213,6 @@
   }
 
   .codeBody {
-    font-size: var(--ds-fs-code);
+    font-size: 13px;
   }
 }

@@ -23,14 +23,8 @@
  *
  * Vì sao 12 s chứ không phải 3 s hay 60 s — ba con số đo được ngày 14/10/2026:
  *  1. Monaco nay TỰ HOST (public/monaco/v0.57.0/vs), tức cùng origin với trang.
- *     Lượt tải đầu cho editor python (đo lại bằng chrome-devtools trên
- *     `next start`, 14/10/2026 — bản đầu của chú thích này ghi nhầm ~3,0 MB):
- *     19 request vào /monaco/, 4,94 MB sau giải nén — riêng editor-*.js
- *     2,47 MB, toggleHighContrast-*.js 1,29 MB, editor.main.css 0,39 MB,
- *     editorWorkerHost-*.js 0,36 MB, assets/editor.worker-*.js 0,28 MB, đều
- *     tải ngay lúc mở. Máy chủ nén gzip nên trên dây chỉ ~1,3 MB. Với tốc độ
- *     đã đo bằng Pyodide (13,2 MB trong 2,7 s ≈ 5 MB/s) thì ~0,3 s khi có
- *     nén, khoảng 1 giây nếu không nén.
+ *     Lượt tải đầu cho editor python là ~3,0 MB. Trên đường truyền đã đo bằng
+ *     Pyodide (13,2 MB trong 2,7 s ≈ 5 MB/s) thì 3 MB mất dưới 1 giây.
  *  2. Hỏng kiểu BIẾT NGAY (404 vì chép thiếu file, domain bị chặn) không chờ
  *     tới đây: `loader.js` bắn `onerror` trong vài trăm ms và cờ `rejected`
  *     bên dưới cắt ngay.
@@ -68,15 +62,10 @@ export type EditorLoadSignals = {
 export type EditorLoadPhase = 'ready' | 'loading' | 'failed';
 
 export function editorLoadPhase(signals: EditorLoadSignals): EditorLoadPhase {
-  // `mounted` THẮNG mọi tín hiệu khác, kể cả `rejected`. Nói thẳng: với cách
-  // nối dây HIỆN TẠI, hai cờ này không thể cùng bật. `rejected` chỉ bật từ
-  // lời gọi `loader.init()` trong factory của `dynamic()` (IdeClient.tsx) — lời
-  // gọi đó không gắn với effect nào nên không bao giờ bị huỷ — và mọi lời gọi
-  // init() đều bọc CÙNG MỘT promise của loader: đã resolve (điều kiện để có
-  // onMount) thì không thể reject nữa. Dòng này là PHÒNG THỦ cho lần sửa sau:
-  // nếu ai đó nối `rejected` vào một lời gọi huỷ được (promise của init() bị
-  // huỷ sẽ reject với `{ type: 'cancelation' }`) thì editor đã nằm trong DOM
-  // vẫn không bị che bằng <textarea>.
+  // `mounted` THẮNG mọi tín hiệu khác, kể cả `rejected`. Vì sao: trang gọi
+  // `loader.init()` một lần nữa để biết lỗi sớm, và lời gọi đó có thể từ chối
+  // vì lý do vô hại (ví dụ bị huỷ khi React 19 StrictMode dựng lại effect).
+  // Editor đã nằm trong DOM rồi thì che nó bằng <textarea> là tự làm hỏng.
   if (signals.mounted) return 'ready';
   if (signals.rejected) return 'failed';
 
@@ -89,13 +78,10 @@ export function editorLoadPhase(signals: EditorLoadSignals): EditorLoadPhase {
       ? (signals.timeoutMs as number)
       : EDITOR_LOAD_TIMEOUT_MS;
 
-  // Thời gian đã chờ KHÔNG tin tuyệt đối được. Bản đầu tính bằng `Date.now()`
-  // (đồng hồ tường: đồng bộ NTP/chỉnh giờ giữa lúc chờ là ra số âm); nay
-  // IdeClient dùng performance.now() vốn đơn điệu, nhưng cổng vẫn không được
-  // dựa vào điều đó. Số âm/NaN/vô cực thì nghiêng về "còn chờ" chứ không kết
-  // luận hỏng — kết luận oan là giật mất editor đang chạy khỏi tay người dùng.
-  // Đổi lại, phía hẹn giờ (src/lib/editor-load-recheck.ts) phải hỏi lại chừng
-  // nào cổng còn nói 'loading', không thì "còn chờ" thành "chờ mãi".
+  // Thời gian đã chờ tính bằng `Date.now()`, tức đồng hồ TƯỜNG: máy đổi múi
+  // giờ / đồng bộ NTP giữa lúc chờ là ra số âm hoặc NaN. Khi không tin được
+  // thì nghiêng về "còn chờ" chứ không kết luận hỏng — kết luận oan là giật
+  // mất editor đang hoạt động khỏi tay người dùng.
   if (!Number.isFinite(signals.elapsedMs) || signals.elapsedMs < 0) return 'loading';
 
   return signals.elapsedMs >= timeoutMs ? 'failed' : 'loading';

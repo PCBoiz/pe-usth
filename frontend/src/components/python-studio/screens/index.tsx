@@ -3,7 +3,6 @@
 // Bộ phân tuyến màn hình: đổi `scr.kind` thành đúng một component trong
 // thư mục này. Trước đây đây là một chuỗi `if` dài trong StudioLesson.tsx.
 import LessonBrief from '@/components/lesson-chrome/LessonBrief';
-import UnknownScreenNotice from '@/components/lesson-chrome/UnknownScreenNotice';
 import { ideCodeChoDeBai } from '@/lib/ide-brief-code';
 
 import ClassifyScreen from './ClassifyScreen';
@@ -27,15 +26,6 @@ export type { LessonScreenProps };
 
 export default function LessonScreenView(props: LessonScreenProps) {
   const { lesson, scr, game } = props;
-  // Dùng chung cho hai nhánh "không dựng được màn" dưới đây.
-  const notice = (what: 'màn' | 'mini-game', kind: unknown) => (
-    <UnknownScreenNotice
-      what={what}
-      kind={kind}
-      lessonLabel={props.metaLabel ?? lesson.title}
-      metaLabel={props.metaLabel}
-    />
-  );
 
   switch (scr.kind) {
     case 'brief':
@@ -69,19 +59,12 @@ export default function LessonScreenView(props: LessonScreenProps) {
     case 'counter':
       return <CounterScreen {...props} />;
     case 'game':
-      // `scr.gameId` không tìm thấy trong `play.games` cũng ra màn trắng y như
-      // `kind` sai chính tả, nên báo cùng một kiểu.
-      return game ? <GameScreen {...props} game={game} /> : notice('mini-game', scr.gameId);
+      return game ? <GameScreen {...props} game={game} /> : null;
     case 'sandbox':
       return <SandboxScreen {...props} />;
     case 'recap':
       return <RecapScreen {...props} />;
     default:
-      // KHÔNG trả `null` ở đây. Trước đây nhánh này im lặng, nên một `kind` sai
-      // chính tả trong `lessons.content_json` (server không chặn giá trị nào —
-      // xem @/lib/screen-kinds) biến thành màn trắng không dấu vết: không
-      // ngoại lệ, không cảnh báo, không log. Giờ nó ghi console.warn kèm giá
-      // trị nhận được và hiện khối báo lỗi đọc được cho người học.
-      return notice('màn', scr.kind);
+      return null;
   }
 }

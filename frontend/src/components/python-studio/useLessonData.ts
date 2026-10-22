@@ -10,13 +10,7 @@
 // loading) nên thứ tự người học thấy không đổi.
 import { useCallback, useEffect, useState } from 'react';
 
-import { apiFetch, asList, findEnrollment, probeApiHealth } from '@/lib/api';
-import {
-  classifyLoadFailure,
-  loadFailureCopy,
-  NO_SESSION_MESSAGE,
-  type LoadFailureCopy,
-} from '@/lib/lesson-load-error';
+import { apiFetch, asList, findEnrollment } from '@/lib/api';
 import { buildScreens, type StudioLesson as Lesson } from '@/lib/studio-lesson';
 
 export type Award = { name?: string | null; description?: string | null; icon?: string | null };
@@ -27,16 +21,12 @@ export type LessonData = {
   lesson: Lesson | null;
   meta: LessonMeta | null;
   user: LessonUser | null;
+  streak: number;
   totalLessons: number;
   enrolled: boolean;
   completed: boolean;
   loading: boolean;
   loadError: string;
-  /**
-   * Nhan đề + câu giải thích cho màn hỏng, đã phân biệt theo NGUYÊN NHÂN
-   * (DB chết / quá tải / lệch gốc API / 401 thật). `null` khi không có lỗi.
-   */
-  loadFailure: LoadFailureCopy | null;
   /** Bài có hàng trong DB nhưng chưa có nội dung Studio. */
   empty: boolean;
   /** Đang gọi một lệnh ghi (đăng ký / lưu hoàn thành). */
@@ -52,17 +42,6 @@ export type LessonData = {
   complete: (quizScore: number) => Promise<void>;
 };
 
-/**
- * Lỗi mang theo MÃ HTTP.
- *
- * Trước đây `json()` chỉ ném `Error(message)`, nên tới `catch` là mã đã mất và
- * mọi sự cố — DB chết, 429, 404 vì gốc API sai — đều hiện ra bằng cùng một
- * câu. Mã là thứ duy nhất phân biệt được chúng (xem `lib/lesson-load-error.ts`).
- */
-function httpError(message: string, status: number): Error & { status: number } {
-  return Object.assign(new Error(message), { status });
-}
-
 export function useLessonData({
   courseId,
   lessonNo,
@@ -76,11 +55,11 @@ export function useLessonData({
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [meta, setMeta] = useState<LessonMeta | null>(null);
   const [user, setUser] = useState<LessonUser | null>(null);
+  const [streak, setStreak] = useState(0);
   const [totalLessons, setTotalLessons] = useState(0);
   const [enrolled, setEnrolled] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState('');
-  const [loadFailure, setLoadFailure] = useState<LoadFailureCopy | null>(null);
   const [empty, setEmpty] = useState(false);
   const [completed, setCompleted] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -93,17 +72,17 @@ export function useLessonData({
       const response = await apiFetch(path, options);
       // Frontend không còn trang đăng nhập (/login đã gỡ) nên không đá đi đâu
       // được nữa — chuyển hướng sẽ ra 404. Báo lỗi tại chỗ để loadError hiện lên.
-      if (response.status === 401) throw httpError(NO_SESSION_MESSAGE, 401);
+      if (response.status === 401)
+        throw new Error('Bài học này cần phiên đăng nhập hợp lệ từ API.');
       const body = await response.json().catch(() => ({}));
       if (!response.ok || body.ok === false)
-        throw httpError(
+        throw new Error(
           Array.isArray(body.message)
             ? body.message.join(', ')
             : body.message ||
                 // Bộ lọc lỗi của backend gói lỗi thành { error: { status, message } }.
                 (typeof body.error === 'object' ? body.error?.message : body.error) ||
                 `Không thể kết nối (${response.status}).`,
-          response.status,
         );
       return body;
     },
@@ -113,7 +92,6 @@ export function useLessonData({
   const load = useCallback(async () => {
     setLoading(true);
     setLoadError('');
-    setLoadFailure(null);
     setEmpty(false);
     try {
       // Gọi /api/user TRƯỚC, không song song: với người mới, request đầu tiên
@@ -140,10 +118,11 @@ export function useLessonData({
       setUser(profile);
       setEnrolled(Boolean(enrollment));
       setTotalLessons(Number(enrollment?.totalLessons) || 0);
-      // Không gọi /api/stats nữa: lời gọi đó chỉ để lấy số chuỗi ngày hiện lên
-      // thanh trên cùng, mà chuỗi ngày đã gỡ khỏi trang bài học (xem chú thích
-      // trong LessonChrome.tsx). Backend vẫn tính và lưu chuỗi, endpoint vẫn
-      // còn — chỉ là trang bài học không hỏi tới.
+      // Streak chỉ để hiện trên thanh trên cùng — hỏng thì bỏ qua, không chặn bài.
+      void apiFetch('/api/stats')
+        .then((r) => (r.ok ? r.json() : null))
+        .then((stats) => setStreak(Number(stats?.streak) || 0))
+        .catch(() => undefined);
 
       // Quản trị viên xem trước bài học mà không cần ghi danh; backend cũng cho
       // đọc content nhưng vẫn chặn nộp bài.
@@ -173,16 +152,7 @@ export function useLessonData({
       setLesson(content);
       onDraftReady?.(content, Number(profile.id), list.length);
     } catch (error) {
-      // Nói ĐÚNG nguyên nhân thay vì đổ cho phiên của người học. Mã của lượt
-      // hỏng một mình không đủ (401 ở trên có thể là DB chết), nên hỏi thêm
-      // /health rồi mới chọn câu. Lượt dò này chỉ chạy trên nhánh hỏng.
-      const detail = error instanceof Error ? error.message : 'Không kết nối được backend.';
-      const status = typeof (error as { status?: number }).status === 'number'
-        ? (error as { status: number }).status
-        : 0;
-      const probe = await probeApiHealth();
-      setLoadFailure(loadFailureCopy(classifyLoadFailure({ status, probe }), detail));
-      setLoadError(detail);
+      setLoadError(error instanceof Error ? error.message : 'Không kết nối được backend.');
     } finally {
       setLoading(false);
     }
@@ -252,8 +222,8 @@ export function useLessonData({
           setAwards(body.newAchievements as Award[]);
         setMessage(
           body.alreadyCompleted
-            ? 'Bài này đã xong trước đó — không cộng XP lần hai.'
-            : 'Đã lưu: bài này đã xong.',
+            ? 'Bài này đã hoàn thành trước đó — không cộng XP lần hai.'
+            : 'Đã lưu hoàn thành bài học.',
         );
       } catch (error) {
         setMessage(`Chưa lưu được tiến độ: ${(error as Error).message}`);
@@ -268,12 +238,12 @@ export function useLessonData({
     lesson,
     meta,
     user,
+    streak,
     totalLessons,
     enrolled,
     completed,
     loading,
     loadError,
-    loadFailure,
     empty,
     busy,
     message,

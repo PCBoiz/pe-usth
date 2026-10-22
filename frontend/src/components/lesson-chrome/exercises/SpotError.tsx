@@ -38,7 +38,7 @@ export default function SpotError({ filename, lines, selected, onSelect, correct
             : isWrong
               ? 'var(--st-err-line)'
               : isSelected
-                ? 'var(--ds-violet)'
+                ? 'var(--edu-accent)'
                 : 'transparent';
 
           return (
@@ -72,11 +72,11 @@ export default function SpotError({ filename, lines, selected, onSelect, correct
               {showLabel && (
                 <span
                   style={{
-                    background: isRight ? 'var(--st-ok-bg)' : 'var(--ds-violet-tint)',
-                    color: isRight ? 'var(--st-ok-text)' : 'var(--ds-violet-deep)',
+                    background: isRight ? 'var(--st-ok-bg)' : 'var(--edu-accent-soft)',
+                    color: isRight ? 'var(--st-ok-text)' : 'var(--edu-accent-text)',
                     borderRadius: 999,
                     padding: '2px 10px',
-                    fontSize: 'var(--ds-fs-label)',
+                    fontSize: 11,
                     fontWeight: 700,
                     flexShrink: 0,
                     marginLeft: 12,

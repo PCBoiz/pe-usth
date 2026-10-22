@@ -4,19 +4,13 @@
    thương hiệu mới; chỗ cần "đang ở đây" thì pha từ --edu-accent. */
 
 .panel {
-  /* Khối này nay nằm TRONG mục kết quả (`.outputPane` của ide.module.css), nên
-     bỏ hết khung của riêng nó: nền, viền, bo góc, đổ bóng đều y hệt khung chứa,
-     giữ lại là vẽ một cái hộp trong một cái hộp cùng màu. Thay bằng một đường
-     kẻ trên để mắt biết đây là phần mới. */
-  margin-top: 18px;
-  padding-top: 16px;
-  border-top: 1px solid var(--edu-panel-border);
+  margin-top: 16px;
+  padding: 16px 18px;
   font-family: var(--edu-font);
-
-  /* Các mốc gãy bên dưới đo theo bề rộng CỦA CHÍNH KHỐI NÀY, không theo bề
-     rộng màn hình. Từ lúc nó vào cột kết quả, màn 1600px vẫn chỉ cho nó ~700px
-     — mốc theo màn hình sẽ bày hai cột vào chỗ không đủ cho hai cột. */
-  container-type: inline-size;
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-panel-border);
+  border-radius: 16px;
+  box-shadow: var(--edu-card-shadow);
 }
 
 .head {
@@ -49,11 +43,7 @@
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.15s ease;
 }
-/* Chỉ nhấc nút khi thiết bị THẬT có con trỏ: trên màn cảm ứng, :hover dính lại
-   sau cú chạm nên nút kẹt ở trạng thái "đang trỏ vào". */
-@media (hover: hover) and (pointer: fine) {
-  .start:hover:not(:disabled) { transform: translateY(-1px); }
-}
+.start:hover:not(:disabled) { transform: translateY(-1px); }
 .start:disabled { opacity: 0.6; cursor: progress; }
 .start:focus-visible,
 .ctrl:focus-visible,
@@ -82,10 +72,19 @@
   color: var(--edu-t3);
 }
 
-/* Trước đây còn một `.spinner` quay vô hạn ngay cạnh dải này. Hai chỉ báo vô
-   hạn cho CÙNG một việc ("đang ghi vết") là hai thứ phải tính lại mỗi khung
-   hình mà không nói thêm thông tin nào, nên con quay đã bỏ — dải chạy ở dưới đủ
-   và nó đã nằm trên compositor. */
+.spinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  vertical-align: -1px;
+  border: 2px solid var(--edu-track-bg);
+  border-top-color: var(--edu-accent);
+  border-radius: 50%;
+  animation: cv-spin 0.8s linear infinite;
+}
+@keyframes cv-spin { to { transform: rotate(360deg); } }
+
 /* "Đang chạy", không phải "đã được bao nhiêu phần trăm": không ai biết trước
    chương trình của người học chạy mất bao lâu. Dải con chạy bằng translateX —
    đổi width thì trình duyệt layout lại mỗi khung hình. */
@@ -219,17 +218,11 @@
   list-style: none;
   font-size: 13px;
 }
-/* MỌI hàng cao đúng MỘT dòng chữ (nowrap + ellipsis ở .frameName). Đây không
-   phải chuyện thẩm mỹ: cú đẩy vào/bật ra đi đúng `translateY(±100%)`, mà 100%
-   là chiều cao CHÍNH hàng đó — một tên hàm dài xuống dòng sẽ làm hàng cao gấp
-   đôi và quãng đường của nó lệch khỏi quãng đường của bóng khung bật ra, tức
-   mất đúng cái bất biến "không bao giờ đè nhau". */
 .frame {
   display: flex;
   justify-content: space-between;
   gap: 10px;
   padding: 4px 8px;
-  line-height: 18px;
   color: var(--edu-t2);
   border-radius: 8px;
 }
@@ -240,37 +233,38 @@
   font-weight: 600;
   background: var(--edu-accent-soft);
 }
-/* Bóng của khung VỪA BẬT RA.
+/* Gọi hàm: khung mới TRÔI VÀO TỪ DƯỚI (từ phía hàm gọi) và chồng lên đầu danh
+   sách. Trả về: bóng của khung vừa rời đi trôi ngược xuống rồi tắt. Hai hiệu
+   ứng ngược chiều nhau là lý do duy nhất để chữ "stack" có nghĩa với người học
+   — nếu không thì đây chỉ là một danh sách đổi nội dung. */
+.framePushed {
+  animation: cv-frame-in 180ms cubic-bezier(.33, 1, .68, 1) both;
+}
+@keyframes cv-frame-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
 
-   Nằm ngoài luồng: khung đã rời stack không được chiếm chỗ, nếu không danh sách
-   bên dưới bị đẩy xuống suốt thời gian người học đứng ở bước đó.
-
-   Trạng thái NGHỈ là `opacity: 0`, tức ĐÚNG khung cuối của hiệu ứng — nguyên
-   tắc đã trả giá ở lib/lesson-intro.ts. Nhờ vậy: không có WAAPI, JS chết giữa
-   chừng, hay người dùng bật giảm chuyển động thì bóng vô hình, chứ không đứng
-   lại đè lên khung trên cùng. Chuyển động do CodeVisualizer.tsx chạy bằng
-   `el.animate()` với luật ở stackMove() — không có keyframe CSS ở đây, vì hai
-   cú đẩy vào liên tiếp không đổi tên lớp nên animation CSS sẽ không chạy lại. */
+/* Nằm ngoài luồng: khung đã rời stack không được chiếm chỗ, nếu không danh sách
+   bên dưới bị đẩy xuống suốt thời gian người học đứng ở bước đó. */
 .framePopped {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  opacity: 0;
   pointer-events: none;
+  animation: cv-frame-out 200ms cubic-bezier(.65, 0, .35, 1) both;
+}
+@keyframes cv-frame-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(12px); }
 }
 
-.frameName {
-  overflow: hidden;
-  font-family: ui-monospace, 'Cascadia Code', Consolas, monospace;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.frameLine { flex: 0 0 auto; font-size: 12px; color: var(--edu-t3); }
+.frameName { font-family: ui-monospace, 'Cascadia Code', Consolas, monospace; }
+.frameLine { font-size: 12px; color: var(--edu-t3); }
 .stackElided {
   padding: 4px 8px;
   font-size: 12px;
-  line-height: 18px;
   color: var(--edu-t3);
 }
 
@@ -364,87 +358,89 @@
 }
 .stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
 
-/* Dòng đang chạy, tô trong CHÍNH Monaco bằng decoration — đây là NEO TĨNH:
-   đứng ở bước nào cũng thấy "đang ở dòng này", kể cả khi lớp phủ bên dưới
-   không dựng được. Không còn animation nào ở đây: cái DI CHUYỂN là con trỏ ở
-   lớp phủ, và hai thứ cùng động trên một dòng thì không đọc ra cái nào. */
+/* Dòng đang chạy, tô bên trong Monaco (class do decoration của Monaco gắn). */
+/* Dòng đang chạy, tô trong CHÍNH Monaco — đây là bản mã duy nhất hiện ra.
+   Hiệu ứng chỉ dùng opacity/transform; nhịp do CodeVisualizer.tsx truyền xuống
+   qua --pe-step-ms (cùng luật stepMotion đã có test), vì decoration của Monaco
+   chỉ nhận className chứ không nhận style. */
 .monacoLine {
-  background: var(--edu-accent-soft);
+  background: var(--edu-accent-soft-strong);
+}
+
+/* Nhịp là LỚP TĨNH, không phải biến đặt lên nút gốc Monaco ở mỗi bước — xem
+   nhipLop() trong CodeVisualizer.tsx để biết số đo. Ba mức là đủ: mắt không
+   phân biệt nổi 124 ms với 131 ms. */
+.stepNear {
+  animation: cv-line-in 130ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+.stepFar {
+  animation: cv-line-in 200ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+/* Giữ phím → : hiệu ứng phải rút gần hết, không bao giờ bắt người dùng chờ. */
+.stepInstant {
+  animation: cv-line-in 60ms linear both;
+}
+
+/* Nhảy XA — vào hàm, trả về, quay đầu vòng lặp. Vào mạnh hơn một nhịp để mắt
+   đọc ra "nó vừa nhảy tới đây", khác hẳn một bước xuống dòng kế tiếp. */
+.monacoLineTravel {
+  animation: cv-line-travel 200ms cubic-bezier(.33, 1, .68, 1) both;
+}
+
+@keyframes cv-line-in {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+@keyframes cv-line-travel {
+  from { opacity: 0; transform: scaleX(0.92); }
+  60% { opacity: 1; }
+  to { opacity: 1; transform: none; }
+}
+
+/* Người bật giảm chuyển động: dòng vẫn tô, chỉ bỏ phần động. */
+@media (prefers-reduced-motion: reduce) {
+  .monacoLine,
+  .monacoLineTravel,
+  .stepNear,
+  .stepFar,
+  .stepInstant {
+    animation: none;
+  }
 }
 .monacoGlyph { background: var(--edu-accent); }
 
-/* --- LỚP PHỦ CON TRỎ DÒNG ------------------------------------------------
-   Dựng bằng JS và cắm vào `.overflow-guard` của Monaco (xem CodeVisualizer.tsx:
-   ensureLayer). Nằm ngoài vòng vẽ của Monaco nên cuộn/gõ không làm nó chạy lại
-   hiệu ứng, và vị trí do CSSOM ghi thẳng `transform` — không qua state React,
-   không qua thuộc tính style trong mã nguồn. */
-.cursorLayer {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-/* Con trỏ: đây là thứ ĐI từ dòng cũ sang dòng mới. Trạng thái nghỉ (chưa có JS
-   đặt transform) là góc trên bên trái — không có khai báo nào ẩn nó đi, nên
-   không có đường nào dẫn tới "mất dấu dòng đang chạy". */
-.lineCursor {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  background: var(--edu-accent-soft-strong);
-  border-left: 3px solid var(--edu-accent);
-}
-
-/* Dấu CHỖ GỌI: mỗi khung stack chưa chạy xong đang đứng ở dòng gọi của nó, tức
-   đường về. Đứng yên (bảng motion-v2: "chữ và nhãn đứng yên, chỉ dấu nhấn di
-   chuyển") và tự mất khi hàm trả về. */
-.callSite {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 3px;
-  background: var(--edu-accent);
-  opacity: 0.45;
-}
-
 /* Người dùng đã nói "ít chuyển động" ở mức hệ điều hành thì tắt hết, chỉ giữ
-   lại thứ mang THÔNG TIN — và ở đây KHÔNG có thông tin nào nằm trong chuyển
-   động:
-     - con trỏ dòng vẫn đi tới đúng dòng, chỉ là tới ngay (cursorPlacement trả
-       transition 'none' khi stepMotion cho thời lượng 0);
-     - dấu chỗ gọi vẫn đủ, vì chúng vốn đứng yên;
-     - chồng khung vẫn đúng thứ tự và đúng độ sâu, chỉ là không trượt
-       (stackMove trả null, nên không animation nào chạy);
-     - nền "biến vừa đổi" và nền "vừa in ra" là màu TĨNH, không phải chuyển động.
-   Dải "đang chạy" đứng lại nhưng vẫn hiện, để lúc chờ 2 giây vẫn có cái nói
-   rằng máy chủ đang làm việc.
-
-   Lưu ý cho người sửa sau: ĐỪNG rút thời lượng xuống 0,01ms để "tắt" một hiệu
-   ứng tắt dần — nó nhảy thẳng tới khung cuối, tức biến mất. Đó là lỗi đã mất
-   chữ "+XP" của người bật giảm chuyển động (xem lib/status-pop-life.ts). */
+   lại thứ mang THÔNG TIN: con trỏ vẫn nhảy đúng dòng (CodeVisualizer.tsx tự
+   kiểm tra matchMedia rồi đặt thời lượng về 0 — media query không với tới Web
+   Animations API), nền "biến vừa đổi" và nền "vừa in ra" vẫn còn vì chúng là
+   màu tĩnh, không phải chuyển động. Dải "đang chạy" đứng lại nhưng vẫn hiện,
+   để lúc chờ 2 giây vẫn có cái nói rằng máy chủ đang làm việc. */
 @media (prefers-reduced-motion: reduce) {
+  .spinner { animation: none; }
   .start { transition: none; }
   .start:hover:not(:disabled) { transform: none; }
   .progressBar { animation: none; width: 100%; }
+  .framePushed,
   .varNew,
   .freshOut { animation: none; }
-  .lineCursor { transition: none; }
+  /* Khung vừa bật ra không còn chuyển động thì cũng không nên đứng đó chắn mất
+     khung trên cùng của stack. */
+  .framePopped { display: none; }
 }
 
-/* Hẹp: đầu ra xuống hàng dưới, call stack đứng một mình. Ngưỡng 560px là bề
-   rộng tối thiểu để hai cột còn đọc được — dưới mức đó tên biến bắt đầu xuống
-   dòng giữa chừng. */
-@container (max-width: 560px) {
+/* Máy tính bảng: đầu ra xuống hàng dưới, call stack đứng một mình. */
+@media (max-width: 1099.98px) {
   .grid { grid-template-columns: minmax(0, 1fr); }
   .outPane { grid-column: 1 / -1; }
 }
 
-/* Rất hẹp (điện thoại, hoặc cột kết quả bị bóp): xếp dọc, thanh kéo xuống
-   hàng riêng. Dùng được — bước, đọc biến, đọc đầu ra — nhưng chật; khung mã
-   cuộn ngang thay vì xuống dòng để thụt lề Python không bị sai. */
-@container (max-width: 420px) {
+/* Điện thoại: xếp dọc. Dùng được — bước, đọc biến, đọc đầu ra — nhưng chật;
+   khung mã cuộn ngang thay vì xuống dòng để thụt lề Python không bị sai. */
+@media (max-width: 719.98px) {
+  .panel { padding: 14px 12px; }
   .grid { grid-template-columns: minmax(0, 1fr); }
   .outPane { grid-column: auto; }
   .code { max-height: 220px; }

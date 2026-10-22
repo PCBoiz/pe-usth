@@ -220,26 +220,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "errors=\"coerce\"",
-            "hint": "Ngày không đọc được thì thành NaT, không làm vỡ cả lệnh"
+            "answer": "errors=\"coerce\""
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "\"MS\"",
-            "hint": "Mã tần suất gộp theo tháng, nhãn đặt ở ĐẦU tháng"
+            "answer": "\"MS\""
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "monthly.sum(min_count=1)",
-            "hint": "Tổng theo tháng, nhưng tháng không có đơn phải để trống chứ không thành 0"
+            "answer": "monthly.sum(min_count=1)"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "s.sort_index().rolling(window).mean()",
-            "hint": "Trung bình trượt — sắp theo ngày TRƯỚC khi trượt"
+            "answer": "s.sort_index().rolling(window).mean()"
           }
         ],
         "bank": [

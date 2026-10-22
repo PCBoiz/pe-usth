@@ -216,26 +216,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "7",
-            "hint": "Điểm dừng của arange — reshape(2, 3) quyết định cần bao nhiêu số"
+            "answer": "7"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "temps.size",
-            "hint": "Tổng số phần tử của array, không phải số hàng"
+            "answer": "temps.size"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "axis=0",
-            "hint": "Cộng theo chiều thành phố, để ra tổng TỪNG NGÀY"
+            "answer": "axis=0"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "axis=1",
-            "hint": "Cộng theo chiều ngày, để ra tổng TỪNG THÀNH PHỐ"
+            "answer": "axis=1"
           }
         ],
         "bank": [

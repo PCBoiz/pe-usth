@@ -3,7 +3,6 @@ import { ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { JwtModule } from '@nestjs/jwt';
 import { ThrottlerModule, days, hours } from '@nestjs/throttler';
-import type { SignOptions } from 'jsonwebtoken';
 import { AuthModule } from 'src/auth/auth.module';
 import { AllExceptionsFilter } from 'src/common/filters/all-exceptions/all-exceptions.filter';
 import { PrismaExceptionFilter } from 'src/common/filters/prisma-exception/prisma-exception.filter';
@@ -60,14 +59,7 @@ import { SecurityHeadersMiddleware } from 'src/common/middleware/security-header
       useFactory: (config: ConfigService) => ({
         secret: config.get<string>('jwt.accessSecret'),
         signOptions: {
-          // `as any` cũ ở đây là để lách kiểu `StringValue` (template literal
-          // của `ms`) mà @types/jsonwebtoken đòi cho `expiresIn` — giá trị đến
-          // từ biến môi trường nên TS không thể tự biết nó khớp. Ép về ĐÚNG
-          // kiểu của chính field đó thay cho `any`: sai chính tả tên field vẫn
-          // bị tsc bắt, và `any` không chảy tiếp vào signOptions.
-          expiresIn: config.get<string>(
-            'jwt.accessExpires',
-          ) as SignOptions['expiresIn'],
+          expiresIn: config.get<string>('jwt.accessExpires') as any,
         },
       }),
     }),

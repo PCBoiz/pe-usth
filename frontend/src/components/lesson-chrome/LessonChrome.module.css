@@ -3,15 +3,9 @@
    680px (--st-col), bottom bar 88px trắng với nút CTA 480px ở giữa. */
 
 /* Trang bài học không nạp CSS reset: bỏ lề 8px mặc định của body để khung
-   tràn viền như Figma.
-   Nền: edu-theme.css vẽ cho body một dải gradient xanh (--edu-bg-image). Bản
-   thiết kế v2 chốt nền KEM phẳng; `.chrome` đã tự tô nền nhưng dải gradient
-   vẫn lọt ra ở phần body cao hơn khung (và lúc cuộn quá đà trên iOS), nên
-   phải tắt ngay ở body. */
+   tràn viền như Figma. */
 :global(body):has(.chrome) {
   margin: 0;
-  background: var(--ds-page);
-  background-image: none;
 }
 
 /* Hai thanh trên/dưới dùng border-box để số đo khớp đúng frame Figma. */
@@ -26,12 +20,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  color: var(--ds-ink);
+  color: var(--edu-t1);
   font-family: var(--edu-font);
-  /* Mọi chữ không tự khai cỡ (phương án trắc nghiệm, đoạn văn trong màn…)
-     đều thừa từ đây. Trước lần này không có dòng nào, nên chúng rơi về 16px
-     mặc định của trình duyệt — dưới mức thân ≥ 17px của bản thiết kế v2. */
-  font-size: var(--ds-fs-body);
   background: var(--st-page-bg);
 }
 
@@ -40,11 +30,10 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: var(--ds-paper);
+  background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
 }
-/* Frame 1440: nút × ở x=56, mục cuối cùng của thanh kết thúc ở x=1350 (trước
-   đây là pill chuỗi ngày, nay là nhãn bước / ô điểm). */
+/* Frame 1440: nút × ở x=56, pill streak kết thúc ở x=1350. */
 .topBarInner {
   max-width: 1440px;
   height: 100%;
@@ -58,19 +47,19 @@
 .closeBtn {
   width: 40px;
   height: 40px;
-  border-radius: var(--ds-r-round);
+  border-radius: 50%;
   flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 0;
   background: transparent;
-  color: var(--ds-soft);
+  color: var(--edu-t5);
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
 }
 .closeBtn:hover {
-  background: var(--ds-violet-tint);
+  background: var(--edu-accent-soft);
 }
 .closeBtn:active {
   transform: scale(0.95);
@@ -81,8 +70,8 @@
   flex: 0 1 285px;
   min-width: 0;
   overflow: hidden;
-  color: var(--ds-soft);
-  font-size: var(--ds-fs-ui);
+  color: var(--edu-t2);
+  font-size: 16px;
   font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -129,48 +118,48 @@ button.segment::after {
   position: absolute;
   inset: -7px 0;
 }
-/* Luôn render thẻ fill (kể cả khi còn rỗng) để có giá trị cũ mà nội suy — nếu
-   chỉ gắn/gỡ thẻ theo bước thì trình duyệt không có gì để chuyển tiếp.
-   Chạy bằng `transform: scaleX()`, KHÔNG bằng `width`: đoạn chỉ có hai trạng
-   thái (rỗng / đầy) nên scaleX cho đúng hình ảnh đó, mà transform thì chạy trên
-   compositor — đổi `width` là trình duyệt phải layout lại mỗi khung hình, với
-   tới 8 đoạn cùng chạy 450 ms. */
+/* Luôn render thẻ fill (kể cả rộng 0) để width có thể transition — nếu chỉ
+   gắn/gỡ thẻ theo bước thì trình duyệt không có giá trị cũ để nội suy. */
 .segmentFill {
-  width: 100%;
+  width: 0;
   height: 100%;
-  background: var(--ds-ink);
-  transform: scaleX(0);
-  transform-origin: left center;
-  transition: transform var(--ds-dur-page) cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-.segmentFillOn {
-  transform: scaleX(1);
+  background: var(--edu-accent);
+  transition: width 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 .segmentCurrent .segmentFill {
-  background: var(--ds-violet);
+  background: var(--edu-accent);
 }
 /* Đã xong nhưng nằm sau màn đang xem lại. */
-/* Sau khi gom bảng màu, `--edu-accent` và `--edu-accent-3` thành CÙNG một
-   màu tím, nên đoạn "đã xong nhưng nằm sau màn đang xem lại" mất hẳn dấu hiệu
-   riêng. Bản thiết kế chốt: đã xong = `ink`, đang ở = `violet`; đoạn vượt
-   trước dùng `soft` (7,07:1 trên rãnh `desk`). */
 .segmentAhead .segmentFill {
-  background: var(--ds-soft);
+  background: var(--edu-accent-3);
 }
 
-/* `margin-left: auto` chứ không phải 1px: pill chuỗi ngày (🔥) từng là mục neo
-   mép phải của thanh, gỡ nó đi thì mọi thứ dồn sang trái và chừa một khoảng
-   trống ~230px bên phải. Nay nhãn bước hút hết khoảng trống đó, nên bố cục vẫn
-   là "đóng bài · tên bài · thanh tiến độ ——— mục bên phải" như Figma. */
 .stepLabel {
-  margin-left: auto;
+  margin-left: 1px;
   min-width: 56px;
-  font-size: var(--ds-fs-label);
+  font-size: 14px;
   font-weight: 600;
-  color: var(--ds-soft);
+  color: var(--edu-t3);
   white-space: nowrap;
   flex-shrink: 0;
   font-variant-numeric: tabular-nums;
+}
+
+.streakPill {
+  margin-left: auto;
+  min-width: 120px;
+  height: 34px;
+  background: var(--st-streak-bg);
+  color: var(--edu-accent-text);
+  border-radius: 17px;
+  padding: 0 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
 }
 
 /* ── VÌ SAO KHÔNG CĂN GIỮA Ở ĐÂY NỮA ─────────────────────────────────────
@@ -254,7 +243,7 @@ button.segment::after {
   position: sticky;
   bottom: 0;
   z-index: 50;
-  background: var(--ds-paper);
+  background: var(--edu-panel-bg-solid);
   flex-shrink: 0;
 }
 /* Ba cột: trạng thái lưu | nút chính 480px đúng giữa (x=480–960 ở frame 1440) | nút phụ. */
@@ -269,28 +258,14 @@ button.segment::after {
   gap: 16px;
 }
 
-/* Cột trái của thanh dưới: nút "Màn trước" + nhãn lưu. Khoảng đệm 129px
-   trước đây nằm trên .saveLabel, nay chuyển lên ô bọc để nút lùi đứng đúng chỗ
-   nhãn lưu từng đứng. */
-.leftSlot {
+.saveLabel {
   justify-self: start;
   min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 16px;
   padding-left: 129px;
-}
-
-.prevBtn {
-  composes: secondaryBtn;
-}
-
-.saveLabel {
-  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--ds-soft);
-  font-size: var(--ds-fs-label);
+  color: var(--edu-t3);
+  font-size: 13px;
   white-space: nowrap;
 }
 
@@ -304,15 +279,12 @@ button.segment::after {
   height: 52px;
   border-radius: 26px;
   border: 0;
-  background: var(--ds-action);
-  /* Chữ đọc được trên nền nút ở CẢ HAI chế độ: --ds-on-action là trắng ở bản
-     ngày (7,33:1 trên --ds-action) và gần như đen ở bản đêm (8,36:1). Trước
-     đây màu chữ viết thẳng là mã màu trắng, nên bản đêm — nền nút sáng lên —
-     thành chữ trắng trên nền sáng. Đó cũng là mã màu hex cuối cùng còn sót
-     trong *.module.css mà `npm run lint:tokens` cấm. */
-  color: var(--ds-on-action);
-  font-size: var(--ds-fs-ui);
-  font-weight: 800;
+  background: var(--edu-accent);
+  /* Chữ trắng ở cả hai chế độ: nền nút là màu accent cố định (trước đây dùng
+     --edu-panel-bg-solid nên ở chế độ tối chữ thành màu tối, khó đọc). */
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
   font-family: inherit;
   cursor: pointer;
   transition: transform 0.15s ease, filter 0.15s ease;
@@ -324,14 +296,8 @@ button.segment::after {
 .primaryBtn:active:not(:disabled) {
   transform: translateY(1px);
 }
-/* Trạng thái tắt KHÔNG làm mờ bằng opacity: `opacity: .5` trộn chữ trắng với
-   nền tím rồi với nền trang, còn ≈4,2:1 — đây là cách nhanh nhất để chữ tụt
-   dưới ngưỡng AA. Bản thiết kế v2 chốt: hạ cấp MÀU (nền `desk`, chữ `soft`,
-   viền `sketch`), giữ nguyên độ đục. soft/desk = 7,07:1. */
 .primaryBtn:disabled {
-  background: var(--ds-desk);
-  color: var(--ds-soft);
-  box-shadow: inset 0 0 0 2px var(--ds-sketch);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 /* Nút chính đổi màu theo kết quả chấm — xanh khi đúng, đỏ khi sai. */
@@ -348,15 +314,13 @@ button.segment::after {
   flex-shrink: 0;
   height: 52px;
   padding: 0 20px;
-  border-radius: var(--ds-r-pill);
-  /* Viền `line` chỉ 1,36:1 trên thẻ — không đủ để nhận ra một thứ bấm được
-     (WCAG 1.4.11 đòi ≥ 3:1). Bản thiết kế chốt nút phụ = viền `ink` 2px. */
-  border: 2px solid var(--ds-ink);
-  background: transparent;
-  color: var(--ds-ink);
+  border-radius: 999px;
+  border: 1px solid var(--edu-sidebar-border);
+  background: var(--edu-panel-bg-solid);
+  color: var(--edu-t2);
   font-family: inherit;
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -365,8 +329,8 @@ button.segment::after {
   transition: background 0.15s ease, color 0.15s ease, transform 0.12s ease;
 }
 .secondaryBtn:hover {
-  background: var(--ds-violet-tint);
-  color: var(--ds-violet-deep);
+  background: var(--edu-accent-soft);
+  color: var(--edu-accent-text);
 }
 .secondaryBtn:active {
   transform: translateY(1px);
@@ -376,33 +340,7 @@ button.segment::after {
 button.segment:focus-visible,
 .primaryBtn:focus-visible,
 .secondaryBtn:focus-visible {
-  outline: 3px solid var(--ds-violet);
-  outline-offset: 3px;
-}
-
-/* ── VÒNG TIÊU ĐIỂM DỰ PHÒNG CHO CẢ MÀN HỌC BÀI (WCAG 2.4.7) ──────────────
-   Lỗi đang chữa: trang bài học `/lesson/python_advanced` chỉ nạp
-   `edu-theme.css` + `studio-tokens.css` (xem STUDIO_CSS trong
-   `app/(standalone)/lesson/python_advanced/page.tsx`). Quy tắc
-   `button:focus-visible` toàn cục thì nằm ở `public/static/css/auth.css` và
-   `lesson_db_design.css` — HAI file màn học bài KHÔNG nạp, và layout gốc cũng
-   không import CSS global nào. Hệ quả đo được: chỉ bốn nút của khung này (đóng
-   bài, đoạn tiến độ, CTA chính, nút phụ) cộng vài chỗ tự khai (ô soạn mã,
-   SoQuyGame, nút mở hình lý thuyết) là có vòng tiêu điểm. MỌI thứ còn lại trong
-   16 loại màn — thẻ token của "Phân loại", ô trống ①②③ của "Lắp ghép khung mã",
-   dòng lệnh trong kho của "Ghép code", phương án trắc nghiệm, dòng code của
-   "Săn lỗi", nút "Đặt lại các ô"/"Gỡ dòng cuối" — Tab tới được nhưng KHÔNG VẼ
-   GÌ. Người dùng bàn phím đi được nhưng không biết mình đang ở đâu: cả bài học
-   thành một mê cung không con trỏ.
-
-   Viết bằng `:where()` cho CẢ hai vế nên độ đặc hiệu chỉ là (0,1,0) của
-   `:focus-visible` — mọi quy tắc tự khai ở trên và ở các module khác
-   (`.closeBtn:focus-visible`, `textarea.codeBody:focus-visible`,
-   `.playBtn:focus-visible`…) đều THẮNG. Đây là lưới an toàn, không phải lớp đè.
-   Bọc trong `.chrome` nên không rò sang trang khác. */
-:where(.chrome)
-  :where(button, a, input, textarea, select, summary, [tabindex]):focus-visible {
-  outline: 3px solid var(--ds-violet);
+  outline: 3px solid var(--edu-accent-3);
   outline-offset: 3px;
 }
 
@@ -417,7 +355,7 @@ button.segment:focus-visible,
 
 /* Màn vừa: bỏ khoảng đệm lớn bên trái nhãn lưu. */
 @media (max-width: 1180px) {
-  .leftSlot {
+  .saveLabel {
     padding-left: 0;
   }
 }
@@ -429,7 +367,11 @@ button.segment:focus-visible,
   }
   .lessonContext {
     flex-basis: 180px;
-    font-size: var(--ds-fs-label);
+    font-size: 14px;
+  }
+  .streakPill {
+    min-width: 0;
+    padding: 0 12px;
   }
 }
 
@@ -459,7 +401,7 @@ button.segment:focus-visible,
   }
   .saveLabel {
     max-width: 96px;
-    font-size: var(--ds-fs-label);
+    font-size: 11px;
     line-height: 1.3;
     white-space: normal;
   }
@@ -467,45 +409,30 @@ button.segment:focus-visible,
     flex: 1;
     min-width: 132px;
     height: 48px;
-    font-size: var(--ds-fs-ui);
+    font-size: 14px;
   }
   .secondarySlot {
     order: -1;
   }
-  /* Điện thoại: nút lùi chỉ còn mũi tên (tên vẫn đọc qua aria-label), nhãn
-     lưu nhường chỗ — 320px không đủ cho cả nút lùi, nút chính và nút phụ. */
-  .leftSlot {
-    gap: 8px;
-  }
-  .prevText {
-    display: none;
-  }
-  .prevBtn ~ .saveLabel {
-    display: none;
-  }
   .secondaryBtn {
     height: 48px;
     padding: 0 12px;
-    /* Nút phụ trên điện thoại là chỗ duy nhất trong khung dùng cỡ NHÃN thay
-       vì cỡ nút: ở bề ngang 320px, nút chính (tối thiểu 132px) cộng nút phụ
-       ở 17px không còn đủ chỗ. 15px vẫn nằm trong mức "nhãn/chip 14–15px". */
-    font-size: var(--ds-fs-label);
+    font-size: 12px;
   }
 }
 
-/* Ô điểm của khoá có mini-game, đứng cuối thanh. Không đặt `margin-left: auto`
-   nữa (nhãn bước đã giữ việc đó): hai mục cùng `auto` thì khoảng trống bị CHIA
-   ĐÔI, "3/8" rơi vào giữa thanh thay vì nằm cạnh ô điểm. */
+/* Ô điểm của khoá có mini-game: cùng dáng pill streak, đứng ngay trước nó. */
 .scorePill {
+  margin-left: auto;
   height: 34px;
-  background: var(--ds-violet-tint);
-  color: var(--ds-violet-deep);
+  background: var(--edu-accent-soft);
+  color: var(--edu-accent-text);
   border-radius: 17px;
   padding: 0 14px;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: var(--ds-fs-label);
+  font-size: 14px;
   font-weight: 700;
   white-space: nowrap;
 }

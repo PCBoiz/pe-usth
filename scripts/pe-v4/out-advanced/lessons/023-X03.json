@@ -214,26 +214,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "?",
-            "hint": "Chỗ giữ cho giá trị để sqlite3 tự chèn — đừng ghép vào chuỗi SQL"
+            "answer": "?"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "(city,)",
-            "hint": "Dãy tham số của câu SQL — một phần tử vẫn phải là tuple"
+            "answer": "(city,)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "SUM(amount)",
-            "hint": "Biểu thức tổng hợp cộng cả cột tiền ngay trong SQL"
+            "answer": "SUM(amount)"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "fetchone()",
-            "hint": "Lấy MỘT dòng kết quả, để row[0] là con số"
+            "answer": "fetchone()"
           }
         ],
         "bank": [

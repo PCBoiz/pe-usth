@@ -22,7 +22,7 @@ export default function Multi({ instruction, options, selected, onToggle, correc
   return (
     <div>
       {instruction && (
-        <p style={{ fontSize: 'var(--ds-fs-body)', color: 'var(--ds-soft)', margin: '0 0 16px' }}>{instruction}</p>
+        <p style={{ fontSize: 13, color: 'var(--edu-t3)', margin: '0 0 16px' }}>{instruction}</p>
       )}
       <div className={styles.optionsList}>
         {options.map((opt) => {
@@ -37,10 +37,7 @@ export default function Multi({ instruction, options, selected, onToggle, correc
               ? styles.optionWrong
               : isSelected
                 ? styles.optionSelected
-                : checked
-                  // Xem chú thích cùng chỗ ở Mcq.tsx: hạ cấp màu, không hạ độ đục.
-                  ? styles.optionDim
-                  : styles.optionCard;
+                : styles.optionCard;
 
           return (
             <button
@@ -50,6 +47,7 @@ export default function Multi({ instruction, options, selected, onToggle, correc
               onClick={() => onToggle(opt.key)}
               disabled={checked}
               aria-pressed={isSelected}
+              style={checked && !isRight && !isWrong ? { opacity: 0.55 } : undefined}
             >
               <span
                 className={isSelected || isRight ? styles.checkboxSelected : styles.checkbox}

@@ -22,10 +22,10 @@ const SHOTS = process.env.E2E_SHOTS;
 
 type Row = { lesson_code: string; sort_order: number; title: string; xp_reward: number; content_json: StudioLesson };
 const rows: Row[] = JSON.parse(readFileSync(BUNDLE, 'utf8')).lessons;
-// 15/10/2026 — bỏ `v1Rows` (giáo trình khoá `python` cũ, studio-lesson/v1) và ca
-// kiểm luồng v1: route /lesson/python đã xoá. Khoá `python` không còn trong danh
-// mục (src/lib/catalog.ts) và `prisma/seed-courses.js` nay dựng nó RỖNG, nên ca
-// đó chỉ còn xanh nhờ chính mock trong file này — nó không canh gì thật nữa.
+/** Giáo trình khoá `python` cũ (studio-lesson/v1) — để kiểm tra không bị ảnh hưởng. */
+const v1Rows: Row[] = JSON.parse(
+  readFileSync(join(__dirname, '..', '..', 'scripts', 'pe-v3', 'out', 'lessons.json'), 'utf8'),
+).lessons;
 
 if (process.env.PW_CHANNEL) test.use({ channel: process.env.PW_CHANNEL });
 test.use({ viewport: { width: 1280, height: 900 } });
@@ -60,13 +60,13 @@ async function mockApi(page: Page) {
         ok: true,
         enrolled: [
           { id: 'python_advanced', courseId: 'python_advanced', totalLessons: rows.length },
+          { id: 'python', courseId: 'python', totalLessons: v1Rows.length },
         ],
       });
-    // Không còn stub /api/stats: nó chỉ trả `streak` cho pill chuỗi ngày, mà
-    // chuỗi ngày đã gỡ khỏi trang bài học nên không trang nào gọi route này nữa.
-    const content = /^\/api\/courses\/(python_advanced)\/lessons\/(\d+)\/content$/.exec(url.pathname);
+    if (url.pathname === '/api/stats') return json(route, { streak: 4 });
+    const content = /^\/api\/courses\/(python_advanced|python)\/lessons\/(\d+)\/content$/.exec(url.pathname);
     if (content) {
-      const row = rows[Number(content[2]) - 1];
+      const row = (content[1] === 'python' ? v1Rows : rows)[Number(content[2]) - 1];
       return json(route, { ok: true, completed: false, lesson: { title: row.title, xpReward: row.xp_reward, contentJson: row.content_json } });
     }
     const done = /^\/api\/lessons\/(\d+)\/complete$/.exec(url.pathname);
@@ -258,6 +258,18 @@ test.describe('Python Advanced — chơi hết bài', () => {
       await playLesson(page, code);
     });
   }
+
+  test('khoá python cũ (v1) giữ nguyên luồng S1–S4, không có điểm hay game', async ({ page }) => {
+    await page.goto('/lesson/python?lesson=0');
+    await expect(page.locator('[data-cta="primary"]')).toHaveText(/Tiếp tục/, { timeout: 60_000 });
+    await expect(page.getByText(/Python · /)).toBeVisible();
+    await expect(page.getByLabel(/điểm$/)).toHaveCount(0);
+    // Luồng v1 của B01: brief, giải thích, ngộ nhận, dự đoán, 2 trắc nghiệm, tự giải thích,
+    // lắp ghép, nhật ký, tái dự đoán, sandbox, tổng kết = 12 màn.
+    await expect(page.getByText('1/12')).toBeVisible();
+    await page.locator('[data-cta="primary"]').click();
+    await expect(page.getByText(/S1 · Giải thích từng dòng/)).toBeVisible();
+  });
 
   test.describe('điện thoại 390px', () => {
     test.use({ viewport: { width: 390, height: 844 } });

@@ -37,10 +37,6 @@ import { withAssetVersion } from '@/lib/assetVersion';
  * edu-*), đủ an toàn vì chúng đều là CSS riêng của một trang.
  */
 const RANK: Record<string, number> = {
-  // @font-face của Be Vietnam Pro + JetBrains Mono. Hạng 9 — TRƯỚC mọi file
-  // khác: @font-face vốn không phụ thuộc thứ tự, nhưng đặt đầu thì yêu cầu
-  // .woff2 nổ sớm nhất có thể, bớt một nhịp đổi phông.
-  'edu-fonts.css': 9,
   'theme.css': 10,
   'auth.css': 11,
   'style.css': 12,
@@ -53,15 +49,9 @@ const RANK: Record<string, number> = {
   'login.css': 19,
   'register.css': 20,
   'questionaire.css': 21,
-  // Hạng 22 từng là 'lesson.css' (và 44 là 'edu-lesson.css'). Hai file đó chỉ
-  // được nạp bởi /lesson/java, /lesson/htmlcss và /interface — ba trang đã xoá
-  // 15/10/2026 — nên file cũng đã xoá khỏi public/static/css. Để lại tên trong
-  // bảng thì hạng vẫn được ghim ở layout gốc cho một file không còn tồn tại.
+  'lesson.css': 22,
   'lesson_db_design.css': 23,
-  // Hạng 24 từng là 'chatbot.css'. Ba trang /courses/db_design* là chỗ cuối cùng
-  // nạp nó; bỏ dòng nạp ở đó (15/10/2026) thì không trang nào còn nạp, nên file
-  // CSS cũng xoá — cùng lý lẽ với 'lesson.css' ở trên: giữ tên trong bảng là ghim
-  // một hạng cho file không còn tồn tại.
+  'chatbot.css': 24,
   'course_detail.css': 25,
   'course_db_design.css': 26,
   // các file pages/*.inline.css → 30 (mặc định)
@@ -69,6 +59,7 @@ const RANK: Record<string, number> = {
   'edu-dashboard.css': 41,
   'edu-course-detail.css': 42,
   'edu-db.css': 43,
+  'edu-lesson.css': 44,
   'edu-auth.css': 45,
   'edu-forms.css': 46,
   'edu-card.css': 47,
@@ -91,27 +82,6 @@ const DEFAULT_RANK = 30;
  */
 const RESPONSIVE_CSS = '/static/css/edu-responsive.css';
 
-/**
- * Khai báo @font-face, cũng tự thêm vào MỌI trang và cùng một lý lẽ: sót một
- * trang là trang đó vẽ bằng phông dự phòng của hệ điều hành trong khi `--edu-font`
- * vẫn nói 'Be Vietnam Pro'. Không gộp vào edu-theme.css để bản thân phông có
- * một tệp riêng cache được độc lập (phông gần như không bao giờ đổi, còn
- * edu-theme.css thì đổi theo mỗi đợt sửa giao diện).
- */
-const FONTS_CSS = '/static/css/edu-fonts.css';
-
-/**
- * Bảng token --ds-* của bản thiết kế v2, cũng toàn cục kể từ 15/10/2026.
- *
- * Vì sao không chỉ nạp ở những trang đã chuyển: `SiteHeader` dùng --ds-* và nó
- * có mặt ở trang chủ, trang khoá, /ide và /practice. Một trang quên nạp là
- * header ở đó vẽ bằng biến không tồn tại — `color: var(--ds-ink)` không có giá
- * trị thì thuộc tính bị bỏ, chữ rơi về màu thừa hưởng, nền mất hẳn. Đó là loại
- * lỗi chỉ hiện ra ở đúng một trang nên rất dễ lọt. File chỉ khai biến (không
- * một quy tắc nào áp lên phần tử) nên nạp ở trang chưa chuyển là vô hại.
- */
-const TOKENS_CSS = '/static/css/studio-tokens.css';
-
 /** Tên nhóm precedence — React xếp <head> theo thứ tự nhóm được đăng ký. */
 export function cssPrecedence(href: string): string {
   const file = href.split('/').pop() || href;
@@ -127,10 +97,8 @@ export const ALL_PRECEDENCES: string[] = Array.from(
   .map((r) => `pe${String(r).padStart(3, '0')}`);
 
 export default function PageStyles({ hrefs }: { hrefs: string[] }) {
-  // Lọc trùng phòng khi một trang đã tự liệt kê các file toàn cục (trang bài
-  // học vẫn liệt kê studio-tokens.css trong tổ hợp của nó — thứ tự ở đó là
-  // phần của hợp đồng, nên giữ chỗ cũ chứ không để Set đẩy lên đầu).
-  const all = [...new Set([FONTS_CSS, ...hrefs, TOKENS_CSS, RESPONSIVE_CSS])];
+  // Lọc trùng phòng khi một trang đã tự liệt kê file co giãn.
+  const all = hrefs.includes(RESPONSIVE_CSS) ? hrefs : [...hrefs, RESPONSIVE_CSS];
   return (
     <>
       {all.map((href) => (

@@ -1,15 +1,5 @@
 import * as Joi from 'joi';
 
-// Số lượt cho phép trong một cửa sổ throttle: phải là số nguyên >= 1. 0 nghĩa
-// là chặn mọi request — không ai cố ý đặt vậy, đó là dấu hiệu biến để trống.
-const throttleLimit = (mac_dinh: number) =>
-  Joi.number().integer().min(1).max(10_000_000).default(mac_dinh);
-
-// Độ dài cửa sổ throttle, tính bằng GIÂY (nơi dùng bọc seconds(...)): 1 giây
-// tới 1 ngày.
-const throttleTtl = (mac_dinh: number) =>
-  Joi.number().integer().min(1).max(86_400).default(mac_dinh);
-
 export const envValidationSchema = Joi.object({
   PORT: Joi.number().integer().min(1).max(65535).default(5000),
 
@@ -26,59 +16,6 @@ export const envValidationSchema = Joi.object({
     then: Joi.string().valid('false'),
     otherwise: Joi.string().valid('true', 'false'),
   }),
-
-  // ---- Rate limit & proxy --------------------------------------------------
-  //
-  // GIỚI HẠN CỦA PHẦN NÀY — đọc trước khi sửa: các biến dưới đây được đọc
-  // THẲNG từ process.env ở nơi dùng, phần lớn ngay lúc nạp class
-  // (`@Throttle({ limit: Number(process.env.X ?? 10) })` là decorator, chạy
-  // trước khi ConfigModule validate). Vì vậy Joi KHÔNG đổi được giá trị code
-  // nhìn thấy: `.default()` ở đây chỉ để ghi lại mặc định, và phải trùng với
-  // `?? <số>` ở nơi dùng. Việc Joi làm được là TỪ CHỐI KHỞI ĐỘNG khi giá trị
-  // sai — đúng cái cần, vì các lỗi dưới đây đều im lặng:
-  //   - `THROTTLE_PY_RUN_LIMIT=` để trống → `?? 10` không áp (chuỗi rỗng không
-  //     phải undefined) → Number('') = 0 → mọi lượt Chạy bị 429.
-  //   - gõ "1o" thay "10" → NaN → throttler so sánh với NaN, không bao giờ chặn.
-  //   - `TRUST_PROXY_HOPS=one` → NaN → `NaN > 0` là false → trust proxy TẮT,
-  //     cả hệ thống chung một bucket IP của proxy mà không ai biết.
-  // Không có .empty(''): chuỗi rỗng phải bị từ chối, không được coi như "chưa đặt".
-  //
-  // Nơi dùng: throttle.config.ts, auth.controller.ts, python-runner.controller.ts,
-  // notifications.controller.ts, fixed-window-throttler.storage.ts,
-  // api-gateway.setup.ts. Thêm biến THROTTLE_* mới thì khai ở đây.
-  THROTTLE_IP_HOUR_LIMIT: throttleLimit(1000),
-  THROTTLE_IP_DAY_LIMIT: throttleLimit(10000),
-  THROTTLE_LOGIN_LIMIT: throttleLimit(20),
-  THROTTLE_LOGIN_TTL_SECONDS: throttleTtl(60),
-  THROTTLE_REGISTER_LIMIT: throttleLimit(10),
-  THROTTLE_REGISTER_TTL_SECONDS: throttleTtl(60),
-  THROTTLE_GUEST_LIMIT: throttleLimit(120),
-  THROTTLE_GUEST_TTL_SECONDS: throttleTtl(3600),
-  THROTTLE_BADGE_LIMIT: throttleLimit(240),
-  THROTTLE_PY_RUN_LIMIT: throttleLimit(10),
-  THROTTLE_PY_RUN_TTL_SECONDS: throttleTtl(60),
-  THROTTLE_PY_TRACE_LIMIT: throttleLimit(10),
-  THROTTLE_PY_TRACE_TTL_SECONDS: throttleTtl(60),
-  // Chu kỳ quét key hết hạn của FixedWindowThrottlerStorage; 0/NaN làm
-  // setInterval chạy liên tục hoặc không bao giờ dọn.
-  THROTTLE_SWEEP_INTERVAL_MS: Joi.number()
-    .integer()
-    .min(1000)
-    .max(3_600_000)
-    .default(60_000),
-  THROTTLE_MAX_KEYS: Joi.number()
-    .integer()
-    .min(1000)
-    .max(10_000_000)
-    .default(200_000),
-
-  // Số reverse proxy phía trước (Express 'trust proxy' dạng SỐ HOP). Chỉ nhận
-  // số nguyên 0–3: không có hạ tầng nào của dự án có hơn 3 lớp proxy, và đặt
-  // CAO hơn số proxy thật là hướng nguy hiểm — req.ip rơi vào phần
-  // X-Forwarded-For do client tự bịa, vượt được mọi rate-limit theo IP. Không
-  // nhận 'true' vì cùng lý do (xem api-gateway.setup.ts). Giá trị đúng cho
-  // production phải ĐO, không suy luận — xem runner/README.md mục TRUST_PROXY_HOPS.
-  TRUST_PROXY_HOPS: Joi.number().integer().min(0).max(3).default(0),
 
   DATABASE_URL: Joi.string().required(),
   DIRECT_URL: Joi.string().required(),
@@ -150,11 +87,7 @@ export const envValidationSchema = Joi.object({
   PY_RUNNER_MODE: Joi.string().valid('local', 'remote').default('local'),
   // Chỉ bắt buộc khi PY_RUNNER_MODE=remote — module tự getOrThrow lúc khởi động.
   RUNNER_URL: Joi.string().uri().optional(),
-  // >= 32 ký tự, KHỚP runner (runner/src/config.ts từ chối khoá < 32 sau trim).
-  // Trước đây ở đây là min(16): khoá 16–31 ký tự qua được backend nhưng runner
-  // không bao giờ khởi động với khoá đó, nên lỗi chỉ lộ ra lúc chạy dưới dạng
-  // 401/503 thay vì chặn ngay khi deploy. .env.example cũng đã ghi ">= 32".
-  RUNNER_SECRET: Joi.string().min(32).optional(),
+  RUNNER_SECRET: Joi.string().min(16).optional(),
   // true → POST /api/python/run KHÔNG đòi JWT (lúc khởi động có cảnh báo). Mặc định
   // false. KHÔNG chặn khởi động ở production: route được bảo vệ bằng lớp mạng ở
   // reverse proxy. .empty(''): `PY_RUNNER_PUBLIC=` để trống coi như chưa đặt.

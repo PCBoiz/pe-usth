@@ -6,7 +6,7 @@
  * KHÔNG được các thư viện chuyển SVG→PNG thuần (cairosvg, rsvg) hiểu — chúng vẽ
  * khung hình gốc, nhiều khi là trạng thái "chưa chạy" nên thiếu nhãn. Ở đây ta mở
  * hình trong Chromium với `prefers-reduced-motion: reduce`: theo chuẩn vẽ của
- * scripts/pe-v4/CONTRACT-THEORY.md, mọi hình phải tắt animation ở chế độ này và đứng ở TRẠNG
+ * CONTRACT-THEORY.md, mọi hình phải tắt animation ở chế độ này và đứng ở TRẠNG
  * THÁI HOÀN CHỈNH — đúng cái cần in ra giấy.
  *
  * Chạy (từ thư mục gốc repo):

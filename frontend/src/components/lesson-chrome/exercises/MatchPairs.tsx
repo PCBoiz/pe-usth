@@ -27,8 +27,8 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
           display: 'grid',
           gridTemplateColumns: '1fr 1fr',
           gap: 10,
-          background: 'var(--ds-card)',
-          border: '1px solid var(--ds-line)',
+          background: 'var(--edu-panel-bg-solid)',
+          border: '1px solid var(--edu-sidebar-border)',
           borderRadius: 12,
           padding: 16,
         }}
@@ -49,10 +49,9 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
                 onClick={() => onPickLeft(item.id)}
                 className={styles.optionCard}
                 style={{
-                  borderColor: isPending ? 'var(--ds-violet)' : isMatched ? 'var(--st-ok-line)' : undefined,
-                  background: isMatched ? 'var(--st-ok-bg)' : isPending ? 'var(--ds-violet-tint)' : undefined,
-                  // Cặp đã ghép KHÔNG làm mờ bằng opacity: nền ochre nhạt +
-                  // viền ochre đã nói đủ, mà chữ vẫn giữ nguyên 14,34:1.
+                  borderColor: isPending ? 'var(--edu-accent)' : isMatched ? 'var(--st-ok-line)' : undefined,
+                  background: isMatched ? 'var(--st-ok-bg)' : isPending ? 'var(--edu-accent-soft)' : undefined,
+                  opacity: isMatched ? 0.7 : 1,
                   justifyContent: 'flex-start',
                 }}
               >
@@ -72,12 +71,9 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
                 onClick={() => onPickRight(item.id)}
                 className={styles.optionCard}
                 style={{
-                  borderColor: isMatched
-                    ? 'var(--st-ok-line)'
-                    // Chưa chọn đầu trái thì cột phải chưa bấm được: hạ VIỀN
-                    // về `line` thay cho `opacity: .5` (chữ còn 3,6:1).
-                    : pendingLeft ? undefined : 'var(--ds-line)',
+                  borderColor: isMatched ? 'var(--st-ok-line)' : undefined,
                   background: isMatched ? 'var(--st-ok-bg)' : undefined,
+                  opacity: isMatched ? 0.7 : pendingLeft ? 1 : 0.5,
                   justifyContent: 'flex-start',
                 }}
               >
@@ -89,7 +85,7 @@ export default function MatchPairs({ left, right, matched, pendingLeft, onPickLe
       </div>
       {/* Ghép đúng một cặp thì hai mục chỉ đổi sang nền xanh rồi tắt — số cặp
           đã ghép là chỗ duy nhất báo "vừa ăn một cặp", nên để nó tự đọc lên. */}
-      <div style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)', marginTop: 10 }} role="status">
+      <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 10 }} role="status">
         Đã ghép {Object.keys(matched).length}/{left.length} cặp
       </div>
     </div>

@@ -1,48 +1,22 @@
 'use client';
 
-// Chi tiết khoá học — dữ liệu đến từ danh mục tĩnh (src/lib/catalog.ts), phần
-// vẽ nằm trọn trong `CourseShell.module.css` (bảng kem --ds-* của bản thiết kế
-// v2).
+// Chi tiết khóa học — giữ khung/class của bản cũ (edu-course-detail.css,
+// course_detail.css) để màu sắc và bố cục không đổi, nhưng dữ liệu nay đến từ
+// danh mục tĩnh (src/lib/catalog.ts) thay vì API.
 //
-// ── 15/10/2026: BỎ HAI FILE CSS LEGACY VÀ FONT AWESOME ────────────────
-// Trước bản này trang vẽ bằng lớp TOÀN CỤC `.edu-cd-*` / `.cd-block*` của
-// `/static/css/edu-course-detail.css` + `/static/css/course_detail.css`, nên nó
-// là bề mặt cuối cùng còn ở bảng XANH DƯƠNG kế thừa bản Django. Người dùng
-// thấy được: thanh đầu trang (SiteHeader, đã kem) đứng trên thân trang xanh, và
-// đi trang chủ (kem) → trang khoá (xanh) → bài học (kem) là hai cú giật màu.
+// Đã bỏ cùng với trang đăng nhập: thẻ tiến độ, nút Đăng ký/Hủy đăng ký, quiz ôn
+// tập (cần ≥ 5 bài đã hoàn thành) và bài demo dành cho quản trị. Cả bốn đều đọc
+// /api/enrolled hoặc /api/user — route đòi JWT, khách không có để gửi — nên nếu
+// giữ thì khách nào cũng thấy trạng thái "chưa đăng ký" sai sự thật.
 //
-// Vì sao chuyển sang CSS module thay vì sửa hai file legacy đó: lý lẽ đầy đủ ở
-// đầu `CourseShell.module.css`. Tóm tắt: `edu-course-detail.css` còn được ba
-// trang `/courses/db_design*` nạp, và tên lớp CSS module bị băm nên không
-// selector legacy nào khớp được nữa — kể cả hai dòng `!important` của
-// edu-theme.css đang đè `.cd-block`.
-//
-// Cũng bỏ `<link>` Font Awesome: trang này nay chỉ còn MỘT hệ biểu tượng là
-// SVG nội tuyến. Trước đó nó dùng BA hệ cùng lúc — Font Awesome qua CDN (5
-// icon ở khối "KHOÁ HỌC BAO GỒM"), SVG nội tuyến (mũi tên quay lại) và EMOJI
-// (📚 📋 📌 làm icon tiêu đề mục, ▶ trong tên nút). Emoji trong tên nút là lỗi
-// trợ năng thật: trình đọc màn hình đọc TÊN KÝ TỰ trước nhãn nút. Hai trang
-// còn dùng Font Awesome (`CourseDbDesign.tsx`, `/card/[cardId]`) tự nạp link
-// của riêng chúng nên không ảnh hưởng.
-//
-// Không còn nạp course_detail.js/edu-chrome.js: hai file đó chỉ phục vụ nút
+// Cũng không còn nạp course_detail.js/edu-chrome.js: hai file đó chỉ phục vụ nút
 // Đăng ký, goLesson() và chuông thông báo của Sidebar/HeaderBar đã gỡ.
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
-import { apiFetchSessionOnly, asList, findEnrollment } from '@/lib/api';
 import { findCourse, LEVEL_LABEL } from '@/lib/catalog';
-import {
-  completedLessonSet,
-  loadCompletedLessons,
-  LS_ACCESS,
-  LS_LEGACY_REFRESH,
-  planResume,
-  resumeButtonLabel,
-  type ResumePlan,
-} from '@/lib/course-progress';
 import CURRICULA_JSON from '@/lib/curricula.json';
 
 import styles from '@/components/CourseShell.module.css';
@@ -55,188 +29,43 @@ type Curriculum = {
 };
 const CURRICULA = CURRICULA_JSON.CURRICULA as Record<string, Curriculum>;
 
-/**
- * 15/10/2026 — GỠ HẲN khối "Đánh giá của học viên".
- *
- * Nó gồm hai thứ giả, và cả hai đều giả theo kiểu tệ nhất là người xem không
- * nhận ra:
- *  · 4,8 sao "đánh giá trung bình" — con số viết cứng trong `src/lib/catalog.ts`
- *    (`rating: 4.8`), không có một đánh giá nào ở sau nó. Trường đó cũng đã gỡ.
- *  · ô chấm sao của người xem (`StarRating`, `RATE_LABELS`) — bấm vào thì sao
- *    sáng lên rồi mất khi tải lại trang: điểm không gửi đi đâu, không lưu đâu,
- *    đúng như ghi chú "tính năng đang được phát triển" ngay dưới nó.
- * Buổi dùng thử với giảng viên và sinh viên: thấy một con số bịa là mất lòng
- * tin vào mọi con số khác trên trang (48 bài, tiến độ, "đã xong"). Có bảng đánh
- * giá thật trong DB thì dựng lại; tới lúc đó, không có khối này là trung thực.
- */
+const RATE_LABELS: Record<number, string> = {
+  0.5: 'Quá tệ', 1: 'Rất tệ', 1.5: 'Tệ', 2: 'Không tốt',
+  2.5: 'Tạm được', 3: 'Bình thường', 3.5: 'Khá ổn',
+  4: 'Tốt', 4.5: 'Rất tốt', 5: 'Xuất sắc! 🎉',
+};
 
 /**
- * Biểu tượng — MỘT hệ duy nhất cho cả trang: SVG nội tuyến, nét 2 (bản thiết
- * kế §1.2 chốt "Icon SVG, chevron 18px, nét 2,4" thay cho mũi tên ký tự).
- *
- * Mọi icon ở đây đều TRANG TRÍ: ngay cạnh chúng luôn có chữ nói cùng một
- * điều, nên để `aria-hidden` là đúng — đọc thêm tên icon chỉ làm dài câu mà
- * không thêm thông tin. Icon nào MANG thông tin thì phải có nhãn chữ, không
- * được để trần ở đây.
+ * Ô chấm sao — do React giữ, không do course_detail.js (file legacy gắn sự kiện
+ * một lần lúc nạp nên đổi khóa bằng client-side routing là các sao thành trơ).
+ * Điểm chỉ nằm trong trang này, chưa lưu đi đâu (đúng ghi chú "đang phát triển").
  */
-const ICON_PATHS = {
-  chevronLeft: 'm15 18-6-6 6-6',
-  chevronRight: 'm9 18 6-6-6-6',
-  // "Nội dung khoá học" — quyển sách mở
-  book: 'M2 5h7a3 3 0 0 1 3 3v11a3 3 0 0 0-3-3H2zM22 5h-7a3 3 0 0 0-3 3v11a3 3 0 0 1 3-3h7z',
-  // "Tổng quan khoá học" — bảng kẹp
-  clipboard: 'M9 4h6v3H9zM8 5.5H6a2 2 0 0 0-2 2V20a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5a2 2 0 0 0-2-2h-2',
-  // "Yêu cầu" — ghim
-  pin: 'M12 17v5M9 3h6l-1 6 3 3v2H7v-2l3-3z',
-  clock: 'M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z',
-  /* "Mọi bài mở sẵn, không khoá theo thứ tự" — ĐƯỜNG ĐI, không phải ổ khoá.
-
-     Trước bản này dòng đó mang icon `unlock` (`M7 11V7a5 5 0 0 1 9.9-1M5
-     11h14v10H5z`): một ổ KHOÁ vẽ ngay cạnh câu nói KHÔNG có khoá. Hình ở lại
-     trong đầu lâu hơn câu phủ định, nên người học đọc xong vẫn nhớ "có khoá".
-     Bản thiết kế dành hai mục cho đúng chuyện này (§0.3 "Màn này nói không
-     khoá, màn kia vẽ ổ khoá"; §2.2 "Chưa mở = nét đứt + ổ khoá" → "chưa học =
-     nét đứt + số bài"). Đường gấp khúc nối hai chặng nói đúng thứ dòng chữ
-     nói: có một lộ trình, và không chốt nào trên đó. */
-  route: 'M6 20a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM18 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM16 6H9a3 3 0 0 0 0 6h6a3 3 0 0 1 0 6H8',
-  save: 'M5 3h11l3 3v15H5zM8 3v6h7V3M8 14h8v7H8z',
-  device: 'M7 2h10v20H7zM11 18h2',
-} as const;
-
-/**
- * MỘT cỡ duy nhất, 18px (bản thiết kế §1.4 "Nút chính": "chevron SVG 18").
- *
- * Trước bản này `size` là tham số và trang dùng BA cỡ — 18 mặc định, 15 ở nút
- * "Tất cả khoá học", 14 ở mũi tên accordion — tức ba cỡ cho cùng một vai (một
- * chevron đứng cạnh một dòng chữ). Bỏ tham số là cách rẻ nhất để cỡ thứ tư
- * không mọc thêm; cần cỡ khác thì phải sửa ở đây và nói vì sao.
- *
- * Cũng bỏ nhánh `fill` đặc: nó chỉ tồn tại cho icon `play`, mà `play` đã gỡ.
- */
-function Icon({ name }: { name: keyof typeof ICON_PATHS }) {
+function StarRating() {
+  const [rating, setRating] = useState(0);
+  const [hover, setHover] = useState(0);
+  const shown = hover || rating;
+  // Nửa trái ngôi sao = nửa điểm (giữ đúng hành vi cũ)
+  const half = (e: React.MouseEvent<HTMLDivElement>, i: number) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    return e.clientX - r.left < r.width / 2 ? i - 0.5 : i;
+  };
   return (
-    <svg
-      width={18}
-      height={18}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d={ICON_PATHS[name]} />
-    </svg>
-  );
-}
-
-function lsGet(key: string): string | null {
-  try {
-    return localStorage.getItem(key);
-  } catch {
-    return null; // chế độ riêng tư
-  }
-}
-
-/**
- * Nạp danh sách bài đã xong của người đang xem — hoặc KHÔNG nạp gì cả.
- *
- * Trả `null` nghĩa là "chưa biết" (chưa có phiên, hoặc API chưa trả về / lỗi):
- * trang phải hiện y như trang tĩnh hiện nay. Chỉ khi trả về một mảng thì mới
- * đổi nhãn nút và đánh dấu bài đã xong — tức thông tin tiến độ chỉ CỘNG THÊM,
- * không bao giờ làm trang tệ hơn bản tĩnh.
- *
- * HAI ĐIỀU TUYỆT ĐỐI KHÔNG ĐƯỢC PHÁ ở đây:
- *
- *  1. Chưa có phiên trong máy thì KHÔNG gọi API — thoát trước cả lời gọi đầu
- *     tiên. Nếu gọi, `/api/enrolled` trả 401 cho khách, và nếu lại dùng
- *     `apiFetch` thì nó rơi xuống `ensureGuest()`: mọi khách vãng lai và mọi
- *     con bot mở trang khoá (trang CÔNG KHAI, có trong sitemap) đều sinh một
- *     tài khoản khách trong bảng `users` và ăn một suất của
- *     THROTTLE_GUEST_LIMIT (mặc định 120 lượt/giờ/IP) — cả phòng máy chung một
- *     NAT sẽ bị 429 đúng lúc có người cần tài khoản thật.
- *  2. Dùng `apiFetchSessionOnly`, không dùng `apiFetch`: ngay cả khi cờ phiên
- *     nói sai (token cũ đã bị thu hồi), đường này cùng lắm là trả 401 chứ
- *     không tạo tài khoản mới.
- */
-function useCompletedLessons(courseId: string): number[] | null {
-  const [completed, setCompleted] = useState<number[] | null>(null);
-
-  useEffect(() => {
-    // Lượt render đầu trên server không có localStorage/document.cookie.
-    if (typeof window === 'undefined') return;
-
-    let alive = true;
-    void loadCompletedLessons({
-      session: {
-        access: lsGet(LS_ACCESS),
-        legacyRefresh: lsGet(LS_LEGACY_REFRESH),
-        cookie: typeof document === 'undefined' ? null : document.cookie,
-      },
-      // Hàm này CHỈ chạy khi cổng ở loadCompletedLessons xác nhận đã có phiên;
-      // khách vãng lai/bot không đi tới đây, nên không một lời gọi mạng nào.
-      fetchCompleted: async () => {
-        const res = await apiFetchSessionOnly('/api/enrolled');
-        if (!res.ok) return null; // 401 (phiên đã chết) / 5xx: coi như chưa biết
-        const data = (await res.json()) as unknown;
-        const row = findEnrollment(asList(data, 'enrolled'), courseId);
-        const raw = row?.completedLessonNumbers;
-        // Chưa ghi danh khoá này thì không có hàng nào -> vẫn là "chưa biết".
-        if (!Array.isArray(raw)) return null;
-        return raw.filter((n): n is number => typeof n === 'number');
-      },
-    }).then((list) => {
-      if (alive && list) setCompleted(list);
-    });
-
-    return () => {
-      alive = false;
-    };
-  }, [courseId]);
-
-  return completed;
-}
-
-/**
- * Thẻ "học tiếp": một tên bài và một cái nút.
- *
- * ===========================================================================
- * VÌ SAO NÓ TỪNG DÀI GẤP BỐN, VÀ VÌ SAO BỊ CẮT
- * ===========================================================================
- * Bản cũ có bốn lớp chú giải bao quanh đúng MỘT cái nút:
- *   · nhãn "Gợi ý bước tiếp · hệ thống chọn" — kể về cơ chế bên trong;
- *   · đoạn "Vì sao bài này: bạn đã xong 0/48 bài, và bài X là bài trống đầu
- *     tiên theo thứ tự giáo trình" (`resumeReason()`, đã gỡ khỏi
- *     `lib/course-progress.ts`) — giải thích phép tính của chính nó;
- *   · câu "Đây là gợi ý, không phải lệnh" — lời rào đón cho một gợi ý;
- *   · lối ra "Tự chọn bài", trong khi danh sách 48 bài nằm NGAY DƯỚI trên cùng
- *     trang này (`#cd-curriculum`) và đã đánh dấu bài được gợi ý.
- *
- * Cùng bốn lớp, cùng lý lẽ, cùng cách cắt như thẻ của trang chủ — luật rút ra
- * ghi đầy đủ ở đầu khối `nextStep` trong `lib/home-copy.ts`.
- */
-function ResumeCard({
-  plan,
-  title,
-  href,
-}: {
-  plan: ResumePlan;
-  title: string;
-  href: string;
-}) {
-  return (
-    <section className={styles.resumeCard} aria-labelledby="cd-resume-title">
-      <h2 className={styles.resumeTitle} id="cd-resume-title">
-        {`Bài ${plan.lessonNo}`}
-        {title ? ` · ${title}` : ''}
-      </h2>
-      <a className={`${styles.btn} ${styles.btnPrimary} ${styles.resumeBtn}`} href={href}>
-        <Icon name="chevronRight" />
-        {resumeButtonLabel(plan)}
-      </a>
-    </section>
+    <>
+      <div className="star-interactive" id="starInteractive" onMouseLeave={() => setHover(0)}>
+        {[1, 2, 3, 4, 5].map((i) => (
+          <div
+            className={`si-star${shown >= i ? ' star-full' : shown >= i - 0.5 ? ' star-half' : ''}`}
+            data-star={i}
+            key={i}
+            onMouseMove={(e) => setHover(half(e, i))}
+            onClick={(e) => setRating(half(e, i))}
+          >★</div>
+        ))}
+      </div>
+      <div className="user-rate-val" id="userRateVal">
+        {rating ? `${rating} ★  ${RATE_LABELS[rating] || ''}` : '—'}
+      </div>
+    </>
   );
 }
 
@@ -247,8 +76,6 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
    * đúng. Khoá theo chỉ số module; module đầu mở sẵn.
    */
   const [openModules, setOpenModules] = useState<Record<number, boolean>>({});
-  // Phải gọi TRƯỚC nhánh `if (!course)` — hook không được nằm sau return.
-  const completedRaw = useCompletedLessons(courseId);
 
   // Trang cha đã trả 404 cho mã lạ; nhánh này chỉ để thu hẹp kiểu.
   if (!course) return null;
@@ -257,41 +84,9 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   const modules = curriculum.modules || [];
   const outcomes = curriculum.skills || [];
   const requirements = curriculum.requirements || [];
-  /**
-   * Tổng số bài lấy từ chính danh sách đang render, không từ `course.lessons`:
-   * hai nguồn này đã từng lệch (xem bẫy "hai nguồn danh sách bài" trong
-   * AGENTS.md) và nếu lệch thì "đã xong 48/40" là con số vô nghĩa.
-   */
-  const flatTitles = modules.flatMap((m) => m.lessons);
-  const total = flatTitles.length || course.lessons;
-  const plan = planResume(completedRaw, total);
-  const doneSet = completedLessonSet(completedRaw, total);
-  // ?lesson= là chỉ số từ 0 (xem lesson/python_advanced/page.tsx); khoá khác bỏ qua tham số này.
-  const startUrl = `${course.lessonUrl}?lesson=${plan.index}`;
-  // Chưa có tiến độ (hoặc chưa biết) thì nhãn giữ NGUYÊN chữ cũ "Bắt đầu học".
-  const ctaLabel = resumeButtonLabel(plan);
-  // Neo của danh sách 48 bài (mục lục đầu trang trỏ vào đây).
-  const curriculumAnchor = 'cd-curriculum';
-  /**
-   * MỘT nút chính trên một màn, và nó nằm trong thẻ "học tiếp".
-   *
-   * Trước bản này trang có BA nút nền `--ds-action` cùng khung nhìn — hero,
-   * thẻ giá, thẻ gợi ý — và cả ba trỏ CÙNG một `startUrl`; hai trong số đó
-   * trùng nhau cả nhãn (`ctaLabel`) lẫn icon. Nút trong thẻ giá còn
-   * `width: 100%` nên nó là khối tím to nhất trang. Bản thiết kế §1.4 khai
-   * ĐÚNG MỘT `btn-primary` (và liệt "5 biến thể kích thước" là lỗi cần gộp,
-   * không phải giấy phép nhân bản), còn §1.4 "Khối hệ thống gợi ý" chốt rằng
-   * nút chính của màn nằm trong thẻ này.
-   *
-   * Vì sao hero không bị hạ VÔ ĐIỀU KIỆN: `ResumeCard` chỉ dựng khi
-   * `plan.kind !== 'start'`, nên khách mới KHÔNG có thẻ đó — hạ vô điều
-   * kiện là màn hình đầu tiên của người mới không còn nút chính nào.
-   *
-   * Vì sao nút trong thẻ không hạ xuống `btnSecondary` được: thẻ nền `ink`, mà
-   * `btnSecondary` là viền + chữ `ink` → tàng hình. (Cùng lý do đã ghi ở
-   * `CourseShell.module.css` cho vòng focus của `.resumeBtn`.)
-   */
-  const coTheGoiY = plan.kind !== 'start';
+  const ratingFill = Math.round((course.rating / 5) * 1000) / 10;
+  // ?lesson= là chỉ số từ 0 (xem lesson/python/page.tsx); khóa khác bỏ qua tham số này.
+  const startUrl = `${course.lessonUrl}?lesson=0`;
   // Nút góp ý đứng ngay cạnh "Bắt đầu học" vì đây là trang người thử quay lại
   // nhiều nhất; để tận trang chủ thì học xong phải lần ngược ra mới tìm thấy.
   // Không có link hợp lệ thì không dựng nút — xem feedbackHref().
@@ -300,256 +95,211 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
   let flatIdx = 0;
   return (
     <>
-      {/* Chỉ còn edu-theme.css, giống trang chủ: nó giữ `--edu-font` và vẽ các
-          trang legacy. Năm file bỏ đi (style/dashboard/pages/dark-mode/
-          edu-dashboard + hai file course detail) đã được ĐO trên trang thật là
-          KHÔNG thắng ở bất kỳ khối nào của trang này — chúng chỉ tô `body`,
-          mà `.page` dưới đây phủ kín khung nhìn nên nền body không còn lộ. */}
-      <PageStyles hrefs={['/static/css/edu-theme.css']} />
+      <PageStyles hrefs={[
+        '/static/css/style.css',
+        '/static/css/dashboard.css',
+        '/static/css/pages.css',
+        '/static/css/dark-mode.css',
+        '/static/css/course_detail.css',
+        '/static/css/edu-theme.css',
+        '/static/css/edu-dashboard.css',
+        '/static/css/edu-course-detail.css',
+      ]} />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-      <div className={styles.page}>
-        <div className={styles.shell}>
-          <SiteHeader />
+      <div className={styles.shell}>
+        <SiteHeader />
 
-          <div className={styles.content}>
-            {/* <a> thường: về trang chủ bằng tải lại trang, xem SiteHeader. */}
-            {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
-            <a className={styles.back} href="/">
-              <Icon name="chevronLeft" />
-              <span>Tất cả khoá học</span>
-            </a>
+        <div className={styles.content}>
+          {/* <a> thường: về trang chủ bằng tải lại trang, xem SiteHeader. */}
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+          <a className={styles.back} href="/">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6" /></svg>
+            <span>Tất cả khóa học</span>
+          </a>
 
-            <div className={styles.grid}>
-              {/* ── Cột trái ── */}
-              <div className={styles.main}>
-                {/* Hero */}
-                <div className={styles.hero}>
-                  <div className={styles.heroInfo}>
-                    {/* Dòng nhãn chỉ hiện khi khoá khai `tag`. Khoá không khai thì
-                        bỏ CẢ dòng — trước đây ghép cứng `[tag, cấp độ].join(' · ')`
-                        nên khoá thiếu thẻ sẽ in ra "undefined · Nâng cao", mà bỏ
-                        riêng thẻ thì còn trơ " · Nâng cao" treo trên tiêu đề. */}
-                    {course.tag && (
-                      <span className={styles.tag}>{`${course.tag} · ${LEVEL_LABEL[course.level]}`}</span>
-                    )}
-                    <h1 className={styles.title}>{course.title}</h1>
-                    <p className={styles.subtitle}>{course.subtitle}</p>
-                    <div className={styles.heroCta}>
+          <div className="edu-cd-grid">
+            {/* ── Cột trái ── */}
+            <div className="edu-cd-main">
+              {/* Hero */}
+              <div className="edu-cd-hero">
+                <div className="edu-cd-hero-info">
+                  {/* Dòng nhãn chỉ hiện khi khoá khai `tag`. Khoá không khai thì
+                      bỏ CẢ dòng — trước đây ghép cứng `[tag, cấp độ].join(' · ')`
+                      nên khoá thiếu thẻ sẽ in ra "undefined · Nâng cao", mà bỏ
+                      riêng thẻ thì còn trơ " · Nâng cao" treo trên tiêu đề. */}
+                  {course.tag && (
+                    <span className="edu-cd-tag">{`${course.tag} · ${LEVEL_LABEL[course.level]}`}</span>
+                  )}
+                  <h1 className="edu-cd-title">{course.title}</h1>
+                  <p className="edu-cd-subtitle">{course.subtitle}</p>
+                  <div className="edu-cd-hero-cta">
+                    <a className={`edu-cd-btn primary ${styles.lessonLink}`} href={startUrl}>▶ Bắt đầu học</a>
+                    {feedback && (
                       <a
-                        className={`${styles.btn} ${coTheGoiY ? styles.btnSecondary : styles.btnPrimary}`}
-                        href={startUrl}
+                        className={`edu-cd-btn ${styles.feedbackBtn}`}
+                        href={feedback}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        title="Khảo sát ẩn danh về khoá học, mở ở tab mới"
                       >
-                        <Icon name="chevronRight" />
-                        {ctaLabel}
+                        Góp ý cho chúng tôi
                       </a>
-                      {feedback && (
-                        <a
-                          className={`${styles.btn} ${styles.btnSecondary}`}
-                          href={feedback}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          title="Khảo sát ẩn danh về khoá học, mở ở tab mới"
-                        >
-                          {/* Đúng nhãn của `FEEDBACK.title` (lib/home-copy.ts).
-                              Thẻ góp ý ở trang chủ đã bỏ ngôi "chúng tôi" —
-                              góp ý đi về NHÓM LÀM KHOÁ, nói thẳng thế thì người
-                              bấm biết chữ mình viết tới tay ai; "cho chúng tôi"
-                              là khuôn nút góp ý của mọi trang SaaS và không nói
-                              góp ý về cái gì. Nút này là bản còn sót lại, nên
-                              hai chỗ in hai nhãn cho cùng một biểu mẫu.
-                              Canh bằng e2e/unit/home-page.test.mjs. */}
-                          Góp ý cho nhóm làm khoá
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                  <div className={styles.heroArt}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={course.image} alt={course.title} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    )}
                   </div>
                 </div>
+                <div className="edu-cd-hero-art">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={course.image} alt={course.title} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                </div>
+              </div>
 
-                {/* Nội dung khoá học (giáo trình) */}
-                <div className={styles.block} id={curriculumAnchor}>
-                  <div className={styles.blockHd}>
-                    <div className={styles.blockIcon}><Icon name="book" /></div>
-                    <h3 className={styles.blockTitle}>Nội dung khoá học</h3>
-                    <span className={styles.blockMeta}>
-                      {/* "chặng" và "bài", không phải "module"/"bài học": bảng
-                          thuật ngữ ở lib/home-copy.ts chốt một việc một từ, trang
-                          chủ in "8 chặng · 48 bài" và màn Thử thách ôn cũng nói
-                          "chặng". Trang khoá nằm GIỮA hai màn đó trên đúng luồng
-                          của người học, nên nó mà gọi tên khác là người học tưởng
-                          đây là hai thứ khác nhau. */}
-                      {modules.length} chặng · {total} bài
-                      {/* Chỉ thêm phần "đã xong" khi thật sự biết tiến độ; khách
-                          vãng lai vẫn thấy đúng dòng chữ như trước. */}
-                      {plan.completedCount > 0 && ` · đã xong ${plan.completedCount}/${total}`}
-                    </span>
-                  </div>
-                  <div className={styles.blockBody}>
-                    {modules.map((module, mi) => {
-                      const open = openModules[mi] ?? mi === 0;
-                      const bodyId = `cd-module-body-${mi}`;
-                      return (
-                        <div className={styles.module} key={mi}>
-                          {/* <button> chứ không <div onClick>: tiêu đề module là thứ
-                              duy nhất mở được danh sách bài, để <div> thì bàn phím
-                              không với tới (WCAG 2.1.1). */}
-                          <button
-                            type="button"
-                            className={`${styles.moduleHead}${open ? ` ${styles.moduleOpen}` : ''}`}
-                            aria-expanded={open}
-                            aria-controls={bodyId}
-                            onClick={() => setOpenModules((s) => ({ ...s, [mi]: !open }))}
-                          >
-                            <div className={styles.moduleArrow}><Icon name="chevronRight" /></div>
-                            <div className={styles.moduleName}>{module.title}</div>
-                            <div className={styles.moduleMeta}>{module.lessons.length} bài</div>
-                          </button>
-                          <div
-                            className={`${styles.moduleBody}${open ? ` ${styles.moduleBodyOpen}` : ''}`}
-                            id={bodyId}
-                          >
-                            <div className={styles.lessonList}>
-                              {module.lessons.map((title) => {
-                                const index = flatIdx++;
-                                const lessonNo = index + 1;
-                                const done = doneSet.has(lessonNo);
-                                // Bài được gợi ý — chỉ ĐÁNH DẤU, không khoá bài nào.
-                                const suggested = plan.kind === 'continue' && plan.lessonNo === lessonNo;
-                                // <a href> chứ không <div onClick>: cú bấm này điều
-                                // hướng, để trình duyệt lo Tab/Enter/chuột giữa.
-                                return (
-                                  <a
-                                    className={`${styles.lesson}`
-                                      + `${done ? ` ${styles.lessonDone}` : ''}`
-                                      + `${suggested ? ` ${styles.lessonNext}` : ''}`}
-                                    key={index}
-                                    data-done={done ? '1' : undefined}
-                                    href={`${course.lessonUrl}?lesson=${index}`}
-                                  >
-                                    {/* Ô số bài đổi thành dấu ✓ khi đã xong. Dấu
-                                        này aria-hidden nên tình trạng phải được
-                                        nói lại bằng CHỮ ở dòng meta dưới — người
-                                        dùng trình đọc màn hình không "thấy" được
-                                        màu hay dấu kiểm. */}
-                                    <div
-                                      className={`${styles.lessonIcon}${done ? ` ${styles.lessonIconDone}` : ''}`}
-                                      aria-hidden="true"
-                                    >
-                                      {done ? '✓' : lessonNo}
-                                    </div>
-                                    <div className={styles.lessonBody}>
-                                      <div className={styles.lessonTitle}>{title}</div>
-                                      <div className={styles.lessonMeta}>
-                                        Bài {lessonNo}
-                                        {done && ' · đã xong'}
-                                        {suggested && ' · gợi ý học tiếp'}
-                                      </div>
-                                    </div>
-                                  </a>
-                                );
-                              })}
-                            </div>
+              {/* Nội dung khóa học (giáo trình) */}
+              <div className="cd-block">
+                <div className="cd-block-hd">
+                  <div className="cd-block-icon">📚</div>
+                  <h3>Nội dung khóa học</h3>
+                  <span className={styles.blockMeta}>
+                    {modules.length} module · {course.lessons} bài học
+                  </span>
+                </div>
+                <div className="cd-block-body" style={{ paddingTop: 10 }}>
+                  {modules.map((module, mi) => {
+                    const open = openModules[mi] ?? mi === 0;
+                    const bodyId = `cd-module-body-${mi}`;
+                    return (
+                      <div className="edu-cd-module" key={mi}>
+                        {/* <button> chứ không <div onClick>: tiêu đề module là thứ
+                            duy nhất mở được danh sách bài, để <div> thì bàn phím
+                            không với tới (WCAG 2.1.1). */}
+                        <button
+                          type="button"
+                          className={`edu-cd-module-hd ${styles.moduleHead} ${open ? 'open' : ''}`}
+                          aria-expanded={open}
+                          aria-controls={bodyId}
+                          onClick={() => setOpenModules((s) => ({ ...s, [mi]: !open }))}
+                        >
+                          <div className="edu-cd-module-arrow" aria-hidden="true">▶</div>
+                          <div className="edu-cd-module-name">{module.title}</div>
+                          <div className="edu-cd-module-meta">{module.lessons.length} bài</div>
+                        </button>
+                        <div className={`edu-cd-module-body ${open ? 'open' : ''}`} id={bodyId}>
+                          <div className="edu-cd-lesson-list">
+                            {module.lessons.map((title) => {
+                              const index = flatIdx++;
+                              // <a href> chứ không <div onClick>: cú bấm này điều
+                              // hướng, để trình duyệt lo Tab/Enter/chuột giữa.
+                              return (
+                                <a
+                                  className={`edu-cd-lesson ${styles.lessonLink}`}
+                                  key={index}
+                                  data-clickable="1"
+                                  href={`${course.lessonUrl}?lesson=${index}`}
+                                >
+                                  <div className="edu-cd-lesson-icon" aria-hidden="true">{index + 1}</div>
+                                  <div className="edu-cd-lesson-body">
+                                    <div className="edu-cd-lesson-title">{title}</div>
+                                    <div className="edu-cd-lesson-meta">Bài {index + 1}</div>
+                                  </div>
+                                </a>
+                              );
+                            })}
                           </div>
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    );
+                  })}
                 </div>
-
-                {/* Tổng quan */}
-                <div className={styles.block}>
-                  <div className={styles.blockHd}>
-                    <div className={styles.blockIcon}><Icon name="clipboard" /></div>
-                    <h3 className={styles.blockTitle}>Tổng quan khoá học</h3>
-                  </div>
-                  <div className={styles.blockBody}>
-                    <p className={styles.desc}>{course.description}</p>
-                  </div>
-                </div>
-
-                {/* Yêu cầu */}
-                {requirements.length > 0 && (
-                  <div className={styles.block}>
-                    <div className={styles.blockHd}>
-                      <div className={styles.blockIcon}><Icon name="pin" /></div>
-                      <h3 className={styles.blockTitle}>Yêu cầu</h3>
-                    </div>
-                    <div className={styles.blockBody}>
-                      <ul className={styles.reqList}>
-                        {requirements.map((req, i) => (
-                          <li key={i}>{req}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-
-                {/* Khối "Đánh giá của học viên" đã gỡ — xem chú thích đầu file. */}
               </div>
 
-              {/* ── Cột phải ── */}
-              <div className={styles.side}>
-                {/* Thẻ gợi ý chỉ dựng khi ĐÃ BIẾT tiến độ (kind !== 'start').
-                    Khách vãng lai không có thẻ này — và cũng không có lời gọi API
-                    nào để biết, xem useCompletedLessons. */}
-                {coTheGoiY && (
-                  <ResumeCard plan={plan} title={flatTitles[plan.index] ?? ''} href={startUrl} />
-                )}
-
-                <div className={styles.card}>
-                  <div className={styles.price}>Miễn phí</div>
-
-                  {/* KHÔNG có nút ở đây. Nút cũ trùng NHÃN + ICON + HREF với nút
-                      hero, nên nó không thêm một lựa chọn nào — chỉ thêm một khối
-                      tím rộng hết cột. Thẻ này nay làm đúng một việc: nói giá rồi
-                      liệt kê khoá học có gì. Lớp `.startBtn` (width 100%) cũng xoá
-                      theo ở CourseShell.module.css vì không còn ai dùng. */}
-                  {/* KHOÁ HỌC BAO GỒM — hai dòng ở đây từng hứa thứ không có:
-                      · "Chứng chỉ hoàn thành": không có endpoint, không có màn,
-                        không có đường nào phát. Cột `users.certificates` là di sản
-                        bản Django, chỉ được ĐỌC ở `stats.service.ts`, không nơi nào
-                        tăng — nên nó đứng ở 0 với mọi người, mãi mãi.
-                      · "Truy cập vĩnh viễn": frontend không còn đăng nhập, ai vào
-                        cũng là tài khoản khách, mà hạn refresh mặc định là 8 giờ
-                        (cửa sổ TRƯỢT — xem `RefreshTokenService.issue()`). Hết hạn
-                        là mất tiến độ, ngược hẳn với "vĩnh viễn".
-                      Hai dòng thay thế nói đúng thứ đo được: không có cơ chế khoá
-                      bài nào trong repo, và tiến độ gắn với phiên. Cùng lý lẽ đã gỡ
-                      `rating: 4.8` ở a04c3cf — hiện số liệu bịa cho người thử là tự
-                      bắn vào chân mình. Canh bằng `e2e/unit/course-includes.test.mjs`. */}
-                  <div className={styles.includes}>
-                    <div className={styles.includesTitle}>KHOÁ HỌC BAO GỒM</div>
-                    {/* "bài", không phải "bài học": cột trái của CHÍNH trang này
-                        in "{modules.length} chặng · {total} bài" và có chú thích
-                        bảo vệ, rồi dòng này gọi cùng một thứ bằng tên khác —
-                        hai đơn vị trong một khung nhìn. Ca "chặng" của
-                        ds-wording.test.mjs nay cấm cả hai. */}
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="book" /></span> {course.lessons} bài</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="clock" /></span> {course.duration}</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="route" /></span> Mọi bài mở sẵn, không khoá theo thứ tự</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="save" /></span> Tiến độ lưu theo phiên của bạn</div>
-                    <div className={styles.incItem}><span className={styles.incIcon}><Icon name="device" /></span> Chạy trong trình duyệt, không cần cài gì</div>
-                  </div>
+              {/* Tổng quan */}
+              <div className="cd-block">
+                <div className="cd-block-hd">
+                  <div className="cd-block-icon">📋</div>
+                  <h3>Tổng quan khóa học</h3>
                 </div>
+                <div className="cd-block-body">
+                  <p className="cd-desc">{course.description}</p>
+                </div>
+              </div>
 
-                {/* Bạn sẽ học được — ẩn hẳn khi khoá không có curriculum.skills. */}
-                {outcomes.length > 0 && (
-                  <div className={styles.card}>
-                    <div className={styles.cardTitle}>Bạn sẽ học được</div>
-                    <div className={styles.outcomes}>
-                      {outcomes.map((skill, i) => (
-                        <div className={styles.outcome} key={i}>
-                          <div className={styles.outcomeDot}></div>
-                          <span>{skill}</span>
-                        </div>
+              {/* Yêu cầu */}
+              {requirements.length > 0 && (
+                <div className="cd-block">
+                  <div className="cd-block-hd">
+                    <div className="cd-block-icon">📌</div>
+                    <h3>Yêu cầu</h3>
+                  </div>
+                  <div className="cd-block-body">
+                    <ul className="cd-req-list">
+                      {requirements.map((req, i) => (
+                        <li key={i}>{req}</li>
                       ))}
-                    </div>
+                    </ul>
                   </div>
-                )}
+                </div>
+              )}
+
+              {/* Đánh giá */}
+              <div className="cd-block">
+                <div className="cd-block-hd">
+                  <div className="cd-block-icon">⭐</div>
+                  <h3>Đánh giá của học viên</h3>
+                </div>
+                <div className="cd-block-body">
+                  <div className="cd-reviews-stub">
+                    <div className="star-avg-wrap">
+                      <div className="star-avg">
+                        <div className="star-avg-bg">★★★★★</div>
+                        <div className="star-avg-fill" style={{ width: `${ratingFill}%` }}>★★★★★</div>
+                      </div>
+                    </div>
+                    <div className="score">{course.rating}</div>
+                    <div className="avg-label">Đánh giá trung bình</div>
+
+                    <div className="user-rate-section">
+                      <div className="user-rate-label">Đánh giá của bạn:</div>
+                      <StarRating key={courseId} />
+                    </div>
+
+                    <div className="coming-soon-note">Tính năng lưu đánh giá đang được phát triển. Hãy quay lại sau!</div>
+                  </div>
+                </div>
               </div>
+            </div>
+
+            {/* ── Cột phải ── */}
+            <div className="edu-cd-side">
+              <div className="edu-cd-card">
+                <div className="edu-cd-price">Miễn phí</div>
+                <div className="edu-cd-price-free">🎉 Hoàn toàn không mất phí</div>
+
+                <a className={`edu-cd-btn primary ${styles.startBtn}`} href={startUrl}>▶ Bắt đầu học</a>
+
+                <div className="edu-cd-includes">
+                  <div className="edu-cd-includes-title">KHÓA HỌC BAO GỒM</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-book-open"></i> {course.lessons} bài học</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-clock"></i> {course.duration}</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-infinity"></i> Truy cập vĩnh viễn</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-certificate"></i> Chứng chỉ hoàn thành</div>
+                  <div className="edu-cd-inc-item"><i className="fas fa-mobile-alt"></i> Học trên mọi thiết bị</div>
+                </div>
+              </div>
+
+              {/* Bạn sẽ học được — ẩn hẳn khi khóa không có curriculum.skills. */}
+              {outcomes.length > 0 && (
+                <div className="edu-cd-card">
+                  <div className="edu-cd-card-title">Bạn sẽ học được</div>
+                  <div className="edu-cd-outcomes">
+                    {outcomes.map((skill, i) => (
+                      <div className="edu-cd-outcome" key={i}>
+                        <div className="edu-cd-outcome-dot"></div>
+                        <span>{skill}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

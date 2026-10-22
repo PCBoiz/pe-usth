@@ -43,8 +43,8 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
               textAlign: 'left',
               font: 'inherit',
               cursor: heldToken ? 'pointer' : 'default',
-              background: 'var(--ds-tint)',
-              border: heldToken ? '1.5px dashed var(--st-slot-border)' : '1px solid var(--ds-line)',
+              background: 'var(--edu-card-bg)',
+              border: heldToken ? '1.5px dashed var(--st-slot-border)' : '1px solid var(--edu-sidebar-border)',
               borderRadius: 14,
               padding: 14,
               minHeight: 140,
@@ -53,10 +53,10 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
               gap: 6,
             }}
           >
-            <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--ds-ink)' }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t1)' }}>
               <code>{bin.label}</code>
             </div>
-            <div style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)' }}>{bin.sub}</div>
+            <div style={{ fontSize: 11, color: 'var(--edu-t3)' }}>{bin.sub}</div>
             <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginTop: 6 }}>
               {bin.items.map((item) => (
                 <span key={item} className={styles.chip} style={{ cursor: 'default' }}>
@@ -69,18 +69,18 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
       </div>
       <div
         style={{
-          background: 'var(--ds-tint)',
+          background: 'var(--edu-card-bg)',
           borderRadius: 12,
           padding: '12px 16px',
         }}
       >
         {/* "Đang cầm X" là trạng thái duy nhất cho biết thao tác đã ăn: phải
             được đọc lên khi đổi. */}
-        <div style={{ fontSize: 'var(--ds-fs-label)', fontWeight: 700, color: 'var(--ds-soft)', marginBottom: 8 }} role="status">
+        <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t2)', marginBottom: 8 }} role="status">
           KHO TOKEN {heldToken ? `— đang cầm "${heldToken}", bấm vào nhóm để thả` : '(bấm để cầm lên)'}
         </div>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          {pool.length === 0 && <span style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)' }}>Đã phân loại hết.</span>}
+          {pool.length === 0 && <span style={{ fontSize: 12, color: 'var(--edu-t3)' }}>Đã phân loại hết.</span>}
           {pool.map((token) => (
             <button
               key={token}
@@ -90,7 +90,7 @@ export default function Classify({ bins, pool, heldToken, onHold, onDrop }: Clas
               // phải có mặt trong cây trợ năng, không chỉ trong màu.
               aria-pressed={heldToken === token}
               onClick={() => onHold(token)}
-              style={heldToken === token ? { borderColor: 'var(--ds-violet)', background: 'var(--ds-violet-tint)' } : undefined}
+              style={heldToken === token ? { borderColor: 'var(--edu-accent)', background: 'var(--edu-accent-soft)' } : undefined}
             >
               {token}
             </button>

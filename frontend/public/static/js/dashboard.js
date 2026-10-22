@@ -2190,13 +2190,9 @@ function forumClearSearch() {
       var sub = status === 'done' ? '✓ Hoàn thành'
         : status === 'current' ? (c.progress || 0) + '% · ' + lessons
           : 'Bấm để bắt đầu';
-      // Nhánh dự phòng là '/' (danh mục khoá), KHÔNG phải '/interface': route đó
-      // đã xoá ở đợt dọn route chết nên bấm vào là 404. File này hiện không được
-      // trang nào nạp (dead-routes.test.mjs cố ý chỉ canh src/**), nhưng để
-      // nguyên là gài mìn cho ai bật lại nó.
       var onClick = "window.location.href='" + (window.COURSE_URLS && window.COURSE_URLS[c.id]
         ? window.COURSE_URLS[c.id]
-        : '/') + "'";
+        : '/interface') + "'";
       html +=
         '<div class="mini-rm-node mini-rm-node--' + status + '"' +
         ' style="left:' + pos.x + '%; top:' + pos.y + '%;"' +

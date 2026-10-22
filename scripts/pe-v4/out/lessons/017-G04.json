@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Tạo widget xong nó vẫn chưa hiện",
+          "title": "Định nghĩa: geometry manager",
           "body": "Tạo widget xong nó vẫn chưa hiện: phải giao cho một geometry manager của chính widget — .pack() xếp theo cạnh (side, fill), .place() theo toạ độ (x/y, relx), .grid() theo ô row–column."
         },
         {
@@ -45,7 +45,7 @@
           "body": "Hai manager tính chỗ theo hai cách khác nhau, nên các con của CÙNG một parent vừa pack() vừa grid() làm Tk báo TclError. Khác parent thì vô tư: Frame bên trong grid, Frame đó pack ra ngoài."
         },
         {
-          "title": "weight=1 cho cột nuốt phần dư",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
             "grid cho form nhãn–ô nhập; pack cho khung và thanh nút; place khi cần toạ độ",
             "columnconfigure(1, weight=1) cho cột 1 nuốt phần dư khi cửa sổ to ra",
@@ -53,7 +53,7 @@
           ]
         },
         {
-          "title": "Cùng ba widget, ba manager xếp ba kiểu",
+          "title": "Đọc sơ đồ",
           "body": "Ba cửa sổ nhỏ, CÙNG ba widget, ba manager: pack xếp chồng, place ghim theo toạ độ nên có thể chồng nhau, grid chia lưới thẳng hàng. Dải đỏ dưới cùng là ca lỗi pack + grid cùng parent.",
           "figure": {
             "src": "/static/anim/G04-layouts.svg",
@@ -247,26 +247,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "pack(padx=10, pady=10)",
-            "hint": "Đặt Frame vào cửa sổ, chừa lề — cùng kiểu layout với nhãn phía dưới"
+            "answer": "pack(padx=10, pady=10)"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "index // 2",
-            "hint": "Số hàng tính từ thứ tự nút: hai nút một hàng"
+            "answer": "index // 2"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "index % 2",
-            "hint": "Số cột tính từ thứ tự nút: luân phiên 0 rồi 1"
+            "answer": "index % 2"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "pack(side=\"bottom\")",
-            "hint": "Đặt nhãn xuống đáy cửa sổ, cùng kiểu layout mà root đã dùng"
+            "answer": "pack(side=\"bottom\")"
           }
         ],
         "bank": [

@@ -1,221 +1,48 @@
 /* ══════════════════════════════════════════════════════════════
-   STUDIO-TOKENS — lớp mở rộng của edu-theme.css.
+   STUDIO-TOKENS — lớp mở rộng của edu-theme.css cho Python Studio.
 
    Nạp SAU edu-theme.css. Chỉ khai báo token mà tầng 1 chưa có.
    TUYỆT ĐỐI không khai báo lại bất kỳ --edu-* nào ở đây; cần sửa
    token dùng chung thì sửa thẳng edu-theme.css.
 
-   ── 15/10/2026: BẢNG NÀY NAY NẠP Ở MỌI TRANG ──────────────────
-   Tên file vẫn là "studio-" vì trang bài học là nơi bảng ra đời,
-   nhưng PageStyles đã tự thêm nó vào MỌI trang (cùng cách với
-   edu-fonts.css và edu-responsive.css). Lý do: thanh đầu trang
-   (SiteHeader) và trang chủ đã chuyển sang bảng kem --ds-*, mà
-   SiteHeader có mặt ở trang chủ, trang khoá, /ide và /practice —
-   sót một trang là trang đó vẽ header bằng biến KHÔNG tồn tại,
-   tức mất hẳn màu. File này chỉ KHAI BIẾN, không có một quy tắc
-   nào áp lên phần tử, nên nạp ở trang chưa chuyển cũng không đổi
-   gì ở đó.
-
-   Hai tiền tố, hai vai:
-     --ds-*  BẢNG TOKEN của bản thiết kế v2 (nguồn sự thật duy nhất của
-             màu và cỡ chữ ở trang bài học). Đây là chỗ DUY NHẤT trong
-             trang bài học được viết mã màu — mọi *.module.css đều bị
-             `npm run lint:tokens` cấm mã màu.
-     --st-*  token cũ của riêng Studio, nay chỉ còn là BÍ DANH trỏ vào
-             --ds-*. Giữ lại để không phải sửa hết tên ở 40 file một lượt;
-             chỗ nào sửa tới thì nên dùng thẳng --ds-*.
-
-   ── VÌ SAO ĐỔI CẢ BẢNG MÀU (14/10/2026) ───────────────────────
-   Trang bài học trước đây dùng bảng xanh dương kế thừa từ bản Django
-   (--edu-accent #2563eb trên nền #f3f5fa). Bản thiết kế v2 (rà 9 artboard,
-   xem design-system-v2 mục 1.3) chốt một bảng khác hẳn: nền kem, mực nâu
-   đen, bốn họ nhấn có VAI NGỮ NGHĨA DUY NHẤT —
-     violet   = vị trí và lựa chọn (bạn ở đây, đang chọn, liên kết)
-     sanguine = chú ý (đoán trước, ngộ nhận, cẩn thận, CHƯA ĐÚNG)
-     ochre    = đã có (đúng, đã xong, XP, kết quả in ra)
-     action   = CHỈ dùng làm nền nút chính
-   Bảng v2 không có màu xanh lá, nên "đúng/chưa đúng" KHÔNG được phân biệt
-   chỉ bằng màu: mọi chỗ chấm bài đều phải kèm icon + chữ (WCAG 1.4.1).
-   Vì vậy --st-ok-* nay là ochre và --st-err-* là sanguine, chứ không còn
-   là xanh lá / đỏ hồng.
-
-   Mọi cặp chữ/nền trong bảng này đã đo lại bằng công thức độ chói WCAG 2.x
-   và đều đạt AA (chữ ≥ 4,5:1; viền và đồ hoạ cần nhận ra ≥ 3:1).
+   Tiền tố --st-* để grep ra ngay biến nào là của riêng Studio.
    ══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* ── BẢNG TOKEN v2 · nền và mực ───────────────────────────── */
-  --ds-page:        #EAEFF6;   /* nền trang */
-  --ds-card:        #FFFFFF;   /* thẻ, ô nhập */
-  --ds-paper:       #F7FAFD;   /* thanh trên/dưới, mặt giấy */
-  --ds-tint:        #E8F0FE;   /* khối ghi chú nhẹ, code nội dòng */
-  --ds-desk:        #DDE5F0;   /* nền bàn, rãnh thanh tiến độ */
-  --ds-line:        #CFD9E8;   /* đường kẻ TRANG TRÍ. 1,36:1 trên thẻ —
-                                  KHÔNG dùng làm viền của thứ bấm được */
-  --ds-sketch:      #5B6A85;   /* viền thứ bấm được, nét đứt "chưa học".
-                                  4,21:1 trên paper → đạt 1.4.11 */
-  --ds-ink:         #0F1B33;   /* chữ chính · 14,91:1 trên page */
-  --ds-soft:        #3A4A66;
-  /* Chữ phụ đặt TRÊN NỀN ink (thẻ tối trên màn Path). Tài liệu §1.3 khai
-     token này từ đầu nhưng bảng CSS chưa bao giờ hiện thực nó — lộ ra ngày
-     15/10 khi ca test thôi chép tay bảng màu và đọc thẳng từ tài liệu. */
-  --ds-on-ink-soft: #BFD0E8;   /* 10,94:1 trên ink */   /* chữ phụ, nhãn · 8,20:1 trên page */
+  /* ── phản hồi bài làm ─────────────────────────────────────── */
+  --st-ok-bg:       rgba(34,197,94,.14);
+  --st-ok-text:     #1f9d59;
+  --st-ok-line:     rgba(34,197,94,.45);
+  --st-err-bg:      rgba(240,82,107,.14);
+  --st-err-text:    #d0344b;
+  --st-err-line:    rgba(240,82,107,.45);
+  --st-warn-bg:     rgba(245,158,11,.14);
+  --st-warn-text:   #b45309;
+  --st-warn-line:   rgba(245,158,11,.45);
+  --st-info-bg:     rgba(2,132,199,.12);
+  --st-info-text:   #0284c7;
+  --st-info-line:   rgba(2,132,199,.40);
 
-  /* ── BẢNG TOKEN v2 · bốn họ nhấn ──────────────────────────── */
-  --ds-violet:      #1D4ED8;   /* vị trí, lựa chọn, liên kết · 7,63:1 */
-  --ds-violet-deep: #15337A;   /* chữ tím trên nền tím nhạt · 10,09:1 */
-  --ds-violet-tint: #E8F0FE;
-  --ds-action:      #1F5FE0;   /* CHỈ nền nút chính · chữ trắng 7,33:1 */
-  --ds-on-action:   #FFFFFF;   /* chữ/hình đặt trên nền màu nhấn đậm */
-  --ds-sanguine:    #CF2338;   /* chú ý, chưa đúng · 6,41:1 */
-  --ds-sanguine-tint: #FFF1F3;
-  --ds-ochre:       #047857;   /* đã có, đúng, đã xong · 5,53:1 */
-  --ds-ochre-tint:  #E7F6F0;
+  /* ── khối code (tối ở cả hai chế độ) ──────────────────────── */
+  --st-code-bg:     #1c2536;
+  --st-code-radius: 16px;
+  --st-code-gutter: rgba(255,255,255,.28);
+  --st-syn-keyword: #92b1ea;
+  --st-syn-string:  #ecc48d;
+  --st-syn-number:  #f78c6c;
+  --st-syn-comment: #69717f;
+  --st-syn-plain:   #e3e8f0;
 
-  /* ── HÌNH MINH HOẠ · vàng tơ của chặng đa luồng (M2) ────────
-     Bảng minh hoạ TÁCH khỏi xanh–đỏ của giao diện (design/v3/quyet-dinh.md
-     mục 2): mini-game "Sổ quỹ chung" của bài T05 vẽ bằng ba token này. Mã gốc
-     #C9A646 của báo cáo bản đồ chỉ 2,33:1 trên thẻ — không đủ cho nét mang
-     nghĩa (cửa, khoá, nhân vật cần ≥ 3:1) — nên nó lùi về mảng trang trí,
-     còn nét dùng bản đậm. Đã đo, cặp nằm trong e2e/unit/ds-contrast.mjs. */
-  --ds-silk:        #8A6D1E;   /* nét hình · 4,50:1 trên silk-tint */
-  --ds-silk-soft:   #C9A646;   /* mảng trang trí, không mang nghĩa */
-  --ds-silk-tint:   #FBF5E3;   /* nền sân khấu · chữ ink 15,73:1 */
+  /* ── kéo thả — dẫn xuất từ tầng 1, không viết lại hex ─────── */
+  --st-chip-bg:     var(--edu-pill-bg);
+  --st-chip-border: var(--edu-pill-border);
+  --st-slot-bg:     var(--edu-accent-soft);
+  --st-slot-border: rgba(63,125,240,.40);
+  --st-drag-shadow: 0 12px 28px rgba(63,125,240,.28);
 
-  /* ── BẢNG TOKEN v2 · khung code (tối ở cả hai chế độ) ─────── */
-  --ds-code-bg:     #221A13;
-  --ds-code-line:   #3D3127;   /* đường kẻ trong khung code */
-  --ds-code-fg:     #EFE6D2;   /* 13,81:1 */
-  --ds-code-meta:   #C9B48C;   /* tên file, nhãn · 8,48:1 */
-  --ds-code-num:    #A8977F;   /* số dòng, chú thích · 6,04:1 */
-  --ds-code-kw:     #F2B880;   /* 9,75:1 */
-  --ds-code-str:    #C8DDA0;   /* 11,68:1 */
-  --ds-mark-violet: #C99BEF;   /* màu nhấn ĐẶT TRÊN NỀN TỐI · 7,69:1 */
-  --ds-mark-sanguine: #EC9277; /* 7,30:1 */
-  --ds-mark-ochre:  #E0B062;   /* 8,62:1 */
-
-  /* ── BẢNG TOKEN v2 · độ nổi ───────────────────────────────── */
-  /* Chỉ MỘT mức nổi, dành cho thẻ đang mở. */
-  --ds-shadow-open: 0 6px 22px rgba(42, 32, 23, .08);
-  /* Quầng "Bạn ở đây" — §1.3 khai nó cùng chỗ với shadow-open nhưng bảng này
-     bỏ sót, nên mỗi màn tự viết lại một quầng khác. */
-  --ds-halo: 0 0 0 8px rgba(185, 63, 240, .2);
-
-  /* ── BẢNG TOKEN v2 · thang bo góc ─────────────────────────────
-     Sáu bậc, chép nguyên design-system-v2 §1.3 ("Bo góc, nét viền, độ nổi,
-     chuyển động").
-
-     VÌ SAO KHAI MUỘN: bảng này ra đời ngày 14/10 bằng cách chép MỖI bảng màu
-     của §1.3, bỏ cả ba thang còn lại. Hệ quả đo ngày 15/10 trên 13 file
-     *.module.css trong phạm vi: **15 giá trị bo góc khác nhau** (2 3 4 6 8 10
-     12 14 16 17 18 20 26 999 50%) trong khi chỉ có hai token bo góc tồn tại
-     (--st-card-radius, --st-code-radius) và cả hai là 16px viết cứng. Thiếu
-     thang thì không ai BIẾT mình đang thêm bậc thứ mười sáu.
-
-     Thang KHÔNG đổi giá trị thị giác của gì cả: nó chỉ đặt tên cho đúng sáu
-     bậc bản thiết kế đã chốt. Bậc nào không có trong thang (2 3 6 10 14 17 18
-     20 26) thì CỐ Ý để nguyên px và ghi vào danh sách chờ chủ sản phẩm —
-     quy bừa 14 → 12 hay 18 → 16 là đổi hình, không phải dọn token. */
-  --ds-r-xs:        4px;    /* code nội dòng, ô trống trong code */
-  --ds-r-sm:        8px;    /* dòng code, ô biến, chip vuông */
-  --ds-r-md:        12px;   /* khối con, callout, phương án trắc nghiệm */
-  --ds-r-lg:        16px;   /* thẻ, panel, khung code lớn, bìa sổ */
-  --ds-r-pill:      999px;  /* nút, chip */
-  --ds-r-round:     50%;    /* nút trạng thái bài, nút icon tròn */
-
-  /* ── BẢNG TOKEN v2 · thang nét viền ───────────────────────────
-     Bốn bậc theo §1.3. Bản thiết kế đếm được 8 độ dày trong 9 artboard
-     (1 · 1,5 · 2 · 2,5 · 3 · 3,5 · 4 · 5) và chốt lại còn bốn.
-     Trong repo hiện chỉ còn 1 · 2 · 3 · 5px, tức đã gần thang; 5px là chỗ
-     §1.3 (bw-rail 4px) và §1.4 ("Phản hồi sau trả lời: rail 5px") nói khác
-     nhau, nên để nguyên và hỏi chủ sản phẩm. */
-  --ds-bw-1:        1px;    /* viền thẻ, đường chia */
-  --ds-bw-2:        2px;    /* viền thứ bấm được, nét đứt trạng thái */
-  --ds-bw-3:        3px;    /* vòng nhấn trong hình động, focus ring */
-  --ds-bw-rail:     4px;    /* thanh nhấn trái/trên của callout */
-
-  /* ── BẢNG TOKEN v2 · thang chuyển động ────────────────────────
-     Ba bậc theo §1.3: phản hồi / hiện ra / lật trang. Chỉ đổi transform và
-     opacity, và mọi chỗ dùng phải có nhánh `prefers-reduced-motion`.
-
-     Đo ngày 15/10: 17 thời lượng khác nhau đang dùng (0,1 → 1,8 s) và chỉ
-     ba trong số đó (0,2 · 0,32 · 0,45) trùng thang. Những bậc còn lại —
-     nhất là 0,15 s dùng ở 10 chỗ cho đúng vai "phản hồi" của dur-fast —
-     KHÔNG tự đổi ở đợt này: 200 ms chậm hơn 150 ms một phần ba, người dùng
-     thấy được. Ghi vào danh sách chờ chốt. */
-  --ds-dur-fast:    200ms;  /* phản hồi: hover, nhấn, đổi trạng thái */
-  --ds-dur-base:    320ms;  /* hiện ra: thẻ, callout, khối gợi ý */
-  --ds-dur-page:    450ms;  /* lật trang: chuyển màn trong bài */
-
-  /* ── BẢNG TOKEN v2 · thang cỡ chữ ─────────────────────────────
-     Luật của bản thiết kế: không có chữ nào nhỏ hơn 15px, và câu nào
-     người học phải đọc để biết làm gì thì từ 17px trở lên.
-
-     Tám cỡ. Đặt thành token để không ai thêm cỡ thứ chín mà không thấy:
-     `e2e/unit/ds-type-scale.test.mjs` trượt nếu một file ĐÃ CHUYỂN viết
-     lại một con số px, hoặc nếu thang ở đây mọc thêm/hụt một cỡ.
-
-     ĐÃ CHUYỂN (test canh): LessonChrome, LessonBrief, ShellA, ShellB,
-     TryItButton, exercises/*.module.css, studio-chrome.module.css, và
-     mọi `fontSize` nội tuyến trong lesson-chrome/exercises/*.tsx.
-
-     CHƯA CHUYỂN — nợ còn lại, đo ngày 14/10/2026:
-       · `python-studio/studio.module.css`: 100 khai báo font-size px, 12
-         cỡ khác nhau, trong đó 88 khai báo dưới 14px (nhỏ nhất 8px).
-         File này chỉ vẽ trang demo `?demo=list` (PythonStudio.tsx) —
-         không nằm trong giáo trình 48 bài — nên để lại cho một đợt
-         riêng: 100 khai báo trong một file 1 785 dòng mà gộp vào đợt
-         này thì không soát nổi.
-       · `code-visualizer/CodeVisualizer.module.css`: 12 khai báo, 11
-         dưới 15px. Nằm trong vùng của agent khác, không được sửa. */
-  --ds-fs-label:    15px;  /* nhãn in hoa, chip, meta, số dòng ghi chú */
-  --ds-fs-code:     16px;  /* khối code (JetBrains Mono) */
-  --ds-fs-ui:       17px;  /* nút, nav, phương án trắc nghiệm */
-  --ds-fs-body:     18px;  /* MỌI câu văn đầy đủ */
-  --ds-fs-lead:     20px;  /* câu dẫn, trích dẫn */
-  --ds-fs-h3:       22px;  /* câu hỏi, tiêu đề thẻ */
-  --ds-fs-h2:       28px;  /* tiêu đề mục */
-  --ds-fs-h1:       36px;  /* tiêu đề màn */
-
-  /* ── phản hồi bài làm — BÍ DANH, không còn mã màu riêng ───────
-     "ok" là ochre (đã có / đúng), "err" và "warn" là sanguine (chú ý).
-     Hai cái sau trùng màu LÀ CÓ Ý: bảng v2 chỉ cho sanguine một vai. */
-  --st-ok-bg:       var(--ds-ochre-tint);
-  --st-ok-text:     var(--ds-ochre);
-  --st-ok-line:     var(--ds-ochre);
-  --st-err-bg:      var(--ds-sanguine-tint);
-  --st-err-text:    var(--ds-sanguine);
-  --st-err-line:    var(--ds-sanguine);
-  --st-warn-bg:     var(--ds-sanguine-tint);
-  --st-warn-text:   var(--ds-sanguine);
-  --st-warn-line:   var(--ds-sanguine);
-  --st-info-bg:     var(--ds-violet-tint);
-  --st-info-text:   var(--ds-violet-deep);
-  --st-info-line:   var(--ds-violet);
-
-  /* ── khối code ────────────────────────────────────────────── */
-  --st-code-bg:     var(--ds-code-bg);
-  --st-code-radius: var(--ds-r-lg);
-  /* Trước đây là rgba(255,255,255,.28) và bị dùng LÀM MÀU CHỮ cho số
-     dòng — trộn ra ≈#5B534D, chỉ 2,3:1 trên nền code. Nay chỉ còn là
-     ĐƯỜNG KẺ; màu số dòng dùng --ds-code-num (6,04:1). */
-  --st-code-gutter: var(--ds-code-line);
-  --st-syn-keyword: var(--ds-code-kw);
-  --st-syn-string:  var(--ds-code-str);
-  --st-syn-number:  var(--ds-mark-sanguine);
-  --st-syn-comment: var(--ds-code-num);
-  --st-syn-plain:   var(--ds-code-fg);
-
-  /* ── kéo thả ──────────────────────────────────────────────── */
-  --st-chip-bg:     var(--ds-card);
-  --st-chip-border: var(--ds-sketch);
-  --st-slot-bg:     var(--ds-violet-tint);
-  --st-slot-border: var(--ds-violet);
-  --st-drag-shadow: var(--ds-shadow-open);
-
-  /* ── bóng đổ: một mức duy nhất ────────────────────────────── */
-  --st-shadow-sm:   var(--ds-shadow-open);
-  --st-shadow-md:   var(--ds-shadow-open);
+  /* ── bóng đổ nội bộ Studio ────────────────────────────────── */
+  --st-shadow-sm:   0 2px 6px rgba(30,37,50,.08);
+  --st-shadow-md:   0 6px 18px rgba(30,37,50,.10);
 
   /* ── kích thước khung màn học ─────────────────────────────── */
   --st-chrome-h:    56px;
@@ -226,54 +53,37 @@
      hoạ của bài vẽ ở khổ 1280×640; ở cột 680 nó hiện chưa tới một nửa nên chữ
      trong sơ đồ xuống còn 6–7px, không đọc nổi. */
   --st-col-wide:    1328px;
-  --st-card-radius: var(--ds-r-lg);
+  --st-card-radius: 22px;
 
-  /* ── khung bài học ────────────────────────────────────────── */
-  --st-page-bg:     var(--ds-page);
-  --st-track:       var(--ds-desk);   /* rãnh thanh tiến độ */
-  --st-predict-bg:  var(--ds-sanguine-tint);  /* thẻ DỰ ĐOÁN = đoán trước */
-  --st-code-bar:    var(--ds-code-line);      /* thanh tên file */
-  --st-code-meta:   var(--ds-code-meta);
-  --st-reflect-bg:  var(--ds-violet-tint);    /* thẻ GIẢI THÍCH TRƯỚC */
-  --st-reflect-text: var(--ds-violet-deep);
-  --st-code-edge:   var(--ds-code-line);
+  /* ── khung bài học PE v3 (Figma "B01–B20 bản một màn") ────── */
+  --st-page-bg:     #f3f5fa;   /* nền phẳng của màn học */
+  --st-track:       #d8dee8;   /* rãnh thanh tiến độ */
+  --st-streak-bg:   #e6eefd;
+  --st-predict-bg:  #e8effb;   /* thẻ DỰ ĐOÁN */
+  --st-code-bar:    #293141;   /* thanh tên file trên khối code */
+  --st-code-meta:   #bfc8d9;   /* chữ main.py / PYTHON 3 */
+  --st-reflect-bg:  #e9f7f0;   /* thẻ GIẢI THÍCH TRƯỚC KHI XEM ĐÁP ÁN */
+  --st-reflect-text:#314a3a;
+  --st-code-edge:   transparent; /* viền khối code, chỉ cần ở chế độ tối */
 }
 
-/* ── Ban đêm ──────────────────────────────────────────────────
-   Chỉ đổi BẢNG --ds-*; mọi bí danh --st-* ở trên là var() nên tự đi theo,
-   không phải khai lại lần nữa. Bốn họ nhấn đổi sang bản sáng hơn: bản ngày
-   đặt lên nền #16120E chỉ còn 2,28:1 (đúng chỗ bản thiết kế bắt lỗi ở màn
-   Main). Khung code KHÔNG đổi — nó đã tối ở cả hai chế độ. */
 body.dark {
-  --ds-page:        #0B1220;
-  --ds-card:        #131C2E;
-  --ds-paper:       #0F1726;
-  --ds-tint:        #1A2437;
-  --ds-desk:        #233049;
-  --ds-line:        #233049;
-  --ds-sketch:      #8FA0BC;
-  --ds-ink:         #E8EEF7;   /* 15,71:1 trên page */
-  --ds-soft:        #AFBDD2;
-  /* Bản tối của chữ phụ TRÊN NỀN ink. Ở chế độ tối `ink` lật thành màu SÁNG
-     (#E8EEF7), nên chữ đặt trên nó phải lật thành màu tối. Bảng này thiếu
-     dòng này từ ngày khai token (774e7d5): chữ phụ #BFD0E8 trên ink sáng
-     chỉ còn 1,34:1. Không ai thấy vì chưa màn nào dùng token đó, và bộ đo
-     tương phản không có cặp nào cho nó. */
-  --ds-on-ink-soft: #3A4A66;   /* 7,66:1 trên ink của bản tối */   /* 9,31:1 trên card */
+  --st-ok-bg:       rgba(34,197,94,.18);
+  --st-err-bg:      rgba(240,82,107,.18);
+  --st-warn-bg:     rgba(245,158,11,.18);
+  --st-info-bg:     rgba(2,132,199,.18);
+  --st-code-bg:     #13171e;
+  --st-syn-plain:   #ccd2dc;
+  --st-shadow-sm:   0 2px 6px rgba(0,0,0,.40);
+  --st-shadow-md:   0 6px 18px rgba(0,0,0,.45);
 
-  --ds-violet:      #7FA8FF;   /* 7,56:1 — thay #6E2BA8 (2,28:1) */
-  --ds-violet-deep: #B9D0FF;
-  --ds-violet-tint: #1B2A47;
-  --ds-action:      #7FA8FF;   /* nền nút chính + chữ #16120E = 8,36:1 */
-  --ds-on-action:   #0B1220;
-  --ds-sanguine:    #FF8798;   /* 7,94:1 */
-  --ds-sanguine-tint: #33202A;
-  --ds-ochre:       #4FD0A0;   /* 8,47:1 */
-  --ds-ochre-tint:  #10291F;
-  /* Vàng tơ ban đêm: mã gốc đủ sáng làm nét (6,63:1 trên silk-tint đêm). */
-  --ds-silk:        #C9A646;
-  --ds-silk-soft:   #7A6427;
-  --ds-silk-tint:   #2A2416;   /* chữ ink đêm 13,22:1 */
-
-  --ds-shadow-open: 0 6px 22px rgba(0, 0, 0, .45);
+  --st-page-bg:     var(--edu-bg-solid);
+  --st-track:       rgba(255,255,255,.12);
+  --st-streak-bg:   rgba(63,125,240,.20);
+  --st-predict-bg:  rgba(63,125,240,.14);
+  --st-code-bar:    #1a2231;
+  --st-code-meta:   #a1aabc;
+  --st-reflect-bg:  rgba(34,197,94,.14);
+  --st-reflect-text:#bfe6cc;
+  --st-code-edge:   rgba(255,255,255,.10);
 }

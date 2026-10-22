@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "queue.Queue đã khoá sẵn bên trong",
+          "title": "Định nghĩa: queue.Queue",
           "body": "queue.Queue là hàng đợi FIFO đã khoá sẵn bên trong, dựng riêng cho việc trao đổi giữa các thread: put() bỏ việc vào cuối, get() lấy ở đầu. Nhờ khoá nằm sẵn mà hai bên không phải tự dựng Lock như T05.",
           "bullets": [
             "get() mặc định CHỜ khi rỗng; get_nowait() không chờ, rỗng thì raise queue.Empty",
@@ -49,7 +49,7 @@
           "body": "Producer tạo việc, put vào queue rồi đi tiếp ngay; consumer lấy việc ra và làm phần chậm. Queue là ranh giới duy nhất giữa hai bên, nên thêm worker chỉ là chạy thêm một thread cùng đọc một queue."
         },
         {
-          "title": "put bản sao, đừng put object đang sửa",
+          "title": "Dùng ở đâu",
           "bullets": [
             "Giao diện: nút bấm chỉ submit, worker làm việc nặng, kết quả về qua queue khác (G06)",
             "Máy chủ: một queue việc, vài worker cùng rút ra làm — thêm worker là tăng thông lượng",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Hai bên chỉ gặp nhau qua queue",
+          "title": "Đọc sơ đồ",
           "body": "Giữa hình là queue, một hàng ô xếp theo thứ tự vào: producer put thêm vào cuối rồi quay về việc của mình ngay, worker lấy ở đầu rồi task_done(). Hai mũi tên không bao giờ chạm nhau — hai bên chỉ gặp nhau qua queue.",
           "figure": {
             "src": "/static/anim/T06-queue-worker.svg",
@@ -252,26 +252,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "dict(record)",
-            "hint": "Đưa vào hàng đợi một BẢN SAO, để nơi gọi sửa tiếp cũng không ảnh hưởng"
+            "answer": "dict(record)"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "self.jobs.get_nowait()",
-            "hint": "Lấy việc mà KHÔNG chờ — hàng rỗng thì ném ngoại lệ ngay"
+            "answer": "self.jobs.get_nowait()"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "self.jobs.task_done()",
-            "hint": "Báo đã xử lý xong một việc, cho bên đang chờ biết"
+            "answer": "self.jobs.task_done()"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "threading.Thread(target=self._work)",
-            "hint": "Dựng thread chạy vòng xử lý: trỏ tới method, chưa gọi nó"
+            "answer": "threading.Thread(target=self._work)"
           }
         ],
         "bank": [

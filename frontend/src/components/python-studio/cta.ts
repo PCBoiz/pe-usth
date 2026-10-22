@@ -15,8 +15,6 @@ import {
   type StudioLesson as Lesson,
 } from '@/lib/studio-lesson';
 
-import { gradedCta } from '@/lib/lesson-nav';
-
 import type { RunResult } from './runner/types';
 import { eyebrowOf, type ScreenVerdict } from './screens/chrome';
 
@@ -82,20 +80,20 @@ export function primaryCta(ctx: CtaContext): Cta {
   const { scr, screens, draft, game, checked, verdict, completed, busy, running, result } = ctx;
   const tests = ctx.lesson?.step_4?.tests ?? [];
 
-  if (!scr) return { label: 'Về khoá học', tone: 'accent', action: 'leave' };
+  if (!scr) return { label: 'Về khóa học', tone: 'accent', action: 'leave' };
 
   if (scr.kind === 'recap') {
     // Học xong thì đi thẳng sang bài kế tiếp, không bắt quay về danh sách.
     if (completed)
       return ctx.hasNextLesson
         ? { label: `Bài ${ctx.lessonNo + 1} →`, tone: 'ok', action: 'nextLesson' }
-        : { label: 'Về khoá học →', tone: 'ok', action: 'leave' };
+        : { label: 'Về khóa học →', tone: 'ok', action: 'leave' };
     // Chưa làm xong màn nào đó thì không cho kết thúc bài — kể cả khi mở lại
     // từ bản nháp cũ và nhảy thẳng tới đây.
     const missing = firstUnfinished(screens, draft);
     if (missing)
       return {
-        label: `Quay lại: ${eyebrowOf(missing).label}`,
+        label: `Còn phải làm: ${eyebrowOf(missing).label}`,
         tone: 'err',
         action: 'toBlocked',
       };
@@ -104,7 +102,7 @@ export function primaryCta(ctx: CtaContext): Cta {
     // Bài lab desktop / bài quy trình không có ca chấm nào chạy được trong
     // trình duyệt, nên hoàn thành do người học tự xác nhận ở đây.
     return {
-      label: busy ? 'Đang lưu…' : 'Đánh dấu đã xong',
+      label: busy ? 'Đang lưu…' : 'Đánh dấu đã hoàn thành ✓',
       tone: 'accent',
       disabled: busy,
       action: 'complete',
@@ -115,24 +113,26 @@ export function primaryCta(ctx: CtaContext): Cta {
     if (!tests.length) return { label: 'Tiếp tục →', tone: 'accent', action: 'next' };
     if (draft.done[scr.key]) return { label: 'Tiếp tục →', tone: 'ok', action: 'next' };
     return {
-      label: running ? 'Đang chấm…' : 'Nộp để kiểm',
+      label: running ? 'Đang chấm…' : 'Nộp & Chấm điểm',
       tone: result && result.tests.some((t) => !t.passed) ? 'err' : 'accent',
       disabled: running || busy,
       action: 'submit',
     };
   }
 
-  // Luật của màn có chấm nằm ở lib/lesson-nav.ts (kiểm được bằng node --test):
-  // đúng rồi thì nút đi tiếp BẬT, kể cả khi quay lại một màn đã xong.
-  if (isGraded(scr.kind))
-    return gradedCta({
-      runnable: isRunnableGame(game),
-      running,
-      checked,
-      answered: isAnswered(ctx),
-      correct: verdict ? verdict.correct : null,
-      done: Boolean(draft.done[scr.key]),
-    });
+  if (isGraded(scr.kind)) {
+    if (isRunnableGame(game) && running)
+      return { label: 'Đang chạy code…', tone: 'accent', disabled: true, action: 'check' };
+    if (!checked)
+      return {
+        label: isRunnableGame(game) ? '▶ Chạy & kiểm tra' : 'Kiểm tra',
+        tone: 'accent',
+        disabled: !isAnswered(ctx),
+        action: 'check',
+      };
+    if (verdict && !verdict.correct) return { label: 'Thử lại', tone: 'err', action: 'retry' };
+    return { label: 'Tiếp tục →', tone: 'ok', action: 'next' };
+  }
 
   return { label: 'Tiếp tục →', tone: 'accent', action: 'next' };
 }

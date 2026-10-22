@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 
 import { ALL_PRECEDENCES } from '@/components/PageStyles';
 import { withAssetVersion } from '@/lib/assetVersion';
-import { findCourse } from '@/lib/catalog';
-import { seoDescription } from '@/lib/seo-copy';
 
 // Root layout TỐI THIỂU — không import CSS global nào ở đây.
 // Mỗi page/layout con tự import ĐÚNG tổ hợp CSS của template gốc
@@ -14,18 +12,9 @@ export const metadata: Metadata = {
   // Lighthouse SEO trên bản triển khai chấm 90 vì THIẾU meta description —
   // không trang nào có. Đặt ở layout gốc thì mọi route thừa hưởng; route nào
   // cần câu riêng (ví dụ trang bài học) tự khai lại `description` của nó.
-  //
-  // 15/10/2026 — viết lại vì câu cũ quảng cáo thứ không còn: "Java, HTML/CSS"
-  // là hai khoá đã bị XOÁ ở 9bc42c1 (route trả 404), và danh mục
-  // (`lib/catalog.ts`) nay chỉ còn `python_advanced` + công cụ `/ide`. Đây là
-  // câu Google in ra dưới MỌI liên kết của site — trang chủ không khai
-  // `description` riêng nên nó thừa hưởng đúng câu này — nên nói sai ở đây là
-  // nói sai ở chỗ đông người đọc nhất.
-  //
-  // Số bài đếm từ `curricula.json` qua danh mục, không viết cứng: bẫy "hai
-  // nguồn danh sách bài" trong AGENTS.md. Viết cứng "48" thì dựng lại giáo
-  // trình là câu này lệch mà không ai biết.
-  description: seoDescription(findCourse('python_advanced')?.lessons ?? 0),
+  description:
+    'Programming EDU — học lập trình Python, Java, HTML/CSS và thiết kế cơ sở dữ liệu '
+    + 'bằng bài tập chạy ngay trong trình duyệt, có chấm tự động và theo dõi tiến độ.',
   icons: {
     // favicon rocket 🚀 y hệt base.html
     icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E",
@@ -42,39 +31,35 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Template gốc nào cũng có meta csrf-token; course_detail.js/course_db_design.js
             đọc .content KHÔNG guard → meta phải tồn tại (rỗng — auth giờ là JWT). */}
         <meta name="csrf-token" content="" />
-        {/* ── ĐƯỜNG TẢI PHÔNG ──────────────────────────────────────────────
-            15/10/2026 — gỡ hai thẻ preconnect + một thẻ preload trỏ tới Google
-            Fonts. Chúng tồn tại để bù cho một chuỗi phụ thuộc bốn chặng:
-            edu-theme.css nạp Poppins bằng `@import url(fonts.googleapis.com/…)`,
-            mà @import nằm BÊN TRONG một file tải qua <link>, nên trình duyệt
-            chỉ biết tới phông sau khi đã tải + phân tích xong edu-theme.css —
-            HTML → edu-theme.css → CSS của Google → .woff2, hai chặng cuối ở
-            origin khác (thêm DNS + TLS cho mỗi origin).
+        {/* ── RÚT NGẮN ĐƯỜNG TẢI FONT ──────────────────────────────────────
+            edu-theme.css dòng 14 nạp Poppins bằng `@import url(fonts.
+            googleapis.com/...&display=swap)`. @import nằm BÊN TRONG một file
+            tải qua <link>, nên trình duyệt chỉ biết tới nó sau khi đã tải và
+            phân tích xong edu-theme.css: chuỗi phụ thuộc là HTML → edu-theme
+            .css → CSS của Google Fonts → file .woff2. Với `display=swap`, chữ
+            vẽ bằng font dự phòng trước rồi mới nhảy sang Poppins — mỗi nhịp
+            chậm trong chuỗi đó là một nhịp dịch bố cục (CLS).
 
-            Nay hai họ chữ của bản thiết kế v2 (Be Vietnam Pro + JetBrains Mono)
-            tự lưu trữ trong public/static/fonts/ và khai @font-face ở
-            /static/css/edu-fonts.css, mà PageStyles tự thêm vào mọi trang. Chuỗi
-            còn HAI chặng, CÙNG ORIGIN: HTML → edu-fonts.css → .woff2. Không còn
-            origin nào để preconnect, cũng không còn file CSS trung gian để
-            preload — giữ mấy thẻ đó lại là bắt mọi trang mở thêm hai kết nối
-            TLS không ai dùng.
+            preconnect: dựng sẵn DNS + TLS cho hai origin của Google Fonts.
+            preload as=style: nổ phát yêu cầu file CSS của font NGAY khi phân
+            tích HTML, song song với edu-theme.css thay vì phải chờ nó — lúc
+            @import chạy tới thì đã có trong cache.
 
-            Không thêm `rel="preload"` cho chính tệp .woff2: đoán sai nét nào
-            dùng trên trang nào là tải thừa 20 KB mỗi nét, mà @font-face chia
-            theo `unicode-range` nên trình duyệt đã chỉ lấy đúng phần có chữ.
-            Có số đo cho thấy nhịp đổi phông còn thấy rõ thì hãy preload, và
-            preload phải kèm `crossorigin` kể cả khi cùng origin (phông luôn
-            được tải ở chế độ CORS).
-
-            Cụm db_design cũ vẫn tự nạp Inter từ Google Fonts, nên hai origin
-            đó CHƯA bỏ được khỏi CSP trong next.config.ts. BA chỗ, không phải
-            một — ai sửa /card rồi tưởng đã đủ điều kiện siết CSP là siết vào
-            hai chỗ còn sống:
-              · src/app/(standalone)/card/[cardId]/page.tsx (thẻ <link>)
-              · src/components/LessonDbDesign.tsx (thẻ <link>)
-              · public/static/css/questionaire.css (@import ngay dòng 1)
-            Đếm lại bằng `grep -rn "fonts.googleapis" frontend/src frontend/public`
-            trước khi gỡ origin nào. */}
+            Cả hai chỉ là gợi ý tải trước, KHÔNG áp style nào, nên không đổi
+            giao diện. Sửa tận gốc (bỏ @import, đưa <link> font vào thẳng đây)
+            phải sửa edu-theme.css — ngoài phạm vi lần này. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        {/* no-page-custom-font là luật của Pages Router ("phải đặt trong
+            pages/_document.js"). App Router thì layout gốc CHÍNH LÀ chỗ dùng
+            chung cho mọi trang — đúng điều luật đòi — nên ở đây nó báo oan
+            (7 chỗ khác trong repo cũng đang chịu cảnh báo này). */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
+        <link
+          rel="preload"
+          as="style"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+        />
         {/* Origin backend cho pe-bridge.js — phải có TRƯỚC mọi script legacy */}
         <script
           dangerouslySetInnerHTML={{
@@ -124,26 +109,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                  trang trắng trơn. Trang chi tiết khóa học dùng .page active sẵn
                  nên không phụ thuộc luật này. */
               '[id^="page-"].page{display:none}[id^="page-"].page.active{display:block}',
-              /* tiện ích ẩn dùng khắp nơi (dashboard.css)
-
-                 15/10/2026 — bỏ `.chatbot-hidden` khỏi dòng này, cùng lý do đã
-                 bỏ `.streak-overlay` ở dưới: hộp chat không còn được dựng ở đâu
-                 nữa (Chatbot.tsx và chatbot.js xoá ở đợt dọn route chết, và
-                 chatbot.css — nơi khai lớp này — vừa xoá theo khi ba trang
-                 /courses/db_design* thôi nạp nó). Luật chặn FOUC cho một lớp
-                 không ai dùng chỉ làm người đọc sau đi tìm chỗ bật nó. */
-              '.hidden{display:none!important}',
+              /* tiện ích ẩn dùng khắp nơi (dashboard.css / chatbot.css) */
+              '.hidden{display:none!important}.chatbot-hidden{display:none!important}',
               /* hộp thoại: ẩn bằng opacity+visibility, mở bằng .active
-                 (dashboard.css .un-overlay, ChangePassword.css .cp-overlay)
-
-                 15/10/2026 — bỏ `.streak-overlay` khỏi hai dòng này. Hộp thoại
-                 chuỗi ngày không còn được dựng ở đâu nữa: không một file nào
-                 trong src/** hay public/static/js/** tạo phần tử mang lớp đó
-                 (chỉ còn khai báo kiểu chết trong dashboard.css). Luật chặn FOUC
-                 cho một lớp không ai dùng chỉ làm người đọc sau tưởng tính năng
-                 còn sống và đi tìm chỗ bật nó. */
-              '.un-overlay,.cp-overlay,.edu-rq-overlay{opacity:0;visibility:hidden}',
-              '.un-overlay.active,.cp-overlay.active,.edu-rq-overlay.active{opacity:1;visibility:visible}',
+                 (dashboard.css .un-overlay/.streak-overlay, ChangePassword.css .cp-overlay) */
+              '.un-overlay,.cp-overlay,.streak-overlay,.edu-rq-overlay{opacity:0;visibility:hidden}',
+              '.un-overlay.active,.cp-overlay.active,.streak-overlay.active,.edu-rq-overlay.active{opacity:1;visibility:visible}',
               /* bảng thông báo + menu người dùng, mở bằng .open (style.css:243/372) */
               '.bell-panel,.user-dropdown{opacity:0;visibility:hidden}',
               '.bell-panel.open,.user-dropdown.open{opacity:1;visibility:visible}',

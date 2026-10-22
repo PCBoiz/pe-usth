@@ -25,18 +25,6 @@ const DB_UNAVAILABLE_PATTERNS = [
   'ETIMEDOUT',
 ];
 
-/**
- * Cùng khuôn `asRecord()` ở `quizzes/quizzes.service.ts`: thân của một
- * HttpException là `string | object` nên bản cũ ép `as any` để đọc `.message` /
- * `.fields`. Giá phải trả: gõ `resObj.fieldss` vẫn biên dịch, `fields` ra
- * `undefined`, form phía FE thôi tô đỏ ô nhập sai mà không có gì báo.
- */
-function asRecord(value: unknown): Record<string, unknown> | null {
-  return typeof value === 'object' && value !== null
-    ? (value as Record<string, unknown>)
-    : null;
-}
-
 function isDbUnavailable(exception: unknown): boolean {
   if (!(exception instanceof Error)) return false;
   const msg = exception.message ?? '';
@@ -49,16 +37,12 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
 
   catch(exception: T, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    // Khai tham số kiểu cho getResponse/getRequest: không khai thì cả hai trả
-    // `any` và mọi phép đọc `request.method` / `request.requestId` bên dưới mất
-    // kiểm tra (đổi tên field vẫn biên dịch, log ra `undefined undefined`).
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse();
+    const request = ctx.getRequest();
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR;
     let message = 'Đã có lỗi xảy ra, xin vui lòng thử lại sau';
-    // `detail` chỉ từng mang mảng message của class-validator.
-    let detail: string[] | null = null;
+    let detail: any = null;
     let fields: Record<string, string> | null = null;
 
     if (exception instanceof ThrottlerException) {
@@ -88,26 +72,20 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
 
       if (typeof res === 'string') {
         message = res;
-      } else {
-        const resObj = asRecord(res);
-        if (resObj && Array.isArray(resObj.message)) {
-          const cac = resObj.message as string[];
+      } else if (typeof res === 'object' && res != null) {
+        const resObj = res as any;
+        if (Array.isArray(resObj.message)) {
           // Nói RÕ sai ở đâu thay vì câu chung chung 'Dữ liệu không hợp lệ':
           // client hiển thị message này trực tiếp cho người dùng.
-          message = cac[0] ?? 'Dữ liệu không hợp lệ';
-          detail = cac;
+          message = resObj.message[0] ?? 'Dữ liệu không hợp lệ';
+          detail = resObj.message;
           // Map field -> message (do validationExceptionFactory sinh ra) giúp
           // form tô đỏ đúng ô nhập.
-          const f = asRecord(resObj.fields);
-          if (f) {
-            fields = f as Record<string, string>;
+          if (resObj.fields && typeof resObj.fields === 'object') {
+            fields = resObj.fields;
           }
-        } else if (resObj) {
-          // `message` của HttpException là `string` ở mọi nhánh còn lại, nhưng
-          // kiểu khai của getResponse() không hứa điều đó -> kiểm lúc chạy thay
-          // vì ép `as string` (ép thì một thân lạ sẽ đẩy object vào JSON lỗi).
-          const m = resObj.message;
-          message = typeof m === 'string' && m ? m : message;
+        } else {
+          message = resObj.message || message;
         }
       }
 
@@ -129,7 +107,6 @@ export class AllExceptionsFilter<T> implements ExceptionFilter {
       }
     }
 
-    // Giữ `||` (không đổi sang `??`): chuỗi rỗng cũng phải ra null như trước.
     const requestId = request.requestId || null;
 
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {

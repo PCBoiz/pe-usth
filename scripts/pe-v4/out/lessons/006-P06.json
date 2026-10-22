@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Popen trả object ngay, cha không chờ",
+          "title": "Định nghĩa: Popen là \"chạy nền\"",
           "body": "Popen khởi động con rồi trả object NGAY, cha không chờ. run() được xây trên Popen — gói sẵn phần giao tiếp và chờ, nên tiện nhưng không cho bạn xen vào giữa.",
           "bullets": [
             "stdin/stdout/stderr=PIPE mở đường nói chuyện; không khai thì nhận None",
@@ -46,11 +46,11 @@
           ]
         },
         {
-          "title": "TimeoutExpired không đụng tới con",
+          "title": "Ví dụ: timeout không giết ai",
           "body": "communicate(timeout=…) ném TimeoutExpired nhưng KHÔNG đụng tới process con — con vẫn chạy, vẫn giữ pipe. Mẫu chuẩn là bắt lỗi, kill(), rồi communicate() lần hai để đọc nốt và thu hồi con."
         },
         {
-          "title": "Quá hạn phải kill, không thì rò process",
+          "title": "Dùng ở đâu",
           "bullets": [
             "Chạy việc dài ở nền, cha làm việc khác và thỉnh thoảng poll() xem xong chưa",
             "Đặt hạn giờ cho mã lạ: quá hạn thì kill để không rò process, không kẹt pipe",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "title": "Đường con kéo qua vạch hạn giờ",
+          "title": "Đọc sơ đồ",
           "body": "Popen trả về ngay ở mốc đầu nên hai đường cha và con chạy song song. Hộp communicate(timeout) có vạch hạn giờ: chạm vạch là TimeoutExpired, nhưng đường con VẪN kéo dài qua vạch — chỉ sau kill() nó mới dứt.",
           "figure": {
             "src": "/static/anim/P06-popen-timeout.svg",
@@ -256,20 +256,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "proc.communicate(data, timeout=limit)",
-            "hint": "Một lời gọi: gửi dữ liệu vào, đọc hai luồng ra, và có hạn giờ"
+            "answer": "proc.communicate(data, timeout=limit)"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "proc.kill()",
-            "hint": "Hết giờ thì phải tự tay dừng con — ngoại lệ không dừng hộ"
+            "answer": "proc.kill()"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "proc.communicate()",
-            "hint": "Thu nốt những gì con đã in, lần này KHÔNG gửi gì thêm"
+            "answer": "proc.communicate()"
           }
         ],
         "bank": [

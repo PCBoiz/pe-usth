@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "CLI nhận lệnh gõ, GUI chờ người bấm",
+          "title": "Định nghĩa: GUI và CLI",
           "body": "CLI nhận lệnh gõ trong terminal rồi in kết quả ra màn hình. GUI vẽ cửa sổ, nút, ô nhập rồi CHỜ người dùng bấm hoặc gõ: dễ học hơn, đổi lại tốn bộ nhớ và chạy chậm hơn CLI."
         },
         {
@@ -49,7 +49,7 @@
           ]
         },
         {
-          "title": "mainloop() ở Studio trả về ngay",
+          "title": "Dùng ở đâu — và Studio khác gì",
           "bullets": [
             "Công cụ nội bộ: form nhập liệu, cửa sổ phụ cho Cài đặt hay Trợ giúp",
             "Studio chạy tkinter GIẢ: không vẽ cửa sổ nào, bộ chấm soi cây widget thay bạn",
@@ -57,7 +57,7 @@
           ]
         },
         {
-          "title": "Đóng root là cửa sổ phụ đóng theo",
+          "title": "Đọc sơ đồ",
           "body": "Thanh tiêu đề mang chuỗi của title(), khung ngoài mang geometry(\"800x600\") — rộng x cao, chữ x thường. Cửa sổ phụ Toplevel có mũi tên trỏ về root: đóng root là nó đóng theo.",
           "figure": {
             "src": "/static/anim/G01-window-anatomy.svg",
@@ -251,26 +251,22 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "tk.Tk()",
-            "hint": "Tạo cửa sổ gốc — gọi lớp, không chỉ nhắc tên lớp"
+            "answer": "tk.Tk()"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "root.geometry(size)",
-            "hint": "Đặt kích thước cửa sổ gốc: một lời gọi method, chuỗi dùng chữ x"
+            "answer": "root.geometry(size)"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "tk.Toplevel(root)",
-            "hint": "Cửa sổ phụ của cùng ứng dụng — không dựng thêm cửa sổ gốc nữa"
+            "answer": "tk.Toplevel(root)"
           },
           {
             "n": 4,
             "placeholder": "[Slot 4]",
-            "answer": "root.mainloop()",
-            "hint": "Giao quyền cho vòng lặp sự kiện: dòng cuối, và phải là lời gọi"
+            "answer": "root.mainloop()"
           }
         ],
         "bank": [

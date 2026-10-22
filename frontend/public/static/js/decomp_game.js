@@ -71,7 +71,7 @@
     const banner = document.createElement('div');
     banner.className = 'decomp-rule';
     banner.innerHTML = `
-      <span class="decomp-rule-icon" aria-hidden="true">⚔️</span>
+      <span class="decomp-rule-icon">⚔️</span>
       <div class="decomp-rule-text">
         <strong>${escapeHtml(stage.rule_label || 'Nhiệm vụ chuẩn hóa')}</strong>
         <span>${escapeHtml(stage.rule)}</span>
@@ -416,9 +416,9 @@
       result.className = 'decomp-result success';
       const isMulti = state.stages && currentStageIdx < state.stages.length - 1;
       const isLast = state.stages && currentStageIdx === state.stages.length - 1;
-      const ctaText = isLast ? 'Xong Boss Battle! 🎉' :
+      const ctaText = isLast ? 'Hoàn thành Boss Battle! 🎉' :
                       isMulti ? `Stage ${currentStageIdx + 2}/${state.stages.length} →` :
-                      'Xong! Tiếp tục Bước 2 →';
+                      'Hoàn thành! Tiếp tục Bước 2 →';
       result.innerHTML = `
         <div class="decomp-result-icon">🎉</div>
         <div class="decomp-result-text">

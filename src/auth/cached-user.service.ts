@@ -34,15 +34,8 @@ export class CachedUserService {
     const user = await this.prisma.user.findUnique({ where: { id } });
     if (user) {
       if (this.cache.size >= MAX_ENTRIES && !this.cache.has(id)) {
-        // Duyệt bằng for…of thay cho `.keys().next().value`: lib ES2023 khai
-        // `IteratorResult.value` là `any`, nên bản cũ để `any` chảy thẳng vào
-        // `cache.delete()` — nếu khoá cache đổi kiểu thì delete() im lặng
-        // không xoá gì và Map phình quá MAX_ENTRIES. for…of cho ra `number`
-        // thật. Map giữ thứ tự chèn nên phần tử đầu là entry cũ nhất.
-        for (const oldest of this.cache.keys()) {
-          this.cache.delete(oldest);
-          break;
-        }
+        const oldest = this.cache.keys().next().value;
+        if (oldest !== undefined) this.cache.delete(oldest);
       }
       this.cache.set(id, { user, expiresAt: Date.now() + TTL_MS });
     } else {

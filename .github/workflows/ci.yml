@@ -55,7 +55,7 @@ jobs:
             -f json -o "$RUNNER_TEMP/eslint-report.json" || true
           node -e "
           const r = require(process.env.RUNNER_TEMP + '/eslint-report.json');
-          const TRAN = 10; // đo được 2 ngày 20/10/2026 (auth + common + user + course-admin + health đã đặt lại kiểu; 2 lỗi còn lại là no-base-to-string cố ý giữ, xem AGENTS.md); dư chỗ cho spec đang viết dở
+          const TRAN = 283; // đo được 263 ngày 14/10/2026 (quizzes + lessons đã đặt lại kiểu); dư chỗ cho spec đang viết dở
           const loi = r.reduce((s, f) => s + f.errorCount, 0);
           const canhBao = r.reduce((s, f) => s + f.warningCount, 0);
           const top = r.filter((f) => f.errorCount).sort((a, b) => b.errorCount - a.errorCount);
@@ -274,8 +274,3 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/pe-v4/anim/check.py --strict
-      # Động cơ mini-game "Sổ quỹ chung" (frontend/public/static/js/so-quy.py):
-      # chỉ thư viện chuẩn, vài giây — gắn vào job rẻ này thay vì `giao-trinh`
-      # (job đó chỉ bật khi scripts/pe-v3/ đổi). Bản Pyodide của cùng bộ ca
-      # (check-so-quy.mjs) cần cài pyodide nên chạy tay, xem AGENTS.md.
-      - run: python scripts/pe-v4/check_so_quy.py

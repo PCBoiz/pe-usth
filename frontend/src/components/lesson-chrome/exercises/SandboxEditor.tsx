@@ -37,7 +37,7 @@ export interface SandboxEditorProps {
 const STATUS_STYLE: Record<SandboxTestRow['status'], { bg: string; text: string; label: string }> = {
   pass: { bg: 'var(--st-ok-bg)', text: 'var(--st-ok-text)', label: '✓ Đạt' },
   fail: { bg: 'var(--st-err-bg)', text: 'var(--st-err-text)', label: '✕ Chưa đạt' },
-  pending: { bg: 'var(--ds-tint)', text: 'var(--ds-soft)', label: '• Chưa chạy' },
+  pending: { bg: 'var(--edu-card-bg)', text: 'var(--edu-t3)', label: '• Chưa chạy' },
 };
 
 export default function SandboxEditor({
@@ -94,7 +94,7 @@ export default function SandboxEditor({
             color: 'var(--st-syn-plain)',
             background: 'transparent',
             fontFamily: "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: 'var(--ds-fs-code)',
+            fontSize: 13,
             lineHeight: 1.7,
             // Tab thay vì nhảy focus: đang gõ code thụt lề là chuyện thường.
             tabSize: 4,
@@ -146,7 +146,7 @@ export default function SandboxEditor({
         >
           {/* Ký hiệu ■/▶ chỉ là hình: để trần thì trình đọc màn hình đọc thành
               "black square"/"black right-pointing triangle" trước tên nút. */}
-          {running ? 'Dừng' : 'Chạy thử'}
+          <span aria-hidden="true">{running ? '■' : '▶'}</span> {running ? 'Dừng' : 'Chạy thử'}
         </button>
         {onShowSolution && (
           <button type="button" className={styles.chip} onClick={onShowSolution}>
@@ -158,7 +158,7 @@ export default function SandboxEditor({
         <span className={styles.runHint} role="status">
           {tests.length
             ? `${passed}/${tests.length} ca kiểm thử đạt`
-            : 'Bài này làm trên máy tính của bạn, không có ca chấm tự động'}
+            : 'Bài này chấm trên máy lab, không có ca tự động'}
         </span>
       </div>
 
@@ -171,10 +171,10 @@ export default function SandboxEditor({
       />
 
       {tests.length > 0 && (
-        <div style={{ marginTop: 16, background: 'var(--ds-tint)', borderRadius: 12, padding: 14 }}>
-          <div style={{ fontSize: 'var(--ds-fs-ui)', fontWeight: 700, color: 'var(--ds-ink)', marginBottom: 10 }}>
+        <div style={{ marginTop: 16, background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-t1)', marginBottom: 10 }}>
             Kiểm thử &nbsp;
-            <span style={{ color: 'var(--ds-soft)', fontWeight: 500 }}>
+            <span style={{ color: 'var(--edu-t3)', fontWeight: 500 }}>
               {passed}/{tests.length} đạt
             </span>
           </div>
@@ -187,15 +187,15 @@ export default function SandboxEditor({
                 <li
                   key={i}
                   style={{
-                    background: 'var(--ds-card)',
-                    border: '1px solid var(--ds-line)',
+                    background: 'var(--edu-panel-bg-solid)',
+                    border: '1px solid var(--edu-sidebar-border)',
                     borderRadius: 8,
                     padding: '8px 12px',
-                    fontSize: 'var(--ds-fs-ui)',
+                    fontSize: 13,
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                    <span style={{ color: 'var(--ds-ink)' }}>{t.label}</span>
+                    <span style={{ color: 'var(--edu-t1)' }}>{t.label}</span>
                     <span
                       className={styles.chip}
                       style={{ background: style.bg, color: style.text, border: 0, cursor: 'default', flexShrink: 0 }}
@@ -204,7 +204,7 @@ export default function SandboxEditor({
                     </span>
                   </div>
                   {t.detail && t.status !== 'pending' && (
-                    <div style={{ fontSize: 'var(--ds-fs-label)', color: 'var(--ds-soft)', marginTop: 4 }}>{t.detail}</div>
+                    <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 4 }}>{t.detail}</div>
                   )}
                 </li>
               );

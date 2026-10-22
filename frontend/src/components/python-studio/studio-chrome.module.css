@@ -1,21 +1,15 @@
 /* Những mảnh nhỏ chỉ có ở màn bài học dựng từ content_json: dải ghi chú,
    thông báo, nhật ký biến đổi và bảng ví dụ I/O. Các thành phần còn lại đều
-   dùng lại component trong components/lesson-chrome.
-
-   Màu và cỡ chữ lấy từ BẢNG TOKEN v2 (--ds-* trong studio-tokens.css): tám
-   cỡ chữ, bốn họ nhấn có vai ngữ nghĩa duy nhất. File này đã chuyển xong,
-   nên không còn số px cỡ chữ nào — `e2e/unit/ds-type-scale.test.mjs` trượt
-   nếu có ai viết lại một con số. (Danh sách file đã/chưa chuyển, và số nợ
-   còn lại ở studio.module.css, ghi trong studio-tokens.css.) */
+   dùng lại component trong components/lesson-chrome. */
 
 .note {
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
   padding: 12px 16px;
   margin-bottom: 14px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 13px;
+  color: var(--edu-t2);
 }
 
 .noteOk {
@@ -28,13 +22,13 @@
   display: flex;
   align-items: flex-start;
   gap: 12px;
-  background: var(--ds-card);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
   padding: 12px 16px;
   margin-top: 14px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 13px;
+  color: var(--edu-t2);
 }
 
 .toast p {
@@ -45,8 +39,8 @@
 .toast button {
   border: 0;
   background: transparent;
-  color: var(--ds-soft);
-  font-size: var(--ds-fs-body);
+  color: var(--edu-t3);
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
 }
@@ -56,8 +50,8 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--ds-soft);
-  font-size: var(--ds-fs-ui);
+  color: var(--edu-t3);
+  font-size: 12px;
   text-decoration: underline;
   cursor: pointer;
 }
@@ -75,20 +69,20 @@
   display: flex;
   gap: 10px;
   align-items: flex-start;
-  background: var(--ds-card);
-  border: 1px solid var(--ds-line);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
   border-radius: 10px;
   padding: 10px 14px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-ink);
+  font-size: 13px;
+  color: var(--edu-t1);
 }
 
 .trace b {
   flex-shrink: 0;
   font-family: 'JetBrains Mono', monospace;
-  font-size: var(--ds-fs-label);
-  color: var(--ds-violet-deep);
-  background: var(--ds-tint);
+  font-size: 11px;
+  color: var(--edu-accent);
+  background: var(--edu-card-bg);
   border-radius: 6px;
   padding: 2px 8px;
 }
@@ -109,13 +103,13 @@
 }
 
 .io dt {
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 12px;
+  color: var(--edu-t3);
 }
 
 .io dd {
   margin: 0;
-  font-size: var(--ds-fs-ui);
+  font-size: 12px;
   min-width: 0;
 }
 
@@ -123,15 +117,15 @@
   display: inline-block;
   max-width: 100%;
   overflow-wrap: anywhere;
-  background: var(--ds-tint);
+  background: var(--edu-card-bg);
   border-radius: 6px;
   padding: 2px 8px;
 }
 
 /* Bài quy trình: khối các bước phải làm trên máy, thay cho ô soạn mã. */
 .procedure {
-  background: var(--ds-tint);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border-radius: 12px;
   padding: 14px;
   margin-bottom: 16px;
 }
@@ -142,14 +136,14 @@
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 10px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-ink);
+  font-size: 13px;
+  color: var(--edu-t1);
 }
 
 .procedure p {
   margin: 0;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 13px;
+  color: var(--edu-t3);
 }
 
 .procedure > div:last-child {
@@ -160,12 +154,12 @@
    admin vẫn tự làm thử được, bấm mới mở. */
 .answerKey {
   margin-top: 14px;
-  background: var(--ds-card);
-  border: 1px dashed var(--ds-violet);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-panel-bg-solid);
+  border: 1px dashed var(--edu-accent);
+  border-radius: 12px;
   padding: 10px 14px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-ink);
+  font-size: 13px;
+  color: var(--edu-t1);
 }
 
 .answerKeyHead {
@@ -183,19 +177,19 @@
 }
 
 .adminTag {
-  background: var(--ds-violet);
-  color: var(--ds-on-action);
-  border-radius: var(--ds-r-xs);
+  background: var(--edu-accent);
+  color: var(--edu-panel-bg-solid);
+  border-radius: 4px;
   padding: 2px 6px;
-  font-size: var(--ds-fs-label);
+  font-size: 10px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.4px;
 }
 
 .answerKeyToggle {
   margin-left: auto;
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 12px;
+  color: var(--edu-t3);
   text-decoration: underline;
 }
 
@@ -208,12 +202,12 @@
 
 .answerKey dl > div {
   padding-left: 10px;
-  border-left: 2px solid var(--ds-violet);
+  border-left: 2px solid var(--edu-accent);
 }
 
 .answerKey dt {
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 11px;
+  color: var(--edu-t3);
   margin-bottom: 2px;
 }
 
@@ -222,7 +216,7 @@
 }
 
 .answerKey dd code {
-  font: var(--ds-fs-code)/1.6 'JetBrains Mono', monospace;
+  font: 12px/1.6 'JetBrains Mono', monospace;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
@@ -250,13 +244,13 @@
 }
 
 .tag {
-  font-size: var(--ds-fs-label);
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
-  color: var(--ds-violet-deep);
-  background: var(--ds-violet-tint);
-  border-radius: var(--ds-r-pill);
+  color: var(--edu-accent-text);
+  background: var(--edu-accent-soft);
+  border-radius: 999px;
   padding: 3px 10px;
 }
 
@@ -267,12 +261,12 @@
 
 .facts {
   margin: 0 0 16px;
-  border: 1px solid var(--ds-line);
+  border: 1px solid var(--edu-sidebar-border);
   display: grid;
   grid-template-columns: minmax(0, max-content) minmax(0, 1fr);
   gap: 8px 16px;
-  background: var(--ds-tint);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border-radius: 12px;
   padding: 12px 14px;
 }
 
@@ -281,14 +275,14 @@
 }
 
 .facts dt {
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 12px;
+  color: var(--edu-t3);
 }
 
 .facts dd {
   margin: 0;
-  font-size: var(--ds-fs-ui);
-  color: var(--ds-ink);
+  font-size: 13px;
+  color: var(--edu-t1);
   min-width: 0;
   overflow-wrap: anywhere;
 }
@@ -296,25 +290,25 @@
 .facts code,
 .contracts code {
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: var(--ds-fs-code);
-  background: var(--ds-tint);
+  font-size: 12px;
+  background: var(--edu-panel-bg-solid);
   border-radius: 6px;
   padding: 1px 6px;
 }
 
 .panel {
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
   padding: 12px 14px;
   margin-bottom: 16px;
 }
 
 .panel summary {
   cursor: pointer;
-  font-size: var(--ds-fs-body);
+  font-size: 13px;
   font-weight: 700;
-  color: var(--ds-ink);
+  color: var(--edu-t1);
   display: flex;
   gap: 10px;
   align-items: baseline;
@@ -322,9 +316,9 @@
 }
 
 .panel summary span {
-  font-weight: 600;
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--edu-t3);
   font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
@@ -338,8 +332,8 @@
 
 .panelNote {
   margin: 0 0 10px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 12px;
+  color: var(--edu-t3);
 }
 
 .contracts {
@@ -352,16 +346,16 @@
 }
 
 .contracts li {
-  background: var(--ds-card);
-  border: 1px solid var(--ds-line);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
   border-radius: 10px;
   padding: 10px 14px;
 }
 
 .contracts p {
   margin: 6px 0 8px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 13px;
+  color: var(--edu-t2);
 }
 
 .contracts dl {
@@ -376,34 +370,34 @@
 }
 
 .contracts dt {
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 12px;
+  color: var(--edu-t3);
 }
 
 .contracts dd {
   margin: 0;
-  font-size: var(--ds-fs-ui);
-  color: var(--ds-ink);
+  font-size: 12px;
+  color: var(--edu-t1);
   overflow-wrap: anywhere;
 }
 
 .contracts .sig {
   font-weight: 700;
-  color: var(--ds-violet-deep);
+  color: var(--edu-accent-text);
   background: transparent;
   padding: 0;
-  font-size: var(--ds-fs-code);
+  font-size: 13px;
 }
 
 .hintCode {
   margin: 0;
   white-space: pre-wrap;
   font-family: 'JetBrains Mono', ui-monospace, monospace;
-  font-size: var(--ds-fs-code);
+  font-size: 12px;
   line-height: 1.6;
   color: var(--st-syn-plain);
   background: var(--st-code-bg);
-  border-radius: var(--ds-r-sm);
+  border-radius: 8px;
   padding: 10px 12px;
   overflow-x: auto;
 }
@@ -422,12 +416,12 @@
 /* ---------------------------------------------------------------- mini-game
    Khoá Python Advanced (studio-lesson/v2): danh sách đúng/sai, nút công cụ
    của game ghép code, dải Boss, điểm bật lên, hiệu ứng code chạy đúng và
-   hộp thành tích mới. Chỉ dùng token màu --ds-…/--st-… (lint:tokens cấm mã màu). */
+   hộp thành tích mới. Chỉ dùng token màu --edu-… và --st-… (lint:tokens cấm mã màu). */
 
 .boss {
-  background: var(--ds-violet-tint);
-  border-color: var(--ds-violet);
-  color: var(--ds-violet-deep);
+  background: var(--edu-accent-soft);
+  border-color: var(--edu-accent);
+  color: var(--edu-accent-text);
 }
 
 .tfList {
@@ -440,16 +434,16 @@
 }
 
 .tfList li {
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
   padding: 14px 16px;
 }
 
 .tfList p {
   margin: 0 0 10px;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-ink);
+  font-size: 14px;
+  color: var(--edu-t1);
 }
 
 .gameTools {
@@ -457,13 +451,8 @@
   gap: 18px;
 }
 
-/* Nút công cụ đang tắt: KHÔNG làm mờ bằng opacity. `opacity: .4` cho chữ
-   `ink` trên thẻ trắng chỉ còn 2,42:1 — bản thiết kế chốt hạ cấp màu (nền
-   `desk`, chữ `soft`, viền `sketch`) thay vì hạ độ đục. */
 .gameTools button:disabled {
-  background: var(--ds-desk);
-  color: var(--ds-soft);
-  border-color: var(--ds-sketch);
+  opacity: 0.4;
   cursor: default;
 }
 
@@ -472,11 +461,11 @@
   top: 72px;
   right: 24px;
   z-index: 40;
-  background: var(--ds-violet);
-  color: var(--ds-on-action);
+  background: var(--edu-accent);
+  color: var(--edu-panel-bg-solid);
   font-weight: 800;
-  font-size: var(--ds-fs-ui);
-  border-radius: var(--ds-r-pill);
+  font-size: 14px;
+  border-radius: 999px;
   padding: 8px 16px;
   pointer-events: none;
   animation: pe-pop 1.6s ease-out forwards;
@@ -510,10 +499,9 @@
   background: var(--st-ok-bg);
   color: var(--st-ok-text);
   border: 1px solid var(--st-ok-line);
-  border-radius: var(--ds-r-pill);
+  border-radius: 999px;
   padding: 10px 20px;
-  font-size: var(--ds-fs-ui);
-  font-weight: 800;
+  font-size: 16px;
   animation: pe-pop 1.8s ease-out forwards;
 }
 
@@ -521,8 +509,7 @@
   position: absolute;
   left: 0;
   top: 0;
-  /* Emoji trang trí, không phải chữ đọc — vẫn lấy một cỡ có trong thang. */
-  font-size: var(--ds-fs-h2);
+  font-size: 26px;
   --angle: calc(var(--i) * 45deg);
   animation: pe-fly 1.2s ease-out forwards;
 }
@@ -544,14 +531,14 @@
   display: grid;
   place-items: center;
   padding: 16px;
-  background: color-mix(in srgb, var(--ds-ink) 45%, transparent);
+  background: color-mix(in srgb, var(--edu-t1) 45%, transparent);
 }
 
 .awards {
   width: min(420px, 100%);
-  background: var(--ds-card);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-lg);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 16px;
   padding: 24px;
   text-align: center;
   animation: pe-pop-in 0.3s ease-out;
@@ -559,10 +546,10 @@
 
 .awardsEyebrow {
   margin: 0 0 14px;
-  font-size: var(--ds-fs-label);
+  font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: var(--ds-violet-deep);
+  color: var(--edu-accent-text);
 }
 
 .award {
@@ -570,36 +557,34 @@
   align-items: center;
   gap: 14px;
   text-align: left;
-  background: var(--ds-tint);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border-radius: 12px;
   padding: 12px 14px;
   margin-bottom: 10px;
 }
 
 .award > span {
-  font-size: var(--ds-fs-h2);
+  font-size: 30px;
 }
 
 .award strong {
-  color: var(--ds-ink);
+  color: var(--edu-t1);
 }
 
 .award p {
   margin: 2px 0 0;
-  font-size: var(--ds-fs-body);
-  color: var(--ds-soft);
+  font-size: 13px;
+  color: var(--edu-t3);
 }
 
 .awards button {
   margin-top: 8px;
   border: 0;
-  border-radius: var(--ds-r-pill);
+  border-radius: 999px;
   padding: 10px 24px;
-  font: inherit;
-  font-size: var(--ds-fs-ui);
-  font-weight: 800;
-  background: var(--ds-action);
-  color: var(--ds-on-action);
+  font-weight: 700;
+  background: var(--edu-accent);
+  color: var(--edu-panel-bg-solid);
   cursor: pointer;
 }
 
@@ -609,27 +594,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* `.pop` ("+10 điểm") và `.burst strong` ("Code chạy đúng!") KHÔNG được chỉ
-     rút thời lượng xuống 0,01ms như trước. `pe-pop` là animation vào-rồi-RA:
-     khung 100% của nó là `opacity: 0`, cộng `forwards` để giữ khung cuối. Rút
-     thời lượng chỉ làm nó nhảy thẳng tới khung cuối, tức thông báo biến mất
-     hẳn — người bật giảm chuyển động không bao giờ đọc được nó (đo 14/10/2026).
-     Nay đứng yên, hiện rõ; LessonOverlays.tsx gỡ phần tử bằng hẹn giờ vì không
-     còn `animationend` nào bắn (xem lib/status-pop-life.ts). */
   .pop,
-  .burst strong {
-    animation: none;
-    opacity: 1;
-  }
-  /* `.awards` thì rút thời lượng được: `pe-pop-in` kết thúc ở opacity 1. */
+  .burst strong,
   .awards {
     animation-duration: 0.01ms;
-  }
-  /* Khung `.burst` chỉ giữ chỗ (width/height = 0) và `pe-burst-life` giữ
-     opacity 1 từ đầu tới cuối, nhưng `animationend` của NÓ là thứ gỡ cả khối
-     ở bản thường. Tắt ở đây cho khớp: bản giảm chuyển động gỡ bằng hẹn giờ. */
-  .burst {
-    animation: none;
   }
   .burst span {
     display: none;
@@ -647,11 +615,11 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  font-size: var(--ds-fs-ui);
+  font-size: 13px;
 }
 
 .runTests li {
-  border-radius: var(--ds-r-sm);
+  border-radius: 8px;
   padding: 6px 12px;
 }
 
@@ -676,27 +644,24 @@
 }
 
 .theoryBlock {
-  background: var(--ds-card);
-  border: 1px solid var(--ds-line);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
   border-radius: 14px;
   padding: 20px 24px;
 }
 
 .theoryBlock h4 {
   margin: 0 0 10px;
-  font-size: var(--ds-fs-h3);
-  font-weight: 700;
-  color: var(--ds-ink);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--edu-t1);
 }
 
-/* 16px là chỗ lệch nặng nhất so với bản thiết kế: đây chính là đoạn văn lý
-   thuyết, tức chữ người học đọc lâu nhất trong cả bài, mà mức thân đã chốt
-   là >= 17px. */
 .theoryBlock p {
   margin: 0;
-  font-size: var(--ds-fs-body);
+  font-size: 16px;
   line-height: 1.7;
-  color: var(--ds-soft);
+  color: var(--edu-t2);
 }
 
 .theoryBlock ul {
@@ -708,9 +673,9 @@
 }
 
 .theoryBlock li {
-  font-size: var(--ds-fs-body);
+  font-size: 16px;
   line-height: 1.65;
-  color: var(--ds-soft);
+  color: var(--edu-t2);
 }
 
 .theoryBlock p + ul {
@@ -730,9 +695,9 @@
   height: auto;
   aspect-ratio: 2 / 1;
   object-fit: contain;
-  background: var(--ds-tint);
-  border: 1px solid var(--ds-line);
-  border-radius: var(--ds-r-md);
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
 }
 
 .theoryFigure a {
@@ -740,66 +705,11 @@
   cursor: zoom-in;
 }
 
-/* Khung của hình giữ tỉ lệ 2:1 ngay trên thẻ <a>, không chỉ trên <img>: khi
-   người dùng bấm Dừng mà không dựng được bản tĩnh thì không còn <img> nào, và
-   nếu khung tự co lại thì cả trang nhảy dưới tay người đang đọc. */
-.theoryFigureBox {
-  aspect-ratio: 2 / 1;
-}
-
-/* Chỗ đứng của hình khi đã ẩn để dừng chuyển động. */
-.theoryFigureOff {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  padding: 24px;
-  text-align: center;
-  font-size: var(--ds-fs-body);
-  line-height: 1.55;
-  color: var(--ds-soft);
-  background: var(--ds-tint);
-  /* Nét đứt mang thông tin ("hình đang tắt"), nên phải >= 3:1: `line` chỉ
-     1,36:1, `sketch` 4,21:1. */
-  border: 2px dashed var(--ds-sketch);
-  border-radius: var(--ds-r-md);
-}
-
-/* Nút Dừng/Chạy hoạt hình của hình minh hoạ (WCAG 2.2.2). Nằm trong figcaption
-   nên phải nhỏ như một link, không to như nút hành động chính của màn. */
-.theoryFigureToggle {
-  margin-left: 10px;
-  padding: 2px 10px;
-  font: inherit;
-  font-size: var(--ds-fs-ui);
-  font-weight: 700;
-  color: var(--ds-violet-deep);
-  background: transparent;
-  /* Nút bấm được: viền `sketch` (4,21:1) thay cho `line` (1,36:1). */
-  border: 2px solid var(--ds-sketch);
-  border-radius: var(--ds-r-pill);
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-/* Hiệu ứng rê chuột chỉ bật khi thiết bị THẬT có con trỏ. Trên màn cảm ứng,
-   :hover dính lại sau cú chạm nên nút trông như đang được chọn. */
-@media (hover: hover) and (pointer: fine) {
-  .theoryFigureToggle:hover {
-    border-color: var(--ds-violet);
-  }
-}
-
-.theoryFigureToggle:focus-visible {
-  outline: 2px solid var(--ds-violet);
-  outline-offset: 2px;
-}
-
 .theoryFigure figcaption {
   margin-top: 10px;
-  font-size: var(--ds-fs-body);
+  font-size: 14px;
   line-height: 1.55;
-  color: var(--ds-soft);
+  color: var(--edu-t3);
 }
 
 /* Link "Xem khổ lớn" nằm ngay sau chú thích, không phải nút riêng: học viên nào
@@ -807,8 +717,8 @@
 .theoryFigure figcaption a {
   display: inline;
   margin-left: 8px;
-  color: var(--ds-violet-deep);
-  text-decoration: underline;
+  color: var(--edu-accent);
+  text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
 }
@@ -817,20 +727,10 @@
   text-decoration: underline;
 }
 
-/* Icon "mở ở ngoài" thay cho ký tự ↗ (xem chú thích ở TheoryScreen.tsx). Giữ
-   `display: inline` của liên kết, nên icon phải tự canh theo đường chữ: nó
-   đứng trên baseline thì trông như tụt xuống nửa dòng. `margin-left` là khoảng
-   giữa chữ và icon — không dùng khoảng trắng trong JSX vì gạch chân của liên
-   kết sẽ kéo qua cả chỗ trống đó. */
-.theoryFigure figcaption a svg {
-  margin-left: 4px;
-  vertical-align: -3px;
-}
-
 .theorySource {
   margin: 0;
-  font-size: var(--ds-fs-label);
-  color: var(--ds-soft);
+  font-size: 14px;
+  color: var(--edu-t3);
 }
 
 /* Màn lý thuyết chạy ở CỘT RỘNG (--st-col-wide, xem .contentWide trong

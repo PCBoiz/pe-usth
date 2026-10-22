@@ -25,7 +25,7 @@ export interface SandboxProps {
 const STATUS_STYLE: Record<SandboxTest['status'], { bg: string; text: string; label: string }> = {
   pass: { bg: 'var(--st-ok-bg)', text: 'var(--st-ok-text)', label: '✓ Đạt (Pass)' },
   fail: { bg: 'var(--st-err-bg)', text: 'var(--st-err-text)', label: '✕ Thất bại' },
-  pending: { bg: 'var(--ds-tint)', text: 'var(--ds-soft)', label: '• Chưa chạy' },
+  pending: { bg: 'var(--edu-card-bg)', text: 'var(--edu-t3)', label: '• Chưa chạy' },
 };
 
 export default function Sandbox({ filename, langTag, code, tests, consoleOutput }: SandboxProps) {
@@ -50,7 +50,7 @@ export default function Sandbox({ filename, langTag, code, tests, consoleOutput 
 
       <div className={styles.runRow}>
         <button type="button" className={styles.runBtn} onClick={run} disabled={running}>
-          {running ? 'Đang chạy…' : ran ? 'Chạy lại' : 'Chạy kiểm thử'}
+          {running ? '⟳ Đang chạy…' : ran ? '↻ Chạy lại' : '▶ Chạy kiểm thử'}
         </button>
         <span className={styles.runHint}>
           {ran ? `${passed}/${tests.length} test đạt` : 'Chạy để xem kết quả ở console bên dưới'}
@@ -64,10 +64,10 @@ export default function Sandbox({ filename, langTag, code, tests, consoleOutput 
         placeholder='Bấm "Chạy kiểm thử" để thực thi solution.py'
       />
 
-      <div style={{ marginTop: 16, background: 'var(--ds-tint)', borderRadius: 12, padding: 14 }}>
-        <div style={{ fontSize: 'var(--ds-fs-ui)', fontWeight: 700, color: 'var(--ds-ink)', marginBottom: 10 }}>
+      <div style={{ marginTop: 16, background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14 }}>
+        <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-t1)', marginBottom: 10 }}>
           Kiểm thử &nbsp;
-          <span style={{ color: 'var(--ds-soft)', fontWeight: 500 }}>{passed}/{tests.length} test đạt</span>
+          <span style={{ color: 'var(--edu-t3)', fontWeight: 500 }}>{passed}/{tests.length} test đạt</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {shown.map((t, i) => {
@@ -79,11 +79,11 @@ export default function Sandbox({ filename, langTag, code, tests, consoleOutput 
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  background: 'var(--ds-card)',
-                  border: '1px solid var(--ds-line)',
+                  background: 'var(--edu-panel-bg-solid)',
+                  border: '1px solid var(--edu-sidebar-border)',
                   borderRadius: 8,
                   padding: '8px 12px',
-                  fontSize: 'var(--ds-fs-ui)',
+                  fontSize: 13,
                   transition: 'border-color .2s',
                 }}
               >

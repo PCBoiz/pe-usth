@@ -73,19 +73,16 @@ for (const path of ['/', '/courses/python_advanced', '/courses/db_design']) {
   });
 }
 
-test('trang chủ chỉ còn ô Python và ô công cụ Bàn thí nghiệm', async ({ page }) => {
+test('trang chủ chỉ còn ô Python và ô công cụ Python IDE', async ({ page }) => {
   await page.goto('/', { waitUntil: 'domcontentloaded' });
-  // Đếm theo `[data-catalog-tile]`, không theo `a[href^="/courses/"]`:
-  // 15/10/2026 trang chủ có thêm thẻ "Gợi ý bước tiếp" với lối ra "Tự chọn bài"
-  // cũng trỏ vào /courses/… — đếm theo href thì ô khoá bị tính lẫn với lối ra.
-  const tiles = page.locator('a[data-catalog-tile][href^="/courses/"]');
+  const tiles = page.locator('a[href^="/courses/"]');
   // 13/10/2026: 6 khoá còn lại (cpp, java, htmlcss, db_design*) đã gỡ khỏi danh
   // mục tĩnh cho buổi dùng thử — xem src/lib/catalog.ts. Còn đúng một ô khoá.
   await expect(tiles).toHaveCount(1);
   const hrefs = await tiles.evaluateAll((els) => els.map((el) => el.getAttribute('href')));
   expect(hrefs).toEqual(['/courses/python_advanced']);
 
-  // Bàn thí nghiệm là CÔNG CỤ (href /ide, ngoài khối khoá) và hiện SẴN; chỉ ẩn
+  // Python IDE là CÔNG CỤ (href /ide, ngoài lưới khóa học) và hiện SẴN; chỉ ẩn
   // khi build với NEXT_PUBLIC_IDE_ENABLED=off, mà e2e không đặt cờ đó.
   await expect(page.locator('a[href="/ide"]')).toHaveCount(1);
 

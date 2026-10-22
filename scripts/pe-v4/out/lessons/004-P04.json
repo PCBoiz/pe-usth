@@ -37,7 +37,7 @@
       },
       "theory": [
         {
-          "title": "Trông như một, thật ra ba đường riêng",
+          "title": "Định nghĩa: ba luồng chuẩn",
           "body": "Mỗi process khi khởi động đã có sẵn ba luồng, mang đúng ba file descriptor đầu tiên. Mặc định cả ba nối với terminal nên trông như một, nhưng là ba đường riêng, đổi đích được độc lập.",
           "bullets": [
             "stdin (0): đầu vào — input() và sys.stdin đọc từ đây",
@@ -46,11 +46,11 @@
           ]
         },
         {
-          "title": "Pipe nối stdout vào stdin bên kia",
+          "title": "Ví dụ: ba cách đổi đích",
           "body": "bc < input.txt đổi stdin sang file; ls -la > out.txt đổi stdout sang file mà stderr vẫn ra màn hình. ps aux | grep term nối stdout của process 1 vào stdin của process 2 qua một pipe."
         },
         {
-          "title": "Log lỗi không trộn vào dữ liệu",
+          "title": "Dùng ở đâu",
           "bullets": [
             "Pipeline shell và CI: mỗi công cụ đọc stdin, ghi ra stdout nên ghép được",
             "Giữ stderr riêng để log lỗi không trộn vào dữ liệu chuyển cho bước sau",
@@ -58,7 +58,7 @@
           ]
         },
         {
-          "title": "stderr tách riêng dù stdout đã sang file",
+          "title": "Đọc sơ đồ",
           "body": "Hộp giữa là process: mũi tên vào là stdin (0), hai mũi tên ra là stdout (1) và stderr (2) — stderr luôn tách riêng, kể cả khi stdout đã đổi sang file. Phần dưới là biến thể pipe: dữ liệu chảy qua bộ nhớ, không qua đĩa.",
           "figure": {
             "src": "/static/anim/P04-io-redirection.svg",
@@ -255,20 +255,17 @@
           {
             "n": 1,
             "placeholder": "[Slot 1]",
-            "answer": "print(\"skip:\", text, file=sys.stderr)",
-            "hint": "Báo dòng bỏ qua ra luồng lỗi, để không lẫn vào kết quả"
+            "answer": "print(\"skip:\", text, file=sys.stderr)"
           },
           {
             "n": 2,
             "placeholder": "[Slot 2]",
-            "answer": "input=data",
-            "hint": "Tham số đưa một chuỗi sẵn có vào stdin của con"
+            "answer": "input=data"
           },
           {
             "n": 3,
             "placeholder": "[Slot 3]",
-            "answer": "text=True",
-            "hint": "Tham số cho out/err về dạng chuỗi thay vì bytes"
+            "answer": "text=True"
           }
         ],
         "bank": [

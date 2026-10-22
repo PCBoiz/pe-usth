@@ -14,7 +14,7 @@ Cùng khuôn với scripts/pe-v3/build.py (bản đó giữ nguyên cho khoá c�
   ứng dụng, đọc sơ đồ), `figure=dict(name=…, caption=…, alt=…)` (hoặc một LIST tối đa
   hai hình, phần tử đầu là hình chính — mỗi hình phải có một khối theory khai
   `figure='<tên>'`) và `slides='SL 15-16'`
-  — xem scripts/pe-v4/CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
+  — xem CONTRACT-THEORY.md. Chúng đổ vào content_json.step_1.theory / .figure và
   content_json.source.slides. Hình SVG nằm ở frontend/public/static/anim/<name>.svg;
   thiếu file chỉ là CẢNH BÁO (tác giả nội dung không phải chờ agent vẽ hình), trừ khi
   chạy với --strict.
@@ -96,7 +96,7 @@ IMPORT_TO_PACKAGE = {mod: pkg for pkg, mod in PACKAGES.items()}
 MIN_TESTS = 5
 MIN_BAD = 2
 
-# ---- LÝ THUYẾT + HÌNH (M1–M3, xem scripts/pe-v4/CONTRACT-THEORY.md)
+# ---- LÝ THUYẾT + HÌNH (M1–M3, xem CONTRACT-THEORY.md)
 # Hai khoá mới của dict bài: `theory` (3–5 khối nền) và `figure` (hình chính).
 # Giới hạn độ dài KHÔNG phải tuỳ hứng: màn `theory` của frontend là một thẻ, chữ
 # dài hơn mức này thì thẻ tràn và học viên bỏ qua. Bài M4–M8 không khai gì thì
@@ -110,7 +110,6 @@ THEORY_BULLET_MAX = 160
 # Mỗi bài khai 1 hoặc 2 hình: `figure=dict(...)` hoặc `figure=[dict(...), dict(...)]`.
 # Vì sao cho 2: P01/P02/P03 có hình thứ hai đã vẽ xong (cây process, fork-exec-wait,
 # round robin) mà schema một-hình giữ chúng ngoài bài — hình vẽ rồi không ai thấy.
-# (P03-round-robin sau đó bị gỡ lại vì lệch dữ liệu bài, xem ALLOW_ORPHAN ở anim/check.py.)
 # Vì sao không cho nhiều hơn: màn `theory` là MỘT thẻ, thêm hình nữa là lại cuộn dài.
 FIGURES_MAX = 2
 FIGURE_CAPTION_MAX = 90
@@ -195,7 +194,7 @@ def brief_block(code, spec, briefs, module_no, level):
     for key in ('goal', 'task', 'predict', 'reflect'):
         check(brief.get(key), code, f'màn mở đầu thiếu {key}')
     return {
-        'eyebrow': [f'M{module_no}', 'TỔNG HỢP' if spec.get('gate') else f'BÀI TẬP {level.upper()}', code],
+        'eyebrow': [f'M{module_no}', 'BOSS' if spec.get('gate') else f'BÀI TẬP {level.upper()}', code],
         'title': spec['title'],
         'goal': brief['goal'],
         'task': brief['task'],
@@ -240,31 +239,9 @@ def scaffold_block(code, spec):
     check(len(labels) == len(set(labels)), code, 'khối trong ngân hàng lắp ghép bị trùng nhãn')
     check(all('\n' not in b for b in labels), code, 'nhãn khối lắp ghép không được xuống dòng')
     random.Random(code).shuffle(bank)
-    # `hints` (ô này làm gì — nhãn của nhóm thẻ) và `whys` (vì sao đáp án đúng —
-    # câu phản hồi khi ô đúng) là TUỲ CHỌN, mỗi phần tử ứng với một slot, None =
-    # bỏ trống. Màn điền code (frontend lib/studio-lesson.ts: bankGroups,
-    # fillFeedback) đọc `slots[].hint/why`; thiếu thì nhóm không nhãn và câu đúng
-    # không lý do. Chỉ chép khi bài khai THẬT — không sinh chữ thay người viết.
-    # LUẬT VIẾT `hints`: nhãn nằm trên kho TRƯỚC khi người học chọn gì, nên nó
-    # phải nói LOẠI thứ cần điền hoặc VIỆC nó làm, KHÔNG nói ra chính đáp án —
-    # lộ ở đây là phát sẵn bảng đáp án. Lưới: frontend/e2e/unit/trap-leak.test.mjs.
-    extra = {}
-    for key, field in (('hints', 'hint'), ('whys', 'why')):
-        vals = spec.get(key)
-        if vals is None:
-            continue
-        check(len(vals) == len(slots), code, f'{key} có {len(vals)} mục nhưng khung có {len(slots)} slot')
-        extra[field] = vals
-    out_slots = []
-    for i, a in enumerate(slots, start=1):
-        slot = {'n': i, 'placeholder': f'[Slot {i}]', 'answer': a}
-        for field, vals in extra.items():
-            if vals[i - 1]:
-                slot[field] = vals[i - 1]
-        out_slots.append(slot)
     return {
         'template': template,
-        'slots': out_slots,
+        'slots': [{'n': i, 'placeholder': f'[Slot {i}]', 'answer': a} for i, a in enumerate(slots, start=1)],
         'bank': bank,
     }
 
@@ -418,12 +395,8 @@ def theory_blocks(code, spec, warnings, strict_figures):
             carried[name] = at
             block['figure'] = {k: by_name[name][k] for k in ('src', 'caption', 'alt')}
         blocks.append(block)
-    # Hình khai mà không khối nào mang là hình KHÔNG BAO GIỜ lên màn hình — bắt tại đây
-    # vì từ khi `figure` nhận list, đó là cách mới để một hình rơi khỏi bài.
-    # Đừng nhầm đây là check đã bắt vụ P01/P02/P03: ba hình đó CHƯA TỪNG được khai ở
-    # bài nào (`git log -S P01-process-tree -- scripts/pe-v4` chỉ ra commit nối chúng
-    # vào), nên build.py không có gì để so. Thứ bắt được lớp lỗi "vẽ xong mà không bài
-    # nào khai" là `anim/check.py --strict`, đọc ngược từ file SVG sang gói bài.
+    # Hình khai mà không khối nào mang là hình KHÔNG BAO GIỜ lên màn hình: đó đúng là
+    # cách P01/P02/P03 từng mất hình thứ hai (vẽ xong, không bài nào nối vào).
     orphan = [name for name in by_name if name not in carried]
     check(not orphan, code,
           f'hình khai mà không khối theory nào mang: {", ".join(orphan)} — thêm figure="<tên>" vào một khối')
@@ -437,7 +410,7 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     title = f"{code} · {spec['title']}"
     subtitle = f"{level} · M{module_no} · {spec['minutes']} phút"
     if gate:
-        subtitle += f" · Tổng hợp {spec.get('exam') or module_name}"
+        subtitle += f" · Boss {spec.get('exam') or module_name}"
 
     prereq = spec.get('prereq')
     if prereq:
@@ -450,8 +423,8 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     # ---- S1: hiểu và dự đoán
     step1 = {
         'brief': brief_block(code, spec, briefs, module_no, level),
-        # Lý thuyết là màn ĐẦU TIÊN của bài, đứng trước cả `brief` (xem buildPlayScreens
-        # của frontend): học viên cần khái niệm + hình trước khi bị đòi viết code.
+        # Lý thuyết đứng NGAY SAU màn mở đầu (xem buildPlayScreens của frontend):
+        # học viên cần khái niệm + hình trước khi đọc code từng dòng ở `explain`.
         'theory': theory,
         'figure': figure,
         'context': {
@@ -517,11 +490,7 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
         task_body += '\n\nThực hành: ' + spec['practice']
     step4 = {
         'task': {
-            # Tiêu đề bài cửa KHÔNG được nhắc lại lời hứa "nộp lần đầu": luật thật
-            # là lời giải mở khi bài HOÀN THÀNH (xem lessons.service.ts
-            # `gated && !completed` và frontend/src/lib/gate-notice.ts). Câu cũ
-            # hứa ngược lại, và nó hiện ngay TRÊN lời nhắc đã sửa.
-            'title': 'Bài tổng hợp chặng — tự viết rồi nộp' if gate else 'Thử thách độc lập',
+            'title': 'Boss — tự viết, nộp lần đầu trước khi xem lời giải' if gate else 'Thử thách độc lập',
             'body': task_body,
             'io': [{'label': label, 'value': value} for label, value in spec['io']],
         },
@@ -545,16 +514,6 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     if packages:
         step4['packages'] = packages
 
-    # Mini-game có động cơ riêng (vd. "Sổ quỹ chung" của T05): build_advanced.py nối
-    # nó vào CUỐI play.games — cuối chứ không chen giữa, vì id game mang số thứ tự
-    # (`fill-1`, `debug-3`…) và bản nháp của người đang học lưu theo id đó.
-    mini_game = spec.get('mini_game')
-    if mini_game:
-        need = {'type', 'title', 'code', 'loiGiai', 'ham', 'soDu', 'nguoi'}
-        check(need <= set(mini_game), code, f'mini_game thiếu {sorted(need - set(mini_game))}')
-        check(mini_game['type'] == 'soQuy', code, f"mini_game type {mini_game['type']!r} chưa có động cơ")
-        check(len(mini_game['nguoi']) == 2, code, 'mini_game soQuy cần đúng 2 người (màn vẽ hai nhân vật)')
-
     # `slides` = trang slide gốc của giảng viên ("SL 15-16"), để sổ tay in được dòng
     # nguồn dưới khối lý thuyết. Đi cùng `source` vì nó nói về xuất xứ, không phải nội dung.
     slides = spec.get('slides')
@@ -574,8 +533,6 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
         'step_3': step3,
         'step_4': step4,
     }
-    if mini_game:
-        content['mini_games'] = [dict(mini_game)]
     xp = XP[level] * (2 if gate else 1)
     row = {
         'lesson_code': code,

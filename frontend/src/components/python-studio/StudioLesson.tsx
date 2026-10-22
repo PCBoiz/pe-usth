@@ -28,7 +28,6 @@ import { useMemo } from 'react';
 
 import LessonChrome from '@/components/lesson-chrome/LessonChrome';
 import ShellB from '@/components/lesson-chrome/ShellB';
-import { prevStep } from '@/lib/lesson-nav';
 import c from './studio-chrome.module.css';
 import AdminAnswerKey from './AdminAnswerKey';
 import LessonOverlays from './LessonOverlays';
@@ -68,12 +67,12 @@ export default function StudioLesson({
     lesson,
     meta,
     user,
+    streak,
     totalLessons,
     enrolled,
     completed,
     loading,
     loadError,
-    loadFailure,
     empty,
     busy,
     message,
@@ -238,19 +237,15 @@ export default function StudioLesson({
     (acc, x, i) => (d.done[x.key] ? Math.max(acc, i + 2) : acc),
     1,
   );
-  // "Màn trước" ở thanh dưới — các màn tải/lỗi/chưa ghi danh tắt nó qua `over`
-  // giống hệt `onSeek`.
-  const prevAt = prevStep(d.step, screens.length);
   function frame(children: React.ReactNode, over?: Partial<React.ComponentProps<typeof LessonChrome>>) {
     return (
       <LessonChrome
         step={Math.min(d.step, Math.max(1, screens.length || 1))}
         totalSteps={Math.max(1, screens.length || 1)}
-        // Không truyền `streak` nữa — chuỗi ngày đã gỡ khỏi thanh trên cùng
-        // (xem chú thích trong LessonChrome.tsx).
+        streak={streak}
         points={play ? score.points : undefined}
         courseLabel={
-          (boss ? 'BÀI TỔNG HỢP CHẶNG · ' : '') +
+          (boss ? '⚔️ BOSS · ' : '') +
           (lesson?.step_1?.brief?.title || meta?.title
             ? `${courseName} · ` + (lesson?.step_1?.brief?.title || meta?.title)
             : `${courseName} Studio`)
@@ -262,7 +257,6 @@ export default function StudioLesson({
         primaryTone={cta.tone}
         primaryDisabled={cta.disabled}
         onPrimaryClick={() => doAction(cta.action)}
-        onPrev={prevAt ? () => goTo(prevAt) : undefined}
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
@@ -309,33 +303,26 @@ export default function StudioLesson({
       primaryDisabled: true,
       onPrimaryClick: () => undefined,
       onSeek: undefined,
-      onPrev: undefined,
     });
 
-  // Nhan đề và câu giải thích đến từ `lib/lesson-load-error.ts`: nó phân biệt
-  // DB chết / quá tải / lệch gốc API / 401 thật. Bản cũ dán MỘT nhan đề "Chưa
-  // kết nối được bài học" cho mọi nguyên nhân, và câu bên dưới là thông điệp
-  // 401 — tức đổ lỗi cho phiên của người học khi máy chủ mất cơ sở dữ liệu.
   if (loadError)
-    return frame(info(loadFailure?.title ?? 'Chưa mở được bài học', loadFailure?.body ?? loadError), {
+    return frame(info('Chưa kết nối được bài học', loadError), {
       primaryLabel: 'Thử lại',
       onPrimaryClick: () => void load(),
       onSeek: undefined,
-      onPrev: undefined,
     });
 
   if (!enrolled && user?.role !== 'admin')
     return frame(
       info(
         meta?.title || `Bài học ${courseName}`,
-        'Đăng ký khoá học miễn phí để mở bài học và lưu tiến độ.',
+        'Đăng ký khóa học miễn phí để mở bài học và lưu tiến độ.',
       ),
       {
-        primaryLabel: busy ? 'Đang đăng ký…' : `Đăng ký khoá ${courseName} & bắt đầu`,
+        primaryLabel: busy ? 'Đang đăng ký…' : `Đăng ký khóa ${courseName} & bắt đầu`,
         primaryDisabled: busy,
         onPrimaryClick: () => void enroll(),
         onSeek: undefined,
-      onPrev: undefined,
       },
     );
 
@@ -346,7 +333,7 @@ export default function StudioLesson({
         'Bài học này chưa có nội dung Studio. Quản trị viên có thể nhập nội dung từ file PDF hoặc Markdown trong trang quản trị.',
         'Đang biên soạn',
       ),
-      { primaryLabel: 'Về khoá học →', onPrimaryClick: leave, onSeek: undefined, onPrev: undefined },
+      { primaryLabel: 'Về khóa học →', onPrimaryClick: leave, onSeek: undefined },
     );
 
   return frame(
@@ -359,7 +346,7 @@ export default function StudioLesson({
       )}
       {completed && scr?.kind !== 'recap' && (
         <div className={`${c.note} ${c.noteOk}`} role="status">
-          ✓ Bài này đã xong và được lưu trên hệ thống. Bạn có thể luyện tập lại.
+          ✓ Bài này đã hoàn thành và được lưu trên hệ thống. Bạn có thể luyện tập lại.
         </div>
       )}
       {lesson && scr && (

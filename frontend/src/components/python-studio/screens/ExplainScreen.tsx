@@ -50,6 +50,11 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
       scr={scr}
       metaLabel={metaLabel}
       title={demo ? 'Ví dụ minh hoạ cơ chế' : 'Đọc lại ví dụ theo từng ý'}
+      description={
+        demo
+          ? 'Cùng cơ chế với bài, nhưng dữ liệu khác — đọc hiểu rồi tự áp dụng vào đề.'
+          : undefined
+      }
     >
       <CodeAnnotated
         filename={one.code.filename || 'example.py'}
@@ -62,7 +67,7 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
       />
       {/* Ví dụ của phần lý thuyết là mã CHẠY ĐƯỢC: đọc xong thì sửa thử một dòng
           rồi chạy lại là cách hiểu nhanh nhất. Mở ở tab mới nên bài không mất.
-          Qua chayDuocTrongIde() trước: Bàn thí nghiệm không có matplotlib lẫn
+          Qua chayDuocTrongIde() trước: sandbox của IDE không có matplotlib lẫn
           Tk, nên ví dụ của bài vẽ biểu đồ/GUI sẽ nổ traceback ngay dòng import
           — không phải lỗi người học, nên không hiện nút ở đó. */}
       <TryItButton
