@@ -151,7 +151,7 @@ test('biến đặt chuỗi rỗng là CỐ Ý tắt nút, không rơi về hằ
 test('cả trang chủ lẫn trang khoá học đều gọi feedbackFormHref(), không tự đọc env', async () => {
   const { readFileSync } = await import('node:fs');
   for (const f of [
-    '../../src/app/page.tsx',
+    '../../src/app/dashboard/page.tsx',
     '../../src/app/(standalone)/courses/[courseId]/CourseDetail.tsx',
   ]) {
     const src = readFileSync(new URL(f, import.meta.url), 'utf8');

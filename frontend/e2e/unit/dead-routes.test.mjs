@@ -219,7 +219,7 @@ test('mã chạy trong src/** không còn mảnh nào của chuỗi ngày (strea
 /* ── 5 · phanh: bốn trang sống không được dọn lây ────────────────────────── */
 
 const ALIVE = [
-  [['src', 'app', 'page.tsx'], 'trang chủ'],
+  [['src', 'app', 'dashboard', 'page.tsx'], 'bảng điều khiển bản Figma (từng là trang chủ)'],
   [['src', 'app', '(standalone)', 'courses', '[courseId]', 'page.tsx'], '/courses/python_advanced'],
   [['src', 'app', '(standalone)', 'lesson', 'python_advanced', 'page.tsx'], 'trang bài học'],
   [['src', 'app', 'ide', 'page.tsx'], 'Bàn thí nghiệm /ide'],

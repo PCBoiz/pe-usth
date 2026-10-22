@@ -46,7 +46,7 @@ function codeOnly(src) {
     .replace(/[ \t]+\/\/.*$/gm, '');
 }
 
-const PAGE = codeOnly(read('src', 'app', 'page.tsx'));
+const PAGE = codeOnly(read('src', 'app', 'dashboard', 'page.tsx'));
 const MAP = codeOnly(read('src', 'app', 'DashboardMap.tsx'));
 const PLAN = codeOnly(read('src', 'lib', 'dashboard-plan.ts'));
 const CATALOG = codeOnly(read('src', 'lib', 'catalog.ts'));
