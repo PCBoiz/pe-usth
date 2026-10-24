@@ -2,7 +2,7 @@
   "requirements": [
     "Học bằng cách đọc lời giảng, đọc code kèm kết quả rồi tự chạy lại và sửa",
     "Không cần biết Python trước: bài PY01 bắt đầu từ một phép cộng",
-    "128 bài chạy được ngay trong trình duyệt; 44 bài cần Python 3.12 trên máy (Tkinter, tiến trình, đa luồng, seaborn, plotly)",
+    "131 bài chạy được ngay trong trình duyệt; 41 bài cần Python 3.12 trên máy (Tkinter, tiến trình, đa luồng, seaborn, plotly)",
     "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"
   ],
   "skills": [

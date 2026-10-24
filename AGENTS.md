@@ -19,7 +19,7 @@ cd frontend && npm run dev # cổng 3000
 py scripts/pe-da/build.py              # course.json -> scripts/pe-da/out/ + chép 80 ảnh
 py scripts/pe-da/check.py --strict     # kiểm cấu trúc (CI chạy bản này)
 py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
-npm i --no-save pyodide@0.27.7
+npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
 
 # pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
@@ -28,7 +28,7 @@ py scripts/pe-v4/build_advanced.py     # sinh mini-game -> scripts/pe-v4/out-adv
 py scripts/pe-v4/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
 py scripts/pe-v4/anim/check.py         # kiểm 23 hình SVG + đếm hình được bài dùng
 py scripts/pe-v4/anim/check.py --strict # thêm: hình chưa bài nào khai cũng là lỗi (CI chạy bản này)
-npm i --no-save pyodide@0.27.7         # CẢ HAI lệnh dưới đều import pyodide
+npm i --no-save pyodide@314.0.7         # CẢ HAI lệnh dưới đều import pyodide
 node scripts/pe-v4/check-advanced.mjs  # chấm thử game chạy code trong Pyodide
 node scripts/pe-v4/check-pyodide.mjs   # chấm thử 427 ca bằng chính bộ chấm của trình duyệt
 ```
@@ -48,8 +48,9 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Frontend lint | 0 lỗi, 178 cảnh báo |
 | Frontend unit test | `cd frontend && npm run test:unit` → **142 ca** / 12 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 402 đoạn code, **0 hỏng**, ~13 s |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
+| Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
 
 **pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 172
 bài. `scripts/pe-v4/**`, 427 ca chấm và job CI của nó được GIỮ NGUYÊN, vì bộ chấm
@@ -95,17 +96,19 @@ npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
 
 Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đã sửa hoặc còn mở.
 
-- **Giáo trình pe-da được kiểm trên thư viện MỚI HƠN nền tảng, lệch tới một major.**
+- **Nền tảng phải đuổi kịp thư viện mà giáo trình được kiểm trên đó — ĐÃ nâng, giữ thế.**
   `requirements-tested.txt` của gói gốc ghi matplotlib **3.11.2**, numpy **2.5.4**, pandas
-  **3.1.0**; Pyodide 0.27.7 trong repo mang matplotlib **3.8.4**, numpy **2.0.2**, pandas
-  **2.2.3**. Tức 32 bài pandas và 30 bài trực quan hoá được tác giả kiểm trên một nền khác
-  hẳn nền sẽ chạy chúng — pandas 3.x còn đổi mặc định chuỗi sang PyArrow. Đừng tin dòng
-  "641 đoạn đạt, 0 lỗi" trong README của gói: nó đúng với nền CỦA HỌ. Thứ nói được sự thật
-  trên nền NÀY là `node scripts/pe-da/check-pyodide.mjs`, và nó đã tìm ra VZ07
-  (`ax.boxplot(tick_labels=…)` cần matplotlib ≥ 3.9) và VZ03 (`fig.autofmt_xdate()` xung đột
-  `layout="constrained"` ở 3.8.4). Hai chỗ đó nằm trong hằng `LECH_PHIEN_BAN` của
-  `scripts/pe-da/build.py` — sửa nội dung xong thì XOÁ dòng tương ứng, đừng để nó thành
-  danh sách bỏ qua.
+  **3.1.0**. Pyodide 0.27.7 cũ mang 3.8.4 / 2.0.2 / **2.2.3** — lệch một MAJOR ở pandas, mà
+  pandas 3 đổi cả mặc định chuỗi sang PyArrow. Nâng lên **314.0.7** (Python 3.14.2,
+  matplotlib 3.10.8, numpy 2.4.6, pandas **3.0.2**) đóng khoảng đó, và còn NHẸ hơn: 30 MB so
+  với 32 MB. Hai lỗi do lệch bản — VZ07 (`ax.boxplot(tick_labels=…)` cần matplotlib ≥ 3.9) và
+  VZ03 (`fig.autofmt_xdate()` xung đột `layout="constrained"`) — tự hết.
+  Đừng tin dòng "641 đoạn đạt, 0 lỗi" trong README của gói: nó đúng với nền CỦA HỌ. Thứ nói
+  được sự thật trên nền NÀY là `node scripts/pe-da/check-pyodide.mjs`.
+  Hằng `LECH_PHIEN_BAN` trong `scripts/pe-da/build.py` nay TRỐNG — giữ cái móc lại, lần nâng
+  sau sẽ lại có thứ lệch theo chiều ngược lại. Muốn thử một bản Pyodide khác TRƯỚC khi chép
+  30 MB vào cây mã: `PYODIDE_DIR=<đường dẫn> node scripts/pe-da/check-pyodide.mjs` (cả hai bộ
+  chấm đều nhận biến này), nhớ `npm i --no-save pyodide@<bản>` cho khớp API.
 - **`course.json` có HAI biến thể code cho cùng một khối, lấy nhầm là dạy sai.** `code` là
   bản đầy đủ dùng để XUẤT HÌNH (`matplotlib.use("Agg")`, `fig.savefig(gettempdir()/…)`),
   `displayCode` mới là bản gọn viết cho người học (`plt.show()`). 83 khối có cả hai.
@@ -124,12 +127,31 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   file làm `frontend/public/static/da/` phình từ 2,3 MB lên **49 MB**, lại còn vào thẻ
   `<img>` nên cũng không hiện. `chep_anh()` nay chỉ nhận `.png` và check.py chặn `figure`
   không phải PNG.
-- **Pyodide 0.27.7 thiếu `lzma`, `ssl`, `sqlite3` trong stdlib — nhưng `sqlite3` có wheel.**
-  Đo bằng `importlib` trên chính runtime trong repo, không suy từ tài liệu: `bz2`, `zlib`,
-  `gzip`, `tarfile`, `zipfile`, `pickle`, `tracemalloc` thì CÓ. `threading`,
-  `multiprocessing`, `subprocess`, `socket` import được nhưng không chạy thật. Và thư viện
-  gọi qua CHUỖI (`df.to_excel(..., engine="openpyxl")`) thì quét `import` bỏ sót hoàn toàn
-  — xem `CHUOI_GOI_THU_VIEN` trong build.py.
+- **Danh sách module đổi theo bản Pyodide, và đổi theo CẢ HAI chiều.** Đo bằng `importlib`
+  trên chính runtime trong repo, không suy từ tài liệu. 0.27.7 thiếu `lzma`, `ssl`,
+  `sqlite3`; **314.0.7 có cả ba** (bài SY19 dạy nén lzma nhờ đó chạy được). Nhưng `sqlite3`
+  đi ngược: ở 0.27.7 nó là WHEEL phải khai `packages`, ở 314 nó là stdlib — khai nó làm
+  `loadPackage` ném "No known package" và giết cả lần chạy. Nay chỉ `curses` và `tkinter` là
+  thiếu thật, và đó là giới hạn WASM chứ không phải thiếu wheel.
+  **Ba kiểu phụ thuộc mà quét `import` KHÔNG thấy**, đều đã cắn ít nhất một lần:
+  · gọi qua chuỗi — `df.to_excel(..., engine="openpyxl")` (PD13), xem `CHUOI_GOI_THU_VIEN`;
+  · gói dữ liệu ẩn sau stdlib — `tz_convert('Asia/Ho_Chi_Minh')` cần `tzdata` vì `zoneinfo`
+    trong Pyodide là stdlib RỖNG (PD23), xem `GOI_AN`;
+  · thuộc tính phơi ra máy thật — `Path(sys.executable).is_file()` chạy đúng, không ném gì,
+    và trả SAI trong trình duyệt (EX03), xem `THUOC_TINH_MAY`.
+  Cả ba chỉ lộ ra khi CHẠY THẬT. Đó là việc của `check-pyodide.mjs`.
+- **Worker Python là MODULE worker từ khi nâng lên Pyodide 314 — đừng quay về classic.**
+  314 bỏ hẳn hỗ trợ classic worker và không còn phát hành `pyodide.js`, chỉ có `.mjs`. Cả hai
+  worker (`studio-lesson.worker.js`, `python-studio.worker.js`) nay nạp runtime bằng
+  `await import(PYODIDE_DIR + 'pyodide.mjs')`, và CẢ HAI chỗ tạo worker phải truyền
+  `{ type: 'module' }` (`runner/pyodide-runner.ts`, `PythonStudio.tsx`). Thiếu một trong hai
+  thì worker chết lặng lẽ, giao diện chỉ hiện "không chạy được Python".
+- **Cảnh báo thư viện đổ CHUNG vào stdout.** `studio-harness.py` cố ý
+  `redirect_stderr(ctx.out)` để console của học viên hiện cả hai. Hệ quả: một
+  `MatplotlibDeprecationWarning` chen vào giữa và làm mọi phép so với `expected` trượt dù bài
+  in đúng từng chữ. `check-pyodide.mjs` tách chúng ra và BÁO riêng (`tachCanhBao`) thay vì
+  bỏ qua — hiện có 14 cảnh báo ở VZ14/VZ25/VZ30 do `figsize=(6, 3.5)` sinh kích thước điểm
+  ảnh là số thực; đó là việc người soạn giáo trình phải sửa, không phải lỗi nền tảng.
 - **Câu ôn tập nằm ở trường RIÊNG, đếm thiếu là tưởng mất 21% bài tập.** `course.json` có
   `drills` (516) VÀ `reviewExercises` (139) = 655 câu. Một lượt audit từng báo động "gói chỉ
   giữ 3 câu/bài, mất 139 câu" vì chỉ đếm `drills`. Bản dựng ra đúng 655, và `check.py` so

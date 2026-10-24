@@ -5567,24 +5567,24 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (openpyxl chưa có wheel trong /pyodide/v0.27.7/) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (openpyxl chưa có wheel trong /pyodide/v314.0.7/) nên không nằm trong ô này."
      },
      "starterCode": "import pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))\n",
      "packages": [
       "pandas"
      ],
-     "env": "2 đoạn phải chạy bằng Python trên máy: openpyxl chưa có wheel trong /pyodide/v0.27.7/."
+     "env": "2 đoạn phải chạy bằng Python trên máy: openpyxl chưa có wheel trong /pyodide/v314.0.7/."
     }
    },
    "_mode": "mixed",
    "_blocked": [
     {
      "block": 1,
-     "reason": "openpyxl chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "openpyxl chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "openpyxl chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "openpyxl chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -6541,7 +6541,8 @@
      },
      "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nutc = pd.to_datetime(['2026-01-01 00:00:00'], utc=True)\nlocal = utc.tz_convert('Asia/Ho_Chi_Minh')\nprint(local.strftime('%Y-%m-%d %H:%M %z').tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nwall_time = pd.DatetimeIndex(['2026-01-01 07:00'])\nlocal = wall_time.tz_localize('Asia/Ho_Chi_Minh')\nprint(local.tz_convert('UTC').strftime('%Y-%m-%d %H:%M %z').tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ntimes = pd.to_datetime(pd.Series(['2026-01-01T23:00:00Z', '2026-01-02T02:00:00Z']), utc=True)\nprint(times.dt.strftime('%Y-%m-%d').tolist())\nprint(times.dt.tz_convert('Asia/Ho_Chi_Minh').dt.strftime('%Y-%m-%d').tolist())\n",
      "packages": [
-      "pandas"
+      "pandas",
+      "tzdata"
      ]
     }
    },
@@ -7117,8 +7118,7 @@
      },
      "starterCode": "# ── Đoạn 1 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())\n\n# ── Đoạn 2 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())\n\n# ── Đoạn 3 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))\n",
      "packages": [
-      "pandas",
-      "sqlite3"
+      "pandas"
      ]
     }
    },
@@ -7709,23 +7709,17 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
      },
-     "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()\n",
+     "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()\n",
      "packages": [
       "matplotlib",
       "numpy"
-     ],
-     "env": "1 đoạn phải chạy bằng Python trên máy: fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi."
+     ]
     }
    },
-   "_mode": "mixed",
-   "_blocked": [
-    {
-     "block": 0,
-     "reason": "fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi"
-    }
-   ]
+   "_mode": "pyodide",
+   "_blocked": []
   },
   {
    "lesson_code": "VZ04",
@@ -8124,26 +8118,16 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
      },
-     "starterCode": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()\n",
+     "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()\n",
      "packages": [
       "matplotlib"
-     ],
-     "env": "2 đoạn phải chạy bằng Python trên máy: ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4."
+     ]
     }
    },
-   "_mode": "mixed",
-   "_blocked": [
-    {
-     "block": 0,
-     "reason": "ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4"
-    },
-    {
-     "block": 1,
-     "reason": "ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4"
-    }
-   ]
+   "_mode": "pyodide",
+   "_blocked": []
   },
   {
    "lesson_code": "VZ08",
@@ -9098,7 +9082,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -9112,15 +9096,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -9212,7 +9196,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -9226,15 +9210,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -9332,7 +9316,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -9346,15 +9330,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -9446,7 +9430,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -9460,15 +9444,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -9735,7 +9719,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: plotly chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: plotly chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -9749,15 +9733,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "plotly chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "plotly chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "plotly chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -9840,24 +9824,24 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (ipywidgets chưa có wheel trong /pyodide/v0.27.7/) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (ipywidgets chưa có wheel trong /pyodide/v314.0.7/) nên không nằm trong ô này."
      },
      "starterCode": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))\n",
      "packages": [
       "pandas"
      ],
-     "env": "2 đoạn phải chạy bằng Python trên máy: ipywidgets chưa có wheel trong /pyodide/v0.27.7/."
+     "env": "2 đoạn phải chạy bằng Python trên máy: ipywidgets chưa có wheel trong /pyodide/v314.0.7/."
     }
    },
    "_mode": "mixed",
    "_blocked": [
     {
      "block": 1,
-     "reason": "ipywidgets chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "ipywidgets chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "ipywidgets chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "ipywidgets chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -12520,19 +12504,13 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (lzma không có trong stdlib của bản Pyodide này) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
      },
-     "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n",
-     "env": "1 đoạn phải chạy bằng Python trên máy: lzma không có trong stdlib của bản Pyodide này."
+     "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))\n\n# ── Đoạn 3 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n"
     }
    },
-   "_mode": "mixed",
-   "_blocked": [
-    {
-     "block": 1,
-     "reason": "lzma không có trong stdlib của bản Pyodide này"
-    }
-   ]
+   "_mode": "pyodide",
+   "_blocked": []
   },
   {
    "lesson_code": "SY20",
@@ -12821,24 +12799,24 @@
     "step_4": {
      "task": {
       "title": "Chạy thử",
-      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (sas7bdat chưa có wheel trong /pyodide/v0.27.7/) nên không nằm trong ô này."
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (sas7bdat chưa có wheel trong /pyodide/v314.0.7/) nên không nằm trong ô này."
      },
      "starterCode": "import pandas as pd, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"scores.dta\"\n    pd.DataFrame({\"score\": [8.0, 6.0]}).to_stata(path, write_index=False)\n    frame = pd.read_stata(path)\n    print(frame[\"score\"].tolist())\n",
      "packages": [
       "pandas"
      ],
-     "env": "2 đoạn phải chạy bằng Python trên máy: sas7bdat chưa có wheel trong /pyodide/v0.27.7/."
+     "env": "2 đoạn phải chạy bằng Python trên máy: sas7bdat chưa có wheel trong /pyodide/v314.0.7/."
     }
    },
    "_mode": "mixed",
    "_blocked": [
     {
      "block": 1,
-     "reason": "sas7bdat chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "sas7bdat chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "sas7bdat chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "sas7bdat chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -12935,7 +12913,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: h5py chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: h5py chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -12949,15 +12927,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "h5py chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "h5py chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "h5py chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "h5py chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "scipy chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "scipy chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },
@@ -13048,7 +13026,7 @@
     "step_4": {
      "task": {
       "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: sqlalchemy chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "body": "Bài này không chạy được trong trình duyệt: sqlalchemy chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
      },
      "procedure": [
       "Mở terminal tại thư mục làm việc của bạn.",
@@ -13062,15 +13040,15 @@
    "_blocked": [
     {
      "block": 0,
-     "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 1,
-     "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
     },
     {
      "block": 2,
-     "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+     "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
     }
    ]
   },

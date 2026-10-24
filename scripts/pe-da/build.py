@@ -38,9 +38,15 @@ IMPORTED_AT = '2026-10-24T00:00:00+00:00'
 # chiếu với bảng này, không phải để thay nó.
 # ---------------------------------------------------------------------------
 
-# Wheel tự lưu trữ trong frontend/public/pyodide/v0.27.7/ — khớp StudioPackage.
+# Wheel tự lưu trữ trong frontend/public/pyodide/v314.0.7/ — khớp StudioPackage.
+# Giá trị None = module CÓ sẵn, không phải tải gói nào: `sqlite3` là wheel riêng
+# ở Pyodide 0.27.7 nhưng vào thẳng stdlib ở 314, và khai nó làm `loadPackage`
+# ném "No known package" rồi giết cả lần chạy. `zoneinfo` thì ngược lại — là
+# stdlib nhưng rỗng dữ liệu múi giờ, phải tải gói `tzdata` mới tra được
+# "Asia/Ho_Chi_Minh" (PD23 phát hiện ra chuyện này).
 VENDORED = {'numpy': 'numpy', 'pandas': 'pandas', 'matplotlib': 'matplotlib',
-            'mpl_toolkits': 'matplotlib', 'sqlite3': 'sqlite3', 'PIL': None}
+            'mpl_toolkits': 'matplotlib', 'PIL': None, 'sqlite3': None,
+            'zoneinfo': 'tzdata'}
 
 # WASM không có: không phải thiếu wheel mà là nền tảng không hỗ trợ.
 WASM_KHONG_CO = {
@@ -61,12 +67,11 @@ WASM_KHONG_CO = {
     'concurrent': 'concurrent.futures chạy trên thread/process thật',
     'ctypes': 'không nạp được thư viện động của máy',
     'webbrowser': 'không mở được trình duyệt của máy',
-    # Đo thật bằng chính runtime trong repo (importlib trên 38 module), không
-    # suy từ tài liệu: ba module stdlib này KHÔNG có trong python_stdlib.zip của
-    # bản Pyodide 0.27.7 đang dùng. `sqlite3` cũng không có sẵn, nhưng nó có
-    # wheel riêng nên vẫn chạy được — đừng gộp chung.
-    'lzma': 'lzma không có trong stdlib của bản Pyodide này',
-    'ssl': 'ssl không có trong stdlib của bản Pyodide này',
+    # Đo thật bằng chính runtime trong repo, không suy từ tài liệu. Ở Pyodide
+    # 0.27.7 thì `lzma`, `ssl`, `sqlite3` đều THIẾU; bản 314.0.7 có cả ba, nên
+    # ba dòng chặn chúng đã được gỡ khỏi đây (bài SY19 dạy nén bz2/lzma nhờ đó
+    # chạy được trong trình duyệt). Chỉ còn `curses` và `tkinter` là thiếu
+    # thật, và đó là giới hạn của WASM chứ không phải thiếu wheel.
 }
 
 # Thuộc tính phơi ra môi trường THẬT của máy. Bài kiểm chúng (EX03 in
@@ -81,11 +86,21 @@ THUOC_TINH_MAY = {
 # Thư viện được gọi qua CHUỖI chứ không qua `import` — quét import bỏ sót hẳn.
 # PD13 viết `df.to_excel(..., engine="openpyxl")`: không dòng import nào, nhưng
 # chạy là ModuleNotFoundError.
+# Gói phải tải nhưng KHÔNG xuất hiện trong bất cứ dòng `import` nào của bài.
+# PD23 viết `tz_convert('Asia/Ho_Chi_Minh')`: pandas gọi `zoneinfo` ở bên trong,
+# mà `zoneinfo` trong Pyodide là stdlib RỖNG — không có gói `tzdata` thì ném
+# ZoneInfoNotFoundError. Quét import không thấy gì để bám vào, nên phải dò theo
+# chính thao tác người học gõ.
+GOI_AN = [
+    (('tz_convert', 'tz_localize', 'ZoneInfo(', 'tz='), 'tzdata'),
+]
+
+
 CHUOI_GOI_THU_VIEN = {
-    'openpyxl': 'openpyxl chưa có wheel trong /pyodide/v0.27.7/',
-    'xlsxwriter': 'xlsxwriter chưa có wheel trong /pyodide/v0.27.7/',
-    'pyarrow': 'pyarrow chưa có wheel trong /pyodide/v0.27.7/',
-    'sas7bdat': 'sas7bdat chưa có wheel trong /pyodide/v0.27.7/',
+    'openpyxl': 'openpyxl chưa có wheel trong /pyodide/v314.0.7/',
+    'xlsxwriter': 'xlsxwriter chưa có wheel trong /pyodide/v314.0.7/',
+    'pyarrow': 'pyarrow chưa có wheel trong /pyodide/v314.0.7/',
+    'sas7bdat': 'sas7bdat chưa có wheel trong /pyodide/v314.0.7/',
 }
 
 # Thư viện Python thật nhưng KHÔNG có wheel trong repo.
@@ -121,10 +136,12 @@ GOI_CHAN = {
 # trong lúc chờ. Sửa xong nội dung thì XOÁ dòng tương ứng. `check-pyodide.mjs`
 # là thứ tìm ra chúng, nên thêm bài mới cũng sẽ lộ ra theo cùng cách.
 LECH_PHIEN_BAN = {
-    ('VZ07', 0): 'ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4',
-    ('VZ07', 1): 'ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4',
-    ('VZ03', 0): 'fig.autofmt_xdate() xung đột với layout="constrained" ở matplotlib 3.8.4 '
-                 '— in ra UserWarning chen vào giữa kết quả bài ghi',
+    # Trống sau khi nâng Pyodide 0.27.7 → 314.0.7 (Python 3.12.7 → 3.14.2,
+    # matplotlib 3.8.4 → 3.10.8, pandas 2.2.3 → 3.0.2, numpy 2.0.2 → 2.4.6).
+    # Hai mục từng nằm đây — VZ07 (`ax.boxplot(tick_labels=…)` cần matplotlib
+    # ≥ 3.9) và VZ03 (`fig.autofmt_xdate()` xung đột `layout="constrained"`) —
+    # đều hết lỗi vì nền tảng nay MỚI HƠN chỗ chúng vỡ. Giữ cái móc này lại:
+    # lần nâng sau sẽ lại có thứ lệch theo chiều ngược lại.
 }
 
 
@@ -173,7 +190,7 @@ def phan_loai_khoi(code: str) -> tuple[bool, str]:
         if m in WASM_KHONG_CO:
             return False, WASM_KHONG_CO[m]
         if m in THIEU_WHEEL:
-            return False, f'{m} chưa có wheel trong /pyodide/v0.27.7/'
+            return False, f'{m} chưa có wheel trong /pyodide/v314.0.7/'
     if goi:
         return False, GOI_CHAN[sorted(goi)[0]]
     for ten, ly_do in THUOC_TINH_MAY.items():
@@ -197,6 +214,9 @@ def goi_can_tai(codes: list[str]) -> list[str]:
             ten = VENDORED.get(m)
             if ten:
                 can.add(ten)
+        for dau_hieu, goi in GOI_AN:
+            if any(d in code for d in dau_hieu):
+                can.add(goi)
     # matplotlib kéo theo pillow; worker tự lo, chỉ khai tên gói chính.
     return sorted(can)
 

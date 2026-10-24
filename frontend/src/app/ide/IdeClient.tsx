@@ -34,7 +34,7 @@ import styles from './ide.module.css';
  * 12 lượt tải sang jsdelivr. Phòng máy chặn hoặc làm chậm domain đó là mất
  * trắng trang IDE, mà /ide đang là thứ duy nhất demo được (xem AGENTS.md: DB
  * dùng chung đang hỏng đăng nhập). Pyodide đã tự host ở
- * public/pyodide/v0.27.7/ đúng vì lý do này từ trước; Monaco bị bỏ sót.
+ * public/pyodide/v314.0.7/ đúng vì lý do này từ trước; Monaco bị bỏ sót.
  *
  * Thư mục GHIM PHIÊN BẢN (v0.57.0) nên nội dung không bao giờ đổi → có luật
  * cache `immutable` trong next.config.ts, giống /pyodide/:path*. Muốn nâng cấp

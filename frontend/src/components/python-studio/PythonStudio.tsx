@@ -196,7 +196,9 @@ export default function PythonStudio() {
     setResult(null);
     setRunning(true);
     setRuntimeStatus('Đang tải Python…');
-    const instance = new Worker('/static/js/python-studio.worker.js');
+    // `type: 'module'` bắt buộc từ khi nâng lên Pyodide 314 — xem chú thích trong
+    // chính file worker.
+    const instance = new Worker('/static/js/python-studio.worker.js', { type: 'module' });
     worker.current = instance;
     const expire = (text: string) => {
       cancelRun();

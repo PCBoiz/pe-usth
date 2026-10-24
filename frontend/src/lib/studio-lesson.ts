@@ -278,13 +278,20 @@ export type Step4 = {
   env?: string;
   /**
    * Thư viện ngoài bài cần (khoá Python Advanced): worker tải + import sẵn
-   * TRƯỚC khi bấm giờ 5 giây. Chỉ các gói tự lưu trữ trong /pyodide/v0.27.7/.
+   * TRƯỚC khi bấm giờ 5 giây. Chỉ các gói tự lưu trữ trong /pyodide/v314.0.7/.
    */
   packages?: StudioPackage[];
 };
 
-/** Gói Pyodide 0.27.7 tự lưu trữ — khớp PACKAGES của studio-lesson.worker.js và scripts/pe-v4/build.py. */
-export type StudioPackage = 'numpy' | 'pandas' | 'matplotlib' | 'sqlite3';
+/**
+ * Gói Pyodide 314.0.7 tự lưu trữ — khớp PACKAGES của studio-lesson.worker.js,
+ * VENDORED của scripts/pe-da/build.py và scripts/pe-v4/build.py.
+ *
+ * `sqlite3` đã RỜI danh sách này khi nâng từ 0.27.7: ở bản mới nó là stdlib,
+ * và khai nó làm `loadPackage` ném "No known package" rồi giết cả lần chạy.
+ * `tzdata` vào thay: `zoneinfo` là stdlib nhưng rỗng dữ liệu múi giờ.
+ */
+export type StudioPackage = 'numpy' | 'pandas' | 'matplotlib' | 'tzdata';
 
 export type TraceTableGame = {
   type: 'traceTable';

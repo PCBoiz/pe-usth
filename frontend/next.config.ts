@@ -15,7 +15,7 @@ const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 // 'wasm-unsafe-eval': Pyodide (Python Studio) biên dịch WebAssembly.
 //
 // connect-src KHÔNG còn cdn.jsdelivr.net: runtime Pyodide đã nằm trong repo
-// (frontend/public/pyodide/v0.27.7/) nên hai worker Python nạp .wasm +
+// (frontend/public/pyodide/v314.0.7/) nên hai worker Python nạp .wasm +
 // python_stdlib.zip bằng fetch CÙNG ORIGIN. Domain này vẫn phải ở lại
 // script-src và style-src vì lớp legacy còn nạp mermaid, svg-pan-zoom,
 // canvas-confetti và CodeMirror 5 (js + css) từ đó — xem dashboard/page.tsx,

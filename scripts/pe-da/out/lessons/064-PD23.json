@@ -87,7 +87,8 @@
    },
    "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nutc = pd.to_datetime(['2026-01-01 00:00:00'], utc=True)\nlocal = utc.tz_convert('Asia/Ho_Chi_Minh')\nprint(local.strftime('%Y-%m-%d %H:%M %z').tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nwall_time = pd.DatetimeIndex(['2026-01-01 07:00'])\nlocal = wall_time.tz_localize('Asia/Ho_Chi_Minh')\nprint(local.tz_convert('UTC').strftime('%Y-%m-%d %H:%M %z').tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ntimes = pd.to_datetime(pd.Series(['2026-01-01T23:00:00Z', '2026-01-02T02:00:00Z']), utc=True)\nprint(times.dt.strftime('%Y-%m-%d').tolist())\nprint(times.dt.tz_convert('Asia/Ho_Chi_Minh').dt.strftime('%Y-%m-%d').tolist())\n",
    "packages": [
-    "pandas"
+    "pandas",
+    "tzdata"
    ]
   }
  },

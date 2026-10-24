@@ -1,7 +1,7 @@
 /**
  * Chấm thử khoá Python Advanced (pe-v4) bằng CHÍNH Pyodide 0.27.7 và CHÍNH bộ chấm
  * của trình duyệt (frontend/public/static/js/studio-harness.py), nạp runtime VÀ thư
- * viện từ thư mục tự lưu trữ frontend/public/pyodide/v0.27.7/ — đúng các file
+ * viện từ thư mục tự lưu trữ frontend/public/pyodide/v314.0.7/ — đúng các file
  * trình duyệt sẽ tải, không đi CDN.
  *
  * Cùng ba luật với scripts/pe-v3/check-pyodide.mjs:
@@ -23,7 +23,10 @@ import { loadPyodide } from 'pyodide';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
-const RUNTIME = join(ROOT, 'frontend', 'public', 'pyodide', 'v0.27.7') + '/';
+// PYODIDE_DIR: thử bản Pyodide khác trước khi đưa vào repo. Nâng runtime là đổi
+// Python/numpy/pandas dưới chân 427 ca chấm, nên phải đo được thiệt hại trước.
+const RUNTIME =
+  process.env.PYODIDE_DIR || join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/';
 const LIMIT_MS = 5000;
 const harness = readFileSync(join(ROOT, 'frontend', 'public', 'static', 'js', 'studio-harness.py'), 'utf8');
 const qa = JSON.parse(readFileSync(join(HERE, 'out', 'qa.json'), 'utf8'));
@@ -31,6 +34,13 @@ const args = process.argv.slice(2);
 const verbose = args.includes('--verbose');
 const onlyArg = args.find((a) => !a.startsWith('--'));
 const only = onlyArg ? new Set(onlyArg.split(',')) : null;
+
+// Gói runtime này THẬT SỰ tải được. `sqlite3` là wheel riêng ở 0.27.7 nhưng vào
+// stdlib ở 314.0.7, nên loadPackage(['sqlite3']) ở bản mới ném "No known
+// package" và giết cả bộ chấm — lọc trước rồi để `import` tự nói có hay không.
+const coTrongLock = new Set(
+  Object.keys(JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8')).packages),
+);
 
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
@@ -62,7 +72,7 @@ for (const lesson of qa) {
   cases += lesson.tests.length;
 
   // Như worker: tải gói còn thiếu rồi import sẵn, KHÔNG tính vào thời gian chạy.
-  const missing = (lesson.packages || []).filter((p) => !warmed.has(p));
+  const missing = (lesson.packages || []).filter((p) => coTrongLock.has(p) && !warmed.has(p));
   let loadMs = 0;
   if (missing.length) {
     const t0 = performance.now();

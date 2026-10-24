@@ -86,7 +86,7 @@
   "step_4": {
    "task": {
     "title": "Chạy trên máy của bạn",
-    "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+    "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v314.0.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
    },
    "procedure": [
     "Mở terminal tại thư mục làm việc của bạn.",
@@ -100,15 +100,15 @@
  "_blocked": [
   {
    "block": 0,
-   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+   "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   },
   {
    "block": 1,
-   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+   "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   },
   {
    "block": 2,
-   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+   "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   }
  ]
 }

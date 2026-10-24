@@ -79,7 +79,7 @@ Quyết định theo `runnable.json` (do khâu kiểm code sinh ra), mỗi bài 
 | `mixed` | như `pyodide`, nhưng `starterCode` chỉ lấy các khối chạy được; `env` ghi rõ khối nào phải chạy trên máy | ô soạn mã + dòng cảnh báo |
 
 `packages` chỉ nhận `numpy | pandas | matplotlib | sqlite3` — đúng các wheel tự
-lưu trữ trong `frontend/public/pyodide/v0.27.7/`. seaborn và plotly KHÔNG có
+lưu trữ trong `frontend/public/pyodide/v314.0.7/`. seaborn và plotly KHÔNG có
 wheel ở đó, nên bài dùng chúng là `local`, không phải `pyodide`.
 
 ## Không khai gì nữa

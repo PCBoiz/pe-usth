@@ -1,6 +1,6 @@
 /**
  * pe-v4: chấm thử các mini-game CHẠY CODE của khoá Python Advanced (48 bài) bằng
- * CHÍNH Pyodide 0.27.7 + thư viện tự lưu trữ trong frontend/public/pyodide/v0.27.7/
+ * CHÍNH Pyodide 314.0.7 + thư viện tự lưu trữ trong frontend/public/pyodide/v314.0.7/
  * và CHÍNH bộ chấm của trình duyệt (studio-harness.py). Bài có step_4.packages được
  * tải + import sẵn trước, như worker làm:
  *
@@ -25,7 +25,7 @@ const bundle = JSON.parse(readFileSync(join(HERE, 'out-advanced', 'lessons.json'
 const onlyArg = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const only = onlyArg ? new Set(onlyArg.split(',')) : null;
 
-const py = await loadPyodide({ indexURL: join(ROOT, 'frontend', 'public', 'pyodide', 'v0.27.7') + '/' });
+const py = await loadPyodide({ indexURL: join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/' });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');
 const preload = py.globals.get('_studio_preload');

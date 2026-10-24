@@ -14,12 +14,15 @@
  *
  * Python still runs in a disposable browser worker, never in the NestJS process.
  */
-/* global importScripts, loadPyodide */
-
 // Đường dẫn CÙNG ORIGIN tới runtime đã commit vào repo. Root-relative chứ
 // không '../../pyodide/…' để khỏi phụ thuộc vào vị trí của chính file worker,
 // giống fetch('/static/js/studio-harness.py') bên dưới.
-const PYODIDE_DIR = '/pyodide/v0.27.7/';
+//
+// Đây là MODULE worker (React tạo bằng `new Worker(url, { type: 'module' })`).
+// Không phải lựa chọn về phong cách: Pyodide 314 bỏ hẳn hỗ trợ classic worker,
+// nên `importScripts(PYODIDE_DIR + 'pyodide.js')` của bản 0.27.7 không còn
+// đường chạy — bản 314 cũng không phát hành `pyodide.js` nữa, chỉ có `.mjs`.
+const PYODIDE_DIR = '/pyodide/v314.0.7/';
 
 // Runtime và bộ chấm được GIỮ LẠI giữa các lần chạy. Trước đây worker nạp
 // Pyodide bên trong onmessage nên mỗi lần bấm Chạy là nạp lại ~13 MB; phía
@@ -36,7 +39,11 @@ let runtime = null;
 // pyodide-lock.json; loadPackage tự kéo theo phụ thuộc). Chỉ tải cho bài cần:
 // bài không dùng thì lần chạy đầu không chậm thêm byte nào.
 // Khoá = tên gói (step_4.packages), giá trị = tên module khi `import`.
-const PACKAGES = { numpy: 'numpy', pandas: 'pandas', matplotlib: 'matplotlib', sqlite3: 'sqlite3' };
+// `sqlite3` KHÔNG còn ở đây: nó là wheel riêng ở Pyodide 0.27.7 nhưng vào thẳng
+// stdlib ở 314, và khai nó làm `loadPackage` ném "No known package" rồi giết cả
+// lần chạy. `tzdata` thì ngược lại — `zoneinfo` là stdlib nhưng RỖNG dữ liệu
+// múi giờ, phải tải gói mới tra được "Asia/Ho_Chi_Minh".
+const PACKAGES = { numpy: 'numpy', pandas: 'pandas', matplotlib: 'matplotlib', tzdata: 'zoneinfo' };
 const IMPORT_TO_PACKAGE = Object.fromEntries(Object.entries(PACKAGES).map(([pkg, mod]) => [mod, pkg]));
 /** Gói đã tải VÀ đã import sẵn trong runtime đang giữ. */
 const warmed = new Set();
@@ -78,7 +85,9 @@ async function warmPackages(py, names) {
 
 async function getRuntime() {
   if (runtime) return runtime;
-  importScripts(PYODIDE_DIR + 'pyodide.js');
+  // import() động chứ không import tĩnh ở đầu file: runtime ~13 MB chỉ được nạp
+  // khi thật sự cần chạy code, không phải lúc worker vừa sinh ra.
+  const { loadPyodide } = await import(PYODIDE_DIR + 'pyodide.mjs');
   const box = { stray: '' };
   const write = (line) => {
     if (box.stray.length < 4000) box.stray += line.slice(0, 4000 - box.stray.length) + '\n';

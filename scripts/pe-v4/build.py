@@ -87,10 +87,10 @@ MODULE_OF = {code: (i, name, level) for i, (name, level, codes) in enumerate(MOD
 XP = {'Cơ bản': 10, 'Trung cấp': 15, 'Nâng cao': 20}
 HINT_TITLES = ('Nguyên lý', 'Cấu trúc', 'Lời giải từng phần')
 
-# Thư viện trình duyệt tải được (tự lưu trữ trong frontend/public/pyodide/v0.27.7/).
+# Thư viện trình duyệt tải được (tự lưu trữ trong frontend/public/pyodide/v314.0.7/).
 # Khoá = tên gói khai trong bài; giá trị = tên module khi `import`.
 # openpyxl KHÔNG có trong pyodide-lock.json của 0.27.7 nên không được khai.
-PACKAGES = {'numpy': 'numpy', 'pandas': 'pandas', 'matplotlib': 'matplotlib', 'sqlite3': 'sqlite3'}
+PACKAGES = {'numpy': 'numpy', 'pandas': 'pandas', 'matplotlib': 'matplotlib', 'sqlite3': None}
 IMPORT_TO_PACKAGE = {mod: pkg for pkg, mod in PACKAGES.items()}
 
 MIN_TESTS = 5
@@ -486,7 +486,7 @@ def build_lesson(spec, briefs, support, sort_order, warnings=None, strict_figure
     unknown = declared - set(PACKAGES)
     check(not unknown, code, f'packages {sorted(unknown)} không có; chỉ dùng được {sorted(PACKAGES)}')
     excel = uses_excel(spec['solution'])
-    check(not excel, code, f'lời giải dùng {excel}: Excel cần openpyxl, mà Pyodide 0.27.7 không có gói này — '
+    check(not excel, code, f'lời giải dùng {excel}: Excel cần openpyxl, mà Pyodide 314.0.7 không có gói này — '
                            'trình duyệt sẽ lỗi')
     packages = sorted(declared | detect_packages(spec['solution'], spec['starter'],
                                                  *[t['call'] + '\n' + t['expect'] for t in tests]))
@@ -654,7 +654,7 @@ def run_checks(qa_rows: list[dict], jobs: int, timeout: float, verbose: bool) ->
     python = interpreter()
     if python == sys.executable and not os.environ.get('PE_V4_PYTHON'):
         print(f'! Chấm thử bằng {sys.version.split()[0]} (không thấy scripts/pe-v4/.venv): phiên bản numpy/pandas '
-              'có thể khác Pyodide 0.27.7. Tạo venv: uv venv scripts/pe-v4/.venv --python 3.12 && uv pip install '
+              'có thể khác Pyodide 314.0.7. Tạo venv: uv venv scripts/pe-v4/.venv --python 3.12 && uv pip install '
               '--python scripts/pe-v4/.venv/Scripts/python.exe numpy==2.0.2 pandas==2.2.3 matplotlib==3.8.4')
     started = time.monotonic()
     problems = []

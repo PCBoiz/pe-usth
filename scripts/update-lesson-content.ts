@@ -1,6 +1,6 @@
 /**
  * update-lesson-content.ts — nạp lại NỘI DUNG (`content_json`) của vài bài khoá
- * `python_advanced` từ gói scripts/pe-v4/out-advanced/lessons.json, KHÔNG đụng tiến độ.
+ * `python_advanced` từ gói scripts/pe-da/out/lessons.json, KHÔNG đụng tiến độ.
  *
  * Vì sao cần: script nạp duy nhất trước đây là `seed-python-advanced-v4.ts --apply`,
  * và nó XOÁ HẲN 48 bài + toàn bộ `lesson_progress` của khoá rồi đặt mọi ghi danh về 0%.
@@ -49,7 +49,14 @@ const ARGV = process.argv.slice(2);
 const APPLY = ARGV.includes('--apply');
 const OFFLINE = ARGV.includes('--offline');
 const BACKUP = ARGV.find((a) => a.startsWith('--backup='))?.slice('--backup='.length);
-const BUNDLE = join(__dirname, 'pe-v4', 'out-advanced', 'lessons.json');
+// Gói của khoá ĐANG CHẠY. Đổi từ pe-v4/out-advanced sang pe-da/out khi khoá
+// python_advanced thay ruột: để nguyên đường cũ thì script đọc 48 bài đã nghỉ
+// và từ chối mọi mã bài của bộ mới — tức mất hẳn đường nạp AN TOÀN, đường duy
+// nhất sửa nội dung mà không xoá tiến độ người học.
+// `--bundle=<đường dẫn>` để trỏ vào gói khác (ví dụ pe-v4 khi cần quay đầu).
+const BUNDLE =
+  process.argv.find((a) => a.startsWith('--bundle='))?.slice('--bundle='.length) ??
+  join(__dirname, 'pe-da', 'out', 'lessons.json');
 
 const short = (f: Fingerprint) => `${f.bytes} B, sha256 ${f.sha256.slice(0, 12)}`;
 

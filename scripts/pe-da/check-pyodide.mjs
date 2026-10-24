@@ -1,7 +1,7 @@
 /**
  * Chấm NỘI DUNG khoá 172 bài (pe-da) bằng CHÍNH Pyodide 0.27.7 và CHÍNH bộ chấm
  * của trình duyệt (frontend/public/static/js/studio-harness.py), nạp runtime và
- * wheel từ frontend/public/pyodide/v0.27.7/ — đúng các file trình duyệt sẽ tải.
+ * wheel từ frontend/public/pyodide/v314.0.7/ — đúng các file trình duyệt sẽ tải.
  *
  * Bộ đọc không có ca chấm đúng/sai của học viên, nhưng nó có một thứ kiểm được
  * và quan trọng hơn: MỖI đoạn code trong bài đều khai sẵn kết quả nó in ra. Nếu
@@ -24,7 +24,12 @@ import { loadPyodide } from 'pyodide';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, '..', '..');
-const RUNTIME = join(ROOT, 'frontend', 'public', 'pyodide', 'v0.27.7') + '/';
+// Biến môi trường PYODIDE_DIR để thử một bản Pyodide KHÁC trước khi đưa vào
+// repo: nâng runtime là đổi numpy/pandas/matplotlib dưới chân 172 bài, phải đo
+// được thiệt hại trước khi chép 30 MB vào cây mã. Nhớ cài đúng gói JS cùng
+// phiên bản (`npm i --no-save pyodide@<bản>`), không thì API không khớp runtime.
+const RUNTIME =
+  process.env.PYODIDE_DIR || join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/';
 /** Cùng giới hạn với trình duyệt: worker.terminate() cắt sau 5 giây. */
 const LIMIT_MS = 5000;
 
@@ -38,6 +43,19 @@ const args = process.argv.slice(2);
 const verbose = args.includes('--verbose');
 const onlyArg = args.find((a) => !a.startsWith('--'));
 const only = onlyArg ? new Set(onlyArg.split(',')) : null;
+
+/**
+ * Tên gói runtime này THẬT SỰ tải được.
+ *
+ * Danh sách gói đổi theo bản Pyodide, và không phải lúc nào cũng theo hướng
+ * thiếu đi: `sqlite3` là một WHEEL riêng ở 0.27.7 nhưng vào thẳng stdlib ở
+ * 314.0.7, nên `loadPackage(['sqlite3'])` ở bản mới ném "No known package" và
+ * giết cả bộ chấm ngay bài đầu. Bài khai gói mà runtime không có là một phát
+ * hiện cần BÁO, không phải lý do để bộ kiểm chết.
+ */
+const coTrongLock = new Set(
+  Object.keys(JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8')).packages),
+);
 
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
@@ -54,6 +72,35 @@ function hocVien(block) {
   };
 }
 
+/**
+ * Tách CẢNH BÁO khỏi kết quả in ra.
+ *
+ * Harness cố ý gộp stderr vào stdout (`redirect_stderr(ctx.out)` ở
+ * studio-harness.py) để console của học viên hiện cả hai. Hệ quả: một
+ * DeprecationWarning của matplotlib chen vào giữa và làm phép so với `expected`
+ * trượt, dù bài in ra đúng từng chữ. Cảnh báo vẫn phải được BÁO — tác giả cần
+ * biết bài mình gọi một API sắp bị gỡ — nhưng nó không phải kết quả của bài.
+ *
+ * Khuôn cảnh báo mặc định của Python là hai dòng:
+ *     <file>:<dòng>: TênWarning: lời nhắn
+ *       dòng mã nguồn
+ */
+function tachCanhBao(text) {
+  const dong = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
+  const ra = [];
+  const canhBao = [];
+  for (let i = 0; i < dong.length; i += 1) {
+    if (/^.*?:\d+:\s*\w*Warning:/.test(dong[i])) {
+      canhBao.push(dong[i].trim());
+      // Dòng ngay sau là bản in lại mã nguồn gây cảnh báo — đi cùng nó.
+      if (i + 1 < dong.length && /^\s+\S/.test(dong[i + 1])) i += 1;
+      continue;
+    }
+    ra.push(dong[i]);
+  }
+  return { sach: ra.join('\n'), canhBao };
+}
+
 /** Bỏ khoảng trắng cuối dòng và dòng trống cuối — khác biệt đó không dạy gì. */
 function chuanHoa(text) {
   return String(text ?? '')
@@ -65,6 +112,8 @@ function chuanHoa(text) {
 }
 
 const hong = [];
+/** Cảnh báo thư viện: không làm bài trượt, nhưng phải in ra cho tác giả thấy. */
+const canhBaoTheoBai = [];
 const chamQua = [];
 let daChay = 0;
 let soDoan = 0;
@@ -91,7 +140,24 @@ for (const lesson of bundle.lessons) {
   if (!khoi.length) continue;
 
   // Như worker: tải wheel + import sẵn TRƯỚC khi bấm giờ.
-  const can = (lesson.content_json.step_4?.packages || []).filter((p) => !warmed.has(p));
+  const khai = lesson.content_json.step_4?.packages || [];
+  const laRuntime = khai.filter((p) => !coTrongLock.has(p));
+  if (laRuntime.length) {
+    // Không phải lỗi nếu gói đã vào stdlib — thử import trước khi kết luận.
+    const thieu = laRuntime.filter((p) => {
+      try {
+        py.runPython(`import ${p}`);
+        return false;
+      } catch {
+        return true;
+      }
+    });
+    if (thieu.length) {
+      hong.push({ ma, loai: 'gói không có', chiTiet: `${thieu.join(', ')} — runtime này không có` });
+      continue;
+    }
+  }
+  const can = khai.filter((p) => coTrongLock.has(p) && !warmed.has(p));
   if (can.length) {
     await py.loadPackage(can, { messageCallback: () => {} });
     const loi = JSON.parse(preload(JSON.stringify(can)));
@@ -112,7 +178,9 @@ for (const lesson of bundle.lessons) {
     hong.push({ ma, loai: 'nổ khi chạy', chiTiet: String(res.error).split('\n').slice(-3).join(' | ') });
     continue;
   }
-  const thuc = chuanHoa(res.output);
+  const { sach, canhBao } = tachCanhBao(res.output);
+  if (canhBao.length) canhBaoTheoBai.push({ ma, canhBao });
+  const thuc = chuanHoa(sach);
   if (thuc !== mongDoi) {
     hong.push({ ma, loai: 'kết quả lệch', chiTiet: lech(mongDoi, thuc) });
     continue;
@@ -139,6 +207,14 @@ function lech(mongDoi, thuc) {
 
 const giay = ((Date.now() - batDau) / 1000).toFixed(1);
 console.log(`\n${daChay} bài · ${soDoan} đoạn code · ${chamQua.length} đạt · ${hong.length} hỏng · ${giay}s`);
+if (canhBaoTheoBai.length) {
+  const tong = canhBaoTheoBai.reduce((n, c) => n + c.canhBao.length, 0);
+  console.log(`\n${tong} cảnh báo thư viện ở ${canhBaoTheoBai.length} bài (không làm trượt, nhưng học viên SẼ thấy chúng trong console):`);
+  for (const c of canhBaoTheoBai) {
+    const dau = c.canhBao[0].replace(/^.*?:\d+:\s*/, '');
+    console.log(`  ! ${c.ma}: ${dau}${c.canhBao.length > 1 ? ` (+${c.canhBao.length - 1} nữa)` : ''}`);
+  }
+}
 if (hong.length) {
   console.log('\nHỎNG:');
   for (const h of hong) console.log(`  ✗ ${h.ma} [${h.loai}] ${h.chiTiet}`);

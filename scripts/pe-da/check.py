@@ -169,7 +169,7 @@ def kiem_sandbox(bai: list[dict]) -> None:
     traceback không ai giải thích — tệ hơn hẳn việc nói thẳng là phải chạy trên
     máy.
     """
-    hop_le = {'numpy', 'pandas', 'matplotlib', 'sqlite3'}
+    hop_le = {'numpy', 'pandas', 'matplotlib', 'tzdata'}
     for b in bai:
         bon = b['content_json'].get('step_4') or {}
         mode = b['_mode']

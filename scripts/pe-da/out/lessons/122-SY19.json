@@ -85,17 +85,11 @@
   "step_4": {
    "task": {
     "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (lzma không có trong stdlib của bản Pyodide này) nên không nằm trong ô này."
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n",
-   "env": "1 đoạn phải chạy bằng Python trên máy: lzma không có trong stdlib của bản Pyodide này."
+   "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))\n\n# ── Đoạn 3 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n"
   }
  },
- "_mode": "mixed",
- "_blocked": [
-  {
-   "block": 1,
-   "reason": "lzma không có trong stdlib của bản Pyodide này"
-  }
- ]
+ "_mode": "pyodide",
+ "_blocked": []
 }

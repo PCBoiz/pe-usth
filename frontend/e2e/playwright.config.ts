@@ -4,7 +4,7 @@
 // Hai nhóm spec, yêu cầu chạy KHÁC NHAU — đừng chạy cả thư mục:
 //
 //  1. `python-advanced` — giả lập toàn bộ API bằng `page.route`, Pyodide tự host
-//     trong repo (`public/pyodide/v0.27.7/`), nên KHÔNG cần backend, DB, mạng:
+//     trong repo (`public/pyodide/v314.0.7/`), nên KHÔNG cần backend, DB, mạng:
 //       cd frontend && npx playwright test -c e2e/playwright.config.ts python-advanced
 //     `mobile-responsive` cũng không cần backend (chỉ đo trang chủ + chi tiết khóa) nên chạy chung nhóm này trong CI.
 //

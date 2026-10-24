@@ -134,7 +134,10 @@ export class PyodideRunner implements Runner {
   // ---------- bên trong ----------
 
   private spawn() {
-    const instance = new Worker(WORKER_URL);
+    // `type: 'module'` là BẮT BUỘC, không phải tuỳ chọn: Pyodide 314 bỏ hỗ trợ
+    // classic worker và không còn phát hành `pyodide.js`, nên worker nạp runtime
+    // bằng `await import(...)` — thứ chỉ chạy trong module worker.
+    const instance = new Worker(WORKER_URL, { type: 'module' });
     this.worker = instance;
     instance.onmessage = ({ data }) => {
       if (this.worker !== instance) return; // thông điệp của worker đã bị bỏ

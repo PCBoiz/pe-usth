@@ -35,3 +35,9 @@ NHAT-KY-SUA.md
 # remote. KHÔNG phải chỗ để tài liệu dự án: cái gì cả đội cần biết thì vào
 # AGENTS.md hoặc README của thư mục tương ứng.
 /ghi-chu-local/
+
+# Sao lưu DB trước khi nạp nội dung (seed-python-da.ts, update-lesson-content.ts).
+# Chứa content_json và tiến độ học viên lấy thẳng từ Neon — không đẩy lên remote.
+# Commit a2169f2 đã bỏ theo dõi thư mục này nhưng quên ghi luật, nên mỗi lần nạp
+# lại hiện ra trong `git status` và dễ bị `git add -A` kéo lên.
+/backups/

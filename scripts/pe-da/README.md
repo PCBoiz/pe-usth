@@ -14,7 +14,7 @@ py scripts/pe-da/build.py              # course.json -> out/ + chép 80 ảnh sa
 py scripts/pe-da/check.py --strict     # cấu trúc (CI chạy bản này)
 py scripts/pe-da/sync_curricula.py     # -> frontend/src/lib/curricula.json
 
-npm i --no-save pyodide@0.27.7
+npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs            # cả 145 bài chạy được
 node scripts/pe-da/check-pyodide.mjs NP02,VZ01 --verbose   # vài bài, in chi tiết
 ```

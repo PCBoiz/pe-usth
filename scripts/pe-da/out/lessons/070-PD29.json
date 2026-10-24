@@ -87,8 +87,7 @@
    },
    "starterCode": "# ── Đoạn 1 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())\n\n# ── Đoạn 2 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())\n\n# ── Đoạn 3 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))\n",
    "packages": [
-    "pandas",
-    "sqlite3"
+    "pandas"
    ]
   }
  },

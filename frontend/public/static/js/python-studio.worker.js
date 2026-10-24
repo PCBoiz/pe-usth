@@ -1,13 +1,14 @@
 /* Python executes in a disposable browser worker, never in the NestJS process. */
-/* global importScripts, loadPyodide */
-
 // Runtime Pyodide tự host trong repo, cùng origin — xem chú thích trong
 // studio-lesson.worker.js. Trước đây nạp từ cdn.jsdelivr.net.
-const PYODIDE_DIR = '/pyodide/v0.27.7/';
+//
+// MODULE worker (PythonStudio.tsx tạo bằng `{ type: 'module' }`): Pyodide 314
+// bỏ hẳn hỗ trợ classic worker và không còn phát hành `pyodide.js`.
+const PYODIDE_DIR = '/pyodide/v314.0.7/';
 
 self.onmessage = async ({ data }) => {
   try {
-    importScripts(PYODIDE_DIR + 'pyodide.js');
+    const { loadPyodide } = await import(PYODIDE_DIR + 'pyodide.mjs');
     let output = '';
     const write = (line) => {
       if (output.length < 12000)
