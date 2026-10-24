@@ -47,7 +47,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **173 ca** / 14 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **186 ca** / 16 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -61,11 +61,12 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 173 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 186 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
-ide-brief-code 11 · ide-handoff 6 · ide-runner-error 10 · ide-stop-autosave 24 · ide-trace 38 ·
-prewarm-gate 5 · studio-lesson 40 · trap-leak 3 · worker-csp 7 = 173. Mốc trước là 166; 7 ca
-thêm vào khoá CSP riêng của ba worker Python.
+ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-runner-error 10 ·
+ide-stop-autosave 24 · ide-trace 38 · label-version 2 · prewarm-gate 5 · studio-lesson 40 ·
+trap-leak 3 · worker-csp 7 = 186. Mốc trước là 166; thêm worker-csp 7, ide-partial-output 10,
+label-version 2, và ide-brief-code 11 → 12.
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -154,6 +155,47 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   nay vá `globalThis.fetch` để TỪ CHỐI mọi địa chỉ `http(s)://`. Đừng gỡ: nó là
   thứ duy nhất làm hai môi trường nói cùng một chuyện. Kiểm lại bằng cách đổi tên
   một wheel rồi chạy `node scripts/pe-da/check-pyodide.mjs PD01` — phải ĐỎ.
+- **Lần chạy BỊ CẮT từng trả về đầu ra RỖNG — `terminate()` giết luôn thông điệp 'result'.**
+  Chạy `while True: print("dong", i)` rồi bấm Dừng sau 2 giây: ô kết quả hiện "(Không có đầu
+  ra)" dù chương trình đã in hơn 6 000 dòng, và mục chọn "In vô hạn (cắt đầu ra)" ngay trong
+  trang thì hứa điều ngược lại. Đường Docker cũ không có lỗi này vì máy chủ giữ stdout hộ.
+  Cách sửa: hook stdout của worker `postMessage({type:'partial'})` theo nhịp 200 ms — gửi được
+  dù worker đang bị chặn, vì `postMessage` chỉ xếp hàng còn main thread thì không bị chặn — và
+  `cat()` trong `ide-runner.ts` resolve bằng đợt cuối nhận được thay vì `stdout: ''`.
+  **Cả 173 ca test trước đó đều ĐẠT khi lỗi này còn nguyên**: không ca nào chạm tới đường
+  bị-cắt. Nay có `ide-partial-output.test.mjs` (10 ca).
+  Hai nhãn đi kèm cũng sai và đã sửa: thông báo cắt đầu ra ghi "vượt 1 MB nên bị cắt và chương
+  trình đã bị dừng" — trần thật của worker là 60 000 ký tự MỖI LUỒNG và chương trình VẪN chạy;
+  còn câu "phần đã in ra của lần chạy này mất theo" thì nay không còn đúng. Hằng
+  `IDE_OUTPUT_CAP_CHARS` xuất từ `ide-runner.ts`, và test so nó với con số thật trong worker.
+- **`loadPackage` KHÔNG import, nên 5,62 s của matplotlib từng ăn vào hạn 15 giây.** Đo trên
+  /ide: bài vẽ biểu đồ lần chạy đầu báo "Thời gian chạy: 5,62 s", toàn bộ là
+  `import matplotlib.pyplot` (dựng cache font, chọn backend) — nằm trong mã người học nên tính
+  vào hạn của họ, và một bài vẽ nhiều hình bị cắt vì THƯ VIỆN chứ không vì mã mình. Nay worker
+  import sẵn ngay sau `loadPackage`, TRƯỚC khi bấm giờ: cùng đoạn mã báo **0,04 s**. Phải làm
+  nóng đúng `matplotlib.pyplot` (`LAM_NONG`), vì `import matplotlib` gần như miễn phí.
+- **Cổng ẩn/hiện nút "Thử ngay trong IDE" từng ghi lại kiến trúc ĐÃ BỎ, và nó ngược hẳn.**
+  `ide-brief-code.ts` chặn `matplotlib` và cho qua `threading`/`multiprocessing`/`subprocess`
+  — đúng với ảnh Docker `python:3.12-slim`, sai với Pyodide. Đo lại trên /ide: matplotlib
+  3.10.8 dựng được Figure; `Thread.start()` ném "RuntimeError: can't start new thread";
+  `multiprocessing` thiếu `_multiprocessing`; `subprocess` ném OSError 138. Đã đảo danh sách
+  (17 bài bị chặn, 31 bài còn nút, trong đó có cả 10 bài biểu đồ).
+  **Chọn bài theo IMPORT THẬT, đừng theo tiền tố mã bài**: bản đầu của ca test này dùng P01 vì
+  tưởng "P" là process, nhưng P01 chỉ `import os` nên nó chạy được và phải giữ nút.
+  Phạm vi: hai hàm này chỉ được gọi từ màn `brief` và màn `explain`, mà bộ 172 bài đang xuất
+  bản không có màn nào trong hai màn đó (0/172) — nên hôm nay luật này không ẩn/hiện nút cho
+  người học nào. Vẫn sửa, vì nó sẽ âm thầm sai vào ngày pe-v4 bật lại.
+- **Nhãn phiên bản Python trong giao diện từng ghi cứng 3.12, và nó là nhãn MẶC ĐỊNH.** Màn
+  "Thử thách độc lập" hiện "CPython 3.12" trước lần chạy đầu rồi đổi sang "CPython 3.14.2";
+  trang chủ dán "Python 3.12" lên mọi ô khoá học; một màn còn ghi "CPython 3.11". Luật nay:
+  nhãn nào chỉ MÔ TẢ runtime thì KHÔNG ghi số — số thật đến từ `runtimeStatus` lúc chạy, nhãn
+  dự phòng không có số thì không bao giờ lệch sau một lần nâng Pyodide.
+  `label-version.test.mjs` quét cả `frontend/src` (bỏ chú thích) nên không ghi lại được.
+  Bẫy nhỏ trong chính ca test đó: file trong repo là CRLF, mà `.` của regex không khớp ``
+  nên `//.*$` không bóc được chú thích cuối dòng — phải `.replace(//g, '')` trước.
+- **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
+  trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
+  độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
 - **Code Python của học viên gọi được API kèm cookie phiên — đã bịt, và `worker-src` KHÔNG
   phải thứ bịt được.** `pyodide.ffi` cho code Python với tới JS, nên trong worker nó làm được
   `fetch(API_ORIGIN + '/auth/refresh', { credentials: 'include' })` và nhận về access token

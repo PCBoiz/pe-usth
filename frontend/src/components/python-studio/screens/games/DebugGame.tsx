@@ -39,7 +39,7 @@ export default function DebugGame({
     >
       <SandboxEditor
         filename="main.py"
-        langTag={runtimeStatus || 'CPython 3.12'}
+        langTag={runtimeStatus || 'CPython'}
         code={state.code ?? game.code}
         onCodeChange={(code) => updateGame(game.id, { code })}
         running={running}

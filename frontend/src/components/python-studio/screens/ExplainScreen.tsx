@@ -58,7 +58,7 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
     >
       <CodeAnnotated
         filename={one.code.filename || 'example.py'}
-        langTag={one.code.version || 'Python 3.12'}
+        langTag={one.code.version || 'Python'}
         code={toCodeLines(one.code.source)}
         annotations={rows.map((row, i) => ({
           label: row.title || `Ý ${row.n ?? i + 1}`,
@@ -67,9 +67,10 @@ export default function ExplainScreen({ lesson, scr, metaLabel }: ShellProps) {
       />
       {/* Ví dụ của phần lý thuyết là mã CHẠY ĐƯỢC: đọc xong thì sửa thử một dòng
           rồi chạy lại là cách hiểu nhanh nhất. Mở ở tab mới nên bài không mất.
-          Qua chayDuocTrongIde() trước: sandbox của IDE không có matplotlib lẫn
-          Tk, nên ví dụ của bài vẽ biểu đồ/GUI sẽ nổ traceback ngay dòng import
-          — không phải lỗi người học, nên không hiện nút ở đó. */}
+          Qua chayDuocTrongIde() trước: /ide nay chạy Pyodide nên có matplotlib,
+          nhưng KHÔNG có Tk, thread hay tiến trình — ví dụ của bài GUI/thread sẽ
+          nổ traceback ngay dòng import, không phải lỗi người học, nên không
+          hiện nút ở đó. Bảng đo trong ide-brief-code.ts. */}
       <TryItButton
         code={chayDuocTrongIde(one.code.source) ? one.code.source : undefined}
         spaced

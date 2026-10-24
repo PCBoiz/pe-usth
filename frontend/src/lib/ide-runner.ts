@@ -80,6 +80,20 @@ const WORKER_URL = '/static/js/ide.worker.js';
 export const IDE_RUN_TIMEOUT_MS = 15_000;
 
 /**
+ * Trần đầu ra mà WORKER gom cho mỗi luồng (stdout, stderr).
+ *
+ * Xuất ra ngoài vì cùng lý lẽ với trần thời gian ở trên: giao diện phải nói
+ * đúng con số này. Trước đây nó nói "vượt 1 MB nên bị cắt và chương trình đã bị
+ * dừng" — cả hai nửa đều sai cho đường trình duyệt: trần là 60 000 ký tự, và
+ * chương trình VẪN chạy sau khi worker thôi gom.
+ *
+ * Con số THẬT nằm trong `frontend/public/static/js/ide.worker.js` (worker là JS
+ * trần, không import được từ đây). `worker-csp.test.mjs` so hai chỗ để chúng
+ * không lệch nhau trong im lặng.
+ */
+export const IDE_OUTPUT_CAP_CHARS = 60_000;
+
+/**
  * Bắt đầu hiện ĐẾM NGƯỢC khi chỉ còn bấy nhiêu thời gian.
  *
  * VÌ SAO CÓ ĐẾM NGƯỢC: trước bản này, người học viết `while True:` rồi ngồi
@@ -221,6 +235,17 @@ export function runInBrowser(code: string): Promise<IdeRunResult> {
      * đúng một trường `cutBy`. Tách thành hai nhánh code là mời một trong hai
      * nhánh quên mất bước nạp lại worker.
      */
+    /**
+     * Đầu ra đã nhận được TÍNH TỚI LÚC NÀY, do worker gửi dần trong lúc chạy.
+     *
+     * Vì sao phải giữ: `terminate()` làm thông điệp 'result' không bao giờ tới,
+     * nên trước đây lần chạy bị cắt luôn trả `stdout: ''` — chạy
+     * `while True: print("x")` rồi chờ hết 15 giây thì ô kết quả hiện "(Không
+     * có đầu ra)" dù chương trình đã in hàng nghìn dòng. Đường Docker cũ không
+     * có lỗi này vì máy chủ giữ stdout hộ.
+     */
+    let phanDaNhan = { stdout: '', stderr: '', outputTruncated: false };
+
     const cat = (cutBy: 'timeout' | 'user') =>
       het(() => {
         // Cắt từ bên ngoài là cách DUY NHẤT: worker đang bị chặn. Mất sạch
@@ -231,12 +256,12 @@ export function runInBrowser(code: string): Promise<IdeRunResult> {
         // Nạp sẵn worker thay thế ở nền để lần bấm Chạy sau không phải chờ lại.
         warmIdeRunner();
         resolve({
-          stdout: '',
-          stderr: '',
+          stdout: phanDaNhan.stdout,
+          stderr: phanDaNhan.stderr,
           exitCode: null,
           timedOut: true,
           cutBy,
-          outputTruncated: false,
+          outputTruncated: phanDaNhan.outputTruncated,
           durationMs: Date.now() - t0,
           queuedMs: 0,
         });
@@ -247,6 +272,16 @@ export function runInBrowser(code: string): Promise<IdeRunResult> {
 
     w.onmessage = ({ data }) => {
       if (!data) return;
+      if (data.type === 'partial') {
+        // Không gọi het(): lần chạy CHƯA xong, đây chỉ là ảnh chụp đầu ra để
+        // dùng nếu lát nữa phải cắt.
+        phanDaNhan = {
+          stdout: String(data.stdout ?? ''),
+          stderr: String(data.stderr ?? ''),
+          outputTruncated: Boolean(data.outputTruncated),
+        };
+        return;
+      }
       if (data.type === 'result') {
         het(() => {
           const kq = data.result as IdeRunResult;

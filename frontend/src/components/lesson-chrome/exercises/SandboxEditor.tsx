@@ -49,7 +49,11 @@ const STATUS_STYLE: Record<SandboxTestRow['status'], { bg: string; text: string;
 
 export default function SandboxEditor({
   filename = 'solution.py',
-  langTag = 'CPython 3.12',
+  // KHÔNG ghi số phiên bản vào đây. Nhãn này chỉ là bản dự phòng cho lúc runtime
+  // CHƯA nói nó là bản nào, nên nó luôn hiện trước lần chạy đầu — và nó từng ghi
+  // "CPython 3.12", con số của ảnh Docker python:3.12-slim đã bỏ. Người học mở
+  // bài thấy 3.12, chạy một lần rồi thấy 3.14.2. Không có số thì không sai được.
+  langTag = 'CPython',
   code,
   onCodeChange,
   running,
@@ -173,7 +177,10 @@ export default function SandboxEditor({
         meta={consoleMeta}
         running={running}
         lines={consoleLines}
-        placeholder='Bấm "Chạy thử" để thực thi solution.py ngay trong trình duyệt.'
+        // Dùng `filename` chứ không ghi cứng "solution.py": màn Thử thách độc
+        // lập truyền filename="main.py", nên ô này từng ghi `main.py` ở đầu rồi
+        // hứa chạy `solution.py` ở ngay dưới — hai tên cho một file.
+        placeholder={`Bấm "Chạy thử" để thực thi ${filename} ngay trong trình duyệt.`}
       />
 
       {tests.length > 0 && (

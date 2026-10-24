@@ -49,7 +49,9 @@ export default function ScaffoldScreen({
     >
       <Assemble
         filename="main.py"
-        langTag="Python 3.12"
+        // Màn này không chạy mã nên không có runtime để hỏi phiên bản;
+        // ghi số là tự nhận một con số sẽ cũ đi.
+        langTag="Python"
         lines={scaffold.template
           .replace(/\s+$/, '')
           .split('\n')

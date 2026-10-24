@@ -47,6 +47,13 @@ let runtime = null;
  *  stdlib, và khai nó làm `loadPackage` ném "No known package" rồi giết cả lần chạy. */
 const PACKAGES = { numpy: 'numpy', pandas: 'pandas', matplotlib: 'matplotlib', tzdata: 'zoneinfo' };
 
+/** Module đem đi LÀM NÓNG khi khác tên module dùng để dò.
+ *
+ *  `import matplotlib` gần như miễn phí; chỗ tốn là `matplotlib.pyplot` (dựng
+ *  cache font, chọn backend). Làm nóng sai tên thì vẫn còn nguyên 5,62 s trong
+ *  hạn 15 giây của người học. */
+const LAM_NONG = { matplotlib: 'matplotlib.pyplot' };
+
 async function getRuntime() {
   if (runtime) return runtime;
   // import() động chứ không tĩnh ở đầu file: runtime chỉ nạp khi thật sự cần.
@@ -57,6 +64,7 @@ async function getRuntime() {
     // làm phình thông điệp postMessage tới mức treo tab.
     if (box[khoa].length < 60000) box[khoa] += dong.slice(0, 60000 - box[khoa].length) + '\n';
     else box.cat = true;
+    guiDanDan();
   };
   const py = await loadPyodide({ indexURL: PYODIDE_DIR, stdout: them('out'), stderr: them('err') });
   // matplotlib trong worker KHÔNG có DOM: backend mặc định của Pyodide là
@@ -84,17 +92,145 @@ function packagesFor(code) {
 
 const warmed = new Set();
 
+/*
+ * Gửi dần đầu ra về main thread TRONG LÚC chạy.
+ *
+ * VÌ SAO: vòng lặp vô hạn và nút Dừng đều kết thúc bằng `terminate()` từ bên
+ * ngoài — worker đang bị chặn nên không gửi được thông điệp 'result' nào. Hệ quả
+ * đo được: chạy `while True: print("x")` rồi chờ hết 15 giây thì ô kết quả hiện
+ * "(Không có đầu ra)", dù chương trình đã in hàng nghìn dòng. Đúng cái mà mục
+ * chọn "In vô hạn (cắt đầu ra)" trong trang tự hứa, và đường Docker cũ thì làm
+ * được vì máy chủ giữ stdout hộ.
+ *
+ * Gửi được dù worker đang bị chặn: `postMessage` chỉ xếp thông điệp vào hàng
+ * đợi, mà main thread KHÔNG bị chặn nên vẫn nhận. Có throttle vì một vòng lặp
+ * print sinh hàng chục nghìn lượt gọi mỗi giây.
+ */
+const NHIP_GUI_MS = 200;
+let lanGuiCuoi = 0;
+let hopDangChay = null;
+
+function guiDanDan(bucPhai = false) {
+  if (!hopDangChay) return;
+  const gio = Date.now();
+  if (!bucPhai && gio - lanGuiCuoi < NHIP_GUI_MS) return;
+  lanGuiCuoi = gio;
+  self.postMessage({
+    type: 'partial',
+    stdout: hopDangChay.out,
+    stderr: hopDangChay.err,
+    outputTruncated: Boolean(hopDangChay.cat),
+  });
+}
+
+/*
+ * Lớp bọc Python cho mỗi lần Chạy. CỐ Ý viết bằng Python chứ không xử ở JS: chỉ
+ * trong Python mới lọc được frame của traceback theo `co_filename`, và cũng chỉ
+ * ở đây mới thay được `input()`.
+ */
+const BOC_PYTHON = [
+  'import builtins, sys, traceback',
+  '',
+  '_ide = {"eof": 0}',
+  '',
+  'def _ide_input(prompt=""):',
+  // Pyodide không có stdin: mặc định `input()` ném "OSError: [Errno 29] I/O
+  // error" — đúng về kỹ thuật nhưng người mới học không đọc được, và nó còn
+  // khác hẳn câu mà ô chạy tự do của trang bài học đưa ra cho CÙNG một đoạn mã.
+  // Ném EOFError giống CPython khi `python main.py < input.txt` cạn dòng, rồi
+  // nói thêm bằng lời ở cuối.
+  '    sys.stdout.write(str(prompt))',
+  '    _ide["eof"] += 1',
+  '    raise EOFError("EOF when reading a line")',
+  '',
+  'builtins.input = _ide_input',
+  '',
+  'try:',
+  '    exec(compile(__ide_src, "main.py", "exec"), {"__name__": "__main__"})',
+  'except SystemExit as e:',
+  // CPython: `sys.exit("lời nhắn")` IN lời nhắn ra stderr rồi thoát 1. Bắt
+  // SystemExit mà quên in thì người học gọi sys.exit("thiếu dữ liệu") sẽ
+  // thấy một ô console trống và không hiểu vì sao chương trình dừng.
+  '    if e.code is None:',
+  '        sys.__ide_exit = 0',
+  '    elif isinstance(e.code, int):',
+  '        sys.__ide_exit = e.code',
+  '    else:',
+  '        print(e.code, file=sys.stderr)',
+  '        sys.__ide_exit = 1',
+  'except BaseException as e:',
+  // Bỏ các frame KHÔNG thuộc chương trình người học: ruột Pyodide
+  // (`_pyodide/_base.py` → `eval_code_async` → `run_async`) và chính lớp bọc
+  // này (`<exec>`, trong đó có `_ide_input` ở trên). Không lọc thì mỗi lỗi lòi
+  // ra 10 dòng vô nghĩa TRƯỚC dòng của người học — đường Docker cũ chạy
+  // `python main.py` nên traceback vốn đã sạch, để nguyên thì chính lần chuyển
+  // sang client làm thông báo lỗi tệ hơn trước.
+  //
+  // Lọc theo danh sách LOẠI TRỪ, không phải chỉ giữ main.py: lỗi nằm trong
+  // thư viện thật (`json/decoder.py`…) thì frame đó vẫn cần hiện, y như CPython.
+  //
+  // Vẫn in ra STDERR: `ide-runner.ts:263` nhận diện MemoryError/OverflowError
+  // bằng regex trên stderr để thay worker, đổi chỗ in là phá luôn việc đó.
+  '    def _bo(f):',
+  '        return f.filename == "<exec>" or "/_pyodide/" in f.filename',
+  '    def _don(te):',
+  '        te.stack = traceback.StackSummary.from_list(',
+  '            [f for f in te.stack if not _bo(f)])',
+  // `raise X from Y` và lỗi lồng trong except: mỗi tầng có stack riêng, không
+  // dọn thì vẫn lòi ruột Pyodide ở tầng dưới.
+  '        for con in (te.__cause__, te.__context__):',
+  '            if con is not None:',
+  '                _don(con)',
+  '    te = traceback.TracebackException.from_exception(e)',
+  '    _don(te)',
+  '    sys.stderr.write("".join(te.format()))',
+  '    sys.__ide_exit = 1',
+  'else:',
+  '    sys.__ide_exit = 0',
+  '',
+  'if _ide["eof"]:',
+  // Cùng một câu với ô chạy tự do (xem `_notes()` trong studio-harness.py): hai
+  // nơi nói khác nhau về cùng một giới hạn thì người học tưởng là hai lỗi khác.
+  '    print("[nhập liệu] Ô này không nhập được từ bàn phím, nên input() báo "',
+  '          "EOFError. Gán sẵn giá trị để thử: ten = \\"Hoa\\" thay cho "',
+  '          "ten = input(\\"Tên: \\").", file=sys.stderr)',
+].join('\n');
+
 async function run(code) {
   const { py, box } = await getRuntime();
   box.out = '';
   box.err = '';
   box.cat = false;
+  // Mở đường gửi dần. Chỉ mở trong lúc CHẠY: lúc nạp gói hay lúc ghi vết thì
+  // đầu ra chưa thuộc về lần chạy nào của người học.
+  hopDangChay = box;
+  lanGuiCuoi = 0;
 
   // Tải gói TRƯỚC khi bấm giờ: `import pandas` lần đầu tốn vài giây, tính vào
   // thời gian chạy thì người học tưởng mã của mình chậm.
   const can = packagesFor(code).filter((p) => !warmed.has(p));
   if (can.length) {
     await py.loadPackage(can, { messageCallback: () => {} });
+    // IMPORT SẴN, không chỉ loadPackage. `loadPackage` chỉ bung wheel vào MEMFS;
+    // chính câu `import matplotlib.pyplot` mới là chỗ tốn — đo trên /ide ngày
+    // 25/10/2026: lần chạy đầu của một bài biểu đồ mất **5,62 s**, và vì nó nằm
+    // trong mã người học nên 5,62 s đó ăn vào đúng hạn 15 giây của họ. Một bài
+    // vẽ nhiều hình có thể bị cắt vì thư viện, không vì mã của mình.
+    //
+    // Nuốt lỗi: gói nào import không được thì để chính mã người học ném, ở đó
+    // traceback mới chỉ đúng dòng của họ.
+    try {
+      py.runPython(
+        'import importlib\n'
+        + 'for _m in ' + JSON.stringify(can.map((p) => LAM_NONG[p] ?? PACKAGES[p])) + ':\n'
+        + '    try:\n'
+        + '        importlib.import_module(_m)\n'
+        + '    except BaseException:\n'
+        + '        pass\n',
+      );
+    } catch {
+      // Không làm gì: đây chỉ là bước làm nóng.
+    }
     can.forEach((p) => warmed.add(p));
   }
 
@@ -105,24 +241,7 @@ async function run(code) {
     // theo `co_filename == "main.py"`, studio-harness.py compile mã học viên
     // với đúng tên đó, và bộ đo độ hiệu quả cũng lọc theo nó. Đừng đổi lẻ.
     py.globals.set('__ide_src', code);
-    await py.runPythonAsync(
-      'import sys\n'
-      + 'try:\n'
-      + '    exec(compile(__ide_src, "main.py", "exec"), {"__name__": "__main__"})\n'
-      + 'except SystemExit as e:\n'
-      // CPython: `sys.exit("lời nhắn")` IN lời nhắn ra stderr rồi thoát 1. Bắt
-      // SystemExit mà quên in thì người học gọi sys.exit("thiếu dữ liệu") sẽ
-      // thấy một ô console trống và không hiểu vì sao chương trình dừng.
-      + '    if e.code is None:\n'
-      + '        sys.__ide_exit = 0\n'
-      + '    elif isinstance(e.code, int):\n'
-      + '        sys.__ide_exit = e.code\n'
-      + '    else:\n'
-      + '        print(e.code, file=sys.stderr)\n'
-      + '        sys.__ide_exit = 1\n'
-      + 'else:\n'
-      + '    sys.__ide_exit = 0\n',
-    );
+    await py.runPythonAsync(BOC_PYTHON);
     exitCode = py.runPython('import sys; getattr(sys, "__ide_exit", 0)');
   } catch (error) {
     // Traceback của mã người học đã ra stderr qua stdout/stderr hook; ở đây chỉ
@@ -133,6 +252,7 @@ async function run(code) {
     if (!box.err.includes(text.slice(0, 40))) box.err += text + '\n';
   } finally {
     py.globals.delete('__ide_src');
+    hopDangChay = null;
   }
 
   return {

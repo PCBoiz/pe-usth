@@ -35,7 +35,7 @@ export default function PredictScreen({
     >
       <Mcq
         filename={predict?.code ? 'solution.py' : one?.code?.filename || 'example.py'}
-        langTag={one?.code?.version || 'Python 3.12'}
+        langTag={one?.code?.version || 'Python'}
         code={code ? toCodeLines(code) : undefined}
         options={(predict?.options ?? []).map((o, i) => ({
           key: letterKey(i),

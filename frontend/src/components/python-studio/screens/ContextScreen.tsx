@@ -49,7 +49,7 @@ export default function ContextScreen({ lesson, scr, metaLabel }: ShellProps) {
       {lessonCode && (
         <CodeBlock
           filename={one?.code?.filename || 'example.py'}
-          langTag={one?.code?.version || 'Python 3.12'}
+          langTag={one?.code?.version || 'Python'}
           lines={toCodeLines(lessonCode)}
         />
       )}

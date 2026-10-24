@@ -46,7 +46,11 @@ export default function HomePage() {
                     label={course.label}
                     description={course.subtitle}
                     tags={[
-                      { text: 'Python 3.12' },
+                      // KHÔNG ghi số phiên bản: thẻ này từng ghi 'Python 3.12' (ảnh
+                      // Docker đã bỏ) trong khi runtime là 3.14.2, và nó nằm ngay
+                      // trang chủ. Nhãn không có số thì không lệch được sau mỗi lần
+                      // nâng Pyodide.
+                      { text: 'Python' },
                       { text: LEVEL_LABEL[course.level], tone: 'red' },
                     ]}
                     color={course.color}

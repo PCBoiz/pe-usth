@@ -499,7 +499,8 @@ export default function PythonStudio() {
                         <i />
                       </span>
                       <span>tournament_state.py</span>
-                      <small>Python 3.12</small>
+                      {/* Nhãn trang trí — đừng ghi số, xem thẻ ở trang chủ. */}
+                      <small>Python</small>
                       <button
                         aria-label="Sao chép mã ví dụ"
                         onClick={() =>
@@ -744,7 +745,8 @@ export default function PythonStudio() {
                     <div className={s.codeCard}>
                       <div className={s.editorHeader}>
                         python_memory_test.py{' '}
-                        <small className={s.amber}>CPython 3.11</small>
+                        {/* Nhãn trang trí, không ghi số — xem thẻ ở trang chủ. */}
+                        <small className={s.amber}>CPython</small>
                       </div>
                       <Code
                         code={'a = [1, 2]\nb = a[:]\n# id(a) so với id(b)?'}
@@ -1094,7 +1096,7 @@ export default function PythonStudio() {
                         <i />
                       </span>
                       <Icon step={3} n={4} /> solution.py{' '}
-                      <small>Python 3.12.2</small>
+                      <small>Python</small>
                       <Icon step={3} n={5} />
                     </div>
                     <Code
@@ -1355,7 +1357,7 @@ export default function PythonStudio() {
                       >
                         test_runner.py
                       </button>
-                      <small>{runtimeStatus || 'CPython 3.12'}</small>
+                      <small>{runtimeStatus || 'CPython'}</small>
                       <button
                         disabled={running}
                         onClick={() => {

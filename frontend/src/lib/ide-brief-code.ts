@@ -5,19 +5,47 @@
 //
 //   · Bài học chạy Pyodide trong trình duyệt + studio-harness.py — có tkinter
 //     MÔ PHỎNG, subprocess/threading mô phỏng, numpy/pandas/matplotlib tải sẵn.
-//   · IDE chạy CPython 3.12 THẬT trong Docker. Đo ngày 13/10/2026 trên chính
-//     sandbox đang phục vụ: có numpy, pandas, sqlite3, threading, multiprocessing,
-//     subprocess — nhưng KHÔNG có matplotlib, và tkinter thì import được tên
-//     nhưng nổ "libtk8.6.so: cannot open shared object file" vì container không
-//     có thư viện Tk lẫn màn hình.
+//   · IDE nay CŨNG chạy Pyodide trong trình duyệt, KHÔNG còn Docker. Khác biệt
+//     còn lại chỉ là: IDE không có studio-harness.py, nên không có phần MÔ PHỎNG.
 //
-// Nên bài vẽ biểu đồ và bài GUI KHÔNG hiện nút: thà thiếu nút còn hơn mở tab
-// mới rồi để người học đọc một traceback không phải lỗi của họ. Ngược lại, bài
-// process/thread chạy trong IDE còn ĐÚNG HƠN trong bài học — ở đó là mô phỏng,
-// ở đây là PID và thread thật.
+// DANH SÁCH NÀY TỪNG NGƯỢC HẲN, và đó là hậu quả của lần chuyển sang client:
+// bản cũ viết theo ảnh Docker `python:3.12-slim` (có threading/multiprocessing/
+// subprocess thật, không có matplotlib). Đo lại trong Chrome 155 ngày
+// 25/10/2026 trên chính /ide:
+//
+//   matplotlib 3.10.8  CHẠY ĐƯỢC (dựng được Figure)   ← trước đây bị CHẶN
+//   numpy 2.4.6        CHẠY ĐƯỢC
+//   pandas 3.0.2       CHẠY ĐƯỢC
+//   sqlite3            CHẠY ĐƯỢC (bản 314 đưa vào stdlib)
+//   threading          RuntimeError: can't start new thread   ← trước đây CHO QUA
+//   multiprocessing    ModuleNotFoundError: _multiprocessing  ← trước đây CHO QUA
+//   subprocess         OSError 138: emscripten does not support processes
+//   os.fork            OSError 52: Function not implemented
+//   tkinter            ModuleNotFoundError (giới hạn WASM, không phải thiếu wheel)
+//
+// Nên bài GUI và bài process/thread KHÔNG hiện nút: thà thiếu nút còn hơn mở
+// tab mới rồi để người học đọc một traceback không phải lỗi của họ. Bài vẽ biểu
+// đồ thì NGƯỢC LẠI — nay chạy được, nên không còn lý do chặn.
+//
+// PHẠM VI THẬT, đừng phóng to: hai hàm trong file này chỉ được gọi từ màn
+// `brief` (screens/index.tsx) và màn `explain` (ExplainScreen.tsx), mà bộ 172
+// bài đang xuất bản KHÔNG có màn nào trong hai màn đó — đếm được: 0/172 bài có
+// `step_1.brief`, 0/172 có `step_2.one.code.source`; chúng dùng
+// `step_1:{read,context}` · `step_2:{practice}` · `step_4:{task,starterCode}`.
+// Nên hôm nay luật này không ẩn/hiện nút cho một người học nào. Vẫn sửa, vì một
+// luật ghi lại kiến trúc ĐÃ BỎ chính là thứ sẽ âm thầm sai vào ngày pe-v4 được
+// bật lại, hoặc ngày bộ 172 bài thêm một màn đề bài.
 
-/** Thư viện sandbox của IDE không chạy được. Nhận ra bằng chính dòng import. */
-const KHONG_CHAY_DUOC = /^\s*(?:import|from)\s+(matplotlib|tkinter|_studio)\b/m;
+/**
+ * Thư viện sandbox của IDE không chạy được. Nhận ra bằng chính dòng import.
+ *
+ * `_studio` là API của studio-harness.py, chỉ có trong bài học. Ba cái còn lại
+ * là giới hạn WASM, không phải thiếu wheel — xem bảng đo ở đầu file. `threading`
+ * nằm trong danh sách dù IMPORT ĐƯỢC: `Thread.start()` mới ném, mà một bài dạy
+ * thread thì chắc chắn gọi `start()`.
+ */
+const KHONG_CHAY_DUOC =
+  /^\s*(?:import|from)\s+(tkinter|_studio|threading|multiprocessing|subprocess)\b/m;
 
 /**
  * Mã CHẠY ĐƯỢC trong sandbox của IDE hay không.

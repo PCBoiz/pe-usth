@@ -189,7 +189,7 @@ export default function SandboxScreen({
       {showEditorOf(lesson) && (
         <SandboxEditor
           filename="main.py"
-          langTag={runtimeStatus || 'CPython 3.12'}
+          langTag={runtimeStatus || 'CPython'}
           code={draft.code}
           onCodeChange={(code) => update({ code })}
           running={running}

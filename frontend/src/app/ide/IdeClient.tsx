@@ -33,6 +33,7 @@ import {
   countdownSeconds,
   disposeIdeRunner,
   IDE_AUTOSAVE_DEBOUNCE_MS,
+  IDE_OUTPUT_CAP_CHARS,
   IDE_RUN_TIMEOUT_MS,
   type IdeCodeSource,
   ideRunnerMode,
@@ -554,6 +555,23 @@ export default function IdeClient() {
   }, []);
 
   /**
+   * "Tôi tin đoạn mã này — cho chạy": tin VÀ chạy, một cú bấm.
+   *
+   * Trước đây nút này chỉ `setLinkTrusted(true)` — dải cảnh báo biến mất và
+   * KHÔNG có gì chạy, dù nhãn hứa "cho chạy". Người dùng phải bấm Chạy lần nữa.
+   *
+   * Ghi thẳng vào `askLinkRef` chứ không chờ effect gương nó: state mới chưa
+   * tới `run()` trong cùng một lượt, nên không ghi ref thì `run()` vẫn thấy
+   * "chưa xác nhận" và lại không chạy gì. Ghi ref TRONG event handler là hợp lệ
+   * — luật `react-hooks/purity` chỉ chặn ghi trong thân component lúc render.
+   */
+  const tinVaChay = useCallback(() => {
+    setLinkTrusted(true);
+    askLinkRef.current = false;
+    void run();
+  }, [run]);
+
+  /**
    * Đếm ngược mấy giây cuối. Mốc lấy bằng `performance.now()` — đồng hồ ĐƠN
    * ĐIỆU, không bị kéo lùi khi máy đồng bộ NTP; cùng lý do như bộ đếm chờ
    * Monaco ở trên.
@@ -634,11 +652,16 @@ export default function IdeClient() {
                   PyScript: editor đang chạy thì Run thành Stop). Chi phí bằng
                   không, mà đổi được cảm giác "hệ thống cắt tôi" thành "tôi dừng
                   nó". Đường máy chủ không dừng được nên vẫn vô hiệu hoá như cũ. */}
+              {/* Vô hiệu hoá khi mã từ link chưa được xác nhận. Trước đây nút
+                  vẫn bấm được nhưng `run()` lặng lẽ `return` ở cổng xác nhận —
+                  người dùng bấm Chạy và KHÔNG có gì xảy ra, không một lời giải
+                  thích. Nút mờ cạnh dải cảnh báo thì tự nói ra lý do. */}
               <button
                 type="button"
                 className={canStop ? styles.stop : styles.run}
                 onClick={canStop ? stop : () => void run()}
-                disabled={running && !canStop}
+                disabled={(running && !canStop) || askLink}
+                title={askLink ? 'Xác nhận đoạn mã đến từ link ở bên dưới trước khi chạy' : undefined}
               >
                 {canStop ? '■ Dừng' : running ? 'Đang chạy…' : '▶ Chạy'}
                 {!running && <kbd className={styles.kbd}>Ctrl+Enter</kbd>}
@@ -659,7 +682,7 @@ export default function IdeClient() {
               <button
                 type="button"
                 className={styles.restoredAction}
-                onClick={() => setLinkTrusted(true)}
+                onClick={tinVaChay}
               >
                 Tôi tin đoạn mã này — cho chạy
               </button>
@@ -791,9 +814,16 @@ function Output({ state }: { state: RunState }) {
           Chương trình bị dừng vì dùng quá giới hạn bộ nhớ — mã thoát 137.
         </div>
       )}
+      {/* Hai đường chạy cắt đầu ra theo HAI luật khác nhau, và nói chung một
+          câu là nói sai một trong hai. Đường MÁY CHỦ: quá 1 MB thì máy chủ giết
+          tiến trình. Đường TRÌNH DUYỆT (`cutBy` có giá trị): worker ngừng gom
+          sau 60 000 ký tự mỗi luồng nhưng chương trình VẪN chạy — nói "đã bị
+          dừng" ở đây là sai, và con số 1 MB cũng sai. */}
       {result.outputTruncated && (
         <div className={`${styles.notice} ${styles.noticeWarn}`}>
-          Đầu ra vượt 1 MB nên bị cắt và chương trình đã bị dừng.
+          {result.cutBy
+            ? `Đầu ra quá dài nên chỉ giữ ${IDE_OUTPUT_CAP_CHARS.toLocaleString('vi-VN')} ký tự đầu của mỗi luồng.`
+            : 'Đầu ra vượt 1 MB nên bị cắt và chương trình đã bị dừng.'}
         </div>
       )}
 
@@ -831,10 +861,16 @@ function CutNotice({ result }: { result: RunResult }) {
         <strong>{boiNguoiHoc ? 'Bạn đã dừng chương trình' : `Đã dừng sau ${giay} giây`}</strong>
         <p>
           Chương trình chưa tự kết thúc — hay gặp nhất là một vòng lặp chưa chạm tới điều kiện
-          dừng. Các biến và phần đã in ra của lần chạy này mất theo, nhưng{' '}
+          dừng. Các biến của lần chạy này mất theo, nhưng{' '}
           <strong>mã trong trình soạn thảo vẫn còn nguyên</strong>: sửa điều kiện dừng rồi bấm
           Chạy lại.
         </p>
+        {/* Chỉ nói khi THẬT SỰ có đầu ra. Worker gửi đầu ra về theo từng đợt
+            200 ms nên phần hiện bên dưới có thể thiếu đợt cuối cùng — nói ra
+            chỗ đó, đừng để họ đếm dòng rồi tưởng mã mình sai. */}
+        {(result.stdout || result.stderr) && (
+          <p>Phần đã in ra tới lúc dừng vẫn ở bên dưới (có thể thiếu một chút ở cuối).</p>
+        )}
         {/* Chỉ nhắc khi họ VỪA chờ hết 15 giây: lần sau không phải chờ nữa. */}
         {!boiNguoiHoc && (
           <p>Lần sau không cần chờ hết {giay} giây — nút “■ Dừng” cắt ngay lúc bạn bấm.</p>

@@ -4,12 +4,21 @@
  * `...`. Mở IDE bấm Chạy thì xong trong 0,2 giây, không in gì, "Mã thoát: 0" —
  * người học tưởng IDE hỏng. Ảnh chụp của người dùng ngày 13/10/2026 đúng cảnh đó.
  *
- * Và một bẫy nữa, nặng hơn: bài học chạy Pyodide + studio-harness.py (có tkinter
- * MÔ PHỎNG), còn IDE chạy CPython THẬT trong Docker. Đo trên chính sandbox đang
- * phục vụ: có numpy/pandas/sqlite3/threading/multiprocessing/subprocess, KHÔNG
- * có matplotlib, và tkinter nổ "libtk8.6.so: cannot open shared object file".
- * Nên bài vẽ biểu đồ và bài GUI mà hiện nút là đẩy người học sang một traceback
- * không phải lỗi của họ.
+ * Và một bẫy nữa, nặng hơn: hai môi trường chạy khác nhau, nên nút có thể đẩy
+ * người học sang một traceback không phải lỗi của họ.
+ *
+ * DANH SÁCH THƯ VIỆN TRONG FILE NÀY ĐÃ ĐẢO CHIỀU ngày 25/10/2026. Bản cũ đo
+ * trên sandbox Docker (`python:3.12-slim`): có threading/multiprocessing/
+ * subprocess thật, KHÔNG có matplotlib. Nhưng /ide nay chạy Pyodide trong trình
+ * duyệt, và đo lại trên chính trang đó (Chrome 155) thì đúng ngược lại —
+ * matplotlib 3.10.8 dựng được Figure, còn `threading.Thread.start()` ném
+ * "RuntimeError: can't start new thread", `multiprocessing` thiếu
+ * `_multiprocessing`, `subprocess` ném OSError 138 "emscripten does not support
+ * processes".
+ *
+ * PHẠM VI: cả hai hàm chỉ được gọi từ màn `brief` và màn `explain`, mà bộ 172
+ * bài đang xuất bản không có màn nào trong hai màn đó (đếm được 0/172). Fixture
+ * dưới đây vì vậy vẫn là 48 bài pe-v4 — bộ duy nhất có `step_1.brief`.
  *
  * Fixture là bài THẬT từ scripts/pe-v4/out-advanced/lessons/*.json — đúng cái
  * seed đẩy vào `lessons.content_json`. Bẫy đã ghi trong AGENTS.md: fixture tự
@@ -59,31 +68,63 @@ test('kèm chú thích nói rõ cần in ra gì, lấy từ bộ test chấm bà
   assert.ok(gui.includes(`${ca.call}  →  ${ca.expect}`), 'không thấy ca kiểm tra đầu tiên');
 });
 
-test('bài cần matplotlib hoặc tkinter thì KHÔNG hiện nút', () => {
+test('bài cần thư viện WASM không có thì KHÔNG hiện nút', () => {
   const chet = [];
   for (const { ma, c } of BAI) {
     const starter = c.step_4?.starterCode ?? '';
-    const canThuVienThieu = /^\s*(?:import|from)\s+(matplotlib|tkinter|_studio)\b/m.test(starter);
+    const canThuVienThieu =
+      /^\s*(?:import|from)\s+(tkinter|_studio|threading|multiprocessing|subprocess)\b/m.test(starter);
     if (canThuVienThieu && ideCodeChoDeBai(c) !== null) chet.push(ma);
   }
   assert.deepEqual(chet, [], `những bài này sẽ gửi code nổ ngay dòng import: ${chet.join(', ')}`);
 });
 
-test('bài process/thread VẪN hiện nút — ở IDE còn thật hơn trong bài học', () => {
-  // Trong bài học, subprocess/threading là MÔ PHỎNG của harness; trong IDE là
-  // CPython thật. Chặn nhầm nhóm này là bỏ mất phần giá trị nhất của nút.
-  for (const ma of ['P01', 'T01']) {
-    const b = BAI.find((x) => x.ma === ma);
-    assert.ok(ideCodeChoDeBai(b.c), `${ma} phải có nút`);
+test('bài vẽ biểu đồ NAY hiện nút — Pyodide của /ide có matplotlib', () => {
+  // Đảo chiều so với bản Docker. Đo trên /ide: `import matplotlib.pyplot` rồi
+  // `plt.subplots()` cho ra Figure, matplotlib 3.10.8.
+  const veBieuDo = BAI.filter(({ c }) =>
+    /^\s*(?:import|from)\s+matplotlib\b/m.test(c.step_4?.starterCode ?? ''));
+  assert.ok(veBieuDo.length >= 8, `chỉ thấy ${veBieuDo.length} bài matplotlib`);
+  // Vẫn có bài mất nút vì lý do KHÁC (kèm cả tkinter, hoặc mã quá dài), nên chỉ
+  // đòi rằng matplotlib MỘT MÌNH không còn là lý do chặn.
+  const matNut = veBieuDo.filter(({ c }) => ideCodeChoDeBai(c) === null).map((b) => b.ma);
+  for (const ma of matNut) {
+    const starter = BAI.find((x) => x.ma === ma).c.step_4.starterCode;
+    assert.ok(
+      /^\s*(?:import|from)\s+(tkinter|_studio|threading|multiprocessing|subprocess)\b/m.test(starter),
+      `${ma} mất nút mà không phải vì thư viện WASM thiếu — matplotlib không còn là lý do chặn`,
+    );
   }
 });
 
+test('bài process/thread KHÔNG còn nút — trong WASM chúng nổ', () => {
+  // Bản cũ đòi NGƯỢC LẠI ("ở IDE còn thật hơn trong bài học"), và nó đúng với
+  // Docker. Pyodide thì `Thread.start()` ném RuntimeError còn `multiprocessing`
+  // không import được, nên để nút là đẩy người học vào một traceback.
+  //
+  // T01 = `import threading`, P07 = `import multiprocessing`, P02 =
+  // `import subprocess` (đếm bằng chính starterCode, không chọn theo tên bài —
+  // bản đầu của ca này chọn P01 vì tưởng tiền tố "P" là process, nhưng P01 chỉ
+  // `import os` nên nó CHẠY ĐƯỢC và phải giữ nút).
+  for (const ma of ['T01', 'P07', 'P02']) {
+    const b = BAI.find((x) => x.ma === ma);
+    assert.ok(b, `không thấy bài ${ma}`);
+    assert.equal(ideCodeChoDeBai(b.c), null, `${ma} vẫn còn nút`);
+  }
+  const p01 = BAI.find((x) => x.ma === 'P01');
+  assert.ok(ideCodeChoDeBai(p01.c), 'P01 chỉ import os — không được chặn lây');
+});
+
 test('chayDuocTrongIde: bắt theo dòng import, không bắt theo chữ trong chú thích', () => {
-  assert.equal(chayDuocTrongIde('import matplotlib.pyplot as plt'), false);
   assert.equal(chayDuocTrongIde('from tkinter import Tk'), false);
-  assert.equal(chayDuocTrongIde('x = 1\nimport matplotlib'), false);
+  assert.equal(chayDuocTrongIde('x = 1\nimport threading'), false);
+  assert.equal(chayDuocTrongIde('import multiprocessing'), false);
+  assert.equal(chayDuocTrongIde('import subprocess'), false);
+  // matplotlib ĐẢO CHIỀU: Pyodide của /ide có nó, nên không chặn nữa.
+  assert.equal(chayDuocTrongIde('import matplotlib.pyplot as plt'), true);
+  assert.equal(chayDuocTrongIde('x = 1\nimport matplotlib'), true);
   // Chữ xuất hiện trong chú thích/chuỗi thì chương trình vẫn chạy bình thường.
-  assert.equal(chayDuocTrongIde('# matplotlib vẽ biểu đồ\nprint(1)'), true);
+  assert.equal(chayDuocTrongIde('# tkinter dựng cửa sổ\nprint(1)'), true);
   assert.equal(chayDuocTrongIde('ten = "tkinter"\nprint(ten)'), true);
   assert.equal(chayDuocTrongIde(''), false);
   assert.equal(chayDuocTrongIde(undefined), false);
@@ -105,20 +146,39 @@ test('mã gửi đi vẫn vừa trần bàn giao của mọi bài còn hiện n�
 });
 
 // ── Đối chiếu với KẾT QUẢ ĐO THẬT ───────────────────────────────────────────
-// Ngày 13/10/2026 chạy starterCode của cả 48 bài qua chính sandbox đang phục vụ
-// (api.programmingedu.io.vn/api/python/run): 28 bài chạy được, 20 bài chết.
-//   ·  7 bài tkinter  (G01–G06, R02): ImportError libtk8.6.so
-//   · 10 bài matplotlib (X04, X05, M01–M06, DA01, DA02): ModuleNotFoundError
-//   ·  3 bài đọc file  (PD03, PD08, PD09): FileNotFoundError sales.csv
+// ĐO LẠI 25/10/2026 trên /ide (Pyodide 314.0.7 trong Chrome 155), vì nền chạy
+// đã đổi. Số cũ — đo 13/10/2026 trên sandbox Docker — giữ lại ở đây để thấy nó
+// đảo chiều chứ không phải để dùng:
 //
-// Ba bài cuối là lý do bộ test này tồn tại: luật "bắt theo dòng import" KHÔNG
-// thấy chúng — không có import nào sai cả. Đoán theo code thì sót, nên danh
-// sách dưới đây chép từ SỐ ĐO, và hàm phải khớp với nó.
+//   CŨ (Docker python:3.12-slim): 7 bài tkinter chết (libtk8.6.so) + 10 bài
+//   matplotlib chết (ModuleNotFoundError) + 3 bài đọc file chết (sales.csv).
+//
+//   NAY (Pyodide): matplotlib CHẠY ĐƯỢC (3.10.8, dựng được Figure), nhưng
+//   threading/multiprocessing/subprocess thì KHÔNG — `Thread.start()` ném
+//   "RuntimeError: can't start new thread", thiếu `_multiprocessing`, và
+//   subprocess ném OSError 138 "emscripten does not support processes".
+//
+// Ba bài đọc file vẫn là lý do bộ test này tồn tại: luật "bắt theo dòng import"
+// KHÔNG thấy chúng — không có import nào sai cả. Đoán theo code thì sót, nên
+// danh sách dưới đây chép từ SỐ ĐO, và hàm phải khớp với nó.
+//
+// Nhóm theo MODULE mà starterCode thật sự import (đếm trên 48 bài), không theo
+// tiền tố mã bài: P01 mang chữ "P" nhưng chỉ `import os`.
 const DO_DUOC_LA_CHET_VI_THU_VIEN = [
+  // tkinter — giới hạn WASM, không có màn hình
   'G01', 'G02', 'G03', 'G04', 'G05', 'G06', 'R02',
-  'X04', 'X05', 'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'DA01', 'DA02',
+  // threading — import được, nhưng Thread.start() ném
+  'T01', 'T02', 'T03', 'T05', 'T06',
+  // multiprocessing — thiếu _multiprocessing
+  'P07',
+  // subprocess — emscripten không có tiến trình
+  'P02', 'P04', 'P05', 'P06',
 ];
 const DO_DUOC_LA_CHET_VI_THIEU_FILE = ['PD03', 'PD08', 'PD09'];
+// 10 bài vẽ biểu đồ, TRƯỚC bị chặn và NAY chạy được — chính chỗ đảo chiều.
+const DO_DUOC_LA_VE_BIEU_DO_CHAY_DUOC = [
+  'X04', 'X05', 'M01', 'M02', 'M03', 'M04', 'M05', 'M06', 'DA01', 'DA02',
+];
 
 test('mọi bài ĐO ĐƯỢC là chết vì thiếu thư viện đều KHÔNG hiện nút', () => {
   const sai = DO_DUOC_LA_CHET_VI_THIEU_FILE.length ? [] : [];
@@ -147,10 +207,15 @@ test('ba bài thiếu file được VÁ bằng đoạn tự tạo file, không b
 
 test('số bài còn nút khớp số ĐO ĐƯỢC là chạy được, cộng ba bài vừa vá', () => {
   const conNut = BAI.filter((b) => ideCodeChoDeBai(b.c) !== null).map((b) => b.ma);
-  // 28 bài đo được là chạy được + 3 bài thiếu file nay đã vá = 31.
+  // 48 bài − 17 bài chết vì thư viện WASM = 31, và không bài nào mất nút vì lý
+  // do khác (đã đếm: 0). Con số 31 trùng với mốc cũ chỉ là ngẫu nhiên — THÀNH
+  // PHẦN đổi hẳn, nên hai vòng kiểm dưới mới là phần có nghĩa.
   assert.equal(conNut.length, 31, `đang có ${conNut.length} bài còn nút: ${conNut.join(', ')}`);
   for (const ma of DO_DUOC_LA_CHET_VI_THU_VIEN) {
     assert.ok(!conNut.includes(ma), `${ma} không được có nút`);
+  }
+  for (const ma of DO_DUOC_LA_VE_BIEU_DO_CHAY_DUOC) {
+    assert.ok(conNut.includes(ma), `${ma} vẽ biểu đồ và nay chạy được — phải có nút`);
   }
 });
 
