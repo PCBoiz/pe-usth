@@ -4928,9 +4928,234 @@ def _studio_preload(packages_json='[]'):
     return json.dumps(errors)
 
 
-def _studio_main(source, cases_json, files_json, stdin_json='[]'):
-    # stdin_json có mặc định để check-pyodide.mjs (và mọi chỗ gọi cũ) vẫn gọi
-    # được bằng 3 tham số.
+# ---------------------------------------------------------------------------
+# ĐO ĐỘ HIỆU QUẢ (step_4.perf) — chạy SAU khi mọi ca chấm đã đạt.
+#
+# Vì sao có: hai lời giải cùng ĐÚNG vẫn có thể cách nhau một bậc độ phức tạp, và
+# bài học muốn chỉ ra điều đó. Vì sao không dùng đồng hồ: đo trong WASM lệch tới
+# 2,07 lần trên cùng một đoạn code và còn phán SAI BẬC; `performance.now()` lại
+# bị làm thô về ~100 µs vì trang không cross-origin isolated. Một học viên nộp
+# đúng cùng một code hai lần mà nhận hai phán quyết khác nhau thì mất lòng tin
+# vào cả hệ thống nhanh hơn bất cứ lỗi nào. Nên đo bằng ĐẾM, tất định tuyệt đối.
+#
+# HAI NGUỒN ĐẾM, KHÔNG PHẢI MỘT. Đây là chỗ dễ hiểu sai nhất:
+# `sys.monitoring.CALL` KHÔNG bắn cho dunder gọi qua TOÁN TỬ. Đo trong chính
+# Pyodide 314.0.7: vòng lặp lồng kinh điển sinh sự kiện cho enumerate/len/range/
+# append/sorted và KHÔNG MỘT sự kiện nào cho `Probe.__eq__` (qua `==`) hay
+# `list.__contains__` (qua `in`) — trong khi bộ đếm bên trong Probe thấy 65 phép
+# so sánh. Số mũ theo CALL là 0,99 ("hiệu quả"); theo Probe là 1,97. Ai cài bảng
+# phí trên CALL mà bỏ Probe sẽ dựng một bộ chấm KHEN đúng cái bài học muốn chữa,
+# không ngoại lệ nào được ném, không log nào đỏ.
+#
+# ĐIỂM MÙ đã biết — bài rơi vào đây thì ĐỪNG khai `perf`:
+#  · ghép chuỗi (`s += x`, `''.join(parts)` trong vòng lặp): `+=` là toán tử nên
+#    CALL mù; `join` thì `arg0` là DẤU NGĂN chứ không phải danh sách (đo được),
+#    nên không có cách nào thấy được khối lượng thật;
+#  · dịch phần tử bằng toán tử (`out = [x] + out`): cùng lý do;
+#  · `set`/`dict` trên dữ liệu đối kháng: chi phí thăm dò nằm ngoài tầm cả hai
+#    nguồn (đo được: va chạm slot mà khác hash KHÔNG sinh một phép __eq__ nào);
+#  · bài NumPy/pandas: `np.asarray([Probe(1)])` cho dtype int32 và phần tử KHÔNG
+#    còn là Probe (đo được) — dùng `elem: "none"` cho nhóm này.
+_PERF_TOOL = 3
+_PERF_TRAN = 2_000_000   # trần: vượt là dừng sớm, trả 'unknown', không treo 5 giây
+_PERF_SAN = 200          # sàn áp cho MẪU SỐ, kiểm TRƯỚC khi chia
+
+
+class _PerfBoHoc(Exception):
+    """Vượt trần gas. Chỉ được bắt trong pha đo, không bao giờ thành 'ca trượt'."""
+
+
+# Hình dạng độ phức tạp lấy từ docs.python.org/3.14/builtins/time-complexity.html,
+# trừ ba dòng dưới đây lấy từ CPython Objects/listobject.c (trang tài liệu không
+# liệt kê chúng, mà chúng lại là lý do bảng phí tồn tại):
+#  · list_count_impl quét HẾT list, không thoát sớm  -> len là đúng;
+#  · list_index_impl và list_remove_impl THOÁT SỚM ở phần tử khớp đầu tiên,
+#    nên len là tính THỪA. Giữ len vì hằng số không đổi số mũ, và vì bù lại cho
+#    phần `PyObject_RichCompareBool` trả 1 ngay khi hai toán hạng là một object
+#    (tức Probe không đếm được phép so sánh ấy).
+_PHI_THEO_LEN = frozenset({
+    'count', 'index', 'remove', 'copy', 'reverse', 'sum', 'min', 'max',
+    'sorted', 'set', 'list', 'tuple', 'dict', 'any', 'all', 'enumerate',
+})
+# n·log n — dùng bit_length() chứ không math.log2: số nguyên, không có số thực,
+# và nó là chặn TRÊN, tức sai về phía đắt (hướng lệch có chủ ý).
+_PHI_THEO_NLOGN = frozenset({'sort'})
+# Phí phẳng vì KHỐI LƯỢNG THẬT NẰM Ở ĐỐI SỐ, mà callback chỉ thấy arg0 = chính
+# instance (đo được: `a.extend(b)` -> arg0 là `a`; `'-'.join(p)` -> arg0 là `'-'`).
+# Tính len(arg0) ở đây là tính SAI CHIỀU, nên tính phẳng và ghi nhận điểm mù.
+_PHI_PHANG_DU_LA_QUET = frozenset({'extend', 'update', 'join'})
+
+
+def _perf_do_mot_lan(ham, ns, bien_dem):
+    """Chạy `ham()` một lần, trả (số đơn vị, lỗi nếu có)."""
+    mon = sys.monitoring
+    tong = [0]
+
+    def cb(code, offset, callable_, arg0):
+        # Chỉ tính code của HỌC VIÊN. _run_program compile với tên 'main.py'
+        # (dòng ~4550), còn ca chấm eval ra '<string>' — nên phép lọc này không
+        # nuốt nhầm chi phí của chính bộ chấm.
+        if code.co_filename != 'main.py':
+            return
+        ten = getattr(callable_, '__name__', '')
+        if ten in _PHI_THEO_LEN:
+            try:
+                tong[0] += len(arg0)
+            except TypeError:
+                tong[0] += 1
+        elif ten in _PHI_THEO_NLOGN:
+            try:
+                n = len(arg0)
+                tong[0] += n * max(1, n.bit_length())
+            except TypeError:
+                tong[0] += 1
+        else:
+            tong[0] += 1
+        if tong[0] > _PERF_TRAN:
+            raise _PerfBoHoc('vượt trần %d đơn vị' % _PERF_TRAN)
+
+    # Tool id là tài nguyên TOÀN CỤC và KHÔNG tự dọn: đo được rằng sau khi bỏ dở,
+    # get_tool(3) vẫn trả về tên cũ và get_events(3) vẫn là CALL. Runtime lại
+    # được giữ giữa các lần chạy, nên thiếu `finally` là lần sau ValueError.
+    if mon.get_tool(_PERF_TOOL) is not None:
+        return None, 'tool id %d đang có người dùng' % _PERF_TOOL
+    mon.use_tool_id(_PERF_TOOL, 'pe-perf')
+    try:
+        mon.register_callback(_PERF_TOOL, mon.events.CALL, cb)
+        mon.set_events(_PERF_TOOL, mon.events.CALL)
+        try:
+            ham()
+        finally:
+            mon.set_events(_PERF_TOOL, 0)
+            mon.register_callback(_PERF_TOOL, mon.events.CALL, None)
+    except _PerfBoHoc as exc:
+        return None, str(exc)
+    except BaseException as exc:
+        return None, '%s: %s' % (type(exc).__name__, exc)
+    finally:
+        mon.free_tool_id(_PERF_TOOL)
+    return tong[0] + bien_dem.lay(), None
+
+
+class _PerfDem:
+    """Nguồn đếm thứ hai: phép so sánh/băm mà CALL không bao giờ thấy."""
+
+    def __init__(self):
+        self.n = 0
+
+    def lay(self):
+        v = self.n
+        self.n = 0
+        return v
+
+
+class _PerfKhong:
+    """Dùng cho bài NumPy/pandas: bọc kiểu bị nuốt mất nên đừng bọc."""
+
+    def lay(self):
+        return 0
+
+
+def _perf_lam_probe(dem):
+    class _Probe(int):
+        __slots__ = ()
+
+        def __eq__(self, other):
+            dem.n += 1
+            return int(self) == int(other)
+
+        def __ne__(self, other):
+            dem.n += 1
+            return int(self) != int(other)
+
+        def __lt__(self, other):
+            dem.n += 1
+            return int(self) < int(other)
+
+        def __le__(self, other):
+            dem.n += 1
+            return int(self) <= int(other)
+
+        def __gt__(self, other):
+            dem.n += 1
+            return int(self) > int(other)
+
+        def __ge__(self, other):
+            dem.n += 1
+            return int(self) >= int(other)
+
+        def __hash__(self):
+            dem.n += 1
+            return int.__hash__(self)
+
+    return _Probe
+
+
+def _perf_sinh(n, boc, mode):
+    """Dữ liệu chấm: CHỈ số nguyên.
+
+    Chuỗi bị random hoá hash mỗi lần nạp trang nên số đếm đổi giữa hai phiên —
+    tất định là điều kiện biên của cả phương pháp, không phải chi tiết. Và tránh
+    bước nhảy luỹ thừa 2: không phải vì lời giải `set` bị oan (đo rồi, không bị)
+    mà vì chi phí thăm dò nằm ngoài tầm cả hai nguồn đếm, tức có thể KHEN NHẦM.
+    """
+    buoc = 7 if mode != 'trung' else 3
+    tho = [(i * buoc + 11) % (n * 2 + 7) for i in range(n)]
+    return [boc(v) for v in tho] if boc is not None else tho
+
+
+def _perf_hang(p):
+    if p is None:
+        return 'unknown'
+    if p < 1.5:
+        return 'efficient'
+    if p >= 1.75:
+        return 'slow'
+    return 'unknown'
+
+
+def _perf_chay(ns, perf):
+    """Trả dict kết quả đo, hoặc {'verdict': 'unknown', 'reason': …}."""
+    import math
+
+    goi = perf.get('call')
+    if not goi:
+        return {'verdict': 'unknown', 'reason': 'bài không khai perf.call'}
+    co_ban = int(perf.get('base') or 100)
+    co = [co_ban, co_ban * 2, co_ban * 4]
+    dung_probe = (perf.get('elem') or 'int') == 'int'
+    mode = perf.get('shape') or 'thuong'
+
+    dem = _PerfDem() if dung_probe else _PerfKhong()
+    boc = _perf_lam_probe(dem) if dung_probe else None
+
+    so_dem = []
+    for n in co:
+        du_lieu = _perf_sinh(n, boc, mode)
+        rieng = dict(ns)
+        rieng['_perf_data'] = du_lieu
+        c, loi = _perf_do_mot_lan(lambda: eval(goi, rieng), rieng, dem)
+        if loi is not None:
+            return {'verdict': 'unknown', 'reason': loi}
+        so_dem.append(c)
+
+    cn, _c2n, c4n = so_dem
+    # Sàn áp cho MẪU SỐ và kiểm TRƯỚC khi chia. Thiếu phép kiểm này thì một lời
+    # giải mà bộ đếm mù (cn = c4n = 2) ra p = 0 và bị đọc thành "hằng số, rất
+    # hiệu quả" — tức khen một lời giải có thể đang là bậc hai.
+    if cn < _PERF_SAN:
+        if cn == c4n:
+            return {'verdict': 'efficient', 'counts': so_dem,
+                    'reason': 'số đếm không đổi theo cỡ dữ liệu'}
+        return {'verdict': 'unknown', 'counts': so_dem,
+                'reason': 'số đếm quá nhỏ (%d) để kết luận' % cn}
+    p = math.log2(c4n / cn) / 2
+    return {'verdict': _perf_hang(p), 'counts': so_dem, 'p': round(p, 3)}
+
+
+def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='null'):
+    # stdin_json và perf_json có mặc định để check-pyodide.mjs (và mọi chỗ gọi
+    # cũ) vẫn gọi được bằng 3 tham số.
     _install()
     os.makedirs(WORK_ROOT, exist_ok=True)
     _STDIN['lines'] = json.loads(stdin_json or '[]') or []
@@ -4984,10 +5209,40 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]'):
             finally:
                 os.chdir(old)
 
+    # Pha ĐO ĐỘ HIỆU QUẢ — NẰM NGOÀI vòng ca chấm, và đó là chuyện sống còn:
+    # vòng trên kết thúc bằng `except BaseException` ghi {'passed': False}, nên
+    # một ngoại lệ của pha đo (vượt trần gas chẳng hạn) rơi vào đó sẽ hiện ra
+    # thành "ca kiểm tra trượt" GẮN TÊN CA CỦA HỌC VIÊN, trên một lời giải
+    # ĐÚNG. Đo được: ngoại lệ ném từ callback của sys.monitoring nổi lên qua
+    # đúng frame main.py của học viên, nên rủi ro ấy có thật.
+    #
+    # `results` phải KHÁC RỖNG: `all([])` là True, nên thiếu phép kiểm này thì
+    # mọi bài không có ca chấm nào cũng lọt vào pha đo rồi cố eval một
+    # `perf.call` không tồn tại.
+    perf_kq = None
+    perf = json.loads(perf_json or 'null')
+    if perf and error is None and results and all(r['passed'] for r in results):
+        old = os.getcwd()
+        try:
+            os.chdir(main.dir)
+            # Sink riêng: harness cố ý gộp stderr vào stdout để console học viên
+            # hiện cả hai, nên bất cứ thứ gì pha đo in ra sẽ thành KẾT QUẢ BỊ
+            # CHẤM của họ.
+            with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+                perf_kq = _perf_chay(main.ns, perf)
+        except BaseException as exc:
+            # Mọi lỗi của pha đo chỉ được biến thành 'unknown'. Pha này không
+            # bao giờ được làm một lời giải đúng trông như sai.
+            perf_kq = {'verdict': 'unknown',
+                       'reason': '%s: %s' % (type(exc).__name__, exc)}
+        finally:
+            os.chdir(old)
+
     return json.dumps({
         'tests': results,
         'error': error,
         'output': output[:12000],
         'notes': notes,
+        'perf': perf_kq,
         'version': sys.version.split()[0],
     })

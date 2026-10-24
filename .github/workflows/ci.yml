@@ -330,3 +330,11 @@ jobs:
       - run: npm ci
       - run: npm i --no-save pyodide@314.0.7
       - run: node scripts/pe-da/check-pyodide.mjs
+
+      # Kiểm chính BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py. Tách khỏi hai bộ
+      # trên vì chúng chỉ kiểm ĐÚNG/SAI: một lỗi làm số mũ luôn ra ≈ 1 đi qua cả
+      # 427 ca của pe-v4 lẫn 406 đoạn của pe-da mà không đỏ dòng nào, rồi bộ chấm
+      # KHEN đúng cái bài học muốn chữa. Ca "O(n^2) qua toán tử ==" canh chỗ đó:
+      # `==` và `in` không sinh sự kiện sys.monitoring.CALL, nên gỡ nguồn đếm thứ
+      # hai (bọc kiểu Probe) ra là nó lật thành "efficient" và CI đỏ.
+      - run: node scripts/check-perf.mjs
