@@ -9,6 +9,15 @@
 // /api/enrolled hoặc /api/user — route đòi JWT, khách không có để gửi — nên nếu
 // giữ thì khách nào cũng thấy trạng thái "chưa đăng ký" sai sự thật.
 //
+// LỐI VÀO QUIZ ÔN TẬP PHẢI GIỮ NGUYÊN TRẠNG "KHÔNG CÓ", kể cả khi trang này có
+// lại phiên đăng nhập. `QuizzesService.collectQuestions()` dựng kho câu hỏi từ
+// `content_json.step_2.mcq` và đòi `MIN_POOL = 5`; khoá python_advanced nay là
+// 172 bài ĐỌC (scripts/pe-da/SCHEMA.md) và KHÔNG bài nào phát ra `step_2.mcq`,
+// nên kho câu hỏi của khoá đó mãi bằng 0. Dựng lại lối vào là treo một lời hứa
+// không bao giờ tới: học viên đọc "hoàn thành thêm bài để mở quiz ôn tập" rồi
+// học hết 172 bài mà nó vẫn không mở. Khoá nào có mcq trở lại thì mới mở, và
+// phải mở theo SỐ CÂU thật của khoá đó, không mở cho mọi khoá.
+//
 // Cũng không còn nạp course_detail.js/edu-chrome.js: hai file đó chỉ phục vụ nút
 // Đăng ký, goLesson() và chuông thông báo của Sidebar/HeaderBar đã gỡ.
 
