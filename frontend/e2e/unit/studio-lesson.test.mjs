@@ -37,12 +37,13 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, readdirSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import {
   EMPTY_SCORE,
+  READ_BLOCK_TYPES,
   SELF_EXPLAIN_MIN,
   buildScreens,
   correctIndex,
@@ -742,4 +743,306 @@ test('đi hết bài B01 v2 như học viên thật: sai một màn thì % khôn
   assert.equal(d.score.bestCombo, 3);
   // Có mở gợi ý: 75 vẫn dưới trần 80 nên không bị hạ thêm.
   assert.equal(quizPercent(screens, { ...d, assisted: true }, false), 75);
+});
+
+// ───────────────────── 7. khoá BÀI ĐỌC (step_1.read + step_2.practice)
+//
+// Khoá python_advanced đổi ruột sang 172 bài giáo trình ĐỌC
+// (scripts/pe-da/SCHEMA.md): không trắc nghiệm, không scaffold, không ca kiểm
+// thử. Nhóm này chứng minh buildScreens() phát ĐÚNG SỐ màn `read`/`practice`,
+// hai loại màn đó KHÔNG được chấm, và ReadScreen biết dựng ĐỦ 5 loại khối.
+//
+// Fixture là bản dựng THẬT `scripts/pe-da/out/lessons.json` — đúng cái mà bước
+// nạp đẩy vào `lessons.content_json`, cùng quy ước với các nhóm trên (bẫy
+// AGENTS.md: fixture tự bịa thì test nói dối).
+//
+// Bằng chứng nhóm này bắt được lỗi thật (quy ước AGENTS.md: gỡ bản sửa ra, test
+// phải trượt).
+//  (a) Gỡ hai dòng phát màn trong buildScreens() của src/lib/studio-lesson.ts
+//      (`(one?.read ?? []).forEach(…)` và `(two?.practice ?? []).forEach(…)`)
+//      → 4 ca trượt, đều trong nhóm này:
+//        ✖ bài đọc: mỗi lát của step_1.read thành MỘT màn, đúng thứ tự
+//          AssertionError: 0 !== 3   (không màn đọc nào được phát)
+//        ✖ bài đọc: mỗi câu step_2.practice thành MỘT màn, xếp sau mcq/classify
+//        ✖ bài đọc: màn read đứng TRƯỚC mọi màn khác của S1
+//        ✖ bài đọc: cả bài không có màn nào được chấm, nên % luôn 100
+//      Hậu quả thật: 172 bài đọc mở ra chỉ còn sandbox + tổng kết, toàn bộ nội
+//      dung giáo trình không hiện ra màn nào.
+//  (b) Trả `READ_BLOCK_TYPES` về bản thiếu hai loại (chỉ paragraph | code |
+//      table, đúng bản đặc tả đầu) → 1 ca trượt:
+//        ✖ bài đọc: renderer biết dựng ĐỦ 5 loại khối build phát ra
+//          AssertionError: Expected values to be strictly deep-equal
+//          (thiếu 'figure' và 'terminal')
+//      Hậu quả thật: khối figure rơi vào nhánh bảng của Block(), `.headers.map`
+//      ném TypeError và 26 bài có hình thành trang trắng. Bỏ hẳn hai loại khỏi
+//      `ReadBlock` thì `npm run typecheck` đỏ TRƯỚC cả test — đã kiểm bằng cách
+//      thêm một loại thứ sáu chưa có nhánh:
+//        ReadScreen.tsx: error TS2322: Type '{ type: "video"; … }' is not
+//        assignable to type 'never'.
+//  (c) Đổi `.readFigure img` thành dùng lại `.theoryFigure` (có
+//      `aspect-ratio: 2 / 1`) → 1 ca trượt:
+//        ✖ bài đọc: khối figure KHÔNG dùng lại Figure/CSS của màn lý thuyết
+//      Hậu quả thật: 68/80 ảnh là 780×455 (tỉ lệ 1,71), ghim 2/1 là méo hết.
+
+const paBuild = JSON.parse(
+  readFileSync(join(ROOT, 'scripts', 'pe-da', 'out', 'lessons.json'), 'utf8'),
+);
+/** `content_json` của 172 bài đọc — đúng cột mà frontend nhận từ API. */
+const DA = paBuild.lessons.map((row) => [row.lesson_code, row.content_json]);
+const daBy = (code) => {
+  const found = DA.find(([c]) => c === code);
+  assert.ok(found, `không có bài ${code} trong bản dựng pe-da`);
+  return found[1];
+};
+const vz01 = daBy('VZ01'); // 3 lát, lát nào cũng có figure
+const np02 = daBy('NP02'); // bài DUY NHẤT có khối table
+const py02 = daBy('PY02'); // có khối terminal
+
+/** Mọi khối đọc của cả 172 bài, phẳng ra. */
+const daBlocks = DA.flatMap(([, l]) => (l.step_1?.read ?? []).flat());
+
+test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/PracticeItem', () => {
+  assert.equal(DA.length, 172);
+  for (const [code, l] of DA) {
+    assert.equal(l.schema, 'studio-lesson/v2', code);
+    // Bộ này KHÔNG có trắc nghiệm: lối vào quiz ôn tập vì vậy không bao giờ mở
+    // được (QuizzesService đòi MIN_POOL = 5 câu lấy từ step_2.mcq).
+    assert.equal(l.step_2?.mcq, undefined, code);
+    assert.equal(l.step_3, undefined, code);
+    assert.equal(l.step_4?.tests, undefined, code);
+    assert.equal(l.play, undefined, code);
+  }
+  // Số khối từng loại, đúng con số ghi trong SCHEMA.md. Đây là cái chốt: build
+  // đổi hình dạng dữ liệu thì ca này đỏ TRƯỚC, thay vì để các ca dưới tiếp tục
+  // xanh trên dữ liệu không còn tồn tại.
+  const count = {};
+  for (const b of daBlocks) count[b.type] = (count[b.type] ?? 0) + 1;
+  assert.deepEqual(count, { paragraph: 738, code: 495, terminal: 21, figure: 80, table: 1 });
+  // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để
+  // so, nên không chấm được. Đây là lý do isGraded('practice') phải là false.
+  for (const d of vz01.step_2.practice) {
+    assert.equal(typeof d.prompt, 'string');
+    assert.equal(typeof d.answer, 'string');
+    assert.equal(d.options, undefined);
+    assert.equal(d.correct, undefined);
+  }
+});
+
+test('bài đọc: renderer biết dựng ĐỦ 5 loại khối build phát ra', () => {
+  // Nhánh `default: const unhandled: never = block` trong ReadScreen chỉ bắt
+  // được lúc typecheck, mà DỮ LIỆU đổi không cần biên dịch lại — nên phải đối
+  // chiếu "loại khối build phát ra" với "loại khối renderer khai".
+  assert.deepEqual([...READ_BLOCK_TYPES].sort(), [
+    'code',
+    'figure',
+    'paragraph',
+    'table',
+    'terminal',
+  ]);
+  const seen = [...new Set(daBlocks.map((b) => b.type))];
+  const unhandled = seen.filter((t) => !READ_BLOCK_TYPES.includes(t));
+  assert.deepEqual(
+    unhandled,
+    [],
+    `loại khối build phát ra mà ReadScreen không có nhánh: ${unhandled.join(', ')}`,
+  );
+  // Và ngược lại: không khai loại nào build không bao giờ phát (chết cứng).
+  assert.deepEqual([...seen].sort(), [...READ_BLOCK_TYPES].sort());
+
+  // Hình dạng từng loại, vì mỗi nhánh của Block() đọc đúng những khoá này.
+  for (const b of daBlocks) {
+    if (b.type === 'paragraph') assert.equal(typeof b.text, 'string');
+    if (b.type === 'code' || b.type === 'terminal') assert.equal(typeof b.code, 'string');
+    if (b.type === 'table') {
+      assert.ok(Array.isArray(b.headers) && Array.isArray(b.rows));
+      for (const row of b.rows) assert.equal(row.length, b.headers.length);
+    }
+    if (b.type === 'figure') {
+      // PNG cùng miền: khối này hiện bằng <img src> nên file phải có thật,
+      // nếu không 26 bài hiện ra ô ảnh vỡ mà không log nào đỏ. `.html` của
+      // Plotly (4,7 MB/hình) cố ý KHÔNG được phát ra đây.
+      assert.match(b.src, /^\/static\/da\/[\w.-]+\.png$/, b.src);
+      assert.ok(
+        existsSync(join(ROOT, 'frontend', 'public', b.src.replace(/^\//, ''))),
+        `thiếu file ảnh ${b.src}`,
+      );
+      // `alt` bắt buộc (người không xem được hình), `caption` thì build KHÔNG
+      // phát — đó là lý do không dùng lại LessonFigure của màn lý thuyết.
+      assert.ok(b.alt && b.alt.length > 0, b.src);
+      assert.equal(b.caption, undefined, b.src);
+    }
+  }
+});
+
+test('bài đọc: khối figure KHÔNG dùng lại Figure/CSS của màn lý thuyết', () => {
+  // Không render được JSX trong runner này (node --test chỉ bóc kiểu, không
+  // biên dịch JSX), nên kiểm ở mức NGUỒN — vẫn bắt đúng hồi quy cần chặn.
+  const screen = readFileSync(
+    join(ROOT, 'frontend', 'src', 'components', 'python-studio', 'screens', 'ReadScreen.tsx'),
+    'utf8',
+  );
+  assert.equal(
+    /from '\.\/TheoryScreen'/.test(screen),
+    false,
+    'ReadScreen không được import Figure của TheoryScreen: LessonFigure.caption là bắt buộc mà khối figure của bài đọc không có',
+  );
+  assert.ok(screen.includes('c.readFigure'), 'khối figure phải dùng class .readFigure riêng');
+  // Dò lượt DÙNG class (`c.theoryFigure`), không dò chữ "theoryFigure" trần —
+  // chú thích trong ReadScreen có nhắc tên đó để giải thích vì sao không dùng.
+  assert.equal(screen.includes('c.theoryFigure'), false);
+
+  // Và class riêng đó KHÔNG được ghim tỉ lệ: khổ thật trải từ 676×338 tới
+  // 1248×624, ghim 2/1 như .theoryFigure là méo 68/80 ảnh.
+  const css = readFileSync(
+    join(ROOT, 'frontend', 'src', 'components', 'python-studio', 'studio-chrome.module.css'),
+    'utf8',
+  );
+  const rule = css.match(/\.readFigure img \{[^}]*\}/);
+  assert.ok(rule, 'thiếu quy tắc .readFigure img');
+  assert.equal(/aspect-ratio/.test(rule[0]), false, rule[0]);
+  // Đối chứng: .theoryFigure img THẬT SỰ có ghim — nếu ngày nào nó bỏ đi thì
+  // câu "không dùng lại vì nó ghim tỉ lệ" ở trên thành vô nghĩa và phải xem lại.
+  const theory = css.match(/\.theoryFigure img \{[^}]*\}/);
+  assert.ok(theory && /aspect-ratio: 2 \/ 1/.test(theory[0]));
+
+  // Nút "Xem đáp án" phải có vòng focus: Tab tới mà không thấy mình ở đâu là
+  // WCAG 2.4.7. :hover một mình không đủ (đó là tín hiệu của chuột).
+  assert.ok(/\.practiceReveal:focus-visible \{[^}]*outline:/.test(css));
+});
+
+test('bài đọc: mỗi lát của step_1.read thành MỘT màn, đúng thứ tự', () => {
+  // VZ01 (sort_order 74): 3 lát, mỗi lát "paragraph code figure".
+  assert.deepEqual(
+    vz01.step_1.read.map((slice) => slice.map((b) => b.type).join(' ')),
+    ['paragraph code figure', 'paragraph code figure', 'paragraph code figure'],
+  );
+
+  const screens = buildScreens(vz01);
+  const read = screens.filter((s) => s.kind === 'read');
+  assert.equal(read.length, 3);
+  assert.deepEqual(
+    read.map((s) => s.key),
+    ['s1-read-0', 's1-read-1', 's1-read-2'],
+  );
+  // `index` phải trỏ đúng lát: ReadScreen đọc read[scr.index], lệch một ô là
+  // người học đọc nhầm đoạn mà không có gì báo lỗi.
+  assert.deepEqual(
+    read.map((s) => s.index),
+    [0, 1, 2],
+  );
+  for (const s of read) assert.equal(s.origin, 1);
+
+  // Đúng với CẢ 172 bài, không riêng bài mẫu: số màn đọc = số lát.
+  for (const [code, l] of DA)
+    assert.equal(
+      buildScreens(l).filter((s) => s.kind === 'read').length,
+      l.step_1.read.length,
+      code,
+    );
+  // Thêm/bớt lát là thêm/bớt màn, không phải gộp vào một màn đọc dài.
+  assert.equal(
+    buildScreens({ ...vz01, step_1: { ...vz01.step_1, read: vz01.step_1.read.slice(0, 2) } })
+      .filter((s) => s.kind === 'read').length,
+    2,
+  );
+  // Không khai `read` thì không có màn đọc nào — 48 bài pe-v4 vẫn như cũ.
+  for (const [f, old] of V4)
+    assert.equal(
+      buildScreens(old).some((s) => s.kind === 'read'),
+      false,
+      f,
+    );
+});
+
+test('bài đọc: mỗi câu step_2.practice thành MỘT màn, xếp sau mcq/classify', () => {
+  for (const [code, l] of DA) {
+    const practice = buildScreens(l).filter((s) => s.kind === 'practice');
+    assert.equal(practice.length, l.step_2?.practice?.length ?? 0, code);
+    assert.deepEqual(
+      practice.map((s) => [s.key, s.index, s.origin]),
+      (l.step_2?.practice ?? []).map((_, i) => [`s2-practice-${i}`, i, 2]),
+      code,
+    );
+  }
+
+  // Bài trộn cả hai: phần ĐƯỢC CHẤM làm trước, phần tự viết làm sau.
+  const mixed = {
+    ...vz01,
+    step_2: { mcq: b01.step_2.mcq, classify: b01.step_2.classify, practice: vz01.step_2.practice },
+  };
+  const kinds = buildScreens(mixed)
+    .filter((s) => s.origin === 2)
+    .map((s) => s.kind);
+  const lastGraded = Math.max(kinds.lastIndexOf('mcq'), kinds.lastIndexOf('classify'));
+  assert.ok(lastGraded >= 0, 'fixture B01 phải có mcq/classify');
+  assert.ok(
+    kinds.indexOf('practice') > lastGraded,
+    'practice phải đứng sau mcq/classify, nhưng thứ tự là ' + kinds.join(' '),
+  );
+  // Và các màn cũ của S2 không bị mất đi.
+  assert.equal(kinds.filter((k) => k === 'mcq').length, b01.step_2.mcq.length);
+});
+
+test('bài đọc: màn read đứng TRƯỚC mọi màn khác của S1', () => {
+  // Bài trộn bài đọc với lý thuyết + đề bài của khoá pe-v4: đọc xong mới tới
+  // lý thuyết/đề bài, không phải ngược lại.
+  const [, v4] = V4[0];
+  const mixed = { ...v4, play: undefined, step_1: { ...v4.step_1, read: vz01.step_1.read } };
+  const s1 = buildScreens(mixed).filter((s) => s.origin === 1);
+  const lastRead = s1.map((s) => s.kind).lastIndexOf('read');
+  assert.equal(lastRead, 2);
+  assert.equal(
+    s1.slice(0, lastRead + 1).every((s) => s.kind === 'read'),
+    true,
+  );
+  assert.ok(lastRead + 1 < s1.length, 'fixture phải còn màn S1 khác sau bài đọc');
+  assert.equal(s1[lastRead + 1].kind, 'theory');
+});
+
+test('bài đọc: cả bài không có màn nào được chấm, nên % luôn 100', () => {
+  // isGraded là danh sách TRẮNG: hai loại màn mới không nằm trong đó.
+  assert.equal(isGraded('read'), false);
+  assert.equal(isGraded('practice'), false);
+
+  for (const [code, l] of DA) {
+    const screens = buildScreens(l);
+    assert.equal(screens.filter((s) => isGraded(s.kind)).length, 0, code);
+    // Hệ quả phải đúng, không chỉ là cái cờ: nút kết thúc bài không bị chặn bởi
+    // một màn không bao giờ "đúng" được, và điểm gửi backend không chia cho 0.
+    assert.equal(quizPercent(screens, initialLessonDraft(l), false), 100, code);
+    // Khoá màn không trùng nhau (bản nháp lưu theo khoá này) và bài kết bằng
+    // tổng kết.
+    assert.equal(new Set(screens.map((s) => s.key)).size, screens.length, code);
+    assert.equal(screens.at(-1).kind, 'recap', code);
+  }
+
+  // VZ01: 3 màn đọc + 3 câu luyện tập + sandbox + tổng kết.
+  assert.deepEqual(
+    buildScreens(vz01).map((s) => s.kind),
+    ['read', 'read', 'read', 'practice', 'practice', 'practice', 'sandbox', 'recap'],
+  );
+  // Nháp có chỗ cho câu tự viết và cờ "đã xem đáp án".
+  const d = initialLessonDraft(vz01);
+  assert.deepEqual(d.practice, {});
+  assert.deepEqual(d.practiceSeen, {});
+  // Không màn nào trong bài có kết quả chấm — kể cả màn luyện tập.
+  for (const s of buildScreens(vz01)) assert.equal(screenVerdict(vz01, s, d), null, s.key);
+});
+
+test('bài đọc: khối terminal và khối table vẫn là hai loại riêng', () => {
+  // PY02 dạy dựng môi trường: lệnh shell, không phải Python. Nếu hai loại này
+  // bị gộp thì học viên copy `python -m venv .venv` vào ô Python.
+  const term = py02.step_1.read.flat().filter((b) => b.type === 'terminal');
+  assert.ok(term.length >= 2);
+  for (const b of term) {
+    assert.equal(b.type, 'terminal');
+    // `expected` ở đây là MÔ TẢ bằng lời, không phải stdout — nên ReadScreen
+    // dùng nhãn "Dấu hiệu thành công", không phải "Kết quả:".
+    assert.ok(b.expected.length > 20, b.expected);
+  }
+  // Và khối table thật (bài duy nhất có) vẫn đủ cột cho mọi hàng.
+  const table = np02.step_1.read.flat().find((b) => b.type === 'table');
+  assert.ok(table);
+  assert.deepEqual(table.headers, ['Chỉ số', '0', '1', '2']);
+  for (const row of table.rows) assert.equal(row.length, 4);
 });

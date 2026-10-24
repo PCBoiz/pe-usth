@@ -6,6 +6,7 @@
 import Recap from '@/components/lesson-chrome/exercises/Recap';
 import { EMPTY_SCORE, isGraded } from '@/lib/studio-lesson';
 
+import { sandboxMode } from './chrome';
 import type { LessonScreenProps } from './props';
 
 type Props = Pick<
@@ -81,6 +82,16 @@ export default function RecapScreen({
     );
   }
 
+  // Bài ĐỌC (step_1.read, khoá 172 bài): không ca chấm, không màn nào được
+  // chấm, nên hai ô "Câu đã làm đúng 0/0" và "Ca kiểm thử đạt 0/0" của bản
+  // thường chỉ là hai con số rỗng — mà đặt cạnh chữ "hoàn thành" thì chúng còn
+  // trông như vừa trượt hết. Khoá này đếm thứ đếm được: số màn đọc và số câu
+  // luyện tập. Lý do "không có ca chấm" cũng khác bài quy trình, nên câu mô tả
+  // không được dùng chung — xem sandboxMode().
+  const readSlices = lesson.step_1?.read?.length ?? 0;
+  const practice = lesson.step_2?.practice?.length ?? 0;
+  const reading = readSlices > 0;
+
   return (
     <Recap
       xpLabel={completed ? `+${xpReward} XP` : `${xpReward} XP`}
@@ -90,27 +101,42 @@ export default function RecapScreen({
           ? 'Tiến độ và XP đã được lưu. Bạn có thể quay lại luyện tập bất cứ lúc nào.'
           : tests.length
             ? 'Bài này chấm tự động — nộp bài ở màn sandbox để ghi nhận hoàn thành.'
-            : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.') +
+            : sandboxMode(lesson) === 'procedure'
+              ? 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.'
+              : 'Bài đọc — không có ca chấm nào. Xác nhận khi bạn đã đọc hết và thử lại ví dụ.') +
         (draft.assisted
           ? gate
             ? ' Lượt này có dùng gợi ý/lời giải: cửa tự kiểm tra tính là "có hỗ trợ" — hãy tự làm lại với dữ liệu mới.'
             : ' Lượt này có dùng gợi ý/lời giải — thử làm lại không mở gợi ý để chắc kiến thức.'
           : '')
       }
-      stats={[
-        { icon: '🎯', value: `${done}/${graded.length || 0}`, label: 'Câu đã làm đúng' },
-        {
-          icon: '🧪',
-          // Kết quả chạy không lưu qua lần tải trang; bài có test chỉ hoàn thành
-          // được qua lượt nộp đạt hết ca, nên đã hoàn thành = đạt đủ.
-          value: `${result ? result.tests.filter((t) => t.passed).length : completed ? tests.length : 0}/${tests.length}`,
-          label: 'Ca kiểm thử đạt',
-        },
-        { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' },
-      ]}
+      stats={
+        reading
+          ? [
+              { icon: '📖', value: `${readSlices}`, label: 'Phần đã đọc' },
+              { icon: '✍️', value: `${practice}`, label: 'Câu luyện tập' },
+              { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' },
+            ]
+          : [
+              { icon: '🎯', value: `${done}/${graded.length || 0}`, label: 'Câu đã làm đúng' },
+              {
+                icon: '🧪',
+                // Kết quả chạy không lưu qua lần tải trang; bài có test chỉ hoàn thành
+                // được qua lượt nộp đạt hết ca, nên đã hoàn thành = đạt đủ.
+                value: `${result ? result.tests.filter((t) => t.passed).length : completed ? tests.length : 0}/${tests.length}`,
+                label: 'Ca kiểm thử đạt',
+              },
+              { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' },
+            ]
+      }
       facts={[
         lesson.step_1?.context?.body,
         ...(lesson.step_1?.explain ?? []).map((row) => row.body),
+        // Bài đọc không có `explain`/`context`: lấy đoạn văn đầu của từng màn
+        // đọc làm ý chính, thay vì để ô "Ghi nhớ" trống trơn.
+        ...(lesson.step_1?.read ?? []).map(
+          (slice) => slice.find((b) => b.type === 'paragraph')?.text,
+        ),
         lesson.step_1?.misconception?.body
           ? `Tránh ngộ nhận: ${lesson.step_1.misconception.body}`
           : undefined,

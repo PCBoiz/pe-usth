@@ -756,3 +756,267 @@
     max-width: 100%;
   }
 }
+
+/* `code nội tuyến` trong văn bản (paragraphs() ở screens/chrome.tsx). Nền nhạt
+   + chữ monospace, KHÔNG dùng nền tối của .codeCard: nó nằm giữa dòng chữ nên
+   một ô đen chen vào giữa câu làm mắt nhảy. */
+.inlineCode {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  color: var(--edu-t1);
+  overflow-wrap: anywhere;
+}
+
+/* ── Bài ĐỌC (step_1.read, khoá 172 bài — xem scripts/pe-da/SCHEMA.md) ──────
+   Dùng lại ngôn ngữ thị giác của .theory: thẻ nền panel, viền sidebar, bo 14px.
+   Khác một điểm: ở đây KHÔNG chia thành nhiều thẻ con — một màn đọc là một
+   dòng chảy văn → code → kết quả, chia thẻ nữa thì mất mạch. */
+.read {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 4px;
+}
+
+.read p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--edu-t2);
+}
+
+/* .codeCard tự mang margin-bottom 16px (nó được thiết kế để đứng rời trong
+   thẻ bài tập). Trong bài đọc thì gap của .read đã lo khoảng cách, nên bỏ đi —
+   nếu không khối "Kết quả:" bị đẩy xa khỏi đúng đoạn code sinh ra nó. */
+.readCode > div {
+  margin-bottom: 0;
+}
+
+/* KẾT QUẢ của khối code — console, KHÔNG phải code. Phải nhìn là biết ngay đâu
+   là lệnh đâu là cái nó in ra: nhãn riêng, viền trái màu nhấn, không số dòng.
+   Trước đây nếu nhồi `expected` vào chính CodeBlock thì học viên đọc output
+   như thể nó là dòng code tiếp theo. */
+.readExpected {
+  background: var(--st-code-bg);
+  border-left: 3px solid var(--edu-accent);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.readExpectedLabel {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-syn-comment);
+}
+
+.readExpected pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--st-syn-string);
+}
+
+/* Bảng trong bài đọc: bảng HTML thường, chỉ kẻ đủ để đọc được cột. */
+.readTable {
+  overflow-x: auto;
+}
+
+.readTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.readTable th,
+.readTable td {
+  border: 1px solid var(--edu-sidebar-border);
+  padding: 8px 12px;
+  text-align: left;
+  color: var(--edu-t2);
+}
+
+.readTable th {
+  background: var(--edu-card-bg);
+  color: var(--edu-t1);
+  font-weight: 600;
+}
+
+/* Nguồn slide của giảng viên, in cuối màn đọc cuối cùng. */
+.readSource {
+  margin: 0;
+  font-size: 14px;
+  color: var(--edu-t3);
+}
+
+/* Màn đọc chạy ở CỘT RỘNG như màn lý thuyết (bảng và code cần chiều ngang),
+   nhưng chữ thì bó lại ~78 ký tự — xem ghi chú ở .theoryBlock p. */
+@media (min-width: 1000px) {
+  .read p,
+  .readSource {
+    max-width: 78ch;
+  }
+}
+
+/* ── Câu luyện tập (step_2.practice): tự viết rồi mới xem đáp án mẫu ──────── */
+.practice {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Dùng cho cả <p> và <label> — label mặc định là inline, không có display:block
+   thì nó không chiếm cả dòng và gap của .practice không ăn. */
+.practiceNote {
+  display: block;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--edu-t3);
+}
+
+.practiceInput {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 12px 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+  background: var(--edu-panel-bg-solid);
+  color: var(--edu-t1);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.practiceAnswer {
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 14px;
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.practiceAnswer h4 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--edu-t1);
+}
+
+.practiceAnswer p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--edu-t2);
+}
+
+/* "Xem đáp án" là hành động CHÍNH của màn luyện tập (nút CTA dưới đáy chỉ đi
+   tiếp), nên nó không dùng .resetLink — cỡ chữ 12px gạch chân mờ của .resetLink
+   là dành cho hành động phụ như "Ẩn đi". */
+.practiceReveal {
+  align-self: flex-start;
+  padding: 9px 16px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 999px;
+  background: var(--edu-panel-bg-solid);
+  color: var(--edu-t1);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.practiceReveal:hover {
+  border-color: var(--edu-accent);
+  color: var(--edu-accent);
+}
+
+/* Vòng focus: nút này trước đây chỉ có :hover, nên người dùng bàn phím Tab tới
+   nó mà không thấy mình đang ở đâu (WCAG 2.4.7). Không dùng chung với :hover —
+   đổi màu viền là tín hiệu của chuột, vòng outline là tín hiệu của bàn phím. */
+.practiceReveal:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 2px;
+}
+
+/* Khối TERMINAL của bài đọc (ReadBlock type 'terminal'): lệnh shell, KHÔNG phải
+   Python. Khác .readCode ở dấu nhắc $, không số dòng và không tô cú pháp — ba
+   thứ đó cộng lại là cái phân biệt "gõ ở terminal" với "gõ vào ô Python", chứ
+   không chỉ để trang trí. */
+.readTerminal {
+  background: var(--st-code-bg);
+  border: 1px dashed var(--st-code-gutter);
+  border-radius: 12px;
+  padding: 12px 16px;
+}
+
+.readTerminalLabel {
+  display: block;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--st-syn-comment);
+}
+
+/* Dấu nhắc `$` không được dính vào thứ người ta copy: bôi đen cả dòng rồi dán
+   vào terminal mà mang theo "$ " là lệnh chạy lỗi. Cùng lý do với .lineNum của
+   khối code (exercises.module.css). */
+.readTerminal pre > span {
+  user-select: none;
+  color: var(--st-syn-comment);
+}
+
+.readTerminal pre {
+  margin: 0;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--st-syn-plain);
+}
+
+/* `expected` của khối terminal là MÔ TẢ bằng lời, không phải stdout: để nó ở
+   dạng văn bản thường, KHÔNG dùng .readExpected (nền console) — nhìn như
+   output thì người học đi tìm đúng từng chữ đó trên màn hình của mình. */
+.readTerminalNote {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--edu-t2);
+}
+
+.readTerminalNote strong {
+  color: var(--edu-t1);
+}
+
+/* Biểu đồ của bài đọc (ReadBlock type 'figure'). CỐ Ý KHÔNG ghim aspect-ratio
+   như .theoryFigure: ở đó mọi hình đều vẽ theo khổ 1280×640, còn ở đây khổ thật
+   trải từ 676×338 tới 1248×624 (68/80 là 780×455) nên ghim tỉ lệ là méo.
+   `max-width` thay cho `width: 100%`: biểu đồ 780px không bị kéo giãn lên
+   ~1230px của cột rộng rồi nhoè chữ trên trục. */
+.readFigure {
+  margin: 0;
+}
+
+.readFigure img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+}

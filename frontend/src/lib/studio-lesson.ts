@@ -8,6 +8,12 @@
  *
  * `step_2.mcq` is NOT free to move: QuizzesService.collectQuestions() reads
  * `content_json.step_2.mcq` to build review quizzes (src/quizzes/quizzes.service.ts).
+ *
+ * Nhưng ĐỪNG suy ra "bài nào cũng có mcq nên quiz ôn tập luôn chạy": khoá 172
+ * bài đọc (scripts/pe-da) không phát ra `step_2.mcq` nào, nên kho câu hỏi của
+ * khoá đó LUÔN dưới `MIN_POOL = 5` và quiz ôn tập không bao giờ mở được. Giao
+ * diện không được hứa nó — xem ghi chú ở
+ * src/app/(standalone)/courses/[courseId]/CourseDetail.tsx.
  */
 
 export const STUDIO_LESSON_SCHEMA = 'studio-lesson/v1';
@@ -17,6 +23,11 @@ export const STUDIO_LESSON_SCHEMA = 'studio-lesson/v1';
  * mini-game sinh bởi scripts/pe-v3/build_advanced.py. Có `play` thì
  * buildScreens() dựng luồng ngắn theo game thay cho luồng S1–S4 đầy đủ; mọi
  * trường v1 vẫn giữ (step_2.mcq còn phục vụ quiz ôn tập).
+ *
+ * v2 còn mang khoá BÀI ĐỌC: `step_1.read` + `step_2.practice` (xem
+ * scripts/pe-da/SCHEMA.md). Bộ đó không có `play`, không `mcq`, không
+ * `step_4.tests` — buildScreens() vì vậy dựng luồng "đọc → luyện tập →
+ * sandbox chạy tự do → tổng kết", và không màn nào được chấm.
  */
 export const STUDIO_LESSON_SCHEMA_V2 = 'studio-lesson/v2';
 
@@ -88,8 +99,62 @@ export type TheoryBlock = {
   figure?: LessonFigure;
 };
 
+/**
+ * Một khối trong bài ĐỌC (`step_1.read`) — khoá 172 bài "Python cho Data
+ * Analyst", xem scripts/pe-da/SCHEMA.md.
+ *
+ * Nguồn của bộ này KHÔNG có trắc nghiệm, scaffold hay ca kiểm thử: nó có lời
+ * giảng, code kèm kết quả in ra, và bảng. `expected` là output thật của khối
+ * code — renderer phải hiện nó TÁCH khỏi code, vì người học cần phân biệt
+ * được đâu là lệnh và đâu là cái lệnh đó in ra.
+ */
+export type ReadBlock =
+  | { type: 'paragraph'; text: string }
+  | { type: 'code'; code: string; expected?: string }
+  /**
+   * Lệnh gõ trong TERMINAL (`python -m venv .venv`, `git status`) — KHÔNG phải
+   * Python. Phải hiện khác khối `code`, nếu không người học copy nó vào ô soạn
+   * mã Python rồi nhận SyntaxError mà không hiểu vì sao. `expected` của khối
+   * này thường là MÔ TẢ bằng lời ("lệnh thường không in thông báo; trong thư
+   * mục xuất hiện .venv…") chứ không phải stdout, nên nhãn cũng khác.
+   */
+  | { type: 'terminal'; code: string; expected?: string }
+  /**
+   * Biểu đồ do chính đoạn code ngay TRÊN nó vẽ ra. Luôn là PNG cùng miền dưới
+   * /static/da/. KHÔNG có `caption` (khâu build không phát) nên đừng dùng lại
+   * `LessonFigure`/`Figure` của màn lý thuyết — xem ReadScreen.
+   */
+  | { type: 'figure'; src: string; alt: string }
+  | { type: 'table'; headers: string[]; rows: string[][] };
+
+/**
+ * NĂM loại khối, không phải ba. Bản đặc tả đầu của pe-da chỉ khai ba
+ * (paragraph/code/table) trong khi khâu build phát thêm `terminal` (21 khối,
+ * 10 bài) và `figure` (80 khối, 26 bài): renderer viết theo đặc tả thì 26 bài
+ * có hình ném TypeError ngay màn đọc.
+ *
+ * Hằng này để bộ test đối chiếu được "loại khối build phát ra" với "loại khối
+ * renderer biết dựng" — nhánh `default` ép kiểu `never` trong ReadScreen chỉ
+ * bắt được lúc typecheck, mà dữ liệu thì đổi mà không cần biên dịch lại.
+ */
+export const READ_BLOCK_TYPES: ReadBlock['type'][] = [
+  'paragraph',
+  'code',
+  'terminal',
+  'figure',
+  'table',
+];
+
 export type Step1 = {
   heading?: string;
+  /**
+   * Bài đọc, ĐÃ CHIA SẴN thành màn ở khâu build: mỗi phần tử là MỘT màn
+   * `read`. Renderer không chia lại — luật chia là luật nội dung (một màn =
+   * một ý được một đoạn code chứng minh) nên nó được kiểm bằng Python ở
+   * scripts/pe-da, và chia cố định thì khoá `s1-read-<i>` của bản nháp không
+   * đổi khi sửa CSS.
+   */
+  read?: ReadBlock[][];
   /** Có thì màn đầu của bài là LessonBrief thay cho thẻ "Ngữ cảnh". */
   brief?: LessonBriefData;
   /** 3–5 khối lý thuyết — có thì chèn một màn `theory` NGAY TRƯỚC `brief`. */
@@ -122,9 +187,24 @@ export type ClassifyBin = {
   desc?: string;
 };
 
+/**
+ * Câu luyện tập có đáp án mẫu (`step_2.practice`, khoá bài đọc). KHÔNG chấm:
+ * 516 câu trong nguồn đều là câu hỏi MỞ kèm lời giải mẫu, không phải trắc
+ * nghiệm có phương án sai — nên không có gì để so đúng/sai. Học viên tự viết
+ * rồi bấm "Xem đáp án"; xem isGraded().
+ */
+export type PracticeItem = {
+  prompt: string;
+  answer: string;
+  answerCode?: string;
+  answerExpected?: string;
+};
+
 export type Step2 = {
   heading?: string;
   mcq?: Mcq[];
+  /** Mỗi câu một màn `practice`. */
+  practice?: PracticeItem[];
   classify?: {
     instruction?: string;
     bins: ClassifyBin[];
@@ -372,6 +452,13 @@ export type LessonDraft = {
   slots: Record<number, string>;
   counter: string;
   code: string;
+  /**
+   * Bài đọc: câu trả lời học viên tự viết cho `step_2.practice`, theo chỉ số
+   * câu. Không chấm, nhưng vẫn lưu — nháp mất là mất công viết của người học.
+   */
+  practice?: Record<number, string>;
+  /** Câu luyện tập đã bấm "Xem đáp án"; giữ trong nháp để quay lại màn vẫn thấy. */
+  practiceSeen?: Record<number, boolean>;
   solutionUsed: boolean;
   /** Màn hình đã qua, theo `LessonScreen.key`. */
   done: Record<string, boolean>;
@@ -432,6 +519,8 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
     slots: {},
     counter: '',
     code: lesson.step_4?.starterCode ?? '',
+    practice: {},
+    practiceSeen: {},
     solutionUsed: false,
     done: {},
     submitted: false,
@@ -450,6 +539,8 @@ export function initialLessonDraft(lesson: StudioLesson): LessonDraft {
 
 export type ScreenKind =
   | 'brief'
+  /** Một lát của bài đọc (step_1.read[index]) — màn ĐẦU bài, trước cả theory. */
+  | 'read'
   /** Lý thuyết nền + hình (step_1.theory) — màn ĐẦU bài, trước brief. */
   | 'theory'
   | 'context'
@@ -459,6 +550,8 @@ export type ScreenKind =
   | 'predict'
   | 'mcq'
   | 'classify'
+  /** Một câu luyện tập có đáp án mẫu (step_2.practice[index]) — KHÔNG chấm. */
+  | 'practice'
   | 'selfExplain'
   | 'scaffold'
   | 'trace'
@@ -475,7 +568,7 @@ export type LessonScreen = {
   /** Bước gốc S1–S4, để hiện nhãn "S2 · Bẫy ngộ nhận". */
   origin: 1 | 2 | 3 | 4;
   label: string;
-  /** Vị trí câu hỏi trong step_2.mcq. */
+  /** Vị trí trong mảng nguồn của màn: step_2.mcq, step_1.read hay step_2.practice. */
   index?: number;
   /** PlayGame.id khi kind = 'game'. */
   gameId?: string;
@@ -541,6 +634,11 @@ export function buildScreens(lesson: StudioLesson): LessonScreen[] {
   if (lesson.play?.games?.length) return buildPlayScreens(lesson, lesson.play);
   const out: LessonScreen[] = [];
   const one = lesson.step_1;
+  // BÀI ĐỌC ĐỨNG TRƯỚC MỌI MÀN KHÁC CỦA S1. Khoá 172 bài chỉ có `read` nên thứ
+  // tự này không quan sát được ở đó; nó quan trọng cho bài nào trộn cả hai —
+  // đọc xong mới tới lý thuyết/đề bài, không phải ngược lại.
+  // Các lát đã được khâu build chia sẵn (xem Step1.read), ở đây chỉ phát màn.
+  (one?.read ?? []).forEach((_, i) => out.push(screen(`s1-read-${i}`, 'read', 1, i)));
   // Cùng thứ tự với buildPlayScreens: lý thuyết trước, rồi mới tới đề bài.
   if (one?.theory?.length) out.push(screen('s1-theory', 'theory', 1));
   if (one?.brief?.task) out.push(screen('s1-brief', 'brief', 1));
@@ -555,6 +653,9 @@ export function buildScreens(lesson: StudioLesson): LessonScreen[] {
     if ((q.options?.length ?? 0) >= 2) out.push(screen(`s2-mcq-${i}`, 'mcq', 2, i));
   });
   if (two?.classify?.tokens?.length) out.push(screen('s2-classify', 'classify', 2));
+  // Câu luyện tập xếp SAU trắc nghiệm/phân loại: bài nào có cả hai thì phần
+  // được chấm làm trước, phần tự viết (không chấm) làm sau.
+  (two?.practice ?? []).forEach((_, i) => out.push(screen(`s2-practice-${i}`, 'practice', 2, i)));
   if (two?.selfExplain?.prompt) out.push(screen('s2-self', 'selfExplain', 2));
 
   const three = lesson.step_3;
@@ -583,7 +684,15 @@ export function keyIndex(key: string): number {
 /** Ngưỡng tối thiểu cho ô tự giải thích khi bài không khai rubric từ khoá. */
 export const SELF_EXPLAIN_MIN = { chars: 60, words: 12 };
 
-/** Màn hình có chấm đúng/sai tại chỗ (nút CTA đổi thành "Kiểm tra"). */
+/**
+ * Màn hình có chấm đúng/sai tại chỗ (nút CTA đổi thành "Kiểm tra").
+ *
+ * Danh sách TRẮNG, cố ý: `read` và `practice` của khoá bài đọc KHÔNG nằm trong
+ * đây vì không có gì để so — câu luyện tập là câu mở kèm lời giải mẫu, không
+ * phải trắc nghiệm có phương án sai. Đưa chúng vào đây thì `firstUnfinished()`
+ * sẽ chặn nút kết thúc bài bằng một màn không bao giờ "đúng" được, và
+ * `quizPercent()` chia cho một mẫu số vô nghĩa.
+ */
 export function isGraded(kind: ScreenKind): boolean {
   return (
     kind === 'predict' ||

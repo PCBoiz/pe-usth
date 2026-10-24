@@ -32,6 +32,13 @@ export interface SandboxEditorProps {
   disabled?: boolean;
   /** Chữ mờ khi ô còn trống — bài không có code khởi tạo thì nói rõ ô này dùng làm gì. */
   placeholder?: string;
+  /**
+   * Câu thay cho "x/y ca kiểm thử đạt" khi bài KHÔNG có ca nào. Phải truyền từ
+   * ngoài: thiếu `tests` có nhiều lý do khác nhau (bài quy trình làm trên máy,
+   * bài đọc chạy thử tự do) và trước đây chỗ này ghi cứng một lý do duy nhất
+   * nên nó nói sai cho các lý do còn lại.
+   */
+  noTestsHint?: string;
 }
 
 const STATUS_STYLE: Record<SandboxTestRow['status'], { bg: string; text: string; label: string }> = {
@@ -54,6 +61,7 @@ export default function SandboxEditor({
   tests,
   disabled,
   placeholder,
+  noTestsHint = 'Bài này không có ca kiểm thử tự động',
 }: SandboxEditorProps) {
   const passed = tests.filter((t) => t.status === 'pass').length;
   const hintId = useId();
@@ -156,9 +164,7 @@ export default function SandboxEditor({
         {/* Kết quả chấm phải được ĐỌC LÊN: trước đây chỉ có màu và dấu ✓/✕ đổi,
             người dùng trình đọc màn hình bấm "Chạy thử" rồi không biết gì xảy ra. */}
         <span className={styles.runHint} role="status">
-          {tests.length
-            ? `${passed}/${tests.length} ca kiểm thử đạt`
-            : 'Bài này chấm trên máy lab, không có ca tự động'}
+          {tests.length ? `${passed}/${tests.length} ca kiểm thử đạt` : noTestsHint}
         </span>
       </div>
 

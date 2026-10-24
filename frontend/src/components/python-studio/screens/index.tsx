@@ -13,7 +13,9 @@ import GameScreen from './GameScreen';
 import McqScreen from './McqScreen';
 import MemoryScreen from './MemoryScreen';
 import MisconceptionScreen from './MisconceptionScreen';
+import PracticeScreen from './PracticeScreen';
 import PredictScreen from './PredictScreen';
+import ReadScreen from './ReadScreen';
 import RecapScreen from './RecapScreen';
 import SandboxScreen from './SandboxScreen';
 import ScaffoldScreen from './ScaffoldScreen';
@@ -34,6 +36,8 @@ export default function LessonScreenView(props: LessonScreenProps) {
       return lesson.step_1?.brief ? (
         <LessonBrief {...lesson.step_1.brief} tryCode={ideCodeChoDeBai(lesson) ?? undefined} />
       ) : null;
+    case 'read':
+      return <ReadScreen {...props} />;
     case 'theory':
       return <TheoryScreen {...props} />;
     case 'context':
@@ -50,6 +54,8 @@ export default function LessonScreenView(props: LessonScreenProps) {
       return <McqScreen {...props} />;
     case 'classify':
       return <ClassifyScreen {...props} />;
+    case 'practice':
+      return <PracticeScreen {...props} />;
     case 'selfExplain':
       return <SelfExplainScreen {...props} />;
     case 'scaffold':

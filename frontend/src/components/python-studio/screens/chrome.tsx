@@ -8,6 +8,7 @@ import FeedbackBanner from '@/components/lesson-chrome/exercises/FeedbackBanner'
 import ShellB from '@/components/lesson-chrome/ShellB';
 import type { LessonScreen, PlayGame, StudioLesson as Lesson } from '@/lib/studio-lesson';
 
+import c from '../studio-chrome.module.css';
 import type { RunResult } from '../runner/types';
 import type { SandboxTestRow } from '@/components/lesson-chrome/exercises/SandboxEditor';
 import type { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
@@ -48,12 +49,48 @@ export const ICON = {
   ),
 };
 
+/**
+ * `code nội tuyến` trong dấu backtick → <code>.
+ *
+ * Trước đây paragraphs() trả nguyên chuỗi, nên nguồn Markdown hiện ra kèm cả
+ * dấu backtick: học viên đọc `print` thành ‹backtick›print‹backtick›. Khoá
+ * 172 bài đọc (scripts/pe-da) dùng backtick dày đặc — tên hàm, toán tử `=`,
+ * đuôi file `.py` — nên phải bóc ở đây, không phải để từng màn tự xử lý.
+ *
+ * Chỉ nhận cặp backtick trên CÙNG một dòng: backtick lẻ trong văn bản thường
+ * (hiếm, nhưng có) thì để nguyên chứ không nuốt cả đoạn sau nó.
+ */
+const INLINE_CODE = /`([^`\n]+)`/g;
+
+function withInlineCode(text: string): React.ReactNode {
+  if (!text.includes('`')) return text;
+  const out: React.ReactNode[] = [];
+  let last = 0;
+  let key = 0;
+  for (const match of text.matchAll(INLINE_CODE)) {
+    const at = match.index ?? 0;
+    if (at > last) out.push(text.slice(last, at));
+    out.push(
+      <code key={key++} className={c.inlineCode}>
+        {match[1]}
+      </code>,
+    );
+    last = at + match[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
+}
+
 /** Đoạn văn cách nhau bằng dòng trống → từng khối riêng (mô tả nằm trong <p>). */
 export function paragraphs(text?: string): React.ReactNode {
-  if (!text || !text.includes('\n\n')) return text;
-  return text.split(/\n{2,}/).map((part, i) => (
+  if (!text) return text;
+  const parts = text.split(/\n{2,}/);
+  // Một đoạn thì KHÔNG bọc thêm <span display:block>: giữ đúng dáng cũ của mọi
+  // màn đang dùng hàm này (phần lớn mô tả chỉ có một đoạn).
+  if (parts.length === 1) return withInlineCode(parts[0]);
+  return parts.map((part, i) => (
     <span key={i} style={{ display: 'block', marginTop: i ? 8 : 0 }}>
-      {part}
+      {withInlineCode(part)}
     </span>
   ));
 }
@@ -62,6 +99,8 @@ export function paragraphs(text?: string): React.ReactNode {
 export function eyebrowOf(scr: LessonScreen): { icon: React.ReactNode; label: string } {
   const map: Record<string, { icon: React.ReactNode; label: string }> = {
     brief: { icon: ICON.book, label: 'Tổng quan bài' },
+    read: { icon: ICON.book, label: 'Bài đọc' },
+    practice: { icon: ICON.bulb, label: 'Luyện tập' },
     theory: { icon: ICON.book, label: 'LÝ THUYẾT' },
     context: { icon: ICON.book, label: 'Ngữ cảnh' },
     explain: { icon: ICON.code, label: 'Giải thích từng dòng' },
@@ -166,6 +205,23 @@ export function showEditorOf(lesson: Lesson): boolean {
   return Boolean(
     four?.tests?.length || four?.starterCode || four?.solutionCode || !four?.procedure?.length,
   );
+}
+
+/**
+ * Màn sandbox đang ở chế độ nào — để nhãn nói ĐÚNG việc nó làm.
+ *
+ * Trước đây chỉ có hai trường hợp nên mọi câu "không có ca kiểm thử" đều được
+ * viết thành "bài này thực hành trên máy lab". Khoá 172 bài đọc phá vỡ đúng chỗ
+ * đó: bài của nó có `starterCode` chạy được trong trình duyệt nhưng KHÔNG có
+ * `tests` nào — nói "trên máy lab" là nói sai, và người học sẽ không bấm Chạy.
+ *
+ *   graded    — có `step_4.tests`: nộp để máy chấm.
+ *   procedure — các bước phải tự làm trên máy (không có mã Python để chạy).
+ *   free      — có ô soạn mã nhưng không ca chấm nào: chạy thử tự do.
+ */
+export function sandboxMode(lesson: Lesson): 'graded' | 'procedure' | 'free' {
+  if (lesson.step_4?.tests?.length) return 'graded';
+  return lesson.step_4?.procedure?.length ? 'procedure' : 'free';
 }
 
 /** Bảng ca kiểm thử dưới editor, ghép đề bài với kết quả chạy gần nhất. */

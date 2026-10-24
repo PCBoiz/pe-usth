@@ -11,7 +11,7 @@ import { toCodeLines } from '@/lib/py-highlight';
 
 import c from '../studio-chrome.module.css';
 import type { RunResult } from '../runner/types';
-import { eyebrowOf, paragraphs, showEditorOf, testRows } from './chrome';
+import { eyebrowOf, paragraphs, sandboxMode, showEditorOf, testRows } from './chrome';
 import type { LessonScreenProps } from './props';
 
 type Props = Pick<
@@ -78,12 +78,12 @@ export default function SandboxScreen({
   const eyebrow = eyebrowOf(scr);
   const io = four?.task?.io ?? [];
   const hints = four?.hints ?? [];
-  const tests = four?.tests ?? [];
   const procedure = four?.procedure ?? [];
   const files = four?.files ?? [];
   const contracts = four?.contracts ?? [];
   const gate = Boolean(four?.gate);
   const boss = Boolean(lesson.play?.boss);
+  const mode = sandboxMode(lesson);
 
   return (
     <ShellB
@@ -203,14 +203,25 @@ export default function SandboxScreen({
                 }
               : undefined
           }
+          // Ô trống thì nói đúng lý do VÌ SAO không có ca chấm. Câu cũ ghi
+          // cứng "thực hành trên máy lab" cho MỌI bài thiếu `tests`, nên bài
+          // của khoá đọc — chạy được ngay trong trình duyệt, chỉ là không có
+          // ca chấm nào — cũng bị dán nhãn máy lab và người học bỏ qua nút Chạy.
           placeholder={
-            tests.length
+            mode === 'graded'
               ? undefined
-              : 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
+              : mode === 'procedure'
+                ? 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Ô này dùng làm nháp: gõ thử rồi bấm "Chạy thử" (chỉ thư viện chuẩn chạy được trong trình duyệt).'
+                : 'Bài đọc: không có ca chấm nào, ô này để bạn thử lại ví dụ trong bài. Gõ rồi bấm "Chạy thử" — code chạy ngay trong trình duyệt.'
           }
           consoleLines={consoleLines(result, draft.code)}
           consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
           tests={testRows(lesson, result)}
+          noTestsHint={
+            mode === 'procedure'
+              ? 'Bài này chấm trên máy lab, không có ca tự động'
+              : 'Bài đọc — chạy thử tự do, không có ca chấm'
+          }
           disabled={busy}
         />
       )}

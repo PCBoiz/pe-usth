@@ -110,7 +110,13 @@ export function primaryCta(ctx: CtaContext): Cta {
   }
 
   if (scr.kind === 'sandbox') {
-    if (!tests.length) return { label: 'Tiếp tục →', tone: 'accent', action: 'next' };
+    // KHÔNG có ca kiểm thử nào thì nút KHÔNG được nói "Nộp & Chấm điểm": không
+    // có gì để chấm, và bấm nó chỉ chạy code rồi báo đạt 0/0. Đúng trường hợp
+    // của khoá 172 bài đọc (không bài nào phát ra `step_4.tests`) và của bài
+    // quy trình làm trên máy. Chạy thử là việc của nút "▶ Chạy thử" trong ô
+    // soạn mã, nên nút dưới đáy chỉ còn việc đi tiếp — và nó nói đúng thế.
+    // Bảng ca kiểm thử cũng tự ẩn khi rỗng (xem SandboxEditor).
+    if (!tests.length) return { label: 'Xong — tiếp tục →', tone: 'accent', action: 'next' };
     if (draft.done[scr.key]) return { label: 'Tiếp tục →', tone: 'ok', action: 'next' };
     return {
       label: running ? 'Đang chấm…' : 'Nộp & Chấm điểm',
