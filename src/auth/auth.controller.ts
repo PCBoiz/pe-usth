@@ -43,14 +43,30 @@ export class AuthController {
     private readonly refreshTokens: RefreshTokenService,
   ) {}
 
-  /** Chuyển refresh token từ body sang cookie httpOnly; body chỉ còn access. */
+  /**
+   * Chuyển refresh token từ body sang cookie httpOnly; body chỉ còn access.
+   *
+   * `refreshExpiresIn` (giây) đi kèm vì frontend cần biết phiên sống bao lâu
+   * mà KHÔNG đọc được cookie httpOnly. Trước đây nó tự đoán 8 giờ, ghi cứng
+   * `max-age=28800` ở bốn chỗ — trong khi production đặt
+   * `JWT_REFRESH_EXPIRES=24h` và đo được `Set-Cookie: … Max-Age=86400`. Lệch
+   * 3 lần: từ giờ thứ 8 tới giờ thứ 24, cookie mốc `pe_has_session` đã hết
+   * trong khi phiên còn nguyên, nên trang công khai hiện "chưa đăng nhập" và
+   * badge "Tiếp tục ở bài X" biến mất dù tiến độ vẫn còn.
+   *
+   * Nói ra con số THẬT là cách duy nhất hết lệch: đổi `JWT_REFRESH_EXPIRES` thì
+   * client đi theo, không phải sửa thêm chỗ nào.
+   */
   private moveRefreshToCookie<T extends TokenPair>(
     res: Response,
     result: T,
-  ): Omit<T, 'refresh'> {
+  ): Omit<T, 'refresh'> & { refreshExpiresIn: number } {
     const { refresh, ...rest } = result;
     setRefreshCookie(res, refresh, this.refreshTokens.lifetimeMs);
-    return rest;
+    return {
+      ...rest,
+      refreshExpiresIn: Math.floor(this.refreshTokens.lifetimeMs / 1000),
+    };
   }
 
   // Throttle override: đè tier 'ip_hour' RIÊNG cho route này.

@@ -47,6 +47,40 @@ function callRefresh(): Promise<Response> {
     body: JSON.stringify(legacy ? { refresh: legacy } : {}),
   });
 }
+/**
+ * Hạn DỰ PHÒNG cho cookie mốc `pe_has_session`, chỉ dùng khi máy chủ không nói.
+ *
+ * Khớp mặc định `JWT_REFRESH_EXPIRES='8h'` trong `src/config/env.validation.ts`.
+ * CỐ Ý chọn ngắn: đoán dài hơn hạn thật là trang công khai hiện "Tiếp tục ở bài
+ * X" cho một phiên đã chết — bấm vào thì `apiFetch` refresh không được, rơi
+ * xuống `ensureGuest()` và người học nhận một tài khoản khách MỚI, tức mất tiến
+ * độ. Đoán ngắn hơn thì chỉ mất cái badge, tiến độ còn nguyên.
+ */
+export const HAN_DU_PHONG_GIAY = 8 * 3600;
+
+/**
+ * Ghi cookie mốc "đang có phiên" cho proxy.ts của Next đọc (nó không đọc được
+ * localStorage, và `pe_refresh` thì httpOnly).
+ *
+ * `giay` lấy từ `refreshExpiresIn` trong response của /auth/*. Trước đây bốn
+ * chỗ ghi cứng `max-age=28800` trong khi production đặt
+ * `JWT_REFRESH_EXPIRES=24h` — đo được `Set-Cookie: … Max-Age=86400`. Lệch 3
+ * lần, và hệ quả thấy được: từ giờ thứ 8 tới giờ thứ 24 phiên còn sống nhưng
+ * cookie mốc đã hết, nên trang chủ hiện "chưa đăng nhập".
+ */
+// Xuất ra ngoài CHỈ để test được: nó quyết hạn của cookie mốc, và chính con số
+// đó từng lệch 3 lần so với máy chủ mà không có ca nào bắt.
+export function danhDauPhien(giay?: unknown): void {
+  const n = typeof giay === 'number' && Number.isFinite(giay) && giay > 0
+    ? Math.floor(giay)
+    : HAN_DU_PHONG_GIAY;
+  try {
+    document.cookie = `pe_has_session=1; path=/; max-age=${n}; SameSite=Lax`;
+  } catch {
+    /* non-browser */
+  }
+}
+
 
 function refreshAccess(): Promise<string | null> {
   if (typeof window !== 'undefined') {
@@ -86,11 +120,7 @@ function refreshAccess(): Promise<string | null> {
       } catch {
         /* private mode */
       }
-      try {
-        document.cookie = 'pe_has_session=1; path=/; max-age=28800; SameSite=Lax';
-      } catch {
-        /* non-browser */
-      }
+      danhDauPhien(d.refreshExpiresIn);
       return d.access as string;
     })
     .catch(() => null);
@@ -126,11 +156,7 @@ function ensureGuest(): Promise<string | null> {
       } catch {
         /* private mode: vẫn dùng được access trong phiên này */
       }
-      try {
-        document.cookie = 'pe_has_session=1; path=/; max-age=28800; SameSite=Lax';
-      } catch {
-        /* non-browser */
-      }
+      danhDauPhien(d.refreshExpiresIn);
       return d.access as string;
     })
     .catch(() => null)

@@ -30,20 +30,33 @@
   function getLegacyRefresh() { try { return localStorage.getItem(LS_LEGACY_REFRESH); } catch (e) { return null; } }
   function dropLegacyRefresh() { try { localStorage.removeItem(LS_LEGACY_REFRESH); } catch (e) {} }
   /* Cookie CỜ (không chứa token) để proxy.ts của Next đọc được trạng thái
-   * "có phiên" từ server — localStorage server không đọc được. max-age khớp
-   * hạn refresh token (8h), được gia hạn mỗi lần login/refresh. */
-  function setSessionCookie() {
-    try { document.cookie = 'pe_has_session=1; path=/; max-age=28800; SameSite=Lax'; } catch (e) {}
+   * "có phiên" từ server — localStorage server không đọc được. Được gia hạn mỗi
+   * lần login/refresh.
+   *
+   * max-age lấy từ `refreshExpiresIn` mà /auth/* trả về. Ghi cứng 8h là lệch:
+   * production đặt JWT_REFRESH_EXPIRES=24h, đo được Set-Cookie Max-Age=86400,
+   * nên từ giờ thứ 8 tới giờ thứ 24 cookie mốc đã hết trong khi phiên còn sống.
+   * Dự phòng vẫn là 8h vì đoán NGẮN hơn chỉ mất cái badge, còn đoán DÀI hơn thì
+   * trang công khai mời người học vào một phiên đã chết rồi cấp tài khoản khách
+   * mới — mất tiến độ. */
+  var HAN_DU_PHONG_GIAY = 8 * 3600;
+  function setSessionCookie(giay) {
+    var n = (typeof giay === 'number' && isFinite(giay) && giay > 0)
+      ? Math.floor(giay) : HAN_DU_PHONG_GIAY;
+    try { document.cookie = 'pe_has_session=1; path=/; max-age=' + n + '; SameSite=Lax'; } catch (e) {}
   }
   function clearSessionCookie() {
     try { document.cookie = 'pe_has_session=; path=/; max-age=0; SameSite=Lax'; } catch (e) {}
   }
-  function setTokens(access) {
+  /* `hanGiay` = refreshExpiresIn trong response của /auth/*; thiếu thì dùng dự
+   * phòng. Truyền xuống tới đây chứ không đoán ở setSessionCookie, để chỉ có
+   * MỘT nguồn sự thật: máy chủ. */
+  function setTokens(access, hanGiay) {
     try {
       if (access) localStorage.setItem(LS_ACCESS, access);
     } catch (e) { /* private mode */ }
     dropLegacyRefresh();
-    if (access) setSessionCookie();
+    if (access) setSessionCookie(hanGiay);
   }
   function clearTokens() {
     try { localStorage.removeItem(LS_ACCESS); } catch (e) {}
@@ -86,7 +99,7 @@
       if (r.status === 401 || r.status === 403) { clearTokens(); return null; }
       if (!r.ok) return null;  // lỗi mạng/5xx: giữ token, thử lại sau
       return r.json().then(function (d) {
-        setTokens(d.access);
+        setTokens(d.access, d.refreshExpiresIn);
         return d.access;
       });
     }).catch(function () { return null; });
@@ -144,7 +157,7 @@
       if (toBackend && resp.ok &&
           (url.indexOf('/auth/login') === 0 || url.indexOf('/auth/register') === 0)) {
         resp.clone().json().then(function (data) {
-          if (data && data.access) setTokens(data.access);
+          if (data && data.access) setTokens(data.access, data.refreshExpiresIn);
         }).catch(function () {});
       }
       // 401 → thử refresh 1 lần (trừ chính các call auth)

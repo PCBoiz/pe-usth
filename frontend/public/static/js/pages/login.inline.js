@@ -16,6 +16,12 @@
         let access = null;
         try { access = localStorage.getItem("pe_access"); } catch (e) {}
         if (!access) return;
+        // Chỗ này KHÔNG biết hạn thật: nó chỉ dán lại cookie mốc cho một phiên
+        // đã có, không gọi /auth/* nên không có `refreshExpiresIn`. Dùng hạn dự
+        // phòng 8h; lần refresh kế tiếp (trong vòng 15 phút, bằng tuổi access
+        // token) sẽ ghi lại bằng con số thật của máy chủ. Đừng nâng số này lên
+        // cho "khớp production": đoán DÀI hơn hạn thật là mời người học vào một
+        // phiên đã chết rồi cấp tài khoản khách mới, tức mất tiến độ.
         try { document.cookie = "pe_has_session=1; path=/; max-age=28800; SameSite=Lax"; } catch (e) {}
         window.location.replace(next);
       })();

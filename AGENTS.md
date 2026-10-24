@@ -43,11 +43,11 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 35 bộ, 390 ca, tất cả đạt |
+| Backend test | 36 bộ, 394 ca, tất cả đạt |
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **186 ca** / 16 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **191 ca** / 17 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -61,12 +61,12 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 186 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 191 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-runner-error 10 ·
-ide-stop-autosave 24 · ide-trace 38 · label-version 2 · prewarm-gate 5 · studio-lesson 40 ·
-trap-leak 3 · worker-csp 7 = 186. Mốc trước là 166; thêm worker-csp 7, ide-partial-output 10,
-label-version 2, và ide-brief-code 11 → 12.
+ide-stop-autosave 24 · ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 ·
+studio-lesson 40 · trap-leak 3 · worker-csp 7 = 191. Mốc trước là 166; thêm worker-csp 7,
+ide-partial-output 10, label-version 2, session-marker 5, và ide-brief-code 11 → 12.
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -191,8 +191,10 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   nhãn nào chỉ MÔ TẢ runtime thì KHÔNG ghi số — số thật đến từ `runtimeStatus` lúc chạy, nhãn
   dự phòng không có số thì không bao giờ lệch sau một lần nâng Pyodide.
   `label-version.test.mjs` quét cả `frontend/src` (bỏ chú thích) nên không ghi lại được.
-  Bẫy nhỏ trong chính ca test đó: file trong repo là CRLF, mà `.` của regex không khớp ``
-  nên `//.*$` không bóc được chú thích cuối dòng — phải `.replace(//g, '')` trước.
+  Bẫy nhỏ trong chính ca test đó: file trong repo là CRLF, mà `.` của regex không khớp `
+`
+  nên `//.*$` không bóc được chú thích cuối dòng — phải `.replace(/
+/g, '')` trước.
 - **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
   trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
   độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
@@ -329,17 +331,29 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   đếm `step_2.mcq`). Nên thực tế học viên phải hoàn thành 2 bài mới mở được quiz ôn. Thông báo
   gửi FE (`min_questions: 5`) nói theo SỐ CÂU nên dễ đọc nhầm thành "xong 1 bài là đủ"; sửa
   `MIN_POOL` là đổi hành vi người dùng thấy được.
-- **Hạn của tài khoản khách là cửa sổ TRƯỢT, và frontend đang ghi cứng 8 giờ ở nhiều chỗ.**
+- **Hạn của tài khoản khách là cửa sổ TRƯỢT, và frontend từng ghi cứng 8 giờ — ĐÃ sửa.**
   `JWT_REFRESH_EXPIRES` mặc định `'8h'` (`src/config/env.validation.ts`), nhưng
   `RefreshTokenService.lifetimeMs` là hằng đọc MỘT LẦN trong constructor và `expiresAt` được
   tính trong `issue()` — mà `rotateAndBlacklist()` gọi lại `issue()`, nên mỗi lần refresh là
-  một hạn 8 giờ MỚI. Hệ quả: muốn đổi luật hết hạn (ví dụ "khách giữ tiến độ 30 ngày") thì
-  phải quyết ở `issue()`, đặt ở controller là vô ích. Phía frontend, cookie mốc
-  `pe_has_session` đang ghi cứng `max-age=28800` ở **bốn** chỗ — `frontend/src/lib/api.ts:90`
-  và `:130`, `frontend/public/static/js/pe-bridge.js:36`, `frontend/public/static/js/pages/login.inline.js:19`
-  (thêm một chú thích nhắc tới 8 giờ ở `frontend/src/lib/course-progress.ts`). Đổi
-  `JWT_REFRESH_EXPIRES` mà quên bốn chỗ này thì cookie và token lệch nhau: FE tưởng còn phiên
-  trong khi token đã hết, hoặc ngược lại.
+  một hạn MỚI. Hệ quả vẫn đúng: muốn đổi luật hết hạn (ví dụ "khách giữ tiến độ 30 ngày") thì
+  phải quyết ở `issue()`, đặt ở controller là vô ích.
+  **Phần đã sửa, và vì sao nó là lỗi thật:** production đặt `JWT_REFRESH_EXPIRES=24h` — đọc
+  nguyên văn header của `POST https://api.programmingedu.io.vn/auth/refresh` ngày 25/10/2026:
+  `set-cookie: pe_refresh=…; Max-Age=86400; Path=/auth; HttpOnly; Secure; SameSite=Lax` —
+  trong khi cookie mốc `pe_has_session` ghi cứng `max-age=28800` ở BỐN chỗ. Lệch 3 lần: từ giờ
+  thứ 8 tới giờ thứ 24 phiên còn sống nhưng cookie mốc đã hết, nên trang công khai hiện "chưa
+  đăng nhập" và badge "Tiếp tục ở bài X" biến mất dù tiến độ còn nguyên.
+  Nay `/auth/*` trả thêm `refreshExpiresIn` (giây, lấy từ chính `lifetimeMs` dùng để đặt
+  cookie) và client ghi cookie mốc theo con số đó — `danhDauPhien()` trong `api.ts`,
+  `setSessionCookie(giay)` trong `pe-bridge.js`. Đổi `JWT_REFRESH_EXPIRES` là client đi theo,
+  không phải sửa thêm chỗ nào.
+  **Hướng lệch của hạn dự phòng KHÔNG đối xứng — đừng nâng `HAN_DU_PHONG_GIAY` lên "cho khớp
+  production".** Đoán NGẮN hơn hạn thật thì chỉ mất cái badge, tiến độ còn. Đoán DÀI hơn thì
+  trang công khai mời người học vào một phiên đã chết; `apiFetch` refresh không được, rơi xuống
+  `ensureGuest()` và cấp một tài khoản khách MỚI — người học thấy như mất sạch tiến độ. Hai ca
+  test canh đúng chỗ này (`session-marker.test.mjs`, `refresh-expires-contract.spec.ts`).
+  `login.inline.js` vẫn dùng hạn dự phòng vì nó chỉ dán lại cookie cho phiên đã có, không gọi
+  `/auth/*`; lần refresh kế tiếp (≤ 15 phút, bằng tuổi access token) ghi lại bằng số thật.
 - **`apiFetch` gặp 401 là TỰ TẠO tài khoản khách — đừng gọi nó ở trang công khai.**
   `apiFetch` (`frontend/src/lib/api.ts`) khi refresh không được sẽ rơi xuống `ensureGuest()`.
   Gọi nó trên một trang ai cũng vào được nghĩa là **mỗi bot quét web sinh một tài khoản khách**,
