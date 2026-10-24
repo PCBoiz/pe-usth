@@ -8,13 +8,15 @@
  * trang chi tiết đang dùng để vẽ giáo trình, nên hai chỗ không thể lệch số bài.
  *
  * Seed nào là nguồn: `prisma/seed-courses.js` KHÔNG tạo `python_advanced`. Tiêu
- * đề khoá này nằm ở `scripts/seed-python-advanced-v4.ts` (`title` + `META`:
- * subtitle/description ghi vào `courses.content_meta`), còn tên đang hiển thị
- * trong DB Neon thì đổi bằng `scripts/rename-python-advanced.ts`. Sửa tên khoá
- * là phải sửa cả ba chỗ, không thì lần seed sau kéo tên cũ trở lại.
+ * đề khoá này nằm ở `scripts/seed-python-da.ts` (`TITLE` + `META`:
+ * subtitle/description ghi vào `courses.content_meta`). Sửa tên khoá là phải sửa
+ * cả hai chỗ, không thì lần seed sau kéo tên cũ trở lại. (`scripts/seed-python-
+ * advanced-v4.ts` và `scripts/rename-python-advanced.ts` vẫn mang tên cũ
+ * "Advanced Python" — chúng là công cụ của bộ 48 bài pe-v4 đã nghỉ, đừng chạy.)
  *
- * Khoá `python` cơ bản đã gỡ khỏi trang (10/2026): chỉ còn Python Advanced, giáo
- * trình 48 bài từ scripts/pe-v4 (đồng bộ bằng scripts/pe-v4/sync_curricula.py).
+ * Khoá `python` cơ bản đã gỡ khỏi trang (10/2026): chỉ còn một khoá Python.
+ * 24/10/2026 khoá này đổi ruột: 48 bài pe-v4 ra, 172 bài "Python cho Data
+ * Analyst" từ scripts/pe-da vào (đồng bộ bằng scripts/pe-da/sync_curricula.py).
  *
  * 13/10/2026 — gỡ nốt 6 khoá còn lại khỏi danh mục (cpp, java, htmlcss,
  * db_design, db_design_tc, db_design_nc). Buổi dùng thử với giảng viên và sinh
@@ -83,21 +85,38 @@ function lessonCount(id: string, fallback: number): number {
 export const COURSES: CatalogCourse[] = [
   {
     id: 'python_advanced',
-    label: 'Advanced Python',
-    title: 'Advanced Python',
-    subtitle: '48 bài Python nâng cao, chạy ngay trong trình duyệt',
+    // Tên đổi 24/10/2026 cùng lúc đổi ruột khoá. "Advanced Python" nói sai với
+    // người chưa biết Python: bài đầu (PY01) bắt đầu từ `print(12 + 9)` và 54
+    // trong 172 bài ở mức "Cơ bản" — họ sẽ bỏ qua đúng khoá dành cho mình.
+    // Phải TRÙNG `TITLE` trong scripts/seed-python-da.ts (hai nguồn của cùng
+    // một cái tên; `e2e/unit/catalog-naming.test.mjs` canh chỗ này).
+    label: 'Python cho Data Analyst',
+    title: 'Python cho Data Analyst',
+    subtitle: '172 bài: từ phép cộng đầu tiên tới phân tích dữ liệu',
     description:
-      'Process và subprocess, đa luồng, GUI Tkinter, SQL, NumPy, pandas, Matplotlib và dự án phân tích '
-      + 'dữ liệu — chạy Python ngay trong trình duyệt: ghép code rồi chạy thật, săn lỗi, sửa code và '
-      + 'trận Boss cuối chặng.',
+      'Học bằng cách đọc lời giảng, đọc code kèm kết quả thật rồi tự chạy lại và sửa. Python nền '
+      + 'tảng, NumPy, pandas, trực quan hoá (Matplotlib, seaborn, Plotly), OOP và sqlite3, tiến '
+      + 'trình và đa luồng, Tkinter — phần lớn bài chạy ngay trong trình duyệt, những bài cần thư '
+      + 'viện không có sẵn thì có hướng dẫn chạy trên máy.',
+    // KHÔNG ghi số bài chạy-trong-trình-duyệt vào phần giới thiệu: tỉ lệ đó đổi
+    // theo từng lần dựng lại pe-da — chiều 24/10/2026 nó đi 133 → 130 → 128
+    // trong vòng một giờ. Con số chính xác nằm ở phần "Yêu cầu" của
+    // `curricula.json`, do scripts/pe-da/sync_curricula.py sinh lại mỗi lần
+    // dựng, nên nó không trôi khỏi dữ liệu.
     // Không khai `tag`: xem chú thích ở CatalogCourse.tag.
-    level: 'advanced',
-    // Tổng `estimated_minutes` của 48 bài là 1 725 phút ≈ 28,8 giờ. Con số cũ
-    // "~48 giờ" trông như lấy 48 bài × 1 giờ rồi ghi cứng — phóng đại ~67% trên
-    // trang ai cũng vào. `e2e/unit/catalog-duration.test.mjs` cộng lại từ giáo
-    // trình và đòi chuỗi này khớp, để thêm/bớt bài là con số không trôi nữa.
-    duration: '~29 giờ',
-    lessons: lessonCount('python_advanced', 48),
+    //
+    // `beginner` chứ không phải `advanced`: nhãn cấp độ ở trang chủ nói về NGƯỠNG
+    // VÀO, mà khoá này không cần biết Python trước. Khoá vẫn đi tới đa luồng,
+    // multiprocessing và Tkinter ở cuối — phần đó nằm trong giáo trình, không
+    // phải trong nhãn.
+    level: 'beginner',
+    // Tổng `estimated_minutes` của 172 bài là 1 836 phút = 30,6 giờ (cộng từ
+    // scripts/pe-da/out/lessons/*.json). Đừng ghi theo kiểu "172 bài × 1 giờ":
+    // đúng cái đó từng cho ra "~48 giờ" cho bộ 48 bài trong khi thật là 28,8 —
+    // phóng đại ~67% trên trang ai cũng vào. `e2e/unit/catalog-duration.test.mjs`
+    // cộng lại từ giáo trình thật và đòi chuỗi này khớp.
+    duration: '~31 giờ',
+    lessons: lessonCount('python_advanced', 172),
     rating: 4.8,
     image: '/static/images/python.webp',
     color: '#2563eb',
