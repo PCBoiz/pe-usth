@@ -366,6 +366,11 @@ def _input(prompt=''):
         # Đúng hành vi CPython khi stdin cạn. Cố ý KHÔNG trả '' hay treo máy:
         # trả '' thì chương trình sai âm thầm, còn treo thì worker bị
         # terminate() sau 5 giây và học viên không hiểu vì sao.
+        #
+        # Nhưng "EOFError: EOF when reading a line" thì người mới học không đọc
+        # được. Đếm lại ở đây để _notes() thêm một dòng giải thích BẰNG LỜI —
+        # giữ nguyên ngoại lệ thật (traceback phải đúng), chỉ nói thêm.
+        _STDIN['eof'] = _STDIN.get('eof', 0) + 1
         raise EOFError('EOF when reading a line')
     return line[:-1] if line.endswith('\n') else line
 
@@ -4862,6 +4867,13 @@ def _run_program(source, files, vars=None, entry=None, setup=None, options=None,
 def _notes(result):
     """Mấy dòng tóm tắt mô phỏng, hiện mờ dưới console của học viên."""
     notes = []
+    # input() không có gì để đọc. Người mới gõ input() trong ô chạy tự do sẽ
+    # nhận "EOFError: EOF when reading a line" — đúng nhưng vô nghĩa với họ.
+    # Nói thẳng ra là ở đây không gõ được từ bàn phím, kèm cách làm thay.
+    if _STDIN.get('eof'):
+        notes.append('[nhập liệu] Ô này không nhập được từ bàn phím, nên input() '
+                     'báo EOFError. Gán sẵn giá trị để thử: ten = "Hoa" thay cho '
+                     'ten = input("Tên: ").')
     if result.threads:
         joined = sum(1 for t in result.threads if t.joined)
         line = '[mô phỏng thread] %d Thread được tạo, %d đã start, %d đã join' % (
@@ -5160,6 +5172,9 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='nul
     os.makedirs(WORK_ROOT, exist_ok=True)
     _STDIN['lines'] = json.loads(stdin_json or '[]') or []
     _STDIN['loose'] = None
+    # Runtime được GIỮ LẠI giữa các lần chạy, nên bộ đếm EOF phải đặt lại ở đây;
+    # quên thì lần chạy sau vẫn hiện dòng giải thích của lần trước.
+    _STDIN['eof'] = 0
     _TK_FALLBACK[0] = None
     _LOOSE_TK[0] = None
     files = {}
