@@ -262,7 +262,14 @@ export type Step4 = {
   /** Ghi vào thư mục chạy trước mỗi lần chạy; bộ chấm cho phép thay theo từng ca. */
   files?: LessonFile[];
   contracts?: LessonContract[];
-  /** Cửa tự kiểm tra (B20, I07, I12, N04, N08): lời giải chỉ mở sau lần nộp đầu. */
+  /**
+   * Cửa tự kiểm tra: lời giải chỉ mở sau khi bài được ghi nhận HOÀN THÀNH.
+   *
+   * Danh sách cũ ở đây (B20, I07, I12, N04, N08) là của khoá cơ bản pe-v3 ĐÃ
+   * XOÁ — AGENTS.md cảnh báo đúng chú thích này. Khoá đang chạy là 172 bài
+   * pe-da, không có cửa nào; pe-v4 (còn trong repo, không xuất bản) có ba:
+   * R02, DA01, DA02. Cả hai phía nhận diện theo CỜ này chứ không theo mã bài.
+   */
   gate?: boolean;
   /** Server đang giữ solutionCode (bài cửa chưa hoàn thành) — xem
    *  withholdSolutionCode ở src/lessons/lessons.service.ts. */
