@@ -142,6 +142,18 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · thuộc tính phơi ra máy thật — `Path(sys.executable).is_file()` chạy đúng, không ném gì,
     và trả SAI trong trình duyệt (EX03), xem `THUOC_TINH_MAY`.
   Cả ba chỉ lộ ra khi CHẠY THẬT. Đó là việc của `check-pyodide.mjs`.
+- **`loadPackage` KHÔNG ném khi thiếu wheel — nó lặng lẽ tải từ CDN.** Giấu thử
+  `pandas-3.0.2-….whl` đi rồi chạy bộ chấm: `loadPackage` resolve bình thường,
+  `loadedPackages` báo có pandas, `import pandas` ra `3.0.2` — vì Pyodide rơi về
+  `cdn.jsdelivr.net`. Nghĩa là ba bộ chấm chưa bao giờ chứng minh được các wheel
+  trong `frontend/public/pyodide/` dùng được: xoá nhầm một cái vẫn xanh CI.
+  Trong trình duyệt thì NGƯỢC LẠI — CSP `connect-src 'self' ${API_ORIGIN}`
+  (`frontend/next.config.ts`) chặn đường CDN đó, nên cùng một wheel thiếu là
+  hỏng cứng với học viên mà CI không hề biết. Cả ba bộ chấm
+  (`pe-da/check-pyodide.mjs`, `pe-v4/check-pyodide.mjs`, `pe-v4/check-advanced.mjs`)
+  nay vá `globalThis.fetch` để TỪ CHỐI mọi địa chỉ `http(s)://`. Đừng gỡ: nó là
+  thứ duy nhất làm hai môi trường nói cùng một chuyện. Kiểm lại bằng cách đổi tên
+  một wheel rồi chạy `node scripts/pe-da/check-pyodide.mjs PD01` — phải ĐỎ.
 - **Worker Python là MODULE worker từ khi nâng lên Pyodide 314 — đừng quay về classic.**
   314 bỏ hẳn hỗ trợ classic worker và không còn phát hành `pyodide.js`, chỉ có `.mjs`. Cả hai
   worker (`studio-lesson.worker.js`, `python-studio.worker.js`) nay nạp runtime bằng

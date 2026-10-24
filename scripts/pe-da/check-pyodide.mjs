@@ -57,6 +57,35 @@ const coTrongLock = new Set(
   Object.keys(JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8')).packages),
 );
 
+/**
+ * CẤM ĐI MẠNG — bộ chấm chỉ được dùng đúng các file trong repo.
+ *
+ * Phát hiện bằng cách giấu thử một wheel đi: `loadPackage` KHÔNG ném, mà lặng lẽ
+ * tải từ `cdn.jsdelivr.net`, rồi `loadedPackages` báo có và `import` chạy ngon.
+ * Nghĩa là bộ chấm này chưa bao giờ thật sự chứng minh các wheel trong
+ * `frontend/public/pyodide/` dùng được — xoá nhầm một cái vẫn xanh CI, vì Node
+ * có mạng còn jsdelivr thì luôn sẵn.
+ *
+ * Trong trình duyệt thì ngược lại: CSP `connect-src 'self' ${API_ORIGIN}`
+ * (frontend/next.config.ts) CHẶN đường CDN đó, nên cùng một wheel thiếu là hỏng
+ * cứng với học viên nhưng vẫn xanh ở đây. Chặn mạng ngoài để hai môi trường nói
+ * cùng một chuyện.
+ */
+const fetchThat = globalThis.fetch;
+globalThis.fetch = (u, ...r) => {
+  const dia = String(typeof u === 'string' ? u : (u?.url ?? u));
+  if (/^https?:\/\//i.test(dia)) {
+    return Promise.reject(
+      new Error(
+        `bộ chấm không được đi mạng: ${dia}\n`
+        + '  → file này phải nằm sẵn trong frontend/public/pyodide/v314.0.7/.\n'
+        + '  → trình duyệt cũng chặn (CSP connect-src), nên tải được ở đây là ảo.',
+      ),
+    );
+  }
+  return fetchThat(u, ...r);
+};
+
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');
@@ -160,6 +189,27 @@ for (const lesson of bundle.lessons) {
   const can = khai.filter((p) => coTrongLock.has(p) && !warmed.has(p));
   if (can.length) {
     await py.loadPackage(can, { messageCallback: () => {} });
+
+    // `loadPackage` KHÔNG ném khi wheel không tải được. Đo được: gọi nó cho một
+    // gói có trong lock nhưng thiếu file trên đĩa thì nó resolve "thành công"
+    // sau một giây, `loadedPackages` rỗng, không một ngoại lệ nào. Lỗi chỉ lộ ra
+    // ở dòng `import` sau đó — và lúc ấy trông y hệt như học viên gõ sai tên
+    // module. Một wheel bị xoá nhầm khỏi `frontend/public/pyodide/` vì thế đi
+    // lọt qua cả bộ chấm mà không làm đỏ gì.
+    //
+    // Hỏi thẳng runtime xem nó NẠP ĐƯỢC cái gì, đừng tin lời hứa của hàm.
+    const daNap = new Set(Object.keys(py.loadedPackages ?? {}));
+    const thieuFile = can.filter((p) => !daNap.has(p));
+    if (thieuFile.length) {
+      hong.push({
+        ma,
+        loai: 'wheel không tải được',
+        chiTiet: `${thieuFile.join(', ')} — có trong pyodide-lock.json nhưng `
+          + `loadPackage không nạp được (thiếu file trong ${RUNTIME}?)`,
+      });
+      continue;
+    }
+
     const loi = JSON.parse(preload(JSON.stringify(can)));
     if (loi.length) hong.push({ ma, loai: 'nạp gói', chiTiet: loi.join('; ') });
     can.forEach((p) => warmed.add(p));

@@ -32,6 +32,21 @@ const RUNTIME = join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/';
 const coTrongLock = new Set(
   Object.keys(JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8')).packages),
 );
+// CẤM ĐI MẠNG — chỉ được dùng đúng các file trong repo. Giấu thử một wheel đi
+// thì `loadPackage` KHÔNG ném: nó lặng lẽ tải từ cdn.jsdelivr.net rồi báo thành
+// công. Tức bộ chấm này chưa bao giờ chứng minh được các wheel trong
+// frontend/public/pyodide/ dùng được — xoá nhầm một cái vẫn xanh CI. Trình duyệt
+// thì ngược lại: CSP `connect-src 'self'` chặn đường đó, nên cùng một wheel
+// thiếu là hỏng cứng với học viên. Chặn ở đây để hai môi trường nói cùng chuyện.
+const fetchThat = globalThis.fetch;
+globalThis.fetch = (u, ...r) => {
+  const dia = String(typeof u === 'string' ? u : (u?.url ?? u));
+  if (/^https?:\/\//i.test(dia)) {
+    return Promise.reject(new Error(`bộ chấm không được đi mạng: ${dia}`));
+  }
+  return fetchThat(u, ...r);
+};
+
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');
