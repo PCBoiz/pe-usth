@@ -47,7 +47,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **166 ca** / 13 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **173 ca** / 14 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -61,11 +61,11 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 166 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 173 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 11 · ide-handoff 6 · ide-runner-error 10 · ide-stop-autosave 24 · ide-trace 38 ·
-prewarm-gate 5 · studio-lesson 40 · trap-leak 3 = 166. Mốc trước là 142; 24 ca thêm vào là của
-nút Dừng, phần tự lưu mã, và chế độ chạy mặc định của `/ide`.
+prewarm-gate 5 · studio-lesson 40 · trap-leak 3 · worker-csp 7 = 173. Mốc trước là 166; 7 ca
+thêm vào khoá CSP riêng của ba worker Python.
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -154,6 +154,26 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   nay vá `globalThis.fetch` để TỪ CHỐI mọi địa chỉ `http(s)://`. Đừng gỡ: nó là
   thứ duy nhất làm hai môi trường nói cùng một chuyện. Kiểm lại bằng cách đổi tên
   một wheel rồi chạy `node scripts/pe-da/check-pyodide.mjs PD01` — phải ĐỎ.
+- **Code Python của học viên gọi được API kèm cookie phiên — đã bịt, và `worker-src` KHÔNG
+  phải thứ bịt được.** `pyodide.ffi` cho code Python với tới JS, nên trong worker nó làm được
+  `fetch(API_ORIGIN + '/auth/refresh', { credentials: 'include' })` và nhận về access token
+  THẬT (đo trong Chrome 155, 25/10/2026). Nguyên nhân KHÔNG phải "worker không có CSP": entry
+  `/(.*)` trong `frontend/next.config.ts` khớp cả `/static/js/*.worker.js`, nên ba worker vẫn
+  đang chạy với đúng CSP của trang — mà CSP đó **cố ý** cho phép `connect-src … ${API_ORIGIN}`.
+  Theo CSP3 §4.2 worker nhận policy từ response CỦA NÓ, nên cách bịt là một entry RIÊNG cho
+  ba file worker với `connect-src 'self'`. Entry đó phải nằm **sau** `/(.*)`: trùng tên header
+  thì Next.js lấy entry sau (`node_modules/next/dist/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.md`).
+  Đo lại được: cùng một URL, server có mở CORS hết cỡ — gọi từ TRANG thì 200, gọi từ WORKER
+  thì bị chặn, mà khác biệt duy nhất là header CSP trên file worker.
+  **Phần dễ tưởng xong mà chưa xong:** `worker-src 'none'` KHÔNG chặn
+  `js.Worker.new('/static/js/pe-bridge.js')` — đo được là nó chỉ chặn `blob:`, còn worker con
+  từ URL cùng origin vẫn tạo được, vì Chrome xét worker con lồng trong worker theo
+  `script-src`, mà `script-src` buộc phải có `'self'` để `import()` được `pyodide.mjs`. Và
+  worker con đó nhận CSP của TRANG, tức có lại `API_ORIGIN` — bản sửa thành vô nghĩa. Nên mỗi
+  worker còn phải tự `delete self.Worker` trước khi chạy mã học viên. Cả hai nửa bị khoá bởi
+  `frontend/e2e/unit/worker-csp.test.mjs` (7 ca; gỡ từng nửa ra thì trượt đúng nửa đó, đã thử).
+  Thêm worker Python mới thì phải khai vào `PYTHON_WORKERS` — ca "MỌI worker trên đĩa đều được
+  khai" bắt chỗ này.
 - **Worker Python là MODULE worker từ khi nâng lên Pyodide 314 — đừng quay về classic.**
   314 bỏ hẳn hỗ trợ classic worker và không còn phát hành `pyodide.js`, chỉ có `.mjs`. Cả hai
   worker (`studio-lesson.worker.js`, `python-studio.worker.js`) nay nạp runtime bằng

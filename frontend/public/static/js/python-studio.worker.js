@@ -6,6 +6,23 @@
 // bỏ hẳn hỗ trợ classic worker và không còn phát hành `pyodide.js`.
 const PYODIDE_DIR = '/pyodide/v314.0.7/';
 
+// Bỏ hẳn `Worker` khỏi worker này TRƯỚC khi chạy mã học viên.
+//
+// Code Python gọi được JS qua `pyodide.ffi`, nên một đoạn mã dán từ link lạ có
+// thể làm `js.Worker.new('/static/js/pe-bridge.js')`. Worker CON đó nhận policy
+// từ response của CHÍNH file đó — tức CSP chung của trang, trong đó
+// `connect-src` có `API_ORIGIN` — nên nó lại gọi được API kèm cookie phiên.
+//
+// `worker-src 'none'` trong CSP riêng của file worker (frontend/next.config.ts)
+// KHÔNG đủ: đo trong Chrome 155 thì nó chỉ chặn `blob:`, còn worker con từ URL
+// cùng origin vẫn tạo được — Chrome xét worker con lồng trong worker theo
+// `script-src`, mà `script-src` buộc phải có `'self'` để `import()` được
+// pyodide.mjs. Nên chặn bằng JS là cách duy nhất khép được đường này.
+//
+// Không có đường lấy lại: worker không có DOM nên không tạo được realm mới.
+delete self.Worker;
+
+
 self.onmessage = async ({ data }) => {
   try {
     const { loadPyodide } = await import(PYODIDE_DIR + 'pyodide.mjs');

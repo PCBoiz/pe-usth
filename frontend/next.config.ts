@@ -39,6 +39,39 @@ const csp = [
   "frame-ancestors 'self'",
 ].join("; ");
 
+// CSP RIÊNG cho chính response của ba worker Python. Theo CSP3 §4.2 worker
+// nhận policy từ response CỦA NÓ, không phải của trang tạo ra nó — và hôm nay
+// entry "/(.*)" bên dưới khớp cả `/static/js/*.worker.js`, nên ba worker đang
+// chạy với ĐÚNG `csp` ở trên. Vấn đề nằm ở chỗ `csp` cố ý cho phép
+// `connect-src ... ${API_ORIGIN}`: đo được trong worker rằng
+// `fetch(API_ORIGIN + '/auth/refresh', { credentials: 'include' })` trả về một
+// access token THẬT. Code Python của học viên gọi được JS qua `pyodide.ffi`,
+// nên một đoạn code dán từ link lạ đọc được tiến độ/XP của tài khoản đang mở.
+//
+// Ba worker này chỉ cần CÙNG ORIGIN: `import()` runtime Pyodide, fetch .wasm +
+// python_stdlib.zip + wheel, `studio-harness.py`, `pe_tracer.min.py`. Không cái
+// nào gọi API. Nên bỏ hẳn API_ORIGIN khỏi connect-src của chúng.
+//
+// `worker-src 'none'` KHÔNG được bỏ: thiếu nó thì worker tạo được worker con từ
+// một file cùng origin khác (vd `/static/js/pe-bridge.js`), file đó lại nhận
+// policy của TRANG — tức là có lại API_ORIGIN, và bản sửa này thành vô nghĩa.
+//
+// `default-src 'none'`: worker không có DOM nên không cần img/style/font.
+const workerCsp = [
+  "default-src 'none'",
+  "script-src 'self' 'wasm-unsafe-eval'",
+  "connect-src 'self'",
+  "worker-src 'none'",
+].join("; ");
+
+// Liệt kê TỪNG tên file, không dùng regex đuôi `.worker.js`: pattern viết sai là
+// im lặng không khớp, và mất CSP thì không có gì đỏ lên để biết.
+const PYTHON_WORKERS = [
+  "ide.worker.js",
+  "python-studio.worker.js",
+  "studio-lesson.worker.js",
+];
+
 const nextConfig: NextConfig = {
   turbopack: {
     // Ghim gốc dự án vào chính thư mục frontend/.
@@ -61,6 +94,13 @@ const nextConfig: NextConfig = {
           { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
+      // PHẢI nằm sau entry "/(.*)" ở trên: Next.js lấy giá trị của entry SAU khi
+      // hai entry cùng khớp và cùng tên header (01-next-config-js/headers.md).
+      // Đổi thứ tự là ba worker lại nhận CSP của trang, kèm API_ORIGIN.
+      ...PYTHON_WORKERS.map((file) => ({
+        source: `/static/js/${file}`,
+        headers: [{ key: "Content-Security-Policy", value: workerCsp }],
+      })),
       {
         // Runtime Pyodide (~32 MB: wasm + stdlib + wheel numpy/pandas/matplotlib)
         // nằm trong thư mục ĐÃ GHIM PHIÊN BẢN, nên nội dung không bao giờ đổi:
