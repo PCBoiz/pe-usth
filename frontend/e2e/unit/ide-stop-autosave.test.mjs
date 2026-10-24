@@ -27,6 +27,8 @@ import test from 'node:test';
 
 import {
   countdownSeconds,
+  ideRunnerMode,
+  needsLinkConfirm,
   IDE_AUTOSAVE_KEY,
   IDE_COUNTDOWN_FROM_MS,
   IDE_RUN_TIMEOUT_MS,
@@ -216,4 +218,65 @@ test('đúng trần thì vẫn lưu được — trần là trần, không phả
   const vuaDu = '#'.repeat(MAX_IDE_AUTOSAVE_CHARS);
   saveIdeCode(vuaDu, kho);
   assert.equal(loadIdeCode(kho), vuaDu);
+});
+
+// ---------------------------------------------------------------------------
+// CHẾ ĐỘ CHẠY và LỚP CHẶN MÃ TỪ LINK
+//
+// Hai thứ dưới đây là quyết định BẢO MẬT, không phải tuỳ chọn giao diện, nên
+// chúng phải có test ghim lại thay vì nằm trong một dòng `?:` không ai canh.
+//
+// Vì sao mặc định là `client`: đường backend đang trả HTTP 503 trên production
+// ("Bộ chạy Python đang tắt"), nên rơi về nó là rơi vào một trang hỏng. Mọi giá
+// trị KHÔNG phải `'server'` — chưa đặt, gõ sai, chuỗi rỗng — đều phải ra
+// `client`; một lỗi chính tả trong biến môi trường không được âm thầm đưa học
+// viên về trang chết.
+//
+// Vì sao `needsLinkConfirm` chỉ hỏi ở đúng một ca: mã đến từ `/ide#code=…` là
+// mã của NGƯỜI KHÁC, và khi nó chạy Pyodide cùng origin thì một lời gọi
+// `fetch('/auth/refresh', {credentials:'include'})` trong đó lấy được access
+// token của chính người đang xem (đã đo trên bản thật). Hỏi ở ca `autosave` hay
+// `default` thì chỉ làm phiền người học với mã của chính họ; KHÔNG hỏi ở ca
+// `hash` thì mất lớp chặn duy nhất đang có.
+//
+// Gỡ bản sửa ra thì test trượt (đã chạy thật 25/10/2026):
+//  · đổi mặc định về `'server'` → 1 ca trượt;
+//  · cho `needsLinkConfirm` trả `true` ở mọi `source` → 2 ca trượt;
+//  · cho nó bỏ qua `mode` (luôn hỏi khi source là hash) → 1 ca trượt.
+test('needsLinkConfirm: chỉ hỏi khi mã đến TỪ LINK và chạy Ở CLIENT', () => {
+  assert.equal(needsLinkConfirm('hash', 'client'), true);
+
+  // Chạy ở máy chủ thì mã chạy trong container, không đụng phiên của ai.
+  assert.equal(needsLinkConfirm('hash', 'server'), false);
+});
+
+test('needsLinkConfirm: KHÔNG hỏi về mã của chính người học', () => {
+  for (const nguon of ['autosave', 'default']) {
+    assert.equal(
+      needsLinkConfirm(nguon, 'client'),
+      false,
+      `source=${nguon} là mã của chính họ, hỏi là làm phiền vô cớ`,
+    );
+  }
+});
+
+test('ideRunnerMode: chỉ đúng chữ "server" mới quay về backend', async () => {
+  const luu = process.env.NEXT_PUBLIC_IDE_RUNNER;
+  try {
+    for (const [dat, mong] of [
+      ['server', 'server'],
+      ['client', 'client'],
+      [undefined, 'client'],
+      ['', 'client'],
+      ['sever', 'client'], // gõ sai: phải rơi về client, không về trang 503
+      ['SERVER', 'client'], // so khớp đúng chữ, không nới lỏng
+    ]) {
+      if (dat === undefined) delete process.env.NEXT_PUBLIC_IDE_RUNNER;
+      else process.env.NEXT_PUBLIC_IDE_RUNNER = dat;
+      assert.equal(ideRunnerMode(), mong, `NEXT_PUBLIC_IDE_RUNNER=${String(dat)}`);
+    }
+  } finally {
+    if (luu === undefined) delete process.env.NEXT_PUBLIC_IDE_RUNNER;
+    else process.env.NEXT_PUBLIC_IDE_RUNNER = luu;
+  }
 });

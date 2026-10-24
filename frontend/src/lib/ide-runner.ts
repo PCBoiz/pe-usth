@@ -9,18 +9,27 @@
  * chỉ phục vụ ĐÚNG HAI lượt song song, trong khi ở client là bằng số máy học
  * viên.
  *
- * ĐANG SAU MỘT CỜ, mặc định vẫn là máy chủ. Đổi ý thì tắt cờ, không phải revert.
- * Xem `ideRunnerMode()` bên dưới.
+ * MẶC ĐỊNH NAY LÀ CLIENT. Quay về máy chủ bằng `NEXT_PUBLIC_IDE_RUNNER=server`
+ * hoặc `?runner=server` — không cần revert commit nào.
  *
- * ĐIỀU KIỆN CHẶN ĐƯỜNG trước khi bật mặc định cho mọi người — ghi ở đây vì đây
- * là chỗ người ta sẽ đọc khi định bật: `/ide` ĐÃ CÓ đường chia sẻ link
- * (`ide-handoff.ts` nhét mã vào `/ide#code=…`, và `TryItButton` dựng nó thành
- * một <a> thật trên trang bài học). Hôm nay vô hại vì mã chạy trong Docker. Khi
- * mã chạy Pyodide CÙNG ORIGIN với phiên của người xem, cái link đó thành đường
- * một cú bấm từ mã của người này vào ngữ cảnh JS của người kia — đúng lớp lỗ
- * hổng đã có 4 CVE 8,3–9,9 (thoát sandbox Pyodide qua ctypes → export
- * Emscripten). Lớp phòng đúng là ORIGIN (iframe sandbox ở domain khác), không
- * phải chặn `ctypes`. Đừng bật mặc định trước khi quyết xong chuyện đó.
+ * Lật mặc định là một quyết định có đánh đổi, ghi lại ở đây vì đây là chỗ người
+ * ta sẽ đọc khi muốn hiểu vì sao:
+ *  · ĐƯỢC: `/ide` trên production đang trả HTTP 503 ("Bộ chạy Python đang tắt"),
+ *    tức cả nút Chạy lẫn nút Xem-từng-bước đều CHẾT. Đường client làm nó sống
+ *    lại ngay, không cần dựng lại hạ tầng nào.
+ *  · MẤT: `/ide` ĐÃ CÓ đường chia sẻ link (`ide-handoff.ts` nhét mã vào
+ *    `/ide#code=…`, `TryItButton` dựng nó thành <a> thật trên trang bài học).
+ *    Mã chạy trong Docker thì vô hại; chạy Pyodide CÙNG ORIGIN thì không. Đo
+ *    được trên bản thật: trong Worker, `localStorage`/`document` KHÔNG với tới
+ *    (cách ly miễn phí), nhưng `fetch` mở và `POST /auth/refresh` kèm
+ *    `credentials:'include'` trả về access token của chính người đang xem. Tức
+ *    thiệt hại là CHIẾM PHIÊN, và chặn `ctypes` giải quyết số không vì
+ *    `js.fetch` là API hợp pháp.
+ *
+ * `needsLinkConfirm` bên dưới cắt chuỗi "gửi link → bấm Chạy → xong" bằng một
+ * lần hỏi. Nó là LỚP VÁ, không phải lớp phòng. Lớp phòng thật là tách ORIGIN
+ * (chạy trong iframe sandbox ở domain khác) — việc đó còn nợ, và chừng nào chưa
+ * làm thì mặc định client chỉ hợp với giai đoạn thử nội bộ.
  *
  * File này KHÔNG import gì theo alias '@/…' và không có JSX, nên bộ test chạy
  * bằng `node --test` thuần import trực tiếp được — cùng tiền lệ với
@@ -103,7 +112,10 @@ export function ideRunnerMode(): 'client' | 'server' {
     const q = new URLSearchParams(window.location.search).get('runner');
     if (q === 'client' || q === 'server') return q;
   }
-  return process.env.NEXT_PUBLIC_IDE_RUNNER === 'client' ? 'client' : 'server';
+  // Mặc định CLIENT. Chỉ `=server` mới quay về đường backend — mọi giá trị khác
+  // (chưa đặt, gõ sai, chuỗi rỗng) đều rơi về client, vì đường backend hiện
+  // đang trả 503 và rơi về nó là rơi vào một trang hỏng.
+  return process.env.NEXT_PUBLIC_IDE_RUNNER === 'server' ? 'server' : 'client';
 }
 
 let worker: Worker | null = null;

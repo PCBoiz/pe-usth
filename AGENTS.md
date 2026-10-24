@@ -47,7 +47,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **163 ca** / 13 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **166 ca** / 13 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -61,11 +61,11 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 163 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 166 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
-ide-brief-code 11 · ide-handoff 6 · ide-runner-error 10 · ide-stop-autosave 21 · ide-trace 38 ·
-prewarm-gate 5 · studio-lesson 40 · trap-leak 3 = 163. Mốc trước là 142; 21 ca thêm vào là của
-nút Dừng và phần tự lưu mã ở `/ide`.
+ide-brief-code 11 · ide-handoff 6 · ide-runner-error 10 · ide-stop-autosave 24 · ide-trace 38 ·
+prewarm-gate 5 · studio-lesson 40 · trap-leak 3 = 166. Mốc trước là 142; 24 ca thêm vào là của
+nút Dừng, phần tự lưu mã, và chế độ chạy mặc định của `/ide`.
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
