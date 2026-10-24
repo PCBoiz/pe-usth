@@ -67,6 +67,40 @@
 .run:hover:not(:disabled) { transform: translateY(-1px); }
 .run:disabled { opacity: 0.6; cursor: progress; }
 
+/* Nút Dừng — CÙNG nút Chạy đổi vai, không phải nút thứ hai (xem IdeClient).
+   Giữ đúng chiều cao 42px và bán kính của .run để thanh công cụ không nhảy khi
+   nhãn đổi. Dùng màu cảnh báo chứ không phải gradient nhấn: đây là việc CẮT
+   một thứ đang chạy, không phải việc khởi động. */
+.stop {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 22px;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--edu-t1);
+  background: color-mix(in srgb, crimson 16%, transparent);
+  border: 1px solid color-mix(in srgb, crimson 45%, transparent);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.stop:hover { background: color-mix(in srgb, crimson 26%, transparent); }
+.stop:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 2px;
+}
+
+/* Đếm ngược mấy giây cuối. `tabular-nums` để con số không làm dòng chữ co giãn
+   mỗi lần đổi — chữ nhảy cạnh nút người ta đang định bấm là tệ hơn không đếm. */
+.countdown {
+  font-size: 13px;
+  color: var(--edu-t3);
+  font-variant-numeric: tabular-nums;
+}
+
 .kbd {
   padding: 2px 7px;
   font: inherit;
@@ -195,9 +229,53 @@
 .stdout { color: var(--edu-t1); }
 .stderr { color: color-mix(in srgb, crimson 85%, var(--edu-t1)); }
 
+/* Dải "đã khôi phục bản tự lưu" (xem `restored` trong IdeClient). Nói ra việc
+   vừa xảy ra thay vì âm thầm thay mã của người ta; đóng được nên nó không ăn
+   chỗ của .split mãi mãi. Dùng tông pill trung tính, KHÔNG phải .noticeWarn:
+   khôi phục thành công không phải chuyện phải cảnh báo. */
+.restored {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 12px;
+  padding: 8px 8px 8px 14px;
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--edu-t1);
+  background: var(--edu-pill-bg);
+  border: 1px solid var(--edu-pill-border);
+  border-radius: 12px;
+}
+/* Câu chữ ăn hết chỗ còn lại, nhưng được phép xuống dòng riêng khi hẹp
+   (260px) thay vì bóp hai nút thành hai cột chữ dọc. */
+.restored span { flex: 1 1 260px; }
+
+.restoredAction,
+.restoredClose {
+  flex: 0 0 auto;
+  font: inherit;
+  font-size: 13px;
+  color: var(--edu-t1);
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-pill-border);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.restoredAction { padding: 5px 14px; font-weight: 600; }
+.restoredClose { width: 26px; height: 26px; line-height: 1; }
+.restoredAction:hover,
+.restoredClose:hover { background: var(--edu-track-bg); }
+.restoredAction:focus-visible,
+.restoredClose:focus-visible {
+  outline: 2px solid var(--edu-accent);
+  outline-offset: 2px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .spinner { animation: none; }
-  .run { transition: none; }
+  .run,
+  .stop { transition: none; }
 }
 
 @media (max-width: 899.98px) {

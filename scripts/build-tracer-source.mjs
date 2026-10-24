@@ -22,7 +22,7 @@
  */
 import { spawnSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -30,6 +30,11 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const pySource = join(root, 'src/python-runner/tracer/pe_tracer.py');
 const stripper = join(root, 'scripts/pe-tracer-strip.py');
 const tsTarget = join(root, 'src/python-runner/tracer/tracer-source.ts');
+// Bản thứ hai, PHỤC VỤ TĨNH cho trình duyệt: khi "Xem từng bước" chạy bằng
+// Pyodide trong worker, tracer phải tải được qua HTTP cùng origin. Sinh từ CÙNG
+// một nguồn và CÙNG một lượt rút gọn với bản nhúng cho backend — hai bản lệch
+// nhau thì cùng một đoạn mã cho ra hai vết khác nhau tuỳ đường nào chạy.
+const webTarget = join(root, 'frontend/public/static/py/pe_tracer.min.py');
 
 // Chuẩn hoá về \n: bản nhúng phải giống nhau trên Windows và Linux, nếu không
 // cùng một commit lại gửi hai đoạn Python khác nhau tuỳ máy nào build.
@@ -79,6 +84,22 @@ export const TRACER_SOURCE = \`${escaped}\`;
 `;
 
 writeFileSync(tsTarget, out, 'utf8');
+
+mkdirSync(dirname(webTarget), { recursive: true });
+writeFileSync(
+  webTarget,
+  [
+    '# TỆP SINH TỰ ĐỘNG — ĐỪNG SỬA TAY.',
+    '# Nguồn: src/python-runner/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)',
+    '# Sinh lại: node scripts/build-tracer-source.mjs',
+    `# sha256 của nguồn: ${sha}`,
+    stripped,
+    '',
+  ].join('\n'),
+  'utf8',
+);
+
+process.stdout.write(`Đã ghi bản cho trình duyệt: ${webTarget}\n`);
 process.stdout.write(
   `Đã nhúng ${Buffer.byteLength(stripped, 'utf8')} byte Python (rút gọn từ ` +
     `${Buffer.byteLength(original, 'utf8')} byte) vào ${tsTarget}\n`,

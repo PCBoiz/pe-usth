@@ -39,6 +39,9 @@ import {
   type TraceRunInfo,
 } from '@/lib/trace';
 
+import { ideRunnerMode } from '@/lib/ide-runner';
+import { traceInBrowser } from '@/lib/ide-trace';
+
 import styles from './CodeVisualizer.module.css';
 
 /**
@@ -147,6 +150,29 @@ export default function CodeVisualizer({
     setPlaying(false); // vết mới: đừng để nhịp tự chạy của vết CŨ chạy tiếp
     lastMoveRef.current = null;
     try {
+      // Đường CLIENT: ghi vết bằng Pyodide ngay trong trình duyệt. Dùng CHÍNH
+      // `pe_tracer.py` của backend (sinh ra cùng một lượt với bản nhúng), nên
+      // hợp đồng JSON v1 và toàn bộ phần dựng giao diện bên dưới giữ nguyên.
+      if (ideRunnerMode() === 'client') {
+        try {
+          const payload = await traceInBrowser(code);
+          if (!controller.signal.aborted) {
+            setState({ status: 'ready', doc: payload.trace, run: payload.run, code });
+          }
+        } catch (e) {
+          if (!controller.signal.aborted) {
+            setState({
+              status: 'error',
+              kind: 'infra',
+              message:
+                'Không khởi động được bộ ghi vết trong trình duyệt. Thử tải lại trang; '
+                + 'nút “Chạy” vẫn dùng được bình thường.',
+              detail: e instanceof Error ? e.message : String(e),
+            });
+          }
+        }
+        return;
+      }
       const res = await apiFetch('/api/python/trace', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
