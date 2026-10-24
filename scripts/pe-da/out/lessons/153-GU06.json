@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU06",
+ "sort_order": 153,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU06 · Radiobutton và giá trị được chọn",
+ "subtitle": "Trung cấp · M8 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU06 · Radiobutton và giá trị được chọn",
+  "subtitle": "Trung cấp · M8 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 314; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Người dùng chọn một hệ điểm 10 hoặc 20. Hai nút radio dùng chung một biến nên chỉ có một giá trị đang được chọn."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nscale=tk.StringVar(r,value='20')\nsmall=tk.Radiobutton(r,text='He 10',variable=scale,value='10')\nlarge=tk.Radiobutton(r,text='He 20',variable=scale,value='20')\nprint(scale.get())\nsmall.invoke()\nprint(scale.get())\nr.destroy()",
+      "expected": "20\n10"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "StringVar giữ giá trị mà các widget có thể cùng theo dõi. value là dữ liệu lưu khi chọn nút, còn text chỉ là nhãn hiển thị; chúng không cần giống nhau."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nchoice=tk.StringVar(r,value='N')\nnorth=tk.Radiobutton(r,text='Mien Bac',variable=choice,value='N')\nsouth=tk.Radiobutton(r,text='Mien Nam',variable=choice,value='S')\nsouth.invoke()\nprint(south.cget('text'))\nprint(choice.get())\nr.destroy()",
+      "expected": "Mien Nam\nS"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở đây người dùng nhìn Mien Nam nhưng chương trình nhận mã S. Dùng mã ổn định giúp phần xử lý không phụ thuộc việc bạn đổi nhãn sang ngôn ngữ khác."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nchoice=tk.StringVar(r,value='N')\nlabel=tk.Label(r,textvariable=choice)\nchoice.set('S')\nprint(choice.get())\nprint(str(label.cget('textvariable'))==str(choice))\nr.destroy()",
+      "expected": "S\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "set cập nhật biến; các widget liên kết bằng textvariable phản ánh cùng biến khi giao diện xử lý sự kiện. Không dùng một StringVar chung cho những nhóm radio độc lập."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU05 · Entry, mật khẩu và Checkbutton"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Để hai radio loại trừ nhau, chúng cần dùng chung gì?",
+     "answer": "Cùng variable, với các value khác nhau."
+    },
+    {
+     "prompt": "Nhãn Mien Nam và mã S lần lượt là thuộc tính nào?",
+     "answer": "text và value."
+    },
+    {
+     "prompt": "Tạo StringVar A, liên kết radio có value B rồi invoke và in biến.",
+     "answer": "Biến thành B.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nx=tk.StringVar(r,value='A')\nb=tk.Radiobutton(r,text='Lua chon B',variable=x,value='B');b.invoke()\nprint(x.get())\nr.destroy()",
+     "answerExpected": "B"
+    },
+    {
+     "prompt": "StringVar(value=\"N\") được hai radio dùng chung, một nút text=\"Miền Nam\", value=\"S\". Chọn nút này làm biến chứa gì?",
+     "answer": "S. text là nhãn hiển thị; value là dữ liệu lưu; chung variable tạo một nhóm chỉ có một giá trị đang chọn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

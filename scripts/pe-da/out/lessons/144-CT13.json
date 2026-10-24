@@ -1,0 +1,101 @@
+{
+ "lesson_code": "CT13",
+ "sort_order": 144,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT13 · Queue và lưu pickle có nén ở nền",
+ "subtitle": "Nâng cao · M6 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT13 · Queue và lưu pickle có nén ở nền",
+  "subtitle": "Nâng cao · M6 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT13",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 299; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở PW6, ứng dụng đã lưu và nạp lại dữ liệu bằng pickle có nén. PW8 giữ phần đó, nhưng chuyển công việc lưu sang thread nền để người dùng không phải đợi toàn bộ quá trình. Worker có thể gửi kết quả qua queue. Trước hết, xem một thông điệp đơn giản:"
+     },
+     {
+      "type": "code",
+      "code": "from queue import Queue\nfrom threading import Thread\nq = Queue()\ndef work(): q.put({\"status\":\"done\", \"count\":3})\nt = Thread(target=work)\nt.start(); t.join()\nprint(q.get())",
+      "expected": "{'status': 'done', 'count': 3}"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Queue cung cấp cách trao đổi dữ liệu giữa các thread. join ở đây chỉ dùng cho ví dụ dòng lệnh. Trong GUI, kiểm tra queue theo lịch của event loop thay vì chặn callback chờ worker."
+     },
+     {
+      "type": "code",
+      "code": "from queue import Queue, Empty\nq = Queue()\ntry:\n    q.get_nowait()\nexcept Empty:\n    print(\"no message\")",
+      "expected": "no message"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`get_nowait` báo Empty khi chưa có thông điệp. Bạn có thể quay lại sau, thay vì coi chưa có kết quả là lỗi tác vụ."
+     },
+     {
+      "type": "code",
+      "code": "import gzip, pickle\nfrom threading import Thread\nfrom queue import Queue\nsnapshot = {\"marks\":[6,8]}\nq = Queue()\ndef save(data):\n    q.put(gzip.compress(pickle.dumps(data)))\nt = Thread(target=save, args=(snapshot,))\nt.start(); t.join()\nrestored = pickle.loads(gzip.decompress(q.get()))\nprint(restored == snapshot)",
+      "expected": "True"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ví dụ này nén dữ liệu trong bộ nhớ rồi nạp lại để đối chiếu. Bài thực hành PW8 còn yêu cầu ghi ra file, xử lý lỗi và nạp lại khi mở ứng dụng. Dữ liệu đưa cho worker phải là một bản chụp nhất quán, hay snapshot: trong lúc worker đọc, không được trộn các thay đổi ở nhiều thời điểm. Bạn có thể sao chép cấu trúc phù hợp hoặc đồng bộ khi lấy snapshot. Chỉ gán snapshot = data sẽ tạo thêm tên trỏ tới cùng dữ liệu, không tạo bản sao. Chỉ nạp pickle từ nguồn tin cậy vì việc nạp có thể thực thi mã."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT12 · Race condition, Lock và tránh deadlock, SY28 · PW6: lưu dữ liệu bằng pickle có nén"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Queue rỗng khi worker chưa xong có nghĩa worker đã lỗi không?",
+     "answer": "Không. Có thể chưa có thông điệp; cần phân biệt trạng thái đang làm, thành công và lỗi."
+    },
+    {
+     "prompt": "Muốn giữ nén khi chuyển từ PW6 sang PW8, pickle có thay gzip không?",
+     "answer": "Không. Pickle tuần tự hóa object, gzip nén bytes; hai bước có vai trò khác nhau."
+    },
+    {
+     "prompt": "Một bài PW8 hoàn chỉnh cần kiểm những gì ngoài worker chạy được?",
+     "answer": "Dữ liệu snapshot nhất quán, file lưu có thể nạp lại, lỗi được báo, ứng dụng không thoát trước khi lưu xong và không chặn UI trong lúc chờ."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+   },
+   "starterCode": "from queue import Queue, Empty\nq = Queue()\ntry:\n    q.get_nowait()\nexcept Empty:\n    print(\"no message\")\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

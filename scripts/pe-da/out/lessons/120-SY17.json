@@ -1,0 +1,103 @@
+{
+ "lesson_code": "SY17",
+ "sort_order": 120,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY17 · Buffer, flush, file tạm và lỗi đọc ghi",
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY17 · Buffer, flush, file tạm và lỗi đọc ghi",
+  "subtitle": "Trung cấp · M5 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY17",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 164-167, 169-172; Python — tempfile; Python — io"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một chương trình ghi nhiều dòng log nhỏ. Bộ đệm (buffer) gom dữ liệu trước khi chuyển tiếp để giảm số lần đọc/ghi (I/O). Gọi flush giúp đẩy dữ liệu ra khỏi bộ đệm của Python, nhưng chưa bảo đảm dữ liệu đã được ghi bền trên thiết bị khi mất điện:"
+     },
+     {
+      "type": "code",
+      "code": "import tempfile\nwith tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf8\") as f:\n    f.write(\"A\\n\")\n    f.flush()\n    f.seek(0)\n    print(f.readline().strip())\nprint(f.closed)",
+      "expected": "A\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "TemporaryFile tự tạo nơi lưu tạm và dọn tài nguyên khi đóng. Đây là file tạm, khác TemporaryDirectory tạo cả thư mục. `flush` đẩy buffer của Python; OS và thiết bị còn có cache riêng. `with` giúp đóng handle dù bước bên trong có lỗi."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"raw.bin\"\n    with open(path, \"wb\", buffering=0) as f: print(f.write(b\"AB\"))\n    with open(path, \"r\", encoding=\"ascii\", buffering=1) as f: print(f.read())",
+      "expected": "2\nAB"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`buffering=-1` để Python chọn mặc định; `io.DEFAULT_BUFFER_SIZE` là hằng số tham khảo về cỡ buffer. `buffering=0` tắt buffer và chỉ hợp lệ với binary. `buffering=1` yêu cầu line buffering cho text ở phía ghi: dữ liệu được đẩy khi có newline. Giá trị lớn hơn 1 chọn cỡ buffer của luồng binary. Nó không buộc read luôn trả từng dòng."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing.txt\"\n    try:\n        with open(path, encoding=\"utf8\") as f: print(f.read())\n    except FileNotFoundError:\n        print(\"Thieu file\")",
+      "expected": "Thieu file"
+     },
+     {
+      "type": "paragraph",
+      "text": "FileNotFoundError khác PermissionError khi thiếu quyền; cả hai thuộc OSError, còn IOError là tên tương thích. Chỉ báo \"thiếu file\" cho trường hợp đúng. Bắt Exception rồi trả dữ liệu rỗng sẽ làm người dùng không phân biệt file rỗng với lần đọc thất bại."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY16 · Con trỏ file, dòng văn bản và bytes"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "buffering=0 dùng với text được không?",
+     "answer": "Không. Chỉ dữ liệu nhị phân mới dùng được chế độ không có bộ đệm (`buffering=0`). Với văn bản, bạn có thể dùng bộ đệm theo dòng (`buffering=1`)."
+    },
+    {
+     "prompt": "TemporaryFile đóng rồi có dùng tiếp được không?",
+     "answer": "Không. Handle đã đóng; tài nguyên tạm được dọn theo cơ chế nền tảng."
+    },
+    {
+     "prompt": "Viết read_status trả ok/missing/denied.",
+     "answer": "Trong try, with open đọc và trả (\"ok\", text). except FileNotFoundError trả (\"missing\", None); except PermissionError trả (\"denied\", None). Lỗi khác cho truyền ra. Thử missing thật; Để thử PermissionError mà không đổi quyền thư mục, có thể thay thao tác mở file trong bài kiểm thử bằng một hàm chủ động báo lỗi này. Ghi rõ bạn đã dùng cách thử đó."
+    },
+    {
+     "prompt": "Ghép buffering=-1, 0, 1, 8192 với mặc định, không buffer, theo dòng text và cỡ buffer binary. flush có bảo đảm ghi đến thiết bị khi mất điện không?",
+     "answer": "-1 chọn mặc định, có io.DEFAULT_BUFFER_SIZE làm tham khảo; 0 chỉ binary không buffer; 1 cho line buffering text; 8192 chọn cỡ buffer binary. Buffer gom ghi nhỏ để giảm IO. flush đẩy buffer Python nhưng không tự bảo đảm cache OS/thiết bị đã bền trước mất điện."
+    },
+    {
+     "prompt": "TemporaryFile(mode=\"w+t\") và TemporaryFile(mode=\"w+b\") nhận kiểu gì khi write? Bạn có phải tự đặt tên/vị trí không, và sau close tài nguyên ra sao?",
+     "answer": "w+t nhận str, w+b nhận bytes. tempfile tự tạo file tạm nên không cần tự chọn tên/vị trí. Đóng file dọn tài nguyên theo nền tảng; with thu dọn cả khi phát sinh exception. Không dùng lại handle đã đóng."
+    },
+    {
+     "prompt": "File đọc thất bại lúc chạy có phải luôn thiếu file không? IOError, OSError, FileNotFoundError và PermissionError liên hệ ra sao?",
+     "answer": "Đây là ngoại lệ runtime; IOError là tên tương thích của OSError. FileNotFoundError và PermissionError là hai trường hợp cụ thể khác nhau. Dùng try/except để báo đúng nguyên nhân; lỗi quyền không được đổi thành báo thiếu file."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport tempfile\nwith tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf8\") as f:\n    f.write(\"A\\n\")\n    f.flush()\n    f.seek(0)\n    print(f.readline().strip())\nprint(f.closed)\n\n# ── Đoạn 2 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"raw.bin\"\n    with open(path, \"wb\", buffering=0) as f: print(f.write(b\"AB\"))\n    with open(path, \"r\", encoding=\"ascii\", buffering=1) as f: print(f.read())\n\n# ── Đoạn 3 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing.txt\"\n    try:\n        with open(path, encoding=\"utf8\") as f: print(f.read())\n    except FileNotFoundError:\n        print(\"Thieu file\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

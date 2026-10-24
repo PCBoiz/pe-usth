@@ -1,0 +1,105 @@
+{
+ "lesson_code": "SY21",
+ "sort_order": 124,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
+  "subtitle": "Trung cấp · M5 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY21",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 179-182, 192, 328; Python — pickle; Python — json"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+     },
+     {
+      "type": "code",
+      "code": "import pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
+      "expected": "tuple list\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Pickle lưu biểu diễn nhị phân của cấu trúc object Python; JSON là text với tập kiểu đơn giản hơn. JSON chuyển tuple thành array, đọc lại thành list. Pickle còn giữ set và nhiều kiểu Python khác, nhưng không thể mặc định lưu mọi tài nguyên đang mở."
+     },
+     {
+      "type": "code",
+      "code": "import pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
+      "expected": "True\nset"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong RAM. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
+     },
+     {
+      "type": "code",
+      "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])",
+      "expected": "1\nAn"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Chỉ dùng pickle để đọc dữ liệu do bạn tạo và tin cậy, vì thao tác đọc pickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm một file lạ an toàn hơn. JSON thường tiện hơn khi trao đổi với hệ khác. Pickle có thể phù hợp để lưu dữ liệu Python trong bài thực hành nếu bạn quản lý nơi tạo file và phiên bản cấu trúc dữ liệu."
+     },
+     {
+      "type": "paragraph",
+      "text": "JSON lưu được số, chuỗi, boolean, null, list và object với khóa chuỗi. `json.dumps({1, 2})` gây TypeError vì set không có biểu diễn JSON mặc định; instance class tự tạo cũng cần chuyển thành dữ liệu đơn giản hoặc bộ mã hóa riêng. Ngược lại, một scalar hay collection chỉ pickle được khi các thành phần bên trong cũng pickle được."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY20 · Gom nhiều file bằng ZIP và tar"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "dump khác dumps ở đâu?",
+     "answer": "dump ghi vào file binary; dumps trả bytes. load/loads là hai chiều đọc tương ứng."
+    },
+    {
+     "prompt": "Có thể tải pickle người lạ rồi thử load để xem có an toàn không?",
+     "answer": "Không. Ngay thao tác load đã có thể chạy mã; chỉ dùng dữ liệu mẫu do bạn tạo hoặc có nguồn tin cậy trong bài thực hành."
+    },
+    {
+     "prompt": "Làm PW6 thay cách lưu dữ liệu văn bản bằng gzip+pickle, giữ kiểu và version.",
+     "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi xóa dữ liệu đang giữ trong RAM, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
+    },
+    {
+     "prompt": "Có phải mọi giá trị đơn và mọi collection đều lưu được bằng pickle không? Hàm/class ở cấp module khác file đang mở hoặc socket đang kết nối ở điểm nào khi lưu?",
+     "answer": "Chỉ được khi các thành phần pickle được. Function/class cấp module thường được lưu theo tên, load cần đúng module/định nghĩa tương thích. File handle/socket là tài nguyên đang mở, không tự pickle rồi khôi phục kết nối được."
+    },
+    {
+     "prompt": "Cần trao đổi dữ liệu với hệ khác và xem bằng editor: chọn JSON hay pickle? Tuple, set và class có đi qua JSON nguyên kiểu không?",
+     "answer": "Thường chọn JSON text với dữ liệu đơn giản; pickle binary thiên Python. Tuple thành array rồi list khi load; set/class tự tạo không hỗ trợ trực tiếp nếu không chuyển đổi hoặc có encoder. Không chọn pickle chỉ vì nó giữ được nhiều kiểu khi nguồn file không tin cậy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)\n\n# ── Đoạn 2 ──\nimport pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)\n\n# ── Đoạn 3 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

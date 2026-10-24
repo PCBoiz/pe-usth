@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY07",
+ "sort_order": 7,
+ "module": "M1 · Python nền tảng",
+ "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
+ "subtitle": "Cơ bản · M1 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
+  "subtitle": "Cơ bản · M1 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 47-48, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên file là \"marks.csv\". Bạn chỉ cần phần đuôi csv để kiểm tra loại dữ liệu:"
+     },
+     {
+      "type": "code",
+      "code": "filename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])",
+      "expected": "csv\nm"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một slice, tức một đoạn. Với bước dương, bỏ vị trí bắt đầu (start) như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ vị trí dừng (stop) như `filename[2:]` là lấy đến hết."
+     },
+     {
+      "type": "code",
+      "code": "text = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)",
+      "expected": "yh\nnohtyP\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong `text[start:stop:step]`, điểm dừng không được lấy. `text[1:5:2]` lấy chỉ số 1 và 3, nên được y và h. Bước -1 đảo hướng đọc. `in` kiểm tra có chuỗi con, còn `not in` kiểm tra không có. Việc kiểm tra phân biệt hoa thường: `\"Py\" in \"Python\"` là True, nhưng `\"py\" in \"Python\"` là False."
+     },
+     {
+      "type": "code",
+      "code": "text = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])",
+      "expected": "TypeError\nData"
+     },
+     {
+      "type": "paragraph",
+      "text": "Chuỗi bất biến: không thể gán lại một ký tự trong object chuỗi. Đoạn trên dùng try/except để bắt TypeError và in tên lỗi, nên chương trình vẫn chạy câu lệnh tiếp theo; bạn sẽ học cấu trúc bắt lỗi ở bài ngoại lệ. Bạn tạo chuỗi mới bằng cách ghép \"D\" với đoạn còn lại. Chỉ số vượt phạm vi gây IndexError; slice vượt điểm cuối có thể trả đoạn ngắn hơn thay vì báo lỗi."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "\"Python\"[-1] trả ký tự nào?",
+     "answer": "n."
+    },
+    {
+     "prompt": "Trong \"Python\"[1:5:2], vì sao không có ký tự ở vị trí 5?",
+     "answer": "Slice không lấy điểm dừng; các chỉ số được lấy là 1 và 3."
+    },
+    {
+     "prompt": "Lấy 5 ký tự đầu và 3 ký tự cuối của một chuỗi.",
+     "answer": "Dùng s[:5] và s[-3:]. Nếu chuỗi ngắn hơn độ dài yêu cầu, slice trả phần có sẵn."
+    },
+    {
+     "prompt": "Với s=\"Python\", s[0], s[-1], s[:2], s[2:] và \"py\" not in s cho gì?",
+     "answer": "P; n; Py; thon; True. Chỉ số bắt đầu 0, âm từ cuối; bỏ start lấy từ đầu, bỏ stop lấy đến hết. So chuỗi con phân biệt hoa thường."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfilename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])\n\n# ── Đoạn 2 ──\ntext = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)\n\n# ── Đoạn 3 ──\ntext = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

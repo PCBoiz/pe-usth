@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD27",
+ "sort_order": 68,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD27 · MultiIndex cho dữ liệu nhiều cấp",
+ "subtitle": "Nâng cao · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD27 · MultiIndex cho dữ liệu nhiều cấp",
+  "subtitle": "Nâng cao · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD27",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · MultiIndex"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Báo cáo có cả cửa hàng và tháng. Khi mỗi cặp `store`–`month` xác định một hàng, bạn có thể dùng hai tầng index để lấy doanh thu của một cửa hàng trong một tháng, hoặc lấy cùng một tháng ở tất cả cửa hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
+      "expected": "20\n['store', 'month']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "MultiIndex có các tầng nhãn. Tuple (\"A\", \"Feb\") chỉ rõ hai tầng cho cùng một hàng. sort_index giúp các thao tác chọn khoảng theo nhãn có thứ tự dễ dự đoán."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
+      "expected": "{'A': 10, 'B': 30}\n['store', 'month', 'sales']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`xs` chọn theo một tầng index được đặt tên; ở đây, `xs(\"Jan\", level=\"month\")` lấy doanh thu tháng Jan của tất cả cửa hàng. `reset_index()` đưa cả hai tầng trở lại thành cột nếu bạn muốn dùng `merge` hoặc xuất file."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\ns = df.set_index(['store', 'month'])['sales']\nwide = s.unstack('month')\nprint(wide.loc['A', 'Feb'])\nprint(pd.isna(wide.loc['B', 'Feb']))",
+      "expected": "20.0\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "unstack chuyển một tầng thành cột, gần với cách pivot ở bài trước. Ô B–Feb thiếu vì chưa có cặp đó, nên số nguyên ở các ô còn lại có thể hiển thị thành số thực. Không phải bảng nào cũng cần MultiIndex; giữ khóa thành cột thường dễ trao đổi hơn khi làm việc nhóm."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD26 · Dữ liệu phân loại và chia khoảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?",
+     "answer": "Hai tầng: store và month."
+    },
+    {
+     "prompt": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?",
+     "answer": "xs(\"Jan\", level=\"month\")."
+    },
+    {
+     "prompt": "Tạo bảng city=[HN,HCM], year=[2025,2025], value=[3,4]; đặt hai cột đầu làm index và lấy HCM–2025.",
+     "answer": "Giá trị là 4.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM'], 'year': [2025, 2025], 'value': [3, 4]})\nprint(df.set_index(['city', 'year']).loc[('HCM', 2025), 'value'])",
+     "answerExpected": "4"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\ns = df.set_index(['store', 'month'])['sales']\nwide = s.unstack('month')\nprint(wide.loc['A', 'Feb'])\nprint(pd.isna(wide.loc['B', 'Feb']))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

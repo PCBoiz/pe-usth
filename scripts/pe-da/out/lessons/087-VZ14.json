@@ -1,0 +1,105 @@
+{
+ "lesson_code": "VZ14",
+ "sort_order": 87,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure",
+ "subtitle": "Trung cấp · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure",
+  "subtitle": "Trung cấp · M4 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Xuất PNG/SVG, độ phân giải và vòng đời Figure"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một hình nhìn rõ trong notebook vẫn có thể mờ khi đặt vào slide. figsize tính theo inch, còn dpi quyết định số pixel khi xuất ảnh raster. Hình rộng 6 inch ở 150 dpi có bề rộng 900 pixel nếu không cắt lại khung."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)",
+      "expected": "(900, 450)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ14-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "PNG phù hợp cho ảnh chèn nhanh, SVG giữ nét vector cho đường và chữ khi phóng to. transparent=True cho nền trong suốt; hãy kiểm tra lại màu chữ trên nền nơi hình sẽ được đặt. bbox_inches=\"tight\" có thể thay đổi kích thước pixel vì nó cắt theo nội dung, nên không dùng công thức inch nhân dpi để khẳng định kích thước sau cắt."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)",
+      "expected": "True"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ14-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "savefig lưu hình; show mở hình qua backend tương tác. Trong script, thường lưu trước khi show và đóng Figure sau khi dùng để không giữ nhiều hình trong bộ nhớ. cla xóa nội dung Axes hiện tại, clf xóa nội dung Figure hiện tại, close đóng Figure. Khi đã có ax và fig, dùng ax.clear() hoặc fig.clear() sẽ rõ đối tượng hơn các lệnh phụ thuộc trạng thái hiện tại."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2], [8, 10])\nplt.sca(ax)\nplt.cla()\nprint(len(ax.lines))\nax.bar([\"A\", \"B\"], [8, 10])\nax.set(ylabel=\"Cups\", title=\"Axes reused after clearing\")\nfig.canvas.draw()\nplt.clf()\nax = fig.add_subplot(111)\nax.plot([1, 2], [8, 10], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Figure reused after clearing\")\nprint(len(fig.axes))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-3.png\", dpi=130)\nplt.close(fig)",
+      "expected": "0\n1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ14-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ14-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ09 · Nhãn, đơn vị, đường mốc và chú thích, VZ12 · Subplot, thang chung và bố trí hình"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Hình rộng 4 inch ở 200 dpi có bao nhiêu pixel trước khi cắt khung?",
+     "answer": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất."
+    },
+    {
+     "prompt": "Muốn đặt hình lên nền slide có màu, cân nhắc tham số nào?",
+     "answer": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật."
+    },
+    {
+     "prompt": "cla, clf và close khác nhau ở đâu?",
+     "answer": "cla xóa Axes hiện tại; clf xóa Figure hiện tại; close đóng Figure. Bộ ví dụ dùng plt.close(fig) để đóng rõ hình cần đóng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2], [8, 10])\nplt.sca(ax)\nplt.cla()\nprint(len(ax.lines))\nax.bar([\"A\", \"B\"], [8, 10])\nax.set(ylabel=\"Cups\", title=\"Axes reused after clearing\")\nfig.canvas.draw()\nplt.clf()\nax = fig.add_subplot(111)\nax.plot([1, 2], [8, 10], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Figure reused after clearing\")\nprint(len(fig.axes))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-3.png\", dpi=130)\nplt.close(fig)\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

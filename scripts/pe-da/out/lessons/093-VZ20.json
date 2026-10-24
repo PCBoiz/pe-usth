@@ -1,0 +1,92 @@
+{
+ "lesson_code": "VZ20",
+ "sort_order": 93,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ20 · Plotly: Figure tương tác, hover và legend",
+ "subtitle": "Trung cấp · M4 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ20 · Plotly: Figure tương tác, hover và legend",
+  "subtitle": "Trung cấp · M4 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ20",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Plotly: Figure tương tác, hover và legend"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một biểu đồ tương tác cho phép bạn đưa chuột vào từng đơn để xem tên cửa hàng và giá trị. Plotly Express tạo Figure từ DataFrame; hover_data chọn thông tin hiện khi rê chuột. Bạn vẫn cần tiêu đề, đơn vị và một câu mô tả vì người đọc có thể xem ảnh chụp hoặc dùng thiết bị không có chuột."
+     },
+     {
+      "type": "terminal",
+      "code": "import pandas as pd\nimport plotly.express as px\norders = pd.DataFrame({\"km\":[1, 2, 3], \"minutes\":[8, 12, 11], \"store\":[\"A\", \"B\", \"A\"]})\nfig = px.scatter(orders, x=\"km\", y=\"minutes\", color=\"store\", symbol=\"store\", hover_data=[\"store\"], labels={\"km\":\"Distance (km)\", \"minutes\":\"Delivery (minutes)\"}, title=\"Inspect an order with hover\")\nprint(len(fig.data))\nfig.show()",
+      "expected": "Chạy với frontend Plotly hỗ trợ: biểu đồ tương tác mở, hover/legend hoặc bộ chọn hoạt động theo bài; stdout vẫn là phần kết quả số phía dưới. Backend trình duyệt phải được quan sát trực tiếp, không suy từ lần chạy headless."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một trace là một chuỗi dữ liệu có cách vẽ riêng. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend; thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML."
+     },
+     {
+      "type": "terminal",
+      "code": "import pandas as pd\nimport plotly.express as px\ndata = pd.DataFrame({\"day\":[1, 2, 1, 2], \"cups\":[8, 10, 5, 6], \"drink\":[\"Coffee\", \"Coffee\", \"Tea\", \"Tea\"]})\nfig = px.line(data, x=\"day\", y=\"cups\", color=\"drink\", line_dash=\"drink\", markers=True, labels={\"day\":\"Day\", \"cups\":\"Cups\"}, title=\"Toggle a drink in the legend\")\nprint([trace.name for trace in fig.data])\nfig.show()",
+      "expected": "Chạy với frontend Plotly hỗ trợ: biểu đồ tương tác mở, hover/legend hoặc bộ chọn hoạt động theo bài; stdout vẫn là phần kết quả số phía dưới. Backend trình duyệt phải được quan sát trực tiếp, không suy từ lần chạy headless."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Định dạng hover giúp rút gọn số thập phân và ghi đơn vị ngay cạnh giá trị. Trong ví dụ cuối, %{y:.1f} hiển thị y với một chữ số sau dấu thập phân. Cặp thẻ <extra></extra> bỏ ô tên trace bên cạnh nội dung hover. Dòng print cho biết mẫu định dạng có trong Figure; để xem nó hiển thị ra sao, mở hình HTML rồi đưa chuột vào từng cột."
+     },
+     {
+      "type": "terminal",
+      "code": "import plotly.graph_objects as go\nfig = go.Figure(go.Bar(x=[\"Coffee\", \"Tea\"], y=[12.5, 20.0], hovertemplate=\"%{x}: %{y:.1f} thousand VND<extra></extra>\"))\nfig.update_layout(title=\"Prices with explicit units\", yaxis_title=\"Price (thousand VND)\", xaxis_title=\"Drink\")\nprint(\"%{y:.1f}\" in fig.data[0].hovertemplate)\nfig.show()",
+      "expected": "Chạy với frontend Plotly hỗ trợ: biểu đồ tương tác mở, hover/legend hoặc bộ chọn hoạt động theo bài; stdout vẫn là phần kết quả số phía dưới. Backend trình duyệt phải được quan sát trực tiếp, không suy từ lần chạy headless."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ05 · Scatter plot: quan hệ giữa hai biến, PD02 · DataFrame: đọc một bảng nhỏ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
+     "answer": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu."
+    },
+    {
+     "prompt": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?",
+     "answer": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ."
+    },
+    {
+     "prompt": "Định dạng %{y:.1f} hiển thị 12.5 thành mấy chữ số sau dấu thập phân?",
+     "answer": "Một chữ số sau dấu thập phân."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": []
+}

@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU09",
+ "sort_order": 156,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU09 · Place: vị trí tuyệt đối và tương đối",
+ "subtitle": "Trung cấp · M8 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU09 · Place: vị trí tuyệt đối và tương đối",
+  "subtitle": "Trung cấp · M8 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 320-321; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một nhãn trạng thái cần nằm ở góc của vùng xem trước. place cho bạn chỉ rõ tọa độ hoặc tỉ lệ của vùng cha, nhưng form nhiều chữ thường dễ bố trí hơn bằng grid."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nlabel=tk.Label(r,text='Status')\nlabel.place(x=20,y=30,width=100,height=25)\ninfo=label.place_info()\nprint(info['x'],info['y'],info['width'],info['height'])\nr.destroy()",
+      "expected": "20 30 100 25"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "x, y là khoảng cách từ góc trên trái của parent; width, height ở place là kích thước theo khoảng cách màn hình, ở đây là pixel. Đừng nhầm với width theo ký tự của Label khi tạo widget."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nlabel=tk.Label(r,text='Center')\nlabel.place(relx=0.5,rely=0.5,anchor='center')\ninfo=label.place_info()\nprint(info['relx'],info['rely'],info['anchor'])\nr.destroy()",
+      "expected": "0.5 0.5 center"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "relx=0.5 và rely=0.5 định vị ở nửa chiều rộng, nửa chiều cao của parent. anchor=\"center\" đặt tâm của nhãn vào điểm đó. Không đặt anchor thì mặc định dùng góc trên trái của widget."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\npanel=tk.Frame(r,bg='white')\npanel.place(relx=0.1,rely=0.1,relwidth=0.8,relheight=0.6)\ninfo=panel.place_info()\nprint(info['relwidth'],info['relheight'])\nr.destroy()",
+      "expected": "0.8 0.6"
+     },
+     {
+      "type": "paragraph",
+      "text": "relwidth=0.8 cho chiều rộng bằng 80% parent; relheight=0.6 cho chiều cao 60%. Kích thước tương đối thay đổi theo cửa sổ, nhưng không tự bảo đảm chữ vừa hoặc các nút không chồng nhau. Bạn vẫn cần thử resize và font lớn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU08 · Pack: xếp các vùng của giao diện"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "relx=0.5 lấy nửa chiều rộng của widget hay parent?",
+     "answer": "Của parent."
+    },
+    {
+     "prompt": "Vì sao dùng tọa độ cố định có thể gặp lỗi khi đổi font?",
+     "answer": "Chữ có thể lớn hơn vùng đặt sẵn và bị cắt hoặc chồng lấn."
+    },
+    {
+     "prompt": "Place một Label tại x=10,y=15 và in hai cấu hình.",
+     "answer": "Kết quả 10 15.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nx=tk.Label(r,text='A');x.place(x=10,y=15)\np=x.place_info();print(p['x'],p['y'])\nr.destroy()",
+     "answerExpected": "10 15"
+    },
+    {
+     "prompt": "Một panel cần rộng 80%, cao 60%, nằm ở 10% chiều rộng/cao parent. Viết cấu hình place và phân biệt với pixel.",
+     "answer": "panel.place(relx=0.1,rely=0.1,relwidth=0.8,relheight=0.6). x/y và width/height cố định theo pixel trong ví dụ; rel* theo parent và đổi khi resize. Vẫn phải kiểm chữ vừa/chồng lấn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

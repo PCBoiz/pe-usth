@@ -1,0 +1,90 @@
+{
+ "lesson_code": "EX02",
+ "sort_order": 161,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX02 · Structured array: bảng có tên và điểm",
+ "subtitle": "Trung cấp · M9 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX02 · Structured array: bảng có tên và điểm",
+  "subtitle": "Trung cấp · M9 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 328; NumPy genfromtxt; NumPy 2 migration"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một bảng gồm tên học viên và điểm cần lưu chữ và số ở các cột khác nhau. `genfromtxt` có thể đọc bảng này thành structured array: mỗi phần tử là một bản ghi học viên, bên trong có các trường (field) mang tên và kiểu riêng. `names=True` lấy tên các trường từ dòng đầu."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())",
+      "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`dtype=None` để NumPy tự chọn kiểu cho từng trường; `encoding=\"utf-8\"` quy định cách đọc phần văn bản. `table[\"mark\"]` lấy trường điểm của các học viên, còn `table[0]` lấy bản ghi đầu tiên gồm cả tên và điểm. Vì vậy, nguồn có hai cột không có nghĩa structured array có hai chiều."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))",
+      "expected": "(2,)\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ô điểm trống được đọc thành NaN vì trường `mark` ở đây có kiểu số thực. Nếu một cột chỉ chứa số nguyên và ô trống, NumPy có thể suy ra kiểu và giá trị điền khác; hãy xem `dtype` và khai báo rõ kiểu, giá trị thiếu cần dùng. Ví dụ cuối đặt trường điểm là `float` thay vì để NumPy suy luận. Với code cũ gọi `recfromcsv`, dùng `genfromtxt` cùng các tham số tương ứng vì `recfromcsv` đã bị bỏ từ NumPy 2."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)",
+      "expected": "Mai 8.0\nf"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "EX01 · Đọc bảng cùng kiểu bằng loadtxt và tra đúng trợ giúp, NP17 · Dữ liệu thiếu: NaN"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "`names=True` lấy thông tin gì từ dòng đầu? Muốn lấy toàn bộ điểm trong trường `mark`, bạn viết thế nào?",
+     "answer": "Lấy tên field. Dùng table[\"mark\"]; table[0] là bản ghi đầu tiên, không phải cột đầu."
+    },
+    {
+     "prompt": "Structured array có shape (2,) và hai field thì có bao nhiêu bản ghi?",
+     "answer": "Hai bản ghi, mỗi bản ghi có hai field. shape không liệt kê số field như một chiều array thường."
+    },
+    {
+     "prompt": "Một ví dụ cũ gọi recfromcsv không chạy trên NumPy 2. Sửa hướng nào, và làm sao bảo đảm điểm trống được lưu như số thực thiếu?",
+     "answer": "Đổi sang genfromtxt(delimiter=\",\", names=True, ...) và chọn dtype cho field điểm là float; đặt missing_values/filling_values rõ nếu định dạng cần. Kiểm dtype và np.isnan, không giả định mọi cột suy luận đều cùng cách điền."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))\n\n# ── Đoạn 3 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

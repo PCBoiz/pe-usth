@@ -1,0 +1,95 @@
+{
+ "lesson_code": "SY20",
+ "sort_order": 123,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY20 · Gom nhiều file bằng ZIP và tar",
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY20 · Gom nhiều file bằng ZIP và tar",
+  "subtitle": "Trung cấp · M5 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY20",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 178, 190-191; Python — zipfile; Python — tarfile"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; một archive gom các file vào một gói và giữ tên từng file bên trong:"
+     },
+     {
+      "type": "code",
+      "code": "from io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())",
+      "expected": "['students.txt', 'courses.txt']\nS01,An"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "ZIP giữ nhiều file và cả các mục thư mục theo tên; nó có thể nén từng thành viên. `read(name)` lấy bytes của đúng file, giúp bạn kiểm tên và nội dung trước khi viết ra đĩa. Không cần extractall chỉ để đọc một bảng."
+     },
+     {
+      "type": "code",
+      "code": "from io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())",
+      "expected": "['marks.txt']\nS01,PY,8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "tar gom nhiều thành viên; mode w:gz thêm nén gzip, còn w tạo tar không nén. Phân biệt format thực với tên đuôi: đổi .zip thành .dat không biến nó thành định dạng khác."
+     },
+     {
+      "type": "code",
+      "code": "import zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)",
+      "expected": "True"
+     },
+     {
+      "type": "paragraph",
+      "text": "Sau khi đóng gói rồi đọc lại, restored bằng files: cả tên file lẫn nội dung đều được giữ nguyên. Với file ngoài, kiểm danh sách tên và dung lượng trước khi nạp; không tự ghi đường dẫn chứa .. hoặc đường dẫn tuyệt đối ra ngoài vùng bài tập. Đề PW5 có thể chọn một cách archive/nén miễn khôi phục được cả ba file."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "gzip và ZIP khác nhau thế nào?",
+     "answer": "gzip nén một luồng; ZIP là archive giữ nhiều tên thành viên và có thể nén chúng."
+    },
+    {
+     "prompt": "tarfile mode w khác w:gz ở đâu?",
+     "answer": "w tạo tar không nén; w:gz tạo tar có gzip."
+    },
+    {
+     "prompt": "Đóng đúng ba file PW5 vào students.dat và kiểm khôi phục.",
+     "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, đọc dữ liệu theo cấu trúc đã chọn rồi so với trước khi đóng gói. Chạy lại khi bộ dữ liệu trong RAM đang rỗng; không chỉ kiểm file .dat tồn tại."
+    },
+    {
+     "prompt": "Cần gom thư mục reports có hai file vào một gói: ZIP giữ được tên file/thư mục không? tarfile mode w có tự nén giống w:gz không?",
+     "answer": "ZIP có các mục theo tên cho file và thư mục, có thể nén từng thành viên. tar mode w chỉ archive không nén; w:gz thêm gzip. Đổi phần đuôi tên file không đổi định dạng bên trong."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())\n\n# ── Đoạn 3 ──\nimport zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

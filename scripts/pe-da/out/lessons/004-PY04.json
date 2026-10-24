@@ -1,0 +1,109 @@
+{
+ "lesson_code": "PY04",
+ "sort_order": 4,
+ "module": "M1 · Python nền tảng",
+ "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
+  "subtitle": "Cơ bản · M1 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 29-33, 38-45; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Giá bán đọc từ một ô nhập là chuỗi \"15\". Trước khi tính doanh thu, bạn cần chuyển chuỗi đó thành số:"
+     },
+     {
+      "type": "code",
+      "code": "raw = \"15\"\nprice = int(raw)\nprint(price * 2)\nprint(type(raw).__name__, type(price).__name__)",
+      "expected": "30\nstr int"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`type(raw).__name__` cho tên kiểu của raw; `type(price).__name__` làm tương tự với price. `str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
+     },
+     {
+      "type": "code",
+      "code": "value = \"15\"\nvalue = 15.5\nprint(type(value).__name__)\nprint(2e4)",
+      "expected": "float\n20000.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới object khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
+     },
+     {
+      "type": "code",
+      "code": "import keyword\nprint(\"total_cups\".isidentifier())\nprint(\"2cups\".isidentifier())\nprint(keyword.iskeyword(\"for\"))",
+      "expected": "True\nFalse\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên biến có thể có chữ, số và gạch dưới nhưng không bắt đầu bằng số; không dùng từ khóa như `for`. Dấu cách và dấu gạch ngang không thuộc tên như `total cups` hay `total-cups`. `cups` và `Cups` là hai tên khác nhau. `keyword.iskeyword` kiểm một tên, còn `keyword.kwlist` cho danh sách từ khóa của Python đang chạy. Chọn tên gợi rõ nội dung giúp tránh nhầm số lượng với đơn giá."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chuyển kiểu không xảy ra tự động cho mọi phép tính. `\"15\" + 2` gây TypeError vì đang cộng str với int; `float(\"12.5\")` cho 12.5, còn `int(\"12.5\")` gây ValueError. Khi dữ liệu đến từ ô nhập hoặc file, hãy chọn phép đổi theo ý nghĩa dữ liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY03 · REPL, notebook và trạng thái đã chạy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Sau value = \"15\" rồi value = 15.5, kiểu hiện tại là gì?",
+     "answer": "float; tên value đang tham chiếu object số thực."
+    },
+    {
+     "prompt": "Tên nào dùng được: 2price, total_price, for?",
+     "answer": "total_price. 2price bắt đầu bằng số; for là từ khóa."
+    },
+    {
+     "prompt": "Chuyển \"12.5\" thành số rồi nhân 2.",
+     "answer": "float(\"12.5\") * 2 cho 25.0. int(\"12.5\") không chuyển trực tiếp được chuỗi có dấu thập phân."
+    },
+    {
+     "prompt": "Sau cups = 12; Cups = 9; cups = 15, hai tên giữ gì? \"coffee\" và 'coffee' có khác giá trị không?",
+     "answer": "`cups` giữ 15, còn `Cups` giữ 9 vì tên biến phân biệt chữ hoa và chữ thường. `\"coffee\"` và `'coffee'` có cùng giá trị; bạn có thể dùng một trong hai kiểu dấu nháy. Các giá trị được viết trực tiếp trong code như `12`, `15` hay `\"coffee\"` được gọi là literal."
+    },
+    {
+     "prompt": "Kiểm các tên total cups, total-cups, for, total_cups và tra danh sách từ khóa của Python đang chạy thế nào?",
+     "answer": "Chỉ total_cups là tên biến hợp lệ trong các lựa chọn. Hai tên đầu có dấu cách/dấu trừ; for là keyword. Dùng import keyword; keyword.kwlist hoặc keyword.iskeyword(name) khi kiểm một tên."
+    },
+    {
+     "prompt": "True, 20000, 2e4 và \"A\" có kiểu gì? \"15\" + 2 và float(\"abc\") gây lỗi gì?",
+     "answer": "Lần lượt bool, int, float và str; Python không có char riêng. Phép cộng gây TypeError; phép đổi chuỗi không biểu diễn số gây ValueError."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nraw = \"15\"\nprice = int(raw)\nprint(price * 2)\nprint(type(raw).__name__, type(price).__name__)\n\n# ── Đoạn 2 ──\nvalue = \"15\"\nvalue = 15.5\nprint(type(value).__name__)\nprint(2e4)\n\n# ── Đoạn 3 ──\nimport keyword\nprint(\"total_cups\".isidentifier())\nprint(\"2cups\".isidentifier())\nprint(keyword.iskeyword(\"for\"))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

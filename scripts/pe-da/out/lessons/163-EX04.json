@@ -1,0 +1,93 @@
+{
+ "lesson_code": "EX04",
+ "sort_order": 163,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX04 · Đọc cây process và phân biệt fork với exec",
+ "subtitle": "Trung cấp · M9 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX04 · Đọc cây process và phân biệt fork với exec",
+  "subtitle": "Trung cấp · M9 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 195-221; Python os exec families; subprocess"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một process con có thể mở thêm một process cháu. Muốn đọc cây process, đi theo quan hệ PID và PPID: PPID của con là PID cha trực tiếp, không phải mọi tổ tiên. Mô hình dưới dùng số giả định để bạn theo dõi quan hệ mà không phụ thuộc chương trình đang chạy trên máy."
+     },
+     {
+      "type": "code",
+      "code": "processes = {100:{\"parent\":None, \"name\":\"main\"}, 101:{\"parent\":100, \"name\":\"worker\"}, 102:{\"parent\":101, \"name\":\"export\"}}\nprint(processes[102][\"parent\"])\nprint(processes[processes[102][\"parent\"]][\"parent\"])",
+      "expected": "101\n100"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Stack, data section, heap và descriptor là những phần của mô hình trạng thái process. Các process thường có không gian địa chỉ riêng; có thể cố ý chia sẻ qua cơ chế OS, nhưng không mặc định list Python được dùng chung. Ví dụ thật dưới thay list trong process con; list của cha vẫn giữ nguyên."
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys\nvalues = [1, 2]\nchild = \"values=[1,2]; values.append(3); print(len(values))\"\nresult = subprocess.run([sys.executable, \"-c\", child], capture_output=True, text=True, check=True)\nprint(len(values), result.stdout.strip())",
+      "expected": "2 3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trên hệ POSIX như UNIX/Linux, fork trả PID con ở cha và 0 ở con; cả hai tiếp tục từ vị trí sau fork. exec thay chương trình trong process hiện tại và giữ PID. Trong họ hàm exec, hậu tố l nhận từng đối số riêng; v nhận một dãy đối số; p tìm chương trình qua PATH; e cho phép truyền môi trường tường minh. Slide nhắc execl, execle, execlp, execv và execvp theo các đặc điểm đó. Windows dùng CreateProcess và còn có API cũ WinExec. Các tên, chữ ký và cờ trong ví dụ C/WinAPI không phải cú pháp Python. Để thực hành trên cả Windows và UNIX, dùng subprocess."
+     },
+     {
+      "type": "code",
+      "code": "family = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])",
+      "expected": "('vector', True, False)\n('list', False, True)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "CT02 · Tạo process: Windows, fork và exec, CT03 · Scheduler, PCB và các hàng đợi"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Process 102 có PPID 101, process 101 có PPID 100. Cha trực tiếp và ông của 102 là ai?",
+     "answer": "Cha trực tiếp 101, ông 100. Một dòng cây process biểu diễn quan hệ, không nói các process dùng chung mọi biến."
+    },
+    {
+     "prompt": "fork tạo thêm process hay thay chương trình đang chạy? exec có đổi PID theo mô hình đang học không?",
+     "answer": "fork tạo process con có PID khác. exec thay chương trình trong process hiện tại và giữ PID; nó không tạo thêm process thứ ba."
+    },
+    {
+     "prompt": "execvp khác execle ở cách nhận đối số, PATH và environment thế nào? Có chép cờ CreateProcess của C vào subprocess.run được không?",
+     "answer": "execvp dùng vector đối số và tìm qua PATH. execle nhận danh sách đối số và environment tường minh. Không chép nguyên cờ C/WinAPI thành đối số Python; cần dùng API và tham số được subprocess hỗ trợ."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (WASM không gọi được chương trình ngoài) nên không nằm trong ô này."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nprocesses = {100:{\"parent\":None, \"name\":\"main\"}, 101:{\"parent\":100, \"name\":\"worker\"}, 102:{\"parent\":101, \"name\":\"export\"}}\nprint(processes[102][\"parent\"])\nprint(processes[processes[102][\"parent\"]][\"parent\"])\n\n# ── Đoạn 2 ──\nfamily = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])\n",
+   "env": "1 đoạn phải chạy bằng Python trên máy: WASM không gọi được chương trình ngoài."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "WASM không gọi được chương trình ngoài"
+  }
+ ]
+}

@@ -1,0 +1,109 @@
+{
+ "lesson_code": "VZ09",
+ "sort_order": 82,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ09 · Nhãn, đơn vị, đường mốc và chú thích",
+ "subtitle": "Cơ bản · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ09 · Nhãn, đơn vị, đường mốc và chú thích",
+  "subtitle": "Cơ bản · M4 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Nhãn, đơn vị, đường mốc và chú thích"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một đường có các giá trị 8, 10 và 7 vẫn thiếu thông tin nếu người đọc không biết đó là cốc, triệu đồng hay phút. Tiêu đề cho biết câu hỏi; nhãn trục ghi biến và đơn vị. Dòng nguồn và thời gian đo giúp người khác hiểu giới hạn của hình khi nó được tách khỏi báo cáo."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()",
+      "expected": "Revenue (million VND)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ09-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dùng annotate để chỉ vào một điểm cần giải thích. xy là tọa độ điểm, xytext là vị trí đặt chữ; hai vị trí không nhất thiết giống nhau. Không cần ghi nhãn lên mọi điểm nếu các nhãn che nhau. axhline và axvline thêm mốc mục tiêu hoặc ngày thay đổi mà không giả làm quan sát mới."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()",
+      "expected": "1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ09-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mathtext cho phép ghi ký hiệu toán bằng chuỗi đặt trong dấu $. Nó chỉ định dạng chữ trên hình, không tính biểu thức. Ví dụ dưới ghi ngưỡng sigma bằng ký hiệu; giá trị của ngưỡng vẫn do code cung cấp."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.axhline(9, linestyle=\"--\", color=\"gray\", label=\"Target: 9\")\nax.axvline(2, linestyle=\":\", color=\"black\", label=\"Campaign day\")\nax.text(1.05, 10.5, r\"$\\sigma=2$\", fontsize=12)\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Targets and annotations\", ylim=(0, 12))\nax.legend(loc=\"lower left\")\nprint(len(ax.lines))\nplt.show()",
+      "expected": "3"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ09-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ09-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Tiêu đề “Doanh thu” còn thiếu gì để đọc được các con số?",
+     "answer": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp."
+    },
+    {
+     "prompt": "xy và xytext của annotate khác nhau thế nào?",
+     "answer": "xy là điểm được chỉ tới; xytext là nơi đặt lời chú thích."
+    },
+    {
+     "prompt": "Muốn kẻ mục tiêu 9 triệu đồng viết lệnh gì?",
+     "answer": "ax.axhline(9, linestyle=\"--\", label=\"Target: 9\"); thêm legend để người đọc hiểu mốc."
+    },
+    {
+     "prompt": "Vẽ hai chuỗi có label Coffee và Tea; đặt title Sales, xlabel Day, ylabel Cups và legend ở góc trên trái. Thêm đường đứng ngày 2 và đường ngang mục tiêu 9.",
+     "answer": "Mỗi ax.plot(...,label=...) đặt tên một chuỗi; ax.set(title=\"Sales\",xlabel=\"Day\",ylabel=\"Cups\"); ax.legend(loc=\"upper left\"); ax.axvline(2); ax.axhline(9). Nhãn và legend cho biết ý nghĩa đường, không tự thay đổi dữ liệu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.axhline(9, linestyle=\"--\", color=\"gray\", label=\"Target: 9\")\nax.axvline(2, linestyle=\":\", color=\"black\", label=\"Campaign day\")\nax.text(1.05, 10.5, r\"$\\sigma=2$\", fontsize=12)\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Targets and annotations\", ylim=(0, 12))\nax.legend(loc=\"lower left\")\nprint(len(ax.lines))\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD19",
+ "sort_order": 60,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD19 · Pivot và melt: đổi hình dạng bảng",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD19 · Pivot và melt: đổi hình dạng bảng",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD19",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Pivot and melt"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng doanh thu hiện có một hàng cho mỗi cặp cửa hàng và tháng. Để so sánh các tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B', 'B'], 'month': ['Jan', 'Feb', 'Jan', 'Feb'], 'revenue': [10, 20, 30, 40]})\nwide = df.pivot(index='store', columns='month', values='revenue')\nprint(wide.loc['A', 'Feb'])\nprint(wide.loc['B', 'Jan'])",
+      "expected": "20\n30"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng đầu là dạng dài: store, month xác định một quan sát. Bảng sau là dạng rộng: mỗi tháng trở thành cột. pivot chỉ đổi vị trí dữ liệu, không cộng các hàng trùng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nwide = pd.DataFrame({'store': ['A', 'B'], 'Jan': [10, 30], 'Feb': [20, 40]})\nlong = wide.melt(id_vars='store', var_name='month', value_name='revenue')\nprint(long.to_dict('records'))",
+      "expected": "[{'store': 'A', 'month': 'Jan', 'revenue': 10}, {'store': 'B', 'month': 'Jan', 'revenue': 30}, {'store': 'A', 'month': 'Feb', 'revenue': 20}, {'store': 'B', 'month': 'Feb', 'revenue': 40}]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "melt làm chiều ngược lại: giữ cột định danh bằng id_vars, rồi chuyển các cột đo thành hai cột tên và giá trị. Dạng dài thường thuận tiện để groupby hoặc đưa vào thư viện vẽ biểu đồ."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A'], 'month': ['Jan', 'Jan'], 'revenue': [10, 20]})\ntry:\n    df.pivot(index='store', columns='month', values='revenue')\nexcept ValueError as error:\n    print(type(error).__name__)",
+      "expected": "ValueError"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hai giá trị cho cùng ô A–Jan khiến pivot không xác định được giá trị cần đặt vào. Nếu chúng là hai giao dịch hợp lệ, bạn cần tổng hợp trước hoặc dùng pivot_table ở bài tiếp theo; không tự bỏ một hàng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD18 · Concat: ghép các lô dữ liệu"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "pivot có tự tính tổng các giao dịch cùng store–month không?",
+     "answer": "Không; nó yêu cầu mỗi ô được xác định duy nhất."
+    },
+    {
+     "prompt": "Trong melt, id_vars có nghĩa gì?",
+     "answer": "Các cột định danh được giữ, không chuyển thành cột giá trị đo."
+    },
+    {
+     "prompt": "Melt bảng id=[1], Jan=[5], Feb=[8] rồi in cột value.",
+     "answer": "Kết quả [5, 8].",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'id': [1], 'Jan': [5], 'Feb': [8]})\nprint(df.melt(id_vars='id')['value'].tolist())",
+     "answerExpected": "[5, 8]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B', 'B'], 'month': ['Jan', 'Feb', 'Jan', 'Feb'], 'revenue': [10, 20, 30, 40]})\nwide = df.pivot(index='store', columns='month', values='revenue')\nprint(wide.loc['A', 'Feb'])\nprint(wide.loc['B', 'Jan'])\n\n# ── Đoạn 2 ──\nimport pandas as pd\nwide = pd.DataFrame({'store': ['A', 'B'], 'Jan': [10, 30], 'Feb': [20, 40]})\nlong = wide.melt(id_vars='store', var_name='month', value_name='revenue')\nprint(long.to_dict('records'))\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A'], 'month': ['Jan', 'Jan'], 'revenue': [10, 20]})\ntry:\n    df.pivot(index='store', columns='month', values='revenue')\nexcept ValueError as error:\n    print(type(error).__name__)\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

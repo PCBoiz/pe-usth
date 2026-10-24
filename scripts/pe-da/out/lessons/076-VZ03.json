@@ -1,0 +1,106 @@
+{
+ "lesson_code": "VZ03",
+ "sort_order": 76,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu",
+ "subtitle": "Cơ bản · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu",
+  "subtitle": "Cơ bản · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Line chart: thời gian, thứ tự và dữ liệu thiếu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Doanh thu tuần này lần lượt là 8, 10 và 7 triệu đồng. Khi vẽ line chart, mỗi giá trị phải đi cùng đúng ngày của nó. Matplotlib nối theo thứ tự bạn đưa vào, vì vậy dữ liệu chưa sắp ngày có thể tạo ra đường đi ngược."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()",
+      "expected": "10"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ03-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dùng marker để thấy từng quan sát, label để phân biệt chuỗi và legend để hiển thị tên. Màu và kiểu nét có thể cùng phân biệt hai chuỗi; người đọc vẫn nhận ra đường nào khi in đen trắng. Không nối qua một giá trị bị thiếu nếu việc nối khiến người đọc tưởng rằng ngày đó đã được đo."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ03-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ03-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ03-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ02 · Figure, Axes và biểu đồ đầu tiên, NP17 · Dữ liệu thiếu: NaN"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?",
+     "answer": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào."
+    },
+    {
+     "prompt": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?",
+     "answer": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0."
+    },
+    {
+     "prompt": "Đổi đường trà thành nét đứt và marker vuông bằng tham số nào?",
+     "answer": "Dùng linestyle=\"--\", marker=\"s\"; giữ label=\"Tea\" và gọi legend()."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi) nên không nằm trong ô này."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ],
+   "env": "1 đoạn phải chạy bằng Python trên máy: fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "fig.autofmt_xdate() xung đột với layout=\"constrained\" ở matplotlib 3.8.4 — in ra UserWarning chen vào giữa kết quả bài ghi"
+  }
+ ]
+}

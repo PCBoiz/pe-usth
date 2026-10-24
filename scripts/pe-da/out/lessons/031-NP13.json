@@ -1,0 +1,108 @@
+{
+ "lesson_code": "NP13",
+ "sort_order": 31,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP13 · So sánh tạo dãy True/False",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP13 · So sánh tạo dãy True/False",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP13",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 112-114; Python Data Science Handbook · Đếm ngày mưa"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)",
+      "expected": "[False  True False]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`False` nghĩa là điều kiện không đúng; `True` nghĩa là điều kiện đúng. Ngày thứ hai có lượng mưa lớn hơn 0 nên được đánh dấu `True`. Hai ngày còn lại được đánh dấu `False`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Array True/False dùng để đánh dấu các vị trí như vậy được gọi là mask. Mask giữ số vị trí và thứ tự giống dữ liệu mà bạn vừa so sánh."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ví dụ, để đánh dấu những điểm từ 5 trở lên:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([3, 5, 8])\nprint(a >= 5)",
+      "expected": "[False  True  True]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Điểm 3 không đạt điều kiện, còn 5 và 8 đạt điều kiện. Dấu `>=` có nghĩa là lớn hơn hoặc bằng, nên điểm 5 cũng được đánh dấu `True`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Một điều kiện khác có thể dùng dấu `<`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([20, 35, 40])\nprint(a < 35)",
+      "expected": "[ True False False]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Chỉ có 20 nhỏ hơn 35. Số 35 bằng ngưỡng nên không thỏa điều kiện `< 35`. Các phép so sánh này mới tạo dãy đánh dấu; chúng chưa loại số nào khỏi array ban đầu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP02 · Lấy một phần tử, NP04 · Tính trên từng phần tử"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với array chứa `[4, 6]`, điều kiện `>= 5` tạo mask nào?",
+     "answer": "Mask là `[False, True]`: 4 không đạt, 6 đạt điều kiện."
+    },
+    {
+     "prompt": "Điền phép so sánh để đánh dấu điểm từ 5 trở lên: `scores ___ 5`.",
+     "answer": "Điền `>=`, nghĩa là lớn hơn hoặc bằng."
+    },
+    {
+     "prompt": "Tạo mask đánh dấu nhiệt độ lớn hơn 30 trong dãy `[28, 32, 30]`.",
+     "answer": "So sánh từng số đo với 30:",
+     "answerCode": "import numpy as np\n\ntemps = np.array([28, 32, 30])\nprint(temps > 30)",
+     "answerExpected": "[False  True False]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)\n\n# ── Đoạn 2 ──\na = np.array([3, 5, 8])\nprint(a >= 5)\n\n# ── Đoạn 3 ──\na = np.array([20, 35, 40])\nprint(a < 35)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

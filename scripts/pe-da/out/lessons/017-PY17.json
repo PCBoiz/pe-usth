@@ -1,0 +1,97 @@
+{
+ "lesson_code": "PY17",
+ "sort_order": 17,
+ "module": "M1 · Python nền tảng",
+ "title": "PY17 · Scope, tham chiếu hàm và callback",
+ "subtitle": "Cơ bản · M1 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY17 · Scope, tham chiếu hàm và callback",
+  "subtitle": "Cơ bản · M1 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY17",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 58-61, 295, 312; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một callback sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
+     },
+     {
+      "type": "code",
+      "code": "def greet():\n    return \"Hello\"\n\ncallback = greet\nprint(callback())",
+      "expected": "Hello"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`greet` tham chiếu tới chính hàm đó; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+     },
+     {
+      "type": "code",
+      "code": "value = 10\ndef calculate():\n    value = 20\n    return value\n\nprint(calculate(), value)",
+      "expected": "20 10"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Biến value trong calculate có phạm vi cục bộ (local scope): nó chỉ thuộc lần gọi hàm đó và che tên value bên ngoài. Vì vậy, gán value = 20 trong hàm không đổi value ở cấp module. Mỗi lần gọi có các biến cục bộ riêng; một khối if hoặc for không tự tạo phạm vi hàm mới."
+     },
+     {
+      "type": "code",
+      "code": "count = 0\ndef increment():\n    global count\n    count += 1\n\nincrement()\nprint(count)",
+      "expected": "1"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`global` cần khi bạn muốn gán lại tên cấp module từ trong hàm. Chỉ đọc tên bên ngoài không tự đòi hỏi global. Trong ứng dụng lớn, ưu tiên truyền dữ liệu và trả kết quả, hoặc giữ trạng thái trong object, để tránh quá nhiều biến dùng chung."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi truyền đối số cho Thread, `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY11 · Tuple, bytes và lựa chọn collection, PY16 · Hàm, giá trị trả về và docstring"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "callback = greet có gọi greet ngay không?",
+     "answer": "Không; callback nhận tham chiếu tới hàm."
+    },
+    {
+     "prompt": "Vì sao calculate() trả 20 nhưng value bên ngoài vẫn là 10?",
+     "answer": "value bên trong là biến cục bộ của hàm, khác với value ở cấp module."
+    },
+    {
+     "prompt": "Trong Button, command=save và command=save() khác nhau thế nào?",
+     "answer": "command=save truyền hàm để gọi sau; command=save() gọi ngay khi dựng nút rồi truyền kết quả của lời gọi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\ndef greet():\n    return \"Hello\"\n\ncallback = greet\nprint(callback())\n\n# ── Đoạn 2 ──\nvalue = 10\ndef calculate():\n    value = 20\n    return value\n\nprint(calculate(), value)\n\n# ── Đoạn 3 ──\ncount = 0\ndef increment():\n    global count\n    count += 1\n\nincrement()\nprint(count)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

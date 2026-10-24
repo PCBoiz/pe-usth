@@ -1,0 +1,103 @@
+{
+ "lesson_code": "VZ02",
+ "sort_order": 75,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ02 · Figure, Axes và biểu đồ đầu tiên",
+ "subtitle": "Cơ bản · M4 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ02 · Figure, Axes và biểu đồ đầu tiên",
+  "subtitle": "Cơ bản · M4 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Figure, Axes và biểu đồ đầu tiên"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần một hình có tiêu đề, trục và đường bán hàng. plt.subplots() trả về hai đối tượng: Figure là toàn bộ hình, Axes là vùng vẽ bên trong. Dùng fig để lưu hình và ax để thêm dữ liệu hoặc đổi nhãn sẽ giúp bạn biết mình đang sửa phần nào."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()",
+      "expected": "1 1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ02-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở ví dụ đầu, fig có một vùng vẽ ax và ax có một đường. Bạn cũng có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. Nếu cần đặt vị trí cụ thể, add_axes([left, bottom, width, height]) nhận bốn tỷ lệ so với Figure. Ví dụ [0.15, 0.2, 0.8, 0.65] đặt mép trái ở 15%, mép dưới ở 20%, chiều rộng 80% và chiều cao 65% của Figure. Khi dùng pyplot, plt.plot(...) vẽ vào vùng hiện tại; ax.plot(...) chỉ rõ vùng cần vẽ. Vì vậy, khi có nhiều Axes, dùng ax giúp tránh vẽ nhầm. Bạn thường chuẩn bị dữ liệu, tạo Figure và Axes, vẽ, chỉnh nhãn và bố trí, rồi lưu nếu cần trước khi gọi show."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()",
+      "expected": "(1, 1, 0, 0)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ02-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_axes([0.15, 0.2, 0.8, 0.65])\nax.scatter([1, 2, 3], [12, 15, 9])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Manually positioned Axes\")\nprint([round(float(v), 2) for v in ax.get_position().bounds])\nplt.show()",
+      "expected": "[0.15, 0.2, 0.8, 0.65]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ02-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ02-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ01 · Từ câu hỏi đến loại biểu đồ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?",
+     "answer": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu."
+    },
+    {
+     "prompt": "add_subplot(221) mô tả vị trí nào?",
+     "answer": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng."
+    },
+    {
+     "prompt": "Vì sao add_axes cần bốn số?",
+     "answer": "Bốn số xác định vị trí trái, dưới, chiều rộng và chiều cao theo tỷ lệ của Figure."
+    },
+    {
+     "prompt": "Một Figure có hai Axes left/right. Muốn chắc đường nằm bên phải thì dùng plt.plot hay right.plot? Sắp thứ tự chuẩn bị dữ liệu, tạo Figure, vẽ, chỉnh, lưu và show.",
+     "answer": "right.plot chỉ rõ Axes bên phải; plt.plot dùng Axes hiện tại nên phụ thuộc trạng thái. Thứ tự là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh → lưu → show. Figure là toàn bộ hình, Axes là vùng dữ liệu, còn các trục x/y thuộc Axes."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_axes([0.15, 0.2, 0.8, 0.65])\nax.scatter([1, 2, 3], [12, 15, 9])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Manually positioned Axes\")\nprint([round(float(v), 2) for v in ax.get_position().bounds])\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

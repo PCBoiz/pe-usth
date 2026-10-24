@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY15",
+ "sort_order": 15,
+ "module": "M1 · Python nền tảng",
+ "title": "PY15 · While, break và continue",
+ "subtitle": "Cơ bản · M1 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY15 · While, break và continue",
+  "subtitle": "Cơ bản · M1 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY15",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 90-94, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một chương trình cho phép thử tối đa ba lần. Khi chưa có thao tác của người dùng, bạn có thể mô phỏng số lượt để đọc điều kiện dừng:"
+     },
+     {
+      "type": "code",
+      "code": "attempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)",
+      "expected": "1\n2\n3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "while kiểm tra điều kiện trước mỗi lượt. Việc tăng attempt giúp điều kiện cuối cùng thành False. Nếu quên thay đổi trạng thái mà điều kiện luôn đúng, chương trình có thể lặp mãi."
+     },
+     {
+      "type": "code",
+      "code": "for number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)",
+      "expected": "0\n2\n3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`continue` bỏ phần còn lại của lượt hiện tại; `break` thoát vòng gần nhất. Vì vậy số 1 không được in và gặp 4 thì dừng trước print. Vị trí cập nhật biến rất quan trọng: nếu `total += number` nằm sau continue, số bị bỏ qua không được cộng. Trong while, nếu cập nhật điều kiện dừng nằm sau continue, bạn có thể vô tình bỏ luôn bước giúp vòng lặp kết thúc."
+     },
+     {
+      "type": "code",
+      "code": "commands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)",
+      "expected": "sum"
+     },
+     {
+      "type": "paragraph",
+      "text": "`iter(...)` tạo đối tượng để lấy lần lượt các lệnh trong danh sách. Mỗi lần gọi `next(commands, \"quit\")` sẽ lấy lệnh tiếp theo; khi hết dữ liệu, nó trả giá trị mặc định `\"quit\"`. Chuỗi này là sentinel, tức giá trị báo dừng, nên ví dụ không lặp mãi. Khi làm chương trình nhận lệnh trong terminal (CLI), bạn có thể lấy từng lệnh bằng `input()` và giữ cùng quy tắc thoát."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY14 · For, range và biến tích lũy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vòng đầu chạy mấy lượt?",
+     "answer": "3 lượt, với attempt được in là 1, 2 và 3."
+    },
+    {
+     "prompt": "break và continue có giống nhau không?",
+     "answer": "Không. break thoát vòng lặp; continue chỉ bỏ phần còn lại của một lượt."
+    },
+    {
+     "prompt": "Nếu commands không có phần tử nào, ví dụ cuối có bị lặp mãi không?",
+     "answer": "Không. next trả mặc định quit ngay, rồi break kết thúc vòng lặp."
+    },
+    {
+     "prompt": "total=0; duyệt [1,2,3,4], bỏ lượt khi n==2, dừng khi n==4, còn lại cộng n. Tổng cuối là gì? Trong while, đặt cập nhật n sau continue có rủi ro gì?",
+     "answer": "Tổng là 4 từ 1 và 3. Continue có thể bỏ luôn cập nhật biến kiểm soát while, làm điều kiện không đổi và lặp mãi. Break chỉ kết thúc vòng gần nhất; lệnh sau vòng vẫn có thể chạy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nattempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)\n\n# ── Đoạn 2 ──\nfor number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)\n\n# ── Đoạn 3 ──\ncommands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

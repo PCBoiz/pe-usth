@@ -1,0 +1,113 @@
+{
+ "lesson_code": "VZ11",
+ "sort_order": 84,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị",
+ "subtitle": "Trung cấp · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị",
+  "subtitle": "Trung cấp · M4 · 17 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Trục, tick, tỷ lệ log và giới hạn hiển thị"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai cột 98 và 100 có thể trông chênh nhau rất lớn nếu trục đứng bắt đầu từ 97. Giới hạn trục thay đổi cảm nhận về hình nhưng không thay đổi dữ liệu. Với cột biểu diễn lượng, giữ mốc 0; với đường cần xem biến động nhỏ, có thể thu hẹp trục nhưng phải hiển thị mốc rõ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()",
+      "expected": "1.02"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ11-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Thang log dùng khoảng cách bằng nhau cho tỷ lệ bằng nhau, chẳng hạn 1, 10 và 100. Log thông thường không biểu diễn trực tiếp được 0 và số âm; không tự cộng 1 mà không giải thích. Mỗi mốc tick phải thể hiện đúng giá trị, kể cả khi bạn viết lại nhãn bằng chữ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [1, 10, 100], marker=\"o\")\nax.set_yscale(\"log\")\nax.set(xlabel=\"Stage\", ylabel=\"Records (log scale)\", title=\"Equal distances represent equal ratios\")\nax.set_xticks([1, 2, 3], [\"Start\", \"Middle\", \"End\"])\nprint(ax.get_yscale())\nplt.show()",
+      "expected": "log"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ11-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể ẩn viền trên, chỉnh tick hoặc tăng khoảng đệm bằng margins để hình thoáng hơn. Tỷ lệ equal giữ một đơn vị x dài bằng một đơn vị y; điều này cần khi hình học có ý nghĩa. Tránh hai trục y tùy ý chỉ để hai đường trông đi cùng nhau; cùng dữ liệu có thể tạo nhiều cảm giác khác nhau khi đổi giới hạn. margins(x=0.1,y=0.1) thêm đệm dựa trên phạm vi dữ liệu tự co giãn; nó không đặt giới hạn cố định. Khi cần miền x cụ thể, gọi ax.set_xlim(0,3) hoặc ax.set(xlim=(0,3)). set_aspect(\"equal\") kiểm soát độ dài một đơn vị dữ liệu, khác tỷ lệ cao/rộng của cả Figure."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([0, 1, 2], [0, 1, 2], marker=\"o\")\nax.set_aspect(\"equal\", adjustable=\"box\")\nax.margins(x=0.1, y=0.1)\nax.spines[\"top\"].set_visible(False)\nax.spines[\"bottom\"].set_position((\"outward\", 5))\nax.tick_params(axis=\"y\", direction=\"inout\", length=8)\nax.set(xlabel=\"x (km)\", ylabel=\"y (km)\", title=\"Equal units on both axes\")\nprint(ax.spines[\"top\"].get_visible())\nplt.show()",
+      "expected": "False"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ11-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ11-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự, VZ09 · Nhãn, đơn vị, đường mốc và chú thích"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?",
+     "answer": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên."
+    },
+    {
+     "prompt": "Vì sao số 0 gặp vấn đề trên trục log thông thường?",
+     "answer": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu."
+    },
+    {
+     "prompt": "Muốn giấu viền trên của Axes, dùng lệnh nào?",
+     "answer": "ax.spines[\"top\"].set_visible(False). Giữ đủ dấu trục và nhãn để đọc được số."
+    },
+    {
+     "prompt": "Bạn vẽ một vùng theo đơn vị km trên cả hai trục. Hãy viết các lệnh để một đơn vị x dài bằng một đơn vị y; giới hạn x từ 0 đến 3; thêm đệm 10% khi trục đang tự chọn giới hạn; đặt tick y hướng vào trong, dài 8 điểm; và ẩn viền trên. Nếu đã đặt xlim cố định, gọi margins sau đó có tự thay đổi giới hạn x không?",
+     "answer": "Dùng ax.set_aspect(\"equal\"), ax.set_xlim(0, 3), ax.margins(x=0.1, y=0.1), ax.tick_params(axis=\"y\", direction=\"in\", length=8) và ax.spines[\"top\"].set_visible(False) cho từng việc tương ứng. Đặt xlim cố định sẽ tắt việc tự chọn giới hạn theo chiều x, nên margins không ghi đè giới hạn đó. Muốn thêm đệm tự động theo dữ liệu, cần bật lại autoscale cho chiều đó. Để đưa viền dưới ra ngoài 5 điểm, dùng ax.spines[\"bottom\"].set_position((\"outward\", 5))."
+    },
+    {
+     "prompt": "Đặt ba tick ngang ở vị trí [1,2,3] với nhãn [\"Start\",\"Middle\",\"End\"] bằng cách nào? Việc đổi nhãn có đổi giá trị dữ liệu thành ba chữ đó không?",
+     "answer": "ax.set_xticks([1,2,3],[\"Start\",\"Middle\",\"End\"]). Các vị trí số vẫn là 1,2,3; nhãn chỉ quyết định chữ người đọc nhìn thấy. Không gán riêng ba nhãn cho số vị trí không tương ứng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [1, 10, 100], marker=\"o\")\nax.set_yscale(\"log\")\nax.set(xlabel=\"Stage\", ylabel=\"Records (log scale)\", title=\"Equal distances represent equal ratios\")\nax.set_xticks([1, 2, 3], [\"Start\", \"Middle\", \"End\"])\nprint(ax.get_yscale())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([0, 1, 2], [0, 1, 2], marker=\"o\")\nax.set_aspect(\"equal\", adjustable=\"box\")\nax.margins(x=0.1, y=0.1)\nax.spines[\"top\"].set_visible(False)\nax.spines[\"bottom\"].set_position((\"outward\", 5))\nax.tick_params(axis=\"y\", direction=\"inout\", length=8)\nax.set(xlabel=\"x (km)\", ylabel=\"y (km)\", title=\"Equal units on both axes\")\nprint(ax.spines[\"top\"].get_visible())\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

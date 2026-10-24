@@ -1,0 +1,97 @@
+{
+ "lesson_code": "EX06",
+ "sort_order": 165,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX06 · Lưu nền thật: gzip, pickle, file và thông báo lỗi",
+ "subtitle": "Nâng cao · M9 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX06 · Lưu nền thật: gzip, pickle, file và thông báo lỗi",
+  "subtitle": "Nâng cao · M9 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 299; Pickle; gzip; queue"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Sau khi nhập điểm, bạn muốn lưu một bản nén mà ứng dụng mở lại được. Trước khi đưa việc lưu sang thread, kiểm hai chiều ghi và nạp trên file thật. pickle biến object thành bytes; gzip nén bytes; hai bước không thay thế nhau. Chỉ nạp pickle từ nguồn bạn tin cậy."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
+      "expected": "True True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trước khi tạo worker, chương trình dùng deepcopy để lấy một bản chụp dữ liệu, hay snapshot. Trong ví dụ này, các phần tử chỉ là số nên bản sao tách được cấu trúc cần lưu khỏi data đang thay đổi. Sau khi file được đóng, worker gửi thông điệp hoàn tất. Thread chính dùng join để chờ trong ví dụ dòng lệnh. Với GUI, cần kiểm tra queue qua event loop; gọi join trong một callback lâu sẽ làm giao diện phải chờ theo."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, gzip, pickle, copy\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, snapshot, messages):\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(snapshot, f)\n    messages.put((\"done\", len(snapshot[\"marks\"])))\ndata = {\"marks\":[6, 8]}\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    snapshot = copy.deepcopy(data)\n    worker = Thread(target=save, args=(path, snapshot, messages))\n    worker.start()\n    data[\"marks\"].append(10)\n    worker.join()\n    status = messages.get()\n    with gzip.open(path, \"rb\") as f:\n        loaded = pickle.load(f)\n    print(status)\n    print(loaded[\"marks\"], data[\"marks\"])",
+      "expected": "('done', 2)\n[6, 8] [6, 8, 10]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Nếu việc ghi file lỗi bên trong worker, callback đã tạo worker không tự nhận được ngoại lệ đó. Worker cần bắt lỗi và gửi qua queue để giao diện báo cho người dùng rồi cho phép thử lại. Ví dụ dưới ghi vào một thư mục chưa tồn tại, bắt OSError và gửi thông điệp error, thay vì bỏ qua lỗi bằng except: pass. Bạn đang kiểm tra phần ghi file và báo lỗi của PW8. Để biết cửa sổ còn phản hồi trong lúc lưu hay không, cần thử ứng dụng có giao diện ở PW9."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef save(path, data, messages):\n    try:\n        with gzip.open(path, \"wb\") as f:\n            pickle.dump(data, f)\n    except OSError as error:\n        messages.put((\"error\", isinstance(error, FileNotFoundError)))\n    else:\n        messages.put((\"done\", True))\nmessages = Queue()\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing-folder\" / \"students.dat\"\n    worker = Thread(target=save, args=(path, {\"marks\":[6, 8]}, messages))\n    worker.start(); worker.join()\n    print(messages.get())",
+      "expected": "('error', True)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT13 · Queue và lưu pickle có nén ở nền"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao không truyền thẳng data đang được UI sửa vào worker?",
+     "answer": "Worker có thể quan sát dữ liệu ở nhiều thời điểm khác nhau. Lấy snapshot nhất quán, với sao chép hoặc đồng bộ phù hợp; gán snapshot=data chưa tạo bản sao."
+    },
+    {
+     "prompt": "Sau thông điệp done, kiểm gì để biết file thật có ích?",
+     "answer": "Mở lại file qua gzip và pickle.load, rồi đối chiếu cấu trúc dữ liệu cùng các giá trị với snapshot. Có thể thử nạp trong một lượt chạy mới để chắc rằng kết quả không phụ thuộc dữ liệu còn trong bộ nhớ. Chỉ thấy đường dẫn tồn tại chưa cho biết dữ liệu đã khôi phục đúng."
+    },
+    {
+     "prompt": "Worker báo error thì UI nên làm gì? Có gọi join dài trong callback để chờ được không?",
+     "answer": "Hiện lỗi, giữ dữ liệu chưa lưu và cho thử lại theo chính sách. Dùng event loop kiểm queue; join dài sẽ chặn UI. Khi thoát phải có quy tắc chờ/lưu/hủy rõ, không để ứng dụng kết thúc giữa lần ghi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+   },
+   "starterCode": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

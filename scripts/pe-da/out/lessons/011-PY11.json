@@ -1,0 +1,99 @@
+{
+ "lesson_code": "PY11",
+ "sort_order": 11,
+ "module": "M1 · Python nền tảng",
+ "title": "PY11 · Tuple, bytes và lựa chọn collection",
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY11 · Tuple, bytes và lựa chọn collection",
+  "subtitle": "Cơ bản · M1 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 64-66, 81-82; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một điểm trên bản đồ gồm hai tọa độ. Bạn muốn giữ chúng thành một bản ghi và tách ra khi cần:"
+     },
+     {
+      "type": "code",
+      "code": "point = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)",
+      "expected": "10 20\nint tuple"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Bạn không thể gán giá trị khác vào một vị trí của tuple, chẳng hạn `point[0] = 30`. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
+     },
+     {
+      "type": "code",
+      "code": "point = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
+      "expected": "TypeError"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Collection là cách gom nhiều object vào một cấu trúc. List thích hợp khi cần thêm hoặc sửa vị trí; tuple thường dùng cho bản ghi hay kích thước cố định. String, list, tuple và range đều là sequence: có thứ tự, đọc theo vị trí và có thể có giá trị lặp. Set giữ thành viên không trùng và không có chỉ số; dict tra giá trị bằng khóa. Bạn chọn cấu trúc theo thao tác cần làm, không chỉ theo cách nó được in ra."
+     },
+     {
+      "type": "code",
+      "code": "raw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))",
+      "expected": "b'AB'\nb'CB'"
+     },
+     {
+      "type": "paragraph",
+      "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY10 · List: lấy, thêm và xóa phần tử"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "args = (10) có phải tuple một phần tử không?",
+     "answer": "Không. Dùng args = (10,)."
+    },
+    {
+     "prompt": "Cần thêm số đo liên tục, chọn list hay tuple?",
+     "answer": "List thường phù hợp hơn vì có thể thêm và sửa phần tử."
+    },
+    {
+     "prompt": "bytes và bytearray khác nhau ở điểm nào?",
+     "answer": "bytes bất biến; bytearray cho phép cập nhật byte. Cả hai dùng cho dữ liệu nhị phân, không thay thế quy tắc mã hóa văn bản."
+    },
+    {
+     "prompt": "Cần dãy có thể trùng và thêm phần tử, tập mã duy nhất, tra theo mã và cặp kích thước cố định: chọn collection nào? Chúng khác sequence ở đâu?",
+     "answer": "Lần lượt list, set, dict và tuple. Sequence có thứ tự và truy cập vị trí; list/tuple/range/str/bytes/bytearray là ví dụ. Không dùng vị trí để truy cập set; dict tra khóa."
+    },
+    {
+     "prompt": "point=(10,20): point[1] trả gì và point[0]=30 gây lỗi gì? Nếu tuple chứa list thì list bên trong có bị đóng băng không?",
+     "answer": "Trả 20; phép gán vị trí tuple gây TypeError. Tuple cố định tham chiếu ở các vị trí, không tự làm list bên trong bất biến."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\npoint = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)\n\n# ── Đoạn 2 ──\npoint = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)\n\n# ── Đoạn 3 ──\nraw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

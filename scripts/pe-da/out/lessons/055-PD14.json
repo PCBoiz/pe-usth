@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD14",
+ "sort_order": 55,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD14 · Groupby: tổng hợp theo nhóm",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD14 · Groupby: tổng hợp theo nhóm",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Groupby aggregation"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng hiện có một hàng cho mỗi giao dịch. Để báo cáo doanh thu cửa hàng, bạn cần gộp các giao dịch có cùng mã cửa hàng rồi cộng amount."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
+      "expected": "{'A': 30, 'B': 40}"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "groupby chia hàng thành nhóm, rồi sum tính riêng trong từng nhóm. Kết quả có một giá trị cho mỗi cửa hàng. Nếu cần nhiều thống kê, agg đặt tên rõ cho các cột báo cáo."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))",
+      "expected": "[{'store': 'A', 'revenue': 30, 'orders': 2}, {'store': 'B', 'revenue': 40, 'orders': 1}]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "as_index=False giữ store thành cột thông thường. size đếm số hàng của nhóm; count chỉ đếm ô không thiếu trong cột được chọn. Nếu khóa nhóm bị thiếu, mặc định nhóm đó bị bỏ; dropna=False giữ nó để bạn kiểm tra."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', None], 'amount': [10.0, None, 20.0]})\ngrouped = df.groupby('store', dropna=False)['amount']\nprint(grouped.size().tolist())\nprint(grouped.count().tolist())\nprint(grouped.sum().sum())",
+      "expected": "[2, 1]\n[1, 1]\n30.0"
+     },
+     {
+      "type": "paragraph",
+      "text": "Có thể nhóm theo nhiều cột bằng danh sách, chẳng hạn groupby([\"store\", \"month\"]). Trước khi so sánh tổng báo cáo với tổng gốc, hãy quyết định cách xử lý khóa nhóm thiếu để tránh làm thất thoát số liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD13 · JSON và Excel: chọn đúng bảng cần đọc"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+     "answer": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
+    },
+    {
+     "prompt": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?",
+     "answer": "size là 2; count của amount là 1."
+    },
+    {
+     "prompt": "Tính tổng qty theo region cho region=[N,N,S], qty=[2,3,4].",
+     "answer": "N=5 và S=4.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'region': ['N', 'N', 'S'], 'qty': [2, 3, 4]})\nprint(df.groupby('region')['qty'].sum().to_dict())",
+     "answerExpected": "{'N': 5, 'S': 4}"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', None], 'amount': [10.0, None, 20.0]})\ngrouped = df.groupby('store', dropna=False)['amount']\nprint(grouped.size().tolist())\nprint(grouped.count().tolist())\nprint(grouped.sum().sum())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

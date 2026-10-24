@@ -1,0 +1,125 @@
+{
+ "lesson_code": "CT01",
+ "sort_order": 132,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT01 · Một chương trình, nhiều tiến trình",
+ "subtitle": "Nâng cao · M6 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT01 · Một chương trình, nhiều tiến trình",
+  "subtitle": "Nâng cao · M6 · 17 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 195-210; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn mở cùng một script phân tích hai lần. File chương trình vẫn là một, nhưng hệ điều hành tạo hai lần thực thi khác nhau. Mỗi lần thực thi được gọi là một process, có PID để nhận diện:"
+     },
+     {
+      "type": "code",
+      "code": "import os, subprocess, sys\nchild = subprocess.check_output([sys.executable, \"-c\", \"import os; print(os.getpid())\"], text=True)\nprint(int(child) != os.getpid())",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack giữ khung lời gọi hàm; data section giữ dữ liệu tĩnh/toàn cục; heap phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
+     },
+     {
+      "type": "code",
+      "code": "transitions = {(\"new\", \"admitted\"): \"ready\", (\"ready\", \"scheduled\"): \"running\", (\"running\", \"io_wait\"): \"waiting\", (\"waiting\", \"io_done\"): \"ready\", (\"running\", \"exit\"): \"terminated\"}\nprint(transitions[(\"running\", \"io_wait\")])\nprint(transitions[(\"waiting\", \"io_done\")])",
+      "expected": "waiting\nready"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dictionary trên mô phỏng các trạng thái của process trong slide: new là mới tạo; ready là đã sẵn sàng và đang đợi CPU; running là đang chạy; waiting là đang chờ một sự kiện như I/O; terminated là đã kết thúc. Khi bị ngắt để nhường CPU, process có thể chuyển từ running về ready. Khi I/O hoàn thành, nó thường chuyển từ waiting về ready, chứ chưa chắc được chạy ngay."
+     },
+     {
+      "type": "code",
+      "code": "import os, subprocess, sys\nparent = subprocess.check_output([sys.executable, \"-c\", \"import os; print(os.getppid())\"], text=True)\nprint(int(parent) == os.getpid())",
+      "expected": "True"
+     },
+     {
+      "type": "paragraph",
+      "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker, rồi worker tạo helper; công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PY16 · Hàm, giá trị trả về và docstring"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Một file script chạy hai lần có nhất thiết cùng PID không?",
+     "answer": "Không. Đó có thể là hai process khác nhau, dù dùng cùng program."
+    },
+    {
+     "prompt": "ready khác waiting ở đâu?",
+     "answer": "ready đang đợi CPU; waiting còn đợi một sự kiện hoặc I/O để có thể tiếp tục."
+    },
+    {
+     "prompt": "Sau I/O hoàn thành, vì sao process không nhất thiết chạy ngay?",
+     "answer": "Nó thường trở lại ready queue; scheduler còn phải chọn khi nào cấp CPU."
+    },
+    {
+     "prompt": "Script đang nằm trên đĩa và hai lần chạy của script: đâu là program, đâu là process?",
+     "answer": "File script là program thụ động. Mỗi lần chạy là một process có trạng thái thực thi và PID của nó."
+    },
+    {
+     "prompt": "Nếu dừng rồi tiếp tục process, program counter và registers dùng để làm gì?",
+     "answer": "Program counter chỉ vị trí lệnh để tiếp tục; registers giữ trạng thái tính toán của CPU. Chúng thuộc ngữ cảnh cần lưu và nạp lại."
+    },
+    {
+     "prompt": "Stack, data section, heap và file descriptor lần lượt giữ thông tin gì?",
+     "answer": "Stack giữ khung lời gọi; data section giữ dữ liệu tĩnh/toàn cục; heap phục vụ cấp phát động; file descriptor nhận diện tài nguyên I/O đang mở."
+    },
+    {
+     "prompt": "Điền trạng thái: new --admitted--> ? --scheduled--> ? --interrupt--> ?; running --event wait--> ? --event finish--> ?; running --exit--> ?",
+     "answer": "ready, running, ready; waiting, ready; terminated. Interrupt nhường CPU khác với chờ I/O."
+    },
+    {
+     "prompt": "Trong cây analysis(100) → worker(101) → helper(102), ai là cha của helper và ai là ông/bà?",
+     "answer": "worker là cha, analysis là tổ tiên cách một thế hệ. helper là cháu của analysis."
+    },
+    {
+     "prompt": "Con được tạo từ cha có luôn dùng chung mọi biến Python không? Slide nêu những mức chia sẻ nào?",
+     "answer": "Không. Tùy hệ điều hành và cơ chế tạo process, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ loại tài nguyên đang xét. Với một object Python cụ thể, cần biết nó được sao chép hay được chia sẻ qua cơ chế nào; không mặc định mọi biến đều dùng chung."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (WASM không gọi được chương trình ngoài) nên không nằm trong ô này."
+   },
+   "starterCode": "transitions = {(\"new\", \"admitted\"): \"ready\", (\"ready\", \"scheduled\"): \"running\", (\"running\", \"io_wait\"): \"waiting\", (\"waiting\", \"io_done\"): \"ready\", (\"running\", \"exit\"): \"terminated\"}\nprint(transitions[(\"running\", \"io_wait\")])\nprint(transitions[(\"waiting\", \"io_done\")])\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: WASM không gọi được chương trình ngoài."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "WASM không gọi được chương trình ngoài"
+  },
+  {
+   "block": 2,
+   "reason": "WASM không gọi được chương trình ngoài"
+  }
+ ]
+}

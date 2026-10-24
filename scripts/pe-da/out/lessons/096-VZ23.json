@@ -1,0 +1,100 @@
+{
+ "lesson_code": "VZ23",
+ "sort_order": 96,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback",
+ "subtitle": "Nâng cao · M4 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback",
+  "subtitle": "Nâng cao · M4 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ23",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Widget events; Using interact"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một dashboard nhỏ cần bộ chọn cửa hàng và các chỉ số thay đổi cùng bộ chọn. Hãy viết hàm lọc trước rồi mới gắn giao diện vào nó. Hàm độc lập dễ kiểm tra bằng dữ liệu nhỏ và có thể dùng lại trong notebook hoặc một ứng dụng web."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
+      "expected": "(18, 2)\n(23, 3)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "ipywidgets.Dropdown giữ lựa chọn hiện tại trong value. Trong Jupyter có hỗ trợ widget, gọi display(control) để hiện bộ chọn. Tạo cùng đối tượng trong một script Python thường không tự mở giao diện hay trang web. Ví dụ dưới đặt value thành \"A\" rồi đọc lại, nên bạn có thể xem cách lưu lựa chọn trước khi thử nó trong notebook."
+     },
+     {
+      "type": "code",
+      "code": "import ipywidgets as widgets\ncontrol = widgets.Dropdown(options=[\"All\", \"A\", \"B\"], value=\"All\", description=\"Store:\")\ncontrol.value = \"A\"\nprint(control.value)\ncontrol.close()",
+      "expected": "A"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "observe gọi hàm khi một thuộc tính thay đổi. Callback nhận change, trong đó new là giá trị mới; đây cũng là cách nghĩ bạn sẽ gặp ở GUI. Khi làm dashboard thật, callback cập nhật cả KPI lẫn biểu đồ từ cùng một tập dữ liệu đã lọc, xử lý trường hợp rỗng và giữ thông tin về kỳ dữ liệu. interact hoặc Output có thể hiện kết quả ngay trong notebook; Streamlit và Dash là lựa chọn khi cần một ứng dụng phục vụ qua web, với bước triển khai riêng."
+     },
+     {
+      "type": "code",
+      "code": "import ipywidgets as widgets\ntotals = {\"All\":23, \"A\":18, \"B\":5}\ncontrol = widgets.Dropdown(options=list(totals), value=\"All\")\nstate = {\"store\":\"All\", \"cups\":23}\ndef update(change):\n    state[\"store\"] = change[\"new\"]\n    state[\"cups\"] = totals[change[\"new\"]]\ncontrol.observe(update, names=\"value\")\ncontrol.value = \"B\"\nprint(state)\ncontrol.unobserve(update, names=\"value\")\ncontrol.close()",
+      "expected": "{'store': 'B', 'cups': 5}"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ21 · Plotly: lọc dữ liệu, dropdown và facet, PD05 · Lọc hàng theo điều kiện, PY16 · Hàm, giá trị trả về và docstring"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao viết hàm summarize trước khi làm widget?",
+     "answer": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán."
+    },
+    {
+     "prompt": "Widget được tạo trong script có tự biến thành website không?",
+     "answer": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp."
+    },
+    {
+     "prompt": "Chọn B mà KPI vẫn là tổng All cần sửa gì?",
+     "answer": "Cho callback tính lại KPI và biểu đồ từ cùng trạng thái lọc. Kiểm tra bằng một ví dụ biết trước B=5."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (ipywidgets chưa có wheel trong /pyodide/v0.27.7/) nên không nằm trong ô này."
+   },
+   "starterCode": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))\n",
+   "packages": [
+    "pandas"
+   ],
+   "env": "2 đoạn phải chạy bằng Python trên máy: ipywidgets chưa có wheel trong /pyodide/v0.27.7/."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "ipywidgets chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "ipywidgets chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

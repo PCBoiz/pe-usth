@@ -1,0 +1,95 @@
+{
+ "lesson_code": "CT04",
+ "sort_order": 135,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc",
+ "subtitle": "Nâng cao · M6 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc",
+  "subtitle": "Nâng cao · M6 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 234-235; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ba việc cùng sẵn sàng lúc 0: A cần 6 đơn vị CPU, B cần 2, C cần 1. Nếu xử lý theo thứ tự đến A, B, C, việc ngắn C phải chờ cả A lẫn B:"
+     },
+     {
+      "type": "code",
+      "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst",
+      "expected": "A 0\nB 6\nC 8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Đây là FCFS non-preemptive: việc tới trước chạy trước và không bị thu CPU giữa chừng trong mô hình này. Các số in ra là thời gian bắt đầu, cũng là thời gian chờ vì mọi việc đều tới lúc 0."
+     },
+     {
+      "type": "code",
+      "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst",
+      "expected": "C 0\nB 1\nA 3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "SJF chọn công việc có đợt chạy CPU ngắn nhất trong số các việc đang sẵn sàng. Độ dài đợt chạy này được gọi là CPU burst. Trong ví dụ, C cần 1 đơn vị nên chạy trước, tiếp theo là B rồi A. Bản SJF này không thu CPU giữa chừng. Nó chỉ chọn trong các việc đã đến, không được chọn trước một việc còn chưa xuất hiện."
+     },
+     {
+      "type": "code",
+      "code": "fcfs_waits = [0, 6, 8]\nsjf_waits = [0, 1, 3]\nprint(round(sum(fcfs_waits)/3, 2))\nprint(round(sum(sjf_waits)/3, 2))",
+      "expected": "4.67\n1.33"
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong bộ số giả định này, trung bình chờ của SJF thấp hơn. Kết luận phụ thuộc giả định biết burst và thời điểm đến. Hệ thống thật phải ước lượng thời gian chạy; các việc dài cũng có thể bị chờ lâu nếu việc ngắn tiếp tục đến."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT03 · Scheduler, PCB và các hàng đợi"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "FCFS ở ví dụ chạy theo thứ tự nào?",
+     "answer": "A, B, C."
+    },
+    {
+     "prompt": "Vì sao SJF chọn C trước?",
+     "answer": "C có CPU burst ngắn nhất trong ba việc đã sẵn sàng."
+    },
+    {
+     "prompt": "Tính thời gian chờ của B trong FCFS và SJF trên.",
+     "answer": "FCFS: 6. SJF: 1, do C chạy trước mất một đơn vị."
+    },
+    {
+     "prompt": "A tới trước cần 6 đơn vị, B tới sau cần 1 khi A mới chạy 1 đơn vị. FCFS và SJF non-preemptive có tự ngắt A không?",
+     "answer": "Không. Cả hai bản non-preemptive đang xét để A chạy tới khi nhường/chặn/kết thúc. SJF chỉ chọn burst ngắn trong những việc ready ở lúc quyết định."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 2 ──\njobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst\n\n# ── Đoạn 3 ──\nfcfs_waits = [0, 6, 8]\nsjf_waits = [0, 1, 3]\nprint(round(sum(fcfs_waits)/3, 2))\nprint(round(sum(sjf_waits)/3, 2))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

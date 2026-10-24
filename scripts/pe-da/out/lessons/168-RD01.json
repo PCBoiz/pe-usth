@@ -1,0 +1,109 @@
+{
+ "lesson_code": "RD01",
+ "sort_order": 168,
+ "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+ "title": "RD01 · Đặt chú thích theo dữ liệu hoặc theo vùng vẽ",
+ "subtitle": "Trung cấp · M10 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RD01 · Đặt chú thích theo dữ liệu hoặc theo vùng vẽ",
+  "subtitle": "Trung cấp · M10 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RD01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Matplotlib annotations"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Doanh thu cao nhất nằm ở ngày 2, nhưng bạn muốn lời giải thích luôn ở góc trên bên trái dù người xem đổi giới hạn trục. Một vị trí thuộc dữ liệu, vị trí còn lại thuộc vùng vẽ. Matplotlib cho phép chọn hai hệ tọa độ này riêng."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nlabel = ax.text(0.05, 0.95, \"Three days only\", transform=ax.transAxes, va=\"top\")\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(label.get_position())\nplt.show()\nplt.close(fig)",
+      "expected": "(0.05, 0.95)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/RD01-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`ax.text(x, y, ...)` mặc định hiểu x và y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ của vùng vẽ: `(0, 0)` là góc dưới trái, `(1, 1)` là góc trên phải. Vị trí `(0.05, 0.95)` cách cạnh trái 5% chiều rộng và nằm ở 95% chiều cao tính từ dưới lên. `va=\"top\"` đặt cạnh trên của dòng chữ tại vị trí đó."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nnote = ax.annotate(\"Peak: 10\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0.05, 0.95), textcoords=\"axes fraction\",\n                   va=\"top\", arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(note.xy, note.get_position())\nplt.show()\nplt.close(fig)",
+      "expected": "(2, 10) (0.05, 0.95)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/RD01-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`xy` là điểm mà mũi tên chỉ tới; với `xycoords=\"data\"`, điểm `(2, 10)` vẫn là ngày 2 có doanh thu 10. `xytext` chọn nơi đặt chữ, còn `textcoords=\"axes fraction\"` diễn giải nơi đó theo tỷ lệ vùng vẽ. Nếu muốn chữ luôn cách điểm dữ liệu một khoảng nhỏ, dùng `textcoords=\"offset points\"`; khi ấy khoảng cách được đo bằng point, đơn vị cỡ chữ có 72 point trong một inch."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nnote = ax.annotate(r\"$y=10$\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0, 12), textcoords=\"offset points\", ha=\"center\")\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\ntitle = ax.set_title(\"Three daily observations\", fontsize=14)\nprint(note.get_text(), title.get_fontsize())\nplt.show()\nplt.close(fig)",
+      "expected": "$y=10$ 14.0"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/RD01-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (RD01-3.png)"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở ví dụ cuối, `xytext=(0, 12)` đặt chữ cao hơn điểm dữ liệu 12 point. Dấu `$` trong `r\"$y=10$\"` bật Mathtext để định dạng biểu thức toán. Tiền tố `r` giữ nguyên các dấu gạch chéo trong chuỗi, nên hữu ích khi viết ký hiệu như `r\"$\\sigma$\"`. Mathtext chỉ định dạng ký hiệu, không tính giá trị. Gọi `plt.show()` để xem hình và `plt.close(fig)` sau khi xem xong."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ09 · Nhãn, đơn vị, đường mốc và chú thích, VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong hình doanh thu, text(0.05,0.95,...) có luôn nằm góc trên trái không?",
+     "answer": "Chỉ khi chọn transform=ax.transAxes. Mặc định đó là tọa độ dữ liệu 0.05 và 0.95, không phải tỷ lệ vùng vẽ."
+    },
+    {
+     "prompt": "Viết các tham số để mũi tên chỉ (2,10) theo dữ liệu, còn chữ ở (0.1,0.9) của Axes.",
+     "answer": "xy=(2,10), xycoords=\"data\", xytext=(0.1,0.9), textcoords=\"axes fraction\", arrowprops={\"arrowstyle\":\"->\"}."
+    },
+    {
+     "prompt": "Muốn chữ cách điểm 8 điểm in về bên phải, dùng xytext/textcoords thế nào? Muốn tiêu đề cỡ 14 và ký hiệu sigma thì viết gì?",
+     "answer": "xytext=(8,0), textcoords=\"offset points\". Dùng ax.set_title(\"...\",fontsize=14) và chuỗi raw r\"$\\sigma$\" trong text/annotate. Các hệ tọa độ khác nhau giải quyết vị trí, không thay giá trị số đo."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nlabel = ax.text(0.05, 0.95, \"Three days only\", transform=ax.transAxes, va=\"top\")\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(label.get_position())\nplt.show()\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nnote = ax.annotate(\"Peak: 10\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0.05, 0.95), textcoords=\"axes fraction\",\n                   va=\"top\", arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(note.xy, note.get_position())\nplt.show()\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nnote = ax.annotate(r\"$y=10$\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0, 12), textcoords=\"offset points\", ha=\"center\")\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\ntitle = ax.set_title(\"Three daily observations\", fontsize=14)\nprint(note.get_text(), title.get_fontsize())\nplt.show()\nplt.close(fig)\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU05",
+ "sort_order": 152,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU05 · Entry, mật khẩu và Checkbutton",
+ "subtitle": "Trung cấp · M8 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU05 · Entry, mật khẩu và Checkbutton",
+  "subtitle": "Trung cấp · M8 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 313; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Form có ô tên và tùy chọn nhận thông báo. Entry luôn trả chữ; Checkbutton giữ trạng thái bật hoặc tắt độc lập với các ô khác."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nentry=tk.Entry(r);entry.insert(0,'An')\nprint(entry.get())\nentry.delete(0,tk.END);entry.insert(0,'Binh')\nprint(entry.get())\nr.destroy()",
+      "expected": "An\nBinh"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "insert(0,...) thêm chữ ở đầu; delete(0, END) xóa toàn bộ nội dung. Với ô điểm, bạn cần chuyển chuỗi sang số và xử lý lỗi nhập; Entry không tự kiểm tra giới hạn điểm."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\npassword=tk.Entry(r,show='*');password.insert(0,'secret')\nprint(password.cget('show'))\nprint(password.get()=='secret')\nr.destroy()",
+      "expected": "*\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "show=\"*\" chỉ che cách hiển thị trên màn hình. get vẫn nhận chuỗi gốc; cách này không mã hóa hay bảo vệ việc lưu mật khẩu."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nnews=tk.BooleanVar(r,value=False)\nalerts=tk.BooleanVar(r,value=False)\na=tk.Checkbutton(r,text='News',variable=news)\nb=tk.Checkbutton(r,text='Alerts',variable=alerts)\na.invoke()\nprint(news.get(),alerts.get())\nr.destroy()",
+      "expected": "True False"
+     },
+     {
+      "type": "paragraph",
+      "text": "Mỗi Checkbutton dùng một biến riêng nên bật News không làm bật Alerts. invoke mô phỏng việc kích hoạt nút. Các lựa chọn chỉ được phép chọn một trong nhóm sẽ dùng Radiobutton ở bài sau."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU04 · Button, callback và hộp thông báo"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Entry.get() trả số hay chuỗi?",
+     "answer": "Trả chuỗi."
+    },
+    {
+     "prompt": "show=\"*\" có mã hóa mật khẩu không?",
+     "answer": "Không; chỉ đổi ký tự hiển thị."
+    },
+    {
+     "prompt": "Tạo Entry chứa 12.5 và chuyển giá trị thành float.",
+     "answer": "Kết quả 12.5.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\ne=tk.Entry(r);e.insert(0,'12.5')\nprint(float(e.get()))\nr.destroy()",
+     "answerExpected": "12.5"
+    },
+    {
+     "prompt": "Dùng Entry.insert(0,\"12.5\") rồi get, dữ liệu có tự thành float không? Hai Checkbutton độc lập nên dùng mấy biến?",
+     "answer": "get vẫn trả str; cần float và kiểm lỗi phù hợp. Hai Checkbutton độc lập dùng hai BooleanVar (hoặc biến phù hợp) riêng; bật ô này không đổi ô kia."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

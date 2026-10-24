@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY13",
+ "sort_order": 13,
+ "module": "M1 · Python nền tảng",
+ "title": "PY13 · Set và so sánh hai nhóm",
+ "subtitle": "Cơ bản · M1 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY13 · Set và so sánh hai nhóm",
+  "subtitle": "Cơ bản · M1 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY13",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 65, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có danh sách học viên đã đăng ký và danh sách đã nộp bài. Cần tìm ai chưa nộp, không cần đếm một tên hai lần:"
+     },
+     {
+      "type": "code",
+      "code": "registered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))",
+      "expected": "['An']\n3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Set chỉ giữ các phần tử khác nhau và không có chỉ số vị trí. Phép hiệu `registered - submitted` giữ người thuộc nhóm đăng ký nhưng không thuộc nhóm nộp. Ví dụ dùng sorted khi in để kết quả có thứ tự ổn định."
+     },
+     {
+      "type": "code",
+      "code": "a, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))",
+      "expected": "[1, 2, 3]\n[2]\n[1]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`|` là hợp, `&` là giao, `-` là hiệu. Các phương thức tương ứng là `union`, `intersection` và `difference`. Thứ tự hai vế quan trọng với hiệu: b - a không giống a - b."
+     },
+     {
+      "type": "code",
+      "code": "a, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))",
+      "expected": "True True\nTrue\n2"
+     },
+     {
+      "type": "paragraph",
+      "text": "`a.issubset(b)` hay `a <= b` kiểm mọi phần tử của a có trong b. `b.issuperset(a)` hay `b >= a` kiểm quan hệ ngược lại. `isdisjoint` kiểm không có phần tử chung; `x in a` kiểm một thành viên. Tạo set từ list loại phần tử trùng, nhưng không giữ thứ tự bản ghi ban đầu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY12 · Dictionary và tra cứu theo khóa"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Giao của {1, 2} và {2, 3} là gì?",
+     "answer": "{2}."
+    },
+    {
+     "prompt": "Muốn biết mọi người đã nộp đều có đăng ký, dùng quan hệ nào?",
+     "answer": "submitted.issubset(registered), hoặc submitted <= registered."
+    },
+    {
+     "prompt": "Từ [\"A\", \"A\", \"B\"], đếm mã khác nhau.",
+     "answer": "len(set([\"A\", \"A\", \"B\"])) cho 2. Set không giữ số lần mỗi mã xuất hiện; việc đó cần Counter."
+    },
+    {
+     "prompt": "Với a={1,2}, b={1,2,3}, kiểm a <= b, b >= a, a.isdisjoint({4}) và 2 in a. Viết tương đương hợp/giao/hiệu bằng method.",
+     "answer": "Cả bốn kiểm tra đều True. a | b tương đương a.union(b); a & b tương đương a.intersection(b); a - b tương đương a.difference(b). Set giữ duy nhất và không có thứ tự xếp hạng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nregistered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))\n\n# ── Đoạn 2 ──\na, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))\n\n# ── Đoạn 3 ──\na, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

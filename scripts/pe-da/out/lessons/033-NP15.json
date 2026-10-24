@@ -1,0 +1,106 @@
+{
+ "lesson_code": "NP15",
+ "sort_order": 33,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP15 · Gắn nhãn và giới hạn điểm",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP15 · Gắn nhãn và giới hạn điểm",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP15",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 112-114; NumPy · where; NumPy · clip"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần hiển thị điểm của ba học viên kèm trạng thái đạt hay chưa đạt. Ngưỡng đạt là 5. Để chọn nhãn cho mỗi điểm, dùng `np.where`:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nscores = np.array([4, 6, 9])\nlabels = np.where(scores >= 5, \"dat\", \"chua dat\")\nprint(labels)",
+      "expected": "['chua dat' 'dat' 'dat']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`np.where(điều kiện, giá trị khi đúng, giá trị khi sai)` chọn một giá trị tại mỗi vị trí. Điểm 4 nhận nhãn `chua dat`; điểm 6 và 9 nhận nhãn `dat`. Các nhãn trong ví dụ được viết không dấu để bạn dễ đối chiếu output."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu chỉ muốn lấy các điểm đạt, bạn dùng mask thay vì gắn nhãn:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([4, 6, 9])\nprint(a[a >= 5])",
+      "expected": "[6 9]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Lọc chỉ giữ 6 và 9, nên dãy còn hai số. Trong khi đó, `where` ở ví dụ đầu giữ đủ ba vị trí và đổi chúng thành nhãn. Nếu cần giữ dữ liệu dạng số nhưng chặn giá trị trong một khoảng, dùng `np.clip`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([9.8, 7.0])\nprint(np.clip(a + 0.5, 0, 10))",
+      "expected": "[10.   7.5]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Sau khi cộng 0.5, hai điểm là 10.3 và 7.5. `np.clip(..., 0, 10)` đưa số vượt 10 về 10, số dưới 0 về 0, còn số trong khoảng giữ nguyên. Kết quả vẫn có hai phần tử."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu điểm đầu vào có giá trị sai, hãy lọc chúng trước khi cộng thưởng. Chẳng hạn, -1 là một điểm không hợp lệ cần bỏ; dùng `clip` ngay từ đầu sẽ biến nó thành 0 và làm mất dấu lỗi dữ liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP04 · Tính trên từng phần tử, NP14 · Lọc dữ liệu bằng mask"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "`np.clip([4, 12], 0, 10)` trả về bao nhiêu phần tử? Giá trị của chúng là gì?",
+     "answer": "Vẫn có 2 phần tử, giá trị là 4 và 10."
+    },
+    {
+     "prompt": "Điền nhãn khi đạt: `np.where(a >= 5, ___, \"chua dat\")`.",
+     "answer": "Điền `\"dat\"`: giá trị được chọn khi điều kiện đúng."
+    },
+    {
+     "prompt": "Với điểm `[-1, 4, 9.8, 12]`, bỏ điểm ngoài khoảng 0–10, cộng 0.5 cho các điểm còn lại rồi giới hạn ở 10.",
+     "answer": "Bỏ điểm sai trước, rồi cộng thưởng và giới hạn ở 10:",
+     "answerCode": "import numpy as np\n\na = np.array([-1, 4, 9.8, 12])\nvalid = a[(a >= 0) & (a <= 10)]\nresult = np.clip(valid + 0.5, 0, 10)\nprint(result)",
+     "answerExpected": "[ 4.5 10. ]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nscores = np.array([4, 6, 9])\nlabels = np.where(scores >= 5, \"dat\", \"chua dat\")\nprint(labels)\n\n# ── Đoạn 2 ──\na = np.array([4, 6, 9])\nprint(a[a >= 5])\n\n# ── Đoạn 3 ──\na = np.array([9.8, 7.0])\nprint(np.clip(a + 0.5, 0, 10))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

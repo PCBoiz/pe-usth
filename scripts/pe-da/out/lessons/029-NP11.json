@@ -1,0 +1,102 @@
+{
+ "lesson_code": "NP11",
+ "sort_order": 29,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP11 · Tổng từng cột: axis=0",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP11 · Tổng từng cột: axis=0",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · sum và axis"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Người quản lý muốn biết tổng số cốc bán trong từng ngày. Trong bảng này, mỗi cột là một ngày. Bạn cần cộng số bán của hai cửa hàng trong cùng cột:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=0))",
+      "expected": "[22 23 23]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ngày đầu: 12 + 10 = 22. Ngày thứ hai: 15 + 8 = 23. Ngày thứ ba: 9 + 14 = 23. Có ba ngày nên kết quả có ba số."
+     },
+     {
+      "type": "paragraph",
+      "text": "`sum(axis=0)` gộp các hàng lại, để lại một tổng cho mỗi cột. Xem cùng cách cộng trên bảng số nhỏ hơn:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
+      "expected": "[5 7 9]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ba phần tử kết quả lần lượt đến từ 1 + 4, 2 + 5 và 3 + 6. Bảng ban đầu có `shape` là `(2, 3)`; kết quả là một dãy có `shape` là `(3,)`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bây giờ đổi dữ liệu sang bảng điểm, mỗi hàng là một học viên và mỗi cột là một bài kiểm tra:"
+     },
+     {
+      "type": "code",
+      "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=0))",
+      "expected": "[18 23]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tổng của bài kiểm tra đầu là 6 + 7 + 5 = 18; tổng bài thứ hai là 8 + 9 + 6 = 23. Có hai cột, nên kết quả có hai số. Khi chọn `axis`, hãy xác định những ô cần cộng với nhau và ý nghĩa của mỗi số kết quả."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP07 · Đọc shape, ndim và size, NP09 · Lấy ô, hàng và cột, NP10 · Tổng của cả dãy và cả bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Cột gồm hai số 1 và 4 có tổng bao nhiêu?",
+     "answer": "Tổng là 1 + 4 = 5."
+    },
+    {
+     "prompt": "Một bảng có `shape` là `(3, 4)`. Kết quả `sum(axis=0)` có bao nhiêu phần tử?",
+     "answer": "Có 4 số, mỗi số là tổng của một cột."
+    },
+    {
+     "prompt": "Bảng bán hàng có 2 hàng cửa hàng và 3 cột sản phẩm. Chọn `axis` nào để tính tổng số bán của từng sản phẩm?",
+     "answer": "Dùng `axis=0`: gộp các hàng cửa hàng để còn một tổng cho mỗi cột sản phẩm."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=0))\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))\n\n# ── Đoạn 3 ──\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=0))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,119 @@
+{
+ "lesson_code": "VZ07",
+ "sort_order": 80,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm",
+ "subtitle": "Trung cấp · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm",
+  "subtitle": "Trung cấp · M4 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Boxplot và violinplot: đọc phân bố theo nhóm"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai ca làm có thể cùng thời gian giao trung bình nhưng độ phân tán khác nhau. Boxplot tóm tắt dữ liệu bằng trung vị và các phần tư, giúp bạn nhìn phần giữa của phân bố và các điểm nằm xa phần đó."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()",
+      "expected": "4"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ07-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hộp chạy từ phần tư thứ nhất Q1 đến phần tư thứ ba Q3, tức phần giữa chứa khoảng một nửa dữ liệu. Khoảng cách Q3 - Q1 được gọi là IQR. Theo mặc định, râu vươn đến điểm xa nhất còn nằm trong giới hạn Q1 - 1.5 × IQR và Q3 + 1.5 × IQR. Điểm ngoài râu cần được xem thêm, nhưng không tự động là dữ liệu sai. Trong ví dụ, vẽ thêm từng thời gian giao giúp bạn thấy rõ nhóm chỉ có năm đơn."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()",
+      "expected": "10"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ07-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Violinplot còn ước lượng hình dạng mật độ ở hai phía. Độ phình của violin không phải một số đếm chính xác; hình phụ thuộc cách làm mượt. Với ít điểm như ví dụ này, luôn đọc nó cùng các điểm gốc thay vì suy ra quá nhiều về hình dạng phân bố."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()",
+      "expected": "6"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ07-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ07-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ06 · Histogram: khoảng chia, tần số và mật độ, NP16 · Thống kê và điểm có trọng số"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Điểm ngoài râu có phải luôn xóa không?",
+     "answer": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật."
+    },
+    {
+     "prompt": "Đường giữa hộp thường là đại lượng gì?",
+     "answer": "Trung vị, không phải trung bình."
+    },
+    {
+     "prompt": "Với mẫu 5 điểm, vì sao thêm điểm gốc lên boxplot?",
+     "answer": "Để người đọc biết có ít quan sát và thấy những giá trị mà bản tóm tắt có thể che đi."
+    },
+    {
+     "prompt": "Để biết bao nhiêu đơn nằm trong từng khoảng chờ, chọn histogram, boxplot hay violinplot? Để đọc trung vị và phần giữa thì chọn gì? Độ phình violin có phải số đếm không?",
+     "answer": "Chọn histogram để đếm số đơn trong từng khoảng chờ. Chọn boxplot để đọc trung vị, Q1, Q3 và râu. Violinplot ước lượng mật độ sau khi làm mượt; độ phình không cho bạn một số đếm chính xác. Điểm ngoài râu boxplot cần được xem lại trong ngữ cảnh, không mặc định là lỗi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4) nên không nằm trong ô này."
+   },
+   "starterCode": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ],
+   "env": "2 đoạn phải chạy bằng Python trên máy: ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4"
+  },
+  {
+   "block": 1,
+   "reason": "ax.boxplot(tick_labels=…) cần matplotlib ≥ 3.9; nền tảng có 3.8.4"
+  }
+ ]
+}

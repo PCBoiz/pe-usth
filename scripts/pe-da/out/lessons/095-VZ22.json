@@ -1,0 +1,105 @@
+{
+ "lesson_code": "VZ22",
+ "sort_order": 95,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file",
+ "subtitle": "Trung cấp · M4 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file",
+  "subtitle": "Trung cấp · M4 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ22",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần gửi một biểu đồ tương tác cho người khác mở khi không có mạng. write_html với include_plotlyjs=True nhúng mã JavaScript của Plotly vào file, nên không cần tải thư viện từ CDN. File lớn hơn nhưng người nhận có thể mở trực tiếp trong trình duyệt."
+     },
+     {
+      "type": "code",
+      "code": "import plotly.express as px\nfig = px.bar(x=[\"Coffee\", \"Tea\"], y=[36, 24], title=\"A self-contained report\", labels={\"x\":\"Drink\", \"y\":\"Cups\"})\nhtml = fig.to_html(include_plotlyjs=True, full_html=True)\nprint(\"<html>\" in html, \"Plotly.newPlot\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-1.html\", include_plotlyjs=True, auto_open=False)",
+      "expected": "True True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "include_plotlyjs=\"cdn\" giảm dung lượng nhưng cần mạng để tải thư viện, trừ khi trình duyệt đã có cache phù hợp. full_html=False tạo một đoạn nhúng, không phải cả trang. Các đoạn HTML cần được đặt vào trang có mã Plotly được nạp một lần; không giả định một đoạn nhúng sẽ tự mở giống một file hoàn chỉnh."
+     },
+     {
+      "type": "code",
+      "code": "import plotly.graph_objects as go\nfig = go.Figure(go.Scatter(x=[1, 2], y=[8, 10], mode=\"lines+markers\"))\nfig.update_layout(title=\"A fragment for an existing page\", xaxis_title=\"Day\", yaxis_title=\"Cups\")\nfragment = fig.to_html(include_plotlyjs=False, full_html=False)\nprint(\"<html>\" in fragment, \"Plotly.newPlot\" in fragment)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-2.html\", include_plotlyjs=True, auto_open=False)",
+      "expected": "False True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một Figure có thể chứa dữ liệu trong x, y, customdata, hover và trace đang ẩn. Trước khi gửi HTML, chỉ đưa các cột cần chia sẻ và tổng hợp hoặc ẩn danh theo yêu cầu thực tế. Ví dụ cuối dựng Figure từ số liệu đã cộng; nó không đưa tên khách vào Figure. Kiểm tra file xuất ở kích thước thật và thử zoom, hover, legend sau khi mở."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nimport plotly.express as px\norders = pd.DataFrame({\"customer\":[\"Customer 1\", \"Customer 2\", \"Customer 3\"], \"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"cups\":[1, 2, 3]})\npublic = orders.groupby(\"drink\", as_index=False)[\"cups\"].sum()\nfig = px.bar(public, x=\"drink\", y=\"cups\", title=\"Share totals, not customer rows\", labels={\"drink\":\"Drink\", \"cups\":\"Cups\"})\nprint(public.to_dict(\"records\"))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-3.html\", include_plotlyjs=True, auto_open=False)",
+      "expected": "[{'drink': 'Coffee', 'cups': 4}, {'drink': 'Tea', 'cups': 2}]"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ20 · Plotly: Figure tương tác, hover và legend, VZ21 · Plotly: lọc dữ liệu, dropdown và facet"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?",
+     "answer": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng."
+    },
+    {
+     "prompt": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?",
+     "answer": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn."
+    },
+    {
+     "prompt": "full_html=False tạo gì?",
+     "answer": "Một đoạn HTML để nhúng vào trang khác; trang đó cần nạp Plotly.js phù hợp."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: plotly chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "plotly chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

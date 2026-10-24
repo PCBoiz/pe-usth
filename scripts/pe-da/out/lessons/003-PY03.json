@@ -1,0 +1,109 @@
+{
+ "lesson_code": "PY03",
+ "sort_order": 3,
+ "module": "M1 · Python nền tảng",
+ "title": "PY03 · REPL, notebook và trạng thái đã chạy",
+ "subtitle": "Cơ bản · M1 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY03 · REPL, notebook và trạng thái đã chạy",
+  "subtitle": "Cơ bản · M1 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 22-25, 28, 62; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
+     },
+     {
+      "type": "code",
+      "code": "cups = 12\nprint(cups + 1)",
+      "expected": "13"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Notebook có cell code và cell văn bản, có thể chứa output, hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
+     },
+     {
+      "type": "code",
+      "code": "cups = 12\nprint(cups)\ncups = 15\nprint(cups)",
+      "expected": "12\n15"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Cell chạy sau sẽ dùng giá trị cups mới nhất trong kernel. Nếu chưa gán cups mà đã in nó, Python báo NameError vì chưa có tên đó. Khi hoàn thành notebook, khởi động lại kernel rồi chạy từ đầu để tìm bước khởi tạo bị thiếu. Một editor chủ yếu giúp sửa văn bản mã nguồn; IDE gom thêm công cụ chạy, kiểm lỗi và gỡ lỗi. VS Code có thể mở rộng bằng extension; PyCharm và Spyder là các ví dụ IDE trong slide."
+     },
+     {
+      "type": "code",
+      "code": "print(type(12))\nprint(type(\"data\"))",
+      "expected": "<class 'int'>\n<class 'str'>"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Nội dung trợ giúp có thể dài; hãy tìm phần tham số và ví dụ phù hợp với việc bạn đang làm."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu chưa có Notebook, chạy `python -m pip install notebook` trong terminal của môi trường đã chọn, sau đó chạy `jupyter notebook` để mở. Với conda, slide đưa lựa chọn `conda install -c conda-forge notebook`. Đây là lệnh terminal; đừng dán chúng vào cell rồi coi là câu Python thông thường. Không cần dùng cả pip và conda cho cùng lần cài."
+     },
+     {
+      "type": "paragraph",
+      "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không thực thi code Python thay kernel và bạn không cần tự cài từng cái để viết một cell."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY02 · Chọn đúng Python và tách môi trường học"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao cell chạy được trên máy bạn nhưng máy khác báo NameError?",
+     "answer": "Kernel của bạn có thể còn biến từ cell trước; máy khác chưa chạy phần khởi tạo."
+    },
+    {
+     "prompt": "Muốn xem kiểu của cups và tìm trợ giúp cho print, viết gì?",
+     "answer": "type(cups) và help(print)."
+    },
+    {
+     "prompt": "Máy đã có Python nhưng chưa có Notebook: cài và mở bằng lệnh nào? Sau đó kiểm tra một notebook không phụ thuộc trạng thái cũ ra sao?",
+     "answer": "Trong terminal của môi trường dự án, chạy python -m pip install notebook rồi jupyter notebook. Với notebook đã mở, chọn Restart kernel rồi Run All để chạy lại từ đầu. Kiểm tra kết quả và ghi lại môi trường khi chia sẻ. Việc cài đặt cần kết nối mạng và quyền phù hợp; các lệnh cài đặt được chạy trong terminal."
+    },
+    {
+     "prompt": "Bạn cần sửa file .py và đặt breakpoint. Editor và IDE khác nhau ở đâu? Notebook có thêm loại nội dung nào ngoài code?",
+     "answer": "Editor chủ yếu sửa văn bản; IDE tích hợp thêm chạy, kiểm lỗi và debugger. VS Code có thể mở rộng, PyCharm/Spyder là ví dụ IDE. Notebook còn chứa văn bản giải thích, output, hình và phương trình."
+    },
+    {
+     "prompt": "Notebook/JupyterLab, IPython kernel, ZeroMQ, Tornado, jQuery/Bootstrap và MathJax giữ vai trò nào trong sơ đồ slide?",
+     "answer": "Notebook/Lab là giao diện; IPython kernel thực thi và giữ trạng thái. ZeroMQ vận chuyển thông điệp; Tornado thuộc web server; jQuery/Bootstrap thuộc giao diện lịch sử; MathJax hiển thị toán. Jupyter phát triển từ IPython. Đây không phải các package cần tự gọi để tính một cell."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\ncups = 12\nprint(cups + 1)\n\n# ── Đoạn 2 ──\ncups = 12\nprint(cups)\ncups = 15\nprint(cups)\n\n# ── Đoạn 3 ──\nprint(type(12))\nprint(type(\"data\"))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

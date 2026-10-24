@@ -1,0 +1,96 @@
+{
+ "lesson_code": "SY14",
+ "sort_order": 117,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
+ "subtitle": "Trung cấp · M5 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
+  "subtitle": "Trung cấp · M5 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 150-151; Python — Curses HOWTO"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một menu quản lý điểm có thể chạy ngay trong terminal: người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module curses hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
+     },
+     {
+      "type": "terminal",
+      "code": "from curses import ascii\nprint(ascii.ctrl(\"a\") == \"\\x01\")\nprint(ascii.isdigit(\"5\"))",
+      "expected": "True\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Phần tương tác cần terminal thật có hỗ trợ curses. Trên Windows, nhiều bản Python cần gói windows-curses; không chạy bài này trong ô output không nhận phím. `wrapper` chuẩn bị màn hình và khôi phục terminal khi hàm kết thúc."
+     },
+     {
+      "type": "terminal",
+      "code": "import curses\ndef main(screen):\n    screen.addstr(0, 0, \"Student management - press q\")\n    screen.refresh()\n    while screen.getkey() != \"q\":\n        pass\ncurses.wrapper(main)",
+      "expected": "Terminal hiển thị tiêu đề; bấm q thoát và terminal được khôi phục."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`addstr` ghi text vào vị trí hàng/cột; `refresh` đưa thay đổi ra màn hình; `getkey` chờ một phím. Đặt việc tính GPA trong hàm nghiệp vụ, không trộn công thức vào các lệnh vẽ."
+     },
+     {
+      "type": "terminal",
+      "code": "import curses\ndef main(screen):\n    choice = \"1\"\n    while True:\n        screen.erase()\n        screen.addstr(0, 0, \"1: Students  2: Courses  q: Exit\")\n        screen.addstr(2, 0, \"Selected: \" + choice)\n        screen.refresh()\n        key = screen.getkey()\n        if key == \"q\": break\n        if key in (\"1\", \"2\"): choice = key\ncurses.wrapper(main)",
+      "expected": "Nhấn 1/2 đổi dòng Selected; nhấn q thoát."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Student/Course/Mark thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý khi kích thước cửa sổ terminal thay đổi và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY13 · Làm tròn xuống và tính điểm có trọng số"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao curses.wrapper hữu ích?",
+     "answer": "Nó khởi tạo và thu dọn trạng thái terminal, kể cả khi hàm main phát sinh lỗi."
+    },
+    {
+     "prompt": "Đặt hàm tính GPA ở screen.addstr có tốt không?",
+     "answer": "Nên tính ở phần nghiệp vụ rồi đưa kết quả sang output; như vậy kiểm thử công thức không cần terminal."
+    },
+    {
+     "prompt": "Khi đã có chương trình quản lý điểm PW3, thêm menu để xem sinh viên, môn học và danh sách GPA giảm dần. Nếu chưa làm dự án, đọc SY25–SY26 trước khi làm câu này.",
+     "answer": "Dùng phím 1/2/3/q, mỗi lần đổi màn hình erase rồi addstr/refresh. Gọi registry để lấy dữ liệu, không tạo danh sách điểm riêng ở UI. Nộp video/ghi nhận thao tác terminal thật; thử phím ngoài menu và thoát khi có lỗi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": []
+}

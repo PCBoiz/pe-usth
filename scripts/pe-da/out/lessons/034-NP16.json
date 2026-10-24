@@ -1,0 +1,108 @@
+{
+ "lesson_code": "NP16",
+ "sort_order": 34,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP16 · Thống kê và điểm có trọng số",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP16 · Thống kê và điểm có trọng số",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP16",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 118-120; NumPy · Trung bình có trọng số"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một môn 2 tín chỉ được 7 điểm, một môn 3 tín chỉ được 8 điểm. Để tính trung bình có xét tín chỉ, bạn nhân mỗi điểm với số tín chỉ rồi chia cho tổng tín chỉ: (7 × 2 + 8 × 3) / (2 + 3) = 7.6."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nweighted = (7 * 2 + 8 * 3) / (2 + 3)\nprint(weighted)",
+      "expected": "7.6"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Code thực hiện đúng công thức vừa tính tay: nhân điểm với tín chỉ, cộng các tích rồi chia cho tổng tín chỉ. Số tín chỉ ở đây đóng vai trò trọng số."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu các điểm có vai trò như nhau, trung bình thông thường là tổng chia số điểm. Với 6, 8 và 10, bạn có (6 + 8 + 10) / 3 = 8:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6, 8, 10])\nprint(a.mean(), a.min(), a.max())",
+      "expected": "8.0 6 10"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`mean()` tính trung bình, `min()` lấy số nhỏ nhất và `max()` lấy số lớn nhất. Còn median (trung vị) là giá trị nằm giữa sau khi sắp xếp: `[6, 8, 10]` có median là 8. Nếu có hai giá trị giữa, median là trung bình của chúng; bạn có thể tính bằng `np.median(a)`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi cần tính theo từng cột của một bảng, `mean(axis=0)` giữ một trung bình cho mỗi cột, giống cách `sum(axis=0)` giữ một tổng cho mỗi cột."
+     },
+     {
+      "type": "paragraph",
+      "text": "Quay lại hai môn có số tín chỉ khác nhau:"
+     },
+     {
+      "type": "code",
+      "code": "marks = np.array([7, 8])\ncredits = np.array([2, 3])\nprint(np.average(marks, weights=credits))",
+      "expected": "7.6"
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong `np.average`, `weights` nhận các trọng số. Tín chỉ 2 đi với điểm 7, tín chỉ 3 đi với điểm 8; hai array cần đặt các môn cùng thứ tự. Mẫu số vẫn là tổng tín chỉ 2 + 3 = 5. Nếu chỉ dùng `marks.mean()`, kết quả là 7.5 vì hai điểm được tính như nhau."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP10 · Tổng của cả dãy và cả bảng, NP12 · Tổng từng hàng và bài ghép"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trung bình của 4, 6 và 8 là bao nhiêu?",
+     "answer": "Trung bình là (4 + 6 + 8) / 3 = 6."
+    },
+    {
+     "prompt": "Điểm là `[7, 8]`, số tín chỉ tương ứng là `[2, 3]`. Mẫu số trong công thức trung bình có trọng số là bao nhiêu?",
+     "answer": "Mẫu số là 2 + 3 = 5, tức tổng tín chỉ."
+    },
+    {
+     "prompt": "Hai môn được 6 và 9 điểm, có 1 và 3 tín chỉ tương ứng. Tính tay rồi kiểm tra bằng `np.average`.",
+     "answer": "Tính tay: (6 × 1 + 9 × 3) / (1 + 3) = 8.25.",
+     "answerCode": "import numpy as np\n\nmarks = np.array([6, 9])\ncredits = np.array([1, 3])\nprint(np.average(marks, weights=credits))",
+     "answerExpected": "8.25"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nweighted = (7 * 2 + 8 * 3) / (2 + 3)\nprint(weighted)\n\n# ── Đoạn 2 ──\na = np.array([6, 8, 10])\nprint(a.mean(), a.min(), a.max())\n\n# ── Đoạn 3 ──\nmarks = np.array([7, 8])\ncredits = np.array([2, 3])\nprint(np.average(marks, weights=credits))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

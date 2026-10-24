@@ -1,0 +1,97 @@
+{
+ "lesson_code": "PD29",
+ "sort_order": 70,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD29 · Đọc SQL thành DataFrame",
+ "subtitle": "Nâng cao · M3 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD29 · Đọc SQL thành DataFrame",
+  "subtitle": "Nâng cao · M3 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD29",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 328; pandas · SQL input"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Dữ liệu bán hàng nằm trong cơ sở dữ liệu. Bạn có thể để SQL chọn các hàng cần thiết, rồi nhận kết quả thành DataFrame để tiếp tục phân tích."
+     },
+     {
+      "type": "code",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())",
+      "expected": "70"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Cơ sở dữ liệu :memory: chỉ tồn tại trong lần chạy này, nên ví dụ không cần máy chủ. to_sql tạo bảng; read_sql_query đưa kết quả truy vấn về DataFrame. Với hệ quản trị khác, pandas thường dùng kết nối hoặc engine SQLAlchemy và driver tương ứng."
+     },
+     {
+      "type": "code",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())",
+      "expected": "[40]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dấu `?` là chỗ để sqlite3 nhận giá trị qua `params`. Trong ví dụ, `params=(20,)` thay ngưỡng 20 vào điều kiện `amount > ?`. Truyền giá trị riêng như vậy thay vì ghép trực tiếp dữ liệu người dùng vào câu SQL bằng f-string. Ký hiệu này có thể khác giữa các driver và dùng cho giá trị, không dùng tùy ý để thay tên bảng hoặc tên cột."
+     },
+     {
+      "type": "code",
+      "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))",
+      "expected": "[{'store': 'A', 'revenue': 30}, {'store': 'B', 'revenue': 40}]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tổng hợp ở SQL có thể giảm số hàng cần truyền và giữ trong RAM. Cần đối chiếu kiểu cột, khóa và quy tắc thiếu sau khi đọc. Khối with bảo đảm giao dịch của sqlite3 được xử lý khi thoát; với kết nối sqlite thật lâu dài, còn cần quản lý đóng kết nối rõ ràng theo vòng đời ứng dụng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD28 · Đọc ít hơn và xử lý theo lô"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "read_sql_query trả dữ liệu ở dạng gì?",
+     "answer": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize."
+    },
+    {
+     "prompt": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
+     "answer": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó."
+    },
+    {
+     "prompt": "Tạo bảng amount=[5,8], dùng SQL tính SUM và nhận kết quả bằng pandas.",
+     "answer": "Tổng là 13.",
+     "answerCode": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as con:\n    pd.DataFrame({'amount': [5, 8]}).to_sql('sales', con, index=False)\n    print(pd.read_sql_query('SELECT SUM(amount) AS total FROM sales', con).loc[0, 'total'])",
+     "answerExpected": "13"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())\n\n# ── Đoạn 2 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())\n\n# ── Đoạn 3 ──\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))\n",
+   "packages": [
+    "pandas",
+    "sqlite3"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

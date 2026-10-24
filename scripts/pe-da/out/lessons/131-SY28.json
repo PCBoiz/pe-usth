@@ -1,0 +1,91 @@
+{
+ "lesson_code": "SY28",
+ "sort_order": 131,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+ "subtitle": "Trung cấp · M5 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+  "subtitle": "Trung cấp · M5 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY28",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 179-182, 192; Python — pickle; Python — gzip"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+     },
+     {
+      "type": "code",
+      "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}, \"courses\": {\"PY\": {\"name\": \"Python\", \"credits\": 3}}, \"marks\": {(\"S01\", \"PY\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"marks\"][(\"S01\", \"PY\")])",
+      "expected": "True\n8.7"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Pickle giữ được tuple làm khóa của marks, còn JSON không hỗ trợ trực tiếp kiểu khóa này. Nếu lưu instance như Student hay Course, đặt class ở module ổn định, chẳng hạn domains.student, để Python tìm lại đúng class khi đọc file. Gom toàn bộ dữ liệu trong một dict có trường version giúp bạn nhận biết phiên bản cấu trúc trước khi cập nhật Registry."
+     },
+     {
+      "type": "code",
+      "code": "import gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])",
+      "expected": "tuple\n1"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "gzip.open kết hợp mở file với nén dữ liệu; pickle.dump vẫn ghi dữ liệu nhị phân. Chỉ đọc file pickle do bạn tạo và tin cậy. Nếu version hoặc định nghĩa class không còn tương thích, báo rằng cần chuyển đổi dữ liệu sang phiên bản mới thay vì đoán cấu trúc."
+     },
+     {
+      "type": "code",
+      "code": "def validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])",
+      "expected": "Can chuyen doi du lieu\n1"
+     },
+     {
+      "type": "paragraph",
+      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Đọc dữ liệu vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi cách lưu ở đây chưa tự có hai tính năng đó."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY21 · Pickle, JSON và khôi phục trạng thái, SY27 · PW5: lưu ba file, nén và nạp lại"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao cần giữ module class khi pickle object?",
+     "answer": "Pickle thường lưu tham chiếu tên class/function; load phải import được định nghĩa tương thích để tạo lại object."
+    },
+    {
+     "prompt": "Gzip có làm pickle tải từ người lạ an toàn không?",
+     "answer": "Không. Sau giải nén, pickle.load vẫn có thể thực thi mã."
+    },
+    {
+     "prompt": "Hoàn thiện PW6 để lưu các object quản lý điểm, đọc lại ở lần chạy sau và giữ đủ chức năng của PW5.",
+     "answer": "Ghi Registry bằng gzip.open ở chế độ wb và pickle.dump; đọc lại bằng chế độ rb và pickle.load từ file tin cậy. Đặt Student, Course và StudentMark trong package domains có cấu trúc ổn định. Đọc vào một biến tạm, kiểm version, mã, DoB, tín chỉ và điểm rồi mới cập nhật Registry. Thử đóng rồi chạy lại để kiểm tra các instance được khôi phục, điểm 0 và GPA cùng thứ tự xếp hạng không đổi. Thử file thiếu, file hỏng và version chưa hỗ trợ. Khi đọc lỗi, giữ dữ liệu hiện tại và file cũ. Chỉ báo lưu thành công sau khi ghi và đóng file xong."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}, \"courses\": {\"PY\": {\"name\": \"Python\", \"credits\": 3}}, \"marks\": {(\"S01\", \"PY\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"marks\"][(\"S01\", \"PY\")])\n\n# ── Đoạn 2 ──\nimport gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])\n\n# ── Đoạn 3 ──\ndef validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

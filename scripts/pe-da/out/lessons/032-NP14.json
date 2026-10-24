@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP14",
+ "sort_order": 32,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP14 · Lọc dữ liệu bằng mask",
+ "subtitle": "Cơ bản · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP14 · Lọc dữ liệu bằng mask",
+  "subtitle": "Cơ bản · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 112-114; Python Data Science Handbook · Đếm ngày mưa; NumPy · Lấy phần tử và cắt dữ liệu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có lượng mưa bốn ngày và chỉ muốn lấy số đo của những ngày có mưa. Trước tiên tạo mask, sau đó dùng mask để chọn dữ liệu:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])",
+      "expected": "[2.5 7. ]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`wet` đánh dấu `True` ở các vị trí có lượng mưa lớn hơn 0. `rain[wet]` chỉ giữ giá trị ở những vị trí đó, nên còn 2.5 và 7. Thứ tự các giá trị được giữ nguyên."
+     },
+     {
+      "type": "paragraph",
+      "text": "Lọc điểm cũng làm theo hai bước tương tự:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([3, 5, 8])\nmask = a >= 5\nprint(a[mask])",
+      "expected": "[5 8]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mask là `[False, True, True]`, vì vậy kết quả giữ 5 và 8. Bạn có thể viết gọn thành `a[a >= 5]` sau khi hiểu được hai bước này."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để giữ các điểm trong khoảng từ 0 đến 10, bạn cần hai điều kiện cùng đúng:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([-1, 4, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
+      "expected": "[ 4 10]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`&` có nghĩa là “và”: một giá trị phải vừa lớn hơn hoặc bằng 0, vừa nhỏ hơn hoặc bằng 10. Vì vậy, -1 và 12 bị bỏ, còn 4 và 10 được giữ."
+     },
+     {
+      "type": "paragraph",
+      "text": "Đặt từng phép so sánh trong ngoặc như trên. Nếu cần một trong hai điều kiện đúng, dùng `|`, nghĩa là “hoặc”. Không dùng `and` hoặc `or` để ghép các mask nhiều phần tử. Sau khi lọc, array kết quả có thể ngắn hơn array ban đầu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP13 · So sánh tạo dãy True/False"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Lọc dãy `[2, 7, 9]` bằng điều kiện lớn hơn 5 thì còn các giá trị nào?",
+     "answer": "Còn 7 và 9."
+    },
+    {
+     "prompt": "Giữ điểm từ 0 đến 10: `(a >= 0) ___ (a <= 10)` cần điền gì?",
+     "answer": "Điền `&`, vì cả hai điều kiện phải đúng."
+    },
+    {
+     "prompt": "Tạo một array nhiệt độ và lọc các giá trị từ 20 đến 35, kể cả hai biên.",
+     "answer": "Đặt từng điều kiện trong ngoặc; giữ cả hai biên:",
+     "answerCode": "import numpy as np\n\na = np.array([18, 20, 28, 35, 40])\nprint(a[(a >= 20) & (a <= 35)])",
+     "answerExpected": "[20 28 35]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])\n\n# ── Đoạn 2 ──\na = np.array([3, 5, 8])\nmask = a >= 5\nprint(a[mask])\n\n# ── Đoạn 3 ──\na = np.array([-1, 4, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

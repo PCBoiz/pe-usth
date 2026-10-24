@@ -1,0 +1,119 @@
+{
+ "lesson_code": "SY23",
+ "sort_order": 126,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
+  "subtitle": "Trung cấp · M5 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY23",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 328; h5py — Datasets; SciPy — loadmat"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "File cảm biến không chỉ có một bảng: có thể chứa nhiều mảng và thông tin mô tả (metadata) dưới các nhóm. HDF5 giữ cấu trúc đó; tên nhóm giống các tầng đường dẫn bên trong file:"
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, h5py\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"scores.h5\"\n    with h5py.File(path, \"w\") as f:\n        f.create_dataset(\"scores\", data=[[8, 6], [5, 9]])\n        f.create_dataset(\"meta/source\", data=b\"lab\")\n    with h5py.File(path, \"r\") as f:\n        print(sorted(f.keys()))\n        print(f[\"scores\"][()].tolist())",
+      "expected": "['meta', 'scores']\n[[8, 6], [5, 9]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`f[\"scores\"]` là đối tượng đại diện cho dataset trong file, nên còn phụ thuộc vào file đang mở. Thêm `[()]` để đọc giá trị ra một array; array này vẫn dùng được sau khi đóng file. Nhóm meta chứa dataset source, được truy cập bằng tên. Với API h5py dùng ở bài này, đọc bằng `[()]` thay cho thuộc tính .value cũ trong cheat sheet."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, h5py\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"data.h5\"\n    with h5py.File(path, \"w\") as f: f.create_dataset(\"meta/source\", data=b\"lab\")\n    with h5py.File(path, \"r\") as f:\n        print(list(f[\"meta\"].keys()))\n        source = f[\"meta/source\"][()]\n    print(source.decode(\"utf8\"))",
+      "expected": "['source']\nlab"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Không đoán dataset đầu tiên là dữ liệu cần dùng. Tìm đúng tên và kiểm shape/dtype để tránh tính nhầm mảng metadata. Việc liệt kê keys ở HDF5 và ở dictionary MATLAB đều giúp khám phá cấu trúc, nhưng hai object này không có cùng kiểu tài nguyên."
+     },
+     {
+      "type": "code",
+      "code": "from scipy.io import savemat, loadmat\nfrom io import BytesIO\nbuffer = BytesIO()\nsavemat(buffer, {\"scores\": [[8, 6], [5, 9]]})\nbuffer.seek(0)\nvalues = loadmat(buffer)\nprint(\"scores\" in values.keys())\nprint(values[\"scores\"].shape)\nprint(values[\"scores\"].tolist())",
+      "expected": "True\n(2, 2)\n[[8, 6], [5, 9]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`loadmat` trả dictionary các biến; còn các key metadata như __header__ nên cần lấy đúng tên scores. Một số biến thể MAT mới như 7.3 dựa trên HDF5 cần công cụ phù hợp, không mặc định mọi file .mat đều đọc bằng cùng một lời gọi."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với dictionary nhận từ loadmat, keys() xem tên biến, values() xem các giá trị và items() duyệt từng cặp tên/giá trị, chẳng hạn for name, value in values.items(): print(name, type(value).__name__). Những mục như __header__ mô tả file; đừng đưa tất cả values() vào cùng một phép tính rồi coi đó là bảng dữ liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY22 · Đọc đúng định dạng Stata và SAS"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao cần đọc [()] trước khi rời with h5py.File?",
+     "answer": "Để giữ giá trị array độc lập với đối tượng dataset còn phụ thuộc vào file đang mở."
+    },
+    {
+     "prompt": "Muốn lấy nguồn trong meta/source dùng gì?",
+     "answer": "f[\"meta/source\"][()], rồi decode nếu đó là bytes."
+    },
+    {
+     "prompt": "Viết read_scores(path, kind) cho hdf5/mat.",
+     "answer": "Với hdf5: with h5py.File(path,\"r\") as f: result=f[\"scores\"][()]. Với mat: loadmat(path)[\"scores\"]. Kiểm shape và giá trị; thiếu key phải báo lỗi thay vì chọn mảng đầu tiên. Thử file đóng rồi vẫn sử dụng được result."
+    },
+    {
+     "prompt": "MATLAB loadmat trả kiểu gì? Muốn xem tên, giá trị và từng cặp tên/giá trị dùng ba phương thức nào? Có nên coi key __header__ là bảng số cần phân tích không?",
+     "answer": "loadmat trả dict. Dùng values.keys(), values.values(), values.items() để xem tên, các giá trị, từng cặp tên/giá trị. __header__ là metadata; lấy đúng biến như values[\"scores\"] và kiểm shape/dtype."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: h5py chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "h5py chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "h5py chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "scipy chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY05",
+ "sort_order": 5,
+ "module": "M1 · Python nền tảng",
+ "title": "PY05 · Phép toán và thứ tự tính",
+ "subtitle": "Cơ bản · M1 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY05 · Phép toán và thứ tự tính",
+  "subtitle": "Cơ bản · M1 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 34-36, 44-45; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn bán 3 cốc, mỗi cốc 15 nghìn, rồi giảm 5 nghìn cho cả hóa đơn. Phép tính phải nhân số lượng với giá trước khi trừ giảm giá:"
+     },
+     {
+      "type": "code",
+      "code": "print(3 * 15 - 5)\nprint(3 * (15 - 5))",
+      "expected": "40\n30"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai kết quả khác nhau vì dấu ngoặc thay đổi thứ tự. Cách thứ nhất giảm 5 nghìn một lần; cách thứ hai giảm 5 nghìn cho từng cốc. Trong Python, nhân/chia có ưu tiên hơn cộng/trừ; khi ý nghĩa chưa rõ, thêm ngoặc."
+     },
+     {
+      "type": "code",
+      "code": "print(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)",
+      "expected": "3.5\n3 1\n-4"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`/` chia thực. `//` lấy thương làm tròn xuống, nên -7 chia 2 được -4 theo hướng âm vô cùng, không phải -3. `%` lấy phần dư; 7 chia 2 có thương 3 và dư 1."
+     },
+     {
+      "type": "code",
+      "code": "total = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)",
+      "expected": "15\n8\n0.99"
+     },
+     {
+      "type": "paragraph",
+      "text": "`total += 5` cộng 5 rồi gán lại, tương đương `total = total + 5` với số ở ví dụ này. Trong `total + 5`, giá trị total hiện tại và 5 là hai toán hạng. `**` là lũy thừa, nên 2 ** 3 bằng 8. Python 3 cho 99 / 100 bằng 0.99 dù cả hai toán hạng là int; trộn int và float trong phép tính như 2 + 3.0 thường cho float. Đừng chép nguyên kết quả chia Python 2 từ tài liệu cũ."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao hai phép tính đầu cho kết quả khác nhau?",
+     "answer": "Một phép giảm cho cả hóa đơn, một phép giảm trên từng cốc; dấu ngoặc xác định phần được tính trước."
+    },
+    {
+     "prompt": "Điền kết quả 7 // 2 và 7 % 2.",
+     "answer": "3 và 1."
+    },
+    {
+     "prompt": "Viết doanh thu 4 sản phẩm giá 12, trừ 6 phí chung.",
+     "answer": "4 * 12 - 6 cho 42. Dùng 4 * (12 - 6) sẽ trừ phí bốn lần."
+    },
+    {
+     "prompt": "Trong x = x + 2 với x ban đầu là 5, toán hạng là gì và x cuối cùng là bao nhiêu? 2 ** 3 và 2 + 3 * 4.0 bằng bao nhiêu?",
+     "answer": "Hai toán hạng của + là giá trị x cũ (5) và 2; phép gán gắn x tới kết quả 7. Hai biểu thức sau là 8 và 14.0; phép nhân thực hiện trước cộng và có float tham gia."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nprint(3 * 15 - 5)\nprint(3 * (15 - 5))\n\n# ── Đoạn 2 ──\nprint(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)\n\n# ── Đoạn 3 ──\ntotal = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,99 @@
+{
+ "lesson_code": "SY05",
+ "sort_order": 108,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+  "subtitle": "Trung cấp · M5 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 101-103, 108-113; Python — Classes"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một hồ sơ sinh viên có mã, tên và ngày sinh. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Student; mã gọi làm việc qua thuộc tính và các hàm của từng sinh viên, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
+     },
+     {
+      "type": "code",
+      "code": "class Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())",
+      "expected": "S01: An"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`Student` là class mô tả cách tạo hồ sơ; student là một đối tượng cụ thể được tạo từ class, gọi là instance. Khi viết `Student(...)`, Python tạo object và gọi `__init__` để khởi tạo dữ liệu cho nó. Constructor là thao tác dựng object; nói chính xác, `__init__` là bước khởi tạo chứ không tự cấp phát object. `self` nhận instance đang được gọi method, nên self.name đọc tên sinh viên đó."
+     },
+     {
+      "type": "code",
+      "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)",
+      "expected": "Anh Binh"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể tạo nhiều instance từ một class. Mỗi instance trong ví dụ giữ thuộc tính name riêng. Method là hàm gắn với class; tham số và return vẫn có ý nghĩa như ở hàm đã học."
+     },
+     {
+      "type": "code",
+      "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)",
+      "expected": "Anh\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "Gán alias = first không tạo một sinh viên thứ hai. Hai tên cùng tham chiếu một object. Các câu ôn trong slide dùng bối cảnh Java: biến thuộc kiểu cơ bản (primitive) như int giữ giá trị, còn biến tham chiếu (reference) giữ tham chiếu đến object. Gán một biến reference cho biến khác có thể làm hai biến cùng trỏ tới một object. Ở Python, mọi giá trị đều là object và phép gán gắn tên với object. Cần phân biệt gán lại tên với sửa một object dùng chung."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Student và student khác nhau gì?",
+     "answer": "Student là class; student là một instance được tạo từ class."
+    },
+    {
+     "prompt": "Vì sao sửa alias.name làm first.name đổi?",
+     "answer": "Hai tên trỏ cùng object, không có bản sao được tạo bởi phép gán."
+    },
+    {
+     "prompt": "Viết Course(cid, name, credits) và method label() trả mã: tên.",
+     "answer": "Khởi tạo self.cid, self.name, self.credits trong __init__; label trả f\"{self.cid}: {self.name}\". Tạo hai Course, sửa tên một môn và xác nhận môn kia không đổi."
+    },
+    {
+     "prompt": "Sau a=Student(\"An\"), b=a, b.name=\"Mai\", có mấy object Student? So với câu Java về primitive/reference khác gì?",
+     "answer": "Một object Student được hai tên tham chiếu; a.name cũng là Mai. Trong mô hình Java, gán primitive sao giá trị, gán reference sao tham chiếu. Python mọi giá trị là object; gán tên không tự sao chép object."
+    },
+    {
+     "prompt": "Trong def label(self, prefix): return prefix+self.name, self là gì, prefix là gì, kết quả đi đâu?",
+     "answer": "self là instance hiện tại khi gọi obj.label(\"SV: \"); prefix là tham số nhận đối số \"SV: \". return gửi chuỗi về nơi gọi, không tự in. __init__ khởi tạo object; name là thuộc tính có thể đọc/gán."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nclass Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())\n\n# ── Đoạn 2 ──\nclass Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)\n\n# ── Đoạn 3 ──\nclass Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

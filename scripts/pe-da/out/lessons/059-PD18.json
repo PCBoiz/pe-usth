@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD18",
+ "sort_order": 59,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD18 · Concat: ghép các lô dữ liệu",
+ "subtitle": "Trung cấp · M3 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD18 · Concat: ghép các lô dữ liệu",
+  "subtitle": "Trung cấp · M3 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD18",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Concatenation"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi ngày cửa hàng gửi một bảng có cùng cấu trúc. Để tạo bảng nhiều ngày, bạn xếp các bảng này nối tiếp theo hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())",
+      "expected": "[{'order': 'A', 'amount': 10}, {'order': 'B', 'amount': 20}]\n[0, 1]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "axis=0 là mặc định và nối theo hàng. ignore_index=True tạo nhãn hàng mới. Nó không bỏ đơn trùng: nếu file ngày bị đọc hai lần, các dòng vẫn lặp."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
+      "expected": "['amount', 'note', 'city']\n['amount']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi nối theo hàng, mặc định kết quả giữ tất cả tên cột xuất hiện trong các bảng; hàng nào không có cột tương ứng thì nhận ô thiếu. Trong ví dụ, kết quả có cả `amount`, `note` và `city`. `join=\"inner\"` chỉ giữ cột chung là `amount`. Chọn cách nào tùy việc bạn cần giữ các thông tin khác nhau giữa các lô hay chỉ cần phần chung."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nsales = pd.DataFrame({'revenue': [10, 20]}, index=['A', 'B'])\ntargets = pd.DataFrame({'target': [30, 15]}, index=['B', 'A'])\ncombined = pd.concat([sales, targets], axis=1)\nprint(combined['target'].tolist())",
+      "expected": "[15, 30]"
+     },
+     {
+      "type": "paragraph",
+      "text": "axis=1 ghép theo cột và căn theo index, không chỉ theo vị trí. Vì vậy target của A là 15. Khi có nhiều lô, thu gom chúng vào list rồi concat một lần, tránh nối lại toàn bộ bảng sau từng hàng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD17 · Kiểm tra số dòng sau khi nối bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "ignore_index có xóa đơn hàng trùng không?",
+     "answer": "Không; nó chỉ tạo lại nhãn index."
+    },
+    {
+     "prompt": "concat axis=1 căn hàng theo vị trí hay index?",
+     "answer": "Theo index."
+    },
+    {
+     "prompt": "Nối ba bảng mỗi bảng một qty là 1, 2, 3; in tổng.",
+     "answer": "Tổng là 6.",
+     "answerCode": "import pandas as pd\nparts = [pd.DataFrame({'qty': [v]}) for v in [1, 2, 3]]\nprint(pd.concat(parts, ignore_index=True)['qty'].sum())",
+     "answerExpected": "6"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nsales = pd.DataFrame({'revenue': [10, 20]}, index=['A', 'B'])\ntargets = pd.DataFrame({'target': [30, 15]}, index=['B', 'A'])\ncombined = pd.concat([sales, targets], axis=1)\nprint(combined['target'].tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

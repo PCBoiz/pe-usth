@@ -1,0 +1,104 @@
+{
+ "lesson_code": "NP05",
+ "sort_order": 23,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP05 · Tạo dãy bằng arange",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP05 · Tạo dãy bằng arange",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · arange"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một báo cáo tuần cần các số thứ tự từ 1 đến 7. Thay vì nhập từng số, bạn có thể tạo dãy bằng `np.arange`:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\ndays = np.arange(1, 8)\nprint(days)",
+      "expected": "[1 2 3 4 5 6 7]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`np.arange(start, stop)` bắt đầu tại `start` và dừng trước `stop`. Vì muốn có cả ngày 7, bạn đặt điểm dừng là 8. Số 8 không nằm trong kết quả."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với một dãy ngắn hơn, bạn có thể đếm trực tiếp:"
+     },
+     {
+      "type": "code",
+      "code": "print(np.arange(1, 5))",
+      "expected": "[1 2 3 4]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dãy có 1, 2, 3 và 4. Nếu không đưa thêm tham số, bước nhảy là 1, nghĩa là mỗi số sau lớn hơn số trước 1 đơn vị."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để tạo các số cách nhau 2 đơn vị, thêm bước nhảy ở vị trí thứ ba:"
+     },
+     {
+      "type": "code",
+      "code": "print(np.arange(0, 7, 2))",
+      "expected": "[0 2 4 6]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Lệnh bắt đầu ở 0, lần lượt lấy 0, 2, 4, 6 và dừng trước 7. Trong bài này, bạn chỉ cần dùng số nguyên để dễ kiểm tra điểm bắt đầu, điểm dừng và bước nhảy. Dãy này có thể dùng làm số thứ tự hoặc các mốc trên trục ngang của biểu đồ."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP01 · Array là gì?, NP02 · Lấy một phần tử"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "`np.arange(1, 4)` có lấy số 4 không? Viết các số trong kết quả.",
+     "answer": "Không. Dãy là `[1, 2, 3]`, dừng trước 4."
+    },
+    {
+     "prompt": "Để tạo dãy từ 1 đến 6, điền `np.arange(1, ___)`.",
+     "answer": "Điền `7`, vì điểm dừng không được lấy."
+    },
+    {
+     "prompt": "Dùng `arange` tạo các số 2, 4, 6 và 8.",
+     "answer": "Bắt đầu tại 2, dừng trước 9 và nhảy 2 đơn vị:",
+     "answerCode": "import numpy as np\n\nprint(np.arange(2, 9, 2))",
+     "answerExpected": "[2 4 6 8]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ndays = np.arange(1, 8)\nprint(days)\n\n# ── Đoạn 2 ──\nprint(np.arange(1, 5))\n\n# ── Đoạn 3 ──\nprint(np.arange(0, 7, 2))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

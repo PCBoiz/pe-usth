@@ -1,0 +1,110 @@
+{
+ "lesson_code": "SY12",
+ "sort_order": 115,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY12 · Package và điểm bắt đầu của chương trình",
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY12 · Package và điểm bắt đầu của chương trình",
+  "subtitle": "Trung cấp · M5 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 144-148, 151; Python — Packages"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Dự án có thể cần nhiều module. Bạn có thể gom chúng vào một package, rồi chia tiếp thành package con. Ví dụ này dùng domains chứa grades và package con reports; reports chứa module summary. Tạo hai file __init__.py rỗng ở domains và domains/reports. Đó là các file khởi tạo package thông thường (regular package), khác với method __init__ của class:"
+     },
+     {
+      "type": "terminal",
+      "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/reports/summary.py\nfrom ..grades import passed\n\ndef report(score):\n    return \"Pass\" if passed(score) else \"Retry\"\n\n# main.py\nfrom domains.reports.summary import report\nprint(report(6))",
+      "expected": "Tạo domains/__init__.py và domains/reports/__init__.py rỗng, rồi lưu ba file như chú thích. Đặt main.py bên cạnh thư mục domains. Chạy python main.py tại thư mục đó. Kết quả: Pass."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`domains.reports.summary` là tên module theo các tầng thư mục, không phải một đường dẫn có dấu slash. Trong summary.py, `from ..grades import passed` đi lên package domains rồi lấy module grades. Python còn hỗ trợ namespace packages không cần __init__.py; khóa này dùng regular package để cấu trúc dễ theo dõi."
+     },
+     {
+      "type": "terminal",
+      "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/__init__.py\nfrom .grades import passed\n\n# main.py\nimport domains\nprint(domains.passed(6))",
+      "expected": "Giữ grades.py trong domains, thêm dòng import vào domains/__init__.py và thay main.py như trên. Chạy python main.py từ thư mục chứa domains. Kết quả: True."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi import package, Python không tự import mọi module con. Ở ví dụ dưới đây, dòng `from .grades import passed` trong domains/__init__.py đưa hàm passed ra ngoài package, nên main.py gọi được `domains.passed(6)`. Khi cài thư viện ngoài, dùng `python -m pip install ten_package` trong đúng môi trường; tên cài trên PyPI đôi khi khác tên dùng để import."
+     },
+     {
+      "type": "terminal",
+      "code": "# main.py\ndef run():\n    print(\"Started\")\n\nif __name__ == \"__main__\":\n    run()",
+      "expected": "Lưu main.py như trên. Chạy python main.py sẽ in Started. Chạy python -c \"import main\" từ cùng thư mục sẽ không in gì, vì import không gọi run()."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Điều kiện `if __name__ == \"__main__\"` được gọi là main guard. Nó chỉ gọi run khi bạn chạy file trực tiếp làm điểm bắt đầu của chương trình. Import main để dùng hàm không tự khởi chạy giao diện. PW4 dùng main.py điều phối, input.py cho nhập liệu, output.py cho curses, domains cho class; đặt trách nhiệm rõ còn quan trọng hơn số file."
+     },
+     {
+      "type": "paragraph",
+      "text": "`import domains.grades` nạp submodule và cho phép gọi `domains.grades.passed(6)`. Chỉ `import domains` không bảo đảm grades có sẵn, trừ khi __init__.py đã import hoặc export nó. Tên nhiều tầng như domains.reports.summary vẫn dùng dấu chấm; để tạo cây đó cần các thư mục tương ứng và __init__.py ở những regular package."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY11 · Module và các cách import"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "__init__.py có phải constructor của mọi object trong package không?",
+     "answer": "Không. Nó là module khởi tạo regular package; __init__(self,...) là method của class."
+    },
+    {
+     "prompt": "Từ domains/reports/summary.py import passed ở domains/grades.py thế nào?",
+     "answer": "from ..grades import passed; chạy chương trình từ điểm bắt đầu phù hợp của package, không sửa sys.path để che cấu trúc sai."
+    },
+    {
+     "prompt": "Khi đã hoàn thành chương trình quản lý điểm PW1–PW3, tách nó thành các module theo yêu cầu PW4 rồi kiểm tra lại chức năng. Nếu chưa làm dự án này, xem SY25–SY26 trước khi thực hành câu này.",
+     "answer": "Tạo input.py cho nhập liệu, output.py cho hiển thị bằng curses, package domains cho các class và main.py để điều phối. Giữ công thức và quy tắc điểm ngoài phần giao diện. Khi import main, chương trình chưa mở giao diện. Khi chạy main trực tiếp, các thao tác nhập, liệt kê và tính GPA phải còn hoạt động như trước. Truyền cùng một Registry vào các hàm để chúng dùng chung dữ liệu."
+    },
+    {
+     "prompt": "domains/reports/summary.py thuộc cây package nào? import domains.grades khác import domains ở đâu, và export passed trong __init__.py thế nào?",
+     "answer": "domains là package, reports là subpackage, summary là module; dùng tên nhiều tầng với dấu chấm: domains.reports.summary. Import domains.grades nạp submodule đó; chỉ import domains không bảo đảm nó đã nạp. Trong domains/__init__.py viết from .grades import passed để domains.passed có sẵn. Regular package có __init__.py; nhiều tầng có file đó ở các tầng package."
+    },
+    {
+     "prompt": "pip install một package lấy từ đâu và có chắc tên cài bằng tên import không?",
+     "answer": "pip thường lấy phân phối từ PyPI và cài vào môi trường được chọn. Tên phân phối có thể khác tên import; tra tài liệu rồi dùng python -m pip của đúng trình thông dịch Python. Package là đơn vị tổ chức module/subpackage, không chỉ là tên của một thư viện trên PyPI."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": []
+}

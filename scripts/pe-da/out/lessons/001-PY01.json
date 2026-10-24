@@ -1,0 +1,117 @@
+{
+ "lesson_code": "PY01",
+ "sort_order": 1,
+ "module": "M1 · Python nền tảng",
+ "title": "PY01 · Chạy một phép tính và đọc kết quả",
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY01 · Chạy một phép tính và đọc kết quả",
+  "subtitle": "Cơ bản · M1 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 4, 7-19, 28-29; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook rồi chạy:"
+     },
+     {
+      "type": "code",
+      "code": "print(12 + 9)",
+      "expected": "21"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ script tự động hóa, backend web đến ứng dụng và phân tích dữ liệu. Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi cần dùng lại một số, đặt tên cho nó bằng phép gán:"
+     },
+     {
+      "type": "code",
+      "code": "morning = 12\nafternoon = 9\nprint(morning + afternoon)",
+      "expected": "21"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dấu `=` gán giá trị cho tên biến. Hai lần chạy trên cho cùng kết quả nhưng lần sau bạn có thể đổi số bán từng buổi mà không viết lại biểu thức."
+     },
+     {
+      "type": "code",
+      "code": "cups = 21\nprint(\"So coc:\", cups)\nprint(cups * 15)",
+      "expected": "So coc: 21\n315"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào class."
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong REPL, bạn nhập và chạy từng lệnh; trong script, bạn lưu code vào file `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
+     },
+     {
+      "type": "paragraph",
+      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode, một dạng lệnh trung gian, trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "Bắt đầu tại đây"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Đoạn đầu tính gì và hiển thị bao nhiêu?",
+     "answer": "Tính tổng số cốc hai buổi và hiển thị 21."
+    },
+    {
+     "prompt": "Đổi số bán chiều thành 11 thì tổng là bao nhiêu?",
+     "answer": "12 + 11 = 23."
+    },
+    {
+     "prompt": "Viết hai biến cho số cốc hai ngày rồi in tổng. Nếu lưu vào sales.py thì chạy file bằng lệnh nào?",
+     "answer": "Ví dụ: day1 = 10; day2 = 15; print(day1 + day2). Kết quả 25. Trong terminal chạy python sales.py bằng Python của dự án."
+    },
+    {
+     "prompt": "Python bậc cao, đa dụng và mã nguồn mở có nghĩa gì? Nêu một việc ở backend và một việc của Data Analyst có thể dùng Python.",
+     "answer": "Bậc cao nghĩa là bạn viết thao tác gần với bài toán hơn là lệnh máy. Đa dụng nghĩa là Python dùng được cho nhiều loại công việc. Mã nguồn mở nghĩa là mã triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Ví dụ, backend có thể dùng Python để xử lý yêu cầu web, còn Data Analyst dùng Python để đọc đơn hàng và tính doanh thu."
+    },
+    {
+     "prompt": "So sánh gõ print(12 + 9) trong REPL với lưu cùng lệnh vào sales.py. Shebang dùng để làm gì?",
+     "answer": "Trong REPL, bạn nhập từng lệnh và nhận kết quả ngay. Với script, bạn lưu các lệnh rồi chạy bằng `python sales.py`. Trên hệ có hỗ trợ, shebang ở đầu file chỉ ra trình thông dịch cần dùng khi chạy trực tiếp một file có quyền thực thi. Cách xử lý shebang phụ thuộc hệ điều hành."
+    },
+    {
+     "prompt": "Có đúng là CPython không biên dịch và luôn nhanh nhất cho mọi việc không?",
+     "answer": "Không. CPython biên dịch thành bytecode rồi thực thi. Thời gian còn phụ thuộc tác vụ, thuật toán và thư viện; code nặng CPU cần đo trước khi chọn cách tối ưu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nprint(12 + 9)\n\n# ── Đoạn 2 ──\nmorning = 12\nafternoon = 9\nprint(morning + afternoon)\n\n# ── Đoạn 3 ──\ncups = 21\nprint(\"So coc:\", cups)\nprint(cups * 15)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

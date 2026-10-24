@@ -1,0 +1,95 @@
+{
+ "lesson_code": "SY01",
+ "sort_order": 104,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY01 · Đọc ngày tháng và tính khoảng thời gian",
+ "subtitle": "Cơ bản · M5 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY01 · Đọc ngày tháng và tính khoảng thời gian",
+  "subtitle": "Cơ bản · M5 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 330; Python — datetime"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một báo cáo cần lấy đơn hàng từ ngày 28/02/2024 đến hai ngày sau đó. Nếu cộng trực tiếp vào phần ngày của chuỗi, bạn sẽ gặp ngày không tồn tại. Hãy chuyển chuỗi thành datetime trước:"
+     },
+     {
+      "type": "code",
+      "code": "from datetime import datetime, timedelta\nday = datetime.strptime(\"2024-02-28\", \"%Y-%m-%d\")\nprint((day + timedelta(days=2)).strftime(\"%Y-%m-%d\"))",
+      "expected": "2024-03-01"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`strptime` đọc chuỗi theo định dạng, còn `strftime` tạo chuỗi để trình bày. `%Y`, `%m`, `%d` lần lượt là năm, tháng, ngày. `timedelta` biểu diễn khoảng thời gian; Python tính qua ranh giới tháng và năm nhuận."
+     },
+     {
+      "type": "code",
+      "code": "from datetime import datetime, timedelta\nend = datetime(year=2024, month=3, day=29)\nstart = end - timedelta(weeks=4)\nprint(start.strftime(\"%Y-%m-%d\"))\nprint((end - start).days)",
+      "expected": "2024-03-01\n28"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bốn tuần là 28 ngày, không phải luôn bằng một tháng theo lịch. Khi lọc dữ liệu theo tuần, cần nói rõ mốc đầu và mốc cuối có được lấy hay không. Bạn cũng có thể tạo datetime bằng các trường số, thay vì đọc từ chuỗi."
+     },
+     {
+      "type": "code",
+      "code": "from datetime import datetime\ntry:\n    datetime.strptime(\"2023-02-29\", \"%Y-%m-%d\")\nexcept ValueError:\n    print(\"Ngay khong hop le\")\nprint(isinstance(datetime.now(), datetime))",
+      "expected": "Ngay khong hop le\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "`datetime.now()` lấy thời điểm chạy trên máy nên kết quả thay đổi. Ví dụ chỉ kiểm tra kiểu của nó; bài tính ngày dùng mốc cố định để bạn tự đối chiếu. Trong báo cáo có nhiều múi giờ, cần thống nhất timezone trước khi so sánh; datetime không gắn timezone ở đây chỉ dùng để học lịch cơ bản."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Đổi 2024-03-01 thành chuỗi 01/03/2024.",
+     "answer": "datetime.strptime(\"2024-03-01\", \"%Y-%m-%d\").strftime(\"%d/%m/%Y\") cho \"01/03/2024\"."
+    },
+    {
+     "prompt": "Bốn tuần trước 29/03/2024 là ngày nào?",
+     "answer": "01/03/2024, vì timedelta(weeks=4) là 28 ngày."
+    },
+    {
+     "prompt": "Viết hàm ngày_hẹn(text, days) nhận YYYY-MM-DD và trả ngày sau days.",
+     "answer": "Dùng datetime.strptime(text, \"%Y-%m-%d\"), cộng timedelta(days=days), rồi strftime(\"%Y-%m-%d\"). Để ValueError báo ngày không hợp lệ; thử cả days âm và qua năm nhuận."
+    },
+    {
+     "prompt": "Tạo datetime cho 31/12/2020 rồi cộng một ngày và định dạng YYYY-MM-DD. datetime.now có thể đặt một output ngày cố định cho mọi lần chạy không?",
+     "answer": "`datetime(year=2020, month=12, day=31) + timedelta(days=1)` cho ngày 01/01/2021. Gọi `strftime(\"%Y-%m-%d\")` để nhận chuỗi `\"2021-01-01\"`. `datetime.now()` lấy thời điểm đang chạy nên kết quả có thể thay đổi; khi luyện phép tính lịch, dùng một mốc cố định để dễ đối chiếu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom datetime import datetime, timedelta\nday = datetime.strptime(\"2024-02-28\", \"%Y-%m-%d\")\nprint((day + timedelta(days=2)).strftime(\"%Y-%m-%d\"))\n\n# ── Đoạn 2 ──\nfrom datetime import datetime, timedelta\nend = datetime(year=2024, month=3, day=29)\nstart = end - timedelta(weeks=4)\nprint(start.strftime(\"%Y-%m-%d\"))\nprint((end - start).days)\n\n# ── Đoạn 3 ──\nfrom datetime import datetime\ntry:\n    datetime.strptime(\"2023-02-29\", \"%Y-%m-%d\")\nexcept ValueError:\n    print(\"Ngay khong hop le\")\nprint(isinstance(datetime.now(), datetime))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,106 @@
+{
+ "lesson_code": "VZ13",
+ "sort_order": 86,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ13 · Error bar: phân tán và độ bất định",
+ "subtitle": "Nâng cao · M4 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ13 · Error bar: phân tán và độ bất định",
+  "subtitle": "Nâng cao · M4 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ13",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Error bar: phân tán và độ bất định"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai nhóm giao hàng có trung bình 10 và 12 phút. Chỉ hai điểm trung bình chưa cho biết các đơn phân tán ra sao hay trung bình được ước lượng chắc đến mức nào. Error bar có thể biểu diễn độ lệch chuẩn, khoảng phần trăm hoặc khoảng tin cậy; bạn cần ghi rõ mình đang vẽ loại nào."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()",
+      "expected": "8 12"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ13-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ13-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Độ lệch chuẩn mô tả độ phân tán của quan sát. Sai số chuẩn của trung bình được tính bằng độ lệch chuẩn mẫu chia căn bậc hai số quan sát, trong mô hình lấy mẫu độc lập phù hợp. Nó không phải khoảng tin cậy 95% nếu bạn chỉ vẽ cộng trừ một sai số chuẩn. Khi mẫu nhỏ hoặc các quan sát phụ thuộc nhau, cần cân nhắc cách ước lượng khác."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()",
+      "expected": "1.63 0.82"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ13-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ13-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một dải quanh đường có thể dùng fill_between để vẽ cận dưới và cận trên đã được tính. Dải dưới đây là khoảng dự báo minh họa do người viết cung cấp, không phải kết quả suy luận từ ba điểm. Các khoảng chồng nhau hay không chồng nhau cũng không tự thay thế một phép kiểm định phù hợp."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\nmean = [10, 12, 11]\nax.plot(days, mean, marker=\"o\", label=\"Forecast\")\nax.fill_between(days, [8, 9, 9], [12, 15, 13], alpha=0.25, label=\"Illustrative interval\")\nax.set(xlabel=\"Day\", ylabel=\"Orders\", title=\"Label what the shaded interval means\")\nax.legend()\nprint([12-8, 15-9, 13-9])\nplt.show()",
+      "expected": "[4, 6, 4]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ13-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ13-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm, NP16 · Thống kê và điểm có trọng số"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Cộng trừ một độ lệch chuẩn có phải mặc định là khoảng tin cậy 95%?",
+     "answer": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn."
+    },
+    {
+     "prompt": "Với SD=4 và n=16, sai số chuẩn trung bình bằng bao nhiêu?",
+     "answer": "SE=4/sqrt(16)=1, khi điều kiện lấy mẫu độc lập phù hợp."
+    },
+    {
+     "prompt": "Báo cáo có dải màu nhưng không ghi ý nghĩa. Cần bổ sung gì?",
+     "answer": "Ghi loại khoảng, cách tính, mức nếu có, cỡ mẫu và đơn vị. Không tự đoán đó là CI 95%."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\nmean = [10, 12, 11]\nax.plot(days, mean, marker=\"o\", label=\"Forecast\")\nax.fill_between(days, [8, 9, 9], [12, 15, 13], alpha=0.25, label=\"Illustrative interval\")\nax.set(xlabel=\"Day\", ylabel=\"Orders\", title=\"Label what the shaded interval means\")\nax.legend()\nprint([12-8, 15-9, 13-9])\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU08",
+ "sort_order": 155,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU08 · Pack: xếp các vùng của giao diện",
+ "subtitle": "Trung cấp · M8 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU08 · Pack: xếp các vùng của giao diện",
+  "subtitle": "Trung cấp · M8 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU08",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 317-319; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Thanh công cụ có ba nút nằm cạnh nhau. pack xếp widget lần lượt vào phần không gian còn lại của parent, nên phù hợp cho hàng nút và các vùng trên–dưới."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\na=tk.Label(r,text='Top');a.pack()\nb=tk.Label(r,text='Bottom');b.pack()\nprint([x.cget('text') for x in r.pack_slaves()])\nprint(a.pack_info()['side'])\nr.destroy()",
+      "expected": "['Top', 'Bottom']\ntop"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mặc định side là top: các widget được xếp dọc theo thứ tự gọi pack và canh giữa trong phần không gian được cấp. Nó không phải tọa độ tuyệt đối trên cửa sổ."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbar=tk.Frame(r);bar.pack(fill=tk.X)\nfor name in ['Add','Edit','Delete']:\n    tk.Button(bar,text=name).pack(side=tk.LEFT)\nprint([x.cget('text') for x in bar.pack_slaves()])\nprint(bar.pack_info()['fill'])\nr.destroy()",
+      "expected": "['Add', 'Edit', 'Delete']\nx"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "side=LEFT đặt nút lần lượt từ trái. fill=X cho phép widget lấp chiều ngang trong vùng được cấp; fill=Y lấp chiều dọc. expand xin phần không gian dư của parent, còn fill quyết định widget có giãn trong phần được cấp hay không."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nbody=tk.Frame(r);body.pack(fill=tk.BOTH,expand=True)\npanel=tk.Label(body,text='Report');panel.pack(fill=tk.Y,expand=True)\nprint(body.pack_info()['fill'], bool(body.pack_info()['expand']))\nprint(panel.pack_info()['fill'])\nr.destroy()",
+      "expected": "both True\ny"
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể pack các Frame bên ngoài rồi dùng grid bên trong từng Frame. Tránh dùng pack và grid để quản lý các widget con trong cùng một parent; hãy chia container khi cần hai kiểu bố trí."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU07 · Danh sách và hộp chọn thả xuống"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "pack mặc định xếp theo side nào?",
+     "answer": "top."
+    },
+    {
+     "prompt": "fill và expand có cùng ý nghĩa không?",
+     "answer": "Không; expand cấp thêm không gian dư, fill cho widget giãn trong vùng được cấp."
+    },
+    {
+     "prompt": "Pack một Label sang trái và in cấu hình side.",
+     "answer": "Cấu hình là left.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nx=tk.Label(r,text='A');x.pack(side=tk.LEFT)\nprint(x.pack_info()['side'])\nr.destroy()",
+     "answerExpected": "left"
+    },
+    {
+     "prompt": "Ba nút gọi pack() không side sẽ xếp thế nào? Muốn xếp từ trái, rồi lấp ngang/dọc dùng các tùy chọn gì?",
+     "answer": "Mặc định top, xếp dọc theo thứ tự và canh giữa vùng cấp. side=tk.LEFT xếp từ trái; fill=tk.X lấp ngang, fill=tk.Y lấp dọc. Geometry manager bố trí widget trong parent."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

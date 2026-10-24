@@ -1,0 +1,107 @@
+{
+ "lesson_code": "CT15",
+ "sort_order": 146,
+ "module": "M7 · Multiprocessing và shell thực hành",
+ "title": "CT15 · PW7: shell có chuyển hướng và pipe",
+ "subtitle": "Nâng cao · M7 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT15 · PW7: shell có chuyển hướng và pipe",
+  "subtitle": "Nâng cao · M7 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT15",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 247-248; Python — multiprocessing; Python — subprocess"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"out.txt\"\n    with path.open(\"w\", encoding=\"utf-8\") as file:\n        subprocess.run([sys.executable, \"-c\", \"print(42)\"], stdout=file, check=True)\n    print(path.read_text(encoding=\"utf-8\").strip())",
+      "expected": "42"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "stdout nhận file đã mở nên bạn không thêm dấu > vào list đối số truyền cho chương trình. Trong shell thực hành, phần phân tích lệnh, gọi là parser, sẽ nhận ra dấu >, mở file đích rồi nối file đó với stdout trước khi chạy chương trình."
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"in.txt\"\n    path.write_text(\"abc\", encoding=\"utf-8\")\n    with path.open(\"rb\") as file:\n        result = subprocess.run([sys.executable, \"-c\", \"import sys; print(sys.stdin.read().upper())\"], stdin=file, capture_output=True, text=True, check=True)\n    print(result.stdout.strip())",
+      "expected": "ABC"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Input đến từ file thay cho bàn phím. Ví dụ dùng chương trình Python con để chạy được trên nhiều nền tảng. Trong bài gốc, ls, bc, ps và grep là các công cụ UNIX cần có trong môi trường lab tương ứng."
+     },
+     {
+      "type": "code",
+      "code": "import shlex\nlexer = shlex.shlex('tool \"two words\" < in.txt | other > out.txt', posix=True, punctuation_chars=\"|<>\")\nprint(list(lexer))",
+      "expected": "['tool', 'two words', '<', 'in.txt', '|', 'other', '>', 'out.txt']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "shlex giữ \"two words\" thành một đối số, dù bên trong có khoảng trắng. Parser sau đó dùng dấu | để tách các bước của pipeline và dùng <, > để nhận ra chuyển hướng. File projects/shell_lab.py đi kèm có vòng nhập lệnh, cách tách đối số, chuyển hướng và chạy pipeline. Chương trình tự xử lý những ký hiệu này thay vì giao cả chuỗi cho shell của hệ điều hành bằng shell=True."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi thử lab, chạy `python projects/shell_lab.py` từ thư mục bộ học. Dùng đường dẫn/đối số có dấu nháy khi chứa khoảng trắng. Với pipeline, kiểm mã thoát của mọi stage; với lỗi cú pháp hoặc thiếu chương trình, báo lỗi rồi quay lại vòng nhập. Các cấu trúc shell khác như >>, biến môi trường hay wildcard không thuộc parser này."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT07 · Chạy lệnh, tách output và mã thoát, CT08 · Popen, communicate, pipeline và timeout, SY15 · Mở file: đọc, ghi đè, nối và tạo mới"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Dấu > và | có vai trò gì?",
+     "answer": "> ghi stdout ra file; | nối stdout của stage trước vào stdin của stage sau."
+    },
+    {
+     "prompt": "Vì sao không truyền nguyên dấu > như một argument cho chương trình?",
+     "answer": "Chuyển hướng là công việc của parser/shell; chương trình sẽ coi ký tự đó là dữ liệu đối số nếu không có cơ chế xử lý."
+    },
+    {
+     "prompt": "Thử shell với lệnh thường, input file, output file, hai-stage pipe và một chương trình không tồn tại. Cần quan sát gì?",
+     "answer": "Output đúng, file chứa dữ liệu đúng, mã thoát từng stage được kiểm tra; lỗi được báo và shell còn nhận lệnh tiếp. Đối chiếu các tình huống ls -la; ls -la > out.txt; bc < input.txt; ps aux | grep term trong môi trường UNIX có các công cụ đó."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (WASM không gọi được chương trình ngoài) nên không nằm trong ô này."
+   },
+   "starterCode": "import shlex\nlexer = shlex.shlex('tool \"two words\" < in.txt | other > out.txt', posix=True, punctuation_chars=\"|<>\")\nprint(list(lexer))\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: WASM không gọi được chương trình ngoài."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "WASM không gọi được chương trình ngoài"
+  },
+  {
+   "block": 1,
+   "reason": "WASM không gọi được chương trình ngoài"
+  }
+ ]
+}

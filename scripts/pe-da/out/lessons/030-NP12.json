@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP12",
+ "sort_order": 30,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP12 · Tổng từng hàng và bài ghép",
+ "subtitle": "Cơ bản · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP12 · Tổng từng hàng và bài ghép",
+  "subtitle": "Cơ bản · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · sum và axis"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Vẫn là bảng bán hàng hai cửa hàng trong ba ngày, nhưng lần này bạn cần tổng của từng cửa hàng. Hãy cộng các ngày trong cùng một hàng:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=1))",
+      "expected": "[36 32]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Cửa hàng A bán 12 + 15 + 9 = 36 cốc; cửa hàng B bán 10 + 8 + 14 = 32 cốc. `sum(axis=1)` gộp các cột trong mỗi hàng, để lại một số cho mỗi cửa hàng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với bảng 2 hàng, 3 cột quen thuộc:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
+      "expected": "[ 6 15]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hàng đầu có tổng 6, hàng thứ hai có tổng 15. Trên bảng này, `sum(axis=0)` cho ba tổng cột, `sum(axis=1)` cho hai tổng hàng, còn `sum()` cho một tổng là 21."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể ghép các thao tác đã học: tạo các số từ 1 đến 12 bằng `arange`, xếp thành bảng 3 hàng, 4 cột bằng `reshape`, rồi tính tổng từng cột:"
+     },
+     {
+      "type": "code",
+      "code": "numbers = np.arange(1, 13)\na = numbers.reshape(3, 4)\nprint(a.sum(axis=0))",
+      "expected": "[15 18 21 24]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng được xếp thành các hàng `[1, 2, 3, 4]`, `[5, 6, 7, 8]` và `[9, 10, 11, 12]`. Cột đầu có tổng 1 + 5 + 9 = 15. Ba cột còn lại có tổng 18, 21 và 24."
+     },
+     {
+      "type": "paragraph",
+      "text": "Kết quả có bốn phần tử vì bảng có bốn cột. Nếu đổi sang `axis=1`, bạn sẽ có ba phần tử, mỗi phần tử là tổng của một hàng. Bạn có thể dự đoán số phần tử trước khi tính các tổng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP05 · Tạo dãy bằng arange, NP08 · Xếp lại bằng reshape, NP11 · Tổng từng cột: axis=0"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với bảng `[[1, 2, 3], [4, 5, 6]]`, `sum(axis=1)` cho bao nhiêu số? Đó là những số nào?",
+     "answer": "Có 2 số là 6 và 15, mỗi số cho một hàng."
+    },
+    {
+     "prompt": "Muốn một tổng cho mỗi hàng của bảng 3 hàng, 4 cột: `sum(axis=___)` cần điền gì?",
+     "answer": "Điền `1`: `sum(axis=1)` cho một tổng mỗi hàng."
+    },
+    {
+     "prompt": "`np.arange(1, 13).reshape(3, 4).sum(axis=0)` có bao nhiêu phần tử? Giải thích trước khi chạy code.",
+     "answer": "Có 4 phần tử vì bảng có 4 cột. Sau khi gộp ba hàng, kết quả là:",
+     "answerCode": "import numpy as np\n\na = np.arange(1, 13).reshape(3, 4)\nprint(a.sum(axis=0))",
+     "answerExpected": "[15 18 21 24]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=1))\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))\n\n# ── Đoạn 3 ──\nnumbers = np.arange(1, 13)\na = numbers.reshape(3, 4)\nprint(a.sum(axis=0))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

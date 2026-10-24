@@ -1,0 +1,114 @@
+{
+ "lesson_code": "VZ19",
+ "sort_order": 92,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ19 · Seaborn: facet và đường hồi quy mô tả",
+ "subtitle": "Nâng cao · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ19 · Seaborn: facet và đường hồi quy mô tả",
+  "subtitle": "Nâng cao · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ19",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Seaborn: facet và đường hồi quy mô tả"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"km\":[1, 2, 1, 2], \"minutes\":[8, 12, 7, 9], \"store\":[\"A\", \"A\", \"B\", \"B\"]})\ng = sns.relplot(data=data, x=\"km\", y=\"minutes\", col=\"store\", height=2.6, aspect=1)\ng.set_axis_labels(\"Distance (km)\", \"Delivery (minutes)\")\ng.set_titles(\"Store {col_name}\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ19-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ19-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Facet hữu ích khi vẫn giữ ít nhóm và thang so sánh phù hợp. catplot là giao diện tương tự cho dữ liệu nhóm. Một hồi quy được vẽ lên scatter chỉ là mô hình mô tả; cần xem điểm gốc, số quan sát và phần dư. Với dữ liệu minh họa nhỏ, tắt dải CI để tránh tạo vẻ chính xác hơn dữ liệu cho phép."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"PM\", \"PM\"], \"wait\":[2, 4, 3, 5], \"store\":[\"A\", \"B\", \"A\", \"B\"]})\ng = sns.catplot(data=data, x=\"shift\", y=\"wait\", col=\"store\", kind=\"strip\", jitter=False, height=2.6)\ng.set_axis_labels(\"Shift\", \"Wait (minutes)\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ19-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ19-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport seaborn as sns\nsns.regplot(x=[1, 2, 3, 4], y=[2, 4, 5, 8], ci=None, ax=ax)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"A fitted line is a model, not a causal proof\")\nprint(4)\nplt.show()",
+      "expected": "4"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ19-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ19-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ12 · Subplot, thang chung và bố trí hình, VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao không truyền ax vào relplot như scatterplot?",
+     "answer": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax."
+    },
+    {
+     "prompt": "Muốn xem riêng từng cửa hàng, thêm tham số gì?",
+     "answer": "col=\"store\" hoặc row=\"store\" tùy bố trí và số nhóm."
+    },
+    {
+     "prompt": "Đường hồi quy tăng chứng minh chiến dịch gây tăng doanh thu không?",
+     "answer": "Không. Cần thiết kế và phân tích nhân quả phù hợp; đường chỉ mô tả mẫu theo mô hình đã chọn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

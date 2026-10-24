@@ -1,0 +1,119 @@
+{
+ "lesson_code": "GU03",
+ "sort_order": 150,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU03 · Frame, Label và thuộc tính widget",
+ "subtitle": "Trung cấp · M8 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU03 · Frame, Label và thuộc tính widget",
+  "subtitle": "Trung cấp · M8 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 310-311; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Frame nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\npanel=tk.Frame(root, width=300, height=100, bg='white')\nlabel=tk.Label(panel, text='Sinh vien', bg='white')\nprint(label.cget('text'))\nprint(label.master is panel)\nroot.destroy()",
+      "expected": "Sinh vien\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Label hiển thị chữ, còn Frame chứa widget con. cget đọc cấu hình; configure thay cấu hình sau khi tạo. Không phải cứ tạo widget là nó đã xuất hiện: bạn còn cần pack, grid hoặc place."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nlabel=tk.Label(root, text='Chua chon', width=20, height=2, bg='white')\nlabel.configure(text='Da chon S01')\nprint(label.cget('text'))\nprint(label.cget('width'), label.cget('height'))\nroot.destroy()",
+      "expected": "Da chon S01\n20 2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "width và height không luôn có đơn vị pixel: Label chứa chữ thường dùng đơn vị ký tự và dòng; Frame thường dùng khoảng cách màn hình. bg đặt màu nền cho widget Tk cổ điển. ttk có cơ chế Style riêng, nên không phải mọi thuộc tính của tk.Label đều dùng được với ttk.Label."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nmenu=tk.Menu(root, tearoff=False)\nmenu.add_command(label='Luu', command=lambda: print('save'))\nroot.configure(menu=menu)\nmenu.invoke(0)\nroot.destroy()",
+      "expected": "save"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở ví dụ cuối, add_command thêm mục Lưu vào menu, command nhận hàm xử lý, còn menu.invoke(0) gọi mục đầu tiên bằng code. Muốn thử người dùng mở menu và chọn Lưu, bạn cần hiện cửa sổ. Slide chỉ nhắc tên Menu; ví dụ triển khai này là phần bổ sung của bài."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU02 · Cửa sổ chính và cửa sổ phụ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Frame và Label có vai trò gì?",
+     "answer": "Frame chứa các widget; Label hiển thị nội dung chữ hoặc ảnh."
+    },
+    {
+     "prompt": "width=20 của Label chứa chữ có nhất thiết là 20 pixel không?",
+     "answer": "Không; thường là khoảng rộng theo ký tự."
+    },
+    {
+     "prompt": "Tạo Label Pending rồi sửa thành Ready và in nội dung.",
+     "answer": "Dùng configure.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nx=tk.Label(r,text='Pending');x.configure(text='Ready')\nprint(x.cget('text'))\nr.destroy()",
+     "answerExpected": "Ready"
+    },
+    {
+     "prompt": "Frame(width=300,height=100,bg=\"white\") và Label(width=20,height=2) có cùng đơn vị kích thước không?",
+     "answer": "Không. Frame thường dùng khoảng cách màn hình; Label chữ thường dùng ký tự/dòng. bg đặt nền widget Tk cổ điển; Frame chứa widget con còn Label hiển thị chữ."
+    },
+    {
+     "prompt": "Trong ví dụ menu, add_command, command và invoke lần lượt làm gì? Ví dụ này được triển khai trong slide hay được bổ sung ở bài học?",
+     "answer": "add_command thêm một mục menu; command nhận hàm cần gọi khi chọn mục đó; invoke gọi mục menu bằng code. Slide chỉ liệt kê tên Menu, còn ví dụ triển khai là phần bổ sung ở đây."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

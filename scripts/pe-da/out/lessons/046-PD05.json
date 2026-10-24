@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD05",
+ "sort_order": 46,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD05 · Lọc hàng theo điều kiện",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD05 · Lọc hàng theo điều kiện",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Boolean indexing"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy True/False; dãy này quyết định giữ hàng nào."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())",
+      "expected": "[False, True, True]\n['B', 'C']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "True giữ hàng, False bỏ hàng khỏi kết quả lọc. Với nhiều điều kiện, dùng & cho “và”, | cho “hoặc”, rồi đặt từng phép so sánh trong ngoặc. Không dùng and/or để nối hai Series."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
+      "expected": "[{'order': 'B', 'amount': 150}]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`isin` kiểm tra thuộc một tập lựa chọn; `between` kiểm tra khoảng và mặc định gồm hai đầu. Dấu ~ đảo một mask. Các cách viết này giúp diễn đạt điều kiện trực tiếp bằng cột."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM', 'DN'], 'amount': [80, 150, 120]})\nmask = df['city'].isin(['HN', 'DN']) & df['amount'].between(100, 200)\nprint(df.loc[mask, 'city'].tolist())\nprint(df.loc[~df['city'].isin(['HN']), 'city'].tolist())",
+      "expected": "['DN']\n['HCM', 'DN']"
+     },
+     {
+      "type": "paragraph",
+      "text": "Lọc chỉ trả về phần dữ liệu thỏa điều kiện; nó không tự xóa các hàng khỏi df. Nếu muốn lưu kết quả, bạn gán nó cho một biến."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD04 · Index và phép tính căn theo nhãn"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Mask [True, False, True] giữ các hàng vị trí nào?",
+     "answer": "Giữ vị trí 0 và 2."
+    },
+    {
+     "prompt": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?",
+     "answer": "Dùng &, với ngoặc bao từng phép so sánh."
+    },
+    {
+     "prompt": "Lọc giá [40, 80, 120] trong khoảng từ 50 đến 100, gồm hai đầu.",
+     "answer": "Chỉ còn 80.",
+     "answerCode": "import pandas as pd\nprices = pd.Series([40, 80, 120])\nprint(prices.loc[prices.between(50, 100)].tolist())",
+     "answerExpected": "[80]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM', 'DN'], 'amount': [80, 150, 120]})\nmask = df['city'].isin(['HN', 'DN']) & df['amount'].between(100, 200)\nprint(df.loc[mask, 'city'].tolist())\nprint(df.loc[~df['city'].isin(['HN']), 'city'].tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

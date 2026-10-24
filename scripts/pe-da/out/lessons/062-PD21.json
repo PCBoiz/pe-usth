@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD21",
+ "sort_order": 62,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD21 · Đọc ngày và tính khoảng thời gian",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD21 · Đọc ngày và tính khoảng thời gian",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD21",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Datetime conversion"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ngày đặt hàng đang là chuỗi \"05/01/2026\". Nếu không biết quy ước ngày/tháng, bạn có thể đọc nhầm thành ngày 1 tháng 5. format giúp ghi rõ cách hiểu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
+      "expected": "['2026-01-05', '2026-01-07']\n[1, 1]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "%d là ngày, %m là tháng, %Y là năm bốn chữ số. Sau chuyển đổi, .dt cho phép lấy month, year, day hoặc day_of_week; day_of_week dùng thứ Hai=0."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
+      "expected": "[False, True]\n[0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ngày không đọc được trở thành NaT khi errors=\"coerce\". Hãy đếm những hàng đó trước khi tổng hợp theo thời gian, vì chúng có thể bị loại khỏi báo cáo ngày."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'ordered': ['2026-01-01', '2026-01-03'], 'delivered': ['2026-01-03', '2026-01-04']})\ndays = pd.to_datetime(df['delivered']) - pd.to_datetime(df['ordered'])\nprint(days.dt.days.tolist())\nprint((pd.Timestamp('2026-01-01') + pd.Timedelta(days=2)).strftime('%Y-%m-%d'))",
+      "expected": "[2, 1]\n2026-01-03"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hiệu hai thời điểm là Timedelta. .dt.days lấy phần số ngày trọn; nếu cần chính xác theo giờ, dùng .dt.total_seconds() chia 3600. Trước khi tính độ trễ hoặc giá trị trước đó, cần sắp xếp theo ngày thật đã chuyển kiểu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD20 · Pivot table và bảng đếm chéo"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?",
+     "answer": "Ngày 5 tháng 1 năm 2026."
+    },
+    {
+     "prompt": "errors=\"coerce\" tạo giá trị gì khi ngày sai?",
+     "answer": "NaT, được phát hiện bằng isna()."
+    },
+    {
+     "prompt": "Tính số ngày từ 2026-02-01 đến 2026-02-04.",
+     "answer": "Ba ngày.",
+     "answerCode": "import pandas as pd\nprint((pd.Timestamp('2026-02-04') - pd.Timestamp('2026-02-01')).days)",
+     "answerExpected": "3"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'ordered': ['2026-01-01', '2026-01-03'], 'delivered': ['2026-01-03', '2026-01-04']})\ndays = pd.to_datetime(df['delivered']) - pd.to_datetime(df['ordered'])\nprint(days.dt.days.tolist())\nprint((pd.Timestamp('2026-01-01') + pd.Timedelta(days=2)).strftime('%Y-%m-%d'))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

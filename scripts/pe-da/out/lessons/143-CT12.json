@@ -1,0 +1,109 @@
+{
+ "lesson_code": "CT12",
+ "sort_order": 143,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT12 · Race condition, Lock và tránh deadlock",
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT12 · Race condition, Lock và tránh deadlock",
+  "subtitle": "Nâng cao · M6 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 296-297; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai worker cùng đọc bộ đếm là 0 rồi mỗi worker ghi thêm 1. Nếu lần ghi sau đè lần ghi trước, kết quả có thể chỉ là 1 dù có hai lượt tăng. Mô phỏng thứ tự xen kẽ đó:"
+     },
+     {
+      "type": "code",
+      "code": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)",
+      "expected": "1"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Race condition phụ thuộc thứ tự thực thi khi nhiều luồng truy cập dữ liệu chung. Phép tăng là một chuỗi đọc, tính và ghi theo ý nghĩa ứng dụng. Cần bảo vệ toàn bộ chuỗi bằng cùng một khóa."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread, Lock\nlock = Lock()\nstate = {\"count\": 0}\ndef work():\n    for _ in range(100):\n        with lock:\n            state[\"count\"] += 1\nthreads = [Thread(target=work) for _ in range(2)]\nfor t in threads: t.start()\nfor t in threads: t.join()\nprint(state[\"count\"])",
+      "expected": "200"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Chỉ một thread giữ lock tại một thời điểm. `with lock` tự acquire khi vào và release khi rời khối, kể cả khi có ngoại lệ. Các thread phải tuân cùng một lock cho dữ liệu đó; khóa riêng không phối hợp với nhau."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Lock\nlock = Lock()\nlock.acquire()\ntry:\n    print(lock.acquire(blocking=False))\nfinally:\n    lock.release()\nprint(lock.locked())",
+      "expected": "False\nFalse"
+     },
+     {
+      "type": "paragraph",
+      "text": "Lock thông thường không cho thread đang giữ tự lấy lại lần nữa. Ví dụ dùng blocking=False để quan sát thất bại mà không treo. Nếu A giữ khóa X chờ Y trong khi B giữ Y chờ X, cả hai có thể deadlock. Dùng thứ tự lấy khóa nhất quán, thu nhỏ vùng tới hạn và tránh giữ khóa khi chờ lâu. CPython build có GIL dùng một khóa của interpreter, nhưng khóa đó không bảo vệ trọn quy tắc chuyển tiền hay cập nhật nhiều giá trị của ứng dụng. EX05 giải thích riêng mô hình GIL này."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT11 · Kế thừa Thread và truyền trạng thái"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao mô phỏng hai lần tăng lại cho 1?",
+     "answer": "Cả hai lần đọc lấy cùng giá trị 0; lần ghi thứ hai đè cập nhật đầu."
+    },
+    {
+     "prompt": "Lock nên chỉ bảo vệ phép ghi hay cả đọc-tính-ghi?",
+     "answer": "Cần bảo vệ cả chuỗi đọc giá trị, tính giá trị mới và ghi lại, bằng cùng một khóa. Chỉ khóa lần ghi vẫn có thể để hai thread tính từ cùng giá trị cũ."
+    },
+    {
+     "prompt": "Hai thread lấy hai khóa theo thứ tự ngược nhau có rủi ro gì?",
+     "answer": "Deadlock: mỗi thread giữ một khóa và chờ khóa mà thread kia đang giữ."
+    },
+    {
+     "prompt": "Vì sao dùng with lock thường an toàn hơn tự gọi acquire rồi có thể quên release? Nếu mỗi worker tạo một lock riêng, các khóa đó có phối hợp để bảo vệ cùng state không?",
+     "answer": "with tự acquire/release kể cả khi có ngoại lệ. Mọi worker liên quan phải dùng cùng lock cho cùng quy tắc dữ liệu; lock riêng không tạo loại trừ giữa chúng."
+    },
+    {
+     "prompt": "Có GIL thì có thể bỏ khóa cho thao tác chuyển tiền gồm đọc hai số dư rồi ghi lại không?",
+     "answer": "Không. GIL không biến cả quy tắc ứng dụng thành một thao tác nguyên tử; bảo vệ toàn bộ read-modify-write bằng cùng khóa hoặc thiết kế trao đổi thông điệp."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+   },
+   "starterCode": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

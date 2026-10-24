@@ -1,0 +1,110 @@
+{
+ "lesson_code": "VZ29",
+ "sort_order": 102,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ29 · Trường vector: arrow, quiver và streamplot",
+ "subtitle": "Nâng cao · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ29 · Trường vector: arrow, quiver và streamplot",
+  "subtitle": "Nâng cao · M4 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ29",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Trường vector: arrow, quiver và streamplot"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Nếu dữ liệu là hướng di chuyển, một giá trị màu không đủ cho biết hướng. arrow vẽ một mũi tên đơn, quiver vẽ các vector tại nhiều vị trí, còn streamplot thể hiện các đường đi theo trường vector. Cần phân biệt vị trí bắt đầu với thành phần vector theo x và y."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
+      "expected": "(2, 1)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ29-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ29-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong quiver(X, Y, U, V), X và Y xác định nơi đặt mũi tên, còn U và V là độ dời theo x và y. Ví dụ dưới đặt U=1, V=0, nên mỗi mũi tên chỉ sang phải một đơn vị. Các tùy chọn angles=\"xy\", scale_units=\"xy\", scale=1 giữ hướng và độ dài theo đơn vị tọa độ. Nếu để Matplotlib tự co giãn, độ dài mũi tên trên hình không nhất thiết bằng trực tiếp giá trị U và V. Khi vẽ dữ liệu thật, ghi rõ đơn vị và cách đọc độ dài vector."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
+      "expected": "4"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ29-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ29-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "streamplot cần lưới phù hợp và hai trường U,V cùng kích thước. Trường U=-Y, V=X dưới đây xoay quanh gốc; màu biểu diễn độ lớn vận tốc và colorbar ghi đúng đại lượng đó. Đường dòng là hình dung một trường đã cho, không tự chứng minh các hạt ngoài đời đã đi qua chính những đường ấy."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncoords = np.linspace(-2, 2, 15)\nX, Y = np.meshgrid(coords, coords)\nU, V = -Y, X\nspeed = np.hypot(U, V)\nstream = ax.streamplot(coords, coords, U, V, color=speed, cmap=\"viridis\", density=0.8)\nfig.colorbar(stream.lines, ax=ax, label=\"Speed (arbitrary units)\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"A synthetic rotating vector field\", aspect=\"equal\")\nprint(U.shape)\nplt.show()",
+      "expected": "(15, 15)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ29-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ29-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ28 · Lưới 2D: pcolor, pcolormesh, contour và contourf, EX08 · Chuẩn bị vector và lưới trước khi vẽ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "arrow(0,0,2,1) trỏ đến điểm nào?",
+     "answer": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu."
+    },
+    {
+     "prompt": "U,V trong quiver là vị trí hay thành phần vector?",
+     "answer": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector."
+    },
+    {
+     "prompt": "Vì sao thêm colorbar khi tô màu streamplot theo speed?",
+     "answer": "Để biết màu tương ứng độ lớn vận tốc nào và đơn vị gì; màu không tự cho biết con số."
+    },
+    {
+     "prompt": "Bạn có lưới đều 15 vị trí x và 15 vị trí y, trường U=-Y, V=X. Muốn nhìn các đường dòng theo trường thay vì 225 mũi tên rời, chọn hàm nào? U,V cần shape gì và đường vẽ có chứng minh hạt thực đã đi qua đó không?",
+     "answer": "Dùng ax.streamplot(x,y,U,V); U,V cùng shape (15,15), theo các vị trí y/x của lưới. Muốn từng vector tại vị trí thì dùng quiver; một độ dời đơn dùng arrow. Streamplot minh họa đường dòng của trường được cung cấp, không phải quỹ đạo hạt đã đo ngoài đời."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncoords = np.linspace(-2, 2, 15)\nX, Y = np.meshgrid(coords, coords)\nU, V = -Y, X\nspeed = np.hypot(U, V)\nstream = ax.streamplot(coords, coords, U, V, color=speed, cmap=\"viridis\", density=0.8)\nfig.colorbar(stream.lines, ax=ax, label=\"Speed (arbitrary units)\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"A synthetic rotating vector field\", aspect=\"equal\")\nprint(U.shape)\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

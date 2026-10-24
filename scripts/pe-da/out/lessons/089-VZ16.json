@@ -1,0 +1,120 @@
+{
+ "lesson_code": "VZ16",
+ "sort_order": 89,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ16 · Seaborn: histogram, ECDF và KDE",
+ "subtitle": "Trung cấp · M4 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ16 · Seaborn: histogram, ECDF và KDE",
+  "subtitle": "Trung cấp · M4 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ16",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Seaborn: histogram, ECDF và KDE"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.histplot(data=orders, x=\"wait\", bins=[0, 3, 6, 9], ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"A named column in a DataFrame\")\nprint(len(orders))\nplt.show()",
+      "expected": "6"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ16-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ16-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "ECDF cho biết phần quan sát có giá trị nhỏ hơn hoặc bằng một mốc. Với sáu đơn, bốn đơn chờ không quá 4 phút nên ECDF ở 4 là 4/6. Nó không cần chọn bins, phù hợp khi bạn muốn đọc tỷ lệ dưới một ngưỡng."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.ecdfplot(data=orders, x=\"wait\", ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Proportion <= x\", title=\"How many orders wait at most four minutes?\")\nprint(round(float((orders[\"wait\"] <= 4).mean()), 3))\nplt.show()",
+      "expected": "0.667"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ16-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ16-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "KDE ước lượng một đường mật độ mượt. bw_adjust điều chỉnh mức làm mượt và cut=0 dừng đường tại miền quan sát; chúng không biến KDE thành phân bố thật của tổng thể. Dữ liệu chờ là không âm và mẫu ở đây rất nhỏ, vì vậy luôn xem cả điểm gốc hoặc histogram trước khi diễn giải các đỉnh của đường."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.kdeplot(data=orders, x=\"wait\", bw_adjust=1.2, cut=0, ax=ax)\nsns.rugplot(data=orders, x=\"wait\", ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Estimated density\", title=\"Smoothing does not add observations\")\nprint(orders[\"wait\"].min(), orders[\"wait\"].max())\nplt.show()",
+      "expected": "1 8"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ16-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ16-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ06 · Histogram: khoảng chia, tần số và mật độ, PD02 · DataFrame: đọc một bảng nhỏ, PD05 · Lọc hàng theo điều kiện"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "ECDF tại 4 bằng 4/6 có nghĩa gì?",
+     "answer": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút."
+    },
+    {
+     "prompt": "Tăng bw_adjust thường làm KDE thay đổi thế nào?",
+     "answer": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ."
+    },
+    {
+     "prompt": "KDE có nhiều đỉnh trong mẫu 6 đơn có đủ để khẳng định nhiều nhóm khách không?",
+     "answer": "Chưa đủ. Kiểm tra dữ liệu gốc, cỡ mẫu và độ nhạy với mức làm mượt."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

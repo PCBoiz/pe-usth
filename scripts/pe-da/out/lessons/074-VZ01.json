@@ -1,0 +1,105 @@
+{
+ "lesson_code": "VZ01",
+ "sort_order": 74,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ01 · Từ câu hỏi đến loại biểu đồ",
+ "subtitle": "Cơ bản · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ01 · Từ câu hỏi đến loại biểu đồ",
+  "subtitle": "Cơ bản · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Từ câu hỏi đến loại biểu đồ"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Nếu cần nhìn sự thay đổi theo ngày, đặt ngày lên trục ngang và số cốc lên trục dọc. Đường nối các điểm giúp bạn theo dõi thứ tự thời gian."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()",
+      "expected": "36"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ01-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong hình đầu, vị trí ngang của mỗi điểm cho biết ngày, còn vị trí dọc cho biết số cốc bán được. Khi đổi câu hỏi sang so sánh cà phê với trà, bạn có thể dùng hai cột bắt đầu từ mốc 0. Hai loại đồ uống là hai nhóm riêng, nên nối chúng bằng một đường sẽ không biểu diễn sự thay đổi theo thời gian."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()",
+      "expected": "12"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ01-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Với thời gian chờ của nhiều đơn hàng, histogram chia thời gian thành các khoảng rồi đếm số đơn trong mỗi khoảng. Line chart, bar chart và histogram trả lời những câu hỏi khác nhau; hãy chọn theo điều bạn muốn biết. Các ví dụ dùng plt.show() để hiện hình. Trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bạn sẽ học cách lưu hình thành file ở VZ14."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [2, 2, 3, 5, 6]\ncounts, edges, bars = ax.hist(wait, bins=[0, 4, 8], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Waiting time\")\nprint(counts.astype(int).tolist())\nplt.show()",
+      "expected": "[3, 2]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ01-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ01-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP02 · Lấy một phần tử"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?",
+     "answer": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán."
+    },
+    {
+     "prompt": "Trong hình đầu, trục x và y đại diện cho gì?",
+     "answer": "x là thứ tự ngày, y là số cốc bán. Một điểm biểu diễn lượng bán của một ngày."
+    },
+    {
+     "prompt": "Với các thời gian chờ [2, 2, 3, 5, 6], khoảng [0, 4) có bao nhiêu đơn?",
+     "answer": "Có 3 đơn: 2, 2 và 3. Histogram đếm số quan sát trong từng khoảng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [2, 2, 3, 5, 6]\ncounts, edges, bars = ax.hist(wait, bins=[0, 4, 8], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Waiting time\")\nprint(counts.astype(int).tolist())\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

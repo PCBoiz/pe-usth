@@ -1,0 +1,96 @@
+{
+ "lesson_code": "SY04",
+ "sort_order": 107,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY04 · Git: từ thư mục bài làm đến fork của bạn",
+ "subtitle": "Trung cấp · M5 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY04 · Git: từ thư mục bài làm đến fork của bạn",
+  "subtitle": "Trung cấp · M5 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 96; Git — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork tạo một bản kho mã (repository) trong tài khoản GitHub của bạn; clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
+     },
+     {
+      "type": "terminal",
+      "code": "git clone git@github.com:TEN_BAN/pp2022.git\ncd pp2022\ngit remote -v",
+      "expected": "Có remote origin trỏ tới fork của bạn. Tên tài khoản và output thay đổi theo lab."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trước bước clone, dùng nút Fork của repository môn học để tạo fork. `origin` của bản clone phải trỏ đến fork bạn có quyền ghi. Chưa cần thay code hay push vào repository gốc của giảng viên."
+     },
+     {
+      "type": "terminal",
+      "code": "git status\ngit diff -- README.md\ngit add README.md\ngit diff --cached\ngit commit -m \"First student commit\"",
+      "expected": "Commit chứa đúng sửa đổi README bạn đã kiểm tra; không kèm file ngoài ý muốn."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Sau khi sửa README để ghi tên theo hướng dẫn môn học, dùng `git add` để chọn nội dung sẽ đưa vào commit. Vùng chứa nội dung đã chọn được gọi là staging area. Nếu sửa file thêm sau khi add, phần sửa mới chưa nằm trong vùng này. Dùng `git diff` để xem phần chưa add và `git diff --cached` để xem phần sắp được commit."
+     },
+     {
+      "type": "terminal",
+      "code": "git push origin HEAD\ngit status\ngit log -1 --oneline",
+      "expected": "Commit mới có trên fork; working tree sạch nếu không có thay đổi tiếp theo."
+     },
+     {
+      "type": "paragraph",
+      "text": "Push gửi các commit trên máy lên repository ở remote. Vì vậy, commit chưa push vẫn nằm trên máy bạn, nhưng người khác chưa lấy được nó từ fork. Bài này cần Git, tài khoản GitHub và quyền truy cập repository. Sau khi push, mở fork trên GitHub và kiểm tra commit cùng phần README vừa sửa."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PY03 · REPL, notebook và trạng thái đã chạy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Fork khác clone ở đâu?",
+     "answer": "Fork tạo repository trên GitHub; clone tạo bản làm việc và lịch sử Git trên máy."
+    },
+    {
+     "prompt": "Sửa file sau git add, commit sẽ lưu bản nào?",
+     "answer": "Lưu nội dung đã stage, trừ khi add lại phần sửa mới. Dùng git diff và git diff --cached để xem hai phần."
+    },
+    {
+     "prompt": "Làm đủ PW0 và nộp bằng chứng gì?",
+     "answer": "Tự fork repository môn học, clone fork, sửa README ghi tên, add/commit với First student commit, push. Nộp URL fork + commit hash + git remote -v + git status. Kiểm README của đúng commit trên fork."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": []
+}

@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD09",
+ "sort_order": 50,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD09 · Làm sạch chữ trong một cột",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD09 · Làm sạch chữ trong một cột",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Text data"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên khu vực được nhập là \" North \", \"NORTH\" và \"South\". Nếu đếm ngay, cùng một khu vực North có thể bị tách thành hai tên."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
+      "expected": "['north', 'north', 'south']\n2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`.str` áp dụng thao tác chuỗi lên từng giá trị. strip bỏ khoảng trắng ở hai đầu; lower chuyển về chữ thường. Bạn vẫn cần thống nhất cách viết theo nghiệp vụ, vì đổi chữ thường không tự sửa lỗi đánh máy."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
+      "expected": "[True, False, False]\n['Coffee', 'unknown', 'Tea']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`na=False` coi ô thiếu là không khớp khi lọc chữ. `regex=False` yêu cầu tìm đúng đoạn chữ, tránh để các ký tự như dấu chấm bị hiểu là biểu thức chính quy."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ncodes = pd.Series(['HN-001', 'DN-020'], dtype='string')\nprint(codes.str.split('-').str[0].tolist())\nprint(codes.str.extract(r'-(\\d+)', expand=False).tolist())",
+      "expected": "['HN', 'DN']\n['001', '020']"
+     },
+     {
+      "type": "paragraph",
+      "text": "`split` tách mã ở dấu gạch ngang, rồi `.str[0]` lấy phần đầu như HN hoặc DN. Trong mẫu `r'-(\\d+)'`, dấu `-` khớp dấu gạch ngang, `\\d+` khớp một hoặc nhiều chữ số, còn cặp ngoặc đánh dấu phần cần lấy. Vì vậy, `extract` lấy được 001 và 020. Kết quả vẫn là chuỗi nên giữ được số 0 ở đầu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD08 · Ô thiếu: phát hiện trước khi điền"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "strip có xóa dấu cách giữa hai từ không?",
+     "answer": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn."
+    },
+    {
+     "prompt": "Tại sao contains thường thêm na=False khi dùng làm mask?",
+     "answer": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu."
+    },
+    {
+     "prompt": "Chuẩn hóa [\" Tea \", \"TEA\"] bằng strip và lower.",
+     "answer": "Hai phần tử đều thành tea.",
+     "answerCode": "import pandas as pd\ns = pd.Series([' Tea ', 'TEA'], dtype='string')\nprint(s.str.strip().str.lower().tolist())",
+     "answerExpected": "['tea', 'tea']"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ncodes = pd.Series(['HN-001', 'DN-020'], dtype='string')\nprint(codes.str.split('-').str[0].tolist())\nprint(codes.str.extract(r'-(\\d+)', expand=False).tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

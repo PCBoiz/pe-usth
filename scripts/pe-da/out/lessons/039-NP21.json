@@ -1,0 +1,112 @@
+{
+ "lesson_code": "NP21",
+ "sort_order": 39,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP21 · Đọc bảng số từ CSV",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP21 · Đọc bảng số từ CSV",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP21",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 124-126; Scientific Python Lectures · Dữ liệu quần thể; NumPy · Đọc và ghi dữ liệu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV. Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nfrom io import StringIO\ntext = \"birds,rabbits\\n12,5\\n15,7\"\ncounts = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(counts)",
+      "expected": "[[12.  5.]\n [15.  7.]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "CSV là văn bản trong đó dấu phân cách ngăn các cột. Ở ví dụ này, dấu phẩy tách cột `birds` và `rabbits`; mỗi dòng mới tạo một hàng. Chuỗi `\\n` trong code biểu diễn ký tự xuống dòng."
+     },
+     {
+      "type": "paragraph",
+      "text": "`StringIO` giúp NumPy đọc một chuỗi như đọc file. Nhờ vậy, bạn có thể chạy ví dụ mà chưa cần tải file lên. `delimiter=\",\"` chỉ dấu phân cách, còn `skiprows=1` bỏ dòng tên cột."
+     },
+     {
+      "type": "paragraph",
+      "text": "Sau khi đọc, hãy kiểm tra kích thước bảng:"
+     },
+     {
+      "type": "code",
+      "code": "from io import StringIO\ntext = \"x,y\\n1,2\\n3,4\"\na = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(a.shape)",
+      "expected": "(2, 2)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`shape` là `(2, 2)`: hai hàng dữ liệu và hai cột. Dòng tên cột không được tính là một hàng số."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu một ô bị bỏ trống, bạn có thể dùng `genfromtxt` để đọc bảng số này:"
+     },
+     {
+      "type": "code",
+      "code": "from io import StringIO\ntext = \"x,y\\n1,\\n3,4\"\na = np.genfromtxt(StringIO(text), delimiter=\",\", skip_header=1)\nprint(np.isnan(a).sum())",
+      "expected": "1"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ô sau dấu phẩy ở dòng `1,` bị thiếu, nên được đọc thành NaN với cách dùng mặc định ở đây. `np.isnan(a)` đánh dấu ô thiếu; `.sum()` đếm số ô được đánh dấu vì True được tính là 1 và False là 0."
+     },
+     {
+      "type": "paragraph",
+      "text": "Lưu ý tên tham số: `loadtxt` dùng `skiprows`, còn `genfromtxt` dùng `skip_header`. Khi chuyển sang file thật, thay `StringIO(text)` bằng đường dẫn, chẳng hạn `\"counts.csv\"`. Trước khi tính, vẫn kiểm tra số hàng, số cột, ý nghĩa từng cột và dữ liệu thiếu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP07 · Đọc shape, ndim và size, NP09 · Lấy ô, hàng và cột, NP17 · Dữ liệu thiếu: NaN"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong dòng CSV `1,2`, dấu phẩy có vai trò gì?",
+     "answer": "Dấu phẩy ngăn hai cột dữ liệu."
+    },
+    {
+     "prompt": "Điền tham số để `loadtxt` bỏ một dòng tiêu đề: `___=1`.",
+     "answer": "Điền `skiprows` khi dùng `loadtxt`."
+    },
+    {
+     "prompt": "Sau khi đọc bảng có ô trống, bạn cần kiểm tra những gì trước khi tính?",
+     "answer": "Kiểm tra `shape`, ý nghĩa và thứ tự cột, các ô thiếu. Đọc được file không đảm bảo bảng đã đúng với dữ liệu bạn cần."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nfrom io import StringIO\ntext = \"birds,rabbits\\n12,5\\n15,7\"\ncounts = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(counts)\n\n# ── Đoạn 2 ──\nfrom io import StringIO\ntext = \"x,y\\n1,2\\n3,4\"\na = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(a.shape)\n\n# ── Đoạn 3 ──\nfrom io import StringIO\ntext = \"x,y\\n1,\\n3,4\"\na = np.genfromtxt(StringIO(text), delimiter=\",\", skip_header=1)\nprint(np.isnan(a).sum())\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

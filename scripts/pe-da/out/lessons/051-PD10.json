@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD10",
+ "sort_order": 51,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD10 · Dòng trùng và khóa của bảng",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD10 · Dòng trùng và khóa của bảng",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Duplicate rows"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "File đơn hàng được ghép hai lần nên đơn A xuất hiện hai hàng giống nhau. Trước khi cộng doanh thu, bạn cần xác định đâu là dòng bị lặp."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
+      "expected": "[False, True, False]\n30"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "duplicated mặc định đánh dấu những lần lặp sau hàng đầu. drop_duplicates bỏ các hàng trùng toàn bộ cột. Nhưng cùng mã đơn chưa chắc là lỗi: một đơn có thể có nhiều sản phẩm."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
+      "expected": "[False, True, False]\n[False, False, False]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Nếu mỗi hàng là một sản phẩm trong đơn, có thể cần cả `order` và `item` để phân biệt các hàng. Gọi `drop_duplicates(subset=[\"order\"])` lúc này sẽ bỏ cả sản phẩm hợp lệ. Với bảng cập nhật theo phiên bản, bạn có thể giữ bản mới nhất sau khi sắp xếp đúng thứ tự."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'version': [1, 2, 1], 'amount': [10, 12, 20]})\nlatest = df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order')\nprint(latest['amount'].tolist())\nprint(latest['order'].is_unique)",
+      "expected": "[12, 20]\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "keep=\"last\" giữ hàng cuối theo thứ tự hiện có, không tự hiểu hàng nào mới hơn. Vì vậy bạn cần sắp xếp version trước. `is_unique` giúp kiểm tra cột khóa sau khi làm sạch."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD09 · Làm sạch chữ trong một cột"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "duplicated mặc định đánh dấu bản đầu hay bản sau?",
+     "answer": "Đánh dấu các bản sau là True; bản đầu được giữ."
+    },
+    {
+     "prompt": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?",
+     "answer": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng."
+    },
+    {
+     "prompt": "Bỏ dòng trùng toàn bộ trong id=[1,1,2], qty=[3,3,4], rồi in số hàng.",
+     "answer": "Còn 2 hàng.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'id': [1, 1, 2], 'qty': [3, 3, 4]})\nprint(len(df.drop_duplicates()))",
+     "answerExpected": "2"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'version': [1, 2, 1], 'amount': [10, 12, 20]})\nlatest = df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order')\nprint(latest['amount'].tolist())\nprint(latest['order'].is_unique)\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

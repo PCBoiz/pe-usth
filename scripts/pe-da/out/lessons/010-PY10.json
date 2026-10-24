@@ -1,0 +1,109 @@
+{
+ "lesson_code": "PY10",
+ "sort_order": 10,
+ "module": "M1 · Python nền tảng",
+ "title": "PY10 · List: lấy, thêm và xóa phần tử",
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY10 · List: lấy, thêm và xóa phần tử",
+  "subtitle": "Cơ bản · M1 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 64-78, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn lưu số cốc bán trong ba ngày bằng list. Khi nhận số của ngày tiếp theo, bạn thêm nó vào cuối:"
+     },
+     {
+      "type": "code",
+      "code": "cups = [12, 15, 9]\ncups.append(11)\nprint(cups)\nprint(cups[-2:])",
+      "expected": "[12, 15, 9, 11]\n[9, 11]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "List có thứ tự, cho phép phần tử trùng và có thể thay đổi. `append` thêm một object. Nếu cần nối nhiều phần tử từ một dãy khác, dùng `extend`:"
+     },
+     {
+      "type": "code",
+      "code": "a = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nb.insert(0, 0)\nprint(a)\nprint(b)",
+      "expected": "[1, 2, [3, 4]]\n[0, 1, 2, 3, 4]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`append([3, 4])` tạo một phần tử là list con; `extend([3, 4])` thêm hai số riêng. `a + b` tạo list nối mới; `a += b` mở rộng list a tại chỗ. `insert(0, 0)` chèn số 0 ở đầu. Bạn cũng có thể gán một phần tử bằng `b[0] = 7`, hoặc cập nhật một đoạn: `b[1:3] = [8, 9]` thay các phần tử ở chỉ số 1 và 2. Slice rỗng như `b[1:1] = [6]` chèn trước vị trí 1 mà không xóa phần tử nào."
+     },
+     {
+      "type": "code",
+      "code": "values = [3, 1, 2, 1]\nvalues.remove(1)\nlast = values.pop()\ndel values[0]\nvalues.sort()\nvalues.reverse()\nprint(last, values)",
+      "expected": "1 [2]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`remove(x)` xóa lần xuất hiện đầu tiên khớp x; `pop()` xóa và trả phần tử cuối, còn `pop(index)` chọn vị trí cần lấy. `del` xóa theo vị trí hoặc slice. `sort` sắp tại chỗ, `reverse` đảo tại chỗ. Hai phương thức này trả None thay vì trả list đã đổi. Khi chỉ muốn đọc một phần, `values[1::2]` lấy các vị trí 1, 3, 5...; `values[-5:]` lấy tối đa năm phần tử cuối và không xóa dữ liệu."
+     },
+     {
+      "type": "paragraph",
+      "text": "Gán `b = a` không sao chép list: hai tên cùng dùng một object. Muốn thay đổi list ngoài mà giữ bản gốc, dùng `a.copy()` cho bản sao nông; dữ liệu lồng nhau vẫn cần xem có dùng chung object con hay không."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY09 · Điều kiện, so sánh và khối lệnh"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "append([3, 4]) và extend([3, 4]) khác nhau thế nào? a + b có sửa a giống a += b không?",
+     "answer": "append thêm một list con; extend thêm các phần tử 3 và 4 riêng. Với list, a + b tạo kết quả mới; a += b mở rộng a tại chỗ, nên các tên khác cùng tham chiếu a cũng thấy thay đổi."
+    },
+    {
+     "prompt": "Phương thức nào xóa và trả phần tử cuối? Với a=[1,2,3], a[1:1]=[8] rồi a.pop(0) trả gì và còn list nào?",
+     "answer": "pop() lấy phần tử cuối. Trong trường hợp được hỏi, slice rỗng chèn 8 tạo [1,8,2,3]; pop(0) trả 1 và a còn [8,2,3]."
+    },
+    {
+     "prompt": "Lưu bản gốc [3, 1, 2], tạo bản riêng rồi sắp tăng.",
+     "answer": "original = [3, 1, 2]; ordered = original.copy(); ordered.sort(). original vẫn [3, 1, 2], ordered là [1, 2, 3]."
+    },
+    {
+     "prompt": "Với a=[1,2,3,4], chạy a[1]=8 rồi a[2:4]=[9] được list nào? Nếu tiếp tục a[1:1]=[7] thì sao?",
+     "answer": "Sau hai phép gán là [1,8,9]; slice rỗng chèn 7 trước chỉ số 1, được [1,7,8,9]."
+    },
+    {
+     "prompt": "Với a=[3,1,2,1], remove(1), pop(0), reverse() lần lượt làm gì? sort() trả list mới hay None?",
+     "answer": "remove(1) xóa số 1 đầu tiên: [3,2,1]. pop(0) trả 3 và còn [2,1]. reverse đảo tại chỗ thành [1,2]. sort cũng sửa tại chỗ và trả None; del a[0] xóa theo vị trí mà không trả phần tử."
+    },
+    {
+     "prompt": "Với `a = list(range(10))`, `a[1::2]` và `a[-5:]` lấy những phần tử nào?",
+     "answer": "Lần lượt [1,3,5,7,9] và [5,6,7,8,9]. Đây là đọc slice, không xóa phần tử."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\ncups = [12, 15, 9]\ncups.append(11)\nprint(cups)\nprint(cups[-2:])\n\n# ── Đoạn 2 ──\na = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nb.insert(0, 0)\nprint(a)\nprint(b)\n\n# ── Đoạn 3 ──\nvalues = [3, 1, 2, 1]\nvalues.remove(1)\nlast = values.pop()\ndel values[0]\nvalues.sort()\nvalues.reverse()\nprint(last, values)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

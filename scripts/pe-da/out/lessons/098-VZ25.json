@@ -1,0 +1,105 @@
+{
+ "lesson_code": "VZ25",
+ "sort_order": 98,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML",
+ "subtitle": "Nâng cao · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML",
+  "subtitle": "Nâng cao · M4 · 16 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ25",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Animation: cập nhật đối tượng và xuất vòng lặp HTML"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Reveal observations one at a time\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nupdate(1)\nprint(list(line.get_ydata()))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-1.png\", dpi=130)\nplt.close(fig)",
+      "expected": "[8, 10]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ25-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "FuncAnimation gọi update theo frames và interval tính bằng mili giây. Giữ biến ani để đối tượng animation còn tồn tại. to_jshtml xuất bộ điều khiển và các khung vào HTML; với vài khung nhỏ nó chạy không cần bộ mã hóa video. Hình PNG tĩnh cạnh ví dụ là một khung, còn HTML mới chứa chuyển động."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom matplotlib.animation import FuncAnimation\nfrom pathlib import Path\nfrom tempfile import gettempdir\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Three-frame teaching animation\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nani = FuncAnimation(fig, update, frames=3, interval=600, repeat=True)\nhtml = ani.to_jshtml()\nhtml += '<style>.anim-buttons{display:flex;flex-wrap:wrap;gap:4px}.anim-buttons button{width:auto;min-height:28px}.anim-buttons button::after{content:attr(title);font:12px sans-serif;padding:3px}.anim-buttons .fa{display:none}</style>'\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\n(out / \"VZ25-motion.html\").write_text(html, encoding=\"utf-8\")\nupdate(2)\nprint(\"<script\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-2.png\", dpi=130)\nplt.close(fig)",
+      "expected": "True"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ25-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Animation cần có nút dừng và hình tĩnh để người học xem lại; tốc độ chạy không nên che con số hoặc chỉ dựa vào nhấp nháy. Dòng style trong ví dụ giữ nhãn chữ trên nút điều khiển kể cả khi không tải được font icon từ mạng. Lặp lại chỉ là cách trình chiếu, không có nghĩa dữ liệu quay về thời điểm đầu. Ví dụ cuối tạo một cột thay đổi chiều cao, giữ nguyên thang để độ cao không bị tự co giãn ở mỗi khung."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Coffee\"], [0])\nax.set(ylim=(0, 12), ylabel=\"Cups\", title=\"Stable axes while the value changes\")\nvalues = [8, 10, 7]\ndef update(frame):\n    bars[0].set_height(values[frame])\n    return (bars[0],)\nupdate(2)\nprint(bars[0].get_height())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-3.png\", dpi=130)\nplt.close(fig)",
+      "expected": "7"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ25-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ25-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?",
+     "answer": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy."
+    },
+    {
+     "prompt": "Vì sao giữ nguyên ylim khi cột thay đổi?",
+     "answer": "Để cùng độ cao luôn biểu diễn cùng lượng, tránh hình tự co giãn làm thay đổi cảm nhận."
+    },
+    {
+     "prompt": "Muốn tạo video MP4 có dùng luôn to_jshtml được không?",
+     "answer": "Không. to_jshtml tạo HTML. MP4 cần bộ ghi và bộ mã hóa phù hợp như FFmpeg; phải kiểm tra môi trường trước."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Reveal observations one at a time\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nupdate(1)\nprint(list(line.get_ydata()))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-1.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom matplotlib.animation import FuncAnimation\nfrom pathlib import Path\nfrom tempfile import gettempdir\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Three-frame teaching animation\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nani = FuncAnimation(fig, update, frames=3, interval=600, repeat=True)\nhtml = ani.to_jshtml()\nhtml += '<style>.anim-buttons{display:flex;flex-wrap:wrap;gap:4px}.anim-buttons button{width:auto;min-height:28px}.anim-buttons button::after{content:attr(title);font:12px sans-serif;padding:3px}.anim-buttons .fa{display:none}</style>'\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\n(out / \"VZ25-motion.html\").write_text(html, encoding=\"utf-8\")\nupdate(2)\nprint(\"<script\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-2.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Coffee\"], [0])\nax.set(ylim=(0, 12), ylabel=\"Cups\", title=\"Stable axes while the value changes\")\nvalues = [8, 10, 7]\ndef update(frame):\n    bars[0].set_height(values[frame])\n    return (bars[0],)\nupdate(2)\nprint(bars[0].get_height())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-3.png\", dpi=130)\nplt.close(fig)\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

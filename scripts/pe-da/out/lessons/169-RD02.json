@@ -1,0 +1,94 @@
+{
+ "lesson_code": "RD02",
+ "sort_order": 169,
+ "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+ "title": "RD02 · Đổi trục và ghép các lô array",
+ "subtitle": "Nâng cao · M10 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RD02 · Đổi trục và ghép các lô array",
+  "subtitle": "Nâng cao · M10 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RD02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "NumPy array manipulation"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai cửa hàng có số bán trong ba ngày. Trong file hiện tại, hàng là cửa hàng. Một hàm báo cáo khác lại cần hàng là ngày; transpose đổi hai chiều mà không đổi con số nào."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nsales = np.array([[12, 15, 9], [10, 8, 14]])\nby_day = sales.T\nprint(by_day.tolist())\nprint(by_day.shape)",
+      "expected": "[[12, 10], [15, 8], [9, 14]]\n(3, 2)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "sales.T có hàng đầu [12,10]: số bán ngày đầu của hai cửa hàng. Với array hai chiều, transpose đổi hàng thành cột và ngược lại. Nó khác reshape vốn xếp lại theo thứ tự phần tử; bạn vẫn phải kiểm ý nghĩa hàng/cột khi chuyển cho hàm khác."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nfirst = np.array([[12, 15, 9]])\nsecond = np.array([[10, 8, 14]])\nprint(np.concatenate([first, second], axis=0).tolist())\nprint(np.concatenate([first, second], axis=1).shape)",
+      "expected": "[[12, 15, 9], [10, 8, 14]]\n(1, 6)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "concatenate nối dọc theo một chiều đã có. axis=0 thêm hàng; axis=1 nối các cột ở ví dụ này. Các chiều còn lại phải khớp. Chỉ nối cột khi các hàng cùng đại diện cho một đối tượng; kích thước vừa nhau chưa chứng minh ghép đúng dữ liệu."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nmon = np.array([12, 10])\ntue = np.array([15, 8])\ndays = np.stack([mon, tue], axis=0)\nprint(days.tolist())\nprint(days.shape)",
+      "expected": "[[12, 10], [15, 8]]\n(2, 2)"
+     },
+     {
+      "type": "paragraph",
+      "text": "stack tạo một chiều mới. Hai dãy vốn có shape (2,) trở thành bảng (2,2), mỗi hàng là một ngày. concatenate hai dãy đó không tạo chiều ngày mà chỉ cho dãy bốn số. Khi làm nhiều lô lớn, thu các lô vào list rồi ghép một lần để tránh sao chép lại toàn bộ sau mỗi lần thêm."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "NP08 · Xếp lại bằng reshape, NP09 · Lấy ô, hàng và cột, NP19 · Cắt dữ liệu: view và copy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "sales có shape (2,3). sales.T có shape gì và hàng đầu biểu diễn gì?",
+     "answer": "Shape (3,2); hàng đầu giữ ngày thứ nhất của hai cửa hàng, không còn là ba ngày của cửa hàng đầu."
+    },
+    {
+     "prompt": "Nối bảng (2,3) với bảng (1,3) thành ba hàng dùng hàm và axis nào?",
+     "answer": "np.concatenate([a,b],axis=0), shape (3,3). Không dùng axis=1 vì số hàng 2 và 1 không khớp."
+    },
+    {
+     "prompt": "Hai array a=[1,2], b=[3,4]: stack axis=0 và concatenate cho shape nào?",
+     "answer": "np.stack([a,b],axis=0) cho (2,2); np.concatenate([a,b]) cho (4,). Chiều mới của stack giữ riêng danh tính từng dãy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nsales = np.array([[12, 15, 9], [10, 8, 14]])\nby_day = sales.T\nprint(by_day.tolist())\nprint(by_day.shape)\n\n# ── Đoạn 2 ──\nimport numpy as np\nfirst = np.array([[12, 15, 9]])\nsecond = np.array([[10, 8, 14]])\nprint(np.concatenate([first, second], axis=0).tolist())\nprint(np.concatenate([first, second], axis=1).shape)\n\n# ── Đoạn 3 ──\nimport numpy as np\nmon = np.array([12, 10])\ntue = np.array([15, 8])\ndays = np.stack([mon, tue], axis=0)\nprint(days.tolist())\nprint(days.shape)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD03",
+ "sort_order": 44,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD03 · Chọn hàng và cột bằng loc, iloc",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD03 · Chọn hàng và cột bằng loc, iloc",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Indexing"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Danh sách khách có mã C01, C02, C03. Mã khách là nhãn của hàng, còn vị trí hàng vẫn được đếm từ 0. Hai cách chọn này cần được viết rõ để tránh lấy nhầm người."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])",
+      "expected": "Binh\nBinh"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`loc` dùng nhãn C02 và tên cột name. `iloc` dùng vị trí hàng 1, cột 0. Chúng cùng lấy Binh trong bảng này. Với nhãn số như 10, `loc[10]` vẫn là nhãn 10, không phải hàng thứ mười một."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())",
+      "expected": "[2, 4]\n[2, 4]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở index đã sắp xếp này, lát cắt loc gồm cả nhãn cuối C02. Lát cắt iloc dừng trước vị trí 2, giống slicing của list. Chọn một nhãn hoặc vị trí không tồn tại sẽ báo lỗi."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2]}, index=['C01'])\ntry:\n    df.loc['C99']\nexcept KeyError as error:\n    print(type(error).__name__)\ntry:\n    df.iloc[5]\nexcept IndexError as error:\n    print(type(error).__name__)",
+      "expected": "KeyError\nIndexError"
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong ví dụ, try/except chỉ giúp hiển thị loại lỗi để quan sát. Khi phân tích dữ liệu, bạn nên kiểm tra mã khách hoặc độ dài bảng thay vì bỏ qua một hàng bị chọn sai."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD02 · DataFrame: đọc một bảng nhỏ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?",
+     "answer": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên."
+    },
+    {
+     "prompt": "loc['C01':'C02'] có lấy C02 không?",
+     "answer": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối."
+    },
+    {
+     "prompt": "Tạo Series [7, 9] với nhãn [10, 20]. In giá trị theo nhãn 20 và theo vị trí 0.",
+     "answer": "Kết quả lần lượt là 9 và 7.",
+     "answerCode": "import pandas as pd\ns = pd.Series([7, 9], index=[10, 20])\nprint(s.loc[20])\nprint(s.iloc[0])",
+     "answerExpected": "9\n7"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2]}, index=['C01'])\ntry:\n    df.loc['C99']\nexcept KeyError as error:\n    print(type(error).__name__)\ntry:\n    df.iloc[5]\nexcept IndexError as error:\n    print(type(error).__name__)\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

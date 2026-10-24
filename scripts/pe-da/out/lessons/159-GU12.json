@@ -1,0 +1,99 @@
+{
+ "lesson_code": "GU12",
+ "sort_order": 159,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
+ "subtitle": "Nâng cao · M8 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
+  "subtitle": "Nâng cao · M8 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 327; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bài thực hành cuối chuyển hệ thống quản lý điểm sang cửa sổ Tkinter và giữ các chức năng từ PW8. File projects/grade_app.py đi kèm có ba tab Sinh viên, Môn học, Điểm và GPA. Mã sinh viên và mã môn là khóa; điểm mỗi cặp sinh viên–môn chỉ có một giá trị."
+     },
+     {
+      "type": "code",
+      "code": "from decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)",
+      "expected": "[14.2, 16.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ví dụ hạ điểm xuống một chữ số thập phân theo yêu cầu PW3, không làm tròn tới số gần nhất. Ứng dụng mẫu dùng thang 0–20 và tín chỉ nguyên dương; đây là quy ước minh họa ghi rõ trong form, vì slide không quy định toàn bộ thang điểm."
+     },
+     {
+      "type": "code",
+      "code": "marks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)",
+      "expected": "16.4"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. Môn có mã GUI chưa có điểm nên không góp vào mẫu số; điểm thiếu không được coi là 0. Sinh viên chưa có điểm nào được hiển thị dấu gạch thay vì GPA 0. Bạn có thể sắp danh sách GPA theo thứ tự giảm dần."
+     },
+     {
+      "type": "code",
+      "code": "import gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)",
+      "expected": "S01\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi lưu, giao diện tạo một bản chụp dữ liệu nhất quán, gọi là snapshot, rồi giao cho worker. Worker ghi pickle nén gzip vào file tạm, thay thế file đích khi ghi xong và gửi kết quả qua queue. Giao diện dùng after để đọc kết quả. Chỉ nạp pickle từ nguồn mà ứng dụng và người dùng tin cậy, vì quá trình nạp có thể thực thi code."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chạy ứng dụng bằng python projects/grade_app.py --data duong-dan/grades.pkl.gz. Nếu file chưa tồn tại, ứng dụng bắt đầu với dữ liệu rỗng. Nếu file hỏng, ứng dụng báo lỗi và không tự ghi đè. Các bài kiểm tra đi kèm kiểm tra dữ liệu, GPA, việc lưu và nạp cùng một số callback. Để xem giao diện có dễ dùng và bố trí có vừa không, hãy chạy các bước thực hành bên dưới bằng chuột, bàn phím và cửa sổ thật."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "GU11 · Event loop và tác vụ nền, CT10 · Tạo thread bằng target, start và join, CT13 · Queue và lưu pickle có nén ở nền"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Một sinh viên có điểm PY=14 với 2 tín chỉ, DA=18 với 3 tín chỉ. GPA là bao nhiêu?",
+     "answer": "16.4. Môn chưa có điểm không góp vào mẫu số."
+    },
+    {
+     "prompt": "Vì sao worker nhận snapshot thay vì đọc trực tiếp model đang được UI sửa?",
+     "answer": "Để file lưu là một trạng thái nhất quán, không trộn dữ liệu trước và sau thay đổi."
+    },
+    {
+     "prompt": "Viết phép tính GPA cho điểm 10,20 và tín chỉ 1,3.",
+     "answer": "GPA bằng 17.5.",
+     "answerCode": "marks=[10,20]\ncredits=[1,3]\nprint(sum(m*c for m,c in zip(marks,credits))/sum(credits))",
+     "answerExpected": "17.5"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)\n\n# ── Đoạn 2 ──\nmarks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)\n\n# ── Đoạn 3 ──\nimport gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

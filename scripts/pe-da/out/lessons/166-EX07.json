@@ -1,0 +1,87 @@
+{
+ "lesson_code": "EX07",
+ "sort_order": 166,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX07 · Bytecode, số nguyên lớn và lỗi thụt lề",
+ "subtitle": "Trung cấp · M9 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX07 · Bytecode, số nguyên lớn và lỗi thụt lề",
+  "subtitle": "Trung cấp · M9 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 4, 28, 38, 53-54; Python lexical analysis; Built-in compile"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "“Python được thông dịch” không có nghĩa CPython bỏ qua bước biên dịch. compile tạo một code object từ mã nguồn; exec có thể thực thi code object đó. Đây là cách quan sát hai bước bằng một phép tính nhỏ, không cần học chi tiết từng opcode."
+     },
+     {
+      "type": "code",
+      "code": "from types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])",
+      "expected": "True\n21"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một script lưu vào file .py có thể chạy bằng python example.py. Trên UNIX, shebang như #!/usr/bin/env python3 cho biết interpreter khi file được cấp quyền chạy; trên Windows đừng mặc định quy tắc thực thi giống UNIX. Số nguyên Python có thể vượt giới hạn int 64 bit, nhưng vẫn cần bộ nhớ và thời gian để tính."
+     },
+     {
+      "type": "code",
+      "code": "number = 2 ** 100\nprint(number > 2 ** 63)\nprint(number.bit_length())\nprint(type(\"A\").__name__)",
+      "expected": "True\n101\nstr"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Python dùng thụt lề để xác định các câu lệnh thuộc cùng một khối. Thiếu thụt lề sau if hoặc dùng tab và dấu cách không nhất quán có thể gây lỗi cú pháp. Ví dụ dưới dùng compile để biên dịch hai chuỗi chứa lỗi rồi in tên lỗi nhận được. Bạn không cần tạo hai file .py lỗi để thử chúng."
+     },
+     {
+      "type": "code",
+      "code": "sources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)",
+      "expected": "IndentationError\nTabError"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong ví dụ compile/exec, bước nào tạo code object và bước nào làm xuất hiện cups?",
+     "answer": "compile tạo code object; exec thực thi và gán cups trong namespace. Không nói CPython hoàn toàn không biên dịch."
+    },
+    {
+     "prompt": "2**100 vượt số nguyên 64 bit có buộc tự đổi sang float không? Ký tự \"A\" có kiểu char riêng không?",
+     "answer": "Không. Python int hỗ trợ số lớn theo tài nguyên, không tự đổi sang float chỉ vì vượt 64 bit. \"A\" có kiểu str."
+    },
+    {
+     "prompt": "IndentationError và TabError ở ví dụ nói về gì? Shebang có sửa được chúng không?",
+     "answer": "Một lỗi là thiếu/sai thụt lề; lỗi kia là dùng tab/space không nhất quán. Shebang chỉ gợi interpreter khi hệ hỗ trợ, không sửa cú pháp trong file."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])\n\n# ── Đoạn 2 ──\nnumber = 2 ** 100\nprint(number > 2 ** 63)\nprint(number.bit_length())\nprint(type(\"A\").__name__)\n\n# ── Đoạn 3 ──\nsources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

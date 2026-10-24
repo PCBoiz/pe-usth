@@ -1,0 +1,114 @@
+{
+ "lesson_code": "NP23",
+ "sort_order": 41,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP23",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-114, 118-120; NumPy · Quickstart; NumPy · sum và axis"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))",
+      "expected": "[14 16 11]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Phần tính tổng này chỉ dùng các thao tác đã học đến NP15; bạn có thể làm trước nếu chưa học thống kê và dữ liệu thiếu ở NP16–NP17."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để có cả tổng từng học viên và tổng từng bài kiểm tra:"
+     },
+     {
+      "type": "code",
+      "code": "marks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))",
+      "expected": "[14. 16. 11.]\n[18. 23.]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`marks` có `shape` `(3, 2)`. `axis=1` cho ba tổng hàng, còn `axis=0` cho hai tổng cột. Bạn có thể đối chiếu hàng đầu: 6 + 8 = 14, và cột đầu: 6 + 7 + 5 = 18."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu cần gắn nhãn, hãy nêu rõ ngưỡng. Chẳng hạn, bạn có thể tính `totals = marks.sum(axis=1)` rồi dùng `np.where(totals >= 10, \"dat\", \"chua dat\")` khi quy định tổng từ 10 là đạt."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu một học viên chưa được nhập điểm, hãy đánh dấu ô đó bằng NaN. Với `nanmean` đã học ở NP17, bạn có thể tính trung bình từ các điểm hiện có:"
+     },
+     {
+      "type": "code",
+      "code": "marks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))",
+      "expected": "1\n[5.5        7.66666667]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng có một ô thiếu. Trung bình bài đầu là (6 + 5) / 2 = 5.5; bài thứ hai là (8 + 9 + 6) / 3, xấp xỉ 7.67. Số quan sát dùng để tính ở hai cột khác nhau, nên cần nói rõ khi báo cáo."
+     },
+     {
+      "type": "paragraph",
+      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas hay Matplotlib."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP12 · Tổng từng hàng và bài ghép, NP15 · Gắn nhãn và giới hạn điểm"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Bảng có 3 hàng học viên và 2 cột bài kiểm tra. Tổng điểm từng học viên có bao nhiêu phần tử?",
+     "answer": "Có 3 số, mỗi số là tổng điểm của một học viên."
+    },
+    {
+     "prompt": "Điền `axis` để tính tổng điểm mỗi bài kiểm tra: `marks.sum(axis=___)`.",
+     "answer": "Điền `0`: `marks.sum(axis=0)`."
+    },
+    {
+     "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in `shape`, tổng từng hàng và tổng từng cột. Nếu đã học NP16–NP17, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
+     "answer": "Ví dụ dưới tính tổng trên bảng đầy đủ, rồi tính số ô thiếu và trung bình trên bảng có một điểm chưa nhập:",
+     "answerCode": "import numpy as np\n\nmarks = np.array([[4., 7.], [8., 6.], [5., 9.]])\nprint(marks.shape)\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\nmissing = np.array([[4., 7.], [np.nan, 6.], [5., 9.]])\nprint(np.isnan(missing).sum())\nprint(np.nanmean(missing, axis=0))",
+     "answerExpected": "(3, 2)\n[11. 14. 14.]\n[17. 22.]\n1\n[4.5        7.33333333]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))\n\n# ── Đoạn 2 ──\nmarks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\n# ── Đoạn 3 ──\nmarks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

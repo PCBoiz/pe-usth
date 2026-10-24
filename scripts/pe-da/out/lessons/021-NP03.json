@@ -1,0 +1,108 @@
+{
+ "lesson_code": "NP03",
+ "sort_order": 21,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP03 · Kiểu dữ liệu của array",
+ "subtitle": "Cơ bản · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP03 · Kiểu dữ liệu của array",
+  "subtitle": "Cơ bản · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · Kiểu dữ liệu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một quán cà phê bán hai loại đồ uống với giá 12.5 và 20 nghìn đồng. Bạn muốn lưu các mức giá này trong một array:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nprices = np.array([12.5, 20])\nprint(prices)\nprint(prices.dtype)",
+      "expected": "[12.5 20. ]\nfloat64"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`dtype` cho biết kiểu dữ liệu của các phần tử trong array. Trong ví dụ này, NumPy chọn kiểu số thực để lưu giá 12.5 có phần thập phân. Giá 20 cũng được lưu theo kiểu số thực, vì các phần tử trong array số này dùng chung một kiểu dữ liệu."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn thấy `20.` trong kết quả vì NumPy đang hiển thị số thực 20.0 theo cách viết gọn. Giá trị của nó vẫn là 20."
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong Python, `6` là số nguyên, còn `6.5` là số thực có phần thập phân. Bạn cũng có thể dùng kiểu số thực để lưu một giá trị nguyên như `6.0`. Nếu muốn chọn kiểu số thực ngay khi tạo array, bạn thêm `dtype=float`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6, 8], dtype=float)\nprint(a)",
+      "expected": "[6. 8.]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai giá trị vẫn là 6 và 8, nhưng được lưu bằng kiểu số thực. `6.` và `8.` là cách NumPy hiển thị 6.0 và 8.0."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu không chỉ định `dtype`, NumPy sẽ chọn kiểu dựa trên dữ liệu bạn đưa vào. Ví dụ, khi có cả `6` và `8.5`, NumPy chọn kiểu số thực cho array này:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6, 8.5])\nprint(a)",
+      "expected": "[6.  8.5]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn chưa cần nhớ ý nghĩa của số 64 trong `float64` ở bài này. Khi xem `dtype`, tên kiểu số nguyên có thể là `int32` hoặc `int64`, tùy nền tảng và phiên bản NumPy. Trước mắt, bạn cần phân biệt số nguyên với số thực và biết dùng `dtype=float` khi muốn tạo array số thực."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP01 · Array là gì?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "`6` và `6.5` khác nhau ở điểm nào về kiểu dữ liệu?",
+     "answer": "`6` là số nguyên. `6.5` là số thực có phần thập phân."
+    },
+    {
+     "prompt": "Điền vào chỗ trống để tạo array số thực: `a = np.array([1, 2], dtype=___)`.",
+     "answer": "Điền `float`: `a = np.array([1, 2], dtype=float)`."
+    },
+    {
+     "prompt": "Tạo array chứa hai giá 12.5 và 20.0, rồi in kiểu dữ liệu của các phần tử.",
+     "answer": "Bạn có thể viết:",
+     "answerCode": "import numpy as np\n\nprices = np.array([12.5, 20.0])\nprint(prices.dtype)",
+     "answerExpected": "float64"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nprices = np.array([12.5, 20])\nprint(prices)\nprint(prices.dtype)\n\n# ── Đoạn 2 ──\na = np.array([6, 8], dtype=float)\nprint(a)\n\n# ── Đoạn 3 ──\na = np.array([6, 8.5])\nprint(a)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

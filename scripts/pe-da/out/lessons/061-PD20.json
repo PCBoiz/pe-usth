@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD20",
+ "sort_order": 61,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD20 · Pivot table và bảng đếm chéo",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD20 · Pivot table và bảng đếm chéo",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD20",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Pivot tables"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cửa hàng có nhiều giao dịch trong tháng. Báo cáo cần một ô tổng doanh thu cho mỗi cửa hàng và tháng, nên lần này phải tổng hợp dữ liệu khi đổi hình dạng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
+      "expected": "30\n0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`aggfunc=\"sum\"` yêu cầu tính tổng; mặc định `pivot_table` dùng trung bình (`mean`), nên hãy ghi rõ khi làm báo cáo tổng doanh thu. Trong ví dụ, A–Jan bằng 10 + 20 = 30. Không có giao dịch A–Feb nên ô đó được điền 0 bằng `fill_value=0`. Chỉ điền như vậy nếu dữ liệu đầy đủ và không có giao dịch thực sự có nghĩa là doanh thu bằng 0."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
+      "expected": "1\n0.5"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "crosstab đếm tổ hợp phân loại. normalize=\"index\" chia trong từng hàng: web có một đơn đã thanh toán trên hai đơn, nên tỷ lệ là 0.5. margins=True có thể thêm hàng và cột tổng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nwide = pd.DataFrame({'Jan': [10, 30], 'Feb': [20, 40]}, index=['A', 'B'])\nlong = wide.stack()\nprint(long.loc[('A', 'Feb')])\nprint(long.unstack().equals(wide))",
+      "expected": "20\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "stack đưa tên cột thành một tầng index; unstack đưa tầng index trở lại thành cột. Chúng hữu ích khi dữ liệu đã có nhãn hàng, khác melt thường giữ các định danh trong cột."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD19 · Pivot và melt: đổi hình dạng bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?",
+     "answer": "aggfunc=\"sum\"."
+    },
+    {
+     "prompt": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?",
+     "answer": "Tổng số đơn trong hàng web."
+    },
+    {
+     "prompt": "Đếm tổ hợp g=[A,A,B], status=[ok,ok,no], rồi lấy ô A–ok.",
+     "answer": "Có 2 hàng.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'g': ['A', 'A', 'B'], 'status': ['ok', 'ok', 'no']})\nprint(pd.crosstab(df['g'], df['status']).loc['A', 'ok'])",
+     "answerExpected": "2"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])\n\n# ── Đoạn 3 ──\nimport pandas as pd\nwide = pd.DataFrame({'Jan': [10, 30], 'Feb': [20, 40]}, index=['A', 'B'])\nlong = wide.stack()\nprint(long.loc[('A', 'Feb')])\nprint(long.unstack().equals(wide))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

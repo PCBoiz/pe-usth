@@ -1,0 +1,113 @@
+{
+ "lesson_code": "SY24",
+ "sort_order": 127,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
+ "subtitle": "Trung cấp · M5 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
+  "subtitle": "Trung cấp · M5 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY24",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 328; SQLAlchemy — Connections; pandas — read_sql_query"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Dữ liệu đơn hàng có thể nằm trong cơ sở dữ liệu (database) thay vì CSV. Trong SQLAlchemy, engine quản lý việc tạo và dùng các kết nối, còn connection là kết nối bạn dùng để chạy SQL. Ví dụ sau dùng SQLite trong RAM nên không cần máy chủ riêng:"
+     },
+     {
+      "type": "code",
+      "code": "from sqlalchemy import create_engine, text, inspect\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.begin() as connection:\n    connection.execute(text(\"CREATE TABLE scores (id TEXT, score REAL)\"))\n    connection.execute(text(\"INSERT INTO scores VALUES ('A',8),('B',6)\"))\nprint(inspect(engine).get_table_names())\nengine.dispose()",
+      "expected": "['scores']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`engine.begin()` gom các lệnh trong khối thành một transaction, tức một lần xử lý chung; nếu khối chạy thành công, các thay đổi được xác nhận bằng commit. `inspect(engine).get_table_names()` là cách liệt kê bảng hiện hành, thay engine.table_names() cũ. File SQLite tương đối dùng URL `sqlite:///ten_file.sqlite`; memory database chỉ dùng cho ví dụ này."
+     },
+     {
+      "type": "code",
+      "code": "from sqlalchemy import create_engine, text\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.connect() as connection:\n    result = connection.execute(text(\"SELECT 'A' AS id, 8 AS score UNION ALL SELECT 'B', 6\"))\n    print(list(result.keys()))\n    print([tuple(row) for row in result.fetchmany(size=1)])\n    print([tuple(row) for row in result.fetchall()])\nengine.dispose()",
+      "expected": "['id', 'score']\n[('A', 8)]\n[('B', 6)]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`fetchmany` lấy một nhóm dòng ở vị trí hiện tại; fetchall sau đó chỉ còn những dòng chưa lấy. result.keys cho tên cột. `with engine.connect()` đóng connection khi rời block; `dispose` thu dọn nhóm kết nối do engine quản lý (connection pool) khi đã làm xong. Chỉ tạo DataFrame từ các tuple mà bỏ tên cột sẽ làm mất ý nghĩa dữ liệu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nfrom sqlalchemy import create_engine, text\nengine = create_engine(\"sqlite:///:memory:\")\nwith engine.connect() as connection:\n    frame = pd.read_sql_query(text(\"SELECT :sid AS id, :score AS score\"), connection, params={\"sid\": \"A\", \"score\": 8})\nprint(frame.to_dict(\"records\"))\nengine.dispose()",
+      "expected": "[{'id': 'A', 'score': 8}]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute trực tiếp một chuỗi trong cheat sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD02 · DataFrame: đọc một bảng nhỏ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Engine và connection là một không?",
+     "answer": "Không. Engine quản lý kết nối/pool; connection là phiên dùng để thực thi thao tác."
+    },
+    {
+     "prompt": "fetchmany(1) rồi fetchall có lặp lại dòng đầu không?",
+     "answer": "Không. Kết quả được tiêu thụ theo vị trí; fetchall lấy phần còn lại."
+    },
+    {
+     "prompt": "Đọc bảng scores vào DataFrame theo id tăng dần.",
+     "answer": "Dùng with engine.connect() as c: pd.read_sql_query(text(\"SELECT id, score FROM scores ORDER BY id\"), c). Kiểm columns, số dòng và giá trị. Trước đó inspect(engine).get_table_names() để kiểm tên bảng; đóng/dispose khi hoàn tất."
+    },
+    {
+     "prompt": "File SQLite data.sqlite trong thư mục hiện tại dùng URL nào? Thay engine.table_names() và execute chuỗi trần của slide bằng gì? fetchmany(size=1), fetchall() và result.keys() trả phần nào?",
+     "answer": "URL sqlite:///data.sqlite. Dùng inspect(engine).get_table_names(), và connection.execute(text(\"SELECT ...\")). result.keys() cho tên cột; fetchmany(size=1) lấy một dòng từ vị trí hiện tại; fetchall() lấy các dòng còn lại. with engine.connect() đóng connection khi rời khối, engine.dispose() thu dọn pool. pd.read_sql_query(text(...),connection,params=...) trả DataFrame có tên cột."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: sqlalchemy chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "sqlalchemy chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD08",
+ "sort_order": 49,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD08 · Ô thiếu: phát hiện trước khi điền",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD08 · Ô thiếu: phát hiện trước khi điền",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD08",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Missing values"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
+      "expected": "[False, True, False]\n1\n21.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`isna` nhận biết giá trị thiếu. Trung bình mặc định bỏ các ô thiếu, nên 21 được tính từ hai số đo có thật. Dùng == None hoặc == NaN không phải cách tổng quát để tìm các ô này."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
+      "expected": "['A', 'C']\n[10.0, 0.0, 30.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`dropna` ở đây bỏ các hàng thiếu `amount`, còn `fillna(0)` trả về cột với ô thiếu đã được điền số 0. Ví dụ đầu giữ các đơn đã biết số tiền; ví dụ sau giữ đủ các đơn và thay số tiền chưa biết bằng 0. Chỉ chọn cách thứ hai nếu quy ước dữ liệu cho biết ô trống nghĩa là không phát sinh tiền."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nunknown = pd.Series([None, None], dtype='Float64')\nprint(unknown.sum())\nprint(pd.isna(unknown.sum(min_count=1)))",
+      "expected": "0.0\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tổng của một cột chỉ có ô thiếu mặc định có thể bằng 0. `min_count=1` yêu cầu có ít nhất một giá trị không thiếu mới tính tổng; nếu không, kết quả vẫn thiếu. Nhờ vậy, bạn phân biệt được “doanh thu bằng 0” với “chưa có dữ liệu doanh thu”."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD07 · Kiểu dữ liệu và số nguyên có ô trống"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?",
+     "answer": "21, vì phép tính bỏ giá trị thiếu."
+    },
+    {
+     "prompt": "Vì sao không nên luôn fillna(0)?",
+     "answer": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0."
+    },
+    {
+     "prompt": "Giữ các hàng có price trong [10, thiếu, 30] rồi in giá còn lại.",
+     "answer": "Còn [10.0, 30.0].",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'price': [10.0, None, 30.0]})\nprint(df.dropna(subset=['price'])['price'].tolist())",
+     "answerExpected": "[10.0, 30.0]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nunknown = pd.Series([None, None], dtype='Float64')\nprint(unknown.sum())\nprint(pd.isna(unknown.sum(min_count=1)))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

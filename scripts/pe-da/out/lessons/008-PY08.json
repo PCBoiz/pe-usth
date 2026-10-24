@@ -1,0 +1,99 @@
+{
+ "lesson_code": "PY08",
+ "sort_order": 8,
+ "module": "M1 · Python nền tảng",
+ "title": "PY08 · Chuẩn hóa và định dạng văn bản",
+ "subtitle": "Cơ bản · M1 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY08 · Chuẩn hóa và định dạng văn bản",
+  "subtitle": "Cơ bản · M1 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY08",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 49, 62, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên người nhập có khoảng trắng và chữ hoa/thường lẫn nhau. Bạn muốn hiển thị tên và mã theo một quy tắc chung:"
+     },
+     {
+      "type": "code",
+      "code": "name = \"  maI  \".strip().title()\ncode = \"23\".zfill(4)\nprint(f\"{code}: {name}\")",
+      "expected": "0023: Mai"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`strip()` bỏ khoảng trắng hai đầu, `title()` viết hoa đầu từ và `zfill(4)` thêm số 0 để đủ bốn ký tự. Mỗi phương thức trả một kết quả mới; tên người thật có thể có quy tắc riêng, nên không tự áp title cho mọi danh sách tên mà chưa kiểm tra."
+     },
+     {
+      "type": "code",
+      "code": "raw = \"12,18,20\\n\"\nprint(raw.rstrip().split(\",\"))\nprint(\"A\\nB\".splitlines())",
+      "expected": "['12', '18', '20']\n['A', 'B']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`split(\",\")` tách theo dấu phẩy và trả list các chuỗi. `splitlines()` tách theo các dấu xuống dòng. `rstrip()` chỉ xử lý phía phải; nó không giống yêu cầu bỏ một hậu tố chính xác."
+     },
+     {
+      "type": "code",
+      "code": "name, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")",
+      "expected": "Mai: 12.5\nmai: 12.50"
+     },
+     {
+      "type": "paragraph",
+      "text": "`str.format()` và f-string chèn giá trị vào văn bản. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY07 · Lấy ký tự và một đoạn chuỗi"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "strip().split(\",\") trả chuỗi hay list?",
+     "answer": "List các chuỗi."
+    },
+    {
+     "prompt": "Viết biểu thức đổi \" Data \" thành \"data\".",
+     "answer": "\" Data \".strip().lower()."
+    },
+    {
+     "prompt": "Viết code đọc một giá từ input rồi hiển thị hai chữ số thập phân.",
+     "answer": "price = float(input(\"Gia: \")); print(f\"{price:.2f}\"). Khi người nhập chuỗi không phải số, cần xử lý ValueError ở bài ngoại lệ."
+    },
+    {
+     "prompt": "Viết cùng câu \"Mai: 8\" bằng str.format và f-string. Đổi \"23\" thành mã bốn ký tự, rồi tách \"A\\r\\nB\\nC\" thành ba dòng.",
+     "answer": "\"{}: {}\".format(\"Mai\", 8) và f\"{'Mai'}: {8}\" đều tạo Mai: 8. \"23\".zfill(4) cho \"0023\"; \"A\r\nB\nC\".splitlines() cho [\"A\", \"B\", \"C\"]. lower/title/zfill/splitlines trả kết quả mới, không sửa str tại chỗ."
+    },
+    {
+     "prompt": "len([6,8,10]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
+     "answer": "`len([6, 8, 10])` bằng 3 vì list có ba phần tử. `input` trả chuỗi, dù bạn gõ `12.5`. Nó hiển thị lời nhắc rồi đọc từ stdin; `print` ghi vào stdout. Muốn dùng giá nhập để tính toán, đổi chuỗi bằng `float` trước."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nname = \"  maI  \".strip().title()\ncode = \"23\".zfill(4)\nprint(f\"{code}: {name}\")\n\n# ── Đoạn 2 ──\nraw = \"12,18,20\\n\"\nprint(raw.rstrip().split(\",\"))\nprint(\"A\\nB\".splitlines())\n\n# ── Đoạn 3 ──\nname, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

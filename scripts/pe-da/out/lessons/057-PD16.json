@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD16",
+ "sort_order": 57,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD16 · Merge: nối đơn hàng với bảng khách",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD16 · Merge: nối đơn hàng với bảng khách",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD16",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Merge"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng đơn hàng chỉ có customer_id. Tên và khu vực nằm trong bảng khách. merge dùng mã chung để bổ sung thông tin khách vào mỗi đơn."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
+      "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "left giữ các khóa từ bảng bên trái. Với bảng khách có mã duy nhất như ví dụ này, mỗi đơn nhận đúng một tên. Nếu khách không có trong danh mục, thông tin bổ sung bị thiếu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
+      "expected": "[2]\n[True, False]\n[1, 2, 3]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`inner` chỉ giữ mã có ở cả hai bảng; `outer` giữ mã có ở ít nhất một bảng. Nếu hai bảng có cột trùng tên ngoài khóa, dùng `suffixes=(\"_order\", \"_customer\")` để phân biệt cột từ mỗi bảng. Khi mã khách nằm ở index của bảng bên phải, bạn có thể dùng `join`."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())",
+      "expected": "['DN', 'HN']"
+     },
+     {
+      "type": "paragraph",
+      "text": "join với on=\"customer_id\" đối chiếu cột của bảng trái với index bảng phải. Dù dùng merge hay join, hãy kiểm tra độ duy nhất của khóa; bảng danh mục trùng mã có thể nhân số hàng giao dịch."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD15 · Transform: giữ từng hàng và thêm số của nhóm"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?",
+     "answer": "how=\"left\", khi orders nằm bên trái."
+    },
+    {
+     "prompt": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?",
+     "answer": "Chỉ mã 2."
+    },
+    {
+     "prompt": "Nối đơn customer_id=[1,2] với danh mục chỉ có id=1, rồi đếm tên thiếu.",
+     "answer": "Một đơn chưa có tên khách.",
+     "answerCode": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1], 'name': ['An']})\nprint(orders.merge(customers, on='customer_id', how='left')['name'].isna().sum())",
+     "answerExpected": "1"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))\n\n# ── Đoạn 2 ──\nimport pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))\n\n# ── Đoạn 3 ──\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

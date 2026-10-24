@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD06",
+ "sort_order": 47,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD06 · Thêm cột và sửa đúng bảng",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD06 · Thêm cột và sửa đúng bảng",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Copy-on-Write"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng đơn hàng đã có số lượng và đơn giá. Doanh thu từng hàng được tính bằng cách nhân hai cột cùng hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
+      "expected": "[20, 60]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Kết quả có cùng index với bảng. Bạn cũng có thể dùng `assign` để nhận một bảng có cột mới, rồi lưu vào biến khác. Trong ví dụ sau, giả sử đơn từ 3 sản phẩm trở lên được giảm tổng tiền còn 50; dùng `loc` để chỉ rõ hàng và cột cần sửa."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
+      "expected": "[20, 50]\n['qty', 'price']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "df vẫn có hai cột cũ vì kết quả assign được lưu vào priced. Nếu muốn sửa một bảng con độc lập, có thể chọn rồi copy rõ ràng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())",
+      "expected": "[10, 20]\n[18]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tránh viết `df[mask][\"price\"] = 18`: đây là chained assignment, tức gán sau hai lần chọn dữ liệu liên tiếp. Từ pandas 3.0, cơ chế Copy-on-Write giúp dữ liệu chỉ được sao chép khi cần sửa, và cách gán qua hai lần chọn này không cập nhật `df`. Nếu muốn sửa bảng gốc, dùng `df.loc[mask, \"price\"] = 18`. Ở các phiên bản cũ, hành vi của chained assignment cũng không nhất quán."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD05 · Lọc hàng theo điều kiện"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Nhân qty=[2, 3] với price=[10, 20] cho doanh thu nào?",
+     "answer": "[20, 60]."
+    },
+    {
+     "prompt": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
+     "answer": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18."
+    },
+    {
+     "prompt": "Tạo qty=[1, 4], sửa qty lớn hơn 2 thành 2 và in cột.",
+     "answer": "Kết quả [1, 2].",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'qty': [1, 4]})\ndf.loc[df['qty'] > 2, 'qty'] = 2\nprint(df['qty'].tolist())",
+     "answerExpected": "[1, 2]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

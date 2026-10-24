@@ -1,0 +1,127 @@
+{
+ "lesson_code": "CT07",
+ "sort_order": 138,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT07 · Chạy lệnh, tách output và mã thoát",
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT07 · Chạy lệnh, tách output và mã thoát",
+  "subtitle": "Nâng cao · M6 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 236-245; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một bước phân tích cần gọi chương trình Python khác rồi nhận số liệu về. Bạn cần phân biệt thứ chương trình in ra với trạng thái nó kết thúc:"
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys\nr = subprocess.run([sys.executable, \"-c\", \"print(42)\"], capture_output=True, text=True, check=True)\nprint(r.stdout.strip())\nprint(r.returncode)",
+      "expected": "42\n0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "run chờ chương trình con kết thúc rồi trả một đối tượng CompletedProcess. Trong kết quả r, stdout chứa văn bản chương trình đã in, còn returncode cho biết mã thoát. Theo quy ước phổ biến, mã 0 là thành công. List truyền vào run tách rõ đường dẫn chương trình ở phần tử đầu và từng đối số ở những phần tử sau."
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys\ncode = \"import sys; print(5); print('warn', file=sys.stderr)\"\nr = subprocess.run([sys.executable, \"-c\", code], capture_output=True, text=True)\nprint(r.stdout.strip(), r.stderr.strip())",
+      "expected": "5 warn"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "stdin, stdout và stderr là ba luồng chuẩn, thường gắn descriptor 0, 1 và 2. stdin thường nhận từ bàn phím; stdout/stderr thường hiện ở terminal. Chúng có thể được nối tới file hoặc pipe. Thu stdout không tự thu hoặc trộn stderr nếu bạn không cấu hình."
+     },
+     {
+      "type": "code",
+      "code": "import subprocess, sys\ntry:\n    subprocess.check_output([sys.executable, \"-c\", \"raise SystemExit(2)\"], text=True)\nexcept subprocess.CalledProcessError as error:\n    print(error.returncode)",
+      "expected": "2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`check_output` trả output khi thành công; nó không trả mã thoát. Với mã lỗi, nó gây CalledProcessError. run có check=True cũng báo lỗi theo cách này."
+     },
+     {
+      "type": "paragraph",
+      "text": "Slide còn liệt kê các API os để tham khảo. os.system chạy một command string qua shell và chờ; os.popen mở luồng đọc/ghi tới command. os.pipe tạo cặp descriptor đọc/ghi, không tự tạo process. os.fork tạo con trên hệ hỗ trợ; os.kill(pid, signal.SIGTERM) gửi tín hiệu/yêu cầu kết thúc theo nền tảng. Không chạy kill vào PID tùy ý khi học. Module os vẫn được hỗ trợ; câu slide nói cả module đã deprecated là sai. Với khởi chạy thông thường, dùng subprocess để quản lý đối số, luồng và lỗi. CT08 phân biệt chạy chờ, chạy tiếp sau Popen, timeout và kết thúc process con do chính mình tạo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PY18 · Ngoại lệ và dữ liệu không hợp lệ, CT01 · Một chương trình, nhiều tiến trình"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Chương trình in 42 và thoát thành công: stdout và returncode là gì?",
+     "answer": "stdout chứa \"42\\n\"; returncode là 0."
+    },
+    {
+     "prompt": "Muốn lệnh lỗi gây CalledProcessError khi dùng run, thêm gì?",
+     "answer": "check=True."
+    },
+    {
+     "prompt": "Cần lưu kết quả ra file và cảnh báo ra terminal: có bắt buộc trộn stdout/stderr không?",
+     "answer": "Không. Chúng là hai luồng riêng; cấu hình mỗi luồng theo mục đích."
+    },
+    {
+     "prompt": "Ghép descriptor 0/1/2 với ba luồng và đích mặc định của chúng.",
+     "answer": "0 là stdin thường nhận bàn phím; 1 stdout và 2 stderr thường ra terminal. Có thể thay các kết nối bằng file/pipe."
+    },
+    {
+     "prompt": "Chọn API os phù hợp với từng việc: chạy chuỗi lệnh qua shell rồi chờ; mở luồng đọc hoặc ghi tới một lệnh; tạo cặp đầu đọc và ghi của pipe; tạo process con trên hệ POSIX; gửi yêu cầu kết thúc tới một PID.",
+     "answer": "Lần lượt os.system, os.popen, os.pipe, os.fork, os.kill với signal.SIGTERM. Chúng không cùng vai trò, và os.fork không có trên Windows."
+    },
+    {
+     "prompt": "Một lần check_output thành công in report. Hàm trả report hay số 0? Muốn đặt giới hạn chạy run thì dùng gì?",
+     "answer": "check_output trả nội dung đầu ra, không phải mã thoát 0. Để giới hạn thời gian chạy run, truyền timeout theo số giây. Khi hết hạn, run dừng và chờ process con rồi gây TimeoutExpired. Nếu chương trình thoát với mã lỗi và có check=True, run gây CalledProcessError."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: WASM không gọi được chương trình ngoài. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "WASM không gọi được chương trình ngoài"
+  },
+  {
+   "block": 1,
+   "reason": "WASM không gọi được chương trình ngoài"
+  },
+  {
+   "block": 2,
+   "reason": "WASM không gọi được chương trình ngoài"
+  }
+ ]
+}

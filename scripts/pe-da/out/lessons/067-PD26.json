@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD26",
+ "sort_order": 67,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD26 · Dữ liệu phân loại và chia khoảng",
+ "subtitle": "Nâng cao · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD26 · Dữ liệu phân loại và chia khoảng",
+  "subtitle": "Nâng cao · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD26",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Categoricals"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mức ưu tiên low, medium, high có thứ tự riêng. Nếu sắp theo bảng chữ cái, high có thể đứng trước low; kiểu category cho phép bạn ghi rõ thứ tự mong muốn."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
+      "expected": "['low', 'medium', 'high']\n['low', 'medium', 'high']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Thứ tự do categories quy định, không phải cách đánh vần tên. Giá trị không thuộc tập categories trở thành thiếu khi chuyển kiểu. Category phù hợp với số nhãn ít và lặp nhiều; không phải lúc nào cũng tiết kiệm nếu gần như mỗi hàng một nhãn riêng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
+      "expected": "['small', 'medium', 'large']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`cut` dùng các mốc bạn đặt. Mặc định, một khoảng không lấy mốc bên trái nhưng có lấy mốc bên phải: khoảng `(0, 10]` nhận các số lớn hơn 0 và nhỏ hơn hoặc bằng 10. Vì vậy, 10 thuộc nhóm đầu. Giá trị ngoài các khoảng thành thiếu. Thêm `include_lowest=True` nếu cần nhận cả mốc thấp nhất là 0."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())",
+      "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+     },
+     {
+      "type": "paragraph",
+      "text": "qcut chọn ranh giới theo phân vị để số quan sát trong nhóm gần nhau khi dữ liệu cho phép; nhiều giá trị trùng có thể khiến không tạo đủ khoảng. observed=True chỉ báo cáo nhóm category thực sự có mặt. Ghi rõ observed giúp tránh phụ thuộc mặc định giữa các phiên bản."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD25 · Map, phép tính theo cột và apply"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "cut và qcut chọn ranh giới khác nhau thế nào?",
+     "answer": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu."
+    },
+    {
+     "prompt": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?",
+     "answer": "(0,10], vì khoảng mặc định đóng bên phải."
+    },
+    {
+     "prompt": "Chia [3,15] theo bins=[0,10,20], nhãn low/high.",
+     "answer": "Kết quả [low, high].",
+     "answerCode": "import pandas as pd\ns = pd.Series([3, 15])\nprint(pd.cut(s, bins=[0, 10, 20], labels=['low', 'high']).tolist())",
+     "answerExpected": "['low', 'high']"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

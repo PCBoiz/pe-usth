@@ -1,0 +1,115 @@
+{
+ "lesson_code": "CT14",
+ "sort_order": 145,
+ "module": "M7 · Multiprocessing và shell thực hành",
+ "title": "CT14 · Multiprocessing: dữ liệu riêng và trao đổi kết quả",
+ "subtitle": "Nâng cao · M7 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT14 · Multiprocessing: dữ liệu riêng và trao đổi kết quả",
+  "subtitle": "Nâng cao · M7 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Python — multiprocessing; Python — subprocess"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có một tác vụ tính toán viết bằng Python thuần và muốn dùng nhiều lõi CPU. Với bản CPython có GIL, có thể cần nhiều process thay vì chỉ thêm thread. Trước khi tìm cách tăng tốc, hãy xem việc sửa list trong process con có làm list ở cha thay đổi không:"
+     },
+     {
+      "type": "code",
+      "code": "from multiprocessing import Process\ndef change(values):\n    values.append(9)\nif __name__ == \"__main__\":\n    values = [1, 2]\n    p = Process(target=change, args=(values,))\n    p.start(); p.join()\n    print(values, p.exitcode)",
+      "expected": "[1, 2] 0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hàm change thêm 9 vào list trong process con, nhưng list values ở cha vẫn là [1, 2]. Hãy lưu mỗi ví dụ thành file .py rồi chạy file. Khi dùng cơ chế spawn, process con cần import được module chứa hàm worker. Khối if __name__ == \"__main__\":, thường gọi là main guard, ngăn phần khởi chạy process chạy lại khi module được import ở con."
+     },
+     {
+      "type": "code",
+      "code": "from multiprocessing import Process, Queue\ndef work(value, results):\n    results.put(value * value)\nif __name__ == \"__main__\":\n    q = Queue()\n    p = Process(target=work, args=(4, q))\n    p.start()\n    print(q.get(timeout=5))\n    p.join()\n    q.close(); q.join_thread()",
+      "expected": "16"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "multiprocessing.Queue gửi kết quả giữa process; nó không phải chính queue.Queue dành cho thread. Dữ liệu gửi thường được pickle, nên cần object phù hợp và tránh gửi các object GUI hoặc handle không có cơ chế chuyển giao rõ ràng."
+     },
+     {
+      "type": "code",
+      "code": "from concurrent.futures import ProcessPoolExecutor\ndef square(value): return value * value\nif __name__ == \"__main__\":\n    with ProcessPoolExecutor(max_workers=2) as pool:\n        print(list(pool.map(square, [2, 3, 4])))",
+      "expected": "[4, 9, 16]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Pool dùng lại worker cho nhiều việc; map giữ thứ tự kết quả theo đầu vào. Khởi tạo process và truyền dữ liệu đều tốn chi phí, nên phép tính nhỏ có thể chậm hơn chạy tuần tự. Không dùng các ví dụ vài số này làm benchmark."
+     },
+     {
+      "type": "paragraph",
+      "text": "Đây là phần mở rộng cho Data Analyst. Chương Multi Processing trong slide chủ yếu dạy process của hệ điều hành và subprocess, còn bài này dùng module multiprocessing. Nếu thư viện native, tức thư viện có phần code biên dịch như C/C++, đã dùng nhiều thread bên trong, hãy kiểm tra trước khi tạo thêm nhiều process. Quá nhiều worker ở cả hai tầng có thể cùng tranh CPU và làm chương trình chậm hơn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT02 · Tạo process: Windows, fork và exec, EX05 · GIL, reference counting và chọn đúng kiểu đồng thời, SY12 · Package và điểm bắt đầu của chương trình"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao list ở cha không nhận phần tử 9 trong ví dụ đầu?",
+     "answer": "Cha và con không tự dùng chung list Python; sửa object trong process con không sửa bản ở cha."
+    },
+    {
+     "prompt": "Main guard giúp gì khi dùng spawn?",
+     "answer": "Ngăn code khởi chạy process chạy lại khi module được import trong worker; worker phải là hàm import được."
+    },
+    {
+     "prompt": "Có nên chia mọi phép nhân vài số sang process pool không?",
+     "answer": "Không. Đo workload thực và tính chi phí khởi tạo/truyền dữ liệu; chỉ chọn khi lợi ích đủ bù overhead."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: WASM không fork được tiến trình. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "WASM không fork được tiến trình"
+  },
+  {
+   "block": 1,
+   "reason": "WASM không fork được tiến trình"
+  },
+  {
+   "block": 2,
+   "reason": "concurrent.futures chạy trên thread/process thật"
+  }
+ ]
+}

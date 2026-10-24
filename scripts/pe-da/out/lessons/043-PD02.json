@@ -1,0 +1,110 @@
+{
+ "lesson_code": "PD02",
+ "sort_order": 43,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD02 · DataFrame: đọc một bảng nhỏ",
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD02 · DataFrame: đọc một bảng nhỏ",
+  "subtitle": "Cơ bản · M3 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 328; pandas · DataFrame"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng bán hàng cần cả tên đồ uống và số cốc. DataFrame giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
+      "expected": "(2, 2)\n['drink', 'cups']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`shape` có thứ tự số hàng, số cột. Bảng này có hai hàng và hai cột. Các cột có thể khác kiểu dữ liệu: drink chứa chữ, cups chứa số. Một cột được lấy ra bằng tên của nó."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
+      "expected": "Series\nDataFrame\n[12, 8]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`sales['cups']` lấy một cột thành Series. Khi truyền danh sách tên cột như `sales[['cups']]`, kết quả vẫn là DataFrame. Để xem vài hàng đầu hoặc cuối, dùng `head()` và `tail()`. `to_dict(\"records\")` chuyển mỗi hàng thành một dictionary để kết quả ngắn dễ đọc hơn."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea', 'cocoa'], 'cups': [12, 8, 5]})\nprint(sales.head(1).to_dict('records'))\nprint(sales.tail(1).to_dict('records'))\nprint(sales[['cups']].to_numpy().tolist())",
+      "expected": "[{'drink': 'coffee', 'cups': 12}]\n[{'drink': 'cocoa', 'cups': 5}]\n[[12], [8], [5]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`to_numpy()` lấy các giá trị thành NumPy array, bỏ nhãn hàng và cột; array của một cột vẫn có hai chiều nên kết quả gồm các list nhỏ. Slide cũ dùng `.values` cho thao tác tương tự; code mới thường viết rõ `to_numpy()`. Nếu các cột khác kiểu, array kết quả có thể cần kiểu chung thay vì giữ nguyên kiểu của từng cột."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với bảng thật, `sales.info()` còn cho biết số giá trị không thiếu và kiểu dữ liệu từng cột. Hàm này in thông tin trực tiếp; không cần viết print(sales.info()). Đọc vài hàng là bước kiểm tra đầu tiên, chưa đủ để kết luận dữ liệu sạch."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD01 · Series: một cột dữ liệu có nhãn"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "shape bằng (100, 4) có nghĩa gì?",
+     "answer": "Bảng có 100 hàng và 4 cột."
+    },
+    {
+     "prompt": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?",
+     "answer": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print."
+    },
+    {
+     "prompt": "Tạo bảng qty=[2, 3], price=[10, 20], rồi in hàng đầu.",
+     "answer": "Dùng head(1).",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nprint(df.head(1).to_dict('records'))",
+     "answerExpected": "[{'qty': 2, 'price': 10}]"
+    },
+    {
+     "prompt": "Với bảng có index [\"A\",\"B\"] và columns [\"qty\",\"price\"], viết cách xem index, columns, hàng đầu, hàng cuối và thông tin kiểu cột.",
+     "answer": "Dùng df.index.tolist(), df.columns.tolist(), df.head(1), df.tail(1) và df.info(). Hai tên đầu là nhãn hàng, hai tên sau là nhãn cột; info in thông tin trực tiếp."
+    },
+    {
+     "prompt": "df[[\"qty\"]] có shape (2,1). Sau to_numpy(), các nhãn A/B và qty còn được giữ không? .values trong slide có ý nghĩa gì?",
+     "answer": "Không. to_numpy() trả ndarray shape (2,1) chỉ giữ giá trị. .values cũng lấy phần giá trị, nhưng to_numpy() thể hiện rõ thao tác và cho phép chọn dtype/copy. Giữ nhãn riêng nếu cần ghép kết quả trở lại bảng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea', 'cocoa'], 'cups': [12, 8, 5]})\nprint(sales.head(1).to_dict('records'))\nprint(sales.tail(1).to_dict('records'))\nprint(sales[['cups']].to_numpy().tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

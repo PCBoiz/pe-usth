@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD01",
+ "sort_order": 42,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD01 · Series: một cột dữ liệu có nhãn",
+ "subtitle": "Cơ bản · M3 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD01 · Series: một cột dữ liệu có nhãn",
+  "subtitle": "Cơ bản · M3 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Series"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng Series. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
+      "expected": "[12, 15, 9]\n[0, 1, 2]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
+      "expected": "15"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`loc` chọn dữ liệu theo nhãn. Vì đã gắn nhãn Tue, bạn lấy được số cốc thứ Ba mà không phải nhớ nó đứng ở vị trí nào. Series cũng có các phép tính cho cả cột."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.sum())\nprint(len(cups))",
+      "expected": "36\n3"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tổng ba ngày là 36 cốc. `len(cups)` cho biết Series có ba phần tử. Trong các bài sau, `tolist()` được dùng để in giá trị gọn thành list; dữ liệu ban đầu vẫn là Series."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP01 · Array là gì?, NP02 · Lấy một phần tử, NP03 · Kiểu dữ liệu của array"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong ví dụ đầu, giá trị 15 có nhãn nào?",
+     "answer": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0."
+    },
+    {
+     "prompt": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.",
+     "answer": "Dùng cups.loc['Wed'], nhận 9."
+    },
+    {
+     "prompt": "Tạo Series [4, 6] có nhãn A, B và in tổng.",
+     "answer": "Tổng là 10.",
+     "answerCode": "import pandas as pd\ns = pd.Series([4, 6], index=['A', 'B'])\nprint(s.sum())",
+     "answerExpected": "10"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])\n\n# ── Đoạn 3 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.sum())\nprint(len(cups))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

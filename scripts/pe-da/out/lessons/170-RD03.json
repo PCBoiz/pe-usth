@@ -1,0 +1,94 @@
+{
+ "lesson_code": "RD03",
+ "sort_order": 170,
+ "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+ "title": "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
+ "subtitle": "Nâng cao · M10 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
+  "subtitle": "Nâng cao · M10 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RD03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "NumPy sorting"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần xếp ba cửa hàng theo doanh thu nhưng vẫn giữ tên đi cùng số tiền. Chỉ sort doanh thu rồi ghép lại tên cũ sẽ gán nhầm cửa hàng. argsort trả các vị trí theo thứ tự cần chọn."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nnames = np.array([\"A\", \"B\", \"C\"])\nsales = np.array([30, 10, 20])\norder = np.argsort(sales, kind=\"stable\")\nprint(order.tolist())\nprint(names[order].tolist(), sales[order].tolist())",
+      "expected": "[1, 2, 0]\n['B', 'C', 'A'] [10, 20, 30]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Thứ tự [1,2,0] lấy B trước, rồi C và A. Áp cùng một order lên mọi cột để các cặp không bị tách. kind=\"stable\" giữ thứ tự gốc giữa những giá trị bằng nhau. Nếu chỉ cần các số đã xếp, np.sort trả một array mới."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nsales = np.array([30, 10, 20])\nsorted_sales = np.sort(sales)\nprint(sorted_sales.tolist())\nprint(sales.tolist())",
+      "expected": "[10, 20, 30]\n[30, 10, 20]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Array gốc vẫn là [30,10,20]. sales.sort() là phương thức sửa tại chỗ, nên chọn np.sort khi còn cần giữ dữ liệu gốc. Sau khi đã biết cách chọn, bạn có thể đếm các mã phân loại bằng unique."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\ncodes = np.array([\"B\", \"A\", \"B\", \"C\", \"A\"])\nvalues, counts = np.unique(codes, return_counts=True)\nprint(values.tolist())\nprint(counts.tolist())\nprint(int(counts.sum()))",
+      "expected": "['A', 'B', 'C']\n[2, 2, 1]\n5"
+     },
+     {
+      "type": "paragraph",
+      "text": "unique trả các giá trị khác nhau theo thứ tự sắp xếp mặc định. counts cùng vị trí với values: A xuất hiện hai lần, B hai lần, C một lần. Tổng đếm bằng năm quan sát. Đây là đếm lần xuất hiện, không phải cộng doanh thu của từng mã; khi cần nhiều cột và nhãn, groupby của pandas thường dễ đọc hơn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "NP14 · Lọc dữ liệu bằng mask, NP19 · Cắt dữ liệu: view và copy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Nếu chỉ sort sales rồi giữ names cũ, tên nào bị gán sai trong ví dụ?",
+     "answer": "A sẽ bị gán 10 thay vì 30, B bị gán 20 thay vì 10, C bị gán 30 thay vì 20. Dùng một order chung cho tên và số."
+    },
+    {
+     "prompt": "np.sort(a) và a.sort() có cùng sửa a tại chỗ không?",
+     "answer": "Không. np.sort(a) trả bản đã xếp; a.sort() sửa a tại chỗ. Cần lưu kết quả np.sort nếu muốn dùng nó."
+    },
+    {
+     "prompt": "Với mã [A,B,A,A], unique(return_counts=True) cho các mã và số đếm nào?",
+     "answer": "Mã [A,B], số đếm [3,1]; tổng bằng 4. Muốn tính doanh thu theo mã phải cộng cột doanh thu, không chỉ đếm số mã."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nnames = np.array([\"A\", \"B\", \"C\"])\nsales = np.array([30, 10, 20])\norder = np.argsort(sales, kind=\"stable\")\nprint(order.tolist())\nprint(names[order].tolist(), sales[order].tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nsales = np.array([30, 10, 20])\nsorted_sales = np.sort(sales)\nprint(sorted_sales.tolist())\nprint(sales.tolist())\n\n# ── Đoạn 3 ──\nimport numpy as np\ncodes = np.array([\"B\", \"A\", \"B\", \"C\", \"A\"])\nvalues, counts = np.unique(codes, return_counts=True)\nprint(values.tolist())\nprint(counts.tolist())\nprint(int(counts.sum()))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

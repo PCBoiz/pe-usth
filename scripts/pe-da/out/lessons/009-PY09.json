@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY09",
+ "sort_order": 9,
+ "module": "M1 · Python nền tảng",
+ "title": "PY09 · Điều kiện, so sánh và khối lệnh",
+ "subtitle": "Cơ bản · M1 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY09 · Điều kiện, so sánh và khối lệnh",
+  "subtitle": "Cơ bản · M1 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 50-51, 53-57; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một điểm từ 8 trở lên được ghi Good, từ 5 đến dưới 8 là Pass, còn lại là Retry:"
+     },
+     {
+      "type": "code",
+      "code": "score = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")",
+      "expected": "Pass"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Python kiểm tra các nhánh từ trên xuống và chỉ chạy nhánh đầu có điều kiện đúng. Dấu `:` mở khối; thụt lề cho biết lệnh thuộc nhánh nào. Lệnh được viết trở lại mức thụt lề ngoài nhánh tiếp tục chạy sau cấu trúc if. Dùng nhất quán bốn dấu cách và tránh trộn tab với space; thụt lề sai có thể gây IndentationError, còn trộn tab và space không nhất quán có thể gây TabError."
+     },
+     {
+      "type": "code",
+      "code": "age, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)",
+      "expected": "True\nFalse\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`and` yêu cầu cả hai điều kiện đúng; `or` cần ít nhất một điều kiện đúng; `not` đảo giá trị đúng/sai. `==` so sánh bằng, `!=` so sánh khác, còn `=` là phép gán. Với dữ liệu vô hướng, and/or có thể dừng sớm khi đã xác định được kết quả."
+     },
+     {
+      "type": "code",
+      "code": "score = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")",
+      "expected": "Valid and good"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở ví dụ lồng nhau, kiểm tra điểm hợp lệ được xét trước. `else` thẳng hàng với if nào thì thuộc if đó: ở đây nó thuộc kiểm tra 0 <= score <= 10, không thuộc kiểm tra score >= 8. Giảm mức thụt lề kết thúc khối bên trong. Dòng trống và comment không mở hay kết thúc khối mới. Nếu cần để trống một nhánh đang viết dở, dùng `pass`; một nhánh chỉ có comment vẫn thiếu câu lệnh."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY08 · Chuẩn hóa và định dạng văn bản"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với score = 8, đoạn đầu chạy nhánh nào?",
+     "answer": "Good, vì điều kiện đầu đã đúng."
+    },
+    {
+     "prompt": "Dùng phép so sánh nào cho điều kiện ít nhất 5 và không quá 10?",
+     "answer": "Viết 5 <= score <= 10, hoặc score >= 5 and score <= 10."
+    },
+    {
+     "prompt": "Vì sao if True: rồi chỉ có comment chưa phải khối hoàn chỉnh?",
+     "answer": "Comment không phải câu lệnh. Cần một câu lệnh thực hoặc pass, với thụt lề đúng."
+    },
+    {
+     "prompt": "Nếu if ngoài kiểm điểm 0..10 và if trong kiểm >=8, else thẳng hàng với if ngoài chạy khi nào? Đặt print(\"done\") sau toàn bộ cấu trúc có bị bỏ qua không?",
+     "answer": "else ngoài chạy khi điểm không hợp lệ. print ở ngoài mọi nhánh chạy sau cấu trúc khi không có ngoại lệ hay thoát sớm. Comment/dòng trống không đổi quan hệ khối; mức thụt lề quyết định."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nscore = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")\n\n# ── Đoạn 2 ──\nage, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)\n\n# ── Đoạn 3 ──\nscore = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

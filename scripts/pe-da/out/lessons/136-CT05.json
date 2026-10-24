@@ -1,0 +1,99 @@
+{
+ "lesson_code": "CT05",
+ "sort_order": 136,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT05 · SRTF, deadline và các mức ưu tiên",
+ "subtitle": "Nâng cao · M6 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT05 · SRTF, deadline và các mức ưu tiên",
+  "subtitle": "Nâng cao · M6 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 234-235; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "A bắt đầu chạy với 6 đơn vị CPU. Sau 1 đơn vị, B đến và chỉ cần 2 đơn vị. SRTF xem thời gian còn lại: A còn 5, nên B có thể được chạy trước."
+     },
+     {
+      "type": "code",
+      "code": "remaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))",
+      "expected": "B"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "SRTF là dạng preemptive của ý tưởng chọn việc ngắn: việc mới ngắn hơn thời gian còn lại có thể làm việc đang chạy bị thu CPU. SJF non-preemptive sẽ không tự ngắt A như vậy."
+     },
+     {
+      "type": "code",
+      "code": "jobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])",
+      "expected": "B\nA"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Earliest Deadline First chọn deadline sớm nhất, nên B được chọn dù nó dài hơn. Deadline là hạn cần hoàn thành; burst là lượng CPU cần. Chọn đúng chính sách không tự đảm bảo mọi deadline đều khả thi khi tổng việc quá lớn."
+     },
+     {
+      "type": "code",
+      "code": "queues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])",
+      "expected": "[] ['B', 'A']"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở mô phỏng cuối, A chuyển từ hàng ưu tiên cao xuống hàng thấp sau khi dùng CPU. Multilevel Queue chia công việc vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép công việc đổi hàng theo hành vi hoặc thời gian CPU đã dùng. Ngoài chính sách bên trong từng hàng, hệ thống còn cần quy tắc chọn hàng ưu tiên và quyết định khi nào thu hồi CPU. Chỉ tên thuật toán chưa cho biết đầy đủ những quy tắc đó."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "A còn 5, B mới tới cần 2: SRTF ưu tiên ai?",
+     "answer": "B, nếu không có ràng buộc khác trong mô hình."
+    },
+    {
+     "prompt": "Deadline sớm nhất có luôn là CPU burst ngắn nhất không?",
+     "answer": "Không. Ví dụ B có deadline sớm hơn nhưng burst dài hơn A."
+    },
+    {
+     "prompt": "Điểm phân biệt Queue và Feedback Queue là gì?",
+     "answer": "Feedback cho phép công việc chuyển giữa các hàng theo quy tắc; phân lớp ở Multilevel Queue thường cố định."
+    },
+    {
+     "prompt": "Hàng dành cho công việc tương tác dùng Round Robin, còn hàng cho tác vụ nền dùng FCFS. Một hệ thống có được dùng hai chính sách khác nhau như vậy không?",
+     "answer": "Có. Trong Multilevel Queue, mỗi hàng có thể dùng chính sách riêng. Hệ thống vẫn cần quy tắc chọn giữa các hàng, gồm độ ưu tiên và điều kiện thu hồi CPU từ công việc đang chạy."
+    },
+    {
+     "prompt": "A bị chuyển từ hàng cao xuống thấp vì dùng hết quantum. Cơ chế này thuộc Queue cố định hay Feedback Queue?",
+     "answer": "Feedback Queue, vì công việc được đổi hàng. Phân lớp cố định không tự chuyển như vậy; quy tắc ưu tiên/preempt của cả hai còn tùy cấu hình."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nremaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))\n\n# ── Đoạn 2 ──\njobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])\n\n# ── Đoạn 3 ──\nqueues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

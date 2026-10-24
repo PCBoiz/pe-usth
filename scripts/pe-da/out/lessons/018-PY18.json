@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY18",
+ "sort_order": 18,
+ "module": "M1 · Python nền tảng",
+ "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
+ "subtitle": "Cơ bản · M1 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
+  "subtitle": "Cơ bản · M1 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY18",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 45, 131, 169, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cột điểm có hai chuỗi hợp lệ và một chuỗi trống. Nếu chuyển tất cả thành số mà không xử lý lỗi, chương trình sẽ dừng ở ô trống:"
+     },
+     {
+      "type": "code",
+      "code": "for raw in [\"6\", \"\", \"8\"]:\n    try:\n        print(float(raw))\n    except ValueError:\n        print(\"missing\")",
+      "expected": "6.0\nmissing\n8.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "try chứa thao tác có thể gây lỗi; except ValueError xử lý riêng lỗi chuyển đổi này. Không bắt mọi ngoại lệ rồi bỏ qua, vì lỗi lập trình như sai tên biến cần được phát hiện."
+     },
+     {
+      "type": "code",
+      "code": "def read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))",
+      "expected": "Outside 0..10"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`raise` chủ động báo dữ liệu vi phạm quy tắc. Phân biệt các lỗi thường gặp: TypeError là thao tác không phù hợp kiểu, IndexError là chỉ số không tồn tại và KeyError là thiếu khóa dict. Traceback cho biết chuỗi lời gọi và vị trí phát sinh; đọc dòng lỗi cuối cùng rồi tìm lại dòng code liên quan."
+     },
+     {
+      "type": "code",
+      "code": "try:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")",
+      "expected": "8\nfinished"
+     },
+     {
+      "type": "paragraph",
+      "text": "else chạy khi phần try không gây ngoại lệ; finally chạy khi rời cấu trúc, thường dùng để thu dọn tài nguyên. Với file, khối with thường giúp quản lý đóng file rõ hơn. Trong dữ liệu phân tích, “bắt được lỗi” chưa quyết định nên bỏ ô, gắn nhãn thiếu hay yêu cầu nhập lại; bạn phải nêu chính sách xử lý."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY09 · Điều kiện, so sánh và khối lệnh, PY12 · Dictionary và tra cứu theo khóa, PY16 · Hàm, giá trị trả về và docstring"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Chuỗi trống chuyển bằng float thường gây lỗi gì?",
+     "answer": "ValueError."
+    },
+    {
+     "prompt": "Muốn báo điểm ngoài 0–10, dùng từ khóa nào?",
+     "answer": "raise, chẳng hạn raise ValueError(\"Outside 0..10\")."
+    },
+    {
+     "prompt": "Có nên dùng except: pass để bỏ hết lỗi đọc dữ liệu không?",
+     "answer": "Không. Nó có thể che lỗi sai tên, sai logic hoặc lỗi file. Bắt ngoại lệ cụ thể, ghi nhận dữ liệu lỗi và nêu cách xử lý."
+    },
+    {
+     "prompt": "Giữ nguyên độ dài khi đổi [\"1\",\"\",\"3.5\"] thành float, đánh dấu ô hỏng bằng None: viết phần try/except và nêu kết quả.",
+     "answer": "Khởi tạo values=[]; lặp raw, try: values.append(float(raw)); except ValueError: values.append(None). Kết quả [1.0,None,3.5]. Bắt ValueError riêng, không bỏ dòng âm thầm và không giữ chuỗi rỗng trong cột đã quy ước là số hoặc None."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfor raw in [\"6\", \"\", \"8\"]:\n    try:\n        print(float(raw))\n    except ValueError:\n        print(\"missing\")\n\n# ── Đoạn 2 ──\ndef read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))\n\n# ── Đoạn 3 ──\ntry:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

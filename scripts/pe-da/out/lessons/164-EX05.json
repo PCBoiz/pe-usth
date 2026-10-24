@@ -1,0 +1,101 @@
+{
+ "lesson_code": "EX05",
+ "sort_order": 164,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX05 · GIL, reference counting và chọn đúng kiểu đồng thời",
+ "subtitle": "Nâng cao · M9 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX05 · GIL, reference counting và chọn đúng kiểu đồng thời",
+  "subtitle": "Nâng cao · M9 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 255-286; Thread state and GIL; Python gc; PEP 703"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
+     },
+     {
+      "type": "code",
+      "code": "values = [6, 8]\nalias = values\nalias.append(10)\nprint(alias is values)\nprint(values)",
+      "expected": "True\n[6, 8, 10]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong ví dụ tiếp theo, a và b giữ tham chiếu tới nhau qua thuộc tính peer. Sau khi make_cycle kết thúc, chương trình không còn biến nào dẫn tới hai object đó, nhưng chúng vẫn tham chiếu lẫn nhau. weakref giữ một tham chiếu yếu, cho phép quan sát object mà không tự giữ nó sống. Sau gc.collect(), reference() là None, cho biết object được quan sát đã bị thu hồi. Không dùng tổng số object mà gc.collect trả về để kết luận riêng về ví dụ, vì nó có thể thu hồi cả object khác trong môi trường."
+     },
+     {
+      "type": "code",
+      "code": "import gc, weakref\nclass Node:\n    pass\ndef make_cycle():\n    a, b = Node(), Node()\n    a.peer, b.peer = b, a\n    return weakref.ref(a)\nreference = make_cycle()\ngc.collect()\nprint(reference() is None)",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "GIL (Global Interpreter Lock) là khóa của trình thông dịch. Trong bản CPython có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Khóa bảo vệ trạng thái nội bộ của CPython, nhưng không làm toàn bộ thao tác cập nhật dữ liệu của ứng dụng trở thành một bước nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
+     },
+     {
+      "type": "code",
+      "code": "from concurrent.futures import ThreadPoolExecutor\ndef read_simulated_record(value):\n    return value * 2\nwith ThreadPoolExecutor(max_workers=2) as pool:\n    result = list(pool.map(read_simulated_record, [3, 4]))\nprint(result)",
+      "expected": "[6, 8]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ví dụ cuối cho thấy pool trả kết quả theo thứ tự [3, 4] ở đầu vào. Hàm chỉ nhân số, không đọc dữ liệu hay chờ I/O, nên ví dụ không cho biết thread có tăng tốc việc đọc file hay không. Để so hiệu năng, cần chọn một tác vụ thực tế, đo nhiều lượt và ghi cấu hình máy. Các sơ đồ Apache và Chromium trong slide còn minh họa một lý do khác để dùng process: tách bộ nhớ để tăng tính cô lập. Thread bên trong mỗi process vẫn có thể dùng chung dữ liệu của process đó."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT09 · Thread dùng chung gì, giữ riêng gì?, CT12 · Race condition, Lock và tránh deadlock"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Reference counting có giống garbage collector chu kỳ không? Vì sao hai Node có thể cần collector dù không còn biến bên ngoài?",
+     "answer": "Không. Hai Node giữ tham chiếu lẫn nhau nên chỉ đếm tham chiếu chưa đủ tìm chu kỳ không còn được truy cập. Collector xem cấu trúc liên kết để thu hồi nhóm không còn truy cập được."
+    },
+    {
+     "prompt": "Trong build có GIL, chọn gì cho chờ I/O và Python thuần nặng CPU? Vì sao vẫn cần Lock cho số dư tài khoản?",
+     "answer": "Thread thường phù hợp chờ I/O; process có thể dùng nhiều core cho Python thuần. GIL không bảo vệ trọn quy tắc đọc–tính–ghi số dư; dùng khóa hoặc thiết kế trao đổi dữ liệu phù hợp. Native code nhả GIL có thể có hành vi hiệu năng khác."
+    },
+    {
+     "prompt": "Bỏ GIL có chỉ là xóa một khóa không? Nếu cần cô lập renderer hoặc worker lỗi, thread có cho ranh giới bộ nhớ giống process không?",
+     "answer": "Không. Phải xử lý đồng bộ trạng thái, tham chiếu và tính tương thích C extension, cùng đánh đổi hiệu năng. Thread chung không gian bộ nhớ; process tạo ranh giới địa chỉ riêng và có thể tăng cô lập, nhưng vẫn cần IPC và quản lý tài nguyên. Các sơ đồ Apache/Chromium trong slide minh họa lựa chọn này, không cam kết mọi phiên bản hiện tại giống hệt."
+    },
+    {
+     "prompt": "GIL là gì? Vì sao không thể kết luận mọi chương trình Python hoặc mọi phép NumPy đều chỉ chạy trên một core?",
+     "answer": "GIL là Global Interpreter Lock. Trong CPython build có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Một thread chờ I/O có thể nhường cho thread khác; một số native code nhả GIL và có thể chạy song song, nhưng phải kiểm từng thao tác thay vì mặc định mọi phép NumPy đều làm vậy. Nhiều process có interpreter riêng; free-threaded build có mô hình khác. Vì thế cần nói rõ interpreter, build và loại tác vụ."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (concurrent.futures chạy trên thread/process thật) nên không nằm trong ô này."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nvalues = [6, 8]\nalias = values\nalias.append(10)\nprint(alias is values)\nprint(values)\n\n# ── Đoạn 2 ──\nimport gc, weakref\nclass Node:\n    pass\ndef make_cycle():\n    a, b = Node(), Node()\n    a.peer, b.peer = b, a\n    return weakref.ref(a)\nreference = make_cycle()\ngc.collect()\nprint(reference() is None)\n",
+   "env": "1 đoạn phải chạy bằng Python trên máy: concurrent.futures chạy trên thread/process thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 2,
+   "reason": "concurrent.futures chạy trên thread/process thật"
+  }
+ ]
+}

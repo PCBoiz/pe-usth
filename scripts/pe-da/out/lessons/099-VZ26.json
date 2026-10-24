@@ -1,0 +1,101 @@
+{
+ "lesson_code": "VZ26",
+ "sort_order": 99,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
+ "subtitle": "Nâng cao · M4 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
+  "subtitle": "Nâng cao · M4 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ26",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas aggregation; Plotly export"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn được hỏi: “Trong dữ liệu mẫu, loại đồ uống nào đóng góp doanh thu cao nhất?” Cần thống nhất doanh thu bằng số lượng nhân đơn giá, loại bỏ dòng không hợp lệ theo quy tắc công khai rồi mới tổng hợp. Ví dụ dưới giữ ba dòng có lượng và giá không âm; đây là dữ liệu minh họa, không phải kết quả kinh doanh thật."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()",
+      "expected": "{'Tea': 36, 'Coffee': 60}"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ26-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Lời kết luận cần bám vào số đã vẽ: cà phê đạt 60 trong tổng 96 nghìn đồng, tức 62.5%. Chưa có chi phí nên không gọi đó là lợi nhuận; chỉ ba đơn nên không suy ra tỷ trọng dài hạn. Bảng tóm tắt hoặc phần mô tả chữ giúp người đọc kiểm tra kết luận ngay cạnh biểu đồ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()",
+      "expected": "62.5"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ26-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ26-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi gửi báo cáo, bạn có thể kèm hình tĩnh để chèn vào tài liệu và HTML để người đọc xem giá trị chi tiết. Gửi cả bảng dữ liệu được dùng, công thức tính chỉ số và khoảng dữ liệu mà báo cáo bao quát. Trước khi gửi, đối chiếu tổng trước và sau lọc, kiểm tra tiêu đề khớp dữ liệu, nhãn không bị cắt và các file mở được. Nếu thêm một kỳ so sánh, áp dụng cùng quy tắc tính cho cả hai kỳ. Chỉ có chênh lệch doanh thu chưa đủ để kết luận nguyên nhân tăng trưởng."
+     },
+     {
+      "type": "terminal",
+      "code": "import pandas as pd\nimport plotly.express as px\nsummary = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\"], \"revenue\":[60, 36], \"orders\":[2, 1]})\nassert summary[\"revenue\"].sum() == 96\nfig = px.bar(summary, x=\"drink\", y=\"revenue\", hover_data=[\"orders\"], labels={\"drink\":\"Drink\", \"revenue\":\"Revenue (thousand VND)\", \"orders\":\"Order rows\"}, title=\"Synthetic sample: three orders, total revenue 96\")\nprint(int(summary[\"orders\"].sum()), int(summary[\"revenue\"].sum()))\nfig.show()",
+      "expected": "Chạy với frontend Plotly hỗ trợ: biểu đồ tương tác mở, hover/legend hoặc bộ chọn hoạt động theo bài; stdout vẫn là phần kết quả số phía dưới. Backend trình duyệt phải được quan sát trực tiếp, không suy từ lần chạy headless."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting, VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file, VZ24 · Nhận ra biểu đồ gây hiểu lầm, PD14 · Groupby: tổng hợp theo nhóm"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.",
+     "answer": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá."
+    },
+    {
+     "prompt": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?",
+     "answer": "Không. Cần chi phí để tính lợi nhuận."
+    },
+    {
+     "prompt": "Tự làm báo cáo ba đơn ở ví dụ, cần giao những gì?",
+     "answer": "Bảng đã kiểm tra, công thức revenue=qty*price, tổng 96, hình có đơn vị, mô tả Coffee=60/96=62.5%, file PNG/SVG và HTML mở được, cùng giới hạn mẫu nhỏ. Không gán nguyên nhân kinh doanh."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

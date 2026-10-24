@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD07",
+ "sort_order": 48,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD07 · Kiểu dữ liệu và số nguyên có ô trống",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD07 · Kiểu dữ liệu và số nguyên có ô trống",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD07",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Nullable integers"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mã đơn 001 cần giữ số 0 ở đầu; số lượng có thể chưa được nhập. Hai cột này không nên được xử lý cùng một kiểu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
+      "expected": "['001', '002']\nInt64\n[False, True]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Kiểu `string` giữ mã như chữ. `Int64` viết hoa I là kiểu số nguyên của pandas cho phép có ô thiếu; những ô đó được biểu diễn bằng `pd.NA`. Nó khác kiểu `int64` thông thường của NumPy, vốn không chứa được `pd.NA`. Dùng `df.dtypes` để xem kiểu của từng cột."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())",
+      "expected": "[False, True, False]\n[12.0, 8.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`to_numeric` chuyển chữ thành số. errors=\"coerce\" biến dữ liệu không đọc được thành giá trị thiếu; bạn vẫn cần đếm và xem những hàng này. Không nên biến lỗi nhập liệu thành 0 mà chưa kiểm tra."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ns = pd.Series([1.0, 2.0])\nconverted = s.astype('Int64')\nprint(str(converted.dtype))\nprint(converted.tolist())",
+      "expected": "Int64\n[1, 2]"
+     },
+     {
+      "type": "paragraph",
+      "text": "`astype` phù hợp khi đã biết dữ liệu tương thích với kiểu đích. Việc đổi 1.0 và 2.0 sang Int64 ở đây không làm mất phần lẻ vì chúng đều là giá trị nguyên. Không mặc định ép mọi cột số thực về số nguyên."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD06 · Thêm cột và sửa đúng bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao mã 001 nên giữ dạng chữ?",
+     "answer": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
+    },
+    {
+     "prompt": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+     "answer": "Cột số nguyên có giá trị thiếu."
+    },
+    {
+     "prompt": "Chuyển [\"5\", \"?\", \"7\"] thành số, cho dữ liệu lỗi thành thiếu rồi đếm ô thiếu.",
+     "answer": "Có 1 ô thiếu.",
+     "answerCode": "import pandas as pd\ns = pd.to_numeric(pd.Series(['5', '?', '7']), errors='coerce')\nprint(s.isna().sum())",
+     "answerExpected": "1"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ns = pd.Series([1.0, 2.0])\nconverted = s.astype('Int64')\nprint(str(converted.dtype))\nprint(converted.tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,101 @@
+{
+ "lesson_code": "SY10",
+ "sort_order": 113,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY10 · Giữ trạng thái hợp lệ bằng getter và setter",
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY10 · Giữ trạng thái hợp lệ bằng getter và setter",
+  "subtitle": "Trung cấp · M5 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 129-131; Python — Private variables"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
+     },
+     {
+      "type": "code",
+      "code": "class Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())",
+      "expected": "8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Getter đọc trạng thái; setter kiểm tra rồi mới cập nhật. Một dấu gạch dưới ở _value là lời nhắc đây là chi tiết nội bộ. Nó không chặn truy cập như protected của Java, vốn đặt quy tắc truy cập theo package và lớp con."
+     },
+     {
+      "type": "code",
+      "code": "class Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))",
+      "expected": "100\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai dấu gạch dưới ở đầu tên kích hoạt name mangling: tên nội bộ mang theo tên class. Mục đích là tránh đụng tên trong kế thừa, không giữ bí mật trước người có quyền chạy Python. `__value` không giống tên đặc biệt có hai dấu gạch dưới ở cả hai đầu như __str__."
+     },
+     {
+      "type": "code",
+      "code": "class Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)",
+      "expected": "Tu choi\n8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Property cho cú pháp grade.value trong khi vẫn gọi getter/setter. Kiểm tra trước khi gán giúp trạng thái cũ còn nguyên nếu dữ liệu sai. Trong bài thực tế, bổ sung quy tắc kiểu và số hữu hạn nếu đầu vào có thể chứa bool, NaN (giá trị “không phải số”) hoặc giá trị vô cực."
+     },
+     {
+      "type": "paragraph",
+      "text": "Thuộc tính không có tiền tố đặc biệt, như name, mặc định là public theo quy ước sử dụng. Nếu Employee khai báo `self.__salary`, Python lưu tên đã đổi thành `_Employee__salary`; truy cập `employee.__salary` từ ngoài gây AttributeError. Getter có thể đọc đúng tên từ trong class. Đây là lỗi tìm thuộc tính, không phải bằng chứng dữ liệu đã được mã hóa."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY09 · Abstraction, interface và composition"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "_value có ngăn người khác đọc được không?",
+     "answer": "Không. Nó là quy ước API nội bộ."
+    },
+    {
+     "prompt": "__value có phải mã hóa hay bảo mật dữ liệu không?",
+     "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập bằng tên đã được Python đổi."
+    },
+    {
+     "prompt": "Sửa Grade để chỉ nhận int/float hữu hạn, bỏ bool và giữ điểm cũ khi sai.",
+     "answer": "Kiểm type(value) in (int, float), math.isfinite(value), 0 <= value <= 10 trước self._value = value. Thử 0,10,-1,11,True,float(\"nan\"),float(\"inf\")."
+    },
+    {
+     "prompt": "name, _name và __salary khác quy tắc gì? Employee có self.__salary: employee.__salary gây lỗi nào và getter đọc được vì sao?",
+     "answer": "name public theo mặc định; _name là quy ước không public, không phải protected được cưỡng chế như Java. __salary bị đổi thành _Employee__salary; truy cập employee.__salary gây AttributeError. Method trong class được đổi tên nhất quán nên getter đọc được. Getter/accessor đọc, setter/mutator kiểm rồi cập nhật."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nclass Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())\n\n# ── Đoạn 2 ──\nclass Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))\n\n# ── Đoạn 3 ──\nclass Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

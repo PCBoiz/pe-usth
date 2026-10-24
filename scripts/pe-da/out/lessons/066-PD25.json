@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD25",
+ "sort_order": 66,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD25 · Map, phép tính theo cột và apply",
+ "subtitle": "Nâng cao · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD25 · Map, phép tính theo cột và apply",
+  "subtitle": "Nâng cao · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD25",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · DataFrame.apply"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Cột `status` dùng P cho đơn đã thanh toán và C cho đơn đã hủy. Bạn muốn đổi các mã này sang tên dễ đọc. Sau đó, bảng số lượng, đơn giá và tỷ lệ giảm giá được dùng để tính doanh thu sau chiết khấu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())",
+      "expected": "['paid', 'cancelled', 'unknown']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "map thay từng mã bằng giá trị trong dictionary. Mã X chưa có trong bảng ánh xạ trở thành thiếu. Hãy kiểm tra mã lạ trước khi quyết định gán nhãn unknown."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())",
+      "expected": "[18.0, 60.0]\n[0.0, 60.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndef row_total(row):\n    return row['qty'] * row['price']\nprint(df.apply(row_total, axis=1).tolist())\nprint((df['qty'] * df['price']).tolist())",
+      "expected": "[20, 60]\n[20, 60]"
+     },
+     {
+      "type": "paragraph",
+      "text": "axis=1 đưa từng hàng cho row_total; axis=0 đưa từng cột. apply hữu ích với logic riêng khó diễn đạt bằng hàm có sẵn, nhưng không tự biến hàm Python thành code chạy nhanh. Với phép nhân đơn giản, dùng hai cột trực tiếp."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD24 · Cửa sổ trượt và so sánh kỳ trước"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?",
+     "answer": "Giá trị đó thành thiếu."
+    },
+    {
+     "prompt": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?",
+     "answer": "Từng hàng."
+    },
+    {
+     "prompt": "Dùng map đổi [N,S] thành [North,South].",
+     "answer": "Kết quả là hai tên đầy đủ.",
+     "answerCode": "import pandas as pd\ns = pd.Series(['N', 'S'])\nprint(s.map({'N': 'North', 'S': 'South'}).tolist())",
+     "answerExpected": "['North', 'South']"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndef row_total(row):\n    return row['qty'] * row['price']\nprint(df.apply(row_total, axis=1).tolist())\nprint((df['qty'] * df['price']).tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

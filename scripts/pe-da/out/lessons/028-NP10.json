@@ -1,0 +1,100 @@
+{
+ "lesson_code": "NP10",
+ "sort_order": 28,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP10 · Tổng của cả dãy và cả bảng",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP10 · Tổng của cả dãy và cả bảng",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · sum và axis"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Cuối ba ngày, bạn cần biết cả hai cửa hàng đã bán tổng cộng bao nhiêu cốc. Vì chưa cần tách theo ngày hoặc cửa hàng, hãy cộng tất cả ô trong bảng:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum())",
+      "expected": "68"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`sales.sum()` cộng 12 + 15 + 9 + 10 + 8 + 14, được 68. Đầu vào là một bảng có sáu số; đầu ra là một số tổng."
+     },
+     {
+      "type": "paragraph",
+      "text": "`sum()` cũng dùng được với array một chiều:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([2, 4, 6])\nprint(a.sum())",
+      "expected": "12"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở đây, 2 + 4 + 6 = 12. Với bảng hai chiều, lệnh vẫn cộng tất cả phần tử:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum())",
+      "expected": "21"
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể kiểm lại: 1 + 2 + 3 + 4 + 5 + 6 = 21. Khi gọi `sum()` mà không thêm `axis`, NumPy trả tổng của toàn bộ array. Nếu cần một tổng cho mỗi hàng hoặc mỗi cột, bạn sẽ chọn `axis` ở hai bài tiếp theo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP04 · Tính trên từng phần tử, NP06 · Array hai chiều"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Tổng của dãy `[1, 2, 3]` là bao nhiêu?",
+     "answer": "Tổng là 1 + 2 + 3 = 6."
+    },
+    {
+     "prompt": "Điền tên phương thức để tính tổng tất cả phần tử: `a.___()`.",
+     "answer": "Điền `sum`: `a.sum()`."
+    },
+    {
+     "prompt": "Tính tổng số sản phẩm trong bảng `[[2, 1], [0, 3]]`.",
+     "answer": "Cộng tất cả bốn ô:",
+     "answerCode": "import numpy as np\n\na = np.array([[2, 1], [0, 3]])\nprint(a.sum())",
+     "answerExpected": "6"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum())\n\n# ── Đoạn 2 ──\na = np.array([2, 4, 6])\nprint(a.sum())\n\n# ── Đoạn 3 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum())\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

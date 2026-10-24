@@ -1,0 +1,111 @@
+{
+ "lesson_code": "GU04",
+ "sort_order": 151,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU04 · Button, callback và hộp thông báo",
+ "subtitle": "Trung cấp · M8 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU04 · Button, callback và hộp thông báo",
+  "subtitle": "Trung cấp · M8 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 312; Python · tkinter; Python · messagebox"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Nút Tính GPA chỉ nên chạy phép tính khi người dùng bấm. command cần nhận hàm sẽ được gọi sau, không phải kết quả của một lần gọi ngay lúc dựng giao diện."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nresult=tk.StringVar(root, value='Pending')\ndef calculate():\n    result.set('GPA 15.0')\nbutton=tk.Button(root, text='Tinh', command=calculate)\nprint(result.get())\nbutton.invoke()\nprint(result.get())\nroot.destroy()",
+      "expected": "Pending\nGPA 15.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "command=calculate truyền hàm. Viết calculate() sẽ chạy ngay và thường trả None, khiến nút không còn callback mong muốn. invoke ở ví dụ là cách gọi callback bằng code; nó chưa kiểm tra cú bấm chuột thật."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nstatus=tk.Label(root, text='0')\ndef set_status(value):\n    status.configure(text=value)\nbutton=tk.Button(root, text='Chon S01', command=lambda: set_status('S01'))\nbutton.invoke()\nprint(status.cget('text'))\nroot.destroy()",
+      "expected": "S01"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "lambda tạo hàm không tham số để gọi set_status với giá trị bạn cần. Callback chạy trong vòng xử lý sự kiện của giao diện, vì vậy cần kết thúc nhanh."
+     },
+     {
+      "type": "terminal",
+      "code": "import tkinter as tk\nfrom tkinter import messagebox\n\nwindow = tk.Tk()\n\ndef notify():\n    messagebox.showinfo(\"Kết quả\", \"Đã lưu\", parent=window)\n\ntk.Button(window, text=\"Thông báo\", command=notify).pack()\nwindow.mainloop()",
+      "expected": "Bấm Thông báo để mở hộp thoại Kết quả với nội dung Đã lưu; đóng cửa sổ để kết thúc."
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi bạn bấm Thông báo, event loop gọi notify, rồi showinfo mở hộp thoại có tiêu đề Kết quả và nội dung Đã lưu. Đây là hộp thoại modal: người dùng cần đóng hoặc phản hồi hộp thoại rồi mới tiếp tục thao tác với cửa sổ cha. Hãy chạy ví dụ, bấm nút rồi đóng hộp thoại để thử thứ tự này. Trong bản kiểm tra tự động, showinfo được thay bằng một hàm giả, gọi là mock; cách đó kiểm tra được lời gọi nhưng không cho biết hộp thoại thật hiển thị ra sao."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU03 · Frame, Label và thuộc tính widget"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "command=calculate khác command=calculate() thế nào?",
+     "answer": "Cách đầu truyền hàm để gọi sau; cách sau gọi ngay khi tạo widget."
+    },
+    {
+     "prompt": "Mock showinfo trong ví dụ có chứng minh hộp thoại hiển thị đúng không?",
+     "answer": "Không; nó chỉ kiểm tra lời gọi. Cần thử hộp thoại thật."
+    },
+    {
+     "prompt": "Tạo nút tăng một biến IntVar từ 0 lên 1 và gọi invoke.",
+     "answer": "Callback sửa biến khi được gọi.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nn=tk.IntVar(r,value=0)\nb=tk.Button(r,command=lambda:n.set(n.get()+1));b.invoke()\nprint(n.get())\nr.destroy()",
+     "answerExpected": "1"
+    },
+    {
+     "prompt": "Nếu callback showinfo được gọi từ nút, ai gọi callback và showinfo dùng để làm gì?",
+     "answer": "Event loop gọi callback khi nút được kích hoạt. messagebox.showinfo mở hộp thông báo; command nhận hàm để gọi sau. Mock chỉ kiểm lời gọi, chưa chứng minh hộp thoại thật."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

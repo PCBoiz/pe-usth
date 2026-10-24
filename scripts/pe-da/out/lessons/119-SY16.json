@@ -1,0 +1,101 @@
+{
+ "lesson_code": "SY16",
+ "sort_order": 119,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY16 · Con trỏ file, dòng văn bản và bytes",
+ "subtitle": "Trung cấp · M5 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY16 · Con trỏ file, dòng văn bản và bytes",
+  "subtitle": "Trung cấp · M5 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY16",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 161-163; Python — io"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn đọc hai ký tự đầu rồi đọc tiếp cùng file. Lần đọc sau bắt đầu ở vị trí hiện tại, không tự quay về đầu. Ở ví dụ này, StringIO giữ văn bản trong RAM và cho phép đọc như một file:"
+     },
+     {
+      "type": "code",
+      "code": "from io import StringIO\nwith StringIO(\"AB\\nCD\\n\") as f:\n    print(repr(f.read(2)))\n    print(repr(f.readline()))\n    print(f.readlines())",
+      "expected": "'AB'\n'\\n'\n['CD\\n']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Sau AB, con trỏ đứng trước newline; readline tiếp theo chỉ còn newline của dòng đó. `readlines` lấy các dòng còn lại thành list. Dòng cuối không bắt buộc có newline. Với text, read(size) đếm ký tự; với binary, nó đếm bytes."
+     },
+     {
+      "type": "code",
+      "code": "from io import BytesIO\nwith BytesIO(b\"ABC\") as f:\n    f.seek(1)\n    f.write(b\"Z\")\n    f.seek(0)\n    print(f.read())",
+      "expected": "b'AZC'"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`seek(1)` trên dữ liệu nhị phân đưa con trỏ đến vị trí byte số 1, tính từ 0. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
+     },
+     {
+      "type": "code",
+      "code": "text = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))",
+      "expected": "6\n8\ncà phê"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một ký tự Unicode có thể dùng nhiều byte UTF-8. Không cắt bytes tùy ý rồi mặc định phần còn lại decode được. Với text file, dùng seek(0) để quay đầu hoặc vị trí do tell trả lại; không coi mọi số ký tự là byte offset hợp lệ."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu chỉ cần lọc dòng, duyệt `for line in f` để xử lý lần lượt. `read()` không truyền size lấy toàn bộ phần còn lại, còn readlines tạo list các dòng còn lại; cả hai có thể dùng nhiều RAM với file lớn. `seek(0)` đưa vị trí về đầu để đọc lại."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY15 · Mở file: đọc, ghi đè, nối và tạo mới"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "read() gọi hai lần mà không seek sẽ thế nào?",
+     "answer": "Lần đầu có thể đọc hết; lần sau trả chuỗi/bytes rỗng vì đã ở cuối."
+    },
+    {
+     "prompt": "Muốn đổi B thành Z trong bytes ABC dùng gì?",
+     "answer": "Mở r+b, seek(1), write(b\"Z\"), seek(0) rồi đọc; kết quả b\"AZC\"."
+    },
+    {
+     "prompt": "Viết bài đọc file theo dòng, chỉ giữ dòng chứa \"paid\".",
+     "answer": "Dùng with open(...,encoding=\"utf8\"), for line in f, if \"paid\" in line: ... . Thử dòng cuối không có newline và chuỗi rỗng. Không read toàn bộ file lớn nếu chỉ cần xử lý từng dòng."
+    },
+    {
+     "prompt": "Với StringIO(\"AB\\nCD\"), read(2), readline(), readlines() liên tiếp trả gì? Sau đó read() trả gì và seek(0) có tác dụng gì?",
+     "answer": "Lần lượt \"AB\", \"\n\", [\"CD\"]; read() tiếp trả \"\" vì ở cuối. readline giữ newline nếu còn; dòng cuối không cần newline. seek(0) quay đầu. read(size) cập nhật vị trí; read() và readlines() lấy mọi phần còn lại, nên xử lý file lớn theo dòng khi được."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom io import StringIO\nwith StringIO(\"AB\\nCD\\n\") as f:\n    print(repr(f.read(2)))\n    print(repr(f.readline()))\n    print(f.readlines())\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nwith BytesIO(b\"ABC\") as f:\n    f.seek(1)\n    f.write(b\"Z\")\n    f.seek(0)\n    print(f.read())\n\n# ── Đoạn 3 ──\ntext = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

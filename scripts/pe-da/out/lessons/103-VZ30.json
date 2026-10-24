@@ -1,0 +1,105 @@
+{
+ "lesson_code": "VZ30",
+ "sort_order": 103,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ30 · Tương tác với Matplotlib và nối sang GUI",
+ "subtitle": "Nâng cao · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ30 · Tương tác với Matplotlib và nối sang GUI",
+  "subtitle": "Nâng cao · M4 · 16 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ30",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Tương tác với Matplotlib và nối sang GUI"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như Axes đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)",
+      "expected": "(2.0, 10.0)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ30-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Callback nên xử lý trường hợp người xem bấm ngoài Axes, khi xdata và ydata có thể không có giá trị. Đừng cho một cú bấm chỉ vào khoảng trống biến thành một quan sát có thật. Ví dụ tiếp chỉ nhận một hàng đã có trong dữ liệu và đổi nhãn của điểm đang chọn."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)",
+      "expected": "Day 2: 10 cups"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ30-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi đóng hoặc tạo lại giao diện, ngắt các callback không còn dùng để tránh nhiều lần xử lý cho một thao tác. Tách hàm tạo biểu đồ khỏi callback giúp bạn dùng cùng code cho báo cáo tĩnh, notebook và GUI. Backend Agg trong ví dụ chỉ dùng để kiểm tra logic và lưu ảnh; muốn bấm chuột thật, chạy với backend tương tác và gọi plt.show()."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)",
+      "expected": "1 1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ30-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ30-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback, VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Bấm ngoài Axes có nên lấy xdata làm số để tính ngay không?",
+     "answer": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None."
+    },
+    {
+     "prompt": "Agg có tạo một cửa sổ để bấm chuột không?",
+     "answer": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show()."
+    },
+    {
+     "prompt": "Vì sao tách build_sales_chart khỏi callback?",
+     "answer": "Để kiểm tra dữ liệu và Figure độc lập, dùng lại cho báo cáo hay GUI và giảm công việc trong hàm xử lý sự kiện."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

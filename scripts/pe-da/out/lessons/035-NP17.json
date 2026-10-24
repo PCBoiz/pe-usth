@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP17",
+ "sort_order": 35,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP17 · Dữ liệu thiếu: NaN",
+ "subtitle": "Trung cấp · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP17 · Dữ liệu thiếu: NaN",
+  "subtitle": "Trung cấp · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP17",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 118-120; NumPy · Trung bình khi có dữ liệu thiếu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cảm biến ghi được 28°C, mất dữ liệu một ngày, rồi ghi được 32°C. Ngày mất dữ liệu không phải là ngày có nhiệt độ 0°C. Bạn có thể biểu diễn giá trị chưa biết bằng `np.nan`:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\ntemps = np.array([28., np.nan, 32.])\nprint(np.nanmean(temps))",
+      "expected": "30.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`NaN` được dùng làm dấu hiệu dữ liệu thiếu trong các array số thực ở đây. `np.nanmean` bỏ qua NaN khi tính trung bình, nên kết quả là (28 + 32) / 2 = 30. Nếu tự điền 0, bạn sẽ thêm một số đo không có thật vào phép tính."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để tìm vị trí dữ liệu thiếu, dùng `np.isnan`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.isnan(a))",
+      "expected": "[False  True False]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mask có `True` ở vị trí thứ hai vì đó là ô NaN. Không kiểm bằng `a == np.nan`: so sánh bằng với NaN không hoạt động như so sánh các số thông thường."
+     },
+     {
+      "type": "paragraph",
+      "text": "Tính trung bình từ hai điểm đã có:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.nanmean(a))",
+      "expected": "8.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Có hai điểm đã biết là 6 và 10, nên trung bình bằng 8. Nếu mọi phần tử đều là NaN, `nanmean` trả NaN và phát cảnh báo; khi đó cần báo chưa có dữ liệu để tính trung bình."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với điểm có trọng số, khi bỏ một điểm thiếu, bạn phải bỏ cả tín chỉ của môn đó bằng cùng một mask. `np.isnan(a)` đánh dấu ô thiếu; thêm `~` ở trước để đảo True/False, nên `~np.isnan(a)` đánh dấu các ô không thiếu. Ngoài ra, bỏ NaN không đồng nghĩa bỏ mọi giá trị vô hạn; đó là hai điều kiện kiểm tra khác nhau."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP03 · Kiểu dữ liệu của array, NP14 · Lọc dữ liệu bằng mask, NP16 · Thống kê và điểm có trọng số"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong dãy `[6, NaN, 10]`, có bao nhiêu điểm đã biết?",
+     "answer": "Có 2 điểm đã biết là 6 và 10."
+    },
+    {
+     "prompt": "Điền tên hàm để tính trung bình và bỏ qua NaN: `np.___(a)`.",
+     "answer": "Điền `nanmean` để bỏ NaN khi tính trung bình."
+    },
+    {
+     "prompt": "Khi tính điểm trung bình có trọng số mà một môn thiếu điểm, cần bỏ những phần tử nào trước khi dùng `np.average`?",
+     "answer": "Bỏ điểm thiếu và tín chỉ tương ứng bằng cùng mask. Dấu `~` đảo True/False để giữ vị trí không thiếu:",
+     "answerCode": "import numpy as np\n\nmarks = np.array([7., np.nan, 9.])\ncredits = np.array([2, 3, 1])\nvalid = ~np.isnan(marks)\nprint(np.average(marks[valid], weights=credits[valid]))",
+     "answerExpected": "7.666666666666667"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ntemps = np.array([28., np.nan, 32.])\nprint(np.nanmean(temps))\n\n# ── Đoạn 2 ──\na = np.array([6.0, np.nan, 10.0])\nprint(np.isnan(a))\n\n# ── Đoạn 3 ──\na = np.array([6.0, np.nan, 10.0])\nprint(np.nanmean(a))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

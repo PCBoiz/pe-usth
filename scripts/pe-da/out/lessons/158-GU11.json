@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU11",
+ "sort_order": 158,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU11 · Event loop và tác vụ nền",
+ "subtitle": "Nâng cao · M8 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU11 · Event loop và tác vụ nền",
+  "subtitle": "Nâng cao · M8 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 325; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Nút Lưu ghi một file lớn có thể mất vài giây. Nếu callback tự ghi file và chờ xong, giao diện khó nhận thêm thao tác. mainloop chỉ tiếp tục xử lý sự kiện khi callback trả quyền điều khiển."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nevents=[]\nr.after(0,lambda: events.append('tick'))\nr.after(20,r.quit)\nr.mainloop()\nprint(events)\nr.destroy()",
+      "expected": "['tick']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "after lên lịch để event loop gọi một hàm; nó không tạo thread mới. Trong ví dụ, after(0, ...) xếp thao tác thêm \"tick\" vào list, còn after(20, r.quit) yêu cầu dừng mainloop sau khoảng 20 mili giây. quit dừng vòng xử lý sự kiện đang chạy, còn destroy hủy cửa sổ. Ứng dụng dùng thật thường giữ mainloop chạy cho tới khi người dùng đóng cửa sổ."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nfrom queue import Queue\nfrom threading import Thread\nr=tk.Tk();r.withdraw()\nresult=Queue()\nworker=Thread(target=lambda: result.put(sum([10,20,30])))\nworker.start();worker.join()\nstatus=tk.StringVar(r,value='Pending')\nstatus.set(str(result.get()))\nprint(status.get())\nr.destroy()",
+      "expected": "60"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Worker chỉ tính tổng và gửi kết quả qua Queue. Thread đã tạo Tk đọc kết quả rồi cập nhật StringVar. Trong ví dụ nhỏ này, join chờ phép tính hoàn tất trước khi đọc queue. Với việc lưu file lâu trong ứng dụng thật, không gọi join trong callback giao diện, vì giao diện sẽ phải chờ theo. Ví dụ tiếp dùng after để kiểm tra kết quả mà không chặn vòng xử lý sự kiện."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nfrom queue import Queue, Empty\nfrom threading import Thread\nr=tk.Tk();r.withdraw()\nresults=Queue();status=tk.StringVar(r,value='Pending')\nworker=Thread(target=lambda:results.put(('ok',42)));worker.start()\ndef poll():\n    try:\n        state,value=results.get_nowait()\n    except Empty:\n        r.after(5,poll)\n    else:\n        status.set(str(value));r.quit()\nr.after(0,poll)\ntimeout=r.after(2000,r.quit)\nr.mainloop();r.after_cancel(timeout)\nworker.join()\nprint(status.get())\nr.destroy()",
+      "expected": "42"
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong ứng dụng, poll đọc queue không chặn rồi tự lên lịch lại. Worker nên gửi cả trạng thái thành công hoặc lỗi, để UI bật lại nút và báo kết quả. Phần thread, queue và lưu nền là mở rộng nối với PW8; slide GUI gốc dừng ở mainloop. Khi đóng cửa sổ, ứng dụng phải có quy tắc rõ cho worker đang lưu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "GU10 · Grid: dựng form theo hàng và cột, CT10 · Tạo thread bằng target, start và join, CT13 · Queue và lưu pickle có nén ở nền"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "after có tự đưa công việc nặng sang thread khác không?",
+     "answer": "Không; callback after vẫn chạy trong event loop."
+    },
+    {
+     "prompt": "Worker nên gọi label.configure trực tiếp không?",
+     "answer": "Nên gửi kết quả qua queue; thread UI đọc queue và cập nhật widget."
+    },
+    {
+     "prompt": "Lên lịch một callback ghi done vào list rồi quit, chạy mainloop và in list.",
+     "answer": "Callback được event loop gọi.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nevents=[]\ndef done():\n    events.append('done');r.quit()\nr.after(0,done);r.mainloop()\nprint(events)\nr.destroy()",
+     "answerExpected": "['done']"
+    },
+    {
+     "prompt": "Một cửa sổ đã tạo widget nhưng chưa gọi mainloop. mainloop làm gì, và vì sao ghi file lâu trong callback làm nó kém đáp ứng?",
+     "answer": "window.mainloop chạy vòng nhận/xử lý sự kiện, gọi callback và cập nhật giao diện. Callback dài giữ thread UI nên sự kiện khác phải đợi; đưa tác vụ lâu sang worker và đọc kết quả bằng after/queue."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

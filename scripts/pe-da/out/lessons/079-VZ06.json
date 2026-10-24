@@ -1,0 +1,100 @@
+{
+ "lesson_code": "VZ06",
+ "sort_order": 79,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ06 · Histogram: khoảng chia, tần số và mật độ",
+ "subtitle": "Cơ bản · M4 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ06 · Histogram: khoảng chia, tần số và mật độ",
+  "subtitle": "Cơ bản · M4 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Histogram: khoảng chia, tần số và mật độ"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong sáu đơn hàng, thời gian chờ là 1, 2, 2, 4, 5 và 8 phút. Thay vì vẽ một cột cho từng đơn, histogram gộp thời gian thành các khoảng rồi đếm có bao nhiêu đơn nằm trong mỗi khoảng."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
+      "expected": "[3, 2, 1]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ06-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Các khoảng thường lấy cận trái và bỏ cận phải; khoảng cuối lấy cả cận phải. Đổi bins có thể làm hình trông khác, nên cần kiểm tra vài cách chia khoảng thay vì chỉ giữ hình đẹp nhất. density=True chuyển chiều cao thành mật độ: tổng diện tích cột bằng 1, chứ tổng chiều cao không nhất thiết bằng 1."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
+      "expected": "[4, 2]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ06-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ndensity, edges, bars = ax.hist([1, 2, 2, 4, 5, 8], bins=[0, 3, 6, 9], density=True, edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Density\", title=\"Area, rather than height, sums to one\")\nprint(round(float(np.sum(density * np.diff(edges))), 6))\nplt.show()",
+      "expected": "1.0"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ06-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ06-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ02 · Figure, Axes và biểu đồ đầu tiên, NP10 · Tổng của cả dãy và cả bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?",
+     "answer": "[3,6), tức cột thứ hai."
+    },
+    {
+     "prompt": "Histogram và bar chart khác nhau thế nào?",
+     "answer": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống."
+    },
+    {
+     "prompt": "density=True có nghĩa tổng chiều cao bằng 1 không?",
+     "answer": "Không; tổng diện tích bằng 1. Phải nhân mật độ với độ rộng mỗi khoảng trước khi cộng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ndensity, edges, bars = ax.hist([1, 2, 2, 4, 5, 8], bins=[0, 3, 6, 9], density=True, edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Density\", title=\"Area, rather than height, sums to one\")\nprint(round(float(np.sum(density * np.diff(edges))), 6))\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

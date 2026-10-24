@@ -1,0 +1,113 @@
+{
+ "lesson_code": "CT10",
+ "sort_order": 141,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT10 · Tạo thread bằng target, start và join",
+ "subtitle": "Nâng cao · M6 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT10 · Tạo thread bằng target, start và join",
+  "subtitle": "Nâng cao · M6 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 295; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn muốn tính một kết quả ở thread nền rồi dùng kết quả sau khi nó hoàn thành. Truyền hàm vào target, gọi start để tạo luồng thực thi và join để chờ:"
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread\nresult = []\ndef double(value): result.append(value * 2)\nt = Thread(target=double, args=(4,))\nt.start(); t.join()\nprint(result)",
+      "expected": "[8]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`target=double` truyền hàm, không gọi double ngay. `args=(4,)` là tuple một đối số. Nếu viết target=double(4), hàm sẽ chạy lúc dựng đối tượng và giá trị trả về bị truyền thay cho hàm."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread, current_thread\nseen = []\ndef work(): seen.append(current_thread().name)\nt = Thread(target=work, name=\"background\")\nt.run()\nprint(seen == [current_thread().name])",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Gọi trực tiếp run chỉ là gọi một method trên thread hiện tại, không tạo thread mới. start mới sắp xếp chạy run trên luồng mới. Mỗi đối tượng Thread chỉ được start một lần."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread\nfrom time import sleep\nresult = []\ndef work():\n    sleep(0.01)\n    result.append(\"done\")\nt = Thread(target=work)\nt.start(); t.join()\nprint(t.is_alive(), result)",
+      "expected": "False ['done']"
+     },
+     {
+      "type": "paragraph",
+      "text": "sleep chặn thread đang gọi nó; không làm mọi thread ngủ. join ở đây bảo đảm khi in, worker đã xong. Nếu gọi join từ callback GUI, UI vẫn có thể bị chặn; bài event loop sẽ nhận kết quả qua queue thay vì chờ dài trong callback."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT09 · Thread dùng chung gì, giữ riêng gì?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "target=work và target=work() khác nhau thế nào?",
+     "answer": "Một cách truyền hàm để chạy sau; cách kia gọi ngay và truyền kết quả."
+    },
+    {
+     "prompt": "Gọi run trực tiếp có tạo thread mới không?",
+     "answer": "Không."
+    },
+    {
+     "prompt": "Sau join không có timeout đã trả về, worker còn đang chạy không?",
+     "answer": "Không; join như vậy chờ worker kết thúc. join(timeout=...) có thể trả về khi worker vẫn còn sống."
+    },
+    {
+     "prompt": "Viết tuple một đối số 10 cho Thread(target=work,...). Khi worker sleep, thread chính có buộc ngủ cùng không?",
+     "answer": "Dùng args=(10,) với dấu phẩy. time.sleep chặn thread gọi nó, không bắt mọi thread cùng ngủ; start khởi chạy, join chờ khi cần."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bản Pyodide này không bật thread thật. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

@@ -1,0 +1,241 @@
+{
+  "requirements": [
+    "Học bằng cách đọc lời giảng, đọc code kèm kết quả rồi tự chạy lại và sửa",
+    "Không cần biết Python trước: bài PY01 bắt đầu từ một phép cộng",
+    "128 bài chạy được ngay trong trình duyệt; 44 bài cần Python 3.12 trên máy (Tkinter, tiến trình, đa luồng, seaborn, plotly)",
+    "Bài numpy/pandas/matplotlib tải thêm thư viện ở lần mở đầu tiên (vài MB)"
+  ],
+  "skills": [
+    "Python nền tảng: biến, điều kiện, vòng lặp, collection, hàm và file",
+    "NumPy: array, shape, index, slice, phép toán theo phần tử và theo trục",
+    "pandas: đọc dữ liệu, chọn lọc, nhóm, nối bảng và quy trình phân tích",
+    "Trực quan hoá: Matplotlib, seaborn, Plotly và dashboard",
+    "OOP, module, lưu trữ dữ liệu và sqlite3",
+    "Hệ điều hành: tiến trình, đa luồng, multiprocessing và shell",
+    "Tkinter: từ form nhỏ tới ứng dụng quản lý điểm"
+  ],
+  "modules": [
+    {
+      "title": "M1 · Python nền tảng",
+      "lessons": [
+        "PY01 · Chạy một phép tính và đọc kết quả",
+        "PY02 · Chọn đúng Python và tách môi trường học",
+        "PY03 · REPL, notebook và trạng thái đã chạy",
+        "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
+        "PY05 · Phép toán và thứ tự tính",
+        "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng",
+        "PY07 · Lấy ký tự và một đoạn chuỗi",
+        "PY08 · Chuẩn hóa và định dạng văn bản",
+        "PY09 · Điều kiện, so sánh và khối lệnh",
+        "PY10 · List: lấy, thêm và xóa phần tử",
+        "PY11 · Tuple, bytes và lựa chọn collection",
+        "PY12 · Dictionary và tra cứu theo khóa",
+        "PY13 · Set và so sánh hai nhóm",
+        "PY14 · For, range và biến tích lũy",
+        "PY15 · While, break và continue",
+        "PY16 · Hàm, giá trị trả về và docstring",
+        "PY17 · Scope, tham chiếu hàm và callback",
+        "PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+      ]
+    },
+    {
+      "title": "M2 · NumPy từ dãy số đến bảng",
+      "lessons": [
+        "NP01 · Array là gì?",
+        "NP02 · Lấy một phần tử",
+        "NP03 · Kiểu dữ liệu của array",
+        "NP04 · Tính trên từng phần tử",
+        "NP05 · Tạo dãy bằng arange",
+        "NP06 · Array hai chiều",
+        "NP07 · Đọc shape, ndim và size",
+        "NP08 · Xếp lại bằng reshape",
+        "NP09 · Lấy ô, hàng và cột",
+        "NP10 · Tổng của cả dãy và cả bảng",
+        "NP11 · Tổng từng cột: axis=0",
+        "NP12 · Tổng từng hàng và bài ghép",
+        "NP13 · So sánh tạo dãy True/False",
+        "NP14 · Lọc dữ liệu bằng mask",
+        "NP15 · Gắn nhãn và giới hạn điểm",
+        "NP16 · Thống kê và điểm có trọng số",
+        "NP17 · Dữ liệu thiếu: NaN",
+        "NP18 · Broadcasting từ ví dụ giá bán",
+        "NP19 · Cắt dữ liệu: view và copy",
+        "NP20 · So sánh số thực",
+        "NP21 · Đọc bảng số từ CSV",
+        "NP22 · Tạo dữ liệu thử với seed",
+        "NP23 · Bài tổng hợp: điểm kiểm tra"
+      ]
+    },
+    {
+      "title": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+      "lessons": [
+        "PD01 · Series: một cột dữ liệu có nhãn",
+        "PD02 · DataFrame: đọc một bảng nhỏ",
+        "PD03 · Chọn hàng và cột bằng loc, iloc",
+        "PD04 · Index và phép tính căn theo nhãn",
+        "PD05 · Lọc hàng theo điều kiện",
+        "PD06 · Thêm cột và sửa đúng bảng",
+        "PD07 · Kiểu dữ liệu và số nguyên có ô trống",
+        "PD08 · Ô thiếu: phát hiện trước khi điền",
+        "PD09 · Làm sạch chữ trong một cột",
+        "PD10 · Dòng trùng và khóa của bảng",
+        "PD11 · Sắp xếp và nhìn nhanh phân bố",
+        "PD12 · Đọc CSV và giữ đúng ý nghĩa cột",
+        "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
+        "PD14 · Groupby: tổng hợp theo nhóm",
+        "PD15 · Transform: giữ từng hàng và thêm số của nhóm",
+        "PD16 · Merge: nối đơn hàng với bảng khách",
+        "PD17 · Kiểm tra số dòng sau khi nối bảng",
+        "PD18 · Concat: ghép các lô dữ liệu",
+        "PD19 · Pivot và melt: đổi hình dạng bảng",
+        "PD20 · Pivot table và bảng đếm chéo",
+        "PD21 · Đọc ngày và tính khoảng thời gian",
+        "PD22 · Gom theo ngày, tháng và điền mốc thiếu",
+        "PD23 · Múi giờ: cùng thời điểm, khác giờ hiển thị",
+        "PD24 · Cửa sổ trượt và so sánh kỳ trước",
+        "PD25 · Map, phép tính theo cột và apply",
+        "PD26 · Dữ liệu phân loại và chia khoảng",
+        "PD27 · MultiIndex cho dữ liệu nhiều cấp",
+        "PD28 · Đọc ít hơn và xử lý theo lô",
+        "PD29 · Đọc SQL thành DataFrame",
+        "PD30 · Một quy trình làm sạch có kiểm tra",
+        "PD31 · EDA: từ câu hỏi đến bảng kết quả",
+        "PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu"
+      ]
+    },
+    {
+      "title": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+      "lessons": [
+        "VZ01 · Từ câu hỏi đến loại biểu đồ",
+        "VZ02 · Figure, Axes và biểu đồ đầu tiên",
+        "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu",
+        "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự",
+        "VZ05 · Scatter plot: quan hệ giữa hai biến",
+        "VZ06 · Histogram: khoảng chia, tần số và mật độ",
+        "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm",
+        "VZ08 · Heatmap: màu, ma trận và thang đo chung",
+        "VZ09 · Nhãn, đơn vị, đường mốc và chú thích",
+        "VZ10 · Màu sắc và khả năng đọc cho nhiều người",
+        "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị",
+        "VZ12 · Subplot, thang chung và bố trí hình",
+        "VZ13 · Error bar: phân tán và độ bất định",
+        "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure",
+        "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting",
+        "VZ16 · Seaborn: histogram, ECDF và KDE",
+        "VZ17 · Seaborn: đếm nhóm và so sánh phân bố",
+        "VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap",
+        "VZ19 · Seaborn: facet và đường hồi quy mô tả",
+        "VZ20 · Plotly: Figure tương tác, hover và legend",
+        "VZ21 · Plotly: lọc dữ liệu, dropdown và facet",
+        "VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file",
+        "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback",
+        "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
+        "VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML",
+        "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
+        "VZ27 · Cơ cấu của tổng, vùng tô và đa giác",
+        "VZ28 · Lưới 2D: pcolor, pcolormesh, contour và contourf",
+        "VZ29 · Trường vector: arrow, quiver và streamplot",
+        "VZ30 · Tương tác với Matplotlib và nối sang GUI"
+      ]
+    },
+    {
+      "title": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+      "lessons": [
+        "SY01 · Đọc ngày tháng và tính khoảng thời gian",
+        "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
+        "SY03 · Tìm và sửa mẫu văn bản bằng regex",
+        "SY04 · Git: từ thư mục bài làm đến fork của bạn",
+        "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
+        "SY06 · Cho object cách hiển thị và so sánh",
+        "SY07 · Kế thừa, override và super",
+        "SY08 · Đa kế thừa: method được tìm ở đâu?",
+        "SY09 · Abstraction, interface và composition",
+        "SY10 · Giữ trạng thái hợp lệ bằng getter và setter",
+        "SY11 · Module và các cách import",
+        "SY12 · Package và điểm bắt đầu của chương trình",
+        "SY13 · Làm tròn xuống và tính điểm có trọng số",
+        "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
+        "SY15 · Mở file: đọc, ghi đè, nối và tạo mới",
+        "SY16 · Con trỏ file, dòng văn bản và bytes",
+        "SY17 · Buffer, flush, file tạm và lỗi đọc ghi",
+        "SY18 · Đường dẫn, cây thư mục và symlink",
+        "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
+        "SY20 · Gom nhiều file bằng ZIP và tar",
+        "SY21 · Pickle, JSON và khôi phục trạng thái",
+        "SY22 · Đọc đúng định dạng Stata và SAS",
+        "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
+        "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
+        "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+        "SY26 · PW2–PW4: chuyển sang object rồi chia package",
+        "SY27 · PW5: lưu ba file, nén và nạp lại",
+        "SY28 · PW6: lưu dữ liệu bằng pickle có nén"
+      ]
+    },
+    {
+      "title": "M6 · Hệ điều hành, tiến trình và đa luồng",
+      "lessons": [
+        "CT01 · Một chương trình, nhiều tiến trình",
+        "CT02 · Tạo process: Windows, fork và exec",
+        "CT03 · Scheduler, PCB và các hàng đợi",
+        "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc",
+        "CT05 · SRTF, deadline và các mức ưu tiên",
+        "CT06 · Round Robin và time quantum",
+        "CT07 · Chạy lệnh, tách output và mã thoát",
+        "CT08 · Popen, communicate, pipeline và timeout",
+        "CT09 · Thread dùng chung gì, giữ riêng gì?",
+        "CT10 · Tạo thread bằng target, start và join",
+        "CT11 · Kế thừa Thread và truyền trạng thái",
+        "CT12 · Race condition, Lock và tránh deadlock",
+        "CT13 · Queue và lưu pickle có nén ở nền"
+      ]
+    },
+    {
+      "title": "M7 · Multiprocessing và shell thực hành",
+      "lessons": [
+        "CT14 · Multiprocessing: dữ liệu riêng và trao đổi kết quả",
+        "CT15 · PW7: shell có chuyển hướng và pipe",
+        "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong"
+      ]
+    },
+    {
+      "title": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+      "lessons": [
+        "GU01 · GUI, CLI và chọn toolkit",
+        "GU02 · Cửa sổ chính và cửa sổ phụ",
+        "GU03 · Frame, Label và thuộc tính widget",
+        "GU04 · Button, callback và hộp thông báo",
+        "GU05 · Entry, mật khẩu và Checkbutton",
+        "GU06 · Radiobutton và giá trị được chọn",
+        "GU07 · Danh sách và hộp chọn thả xuống",
+        "GU08 · Pack: xếp các vùng của giao diện",
+        "GU09 · Place: vị trí tuyệt đối và tương đối",
+        "GU10 · Grid: dựng form theo hàng và cột",
+        "GU11 · Event loop và tác vụ nền",
+        "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter"
+      ]
+    },
+    {
+      "title": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+      "lessons": [
+        "EX01 · Đọc bảng cùng kiểu bằng loadtxt và tra đúng trợ giúp",
+        "EX02 · Structured array: bảng có tên và điểm",
+        "EX03 · Tự mở Notebook trong đúng môi trường",
+        "EX04 · Đọc cây process và phân biệt fork với exec",
+        "EX05 · GIL, reference counting và chọn đúng kiểu đồng thời",
+        "EX06 · Lưu nền thật: gzip, pickle, file và thông báo lỗi",
+        "EX07 · Bytecode, số nguyên lớn và lỗi thụt lề",
+        "EX08 · Chuẩn bị vector và lưới trước khi vẽ"
+      ]
+    },
+    {
+      "title": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+      "lessons": [
+        "RD01 · Đặt chú thích theo dữ liệu hoặc theo vùng vẽ",
+        "RD02 · Đổi trục và ghép các lô array",
+        "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
+        "RD04 · Nhân ma trận và ước lượng một đường thẳng",
+        "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu"
+      ]
+    }
+  ]
+}

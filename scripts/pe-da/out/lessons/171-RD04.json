@@ -1,0 +1,94 @@
+{
+ "lesson_code": "RD04",
+ "sort_order": 171,
+ "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+ "title": "RD04 · Nhân ma trận và ước lượng một đường thẳng",
+ "subtitle": "Nâng cao · M10 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RD04 · Nhân ma trận và ước lượng một đường thẳng",
+  "subtitle": "Nâng cao · M10 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RD04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "NumPy linear algebra"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi hàng đơn hàng có số lượng hai sản phẩm; bảng giá là một dãy hai số. Phép @ có thể cộng các tích số lượng × giá để cho ngay tổng tiền từng đơn."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint((qty @ price).tolist())\nprint((qty * price).sum(axis=1).tolist())",
+      "expected": "[40, 70]\n[40, 70]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dòng đầu của phép nhân là 2×10 + 1×20 = 40. @ ở đây lấy chiều cột của qty ghép với chiều của price; chúng cùng dài 2. Dấu * vẫn là nhân từng phần tử có broadcasting. Hai phép toán không thay thế tùy ý cho nhau."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nA = np.array([[1., 1.], [2., 1.]])\nb = np.array([5., 8.])\nx = np.linalg.solve(A, b)\nprint(np.round(x, 6).tolist())\nprint(bool(np.allclose(A @ x, b)))",
+      "expected": "[3.0, 2.0]\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hệ trên là x + y = 5 và 2x + y = 8, nên nghiệm là x = 3, y = 2. `np.linalg.solve` dùng cho ma trận vuông, không suy biến, tức hệ có một nghiệm duy nhất. Nếu hai phương trình trùng nhau, điều kiện đó không còn đúng. Khi chỉ cần giải hệ, dùng `solve` thay vì tự tính ma trận nghịch đảo rồi nhân. Sau đó, kiểm tra `A @ x` có gần bằng `b` theo sai số phù hợp không."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nvisits = np.array([0., 1., 2.])\nsales = np.array([2., 5., 8.])\ndesign = np.column_stack([np.ones(3), visits])\ncoef, residuals, rank, singular = np.linalg.lstsq(design, sales, rcond=None)\nprint(np.round(coef, 6).tolist())\nprint(np.round(design @ coef, 6).tolist())\nprint(rank)",
+      "expected": "[2.0, 3.0]\n[2.0, 5.0, 8.0]\n2"
+     },
+     {
+      "type": "paragraph",
+      "text": "`design` có cột đầu toàn số 1 để biểu diễn hệ số chặn và cột thứ hai chứa số lượt truy cập `visits`. `lstsq` tìm các hệ số làm tổng bình phương sai lệch giữa dự đoán và dữ liệu nhỏ nhất. Kết quả `[2, 3]` cho công thức `sales ≈ 2 + 3 × visits`. `column_stack` ghép các dãy thành cột; `rank=2` cho biết hai cột trong ví dụ độc lập tuyến tính. Với dữ liệu thật, hãy xem phần dư (giá trị quan sát trừ dự đoán), khoảng giá trị `visits` đã có và cách lấy mẫu. Đường khớp không chứng minh thêm lượt truy cập làm tăng doanh thu; dự đoán ngoài khoảng dữ liệu đã quan sát cũng có thể sai."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "NP18 · Broadcasting từ ví dụ giá bán, NP20 · So sánh số thực, RD02 · Đổi trục và ghép các lô array"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với qty=[[1,2],[3,0]] và price=[10,5], dự đoán qty@price trước khi chạy.",
+     "answer": "Kết quả [20,30]. Mỗi hàng được nhân với giá tương ứng rồi cộng; chiều ghép phải có cùng độ dài."
+    },
+    {
+     "prompt": "Hệ có hai phương trình x+y=5 và 2x+2y=10 có nghiệm duy nhất để solve không?",
+     "answer": "Không. Hai phương trình phụ thuộc nhau; ma trận suy biến. Cần xem lại bài toán thay vì cho rằng mọi ma trận vuông đều giải được duy nhất."
+    },
+    {
+     "prompt": "Đường khớp cho hệ số [2,3] với cột [1,x]. Dự báo ở x=4 là gì? Kết quả đó có tự chứng minh chính xác cho dữ liệu mới không?",
+     "answer": "2+3×4=14. Đó là dự báo của mô hình; x=4 còn ngoài phạm vi ví dụ 0–2 nên là ngoại suy. Cần kiểm dữ liệu mới, phần dư và giả định, không suy quan hệ nhân quả."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint((qty @ price).tolist())\nprint((qty * price).sum(axis=1).tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nA = np.array([[1., 1.], [2., 1.]])\nb = np.array([5., 8.])\nx = np.linalg.solve(A, b)\nprint(np.round(x, 6).tolist())\nprint(bool(np.allclose(A @ x, b)))\n\n# ── Đoạn 3 ──\nimport numpy as np\nvisits = np.array([0., 1., 2.])\nsales = np.array([2., 5., 8.])\ndesign = np.column_stack([np.ones(3), visits])\ncoef, residuals, rank, singular = np.linalg.lstsq(design, sales, rcond=None)\nprint(np.round(coef, 6).tolist())\nprint(np.round(design @ coef, 6).tolist())\nprint(rank)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

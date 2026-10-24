@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU10",
+ "sort_order": 157,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU10 · Grid: dựng form theo hàng và cột",
+ "subtitle": "Trung cấp · M8 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU10 · Grid: dựng form theo hàng và cột",
+  "subtitle": "Trung cấp · M8 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 322-324; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Form có nhãn Username bên trái, ô nhập bên phải và nút đăng nhập bên dưới. grid đặt các widget vào hàng và cột, giúp các ô thẳng nhau khi thay đổi độ rộng."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\ntk.Label(r,text='Username').grid(row=0,column=0,padx=8,pady=4)\nname=tk.Entry(r);name.grid(row=0,column=1,sticky=tk.EW,padx=8,pady=4)\nprint(name.grid_info()['row'],name.grid_info()['column'])\nprint(name.grid_info()['sticky'])\nr.destroy()",
+      "expected": "0 1\new"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "row và column bắt đầu từ 0. sticky=\"ew\" kéo widget tới mép đông và tây của ô, nên ô nhập có thể lấp chiều ngang. padx, pady tạo khoảng trống bên ngoài widget."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\ntk.Label(r,text='Password').grid(row=1,column=0)\ntk.Entry(r,show='*').grid(row=1,column=1,sticky='ew')\nbutton=tk.Button(r,text='Login');button.grid(row=2,column=0,columnspan=2,sticky='ew')\nprint(button.grid_info()['columnspan'])\nr.destroy()",
+      "expected": "2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "columnspan=2 cho nút trải qua hai cột. rowspan làm tương tự theo hàng. sticky không tự tạo không gian dư cho cột; parent cần có trọng số để phân bổ phần dư khi resize."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nr.columnconfigure(1,weight=1)\nr.rowconfigure(0,weight=1)\npanel=tk.Frame(r);panel.grid(row=0,column=0,columnspan=2,rowspan=2,sticky='nsew',padx=5,pady=5)\nprint(r.grid_columnconfigure(1)['weight'])\nprint(panel.grid_info()['rowspan'],panel.grid_info()['columnspan'])\nr.destroy()",
+      "expected": "1\n2 2"
+     },
+     {
+      "type": "paragraph",
+      "text": "weight=1 cho cột tham gia chia không gian dư; weight=0 giữ kích thước theo nội dung. Khi dựng form thật, đặt trọng số ở đúng container chứa widget. Bố cục thường cần thử với tên dài và cửa sổ hẹp chứ không chỉ nhìn cấu hình."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU09 · Place: vị trí tuyệt đối và tương đối"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "grid bắt đầu đánh số hàng từ mấy?",
+     "answer": "Từ 0."
+    },
+    {
+     "prompt": "sticky=\"ew\" có tự làm cột nhận không gian dư không?",
+     "answer": "Không; thường cần columnconfigure(weight=...) cho parent."
+    },
+    {
+     "prompt": "Tạo Button chiếm ba cột và in columnspan.",
+     "answer": "Kết quả 3.",
+     "answerCode": "import tkinter as tk\nr=tk.Tk();r.withdraw()\nb=tk.Button(r,text='Save');b.grid(row=0,column=0,columnspan=3)\nprint(b.grid_info()['columnspan'])\nr.destroy()",
+     "answerExpected": "3"
+    },
+    {
+     "prompt": "Hãy mô tả cách dùng grid cho form có hai hàng Username và Password, ô nhập bên phải mỗi nhãn, cùng nút Login bên dưới chiếm hai cột. Đặt khoảng đệm bằng padx và pady. Nếu cần widget chiếm nhiều hàng thay vì nhiều cột, dùng tùy chọn nào?",
+     "answer": "Đặt nhãn Username ở row=0, column=0 và Password ở row=1, column=0. Hai Entry ở column=1, dùng sticky=tk.EW và padx, pady để giãn ngang và chừa khoảng. Nút Login ở row=2, column=0, columnspan=2. Hàng và cột bắt đầu từ 0; rowspan cho widget trải qua nhiều hàng. Muốn cột nhận thêm không gian khi kéo rộng cửa sổ, đặt weight cho cột trong đúng widget cha."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

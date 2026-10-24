@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY06",
+ "sort_order": 6,
+ "module": "M1 · Python nền tảng",
+ "title": "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng",
+ "subtitle": "Cơ bản · M1 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng",
+  "subtitle": "Cơ bản · M1 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 42, 46, 50-51; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một báo cáo cần ghép tên cửa hàng vào tiêu đề. Bạn có thể dùng phép cộng với chuỗi:"
+     },
+     {
+      "type": "code",
+      "code": "store = \"Hanoi\"\nprint(\"Bao cao \" + store)\nprint(\"-\" * 5)",
+      "expected": "Bao cao Hanoi\n-----"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`+` nối chuỗi, còn `*` với một số nguyên lặp chuỗi. Muốn nối số vào văn bản, chuyển nó thành chuỗi bằng `str` hoặc dùng định dạng chuỗi ở bài sau."
+     },
+     {
+      "type": "code",
+      "code": "message = \"Dong 1\\nDong 2\"\nprint(message)",
+      "expected": "Dong 1\nDong 2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải thêm dấu gạch chéo để biểu diễn dấu nháy bên trong. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
+     },
+     {
+      "type": "code",
+      "code": "name = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")",
+      "expected": "6\nFalse"
+     },
+     {
+      "type": "paragraph",
+      "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu comment, bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY05 · Phép toán và thứ tự tính"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "\"ab\" * 3 cho chuỗi nào?",
+     "answer": "ababab."
+    },
+    {
+     "prompt": "Viết một chuỗi in thành hai dòng A rồi B.",
+     "answer": "print(\"A\\nB\")."
+    },
+    {
+     "prompt": "Comment # và chuỗi ba nháy có hoàn toàn giống nhau không?",
+     "answer": "Không. # bắt đầu comment; ba nháy tạo chuỗi nhiều dòng, và có thể làm docstring ở vị trí phù hợp."
+    },
+    {
+     "prompt": "Viết một chuỗi ba nháy chứa hai dòng A và B. Thêm # trước dòng print của bạn có làm chuỗi biến mất không?",
+     "answer": "Có thể viết s = \"\"\"A\nB\"\"\" rồi print(s). Đặt # trước print chỉ vô hiệu dòng in, không xóa phép gán s; comment nên giải thích ý định khi cần."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nstore = \"Hanoi\"\nprint(\"Bao cao \" + store)\nprint(\"-\" * 5)\n\n# ── Đoạn 2 ──\nmessage = \"Dong 1\\nDong 2\"\nprint(message)\n\n# ── Đoạn 3 ──\nname = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

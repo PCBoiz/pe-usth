@@ -1,0 +1,91 @@
+{
+ "lesson_code": "SY25",
+ "sort_order": 128,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+ "subtitle": "Trung cấp · M5 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
+  "subtitle": "Trung cấp · M5 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY25",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 97-98; Python — Data structures"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
+     },
+     {
+      "type": "code",
+      "code": "students = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])",
+      "expected": "2005-01-02\n8.0"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dictionary giúp tra theo mã; tuple (student_id, course_id) làm khóa của một điểm. Ở PW1, bạn chỉ dùng collection và hàm để tổ chức dữ liệu, chưa cần class cho sinh viên hay môn học. Mỗi hồ sơ vẫn cần ngày sinh (DoB), dù trường này không tham gia công thức GPA."
+     },
+     {
+      "type": "code",
+      "code": "def course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))",
+      "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Điểm 0 là dữ liệu hợp lệ, khác chưa có điểm. Khi liệt kê một môn, chọn đúng các cặp khóa của môn đó. Trong màn hình nhập, kiểm mã môn và mã sinh viên tồn tại trước khi nhận điểm."
+     },
+     {
+      "type": "code",
+      "code": "def read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])",
+      "expected": "S01 An 2005-01-02"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hàm read_student nhận một hàm ask để lấy dữ liệu. Trong ví dụ, lambda trả lần lượt các câu trả lời có sẵn nên bạn có thể chạy ngay mà không gõ bàn phím. Khi làm chương trình terminal, gọi `read_student(input)`. Bài hoàn chỉnh cần nhập số lượng rồi từng hồ sơ sinh viên, nhập số môn và mã/tên từng môn, chọn môn để nhập điểm, và liệt kê lại các danh sách. Các thao tác phải dùng chung bộ dữ liệu để hồ sơ và điểm luôn khớp nhau."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY01 · Đọc ngày tháng và tính khoảng thời gian, SY04 · Git: từ thư mục bài làm đến fork của bạn, PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Khóa điểm vì sao có hai thành phần?",
+     "answer": "Một sinh viên có thể có nhiều môn; (student_id, course_id) xác định điểm thuộc đúng cặp."
+    },
+    {
+     "prompt": "Nếu điểm bằng 0 có được bỏ như chưa nhập không?",
+     "answer": "Không. Kiểm sự tồn tại của key; 0 là điểm hợp lệ."
+    },
+    {
+     "prompt": "Hoàn thiện PW1 không dùng class domain và tự kiểm đủ yêu cầu.",
+     "answer": "Tạo file 1.student.mark.py. Viết các hàm read_count nhận số nguyên không âm; read_students(count) nhận mã, tên và DoB, không cho trùng mã; read_courses(count) nhận mã và tên môn, không cho trùng mã; read_marks(course_id) nhận điểm hữu hạn từ 0 đến 10. Thêm list_students, list_courses và list_course_marks để xem lại dữ liệu. Chương trình terminal cần menu nhập, xem và thoát; dùng input để nhận dữ liệu, hoặc truyền ask khi chạy thử. Thử hai sinh viên trùng tên nhưng khác mã, hai môn, điểm 0, mã không tồn tại, số lượng sai và ngày không hợp lệ. Đối chiếu danh sách điểm của từng môn, rồi commit và push bài lên fork."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])\n\n# ── Đoạn 2 ──\ndef course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))\n\n# ── Đoạn 3 ──\ndef read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

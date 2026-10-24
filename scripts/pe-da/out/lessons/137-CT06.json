@@ -1,0 +1,95 @@
+{
+ "lesson_code": "CT06",
+ "sort_order": 137,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT06 · Round Robin và time quantum",
+ "subtitle": "Nâng cao · M6 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT06 · Round Robin và time quantum",
+  "subtitle": "Nâng cao · M6 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 234-235; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum rồi đưa việc chưa xong về cuối hàng:"
+     },
+     {
+      "type": "code",
+      "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)",
+      "expected": "['A', 'B', 'A', 'B', 'A']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Quantum bằng 1 nên A, B thay phiên. Khi B hết hai đơn vị CPU, nó không trở lại ready queue. Mô phỏng này chưa có chi phí chuyển ngữ cảnh hoặc việc đến giữa chừng."
+     },
+     {
+      "type": "code",
+      "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)",
+      "expected": "[('A', 2), ('B', 2), ('A', 1)]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Quantum bằng 2 giảm số lượt cấp CPU, nhưng B phải chờ A chạy lâu hơn trước lượt đầu. Đó là đánh đổi giữa đáp ứng và overhead, không phải quy tắc quantum càng nhỏ càng tốt."
+     },
+     {
+      "type": "code",
+      "code": "useful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))",
+      "expected": "5.4\n5.2"
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển cộng thêm 0.2. Quantum nhỏ cho việc phía sau có lượt sớm hơn, nhưng có thể làm tổng thời gian tăng vì chuyển ngữ cảnh nhiều hơn. Đây là tính toán trên số giả định để so sánh hai lựa chọn, không phải kết quả đo scheduler của máy đang chạy Python."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT05 · SRTF, deadline và các mức ưu tiên"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với quantum 1, thứ tự lượt chạy là gì?",
+     "answer": "A, B, A, B, A."
+    },
+    {
+     "prompt": "Việc chưa hết CPU sau quantum đi đâu?",
+     "answer": "Trở về cuối ready queue trong mô hình Round Robin."
+    },
+    {
+     "prompt": "Quantum lớn đến mức mọi việc xong trong một lượt gần chính sách nào?",
+     "answer": "Gần FCFS với các giả định cùng ready queue và không có cơ chế ưu tiên khác."
+    },
+    {
+     "prompt": "Quantum 1 và 2 trong bài tạo lần lượt 5 và 3 lượt chạy. Vì sao quantum nhỏ có thể đáp ứng nhanh hơn nhưng tổng thời gian lâu hơn?",
+     "answer": "Việc phía sau có lượt sớm hơn, nhưng số lần chuyển ngữ cảnh tăng. Nếu mỗi lần chuyển có chi phí, tổng overhead có thể lớn hơn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 2 ──\nfrom collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)\n\n# ── Đoạn 3 ──\nuseful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

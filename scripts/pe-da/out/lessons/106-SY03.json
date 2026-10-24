@@ -1,0 +1,95 @@
+{
+ "lesson_code": "SY03",
+ "sort_order": 106,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY03 · Tìm và sửa mẫu văn bản bằng regex",
+ "subtitle": "Trung cấp · M5 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY03 · Tìm và sửa mẫu văn bản bằng regex",
+  "subtitle": "Trung cấp · M5 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 330; Python — re"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong ghi chú \"Paid by S012 today\", bạn muốn lấy mã sinh viên thay vì dựa vào vị trí ký tự cố định. Regex mô tả dạng của mã:"
+     },
+     {
+      "type": "code",
+      "code": "import re\nmatch = re.search(r\"\\bS\\d{3}\\b\", \"Paid by S012 today\")\nprint(match.group(0) if match else None)",
+      "expected": "S012"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`S` là chữ phải có; `\\d{3}` là ba chữ số; `\\b` đánh dấu ranh giới từ. Chữ r trước dấu nháy tạo raw string, giúp dấu gạch chéo được truyền đúng vào regex. `search` tìm khớp đầu tiên và trả Match; không thấy thì trả None."
+     },
+     {
+      "type": "code",
+      "code": "import re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)",
+      "expected": "An paid today"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`sub` thay các đoạn khớp, ở đây gộp khoảng trắng liên tiếp thành một dấu cách. Khác search, kết quả của sub là chuỗi mới. Dấu chấm trong regex thường khớp một ký tự bất kỳ trừ ký tự xuống dòng. Muốn tìm dấu chấm thật, viết `r\"a\\.b\"` hoặc dùng `re.escape(\"a.b\")` để tạo mẫu tìm đúng chuỗi đó."
+     },
+     {
+      "type": "code",
+      "code": "import re\nprint(re.search(r\"\\bS\\d{3}\\b\", \"S12\") is None)\nprint(re.search(re.escape(\"a.b\"), \"a-b\") is None)\nprint(re.search(r\"\\d{4}-\\d{2}-\\d{2}\", \"2024-02-31\") is not None)",
+      "expected": "True\nTrue\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "Dòng cuối khớp cấu trúc ngày nhưng ngày 31/02 không tồn tại. Sau bước tìm chuỗi, hãy dùng datetime.strptime để xác nhận ngày. Một mẫu khớp không tự chứng minh dữ liệu có ý nghĩa đúng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "search không thấy gì trả về gì?",
+     "answer": "None. Kiểm match trước khi gọi match.group(0)."
+    },
+    {
+     "prompt": "Viết cách gộp các khoảng trắng trong \"A   B\".",
+     "answer": "re.sub(r\"\\s+\", \" \", \"A   B\") trả \"A B\"."
+    },
+    {
+     "prompt": "Viết extract_id(text) trả mã S và đúng ba chữ số, hoặc None.",
+     "answer": "m = re.search(r\"\\bS\\d{3}\\b\", text); return m.group(0) if m else None. Thử S012, S12, S0123 và chuỗi không có mã."
+    },
+    {
+     "prompt": "`re.search(r\"a.b\", \"a-b\")` có khớp không? Muốn tìm đúng chuỗi `a.b` thì viết thế nào? Sau đó viết lệnh gộp các khoảng trắng liên tiếp thành một dấu cách.",
+     "answer": "Có vì dấu chấm regex khớp một ký tự. Dùng re.search(re.escape(\"a.b\"), text) cho literal; re.sub(r\"\\s+\", \" \", text) tạo chuỗi mới. Import re trước khi gọi; search không thấy trả None."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport re\nmatch = re.search(r\"\\bS\\d{3}\\b\", \"Paid by S012 today\")\nprint(match.group(0) if match else None)\n\n# ── Đoạn 2 ──\nimport re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)\n\n# ── Đoạn 3 ──\nimport re\nprint(re.search(r\"\\bS\\d{3}\\b\", \"S12\") is None)\nprint(re.search(re.escape(\"a.b\"), \"a-b\") is None)\nprint(re.search(r\"\\d{4}-\\d{2}-\\d{2}\", \"2024-02-31\") is not None)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,101 @@
+{
+ "lesson_code": "SY19",
+ "sort_order": 122,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
+ "subtitle": "Trung cấp · M5 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
+  "subtitle": "Trung cấp · M5 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY19",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 173-178; Python — Data compression"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
+     },
+     {
+      "type": "code",
+      "code": "import zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)",
+      "expected": "True\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Các hàm compress/decompress làm việc với bytes. Với văn bản, dùng encode để chuyển thành bytes trước khi nén và decode để chuyển lại thành chuỗi sau khi giải nén. Một file .gz thường lưu một luồng nén; nếu cần giữ nhiều file cùng tên của chúng, dùng định dạng đóng gói (archive) như ZIP hoặc tar."
+     },
+     {
+      "type": "code",
+      "code": "import bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))",
+      "expected": "cà phê\ncà phê"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "bz2 thường gắn đuôi .bz2; lzma với định dạng mặc định ở đây là .xz; gzip là .gz. Mỗi cách nén đánh đổi tốc độ, bộ nhớ và kích thước. Không có một cách nén (codec) luôn tốt nhất cho mọi bảng dữ liệu."
+     },
+     {
+      "type": "code",
+      "code": "import gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")",
+      "expected": "True\nDu lieu nen khong hop le"
+     },
+     {
+      "type": "paragraph",
+      "text": "Dữ liệu rất ngắn có thể lớn hơn sau khi nén vì định dạng nén còn cần phần đầu và thông tin điều khiển. Nén cũng không phải mã hóa bảo mật: người có file và công cụ phù hợp vẫn có thể giải nén. Một số định dạng đóng gói hỗ trợ mật khẩu, nhưng đó là tính năng riêng, không phải tính chất của mọi thuật toán nén."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY18 · Đường dẫn, cây thư mục và symlink"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Nén text trực tiếp bằng gzip.compress được không?",
+     "answer": "Cần bytes: gzip.compress(text.encode(\"utf8\")); giải nén rồi decode cùng encoding."
+    },
+    {
+     "prompt": "Tại sao file ngắn nén xong lớn hơn?",
+     "answer": "Phần đầu và thông tin điều khiển của định dạng nén có thể lớn hơn số byte tiết kiệm được. Hãy giải nén rồi so với dữ liệu ban đầu để kiểm tra có mất dữ liệu hay không."
+    },
+    {
+     "prompt": "Viết compress_bytes(data, method) và decompress_bytes cho bốn codec.",
+     "answer": "Map tên zlib/gzip/bz2/lzma sang module, tên lạ raise ValueError; gọi .compress/.decompress. Thử b\"\", bytes có ký tự 0, text UTF-8, input lặp dài và bytes hỏng. Không yêu cầu output luôn nhỏ hơn."
+    },
+    {
+     "prompt": "Ghép gzip/bz2/lzma với .gz/.bz2/.xz; zlib.compress nhận gì? Vì sao không gọi nén là mã hóa?",
+     "answer": "gzip→.gz, bz2→.bz2, lzma mặc định ở đây→.xz; zlib.compress và ba codec đều nén bytes. Text cần encode. Nén thay biểu diễn để tiết kiệm nhưng không bảo mật; dữ liệu nhỏ có thể lớn lên do header. Archive giữ nhiều tên file; encryption cần cơ chế khóa riêng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (lzma không có trong stdlib của bản Pyodide này) nên không nằm trong ô này."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n",
+   "env": "1 đoạn phải chạy bằng Python trên máy: lzma không có trong stdlib của bản Pyodide này."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "lzma không có trong stdlib của bản Pyodide này"
+  }
+ ]
+}

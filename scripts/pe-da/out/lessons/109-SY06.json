@@ -1,0 +1,101 @@
+{
+ "lesson_code": "SY06",
+ "sort_order": 109,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY06 · Cho object cách hiển thị và so sánh",
+ "subtitle": "Trung cấp · M5 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY06 · Cho object cách hiển thị và so sánh",
+  "subtitle": "Trung cấp · M5 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 114-117; Python — Data model"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi in một điểm số, bạn muốn thấy \"Diem 8\" thay vì mô tả mặc định của object. Python gọi __str__ để lấy chuỗi hiển thị:"
+     },
+     {
+      "type": "code",
+      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))",
+      "expected": "Diem 8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`__str__` phải trả chuỗi. Nếu chỉ print trong method rồi không return, Python không nhận được chuỗi đúng yêu cầu. Để so sánh hai Grade bằng dấu <, định nghĩa __lt__:"
+     },
+     {
+      "type": "code",
+      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])",
+      "expected": "True\n[5, 8]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`sorted` tạo danh sách mới theo quy tắc so sánh. Ở đây quy tắc là giá trị điểm. `NotImplemented` cho biết method không xử lý loại object kia; nó khác việc tự nhận mọi trường hợp không biết là False."
+     },
+     {
+      "type": "code",
+      "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
+      "expected": "Khong cung loai de so sanh"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Không phải hai object có thể in được thì cũng so sánh thứ tự được với nhau. Khi thiết kế báo cáo, chọn rõ thứ tự theo điểm, tên hay mã thay vì trông chờ thứ tự mặc định."
+     },
+     {
+      "type": "paragraph",
+      "text": "Slide so sánh người theo tuổi. Quy tắc tương tự: trong class Person có age, `__lt__` trả `self.age < other.age`. Khi đó Person 18 tuổi nhỏ hơn Person 21 tuổi, dù tên được xếp chữ cái theo thứ tự nào. Bạn cần chọn đúng thuộc tính để phép so sánh mang nghĩa của bài toán."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "__str__ trả gì?",
+     "answer": "Một str. print(Grade(8)) sẽ dùng chuỗi do __str__ trả."
+    },
+    {
+     "prompt": "Muốn xếp điểm giảm dần khi đã có __lt__ thì làm sao?",
+     "answer": "sorted(grades, reverse=True). Nó không sửa list nguồn."
+    },
+    {
+     "prompt": "Thêm __str__ và __lt__ cho Course theo credits.",
+     "answer": "__str__ có thể trả f\"{self.cid}: {self.credits}\"; __lt__ kiểm other là Course rồi so self.credits < other.credits, kiểu khác trả NotImplemented. Thử credits hòa và so với str."
+    },
+    {
+     "prompt": "Person có name và age. Viết __lt__ để Person(\"Z\",18) < Person(\"A\",21) là True; viết __str__ trả tên và tuổi. Có nên print trong __str__ thay return không?",
+     "answer": "Trong __lt__, kiểm isinstance(other, Person), kiểu khác return NotImplemented; còn lại return self.age < other.age. Trong __str__, return f\"{self.name}: {self.age}\". Kết quả so tuổi là True dù Z đứng sau A; __str__ phải trả str, chỉ print rồi trả None sẽ gây TypeError khi Python cần chuỗi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))\n\n# ── Đoạn 2 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])\n\n# ── Đoạn 3 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

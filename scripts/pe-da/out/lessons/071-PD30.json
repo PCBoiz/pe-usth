@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD30",
+ "sort_order": 71,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD30 · Một quy trình làm sạch có kiểm tra",
+ "subtitle": "Nâng cao · M3 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD30 · Một quy trình làm sạch có kiểm tra",
+  "subtitle": "Nâng cao · M3 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD30",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Pipe"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi tuần bạn nhận cùng kiểu file doanh thu. Nếu sửa từng ô bằng tay, tuần sau rất khó biết mình đã làm gì. Một hàm làm sạch giúp chạy lại cùng quy tắc và kiểm tra kết quả."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())",
+      "expected": "['A', 'B']\n[False, True]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hàm nhận bảng gốc và trả bảng đã xử lý. Nó chưa tự bỏ dữ liệu lỗi: `amount` còn thiếu để bạn quyết định cách xử lý. Tiếp theo, cần kiểm tra các quy tắc mà bảng phải đáp ứng, chẳng hạn mỗi đơn có mã duy nhất và số tiền không thiếu. Tập quy tắc đó thường được gọi là hợp đồng dữ liệu."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
+      "expected": "Passed: 2 orders, total 30"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Điều kiện số tiền không âm chỉ đúng với bảng doanh thu chưa chứa hoàn tiền; bảng khác có thể cần quy tắc khác. `assert` hữu ích trong bài phân tích và kiểm thử. Với ứng dụng đang vận hành, hãy dùng điều kiện kiểm tra và `raise` rõ ràng, vì Python có chế độ chạy tắt các câu lệnh `assert`."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndef normalize(df):\n    return df.assign(store=df['store'].str.strip().str.upper())\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': [10, 20]})\nclean = raw.pipe(normalize).sort_values('store').reset_index(drop=True)\nprint(clean.to_dict('records'))\nprint(normalize(clean).equals(clean))",
+      "expected": "[{'store': 'A', 'amount': 10}, {'store': 'B', 'amount': 20}]\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "pipe truyền cả bảng vào hàm để các bước đọc từ trái sang phải. Kiểm tra cuối cho thấy chuẩn hóa thêm lần nữa không làm đổi bảng ở ví dụ này. Ghi phiên bản thư viện, quy tắc và thứ tự đầu ra giúp người khác chạy lại báo cáo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD29 · Đọc SQL thành DataFrame"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?",
+     "answer": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ."
+    },
+    {
+     "prompt": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?",
+     "answer": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ."
+    },
+    {
+     "prompt": "Kiểm tra order=[A,B] duy nhất và amount=[3,4] không thiếu, rồi in tổng.",
+     "answer": "Các kiểm tra đều qua, tổng là 7.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [3, 4]})\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nprint(df['amount'].sum())",
+     "answerExpected": "7"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndef normalize(df):\n    return df.assign(store=df['store'].str.strip().str.upper())\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': [10, 20]})\nclean = raw.pipe(normalize).sort_values('store').reset_index(drop=True)\nprint(clean.to_dict('records'))\nprint(normalize(clean).equals(clean))\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,106 @@
+{
+ "lesson_code": "VZ15",
+ "sort_order": 88,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting",
+ "subtitle": "Trung cấp · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting",
+  "subtitle": "Trung cấp · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ15",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Từ DataFrame đến biểu đồ: pandas plotting"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng đơn hàng có hai lần bán cà phê và một lần bán trà. Nếu muốn vẽ doanh thu theo loại, cần cộng các dòng của cùng loại trước. pandas chuẩn bị bảng tổng hợp; plot.bar vẽ bảng đó vào Axes bạn đã tạo."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
+      "expected": "{'Coffee': 50, 'Tea': 12}"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ15-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Series.plot dùng index làm trục ngang nếu bạn không chỉ định khác. Với thời gian, hãy chuyển cột ngày sang datetime rồi sắp trước khi vẽ. Tên cột có thể trở thành nhãn mặc định nhưng vẫn cần bổ sung đơn vị cho người đọc."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()",
+      "expected": "[8, 10, 7]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ15-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mặc định bỏ qua giá trị thiếu khi tổng hợp có thể khiến một nhóm nhìn đủ dữ liệu dù chưa đủ. Trước khi vẽ, đếm số giá trị có thật và ghi rõ khoảng nào thiếu. Ví dụ cuối giữ khoảng trống của thời gian chờ; fillna(0) ở đây sẽ tạo một đơn chờ 0 phút vốn chưa được ghi nhận."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nwait = pd.Series([2.0, None, 5.0], index=[1, 2, 3], name=\"Wait\")\nwait.plot(ax=ax, marker=\"o\")\nax.set(xlabel=\"Order\", ylabel=\"Wait (minutes)\", title=\"One missing observation\")\nprint(int(wait.count()), int(wait.isna().sum()))\nplt.show()",
+      "expected": "2 1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ15-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ15-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự, PD08 · Ô thiếu: phát hiện trước khi điền, PD14 · Groupby: tổng hợp theo nhóm, PD21 · Đọc ngày và tính khoảng thời gian"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?",
+     "answer": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả."
+    },
+    {
+     "prompt": "Index ngày chưa sắp có ảnh hưởng đến line chart không?",
+     "answer": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày."
+    },
+    {
+     "prompt": "Có nên thay mọi thời gian chờ thiếu bằng 0 trước khi vẽ?",
+     "answer": "Không. 0 là giá trị có ý nghĩa riêng. Cần giải thích quy tắc xử lý thiếu và kiểm tra nguồn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nwait = pd.Series([2.0, None, 5.0], index=[1, 2, 3], name=\"Wait\")\nwait.plot(ax=ax, marker=\"o\")\nax.set(xlabel=\"Order\", ylabel=\"Wait (minutes)\", title=\"One missing observation\")\nprint(int(wait.count()), int(wait.isna().sum()))\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

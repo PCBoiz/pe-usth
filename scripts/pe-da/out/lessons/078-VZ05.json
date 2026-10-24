@@ -1,0 +1,99 @@
+{
+ "lesson_code": "VZ05",
+ "sort_order": 78,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ05 · Scatter plot: quan hệ giữa hai biến",
+ "subtitle": "Cơ bản · M4 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ05 · Scatter plot: quan hệ giữa hai biến",
+  "subtitle": "Cơ bản · M4 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Scatter plot: quan hệ giữa hai biến"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có bốn đơn hàng, mỗi đơn có khoảng cách giao và số phút giao. Scatter plot đặt mỗi đơn thành một điểm. Nó giúp bạn xem đơn ở xa có thường giao lâu hơn không mà không giả định phải nối từ đơn này sang đơn khác."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()",
+      "expected": "4"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ05-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Có thể dùng màu cho nhóm và diện tích marker cho một số đo khác. Tham số s là diện tích marker tính theo điểm in bình phương, không phải bán kính. Với các điểm trùng nhau, alpha nhỏ hơn 1 làm chỗ chồng lên nhau rõ hơn. Bốn điểm minh họa có thể gợi ý một quan hệ, nhưng không đủ để kết luận khoảng cách là nguyên nhân duy nhất của thời gian giao."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
+      "expected": "4.0"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ05-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2], [8, 12], marker=\"o\", color=\"#0072B2\", label=\"Bike\")\nax.scatter([2, 3], [10, 11], marker=\"^\", color=\"#D55E00\", label=\"Motorbike\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Separate delivery methods\")\nax.legend()\nprint(len(ax.collections))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ05-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ05-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ02 · Figure, Axes và biểu đồ đầu tiên"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Mỗi điểm trong ví dụ giao hàng là gì?",
+     "answer": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó."
+    },
+    {
+     "prompt": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?",
+     "answer": "4 lần. Bán kính không tăng 4 lần."
+    },
+    {
+     "prompt": "Nhìn điểm đi lên có kết luận tăng khoảng cách luôn gây chậm giao được không?",
+     "answer": "Không. Cần xét dữ liệu và các yếu tố khác như phương tiện, giao thông; biểu đồ chỉ mô tả quan hệ quan sát được."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2], [8, 12], marker=\"o\", color=\"#0072B2\", label=\"Bike\")\nax.scatter([2, 3], [10, 11], marker=\"^\", color=\"#D55E00\", label=\"Motorbike\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Separate delivery methods\")\nax.legend()\nprint(len(ax.collections))\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

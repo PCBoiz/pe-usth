@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP19",
+ "sort_order": 37,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP19 · Cắt dữ liệu: view và copy",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP19 · Cắt dữ liệu: view và copy",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP19",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 121-123; NumPy · View và copy"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn muốn thử đổi giá của hai sản phẩm đầu, nhưng vẫn cần bảng giá gốc để đối chiếu. Hãy tạo bản sao trước khi sửa:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nprices = np.array([10, 20, 30])\ntrial = prices[:2].copy()\ntrial[0] = 8\nprint(prices)\nprint(trial)",
+      "expected": "[10 20 30]\n[ 8 20]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`prices[:2]` lấy hai phần tử đầu. Thêm `.copy()` tạo dữ liệu độc lập cho `trial`, nên đổi giá trong `trial` không làm đổi `prices`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu chỉ cắt một đoạn bằng slice, kết quả có thể là view: một cách truy cập vào cùng dữ liệu. Với array dưới đây, điều đó thể hiện ngay khi bạn sửa `b`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)",
+      "expected": "[9 2 3]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`b` là view của hai phần tử đầu trong `a`. Khi gán `b[0] = 9`, ô dữ liệu mà `a` đang dùng cũng đổi thành 9."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chạy lại với một array mới và thêm `copy()`:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([1, 2, 3])\nb = a[:2].copy()\nb[0] = 9\nprint(a)",
+      "expected": "[1 2 3]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Lần này `a` vẫn là `[1 2 3]`. Bạn có thể sửa `b` mà không sửa dữ liệu gốc."
+     },
+     {
+      "type": "paragraph",
+      "text": "Cũng cần phân biệt `a[:2] * 2` với `a[:2] *= 2`: phép đầu tạo kết quả mới, còn phép sau sửa tại chỗ và làm đổi hai phần tử đầu của `a`. Khi lấy dữ liệu bằng boolean indexing như `b = a[a > 1]`, kết quả là bản sao; đừng mặc định mọi cách lấy một phần array đều dùng chung dữ liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP09 · Lấy ô, hàng và cột"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong ví dụ `b = a[:2]`, vì sao sửa `b[0]` lại làm đổi `a`?",
+     "answer": "Vì `b` là view dùng chung dữ liệu với `a`. Sửa `b[0]` làm đổi ô mà `a` cũng truy cập."
+    },
+    {
+     "prompt": "Điền phương thức để sửa `b` mà giữ nguyên `a`: `b = a[:2].___()`.",
+     "answer": "Điền `copy`: `b = a[:2].copy()`."
+    },
+    {
+     "prompt": "Nhân đôi hai giá đầu trong một bảng giá, giữ bảng giá gốc để đối chiếu.",
+     "answer": "Tạo kết quả mới từ bản sao của hai giá đầu:",
+     "answerCode": "import numpy as np\n\nprices = np.array([10, 20, 30])\nnew_prices = prices[:2].copy() * 2\nprint(prices)\nprint(new_prices)",
+     "answerExpected": "[10 20 30]\n[20 40]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nprices = np.array([10, 20, 30])\ntrial = prices[:2].copy()\ntrial[0] = 8\nprint(prices)\nprint(trial)\n\n# ── Đoạn 2 ──\na = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)\n\n# ── Đoạn 3 ──\na = np.array([1, 2, 3])\nb = a[:2].copy()\nb[0] = 9\nprint(a)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

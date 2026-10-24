@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD22",
+ "sort_order": 63,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD22 · Gom theo ngày, tháng và điền mốc thiếu",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD22 · Gom theo ngày, tháng và điền mốc thiếu",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD22",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Resampling"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng giao dịch có nhiều ngày và bạn muốn báo cáo doanh thu tháng. Khi index là thời gian, resample gom các hàng vào những khoảng thời gian đều nhau."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())",
+      "expected": "['2026-01-01', '2026-02-01']\n[30, 40]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "MS là mốc đầu tháng. Doanh thu tháng 1 là 30, dù có hai ngày bán khác nhau. Nếu thời gian vẫn là cột, groupby(pd.Grouper(key=\"date\", freq=\"MS\")) là một cách gom tương ứng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())",
+      "expected": "[False, True, False]\n[10.0, 0.0, 30.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "reindex bổ sung ngày 2 đang vắng. Có thể dùng asfreq(\"D\") để đưa một chuỗi có index thời gian phù hợp về tần suất ngày mà không tổng hợp. Chỉ fillna(0) nếu xác nhận ngày vắng thực sự không có bán hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndates = pd.Series(pd.to_datetime(['2026-01-05', '2026-01-20', '2026-02-02']))\nmonths = dates.dt.to_period('M')\nprint(months.astype(str).tolist())\nprint(months.nunique())",
+      "expected": "['2026-01', '2026-01', '2026-02']\n2"
+     },
+     {
+      "type": "paragraph",
+      "text": "Period biểu diễn cả một khoảng như tháng 2026-01, khác Timestamp biểu diễn một thời điểm. Dùng tháng dạng Period để nhóm khi bạn không muốn gán tháng đó vào một ngày cụ thể."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD21 · Đọc ngày và tính khoảng thời gian"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "MS trong resample dùng nhãn ở đầu hay cuối tháng?",
+     "answer": "Đầu tháng."
+    },
+    {
+     "prompt": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?",
+     "answer": "Không; nó chỉ làm rõ mốc chưa có dữ liệu."
+    },
+    {
+     "prompt": "Gom số [5,7] ở 2026-01-01 và 2026-01-02 thành tổng tháng.",
+     "answer": "Tổng tháng là 12.",
+     "answerCode": "import pandas as pd\ns = pd.Series([5, 7], index=pd.to_datetime(['2026-01-01', '2026-01-02']))\nprint(s.resample('MS').sum().tolist())",
+     "answerExpected": "[12]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndates = pd.Series(pd.to_datetime(['2026-01-05', '2026-01-20', '2026-02-02']))\nmonths = dates.dt.to_period('M')\nprint(months.astype(str).tolist())\nprint(months.nunique())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

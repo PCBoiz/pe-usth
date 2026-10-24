@@ -1,0 +1,108 @@
+{
+ "lesson_code": "SY26",
+ "sort_order": 129,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY26 · PW2–PW4: chuyển sang object rồi chia package",
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY26 · PW2–PW4: chuyển sang object rồi chia package",
+  "subtitle": "Trung cấp · M5 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY26",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 109-110, 132, 150-151; Python — Classes; Python — Packages"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
+     },
+     {
+      "type": "code",
+      "code": "class Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())",
+      "expected": "S01: An (2005-01-02)\nPY: Python"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Vòng lặp gọi cùng describe trên hai loại object. Vòng lặp liệt kê không cần biết đang nhận Student hay Course; mỗi object tự tạo phần mô tả phù hợp. Đó là đa hình. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
+     },
+     {
+      "type": "code",
+      "code": "import math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))",
+      "expected": "[8.7, 6.2]\n8.07"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở PW3, làm tròn xuống ngay khi nhận điểm rồi dùng điểm đã lưu để tính GPA. Với 8.7 và 6.2, trung bình có trọng số là 8.075. Dòng round chỉ minh họa cách hiển thị trên số float; nếu cần một quy tắc làm tròn thập phân chính xác, phải chọn và nêu riêng. Khi xếp hạng, cũng cần nói rõ dùng GPA nào và xử lý ra sao khi hai sinh viên bằng điểm."
+     },
+     {
+      "type": "code",
+      "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
+      "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Đây là sơ đồ file cần tạo, không phải một package đã tự được sinh ra bởi dictionary. PW4 đặt class trong domains, nhập liệu trong input.py, curses output trong output.py và main.py nối các phần. Sau khi tách, chạy lại đúng những ca PW1 để kiểm việc đổi cấu trúc không làm mất chức năng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Ở class StudentMark trên, set_score kiểm điểm rồi mới cập nhật self.score. Mỗi lần đổi điểm cũng đi qua method này: nếu dữ liệu mới sai, điểm cũ vẫn còn. Kiểm kiểu trước khi gọi math.isfinite để không coi True là điểm 1; chỉ lưu số hữu hạn trong 0..10, sau đó mới floor một chữ số. Đây là một cách đóng gói quy tắc mà PW2/PW3 yêu cầu."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để xếp GPA, dùng `sorted(students, key=lambda student: (-student.gpa, student.sid))`: GPA giảm dần, bằng GPA thì mã tăng dần. Nếu chỉ cần giữ thứ tự nhập khi hòa, có thể dùng key theo gpa và `reverse=True`. Project mẫu tính GPA trên những môn đã có điểm, với trọng số tín chỉ của chính các môn đó. Sinh viên chưa có điểm môn nào được ghi \"chưa có GPA\" và xếp riêng; không thay điểm thiếu bằng 0. Công bố chính sách này trước khi so sánh kết quả."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng, SY06 · Cho object cách hiển thị và so sánh, SY07 · Kế thừa, override và super, SY10 · Giữ trạng thái hợp lệ bằng getter và setter, SY12 · Package và điểm bắt đầu của chương trình, SY13 · Làm tròn xuống và tính điểm có trọng số, SY14 · Curses: nhận phím và vẽ lại giao diện terminal, SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "PW2 có được bỏ ngày sinh hoặc chỉ giữ một môn để đơn giản hóa không?",
+     "answer": "Không. PW2 vẫn giữ đầy đủ chức năng PW1, rồi tổ chức dữ liệu thành object, gom quy tắc vào các class và dùng hành vi đa hình khi liệt kê."
+    },
+    {
+     "prompt": "Công thức GPA ở ví dụ dùng điểm 8.79 hay 8.7?",
+     "answer": "Dùng điểm đã floor lúc nhập, tức 8.7 theo yêu cầu PW3. Không âm thầm đổi quy tắc giữa nhập, lưu và báo cáo."
+    },
+    {
+     "prompt": "Nộp gói PW2–PW4 có đủ chức năng và cách xác nhận.",
+     "answer": "Ở PW2, tạo Student, Course, StudentMark và Registry; dùng setter kiểm dữ liệu và để các object cung cấp cùng thao tác mô tả khi liệt kê. Ở PW3, làm tròn xuống một chữ số lúc nhập điểm, dùng NumPy tính GPA theo tín chỉ, xếp giảm dần và làm menu curses theo SY14. Ở PW4, tách input.py, output.py, domains và main.py; import main không tự mở giao diện. Chạy thử cùng hai sinh viên và hai môn qua từng mốc: giữ ngày sinh, cập nhật điểm, điểm 0, GPA, thứ tự xếp hạng và lỗi trùng mã. Nộp cả cây file, ghi hình thao tác menu trong terminal và lưu commit cho từng mốc."
+    },
+    {
+     "prompt": "Điểm cũ là 8.7. Nếu gọi set_score với 11, True hoặc NaN, điểm đã lưu có thay đổi không? Khi hai sinh viên bằng GPA và một sinh viên chưa có điểm môn nào, bạn sẽ xếp danh sách thế nào?",
+     "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và nêu rõ cách xếp khi bằng GPA, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nclass Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())\n\n# ── Đoạn 2 ──\nimport math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))\n\n# ── Đoạn 3 ──\nfiles = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

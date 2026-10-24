@@ -1,0 +1,99 @@
+{
+ "lesson_code": "PY14",
+ "sort_order": 14,
+ "module": "M1 · Python nền tảng",
+ "title": "PY14 · For, range và biến tích lũy",
+ "subtitle": "Cơ bản · M1 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY14 · For, range và biến tích lũy",
+  "subtitle": "Cơ bản · M1 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY14",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 79-80, 88-89, 93-94, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần cộng số cốc của ba ngày. Một vòng for có thể lần lượt lấy từng số và cộng vào biến tổng:"
+     },
+     {
+      "type": "code",
+      "code": "cups = [12, 15, 9]\ntotal = 0\nfor value in cups:\n    total += value\nprint(total)",
+      "expected": "36"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, value nhận một phần tử theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
+     },
+     {
+      "type": "code",
+      "code": "print(list(range(1, 5)))\nprint(list(range(5, 0, -2)))\nfor index, value in enumerate([6, 8]):\n    print(index, value)",
+      "expected": "[1, 2, 3, 4]\n[5, 3, 1]\n0 6\n1 8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`range(start, stop, step)` không lấy stop; bước âm tạo dãy giảm. `range(5)` bắt đầu từ 0. range là một object range, nên ví dụ gọi list để hiện toàn bộ số. `enumerate` cho cả chỉ số và giá trị."
+     },
+     {
+      "type": "code",
+      "code": "names, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
+      "expected": "Mai 8\nAn 7\n[4, 6]"
+     },
+     {
+      "type": "paragraph",
+      "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt input. Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY13 · Set và so sánh hai nhóm"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "range(0, 7, 2) có những số nào?",
+     "answer": "0, 2, 4, 6; không lấy điểm dừng 7."
+    },
+    {
+     "prompt": "Với enumerate([6, 8]), cặp thứ hai là gì?",
+     "answer": "Chỉ số 1 và giá trị 8."
+    },
+    {
+     "prompt": "Tạo list bình phương các số từ 0 đến 4.",
+     "answer": "[i ** 2 for i in range(5)] cho [0, 1, 4, 9, 16]."
+    },
+    {
+     "prompt": "range(4), range(2,5) và range(5,0,-2) tạo các số nào? for n in range(3): total += n với total=0 từ đầu có tổng gì?",
+     "answer": "Lần lượt 0,1,2,3; 2,3,4; 5,3,1. range là sequence không phải list; dùng list(...) để hiển thị. Vòng cuối cộng lần lượt 0,1,2, được 3; câu lệnh sau vòng chỉ chạy sau khi duyệt xong."
+    },
+    {
+     "prompt": "Ghép zip([\"An\",\"Mai\"],[8]) rồi for name, score in ... được mấy cặp? Viết comprehension đổi [\"AN\",\"MAI\"] thành chữ thường, và lọc [3,1,4] giữ số >=3.",
+     "answer": "Zip mặc định chỉ có (\"An\",8) vì dãy điểm ngắn hơn; vòng for unpack cặp vào hai tên. [s.lower() for s in [\"AN\",\"MAI\"]] cho [\"an\",\"mai\"]; [x for x in [3,1,4] if x>=3] cho [3,4], giữ thứ tự ban đầu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\ncups = [12, 15, 9]\ntotal = 0\nfor value in cups:\n    total += value\nprint(total)\n\n# ── Đoạn 2 ──\nprint(list(range(1, 5)))\nprint(list(range(5, 0, -2)))\nfor index, value in enumerate([6, 8]):\n    print(index, value)\n\n# ── Đoạn 3 ──\nnames, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

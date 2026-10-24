@@ -1,0 +1,95 @@
+{
+ "lesson_code": "SY08",
+ "sort_order": 111,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY08 · Đa kế thừa: method được tìm ở đâu?",
+ "subtitle": "Trung cấp · M5 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY08 · Đa kế thừa: method được tìm ở đâu?",
+  "subtitle": "Trung cấp · M5 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY08",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 123-124, 126-127; Python — super"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai class A và B đều có method label, nhưng trả nội dung khác nhau. Nếu C kế thừa cả A lẫn B thì `C().label()` sẽ dùng method nào? Hãy xem thứ tự Python tìm method:"
+     },
+     {
+      "type": "code",
+      "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(A, B): pass\nprint(C().label())\nprint([x.__name__ for x in C.__mro__])",
+      "expected": "A\n['C', 'A', 'B', 'object']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`__mro__` cho biết thứ tự tìm method, viết đầy đủ là Method Resolution Order (MRO). Trong ví dụ, Python tìm label ở C rồi A trước B. Đổi thứ tự lớp cha có thể đổi kết quả; đừng coi super là cách gọi cố định một lớp cha bất kỳ."
+     },
+     {
+      "type": "code",
+      "code": "class Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())",
+      "expected": "SALES"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "UpperMixin gọi method tiếp theo theo MRO rồi đổi kết quả thành chữ hoa. Nhờ super, phần mở rộng phối hợp được với Report mà không cần gọi đích danh Report.render. Một mixin là lớp bổ sung hành vi cho lớp khác qua kế thừa. Nó nên đảm nhiệm một phần hành vi nhỏ; nếu nhiều lớp cùng sửa một trạng thái, cần kiểm kỹ thứ tự gọi."
+     },
+     {
+      "type": "code",
+      "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(B, A): pass\nprint(C().label())",
+      "expected": "B"
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi thứ tự kế thừa khó giải thích hoặc hai lớp cùng quản lý một trạng thái, để một object chứa hoặc sử dụng object khác, gọi là composition, có thể dễ đọc hơn. Đa kế thừa được hỗ trợ nhưng không cần dùng cho mọi báo cáo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY07 · Kế thừa, override và super"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "C(A, B) và C(B, A) có luôn cùng hành vi không?",
+     "answer": "Không. Với method label trùng tên trong ví dụ, thứ tự lớp cha quyết định nơi tìm thấy trước."
+    },
+    {
+     "prompt": "Xem MRO của một class bằng gì?",
+     "answer": "ClassName.__mro__ hoặc ClassName.mro()."
+    },
+    {
+     "prompt": "Thêm PrefixMixin đặt \"DA: \" trước kết quả render của Report.",
+     "answer": "class PrefixMixin: def render(self): return \"DA: \" + super().render(). Tạo class PrefixedReport(PrefixMixin, Report). Thử đổi thứ tự hai lớp và giải thích vì sao mixin có thể không được gọi."
+    },
+    {
+     "prompt": "LoudReport(UpperMixin,Report) cần gọi cả hai render. Vì sao super trong UpperMixin đi tới Report thay vì một lớp cha cố định?",
+     "answer": "super tiếp tục sau UpperMixin trong MRO của instance LoudReport. Nhờ thứ tự này, Report.render tạo sales rồi mixin đổi thành SALES. Đổi thứ tự lớp cha có thể bỏ qua mixin hoặc làm lời gọi khác đi."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nclass A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(A, B): pass\nprint(C().label())\nprint([x.__name__ for x in C.__mro__])\n\n# ── Đoạn 2 ──\nclass Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())\n\n# ── Đoạn 3 ──\nclass A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(B, A): pass\nprint(C().label())\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD28",
+ "sort_order": 69,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD28 · Đọc ít hơn và xử lý theo lô",
+ "subtitle": "Nâng cao · M3 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD28 · Đọc ít hơn và xử lý theo lô",
+  "subtitle": "Nâng cao · M3 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD28",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Scaling"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một file có hàng chục cột, nhưng báo cáo chỉ cần mã cửa hàng và doanh thu. Cách tiết kiệm bộ nhớ đầu tiên là không đọc những cột bạn không dùng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
+      "expected": "['store', 'amount']\n30"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Với dữ liệu lớn, chọn thêm dtype phù hợp sau khi đã kiểm tra miền giá trị. Không ép số vào kiểu quá nhỏ chỉ để giảm bộ nhớ, vì dữ liệu mới có thể vượt phạm vi đó."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
+      "expected": "True\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "deep=True tính cả phần bộ nhớ chứa các đối tượng chữ. Ở dãy có ít tên lặp nhiều lần này, category dùng ít bộ nhớ hơn và giữ các giá trị. Kết quả cụ thể phụ thuộc dữ liệu, nên hãy đo thay vì mặc định mọi category đều có lợi."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)",
+      "expected": "100 4\n25.0"
+     },
+     {
+      "type": "paragraph",
+      "text": "chunksize trả từng lô để cộng dồn. Trung bình toàn bộ phải tính tổng chia số quan sát phù hợp; không cộng hoặc lấy trung bình các trung bình lô khi kích thước lô khác nhau. Các phép cần toàn bộ dữ liệu như sắp xếp toàn cục không được giải quyết chỉ bằng chunksize. Khi đo tốc độ, kiểm tra hai cách cho cùng kết quả và đo nhiều lần với cùng dữ liệu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD27 · MultiIndex cho dữ liệu nhiều cấp"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "usecols giảm phần dữ liệu nào được đọc?",
+     "answer": "Giảm số cột được nạp."
+    },
+    {
+     "prompt": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?",
+     "answer": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát."
+    },
+    {
+     "prompt": "Đọc cột x gồm 1,2,3 theo chunksize=2 rồi cộng dồn.",
+     "answer": "Tổng là 6.",
+     "answerCode": "import pandas as pd\nfrom io import StringIO\ntotal = 0\nfor chunk in pd.read_csv(StringIO('x\\n1\\n2\\n3'), chunksize=2):\n    total += chunk['x'].sum()\nprint(total)",
+     "answerExpected": "6"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))\n\n# ── Đoạn 3 ──\nimport pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

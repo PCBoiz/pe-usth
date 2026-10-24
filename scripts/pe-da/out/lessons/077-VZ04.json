@@ -1,0 +1,100 @@
+{
+ "lesson_code": "VZ04",
+ "sort_order": 77,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự",
+ "subtitle": "Cơ bản · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự",
+  "subtitle": "Cơ bản · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Bar chart: so sánh nhóm và sắp thứ tự"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Cửa hàng bán 18 cốc trà, 30 cốc cà phê và 12 cốc ca cao. Bar chart cho bạn so sánh ba lượng bán bằng chiều cao cột. Vì chiều dài cột biểu diễn lượng bán, trục số nên bắt đầu từ 0 để chênh lệch không bị phóng đại."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()",
+      "expected": "60"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ04-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Sắp theo lượng bán giúp nhận ra nhóm lớn nhất nhanh hơn. Dùng barh khi tên nhóm dài; sau khi sắp tăng dần, nhóm lớn nhất sẽ nằm phía trên. Nếu so sánh hai tuần cho cùng loại đồ uống, đặt hai cột cạnh nhau và giải thích tên mỗi tuần trong legend."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
+      "expected": "Coffee"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ04-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.arange(2)\nax.bar(x - 0.2, [30, 18], width=0.4, label=\"Week 1\")\nax.bar(x + 0.2, [33, 21], width=0.4, label=\"Week 2\")\nax.set_xticks(x, [\"Coffee\", \"Tea\"])\nax.set(ylabel=\"Cups\", title=\"Compare the same drink across weeks\")\nax.legend()\nprint(33 - 30)\nplt.show()",
+      "expected": "3"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ04-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ04-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "VZ02 · Figure, Axes và biểu đồ đầu tiên, NP05 · Tạo dãy bằng arange"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?",
+     "answer": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh."
+    },
+    {
+     "prompt": "Khi tên nhóm dài, nên đổi sang hàm nào?",
+     "answer": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn."
+    },
+    {
+     "prompt": "Cột ghép của hai tuần có cần ghi rõ tuần nào không?",
+     "answer": "Có. Dùng label cho mỗi nhóm cột và legend; không để người đọc đoán từ màu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.arange(2)\nax.bar(x - 0.2, [30, 18], width=0.4, label=\"Week 1\")\nax.bar(x + 0.2, [33, 21], width=0.4, label=\"Week 2\")\nax.set_xticks(x, [\"Coffee\", \"Tea\"])\nax.set(ylabel=\"Cups\", title=\"Compare the same drink across weeks\")\nax.legend()\nprint(33 - 30)\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

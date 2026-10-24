@@ -1,0 +1,99 @@
+{
+ "lesson_code": "PY12",
+ "sort_order": 12,
+ "module": "M1 · Python nền tảng",
+ "title": "PY12 · Dictionary và tra cứu theo khóa",
+ "subtitle": "Cơ bản · M1 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY12 · Dictionary và tra cứu theo khóa",
+  "subtitle": "Cơ bản · M1 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 83-87, 330; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi học viên có mã và điểm. Dictionary giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
+     },
+     {
+      "type": "code",
+      "code": "marks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)",
+      "expected": "8\nmissing\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`marks[key]` đọc giá trị và gây KeyError nếu thiếu khóa. `get` cho phép trả giá trị mặc định. Kiểm tra có khóa khác với kiểm tra điểm có khác 0: S02 có dữ liệu hợp lệ là điểm 0. `in` trên dict kiểm tra khóa."
+     },
+     {
+      "type": "code",
+      "code": "marks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))",
+      "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong `for code, mark in marks.items()`, mỗi lượt lấy một cặp khóa và giá trị rồi gán vào code và mark. Đây là vòng lặp for; bài PY14 sẽ giải thích cách viết vòng lặp chi tiết hơn. `keys()` và `values()` trả các view, tức cách xem khóa hoặc giá trị luôn phản ánh nội dung hiện tại của dict; Python 3 giữ thứ tự chèn. Khóa là duy nhất, nên gán S01 lần nữa sẽ thay giá trị của khóa đó."
+     },
+     {
+      "type": "code",
+      "code": "marks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))",
+      "expected": "S02 5\nS01"
+     },
+     {
+      "type": "paragraph",
+      "text": "`max(marks)` và `min(marks)` mặc định so các khóa. Thêm `key=marks.get` mới so theo điểm và vẫn trả mã tương ứng. `pop(key, default)` vừa lấy vừa xóa, trả default nếu thiếu; không có default thì khóa thiếu gây KeyError. `del marks[code]` chỉ xóa. `not in` cũng xét khóa, giống `in`. Giá trị trong dict có thể là list hoặc một dict khác, chẳng hạn hồ sơ chứa tên và nhiều điểm."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY11 · Tuple, bytes và lựa chọn collection"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với `student = {\"name\": \"Mai\"}`, `\"Mai\" in student` kiểm tra khóa hay giá trị? Muốn tìm trong các giá trị thì viết thế nào?",
+     "answer": "Kiểm tra khóa; muốn tìm trong values dùng \"Mai\" in student.values()."
+    },
+    {
+     "prompt": "Tìm mã có điểm thấp nhất trong marks bằng biểu thức nào?",
+     "answer": "min(marks, key=marks.get), khi dict không rỗng."
+    },
+    {
+     "prompt": "Xóa S01 và lấy lại điểm của mã đó.",
+     "answer": "score = marks.pop(\"S01\"). Nếu có thể thiếu khóa, dùng marks.pop(\"S01\", None) và xử lý trường hợp không có."
+    },
+    {
+     "prompt": "Với d={\"A\":9,\"Z\":2}, max(d), min(d), max(d,key=d.get), min(d,key=d.get) trả gì?",
+     "answer": "Lần lượt Z, A, A và Z. Hai cách đầu so khóa; hai cách có key=d.get so giá trị nhưng vẫn trả khóa."
+    },
+    {
+     "prompt": "Với d={\"A\":1}, d.update({\"A\":3,\"B\":2}); d.pop(\"X\",0); del d[\"A\"] làm d còn gì? get(\"X\",0) có thêm X không?",
+     "answer": "d còn {\"B\":2}; update ghi đè A và thêm B, pop khóa thiếu trả 0, del xóa A. get không thêm khóa. keys/values/items cho khóa, giá trị và cặp tương ứng; \"B\" in d và \"X\" not in d đều True."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nmarks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)\n\n# ── Đoạn 2 ──\nmarks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))\n\n# ── Đoạn 3 ──\nmarks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

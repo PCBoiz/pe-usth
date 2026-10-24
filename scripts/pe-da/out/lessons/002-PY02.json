@@ -1,0 +1,117 @@
+{
+ "lesson_code": "PY02",
+ "sort_order": 2,
+ "module": "M1 · Python nền tảng",
+ "title": "PY02 · Chọn đúng Python và tách môi trường học",
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY02 · Chọn đúng Python và tách môi trường học",
+  "subtitle": "Cơ bản · M1 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 19-22; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có hai dự án cần các phiên bản thư viện khác nhau. Nếu cài mọi thứ vào cùng một Python, một lần nâng cấp có thể làm dự án cũ thay đổi. Trước hết, hãy biết mình đang chạy Python nào:"
+     },
+     {
+      "type": "code",
+      "code": "import sys\nprint(sys.version_info.major)",
+      "expected": "3"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Số 3 cho biết đang dùng Python 3. `sys` là module có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
+     },
+     {
+      "type": "paragraph",
+      "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
+     },
+     {
+      "type": "terminal",
+      "code": "python -m venv .venv",
+      "expected": "Nếu thành công, lệnh thường không in thông báo. Trong thư mục dự án xuất hiện .venv, có file pyvenv.cfg và trình thông dịch riêng."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy. Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
+     },
+     {
+      "type": "terminal",
+      "code": ".venv\\Scripts\\python -m pip --version",
+      "expected": "Một dòng bắt đầu bằng pip, kèm phiên bản và đường dẫn thư viện bên trong .venv. Số phiên bản thay đổi tùy máy."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài package, thường từ kho PyPI; nó không tự đổi phiên bản Python."
+     },
+     {
+      "type": "paragraph",
+      "text": "`sys` và `venv` thuộc thư viện chuẩn nên đã có cùng Python. NumPy là package bên ngoài cần cài thêm. `virtualenv` là công cụ khác để tạo môi trường; `pyenv` chủ yếu giúp quản lý phiên bản Python. Conda quản lý cả môi trường lẫn package, trong đó Miniconda gọn hơn Anaconda vốn kèm nhiều package."
+     },
+     {
+      "type": "paragraph",
+      "text": "Sơ đồ trong slide còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc, cùng `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY01 · Chạy một phép tính và đọc kết quả"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "pip và pyenv quản lý cùng một việc không?",
+     "answer": "Không. pip quản lý package trong môi trường Python; pyenv giúp chọn/cài các phiên bản Python."
+    },
+    {
+     "prompt": "Viết lệnh tạo môi trường .venv và kiểm tra pip của nó trên Windows.",
+     "answer": "python -m venv .venv; sau đó chạy .venv\\Scripts\\python -m pip --version. Đây là hai lệnh riêng."
+    },
+    {
+     "prompt": "Vì sao hai dự án nên có môi trường riêng?",
+     "answer": "Mỗi dự án có thể cần phiên bản thư viện khác nhau. Môi trường riêng giúp việc cài hoặc nâng cấp package ở dự án này không làm thay đổi dự án kia. Khi chia sẻ dự án, kiểm tra đường dẫn Python đang chạy và ghi lại các phiên bản thư viện."
+    },
+    {
+     "prompt": "Khóa học dùng Python 2 hay Python 3? Vì sao không bắt đầu dự án mới bằng Python 2?",
+     "answer": "Dùng Python 3. Python 2 đã ngừng được hỗ trợ nên không còn là lựa chọn phù hợp để bắt đầu dự án mới."
+    },
+    {
+     "prompt": "Bạn muốn cài NumPy từ PyPI và ghi phụ thuộc của dự án. pip, PyPI, pipenv/Poetry và setup.py có vai trò gì?",
+     "answer": "PyPI là kho phân phối package; pip là công cụ cài package vào môi trường Python đã chọn. pipenv và Poetry giúp quản lý môi trường hoặc phụ thuộc dự án. setup.py là file cấu hình trong cách đóng gói Python truyền thống, không phải một môi trường ảo."
+    },
+    {
+     "prompt": "Conda khác pyenv ở đâu? Nếu muốn bắt đầu với ít package được cài sẵn, bạn chọn Miniconda hay Anaconda?",
+     "answer": "pyenv chủ yếu quản lý các phiên bản Python. Conda quản lý môi trường và package, kể cả một số phụ thuộc ngoài Python. Miniconda là bản khởi đầu gọn; Anaconda cài sẵn nhiều package hơn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "import sys\nprint(sys.version_info.major)\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

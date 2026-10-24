@@ -1,0 +1,94 @@
+{
+ "lesson_code": "RD05",
+ "sort_order": 172,
+ "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
+ "title": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu",
+ "subtitle": "Nâng cao · M10 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu",
+  "subtitle": "Nâng cao · M10 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RD05",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "NumPy random Generator; Seaborn error bars and bootstrap"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))",
+      "expected": "(100,)\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "loc=25 và scale=2 là tham số phân phối, không bắt buộc trung bình và độ lệch chuẩn của đúng 100 số vừa sinh bằng chính xác 25 và 2. Seed giúp tái lập trong cùng môi trường và thứ tự lệnh. Với dữ liệu hữu hạn đã có, choice chọn trực tiếp các phần tử."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10., 20., 30.])\nsample = rng.choice(orders, size=3, replace=True)\nprint(sample.shape)\nprint(bool(np.isin(sample, orders).all()))\nprint(sorted(rng.choice(orders, size=3, replace=False).tolist()))",
+      "expected": "(3,)\nTrue\n[10.0, 20.0, 30.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "replace=True cho phép cùng một đơn được chọn nhiều lần. replace=False không cho lặp một vị trí; lấy ba vị trí trong bảng ba đơn phải giữ đủ ba đơn, chỉ khác thứ tự. Bootstrap dùng mẫu có hoàn lại để xem một thống kê thay đổi thế nào khi lấy mẫu lại."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))",
+      "expected": "(1000, 3) (1000,)\n20.0\nTrue"
+     },
+     {
+      "type": "paragraph",
+      "text": "Mỗi hàng của `samples` là một mẫu gồm ba đơn; `mean(axis=1)` tính một trung bình cho mỗi mẫu, được 1000 trung bình. `quantile` lấy phân vị 2.5% và 97.5% của các trung bình này để đặt hai đầu khoảng bootstrap theo phân vị. Ví dụ minh họa cách tính, trong khi ba đơn gốc quá ít để kết luận chắc về toàn bộ các đơn. Cách lấy mẫu từng hàng còn giả định các quan sát độc lập phù hợp với bài toán; dữ liệu gắn theo khách hoặc theo thời gian có thể cần cách lấy mẫu khác. Khoảng 95% không có nghĩa là trung bình tổng thể cố định có xác suất 95% nằm trong khoảng vừa tính."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "NP16 · Thống kê và điểm có trọng số, NP22 · Tạo dữ liệu thử với seed, NP18 · Broadcasting từ ví dụ giá bán"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "100 số từ normal(loc=25,scale=2) có bắt buộc mean đúng 25 không?",
+     "answer": "Không. 25 là tham số của phân phối mô phỏng; trung bình mẫu dao động. Dữ liệu mô phỏng không phải phép đo thực."
+    },
+    {
+     "prompt": "Có thể chọn 5 vị trí khác nhau từ ba đơn với replace=False không? Vì sao bootstrap dùng replace=True?",
+     "answer": "Không. Chỉ có ba vị trí. Bootstrap cho phép chọn lại mỗi quan sát để tạo các mẫu cùng kích thước với dữ liệu gốc mà vẫn có thành phần khác nhau."
+    },
+    {
+     "prompt": "samples có shape (1000,3), mỗi hàng là một mẫu. Tính một mean mỗi mẫu dùng axis nào? Có thể coi 1000 mean này là 1000 đơn quan sát mới không?",
+     "answer": "Dùng samples.mean(axis=1), shape (1000,). Đây là kết quả lấy mẫu lại từ ba đơn gốc, không phải 1000 đơn mới; tăng số lần lặp không sửa được mẫu thiên lệch hay quá ít."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))\n\n# ── Đoạn 2 ──\nimport numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10., 20., 30.])\nsample = rng.choice(orders, size=3, replace=True)\nprint(sample.shape)\nprint(bool(np.isin(sample, orders).all()))\nprint(sorted(rng.choice(orders, size=3, replace=False).tolist()))\n\n# ── Đoạn 3 ──\nimport numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,91 @@
+{
+ "lesson_code": "SY27",
+ "sort_order": 130,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY27 · PW5: lưu ba file, nén và nạp lại",
+ "subtitle": "Trung cấp · M5 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY27 · PW5: lưu ba file, nén và nạp lại",
+  "subtitle": "Trung cấp · M5 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY27",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 190-191; Python — csv; Python — zipfile"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Sau khi nhập xong, chương trình phải mở lại được dữ liệu ở lần chạy khác. PW5 yêu cầu ba file riêng: students.txt, courses.txt, marks.txt. Dùng CSV làm định dạng text giúp tên có dấu phẩy vẫn đọc đúng:"
+     },
+     {
+      "type": "code",
+      "code": "import csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])",
+      "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Không dùng split(\",\") để đọc CSV có trường được bao trong dấu nháy. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc chương trình lỗi mới bắt đầu lưu."
+     },
+     {
+      "type": "code",
+      "code": "from io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi đưa dữ liệu vào chương trình."
+     },
+     {
+      "type": "code",
+      "code": "import tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())",
+      "expected": "False\nS01,An,2005-01-02"
+     },
+     {
+      "type": "paragraph",
+      "text": "Ví dụ cuối chỉ minh họa việc phát hiện và đọc archive trên đĩa; bài PW5 hoàn chỉnh vẫn phải có đủ ba file như ví dụ trước. Thiếu file lần đầu có thể tạo registry rỗng. File đã có nhưng hỏng phải báo lỗi và giữ nguyên file, không tự ghi đè bằng state rỗng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY15 · Mở file: đọc, ghi đè, nối và tạo mới, SY16 · Con trỏ file, dòng văn bản và bytes, SY18 · Đường dẫn, cây thư mục và symlink, SY20 · Gom nhiều file bằng ZIP và tar, SY26 · PW2–PW4: chuyển sang object rồi chia package"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Tên có dấu phẩy đọc bằng split có ổn không?",
+     "answer": "Không, vì dấu phẩy trong tên có thể bị hiểu nhầm là dấu tách cột. Dùng csv.writer để ghi và csv.DictReader để đọc theo đúng quy tắc dấu nháy và xuống dòng của CSV."
+    },
+    {
+     "prompt": "students.dat có nhất thiết là định dạng nhị phân mới tự thiết kế không?",
+     "answer": "Không. Có thể là ZIP chứa ba file text, miễn công bố codec và khôi phục đúng."
+    },
+    {
+     "prompt": "Hoàn thiện PW5 và chứng minh dữ liệu tồn tại qua lần chạy.",
+     "answer": "Sau mỗi nhóm nhập, ghi students.txt (mã/tên/DoB), courses.txt (mã/tên/tín chỉ) và marks.txt (mã sinh viên/mã môn/điểm). Khi thoát, đóng gói cả ba file vào students.dat. Lúc khởi động, kiểm tra file có tồn tại, đọc đủ ba thành viên, kiểm mã duy nhất, mã tham chiếu và điểm; chỉ cập nhật Registry sau khi toàn bộ dữ liệu hợp lệ. Thử một lần nhập hai sinh viên và hai môn rồi thoát. Chạy lại chương trình, không nhập thêm và kiểm tra danh sách cùng GPA còn đúng. Thử thêm file thiếu, gói nén hỏng, thiếu thành viên và tên có dấu phẩy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)\n\n# ── Đoạn 3 ──\nimport tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

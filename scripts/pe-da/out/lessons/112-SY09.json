@@ -1,0 +1,109 @@
+{
+ "lesson_code": "SY09",
+ "sort_order": 112,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY09 · Abstraction, interface và composition",
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY09 · Abstraction, interface và composition",
+  "subtitle": "Trung cấp · M5 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 103-104, 106; Python — abc"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một tác vụ xuất dữ liệu chỉ cần biết object có thể export. Nó không cần biết object ghi ra CSV hay JSON. Bạn có thể diễn đạt yêu cầu đó bằng abstract base class:"
+     },
+     {
+      "type": "code",
+      "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\ntry:\n    Exporter()\nexcept TypeError:\n    print(\"Can cai dat export\")",
+      "expected": "Can cai dat export"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Exporter còn method trừu tượng `export` chưa có cách xử lý cụ thể, nên chưa thể tạo instance. Cách giữ lại thao tác cần dùng và giấu chi tiết xử lý được gọi là trừu tượng hóa (abstraction). Python không có từ khóa interface như Java; ABC là một cách nêu các method lớp con cần cung cấp, nhưng bạn không bắt buộc dùng ABC cho mọi giao diện."
+     },
+     {
+      "type": "code",
+      "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\nclass TextExporter(Exporter):\n    def export(self, rows): return \",\".join(rows)\nprint(TextExporter().export([\"A\", \"B\"]))",
+      "expected": "A,B"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "TextExporter là một Exporter, tức quan hệ is-a. ReportService ở ví dụ tiếp theo sử dụng một exporter để làm việc, tức quan hệ has-a. Nó giữ exporter trong một thuộc tính thay vì kế thừa Exporter."
+     },
+     {
+      "type": "code",
+      "code": "class TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))",
+      "expected": "A,B"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Ở ví dụ cuối, ReportService chỉ cần object có method export phù hợp, thường gọi là duck typing. Trong câu hỏi Java của slide, static type là kiểu khai báo của biến; dynamic type là class thực của object lúc chạy. Biến kiểu cha có thể tham chiếu object lớp con. Python không bắt buộc khai báo kiểu cho tên; type annotation mô tả kỳ vọng cho công cụ kiểm tra, không tự ép kiểu lúc chạy."
+     },
+     {
+      "type": "paragraph",
+      "text": "Python cho phép `class C(A, B)` kế thừa nhiều class. Java chỉ cho một superclass trực tiếp, nhưng một class có thể implement nhiều interface. Interface mô tả các thao tác mà bên dùng được quyền trông chờ; abstract class có thể nêu các method lớp con cần có và cung cấp hành vi dùng chung. Phần ôn này giúp đọc câu hỏi Java trong slide; bạn không cần viết lại bài Python bằng Java."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY08 · Đa kế thừa: method được tìm ở đâu?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao Exporter() lỗi ở ví dụ đầu?",
+     "answer": "export vẫn là abstractmethod chưa có triển khai cụ thể."
+    },
+    {
+     "prompt": "ReportService là Exporter hay có Exporter?",
+     "answer": "Có exporter để sử dụng, tức has-a/composition; không nhất thiết là một Exporter."
+    },
+    {
+     "prompt": "Tạo JsonExporter cho list mã rồi dùng cùng ReportService.",
+     "answer": "JsonExporter.export dùng json.dumps(rows); service gọi cùng .export(rows). Nếu kế thừa ABC, phải cài đầy đủ abstractmethod trước khi tạo instance. Thử hai exporter mà không sửa build."
+    },
+    {
+     "prompt": "Tách chương trình thành hàm tính điểm khác tách thành Student, Course, StudentMark ở đâu? Vì sao không cho StudentMark tự gọi input trong __init__?",
+     "answer": "Cách hàm truyền dữ liệu qua từng tác vụ; cách object gắn dữ liệu với hành vi liên quan. Student giữ hồ sơ, Course giữ môn/tín chỉ, StudentMark giữ điểm của cặp sinh viên–môn. Không buộc constructor đọc bàn phím để còn dựng object từ file, test hoặc GUI."
+    },
+    {
+     "prompt": "Nêu is-a và has-a trong hai ví dụ Exporter/ReportService. Java có kế thừa nhiều class như Python không? Interface giúp bên dùng biết gì?",
+     "answer": "TextExporter is-a Exporter; ReportService has-a exporter. Python hỗ trợ nhiều base class, Java chỉ một superclass trực tiếp nhưng implement nhiều interface. Interface nêu các thao tác cần có; ABC có thể thêm hành vi dùng chung và chặn instance khi còn abstractmethod."
+    },
+    {
+     "prompt": "Trong Java, biến khai báo Report nhưng giữ SalesReport có static/dynamic type nào? Python annotation có tự chặn mọi object sai kiểu không?",
+     "answer": "Static type là Report, dynamic type là SalesReport. Python không bắt buộc khai báo kiểu cho tên; annotation chủ yếu hỗ trợ công cụ và không tự kiểm mọi đầu vào lúc chạy."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nfrom abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\ntry:\n    Exporter()\nexcept TypeError:\n    print(\"Can cai dat export\")\n\n# ── Đoạn 2 ──\nfrom abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\nclass TextExporter(Exporter):\n    def export(self, rows): return \",\".join(rows)\nprint(TextExporter().export([\"A\", \"B\"]))\n\n# ── Đoạn 3 ──\nclass TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

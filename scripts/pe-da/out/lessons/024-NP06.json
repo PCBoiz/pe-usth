@@ -1,0 +1,106 @@
+{
+ "lesson_code": "NP06",
+ "sort_order": 24,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP06 · Array hai chiều",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP06 · Array hai chiều",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP06",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 109-111; NumPy · Hướng dẫn người mới"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales)",
+      "expected": "[[12 15  9]\n [10  8 14]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Đây là array hai chiều, có thể hình dung như một bảng. Mỗi danh sách con tạo thành một hàng. Hàng đầu thuộc cửa hàng A, hàng thứ hai thuộc cửa hàng B; ba cột lần lượt là ba ngày."
+     },
+     {
+      "type": "paragraph",
+      "text": "Với các số nhỏ hơn, cách xếp vẫn như vậy:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a)",
+      "expected": "[[1 2 3]\n [4 5 6]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`[1, 2, 3]` là hàng đầu và `[4, 5, 6]` là hàng thứ hai. Bảng có 2 hàng, mỗi hàng 3 cột. Các hàng cần có cùng số phần tử khi tạo bảng số hai chiều đơn giản này."
+     },
+     {
+      "type": "paragraph",
+      "text": "Một bảng điểm cũng dùng cách xếp đó, nhưng ý nghĩa của hàng và cột thay đổi:"
+     },
+     {
+      "type": "code",
+      "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
+      "expected": "[[6 8]\n [7 9]\n [5 6]]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu mỗi hàng là một học viên và mỗi cột là một bài kiểm tra, bảng này lưu điểm của 3 học viên trong 2 bài. Học viên đầu có điểm 6 và 8. Trước khi tính, bạn cần biết rõ hàng và cột đại diện cho điều gì; NumPy không tự lưu các nhãn đó trong array số này."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP01 · Array là gì?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Bảng `[[1, 2, 3], [4, 5, 6]]` có bao nhiêu hàng và cột?",
+     "answer": "Có 2 hàng và 3 cột."
+    },
+    {
+     "prompt": "Viết lại bảng trên sau khi thêm hàng `[7, 8, 9]`.",
+     "answer": "Đặt thêm danh sách `[7, 8, 9]` vào danh sách ngoài:",
+     "answerCode": "import numpy as np\n\na = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])\nprint(a)",
+     "answerExpected": "[[1 2 3]\n [4 5 6]\n [7 8 9]]"
+    },
+    {
+     "prompt": "Tạo một bảng điểm cho 2 học viên, mỗi người có điểm của 2 bài kiểm tra.",
+     "answer": "Ví dụ, mỗi hàng là một học viên:",
+     "answerCode": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9]])\nprint(marks)",
+     "answerExpected": "[[6 8]\n [7 9]]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales)\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a)\n\n# ── Đoạn 3 ──\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

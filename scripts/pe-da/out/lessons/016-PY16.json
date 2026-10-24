@@ -1,0 +1,95 @@
+{
+ "lesson_code": "PY16",
+ "sort_order": 16,
+ "module": "M1 · Python nền tảng",
+ "title": "PY16 · Hàm, giá trị trả về và docstring",
+ "subtitle": "Cơ bản · M1 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PY16 · Hàm, giá trị trả về và docstring",
+  "subtitle": "Cơ bản · M1 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PY16",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 58-62; Python — Tutorial"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn tính tổng hóa đơn nhiều lần với đơn giá và số lượng khác nhau. Thay vì lặp lại biểu thức, đặt phép tính trong một hàm:"
+     },
+     {
+      "type": "code",
+      "code": "def total(price, quantity=1):\n    \"\"\"Return price multiplied by quantity.\"\"\"\n    return price * quantity\n\nprint(total(12, 3))\nprint(total(12, quantity=2))",
+      "expected": "36\n24"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "price và quantity là tham số trong định nghĩa; 12 và 3 là đối số trong lần gọi. quantity có giá trị mặc định 1. Bạn có thể truyền theo vị trí hoặc ghi tên đối số để dễ đọc."
+     },
+     {
+      "type": "code",
+      "code": "def display_total(price, quantity):\n    print(price * quantity)\n\nresult = display_total(12, 3)\nprint(result)",
+      "expected": "36\nNone"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hàm chỉ print không tự trả số vừa hiển thị. Nếu không return một giá trị, kết quả lời gọi là None. Để đưa kết quả vào bước xử lý sau, dùng return."
+     },
+     {
+      "type": "code",
+      "code": "def average(values):\n    \"\"\"Return the mean of a non-empty sequence.\"\"\"\n    return sum(values) / len(values)\n\nprint(average([6, 8, 10]))\nprint(min([6, 8, 10]), max([6, 8, 10]))",
+      "expected": "8.0\n6 10"
+     },
+     {
+      "type": "paragraph",
+      "text": "sum, len, min và max là các hàm có sẵn của Python (built-in). Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ điều kiện dữ liệu không được rỗng. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY15 · While, break và continue"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Định nghĩa hàm dùng từ khóa nào?",
+     "answer": "def."
+    },
+    {
+     "prompt": "result trong ví dụ display_total giữ 36 hay None?",
+     "answer": "None; 36 chỉ được print ra màn hình."
+    },
+    {
+     "prompt": "Viết hàm discount(price, amount) trả giá sau giảm.",
+     "answer": "def discount(price, amount): return price - amount. Ví dụ discount(20, 3) trả 17; cần bổ sung quy tắc nếu không cho phép giá âm."
+    },
+    {
+     "prompt": "Định nghĩa total nhưng chưa gọi có chạy thân hàm không? Trong total(12,3), đâu là tham số, đâu là đối số; docstring khác comment thế nào?",
+     "answer": "Chưa gọi thì thân hàm chưa chạy. price và quantity là tham số; 12 và 3 là đối số. Docstring là chuỗi đầu hàm có thể tra qua __doc__/help; comment # chỉ giải thích trong mã nguồn."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\ndef total(price, quantity=1):\n    \"\"\"Return price multiplied by quantity.\"\"\"\n    return price * quantity\n\nprint(total(12, 3))\nprint(total(12, quantity=2))\n\n# ── Đoạn 2 ──\ndef display_total(price, quantity):\n    print(price * quantity)\n\nresult = display_total(12, 3)\nprint(result)\n\n# ── Đoạn 3 ──\ndef average(values):\n    \"\"\"Return the mean of a non-empty sequence.\"\"\"\n    return sum(values) / len(values)\n\nprint(average([6, 8, 10]))\nprint(min([6, 8, 10]), max([6, 8, 10]))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

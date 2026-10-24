@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD32",
+ "sort_order": 73,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu",
+ "subtitle": "Nâng cao · M3 · 10 phút",
+ "estimated_minutes": 10,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu",
+  "subtitle": "Nâng cao · M3 · 10 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD32",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Reproducible transformation pipeline"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn nhận một CSV đơn hàng và một danh mục cửa hàng. Báo cáo cần doanh thu tháng theo khu vực, đồng thời cho biết có đơn nào chưa khớp danh mục. Ba đoạn dưới minh họa ba bước; mỗi đoạn tự tạo đủ dữ liệu để chạy riêng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
+      "expected": "4 3 60"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "File có bốn hàng nhưng một dòng O2 bị lặp toàn bộ, nên còn ba đơn với tổng 60. Ở dự án thật, chỉ bỏ dòng theo khóa đơn sau khi xác nhận mỗi đơn là một hàng; nếu đơn có nhiều sản phẩm, cần giữ các dòng sản phẩm hợp lệ."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
+      "expected": "['O3']\n60"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "O3 vẫn được giữ dù cửa hàng C chưa có khu vực. Hai kiểm tra xác nhận phép nối không nhân dòng hoặc thay đổi tổng tiền. Bạn nên gửi danh sách mã chưa khớp để bổ sung danh mục, thay vì âm thầm bỏ các đơn đó."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())",
+      "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+     },
+     {
+      "type": "paragraph",
+      "text": "Báo cáo giữ nhóm Unknown để tổng vẫn đối chiếu được. Cột month, region, amount ở dạng dài sẵn sàng cho biểu đồ cột hoặc đường ở phần visualization. Khi giao báo cáo, ghi đơn vị tiền, khoảng ngày, định nghĩa doanh thu, cách bỏ trùng và số đơn chưa khớp; nhận xét nên bám vào dữ liệu, không tự suy ra nguyên nhân."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD31 · EDA: từ câu hỏi đến bảng kết quả"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?",
+     "answer": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối."
+    },
+    {
+     "prompt": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?",
+     "answer": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn."
+    },
+    {
+     "prompt": "Tự làm báo cáo: ngày=[2026-01-01,2026-01-02,2026-02-01], amount=[5,7,8]. Tính tổng tháng và kiểm tra tổng báo cáo bằng tổng gốc.",
+     "answer": "Tháng 1=12, tháng 2=8; tổng 20.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'amount': [5, 7, 8]})\nreport = df.set_index('date')['amount'].resample('MS').sum()\nassert report.sum() == df['amount'].sum()\nprint(report.tolist())\nprint(report.sum())",
+     "answerExpected": "[12, 8]\n20"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

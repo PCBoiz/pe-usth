@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP18",
+ "sort_order": 36,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP18 · Broadcasting từ ví dụ giá bán",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP18 · Broadcasting từ ví dụ giá bán",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP18",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 115-117; NumPy · Broadcasting"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một cửa hàng có hai sản phẩm, giá 10 và 20 nghìn đồng. Đơn đầu mua lần lượt 2 và 1 sản phẩm; đơn sau mua 1 và 3 sản phẩm. Để tính tiền từng loại trong mỗi đơn:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)",
+      "expected": "[[20 20]\n [10 60]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi hàng là một đơn, mỗi cột là một sản phẩm. NumPy áp giá 10 vào cột đầu, giá 20 vào cột thứ hai. Hàng đầu vì vậy thành `[2 × 10, 1 × 20]`, tức `[20, 20]`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Cách kết hợp các array có hình dạng khác nhau này gọi là broadcasting. Bạn đã gặp trường hợp đơn giản ở `a * 2`: một số được dùng cho mọi phần tử. Ở đây, một dãy hai giá được dùng cho mỗi hàng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Thêm một đơn hàng nữa, bảng giá vẫn có hai số:"
+     },
+     {
+      "type": "code",
+      "code": "qty = np.array([[2, 1], [0, 3], [4, 2]])\nprice = np.array([10, 20])\nprint(qty * price)",
+      "expected": "[[20 20]\n [ 0 60]\n [40 40]]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`qty` có `shape` là `(3, 2)`, còn `price` có `shape` là `(2,)`. Khi xét từ bên phải, độ dài 2 khớp với 2; chiều còn thiếu của `price` được xem như có độ dài 1 và có thể áp cho ba hàng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Quy tắc chung là so các chiều từ phải sang trái: hai độ dài phải bằng nhau, hoặc một trong hai bằng 1. Dãy ba giá có `shape` là `(3,)` không khớp bảng `(3, 2)`, dù bảng có ba hàng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Một ứng dụng khác là trừ trung bình của từng cột:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[2., 20.], [4., 40.]])\nmeans = a.mean(axis=0, keepdims=True)\nprint(a - means)",
+      "expected": "[[ -1. -10.]\n [  1.  10.]]"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hai trung bình là 3 và 30. `keepdims=True` giữ chúng trong bảng có `shape` `(1, 2)` thay vì dãy `(2,)`; hàng trung bình này được áp vào cả hai hàng dữ liệu. Cột đầu sau phép trừ là -1 và 1, cột sau là -10 và 10."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP04 · Tính trên từng phần tử, NP07 · Đọc shape, ndim và size, NP12 · Tổng từng hàng và bài ghép, NP15 · Gắn nhãn và giới hạn điểm, NP16 · Thống kê và điểm có trọng số"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Một đơn có số lượng `[2, 1]`, bảng giá là `[10, 20]`. Tiền của từng loại sản phẩm là bao nhiêu?",
+     "answer": "Doanh thu từng loại là `[20, 20]`: 2 × 10 và 1 × 20."
+    },
+    {
+     "prompt": "Điền tham số để giữ một hàng trung bình: `a.mean(axis=0, ___=True)`.",
+     "answer": "Điền `keepdims`: `mean(axis=0, keepdims=True)`."
+    },
+    {
+     "prompt": "Vì sao bảng số lượng 3 hàng, 2 cột cần một dãy hai giá thay vì ba giá?",
+     "answer": "Bảng có hai cột sản phẩm nên cần hai giá theo đúng thứ tự cột. Chiều cuối 2 khớp với dãy giá `(2,)`; dãy ba giá không khớp chiều này."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)\n\n# ── Đoạn 2 ──\nqty = np.array([[2, 1], [0, 3], [4, 2]])\nprice = np.array([10, 20])\nprint(qty * price)\n\n# ── Đoạn 3 ──\na = np.array([[2., 20.], [4., 40.]])\nmeans = a.mean(axis=0, keepdims=True)\nprint(a - means)\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

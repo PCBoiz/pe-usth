@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD11",
+ "sort_order": 52,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD11 · Sắp xếp và nhìn nhanh phân bố",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD11 · Sắp xếp và nhìn nhanh phân bố",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Descriptive statistics"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có doanh thu ba cửa hàng và muốn xem cửa hàng cao nhất trước. Sắp xếp giúp đọc thứ tự; nó không thay đổi ý nghĩa của nhãn hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())",
+      "expected": "['B', 'C', 'A']\n['B', 'C']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "ascending=False xếp giảm dần; nlargest chỉ lấy một số hàng lớn nhất. Nếu cần sắp xếp theo nhãn index thay vì giá trị cột, dùng sort_index. Với cột phân loại, đếm số lần xuất hiện thường hữu ích hơn sắp xếp."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)",
+      "expected": "{'paid': 2, 'cancelled': 1}\n3\n4"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`value_counts()` mặc định bỏ ô thiếu; thêm `dropna=False` nếu cần đếm cả chúng. `count()` đếm giá trị không thiếu, còn `size` đếm tất cả phần tử. Với cột số, `describe()` cho các thống kê như số giá trị đã có (`count`), trung bình (`mean`), độ lệch chuẩn (`std`), số nhỏ nhất, các tứ phân vị và số lớn nhất. Các tứ phân vị chia dãy đã sắp xếp thành bốn phần có số quan sát gần bằng nhau."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\namount = pd.Series([10, 20, 30, 100])\nsummary = amount.describe()\nprint(summary['min'], summary['max'])\nprint(amount.mean(), amount.median())",
+      "expected": "10.0 100.0\n40.0 25.0"
+     },
+     {
+      "type": "paragraph",
+      "text": "Số 100 kéo trung bình lên 40 trong khi trung vị là 25. Hai con số trả lời khác nhau về vị trí trung tâm; bạn cần xem phân bố và các giá trị lớn trước khi chọn một số để báo cáo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD10 · Dòng trùng và khóa của bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "count và size khác gì khi có ô thiếu?",
+     "answer": "count bỏ ô thiếu; size vẫn đếm chúng."
+    },
+    {
+     "prompt": "Muốn lấy ba doanh thu cao nhất, có thể dùng hàm nào?",
+     "answer": "df.nlargest(3, \"revenue\")."
+    },
+    {
+     "prompt": "Với [10, 20, 30], in trung bình và trung vị.",
+     "answer": "Cả hai bằng 20.0.",
+     "answerCode": "import pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.mean(), s.median())",
+     "answerExpected": "20.0 20.0"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)\n\n# ── Đoạn 3 ──\nimport pandas as pd\namount = pd.Series([10, 20, 30, 100])\nsummary = amount.describe()\nprint(summary['min'], summary['max'])\nprint(amount.mean(), amount.median())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,110 @@
+{
+ "lesson_code": "NP09",
+ "sort_order": 27,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP09 · Lấy ô, hàng và cột",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP09 · Lấy ô, hàng và cột",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 112-114; NumPy · Lấy phần tử và cắt dữ liệu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong bảng bán hàng, mỗi hàng là một cửa hàng và mỗi cột là một ngày. Bạn muốn lấy riêng số bán của ngày thứ hai ở cả hai cửa hàng:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales[:, 1])",
+      "expected": "[15  8]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`sales[:, 1]` có hai phần: dấu `:` lấy tất cả hàng, còn chỉ số 1 chọn cột thứ hai. Kết quả `[15 8]` lần lượt là số cốc của cửa hàng A và B trong ngày đó."
+     },
+     {
+      "type": "paragraph",
+      "text": "Để lấy một ô, viết cả chỉ số hàng và chỉ số cột. Cả hai đều bắt đầu từ 0:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[1, 0])\nprint(a[0])",
+      "expected": "4\n[1 2 3]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`a[1, 0]` lấy hàng thứ hai, cột đầu tiên nên được 4. `a[0]` lấy cả hàng đầu tiên, được `[1 2 3]`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Còn nếu cần cột thứ hai của bảng này:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[:, 1])",
+      "expected": "[2 5]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Số 2 ở hàng đầu và số 5 ở hàng sau cùng nằm trong cột chỉ số 1. Bạn có thể lấy cột cuối bằng `a[:, -1]`."
+     },
+     {
+      "type": "paragraph",
+      "text": "Dấu `:` cũng dùng để lấy một đoạn. `a[0:2]` lấy các hàng từ chỉ số 0 đến trước chỉ số 2, tức hàng 0 và hàng 1. Cách đếm điểm dừng này giống `arange`: không lấy vị trí dừng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP02 · Lấy một phần tử, NP06 · Array hai chiều, NP07 · Đọc shape, ndim và size"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Với `a = np.array([[1, 2, 3], [4, 5, 6]])`, `a[0, 2]` trả về gì?",
+     "answer": "Trả về 3: hàng đầu, cột thứ ba."
+    },
+    {
+     "prompt": "Với bảng ba cột trên, điền chỉ số để lấy cột cuối: `a[:, ___]`.",
+     "answer": "Điền `2` hoặc `-1` với bảng mẫu ba cột."
+    },
+    {
+     "prompt": "Tạo bảng điểm `[[6, 8], [7, 9], [5, 6]]`. Lấy điểm bài kiểm tra thứ hai của mọi học viên.",
+     "answer": "Lấy tất cả hàng và cột chỉ số 1:",
+     "answerCode": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks[:, 1])",
+     "answerExpected": "[8 9 6]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales[:, 1])\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[1, 0])\nprint(a[0])\n\n# ── Đoạn 3 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[:, 1])\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

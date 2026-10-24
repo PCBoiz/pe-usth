@@ -1,0 +1,99 @@
+{
+ "lesson_code": "SY02",
+ "sort_order": 105,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
+ "subtitle": "Trung cấp · M5 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
+  "subtitle": "Trung cấp · M5 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 330; Python — random; Python — Counter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có danh sách đơn hàng và muốn chọn ngẫu nhiên một đơn để kiểm tra. Để thử code mà không phụ thuộc trạng thái random của phần khác, tạo một bộ sinh riêng:"
+     },
+     {
+      "type": "code",
+      "code": "import random\nrng = random.Random(7)\nsample = rng.choice([\"A01\", \"A02\", \"A03\"])\nprint(sample in [\"A01\", \"A02\", \"A03\"])\nprint(0 <= rng.random() < 1)",
+      "expected": "True\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`choice` chọn một phần tử, nên danh sách phải không rỗng. `random()` trả số thực từ 0 đến trước 1. Số 7 trong `Random(7)` là seed, dùng để khởi tạo bộ sinh. Giữ cùng môi trường và cùng thứ tự gọi sẽ giúp bạn lặp lại lần thử; nếu cần chạy ổn định giữa các môi trường, đừng mặc định mọi cách lấy mẫu đều cho cùng một dãy."
+     },
+     {
+      "type": "code",
+      "code": "import random\nrng = random.Random(12)\nvalues = [rng.randint(1, 3) for _ in range(5)]\nprint(len(values))\nprint(all(1 <= x <= 3 for x in values))",
+      "expected": "5\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`randint(1, 3)` có thể trả cả 1 lẫn 3, khác `range` không lấy điểm dừng. Ví dụ lấy năm lần rồi kiểm tra có đủ năm số và tất cả đều nằm trong khoảng 1 đến 3. Hai dòng True cho bạn thấy các điều kiện đó đã đúng; chúng không hiển thị dãy số vừa lấy."
+     },
+     {
+      "type": "code",
+      "code": "from collections import Counter\norders = [\"tea\", \"coffee\", \"tea\", \"water\", \"tea\"]\ncounts = Counter(orders)\nprint(counts[\"tea\"], counts[\"milk\"])\nprint(counts.most_common(2))",
+      "expected": "3 0\n[('tea', 3), ('coffee', 1)]"
+     },
+     {
+      "type": "paragraph",
+      "text": "`Counter` đếm số lần xuất hiện. Có 5 lượt mua nhưng chỉ 3 loại đồ uống. `most_common(2)` lấy hai loại có tần suất cao nhất; nếu hòa, Counter giữ thứ tự gặp đầu trong dữ liệu. Tần suất này mô tả dữ liệu đã có, khác việc chọn mẫu ngẫu nhiên."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY01 · Đọc ngày tháng và tính khoảng thời gian"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "randint(0, 10) có trả 10 không?",
+     "answer": "Có. Hai đầu đều được lấy; random() thì không lấy 1.0."
+    },
+    {
+     "prompt": "Đếm [\"A\", \"B\", \"A\"] và lấy loại phổ biến nhất.",
+     "answer": "Counter([\"A\", \"B\", \"A\"]).most_common(1) trả [(\"A\", 2)]."
+    },
+    {
+     "prompt": "Viết hàm pick(ids, rng), báo ValueError khi rỗng; kiểm thế nào?",
+     "answer": "Nếu not ids: raise ValueError(\"empty\"); còn lại return rng.choice(ids). Với Random riêng, kiểm kết quả thuộc ids; thử list một phần tử và list rỗng. Không dùng random để bảo vệ mật khẩu."
+    },
+    {
+     "prompt": "Với [\"A\",\"B\",\"A\",\"C\",\"A\"], Counter có bao nhiêu key và tổng count là bao nhiêu? Lấy hai mã phổ biến nhất thế nào?",
+     "answer": "Có 3 mã khác nhau và tổng cộng 5 lượt. Với `counts = Counter(values)`, `counts.most_common(2)` trả `[(\"A\", 3), (\"B\", 1)]`. Số khóa cho biết có bao nhiêu mã khác nhau; tổng tần suất cho biết có bao nhiêu lượt xuất hiện."
+    },
+    {
+     "prompt": "choice(ids), random() và randint(1,3) trả loại kết quả nào? Kiểm mẫu ngẫu nhiên mà không đoán đúng một dãy cụ thể thế nào?",
+     "answer": "choice trả thành viên trong ids không rỗng; random trả float trong [0,1); randint trả số nguyên có thể gồm cả 1 và 3. Kiểm miền, số lượng và trường hợp rỗng; nếu cần tái lập, truyền Random riêng với seed và ghi môi trường."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport random\nrng = random.Random(7)\nsample = rng.choice([\"A01\", \"A02\", \"A03\"])\nprint(sample in [\"A01\", \"A02\", \"A03\"])\nprint(0 <= rng.random() < 1)\n\n# ── Đoạn 2 ──\nimport random\nrng = random.Random(12)\nvalues = [rng.randint(1, 3) for _ in range(5)]\nprint(len(values))\nprint(all(1 <= x <= 3 for x in values))\n\n# ── Đoạn 3 ──\nfrom collections import Counter\norders = [\"tea\", \"coffee\", \"tea\", \"water\", \"tea\"]\ncounts = Counter(orders)\nprint(counts[\"tea\"], counts[\"milk\"])\nprint(counts.most_common(2))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

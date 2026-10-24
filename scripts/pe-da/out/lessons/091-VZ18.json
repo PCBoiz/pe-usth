@@ -1,0 +1,120 @@
+{
+ "lesson_code": "VZ18",
+ "sort_order": 91,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap",
+ "subtitle": "Nâng cao · M4 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap",
+  "subtitle": "Nâng cao · M4 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ18",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Seaborn relational plots; Error bars and bootstrap"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bảng giao hàng có khoảng cách, thời gian và phương tiện. seaborn.scatterplot dùng hue cho màu và style cho marker, nên bạn có thể xem quan hệ khoảng cách–thời gian trong từng phương tiện mà vẫn giữ mỗi đơn là một điểm."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"km\":[1, 2, 2, 3], \"minutes\":[8, 12, 10, 11], \"mode\":[\"Bike\", \"Bike\", \"Motor\", \"Motor\"]})\nsns.scatterplot(data=orders, x=\"km\", y=\"minutes\", hue=\"mode\", style=\"mode\", ax=ax)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Color and marker encode the same group\")\nprint(orders[\"mode\"].nunique())\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ18-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ18-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "lineplot thường tổng hợp các dòng có cùng giá trị x. Với hai lần đo ở mỗi ngày, đường mặc định mô tả trung bình chứ không phải nối từng dòng. Khi muốn xem từng cá nhân hoặc cửa hàng, dùng units cho đơn vị quan sát và estimator=None để không gộp."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\ndaily = pd.DataFrame({\"day\":[1, 1, 2, 2], \"cups\":[8, 12, 10, 14]})\nsns.lineplot(data=daily, x=\"day\", y=\"cups\", errorbar=None, marker=\"o\", ax=ax)\nax.set(xlabel=\"Day\", ylabel=\"Mean cups\", title=\"Repeated x values are aggregated\")\nprint(daily.groupby(\"day\")[\"cups\"].mean().tolist())\nplt.show()",
+      "expected": "[10.0, 12.0]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ18-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ18-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cần ghi rõ dải quanh đường biểu diễn điều gì. errorbar=\"sd\" vẽ độ lệch chuẩn, còn errorbar=(\"ci\", 95) dùng bootstrap để ước lượng khoảng tin cậy. Bootstrap lấy mẫu lại nhiều lần từ dữ liệu đang có rồi tính lại đại lượng cần quan sát. n_boot là số lần lấy mẫu lại; seed cố định giúp thu được cùng kết quả khi chạy lại. Cách lấy từng dòng riêng phù hợp khi các dòng là các đơn vị lấy mẫu độc lập. Nếu nhiều dòng thuộc cùng người, cùng nhóm hoặc một chuỗi thời gian phụ thuộc, cần cách lấy mẫu lại phù hợp với cấu trúc đó. Tăng n_boot không sửa được sai lệch trong cách thu thập dữ liệu."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\ndaily = pd.DataFrame({\"day\":[1, 1, 1, 2, 2, 2], \"cups\":[8, 10, 12, 10, 12, 14]})\nsns.lineplot(data=daily, x=\"day\", y=\"cups\", errorbar=(\"ci\", 95), n_boot=300, seed=7, marker=\"o\", ax=ax)\nax.set(xlabel=\"Day\", ylabel=\"Mean cups\", title=\"Bootstrap CI; illustrative n=3 per day\")\nprint(daily.groupby(\"day\").size().tolist())\nplt.show()",
+      "expected": "[3, 3]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ18-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ18-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "VZ05 · Scatter plot: quan hệ giữa hai biến, VZ13 · Error bar: phân tán và độ bất định, VZ17 · Seaborn: đếm nhóm và so sánh phân bố"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?",
+     "answer": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình."
+    },
+    {
+     "prompt": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?",
+     "answer": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt."
+    },
+    {
+     "prompt": "Tăng bootstrap lên 10000 lần có sửa được mẫu chỉ lấy từ khách quen không?",
+     "answer": "Không. Nó giảm nhiễu mô phỏng nhưng không làm mẫu trở nên đại diện cho khách ngoài mẫu."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: seaborn chưa có wheel trong /pyodide/v0.27.7/. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 1,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  },
+  {
+   "block": 2,
+   "reason": "seaborn chưa có wheel trong /pyodide/v0.27.7/"
+  }
+ ]
+}

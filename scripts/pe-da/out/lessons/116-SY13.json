@@ -1,0 +1,94 @@
+{
+ "lesson_code": "SY13",
+ "sort_order": 116,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
+ "subtitle": "Trung cấp · M5 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
+  "subtitle": "Trung cấp · M5 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY13",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 150; Python — math.floor; NumPy — average"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nmarks = np.array([8.0, 6.0])\ncredits = np.array([3.0, 1.0])\nprint(marks * credits)\nprint((marks * credits).sum() / credits.sum())",
+      "expected": "[24.  6.]\n7.5"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tổng có trọng số là 30, tổng tín chỉ là 4, nên GPA bằng 7.5. Chỉ dùng marks.mean() sẽ cho 7.0 và bỏ qua số tín chỉ. Trước bài này, bạn cần đã hiểu array, phép toán theo phần tử và sum; không nên bắt đầu học NumPy bằng cả công thức gộp này."
+     },
+     {
+      "type": "code",
+      "code": "import math\nprint(math.floor(8.79 * 10) / 10)\nprint(math.floor(-1.21 * 10) / 10)\nprint(round(8.79, 1))",
+      "expected": "8.7\n-1.3\n8.8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor làm tròn xuống về phía số nhỏ hơn, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu cần làm tròn đúng theo số thập phân người dùng đã nhập, hãy dùng Decimal và nêu rõ quy tắc làm tròn."
+     },
+     {
+      "type": "code",
+      "code": "students = [{\"id\": \"A\", \"gpa\": 7.5}, {\"id\": \"B\", \"gpa\": 8.0}]\nranked = sorted(students, key=lambda x: x[\"gpa\"], reverse=True)\nprint([s[\"id\"] for s in ranked])\nprint([s[\"id\"] for s in students])",
+      "expected": "['B', 'A']\n['A', 'B']"
+     },
+     {
+      "type": "paragraph",
+      "text": "`key=lambda x: x[\"gpa\"]` là một hàm ngắn lấy GPA của mỗi sinh viên để sắp xếp; `reverse=True` đổi sang thứ tự giảm dần. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự nhập ban đầu. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "SY12 · Package và điểm bắt đầu của chương trình, NP06 · Array hai chiều, NP10 · Tổng của cả dãy và cả bảng"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Hai môn 3 và 1 tín chỉ, điểm 8 và 6, GPA bằng bao nhiêu?",
+     "answer": "(8*3 + 6*1)/(3+1) = 7.5."
+    },
+    {
+     "prompt": "floor(x*10)/10 và round(x,1) với 8.79 có giống nhau không?",
+     "answer": "Không: lần lượt 8.7 và 8.8."
+    },
+    {
+     "prompt": "Viết weighted_gpa(marks, credits) và xếp sinh viên giảm dần.",
+     "answer": "Đổi cả hai thành array float; từ chối khác độ dài, rỗng, điểm không hữu hạn/ngoài 0..10, tín chỉ không hữu hạn/không dương. Trả sum(marks*credits)/sum(credits). Xếp bằng key gpa, reverse=True; nêu quy tắc khi hòa."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nmarks = np.array([8.0, 6.0])\ncredits = np.array([3.0, 1.0])\nprint(marks * credits)\nprint((marks * credits).sum() / credits.sum())\n\n# ── Đoạn 2 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nprint(math.floor(-1.21 * 10) / 10)\nprint(round(8.79, 1))\n\n# ── Đoạn 3 ──\nstudents = [{\"id\": \"A\", \"gpa\": 7.5}, {\"id\": \"B\", \"gpa\": 8.0}]\nranked = sorted(students, key=lambda x: x[\"gpa\"], reverse=True)\nprint([s[\"id\"] for s in ranked])\nprint([s[\"id\"] for s in students])\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

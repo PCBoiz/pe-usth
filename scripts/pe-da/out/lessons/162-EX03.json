@@ -1,0 +1,93 @@
+{
+ "lesson_code": "EX03",
+ "sort_order": 162,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX03 · Tự mở Notebook trong đúng môi trường",
+ "subtitle": "Cơ bản · M9 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX03 · Tự mở Notebook trong đúng môi trường",
+  "subtitle": "Cơ bản · M9 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX03",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 19-25, 28; Jupyter installation; Python venv"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn đã tạo môi trường cho dự án, nhưng Notebook lại chạy bằng một bản Python khác. Trước khi cài thêm thư viện, hãy dùng sys.executable để xem đường dẫn tới Python đang thực thi code. Đường dẫn này giúp xác nhận đúng môi trường thay vì đoán qua tên cửa sổ terminal."
+     },
+     {
+      "type": "code",
+      "code": "import sys\nfrom pathlib import Path\nprint(sys.version_info.major)\nprint(Path(sys.executable).is_file())",
+      "expected": "3\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong terminal đã chọn đúng môi trường, dùng python -m pip install notebook rồi jupyter notebook. Nếu dùng conda để quản lý dự án, slide đưa lựa chọn conda install -c conda-forge notebook. Đây là hai cách cài thay thế, không phải bắt buộc làm lần lượt. Các chuỗi dưới chỉ ghi lại lệnh để đọc, không tự cài hay khởi động máy chủ."
+     },
+     {
+      "type": "code",
+      "code": "pip_install = \"python -m pip install notebook\"\nconda_install = \"conda install -c conda-forge notebook\"\nopen_notebook = \"jupyter notebook\"\nprint(pip_install)\nprint(conda_install)\nprint(open_notebook)",
+      "expected": "python -m pip install notebook\nconda install -c conda-forge notebook\njupyter notebook"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Kernel là tiến trình thực thi code và giữ các biến trong phiên Notebook. Trong mô hình được slide giới thiệu, IPython hỗ trợ việc thực thi, ZeroMQ chuyển thông điệp giữa các thành phần, Tornado phục vụ phần web và MathJax hiển thị công thức. jQuery và Bootstrap là các thành phần giao diện lịch sử trên sơ đồ. Bạn không cần tự gọi chúng để tính toán dữ liệu trong cell. Khi hoàn thành một notebook, hãy khởi động lại kernel rồi chạy tất cả cell từ đầu bằng Restart/Run All. Cách này giúp phát hiện cell phụ thuộc vào biến chỉ có từ một lượt chạy cũ."
+     },
+     {
+      "type": "code",
+      "code": "roles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])",
+      "expected": "execution\nmessages\nmath display"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PY03 · REPL, notebook và trạng thái đã chạy"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Python đã có sẵn: nêu lệnh cài bằng pip và lệnh mở Notebook. Những lệnh này chạy ở đâu?",
+     "answer": "python -m pip install notebook rồi jupyter notebook, trong terminal của môi trường dự án. Không dán thành câu lệnh Python vào cell."
+    },
+    {
+     "prompt": "Nếu dự án quản lý bằng conda, lựa chọn cài trong slide là gì? Vì sao vẫn kiểm sys.executable trong notebook?",
+     "answer": "conda install -c conda-forge notebook. Kernel có thể trỏ tới môi trường khác terminal; sys.executable giúp kiểm Python thực tế."
+    },
+    {
+     "prompt": "Ghép IPython, ZeroMQ, Tornado và MathJax với vai trò tương ứng. jQuery và Bootstrap có thực thi phép tính Python trong cell không?",
+     "answer": "IPython hỗ trợ thực thi code; ZeroMQ chuyển thông điệp; Tornado phục vụ phần web; MathJax hiển thị công thức. jQuery và Bootstrap thuộc phần giao diện lịch sử trong sơ đồ, không phải thành phần thực thi phép tính Python trong cell."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 1 đoạn trong bài không chạy được ở đây (sys.executable trong trình duyệt không trỏ tới file thật) nên không nằm trong ô này."
+   },
+   "starterCode": "# ── Đoạn 1 ──\npip_install = \"python -m pip install notebook\"\nconda_install = \"conda install -c conda-forge notebook\"\nopen_notebook = \"jupyter notebook\"\nprint(pip_install)\nprint(conda_install)\nprint(open_notebook)\n\n# ── Đoạn 2 ──\nroles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])\n",
+   "env": "1 đoạn phải chạy bằng Python trên máy: sys.executable trong trình duyệt không trỏ tới file thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "sys.executable trong trình duyệt không trỏ tới file thật"
+  }
+ ]
+}

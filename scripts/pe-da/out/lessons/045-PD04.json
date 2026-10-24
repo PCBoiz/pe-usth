@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD04",
+ "sort_order": 45,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD04 · Index và phép tính căn theo nhãn",
+ "subtitle": "Cơ bản · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD04 · Index và phép tính căn theo nhãn",
+  "subtitle": "Cơ bản · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD04",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Data alignment"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai Series có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())",
+      "expected": "{'A': 40, 'B': 50}"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Cửa hàng A được tính 100 trừ 60 dù chi phí của A đứng sau. Điều này khác phép trừ hai NumPy array chỉ theo vị trí. Nếu bảng đang để mã cửa hàng trong cột, bạn dùng set_index để đưa mã thành nhãn hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
+      "expected": "80\n['store', 'sales']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`reset_index()` chuyển nhãn trở lại thành cột. Khi một nhãn chỉ có ở một phía, phép cộng thông thường cho giá trị thiếu tại nhãn đó. Nếu quy tắc nghiệp vụ cho phép coi phần chưa có là 0, dùng add với fill_value."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\nmorning = pd.Series([10, 8], index=['A', 'B'])\nevening = pd.Series([5], index=['A'])\nprint((morning + evening).isna().to_dict())\nprint(morning.add(evening, fill_value=0).to_dict())\nprint(evening.reindex(['A', 'B'], fill_value=0).tolist())",
+      "expected": "{'A': False, 'B': True}\n{'A': 15.0, 'B': 8.0}\n[5, 0]"
+     },
+     {
+      "type": "paragraph",
+      "text": "`reindex` chọn thứ tự và tập nhãn mong muốn. Chỉ điền 0 nếu thiếu thực sự có nghĩa là không phát sinh; nếu chưa nhận được báo cáo, điền 0 có thể làm sai doanh thu."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "PD03 · Chọn hàng và cột bằng loc, iloc"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao profit của A là 40?",
+     "answer": "pandas ghép nhãn A với A: 100 - 60 = 40."
+    },
+    {
+     "prompt": "reset_index() thường chuyển index về đâu?",
+     "answer": "Thành một hoặc nhiều cột; index mới thường là số thứ tự."
+    },
+    {
+     "prompt": "Cộng a có A=3, B=4 với b có B=2 theo nhãn, điền phần chưa có bằng 0.",
+     "answer": "A=3 và B=6.",
+     "answerCode": "import pandas as pd\na = pd.Series([3, 4], index=['A', 'B'])\nb = pd.Series([2], index=['B'])\nprint(a.add(b, fill_value=0).to_dict())",
+     "answerExpected": "{'A': 3.0, 'B': 6.0}"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nmorning = pd.Series([10, 8], index=['A', 'B'])\nevening = pd.Series([5], index=['A'])\nprint((morning + evening).isna().to_dict())\nprint(morning.add(evening, fill_value=0).to_dict())\nprint(evening.reindex(['A', 'B'], fill_value=0).tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

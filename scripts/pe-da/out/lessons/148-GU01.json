@@ -1,0 +1,121 @@
+{
+ "lesson_code": "GU01",
+ "sort_order": 148,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU01 · GUI, CLI và chọn toolkit",
+ "subtitle": "Trung cấp · M8 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU01 · GUI, CLI và chọn toolkit",
+  "subtitle": "Trung cấp · M8 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 302-304, 306-307; Python · tkinter; Riverbank · PyQt; Kivy · Overview; wxPython · Overview"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một công cụ tính tiền có thể nhận lệnh \"3 20\" trong terminal hoặc có hai ô nhập và một nút Tính. Cả hai đều gọi được cùng hàm Python; phần khác nhau là cách người dùng gửi dữ liệu và đọc kết quả."
+     },
+     {
+      "type": "code",
+      "code": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))",
+      "expected": "60"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Đây là phần xử lý có thể đặt sau CLI: người dùng gõ lệnh hoặc tham số bằng bàn phím. CLI thuận tiện cho script, thao tác lặp và tự động hóa. Người mới cần nhớ cú pháp; GUI thường cho thấy lựa chọn bằng ô nhập, nhãn và nút, nhưng vẫn cần thiết kế rõ ràng."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot = tk.Tk()\nroot.withdraw()\nqty = tk.Entry(root)\nqty.insert(0, '3')\nprice = tk.Entry(root)\nprice.insert(0, '20')\nprint(int(qty.get()) * int(price.get()))\nroot.destroy()",
+      "expected": "60"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Entry là ô nhập chữ. Ví dụ lấy dữ liệu từ hai ô rồi nhân giống phép tính ở CLI. root.withdraw() ẩn cửa sổ để đoạn code có thể kiểm tra tự động và kết thúc bằng destroy(). Muốn tương tác thật, bạn bỏ withdraw, bố trí widget và chạy mainloop như các bài sau."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nfrom tkinter import ttk\nroot = tk.Tk()\nroot.withdraw()\nstyle = ttk.Style(root)\nprint(style.theme_use() in style.theme_names())\nprint(ttk.Button(root, text='Tinh').winfo_class())\nroot.destroy()",
+      "expected": "True\nTButton"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "GUI có thêm thành phần hiển thị nên cần bộ nhớ và thời gian xử lý giao diện. Tốc độ thực tế còn phụ thuộc công việc; không thể kết luận mọi GUI đều chậm hơn mọi CLI. Các widget của ttk dùng theme, tức bộ quy tắc về diện mạo. Theme có thể thay đổi theo nền tảng, và bạn có thể chọn theme khác khi có sẵn. GUI cũng có thể hỗ trợ bàn phím và phím tắt, không chỉ thao tác chuột."
+     },
+     {
+      "type": "paragraph",
+      "text": "Slide giới thiệu Tkinter dựa trên Tcl/Tk; PyQt là binding Python cho Qt; Kivy dùng hệ đồ họa OpenGL và hướng tới giao diện đa nền tảng, gồm tương tác cảm ứng; wxPython dựa trên wxWidgets. Các toolkit có điều kiện cài đặt và hệ sinh thái riêng. Phần thực hành này dùng Tkinter, không yêu cầu cài ba toolkit còn lại. Tkinter có trong nhiều bản phân phối Python nhưng vẫn là module tùy chọn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "CT10 · Tạo thread bằng target, start và join, CT13 · Queue và lưu pickle có nén ở nền"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Hàm total có cần viết lại nếu thay CLI bằng GUI không?",
+     "answer": "Không; có thể giữ phần xử lý và đổi phần nhận dữ liệu, hiển thị kết quả."
+    },
+    {
+     "prompt": "PyQt và Tkinter dựa trên cùng toolkit không?",
+     "answer": "Không. PyQt dùng Qt; Tkinter dùng Tcl/Tk."
+    },
+    {
+     "prompt": "Tạo Entry ẩn, nhập sẵn 4 rồi lấy số đó nhân 5.",
+     "answer": "get trả chuỗi nên cần int trước khi nhân.",
+     "answerCode": "import tkinter as tk\nroot = tk.Tk(); root.withdraw()\ne = tk.Entry(root); e.insert(0, '4')\nprint(int(e.get()) * 5)\nroot.destroy()",
+     "answerExpected": "20"
+    },
+    {
+     "prompt": "Muốn chạy cùng phép tính cho 100 file tự động và muốn người mới chọn file bằng chuột: CLI/GUI mỗi cách phù hợp chỗ nào?",
+     "answer": "CLI dễ nối script/lặp lệnh nhưng cần nhớ cú pháp. GUI cho thấy lựa chọn và hỗ trợ chuột/phím tắt, cần thiết kế và xử lý tương tác; vẫn có thể dùng chung hàm tính."
+    },
+    {
+     "prompt": "GUI có luôn nhanh hơn để học và luôn chậm hơn để xử lý dữ liệu không? Bộ nhớ và theme liên quan gì?",
+     "answer": "Không có kết luận đúng cho mọi ứng dụng. Widget và phần hiển thị dùng thêm bộ nhớ, còn tốc độ xử lý phụ thuộc tác vụ. Giao diện rõ giúp người mới tìm thao tác; CLI có thể thuận tiện hơn khi cần lặp lệnh hoặc tự động hóa. Theme đổi diện mạo của widget, nhưng không tự làm ứng dụng dễ học hay linh hoạt hơn."
+    },
+    {
+     "prompt": "Ghép Tkinter, PyQt, Kivy và wxPython với nền tảng tương ứng: Tcl/Tk, Qt, OpenGL và wxWidgets. Phần thực hành trong khóa này dùng toolkit nào?",
+     "answer": "Tkinter–Tcl/Tk; PyQt–Qt; Kivy–OpenGL; wxPython–wxWidgets. Các bộ hỗ trợ nhiều nền tảng nhưng cần môi trường thích hợp; Tkinter có trong nhiều bản Python dưới dạng module tùy chọn. Ba bộ còn lại cần cài thêm, chỉ được giới thiệu ở đây."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (Tkinter cần hệ cửa sổ của máy) nên không nằm trong ô này."
+   },
+   "starterCode": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: Tkinter cần hệ cửa sổ của máy."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

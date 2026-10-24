@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD24",
+ "sort_order": 65,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD24 · Cửa sổ trượt và so sánh kỳ trước",
+ "subtitle": "Trung cấp · M3 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD24 · Cửa sổ trượt và so sánh kỳ trước",
+  "subtitle": "Trung cấp · M3 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD24",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Window operations"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Doanh thu từng ngày biến động mạnh. Trung bình ba ngày giúp xem xu hướng ngắn hạn, nhưng chỉ nên dùng dữ liệu từ hiện tại trở về trước."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())",
+      "expected": "[True, True, False, False]\n[20.0, 30.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai hàng đầu chưa đủ ba giá trị nên còn thiếu. min_periods=1 cho phép tính sớm hơn bằng ít dữ liệu hơn. Cửa sổ rolling(3) là ba hàng; muốn ba ngày theo lịch phải có index thời gian và dùng rolling(\"3D\")."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
+      "expected": "[100.0, 120.0]\n[20.0, -30.0]\n[0.2, -0.25]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`shift(1)` đưa giá trị kỳ trước về hàng hiện tại. `diff()` lấy giá trị hiện tại trừ kỳ trước, nên 120 trừ 100 bằng 20, còn 90 trừ 120 bằng -30. `pct_change()` chia chênh lệch đó cho giá trị kỳ trước; 0.2 nghĩa là tăng 20%. Khi kỳ trước bằng 0 hoặc thiếu, bạn cần đặt quy tắc riêng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.ewm(alpha=0.5, adjust=False).mean().tolist())\nprint(s.rolling(2).mean().shift(1).dropna().tolist())",
+      "expected": "[10.0, 15.0, 22.5]\n[15.0]"
+     },
+     {
+      "type": "paragraph",
+      "text": "`ewm` tính trung bình với trọng số giảm dần cho các quan sát cũ. Với `alpha=0.5, adjust=False`, mỗi kết quả sau lấy một nửa giá trị mới cộng một nửa kết quả trước: 0.5 × 20 + 0.5 × 10 = 15, rồi 0.5 × 30 + 0.5 × 15 = 22.5. Dòng `rolling(2).mean().shift(1)` đưa trung bình hai hàng trước về hàng hiện tại; vì vậy kết quả ở hàng có giá trị 30 là trung bình của 10 và 20, bằng 15. Khi tạo dữ liệu cho dự báo, cách dịch này giúp tránh dùng chính giá trị đang cần dự báo."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PD23 · Múi giờ: cùng thời điểm, khác giờ hiển thị"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?",
+     "answer": "Chưa đủ ba quan sát."
+    },
+    {
+     "prompt": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?",
+     "answer": "20%."
+    },
+    {
+     "prompt": "Tính trung bình cửa sổ hai hàng của [2,4,8], chỉ in các kết quả đủ cửa sổ.",
+     "answer": "Kết quả [3.0, 6.0].",
+     "answerCode": "import pandas as pd\ns = pd.Series([2, 4, 8])\nprint(s.rolling(2).mean().dropna().tolist())",
+     "answerExpected": "[3.0, 6.0]"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.ewm(alpha=0.5, adjust=False).mean().tolist())\nprint(s.rolling(2).mean().shift(1).dropna().tolist())\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

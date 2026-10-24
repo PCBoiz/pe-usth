@@ -1,0 +1,99 @@
+{
+ "lesson_code": "EX08",
+ "sort_order": 167,
+ "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
+ "title": "EX08 · Chuẩn bị vector và lưới trước khi vẽ",
+ "subtitle": "Trung cấp · M9 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "EX08 · Chuẩn bị vector và lưới trước khi vẽ",
+  "subtitle": "Trung cấp · M9 · 14 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#EX08",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; NumPy mgrid; Matplotlib sample data"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Để vẽ đường sin, bạn cần các vị trí x và giá trị sin tương ứng. `linspace` tạo các vị trí cách đều; `sin` và `cos` tính trên từng phần tử của array. Ví dụ dưới cũng tạo bảng số ngẫu nhiên bằng một bộ sinh riêng `rng`. Seed giúp chạy lại ví dụ trong cùng môi trường, nhưng các số sinh ra vẫn là dữ liệu mô phỏng. Lệnh cũ `np.random.random((2, 3))` dùng bộ sinh toàn cục, cho bảng 2 hàng, 3 cột với các số từ 0 đến dưới 1. Giữ `rng` riêng giúp bạn điều khiển seed mà không đổi trạng thái ngẫu nhiên của phần code khác."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nx = np.linspace(0, np.pi, 3)\nprint(np.round(np.sin(x), 6).tolist())\nprint(np.round(np.cos(x), 6).tolist())\nrng = np.random.default_rng(7)\ndata = rng.random((2, 3))\nprint(data.shape, bool(((data >= 0) & (data < 1)).all()))\nprint(np.random.random((2, 3)).shape)",
+      "expected": "[0.0, 1.0, 0.0]\n[1.0, 0.0, -1.0]\n(2, 3) True\n(2, 3)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong `np.mgrid`, `3j` yêu cầu ba điểm tính cả hai đầu, không phải khoảng cách 3 giữa các điểm. Ví dụ lấy ba vị trí x từ -1 đến 1 và năm vị trí y từ -2 đến 2. `X` và `Y` là hai bảng tọa độ có cùng `shape=(3, 5)`. Tại mỗi vị trí, đặt `U=-Y` và `V=X` để có hai thành phần của vector xoay; VZ29 dùng các bảng này để vẽ trường vector. Với bước là số thực như 0.5, `mgrid` hiểu đó là khoảng cách giữa các điểm."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nX, Y = np.mgrid[-1:1:3j, -2:2:5j]\nU, V = -Y, X\nprint(X.shape, Y.shape, U.shape, V.shape)\nprint(X[:, 0].tolist())\nprint(Y[0, :].tolist())",
+      "expected": "(3, 5) (3, 5) (3, 5) (3, 5)\n[-1.0, 0.0, 1.0]\n[-2.0, -1.0, 0.0, 1.0, 2.0]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`np.load` đọc file định dạng NumPy. Đoạn dưới lưu array ảnh vào `image.npy`, đọc lại rồi kiểm tra dữ liệu có giữ nguyên không. Tiếp theo, `get_sample_data(\"topobathy.npz\", asfileobj=False)` lấy đường dẫn file mẫu đi kèm Matplotlib. File `.npz` này chứa ba array: `topo` (độ cao/độ sâu), `longitude` (kinh độ) và `latitude` (vĩ độ). Dùng `np.load` để mở rồi chọn array theo tên. Một số file mẫu cũ như `bivariate_normal.npy` không có ở mọi phiên bản; nếu thiếu, hãy xem các mẫu có sẵn hoặc dùng array tự tạo."
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\nimport tempfile\nfrom pathlib import Path\nfrom matplotlib.cbook import get_sample_data\nimage = np.array([[0.0, 0.5], [0.75, 1.0]])\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"image.npy\"\n    np.save(path, image)\n    loaded = np.load(path, allow_pickle=False)\n    print(loaded.shape, bool(np.array_equal(image, loaded)))\nsample_path = get_sample_data(\"topobathy.npz\", asfileobj=False)\nwith np.load(sample_path, allow_pickle=False) as sample:\n    print(sorted(sample.files))\n    print(sample[\"topo\"].ndim)",
+      "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP22 · Tạo dữ liệu thử với seed, NP08 · Xếp lại bằng reshape"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "linspace(0, pi, 3) cho bao nhiêu vị trí? sin và cos của array cho một số hay một array?",
+     "answer": "Ba vị trí. sin/cos tính từng phần tử và trả array cùng shape; không tự vẽ đường."
+    },
+    {
+     "prompt": "np.mgrid[-1:1:3j,-2:2:5j] tạo shape gì? 3j có phải bước dài 3 không?",
+     "answer": "Shape (3,5); 3j yêu cầu ba điểm trên chiều đầu, gồm hai đầu mút. Nó không có nghĩa bước dài 3."
+    },
+    {
+     "prompt": "np.load(path) và get_sample_data(name) có cùng đọc CSV không? Làm gì nếu ví dụ cũ thiếu ảnh mẫu?",
+     "answer": "Không. `np.load` đọc file định dạng NumPy, còn `get_sample_data` tìm hoặc mở dữ liệu mẫu đi kèm Matplotlib. Nếu file mẫu không có trong phiên bản đang dùng, chọn mẫu khác hoặc tạo một array ảnh để thử; một tên file trong ví dụ cũ không chắc còn được cung cấp."
+    },
+    {
+     "prompt": "np.random.random((2,3)) trong slide cho bao nhiêu số và khoảng giá trị nào? np.mgrid[0:1:100j] cho bước dài 100 hay 100 vị trí?",
+     "answer": "Có 6 số trong bảng (2,3), từ 0 đến dưới 1. 100j yêu cầu 100 vị trí tính cả hai đầu 0 và 1; khoảng cách là 1/99. rng.random((2,3)) là cách dùng bộ sinh riêng với cùng ý nghĩa shape."
+    },
+    {
+     "prompt": "Bạn có X,Y cùng shape (3,5) và muốn trường xoay. Viết U,V; lấy đường dẫn dữ liệu mẫu Matplotlib rồi nạp archive NumPy bằng lệnh nào?",
+     "answer": "Đặt `U, V = -Y, X`; cả bốn array có `shape=(3, 5)`. Lấy đường dẫn bằng `path = get_sample_data(\"topobathy.npz\", asfileobj=False)`, rồi mở bằng `with np.load(path, allow_pickle=False) as sample:`. Trong khối `with`, dùng `topo = sample[\"topo\"].copy()` để lấy bản sao array độ cao/độ sâu. `np.load` không đọc CSV; nếu phiên bản đang dùng thiếu file mẫu, có thể dùng array tự tạo có cùng ý nghĩa."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nx = np.linspace(0, np.pi, 3)\nprint(np.round(np.sin(x), 6).tolist())\nprint(np.round(np.cos(x), 6).tolist())\nrng = np.random.default_rng(7)\ndata = rng.random((2, 3))\nprint(data.shape, bool(((data >= 0) & (data < 1)).all()))\nprint(np.random.random((2, 3)).shape)\n\n# ── Đoạn 2 ──\nimport numpy as np\nX, Y = np.mgrid[-1:1:3j, -2:2:5j]\nU, V = -Y, X\nprint(X.shape, Y.shape, U.shape, V.shape)\nprint(X[:, 0].tolist())\nprint(Y[0, :].tolist())\n\n# ── Đoạn 3 ──\nimport numpy as np\nimport tempfile\nfrom pathlib import Path\nfrom matplotlib.cbook import get_sample_data\nimage = np.array([[0.0, 0.5], [0.75, 1.0]])\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"image.npy\"\n    np.save(path, image)\n    loaded = np.load(path, allow_pickle=False)\n    print(loaded.shape, bool(np.array_equal(image, loaded)))\nsample_path = get_sample_data(\"topobathy.npz\", asfileobj=False)\nwith np.load(sample_path, allow_pickle=False) as sample:\n    print(sorted(sample.files))\n    print(sample[\"topo\"].ndim)\n",
+   "packages": [
+    "matplotlib",
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

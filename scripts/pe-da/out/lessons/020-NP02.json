@@ -1,0 +1,117 @@
+{
+ "lesson_code": "NP02",
+ "sort_order": 20,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP02 · Lấy một phần tử",
+ "subtitle": "Cơ bản · M2 · 7 phút",
+ "estimated_minutes": 7,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP02 · Lấy một phần tử",
+  "subtitle": "Cơ bản · M2 · 7 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 112-114; NumPy · Lấy phần tử và cắt dữ liệu"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Giả sử, bạn có một array chứa số lượng cà phê bán ra mỗi ngày, theo thứ tự thứ Hai, thứ Ba và thứ Tư. Để xem số cốc bán vào thứ Ba, bạn viết:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups[1])",
+      "expected": "15"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể sử dụng chỉ số để lấy ra một phần tử trong array. Một index (chỉ số) đại diện cho một vị trí trong array. Chỉ số bắt đầu bằng 0: `a[0]` lấy phần tử đầu tiên, `a[1]` lấy phần tử thứ hai. `a[-1]` lấy phần tử cuối cùng."
+     },
+     {
+      "type": "paragraph",
+      "text": "Chỉ số cho bạn biết vị trí chứ không phải giá trị. Ví dụ, phần tử có giá trị 8 trong array `[6, 8, 10]` có index là 1."
+     },
+     {
+      "type": "table",
+      "headers": [
+       "Chỉ số",
+       "0",
+       "1",
+       "2"
+      ],
+      "rows": [
+       [
+        "Giá trị",
+        "6",
+        "8",
+        "10"
+       ]
+      ]
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6, 8, 10])\nprint(a[1])",
+      "expected": "8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn cũng có thể đếm từ cuối dãy bằng chỉ số âm:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.array([6, 8, 10])\nprint(a[-1])",
+      "expected": "10"
+     },
+     {
+      "type": "paragraph",
+      "text": "Nếu sử dụng một chỉ số không tồn tại, bạn sẽ nhận một `IndexError`. Array ba phần tử ở trên có các chỉ số từ 0 đến 2, nên `a[3]` không lấy được phần tử nào."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Cơ bản",
+    "prereq": "NP01 · Array là gì?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Dùng `a = np.array([6, 8, 10])`. `a[0]` trả về giá trị nào?",
+     "answer": "Trả về 6, vì chỉ số 0 trỏ đến phần tử đầu tiên."
+    },
+    {
+     "prompt": "Với cùng array `a`, điền chỉ số để `a[___]` trả về giá trị 10.",
+     "answer": "Điền `2` hoặc `-1`. Cả hai đều lấy giá trị 10 trong array này."
+    },
+    {
+     "prompt": "Nếu có các giá `[15, 25, 35]`, bạn lấy giá thứ hai như thế nào?",
+     "answer": "Dùng chỉ số 1 để lấy giá thứ hai:",
+     "answerCode": "import numpy as np\n\nprices = np.array([15, 25, 35])\nprint(prices[1])",
+     "answerExpected": "25"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups[1])\n\n# ── Đoạn 2 ──\na = np.array([6, 8, 10])\nprint(a[1])\n\n# ── Đoạn 3 ──\na = np.array([6, 8, 10])\nprint(a[-1])\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

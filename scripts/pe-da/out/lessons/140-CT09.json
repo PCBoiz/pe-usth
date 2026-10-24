@@ -1,0 +1,125 @@
+{
+ "lesson_code": "CT09",
+ "sort_order": 140,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
+ "subtitle": "Nâng cao · M6 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
+  "subtitle": "Nâng cao · M6 · 18 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT09",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 253-273, 282-286; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
+     },
+     {
+      "type": "code",
+      "code": "import threading\nresult = []\ndef work():\n    result.append(threading.current_thread().name)\nt = threading.Thread(target=work, name=\"reader\")\nt.start(); t.join()\nprint(result)",
+      "expected": "['reader']"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Single-threaded process có một luồng thực thi, với một stack và một ngữ cảnh CPU. Khi có nhiều thread, mỗi thread có stack, stack pointer (SP: vị trí hiện tại trên stack), program counter, thanh ghi và trạng thái điều phối riêng. Code, dữ liệu toàn cục, heap và file descriptors được dùng chung, nên worker truy cập được list result. Descriptor có thể trỏ tới file đang mở, TCP/UNIX socket hoặc thiết bị. Slide còn nhắc signals: đây là cơ chế thông báo của hệ điều hành, không phải dữ liệu Python riêng tự sao chép vào mỗi thread. Quy tắc xử lý signal tùy hệ điều hành; bài này không dạy socket API."
+     },
+     {
+      "type": "code",
+      "code": "import threading\nshared = {\"done\": False}\ndef work(): shared[\"done\"] = True\nt = threading.Thread(target=work)\nt.start(); t.join()\nprint(shared[\"done\"])",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi một thread chờ đọc file, thread khác có thể tiếp tục nhận thao tác giao diện. Do dùng chung nhiều tài nguyên, thread thường tốn ít chi phí tạo, kết thúc và chuyển ngữ cảnh hơn process; mức chênh lệch còn tùy hệ điều hành và công việc. Thêm lõi CPU có thể giúp một số tác vụ chạy đồng thời, nhưng quá nhiều thread lại làm tăng chi phí chuyển và đồng bộ. Hai thread cùng sửa dữ liệu có thể xen kẽ theo thứ tự không dự đoán được, gây race condition. Nếu mỗi thread giữ một khóa và chờ khóa của thread kia, cả hai có thể mắc kẹt, gọi là deadlock. CT12 minh họa hai tình huống này."
+     },
+     {
+      "type": "code",
+      "code": "single_core_schedule = [\"A\", \"B\", \"A\", \"B\"]\nprint(\"\".join(single_core_schedule))\nprint({\"core1\":\"A\", \"core2\":\"B\"})",
+      "expected": "ABAB\n{'core1': 'A', 'core2': 'B'}"
+     },
+     {
+      "type": "paragraph",
+      "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL trong CPython; RC01 đọc các sơ đồ Apache và Chromium của slide."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PY17 · Scope, tham chiếu hàm và callback, CT03 · Scheduler, PCB và các hàng đợi"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Hai thread dùng chung list result. Chúng có dùng chung stack không?",
+     "answer": "Không. List nằm trong vùng dữ liệu dùng chung; mỗi thread vẫn có stack và ngữ cảnh CPU riêng."
+    },
+    {
+     "prompt": "Một core lần lượt chạy A, B, A, B có phải parallelism không?",
+     "answer": "Chưa. Đây là concurrency qua xen kẽ thời gian. Parallelism cần có công việc thực sự chạy đồng thời."
+    },
+    {
+     "prompt": "Hai worker cùng sửa một list có cần quy tắc đồng bộ không?",
+     "answer": "Có. Dữ liệu dùng chung có thể bị đọc hoặc sửa giữa chừng. Chọn Lock hoặc cách chuyển thông điệp phù hợp với thao tác cần bảo vệ."
+    },
+    {
+     "prompt": "Mỗi thread giữ stack pointer, PC, registers và trạng thái điều phối để làm gì?",
+     "answer": "Để tiếp tục đúng vị trí lời gọi và trạng thái CPU của luồng đó khi được chạy; các thread không dùng chung một stack/PC."
+    },
+    {
+     "prompt": "Nếu descriptor trỏ tới file, TCP socket, UNIX socket hay thiết bị, có nên coi đó là một bản tài nguyên Python độc lập cho mỗi thread không?",
+     "answer": "Không. Các thread cùng process có thể truy cập descriptor/tài nguyên chung, nên phải xét cách phối hợp. Slide nhắc signals như cơ chế OS; quy tắc signal không được suy thành biến Python riêng cho từng thread."
+    },
+    {
+     "prompt": "So sánh việc tạo process có trạng thái riêng với việc thêm thread dùng chung tài nguyên của process. Chi phí tạo, kết thúc và chuyển ngữ cảnh thường khác nhau thế nào?",
+     "answer": "Process có trạng thái và không gian địa chỉ riêng theo cơ chế tạo. Thread dùng chung nhiều tài nguyên của process nên thường tốn ít chi phí tạo, kết thúc và chuyển ngữ cảnh hơn. Mức chênh lệch phụ thuộc hệ điều hành và loại công việc, không có một tỷ lệ đúng cho mọi máy."
+    },
+    {
+     "prompt": "Bạn tạo 500 thread cho 500 phép tính rất nhỏ. Có chắc tận dụng các lõi CPU tốt hơn và làm giao diện phản hồi nhanh hơn không?",
+     "answer": "Không. Chi phí tạo, chuyển giữa các thread và đồng bộ có thể lớn hơn phần thời gian tính toán hữu ích. Kết quả còn phụ thuộc loại công việc, số lõi CPU, trình thông dịch và cách truy cập dữ liệu chung."
+    },
+    {
+     "prompt": "Một worker chờ file trong khi UI nhận phím. Đây là lợi ích gì? Rủi ro gì khi cả hai sửa dữ liệu chung?",
+     "answer": "Giao diện vẫn phản hồi trong lúc worker bị chặn chờ I/O; đây là lợi ích về khả năng đáp ứng. Tuy nhiên, thứ tự chạy giữa chúng không xác định. Nếu cùng sửa dữ liệu mà không phối hợp, chúng có thể gặp race condition; nếu chờ khóa của nhau theo vòng, chúng có thể deadlock. Tạo thêm thread không tự giải quyết hai lỗi này."
+    },
+    {
+     "prompt": "Một process đơn luồng có mấy stack/PC context? Khi thêm thread, code, global data, heap và file descriptors được chia thế nào?",
+     "answer": "Process đơn luồng có một stack và một ngữ cảnh PC/registers. Khi thêm thread, mỗi thread có phần stack/context riêng, còn code/global data/heap/file descriptors thuộc process được dùng chung."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+   },
+   "starterCode": "single_core_schedule = [\"A\", \"B\", \"A\", \"B\"]\nprint(\"\".join(single_core_schedule))\nprint({\"core1\":\"A\", \"core2\":\"B\"})\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+  }
+ },
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

@@ -1,0 +1,113 @@
+{
+ "lesson_code": "CT11",
+ "sort_order": 142,
+ "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
+ "title": "CT11 · Kế thừa Thread và truyền trạng thái",
+ "subtitle": "Nâng cao · M6 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "CT11 · Kế thừa Thread và truyền trạng thái",
+  "subtitle": "Nâng cao · M6 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#CT11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 287-294; Python — subprocess; Python — threading"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi worker có nhiều dữ liệu riêng, bạn có thể tạo subclass của threading.Thread. Hàm __init__ nhận tham số, còn run chứa công việc:"
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread\nclass Worker(Thread):\n    def __init__(self, value):\n        super().__init__()\n        self.value = value\n        self.result = None\n    def run(self):\n        self.result = self.value * 2\nw = Worker(4)\nw.start(); w.join()\nprint(w.result)",
+      "expected": "8"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`super().__init__()` khởi tạo phần Thread của object. self.value và self.result là thuộc tính của worker; run ghi kết quả, còn thread chính chỉ đọc sau join. Bạn cần học class, self và kế thừa trước khi tự viết dạng này."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread\nfrom time import sleep\nclass Pause(Thread):\n    def __init__(self, delay):\n        super().__init__()\n        self.delay = delay\n        self.finished = False\n    def run(self):\n        sleep(self.delay)\n        self.finished = True\nw = Pause(0.01)\nw.start(); w.join()\nprint(w.finished)",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "delay thuộc instance, nên mỗi worker có thể nhận thời gian chờ khác nhau. sleep được thực hiện bên trong run, tức trên worker khi gọi start."
+     },
+     {
+      "type": "code",
+      "code": "from threading import Thread\nclass Worker(Thread):\n    def run(self): self.result = 7\na, b = Worker(), Worker()\na.start(); b.start()\na.join(); b.join()\nprint(a.result, b.result)",
+      "expected": "7 7"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hai object có trạng thái thuộc tính riêng, nhưng nếu bạn truyền cùng một list cho cả hai thì list đó vẫn là dữ liệu chung. Chọn target cho công việc đơn giản; subclass khi việc gom trạng thái và hành vi giúp dễ đọc hơn."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "CT10 · Tạo thread bằng target, start và join, SY05 · Class và object: mỗi sinh viên có dữ liệu riêng, SY07 · Kế thừa, override và super"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao gọi super().__init__ trong subclass Thread?",
+     "answer": "Để phần khởi tạo của Thread thiết lập trạng thái cần cho start/join và quản lý thread."
+    },
+    {
+     "prompt": "Đặt công việc trong __init__ hay run để start chạy nền?",
+     "answer": "Trong run. __init__ chạy ngay khi tạo object trên thread gọi nó."
+    },
+    {
+     "prompt": "Hai instance có các thuộc tính self riêng có nghĩa là những object mà các thuộc tính đó trỏ tới cũng luôn độc lập không?",
+     "answer": "Không. Hai thuộc tính vẫn có thể tham chiếu cùng một list hoặc object khác."
+    },
+    {
+     "prompt": "Trong class Pause, bạn muốn mỗi instance nhận một thời gian chờ delay khác nhau. Giá trị này được truyền và lưu ở đâu? sleep chạy trên thread nào khi gọi start?",
+     "answer": "Nhận delay trong __init__, gọi super().__init__() rồi lưu vào self.delay. Phương thức run gọi sleep(self.delay). Khi gọi start, run thực hiện trên thread worker; join cho thread đang gọi chờ worker kết thúc."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: bản Pyodide này không bật thread thật. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 1,
+   "reason": "bản Pyodide này không bật thread thật"
+  },
+  {
+   "block": 2,
+   "reason": "bản Pyodide này không bật thread thật"
+  }
+ ]
+}

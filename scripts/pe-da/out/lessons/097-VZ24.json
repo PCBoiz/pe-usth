@@ -1,0 +1,106 @@
+{
+ "lesson_code": "VZ24",
+ "sort_order": 97,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
+ "subtitle": "Trung cấp · M4 · 13 phút",
+ "estimated_minutes": 13,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
+  "subtitle": "Trung cấp · M4 · 13 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ24",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Nhận ra biểu đồ gây hiểu lầm"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Cửa hàng A có 20 khiếu nại, B có 10. Chỉ đếm khiếu nại sẽ khiến A trông kém hơn, nhưng A phục vụ 1000 đơn còn B phục vụ 100 đơn. Mẫu số thay đổi kết luận: tỷ lệ tương ứng là 2% và 10%. Trước khi chọn hình, cần biết đang so sánh tổng hay tỷ lệ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()",
+      "expected": "[2.0, 10.0]"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ24-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai trục y có thể đặt đại lượng khác đơn vị vào cùng một vùng vẽ. Điểm giao hoặc độ dốc nhìn giống nhau không có ý nghĩa so sánh khi thang khác nhau; đổi giới hạn một trục có thể đổi cảm nhận. Nếu chỉ cần xem hai xu hướng, hai subplot có chung trục thời gian thường dễ giải thích hơn. secondary_yaxis chỉ nên dùng cho hai cách biểu diễn cùng đại lượng qua một phép đổi đơn vị rõ, như độ C và độ F."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ24-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Một bộ dữ liệu chỉ gồm ba ngày hoặc một cửa hàng không đại diện cho cả năm hay toàn bộ thị trường. Chọn khoảng thời gian sau khi đã nhìn kết quả dễ tạo kết luận lệch. Ghi phạm vi, số quan sát và những giá trị thiếu; không thêm góc nhìn 3D vào cột vì phối cảnh khiến chiều cao khó so sánh."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"day\":[1, 2, 3], \"sales\":[100, 110, 90]})\nax.plot(daily[\"day\"], daily[\"sales\"], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Three days do not establish annual growth\")\nfirst_to_last = (daily[\"sales\"].iloc[-1] / daily[\"sales\"].iloc[0] - 1) * 100\nprint(round(float(first_to_last), 1))\nplt.show()",
+      "expected": "-10.0"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ24-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ24-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị, VZ13 · Error bar: phân tán và độ bất định"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?",
+     "answer": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số."
+    },
+    {
+     "prompt": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?",
+     "answer": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau."
+    },
+    {
+     "prompt": "Chỉ công bố ngày 1–2 của chuỗi 100,110,90 có thể gây hiểu lầm gì?",
+     "answer": "Tạo ấn tượng tăng 10% dù ngày 3 giảm còn 90. Cần nêu tiêu chí chọn kỳ và cho đủ phạm vi phù hợp."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"day\":[1, 2, 3], \"sales\":[100, 110, 90]})\nax.plot(daily[\"day\"], daily[\"sales\"], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Three days do not establish annual growth\")\nfirst_to_last = (daily[\"sales\"].iloc[-1] / daily[\"sales\"].iloc[0] - 1) * 100\nprint(round(float(first_to_last), 1))\nplt.show()\n",
+   "packages": [
+    "matplotlib",
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

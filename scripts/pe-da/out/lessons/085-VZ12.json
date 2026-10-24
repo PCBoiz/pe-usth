@@ -1,0 +1,107 @@
+{
+ "lesson_code": "VZ12",
+ "sort_order": 85,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ12 · Subplot, thang chung và bố trí hình",
+ "subtitle": "Trung cấp · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ12 · Subplot, thang chung và bố trí hình",
+  "subtitle": "Trung cấp · M4 · 17 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ12",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Subplot, thang chung và bố trí hình"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. sharey=True giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), sharey=True, layout=\"constrained\")\nfor ax, name, values in zip(axes, [\"Store A\", \"Store B\"], [[8, 10, 7], [4, 6, 5]]):\n    ax.plot([1, 2, 3], values, marker=\"o\")\n    ax.set(title=name, xlabel=\"Day\", ylim=(0, 12))\naxes[0].set_ylabel(\"Cups\")\nprint(len(fig.axes))\nplt.show()",
+      "expected": "2"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ12-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "constrained layout tự chừa khoảng cho nhãn và tiêu đề. tight_layout là một lựa chọn bố trí khác; không cần gọi đồng thời cả hai. Nếu tự đặt khoảng bằng subplots_adjust thì tắt cơ chế bố trí tự động để các thiết lập không cạnh tranh nhau. figaspect chọn kích thước dựa trên tỷ lệ cao/rộng, không thay đổi đơn vị dữ liệu trong Axes. wspace/hspace chỉnh khoảng giữa các ô theo chiều ngang/dọc. left/right/top/bottom xác định phần khung Figure dành cho subplot theo tỷ lệ từ 0 đến 1. Không nhầm các tỷ lệ này với tọa độ dữ liệu trong biểu đồ."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(7, 3))\nleft = fig.add_subplot(121)\nright = fig.add_subplot(122)\nleft.bar([\"A\", \"B\"], [8, 10])\nright.hist([1, 2, 2, 4], bins=[0, 3, 6])\nleft.set(title=\"Sales\", ylabel=\"Cups\")\nright.set(title=\"Wait\", xlabel=\"Minutes\", ylabel=\"Orders\")\nfig.subplots_adjust(wspace=0.55, bottom=0.2)\nprint(left.get_subplotspec().num1, right.get_subplotspec().num1)\nplt.show()",
+      "expected": "0 1"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ12-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-2.png)"
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=plt.figaspect(0.5))\nax = fig.add_subplot(111)\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A wide figure\")\nfig.tight_layout()\nw, h = fig.get_size_inches()\nprint(round(float(h / w), 1))\nplt.show()",
+      "expected": "0.5"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ12-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ12-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ02 · Figure, Axes và biểu đồ đầu tiên, VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "sharey=True giúp so sánh hai hình như thế nào?",
+     "answer": "Hai Axes chia sẻ thang y. Một đơn vị được biểu diễn theo cùng thang đứng."
+    },
+    {
+     "prompt": "Hai chữ số đầu trong add_subplot(212) có nghĩa gì?",
+     "answer": "Hai hàng và một cột; chữ số cuối 2 là ô thứ hai."
+    },
+    {
+     "prompt": "Có cần gọi constrained layout rồi tight_layout liên tiếp không?",
+     "answer": "Không. Chọn một cơ chế phù hợp; khi cần tự chỉnh khoảng thì dùng subplots_adjust với bố trí tự động tắt."
+    },
+    {
+     "prompt": "Figure có figsize=plt.figaspect(0.5): tỷ lệ nào bằng 0.5? add_subplot(221) và add_subplot(212) có cùng lưới không?",
+     "answer": "Tỷ lệ cao/rộng của Figure bằng 0.5 trong kích thước ví dụ. 221 là 2 hàng × 2 cột, ô 1; 212 là 2 hàng × 1 cột, ô 2. Hai lưới khác nhau. figaspect không làm một đơn vị x dài bằng một đơn vị y; việc đó thuộc set_aspect."
+    },
+    {
+     "prompt": "Nhãn của các subplot đang quá sát nhau. Nêu một cách bố trí tự động. Nếu muốn tự đặt khoảng, hãy cho khoảng ngang bằng 0.4, khoảng dọc 0.3, mép trái 0.15, phải 0.95, dưới 0.2 và trên 0.9.",
+     "answer": "Để bố trí tự động, gọi fig.tight_layout() hoặc tạo hình với layout=\"constrained\"; chọn một trong hai. Để tự đặt khoảng, không bật bố trí tự động và gọi fig.subplots_adjust(wspace=0.4, hspace=0.3, left=0.15, right=0.95, bottom=0.2, top=0.9). Mở hình ở kích thước sẽ sử dụng và kiểm tra nhãn có bị cắt không."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), sharey=True, layout=\"constrained\")\nfor ax, name, values in zip(axes, [\"Store A\", \"Store B\"], [[8, 10, 7], [4, 6, 5]]):\n    ax.plot([1, 2, 3], values, marker=\"o\")\n    ax.set(title=name, xlabel=\"Day\", ylim=(0, 12))\naxes[0].set_ylabel(\"Cups\")\nprint(len(fig.axes))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(7, 3))\nleft = fig.add_subplot(121)\nright = fig.add_subplot(122)\nleft.bar([\"A\", \"B\"], [8, 10])\nright.hist([1, 2, 2, 4], bins=[0, 3, 6])\nleft.set(title=\"Sales\", ylabel=\"Cups\")\nright.set(title=\"Wait\", xlabel=\"Minutes\", ylabel=\"Orders\")\nfig.subplots_adjust(wspace=0.55, bottom=0.2)\nprint(left.get_subplotspec().num1, right.get_subplotspec().num1)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=plt.figaspect(0.5))\nax = fig.add_subplot(111)\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A wide figure\")\nfig.tight_layout()\nw, h = fig.get_size_inches()\nprint(round(float(h / w), 1))\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,115 @@
+{
+ "lesson_code": "GU02",
+ "sort_order": 149,
+ "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
+ "title": "GU02 · Cửa sổ chính và cửa sổ phụ",
+ "subtitle": "Trung cấp · M8 · 11 phút",
+ "estimated_minutes": 11,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "GU02 · Cửa sổ chính và cửa sổ phụ",
+  "subtitle": "Trung cấp · M8 · 11 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#GU02",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 309; Python · tkinter"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Ứng dụng quản lý điểm có một cửa sổ chính. Khi xem thông tin sinh viên, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot = tk.Tk(); root.withdraw()\nroot.title('Quan ly diem')\nroot.geometry('640x400')\nprint(root.title())\nprint(root.winfo_class())\nroot.destroy()",
+      "expected": "Quan ly diem\nTk"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Tk() tạo root và trình thông dịch Tcl/Tk đi kèm. title đặt tên trên thanh cửa sổ; geometry(\"640x400\") yêu cầu vùng cửa sổ rộng 640, cao 400 pixel. Số đo thực tế còn chịu quy tắc của hệ cửa sổ."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot = tk.Tk(); root.withdraw()\ndetail = tk.Toplevel(root); detail.withdraw()\ndetail.title('Sinh vien S01')\nprint(detail.title())\nprint(detail.master is root)\ndetail.destroy()\nprint(root.winfo_exists())\nroot.destroy()",
+      "expected": "Sinh vien S01\nTrue\n1"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Toplevel(root) tạo cửa sổ phụ với root làm cha. Đóng cửa sổ phụ không nhất thiết đóng ứng dụng. Thông thường một ứng dụng dùng một Tk, các cửa sổ khác dùng Toplevel."
+     },
+     {
+      "type": "code",
+      "code": "import tkinter as tk\nroot = tk.Tk(); root.withdraw()\nchild = tk.Toplevel(root); child.withdraw()\nlabel = tk.Label(child, text='S01')\nprint(label.master is child)\nchild.destroy()\nprint(len(root.winfo_children()))\nroot.destroy()",
+      "expected": "True\n0"
+     },
+     {
+      "type": "paragraph",
+      "text": "Widget có parent chứa nó. Khi hủy cửa sổ phụ, các widget con của nó cũng bị hủy. Giữ quan hệ parent rõ giúp quản lý vòng đời giao diện và tránh tạo widget vào nhầm cửa sổ."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "GU01 · GUI, CLI và chọn toolkit"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Muốn mở cửa sổ phụ, nên dùng Tk hay Toplevel?",
+     "answer": "Toplevel(root)."
+    },
+    {
+     "prompt": "geometry(\"800x500\") yêu cầu kích thước nào?",
+     "answer": "Rộng 800 và cao 500 pixel."
+    },
+    {
+     "prompt": "Tạo cửa sổ phụ có title Details rồi in title.",
+     "answer": "Dùng Toplevel với parent rõ ràng.",
+     "answerCode": "import tkinter as tk\nroot=tk.Tk();root.withdraw()\nchild=tk.Toplevel(root);child.withdraw();child.title('Details')\nprint(child.title())\nroot.destroy()",
+     "answerExpected": "Details"
+    },
+    {
+     "prompt": "Viết hai dòng tạo root và cửa sổ phụ có parent rõ ràng. Hủy cửa sổ phụ ảnh hưởng widget con thế nào?",
+     "answer": "import tkinter as tk; root=tk.Tk(); detail=tk.Toplevel(root). Hủy detail cũng hủy widget con của detail; không nhất thiết đóng root."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy trên máy của bạn",
+    "body": "Bài này không chạy được trong trình duyệt: Tkinter cần hệ cửa sổ của máy. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+   },
+   "procedure": [
+    "Mở terminal tại thư mục làm việc của bạn.",
+    "Tạo môi trường: py -m venv .venv",
+    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
+    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
+   ]
+  }
+ },
+ "_mode": "local",
+ "_blocked": [
+  {
+   "block": 0,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 1,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  },
+  {
+   "block": 2,
+   "reason": "Tkinter cần hệ cửa sổ của máy"
+  }
+ ]
+}

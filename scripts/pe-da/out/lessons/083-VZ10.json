@@ -1,0 +1,109 @@
+{
+ "lesson_code": "VZ10",
+ "sort_order": 83,
+ "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
+ "title": "VZ10 · Màu sắc và khả năng đọc cho nhiều người",
+ "subtitle": "Trung cấp · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "VZ10 · Màu sắc và khả năng đọc cho nhiều người",
+  "subtitle": "Trung cấp · M4 · 15 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#VZ10",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 329; Màu sắc và khả năng đọc cho nhiều người"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Hai chuỗi cà phê và trà sẽ khó phân biệt nếu chỉ khác một màu nhạt. Bạn có thể kết hợp màu, marker và kiểu nét để người có cách nhìn màu khác nhau vẫn đọc được hình. Nhãn trực tiếp và bảng số đi kèm cũng giúp biểu đồ không phụ thuộc hoàn toàn vào màu."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()",
+      "expected": "['o', 's']"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ10-1.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-1.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Với số đo tăng từ thấp lên cao, một thang tuần tự như viridis giúp thể hiện thứ tự. Với sai lệch quanh 0, thang phân kỳ giúp thấy phía âm và dương. Màu dành cho nhóm thì không cần ngụ ý một nhóm lớn hơn nhóm khác. Hạn chế dùng nhiều màu chỉ để trang trí."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
+      "expected": "(0.0, 4.0)"
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ10-2.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-2.png)"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Khi gửi hình, thêm một chú thích nêu xu hướng và con số cần chú ý. Chẳng hạn, với chuỗi cà phê, bạn có thể viết: “Số cốc tăng từ 8 lên 10 rồi giảm còn 7 trong ba ngày.” Kiểm tra cỡ chữ ở kích thước người đọc sẽ xem, độ tương phản và bản in đen trắng. Trong ví dụ cuối, plot trả về list lines chứa các đối tượng Line2D, mỗi đối tượng là một đường. plt.setp(lines, linewidth=2.5) đổi độ dày các đường đó mà không thay dữ liệu gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để đổi thành màu qua cmap. alpha=0 là hoàn toàn trong suốt, còn alpha=1 là hoàn toàn không trong suốt."
+     },
+     {
+      "type": "code",
+      "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nlines = ax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Coffee\")\nplt.setp(lines, color=\"#0072B2\", linewidth=2.5)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Coffee: 8 to 10, then down to 7\")\nax.tick_params(labelsize=11)\nprint(\"Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.\")\nplt.show()",
+      "expected": "Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups."
+     },
+     {
+      "type": "figure",
+      "src": "/static/da/VZ10-3.png",
+      "alt": "Biểu đồ do đoạn code trên vẽ ra (VZ10-3.png)"
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "VZ09 · Nhãn, đơn vị, đường mốc và chú thích"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Vì sao vẫn cần marker khi đã dùng hai màu?",
+     "answer": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu."
+    },
+    {
+     "prompt": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?",
+     "answer": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0."
+    },
+    {
+     "prompt": "Viết mô tả chữ cho chuỗi [8,10,7].",
+     "answer": "Ví dụ: “Số cốc tăng từ 8 lên 10 trong ngày 2 rồi giảm còn 7 ở ngày 3; đây là dữ liệu minh họa ba ngày.”"
+    },
+    {
+     "prompt": "lines = ax.plot(x,y) trả một số hay một list đối tượng? Sửa toàn bộ đường thành nét đứt, marker chấm, rộng 2, alpha 0.5 và màu đen bằng setp.",
+     "answer": "Nó trả list các Line2D. Viết plt.setp(lines, linestyle=\"--\", marker=\".\", linewidth=2, alpha=0.5, color=\"black\"). Marker chỉ dấu tại điểm, linestyle chỉ cách nối; alpha=0.5 làm đường bán trong suốt. c là tên rút gọn của color trong plot; với scatter, c có thể là dữ liệu số dùng cùng cmap."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nlines = ax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Coffee\")\nplt.setp(lines, color=\"#0072B2\", linewidth=2.5)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Coffee: 8 to 10, then down to 7\")\nax.tick_params(labelsize=11)\nprint(\"Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.\")\nplt.show()\n",
+   "packages": [
+    "matplotlib"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

@@ -1,0 +1,91 @@
+{
+ "lesson_code": "RC01",
+ "sort_order": 147,
+ "module": "M7 · Multiprocessing và shell thực hành",
+ "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
+ "subtitle": "Trung cấp · M7 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
+  "subtitle": "Trung cấp · M7 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#RC01",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 274-276"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Trong hình Apache Prefork ở trang 274, một process cha quản lý nhiều process con. Mỗi process con được nối với một yêu cầu HTTP từ phía người dùng web. Bạn có thể chép các ô đó thành một dictionary để đếm số process con mà không cần chạy web server:"
+     },
+     {
+      "type": "code",
+      "code": "prefork = {\"parent\": \"master\", \"children\": [\"P1\", \"P2\", \"P3\"]}\nprint(len(prefork[\"children\"]))\nprint(prefork[\"parent\"])",
+      "expected": "3\nmaster"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Dictionary chỉ là bản chép đơn giản của sơ đồ. Nó không tạo process thật. Ở mô hình Prefork trong tài liệu, request được giao cho child process; các child có không gian địa chỉ riêng. Phải dùng cơ chế trao đổi dữ liệu nếu muốn chia sẻ kết quả."
+     },
+     {
+      "type": "code",
+      "code": "worker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))",
+      "expected": "2\n4"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Hình Apache Worker ở trang 275 có thêm các ô thread bên trong mỗi child process. Trong mô hình trên có hai child, mỗi child có hai thread. Hai thread trong P1 dùng chung heap của P1; một thread ở P2 không tự truy cập heap đó. Đây là cách kết hợp chia sẻ bên trong process với ranh giới bộ nhớ giữa các process."
+     },
+     {
+      "type": "code",
+      "code": "links = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])",
+      "expected": "['IPC']"
+     },
+     {
+      "type": "paragraph",
+      "text": "Hình Chromium ở trang 276 đặt main thread và I/O thread trong browser process; renderer process có các thread của nó. Các đường từ browser sang renderer được ghi IPC (inter-process communication). Tách process có thể tăng cô lập, còn trao đổi giữa chúng cần giao thức và có chi phí. Ba ví dụ chỉ giúp đọc sơ đồ lịch sử của slide; chúng không khẳng định kiến trúc của mọi phiên bản Apache hoặc Chromium đang được dùng."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "CT09 · Thread dùng chung gì, giữ riêng gì?"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trong hình Prefork, request được xử lý ở một child process hay một thread được vẽ bên trong child?",
+     "answer": "Ở child process; hình Prefork không có tầng thread được vẽ như hình Worker."
+    },
+    {
+     "prompt": "Mô hình Worker có ba child, mỗi child bốn thread. Có bao nhiêu thread xử lý được vẽ?",
+     "answer": "12 thread. Các thread trong cùng child dùng chung tài nguyên của child; không có một heap chung cho cả ba child."
+    },
+    {
+     "prompt": "Hai thread trong browser và một renderer process khác nhau thế nào về chia sẻ bộ nhớ và IPC?",
+     "answer": "Hai thread cùng browser dùng chung không gian nhớ của process. Renderer là process khác nên cần IPC để trao đổi với browser; tách process tạo ranh giới địa chỉ riêng."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nprefork = {\"parent\": \"master\", \"children\": [\"P1\", \"P2\", \"P3\"]}\nprint(len(prefork[\"children\"]))\nprint(prefork[\"parent\"])\n\n# ── Đoạn 2 ──\nworker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))\n\n# ── Đoạn 3 ──\nlinks = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

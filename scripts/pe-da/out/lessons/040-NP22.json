@@ -1,0 +1,112 @@
+{
+ "lesson_code": "NP22",
+ "sort_order": 40,
+ "module": "M2 · NumPy từ dãy số đến bảng",
+ "title": "NP22 · Tạo dữ liệu thử với seed",
+ "subtitle": "Trung cấp · M2 · 8 phút",
+ "estimated_minutes": 8,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "NP22 · Tạo dữ liệu thử với seed",
+  "subtitle": "Trung cấp · M2 · 8 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#NP22",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "Advanced-Python-Tai-Lieu-Mon-Hoc.pdf tr. 124-126; NumPy · Bộ sinh số ngẫu nhiên"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed và chạy cùng lệnh:"
+     },
+     {
+      "type": "code",
+      "code": "import numpy as np\n\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=5)\nprint(rolls)",
+      "expected": "[6 4 5 6 4]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`np.random.default_rng(7)` tạo một bộ sinh số ngẫu nhiên với seed là 7. Trong cùng môi trường, hai bộ sinh khởi tạo giống nhau và chạy cùng chuỗi lệnh cho cùng kết quả."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bạn có thể kiểm tra dãy vừa tạo có đủ năm số và mọi số đều nằm trong khoảng từ 1 đến 6:"
+     },
+     {
+      "type": "code",
+      "code": "rng = np.random.default_rng(7)\na = rng.integers(1, 7, size=5)\nprint(a.shape)\nprint(((a >= 1) & (a <= 6)).all())",
+      "expected": "(5,)\nTrue"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`integers(1, 7, size=5)` tạo năm số nguyên từ 1 đến 6; điểm dừng 7 không được lấy. Vì vậy, có thể dùng dãy này để mô phỏng năm lần tung xúc xắc."
+     },
+     {
+      "type": "paragraph",
+      "text": "Trong phép kiểm tra, `(a >= 1) & (a <= 6)` tạo mask cho các số nằm trong khoảng hợp lệ. `.all()` trả True nếu mọi vị trí trong mask đều là True."
+     },
+     {
+      "type": "paragraph",
+      "text": "So sánh lại hai bộ sinh được tạo riêng với cùng seed:"
+     },
+     {
+      "type": "code",
+      "code": "a = np.random.default_rng(7).integers(1, 7, size=5)\nb = np.random.default_rng(7).integers(1, 7, size=5)\nprint(np.array_equal(a, b))",
+      "expected": "True"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`np.array_equal(a, b)` kiểm tra hai array có cùng hình dạng và các phần tử bằng nhau hay không. Gọi sinh số nhiều lần trên cùng một `rng` sẽ tiếp tục chuỗi, không bắt đầu lại từ seed. Khi chia sẻ một ví dụ cần chạy lại, hãy ghi seed, phiên bản NumPy và thứ tự các lệnh. Đổi seed không đảm bảo mọi dãy ngắn đều khác nhau."
+     },
+     {
+      "type": "paragraph",
+      "text": "Các số này là dữ liệu mô phỏng để thử chương trình. Chúng không phải kết quả quan sát những lần tung xúc xắc thật."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "NP01 · Array là gì?, NP05 · Tạo dãy bằng arange"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "`rng.integers(1, 7)` có thể cho số 7 không?",
+     "answer": "Không. Các số có thể nhận là 1 đến 6."
+    },
+    {
+     "prompt": "Để mô phỏng 10 lần tung xúc xắc, điền `rng.integers(1, 7, size=___)`.",
+     "answer": "Điền `10`: `rng.integers(1, 7, size=10)`."
+    },
+    {
+     "prompt": "Bạn cần chia sẻ những thông tin nào để người khác chạy lại đúng ví dụ mô phỏng?",
+     "answer": "Chia sẻ seed, phiên bản NumPy và thứ tự lệnh; người chạy lại cần cùng môi trường và cùng chuỗi thao tác trên bộ sinh."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=5)\nprint(rolls)\n\n# ── Đoạn 2 ──\nrng = np.random.default_rng(7)\na = rng.integers(1, 7, size=5)\nprint(a.shape)\nprint(((a >= 1) & (a <= 6)).all())\n\n# ── Đoạn 3 ──\na = np.random.default_rng(7).integers(1, 7, size=5)\nb = np.random.default_rng(7).integers(1, 7, size=5)\nprint(np.array_equal(a, b))\n",
+   "packages": [
+    "numpy"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

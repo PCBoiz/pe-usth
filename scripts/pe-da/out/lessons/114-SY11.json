@@ -1,0 +1,105 @@
+{
+ "lesson_code": "SY11",
+ "sort_order": 114,
+ "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
+ "title": "SY11 · Module và các cách import",
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "SY11 · Module và các cách import",
+  "subtitle": "Trung cấp · M5 · 12 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#SY11",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "All_slide_one_file.pdf tr. 136-142; Python — Modules"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết, thử gọi một hàm qua tên của module có sẵn:"
+     },
+     {
+      "type": "code",
+      "code": "import math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)",
+      "expected": "8.7\n8.7"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "`import math` giữ tên module, nên gọi math.floor. `from math import floor` đưa tên floor vào module hiện tại. `import ... as ...` đặt bí danh. Cả ba cách cùng dùng một công cụ nhưng tạo các tên khác nhau ở nơi gọi."
+     },
+     {
+      "type": "code",
+      "code": "import math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))",
+      "expected": "True\n-2"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "File grades.py có thể chứa các hàm tính điểm. Tạo hai file dưới đây trong cùng một thư mục. Trong main.py, viết `import grades` rồi gọi `grades.passed(6)`; không viết đuôi .py trong câu import."
+     },
+     {
+      "type": "terminal",
+      "code": "# grades.py\ndef passed(score):\n    return score >= 5\n\n# main.py\nimport grades\nprint(grades.passed(6))",
+      "expected": "Lưu grades.py và main.py trong cùng một thư mục. Mở terminal ở thư mục đó rồi chạy python main.py. Kết quả: True."
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Chạy `python main.py` từ thư mục chứa hai file. Python tìm module grades và gọi hàm passed đã định nghĩa ở đó. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi dễ bảo trì hơn chép nhiều bản. Nó còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
+     },
+     {
+      "type": "paragraph",
+      "text": "Trang 137 còn minh họa thành phần dùng lại trong hệ thống: .ko là module kernel Linux, .so là thư viện dùng chung (shared library) thường gặp ở UNIX và .dll là thư viện động trên Windows. Đó là liên hệ về ý tưởng chia thành phần; Python module .py và package dùng import không có cùng định dạng hay API với các file nhị phân này."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Trung cấp",
+    "prereq": "PY18 · Ngoại lệ và dữ liệu không hợp lệ"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "import math và from math import floor khác tên gọi thế nào?",
+     "answer": "Cách đầu gọi math.floor; cách sau gọi floor trực tiếp."
+    },
+    {
+     "prompt": "np trong import numpy as np có phải keyword không?",
+     "answer": "Không. Đó là bí danh (alias) do người viết chọn; np là quy ước phổ biến cho NumPy."
+    },
+    {
+     "prompt": "Tạo grades.py có passed và main.py dùng hàm đó.",
+     "answer": "grades.py: def passed(score): return score >= 5. main.py: import grades; print(grades.passed(6)). Chạy python main.py từ thư mục dự án. Kiểm không còn bản công thức sao chép trong main."
+    },
+    {
+     "prompt": "Module riêng có thể chứa gì và giúp bảo trì thế nào? Viết import grades.py hay import grades? from math import * có thể gây vấn đề gì?",
+     "answer": "Một file .py có thể chứa hàm, class và hằng để dùng lại/chia sẻ. Nhiều nơi import cùng công thức nên chỉ sửa một nơi. Viết import grades, không ghi .py hay đường dẫn. Import * có thể che tên đang có và làm khó biết hàm đến từ đâu."
+    },
+    {
+     "prompt": "import numpy as np và from math import floor as down đưa các tên nào vào nơi gọi? __init__.py có giống __init__(self) không?",
+     "answer": "Tên np trỏ module NumPy; tên down trỏ floor. __init__.py là file khởi tạo một package thông thường; __init__(self) là method khởi tạo instance, không phải hai cách viết cùng việc."
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n"
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}

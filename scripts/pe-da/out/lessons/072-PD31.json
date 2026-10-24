@@ -1,0 +1,96 @@
+{
+ "lesson_code": "PD31",
+ "sort_order": 72,
+ "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
+ "title": "PD31 · EDA: từ câu hỏi đến bảng kết quả",
+ "subtitle": "Nâng cao · M3 · 9 phút",
+ "estimated_minutes": 9,
+ "xp_reward": 8,
+ "content_json": {
+  "schema": "studio-lesson/v2",
+  "title": "PD31 · EDA: từ câu hỏi đến bảng kết quả",
+  "subtitle": "Nâng cao · M3 · 9 phút",
+  "source": {
+   "kind": "python-da",
+   "filename": "course.json#PD31",
+   "parser": "pe-da/build",
+   "importedAt": "2026-10-24T00:00:00+00:00",
+   "slides": "pandas · Descriptive statistics and correlation"
+  },
+  "step_1": {
+   "read": [
+    [
+     {
+      "type": "paragraph",
+      "text": "Phân tích khám phá dữ liệu, thường gọi là EDA, bắt đầu từ câu hỏi bạn muốn trả lời. Ở đây, bạn muốn so sánh giá trị đơn giữa hai kênh bán. Trước khi tính hoặc vẽ, cần xác định mỗi hàng là một đơn hay chỉ là một sản phẩm trong đơn; đếm nhầm đơn sẽ làm lệch kết quả so sánh."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
+      "expected": "{'shop': {'count': 2, 'mean': 60.0, 'median': 60.0}, 'web': {'count': 2, 'mean': 20.0, 'median': 20.0}}"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Mỗi kênh mới có hai đơn, nên chênh lệch trung bình chưa chứng minh kết quả sẽ ổn định trên nhiều đơn hơn. Báo cáo cần kèm số quan sát và khoảng thời gian. Khi xem các giá trị bất thường, bạn có thể dùng tứ phân vị thứ nhất Q1 (phân vị 25%) và thứ ba Q3 (phân vị 75%). Hiệu Q3 − Q1 gọi là khoảng tứ phân vị, viết tắt IQR."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
+      "expected": "11.0 13.0\n[100]"
+     }
+    ],
+    [
+     {
+      "type": "paragraph",
+      "text": "Quy tắc 1.5 IQR chỉ gắn cờ điểm cần kiểm tra. Đơn 100 có thể là khách mua nhiều thật, không phải lỗi để tự xóa. Giữ dữ liệu gốc và ghi lý do nếu bạn loại một hàng."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\ndf = pd.DataFrame({'ad_spend': [1, 2, 3, 4], 'sales': [10, 20, 30, 40]})\nprint(round(df['ad_spend'].corr(df['sales']), 2))\nprint(df[['ad_spend', 'sales']].dropna().shape[0])",
+      "expected": "1.0\n4"
+     },
+     {
+      "type": "paragraph",
+      "text": "Tương quan Pearson bằng 1 trong bốn điểm minh họa này chỉ cho thấy quan hệ tuyến tính của dữ liệu đã quan sát. Nó không chứng minh chi quảng cáo làm doanh thu tăng. Mùa vụ hoặc yếu tố khác có thể ảnh hưởng cả hai. Dùng biểu đồ phân tán, kiểm tra giá trị thiếu và lượng dữ liệu trước khi diễn giải."
+     }
+    ]
+   ],
+   "context": {
+    "level": "Nâng cao",
+    "prereq": "PD30 · Một quy trình làm sạch có kiểm tra"
+   }
+  },
+  "step_2": {
+   "practice": [
+    {
+     "prompt": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?",
+     "answer": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước."
+    },
+    {
+     "prompt": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?",
+     "answer": "Không; cần kiểm tra nguồn và nghiệp vụ."
+    },
+    {
+     "prompt": "Tính count và mean theo channel=[web,web,shop], amount=[10,20,30].",
+     "answer": "shop có 1 đơn, mean 30; web có 2 đơn, mean 15.",
+     "answerCode": "import pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'amount': [10, 20, 30]})\nprint(df.groupby('channel')['amount'].agg(['count', 'mean']).to_dict('index'))",
+     "answerExpected": "{'shop': {'count': 1, 'mean': 30.0}, 'web': {'count': 2, 'mean': 15.0}}"
+    }
+   ]
+  },
+  "step_4": {
+   "task": {
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+   },
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))\n\n# ── Đoạn 2 ──\nimport pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'ad_spend': [1, 2, 3, 4], 'sales': [10, 20, 30, 40]})\nprint(round(df['ad_spend'].corr(df['sales']), 2))\nprint(df[['ad_spend', 'sales']].dropna().shape[0])\n",
+   "packages": [
+    "pandas"
+   ]
+  }
+ },
+ "_mode": "pyodide",
+ "_blocked": []
+}
