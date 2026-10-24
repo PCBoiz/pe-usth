@@ -29,3 +29,9 @@ NHAT-KY-SUA.md
 # CPython 3.12 + đúng phiên bản numpy/pandas/matplotlib của Pyodide 0.27.7, để
 # scripts/pe-v4/build.py chấm thử lúc dựng giống trình duyệt (xem README pe-v4)
 /scripts/pe-v4/.venv/
+
+# Ghi chú làm việc chỉ nằm trên máy này: trạng thái đang dở, quyết định đã chốt,
+# việc còn mở — thứ để bàn giao sang phiên làm việc khác mà không muốn đẩy lên
+# remote. KHÔNG phải chỗ để tài liệu dự án: cái gì cả đội cần biết thì vào
+# AGENTS.md hoặc README của thư mục tương ứng.
+/ghi-chu-local/

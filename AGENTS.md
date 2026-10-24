@@ -15,7 +15,14 @@ npm run start:dev          # cổng 5000
 cd frontend && npm run typecheck && npm run lint && npm run build
 cd frontend && npm run dev # cổng 3000
 
-# Giáo trình Python (khoá đang chạy: Advanced Python, 48 bài — pe-v4)
+# Giáo trình đang chạy: python_advanced = 172 bài "Python cho Data Analyst" (pe-da)
+py scripts/pe-da/build.py              # course.json -> scripts/pe-da/out/ + chép 80 ảnh
+py scripts/pe-da/check.py --strict     # kiểm cấu trúc (CI chạy bản này)
+py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
+npm i --no-save pyodide@0.27.7
+node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
+
+# pe-v4 (48 bài, 427 ca chấm) — GIỮ LẠI nhưng KHÔNG còn xuất bản; xem mục dưới
 py scripts/pe-v4/build.py              # dựng lại 48 bài -> scripts/pe-v4/out/
 py scripts/pe-v4/build_advanced.py     # sinh mini-game -> scripts/pe-v4/out-advanced/
 py scripts/pe-v4/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
@@ -30,7 +37,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo lại ngày 22/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
+Đo lại ngày 24/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
 
 | Hạng mục | Mốc |
 |---|---|
@@ -39,16 +46,27 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **134 ca** / 12 tệp, tất cả đạt |
-| Giáo trình pe-v4 | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **142 ca** / 12 tệp, tất cả đạt |
+| Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 402 đoạn code, **0 hỏng**, ~13 s |
 
-**Dòng "Frontend unit test" vừa được sửa từ 204 xuống 134, và đó là sửa một con số SAI chứ
-không phải chấp nhận tụt mốc.** Tự chạy `npm run test:unit` trên đúng cây này ra 134 ca trên
-12 tệp (trong đó 3 ca là của `trap-leak.test.mjs` và 2 ca của `catalog-duration.test.mjs`
-vừa thêm, nên trước đó là 129). Con số 204
-chưa bao giờ ứng với cây mã này — đây đúng cái bẫy mà mục dưới cảnh báo: một con số cũ trong
-bảng không phải chú thích lỗi thời vô hại, nó là 72 ca test tưởng có mà không có. Thêm/bớt ca
-⇒ chạy lệnh, lấy số thật, sửa bảng TRONG CÙNG commit.
+**pe-v4 còn trong repo nhưng không còn xuất bản.** Khoá `python_advanced` nay là bộ 172
+bài. `scripts/pe-v4/**`, 427 ca chấm và job CI của nó được GIỮ NGUYÊN, vì bộ chấm
+input/output đó là thứ cố vấn dự án gọi là tính năng lõi — xoá đi là mất đường quay đầu
+và mất bộ kiểm duy nhất chấm được code học viên. `frontend/public/static/js/studio-harness.py`
+thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
+26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
+
+**Con số 142 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
+ide-brief-code 11 · ide-handoff 6 · ide-runner-error 10 · ide-trace 38 · prewarm-gate 5 ·
+studio-lesson 40 · trap-leak 3 = 142. Mốc trước là 134; tám ca thêm vào là của màn đọc và
+màn luyện tập (`studio-lesson.test.mjs` 32 → 40).
+
+Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
+chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
+lấy số thật, sửa bảng TRONG CÙNG commit.
 
 Backend chạy riêng mới ra số đúng: chạy `npx jest --ci` song song với bộ test frontend thì
 15/15 bộ báo trượt với 0 ca chạy — tranh CPU, không phải lỗi thật (xem bẫy "Test
@@ -77,6 +95,45 @@ npx eslint "{src,apps,libs,test}/**/*.ts" --ignore-pattern "src/generated/**"
 
 Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đã sửa hoặc còn mở.
 
+- **Giáo trình pe-da được kiểm trên thư viện MỚI HƠN nền tảng, lệch tới một major.**
+  `requirements-tested.txt` của gói gốc ghi matplotlib **3.11.2**, numpy **2.5.4**, pandas
+  **3.1.0**; Pyodide 0.27.7 trong repo mang matplotlib **3.8.4**, numpy **2.0.2**, pandas
+  **2.2.3**. Tức 32 bài pandas và 30 bài trực quan hoá được tác giả kiểm trên một nền khác
+  hẳn nền sẽ chạy chúng — pandas 3.x còn đổi mặc định chuỗi sang PyArrow. Đừng tin dòng
+  "641 đoạn đạt, 0 lỗi" trong README của gói: nó đúng với nền CỦA HỌ. Thứ nói được sự thật
+  trên nền NÀY là `node scripts/pe-da/check-pyodide.mjs`, và nó đã tìm ra VZ07
+  (`ax.boxplot(tick_labels=…)` cần matplotlib ≥ 3.9) và VZ03 (`fig.autofmt_xdate()` xung đột
+  `layout="constrained"` ở 3.8.4). Hai chỗ đó nằm trong hằng `LECH_PHIEN_BAN` của
+  `scripts/pe-da/build.py` — sửa nội dung xong thì XOÁ dòng tương ứng, đừng để nó thành
+  danh sách bỏ qua.
+- **`course.json` có HAI biến thể code cho cùng một khối, lấy nhầm là dạy sai.** `code` là
+  bản đầy đủ dùng để XUẤT HÌNH (`matplotlib.use("Agg")`, `fig.savefig(gettempdir()/…)`),
+  `displayCode` mới là bản gọn viết cho người học (`plt.show()`). 83 khối có cả hai.
+  `code_hoc_vien()` trong build.py chọn đúng bản; bản dựng đầu lấy nhầm `code` và suýt dạy
+  người mới học thói quen lưu hình vào thư mục tạm. Tương tự: `displayExpected`,
+  `displayMode`, và `kind: "terminal"` / `mode: "manual"` đánh dấu khối là LỆNH SHELL —
+  `git clone`, `python -m venv` — không được đưa vào sandbox Python.
+- **Màn đọc có NĂM loại khối, và ba chỗ phải đổi cùng lúc.** `paragraph · code · terminal ·
+  figure · table`. Chúng được khai ở `ReadBlock` (`frontend/src/lib/studio-lesson.ts`),
+  dựng ở `ReadScreen.tsx`, và phát ra ở `scripts/pe-da/build.py`. Bản đặc tả đầu chỉ ghi ba
+  loại, build thêm `figure`/`terminal` sau — 26 bài có hình ném TypeError ngay màn đọc và
+  không ai thấy cho tới khi mở đúng bài đó. `ReadScreen` phải `switch` có nhánh `default`
+  ép `never`, và `check.py` chặn loại khối lạ.
+- **"Hình" của bốn bài Plotly là file HTML 4,7 MB, không phải ảnh.** VZ20–VZ22 và VZ26 khai
+  `figure` trỏ tới `.html` do Plotly xuất, mỗi file nhúng sẵn cả plotly.js. Chép theo tên
+  file làm `frontend/public/static/da/` phình từ 2,3 MB lên **49 MB**, lại còn vào thẻ
+  `<img>` nên cũng không hiện. `chep_anh()` nay chỉ nhận `.png` và check.py chặn `figure`
+  không phải PNG.
+- **Pyodide 0.27.7 thiếu `lzma`, `ssl`, `sqlite3` trong stdlib — nhưng `sqlite3` có wheel.**
+  Đo bằng `importlib` trên chính runtime trong repo, không suy từ tài liệu: `bz2`, `zlib`,
+  `gzip`, `tarfile`, `zipfile`, `pickle`, `tracemalloc` thì CÓ. `threading`,
+  `multiprocessing`, `subprocess`, `socket` import được nhưng không chạy thật. Và thư viện
+  gọi qua CHUỖI (`df.to_excel(..., engine="openpyxl")`) thì quét `import` bỏ sót hoàn toàn
+  — xem `CHUOI_GOI_THU_VIEN` trong build.py.
+- **Câu ôn tập nằm ở trường RIÊNG, đếm thiếu là tưởng mất 21% bài tập.** `course.json` có
+  `drills` (516) VÀ `reviewExercises` (139) = 655 câu. Một lượt audit từng báo động "gói chỉ
+  giữ 3 câu/bài, mất 139 câu" vì chỉ đếm `drills`. Bản dựng ra đúng 655, và `check.py` so
+  số câu của từng bài với nguồn nên lỗi kiểu này không sống sót im lặng được.
 - **Fixture test không giống dữ liệu thật thì test vô dụng.** `quizzes.service.spec.ts` từng
   khẳng định "không bao giờ lộ đáp án" bằng fixture `options: ['a','b']`, trong khi dữ liệu
   thật là mảng object mang cờ `correct` — lỗ lộ đáp án sống sót qua mọi lần chạy test. Khi

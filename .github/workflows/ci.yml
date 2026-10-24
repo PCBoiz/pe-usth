@@ -274,3 +274,59 @@ jobs:
         with:
           python-version: '3.12'
       - run: python scripts/pe-v4/anim/check.py --strict
+
+  # Khoá python_advanced đang chạy: 172 bài "Python cho Data Analyst" (pe-da).
+  # Ba lớp kiểm, mỗi lớp bắt một loại lỗi mà hai lớp kia không thấy:
+  #
+  #  1. DỰNG LẠI rồi so với bản đã commit — out/ là thứ được seed vào DB, nên
+  #     sửa build.py mà quên commit bản dựng là hai nguồn nói hai chuyện.
+  #  2. check.py — cấu trúc: sort_order liên tục, số câu luyện tập khớp nguồn,
+  #     hình trỏ tới file có thật, và nút Chạy chỉ hiện ở bài chạy được. Đây là
+  #     lớp bắt lỗi KHÔNG ném ngoại lệ: bài trỏ vào hình không có, hay bài
+  #     Tkinter lỡ phát starterCode rồi học viên bấm Chạy nhận traceback.
+  #  3. check-pyodide.mjs — chạy code của từng bài trong CHÍNH Pyodide và CHÍNH
+  #     harness của trình duyệt, so kết quả in ra với `expected` của giáo trình.
+  #     Lớp này bắt khoảng lệch phiên bản: gói gốc được kiểm trên matplotlib
+  #     3.11 / numpy 2.5 / pandas 3.1, còn nền tảng có 3.8.4 / 2.0.2 / 2.2.3.
+  #     Nó đã tìm ra VZ07 (tick_labels cần matplotlib ≥ 3.9) theo đúng cách đó.
+  giao-trinh-da:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Dựng lại từ source/course.json. Ảnh lấy từ bản đã commit (gói gốc chỉ có
+      # trên máy người soạn) — thiếu ảnh thì build tự thoát khác 0.
+      - run: python scripts/pe-da/build.py
+
+      - name: Bản dựng phải trùng bản đã commit
+        run: |
+          khac=$(git status --porcelain scripts/pe-da/out frontend/public/static/da)
+          if [ -n "$khac" ]; then
+            echo "$khac"
+            git diff --stat scripts/pe-da/out | tail -20
+            echo "::error::build.py dựng ra khác bản đã commit — chạy py scripts/pe-da/build.py rồi commit scripts/pe-da/out."
+            exit 1
+          fi
+
+      - run: python scripts/pe-da/check.py --strict
+
+      # Trang khoá học đọc file tĩnh curricula.json, nội dung bài đọc từ DB —
+      # quên bước chép là hai con số trên cùng một màn hình nói khác nhau.
+      - name: curricula.json phải khớp bản dựng
+        run: |
+          python scripts/pe-da/sync_curricula.py
+          khac=$(git status --porcelain frontend/src/lib/curricula.json)
+          if [ -n "$khac" ]; then
+            echo "::error::curricula.json lệch — chạy py scripts/pe-da/sync_curricula.py rồi commit."
+            exit 1
+          fi
+
+      - run: npm ci
+      - run: npm i --no-save pyodide@0.27.7
+      - run: node scripts/pe-da/check-pyodide.mjs
