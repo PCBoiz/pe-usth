@@ -196,8 +196,25 @@ export function validateStudioLesson(value: unknown): string[] {
         });
       }
     }
-    // Bước sandbox mà không có test thì học viên không thể nộp bài.
-    if (nonEmptyString(four.starterCode) && !Array.isArray(tests)) {
+    // Bước sandbox mà không có test thì học viên không thể nộp bài — ĐÚNG với
+    // bài có chấm, SAI với bài đọc.
+    //
+    // Khoá python_advanced nay là 172 bài giáo trình ĐỌC (pe-da): ô sandbox ở
+    // đó cố ý chạy tự do, vì nguồn không có ca chấm nào và build không tự sinh
+    // ra ca chấm (xem scripts/pe-da/SCHEMA.md). Áp luật cũ vào thì 145/172 bài
+    // đều "không hợp lệ" và không nạp được bài nào.
+    //
+    // Dấu phân biệt là `step_1.read`: chỉ bài đọc mới có nó. Kiểm theo DẤU
+    // trong chính nội dung, đừng để nơi gọi tự bỏ qua luật — bản seed đầu lọc
+    // bằng cách so khớp CHUỖI lỗi này, nên đổi một chữ trong câu thông báo là
+    // bộ lọc im lặng trượt hết.
+    const laBaiDoc =
+      isObject(lesson.step_1) && Array.isArray(lesson.step_1.read);
+    if (
+      !laBaiDoc &&
+      nonEmptyString(four.starterCode) &&
+      !Array.isArray(tests)
+    ) {
       errors.push('step_4.tests: có code khởi tạo thì phải có phần Test.');
     }
     // File cấp sẵn (language_base.py, data.txt…) được ghi vào thư mục chạy bài

@@ -17,8 +17,8 @@ const BUNDLE_PATH = join(
   '..',
   '..',
   'scripts',
-  'pe-v4',
-  'out-advanced',
+  'pe-da',
+  'out',
   'lessons.json',
 );
 const REAL = JSON.parse(readFileSync(BUNDLE_PATH, 'utf8')) as {
@@ -27,12 +27,12 @@ const REAL = JSON.parse(readFileSync(BUNDLE_PATH, 'utf8')) as {
   lessons: BundleRow[];
 };
 const bundle = () => structuredClone(REAL);
-const CODES = ['P01', 'P02', 'P03', 'G01'];
+const CODES = ['PY01', 'PY02', 'NP02', 'VZ01'];
 
 describe('parseCodesArg', () => {
   it('nhận cả hai dạng, viết hoa, bỏ trùng và khoảng trắng', () => {
     expect(parseCodesArg(['--codes', 'p01, P02,,P01'])).toEqual(['P01', 'P02']);
-    expect(parseCodesArg(['--apply', '--codes=G01'])).toEqual(['G01']);
+    expect(parseCodesArg(['--apply', '--codes=VZ01'])).toEqual(['VZ01']);
   });
 
   it('thiếu --codes thì ném lỗi, không mặc định "mọi bài"', () => {
@@ -41,33 +41,37 @@ describe('parseCodesArg', () => {
   });
 });
 
-describe('selectLessons — trên gói out-advanced thật', () => {
+// Fixture đọc gói THẬT đang được seed (scripts/pe-da/out) chứ không dựng tay:
+// xem bẫy "fixture test không giống dữ liệu thật thì test vô dụng" trong
+// AGENTS.md. Gói cũ pe-v4 vẫn còn trong repo nhưng không còn là thứ nạp vào DB,
+// nên canh nó là canh một bộ bài không ai học.
+describe('selectLessons — trên gói pe-da thật', () => {
   it('chọn đúng 4 bài theo mã, đúng sort_order, không lỗi', () => {
     const { rows, errors } = selectLessons(bundle(), CODES);
     expect(errors).toEqual([]);
     expect(rows.map((r) => [r.lesson_code, r.sort_order])).toEqual([
-      ['P01', 1],
-      ['P02', 2],
-      ['P03', 3],
-      ['G01', 14],
+      ['PY01', 1],
+      ['PY02', 2],
+      ['NP02', 20],
+      ['VZ01', 74],
     ]);
   });
 
   it('từ chối mã không có trong gói và KHÔNG trả bài nào', () => {
-    const { rows, errors } = selectLessons(bundle(), ['P01', 'P99']);
+    const { rows, errors } = selectLessons(bundle(), ['PY01', 'PY99']);
     expect(rows).toEqual([]);
-    expect(errors.join('\n')).toMatch(/P99/);
+    expect(errors.join('\n')).toMatch(/PY99/);
   });
 
-  it('từ chối gói không đủ 48 bài (bản dựng thiếu dồn sort_order)', () => {
+  it('từ chối gói không đủ 172 bài (bản dựng thiếu dồn sort_order)', () => {
     const short = bundle();
-    short.lessons = short.lessons.slice(0, 47);
+    short.lessons = short.lessons.slice(0, 171);
     const { rows, errors } = selectLessons(short, CODES);
     expect(rows).toEqual([]);
-    expect(errors.join('\n')).toMatch(/47 bài, cần đúng 48/);
+    expect(errors.join('\n')).toMatch(/171 bài, cần đúng 172/);
   });
 
-  it('từ chối gói có sort_order lệch dù vẫn đủ 48 bài', () => {
+  it('từ chối gói có sort_order lệch dù vẫn đủ 172 bài', () => {
     const shifted = bundle();
     shifted.lessons[13].sort_order = 15;
     expect(selectLessons(shifted, CODES).rows).toEqual([]);
@@ -82,19 +86,21 @@ describe('selectLessons — trên gói out-advanced thật', () => {
 
   it('chạy validateStudioLesson trên bài được chọn', () => {
     const broken = bundle();
-    const g01 = broken.lessons.find((r) => r.lesson_code === 'G01')!;
-    (g01.content_json as Record<string, unknown>).title = '';
+    const vz01 = broken.lessons.find((r) => r.lesson_code === 'VZ01')!;
+    (vz01.content_json as Record<string, unknown>).title = '';
     const { rows, errors } = selectLessons(broken, CODES);
     expect(rows).toEqual([]);
-    expect(errors.join('\n')).toMatch(/G01: .*title/);
+    expect(errors.join('\n')).toMatch(/VZ01: .*title/);
   });
 
-  it('từ chối bài thiếu khối play (gói out/ chưa qua build_advanced)', () => {
-    const noPlay = bundle();
-    delete (noPlay.lessons[0].content_json as Record<string, unknown>).play;
-    expect(selectLessons(noPlay, ['P01']).errors.join('\n')).toMatch(
-      /P01: thiếu khối play/,
-    );
+  it('từ chối bài không có play (pe-v4) lẫn step_1.read (pe-da)', () => {
+    // Gói dựng dở: nạp vào là bài mở ra trắng trơn mà không lỗi nào được ném.
+    const trong = bundle();
+    const one = (trong.lessons[0].content_json as Record<string, unknown>)
+      .step_1 as Record<string, unknown>;
+    delete one.read;
+    const { errors } = selectLessons(trong, ['PY01']);
+    expect(errors.join(' ')).toMatch(/PY01: không có khối play/);
   });
 });
 
@@ -127,9 +133,9 @@ describe('planContentUpdates', () => {
   it('chỉ bài có nội dung khác mới được đánh dấu đổi', () => {
     const rows = selected();
     const db = dbFrom(rows);
-    (db[3].contentJson as Record<string, unknown>).title = 'G01 · bản cũ';
+    (db[3].contentJson as Record<string, unknown>).title = 'VZ01 · bản cũ';
     const { items } = planContentUpdates(rows, db);
-    expect(items.filter((i) => i.changed).map((i) => i.code)).toEqual(['G01']);
+    expect(items.filter((i) => i.changed).map((i) => i.code)).toEqual(['VZ01']);
     expect(items[3].content).toBe(rows[3].content_json);
   });
 
@@ -139,7 +145,7 @@ describe('planContentUpdates', () => {
     db[3].lessonCode = null;
     const { items, errors } = planContentUpdates(rows, db);
     expect(items).toEqual([]);
-    expect(errors.join('\n')).toMatch(/G01: ô sort_order 14 .*\(NULL\)/);
+    expect(errors.join('\n')).toMatch(/VZ01: ô sort_order 74 .*\(NULL\)/);
   });
 
   it('từ chối khi DB chưa có bài — script không tạo bài', () => {
@@ -149,6 +155,6 @@ describe('planContentUpdates', () => {
       dbFrom(rows).slice(0, 3),
     );
     expect(items).toEqual([]);
-    expect(errors.join('\n')).toMatch(/G01: DB không có bài sort_order 14/);
+    expect(errors.join('\n')).toMatch(/VZ01: DB không có bài sort_order 74/);
   });
 });

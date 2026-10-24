@@ -48,15 +48,15 @@ function readStep4(
 /**
  * Bài có "cửa tự kiểm tra": step_4.gate === true.
  *
- * Khoá đang chạy (Python Advanced, 48 bài) có ĐÚNG 3 bài: R02 (sort_order 20),
- * DA01 (47), DA02 (48) — khai `gate=True` trong scripts/pe-v4/lessons_*.py,
- * build.py ghi `step4['gate'] = True`. Con số 5 bài (B20, I07, I12, N04, N08)
- * trong chú thích cũ là của khoá cơ bản pe-v3 ĐÃ XOÁ.
+ * Khoá đang chạy (172 bài "Python cho Data Analyst", pe-da) KHÔNG có bài cửa
+ * nào — đó là giáo trình đọc, không giữ lại lời giải nào để mở sau. Hàm này vẫn
+ * phải chạy đúng: bộ pe-v4 còn trong repo (48 bài, 3 cửa R02/DA01/DA02) và có
+ * thể được nạp lại, còn các khoá khác trong DB vẫn dùng `gate`.
  *
  * Nhận diện theo CỜ trong nội dung chứ không hard-code mã bài: biên tập thêm
  * cửa mới thì server tự khoá theo, không phải sửa code backend. Vì vậy đừng
- * dùng con số 3 ở trên để viết test — đếm lại bằng
- * `grep '"gate": true' scripts/pe-v4/out-advanced/lessons/*.json`.
+ * viết test khoá cứng số bài cửa — đếm lại bằng `grep -r '"gate": true'` trong
+ * thư mục out của bộ đang nạp (ví dụ `scripts/pe-v4/out-advanced/lessons`).
  */
 export function isSelfTestGateLesson(
   contentJson: Prisma.JsonValue | null | undefined,
