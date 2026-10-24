@@ -25,7 +25,14 @@ const bundle = JSON.parse(readFileSync(join(HERE, 'out-advanced', 'lessons.json'
 const onlyArg = process.argv.slice(2).find((a) => !a.startsWith('--'));
 const only = onlyArg ? new Set(onlyArg.split(',')) : null;
 
-const py = await loadPyodide({ indexURL: join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/' });
+const RUNTIME = join(ROOT, 'frontend', 'public', 'pyodide', 'v314.0.7') + '/';
+// Gói runtime này THẬT SỰ tải được. `sqlite3` là wheel riêng ở Pyodide 0.27.7
+// nhưng vào stdlib ở 314, nên loadPackage(['sqlite3']) ném "No known package" và
+// giết cả bộ chấm ngay bài đầu — lọc trước, để `import` tự nói có hay không.
+const coTrongLock = new Set(
+  Object.keys(JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8')).packages),
+);
+const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');
 const preload = py.globals.get('_studio_preload');
@@ -51,7 +58,7 @@ for (const row of bundle.lessons) {
   lessons += 1;
   const content = row.content_json;
   const four = content.step_4;
-  const missing = (four.packages || []).filter((p) => !warmed.has(p));
+  const missing = (four.packages || []).filter((p) => coTrongLock.has(p) && !warmed.has(p));
   if (missing.length) {
     await py.loadPackage(missing, { messageCallback: () => {} });
     preload(JSON.stringify(missing));
