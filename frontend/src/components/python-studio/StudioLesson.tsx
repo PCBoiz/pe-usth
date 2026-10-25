@@ -24,7 +24,7 @@
 //   useLessonProgress.ts  màn đang mở, màn đã đúng, điểm/combo, hiệu ứng
 //   cta.ts            luật của nút CTA dưới đáy (hàm thuần)
 //   answer-key.ts     bảng đáp án cho admin (hàm thuần)
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import LessonChrome from '@/components/lesson-chrome/LessonChrome';
 import ShellB from '@/components/lesson-chrome/ShellB';
@@ -88,6 +88,27 @@ export default function StudioLesson({
   const saveStatus = draftState.saveStatus;
 
   const screens = useMemo(() => (lesson ? buildScreens(lesson) : []), [lesson]);
+
+  // Chờ LÂU thì phải nói ra đang chờ gì.
+  //
+  // Đo trên production ngày 25/10/2026: request API ĐẦU TIÊN sau lúc máy chủ
+  // nghỉ mất hơn 25 giây (Render + Neon thức dậy), các request sau 300 ms. Suốt
+  // 25 giây đó trang chỉ hiện "Đang tải bài học…" — không một chữ nào nói vì
+  // sao, nên người học đầu tiên trong ngày kết luận là trang hỏng rồi bỏ đi.
+  // Mốc 6 giây: đủ dài để lần tải bình thường (300 ms – 3 s) không bao giờ thấy
+  // dòng này, đủ ngắn để họ đọc được nó trước khi mất kiên nhẫn.
+  const [choLau, setChoLau] = useState(false);
+  useEffect(() => {
+    if (!loading) return;
+    const hen = setTimeout(() => setChoLau(true), 6000);
+    // Dọn ở CLEANUP, không phải trong thân effect: React 19 chặn `setState`
+    // đồng bộ trong thân (`react-hooks/set-state-in-effect`) vì nó gây một
+    // lượt render dây chuyền, và luật đó đúng.
+    return () => {
+      clearTimeout(hen);
+      setChoLau(false);
+    };
+  }, [loading]);
   const scr: LessonScreen | undefined = screens[d.step - 1];
   const play = lesson?.play;
   const boss = Boolean(play?.boss);
@@ -299,7 +320,11 @@ export default function StudioLesson({
   );
 
   if (loading)
-    return frame(info('Đang tải bài học…', 'Chờ một chút, nội dung đang được lấy từ máy chủ.'), {
+    return frame(info('Đang tải bài học…', choLau
+      ? 'Máy chủ đang khởi động lại sau một lúc không có ai học — lần đầu trong '
+        + 'ngày có thể mất khoảng nửa phút. Tiến độ của bạn vẫn còn, không cần '
+        + 'tải lại trang.'
+      : 'Chờ một chút, nội dung đang được lấy từ máy chủ.'), {
       primaryLabel: 'Đang tải…',
       primaryDisabled: true,
       onPrimaryClick: () => undefined,
