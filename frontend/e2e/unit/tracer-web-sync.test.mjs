@@ -20,12 +20,12 @@ import test from 'node:test';
 const WEB = new URL('../../public/static/py/pe_tracer.min.py', import.meta.url);
 // Đường dẫn nguồn. Pha dọn có thể DI CHUYỂN nó; khi đó ca đầu tiên đỏ với đúng
 // câu phải làm, chứ không im lặng bỏ qua phép canh.
-const NGUON = new URL('../../../src/python-runner/tracer/pe_tracer.py', import.meta.url);
+const NGUON = new URL('../../../scripts/tracer/pe_tracer.py', import.meta.url);
 
 test('tệp nguồn của tracer còn ở chỗ đã khai', () => {
   assert.ok(
     existsSync(NGUON),
-    'không thấy src/python-runner/tracer/pe_tracer.py — nếu pha dọn đã dời nó thì '
+    'không thấy scripts/tracer/pe_tracer.py — nếu có ai dời nó thì '
       + 'sửa hằng NGUON trong file này VÀ scripts/build-tracer-source.mjs. Đừng xoá ca này: '
       + 'nó là thứ duy nhất còn canh bản tracer mà trình duyệt tải.',
   );

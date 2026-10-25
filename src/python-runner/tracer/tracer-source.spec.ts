@@ -18,10 +18,12 @@ import { TRACER_SOURCE, TRACER_SOURCE_SHA256 } from './tracer-source';
  * sinh lại → 1 ca trượt, kèm đúng lệnh phải chạy.
  */
 describe('tracer-source.ts — bản nhúng phải khớp pe_tracer.py', () => {
-  const python = readFileSync(join(__dirname, 'pe_tracer.py'), 'utf8').replace(
-    /\r\n/g,
-    '\n',
-  );
+  // Nguồn đã dời sang scripts/tracer/ — xem chú thích trong
+  // scripts/build-tracer-source.mjs.
+  const python = readFileSync(
+    join(__dirname, '..', '..', '..', 'scripts', 'tracer', 'pe_tracer.py'),
+    'utf8',
+  ).replace(/\r\n/g, '\n');
 
   // Trượt ca này nghĩa là: đã sửa pe_tracer.py nhưng chưa chạy
   //   node scripts/build-tracer-source.mjs

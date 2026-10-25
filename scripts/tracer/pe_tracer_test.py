@@ -9,7 +9,7 @@ gọn + mã nén base64), chạy nó bằng một tiến trình Python riêng, r
 từ giữa hai mốc — y hệt đường đi thật, chỉ thiếu lớp container.
 
 Chạy (Windows dùng `py`, không dùng `python`):
-    py src/python-runner/tracer/pe_tracer_test.py
+    py scripts/tracer/pe_tracer_test.py
 
 Bằng chứng test bắt được lỗi thật (quy ước AGENTS.md: gỡ bản sửa ra, test phải
 trượt) — xem phần cuối file: hạ MAX_STEPS, bỏ phát hiện chu trình, bỏ SIGALRM,
@@ -25,7 +25,10 @@ import tempfile
 import zlib
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
+# Hai tầng, không ba: file này nay ở scripts/tracer/, trước ở
+# src/python-runner/tracer/. Để nguyên ".." ba lần thì ROOT trỏ ra ngoài repo và
+# test chết với CalledProcessError ở D:\scripts\pe-tracer-strip.py.
+ROOT = os.path.abspath(os.path.join(HERE, "..", ".."))
 TRACER = os.path.join(HERE, "pe_tracer.py")
 STRIP = os.path.join(ROOT, "scripts", "pe-tracer-strip.py")
 

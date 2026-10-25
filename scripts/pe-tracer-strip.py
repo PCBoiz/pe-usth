@@ -11,7 +11,7 @@ mất; docstring thì có (là câu lệnh chuỗi) nên phải bỏ tay. KHÔNG
 chuỗi theo dấu '#' — dấu đó nằm trong chuỗi ký tự là cắt sai mã, im lặng.
 
 Chạy (Windows dùng `py`, không dùng `python`):
-    py scripts/pe-tracer-strip.py src/python-runner/tracer/pe_tracer.py
+    py scripts/pe-tracer-strip.py scripts/tracer/pe_tracer.py
 """
 import ast
 import io

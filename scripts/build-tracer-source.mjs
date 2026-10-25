@@ -27,7 +27,11 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const pySource = join(root, 'src/python-runner/tracer/pe_tracer.py');
+// Nguồn nằm cạnh script này, KHÔNG trong src/python-runner: từ khi `/ide`
+// chạy Pyodide ở trình duyệt, tracer chỉ còn là nguồn sinh ra một asset của
+// frontend. Để nó trong module backend là mời người dọn pha 4 xoá cả cụm —
+// và xoá cả cụm là giết nút "Xem từng bước".
+const pySource = join(root, 'scripts/tracer/pe_tracer.py');
 const stripper = join(root, 'scripts/pe-tracer-strip.py');
 const tsTarget = join(root, 'src/python-runner/tracer/tracer-source.ts');
 // Bản thứ hai, PHỤC VỤ TĨNH cho trình duyệt: khi "Xem từng bước" chạy bằng
