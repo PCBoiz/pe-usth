@@ -20,8 +20,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import type { OnMount } from '@monaco-editor/react';
 
-import { apiFetch } from '@/lib/api';
-import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 import {
   AUTOPLAY_INTERVAL_MS,
   changedNames,
@@ -35,11 +33,9 @@ import {
   stopNotice,
   TRACE_COST_NOTE,
   type TraceDocument,
-  type TraceResponse,
   type TraceRunInfo,
 } from '@/lib/trace';
 
-import { ideRunnerMode } from '@/lib/ide-runner';
 import { traceInBrowser } from '@/lib/ide-trace';
 
 import styles from './CodeVisualizer.module.css';
@@ -86,15 +82,8 @@ type State =
   | { status: 'idle' }
   | { status: 'loading' }
   | { status: 'ready'; doc: TraceDocument; run: TraceRunInfo; code: string }
-  | { status: 'error'; kind: 'infra' | 'busy' | 'other'; message: string; detail?: string };
-
-/** Backend bọc lỗi thành { error: { message } } (AllExceptionsFilter) hoặc { message } (ValidationPipe). */
-function errorMessage(body: unknown, fallback: string): string {
-  const b = body as { error?: { message?: unknown } | string; message?: unknown } | null;
-  const raw = (typeof b?.error === 'object' ? b.error?.message : undefined) ?? b?.message;
-  if (Array.isArray(raw)) return raw.join(', ');
-  return typeof raw === 'string' && raw ? raw : fallback;
-}
+  // `busy` (429 của máy chủ) không còn nguồn nào sinh ra từ khi bỏ đường backend.
+  | { status: 'error'; kind: 'infra' | 'other'; message: string; detail?: string };
 
 export default function CodeVisualizer({
   codeRef,
@@ -150,97 +139,30 @@ export default function CodeVisualizer({
     setPlaying(false); // vết mới: đừng để nhịp tự chạy của vết CŨ chạy tiếp
     lastMoveRef.current = null;
     try {
-      // Đường CLIENT: ghi vết bằng Pyodide ngay trong trình duyệt. Dùng CHÍNH
-      // `pe_tracer.py` của backend (sinh ra cùng một lượt với bản nhúng), nên
-      // hợp đồng JSON v1 và toàn bộ phần dựng giao diện bên dưới giữ nguyên.
-      if (ideRunnerMode() === 'client') {
-        try {
-          const payload = await traceInBrowser(code);
-          if (!controller.signal.aborted) {
-            setState({ status: 'ready', doc: payload.trace, run: payload.run, code });
-          }
-        } catch (e) {
-          if (!controller.signal.aborted) {
-            setState({
-              status: 'error',
-              kind: 'infra',
-              message:
-                'Không khởi động được bộ ghi vết trong trình duyệt. Thử tải lại trang; '
-                + 'nút “Chạy” vẫn dùng được bình thường.',
-              detail: e instanceof Error ? e.message : String(e),
-            });
-          }
+      // Pyodide ngay trong trình duyệt — đường DUY NHẤT từ 25/10/2026. Nhánh
+      // `POST /api/python/trace` đã đi cùng `src/python-runner/`.
+      //
+      // Bộ ghi vết là `scripts/tracer/pe_tracer.py`, rút gọn sang
+      // `/static/py/pe_tracer.min.py`; hợp đồng JSON v1 không đổi nên toàn bộ
+      // phần dựng giao diện bên dưới giữ nguyên qua cả lần chuyển.
+      //
+      // Không cần `setIndex(0)` ở đây: dòng đầu hàm này đã làm rồi. Nhánh máy
+      // chủ cũ gọi lại một lần nữa — đó là dư, không phải thứ bị thiếu bên này.
+      try {
+        const payload = await traceInBrowser(code);
+        if (!controller.signal.aborted) {
+          setState({ status: 'ready', doc: payload.trace, run: payload.run, code });
         }
-        return;
-      }
-      const res = await apiFetch('/api/python/trace', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-        signal: controller.signal,
-      });
-      const body: unknown = await res.json().catch(() => null);
-      if (res.status === 429) {
-        // Hai nguồn 429 với hai lời khuyên khác nhau (bấm quá nhiều / máy chủ
-        // quá tải); backend đã phân biệt bằng thông điệp nên hiện đúng câu đó.
-        setState({
-          status: 'error',
-          kind: 'busy',
-          message: errorMessage(body, 'Máy chủ đang quá tải, thử lại sau'),
-        });
-      } else if (res.status === 503) {
-        setState({
-          status: 'error',
-          kind: 'infra',
-          message: RUNNER_UNAVAILABLE_MESSAGE,
-          detail: `HTTP 503 — ${errorMessage(body, 'bộ chạy Python không trả lời.')}`,
-        });
-      } else if (res.status === 401) {
-        setState({
-          status: 'error',
-          kind: 'infra',
-          message:
-            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
-            + 'bình thường ngay trong trình duyệt.',
-          detail: `HTTP 401 — ${errorMessage(body, 'phiên khách chưa sẵn sàng; tải lại trang.')}`,
-        });
-      } else if (!res.ok) {
-        // 400 ở đây gần như luôn là "chương trình quá dài để ghi vết": thông
-        // điệp của backend có con số thật và chỉ sang nút Chạy, nên hiện nguyên.
-        setState({
-          status: 'error',
-          kind: 'other',
-          message: errorMessage(body, `Không ghi được vết (HTTP ${res.status}).`),
-        });
-      } else {
-        const payload = body as TraceResponse | null;
-        if (!payload?.trace) {
-          setState({ status: 'error', kind: 'other', message: 'Máy chủ trả về dữ liệu lạ.' });
-        } else if (
-          // 200 nhưng docker chết trước khi Python kịp chạy — cùng phép thử với
-          // nút Chạy, dùng lại đúng hàm đó để hai nơi không nói khác nhau.
-          isRunnerDown({
-            stdout: payload.trace.stdout,
-            stderr: payload.trace.stderr,
-            exitCode: payload.run.exitCode,
-            timedOut: payload.run.timedOut,
-            outputTruncated: payload.run.outputTruncated,
-          })
-        ) {
+      } catch (e) {
+        if (!controller.signal.aborted) {
           setState({
             status: 'error',
             kind: 'infra',
-            message: RUNNER_UNAVAILABLE_MESSAGE,
-            detail: payload.trace.stderr.trim(),
+            message:
+              'Không khởi động được bộ ghi vết trong trình duyệt. Thử tải lại trang; '
+              + 'nút “Chạy” vẫn dùng được bình thường.',
+            detail: e instanceof Error ? e.message : String(e),
           });
-        } else {
-          setState({
-            status: 'ready',
-            doc: payload.trace,
-            run: payload.run,
-            code,
-          });
-          setIndex(0);
         }
       }
     } catch (e) {

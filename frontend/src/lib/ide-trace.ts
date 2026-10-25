@@ -1,12 +1,12 @@
 /**
- * "Xem từng bước" chạy bằng Pyodide trong trình duyệt, thay đường
- * POST /api/python/trace → container Docker ở backend.
+ * "Xem từng bước" chạy bằng Pyodide trong trình duyệt. ĐÂY LÀ ĐƯỜNG DUY NHẤT —
+ * `POST /api/python/trace` và container Docker sau nó đã bị xoá ngày 25/10/2026.
  *
- * Bộ ghi vết là CHÍNH `src/python-runner/tracer/pe_tracer.py`: một lượt
- * `node scripts/build-tracer-source.mjs` sinh ra cả bản nhúng cho backend
- * (`tracer-source.ts`) lẫn bản phục vụ tĩnh cho trình duyệt
- * (`/static/py/pe_tracer.min.py`). Hợp đồng JSON v1 giữ nguyên, nên
+ * Bộ ghi vết là `scripts/tracer/pe_tracer.py`, rút gọn thành
+ * `/static/py/pe_tracer.min.py` bằng `node scripts/build-tracer-source.mjs`.
+ * Hợp đồng JSON v1 giữ nguyên qua cả lần chuyển, nên
  * `frontend/src/lib/trace.ts` không phải đổi một dòng nào.
+ * `frontend/e2e/unit/tracer-web-sync.test.mjs` canh hai bản khỏi lệch.
  *
  * Đo trước khi làm, trong Pyodide 314.0.7 thật: tracer chậm hơn CPython native
  * 2,1–3,3×, ca xấu nhất 86 ms — trong khi thứ nó thay thế là 200–600 ms khởi

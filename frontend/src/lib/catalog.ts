@@ -161,17 +161,18 @@ const IDE_TOOL: CatalogTool = {
 /**
  * Thẻ "Python IDE" hiện SẴN; đặt NEXT_PUBLIC_IDE_ENABLED=off để ẩn.
  *
- * Mặc định cũ (12/10/2026) là ẩn, phải đặt =on mới hiện: `/ide` gửi mã sang
- * `POST /api/python/run`, mà route đó chạy code trong container Docker
- * (src/python-runner). Nền tảng web service thường (Render chẳng hạn) chạy SẴN
- * trong container và không có Docker bên trong, nên mọi lần bấm Chạy đều trả lỗi
- * hạ tầng — thà không có thẻ còn hơn để người dùng bấm vào rồi gặp lỗi.
+ * Lịch sử của cái cờ này, vì nó giải thích vì sao vẫn còn: mặc định ban đầu
+ * (12/10/2026) là ẨN, phải đặt =on mới hiện — hồi đó `/ide` gửi mã sang
+ * `POST /api/python/run` và route đó chạy code trong container Docker, mà nền
+ * tảng web service thường (Render) đã chạy SẴN trong container nên không có
+ * Docker bên trong: mọi lần bấm Chạy đều trả lỗi hạ tầng. 13/10 đảo lại thành
+ * HIỆN sau khi `IdeClient` biết nói một câu bình thường thay cho thông điệp của
+ * docker.
  *
- * 13/10/2026 đảo mặc định lại thành HIỆN, vì chỗ gây hại đã bịt ở đúng nơi:
- * `IdeClient` nhận ra trường hợp "chưa có bộ chạy" và nói một câu bình thường
- * (đang dựng, bài học vẫn chạy trong trình duyệt) thay vì dán thông điệp của
- * docker ra màn hình. Công cụ viết được code vẫn có ích khi chưa chạy được, nên
- * giữ nguyên cơ chế tắt: buổi nào không muốn thấy thì đặt cờ =off.
+ * 25/10/2026: lý do gốc đã mất hẳn — `/ide` chạy Pyodide ngay trong trình duyệt
+ * và đường backend đã bị xoá khỏi repo, nên không còn tình huống "chưa có bộ
+ * chạy". Giữ cờ lại vì nó vẫn có công dụng khác: buổi dạy nào không muốn học
+ * viên thấy thẻ IDE thì đặt =off.
  */
 export const TOOLS: CatalogTool[] =
   process.env.NEXT_PUBLIC_IDE_ENABLED === 'off' ? [] : [IDE_TOOL];

@@ -28,7 +28,6 @@ import test from 'node:test';
 
 import {
   countdownSeconds,
-  ideRunnerMode,
   needsLinkConfirm,
   IDE_AUTOSAVE_KEY,
   IDE_COUNTDOWN_FROM_MS,
@@ -242,19 +241,19 @@ test('đúng trần thì vẫn lưu được — trần là trần, không phả
 //
 // Gỡ bản sửa ra thì test trượt (đã chạy thật 25/10/2026):
 //  · đổi mặc định về `'server'` → 1 ca trượt;
-//  · cho `needsLinkConfirm` trả `true` ở mọi `source` → 2 ca trượt;
-//  · cho nó bỏ qua `mode` (luôn hỏi khi source là hash) → 1 ca trượt.
-test('needsLinkConfirm: chỉ hỏi khi mã đến TỪ LINK và chạy Ở CLIENT', () => {
-  assert.equal(needsLinkConfirm('hash', 'client', 'https://ke-la.example/bai'), true);
-
-  // Chạy ở máy chủ thì mã chạy trong container, không đụng phiên của ai.
-  assert.equal(needsLinkConfirm('hash', 'server', 'https://ke-la.example/bai'), false);
+//  · cho `needsLinkConfirm` trả `true` ở mọi `source` → 2 ca trượt.
+//
+// Tham số `mode` đã bỏ cùng đường máy chủ (25/10/2026): ca cũ "chạy ở máy chủ
+// thì không hỏi, vì mã chạy trong container nên không đụng phiên của ai" không
+// còn tình huống nào ứng với nó.
+test('needsLinkConfirm: hỏi khi mã đến TỪ LINK LẠ', () => {
+  assert.equal(needsLinkConfirm('hash', 'https://ke-la.example/bai'), true);
 });
 
 test('needsLinkConfirm: KHÔNG hỏi về mã của chính người học', () => {
   for (const nguon of ['autosave', 'default']) {
     assert.equal(
-      needsLinkConfirm(nguon, 'client', 'https://ke-la.example/bai'),
+      needsLinkConfirm(nguon, 'https://ke-la.example/bai'),
       false,
       `source=${nguon} là mã của chính họ, hỏi là làm phiền vô cớ`,
     );
@@ -274,15 +273,15 @@ globalThis.location = { origin: DAY };
 
 test('needsLinkConfirm: link TỪ CHÍNH origin này thì không hỏi — ca bắt lỗi', () => {
   const day = DAY;
-  assert.equal(needsLinkConfirm('hash', 'client', `${day}/lesson/python_advanced?lesson=5`), false);
-  assert.equal(needsLinkConfirm('hash', 'client', `${day}/`), false);
+  assert.equal(needsLinkConfirm('hash', `${day}/lesson/python_advanced?lesson=5`), false);
+  assert.equal(needsLinkConfirm('hash', `${day}/`), false);
 });
 
 test('needsLinkConfirm: referrer RỖNG vẫn hỏi', () => {
   // Gõ tay địa chỉ, mở từ bookmark, hoặc trang gửi đặt `no-referrer`. Không có
   // tín hiệu thì coi là không tin — hỏi là phía an toàn.
   for (const rong of ['', null, undefined]) {
-    assert.equal(needsLinkConfirm('hash', 'client', rong), true, `referrer=${String(rong)}`);
+    assert.equal(needsLinkConfirm('hash', rong), true, `referrer=${String(rong)}`);
   }
 });
 
@@ -296,7 +295,7 @@ test('needsLinkConfirm: so bằng ORIGIN chuẩn hoá, không bằng startsWith'
     'khong-phai-url',
     'javascript:void 0',
   ]) {
-    assert.equal(needsLinkConfirm('hash', 'client', gia), true, `referrer=${gia}`);
+    assert.equal(needsLinkConfirm('hash', gia), true, `referrer=${gia}`);
   }
 });
 
@@ -312,23 +311,7 @@ test('TryItButton phải để `rel="noopener"`, không `noreferrer`', () => {
   assert.equal(m[1], 'noopener');
 });
 
-test('ideRunnerMode: chỉ đúng chữ "server" mới quay về backend', async () => {
-  const luu = process.env.NEXT_PUBLIC_IDE_RUNNER;
-  try {
-    for (const [dat, mong] of [
-      ['server', 'server'],
-      ['client', 'client'],
-      [undefined, 'client'],
-      ['', 'client'],
-      ['sever', 'client'], // gõ sai: phải rơi về client, không về trang 503
-      ['SERVER', 'client'], // so khớp đúng chữ, không nới lỏng
-    ]) {
-      if (dat === undefined) delete process.env.NEXT_PUBLIC_IDE_RUNNER;
-      else process.env.NEXT_PUBLIC_IDE_RUNNER = dat;
-      assert.equal(ideRunnerMode(), mong, `NEXT_PUBLIC_IDE_RUNNER=${String(dat)}`);
-    }
-  } finally {
-    if (luu === undefined) delete process.env.NEXT_PUBLIC_IDE_RUNNER;
-    else process.env.NEXT_PUBLIC_IDE_RUNNER = luu;
-  }
-});
+// Ca `ideRunnerMode` cũ đã bỏ cùng hàm: từ 25/10/2026 chỉ còn MỘT đường chạy
+// (Pyodide trong trình duyệt), nên không còn cờ `NEXT_PUBLIC_IDE_RUNNER` lẫn
+// `?runner=server` để mà kiểm. Ca đó từng canh chuyện "gõ sai tên chế độ phải
+// rơi về client, không rơi về trang 503" — nay không có trang 503 nào nữa.

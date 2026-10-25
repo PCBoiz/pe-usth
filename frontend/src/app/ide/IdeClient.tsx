@@ -27,7 +27,6 @@ import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from '
 import CodeVisualizer, { type MonacoHandle } from '@/components/code-visualizer/CodeVisualizer';
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
-import { apiFetch } from '@/lib/api';
 import {
   clearIdeCode,
   countdownSeconds,
@@ -36,7 +35,6 @@ import {
   IDE_OUTPUT_CAP_CHARS,
   IDE_RUN_TIMEOUT_MS,
   type IdeCodeSource,
-  ideRunnerMode,
   loadIdeCode,
   needsLinkConfirm,
   pickIdeOpeningCode,
@@ -47,7 +45,6 @@ import {
 } from '@/lib/ide-runner';
 import { EDITOR_LOAD_TIMEOUT_MS, editorLoadPhase } from '@/lib/editor-load-gate';
 import { ideCodeHref, readIdeCodeFromHash } from '@/lib/ide-handoff';
-import { isRunnerDown, RUNNER_UNAVAILABLE_MESSAGE } from '@/lib/runner-error';
 
 import { DEFAULT_CODE, IDE_EXAMPLES } from './examples';
 import styles from './ide.module.css';
@@ -157,7 +154,7 @@ type RunState =
   | { status: 'done'; result: RunResult }
   | {
       status: 'error';
-      kind: 'private' | 'busy' | 'unavailable' | 'other';
+      kind: 'unavailable' | 'other';
       message: string;
       /** Nguyên văn thông điệp kỹ thuật, gập trong <details> cho người vận hành. */
       detail?: string;
@@ -205,20 +202,13 @@ function clip(text: string): { text: string; clipped: boolean } {
     : { text, clipped: false };
 }
 
+// Chỉ còn hai loại lỗi từ khi bỏ đường máy chủ: `unavailable` (không dựng được
+// Pyodide/Worker) và `other`. Hai loại cũ — `private` (401, backend đòi JWT) và
+// `busy` (429, hàng đợi máy chủ) — không còn nguồn nào sinh ra.
 const ERROR_TITLES: Record<Extract<RunState, { status: 'error' }>['kind'], string> = {
-  private: 'IDE chưa mở cho phiên này',
-  busy: 'Chưa chạy được lúc này',
-  unavailable: 'Bộ chạy Python đang được dựng',
+  unavailable: 'Chưa chạy được Python trong trình duyệt',
   other: 'Lỗi',
 };
-
-/** Backend bọc lỗi thành { error: { message } } (AllExceptionsFilter) hoặc { message } (ValidationPipe). */
-function errorMessage(body: unknown, fallback: string): string {
-  const b = body as { error?: { message?: unknown } | string; message?: unknown } | null;
-  const raw = (typeof b?.error === 'object' ? b.error?.message : undefined) ?? b?.message;
-  if (Array.isArray(raw)) return raw.join(', ');
-  return typeof raw === 'string' && raw ? raw : fallback;
-}
 
 /**
  * Mã /ide mở ra, và nó đến từ đâu. BA nguồn, thứ tự ưu tiên nằm trong
@@ -316,7 +306,7 @@ export default function IdeClient() {
    */
   const [linkTrusted, setLinkTrusted] = useState(false);
   const askLink = hydrated && !linkTrusted
-    && needsLinkConfirm(opening.source, ideRunnerMode());
+    && needsLinkConfirm(opening.source);
   // `run` là useCallback rỗng deps (xem codeRef ở trên, cùng lý do): đọc state
   // trong đó là đọc bản của lần render đầu, tức cú bấm NGAY sau khi xác nhận sẽ
   // vẫn thấy "chưa xác nhận". Gương ra ref để nó luôn đọc giá trị mới nhất.
@@ -433,105 +423,26 @@ export default function IdeClient() {
     if (askLinkRef.current) return; // mã từ link chưa được xác nhận — xem `askLink`
     const controller = new AbortController();
     abortRef.current = controller;
-    // Đường CLIENT: chạy Pyodide ngay trong trình duyệt, không đụng backend.
-    // Mặc định vẫn là máy chủ; bật bằng NEXT_PUBLIC_IDE_RUNNER=client hoặc
-    // `?runner=client` để thử trên trang thật mà không deploy lại.
-    //
-    // Chốt chế độ MỘT LẦN ở đây rồi mang theo cả lần chạy: đọc lại
-    // `ideRunnerMode()` ở chỗ khác thì nút Dừng và đường thật sự đang chạy có
-    // thể lệch nhau nếu địa chỉ đổi giữa chừng.
-    const duongClient = ideRunnerMode() === 'client';
+    // Pyodide ngay trong trình duyệt — đường DUY NHẤT từ 25/10/2026. Nhánh gửi
+    // lên `POST /api/python/run` đã đi cùng `src/python-runner/`.
     setSecondsLeft(null); // xem chú thích của bộ đếm ngược: xoá số sót của lần trước
-    setState({ status: 'running', canStop: duongClient, startedAt: performance.now() });
+    // `canStop: true` không còn điều kiện: chỉ đường client mới cắt được lần
+    // chạy (bằng `terminate()`), và nay chỉ còn đường đó.
+    setState({ status: 'running', canStop: true, startedAt: performance.now() });
     try {
-      if (duongClient) {
-        try {
-          const result = await runInBrowser(codeRef.current);
-          if (!controller.signal.aborted) setState({ status: 'done', result });
-        } catch (e) {
-          if (!controller.signal.aborted) {
-            setState({
-              status: 'error',
-              kind: 'unavailable',
-              message:
-                'Không khởi động được Python trong trình duyệt. Thử tải lại trang; '
-                + 'nếu vẫn vậy, trình duyệt có thể đang chặn Web Worker.',
-              detail: e instanceof Error ? e.message : String(e),
-            });
-          }
-        }
-        return;
-      }
-      const res = await apiFetch('/api/python/run', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: codeRef.current }),
-        signal: controller.signal,
-      });
-      const body: unknown = await res.json().catch(() => null);
-      if (res.status === 401) {
-        // Không có đăng nhập để mà gợi ý: 401 nghĩa là backend vẫn đòi JWT cho route
-        // này và phiên khách hiện tại không có token. Tên biến môi trường là việc của
-        // người vận hành chứ không phải của người học → xuống <details>.
-        setState({
-          status: 'error',
-          kind: 'private',
-          message:
-            'Lúc này IDE chưa chạy được mã. Các bài học trong khóa vẫn chạy Python '
-            + 'bình thường ngay trong trình duyệt.',
-          // KHÔNG gợi ý PY_RUNNER_PUBLIC=true ở đây. Câu cũ mời người vận hành
-          // bật một cờ mở toang route chạy mã cho cả internet, trong khi 401
-          // gần như luôn có nghĩa khác: phiên khách chưa kịp cấp. apiFetch đã
-          // tự gọi POST /auth/guest khi gặp 401 rồi gửi lại — nên IDE chạy
-          // bình thường với PY_RUNNER_PUBLIC=false.
-          detail: `HTTP 401 — ${errorMessage(body, 'phiên đăng nhập chưa sẵn sàng; tải lại trang để nhận phiên khách mới.')}`,
-        });
-      } else if (res.status === 429) {
-        setState({
-          status: 'error',
-          kind: 'busy',
-          // 429 có hai nguồn với hai lời khuyên KHÁC NHAU, backend đã phân biệt bằng
-          // thông điệp: "Bạn chạy quá nhiều lần, đợi khoảng 1 phút…" (throttle) hoặc
-          // "Máy chủ đang quá tải, thử lại sau" (hàng đợi đầy / chờ quá hạn). Hiện đúng
-          // câu đó, đừng thay bằng câu chung: cả hai đều là lời khuyên cho người dùng.
-          message: errorMessage(body, 'Máy chủ đang quá tải, thử lại sau'),
-        });
-      } else if (res.status === 503) {
-        // 503 ở route này LUÔN là hạ tầng, không bao giờ là lỗi của mã: chế độ remote
-        // không gọi được runner (tắt, lệch khoá, quá hạn), chế độ local không có docker
-        // ("Máy chủ chưa cài Docker"). Trước đây trang hiện thẳng câu của backend vì nó
-        // nói đúng nguyên nhân — nhưng người đọc là sinh viên, nên câu đó xuống
-        // <details> còn trên mặt là một câu bình thường.
-        setState({
-          status: 'error',
-          kind: 'unavailable',
-          message: RUNNER_UNAVAILABLE_MESSAGE,
-          detail: `HTTP 503 — ${errorMessage(body, 'bộ chạy Python không trả lời.')}`,
-        });
-      } else if (!res.ok) {
-        setState({
-          status: 'error',
-          kind: 'other',
-          message: errorMessage(body, `Không chạy được (HTTP ${res.status}).`),
-        });
-      } else if (isRunnerDown(body as RunResult)) {
-        // 200 nhưng docker chết trước khi Python kịp chạy — xem isRunnerDown().
-        setState({
-          status: 'error',
-          kind: 'unavailable',
-          message: RUNNER_UNAVAILABLE_MESSAGE,
-          detail: (body as RunResult).stderr.trim(),
-        });
-      } else {
-        setState({ status: 'done', result: body as RunResult });
-      }
+      const result = await runInBrowser(codeRef.current);
+      if (!controller.signal.aborted) setState({ status: 'done', result });
     } catch (e) {
-      if (controller.signal.aborted) return; // người dùng rời trang
-      setState({
-        status: 'error',
-        kind: 'other',
-        message: e instanceof Error ? `Không kết nối được máy chủ: ${e.message}` : 'Không kết nối được máy chủ.',
-      });
+      if (!controller.signal.aborted) {
+        setState({
+          status: 'error',
+          kind: 'unavailable',
+          message:
+            'Không khởi động được Python trong trình duyệt. Thử tải lại trang; '
+            + 'nếu vẫn vậy, trình duyệt có thể đang chặn Web Worker.',
+          detail: e instanceof Error ? e.message : String(e),
+        });
+      }
     } finally {
       abortRef.current = null;
     }
@@ -771,7 +682,7 @@ function Output({ state }: { state: RunState }) {
 
   if (state.status === 'error') {
     // Hạ tầng chưa sẵn sàng thì KHÔNG tô đỏ: người học không làm gì sai cả.
-    const infra = state.kind === 'unavailable' || state.kind === 'private';
+    const infra = state.kind === 'unavailable';
     return (
       <div className={`${styles.notice} ${infra ? styles.noticeWarn : styles.noticeError}`} role="alert">
         <strong>

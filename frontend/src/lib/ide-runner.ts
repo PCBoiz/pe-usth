@@ -1,35 +1,30 @@
 /**
- * Chạy mã của /ide bằng Pyodide trong trình duyệt, thay đường
- * POST /api/python/run → container Docker ở backend.
+ * Chạy mã của /ide bằng Pyodide trong trình duyệt. ĐÂY LÀ ĐƯỜNG DUY NHẤT.
  *
- * VÌ SAO CÓ FILE NÀY: sản phẩm đang có HAI đường chạy mã ngược nhau — trang bài
- * học chạy Pyodide ở client, /ide gửi lên máy chủ — và hai đường còn chạy hai
- * Python khác nhau (ảnh sandbox là python:3.12-slim, bài học là 3.14.2). Cố vấn
- * dự án cũng đã chốt: đừng chạy mã học viên ở backend. Máy chạy hiện tại còn
- * chỉ phục vụ ĐÚNG HAI lượt song song, trong khi ở client là bằng số máy học
- * viên.
+ * VÌ SAO CÓ FILE NÀY: sản phẩm từng có HAI đường chạy mã ngược nhau — trang bài
+ * học chạy Pyodide ở client, `/ide` POST lên `/api/python/run` để backend chạy
+ * trong container Docker — và hai đường còn chạy hai Python khác nhau (ảnh
+ * sandbox `python:3.12-slim`, bài học 3.14.2). Cố vấn dự án đã chốt: đừng chạy
+ * mã học viên ở backend. Máy chạy cũ còn chỉ phục vụ ĐÚNG HAI lượt song song,
+ * trong khi ở client là bằng số máy học viên.
  *
- * MẶC ĐỊNH NAY LÀ CLIENT. Quay về máy chủ bằng `NEXT_PUBLIC_IDE_RUNNER=server`
- * hoặc `?runner=server` — không cần revert commit nào.
+ * Ngày 25/10/2026 đường backend đã bị XOÁ khỏi repo (`src/python-runner/`,
+ * `runner/`, `docker/py-sandbox/`), sau khi xác nhận trên production rằng `/ide`
+ * chạy Pyodide thật: `print(sys.version)` ra `3.14.2 … emscripten` trong 0,01 s
+ * và DevTools không thấy request nào tới `/api/python/*`. Nên KHÔNG còn cờ
+ * `NEXT_PUBLIC_IDE_RUNNER` hay `?runner=server`; nhánh đó đi cùng.
  *
- * Lật mặc định là một quyết định có đánh đổi, ghi lại ở đây vì đây là chỗ người
- * ta sẽ đọc khi muốn hiểu vì sao:
- *  · ĐƯỢC: `/ide` trên production đang trả HTTP 503 ("Bộ chạy Python đang tắt"),
- *    tức cả nút Chạy lẫn nút Xem-từng-bước đều CHẾT. Đường client làm nó sống
- *    lại ngay, không cần dựng lại hạ tầng nào.
- *  · MẤT: `/ide` ĐÃ CÓ đường chia sẻ link (`ide-handoff.ts` nhét mã vào
- *    `/ide#code=…`, `TryItButton` dựng nó thành <a> thật trên trang bài học).
- *    Mã chạy trong Docker thì vô hại; chạy Pyodide CÙNG ORIGIN thì không. Đo
- *    được trên bản thật: trong Worker, `localStorage`/`document` KHÔNG với tới
- *    (cách ly miễn phí), nhưng `fetch` mở và `POST /auth/refresh` kèm
- *    `credentials:'include'` trả về access token của chính người đang xem. Tức
- *    thiệt hại là CHIẾM PHIÊN, và chặn `ctypes` giải quyết số không vì
- *    `js.fetch` là API hợp pháp.
+ * CÁI GIÁ CỦA ĐƯỜNG CLIENT, vẫn còn và phải nhớ: `/ide` có đường chia sẻ link
+ * (`ide-handoff.ts` nhét mã vào `/ide#code=…`, `TryItButton` dựng thành <a>
+ * thật trên trang bài học). Mã chạy trong Docker thì vô hại; chạy Pyodide CÙNG
+ * ORIGIN thì không. Đo được: trong Worker, `localStorage`/`document` KHÔNG với
+ * tới, nhưng `fetch` thì mở. Nay có hai lớp chặn — CSP riêng cho ba file worker
+ * (`connect-src 'self'`, không có API_ORIGIN) và `delete self.Worker` trong
+ * chính worker; xem bẫy tương ứng trong AGENTS.md.
  *
- * `needsLinkConfirm` bên dưới cắt chuỗi "gửi link → bấm Chạy → xong" bằng một
- * lần hỏi. Nó là LỚP VÁ, không phải lớp phòng. Lớp phòng thật là tách ORIGIN
- * (chạy trong iframe sandbox ở domain khác) — việc đó còn nợ, và chừng nào chưa
- * làm thì mặc định client chỉ hợp với giai đoạn thử nội bộ.
+ * `needsLinkConfirm` bên dưới còn cắt chuỗi "gửi link → bấm Chạy → xong" bằng
+ * một lần hỏi, cho mã đến từ link LẠ. Nó là LỚP VÁ, không phải lớp phòng; lớp
+ * phòng mạnh nhất vẫn là tách ORIGIN và việc đó còn nợ.
  *
  * File này KHÔNG import gì theo alias '@/…' và không có JSX, nên bộ test chạy
  * bằng `node --test` thuần import trực tiếp được — cùng tiền lệ với
@@ -120,18 +115,6 @@ export function countdownSeconds(elapsedMs: number, timeoutMs = IDE_RUN_TIMEOUT_
   return Math.max(0, Math.ceil(conLai / 1000));
 }
 
-/** `?runner=client|server` ghi đè cờ build — để thử trên trang thật mà không deploy lại. */
-export function ideRunnerMode(): 'client' | 'server' {
-  if (typeof window !== 'undefined') {
-    const q = new URLSearchParams(window.location.search).get('runner');
-    if (q === 'client' || q === 'server') return q;
-  }
-  // Mặc định CLIENT. Chỉ `=server` mới quay về đường backend — mọi giá trị khác
-  // (chưa đặt, gõ sai, chuỗi rỗng) đều rơi về client, vì đường backend hiện
-  // đang trả 503 và rơi về nó là rơi vào một trang hỏng.
-  return process.env.NEXT_PUBLIC_IDE_RUNNER === 'server' ? 'server' : 'client';
-}
-
 let worker: Worker | null = null;
 
 function spawn(): Worker {
@@ -165,7 +148,7 @@ export function dropIdeWorker(): void {
 
 /** Nạp sẵn runtime lúc người học còn đang gõ, để lần bấm Chạy đầu không phải chờ 13 MB. */
 export function warmIdeRunner(): void {
-  if (ideRunnerMode() !== 'client' || worker) return;
+  if (worker) return;
   try {
     spawn().postMessage({ type: 'warmup' });
   } catch {
@@ -475,10 +458,9 @@ export type IdeCodeSource = 'hash' | 'autosave' | 'default';
  */
 export function needsLinkConfirm(
   source: IdeCodeSource,
-  mode: 'client' | 'server',
   referrer?: string | null,
 ): boolean {
-  if (source !== 'hash' || mode !== 'client') return false;
+  if (source !== 'hash') return false;
   return !tuCungOrigin(referrer);
 }
 

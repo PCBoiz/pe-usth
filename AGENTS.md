@@ -48,7 +48,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **200 ca** / 18 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **189 ca** / 17 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -63,11 +63,11 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 200 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 189 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
-ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-runner-error 10 ·
-ide-stop-autosave 28 · ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 ·
-studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 200. Mốc trước là 166; thêm worker-csp 7,
+ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
+ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 · studio-lesson 40 ·
+tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 189. Mốc trước là 166; thêm worker-csp 7,
 ide-partial-output 10, label-version 2, session-marker 5, ide-brief-code 11 → 12, và
 ide-stop-autosave 24 → 28 (cổng xác nhận mã từ link).
 
@@ -225,6 +225,15 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `AbortSignal.timeout` ném TypeError → 503 trong khi dịch vụ phía sau vẫn khoẻ). Biến gây ra
   nó đã xoá, bài học thì chuyển lên đầu schema và `env.validation.spec.ts` chuyển sang canh
   các biến số CÒN LẠI.
+  **Nửa FRONTEND cũng đã dọn:** không còn `ideRunnerMode()`, không còn cờ
+  `NEXT_PUBLIC_IDE_RUNNER` lẫn `?runner=server`, `runner-error.ts` (`isRunnerDown`) và bộ test
+  10 ca của nó đi cùng. `needsLinkConfirm` nay nhận `(source, referrer?)` — tham số `mode` đã
+  bỏ. Union `kind` của lỗi thu hẹp: `IdeClient` còn `unavailable | other` (hai loại cũ
+  `private` cho 401 và `busy` cho 429 không còn nguồn nào sinh ra), `CodeVisualizer` còn
+  `infra | other`.
+  Một chi tiết tưởng là lỗi mà không phải: nhánh client KHÔNG gọi `setIndex(0)` trong khi
+  nhánh máy chủ có — nhưng dòng đầu của chính hàm đó đã `setIndex(0)` rồi, nên lời gọi ở nhánh
+  máy chủ là DƯ, không phải thứ bên client bị thiếu. Kiểm trước khi "sửa".
   **Dọn tới đây mới hết:** `@ThrottleMessage` nay KHÔNG controller nào dùng (route cũ là chỗ
   duy nhất) — nhánh đọc decorator trong `custom-throttler.guard.ts` đang ngủ, giữ lại vì nó là
   cách duy nhất để một route nói câu 429 riêng. `docs/azure-runner-plan.md` (909 dòng) được
