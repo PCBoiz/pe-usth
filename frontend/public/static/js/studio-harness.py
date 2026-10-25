@@ -106,6 +106,7 @@ lần của chính trình duyệt học viên.
 """
 
 import ast
+import base64
 import builtins
 import copy
 import errno
@@ -125,6 +126,7 @@ import threading
 import time
 import traceback
 import types
+import warnings
 from contextlib import redirect_stderr, redirect_stdout
 
 WORK_ROOT = '/tmp/studio'
@@ -4364,6 +4366,14 @@ def _hook_figure(module):
                               'empty': not any(ax.has_data() for ax in self.axes)})
         return original_save(self, fname, *args, **kwargs)
 
+    # Phơi bản GỐC ra ngoài closure cho `_anh_figure` dùng.
+    #
+    # PHÒNG XA, không phải điều kiện sống — đã đo: lúc `_anh_figure` chạy thì
+    # `_ctx()` đã là None (ngăn xếp pop xong khi lần chạy kết thúc), nên bản móc
+    # cũng không ghi gì vào `ctx.saved`. Giữ đường này vì nếu sau có ai dời việc
+    # xuất ảnh vào TRONG một lần chạy thì bản móc sẽ ghi thêm một dòng "đã lưu
+    # hình" cho bài mà người học chưa lưu gì — và ca chấm đọc đúng danh sách đó.
+    savefig._studio_original = original_save
     fig_cls.savefig = savefig
 
 
@@ -4391,6 +4401,65 @@ def _chart(fig):
         })
     sup = getattr(fig, '_suptitle', None)
     return {'suptitle': sup.get_text() if sup is not None else '', 'axes': axes}
+
+
+# Trần cho ảnh gửi về trình duyệt. Một hình 6x3,5 inch ở dpi 96 nặng ~40-80 KB,
+# nên sáu hình vẫn dưới 1,5 MB — đủ rộng cho mọi bài, mà vẫn chặn được một vòng
+# lặp vẽ 200 hình làm phình thông điệp postMessage tới mức treo tab.
+_ANH_TOI_DA = 6
+_ANH_BYTE_MOI_HINH = 600_000
+_ANH_BYTE_TONG = 1_500_000
+
+
+def _anh_figure(figures):
+    """PNG (base64) của những Figure mà chương trình người học dựng ra.
+
+    VÌ SAO: trước bản này, chạy một bài biểu đồ chỉ nhận lại MỘT DÒNG CHỮ
+    "[matplotlib] 3 Figure được tạo". Hình trên màn đọc là PNG người soạn giáo
+    trình xuất sẵn, không phải kết quả của người học — nên sửa một dòng code rồi
+    chạy lại thì không thấy gì đổi. Với một khoá Data Analyst có 26+ bài biểu đồ
+    thì đó là mất gần hết giá trị của việc tự chạy.
+
+    Gọi sau ca chấm cũng được: `_run_program` mở đầu bằng `_reset_pyplot()`
+    (`plt.close('all')`), nhưng `main.figures` giữ tham chiếu TRỰC TIẾP tới
+    Figure và `savefig` vẫn chạy trên một Figure đã close — đã đo. Vẫn gọi ngay
+    sau lần chạy chính cho gần chỗ sinh ra nó.
+    """
+    if not figures:
+        return []
+    anh = []
+    tong = 0
+    # Nuốt cảnh báo và mọi thứ in ra: harness cố ý gộp stderr vào stdout để
+    # console học viên hiện cả hai, nên một MatplotlibDeprecationWarning do
+    # CHÍNH bước xuất ảnh sinh ra sẽ chen vào KẾT QUẢ BỊ CHẤM của họ.
+    with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            for fig in figures[:_ANH_TOI_DA]:
+                try:
+                    # Hình trống thì bỏ: dựng ra một ô xám không giúp ai, mà
+                    # `plt.subplots()` ở dòng đầu bài nào cũng có.
+                    if not fig.axes or not any(ax.has_data() for ax in fig.axes):
+                        continue
+                    buf = io.BytesIO()
+                    goc = getattr(type(fig).savefig, '_studio_original', None)
+                    if goc is None:
+                        goc = type(fig).savefig
+                    # dpi 96 cho figsize nguyên: tránh tự sinh thêm cảnh báo
+                    # "kích thước điểm ảnh là số thực".
+                    goc(fig, buf, format='png', dpi=96, bbox_inches='tight')
+                    data = buf.getvalue()
+                    if len(data) > _ANH_BYTE_MOI_HINH:
+                        continue
+                    if tong + len(data) > _ANH_BYTE_TONG:
+                        break
+                    tong += len(data)
+                    anh.append(base64.b64encode(data).decode('ascii'))
+                except BaseException:
+                    # Không xuất được hình thì thôi. Bước này KHÔNG bao giờ được
+                    # làm một lời giải đúng trông như sai.
+                    continue
+    return anh
 
 
 def _reset_pyplot():
@@ -5193,6 +5262,7 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='nul
     elif main.error == 'SimulationError':
         error = 'Mô phỏng dừng: %s' % main.message
     notes = _notes(main)
+    figures = _anh_figure(main.figures)
 
     if error is None:
         studio = Studio(source, files, main.dir)
@@ -5259,5 +5329,6 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='nul
         'output': output[:12000],
         'notes': notes,
         'perf': perf_kq,
+        'figures': figures,
         'version': sys.version.split()[0],
     })

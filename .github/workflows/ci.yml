@@ -338,3 +338,10 @@ jobs:
       # `==` và `in` không sinh sự kiện sys.monitoring.CALL, nên gỡ nguồn đếm thứ
       # hai (bọc kiểu Probe) ra là nó lật thành "efficient" và CI đỏ.
       - run: node scripts/check-perf.mjs
+
+      # Kiểm việc XUẤT HÌNH của studio-harness.py, tách khỏi hai bộ trên vì cùng
+      # một lý lẽ: chúng chỉ so ĐẦU RA BẰNG CHỮ, mà việc xuất hình không ảnh
+      # hưởng tới chữ — nên mọi cách hỏng của nó (trả về rỗng, dựng ảnh cho
+      # Figure trống, bỏ trần số hình) đi qua cả 427 ca pe-v4 lẫn 406 đoạn pe-da
+      # mà không đỏ dòng nào, và học viên lại mất hình như trước.
+      - run: node scripts/check-figures.mjs

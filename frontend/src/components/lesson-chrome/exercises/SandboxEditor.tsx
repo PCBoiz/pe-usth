@@ -28,6 +28,15 @@ export interface SandboxEditorProps {
   onShowSolution?: () => void;
   consoleLines: ConsoleLine[] | null;
   consoleMeta?: string;
+  /**
+   * PNG (base64) của những Figure chương trình vừa dựng ra, do
+   * `studio-harness.py` xuất.
+   *
+   * Vì sao cần: trước bản này một bài biểu đồ chạy xong chỉ nhận lại dòng chữ
+   * "[matplotlib] 3 Figure được tạo" — hình trên màn đọc là PNG người soạn giáo
+   * trình xuất sẵn, nên sửa một dòng code rồi chạy lại thì KHÔNG thấy gì đổi.
+   */
+  figures?: string[];
   tests: SandboxTestRow[];
   disabled?: boolean;
   /** Chữ mờ khi ô còn trống — bài không có code khởi tạo thì nói rõ ô này dùng làm gì. */
@@ -62,6 +71,7 @@ export default function SandboxEditor({
   onShowSolution,
   consoleLines,
   consoleMeta,
+  figures,
   tests,
   disabled,
   placeholder,
@@ -182,6 +192,47 @@ export default function SandboxEditor({
         // hứa chạy `solution.py` ở ngay dưới — hai tên cho một file.
         placeholder={`Bấm "Chạy thử" để thực thi ${filename} ngay trong trình duyệt.`}
       />
+
+      {!!figures?.length && (
+        // Hình do CHÍNH chương trình vừa chạy dựng ra, không phải ảnh soạn sẵn
+        // của bài. Đặt ngay dưới console vì nó là một phần của "kết quả chạy".
+        //
+        // `data:` URI thì CSP cho qua: `img-src 'self' data: blob: https:`
+        // trong frontend/next.config.ts.
+        <div style={{ marginTop: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t3)', marginBottom: 8, letterSpacing: '.04em' }}>
+            {figures.length > 1 ? `${figures.length} HÌNH VỪA VẼ` : 'HÌNH VỪA VẼ'}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+            {figures.map((png, i) => (
+              // `next/image` không làm gì được ở đây: nguồn là `data:` URI vừa
+              // sinh trong trình duyệt, không phải file để tối ưu hay CDN để
+              // cache. Dùng <Image> là thêm một lớp bọc rồi vẫn phải
+              // `unoptimized`. Chỉ thị phải nằm NGAY TRÊN thẻ — để nó trên khối
+              // chú thích này thì nó trỏ vào một dòng comment, thành "unused
+              // directive" mà cảnh báo cũ vẫn còn.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={`data:image/png;base64,${png}`}
+                // Người dùng trình đọc màn hình không thấy được biểu đồ; nói ra
+                // thứ duy nhất chắc chắn đúng là nó là hình thứ mấy của lần
+                // chạy nào. Nội dung biểu đồ thì console và `notes` đã tả.
+                alt={figures.length > 1 ? `Hình ${i + 1} do chương trình vừa vẽ` : 'Hình do chương trình vừa vẽ'}
+                style={{
+                  maxWidth: '100%',
+                  // Nền trắng CỐ ĐỊNH: matplotlib xuất PNG nền trong suốt ở một
+                  // số style, và trên giao diện tối thì trục với chữ đen biến
+                  // mất hẳn.
+                  background: '#fff',
+                  borderRadius: 8,
+                  border: '1px solid var(--edu-line, rgba(0,0,0,.12))',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
 
       {tests.length > 0 && (
         <div style={{ marginTop: 16, background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14 }}>

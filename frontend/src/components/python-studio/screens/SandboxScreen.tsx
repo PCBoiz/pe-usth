@@ -216,6 +216,7 @@ export default function SandboxScreen({
           }
           consoleLines={consoleLines(result, draft.code)}
           consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
+          figures={result?.figures}
           tests={testRows(lesson, result)}
           noTestsHint={
             mode === 'procedure'

@@ -15,6 +15,11 @@ export type RunResult = {
   error?: string;
   /** Tóm tắt của bộ chấm về thread/process mô phỏng — hiện mờ dưới console. */
   notes?: string[];
+  /**
+   * PNG (base64) của những Figure chương trình vừa dựng ra, do
+   * `studio-harness.py` xuất. Trần 6 hình / 1,5 MB đặt ở phía harness.
+   */
+  figures?: string[];
   duration: number;
   version: string;
 };
