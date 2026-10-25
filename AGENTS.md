@@ -67,7 +67,7 @@ thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg`
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-runner-error 10 ·
 ide-stop-autosave 28 · ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 ·
-studio-lesson 40 · trace-web-sync 5 · trap-leak 3 · worker-csp 7 = 200. Mốc trước là 166; thêm worker-csp 7,
+studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 200. Mốc trước là 166; thêm worker-csp 7,
 ide-partial-output 10, label-version 2, session-marker 5, ide-brief-code 11 → 12, và
 ide-stop-autosave 24 → 28 (cổng xác nhận mã từ link).
 
