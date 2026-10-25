@@ -44,7 +44,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 27 bộ, 265 ca, tất cả đạt |
+| Backend test | 27 bộ, 266 ca, tất cả đạt |
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
@@ -201,6 +201,27 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
   trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
   độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
+- **Mở một bài học từng đi BA vòng DB tuần tự — và `.env.example` hứa một bộ cache KHÔNG tồn
+  tại.** `getLessonContent` gọi lần lượt `enrollment` → `lesson` → `lessonProgress`. Đo trên
+  chính DB đang dùng (trung vị 9 lượt): **150 ms**. Nay `enrollment` chạy SONG SONG với
+  `lesson`, và tiến độ gộp vào truy vấn lesson bằng quan hệ `Lesson.lessonProgress` → **99 ms,
+  nhanh hơn 34%**. Mỗi lượt mở bài đi qua đây đúng một lần, nên đây là 51 ms mà MỌI học viên
+  trả ở MỌI bài.
+  **`$transaction([...])` CHẬM HƠN, đừng dùng nó để gộp truy vấn đọc:** đo được 251 ms, tức
+  +101 ms so với bản cũ, vì transaction tương tác thêm vòng BEGIN/COMMIT.
+  **Giá phải trả, có chủ đích:** người CHƯA ghi danh cũng làm tốn một truy vấn lesson rồi mới
+  bị 403. Không lộ gì vì hàm throw trước khi dùng tới nó — và ca test tương ứng đã viết lại cho
+  đúng tính chất: nó kiểm "KHÔNG trả nội dung ra", không kiểm "đã gọi mấy truy vấn" (một chi
+  tiết hiệu năng mà mỗi lần tối ưu lại phải sửa test).
+  **Phải tách `lessonProgress` khỏi `lesson` trước khi trả về:** hàm return `{ ok, lesson,
+  completed }` với `lesson` nguyên đối tượng, để nguyên là bê một mảng `[{lessonId}]` vào
+  response và đổi hình dạng API mà không ai yêu cầu.
+  **Và fixture test phải mang hình dạng MỚI:** `lessonProgress` nằm TRONG hàng lesson. Để nó
+  ra ngoài như truy vấn cũ thì `completed` luôn false, và ca "đã hoàn thành → được xem lời
+  giải" vẫn ĐẠT vì lý do sai — đúng họ bẫy fixture mà file này đã ghi ở trên.
+  `LESSON_CACHE_TTL_MS` / `LESSON_CACHE_DISABLED` đã bỏ khỏi `.env.example`: không mã nào đọc
+  chúng và `git log -S` trên `src/` không có commit nào — bộ cache đó chưa bao giờ được làm,
+  nên dòng hứa "giảm ~550 ms mỗi lần mở bài" là tài liệu nói sai suốt từ đầu.
 - **Bộ chạy Python ở MÁY CHỦ đã bị xoá (25/10) — và chỗ duy nhất không được xoá cùng.**
   `src/python-runner/`, `runner/`, `docker/py-sandbox/` đi hết; `/ide` nay chạy Pyodide trong
   trình duyệt. Xác nhận trên production TRƯỚC khi xoá: `/ide` chạy `print(sys.version)` ra

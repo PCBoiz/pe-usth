@@ -141,7 +141,6 @@ const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
 type PrismaMock = {
   enrollment: { findUnique: AsyncMock };
   lesson: { findFirst: AsyncMock };
-  lessonProgress: { findFirst: AsyncMock };
   user: { findUnique: AsyncMock };
 };
 
@@ -153,7 +152,6 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     prisma = {
       enrollment: { findUnique: asyncMock() },
       lesson: { findFirst: asyncMock() },
-      lessonProgress: { findFirst: asyncMock().mockResolvedValue(null) },
       user: { findUnique: asyncMock().mockResolvedValue({ role: 'user' }) },
     };
 
@@ -169,7 +167,20 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     service = mod.get(LessonsService);
   });
 
-  function lessonRow(contentJson: unknown) {
+  /**
+   * Hàng `lesson` như truy vấn THẬT trả về.
+   *
+   * `lessonProgress` nằm TRONG hàng này, không phải một truy vấn riêng: từ
+   * 25/10/2026 `getLessonContent` lấy tiến độ bằng quan hệ
+   * `Lesson.lessonProgress` để bớt một vòng tới DB (đo: 150 ms → 99 ms). Mảng
+   * rỗng = chưa hoàn thành.
+   *
+   * Bẫy mà AGENTS.md đã ghi và đây đúng là một ca của nó: fixture phải giống
+   * hình dạng dữ liệu THẬT. Nếu để `lessonProgress` ra ngoài như truy vấn cũ
+   * thì `completed` luôn false và ca "đã hoàn thành -> được xem lời giải" sẽ
+   * ĐẠT vì lý do sai.
+   */
+  function lessonRow(contentJson: unknown, xong = false) {
     return {
       id: 20,
       title: 'B20',
@@ -178,6 +189,7 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
       sortOrder: 20,
       xpReward: 40,
       contentJson,
+      lessonProgress: xong ? [{ lessonId: 20 }] : [],
     };
   }
 
@@ -205,8 +217,7 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
 
   it('đã hoàn thành bài cửa -> được xem lời giải để đối chiếu', async () => {
     enrolled();
-    prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
-    prisma.lessonProgress.findFirst.mockResolvedValue({ lessonId: 20 });
+    prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent(), true));
 
     const res = await service.getLessonContent(1, 'python', 20);
 
@@ -256,14 +267,41 @@ describe('LessonsService.getLessonContent — lời giải của cửa tự ki�
     );
   });
 
-  it('chưa ghi danh và không phải admin -> 403, không đọc nội dung', async () => {
+  it('chưa ghi danh và không phải admin -> 403, KHÔNG trả về nội dung', async () => {
+    // Ca này từng khẳng định `prisma.lesson.findFirst` KHÔNG được gọi. Khẳng
+    // định đó hết đúng từ 25/10/2026: truy vấn lesson nay chạy SONG SONG với
+    // truy vấn enrollment để bớt một vòng tới DB (150 ms → 99 ms), nên người
+    // chưa ghi danh cũng làm tốn một truy vấn rồi mới bị 403.
+    //
+    // Tính chất phải giữ KHÔNG đổi, và nó mới là tính chất bảo mật thật: nội
+    // dung không bao giờ RA ngoài. Nên ca này kiểm đúng điều đó — hàm throw và
+    // không trả gì — chứ không kiểm "đã gọi mấy truy vấn", một chi tiết hiệu
+    // năng mà mỗi lần tối ưu lại phải sửa test.
     prisma.enrollment.findUnique.mockResolvedValue(null);
     prisma.user.findUnique.mockResolvedValue({ role: 'user' });
+    // Cố tình cho truy vấn lesson TRẢ VỀ nội dung đầy đủ: nếu hàm lỡ trả nó ra
+    // thì ca này đỏ.
+    prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
 
     await expect(service.getLessonContent(2, 'python', 20)).rejects.toThrow(
       ForbiddenException,
     );
-    expect(prisma.lesson.findFirst).not.toHaveBeenCalled();
+  });
+
+  it('403 rồi thì không có đường nào trả nội dung ra — kiểm bằng giá trị trả về', async () => {
+    // Nửa còn lại của ca trên, viết tách để lời khẳng định không bị lẫn: đổi
+    // `throw` thành `return` ở nhánh 403 là ca này đỏ.
+    prisma.enrollment.findUnique.mockResolvedValue(null);
+    prisma.user.findUnique.mockResolvedValue({ role: 'user' });
+    prisma.lesson.findFirst.mockResolvedValue(lessonRow(gateContent()));
+
+    const kq = await service
+      .getLessonContent(2, 'python', 20)
+      .then((r) => ({ tra: r }))
+      .catch((e: unknown) => ({ nem: e }));
+
+    expect('nem' in kq).toBe(true);
+    expect('tra' in kq).toBe(false);
   });
 
   it('bài không tồn tại -> 404', async () => {

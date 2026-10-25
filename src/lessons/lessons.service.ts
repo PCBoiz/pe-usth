@@ -187,10 +187,50 @@ export class LessonsService {
    * khoá, không phải dữ liệu công khai.
    */
   async getLessonContent(userId: number, courseId: string, lessonNo: number) {
-    const enrollment = await this.prisma.enrollment.findUnique({
-      where: { userId_courseId: { userId, courseId } },
-      select: { userId: true },
-    });
+    // HAI truy vấn SONG SONG, không phải ba tuần tự.
+    //
+    // Đo trên chính DB đang dùng (trung vị 9 lượt, bài 82): ba vòng tuần tự
+    // 150 ms → cách này 99 ms, nhanh hơn 34%. Mỗi lần mở bài đi qua đây đúng
+    // một lần, nên đây là 51 ms mà MỌI học viên trả ở mọi bài.
+    //
+    // `enrollment` và `lesson` độc lập nhau nên chạy song song được; còn
+    // `lessonProgress` thì cần `lesson.id`, nên gộp luôn vào truy vấn lesson
+    // bằng quan hệ `Lesson.lessonProgress` thay vì đi thêm một vòng.
+    //
+    // ĐÃ THỬ `$transaction([...])` và nó CHẬM HƠN: 251 ms, tức +101 ms so với
+    // bản cũ, vì transaction tương tác thêm vòng BEGIN/COMMIT. Đừng dùng nó để
+    // "gộp" truy vấn ĐỌC.
+    //
+    // Giá phải trả, nói ra để không ai tưởng là sơ suất: người CHƯA ghi danh
+    // vẫn làm tốn một truy vấn lesson rồi mới bị 403. Đổi lấy 51 ms cho mọi
+    // lượt mở bài hợp lệ — và không lộ gì, vì hàm throw trước khi dùng tới nó.
+    const [enrollment, found] = await Promise.all([
+      this.prisma.enrollment.findUnique({
+        where: { userId_courseId: { userId, courseId } },
+        select: { userId: true },
+      }),
+      this.prisma.lesson.findFirst({
+        where: { courseId, sortOrder: lessonNo },
+        select: {
+          id: true,
+          title: true,
+          subtitle: true,
+          module: true,
+          sortOrder: true,
+          xpReward: true,
+          contentJson: true,
+          // `take: 1` vì chỉ cần BIẾT có hay không. Khoá chính của
+          // lesson_progress là (user_id, lesson_id) nên nhiều nhất cũng một
+          // hàng, nhưng đừng dựa vào điều đó: `status` là cột nullable và bộ
+          // lọc này mới là thứ quyết định.
+          lessonProgress: {
+            where: { userId, courseId, status: 'completed' },
+            select: { lessonId: true },
+            take: 1,
+          },
+        },
+      }),
+    ]);
 
     // Đã chứng minh là admin ngay ở nhánh dưới -> khỏi truy vấn lại role lần hai.
     let knownAdmin = false;
@@ -208,34 +248,23 @@ export class LessonsService {
       knownAdmin = true;
     }
 
-    const lesson = await this.prisma.lesson.findFirst({
-      where: { courseId, sortOrder: lessonNo },
-      select: {
-        id: true,
-        title: true,
-        subtitle: true,
-        module: true,
-        sortOrder: true,
-        xpReward: true,
-        contentJson: true,
-      },
-    });
-    if (!lesson) throw new NotFoundException('Không tìm thấy bài học');
+    if (!found) throw new NotFoundException('Không tìm thấy bài học');
 
-    const progress = await this.prisma.lessonProgress.findFirst({
-      where: { userId, courseId, lessonId: lesson.id, status: 'completed' },
-      select: { lessonId: true },
-    });
-    const completed = Boolean(progress);
+    // TÁCH `lessonProgress` ra khỏi `lesson`: cuối hàm trả `{ ok, lesson,
+    // completed }` với `lesson` nguyên đối tượng, nên để nguyên là bê một mảng
+    // `[{lessonId}]` vào response và đổi hình dạng API mà không ai yêu cầu.
+    const { lessonProgress, ...lesson } = found;
+    const completed = lessonProgress.length > 0;
 
     // CHỈ giữ lời giải mẫu lại ở bài cửa tự kiểm tra và khi học viên chưa xong
     // bài. Không mở rộng sang mọi bài vì ở các bài còn lại "Hiện lời giải" là
     // TÍNH NĂNG có chủ đích (gợi ý bậc cuối, bấm vào là FE ghi solutionUsed /
     // assisted) — cắt hết thì phá trải nghiệm học mà không bịt thêm lỗ nào.
     //
-    // Truy vấn role chỉ nằm trong nhánh này: 5/40 bài, và chỉ tới khi học viên
-    // làm xong. Đường nóng (mọi bài khác) KHÔNG phải thêm vòng gọi DB nào —
-    // mỗi vòng tới Neon ~237ms nên không đặt nó ở ngoài.
+    // Truy vấn role chỉ nằm trong nhánh này: 3/48 bài pe-v4, và chỉ tới khi học
+    // viên chưa làm xong. Đường nóng (mọi bài khác) KHÔNG phải thêm vòng gọi DB
+    // nào — một vòng tới Neon đo được ~50 ms từ máy dev và ~237 ms từ Render,
+    // nên đừng kéo nó ra ngoài nhánh này.
     // ĐÁNH ĐỔI NGƯỜI DÙNG THẤY ĐƯỢC, ghi lại để không ai tưởng là lỗi:
     // FE chỉ gọi endpoint này MỘT LẦN lúc mở bài (StudioLesson.tsx, useEffect
     // nạp content), còn nút "Hiện lời giải" của bài cửa bật theo cờ tại chỗ
