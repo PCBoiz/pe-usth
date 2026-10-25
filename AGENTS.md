@@ -44,7 +44,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 36 bộ, 394 ca, tất cả đạt |
+| Backend test | 27 bộ, 265 ca, tất cả đạt |
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
@@ -201,27 +201,35 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
   trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
   độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
-- **PHA DỌN SẮP TỚI: `src/python-runner/**` KHÔNG được xoá cả cụm — bên trong có nguồn
-  tracer mà đường CLIENT đang dùng.** `src/python-runner/tracer/pe_tracer.py` là nguồn sinh ra
-  `frontend/public/static/py/pe_tracer.min.py` (qua `node scripts/build-tracer-source.mjs`),
-  tức file mà worker của `/ide` fetch mỗi lần bấm "Xem từng bước". Xoá cả thư mục là giết
-  tính năng vừa port xong.
-  Phần THẬT SỰ chết sau khi `/ide` chạy ở client: controller, service, guard, hai executor,
-  `sandbox/`, và bản nhúng `tracer-source.ts`. Đếm được **115 ca test** trong 9 file spec của
-  module (local-executor 15 · access-guard 8 · controller 8 · service 5 · remote-executor 14 ·
-  host-capacity 30 · run-queue 17 · trace-program 13 · tracer-source 5) — xoá là backend tụt
-  từ 36 bộ/394 ca xuống 27/279, nên phải đo lại và sửa bảng mốc TRONG CÙNG commit.
-  Còn phải gỡ nhánh `'server'` ở frontend (`ideRunnerMode`, `IdeClient`, `CodeVisualizer`):
-  để lại một nhánh trỏ vào endpoint đã xoá còn tệ hơn là không có nhánh nào.
-  **Thứ tự nên làm:** deploy đường client lên production và xác nhận `/ide` sống, RỒI mới xoá.
-  Hôm nay production vẫn trả HTTP 503 ở `/ide`, tức đang chạy bản cũ.
-  `frontend/e2e/unit/tracer-web-sync.test.mjs` cố ý nằm ở bộ test FRONTEND để sống sót qua pha
-  đó: nó băm `pe_tracer.py` rồi so với dòng `# sha256 của nguồn:` trong bản `.min.py`, nên
-  dời/xoá nguồn là đỏ kèm đúng câu phải làm. Bản canh cũ (`tracer-source.spec.ts`) chỉ so
-  nguồn với bản nhúng cho BACKEND, và chính nó cũng sẽ bị xoá trong pha dọn.
-  Bẫy nhỏ trong chính ca test đó: đừng canh bằng `src.includes('/static/py/pe_tracer.min.py')`
-  — tên file còn nằm trong một chú thích của worker, nên lời gọi `fetch` thật bị đổi mà ca vẫn
-  xanh; phải khớp cả `fetch('…')`.
+- **Bộ chạy Python ở MÁY CHỦ đã bị xoá (25/10) — và chỗ duy nhất không được xoá cùng.**
+  `src/python-runner/`, `runner/`, `docker/py-sandbox/` đi hết; `/ide` nay chạy Pyodide trong
+  trình duyệt. Xác nhận trên production TRƯỚC khi xoá: `/ide` chạy `print(sys.version)` ra
+  `3.14.2 … emscripten` trong 0,01 s, ghi vết 17 bước, và DevTools cho thấy **0 request nào
+  tới `/api/python/*`**.
+  **Chỗ phải cứu trước khi xoá:** `src/python-runner/tracer/pe_tracer.py` là NGUỒN sinh ra
+  `frontend/public/static/py/pe_tracer.min.py` — file worker `/ide` fetch mỗi lần bấm "Xem
+  từng bước". Nay nằm ở `scripts/tracer/`, cạnh `build-tracer-source.mjs`. Nếu có ai dời nó
+  nữa thì `frontend/e2e/unit/tracer-web-sync.test.mjs` đỏ kèm đúng câu phải làm (nó nằm ở bộ
+  test FRONTEND có chủ ý — bộ canh cũ `tracer-source.spec.ts` đã bị xoá cùng module).
+  Bẫy kèm theo khi dời: `pe_tracer_test.py` tính ROOT bằng BA lần `..` (đúng cho
+  `src/python-runner/tracer/`), dời lên một tầng mà không sửa thì nó trỏ ra ngoài repo và chết
+  với `CalledProcessError`. Nay hai lần.
+  **Biến môi trường đã bỏ, 14 cái:** `PY_SANDBOX_IMAGE`, `PY_RUN_TIMEOUT_MS`,
+  `PY_RUN_MAX_CONCURRENT`, `PY_RUN_QUEUE_TIMEOUT_MS`, `PY_RUN_QUEUE_MAX`, `PY_RUN_MEMORY`,
+  `PY_RUNNER_MODE`, `PY_RUNNER_PUBLIC`, `RUNNER_URL`, `RUNNER_SECRET`, và bốn biến throttle
+  của hai route đó (`THROTTLE_PY_RUN_LIMIT/TTL_SECONDS`, `THROTTLE_PY_TRACE_LIMIT/TTL_SECONDS`
+  — chúng chỉ còn được validate, `throttle.config.ts` không hề đọc).
+  **Bài học KHÔNG được xoá theo:** `config.get<number>()` chỉ ép kiểu lúc BIÊN DỊCH, nên biến
+  số không khai trong `env.validation.ts` giữ nguyên dạng CHUỖI và code đi cộng chuỗi. Sự cố
+  13/10/2026 do đúng chuyện đó (`"30000" + 10000 + 10000` → `"300001000010000"` →
+  `AbortSignal.timeout` ném TypeError → 503 trong khi dịch vụ phía sau vẫn khoẻ). Biến gây ra
+  nó đã xoá, bài học thì chuyển lên đầu schema và `env.validation.spec.ts` chuyển sang canh
+  các biến số CÒN LẠI.
+  **Dọn tới đây mới hết:** `@ThrottleMessage` nay KHÔNG controller nào dùng (route cũ là chỗ
+  duy nhất) — nhánh đọc decorator trong `custom-throttler.guard.ts` đang ngủ, giữ lại vì nó là
+  cách duy nhất để một route nói câu 429 riêng. `docs/azure-runner-plan.md` (909 dòng) được
+  ĐÁNH DẤU lỗi thời chứ không xoá: phần nghiên cứu chi phí còn giá trị cho ngày cần chạy mã ở
+  máy chủ thật. Mục 6 của `docs/deploy-runbook.md` đã viết lại.
 - **Request API ĐẦU TIÊN sau lúc máy chủ nghỉ mất hơn 25 giây, và trang không nói gì.**
   Đo trên production 25/10/2026: lượt đầu >25 s (Render + Neon thức dậy), các lượt sau 300 ms.
   Suốt quãng đó `StudioLesson` chỉ hiện "Đang tải bài học…" — không một chữ nào nói vì sao,

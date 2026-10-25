@@ -7,13 +7,15 @@ import { envValidationSchema } from './env.validation';
  * chạy. Nên quên khai một biến số là lỗi IM LẶNG: code cộng chuỗi với số.
  *
  * Sự cố thật ngày 13/10/2026: PY_RUN_QUEUE_TIMEOUT_MS chưa khai, đặt "30000"
- * trên Render → RemoteExecutor tính "30000" + 10000 + 10000 = chuỗi
- * "300001000010000" → AbortSignal.timeout(<chuỗi>) ném TypeError ngay trong
- * try → catch trả 503 "Bộ chạy Python đang tắt". Runner vẫn khoẻ, fetch chưa
- * từng được gọi, và triệu chứng trỏ sai sang "lệch khoá / tường lửa chặn".
+ * trên Render → code tính "30000" + 10000 + 10000 = chuỗi "300001000010000" →
+ * AbortSignal.timeout(<chuỗi>) ném TypeError ngay trong try → catch trả 503 "Bộ
+ * chạy Python đang tắt". Dịch vụ phía sau vẫn khoẻ, fetch chưa từng được gọi,
+ * và triệu chứng trỏ sai sang "lệch khoá / tường lửa chặn".
  *
- * Các ca dưới đây bắt đúng lớp lỗi đó: gỡ dòng khai của bất kỳ biến số nào ra
- * khỏi env.validation.ts thì ca tương ứng trượt.
+ * Biến gây ra vụ đó đã bị xoá cùng bộ chạy Python ở máy chủ (pha dọn 25/10), nên
+ * các ca dưới đây chuyển sang canh những biến số CÒN LẠI — lớp lỗi thì không đổi:
+ * gỡ dòng khai của bất kỳ biến số nào ra khỏi env.validation.ts thì ca tương
+ * ứng trượt.
  */
 const BAT_BUOC = {
   DATABASE_URL: 'postgresql://u:p@host/db',
@@ -37,12 +39,14 @@ const validate = (extra: Record<string, string>) => {
 describe('envValidationSchema — biến số phải ra SỐ, không phải chuỗi', () => {
   // Đặt qua dashboard (Render/Vercel) thì mọi giá trị đều là chuỗi.
   // Giá trị mẫu nằm trong khoảng hợp lệ của từng biến (mỗi biến một trần khác
-  // nhau: đồng thời ≤ 16, hàng đợi ≤ 500, thời gian tính bằng mili giây).
+  // nhau: cổng ≤ 65535, số hop ≤ 3, thời gian tính bằng mili giây).
   const SO: ReadonlyArray<readonly [string, string]> = [
-    ['PY_RUN_TIMEOUT_MS', '12000'],
-    ['PY_RUN_QUEUE_TIMEOUT_MS', '30000'],
-    ['PY_RUN_MAX_CONCURRENT', '4'],
-    ['PY_RUN_QUEUE_MAX', '50'],
+    ['PORT', '5000'],
+    ['THROTTLE_IP_HOUR_LIMIT', '20000'],
+    ['THROTTLE_IP_DAY_LIMIT', '200000'],
+    ['THROTTLE_SWEEP_INTERVAL_MS', '60000'],
+    ['THROTTLE_MAX_KEYS', '200000'],
+    ['TRUST_PROXY_HOPS', '1'],
   ];
 
   it.each(SO)('%s nhập dạng chuỗi được ép về number', (key, mau) => {
@@ -57,36 +61,29 @@ describe('envValidationSchema — biến số phải ra SỐ, không phải chu�
     expect(typeof (value as Record<string, unknown>)[key]).toBe('number');
   });
 
-  it('cộng ba mốc thời gian ra SỐ, không nối chuỗi', () => {
+  it('cộng hai mốc đã ép kiểu ra SỐ, không nối chuỗi', () => {
+    // Chính hình dạng phép tính đã gây sự cố 13/10: cộng hai giá trị đọc từ env
+    // rồi cộng thêm một hằng. Nếu Joi không ép kiểu thì đây là nối chuỗi.
     const { value } = validate({
-      PY_RUN_QUEUE_TIMEOUT_MS: '30000',
-      PY_RUN_TIMEOUT_MS: '10000',
+      THROTTLE_SWEEP_INTERVAL_MS: '60000',
+      THROTTLE_MAX_KEYS: '200000',
     });
     const v = value as Record<string, number>;
-    // Chính phép tính của RemoteExecutor: queue + run + 10s dự phòng.
-    expect(v.PY_RUN_QUEUE_TIMEOUT_MS + v.PY_RUN_TIMEOUT_MS + 10_000).toBe(
-      50_000,
+    expect(v.THROTTLE_SWEEP_INTERVAL_MS + v.THROTTLE_MAX_KEYS + 10_000).toBe(
+      270_000,
     );
   });
 
-  it('PY_RUNNER_MODE chỉ nhận local/remote — chặn lỗi viết hoa im lặng', () => {
-    expect(validate({ PY_RUNNER_MODE: 'remote' }).error).toBeUndefined();
-    expect(validate({ PY_RUNNER_MODE: 'Remote' }).error).toBeDefined();
-  });
-
-  it('RUNNER_SECRET quá ngắn bị chặn ngay lúc khởi động', () => {
-    // Runner từ chối khoá ngắn; backend phải từ chối cùng lúc, không để lệch
-    // nhau rồi mới lộ ra bằng một chuỗi 401 lúc chạy.
-    expect(validate({ RUNNER_SECRET: 'ngan' }).error).toBeDefined();
-    expect(validate({ RUNNER_SECRET: 'x'.repeat(32) }).error).toBeUndefined();
-  });
-
-  it('RUNNER_SECRET dùng CÙNG ngưỡng 32 với runner — 31 ký tự bị chặn', () => {
-    // Ngưỡng cũ là 16: khoá 16–31 ký tự qua được backend trong khi runner
-    // (runner/src/config.ts) từ chối khởi động với chính khoá đó. Ca biên này
-    // là ca duy nhất phân biệt min(16) với min(32).
-    expect(validate({ RUNNER_SECRET: 'x'.repeat(31) }).error).toBeDefined();
-    expect(validate({ RUNNER_SECRET: 'x'.repeat(16) }).error).toBeDefined();
+  it('biến KHÔNG khai trong schema giữ nguyên dạng chuỗi — đây là lớp lỗi', () => {
+    // Ca này mô tả chính cái bẫy, bằng một tên biến chắc chắn không có trong
+    // schema. Nó không đỏ khi ai đó quên khai biến mới (không có cách nào biết
+    // trước tên đó), nhưng nó khoá LÝ DO các ca trên tồn tại: `allowUnknown`
+    // cho qua, và giá trị vẫn là chuỗi.
+    const { error, value } = validate({ MOT_BIEN_KHONG_KHAI: '30000' });
+    expect(error).toBeUndefined();
+    expect((value as Record<string, unknown>).MOT_BIEN_KHONG_KHAI).toBe(
+      '30000',
+    );
   });
 });
 
@@ -109,10 +106,6 @@ describe('envValidationSchema — THROTTLE_* và TRUST_PROXY_HOPS', () => {
     ['THROTTLE_GUEST_LIMIT', 120],
     ['THROTTLE_GUEST_TTL_SECONDS', 3600],
     ['THROTTLE_BADGE_LIMIT', 240],
-    ['THROTTLE_PY_RUN_LIMIT', 10],
-    ['THROTTLE_PY_RUN_TTL_SECONDS', 60],
-    ['THROTTLE_PY_TRACE_LIMIT', 10],
-    ['THROTTLE_PY_TRACE_TTL_SECONDS', 60],
     ['THROTTLE_SWEEP_INTERVAL_MS', 60_000],
     ['THROTTLE_MAX_KEYS', 200_000],
   ];
@@ -139,10 +132,10 @@ describe('envValidationSchema — THROTTLE_* và TRUST_PROXY_HOPS', () => {
   );
 
   it('giá trị đang đặt trên production vẫn qua (không chặn deploy)', () => {
-    // Đo/ghi ngày 14/10/2026: header x-ratelimit-limit-ip_hour: 400 ở
-    // /api/python/run; THROTTLE_IP_HOUR_LIMIT/DAY theo docs/deploy-runbook.md.
+    // Đo lại ngày 25/10/2026 trên chính production: header
+    // x-ratelimit-limit-ip_hour: 20000, ip_day: 200000 (đọc từ response của
+    // POST https://api.programmingedu.io.vn/auth/refresh).
     const { error } = validate({
-      THROTTLE_PY_RUN_LIMIT: '400',
       THROTTLE_IP_HOUR_LIMIT: '20000',
       THROTTLE_IP_DAY_LIMIT: '200000',
       TRUST_PROXY_HOPS: '1',

@@ -29,7 +29,7 @@ jest.mock('zlib', () => {
  * production (đo 14/10/2026) và compression 1.8.1 rò bộ nhớ zlib khi client
  * ngắt giữa chừng (GHSA-vc2v-76pw-4v95). Cả hai nằm trong main.ts — chỗ không
  * test nào chạy tới. Nay cấu hình nằm trong setupHttpApp và được dựng lại ở đây
- * trên một app Nest thật, giống python-runner.controller.spec.ts.
+ * trên một app Nest thật, giống cách các spec dựng app Nest thật.
  */
 @Controller()
 class DemoController {

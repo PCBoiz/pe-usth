@@ -53,9 +53,15 @@ export class CustomThrottlerGuard extends ThrottlerGuard {
    * Route nào khai @ThrottleMessage thì dùng câu của route đó cho lỗi 429.
    *
    * Mặc định của thư viện là "ThrottlerException: Too Many Requests" — tiếng
-   * Anh và không nói được người dùng nên làm gì tiếp. Riêng /python/run có hai
-   * kiểu 429 phải phân biệt: bấm quá nhiều (chờ ~1 phút) và hàng đợi của máy
-   * chủ đầy (chờ vài giây) — xem python-runner.controller.spec.ts.
+   * Anh và không nói được người dùng nên làm gì tiếp. Trước đây /python/run có
+   * hai kiểu 429 phải phân biệt (bấm quá nhiều, và hàng đợi máy chủ đầy); route
+   * đó đã bỏ cùng bộ chạy Python ở máy chủ.
+   *
+   * Nói thẳng hiện trạng: sau khi bỏ route đó, KHÔNG còn controller nào gắn
+   * `@ThrottleMessage`, nên nhánh đọc decorator dưới đây chưa có ai dùng. Giữ
+   * lại vì nó là cách duy nhất để một route nói câu 429 của riêng mình, và câu
+   * mặc định tiếng Việt bên dưới vẫn áp cho mọi route — đừng xoá nhánh này rồi
+   * tưởng đã dọn xong, nó chỉ đang ngủ.
    */
   protected async getErrorMessage(
     context: ExecutionContext,

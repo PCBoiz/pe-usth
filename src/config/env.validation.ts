@@ -10,6 +10,18 @@ const throttleLimit = (mac_dinh: number) =>
 const throttleTtl = (mac_dinh: number) =>
   Joi.number().integer().min(1).max(86_400).default(mac_dinh);
 
+// MỌI biến mà code đọc bằng `config.get<number>()` PHẢI khai ở đây.
+//
+// Joi chạy với allowUnknown: true nên key lạ vẫn qua được, nhưng giữ nguyên dạng
+// CHUỖI — và `get<number>()` chỉ là ép kiểu lúc BIÊN DỊCH, không đổi giá trị lúc
+// chạy. Hậu quả thật trên production 13/10/2026: một biến timeout không khai ở
+// đây, đặt "30000" trên Render, thì code tính "30000" + 10000 + 10000 = chuỗi
+// "300001000010000"; `AbortSignal.timeout(<chuỗi>)` ném TypeError NGAY TRONG try
+// rồi rơi vào catch và trả 503 — trong khi dịch vụ phía sau vẫn khoẻ và `fetch`
+// chưa từng được gọi. Triệu chứng trỏ sai hoàn toàn sang "lệch khoá/tường lửa".
+//
+// Biến gây ra vụ đó (PY_RUN_QUEUE_TIMEOUT_MS) đã bị xoá cùng bộ chạy Python ở
+// máy chủ, nhưng BÀI HỌC thì áp cho mọi biến số sau này.
 export const envValidationSchema = Joi.object({
   PORT: Joi.number().integer().min(1).max(65535).default(5000),
 
@@ -55,10 +67,6 @@ export const envValidationSchema = Joi.object({
   THROTTLE_GUEST_LIMIT: throttleLimit(120),
   THROTTLE_GUEST_TTL_SECONDS: throttleTtl(3600),
   THROTTLE_BADGE_LIMIT: throttleLimit(240),
-  THROTTLE_PY_RUN_LIMIT: throttleLimit(10),
-  THROTTLE_PY_RUN_TTL_SECONDS: throttleTtl(60),
-  THROTTLE_PY_TRACE_LIMIT: throttleLimit(10),
-  THROTTLE_PY_TRACE_TTL_SECONDS: throttleTtl(60),
   // Chu kỳ quét key hết hạn của FixedWindowThrottlerStorage; 0/NaN làm
   // setInterval chạy liên tục hoặc không bao giờ dọn.
   THROTTLE_SWEEP_INTERVAL_MS: Joi.number()
@@ -117,46 +125,4 @@ export const envValidationSchema = Joi.object({
   GEMINI_TIMEOUT_MS: Joi.number().integer().min(1000).max(120000).optional(),
   GEMINI_MAX_CHARS: Joi.number().integer().min(100).max(20000).optional(),
   GEMINI_HOUR_LIMIT: Joi.number().integer().min(1).optional(),
-
-  // Python IDE (src/python-runner): chạy code người dùng trong container Docker.
-  //
-  // MỌI biến PY_*/RUNNER_* mà code đọc bằng `config.get<number>()` PHẢI khai ở
-  // đây. Joi chạy với allowUnknown: true nên key lạ vẫn qua được, nhưng giữ
-  // nguyên dạng CHUỖI — và `get<number>()` chỉ là ép kiểu lúc biên dịch, không
-  // đổi giá trị lúc chạy. Hậu quả thật đã gặp trên production 13/10/2026:
-  // PY_RUN_QUEUE_TIMEOUT_MS không khai ở đây, đặt "30000" trên Render thì
-  // RemoteExecutor tính "30000" + 10000 + 10000 = chuỗi "300001000010000",
-  // AbortSignal.timeout(<chuỗi>) ném TypeError NGAY TRONG try, rơi vào catch và
-  // trả 503 "Bộ chạy Python đang tắt" — trong khi runner vẫn khoẻ và fetch chưa
-  // từng được gọi. Triệu chứng trỏ sai hoàn toàn sang "lệch khoá/tường lửa".
-  PY_SANDBOX_IMAGE: Joi.string().default('py-sandbox'),
-  PY_RUN_TIMEOUT_MS: Joi.number().integer().min(1000).max(60000).default(10000),
-  // Số container chạy ĐỒNG THỜI tối đa; vượt thì xếp hàng, hàng đầy thì 429.
-  PY_RUN_MAX_CONCURRENT: Joi.number().integer().min(1).max(16).default(2),
-  // Chờ tối đa trong hàng trước khi bỏ cuộc. Phải KHỚP với runner, nếu không
-  // backend bỏ cuộc trước hoặc sau runner và thông điệp lỗi sai lệch.
-  PY_RUN_QUEUE_TIMEOUT_MS: Joi.number()
-    .integer()
-    .min(1000)
-    .max(120000)
-    .default(30000),
-  // Số bài được xếp hàng chờ; vượt thì 429 ngay thay vì để chờ vô vọng.
-  PY_RUN_QUEUE_MAX: Joi.number().integer().min(1).max(500).default(50),
-  // Trần RAM mỗi container, dạng docker ('512m', '1g'). Chuỗi nên không dính
-  // bẫy ở trên, nhưng khai ra để một chỗ duy nhất liệt kê đủ biến.
-  PY_RUN_MEMORY: Joi.string().default('512m'),
-  // 'remote' → gọi runner qua HTTP; giá trị khác (kể cả 'Remote' viết hoa) rơi
-  // về chạy docker ngay trên máy backend.
-  PY_RUNNER_MODE: Joi.string().valid('local', 'remote').default('local'),
-  // Chỉ bắt buộc khi PY_RUNNER_MODE=remote — module tự getOrThrow lúc khởi động.
-  RUNNER_URL: Joi.string().uri().optional(),
-  // >= 32 ký tự, KHỚP runner (runner/src/config.ts từ chối khoá < 32 sau trim).
-  // Trước đây ở đây là min(16): khoá 16–31 ký tự qua được backend nhưng runner
-  // không bao giờ khởi động với khoá đó, nên lỗi chỉ lộ ra lúc chạy dưới dạng
-  // 401/503 thay vì chặn ngay khi deploy. .env.example cũng đã ghi ">= 32".
-  RUNNER_SECRET: Joi.string().min(32).optional(),
-  // true → POST /api/python/run KHÔNG đòi JWT (lúc khởi động có cảnh báo). Mặc định
-  // false. KHÔNG chặn khởi động ở production: route được bảo vệ bằng lớp mạng ở
-  // reverse proxy. .empty(''): `PY_RUNNER_PUBLIC=` để trống coi như chưa đặt.
-  PY_RUNNER_PUBLIC: Joi.boolean().empty('').default(false),
 });
