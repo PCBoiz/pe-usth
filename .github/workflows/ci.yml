@@ -345,3 +345,9 @@ jobs:
       # Figure trống, bỏ trần số hình) đi qua cả 427 ca pe-v4 lẫn 406 đoạn pe-da
       # mà không đỏ dòng nào, và học viên lại mất hình như trước.
       - run: node scripts/check-figures.mjs
+
+      # 65 phép kiểm của BỘ GHI VẾT (nút "Xem từng bước" của /ide). Trước đây
+      # chỉ chạy tay, nên một bản sửa làm tracer chạy SAI mà vẫn sinh lại đúng
+      # thì không có gì đỏ: phép canh sha chỉ bắt được chuyện "sửa .py mà quên
+      # sinh lại". `python`, không phải `py` — đây là runner Linux.
+      - run: python scripts/tracer/pe_tracer_test.py
