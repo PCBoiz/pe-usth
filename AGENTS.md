@@ -48,7 +48,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **195 ca** / 17 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **200 ca** / 18 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -63,11 +63,11 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 195 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 200 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-runner-error 10 ·
 ide-stop-autosave 28 · ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 ·
-studio-lesson 40 · trap-leak 3 · worker-csp 7 = 195. Mốc trước là 166; thêm worker-csp 7,
+studio-lesson 40 · trace-web-sync 5 · trap-leak 3 · worker-csp 7 = 200. Mốc trước là 166; thêm worker-csp 7,
 ide-partial-output 10, label-version 2, session-marker 5, ide-brief-code 11 → 12, và
 ide-stop-autosave 24 → 28 (cổng xác nhận mã từ link).
 
@@ -201,6 +201,27 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
   trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
   độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
+- **PHA DỌN SẮP TỚI: `src/python-runner/**` KHÔNG được xoá cả cụm — bên trong có nguồn
+  tracer mà đường CLIENT đang dùng.** `src/python-runner/tracer/pe_tracer.py` là nguồn sinh ra
+  `frontend/public/static/py/pe_tracer.min.py` (qua `node scripts/build-tracer-source.mjs`),
+  tức file mà worker của `/ide` fetch mỗi lần bấm "Xem từng bước". Xoá cả thư mục là giết
+  tính năng vừa port xong.
+  Phần THẬT SỰ chết sau khi `/ide` chạy ở client: controller, service, guard, hai executor,
+  `sandbox/`, và bản nhúng `tracer-source.ts`. Đếm được **115 ca test** trong 9 file spec của
+  module (local-executor 15 · access-guard 8 · controller 8 · service 5 · remote-executor 14 ·
+  host-capacity 30 · run-queue 17 · trace-program 13 · tracer-source 5) — xoá là backend tụt
+  từ 36 bộ/394 ca xuống 27/279, nên phải đo lại và sửa bảng mốc TRONG CÙNG commit.
+  Còn phải gỡ nhánh `'server'` ở frontend (`ideRunnerMode`, `IdeClient`, `CodeVisualizer`):
+  để lại một nhánh trỏ vào endpoint đã xoá còn tệ hơn là không có nhánh nào.
+  **Thứ tự nên làm:** deploy đường client lên production và xác nhận `/ide` sống, RỒI mới xoá.
+  Hôm nay production vẫn trả HTTP 503 ở `/ide`, tức đang chạy bản cũ.
+  `frontend/e2e/unit/tracer-web-sync.test.mjs` cố ý nằm ở bộ test FRONTEND để sống sót qua pha
+  đó: nó băm `pe_tracer.py` rồi so với dòng `# sha256 của nguồn:` trong bản `.min.py`, nên
+  dời/xoá nguồn là đỏ kèm đúng câu phải làm. Bản canh cũ (`tracer-source.spec.ts`) chỉ so
+  nguồn với bản nhúng cho BACKEND, và chính nó cũng sẽ bị xoá trong pha dọn.
+  Bẫy nhỏ trong chính ca test đó: đừng canh bằng `src.includes('/static/py/pe_tracer.min.py')`
+  — tên file còn nằm trong một chú thích của worker, nên lời gọi `fetch` thật bị đổi mà ca vẫn
+  xanh; phải khớp cả `fetch('…')`.
 - **Request API ĐẦU TIÊN sau lúc máy chủ nghỉ mất hơn 25 giây, và trang không nói gì.**
   Đo trên production 25/10/2026: lượt đầu >25 s (Render + Neon thức dậy), các lượt sau 300 ms.
   Suốt quãng đó `StudioLesson` chỉ hiện "Đang tải bài học…" — không một chữ nào nói vì sao,
