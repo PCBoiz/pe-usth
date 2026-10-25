@@ -48,7 +48,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **189 ca** / 17 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **196 ca** / 18 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
@@ -63,11 +63,11 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 189 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 196 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
-ide-trace 38 · label-version 2 · prewarm-gate 5 · session-marker 5 · studio-lesson 40 ·
-tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 189. Mốc trước là 166; thêm worker-csp 7,
+ide-trace 38 · label-version 2 · lesson-load 7 · prewarm-gate 5 · session-marker 5 ·
+studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 196. Mốc trước là 166; thêm worker-csp 7,
 ide-partial-output 10, label-version 2, session-marker 5, ide-brief-code 11 → 12, và
 ide-stop-autosave 24 → 28 (cổng xác nhận mã từ link).
 
@@ -201,6 +201,23 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
 - **Ô kết quả của bài học hứa chạy `solution.py` trong khi đầu ô ghi `main.py`.** Placeholder
   trong `SandboxEditor.tsx` ghi cứng tên file thay vì dùng prop `filename`, mà màn "Thử thách
   độc lập" truyền `main.py` — hai tên cho một file, cạnh nhau trên cùng màn hình.
+- **Mở một bài học còn gọi BA lượt API TUẦN TỰ ở phía client — 3,7 giây trước khi có chữ.**
+  Đo trên production bằng Resource Timing (API đã nóng): `/api/user` 1198 ms → `/api/enrolled`
+  1286 ms → `/content` 1239 ms, nối đuôi nhau. Nay cả ba trong một `Promise.all` → còn một
+  lượt, ~1,3 giây. Đo lại ở máy: ba lượt bắt đầu cách nhau **1 ms**.
+  **Chú thích cũ nói phải gọi tuần tự, và lý do đó KHÔNG đứng:** nó viết "với người mới,
+  request đầu tiên là request tạo tài khoản khách". Nhưng `apiFetch` gặp 401 thì gọi
+  `refreshAccess()` rồi `ensureGuest()` — CẢ HAI dedupe bằng promise ở tầm module — rồi GỬI
+  LẠI request. Đã kiểm trong một ngữ cảnh trình duyệt sạch: ba lượt 401 → đúng **MỘT**
+  `/auth/guest` → cả ba tự gửi lại. Một tài khoản, không ba.
+  `/content` được phép 403 (người mới chưa ghi danh): nhánh ghi danh lo, rồi gọi lại content.
+  Người MỚI trả thêm một lượt, người ĐANG HỌC — ca thường — tiết kiệm hai lượt.
+  **Phép nhận diện 403 phải có HAI dấu hiệu**, vì mỗi cái một mình đều mong manh: `json()`
+  dựng Error từ *thông điệp* backend, nên khi backend có message thì chuỗi "403" KHÔNG xuất
+  hiện, còn khi không có message thì nó mới ghép `(403)`. Và phải `403` chứ không
+  `includes('403')` — nếu không thì một lỗi 500 của bài sortOrder 4030 cũng bị nuốt.
+  Hàm nằm ở `frontend/src/lib/lesson-load.ts` (không trong hook: logic trong hook là logic
+  không có test), `lesson-load.test.mjs` 7 ca.
 - **Mở một bài học từng đi BA vòng DB tuần tự — và `.env.example` hứa một bộ cache KHÔNG tồn
   tại.** `getLessonContent` gọi lần lượt `enrollment` → `lesson` → `lessonProgress`. Đo trên
   chính DB đang dùng (trung vị 9 lượt): **150 ms**. Nay `enrollment` chạy SONG SONG với

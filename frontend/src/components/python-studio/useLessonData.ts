@@ -11,6 +11,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { apiFetch, asList, findEnrollment } from '@/lib/api';
+import { la403ChuaGhiDanh } from '@/lib/lesson-load';
 import { buildScreens, type StudioLesson as Lesson } from '@/lib/studio-lesson';
 
 export type Award = { name?: string | null; description?: string | null; icon?: string | null };
@@ -89,17 +90,55 @@ export function useLessonData({
     [],
   );
 
+  /**
+   * Như `json`, nhưng 403 trả `null` thay vì ném.
+   *
+   * Chỉ dùng cho `/content` trong lượt gọi song song: ở đó 403 KHÔNG phải lỗi
+   * mà là câu trả lời bình thường cho "người này chưa ghi danh" — backend tự
+   * kiểm ghi danh, nên ta hỏi trước rồi ghi danh sau cũng được. Mọi mã lỗi khác
+   * vẫn ném như cũ.
+   */
+  const jsonChoPhep403 = useCallback(
+    async (path: string): Promise<Record<string, unknown> | null> => {
+      try {
+        return (await json(path)) as Record<string, unknown>;
+      } catch (e) {
+        if (la403ChuaGhiDanh(e)) return null;
+        throw e;
+      }
+    },
+    [json],
+  );
+
   const load = useCallback(async () => {
     setLoading(true);
     setLoadError('');
     setEmpty(false);
+    const duongContent = `/api/courses/${encodeURIComponent(courseId)}/lessons/${lessonNo}/content`;
     try {
-      // Gọi /api/user TRƯỚC, không song song: với người mới, request đầu tiên
-      // là request tạo tài khoản khách (apiFetch). Chạy song song thì hai
-      // request cùng nhận 401 — vẫn chỉ một khách nhờ dedupe, nhưng tuần tự
-      // thì /api/enrolled chắc chắn đi với token đã có.
-      const profile = await json('/api/user');
-      let enrollment = findEnrollment(asList(await json('/api/enrolled'), 'enrolled'), courseId);
+      // BA lượt gọi SONG SONG, không tuần tự.
+      //
+      // ĐO TRÊN PRODUCTION (25/10/2026, Resource Timing, API đã nóng): ba lượt
+      // nối đuôi nhau — /api/user 1198 ms → /api/enrolled 1286 ms → content
+      // 1239 ms — tức **3,7 giây** trước khi chữ đầu tiên của bài hiện ra. Song
+      // song thì chỉ còn một lượt, khoảng 1,3 giây.
+      //
+      // Chú thích cũ ở đây nói phải gọi tuần tự vì "với người mới, request đầu
+      // tiên là request tạo tài khoản khách". Đọc lại `apiFetch` thì lý do đó
+      // không đứng: gặp 401 nó gọi `refreshAccess()` rồi `ensureGuest()` — CẢ
+      // HAI đều dedupe bằng một promise ở tầm module — rồi GỬI LẠI request với
+      // token vừa có. Nên ba lượt song song cùng nhận 401 thì cùng chờ đúng một
+      // lượt tạo khách, rồi cả ba tự gửi lại. Một tài khoản, không ba.
+      //
+      // `/content` được phép 403: người chưa ghi danh thì nhánh ghi danh bên
+      // dưới lo, và lúc đó mới gọi lại content. Tức người MỚI trả thêm một lượt,
+      // người ĐANG HỌC (ca thường) tiết kiệm hai lượt.
+      const [profile, enrolledBody, contentDau] = await Promise.all([
+        json('/api/user'),
+        json('/api/enrolled'),
+        jsonChoPhep403(duongContent),
+      ]);
+      let enrollment = findEnrollment(asList(enrolledBody, 'enrolled'), courseId);
       // Trang khoá học nay là danh mục tĩnh, không còn nút "Đăng ký" — mở bài
       // là tự ghi danh, để người thử vào thẳng nội dung. Ghi danh lặp lại an
       // toàn (backend ON CONFLICT DO NOTHING), lỗi thì rơi về màn ghi danh như trước.
@@ -131,9 +170,9 @@ export function useLessonData({
         return;
       }
 
-      const payload = await json(
-        `/api/courses/${encodeURIComponent(courseId)}/lessons/${lessonNo}/content`,
-      );
+      // Lượt song song ở trên đã lấy được content thì dùng luôn; chỉ gọi lại khi
+      // nó bị 403 vì lúc đó chưa ghi danh (người mới), và giờ đã ghi danh xong.
+      const payload = contentDau ?? (await json(duongContent));
       const content = payload.lesson?.contentJson as Lesson | null;
       setMeta({
         title: payload.lesson?.title || `Bài ${lessonNo}`,
@@ -156,7 +195,7 @@ export function useLessonData({
     } finally {
       setLoading(false);
     }
-  }, [courseId, json, lessonNo, onDraftReady]);
+  }, [courseId, json, jsonChoPhep403, lessonNo, onDraftReady]);
 
   useEffect(() => {
     const init = setTimeout(() => void load(), 0);
