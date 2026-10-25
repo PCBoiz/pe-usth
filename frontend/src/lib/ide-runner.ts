@@ -454,14 +454,52 @@ export type IdeCodeSource = 'hash' | 'autosave' | 'default';
  *
  * Lớp phòng ĐÚNG là tách ORIGIN (chạy trong iframe sandbox ở domain khác). Hàm
  * này KHÔNG thay thế việc đó; nó chỉ cắt chuỗi "một cú bấm" bằng một lần hỏi,
- * và chỉ hỏi đúng ca đáng hỏi: mã từ link, chạy ở client. Mã người học tự gõ
- * hoặc khôi phục từ máy họ thì không hỏi gì.
+ * và chỉ hỏi đúng ca đáng hỏi: mã từ link, chạy ở client, VÀ link không đến từ
+ * chính trang bài học. Mã người học tự gõ hoặc khôi phục từ máy họ thì không
+ * hỏi gì.
+ *
+ * VÌ SAO LOẠI LINK CÙNG ORIGIN RA: nút "Thử ngay trong IDE" trên trang bài học
+ * cũng đi qua `/ide#code=…`, nên trước đây đường đi CHÍNH của sản phẩm cũng bị
+ * hỏi. Một lần hỏi xuất hiện ở mọi lần dùng bình thường thì người ta bấm qua nó
+ * theo phản xạ, và đúng lần đáng chú ý cũng bị bấm qua.
+ *
+ * VÌ SAO `document.referrer` LÀ TÍN HIỆU ĐỦ VỮNG: kẻ tấn công không đặt được
+ * referrer thành origin của mình-người-khác. `referrerpolicy` chỉ CẮT BỚT
+ * referrer, không bịa ra được một origin khác; muốn referrer là origin này thì
+ * phải có một trang chạy TRÊN origin này, tức đã có XSS — mà có XSS rồi thì
+ * không cần đi đường link nữa. Referrer rỗng (gõ tay địa chỉ, mở từ bookmark,
+ * trang gửi đặt `no-referrer`) được coi là KHÔNG tin, nên vẫn hỏi.
+ *
+ * Điều kiện này đòi `TryItButton` dùng `rel="noopener"` chứ không
+ * `rel="noopener noreferrer"` — `noreferrer` xoá đúng tín hiệu đang cần.
  */
 export function needsLinkConfirm(
   source: IdeCodeSource,
   mode: 'client' | 'server',
+  referrer?: string | null,
 ): boolean {
-  return source === 'hash' && mode === 'client';
+  if (source !== 'hash' || mode !== 'client') return false;
+  return !tuCungOrigin(referrer);
+}
+
+/** Referrer trỏ về chính origin này? Dùng cho `needsLinkConfirm`. */
+function tuCungOrigin(referrer?: string | null): boolean {
+  const raw = referrer ?? (typeof document === 'undefined' ? '' : document.referrer);
+  if (!raw) return false;
+  try {
+    // So bằng `origin` đã chuẩn hoá, KHÔNG bằng `startsWith`: với
+    // `startsWith(location.origin)` thì một domain như
+    // `programmingedu.io.vn.ke-tan-cong.com` cũng khớp.
+    //
+    // `globalThis.location` chứ không `window.location`: ngoài trình duyệt (bộ
+    // test chạy bằng node:test) thì `window` KHÔNG tồn tại, và một
+    // ReferenceError ở đây sẽ bị `catch` nuốt rồi trả "không cùng origin" —
+    // tức ca test cho origin của chính mình cũng đỏ mà không phải vì lỗi thật.
+    const here = (globalThis as { location?: { origin?: string } }).location?.origin;
+    return Boolean(here) && new URL(raw).origin === here;
+  } catch {
+    return false;
+  }
 }
 
 export function pickIdeOpeningCode(nguon: {

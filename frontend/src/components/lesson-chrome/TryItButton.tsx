@@ -36,7 +36,17 @@ export default function TryItButton({
         className={styles.button}
         href={href}
         target="_blank"
-        rel="noopener noreferrer"
+        // `noopener` giữ (cắt `window.opener`), nhưng BỎ `noreferrer`: nó xoá
+        // mất tín hiệu duy nhất phân biệt "link từ chính trang bài học" với
+        // "link lạ ai gửi". Thiếu tín hiệu đó thì `/ide` phải hỏi xác nhận cho
+        // CẢ HAI, và lần hỏi ở đường đi chính (bài học → IDE) chỉ là tiếng ồn —
+        // ồn quá thì người ta bấm qua cả lần hỏi đáng chú ý. Xem
+        // `needsLinkConfirm` trong ide-runner.ts.
+        //
+        // Không mất gì về quyền riêng tư: đây là điều hướng CÙNG ORIGIN, và
+        // `Referrer-Policy: strict-origin-when-cross-origin` của trang vẫn chặn
+        // việc gửi đường dẫn đầy đủ ra ngoài domain khác.
+        rel="noopener"
         title="Mở Python IDE ở tab mới — bài học giữ nguyên tiến độ, đoạn mã này đã nạp sẵn trong trình soạn thảo"
       >
         {label}

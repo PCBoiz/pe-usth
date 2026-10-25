@@ -23,6 +23,7 @@
 //  · `countdownSeconds`: đổi `ceil` thành `floor` → 1 ca trượt; bỏ chốt chặn
 //    đồng hồ rác (`Number.isFinite`) → 1 ca; bỏ `Math.max(0, …)` → 1 ca.
 import { strict as assert } from 'node:assert';
+import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 import {
@@ -244,20 +245,71 @@ test('đúng trần thì vẫn lưu được — trần là trần, không phả
 //  · cho `needsLinkConfirm` trả `true` ở mọi `source` → 2 ca trượt;
 //  · cho nó bỏ qua `mode` (luôn hỏi khi source là hash) → 1 ca trượt.
 test('needsLinkConfirm: chỉ hỏi khi mã đến TỪ LINK và chạy Ở CLIENT', () => {
-  assert.equal(needsLinkConfirm('hash', 'client'), true);
+  assert.equal(needsLinkConfirm('hash', 'client', 'https://ke-la.example/bai'), true);
 
   // Chạy ở máy chủ thì mã chạy trong container, không đụng phiên của ai.
-  assert.equal(needsLinkConfirm('hash', 'server'), false);
+  assert.equal(needsLinkConfirm('hash', 'server', 'https://ke-la.example/bai'), false);
 });
 
 test('needsLinkConfirm: KHÔNG hỏi về mã của chính người học', () => {
   for (const nguon of ['autosave', 'default']) {
     assert.equal(
-      needsLinkConfirm(nguon, 'client'),
+      needsLinkConfirm(nguon, 'client', 'https://ke-la.example/bai'),
       false,
       `source=${nguon} là mã của chính họ, hỏi là làm phiền vô cớ`,
     );
   }
+});
+
+// ── Link từ CHÍNH trang bài học thì không hỏi ────────────────────────────────
+//
+// Nút "Thử ngay trong IDE" cũng đi qua `/ide#code=…`, nên trước đây đường đi
+// CHÍNH của sản phẩm cũng bị hỏi. Một lần hỏi xuất hiện ở mọi lần dùng bình
+// thường thì người ta bấm qua nó theo phản xạ — và đúng lần đáng chú ý cũng bị
+// bấm qua. Điều kiện này đòi `TryItButton` dùng `rel="noopener"`; `noreferrer`
+// xoá đúng tín hiệu đang cần, nên có một ca canh chuỗi đó ở cuối file.
+/** node:test không có `location`; dựng một bản giả để so origin được. */
+const DAY = 'https://www.programmingedu.io.vn';
+globalThis.location = { origin: DAY };
+
+test('needsLinkConfirm: link TỪ CHÍNH origin này thì không hỏi — ca bắt lỗi', () => {
+  const day = DAY;
+  assert.equal(needsLinkConfirm('hash', 'client', `${day}/lesson/python_advanced?lesson=5`), false);
+  assert.equal(needsLinkConfirm('hash', 'client', `${day}/`), false);
+});
+
+test('needsLinkConfirm: referrer RỖNG vẫn hỏi', () => {
+  // Gõ tay địa chỉ, mở từ bookmark, hoặc trang gửi đặt `no-referrer`. Không có
+  // tín hiệu thì coi là không tin — hỏi là phía an toàn.
+  for (const rong of ['', null, undefined]) {
+    assert.equal(needsLinkConfirm('hash', 'client', rong), true, `referrer=${String(rong)}`);
+  }
+});
+
+test('needsLinkConfirm: so bằng ORIGIN chuẩn hoá, không bằng startsWith', () => {
+  // `startsWith(location.origin)` cho qua cả một domain do kẻ tấn công đăng ký
+  // kiểu `localhost:3000.ke-tan-cong.com`. Ca này canh đúng chỗ đó.
+  const host = DAY.replace(/^https?:\/\//, '');
+  for (const gia of [
+    `https://${host}.ke-tan-cong.com/bai`,
+    `https://ke-tan-cong.com/?x=${DAY}`,
+    'khong-phai-url',
+    'javascript:void 0',
+  ]) {
+    assert.equal(needsLinkConfirm('hash', 'client', gia), true, `referrer=${gia}`);
+  }
+});
+
+test('TryItButton phải để `rel="noopener"`, không `noreferrer`', () => {
+  // Nửa còn lại của bản sửa: `noreferrer` xoá `document.referrer`, nên mọi link
+  // từ trang bài học lại bị hỏi và ca ở trên thành vô nghĩa trong thực tế.
+  const src = readFileSync(
+    new URL('../../src/components/lesson-chrome/TryItButton.tsx', import.meta.url),
+    'utf8',
+  );
+  const m = /rel="([^"]*)"/.exec(src);
+  assert.ok(m, 'không tìm thấy thuộc tính rel của nút');
+  assert.equal(m[1], 'noopener');
 });
 
 test('ideRunnerMode: chỉ đúng chữ "server" mới quay về backend', async () => {
