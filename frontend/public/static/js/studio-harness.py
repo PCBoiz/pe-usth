@@ -109,6 +109,7 @@ import ast
 import base64
 import builtins
 import copy
+import datetime
 import errno
 import importlib
 import importlib.machinery
@@ -116,6 +117,7 @@ import importlib.util
 import io
 import json
 import linecache
+import math
 import os
 import queue
 import re
@@ -4605,8 +4607,20 @@ def _finish_run(ctx):
         _flush_popens(ctx)
 
 
-def _execute(ctx, source, files, vars=None, entry=None, setup=None):
-    """Chạy cả chương trình trong một thư mục mới. Trả dict kết quả thô."""
+def _execute(ctx, source, files, vars=None, entry=None, setup=None, inject=None):
+    """Chạy cả chương trình trong một thư mục mới. Trả dict kết quả thô.
+
+    `inject` khác `vars` và khác `setup`, cả ba đều cần:
+
+    * `vars` thay VẾ PHẢI của một dòng gán cấp ngoài cùng đã có trong mã học
+      viên (`year = 1991` -> `year = 2026`). Dùng được vì bài pe-v3 tự khai dữ
+      liệu đề trong code.
+    * `setup` chạy SAU mã học viên, nên không đặt được dữ liệu vào trước.
+    * `inject` đặt sẵn tên vào namespace TRƯỚC khi mã chạy. Đây là hợp đồng
+      `mode: "script"` của gói practice: đề cấp `raw`, học viên chỉ viết phần
+      xử lý và gán vào `total` — trong mã họ KHÔNG có dòng gán `raw` nào để
+      `vars` thay. Thiếu cách này thì 12 bài script không chấm được.
+    """
     outcome = {'exit': None, 'error': None, 'exc': None, 'value': None, 'ns': None, 'dir': None}
     path = _prepare_dir(files)
     outcome['dir'] = path
@@ -4627,6 +4641,10 @@ def _execute(ctx, source, files, vars=None, entry=None, setup=None):
             outcome['exc'] = exc
             return outcome
         ns = {'__name__': '__main__' if entry is None else 'solution', '__builtins__': builtins}
+        if inject:
+            # copy.deepcopy như worker.py của gói: ca chấm sau không được nhận
+            # dữ liệu mà mã học viên đã sửa tại chỗ ở ca trước.
+            ns.update({k: copy.deepcopy(v) for k, v in inject.items()})
         outcome['ns'] = ns
         with redirect_stdout(ctx.out), redirect_stderr(ctx.out), _redirect_stdin(ctx.stdin):
             try:
@@ -4819,7 +4837,7 @@ class Studio:
         self._main_dir = main_dir
 
     def run(self, vars=None, files=None, entry=None, setup=None, fail_fork_at=None, child_exit=None,
-            stdin=None):
+            stdin=None, inject=None):
         """Chạy lại CẢ chương trình (thư mục mới), có thể thay dữ liệu đề cấp.
 
         `stdin=['Hoa', '20']` cho ca chấm đổi bộ input như đang đổi `vars` —
@@ -4828,7 +4846,7 @@ class Studio:
         merged = dict(self.files)
         merged.update(files or {})
         options = {'fail_fork_at': fail_fork_at, 'child_exit': child_exit or {}}
-        return _run_program(self.source, merged, vars, entry, setup, options, stdin)
+        return _run_program(self.source, merged, vars, entry, setup, options, stdin, inject)
 
     def call(self, fn, *args, **kwargs):
         """Gọi một hàm, ghi lại stdout/lỗi/thread phát sinh trong lời gọi."""
@@ -4908,7 +4926,8 @@ class Studio:
         return self.main.subprocess_calls
 
 
-def _run_program(source, files, vars=None, entry=None, setup=None, options=None, stdin=None):
+def _run_program(source, files, vars=None, entry=None, setup=None, options=None, stdin=None,
+                 inject=None):
     saved_job = dict(_JOB)
     _JOB.clear()
     _JOB.update({'source': source, 'files': files, 'vars': vars, 'entry': entry, 'setup': setup,
@@ -4922,7 +4941,7 @@ def _run_program(source, files, vars=None, entry=None, setup=None, options=None,
     # vậy child chạy lại nhận đúng bộ input đó từ dòng đầu.
     ctx = Ctx(options=options or {})
     try:
-        outcome = _execute(ctx, source, files, vars, entry, setup)
+        outcome = _execute(ctx, source, files, vars, entry, setup, inject)
     finally:
         _JOB.clear()
         _JOB.update(saved_job)
@@ -5234,7 +5253,160 @@ def _perf_chay(ns, perf):
     return {'verdict': _perf_hang(p), 'counts': so_dem, 'p': round(p, 3)}
 
 
-def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='null'):
+# --------------------------------------------------------------- hợp đồng DỮ LIỆU
+#
+# Hai hợp đồng ca chấm cùng tồn tại, và chúng KHÔNG thay nhau được:
+#
+#   * biểu thức (pe-v4) — {name, call, expect}: hai chuỗi được eval trong
+#     namespace của học viên rồi so bằng `==`. Cần thế vì ca chấm pe-v4 phải
+#     gọi được `_studio.run(...)`, dựng fixture, đọc timeline thread/process.
+#     427 ca đang dựa vào nó.
+#   * dữ liệu (gói practice) — {name, input, expected}: giá trị JSON thuần, mỗi
+#     ca chạy LẠI chương trình trên một namespace mới. 419 ca của 138 bài tự
+#     làm dùng hợp đồng này.
+#
+# Vì sao không quy hết về `==` như hợp đồng cũ: ĐÃ ĐO, 65/389 ca trượt oan, và
+# cả 65 ca đều vì đúng hai chuyện máy móc.
+#
+#   1. JSON KHÔNG CÓ TUPLE. `solve` trả (8, 3), `expected` trong gói là [8, 3]
+#      — và (8, 3) == [8, 3] là False. 8 ca ở NP07/PY11/RD01.
+#   2. SO SÁNH MẢNG NUMPY RA MẢNG. np.array([1,2]) == [1,2] trả
+#      array([True, True]), rồi bool() của nó ném "truth value of an array with
+#      more than one element is ambiguous". 19 ca ở 8 bài NP*. Đây là lỗi KHÔNG
+#      giống lỗi: học viên viết đúng, nhận về ValueError của numpy.
+#
+# Nên hai hàm dưới là bản chép ngữ nghĩa từ practice/worker.py của gói —
+# `expected` của 419 ca được VIẾT theo chúng, nghĩ ra cách chuẩn hoá khác là tự
+# tạo lệch. Giữ cả những nhánh trông như dư (NAType, không-hữu-hạn): bỏ đi là
+# một lớp bài pandas lặng lẽ trượt.
+
+
+def _chuan_gia_tri(value, _sau=0):
+    """Hạ một giá trị Python về dạng JSON đối chiếu được (= normalize của gói).
+
+    `_sau` chặn đệ quy vô hạn: dữ liệu tự tham chiếu (a = []; a.append(a)) làm
+    hàm này chạy mãi. Gói không cần chặn vì nó chạy trong process riêng có thể
+    giết; ở đây nó chạy TRONG worker của học viên, treo là treo cả bài.
+    """
+    if _sau > 24:
+        raise TypeError('Dữ liệu lồng quá sâu để đối chiếu.')
+    if value is None or isinstance(value, (str, bool, int)):
+        return value
+    # pandas.NA / pandas.NaT: so sánh chúng với bất cứ gì cũng ra NA, nên phải
+    # hạ về None TRƯỚC. Kiểm bằng TÊN KIỂU, không `import pandas` — harness
+    # phải nạp được cả khi bài không dùng pandas.
+    if (type(value).__name__ in ('NAType', 'NaTType')
+            and type(value).__module__.startswith('pandas')):
+        return None
+    if isinstance(value, float):
+        # nan != nan, và inf không đi qua JSON. Cả hai về None để phép so dưới
+        # còn nói được điều gì.
+        return value if math.isfinite(value) else None
+    if isinstance(value, (datetime.datetime, datetime.date, datetime.time)):
+        return value.isoformat()
+    if isinstance(value, dict):
+        return {str(k): _chuan_gia_tri(v, _sau + 1) for k, v in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_chuan_gia_tri(v, _sau + 1) for v in value]
+    # ndarray, Series, DataFrame, numpy scalar — theo ĐÚNG thứ tự này:
+    # `.tolist()` trước `.item()` vì numpy scalar có CẢ HAI, mà `.item()` của
+    # mảng nhiều phần tử thì ném.
+    if hasattr(value, 'tolist'):
+        return _chuan_gia_tri(value.tolist(), _sau + 1)
+    if hasattr(value, 'item'):
+        return _chuan_gia_tri(value.item(), _sau + 1)
+    raise TypeError('Kết quả cần là số, chữ, list/dict hoặc array đối chiếu '
+                    'được. Nhận được %s.' % type(value).__name__)
+
+
+def _bang_du_lieu(actual, expected):
+    """So hai giá trị đã chuẩn hoá (= equal của gói).
+
+    Số so bằng math.isclose(rel_tol=1e-6, abs_tol=1e-6), KHÔNG bằng `==`:
+    0.1 + 0.2 ra 0.30000000000000004 và bài dạy tính tiền sẽ trượt vì nhị phân,
+    không vì học viên. `abs_tol` cần thêm vì `rel_tol` một mình không so được
+    gì với 0.
+    """
+    if isinstance(expected, bool):
+        # bool TRƯỚC int: trong Python True == 1, nên bài hỏi True mà trả 1 sẽ
+        # "đạt" nếu để nhánh số bắt trước.
+        return isinstance(actual, bool) and actual == expected
+    if isinstance(expected, (int, float)):
+        return (isinstance(actual, (int, float)) and not isinstance(actual, bool)
+                and math.isclose(actual, expected, rel_tol=1e-6, abs_tol=1e-6))
+    if isinstance(expected, list):
+        return (isinstance(actual, list) and len(actual) == len(expected)
+                and all(_bang_du_lieu(a, b) for a, b in zip(actual, expected)))
+    if isinstance(expected, dict):
+        # set(actual) == set(expected): THỪA khoá cũng là sai, không chỉ thiếu.
+        return (isinstance(actual, dict) and set(actual) == set(expected)
+                and all(_bang_du_lieu(actual[k], v) for k, v in expected.items()))
+    return type(actual) == type(expected) and actual == expected
+
+
+def _kiem_kieu_tra(value, required):
+    """`returnType` của gói: ghim KIỂU trả về, kiểm TRƯỚC khi chuẩn hoá.
+
+    Chỉ 3 ca dùng (tuple x1, numpy.ndarray x2) nhưng chúng là 3 ca duy nhất
+    dạy "dựng đúng cấu trúc dữ liệu", mà chuẩn hoá thì xoá sạch khác biệt đó:
+    [1, 2] và np.array([1, 2]) sau _chuan_gia_tri là một.
+    """
+    if not required:
+        return
+    ten = type(value).__name__
+    if required == 'numpy.ndarray':
+        hop = any(c.__name__ == 'ndarray' and c.__module__.startswith('numpy')
+                  for c in type(value).__mro__)
+    else:
+        hop = ten == required
+    if not hop:
+        raise TypeError('Bài yêu cầu trả %s, nhưng nhận %s. Kiểm lại cách bạn '
+                        'tạo dữ liệu, không chỉ các giá trị in ra.' % (required, ten))
+
+
+def _chay_ca_du_lieu(studio, case, hop_dong):
+    """Chạy MỘT ca chấm theo hợp đồng dữ liệu. Trả (passed, detail).
+
+    Chạy lại cả chương trình cho từng ca — giống worker.py của gói, và đó là
+    chủ đích: hợp đồng này nói "với đầu vào này thì kết quả là gì", nên trạng
+    thái cấp module mà ca trước để lại không được dính sang ca sau.
+    """
+    mode = hop_dong.get('mode') or 'function'
+    du_lieu = case.get('input')
+    if mode == 'script':
+        ten_vao = hop_dong.get('inputVariable') or 'data'
+        ten_ra = hop_dong.get('resultVariable') or 'result'
+        run = studio.run(inject={ten_vao: du_lieu})
+        if run.error:
+            return False, '%s: %s' % (run.error, run.message)
+        if ten_ra not in run.ns:
+            return False, 'Hãy gán kết quả vào biến %s như yêu cầu bài.' % ten_ra
+        gia_tri = run.ns[ten_ra]
+    else:
+        run = studio.run()
+        if run.error:
+            return False, '%s: %s' % (run.error, run.message)
+        solve = run.ns.get('solve')
+        if not callable(solve):
+            return False, ('Chưa có hàm solve(data). Hãy giữ tên hàm để bộ chấm '
+                           'truyền dữ liệu vào.')
+        goi = studio.call(solve, copy.deepcopy(du_lieu))
+        if goi.error:
+            return False, '%s: %s' % (goi.error, goi.message)
+        gia_tri = goi.value
+
+    _kiem_kieu_tra(gia_tri, hop_dong.get('returnType'))
+    thuc = _chuan_gia_tri(gia_tri)
+    mong = case.get('expected')
+    if _bang_du_lieu(thuc, mong):
+        return True, 'Dat: %s' % json.dumps(thuc, ensure_ascii=False)[:200]
+    return False, 'Can co %s nhung nhan %s' % (
+        json.dumps(mong, ensure_ascii=False)[:160],
+        json.dumps(thuc, ensure_ascii=False)[:160])
+
+
+def _studio_main(source, cases_json, files_json, stdin_json='[]',
+                 perf_json='null', contract_json='null'):
     # stdin_json và perf_json có mặc định để check-pyodide.mjs (và mọi chỗ gọi
     # cũ) vẫn gọi được bằng 3 tham số.
     _install()
@@ -5252,10 +5424,27 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='nul
     _SUPPORT_MODULES.clear()
     _SUPPORT_MODULES.update(name[:-3] for name in files if name.endswith('.py'))
     cases = json.loads(cases_json or '[]')
+    # Hợp đồng DỮ LIỆU của bài (mode/inputVariable/resultVariable/
+    # returnType) — dùng chung cho mọi ca của bài đó, nên gửi MỘT lần
+    # thay vì nhắc lại trong từng ca.
+    hop_dong = json.loads(contract_json or 'null') or None
     results = []
     error = None
 
-    main = _run_program(source, files)
+    # Lần chạy CHÍNH cũng cần dữ liệu đề khi hợp đồng là `script`.
+    #
+    # Đo được: thiếu chỗ này thì 12/12 bài script trượt với
+    # "NameError: name 'raw' is not defined" và KHÔNG ca nào kịp chạy — vòng
+    # chấm nằm sau `if error is None`, nên một NameError ở lần chạy chính giết
+    # cả bài. Mà đó cũng đúng là điều học viên thấy khi bấm Chạy: mã của họ đọc
+    # `raw` do đề cấp, không phải biến họ tự gán.
+    #
+    # Lấy đầu vào của ca ĐẦU TIÊN, vì đó là bộ dữ liệu bài dùng làm ví dụ.
+    tiem_chinh = None
+    if hop_dong and (hop_dong.get('mode') == 'script') and cases:
+        ten_vao = hop_dong.get('inputVariable') or 'data'
+        tiem_chinh = {ten_vao: cases[0].get('input')}
+    main = _run_program(source, files, inject=tiem_chinh)
     output = main.stdout
     if main.error and main.error != 'SimulationError':
         error = main.traceback
@@ -5278,10 +5467,18 @@ def _studio_main(source, cases_json, files_json, stdin_json='[]', perf_json='nul
                 os.chdir(main.dir)
                 sink = io.StringIO()
                 with redirect_stdout(sink), redirect_stderr(sink), _redirect_stdin(_loose_stdin()):
-                    actual = eval(case['call'], ns)
-                    expected = eval(case['expect'], ns)
-                ok = actual == expected
-                detail = ('Đạt: %r' % (actual,)) if ok else ('Mong đợi %r nhưng nhận %r' % (expected, actual))
+                    # Phân nhánh theo TRƯỜNG CÓ MẶT, không theo một cờ riêng:
+                    # ca pe-v4 luôn có `call`, ca gói practice luôn có `input`/
+                    # `expected`. Một cờ riêng là thứ thứ hai phải khớp, và nó
+                    # sẽ lệch — kiểu ca thì đọc ngay ra từ chính dữ liệu.
+                    if 'call' in case:
+                        actual = eval(case['call'], ns)
+                        expected = eval(case['expect'], ns)
+                        ok = actual == expected
+                        detail = (('Đạt: %r' % (actual,)) if ok
+                                  else ('Mong đợi %r nhưng nhận %r' % (expected, actual)))
+                    else:
+                        ok, detail = _chay_ca_du_lieu(studio, case, hop_dong or {})
                 results.append({'name': name, 'passed': bool(ok), 'detail': detail[:400]})
             except (AssertionError, StudioSetupError) as exc:
                 results.append({'name': name, 'passed': False,
