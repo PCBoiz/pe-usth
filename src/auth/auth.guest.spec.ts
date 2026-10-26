@@ -17,7 +17,15 @@ describe('AuthService.guest', () => {
     },
   };
   const jwt = { signAsync: jest.fn(() => Promise.resolve('access-token')) };
-  const refresh = { issue: jest.fn(() => Promise.resolve('refresh-token')) };
+  // `lifetimeMsFor` phải có trong mock: từ 26/10 `issueTokens` hỏi nó để biết
+  // cấp hạn nào — khách 30 ngày, tài khoản thật 8 giờ.
+  const GIO = 3_600_000;
+  const refresh = {
+    issue: jest.fn(() => Promise.resolve('refresh-token')),
+    lifetimeMsFor: jest.fn((email: string) =>
+      email.endsWith('@guest.local') ? 30 * 24 * GIO : 8 * GIO,
+    ),
+  };
   const service = new AuthService(prisma as never, jwt as never, refresh as never, {} as never);
 
   afterEach(() => {
@@ -35,6 +43,21 @@ describe('AuthService.guest', () => {
     expect(String(created[0].email)).toMatch(/^guest_[0-9a-f-]{36}@guest\.local$/);
     expect(created[0].questionnaireCompleted).toBe(true);
     expect(created[0].role).toBe('Học viên');
+  });
+
+  it('khách nhận hạn 30 ngày, và hạn đó đi THEO cặp token', async () => {
+    // Vì sao quan trọng: đợt thử nghiệm không bắt đăng nhập, nên refresh token
+    // là thứ DUY NHẤT giữ tiến độ của người thử. Hạn 24 giờ nghĩa là ai quay
+    // lại hôm sau cũng nhận một tài khoản mới và thấy như mất sạch.
+    const a = await service.guest();
+
+    expect(a.refreshExpiresInMs).toBe(30 * 24 * GIO);
+    // Và hạn đó phải được DÙNG để cấp token, không chỉ báo cáo suông.
+    expect(refresh.issue).toHaveBeenCalledWith(
+      expect.any(Number),
+      undefined,
+      30 * 24 * GIO,
+    );
   });
 
   it('không thể đăng nhập vào tài khoản khách bằng mật khẩu nào', async () => {

@@ -5,26 +5,66 @@ import { createHash } from 'crypto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { RefreshTokenService } from './refresh-token.service';
 
+/**
+ * Hình dạng hàng `auth_sessions` mà service GHI xuống. Chỉ phần ĐỐI SỐ cần
+ * kiểu thật, vì các ca dưới đọc lại chính nó qua `mock.calls` để chứng minh
+ * "token lưu xuống là HASH" và "hạn ghi vào DB bằng hạn báo ra". Giá trị trả
+ * về để `Promise<unknown>` là đủ: mỗi ca tự `mockResolvedValue()`.
+ *
+ * `jest.Mock` trần (bản cũ) làm cả ba dòng đó thành `any`, nên gõ sai tên
+ * trường — `expires_at` thay cho `expiresAt` — vẫn biên dịch và test vẫn ĐẠT
+ * trong khi chẳng kiểm gì. Đúng cách dọn mà AGENTS.md đã ghi cho `quizzes` +
+ * `lessons`.
+ */
+type DataPhien = {
+  userId: number;
+  token: string;
+  familyId: string;
+  expiresAt: Date;
+};
+
+type AsyncMock<A extends unknown[] = unknown[]> = jest.Mock<
+  Promise<unknown>,
+  A
+>;
+
+const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
+  jest.fn<Promise<unknown>, A>();
+
+type DieuKien = Record<string, unknown>;
+
 describe('RefreshTokenService', () => {
   let service: RefreshTokenService;
   let authSession: {
-    create: jest.Mock;
-    findFirst: jest.Mock;
-    updateMany: jest.Mock;
+    create: AsyncMock<[{ data: DataPhien }]>;
+    findFirst: AsyncMock<[{ where: { token: string }; include?: unknown }]>;
+    updateMany: AsyncMock<[{ where: DieuKien; data: DieuKien }]>;
   };
 
   beforeEach(async () => {
     authSession = {
-      create: jest.fn().mockResolvedValue({ id: 1 }),
-      findFirst: jest.fn(),
-      updateMany: jest.fn().mockResolvedValue({ count: 1 }),
+      create: asyncMock<[{ data: DataPhien }]>().mockResolvedValue({ id: 1 }),
+      findFirst: asyncMock<[{ where: { token: string }; include?: unknown }]>(),
+      updateMany: asyncMock<
+        [{ where: DieuKien; data: DieuKien }]
+      >().mockResolvedValue({ count: 1 }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RefreshTokenService,
         { provide: PrismaService, useValue: { authSession } },
-        { provide: ConfigService, useValue: { get: () => '8h' } },
+        {
+          // Mock phải phân biệt KHOÁ. Bản cũ `get: () => '8h'` trả '8h' cho mọi
+          // khoá nên `jwt.guestRefreshExpires` cũng thành 8 giờ — hai hạn bằng
+          // nhau thì mọi ca so "khách khác tài khoản thật" đều vô nghĩa, mà
+          // vẫn XANH. Đúng kiểu fixture-không-giống-thật mà AGENTS.md ghi.
+          provide: ConfigService,
+          useValue: {
+            get: (key: string) =>
+              key === 'jwt.guestRefreshExpires' ? '30d' : '8h',
+          },
+        },
       ],
     }).compile();
 
@@ -69,12 +109,45 @@ describe('RefreshTokenService', () => {
   });
 
   describe('rotateAndBlacklist', () => {
-    const live = () => ({
+    // Hàng phiên như truy vấn THẬT trả về: từ 26/10 `rotateAndBlacklist` lấy
+    // kèm email của chủ tài khoản (cùng một vòng DB, qua `include`) để biết
+    // cấp hạn nào — khách 30 ngày, tài khoản thật theo JWT_REFRESH_EXPIRES.
+    // Fixture thiếu `user` thì hàm ném, đúng họ bẫy "fixture không giống dữ
+    // liệu thật" mà AGENTS.md đã ghi.
+    const live = (email = 'nguoi-that@example.com') => ({
       id: 7,
       userId: 42,
       familyId: 'fam-1',
       revokedAt: null,
       expiresAt: new Date(Date.now() + 60_000),
+      user: { email },
+    });
+
+    it('hạn tính lại theo CHỦ tài khoản ở mỗi lần rotate — ca bắt lỗi', async () => {
+      // Cửa sổ của khách là TRƯỢT: mỗi lần refresh phải cấp lại 30 ngày mới,
+      // nếu không thì người thử vẫn mất tiến độ đúng 30 ngày sau lần đầu.
+      // Và tài khoản thật KHÔNG được ăn theo cửa sổ dài đó.
+      authSession.findFirst.mockResolvedValue(live('ai-do@guest.local'));
+      const khach = await service.rotateAndBlacklist('raw');
+      expect(khach.refreshExpiresInMs).toBe(service.guestLifetimeMs);
+
+      authSession.findFirst.mockResolvedValue(live('admin@example.com'));
+      const that = await service.rotateAndBlacklist('raw');
+      expect(that.refreshExpiresInMs).toBe(service.lifetimeMs);
+      expect(that.refreshExpiresInMs).not.toBe(khach.refreshExpiresInMs);
+    });
+
+    it('hạn được DÙNG để ghi expires_at, không chỉ báo cáo suông', async () => {
+      // Trả đúng số mà ghi hàng DB bằng hạn khác thì cookie và DB lệch nhau:
+      // client tưởng còn phiên, server đã từ chối.
+      authSession.findFirst.mockResolvedValue(live('ai-do@guest.local'));
+      const truoc = Date.now();
+      await service.rotateAndBlacklist('raw');
+
+      const ghi = authSession.create.mock.calls.at(-1)![0].data;
+      const con = ghi.expiresAt.getTime() - truoc;
+      // Cho sai số 5 giây vì hai mốc thời gian lấy ở hai thời điểm khác nhau.
+      expect(Math.abs(con - service.guestLifetimeMs)).toBeLessThan(5_000);
     });
 
     it('tra DB bằng hash của token, không phải token thô', async () => {

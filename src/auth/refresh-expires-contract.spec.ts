@@ -35,12 +35,35 @@ describe('hợp đồng refreshExpiresIn của /auth/*', () => {
     };
   }
 
-  function dungController(refreshExpires: string | undefined) {
-    const config = new ConfigService({ jwt: { refreshExpires } });
+  /**
+   * `email` quyết định hạn, vì hạn nay khác nhau theo LOẠI TÀI KHOẢN: khách
+   * `@guest.local` được cửa sổ dài (đợt thử nghiệm không bắt đăng nhập nên
+   * refresh token là thứ duy nhất giữ tiến độ), tài khoản thật thì không.
+   * Mặc định để email KHÔNG phải khách, để các ca cũ vẫn nói về đúng
+   * `JWT_REFRESH_EXPIRES` như trước.
+   *
+   * Mock `authService.guest()` phải tự tính `refreshExpiresInMs` bằng chính
+   * `lifetimeMsFor` của service thật — AuthService là chỗ quyết hạn trong sản
+   * phẩm, còn controller chỉ chuyển tiếp. Trả cứng một số ở đây là mock khẳng
+   * định hộ cái đang cần chứng minh.
+   */
+  function dungController(
+    refreshExpires: string | undefined,
+    email = 'that@example.com',
+    guestRefreshExpires: string | undefined = '30d',
+  ) {
+    const config = new ConfigService({
+      jwt: { refreshExpires, guestRefreshExpires },
+    });
     const refreshTokens = new RefreshTokenService({} as never, config);
     const authService = {
       guest: jest.fn(() =>
-        Promise.resolve({ ok: true, access: 'A', refresh: 'R' }),
+        Promise.resolve({
+          ok: true,
+          access: 'A',
+          refresh: 'R',
+          refreshExpiresInMs: refreshTokens.lifetimeMsFor(email),
+        }),
       ),
     };
     const controller = new AuthController(
@@ -97,6 +120,45 @@ describe('hợp đồng refreshExpiresIn của /auth/*', () => {
     }
   });
 
+  it('khách được cửa sổ DÀI, tài khoản thật thì không — ca bắt lỗi', async () => {
+    // Đây là chỗ dễ sửa nửa vời nhất: tính đúng hạn khách ở AuthService nhưng
+    // controller vẫn đặt cookie bằng hằng `lifetimeMs`. Khi đó body nói 30
+    // ngày, cookie chết sau 8 giờ, và người thử mất tiến độ đúng như trước —
+    // chỉ khác là lần này API khẳng định ngược lại.
+    const khach = dungController('8h', 'abc123@guest.local');
+    const resK = resGia();
+    const bodyK = (await khach.controller.guest(resK as never)) as {
+      refreshExpiresIn?: number;
+    };
+    expect(bodyK.refreshExpiresIn).toBe(2_592_000);
+    expect(
+      resK.cookies.find((c) => c.ten === REFRESH_COOKIE)?.opts.maxAge,
+    ).toBe(khach.refreshTokens.guestLifetimeMs);
+
+    const that = dungController('8h', 'admin@example.com');
+    const resT = resGia();
+    const bodyT = (await that.controller.guest(resT as never)) as {
+      refreshExpiresIn?: number;
+    };
+    expect(bodyT.refreshExpiresIn).toBe(28_800);
+    expect(
+      resT.cookies.find((c) => c.ten === REFRESH_COOKIE)?.opts.maxAge,
+    ).toBe(that.refreshTokens.lifetimeMs);
+  });
+
+  it('JWT_GUEST_REFRESH_EXPIRES rác thì về mặc định 30 ngày, không về 8 giờ', async () => {
+    // Hướng lệch KHÔNG đối xứng (AGENTS.md, bẫy hạn dự phòng): đoán NGẮN hơn
+    // hạn thật chỉ mất cái badge; ở đây đoán ngắn nghĩa là khách mất tiến độ,
+    // tức đúng lỗi đang sửa quay lại qua đường cấu hình gõ sai.
+    for (const rac of [undefined, '', 'ba mươi ngày', '30 ngày', '30dd']) {
+      const { controller } = dungController('8h', 'x@guest.local', rac);
+      const body = (await controller.guest(resGia() as never)) as {
+        refreshExpiresIn?: number;
+      };
+      expect(body.refreshExpiresIn).toBe(2_592_000);
+    }
+  });
+
   it('KHÔNG để refresh token lọt vào body', async () => {
     // Lý do `moveRefreshToCookie` tồn tại; thêm field mới không được phá nó.
     const { controller } = dungController('24h');
@@ -105,6 +167,10 @@ describe('hợp đồng refreshExpiresIn của /auth/*', () => {
       unknown
     >;
     expect(body).not.toHaveProperty('refresh');
+    // `refreshExpiresInMs` là chi tiết nội bộ (milliseconds): hợp đồng ra ngoài
+    // là `refreshExpiresIn` tính GIÂY. Để lọt cả hai thì client sớm muộn đọc
+    // nhầm đơn vị — lệch 1000 lần, theo chiều NỚI hạn, đúng chiều nguy hiểm.
+    expect(body).not.toHaveProperty('refreshExpiresInMs');
     expect(body.access).toBe('A');
   });
 });

@@ -94,6 +94,12 @@ export const envValidationSchema = Joi.object({
   JWT_ACCESS_SECRET: Joi.string().min(32).required(),
   JWT_ACCESS_EXPIRES: Joi.string().default('30m'),
   JWT_REFRESH_EXPIRES: Joi.string().default('8h'),
+  // Hạn RIÊNG cho tài khoản khách. Dài hơn hẳn vì đợt thử nghiệm không bắt
+  // đăng nhập: với người thử, refresh token là thứ DUY NHẤT giữ tiến độ, hết
+  // hạn là họ nhận một tài khoản mới và thấy như mất sạch. Tách khỏi biến
+  // trên để không nới cửa sổ của quản trị viên theo — xem
+  // `RefreshTokenService.lifetimeMsFor`.
+  JWT_GUEST_REFRESH_EXPIRES: Joi.string().default('30d'),
 
   // Cookie refresh token: 'lax' khi frontend và backend cùng site (vd
   // app.example.com + api.example.com); 'none' khi khác site (bắt buộc HTTPS).

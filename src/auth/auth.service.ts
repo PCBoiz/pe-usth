@@ -42,6 +42,15 @@ export interface OAuthProfile {
 export interface TokenPair {
   access: string;
   refresh: string;
+  /**
+   * Hạn THẬT của refresh token vừa cấp, tính bằng ms.
+   *
+   * Đi kèm vì hạn nay khác nhau giữa khách và tài khoản thật (xem
+   * `RefreshTokenService.lifetimeMsFor`). Controller phải đặt cookie VÀ báo
+   * `refreshExpiresIn` cho client từ CHÍNH con số này — đọc lại một hằng toàn
+   * cục là tái tạo đúng lỗi lệch 8h/24h đã sửa ngày 25/10.
+   */
+  refreshExpiresInMs: number;
 }
 
 @Injectable()
@@ -179,8 +188,11 @@ export class AuthService {
   async refresh(refreshToken: string): Promise<TokenPair> {
     // rotateAndBlacklist đã bao gồm: verify còn hạn + chưa bị thu hồi (bước 1),
     // rồi đánh dấu revokedAt + cấp token mới (bước 2).
-    const { userId, refreshToken: newRefresh } =
-      await this.refreshTokenService.rotateAndBlacklist(refreshToken);
+    const {
+      userId,
+      refreshToken: newRefresh,
+      refreshExpiresInMs,
+    } = await this.refreshTokenService.rotateAndBlacklist(refreshToken);
 
     const user = await this.cachedUsers.findById(userId);
     if (!user) throw new UnauthorizedException();
@@ -188,6 +200,7 @@ export class AuthService {
     return {
       access: await this.signAccessToken(user),
       refresh: newRefresh,
+      refreshExpiresInMs,
     };
   }
 
@@ -254,9 +267,17 @@ export class AuthService {
   }
 
   async issueTokens(user: User): Promise<TokenPair> {
+    const refreshExpiresInMs = this.refreshTokenService.lifetimeMsFor(
+      user.email,
+    );
     return {
       access: await this.signAccessToken(user),
-      refresh: await this.refreshTokenService.issue(user.id),
+      refresh: await this.refreshTokenService.issue(
+        user.id,
+        undefined,
+        refreshExpiresInMs,
+      ),
+      refreshExpiresInMs,
     };
   }
 

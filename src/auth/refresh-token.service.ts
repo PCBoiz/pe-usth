@@ -45,12 +45,38 @@ function hashToken(rawToken: string): string {
 export interface RotatedRefreshToken {
   userId: number;
   refreshToken: string;
+  /** Hạn THẬT của token vừa cấp. Đi kèm để chỗ gọi không phải đoán lại. */
+  refreshExpiresInMs: number;
 }
+
+/**
+ * Đuôi email của tài khoản khách. Khai ở đây vì `lifetimeMsFor` bên dưới là
+ * chỗ DUY NHẤT phân biệt khách với tài khoản thật; `auth.service.ts` import
+ * lại để dựng email, nên hai nơi không thể lệch nhau.
+ */
+export const HAU_TO_KHACH = '@guest.local';
 
 @Injectable()
 export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
-  /** Lifetime đọc từ JWT_REFRESH_EXPIRES (mặc định 8h) — 1 nguồn sự thật duy nhất. */
+  /** Hạn cho TÀI KHOẢN THẬT, đọc từ JWT_REFRESH_EXPIRES (mặc định 8h). */
   readonly lifetimeMs: number;
+
+  /**
+   * Hạn cho TÀI KHOẢN KHÁCH, đọc từ JWT_GUEST_REFRESH_EXPIRES (mặc định 30d).
+   *
+   * VÌ SAO TÁCH LÀM HAI. Đợt thử nghiệm cố ý KHÔNG bắt đăng nhập, nên với
+   * người thử, refresh token CHÍNH LÀ thứ duy nhất giữ tiến độ của họ: hết hạn
+   * là `apiFetch` rơi xuống `ensureGuest()` và cấp một tài khoản mới tinh —
+   * họ thấy như mất sạch. Với hạn 24 giờ thì ai quay lại hôm sau cũng mất.
+   *
+   * Nhưng nâng hạn CHUNG lên 30 ngày thì kéo theo cả quản trị viên và tài
+   * khoản từ bản Django, tức nới cửa sổ dùng được của một cookie bị đánh cắp
+   * cho đúng những tài khoản có gì để mất. Tài khoản khách thì không: không
+   * mật khẩu (không đăng nhập lại được bằng cách nào khác), không thông tin cá
+   * nhân, chỉ có tiến độ bài học.
+   */
+  readonly guestLifetimeMs: number;
+
   private readonly logger = new Logger(RefreshTokenService.name);
   private pruneTimer?: NodeJS.Timeout;
 
@@ -62,6 +88,20 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
       config.get<string>('jwt.refreshExpires'),
       8 * 3_600_000,
     );
+    this.guestLifetimeMs = parseDuration(
+      config.get<string>('jwt.guestRefreshExpires'),
+      30 * 24 * 3_600_000,
+    );
+  }
+
+  /**
+   * Hạn áp cho CHỦ của email này. Hàm thuần, không truy vấn — chỗ gọi đều đã
+   * có sẵn email trong tay nên không được phép tốn thêm một vòng DB ở đây.
+   */
+  lifetimeMsFor(email: string | null | undefined): number {
+    return email?.toLowerCase().endsWith(HAU_TO_KHACH)
+      ? this.guestLifetimeMs
+      : this.lifetimeMs;
   }
 
   /**
@@ -72,9 +112,10 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
   async issue(
     userId: number,
     familyId: string = randomUUID(),
+    lifetimeMs: number = this.lifetimeMs,
   ): Promise<string> {
     const rawToken = randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + this.lifetimeMs);
+    const expiresAt = new Date(Date.now() + lifetimeMs);
 
     await this.prisma.authSession.create({
       data: {
@@ -105,6 +146,10 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
   async rotateAndBlacklist(oldToken: string): Promise<RotatedRefreshToken> {
     const session = await this.prisma.authSession.findFirst({
       where: { token: hashToken(oldToken) },
+      // Lấy email TRONG CHÍNH truy vấn này, không phải một vòng DB nữa:
+      // `lifetimeMsFor` cần nó để biết đây là khách hay tài khoản thật, và
+      // đây là đường nóng — mỗi lần refresh của mọi người đều đi qua đây.
+      include: { user: { select: { email: true } } },
     });
 
     if (!session) {
@@ -135,12 +180,20 @@ export class RefreshTokenService implements OnModuleInit, OnModuleDestroy {
       throw new UnauthorizedException();
     }
 
+    // Hạn tính lại theo CHỦ tài khoản ở mỗi lần rotate, không kế thừa từ hàng
+    // cũ: bảng `auth_sessions` dùng chung với bản Django nên không có cột
+    // createdAt để suy ra hạn gốc, và ràng buộc "migration chỉ được THÊM"
+    // trong AGENTS.md khiến việc thêm cột chỉ để lưu hạn là không đáng.
+    const refreshExpiresInMs = this.lifetimeMsFor(session.user.email);
+
     return {
       userId: session.userId,
       refreshToken: await this.issue(
         session.userId,
         session.familyId ?? randomUUID(),
+        refreshExpiresInMs,
       ),
+      refreshExpiresInMs,
     };
   }
 

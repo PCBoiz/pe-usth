@@ -60,12 +60,16 @@ export class AuthController {
   private moveRefreshToCookie<T extends TokenPair>(
     res: Response,
     result: T,
-  ): Omit<T, 'refresh'> & { refreshExpiresIn: number } {
-    const { refresh, ...rest } = result;
-    setRefreshCookie(res, refresh, this.refreshTokens.lifetimeMs);
+  ): Omit<T, 'refresh' | 'refreshExpiresInMs'> & { refreshExpiresIn: number } {
+    const { refresh, refreshExpiresInMs, ...rest } = result;
+    // CẢ HAI lấy từ `refreshExpiresInMs` của chính lần cấp này, không từ một
+    // hằng toàn cục: hạn nay khác nhau giữa khách (30 ngày) và tài khoản thật
+    // (8 giờ). Đọc hằng ở đây là tái tạo đúng lỗi lệch 8h/24h đã sửa 25/10,
+    // chỉ khác là lần này lệch theo LOẠI TÀI KHOẢN nên còn khó thấy hơn.
+    setRefreshCookie(res, refresh, refreshExpiresInMs);
     return {
       ...rest,
-      refreshExpiresIn: Math.floor(this.refreshTokens.lifetimeMs / 1000),
+      refreshExpiresIn: Math.floor(refreshExpiresInMs / 1000),
     };
   }
 

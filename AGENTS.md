@@ -44,8 +44,8 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 27 bộ, 266 ca, tất cả đạt |
-| Backend lint | 263 lỗi, 2 cảnh báo — **mốc trần trong CI là 283, chỉ được hạ** |
+| Backend test | 27 bộ, 271 ca, tất cả đạt |
+| Backend lint | 245 lỗi, 2 cảnh báo — **mốc trần trong CI là 265, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
 | Frontend unit test | `cd frontend && npm run test:unit` → **196 ca** / 18 tệp, tất cả đạt |
@@ -239,6 +239,36 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `LESSON_CACHE_TTL_MS` / `LESSON_CACHE_DISABLED` đã bỏ khỏi `.env.example`: không mã nào đọc
   chúng và `git log -S` trên `src/` không có commit nào — bộ cache đó chưa bao giờ được làm,
   nên dòng hứa "giảm ~550 ms mỗi lần mở bài" là tài liệu nói sai suốt từ đầu.
+- **Hạn phiên nay KHÁC NHAU theo loại tài khoản, và đó là một lựa chọn an ninh có chủ đích.**
+  Đợt thử nghiệm cố ý không bắt đăng nhập, nên với người thử, refresh token CHÍNH LÀ thứ duy
+  nhất giữ tiến độ: hết hạn là `apiFetch` rơi xuống `ensureGuest()` và cấp một tài khoản MỚI —
+  họ thấy như mất sạch. Production đặt `JWT_REFRESH_EXPIRES=24h`, nên ai quay lại hôm sau cũng
+  mất. Nay khách `@guest.local` đi theo `JWT_GUEST_REFRESH_EXPIRES` (mặc định **30d**), tài
+  khoản thật giữ nguyên `JWT_REFRESH_EXPIRES`.
+  **Vì sao KHÔNG nâng hạn chung lên 30 ngày:** làm vậy là nới cửa sổ dùng được của một cookie
+  bị đánh cắp cho đúng những tài khoản CÓ GÌ ĐỂ MẤT — quản trị viên và tài khoản mang hash
+  Werkzeug từ bản Django. Tài khoản khách không mật khẩu (không đăng nhập lại bằng cách khác
+  được), không thông tin cá nhân, chỉ có tiến độ bài học.
+  **Chỗ duy nhất phân biệt là `lifetimeMsFor(email)`** trong `refresh-token.service.ts`; hằng
+  `HAU_TO_KHACH` export từ đó và `auth.service.ts` import lại để dựng email, nên hai nơi không
+  lệch nhau được. Hàm THUẦN, không truy vấn: mọi chỗ gọi đều đã có email trong tay, nên
+  `rotateAndBlacklist` lấy email bằng `include` trong CÙNG vòng DB đang có, không thêm vòng mới.
+  **Cửa sổ là TRƯỢT nên hạn phải tính lại ở MỖI lần rotate**, không chỉ lúc cấp đầu — nếu
+  không thì người thử vẫn mất tiến độ, chỉ là đúng 30 ngày sau thay vì 24 giờ.
+  **Bản sửa nửa vời dễ trông như xong:** tính đúng hạn ở `AuthService` nhưng để controller đặt
+  cookie bằng hằng `lifetimeMs`. Khi đó body nói 30 ngày, cookie chết sau 8 giờ, và API khẳng
+  định ngược lại điều đang xảy ra. `moveRefreshToCookie` phải lấy CẢ cookie lẫn
+  `refreshExpiresIn` từ cùng `refreshExpiresInMs` của chính lần cấp đó — đúng bài học của vụ
+  lệch 8h/24h ngày 25/10, chỉ khác là lần này lệch theo LOẠI TÀI KHOẢN nên còn khó thấy hơn.
+  `refreshExpiresInMs` (milliseconds) là chi tiết nội bộ, hợp đồng ra ngoài là `refreshExpiresIn`
+  tính GIÂY; để lọt cả hai thì sớm muộn client đọc nhầm đơn vị — lệch 1000 lần theo chiều NỚI
+  hạn, tức đúng chiều nguy hiểm.
+  **Mock ConfigService phải phân biệt KHOÁ.** `refresh-token.service.spec.ts` từng dùng
+  `{ get: () => '8h' }` — trả '8h' cho mọi khoá, nên `jwt.guestRefreshExpires` cũng thành 8 giờ
+  và MỌI ca so "khách khác tài khoản thật" đều vô nghĩa mà vẫn XANH. Cùng họ bẫy fixture ghi ở
+  trên. 5 ca canh chỗ này (`refresh-token.service.spec.ts` 2, `refresh-expires-contract.spec.ts`
+  2, `auth.guest.spec.ts` 1); ablate `lifetimeMsFor` → 2 đỏ, ablate cookie → 1 đỏ.
+
 - **Bộ chạy Python ở MÁY CHỦ đã bị xoá (25/10) — và chỗ duy nhất không được xoá cùng.**
   `src/python-runner/`, `runner/`, `docker/py-sandbox/` đi hết; `/ide` nay chạy Pyodide trong
   trình duyệt. Xác nhận trên production TRƯỚC khi xoá: `/ide` chạy `print(sys.version)` ra
