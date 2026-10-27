@@ -205,6 +205,28 @@
       "minimum": 0
      },
      "expected": []
+    },
+    {
+     "name": "cùng thành phố, một đơn dưới ngưỡng",
+     "input": {
+      "rows": [
+       {
+        "order": "B",
+        "city": "HN",
+        "amount": 20
+       },
+       {
+        "order": "C",
+        "city": "HN",
+        "amount": 25
+       }
+      ],
+      "city": "HN",
+      "minimum": 25
+     },
+     "expected": [
+      "C"
+     ]
     }
    ],
    "hints": [

@@ -191,6 +191,18 @@
      "name": "rỗng",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "tên môn rỗng vẫn phải có dấu hai chấm",
+     "input": [
+      {
+       "id": "X",
+       "name": ""
+      }
+     ],
+     "expected": [
+      "X: "
+     ]
     }
    ],
    "hints": [

@@ -175,6 +175,17 @@
      "name": "Không có ghế",
      "input": 0,
      "expected": []
+    },
+    {
+     "name": "Năm ghế, số cuối phải đúng 2*n",
+     "input": 5,
+     "expected": [
+      2,
+      4,
+      6,
+      8,
+      10
+     ]
     }
    ],
    "contract": {

@@ -209,6 +209,29 @@
       "names": [],
       "amounts": []
      }
+    },
+    {
+     "name": "Số tiền âm xếp trước",
+     "input": {
+      "names": [
+       "A",
+       "B"
+      ],
+      "amounts": [
+       2,
+       -5
+      ]
+     },
+     "expected": {
+      "names": [
+       "B",
+       "A"
+      ],
+      "amounts": [
+       -5,
+       2
+      ]
+     }
     }
    ],
    "contract": {

@@ -187,6 +187,15 @@
      "name": "Chưa có số đo",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "Chỉ một số đo, trên ngưỡng",
+     "input": [
+      31
+     ],
+     "expected": [
+      true
+     ]
     }
    ],
    "contract": {

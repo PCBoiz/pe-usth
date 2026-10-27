@@ -197,6 +197,17 @@
      "name": "không việc",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "hai số cho cùng một bình phương",
+     "input": [
+      1,
+      -1
+     ],
+     "expected": [
+      1,
+      1
+     ]
     }
    ],
    "hints": [

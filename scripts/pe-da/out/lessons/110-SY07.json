@@ -187,6 +187,19 @@
      "name": "không có báo cáo",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "giữ thứ tự khi tiêu đề lặp",
+     "input": [
+      "b",
+      "a",
+      "b"
+     ],
+     "expected": [
+      "Report: b",
+      "Report: a",
+      "Report: b"
+     ]
     }
    ],
    "hints": [

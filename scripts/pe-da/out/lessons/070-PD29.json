@@ -189,6 +189,20 @@
       0,
       3
      ]
+    },
+    {
+     "name": "hai số trùng đều vượt ngưỡng",
+     "input": {
+      "amounts": [
+       5,
+       5
+      ],
+      "threshold": 4
+     },
+     "expected": [
+      5,
+      5
+     ]
     }
    ],
    "hints": [

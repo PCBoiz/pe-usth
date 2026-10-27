@@ -189,6 +189,20 @@
       ]
      ],
      "expected": 0
+    },
+    {
+     "name": "Chỉ một ô khác không",
+     "input": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       5
+      ]
+     ],
+     "expected": 5
     }
    ],
    "contract": {

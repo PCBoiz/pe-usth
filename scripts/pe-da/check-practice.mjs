@@ -309,11 +309,20 @@ if (khongChayDuoc.length) {
  *   TRẢ HẰNG — hàm trả đúng `expected` của ca ĐẦU rồi thôi. Phải trượt ÍT NHẤT
  *   MỘT ca. Đạt hết nghĩa là mọi ca của bài hỏi cùng một câu: bài đó chấm được
  *   cả lời giải chỉ thuộc lòng ví dụ, tức không chấm gì.
+ *
+ * Nhóm thứ ba (`traNguyen`/`traRong`, luật `tamthuong`) nối tiếp đúng phát hiện
+ * của 5 dương tính giả trên: "khung trống" chỉ là MỘT hình dạng của "chưa làm
+ * gì", nên nó bỏ sót ca mà đáp án TRÙNG đầu vào hoặc đáp án đúng bằng rỗng.
+ * Xem chú thích ngay trên hai hàm đó.
  */
 const choPhepSai = [];
 /** Bài mà khung trống vẫn đạt một ca `expected: null` — không phải lỗi, nhưng
  *  học viên chưa viết gì đã thấy "1/3 ca đạt", nên người soạn bài cần biết. */
 const datKhungTrong = [];
+/** Bài mà một lời giải TẦM THƯỜNG (dội lại đầu vào / trả rỗng) đạt đúng ca có
+ *  đáp án bằng chính giá trị đó — cùng họ với `datKhungTrong`: không phải lỗi
+ *  của bộ chấm, nhưng là một ca xanh mà học viên chưa làm gì đã nhận. */
+const datTamThuong = [];
 let soBienThe = 0;
 let soTruot = 0;
 
@@ -390,6 +399,76 @@ function traHang(bt) {
   return `def solve(data):\n    return ${hang}\n`;
 }
 
+/* --------------------------------------------------- LỜI GIẢI TẦM THƯỜNG
+ *
+ * Mã KHÔNG đọc đầu vào, hoặc chỉ dội nguyên đầu vào ra.
+ *
+ * Vì sao cần thêm, dù đã có khung trống và trả hằng: hai biến thể đó chỉ bắt
+ * được hai hình dạng "không làm gì" cụ thể (None, và hằng của ca ĐẦU). Một ca
+ * chấm còn yếu theo những cách khác — ca mà đáp án TRÙNG đầu vào, ca mà đáp án
+ * đúng bằng rỗng (`[]`/`{}`/`0`/`''`) — và học viên chưa viết dòng nào vẫn thấy
+ * ca đó xanh. Chính phát hiện "khung trống đã đạt 1 ca" ở 5 bài (PY16, NP17,
+ * VZ30, SY03, SY13) là một trường hợp RIÊNG của họ lỗi này; nhóm biến thể dưới
+ * đây tìm cho hết họ đó thay vì chỉ sửa 5 bài đã biết.
+ *
+ * Luật đánh giá y như khung trống, không nới một li: đạt một ca mà `expected`
+ * KHÁC giá trị tầm thường ấy là LỘ ĐÁP ÁN (lỗi); đạt đúng ca mà `expected` BẰNG
+ * chính giá trị đó là tự nhiên — ghi nhận để người soạn bài biết, không báo lỗi.
+ */
+function traNguyen(bt) {
+  if (bt.mode === 'script') {
+    const vao = bt.inputVariable || 'data';
+    const ra = bt.resultVariable || 'result';
+    // Cùng một tên thì `x = x` không còn là "dội lại đầu vào", nó chỉ là mã vô
+    // nghĩa — và kết quả không nói lên điều gì về ca chấm.
+    if (vao === ra) return null;
+    return `${ra} = ${vao}\n`;
+  }
+  return 'def solve(data):\n    return data\n';
+}
+
+/** Giá trị RỖNG cùng kiểu với `v` — đúng thứ một lời giải "chưa làm gì" trả. */
+function rongCungKieu(v) {
+  if (v === null || v === undefined) return null;
+  if (Array.isArray(v)) return [];
+  if (typeof v === 'boolean') return false;
+  if (typeof v === 'number') return 0;
+  if (typeof v === 'string') return '';
+  if (typeof v === 'object') return {};
+  return null;
+}
+
+function traRong(bt, hang) {
+  if (bt.mode === 'script') return `${bt.resultVariable || 'result'} = ${pyRepr(hang)}\n`;
+  return `def solve(data):\n    return ${pyRepr(hang)}\n`;
+}
+
+/**
+ * So hai giá trị như `_bang_du_lieu` của harness (studio-harness.py).
+ *
+ * Phải CÙNG phép so mà bộ chấm đã dùng, nếu không thì luật "tự nhiên hay lộ
+ * đáp án" nói khác bộ chấm. Cụ thể: số so theo sai số như bên đó, vì với
+ * `JSON.stringify` thì 0.30000000000000004 khác 0.3 và một ca tự nhiên sẽ bị
+ * báo thành lỗi; dict so theo TẬP KHOÁ, không theo thứ tự khoá.
+ */
+function bangDuLieu(a, b) {
+  if (typeof a === 'boolean' || typeof b === 'boolean') return a === b;
+  if (typeof a === 'number' && typeof b === 'number') {
+    return Math.abs(a - b) <= 1e-6 + 1e-6 * Math.abs(b);
+  }
+  if (Array.isArray(b)) {
+    return Array.isArray(a) && a.length === b.length
+      && a.every((x, i) => bangDuLieu(x, b[i]));
+  }
+  if (b && typeof b === 'object') {
+    if (!a || typeof a !== 'object' || Array.isArray(a)) return false;
+    const ka = Object.keys(a);
+    const kb = Object.keys(b);
+    return ka.length === kb.length && kb.every((k) => k in a && bangDuLieu(a[k], b[k]));
+  }
+  return (a ?? null) === (b ?? null);
+}
+
 for (const bai of goi.lessons) {
   if (only && !only.has(bai.id)) continue;
   for (const bt of bai.exercises) {
@@ -402,11 +481,22 @@ for (const bai of goi.lessons) {
       name: t.name, input: t.input ?? null, expected: t.expected ?? null,
     }));
 
-    for (const [loai, code, luat] of [
-      ['khung trống', khungTrong(bt), 'het'],
-      ['trả hằng', traHang(bt), 'motca'],
-      ['thừa một khoá dict', themKhoa(bt), 'hetsai'],
-      ['hạ tuple/ndarray xuống list', haKieu(bt), 'hetsai'],
+    // Mỗi KIỂU đáp án mà bài có sinh ra một biến thể "trả rỗng" riêng, dedupe
+    // theo repr: bài trả list thì thử `[]`, bài trả dict thì `{}`, bài có ca
+    // `null` thì `None` — và bài trộn nhiều kiểu thì thử cả mấy cái.
+    const rong = [];
+    for (const t of bt.tests || []) {
+      const r = rongCungKieu(t.expected ?? null);
+      if (!rong.some((x) => pyRepr(x) === pyRepr(r))) rong.push(r);
+    }
+
+    for (const [loai, code, luat, tri] of [
+      ['khung trống', khungTrong(bt), 'het', null],
+      ['trả hằng', traHang(bt), 'motca', null],
+      ['thừa một khoá dict', themKhoa(bt), 'hetsai', null],
+      ['hạ tuple/ndarray xuống list', haKieu(bt), 'hetsai', null],
+      ['trả nguyên đầu vào', traNguyen(bt), 'tamthuong', (i) => cases[i]?.input ?? null],
+      ...rong.map((h) => [`trả rỗng ${pyRepr(h)}`, traRong(bt, h), 'tamthuong', () => h]),
     ]) {
       if (code === null) continue;
       soBienThe += 1;
@@ -443,6 +533,31 @@ for (const bai of goi.lessons) {
           soTruot += 1;
           if (dat > 0) datKhungTrong.push({ ma: bai.id, id: bt.id, dat, tong });
         }
+      } else if (luat === 'tamthuong') {
+        // Cùng luật với khung trống, chỉ khác "giá trị tầm thường" không phải
+        // None mà là thứ biến thể này trả về cho ca đó.
+        const lo = ketQua.filter((r, i) => r.passed
+          && !bangDuLieu(cases[i]?.expected ?? null, tri(i)));
+        if (lo.length) {
+          choPhepSai.push({
+            ma: bai.id, id: bt.id, loai,
+            vi: `ĐẠT ${lo.length} ca mà đáp án KHÁC giá trị tầm thường đó `
+              + `(${lo.map((r) => r.name).join('; ')}) — ca đó không hỏi gì mà vẫn cho điểm`,
+          });
+        } else if (dat === tong && tong > 0) {
+          choPhepSai.push({
+            ma: bai.id, id: bt.id, loai,
+            vi: `ĐẠT ${tong}/${tong} ca — mọi đáp án của bài đúng bằng giá trị tầm thường`,
+          });
+        } else {
+          soTruot += 1;
+          if (dat > 0) {
+            datTamThuong.push({
+              ma: bai.id, id: bt.id, loai, dat, tong,
+              ca: ketQua.filter((r) => r.passed).map((r) => r.name).join('; '),
+            });
+          }
+        }
       } else if (luat === 'motca' && dat === tong && tong > 0) {
         choPhepSai.push({
           ma: bai.id, id: bt.id, loai,
@@ -468,6 +583,14 @@ if (datKhungTrong.length) {
   console.log('  trống vẫn đạt đúng ca đó. Không phải lỗi; chỉ là học viên chưa viết gì đã');
   console.log('  thấy một ca xanh:');
   for (const b of datKhungTrong) console.log(`    ${b.ma} ${b.id} — ${b.dat}/${b.tong}`);
+}
+if (datTamThuong.length) {
+  console.log(`\nghi nhận: ${datTamThuong.length} lần một lời giải TẦM THƯỜNG đạt đúng ca mà đáp`);
+  console.log('  án bằng chính giá trị tầm thường đó. Không phải lỗi bộ chấm; chỉ là ca đó');
+  console.log('  không phân biệt được "đã làm" với "chưa làm":');
+  for (const b of datTamThuong) {
+    console.log(`    ${b.ma} ${b.id} · ${b.loai} — ${b.dat}/${b.tong} (${b.ca})`);
+  }
 }
 if (choPhepSai.length) {
   console.log(`\n=== bộ chấm CHO ĐẠT bài sai (${choPhepSai.length}) ===`);

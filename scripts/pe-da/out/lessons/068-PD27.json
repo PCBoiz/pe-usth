@@ -201,6 +201,26 @@
       "year": 2024
      },
      "expected": 9.0
+    },
+    {
+     "name": "cùng thành phố, năm còn lại khác 0",
+     "input": {
+      "rows": [
+       {
+        "city": "DN",
+        "year": 2026,
+        "value": 0
+       },
+       {
+        "city": "DN",
+        "year": 2025,
+        "value": 6
+       }
+      ],
+      "city": "DN",
+      "year": 2025
+     },
+     "expected": 6.0
     }
    ],
    "hints": [

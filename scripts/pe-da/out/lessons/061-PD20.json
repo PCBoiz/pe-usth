@@ -201,6 +201,31 @@
       "month": "Apr"
      },
      "expected": 0.0
+    },
+    {
+     "name": "ô có số dù bảng còn ô vắng",
+     "input": {
+      "rows": [
+       {
+        "store": "A",
+        "month": "Jan",
+        "amount": 2
+       },
+       {
+        "store": "A",
+        "month": "Feb",
+        "amount": 0
+       },
+       {
+        "store": "B",
+        "month": "Jan",
+        "amount": 5
+       }
+      ],
+      "store": "A",
+      "month": "Jan"
+     },
+     "expected": 2.0
     }
    ],
    "hints": [

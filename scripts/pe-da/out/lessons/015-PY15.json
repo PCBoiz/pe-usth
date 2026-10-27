@@ -181,6 +181,14 @@
      "name": "Dãy rỗng",
      "input": [],
      "expected": 0
+    },
+    {
+     "name": "Số 0 đứng cuối dãy",
+     "input": [
+      7,
+      0
+     ],
+     "expected": 7
     }
    ],
    "contract": {

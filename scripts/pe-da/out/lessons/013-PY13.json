@@ -176,6 +176,17 @@
      "name": "Chưa có phiếu",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "Mã số xếp theo chữ, không theo số",
+     "input": [
+      "P2",
+      "P10"
+     ],
+     "expected": [
+      "P10",
+      "P2"
+     ]
     }
    ],
    "contract": {

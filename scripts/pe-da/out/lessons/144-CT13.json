@@ -171,6 +171,15 @@
      "name": "rỗng",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "một giá trị duy nhất",
+     "input": [
+      2
+     ],
+     "expected": [
+      4
+     ]
     }
    ],
    "hints": [

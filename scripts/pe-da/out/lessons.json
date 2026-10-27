@@ -706,6 +706,11 @@
        "name": "Vé miễn phí",
        "input": "0",
        "expected": 0.0
+      },
+      {
+       "name": "Giá nhỏ hơn một đơn vị",
+       "input": "0.25",
+       "expected": 0.5
       }
      ],
      "contract": {
@@ -1273,6 +1278,11 @@
        "name": "Mã rỗng",
        "input": "",
        "expected": ""
+      },
+      {
+       "name": "Mã chỉ dài hơn bốn ký tự một chút",
+       "input": "AB123",
+       "expected": "B123"
       }
      ],
      "contract": {
@@ -2308,6 +2318,14 @@
         "P01": 4
        },
        "expected": null
+      },
+      {
+       "name": "P02 còn một món, mã khác đã hết",
+       "input": {
+        "P01": 0,
+        "P02": 1
+       },
+       "expected": 1
       }
      ],
      "contract": {
@@ -2510,6 +2528,17 @@
        "name": "Chưa có phiếu",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "Mã số xếp theo chữ, không theo số",
+       "input": [
+        "P2",
+        "P10"
+       ],
+       "expected": [
+        "P10",
+        "P2"
+       ]
       }
      ],
      "contract": {
@@ -2709,6 +2738,14 @@
        "name": "Chuyến trống",
        "input": [],
        "expected": 0
+      },
+      {
+       "name": "Có kiện nặng 0 kg",
+       "input": [
+        0,
+        3
+       ],
+       "expected": 3
       }
      ],
      "contract": {
@@ -2916,6 +2953,14 @@
        "name": "Dãy rỗng",
        "input": [],
        "expected": 0
+      },
+      {
+       "name": "Số 0 đứng cuối dãy",
+       "input": [
+        7,
+        0
+       ],
+       "expected": 7
       }
      ],
      "contract": {
@@ -3111,6 +3156,14 @@
        "name": "Chưa có số đo",
        "input": [],
        "expected": null
+      },
+      {
+       "name": "Có một số đo bằng không",
+       "input": [
+        0,
+        3
+       ],
+       "expected": 1.5
       }
      ],
      "contract": {
@@ -4385,6 +4438,17 @@
         1.0,
         50.0
        ]
+      },
+      {
+       "name": "Có độ dài bằng không lẫn độ dài nhỏ",
+       "input": [
+        0,
+        0.25
+       ],
+       "expected": [
+        0.0,
+        25.0
+       ]
       }
      ],
      "contract": {
@@ -4587,6 +4651,17 @@
        "name": "Không có ghế",
        "input": 0,
        "expected": []
+      },
+      {
+       "name": "Năm ghế, số cuối phải đúng 2*n",
+       "input": 5,
+       "expected": [
+        2,
+        4,
+        6,
+        8,
+        10
+       ]
       }
      ],
      "contract": {
@@ -5768,6 +5843,20 @@
         ]
        ],
        "expected": 0
+      },
+      {
+       "name": "Chỉ một ô khác không",
+       "input": [
+        [
+         0,
+         0
+        ],
+        [
+         0,
+         5
+        ]
+       ],
+       "expected": 5
       }
      ],
      "contract": {
@@ -6455,6 +6544,15 @@
        "name": "Chưa có số đo",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "Chỉ một số đo, trên ngưỡng",
+       "input": [
+        31
+       ],
+       "expected": [
+        true
+       ]
       }
      ],
      "contract": {
@@ -6680,6 +6778,17 @@
         20,
         30
        ]
+      },
+      {
+       "name": "Loại cả hai phía của khoảng",
+       "input": [
+        19,
+        20,
+        36
+       ],
+       "expected": [
+        20
+       ]
       }
      ],
      "contract": {
@@ -6895,6 +7004,16 @@
         11
        ],
        "expected": []
+      },
+      {
+       "name": "Chỉ một điểm hợp lệ và đã ở trần",
+       "input": [
+        10,
+        -1
+       ],
+       "expected": [
+        10.0
+       ]
       }
      ],
      "contract": {
@@ -7334,6 +7453,14 @@
         null
        ],
        "expected": null
+      },
+      {
+       "name": "Một ô thiếu và một ô đã biết",
+       "input": [
+        null,
+        4
+       ],
+       "expected": 4.0
       }
      ],
      "contract": {
@@ -8060,6 +8187,17 @@
          0
         ],
         "expected": 0
+       },
+       "expected": true
+      },
+      {
+       "name": "Tổng khớp đúng số nguyên",
+       "input": {
+        "parts": [
+         1,
+         2
+        ],
+        "expected": 3
        },
        "expected": true
       }
@@ -9937,6 +10075,28 @@
         "minimum": 0
        },
        "expected": []
+      },
+      {
+       "name": "cùng thành phố, một đơn dưới ngưỡng",
+       "input": {
+        "rows": [
+         {
+          "order": "B",
+          "city": "HN",
+          "amount": 20
+         },
+         {
+          "order": "C",
+          "city": "HN",
+          "amount": 25
+         }
+        ],
+        "city": "HN",
+        "minimum": 25
+       },
+       "expected": [
+        "C"
+       ]
       }
      ],
      "hints": [
@@ -11090,6 +11250,35 @@
         "rows": []
        },
        "expected": []
+      },
+      {
+       "name": "ba phiên bản của một mã",
+       "input": {
+        "rows": [
+         {
+          "order": "A",
+          "version": 1,
+          "amount": 5
+         },
+         {
+          "order": "A",
+          "version": 3,
+          "amount": 11
+         },
+         {
+          "order": "A",
+          "version": 2,
+          "amount": 7
+         }
+        ]
+       },
+       "expected": [
+        {
+         "order": "A",
+         "version": 3,
+         "amount": 11
+        }
+       ]
       }
      ],
      "hints": [
@@ -11917,6 +12106,24 @@
         "rows": []
        },
        "expected": {}
+      },
+      {
+       "name": "mọi hàng đều thiếu vùng",
+       "input": {
+        "rows": [
+         {
+          "region": null,
+          "qty": 2
+         },
+         {
+          "region": null,
+          "qty": 3
+         }
+        ]
+       },
+       "expected": {
+        "Unknown": 5
+       }
       }
      ],
      "hints": [
@@ -13080,6 +13287,26 @@
         "month": "Jun"
        },
        "expected": 0.0
+      },
+      {
+       "name": "ô khác trong cùng cửa hàng mang số 0",
+       "input": {
+        "rows": [
+         {
+          "store": "D",
+          "month": "Jul",
+          "revenue": 0
+         },
+         {
+          "store": "D",
+          "month": "Aug",
+          "revenue": 5
+         }
+        ],
+        "store": "D",
+        "month": "Aug"
+       },
+       "expected": 5.0
       }
      ],
      "hints": [
@@ -13305,6 +13532,31 @@
         "month": "Apr"
        },
        "expected": 0.0
+      },
+      {
+       "name": "ô có số dù bảng còn ô vắng",
+       "input": {
+        "rows": [
+         {
+          "store": "A",
+          "month": "Jan",
+          "amount": 2
+         },
+         {
+          "store": "A",
+          "month": "Feb",
+          "amount": 0
+         },
+         {
+          "store": "B",
+          "month": "Jan",
+          "amount": 5
+         }
+        ],
+        "store": "A",
+        "month": "Jan"
+       },
+       "expected": 2.0
       }
      ],
      "hints": [
@@ -14834,6 +15086,26 @@
         "year": 2024
        },
        "expected": 9.0
+      },
+      {
+       "name": "cùng thành phố, năm còn lại khác 0",
+       "input": {
+        "rows": [
+         {
+          "city": "DN",
+          "year": 2026,
+          "value": 0
+         },
+         {
+          "city": "DN",
+          "year": 2025,
+          "value": 6
+         }
+        ],
+        "city": "DN",
+        "year": 2025
+       },
+       "expected": 6.0
       }
      ],
      "hints": [
@@ -15252,6 +15524,20 @@
        "expected": [
         0,
         3
+       ]
+      },
+      {
+       "name": "hai số trùng đều vượt ngưỡng",
+       "input": {
+        "amounts": [
+         5,
+         5
+        ],
+        "threshold": 4
+       },
+       "expected": [
+        5,
+        5
        ]
       }
      ],
@@ -22912,6 +23198,27 @@
         1.0,
         4.0
        ]
+      },
+      {
+       "name": "tọa độ 0 vẫn là lựa chọn hợp lệ",
+       "input": {
+        "events": [
+         {
+          "inside": false,
+          "x": 1,
+          "y": 1
+         },
+         {
+          "inside": true,
+          "x": 0,
+          "y": 0
+         }
+        ]
+       },
+       "expected": [
+        0.0,
+        0.0
+       ]
       }
      ],
      "hints": [
@@ -23507,6 +23814,11 @@
        "name": "không có mã",
        "input": "P12 pending",
        "expected": null
+      },
+      {
+       "name": "mã toàn chữ số 0",
+       "input": "ship P0000 now",
+       "expected": "P0000"
       }
      ],
      "hints": [
@@ -23876,6 +24188,18 @@
        "name": "rỗng",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "tên môn rỗng vẫn phải có dấu hai chấm",
+       "input": [
+        {
+         "id": "X",
+         "name": ""
+        }
+       ],
+       "expected": [
+        "X: "
+       ]
       }
      ],
      "hints": [
@@ -24090,6 +24414,23 @@
        "name": "không có kiện",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "trọng lượng 0 và số âm",
+       "input": [
+        {
+         "name": "C",
+         "weight": 0
+        },
+        {
+         "name": "D",
+         "weight": -1
+        }
+       ],
+       "expected": [
+        "D",
+        "C"
+       ]
       }
      ],
      "hints": [
@@ -24298,6 +24639,19 @@
        "name": "không có báo cáo",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "giữ thứ tự khi tiêu đề lặp",
+       "input": [
+        "b",
+        "a",
+        "b"
+       ],
+       "expected": [
+        "Report: b",
+        "Report: a",
+        "Report: b"
+       ]
       }
      ],
      "hints": [
@@ -24492,6 +24846,15 @@
        "name": "rỗng",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "chữ có dấu cũng phải thành chữ hoa",
+       "input": [
+        "3 đơn"
+       ],
+       "expected": [
+        "3 ĐƠN"
+       ]
       }
      ],
      "hints": [
@@ -24704,6 +25067,17 @@
         "rows": []
        },
        "expected": ""
+      },
+      {
+       "name": "phân cách rỗng vẫn phải nối",
+       "input": {
+        "separator": "",
+        "rows": [
+         "A",
+         "B"
+        ]
+       },
+       "expected": "AB"
       }
      ],
      "hints": [
@@ -25461,6 +25835,20 @@
         "credits": []
        },
        "expected": null
+      },
+      {
+       "name": "môn điểm 0 có ít tín chỉ hơn",
+       "input": {
+        "marks": [
+         0,
+         9
+        ],
+        "credits": [
+         1,
+         2
+        ]
+       },
+       "expected": 6.0
       }
      ],
      "hints": [
@@ -26028,6 +26416,14 @@
        "name": "không khớp",
        "input": " PAID:2\nUNPAID:3",
        "expected": []
+      },
+      {
+       "name": "dòng kết thúc kiểu Windows",
+       "input": "PAID:1\r\nPAID:2\r\n",
+       "expected": [
+        "PAID:1",
+        "PAID:2"
+       ]
       }
      ],
      "hints": [
@@ -26448,6 +26844,19 @@
        "expected": [
         "z/q/e.txt"
        ]
+      },
+      {
+       "name": "nhiều file cùng cấp phải xếp theo tên",
+       "input": {
+        "b.txt": "B",
+        "a.txt": "A",
+        "n/a.txt": "X"
+       },
+       "expected": [
+        "a.txt",
+        "b.txt",
+        "n/a.txt"
+       ]
       }
      ],
      "hints": [
@@ -26855,6 +27264,15 @@
        "name": "archive rỗng",
        "input": {},
        "expected": {}
+      },
+      {
+       "name": "tên kèm byte null bị zipfile cắt khi ghi",
+       "input": {
+        "students.csv\u0000.exe": "id\nS1"
+       },
+       "expected": {
+        "students.csv": "id\nS1"
+       }
       }
      ],
      "hints": [
@@ -29911,6 +30329,17 @@
        "name": "không việc",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "hai số cho cùng một bình phương",
+       "input": [
+        1,
+        -1
+       ],
+       "expected": [
+        1,
+        1
+       ]
       }
      ],
      "hints": [
@@ -30126,6 +30555,20 @@
         "factor": 5
        },
        "expected": []
+      },
+      {
+       "name": "factor 0 cho dãy toàn 0",
+       "input": {
+        "values": [
+         0,
+         3
+        ],
+        "factor": 0
+       },
+       "expected": [
+        0,
+        0
+       ]
       }
      ],
      "hints": [
@@ -30562,6 +31005,15 @@
        "name": "không worker",
        "input": [],
        "expected": 0
+      },
+      {
+       "name": "chỉ một worker có việc",
+       "input": [
+        0,
+        0,
+        3
+       ],
+       "expected": 3
       }
      ],
      "hints": [
@@ -30764,6 +31216,15 @@
        "name": "rỗng",
        "input": [],
        "expected": []
+      },
+      {
+       "name": "một giá trị duy nhất",
+       "input": [
+        2
+       ],
+       "expected": [
+        4
+       ]
       }
      ],
      "hints": [
@@ -35635,6 +36096,29 @@
        "expected": {
         "names": [],
         "amounts": []
+       }
+      },
+      {
+       "name": "Số tiền âm xếp trước",
+       "input": {
+        "names": [
+         "A",
+         "B"
+        ],
+        "amounts": [
+         2,
+         -5
+        ]
+       },
+       "expected": {
+        "names": [
+         "B",
+         "A"
+        ],
+        "amounts": [
+         -5,
+         2
+        ]
        }
       }
      ],

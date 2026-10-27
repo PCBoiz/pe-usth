@@ -198,6 +198,19 @@
      "expected": [
       "z/q/e.txt"
      ]
+    },
+    {
+     "name": "nhiều file cùng cấp phải xếp theo tên",
+     "input": {
+      "b.txt": "B",
+      "a.txt": "A",
+      "n/a.txt": "X"
+     },
+     "expected": [
+      "a.txt",
+      "b.txt",
+      "n/a.txt"
+     ]
     }
    ],
    "hints": [

@@ -163,6 +163,11 @@
      "name": "Mã rỗng",
      "input": "",
      "expected": ""
+    },
+    {
+     "name": "Mã chỉ dài hơn bốn ký tự một chút",
+     "input": "AB123",
+     "expected": "B123"
     }
    ],
    "contract": {

@@ -4,11 +4,11 @@
  * Vì sao phải có bộ này. Tới 26/10/2026 khoá 172 bài đang xuất bản KHÔNG có một
  * ca chấm nào: mọi bài có `step_4.task` và phần lớn có `starterCode`, nhưng
  * `step_4.tests` thì trống trơn — người học viết code rồi tự so bằng mắt. Nay
- * 124 bài có bài tập được chấm với 377 ca, và chúng dùng một hợp đồng KHÁC hợp
+ * 124 bài có bài tập được chấm với 415 ca, và chúng dùng một hợp đồng KHÁC hợp
  * đồng của pe-v4: `{name, input, expected}` thay cho `{name, call, expect}`.
  *
  * Cái dễ vỡ không phải phép so khớp (đó là việc của studio-harness.py, có
- * `scripts/pe-da/check-practice.mjs` canh bằng 377 ca thật + 302 biến thể sai).
+ * `scripts/pe-da/check-practice.mjs` canh bằng 415 ca thật + 556 biến thể sai).
  * Cái dễ vỡ là ĐƯỜNG ĐI: `contract` phải chạy qua năm chặng —
  *
  *     step_4.contract -> useCodeRunner -> RunRequest -> pyodide-runner.send()
@@ -207,12 +207,18 @@ test('harness khai contract_json và phân nhánh theo trường có mặt', () 
 
 // ─────────────────────────────────────────────────── số đo, để không tụt mốc
 
-test('bản dựng có 124 bài tập được chấm và 377 ca', () => {
+test('bản dựng có 124 bài tập được chấm và 415 ca', () => {
   // Con số này phải đo lại mỗi lần đổi nguồn hoặc đổi cổng lọc, không được
   // đoán — xem AGENTS.md, dòng "204 ca test tưởng có mà không có".
+  //
+  // 377 -> 415 ngày 27/10/2026: pha 2 của check-practice.mjs tìm được 38 bài mà
+  // một LỜI GIẢI TẦM THƯỜNG (khung trống, dội lại đầu vào, trả rỗng theo kiểu)
+  // vẫn đạt một ca — người học chưa viết dòng nào đã thấy một ca xanh. Mỗi bài
+  // đó nhận THÊM một ca mà lời giải tầm thường ấy trượt. Số bài vẫn 124: chỉ
+  // thêm ca, không thêm bài.
   const ca = coBaiTap.reduce((s, b) => s + b.content_json.step_4.tests.length, 0);
   assert.equal(coBaiTap.length, 124, 'số bài có bài tập được chấm');
-  assert.equal(ca, 377, 'tổng số ca chấm');
+  assert.equal(ca, 415, 'tổng số ca chấm');
 });
 
 test('mọi bài tập được chấm đều có lời giải mẫu KHÁC khung đề', () => {

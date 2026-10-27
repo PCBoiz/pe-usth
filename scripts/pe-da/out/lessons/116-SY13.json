@@ -180,6 +180,20 @@
       "credits": []
      },
      "expected": null
+    },
+    {
+     "name": "môn điểm 0 có ít tín chỉ hơn",
+     "input": {
+      "marks": [
+       0,
+       9
+      ],
+      "credits": [
+       1,
+       2
+      ]
+     },
+     "expected": 6.0
     }
    ],
    "hints": [

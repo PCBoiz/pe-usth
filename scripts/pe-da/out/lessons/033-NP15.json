@@ -188,6 +188,16 @@
       11
      ],
      "expected": []
+    },
+    {
+     "name": "Chỉ một điểm hợp lệ và đã ở trần",
+     "input": [
+      10,
+      -1
+     ],
+     "expected": [
+      10.0
+     ]
     }
    ],
    "contract": {

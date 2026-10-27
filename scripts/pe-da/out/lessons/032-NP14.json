@@ -198,6 +198,17 @@
       20,
       30
      ]
+    },
+    {
+     "name": "Loại cả hai phía của khoảng",
+     "input": [
+      19,
+      20,
+      36
+     ],
+     "expected": [
+      20
+     ]
     }
    ],
    "contract": {

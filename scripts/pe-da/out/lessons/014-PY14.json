@@ -173,6 +173,14 @@
      "name": "Chuyến trống",
      "input": [],
      "expected": 0
+    },
+    {
+     "name": "Có kiện nặng 0 kg",
+     "input": [
+      0,
+      3
+     ],
+     "expected": 3
     }
    ],
    "contract": {

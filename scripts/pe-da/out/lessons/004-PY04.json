@@ -177,6 +177,11 @@
      "name": "Vé miễn phí",
      "input": "0",
      "expected": 0.0
+    },
+    {
+     "name": "Giá nhỏ hơn một đơn vị",
+     "input": "0.25",
+     "expected": 0.5
     }
    ],
    "contract": {

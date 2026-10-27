@@ -193,6 +193,23 @@
      "name": "không có kiện",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "trọng lượng 0 và số âm",
+     "input": [
+      {
+       "name": "C",
+       "weight": 0
+      },
+      {
+       "name": "D",
+       "weight": -1
+      }
+     ],
+     "expected": [
+      "D",
+      "C"
+     ]
     }
    ],
    "hints": [

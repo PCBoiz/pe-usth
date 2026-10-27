@@ -216,6 +216,35 @@
       "rows": []
      },
      "expected": []
+    },
+    {
+     "name": "ba phiên bản của một mã",
+     "input": {
+      "rows": [
+       {
+        "order": "A",
+        "version": 1,
+        "amount": 5
+       },
+       {
+        "order": "A",
+        "version": 3,
+        "amount": 11
+       },
+       {
+        "order": "A",
+        "version": 2,
+        "amount": 7
+       }
+      ]
+     },
+     "expected": [
+      {
+       "order": "A",
+       "version": 3,
+       "amount": 11
+      }
+     ]
     }
    ],
    "hints": [

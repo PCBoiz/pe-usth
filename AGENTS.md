@@ -21,7 +21,7 @@ py scripts/pe-da/check.py --strict     # kiểm cấu trúc (CI chạy bản nà
 py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
 npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
-node scripts/pe-da/check-practice.mjs  # chấm 377 ca BÀI TẬP + đòi 302 biến thể sai trượt
+node scripts/pe-da/check-practice.mjs  # chấm 415 ca BÀI TẬP + đòi 556 biến thể sai trượt
 # 516 câu trắc nghiệm: check.py đối chiếu với nguồn (kiem_trac_nghiem), không có bộ riêng
 node scripts/check-perf.mjs            # kiểm BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py
 node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio-harness.py
@@ -52,9 +52,9 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Frontend lint | 0 lỗi, 178 cảnh báo |
 | Frontend unit test | `cd frontend && npm run test:unit` → **211 ca** / 19 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 377 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
-| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **377 ca đạt**, 302 biến thể sai đều trượt, ~10 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
@@ -293,7 +293,7 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   · BIỂU THỨC (`{name, call, expect}`) — hai chuỗi eval trong namespace học viên rồi so `==`.
     pe-v4 cần nó để gọi `_studio.run(...)`, dựng fixture, đọc timeline thread/process. 427 ca.
   · DỮ LIỆU (`{name, input, expected}`) — giá trị JSON thuần, mỗi ca chạy LẠI chương trình
-    trên namespace mới. 377 ca của 124 bài pe-da.
+    trên namespace mới. 415 ca của 124 bài pe-da.
   Bộ chấm phân nhánh theo **TRƯỜNG CÓ MẶT** (`'call' in case`), không theo một cờ riêng: một
   cờ riêng là thứ thứ hai phải khớp, và nó sẽ lệch.
   **Vì sao không quy hết về `==`:** đã đo, 65/389 ca trượt OAN, cả 65 vì hai chuyện máy móc.
@@ -339,6 +339,28 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   đó không sai — đáp án đúng cho "chưa có số đo" thật là không có kết quả. Luật đúng: khung
   trống không được đạt ca có `expected` KHÁC null, và không được đạt hết. Cùng lý do,
   `studio-lesson.schema.ts` phải kiểm KHOÁ CÓ MẶT chứ không kiểm giá trị khác null.
+  **Khung trống chỉ là MỘT hình dạng của "chưa làm gì", và họ đó cắn 38 bài.** Pha 2 nay thử
+  thêm hai nhóm biến thể TẦM THƯỜNG: dội nguyên đầu vào ra (`return data`, hoặc
+  `total = raw` với bài `mode: "script"`) và trả giá trị RỖNG theo đúng kiểu của đáp án
+  (`[]`, `{}`, `0`, `''`, `False`, `None`). Luật giữ nguyên, không nới một li: đạt ca có
+  `expected` KHÁC giá trị tầm thường ấy là LỘ ĐÁP ÁN; đạt đúng ca mà `expected` BẰNG chính nó
+  là tự nhiên, chỉ ghi nhận. Đo được: **50 lần** ở **38 bài**, và một bài — SY20 — bị
+  `return data` đạt **3/3** vì bài là round-trip qua ZIP nên đáp án đúng BẰNG đầu vào. Mỗi
+  bài trong 38 bài đó nhận THÊM một ca mà lời giải tầm thường trượt (377 → 415 ca).
+  **Bốn ca mới bắt được lời giải mà CẢ BỘ CŨ cho đạt** — đây là phần đáng giá, không phải con
+  số: · VZ30 `if event.xdata and event.ydata` (truthiness thay cho `is not None`) đạt 4/4 ca
+  cũ, trượt ca "tọa độ 0 vẫn là lựa chọn hợp lệ"; · SY16 `line.rstrip('\n')` đạt 3/3, trượt
+  ca "dòng kết thúc kiểu Windows" (còn lại một `\r`); · SY18 trả `found` mà không `sorted`
+  đạt 3/3, trượt ca "nhiều file cùng cấp phải xếp theo tên" — `os.walk` trả theo thứ tự TẠO
+  file, hai ca cũ tình cờ đã đúng thứ tự; · SY20 `return data` đạt 3/3, trượt ca "tên kèm
+  byte null bị zipfile cắt khi ghi" (`ZipInfo.__init__` cắt tên ở byte NUL — đo trong chính
+  Pyodide 314), và ở một bài round-trip thì đó là thứ DUY NHẤT phân biệt được "đã đi qua
+  zipfile" với "dội lại đầu vào".
+  34 bài còn lại chỉ đổi mẫu số (1/3 → 1/4): ca mới làm lời giải tầm thường trượt thêm một
+  ca, không bắt thêm lỗi nào khác. Và ca "đầu vào rỗng → null/[]/0" thì KHÔNG xoá được — đáp
+  án đúng cho "chưa có số đo" thật là không có kết quả — nên người học chưa viết gì vẫn thấy
+  1 ca xanh. Muốn hết thì phải sửa Ô KẾT QUẢ (đừng tô xanh khi chưa có hàm `solve`/biến kết
+  quả), không phải sửa dữ liệu ca chấm.
   **`check-practice.mjs` đọc BẢN DỰNG, không đọc `source/practice.json`:** giữa gói và học
   viên có một cổng lọc (`bai_tap_cua`) và một phép chuyển hình dạng, nên kiểm nguồn thì một
   lỗi của build.py không làm đỏ ở đâu cả.

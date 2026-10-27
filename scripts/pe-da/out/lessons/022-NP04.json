@@ -191,6 +191,17 @@
       1.0,
       50.0
      ]
+    },
+    {
+     "name": "Có độ dài bằng không lẫn độ dài nhỏ",
+     "input": [
+      0,
+      0.25
+     ],
+     "expected": [
+      0.0,
+      25.0
+     ]
     }
    ],
    "contract": {

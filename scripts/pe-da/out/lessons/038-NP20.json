@@ -193,6 +193,17 @@
       "expected": 0
      },
      "expected": true
+    },
+    {
+     "name": "Tổng khớp đúng số nguyên",
+     "input": {
+      "parts": [
+       1,
+       2
+      ],
+      "expected": 3
+     },
+     "expected": true
     }
    ],
    "contract": {

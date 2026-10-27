@@ -173,6 +173,15 @@
      "name": "rỗng",
      "input": [],
      "expected": []
+    },
+    {
+     "name": "chữ có dấu cũng phải thành chữ hoa",
+     "input": [
+      "3 đơn"
+     ],
+     "expected": [
+      "3 ĐƠN"
+     ]
     }
    ],
    "hints": [

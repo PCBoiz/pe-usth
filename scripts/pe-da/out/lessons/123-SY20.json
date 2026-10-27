@@ -173,6 +173,15 @@
      "name": "archive rỗng",
      "input": {},
      "expected": {}
+    },
+    {
+     "name": "tên kèm byte null bị zipfile cắt khi ghi",
+     "input": {
+      "students.csv\u0000.exe": "id\nS1"
+     },
+     "expected": {
+      "students.csv": "id\nS1"
+     }
     }
    ],
    "hints": [

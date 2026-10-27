@@ -823,7 +823,7 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // `assert.equal(l.step_4?.tests, undefined)` cho cả 172 bài, và nó đúng cho
   // tới 26/10/2026 — khi đó khoá không có một ca chấm nào, người học viết code
   // rồi tự so bằng mắt. Nay 124 bài có bài tập được chấm từ
-  // scripts/pe-da/source/practice.json. Số 124 và 377 được canh riêng ở
+  // scripts/pe-da/source/practice.json. Số 124 và 415 được canh riêng ở
   // practice-contract.test.mjs; ở đây chỉ chốt rằng bài nào CÓ ca chấm thì có
   // đủ khung đề và lời giải mẫu — thiếu một trong hai là bảng ca kiểm thử hiện
   // ra mà không có chỗ viết, hoặc không có thước đo nào chứng minh ca đúng.

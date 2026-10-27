@@ -163,6 +163,11 @@
      "name": "không có mã",
      "input": "P12 pending",
      "expected": null
+    },
+    {
+     "name": "mã toàn chữ số 0",
+     "input": "ship P0000 now",
+     "expected": "P0000"
     }
    ],
    "hints": [

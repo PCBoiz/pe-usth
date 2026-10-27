@@ -184,6 +184,20 @@
       "factor": 5
      },
      "expected": []
+    },
+    {
+     "name": "factor 0 cho dãy toàn 0",
+     "input": {
+      "values": [
+       0,
+       3
+      ],
+      "factor": 0
+     },
+     "expected": [
+      0,
+      0
+     ]
     }
    ],
    "hints": [

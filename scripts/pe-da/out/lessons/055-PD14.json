@@ -195,6 +195,24 @@
       "rows": []
      },
      "expected": {}
+    },
+    {
+     "name": "mọi hàng đều thiếu vùng",
+     "input": {
+      "rows": [
+       {
+        "region": null,
+        "qty": 2
+       },
+       {
+        "region": null,
+        "qty": 3
+       }
+      ]
+     },
+     "expected": {
+      "Unknown": 5
+     }
     }
    ],
    "hints": [

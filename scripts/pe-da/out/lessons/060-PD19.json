@@ -201,6 +201,26 @@
       "month": "Jun"
      },
      "expected": 0.0
+    },
+    {
+     "name": "ô khác trong cùng cửa hàng mang số 0",
+     "input": {
+      "rows": [
+       {
+        "store": "D",
+        "month": "Jul",
+        "revenue": 0
+       },
+       {
+        "store": "D",
+        "month": "Aug",
+        "revenue": 5
+       }
+      ],
+      "store": "D",
+      "month": "Aug"
+     },
+     "expected": 5.0
     }
    ],
    "hints": [

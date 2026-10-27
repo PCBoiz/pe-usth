@@ -169,6 +169,14 @@
      "name": "Chưa có số đo",
      "input": [],
      "expected": null
+    },
+    {
+     "name": "Có một số đo bằng không",
+     "input": [
+      0,
+      3
+     ],
+     "expected": 1.5
     }
    ],
    "contract": {

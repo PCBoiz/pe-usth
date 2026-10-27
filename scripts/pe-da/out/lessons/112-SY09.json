@@ -191,6 +191,17 @@
       "rows": []
      },
      "expected": ""
+    },
+    {
+     "name": "phân cách rỗng vẫn phải nối",
+     "input": {
+      "separator": "",
+      "rows": [
+       "A",
+       "B"
+      ]
+     },
+     "expected": "AB"
     }
    ],
    "hints": [
