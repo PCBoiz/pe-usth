@@ -58,6 +58,7 @@ def main() -> int:
     kiem_thu_tu(bai)
     kiem_noi_dung(bai, nguon_theo_id)
     kiem_anh(bai)
+    kiem_bai_tap_doi_nguon(bai)
     kiem_thu_trong_ide(bai)
     kiem_sandbox(bai)
     kiem_trac_nghiem(bai)
@@ -162,6 +163,64 @@ def kiem_anh(bai: list[dict]) -> None:
     if thua:
         canh_bao(f'{len(thua)} ảnh trong public/static/da/ không bài nào dùng: '
                  f'{", ".join(sorted(thua)[:5])}…')
+
+
+def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:
+    """Mọi bài tập của gói nguồn phải hoặc ĐƯỢC CHẤM, hoặc có LÝ DO ghi lại.
+
+    Vì sao cần luật này. Một lượt audit ngày 27/10 báo "14 bài tập và 80 ca chấm
+    còn sót, chi phí soạn bằng 0, chỉ là nối" — và cả hai nửa đều sai. Đo lại
+    ngày 28/10: 14 bài đó **không nối được** (openpyxl/seaborn/plotly/ipywidgets/
+    h5py/sqlalchemy thiếu wheel trong Pyodide 314, và CT07/CT08/EX04 vì
+    `sys.executable` trong trình duyệt không trỏ tới file thật), mỗi bài 3 ca =
+    **42 ca**, không phải 80. Con số 80 là 457−377, trong đó 38 ca là ca mới
+    được THÊM VÀO NGUỒN ngày 28/10 để lời giải tầm thường trượt.
+
+    Nghĩa là "còn sót" là một kết luận rút ra từ phép trừ hai con số, mà phép
+    trừ đó không nói được ca nào sót và vì sao. Luật dưới đây thay phép trừ bằng
+    một phép đối chiếu TỪNG BÀI, nên lần sau câu hỏi "còn sót không" có câu trả
+    lời bằng lệnh thay vì bằng một lượt đọc.
+
+    Ba luật:
+      1. bài nguồn có `exercises` thì bản dựng phải có `step_4.tests`, HOẶC
+         `_bai_tap` phải ghi lý do cụ thể (`khong: <vì sao>`);
+      2. bài được chấm phải có ĐÚNG số ca của nguồn — mất ca là mất im lặng,
+         không ai thấy vì bộ chấm vẫn xanh trên số ca còn lại;
+      3. tổng (ca đã dựng + ca của bài bị loại) phải bằng tổng ca của nguồn.
+    """
+    if not PRACTICE.is_file():
+        canh_bao('không có source/practice.json — bỏ qua phép đối chiếu bài tập')
+        return
+    nguon = json.loads(PRACTICE.read_text(encoding='utf-8'))
+    ca_nguon = {}
+    for b in nguon['lessons']:
+        ex = b.get('exercises') or []
+        if ex:
+            ca_nguon[b['id']] = sum(len(e.get('tests') or e.get('cases') or [])
+                                    for e in ex)
+
+    theo_ma = {b['lesson_code']: b for b in bai}
+    da_dung = bi_loai = 0
+    for ma, can in sorted(ca_nguon.items()):
+        b = theo_ma.get(ma)
+        if b is None:
+            loi(f'{ma}: gói nguồn có bài tập nhưng bản dựng không có bài này')
+            continue
+        co = (b['content_json'].get('step_4') or {}).get('tests') or []
+        if co:
+            da_dung += len(co)
+            if len(co) != can:
+                loi(f'{ma}: {len(co)} ca chấm nhưng nguồn có {can}')
+        else:
+            bi_loai += can
+            ly_do = b.get('_bai_tap') or ''
+            if not ly_do.startswith('khong: '):
+                loi(f'{ma}: có bài tập trong nguồn mà bản dựng không chấm, '
+                    f'và KHÔNG ghi lý do (_bai_tap = {ly_do!r})')
+
+    tong = sum(ca_nguon.values())
+    if da_dung + bi_loai != tong:
+        loi(f'ca chấm: dựng {da_dung} + loại {bi_loai} ≠ nguồn {tong}')
 
 
 def kiem_thu_trong_ide(bai: list[dict]) -> None:
