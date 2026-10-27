@@ -140,6 +140,19 @@ async function main() {
     );
     console.log(`✓ Đã sao lưu content_json cũ của ${old.length} bài vào ${BACKUP}`);
 
+    // Hạn transaction phải NÓI RA, mặc định 5 giây là không đủ.
+    //
+    // Đã gặp 27/10/2026, lần đầu nạp cả khoá: 124 câu UPDATE trong một
+    // transaction tương tác chạy 5 140 ms trên Neon và Prisma huỷ ở mốc 5 000
+    // ms. Transaction rollback đúng như thiết kế nên DB không hỏng — nhưng
+    // file sao lưu ĐÃ ghi xong trước đó, nên nhìn vào thư mục backup thì
+    // tưởng đã nạp. Lỗi in ra chỉ là một đối tượng Prisma có `timeout: 5000`,
+    // không có câu nào nói phải làm gì.
+    //
+    // 120 giây: nạp cả 172 bài đo được ~5 s, nên đây là 24× biên. Hạn này
+    // canh TREO (kết nối chết giữa lúc ghi), không phải canh tốc độ — đặt sát
+    // số đo thật là tự tạo ra lỗi ngẫu nhiên vào ngày DB chậm hơn thường.
+    // `maxWait` là thời gian CHỜ LẤY kết nối từ pool, chuyện khác hẳn.
     await prisma.$transaction(async (tx) => {
       for (const item of changed) {
         // updateMany để lọc được cả lesson_code (update() chỉ nhận khoá unique). Kiểm
@@ -153,8 +166,9 @@ async function main() {
           throw new Error(`${item.code}: UPDATE trúng ${res.count} hàng, cần đúng 1 — huỷ toàn bộ.`);
         }
       }
-    });
-    console.log(`\n✓ Đã cập nhật content_json của ${changed.map((c) => c.code).join(', ')}.`);
+    }, { timeout: 120_000, maxWait: 20_000 });
+    console.log(`\n✓ Đã cập nhật content_json của ${changed.length} bài: `
+      + `${changed.map((c) => c.code).join(', ')}.`);
   } finally {
     await prisma.$disconnect();
   }

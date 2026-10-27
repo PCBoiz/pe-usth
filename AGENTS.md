@@ -616,6 +616,16 @@ Hai đường, chọn sai là xoá tiến độ của người đang học:
 
   Luật chọn/so sánh nằm ở `src/course-admin/lesson-content-update.ts` (có test Jest).
 
+  **Hạn transaction phải NÓI RA — mặc định 5 giây không nạp nổi cả khoá.** Lần đầu nạp 124
+  bài (27/10/2026): 124 câu UPDATE trong một transaction tương tác chạy 5 140 ms trên Neon,
+  Prisma huỷ ở mốc 5 000 ms. Transaction rollback nên DB không hỏng — nhưng file sao lưu ĐÃ
+  ghi xong trước đó, nên nhìn vào thư mục backup thì tưởng đã nạp, và lỗi in ra chỉ là một
+  đối tượng Prisma có `timeout: 5000`, không câu nào nói phải làm gì. Nay
+  `$transaction(..., { timeout: 120_000, maxWait: 20_000 })`. 120 giây là 24× biên so với số
+  đo thật (~5 s): hạn này canh TREO, không canh tốc độ, nên đặt sát số đo là tự tạo lỗi ngẫu
+  nhiên vào ngày DB chậm hơn thường. `maxWait` là thời gian chờ LẤY kết nối từ pool, chuyện
+  khác hẳn.
+
 Sau MỌI lần nạp, vẫn phải chạy `py scripts/pe-v4/sync_curricula.py` — xem bẫy "Hai nguồn
 danh sách bài" ở trên.
 
