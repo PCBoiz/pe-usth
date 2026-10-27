@@ -87,7 +87,7 @@
      "explanation": "Đọc được file chưa chứng minh các cột đã được hiểu đúng."
     },
     {
-     "question": "sep=\";\" có tác dụng gì?",
+     "question": "sep=\";\" có tác dụng gì?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())",
      "options": [
       {
        "text": "Bỏ mọi dòng có dấu chấm phẩy.",
@@ -106,7 +106,7 @@
      "explanation": "Dùng dấu chấm phẩy để tách cột."
     },
     {
-     "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?",
+     "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))",
      "options": [
       {
        "text": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",

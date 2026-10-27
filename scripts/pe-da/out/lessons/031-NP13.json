@@ -99,7 +99,7 @@
      "explanation": "Đúng. Điều kiện > không nhận giá trị đúng bằng 30."
     },
     {
-     "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([4, 5, 8])\nprint(marks >= 5)",
      "options": [
       {
        "text": "[False, True, True]",
@@ -118,7 +118,7 @@
      "explanation": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện."
     },
     {
-     "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)",
      "options": [
       {
        "text": "[False, False, True]",

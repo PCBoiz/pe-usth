@@ -87,7 +87,7 @@
      "explanation": "Danh mục trùng khóa có thể nhân hàng; many_to_one phát hiện trường hợp này."
     },
     {
-     "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?",
+     "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())",
      "options": [
       {
        "text": "Năm hàng, vì cộng hai kích thước.",
@@ -106,7 +106,7 @@
      "explanation": "Sáu hàng."
     },
     {
-     "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?",
+     "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)",
      "options": [
       {
        "text": "many_to_many để bảo đảm danh mục không lặp mã.",

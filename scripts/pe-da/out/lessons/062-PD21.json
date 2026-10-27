@@ -87,7 +87,7 @@
      "explanation": "Format ghi rõ ý nghĩa của từng phần trong chuỗi ngày."
     },
     {
-     "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?",
+     "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?\n\nimport pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
      "options": [
       {
        "text": "Ngày 5 tháng 1 năm 2025.",
@@ -106,7 +106,7 @@
      "explanation": "Ngày 5 tháng 1 năm 2026."
     },
     {
-     "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?",
+     "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?\n\nimport pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
      "options": [
       {
        "text": "NaT, được phát hiện bằng isna().",

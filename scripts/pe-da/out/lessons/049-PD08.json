@@ -87,7 +87,7 @@
      "explanation": "Cần giữ riêng việc chưa có số đo với một số đo bằng 0."
     },
     {
-     "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?",
+     "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?\n\nimport pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
      "options": [
       {
        "text": "14, vì ô thiếu được coi là 0.",
@@ -106,7 +106,7 @@
      "explanation": "21, vì phép tính bỏ giá trị thiếu."
     },
     {
-     "question": "Vì sao không nên luôn fillna(0)?",
+     "question": "Vì sao không nên luôn fillna(0)?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
      "options": [
       {
        "text": "Vì pandas không cho phép số 0.",

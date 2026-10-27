@@ -98,7 +98,7 @@
      "explanation": "Loại biểu đồ đi theo câu hỏi, không phải chỉ vì thư viện vẽ được."
     },
     {
-     "question": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?",
+     "question": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()",
      "options": [
       {
        "text": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán.",
@@ -117,7 +117,7 @@
      "explanation": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán."
     },
     {
-     "question": "Trong hình đầu, trục x và y đại diện cho gì?",
+     "question": "Trong hình đầu, trục x và y đại diện cho gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()",
      "options": [
       {
        "text": "x là số cốc, y là tên quán.",

@@ -87,7 +87,7 @@
      "explanation": "Đúng. Giữ vị trí để không làm lệch các hàng."
     },
     {
-     "question": "Một ô nhập không phải số. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một ô nhập không phải số. Kết quả ở lệnh print cuối có giá trị nào?\n\ntry:\n    result = float(\"tea\")\nexcept ValueError:\n    result = \"invalid\"\nprint(result)",
      "options": [
       {
        "text": "'invalid'",
@@ -106,7 +106,7 @@
      "explanation": "float không đọc được tea nên nhánh ValueError được chạy."
     },
     {
-     "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"outside\")\n    return mark\ntry:\n    result = read_mark(\"12\")\nexcept ValueError:\n    result = \"rejected\"\nprint(result)",
      "options": [
       {
        "text": "'rejected'",

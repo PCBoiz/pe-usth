@@ -87,7 +87,7 @@
      "explanation": "groupby chia theo khóa rồi mới tính trên từng nhóm."
     },
     {
-     "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+     "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
      "options": [
       {
        "text": "Luôn giữ đúng từng hàng như transform.",
@@ -106,7 +106,7 @@
      "explanation": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
     },
     {
-     "question": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?",
+     "question": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))",
      "options": [
       {
        "text": "Cả hai bằng 2 dù amount thiếu.",

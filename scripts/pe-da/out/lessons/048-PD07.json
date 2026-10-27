@@ -87,7 +87,7 @@
      "explanation": "Mã định danh không nên bị coi là đại lượng để tính."
     },
     {
-     "question": "Vì sao mã 001 nên giữ dạng chữ?",
+     "question": "Vì sao mã 001 nên giữ dạng chữ?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
      "options": [
       {
        "text": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu.",
@@ -106,7 +106,7 @@
      "explanation": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
     },
     {
-     "question": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+     "question": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?\n\nimport pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())",
      "options": [
       {
        "text": "Tự thay mọi ô thiếu bằng 0.",

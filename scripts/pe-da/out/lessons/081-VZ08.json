@@ -92,7 +92,7 @@
      "explanation": "vmin/vmax cùng đơn vị giúp màu mang cùng ý nghĩa."
     },
     {
-     "question": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?",
+     "question": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5, 3], [4, 1, 6]])\nim = ax.imshow(counts, cmap=\"viridis\", vmin=0, vmax=6, aspect=\"auto\")\nax.set_xticks([0, 1, 2], [\"Morning\", \"Noon\", \"Evening\"])\nax.set_yticks([0, 1], [\"Store A\", \"Store B\"])\nax.set_title(\"Orders by store and time\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(counts.shape)\nplt.show()",
      "options": [
       {
        "text": "Có 5 ô vì cộng hai kích thước.",
@@ -111,7 +111,7 @@
      "explanation": "6 ô; colorbar và nhãn không phải ô dữ liệu."
     },
     {
-     "question": "Hai cửa hàng dùng cùng màu xanh đậm có chắc cùng số đơn không?",
+     "question": "Hai cửa hàng dùng cùng màu xanh đậm có chắc cùng số đơn không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5], [4, 1]])\nim = ax.imshow(counts, cmap=\"Blues\", vmin=0, vmax=6)\nfor (row, col), value in np.ndenumerate(counts):\n    ax.text(col, row, str(value), ha=\"center\", va=\"center\", color=\"black\")\nax.set(xticks=[0, 1], xticklabels=[\"Morning\", \"Noon\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Read the count in each cell\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(int(counts.sum()))\nplt.show()",
      "options": [
       {
        "text": "Có; đơn vị dữ liệu không ảnh hưởng cách đọc màu.",

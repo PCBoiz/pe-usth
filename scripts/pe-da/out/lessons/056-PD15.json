@@ -87,7 +87,7 @@
      "explanation": "transform giữ số hàng và index của bảng giao dịch."
     },
     {
-     "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?",
+     "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())",
      "options": [
       {
        "text": "Vì transform luôn sắp các hàng theo giá trị giảm dần.",
@@ -106,7 +106,7 @@
      "explanation": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào."
     },
     {
-     "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?",
+     "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())",
      "options": [
       {
        "text": "Sắp xếp theo ngày trong nhóm trước.",

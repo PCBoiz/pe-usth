@@ -93,7 +93,7 @@
      "explanation": "Đúng. List [3,4] được thêm như một phần tử."
     },
     {
-     "question": "Thêm một nhóm vào cuối danh sách. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Thêm một nhóm vào cuối danh sách. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [1, 2]\nvalues.append([3, 4])\nprint(values)",
      "options": [
       {
        "text": "[1, 2, [3, 4]]",
@@ -112,7 +112,7 @@
      "explanation": "append thêm đối số như một phần tử duy nhất."
     },
     {
-     "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [1, 2]\nvalues.extend([3, 4])\nprint(values)",
      "options": [
       {
        "text": "[1, 2, 3, 4]",

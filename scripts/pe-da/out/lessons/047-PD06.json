@@ -87,7 +87,7 @@
      "explanation": "Doanh thu thuộc từng hàng có cùng số lượng và đơn giá."
     },
     {
-     "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?",
+     "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
      "options": [
       {
        "text": "[20, 30, 40, 60].",
@@ -106,7 +106,7 @@
      "explanation": "[20, 60]."
     },
     {
-     "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
+     "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
      "options": [
       {
        "text": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",

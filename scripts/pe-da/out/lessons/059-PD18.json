@@ -87,7 +87,7 @@
      "explanation": "Ghép lô và xử lý trùng là hai thao tác khác nhau."
     },
     {
-     "question": "ignore_index có xóa đơn hàng trùng không?",
+     "question": "ignore_index có xóa đơn hàng trùng không?\n\nimport pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())",
      "options": [
       {
        "text": "Có; ignore_index tự cộng amount của các đơn trùng.",
@@ -106,7 +106,7 @@
      "explanation": "Không; nó chỉ tạo lại nhãn index."
     },
     {
-     "question": "concat axis=1 căn hàng theo vị trí hay index?",
+     "question": "concat axis=1 căn hàng theo vị trí hay index?\n\nimport pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
      "options": [
       {
        "text": "Theo index.",

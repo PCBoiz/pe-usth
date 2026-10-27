@@ -85,7 +85,7 @@
      "explanation": "Hãy xem tên sheet và chọn theo mục đích của bảng."
     },
     {
-     "question": "orient=\"records\" mô tả JSON như thế nào?",
+     "question": "orient=\"records\" mô tả JSON như thế nào?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))",
      "options": [
       {
        "text": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
@@ -104,7 +104,7 @@
      "explanation": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng."
     },
     {
-     "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?",
+     "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?\n\nimport pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ndf.to_excel(buffer, index=False, sheet_name='Sales', engine='openpyxl')\nbuffer.seek(0)\nback = pd.read_excel(buffer, sheet_name='Sales', usecols=['amount'], engine='openpyxl')\nprint(back['amount'].sum())",
      "options": [
       {
        "text": "Để xóa workbook trước khi đọc.",

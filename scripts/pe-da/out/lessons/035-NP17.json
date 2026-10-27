@@ -101,7 +101,7 @@
      "explanation": "Đúng. Chỉ có hai giá trị đã biết."
     },
     {
-     "question": "Một điểm chưa được nhập. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một điểm chưa được nhập. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6., np.nan, 10.])\nprint(np.isnan(a))",
      "options": [
       {
        "text": "[False, True, False]",
@@ -120,7 +120,7 @@
      "explanation": "isnan chỉ True ở vị trí chứa NaN."
     },
     {
-     "question": "Hai điểm đã biết là 6 và 10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Hai điểm đã biết là 6 và 10. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6., np.nan, 10.])\nprint(np.nanmean(a))",
      "options": [
       {
        "text": "8.0",

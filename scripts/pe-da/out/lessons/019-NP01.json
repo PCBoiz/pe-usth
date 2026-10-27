@@ -99,7 +99,7 @@
      "explanation": "Đúng. np.array giữ thứ tự dữ liệu nhập."
     },
     {
-     "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([8, 11, 6])\nprint(cups)",
      "options": [
       {
        "text": "[8, 11, 6]",
@@ -118,7 +118,7 @@
      "explanation": "Array giữ đúng thứ tự các số đã nhập."
     },
     {
-     "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([7, 7, 9])\nprint(marks)",
      "options": [
       {
        "text": "[7, 7, 9]",

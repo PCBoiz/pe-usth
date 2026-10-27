@@ -98,7 +98,7 @@
      "explanation": "Cần đọc đúng đại lượng tóm tắt trước khi diễn giải phân bố."
     },
     {
-     "question": "Điểm ngoài râu có phải luôn xóa không?",
+     "question": "Điểm ngoài râu có phải luôn xóa không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()",
      "options": [
       {
        "text": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật.",
@@ -117,7 +117,7 @@
      "explanation": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật."
     },
     {
-     "question": "Đường giữa hộp thường là đại lượng gì?",
+     "question": "Đường giữa hộp thường là đại lượng gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()",
      "options": [
       {
        "text": "Trung bình cộng.",

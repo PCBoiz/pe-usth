@@ -87,7 +87,7 @@
      "explanation": "Lô ngắn không được có cùng trọng số với lô dài khi tính mean của mọi hàng."
     },
     {
-     "question": "usecols giảm phần dữ liệu nào được đọc?",
+     "question": "usecols giảm phần dữ liệu nào được đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
      "options": [
       {
        "text": "Giảm số cột được nạp.",
@@ -106,7 +106,7 @@
      "explanation": "Giảm số cột được nạp."
     },
     {
-     "question": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?",
+     "question": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?\n\nimport pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
      "options": [
       {
        "text": "Vì mọi trung bình lô luôn giống nhau.",

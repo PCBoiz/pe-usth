@@ -98,7 +98,7 @@
      "explanation": "X,Y là vị trí; U,V là thành phần của vector tại vị trí đó."
     },
     {
-     "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?",
+     "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
      "options": [
       {
        "text": "Điểm (0,0), vì dx và dy bị bỏ qua.",
@@ -117,7 +117,7 @@
      "explanation": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu."
     },
     {
-     "question": "U,V trong quiver là vị trí hay thành phần vector?",
+     "question": "U,V trong quiver là vị trí hay thành phần vector?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
      "options": [
       {
        "text": "Cả bốn đều là tọa độ điểm cuối.",

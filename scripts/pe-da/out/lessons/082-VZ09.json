@@ -98,7 +98,7 @@
      "explanation": "Mốc tham chiếu phải được phân biệt với các quan sát có thật."
     },
     {
-     "question": "Tiêu đề “Doanh thu” còn thiếu gì để đọc được các con số?",
+     "question": "Tiêu đề “Doanh thu” còn thiếu gì để đọc được các con số?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()",
      "options": [
       {
        "text": "Chỉ cần xóa số trên trục.",
@@ -117,7 +117,7 @@
      "explanation": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp."
     },
     {
-     "question": "xy và xytext của annotate khác nhau thế nào?",
+     "question": "xy và xytext của annotate khác nhau thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()",
      "options": [
       {
        "text": "xy là điểm được chỉ tới; xytext là nơi đặt lời chú thích.",

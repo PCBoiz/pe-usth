@@ -87,7 +87,7 @@
      "explanation": "Hàm không hiểu ý nghĩa mới/cũ nếu bạn chưa sắp theo cột phiên bản."
     },
     {
-     "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?",
+     "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
      "options": [
       {
        "text": "Đánh dấu các bản sau là True; bản đầu được giữ.",
@@ -106,7 +106,7 @@
      "explanation": "Đánh dấu các bản sau là True; bản đầu được giữ."
     },
     {
-     "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?",
+     "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
      "options": [
       {
        "text": "Có; order luôn là khóa duy nhất trong mọi bảng.",

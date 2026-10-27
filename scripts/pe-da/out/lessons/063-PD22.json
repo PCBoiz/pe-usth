@@ -87,7 +87,7 @@
      "explanation": "MS đặt nhãn ở đầu tháng và sum cộng các giao dịch của tháng."
     },
     {
-     "question": "MS trong resample dùng nhãn ở đầu hay cuối tháng?",
+     "question": "MS trong resample dùng nhãn ở đầu hay cuối tháng?\n\nimport pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())",
      "options": [
       {
        "text": "Đầu tháng.",
@@ -106,7 +106,7 @@
      "explanation": "Đầu tháng."
     },
     {
-     "question": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?",
+     "question": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?\n\nimport pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())",
      "options": [
       {
        "text": "Có; mốc vắng luôn có doanh thu 0.",

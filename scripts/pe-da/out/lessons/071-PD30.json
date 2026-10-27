@@ -87,7 +87,7 @@
      "explanation": "Hàm làm sạch và quyết định nghiệp vụ về dữ liệu lỗi cần rõ ràng."
     },
     {
-     "question": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?",
+     "question": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?\n\nimport pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())",
      "options": [
       {
        "text": "Vì dữ liệu thiếu luôn phải bị xóa ngay.",
@@ -106,7 +106,7 @@
      "explanation": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ."
     },
     {
-     "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?",
+     "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
      "options": [
       {
        "text": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",

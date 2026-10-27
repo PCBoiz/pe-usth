@@ -446,9 +446,38 @@ def kiem_trac_nghiem(bai: list[dict]) -> None:
             # câu thứ i của bản dựng phải là câu thứ i của nguồn. So theo nội
             # dung thì một lần đổi thứ tự lấy câu sẽ lọt qua im lặng.
             g = goc[i]
-            if q.get('question') != g.get('prompt'):
-                loi(f'{ma} câu {i}: `question` không khớp `prompt` của nguồn')
+            # `question` = `prompt` của nguồn, CỘNG đoạn `code` nếu nguồn có.
+            #
+            # Luật này từng là `question == prompt` thẳng, và chính nó khoá cứng
+            # một lỗi có thật: 471/1032 câu của gói mang một trường `code` riêng
+            # mà bản dựng bỏ đi, nên **214/516 câu đang phát mất đoạn code
+            # quyết định đáp án và 90 câu ở 45 bài còn TRỎ TỚI nó** — PY01, bài
+            # ĐẦU TIÊN của khoá, hỏi "Kết quả ở lệnh print cuối có giá trị nào?"
+            # mà không có lệnh print nào trên màn hình. Luật cũ xanh suốt, vì nó
+            # kiểm bản dựng khớp một trường của nguồn chứ không kiểm câu hỏi có
+            # TRẢ LỜI ĐƯỢC hay không.
+            de_can = (g.get('prompt') or '').rstrip()
+            code_nguon = (g.get('code') or '').strip()
+            if code_nguon:
+                de_can = f'{de_can}\n\n{code_nguon}'
+            if q.get('question') != de_can:
+                loi(f'{ma} câu {i}: `question` không khớp nguồn '
+                    f'({"prompt + code" if code_nguon else "prompt"})')
                 continue
+            # KHÔNG có luật thứ hai kiểu "câu trỏ tới code thì phải có code", và
+            # đó là một kết luận đã ĐO chứ không phải một chỗ bỏ sót.
+            #
+            # Tôi đã viết luật đó (regex trên "đoạn code|lệnh print|sẽ in gì…"),
+            # và nó báo oan ngay bài ĐẦU TIÊN của khoá: PY01 câu 0 viết "Chạy
+            # morning = 8; afternoon = 11; print(morning + afternoon) sẽ in gì?"
+            # — code nằm NỘI TUYẾN trong đề, nguồn không có trường `code`, câu
+            # trả lời được bình thường. Thêm phép loại trừ "đề có dấu hiệu code
+            # thì bỏ qua" thì luật hết báo oan, nhưng đo lại thì nó bắt được
+            # **0 ca ngay cả khi gỡ CẢ phép gấp code VÀ phép so với nguồn** —
+            # vì gần như mọi đề trỏ tới code cũng chứa `(`/`=`/`print` đâu đó.
+            # Một luật không thể trượt trông như hàng rào mà không phải, nên nó
+            # bị xoá. Thứ CÓ răng là phép so `question == prompt + code` ngay
+            # trên: ablation 214 lỗi.
             lc_goc = g.get('options') or []
             lc_dung = q.get('options') or []
             if len(lc_dung) != len(lc_goc):

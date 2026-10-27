@@ -98,7 +98,7 @@
      "explanation": "Đại lượng cần so sánh phải được xác định trước khi vẽ."
     },
     {
-     "question": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?",
+     "question": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()",
      "options": [
       {
        "text": "Hai nơi bằng nhau vì đều có khách phàn nàn.",
@@ -117,7 +117,7 @@
      "explanation": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số."
     },
     {
-     "question": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?",
+     "question": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?\n\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()",
      "options": [
       {
        "text": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau.",

@@ -87,7 +87,7 @@
      "explanation": "Mỗi bước làm một việc; chuẩn hóa không tự sửa mọi lỗi dữ liệu."
     },
     {
-     "question": "strip có xóa dấu cách giữa hai từ không?",
+     "question": "strip có xóa dấu cách giữa hai từ không?\n\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
      "options": [
       {
        "text": "Có; strip nối các từ và tự đổi thành chữ thường.",
@@ -106,7 +106,7 @@
      "explanation": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn."
     },
     {
-     "question": "Tại sao contains thường thêm na=False khi dùng làm mask?",
+     "question": "Tại sao contains thường thêm na=False khi dùng làm mask?\n\nimport pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
      "options": [
       {
        "text": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",

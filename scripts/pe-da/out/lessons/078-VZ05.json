@@ -92,7 +92,7 @@
      "explanation": "Mỗi tham số mã hóa một đại lượng; s không phải bán kính hay vị trí."
     },
     {
-     "question": "Mỗi điểm trong ví dụ giao hàng là gì?",
+     "question": "Mỗi điểm trong ví dụ giao hàng là gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()",
      "options": [
       {
        "text": "Một điểm là trung bình của mọi đơn.",
@@ -111,7 +111,7 @@
      "explanation": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó."
     },
     {
-     "question": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?",
+     "question": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
      "options": [
       {
        "text": "Diện tích tăng 2 lần.",

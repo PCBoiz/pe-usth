@@ -98,7 +98,7 @@
      "explanation": "Dữ liệu truyền vào hình phải khớp câu hỏi báo cáo."
     },
     {
-     "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?",
+     "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
      "options": [
       {
        "text": "Chỉ đổi index thành tên đồ uống, không cần tổng hợp.",
@@ -117,7 +117,7 @@
      "explanation": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả."
     },
     {
-     "question": "Index ngày chưa sắp có ảnh hưởng đến line chart không?",
+     "question": "Index ngày chưa sắp có ảnh hưởng đến line chart không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()",
      "options": [
       {
        "text": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày.",

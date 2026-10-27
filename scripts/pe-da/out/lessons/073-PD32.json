@@ -87,7 +87,7 @@
      "explanation": "Thiếu danh mục và thiếu doanh thu là hai vấn đề khác nhau."
     },
     {
-     "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?",
+     "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?\n\nimport pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
      "options": [
       {
        "text": "Để ép mọi hàng thành cùng một amount.",
@@ -106,7 +106,7 @@
      "explanation": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối."
     },
     {
-     "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?",
+     "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
      "options": [
       {
        "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",

@@ -87,7 +87,7 @@
      "explanation": "Đúng. print hiển thị 12 nhưng hàm không trả 12."
     },
     {
-     "question": "Không truyền quantity thì hàm dùng giá trị mặc định. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Không truyền quantity thì hàm dùng giá trị mặc định. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef total(price, quantity=1):\n    return price * quantity\nprint(total(8))",
      "options": [
       {
        "text": "8",
@@ -106,7 +106,7 @@
      "explanation": "Hàm dùng quantity=1 khi lời gọi không ghi đối số đó."
     },
     {
-     "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef total(price, quantity=1):\n    return price * quantity\nprint(total(8, quantity=3))",
      "options": [
       {
        "text": "24",

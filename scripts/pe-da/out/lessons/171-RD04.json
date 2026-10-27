@@ -87,7 +87,7 @@
      "explanation": "Đúng. Thế lại: 4+3=7 và 2×4+3=11."
     },
     {
-     "question": "Mỗi hàng là một đơn gồm hai loại hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi hàng là một đơn gồm hai loại hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty @ price)",
      "options": [
       {
        "text": "[20, 30]",
@@ -106,7 +106,7 @@
      "explanation": "Mỗi hàng nhân với các giá tương ứng rồi cộng các tích."
     },
     {
-     "question": "Dừng trước bước cộng mỗi hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Dừng trước bước cộng mỗi hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty * price)",
      "options": [
       {
        "text": "[[10, 10], [30, 0]]",

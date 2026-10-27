@@ -80,7 +80,7 @@
      "explanation": "Kiểm dữ liệu được đưa vào file, không chỉ phần người xem thấy."
     },
     {
-     "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
+     "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?\n\nimport pandas as pd\nimport plotly.express as px\norders = pd.DataFrame({\"km\":[1, 2, 3], \"minutes\":[8, 12, 11], \"store\":[\"A\", \"B\", \"A\"]})\nfig = px.scatter(orders, x=\"km\", y=\"minutes\", color=\"store\", symbol=\"store\", hover_data=[\"store\"], labels={\"km\":\"Distance (km)\", \"minutes\":\"Delivery (minutes)\"}, title=\"Inspect an order with hover\")\nprint(len(fig.data))\nfig.show()",
      "options": [
       {
        "text": "Có; ẩn trace sẽ xóa sạch dữ liệu khỏi file đã xuất.",
@@ -99,7 +99,7 @@
      "explanation": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu."
     },
     {
-     "question": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?",
+     "question": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?\n\nimport pandas as pd\nimport plotly.express as px\ndata = pd.DataFrame({\"day\":[1, 2, 1, 2], \"cups\":[8, 10, 5, 6], \"drink\":[\"Coffee\", \"Coffee\", \"Tea\", \"Tea\"]})\nfig = px.line(data, x=\"day\", y=\"cups\", color=\"drink\", line_dash=\"drink\", markers=True, labels={\"day\":\"Day\", \"cups\":\"Cups\"}, title=\"Toggle a drink in the legend\")\nprint([trace.name for trace in fig.data])\nfig.show()",
      "options": [
       {
        "text": "Chỉ giảm độ trong suốt của mọi điểm bằng nhau.",

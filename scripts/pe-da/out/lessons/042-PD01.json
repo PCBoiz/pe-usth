@@ -87,7 +87,7 @@
      "explanation": "loc dùng nhãn, không dùng vị trí số của phần tử."
     },
     {
-     "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?",
+     "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
      "options": [
       {
        "text": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
@@ -106,7 +106,7 @@
      "explanation": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0."
     },
     {
-     "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.",
+     "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
      "options": [
       {
        "text": "cups.loc['Tue'], nhận 15.",

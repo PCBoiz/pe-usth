@@ -101,7 +101,7 @@
      "explanation": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10."
     },
     {
-     "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrain = np.array([0., 3.5, 0., 6.])\nwet = rain > 0\nprint(rain[wet])",
      "options": [
       {
        "text": "[3.5, 6.0]",
@@ -120,7 +120,7 @@
      "explanation": "Index bằng mask giữ các giá trị ở vị trí True."
     },
     {
-     "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([-1, 0, 6, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
      "options": [
       {
        "text": "[0, 6, 10]",

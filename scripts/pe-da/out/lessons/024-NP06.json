@@ -95,7 +95,7 @@
      "explanation": "Đúng. Có ba danh sách con, mỗi danh sách có hai số."
     },
     {
-     "question": "Mỗi list con là số liệu của một cửa hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi list con là số liệu của một cửa hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([[3, 5], [7, 9]])\nprint(sales)",
      "options": [
       {
        "text": "[[3, 5], [7, 9]]",
@@ -114,7 +114,7 @@
      "explanation": "Các list con có cùng độ dài tạo bảng hai chiều."
     },
     {
-     "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
      "options": [
       {
        "text": "[[6, 8], [7, 9], [5, 6]]",

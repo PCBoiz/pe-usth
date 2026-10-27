@@ -95,7 +95,7 @@
      "explanation": "Phải biết hình đang biểu diễn từng quan sát hay ước lượng nhóm."
     },
     {
-     "question": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?",
+     "question": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"km\":[1, 2, 2, 3], \"minutes\":[8, 12, 10, 11], \"mode\":[\"Bike\", \"Bike\", \"Motor\", \"Motor\"]})\nsns.scatterplot(data=orders, x=\"km\", y=\"minutes\", hue=\"mode\", style=\"mode\", ax=ax)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Color and marker encode the same group\")\nprint(orders[\"mode\"].nunique())\nplt.show()",
      "options": [
       {
        "text": "Luôn giữ ngẫu nhiên một dòng rồi bỏ hai dòng khác.",
@@ -114,7 +114,7 @@
      "explanation": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình."
     },
     {
-     "question": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?",
+     "question": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\ndaily = pd.DataFrame({\"day\":[1, 1, 2, 2], \"cups\":[8, 12, 10, 14]})\nsns.lineplot(data=daily, x=\"day\", y=\"cups\", errorbar=None, marker=\"o\", ax=ax)\nax.set(xlabel=\"Day\", ylabel=\"Mean cups\", title=\"Repeated x values are aggregated\")\nprint(daily.groupby(\"day\")[\"cups\"].mean().tolist())\nplt.show()",
      "options": [
       {
        "text": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt.",

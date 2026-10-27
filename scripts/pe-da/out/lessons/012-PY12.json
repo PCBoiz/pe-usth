@@ -87,7 +87,7 @@
      "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
     },
     {
-     "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 0, \"B\": 8}\nprint(marks[\"A\"])",
      "options": [
       {
        "text": "0",
@@ -106,7 +106,7 @@
      "explanation": "Tra đúng khóa nhận đúng giá trị, kể cả khi giá trị là 0."
     },
     {
-     "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 7}\nprint(marks.get(\"C\", \"missing\"))",
      "options": [
       {
        "text": "'missing'",

@@ -99,7 +99,7 @@
      "explanation": "Đúng. Kiểu chung cần lưu được 4.5."
     },
     {
-     "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprices = np.array([3, 4.5])\nprint(str(prices.dtype))",
      "options": [
       {
        "text": "'float64'",
@@ -118,7 +118,7 @@
      "explanation": "NumPy dùng kiểu số thực để giữ cả hai giá trị."
     },
     {
-     "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([6, 9], dtype=float)\nprint(str(marks.dtype))",
      "options": [
       {
        "text": "'float64'",

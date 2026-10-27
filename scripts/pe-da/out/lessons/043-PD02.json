@@ -93,7 +93,7 @@
      "explanation": "shape mô tả hai chiều của bảng, không phải tổng số ô."
     },
     {
-     "question": "shape bằng (100, 4) có nghĩa gì?",
+     "question": "shape bằng (100, 4) có nghĩa gì?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
      "options": [
       {
        "text": "100 cột và 4 hàng.",
@@ -112,7 +112,7 @@
      "explanation": "Bảng có 100 hàng và 4 cột."
     },
     {
-     "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?",
+     "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
      "options": [
       {
        "text": "Trả về bảng đã xóa các ô thiếu.",

@@ -104,7 +104,7 @@
        "explanation": "Đúng. Python cộng hai giá trị 8 và 11 rồi print kết quả."
       },
       {
-       "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(10 + 7)",
        "options": [
         {
          "text": "17",
@@ -123,7 +123,7 @@
        "explanation": "10 + 7 tính tổng của hai buổi."
       },
       {
-       "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 14\nprint(cups + cups)",
        "options": [
         {
          "text": "28",
@@ -460,7 +460,7 @@
        "explanation": "Đúng. Kernel mới chưa có tên cups."
       },
       {
-       "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 11\nprint(cups + 1)",
        "options": [
         {
          "text": "12",
@@ -479,7 +479,7 @@
        "explanation": "Lệnh sau đọc giá trị được lệnh trước tạo."
       },
       {
-       "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 12\ncups = 18\nprint(cups)",
        "options": [
         {
          "text": "18",
@@ -629,7 +629,7 @@
        "explanation": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước."
       },
       {
-       "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
        "options": [
         {
          "text": "36",
@@ -648,7 +648,7 @@
        "explanation": "int(\"18\") tạo số nguyên 18 trước phép nhân."
       },
       {
-       "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"7.5\"\nprice = float(raw)\nprint(price * 2)",
        "options": [
         {
          "text": "15.0",
@@ -834,7 +834,7 @@
        "explanation": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm."
       },
       {
-       "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(4 * 10 - 3)",
        "options": [
         {
          "text": "37",
@@ -853,7 +853,7 @@
        "explanation": "Phép nhân tính tiền bán trước khi trừ một lần phí chung."
       },
       {
-       "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(9 / 2)",
        "options": [
         {
          "text": "4.5",
@@ -1026,7 +1026,7 @@
        "explanation": "Đúng. \\n trong chuỗi là ký tự xuống dòng."
       },
       {
-       "question": "Tạo nhãn có tên thành phố. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tạo nhãn có tên thành phố. Kết quả ở lệnh print cuối có giá trị nào?\n\ncity = \"Hue\"\nprint(\"Store: \" + city)",
        "options": [
         {
          "text": "'Store: Hue'",
@@ -1045,7 +1045,7 @@
        "explanation": "Dấu + nối nguyên các ký tự của hai chuỗi."
       },
       {
-       "question": "In đường phân cách ngắn. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "In đường phân cách ngắn. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(\"=-\" * 3)",
        "options": [
         {
          "text": "'=-=-=-'",
@@ -1218,7 +1218,7 @@
        "explanation": "Đúng. Lấy bốn ký tự từ cuối tới hết."
       },
       {
-       "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"sales.csv\"\nprint(name[0])",
        "options": [
         {
          "text": "'s'",
@@ -1237,7 +1237,7 @@
        "explanation": "Chỉ số 0 trỏ ký tự đầu tiên."
       },
       {
-       "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"report\"\nprint(name[-1])",
        "options": [
         {
          "text": "'t'",
@@ -1415,7 +1415,7 @@
        "explanation": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường."
       },
       {
-       "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"  lAN  \"\nprint(raw.strip().title())",
        "options": [
         {
          "text": "'Lan'",
@@ -1434,7 +1434,7 @@
        "explanation": "strip làm sạch hai đầu rồi title viết hoa đầu từ."
       },
       {
-       "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?\n\ncode = \"8\"\nprint(code.zfill(4))",
        "options": [
         {
          "text": "'0008'",
@@ -1611,7 +1611,7 @@
        "explanation": "Đúng. Nhánh đầu đã đúng, không xét tiếp nhánh >=5."
       },
       {
-       "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?\n\nscore = 8\nif score >= 8:\n    result = \"Good\"\nelif score >= 5:\n    result = \"Pass\"\nelse:\n    result = \"Retry\"\nprint(result)",
        "options": [
         {
          "text": "'Good'",
@@ -1630,7 +1630,7 @@
        "explanation": "Điều kiện >= nhận cả giá trị bằng 8."
       },
       {
-       "question": "Điểm đạt mức qua môn nhưng chưa tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Điểm đạt mức qua môn nhưng chưa tốt. Kết quả ở lệnh print cuối có giá trị nào?\n\nscore = 6\nif score >= 8:\n    result = \"Good\"\nelif score >= 5:\n    result = \"Pass\"\nelse:\n    result = \"Retry\"\nprint(result)",
        "options": [
         {
          "text": "'Pass'",
@@ -1814,7 +1814,7 @@
        "explanation": "Đúng. List [3,4] được thêm như một phần tử."
       },
       {
-       "question": "Thêm một nhóm vào cuối danh sách. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Thêm một nhóm vào cuối danh sách. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [1, 2]\nvalues.append([3, 4])\nprint(values)",
        "options": [
         {
          "text": "[1, 2, [3, 4]]",
@@ -1833,7 +1833,7 @@
        "explanation": "append thêm đối số như một phần tử duy nhất."
       },
       {
-       "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [1, 2]\nvalues.extend([3, 4])\nprint(values)",
        "options": [
         {
          "text": "[1, 2, 3, 4]",
@@ -2047,7 +2047,7 @@
        "explanation": "Đúng. Dấu phẩy tạo tuple một phần tử."
       },
       {
-       "question": "Tách hai tọa độ. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tách hai tọa độ. Kết quả ở lệnh print cuối có giá trị nào?\n\npoint = (4, 9)\nx, y = point\nprint(x + y)",
        "options": [
         {
          "text": "13",
@@ -2066,7 +2066,7 @@
        "explanation": "Unpack gán 4 cho x và 9 cho y."
       },
       {
-       "question": "Dấu phẩy tạo tuple chỉ có một phần tử. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Dấu phẩy tạo tuple chỉ có một phần tử. Kết quả ở lệnh print cuối có giá trị nào?\n\nitem = (7,)\nprint(type(item).__name__)",
        "options": [
         {
          "text": "'tuple'",
@@ -2262,7 +2262,7 @@
        "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
       },
       {
-       "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 0, \"B\": 8}\nprint(marks[\"A\"])",
        "options": [
         {
          "text": "0",
@@ -2281,7 +2281,7 @@
        "explanation": "Tra đúng khóa nhận đúng giá trị, kể cả khi giá trị là 0."
       },
       {
-       "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 7}\nprint(marks.get(\"C\", \"missing\"))",
        "options": [
         {
          "text": "'missing'",
@@ -2473,7 +2473,7 @@
        "explanation": "Đúng. Giữ người thuộc đăng ký nhưng không thuộc đã nộp."
       },
       {
-       "question": "Tìm người đăng ký chưa nộp. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tìm người đăng ký chưa nộp. Kết quả ở lệnh print cuối có giá trị nào?\n\nregistered = {\"An\", \"Binh\", \"Chi\"}\nsubmitted = {\"Binh\", \"Chi\"}\nprint(sorted(registered - submitted))",
        "options": [
         {
          "text": "['An']",
@@ -2492,7 +2492,7 @@
        "explanation": "Hiệu giữ người thuộc registered mà không thuộc submitted."
       },
       {
-       "question": "Giữ các mã có trong cả hai tập. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Giữ các mã có trong cả hai tập. Kết quả ở lệnh print cuối có giá trị nào?\n\na = {1, 2}\nb = {2, 3}\nprint(sorted(a & b))",
        "options": [
         {
          "text": "[2]",
@@ -2689,7 +2689,7 @@
        "explanation": "Đúng. Tổng được khởi tạo một lần trước vòng lặp."
       },
       {
-       "question": "Cộng các ca bán hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Cộng các ca bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [3, 5, 2]\ntotal = 0\nfor value in values:\n    total += value\nprint(total)",
        "options": [
         {
          "text": "10",
@@ -2708,7 +2708,7 @@
        "explanation": "Mỗi lượt cộng một số vào total đã khởi tạo."
       },
       {
-       "question": "Các mã tăng hai đơn vị. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Các mã tăng hai đơn vị. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(list(range(1, 7, 2)))",
        "options": [
         {
          "text": "[1, 3, 5]",
@@ -2899,7 +2899,7 @@
        "explanation": "Đúng. Chỉ 2 và 4 được cộng; 8 nằm sau điểm dừng."
       },
       {
-       "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?\n\nattempt = 0\nwhile attempt < 3:\n    attempt += 1\nprint(attempt)",
        "options": [
         {
          "text": "3",
@@ -2918,7 +2918,7 @@
        "explanation": "Biến tăng lên 3 sau lượt cuối rồi vòng dừng."
       },
       {
-       "question": "Bỏ riêng số 2. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bỏ riêng số 2. Kết quả ở lệnh print cuối có giá trị nào?\n\nkept = []\nfor number in range(4):\n    if number == 2:\n        continue\n    kept.append(number)\nprint(kept)",
        "options": [
         {
          "text": "[0, 1, 3]",
@@ -3117,7 +3117,7 @@
        "explanation": "Đúng. print hiển thị 12 nhưng hàm không trả 12."
       },
       {
-       "question": "Không truyền quantity thì hàm dùng giá trị mặc định. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Không truyền quantity thì hàm dùng giá trị mặc định. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef total(price, quantity=1):\n    return price * quantity\nprint(total(8))",
        "options": [
         {
          "text": "8",
@@ -3136,7 +3136,7 @@
        "explanation": "Hàm dùng quantity=1 khi lời gọi không ghi đối số đó."
       },
       {
-       "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef total(price, quantity=1):\n    return price * quantity\nprint(total(8, quantity=3))",
        "options": [
         {
          "text": "24",
@@ -3327,7 +3327,7 @@
        "explanation": "Đúng. Dấu ngoặc thực hiện lời gọi."
       },
       {
-       "question": "Gán hàm cho một tên khác rồi gọi sau. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Gán hàm cho một tên khác rồi gọi sau. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef greet():\n    return \"Hello\"\ncallback = greet\nprint(callback())",
        "options": [
         {
          "text": "'Hello'",
@@ -3346,7 +3346,7 @@
        "explanation": "callback và greet cùng tham chiếu tới một hàm."
       },
       {
-       "question": "Biến bên trong hàm có cùng tên biến bên ngoài. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Biến bên trong hàm có cùng tên biến bên ngoài. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalue = 10\ndef calculate():\n    value = 20\n    return value\ninside = calculate()\nprint([inside, value])",
        "options": [
         {
          "text": "[20, 10]",
@@ -3513,7 +3513,7 @@
        "explanation": "Đúng. Giữ vị trí để không làm lệch các hàng."
       },
       {
-       "question": "Một ô nhập không phải số. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một ô nhập không phải số. Kết quả ở lệnh print cuối có giá trị nào?\n\ntry:\n    result = float(\"tea\")\nexcept ValueError:\n    result = \"invalid\"\nprint(result)",
        "options": [
         {
          "text": "'invalid'",
@@ -3532,7 +3532,7 @@
        "explanation": "float không đọc được tea nên nhánh ValueError được chạy."
       },
       {
-       "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"outside\")\n    return mark\ntry:\n    result = read_mark(\"12\")\nexcept ValueError:\n    result = \"rejected\"\nprint(result)",
        "options": [
         {
          "text": "'rejected'",
@@ -3735,7 +3735,7 @@
        "explanation": "Đúng. np.array giữ thứ tự dữ liệu nhập."
       },
       {
-       "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([8, 11, 6])\nprint(cups)",
        "options": [
         {
          "text": "[8, 11, 6]",
@@ -3754,7 +3754,7 @@
        "explanation": "Array giữ đúng thứ tự các số đã nhập."
       },
       {
-       "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([7, 7, 9])\nprint(marks)",
        "options": [
         {
          "text": "[7, 7, 9]",
@@ -3962,7 +3962,7 @@
        "explanation": "Đúng. Chỉ số 1 là phần tử thứ hai."
       },
       {
-       "question": "Đọc lượng bán ngày đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đọc lượng bán ngày đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([9, 14, 11])\nprint(cups[0])",
        "options": [
         {
          "text": "9",
@@ -3981,7 +3981,7 @@
        "explanation": "Vị trí đầu tiên có index 0 và giá trị 9."
       },
       {
-       "question": "Số 8 nằm ở vị trí thứ hai. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Số 8 nằm ở vị trí thứ hai. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6, 8, 10])\nprint(a[1])",
        "options": [
         {
          "text": "8",
@@ -4177,7 +4177,7 @@
        "explanation": "Đúng. Kiểu chung cần lưu được 4.5."
       },
       {
-       "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprices = np.array([3, 4.5])\nprint(str(prices.dtype))",
        "options": [
         {
          "text": "'float64'",
@@ -4196,7 +4196,7 @@
        "explanation": "NumPy dùng kiểu số thực để giữ cả hai giá trị."
       },
       {
-       "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([6, 9], dtype=float)\nprint(str(marks.dtype))",
        "options": [
         {
          "text": "'float64'",
@@ -4409,7 +4409,7 @@
        "explanation": "Đúng. Mỗi số được nhân 2."
       },
       {
-       "question": "Mỗi điểm được cộng 1. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi điểm được cộng 1. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([3, 5])\nprint(a + 1)",
        "options": [
         {
          "text": "[4, 6]",
@@ -4428,7 +4428,7 @@
        "explanation": "Cộng scalar vào array thực hiện trên từng phần tử."
       },
       {
-       "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([2, 5])\nprint(a * 3)",
        "options": [
         {
          "text": "[6, 15]",
@@ -4635,7 +4635,7 @@
        "explanation": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9."
       },
       {
-       "question": "Tạo số thứ tự từ 2 đến trước 6. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tạo số thứ tự từ 2 đến trước 6. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.arange(2, 6))",
        "options": [
         {
          "text": "[2, 3, 4, 5]",
@@ -4654,7 +4654,7 @@
        "explanation": "Dãy bắt đầu ở 2 và không chứa 6."
       },
       {
-       "question": "Chọn các mốc giờ chẵn. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chọn các mốc giờ chẵn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.arange(0, 8, 2))",
        "options": [
         {
          "text": "[0, 2, 4, 6]",
@@ -4851,7 +4851,7 @@
        "explanation": "Đúng. Có ba danh sách con, mỗi danh sách có hai số."
       },
       {
-       "question": "Mỗi list con là số liệu của một cửa hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi list con là số liệu của một cửa hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([[3, 5], [7, 9]])\nprint(sales)",
        "options": [
         {
          "text": "[[3, 5], [7, 9]]",
@@ -4870,7 +4870,7 @@
        "explanation": "Các list con có cùng độ dài tạo bảng hai chiều."
       },
       {
-       "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
        "options": [
         {
          "text": "[[6, 8], [7, 9], [5, 6]]",
@@ -5099,7 +5099,7 @@
        "explanation": "Đúng. Có 3×2 ô."
       },
       {
-       "question": "Bảng có hai cửa hàng và ba ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bảng có hai cửa hàng và ba ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.shape)",
        "options": [
         {
          "text": "(2, 3)",
@@ -5118,7 +5118,7 @@
        "explanation": "Có hai list con, mỗi list ba phần tử nên shape là (2,3)."
       },
       {
-       "question": "Đếm tất cả số đo trong bảng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đếm tất cả số đo trong bảng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.size)",
        "options": [
         {
          "text": "6",
@@ -5342,7 +5342,7 @@
        "explanation": "Đúng. 4×2=8."
       },
       {
-       "question": "Sáu giá trị điền lần lượt theo hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Sáu giá trị điền lần lượt theo hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(2, 3))",
        "options": [
         {
          "text": "[[1, 2, 3], [4, 5, 6]]",
@@ -5361,7 +5361,7 @@
        "explanation": "Hai hàng, mỗi hàng ba giá trị, giữ thứ tự dãy ban đầu."
       },
       {
-       "question": "Cũng sáu số nhưng mỗi hàng hai ô. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Cũng sáu số nhưng mỗi hàng hai ô. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(3, 2))",
        "options": [
         {
          "text": "[[1, 2], [3, 4], [5, 6]]",
@@ -5594,7 +5594,7 @@
        "explanation": "Đúng. Lấy cột chỉ số 1 của cả hai hàng."
       },
       {
-       "question": "Chọn ô ở hàng thứ hai, cột đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chọn ô ở hàng thứ hai, cột đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[2, 4, 6], [8, 10, 12]])\nprint(a[1, 0])",
        "options": [
         {
          "text": "8",
@@ -5613,7 +5613,7 @@
        "explanation": "Chỉ số thứ nhất chọn hàng; chỉ số thứ hai chọn cột."
       },
       {
-       "question": "Đọc toàn bộ cửa hàng đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đọc toàn bộ cửa hàng đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[2, 4, 6], [8, 10, 12]])\nprint(a[0])",
        "options": [
         {
          "text": "[2, 4, 6]",
@@ -5824,7 +5824,7 @@
        "explanation": "Đúng. Không ghi axis thì cộng cả bốn ô."
       },
       {
-       "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([3, 5, 7])\nprint(a.sum())",
        "options": [
         {
          "text": "15",
@@ -5843,7 +5843,7 @@
        "explanation": "Không ghi axis thì sum cộng mọi phần tử."
       },
       {
-       "question": "Gộp doanh thu của mọi cửa hàng và ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Gộp doanh thu của mọi cửa hàng và ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2], [3, 4]])\nprint(a.sum())",
        "options": [
         {
          "text": "10",
@@ -6061,7 +6061,7 @@
        "explanation": "Đúng. Mỗi cột thời điểm có một tổng."
       },
       {
-       "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
        "options": [
         {
          "text": "[5, 7, 9]",
@@ -6080,7 +6080,7 @@
        "explanation": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột."
       },
       {
-       "question": "Bảng bốn cửa hàng nhưng chỉ hai ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bảng bốn cửa hàng nhưng chỉ hai ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])\nprint(a.sum(axis=0).shape)",
        "options": [
         {
          "text": "(2,)",
@@ -6303,7 +6303,7 @@
        "explanation": "Đúng. Hai hàng còn hai tổng."
       },
       {
-       "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
        "options": [
         {
          "text": "[6, 15]",
@@ -6322,7 +6322,7 @@
        "explanation": "axis=1 gộp các cột trong từng hàng."
       },
       {
-       "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[4, 6], [5, 7], [8, 9]])\nprint(a.sum(axis=1).shape)",
        "options": [
         {
          "text": "(3,)",
@@ -6544,7 +6544,7 @@
        "explanation": "Đúng. Điều kiện > không nhận giá trị đúng bằng 30."
       },
       {
-       "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([4, 5, 8])\nprint(marks >= 5)",
        "options": [
         {
          "text": "[False, True, True]",
@@ -6563,7 +6563,7 @@
        "explanation": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện."
       },
       {
-       "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)",
        "options": [
         {
          "text": "[False, False, True]",
@@ -6772,7 +6772,7 @@
        "explanation": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10."
       },
       {
-       "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrain = np.array([0., 3.5, 0., 6.])\nwet = rain > 0\nprint(rain[wet])",
        "options": [
         {
          "text": "[3.5, 6.0]",
@@ -6791,7 +6791,7 @@
        "explanation": "Index bằng mask giữ các giá trị ở vị trí True."
       },
       {
-       "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([-1, 0, 6, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
        "options": [
         {
          "text": "[0, 6, 10]",
@@ -7007,7 +7007,7 @@
        "explanation": "Đúng. Clip đổi giá trị nhưng không loại vị trí sai."
       },
       {
-       "question": "Gắn nhãn cho cả điểm đạt và chưa đạt. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Gắn nhãn cho cả điểm đạt và chưa đạt. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([4, 5, 9])\nprint(np.where(marks >= 5, \"pass\", \"retry\"))",
        "options": [
         {
          "text": "['retry', 'pass', 'pass']",
@@ -7026,7 +7026,7 @@
        "explanation": "Điều kiện True lấy pass; False lấy retry, giữ mọi vị trí."
       },
       {
-       "question": "Chỉ một trong ba điểm đạt nhưng mọi điểm đều nhận nhãn. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Chỉ một trong ba điểm đạt nhưng mọi điểm đều nhận nhãn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([2, 4, 8])\nlabels = np.where(marks >= 5, \"pass\", \"retry\")\nprint(labels.shape)",
        "options": [
         {
          "text": "(3,)",
@@ -7237,7 +7237,7 @@
        "explanation": "Đúng. (6×1+9×3)/(1+3)=33/4."
       },
       {
-       "question": "Ba bài có trọng số bằng nhau. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Ba bài có trọng số bằng nhau. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([4, 6, 8])\nprint(a.mean())",
        "options": [
         {
          "text": "6.0",
@@ -7256,7 +7256,7 @@
        "explanation": "mean bằng tổng các giá trị chia số phần tử."
       },
       {
-       "question": "Đọc mức bán thấp nhất trong dãy. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Đọc mức bán thấp nhất trong dãy. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([12, 7, 15])\nprint(a.min())",
        "options": [
         {
          "text": "7",
@@ -7469,7 +7469,7 @@
        "explanation": "Đúng. Chỉ có hai giá trị đã biết."
       },
       {
-       "question": "Một điểm chưa được nhập. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Một điểm chưa được nhập. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6., np.nan, 10.])\nprint(np.isnan(a))",
        "options": [
         {
          "text": "[False, True, False]",
@@ -7488,7 +7488,7 @@
        "explanation": "isnan chỉ True ở vị trí chứa NaN."
       },
       {
-       "question": "Hai điểm đã biết là 6 và 10. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Hai điểm đã biết là 6 và 10. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6., np.nan, 10.])\nprint(np.nanmean(a))",
        "options": [
         {
          "text": "8.0",
@@ -7694,7 +7694,7 @@
        "explanation": "Đúng. Hai giá khớp chiều cuối gồm hai sản phẩm."
       },
       {
-       "question": "Hai cửa hàng cùng dùng bảng giá. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Hai cửa hàng cùng dùng bảng giá. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)",
        "options": [
         {
          "text": "[[20, 20], [10, 60]]",
@@ -7713,7 +7713,7 @@
        "explanation": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột."
       },
       {
-       "question": "Ba đơn hàng có hai loại sản phẩm. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Ba đơn hàng có hai loại sản phẩm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[2, 0], [1, 3], [4, 1]])\nprice = np.array([5, 10])\nprint(qty * price)",
        "options": [
         {
          "text": "[[10, 0], [5, 30], [20, 10]]",
@@ -7964,7 +7964,7 @@
        "explanation": "Đúng. b là view vào vùng nhớ a đang dùng."
       },
       {
-       "question": "Sửa phần đầu được cắt từ array. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Sửa phần đầu được cắt từ array. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)",
        "options": [
         {
          "text": "[9, 2, 3]",
@@ -7983,7 +7983,7 @@
        "explanation": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc."
       },
       {
-       "question": "Tạo bản thử trước khi sửa. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tạo bản thử trước khi sửa. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([1, 2, 3])\nb = a[:2].copy()\nb[0] = 9\nprint(a)",
        "options": [
         {
          "text": "[1, 2, 3]",
@@ -8206,7 +8206,7 @@
        "explanation": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra."
       },
       {
-       "question": "So sánh bằng dấu ==. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "So sánh bằng dấu ==. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(0.1 + 0.2 == 0.3)",
        "options": [
         {
          "text": "False",
@@ -8225,7 +8225,7 @@
        "explanation": "Tổng được lưu không trùng chính xác với biểu diễn của 0.3."
       },
       {
-       "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.isclose(0.1 + 0.2, 0.3))",
        "options": [
         {
          "text": "True",
@@ -8444,7 +8444,7 @@
        "explanation": "Đúng. Tên cột không bị đọc thành dữ liệu số."
       },
       {
-       "question": "Dòng đầu chứa tên cột, hai dòng sau là số. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Dòng đầu chứa tên cột, hai dòng sau là số. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nfrom io import StringIO\ntext = \"x,y\\n1,2\\n3,4\"\nprint(np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1))",
        "options": [
         {
          "text": "[[1.0, 2.0], [3.0, 4.0]]",
@@ -8463,7 +8463,7 @@
        "explanation": "skiprows=1 bỏ dòng x,y trước khi đọc các ô số."
       },
       {
-       "question": "File dùng chấm phẩy thay vì dấu phẩy. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "File dùng chấm phẩy thay vì dấu phẩy. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nfrom io import StringIO\ntext = \"x;y\\n2;5\\n4;7\"\nprint(np.loadtxt(StringIO(text), delimiter=\";\", skiprows=1))",
        "options": [
         {
          "text": "[[2.0, 5.0], [4.0, 7.0]]",
@@ -8660,7 +8660,7 @@
        "explanation": "Đúng. Muốn bắt đầu lại cùng chuỗi, tạo lại bộ sinh với cùng seed và cùng thứ tự lệnh."
       },
       {
-       "question": "Mô phỏng xúc xắc; kiểm có số nào đạt 7 không. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mô phỏng xúc xắc; kiểm có số nào đạt 7 không. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=20)\nprint(bool((rolls < 7).all()))",
        "options": [
         {
          "text": "True",
@@ -8679,7 +8679,7 @@
        "explanation": "Mọi số sinh được nằm từ 1 tới 6."
       },
       {
-       "question": "Lấy 12 lần tung, không phải 12 mặt. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Lấy 12 lần tung, không phải 12 mặt. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=12)\nprint(rolls.shape)",
        "options": [
         {
          "text": "(12,)",
@@ -8885,7 +8885,7 @@
        "explanation": "Đúng. Gộp hai khoản chi trong từng hàng."
       },
       {
-       "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[4, 7], [8, 6], [5, 9]])\nprint(marks.sum(axis=1))",
        "options": [
         {
          "text": "[11, 14, 14]",
@@ -8904,7 +8904,7 @@
        "explanation": "axis=1 gộp các cột của từng học viên."
       },
       {
-       "question": "Báo cáo cần tổng điểm của ba học viên ở mỗi bài. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Báo cáo cần tổng điểm của ba học viên ở mỗi bài. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[4, 7], [8, 6], [5, 9]])\nprint(marks.sum(axis=0))",
        "options": [
         {
          "text": "[17, 22]",
@@ -9130,7 +9130,7 @@
        "explanation": "loc dùng nhãn, không dùng vị trí số của phần tử."
       },
       {
-       "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?",
+       "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
        "options": [
         {
          "text": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
@@ -9149,7 +9149,7 @@
        "explanation": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0."
       },
       {
-       "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.",
+       "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
        "options": [
         {
          "text": "cups.loc['Tue'], nhận 15.",
@@ -9366,7 +9366,7 @@
        "explanation": "shape mô tả hai chiều của bảng, không phải tổng số ô."
       },
       {
-       "question": "shape bằng (100, 4) có nghĩa gì?",
+       "question": "shape bằng (100, 4) có nghĩa gì?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
        "options": [
         {
          "text": "100 cột và 4 hàng.",
@@ -9385,7 +9385,7 @@
        "explanation": "Bảng có 100 hàng và 4 cột."
       },
       {
-       "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?",
+       "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
        "options": [
         {
          "text": "Trả về bảng đã xóa các ô thiếu.",
@@ -9634,7 +9634,7 @@
        "explanation": "iloc đếm vị trí từ 0, dù nhãn hàng là số."
       },
       {
-       "question": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?",
+       "question": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])",
        "options": [
         {
          "text": "Nhãn 20.",
@@ -9653,7 +9653,7 @@
        "explanation": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên."
       },
       {
-       "question": "loc['C01':'C02'] có lấy C02 không?",
+       "question": "loc['C01':'C02'] có lấy C02 không?\n\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())",
        "options": [
         {
          "text": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối.",
@@ -9868,7 +9868,7 @@
        "explanation": "Phép tính giữa Series căn các giá trị có cùng nhãn."
       },
       {
-       "question": "Vì sao profit của A là 40?",
+       "question": "Vì sao profit của A là 40?\n\nimport pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())",
        "options": [
         {
          "text": "pandas ghép nhãn A với A: 100 - 60 = 40.",
@@ -9887,7 +9887,7 @@
        "explanation": "pandas ghép nhãn A với A: 100 - 60 = 40."
       },
       {
-       "question": "reset_index() thường chuyển index về đâu?",
+       "question": "reset_index() thường chuyển index về đâu?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
        "options": [
         {
          "text": "Xóa mọi giá trị trong index và các cột.",
@@ -10090,7 +10090,7 @@
        "explanation": "& yêu cầu từng hàng thỏa cả hai phép so sánh có ngoặc."
       },
       {
-       "question": "Mask [True, False, True] giữ các hàng vị trí nào?",
+       "question": "Mask [True, False, True] giữ các hàng vị trí nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())",
        "options": [
         {
          "text": "Chỉ vị trí 1.",
@@ -10109,7 +10109,7 @@
        "explanation": "Giữ vị trí 0 và 2."
       },
       {
-       "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?",
+       "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
        "options": [
         {
          "text": "Dùng | vì cần thỏa đồng thời hai điều kiện.",
@@ -10344,7 +10344,7 @@
        "explanation": "Doanh thu thuộc từng hàng có cùng số lượng và đơn giá."
       },
       {
-       "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?",
+       "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
        "options": [
         {
          "text": "[20, 30, 40, 60].",
@@ -10363,7 +10363,7 @@
        "explanation": "[20, 60]."
       },
       {
-       "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
+       "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
        "options": [
         {
          "text": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
@@ -10572,7 +10572,7 @@
        "explanation": "Mã định danh không nên bị coi là đại lượng để tính."
       },
       {
-       "question": "Vì sao mã 001 nên giữ dạng chữ?",
+       "question": "Vì sao mã 001 nên giữ dạng chữ?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
        "options": [
         {
          "text": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu.",
@@ -10591,7 +10591,7 @@
        "explanation": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
       },
       {
-       "question": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+       "question": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?\n\nimport pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())",
        "options": [
         {
          "text": "Tự thay mọi ô thiếu bằng 0.",
@@ -10813,7 +10813,7 @@
        "explanation": "Cần giữ riêng việc chưa có số đo với một số đo bằng 0."
       },
       {
-       "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?",
+       "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?\n\nimport pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
        "options": [
         {
          "text": "14, vì ô thiếu được coi là 0.",
@@ -10832,7 +10832,7 @@
        "explanation": "21, vì phép tính bỏ giá trị thiếu."
       },
       {
-       "question": "Vì sao không nên luôn fillna(0)?",
+       "question": "Vì sao không nên luôn fillna(0)?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
        "options": [
         {
          "text": "Vì pandas không cho phép số 0.",
@@ -11036,7 +11036,7 @@
        "explanation": "Mỗi bước làm một việc; chuẩn hóa không tự sửa mọi lỗi dữ liệu."
       },
       {
-       "question": "strip có xóa dấu cách giữa hai từ không?",
+       "question": "strip có xóa dấu cách giữa hai từ không?\n\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
        "options": [
         {
          "text": "Có; strip nối các từ và tự đổi thành chữ thường.",
@@ -11055,7 +11055,7 @@
        "explanation": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn."
       },
       {
-       "question": "Tại sao contains thường thêm na=False khi dùng làm mask?",
+       "question": "Tại sao contains thường thêm na=False khi dùng làm mask?\n\nimport pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
        "options": [
         {
          "text": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",
@@ -11269,7 +11269,7 @@
        "explanation": "Hàm không hiểu ý nghĩa mới/cũ nếu bạn chưa sắp theo cột phiên bản."
       },
       {
-       "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?",
+       "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
        "options": [
         {
          "text": "Đánh dấu các bản sau là True; bản đầu được giữ.",
@@ -11288,7 +11288,7 @@
        "explanation": "Đánh dấu các bản sau là True; bản đầu được giữ."
       },
       {
-       "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?",
+       "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
        "options": [
         {
          "text": "Có; order luôn là khóa duy nhất trong mọi bảng.",
@@ -11541,7 +11541,7 @@
        "explanation": "Số ô trong cột khác số giá trị có thể dùng để tính."
       },
       {
-       "question": "count và size khác gì khi có ô thiếu?",
+       "question": "count và size khác gì khi có ô thiếu?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())",
        "options": [
         {
          "text": "Cả hai luôn bỏ ô thiếu.",
@@ -11560,7 +11560,7 @@
        "explanation": "count bỏ ô thiếu; size vẫn đếm chúng."
       },
       {
-       "question": "Muốn lấy ba doanh thu cao nhất, có thể dùng hàm nào?",
+       "question": "Muốn lấy ba doanh thu cao nhất, có thể dùng hàm nào?\n\nimport pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)",
        "options": [
         {
          "text": "df.sort_index().head(3) luôn sắp theo revenue.",
@@ -11761,7 +11761,7 @@
        "explanation": "Đọc được file chưa chứng minh các cột đã được hiểu đúng."
       },
       {
-       "question": "sep=\";\" có tác dụng gì?",
+       "question": "sep=\";\" có tác dụng gì?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())",
        "options": [
         {
          "text": "Bỏ mọi dòng có dấu chấm phẩy.",
@@ -11780,7 +11780,7 @@
        "explanation": "Dùng dấu chấm phẩy để tách cột."
       },
       {
-       "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?",
+       "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))",
        "options": [
         {
          "text": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
@@ -11982,7 +11982,7 @@
        "explanation": "Hãy xem tên sheet và chọn theo mục đích của bảng."
       },
       {
-       "question": "orient=\"records\" mô tả JSON như thế nào?",
+       "question": "orient=\"records\" mô tả JSON như thế nào?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))",
        "options": [
         {
          "text": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
@@ -12001,7 +12001,7 @@
        "explanation": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng."
       },
       {
-       "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?",
+       "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?\n\nimport pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ndf.to_excel(buffer, index=False, sheet_name='Sales', engine='openpyxl')\nbuffer.seek(0)\nback = pd.read_excel(buffer, sheet_name='Sales', usecols=['amount'], engine='openpyxl')\nprint(back['amount'].sum())",
        "options": [
         {
          "text": "Để xóa workbook trước khi đọc.",
@@ -12156,7 +12156,7 @@
        "explanation": "groupby chia theo khóa rồi mới tính trên từng nhóm."
       },
       {
-       "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+       "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
        "options": [
         {
          "text": "Luôn giữ đúng từng hàng như transform.",
@@ -12175,7 +12175,7 @@
        "explanation": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
       },
       {
-       "question": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?",
+       "question": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))",
        "options": [
         {
          "text": "Cả hai bằng 2 dù amount thiếu.",
@@ -12396,7 +12396,7 @@
        "explanation": "transform giữ số hàng và index của bảng giao dịch."
       },
       {
-       "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?",
+       "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())",
        "options": [
         {
          "text": "Vì transform luôn sắp các hàng theo giá trị giảm dần.",
@@ -12415,7 +12415,7 @@
        "explanation": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào."
       },
       {
-       "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?",
+       "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())",
        "options": [
         {
          "text": "Sắp xếp theo ngày trong nhóm trước.",
@@ -12626,7 +12626,7 @@
        "explanation": "how=\"left\" giữ bảng chính khi bổ sung thông tin danh mục."
       },
       {
-       "question": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?",
+       "question": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
        "options": [
         {
          "text": "how=\"left\", khi orders nằm bên trái.",
@@ -12645,7 +12645,7 @@
        "explanation": "how=\"left\", khi orders nằm bên trái."
       },
       {
-       "question": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?",
+       "question": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?\n\nimport pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
        "options": [
         {
          "text": "Giữ cả 1, 2 và 3.",
@@ -12873,7 +12873,7 @@
        "explanation": "Danh mục trùng khóa có thể nhân hàng; many_to_one phát hiện trường hợp này."
       },
       {
-       "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?",
+       "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())",
        "options": [
         {
          "text": "Năm hàng, vì cộng hai kích thước.",
@@ -12892,7 +12892,7 @@
        "explanation": "Sáu hàng."
       },
       {
-       "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?",
+       "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)",
        "options": [
         {
          "text": "many_to_many để bảo đảm danh mục không lặp mã.",
@@ -13102,7 +13102,7 @@
        "explanation": "Ghép lô và xử lý trùng là hai thao tác khác nhau."
       },
       {
-       "question": "ignore_index có xóa đơn hàng trùng không?",
+       "question": "ignore_index có xóa đơn hàng trùng không?\n\nimport pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())",
        "options": [
         {
          "text": "Có; ignore_index tự cộng amount của các đơn trùng.",
@@ -13121,7 +13121,7 @@
        "explanation": "Không; nó chỉ tạo lại nhãn index."
       },
       {
-       "question": "concat axis=1 căn hàng theo vị trí hay index?",
+       "question": "concat axis=1 căn hàng theo vị trí hay index?\n\nimport pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
        "options": [
         {
          "text": "Theo index.",
@@ -13346,7 +13346,7 @@
        "explanation": "Đổi hình dạng không tự xác định quy tắc tổng hợp."
       },
       {
-       "question": "pivot có tự tính tổng các giao dịch cùng store–month không?",
+       "question": "pivot có tự tính tổng các giao dịch cùng store–month không?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B', 'B'], 'month': ['Jan', 'Feb', 'Jan', 'Feb'], 'revenue': [10, 20, 30, 40]})\nwide = df.pivot(index='store', columns='month', values='revenue')\nprint(wide.loc['A', 'Feb'])\nprint(wide.loc['B', 'Jan'])",
        "options": [
         {
          "text": "Không; nó yêu cầu mỗi ô được xác định duy nhất.",
@@ -13365,7 +13365,7 @@
        "explanation": "Không; nó yêu cầu mỗi ô được xác định duy nhất."
       },
       {
-       "question": "Trong melt, id_vars có nghĩa gì?",
+       "question": "Trong melt, id_vars có nghĩa gì?\n\nimport pandas as pd\nwide = pd.DataFrame({'store': ['A', 'B'], 'Jan': [10, 30], 'Feb': [20, 40]})\nlong = wide.melt(id_vars='store', var_name='month', value_name='revenue')\nprint(long.to_dict('records'))",
        "options": [
         {
          "text": "Các cột cần xóa khỏi bảng.",
@@ -13594,7 +13594,7 @@
        "explanation": "Tên báo cáo tổng doanh thu cần đi cùng phép tổng, không dựa vào mặc định mean."
       },
       {
-       "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?",
+       "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
        "options": [
         {
          "text": "fill_value=\"sum\".",
@@ -13613,7 +13613,7 @@
        "explanation": "aggfunc=\"sum\"."
       },
       {
-       "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?",
+       "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
        "options": [
         {
          "text": "Tổng số đơn trong cột yes.",
@@ -13847,7 +13847,7 @@
        "explanation": "Format ghi rõ ý nghĩa của từng phần trong chuỗi ngày."
       },
       {
-       "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?",
+       "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?\n\nimport pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
        "options": [
         {
          "text": "Ngày 5 tháng 1 năm 2025.",
@@ -13866,7 +13866,7 @@
        "explanation": "Ngày 5 tháng 1 năm 2026."
       },
       {
-       "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?",
+       "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?\n\nimport pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
        "options": [
         {
          "text": "NaT, được phát hiện bằng isna().",
@@ -14065,7 +14065,7 @@
        "explanation": "MS đặt nhãn ở đầu tháng và sum cộng các giao dịch của tháng."
       },
       {
-       "question": "MS trong resample dùng nhãn ở đầu hay cuối tháng?",
+       "question": "MS trong resample dùng nhãn ở đầu hay cuối tháng?\n\nimport pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())",
        "options": [
         {
          "text": "Đầu tháng.",
@@ -14084,7 +14084,7 @@
        "explanation": "Đầu tháng."
       },
       {
-       "question": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?",
+       "question": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?\n\nimport pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())",
        "options": [
         {
          "text": "Có; mốc vắng luôn có doanh thu 0.",
@@ -14299,7 +14299,7 @@
        "explanation": "Cùng sự kiện có thể thuộc hai ngày lịch khác nhau tùy múi giờ."
       },
       {
-       "question": "tz_localize và tz_convert khác nhau thế nào?",
+       "question": "tz_localize và tz_convert khác nhau thế nào?\n\nimport pandas as pd\nutc = pd.to_datetime(['2026-01-01 00:00:00'], utc=True)\nlocal = utc.tz_convert('Asia/Ho_Chi_Minh')\nprint(local.strftime('%Y-%m-%d %H:%M %z').tolist())",
        "options": [
         {
          "text": "Cả hai chỉ đổi chữ viết của tên múi giờ.",
@@ -14318,7 +14318,7 @@
        "explanation": "tz_localize gắn múi giờ cho giờ chưa có múi giờ; tz_convert chuyển cách hiển thị một thời điểm đã có múi giờ."
       },
       {
-       "question": "23:00 UTC ngày 1/1 ở Việt Nam thuộc ngày nào?",
+       "question": "23:00 UTC ngày 1/1 ở Việt Nam thuộc ngày nào?\n\nimport pandas as pd\nwall_time = pd.DatetimeIndex(['2026-01-01 07:00'])\nlocal = wall_time.tz_localize('Asia/Ho_Chi_Minh')\nprint(local.tz_convert('UTC').strftime('%Y-%m-%d %H:%M %z').tolist())",
        "options": [
         {
          "text": "Ngày 1/1 lúc 16:00.",
@@ -14508,7 +14508,7 @@
        "explanation": "window và min_periods xác định dữ liệu được dùng ở mỗi hàng."
       },
       {
-       "question": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?",
+       "question": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?\n\nimport pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())",
        "options": [
         {
          "text": "Vì min_periods xóa dữ liệu gốc.",
@@ -14527,7 +14527,7 @@
        "explanation": "Chưa đủ ba quan sát."
       },
       {
-       "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?",
+       "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?\n\nimport pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
        "options": [
         {
          "text": "20%.",
@@ -14729,7 +14729,7 @@
        "explanation": "Giữ mã lạ nhìn thấy rồi quyết định quy tắc thay thế."
       },
       {
-       "question": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?",
+       "question": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?\n\nimport pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())",
        "options": [
         {
          "text": "Giá trị đó thành thiếu.",
@@ -14748,7 +14748,7 @@
        "explanation": "Giá trị đó thành thiếu."
       },
       {
-       "question": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?",
+       "question": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())",
        "options": [
         {
          "text": "Từng cột.",
@@ -14953,7 +14953,7 @@
        "explanation": "Dấu ngoặc tròn loại biên, ngoặc vuông nhận biên."
       },
       {
-       "question": "cut và qcut chọn ranh giới khác nhau thế nào?",
+       "question": "cut và qcut chọn ranh giới khác nhau thế nào?\n\nimport pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
        "options": [
         {
          "text": "cut luôn chia số lượng hàng đều nhau, qcut dùng biên cho trước.",
@@ -14972,7 +14972,7 @@
        "explanation": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu."
       },
       {
-       "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?",
+       "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?\n\nimport pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
        "options": [
         {
          "text": "Không thuộc khoảng nào vì 10 là biên.",
@@ -15169,7 +15169,7 @@
        "explanation": "Tên tầng giúp bạn giữ rõ mỗi phần của khóa."
       },
       {
-       "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?",
+       "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
        "options": [
         {
          "text": "Ba tầng vì Feb là tháng thứ hai.",
@@ -15188,7 +15188,7 @@
        "explanation": "Hai tầng: store và month."
       },
       {
-       "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?",
+       "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
        "options": [
         {
          "text": "xs(\"Jan\", level=\"month\").",
@@ -15417,7 +15417,7 @@
        "explanation": "Lô ngắn không được có cùng trọng số với lô dài khi tính mean của mọi hàng."
       },
       {
-       "question": "usecols giảm phần dữ liệu nào được đọc?",
+       "question": "usecols giảm phần dữ liệu nào được đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
        "options": [
         {
          "text": "Giảm số cột được nạp.",
@@ -15436,7 +15436,7 @@
        "explanation": "Giảm số cột được nạp."
       },
       {
-       "question": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?",
+       "question": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?\n\nimport pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
        "options": [
         {
          "text": "Vì mọi trung bình lô luôn giống nhau.",
@@ -15626,7 +15626,7 @@
        "explanation": "Tham số hóa dành cho giá trị, không dùng tùy ý cho tên bảng hay cột."
       },
       {
-       "question": "read_sql_query trả dữ liệu ở dạng gì?",
+       "question": "read_sql_query trả dữ liệu ở dạng gì?\n\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())",
        "options": [
         {
          "text": "Luôn là một list chuỗi SQL.",
@@ -15645,7 +15645,7 @@
        "explanation": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize."
       },
       {
-       "question": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
+       "question": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?\n\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())",
        "options": [
         {
          "text": "Để xem dữ liệu nhập vào như tên cột SQL.",
@@ -15856,7 +15856,7 @@
        "explanation": "Hàm làm sạch và quyết định nghiệp vụ về dữ liệu lỗi cần rõ ràng."
       },
       {
-       "question": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?",
+       "question": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?\n\nimport pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())",
        "options": [
         {
          "text": "Vì dữ liệu thiếu luôn phải bị xóa ngay.",
@@ -15875,7 +15875,7 @@
        "explanation": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ."
       },
       {
-       "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?",
+       "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
        "options": [
         {
          "text": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",
@@ -16097,7 +16097,7 @@
        "explanation": "Gắn cờ là bước tìm hiểu, không phải kết luận về tính đúng sai."
       },
       {
-       "question": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?",
+       "question": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
        "options": [
         {
          "text": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước.",
@@ -16116,7 +16116,7 @@
        "explanation": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước."
       },
       {
-       "question": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?",
+       "question": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?\n\nimport pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
        "options": [
         {
          "text": "Có; cứ ngoài 1.5 IQR là dữ liệu sai.",
@@ -16345,7 +16345,7 @@
        "explanation": "Thiếu danh mục và thiếu doanh thu là hai vấn đề khác nhau."
       },
       {
-       "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?",
+       "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?\n\nimport pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
        "options": [
         {
          "text": "Để ép mọi hàng thành cùng một amount.",
@@ -16364,7 +16364,7 @@
        "explanation": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối."
       },
       {
-       "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?",
+       "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
        "options": [
         {
          "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",
@@ -16644,7 +16644,7 @@
        "explanation": "Loại biểu đồ đi theo câu hỏi, không phải chỉ vì thư viện vẽ được."
       },
       {
-       "question": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?",
+       "question": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()",
        "options": [
         {
          "text": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán.",
@@ -16663,7 +16663,7 @@
        "explanation": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán."
       },
       {
-       "question": "Trong hình đầu, trục x và y đại diện cho gì?",
+       "question": "Trong hình đầu, trục x và y đại diện cho gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()",
        "options": [
         {
          "text": "x là số cốc, y là tên quán.",
@@ -16885,7 +16885,7 @@
        "explanation": "Figure chứa các vùng vẽ; Axes mới nhận lệnh plot trực tiếp."
       },
       {
-       "question": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?",
+       "question": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()",
        "options": [
         {
          "text": "Dùng ax.savefig vì Figure chỉ giữ tên hình.",
@@ -16904,7 +16904,7 @@
        "explanation": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu."
       },
       {
-       "question": "add_subplot(221) mô tả vị trí nào?",
+       "question": "add_subplot(221) mô tả vị trí nào?\n\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()",
        "options": [
         {
          "text": "Hai hàng, một cột, ô thứ hai.",
@@ -17156,7 +17156,7 @@
        "explanation": "plot nối theo thứ tự đầu vào; cần sắp cả cặp dữ liệu."
       },
       {
-       "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?",
+       "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()",
        "options": [
         {
          "text": "Không cần làm gì vì plot tự sắp mọi ngày.",
@@ -17175,7 +17175,7 @@
        "explanation": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào."
       },
       {
-       "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?",
+       "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()",
        "options": [
         {
          "text": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
@@ -17410,7 +17410,7 @@
        "explanation": "Số liệu có ý nghĩa khi vẫn đi cùng đúng nhóm."
       },
       {
-       "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?",
+       "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()",
        "options": [
         {
          "text": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
@@ -17429,7 +17429,7 @@
        "explanation": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh."
       },
       {
-       "question": "Khi tên nhóm dài, nên đổi sang hàm nào?",
+       "question": "Khi tên nhóm dài, nên đổi sang hàm nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
        "options": [
         {
          "text": "hist vì nhãn dài là dữ liệu số.",
@@ -17666,7 +17666,7 @@
        "explanation": "Mỗi tham số mã hóa một đại lượng; s không phải bán kính hay vị trí."
       },
       {
-       "question": "Mỗi điểm trong ví dụ giao hàng là gì?",
+       "question": "Mỗi điểm trong ví dụ giao hàng là gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()",
        "options": [
         {
          "text": "Một điểm là trung bình của mọi đơn.",
@@ -17685,7 +17685,7 @@
        "explanation": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó."
       },
       {
-       "question": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?",
+       "question": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
        "options": [
         {
          "text": "Diện tích tăng 2 lần.",
@@ -17941,7 +17941,7 @@
        "explanation": "Histogram phải có quy tắc nhận biên nhất quán."
       },
       {
-       "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?",
+       "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
        "options": [
         {
          "text": "[6,9], tức cột thứ ba.",
@@ -17960,7 +17960,7 @@
        "explanation": "[3,6), tức cột thứ hai."
       },
       {
-       "question": "Histogram và bar chart khác nhau thế nào?",
+       "question": "Histogram và bar chart khác nhau thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
        "options": [
         {
          "text": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
@@ -18192,7 +18192,7 @@
        "explanation": "Cần đọc đúng đại lượng tóm tắt trước khi diễn giải phân bố."
       },
       {
-       "question": "Điểm ngoài râu có phải luôn xóa không?",
+       "question": "Điểm ngoài râu có phải luôn xóa không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()",
        "options": [
         {
          "text": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật.",
@@ -18211,7 +18211,7 @@
        "explanation": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật."
       },
       {
-       "question": "Đường giữa hộp thường là đại lượng gì?",
+       "question": "Đường giữa hộp thường là đại lượng gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()",
        "options": [
         {
          "text": "Trung bình cộng.",
@@ -18424,7 +18424,7 @@
        "explanation": "vmin/vmax cùng đơn vị giúp màu mang cùng ý nghĩa."
       },
       {
-       "question": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?",
+       "question": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5, 3], [4, 1, 6]])\nim = ax.imshow(counts, cmap=\"viridis\", vmin=0, vmax=6, aspect=\"auto\")\nax.set_xticks([0, 1, 2], [\"Morning\", \"Noon\", \"Evening\"])\nax.set_yticks([0, 1], [\"Store A\", \"Store B\"])\nax.set_title(\"Orders by store and time\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(counts.shape)\nplt.show()",
        "options": [
         {
          "text": "Có 5 ô vì cộng hai kích thước.",
@@ -18443,7 +18443,7 @@
        "explanation": "6 ô; colorbar và nhãn không phải ô dữ liệu."
       },
       {
-       "question": "Hai cửa hàng dùng cùng màu xanh đậm có chắc cùng số đơn không?",
+       "question": "Hai cửa hàng dùng cùng màu xanh đậm có chắc cùng số đơn không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5], [4, 1]])\nim = ax.imshow(counts, cmap=\"Blues\", vmin=0, vmax=6)\nfor (row, col), value in np.ndenumerate(counts):\n    ax.text(col, row, str(value), ha=\"center\", va=\"center\", color=\"black\")\nax.set(xticks=[0, 1], xticklabels=[\"Morning\", \"Noon\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Read the count in each cell\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(int(counts.sum()))\nplt.show()",
        "options": [
         {
          "text": "Có; đơn vị dữ liệu không ảnh hưởng cách đọc màu.",
@@ -18689,7 +18689,7 @@
        "explanation": "Mốc tham chiếu phải được phân biệt với các quan sát có thật."
       },
       {
-       "question": "Tiêu đề “Doanh thu” còn thiếu gì để đọc được các con số?",
+       "question": "Tiêu đề “Doanh thu” còn thiếu gì để đọc được các con số?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()",
        "options": [
         {
          "text": "Chỉ cần xóa số trên trục.",
@@ -18708,7 +18708,7 @@
        "explanation": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp."
       },
       {
-       "question": "xy và xytext của annotate khác nhau thế nào?",
+       "question": "xy và xytext của annotate khác nhau thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()",
        "options": [
         {
          "text": "xy là điểm được chỉ tới; xytext là nơi đặt lời chú thích.",
@@ -18916,7 +18916,7 @@
        "explanation": "Khả năng đọc hình không nên phụ thuộc một kênh màu duy nhất."
       },
       {
-       "question": "Vì sao vẫn cần marker khi đã dùng hai màu?",
+       "question": "Vì sao vẫn cần marker khi đã dùng hai màu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()",
        "options": [
         {
          "text": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu.",
@@ -18935,7 +18935,7 @@
        "explanation": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu."
       },
       {
-       "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?",
+       "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
        "options": [
         {
          "text": "Luôn dùng phân kỳ vì số 0 xuất hiện trong miền.",
@@ -19167,7 +19167,7 @@
        "explanation": "Cần phân biệt hiệu số bằng nhau với tỷ số bằng nhau."
       },
       {
-       "question": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?",
+       "question": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()",
        "options": [
         {
          "text": "Chênh 200 đơn vì trục đã rút ngắn.",
@@ -19186,7 +19186,7 @@
        "explanation": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên."
       },
       {
-       "question": "Vì sao số 0 gặp vấn đề trên trục log thông thường?",
+       "question": "Vì sao số 0 gặp vấn đề trên trục log thông thường?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [1, 10, 100], marker=\"o\")\nax.set_yscale(\"log\")\nax.set(xlabel=\"Stage\", ylabel=\"Records (log scale)\", title=\"Equal distances represent equal ratios\")\nax.set_xticks([1, 2, 3], [\"Start\", \"Middle\", \"End\"])\nprint(ax.get_yscale())\nplt.show()",
        "options": [
         {
          "text": "Vì Matplotlib tự đổi mọi số 0 thành 1 mà không cần thông báo.",
@@ -19409,7 +19409,7 @@
        "explanation": "Bố trí hình và dữ liệu là hai phần khác nhau."
       },
       {
-       "question": "sharey=True giúp so sánh hai hình như thế nào?",
+       "question": "sharey=True giúp so sánh hai hình như thế nào?\n\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), sharey=True, layout=\"constrained\")\nfor ax, name, values in zip(axes, [\"Store A\", \"Store B\"], [[8, 10, 7], [4, 6, 5]]):\n    ax.plot([1, 2, 3], values, marker=\"o\")\n    ax.set(title=name, xlabel=\"Day\", ylim=(0, 12))\naxes[0].set_ylabel(\"Cups\")\nprint(len(fig.axes))\nplt.show()",
        "options": [
         {
          "text": "Chỉ đổi màu nền hai hình thành cùng một màu.",
@@ -19428,7 +19428,7 @@
        "explanation": "Hai Axes chia sẻ thang y. Một đơn vị được biểu diễn theo cùng thang đứng."
       },
       {
-       "question": "Hai chữ số đầu trong add_subplot(212) có nghĩa gì?",
+       "question": "Hai chữ số đầu trong add_subplot(212) có nghĩa gì?\n\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(7, 3))\nleft = fig.add_subplot(121)\nright = fig.add_subplot(122)\nleft.bar([\"A\", \"B\"], [8, 10])\nright.hist([1, 2, 2, 4], bins=[0, 3, 6])\nleft.set(title=\"Sales\", ylabel=\"Cups\")\nright.set(title=\"Wait\", xlabel=\"Minutes\", ylabel=\"Orders\")\nfig.subplots_adjust(wspace=0.55, bottom=0.2)\nprint(left.get_subplotspec().num1, right.get_subplotspec().num1)\nplt.show()",
        "options": [
         {
          "text": "Hai hàng và một cột; chữ số cuối 2 là ô thứ hai.",
@@ -19683,7 +19683,7 @@
        "explanation": "SE của trung bình khác độ phân tán của từng quan sát."
       },
       {
-       "question": "Cộng trừ một độ lệch chuẩn có phải mặc định là khoảng tin cậy 95%?",
+       "question": "Cộng trừ một độ lệch chuẩn có phải mặc định là khoảng tin cậy 95%?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()",
        "options": [
         {
          "text": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn.",
@@ -19702,7 +19702,7 @@
        "explanation": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn."
       },
       {
-       "question": "Với SD=4 và n=16, sai số chuẩn trung bình bằng bao nhiêu?",
+       "question": "Với SD=4 và n=16, sai số chuẩn trung bình bằng bao nhiêu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()",
        "options": [
         {
          "text": "SE=4 vì cỡ mẫu không ảnh hưởng.",
@@ -19925,7 +19925,7 @@
        "explanation": "Công thức inch×dpi áp dụng khi không cắt hoặc đổi kích thước sau xuất."
       },
       {
-       "question": "Hình rộng 4 inch ở 200 dpi có bao nhiêu pixel trước khi cắt khung?",
+       "question": "Hình rộng 4 inch ở 200 dpi có bao nhiêu pixel trước khi cắt khung?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "400 pixel.",
@@ -19944,7 +19944,7 @@
        "explanation": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất."
       },
       {
-       "question": "Muốn đặt hình lên nền slide có màu, cân nhắc tham số nào?",
+       "question": "Muốn đặt hình lên nền slide có màu, cân nhắc tham số nào?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "Chỉ tăng linewidth mà không kiểm nền.",
@@ -20148,7 +20148,7 @@
        "explanation": "Dữ liệu truyền vào hình phải khớp câu hỏi báo cáo."
       },
       {
-       "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?",
+       "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
        "options": [
         {
          "text": "Chỉ đổi index thành tên đồ uống, không cần tổng hợp.",
@@ -20167,7 +20167,7 @@
        "explanation": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả."
       },
       {
-       "question": "Index ngày chưa sắp có ảnh hưởng đến line chart không?",
+       "question": "Index ngày chưa sắp có ảnh hưởng đến line chart không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()",
        "options": [
         {
          "text": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày.",
@@ -20406,7 +20406,7 @@
        "explanation": "ECDF tính theo các quan sát, không cần chọn bins."
       },
       {
-       "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?",
+       "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.histplot(data=orders, x=\"wait\", bins=[0, 3, 6, 9], ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"A named column in a DataFrame\")\nprint(len(orders))\nplt.show()",
        "options": [
         {
          "text": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
@@ -20425,7 +20425,7 @@
        "explanation": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút."
       },
       {
-       "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?",
+       "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.ecdfplot(data=orders, x=\"wait\", ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Proportion <= x\", title=\"How many orders wait at most four minutes?\")\nprint(round(float((orders[\"wait\"] <= 4).mean()), 3))\nplt.show()",
        "options": [
         {
          "text": "Tự tăng số quan sát trong dữ liệu.",
@@ -20581,7 +20581,7 @@
        "explanation": "Tên nhóm giống nhau không làm hai loại biểu đồ trả cùng câu hỏi."
       },
       {
-       "question": "countplot trục y là trung bình thời gian chờ hay số dòng?",
+       "question": "countplot trục y là trung bình thời gian chờ hay số dòng?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"AM\", \"PM\", \"PM\"]})\nsns.countplot(data=orders, x=\"shift\", order=[\"AM\", \"PM\"], color=\"#0072B2\", ax=ax)\nax.set(xlabel=\"Shift\", ylabel=\"Orders\", title=\"Count rows in each shift\")\nprint(orders[\"shift\"].value_counts().to_dict())\nplt.show()",
        "options": [
         {
          "text": "Trung bình của mọi cột số trong nhóm.",
@@ -20600,7 +20600,7 @@
        "explanation": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian."
       },
       {
-       "question": "Khi cả ca có 3 quan sát, tại sao vẽ thêm stripplot?",
+       "question": "Khi cả ca có 3 quan sát, tại sao vẽ thêm stripplot?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"AM\", \"PM\", \"PM\", \"PM\"], \"wait\":[2, 3, 8, 3, 4, 5]})\nsns.stripplot(data=orders, x=\"shift\", y=\"wait\", jitter=False, color=\"#D55E00\", ax=ax)\nax.set(xlabel=\"Shift\", ylabel=\"Wait (minutes)\", title=\"Every dot is an observed order\")\nprint(orders.groupby(\"shift\")[\"wait\"].median().to_dict())\nplt.show()",
        "options": [
         {
          "text": "Để thay thế dữ liệu gốc bằng đường hồi quy.",
@@ -20762,7 +20762,7 @@
        "explanation": "Phải biết hình đang biểu diễn từng quan sát hay ước lượng nhóm."
       },
       {
-       "question": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?",
+       "question": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"km\":[1, 2, 2, 3], \"minutes\":[8, 12, 10, 11], \"mode\":[\"Bike\", \"Bike\", \"Motor\", \"Motor\"]})\nsns.scatterplot(data=orders, x=\"km\", y=\"minutes\", hue=\"mode\", style=\"mode\", ax=ax)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Color and marker encode the same group\")\nprint(orders[\"mode\"].nunique())\nplt.show()",
        "options": [
         {
          "text": "Luôn giữ ngẫu nhiên một dòng rồi bỏ hai dòng khác.",
@@ -20781,7 +20781,7 @@
        "explanation": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình."
       },
       {
-       "question": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?",
+       "question": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\ndaily = pd.DataFrame({\"day\":[1, 1, 2, 2], \"cups\":[8, 12, 10, 14]})\nsns.lineplot(data=daily, x=\"day\", y=\"cups\", errorbar=None, marker=\"o\", ax=ax)\nax.set(xlabel=\"Day\", ylabel=\"Mean cups\", title=\"Repeated x values are aggregated\")\nprint(daily.groupby(\"day\")[\"cups\"].mean().tolist())\nplt.show()",
        "options": [
         {
          "text": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt.",
@@ -20937,7 +20937,7 @@
        "explanation": "Biết cấp Figure/Axes giúp tránh tạo hai hình rồi vẽ nhầm."
       },
       {
-       "question": "Vì sao không truyền ax vào relplot như scatterplot?",
+       "question": "Vì sao không truyền ax vào relplot như scatterplot?\n\nimport matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"km\":[1, 2, 1, 2], \"minutes\":[8, 12, 7, 9], \"store\":[\"A\", \"A\", \"B\", \"B\"]})\ng = sns.relplot(data=data, x=\"km\", y=\"minutes\", col=\"store\", height=2.6, aspect=1)\ng.set_axis_labels(\"Distance (km)\", \"Delivery (minutes)\")\ng.set_titles(\"Store {col_name}\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
        "options": [
         {
          "text": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax.",
@@ -20956,7 +20956,7 @@
        "explanation": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax."
       },
       {
-       "question": "Muốn xem riêng từng cửa hàng, thêm tham số gì?",
+       "question": "Muốn xem riêng từng cửa hàng, thêm tham số gì?\n\nimport matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"PM\", \"PM\"], \"wait\":[2, 4, 3, 5], \"store\":[\"A\", \"B\", \"A\", \"B\"]})\ng = sns.catplot(data=data, x=\"shift\", y=\"wait\", col=\"store\", kind=\"strip\", jitter=False, height=2.6)\ng.set_axis_labels(\"Shift\", \"Wait (minutes)\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
        "options": [
         {
          "text": "legend=\"store\" để tự tạo nhiều ô.",
@@ -21103,7 +21103,7 @@
        "explanation": "Kiểm dữ liệu được đưa vào file, không chỉ phần người xem thấy."
       },
       {
-       "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
+       "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?\n\nimport pandas as pd\nimport plotly.express as px\norders = pd.DataFrame({\"km\":[1, 2, 3], \"minutes\":[8, 12, 11], \"store\":[\"A\", \"B\", \"A\"]})\nfig = px.scatter(orders, x=\"km\", y=\"minutes\", color=\"store\", symbol=\"store\", hover_data=[\"store\"], labels={\"km\":\"Distance (km)\", \"minutes\":\"Delivery (minutes)\"}, title=\"Inspect an order with hover\")\nprint(len(fig.data))\nfig.show()",
        "options": [
         {
          "text": "Có; ẩn trace sẽ xóa sạch dữ liệu khỏi file đã xuất.",
@@ -21122,7 +21122,7 @@
        "explanation": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu."
       },
       {
-       "question": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?",
+       "question": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?\n\nimport pandas as pd\nimport plotly.express as px\ndata = pd.DataFrame({\"day\":[1, 2, 1, 2], \"cups\":[8, 10, 5, 6], \"drink\":[\"Coffee\", \"Coffee\", \"Tea\", \"Tea\"]})\nfig = px.line(data, x=\"day\", y=\"cups\", color=\"drink\", line_dash=\"drink\", markers=True, labels={\"day\":\"Day\", \"cups\":\"Cups\"}, title=\"Toggle a drink in the legend\")\nprint([trace.name for trace in fig.data])\nfig.show()",
        "options": [
         {
          "text": "Chỉ giảm độ trong suốt của mọi điểm bằng nhau.",
@@ -21256,7 +21256,7 @@
        "explanation": "visible có một giá trị cho mỗi trace, theo đúng thứ tự."
       },
       {
-       "question": "Hai trace thì visible cần mấy giá trị?",
+       "question": "Hai trace thì visible cần mấy giá trị?\n\nimport pandas as pd\nimport plotly.express as px\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"day\":[1, 2, 1], \"cups\":[8, 10, 5]})\nselected = data.loc[data[\"store\"].eq(\"A\")]\nfig = px.line(selected, x=\"day\", y=\"cups\", markers=True, title=\"Store A only\", labels={\"day\":\"Day\", \"cups\":\"Cups\"})\nprint(len(selected))\nfig.show()",
        "options": [
         {
          "text": "Ba giá trị vì cần thêm giá trị cho Figure.",
@@ -21275,7 +21275,7 @@
        "explanation": "Hai giá trị, theo đúng thứ tự trace; [True, False] chỉ hiện trace đầu."
       },
       {
-       "question": "Đổi bộ lọc mà không đổi tiêu đề gây vấn đề gì?",
+       "question": "Đổi bộ lọc mà không đổi tiêu đề gây vấn đề gì?\n\nimport plotly.graph_objects as go\nfig = go.Figure()\nfig.add_scatter(x=[1, 2], y=[8, 10], name=\"A\", mode=\"lines+markers\")\nfig.add_scatter(x=[1, 2], y=[5, 6], name=\"B\", mode=\"lines+markers\")\nbuttons = [\n    {\"label\":\"All\", \"method\":\"update\", \"args\":[{\"visible\":[True, True]}, {\"title\":{\"text\":\"All stores\"}}]},\n    {\"label\":\"A\", \"method\":\"update\", \"args\":[{\"visible\":[True, False]}, {\"title\":{\"text\":\"Store A\"}}]},\n    {\"label\":\"B\", \"method\":\"update\", \"args\":[{\"visible\":[False, True]}, {\"title\":{\"text\":\"Store B\"}}]}\n]\nfig.update_layout(title=\"All stores\", xaxis_title=\"Day\", yaxis_title=\"Cups\", updatemenus=[{\"buttons\":buttons}])\nprint(len(buttons))\nfig.show()",
        "options": [
         {
          "text": "Người xem có thể tưởng hình vẫn là toàn bộ dữ liệu; tiêu đề, KPI và chú thích phải khớp bộ lọc.",
@@ -21409,7 +21409,7 @@
        "explanation": "Chọn cách đóng gói theo môi trường người nhận, rồi kiểm file thực tế."
       },
       {
-       "question": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?",
+       "question": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?\n\nimport plotly.express as px\nfig = px.bar(x=[\"Coffee\", \"Tea\"], y=[36, 24], title=\"A self-contained report\", labels={\"x\":\"Drink\", \"y\":\"Cups\"})\nhtml = fig.to_html(include_plotlyjs=True, full_html=True)\nprint(\"<html>\" in html, \"Plotly.newPlot\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-1.html\", include_plotlyjs=True, auto_open=False)",
        "options": [
         {
          "text": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng.",
@@ -21428,7 +21428,7 @@
        "explanation": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng."
       },
       {
-       "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?",
+       "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?\n\nimport plotly.graph_objects as go\nfig = go.Figure(go.Scatter(x=[1, 2], y=[8, 10], mode=\"lines+markers\"))\nfig.update_layout(title=\"A fragment for an existing page\", xaxis_title=\"Day\", yaxis_title=\"Cups\")\nfragment = fig.to_html(include_plotlyjs=False, full_html=False)\nprint(\"<html>\" in fragment, \"Plotly.newPlot\" in fragment)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-2.html\", include_plotlyjs=True, auto_open=False)",
        "options": [
         {
          "text": "Có; hover là nơi duy nhất có thể chứa dữ liệu.",
@@ -21576,7 +21576,7 @@
        "explanation": "Kiểm hàm dữ liệu độc lập rồi gắn thay đổi widget vào cùng quy tắc."
       },
       {
-       "question": "Vì sao viết hàm summarize trước khi làm widget?",
+       "question": "Vì sao viết hàm summarize trước khi làm widget?\n\nimport pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
        "options": [
         {
          "text": "Để widget tự quyết định công thức tính KPI.",
@@ -21595,7 +21595,7 @@
        "explanation": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán."
       },
       {
-       "question": "Widget được tạo trong script có tự biến thành website không?",
+       "question": "Widget được tạo trong script có tự biến thành website không?\n\nimport ipywidgets as widgets\ncontrol = widgets.Dropdown(options=[\"All\", \"A\", \"B\"], value=\"All\", description=\"Store:\")\ncontrol.value = \"A\"\nprint(control.value)\ncontrol.close()",
        "options": [
         {
          "text": "Có; ipywidgets tự triển khai máy chủ khi được import.",
@@ -21755,7 +21755,7 @@
        "explanation": "Đại lượng cần so sánh phải được xác định trước khi vẽ."
       },
       {
-       "question": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?",
+       "question": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()",
        "options": [
         {
          "text": "Hai nơi bằng nhau vì đều có khách phàn nàn.",
@@ -21774,7 +21774,7 @@
        "explanation": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số."
       },
       {
-       "question": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?",
+       "question": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?\n\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()",
        "options": [
         {
          "text": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau.",
@@ -22010,7 +22010,7 @@
        "explanation": "Tách dữ liệu gốc khỏi phần đang được trình chiếu ở một khung."
       },
       {
-       "question": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?",
+       "question": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Reveal observations one at a time\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nupdate(1)\nprint(list(line.get_ydata()))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-1.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy.",
@@ -22029,7 +22029,7 @@
        "explanation": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy."
       },
       {
-       "question": "Vì sao giữ nguyên ylim khi cột thay đổi?",
+       "question": "Vì sao giữ nguyên ylim khi cột thay đổi?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom matplotlib.animation import FuncAnimation\nfrom pathlib import Path\nfrom tempfile import gettempdir\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Three-frame teaching animation\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nani = FuncAnimation(fig, update, frames=3, interval=600, repeat=True)\nhtml = ani.to_jshtml()\nhtml += '<style>.anim-buttons{display:flex;flex-wrap:wrap;gap:4px}.anim-buttons button{width:auto;min-height:28px}.anim-buttons button::after{content:attr(title);font:12px sans-serif;padding:3px}.anim-buttons .fa{display:none}</style>'\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\n(out / \"VZ25-motion.html\").write_text(html, encoding=\"utf-8\")\nupdate(2)\nprint(\"<script\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-2.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "Để dữ liệu gốc không được cập nhật.",
@@ -22260,7 +22260,7 @@
        "explanation": "Lời kết luận phải bám vào số đã được tính và đơn vị của dữ liệu."
       },
       {
-       "question": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.",
+       "question": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()",
        "options": [
         {
          "text": "Tổng 32 vì chỉ cộng hai đơn giá.",
@@ -22279,7 +22279,7 @@
        "explanation": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá."
       },
       {
-       "question": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?",
+       "question": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()",
        "options": [
         {
          "text": "Có; chi phí luôn bằng 0 trong mọi dữ liệu.",
@@ -22526,7 +22526,7 @@
        "explanation": "Cơ cấu có ý nghĩa khi các phần cộng về cùng một tổng dương."
       },
       {
-       "question": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?",
+       "question": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"All drinks\"], [60], label=\"Coffee\")\nax.bar([\"All drinks\"], [40], bottom=[60], label=\"Tea\")\nax.set(ylabel=\"Share (%)\", title=\"Parts of the same total\", ylim=(0, 100))\nax.legend()\nprint(60 + 40)\nplt.show()",
        "options": [
         {
          "text": "Có nếu mỗi phần dùng một màu riêng.",
@@ -22545,7 +22545,7 @@
        "explanation": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại."
       },
       {
-       "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?",
+       "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwedges, labels, values = ax.pie([60, 40], labels=[\"Coffee\", \"Tea\"], autopct=\"%.0f%%\", colors=[\"#0072B2\", \"#D55E00\"])\nax.set_title(\"Only two mutually exclusive shares\")\nprint([text.get_text() for text in values])\nplt.show()",
        "options": [
         {
          "text": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",
@@ -22778,7 +22778,7 @@
        "explanation": "Mỗi ô lưới nằm giữa hai biên liên tiếp theo từng chiều."
       },
       {
-       "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?",
+       "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?\n\nimport matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
        "options": [
         {
          "text": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
@@ -22797,7 +22797,7 @@
        "explanation": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều."
       },
       {
-       "question": "contour khác contourf thế nào?",
+       "question": "contour khác contourf thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()",
        "options": [
         {
          "text": "contour tô vùng, contourf chỉ vẽ đường.",
@@ -23067,7 +23067,7 @@
        "explanation": "X,Y là vị trí; U,V là thành phần của vector tại vị trí đó."
       },
       {
-       "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?",
+       "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
        "options": [
         {
          "text": "Điểm (0,0), vì dx và dy bị bỏ qua.",
@@ -23086,7 +23086,7 @@
        "explanation": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu."
       },
       {
-       "question": "U,V trong quiver là vị trí hay thành phần vector?",
+       "question": "U,V trong quiver là vị trí hay thành phần vector?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
        "options": [
         {
          "text": "Cả bốn đều là tọa độ điểm cuối.",
@@ -23338,7 +23338,7 @@
        "explanation": "Một sự kiện chuột không tự tương ứng với một bản ghi dữ liệu."
       },
       {
-       "question": "Bấm ngoài Axes có nên lấy xdata làm số để tính ngay không?",
+       "question": "Bấm ngoài Axes có nên lấy xdata làm số để tính ngay không?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "Có; bấm ngoài Axes luôn lấy điểm gần nhất.",
@@ -23357,7 +23357,7 @@
        "explanation": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None."
       },
       {
-       "question": "Agg có tạo một cửa sổ để bấm chuột không?",
+       "question": "Agg có tạo một cửa sổ để bấm chuột không?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)",
        "options": [
         {
          "text": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show().",
@@ -35868,7 +35868,7 @@
        "explanation": "Đúng. Vị trí chữ là tỷ lệ của vùng vẽ, không phụ thuộc giá trị trục."
       },
       {
-       "question": "Nhãn ở 10% chiều ngang và 90% chiều cao vùng vẽ. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Nhãn ở 10% chiều ngang và 90% chiều cao vùng vẽ. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nlabel = ax.text(0.1, 0.9, \"Note\", transform=ax.transAxes)\nprint(label.get_position())",
        "options": [
         {
          "text": "(0.1, 0.9)",
@@ -35887,7 +35887,7 @@
        "explanation": "transform=ax.transAxes diễn giải vị trí theo vùng vẽ, không theo dữ liệu."
       },
       {
-       "question": "Mũi tên chỉ doanh thu ở ngày 3, chữ nằm ở góc hình. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mũi tên chỉ doanh thu ở ngày 3, chữ nằm ở góc hình. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nnote = ax.annotate(\"Peak\", xy=(3, 20), xycoords=\"data\", xytext=(0.1, 0.9), textcoords=\"axes fraction\")\nprint(note.xy)",
        "options": [
         {
          "text": "(3, 20)",
@@ -36111,7 +36111,7 @@
        "explanation": "Đúng. Thêm hàng trên chiều có sẵn."
       },
       {
-       "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([[1, 2, 3], [4, 5, 6]])\nprint(sales.T)",
        "options": [
         {
          "text": "[[1, 4], [2, 5], [3, 6]]",
@@ -36130,7 +36130,7 @@
        "explanation": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị."
       },
       {
-       "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1,2,3,4],[5,6,7,8]])\nprint(a.T.shape)",
        "options": [
         {
          "text": "(4, 2)",
@@ -36372,7 +36372,7 @@
        "explanation": "Đúng. B đi cùng số 10 nhỏ nhất."
       },
       {
-       "question": "Cần thứ tự tăng của ba mức bán. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Cần thứ tự tăng của ba mức bán. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([30,10,20])\nprint(np.argsort(sales, kind=\"stable\"))",
        "options": [
         {
          "text": "[1, 2, 0]",
@@ -36391,7 +36391,7 @@
        "explanation": "Giá thấp nhất ở index 1, tiếp theo 2, rồi 0."
       },
       {
-       "question": "Tên phải đi cùng lượng bán khi sắp. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tên phải đi cùng lượng bán khi sắp. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nnames = np.array([\"A\",\"B\",\"C\"])\nsales = np.array([30,10,20])\norder = np.argsort(sales, kind=\"stable\")\nprint(names[order])",
        "options": [
         {
          "text": "['B', 'C', 'A']",
@@ -36634,7 +36634,7 @@
        "explanation": "Đúng. Thế lại: 4+3=7 và 2×4+3=11."
       },
       {
-       "question": "Mỗi hàng là một đơn gồm hai loại hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Mỗi hàng là một đơn gồm hai loại hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty @ price)",
        "options": [
         {
          "text": "[20, 30]",
@@ -36653,7 +36653,7 @@
        "explanation": "Mỗi hàng nhân với các giá tương ứng rồi cộng các tích."
       },
       {
-       "question": "Dừng trước bước cộng mỗi hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Dừng trước bước cộng mỗi hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[1,2],[3,0]])\nprice = np.array([10,5])\nprint(qty * price)",
        "options": [
         {
          "text": "[[10, 10], [30, 0]]",
@@ -36870,7 +36870,7 @@
        "explanation": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc."
       },
       {
-       "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25,scale=2,size=20)\nprint(temps.shape)",
        "options": [
         {
          "text": "(20,)",
@@ -36889,7 +36889,7 @@
        "explanation": "size quyết định số giá trị sinh ra, tách khỏi loc và scale."
       },
       {
-       "question": "Có thể lấy nhiều hơn số vị trí nguồn. Kết quả ở lệnh print cuối có giá trị nào?",
+       "question": "Có thể lấy nhiều hơn số vị trí nguồn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10.,20.,30.])\nsample = rng.choice(orders,size=5,replace=True)\nprint(sample.shape)",
        "options": [
         {
          "text": "(5,)",

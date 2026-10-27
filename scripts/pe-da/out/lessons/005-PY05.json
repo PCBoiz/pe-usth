@@ -87,7 +87,7 @@
      "explanation": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm."
     },
     {
-     "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(4 * 10 - 3)",
      "options": [
       {
        "text": "37",
@@ -106,7 +106,7 @@
      "explanation": "Phép nhân tính tiền bán trước khi trừ một lần phí chung."
     },
     {
-     "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(9 / 2)",
      "options": [
       {
        "text": "4.5",

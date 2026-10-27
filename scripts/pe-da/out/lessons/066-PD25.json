@@ -87,7 +87,7 @@
      "explanation": "Giữ mã lạ nhìn thấy rồi quyết định quy tắc thay thế."
     },
     {
-     "question": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?",
+     "question": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?\n\nimport pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())",
      "options": [
       {
        "text": "Giá trị đó thành thiếu.",
@@ -106,7 +106,7 @@
      "explanation": "Giá trị đó thành thiếu."
     },
     {
-     "question": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?",
+     "question": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?\n\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())",
      "options": [
       {
        "text": "Từng cột.",

@@ -34,12 +34,49 @@ export const STUDIO_LESSON_SCHEMA_V2 = 'studio-lesson/v2';
 export type McqOption = string | { text: string; correct?: boolean; detail?: string };
 
 export type Mcq = {
+  /**
+   * Đề bài, và CÓ THỂ kèm một đoạn code sau một dòng trống — xem `tachDeVaCode`.
+   * Hai thứ nằm chung MỘT trường vì hình dạng này đi qua `normalizeQuestion` ở
+   * backend để vào kho quiz chấm Ở SERVER, mà hàm đó chỉ đọc
+   * `question`/`options`/`explanation`: một trường `code` riêng sẽ bị bỏ âm
+   * thầm ở đúng con đường chấm duy nhất client không giả mạo được.
+   */
   question: string;
   options: McqOption[];
   /** Index of the correct option. The object form of `options` may set it instead. */
   correct?: number;
   explanation?: string;
 };
+
+/** Mốc nối giữa đề bài và đoạn code — khớp `NOI_DE_CODE` trong scripts/pe-da/build.py. */
+const NOI_DE_CODE = '\n\n';
+
+/**
+ * Tách `Mcq.question` thành (đề bài, đoạn code) để màn trắc nghiệm dựng đúng loại.
+ *
+ * Vì sao cần: 471/1032 câu của gói nguồn mang một trường `code` riêng, và đề
+ * bài của chúng KHÔNG tự đứng được. Bản dựng đầu bỏ trường đó, nên **214/516
+ * câu đang phát mất đoạn code quyết định đáp án và 90 câu ở 45 bài còn TRỎ TỚI
+ * nó** — ví dụ PY01, bài đầu tiên của khoá: "Buổi sáng bán 10 cốc, chiều bán 7
+ * cốc. Kết quả ở lệnh print cuối có giá trị nào?" mà không có lệnh print nào
+ * trên màn hình. Nay build gấp code vào `question`, và chỗ này tách lại.
+ *
+ * Nhồi cả hai vào `title` của màn thì code dồn thành một dòng (HTML gộp khoảng
+ * trắng) và học viên đọc code như văn xuôi — đúng loại ngộ nhận mà `ReadScreen`
+ * đã cố ý tránh khi để `expected` ra ngoài `CodeBlock`.
+ *
+ * Chỉ tách ở LẦN XUẤT HIỆN ĐẦU của dòng trống: một đề bài nhiều đoạn văn thì
+ * phần sau vẫn là code, mà `build.py` không bao giờ phát đề nhiều đoạn (nguồn
+ * là `prompt` một đoạn), nên luật này không mất gì. Không có dòng trống thì
+ * `code` là undefined và màn hiện y như trước.
+ */
+export function tachDeVaCode(question: string): { de: string; code?: string } {
+  const at = question.indexOf(NOI_DE_CODE);
+  if (at < 0) return { de: question };
+  const code = question.slice(at + NOI_DE_CODE.length).trim();
+  if (!code) return { de: question.slice(0, at) };
+  return { de: question.slice(0, at), code };
+}
 
 export type PredictOption = {
   id: string;

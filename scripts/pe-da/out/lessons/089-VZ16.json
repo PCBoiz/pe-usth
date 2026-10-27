@@ -95,7 +95,7 @@
      "explanation": "ECDF tính theo các quan sát, không cần chọn bins."
     },
     {
-     "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?",
+     "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.histplot(data=orders, x=\"wait\", bins=[0, 3, 6, 9], ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"A named column in a DataFrame\")\nprint(len(orders))\nplt.show()",
      "options": [
       {
        "text": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
@@ -114,7 +114,7 @@
      "explanation": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút."
     },
     {
-     "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?",
+     "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.ecdfplot(data=orders, x=\"wait\", ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Proportion <= x\", title=\"How many orders wait at most four minutes?\")\nprint(round(float((orders[\"wait\"] <= 4).mean()), 3))\nplt.show()",
      "options": [
       {
        "text": "Tự tăng số quan sát trong dữ liệu.",

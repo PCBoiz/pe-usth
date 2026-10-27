@@ -87,7 +87,7 @@
      "explanation": "Đúng. B đi cùng số 10 nhỏ nhất."
     },
     {
-     "question": "Cần thứ tự tăng của ba mức bán. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Cần thứ tự tăng của ba mức bán. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([30,10,20])\nprint(np.argsort(sales, kind=\"stable\"))",
      "options": [
       {
        "text": "[1, 2, 0]",
@@ -106,7 +106,7 @@
      "explanation": "Giá thấp nhất ở index 1, tiếp theo 2, rồi 0."
     },
     {
-     "question": "Tên phải đi cùng lượng bán khi sắp. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Tên phải đi cùng lượng bán khi sắp. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nnames = np.array([\"A\",\"B\",\"C\"])\nsales = np.array([30,10,20])\norder = np.argsort(sales, kind=\"stable\")\nprint(names[order])",
      "options": [
       {
        "text": "['B', 'C', 'A']",

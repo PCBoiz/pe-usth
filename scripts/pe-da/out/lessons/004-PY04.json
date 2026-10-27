@@ -93,7 +93,7 @@
      "explanation": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước."
     },
     {
-     "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
      "options": [
       {
        "text": "36",
@@ -112,7 +112,7 @@
      "explanation": "int(\"18\") tạo số nguyên 18 trước phép nhân."
     },
     {
-     "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"7.5\"\nprice = float(raw)\nprint(price * 2)",
      "options": [
       {
        "text": "15.0",

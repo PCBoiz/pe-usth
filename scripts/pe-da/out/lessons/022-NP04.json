@@ -101,7 +101,7 @@
      "explanation": "Đúng. Mỗi số được nhân 2."
     },
     {
-     "question": "Mỗi điểm được cộng 1. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi điểm được cộng 1. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([3, 5])\nprint(a + 1)",
      "options": [
       {
        "text": "[4, 6]",
@@ -120,7 +120,7 @@
      "explanation": "Cộng scalar vào array thực hiện trên từng phần tử."
     },
     {
-     "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([2, 5])\nprint(a * 3)",
      "options": [
       {
        "text": "[6, 15]",

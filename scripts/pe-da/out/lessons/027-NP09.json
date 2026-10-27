@@ -101,7 +101,7 @@
      "explanation": "Đúng. Lấy cột chỉ số 1 của cả hai hàng."
     },
     {
-     "question": "Chọn ô ở hàng thứ hai, cột đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chọn ô ở hàng thứ hai, cột đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[2, 4, 6], [8, 10, 12]])\nprint(a[1, 0])",
      "options": [
       {
        "text": "8",
@@ -120,7 +120,7 @@
      "explanation": "Chỉ số thứ nhất chọn hàng; chỉ số thứ hai chọn cột."
     },
     {
-     "question": "Đọc toàn bộ cửa hàng đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Đọc toàn bộ cửa hàng đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[2, 4, 6], [8, 10, 12]])\nprint(a[0])",
      "options": [
       {
        "text": "[2, 4, 6]",

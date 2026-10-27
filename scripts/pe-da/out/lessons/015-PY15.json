@@ -87,7 +87,7 @@
      "explanation": "Đúng. Chỉ 2 và 4 được cộng; 8 nằm sau điểm dừng."
     },
     {
-     "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?\n\nattempt = 0\nwhile attempt < 3:\n    attempt += 1\nprint(attempt)",
      "options": [
       {
        "text": "3",
@@ -106,7 +106,7 @@
      "explanation": "Biến tăng lên 3 sau lượt cuối rồi vòng dừng."
     },
     {
-     "question": "Bỏ riêng số 2. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bỏ riêng số 2. Kết quả ở lệnh print cuối có giá trị nào?\n\nkept = []\nfor number in range(4):\n    if number == 2:\n        continue\n    kept.append(number)\nprint(kept)",
      "options": [
       {
        "text": "[0, 1, 3]",

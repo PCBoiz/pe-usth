@@ -87,7 +87,7 @@
      "explanation": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc."
     },
     {
-     "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25,scale=2,size=20)\nprint(temps.shape)",
      "options": [
       {
        "text": "(20,)",
@@ -106,7 +106,7 @@
      "explanation": "size quyết định số giá trị sinh ra, tách khỏi loc và scale."
     },
     {
-     "question": "Có thể lấy nhiều hơn số vị trí nguồn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Có thể lấy nhiều hơn số vị trí nguồn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10.,20.,30.])\nsample = rng.choice(orders,size=5,replace=True)\nprint(sample.shape)",
      "options": [
       {
        "text": "(5,)",

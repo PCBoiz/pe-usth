@@ -91,7 +91,7 @@
      "explanation": "Đúng. Không ghi axis thì cộng cả bốn ô."
     },
     {
-     "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([3, 5, 7])\nprint(a.sum())",
      "options": [
       {
        "text": "15",
@@ -110,7 +110,7 @@
      "explanation": "Không ghi axis thì sum cộng mọi phần tử."
     },
     {
-     "question": "Gộp doanh thu của mọi cửa hàng và ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Gộp doanh thu của mọi cửa hàng và ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2], [3, 4]])\nprint(a.sum())",
      "options": [
       {
        "text": "10",

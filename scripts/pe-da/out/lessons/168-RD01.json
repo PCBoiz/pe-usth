@@ -102,7 +102,7 @@
      "explanation": "Đúng. Vị trí chữ là tỷ lệ của vùng vẽ, không phụ thuộc giá trị trục."
     },
     {
-     "question": "Nhãn ở 10% chiều ngang và 90% chiều cao vùng vẽ. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Nhãn ở 10% chiều ngang và 90% chiều cao vùng vẽ. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nlabel = ax.text(0.1, 0.9, \"Note\", transform=ax.transAxes)\nprint(label.get_position())",
      "options": [
       {
        "text": "(0.1, 0.9)",
@@ -121,7 +121,7 @@
      "explanation": "transform=ax.transAxes diễn giải vị trí theo vùng vẽ, không theo dữ liệu."
     },
     {
-     "question": "Mũi tên chỉ doanh thu ở ngày 3, chữ nằm ở góc hình. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mũi tên chỉ doanh thu ở ngày 3, chữ nằm ở góc hình. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nnote = ax.annotate(\"Peak\", xy=(3, 20), xycoords=\"data\", xytext=(0.1, 0.9), textcoords=\"axes fraction\")\nprint(note.xy)",
      "options": [
       {
        "text": "(3, 20)",

@@ -87,7 +87,7 @@
      "explanation": "Gắn cờ là bước tìm hiểu, không phải kết luận về tính đúng sai."
     },
     {
-     "question": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?",
+     "question": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
      "options": [
       {
        "text": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước.",
@@ -106,7 +106,7 @@
      "explanation": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước."
     },
     {
-     "question": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?",
+     "question": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?\n\nimport pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
      "options": [
       {
        "text": "Có; cứ ngoài 1.5 IQR là dữ liệu sai.",

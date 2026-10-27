@@ -97,7 +97,7 @@
      "explanation": "Đúng. Kernel mới chưa có tên cups."
     },
     {
-     "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 11\nprint(cups + 1)",
      "options": [
       {
        "text": "12",
@@ -116,7 +116,7 @@
      "explanation": "Lệnh sau đọc giá trị được lệnh trước tạo."
     },
     {
-     "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 12\ncups = 18\nprint(cups)",
      "options": [
       {
        "text": "18",

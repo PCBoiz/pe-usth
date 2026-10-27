@@ -105,7 +105,7 @@
      "explanation": "Đúng. Gộp hai khoản chi trong từng hàng."
     },
     {
-     "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[4, 7], [8, 6], [5, 9]])\nprint(marks.sum(axis=1))",
      "options": [
       {
        "text": "[11, 14, 14]",
@@ -124,7 +124,7 @@
      "explanation": "axis=1 gộp các cột của từng học viên."
     },
     {
-     "question": "Báo cáo cần tổng điểm của ba học viên ở mỗi bài. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Báo cáo cần tổng điểm của ba học viên ở mỗi bài. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[4, 7], [8, 6], [5, 9]])\nprint(marks.sum(axis=0))",
      "options": [
       {
        "text": "[17, 22]",

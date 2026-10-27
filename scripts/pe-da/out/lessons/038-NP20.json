@@ -101,7 +101,7 @@
      "explanation": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra."
     },
     {
-     "question": "So sánh bằng dấu ==. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "So sánh bằng dấu ==. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(0.1 + 0.2 == 0.3)",
      "options": [
       {
        "text": "False",
@@ -120,7 +120,7 @@
      "explanation": "Tổng được lưu không trùng chính xác với biểu diễn của 0.3."
     },
     {
-     "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.isclose(0.1 + 0.2, 0.3))",
      "options": [
       {
        "text": "True",

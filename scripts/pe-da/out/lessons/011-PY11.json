@@ -87,7 +87,7 @@
      "explanation": "Đúng. Dấu phẩy tạo tuple một phần tử."
     },
     {
-     "question": "Tách hai tọa độ. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Tách hai tọa độ. Kết quả ở lệnh print cuối có giá trị nào?\n\npoint = (4, 9)\nx, y = point\nprint(x + y)",
      "options": [
       {
        "text": "13",
@@ -106,7 +106,7 @@
      "explanation": "Unpack gán 4 cho x và 9 cho y."
     },
     {
-     "question": "Dấu phẩy tạo tuple chỉ có một phần tử. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Dấu phẩy tạo tuple chỉ có một phần tử. Kết quả ở lệnh print cuối có giá trị nào?\n\nitem = (7,)\nprint(type(item).__name__)",
      "options": [
       {
        "text": "'tuple'",

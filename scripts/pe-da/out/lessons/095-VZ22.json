@@ -80,7 +80,7 @@
      "explanation": "Chọn cách đóng gói theo môi trường người nhận, rồi kiểm file thực tế."
     },
     {
-     "question": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?",
+     "question": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?\n\nimport plotly.express as px\nfig = px.bar(x=[\"Coffee\", \"Tea\"], y=[36, 24], title=\"A self-contained report\", labels={\"x\":\"Drink\", \"y\":\"Cups\"})\nhtml = fig.to_html(include_plotlyjs=True, full_html=True)\nprint(\"<html>\" in html, \"Plotly.newPlot\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-1.html\", include_plotlyjs=True, auto_open=False)",
      "options": [
       {
        "text": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng.",
@@ -99,7 +99,7 @@
      "explanation": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng."
     },
     {
-     "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?",
+     "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?\n\nimport plotly.graph_objects as go\nfig = go.Figure(go.Scatter(x=[1, 2], y=[8, 10], mode=\"lines+markers\"))\nfig.update_layout(title=\"A fragment for an existing page\", xaxis_title=\"Day\", yaxis_title=\"Cups\")\nfragment = fig.to_html(include_plotlyjs=False, full_html=False)\nprint(\"<html>\" in fragment, \"Plotly.newPlot\" in fragment)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-2.html\", include_plotlyjs=True, auto_open=False)",
      "options": [
       {
        "text": "Có; hover là nơi duy nhất có thể chứa dữ liệu.",

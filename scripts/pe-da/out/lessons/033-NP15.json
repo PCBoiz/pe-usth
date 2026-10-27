@@ -97,7 +97,7 @@
      "explanation": "Đúng. Clip đổi giá trị nhưng không loại vị trí sai."
     },
     {
-     "question": "Gắn nhãn cho cả điểm đạt và chưa đạt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Gắn nhãn cho cả điểm đạt và chưa đạt. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([4, 5, 9])\nprint(np.where(marks >= 5, \"pass\", \"retry\"))",
      "options": [
       {
        "text": "['retry', 'pass', 'pass']",
@@ -116,7 +116,7 @@
      "explanation": "Điều kiện True lấy pass; False lấy retry, giữ mọi vị trí."
     },
     {
-     "question": "Chỉ một trong ba điểm đạt nhưng mọi điểm đều nhận nhãn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Chỉ một trong ba điểm đạt nhưng mọi điểm đều nhận nhãn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([2, 4, 8])\nlabels = np.where(marks >= 5, \"pass\", \"retry\")\nprint(labels.shape)",
      "options": [
       {
        "text": "(3,)",

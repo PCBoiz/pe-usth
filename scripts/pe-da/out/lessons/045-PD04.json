@@ -87,7 +87,7 @@
      "explanation": "Phép tính giữa Series căn các giá trị có cùng nhãn."
     },
     {
-     "question": "Vì sao profit của A là 40?",
+     "question": "Vì sao profit của A là 40?\n\nimport pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())",
      "options": [
       {
        "text": "pandas ghép nhãn A với A: 100 - 60 = 40.",
@@ -106,7 +106,7 @@
      "explanation": "pandas ghép nhãn A với A: 100 - 60 = 40."
     },
     {
-     "question": "reset_index() thường chuyển index về đâu?",
+     "question": "reset_index() thường chuyển index về đâu?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
      "options": [
       {
        "text": "Xóa mọi giá trị trong index và các cột.",

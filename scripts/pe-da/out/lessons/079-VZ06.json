@@ -92,7 +92,7 @@
      "explanation": "Histogram phải có quy tắc nhận biên nhất quán."
     },
     {
-     "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?",
+     "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
      "options": [
       {
        "text": "[6,9], tức cột thứ ba.",
@@ -111,7 +111,7 @@
      "explanation": "[3,6), tức cột thứ hai."
     },
     {
-     "question": "Histogram và bar chart khác nhau thế nào?",
+     "question": "Histogram và bar chart khác nhau thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
      "options": [
       {
        "text": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",

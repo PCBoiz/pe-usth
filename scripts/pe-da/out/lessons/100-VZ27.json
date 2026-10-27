@@ -98,7 +98,7 @@
      "explanation": "Cơ cấu có ý nghĩa khi các phần cộng về cùng một tổng dương."
     },
     {
-     "question": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?",
+     "question": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"All drinks\"], [60], label=\"Coffee\")\nax.bar([\"All drinks\"], [40], bottom=[60], label=\"Tea\")\nax.set(ylabel=\"Share (%)\", title=\"Parts of the same total\", ylim=(0, 100))\nax.legend()\nprint(60 + 40)\nplt.show()",
      "options": [
       {
        "text": "Có nếu mỗi phần dùng một màu riêng.",
@@ -117,7 +117,7 @@
      "explanation": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại."
     },
     {
-     "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?",
+     "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwedges, labels, values = ax.pie([60, 40], labels=[\"Coffee\", \"Tea\"], autopct=\"%.0f%%\", colors=[\"#0072B2\", \"#D55E00\"])\nax.set_title(\"Only two mutually exclusive shares\")\nprint([text.get_text() for text in values])\nplt.show()",
      "options": [
       {
        "text": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",

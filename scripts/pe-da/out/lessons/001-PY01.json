@@ -101,7 +101,7 @@
      "explanation": "Đúng. Python cộng hai giá trị 8 và 11 rồi print kết quả."
     },
     {
-     "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(10 + 7)",
      "options": [
       {
        "text": "17",
@@ -120,7 +120,7 @@
      "explanation": "10 + 7 tính tổng của hai buổi."
     },
     {
-     "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 14\nprint(cups + cups)",
      "options": [
       {
        "text": "28",

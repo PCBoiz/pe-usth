@@ -87,7 +87,7 @@
      "explanation": "& yêu cầu từng hàng thỏa cả hai phép so sánh có ngoặc."
     },
     {
-     "question": "Mask [True, False, True] giữ các hàng vị trí nào?",
+     "question": "Mask [True, False, True] giữ các hàng vị trí nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())",
      "options": [
       {
        "text": "Chỉ vị trí 1.",
@@ -106,7 +106,7 @@
      "explanation": "Giữ vị trí 0 và 2."
     },
     {
-     "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?",
+     "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
      "options": [
       {
        "text": "Dùng | vì cần thỏa đồng thời hai điều kiện.",

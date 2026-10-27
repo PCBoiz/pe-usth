@@ -87,7 +87,7 @@
      "explanation": "Dấu ngoặc tròn loại biên, ngoặc vuông nhận biên."
     },
     {
-     "question": "cut và qcut chọn ranh giới khác nhau thế nào?",
+     "question": "cut và qcut chọn ranh giới khác nhau thế nào?\n\nimport pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
      "options": [
       {
        "text": "cut luôn chia số lượng hàng đều nhau, qcut dùng biên cho trước.",
@@ -106,7 +106,7 @@
      "explanation": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu."
     },
     {
-     "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?",
+     "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?\n\nimport pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
      "options": [
       {
        "text": "Không thuộc khoảng nào vì 10 là biên.",

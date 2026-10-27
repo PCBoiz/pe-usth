@@ -80,7 +80,7 @@
      "explanation": "visible có một giá trị cho mỗi trace, theo đúng thứ tự."
     },
     {
-     "question": "Hai trace thì visible cần mấy giá trị?",
+     "question": "Hai trace thì visible cần mấy giá trị?\n\nimport pandas as pd\nimport plotly.express as px\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"day\":[1, 2, 1], \"cups\":[8, 10, 5]})\nselected = data.loc[data[\"store\"].eq(\"A\")]\nfig = px.line(selected, x=\"day\", y=\"cups\", markers=True, title=\"Store A only\", labels={\"day\":\"Day\", \"cups\":\"Cups\"})\nprint(len(selected))\nfig.show()",
      "options": [
       {
        "text": "Ba giá trị vì cần thêm giá trị cho Figure.",
@@ -99,7 +99,7 @@
      "explanation": "Hai giá trị, theo đúng thứ tự trace; [True, False] chỉ hiện trace đầu."
     },
     {
-     "question": "Đổi bộ lọc mà không đổi tiêu đề gây vấn đề gì?",
+     "question": "Đổi bộ lọc mà không đổi tiêu đề gây vấn đề gì?\n\nimport plotly.graph_objects as go\nfig = go.Figure()\nfig.add_scatter(x=[1, 2], y=[8, 10], name=\"A\", mode=\"lines+markers\")\nfig.add_scatter(x=[1, 2], y=[5, 6], name=\"B\", mode=\"lines+markers\")\nbuttons = [\n    {\"label\":\"All\", \"method\":\"update\", \"args\":[{\"visible\":[True, True]}, {\"title\":{\"text\":\"All stores\"}}]},\n    {\"label\":\"A\", \"method\":\"update\", \"args\":[{\"visible\":[True, False]}, {\"title\":{\"text\":\"Store A\"}}]},\n    {\"label\":\"B\", \"method\":\"update\", \"args\":[{\"visible\":[False, True]}, {\"title\":{\"text\":\"Store B\"}}]}\n]\nfig.update_layout(title=\"All stores\", xaxis_title=\"Day\", yaxis_title=\"Cups\", updatemenus=[{\"buttons\":buttons}])\nprint(len(buttons))\nfig.show()",
      "options": [
       {
        "text": "Người xem có thể tưởng hình vẫn là toàn bộ dữ liệu; tiêu đề, KPI và chú thích phải khớp bộ lọc.",

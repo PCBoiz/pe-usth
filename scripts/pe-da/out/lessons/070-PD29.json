@@ -87,7 +87,7 @@
      "explanation": "Tham số hóa dành cho giá trị, không dùng tùy ý cho tên bảng hay cột."
     },
     {
-     "question": "read_sql_query trả dữ liệu ở dạng gì?",
+     "question": "read_sql_query trả dữ liệu ở dạng gì?\n\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())",
      "options": [
       {
        "text": "Luôn là một list chuỗi SQL.",
@@ -106,7 +106,7 @@
      "explanation": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize."
     },
     {
-     "question": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
+     "question": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?\n\nimport sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())",
      "options": [
       {
        "text": "Để xem dữ liệu nhập vào như tên cột SQL.",

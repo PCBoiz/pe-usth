@@ -87,7 +87,7 @@
      "explanation": "Đổi hình dạng không tự xác định quy tắc tổng hợp."
     },
     {
-     "question": "pivot có tự tính tổng các giao dịch cùng store–month không?",
+     "question": "pivot có tự tính tổng các giao dịch cùng store–month không?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B', 'B'], 'month': ['Jan', 'Feb', 'Jan', 'Feb'], 'revenue': [10, 20, 30, 40]})\nwide = df.pivot(index='store', columns='month', values='revenue')\nprint(wide.loc['A', 'Feb'])\nprint(wide.loc['B', 'Jan'])",
      "options": [
       {
        "text": "Không; nó yêu cầu mỗi ô được xác định duy nhất.",
@@ -106,7 +106,7 @@
      "explanation": "Không; nó yêu cầu mỗi ô được xác định duy nhất."
     },
     {
-     "question": "Trong melt, id_vars có nghĩa gì?",
+     "question": "Trong melt, id_vars có nghĩa gì?\n\nimport pandas as pd\nwide = pd.DataFrame({'store': ['A', 'B'], 'Jan': [10, 30], 'Feb': [20, 40]})\nlong = wide.melt(id_vars='store', var_name='month', value_name='revenue')\nprint(long.to_dict('records'))",
      "options": [
       {
        "text": "Các cột cần xóa khỏi bảng.",

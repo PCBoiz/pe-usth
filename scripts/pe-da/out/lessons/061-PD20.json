@@ -87,7 +87,7 @@
      "explanation": "Tên báo cáo tổng doanh thu cần đi cùng phép tổng, không dựa vào mặc định mean."
     },
     {
-     "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?",
+     "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
      "options": [
       {
        "text": "fill_value=\"sum\".",
@@ -106,7 +106,7 @@
      "explanation": "aggfunc=\"sum\"."
     },
     {
-     "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?",
+     "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
      "options": [
       {
        "text": "Tổng số đơn trong cột yes.",

@@ -92,7 +92,7 @@
      "explanation": "Lời kết luận phải bám vào số đã được tính và đơn vị của dữ liệu."
     },
     {
-     "question": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.",
+     "question": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()",
      "options": [
       {
        "text": "Tổng 32 vì chỉ cộng hai đơn giá.",
@@ -111,7 +111,7 @@
      "explanation": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá."
     },
     {
-     "question": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?",
+     "question": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()",
      "options": [
       {
        "text": "Có; chi phí luôn bằng 0 trong mọi dữ liệu.",

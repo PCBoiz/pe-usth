@@ -93,7 +93,7 @@
      "explanation": "Đúng. Dấu ngoặc thực hiện lời gọi."
     },
     {
-     "question": "Gán hàm cho một tên khác rồi gọi sau. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Gán hàm cho một tên khác rồi gọi sau. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef greet():\n    return \"Hello\"\ncallback = greet\nprint(callback())",
      "options": [
       {
        "text": "'Hello'",
@@ -112,7 +112,7 @@
      "explanation": "callback và greet cùng tham chiếu tới một hàm."
     },
     {
-     "question": "Biến bên trong hàm có cùng tên biến bên ngoài. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Biến bên trong hàm có cùng tên biến bên ngoài. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalue = 10\ndef calculate():\n    value = 20\n    return value\ninside = calculate()\nprint([inside, value])",
      "options": [
       {
        "text": "[20, 10]",

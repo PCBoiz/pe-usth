@@ -92,7 +92,7 @@
      "explanation": "plot nối theo thứ tự đầu vào; cần sắp cả cặp dữ liệu."
     },
     {
-     "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?",
+     "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()",
      "options": [
       {
        "text": "Không cần làm gì vì plot tự sắp mọi ngày.",
@@ -111,7 +111,7 @@
      "explanation": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào."
     },
     {
-     "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?",
+     "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()",
      "options": [
       {
        "text": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",

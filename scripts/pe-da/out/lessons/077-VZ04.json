@@ -92,7 +92,7 @@
      "explanation": "Số liệu có ý nghĩa khi vẫn đi cùng đúng nhóm."
     },
     {
-     "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?",
+     "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()",
      "options": [
       {
        "text": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
@@ -111,7 +111,7 @@
      "explanation": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh."
     },
     {
-     "question": "Khi tên nhóm dài, nên đổi sang hàm nào?",
+     "question": "Khi tên nhóm dài, nên đổi sang hàm nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
      "options": [
       {
        "text": "hist vì nhãn dài là dữ liệu số.",

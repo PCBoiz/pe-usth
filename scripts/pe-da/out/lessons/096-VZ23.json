@@ -81,7 +81,7 @@
      "explanation": "Kiểm hàm dữ liệu độc lập rồi gắn thay đổi widget vào cùng quy tắc."
     },
     {
-     "question": "Vì sao viết hàm summarize trước khi làm widget?",
+     "question": "Vì sao viết hàm summarize trước khi làm widget?\n\nimport pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
      "options": [
       {
        "text": "Để widget tự quyết định công thức tính KPI.",
@@ -100,7 +100,7 @@
      "explanation": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán."
     },
     {
-     "question": "Widget được tạo trong script có tự biến thành website không?",
+     "question": "Widget được tạo trong script có tự biến thành website không?\n\nimport ipywidgets as widgets\ncontrol = widgets.Dropdown(options=[\"All\", \"A\", \"B\"], value=\"All\", description=\"Store:\")\ncontrol.value = \"A\"\nprint(control.value)\ncontrol.close()",
      "options": [
       {
        "text": "Có; ipywidgets tự triển khai máy chủ khi được import.",

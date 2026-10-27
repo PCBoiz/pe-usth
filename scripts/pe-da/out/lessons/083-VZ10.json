@@ -98,7 +98,7 @@
      "explanation": "Khả năng đọc hình không nên phụ thuộc một kênh màu duy nhất."
     },
     {
-     "question": "Vì sao vẫn cần marker khi đã dùng hai màu?",
+     "question": "Vì sao vẫn cần marker khi đã dùng hai màu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()",
      "options": [
       {
        "text": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu.",
@@ -117,7 +117,7 @@
      "explanation": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu."
     },
     {
-     "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?",
+     "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
      "options": [
       {
        "text": "Luôn dùng phân kỳ vì số 0 xuất hiện trong miền.",

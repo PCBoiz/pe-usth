@@ -101,7 +101,7 @@
      "explanation": "Đúng. Hai hàng còn hai tổng."
     },
     {
-     "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
      "options": [
       {
        "text": "[6, 15]",
@@ -120,7 +120,7 @@
      "explanation": "axis=1 gộp các cột trong từng hàng."
     },
     {
-     "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[4, 6], [5, 7], [8, 9]])\nprint(a.sum(axis=1).shape)",
      "options": [
       {
        "text": "(3,)",

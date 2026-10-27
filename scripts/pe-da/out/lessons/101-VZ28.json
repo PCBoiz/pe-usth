@@ -98,7 +98,7 @@
      "explanation": "Mỗi ô lưới nằm giữa hai biên liên tiếp theo từng chiều."
     },
     {
-     "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?",
+     "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?\n\nimport matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
      "options": [
       {
        "text": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
@@ -117,7 +117,7 @@
      "explanation": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều."
     },
     {
-     "question": "contour khác contourf thế nào?",
+     "question": "contour khác contourf thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()",
      "options": [
       {
        "text": "contour tô vùng, contourf chỉ vẽ đường.",

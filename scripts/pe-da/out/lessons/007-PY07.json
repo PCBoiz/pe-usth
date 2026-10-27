@@ -87,7 +87,7 @@
      "explanation": "Đúng. Lấy bốn ký tự từ cuối tới hết."
     },
     {
-     "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"sales.csv\"\nprint(name[0])",
      "options": [
       {
        "text": "'s'",
@@ -106,7 +106,7 @@
      "explanation": "Chỉ số 0 trỏ ký tự đầu tiên."
     },
     {
-     "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"report\"\nprint(name[-1])",
      "options": [
       {
        "text": "'t'",

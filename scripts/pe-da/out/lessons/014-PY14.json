@@ -87,7 +87,7 @@
      "explanation": "Đúng. Tổng được khởi tạo một lần trước vòng lặp."
     },
     {
-     "question": "Cộng các ca bán hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Cộng các ca bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [3, 5, 2]\ntotal = 0\nfor value in values:\n    total += value\nprint(total)",
      "options": [
       {
        "text": "10",
@@ -106,7 +106,7 @@
      "explanation": "Mỗi lượt cộng một số vào total đã khởi tạo."
     },
     {
-     "question": "Các mã tăng hai đơn vị. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Các mã tăng hai đơn vị. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(list(range(1, 7, 2)))",
      "options": [
       {
        "text": "[1, 3, 5]",

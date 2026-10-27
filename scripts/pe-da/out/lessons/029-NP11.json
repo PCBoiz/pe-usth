@@ -95,7 +95,7 @@
      "explanation": "Đúng. Mỗi cột thời điểm có một tổng."
     },
     {
-     "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
      "options": [
       {
        "text": "[5, 7, 9]",
@@ -114,7 +114,7 @@
      "explanation": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột."
     },
     {
-     "question": "Bảng bốn cửa hàng nhưng chỉ hai ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bảng bốn cửa hàng nhưng chỉ hai ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2], [3, 4], [5, 6], [7, 8]])\nprint(a.sum(axis=0).shape)",
      "options": [
       {
        "text": "(2,)",

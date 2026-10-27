@@ -87,7 +87,7 @@
      "explanation": "Đúng. Nhánh đầu đã đúng, không xét tiếp nhánh >=5."
     },
     {
-     "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?\n\nscore = 8\nif score >= 8:\n    result = \"Good\"\nelif score >= 5:\n    result = \"Pass\"\nelse:\n    result = \"Retry\"\nprint(result)",
      "options": [
       {
        "text": "'Good'",
@@ -106,7 +106,7 @@
      "explanation": "Điều kiện >= nhận cả giá trị bằng 8."
     },
     {
-     "question": "Điểm đạt mức qua môn nhưng chưa tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Điểm đạt mức qua môn nhưng chưa tốt. Kết quả ở lệnh print cuối có giá trị nào?\n\nscore = 6\nif score >= 8:\n    result = \"Good\"\nelif score >= 5:\n    result = \"Pass\"\nelse:\n    result = \"Retry\"\nprint(result)",
      "options": [
       {
        "text": "'Pass'",

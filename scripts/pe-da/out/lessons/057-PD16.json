@@ -87,7 +87,7 @@
      "explanation": "how=\"left\" giữ bảng chính khi bổ sung thông tin danh mục."
     },
     {
-     "question": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?",
+     "question": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
      "options": [
       {
        "text": "how=\"left\", khi orders nằm bên trái.",
@@ -106,7 +106,7 @@
      "explanation": "how=\"left\", khi orders nằm bên trái."
     },
     {
-     "question": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?",
+     "question": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?\n\nimport pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
      "options": [
       {
        "text": "Giữ cả 1, 2 và 3.",

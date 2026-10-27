@@ -87,7 +87,7 @@
      "explanation": "window và min_periods xác định dữ liệu được dùng ở mỗi hàng."
     },
     {
-     "question": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?",
+     "question": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?\n\nimport pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())",
      "options": [
       {
        "text": "Vì min_periods xóa dữ liệu gốc.",
@@ -106,7 +106,7 @@
      "explanation": "Chưa đủ ba quan sát."
     },
     {
-     "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?",
+     "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?\n\nimport pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
      "options": [
       {
        "text": "20%.",

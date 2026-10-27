@@ -97,7 +97,7 @@
      "explanation": "Đúng. 4×2=8."
     },
     {
-     "question": "Sáu giá trị điền lần lượt theo hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Sáu giá trị điền lần lượt theo hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(2, 3))",
      "options": [
       {
        "text": "[[1, 2, 3], [4, 5, 6]]",
@@ -116,7 +116,7 @@
      "explanation": "Hai hàng, mỗi hàng ba giá trị, giữ thứ tự dãy ban đầu."
     },
     {
-     "question": "Cũng sáu số nhưng mỗi hàng hai ô. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Cũng sáu số nhưng mỗi hàng hai ô. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(3, 2))",
      "options": [
       {
        "text": "[[1, 2], [3, 4], [5, 6]]",

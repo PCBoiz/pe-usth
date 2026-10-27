@@ -98,7 +98,7 @@
      "explanation": "Tách dữ liệu gốc khỏi phần đang được trình chiếu ở một khung."
     },
     {
-     "question": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?",
+     "question": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Reveal observations one at a time\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nupdate(1)\nprint(list(line.get_ydata()))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-1.png\", dpi=130)\nplt.close(fig)",
      "options": [
       {
        "text": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy.",
@@ -117,7 +117,7 @@
      "explanation": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy."
     },
     {
-     "question": "Vì sao giữ nguyên ylim khi cột thay đổi?",
+     "question": "Vì sao giữ nguyên ylim khi cột thay đổi?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom matplotlib.animation import FuncAnimation\nfrom pathlib import Path\nfrom tempfile import gettempdir\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Three-frame teaching animation\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nani = FuncAnimation(fig, update, frames=3, interval=600, repeat=True)\nhtml = ani.to_jshtml()\nhtml += '<style>.anim-buttons{display:flex;flex-wrap:wrap;gap:4px}.anim-buttons button{width:auto;min-height:28px}.anim-buttons button::after{content:attr(title);font:12px sans-serif;padding:3px}.anim-buttons .fa{display:none}</style>'\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\n(out / \"VZ25-motion.html\").write_text(html, encoding=\"utf-8\")\nupdate(2)\nprint(\"<script\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-2.png\", dpi=130)\nplt.close(fig)",
      "options": [
       {
        "text": "Để dữ liệu gốc không được cập nhật.",

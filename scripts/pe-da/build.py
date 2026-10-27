@@ -241,6 +241,13 @@ def phan_loai_khoi(code: str, cho_mo_phong: bool = False) -> tuple[bool, str]:
     return True, ''
 
 
+# Mốc nối giữa ĐỀ BÀI và ĐOẠN CODE trong một câu trắc nghiệm. Hai chỗ phải khớp
+# từng ký tự: `cau_trac_nghiem()` ở đây nối, `tachDeVaCode()` trong
+# frontend/src/lib/studio-lesson.ts tách. Đổi một bên thì màn trắc nghiệm hiện
+# nguyên chuỗi gộp làm tiêu đề — code dồn thành một dòng, không đọc được.
+NOI_DE_CODE = '\n\n'
+
+
 def cau_trac_nghiem(mcq: dict, so_cau: int = SO_CAU_MCQ) -> list[dict]:
     """Chuyển câu trắc nghiệm của gói sang hình dạng `step_2.mcq`.
 
@@ -271,8 +278,38 @@ def cau_trac_nghiem(mcq: dict, so_cau: int = SO_CAU_MCQ) -> list[dict]:
             # màn không bao giờ đúng được — `firstUnfinished()` chặn luôn nút
             # kết thúc bài.
             continue
+        # GẤP `code` của nguồn vào CHÍNH đề bài.
+        #
+        # Bản dựng đầu BỎ trường này, và đó là một lỗi có thật đã tới tay người
+        # học: đo trên bản dựng 28/10 — **214/516 câu đang phát mất đoạn code
+        # quyết định đáp án, và 90 câu ở 45 bài thì ĐỀ BÀI CÒN TRỎ TỚI nó**, nên
+        # chúng không trả lời được. Ví dụ nguyên văn PY01 — bài ĐẦU TIÊN của
+        # khoá: "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print
+        # cuối có giá trị nào?" và không có lệnh print nào trên màn hình. VZ20
+        # thì có HAI câu trùng nhau từng ký tự, vì thứ duy nhất phân biệt chúng
+        # là `code`.
+        #
+        # Không ngoại lệ nào được ném và không log nào đỏ — đúng họ bẫy "lệch
+        # IM LẶNG" mà mục kho quiz trong AGENTS.md đã ghi. Thứ bắt được nó là
+        # `kiem_trac_nghiem()` trong check.py, nay có luật cho chuyện này.
+        #
+        # Loại bỏ câu có `code` KHÔNG phải lựa chọn: đo thử thì 44/172 bài mất
+        # SẠCH câu và 62 bài còn đúng 1 câu.
+        #
+        # Vì sao gấp vào `question` chứ không thêm một trường mới: hình dạng này
+        # đi qua `normalizeQuestion` ở backend để vào kho quiz chấm Ở SERVER, mà
+        # hàm đó chỉ đọc `question`/`options`/`explanation` — một trường mới sẽ
+        # bị BỎ ÂM THẦM ở đúng con đường chấm duy nhất client không giả mạo
+        # được. Gấp vào thì cả hai kho (trong bài và hậu kiểm) tự đủ, không nơi
+        # nào phải đổi.
+        #
+        # Mốc nối phải khớp với `tachDeVaCode()` ở frontend — xem hằng đó.
+        de = (q.get('prompt') or '').rstrip()
+        code = (q.get('code') or '').strip()
+        if code:
+            de = f'{de}{NOI_DE_CODE}{code}'
         ra.append({
-            'question': q.get('prompt') or '',
+            'question': de,
             'options': [
                 {'text': o.get('text') or '',
                  **({'detail': o['feedback']} if o.get('feedback') else {}),

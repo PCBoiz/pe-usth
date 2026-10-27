@@ -108,7 +108,7 @@
      "explanation": "Đúng. Chỉ số 1 là phần tử thứ hai."
     },
     {
-     "question": "Đọc lượng bán ngày đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Đọc lượng bán ngày đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([9, 14, 11])\nprint(cups[0])",
      "options": [
       {
        "text": "9",
@@ -127,7 +127,7 @@
      "explanation": "Vị trí đầu tiên có index 0 và giá trị 9."
     },
     {
-     "question": "Số 8 nằm ở vị trí thứ hai. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Số 8 nằm ở vị trí thứ hai. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6, 8, 10])\nprint(a[1])",
      "options": [
       {
        "text": "8",

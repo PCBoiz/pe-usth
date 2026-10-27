@@ -87,7 +87,7 @@
      "explanation": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường."
     },
     {
-     "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"  lAN  \"\nprint(raw.strip().title())",
      "options": [
       {
        "text": "'Lan'",
@@ -106,7 +106,7 @@
      "explanation": "strip làm sạch hai đầu rồi title viết hoa đầu từ."
     },
     {
-     "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?\n\ncode = \"8\"\nprint(code.zfill(4))",
      "options": [
       {
        "text": "'0008'",

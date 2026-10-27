@@ -87,7 +87,7 @@
      "explanation": "Đúng. Thêm hàng trên chiều có sẵn."
     },
     {
-     "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([[1, 2, 3], [4, 5, 6]])\nprint(sales.T)",
      "options": [
       {
        "text": "[[1, 4], [2, 5], [3, 6]]",
@@ -106,7 +106,7 @@
      "explanation": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị."
     },
     {
-     "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?",
+     "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1,2,3,4],[5,6,7,8]])\nprint(a.T.shape)",
      "options": [
       {
        "text": "(4, 2)",

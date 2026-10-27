@@ -87,7 +87,7 @@
      "explanation": "Tên tầng giúp bạn giữ rõ mỗi phần của khóa."
     },
     {
-     "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?",
+     "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
      "options": [
       {
        "text": "Ba tầng vì Feb là tháng thứ hai.",
@@ -106,7 +106,7 @@
      "explanation": "Hai tầng: store và month."
     },
     {
-     "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?",
+     "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
      "options": [
       {
        "text": "xs(\"Jan\", level=\"month\").",
