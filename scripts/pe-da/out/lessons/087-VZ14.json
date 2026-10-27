@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)",
-      "expected": "(900, 450)"
+      "expected": "(900, 450)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2], [8, 10])\nplt.sca(ax)\nplt.cla()\nprint(len(ax.lines))\nax.bar([\"A\", \"B\"], [8, 10])\nax.set(ylabel=\"Cups\", title=\"Axes reused after clearing\")\nfig.canvas.draw()\nplt.clf()\nax = fig.add_subplot(111)\nax.plot([1, 2], [8, 10], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Figure reused after clearing\")\nprint(len(fig.axes))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-3.png\", dpi=130)\nplt.close(fig)",
-      "expected": "0\n1"
+      "expected": "0\n1",
+      "tryIt": true
      },
      {
       "type": "figure",

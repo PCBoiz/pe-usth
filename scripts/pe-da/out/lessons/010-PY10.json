@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "cups = [12, 15, 9]\ncups.append(11)\nprint(cups)\nprint(cups[-2:])",
-      "expected": "[12, 15, 9, 11]\n[9, 11]"
+      "expected": "[12, 15, 9, 11]\n[9, 11]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "a = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nb.insert(0, 0)\nprint(a)\nprint(b)",
-      "expected": "[1, 2, [3, 4]]\n[0, 1, 2, 3, 4]"
+      "expected": "[1, 2, [3, 4]]\n[0, 1, 2, 3, 4]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "values = [3, 1, 2, 1]\nvalues.remove(1)\nlast = values.pop()\ndel values[0]\nvalues.sort()\nvalues.reverse()\nprint(last, values)",
-      "expected": "1 [2]"
+      "expected": "1 [2]",
+      "tryIt": true
      }
     ],
     [

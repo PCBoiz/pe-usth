@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
-      "expected": "(2, 2)\n['drink', 'cups']"
+      "expected": "(2, 2)\n['drink', 'cups']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
-      "expected": "Series\nDataFrame\n[12, 8]"
+      "expected": "Series\nDataFrame\n[12, 8]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea', 'cocoa'], 'cups': [12, 8, 5]})\nprint(sales.head(1).to_dict('records'))\nprint(sales.tail(1).to_dict('records'))\nprint(sales[['cups']].to_numpy().tolist())",
-      "expected": "[{'drink': 'coffee', 'cups': 12}]\n[{'drink': 'cocoa', 'cups': 5}]\n[[12], [8], [5]]"
+      "expected": "[{'drink': 'coffee', 'cups': 12}]\n[{'drink': 'cocoa', 'cups': 5}]\n[[12], [8], [5]]",
+      "tryIt": true
      }
     ],
     [

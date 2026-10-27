@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "def greet():\n    return \"Hello\"\n\ncallback = greet\nprint(callback())",
-      "expected": "Hello"
+      "expected": "Hello",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "value = 10\ndef calculate():\n    value = 20\n    return value\n\nprint(calculate(), value)",
-      "expected": "20 10"
+      "expected": "20 10",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "count = 0\ndef increment():\n    global count\n    count += 1\n\nincrement()\nprint(count)",
-      "expected": "1"
+      "expected": "1",
+      "tryIt": true
      }
     ],
     [

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])",
-      "expected": "True\n21"
+      "expected": "True\n21",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "number = 2 ** 100\nprint(number > 2 ** 63)\nprint(number.bit_length())\nprint(type(\"A\").__name__)",
-      "expected": "True\n101\nstr"
+      "expected": "True\n101\nstr",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "sources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)",
-      "expected": "IndentationError\nTabError"
+      "expected": "IndentationError\nTabError",
+      "tryIt": true
      }
     ]
    ],

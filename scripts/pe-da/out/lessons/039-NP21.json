@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nfrom io import StringIO\ntext = \"birds,rabbits\\n12,5\\n15,7\"\ncounts = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(counts)",
-      "expected": "[[12.  5.]\n [15.  7.]]"
+      "expected": "[[12.  5.]\n [15.  7.]]",
+      "tryIt": true
      }
     ],
     [
@@ -46,7 +47,8 @@
      {
       "type": "code",
       "code": "from io import StringIO\ntext = \"x,y\\n1,2\\n3,4\"\na = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(a.shape)",
-      "expected": "(2, 2)"
+      "expected": "(2, 2)",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "from io import StringIO\ntext = \"x,y\\n1,\\n3,4\"\na = np.genfromtxt(StringIO(text), delimiter=\",\", skip_header=1)\nprint(np.isnan(a).sum())",
-      "expected": "1"
+      "expected": "1",
+      "tryIt": true
      }
     ],
     [

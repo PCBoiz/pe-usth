@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
-      "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]"
+      "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
-      "expected": "[2]\n[True, False]\n[1, 2, 3]"
+      "expected": "[2]\n[True, False]\n[1, 2, 3]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())",
-      "expected": "['DN', 'HN']"
+      "expected": "['DN', 'HN']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

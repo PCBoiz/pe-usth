@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())",
-      "expected": "4\n60"
+      "expected": "4\n60",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)",
-      "expected": "MergeError"
+      "expected": "MergeError",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1], 'city': ['HN']})\njoined = orders.merge(customers, on='customer_id', how='left', validate='many_to_one', indicator=True)\nprint(joined['_merge'].astype('string').tolist())\nprint(len(joined) == len(orders))",
-      "expected": "['both', 'left_only']\nTrue"
+      "expected": "['both', 'left_only']\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

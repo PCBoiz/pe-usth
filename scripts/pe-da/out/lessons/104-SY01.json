@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from datetime import datetime, timedelta\nday = datetime.strptime(\"2024-02-28\", \"%Y-%m-%d\")\nprint((day + timedelta(days=2)).strftime(\"%Y-%m-%d\"))",
-      "expected": "2024-03-01"
+      "expected": "2024-03-01",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from datetime import datetime, timedelta\nend = datetime(year=2024, month=3, day=29)\nstart = end - timedelta(weeks=4)\nprint(start.strftime(\"%Y-%m-%d\"))\nprint((end - start).days)",
-      "expected": "2024-03-01\n28"
+      "expected": "2024-03-01\n28",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "from datetime import datetime\ntry:\n    datetime.strptime(\"2023-02-29\", \"%Y-%m-%d\")\nexcept ValueError:\n    print(\"Ngay khong hop le\")\nprint(isinstance(datetime.now(), datetime))",
-      "expected": "Ngay khong hop le\nTrue"
+      "expected": "Ngay khong hop le\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

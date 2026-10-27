@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import sys\nprint(sys.version_info.major)",
-      "expected": "3"
+      "expected": "3",
+      "tryIt": true
      }
     ],
     [

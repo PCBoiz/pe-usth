@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())",
-      "expected": "8"
+      "expected": "8",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "class Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))",
-      "expected": "100\nTrue"
+      "expected": "100\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)",
-      "expected": "Tu choi\n8"
+      "expected": "Tu choi\n8",
+      "tryIt": true
      }
     ],
     [

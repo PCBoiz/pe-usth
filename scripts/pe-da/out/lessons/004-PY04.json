@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "raw = \"15\"\nprice = int(raw)\nprint(price * 2)\nprint(type(raw).__name__, type(price).__name__)",
-      "expected": "30\nstr int"
+      "expected": "30\nstr int",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "value = \"15\"\nvalue = 15.5\nprint(type(value).__name__)\nprint(2e4)",
-      "expected": "float\n20000.0"
+      "expected": "float\n20000.0",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import keyword\nprint(\"total_cups\".isidentifier())\nprint(\"2cups\".isidentifier())\nprint(keyword.iskeyword(\"for\"))",
-      "expected": "True\nFalse\nTrue"
+      "expected": "True\nFalse\nTrue",
+      "tryIt": true
      }
     ],
     [

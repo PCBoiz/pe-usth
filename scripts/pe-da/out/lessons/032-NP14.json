@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])",
-      "expected": "[2.5 7. ]"
+      "expected": "[2.5 7. ]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([3, 5, 8])\nmask = a >= 5\nprint(a[mask])",
-      "expected": "[5 8]"
+      "expected": "[5 8]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "a = np.array([-1, 4, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
-      "expected": "[ 4 10]"
+      "expected": "[ 4 10]",
+      "tryIt": true
      }
     ],
     [

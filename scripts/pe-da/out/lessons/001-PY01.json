@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "print(12 + 9)",
-      "expected": "21"
+      "expected": "21",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "morning = 12\nafternoon = 9\nprint(morning + afternoon)",
-      "expected": "21"
+      "expected": "21",
+      "tryIt": true
      }
     ],
     [
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "cups = 21\nprint(\"So coc:\", cups)\nprint(cups * 15)",
-      "expected": "So coc: 21\n315"
+      "expected": "So coc: 21\n315",
+      "tryIt": true
      }
     ],
     [

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "print(3 * 15 - 5)\nprint(3 * (15 - 5))",
-      "expected": "40\n30"
+      "expected": "40\n30",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "print(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)",
-      "expected": "3.5\n3 1\n-4"
+      "expected": "3.5\n3 1\n-4",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "total = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)",
-      "expected": "15\n8\n0.99"
+      "expected": "15\n8\n0.99",
+      "tryIt": true
      },
      {
       "type": "paragraph",

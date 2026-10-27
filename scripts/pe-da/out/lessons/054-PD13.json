@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))",
-      "expected": "30\n[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]"
+      "expected": "30\n[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]",
+      "tryIt": true
      }
     ],
     [

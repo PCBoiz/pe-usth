@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nweighted = (7 * 2 + 8 * 3) / (2 + 3)\nprint(weighted)",
-      "expected": "7.6"
+      "expected": "7.6",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8, 10])\nprint(a.mean(), a.min(), a.max())",
-      "expected": "8.0 6 10"
+      "expected": "8.0 6 10",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "marks = np.array([7, 8])\ncredits = np.array([2, 3])\nprint(np.average(marks, weights=credits))",
-      "expected": "7.6"
+      "expected": "7.6",
+      "tryIt": true
      },
      {
       "type": "paragraph",

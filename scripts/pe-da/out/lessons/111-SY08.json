@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(A, B): pass\nprint(C().label())\nprint([x.__name__ for x in C.__mro__])",
-      "expected": "A\n['C', 'A', 'B', 'object']"
+      "expected": "A\n['C', 'A', 'B', 'object']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "class Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())",
-      "expected": "SALES"
+      "expected": "SALES",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(B, A): pass\nprint(C().label())",
-      "expected": "B"
+      "expected": "B",
+      "tryIt": true
      },
      {
       "type": "paragraph",

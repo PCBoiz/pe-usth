@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups[1])",
-      "expected": "15"
+      "expected": "15",
+      "tryIt": true
      }
     ],
     [
@@ -59,7 +60,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8, 10])\nprint(a[1])",
-      "expected": "8"
+      "expected": "8",
+      "tryIt": true
      }
     ],
     [
@@ -70,7 +72,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8, 10])\nprint(a[-1])",
-      "expected": "10"
+      "expected": "10",
+      "tryIt": true
      },
      {
       "type": "paragraph",

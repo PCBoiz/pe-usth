@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())",
-      "expected": "['A', 'B']\n[False, True]"
+      "expected": "['A', 'B']\n[False, True]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
-      "expected": "Passed: 2 orders, total 30"
+      "expected": "Passed: 2 orders, total 30",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndef normalize(df):\n    return df.assign(store=df['store'].str.strip().str.upper())\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': [10, 20]})\nclean = raw.pipe(normalize).sort_values('store').reset_index(drop=True)\nprint(clean.to_dict('records'))\nprint(normalize(clean).equals(clean))",
-      "expected": "[{'store': 'A', 'amount': 10}, {'store': 'B', 'amount': 20}]\nTrue"
+      "expected": "[{'store': 'A', 'amount': 10}, {'store': 'B', 'amount': 20}]\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

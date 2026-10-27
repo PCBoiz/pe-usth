@@ -38,7 +38,8 @@
      {
       "type": "code",
       "code": "from queue import Queue, Empty\nq = Queue()\ntry:\n    q.get_nowait()\nexcept Empty:\n    print(\"no message\")",
-      "expected": "no message"
+      "expected": "no message",
+      "tryIt": true
      }
     ],
     [

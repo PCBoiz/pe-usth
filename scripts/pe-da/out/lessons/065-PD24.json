@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())",
-      "expected": "[True, True, False, False]\n[20.0, 30.0]"
+      "expected": "[True, True, False, False]\n[20.0, 30.0]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
-      "expected": "[100.0, 120.0]\n[20.0, -30.0]\n[0.2, -0.25]"
+      "expected": "[100.0, 120.0]\n[20.0, -30.0]\n[0.2, -0.25]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.ewm(alpha=0.5, adjust=False).mean().tolist())\nprint(s.rolling(2).mean().shift(1).dropna().tolist())",
-      "expected": "[10.0, 15.0, 22.5]\n[15.0]"
+      "expected": "[10.0, 15.0, 22.5]\n[15.0]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

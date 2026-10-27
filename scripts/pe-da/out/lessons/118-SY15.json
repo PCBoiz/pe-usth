@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"report.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"12\\n\")\n    with open(path, \"r\", encoding=\"utf8\") as f: print(f.read().strip())\n    print(f.closed)",
-      "expected": "12\nTrue"
+      "expected": "12\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"log.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"A\\n\")\n    with open(path, \"a\", encoding=\"utf8\") as f: f.write(\"B\\n\")\n    print(path.read_text(encoding=\"utf8\").splitlines())",
-      "expected": "['A', 'B']"
+      "expected": "['A', 'B']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"new.txt\"\n    with open(path, \"x\", encoding=\"utf8\") as f: f.write(\"first\")\n    try:\n        with open(path, \"x\", encoding=\"utf8\"): pass\n    except FileExistsError:\n        print(\"Da ton tai\")",
-      "expected": "Da ton tai"
+      "expected": "Da ton tai",
+      "tryIt": true
      }
     ],
     [

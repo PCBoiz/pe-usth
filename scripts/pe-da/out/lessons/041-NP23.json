@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))",
-      "expected": "[14 16 11]"
+      "expected": "[14 16 11]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "marks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))",
-      "expected": "[14. 16. 11.]\n[18. 23.]"
+      "expected": "[14. 16. 11.]\n[18. 23.]",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "marks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))",
-      "expected": "1\n[5.5        7.66666667]"
+      "expected": "1\n[5.5        7.66666667]",
+      "tryIt": true
      }
     ],
     [

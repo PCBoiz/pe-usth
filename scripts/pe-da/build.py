@@ -429,8 +429,18 @@ def la_lenh_terminal(khoi: dict) -> bool:
         khoi.get('mode'), khoi.get('displayMode'))
 
 
-def khoi_doc(khoi: dict) -> list[dict]:
-    """Chuyển một khối nguồn sang các ReadBlock renderer hiểu được."""
+def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None) -> list[dict]:
+    """Chuyển một khối nguồn sang các ReadBlock renderer hiểu được.
+
+    `thu_duoc` khoá theo `id()` của chính dict nguồn, nói khối code này có chạy
+    được trong Pyodide hay không — để renderer biết có dựng nút "Thử ngay trong
+    IDE" (kiểu "Try it Yourself") dưới nó hay không. Phép phân loại nằm ở khâu
+    BUILD, không ở frontend, vì chỉ ở đây mới có `modules_cua` (phân tích AST),
+    `THIEU_WHEEL`, `GOI_AN`, `CHUOI_GOI_THU_VIEN`, `THUOC_TINH_MAY` và
+    `LECH_PHIEN_BAN`. Cổng cũ `chayDuocTrongIde` ở frontend chỉ là một regex
+    trên dòng `import` và nó KHÔNG biết seaborn/plotly/openpyxl thiếu wheel —
+    đúng những thứ chặn bài của khoá này.
+    """
     if khoi['type'] == 'paragraph':
         return [{'type': 'paragraph', 'text': khoi['text']}]
     if khoi['type'] == 'table':
@@ -443,6 +453,11 @@ def khoi_doc(khoi: dict) -> list[dict]:
     ra: dict = {'type': loai, 'code': code}
     if ket_qua is not None:
         ra['expected'] = ket_qua
+    # Chỉ phát khi ĐÚNG, không phát `tryIt: False`: renderer đọc bằng
+    # `block.tryIt ?` nên khối không có khoá cũng là không có nút, mà
+    # content_json thì nhẹ hơn 406 khoá.
+    if loai == 'code' and thu_duoc is not None and thu_duoc.get(id(khoi)):
+        ra['tryIt'] = True
     khoi_ra = [ra]
     # Hình do chính đoạn code trên vẽ ra. Lời giảng trỏ thẳng vào nó ("trong
     # hình đầu, vị trí ngang cho biết ngày…") nên bỏ hình là bỏ nửa bài.
@@ -540,8 +555,9 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     # Phân loại theo code NGƯỜI HỌC đọc, không theo bản xuất hình: hai bản
     # import khác nhau (bản xuất hình thêm matplotlib.use/pathlib/tempfile).
     ma_bai = bai['id']
-    codes = [code_hoc_vien(k)[0] for k in reading
-             if k['type'] == 'code' and not la_lenh_terminal(k)]
+    khoi_code = [k for k in reading
+                 if k['type'] == 'code' and not la_lenh_terminal(k)]
+    codes = [code_hoc_vien(k)[0] for k in khoi_code]
     so_lenh_terminal = sum(1 for k in reading
                            if k['type'] == 'code' and la_lenh_terminal(k))
     phan_loai = []
@@ -569,7 +585,13 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     tieu_de = f'{ma} · {bai["title"]}'
     phu_de = f'{bai["level"]} · M{module_so} · {phut} phút'
 
-    step_1: dict = {'read': [[r for k in lat for r in khoi_doc(k)] for lat in man]}
+    # `chia_man` chia lại CHÍNH các dict trong `reading` (không chép), nên khoá
+    # theo id() còn đúng tới hết hàm. Phép phân loại đã tính ở `phan_loai` ngay
+    # trên — ở đây chỉ nối nó tới từng khối.
+    thu_duoc = {id(k): ok for k, (ok, _) in zip(khoi_code, phan_loai)}
+    step_1: dict = {
+        'read': [[r for k in lat for r in khoi_doc(k, thu_duoc)] for lat in man],
+    }
     truoc = [ten_theo_id[b] for b in bai.get('before') or [] if b in ten_theo_id]
     step_1['context'] = {
         'level': bai['level'],

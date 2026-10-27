@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nvalues = np.array([12, 15, 9, 10, 8, 14])\nsales = values.reshape(2, 3)\nprint(sales)",
-      "expected": "[[12 15  9]\n [10  8 14]]"
+      "expected": "[[12 15  9]\n [10  8 14]]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.arange(1, 7)\nprint(a.reshape(2, 3))",
-      "expected": "[[1 2 3]\n [4 5 6]]"
+      "expected": "[[1 2 3]\n [4 5 6]]",
+      "tryIt": true
      }
     ],
     [
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "a = np.arange(1, 7)\nprint(a.reshape(3, 2))",
-      "expected": "[[1 2]\n [3 4]\n [5 6]]"
+      "expected": "[[1 2]\n [3 4]\n [5 6]]",
+      "tryIt": true
      }
     ],
     [

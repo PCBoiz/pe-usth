@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()",
-      "expected": "8 12"
+      "expected": "8 12",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()",
-      "expected": "1.63 0.82"
+      "expected": "1.63 0.82",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\nmean = [10, 12, 11]\nax.plot(days, mean, marker=\"o\", label=\"Forecast\")\nax.fill_between(days, [8, 9, 9], [12, 15, 13], alpha=0.25, label=\"Illustrative interval\")\nax.set(xlabel=\"Day\", ylabel=\"Orders\", title=\"Label what the shaded interval means\")\nax.legend()\nprint([12-8, 15-9, 13-9])\nplt.show()",
-      "expected": "[4, 6, 4]"
+      "expected": "[4, 6, 4]",
+      "tryIt": true
      },
      {
       "type": "figure",

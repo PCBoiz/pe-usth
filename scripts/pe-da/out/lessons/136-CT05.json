@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "remaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))",
-      "expected": "B"
+      "expected": "B",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "jobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])",
-      "expected": "B\nA"
+      "expected": "B\nA",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "queues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])",
-      "expected": "[] ['B', 'A']"
+      "expected": "[] ['B', 'A']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

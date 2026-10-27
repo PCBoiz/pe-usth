@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
-      "expected": "30\n0"
+      "expected": "30\n0",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
-      "expected": "1\n0.5"
+      "expected": "1\n0.5",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nwide = pd.DataFrame({'Jan': [10, 30], 'Feb': [20, 40]}, index=['A', 'B'])\nlong = wide.stack()\nprint(long.loc[('A', 'Feb')])\nprint(long.unstack().equals(wide))",
-      "expected": "20\nTrue"
+      "expected": "20\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

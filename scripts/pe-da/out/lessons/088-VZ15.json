@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
-      "expected": "{'Coffee': 50, 'Tea': 12}"
+      "expected": "{'Coffee': 50, 'Tea': 12}",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()",
-      "expected": "[8, 10, 7]"
+      "expected": "[8, 10, 7]",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nwait = pd.Series([2.0, None, 5.0], index=[1, 2, 3], name=\"Wait\")\nwait.plot(ax=ax, marker=\"o\")\nax.set(xlabel=\"Order\", ylabel=\"Wait (minutes)\", title=\"One missing observation\")\nprint(int(wait.count()), int(wait.isna().sum()))\nplt.show()",
-      "expected": "2 1"
+      "expected": "2 1",
+      "tryIt": true
      },
      {
       "type": "figure",

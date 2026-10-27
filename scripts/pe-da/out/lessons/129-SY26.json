@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())",
-      "expected": "S01: An (2005-01-02)\nPY: Python"
+      "expected": "S01: An (2005-01-02)\nPY: Python",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))",
-      "expected": "[8.7, 6.2]\n8.07"
+      "expected": "[8.7, 6.2]\n8.07",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
-      "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+      "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']",
+      "tryIt": true
      }
     ],
     [

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())",
-      "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]"
+      "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))",
-      "expected": "(2,)\nTrue"
+      "expected": "(2,)\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)",
-      "expected": "Mai 8.0\nf"
+      "expected": "Mai 8.0\nf",
+      "tryIt": true
      }
     ]
    ],

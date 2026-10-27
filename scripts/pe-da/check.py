@@ -58,6 +58,7 @@ def main() -> int:
     kiem_thu_tu(bai)
     kiem_noi_dung(bai, nguon_theo_id)
     kiem_anh(bai)
+    kiem_thu_trong_ide(bai)
     kiem_sandbox(bai)
     kiem_trac_nghiem(bai)
     kiem_curricula(bai)
@@ -161,6 +162,84 @@ def kiem_anh(bai: list[dict]) -> None:
     if thua:
         canh_bao(f'{len(thua)} ảnh trong public/static/da/ không bài nào dùng: '
                  f'{", ".join(sorted(thua)[:5])}…')
+
+
+def kiem_thu_trong_ide(bai: list[dict]) -> None:
+    """Cờ `tryIt` — nút "Thử ngay trong IDE" dưới khối code của màn đọc.
+
+    Vì sao phải kiểm chứ không tin khâu build: phép nối cờ tới khối đi qua một
+    dict khoá theo `id()` của chính dict nguồn (`chia_man` chia lại các dict
+    trong `reading`, không chép). Lệch một khối là bài mở ra một tab IDE nạp
+    SAI đoạn mã — và không ngoại lệ nào được ném, không log nào đỏ, chỉ người
+    học thấy một chương trình không phải của bài mình đang đọc.
+
+    Bốn luật, và mỗi luật chặn một kiểu lệch khác nhau:
+      1. `tryIt` chỉ được nằm trên khối `code`. Trên khối `terminal` thì nó bàn
+         giao `git clone` vào một sandbox Python; trên `figure`/`table` thì nó
+         vô nghĩa.
+      2. KHÔNG được phát `tryIt: false` — renderer đọc bằng `block.tryIt ?` nên
+         false và vắng mặt là một, mà phát false thì content_json nặng thêm 406
+         khoá vô ích.
+      3. Số khối có cờ phải bằng SỐ KHỐI CHẠY ĐƯỢC mà `_blocked` ghi. Đây là
+         luật bắt được lệch id(): đúng số mà sai khối thì luật 4 bắt.
+      4. Nối mọi khối có cờ theo thứ tự đọc phải ra ĐÚNG `step_4.starterCode` ở
+         những bài còn ô chạy thử — `starterCode` chính là `noi_code(chay_duoc)`,
+         nên hai đường độc lập cùng nói một chuyện. Bài có BÀI TẬP ĐƯỢC CHẤM thì
+         `step_4` không còn `starterCode` nên luật này không áp được (đó cũng
+         đúng là 124 bài mà nút này đáng giá nhất — xem `maDeThu` ở frontend).
+    """
+    for b in bai:
+        ma = b['lesson_code']
+        c = b['content_json']
+        mode = b['_mode']
+        co_co: list[str] = []
+        for i, lat in enumerate(c.get('step_1', {}).get('read') or []):
+            for k in lat:
+                if 'tryIt' not in k:
+                    continue
+                if k['type'] != 'code':
+                    loi(f'{ma}: màn {i} có tryIt trên khối "{k["type"]}" — '
+                        'chỉ khối code mới bàn giao được sang /ide')
+                    continue
+                if k['tryIt'] is not True:
+                    loi(f'{ma}: màn {i} phát tryIt={k["tryIt"]!r} — chỉ được phát True')
+                    continue
+                co_co.append(k['code'])
+
+        can = len(_code_bai_doc(c)) - len(b['_blocked'])
+        if len(co_co) != can:
+            loi(f'{ma}: {len(co_co)} khối có nút Thử-trong-IDE nhưng {can} khối chạy được')
+        if mode == 'local' and co_co:
+            loi(f'{ma}: bài phải chạy trên máy nhưng vẫn có {len(co_co)} nút Thử-trong-IDE')
+
+        # CHỈ so với `starterCode` của ô CHẠY THỬ. Bài có BÀI TẬP ĐƯỢC CHẤM
+        # cũng mang `starterCode` — nhưng đó là KHUNG TRỐNG của bài tập, không
+        # phải mã bài đọc, nên so với nó thì cả 122 bài đều "sai" (đã chạy và
+        # thấy đúng 122 lỗi đó trước khi siết điều kiện này).
+        bon = c.get('step_4') or {}
+        khoi_dau = None if bon.get('tests') else bon.get('starterCode')
+        if khoi_dau and co_co and _noi_nhu_build(co_co) != khoi_dau:
+            loi(f'{ma}: nối các khối có tryIt KHÔNG ra đúng step_4.starterCode — '
+                'cờ gắn sai khối')
+
+
+def _code_bai_doc(c: dict) -> list[str]:
+    """Mọi khối `code` của màn đọc, theo thứ tự đọc (không tính `terminal`)."""
+    return [k['code'] for lat in (c.get('step_1', {}).get('read') or [])
+            for k in lat if k['type'] == 'code']
+
+
+def _noi_nhu_build(codes: list[str]) -> str:
+    """Bản chép của `noi_code()` trong build.py — cố ý CHÉP, không import.
+
+    Nếu import thì một lỗi trong `noi_code` sẽ xuất hiện ở cả hai phía phép so
+    và luật 4 ở trên không chứng minh được gì. Ba bản phải khớp từng ký tự:
+    đây, `noi_code` trong build.py, và `maDeThu` trong frontend/src/lib/studio-lesson.ts.
+    """
+    if len(codes) == 1:
+        return codes[0].rstrip() + '\n'
+    phan = [f'# ── Đoạn {i} ──\n{code.rstrip()}' for i, code in enumerate(codes, 1)]
+    return '\n\n'.join(phan) + '\n'
 
 
 def kiem_sandbox(bai: list[dict]) -> None:

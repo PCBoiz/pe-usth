@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\ntemps = np.array([28., np.nan, 32.])\nprint(np.nanmean(temps))",
-      "expected": "30.0"
+      "expected": "30.0",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.isnan(a))",
-      "expected": "[False  True False]"
+      "expected": "[False  True False]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.nanmean(a))",
-      "expected": "8.0"
+      "expected": "8.0",
+      "tryIt": true
      }
     ],
     [

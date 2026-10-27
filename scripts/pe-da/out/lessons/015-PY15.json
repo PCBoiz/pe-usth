@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "attempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)",
-      "expected": "1\n2\n3"
+      "expected": "1\n2\n3",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "for number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)",
-      "expected": "0\n2\n3"
+      "expected": "0\n2\n3",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "commands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)",
-      "expected": "sum"
+      "expected": "sum",
+      "tryIt": true
      },
      {
       "type": "paragraph",

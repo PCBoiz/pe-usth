@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "processes = {100:{\"parent\":None, \"name\":\"main\"}, 101:{\"parent\":100, \"name\":\"worker\"}, 102:{\"parent\":101, \"name\":\"export\"}}\nprint(processes[102][\"parent\"])\nprint(processes[processes[102][\"parent\"]][\"parent\"])",
-      "expected": "101\n100"
+      "expected": "101\n100",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +50,8 @@
      {
       "type": "code",
       "code": "family = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])",
-      "expected": "('vector', True, False)\n('list', False, True)"
+      "expected": "('vector', True, False)\n('list', False, True)",
+      "tryIt": true
      }
     ]
    ],

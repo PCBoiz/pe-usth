@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "cups = 12\nprint(cups + 1)",
-      "expected": "13"
+      "expected": "13",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "cups = 12\nprint(cups)\ncups = 15\nprint(cups)",
-      "expected": "12\n15"
+      "expected": "12\n15",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "print(type(12))\nprint(type(\"data\"))",
-      "expected": "<class 'int'>\n<class 'str'>"
+      "expected": "<class 'int'>\n<class 'str'>",
+      "tryIt": true
      }
     ],
     [

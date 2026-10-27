@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "queues = {\"job\": [\"A\", \"B\", \"C\"], \"ready\": [\"A\", \"B\"], \"disk\": [\"C\"]}\ncurrent = queues[\"ready\"].pop(0)\nprint(current, queues[\"disk\"])",
-      "expected": "A ['C']"
+      "expected": "A ['C']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "pcb = {\"pid\": 12, \"state\": \"ready\", \"pc\": 40, \"registers\": [0, 1], \"priority\": 2, \"open_fds\": [0, 1, 2]}\npcb[\"state\"] = \"running\"\nprint(pcb[\"pid\"], pcb[\"pc\"], pcb[\"state\"])",
-      "expected": "12 40 running"
+      "expected": "12 40 running",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "useful, switches, switch_cost = 10, 4, 0.1\nprint(round(useful / (useful + switches * switch_cost), 3))",
-      "expected": "0.962"
+      "expected": "0.962",
+      "tryIt": true
      }
     ],
     [

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())",
-      "expected": "['paid', 'cancelled', 'unknown']"
+      "expected": "['paid', 'cancelled', 'unknown']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())",
-      "expected": "[18.0, 60.0]\n[0.0, 60.0]"
+      "expected": "[18.0, 60.0]\n[0.0, 60.0]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndef row_total(row):\n    return row['qty'] * row['price']\nprint(df.apply(row_total, axis=1).tolist())\nprint((df['qty'] * df['price']).tolist())",
-      "expected": "[20, 60]\n[20, 60]"
+      "expected": "[20, 60]\n[20, 60]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

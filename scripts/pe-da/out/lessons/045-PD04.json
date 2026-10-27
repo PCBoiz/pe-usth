@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())",
-      "expected": "{'A': 40, 'B': 50}"
+      "expected": "{'A': 40, 'B': 50}",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
-      "expected": "80\n['store', 'sales']"
+      "expected": "80\n['store', 'sales']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nmorning = pd.Series([10, 8], index=['A', 'B'])\nevening = pd.Series([5], index=['A'])\nprint((morning + evening).isna().to_dict())\nprint(morning.add(evening, fill_value=0).to_dict())\nprint(evening.reindex(['A', 'B'], fill_value=0).tolist())",
-      "expected": "{'A': False, 'B': True}\n{'A': 15.0, 'B': 8.0}\n[5, 0]"
+      "expected": "{'A': False, 'B': True}\n{'A': 15.0, 'B': 8.0}\n[5, 0]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

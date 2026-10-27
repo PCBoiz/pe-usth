@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()",
-      "expected": "1 1"
+      "expected": "1 1",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()",
-      "expected": "(1, 1, 0, 0)"
+      "expected": "(1, 1, 0, 0)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_axes([0.15, 0.2, 0.8, 0.65])\nax.scatter([1, 2, 3], [12, 15, 9])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Manually positioned Axes\")\nprint([round(float(v), 2) for v in ax.get_position().bounds])\nplt.show()",
-      "expected": "[0.15, 0.2, 0.8, 0.65]"
+      "expected": "[0.15, 0.2, 0.8, 0.65]",
+      "tryIt": true
      },
      {
       "type": "figure",

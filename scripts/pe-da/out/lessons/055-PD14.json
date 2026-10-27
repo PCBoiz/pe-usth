@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
-      "expected": "{'A': 30, 'B': 40}"
+      "expected": "{'A': 30, 'B': 40}",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))",
-      "expected": "[{'store': 'A', 'revenue': 30, 'orders': 2}, {'store': 'B', 'revenue': 40, 'orders': 1}]"
+      "expected": "[{'store': 'A', 'revenue': 30, 'orders': 2}, {'store': 'B', 'revenue': 40, 'orders': 1}]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', None], 'amount': [10.0, None, 20.0]})\ngrouped = df.groupby('store', dropna=False)['amount']\nprint(grouped.size().tolist())\nprint(grouped.count().tolist())\nprint(grouped.sum().sum())",
-      "expected": "[2, 1]\n[1, 1]\n30.0"
+      "expected": "[2, 1]\n[1, 1]\n30.0",
+      "tryIt": true
      },
      {
       "type": "paragraph",

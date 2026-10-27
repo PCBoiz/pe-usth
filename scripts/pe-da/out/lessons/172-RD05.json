@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))",
-      "expected": "(100,)\nTrue"
+      "expected": "(100,)\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10., 20., 30.])\nsample = rng.choice(orders, size=3, replace=True)\nprint(sample.shape)\nprint(bool(np.isin(sample, orders).all()))\nprint(sorted(rng.choice(orders, size=3, replace=False).tolist()))",
-      "expected": "(3,)\nTrue\n[10.0, 20.0, 30.0]"
+      "expected": "(3,)\nTrue\n[10.0, 20.0, 30.0]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))",
-      "expected": "(1000, 3) (1000,)\n20.0\nTrue"
+      "expected": "(1000, 3) (1000,)\n20.0\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

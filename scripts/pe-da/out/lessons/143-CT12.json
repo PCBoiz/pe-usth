@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)",
-      "expected": "1"
+      "expected": "1",
+      "tryIt": true
      }
     ],
     [

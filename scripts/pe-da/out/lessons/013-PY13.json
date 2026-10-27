@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "registered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))",
-      "expected": "['An']\n3"
+      "expected": "['An']\n3",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "a, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))",
-      "expected": "[1, 2, 3]\n[2]\n[1]"
+      "expected": "[1, 2, 3]\n[2]\n[1]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "a, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))",
-      "expected": "True True\nTrue\n2"
+      "expected": "True True\nTrue\n2",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
-      "expected": "['2026-01-05', '2026-01-07']\n[1, 1]"
+      "expected": "['2026-01-05', '2026-01-07']\n[1, 1]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
-      "expected": "[False, True]\n[0]"
+      "expected": "[False, True]\n[0]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'ordered': ['2026-01-01', '2026-01-03'], 'delivered': ['2026-01-03', '2026-01-04']})\ndays = pd.to_datetime(df['delivered']) - pd.to_datetime(df['ordered'])\nprint(days.dt.days.tolist())\nprint((pd.Timestamp('2026-01-01') + pd.Timedelta(days=2)).strftime('%Y-%m-%d'))",
-      "expected": "[2, 1]\n2026-01-03"
+      "expected": "[2, 1]\n2026-01-03",
+      "tryIt": true
      },
      {
       "type": "paragraph",

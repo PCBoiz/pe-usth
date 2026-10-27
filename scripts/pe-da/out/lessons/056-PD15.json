@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())",
-      "expected": "[40, 40, 20]\n[0.25, 0.75, 1.0]"
+      "expected": "[40, 40, 20]\n[0.25, 0.75, 1.0]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())",
-      "expected": "[2.0, 1.0, 1.0]\n[1, 2, 1]"
+      "expected": "[2.0, 1.0, 1.0]\n[1, 2, 1]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nkept = df.groupby('store').filter(lambda group: len(group) >= 2)\nprint(kept['store'].tolist())",
-      "expected": "['A', 'A']"
+      "expected": "['A', 'A']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

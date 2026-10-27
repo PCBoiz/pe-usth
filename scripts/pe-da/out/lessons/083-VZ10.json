@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()",
-      "expected": "['o', 's']"
+      "expected": "['o', 's']",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
-      "expected": "(0.0, 4.0)"
+      "expected": "(0.0, 4.0)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nlines = ax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Coffee\")\nplt.setp(lines, color=\"#0072B2\", linewidth=2.5)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Coffee: 8 to 10, then down to 7\")\nax.tick_params(labelsize=11)\nprint(\"Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.\")\nplt.show()",
-      "expected": "Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups."
+      "expected": "Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.",
+      "tryIt": true
      },
      {
       "type": "figure",

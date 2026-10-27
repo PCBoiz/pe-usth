@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=0))",
-      "expected": "[22 23 23]"
+      "expected": "[22 23 23]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
-      "expected": "[5 7 9]"
+      "expected": "[5 7 9]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=0))",
-      "expected": "[18 23]"
+      "expected": "[18 23]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

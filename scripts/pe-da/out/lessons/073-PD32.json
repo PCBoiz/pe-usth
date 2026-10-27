@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
-      "expected": "4 3 60"
+      "expected": "4 3 60",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
-      "expected": "['O3']\n60"
+      "expected": "['O3']\n60",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())",
-      "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+      "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30",
+      "tryIt": true
      },
      {
       "type": "paragraph",

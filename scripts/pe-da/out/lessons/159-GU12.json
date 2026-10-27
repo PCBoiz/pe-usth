@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)",
-      "expected": "[14.2, 16.0]"
+      "expected": "[14.2, 16.0]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "marks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)",
-      "expected": "16.4"
+      "expected": "16.4",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)",
-      "expected": "S01\nTrue"
+      "expected": "S01\nTrue",
+      "tryIt": true
      }
     ],
     [

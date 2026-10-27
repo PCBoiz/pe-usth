@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "values = [6, 8]\nalias = values\nalias.append(10)\nprint(alias is values)\nprint(values)",
-      "expected": "True\n[6, 8, 10]"
+      "expected": "True\n[6, 8, 10]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import gc, weakref\nclass Node:\n    pass\ndef make_cycle():\n    a, b = Node(), Node()\n    a.peer, b.peer = b, a\n    return weakref.ref(a)\nreference = make_cycle()\ngc.collect()\nprint(reference() is None)",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [

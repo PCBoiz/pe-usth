@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
-      "expected": "[3, 2, 1]"
+      "expected": "[3, 2, 1]",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
-      "expected": "[4, 2]"
+      "expected": "[4, 2]",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ndensity, edges, bars = ax.hist([1, 2, 2, 4, 5, 8], bins=[0, 3, 6, 9], density=True, edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Density\", title=\"Area, rather than height, sums to one\")\nprint(round(float(np.sum(density * np.diff(edges))), 6))\nplt.show()",
-      "expected": "1.0"
+      "expected": "1.0",
+      "tryIt": true
      },
      {
       "type": "figure",

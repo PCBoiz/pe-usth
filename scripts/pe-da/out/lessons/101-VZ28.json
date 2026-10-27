@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
-      "expected": "(2, 2)"
+      "expected": "(2, 2)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()",
-      "expected": "[1.0, 2.0, 4.0]"
+      "expected": "[1.0, 2.0, 4.0]",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, x)\nZ = X**2 + Y**2\nim = ax.contourf(X, Y, Z, levels=[0, 1, 2, 4, 8], cmap=\"viridis\")\nfig.colorbar(im, ax=ax, label=\"x squared + y squared\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Filled contour bands\", aspect=\"equal\")\nprint(round(float(Z.min()), 1), round(float(Z.max()), 1))\nplt.show()",
-      "expected": "0.0 8.0"
+      "expected": "0.0 8.0",
+      "tryIt": true
      },
      {
       "type": "figure",

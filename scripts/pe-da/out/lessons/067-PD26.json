@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
-      "expected": "['low', 'medium', 'high']\n['low', 'medium', 'high']"
+      "expected": "['low', 'medium', 'high']\n['low', 'medium', 'high']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
-      "expected": "['small', 'medium', 'large']"
+      "expected": "['small', 'medium', 'large']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())",
-      "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+      "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
+      "tryIt": true
      },
      {
       "type": "paragraph",

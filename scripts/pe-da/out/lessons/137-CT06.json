@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)",
-      "expected": "['A', 'B', 'A', 'B', 'A']"
+      "expected": "['A', 'B', 'A', 'B', 'A']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)",
-      "expected": "[('A', 2), ('B', 2), ('A', 1)]"
+      "expected": "[('A', 2), ('B', 2), ('A', 1)]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "useful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))",
-      "expected": "5.4\n5.2"
+      "expected": "5.4\n5.2",
+      "tryIt": true
      },
      {
       "type": "paragraph",

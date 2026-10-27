@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
-      "expected": "[12, 15, 9]\n[0, 1, 2]"
+      "expected": "[12, 15, 9]\n[0, 1, 2]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
-      "expected": "15"
+      "expected": "15",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.sum())\nprint(len(cups))",
-      "expected": "36\n3"
+      "expected": "36\n3",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()",
-      "expected": "{'Tea': 36, 'Coffee': 60}"
+      "expected": "{'Tea': 36, 'Coffee': 60}",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()",
-      "expected": "62.5"
+      "expected": "62.5",
+      "tryIt": true
      },
      {
       "type": "figure",

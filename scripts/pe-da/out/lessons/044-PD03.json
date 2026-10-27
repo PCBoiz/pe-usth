@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])",
-      "expected": "Binh\nBinh"
+      "expected": "Binh\nBinh",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())",
-      "expected": "[2, 4]\n[2, 4]"
+      "expected": "[2, 4]\n[2, 4]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2]}, index=['C01'])\ntry:\n    df.loc['C99']\nexcept KeyError as error:\n    print(type(error).__name__)\ntry:\n    df.iloc[5]\nexcept IndexError as error:\n    print(type(error).__name__)",
-      "expected": "KeyError\nIndexError"
+      "expected": "KeyError\nIndexError",
+      "tryIt": true
      },
      {
       "type": "paragraph",

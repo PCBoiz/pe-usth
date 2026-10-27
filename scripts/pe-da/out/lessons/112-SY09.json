@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\ntry:\n    Exporter()\nexcept TypeError:\n    print(\"Can cai dat export\")",
-      "expected": "Can cai dat export"
+      "expected": "Can cai dat export",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\nclass TextExporter(Exporter):\n    def export(self, rows): return \",\".join(rows)\nprint(TextExporter().export([\"A\", \"B\"]))",
-      "expected": "A,B"
+      "expected": "A,B",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))",
-      "expected": "A,B"
+      "expected": "A,B",
+      "tryIt": true
      }
     ],
     [

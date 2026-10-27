@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()",
-      "expected": "1.02"
+      "expected": "1.02",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [1, 10, 100], marker=\"o\")\nax.set_yscale(\"log\")\nax.set(xlabel=\"Stage\", ylabel=\"Records (log scale)\", title=\"Equal distances represent equal ratios\")\nax.set_xticks([1, 2, 3], [\"Start\", \"Middle\", \"End\"])\nprint(ax.get_yscale())\nplt.show()",
-      "expected": "log"
+      "expected": "log",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([0, 1, 2], [0, 1, 2], marker=\"o\")\nax.set_aspect(\"equal\", adjustable=\"box\")\nax.margins(x=0.1, y=0.1)\nax.spines[\"top\"].set_visible(False)\nax.spines[\"bottom\"].set_position((\"outward\", 5))\nax.tick_params(axis=\"y\", direction=\"inout\", length=8)\nax.set(xlabel=\"x (km)\", ylabel=\"y (km)\", title=\"Equal units on both axes\")\nprint(ax.spines[\"top\"].get_visible())\nplt.show()",
-      "expected": "False"
+      "expected": "False",
+      "tryIt": true
      },
      {
       "type": "figure",

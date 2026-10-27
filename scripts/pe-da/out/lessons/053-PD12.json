@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())",
-      "expected": "['001', '002']\n[False, True]"
+      "expected": "['001', '002']\n[False, True]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))",
-      "expected": "[{'order': 'A', 'amount': 10}]"
+      "expected": "[{'order': 'A', 'amount': 10}]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ntext = df.to_csv(index=False)\nback = pd.read_csv(StringIO(text))\nprint(text.splitlines()[0])\nprint(back['amount'].sum())",
-      "expected": "order,amount\n30"
+      "expected": "order,amount\n30",
+      "tryIt": true
      },
      {
       "type": "paragraph",

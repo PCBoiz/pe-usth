@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nsales = np.array([[12, 15, 9], [10, 8, 14]])\nby_day = sales.T\nprint(by_day.tolist())\nprint(by_day.shape)",
-      "expected": "[[12, 10], [15, 8], [9, 14]]\n(3, 2)"
+      "expected": "[[12, 10], [15, 8], [9, 14]]\n(3, 2)",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nfirst = np.array([[12, 15, 9]])\nsecond = np.array([[10, 8, 14]])\nprint(np.concatenate([first, second], axis=0).tolist())\nprint(np.concatenate([first, second], axis=1).shape)",
-      "expected": "[[12, 15, 9], [10, 8, 14]]\n(1, 6)"
+      "expected": "[[12, 15, 9], [10, 8, 14]]\n(1, 6)",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nmon = np.array([12, 10])\ntue = np.array([15, 8])\ndays = np.stack([mon, tue], axis=0)\nprint(days.tolist())\nprint(days.shape)",
-      "expected": "[[12, 10], [15, 8]]\n(2, 2)"
+      "expected": "[[12, 10], [15, 8]]\n(2, 2)",
+      "tryIt": true
      },
      {
       "type": "paragraph",

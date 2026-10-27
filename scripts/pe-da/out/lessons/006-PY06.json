@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "store = \"Hanoi\"\nprint(\"Bao cao \" + store)\nprint(\"-\" * 5)",
-      "expected": "Bao cao Hanoi\n-----"
+      "expected": "Bao cao Hanoi\n-----",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "message = \"Dong 1\\nDong 2\"\nprint(message)",
-      "expected": "Dong 1\nDong 2"
+      "expected": "Dong 1\nDong 2",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "name = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")",
-      "expected": "6\nFalse"
+      "expected": "6\nFalse",
+      "tryIt": true
      },
      {
       "type": "paragraph",

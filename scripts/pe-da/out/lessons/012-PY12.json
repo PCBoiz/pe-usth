@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "marks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)",
-      "expected": "8\nmissing\nTrue"
+      "expected": "8\nmissing\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "marks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))",
-      "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]"
+      "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "marks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))",
-      "expected": "S02 5\nS01"
+      "expected": "S02 5\nS01",
+      "tryIt": true
      },
      {
       "type": "paragraph",

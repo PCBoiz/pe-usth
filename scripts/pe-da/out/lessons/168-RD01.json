@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nlabel = ax.text(0.05, 0.95, \"Three days only\", transform=ax.transAxes, va=\"top\")\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(label.get_position())\nplt.show()\nplt.close(fig)",
-      "expected": "(0.05, 0.95)"
+      "expected": "(0.05, 0.95)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nnote = ax.annotate(\"Peak: 10\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0.05, 0.95), textcoords=\"axes fraction\",\n                   va=\"top\", arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(note.xy, note.get_position())\nplt.show()\nplt.close(fig)",
-      "expected": "(2, 10) (0.05, 0.95)"
+      "expected": "(2, 10) (0.05, 0.95)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nnote = ax.annotate(r\"$y=10$\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0, 12), textcoords=\"offset points\", ha=\"center\")\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\ntitle = ax.set_title(\"Three daily observations\", fontsize=14)\nprint(note.get_text(), title.get_fontsize())\nplt.show()\nplt.close(fig)",
-      "expected": "$y=10$ 14.0"
+      "expected": "$y=10$ 14.0",
+      "tryIt": true
      },
      {
       "type": "figure",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
-      "expected": "(18, 2)\n(23, 3)"
+      "expected": "(18, 2)\n(23, 3)",
+      "tryIt": true
      }
     ],
     [

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)",
-      "expected": "True\nTrue"
+      "expected": "True\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))",
-      "expected": "cà phê\ncà phê"
+      "expected": "cà phê\ncà phê",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")",
-      "expected": "True\nDu lieu nen khong hop le"
+      "expected": "True\nDu lieu nen khong hop le",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nprices = np.array([12.5, 20])\nprint(prices)\nprint(prices.dtype)",
-      "expected": "[12.5 20. ]\nfloat64"
+      "expected": "[12.5 20. ]\nfloat64",
+      "tryIt": true
      }
     ],
     [
@@ -46,7 +47,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8], dtype=float)\nprint(a)",
-      "expected": "[6. 8.]"
+      "expected": "[6. 8.]",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8.5])\nprint(a)",
-      "expected": "[6.  8.5]"
+      "expected": "[6.  8.5]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -38,7 +38,8 @@
      {
       "type": "code",
       "code": "pip_install = \"python -m pip install notebook\"\nconda_install = \"conda install -c conda-forge notebook\"\nopen_notebook = \"jupyter notebook\"\nprint(pip_install)\nprint(conda_install)\nprint(open_notebook)",
-      "expected": "python -m pip install notebook\nconda install -c conda-forge notebook\njupyter notebook"
+      "expected": "python -m pip install notebook\nconda install -c conda-forge notebook\njupyter notebook",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +50,8 @@
      {
       "type": "code",
       "code": "roles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])",
-      "expected": "execution\nmessages\nmath display"
+      "expected": "execution\nmessages\nmath display",
+      "tryIt": true
      }
     ]
    ],

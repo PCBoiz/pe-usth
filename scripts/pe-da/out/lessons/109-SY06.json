@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))",
-      "expected": "Diem 8"
+      "expected": "Diem 8",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])",
-      "expected": "True\n[5, 8]"
+      "expected": "True\n[5, 8]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
-      "expected": "Khong cung loai de so sanh"
+      "expected": "Khong cung loai de so sanh",
+      "tryIt": true
      }
     ],
     [

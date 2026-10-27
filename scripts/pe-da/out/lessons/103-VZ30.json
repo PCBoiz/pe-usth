@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)",
-      "expected": "(2.0, 10.0)"
+      "expected": "(2.0, 10.0)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)",
-      "expected": "Day 2: 10 cups"
+      "expected": "Day 2: 10 cups",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)",
-      "expected": "1 1"
+      "expected": "1 1",
+      "tryIt": true
      },
      {
       "type": "figure",

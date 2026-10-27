@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import tempfile\nwith tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf8\") as f:\n    f.write(\"A\\n\")\n    f.flush()\n    f.seek(0)\n    print(f.readline().strip())\nprint(f.closed)",
-      "expected": "A\nTrue"
+      "expected": "A\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"raw.bin\"\n    with open(path, \"wb\", buffering=0) as f: print(f.write(b\"AB\"))\n    with open(path, \"r\", encoding=\"ascii\", buffering=1) as f: print(f.read())",
-      "expected": "2\nAB"
+      "expected": "2\nAB",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing.txt\"\n    try:\n        with open(path, encoding=\"utf8\") as f: print(f.read())\n    except FileNotFoundError:\n        print(\"Thieu file\")",
-      "expected": "Thieu file"
+      "expected": "Thieu file",
+      "tryIt": true
      },
      {
       "type": "paragraph",

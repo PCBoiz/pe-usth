@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "point = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)",
-      "expected": "10 20\nint tuple"
+      "expected": "10 20\nint tuple",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "point = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
-      "expected": "TypeError"
+      "expected": "TypeError",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "raw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))",
-      "expected": "b'AB'\nb'CB'"
+      "expected": "b'AB'\nb'CB'",
+      "tryIt": true
      },
      {
       "type": "paragraph",

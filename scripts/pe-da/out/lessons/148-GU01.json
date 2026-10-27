@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))",
-      "expected": "60"
+      "expected": "60",
+      "tryIt": true
      }
     ],
     [

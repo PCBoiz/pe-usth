@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "parent_pid, new_child_pid = 100, 101\nfork_returns = {\"parent\": new_child_pid, \"child\": 0}\nprint(fork_returns[\"parent\"], fork_returns[\"child\"])",
-      "expected": "101 0"
+      "expected": "101 0",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "process = {\"pid\": 101, \"program\": \"shell\"}\nprocess[\"program\"] = \"analysis\"\nprint(process[\"pid\"], process[\"program\"])",
-      "expected": "101 analysis"
+      "expected": "101 analysis",
+      "tryIt": true
      }
     ],
     [

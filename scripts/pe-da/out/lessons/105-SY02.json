@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import random\nrng = random.Random(7)\nsample = rng.choice([\"A01\", \"A02\", \"A03\"])\nprint(sample in [\"A01\", \"A02\", \"A03\"])\nprint(0 <= rng.random() < 1)",
-      "expected": "True\nTrue"
+      "expected": "True\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import random\nrng = random.Random(12)\nvalues = [rng.randint(1, 3) for _ in range(5)]\nprint(len(values))\nprint(all(1 <= x <= 3 for x in values))",
-      "expected": "5\nTrue"
+      "expected": "5\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "from collections import Counter\norders = [\"tea\", \"coffee\", \"tea\", \"water\", \"tea\"]\ncounts = Counter(orders)\nprint(counts[\"tea\"], counts[\"milk\"])\nprint(counts.most_common(2))",
-      "expected": "3 0\n[('tea', 3), ('coffee', 1)]"
+      "expected": "3 0\n[('tea', 3), ('coffee', 1)]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

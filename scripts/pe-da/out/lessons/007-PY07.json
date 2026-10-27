@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "filename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])",
-      "expected": "csv\nm"
+      "expected": "csv\nm",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "text = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)",
-      "expected": "yh\nnohtyP\nTrue"
+      "expected": "yh\nnohtyP\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "text = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])",
-      "expected": "TypeError\nData"
+      "expected": "TypeError\nData",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nx = np.linspace(0, np.pi, 3)\nprint(np.round(np.sin(x), 6).tolist())\nprint(np.round(np.cos(x), 6).tolist())\nrng = np.random.default_rng(7)\ndata = rng.random((2, 3))\nprint(data.shape, bool(((data >= 0) & (data < 1)).all()))\nprint(np.random.random((2, 3)).shape)",
-      "expected": "[0.0, 1.0, 0.0]\n[1.0, 0.0, -1.0]\n(2, 3) True\n(2, 3)"
+      "expected": "[0.0, 1.0, 0.0]\n[1.0, 0.0, -1.0]\n(2, 3) True\n(2, 3)",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nX, Y = np.mgrid[-1:1:3j, -2:2:5j]\nU, V = -Y, X\nprint(X.shape, Y.shape, U.shape, V.shape)\nprint(X[:, 0].tolist())\nprint(Y[0, :].tolist())",
-      "expected": "(3, 5) (3, 5) (3, 5) (3, 5)\n[-1.0, 0.0, 1.0]\n[-2.0, -1.0, 0.0, 1.0, 2.0]"
+      "expected": "(3, 5) (3, 5) (3, 5) (3, 5)\n[-1.0, 0.0, 1.0]\n[-2.0, -1.0, 0.0, 1.0, 2.0]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import numpy as np\nimport tempfile\nfrom pathlib import Path\nfrom matplotlib.cbook import get_sample_data\nimage = np.array([[0.0, 0.5], [0.75, 1.0]])\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"image.npy\"\n    np.save(path, image)\n    loaded = np.load(path, allow_pickle=False)\n    print(loaded.shape, bool(np.array_equal(image, loaded)))\nsample_path = get_sample_data(\"topobathy.npz\", asfileobj=False)\nwith np.load(sample_path, allow_pickle=False) as sample:\n    print(sorted(sample.files))\n    print(sample[\"topo\"].ndim)",
-      "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2"
+      "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2",
+      "tryIt": true
      }
     ]
    ],

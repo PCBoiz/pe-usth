@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
-      "expected": "[False, True, False]\n1\n21.0"
+      "expected": "[False, True, False]\n1\n21.0",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
-      "expected": "['A', 'C']\n[10.0, 0.0, 30.0]"
+      "expected": "['A', 'C']\n[10.0, 0.0, 30.0]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nunknown = pd.Series([None, None], dtype='Float64')\nprint(unknown.sum())\nprint(pd.isna(unknown.sum(min_count=1)))",
-      "expected": "0.0\nTrue"
+      "expected": "0.0\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

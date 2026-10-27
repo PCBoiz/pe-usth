@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
-      "expected": "20\n['store', 'month']"
+      "expected": "20\n['store', 'month']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
-      "expected": "{'A': 10, 'B': 30}\n['store', 'month', 'sales']"
+      "expected": "{'A': 10, 'B': 30}\n['store', 'month', 'sales']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\ns = df.set_index(['store', 'month'])['sales']\nwide = s.unstack('month')\nprint(wide.loc['A', 'Feb'])\nprint(pd.isna(wide.loc['B', 'Feb']))",
-      "expected": "20.0\nTrue"
+      "expected": "20.0\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

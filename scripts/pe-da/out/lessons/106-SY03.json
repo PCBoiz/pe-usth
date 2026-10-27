@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import re\nmatch = re.search(r\"\\bS\\d{3}\\b\", \"Paid by S012 today\")\nprint(match.group(0) if match else None)",
-      "expected": "S012"
+      "expected": "S012",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)",
-      "expected": "An paid today"
+      "expected": "An paid today",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import re\nprint(re.search(r\"\\bS\\d{3}\\b\", \"S12\") is None)\nprint(re.search(re.escape(\"a.b\"), \"a-b\") is None)\nprint(re.search(r\"\\d{4}-\\d{2}-\\d{2}\", \"2024-02-31\") is not None)",
-      "expected": "True\nTrue\nTrue"
+      "expected": "True\nTrue\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

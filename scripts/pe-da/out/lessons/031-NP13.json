@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)",
-      "expected": "[False  True False]"
+      "expected": "[False  True False]",
+      "tryIt": true
      }
     ],
     [
@@ -46,7 +47,8 @@
      {
       "type": "code",
       "code": "a = np.array([3, 5, 8])\nprint(a >= 5)",
-      "expected": "[False  True  True]"
+      "expected": "[False  True  True]",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "a = np.array([20, 35, 40])\nprint(a < 35)",
-      "expected": "[ True False False]"
+      "expected": "[ True False False]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

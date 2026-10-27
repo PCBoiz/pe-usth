@@ -110,7 +110,19 @@ export type TheoryBlock = {
  */
 export type ReadBlock =
   | { type: 'paragraph'; text: string }
-  | { type: 'code'; code: string; expected?: string }
+  /**
+   * `tryIt` = khâu build đã xác nhận đoạn này CHẠY ĐƯỢC trong Pyodide, nên màn
+   * đọc dựng nút "Thử ngay trong IDE" dưới nó (kiểu "Try it Yourself" của
+   * W3Schools). Chỉ có mặt khi đúng — xem `khoi_doc` trong scripts/pe-da/build.py.
+   *
+   * Vì sao cờ này do BUILD phát chứ không do frontend tự đoán: `chayDuocTrongIde`
+   * trong ide-brief-code.ts chỉ là một regex trên dòng `import` và nó bắt đúng
+   * các giới hạn WASM (tkinter/threading/subprocess) — nhưng thứ chặn bài của
+   * khoá Data Analyst là THIẾU WHEEL (seaborn, plotly, openpyxl, h5py,
+   * sqlalchemy, ipywidgets), là gói ẩn sau chuỗi (`engine="openpyxl"`), và là
+   * thuộc tính phơi ra máy thật (`sys.executable`). Chỉ build.py biết cả ba.
+   */
+  | { type: 'code'; code: string; expected?: string; tryIt?: true }
   /**
    * Lệnh gõ trong TERMINAL (`python -m venv .venv`, `git status`) — KHÔNG phải
    * Python. Phải hiện khác khối `code`, nếu không người học copy nó vào ô soạn
@@ -144,6 +156,46 @@ export const READ_BLOCK_TYPES: ReadBlock['type'][] = [
   'figure',
   'table',
 ];
+
+/**
+ * Mã bàn giao cho `/ide` khi bấm "Thử ngay trong IDE" dưới một khối của màn đọc.
+ *
+ * KHÔNG phải mã của riêng khối đó, và đây là chỗ một bản sửa nửa vời trông như
+ * xong: nguồn viết các đoạn trong một bài để chạy NỐI TIẾP nhau — đoạn 3 dùng
+ * `df` và `import pandas` của đoạn 1. Bàn giao một mình đoạn 3 là mở một tab
+ * mới rồi để người học đọc `NameError: name 'df' is not defined`, tức đúng cái
+ * nút này ra đời để tránh. Nên bàn giao TOÀN BỘ tiền tố: mọi khối `tryIt` từ
+ * đầu bài tới khối được bấm.
+ *
+ * Phép nối phải giống `noi_code()` trong scripts/pe-da/build.py từng ký tự:
+ * một đoạn thì để trần, nhiều đoạn thì chèn mốc `# ── Đoạn i ──`. Có ca test
+ * khoá chỗ này bằng cách so tiền tố ĐẦY ĐỦ với `step_4.starterCode` — chính
+ * `noi_code(chay_duoc)` — ở những bài còn ô chạy thử.
+ *
+ * @param read `step_1.read` — mảng các MÀN, mỗi màn là mảng khối.
+ * @param lat chỉ số màn đang xem.
+ * @param khoi chỉ số khối trong màn đó.
+ */
+export function maDeThu(
+  read: ReadBlock[][] | undefined,
+  lat: number,
+  khoi: number,
+): string | null {
+  if (!read?.length) return null;
+  const doan: string[] = [];
+  for (let i = 0; i <= lat && i < read.length; i++) {
+    const khoiCuaLat = read[i] ?? [];
+    // Màn cuối chỉ lấy tới đúng khối được bấm; các màn trước lấy hết.
+    const den = i === lat ? khoi : khoiCuaLat.length - 1;
+    for (let j = 0; j <= den && j < khoiCuaLat.length; j++) {
+      const b = khoiCuaLat[j];
+      if (b.type === 'code' && b.tryIt) doan.push(b.code.replace(/\s+$/, ''));
+    }
+  }
+  if (!doan.length) return null;
+  if (doan.length === 1) return `${doan[0]}\n`;
+  return `${doan.map((c, i) => `# ── Đoạn ${i + 1} ──\n${c}`).join('\n\n')}\n`;
+}
 
 export type Step1 = {
   heading?: string;

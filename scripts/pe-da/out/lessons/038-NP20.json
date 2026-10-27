@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nparts = np.array([0.1, 0.2])\nprint(np.isclose(parts.sum(), 0.3))",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "print(0.1 + 0.2 == 0.3)\nprint(np.isclose(0.1 + 0.2, 0.3))",
-      "expected": "False\nTrue"
+      "expected": "False\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "print(np.allclose([1., 2.], [1., 2.00000001]))",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [

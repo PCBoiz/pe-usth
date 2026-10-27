@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
-      "expected": "[20, 60]"
+      "expected": "[20, 60]",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
-      "expected": "[20, 50]\n['qty', 'price']"
+      "expected": "[20, 50]\n['qty', 'price']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())",
-      "expected": "[10, 20]\n[18]"
+      "expected": "[10, 20]\n[18]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

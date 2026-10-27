@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())",
-      "expected": "['students.txt', 'courses.txt']\nS01,An"
+      "expected": "['students.txt', 'courses.txt']\nS01,An",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())",
-      "expected": "['marks.txt']\nS01,PY,8"
+      "expected": "['marks.txt']\nS01,PY,8",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      },
      {
       "type": "paragraph",

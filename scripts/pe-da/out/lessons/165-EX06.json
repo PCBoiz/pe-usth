@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
-      "expected": "True True"
+      "expected": "True True",
+      "tryIt": true
      }
     ],
     [

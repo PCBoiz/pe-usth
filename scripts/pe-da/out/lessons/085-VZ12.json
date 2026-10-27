@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), sharey=True, layout=\"constrained\")\nfor ax, name, values in zip(axes, [\"Store A\", \"Store B\"], [[8, 10, 7], [4, 6, 5]]):\n    ax.plot([1, 2, 3], values, marker=\"o\")\n    ax.set(title=name, xlabel=\"Day\", ylim=(0, 12))\naxes[0].set_ylabel(\"Cups\")\nprint(len(fig.axes))\nplt.show()",
-      "expected": "2"
+      "expected": "2",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(7, 3))\nleft = fig.add_subplot(121)\nright = fig.add_subplot(122)\nleft.bar([\"A\", \"B\"], [8, 10])\nright.hist([1, 2, 2, 4], bins=[0, 3, 6])\nleft.set(title=\"Sales\", ylabel=\"Cups\")\nright.set(title=\"Wait\", xlabel=\"Minutes\", ylabel=\"Orders\")\nfig.subplots_adjust(wspace=0.55, bottom=0.2)\nprint(left.get_subplotspec().num1, right.get_subplotspec().num1)\nplt.show()",
-      "expected": "0 1"
+      "expected": "0 1",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=plt.figaspect(0.5))\nax = fig.add_subplot(111)\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A wide figure\")\nfig.tight_layout()\nw, h = fig.get_size_inches()\nprint(round(float(h / w), 1))\nplt.show()",
-      "expected": "0.5"
+      "expected": "0.5",
+      "tryIt": true
      },
      {
       "type": "figure",

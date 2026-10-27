@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=1))",
-      "expected": "[36 32]"
+      "expected": "[36 32]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
-      "expected": "[ 6 15]"
+      "expected": "[ 6 15]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "numbers = np.arange(1, 13)\na = numbers.reshape(3, 4)\nprint(a.sum(axis=0))",
-      "expected": "[15 18 21 24]"
+      "expected": "[15 18 21 24]",
+      "tryIt": true
      }
     ],
     [

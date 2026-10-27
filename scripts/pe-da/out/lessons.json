@@ -30,7 +30,8 @@
        {
         "type": "code",
         "code": "print(12 + 9)",
-        "expected": "21"
+        "expected": "21",
+        "tryIt": true
        }
       ],
       [
@@ -45,7 +46,8 @@
        {
         "type": "code",
         "code": "morning = 12\nafternoon = 9\nprint(morning + afternoon)",
-        "expected": "21"
+        "expected": "21",
+        "tryIt": true
        }
       ],
       [
@@ -56,7 +58,8 @@
        {
         "type": "code",
         "code": "cups = 21\nprint(\"So coc:\", cups)\nprint(cups * 15)",
-        "expected": "So coc: 21\n315"
+        "expected": "So coc: 21\n315",
+        "tryIt": true
        }
       ],
       [
@@ -208,7 +211,8 @@
        {
         "type": "code",
         "code": "import sys\nprint(sys.version_info.major)",
-        "expected": "3"
+        "expected": "3",
+        "tryIt": true
        }
       ],
       [
@@ -386,7 +390,8 @@
        {
         "type": "code",
         "code": "cups = 12\nprint(cups + 1)",
-        "expected": "13"
+        "expected": "13",
+        "tryIt": true
        }
       ],
       [
@@ -397,7 +402,8 @@
        {
         "type": "code",
         "code": "cups = 12\nprint(cups)\ncups = 15\nprint(cups)",
-        "expected": "12\n15"
+        "expected": "12\n15",
+        "tryIt": true
        }
       ],
       [
@@ -408,7 +414,8 @@
        {
         "type": "code",
         "code": "print(type(12))\nprint(type(\"data\"))",
-        "expected": "<class 'int'>\n<class 'str'>"
+        "expected": "<class 'int'>\n<class 'str'>",
+        "tryIt": true
        }
       ],
       [
@@ -556,7 +563,8 @@
        {
         "type": "code",
         "code": "raw = \"15\"\nprice = int(raw)\nprint(price * 2)\nprint(type(raw).__name__, type(price).__name__)",
-        "expected": "30\nstr int"
+        "expected": "30\nstr int",
+        "tryIt": true
        }
       ],
       [
@@ -567,7 +575,8 @@
        {
         "type": "code",
         "code": "value = \"15\"\nvalue = 15.5\nprint(type(value).__name__)\nprint(2e4)",
-        "expected": "float\n20000.0"
+        "expected": "float\n20000.0",
+        "tryIt": true
        }
       ],
       [
@@ -578,7 +587,8 @@
        {
         "type": "code",
         "code": "import keyword\nprint(\"total_cups\".isidentifier())\nprint(\"2cups\".isidentifier())\nprint(keyword.iskeyword(\"for\"))",
-        "expected": "True\nFalse\nTrue"
+        "expected": "True\nFalse\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -764,7 +774,8 @@
        {
         "type": "code",
         "code": "print(3 * 15 - 5)\nprint(3 * (15 - 5))",
-        "expected": "40\n30"
+        "expected": "40\n30",
+        "tryIt": true
        }
       ],
       [
@@ -775,7 +786,8 @@
        {
         "type": "code",
         "code": "print(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)",
-        "expected": "3.5\n3 1\n-4"
+        "expected": "3.5\n3 1\n-4",
+        "tryIt": true
        }
       ],
       [
@@ -786,7 +798,8 @@
        {
         "type": "code",
         "code": "total = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)",
-        "expected": "15\n8\n0.99"
+        "expected": "15\n8\n0.99",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -953,7 +966,8 @@
        {
         "type": "code",
         "code": "store = \"Hanoi\"\nprint(\"Bao cao \" + store)\nprint(\"-\" * 5)",
-        "expected": "Bao cao Hanoi\n-----"
+        "expected": "Bao cao Hanoi\n-----",
+        "tryIt": true
        }
       ],
       [
@@ -964,7 +978,8 @@
        {
         "type": "code",
         "code": "message = \"Dong 1\\nDong 2\"\nprint(message)",
-        "expected": "Dong 1\nDong 2"
+        "expected": "Dong 1\nDong 2",
+        "tryIt": true
        }
       ],
       [
@@ -975,7 +990,8 @@
        {
         "type": "code",
         "code": "name = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")",
-        "expected": "6\nFalse"
+        "expected": "6\nFalse",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -1142,7 +1158,8 @@
        {
         "type": "code",
         "code": "filename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])",
-        "expected": "csv\nm"
+        "expected": "csv\nm",
+        "tryIt": true
        }
       ],
       [
@@ -1153,7 +1170,8 @@
        {
         "type": "code",
         "code": "text = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)",
-        "expected": "yh\nnohtyP\nTrue"
+        "expected": "yh\nnohtyP\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -1164,7 +1182,8 @@
        {
         "type": "code",
         "code": "text = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])",
-        "expected": "TypeError\nData"
+        "expected": "TypeError\nData",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -1336,7 +1355,8 @@
        {
         "type": "code",
         "code": "name = \"  maI  \".strip().title()\ncode = \"23\".zfill(4)\nprint(f\"{code}: {name}\")",
-        "expected": "0023: Mai"
+        "expected": "0023: Mai",
+        "tryIt": true
        }
       ],
       [
@@ -1347,7 +1367,8 @@
        {
         "type": "code",
         "code": "raw = \"12,18,20\\n\"\nprint(raw.rstrip().split(\",\"))\nprint(\"A\\nB\".splitlines())",
-        "expected": "['12', '18', '20']\n['A', 'B']"
+        "expected": "['12', '18', '20']\n['A', 'B']",
+        "tryIt": true
        }
       ],
       [
@@ -1358,7 +1379,8 @@
        {
         "type": "code",
         "code": "name, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")",
-        "expected": "Mai: 12.5\nmai: 12.50"
+        "expected": "Mai: 12.5\nmai: 12.50",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -1529,7 +1551,8 @@
        {
         "type": "code",
         "code": "score = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")",
-        "expected": "Pass"
+        "expected": "Pass",
+        "tryIt": true
        }
       ],
       [
@@ -1540,7 +1563,8 @@
        {
         "type": "code",
         "code": "age, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)",
-        "expected": "True\nFalse\nTrue"
+        "expected": "True\nFalse\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -1551,7 +1575,8 @@
        {
         "type": "code",
         "code": "score = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")",
-        "expected": "Valid and good"
+        "expected": "Valid and good",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -1723,7 +1748,8 @@
        {
         "type": "code",
         "code": "cups = [12, 15, 9]\ncups.append(11)\nprint(cups)\nprint(cups[-2:])",
-        "expected": "[12, 15, 9, 11]\n[9, 11]"
+        "expected": "[12, 15, 9, 11]\n[9, 11]",
+        "tryIt": true
        }
       ],
       [
@@ -1734,7 +1760,8 @@
        {
         "type": "code",
         "code": "a = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nb.insert(0, 0)\nprint(a)\nprint(b)",
-        "expected": "[1, 2, [3, 4]]\n[0, 1, 2, 3, 4]"
+        "expected": "[1, 2, [3, 4]]\n[0, 1, 2, 3, 4]",
+        "tryIt": true
        }
       ],
       [
@@ -1745,7 +1772,8 @@
        {
         "type": "code",
         "code": "values = [3, 1, 2, 1]\nvalues.remove(1)\nlast = values.pop()\ndel values[0]\nvalues.sort()\nvalues.reverse()\nprint(last, values)",
-        "expected": "1 [2]"
+        "expected": "1 [2]",
+        "tryIt": true
        }
       ],
       [
@@ -1959,7 +1987,8 @@
        {
         "type": "code",
         "code": "point = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)",
-        "expected": "10 20\nint tuple"
+        "expected": "10 20\nint tuple",
+        "tryIt": true
        }
       ],
       [
@@ -1970,7 +1999,8 @@
        {
         "type": "code",
         "code": "point = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)",
-        "expected": "TypeError"
+        "expected": "TypeError",
+        "tryIt": true
        }
       ],
       [
@@ -1981,7 +2011,8 @@
        {
         "type": "code",
         "code": "raw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))",
-        "expected": "b'AB'\nb'CB'"
+        "expected": "b'AB'\nb'CB'",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -2171,7 +2202,8 @@
        {
         "type": "code",
         "code": "marks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)",
-        "expected": "8\nmissing\nTrue"
+        "expected": "8\nmissing\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -2182,7 +2214,8 @@
        {
         "type": "code",
         "code": "marks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))",
-        "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]"
+        "expected": "S01 9\nS02 7\n['S01', 'S02'] [9, 7]",
+        "tryIt": true
        }
       ],
       [
@@ -2193,7 +2226,8 @@
        {
         "type": "code",
         "code": "marks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))",
-        "expected": "S02 5\nS01"
+        "expected": "S02 5\nS01",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -2379,7 +2413,8 @@
        {
         "type": "code",
         "code": "registered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))",
-        "expected": "['An']\n3"
+        "expected": "['An']\n3",
+        "tryIt": true
        }
       ],
       [
@@ -2390,7 +2425,8 @@
        {
         "type": "code",
         "code": "a, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))",
-        "expected": "[1, 2, 3]\n[2]\n[1]"
+        "expected": "[1, 2, 3]\n[2]\n[1]",
+        "tryIt": true
        }
       ],
       [
@@ -2401,7 +2437,8 @@
        {
         "type": "code",
         "code": "a, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))",
-        "expected": "True True\nTrue\n2"
+        "expected": "True True\nTrue\n2",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -2592,7 +2629,8 @@
        {
         "type": "code",
         "code": "cups = [12, 15, 9]\ntotal = 0\nfor value in cups:\n    total += value\nprint(total)",
-        "expected": "36"
+        "expected": "36",
+        "tryIt": true
        }
       ],
       [
@@ -2603,7 +2641,8 @@
        {
         "type": "code",
         "code": "print(list(range(1, 5)))\nprint(list(range(5, 0, -2)))\nfor index, value in enumerate([6, 8]):\n    print(index, value)",
-        "expected": "[1, 2, 3, 4]\n[5, 3, 1]\n0 6\n1 8"
+        "expected": "[1, 2, 3, 4]\n[5, 3, 1]\n0 6\n1 8",
+        "tryIt": true
        }
       ],
       [
@@ -2614,7 +2653,8 @@
        {
         "type": "code",
         "code": "names, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
-        "expected": "Mai 8\nAn 7\n[4, 6]"
+        "expected": "Mai 8\nAn 7\n[4, 6]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -2799,7 +2839,8 @@
        {
         "type": "code",
         "code": "attempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)",
-        "expected": "1\n2\n3"
+        "expected": "1\n2\n3",
+        "tryIt": true
        }
       ],
       [
@@ -2810,7 +2851,8 @@
        {
         "type": "code",
         "code": "for number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)",
-        "expected": "0\n2\n3"
+        "expected": "0\n2\n3",
+        "tryIt": true
        }
       ],
       [
@@ -2821,7 +2863,8 @@
        {
         "type": "code",
         "code": "commands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)",
-        "expected": "sum"
+        "expected": "sum",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -3014,7 +3057,8 @@
        {
         "type": "code",
         "code": "def total(price, quantity=1):\n    \"\"\"Return price multiplied by quantity.\"\"\"\n    return price * quantity\n\nprint(total(12, 3))\nprint(total(12, quantity=2))",
-        "expected": "36\n24"
+        "expected": "36\n24",
+        "tryIt": true
        }
       ],
       [
@@ -3025,7 +3069,8 @@
        {
         "type": "code",
         "code": "def display_total(price, quantity):\n    print(price * quantity)\n\nresult = display_total(12, 3)\nprint(result)",
-        "expected": "36\nNone"
+        "expected": "36\nNone",
+        "tryIt": true
        }
       ],
       [
@@ -3036,7 +3081,8 @@
        {
         "type": "code",
         "code": "def average(values):\n    \"\"\"Return the mean of a non-empty sequence.\"\"\"\n    return sum(values) / len(values)\n\nprint(average([6, 8, 10]))\nprint(min([6, 8, 10]), max([6, 8, 10]))",
-        "expected": "8.0\n6 10"
+        "expected": "8.0\n6 10",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -3215,7 +3261,8 @@
        {
         "type": "code",
         "code": "def greet():\n    return \"Hello\"\n\ncallback = greet\nprint(callback())",
-        "expected": "Hello"
+        "expected": "Hello",
+        "tryIt": true
        }
       ],
       [
@@ -3226,7 +3273,8 @@
        {
         "type": "code",
         "code": "value = 10\ndef calculate():\n    value = 20\n    return value\n\nprint(calculate(), value)",
-        "expected": "20 10"
+        "expected": "20 10",
+        "tryIt": true
        }
       ],
       [
@@ -3237,7 +3285,8 @@
        {
         "type": "code",
         "code": "count = 0\ndef increment():\n    global count\n    count += 1\n\nincrement()\nprint(count)",
-        "expected": "1"
+        "expected": "1",
+        "tryIt": true
        }
       ],
       [
@@ -3404,7 +3453,8 @@
        {
         "type": "code",
         "code": "for raw in [\"6\", \"\", \"8\"]:\n    try:\n        print(float(raw))\n    except ValueError:\n        print(\"missing\")",
-        "expected": "6.0\nmissing\n8.0"
+        "expected": "6.0\nmissing\n8.0",
+        "tryIt": true
        }
       ],
       [
@@ -3415,7 +3465,8 @@
        {
         "type": "code",
         "code": "def read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))",
-        "expected": "Outside 0..10"
+        "expected": "Outside 0..10",
+        "tryIt": true
        }
       ],
       [
@@ -3426,7 +3477,8 @@
        {
         "type": "code",
         "code": "try:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")",
-        "expected": "8\nfinished"
+        "expected": "8\nfinished",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -3611,7 +3663,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups)",
-        "expected": "[12 15  9]"
+        "expected": "[12 15  9]",
+        "tryIt": true
        }
       ],
       [
@@ -3630,7 +3683,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8, 10])\nprint(a)",
-        "expected": "[ 6  8 10]"
+        "expected": "[ 6  8 10]",
+        "tryIt": true
        }
       ],
       [
@@ -3645,7 +3699,8 @@
        {
         "type": "code",
         "code": "prices = np.array([10, 20])\nprint(prices)",
-        "expected": "[10 20]"
+        "expected": "[10 20]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -3826,7 +3881,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups[1])",
-        "expected": "15"
+        "expected": "15",
+        "tryIt": true
        }
       ],
       [
@@ -3858,7 +3914,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8, 10])\nprint(a[1])",
-        "expected": "8"
+        "expected": "8",
+        "tryIt": true
        }
       ],
       [
@@ -3869,7 +3926,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8, 10])\nprint(a[-1])",
-        "expected": "10"
+        "expected": "10",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -4047,7 +4105,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nprices = np.array([12.5, 20])\nprint(prices)\nprint(prices.dtype)",
-        "expected": "[12.5 20. ]\nfloat64"
+        "expected": "[12.5 20. ]\nfloat64",
+        "tryIt": true
        }
       ],
       [
@@ -4066,7 +4125,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8], dtype=float)\nprint(a)",
-        "expected": "[6. 8.]"
+        "expected": "[6. 8.]",
+        "tryIt": true
        }
       ],
       [
@@ -4081,7 +4141,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8.5])\nprint(a)",
-        "expected": "[6.  8.5]"
+        "expected": "[6.  8.5]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -4274,7 +4335,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nscores = np.array([6., 8., 9.])\nprint(scores + 0.5)",
-        "expected": "[6.5 8.5 9.5]"
+        "expected": "[6.5 8.5 9.5]",
+        "tryIt": true
        }
       ],
       [
@@ -4289,7 +4351,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8, 10])\nprint(a + 1)",
-        "expected": "[ 7  9 11]"
+        "expected": "[ 7  9 11]",
+        "tryIt": true
        }
       ],
       [
@@ -4304,7 +4367,8 @@
        {
         "type": "code",
         "code": "a = np.array([2, 4])\nprint(a * 3)",
-        "expected": "[ 6 12]"
+        "expected": "[ 6 12]",
+        "tryIt": true
        }
       ],
       [
@@ -4503,7 +4567,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\ndays = np.arange(1, 8)\nprint(days)",
-        "expected": "[1 2 3 4 5 6 7]"
+        "expected": "[1 2 3 4 5 6 7]",
+        "tryIt": true
        }
       ],
       [
@@ -4518,7 +4583,8 @@
        {
         "type": "code",
         "code": "print(np.arange(1, 5))",
-        "expected": "[1 2 3 4]"
+        "expected": "[1 2 3 4]",
+        "tryIt": true
        }
       ],
       [
@@ -4533,7 +4599,8 @@
        {
         "type": "code",
         "code": "print(np.arange(0, 7, 2))",
-        "expected": "[0 2 4 6]"
+        "expected": "[0 2 4 6]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -4716,7 +4783,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales)",
-        "expected": "[[12 15  9]\n [10  8 14]]"
+        "expected": "[[12 15  9]\n [10  8 14]]",
+        "tryIt": true
        }
       ],
       [
@@ -4731,7 +4799,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a)",
-        "expected": "[[1 2 3]\n [4 5 6]]"
+        "expected": "[[1 2 3]\n [4 5 6]]",
+        "tryIt": true
        }
       ],
       [
@@ -4746,7 +4815,8 @@
        {
         "type": "code",
         "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
-        "expected": "[[6 8]\n [7 9]\n [5 6]]"
+        "expected": "[[6 8]\n [7 9]\n [5 6]]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -4961,7 +5031,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.shape)\nprint(sales.size)",
-        "expected": "(2, 3)\n6"
+        "expected": "(2, 3)\n6",
+        "tryIt": true
        }
       ],
       [
@@ -4976,7 +5047,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.shape, a.ndim, a.size, len(a))",
-        "expected": "(2, 3) 2 6 2"
+        "expected": "(2, 3) 2 6 2",
+        "tryIt": true
        }
       ],
       [
@@ -4991,7 +5063,8 @@
        {
         "type": "code",
         "code": "a = np.array([4, 5, 6])\nprint(a.shape, a.ndim, a.size)",
-        "expected": "(3,) 1 3"
+        "expected": "(3,) 1 3",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -5199,7 +5272,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nvalues = np.array([12, 15, 9, 10, 8, 14])\nsales = values.reshape(2, 3)\nprint(sales)",
-        "expected": "[[12 15  9]\n [10  8 14]]"
+        "expected": "[[12 15  9]\n [10  8 14]]",
+        "tryIt": true
        }
       ],
       [
@@ -5214,7 +5288,8 @@
        {
         "type": "code",
         "code": "a = np.arange(1, 7)\nprint(a.reshape(2, 3))",
-        "expected": "[[1 2 3]\n [4 5 6]]"
+        "expected": "[[1 2 3]\n [4 5 6]]",
+        "tryIt": true
        }
       ],
       [
@@ -5225,7 +5300,8 @@
        {
         "type": "code",
         "code": "a = np.arange(1, 7)\nprint(a.reshape(3, 2))",
-        "expected": "[[1 2]\n [3 4]\n [5 6]]"
+        "expected": "[[1 2]\n [3 4]\n [5 6]]",
+        "tryIt": true
        }
       ],
       [
@@ -5444,7 +5520,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales[:, 1])",
-        "expected": "[15  8]"
+        "expected": "[15  8]",
+        "tryIt": true
        }
       ],
       [
@@ -5459,7 +5536,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[1, 0])\nprint(a[0])",
-        "expected": "4\n[1 2 3]"
+        "expected": "4\n[1 2 3]",
+        "tryIt": true
        }
       ],
       [
@@ -5474,7 +5552,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[:, 1])",
-        "expected": "[2 5]"
+        "expected": "[2 5]",
+        "tryIt": true
        }
       ],
       [
@@ -5681,7 +5760,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum())",
-        "expected": "68"
+        "expected": "68",
+        "tryIt": true
        }
       ],
       [
@@ -5696,7 +5776,8 @@
        {
         "type": "code",
         "code": "a = np.array([2, 4, 6])\nprint(a.sum())",
-        "expected": "12"
+        "expected": "12",
+        "tryIt": true
        }
       ],
       [
@@ -5707,7 +5788,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum())",
-        "expected": "21"
+        "expected": "21",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -5911,7 +5993,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=0))",
-        "expected": "[22 23 23]"
+        "expected": "[22 23 23]",
+        "tryIt": true
        }
       ],
       [
@@ -5926,7 +6009,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
-        "expected": "[5 7 9]"
+        "expected": "[5 7 9]",
+        "tryIt": true
        }
       ],
       [
@@ -5941,7 +6025,8 @@
        {
         "type": "code",
         "code": "marks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=0))",
-        "expected": "[18 23]"
+        "expected": "[18 23]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -6144,7 +6229,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=1))",
-        "expected": "[36 32]"
+        "expected": "[36 32]",
+        "tryIt": true
        }
       ],
       [
@@ -6159,7 +6245,8 @@
        {
         "type": "code",
         "code": "a = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
-        "expected": "[ 6 15]"
+        "expected": "[ 6 15]",
+        "tryIt": true
        }
       ],
       [
@@ -6174,7 +6261,8 @@
        {
         "type": "code",
         "code": "numbers = np.arange(1, 13)\na = numbers.reshape(3, 4)\nprint(a.sum(axis=0))",
-        "expected": "[15 18 21 24]"
+        "expected": "[15 18 21 24]",
+        "tryIt": true
        }
       ],
       [
@@ -6384,7 +6472,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)",
-        "expected": "[False  True False]"
+        "expected": "[False  True False]",
+        "tryIt": true
        }
       ],
       [
@@ -6403,7 +6492,8 @@
        {
         "type": "code",
         "code": "a = np.array([3, 5, 8])\nprint(a >= 5)",
-        "expected": "[False  True  True]"
+        "expected": "[False  True  True]",
+        "tryIt": true
        }
       ],
       [
@@ -6418,7 +6508,8 @@
        {
         "type": "code",
         "code": "a = np.array([20, 35, 40])\nprint(a < 35)",
-        "expected": "[ True False False]"
+        "expected": "[ True False False]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -6607,7 +6698,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])",
-        "expected": "[2.5 7. ]"
+        "expected": "[2.5 7. ]",
+        "tryIt": true
        }
       ],
       [
@@ -6622,7 +6714,8 @@
        {
         "type": "code",
         "code": "a = np.array([3, 5, 8])\nmask = a >= 5\nprint(a[mask])",
-        "expected": "[5 8]"
+        "expected": "[5 8]",
+        "tryIt": true
        }
       ],
       [
@@ -6637,7 +6730,8 @@
        {
         "type": "code",
         "code": "a = np.array([-1, 4, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
-        "expected": "[ 4 10]"
+        "expected": "[ 4 10]",
+        "tryIt": true
        }
       ],
       [
@@ -6843,7 +6937,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nscores = np.array([4, 6, 9])\nlabels = np.where(scores >= 5, \"dat\", \"chua dat\")\nprint(labels)",
-        "expected": "['chua dat' 'dat' 'dat']"
+        "expected": "['chua dat' 'dat' 'dat']",
+        "tryIt": true
        }
       ],
       [
@@ -6858,7 +6953,8 @@
        {
         "type": "code",
         "code": "a = np.array([4, 6, 9])\nprint(a[a >= 5])",
-        "expected": "[6 9]"
+        "expected": "[6 9]",
+        "tryIt": true
        }
       ],
       [
@@ -6869,7 +6965,8 @@
        {
         "type": "code",
         "code": "a = np.array([9.8, 7.0])\nprint(np.clip(a + 0.5, 0, 10))",
-        "expected": "[10.   7.5]"
+        "expected": "[10.   7.5]",
+        "tryIt": true
        }
       ],
       [
@@ -7068,7 +7165,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nweighted = (7 * 2 + 8 * 3) / (2 + 3)\nprint(weighted)",
-        "expected": "7.6"
+        "expected": "7.6",
+        "tryIt": true
        }
       ],
       [
@@ -7083,7 +7181,8 @@
        {
         "type": "code",
         "code": "a = np.array([6, 8, 10])\nprint(a.mean(), a.min(), a.max())",
-        "expected": "8.0 6 10"
+        "expected": "8.0 6 10",
+        "tryIt": true
        }
       ],
       [
@@ -7102,7 +7201,8 @@
        {
         "type": "code",
         "code": "marks = np.array([7, 8])\ncredits = np.array([2, 3])\nprint(np.average(marks, weights=credits))",
-        "expected": "7.6"
+        "expected": "7.6",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -7295,7 +7395,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\ntemps = np.array([28., np.nan, 32.])\nprint(np.nanmean(temps))",
-        "expected": "30.0"
+        "expected": "30.0",
+        "tryIt": true
        }
       ],
       [
@@ -7310,7 +7411,8 @@
        {
         "type": "code",
         "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.isnan(a))",
-        "expected": "[False  True False]"
+        "expected": "[False  True False]",
+        "tryIt": true
        }
       ],
       [
@@ -7325,7 +7427,8 @@
        {
         "type": "code",
         "code": "a = np.array([6.0, np.nan, 10.0])\nprint(np.nanmean(a))",
-        "expected": "8.0"
+        "expected": "8.0",
+        "tryIt": true
        }
       ],
       [
@@ -7515,7 +7618,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)",
-        "expected": "[[20 20]\n [10 60]]"
+        "expected": "[[20 20]\n [10 60]]",
+        "tryIt": true
        }
       ],
       [
@@ -7534,7 +7638,8 @@
        {
         "type": "code",
         "code": "qty = np.array([[2, 1], [0, 3], [4, 2]])\nprice = np.array([10, 20])\nprint(qty * price)",
-        "expected": "[[20 20]\n [ 0 60]\n [40 40]]"
+        "expected": "[[20 20]\n [ 0 60]\n [40 40]]",
+        "tryIt": true
        }
       ],
       [
@@ -7553,7 +7658,8 @@
        {
         "type": "code",
         "code": "a = np.array([[2., 20.], [4., 40.]])\nmeans = a.mean(axis=0, keepdims=True)\nprint(a - means)",
-        "expected": "[[ -1. -10.]\n [  1.  10.]]"
+        "expected": "[[ -1. -10.]\n [  1.  10.]]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -7784,7 +7890,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nprices = np.array([10, 20, 30])\ntrial = prices[:2].copy()\ntrial[0] = 8\nprint(prices)\nprint(trial)",
-        "expected": "[10 20 30]\n[ 8 20]"
+        "expected": "[10 20 30]\n[ 8 20]",
+        "tryIt": true
        }
       ],
       [
@@ -7799,7 +7906,8 @@
        {
         "type": "code",
         "code": "a = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)",
-        "expected": "[9 2 3]"
+        "expected": "[9 2 3]",
+        "tryIt": true
        }
       ],
       [
@@ -7814,7 +7922,8 @@
        {
         "type": "code",
         "code": "a = np.array([1, 2, 3])\nb = a[:2].copy()\nb[0] = 9\nprint(a)",
-        "expected": "[1 2 3]"
+        "expected": "[1 2 3]",
+        "tryIt": true
        }
       ],
       [
@@ -8023,7 +8132,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nparts = np.array([0.1, 0.2])\nprint(np.isclose(parts.sum(), 0.3))",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
@@ -8038,7 +8148,8 @@
        {
         "type": "code",
         "code": "print(0.1 + 0.2 == 0.3)\nprint(np.isclose(0.1 + 0.2, 0.3))",
-        "expected": "False\nTrue"
+        "expected": "False\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -8053,7 +8164,8 @@
        {
         "type": "code",
         "code": "print(np.allclose([1., 2.], [1., 2.00000001]))",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
@@ -8254,7 +8366,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nfrom io import StringIO\ntext = \"birds,rabbits\\n12,5\\n15,7\"\ncounts = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(counts)",
-        "expected": "[[12.  5.]\n [15.  7.]]"
+        "expected": "[[12.  5.]\n [15.  7.]]",
+        "tryIt": true
        }
       ],
       [
@@ -8273,7 +8386,8 @@
        {
         "type": "code",
         "code": "from io import StringIO\ntext = \"x,y\\n1,2\\n3,4\"\na = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1)\nprint(a.shape)",
-        "expected": "(2, 2)"
+        "expected": "(2, 2)",
+        "tryIt": true
        }
       ],
       [
@@ -8288,7 +8402,8 @@
        {
         "type": "code",
         "code": "from io import StringIO\ntext = \"x,y\\n1,\\n3,4\"\na = np.genfromtxt(StringIO(text), delimiter=\",\", skip_header=1)\nprint(np.isnan(a).sum())",
-        "expected": "1"
+        "expected": "1",
+        "tryIt": true
        }
       ],
       [
@@ -8467,7 +8582,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=5)\nprint(rolls)",
-        "expected": "[6 4 5 6 4]"
+        "expected": "[6 4 5 6 4]",
+        "tryIt": true
        }
       ],
       [
@@ -8482,7 +8598,8 @@
        {
         "type": "code",
         "code": "rng = np.random.default_rng(7)\na = rng.integers(1, 7, size=5)\nprint(a.shape)\nprint(((a >= 1) & (a <= 6)).all())",
-        "expected": "(5,)\nTrue"
+        "expected": "(5,)\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -8501,7 +8618,8 @@
        {
         "type": "code",
         "code": "a = np.random.default_rng(7).integers(1, 7, size=5)\nb = np.random.default_rng(7).integers(1, 7, size=5)\nprint(np.array_equal(a, b))",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
@@ -8689,7 +8807,8 @@
        {
         "type": "code",
         "code": "import numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))",
-        "expected": "[14 16 11]"
+        "expected": "[14 16 11]",
+        "tryIt": true
        }
       ],
       [
@@ -8704,7 +8823,8 @@
        {
         "type": "code",
         "code": "marks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))",
-        "expected": "[14. 16. 11.]\n[18. 23.]"
+        "expected": "[14. 16. 11.]\n[18. 23.]",
+        "tryIt": true
        }
       ],
       [
@@ -8723,7 +8843,8 @@
        {
         "type": "code",
         "code": "marks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))",
-        "expected": "1\n[5.5        7.66666667]"
+        "expected": "1\n[5.5        7.66666667]",
+        "tryIt": true
        }
       ],
       [
@@ -8949,7 +9070,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
-        "expected": "[12, 15, 9]\n[0, 1, 2]"
+        "expected": "[12, 15, 9]\n[0, 1, 2]",
+        "tryIt": true
        }
       ],
       [
@@ -8960,7 +9082,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
-        "expected": "15"
+        "expected": "15",
+        "tryIt": true
        }
       ],
       [
@@ -8971,7 +9094,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.sum())\nprint(len(cups))",
-        "expected": "36\n3"
+        "expected": "36\n3",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -9176,7 +9300,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
-        "expected": "(2, 2)\n['drink', 'cups']"
+        "expected": "(2, 2)\n['drink', 'cups']",
+        "tryIt": true
        }
       ],
       [
@@ -9187,7 +9312,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
-        "expected": "Series\nDataFrame\n[12, 8]"
+        "expected": "Series\nDataFrame\n[12, 8]",
+        "tryIt": true
        }
       ],
       [
@@ -9198,7 +9324,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea', 'cocoa'], 'cups': [12, 8, 5]})\nprint(sales.head(1).to_dict('records'))\nprint(sales.tail(1).to_dict('records'))\nprint(sales[['cups']].to_numpy().tolist())",
-        "expected": "[{'drink': 'coffee', 'cups': 12}]\n[{'drink': 'cocoa', 'cups': 5}]\n[[12], [8], [5]]"
+        "expected": "[{'drink': 'coffee', 'cups': 12}]\n[{'drink': 'cocoa', 'cups': 5}]\n[[12], [8], [5]]",
+        "tryIt": true
        }
       ],
       [
@@ -9447,7 +9574,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])",
-        "expected": "Binh\nBinh"
+        "expected": "Binh\nBinh",
+        "tryIt": true
        }
       ],
       [
@@ -9458,7 +9586,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())",
-        "expected": "[2, 4]\n[2, 4]"
+        "expected": "[2, 4]\n[2, 4]",
+        "tryIt": true
        }
       ],
       [
@@ -9469,7 +9598,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'orders': [2]}, index=['C01'])\ntry:\n    df.loc['C99']\nexcept KeyError as error:\n    print(type(error).__name__)\ntry:\n    df.iloc[5]\nexcept IndexError as error:\n    print(type(error).__name__)",
-        "expected": "KeyError\nIndexError"
+        "expected": "KeyError\nIndexError",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -9678,7 +9808,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nrevenue = pd.Series([100, 80], index=['A', 'B'])\ncost = pd.Series([30, 60], index=['B', 'A'])\nprofit = revenue - cost\nprint(profit.to_dict())",
-        "expected": "{'A': 40, 'B': 50}"
+        "expected": "{'A': 40, 'B': 50}",
+        "tryIt": true
        }
       ],
       [
@@ -9689,7 +9820,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
-        "expected": "80\n['store', 'sales']"
+        "expected": "80\n['store', 'sales']",
+        "tryIt": true
        }
       ],
       [
@@ -9700,7 +9832,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nmorning = pd.Series([10, 8], index=['A', 'B'])\nevening = pd.Series([5], index=['A'])\nprint((morning + evening).isna().to_dict())\nprint(morning.add(evening, fill_value=0).to_dict())\nprint(evening.reindex(['A', 'B'], fill_value=0).tolist())",
-        "expected": "{'A': False, 'B': True}\n{'A': 15.0, 'B': 8.0}\n[5, 0]"
+        "expected": "{'A': False, 'B': True}\n{'A': 15.0, 'B': 8.0}\n[5, 0]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -9897,7 +10030,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())",
-        "expected": "[False, True, True]\n['B', 'C']"
+        "expected": "[False, True, True]\n['B', 'C']",
+        "tryIt": true
        }
       ],
       [
@@ -9908,7 +10042,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
-        "expected": "[{'order': 'B', 'amount': 150}]"
+        "expected": "[{'order': 'B', 'amount': 150}]",
+        "tryIt": true
        }
       ],
       [
@@ -9919,7 +10054,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM', 'DN'], 'amount': [80, 150, 120]})\nmask = df['city'].isin(['HN', 'DN']) & df['amount'].between(100, 200)\nprint(df.loc[mask, 'city'].tolist())\nprint(df.loc[~df['city'].isin(['HN']), 'city'].tolist())",
-        "expected": "['DN']\n['HCM', 'DN']"
+        "expected": "['DN']\n['HCM', 'DN']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -10148,7 +10284,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())",
-        "expected": "[20, 60]"
+        "expected": "[20, 60]",
+        "tryIt": true
        }
       ],
       [
@@ -10159,7 +10296,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())",
-        "expected": "[20, 50]\n['qty', 'price']"
+        "expected": "[20, 50]\n['qty', 'price']",
+        "tryIt": true
        }
       ],
       [
@@ -10170,7 +10308,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())",
-        "expected": "[10, 20]\n[18]"
+        "expected": "[10, 20]\n[18]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -10373,7 +10512,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())",
-        "expected": "['001', '002']\nInt64\n[False, True]"
+        "expected": "['001', '002']\nInt64\n[False, True]",
+        "tryIt": true
        }
       ],
       [
@@ -10384,7 +10524,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())",
-        "expected": "[False, True, False]\n[12.0, 8.0]"
+        "expected": "[False, True, False]\n[12.0, 8.0]",
+        "tryIt": true
        }
       ],
       [
@@ -10395,7 +10536,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ns = pd.Series([1.0, 2.0])\nconverted = s.astype('Int64')\nprint(str(converted.dtype))\nprint(converted.tolist())",
-        "expected": "Int64\n[1, 2]"
+        "expected": "Int64\n[1, 2]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -10611,7 +10753,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
-        "expected": "[False, True, False]\n1\n21.0"
+        "expected": "[False, True, False]\n1\n21.0",
+        "tryIt": true
        }
       ],
       [
@@ -10622,7 +10765,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
-        "expected": "['A', 'C']\n[10.0, 0.0, 30.0]"
+        "expected": "['A', 'C']\n[10.0, 0.0, 30.0]",
+        "tryIt": true
        }
       ],
       [
@@ -10633,7 +10777,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nunknown = pd.Series([None, None], dtype='Float64')\nprint(unknown.sum())\nprint(pd.isna(unknown.sum(min_count=1)))",
-        "expected": "0.0\nTrue"
+        "expected": "0.0\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -10831,7 +10976,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
-        "expected": "['north', 'north', 'south']\n2"
+        "expected": "['north', 'north', 'south']\n2",
+        "tryIt": true
        }
       ],
       [
@@ -10842,7 +10988,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
-        "expected": "[True, False, False]\n['Coffee', 'unknown', 'Tea']"
+        "expected": "[True, False, False]\n['Coffee', 'unknown', 'Tea']",
+        "tryIt": true
        }
       ],
       [
@@ -10853,7 +11000,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ncodes = pd.Series(['HN-001', 'DN-020'], dtype='string')\nprint(codes.str.split('-').str[0].tolist())\nprint(codes.str.extract(r'-(\\d+)', expand=False).tolist())",
-        "expected": "['HN', 'DN']\n['001', '020']"
+        "expected": "['HN', 'DN']\n['001', '020']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -11061,7 +11209,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
-        "expected": "[False, True, False]\n30"
+        "expected": "[False, True, False]\n30",
+        "tryIt": true
        }
       ],
       [
@@ -11072,7 +11221,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
-        "expected": "[False, True, False]\n[False, False, False]"
+        "expected": "[False, True, False]\n[False, False, False]",
+        "tryIt": true
        }
       ],
       [
@@ -11083,7 +11233,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'version': [1, 2, 1], 'amount': [10, 12, 20]})\nlatest = df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order')\nprint(latest['amount'].tolist())\nprint(latest['order'].is_unique)",
-        "expected": "[12, 20]\nTrue"
+        "expected": "[12, 20]\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -11330,7 +11481,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())",
-        "expected": "['B', 'C', 'A']\n['B', 'C']"
+        "expected": "['B', 'C', 'A']\n['B', 'C']",
+        "tryIt": true
        }
       ],
       [
@@ -11341,7 +11493,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)",
-        "expected": "{'paid': 2, 'cancelled': 1}\n3\n4"
+        "expected": "{'paid': 2, 'cancelled': 1}\n3\n4",
+        "tryIt": true
        }
       ],
       [
@@ -11352,7 +11505,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\namount = pd.Series([10, 20, 30, 100])\nsummary = amount.describe()\nprint(summary['min'], summary['max'])\nprint(amount.mean(), amount.median())",
-        "expected": "10.0 100.0\n40.0 25.0"
+        "expected": "10.0 100.0\n40.0 25.0",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -11547,7 +11701,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())",
-        "expected": "['001', '002']\n[False, True]"
+        "expected": "['001', '002']\n[False, True]",
+        "tryIt": true
        }
       ],
       [
@@ -11558,7 +11713,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))",
-        "expected": "[{'order': 'A', 'amount': 10}]"
+        "expected": "[{'order': 'A', 'amount': 10}]",
+        "tryIt": true
        }
       ],
       [
@@ -11569,7 +11725,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ntext = df.to_csv(index=False)\nback = pd.read_csv(StringIO(text))\nprint(text.splitlines()[0])\nprint(back['amount'].sum())",
-        "expected": "order,amount\n30"
+        "expected": "order,amount\n30",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -11767,7 +11924,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))",
-        "expected": "30\n[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]"
+        "expected": "30\n[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]",
+        "tryIt": true
        }
       ],
       [
@@ -11938,7 +12096,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
-        "expected": "{'A': 30, 'B': 40}"
+        "expected": "{'A': 30, 'B': 40}",
+        "tryIt": true
        }
       ],
       [
@@ -11949,7 +12108,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nreport = df.groupby('store', as_index=False).agg(revenue=('amount', 'sum'), orders=('amount', 'size'))\nprint(report.to_dict('records'))",
-        "expected": "[{'store': 'A', 'revenue': 30, 'orders': 2}, {'store': 'B', 'revenue': 40, 'orders': 1}]"
+        "expected": "[{'store': 'A', 'revenue': 30, 'orders': 2}, {'store': 'B', 'revenue': 40, 'orders': 1}]",
+        "tryIt": true
        }
       ],
       [
@@ -11960,7 +12120,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', None], 'amount': [10.0, None, 20.0]})\ngrouped = df.groupby('store', dropna=False)['amount']\nprint(grouped.size().tolist())\nprint(grouped.count().tolist())\nprint(grouped.sum().sum())",
-        "expected": "[2, 1]\n[1, 1]\n30.0"
+        "expected": "[2, 1]\n[1, 1]\n30.0",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -12175,7 +12336,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())",
-        "expected": "[40, 40, 20]\n[0.25, 0.75, 1.0]"
+        "expected": "[40, 40, 20]\n[0.25, 0.75, 1.0]",
+        "tryIt": true
        }
       ],
       [
@@ -12186,7 +12348,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())",
-        "expected": "[2.0, 1.0, 1.0]\n[1, 2, 1]"
+        "expected": "[2.0, 1.0, 1.0]\n[1, 2, 1]",
+        "tryIt": true
        }
       ],
       [
@@ -12197,7 +12360,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nkept = df.groupby('store').filter(lambda group: len(group) >= 2)\nprint(kept['store'].tolist())",
-        "expected": "['A', 'A']"
+        "expected": "['A', 'A']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -12402,7 +12566,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
-        "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]"
+        "expected": "[{'order': 'O1', 'name': 'An'}, {'order': 'O2', 'name': 'Binh'}]",
+        "tryIt": true
        }
       ],
       [
@@ -12413,7 +12578,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
-        "expected": "[2]\n[True, False]\n[1, 2, 3]"
+        "expected": "[2]\n[True, False]\n[1, 2, 3]",
+        "tryIt": true
        }
       ],
       [
@@ -12424,7 +12590,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())",
-        "expected": "['DN', 'HN']"
+        "expected": "['DN', 'HN']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -12646,7 +12813,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())",
-        "expected": "4\n60"
+        "expected": "4\n60",
+        "tryIt": true
        }
       ],
       [
@@ -12657,7 +12825,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)",
-        "expected": "MergeError"
+        "expected": "MergeError",
+        "tryIt": true
        }
       ],
       [
@@ -12668,7 +12837,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1], 'city': ['HN']})\njoined = orders.merge(customers, on='customer_id', how='left', validate='many_to_one', indicator=True)\nprint(joined['_merge'].astype('string').tolist())\nprint(len(joined) == len(orders))",
-        "expected": "['both', 'left_only']\nTrue"
+        "expected": "['both', 'left_only']\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -12872,7 +13042,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())",
-        "expected": "[{'order': 'A', 'amount': 10}, {'order': 'B', 'amount': 20}]\n[0, 1]"
+        "expected": "[{'order': 'A', 'amount': 10}, {'order': 'B', 'amount': 20}]\n[0, 1]",
+        "tryIt": true
        }
       ],
       [
@@ -12883,7 +13054,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())",
-        "expected": "['amount', 'note', 'city']\n['amount']"
+        "expected": "['amount', 'note', 'city']\n['amount']",
+        "tryIt": true
        }
       ],
       [
@@ -12894,7 +13066,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nsales = pd.DataFrame({'revenue': [10, 20]}, index=['A', 'B'])\ntargets = pd.DataFrame({'target': [30, 15]}, index=['B', 'A'])\ncombined = pd.concat([sales, targets], axis=1)\nprint(combined['target'].tolist())",
-        "expected": "[15, 30]"
+        "expected": "[15, 30]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -13113,7 +13286,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B', 'B'], 'month': ['Jan', 'Feb', 'Jan', 'Feb'], 'revenue': [10, 20, 30, 40]})\nwide = df.pivot(index='store', columns='month', values='revenue')\nprint(wide.loc['A', 'Feb'])\nprint(wide.loc['B', 'Jan'])",
-        "expected": "20\n30"
+        "expected": "20\n30",
+        "tryIt": true
        }
       ],
       [
@@ -13124,7 +13298,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nwide = pd.DataFrame({'store': ['A', 'B'], 'Jan': [10, 30], 'Feb': [20, 40]})\nlong = wide.melt(id_vars='store', var_name='month', value_name='revenue')\nprint(long.to_dict('records'))",
-        "expected": "[{'store': 'A', 'month': 'Jan', 'revenue': 10}, {'store': 'B', 'month': 'Jan', 'revenue': 30}, {'store': 'A', 'month': 'Feb', 'revenue': 20}, {'store': 'B', 'month': 'Feb', 'revenue': 40}]"
+        "expected": "[{'store': 'A', 'month': 'Jan', 'revenue': 10}, {'store': 'B', 'month': 'Jan', 'revenue': 30}, {'store': 'A', 'month': 'Feb', 'revenue': 20}, {'store': 'B', 'month': 'Feb', 'revenue': 40}]",
+        "tryIt": true
        }
       ],
       [
@@ -13135,7 +13310,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A'], 'month': ['Jan', 'Jan'], 'revenue': [10, 20]})\ntry:\n    df.pivot(index='store', columns='month', values='revenue')\nexcept ValueError as error:\n    print(type(error).__name__)",
-        "expected": "ValueError"
+        "expected": "ValueError",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -13358,7 +13534,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
-        "expected": "30\n0"
+        "expected": "30\n0",
+        "tryIt": true
        }
       ],
       [
@@ -13369,7 +13546,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
-        "expected": "1\n0.5"
+        "expected": "1\n0.5",
+        "tryIt": true
        }
       ],
       [
@@ -13380,7 +13558,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nwide = pd.DataFrame({'Jan': [10, 30], 'Feb': [20, 40]}, index=['A', 'B'])\nlong = wide.stack()\nprint(long.loc[('A', 'Feb')])\nprint(long.unstack().equals(wide))",
-        "expected": "20\nTrue"
+        "expected": "20\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -13608,7 +13787,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
-        "expected": "['2026-01-05', '2026-01-07']\n[1, 1]"
+        "expected": "['2026-01-05', '2026-01-07']\n[1, 1]",
+        "tryIt": true
        }
       ],
       [
@@ -13619,7 +13799,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
-        "expected": "[False, True]\n[0]"
+        "expected": "[False, True]\n[0]",
+        "tryIt": true
        }
       ],
       [
@@ -13630,7 +13811,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'ordered': ['2026-01-01', '2026-01-03'], 'delivered': ['2026-01-03', '2026-01-04']})\ndays = pd.to_datetime(df['delivered']) - pd.to_datetime(df['ordered'])\nprint(days.dt.days.tolist())\nprint((pd.Timestamp('2026-01-01') + pd.Timedelta(days=2)).strftime('%Y-%m-%d'))",
-        "expected": "[2, 1]\n2026-01-03"
+        "expected": "[2, 1]\n2026-01-03",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -13823,7 +14005,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())",
-        "expected": "['2026-01-01', '2026-02-01']\n[30, 40]"
+        "expected": "['2026-01-01', '2026-02-01']\n[30, 40]",
+        "tryIt": true
        }
       ],
       [
@@ -13834,7 +14017,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())",
-        "expected": "[False, True, False]\n[10.0, 0.0, 30.0]"
+        "expected": "[False, True, False]\n[10.0, 0.0, 30.0]",
+        "tryIt": true
        }
       ],
       [
@@ -13845,7 +14029,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndates = pd.Series(pd.to_datetime(['2026-01-05', '2026-01-20', '2026-02-02']))\nmonths = dates.dt.to_period('M')\nprint(months.astype(str).tolist())\nprint(months.nunique())",
-        "expected": "['2026-01', '2026-01', '2026-02']\n2"
+        "expected": "['2026-01', '2026-01', '2026-02']\n2",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -14054,7 +14239,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nutc = pd.to_datetime(['2026-01-01 00:00:00'], utc=True)\nlocal = utc.tz_convert('Asia/Ho_Chi_Minh')\nprint(local.strftime('%Y-%m-%d %H:%M %z').tolist())",
-        "expected": "['2026-01-01 07:00 +0700']"
+        "expected": "['2026-01-01 07:00 +0700']",
+        "tryIt": true
        }
       ],
       [
@@ -14065,7 +14251,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nwall_time = pd.DatetimeIndex(['2026-01-01 07:00'])\nlocal = wall_time.tz_localize('Asia/Ho_Chi_Minh')\nprint(local.tz_convert('UTC').strftime('%Y-%m-%d %H:%M %z').tolist())",
-        "expected": "['2026-01-01 00:00 +0000']"
+        "expected": "['2026-01-01 00:00 +0000']",
+        "tryIt": true
        }
       ],
       [
@@ -14076,7 +14263,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ntimes = pd.to_datetime(pd.Series(['2026-01-01T23:00:00Z', '2026-01-02T02:00:00Z']), utc=True)\nprint(times.dt.strftime('%Y-%m-%d').tolist())\nprint(times.dt.tz_convert('Asia/Ho_Chi_Minh').dt.strftime('%Y-%m-%d').tolist())",
-        "expected": "['2026-01-01', '2026-01-02']\n['2026-01-02', '2026-01-02']"
+        "expected": "['2026-01-01', '2026-01-02']\n['2026-01-02', '2026-01-02']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -14260,7 +14448,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())",
-        "expected": "[True, True, False, False]\n[20.0, 30.0]"
+        "expected": "[True, True, False, False]\n[20.0, 30.0]",
+        "tryIt": true
        }
       ],
       [
@@ -14271,7 +14460,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
-        "expected": "[100.0, 120.0]\n[20.0, -30.0]\n[0.2, -0.25]"
+        "expected": "[100.0, 120.0]\n[20.0, -30.0]\n[0.2, -0.25]",
+        "tryIt": true
        }
       ],
       [
@@ -14282,7 +14472,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.ewm(alpha=0.5, adjust=False).mean().tolist())\nprint(s.rolling(2).mean().shift(1).dropna().tolist())",
-        "expected": "[10.0, 15.0, 22.5]\n[15.0]"
+        "expected": "[10.0, 15.0, 22.5]\n[15.0]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -14478,7 +14669,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())",
-        "expected": "['paid', 'cancelled', 'unknown']"
+        "expected": "['paid', 'cancelled', 'unknown']",
+        "tryIt": true
        }
       ],
       [
@@ -14489,7 +14681,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())",
-        "expected": "[18.0, 60.0]\n[0.0, 60.0]"
+        "expected": "[18.0, 60.0]\n[0.0, 60.0]",
+        "tryIt": true
        }
       ],
       [
@@ -14500,7 +14693,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndef row_total(row):\n    return row['qty'] * row['price']\nprint(df.apply(row_total, axis=1).tolist())\nprint((df['qty'] * df['price']).tolist())",
-        "expected": "[20, 60]\n[20, 60]"
+        "expected": "[20, 60]\n[20, 60]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -14699,7 +14893,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
-        "expected": "['low', 'medium', 'high']\n['low', 'medium', 'high']"
+        "expected": "['low', 'medium', 'high']\n['low', 'medium', 'high']",
+        "tryIt": true
        }
       ],
       [
@@ -14710,7 +14905,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
-        "expected": "['small', 'medium', 'large']"
+        "expected": "['small', 'medium', 'large']",
+        "tryIt": true
        }
       ],
       [
@@ -14721,7 +14917,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())",
-        "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}"
+        "expected": "['lower', 'lower', 'upper', 'upper']\n{'A': 5}",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -14912,7 +15109,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
-        "expected": "20\n['store', 'month']"
+        "expected": "20\n['store', 'month']",
+        "tryIt": true
        }
       ],
       [
@@ -14923,7 +15121,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
-        "expected": "{'A': 10, 'B': 30}\n['store', 'month', 'sales']"
+        "expected": "{'A': 10, 'B': 30}\n['store', 'month', 'sales']",
+        "tryIt": true
        }
       ],
       [
@@ -14934,7 +15133,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\ns = df.set_index(['store', 'month'])['sales']\nwide = s.unstack('month')\nprint(wide.loc['A', 'Feb'])\nprint(pd.isna(wide.loc['B', 'Feb']))",
-        "expected": "20.0\nTrue"
+        "expected": "20.0\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -15157,7 +15357,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
-        "expected": "['store', 'amount']\n30"
+        "expected": "['store', 'amount']\n30",
+        "tryIt": true
        }
       ],
       [
@@ -15168,7 +15369,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
-        "expected": "True\nTrue"
+        "expected": "True\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -15179,7 +15381,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)",
-        "expected": "100 4\n25.0"
+        "expected": "100 4\n25.0",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -15363,7 +15566,8 @@
        {
         "type": "code",
         "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    df = pd.read_sql_query('SELECT store, amount FROM sales', connection)\n    print(df['amount'].sum())",
-        "expected": "70"
+        "expected": "70",
+        "tryIt": true
        }
       ],
       [
@@ -15374,7 +15578,8 @@
        {
         "type": "code",
         "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'B'], 'amount': [10, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT amount FROM sales WHERE amount > ?'\n    result = pd.read_sql_query(sql, connection, params=(20,))\n    print(result['amount'].tolist())",
-        "expected": "[40]"
+        "expected": "[40]",
+        "tryIt": true
        }
       ],
       [
@@ -15385,7 +15590,8 @@
        {
         "type": "code",
         "code": "import sqlite3\nimport pandas as pd\nwith sqlite3.connect(':memory:') as connection:\n    pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]}).to_sql('sales', connection, index=False)\n    sql = 'SELECT store, SUM(amount) AS revenue FROM sales GROUP BY store ORDER BY store'\n    print(pd.read_sql_query(sql, connection).to_dict('records'))",
-        "expected": "[{'store': 'A', 'revenue': 30}, {'store': 'B', 'revenue': 40}]"
+        "expected": "[{'store': 'A', 'revenue': 30}, {'store': 'B', 'revenue': 40}]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -15590,7 +15796,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())",
-        "expected": "['A', 'B']\n[False, True]"
+        "expected": "['A', 'B']\n[False, True]",
+        "tryIt": true
        }
       ],
       [
@@ -15601,7 +15808,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
-        "expected": "Passed: 2 orders, total 30"
+        "expected": "Passed: 2 orders, total 30",
+        "tryIt": true
        }
       ],
       [
@@ -15612,7 +15820,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndef normalize(df):\n    return df.assign(store=df['store'].str.strip().str.upper())\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': [10, 20]})\nclean = raw.pipe(normalize).sort_values('store').reset_index(drop=True)\nprint(clean.to_dict('records'))\nprint(normalize(clean).equals(clean))",
-        "expected": "[{'store': 'A', 'amount': 10}, {'store': 'B', 'amount': 20}]\nTrue"
+        "expected": "[{'store': 'A', 'amount': 10}, {'store': 'B', 'amount': 20}]\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -15828,7 +16037,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
-        "expected": "{'shop': {'count': 2, 'mean': 60.0, 'median': 60.0}, 'web': {'count': 2, 'mean': 20.0, 'median': 20.0}}"
+        "expected": "{'shop': {'count': 2, 'mean': 60.0, 'median': 60.0}, 'web': {'count': 2, 'mean': 20.0, 'median': 20.0}}",
+        "tryIt": true
        }
       ],
       [
@@ -15839,7 +16049,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
-        "expected": "11.0 13.0\n[100]"
+        "expected": "11.0 13.0\n[100]",
+        "tryIt": true
        }
       ],
       [
@@ -15850,7 +16061,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'ad_spend': [1, 2, 3, 4], 'sales': [10, 20, 30, 40]})\nprint(round(df['ad_spend'].corr(df['sales']), 2))\nprint(df[['ad_spend', 'sales']].dropna().shape[0])",
-        "expected": "1.0\n4"
+        "expected": "1.0\n4",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -16073,7 +16285,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())",
-        "expected": "4 3 60"
+        "expected": "4 3 60",
+        "tryIt": true
        }
       ],
       [
@@ -16084,7 +16297,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
-        "expected": "['O3']\n60"
+        "expected": "['O3']\n60",
+        "tryIt": true
        }
       ],
       [
@@ -16095,7 +16309,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())",
-        "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30"
+        "expected": "month,region,amount\n2026-01,North,10\n2026-01,South,20\n2026-02,Unknown,30",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -16358,7 +16573,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()",
-        "expected": "36"
+        "expected": "36",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16374,7 +16590,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()",
-        "expected": "12"
+        "expected": "12",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16390,7 +16607,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [2, 2, 3, 5, 6]\ncounts, edges, bars = ax.hist(wait, bins=[0, 4, 8], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Waiting time\")\nprint(counts.astype(int).tolist())\nplt.show()",
-        "expected": "[3, 2]"
+        "expected": "[3, 2]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16602,7 +16820,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()",
-        "expected": "1 1"
+        "expected": "1 1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16618,7 +16837,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()",
-        "expected": "(1, 1, 0, 0)"
+        "expected": "(1, 1, 0, 0)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16628,7 +16848,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_axes([0.15, 0.2, 0.8, 0.65])\nax.scatter([1, 2, 3], [12, 15, 9])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Manually positioned Axes\")\nprint([round(float(v), 2) for v in ax.get_position().bounds])\nplt.show()",
-        "expected": "[0.15, 0.2, 0.8, 0.65]"
+        "expected": "[0.15, 0.2, 0.8, 0.65]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16870,7 +17091,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()",
-        "expected": "10"
+        "expected": "10",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16886,7 +17108,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -16896,7 +17119,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17121,7 +17345,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()",
-        "expected": "60"
+        "expected": "60",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17137,7 +17362,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
-        "expected": "Coffee"
+        "expected": "Coffee",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17147,7 +17373,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.arange(2)\nax.bar(x - 0.2, [30, 18], width=0.4, label=\"Week 1\")\nax.bar(x + 0.2, [33, 21], width=0.4, label=\"Week 2\")\nax.set_xticks(x, [\"Coffee\", \"Tea\"])\nax.set(ylabel=\"Cups\", title=\"Compare the same drink across weeks\")\nax.legend()\nprint(33 - 30)\nplt.show()",
-        "expected": "3"
+        "expected": "3",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17374,7 +17601,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()",
-        "expected": "4"
+        "expected": "4",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17390,7 +17618,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
-        "expected": "4.0"
+        "expected": "4.0",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17400,7 +17629,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2], [8, 12], marker=\"o\", color=\"#0072B2\", label=\"Bike\")\nax.scatter([2, 3], [10, 11], marker=\"^\", color=\"#D55E00\", label=\"Motorbike\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Separate delivery methods\")\nax.legend()\nprint(len(ax.collections))\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17646,7 +17876,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
-        "expected": "[3, 2, 1]"
+        "expected": "[3, 2, 1]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17662,7 +17893,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
-        "expected": "[4, 2]"
+        "expected": "[4, 2]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17672,7 +17904,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ndensity, edges, bars = ax.hist([1, 2, 2, 4, 5, 8], bins=[0, 3, 6, 9], density=True, edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Density\", title=\"Area, rather than height, sums to one\")\nprint(round(float(np.sum(density * np.diff(edges))), 6))\nplt.show()",
-        "expected": "1.0"
+        "expected": "1.0",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17888,7 +18121,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()",
-        "expected": "4"
+        "expected": "4",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17904,7 +18138,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()",
-        "expected": "10"
+        "expected": "10",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -17920,7 +18155,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()",
-        "expected": "6"
+        "expected": "6",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18123,7 +18359,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5, 3], [4, 1, 6]])\nim = ax.imshow(counts, cmap=\"viridis\", vmin=0, vmax=6, aspect=\"auto\")\nax.set_xticks([0, 1, 2], [\"Morning\", \"Noon\", \"Evening\"])\nax.set_yticks([0, 1], [\"Store A\", \"Store B\"])\nax.set_title(\"Orders by store and time\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(counts.shape)\nplt.show()",
-        "expected": "(2, 3)"
+        "expected": "(2, 3)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18139,7 +18376,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5], [4, 1]])\nim = ax.imshow(counts, cmap=\"Blues\", vmin=0, vmax=6)\nfor (row, col), value in np.ndenumerate(counts):\n    ax.text(col, row, str(value), ha=\"center\", va=\"center\", color=\"black\")\nax.set(xticks=[0, 1], xticklabels=[\"Morning\", \"Noon\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Read the count in each cell\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(int(counts.sum()))\nplt.show()",
-        "expected": "12"
+        "expected": "12",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18149,7 +18387,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nchange = np.array([[-2, 1], [0, 3]])\nim = ax.imshow(change, cmap=\"RdBu\", vmin=-3, vmax=3)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Change relative to last week\")\nfig.colorbar(im, ax=ax, label=\"Change (orders)\", orientation=\"horizontal\")\nprint(int(change.min()), int(change.max()))\nplt.show()",
-        "expected": "-2 3"
+        "expected": "-2 3",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18379,7 +18618,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()",
-        "expected": "Revenue (million VND)"
+        "expected": "Revenue (million VND)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18395,7 +18635,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()",
-        "expected": "1"
+        "expected": "1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18411,7 +18652,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.axhline(9, linestyle=\"--\", color=\"gray\", label=\"Target: 9\")\nax.axvline(2, linestyle=\":\", color=\"black\", label=\"Campaign day\")\nax.text(1.05, 10.5, r\"$\\sigma=2$\", fontsize=12)\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Targets and annotations\", ylim=(0, 12))\nax.legend(loc=\"lower left\")\nprint(len(ax.lines))\nplt.show()",
-        "expected": "3"
+        "expected": "3",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18603,7 +18845,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()",
-        "expected": "['o', 's']"
+        "expected": "['o', 's']",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18619,7 +18862,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
-        "expected": "(0.0, 4.0)"
+        "expected": "(0.0, 4.0)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18635,7 +18879,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nlines = ax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Coffee\")\nplt.setp(lines, color=\"#0072B2\", linewidth=2.5)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Coffee: 8 to 10, then down to 7\")\nax.tick_params(labelsize=11)\nprint(\"Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.\")\nplt.show()",
-        "expected": "Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups."
+        "expected": "Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18851,7 +19096,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()",
-        "expected": "1.02"
+        "expected": "1.02",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18867,7 +19113,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [1, 10, 100], marker=\"o\")\nax.set_yscale(\"log\")\nax.set(xlabel=\"Stage\", ylabel=\"Records (log scale)\", title=\"Equal distances represent equal ratios\")\nax.set_xticks([1, 2, 3], [\"Start\", \"Middle\", \"End\"])\nprint(ax.get_yscale())\nplt.show()",
-        "expected": "log"
+        "expected": "log",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -18883,7 +19130,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([0, 1, 2], [0, 1, 2], marker=\"o\")\nax.set_aspect(\"equal\", adjustable=\"box\")\nax.margins(x=0.1, y=0.1)\nax.spines[\"top\"].set_visible(False)\nax.spines[\"bottom\"].set_position((\"outward\", 5))\nax.tick_params(axis=\"y\", direction=\"inout\", length=8)\nax.set(xlabel=\"x (km)\", ylabel=\"y (km)\", title=\"Equal units on both axes\")\nprint(ax.spines[\"top\"].get_visible())\nplt.show()",
-        "expected": "False"
+        "expected": "False",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19096,7 +19344,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), sharey=True, layout=\"constrained\")\nfor ax, name, values in zip(axes, [\"Store A\", \"Store B\"], [[8, 10, 7], [4, 6, 5]]):\n    ax.plot([1, 2, 3], values, marker=\"o\")\n    ax.set(title=name, xlabel=\"Day\", ylim=(0, 12))\naxes[0].set_ylabel(\"Cups\")\nprint(len(fig.axes))\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19112,7 +19361,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=(7, 3))\nleft = fig.add_subplot(121)\nright = fig.add_subplot(122)\nleft.bar([\"A\", \"B\"], [8, 10])\nright.hist([1, 2, 2, 4], bins=[0, 3, 6])\nleft.set(title=\"Sales\", ylabel=\"Cups\")\nright.set(title=\"Wait\", xlabel=\"Minutes\", ylabel=\"Orders\")\nfig.subplots_adjust(wspace=0.55, bottom=0.2)\nprint(left.get_subplotspec().num1, right.get_subplotspec().num1)\nplt.show()",
-        "expected": "0 1"
+        "expected": "0 1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19122,7 +19372,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig = plt.figure(figsize=plt.figaspect(0.5))\nax = fig.add_subplot(111)\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A wide figure\")\nfig.tight_layout()\nw, h = fig.get_size_inches()\nprint(round(float(h / w), 1))\nplt.show()",
-        "expected": "0.5"
+        "expected": "0.5",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19361,7 +19612,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()",
-        "expected": "8 12"
+        "expected": "8 12",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19377,7 +19629,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()",
-        "expected": "1.63 0.82"
+        "expected": "1.63 0.82",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19393,7 +19646,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\nmean = [10, 12, 11]\nax.plot(days, mean, marker=\"o\", label=\"Forecast\")\nax.fill_between(days, [8, 9, 9], [12, 15, 13], alpha=0.25, label=\"Illustrative interval\")\nax.set(xlabel=\"Day\", ylabel=\"Orders\", title=\"Label what the shaded interval means\")\nax.legend()\nprint([12-8, 15-9, 13-9])\nplt.show()",
-        "expected": "[4, 6, 4]"
+        "expected": "[4, 6, 4]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19600,7 +19854,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)",
-        "expected": "(900, 450)"
+        "expected": "(900, 450)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19616,7 +19871,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19632,7 +19888,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2], [8, 10])\nplt.sca(ax)\nplt.cla()\nprint(len(ax.lines))\nax.bar([\"A\", \"B\"], [8, 10])\nax.set(ylabel=\"Cups\", title=\"Axes reused after clearing\")\nfig.canvas.draw()\nplt.clf()\nax = fig.add_subplot(111)\nax.plot([1, 2], [8, 10], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Figure reused after clearing\")\nprint(len(fig.axes))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-3.png\", dpi=130)\nplt.close(fig)",
-        "expected": "0\n1"
+        "expected": "0\n1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19820,7 +20077,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
-        "expected": "{'Coffee': 50, 'Tea': 12}"
+        "expected": "{'Coffee': 50, 'Tea': 12}",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19836,7 +20094,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()",
-        "expected": "[8, 10, 7]"
+        "expected": "[8, 10, 7]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -19852,7 +20111,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nwait = pd.Series([2.0, None, 5.0], index=[1, 2, 3], name=\"Wait\")\nwait.plot(ax=ax, marker=\"o\")\nax.set(xlabel=\"Order\", ylabel=\"Wait (minutes)\", title=\"One missing observation\")\nprint(int(wait.count()), int(wait.isna().sum()))\nplt.show()",
-        "expected": "2 1"
+        "expected": "2 1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21262,7 +21522,8 @@
        {
         "type": "code",
         "code": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
-        "expected": "(18, 2)\n(23, 3)"
+        "expected": "(18, 2)\n(23, 3)",
+        "tryIt": true
        }
       ],
       [
@@ -21423,7 +21684,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()",
-        "expected": "[2.0, 10.0]"
+        "expected": "[2.0, 10.0]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21439,7 +21701,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21455,7 +21718,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"day\":[1, 2, 3], \"sales\":[100, 110, 90]})\nax.plot(daily[\"day\"], daily[\"sales\"], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Three days do not establish annual growth\")\nfirst_to_last = (daily[\"sales\"].iloc[-1] / daily[\"sales\"].iloc[0] - 1) * 100\nprint(round(float(first_to_last), 1))\nplt.show()",
-        "expected": "-10.0"
+        "expected": "-10.0",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21675,7 +21939,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Reveal observations one at a time\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nupdate(1)\nprint(list(line.get_ydata()))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-1.png\", dpi=130)\nplt.close(fig)",
-        "expected": "[8, 10]"
+        "expected": "[8, 10]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21691,7 +21956,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom matplotlib.animation import FuncAnimation\nfrom pathlib import Path\nfrom tempfile import gettempdir\nline, = ax.plot([], [], marker=\"o\")\nax.set(xlim=(1, 3), ylim=(0, 12), xlabel=\"Day\", ylabel=\"Cups\", title=\"Three-frame teaching animation\")\nx, y = [1, 2, 3], [8, 10, 7]\ndef update(frame):\n    line.set_data(x[:frame+1], y[:frame+1])\n    return (line,)\nani = FuncAnimation(fig, update, frames=3, interval=600, repeat=True)\nhtml = ani.to_jshtml()\nhtml += '<style>.anim-buttons{display:flex;flex-wrap:wrap;gap:4px}.anim-buttons button{width:auto;min-height:28px}.anim-buttons button::after{content:attr(title);font:12px sans-serif;padding:3px}.anim-buttons .fa{display:none}</style>'\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\n(out / \"VZ25-motion.html\").write_text(html, encoding=\"utf-8\")\nupdate(2)\nprint(\"<script\" in html)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-2.png\", dpi=130)\nplt.close(fig)",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21707,7 +21973,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Coffee\"], [0])\nax.set(ylim=(0, 12), ylabel=\"Cups\", title=\"Stable axes while the value changes\")\nvalues = [8, 10, 7]\ndef update(frame):\n    bars[0].set_height(values[frame])\n    return (bars[0],)\nupdate(2)\nprint(bars[0].get_height())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ25-3.png\", dpi=130)\nplt.close(fig)",
-        "expected": "7"
+        "expected": "7",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21928,7 +22195,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"qty\":[2, 3, 1], \"price\":[20, 12, 20]})\nvalid = orders.loc[orders[\"qty\"].ge(0) & orders[\"price\"].ge(0)].copy()\nvalid[\"revenue\"] = valid[\"qty\"] * valid[\"price\"]\ntotals = valid.groupby(\"drink\")[\"revenue\"].sum().sort_values()\ntotals.plot.barh(ax=ax)\nax.set(xlabel=\"Revenue (thousand VND)\", ylabel=\"Drink\", title=\"Coffee contributes more revenue in this sample\")\nprint(totals.to_dict())\nplt.show()",
-        "expected": "{'Tea': 36, 'Coffee': 60}"
+        "expected": "{'Tea': 36, 'Coffee': 60}",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -21944,7 +22212,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ntotals = pd.Series({\"Coffee\":60, \"Tea\":36})\nshare = totals / totals.sum() * 100\nbars = ax.bar(share.index, share.values)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Revenue share (%)\", title=\"Coffee accounts for 62.5% of sample revenue\", ylim=(0, 100))\nprint(round(float(share[\"Coffee\"]), 1))\nplt.show()",
-        "expected": "62.5"
+        "expected": "62.5",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22186,7 +22455,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"All drinks\"], [60], label=\"Coffee\")\nax.bar([\"All drinks\"], [40], bottom=[60], label=\"Tea\")\nax.set(ylabel=\"Share (%)\", title=\"Parts of the same total\", ylim=(0, 100))\nax.legend()\nprint(60 + 40)\nplt.show()",
-        "expected": "100"
+        "expected": "100",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22202,7 +22472,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwedges, labels, values = ax.pie([60, 40], labels=[\"Coffee\", \"Tea\"], autopct=\"%.0f%%\", colors=[\"#0072B2\", \"#D55E00\"])\nax.set_title(\"Only two mutually exclusive shares\")\nprint([text.get_text() for text in values])\nplt.show()",
-        "expected": "['60%', '40%']"
+        "expected": "['60%', '40%']",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22218,7 +22489,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.fill([0, 2, 2, 0], [0, 0, 1, 1], color=\"lightblue\", alpha=0.6, label=\"Rectangle\")\nax.plot([0, 2], [0, 1], color=\"black\", label=\"Boundary\")\nax.set(xlabel=\"Width (m)\", ylabel=\"Height (m)\", title=\"A polygon with a known area\", xlim=(-0.2, 2.2), ylim=(-0.2, 1.2))\nax.legend()\nprint(2 * 1)\nplt.show()",
-        "expected": "2"
+        "expected": "2",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22435,7 +22707,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
-        "expected": "(2, 2)"
+        "expected": "(2, 2)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22451,7 +22724,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()",
-        "expected": "[1.0, 2.0, 4.0]"
+        "expected": "[1.0, 2.0, 4.0]",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22467,7 +22741,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, x)\nZ = X**2 + Y**2\nim = ax.contourf(X, Y, Z, levels=[0, 1, 2, 4, 8], cmap=\"viridis\")\nfig.colorbar(im, ax=ax, label=\"x squared + y squared\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Filled contour bands\", aspect=\"equal\")\nprint(round(float(Z.min()), 1), round(float(Z.max()), 1))\nplt.show()",
-        "expected": "0.0 8.0"
+        "expected": "0.0 8.0",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22721,7 +22996,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
-        "expected": "(2, 1)"
+        "expected": "(2, 1)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22737,7 +23013,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
-        "expected": "4"
+        "expected": "4",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22753,7 +23030,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncoords = np.linspace(-2, 2, 15)\nX, Y = np.meshgrid(coords, coords)\nU, V = -Y, X\nspeed = np.hypot(U, V)\nstream = ax.streamplot(coords, coords, U, V, color=speed, cmap=\"viridis\", density=0.8)\nfig.colorbar(stream.lines, ax=ax, label=\"Speed (arbitrary units)\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"A synthetic rotating vector field\", aspect=\"equal\")\nprint(U.shape)\nplt.show()",
-        "expected": "(15, 15)"
+        "expected": "(15, 15)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -22989,7 +23267,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)",
-        "expected": "(2.0, 10.0)"
+        "expected": "(2.0, 10.0)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -23005,7 +23284,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)",
-        "expected": "Day 2: 10 cups"
+        "expected": "Day 2: 10 cups",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -23021,7 +23301,8 @@
        {
         "type": "code",
         "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)",
-        "expected": "1 1"
+        "expected": "1 1",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -23275,7 +23556,8 @@
        {
         "type": "code",
         "code": "from datetime import datetime, timedelta\nday = datetime.strptime(\"2024-02-28\", \"%Y-%m-%d\")\nprint((day + timedelta(days=2)).strftime(\"%Y-%m-%d\"))",
-        "expected": "2024-03-01"
+        "expected": "2024-03-01",
+        "tryIt": true
        }
       ],
       [
@@ -23286,7 +23568,8 @@
        {
         "type": "code",
         "code": "from datetime import datetime, timedelta\nend = datetime(year=2024, month=3, day=29)\nstart = end - timedelta(weeks=4)\nprint(start.strftime(\"%Y-%m-%d\"))\nprint((end - start).days)",
-        "expected": "2024-03-01\n28"
+        "expected": "2024-03-01\n28",
+        "tryIt": true
        }
       ],
       [
@@ -23297,7 +23580,8 @@
        {
         "type": "code",
         "code": "from datetime import datetime\ntry:\n    datetime.strptime(\"2023-02-29\", \"%Y-%m-%d\")\nexcept ValueError:\n    print(\"Ngay khong hop le\")\nprint(isinstance(datetime.now(), datetime))",
-        "expected": "Ngay khong hop le\nTrue"
+        "expected": "Ngay khong hop le\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -23468,7 +23752,8 @@
        {
         "type": "code",
         "code": "import random\nrng = random.Random(7)\nsample = rng.choice([\"A01\", \"A02\", \"A03\"])\nprint(sample in [\"A01\", \"A02\", \"A03\"])\nprint(0 <= rng.random() < 1)",
-        "expected": "True\nTrue"
+        "expected": "True\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -23479,7 +23764,8 @@
        {
         "type": "code",
         "code": "import random\nrng = random.Random(12)\nvalues = [rng.randint(1, 3) for _ in range(5)]\nprint(len(values))\nprint(all(1 <= x <= 3 for x in values))",
-        "expected": "5\nTrue"
+        "expected": "5\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -23490,7 +23776,8 @@
        {
         "type": "code",
         "code": "from collections import Counter\norders = [\"tea\", \"coffee\", \"tea\", \"water\", \"tea\"]\ncounts = Counter(orders)\nprint(counts[\"tea\"], counts[\"milk\"])\nprint(counts.most_common(2))",
-        "expected": "3 0\n[('tea', 3), ('coffee', 1)]"
+        "expected": "3 0\n[('tea', 3), ('coffee', 1)]",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -23678,7 +23965,8 @@
        {
         "type": "code",
         "code": "import re\nmatch = re.search(r\"\\bS\\d{3}\\b\", \"Paid by S012 today\")\nprint(match.group(0) if match else None)",
-        "expected": "S012"
+        "expected": "S012",
+        "tryIt": true
        }
       ],
       [
@@ -23689,7 +23977,8 @@
        {
         "type": "code",
         "code": "import re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)",
-        "expected": "An paid today"
+        "expected": "An paid today",
+        "tryIt": true
        }
       ],
       [
@@ -23700,7 +23989,8 @@
        {
         "type": "code",
         "code": "import re\nprint(re.search(r\"\\bS\\d{3}\\b\", \"S12\") is None)\nprint(re.search(re.escape(\"a.b\"), \"a-b\") is None)\nprint(re.search(r\"\\d{4}-\\d{2}-\\d{2}\", \"2024-02-31\") is not None)",
-        "expected": "True\nTrue\nTrue"
+        "expected": "True\nTrue\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -24024,7 +24314,8 @@
        {
         "type": "code",
         "code": "class Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())",
-        "expected": "S01: An"
+        "expected": "S01: An",
+        "tryIt": true
        }
       ],
       [
@@ -24035,7 +24326,8 @@
        {
         "type": "code",
         "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)",
-        "expected": "Anh Binh"
+        "expected": "Anh Binh",
+        "tryIt": true
        }
       ],
       [
@@ -24046,7 +24338,8 @@
        {
         "type": "code",
         "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)",
-        "expected": "Anh\nTrue"
+        "expected": "Anh\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -24248,7 +24541,8 @@
        {
         "type": "code",
         "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))",
-        "expected": "Diem 8"
+        "expected": "Diem 8",
+        "tryIt": true
        }
       ],
       [
@@ -24259,7 +24553,8 @@
        {
         "type": "code",
         "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])",
-        "expected": "True\n[5, 8]"
+        "expected": "True\n[5, 8]",
+        "tryIt": true
        }
       ],
       [
@@ -24270,7 +24565,8 @@
        {
         "type": "code",
         "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
-        "expected": "Khong cung loai de so sanh"
+        "expected": "Khong cung loai de so sanh",
+        "tryIt": true
        }
       ],
       [
@@ -24479,7 +24775,8 @@
        {
         "type": "code",
         "code": "class Report:\n    def render(self): return \"Bao cao\"\nclass SalesReport(Report):\n    def render(self): return super().render() + \": doanh thu\"\nreport = SalesReport()\nprint(report.render())\nprint(isinstance(report, Report))",
-        "expected": "Bao cao: doanh thu\nTrue"
+        "expected": "Bao cao: doanh thu\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -24490,7 +24787,8 @@
        {
         "type": "code",
         "code": "class Report: pass\nclass SalesReport(Report): pass\nreport = SalesReport()\nprint(isinstance(report, SalesReport))\nprint(issubclass(SalesReport, Report))\nprint(issubclass(Report, SalesReport))",
-        "expected": "True\nTrue\nFalse"
+        "expected": "True\nTrue\nFalse",
+        "tryIt": true
        }
       ],
       [
@@ -24501,7 +24799,8 @@
        {
         "type": "code",
         "code": "class Exporter:\n    def render(self): return \"first\"\n    def render(self, prefix=\"\"): return prefix + \"second\"\nprint(Exporter().render())",
-        "expected": "second"
+        "expected": "second",
+        "tryIt": true
        }
       ],
       [
@@ -24700,7 +24999,8 @@
        {
         "type": "code",
         "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(A, B): pass\nprint(C().label())\nprint([x.__name__ for x in C.__mro__])",
-        "expected": "A\n['C', 'A', 'B', 'object']"
+        "expected": "A\n['C', 'A', 'B', 'object']",
+        "tryIt": true
        }
       ],
       [
@@ -24711,7 +25011,8 @@
        {
         "type": "code",
         "code": "class Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())",
-        "expected": "SALES"
+        "expected": "SALES",
+        "tryIt": true
        }
       ],
       [
@@ -24722,7 +25023,8 @@
        {
         "type": "code",
         "code": "class A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(B, A): pass\nprint(C().label())",
-        "expected": "B"
+        "expected": "B",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -24903,7 +25205,8 @@
        {
         "type": "code",
         "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\ntry:\n    Exporter()\nexcept TypeError:\n    print(\"Can cai dat export\")",
-        "expected": "Can cai dat export"
+        "expected": "Can cai dat export",
+        "tryIt": true
        }
       ],
       [
@@ -24914,7 +25217,8 @@
        {
         "type": "code",
         "code": "from abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\nclass TextExporter(Exporter):\n    def export(self, rows): return \",\".join(rows)\nprint(TextExporter().export([\"A\", \"B\"]))",
-        "expected": "A,B"
+        "expected": "A,B",
+        "tryIt": true
        }
       ],
       [
@@ -24925,7 +25229,8 @@
        {
         "type": "code",
         "code": "class TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))",
-        "expected": "A,B"
+        "expected": "A,B",
+        "tryIt": true
        }
       ],
       [
@@ -25126,7 +25431,8 @@
        {
         "type": "code",
         "code": "class Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())",
-        "expected": "8"
+        "expected": "8",
+        "tryIt": true
        }
       ],
       [
@@ -25137,7 +25443,8 @@
        {
         "type": "code",
         "code": "class Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))",
-        "expected": "100\nTrue"
+        "expected": "100\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -25148,7 +25455,8 @@
        {
         "type": "code",
         "code": "class Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)",
-        "expected": "Tu choi\n8"
+        "expected": "Tu choi\n8",
+        "tryIt": true
        }
       ],
       [
@@ -25345,7 +25653,8 @@
        {
         "type": "code",
         "code": "import math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)",
-        "expected": "8.7\n8.7"
+        "expected": "8.7\n8.7",
+        "tryIt": true
        }
       ],
       [
@@ -25356,7 +25665,8 @@
        {
         "type": "code",
         "code": "import math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))",
-        "expected": "True\n-2"
+        "expected": "True\n-2",
+        "tryIt": true
        }
       ],
       [
@@ -25682,7 +25992,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nmarks = np.array([8.0, 6.0])\ncredits = np.array([3.0, 1.0])\nprint(marks * credits)\nprint((marks * credits).sum() / credits.sum())",
-        "expected": "[24.  6.]\n7.5"
+        "expected": "[24.  6.]\n7.5",
+        "tryIt": true
        }
       ],
       [
@@ -25693,7 +26004,8 @@
        {
         "type": "code",
         "code": "import math\nprint(math.floor(8.79 * 10) / 10)\nprint(math.floor(-1.21 * 10) / 10)\nprint(round(8.79, 1))",
-        "expected": "8.7\n-1.3\n8.8"
+        "expected": "8.7\n-1.3\n8.8",
+        "tryIt": true
        }
       ],
       [
@@ -25704,7 +26016,8 @@
        {
         "type": "code",
         "code": "students = [{\"id\": \"A\", \"gpa\": 7.5}, {\"id\": \"B\", \"gpa\": 8.0}]\nranked = sorted(students, key=lambda x: x[\"gpa\"], reverse=True)\nprint([s[\"id\"] for s in ranked])\nprint([s[\"id\"] for s in students])",
-        "expected": "['B', 'A']\n['A', 'B']"
+        "expected": "['B', 'A']\n['A', 'B']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -26057,7 +26370,8 @@
        {
         "type": "code",
         "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"report.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"12\\n\")\n    with open(path, \"r\", encoding=\"utf8\") as f: print(f.read().strip())\n    print(f.closed)",
-        "expected": "12\nTrue"
+        "expected": "12\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -26068,7 +26382,8 @@
        {
         "type": "code",
         "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"log.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"A\\n\")\n    with open(path, \"a\", encoding=\"utf8\") as f: f.write(\"B\\n\")\n    print(path.read_text(encoding=\"utf8\").splitlines())",
-        "expected": "['A', 'B']"
+        "expected": "['A', 'B']",
+        "tryIt": true
        }
       ],
       [
@@ -26079,7 +26394,8 @@
        {
         "type": "code",
         "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"new.txt\"\n    with open(path, \"x\", encoding=\"utf8\") as f: f.write(\"first\")\n    try:\n        with open(path, \"x\", encoding=\"utf8\"): pass\n    except FileExistsError:\n        print(\"Da ton tai\")",
-        "expected": "Da ton tai"
+        "expected": "Da ton tai",
+        "tryIt": true
        }
       ],
       [
@@ -26269,7 +26585,8 @@
        {
         "type": "code",
         "code": "from io import StringIO\nwith StringIO(\"AB\\nCD\\n\") as f:\n    print(repr(f.read(2)))\n    print(repr(f.readline()))\n    print(f.readlines())",
-        "expected": "'AB'\n'\\n'\n['CD\\n']"
+        "expected": "'AB'\n'\\n'\n['CD\\n']",
+        "tryIt": true
        }
       ],
       [
@@ -26280,7 +26597,8 @@
        {
         "type": "code",
         "code": "from io import BytesIO\nwith BytesIO(b\"ABC\") as f:\n    f.seek(1)\n    f.write(b\"Z\")\n    f.seek(0)\n    print(f.read())",
-        "expected": "b'AZC'"
+        "expected": "b'AZC'",
+        "tryIt": true
        }
       ],
       [
@@ -26291,7 +26609,8 @@
        {
         "type": "code",
         "code": "text = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))",
-        "expected": "6\n8\ncà phê"
+        "expected": "6\n8\ncà phê",
+        "tryIt": true
        }
       ],
       [
@@ -26472,7 +26791,8 @@
        {
         "type": "code",
         "code": "import tempfile\nwith tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf8\") as f:\n    f.write(\"A\\n\")\n    f.flush()\n    f.seek(0)\n    print(f.readline().strip())\nprint(f.closed)",
-        "expected": "A\nTrue"
+        "expected": "A\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -26483,7 +26803,8 @@
        {
         "type": "code",
         "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"raw.bin\"\n    with open(path, \"wb\", buffering=0) as f: print(f.write(b\"AB\"))\n    with open(path, \"r\", encoding=\"ascii\", buffering=1) as f: print(f.read())",
-        "expected": "2\nAB"
+        "expected": "2\nAB",
+        "tryIt": true
        }
       ],
       [
@@ -26494,7 +26815,8 @@
        {
         "type": "code",
         "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing.txt\"\n    try:\n        with open(path, encoding=\"utf8\") as f: print(f.read())\n    except FileNotFoundError:\n        print(\"Thieu file\")",
-        "expected": "Thieu file"
+        "expected": "Thieu file",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -26673,7 +26995,8 @@
        {
         "type": "code",
         "code": "from pathlib import Path\nimport tempfile, os\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    (root / \"sub\").mkdir()\n    (root / \"a.txt\").write_text(\"A\", encoding=\"utf8\")\n    (root / \"sub/b.txt\").write_text(\"B\", encoding=\"utf8\")\n    with os.scandir(root) as entries:\n        print(sorted((e.name, e.is_dir()) for e in entries))\n    print(sorted(p.relative_to(root).as_posix() for p in root.rglob(\"*.txt\")))",
-        "expected": "[('a.txt', False), ('sub', True)]\n['a.txt', 'sub/b.txt']"
+        "expected": "[('a.txt', False), ('sub', True)]\n['a.txt', 'sub/b.txt']",
+        "tryIt": true
        }
       ],
       [
@@ -26684,7 +27007,8 @@
        {
         "type": "code",
         "code": "from pathlib import Path\nimport tempfile, os, shutil\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    os.makedirs(root / \"a/b\")\n    (root / \"old.txt\").write_text(\"A\", encoding=\"utf8\")\n    os.rename(root / \"old.txt\", root / \"new.txt\")\n    print(sorted(os.listdir(root)))\n    os.remove(root / \"new.txt\")\n    os.rmdir(root / \"a/b\")\n    shutil.rmtree(root / \"a\")\n    print(list(root.iterdir()))",
-        "expected": "['a', 'new.txt']\n[]"
+        "expected": "['a', 'new.txt']\n[]",
+        "tryIt": true
        }
       ],
       [
@@ -26905,7 +27229,8 @@
        {
         "type": "code",
         "code": "import zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)",
-        "expected": "True\nTrue"
+        "expected": "True\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -26916,7 +27241,8 @@
        {
         "type": "code",
         "code": "import bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))",
-        "expected": "cà phê\ncà phê"
+        "expected": "cà phê\ncà phê",
+        "tryIt": true
        }
       ],
       [
@@ -26927,7 +27253,8 @@
        {
         "type": "code",
         "code": "import gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")",
-        "expected": "True\nDu lieu nen khong hop le"
+        "expected": "True\nDu lieu nen khong hop le",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -27118,7 +27445,8 @@
        {
         "type": "code",
         "code": "from io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())",
-        "expected": "['students.txt', 'courses.txt']\nS01,An"
+        "expected": "['students.txt', 'courses.txt']\nS01,An",
+        "tryIt": true
        }
       ],
       [
@@ -27129,7 +27457,8 @@
        {
         "type": "code",
         "code": "from io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())",
-        "expected": "['marks.txt']\nS01,PY,8"
+        "expected": "['marks.txt']\nS01,PY,8",
+        "tryIt": true
        }
       ],
       [
@@ -27140,7 +27469,8 @@
        {
         "type": "code",
         "code": "import zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -27321,7 +27651,8 @@
        {
         "type": "code",
         "code": "import pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
-        "expected": "tuple list\nTrue"
+        "expected": "tuple list\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -27332,7 +27663,8 @@
        {
         "type": "code",
         "code": "import pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
-        "expected": "True\nset"
+        "expected": "True\nset",
+        "tryIt": true
        }
       ],
       [
@@ -27343,7 +27675,8 @@
        {
         "type": "code",
         "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])",
-        "expected": "1\nAn"
+        "expected": "1\nAn",
+        "tryIt": true
        }
       ],
       [
@@ -27548,7 +27881,8 @@
        {
         "type": "code",
         "code": "import pandas as pd, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"scores.dta\"\n    pd.DataFrame({\"score\": [8.0, 6.0]}).to_stata(path, write_index=False)\n    frame = pd.read_stata(path)\n    print(frame[\"score\"].tolist())",
-        "expected": "[8.0, 6.0]"
+        "expected": "[8.0, 6.0]",
+        "tryIt": true
        }
       ],
       [
@@ -28138,7 +28472,8 @@
        {
         "type": "code",
         "code": "students = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])",
-        "expected": "2005-01-02\n8.0"
+        "expected": "2005-01-02\n8.0",
+        "tryIt": true
        }
       ],
       [
@@ -28149,7 +28484,8 @@
        {
         "type": "code",
         "code": "def course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))",
-        "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+        "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
+        "tryIt": true
        }
       ],
       [
@@ -28160,7 +28496,8 @@
        {
         "type": "code",
         "code": "def read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])",
-        "expected": "S01 An 2005-01-02"
+        "expected": "S01 An 2005-01-02",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -28290,7 +28627,8 @@
        {
         "type": "code",
         "code": "class Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())",
-        "expected": "S01: An (2005-01-02)\nPY: Python"
+        "expected": "S01: An (2005-01-02)\nPY: Python",
+        "tryIt": true
        }
       ],
       [
@@ -28301,7 +28639,8 @@
        {
         "type": "code",
         "code": "import math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))",
-        "expected": "[8.7, 6.2]\n8.07"
+        "expected": "[8.7, 6.2]\n8.07",
+        "tryIt": true
        }
       ],
       [
@@ -28312,7 +28651,8 @@
        {
         "type": "code",
         "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
-        "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+        "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']",
+        "tryIt": true
        }
       ],
       [
@@ -28459,7 +28799,8 @@
        {
         "type": "code",
         "code": "import csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])",
-        "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}"
+        "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}",
+        "tryIt": true
        }
       ],
       [
@@ -28470,7 +28811,8 @@
        {
         "type": "code",
         "code": "from io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
@@ -28481,7 +28823,8 @@
        {
         "type": "code",
         "code": "import tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())",
-        "expected": "False\nS01,An,2005-01-02"
+        "expected": "False\nS01,An,2005-01-02",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -28611,7 +28954,8 @@
        {
         "type": "code",
         "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}, \"courses\": {\"PY\": {\"name\": \"Python\", \"credits\": 3}}, \"marks\": {(\"S01\", \"PY\"): 8.7}}\nblob = gzip.compress(pickle.dumps(state))\nloaded = pickle.loads(gzip.decompress(blob))\nprint(loaded == state)\nprint(loaded[\"marks\"][(\"S01\", \"PY\")])",
-        "expected": "True\n8.7"
+        "expected": "True\n8.7",
+        "tryIt": true
        }
       ],
       [
@@ -28622,7 +28966,8 @@
        {
         "type": "code",
         "code": "import gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])",
-        "expected": "tuple\n1"
+        "expected": "tuple\n1",
+        "tryIt": true
        }
       ],
       [
@@ -28633,7 +28978,8 @@
        {
         "type": "code",
         "code": "def validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])",
-        "expected": "Can chuyen doi du lieu\n1"
+        "expected": "Can chuyen doi du lieu\n1",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -28774,7 +29120,8 @@
        {
         "type": "code",
         "code": "transitions = {(\"new\", \"admitted\"): \"ready\", (\"ready\", \"scheduled\"): \"running\", (\"running\", \"io_wait\"): \"waiting\", (\"waiting\", \"io_done\"): \"ready\", (\"running\", \"exit\"): \"terminated\"}\nprint(transitions[(\"running\", \"io_wait\")])\nprint(transitions[(\"waiting\", \"io_done\")])",
-        "expected": "waiting\nready"
+        "expected": "waiting\nready",
+        "tryIt": true
        }
       ],
       [
@@ -28949,7 +29296,8 @@
        {
         "type": "code",
         "code": "parent_pid, new_child_pid = 100, 101\nfork_returns = {\"parent\": new_child_pid, \"child\": 0}\nprint(fork_returns[\"parent\"], fork_returns[\"child\"])",
-        "expected": "101 0"
+        "expected": "101 0",
+        "tryIt": true
        }
       ],
       [
@@ -28960,7 +29308,8 @@
        {
         "type": "code",
         "code": "process = {\"pid\": 101, \"program\": \"shell\"}\nprocess[\"program\"] = \"analysis\"\nprint(process[\"pid\"], process[\"program\"])",
-        "expected": "101 analysis"
+        "expected": "101 analysis",
+        "tryIt": true
        }
       ],
       [
@@ -29127,7 +29476,8 @@
        {
         "type": "code",
         "code": "queues = {\"job\": [\"A\", \"B\", \"C\"], \"ready\": [\"A\", \"B\"], \"disk\": [\"C\"]}\ncurrent = queues[\"ready\"].pop(0)\nprint(current, queues[\"disk\"])",
-        "expected": "A ['C']"
+        "expected": "A ['C']",
+        "tryIt": true
        }
       ],
       [
@@ -29138,7 +29488,8 @@
        {
         "type": "code",
         "code": "pcb = {\"pid\": 12, \"state\": \"ready\", \"pc\": 40, \"registers\": [0, 1], \"priority\": 2, \"open_fds\": [0, 1, 2]}\npcb[\"state\"] = \"running\"\nprint(pcb[\"pid\"], pcb[\"pc\"], pcb[\"state\"])",
-        "expected": "12 40 running"
+        "expected": "12 40 running",
+        "tryIt": true
        }
       ],
       [
@@ -29149,7 +29500,8 @@
        {
         "type": "code",
         "code": "useful, switches, switch_cost = 10, 4, 0.1\nprint(round(useful / (useful + switches * switch_cost), 3))",
-        "expected": "0.962"
+        "expected": "0.962",
+        "tryIt": true
        }
       ],
       [
@@ -29313,7 +29665,8 @@
        {
         "type": "code",
         "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst",
-        "expected": "A 0\nB 6\nC 8"
+        "expected": "A 0\nB 6\nC 8",
+        "tryIt": true
        }
       ],
       [
@@ -29324,7 +29677,8 @@
        {
         "type": "code",
         "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst",
-        "expected": "C 0\nB 1\nA 3"
+        "expected": "C 0\nB 1\nA 3",
+        "tryIt": true
        }
       ],
       [
@@ -29335,7 +29689,8 @@
        {
         "type": "code",
         "code": "fcfs_waits = [0, 6, 8]\nsjf_waits = [0, 1, 3]\nprint(round(sum(fcfs_waits)/3, 2))\nprint(round(sum(sjf_waits)/3, 2))",
-        "expected": "4.67\n1.33"
+        "expected": "4.67\n1.33",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -29469,7 +29824,8 @@
        {
         "type": "code",
         "code": "remaining = {\"A\": 5, \"B\": 2}\nprint(min(remaining, key=remaining.get))",
-        "expected": "B"
+        "expected": "B",
+        "tryIt": true
        }
       ],
       [
@@ -29480,7 +29836,8 @@
        {
         "type": "code",
         "code": "jobs = [{\"name\":\"A\", \"burst\":1, \"deadline\":10}, {\"name\":\"B\", \"burst\":4, \"deadline\":5}]\nprint(min(jobs, key=lambda x:x[\"deadline\"])[\"name\"])\nprint(min(jobs, key=lambda x:x[\"burst\"])[\"name\"])",
-        "expected": "B\nA"
+        "expected": "B\nA",
+        "tryIt": true
        }
       ],
       [
@@ -29491,7 +29848,8 @@
        {
         "type": "code",
         "code": "queues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])",
-        "expected": "[] ['B', 'A']"
+        "expected": "[] ['B', 'A']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -29629,7 +29987,8 @@
        {
         "type": "code",
         "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)",
-        "expected": "['A', 'B', 'A', 'B', 'A']"
+        "expected": "['A', 'B', 'A', 'B', 'A']",
+        "tryIt": true
        }
       ],
       [
@@ -29640,7 +29999,8 @@
        {
         "type": "code",
         "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)",
-        "expected": "[('A', 2), ('B', 2), ('A', 1)]"
+        "expected": "[('A', 2), ('B', 2), ('A', 1)]",
+        "tryIt": true
        }
       ],
       [
@@ -29651,7 +30011,8 @@
        {
         "type": "code",
         "code": "useful = 5\nfor switches in [4, 2]:\n    print(round(useful + switches * 0.1, 1))",
-        "expected": "5.4\n5.2"
+        "expected": "5.4\n5.2",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -30181,7 +30542,8 @@
        {
         "type": "code",
         "code": "single_core_schedule = [\"A\", \"B\", \"A\", \"B\"]\nprint(\"\".join(single_core_schedule))\nprint({\"core1\":\"A\", \"core2\":\"B\"})",
-        "expected": "ABAB\n{'core1': 'A', 'core2': 'B'}"
+        "expected": "ABAB\n{'core1': 'A', 'core2': 'B'}",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -30858,7 +31220,8 @@
        {
         "type": "code",
         "code": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)",
-        "expected": "1"
+        "expected": "1",
+        "tryIt": true
        }
       ],
       [
@@ -31083,7 +31446,8 @@
        {
         "type": "code",
         "code": "from queue import Queue, Empty\nq = Queue()\ntry:\n    q.get_nowait()\nexcept Empty:\n    print(\"no message\")",
-        "expected": "no message"
+        "expected": "no message",
+        "tryIt": true
        }
       ],
       [
@@ -31481,7 +31845,8 @@
        {
         "type": "code",
         "code": "import shlex\nlexer = shlex.shlex('tool \"two words\" < in.txt | other > out.txt', posix=True, punctuation_chars=\"|<>\")\nprint(list(lexer))",
-        "expected": "['tool', 'two words', '<', 'in.txt', '|', 'other', '>', 'out.txt']"
+        "expected": "['tool', 'two words', '<', 'in.txt', '|', 'other', '>', 'out.txt']",
+        "tryIt": true
        }
       ],
       [
@@ -31627,7 +31992,8 @@
        {
         "type": "code",
         "code": "prefork = {\"parent\": \"master\", \"children\": [\"P1\", \"P2\", \"P3\"]}\nprint(len(prefork[\"children\"]))\nprint(prefork[\"parent\"])",
-        "expected": "3\nmaster"
+        "expected": "3\nmaster",
+        "tryIt": true
        }
       ],
       [
@@ -31638,7 +32004,8 @@
        {
         "type": "code",
         "code": "worker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))",
-        "expected": "2\n4"
+        "expected": "2\n4",
+        "tryIt": true
        }
       ],
       [
@@ -31649,7 +32016,8 @@
        {
         "type": "code",
         "code": "links = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])",
-        "expected": "['IPC']"
+        "expected": "['IPC']",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -31779,7 +32147,8 @@
        {
         "type": "code",
         "code": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))",
-        "expected": "60"
+        "expected": "60",
+        "tryIt": true
        }
       ],
       [
@@ -33721,7 +34090,8 @@
        {
         "type": "code",
         "code": "from decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)",
-        "expected": "[14.2, 16.0]"
+        "expected": "[14.2, 16.0]",
+        "tryIt": true
        }
       ],
       [
@@ -33732,7 +34102,8 @@
        {
         "type": "code",
         "code": "marks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)",
-        "expected": "16.4"
+        "expected": "16.4",
+        "tryIt": true
        }
       ],
       [
@@ -33743,7 +34114,8 @@
        {
         "type": "code",
         "code": "import gzip,pickle\nsnapshot={'version':1,'students':[{'id':'S01','name':'An','dob':'2005-01-01'}],'courses':[],'marks':[]}\nblob=gzip.compress(pickle.dumps(snapshot))\nloaded=pickle.loads(gzip.decompress(blob))\nprint(loaded['students'][0]['id'])\nprint(loaded==snapshot)",
-        "expected": "S01\nTrue"
+        "expected": "S01\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -33881,7 +34253,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfrom io import StringIO\ntext = \"id,mark\\n1,8.5\\n2,7.0\\n\"\nmarks = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(1,), dtype=float)\nprint(marks.tolist())\nprint(marks.shape, len(marks), marks.dtype.kind)",
-        "expected": "[8.5, 7.0]\n(2,) 2 f"
+        "expected": "[8.5, 7.0]\n(2,) 2 f",
+        "tryIt": true
        }
       ],
       [
@@ -33892,7 +34265,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfrom io import StringIO\ntext = \"name,city\\nMai,Hanoi\\nAn,Hue\\n\"\nnames = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(0,), dtype=str)\nprint(names.tolist())\nprint(names.shape)",
-        "expected": "['Mai', 'An']\n(2,)"
+        "expected": "['Mai', 'An']\n(2,)",
+        "tryIt": true
        }
       ],
       [
@@ -33903,7 +34277,8 @@
        {
         "type": "code",
         "code": "import tempfile, io, contextlib\nfrom pathlib import Path\nimport numpy as np\nimport pandas as pd\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"marks.txt\"\n    path.write_text(\"Mai,8\\nAn,7\\n\", encoding=\"utf-8\")\n    f = open(path, encoding=\"utf-8\")\n    print(f.readline().strip())\n    print(f.read().strip())\n    f.close()\n    print(f.closed)\n    with open(path, encoding=\"utf-8\") as stream:\n        print(len(stream.readlines()))\ninfo, help_text = io.StringIO(), io.StringIO()\nwith contextlib.redirect_stdout(info):\n    np.info(np.ndarray.dtype)\nwith contextlib.redirect_stdout(help_text):\n    help(pd.read_csv)\nprint(bool(info.getvalue().strip()), \"read_csv\" in help_text.getvalue())",
-        "expected": "Mai,8\nAn,7\nTrue\n2\nTrue True"
+        "expected": "Mai,8\nAn,7\nTrue\n2\nTrue True",
+        "tryIt": true
        }
       ]
      ],
@@ -34077,7 +34452,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())",
-        "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]"
+        "expected": "('name', 'mark')\n['Mai', 'An']\n[8.5, 7.0]",
+        "tryIt": true
        }
       ],
       [
@@ -34088,7 +34464,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))",
-        "expected": "(2,)\nTrue"
+        "expected": "(2,)\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -34099,7 +34476,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)",
-        "expected": "Mai 8.0\nf"
+        "expected": "Mai 8.0\nf",
+        "tryIt": true
        }
       ]
      ],
@@ -34290,7 +34668,8 @@
        {
         "type": "code",
         "code": "pip_install = \"python -m pip install notebook\"\nconda_install = \"conda install -c conda-forge notebook\"\nopen_notebook = \"jupyter notebook\"\nprint(pip_install)\nprint(conda_install)\nprint(open_notebook)",
-        "expected": "python -m pip install notebook\nconda install -c conda-forge notebook\njupyter notebook"
+        "expected": "python -m pip install notebook\nconda install -c conda-forge notebook\njupyter notebook",
+        "tryIt": true
        }
       ],
       [
@@ -34301,7 +34680,8 @@
        {
         "type": "code",
         "code": "roles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])",
-        "expected": "execution\nmessages\nmath display"
+        "expected": "execution\nmessages\nmath display",
+        "tryIt": true
        }
       ]
      ],
@@ -34433,7 +34813,8 @@
        {
         "type": "code",
         "code": "processes = {100:{\"parent\":None, \"name\":\"main\"}, 101:{\"parent\":100, \"name\":\"worker\"}, 102:{\"parent\":101, \"name\":\"export\"}}\nprint(processes[102][\"parent\"])\nprint(processes[processes[102][\"parent\"]][\"parent\"])",
-        "expected": "101\n100"
+        "expected": "101\n100",
+        "tryIt": true
        }
       ],
       [
@@ -34455,7 +34836,8 @@
        {
         "type": "code",
         "code": "family = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])",
-        "expected": "('vector', True, False)\n('list', False, True)"
+        "expected": "('vector', True, False)\n('list', False, True)",
+        "tryIt": true
        }
       ]
      ],
@@ -34587,7 +34969,8 @@
        {
         "type": "code",
         "code": "values = [6, 8]\nalias = values\nalias.append(10)\nprint(alias is values)\nprint(values)",
-        "expected": "True\n[6, 8, 10]"
+        "expected": "True\n[6, 8, 10]",
+        "tryIt": true
        }
       ],
       [
@@ -34598,7 +34981,8 @@
        {
         "type": "code",
         "code": "import gc, weakref\nclass Node:\n    pass\ndef make_cycle():\n    a, b = Node(), Node()\n    a.peer, b.peer = b, a\n    return weakref.ref(a)\nreference = make_cycle()\ngc.collect()\nprint(reference() is None)",
-        "expected": "True"
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
@@ -34749,7 +35133,8 @@
        {
         "type": "code",
         "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
-        "expected": "True True"
+        "expected": "True True",
+        "tryIt": true
        }
       ],
       [
@@ -34975,7 +35360,8 @@
        {
         "type": "code",
         "code": "from types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])",
-        "expected": "True\n21"
+        "expected": "True\n21",
+        "tryIt": true
        }
       ],
       [
@@ -34986,7 +35372,8 @@
        {
         "type": "code",
         "code": "number = 2 ** 100\nprint(number > 2 ** 63)\nprint(number.bit_length())\nprint(type(\"A\").__name__)",
-        "expected": "True\n101\nstr"
+        "expected": "True\n101\nstr",
+        "tryIt": true
        }
       ],
       [
@@ -34997,7 +35384,8 @@
        {
         "type": "code",
         "code": "sources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)",
-        "expected": "IndentationError\nTabError"
+        "expected": "IndentationError\nTabError",
+        "tryIt": true
        }
       ]
      ],
@@ -35156,7 +35544,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nx = np.linspace(0, np.pi, 3)\nprint(np.round(np.sin(x), 6).tolist())\nprint(np.round(np.cos(x), 6).tolist())\nrng = np.random.default_rng(7)\ndata = rng.random((2, 3))\nprint(data.shape, bool(((data >= 0) & (data < 1)).all()))\nprint(np.random.random((2, 3)).shape)",
-        "expected": "[0.0, 1.0, 0.0]\n[1.0, 0.0, -1.0]\n(2, 3) True\n(2, 3)"
+        "expected": "[0.0, 1.0, 0.0]\n[1.0, 0.0, -1.0]\n(2, 3) True\n(2, 3)",
+        "tryIt": true
        }
       ],
       [
@@ -35167,7 +35556,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nX, Y = np.mgrid[-1:1:3j, -2:2:5j]\nU, V = -Y, X\nprint(X.shape, Y.shape, U.shape, V.shape)\nprint(X[:, 0].tolist())\nprint(Y[0, :].tolist())",
-        "expected": "(3, 5) (3, 5) (3, 5) (3, 5)\n[-1.0, 0.0, 1.0]\n[-2.0, -1.0, 0.0, 1.0, 2.0]"
+        "expected": "(3, 5) (3, 5) (3, 5) (3, 5)\n[-1.0, 0.0, 1.0]\n[-2.0, -1.0, 0.0, 1.0, 2.0]",
+        "tryIt": true
        }
       ],
       [
@@ -35178,7 +35568,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nimport tempfile\nfrom pathlib import Path\nfrom matplotlib.cbook import get_sample_data\nimage = np.array([[0.0, 0.5], [0.75, 1.0]])\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"image.npy\"\n    np.save(path, image)\n    loaded = np.load(path, allow_pickle=False)\n    print(loaded.shape, bool(np.array_equal(image, loaded)))\nsample_path = get_sample_data(\"topobathy.npz\", asfileobj=False)\nwith np.load(sample_path, allow_pickle=False) as sample:\n    print(sorted(sample.files))\n    print(sample[\"topo\"].ndim)",
-        "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2"
+        "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2",
+        "tryIt": true
        }
       ]
      ],
@@ -35402,7 +35793,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nlabel = ax.text(0.05, 0.95, \"Three days only\", transform=ax.transAxes, va=\"top\")\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(label.get_position())\nplt.show()\nplt.close(fig)",
-        "expected": "(0.05, 0.95)"
+        "expected": "(0.05, 0.95)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -35418,7 +35810,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nnote = ax.annotate(\"Peak: 10\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0.05, 0.95), textcoords=\"axes fraction\",\n                   va=\"top\", arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(note.xy, note.get_position())\nplt.show()\nplt.close(fig)",
-        "expected": "(2, 10) (0.05, 0.95)"
+        "expected": "(2, 10) (0.05, 0.95)",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -35434,7 +35827,8 @@
        {
         "type": "code",
         "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nnote = ax.annotate(r\"$y=10$\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0, 12), textcoords=\"offset points\", ha=\"center\")\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\ntitle = ax.set_title(\"Three daily observations\", fontsize=14)\nprint(note.get_text(), title.get_fontsize())\nplt.show()\nplt.close(fig)",
-        "expected": "$y=10$ 14.0"
+        "expected": "$y=10$ 14.0",
+        "tryIt": true
        },
        {
         "type": "figure",
@@ -35657,7 +36051,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nsales = np.array([[12, 15, 9], [10, 8, 14]])\nby_day = sales.T\nprint(by_day.tolist())\nprint(by_day.shape)",
-        "expected": "[[12, 10], [15, 8], [9, 14]]\n(3, 2)"
+        "expected": "[[12, 10], [15, 8], [9, 14]]\n(3, 2)",
+        "tryIt": true
        }
       ],
       [
@@ -35668,7 +36063,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nfirst = np.array([[12, 15, 9]])\nsecond = np.array([[10, 8, 14]])\nprint(np.concatenate([first, second], axis=0).tolist())\nprint(np.concatenate([first, second], axis=1).shape)",
-        "expected": "[[12, 15, 9], [10, 8, 14]]\n(1, 6)"
+        "expected": "[[12, 15, 9], [10, 8, 14]]\n(1, 6)",
+        "tryIt": true
        }
       ],
       [
@@ -35679,7 +36075,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nmon = np.array([12, 10])\ntue = np.array([15, 8])\ndays = np.stack([mon, tue], axis=0)\nprint(days.tolist())\nprint(days.shape)",
-        "expected": "[[12, 10], [15, 8]]\n(2, 2)"
+        "expected": "[[12, 10], [15, 8]]\n(2, 2)",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -35915,7 +36312,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nnames = np.array([\"A\", \"B\", \"C\"])\nsales = np.array([30, 10, 20])\norder = np.argsort(sales, kind=\"stable\")\nprint(order.tolist())\nprint(names[order].tolist(), sales[order].tolist())",
-        "expected": "[1, 2, 0]\n['B', 'C', 'A'] [10, 20, 30]"
+        "expected": "[1, 2, 0]\n['B', 'C', 'A'] [10, 20, 30]",
+        "tryIt": true
        }
       ],
       [
@@ -35926,7 +36324,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nsales = np.array([30, 10, 20])\nsorted_sales = np.sort(sales)\nprint(sorted_sales.tolist())\nprint(sales.tolist())",
-        "expected": "[10, 20, 30]\n[30, 10, 20]"
+        "expected": "[10, 20, 30]\n[30, 10, 20]",
+        "tryIt": true
        }
       ],
       [
@@ -35937,7 +36336,8 @@
        {
         "type": "code",
         "code": "import numpy as np\ncodes = np.array([\"B\", \"A\", \"B\", \"C\", \"A\"])\nvalues, counts = np.unique(codes, return_counts=True)\nprint(values.tolist())\nprint(counts.tolist())\nprint(int(counts.sum()))",
-        "expected": "['A', 'B', 'C']\n[2, 2, 1]\n5"
+        "expected": "['A', 'B', 'C']\n[2, 2, 1]\n5",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -36174,7 +36574,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint((qty @ price).tolist())\nprint((qty * price).sum(axis=1).tolist())",
-        "expected": "[40, 70]\n[40, 70]"
+        "expected": "[40, 70]\n[40, 70]",
+        "tryIt": true
        }
       ],
       [
@@ -36185,7 +36586,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nA = np.array([[1., 1.], [2., 1.]])\nb = np.array([5., 8.])\nx = np.linalg.solve(A, b)\nprint(np.round(x, 6).tolist())\nprint(bool(np.allclose(A @ x, b)))",
-        "expected": "[3.0, 2.0]\nTrue"
+        "expected": "[3.0, 2.0]\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -36196,7 +36598,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nvisits = np.array([0., 1., 2.])\nsales = np.array([2., 5., 8.])\ndesign = np.column_stack([np.ones(3), visits])\ncoef, residuals, rank, singular = np.linalg.lstsq(design, sales, rcond=None)\nprint(np.round(coef, 6).tolist())\nprint(np.round(design @ coef, 6).tolist())\nprint(rank)",
-        "expected": "[2.0, 3.0]\n[2.0, 5.0, 8.0]\n2"
+        "expected": "[2.0, 3.0]\n[2.0, 5.0, 8.0]\n2",
+        "tryIt": true
        },
        {
         "type": "paragraph",
@@ -36407,7 +36810,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))",
-        "expected": "(100,)\nTrue"
+        "expected": "(100,)\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -36418,7 +36822,8 @@
        {
         "type": "code",
         "code": "import numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10., 20., 30.])\nsample = rng.choice(orders, size=3, replace=True)\nprint(sample.shape)\nprint(bool(np.isin(sample, orders).all()))\nprint(sorted(rng.choice(orders, size=3, replace=False).tolist()))",
-        "expected": "(3,)\nTrue\n[10.0, 20.0, 30.0]"
+        "expected": "(3,)\nTrue\n[10.0, 20.0, 30.0]",
+        "tryIt": true
        }
       ],
       [
@@ -36429,7 +36834,8 @@
        {
         "type": "code",
         "code": "import numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))",
-        "expected": "(1000, 3) (1000,)\n20.0\nTrue"
+        "expected": "(1000, 3) (1000,)\n20.0\nTrue",
+        "tryIt": true
        },
        {
         "type": "paragraph",

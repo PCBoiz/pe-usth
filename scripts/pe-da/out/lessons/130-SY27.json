@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import csv\nfrom io import StringIO\nbuffer = StringIO(newline=\"\")\nwriter = csv.writer(buffer)\nwriter.writerow([\"id\", \"name\", \"dob\"])\nwriter.writerow([\"S01\", \"An, Nguyen\", \"2005-01-02\"])\nbuffer.seek(0)\nprint(list(csv.DictReader(buffer))[0])",
-      "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}"
+      "expected": "{'id': 'S01', 'name': 'An, Nguyen', 'dob': '2005-01-02'}",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from io import BytesIO\nimport zipfile\ntexts = {\"students.txt\": \"id,name,dob\\nS01,An,2005-01-02\\n\", \"courses.txt\": \"id,name,credits\\nPY,Python,3\\n\", \"marks.txt\": \"student_id,course_id,score\\nS01,PY,8.7\\n\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    for name, text in texts.items(): archive.writestr(name, text)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name).decode(\"utf8\") for name in archive.namelist()}\nprint(restored == texts)",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import tempfile, zipfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    print(path.exists())\n    with zipfile.ZipFile(path, \"w\") as archive:\n        archive.writestr(\"students.txt\", \"S01,An,2005-01-02\\n\")\n    with zipfile.ZipFile(path) as archive:\n        print(archive.read(\"students.txt\").decode().strip())",
-      "expected": "False\nS01,An,2005-01-02"
+      "expected": "False\nS01,An,2005-01-02",
+      "tryIt": true
      },
      {
       "type": "paragraph",

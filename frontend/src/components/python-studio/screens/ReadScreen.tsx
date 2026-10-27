@@ -14,8 +14,9 @@
 // và khối code cần chiều ngang. Riêng đoạn văn vẫn bó ~78 ký tự — xem
 // .read p trong studio-chrome.module.css.
 import CodeBlock from '@/components/lesson-chrome/exercises/CodeBlock';
+import TryItButton from '@/components/lesson-chrome/TryItButton';
 import { toCodeLines } from '@/lib/py-highlight';
-import type { ReadBlock } from '@/lib/studio-lesson';
+import { maDeThu, type ReadBlock } from '@/lib/studio-lesson';
 
 import c from '../studio-chrome.module.css';
 import { paragraphs, ScreenShell } from './chrome';
@@ -36,7 +37,7 @@ import type { ShellProps } from './props';
  * pháp) thì học viên đọc output như code — đúng loại ngộ nhận mà cả giáo trình
  * này đang cố gỡ.
  */
-function Block({ block }: { block: ReadBlock }) {
+function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
   switch (block.type) {
     case 'paragraph':
       return <p>{paragraphs(block.text)}</p>;
@@ -56,6 +57,22 @@ function Block({ block }: { block: ReadBlock }) {
               <span className={c.readExpectedLabel}>Kết quả:</span>
               <pre>{block.expected}</pre>
             </div>
+          ) : null}
+          {/* Nút đứng DƯỚI ô "Kết quả:", không ở trên: người học đọc code →
+              đọc kết quả → mới nảy ra "nếu sửa chỗ này thì sao". Nhãn nói rõ
+              khi mã bàn giao gồm cả các đoạn trước (xem `maDeThu`), vì bấm vào
+              rồi thấy nhiều code hơn đoạn vừa đọc là một bất ngờ không cần
+              thiết. */}
+          {thu ? (
+            <TryItButton
+              code={thu}
+              label={
+                thu.includes('# ── Đoạn ')
+                  ? 'Thử trong IDE (kèm các đoạn trên)'
+                  : 'Thử ngay trong IDE'
+              }
+              spaced
+            />
           ) : null}
         </>
       );
@@ -166,7 +183,13 @@ export default function ReadScreen({ lesson, scr, metaLabel }: ShellProps) {
     >
       <div className={c.read}>
         {blocks.map((block, i) => (
-          <Block key={i} block={block} />
+          <Block
+            key={i}
+            block={block}
+            // Tính ở ĐÂY, không trong <Block>: tiền tố cần cả `slices` và chỉ
+            // số màn, mà Block chỉ nên biết về một khối.
+            thu={block.type === 'code' && block.tryIt ? maDeThu(slices, at, i) : null}
+          />
         ))}
       </div>
       {/* Nguồn slide chỉ in ở màn đọc CUỐI: lặp lại ở từng lát thì nó thành

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
-      "expected": "['store', 'amount']\n30"
+      "expected": "['store', 'amount']\n30",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))",
-      "expected": "True\nTrue"
+      "expected": "True\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)",
-      "expected": "100 4\n25.0"
+      "expected": "100 4\n25.0",
+      "tryIt": true
      },
      {
       "type": "paragraph",

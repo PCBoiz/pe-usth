@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"scores.dta\"\n    pd.DataFrame({\"score\": [8.0, 6.0]}).to_stata(path, write_index=False)\n    frame = pd.read_stata(path)\n    print(frame[\"score\"].tolist())",
-      "expected": "[8.0, 6.0]"
+      "expected": "[8.0, 6.0]",
+      "tryIt": true
      }
     ],
     [

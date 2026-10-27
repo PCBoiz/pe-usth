@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())",
-      "expected": "[False, True, True]\n['B', 'C']"
+      "expected": "[False, True, True]\n['B', 'C']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
-      "expected": "[{'order': 'B', 'amount': 150}]"
+      "expected": "[{'order': 'B', 'amount': 150}]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM', 'DN'], 'amount': [80, 150, 120]})\nmask = df['city'].isin(['HN', 'DN']) & df['amount'].between(100, 200)\nprint(df.loc[mask, 'city'].tolist())\nprint(df.loc[~df['city'].isin(['HN']), 'city'].tolist())",
-      "expected": "['DN']\n['HCM', 'DN']"
+      "expected": "['DN']\n['HCM', 'DN']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

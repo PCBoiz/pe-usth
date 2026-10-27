@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
-      "expected": "[False, True, False]\n30"
+      "expected": "[False, True, False]\n30",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
-      "expected": "[False, True, False]\n[False, False, False]"
+      "expected": "[False, True, False]\n[False, False, False]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'version': [1, 2, 1], 'amount': [10, 12, 20]})\nlatest = df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order')\nprint(latest['amount'].tolist())\nprint(latest['order'].is_unique)",
-      "expected": "[12, 20]\nTrue"
+      "expected": "[12, 20]\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

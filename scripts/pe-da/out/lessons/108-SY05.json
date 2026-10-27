@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())",
-      "expected": "S01: An"
+      "expected": "S01: An",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)",
-      "expected": "Anh Binh"
+      "expected": "Anh Binh",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)",
-      "expected": "Anh\nTrue"
+      "expected": "Anh\nTrue",
+      "tryIt": true
      },
      {
       "type": "paragraph",

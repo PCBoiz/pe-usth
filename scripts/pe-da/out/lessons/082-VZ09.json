@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()",
-      "expected": "Revenue (million VND)"
+      "expected": "Revenue (million VND)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()",
-      "expected": "1"
+      "expected": "1",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.axhline(9, linestyle=\"--\", color=\"gray\", label=\"Target: 9\")\nax.axvline(2, linestyle=\":\", color=\"black\", label=\"Campaign day\")\nax.text(1.05, 10.5, r\"$\\sigma=2$\", fontsize=12)\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Targets and annotations\", ylim=(0, 12))\nax.legend(loc=\"lower left\")\nprint(len(ax.lines))\nplt.show()",
-      "expected": "3"
+      "expected": "3",
+      "tryIt": true
      },
      {
       "type": "figure",

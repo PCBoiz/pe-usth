@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from pathlib import Path\nimport tempfile, os\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    (root / \"sub\").mkdir()\n    (root / \"a.txt\").write_text(\"A\", encoding=\"utf8\")\n    (root / \"sub/b.txt\").write_text(\"B\", encoding=\"utf8\")\n    with os.scandir(root) as entries:\n        print(sorted((e.name, e.is_dir()) for e in entries))\n    print(sorted(p.relative_to(root).as_posix() for p in root.rglob(\"*.txt\")))",
-      "expected": "[('a.txt', False), ('sub', True)]\n['a.txt', 'sub/b.txt']"
+      "expected": "[('a.txt', False), ('sub', True)]\n['a.txt', 'sub/b.txt']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from pathlib import Path\nimport tempfile, os, shutil\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    os.makedirs(root / \"a/b\")\n    (root / \"old.txt\").write_text(\"A\", encoding=\"utf8\")\n    os.rename(root / \"old.txt\", root / \"new.txt\")\n    print(sorted(os.listdir(root)))\n    os.remove(root / \"new.txt\")\n    os.rmdir(root / \"a/b\")\n    shutil.rmtree(root / \"a\")\n    print(list(root.iterdir()))",
-      "expected": "['a', 'new.txt']\n[]"
+      "expected": "['a', 'new.txt']\n[]",
+      "tryIt": true
      }
     ],
     [

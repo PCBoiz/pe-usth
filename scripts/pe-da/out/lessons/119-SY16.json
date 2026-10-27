@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "from io import StringIO\nwith StringIO(\"AB\\nCD\\n\") as f:\n    print(repr(f.read(2)))\n    print(repr(f.readline()))\n    print(f.readlines())",
-      "expected": "'AB'\n'\\n'\n['CD\\n']"
+      "expected": "'AB'\n'\\n'\n['CD\\n']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "from io import BytesIO\nwith BytesIO(b\"ABC\") as f:\n    f.seek(1)\n    f.write(b\"Z\")\n    f.seek(0)\n    print(f.read())",
-      "expected": "b'AZC'"
+      "expected": "b'AZC'",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "text = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))",
-      "expected": "6\n8\ncà phê"
+      "expected": "6\n8\ncà phê",
+      "tryIt": true
      }
     ],
     [

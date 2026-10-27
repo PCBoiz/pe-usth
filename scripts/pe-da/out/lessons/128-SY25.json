@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "students = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}\ncourses = {\"PY\": {\"name\": \"Python\"}}\nmarks = {(\"S01\", \"PY\"): 8.0}\nprint(students[\"S01\"][\"dob\"])\nprint(marks[(\"S01\", \"PY\")])",
-      "expected": "2005-01-02\n8.0"
+      "expected": "2005-01-02\n8.0",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "def course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))",
-      "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+      "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "def read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])",
-      "expected": "S01 An 2005-01-02"
+      "expected": "S01 An 2005-01-02",
+      "tryIt": true
      },
      {
       "type": "paragraph",

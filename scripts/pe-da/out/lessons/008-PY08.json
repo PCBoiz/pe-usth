@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "name = \"  maI  \".strip().title()\ncode = \"23\".zfill(4)\nprint(f\"{code}: {name}\")",
-      "expected": "0023: Mai"
+      "expected": "0023: Mai",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "raw = \"12,18,20\\n\"\nprint(raw.rstrip().split(\",\"))\nprint(\"A\\nB\".splitlines())",
-      "expected": "['12', '18', '20']\n['A', 'B']"
+      "expected": "['12', '18', '20']\n['A', 'B']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "name, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")",
-      "expected": "Mai: 12.5\nmai: 12.50"
+      "expected": "Mai: 12.5\nmai: 12.50",
+      "tryIt": true
      },
      {
       "type": "paragraph",

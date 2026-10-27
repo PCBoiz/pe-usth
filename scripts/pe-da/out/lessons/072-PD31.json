@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
-      "expected": "{'shop': {'count': 2, 'mean': 60.0, 'median': 60.0}, 'web': {'count': 2, 'mean': 20.0, 'median': 20.0}}"
+      "expected": "{'shop': {'count': 2, 'mean': 60.0, 'median': 60.0}, 'web': {'count': 2, 'mean': 20.0, 'median': 20.0}}",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
-      "expected": "11.0 13.0\n[100]"
+      "expected": "11.0 13.0\n[100]",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'ad_spend': [1, 2, 3, 4], 'sales': [10, 20, 30, 40]})\nprint(round(df['ad_spend'].corr(df['sales']), 2))\nprint(df[['ad_spend', 'sales']].dropna().shape[0])",
-      "expected": "1.0\n4"
+      "expected": "1.0\n4",
+      "tryIt": true
      },
      {
       "type": "paragraph",

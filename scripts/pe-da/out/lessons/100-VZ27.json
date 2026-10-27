@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"All drinks\"], [60], label=\"Coffee\")\nax.bar([\"All drinks\"], [40], bottom=[60], label=\"Tea\")\nax.set(ylabel=\"Share (%)\", title=\"Parts of the same total\", ylim=(0, 100))\nax.legend()\nprint(60 + 40)\nplt.show()",
-      "expected": "100"
+      "expected": "100",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwedges, labels, values = ax.pie([60, 40], labels=[\"Coffee\", \"Tea\"], autopct=\"%.0f%%\", colors=[\"#0072B2\", \"#D55E00\"])\nax.set_title(\"Only two mutually exclusive shares\")\nprint([text.get_text() for text in values])\nplt.show()",
-      "expected": "['60%', '40%']"
+      "expected": "['60%', '40%']",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.fill([0, 2, 2, 0], [0, 0, 1, 1], color=\"lightblue\", alpha=0.6, label=\"Rectangle\")\nax.plot([0, 2], [0, 1], color=\"black\", label=\"Boundary\")\nax.set(xlabel=\"Width (m)\", ylabel=\"Height (m)\", title=\"A polygon with a known area\", xlim=(-0.2, 2.2), ylim=(-0.2, 1.2))\nax.legend()\nprint(2 * 1)\nplt.show()",
-      "expected": "2"
+      "expected": "2",
+      "tryIt": true
      },
      {
       "type": "figure",

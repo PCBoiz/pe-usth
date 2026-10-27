@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "cups = [12, 15, 9]\ntotal = 0\nfor value in cups:\n    total += value\nprint(total)",
-      "expected": "36"
+      "expected": "36",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "print(list(range(1, 5)))\nprint(list(range(5, 0, -2)))\nfor index, value in enumerate([6, 8]):\n    print(index, value)",
-      "expected": "[1, 2, 3, 4]\n[5, 3, 1]\n0 6\n1 8"
+      "expected": "[1, 2, 3, 4]\n[5, 3, 1]\n0 6\n1 8",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "names, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])",
-      "expected": "Mai 8\nAn 7\n[4, 6]"
+      "expected": "Mai 8\nAn 7\n[4, 6]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

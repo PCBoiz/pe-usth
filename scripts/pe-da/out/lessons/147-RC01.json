@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "prefork = {\"parent\": \"master\", \"children\": [\"P1\", \"P2\", \"P3\"]}\nprint(len(prefork[\"children\"]))\nprint(prefork[\"parent\"])",
-      "expected": "3\nmaster"
+      "expected": "3\nmaster",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "worker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))",
-      "expected": "2\n4"
+      "expected": "2\n4",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "links = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])",
-      "expected": "['IPC']"
+      "expected": "['IPC']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom statistics import median\ntimes = [2, 3, 4, 5, 16]\nax.boxplot(times, tick_labels=[\"Morning\"])\nax.set(ylabel=\"Delivery (minutes)\", title=\"Median and spread\")\nprint(median(times))\nplt.show()",
-      "expected": "4"
+      "expected": "4",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.boxplot([[2, 3, 4, 5, 16], [3, 4, 4, 5, 6]], tick_labels=[\"Morning\", \"Evening\"])\nax.scatter([1]*5 + [2]*5, [2, 3, 4, 5, 16, 3, 4, 4, 5, 6], color=\"#D55E00\", zorder=3)\nax.set(ylabel=\"Delivery (minutes)\", title=\"Show individual observations too\")\nprint(5 + 5)\nplt.show()",
-      "expected": "10"
+      "expected": "10",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nvalues = [2, 3, 4, 5, 6, 8]\nax.violinplot([values], showmedians=True)\nax.scatter([1]*len(values), values, color=\"black\", s=18, zorder=3)\nax.set(xticks=[1], xticklabels=[\"All orders\"], ylabel=\"Delivery (minutes)\", title=\"A smoothed distribution estimate\")\nprint(len(values))\nplt.show()",
-      "expected": "6"
+      "expected": "6",
+      "tryIt": true
      },
      {
       "type": "figure",

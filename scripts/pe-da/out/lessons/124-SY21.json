@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
-      "expected": "tuple list\nTrue"
+      "expected": "tuple list\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
-      "expected": "True\nset"
+      "expected": "True\nset",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])",
-      "expected": "1\nAn"
+      "expected": "1\nAn",
+      "tryIt": true
      }
     ],
     [

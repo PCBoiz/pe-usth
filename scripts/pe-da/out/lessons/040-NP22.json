@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=5)\nprint(rolls)",
-      "expected": "[6 4 5 6 4]"
+      "expected": "[6 4 5 6 4]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "rng = np.random.default_rng(7)\na = rng.integers(1, 7, size=5)\nprint(a.shape)\nprint(((a >= 1) & (a <= 6)).all())",
-      "expected": "(5,)\nTrue"
+      "expected": "(5,)\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "a = np.random.default_rng(7).integers(1, 7, size=5)\nb = np.random.default_rng(7).integers(1, 7, size=5)\nprint(np.array_equal(a, b))",
-      "expected": "True"
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [

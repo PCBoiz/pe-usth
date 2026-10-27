@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
-      "expected": "['north', 'north', 'south']\n2"
+      "expected": "['north', 'north', 'south']\n2",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
-      "expected": "[True, False, False]\n['Coffee', 'unknown', 'Tea']"
+      "expected": "[True, False, False]\n['Coffee', 'unknown', 'Tea']",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ncodes = pd.Series(['HN-001', 'DN-020'], dtype='string')\nprint(codes.str.split('-').str[0].tolist())\nprint(codes.str.extract(r'-(\\d+)', expand=False).tolist())",
-      "expected": "['HN', 'DN']\n['001', '020']"
+      "expected": "['HN', 'DN']\n['001', '020']",
+      "tryIt": true
      },
      {
       "type": "paragraph",

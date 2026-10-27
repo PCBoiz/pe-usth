@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nscores = np.array([4, 6, 9])\nlabels = np.where(scores >= 5, \"dat\", \"chua dat\")\nprint(labels)",
-      "expected": "['chua dat' 'dat' 'dat']"
+      "expected": "['chua dat' 'dat' 'dat']",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([4, 6, 9])\nprint(a[a >= 5])",
-      "expected": "[6 9]"
+      "expected": "[6 9]",
+      "tryIt": true
      }
     ],
     [
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "a = np.array([9.8, 7.0])\nprint(np.clip(a + 0.5, 0, 10))",
-      "expected": "[10.   7.5]"
+      "expected": "[10.   7.5]",
+      "tryIt": true
      }
     ],
     [

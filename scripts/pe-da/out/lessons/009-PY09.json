@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "score = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")",
-      "expected": "Pass"
+      "expected": "Pass",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "age, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)",
-      "expected": "True\nFalse\nTrue"
+      "expected": "True\nFalse\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "score = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")",
-      "expected": "Valid and good"
+      "expected": "Valid and good",
+      "tryIt": true
      },
      {
       "type": "paragraph",

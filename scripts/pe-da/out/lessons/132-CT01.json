@@ -38,7 +38,8 @@
      {
       "type": "code",
       "code": "transitions = {(\"new\", \"admitted\"): \"ready\", (\"ready\", \"scheduled\"): \"running\", (\"running\", \"io_wait\"): \"waiting\", (\"waiting\", \"io_done\"): \"ready\", (\"running\", \"exit\"): \"terminated\"}\nprint(transitions[(\"running\", \"io_wait\")])\nprint(transitions[(\"waiting\", \"io_done\")])",
-      "expected": "waiting\nready"
+      "expected": "waiting\nready",
+      "tryIt": true
      }
     ],
     [

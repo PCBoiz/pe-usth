@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nprices = np.array([10, 20, 30])\ntrial = prices[:2].copy()\ntrial[0] = 8\nprint(prices)\nprint(trial)",
-      "expected": "[10 20 30]\n[ 8 20]"
+      "expected": "[10 20 30]\n[ 8 20]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)",
-      "expected": "[9 2 3]"
+      "expected": "[9 2 3]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "a = np.array([1, 2, 3])\nb = a[:2].copy()\nb[0] = 9\nprint(a)",
-      "expected": "[1 2 3]"
+      "expected": "[1 2 3]",
+      "tryIt": true
      }
     ],
     [

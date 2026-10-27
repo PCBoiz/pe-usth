@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
-      "expected": "(2, 1)"
+      "expected": "(2, 1)",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
-      "expected": "4"
+      "expected": "4",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -59,7 +61,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncoords = np.linspace(-2, 2, 15)\nX, Y = np.meshgrid(coords, coords)\nU, V = -Y, X\nspeed = np.hypot(U, V)\nstream = ax.streamplot(coords, coords, U, V, color=speed, cmap=\"viridis\", density=0.8)\nfig.colorbar(stream.lines, ax=ax, label=\"Speed (arbitrary units)\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"A synthetic rotating vector field\", aspect=\"equal\")\nprint(U.shape)\nplt.show()",
-      "expected": "(15, 15)"
+      "expected": "(15, 15)",
+      "tryIt": true
      },
      {
       "type": "figure",

@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()",
-      "expected": "4"
+      "expected": "4",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -43,7 +44,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
-      "expected": "4.0"
+      "expected": "4.0",
+      "tryIt": true
      },
      {
       "type": "figure",
@@ -53,7 +55,8 @@
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2], [8, 12], marker=\"o\", color=\"#0072B2\", label=\"Bike\")\nax.scatter([2, 3], [10, 11], marker=\"^\", color=\"#D55E00\", label=\"Motorbike\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Separate delivery methods\")\nax.legend()\nprint(len(ax.collections))\nplt.show()",
-      "expected": "2"
+      "expected": "2",
+      "tryIt": true
      },
      {
       "type": "figure",

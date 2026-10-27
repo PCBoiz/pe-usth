@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups)",
-      "expected": "[12 15  9]"
+      "expected": "[12 15  9]",
+      "tryIt": true
      }
     ],
     [
@@ -46,7 +47,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8, 10])\nprint(a)",
-      "expected": "[ 6  8 10]"
+      "expected": "[ 6  8 10]",
+      "tryIt": true
      }
     ],
     [
@@ -61,7 +63,8 @@
      {
       "type": "code",
       "code": "prices = np.array([10, 20])\nprint(prices)",
-      "expected": "[10 20]"
+      "expected": "[10 20]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

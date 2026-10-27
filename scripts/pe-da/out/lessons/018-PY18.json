@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "for raw in [\"6\", \"\", \"8\"]:\n    try:\n        print(float(raw))\n    except ValueError:\n        print(\"missing\")",
-      "expected": "6.0\nmissing\n8.0"
+      "expected": "6.0\nmissing\n8.0",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "def read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))",
-      "expected": "Outside 0..10"
+      "expected": "Outside 0..10",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "try:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")",
-      "expected": "8\nfinished"
+      "expected": "8\nfinished",
+      "tryIt": true
      },
      {
       "type": "paragraph",

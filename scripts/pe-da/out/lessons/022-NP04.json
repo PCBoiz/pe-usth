@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nscores = np.array([6., 8., 9.])\nprint(scores + 0.5)",
-      "expected": "[6.5 8.5 9.5]"
+      "expected": "[6.5 8.5 9.5]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "a = np.array([6, 8, 10])\nprint(a + 1)",
-      "expected": "[ 7  9 11]"
+      "expected": "[ 7  9 11]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "a = np.array([2, 4])\nprint(a * 3)",
-      "expected": "[ 6 12]"
+      "expected": "[ 6 12]",
+      "tryIt": true
      }
     ],
     [

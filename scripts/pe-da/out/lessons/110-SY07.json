@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "class Report:\n    def render(self): return \"Bao cao\"\nclass SalesReport(Report):\n    def render(self): return super().render() + \": doanh thu\"\nreport = SalesReport()\nprint(report.render())\nprint(isinstance(report, Report))",
-      "expected": "Bao cao: doanh thu\nTrue"
+      "expected": "Bao cao: doanh thu\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "class Report: pass\nclass SalesReport(Report): pass\nreport = SalesReport()\nprint(isinstance(report, SalesReport))\nprint(issubclass(SalesReport, Report))\nprint(issubclass(Report, SalesReport))",
-      "expected": "True\nTrue\nFalse"
+      "expected": "True\nTrue\nFalse",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "class Exporter:\n    def render(self): return \"first\"\n    def render(self, prefix=\"\"): return prefix + \"second\"\nprint(Exporter().render())",
-      "expected": "second"
+      "expected": "second",
+      "tryIt": true
      }
     ],
     [

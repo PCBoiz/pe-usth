@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())",
-      "expected": "['B', 'C', 'A']\n['B', 'C']"
+      "expected": "['B', 'C', 'A']\n['B', 'C']",
+      "tryIt": true
      }
     ],
     [
@@ -38,7 +39,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)",
-      "expected": "{'paid': 2, 'cancelled': 1}\n3\n4"
+      "expected": "{'paid': 2, 'cancelled': 1}\n3\n4",
+      "tryIt": true
      }
     ],
     [
@@ -49,7 +51,8 @@
      {
       "type": "code",
       "code": "import pandas as pd\namount = pd.Series([10, 20, 30, 100])\nsummary = amount.describe()\nprint(summary['min'], summary['max'])\nprint(amount.mean(), amount.median())",
-      "expected": "10.0 100.0\n40.0 25.0"
+      "expected": "10.0 100.0\n40.0 25.0",
+      "tryIt": true
      },
      {
       "type": "paragraph",

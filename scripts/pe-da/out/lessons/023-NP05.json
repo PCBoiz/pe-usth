@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\ndays = np.arange(1, 8)\nprint(days)",
-      "expected": "[1 2 3 4 5 6 7]"
+      "expected": "[1 2 3 4 5 6 7]",
+      "tryIt": true
      }
     ],
     [
@@ -42,7 +43,8 @@
      {
       "type": "code",
       "code": "print(np.arange(1, 5))",
-      "expected": "[1 2 3 4]"
+      "expected": "[1 2 3 4]",
+      "tryIt": true
      }
     ],
     [
@@ -57,7 +59,8 @@
      {
       "type": "code",
       "code": "print(np.arange(0, 7, 2))",
-      "expected": "[0 2 4 6]"
+      "expected": "[0 2 4 6]",
+      "tryIt": true
      },
      {
       "type": "paragraph",

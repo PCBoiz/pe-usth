@@ -27,7 +27,8 @@
      {
       "type": "code",
       "code": "import numpy as np\n\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)",
-      "expected": "[[20 20]\n [10 60]]"
+      "expected": "[[20 20]\n [10 60]]",
+      "tryIt": true
      }
     ],
     [
@@ -46,7 +47,8 @@
      {
       "type": "code",
       "code": "qty = np.array([[2, 1], [0, 3], [4, 2]])\nprice = np.array([10, 20])\nprint(qty * price)",
-      "expected": "[[20 20]\n [ 0 60]\n [40 40]]"
+      "expected": "[[20 20]\n [ 0 60]\n [40 40]]",
+      "tryIt": true
      }
     ],
     [
@@ -65,7 +67,8 @@
      {
       "type": "code",
       "code": "a = np.array([[2., 20.], [4., 40.]])\nmeans = a.mean(axis=0, keepdims=True)\nprint(a - means)",
-      "expected": "[[ -1. -10.]\n [  1.  10.]]"
+      "expected": "[[ -1. -10.]\n [  1.  10.]]",
+      "tryIt": true
      },
      {
       "type": "paragraph",
