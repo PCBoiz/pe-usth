@@ -3,13 +3,13 @@
  "sort_order": 16,
  "module": "M1 · Python nền tảng",
  "title": "PY16 · Hàm, giá trị trả về và docstring",
- "subtitle": "Cơ bản · M1 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY16 · Hàm, giá trị trả về và docstring",
-  "subtitle": "Cơ bản · M1 · 10 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY16",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Một hàm chỉ gọi print(12) và không return. Giá trị nhận được khi gán result = hàm() là gì?",
+     "options": [
+      {
+       "text": "None",
+       "detail": "Đúng. print hiển thị 12 nhưng hàm không trả 12.",
+       "correct": true
+      },
+      {
+       "text": "12",
+       "detail": "Muốn nhận 12 từ lời gọi, thân hàm phải return 12."
+      },
+      {
+       "text": "Chuỗi \"12\"",
+       "detail": "print không chuyển output thành giá trị trả về của hàm."
+      }
+     ],
+     "explanation": "Đúng. print hiển thị 12 nhưng hàm không trả 12."
+    },
+    {
+     "question": "Không truyền quantity thì hàm dùng giá trị mặc định. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "8",
+       "detail": "Hàm dùng quantity=1 khi lời gọi không ghi đối số đó.",
+       "correct": true
+      },
+      {
+       "text": "1",
+       "detail": "1 là quantity, còn giá là 8."
+      },
+      {
+       "text": "'TypeError'",
+       "detail": "quantity đã có giá trị mặc định."
+      }
+     ],
+     "explanation": "Hàm dùng quantity=1 khi lời gọi không ghi đối số đó."
+    },
+    {
+     "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "24",
+       "detail": "Đối số theo tên thay giá trị mặc định của quantity.",
+       "correct": true
+      },
+      {
+       "text": "11",
+       "detail": "Hàm nhân giá với số lượng, không cộng."
+      },
+      {
+       "text": "8",
+       "detail": "Lời gọi đã ghi quantity=3."
+      }
+     ],
+     "explanation": "Đối số theo tên thay giá trị mặc định của quantity."
+    }
+   ],
    "practice": [
     {
      "prompt": "Định nghĩa hàm dùng từ khóa nào?",
@@ -129,5 +188,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

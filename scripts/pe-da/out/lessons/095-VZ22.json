@@ -3,13 +3,13 @@
  "sort_order": 95,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file",
- "subtitle": "Trung cấp · M4 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M4 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ22 · Chia sẻ HTML tương tác và kiểm tra dữ liệu trong file",
-  "subtitle": "Trung cấp · M4 · 11 phút",
+  "subtitle": "Trung cấp · M4 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ22",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "include_plotlyjs=\"cdn\" khác True ở điểm nào?",
+     "options": [
+      {
+       "text": "cdn xóa mọi dữ liệu",
+       "detail": "Dữ liệu vẫn được xuất cùng hình theo cấu hình."
+      },
+      {
+       "text": "True chỉ tạo ảnh PNG",
+       "detail": "True liên quan mã JavaScript, không đổi HTML thành ảnh."
+      },
+      {
+       "text": "cdn cần tải thư viện từ mạng; True nhúng thư viện vào file",
+       "detail": "Đúng: tự chứa thường lớn hơn nhưng đọc ngoại tuyến được.",
+       "correct": true
+      }
+     ],
+     "explanation": "Chọn cách đóng gói theo môi trường người nhận, rồi kiểm file thực tế."
+    },
+    {
+     "question": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?",
+     "options": [
+      {
+       "text": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng.",
+       "detail": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng.",
+       "correct": true
+      },
+      {
+       "text": "\"cdn\", vì file HTML luôn tải được thư viện khi mất mạng.",
+       "detail": "CDN là nguồn tải ngoài, không bảo đảm có khi ngoại tuyến."
+      },
+      {
+       "text": "False trong một HTML độc lập không nạp Plotly.js ở đâu khác.",
+       "detail": "False cần một nơi khác đã nạp thư viện, không đủ cho file độc lập ở đây."
+      }
+     ],
+     "explanation": "True để nhúng thư viện. Cũng cần chắc rằng dữ liệu và tài nguyên khác không lấy từ mạng."
+    },
+    {
+     "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?",
+     "options": [
+      {
+       "text": "Có; hover là nơi duy nhất có thể chứa dữ liệu.",
+       "detail": "Dữ liệu có thể nằm ở những trường ngoài hover."
+      },
+      {
+       "text": "Có; trace ẩn không được ghi vào HTML.",
+       "detail": "Trace ẩn vẫn có thể được serialize vào HTML."
+      },
+      {
+       "text": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn.",
+       "detail": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn.",
+       "correct": true
+      }
+     ],
+     "explanation": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn HTML mở không cần mạng, chọn include_plotlyjs thế nào?",
@@ -102,5 +161,6 @@
    "reason": "plotly chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/"
 }

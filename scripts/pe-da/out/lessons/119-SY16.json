@@ -3,13 +3,13 @@
  "sort_order": 119,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY16 · Con trỏ file, dòng văn bản và bytes",
- "subtitle": "Trung cấp · M5 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY16 · Con trỏ file, dòng văn bản và bytes",
-  "subtitle": "Trung cấp · M5 · 10 phút",
+  "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY16",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "StringIO(\"ABCD\") đã read(2). read() tiếp theo trả gì?",
+     "options": [
+      {
+       "text": "CD",
+       "detail": "Lần đọc trước đã đưa con trỏ qua A và B.",
+       "correct": true
+      },
+      {
+       "text": "ABCD",
+       "detail": "read không tự quay lại đầu stream."
+      },
+      {
+       "text": "AB",
+       "detail": "Hai ký tự này đã được lần đọc trước tiêu thụ."
+      }
+     ],
+     "explanation": "Lần đọc trước đã đưa con trỏ qua A và B."
+    },
+    {
+     "question": "Stream đã readline một dòng. read() tiếp lấy phần nào?",
+     "options": [
+      {
+       "text": "Chỉ dòng vừa đọc",
+       "detail": "Chưa đúng. Các lần đọc dùng chung vị trí con trỏ, trừ khi bạn đặt lại bằng seek."
+      },
+      {
+       "text": "Phần còn lại từ vị trí hiện tại",
+       "detail": "Các lần đọc dùng chung vị trí con trỏ, trừ khi bạn đặt lại bằng seek.",
+       "correct": true
+      },
+      {
+       "text": "Tự đọc lại từ đầu",
+       "detail": "Chưa đúng. Các lần đọc dùng chung vị trí con trỏ, trừ khi bạn đặt lại bằng seek."
+      }
+     ],
+     "explanation": "Các lần đọc dùng chung vị trí con trỏ, trừ khi bạn đặt lại bằng seek."
+    },
+    {
+     "question": "Để đọc lại từ đầu một BytesIO đã bị đọc một phần, gọi gì?",
+     "options": [
+      {
+       "text": "seek(0)",
+       "detail": "seek đặt vị trí đọc/ghi; flush không tua lại stream.",
+       "correct": true
+      },
+      {
+       "text": "close() rồi read() trên cùng object",
+       "detail": "Chưa đúng. seek đặt vị trí đọc/ghi; flush không tua lại stream."
+      },
+      {
+       "text": "flush() để xóa vị trí",
+       "detail": "Chưa đúng. seek đặt vị trí đọc/ghi; flush không tua lại stream."
+      }
+     ],
+     "explanation": "seek đặt vị trí đọc/ghi; flush không tua lại stream."
+    }
+   ],
    "practice": [
     {
      "prompt": "read() gọi hai lần mà không seek sẽ thế nào?",
@@ -131,5 +190,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

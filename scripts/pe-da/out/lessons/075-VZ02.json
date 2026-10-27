@@ -3,13 +3,13 @@
  "sort_order": 75,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ02 · Figure, Axes và biểu đồ đầu tiên",
- "subtitle": "Cơ bản · M4 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ02 · Figure, Axes và biểu đồ đầu tiên",
-  "subtitle": "Cơ bản · M4 · 14 phút",
+  "subtitle": "Cơ bản · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ02",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Có left và right là hai Axes. Muốn chắc đường nằm bên phải, dùng gì?",
+     "options": [
+      {
+       "text": "fig.plot(x,y)",
+       "detail": "Figure không có plot giống Axes trong cách dùng này."
+      },
+      {
+       "text": "right.plot(x,y)",
+       "detail": "Đúng: lời gọi chỉ rõ Axes đích.",
+       "correct": true
+      },
+      {
+       "text": "plt.plot(x,y) luôn vào bên phải",
+       "detail": "pyplot phụ thuộc Axes hiện tại, không luôn là bên phải."
+      }
+     ],
+     "explanation": "Figure chứa các vùng vẽ; Axes mới nhận lệnh plot trực tiếp."
+    },
+    {
+     "question": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?",
+     "options": [
+      {
+       "text": "Dùng ax.savefig vì Figure chỉ giữ tên hình.",
+       "detail": "savefig là phương thức của Figure, không phải Axes."
+      },
+      {
+       "text": "Dùng ax.plot vì plot tự lưu mọi hình ra file.",
+       "detail": "plot tạo đường trong Axes; nó không tự lưu toàn hình."
+      },
+      {
+       "text": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu.",
+       "detail": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu."
+    },
+    {
+     "question": "add_subplot(221) mô tả vị trí nào?",
+     "options": [
+      {
+       "text": "Hai hàng, một cột, ô thứ hai.",
+       "detail": "Chuỗi 221 mô tả hai cột, không phải một cột."
+      },
+      {
+       "text": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng.",
+       "detail": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng.",
+       "correct": true
+      },
+      {
+       "text": "Hai hàng, hai cột, ô số 0.",
+       "detail": "Vị trí ô của subplot được đếm từ 1."
+      }
+     ],
+     "explanation": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?",
@@ -204,5 +263,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

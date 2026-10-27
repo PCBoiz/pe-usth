@@ -3,13 +3,13 @@
  "sort_order": 73,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu",
- "subtitle": "Nâng cao · M3 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M3 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD32 · Dự án nhỏ: báo cáo đơn hàng có thể đối chiếu",
-  "subtitle": "Nâng cao · M3 · 10 phút",
+  "subtitle": "Nâng cao · M3 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD32",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Đơn của cửa hàng chưa có vùng nên xử lý thế nào để tổng không mất?",
+     "options": [
+      {
+       "text": "Đổi amount của đơn thành 0",
+       "detail": "Chưa có vùng không có nghĩa chưa có doanh thu."
+      },
+      {
+       "text": "Giữ đơn và ghi vùng Unknown để xem lại",
+       "detail": "Đúng: báo cáo còn đối chiếu được doanh thu.",
+       "correct": true
+      },
+      {
+       "text": "Bỏ đơn bằng inner merge",
+       "detail": "Có thể làm mất doanh thu của đơn hợp lệ."
+      }
+     ],
+     "explanation": "Thiếu danh mục và thiếu doanh thu là hai vấn đề khác nhau."
+    },
+    {
+     "question": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?",
+     "options": [
+      {
+       "text": "Để ép mọi hàng thành cùng một amount.",
+       "detail": "Ép amount giống nhau làm thay dữ liệu thay vì đối chiếu."
+      },
+      {
+       "text": "Vì merge luôn tăng tổng và cần chấp nhận mức tăng đó.",
+       "detail": "Tăng tổng sau merge có thể là lỗi nhân dòng cần phát hiện."
+      },
+      {
+       "text": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối.",
+       "detail": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối.",
+       "correct": true
+      }
+     ],
+     "explanation": "Để phát hiện việc nhân dòng hoặc làm mất đơn khi nối."
+    },
+    {
+     "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?",
+     "options": [
+      {
+       "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",
+       "detail": "Loại các đơn đó sẽ làm mất đóng góp của chúng khỏi báo cáo."
+      },
+      {
+       "text": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
+       "detail": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
+       "correct": true
+      },
+      {
+       "text": "Để tự coi các đơn chưa khớp là đã biết vùng.",
+       "detail": "Unknown ghi rõ chưa xác định, không giả vờ đã biết vùng."
+      }
+     ],
+     "explanation": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao dự án kiểm tra tổng tiền trước và sau merge?",
@@ -221,5 +280,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

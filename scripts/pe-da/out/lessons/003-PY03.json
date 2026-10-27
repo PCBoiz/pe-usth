@@ -3,13 +3,13 @@
  "sort_order": 3,
  "module": "M1 · Python nền tảng",
  "title": "PY03 · REPL, notebook và trạng thái đã chạy",
- "subtitle": "Cơ bản · M1 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY03 · REPL, notebook và trạng thái đã chạy",
-  "subtitle": "Cơ bản · M1 · 11 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY03",
@@ -73,6 +73,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bạn gửi riêng cell print(cups + 1) cho một bạn mới mở kernel. Vì sao bạn ấy có thể nhận NameError?",
+     "options": [
+      {
+       "text": "Notebook luôn tự giữ mọi biến giữa các máy",
+       "detail": "Trạng thái kernel thuộc phiên làm việc; gửi cell không gửi kèm bộ nhớ của bạn."
+      },
+      {
+       "text": "Bạn ấy chưa chạy cell tạo cups",
+       "detail": "Đúng. Kernel mới chưa có tên cups.",
+       "correct": true
+      },
+      {
+       "text": "print chỉ dùng được trong file .py",
+       "detail": "print dùng được trong cả notebook và script."
+      }
+     ],
+     "explanation": "Đúng. Kernel mới chưa có tên cups."
+    },
+    {
+     "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "12",
+       "detail": "Lệnh sau đọc giá trị được lệnh trước tạo.",
+       "correct": true
+      },
+      {
+       "text": "11",
+       "detail": "Biểu thức còn cộng thêm 1."
+      },
+      {
+       "text": "1",
+       "detail": "cups đã có giá trị 11, không bị bỏ qua."
+      }
+     ],
+     "explanation": "Lệnh sau đọc giá trị được lệnh trước tạo."
+    },
+    {
+     "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "18",
+       "detail": "Lần gán cuối quyết định giá trị cups được đọc lúc này.",
+       "correct": true
+      },
+      {
+       "text": "12",
+       "detail": "Đây là giá trị trước lần gán mới."
+      },
+      {
+       "text": "30",
+       "detail": "Phép gán không cộng giá trị cũ và mới."
+      }
+     ],
+     "explanation": "Lần gán cuối quyết định giá trị cups được đọc lúc này."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao cell chạy được trên máy bạn nhưng máy khác báo NameError?",
@@ -106,5 +165,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

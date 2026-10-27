@@ -3,13 +3,13 @@
  "sort_order": 62,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD21 · Đọc ngày và tính khoảng thời gian",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD21 · Đọc ngày và tính khoảng thời gian",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD21",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "\"04/03/2026\" với format %d/%m/%Y là ngày nào?",
+     "options": [
+      {
+       "text": "4 tháng 3",
+       "detail": "Đúng: %d là ngày, %m là tháng.",
+       "correct": true
+      },
+      {
+       "text": "3 tháng 4",
+       "detail": "Đây là cách đọc theo tháng/ngày."
+      },
+      {
+       "text": "Không thể đọc vì có dấu /",
+       "detail": "Dấu / có trong format nên hoàn toàn hợp lệ."
+      }
+     ],
+     "explanation": "Format ghi rõ ý nghĩa của từng phần trong chuỗi ngày."
+    },
+    {
+     "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?",
+     "options": [
+      {
+       "text": "Ngày 5 tháng 1 năm 2025.",
+       "detail": "Năm được ghi rõ là 2026."
+      },
+      {
+       "text": "Ngày 5 tháng 1 năm 2026.",
+       "detail": "Ngày 5 tháng 1 năm 2026.",
+       "correct": true
+      },
+      {
+       "text": "Ngày 1 tháng 5 năm 2026.",
+       "detail": "Bạn đang dùng thứ tự tháng/ngày thay cho ngày/tháng."
+      }
+     ],
+     "explanation": "Ngày 5 tháng 1 năm 2026."
+    },
+    {
+     "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?",
+     "options": [
+      {
+       "text": "NaT, được phát hiện bằng isna().",
+       "detail": "NaT, được phát hiện bằng isna().",
+       "correct": true
+      },
+      {
+       "text": "0 để thay cho ngày sai.",
+       "detail": "0 không phải giá trị thiếu dành cho kiểu datetime."
+      },
+      {
+       "text": "Một ngày hợp lệ gần ngày sai nhất.",
+       "detail": "coerce không đoán một ngày gần nhất để sửa dữ liệu."
+      }
+     ],
+     "explanation": "NaT, được phát hiện bằng isna()."
+    }
+   ],
    "practice": [
     {
      "prompt": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?",
@@ -151,5 +210,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

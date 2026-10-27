@@ -59,7 +59,13 @@ export class QuizzesService {
     // strip) tách thành helper dùng chung với generateReviewQuiz() để hai luồng
     // không lệch nhau khi luật gom pool hay khuôn dữ liệu lưu đổi về sau.
     const pool = await this.buildQuestionPool(userId, courseId);
-    const picked = this.sample(pool, this.sampleSize(pool.length));
+    // Trọng số đều (1): luồng này cố ý KHÔNG ưu tiên bài hay sai, nhưng vẫn
+    // phải trải theo bài — xem pickSpreadByLesson.
+    const picked = this.pickSpreadByLesson(
+      pool,
+      pool.map(() => 1),
+      this.sampleSize(pool.length),
+    );
     return this.persistQuiz(userId, courseId, picked);
   }
 
@@ -91,7 +97,7 @@ export class QuizzesService {
       return 1 + (total > 0 ? wrong / total : 0);
     });
 
-    const picked = this.weightedSampleWithoutReplacement(
+    const picked = this.pickSpreadByLesson(
       pool,
       weights,
       this.sampleSize(pool.length),
@@ -143,7 +149,7 @@ export class QuizzesService {
       return 1 + (total > 0 ? wrong / total : 0);
     });
 
-    const picked = this.weightedSampleWithoutReplacement(
+    const picked = this.pickSpreadByLesson(
       pool,
       weights,
       this.sampleSize(pool.length),
@@ -251,7 +257,13 @@ export class QuizzesService {
       );
     }
 
-    const picked = this.sample(pool, this.sampleSize(pool.length));
+    // Trọng số đều (1): luồng này cố ý KHÔNG ưu tiên bài hay sai, nhưng vẫn
+    // phải trải theo bài — xem pickSpreadByLesson.
+    const picked = this.pickSpreadByLesson(
+      pool,
+      pool.map(() => 1),
+      this.sampleSize(pool.length),
+    );
     return this.persistQuiz(userId, this.dominantCourseId(picked), picked);
   }
 
@@ -537,6 +549,50 @@ export class QuizzesService {
   }
 
   /**
+   * Bốc `n` câu, ƯU TIÊN mỗi bài một câu.
+   *
+   * VÌ SAO CẦN, và vì sao nó là luật về BÀI chứ không về câu: từ 27/10/2026 kho
+   * câu hỏi là 516 câu của khoá 172 bài, nhưng mỗi bài chỉ có MỘT gốc câu hỏi —
+   * 3 câu của một bài là 3 BIẾN THỂ cùng gốc, khác số liệu và khác tình huống
+   * chứ không khác điều được hỏi. `weightedSampleWithoutReplacement` bốc đều
+   * trên cả pool, nên học viên xong 2 bài nhận đề 5 câu rất dễ gặp 3 câu hỏi
+   * cùng một chuyện. Người học đọc ra điều đó là "đề bị lặp", không phải "mình
+   * cần ôn thêm".
+   *
+   * ƯU TIÊN, không phải BẮT BUỘC — và đây là phần quan trọng. Siết thành luật
+   * cứng thì đề 5 câu cần 5 bài đã hoàn thành, trong khi `MIN_POOL` chỉ hứa 5
+   * CÂU (tức 2 bài). Hứa một đằng chặn một nẻo là làm người học xong 2 bài bấm
+   * vào quiz rồi nhận lỗi. Nên: vòng một mỗi bài đúng một câu, thiếu thì vòng
+   * hai lấy tiếp từ phần còn lại.
+   *
+   * Trọng số của vòng hai lấy lại từ `weights` gốc, không tính lại: nó phản ánh
+   * tỉ lệ sai theo BÀI (xem tallyMistakesByLesson) nên không phụ thuộc vòng nào.
+   */
+  private pickSpreadByLesson(
+    pool: QuizQuestion[],
+    weights: number[],
+    n: number,
+  ): QuizQuestion[] {
+    const chiMuc = pool.map((_, i) => i);
+    const daCoBai = new Set<number>();
+    const vongMot: number[] = [];
+    const conLai: number[] = [];
+    // Bốc có trọng số TRÊN CHỈ MỤC để vòng hai còn tra lại được weights.
+    for (const i of this.weightedSampleWithoutReplacement(
+      chiMuc,
+      weights,
+      chiMuc.length,
+    )) {
+      if (daCoBai.has(pool[i].lessonId)) conLai.push(i);
+      else {
+        daCoBai.add(pool[i].lessonId);
+        vongMot.push(i);
+      }
+    }
+    return [...vongMot, ...conLai].slice(0, n).map((i) => pool[i]);
+  }
+
+  /**
    * Bốc `n` phần tử KHÔNG lặp lại, xác suất tỉ lệ với trọng số: mỗi vòng cộng
    * dồn trọng số rồi bắn một số ngẫu nhiên vào dải đó, chọn được phần tử nào
    * thì loại luôn khỏi vòng sau.
@@ -677,16 +733,6 @@ export class QuizzesService {
         (asRecord(rawOptions[idx])?.explanation as string | undefined) ??
         (x.explanation as string | undefined),
     };
-  }
-
-  /** Fisher-Yates rồi cắt — tránh sort(() => Math.random()) vốn lệch phân phối. */
-  private sample<T>(arr: T[], n: number): T[] {
-    const copy = [...arr];
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-    return copy.slice(0, n);
   }
 
   /** Bỏ 'correct' và 'explanation' — dùng ở MỌI nhánh trả câu hỏi cho FE. */

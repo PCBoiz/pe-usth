@@ -3,13 +3,13 @@
  "sort_order": 69,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD28 · Đọc ít hơn và xử lý theo lô",
- "subtitle": "Nâng cao · M3 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M3 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD28 · Đọc ít hơn và xử lý theo lô",
-  "subtitle": "Nâng cao · M3 · 9 phút",
+  "subtitle": "Nâng cao · M3 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD28",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai lô [0,0] và [9] có trung bình toàn bộ bao nhiêu?",
+     "options": [
+      {
+       "text": "4.5",
+       "detail": "Đây là trung bình 0 và 9, đã cho hai lô trọng số bằng nhau."
+      },
+      {
+       "text": "9",
+       "detail": "Đây là tổng, không phải trung bình."
+      },
+      {
+       "text": "3",
+       "detail": "Đúng: tổng 9 chia 3 quan sát.",
+       "correct": true
+      }
+     ],
+     "explanation": "Lô ngắn không được có cùng trọng số với lô dài khi tính mean của mọi hàng."
+    },
+    {
+     "question": "usecols giảm phần dữ liệu nào được đọc?",
+     "options": [
+      {
+       "text": "Giảm số cột được nạp.",
+       "detail": "Giảm số cột được nạp.",
+       "correct": true
+      },
+      {
+       "text": "Giảm số hàng, giữ mọi cột.",
+       "detail": "Giới hạn hàng là nhiệm vụ của tham số khác như nrows."
+      },
+      {
+       "text": "Xóa các giá trị không phải số trong bảng.",
+       "detail": "Chọn cột không đồng nghĩa làm sạch các giá trị trong cột."
+      }
+     ],
+     "explanation": "Giảm số cột được nạp."
+    },
+    {
+     "question": "Vì sao không nên lấy trung bình các trung bình lô khác kích thước?",
+     "options": [
+      {
+       "text": "Vì mọi trung bình lô luôn giống nhau.",
+       "detail": "Các trung bình lô không nhất thiết bằng nhau."
+      },
+      {
+       "text": "Vì trung bình lô không thể biểu diễn bằng số thực.",
+       "detail": "Có thể tính trung bình; vấn đề là trọng số theo số quan sát."
+      },
+      {
+       "text": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát.",
+       "detail": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát.",
+       "correct": true
+      }
+     ],
+     "explanation": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát."
+    }
+   ],
    "practice": [
     {
      "prompt": "usecols giảm phần dữ liệu nào được đọc?",
@@ -142,5 +201,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 84,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị",
- "subtitle": "Trung cấp · M4 · 17 phút",
- "estimated_minutes": 17,
- "xp_reward": 10,
+ "subtitle": "Trung cấp · M4 · 20 phút",
+ "estimated_minutes": 20,
+ "xp_reward": 12,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ11 · Trục, tick, tỷ lệ log và giới hạn hiển thị",
-  "subtitle": "Trung cấp · M4 · 17 phút",
+  "subtitle": "Trung cấp · M4 · 20 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ11",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trên thang log10, 1→10 và 10→100 có khoảng cách thế nào?",
+     "options": [
+      {
+       "text": "Tùy số hàng bảng",
+       "detail": "Số hàng không quyết định thang trục."
+      },
+      {
+       "text": "Bằng nhau vì cùng gấp 10",
+       "detail": "Đúng: log biểu diễn tỷ số bằng khoảng cách.",
+       "correct": true
+      },
+      {
+       "text": "Khoảng sau lớn gấp 10",
+       "detail": "Đó là cách đọc hiệu số trên thang tuyến tính."
+      }
+     ],
+     "explanation": "Cần phân biệt hiệu số bằng nhau với tỷ số bằng nhau."
+    },
+    {
+     "question": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?",
+     "options": [
+      {
+       "text": "Chênh 200 đơn vì trục đã rút ngắn.",
+       "detail": "Trục hẹp chỉ thay cách trình bày, không nhân độ chênh lên 100 lần."
+      },
+      {
+       "text": "Chênh 102 đơn vì cộng hai mức.",
+       "detail": "102 là tổng hai số, không phải hiệu."
+      },
+      {
+       "text": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
+       "detail": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
+       "correct": true
+      }
+     ],
+     "explanation": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên."
+    },
+    {
+     "question": "Vì sao số 0 gặp vấn đề trên trục log thông thường?",
+     "options": [
+      {
+       "text": "Vì Matplotlib tự đổi mọi số 0 thành 1 mà không cần thông báo.",
+       "detail": "Không nên giả định thư viện âm thầm thay 0 thành 1 cho đúng nghĩa dữ liệu."
+      },
+      {
+       "text": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu.",
+       "detail": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu.",
+       "correct": true
+      },
+      {
+       "text": "Vì log(0)=0 nên nó trùng với nhãn đầu trục.",
+       "detail": "log(0) không bằng 0."
+      }
+     ],
+     "explanation": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?",
@@ -181,5 +240,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

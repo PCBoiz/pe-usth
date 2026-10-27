@@ -3,13 +3,13 @@
  "sort_order": 168,
  "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
  "title": "RD01 · Đặt chú thích theo dữ liệu hoặc theo vùng vẽ",
- "subtitle": "Trung cấp · M10 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M10 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RD01 · Đặt chú thích theo dữ liệu hoặc theo vùng vẽ",
-  "subtitle": "Trung cấp · M10 · 10 phút",
+  "subtitle": "Trung cấp · M10 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RD01",
@@ -78,6 +78,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Muốn chữ ở góc trên trái khi đổi giới hạn trục, chọn hệ tọa độ nào cho chữ?",
+     "options": [
+      {
+       "text": "Mặc định mọi text đều nằm theo tỷ lệ Axes",
+       "detail": "ax.text mặc định dùng tọa độ dữ liệu, cần chỉ rõ transform khi muốn tỷ lệ."
+      },
+      {
+       "text": "axes fraction",
+       "detail": "Đúng. Vị trí chữ là tỷ lệ của vùng vẽ, không phụ thuộc giá trị trục.",
+       "correct": true
+      },
+      {
+       "text": "data",
+       "detail": "Tọa độ dữ liệu có thể dịch trên màn hình khi giới hạn trục đổi."
+      }
+     ],
+     "explanation": "Đúng. Vị trí chữ là tỷ lệ của vùng vẽ, không phụ thuộc giá trị trục."
+    },
+    {
+     "question": "Nhãn ở 10% chiều ngang và 90% chiều cao vùng vẽ. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(0.1, 0.9)",
+       "detail": "transform=ax.transAxes diễn giải vị trí theo vùng vẽ, không theo dữ liệu.",
+       "correct": true
+      },
+      {
+       "text": "[10, 90]",
+       "detail": "axes fraction dùng tỷ lệ 0–1, không dùng phần trăm dạng 10 và 90."
+      },
+      {
+       "text": "[0.9, 0.1]",
+       "detail": "Tọa độ ngang đứng trước tọa độ dọc."
+      }
+     ],
+     "explanation": "transform=ax.transAxes diễn giải vị trí theo vùng vẽ, không theo dữ liệu."
+    },
+    {
+     "question": "Mũi tên chỉ doanh thu ở ngày 3, chữ nằm ở góc hình. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(3, 20)",
+       "detail": "xy chọn điểm dữ liệu được chú thích; xytext chọn nơi đặt chữ.",
+       "correct": true
+      },
+      {
+       "text": "[0.1, 0.9]",
+       "detail": "Đó là xytext, vị trí của chữ."
+      },
+      {
+       "text": "[20, 3]",
+       "detail": "Trong xy, x đứng trước y."
+      }
+     ],
+     "explanation": "xy chọn điểm dữ liệu được chú thích; xytext chọn nơi đặt chữ."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong hình doanh thu, text(0.05,0.95,...) có luôn nằm góc trên trái không?",
@@ -191,5 +250,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

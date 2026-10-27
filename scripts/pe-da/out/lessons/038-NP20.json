@@ -3,13 +3,13 @@
  "sort_order": 38,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP20 · So sánh số thực",
- "subtitle": "Trung cấp · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Trung cấp · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP20 · So sánh số thực",
-  "subtitle": "Trung cấp · M2 · 7 phút",
+  "subtitle": "Trung cấp · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP20",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "0.1+0.2 == 0.3 thường False. Kết luận nào đúng?",
+     "options": [
+      {
+       "text": "Cứ ép hai số thành int là kiểm được chính xác",
+       "detail": "Ép int có thể xóa cả một chênh lệch quan trọng."
+      },
+      {
+       "text": "Hai số in giống nhau thì == chắc chắn True",
+       "detail": "Định dạng hiển thị có thể che phần chênh lệch nhỏ."
+      },
+      {
+       "text": "Biểu diễn số thực có thể lệch rất nhỏ; có thể dùng isclose với sai số phù hợp",
+       "detail": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra."
+    },
+    {
+     "question": "So sánh bằng dấu ==. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "False",
+       "detail": "Tổng được lưu không trùng chính xác với biểu diễn của 0.3.",
+       "correct": true
+      },
+      {
+       "text": "True",
+       "detail": "Biểu diễn số thực nhị phân có thể để lại chênh lệch nhỏ."
+      },
+      {
+       "text": "'TypeError'",
+       "detail": "Hai số thực vẫn so sánh được bằng ==."
+      }
+     ],
+     "explanation": "Tổng được lưu không trùng chính xác với biểu diễn của 0.3."
+    },
+    {
+     "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "True",
+       "detail": "isclose chấp nhận chênh lệch nhỏ của phép tính số thực.",
+       "correct": true
+      },
+      {
+       "text": "False",
+       "detail": "Chênh lệch trong ví dụ nhỏ hơn sai số mặc định."
+      },
+      {
+       "text": "'0.3'",
+       "detail": "isclose trả Boolean, không trả giá trị đích."
+      }
+     ],
+     "explanation": "isclose chấp nhận chênh lệch nhỏ của phép tính số thực."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai số trông giống nhau sau khi làm tròn có chắc chắn bằng nhau khi dùng `==` không?",
@@ -156,5 +215,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

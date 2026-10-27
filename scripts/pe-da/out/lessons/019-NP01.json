@@ -3,13 +3,13 @@
  "sort_order": 19,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP01 · Array là gì?",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP01 · Array là gì?",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP01",
@@ -75,6 +75,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a = np.array([4, 2, 9]). Khi in a, thứ tự nào được giữ?",
+     "options": [
+      {
+       "text": "[4 2 9]",
+       "detail": "Đúng. np.array giữ thứ tự dữ liệu nhập.",
+       "correct": true
+      },
+      {
+       "text": "[2 4 9]",
+       "detail": "array không tự sắp tăng."
+      },
+      {
+       "text": "[9 2 4]",
+       "detail": "array không tự đảo thứ tự."
+      }
+     ],
+     "explanation": "Đúng. np.array giữ thứ tự dữ liệu nhập."
+    },
+    {
+     "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[8, 11, 6]",
+       "detail": "Array giữ đúng thứ tự các số đã nhập.",
+       "correct": true
+      },
+      {
+       "text": "[6, 8, 11]",
+       "detail": "Tạo array không tự sắp xếp dữ liệu."
+      },
+      {
+       "text": "25",
+       "detail": "np.array lưu các số; nó chưa cộng chúng."
+      }
+     ],
+     "explanation": "Array giữ đúng thứ tự các số đã nhập."
+    },
+    {
+     "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[7, 7, 9]",
+       "detail": "Mỗi vị trí đầu vào trở thành một vị trí trong array, kể cả số lặp.",
+       "correct": true
+      },
+      {
+       "text": "[7, 9]",
+       "detail": "Array không tự loại các số lặp."
+      },
+      {
+       "text": "[9, 7, 7]",
+       "detail": "Tạo array không đảo thứ tự."
+      }
+     ],
+     "explanation": "Mỗi vị trí đầu vào trở thành một vị trí trong array, kể cả số lặp."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với `a = np.array([6, 8, 10])`, array `a` chứa những giá trị nào?",
@@ -151,5 +210,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

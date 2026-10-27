@@ -3,13 +3,13 @@
  "sort_order": 171,
  "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
  "title": "RD04 · Nhân ma trận và ước lượng một đường thẳng",
- "subtitle": "Nâng cao · M10 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M10 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RD04 · Nhân ma trận và ước lượng một đường thẳng",
-  "subtitle": "Nâng cao · M10 · 9 phút",
+  "subtitle": "Nâng cao · M10 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RD04",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hệ x+y=7, 2x+y=11 có nghiệm nào?",
+     "options": [
+      {
+       "text": "[7,11]",
+       "detail": "Đó là vế phải b, không phải nghiệm của hệ."
+      },
+      {
+       "text": "[4,3]",
+       "detail": "Đúng. Thế lại: 4+3=7 và 2×4+3=11.",
+       "correct": true
+      },
+      {
+       "text": "[3,4]",
+       "detail": "Phương trình đầu đúng nhưng phương trình sau thành 10, không phải 11."
+      }
+     ],
+     "explanation": "Đúng. Thế lại: 4+3=7 và 2×4+3=11."
+    },
+    {
+     "question": "Mỗi hàng là một đơn gồm hai loại hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[20, 30]",
+       "detail": "Mỗi hàng nhân với các giá tương ứng rồi cộng các tích.",
+       "correct": true
+      },
+      {
+       "text": "[[10, 10], [30, 0]]",
+       "detail": "Đó là nhân từng phần tử trước khi cộng theo hàng."
+      },
+      {
+       "text": "[15, 15]",
+       "detail": "Phải dùng số lượng của từng hàng, không chỉ cộng bảng giá."
+      }
+     ],
+     "explanation": "Mỗi hàng nhân với các giá tương ứng rồi cộng các tích."
+    },
+    {
+     "question": "Dừng trước bước cộng mỗi hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[10, 10], [30, 0]]",
+       "detail": "Dấu * với broadcasting giữ riêng khoản tiền từng sản phẩm.",
+       "correct": true
+      },
+      {
+       "text": "[20, 30]",
+       "detail": "Đó là kết quả @ đã cộng các tích."
+      },
+      {
+       "text": "[[10, 5], [30, 5]]",
+       "detail": "Mỗi ô lượng phải được nhân với giá cùng cột."
+      }
+     ],
+     "explanation": "Dấu * với broadcasting giữ riêng khoản tiền từng sản phẩm."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với qty=[[1,2],[3,0]] và price=[10,5], dự đoán qty@price trước khi chạy.",
@@ -169,5 +228,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

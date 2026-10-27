@@ -3,13 +3,13 @@
  "sort_order": 8,
  "module": "M1 · Python nền tảng",
  "title": "PY08 · Chuẩn hóa và định dạng văn bản",
- "subtitle": "Cơ bản · M1 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY08 · Chuẩn hóa và định dạng văn bản",
-  "subtitle": "Cơ bản · M1 · 10 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY08",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "raw = \"  hN  \". Muốn nhận \"hn\" mà không còn khoảng trắng hai đầu, dùng gì?",
+     "options": [
+      {
+       "text": "raw.lower()",
+       "detail": "lower vẫn giữ khoảng trắng ở hai đầu."
+      },
+      {
+       "text": "raw.strip().title()",
+       "detail": "title đổi cách viết hoa, không cho \"hn\"."
+      },
+      {
+       "text": "raw.strip().lower()",
+       "detail": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường."
+    },
+    {
+     "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'Lan'",
+       "detail": "strip làm sạch hai đầu rồi title viết hoa đầu từ.",
+       "correct": true
+      },
+      {
+       "text": "'  Lan  '",
+       "detail": "strip đã bỏ khoảng trắng hai đầu."
+      },
+      {
+       "text": "''",
+       "detail": "strip không xóa nội dung tên; nó chỉ bỏ khoảng trắng ở hai đầu."
+      }
+     ],
+     "explanation": "strip làm sạch hai đầu rồi title viết hoa đầu từ."
+    },
+    {
+     "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'0008'",
+       "detail": "Bổ sung ba số 0 để cả mã dài bốn ký tự.",
+       "correct": true
+      },
+      {
+       "text": "'8000'",
+       "detail": "zfill thêm số 0 ở phía đầu."
+      },
+      {
+       "text": "'00008'",
+       "detail": "Độ dài cần là 4, không phải thêm bốn số 0."
+      }
+     ],
+     "explanation": "Bổ sung ba số 0 để cả mã dài bốn ký tự."
+    }
+   ],
    "practice": [
     {
      "prompt": "strip().split(\",\") trả chuỗi hay list?",
@@ -129,5 +188,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

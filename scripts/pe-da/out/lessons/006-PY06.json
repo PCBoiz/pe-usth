@@ -3,13 +3,13 @@
  "sort_order": 6,
  "module": "M1 · Python nền tảng",
  "title": "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng",
- "subtitle": "Cơ bản · M1 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY06 · Chuỗi, dấu nháy và ký tự xuống dòng",
-  "subtitle": "Cơ bản · M1 · 9 phút",
+  "subtitle": "Cơ bản · M1 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY06",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "print(\"A\\nB\") hiển thị như thế nào?",
+     "options": [
+      {
+       "text": "AB không có khoảng cách",
+       "detail": "Ký tự xuống dòng vẫn được giữ khi in."
+      },
+      {
+       "text": "A và B trên hai dòng",
+       "detail": "Đúng. \\n trong chuỗi là ký tự xuống dòng.",
+       "correct": true
+      },
+      {
+       "text": "A\\nB trên một dòng",
+       "detail": "Đó là cách viết trong code; print diễn giải ký tự xuống dòng có trong chuỗi."
+      }
+     ],
+     "explanation": "Đúng. \\n trong chuỗi là ký tự xuống dòng."
+    },
+    {
+     "question": "Tạo nhãn có tên thành phố. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'Store: Hue'",
+       "detail": "Dấu + nối nguyên các ký tự của hai chuỗi.",
+       "correct": true
+      },
+      {
+       "text": "'Store: city'",
+       "detail": "city không nằm trong dấu nháy nên được đọc giá trị."
+      },
+      {
+       "text": "'Store:Hue'",
+       "detail": "Chuỗi bên trái có một dấu cách sau dấu hai chấm."
+      }
+     ],
+     "explanation": "Dấu + nối nguyên các ký tự của hai chuỗi."
+    },
+    {
+     "question": "In đường phân cách ngắn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'=-=-=-'",
+       "detail": "Mỗi lượt lặp thêm một cặp =-.",
+       "correct": true
+      },
+      {
+       "text": "'===---'",
+       "detail": "Cả chuỗi =- được lặp theo thứ tự."
+      },
+      {
+       "text": "'=-3'",
+       "detail": "Nhân chuỗi với số nguyên không nối chữ số 3."
+      }
+     ],
+     "explanation": "Mỗi lượt lặp thêm một cặp =-."
+    }
+   ],
    "practice": [
     {
      "prompt": "\"ab\" * 3 cho chuỗi nào?",
@@ -125,5 +184,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

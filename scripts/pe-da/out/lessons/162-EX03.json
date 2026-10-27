@@ -3,13 +3,13 @@
  "sort_order": 162,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
  "title": "EX03 · Tự mở Notebook trong đúng môi trường",
- "subtitle": "Cơ bản · M9 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M9 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "EX03 · Tự mở Notebook trong đúng môi trường",
-  "subtitle": "Cơ bản · M9 · 8 phút",
+  "subtitle": "Cơ bản · M9 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#EX03",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Cell chạy được sau nhiều lần thử nhưng Restart/Run All báo NameError. Điều gì cần kiểm trước?",
+     "options": [
+      {
+       "text": "Máy không thể chạy Python",
+       "detail": "NameError cụ thể thường liên quan tên chưa được định nghĩa trong lượt chạy đó."
+      },
+      {
+       "text": "Cài lại mọi thư viện ngay",
+       "detail": "Trước hết cần đọc tên biến và kiểm cell tạo biến đó."
+      },
+      {
+       "text": "Cell đang dùng biến từ một lượt chạy cũ",
+       "detail": "Kernel giữ trạng thái; chạy từ đầu cho thấy thứ tự phụ thuộc thực tế.",
+       "correct": true
+      }
+     ],
+     "explanation": "Kernel giữ trạng thái; chạy từ đầu cho thấy thứ tự phụ thuộc thực tế."
+    },
+    {
+     "question": "sys.executable trong cell cho biết gì?",
+     "options": [
+      {
+       "text": "Thư viện vừa import gần nhất",
+       "detail": "Chưa đúng. Đây là đường dẫn interpreter thực sự của phiên thực thi."
+      },
+      {
+       "text": "Python đang thực thi kernel",
+       "detail": "Đây là đường dẫn interpreter thực sự của phiên thực thi.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ tên notebook",
+       "detail": "Chưa đúng. Đây là đường dẫn interpreter thực sự của phiên thực thi."
+      }
+     ],
+     "explanation": "Đây là đường dẫn interpreter thực sự của phiên thực thi."
+    },
+    {
+     "question": "Lệnh python -m pip install notebook chạy ở đâu theo hướng dẫn?",
+     "options": [
+      {
+       "text": "Terminal của môi trường dự án",
+       "detail": "Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell.",
+       "correct": true
+      },
+      {
+       "text": "Viết như cú pháp Python thuần trong cell",
+       "detail": "Chưa đúng. Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
+      },
+      {
+       "text": "Trong đối số title của Tkinter",
+       "detail": "Chưa đúng. Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
+      }
+     ],
+     "explanation": "Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
+    }
+   ],
    "practice": [
     {
      "prompt": "Python đã có sẵn: nêu lệnh cài bằng pip và lệnh mở Notebook. Những lệnh này chạy ở đâu?",
@@ -90,5 +149,6 @@
    "reason": "sys.executable trong trình duyệt không trỏ tới file thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

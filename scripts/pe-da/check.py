@@ -21,6 +21,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 OUT = HERE / 'out'
 SOURCE = HERE / 'source' / 'course.json'
+PRACTICE = HERE / 'source' / 'practice.json'
 ANH = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da'
 CURRICULA = HERE.parent.parent / 'frontend' / 'src' / 'lib' / 'curricula.json'
 
@@ -58,6 +59,7 @@ def main() -> int:
     kiem_noi_dung(bai, nguon_theo_id)
     kiem_anh(bai)
     kiem_sandbox(bai)
+    kiem_trac_nghiem(bai)
     kiem_curricula(bai)
 
     for m in CANH_BAO:
@@ -257,6 +259,101 @@ def kiem_bai_tap(ma: str, bon: dict, mode: str) -> None:
     if du_lieu and mode == 'local' and not bon.get('env'):
         loi(f'{ma}: code bài đọc phải chạy trên máy nhưng bài tập chấm tại đây, '
             'mà không có `env` nói rõ — học viên mất hướng dẫn chạy trên máy')
+
+
+def kiem_trac_nghiem(bai: list[dict]) -> None:
+    """Câu trắc nghiệm đã dựng phải khớp NGUỒN, nhất là ở chỗ đáp án nào đúng.
+
+    VÌ SAO PHÉP KIỂM NÀY PHẢI Ở ĐÂY, không ở bộ test backend. Ca test trong
+    `quizzes.service.spec.ts` so `correct` của snapshot với vị trí lựa chọn
+    mang cờ trong BẢN DỰNG — nên nó chứng minh "build.py và
+    normalizeQuestion nói cùng một chuyện", KHÔNG chứng minh build.py chọn
+    đúng đáp án. Đã ablate: đổi build.py sang đánh dấu lựa chọn ĐẦU TIÊN là
+    đúng thì cả 30 ca backend vẫn XANH, vì chúng đọc lại chính dữ liệu đã bị
+    đổi. Thẩm quyền về đáp án nằm ở `correctOption` của nguồn, nên phép so
+    phải chạm tới nguồn.
+
+    Và nó không ném ở đâu cả nếu sai: một câu đánh dấu sai đáp án vẫn chấm
+    bình thường, chỉ là đánh trượt mọi học viên trả lời đúng.
+    """
+    if not PRACTICE.is_file():
+        canh_bao('không có source/practice.json — không đối chiếu được trắc nghiệm')
+        return
+    nguon = json.loads(PRACTICE.read_text(encoding='utf-8'))
+    mcq_nguon: dict[str, list[dict]] = {}
+    for l in nguon['lessons']:
+        for a in l.get('mcq') or []:
+            # Phẳng: câu gốc rồi các biến thể, đúng thứ tự build.py lấy.
+            mcq_nguon[l['id']] = [a] + list(a.get('variants') or [])
+            break
+
+    tong = 0
+    for b in bai:
+        ma = b['lesson_code']
+        dung = (b['content_json'].get('step_2') or {}).get('mcq') or []
+        goc = mcq_nguon.get(ma) or []
+        if not dung:
+            if goc:
+                loi(f'{ma}: nguồn có {len(goc)} câu trắc nghiệm nhưng bản dựng không phát câu nào')
+            continue
+        tong += len(dung)
+        if len(dung) != b.get('_so_mcq'):
+            loi(f'{ma}: _so_mcq={b.get("_so_mcq")} nhưng step_2.mcq có {len(dung)} câu')
+        if len(dung) > len(goc):
+            loi(f'{ma}: dựng ra {len(dung)} câu nhưng nguồn chỉ có {len(goc)}')
+            continue
+
+        for i, q in enumerate(dung):
+            # Đối chiếu theo VỊ TRÍ: build.py lấy `[gốc] + biến thể[:n-1]` nên
+            # câu thứ i của bản dựng phải là câu thứ i của nguồn. So theo nội
+            # dung thì một lần đổi thứ tự lấy câu sẽ lọt qua im lặng.
+            g = goc[i]
+            if q.get('question') != g.get('prompt'):
+                loi(f'{ma} câu {i}: `question` không khớp `prompt` của nguồn')
+                continue
+            lc_goc = g.get('options') or []
+            lc_dung = q.get('options') or []
+            if len(lc_dung) != len(lc_goc):
+                loi(f'{ma} câu {i}: dựng {len(lc_dung)} lựa chọn, nguồn có {len(lc_goc)}')
+                continue
+            if [o.get('text') for o in lc_dung] != [o.get('text') for o in lc_goc]:
+                loi(f'{ma} câu {i}: chữ của lựa chọn không khớp nguồn')
+                continue
+
+            danh_dau = [j for j, o in enumerate(lc_dung) if o.get('correct') is True]
+            if len(danh_dau) != 1:
+                loi(f'{ma} câu {i}: có {len(danh_dau)} lựa chọn được đánh dấu đúng, cần đúng 1')
+                continue
+            # ĐÂY là phép kiểm mà bộ test backend không làm được.
+            vi_tri_goc = next(
+                (j for j, o in enumerate(lc_goc) if o.get('id') == g.get('correctOption')), -1)
+            if danh_dau[0] != vi_tri_goc:
+                loi(f'{ma} câu {i}: đánh dấu lựa chọn {danh_dau[0]} là đúng, '
+                    f'nhưng nguồn nói correctOption={g.get("correctOption")!r} '
+                    f'(lựa chọn {vi_tri_goc})')
+            if not (q.get('question') or '').strip():
+                loi(f'{ma} câu {i}: câu hỏi rỗng')
+            for j, o in enumerate(lc_dung):
+                if not (o.get('text') or '').strip():
+                    loi(f'{ma} câu {i}: lựa chọn {j} không có chữ')
+                # `detail` là lời phản hồi RIÊNG của từng lựa chọn — thứ nói
+                # vì sao lựa chọn SAI là sai. Nguồn có nó cho cả 3 096 lựa
+                # chọn; mất nó thì học viên chọn sai rồi chỉ thấy một dấu X,
+                # và màn trắc nghiệm hết tác dụng dạy. Bỏ đi không làm gì đỏ
+                # nên phải canh ở đây.
+                if (lc_goc[j].get('feedback') or '').strip()                         and not (o.get('detail') or '').strip():
+                    loi(f'{ma} câu {i}: lựa chọn {j} mất `detail` — nguồn CÓ feedback')
+
+    # MIN_POOL của backend là 5 CÂU: 3 câu mỗi bài nghĩa là phải xong 2 bài mới
+    # mở được quiz ôn. Hạ xuống 1-2 câu/bài là đổi hành vi người dùng thấy
+    # được (phải xong 3-5 bài), nên con số này phải được canh.
+    for b in bai:
+        n = len((b['content_json'].get('step_2') or {}).get('mcq') or [])
+        if n and n < 3:
+            loi(f'{b["lesson_code"]}: chỉ {n} câu trắc nghiệm — cần ≥3 để 2 bài '
+                'đủ MIN_POOL=5 của kho quiz')
+    if tong and tong != 3 * len(bai):
+        canh_bao(f'tổng câu trắc nghiệm là {tong}, không phải 3 × {len(bai)} bài')
 
 
 def kiem_curricula(bai: list[dict]) -> None:

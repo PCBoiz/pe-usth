@@ -3,13 +3,13 @@
  "sort_order": 134,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT03 · Scheduler, PCB và các hàng đợi",
- "subtitle": "Nâng cao · M6 · 19 phút",
- "estimated_minutes": 19,
- "xp_reward": 11,
+ "subtitle": "Nâng cao · M6 · 22 phút",
+ "estimated_minutes": 22,
+ "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT03 · Scheduler, PCB và các hàng đợi",
-  "subtitle": "Nâng cao · M6 · 19 phút",
+  "subtitle": "Nâng cao · M6 · 22 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT03",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Một tác vụ đang đợi mạng có nên chiếm CPU chỉ để chờ không?",
+     "options": [
+      {
+       "text": "Không; có thể waiting để CPU chạy tác vụ khác",
+       "detail": "I/O-bound có nhiều giai đoạn chờ, scheduler tận dụng thời gian này.",
+       "correct": true
+      },
+      {
+       "text": "Có; CPU cần chờ riêng tác vụ đó",
+       "detail": "Tiến trình waiting thường không cần thực thi chỉ để I/O hoàn tất."
+      },
+      {
+       "text": "Không; phải kết thúc tiến trình ngay",
+       "detail": "Đợi I/O không có nghĩa chương trình đã kết thúc."
+      }
+     ],
+     "explanation": "I/O-bound có nhiều giai đoạn chờ, scheduler tận dụng thời gian này."
+    },
+    {
+     "question": "Process đang chờ ổ đĩa nằm ở queue nào trong mô hình slide?",
+     "options": [
+      {
+       "text": "job queue chỉ chứa kết quả đã in",
+       "detail": "Chưa đúng. Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
+      },
+      {
+       "text": "device queue",
+       "detail": "Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU.",
+       "correct": true
+      },
+      {
+       "text": "ready queue vì đã chạy trước đó",
+       "detail": "Chưa đúng. Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
+      }
+     ],
+     "explanation": "Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
+    },
+    {
+     "question": "Short-term scheduler chủ yếu chọn gì?",
+     "options": [
+      {
+       "text": "Process sẵn sàng sẽ chạy CPU tiếp theo",
+       "detail": "Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo.",
+       "correct": true
+      },
+      {
+       "text": "Tên file để cài Python",
+       "detail": "Chưa đúng. Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
+      },
+      {
+       "text": "Những job được phép vào hệ thống từ đầu",
+       "detail": "Chưa đúng. Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
+      }
+     ],
+     "explanation": "Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một process chờ ổ đĩa có nên được coi là đang dùng CPU để tính không?",
@@ -122,5 +181,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

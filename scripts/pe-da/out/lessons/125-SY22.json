@@ -3,13 +3,13 @@
  "sort_order": 125,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY22 · Đọc đúng định dạng Stata và SAS",
- "subtitle": "Trung cấp · M5 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY22 · Đọc đúng định dạng Stata và SAS",
-  "subtitle": "Trung cấp · M5 · 11 phút",
+  "subtitle": "Trung cấp · M5 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY22",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "File XPORT có thể luôn đọc bằng format=\"sas7bdat\" chỉ vì cùng thuộc SAS không?",
+     "options": [
+      {
+       "text": "Không; XPORT và SAS7BDAT là hai định dạng",
+       "detail": "Cần chọn format hoặc bộ đọc đúng với file được cung cấp.",
+       "correct": true
+      },
+      {
+       "text": "Có; hai tên gọi cùng định dạng",
+       "detail": "XPORT là định dạng trao đổi khác SAS7BDAT."
+      },
+      {
+       "text": "Chỉ cần đổi đuôi file",
+       "detail": "Đổi tên không chuyển đổi cấu trúc byte của file."
+      }
+     ],
+     "explanation": "Cần chọn format hoặc bộ đọc đúng với file được cung cấp."
+    },
+    {
+     "question": "Đồng nghiệp gửi Stata .dta. Đổi đuôi thành .csv có biến nó thành CSV không?",
+     "options": [
+      {
+       "text": "Chỉ cần thêm dấu phẩy vào tên file",
+       "detail": "Chưa đúng. Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên."
+      },
+      {
+       "text": "Không; cần reader cho định dạng Stata",
+       "detail": "Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi định dạng chỉ khác tên",
+       "detail": "Chưa đúng. Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên."
+      }
+     ],
+     "explanation": "Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên."
+    },
+    {
+     "question": "pd.read_stata thường trả dữ liệu dạng nào?",
+     "options": [
+      {
+       "text": "DataFrame",
+       "detail": "Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích.",
+       "correct": true
+      },
+      {
+       "text": "Một cửa sổ đồ họa",
+       "detail": "Chưa đúng. Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."
+      },
+      {
+       "text": "Một kernel Notebook",
+       "detail": "Chưa đúng. Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."
+      }
+     ],
+     "explanation": "Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."
+    }
+   ],
    "practice": [
     {
      "prompt": "Có thể đổi đuôi CSV thành .dta rồi đọc Stata không?",
@@ -172,5 +231,6 @@
    "reason": "sas7bdat chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

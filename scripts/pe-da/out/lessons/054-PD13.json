@@ -3,13 +3,13 @@
  "sort_order": 54,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
- "subtitle": "Trung cấp · M3 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M3 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
-  "subtitle": "Trung cấp · M3 · 12 phút",
+  "subtitle": "Trung cấp · M3 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD13",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Workbook có [\"Notes\",\"Sales\"]. sheet_name=0 chọn gì?",
+     "options": [
+      {
+       "text": "Sales",
+       "detail": "Tên Sales không quyết định vị trí 0."
+      },
+      {
+       "text": "Cả hai",
+       "detail": "Một số 0 chọn một sheet, không phải mọi sheet."
+      },
+      {
+       "text": "Notes",
+       "detail": "Đúng: 0 chỉ vị trí sheet đầu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Hãy xem tên sheet và chọn theo mục đích của bảng."
+    },
+    {
+     "question": "orient=\"records\" mô tả JSON như thế nào?",
+     "options": [
+      {
+       "text": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
+       "detail": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
+       "correct": true
+      },
+      {
+       "text": "Một dictionary cho mỗi cột, không có hàng.",
+       "detail": "Mô tả này nghiêng về dạng ánh xạ theo cột, không phải records."
+      },
+      {
+       "text": "Một chuỗi duy nhất chứa tên sheet Excel.",
+       "detail": "JSON records không mô tả tên sheet của workbook."
+      }
+     ],
+     "explanation": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng."
+    },
+    {
+     "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?",
+     "options": [
+      {
+       "text": "Để xóa workbook trước khi đọc.",
+       "detail": "seek(0) đổi vị trí đọc, không xóa dữ liệu."
+      },
+      {
+       "text": "Để đổi sheet đầu tiên thành Sales.",
+       "detail": "Chọn sheet là trách nhiệm của sheet_name hoặc parse."
+      },
+      {
+       "text": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
+       "detail": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
+       "correct": true
+      }
+     ],
+     "explanation": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc."
+    }
+   ],
    "practice": [
     {
      "prompt": "orient=\"records\" mô tả JSON như thế nào?",
@@ -107,5 +166,6 @@
    "reason": "openpyxl chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: openpyxl chưa có wheel trong /pyodide/v314.0.7/"
 }

@@ -3,13 +3,13 @@
  "sort_order": 115,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY12 · Package và điểm bắt đầu của chương trình",
- "subtitle": "Trung cấp · M5 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY12 · Package và điểm bắt đầu của chương trình",
-  "subtitle": "Trung cấp · M5 · 13 phút",
+  "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY12",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "main.py có main guard gọi run(). Chạy python -c \"import main\" sẽ tự gọi run không?",
+     "options": [
+      {
+       "text": "Không thể import file tên main.py",
+       "detail": "main là tên module hợp lệ; vấn đề là lời gọi có được bảo vệ không."
+      },
+      {
+       "text": "Không",
+       "detail": "Khi import, __name__ của module là main chứ không phải __main__.",
+       "correct": true
+      },
+      {
+       "text": "Có, main guard chạy ở mọi lần import",
+       "detail": "Điều kiện guard phải đúng mới gọi run."
+      }
+     ],
+     "explanation": "Khi import, __name__ của module là main chứ không phải __main__."
+    },
+    {
+     "question": "Tên module nhiều tầng thường viết như thế nào?",
+     "options": [
+      {
+       "text": "domains\\reports\\summary.py trong câu import",
+       "detail": "Chưa đúng. Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác."
+      },
+      {
+       "text": "domains.reports.summary",
+       "detail": "Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác.",
+       "correct": true
+      },
+      {
+       "text": "domains/reports/summary trong câu import",
+       "detail": "Chưa đúng. Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác."
+      }
+     ],
+     "explanation": "Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác."
+    },
+    {
+     "question": "Trong regular package của bài, __init__.py có vai trò gì?",
+     "options": [
+      {
+       "text": "File khởi tạo package",
+       "detail": "__init__.py của package khác method __init__ của một class.",
+       "correct": true
+      },
+      {
+       "text": "Method khởi tạo của mọi class bên trong",
+       "detail": "Chưa đúng. __init__.py của package khác method __init__ của một class."
+      },
+      {
+       "text": "File chỉ chạy khi gọi pip",
+       "detail": "Chưa đúng. __init__.py của package khác method __init__ của một class."
+      }
+     ],
+     "explanation": "__init__.py của package khác method __init__ của một class."
+    }
+   ],
    "practice": [
     {
      "prompt": "__init__.py có phải constructor của mọi object trong package không?",
@@ -107,5 +166,6 @@
  },
  "_mode": "local",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

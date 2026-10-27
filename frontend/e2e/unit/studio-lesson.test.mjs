@@ -352,31 +352,40 @@ test('screenVerdict/mcq: MỌI lựa chọn sai đều bị chấm sai', () => {
   }
 });
 
-test('screenVerdict/mcq: KHIẾM KHUYẾT ĐÃ BIẾT — lựa chọn ngoài phạm vi làm ném TypeError', () => {
-  // Ghi lại chứ không bỏ qua. screenVerdict tính picked = keyIndex(...) rồi gọi
-  // optionDetail(q.options[picked]). Với picked ngoài [0, options.length) thì
-  // q.options[picked] là undefined → optionDetail đọc o.detail → TypeError, màn
-  // bài trắng. Hai nguồn picked xấu:
-  //   - chưa chọn gì: keyIndex('') = -1, mà Number.isInteger(-1) là true nên
-  //     nhánh bảo vệ duy nhất trong file không chặn được;
-  //   - nháp cũ trong localStorage (`pe-studio-lesson-v1:…` ở StudioLesson.tsx
-  //     dòng ~288) lưu khoá của bản bài có nhiều lựa chọn hơn; build lại giáo
-  //     trình làm số lựa chọn giảm là học viên đó mở bài là crash, mãi mãi, vì
-  //     nháp được nạp lại mỗi lần vào.
-  // Hiện người dùng chưa gặp vì nút "Kiểm tra" bị disable bởi answered()
-  // (`d.mcq[index] !== undefined`) — nhưng đó là hàng rào DUY NHẤT, và nó không
-  // chặn được nháp cũ.
-  // Khi studio-lesson.ts chặn index ngoài phạm vi, đổi các assert.throws dưới
-  // đây thành `.correct === false`.
+test('screenVerdict/mcq: lựa chọn ngoài phạm vi trả `correct: false`, KHÔNG ném', () => {
+  // ĐÃ SỬA 27/10/2026. Ca này trước đây tên là "KHIẾM KHUYẾT ĐÃ BIẾT" và nó
+  // khoá đúng hành vi NÉM: `screenVerdict` tính `picked = keyIndex(...)` rồi gọi
+  // `optionDetail(q.options[picked])`, nên picked ngoài [0, options.length) cho
+  // `undefined` và `optionDetail` đọc `o.detail` → TypeError, màn bài TRẮNG.
+  //
+  // Hai nguồn picked xấu, cả hai nay đều ra `correct: false`:
+  //   · chưa chọn gì — `keyIndex('')` = -1, mà `Number.isInteger(-1)` là TRUE
+  //     nên nhánh bảo vệ duy nhất không chặn được. Nay điều kiện là `picked >= 0`.
+  //   · nháp cũ trong localStorage giữ khoá của bản bài có NHIỀU lựa chọn hơn;
+  //     dựng lại giáo trình làm số lựa chọn giảm thì học viên đó mở bài là
+  //     crash, mãi mãi, vì nháp được nạp lại mỗi lần vào. Nay `optionDetail`
+  //     nhận `undefined` — nó vốn trả `string | undefined` nên không mất gì.
+  //
+  // Vì sao sửa BÂY GIỜ: hàng rào duy nhất trước đây là nút "Kiểm tra" bị disable
+  // bởi `answered()`, và nó không chặn được nháp cũ. Tới 27/10 thì 172 bài mỗi
+  // bài có 3 màn trắc nghiệm, tức đường đi này thành đường đi CHÍNH của sản
+  // phẩm chứ không còn là ngõ cụt của 48 bài đã ẩn.
   const scr = screenByKey(buildScreens(b01), 's2-mcq-0');
   const n = b01.step_2.mcq[0].options.length;
-  assert.throws(() => screenVerdict(b01, scr, draftOf(b01)), TypeError);
-  assert.throws(() => screenVerdict(b01, scr, draftOf(b01, { mcq: { 0: '' } })), TypeError);
-  assert.throws(() => screenVerdict(b01, scr, draftOf(b01, { mcq: { 0: letterKey(n) } })), TypeError);
-  assert.throws(() => screenVerdict(b01, scr, draftOf(b01, { mcq: { 0: 'z' } })), TypeError);
+  for (const nhap of [
+    draftOf(b01),                                   // chưa chọn gì
+    draftOf(b01, { mcq: { 0: '' } }),               // khoá rỗng
+    draftOf(b01, { mcq: { 0: letterKey(n) } }),     // vừa quá cuối mảng
+    draftOf(b01, { mcq: { 0: 'z' } }),              // nháp cũ, khoá lạ
+  ]) {
+    const v = screenVerdict(b01, scr, nhap);
+    assert.equal(v.correct, false);
+    // Và vẫn phải NÓI được điều gì: rơi về giải thích của câu, hoặc của đáp án
+    // đúng. Trả `explain: undefined` là học viên thấy một dấu X không lời.
+    assert.equal(typeof v.explain, 'string');
+  }
 
-  // Màn dự đoán xử lý cùng tình huống đúng cách — dùng nó làm mẫu khi sửa:
-  // options[-1] là undefined nhưng `Boolean(chosen?.correct)` nên chỉ ra false.
+  // Màn dự đoán vốn đã xử lý đúng cách — giữ lại làm mốc đối chiếu.
   const pScr = screenByKey(buildScreens(b01), 's1-predict');
   assert.equal(screenVerdict(b01, pScr, draftOf(b01)).correct, false);
   assert.equal(screenVerdict(b01, pScr, draftOf(b01, { predict: 'z' })).correct, false);
@@ -807,7 +816,6 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
     assert.equal(l.schema, 'studio-lesson/v2', code);
     // Bộ này KHÔNG có trắc nghiệm: lối vào quiz ôn tập vì vậy không bao giờ mở
     // được (QuizzesService đòi MIN_POOL = 5 câu lấy từ step_2.mcq).
-    assert.equal(l.step_2?.mcq, undefined, code);
     assert.equal(l.step_3, undefined, code);
     assert.equal(l.play, undefined, code);
   }
@@ -819,6 +827,25 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // practice-contract.test.mjs; ở đây chỉ chốt rằng bài nào CÓ ca chấm thì có
   // đủ khung đề và lời giải mẫu — thiếu một trong hai là bảng ca kiểm thử hiện
   // ra mà không có chỗ viết, hoặc không có thước đo nào chứng minh ca đúng.
+  // `step_2.mcq` cũng KHÔNG còn rỗng. Dòng này từng là
+  // `assert.equal(l.step_2?.mcq, undefined)` cho cả 172 bài — đúng cho tới
+  // 27/10/2026, khi 516 câu trắc nghiệm NGƯỜI VIẾT của gói được rót vào. Trước
+  // đó kho quiz ôn tập ở backend (chấm Ở SERVER, không gửi đáp án ra client)
+  // rỗng hoàn toàn: 0/172 bài có câu hỏi.
+  for (const [code, l] of DA) {
+    const mcq = l.step_2?.mcq ?? [];
+    assert.equal(mcq.length, 3, code);
+    for (const q of mcq) {
+      assert.equal(typeof q.question, 'string', code);
+      assert.ok(q.options.length >= 2, code);
+      // Đúng MỘT đáp án: 0 thì màn không bao giờ đúng được và
+      // `firstUnfinished()` chặn nút kết thúc bài; 2 thì `correctIndex()` lấy
+      // cái đầu và câu đó chấm sai một nửa học viên.
+      assert.equal(correctIndex(q), q.options.findIndex((o) => o.correct === true), code);
+      assert.equal(q.options.filter((o) => o.correct === true).length, 1, code);
+    }
+  }
+
   const coCa = DA.filter(([, l]) => (l.step_4?.tests ?? []).length);
   assert.ok(coCa.length > 0, 'bản dựng phải có bài tập được chấm');
   for (const [code, l] of coCa) {
@@ -1018,34 +1045,101 @@ test('bài đọc: màn read đứng TRƯỚC mọi màn khác của S1', () => 
   assert.equal(s1[lastRead + 1].kind, 'theory');
 });
 
-test('bài đọc: cả bài không có màn nào được chấm, nên % luôn 100', () => {
-  // isGraded là danh sách TRẮNG: hai loại màn mới không nằm trong đó.
+test('bài đọc: 3 màn trắc nghiệm ĐƯỢC chấm, màn đọc và luyện tập thì không', () => {
+  // ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC, 27/10/2026. Ca này từng tên là "cả bài
+  // không có màn nào được chấm, nên % luôn 100" và nó ĐÚNG: pe-da không có câu
+  // trắc nghiệm nào, nên điểm bài học luôn 100% và XP được trả bất kể học viên
+  // hiểu hay không. Nay mỗi bài có 3 câu trắc nghiệm được chấm, nên trả lời sai
+  // là điểm dưới 100 và XP ít hơn.
+  //
+  // `isGraded` vẫn là danh sách TRẮNG, và `read`/`practice` vẫn KHÔNG nằm trong
+  // đó: màn đọc không có gì để so, còn câu luyện tập là câu MỞ kèm lời giải mẫu
+  // (không có phương án sai nào). Đưa chúng vào là chặn nút kết thúc bài bằng
+  // một màn không bao giờ "đúng" được.
   assert.equal(isGraded('read'), false);
   assert.equal(isGraded('practice'), false);
+  assert.equal(isGraded('mcq'), true);
 
   for (const [code, l] of DA) {
     const screens = buildScreens(l);
-    assert.equal(screens.filter((s) => isGraded(s.kind)).length, 0, code);
-    // Hệ quả phải đúng, không chỉ là cái cờ: nút kết thúc bài không bị chặn bởi
-    // một màn không bao giờ "đúng" được, và điểm gửi backend không chia cho 0.
-    assert.equal(quizPercent(screens, initialLessonDraft(l), false), 100, code);
+    // Đúng 3 màn được chấm — khớp 3 câu trắc nghiệm build phát ra.
+    assert.equal(screens.filter((s) => isGraded(s.kind)).length, 3, code);
+    assert.deepEqual(
+      screens.filter((s) => isGraded(s.kind)).map((s) => s.kind),
+      ['mcq', 'mcq', 'mcq'],
+      code,
+    );
+    // Nháp TRỐNG = chưa trả lời câu nào, nên % phải là 0 chứ không phải 100.
+    // Nếu ở đây ra 100 thì học viên bỏ qua cả ba câu vẫn ăn XP đầy đủ.
+    assert.equal(quizPercent(screens, initialLessonDraft(l), false), 0, code);
     // Khoá màn không trùng nhau (bản nháp lưu theo khoá này) và bài kết bằng
     // tổng kết.
     assert.equal(new Set(screens.map((s) => s.key)).size, screens.length, code);
     assert.equal(screens.at(-1).kind, 'recap', code);
   }
 
-  // VZ01: 3 màn đọc + 3 câu luyện tập + sandbox + tổng kết.
+  // VZ01: 3 màn đọc + 3 trắc nghiệm + 3 câu luyện tập + sandbox + tổng kết.
+  // Trắc nghiệm đứng TRƯỚC luyện tập: phần được chấm làm trước.
   assert.deepEqual(
     buildScreens(vz01).map((s) => s.kind),
-    ['read', 'read', 'read', 'practice', 'practice', 'practice', 'sandbox', 'recap'],
+    ['read', 'read', 'read', 'mcq', 'mcq', 'mcq',
+      'practice', 'practice', 'practice', 'sandbox', 'recap'],
   );
   // Nháp có chỗ cho câu tự viết và cờ "đã xem đáp án".
   const d = initialLessonDraft(vz01);
   assert.deepEqual(d.practice, {});
   assert.deepEqual(d.practiceSeen, {});
-  // Không màn nào trong bài có kết quả chấm — kể cả màn luyện tập.
-  for (const s of buildScreens(vz01)) assert.equal(screenVerdict(vz01, s, d), null, s.key);
+  // Màn ĐƯỢC chấm trả một kết quả (chưa chọn gì = sai); màn đọc và luyện tập
+  // trả null và không bao giờ khác.
+  for (const s of buildScreens(vz01)) {
+    const v = screenVerdict(vz01, s, d);
+    if (isGraded(s.kind)) {
+      assert.equal(v.correct, false, s.key);
+      assert.equal(typeof v.explain, 'string', s.key);
+    } else {
+      assert.equal(v, null, s.key);
+    }
+  }
+});
+
+test('bài đọc: đi hết 3 câu trắc nghiệm như học viên thật — đúng hết thì 100%', () => {
+  // Nửa còn lại của ca trên. Không có nó thì một lỗi làm MỌI câu bị tính sai
+  // vẫn đi qua, vì ca trên chỉ kiểm nháp rỗng ra 0.
+  //
+  // Phải đi qua `scoreCheck` chứ không chỉ đặt `draft.mcq`: `quizPercent` đọc
+  // `d.score.firstTry[key]`, tức "đúng ngay lần KIỂM TRA đầu", không đọc câu
+  // trả lời đang chọn. Bản đầu của ca này đặt `draft.mcq` rồi mong 100 và nhận
+  // 0 — đúng cơ chế, sai chỗ đặt.
+  const screens = buildScreens(vz01);
+  const mcqScreens = screens.filter((x) => isGraded(x.kind));
+  assert.equal(mcqScreens.length, 3);
+
+  const diHet = (chon) => {
+    let d = initialLessonDraft(vz01);
+    for (const scr of mcqScreens) {
+      const i = scr.index;
+      d = { ...d, mcq: { ...d.mcq, [i]: chon(vz01.step_2.mcq[i], i) } };
+      const v = screenVerdict(vz01, scr, d);
+      d = { ...d, score: scoreCheck(d.score, scr.key, Boolean(v?.correct)).score };
+    }
+    return quizPercent(screens, d, false);
+  };
+
+  // Đúng cả ba.
+  assert.equal(diHet((q) => letterKey(correctIndex(q))), 100);
+
+  // Sai câu đầu, đúng hai câu sau -> 2/3.
+  assert.equal(
+    diHet((q, i) =>
+      letterKey(i === 0 ? (correctIndex(q) + 1) % q.options.length : correctIndex(q))),
+    67,
+  );
+
+  // Sai cả ba -> 0, và KHÔNG âm.
+  assert.equal(
+    diHet((q) => letterKey((correctIndex(q) + 1) % q.options.length)),
+    0,
+  );
 });
 
 test('bài đọc: khối terminal và khối table vẫn là hai loại riêng', () => {

@@ -3,13 +3,13 @@
  "sort_order": 114,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY11 · Module và các cách import",
- "subtitle": "Trung cấp · M5 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY11 · Module và các cách import",
-  "subtitle": "Trung cấp · M5 · 12 phút",
+  "subtitle": "Trung cấp · M5 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY11",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Sau from math import floor as down, muốn làm tròn xuống 3.8 thì gọi gì?",
+     "options": [
+      {
+       "text": "math.down(3.8)",
+       "detail": "Lời import này không tạo thuộc tính math.down."
+      },
+      {
+       "text": "floor.py(3.8)",
+       "detail": "Tên module/hàm Python không được gọi kèm đuôi file theo cách đó."
+      },
+      {
+       "text": "down(3.8)",
+       "detail": "Bí danh down trỏ tới hàm floor đã import.",
+       "correct": true
+      }
+     ],
+     "explanation": "Bí danh down trỏ tới hàm floor đã import."
+    },
+    {
+     "question": "Sau import math, cách gọi floor nào đúng?",
+     "options": [
+      {
+       "text": "math(8.9).floor",
+       "detail": "Chưa đúng. import math đưa tên module math vào nơi gọi; hàm nằm trong module đó."
+      },
+      {
+       "text": "math.floor(8.9)",
+       "detail": "import math đưa tên module math vào nơi gọi; hàm nằm trong module đó.",
+       "correct": true
+      },
+      {
+       "text": "floor.math(8.9)",
+       "detail": "Chưa đúng. import math đưa tên module math vào nơi gọi; hàm nằm trong module đó."
+      }
+     ],
+     "explanation": "import math đưa tên module math vào nơi gọi; hàm nằm trong module đó."
+    },
+    {
+     "question": "Sau from math import floor, tên nào có sẵn để gọi trực tiếp?",
+     "options": [
+      {
+       "text": "floor",
+       "detail": "Câu import này đưa riêng tên floor vào namespace hiện tại.",
+       "correct": true
+      },
+      {
+       "text": "math luôn tự có sẵn",
+       "detail": "Chưa đúng. Câu import này đưa riêng tên floor vào namespace hiện tại."
+      },
+      {
+       "text": "math.py",
+       "detail": "Chưa đúng. Câu import này đưa riêng tên floor vào namespace hiện tại."
+      }
+     ],
+     "explanation": "Câu import này đưa riêng tên floor vào namespace hiện tại."
+    }
+   ],
    "practice": [
     {
      "prompt": "import math và from math import floor khác tên gọi thế nào?",
@@ -102,5 +161,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

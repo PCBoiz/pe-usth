@@ -3,13 +3,13 @@
  "sort_order": 37,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP19 · Cắt dữ liệu: view và copy",
- "subtitle": "Trung cấp · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP19 · Cắt dữ liệu: view và copy",
-  "subtitle": "Trung cấp · M2 · 8 phút",
+  "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP19",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "b=a[:2]; b[0]=9. Vì sao a cũng đổi?",
+     "options": [
+      {
+       "text": "Slice cơ bản dùng chung dữ liệu với a trong ví dụ",
+       "detail": "Đúng. b là view vào vùng nhớ a đang dùng.",
+       "correct": true
+      },
+      {
+       "text": "Python luôn tự sao chép rồi chép ngược",
+       "detail": "Không có bước sao chép ngược tự động; hai cách truy cập dùng chung dữ liệu."
+      },
+      {
+       "text": "Tên b bắt buộc đồng nghĩa với tên a",
+       "detail": "Tên khác nhau có thể trỏ vào cùng dữ liệu; tên không quyết định việc sao chép."
+      }
+     ],
+     "explanation": "Đúng. b là view vào vùng nhớ a đang dùng."
+    },
+    {
+     "question": "Sửa phần đầu được cắt từ array. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[9, 2, 3]",
+       "detail": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc.",
+       "correct": true
+      },
+      {
+       "text": "[1, 2, 3]",
+       "detail": "b là view nên chia sẻ vùng dữ liệu với a."
+      },
+      {
+       "text": "[9, 2]",
+       "detail": "a vẫn có ba phần tử."
+      }
+     ],
+     "explanation": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc."
+    },
+    {
+     "question": "Tạo bản thử trước khi sửa. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[1, 2, 3]",
+       "detail": "Bản sao có dữ liệu riêng nên a giữ nguyên.",
+       "correct": true
+      },
+      {
+       "text": "[9, 2, 3]",
+       "detail": "copy tách dữ liệu của b khỏi a."
+      },
+      {
+       "text": "[1, 2]",
+       "detail": "Cắt b không làm a ngắn lại."
+      }
+     ],
+     "explanation": "Bản sao có dữ liệu riêng nên a giữ nguyên."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong ví dụ `b = a[:2]`, vì sao sửa `b[0]` lại làm đổi `a`?",
@@ -175,5 +234,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

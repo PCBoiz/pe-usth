@@ -3,13 +3,13 @@
  "sort_order": 150,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU03 · Frame, Label và thuộc tính widget",
- "subtitle": "Trung cấp · M8 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M8 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU03 · Frame, Label và thuộc tính widget",
-  "subtitle": "Trung cấp · M8 · 12 phút",
+  "subtitle": "Trung cấp · M8 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU03",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "tk.Label(frame, ...) thuộc vùng chứa nào?",
+     "options": [
+      {
+       "text": "Tự chuyển vào root dù truyền frame",
+       "detail": "Widget được tạo với frame làm parent theo quan hệ đã truyền."
+      },
+      {
+       "text": "Bất kỳ Frame được tạo gần nhất",
+       "detail": "Tkinter không suy đoán parent theo thời điểm tạo gần nhất."
+      },
+      {
+       "text": "frame",
+       "detail": "Parent xác định cây widget, không chỉ màu nền của widget.",
+       "correct": true
+      }
+     ],
+     "explanation": "Parent xác định cây widget, không chỉ màu nền của widget."
+    },
+    {
+     "question": "Frame chủ yếu dùng để làm gì?",
+     "options": [
+      {
+       "text": "Chỉ chứa được văn bản không có nút",
+       "detail": "Chưa đúng. Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
+      },
+      {
+       "text": "Nhóm và chứa widget con",
+       "detail": "Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm.",
+       "correct": true
+      },
+      {
+       "text": "Tự thay mọi phép tính Python",
+       "detail": "Chưa đúng. Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
+      }
+     ],
+     "explanation": "Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
+    },
+    {
+     "question": "Label phù hợp nhất với việc nào?",
+     "options": [
+      {
+       "text": "Hiển thị trạng thái \"Đã lưu\"",
+       "detail": "Label hiển thị văn bản; Entry mới dành cho nhập một dòng.",
+       "correct": true
+      },
+      {
+       "text": "Đọc nội dung người dùng đang gõ",
+       "detail": "Chưa đúng. Label hiển thị văn bản; Entry mới dành cho nhập một dòng."
+      },
+      {
+       "text": "Giữ một pipe giữa process",
+       "detail": "Chưa đúng. Label hiển thị văn bản; Entry mới dành cho nhập một dòng."
+      }
+     ],
+     "explanation": "Label hiển thị văn bản; Entry mới dành cho nhập một dòng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Frame và Label có vai trò gì?",
@@ -116,5 +175,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

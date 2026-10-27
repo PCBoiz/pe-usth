@@ -3,13 +3,13 @@
  "sort_order": 159,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
- "subtitle": "Nâng cao · M8 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M8 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU12 · PW9: ứng dụng quản lý điểm bằng Tkinter",
-  "subtitle": "Nâng cao · M8 · 9 phút",
+  "subtitle": "Nâng cao · M8 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU12",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Ứng dụng GUI dùng thang 0–20; điểm 20 có nên bị loại chỉ vì PW cũ dùng 0–10 không?",
+     "options": [
+      {
+       "text": "Có; mọi bài Python dùng một thang điểm",
+       "detail": "Thang điểm là quy tắc nghiệp vụ của từng ứng dụng."
+      },
+      {
+       "text": "Không; vậy chấp nhận mọi số",
+       "detail": "Vẫn cần giới hạn 0–20, số hữu hạn và dữ liệu đúng kiểu."
+      },
+      {
+       "text": "Không; kiểm theo hợp đồng của ứng dụng hiện tại",
+       "detail": "GU12 quy định thang 0–20; cần đọc đúng dữ liệu và điều kiện của bài.",
+       "correct": true
+      }
+     ],
+     "explanation": "GU12 quy định thang 0–20; cần đọc đúng dữ liệu và điều kiện của bài."
+    },
+    {
+     "question": "GUI hiện tại dùng điểm 0..20. Điểm 20 hợp lệ không?",
+     "options": [
+      {
+       "text": "Chỉ hợp lệ nếu tên môn là Python",
+       "detail": "Chưa đúng. Quy tắc nghiệp vụ phải theo bài hiện tại; không trộn hai thang điểm."
+      },
+      {
+       "text": "Có theo hợp đồng GU12",
+       "detail": "Quy tắc nghiệp vụ phải theo bài hiện tại; không trộn hai thang điểm.",
+       "correct": true
+      },
+      {
+       "text": "Không vì PW cũ dùng thang 0..10",
+       "detail": "Chưa đúng. Quy tắc nghiệp vụ phải theo bài hiện tại; không trộn hai thang điểm."
+      }
+     ],
+     "explanation": "Quy tắc nghiệp vụ phải theo bài hiện tại; không trộn hai thang điểm."
+    },
+    {
+     "question": "Một sinh viên chưa có điểm nào. Label GPA nên hiển thị gì theo bài?",
+     "options": [
+      {
+       "text": "Chưa có GPA",
+       "detail": "Thiếu điểm không phải đã được chấm 0; cần tách trạng thái thiếu khỏi giá trị hợp lệ.",
+       "correct": true
+      },
+      {
+       "text": "0 bắt buộc",
+       "detail": "Chưa đúng. Thiếu điểm không phải đã được chấm 0; cần tách trạng thái thiếu khỏi giá trị hợp lệ."
+      },
+      {
+       "text": "20 để khuyến khích",
+       "detail": "Chưa đúng. Thiếu điểm không phải đã được chấm 0; cần tách trạng thái thiếu khỏi giá trị hợp lệ."
+      }
+     ],
+     "explanation": "Thiếu điểm không phải đã được chấm 0; cần tách trạng thái thiếu khỏi giá trị hợp lệ."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một sinh viên có điểm PY=14 với 2 tín chỉ, DA=18 với 3 tín chỉ. GPA là bao nhiêu?",
@@ -96,5 +155,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

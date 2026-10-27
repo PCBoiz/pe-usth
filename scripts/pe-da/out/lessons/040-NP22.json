@@ -3,13 +3,13 @@
  "sort_order": 40,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP22 · Tạo dữ liệu thử với seed",
- "subtitle": "Trung cấp · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP22 · Tạo dữ liệu thử với seed",
-  "subtitle": "Trung cấp · M2 · 8 phút",
+  "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP22",
@@ -81,6 +81,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Gọi rng.integers hai lần trên cùng rng có bắt đầu lại từ seed mỗi lần không?",
+     "options": [
+      {
+       "text": "Không, bộ sinh tiếp tục chuỗi",
+       "detail": "Đúng. Muốn bắt đầu lại cùng chuỗi, tạo lại bộ sinh với cùng seed và cùng thứ tự lệnh.",
+       "correct": true
+      },
+      {
+       "text": "Có, mọi lời gọi đều tự reset",
+       "detail": "Seed đặt khi khởi tạo; lời gọi sau tiếp tục trạng thái."
+      },
+      {
+       "text": "Seed buộc mỗi mặt xúc xắc xuất hiện đúng bằng nhau",
+       "detail": "Seed không ép tần suất của một mẫu nhỏ bằng nhau."
+      }
+     ],
+     "explanation": "Đúng. Muốn bắt đầu lại cùng chuỗi, tạo lại bộ sinh với cùng seed và cùng thứ tự lệnh."
+    },
+    {
+     "question": "Mô phỏng xúc xắc; kiểm có số nào đạt 7 không. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "True",
+       "detail": "Mọi số sinh được nằm từ 1 tới 6.",
+       "correct": true
+      },
+      {
+       "text": "False",
+       "detail": "Cận trên 7 không được lấy trong integers(1,7)."
+      },
+      {
+       "text": "'Chỉ đúng nếu seed chẵn'",
+       "detail": "Seed không thay quy tắc loại cận trên."
+      }
+     ],
+     "explanation": "Mọi số sinh được nằm từ 1 tới 6."
+    },
+    {
+     "question": "Lấy 12 lần tung, không phải 12 mặt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(12,)",
+       "detail": "size=12 yêu cầu một dãy gồm 12 kết quả.",
+       "correct": true
+      },
+      {
+       "text": "[6]",
+       "detail": "6 là số mặt có thể nhận, không phải số lượt."
+      },
+      {
+       "text": "[1, 7]",
+       "detail": "Hai cận không phải shape của dãy kết quả."
+      }
+     ],
+     "explanation": "size=12 yêu cầu một dãy gồm 12 kết quả."
+    }
+   ],
    "practice": [
     {
      "prompt": "`rng.integers(1, 7)` có thể cho số 7 không?",
@@ -158,5 +217,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

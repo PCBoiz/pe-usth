@@ -3,13 +3,13 @@
  "sort_order": 106,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY03 · Tìm và sửa mẫu văn bản bằng regex",
- "subtitle": "Trung cấp · M5 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY03 · Tìm và sửa mẫu văn bản bằng regex",
-  "subtitle": "Trung cấp · M5 · 9 phút",
+  "subtitle": "Trung cấp · M5 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY03",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Mẫu r\"a.b\" có khớp chuỗi \"a-b\" không?",
+     "options": [
+      {
+       "text": "Chỉ khớp khi chuỗi bắt đầu bằng số",
+       "detail": "Mẫu không có yêu cầu chữ số nào."
+      },
+      {
+       "text": "Có",
+       "detail": "Dấu chấm trong regex khớp một ký tự bất kỳ, trừ newline trong chế độ mặc định.",
+       "correct": true
+      },
+      {
+       "text": "Không, vì thiếu dấu chấm thật",
+       "detail": "Muốn dấu chấm thật cần escape; dấu chấm không escape mang nghĩa mẫu."
+      }
+     ],
+     "explanation": "Dấu chấm trong regex khớp một ký tự bất kỳ, trừ newline trong chế độ mặc định."
+    },
+    {
+     "question": "Không tìm thấy mã trong ghi chú, re.search trả gì?",
+     "options": [
+      {
+       "text": "Match có nội dung 0",
+       "detail": "Chưa đúng. search trả Match khi thấy mẫu, nếu không thấy thì trả None. Cần kiểm trước group."
+      },
+      {
+       "text": "None",
+       "detail": "search trả Match khi thấy mẫu, nếu không thấy thì trả None. Cần kiểm trước group.",
+       "correct": true
+      },
+      {
+       "text": "Chuỗi rỗng",
+       "detail": "Chưa đúng. search trả Match khi thấy mẫu, nếu không thấy thì trả None. Cần kiểm trước group."
+      }
+     ],
+     "explanation": "search trả Match khi thấy mẫu, nếu không thấy thì trả None. Cần kiểm trước group."
+    },
+    {
+     "question": "Muốn tìm đúng dấu chấm trong mã a.b, cách nào rõ nghĩa?",
+     "options": [
+      {
+       "text": "re.search(re.escape(\"a.b\"), text)",
+       "detail": "Dấu chấm regex có nghĩa đặc biệt; escape biến chuỗi cần tìm thành mẫu nguyên văn.",
+       "correct": true
+      },
+      {
+       "text": "re.search(r\"a.b\", text)",
+       "detail": "Chưa đúng. Dấu chấm regex có nghĩa đặc biệt; escape biến chuỗi cần tìm thành mẫu nguyên văn."
+      },
+      {
+       "text": "re.search(r\"a*b\", text)",
+       "detail": "Chưa đúng. Dấu chấm regex có nghĩa đặc biệt; escape biến chuỗi cần tìm thành mẫu nguyên văn."
+      }
+     ],
+     "explanation": "Dấu chấm regex có nghĩa đặc biệt; escape biến chuỗi cần tìm thành mẫu nguyên văn."
+    }
+   ],
    "practice": [
     {
      "prompt": "search không thấy gì trả về gì?",
@@ -120,5 +179,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

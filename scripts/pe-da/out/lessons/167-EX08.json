@@ -3,13 +3,13 @@
  "sort_order": 167,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
  "title": "EX08 · Chuẩn bị vector và lưới trước khi vẽ",
- "subtitle": "Trung cấp · M9 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M9 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "EX08 · Chuẩn bị vector và lưới trước khi vẽ",
-  "subtitle": "Trung cấp · M9 · 14 phút",
+  "subtitle": "Trung cấp · M9 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#EX08",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "np.mgrid[-1:1:3j] tạo bao nhiêu điểm?",
+     "options": [
+      {
+       "text": "3",
+       "detail": "Bước phức 3j yêu cầu ba điểm, gồm hai đầu -1 và 1.",
+       "correct": true
+      },
+      {
+       "text": "2",
+       "detail": "Không diễn giải 3j như khoảng cách giữa hai điểm."
+      },
+      {
+       "text": "Không xác định vì số phức",
+       "detail": "Trong cú pháp mgrid, phần ảo chỉ định số điểm."
+      }
+     ],
+     "explanation": "Bước phức 3j yêu cầu ba điểm, gồm hai đầu -1 và 1."
+    },
+    {
+     "question": "linspace(0, pi, 3) tạo mấy vị trí?",
+     "options": [
+      {
+       "text": "pi vị trí",
+       "detail": "Chưa đúng. Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu."
+      },
+      {
+       "text": "3",
+       "detail": "Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu.",
+       "correct": true
+      },
+      {
+       "text": "2",
+       "detail": "Chưa đúng. Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu."
+      }
+     ],
+     "explanation": "Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu."
+    },
+    {
+     "question": "np.sin(x) với x là array làm gì trước khi vẽ?",
+     "options": [
+      {
+       "text": "Tính sin từng phần tử thành array",
+       "detail": "Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ.",
+       "correct": true
+      },
+      {
+       "text": "Tự mở đồ thị sin",
+       "detail": "Chưa đúng. Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
+      },
+      {
+       "text": "Đổi mọi phần tử thành chỉ số",
+       "detail": "Chưa đúng. Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
+      }
+     ],
+     "explanation": "Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
+    }
+   ],
    "practice": [
     {
      "prompt": "linspace(0, pi, 3) cho bao nhiêu vị trí? sin và cos của array cho một số hay một array?",
@@ -182,5 +241,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

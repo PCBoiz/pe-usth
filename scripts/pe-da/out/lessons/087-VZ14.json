@@ -3,13 +3,13 @@
  "sort_order": 87,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure",
- "subtitle": "Trung cấp · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M4 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ14 · Xuất PNG/SVG, độ phân giải và vòng đời Figure",
-  "subtitle": "Trung cấp · M4 · 15 phút",
+  "subtitle": "Trung cấp · M4 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ14",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hình rộng 5 inch, dpi=120, không cắt khung: rộng bao nhiêu pixel?",
+     "options": [
+      {
+       "text": "24",
+       "detail": "Không chia dpi cho inch."
+      },
+      {
+       "text": "600",
+       "detail": "Đúng: 5×120=600 pixel.",
+       "correct": true
+      },
+      {
+       "text": "125",
+       "detail": "Không cộng inch với dpi."
+      }
+     ],
+     "explanation": "Công thức inch×dpi áp dụng khi không cắt hoặc đổi kích thước sau xuất."
+    },
+    {
+     "question": "Hình rộng 4 inch ở 200 dpi có bao nhiêu pixel trước khi cắt khung?",
+     "options": [
+      {
+       "text": "400 pixel.",
+       "detail": "400 là mức có thể nhận khi dùng 100 dpi, không phải 200."
+      },
+      {
+       "text": "200 pixel.",
+       "detail": "200 mới là mật độ trên mỗi inch, chưa phải tổng chiều rộng."
+      },
+      {
+       "text": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất.",
+       "detail": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất.",
+       "correct": true
+      }
+     ],
+     "explanation": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất."
+    },
+    {
+     "question": "Muốn đặt hình lên nền slide có màu, cân nhắc tham số nào?",
+     "options": [
+      {
+       "text": "Chỉ tăng linewidth mà không kiểm nền.",
+       "detail": "Độ dày nét không thay cài đặt nền trong suốt."
+      },
+      {
+       "text": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật.",
+       "detail": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ giảm dpi xuống 1.",
+       "detail": "Dpi rất thấp làm giảm độ rõ, không tạo nền trong suốt."
+      }
+     ],
+     "explanation": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hình rộng 4 inch ở 200 dpi có bao nhiêu pixel trước khi cắt khung?",
@@ -156,5 +215,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

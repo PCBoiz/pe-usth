@@ -3,13 +3,13 @@
  "sort_order": 140,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
- "subtitle": "Nâng cao · M6 · 18 phút",
- "estimated_minutes": 18,
- "xp_reward": 11,
+ "subtitle": "Nâng cao · M6 · 21 phút",
+ "estimated_minutes": 21,
+ "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
-  "subtitle": "Nâng cao · M6 · 18 phút",
+  "subtitle": "Nâng cao · M6 · 21 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT09",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai thread trong cùng process có bắt buộc hai heap độc lập như hai process không?",
+     "options": [
+      {
+       "text": "Không; chúng dùng chung heap của process",
+       "detail": "Mỗi thread có stack/PC/thanh ghi riêng nhưng có thể truy cập các object chung.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi biến luôn bị sao chép khi start",
+       "detail": "Thread không sao chép toàn bộ không gian địa chỉ như mô hình process độc lập."
+      },
+      {
+       "text": "Không; vậy chúng cũng chung một stack duy nhất",
+       "detail": "Stack và ngữ cảnh chạy của từng thread cần được giữ riêng."
+      }
+     ],
+     "explanation": "Mỗi thread có stack/PC/thanh ghi riêng nhưng có thể truy cập các object chung."
+    },
+    {
+     "question": "Trong một process nhiều thread, tài nguyên nào thường riêng theo thread?",
+     "options": [
+      {
+       "text": "Mã chương trình thành file riêng",
+       "detail": "Chưa đúng. Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung."
+      },
+      {
+       "text": "Stack và ngữ cảnh thực thi",
+       "detail": "Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung.",
+       "correct": true
+      },
+      {
+       "text": "Toàn bộ heap thành bản sao riêng",
+       "detail": "Chưa đúng. Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung."
+      }
+     ],
+     "explanation": "Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung."
+    },
+    {
+     "question": "Hai thread trong cùng process có thể nhìn cùng một list trên heap không?",
+     "options": [
+      {
+       "text": "Có",
+       "detail": "Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa.",
+       "correct": true
+      },
+      {
+       "text": "Không; mọi list tự copy khi start",
+       "detail": "Chưa đúng. Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."
+      },
+      {
+       "text": "Chỉ khi list có đúng hai phần tử",
+       "detail": "Chưa đúng. Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."
+      }
+     ],
+     "explanation": "Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai thread dùng chung list result. Chúng có dùng chung stack không?",
@@ -164,5 +223,6 @@
    "reason": "bản Pyodide này không bật thread thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

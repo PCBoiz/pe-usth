@@ -13,12 +13,15 @@ CHẤM ĐƯỢC trong trình duyệt thì `step_4` là bài tập đó (task + s
 tests + contract), thay cho ô chạy thử. Trước bản này cả 172 bài KHÔNG có một
 ca chấm nào — người thử viết code rồi tự so bằng mắt.
 
-Vẫn KHÔNG có trắc nghiệm hay scaffold (`step_2.mcq`, `step_3`), và đừng "bù"
-bằng cách tự sinh: câu hỏi do máy sinh từ chính lời giảng chỉ kiểm được trí nhớ
-ngắn hạn, và nó làm người đọc báo cáo tưởng khoá có phần luyện đã được kiểm
-duyệt. (Gói practice CÓ 1032 câu trắc nghiệm người viết, nhưng khoá `text`/
-`correct` của chúng lệch với `normalizeQuestion` ở backend — xem AGENTS.md —
-nên đó là việc riêng, không gộp vào đây.)
+`step_2.mcq` nay cũng có: 3 câu mỗi bài, lấy từ 1032 câu trắc nghiệm NGƯỜI
+VIẾT của gói (mỗi bài 1 gốc + 5 biến thể, mỗi câu 3 lựa chọn kèm lời phản hồi
+riêng). Đây là nguồn duy nhất rót được vào kho quiz ôn tập ở backend — bộ đó
+chấm Ở SERVER và không gửi đáp án ra client, nên là phần duy nhất của hệ thống
+chấm mà client không giả mạo được.
+
+Vẫn KHÔNG tự sinh câu hỏi, và vẫn không có `step_3`: câu do máy sinh từ chính
+lời giảng chỉ kiểm được trí nhớ ngắn hạn, và nó làm người đọc báo cáo tưởng
+khoá có phần luyện đã được kiểm duyệt.
 """
 from __future__ import annotations
 
@@ -35,6 +38,16 @@ PRACTICE = HERE / 'source' / 'practice.json'
 OUT = HERE / 'out'
 
 COURSE_ID = 'python_advanced'
+
+# Số câu trắc nghiệm phát ra MỖI BÀI, lấy từ đầu danh sách (gốc trước, rồi biến
+# thể). Gói có 6 câu mỗi bài; phát hết là thêm 6 màn vào mỗi bài, dài gấp rưỡi.
+#
+# Con số 3 có hai lý do đo được, không phải chọn cho đẹp:
+#  · khớp pe-v4 (46/48 bài có 3 câu), nên hành vi "phải xong 2 bài mới mở được
+#    quiz ôn" mà AGENTS.md đã ghi vẫn đúng — MIN_POOL của backend là 5 CÂU;
+#  · mỗi bài chỉ có MỘT gốc câu hỏi, nên câu thứ 4-6 vẫn hỏi cùng một thứ. Thêm
+#    chúng làm bài dài ra mà không hỏi thêm điều gì.
+SO_CAU_MCQ = 3
 # Ảnh biểu đồ chép sang frontend/public/static/da/ (xem copy_anh()).
 ANH_URL = '/static/da/'
 IMPORTED_AT = '2026-10-24T00:00:00+00:00'
@@ -228,6 +241,49 @@ def phan_loai_khoi(code: str, cho_mo_phong: bool = False) -> tuple[bool, str]:
     return True, ''
 
 
+def cau_trac_nghiem(mcq: dict, so_cau: int = SO_CAU_MCQ) -> list[dict]:
+    """Chuyển câu trắc nghiệm của gói sang hình dạng `step_2.mcq`.
+
+    HAI phía đọc trường này, và cả hai đã nhận cùng một hình dạng từ trước:
+      · frontend — `correctIndex()` tìm lựa chọn có `correct === true`,
+        `optionText()` đọc `text`, `optionDetail()` đọc `detail`;
+      · backend — `normalizeQuestion()` đòi `question` (KHÔNG phải `prompt`) và
+        tìm lựa chọn `correct === true`, rồi quy về `correct: <vị trí>` trước
+        khi lưu snapshot.
+
+    Gói thì dùng `prompt` + `correctOption: '<id>'` + `feedback`. Lệch ở ĐÚNG
+    ba tên đó, và lệch IM LẶNG: `normalizeQuestion` trả None cho mọi câu thiếu
+    `question`, nên kho quiz cứ rỗng mà không ngoại lệ nào được ném, không log
+    nào đỏ. Vì vậy phép đổi tên nằm Ở ĐÂY, không phải thêm một nhánh vào
+    service — service đã đọc đúng hình dạng mà cả dự án dùng.
+
+    `correct: False` KHÔNG được phát ra: `findIndex(o => o.correct === true)`
+    chạy đúng khi lựa chọn sai không có khoá đó, và bỏ nó đi thì
+    `content_json` nhỏ hơn 1 032 khoá.
+    """
+    ra: list[dict] = []
+    for q in [mcq] + list(mcq.get('variants') or [])[:so_cau - 1]:
+        lua_chon = q.get('options') or []
+        dung = q.get('correctOption')
+        if len(lua_chon) < 2 or dung not in {o.get('id') for o in lua_chon}:
+            # Câu hỏng thì BỎ, không phát ra nửa vời: một câu không có đáp án
+            # đúng nào làm `correctIndex()` trả -1, và màn trắc nghiệm thành
+            # màn không bao giờ đúng được — `firstUnfinished()` chặn luôn nút
+            # kết thúc bài.
+            continue
+        ra.append({
+            'question': q.get('prompt') or '',
+            'options': [
+                {'text': o.get('text') or '',
+                 **({'detail': o['feedback']} if o.get('feedback') else {}),
+                 **({'correct': True} if o.get('id') == dung else {})}
+                for o in lua_chon
+            ],
+            **({'explanation': q['explanation']} if q.get('explanation') else {}),
+        })
+    return ra
+
+
 def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
                 ly_do_doc: str = '') -> tuple[dict | None, str]:
     """(step_4 cho bài tập được chấm, lý do nếu không chấm được).
@@ -412,10 +468,14 @@ def khoi_doc(khoi: dict) -> list[dict]:
 # bản trước sinh ra đúng từ việc không ai viết công thức xuống.
 # ---------------------------------------------------------------------------
 
-def phut_cua(reading: list[dict], so_cau: int) -> int:
+def phut_cua(reading: list[dict], so_cau: int, so_mcq: int = 0) -> int:
     tu = sum(len(k['text'].split()) for k in reading if k['type'] == 'paragraph')
     dong_code = sum(len(k['code'].splitlines()) for k in reading if k['type'] == 'code')
-    phut = tu / 160 + dong_code / 6 + so_cau * 1.5
+    # Trắc nghiệm tính 1 phút/câu, nhẹ hơn câu luyện tập (1,5) vì nó là chọn một
+    # trong ba chứ không phải tự viết. Phải CÓ trong công thức: thêm 3 màn vào
+    # mỗi bài mà vẫn báo đúng số phút cũ thì con số trên trang khoá học nói sai,
+    # và đó là con số người học dùng để quyết định có bắt đầu hay không.
+    phut = tu / 160 + dong_code / 6 + so_cau * 1.5 + so_mcq
     return max(6, min(30, round(phut)))
 
 
@@ -469,11 +529,13 @@ def cau_luyen(bai: dict) -> list[dict]:
 
 
 def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
-             ten_theo_id: dict[str, str], bai_tap: dict | None = None) -> dict:
+             ten_theo_id: dict[str, str], bai_tap: dict | None = None,
+             mcq: dict | None = None) -> dict:
     reading = bai['reading']
     man = chia_man(reading)
     luyen = cau_luyen(bai)
-    phut = phut_cua(reading, len(luyen))
+    trac_nghiem = cau_trac_nghiem(mcq) if mcq else []
+    phut = phut_cua(reading, len(luyen), len(trac_nghiem))
 
     # Phân loại theo code NGƯỜI HỌC đọc, không theo bản xuất hình: hai bản
     # import khác nhau (bản xuất hình thêm matplotlib.use/pathlib/tempfile).
@@ -527,8 +589,16 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         },
         'step_1': step_1,
     }
-    if luyen:
-        noi_dung['step_2'] = {'practice': luyen}
+    # Trắc nghiệm đứng TRƯỚC câu luyện tập trong step_2, và `buildScreens` phát
+    # màn theo đúng thứ tự đó: phần ĐƯỢC CHẤM làm trước, phần tự viết (không
+    # chấm) làm sau. Thứ tự này đã có trong buildScreens từ trước, ở đây chỉ là
+    # không phá nó.
+    if trac_nghiem or luyen:
+        noi_dung['step_2'] = {}
+        if trac_nghiem:
+            noi_dung['step_2']['mcq'] = trac_nghiem
+        if luyen:
+            noi_dung['step_2']['practice'] = luyen
     # BÀI TẬP ĐƯỢC CHẤM đứng TRƯỚC ô chạy thử, không đứng cạnh.
     #
     # Mọi đoạn code của bài đã hiện kèm kết quả ở màn đọc, và muốn thử tự do
@@ -555,9 +625,11 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         # Không vào DB — chỉ để check.py và báo cáo đối chiếu.
         '_mode': mode,
         '_blocked': [{'block': i, 'reason': r} for i, r in chan],
-        # Không vào DB. '_bai_tap' nói bài này có bài tập được chấm hay không,
-        # và vì sao không — để check.py và báo cáo đối chiếu được, thay vì phải
-        # suy từ việc step_4 có `tests` hay không.
+        # Không vào DB — chỉ để check.py và báo cáo đối chiếu.
+        '_so_mcq': len(trac_nghiem),
+        # '_bai_tap' nói bài này có bài tập được chấm hay không, và vì sao
+        # không — để check.py và báo cáo đối chiếu được, thay vì phải suy từ
+        # việc step_4 có `tests` hay không.
         '_bai_tap': ('cham' if noi_dung['step_4'].get('tests')
                      else (f'khong: {ly_do_bt}' if ly_do_bt else 'khong co')),
     }
@@ -658,10 +730,16 @@ def main() -> int:
     # gói xếp chúng theo độ khó tăng dần, nên cái cuối là bài chuyển giao
     # (`transferNote`), đúng thứ thuộc về "Thử thách độc lập".
     bai_tap_theo_ma: dict[str, dict] = {}
+    mcq_theo_ma: dict[str, dict] = {}
     if PRACTICE.is_file():
         for l in json.loads(PRACTICE.read_text(encoding='utf-8'))['lessons']:
             if l.get('exercises'):
                 bai_tap_theo_ma[l['id']] = l['exercises'][-1]
+            # Câu trắc nghiệm: lấy hoạt động mcq ĐẦU TIÊN của bài (mỗi bài có
+            # đúng một, mang 5 biến thể bên trong).
+            for a in l.get('mcq') or []:
+                mcq_theo_ma[l['id']] = a
+                break
     ten_theo_id = {b['id']: f'{b["id"]} · {b["title"]}' for b in du_lieu['lessons']}
 
     bai_ra: list[dict] = []
@@ -673,7 +751,7 @@ def main() -> int:
         for ma in nhom['ids']:
             thu_tu += 1
             b = dung_bai(bai_theo_id[ma], thu_tu, so, ten_module, ten_theo_id,
-                         bai_tap_theo_ma.get(ma))
+                         bai_tap_theo_ma.get(ma), mcq_theo_ma.get(ma))
             bai_ra.append(b)
             trong_module.append(b['title'])
         modules.append({'title': ten_module, 'lessons': trong_module})

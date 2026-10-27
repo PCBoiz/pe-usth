@@ -3,13 +3,13 @@
  "sort_order": 124,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
- "subtitle": "Trung cấp · M5 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY21 · Pickle, JSON và khôi phục trạng thái",
-  "subtitle": "Trung cấp · M5 · 12 phút",
+  "subtitle": "Trung cấp · M5 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY21",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "pickle.loads từ file người lạ gửi có an toàn chỉ vì đuôi .dat không?",
+     "options": [
+      {
+       "text": "Có nếu thử json.loads trước",
+       "detail": "Thử bộ đọc khác không chứng minh payload pickle an toàn."
+      },
+      {
+       "text": "Không; chỉ unpickle dữ liệu đáng tin",
+       "detail": "Quá trình unpickle có thể thực thi hành vi; đổi tên file không loại bỏ điều đó.",
+       "correct": true
+      },
+      {
+       "text": "Có; .dat chỉ chứa dữ liệu",
+       "detail": "Phần mở rộng không giới hạn khả năng của pickle."
+      }
+     ],
+     "explanation": "Quá trình unpickle có thể thực thi hành vi; đổi tên file không loại bỏ điều đó."
+    },
+    {
+     "question": "JSON round trip một tuple (\"S1\",[8,9]) thường khôi phục phần ngoài thành gì?",
+     "options": [
+      {
+       "text": "set",
+       "detail": "Chưa đúng. JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python."
+      },
+      {
+       "text": "list",
+       "detail": "JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python.",
+       "correct": true
+      },
+      {
+       "text": "tuple",
+       "detail": "Chưa đúng. JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python."
+      }
+     ],
+     "explanation": "JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python."
+    },
+    {
+     "question": "pickle.dumps và pickle.dump khác nhau ở đích ghi nào?",
+     "options": [
+      {
+       "text": "dumps trả bytes; dump ghi vào file binary",
+       "detail": "Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi.",
+       "correct": true
+      },
+      {
+       "text": "Cả hai chỉ ghi file text",
+       "detail": "Chưa đúng. Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi."
+      },
+      {
+       "text": "dump trả JSON còn dumps trả str",
+       "detail": "Chưa đúng. Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi."
+      }
+     ],
+     "explanation": "Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi."
+    }
+   ],
    "practice": [
     {
      "prompt": "dump khác dumps ở đâu?",
@@ -163,5 +222,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

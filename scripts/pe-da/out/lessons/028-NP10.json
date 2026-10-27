@@ -3,13 +3,13 @@
  "sort_order": 28,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP10 · Tổng của cả dãy và cả bảng",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP10 · Tổng của cả dãy và cả bảng",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP10",
@@ -67,6 +67,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=np.array([[2,1],[0,4]]). a.sum() trả gì?",
+     "options": [
+      {
+       "text": "7",
+       "detail": "Đúng. Không ghi axis thì cộng cả bốn ô.",
+       "correct": true
+      },
+      {
+       "text": "[3,4]",
+       "detail": "Đó là tổng theo hàng, cần axis=1."
+      },
+      {
+       "text": "[2,5]",
+       "detail": "Đó là tổng theo cột, cần axis=0."
+      }
+     ],
+     "explanation": "Đúng. Không ghi axis thì cộng cả bốn ô."
+    },
+    {
+     "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "15",
+       "detail": "Không ghi axis thì sum cộng mọi phần tử.",
+       "correct": true
+      },
+      {
+       "text": "3",
+       "detail": "3 là số phần tử, không phải tổng."
+      },
+      {
+       "text": "7",
+       "detail": "sum không chỉ lấy giá trị cuối."
+      }
+     ],
+     "explanation": "Không ghi axis thì sum cộng mọi phần tử."
+    },
+    {
+     "question": "Gộp doanh thu của mọi cửa hàng và ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "10",
+       "detail": "sum không axis cho một tổng chung của bốn ô.",
+       "correct": true
+      },
+      {
+       "text": "[4, 6]",
+       "detail": "Đó là tổng theo cột, phải chọn axis."
+      },
+      {
+       "text": "[3, 7]",
+       "detail": "Đó là tổng theo hàng, phải chọn axis."
+      }
+     ],
+     "explanation": "sum không axis cho một tổng chung của bốn ô."
+    }
+   ],
    "practice": [
     {
      "prompt": "Tổng của dãy `[1, 2, 3]` là bao nhiêu?",
@@ -152,5 +211,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

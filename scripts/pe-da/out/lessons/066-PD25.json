@@ -3,13 +3,13 @@
  "sort_order": 66,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD25 · Map, phép tính theo cột và apply",
- "subtitle": "Nâng cao · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Nâng cao · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD25 · Map, phép tính theo cột và apply",
-  "subtitle": "Nâng cao · M3 · 8 phút",
+  "subtitle": "Nâng cao · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD25",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "map({\"P\":\"paid\"}) gặp mã \"X\" mặc định cho gì?",
+     "options": [
+      {
+       "text": "\"paid\"",
+       "detail": "Không tự lấy nhãn duy nhất cho mọi mã."
+      },
+      {
+       "text": "\"X\"",
+       "detail": "map không mặc định giữ nguyên mã chưa có."
+      },
+      {
+       "text": "Giá trị thiếu",
+       "detail": "Đúng: X chưa có trong dictionary ánh xạ.",
+       "correct": true
+      }
+     ],
+     "explanation": "Giữ mã lạ nhìn thấy rồi quyết định quy tắc thay thế."
+    },
+    {
+     "question": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?",
+     "options": [
+      {
+       "text": "Giá trị đó thành thiếu.",
+       "detail": "Giá trị đó thành thiếu.",
+       "correct": true
+      },
+      {
+       "text": "Giữ nguyên mã gốc trong mọi trường hợp.",
+       "detail": "Mã vắng không mặc định được giữ lại bởi map dictionary."
+      },
+      {
+       "text": "Tự tìm tên đúng trên mạng.",
+       "detail": "map không truy cập dịch vụ ngoài để tìm tên."
+      }
+     ],
+     "explanation": "Giá trị đó thành thiếu."
+    },
+    {
+     "question": "axis=1 trong DataFrame.apply đưa hàng hay cột cho hàm?",
+     "options": [
+      {
+       "text": "Từng cột.",
+       "detail": "axis=0 mới đưa từng cột cho hàm apply."
+      },
+      {
+       "text": "Toàn bộ DataFrame một lần.",
+       "detail": "Hàm được gọi cho từng hàng, không chỉ một lần cho toàn bảng."
+      },
+      {
+       "text": "Từng hàng.",
+       "detail": "Từng hàng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Từng hàng."
+    }
+   ],
    "practice": [
     {
      "prompt": "map bằng dictionary gặp mã không có thì kết quả mặc định thế nào?",
@@ -157,5 +216,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

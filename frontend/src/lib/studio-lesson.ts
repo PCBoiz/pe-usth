@@ -461,8 +461,11 @@ export function optionText(o: McqOption): string {
   return typeof o === 'string' ? o : o.text;
 }
 
-export function optionDetail(o: McqOption): string | undefined {
-  return typeof o === 'string' ? undefined : o.detail;
+export function optionDetail(o: McqOption | undefined): string | undefined {
+  // Nhận `undefined`: hàm vốn trả `string | undefined` nên không có gì để mất,
+  // và chỗ gọi hay tra `options[index]` với index tính ra từ nháp của học viên
+  // — nháp trống cho -1. Trước đây nó ném TypeError ở đó (xem screenVerdict).
+  return typeof o === 'string' || o === undefined ? undefined : o.detail;
 }
 
 /** Diacritic-insensitive match so rubric keywords work on unaccented typing too. */
@@ -961,9 +964,15 @@ export function screenVerdict(
     const picked = keyIndex(d.mcq[scr.index ?? 0] ?? '');
     const answer = correctIndex(q);
     return {
+      // `picked >= 0`, KHÔNG `Number.isInteger(picked)`: nháp trống làm
+      // `keyIndex('')` trả -1, mà `Number.isInteger(-1)` là TRUE — nên nhánh
+      // này chạy với `q.options[-1]` là undefined và `optionDetail` ném
+      // TypeError. Bấm "Kiểm tra" mà chưa chọn gì là MÀN HÌNH TRẮNG, và không
+      // chỗ nào chặn lời gọi đó. Lỗi có từ pe-v4; chỉ tới khi 172 bài có 3 câu
+      // trắc nghiệm mỗi bài thì nó mới nằm trên đường đi chính.
       correct: picked === answer,
       explain:
-        (Number.isInteger(picked) ? optionDetail(q.options[picked]) : undefined) ||
+        (picked >= 0 ? optionDetail(q.options[picked]) : undefined) ||
         q.explanation ||
         optionDetail(q.options[answer]),
     };

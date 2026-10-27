@@ -3,13 +3,13 @@
  "sort_order": 5,
  "module": "M1 · Python nền tảng",
  "title": "PY05 · Phép toán và thứ tự tính",
- "subtitle": "Cơ bản · M1 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY05 · Phép toán và thứ tự tính",
-  "subtitle": "Cơ bản · M1 · 9 phút",
+  "subtitle": "Cơ bản · M1 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Một gói hàng có 4 sản phẩm giá 12, phí giao cả gói là 3. Tổng tiền là biểu thức nào?",
+     "options": [
+      {
+       "text": "4 * (12 + 3)",
+       "detail": "Cách này thu phí giao bốn lần."
+      },
+      {
+       "text": "4 + 12 * 3",
+       "detail": "Cách này nhân đơn giá với phí giao, không phản ánh đề bài."
+      },
+      {
+       "text": "4 * 12 + 3",
+       "detail": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm."
+    },
+    {
+     "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "37",
+       "detail": "Phép nhân tính tiền bán trước khi trừ một lần phí chung.",
+       "correct": true
+      },
+      {
+       "text": "28",
+       "detail": "4 * (10 - 3) trừ phí bốn lần."
+      },
+      {
+       "text": "43",
+       "detail": "Bài đang trừ phí, không cộng thêm."
+      }
+     ],
+     "explanation": "Phép nhân tính tiền bán trước khi trừ một lần phí chung."
+    },
+    {
+     "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "4.5",
+       "detail": "/ thực hiện chia thực trong Python 3.",
+       "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "Đó là phần nguyên của phép chia, không phải /. "
+      },
+      {
+       "text": "1",
+       "detail": "Đó là số dư khi chia 9 cho 2."
+      }
+     ],
+     "explanation": "/ thực hiện chia thực trong Python 3."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao hai phép tính đầu cho kết quả khác nhau?",
@@ -125,5 +184,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

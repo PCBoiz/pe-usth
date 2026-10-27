@@ -3,13 +3,13 @@
  "sort_order": 143,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT12 · Race condition, Lock và tránh deadlock",
- "subtitle": "Nâng cao · M6 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M6 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT12 · Race condition, Lock và tránh deadlock",
-  "subtitle": "Nâng cao · M6 · 13 phút",
+  "subtitle": "Nâng cao · M6 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT12",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "counter += 1 có nên mặc định coi là giao dịch an toàn nhờ GIL không?",
+     "options": [
+      {
+       "text": "Không; cần đồng bộ thao tác cập nhật chung",
+       "detail": "Tính đúng ứng dụng cần bảo vệ cả đoạn đọc–sửa–ghi theo hợp đồng dữ liệu.",
+       "correct": true
+      },
+      {
+       "text": "Có; GIL thay mọi Lock",
+       "detail": "GIL không cung cấp hợp đồng giao dịch cho mọi cập nhật của ứng dụng."
+      },
+      {
+       "text": "Không; thread không được dùng chung biến nào",
+       "detail": "Có thể chia sẻ biến nếu tổ chức đồng bộ đúng."
+      }
+     ],
+     "explanation": "Tính đúng ứng dụng cần bảo vệ cả đoạn đọc–sửa–ghi theo hợp đồng dữ liệu."
+    },
+    {
+     "question": "Hai worker đọc 0 rồi đều ghi 1 có thể để counter bằng bao nhiêu sau hai lượt tăng?",
+     "options": [
+      {
+       "text": "Bắt buộc 0",
+       "detail": "Chưa đúng. Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ."
+      },
+      {
+       "text": "1",
+       "detail": "Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ.",
+       "correct": true
+      },
+      {
+       "text": "Bắt buộc 2",
+       "detail": "Chưa đúng. Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ."
+      }
+     ],
+     "explanation": "Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ."
+    },
+    {
+     "question": "Để bảo vệ một lần tăng theo mô hình đọc–tính–ghi, khóa phần nào?",
+     "options": [
+      {
+       "text": "Toàn bộ chuỗi cập nhật cần nhất quán",
+       "detail": "Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ lệnh print sau cùng",
+       "detail": "Chưa đúng. Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."
+      },
+      {
+       "text": "Chỉ lúc tạo biến tên counter",
+       "detail": "Chưa đúng. Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."
+      }
+     ],
+     "explanation": "Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao mô phỏng hai lần tăng lại cho 1?",
@@ -141,5 +200,6 @@
    "reason": "bản Pyodide này không bật thread thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

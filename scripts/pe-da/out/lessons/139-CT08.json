@@ -3,13 +3,13 @@
  "sort_order": 139,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT08 · Popen, communicate, pipeline và timeout",
- "subtitle": "Nâng cao · M6 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Nâng cao · M6 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT08 · Popen, communicate, pipeline và timeout",
-  "subtitle": "Nâng cao · M6 · 15 phút",
+  "subtitle": "Nâng cao · M6 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT08",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Popen có stdin=PIPE, stdout=PIPE. Với lượng dữ liệu lớn, communicate giúp gì?",
+     "options": [
+      {
+       "text": "Tự giết mọi tiến trình nếu quá thời gian mà không cần xử lý",
+       "detail": "Khi communicate timeout cần xử lý tiến trình và gọi lại để thu/dọn."
+      },
+      {
+       "text": "Gửi input và thu output để tránh tự chờ sai thứ tự",
+       "detail": "communicate xử lý trao đổi với các pipe và chờ kết thúc.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ trả PID, không đọc output",
+       "detail": "PID nằm ở thuộc tính pid; communicate trả output/error."
+      }
+     ],
+     "explanation": "communicate xử lý trao đổi với các pipe và chờ kết thúc."
+    },
+    {
+     "question": "Popen khác run ở điểm chờ nào?",
+     "options": [
+      {
+       "text": "run không bao giờ chờ con",
+       "detail": "Chưa đúng. Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng."
+      },
+      {
+       "text": "Popen cho phép cha tiếp tục sau khi khởi tạo con",
+       "detail": "Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng.",
+       "correct": true
+      },
+      {
+       "text": "Popen luôn chờ toàn bộ con xong trước khi trả",
+       "detail": "Chưa đúng. Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng."
+      }
+     ],
+     "explanation": "Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng."
+    },
+    {
+     "question": "Popen(text=True) nhận input cho communicate theo kiểu nào trong bài?",
+     "options": [
+      {
+       "text": "str",
+       "detail": "Text mode xử lý chuỗi; binary mode dùng bytes.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ bytes",
+       "detail": "Chưa đúng. Text mode xử lý chuỗi; binary mode dùng bytes."
+      },
+      {
+       "text": "Chỉ int",
+       "detail": "Chưa đúng. Text mode xử lý chuỗi; binary mode dùng bytes."
+      }
+     ],
+     "explanation": "Text mode xử lý chuỗi; binary mode dùng bytes."
+    }
+   ],
    "practice": [
     {
      "prompt": "communicate nhận str khi nào?",
@@ -122,5 +181,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
 }

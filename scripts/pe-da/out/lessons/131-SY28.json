@@ -3,13 +3,13 @@
  "sort_order": 131,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
- "subtitle": "Trung cấp · M5 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
-  "subtitle": "Trung cấp · M5 · 10 phút",
+  "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY28",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Snapshot đọc được nhưng sai version. Có nên gán ngay vào dữ liệu hiện tại rồi mới kiểm không?",
+     "options": [
+      {
+       "text": "Không; đọc vào biến tạm và kiểm trước",
+       "detail": "Chỉ thay trạng thái đang dùng sau khi cấu trúc, version và dữ liệu đều hợp lệ.",
+       "correct": true
+      },
+      {
+       "text": "Có; có thể kiểm sau khi đã mất dữ liệu cũ",
+       "detail": "Gán sớm có thể thay trạng thái tốt bằng dữ liệu không dùng được."
+      },
+      {
+       "text": "Chỉ kiểm đuôi .dat là đủ",
+       "detail": "Đuôi không xác nhận cấu trúc hay version snapshot."
+      }
+     ],
+     "explanation": "Chỉ thay trạng thái đang dùng sau khi cấu trúc, version và dữ liệu đều hợp lệ."
+    },
+    {
+     "question": "PW6 dùng gzip.open(...,\"wb\") cùng pickle.dump. Hai phần làm gì?",
+     "options": [
+      {
+       "text": "gzip thay thế luôn việc serialize object",
+       "detail": "Chưa đúng. Serialize và nén là hai tầng xử lý với vai trò khác nhau."
+      },
+      {
+       "text": "Pickle tạo biểu diễn object, gzip nén dữ liệu ghi",
+       "detail": "Serialize và nén là hai tầng xử lý với vai trò khác nhau.",
+       "correct": true
+      },
+      {
+       "text": "Cả hai đều chỉ mã hóa mật khẩu",
+       "detail": "Chưa đúng. Serialize và nén là hai tầng xử lý với vai trò khác nhau."
+      }
+     ],
+     "explanation": "Serialize và nén là hai tầng xử lý với vai trò khác nhau."
+    },
+    {
+     "question": "Vì sao snapshot có trường version?",
+     "options": [
+      {
+       "text": "Nhận biết cấu trúc cần đọc hoặc chuyển đổi",
+       "detail": "Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong.",
+       "correct": true
+      },
+      {
+       "text": "Để mọi file lạ tự an toàn",
+       "detail": "Chưa đúng. Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
+      },
+      {
+       "text": "Để GPA tự cập nhật",
+       "detail": "Chưa đúng. Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
+      }
+     ],
+     "explanation": "Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao cần giữ module class khi pickle object?",
@@ -88,5 +147,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

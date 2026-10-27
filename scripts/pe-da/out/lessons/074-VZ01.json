@@ -3,13 +3,13 @@
  "sort_order": 74,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ01 · Từ câu hỏi đến loại biểu đồ",
- "subtitle": "Cơ bản · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ01 · Từ câu hỏi đến loại biểu đồ",
-  "subtitle": "Cơ bản · M4 · 13 phút",
+  "subtitle": "Cơ bản · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ01",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Muốn so số sách bán ở ba quầy, dạng hình nào phù hợp nhất?",
+     "options": [
+      {
+       "text": "Line chart nối tên quầy",
+       "detail": "Nối tên nhóm sẽ gợi một thứ tự liên tục không có trong câu hỏi."
+      },
+      {
+       "text": "Histogram của tên quầy",
+       "detail": "Histogram chia miền số thành khoảng, không phải tên nhóm."
+      },
+      {
+       "text": "Bar chart",
+       "detail": "Đúng: mỗi quầy là một nhóm riêng để so chiều cao cột.",
+       "correct": true
+      }
+     ],
+     "explanation": "Loại biểu đồ đi theo câu hỏi, không phải chỉ vì thư viện vẽ được."
+    },
+    {
+     "question": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?",
+     "options": [
+      {
+       "text": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán.",
+       "detail": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán.",
+       "correct": true
+      },
+      {
+       "text": "Chọn line vì mọi dữ liệu đều có thứ tự liên tục.",
+       "detail": "Nối hai nhóm thành đường có thể gợi một liên tục không có trong dữ liệu."
+      },
+      {
+       "text": "Chọn histogram vì tên đồ uống là một trục số liên tục.",
+       "detail": "Tên đồ uống không phải miền số cần chia thành bin."
+      }
+     ],
+     "explanation": "Chọn bar. Hai loại đồ uống là hai nhóm; chiều cao cột giúp so sánh lượng bán."
+    },
+    {
+     "question": "Trong hình đầu, trục x và y đại diện cho gì?",
+     "options": [
+      {
+       "text": "x là số cốc, y là tên quán.",
+       "detail": "Các trục đã được gán sai biến so với ví dụ."
+      },
+      {
+       "text": "x và y đều là số thứ tự dòng.",
+       "detail": "Tọa độ y chứa số cốc, không chỉ số thứ tự dòng."
+      },
+      {
+       "text": "x là thứ tự ngày, y là số cốc bán. Một điểm biểu diễn lượng bán của một ngày.",
+       "detail": "x là thứ tự ngày, y là số cốc bán. Một điểm biểu diễn lượng bán của một ngày.",
+       "correct": true
+      }
+     ],
+     "explanation": "x là thứ tự ngày, y là số cốc bán. Một điểm biểu diễn lượng bán của một ngày."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn so sánh số cốc cà phê với trà, chọn line hay bar?",
@@ -180,5 +239,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

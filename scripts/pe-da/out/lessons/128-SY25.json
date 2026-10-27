@@ -3,13 +3,13 @@
  "sort_order": 128,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
- "subtitle": "Trung cấp · M5 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
-  "subtitle": "Trung cấp · M5 · 9 phút",
+  "subtitle": "Trung cấp · M5 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY25",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Điểm chưa được nhập nên lưu như 0 để tiện tính không?",
+     "options": [
+      {
+       "text": "Không; chưa có điểm khác điểm 0",
+       "detail": "0 là điểm đã biết; thiếu điểm là trạng thái khác cần giữ riêng.",
+       "correct": true
+      },
+      {
+       "text": "Có; cả hai đều không đạt",
+       "detail": "Một điểm đã chấm 0 vẫn phải hiển thị và có thể tham gia phép tính."
+      },
+      {
+       "text": "Xóa sinh viên đó",
+       "detail": "Thiếu điểm không làm hồ sơ sinh viên mất hiệu lực."
+      }
+     ],
+     "explanation": "0 là điểm đã biết; thiếu điểm là trạng thái khác cần giữ riêng."
+    },
+    {
+     "question": "Điểm một sinh viên trong một môn nên gắn với khóa nào?",
+     "options": [
+      {
+       "text": "Số thứ tự dòng in ra terminal",
+       "detail": "Chưa đúng. Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
+      },
+      {
+       "text": "(student_id, course_id)",
+       "detail": "Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ tên sinh viên không duy nhất",
+       "detail": "Chưa đúng. Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
+      }
+     ],
+     "explanation": "Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
+    },
+    {
+     "question": "Điểm 0 khác chưa có điểm ở chỗ nào?",
+     "options": [
+      {
+       "text": "0 là một giá trị đã được chấm",
+       "detail": "Dữ liệu thiếu và một điểm hợp lệ bằng 0 cần được giữ riêng.",
+       "correct": true
+      },
+      {
+       "text": "Hai trạng thái luôn giống nhau",
+       "detail": "Chưa đúng. Dữ liệu thiếu và một điểm hợp lệ bằng 0 cần được giữ riêng."
+      },
+      {
+       "text": "0 luôn phải xóa khỏi registry",
+       "detail": "Chưa đúng. Dữ liệu thiếu và một điểm hợp lệ bằng 0 cần được giữ riêng."
+      }
+     ],
+     "explanation": "Dữ liệu thiếu và một điểm hợp lệ bằng 0 cần được giữ riêng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Khóa điểm vì sao có hai thành phần?",
@@ -88,5 +147,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

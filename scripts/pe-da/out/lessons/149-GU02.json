@@ -3,13 +3,13 @@
  "sort_order": 149,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU02 · Cửa sổ chính và cửa sổ phụ",
- "subtitle": "Trung cấp · M8 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M8 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU02 · Cửa sổ chính và cửa sổ phụ",
-  "subtitle": "Trung cấp · M8 · 11 phút",
+  "subtitle": "Trung cấp · M8 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU02",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Muốn mở cửa sổ Chi tiết trong app đã có root thì dùng gì?",
+     "options": [
+      {
+       "text": "tk.Toplevel(root)",
+       "detail": "Một ứng dụng thường dùng một Tk làm root; cửa sổ phụ là Toplevel.",
+       "correct": true
+      },
+      {
+       "text": "Tạo tk.Tk() mới cho mỗi lần bấm",
+       "detail": "Điều đó tạo thêm root/interpreter, không phải quan hệ cửa sổ phụ mong muốn."
+      },
+      {
+       "text": "root.mainloop() lần nữa",
+       "detail": "mainloop xử lý sự kiện; nó không tạo một cửa sổ mới."
+      }
+     ],
+     "explanation": "Một ứng dụng thường dùng một Tk làm root; cửa sổ phụ là Toplevel."
+    },
+    {
+     "question": "Ứng dụng đã có root, muốn mở cửa sổ Chi tiết nên dùng gì?",
+     "options": [
+      {
+       "text": "mainloop mới thay cho cửa sổ",
+       "detail": "Chưa đúng. Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root."
+      },
+      {
+       "text": "tk.Toplevel(root)",
+       "detail": "Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root.",
+       "correct": true
+      },
+      {
+       "text": "Tk mới cho từng lần bấm",
+       "detail": "Chưa đúng. Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root."
+      }
+     ],
+     "explanation": "Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root."
+    },
+    {
+     "question": "geometry(\"480x300\") quy định gì trong ví dụ?",
+     "options": [
+      {
+       "text": "Kích thước cửa sổ theo pixel",
+       "detail": "Geometry của cửa sổ khác với các tham số bố trí widget.",
+       "correct": true
+      },
+      {
+       "text": "Số widget tối đa",
+       "detail": "Chưa đúng. Geometry của cửa sổ khác với các tham số bố trí widget."
+      },
+      {
+       "text": "Hàng và cột của grid",
+       "detail": "Chưa đúng. Geometry của cửa sổ khác với các tham số bố trí widget."
+      }
+     ],
+     "explanation": "Geometry của cửa sổ khác với các tham số bố trí widget."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn mở cửa sổ phụ, nên dùng Tk hay Toplevel?",
@@ -112,5 +171,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

@@ -22,6 +22,7 @@ py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/li
 npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
 node scripts/pe-da/check-practice.mjs  # chấm 377 ca BÀI TẬP + đòi 302 biến thể sai trượt
+# 516 câu trắc nghiệm: check.py đối chiếu với nguồn (kiem_trac_nghiem), không có bộ riêng
 node scripts/check-perf.mjs            # kiểm BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py
 node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio-harness.py
 
@@ -45,13 +46,13 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 27 bộ, 277 ca, tất cả đạt |
+| Backend test | 27 bộ, 283 ca, tất cả đạt |
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **210 ca** / 19 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **211 ca** / 19 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, **124 bài tập được chấm / 377 ca**, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 377 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **377 ca đạt**, 302 biến thể sai đều trượt, ~10 s |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
@@ -65,12 +66,13 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 210 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 211 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · label-version 2 · lesson-load 7 · practice-contract 14 · prewarm-gate 5 ·
-session-marker 5 · studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 210.
-Mốc trước là 196; thêm practice-contract 14 (đường đi của `contract` qua 5 chặng).
+session-marker 5 · studio-lesson 41 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 211.
+Mốc trước là 196; thêm practice-contract 14 (đường đi của `contract` qua 5 chặng) và
+studio-lesson 40 → 41 (đi hết 3 màn trắc nghiệm như học viên thật).
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -240,6 +242,48 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `LESSON_CACHE_TTL_MS` / `LESSON_CACHE_DISABLED` đã bỏ khỏi `.env.example`: không mã nào đọc
   chúng và `git log -S` trên `src/` không có commit nào — bộ cache đó chưa bao giờ được làm,
   nên dòng hứa "giảm ~550 ms mỗi lần mở bài" là tài liệu nói sai suốt từ đầu.
+- **Kho quiz chấm Ở SERVER từng RỖNG HOÀN TOÀN — 0/172 bài có câu hỏi.** Đây là phần duy
+  nhất của hệ thống chấm mà client không giả mạo được: `submitQuiz` chấm theo SNAPSHOT trong
+  DB, `stripAnswers` không gửi `correct`/`explanation` ra ngoài, và mỗi đề chỉ nộp được một
+  lần. Vậy mà nó không có câu nào để ra đề. Nay 516 câu (3 mỗi bài) lấy từ 1032 câu NGƯỜI VIẾT
+  của gói practice.
+  **Lệch ở ĐÚNG ba tên, và lệch IM LẶNG.** Gói dùng `prompt` / `correctOption: '<id>'` /
+  `feedback`; `normalizeQuestion` đòi `question` và tìm `options[].correct === true`, frontend
+  thì đọc `text` + `detail`. `normalizeQuestion` trả `null` cho mọi câu thiếu `question`, nên
+  đưa nguyên hình dạng của gói vào là kho quiz CỨ RỖNG — không ngoại lệ nào được ném, không
+  log nào đỏ. Phép đổi tên nằm ở `cau_trac_nghiem()` trong build.py, KHÔNG phải thêm nhánh
+  vào service: service đã đọc đúng hình dạng mà cả dự án dùng.
+  **`correct: False` không được phát ra**, chỉ `correct: True` trên đúng một lựa chọn —
+  `findIndex(o => o.correct === true)` chạy đúng khi lựa chọn sai không có khoá đó.
+  **3 câu mỗi bài, không phải 6.** Gói có 6 (1 gốc + 5 biến thể). Phát hết là thêm 6 màn vào
+  mỗi bài; và vì mỗi bài chỉ có MỘT gốc câu hỏi, câu thứ 4–6 vẫn hỏi cùng một thứ. Con số 3
+  khớp pe-v4, nên hệ quả "phải xong 2 bài mới mở được quiz ôn" (MIN_POOL = 5 CÂU) vẫn đúng.
+  Ba biến thể còn lại GIỮ trong `source/practice.json` có chủ đích: bài thi vượt module sau
+  này phải dùng câu người học CHƯA thấy trong bài.
+  **Đề ôn không được lấy hai câu CÙNG MỘT BÀI khi còn bài khác** (`pickSpreadByLesson`): 3 câu
+  của một bài là 3 biến thể cùng gốc, nên bốc đều trên pool thì học viên xong 2 bài nhận đề 5
+  câu rất dễ gặp 3 câu hỏi cùng một chuyện — và họ đọc ra điều đó là "đề bị lặp". ƯU TIÊN chứ
+  KHÔNG bắt buộc: siết thành luật cứng thì đề 5 câu cần 5 bài, trong khi `MIN_POOL` chỉ hứa 5
+  CÂU. Ablate: bỏ luật → 2 ca đỏ; siết thành luật cứng → 9 ca đỏ. `sample()` (Fisher-Yates) đã
+  xoá vì không còn chỗ nào gọi.
+  **Ca test backend KHÔNG chứng minh được build.py chọn đúng đáp án** — nó so `correct` của
+  snapshot với vị trí lựa chọn mang cờ trong BẢN DỰNG, tức so bản dựng với chính nó. Đã ablate:
+  đổi build.py sang đánh dấu lựa chọn ĐẦU TIÊN là đúng thì cả 30 ca backend vẫn XANH. Thẩm
+  quyền về đáp án nằm ở `correctOption` của nguồn, nên phép so đó ở `kiem_trac_nghiem()` trong
+  check.py (4 luật, ablate cả 4 đều đỏ).
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** trước đây pe-da không có màn nào được chấm nên điểm bài
+  luôn 100% và XP được trả bất kể hiểu hay không. Nay 3 câu được chấm mỗi bài, nên trả lời sai
+  là điểm dưới 100 và XP ít hơn. Thời lượng khoá 1 836 → 2 352 phút (1 phút/câu), và
+  `catalog.ts` phải đi theo — `catalog-duration.test.mjs` cộng từ bản dựng thật nên nó bắt.
+  **Một lỗi màn-hình-trắng có thật đã sửa nhân dịp này.** `screenVerdict` dùng
+  `Number.isInteger(picked)` để chặn index xấu, mà `keyIndex('')` trả **-1** và
+  `Number.isInteger(-1)` là TRUE — nên nó gọi `optionDetail(q.options[-1])` và ném TypeError.
+  Bộ test đã GHI NHẬN đây là "KHIẾM KHUYẾT ĐÃ BIẾT" và khoá đúng hành vi ném đó, kèm câu dặn
+  phải đổi assert khi sửa. Hàng rào duy nhất trước đây là nút "Kiểm tra" bị disable bởi
+  `answered()`, và nó KHÔNG chặn được nháp cũ trong localStorage giữ khoá của bản bài có nhiều
+  lựa chọn hơn — học viên đó mở bài là crash, mãi mãi. Nay `picked >= 0` và `optionDetail` nhận
+  `undefined`.
+
 - **Khoá 172 bài từng KHÔNG có một ca chấm nào, và bốn chỗ cùng ghi lại giả định đó.**
   Đếm trên bản dựng ngày 26/10: 172/172 bài có `step_4.task`, 145 bài có `starterCode`, và
   **0 bài** có `step_4.tests`. `step_2.practice` chỉ hiện đáp án mẫu. Người thử viết code rồi

@@ -3,13 +3,13 @@
  "sort_order": 141,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT10 · Tạo thread bằng target, start và join",
- "subtitle": "Nâng cao · M6 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT10 · Tạo thread bằng target, start và join",
-  "subtitle": "Nâng cao · M6 · 10 phút",
+  "subtitle": "Nâng cao · M6 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT10",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Thread(target=work()) khác target=work ở đâu?",
+     "options": [
+      {
+       "text": "Không khác nhau",
+       "detail": "Dấu ngoặc tạo lời gọi ngay, thay đổi thời điểm và giá trị target."
+      },
+      {
+       "text": "work() luôn chạy nhanh hơn trong thread",
+       "detail": "Ở đây chưa có thread nào được start khi biểu thức đối số chạy."
+      },
+      {
+       "text": "work() chạy ngay khi xây đối số",
+       "detail": "target cần callable để thread gọi sau; target=work() truyền kết quả của lời gọi.",
+       "correct": true
+      }
+     ],
+     "explanation": "target cần callable để thread gọi sau; target=work() truyền kết quả của lời gọi."
+    },
+    {
+     "question": "Trong Thread(target=work), work được truyền theo dạng nào?",
+     "options": [
+      {
+       "text": "Tên file work.py bắt buộc",
+       "detail": "Chưa đúng. Truyền hàm không kèm ngoặc để chưa thực thi ngay trên thread hiện tại."
+      },
+      {
+       "text": "Callable để thread gọi sau",
+       "detail": "Truyền hàm không kèm ngoặc để chưa thực thi ngay trên thread hiện tại.",
+       "correct": true
+      },
+      {
+       "text": "Kết quả của work() đã chạy trước",
+       "detail": "Chưa đúng. Truyền hàm không kèm ngoặc để chưa thực thi ngay trên thread hiện tại."
+      }
+     ],
+     "explanation": "Truyền hàm không kèm ngoặc để chưa thực thi ngay trên thread hiện tại."
+    },
+    {
+     "question": "args=(4,) khác args=(4) ở điểm gì?",
+     "options": [
+      {
+       "text": "(4,) là tuple một phần tử",
+       "detail": "Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số.",
+       "correct": true
+      },
+      {
+       "text": "(4) cũng là tuple một phần tử",
+       "detail": "Chưa đúng. Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
+      },
+      {
+       "text": "Dấu phẩy khiến số 4 thành chuỗi",
+       "detail": "Chưa đúng. Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
+      }
+     ],
+     "explanation": "Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
+    }
+   ],
    "practice": [
     {
      "prompt": "target=work và target=work() khác nhau thế nào?",
@@ -155,5 +214,6 @@
    "reason": "bản Pyodide này không bật thread thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

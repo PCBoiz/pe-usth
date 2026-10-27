@@ -3,13 +3,13 @@
  "sort_order": 31,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP13 · So sánh tạo dãy True/False",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP13 · So sánh tạo dãy True/False",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP13",
@@ -75,6 +75,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "temps=np.array([29,30,32]); temps > 30 cho gì?",
+     "options": [
+      {
+       "text": "[False,False,True]",
+       "detail": "Đúng. Điều kiện > không nhận giá trị đúng bằng 30.",
+       "correct": true
+      },
+      {
+       "text": "[False,True,True]",
+       "detail": "Đây là kết quả của >=30."
+      },
+      {
+       "text": "[32]",
+       "detail": "So sánh chỉ tạo mask; muốn lấy 32 phải dùng mask chọn array."
+      }
+     ],
+     "explanation": "Đúng. Điều kiện > không nhận giá trị đúng bằng 30."
+    },
+    {
+     "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[False, True, True]",
+       "detail": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện.",
+       "correct": true
+      },
+      {
+       "text": "[False, False, True]",
+       "detail": "Dấu >= nhận cả điểm bằng 5."
+      },
+      {
+       "text": "[5, 8]",
+       "detail": "So sánh tạo mask, chưa lọc các điểm."
+      }
+     ],
+     "explanation": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện."
+    },
+    {
+     "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[False, False, True]",
+       "detail": "30 không lớn hơn chính nó, nên vị trí giữa là False.",
+       "correct": true
+      },
+      {
+       "text": "[False, True, True]",
+       "detail": "Đó là >=30, có nhận số bằng 30."
+      },
+      {
+       "text": "[32]",
+       "detail": "Đây là kết quả lọc, chưa phải mask so sánh."
+      }
+     ],
+     "explanation": "30 không lớn hơn chính nó, nên vị trí giữa là False."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với array chứa `[4, 6]`, điều kiện `>= 5` tạo mask nào?",
@@ -150,5 +209,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

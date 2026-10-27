@@ -3,13 +3,13 @@
  "sort_order": 45,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD04 · Index và phép tính căn theo nhãn",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD04 · Index và phép tính căn theo nhãn",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD04",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "revenue A=50,B=30; cost B=8,A=20. Lợi nhuận A bằng bao nhiêu?",
+     "options": [
+      {
+       "text": "42",
+       "detail": "42 trừ theo vị trí đầu vào, ghép sai cửa hàng."
+      },
+      {
+       "text": "20",
+       "detail": "20 là chi phí của A, chưa trừ khỏi doanh thu."
+      },
+      {
+       "text": "30",
+       "detail": "Đúng: nhãn A ghép 50 với 20.",
+       "correct": true
+      }
+     ],
+     "explanation": "Phép tính giữa Series căn các giá trị có cùng nhãn."
+    },
+    {
+     "question": "Vì sao profit của A là 40?",
+     "options": [
+      {
+       "text": "pandas ghép nhãn A với A: 100 - 60 = 40.",
+       "detail": "pandas ghép nhãn A với A: 100 - 60 = 40.",
+       "correct": true
+      },
+      {
+       "text": "100 - 90 = 10 vì hai hàng cùng vị trí.",
+       "detail": "Hai hàng ở cùng vị trí chưa chắc cùng nhãn."
+      },
+      {
+       "text": "60 - 100 = -40 vì chi phí luôn đứng trước.",
+       "detail": "Phép tính đang là doanh thu trừ chi phí, không phải ngược lại."
+      }
+     ],
+     "explanation": "pandas ghép nhãn A với A: 100 - 60 = 40."
+    },
+    {
+     "question": "reset_index() thường chuyển index về đâu?",
+     "options": [
+      {
+       "text": "Xóa mọi giá trị trong index và các cột.",
+       "detail": "reset_index không xóa mọi cột hoặc mọi giá trị."
+      },
+      {
+       "text": "Chuyển mọi cột thành index mà không tạo cột mới.",
+       "detail": "set_index mới là thao tác đưa cột vào index."
+      },
+      {
+       "text": "Thành một hoặc nhiều cột; index mới thường là số thứ tự.",
+       "detail": "Thành một hoặc nhiều cột; index mới thường là số thứ tự.",
+       "correct": true
+      }
+     ],
+     "explanation": "Thành một hoặc nhiều cột; index mới thường là số thứ tự."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao profit của A là 40?",
@@ -155,5 +214,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

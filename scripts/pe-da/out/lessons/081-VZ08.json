@@ -3,13 +3,13 @@
  "sort_order": 81,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ08 · Heatmap: màu, ma trận và thang đo chung",
- "subtitle": "Trung cấp · M4 · 16 phút",
- "estimated_minutes": 16,
- "xp_reward": 10,
+ "subtitle": "Trung cấp · M4 · 19 phút",
+ "estimated_minutes": 19,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ08 · Heatmap: màu, ma trận và thang đo chung",
-  "subtitle": "Trung cấp · M4 · 16 phút",
+  "subtitle": "Trung cấp · M4 · 19 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ08",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai heatmap tự chọn vmax khác nhau nhưng cùng có ô xanh đậm. Có chắc cùng số không?",
+     "options": [
+      {
+       "text": "Chỉ cần cùng số hàng",
+       "detail": "Kích thước ma trận không quyết định thang màu."
+      },
+      {
+       "text": "Không, cần đọc thang màu chung",
+       "detail": "Đúng: màu đậm nhất có thể gắn với hai cực đại khác nhau.",
+       "correct": true
+      },
+      {
+       "text": "Có, cùng màu luôn cùng số",
+       "detail": "Chỉ đúng khi dùng cùng phép ánh xạ màu và đơn vị."
+      }
+     ],
+     "explanation": "vmin/vmax cùng đơn vị giúp màu mang cùng ý nghĩa."
+    },
+    {
+     "question": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?",
+     "options": [
+      {
+       "text": "Có 5 ô vì cộng hai kích thước.",
+       "detail": "Cộng số hàng và cột không đếm được số cặp ô."
+      },
+      {
+       "text": "Có 7 ô vì tính cả colorbar.",
+       "detail": "Colorbar giải thích màu, không thêm quan sát vào ma trận."
+      },
+      {
+       "text": "6 ô; colorbar và nhãn không phải ô dữ liệu.",
+       "detail": "6 ô; colorbar và nhãn không phải ô dữ liệu.",
+       "correct": true
+      }
+     ],
+     "explanation": "6 ô; colorbar và nhãn không phải ô dữ liệu."
+    },
+    {
+     "question": "Hai cửa hàng dùng cùng màu xanh đậm có chắc cùng số đơn không?",
+     "options": [
+      {
+       "text": "Có; đơn vị dữ liệu không ảnh hưởng cách đọc màu.",
+       "detail": "Cùng màu nhưng khác đơn vị cũng không cho cùng lượng."
+      },
+      {
+       "text": "Chỉ khi cùng thang màu và cùng đơn vị. Cần đọc vmin, vmax hoặc colorbar.",
+       "detail": "Chỉ khi cùng thang màu và cùng đơn vị. Cần đọc vmin, vmax hoặc colorbar.",
+       "correct": true
+      },
+      {
+       "text": "Có; màu giống nhau luôn mang cùng một con số.",
+       "detail": "Một màu có thể ứng với hai số khác nhau nếu thang tự giãn khác nhau."
+      }
+     ],
+     "explanation": "Chỉ khi cùng thang màu và cùng đơn vị. Cần đọc vmin, vmax hoặc colorbar."
+    }
+   ],
    "practice": [
     {
      "prompt": "Heatmap 2 hàng và 3 cột có bao nhiêu ô dữ liệu?",
@@ -192,5 +251,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

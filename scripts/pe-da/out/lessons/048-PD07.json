@@ -3,13 +3,13 @@
  "sort_order": 48,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD07 · Kiểu dữ liệu và số nguyên có ô trống",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD07 · Kiểu dữ liệu và số nguyên có ô trống",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD07",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Chuyển mã \"007\" thành int rồi thành str có giữ \"007\" không?",
+     "options": [
+      {
+       "text": "Có, pandas nhớ mã gốc",
+       "detail": "Không có dữ liệu gốc để tự thêm lại số 0."
+      },
+      {
+       "text": "Luôn báo lỗi",
+       "detail": "\"007\" là chuỗi số hợp lệ nên thường chuyển được."
+      },
+      {
+       "text": "Không, chỉ còn \"7\"",
+       "detail": "Đúng: các số 0 đầu không còn được lưu trong số nguyên.",
+       "correct": true
+      }
+     ],
+     "explanation": "Mã định danh không nên bị coi là đại lượng để tính."
+    },
+    {
+     "question": "Vì sao mã 001 nên giữ dạng chữ?",
+     "options": [
+      {
+       "text": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu.",
+       "detail": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu.",
+       "correct": true
+      },
+      {
+       "text": "Vì chuyển mã thành số luôn giữ số 0 đầu.",
+       "detail": "Số nguyên 1 không ghi nhớ mã ban đầu có bao nhiêu số 0."
+      },
+      {
+       "text": "Vì 001 chắc chắn là một giá trị tiền.",
+       "detail": "Hình thức gồm chữ số không biến mã định danh thành tiền."
+      }
+     ],
+     "explanation": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
+    },
+    {
+     "question": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+     "options": [
+      {
+       "text": "Tự thay mọi ô thiếu bằng 0.",
+       "detail": "Int64 giữ được trạng thái thiếu; nó không tự điền 0."
+      },
+      {
+       "text": "Chỉ cho phép số nguyên, cấm toàn bộ giá trị thiếu.",
+       "detail": "Điểm cần học của kiểu này là hỗ trợ cả số nguyên lẫn ô thiếu."
+      },
+      {
+       "text": "Cột số nguyên có giá trị thiếu.",
+       "detail": "Cột số nguyên có giá trị thiếu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Cột số nguyên có giá trị thiếu."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao mã 001 nên giữ dạng chữ?",
@@ -174,5 +233,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

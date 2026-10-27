@@ -3,13 +3,13 @@
  "sort_order": 166,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
  "title": "EX07 · Bytecode, số nguyên lớn và lỗi thụt lề",
- "subtitle": "Trung cấp · M9 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M9 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "EX07 · Bytecode, số nguyên lớn và lỗi thụt lề",
-  "subtitle": "Trung cấp · M9 · 8 phút",
+  "subtitle": "Trung cấp · M9 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#EX07",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "compile(\"x = 3\", \"example.py\", \"exec\") đã tạo biến x trong namespace của bạn chưa?",
+     "options": [
+      {
+       "text": "Không thể compile một phép gán",
+       "detail": "Chế độ exec hỗ trợ các câu lệnh như phép gán."
+      },
+      {
+       "text": "Chưa; nó trả code object",
+       "detail": "Cần thực thi code object mới chạy phép gán.",
+       "correct": true
+      },
+      {
+       "text": "Rồi; compile và exec là một lời gọi",
+       "detail": "compile tạo đối tượng code; exec thực thi nó."
+      }
+     ],
+     "explanation": "Cần thực thi code object mới chạy phép gán."
+    },
+    {
+     "question": "compile ở chế độ exec trả đối tượng gì?",
+     "options": [
+      {
+       "text": "Chuỗi stdout",
+       "detail": "Chưa đúng. Compile tạo code object; exec là bước thực thi và tạo thay đổi namespace."
+      },
+      {
+       "text": "Code object",
+       "detail": "Compile tạo code object; exec là bước thực thi và tạo thay đổi namespace.",
+       "correct": true
+      },
+      {
+       "text": "Luôn một dict chứa biến đã chạy",
+       "detail": "Chưa đúng. Compile tạo code object; exec là bước thực thi và tạo thay đổi namespace."
+      }
+     ],
+     "explanation": "Compile tạo code object; exec là bước thực thi và tạo thay đổi namespace."
+    },
+    {
+     "question": "Sau compile(\"x=3\",...,\"exec\") mà chưa exec, biến x đã được gán trong namespace đích chưa?",
+     "options": [
+      {
+       "text": "Chưa",
+       "detail": "Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình.",
+       "correct": true
+      },
+      {
+       "text": "Rồi; compile luôn chạy phép gán",
+       "detail": "Chưa đúng. Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
+      },
+      {
+       "text": "Chỉ gán nếu x là số nguyên",
+       "detail": "Chưa đúng. Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
+      }
+     ],
+     "explanation": "Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong ví dụ compile/exec, bước nào tạo code object và bước nào làm xuất hiện cups?",
@@ -117,5 +176,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

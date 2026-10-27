@@ -3,13 +3,13 @@
  "sort_order": 59,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD18 · Concat: ghép các lô dữ liệu",
- "subtitle": "Trung cấp · M3 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Trung cấp · M3 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD18 · Concat: ghép các lô dữ liệu",
-  "subtitle": "Trung cấp · M3 · 9 phút",
+  "subtitle": "Trung cấp · M3 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD18",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Nối hai lô cùng chứa đơn A với ignore_index=True có tự xóa trùng không?",
+     "options": [
+      {
+       "text": "Không",
+       "detail": "Đúng: nhãn hàng đổi, hai bản ghi vẫn còn.",
+       "correct": true
+      },
+      {
+       "text": "Có",
+       "detail": "ignore_index không phải drop_duplicates."
+      },
+      {
+       "text": "Chỉ giữ lô cuối",
+       "detail": "concat không mặc định bỏ cả lô trước."
+      }
+     ],
+     "explanation": "Ghép lô và xử lý trùng là hai thao tác khác nhau."
+    },
+    {
+     "question": "ignore_index có xóa đơn hàng trùng không?",
+     "options": [
+      {
+       "text": "Có; ignore_index tự cộng amount của các đơn trùng.",
+       "detail": "concat không tự tổng hợp các đơn cùng mã."
+      },
+      {
+       "text": "Không; nó chỉ tạo lại nhãn index.",
+       "detail": "Không; nó chỉ tạo lại nhãn index.",
+       "correct": true
+      },
+      {
+       "text": "Có; ignore_index tự bỏ các đơn giống nhau.",
+       "detail": "ignore_index không đọc nội dung để quyết định đơn nào lặp."
+      }
+     ],
+     "explanation": "Không; nó chỉ tạo lại nhãn index."
+    },
+    {
+     "question": "concat axis=1 căn hàng theo vị trí hay index?",
+     "options": [
+      {
+       "text": "Theo index.",
+       "detail": "Theo index.",
+       "correct": true
+      },
+      {
+       "text": "Theo vị trí 0,1,2 bất kể nhãn.",
+       "detail": "Các hàng có nhãn khác nhau có thể không đứng cạnh nhau dù cùng vị trí."
+      },
+      {
+       "text": "Theo thứ tự chữ cái của tên cột.",
+       "detail": "Tên cột không xác định cách căn hàng khi axis=1."
+      }
+     ],
+     "explanation": "Theo index."
+    }
+   ],
    "practice": [
     {
      "prompt": "ignore_index có xóa đơn hàng trùng không?",
@@ -177,5 +236,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

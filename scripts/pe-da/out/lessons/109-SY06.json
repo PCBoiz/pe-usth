@@ -3,13 +3,13 @@
  "sort_order": 109,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY06 · Cho object cách hiển thị và so sánh",
- "subtitle": "Trung cấp · M5 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY06 · Cho object cách hiển thị và so sánh",
-  "subtitle": "Trung cấp · M5 · 11 phút",
+  "subtitle": "Trung cấp · M5 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY06",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trong __str__, chỉ print(\"A\") rồi không return thì có đáp ứng yêu cầu không?",
+     "options": [
+      {
+       "text": "Có nếu class có __init__",
+       "detail": "__init__ không thay quy tắc giá trị trả về của __str__."
+      },
+      {
+       "text": "Không, __str__ phải trả str",
+       "detail": "Python dùng giá trị trả về của __str__, không dùng nội dung method tự in.",
+       "correct": true
+      },
+      {
+       "text": "Có, vì người dùng vẫn nhìn thấy A",
+       "detail": "Việc in và trả chuỗi là hai thao tác khác nhau."
+      }
+     ],
+     "explanation": "Python dùng giá trị trả về của __str__, không dùng nội dung method tự in."
+    },
+    {
+     "question": "print(Grade(8)) dùng method nào để lấy chuỗi mô tả?",
+     "options": [
+      {
+       "text": "__init__ phải tự print",
+       "detail": "Chưa đúng. __str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
+      },
+      {
+       "text": "__str__",
+       "detail": "__str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn.",
+       "correct": true
+      },
+      {
+       "text": "__lt__",
+       "detail": "Chưa đúng. __str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
+      }
+     ],
+     "explanation": "__str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
+    },
+    {
+     "question": "Person(\"Z\",18) phải đứng trước Person(\"A\",21) khi xếp theo tuổi. __lt__ cần so gì?",
+     "options": [
+      {
+       "text": "self.age với other.age",
+       "detail": "Đại lượng so sánh phải đúng mục tiêu: tuổi, không phải thứ tự chữ cái của tên.",
+       "correct": true
+      },
+      {
+       "text": "self.name với other.name",
+       "detail": "Chưa đúng. Đại lượng so sánh phải đúng mục tiêu: tuổi, không phải thứ tự chữ cái của tên."
+      },
+      {
+       "text": "Tên class của hai object",
+       "detail": "Chưa đúng. Đại lượng so sánh phải đúng mục tiêu: tuổi, không phải thứ tự chữ cái của tên."
+      }
+     ],
+     "explanation": "Đại lượng so sánh phải đúng mục tiêu: tuổi, không phải thứ tự chữ cái của tên."
+    }
+   ],
    "practice": [
     {
      "prompt": "__str__ trả gì?",
@@ -150,5 +209,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

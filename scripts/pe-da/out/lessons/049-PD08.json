@@ -3,13 +3,13 @@
  "sort_order": 49,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD08 · Ô thiếu: phát hiện trước khi điền",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD08 · Ô thiếu: phát hiện trước khi điền",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD08",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trung bình mặc định của [4, thiếu, 8] bằng bao nhiêu?",
+     "options": [
+      {
+       "text": "0",
+       "detail": "Thiếu không có nghĩa tất cả các số đều bằng 0."
+      },
+      {
+       "text": "6",
+       "detail": "Đúng: (4+8)/2, bỏ ô thiếu.",
+       "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "Đây là (4+0+8)/3, đã tự điền 0."
+      }
+     ],
+     "explanation": "Cần giữ riêng việc chưa có số đo với một số đo bằng 0."
+    },
+    {
+     "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?",
+     "options": [
+      {
+       "text": "14, vì ô thiếu được coi là 0.",
+       "detail": "Chia tổng cho cả ba vị trí sẽ coi thiếu như 0."
+      },
+      {
+       "text": "22, vì chỉ giữ phần tử cuối.",
+       "detail": "Phép mean không chỉ lấy phần tử cuối."
+      },
+      {
+       "text": "21, vì phép tính bỏ giá trị thiếu.",
+       "detail": "21, vì phép tính bỏ giá trị thiếu.",
+       "correct": true
+      }
+     ],
+     "explanation": "21, vì phép tính bỏ giá trị thiếu."
+    },
+    {
+     "question": "Vì sao không nên luôn fillna(0)?",
+     "options": [
+      {
+       "text": "Vì pandas không cho phép số 0.",
+       "detail": "Số 0 hợp lệ; vấn đề là nó có đúng ý nghĩa của ô thiếu hay không."
+      },
+      {
+       "text": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0.",
+       "detail": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0.",
+       "correct": true
+      },
+      {
+       "text": "Vì fillna(0) tự khôi phục đúng mọi số bị mất.",
+       "detail": "fillna không có cách biết giá trị thực đã mất là bao nhiêu."
+      }
+     ],
+     "explanation": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?",
@@ -156,5 +215,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

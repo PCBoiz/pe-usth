@@ -3,13 +3,13 @@
  "sort_order": 132,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT01 · Một chương trình, nhiều tiến trình",
- "subtitle": "Nâng cao · M6 · 17 phút",
- "estimated_minutes": 17,
- "xp_reward": 10,
+ "subtitle": "Nâng cao · M6 · 20 phút",
+ "estimated_minutes": 20,
+ "xp_reward": 12,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT01 · Một chương trình, nhiều tiến trình",
-  "subtitle": "Nâng cao · M6 · 17 phút",
+  "subtitle": "Nâng cao · M6 · 20 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT01",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Một editor được mở hai lần từ cùng file chương trình. Hai lần mở có bắt buộc cùng PID không?",
+     "options": [
+      {
+       "text": "Có; PID là tên file chương trình",
+       "detail": "PID nhận diện tiến trình, không phải tên executable."
+      },
+      {
+       "text": "Không thể chạy cùng program hai lần",
+       "detail": "Hệ điều hành có thể tạo nhiều tiến trình từ cùng program."
+      },
+      {
+       "text": "Không; đó có thể là hai tiến trình có PID riêng",
+       "detail": "Program là mã chương trình; process là một lần thực thi có trạng thái và tài nguyên.",
+       "correct": true
+      }
+     ],
+     "explanation": "Program là mã chương trình; process là một lần thực thi có trạng thái và tài nguyên."
+    },
+    {
+     "question": "Mở cùng một script hai lần có nhất thiết chỉ một process không?",
+     "options": [
+      {
+       "text": "Chỉ tạo process thứ hai khi đổi mã nguồn",
+       "detail": "Chưa đúng. Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
+      },
+      {
+       "text": "Không; một program có thể có nhiều lần thực thi",
+       "detail": "Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi.",
+       "correct": true
+      },
+      {
+       "text": "Có; tên file quyết định duy nhất một process",
+       "detail": "Chưa đúng. Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
+      }
+     ],
+     "explanation": "Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
+    },
+    {
+     "question": "Process đã có thể chạy nhưng đang đợi CPU thuộc trạng thái nào?",
+     "options": [
+      {
+       "text": "ready",
+       "detail": "Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O.",
+       "correct": true
+      },
+      {
+       "text": "waiting vì đang chờ đọc đĩa",
+       "detail": "Chưa đúng. Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O."
+      },
+      {
+       "text": "terminated",
+       "detail": "Chưa đúng. Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O."
+      }
+     ],
+     "explanation": "Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một file script chạy hai lần có nhất thiết cùng PID không?",
@@ -122,5 +181,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

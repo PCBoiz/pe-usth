@@ -3,13 +3,13 @@
  "sort_order": 129,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY26 · PW2–PW4: chuyển sang object rồi chia package",
- "subtitle": "Trung cấp · M5 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY26 · PW2–PW4: chuyển sang object rồi chia package",
-  "subtitle": "Trung cấp · M5 · 13 phút",
+  "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY26",
@@ -73,6 +73,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Môn A điểm 8 tín chỉ 3, môn B chưa có điểm tín chỉ 2. Nếu tính GPA phần đã có điểm thì mẫu số là gì?",
+     "options": [
+      {
+       "text": "5",
+       "detail": "Bạn đã cho môn chưa chấm tham gia mẫu số mà không có điểm tương ứng."
+      },
+      {
+       "text": "2",
+       "detail": "Số môn khác tổng tín chỉ; môn có điểm mang 3 tín chỉ."
+      },
+      {
+       "text": "3",
+       "detail": "Chỉ tín chỉ môn đã có điểm tham gia GPA phần đã biết.",
+       "correct": true
+      }
+     ],
+     "explanation": "Chỉ tín chỉ môn đã có điểm tham gia GPA phần đã biết."
+    },
+    {
+     "question": "Tạo Student từ file có nên buộc __init__ luôn gọi input không?",
+     "options": [
+      {
+       "text": "Chỉ cần input khi tên có dấu",
+       "detail": "Chưa đúng. Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
+      },
+      {
+       "text": "Không; nhận dữ liệu qua tham số để dùng lại",
+       "detail": "Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn.",
+       "correct": true
+      },
+      {
+       "text": "Có; object chỉ được tạo từ bàn phím",
+       "detail": "Chưa đúng. Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
+      }
+     ],
+     "explanation": "Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
+    },
+    {
+     "question": "Student và Course cùng có describe. Vòng lặp gọi obj.describe() cho cả hai đang dùng ý tưởng gì?",
+     "options": [
+      {
+       "text": "Đa hình",
+       "detail": "Mỗi loại object cung cấp hành vi cùng tên phù hợp mà nơi gọi không cần phân nhánh theo loại.",
+       "correct": true
+      },
+      {
+       "text": "Mọi object bị biến thành cùng class",
+       "detail": "Chưa đúng. Mỗi loại object cung cấp hành vi cùng tên phù hợp mà nơi gọi không cần phân nhánh theo loại."
+      },
+      {
+       "text": "Sắp xếp theo mã",
+       "detail": "Chưa đúng. Mỗi loại object cung cấp hành vi cùng tên phù hợp mà nơi gọi không cần phân nhánh theo loại."
+      }
+     ],
+     "explanation": "Mỗi loại object cung cấp hành vi cùng tên phù hợp mà nơi gọi không cần phân nhánh theo loại."
+    }
+   ],
    "practice": [
     {
      "prompt": "PW2 có được bỏ ngày sinh hoặc chỉ giữ một môn để đơn giản hóa không?",
@@ -105,5 +164,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

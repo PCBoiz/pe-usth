@@ -3,13 +3,13 @@
  "sort_order": 130,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY27 · PW5: lưu ba file, nén và nạp lại",
- "subtitle": "Trung cấp · M5 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY27 · PW5: lưu ba file, nén và nạp lại",
-  "subtitle": "Trung cấp · M5 · 10 phút",
+  "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY27",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Tên sinh viên \"Mai, Anh\" được ghi CSV đúng cách như thế nào?",
+     "options": [
+      {
+       "text": "Bỏ mọi dấu phẩy trong tên",
+       "detail": "Việc lưu không được tự ý đổi dữ liệu hợp lệ của người dùng."
+      },
+      {
+       "text": "Dùng csv.writer để xử lý dấu phẩy trong một trường",
+       "detail": "CSV writer quote trường khi cần để reader không tách nhầm tên thành hai cột.",
+       "correct": true
+      },
+      {
+       "text": "Nối các trường bằng dấu phẩy là luôn đủ",
+       "detail": "Dấu phẩy nằm trong tên sẽ bị hiểu nhầm thành phân cách cột."
+      }
+     ],
+     "explanation": "CSV writer quote trường khi cần để reader không tách nhầm tên thành hai cột."
+    },
+    {
+     "question": "Tên môn chứa dấu phẩy. Vì sao không đọc CSV bằng split(\",\") đơn giản?",
+     "options": [
+      {
+       "text": "Vì split luôn xóa mọi chữ số",
+       "detail": "Chưa đúng. CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
+      },
+      {
+       "text": "Dấu phẩy trong trường có quote không phải ranh giới cột",
+       "detail": "CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy.",
+       "correct": true
+      },
+      {
+       "text": "Vì CSV không bao giờ chứa chữ",
+       "detail": "Chưa đúng. CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
+      }
+     ],
+     "explanation": "CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
+    },
+    {
+     "question": "PW5 cần giữ những thành viên nào trong gói dữ liệu?",
+     "options": [
+      {
+       "text": "students.txt, courses.txt và marks.txt",
+       "detail": "Danh mục và điểm cùng cần được lưu để khôi phục quan hệ giữa các mã.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ marks.txt là đủ cho mọi tham chiếu",
+       "detail": "Chưa đúng. Danh mục và điểm cùng cần được lưu để khôi phục quan hệ giữa các mã."
+      },
+      {
+       "text": "Chỉ ảnh chụp terminal",
+       "detail": "Chưa đúng. Danh mục và điểm cùng cần được lưu để khôi phục quan hệ giữa các mã."
+      }
+     ],
+     "explanation": "Danh mục và điểm cùng cần được lưu để khôi phục quan hệ giữa các mã."
+    }
+   ],
    "practice": [
     {
      "prompt": "Tên có dấu phẩy đọc bằng split có ổn không?",
@@ -88,5 +147,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

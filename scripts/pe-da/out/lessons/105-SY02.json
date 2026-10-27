@@ -3,13 +3,13 @@
  "sort_order": 105,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
- "subtitle": "Trung cấp · M5 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY02 · Lấy mẫu ngẫu nhiên và đếm tần suất",
-  "subtitle": "Trung cấp · M5 · 11 phút",
+  "subtitle": "Trung cấp · M5 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY02",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Counter([\"A\", \"B\", \"A\"])[\"C\"] trả gì?",
+     "options": [
+      {
+       "text": "KeyError",
+       "detail": "Dictionary thường có thể báo KeyError; Counter hỗ trợ tần suất mặc định 0."
+      },
+      {
+       "text": "Một mã ngẫu nhiên",
+       "detail": "Counter đếm dữ liệu; nó không thực hiện chọn mẫu."
+      },
+      {
+       "text": "0",
+       "detail": "Counter cho tần suất 0 khi giá trị chưa xuất hiện.",
+       "correct": true
+      }
+     ],
+     "explanation": "Counter cho tần suất 0 khi giá trị chưa xuất hiện."
+    },
+    {
+     "question": "rng.choice([]) có đáp ứng yêu cầu lấy một mã đơn không?",
+     "options": [
+      {
+       "text": "Có; luôn trả 0",
+       "detail": "Chưa đúng. choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
+      },
+      {
+       "text": "Không; cần xử lý danh sách rỗng trước",
+       "detail": "choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng.",
+       "correct": true
+      },
+      {
+       "text": "Có; luôn trả chuỗi rỗng",
+       "detail": "Chưa đúng. choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
+      }
+     ],
+     "explanation": "choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
+    },
+    {
+     "question": "Trong module random của Python, rng = random.Random(...). rng.randint(1, 3) có thể trả 3 không?",
+     "options": [
+      {
+       "text": "Có",
+       "detail": "randint nhận cả hai đầu của khoảng số nguyên.",
+       "correct": true
+      },
+      {
+       "text": "Không; chỉ có 1 hoặc 2",
+       "detail": "Chưa đúng. randint nhận cả hai đầu của khoảng số nguyên."
+      },
+      {
+       "text": "Chỉ khi list có ba phần tử",
+       "detail": "Chưa đúng. randint nhận cả hai đầu của khoảng số nguyên."
+      }
+     ],
+     "explanation": "randint nhận cả hai đầu của khoảng số nguyên."
+    }
+   ],
    "practice": [
     {
      "prompt": "randint(0, 10) có trả 10 không?",
@@ -146,5 +205,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

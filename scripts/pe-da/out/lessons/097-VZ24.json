@@ -3,13 +3,13 @@
  "sort_order": 97,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
- "subtitle": "Trung cấp · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
-  "subtitle": "Trung cấp · M4 · 13 phút",
+  "subtitle": "Trung cấp · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ24",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "A có 12 khiếu nại/600 đơn, B có 6/60 đơn. Nơi nào tỷ lệ cao hơn?",
+     "options": [
+      {
+       "text": "B:10%, A:2%",
+       "detail": "Đúng: cần chia cho số đơn tương ứng.",
+       "correct": true
+      },
+      {
+       "text": "A vì 12 lớn hơn 6",
+       "detail": "Đó là so số đếm, chưa so tỷ lệ."
+      },
+      {
+       "text": "Bằng nhau vì đều chia được cho 6",
+       "detail": "Tỷ lệ có hai mẫu số khác nhau."
+      }
+     ],
+     "explanation": "Đại lượng cần so sánh phải được xác định trước khi vẽ."
+    },
+    {
+     "question": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?",
+     "options": [
+      {
+       "text": "Hai nơi bằng nhau vì đều có khách phàn nàn.",
+       "detail": "Cùng có khiếu nại không có nghĩa cùng tỷ lệ."
+      },
+      {
+       "text": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số.",
+       "detail": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số.",
+       "correct": true
+      },
+      {
+       "text": "A cao hơn vì 20 lớn hơn 10.",
+       "detail": "Số 20 lớn hơn 10 nhưng mẫu số 1000 cũng khác 100."
+      }
+     ],
+     "explanation": "B:10%, trong khi A:2%. Cần so cùng một chỉ số và ghi mẫu số."
+    },
+    {
+     "question": "Hai đường giao nhau khi mỗi đường có một trục y riêng nói lên điều gì?",
+     "options": [
+      {
+       "text": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau.",
+       "detail": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau.",
+       "correct": true
+      },
+      {
+       "text": "Hai đại lượng chắc chắn bằng nhau ở điểm giao.",
+       "detail": "Điểm giao của hai đường trên hai trục không buộc hai giá trị bằng nhau."
+      },
+      {
+       "text": "Hai đại lượng chắc chắn có cùng đơn vị.",
+       "detail": "Hai trục y có thể biểu diễn hai loại đại lượng khác nhau."
+      }
+     ],
+     "explanation": "Không tự nói lên hai đại lượng bằng nhau; chúng có thang và có thể cả đơn vị khác nhau."
+    }
+   ],
    "practice": [
     {
      "prompt": "A:20/1000 và B:10/100, nơi nào có tỷ lệ khiếu nại cao hơn?",
@@ -188,5 +247,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

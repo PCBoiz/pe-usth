@@ -110,12 +110,16 @@ export const COURSES: CatalogCourse[] = [
     // multiprocessing và Tkinter ở cuối — phần đó nằm trong giáo trình, không
     // phải trong nhãn.
     level: 'beginner',
-    // Tổng `estimated_minutes` của 172 bài là 1 836 phút = 30,6 giờ (cộng từ
+    // Tổng `estimated_minutes` của 172 bài là 2 352 phút = 39,2 giờ (cộng từ
     // scripts/pe-da/out/lessons/*.json). Đừng ghi theo kiểu "172 bài × 1 giờ":
     // đúng cái đó từng cho ra "~48 giờ" cho bộ 48 bài trong khi thật là 28,8 —
     // phóng đại ~67% trên trang ai cũng vào. `e2e/unit/catalog-duration.test.mjs`
     // cộng lại từ giáo trình thật và đòi chuỗi này khớp.
-    duration: '~31 giờ',
+    //
+    // 1 836 -> 2 352 phút ngày 27/10: thêm 3 câu trắc nghiệm mỗi bài (516 câu),
+    // tính 1 phút/câu. Thêm màn vào bài mà vẫn báo số phút cũ thì con số này
+    // nói sai, và nó là con số người học dùng để quyết định có bắt đầu hay không.
+    duration: '~39 giờ',
     lessons: lessonCount('python_advanced', 172),
     rating: 4.8,
     image: '/static/images/python.webp',

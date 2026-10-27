@@ -3,13 +3,13 @@
  "sort_order": 63,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD22 · Gom theo ngày, tháng và điền mốc thiếu",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD22 · Gom theo ngày, tháng và điền mốc thiếu",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD22",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai đơn ở 1/1 và 20/1 có amount 4,6. resample(\"MS\").sum() cho tháng 1 bao nhiêu?",
+     "options": [
+      {
+       "text": "6",
+       "detail": "resample không chỉ giữ đơn cuối."
+      },
+      {
+       "text": "5",
+       "detail": "5 là trung bình, không phải tổng."
+      },
+      {
+       "text": "10",
+       "detail": "Đúng: cả hai ngày thuộc cùng một tháng.",
+       "correct": true
+      }
+     ],
+     "explanation": "MS đặt nhãn ở đầu tháng và sum cộng các giao dịch của tháng."
+    },
+    {
+     "question": "MS trong resample dùng nhãn ở đầu hay cuối tháng?",
+     "options": [
+      {
+       "text": "Đầu tháng.",
+       "detail": "Đầu tháng.",
+       "correct": true
+      },
+      {
+       "text": "Cuối tháng.",
+       "detail": "Nhãn cuối tháng dùng quy ước khác, không phải MS."
+      },
+      {
+       "text": "Ngày cuối cùng có giao dịch trong tháng.",
+       "detail": "Nhãn resample không phụ thuộc ngày giao dịch cuối thực sự có mặt."
+      }
+     ],
+     "explanation": "Đầu tháng."
+    },
+    {
+     "question": "reindex thêm ngày vắng có tự chứng minh doanh thu ngày đó bằng 0 không?",
+     "options": [
+      {
+       "text": "Có; mốc vắng luôn có doanh thu 0.",
+       "detail": "Vắng ghi nhận và ghi nhận số 0 là hai trường hợp khác nhau."
+      },
+      {
+       "text": "Có; reindex tự truy vấn giao dịch còn thiếu.",
+       "detail": "reindex không tự lấy dữ liệu từ một nguồn khác."
+      },
+      {
+       "text": "Không; nó chỉ làm rõ mốc chưa có dữ liệu.",
+       "detail": "Không; nó chỉ làm rõ mốc chưa có dữ liệu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Không; nó chỉ làm rõ mốc chưa có dữ liệu."
+    }
+   ],
    "practice": [
     {
      "prompt": "MS trong resample dùng nhãn ở đầu hay cuối tháng?",
@@ -167,5 +226,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

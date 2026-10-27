@@ -3,13 +3,13 @@
  "sort_order": 23,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP05 · Tạo dãy bằng arange",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP05 · Tạo dãy bằng arange",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP05",
@@ -71,6 +71,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "np.arange(2, 9, 2) tạo dãy nào?",
+     "options": [
+      {
+       "text": "[2,4,6,8,9]",
+       "detail": "9 là điểm dừng, không được lấy."
+      },
+      {
+       "text": "[2,3,4,5,6,7,8]",
+       "detail": "Dãy này dùng bước 1, không phải bước 2."
+      },
+      {
+       "text": "[2,4,6,8]",
+       "detail": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9."
+    },
+    {
+     "question": "Tạo số thứ tự từ 2 đến trước 6. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[2, 3, 4, 5]",
+       "detail": "Dãy bắt đầu ở 2 và không chứa 6.",
+       "correct": true
+      },
+      {
+       "text": "[2, 3, 4, 5, 6]",
+       "detail": "arange không lấy điểm dừng 6."
+      },
+      {
+       "text": "[1, 2, 3, 4, 5]",
+       "detail": "Điểm bắt đầu được truyền là 2."
+      }
+     ],
+     "explanation": "Dãy bắt đầu ở 2 và không chứa 6."
+    },
+    {
+     "question": "Chọn các mốc giờ chẵn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[0, 2, 4, 6]",
+       "detail": "Bắt đầu 0, thêm 2 mỗi lần, dừng trước 8.",
+       "correct": true
+      },
+      {
+       "text": "[0, 2, 4, 6, 8]",
+       "detail": "8 là điểm dừng nên bị loại."
+      },
+      {
+       "text": "[0, 1, 2, 3, 4, 5, 6, 7]",
+       "detail": "Bước nhảy được ghi là 2."
+      }
+     ],
+     "explanation": "Bắt đầu 0, thêm 2 mỗi lần, dừng trước 8."
+    }
+   ],
    "practice": [
     {
      "prompt": "`np.arange(1, 4)` có lấy số 4 không? Viết các số trong kết quả.",
@@ -138,5 +197,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

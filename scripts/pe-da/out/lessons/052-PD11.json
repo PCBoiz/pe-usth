@@ -3,13 +3,13 @@
  "sort_order": 52,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD11 · Sắp xếp và nhìn nhanh phân bố",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD11 · Sắp xếp và nhìn nhanh phân bố",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD11",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Series [10, None, 30] có count và size thế nào?",
+     "options": [
+      {
+       "text": "3 và 3",
+       "detail": "count không tính ô thiếu."
+      },
+      {
+       "text": "2 và 3",
+       "detail": "Đúng: count bỏ thiếu, size đếm tất cả phần tử.",
+       "correct": true
+      },
+      {
+       "text": "3 và 2",
+       "detail": "Bạn đã đảo count với size."
+      }
+     ],
+     "explanation": "Số ô trong cột khác số giá trị có thể dùng để tính."
+    },
+    {
+     "question": "count và size khác gì khi có ô thiếu?",
+     "options": [
+      {
+       "text": "Cả hai luôn bỏ ô thiếu.",
+       "detail": "count bỏ ô thiếu, còn size tính các vị trí."
+      },
+      {
+       "text": "size bỏ ô thiếu, count giữ chúng.",
+       "detail": "Vai trò count và size đã bị đảo ngược."
+      },
+      {
+       "text": "count bỏ ô thiếu; size vẫn đếm chúng.",
+       "detail": "count bỏ ô thiếu; size vẫn đếm chúng.",
+       "correct": true
+      }
+     ],
+     "explanation": "count bỏ ô thiếu; size vẫn đếm chúng."
+    },
+    {
+     "question": "Muốn lấy ba doanh thu cao nhất, có thể dùng hàm nào?",
+     "options": [
+      {
+       "text": "df.sort_index().head(3) luôn sắp theo revenue.",
+       "detail": "sort_index sắp nhãn hàng chứ không sắp revenue."
+      },
+      {
+       "text": "df.nlargest(3, \"revenue\").",
+       "detail": "df.nlargest(3, \"revenue\").",
+       "correct": true
+      },
+      {
+       "text": "df.head(3) luôn là ba doanh thu lớn nhất.",
+       "detail": "Ba hàng đầu chưa chắc có ba doanh thu lớn nhất."
+      }
+     ],
+     "explanation": "df.nlargest(3, \"revenue\")."
+    }
+   ],
    "practice": [
     {
      "prompt": "count và size khác gì khi có ô thiếu?",
@@ -153,5 +212,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 121,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY18 · Đường dẫn, cây thư mục và symlink",
- "subtitle": "Trung cấp · M5 · 18 phút",
- "estimated_minutes": 18,
- "xp_reward": 11,
+ "subtitle": "Trung cấp · M5 · 21 phút",
+ "estimated_minutes": 21,
+ "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY18 · Đường dẫn, cây thư mục và symlink",
-  "subtitle": "Trung cấp · M5 · 18 phút",
+  "subtitle": "Trung cấp · M5 · 21 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY18",
@@ -73,6 +73,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "os.scandir(folder) tự đi qua toàn bộ thư mục cháu không?",
+     "options": [
+      {
+       "text": "Chỉ trả tên file .txt",
+       "detail": "Nó không tự lọc phần mở rộng hay loại mục."
+      },
+      {
+       "text": "Không; nó liệt kê các mục trực tiếp",
+       "detail": "Muốn duyệt cây thư mục có thể dùng os.walk.",
+       "correct": true
+      },
+      {
+       "text": "Có, mọi cấp",
+       "detail": "scandir không tự đệ quy."
+      }
+     ],
+     "explanation": "Muốn duyệt cây thư mục có thể dùng os.walk."
+    },
+    {
+     "question": "os.chdir(folder) có chuyển các file sang folder không?",
+     "options": [
+      {
+       "text": "Chỉ chuyển các file .py",
+       "detail": "Chưa đúng. Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển."
+      },
+      {
+       "text": "Không; chỉ đổi working directory của process",
+       "detail": "Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi file tự đi theo",
+       "detail": "Chưa đúng. Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển."
+      }
+     ],
+     "explanation": "Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển."
+    },
+    {
+     "question": "Muốn tạo cả chuỗi thư mục cha còn thiếu, dùng hàm nào?",
+     "options": [
+      {
+       "text": "os.makedirs",
+       "detail": "Tên API là makedirs; mkdir đơn thường tạo một tầng.",
+       "correct": true
+      },
+      {
+       "text": "os.mkdirs",
+       "detail": "Chưa đúng. Tên API là makedirs; mkdir đơn thường tạo một tầng."
+      },
+      {
+       "text": "os.rmdir",
+       "detail": "Chưa đúng. Tên API là makedirs; mkdir đơn thường tạo một tầng."
+      }
+     ],
+     "explanation": "Tên API là makedirs; mkdir đơn thường tạo một tầng."
+    }
+   ],
    "practice": [
     {
      "prompt": "os.chdir có đổi vị trí file không?",
@@ -155,5 +214,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

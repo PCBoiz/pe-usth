@@ -3,13 +3,13 @@
  "sort_order": 118,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY15 · Mở file: đọc, ghi đè, nối và tạo mới",
- "subtitle": "Trung cấp · M5 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY15 · Mở file: đọc, ghi đè, nối và tạo mới",
-  "subtitle": "Trung cấp · M5 · 13 phút",
+  "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY15",
@@ -73,6 +73,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "File chứa A. Mở bằng w và ghi B thì còn gì?",
+     "options": [
+      {
+       "text": "A",
+       "detail": "Lệnh ghi B đã thay dữ liệu sau khi file bị làm rỗng."
+      },
+      {
+       "text": "B",
+       "detail": "w xóa nội dung cũ khi mở file thành công.",
+       "correct": true
+      },
+      {
+       "text": "AB",
+       "detail": "Đó là hành vi thêm ở cuối của a."
+      }
+     ],
+     "explanation": "w xóa nội dung cũ khi mở file thành công."
+    },
+    {
+     "question": "Muốn thêm một dòng log và giữ các dòng trước, chọn mode nào?",
+     "options": [
+      {
+       "text": "r",
+       "detail": "Chưa đúng. a thêm ở cuối; w làm rỗng nội dung cũ khi mở thành công."
+      },
+      {
+       "text": "a",
+       "detail": "a thêm ở cuối; w làm rỗng nội dung cũ khi mở thành công.",
+       "correct": true
+      },
+      {
+       "text": "w",
+       "detail": "Chưa đúng. a thêm ở cuối; w làm rỗng nội dung cũ khi mở thành công."
+      }
+     ],
+     "explanation": "a thêm ở cuối; w làm rỗng nội dung cũ khi mở thành công."
+    },
+    {
+     "question": "Muốn tạo file mới nhưng báo lỗi nếu tên đã tồn tại, chọn mode nào?",
+     "options": [
+      {
+       "text": "x",
+       "detail": "x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có.",
+       "correct": true
+      },
+      {
+       "text": "a",
+       "detail": "Chưa đúng. x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
+      },
+      {
+       "text": "r",
+       "detail": "Chưa đúng. x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
+      }
+     ],
+     "explanation": "x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn thêm cuối log chọn mode nào?",
@@ -148,5 +207,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

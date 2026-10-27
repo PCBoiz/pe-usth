@@ -3,13 +3,13 @@
  "sort_order": 30,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP12 · Tổng từng hàng và bài ghép",
- "subtitle": "Cơ bản · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP12 · Tổng từng hàng và bài ghép",
-  "subtitle": "Cơ bản · M2 · 8 phút",
+  "subtitle": "Cơ bản · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP12",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a có shape (2,4). sum(axis=1) trả mấy số?",
+     "options": [
+      {
+       "text": "8",
+       "detail": "Tám là số ô đầu vào, không phải số tổng hàng."
+      },
+      {
+       "text": "2",
+       "detail": "Đúng. Hai hàng còn hai tổng.",
+       "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "Bốn số là kết quả của axis=0 trên bảng này."
+      }
+     ],
+     "explanation": "Đúng. Hai hàng còn hai tổng."
+    },
+    {
+     "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[6, 15]",
+       "detail": "axis=1 gộp các cột trong từng hàng.",
+       "correct": true
+      },
+      {
+       "text": "[5, 7, 9]",
+       "detail": "Đó là tổng từng cột."
+      },
+      {
+       "text": "21",
+       "detail": "Đó là tổng chung."
+      }
+     ],
+     "explanation": "axis=1 gộp các cột trong từng hàng."
+    },
+    {
+     "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(3,)",
+       "detail": "Mỗi học viên giữ một tổng nên còn ba kết quả.",
+       "correct": true
+      },
+      {
+       "text": "[2]",
+       "detail": "2 là số cột đã được gộp."
+      },
+      {
+       "text": "[3, 2]",
+       "detail": "Đó là shape bảng gốc."
+      }
+     ],
+     "explanation": "Mỗi học viên giữ một tổng nên còn ba kết quả."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với bảng `[[1, 2, 3], [4, 5, 6]]`, `sum(axis=1)` cho bao nhiêu số? Đó là những số nào?",
@@ -176,5 +235,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

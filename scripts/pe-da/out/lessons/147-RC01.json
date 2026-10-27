@@ -3,13 +3,13 @@
  "sort_order": 147,
  "module": "M7 · Multiprocessing và shell thực hành",
  "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
- "subtitle": "Trung cấp · M7 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M7 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
-  "subtitle": "Trung cấp · M7 · 8 phút",
+  "subtitle": "Trung cấp · M7 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RC01",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trong mô hình Apache Worker của slide, các thread cùng một child process có thể chia sẻ heap không?",
+     "options": [
+      {
+       "text": "Không; thread luôn có heap riêng",
+       "detail": "Stack riêng không đồng nghĩa heap riêng."
+      },
+      {
+       "text": "Có; vậy mọi child process cũng chung heap",
+       "detail": "Mỗi child process vẫn là một không gian địa chỉ riêng."
+      },
+      {
+       "text": "Có",
+       "detail": "Chúng thuộc cùng process nên cùng không gian địa chỉ theo mô hình thread thông thường.",
+       "correct": true
+      }
+     ],
+     "explanation": "Chúng thuộc cùng process nên cùng không gian địa chỉ theo mô hình thread thông thường."
+    },
+    {
+     "question": "Trong sơ đồ Prefork của slide, các child process có mặc định chung heap không?",
+     "options": [
+      {
+       "text": "Chỉ chung heap nếu tên giống nhau",
+       "detail": "Chưa đúng. Quan hệ cha–con không xóa ranh giới không gian địa chỉ giữa các process."
+      },
+      {
+       "text": "Không; cần cơ chế trao đổi/chia sẻ rõ",
+       "detail": "Quan hệ cha–con không xóa ranh giới không gian địa chỉ giữa các process.",
+       "correct": true
+      },
+      {
+       "text": "Có; process có cùng cha thì cùng heap",
+       "detail": "Chưa đúng. Quan hệ cha–con không xóa ranh giới không gian địa chỉ giữa các process."
+      }
+     ],
+     "explanation": "Quan hệ cha–con không xóa ranh giới không gian địa chỉ giữa các process."
+    },
+    {
+     "question": "Trong sơ đồ Worker, hai thread của cùng P1 có thể dùng chung gì?",
+     "options": [
+      {
+       "text": "Heap của P1",
+       "detail": "Chia sẻ được xét trong ranh giới process, còn ngữ cảnh/stack của thread vẫn riêng.",
+       "correct": true
+      },
+      {
+       "text": "Mọi heap của mọi process renderer",
+       "detail": "Chưa đúng. Chia sẻ được xét trong ranh giới process, còn ngữ cảnh/stack của thread vẫn riêng."
+      },
+      {
+       "text": "Stack riêng của nhau trở thành cùng một stack",
+       "detail": "Chưa đúng. Chia sẻ được xét trong ranh giới process, còn ngữ cảnh/stack của thread vẫn riêng."
+      }
+     ],
+     "explanation": "Chia sẻ được xét trong ranh giới process, còn ngữ cảnh/stack của thread vẫn riêng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong hình Prefork, request được xử lý ở một child process hay một thread được vẽ bên trong child?",
@@ -88,5 +147,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

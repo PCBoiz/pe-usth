@@ -3,13 +3,13 @@
  "sort_order": 98,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML",
- "subtitle": "Nâng cao · M4 · 16 phút",
- "estimated_minutes": 16,
- "xp_reward": 10,
+ "subtitle": "Nâng cao · M4 · 19 phút",
+ "estimated_minutes": 19,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ25 · Animation: cập nhật đối tượng và xuất vòng lặp HTML",
-  "subtitle": "Nâng cao · M4 · 16 phút",
+  "subtitle": "Nâng cao · M4 · 19 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ25",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "update(frame) của animation có cần tạo Figure mới mỗi lần không?",
+     "options": [
+      {
+       "text": "Có, mọi khung bắt buộc là một Figure mới",
+       "detail": "Điều đó không cần thiết và làm quản lý hình phức tạp."
+      },
+      {
+       "text": "Chỉ đổi title, dữ liệu không đổi được",
+       "detail": "Line2D có set_data để đổi dữ liệu."
+      },
+      {
+       "text": "Không, có thể đổi Line2D đã tạo bằng set_data",
+       "detail": "Đúng: đối tượng hình được giữ và chỉ dữ liệu hiển thị đổi.",
+       "correct": true
+      }
+     ],
+     "explanation": "Tách dữ liệu gốc khỏi phần đang được trình chiếu ở một khung."
+    },
+    {
+     "question": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?",
+     "options": [
+      {
+       "text": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy.",
+       "detail": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy.",
+       "correct": true
+      },
+      {
+       "text": "600 giây.",
+       "detail": "600 giây lớn hơn thời gian được khai báo 1000 lần."
+      },
+      {
+       "text": "0.006 giây.",
+       "detail": "600 mili giây bằng 0.6 giây, không phải 0.006."
+      }
+     ],
+     "explanation": "600 mili giây, tương đương 0.6 giây theo lịch phát; thời gian thực có thể lệch tùy trình duyệt và máy."
+    },
+    {
+     "question": "Vì sao giữ nguyên ylim khi cột thay đổi?",
+     "options": [
+      {
+       "text": "Để dữ liệu gốc không được cập nhật.",
+       "detail": "Giữ thang không ngăn cập nhật dữ liệu của artist."
+      },
+      {
+       "text": "Để mọi cột luôn cao bằng nhau dù giá trị khác nhau.",
+       "detail": "Dữ liệu khác nhau vẫn phải có chiều cao khác nhau trên cùng thang."
+      },
+      {
+       "text": "Để cùng độ cao luôn biểu diễn cùng lượng, tránh hình tự co giãn làm thay đổi cảm nhận.",
+       "detail": "Để cùng độ cao luôn biểu diễn cùng lượng, tránh hình tự co giãn làm thay đổi cảm nhận.",
+       "correct": true
+      }
+     ],
+     "explanation": "Để cùng độ cao luôn biểu diễn cùng lượng, tránh hình tự co giãn làm thay đổi cảm nhận."
+    }
+   ],
    "practice": [
     {
      "prompt": "interval=600 có nghĩa mỗi khung kéo dài bao lâu?",
@@ -189,5 +248,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

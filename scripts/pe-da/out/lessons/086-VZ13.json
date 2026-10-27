@@ -3,13 +3,13 @@
  "sort_order": 86,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ13 · Error bar: phân tán và độ bất định",
- "subtitle": "Nâng cao · M4 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ13 · Error bar: phân tán và độ bất định",
-  "subtitle": "Nâng cao · M4 · 14 phút",
+  "subtitle": "Nâng cao · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ13",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "SD mẫu=6, n=9 quan sát độc lập. SE trung bình bằng bao nhiêu?",
+     "options": [
+      {
+       "text": "6",
+       "detail": "6 là SD, chưa chia căn số quan sát."
+      },
+      {
+       "text": "0.667",
+       "detail": "Đây là chia n, không chia sqrt(n)."
+      },
+      {
+       "text": "2",
+       "detail": "Đúng: 6/sqrt(9)=2.",
+       "correct": true
+      }
+     ],
+     "explanation": "SE của trung bình khác độ phân tán của từng quan sát."
+    },
+    {
+     "question": "Cộng trừ một độ lệch chuẩn có phải mặc định là khoảng tin cậy 95%?",
+     "options": [
+      {
+       "text": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn.",
+       "detail": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi thanh sai số đều là CI 95%.",
+       "detail": "Loại khoảng phụ thuộc cách tính và nhãn, không phải chỉ hình thanh."
+      },
+      {
+       "text": "Có nếu thanh sai số được vẽ màu xanh.",
+       "detail": "Màu không quyết định ý nghĩa thống kê của khoảng."
+      }
+     ],
+     "explanation": "Không. Độ lệch chuẩn nói về độ phân tán; khoảng tin cậy nói về độ bất định của một ước lượng theo phương pháp được chọn."
+    },
+    {
+     "question": "Với SD=4 và n=16, sai số chuẩn trung bình bằng bao nhiêu?",
+     "options": [
+      {
+       "text": "SE=4 vì cỡ mẫu không ảnh hưởng.",
+       "detail": "Giữ nguyên SD đã bỏ qua cỡ mẫu trong công thức SE."
+      },
+      {
+       "text": "SE=0.25 vì chia trực tiếp SD cho n.",
+       "detail": "Chia thẳng cho n không đúng công thức đang được học."
+      },
+      {
+       "text": "SE=4/sqrt(16)=1, khi điều kiện lấy mẫu độc lập phù hợp.",
+       "detail": "SE=4/sqrt(16)=1, khi điều kiện lấy mẫu độc lập phù hợp.",
+       "correct": true
+      }
+     ],
+     "explanation": "SE=4/sqrt(16)=1, khi điều kiện lấy mẫu độc lập phù hợp."
+    }
+   ],
    "practice": [
     {
      "prompt": "Cộng trừ một độ lệch chuẩn có phải mặc định là khoảng tin cậy 95%?",
@@ -175,5 +234,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 55,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD14 · Groupby: tổng hợp theo nhóm",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD14 · Groupby: tổng hợp theo nhóm",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD14",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "g=[N,N,S], qty=[2,5,4]. Tổng của N là gì?",
+     "options": [
+      {
+       "text": "11",
+       "detail": "11 là tổng mọi nhóm, không phải riêng N."
+      },
+      {
+       "text": "7",
+       "detail": "Đúng: cộng hai hàng có cùng nhãn N.",
+       "correct": true
+      },
+      {
+       "text": "3",
+       "detail": "3 là tổng số hàng của bảng."
+      }
+     ],
+     "explanation": "groupby chia theo khóa rồi mới tính trên từng nhóm."
+    },
+    {
+     "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+     "options": [
+      {
+       "text": "Luôn giữ đúng từng hàng như transform.",
+       "detail": "transform mới phù hợp với kết quả giữ từng hàng như vậy."
+      },
+      {
+       "text": "Luôn có số hàng bằng số cột gốc.",
+       "detail": "Số cột gốc không quyết định số nhóm."
+      },
+      {
+       "text": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
+       "detail": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
+       "correct": true
+      }
+     ],
+     "explanation": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
+    },
+    {
+     "question": "Trong nhóm hai hàng có một amount thiếu, size và count lần lượt là gì?",
+     "options": [
+      {
+       "text": "Cả hai bằng 2 dù amount thiếu.",
+       "detail": "count không tính amount bị thiếu."
+      },
+      {
+       "text": "size là 2; count của amount là 1.",
+       "detail": "size là 2; count của amount là 1.",
+       "correct": true
+      },
+      {
+       "text": "size=1, count=2.",
+       "detail": "Bạn đã đổi chỗ size và count."
+      }
+     ],
+     "explanation": "size là 2; count của amount là 1."
+    }
+   ],
    "practice": [
     {
      "prompt": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
@@ -155,5 +214,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

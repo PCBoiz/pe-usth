@@ -3,13 +3,13 @@
  "sort_order": 25,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP07 · Đọc shape, ndim và size",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP07 · Đọc shape, ndim và size",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP07",
@@ -71,6 +71,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a có shape (3,2). a.size bằng bao nhiêu?",
+     "options": [
+      {
+       "text": "6",
+       "detail": "Đúng. Có 3×2 ô.",
+       "correct": true
+      },
+      {
+       "text": "3",
+       "detail": "3 là độ dài chiều đầu, cũng là len(a) ở bảng này."
+      },
+      {
+       "text": "2",
+       "detail": "2 là số chiều hoặc số cột trong ví dụ, không phải tổng số ô."
+      }
+     ],
+     "explanation": "Đúng. Có 3×2 ô."
+    },
+    {
+     "question": "Bảng có hai cửa hàng và ba ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(2, 3)",
+       "detail": "Có hai list con, mỗi list ba phần tử nên shape là (2,3).",
+       "correct": true
+      },
+      {
+       "text": "[3, 2]",
+       "detail": "shape ghi số hàng trước số cột."
+      },
+      {
+       "text": "6",
+       "detail": "6 là size, không phải shape."
+      }
+     ],
+     "explanation": "Có hai list con, mỗi list ba phần tử nên shape là (2,3)."
+    },
+    {
+     "question": "Đếm tất cả số đo trong bảng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "6",
+       "detail": "size bằng 2 × 3, tức sáu phần tử.",
+       "correct": true
+      },
+      {
+       "text": "2",
+       "detail": "2 là số hàng."
+      },
+      {
+       "text": "3",
+       "detail": "3 là số cột."
+      }
+     ],
+     "explanation": "size bằng 2 × 3, tức sáu phần tử."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một bảng 3 hàng, 2 cột có `size` bằng bao nhiêu?",
@@ -174,5 +233,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

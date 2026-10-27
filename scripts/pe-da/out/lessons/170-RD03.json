@@ -3,13 +3,13 @@
  "sort_order": 170,
  "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
  "title": "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
- "subtitle": "Nâng cao · M10 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M10 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RD03 · Sắp xếp mà vẫn giữ đúng tên và giá trị",
-  "subtitle": "Nâng cao · M10 · 9 phút",
+  "subtitle": "Nâng cao · M10 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RD03",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "names=[A,B,C], sales=[30,10,20]. Sau sắp tăng đúng cặp, tên đứng đầu là gì?",
+     "options": [
+      {
+       "text": "A",
+       "detail": "Giữ tên cũ trong khi chỉ sort số sẽ gán sai dữ liệu."
+      },
+      {
+       "text": "C",
+       "detail": "C có 20, đứng giữa sau khi xếp tăng."
+      },
+      {
+       "text": "B",
+       "detail": "Đúng. B đi cùng số 10 nhỏ nhất.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. B đi cùng số 10 nhỏ nhất."
+    },
+    {
+     "question": "Cần thứ tự tăng của ba mức bán. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[1, 2, 0]",
+       "detail": "Giá thấp nhất ở index 1, tiếp theo 2, rồi 0.",
+       "correct": true
+      },
+      {
+       "text": "[10, 20, 30]",
+       "detail": "Đó là các giá trị đã sắp, không phải chỉ số."
+      },
+      {
+       "text": "[0, 1, 2]",
+       "detail": "Đó là thứ tự gốc, chưa sắp theo sales."
+      }
+     ],
+     "explanation": "Giá thấp nhất ở index 1, tiếp theo 2, rồi 0."
+    },
+    {
+     "question": "Tên phải đi cùng lượng bán khi sắp. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "['B', 'C', 'A']",
+       "detail": "Index chung order giữ đúng quan hệ tên và lượng bán.",
+       "correct": true
+      },
+      {
+       "text": "['A', 'B', 'C']",
+       "detail": "Giữ nguyên tên sau khi sắp giá trị sẽ gán sai cặp."
+      },
+      {
+       "text": "['A', 'C', 'B']",
+       "detail": "Đó là thứ tự giảm, không phải tăng."
+      }
+     ],
+     "explanation": "Index chung order giữ đúng quan hệ tên và lượng bán."
+    }
+   ],
    "practice": [
     {
      "prompt": "Nếu chỉ sort sales rồi giữ names cũ, tên nào bị gán sai trong ví dụ?",
@@ -172,5 +231,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 33,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP15 · Gắn nhãn và giới hạn điểm",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP15 · Gắn nhãn và giới hạn điểm",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP15",
@@ -73,6 +73,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Điểm -1 là dữ liệu sai. Nếu clip ngay về 0..10 thì chuyện gì xảy ra?",
+     "options": [
+      {
+       "text": "NumPy tự biết -1 là điểm chưa nhập",
+       "detail": "NumPy chỉ thực hiện quy tắc số bạn yêu cầu, không tự biết quy ước nghiệp vụ."
+      },
+      {
+       "text": "Nó thành 0 và dấu lỗi dữ liệu bị che",
+       "detail": "Đúng. Clip đổi giá trị nhưng không loại vị trí sai.",
+       "correct": true
+      },
+      {
+       "text": "Nó bị bỏ khỏi array",
+       "detail": "Lọc bằng mask mới loại vị trí; clip không làm vậy."
+      }
+     ],
+     "explanation": "Đúng. Clip đổi giá trị nhưng không loại vị trí sai."
+    },
+    {
+     "question": "Gắn nhãn cho cả điểm đạt và chưa đạt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "['retry', 'pass', 'pass']",
+       "detail": "Điều kiện True lấy pass; False lấy retry, giữ mọi vị trí.",
+       "correct": true
+      },
+      {
+       "text": "['pass', 'pass']",
+       "detail": "where không loại phần tử chưa đạt."
+      },
+      {
+       "text": "['pass', 'retry', 'retry']",
+       "detail": "Thứ tự hai nhãn là đúng trước, sai sau."
+      }
+     ],
+     "explanation": "Điều kiện True lấy pass; False lấy retry, giữ mọi vị trí."
+    },
+    {
+     "question": "Chỉ một trong ba điểm đạt nhưng mọi điểm đều nhận nhãn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(3,)",
+       "detail": "Mỗi điểm được gắn một nhãn, nên còn ba kết quả.",
+       "correct": true
+      },
+      {
+       "text": "[1]",
+       "detail": "where không lọc còn riêng các điểm đạt."
+      },
+      {
+       "text": "[2]",
+       "detail": "Hai điểm chưa đạt vẫn mỗi điểm có một nhãn."
+      }
+     ],
+     "explanation": "Mỗi điểm được gắn một nhãn, nên còn ba kết quả."
+    }
+   ],
    "practice": [
     {
      "prompt": "`np.clip([4, 12], 0, 10)` trả về bao nhiêu phần tử? Giá trị của chúng là gì?",
@@ -151,5 +210,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

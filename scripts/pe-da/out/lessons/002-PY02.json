@@ -3,13 +3,13 @@
  "sort_order": 2,
  "module": "M1 · Python nền tảng",
  "title": "PY02 · Chọn đúng Python và tách môi trường học",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY02 · Chọn đúng Python và tách môi trường học",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY02",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bạn đã tạo .venv. Lệnh nào kiểm pip của đúng môi trường đó trên Windows?",
+     "options": [
+      {
+       "text": "pip --version",
+       "detail": "Lệnh này có thể tìm pip ở nơi khác trên PATH."
+      },
+      {
+       "text": "python -m venv pip",
+       "detail": "Lệnh này tạo một thư mục môi trường tên pip; nó không kiểm pip trong .venv."
+      },
+      {
+       "text": ".venv\\Scripts\\python -m pip --version",
+       "detail": "Đúng. Lệnh dùng chính trình thông dịch trong .venv.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Lệnh dùng chính trình thông dịch trong .venv."
+    },
+    {
+     "question": "Lệnh nào tạo môi trường .venv cho dự án?",
+     "options": [
+      {
+       "text": "python -m venv .venv",
+       "detail": "venv tạo môi trường; pip dùng để quản lý các gói bên trong môi trường.",
+       "correct": true
+      },
+      {
+       "text": "python -m pip .venv",
+       "detail": "pip không phải module tạo venv."
+      },
+      {
+       "text": "python .venv",
+       "detail": "Lệnh này cố chạy .venv như một script."
+      }
+     ],
+     "explanation": "venv tạo môi trường; pip dùng để quản lý các gói bên trong môi trường."
+    },
+    {
+     "question": "Trên Windows, cách nào kiểm pip thuộc chính .venv?",
+     "options": [
+      {
+       "text": ".venv\\Scripts\\python -m pip --version",
+       "detail": "Dùng đường dẫn interpreter của .venv rồi gọi module pip.",
+       "correct": true
+      },
+      {
+       "text": "pip --version luôn thuộc .venv",
+       "detail": "Lệnh pip trong PATH có thể thuộc Python khác."
+      },
+      {
+       "text": "python -m venv --pip-version",
+       "detail": "Đây không phải cách xem pip của môi trường đã tạo."
+      }
+     ],
+     "explanation": "Dùng đường dẫn interpreter của .venv rồi gọi module pip."
+    }
+   ],
    "practice": [
     {
      "prompt": "pip và pyenv quản lý cùng một việc không?",
@@ -114,5 +173,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

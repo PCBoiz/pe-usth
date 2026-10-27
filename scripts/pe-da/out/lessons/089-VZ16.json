@@ -3,13 +3,13 @@
  "sort_order": 89,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ16 · Seaborn: histogram, ECDF và KDE",
- "subtitle": "Trung cấp · M4 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ16 · Seaborn: histogram, ECDF và KDE",
-  "subtitle": "Trung cấp · M4 · 14 phút",
+  "subtitle": "Trung cấp · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ16",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Dữ liệu [1,2,2,5]. ECDF tại 2 bằng gì?",
+     "options": [
+      {
+       "text": "2/4",
+       "detail": "Hai giá trị 2 không phải toàn bộ các giá trị ≤2; còn số 1."
+      },
+      {
+       "text": "1/4",
+       "detail": "Đây không phải tỷ lệ lớn hơn ngưỡng."
+      },
+      {
+       "text": "3/4",
+       "detail": "Đúng: ba trong bốn giá trị nhỏ hơn hoặc bằng 2.",
+       "correct": true
+      }
+     ],
+     "explanation": "ECDF tính theo các quan sát, không cần chọn bins."
+    },
+    {
+     "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?",
+     "options": [
+      {
+       "text": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
+       "detail": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
+       "correct": true
+      },
+      {
+       "text": "Có bốn quan sát lớn hơn 4 trong sáu quan sát.",
+       "detail": "Đây là phía lớn hơn ngưỡng, ngược với tích lũy tới ngưỡng."
+      },
+      {
+       "text": "Mỗi quan sát chắc chắn có xác suất đúng 4/6.",
+       "detail": "Tỷ lệ tích lũy không gán cùng xác suất 4/6 cho từng điểm riêng."
+      }
+     ],
+     "explanation": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút."
+    },
+    {
+     "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?",
+     "options": [
+      {
+       "text": "Tự tăng số quan sát trong dữ liệu.",
+       "detail": "Làm mượt không sinh thêm quan sát gốc."
+      },
+      {
+       "text": "Luôn tạo thêm nhiều đỉnh hơn.",
+       "detail": "Mức làm mượt cao hơn thường có thể che các đỉnh nhỏ, không bảo đảm tạo thêm đỉnh."
+      },
+      {
+       "text": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
+       "detail": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ."
+    }
+   ],
    "practice": [
     {
      "prompt": "ECDF tại 4 bằng 4/6 có nghĩa gì?",
@@ -117,5 +176,6 @@
    "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
 }

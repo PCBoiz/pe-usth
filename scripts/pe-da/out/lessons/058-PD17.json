@@ -3,13 +3,13 @@
  "sort_order": 58,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD17 · Kiểm tra số dòng sau khi nối bảng",
- "subtitle": "Trung cấp · M3 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Trung cấp · M3 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD17 · Kiểm tra số dòng sau khi nối bảng",
-  "subtitle": "Trung cấp · M3 · 9 phút",
+  "subtitle": "Trung cấp · M3 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD17",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Một khóa lặp 2 lần bên trái và 3 lần bên phải tạo bao nhiêu hàng khi merge?",
+     "options": [
+      {
+       "text": "2",
+       "detail": "Không tự giữ số hàng của bảng trái nếu khóa phải trùng."
+      },
+      {
+       "text": "6",
+       "detail": "Đúng: mọi cặp cùng khóa đều được ghép.",
+       "correct": true
+      },
+      {
+       "text": "3",
+       "detail": "Không chỉ lấy số hàng lớn hơn trong hai phía."
+      }
+     ],
+     "explanation": "Danh mục trùng khóa có thể nhân hàng; many_to_one phát hiện trường hợp này."
+    },
+    {
+     "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?",
+     "options": [
+      {
+       "text": "Năm hàng, vì cộng hai kích thước.",
+       "detail": "Số cặp ghép dùng phép nhân, không dùng phép cộng."
+      },
+      {
+       "text": "Ba hàng, vì merge luôn giữ số hàng lớn hơn.",
+       "detail": "Không có quy tắc chỉ lấy kích thước lớn hơn khi khóa lặp."
+      },
+      {
+       "text": "Sáu hàng.",
+       "detail": "Sáu hàng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Sáu hàng."
+    },
+    {
+     "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?",
+     "options": [
+      {
+       "text": "many_to_many để bảo đảm danh mục không lặp mã.",
+       "detail": "many_to_many không kiểm điều kiện duy nhất của danh mục."
+      },
+      {
+       "text": "many_to_one, khi đơn hàng ở bên trái.",
+       "detail": "many_to_one, khi đơn hàng ở bên trái.",
+       "correct": true
+      },
+      {
+       "text": "one_to_one dù một khách có nhiều đơn.",
+       "detail": "one_to_one từ chối tình huống khách có nhiều đơn hợp lệ."
+      }
+     ],
+     "explanation": "many_to_one, khi đơn hàng ở bên trái."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?",
@@ -162,5 +221,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 152,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU05 · Entry, mật khẩu và Checkbutton",
- "subtitle": "Trung cấp · M8 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M8 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU05 · Entry, mật khẩu và Checkbutton",
-  "subtitle": "Trung cấp · M8 · 10 phút",
+  "subtitle": "Trung cấp · M8 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Entry có show=\"*\" có mã hóa mật khẩu được lưu không?",
+     "options": [
+      {
+       "text": "Không; nó chỉ che cách hiển thị",
+       "detail": "Entry.get vẫn trả nội dung; lưu trữ và bảo vệ dữ liệu là chuyện khác.",
+       "correct": true
+      },
+      {
+       "text": "Có; get sẽ trả các dấu sao",
+       "detail": "show thay cách vẽ chữ, không đổi giá trị bên trong."
+      },
+      {
+       "text": "Có; mọi dữ liệu tự thành bytes mã hóa",
+       "detail": "Tkinter không tự mã hóa dữ liệu khi đặt thuộc tính show."
+      }
+     ],
+     "explanation": "Entry.get vẫn trả nội dung; lưu trữ và bảo vệ dữ liệu là chuyện khác."
+    },
+    {
+     "question": "Entry.get() trả gì kể cả khi người dùng gõ 12?",
+     "options": [
+      {
+       "text": "Một StringVar mới",
+       "detail": "Chưa đúng. Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
+      },
+      {
+       "text": "Chuỗi \"12\"",
+       "detail": "Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng.",
+       "correct": true
+      },
+      {
+       "text": "Luôn số nguyên 12",
+       "detail": "Chưa đúng. Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
+      }
+     ],
+     "explanation": "Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
+    },
+    {
+     "question": "show=\"*\" trên Entry làm gì?",
+     "options": [
+      {
+       "text": "Che cách hiển thị ký tự nhập",
+       "detail": "Che trên màn hình không tự bảo mật hoặc thay giá trị nhận được từ get.",
+       "correct": true
+      },
+      {
+       "text": "Mã hóa dữ liệu đã lưu bằng mật khẩu",
+       "detail": "Chưa đúng. Che trên màn hình không tự bảo mật hoặc thay giá trị nhận được từ get."
+      },
+      {
+       "text": "Đổi nội dung thật thành toàn dấu *",
+       "detail": "Chưa đúng. Che trên màn hình không tự bảo mật hoặc thay giá trị nhận được từ get."
+      }
+     ],
+     "explanation": "Che trên màn hình không tự bảo mật hoặc thay giá trị nhận được từ get."
+    }
+   ],
    "practice": [
     {
      "prompt": "Entry.get() trả số hay chuỗi?",
@@ -112,5 +171,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

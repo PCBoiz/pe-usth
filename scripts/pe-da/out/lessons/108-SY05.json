@@ -3,13 +3,13 @@
  "sort_order": 108,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
- "subtitle": "Trung cấp · M5 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY05 · Class và object: mỗi sinh viên có dữ liệu riêng",
-  "subtitle": "Trung cấp · M5 · 13 phút",
+  "subtitle": "Trung cấp · M5 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a = Student(\"An\"); b = a; b.name = \"Mai\". a.name là gì?",
+     "options": [
+      {
+       "text": "An",
+       "detail": "Gán b=a không tạo bản sao Student."
+      },
+      {
+       "text": "None",
+       "detail": "Tên name đã được khởi tạo và được gán lại; không tự mất giá trị."
+      },
+      {
+       "text": "Mai",
+       "detail": "a và b cùng trỏ một instance; sửa thuộc tính qua b cũng thấy khi đọc qua a.",
+       "correct": true
+      }
+     ],
+     "explanation": "a và b cùng trỏ một instance; sửa thuộc tính qua b cũng thấy khi đọc qua a."
+    },
+    {
+     "question": "Student là class, còn Student(\"S1\",\"An\",...) tạo ra gì?",
+     "options": [
+      {
+       "text": "Bản sao của toàn bộ class",
+       "detail": "Chưa đúng. Class mô tả cấu trúc và hành vi; lời gọi class tạo instance theo cách khởi tạo của nó."
+      },
+      {
+       "text": "Một instance Student",
+       "detail": "Class mô tả cấu trúc và hành vi; lời gọi class tạo instance theo cách khởi tạo của nó.",
+       "correct": true
+      },
+      {
+       "text": "Một module tên Student",
+       "detail": "Chưa đúng. Class mô tả cấu trúc và hành vi; lời gọi class tạo instance theo cách khởi tạo của nó."
+      }
+     ],
+     "explanation": "Class mô tả cấu trúc và hành vi; lời gọi class tạo instance theo cách khởi tạo của nó."
+    },
+    {
+     "question": "Trong label(self, prefix), self đại diện cho gì khi gọi student.label(\"SV: \")?",
+     "options": [
+      {
+       "text": "Instance student đang nhận lời gọi",
+       "detail": "self là tham số nhận instance; prefix nhận đối số chuỗi được truyền vào.",
+       "correct": true
+      },
+      {
+       "text": "Chuỗi \"SV: \"",
+       "detail": "Chưa đúng. self là tham số nhận instance; prefix nhận đối số chuỗi được truyền vào."
+      },
+      {
+       "text": "Tên file hiện tại",
+       "detail": "Chưa đúng. self là tham số nhận instance; prefix nhận đối số chuỗi được truyền vào."
+      }
+     ],
+     "explanation": "self là tham số nhận instance; prefix nhận đối số chuỗi được truyền vào."
+    }
+   ],
    "practice": [
     {
      "prompt": "Student và student khác nhau gì?",
@@ -148,5 +207,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

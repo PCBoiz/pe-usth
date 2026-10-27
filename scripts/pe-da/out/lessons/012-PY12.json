@@ -3,13 +3,13 @@
  "sort_order": 12,
  "module": "M1 · Python nền tảng",
  "title": "PY12 · Dictionary và tra cứu theo khóa",
- "subtitle": "Cơ bản · M1 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY12 · Dictionary và tra cứu theo khóa",
-  "subtitle": "Cơ bản · M1 · 11 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY12",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "marks={\"S02\":0}. marks.get(\"S02\", None) trả gì?",
+     "options": [
+      {
+       "text": "KeyError",
+       "detail": "get cho phép giá trị mặc định; truy cập [] vào khóa thiếu mới gây KeyError."
+      },
+      {
+       "text": "0",
+       "detail": "Đúng. Khóa tồn tại và giữ điểm 0.",
+       "correct": true
+      },
+      {
+       "text": "None",
+       "detail": "Giá trị mặc định chỉ dùng khi thiếu khóa."
+      }
+     ],
+     "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
+    },
+    {
+     "question": "Điểm 0 là một giá trị đã có. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "0",
+       "detail": "Tra đúng khóa nhận đúng giá trị, kể cả khi giá trị là 0.",
+       "correct": true
+      },
+      {
+       "text": "None",
+       "detail": "Khóa A tồn tại và giữ điểm 0."
+      },
+      {
+       "text": "8",
+       "detail": "8 thuộc khóa B."
+      }
+     ],
+     "explanation": "Tra đúng khóa nhận đúng giá trị, kể cả khi giá trị là 0."
+    },
+    {
+     "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'missing'",
+       "detail": "Không có C nên get trả đối số mặc định.",
+       "correct": true
+      },
+      {
+       "text": "None",
+       "detail": "Mặc định đã được truyền là chuỗi missing."
+      },
+      {
+       "text": "'KeyError'",
+       "detail": "get với mặc định không gây KeyError khi thiếu khóa."
+      }
+     ],
+     "explanation": "Không có C nên get trả đối số mặc định."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với `student = {\"name\": \"Mai\"}`, `\"Mai\" in student` kiểm tra khóa hay giá trị? Muốn tìm trong các giá trị thì viết thế nào?",
@@ -136,5 +195,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

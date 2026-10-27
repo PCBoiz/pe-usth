@@ -3,13 +3,13 @@
  "sort_order": 172,
  "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
  "title": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu",
- "subtitle": "Nâng cao · M10 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M10 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RD05 · Lấy mẫu có hoàn lại và mô phỏng dữ liệu",
-  "subtitle": "Nâng cao · M10 · 10 phút",
+  "subtitle": "Nâng cao · M10 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RD05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Có ba đơn gốc, tạo 1000 mẫu bootstrap. Bạn có 1000 đơn gốc mới không?",
+     "options": [
+      {
+       "text": "Không; đó là nhiều lần lấy mẫu lại từ ba đơn",
+       "detail": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc.",
+       "correct": true
+      },
+      {
+       "text": "Có, mỗi trung bình là một đơn mới",
+       "detail": "Trung bình mẫu lại là thống kê, không phải một đơn quan sát."
+      },
+      {
+       "text": "Có nếu cố định seed",
+       "detail": "Seed giúp tái lập, không làm xuất hiện thêm dữ liệu thật."
+      }
+     ],
+     "explanation": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc."
+    },
+    {
+     "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(20,)",
+       "detail": "size quyết định số giá trị sinh ra, tách khỏi loc và scale.",
+       "correct": true
+      },
+      {
+       "text": "[25]",
+       "detail": "25 là tham số loc, không phải số mẫu."
+      },
+      {
+       "text": "[2]",
+       "detail": "2 là scale, không phải số mẫu."
+      }
+     ],
+     "explanation": "size quyết định số giá trị sinh ra, tách khỏi loc và scale."
+    },
+    {
+     "question": "Có thể lấy nhiều hơn số vị trí nguồn. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(5,)",
+       "detail": "Mỗi lượt có thể chọn lại một đơn đã chọn trước.",
+       "correct": true
+      },
+      {
+       "text": "[3]",
+       "detail": "replace=True cho phép chọn lại nên vẫn lấy năm lượt."
+      },
+      {
+       "text": "'ValueError'",
+       "detail": "Trường hợp quá số vị trí chỉ bị cấm với replace=False."
+      }
+     ],
+     "explanation": "Mỗi lượt có thể chọn lại một đơn đã chọn trước."
+    }
+   ],
    "practice": [
     {
      "prompt": "100 số từ normal(loc=25,scale=2) có bắt buộc mean đúng 25 không?",
@@ -196,5 +255,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

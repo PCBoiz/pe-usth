@@ -3,13 +3,13 @@
  "sort_order": 163,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
  "title": "EX04 · Đọc cây process và phân biệt fork với exec",
- "subtitle": "Trung cấp · M9 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M9 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "EX04 · Đọc cây process và phân biệt fork với exec",
-  "subtitle": "Trung cấp · M9 · 8 phút",
+  "subtitle": "Trung cấp · M9 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#EX04",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Process 102 có PPID=101; 101 có PPID=100. Cha trực tiếp của 102 là ai?",
+     "options": [
+      {
+       "text": "102",
+       "detail": "PID bản thân không trở thành PPID của chính nó trong cây này."
+      },
+      {
+       "text": "101",
+       "detail": "PPID trỏ cha trực tiếp, không bỏ qua một thế hệ.",
+       "correct": true
+      },
+      {
+       "text": "100",
+       "detail": "100 là tổ tiên ở đây, không phải cha trực tiếp."
+      }
+     ],
+     "explanation": "PPID trỏ cha trực tiếp, không bỏ qua một thế hệ."
+    },
+    {
+     "question": "Process 8 có PPID 5, process 5 có PPID 1. Cha trực tiếp của 8 là ai?",
+     "options": [
+      {
+       "text": "8",
+       "detail": "Chưa đúng. PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây."
+      },
+      {
+       "text": "5",
+       "detail": "PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây.",
+       "correct": true
+      },
+      {
+       "text": "1",
+       "detail": "Chưa đúng. PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây."
+      }
+     ],
+     "explanation": "PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây."
+    },
+    {
+     "question": "Child sửa list thường trong process riêng có buộc parent list đổi theo không?",
+     "options": [
+      {
+       "text": "Không",
+       "detail": "Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu.",
+       "correct": true
+      },
+      {
+       "text": "Có; tên list giống nhau là đủ",
+       "detail": "Chưa đúng. Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu."
+      },
+      {
+       "text": "Chỉ đổi khi cả hai dùng cùng version Python",
+       "detail": "Chưa đúng. Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu."
+      }
+     ],
+     "explanation": "Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu."
+    }
+   ],
    "practice": [
     {
      "prompt": "Process 102 có PPID 101, process 101 có PPID 100. Cha trực tiếp và ông của 102 là ai?",
@@ -90,5 +149,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
 }

@@ -3,13 +3,13 @@
  "sort_order": 90,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ17 · Seaborn: đếm nhóm và so sánh phân bố",
- "subtitle": "Trung cấp · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ17 · Seaborn: đếm nhóm và so sánh phân bố",
-  "subtitle": "Trung cấp · M4 · 13 phút",
+  "subtitle": "Trung cấp · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ17",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "countplot(x=\"shift\") đặt đại lượng gì trên trục y?",
+     "options": [
+      {
+       "text": "Trung vị",
+       "detail": "Muốn đọc trung vị phân bố thường dùng boxplot hoặc tính riêng."
+      },
+      {
+       "text": "Số hàng mỗi ca",
+       "detail": "Đúng: mỗi quan sát đóng góp vào số đếm của ca.",
+       "correct": true
+      },
+      {
+       "text": "Trung bình thời gian chờ",
+       "detail": "countplot không tự tổng hợp cột wait thành mean."
+      }
+     ],
+     "explanation": "Tên nhóm giống nhau không làm hai loại biểu đồ trả cùng câu hỏi."
+    },
+    {
+     "question": "countplot trục y là trung bình thời gian chờ hay số dòng?",
+     "options": [
+      {
+       "text": "Trung bình của mọi cột số trong nhóm.",
+       "detail": "Đó là mean, không phải count của từng nhóm."
+      },
+      {
+       "text": "Tổng thời gian chờ của nhóm.",
+       "detail": "Cộng thời gian chờ khác với đếm số dòng."
+      },
+      {
+       "text": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
+       "detail": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
+       "correct": true
+      }
+     ],
+     "explanation": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian."
+    },
+    {
+     "question": "Khi cả ca có 3 quan sát, tại sao vẽ thêm stripplot?",
+     "options": [
+      {
+       "text": "Để thay thế dữ liệu gốc bằng đường hồi quy.",
+       "detail": "Điểm gốc không phải đường hồi quy và không thay dữ liệu."
+      },
+      {
+       "text": "Để thấy giá trị thật và cỡ mẫu thay vì suy luận từ hộp tóm tắt.",
+       "detail": "Để thấy giá trị thật và cỡ mẫu thay vì suy luận từ hộp tóm tắt.",
+       "correct": true
+      },
+      {
+       "text": "Để tự làm cỡ mẫu tăng từ 3 lên 30.",
+       "detail": "Số quan sát vẫn là 3, dù mỗi quan sát được hiện rõ hơn."
+      }
+     ],
+     "explanation": "Để thấy giá trị thật và cỡ mẫu thay vì suy luận từ hộp tóm tắt."
+    }
+   ],
    "practice": [
     {
      "prompt": "countplot trục y là trung bình thời gian chờ hay số dòng?",
@@ -111,5 +170,6 @@
    "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
 }

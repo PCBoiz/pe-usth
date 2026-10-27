@@ -3,13 +3,13 @@
  "sort_order": 10,
  "module": "M1 · Python nền tảng",
  "title": "PY10 · List: lấy, thêm và xóa phần tử",
- "subtitle": "Cơ bản · M1 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY10 · List: lấy, thêm và xóa phần tử",
-  "subtitle": "Cơ bản · M1 · 14 phút",
+  "subtitle": "Cơ bản · M1 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY10",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=[1,2]; a.append([3,4]). a có bao nhiêu phần tử?",
+     "options": [
+      {
+       "text": "3",
+       "detail": "Đúng. List [3,4] được thêm như một phần tử.",
+       "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "extend([3,4]) mới thêm hai số riêng."
+      },
+      {
+       "text": "2",
+       "detail": "append làm list thay đổi, không chỉ tạo bản xem."
+      }
+     ],
+     "explanation": "Đúng. List [3,4] được thêm như một phần tử."
+    },
+    {
+     "question": "Thêm một nhóm vào cuối danh sách. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[1, 2, [3, 4]]",
+       "detail": "append thêm đối số như một phần tử duy nhất.",
+       "correct": true
+      },
+      {
+       "text": "[1, 2, 3, 4]",
+       "detail": "extend mới thêm từng phần tử của list nhận vào."
+      },
+      {
+       "text": "[3, 4, 1, 2]",
+       "detail": "append thêm ở cuối, không ở đầu."
+      }
+     ],
+     "explanation": "append thêm đối số như một phần tử duy nhất."
+    },
+    {
+     "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[1, 2, 3, 4]",
+       "detail": "extend đưa từng phần tử của iterable vào list hiện tại.",
+       "correct": true
+      },
+      {
+       "text": "[1, 2, [3, 4]]",
+       "detail": "Đó là kết quả của append một list."
+      },
+      {
+       "text": "[3, 4]",
+       "detail": "extend không bỏ các phần tử đã có."
+      }
+     ],
+     "explanation": "extend đưa từng phần tử của iterable vào list hiện tại."
+    }
+   ],
    "practice": [
     {
      "prompt": "append([3, 4]) và extend([3, 4]) khác nhau thế nào? a + b có sửa a giống a += b không?",
@@ -172,5 +231,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

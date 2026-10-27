@@ -3,13 +3,13 @@
  "sort_order": 133,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT02 · Tạo process: Windows, fork và exec",
- "subtitle": "Nâng cao · M6 · 16 phút",
- "estimated_minutes": 16,
- "xp_reward": 10,
+ "subtitle": "Nâng cao · M6 · 19 phút",
+ "estimated_minutes": 19,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT02 · Tạo process: Windows, fork và exec",
-  "subtitle": "Nâng cao · M6 · 16 phút",
+  "subtitle": "Nâng cao · M6 · 19 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT02",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "exec thành công có làm tiến trình hiện tại đổi PID không?",
+     "options": [
+      {
+       "text": "Có; exec luôn chạy song song cả hai chương trình",
+       "detail": "Sau exec thành công, code chương trình cũ không tiếp tục như một nhánh thứ hai."
+      },
+      {
+       "text": "Không; chương trình trong tiến trình được thay",
+       "detail": "exec thay image chương trình; nó không phải lệnh tạo tiến trình con.",
+       "correct": true
+      },
+      {
+       "text": "Có; exec luôn tạo PID mới",
+       "detail": "Tạo process và thay chương trình là hai thao tác khác nhau."
+      }
+     ],
+     "explanation": "exec thay image chương trình; nó không phải lệnh tạo tiến trình con."
+    },
+    {
+     "question": "fork thành công trên POSIX trả gì ở process con?",
+     "options": [
+      {
+       "text": "-1 trong mọi trường hợp",
+       "detail": "Chưa đúng. Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
+      },
+      {
+       "text": "0",
+       "detail": "Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh.",
+       "correct": true
+      },
+      {
+       "text": "PID của chính cha",
+       "detail": "Chưa đúng. Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
+      }
+     ],
+     "explanation": "Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
+    },
+    {
+     "question": "exec thành công có tạo process mới với PID khác không?",
+     "options": [
+      {
+       "text": "Không; thay chương trình trong process hiện tại",
+       "detail": "Exec thay image chương trình; PID của process hiện tại được giữ theo mô hình đang học.",
+       "correct": true
+      },
+      {
+       "text": "Có; luôn tạo thêm một process thứ ba",
+       "detail": "Chưa đúng. Exec thay image chương trình; PID của process hiện tại được giữ theo mô hình đang học."
+      },
+      {
+       "text": "Chỉ thay tên biến program trong Python",
+       "detail": "Chưa đúng. Exec thay image chương trình; PID của process hiện tại được giữ theo mô hình đang học."
+      }
+     ],
+     "explanation": "Exec thay image chương trình; PID của process hiện tại được giữ theo mô hình đang học."
+    }
+   ],
    "practice": [
     {
      "prompt": "fork trả gì ở cha và ở con khi thành công?",
@@ -114,5 +173,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

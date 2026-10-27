@@ -3,13 +3,13 @@
  "sort_order": 64,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD23 · Múi giờ: cùng thời điểm, khác giờ hiển thị",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD23 · Múi giờ: cùng thời điểm, khác giờ hiển thị",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD23",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "2026-05-01 23:30 UTC ở Việt Nam thuộc ngày nào?",
+     "options": [
+      {
+       "text": "2026-04-30",
+       "detail": "Việt Nam đi trước UTC, không lùi một ngày."
+      },
+      {
+       "text": "2026-05-02",
+       "detail": "Đúng: UTC+7 là 06:30 ngày tiếp theo.",
+       "correct": true
+      },
+      {
+       "text": "2026-05-01",
+       "detail": "Đó vẫn là ngày UTC, chưa chuyển múi giờ."
+      }
+     ],
+     "explanation": "Cùng sự kiện có thể thuộc hai ngày lịch khác nhau tùy múi giờ."
+    },
+    {
+     "question": "tz_localize và tz_convert khác nhau thế nào?",
+     "options": [
+      {
+       "text": "Cả hai chỉ đổi chữ viết của tên múi giờ.",
+       "detail": "Hai thao tác có tác dụng đến ý nghĩa thời điểm, không chỉ đổi tên chữ."
+      },
+      {
+       "text": "tz_convert gắn múi giờ vào giờ naive, tz_localize chuyển mọi thời điểm đã aware.",
+       "detail": "Vai trò của localize và convert đã bị đảo."
+      },
+      {
+       "text": "tz_localize gắn múi giờ cho giờ chưa có múi giờ; tz_convert chuyển cách hiển thị một thời điểm đã có múi giờ.",
+       "detail": "tz_localize gắn múi giờ cho giờ chưa có múi giờ; tz_convert chuyển cách hiển thị một thời điểm đã có múi giờ.",
+       "correct": true
+      }
+     ],
+     "explanation": "tz_localize gắn múi giờ cho giờ chưa có múi giờ; tz_convert chuyển cách hiển thị một thời điểm đã có múi giờ."
+    },
+    {
+     "question": "23:00 UTC ngày 1/1 ở Việt Nam thuộc ngày nào?",
+     "options": [
+      {
+       "text": "Ngày 1/1 lúc 16:00.",
+       "detail": "Phương án này trừ chênh lệch thay vì cộng."
+      },
+      {
+       "text": "Ngày 2/1 lúc 06:00.",
+       "detail": "Ngày 2/1 lúc 06:00.",
+       "correct": true
+      },
+      {
+       "text": "Vẫn là ngày 1/1 lúc 23:00.",
+       "detail": "Mốc 23:00 cộng chênh lệch có thể sang ngày kế tiếp."
+      }
+     ],
+     "explanation": "Ngày 2/1 lúc 06:00."
+    }
+   ],
    "practice": [
     {
      "prompt": "tz_localize và tz_convert khác nhau thế nào?",
@@ -142,5 +201,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

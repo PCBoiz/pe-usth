@@ -3,13 +3,13 @@
  "sort_order": 117,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
- "subtitle": "Trung cấp · M5 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY14 · Curses: nhận phím và vẽ lại giao diện terminal",
-  "subtitle": "Trung cấp · M5 · 9 phút",
+  "subtitle": "Trung cấp · M5 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY14",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Curses wrapper giúp gì khi main kết thúc hoặc lỗi?",
+     "options": [
+      {
+       "text": "Tính GPA tự động",
+       "detail": "Curses quản lý giao diện; công thức vẫn cần hàm nghiệp vụ."
+      },
+      {
+       "text": "Tạo cửa sổ Tkinter",
+       "detail": "Đây là giao diện trong terminal, không phải GUI Tkinter."
+      },
+      {
+       "text": "Khôi phục trạng thái terminal",
+       "detail": "wrapper chuẩn bị màn hình và thu dọn khi rời hàm.",
+       "correct": true
+      }
+     ],
+     "explanation": "wrapper chuẩn bị màn hình và thu dọn khi rời hàm."
+    },
+    {
+     "question": "Curses nên chạy ở môi trường nào để nhận phím?",
+     "options": [
+      {
+       "text": "Một biến dictionary chứa tên phím",
+       "detail": "Chưa đúng. Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
+      },
+      {
+       "text": "Terminal thật có hỗ trợ curses",
+       "detail": "Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác.",
+       "correct": true
+      },
+      {
+       "text": "Ô output tĩnh không nhận bàn phím",
+       "detail": "Chưa đúng. Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
+      }
+     ],
+     "explanation": "Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
+    },
+    {
+     "question": "wrapper giúp gì khi ứng dụng curses kết thúc?",
+     "options": [
+      {
+       "text": "Chuẩn bị rồi khôi phục trạng thái terminal",
+       "detail": "wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng.",
+       "correct": true
+      },
+      {
+       "text": "Tự tính GPA",
+       "detail": "Chưa đúng. wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng."
+      },
+      {
+       "text": "Tự tạo cửa sổ Tkinter",
+       "detail": "Chưa đúng. wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng."
+      }
+     ],
+     "explanation": "wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao curses.wrapper hữu ích?",
@@ -93,5 +152,6 @@
  },
  "_mode": "local",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

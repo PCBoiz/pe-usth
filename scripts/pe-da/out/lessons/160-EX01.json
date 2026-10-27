@@ -3,13 +3,13 @@
  "sort_order": 160,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
  "title": "EX01 · Đọc bảng cùng kiểu bằng loadtxt và tra đúng trợ giúp",
- "subtitle": "Trung cấp · M9 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M9 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "EX01 · Đọc bảng cùng kiểu bằng loadtxt và tra đúng trợ giúp",
-  "subtitle": "Trung cấp · M9 · 14 phút",
+  "subtitle": "Trung cấp · M9 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#EX01",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "File id,mark có hai cột. usecols=(1,) chọn cột nào?",
+     "options": [
+      {
+       "text": "Cả hai cột",
+       "detail": "Tuple chỉ chứa 1 yêu cầu đọc riêng một cột."
+      },
+      {
+       "text": "mark",
+       "detail": "Chỉ số cột bắt đầu từ 0: id ở 0, mark ở 1.",
+       "correct": true
+      },
+      {
+       "text": "id",
+       "detail": "Đó là cột có chỉ số 0."
+      }
+     ],
+     "explanation": "Chỉ số cột bắt đầu từ 0: id ở 0, mark ở 1."
+    },
+    {
+     "question": "File id,mark có một dòng tiêu đề. skiprows=1 bỏ phần nào?",
+     "options": [
+      {
+       "text": "Phần tử cuối mỗi hàng",
+       "detail": "Chưa đúng. Skiprows áp dụng lên dòng; usecols mới lựa chọn cột."
+      },
+      {
+       "text": "Dòng đầu",
+       "detail": "Skiprows áp dụng lên dòng; usecols mới lựa chọn cột.",
+       "correct": true
+      },
+      {
+       "text": "Cột đầu",
+       "detail": "Chưa đúng. Skiprows áp dụng lên dòng; usecols mới lựa chọn cột."
+      }
+     ],
+     "explanation": "Skiprows áp dụng lên dòng; usecols mới lựa chọn cột."
+    },
+    {
+     "question": "usecols=(1,) chọn cột nào khi cột đầu có chỉ số 0?",
+     "options": [
+      {
+       "text": "Cột thứ hai",
+       "detail": "Chỉ số cột theo 0, nên 1 là cột thứ hai.",
+       "correct": true
+      },
+      {
+       "text": "Cột đầu tiên",
+       "detail": "Chưa đúng. Chỉ số cột theo 0, nên 1 là cột thứ hai."
+      },
+      {
+       "text": "Hai cột đầu",
+       "detail": "Chưa đúng. Chỉ số cột theo 0, nên 1 là cột thứ hai."
+      }
+     ],
+     "explanation": "Chỉ số cột theo 0, nên 1 là cột thứ hai."
+    }
+   ],
    "practice": [
     {
      "prompt": "File id,mark có tiêu đề và hai cột. Viết cách chỉ đọc mark bằng số thực.",
@@ -132,5 +191,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

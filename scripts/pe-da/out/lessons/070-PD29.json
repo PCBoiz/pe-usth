@@ -3,13 +3,13 @@
  "sort_order": 70,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD29 · Đọc SQL thành DataFrame",
- "subtitle": "Nâng cao · M3 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M3 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD29 · Đọc SQL thành DataFrame",
-  "subtitle": "Nâng cao · M3 · 9 phút",
+  "subtitle": "Nâng cao · M3 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD29",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Ngưỡng từ người dùng nên đưa vào SQL qua đâu?",
+     "options": [
+      {
+       "text": "Đổi tên bảng thành ngưỡng",
+       "detail": "Tên bảng không phải chỗ chứa giá trị lọc."
+      },
+      {
+       "text": "params và dấu ? của sqlite3",
+       "detail": "Đúng: driver phân biệt giá trị với cú pháp lệnh.",
+       "correct": true
+      },
+      {
+       "text": "Ghép bằng f-string vào câu SQL",
+       "detail": "Dữ liệu nhập có thể bị hiểu là cú pháp SQL."
+      }
+     ],
+     "explanation": "Tham số hóa dành cho giá trị, không dùng tùy ý cho tên bảng hay cột."
+    },
+    {
+     "question": "read_sql_query trả dữ liệu ở dạng gì?",
+     "options": [
+      {
+       "text": "Luôn là một list chuỗi SQL.",
+       "detail": "Chuỗi SQL là lệnh đầu vào, không phải kiểu bảng kết quả."
+      },
+      {
+       "text": "Một cursor cần tự biến thành DataFrame trong mọi trường hợp.",
+       "detail": "pandas đã làm bước chuyển kết quả thành DataFrame hoặc iterator theo lô."
+      },
+      {
+       "text": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize.",
+       "detail": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize.",
+       "correct": true
+      }
+     ],
+     "explanation": "Một DataFrame, hoặc iterator các DataFrame nếu chọn chunksize."
+    },
+    {
+     "question": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
+     "options": [
+      {
+       "text": "Để xem dữ liệu nhập vào như tên cột SQL.",
+       "detail": "Giá trị không nên bị hiểu thành tên cột hoặc một đoạn cú pháp SQL."
+      },
+      {
+       "text": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó.",
+       "detail": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó.",
+       "correct": true
+      },
+      {
+       "text": "Để tự động bỏ mọi điều kiện WHERE.",
+       "detail": "Truyền params không xóa điều kiện WHERE."
+      }
+     ],
+     "explanation": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó."
+    }
+   ],
    "practice": [
     {
      "prompt": "read_sql_query trả dữ liệu ở dạng gì?",
@@ -149,5 +208,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 99,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
- "subtitle": "Nâng cao · M4 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
-  "subtitle": "Nâng cao · M4 · 14 phút",
+  "subtitle": "Nâng cao · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ26",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Chỉ có qty và price, đã tính revenue. Có gọi nhóm revenue cao nhất là lợi nhuận cao nhất không?",
+     "options": [
+      {
+       "text": "Có nếu vẽ bằng barh",
+       "detail": "Loại hình không thay định nghĩa chỉ số."
+      },
+      {
+       "text": "Không, còn thiếu chi phí",
+       "detail": "Đúng: doanh thu không phải lợi nhuận.",
+       "correct": true
+      },
+      {
+       "text": "Có, hai từ cùng nghĩa",
+       "detail": "Lợi nhuận cần trừ chi phí theo định nghĩa phù hợp."
+      }
+     ],
+     "explanation": "Lời kết luận phải bám vào số đã được tính và đơn vị của dữ liệu."
+    },
+    {
+     "question": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.",
+     "options": [
+      {
+       "text": "Tổng 32 vì chỉ cộng hai đơn giá.",
+       "detail": "32 chỉ cộng hai đơn giá và bỏ số lượng."
+      },
+      {
+       "text": "Tổng 5 vì chỉ đếm số lượng.",
+       "detail": "5 chỉ cộng số lượng, chưa dùng đơn giá."
+      },
+      {
+       "text": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá.",
+       "detail": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá.",
+       "correct": true
+      }
+     ],
+     "explanation": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá."
+    },
+    {
+     "question": "Dữ liệu chỉ có doanh thu, có gọi loại doanh thu cao nhất là lợi nhuận cao nhất không?",
+     "options": [
+      {
+       "text": "Có; chi phí luôn bằng 0 trong mọi dữ liệu.",
+       "detail": "Không được tự giả định chi phí mọi đơn đều bằng 0."
+      },
+      {
+       "text": "Không. Cần chi phí để tính lợi nhuận.",
+       "detail": "Không. Cần chi phí để tính lợi nhuận.",
+       "correct": true
+      },
+      {
+       "text": "Có; doanh thu và lợi nhuận là một khái niệm.",
+       "detail": "Hai đại lượng có công thức khác nhau khi có chi phí."
+      }
+     ],
+     "explanation": "Không. Cần chi phí để tính lợi nhuận."
+    }
+   ],
    "practice": [
     {
      "prompt": "Tính doanh thu cho 2 cà phê giá 20 và 3 trà giá 12.",
@@ -194,5 +253,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

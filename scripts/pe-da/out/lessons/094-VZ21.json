@@ -3,13 +3,13 @@
  "sort_order": 94,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ21 · Plotly: lọc dữ liệu, dropdown và facet",
- "subtitle": "Nâng cao · M4 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ21 · Plotly: lọc dữ liệu, dropdown và facet",
-  "subtitle": "Nâng cao · M4 · 12 phút",
+  "subtitle": "Nâng cao · M4 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ21",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Figure có hai trace A,B. visible=[False,True] hiện trace nào?",
+     "options": [
+      {
+       "text": "B",
+       "detail": "Đúng: cờ thứ hai ứng với trace thứ hai.",
+       "correct": true
+      },
+      {
+       "text": "A",
+       "detail": "Cờ đầu đang False."
+      },
+      {
+       "text": "Cả hai",
+       "detail": "Muốn hiện cả hai cần [True,True]."
+      }
+     ],
+     "explanation": "visible có một giá trị cho mỗi trace, theo đúng thứ tự."
+    },
+    {
+     "question": "Hai trace thì visible cần mấy giá trị?",
+     "options": [
+      {
+       "text": "Ba giá trị vì cần thêm giá trị cho Figure.",
+       "detail": "Figure không cần thêm một phần tử visible ngoài các trace."
+      },
+      {
+       "text": "Hai giá trị, theo đúng thứ tự trace; [True, False] chỉ hiện trace đầu.",
+       "detail": "Hai giá trị, theo đúng thứ tự trace; [True, False] chỉ hiện trace đầu.",
+       "correct": true
+      },
+      {
+       "text": "Một giá trị cho cả hai trace bất kể thứ tự.",
+       "detail": "Một giá trị riêng lẻ không mô tả tường minh hai trace trong ví dụ."
+      }
+     ],
+     "explanation": "Hai giá trị, theo đúng thứ tự trace; [True, False] chỉ hiện trace đầu."
+    },
+    {
+     "question": "Đổi bộ lọc mà không đổi tiêu đề gây vấn đề gì?",
+     "options": [
+      {
+       "text": "Người xem có thể tưởng hình vẫn là toàn bộ dữ liệu; tiêu đề, KPI và chú thích phải khớp bộ lọc.",
+       "detail": "Người xem có thể tưởng hình vẫn là toàn bộ dữ liệu; tiêu đề, KPI và chú thích phải khớp bộ lọc.",
+       "correct": true
+      },
+      {
+       "text": "Không có vấn đề vì hình vẫn có dữ liệu.",
+       "detail": "Hình còn dữ liệu nhưng tiêu đề sai vẫn gây diễn giải sai phạm vi."
+      },
+      {
+       "text": "Chỉ thay màu chú giải là tiêu đề sẽ tự đúng.",
+       "detail": "Đổi màu không tự sửa các dòng chữ mô tả bộ lọc."
+      }
+     ],
+     "explanation": "Người xem có thể tưởng hình vẫn là toàn bộ dữ liệu; tiêu đề, KPI và chú thích phải khớp bộ lọc."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai trace thì visible cần mấy giá trị?",
@@ -89,5 +148,6 @@
  },
  "_mode": "local",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/"
 }

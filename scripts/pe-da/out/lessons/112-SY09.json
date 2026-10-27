@@ -3,13 +3,13 @@
  "sort_order": 112,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY09 · Abstraction, interface và composition",
- "subtitle": "Trung cấp · M5 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY09 · Abstraction, interface và composition",
-  "subtitle": "Trung cấp · M5 · 14 phút",
+  "subtitle": "Trung cấp · M5 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY09",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "ReportService giữ self.exporter để gọi export. Đây là quan hệ nào?",
+     "options": [
+      {
+       "text": "Không thể làm vì Python cần interface keyword",
+       "detail": "Python có thể làm qua object có method phù hợp hoặc ABC."
+      },
+      {
+       "text": "has-a: service sử dụng một exporter",
+       "detail": "Service chứa object thực hiện công việc, không cần kế thừa Exporter.",
+       "correct": true
+      },
+      {
+       "text": "is-a: service bắt buộc là exporter",
+       "detail": "Có một thuộc tính exporter không tạo quan hệ kế thừa."
+      }
+     ],
+     "explanation": "Service chứa object thực hiện công việc, không cần kế thừa Exporter."
+    },
+    {
+     "question": "Exporter còn abstract method export chưa triển khai có tạo instance trực tiếp được không?",
+     "options": [
+      {
+       "text": "Có; tên Exporter tự động bỏ abstract",
+       "detail": "Chưa đúng. Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
+      },
+      {
+       "text": "Không; ABC ngăn tạo instance khi còn abstract method",
+       "detail": "Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể.",
+       "correct": true
+      },
+      {
+       "text": "Có; method tự trả dữ liệu mặc định",
+       "detail": "Chưa đúng. Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
+      }
+     ],
+     "explanation": "Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
+    },
+    {
+     "question": "ReportService giữ một exporter trong thuộc tính. Đây là quan hệ nào?",
+     "options": [
+      {
+       "text": "has-a",
+       "detail": "Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu.",
+       "correct": true
+      },
+      {
+       "text": "is-a bắt buộc",
+       "detail": "Chưa đúng. Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu."
+      },
+      {
+       "text": "Hai class phải có cùng MRO",
+       "detail": "Chưa đúng. Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu."
+      }
+     ],
+     "explanation": "Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao Exporter() lỗi ở ví dụ đầu?",
@@ -148,5 +207,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

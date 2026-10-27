@@ -3,13 +3,13 @@
  "sort_order": 4,
  "module": "M1 · Python nền tảng",
  "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
- "subtitle": "Cơ bản · M1 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY04 · Biến, tên hợp lệ và kiểu dữ liệu",
-  "subtitle": "Cơ bản · M1 · 13 phút",
+  "subtitle": "Cơ bản · M1 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY04",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "raw = \"12.5\". Biểu thức nào tính giá của hai vé?",
+     "options": [
+      {
+       "text": "float(raw) * 2",
+       "detail": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước.",
+       "correct": true
+      },
+      {
+       "text": "raw * 2",
+       "detail": "Nhân chuỗi lặp lại văn bản, không nhân giá."
+      },
+      {
+       "text": "int(raw) * 2",
+       "detail": "int(\"12.5\") không đổi trực tiếp được chuỗi có dấu thập phân."
+      }
+     ],
+     "explanation": "Đúng. Chuỗi có phần thập phân cần đổi sang float trước."
+    },
+    {
+     "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "36",
+       "detail": "int(\"18\") tạo số nguyên 18 trước phép nhân.",
+       "correct": true
+      },
+      {
+       "text": "1818",
+       "detail": "Giá đã được đổi thành int trước khi nhân."
+      },
+      {
+       "text": "20",
+       "detail": "Phép tính là nhân giá với hai vé, không cộng 2."
+      }
+     ],
+     "explanation": "int(\"18\") tạo số nguyên 18 trước phép nhân."
+    },
+    {
+     "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "15.0",
+       "detail": "float giữ phần thập phân; hai giá 7.5 cộng lại là 15.",
+       "correct": true
+      },
+      {
+       "text": "14",
+       "detail": "Không cắt 7.5 xuống 7."
+      },
+      {
+       "text": "'7.57.5'",
+       "detail": "float đã chuyển chuỗi thành số."
+      }
+     ],
+     "explanation": "float giữ phần thập phân; hai giá 7.5 cộng lại là 15."
+    }
+   ],
    "practice": [
     {
      "prompt": "Sau value = \"15\" rồi value = 15.5, kiểu hiện tại là gì?",
@@ -139,5 +198,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

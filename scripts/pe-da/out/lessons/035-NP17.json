@@ -3,13 +3,13 @@
  "sort_order": 35,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP17 · Dữ liệu thiếu: NaN",
- "subtitle": "Trung cấp · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Trung cấp · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP17 · Dữ liệu thiếu: NaN",
-  "subtitle": "Trung cấp · M2 · 7 phút",
+  "subtitle": "Trung cấp · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP17",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=[6,NaN,10]. Tính nanmean dùng mẫu số nào?",
+     "options": [
+      {
+       "text": "3",
+       "detail": "Đếm cả ô thiếu sẽ làm trung bình thấp đi như thể ô đó có đóng góp số."
+      },
+      {
+       "text": "0",
+       "detail": "NaN không làm hai giá trị còn lại biến mất."
+      },
+      {
+       "text": "2",
+       "detail": "Đúng. Chỉ có hai giá trị đã biết.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Chỉ có hai giá trị đã biết."
+    },
+    {
+     "question": "Một điểm chưa được nhập. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[False, True, False]",
+       "detail": "isnan chỉ True ở vị trí chứa NaN.",
+       "correct": true
+      },
+      {
+       "text": "[True, False, True]",
+       "detail": "Đó là mask không thiếu, cần đảo isnan."
+      },
+      {
+       "text": "[6, 10]",
+       "detail": "isnan tạo mask, chưa lọc điểm."
+      }
+     ],
+     "explanation": "isnan chỉ True ở vị trí chứa NaN."
+    },
+    {
+     "question": "Hai điểm đã biết là 6 và 10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "8.0",
+       "detail": "Tổng 16 chia hai giá trị đã biết bằng 8.",
+       "correct": true
+      },
+      {
+       "text": "5.333333333333333",
+       "detail": "Không tính ô thiếu như 0 rồi chia ba."
+      },
+      {
+       "text": "None",
+       "detail": "nanmean bỏ qua ô thiếu khi còn điểm hợp lệ."
+      }
+     ],
+     "explanation": "Tổng 16 chia hai giá trị đã biết bằng 8."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong dãy `[6, NaN, 10]`, có bao nhiêu điểm đã biết?",
@@ -148,5 +207,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

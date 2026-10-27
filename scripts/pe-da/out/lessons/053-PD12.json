@@ -3,13 +3,13 @@
  "sort_order": 53,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD12 · Đọc CSV và giữ đúng ý nghĩa cột",
- "subtitle": "Cơ bản · M3 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Cơ bản · M3 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD12 · Đọc CSV và giữ đúng ý nghĩa cột",
-  "subtitle": "Cơ bản · M3 · 10 phút",
+  "subtitle": "Cơ bản · M3 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD12",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "CSV dùng dấu ; nhưng bạn để sep mặc định ,. Bảng thường gặp vấn đề gì?",
+     "options": [
+      {
+       "text": "Dòng có thể bị đọc thành một cột",
+       "detail": "Đúng: bộ đọc chưa tách theo dấu thực sự trong file.",
+       "correct": true
+      },
+      {
+       "text": "pandas tự biết mọi dấu phân cách",
+       "detail": "Không nên dựa vào điều đó; hãy khai báo đúng mẫu file."
+      },
+      {
+       "text": "Mọi giá trị tự thành 0",
+       "detail": "Sai dấu phân cách không có quy tắc biến tất cả số thành 0."
+      }
+     ],
+     "explanation": "Đọc được file chưa chứng minh các cột đã được hiểu đúng."
+    },
+    {
+     "question": "sep=\";\" có tác dụng gì?",
+     "options": [
+      {
+       "text": "Bỏ mọi dòng có dấu chấm phẩy.",
+       "detail": "sep chia cột; nó không yêu cầu bỏ những dòng có dấu đó."
+      },
+      {
+       "text": "Dùng dấu chấm phẩy để tách cột.",
+       "detail": "Dùng dấu chấm phẩy để tách cột.",
+       "correct": true
+      },
+      {
+       "text": "Dùng dấu phẩy để tách cột.",
+       "detail": "Tham số đang ghi dấu chấm phẩy, không phải dấu phẩy."
+      }
+     ],
+     "explanation": "Dùng dấu chấm phẩy để tách cột."
+    },
+    {
+     "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?",
+     "options": [
+      {
+       "text": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
+       "detail": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
+       "correct": true
+      },
+      {
+       "text": "Vì đổi số 1 trở lại string tự khôi phục được 001.",
+       "detail": "str(1) chỉ cho \"1\", không tự biết mã có độ rộng ba chữ số."
+      },
+      {
+       "text": "Vì string tự loại mọi mã trùng.",
+       "detail": "Chọn kiểu string không tự khử trùng mã."
+      }
+     ],
+     "explanation": "Để không mất số 0 đầu khi pandas suy luận mã thành số."
+    }
+   ],
    "practice": [
     {
      "prompt": "sep=\";\" có tác dụng gì?",
@@ -156,5 +215,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 96,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback",
- "subtitle": "Nâng cao · M4 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M4 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ23 · Dashboard đầu tiên: hàm dữ liệu, widget và callback",
-  "subtitle": "Nâng cao · M4 · 10 phút",
+  "subtitle": "Nâng cao · M4 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ23",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Đổi dropdown sang B nhưng KPI vẫn là tổng All. Lỗi chính ở đâu?",
+     "options": [
+      {
+       "text": "Chỉ cần ẩn lựa chọn All",
+       "detail": "Ẩn lựa chọn không làm callback tính đúng."
+      },
+      {
+       "text": "Callback chưa tính lại KPI theo lựa chọn mới",
+       "detail": "Đúng: các phần giao diện cần dùng cùng trạng thái lọc.",
+       "correct": true
+      },
+      {
+       "text": "Phải đổi màu chữ KPI",
+       "detail": "Đổi màu không sửa phép tính."
+      }
+     ],
+     "explanation": "Kiểm hàm dữ liệu độc lập rồi gắn thay đổi widget vào cùng quy tắc."
+    },
+    {
+     "question": "Vì sao viết hàm summarize trước khi làm widget?",
+     "options": [
+      {
+       "text": "Để widget tự quyết định công thức tính KPI.",
+       "detail": "Widget không tự xác định công thức nghiệp vụ đúng."
+      },
+      {
+       "text": "Để mọi lỗi dữ liệu chỉ xuất hiện sau khi đã dựng giao diện.",
+       "detail": "Kiểm hàm độc lập giúp phát hiện lỗi dữ liệu sớm hơn giao diện."
+      },
+      {
+       "text": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán.",
+       "detail": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán.",
+       "correct": true
+      }
+     ],
+     "explanation": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán."
+    },
+    {
+     "question": "Widget được tạo trong script có tự biến thành website không?",
+     "options": [
+      {
+       "text": "Có; ipywidgets tự triển khai máy chủ khi được import.",
+       "detail": "Import thư viện không đồng nghĩa triển khai máy chủ ứng dụng."
+      },
+      {
+       "text": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp.",
+       "detail": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp.",
+       "correct": true
+      },
+      {
+       "text": "Có; tạo Dropdown trong file .py tự tạo website công khai.",
+       "detail": "Tạo Dropdown không tự công bố một website."
+      }
+     ],
+     "explanation": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao viết hàm summarize trước khi làm widget?",
@@ -97,5 +156,6 @@
    "reason": "ipywidgets chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: ipywidgets chưa có wheel trong /pyodide/v314.0.7/"
 }

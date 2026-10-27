@@ -3,13 +3,13 @@
  "sort_order": 22,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP04 · Tính trên từng phần tử",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP04 · Tính trên từng phần tử",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP04",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=np.array([2,5]); a*2 cho gì?",
+     "options": [
+      {
+       "text": "[4,10]",
+       "detail": "Đúng. Mỗi số được nhân 2.",
+       "correct": true
+      },
+      {
+       "text": "[2,5,2,5]",
+       "detail": "Đây là hành vi nhân list, không phải array số."
+      },
+      {
+       "text": "14",
+       "detail": "Muốn tổng các giá trị còn cần phép cộng gộp; nhân array không tự gộp."
+      }
+     ],
+     "explanation": "Đúng. Mỗi số được nhân 2."
+    },
+    {
+     "question": "Mỗi điểm được cộng 1. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[4, 6]",
+       "detail": "Cộng scalar vào array thực hiện trên từng phần tử.",
+       "correct": true
+      },
+      {
+       "text": "[3, 5, 1]",
+       "detail": "Đây không phải thêm phần tử vào cuối dãy."
+      },
+      {
+       "text": "[4, 5]",
+       "detail": "Phép cộng tác động lên mọi phần tử."
+      }
+     ],
+     "explanation": "Cộng scalar vào array thực hiện trên từng phần tử."
+    },
+    {
+     "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[6, 15]",
+       "detail": "Mỗi phần tử được nhân với 3.",
+       "correct": true
+      },
+      {
+       "text": "[2, 5, 2, 5, 2, 5]",
+       "detail": "Lặp list khác với nhân array."
+      },
+      {
+       "text": "[5, 8]",
+       "detail": "Đó là cộng 3, không phải nhân 3."
+      }
+     ],
+     "explanation": "Mỗi phần tử được nhân với 3."
+    }
+   ],
    "practice": [
     {
      "prompt": "`np.array([1, 3]) + 2` cho kết quả gì?",
@@ -154,5 +213,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

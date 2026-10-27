@@ -3,13 +3,13 @@
  "sort_order": 77,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự",
- "subtitle": "Cơ bản · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ04 · Bar chart: so sánh nhóm và sắp thứ tự",
-  "subtitle": "Cơ bản · M4 · 13 phút",
+  "subtitle": "Cơ bản · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ04",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Tên [A,B] đi với lượng [2,9]. Nếu chỉ sắp lượng thành [9,2], vấn đề gì xảy ra?",
+     "options": [
+      {
+       "text": "Không có vấn đề vì tổng không đổi",
+       "detail": "Tổng giữ nguyên nhưng nhãn từng nhóm đã sai."
+      },
+      {
+       "text": "Cả hai cột biến mất",
+       "detail": "Vẫn vẽ được, nên lỗi nhãn càng dễ bị bỏ qua."
+      },
+      {
+       "text": "A bị gán nhầm lượng của B",
+       "detail": "Đúng: phải di chuyển tên và giá trị cùng nhau.",
+       "correct": true
+      }
+     ],
+     "explanation": "Số liệu có ý nghĩa khi vẫn đi cùng đúng nhóm."
+    },
+    {
+     "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?",
+     "options": [
+      {
+       "text": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
+       "detail": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
+       "correct": true
+      },
+      {
+       "text": "Chênh 48 cốc vì phải cộng hai cột.",
+       "detail": "48 là tổng hai lượng, không phải độ chênh."
+      },
+      {
+       "text": "Chênh 1.67 cốc vì phải chia hai cột.",
+       "detail": "Tỷ số không có cùng đơn vị cốc với độ chênh."
+      }
+     ],
+     "explanation": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh."
+    },
+    {
+     "question": "Khi tên nhóm dài, nên đổi sang hàm nào?",
+     "options": [
+      {
+       "text": "hist vì nhãn dài là dữ liệu số.",
+       "detail": "Histogram phục vụ khoảng số, không giải quyết nhãn danh mục dài."
+      },
+      {
+       "text": "pie vì barh không hỗ trợ nhãn chữ.",
+       "detail": "Barh hỗ trợ nhãn chữ và thường phù hợp tên dài."
+      },
+      {
+       "text": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
+       "detail": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
+       "correct": true
+      }
+     ],
+     "explanation": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn."
+    }
+   ],
    "practice": [
     {
      "prompt": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?",
@@ -189,5 +248,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 39,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP21 · Đọc bảng số từ CSV",
- "subtitle": "Trung cấp · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP21 · Đọc bảng số từ CSV",
-  "subtitle": "Trung cấp · M2 · 8 phút",
+  "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP21",
@@ -81,6 +81,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trong np.loadtxt(..., delimiter=\",\", skiprows=1), skiprows=1 bỏ gì?",
+     "options": [
+      {
+       "text": "Mọi dòng có dữ liệu thiếu",
+       "detail": "Bỏ dữ liệu thiếu là chính sách khác; tham số này chỉ bỏ số dòng đầu đã chỉ định."
+      },
+      {
+       "text": "Một dòng đầu, ở đây là tên cột",
+       "detail": "Đúng. Tên cột không bị đọc thành dữ liệu số.",
+       "correct": true
+      },
+      {
+       "text": "Cột đầu tiên",
+       "detail": "skiprows tác động lên dòng, không phải cột."
+      }
+     ],
+     "explanation": "Đúng. Tên cột không bị đọc thành dữ liệu số."
+    },
+    {
+     "question": "Dòng đầu chứa tên cột, hai dòng sau là số. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[1.0, 2.0], [3.0, 4.0]]",
+       "detail": "skiprows=1 bỏ dòng x,y trước khi đọc các ô số.",
+       "correct": true
+      },
+      {
+       "text": "[[3.0, 4.0]]",
+       "detail": "skiprows=1 chỉ bỏ một dòng tiêu đề, không bỏ dòng số đầu."
+      },
+      {
+       "text": "[[1.0, 3.0], [2.0, 4.0]]",
+       "detail": "Đọc file giữ các dòng thành hàng, không chuyển vị."
+      }
+     ],
+     "explanation": "skiprows=1 bỏ dòng x,y trước khi đọc các ô số."
+    },
+    {
+     "question": "File dùng chấm phẩy thay vì dấu phẩy. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[2.0, 5.0], [4.0, 7.0]]",
+       "detail": "delimiter phải khớp ký tự ngăn cột trong file.",
+       "correct": true
+      },
+      {
+       "text": "[[2.0, 4.0], [5.0, 7.0]]",
+       "detail": "Hai dòng vẫn là hai hàng, không phải hai cột đã đổi chỗ."
+      },
+      {
+       "text": "[2.0, 5.0, 4.0, 7.0]",
+       "detail": "File hai cột được đọc thành bảng hai chiều."
+      }
+     ],
+     "explanation": "delimiter phải khớp ký tự ngăn cột trong file."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong dòng CSV `1,2`, dấu phẩy có vai trò gì?",
@@ -149,5 +208,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

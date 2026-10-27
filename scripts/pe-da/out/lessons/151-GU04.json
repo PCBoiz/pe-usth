@@ -3,13 +3,13 @@
  "sort_order": 151,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU04 · Button, callback và hộp thông báo",
- "subtitle": "Trung cấp · M8 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M8 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU04 · Button, callback và hộp thông báo",
-  "subtitle": "Trung cấp · M8 · 12 phút",
+  "subtitle": "Trung cấp · M8 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU04",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "command=show_message() khiến hàm chạy lúc nào?",
+     "options": [
+      {
+       "text": "Sau khi đóng root",
+       "detail": "Không có quy tắc trì hoãn tới khi đóng cửa sổ."
+      },
+      {
+       "text": "Ngay khi biểu thức tạo Button được đánh giá",
+       "detail": "Muốn chờ bấm thường truyền command=show_message, hoặc lambda nếu cần đối số.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ sau lần bấm đầu",
+       "detail": "Dấu ngoặc đã gọi hàm trước khi người dùng bấm."
+      }
+     ],
+     "explanation": "Muốn chờ bấm thường truyền command=show_message, hoặc lambda nếu cần đối số."
+    },
+    {
+     "question": "command=show_message khác command=show_message() thế nào?",
+     "options": [
+      {
+       "text": "Dạng đầu tự tạo thread nền",
+       "detail": "Chưa đúng. Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
+      },
+      {
+       "text": "Dạng đầu truyền callback; dạng sau gọi ngay khi tạo nút",
+       "detail": "Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay.",
+       "correct": true
+      },
+      {
+       "text": "Hai dạng luôn giống nhau",
+       "detail": "Chưa đúng. Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
+      }
+     ],
+     "explanation": "Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
+    },
+    {
+     "question": "Callback nút trả một chuỗi có làm Tkinter tự hiển thị chuỗi đó không?",
+     "options": [
+      {
+       "text": "Không; cần cập nhật widget hoặc gọi hộp thoại",
+       "detail": "Giá trị trả từ hàm không tự biến thành nội dung UI.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi return thành Label",
+       "detail": "Chưa đúng. Giá trị trả từ hàm không tự biến thành nội dung UI."
+      },
+      {
+       "text": "Chỉ hiện nếu chuỗi là tiếng Anh",
+       "detail": "Chưa đúng. Giá trị trả từ hàm không tự biến thành nội dung UI."
+      }
+     ],
+     "explanation": "Giá trị trả từ hàm không tự biến thành nội dung UI."
+    }
+   ],
    "practice": [
     {
      "prompt": "command=calculate khác command=calculate() thế nào?",
@@ -108,5 +167,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

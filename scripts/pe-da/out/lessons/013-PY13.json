@@ -3,13 +3,13 @@
  "sort_order": 13,
  "module": "M1 · Python nền tảng",
  "title": "PY13 · Set và so sánh hai nhóm",
- "subtitle": "Cơ bản · M1 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY13 · Set và so sánh hai nhóm",
-  "subtitle": "Cơ bản · M1 · 9 phút",
+  "subtitle": "Cơ bản · M1 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY13",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Đã đăng ký {A,B,C}, đã nộp {B,C}. Phép nào tìm người chưa nộp?",
+     "options": [
+      {
+       "text": "registered - submitted",
+       "detail": "Đúng. Giữ người thuộc đăng ký nhưng không thuộc đã nộp.",
+       "correct": true
+      },
+      {
+       "text": "submitted - registered",
+       "detail": "Phép này tìm người đã nộp nhưng không có trong đăng ký."
+      },
+      {
+       "text": "registered & submitted",
+       "detail": "Giao tìm những người có ở cả hai nhóm, tức đã nộp hợp lệ."
+      }
+     ],
+     "explanation": "Đúng. Giữ người thuộc đăng ký nhưng không thuộc đã nộp."
+    },
+    {
+     "question": "Tìm người đăng ký chưa nộp. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "['An']",
+       "detail": "Hiệu giữ người thuộc registered mà không thuộc submitted.",
+       "correct": true
+      },
+      {
+       "text": "['Binh', 'Chi']",
+       "detail": "Đây là nhóm đã nộp, không phải phần còn thiếu."
+      },
+      {
+       "text": "['An', 'Binh', 'Chi']",
+       "detail": "Hiệu loại các phần tử đã có trong submitted."
+      }
+     ],
+     "explanation": "Hiệu giữ người thuộc registered mà không thuộc submitted."
+    },
+    {
+     "question": "Giữ các mã có trong cả hai tập. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[2]",
+       "detail": "Chỉ 2 xuất hiện trong cả a lẫn b.",
+       "correct": true
+      },
+      {
+       "text": "[1, 2, 3]",
+       "detail": "Đây là hợp, không phải giao."
+      },
+      {
+       "text": "[1]",
+       "detail": "Đây là hiệu a-b."
+      }
+     ],
+     "explanation": "Chỉ 2 xuất hiện trong cả a lẫn b."
+    }
+   ],
    "practice": [
     {
      "prompt": "Giao của {1, 2} và {2, 3} là gì?",
@@ -138,5 +197,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

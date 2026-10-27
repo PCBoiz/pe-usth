@@ -3,13 +3,13 @@
  "sort_order": 46,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD05 · Lọc hàng theo điều kiện",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD05 · Lọc hàng theo điều kiện",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "df có amount=[80,120,150], city=[\"HN\",\"HCM\",\"HN\"]. Mask (df[\"amount\"] >= 100) & (df[\"city\"] == \"HN\") giữ vị trí nào?",
+     "options": [
+      {
+       "text": "0 và 2",
+       "detail": "Đây chỉ kiểm city, bỏ điều kiện tiền."
+      },
+      {
+       "text": "2",
+       "detail": "Đúng: hàng thứ ba thỏa cả hai điều kiện.",
+       "correct": true
+      },
+      {
+       "text": "1 và 2",
+       "detail": "Hàng 1 đủ tiền nhưng không thuộc HN."
+      }
+     ],
+     "explanation": "& yêu cầu từng hàng thỏa cả hai phép so sánh có ngoặc."
+    },
+    {
+     "question": "Mask [True, False, True] giữ các hàng vị trí nào?",
+     "options": [
+      {
+       "text": "Chỉ vị trí 1.",
+       "detail": "Vị trí 1 đang có False."
+      },
+      {
+       "text": "Vị trí 1 và 3 vì vị trí bắt đầu từ 1.",
+       "detail": "Vị trí Python bắt đầu từ 0, không phải 1."
+      },
+      {
+       "text": "Giữ vị trí 0 và 2.",
+       "detail": "Giữ vị trí 0 và 2.",
+       "correct": true
+      }
+     ],
+     "explanation": "Giữ vị trí 0 và 2."
+    },
+    {
+     "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?",
+     "options": [
+      {
+       "text": "Dùng | vì cần thỏa đồng thời hai điều kiện.",
+       "detail": "Dấu | là điều kiện hoặc, không buộc cả hai vế cùng đúng."
+      },
+      {
+       "text": "Dùng &, với ngoặc bao từng phép so sánh.",
+       "detail": "Dùng &, với ngoặc bao từng phép so sánh.",
+       "correct": true
+      },
+      {
+       "text": "Dùng and, không cần ngoặc.",
+       "detail": "and không kết hợp từng phần tử của hai Series."
+      }
+     ],
+     "explanation": "Dùng &, với ngoặc bao từng phép so sánh."
+    }
+   ],
    "practice": [
     {
      "prompt": "Mask [True, False, True] giữ các hàng vị trí nào?",
@@ -165,5 +224,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

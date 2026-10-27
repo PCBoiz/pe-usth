@@ -3,13 +3,13 @@
  "sort_order": 27,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP09 · Lấy ô, hàng và cột",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP09 · Lấy ô, hàng và cột",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP09",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=np.array([[2,4,6],[1,3,5]]). a[:,1] trả gì?",
+     "options": [
+      {
+       "text": "4",
+       "detail": "Đó chỉ là một ô; dấu : yêu cầu lấy mọi hàng."
+      },
+      {
+       "text": "[4,3]",
+       "detail": "Đúng. Lấy cột chỉ số 1 của cả hai hàng.",
+       "correct": true
+      },
+      {
+       "text": "[1,3,5]",
+       "detail": "Đó là hàng chỉ số 1, viết a[1]."
+      }
+     ],
+     "explanation": "Đúng. Lấy cột chỉ số 1 của cả hai hàng."
+    },
+    {
+     "question": "Chọn ô ở hàng thứ hai, cột đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "8",
+       "detail": "Chỉ số thứ nhất chọn hàng; chỉ số thứ hai chọn cột.",
+       "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "4 nằm ở hàng đầu, cột thứ hai."
+      },
+      {
+       "text": "2",
+       "detail": "2 là ô [0,0]."
+      }
+     ],
+     "explanation": "Chỉ số thứ nhất chọn hàng; chỉ số thứ hai chọn cột."
+    },
+    {
+     "question": "Đọc toàn bộ cửa hàng đầu. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[2, 4, 6]",
+       "detail": "Một chỉ số hàng giữ các phần tử của hàng đó.",
+       "correct": true
+      },
+      {
+       "text": "[2, 8]",
+       "detail": "Đó là cột đầu."
+      },
+      {
+       "text": "2",
+       "detail": "a[0] chọn hàng, không chọn riêng ô đầu."
+      }
+     ],
+     "explanation": "Một chỉ số hàng giữ các phần tử của hàng đó."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với `a = np.array([[1, 2, 3], [4, 5, 6]])`, `a[0, 2]` trả về gì?",
@@ -173,5 +232,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

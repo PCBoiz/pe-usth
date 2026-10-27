@@ -3,13 +3,13 @@
  "sort_order": 153,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU06 · Radiobutton và giá trị được chọn",
- "subtitle": "Trung cấp · M8 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M8 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU06 · Radiobutton và giá trị được chọn",
-  "subtitle": "Trung cấp · M8 · 11 phút",
+  "subtitle": "Trung cấp · M8 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU06",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Radiobutton text=\"Giao nhanh\", value=\"express\" được chọn. StringVar.get() trả gì?",
+     "options": [
+      {
+       "text": "Giao nhanh",
+       "detail": "Đó là text để người dùng đọc, không phải value đã cấu hình."
+      },
+      {
+       "text": "True",
+       "detail": "Radio group trong ví dụ lưu chuỗi lựa chọn, không phải BooleanVar."
+      },
+      {
+       "text": "express",
+       "detail": "text là nhãn nhìn thấy; value là dữ liệu gán vào biến chung.",
+       "correct": true
+      }
+     ],
+     "explanation": "text là nhãn nhìn thấy; value là dữ liệu gán vào biến chung."
+    },
+    {
+     "question": "Các Radiobutton cùng một nhóm thường dùng chung gì?",
+     "options": [
+      {
+       "text": "Một giá trị value giống hệt nhau",
+       "detail": "Chưa đúng. Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
+      },
+      {
+       "text": "Một biến trạng thái như StringVar",
+       "detail": "Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt.",
+       "correct": true
+      },
+      {
+       "text": "Một root riêng cho từng nút",
+       "detail": "Chưa đúng. Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
+      }
+     ],
+     "explanation": "Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
+    },
+    {
+     "question": "Radiobutton có text=\"Nhanh\", value=\"express\". Khi chọn, biến giữ gì?",
+     "options": [
+      {
+       "text": "express",
+       "detail": "text là nhãn hiển thị, value là dữ liệu được gán vào biến.",
+       "correct": true
+      },
+      {
+       "text": "Nhanh",
+       "detail": "Chưa đúng. text là nhãn hiển thị, value là dữ liệu được gán vào biến."
+      },
+      {
+       "text": "Tên class Radiobutton",
+       "detail": "Chưa đúng. text là nhãn hiển thị, value là dữ liệu được gán vào biến."
+      }
+     ],
+     "explanation": "text là nhãn hiển thị, value là dữ liệu được gán vào biến."
+    }
+   ],
    "practice": [
     {
      "prompt": "Để hai radio loại trừ nhau, chúng cần dùng chung gì?",
@@ -112,5 +171,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

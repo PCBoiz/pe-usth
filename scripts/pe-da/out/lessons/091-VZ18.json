@@ -3,13 +3,13 @@
  "sort_order": 91,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap",
- "subtitle": "Nâng cao · M4 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M4 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ18 · Seaborn: quan hệ, tổng hợp và khoảng bootstrap",
-  "subtitle": "Nâng cao · M4 · 14 phút",
+  "subtitle": "Nâng cao · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ18",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "day=[1,1,2,2], cups=[4,8,10,14]. lineplot mặc định vẽ y nào?",
+     "options": [
+      {
+       "text": "[6,12]",
+       "detail": "Đúng: trung bình theo từng day.",
+       "correct": true
+      },
+      {
+       "text": "[4,8,10,14]",
+       "detail": "Đó là nối từng dòng, không phải mặc định tổng hợp của lineplot."
+      },
+      {
+       "text": "[12,24]",
+       "detail": "Đây là tổng nhóm, không phải mean mặc định."
+      }
+     ],
+     "explanation": "Phải biết hình đang biểu diễn từng quan sát hay ước lượng nhóm."
+    },
+    {
+     "question": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?",
+     "options": [
+      {
+       "text": "Luôn giữ ngẫu nhiên một dòng rồi bỏ hai dòng khác.",
+       "detail": "Không có bước chọn ngẫu nhiên chỉ một hàng như phương án này."
+      },
+      {
+       "text": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình.",
+       "detail": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình.",
+       "correct": true
+      },
+      {
+       "text": "Luôn vẽ ba điểm riêng không tổng hợp.",
+       "detail": "Mặc định có thể tổng hợp các quan sát chung ngày thành một ước lượng."
+      }
+     ],
+     "explanation": "Mặc định nó tổng hợp thành ước lượng trung bình cho ngày đó, kèm khoảng theo cấu hình."
+    },
+    {
+     "question": "Muốn vẽ đường riêng của từng store mà không lấy trung bình cần gì?",
+     "options": [
+      {
+       "text": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt.",
+       "detail": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ thêm estimator=\"mean\" là đủ để giữ mọi đường.",
+       "detail": "estimator=\"mean\" vẫn tổng hợp các giá trị thay vì giữ từng đường."
+      },
+      {
+       "text": "Xóa store khỏi dữ liệu rồi Seaborn tự tách cửa hàng.",
+       "detail": "Bỏ khóa store làm mất thông tin cần để chia đường theo cửa hàng."
+      }
+     ],
+     "explanation": "Dùng units=\"store\", estimator=None và dữ liệu có cột store; cân nhắc hue hoặc style để phân biệt."
+    }
+   ],
    "practice": [
     {
      "prompt": "lineplot có ba dòng cùng ngày thường vẽ ba điểm hay một trung bình?",
@@ -117,5 +176,6 @@
    "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
 }

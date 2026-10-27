@@ -3,13 +3,13 @@
  "sort_order": 107,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY04 · Git: từ thư mục bài làm đến fork của bạn",
- "subtitle": "Trung cấp · M5 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M5 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY04 · Git: từ thư mục bài làm đến fork của bạn",
-  "subtitle": "Trung cấp · M5 · 8 phút",
+  "subtitle": "Trung cấp · M5 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY04",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bạn git add README.md, sửa README thêm một lần rồi commit mà không add lại. Commit chứa phần nào?",
+     "options": [
+      {
+       "text": "Nội dung đã được add trước lần sửa sau",
+       "detail": "Git commit dùng nội dung trong staging area.",
+       "correct": true
+      },
+      {
+       "text": "Toàn bộ nội dung mới nhất trên đĩa",
+       "detail": "Phần sửa sau add vẫn chưa được đưa vào staging area."
+      },
+      {
+       "text": "Nội dung đã push lần gần nhất",
+       "detail": "Commit mới được tạo từ staging area tại máy, không lấy từ remote."
+      }
+     ],
+     "explanation": "Git commit dùng nội dung trong staging area."
+    },
+    {
+     "question": "Bạn muốn có bản repository trong tài khoản GitHub của mình trước khi làm PW0. Thao tác nào phù hợp?",
+     "options": [
+      {
+       "text": "git diff",
+       "detail": "Chưa đúng. Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
+      },
+      {
+       "text": "Fork",
+       "detail": "Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local.",
+       "correct": true
+      },
+      {
+       "text": "git add",
+       "detail": "Chưa đúng. Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
+      }
+     ],
+     "explanation": "Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
+    },
+    {
+     "question": "git clone tạo gì trên máy?",
+     "options": [
+      {
+       "text": "Bản làm việc cùng lịch sử Git",
+       "detail": "Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ một ảnh chụp README",
+       "detail": "Chưa đúng. Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
+      },
+      {
+       "text": "Một commit mới trên repository giảng viên",
+       "detail": "Chưa đúng. Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
+      }
+     ],
+     "explanation": "Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
+    }
+   ],
    "practice": [
     {
      "prompt": "Fork khác clone ở đâu?",
@@ -93,5 +152,6 @@
  },
  "_mode": "local",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

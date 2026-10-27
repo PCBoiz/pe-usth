@@ -3,13 +3,13 @@
  "sort_order": 145,
  "module": "M7 · Multiprocessing và shell thực hành",
  "title": "CT14 · Multiprocessing: dữ liệu riêng và trao đổi kết quả",
- "subtitle": "Nâng cao · M7 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M7 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT14 · Multiprocessing: dữ liệu riêng và trao đổi kết quả",
-  "subtitle": "Nâng cao · M7 · 10 phút",
+  "subtitle": "Nâng cao · M7 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT14",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Con sửa một list Python thông thường sau spawn. List ở cha có tự đổi không?",
+     "options": [
+      {
+       "text": "Không; process không thể gửi kết quả",
+       "detail": "Queue, pipe và các cơ chế IPC phục vụ việc trao đổi đó."
+      },
+      {
+       "text": "Không; hai process có không gian dữ liệu riêng",
+       "detail": "Cần cơ chế trao đổi như multiprocessing.Queue nếu muốn gửi kết quả.",
+       "correct": true
+      },
+      {
+       "text": "Có; giống hai thread cùng heap",
+       "detail": "Spawn tạo process riêng, không dùng chung list Python thông thường."
+      }
+     ],
+     "explanation": "Cần cơ chế trao đổi như multiprocessing.Queue nếu muốn gửi kết quả."
+    },
+    {
+     "question": "Với spawn, vì sao worker cần định nghĩa ở mức module?",
+     "options": [
+      {
+       "text": "Để không cần truyền đối số",
+       "detail": "Chưa đúng. Spawn khởi động interpreter mới; hàm worker cần có tên import được."
+      },
+      {
+       "text": "Để process con import được hàm cần chạy",
+       "detail": "Spawn khởi động interpreter mới; hàm worker cần có tên import được.",
+       "correct": true
+      },
+      {
+       "text": "Để worker tự dùng chung heap với cha",
+       "detail": "Chưa đúng. Spawn khởi động interpreter mới; hàm worker cần có tên import được."
+      }
+     ],
+     "explanation": "Spawn khởi động interpreter mới; hàm worker cần có tên import được."
+    },
+    {
+     "question": "Main guard ngăn điều gì khi process con import module?",
+     "options": [
+      {
+       "text": "Phần tạo process chạy lại ngoài ý muốn",
+       "detail": "Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module.",
+       "correct": true
+      },
+      {
+       "text": "Mọi hàm worker bị gọi đúng một lần toàn hệ",
+       "detail": "Chưa đúng. Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module."
+      },
+      {
+       "text": "Mọi lỗi serialize dữ liệu",
+       "detail": "Chưa đúng. Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module."
+      }
+     ],
+     "explanation": "Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao list ở cha không nhận phần tử 9 trong ví dụ đầu?",
@@ -112,5 +171,6 @@
    "reason": "concurrent.futures chạy trên thread/process thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

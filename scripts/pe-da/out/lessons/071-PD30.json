@@ -3,13 +3,13 @@
  "sort_order": 71,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD30 · Một quy trình làm sạch có kiểm tra",
- "subtitle": "Nâng cao · M3 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M3 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD30 · Một quy trình làm sạch có kiểm tra",
-  "subtitle": "Nâng cao · M3 · 10 phút",
+  "subtitle": "Nâng cao · M3 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD30",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "amount=\"bad\" khi clean bằng to_numeric(errors=\"coerce\") nên thành gì?",
+     "options": [
+      {
+       "text": "Ô thiếu để xem lại",
+       "detail": "Đúng: không giấu lỗi thành một số tiền có vẻ hợp lệ.",
+       "correct": true
+      },
+      {
+       "text": "0 vì đó là doanh thu an toàn",
+       "detail": "0 là dữ liệu mới không được nguồn xác nhận."
+      },
+      {
+       "text": "Bỏ cả bảng",
+       "detail": "Một ô lỗi chưa buộc mọi hàng hợp lệ bị bỏ."
+      }
+     ],
+     "explanation": "Hàm làm sạch và quyết định nghiệp vụ về dữ liệu lỗi cần rõ ràng."
+    },
+    {
+     "question": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?",
+     "options": [
+      {
+       "text": "Vì dữ liệu thiếu luôn phải bị xóa ngay.",
+       "detail": "Xóa ngay có thể làm mất đơn trước khi có quy tắc xử lý phù hợp."
+      },
+      {
+       "text": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ.",
+       "detail": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ.",
+       "correct": true
+      },
+      {
+       "text": "Để mọi lỗi trở thành đơn có doanh thu 0 hợp lệ.",
+       "detail": "Điền 0 sẽ che mất khác biệt giữa lỗi và doanh thu 0 thật."
+      }
+     ],
+     "explanation": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ."
+    },
+    {
+     "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?",
+     "options": [
+      {
+       "text": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",
+       "detail": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",
+       "correct": true
+      },
+      {
+       "text": "Có; số âm luôn là lỗi trong mọi nghiệp vụ.",
+       "detail": "Giá trị âm có thể mang ý nghĩa hợp lệ trong một loại bảng khác."
+      },
+      {
+       "text": "Có; số âm tự được đổi thành số dương khi đọc CSV.",
+       "detail": "Pandas không mặc định đổi mọi số âm thành số dương."
+      }
+     ],
+     "explanation": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao hàm clean_sales giữ ô amount lỗi thành thiếu thay vì điền 0?",
@@ -174,5 +233,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

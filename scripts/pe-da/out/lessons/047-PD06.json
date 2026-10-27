@@ -3,13 +3,13 @@
  "sort_order": 47,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD06 · Thêm cột và sửa đúng bảng",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD06 · Thêm cột và sửa đúng bảng",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD06",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "qty = pd.Series([2,4]); price = pd.Series([3,5]). (qty * price).tolist() cho gì?",
+     "options": [
+      {
+       "text": "[6, 20]",
+       "detail": "Đúng: hai Series cùng nhãn được nhân theo từng hàng.",
+       "correct": true
+      },
+      {
+       "text": "[5, 9]",
+       "detail": "Đây là phép cộng, không phải nhân."
+      },
+      {
+       "text": "[6, 10, 12, 20]",
+       "detail": "Không tạo mọi cặp giá trị giữa hai cột."
+      }
+     ],
+     "explanation": "Doanh thu thuộc từng hàng có cùng số lượng và đơn giá."
+    },
+    {
+     "question": "Hai cột của một DataFrame là qty=[2,3] và price=[10,20]. Nhân hai cột theo hàng cho doanh thu nào?",
+     "options": [
+      {
+       "text": "[20, 30, 40, 60].",
+       "detail": "Không cần tạo tích của mọi cặp giữa hai cột."
+      },
+      {
+       "text": "[20, 60].",
+       "detail": "[20, 60].",
+       "correct": true
+      },
+      {
+       "text": "[12, 23].",
+       "detail": "Bạn đang cộng hai cột thay vì nhân."
+      }
+     ],
+     "explanation": "[20, 60]."
+    },
+    {
+     "question": "Muốn sửa bảng gốc ở các hàng qty >= 3, nên dùng câu lệnh nào?",
+     "options": [
+      {
+       "text": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
+       "detail": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18.",
+       "correct": true
+      },
+      {
+       "text": "df[df[\"qty\"] >= 3][\"price\"] = 18 là cách gán rõ ràng cho bảng gốc.",
+       "detail": "Gán nối chuỗi như vậy không phải cách sửa rõ ràng trên bảng gốc."
+      },
+      {
+       "text": "df.loc[:, \"price\"] = 18 vì điều kiện hàng không cần thiết.",
+       "detail": "Phương án này sửa toàn bộ cột, bỏ mất điều kiện qty."
+      }
+     ],
+     "explanation": "df.loc[df[\"qty\"] >= 3, \"price\"] = 18."
+    }
+   ],
    "practice": [
     {
      "prompt": "Nhân qty=[2, 3] với price=[10, 20] cho doanh thu nào?",
@@ -161,5 +220,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

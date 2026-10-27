@@ -3,13 +3,13 @@
  "sort_order": 32,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP14 · Lọc dữ liệu bằng mask",
- "subtitle": "Cơ bản · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP14 · Lọc dữ liệu bằng mask",
-  "subtitle": "Cơ bản · M2 · 8 phút",
+  "subtitle": "Cơ bản · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP14",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "a=np.array([-2,0,7,12]); a[(a>=0)&(a<=10)] còn gì?",
+     "options": [
+      {
+       "text": "[-2,0,7,12]",
+       "detail": "Lọc bằng mask bỏ những vị trí không thỏa điều kiện."
+      },
+      {
+       "text": "[True,True]",
+       "detail": "Kết quả lựa chọn là giá trị của a, không phải mask."
+      },
+      {
+       "text": "[0,7]",
+       "detail": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10."
+    },
+    {
+     "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[3.5, 6.0]",
+       "detail": "Index bằng mask giữ các giá trị ở vị trí True.",
+       "correct": true
+      },
+      {
+       "text": "[False, True, False, True]",
+       "detail": "Đó là mask wet, chưa lấy rain[wet]."
+      },
+      {
+       "text": "[0, 3.5, 0, 6]",
+       "detail": "Hai ngày 0 không đạt điều kiện."
+      }
+     ],
+     "explanation": "Index bằng mask giữ các giá trị ở vị trí True."
+    },
+    {
+     "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[0, 6, 10]",
+       "detail": "Hai so sánh được nối bằng & để cùng đúng ở một vị trí.",
+       "correct": true
+      },
+      {
+       "text": "[6]",
+       "detail": "Hai điều kiện <= và >= nhận cả hai biên."
+      },
+      {
+       "text": "[-1, 0, 6, 10, 12]",
+       "detail": "Điểm -1 và 12 nằm ngoài thang."
+      }
+     ],
+     "explanation": "Hai so sánh được nối bằng & để cùng đúng ở một vị trí."
+    }
+   ],
    "practice": [
     {
      "prompt": "Lọc dãy `[2, 7, 9]` bằng điều kiện lớn hơn 5 thì còn các giá trị nào?",
@@ -161,5 +220,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

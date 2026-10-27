@@ -3,13 +3,13 @@
  "sort_order": 120,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY17 · Buffer, flush, file tạm và lỗi đọc ghi",
- "subtitle": "Trung cấp · M5 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY17 · Buffer, flush, file tạm và lỗi đọc ghi",
-  "subtitle": "Trung cấp · M5 · 14 phút",
+  "subtitle": "Trung cấp · M5 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY17",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "f.flush() đảm bảo điều gì trong phạm vi stream?",
+     "options": [
+      {
+       "text": "Luôn bảo đảm chống mất điện",
+       "detail": "Lưu bền còn phụ thuộc hệ điều hành và thiết bị; flush một mình chưa đủ."
+      },
+      {
+       "text": "Đóng file ngay",
+       "detail": "flush giữ file mở để có thể ghi tiếp."
+      },
+      {
+       "text": "Đẩy dữ liệu từ buffer Python xuống lớp I/O bên dưới",
+       "detail": "flush không tự bảo đảm dữ liệu đã được thiết bị lưu bền sau mất điện.",
+       "correct": true
+      }
+     ],
+     "explanation": "flush không tự bảo đảm dữ liệu đã được thiết bị lưu bền sau mất điện."
+    },
+    {
+     "question": "Một file đang mở ở chế độ ghi. Sau flush, có còn ghi thêm được không nếu chưa đóng?",
+     "options": [
+      {
+       "text": "Chỉ khi đổi tên file",
+       "detail": "Chưa đúng. flush đẩy buffer xuống lớp I/O dưới nhưng không đóng stream."
+      },
+      {
+       "text": "Có",
+       "detail": "flush đẩy buffer xuống lớp I/O dưới nhưng không đóng stream.",
+       "correct": true
+      },
+      {
+       "text": "Không; flush đồng nghĩa close",
+       "detail": "Chưa đúng. flush đẩy buffer xuống lớp I/O dưới nhưng không đóng stream."
+      }
+     ],
+     "explanation": "flush đẩy buffer xuống lớp I/O dưới nhưng không đóng stream."
+    },
+    {
+     "question": "Đọc file không có thật thường cần phân biệt ngoại lệ nào?",
+     "options": [
+      {
+       "text": "FileNotFoundError",
+       "detail": "Loại ngoại lệ giúp phân biệt thiếu file với những lỗi I/O khác.",
+       "correct": true
+      },
+      {
+       "text": "ZeroDivisionError",
+       "detail": "Chưa đúng. Loại ngoại lệ giúp phân biệt thiếu file với những lỗi I/O khác."
+      },
+      {
+       "text": "StopIteration trong mọi trường hợp",
+       "detail": "Chưa đúng. Loại ngoại lệ giúp phân biệt thiếu file với những lỗi I/O khác."
+      }
+     ],
+     "explanation": "Loại ngoại lệ giúp phân biệt thiếu file với những lỗi I/O khác."
+    }
+   ],
    "practice": [
     {
      "prompt": "buffering=0 dùng với text được không?",
@@ -137,5 +196,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

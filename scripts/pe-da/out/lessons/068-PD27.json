@@ -3,13 +3,13 @@
  "sort_order": 68,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD27 · MultiIndex cho dữ liệu nhiều cấp",
- "subtitle": "Nâng cao · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Nâng cao · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD27 · MultiIndex cho dữ liệu nhiều cấp",
-  "subtitle": "Nâng cao · M3 · 8 phút",
+  "subtitle": "Nâng cao · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD27",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "MultiIndex [store,month] cần nhãn nào để lấy đúng A-Feb?",
+     "options": [
+      {
+       "text": "Tuple (\"A\",\"Feb\")",
+       "detail": "Đúng: hai phần ứng với hai tầng nhãn.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ \"Feb\"",
+       "detail": "Thiếu tầng store nên chưa xác định cùng một hàng."
+      },
+      {
+       "text": "Số 2",
+       "detail": "Đó có thể là vị trí, không phải cặp nhãn."
+      }
+     ],
+     "explanation": "Tên tầng giúp bạn giữ rõ mỗi phần của khóa."
+    },
+    {
+     "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?",
+     "options": [
+      {
+       "text": "Ba tầng vì Feb là tháng thứ hai.",
+       "detail": "Tháng Feb là một giá trị của tầng month, không thêm tầng thứ ba."
+      },
+      {
+       "text": "Hai tầng: store và month.",
+       "detail": "Hai tầng: store và month.",
+       "correct": true
+      },
+      {
+       "text": "Một tầng vì tuple là một object.",
+       "detail": "Một tuple có thể chứa nhãn của nhiều tầng."
+      }
+     ],
+     "explanation": "Hai tầng: store và month."
+    },
+    {
+     "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?",
+     "options": [
+      {
+       "text": "xs(\"Jan\", level=\"month\").",
+       "detail": "xs(\"Jan\", level=\"month\").",
+       "correct": true
+      },
+      {
+       "text": "iloc[\"Jan\"].",
+       "detail": "iloc chỉ nhận vị trí, không tra chuỗi Jan như nhãn."
+      },
+      {
+       "text": "xs(\"Jan\", level=\"store\").",
+       "detail": "Jan là giá trị tháng, không phải giá trị của tầng store."
+      }
+     ],
+     "explanation": "xs(\"Jan\", level=\"month\")."
+    }
+   ],
    "practice": [
     {
      "prompt": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?",
@@ -161,5 +220,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 88,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting",
- "subtitle": "Trung cấp · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ15 · Từ DataFrame đến biểu đồ: pandas plotting",
-  "subtitle": "Trung cấp · M4 · 13 phút",
+  "subtitle": "Trung cấp · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ15",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Có ba đơn cùng drink. Muốn một cột tổng cho drink, làm gì trước plot.bar?",
+     "options": [
+      {
+       "text": "groupby drink rồi sum",
+       "detail": "Đúng: mỗi cột mới biểu diễn đúng tổng nhóm.",
+       "correct": true
+      },
+      {
+       "text": "Vẽ từng hàng rồi đổi title thành tổng",
+       "detail": "Đổi chữ không tự tổng hợp ba hàng."
+      },
+      {
+       "text": "Chỉ giữ đơn đầu",
+       "detail": "Sẽ mất doanh thu các đơn sau."
+      }
+     ],
+     "explanation": "Dữ liệu truyền vào hình phải khớp câu hỏi báo cáo."
+    },
+    {
+     "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?",
+     "options": [
+      {
+       "text": "Chỉ đổi index thành tên đồ uống, không cần tổng hợp.",
+       "detail": "Đổi nhãn index không tự cộng các hàng cùng loại."
+      },
+      {
+       "text": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả.",
+       "detail": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả.",
+       "correct": true
+      },
+      {
+       "text": "Vẽ từng hàng thành cột rồi tự coi chúng là tổng.",
+       "detail": "Vẽ từng dòng giao dịch không tạo ra tổng theo đồ uống."
+      }
+     ],
+     "explanation": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả."
+    },
+    {
+     "question": "Index ngày chưa sắp có ảnh hưởng đến line chart không?",
+     "options": [
+      {
+       "text": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày.",
+       "detail": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày.",
+       "correct": true
+      },
+      {
+       "text": "Không; line chart luôn tự sắp index.",
+       "detail": "Không nên dựa vào việc plot tự sửa thứ tự thời gian."
+      },
+      {
+       "text": "Không; thứ tự ngày chỉ ảnh hưởng màu.",
+       "detail": "Thứ tự ngày quyết định đường nối, không chỉ màu."
+      }
+     ],
+     "explanation": "Có. Đường nối theo thứ tự đầu vào; cần sắp theo ngày."
+    }
+   ],
    "practice": [
     {
      "prompt": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?",
@@ -194,5 +253,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

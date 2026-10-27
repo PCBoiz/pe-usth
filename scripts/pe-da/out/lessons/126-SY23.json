@@ -3,13 +3,13 @@
  "sort_order": 126,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
- "subtitle": "Trung cấp · M5 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY23 · HDF5 và MATLAB: đọc mảng kèm tên",
-  "subtitle": "Trung cấp · M5 · 12 phút",
+  "subtitle": "Trung cấp · M5 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY23",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Trong with h5py.File(...), f[\"scores\"] là gì trước khi dùng [()]?",
+     "options": [
+      {
+       "text": "Luôn là list độc lập",
+       "detail": "Dataset không phải list Python đã sao chép sẵn."
+      },
+      {
+       "text": "Một đường dẫn thư mục hệ điều hành",
+       "detail": "Đây là tên đối tượng bên trong HDF5."
+      },
+      {
+       "text": "Dataset gắn với file",
+       "detail": "Dùng [()] lấy dữ liệu ra bộ nhớ khi file còn mở.",
+       "correct": true
+      }
+     ],
+     "explanation": "Dùng [()] lấy dữ liệu ra bộ nhớ khi file còn mở."
+    },
+    {
+     "question": "Muốn array dùng được sau khi đóng HDF5, nên lấy gì khi file còn mở?",
+     "options": [
+      {
+       "text": "Tên file viết hoa",
+       "detail": "Chưa đúng. Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file."
+      },
+      {
+       "text": "Giá trị dataset bằng [()]",
+       "detail": "Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ giữ dataset handle rồi đóng file",
+       "detail": "Chưa đúng. Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file."
+      }
+     ],
+     "explanation": "Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file."
+    },
+    {
+     "question": "Đọc đúng dataset trong HDF5 nên dựa vào điều gì?",
+     "options": [
+      {
+       "text": "Tên và cấu trúc đã kiểm, không mặc định key đầu tiên",
+       "detail": "Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype.",
+       "correct": true
+      },
+      {
+       "text": "Luôn key có tên ngắn nhất",
+       "detail": "Chưa đúng. Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."
+      },
+      {
+       "text": "Màu icon của file",
+       "detail": "Chưa đúng. Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."
+      }
+     ],
+     "explanation": "Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao cần đọc [()] trước khi rời with h5py.File?",
@@ -116,5 +175,6 @@
    "reason": "scipy chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: h5py chưa có wheel trong /pyodide/v314.0.7/"
 }

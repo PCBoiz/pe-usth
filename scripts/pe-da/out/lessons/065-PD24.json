@@ -3,13 +3,13 @@
  "sort_order": 65,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD24 · Cửa sổ trượt và so sánh kỳ trước",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD24 · Cửa sổ trượt và so sánh kỳ trước",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD24",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "s=[2,4,8]. rolling(2,min_periods=2).mean() ở hàng đầu là gì?",
+     "options": [
+      {
+       "text": "Thiếu",
+       "detail": "Đúng: mới có một quan sát, chưa đủ hai.",
+       "correct": true
+      },
+      {
+       "text": "2",
+       "detail": "Chỉ đúng nếu cho phép min_periods=1."
+      },
+      {
+       "text": "3",
+       "detail": "3 là kết quả tại hàng thứ hai."
+      }
+     ],
+     "explanation": "window và min_periods xác định dữ liệu được dùng ở mỗi hàng."
+    },
+    {
+     "question": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?",
+     "options": [
+      {
+       "text": "Vì min_periods xóa dữ liệu gốc.",
+       "detail": "min_periods quyết định lúc có kết quả, không xóa dữ liệu gốc."
+      },
+      {
+       "text": "Chưa đủ ba quan sát.",
+       "detail": "Chưa đủ ba quan sát.",
+       "correct": true
+      },
+      {
+       "text": "Vì pandas luôn bỏ hai hàng đầu của mọi phép tính.",
+       "detail": "Số kết quả đầu thiếu phụ thuộc kích thước cửa sổ và min_periods."
+      }
+     ],
+     "explanation": "Chưa đủ ba quan sát."
+    },
+    {
+     "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?",
+     "options": [
+      {
+       "text": "20%.",
+       "detail": "20%.",
+       "correct": true
+      },
+      {
+       "text": "0.2%.",
+       "detail": "0.2 là một phần năm, không phải 0.2 phần trăm."
+      },
+      {
+       "text": "200%.",
+       "detail": "200% tương ứng tỷ lệ 2.0."
+      }
+     ],
+     "explanation": "20%."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao rolling(3, min_periods=3) có hai kết quả đầu thiếu?",
@@ -154,5 +213,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 93,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ20 · Plotly: Figure tương tác, hover và legend",
- "subtitle": "Trung cấp · M4 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M4 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ20 · Plotly: Figure tương tác, hover và legend",
-  "subtitle": "Trung cấp · M4 · 10 phút",
+  "subtitle": "Trung cấp · M4 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ20",
@@ -59,6 +59,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
+     "options": [
+      {
+       "text": "Chỉ xóa số y nhưng giữ x",
+       "detail": "Không có quy tắc mặc định như vậy."
+      },
+      {
+       "text": "Không",
+       "detail": "Đúng: thao tác thay phần hiện, dữ liệu thường vẫn nằm trong Figure.",
+       "correct": true
+      },
+      {
+       "text": "Có, nên có thể giữ thông tin riêng trong trace ẩn",
+       "detail": "Ẩn không phải một biện pháp loại dữ liệu khỏi file."
+      }
+     ],
+     "explanation": "Kiểm dữ liệu được đưa vào file, không chỉ phần người xem thấy."
+    },
+    {
+     "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
+     "options": [
+      {
+       "text": "Có; ẩn trace sẽ xóa sạch dữ liệu khỏi file đã xuất.",
+       "detail": "Ẩn trên legend thường không xóa mảng dữ liệu của trace."
+      },
+      {
+       "text": "Có; legend là một cơ chế mã hóa dữ liệu.",
+       "detail": "Legend không mã hóa dữ liệu trong HTML."
+      },
+      {
+       "text": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
+       "detail": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu."
+    },
+    {
+     "question": "Muốn phân biệt nhóm mà không chỉ dựa vào màu, thêm gì?",
+     "options": [
+      {
+       "text": "Chỉ giảm độ trong suốt của mọi điểm bằng nhau.",
+       "detail": "Cùng giảm alpha không tạo một ký hiệu riêng cho từng nhóm."
+      },
+      {
+       "text": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ.",
+       "detail": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ đổi tên file HTML.",
+       "detail": "Tên file không giúp phân biệt hai nhóm trong vùng vẽ."
+      }
+     ],
+     "explanation": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ."
+    }
+   ],
    "practice": [
     {
      "prompt": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?",
@@ -89,5 +148,6 @@
  },
  "_mode": "local",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/"
 }

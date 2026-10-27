@@ -3,13 +3,13 @@
  "sort_order": 116,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
- "subtitle": "Trung cấp · M5 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M5 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY13 · Làm tròn xuống và tính điểm có trọng số",
-  "subtitle": "Trung cấp · M5 · 8 phút",
+  "subtitle": "Trung cấp · M5 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY13",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Điểm 8 và 6, tín chỉ lần lượt 3 và 1: GPA là bao nhiêu?",
+     "options": [
+      {
+       "text": "7.5",
+       "detail": "Tổng có trọng số (8×3+6×1)=30, chia tổng tín chỉ 4.",
+       "correct": true
+      },
+      {
+       "text": "7.0",
+       "detail": "Đây là trung bình không trọng số, bỏ qua tín chỉ khác nhau."
+      },
+      {
+       "text": "15.0",
+       "detail": "Bạn đã chia tổng có trọng số cho số môn 2 thay vì tổng tín chỉ 4."
+      }
+     ],
+     "explanation": "Tổng có trọng số (8×3+6×1)=30, chia tổng tín chỉ 4."
+    },
+    {
+     "question": "Điểm [8,6], tín chỉ [3,1]. Trung bình không trọng số bỏ qua điều gì?",
+     "options": [
+      {
+       "text": "Kiểu chữ của tên môn",
+       "detail": "Chưa đúng. GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
+      },
+      {
+       "text": "Môn 3 tín chỉ phải đóng góp nhiều hơn",
+       "detail": "GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ.",
+       "correct": true
+      },
+      {
+       "text": "Số thứ tự của array bắt đầu từ 0",
+       "detail": "Chưa đúng. GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
+      }
+     ],
+     "explanation": "GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
+    },
+    {
+     "question": "math.floor(8.79*10)/10 cho giá trị nào?",
+     "options": [
+      {
+       "text": "8.7",
+       "detail": "Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống.",
+       "correct": true
+      },
+      {
+       "text": "8.8",
+       "detail": "Chưa đúng. Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống."
+      },
+      {
+       "text": "8.79",
+       "detail": "Chưa đúng. Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống."
+      }
+     ],
+     "explanation": "Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai môn 3 và 1 tín chỉ, điểm 8 và 6, GPA bằng bao nhiêu?",
@@ -140,5 +199,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

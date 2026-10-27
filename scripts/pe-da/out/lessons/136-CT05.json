@@ -3,13 +3,13 @@
  "sort_order": 136,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT05 · SRTF, deadline và các mức ưu tiên",
- "subtitle": "Nâng cao · M6 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT05 · SRTF, deadline và các mức ưu tiên",
-  "subtitle": "Nâng cao · M6 · 10 phút",
+  "subtitle": "Nâng cao · M6 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT05",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "SRTF: A còn 5 ms; B vừa đến cần 2 ms. Điều gì xảy ra nếu bỏ qua overhead?",
+     "options": [
+      {
+       "text": "B chỉ được chạy nếu deadline gần hơn",
+       "detail": "Deadline là tiêu chí của EDF, không phải SRTF."
+      },
+      {
+       "text": "B có thể lấy CPU vì thời gian còn lại ngắn hơn",
+       "detail": "SRTF so thời gian còn lại và có thể ngắt job hiện tại.",
+       "correct": true
+      },
+      {
+       "text": "A luôn chạy tới hết vì đến trước",
+       "detail": "Đó là tính không ngắt, trái với SRTF."
+      }
+     ],
+     "explanation": "SRTF so thời gian còn lại và có thể ngắt job hiện tại."
+    },
+    {
+     "question": "A còn 5 đơn vị CPU, B mới đến cần 2. SRTF có thể chọn gì?",
+     "options": [
+      {
+       "text": "Tiếp tục A vì chỉ so burst ban đầu, không xét phần còn lại",
+       "detail": "Chưa đúng. SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
+      },
+      {
+       "text": "Thu CPU của A để B chạy",
+       "detail": "SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn.",
+       "correct": true
+      },
+      {
+       "text": "Luôn đợi A xong vì SRTF non-preemptive",
+       "detail": "Chưa đúng. SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
+      }
+     ],
+     "explanation": "SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
+    },
+    {
+     "question": "EDF chọn theo đại lượng nào?",
+     "options": [
+      {
+       "text": "Deadline sớm nhất",
+       "detail": "Deadline là hạn hoàn thành, khác lượng CPU mà job cần.",
+       "correct": true
+      },
+      {
+       "text": "Burst ngắn nhất trong mọi trường hợp",
+       "detail": "Chưa đúng. Deadline là hạn hoàn thành, khác lượng CPU mà job cần."
+      },
+      {
+       "text": "Thứ tự chữ cái tên job",
+       "detail": "Chưa đúng. Deadline là hạn hoàn thành, khác lượng CPU mà job cần."
+      }
+     ],
+     "explanation": "Deadline là hạn hoàn thành, khác lượng CPU mà job cần."
+    }
+   ],
    "practice": [
     {
      "prompt": "A còn 5, B mới tới cần 2: SRTF ưu tiên ai?",
@@ -96,5 +155,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

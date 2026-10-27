@@ -3,13 +3,13 @@
  "sort_order": 135,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc",
- "subtitle": "Nâng cao · M6 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT04 · FCFS và SJF: thứ tự đến khác độ dài việc",
-  "subtitle": "Nâng cao · M6 · 10 phút",
+  "subtitle": "Nâng cao · M6 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT04",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "A=6, B=2, C=1 đều đến lúc 0, thứ tự nhập A/B/C. SJF không ngắt chọn ai trước?",
+     "options": [
+      {
+       "text": "A",
+       "detail": "Đó là lựa chọn FCFS theo thứ tự đến/nhập."
+      },
+      {
+       "text": "B",
+       "detail": "B ngắn hơn A nhưng vẫn dài hơn C."
+      },
+      {
+       "text": "C",
+       "detail": "Trong các job đã đến, SJF chọn burst nhỏ nhất.",
+       "correct": true
+      }
+     ],
+     "explanation": "Trong các job đã đến, SJF chọn burst nhỏ nhất."
+    },
+    {
+     "question": "A đến trước B. FCFS non-preemptive có tự ngắt A chỉ vì B ngắn hơn không?",
+     "options": [
+      {
+       "text": "Chỉ ngắt khi B ngắn hơn A rất nhiều",
+       "detail": "Chưa đúng. FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
+      },
+      {
+       "text": "Không",
+       "detail": "FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF.",
+       "correct": true
+      },
+      {
+       "text": "Có; luôn ưu tiên việc ngắn",
+       "detail": "Chưa đúng. FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
+      }
+     ],
+     "explanation": "FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
+    },
+    {
+     "question": "SJF được chọn một job ngắn chưa đến hệ thống không?",
+     "options": [
+      {
+       "text": "Không; chỉ chọn trong các việc đang sẵn sàng",
+       "detail": "Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn.",
+       "correct": true
+      },
+      {
+       "text": "Có; biết burst là đủ",
+       "detail": "Chưa đúng. Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn."
+      },
+      {
+       "text": "Chỉ chọn nếu job có deadline",
+       "detail": "Chưa đúng. Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn."
+      }
+     ],
+     "explanation": "Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn."
+    }
+   ],
    "practice": [
     {
      "prompt": "FCFS ở ví dụ chạy theo thứ tự nào?",
@@ -92,5 +151,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

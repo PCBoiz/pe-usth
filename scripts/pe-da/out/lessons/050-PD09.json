@@ -3,13 +3,13 @@
  "sort_order": 50,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD09 · Làm sạch chữ trong một cột",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD09 · Làm sạch chữ trong một cột",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD09",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "\" A B \".strip().lower() cho gì?",
+     "options": [
+      {
+       "text": "\"a b\"",
+       "detail": "Đúng: bỏ khoảng trắng hai đầu, giữ khoảng trắng ở giữa.",
+       "correct": true
+      },
+      {
+       "text": "\"ab\"",
+       "detail": "strip không xóa khoảng trắng nằm giữa hai từ."
+      },
+      {
+       "text": "\" A B \"",
+       "detail": "strip và lower đều tạo kết quả mới đã thay đổi."
+      }
+     ],
+     "explanation": "Mỗi bước làm một việc; chuẩn hóa không tự sửa mọi lỗi dữ liệu."
+    },
+    {
+     "question": "strip có xóa dấu cách giữa hai từ không?",
+     "options": [
+      {
+       "text": "Có; strip nối các từ và tự đổi thành chữ thường.",
+       "detail": "strip không đồng thời thực hiện lower."
+      },
+      {
+       "text": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
+       "detail": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
+       "correct": true
+      },
+      {
+       "text": "Có; strip bỏ mọi dấu cách trong cả chuỗi.",
+       "detail": "Dấu cách nằm giữa hai từ không ở biên chuỗi."
+      }
+     ],
+     "explanation": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn."
+    },
+    {
+     "question": "Tại sao contains thường thêm na=False khi dùng làm mask?",
+     "options": [
+      {
+       "text": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",
+       "detail": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",
+       "correct": true
+      },
+      {
+       "text": "Để biến mọi ô thiếu thành kết quả khớp.",
+       "detail": "na=False làm ô thiếu không khớp, không biến nó thành True."
+      },
+      {
+       "text": "Để bắt contains đọc cả cột thành số.",
+       "detail": "contains là phép tìm chuỗi, không phải phép đổi kiểu số."
+      }
+     ],
+     "explanation": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu."
+    }
+   ],
    "practice": [
     {
      "prompt": "strip có xóa dấu cách giữa hai từ không?",
@@ -166,5 +225,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

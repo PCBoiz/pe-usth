@@ -3,13 +3,13 @@
  "sort_order": 9,
  "module": "M1 · Python nền tảng",
  "title": "PY09 · Điều kiện, so sánh và khối lệnh",
- "subtitle": "Cơ bản · M1 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY09 · Điều kiện, so sánh và khối lệnh",
-  "subtitle": "Cơ bản · M1 · 10 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY09",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "score = 8. Kiểm >=8 trước rồi mới >=5 thì nhãn nào được chọn?",
+     "options": [
+      {
+       "text": "Cả Good và Pass",
+       "detail": "Một chuỗi if/elif chỉ chạy nhánh đúng đầu tiên."
+      },
+      {
+       "text": "Good",
+       "detail": "Đúng. Nhánh đầu đã đúng, không xét tiếp nhánh >=5.",
+       "correct": true
+      },
+      {
+       "text": "Pass",
+       "detail": "Điểm 8 cũng >=5, nhưng nhánh >=8 đứng trước và đã được chọn."
+      }
+     ],
+     "explanation": "Đúng. Nhánh đầu đã đúng, không xét tiếp nhánh >=5."
+    },
+    {
+     "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'Good'",
+       "detail": "Điều kiện >= nhận cả giá trị bằng 8.",
+       "correct": true
+      },
+      {
+       "text": "'Pass'",
+       "detail": "Nhánh đầu đã đúng, nên elif không được xét tiếp."
+      },
+      {
+       "text": "'Retry'",
+       "detail": "Điểm 8 không rơi vào else."
+      }
+     ],
+     "explanation": "Điều kiện >= nhận cả giá trị bằng 8."
+    },
+    {
+     "question": "Điểm đạt mức qua môn nhưng chưa tốt. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'Pass'",
+       "detail": "Sau điều kiện đầu sai, Python chọn elif đúng.",
+       "correct": true
+      },
+      {
+       "text": "'Good'",
+       "detail": "6 không đạt điều kiện >=8."
+      },
+      {
+       "text": "'Retry'",
+       "detail": "Điều kiện elif đã đúng."
+      }
+     ],
+     "explanation": "Sau điều kiện đầu sai, Python chọn elif đúng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với score = 8, đoạn đầu chạy nhánh nào?",
@@ -130,5 +189,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

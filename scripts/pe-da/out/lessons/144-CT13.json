@@ -3,13 +3,13 @@
  "sort_order": 144,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT13 · Queue và lưu pickle có nén ở nền",
- "subtitle": "Nâng cao · M6 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Nâng cao · M6 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT13 · Queue và lưu pickle có nén ở nền",
-  "subtitle": "Nâng cao · M6 · 10 phút",
+  "subtitle": "Nâng cao · M6 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT13",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "get_nowait báo queue.Empty khi worker chưa xong có đồng nghĩa worker thất bại không?",
+     "options": [
+      {
+       "text": "Có; Empty luôn là exception của worker",
+       "detail": "Empty mô tả queue tại thời điểm đọc, không mô tả nguyên nhân worker chưa gửi."
+      },
+      {
+       "text": "Không; nên chặn GUI bằng join ngay",
+       "detail": "join trong callback dài có thể làm event loop đứng chờ."
+      },
+      {
+       "text": "Không; lúc đó chưa có thông điệp",
+       "detail": "Queue rỗng là trạng thái tạm; lỗi worker cần thông điệp hoặc cơ chế xử lý riêng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Queue rỗng là trạng thái tạm; lỗi worker cần thông điệp hoặc cơ chế xử lý riêng."
+    },
+    {
+     "question": "Queue rỗng khi gọi get_nowait sẽ báo gì?",
+     "options": [
+      {
+       "text": "Luôn trả None thay mọi lỗi",
+       "detail": "Chưa đúng. Empty cho biết hiện chưa có thông điệp; không đồng nghĩa tác vụ đã thất bại."
+      },
+      {
+       "text": "Empty",
+       "detail": "Empty cho biết hiện chưa có thông điệp; không đồng nghĩa tác vụ đã thất bại.",
+       "correct": true
+      },
+      {
+       "text": "Một thông điệp \"done\" giả định",
+       "detail": "Chưa đúng. Empty cho biết hiện chưa có thông điệp; không đồng nghĩa tác vụ đã thất bại."
+      }
+     ],
+     "explanation": "Empty cho biết hiện chưa có thông điệp; không đồng nghĩa tác vụ đã thất bại."
+    },
+    {
+     "question": "snapshot = data có tách được một list lồng nhau không?",
+     "options": [
+      {
+       "text": "Không; chỉ thêm tên tham chiếu cùng dữ liệu",
+       "detail": "Snapshot nhất quán cần sao chép cấu trúc hoặc đồng bộ phù hợp, không chỉ đổi tên tham chiếu.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi phép gán tạo bản sao sâu",
+       "detail": "Chưa đúng. Snapshot nhất quán cần sao chép cấu trúc hoặc đồng bộ phù hợp, không chỉ đổi tên tham chiếu."
+      },
+      {
+       "text": "Chỉ tách khi biến tên snapshot",
+       "detail": "Chưa đúng. Snapshot nhất quán cần sao chép cấu trúc hoặc đồng bộ phù hợp, không chỉ đổi tên tham chiếu."
+      }
+     ],
+     "explanation": "Snapshot nhất quán cần sao chép cấu trúc hoặc đồng bộ phù hợp, không chỉ đổi tên tham chiếu."
+    }
+   ],
    "practice": [
     {
      "prompt": "Queue rỗng khi worker chưa xong có nghĩa worker đã lỗi không?",
@@ -138,5 +197,6 @@
    "reason": "bản Pyodide này không bật thread thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

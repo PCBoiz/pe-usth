@@ -7,6 +7,41 @@ import {
 import { Test } from '@nestjs/testing';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { QuizzesService } from './quizzes.service';
+import { readFileSync } from 'fs';
+import { join } from 'path';
+
+/**
+ * Câu trắc nghiệm của khoá 172 bài, ĐỌC TỪ BẢN DỰNG THẬT.
+ *
+ * Không bịa fixture ở đây, vì chính file này đã bị cắn một lần theo đúng kiểu
+ * đó: ca "không bao giờ lộ đáp án" từng dùng `options: ['a','b']`, trong khi
+ * dữ liệu thật là mảng object mang cờ `correct` — lỗ lộ đáp án sống sót qua
+ * mọi lần chạy test. Xem AGENTS.md, bẫy "fixture không giống dữ liệu thật".
+ *
+ * Và lần này có thêm một lý do: nguồn câu hỏi dùng `prompt`/`correctOption`,
+ * còn `normalizeQuestion` đòi `question` + `options[].correct`. Phép đổi tên
+ * nằm ở `scripts/pe-da/build.py`; đọc bản dựng là cách duy nhất chứng minh nó
+ * khớp. Lệch một tên là `normalizeQuestion` trả null cho MỌI câu, kho quiz
+ * rỗng, và KHÔNG ngoại lệ nào được ném.
+ */
+const PE_DA = JSON.parse(
+  readFileSync(
+    join(__dirname, '..', '..', 'scripts', 'pe-da', 'out', 'lessons.json'),
+    'utf8',
+  ),
+) as {
+  lessons: Array<{
+    lesson_code: string;
+    content_json: { step_2?: { mcq?: unknown[] } };
+  }>;
+};
+
+/** `content_json` của một bài pe-da theo mã bài. */
+function peDa(code: string): unknown {
+  const found = PE_DA.lessons.find((l) => l.lesson_code === code);
+  if (!found) throw new Error(`không có bài ${code} trong bản dựng`);
+  return found.content_json;
+}
 
 const SNAPSHOT = [
   { question: 'Q1', options: ['a', 'b'], correct: 0, explanation: 'vì a' },
@@ -709,6 +744,157 @@ describe('QuizzesService', () => {
       await expect(service.generateQuiz(1, 'db_design')).rejects.toThrow(
         BadRequestException,
       );
+    });
+  });
+
+  describe('kho quiz đọc được câu trắc nghiệm của khoá 172 bài', () => {
+    /** Dựng pool từ n bài pe-da đầu tiên có trắc nghiệm. */
+    function dungPool(codes: string[]) {
+      prisma.lessonProgress.findMany.mockResolvedValue(
+        codes.map((_, i) => ({ lessonId: i + 1 })),
+      );
+      prisma.lesson.findMany.mockResolvedValue(
+        codes.map((c, i) => ({
+          id: i + 1,
+          courseId: 'python_advanced',
+          contentJson: peDa(c),
+        })),
+      );
+    }
+
+    it('bản dựng có đúng 3 câu mỗi bài và mỗi câu đúng MỘT đáp án', () => {
+      // Chốt ở đây vì mọi ca dưới dựa vào nó: 0 đáp án đúng thì
+      // `normalizeQuestion` trả null (pool rỗng), 2 đáp án thì `findIndex` lấy
+      // cái đầu và câu đó chấm sai một nửa học viên.
+      const coMcq = PE_DA.lessons.filter(
+        (l) => (l.content_json.step_2?.mcq ?? []).length,
+      );
+      expect(coMcq.length).toBe(172);
+      for (const l of coMcq) {
+        const mcq = l.content_json.step_2!.mcq as Array<{
+          question?: string;
+          options?: Array<{ text?: string; correct?: boolean }>;
+        }>;
+        expect(mcq.length).toBe(3);
+        for (const q of mcq) {
+          expect(typeof q.question).toBe('string');
+          expect(q.question!.length).toBeGreaterThan(0);
+          expect((q.options ?? []).length).toBeGreaterThanOrEqual(2);
+          expect(
+            (q.options ?? []).filter((o) => o.correct === true).length,
+          ).toBe(1);
+        }
+      }
+    });
+
+    it('MỘT bài đã xong là đủ 3 câu, nhưng chưa đủ MIN_POOL=5', async () => {
+      // AGENTS.md ghi hệ quả này cho pe-v4 và nó vẫn đúng: thông báo gửi FE nói
+      // theo SỐ CÂU (min_questions: 5) nên dễ đọc nhầm thành "xong 1 bài là đủ".
+      dungPool(['PY01']);
+      await expect(service.generateQuiz(1, 'python_advanced')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    it('HAI bài đã xong -> ra đề, và đáp án KHÔNG đi ra client', async () => {
+      dungPool(['PY01', 'PY02']);
+      prisma.quiz.create.mockResolvedValue({ id: 7 });
+      const res = (await service.generateQuiz(1, 'python_advanced')) as {
+        questions: Array<Record<string, unknown>>;
+      };
+
+      expect(res.questions.length).toBeGreaterThanOrEqual(5);
+      for (const q of res.questions) {
+        expect(q).not.toHaveProperty('correct');
+        expect(q).not.toHaveProperty('explanation');
+        // Lựa chọn phải là CHUỖI: giữ nguyên object là gửi thẳng cờ `correct`
+        // của từng lựa chọn về trình duyệt — stripAnswers chỉ bỏ field ở cấp
+        // câu hỏi.
+        for (const o of q.options as unknown[]) expect(typeof o).toBe('string');
+      }
+
+      // Nhưng SNAPSHOT trong DB phải còn đáp án để chấm ở server.
+      const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      expect(luu.length).toBe(res.questions.length);
+      for (const q of luu) {
+        expect(typeof q.correct).not.toBe('undefined');
+        expect(typeof q.question).toBe('string');
+      }
+    });
+
+    it('`correct` trong snapshot là VỊ TRÍ, trỏ đúng lựa chọn mang cờ', async () => {
+      // `correctOption: '<id>'` của gói -> `correct: true` trên một lựa chọn
+      // (build.py) -> `correct: <vị trí>` trong snapshot (normalizeQuestion).
+      // Ba hình dạng nối nhau; lệch một bước là chấm sai mà không ai biết.
+      dungPool(['PY01', 'PY02']);
+      prisma.quiz.create.mockResolvedValue({ id: 7 });
+      await service.generateQuiz(1, 'python_advanced');
+
+      const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      const nguon = [
+        ...(peDa('PY01') as { step_2: { mcq: unknown[] } }).step_2.mcq,
+        ...(peDa('PY02') as { step_2: { mcq: unknown[] } }).step_2.mcq,
+      ] as Array<{
+        question: string;
+        options: Array<{ text: string; correct?: boolean }>;
+      }>;
+
+      for (const q of luu) {
+        const goc = nguon.find((n) => n.question === q.question);
+        expect(goc).toBeDefined();
+        const viTri = goc!.options.findIndex((o) => o.correct === true);
+        expect(q.correct).toBe(viTri);
+        // Và `options[correct]` phải là chữ của đúng lựa chọn đó.
+        expect(q.options[q.correct as number]).toBe(goc!.options[viTri].text);
+      }
+    });
+
+    it('đề KHÔNG lấy hai câu cùng một bài khi còn bài khác — ca bắt lỗi', async () => {
+      // Mỗi bài chỉ có MỘT gốc câu hỏi: 3 câu của một bài là 3 biến thể cùng
+      // gốc. Bốc đều trên pool thì học viên dễ gặp 3 câu hỏi cùng một chuyện,
+      // và họ đọc ra điều đó là "đề bị lặp".
+      //
+      // Phải cấp NHIỀU HƠN 10 bài: một đề lấy tối đa SAMPLE_MAX = 10 câu, nên
+      // 7 bài thì trùng là bắt buộc chứ không phải lỗi. Bản đầu của ca này
+      // dùng 7 bài và đỏ oan — đúng tiền đề sai, không phải code sai.
+      const codes = [
+        'PY01',
+        'PY02',
+        'PY03',
+        'PY04',
+        'PY05',
+        'PY06',
+        'PY07',
+        'PY08',
+        'PY09',
+        'PY10',
+        'PY11',
+        'PY12',
+      ];
+      dungPool(codes);
+      prisma.quiz.create.mockResolvedValue({ id: 7 });
+
+      // Chạy nhiều lượt: luật này về xác suất, một lượt may mắn không chứng
+      // minh được gì.
+      for (let lan = 0; lan < 40; lan += 1) {
+        prisma.quiz.create.mockClear();
+        await service.generateQuiz(1, 'python_advanced');
+        const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+        const bai = luu.map((q) => q.lessonId);
+        expect(new Set(bai).size).toBe(bai.length);
+      }
+    });
+
+    it('nhưng vẫn RA ĐỀ khi số bài ÍT HƠN số câu mỗi đề', async () => {
+      // Siết thành luật cứng thì đề 5 câu cần 5 bài, trong khi MIN_POOL chỉ hứa
+      // 5 CÂU (2 bài) — hứa một đằng chặn một nẻo. Vòng hai lấy tiếp từ phần
+      // còn lại, nên 2 bài vẫn ra được đề đủ câu.
+      dungPool(['PY01', 'PY02']);
+      prisma.quiz.create.mockResolvedValue({ id: 7 });
+      await service.generateQuiz(1, 'python_advanced');
+      const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      expect(luu.length).toBeGreaterThanOrEqual(5);
+      expect(new Set(luu.map((q) => q.lessonId)).size).toBe(2);
     });
   });
 

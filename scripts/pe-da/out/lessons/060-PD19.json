@@ -3,13 +3,13 @@
  "sort_order": 60,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD19 · Pivot và melt: đổi hình dạng bảng",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD19 · Pivot và melt: đổi hình dạng bảng",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD19",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai hàng A-Jan có 5 và 8. pivot có tự trả 13 không?",
+     "options": [
+      {
+       "text": "Có, luôn tự cộng",
+       "detail": "pivot chỉ đổi vị trí, không tự cộng."
+      },
+      {
+       "text": "Giữ 8",
+       "detail": "Không tự bỏ giá trị 5 mà không có quy tắc."
+      },
+      {
+       "text": "Không, pivot báo lỗi vì một ô có hai giá trị",
+       "detail": "Đúng: cần tổng hợp trước hoặc dùng pivot_table.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đổi hình dạng không tự xác định quy tắc tổng hợp."
+    },
+    {
+     "question": "pivot có tự tính tổng các giao dịch cùng store–month không?",
+     "options": [
+      {
+       "text": "Không; nó yêu cầu mỗi ô được xác định duy nhất.",
+       "detail": "Không; nó yêu cầu mỗi ô được xác định duy nhất.",
+       "correct": true
+      },
+      {
+       "text": "Có; pivot luôn cộng mọi giao dịch trùng.",
+       "detail": "Phép cộng cần bước tổng hợp hoặc pivot_table."
+      },
+      {
+       "text": "Có; pivot luôn lấy trung bình các giao dịch trùng.",
+       "detail": "Pivot không mặc định lấy trung bình cho ô bị trùng."
+      }
+     ],
+     "explanation": "Không; nó yêu cầu mỗi ô được xác định duy nhất."
+    },
+    {
+     "question": "Trong melt, id_vars có nghĩa gì?",
+     "options": [
+      {
+       "text": "Các cột cần xóa khỏi bảng.",
+       "detail": "Các cột định danh không phải các cột cần xóa."
+      },
+      {
+       "text": "Các cột số tự động được cộng lại.",
+       "detail": "Melt thay hình dạng, không cộng các cột số."
+      },
+      {
+       "text": "Các cột định danh được giữ, không chuyển thành cột giá trị đo.",
+       "detail": "Các cột định danh được giữ, không chuyển thành cột giá trị đo.",
+       "correct": true
+      }
+     ],
+     "explanation": "Các cột định danh được giữ, không chuyển thành cột giá trị đo."
+    }
+   ],
    "practice": [
     {
      "prompt": "pivot có tự tính tổng các giao dịch cùng store–month không?",
@@ -161,5 +220,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

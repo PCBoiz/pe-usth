@@ -3,13 +3,13 @@
  "sort_order": 51,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD10 · Dòng trùng và khóa của bảng",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD10 · Dòng trùng và khóa của bảng",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD10",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Dữ liệu A-v2 rồi A-v1. drop_duplicates(\"order\",keep=\"last\") chưa sort giữ bản nào?",
+     "options": [
+      {
+       "text": "v2",
+       "detail": "Chỉ đúng nếu đã sắp version tăng trước."
+      },
+      {
+       "text": "Cả hai",
+       "detail": "drop_duplicates theo order chỉ giữ một bản trong lựa chọn này."
+      },
+      {
+       "text": "v1",
+       "detail": "Đúng: last là hàng cuối hiện tại, không phải version lớn nhất.",
+       "correct": true
+      }
+     ],
+     "explanation": "Hàm không hiểu ý nghĩa mới/cũ nếu bạn chưa sắp theo cột phiên bản."
+    },
+    {
+     "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?",
+     "options": [
+      {
+       "text": "Đánh dấu các bản sau là True; bản đầu được giữ.",
+       "detail": "Đánh dấu các bản sau là True; bản đầu được giữ.",
+       "correct": true
+      },
+      {
+       "text": "Đánh dấu bản đầu là True, các bản sau False.",
+       "detail": "Bạn đã đảo vai trò của bản đầu và bản lặp sau."
+      },
+      {
+       "text": "Đánh dấu mọi hàng là True dù không trùng.",
+       "detail": "Hàng không lặp không bị đánh dấu là trùng."
+      }
+     ],
+     "explanation": "Đánh dấu các bản sau là True; bản đầu được giữ."
+    },
+    {
+     "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?",
+     "options": [
+      {
+       "text": "Có; order luôn là khóa duy nhất trong mọi bảng.",
+       "detail": "Một order có thể xuất hiện hợp lệ ở nhiều mặt hàng."
+      },
+      {
+       "text": "Có; drop_duplicates tự cộng các mặt hàng bị bỏ.",
+       "detail": "drop_duplicates không cộng lượng của những hàng bị bỏ."
+      },
+      {
+       "text": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
+       "detail": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng."
+    }
+   ],
    "practice": [
     {
      "prompt": "duplicated mặc định đánh dấu bản đầu hay bản sau?",
@@ -176,5 +235,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

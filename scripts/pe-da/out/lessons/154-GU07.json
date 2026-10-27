@@ -3,13 +3,13 @@
  "sort_order": 154,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU07 · Danh sách và hộp chọn thả xuống",
- "subtitle": "Trung cấp · M8 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M8 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU07 · Danh sách và hộp chọn thả xuống",
-  "subtitle": "Trung cấp · M8 · 11 phút",
+  "subtitle": "Trung cấp · M8 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU07",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Listbox đang có mục active nhưng curselection() rỗng. Có thể kết luận người dùng đã chọn mục đó không?",
+     "options": [
+      {
+       "text": "Không; Listbox không cho chọn mục",
+       "detail": "Listbox có selection; cần dùng đúng API và trạng thái."
+      },
+      {
+       "text": "Không; active và selection là hai trạng thái",
+       "detail": "Nên đọc curselection rồi kiểm rỗng khi yêu cầu là mục đã chọn.",
+       "correct": true
+      },
+      {
+       "text": "Có; ACTIVE luôn đồng nghĩa selected",
+       "detail": "ACTIVE là mục bàn phím đang active, có thể khác tập selection."
+      }
+     ],
+     "explanation": "Nên đọc curselection rồi kiểm rỗng khi yêu cầu là mục đã chọn."
+    },
+    {
+     "question": "Listbox.insert dùng để làm gì?",
+     "options": [
+      {
+       "text": "Đặt tên cửa sổ",
+       "detail": "Chưa đúng. Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
+      },
+      {
+       "text": "Thêm phần tử vào danh sách",
+       "detail": "Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop.",
+       "correct": true
+      },
+      {
+       "text": "Tự chọn một process CPU",
+       "detail": "Chưa đúng. Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
+      }
+     ],
+     "explanation": "Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
+    },
+    {
+     "question": "Chưa có mục được chọn, callback có nên mặc định luôn lấy phần tử đầu của curselection không?",
+     "options": [
+      {
+       "text": "Không; cần kiểm tập chỉ số được chọn có rỗng không",
+       "detail": "Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi.",
+       "correct": true
+      },
+      {
+       "text": "Có; curselection luôn có một chỉ số",
+       "detail": "Chưa đúng. Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
+      },
+      {
+       "text": "Chỉ kiểm nếu danh sách có chữ",
+       "detail": "Chưa đúng. Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
+      }
+     ],
+     "explanation": "Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
+    }
+   ],
    "practice": [
     {
      "prompt": "ACTIVE có luôn là phần tử selected không?",
@@ -112,5 +171,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

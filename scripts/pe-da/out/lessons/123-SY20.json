@@ -3,13 +3,13 @@
  "sort_order": 123,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY20 · Gom nhiều file bằng ZIP và tar",
- "subtitle": "Trung cấp · M5 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M5 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY20 · Gom nhiều file bằng ZIP và tar",
-  "subtitle": "Trung cấp · M5 · 12 phút",
+  "subtitle": "Trung cấp · M5 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY20",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "students.dat có chắc là pickle không?",
+     "options": [
+      {
+       "text": "Có; .dat luôn là pickle",
+       "detail": "Pickle không sở hữu phần mở rộng .dat."
+      },
+      {
+       "text": "Có; .dat luôn là ZIP",
+       "detail": "Một ứng dụng có thể đặt nhiều định dạng khác nhau vào tên .dat."
+      },
+      {
+       "text": "Không; .dat không quy định định dạng",
+       "detail": "Cần biết chương trình tạo file và cấu trúc thực tế của nó.",
+       "correct": true
+      }
+     ],
+     "explanation": "Cần biết chương trình tạo file và cấu trúc thực tế của nó."
+    },
+    {
+     "question": "Muốn đọc riêng marks.txt trong ZIP vào RAM, cần extractall trước không?",
+     "options": [
+      {
+       "text": "Chỉ cần đổi đuôi ZIP thành .txt",
+       "detail": "Chưa đúng. ZIP hỗ trợ lấy bytes của thành viên theo tên mà không giải nén toàn bộ ra đĩa."
+      },
+      {
+       "text": "Không; có thể read đúng tên thành viên",
+       "detail": "ZIP hỗ trợ lấy bytes của thành viên theo tên mà không giải nén toàn bộ ra đĩa.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi ZIP bắt buộc bung toàn bộ",
+       "detail": "Chưa đúng. ZIP hỗ trợ lấy bytes của thành viên theo tên mà không giải nén toàn bộ ra đĩa."
+      }
+     ],
+     "explanation": "ZIP hỗ trợ lấy bytes của thành viên theo tên mà không giải nén toàn bộ ra đĩa."
+    },
+    {
+     "question": "tar mode w và w:gz khác nhau thế nào?",
+     "options": [
+      {
+       "text": "w:gz thêm nén gzip; w tạo tar không nén",
+       "detail": "Tar đóng gói; hậu tố mode chỉ lựa chọn thêm tầng nén.",
+       "correct": true
+      },
+      {
+       "text": "w là ZIP còn w:gz là JSON",
+       "detail": "Chưa đúng. Tar đóng gói; hậu tố mode chỉ lựa chọn thêm tầng nén."
+      },
+      {
+       "text": "Cả hai luôn tạo cùng số bytes",
+       "detail": "Chưa đúng. Tar đóng gói; hậu tố mode chỉ lựa chọn thêm tầng nén."
+      }
+     ],
+     "explanation": "Tar đóng gói; hậu tố mode chỉ lựa chọn thêm tầng nén."
+    }
+   ],
    "practice": [
     {
      "prompt": "gzip và ZIP khác nhau thế nào?",
@@ -130,5 +189,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 127,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
- "subtitle": "Trung cấp · M5 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M5 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY24 · Đọc SQL bằng SQLAlchemy và pandas",
-  "subtitle": "Trung cấp · M5 · 11 phút",
+  "subtitle": "Trung cấp · M5 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY24",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Vì sao dùng WHERE score >= :limit cùng dictionary tham số?",
+     "options": [
+      {
+       "text": "Để truy vấn tự tạo bảng còn thiếu",
+       "detail": "Tham số không định nghĩa cấu trúc bảng."
+      },
+      {
+       "text": "Tách giá trị đầu vào khỏi cú pháp SQL",
+       "detail": "Bind parameter để driver truyền giá trị thay vì ghép nó vào câu SQL.",
+       "correct": true
+      },
+      {
+       "text": "Để tên bảng có thể tùy ý là tham số",
+       "detail": "Bind parameter ở đây dành cho giá trị, không thay mọi thành phần cú pháp."
+      }
+     ],
+     "explanation": "Bind parameter để driver truyền giá trị thay vì ghép nó vào câu SQL."
+    },
+    {
+     "question": "Engine và connection trong SQLAlchemy có cùng vai trò không?",
+     "options": [
+      {
+       "text": "Engine luôn là một DataFrame",
+       "detail": "Chưa đúng. Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ."
+      },
+      {
+       "text": "Không; engine quản lý kết nối, connection dùng để thực thi",
+       "detail": "Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ.",
+       "correct": true
+      },
+      {
+       "text": "Có; cả hai chỉ là chuỗi tên bảng",
+       "detail": "Chưa đúng. Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ."
+      }
+     ],
+     "explanation": "Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ."
+    },
+    {
+     "question": "Muốn liệt kê tên bảng theo API hiện hành của bài, chọn gì?",
+     "options": [
+      {
+       "text": "inspect(engine).get_table_names()",
+       "detail": "Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài.",
+       "correct": true
+      },
+      {
+       "text": "engine.table_names() trong ví dụ cũ",
+       "detail": "Chưa đúng. Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."
+      },
+      {
+       "text": "engine.fetchmany() để lấy tên mọi bảng",
+       "detail": "Chưa đúng. Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."
+      }
+     ],
+     "explanation": "Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."
+    }
+   ],
    "practice": [
     {
      "prompt": "Engine và connection là một không?",
@@ -110,5 +169,6 @@
    "reason": "sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: sqlalchemy chưa có wheel trong /pyodide/v314.0.7/"
 }

@@ -3,13 +3,13 @@
  "sort_order": 148,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU01 · GUI, CLI và chọn toolkit",
- "subtitle": "Trung cấp · M8 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M8 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU01 · GUI, CLI và chọn toolkit",
-  "subtitle": "Trung cấp · M8 · 15 phút",
+  "subtitle": "Trung cấp · M8 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU01",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hàm tính thành tiền phải viết hai công thức khác nhau cho CLI và GUI không?",
+     "options": [
+      {
+       "text": "Không; GUI tự biết mọi công thức",
+       "detail": "Bạn vẫn phải viết công thức và chuyển đổi dữ liệu nhập."
+      },
+      {
+       "text": "Không; hai giao diện có thể gọi cùng hàm nghiệp vụ",
+       "detail": "Cách nhận/hiển thị dữ liệu thay đổi; công thức không phụ thuộc widget.",
+       "correct": true
+      },
+      {
+       "text": "Có; Tkinter không gọi được hàm Python thường",
+       "detail": "Callback có thể gọi các hàm Python thông thường."
+      }
+     ],
+     "explanation": "Cách nhận/hiển thị dữ liệu thay đổi; công thức không phụ thuộc widget."
+    },
+    {
+     "question": "Một lệnh CLI và một nút GUI cùng tính thành tiền. Công thức nên đặt ở đâu?",
+     "options": [
+      {
+       "text": "Trong tên cửa sổ",
+       "detail": "Chưa đúng. Cả hai giao diện có thể gọi cùng hàm; việc nhận và hiển thị dữ liệu là phần giao diện."
+      },
+      {
+       "text": "Hàm nghiệp vụ dùng chung",
+       "detail": "Cả hai giao diện có thể gọi cùng hàm; việc nhận và hiển thị dữ liệu là phần giao diện.",
+       "correct": true
+      },
+      {
+       "text": "Viết công thức khác nhau ở mỗi widget",
+       "detail": "Chưa đúng. Cả hai giao diện có thể gọi cùng hàm; việc nhận và hiển thị dữ liệu là phần giao diện."
+      }
+     ],
+     "explanation": "Cả hai giao diện có thể gọi cùng hàm; việc nhận và hiển thị dữ liệu là phần giao diện."
+    },
+    {
+     "question": "GUI có mặc định nhanh hơn CLI cho mọi tác vụ không?",
+     "options": [
+      {
+       "text": "Không; phụ thuộc việc cần làm",
+       "detail": "Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI.",
+       "correct": true
+      },
+      {
+       "text": "Có; có nút bấm luôn nhanh hơn",
+       "detail": "Chưa đúng. Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."
+      },
+      {
+       "text": "Chỉ nhanh hơn nếu nền sáng",
+       "detail": "Chưa đúng. Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."
+      }
+     ],
+     "explanation": "Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hàm total có cần viết lại nếu thay CLI bằng GUI không?",
@@ -118,5 +177,6 @@
    "reason": "Tkinter cần hệ cửa sổ của máy"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

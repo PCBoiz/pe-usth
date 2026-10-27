@@ -3,13 +3,13 @@
  "sort_order": 24,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP06 · Array hai chiều",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP06 · Array hai chiều",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP06",
@@ -71,6 +71,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "np.array([[2,4],[6,8],[1,3]]) biểu diễn gì nếu mỗi hàng là một máy?",
+     "options": [
+      {
+       "text": "Một dãy sáu máy",
+       "detail": "Array này được xếp thành hai chiều, không phải một dãy sáu phần tử."
+      },
+      {
+       "text": "Ba máy, mỗi máy hai số đo",
+       "detail": "Đúng. Có ba danh sách con, mỗi danh sách có hai số.",
+       "correct": true
+      },
+      {
+       "text": "Hai máy, mỗi máy ba số đo",
+       "detail": "Đó là diễn giải ngược hàng và cột."
+      }
+     ],
+     "explanation": "Đúng. Có ba danh sách con, mỗi danh sách có hai số."
+    },
+    {
+     "question": "Mỗi list con là số liệu của một cửa hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[3, 5], [7, 9]]",
+       "detail": "Các list con có cùng độ dài tạo bảng hai chiều.",
+       "correct": true
+      },
+      {
+       "text": "[3, 5, 7, 9]",
+       "detail": "Hai list con giữ thành hai hàng, chưa bị làm phẳng."
+      },
+      {
+       "text": "[[3, 7], [5, 9]]",
+       "detail": "Tạo array không tự chuyển hàng thành cột."
+      }
+     ],
+     "explanation": "Các list con có cùng độ dài tạo bảng hai chiều."
+    },
+    {
+     "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[6, 8], [7, 9], [5, 6]]",
+       "detail": "Tạo bảng giữ nguyên ba hàng và hai giá trị trong mỗi hàng.",
+       "correct": true
+      },
+      {
+       "text": "[[6, 7, 5], [8, 9, 6]]",
+       "detail": "Đó là cách đổi trục, không phải dữ liệu vừa tạo."
+      },
+      {
+       "text": "[14, 16, 11]",
+       "detail": "Chưa có phép tính tổng từng hàng."
+      }
+     ],
+     "explanation": "Tạo bảng giữ nguyên ba hàng và hai giá trị trong mỗi hàng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Bảng `[[1, 2, 3], [4, 5, 6]]` có bao nhiêu hàng và cột?",
@@ -181,5 +240,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

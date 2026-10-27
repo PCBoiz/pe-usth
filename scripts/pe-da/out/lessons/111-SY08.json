@@ -3,13 +3,13 @@
  "sort_order": 111,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY08 · Đa kế thừa: method được tìm ở đâu?",
- "subtitle": "Trung cấp · M5 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY08 · Đa kế thừa: method được tìm ở đâu?",
-  "subtitle": "Trung cấp · M5 · 10 phút",
+  "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY08",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "A và B đều có label, C(B, A) không ghi đè label. Python tìm thấy nhãn ở đâu trước?",
+     "options": [
+      {
+       "text": "A vì đứng đầu bảng chữ cái",
+       "detail": "Python không chọn method theo tên chữ cái."
+      },
+      {
+       "text": "Chạy cả A và B rồi nối lại",
+       "detail": "Một lời gọi không tự gọi mọi lớp cha."
+      },
+      {
+       "text": "B",
+       "detail": "MRO của cấu trúc đơn giản này đặt B trước A.",
+       "correct": true
+      }
+     ],
+     "explanation": "MRO của cấu trúc đơn giản này đặt B trước A."
+    },
+    {
+     "question": "A và B đều có label. C(A,B) không override label sẽ tìm lớp nào trước?",
+     "options": [
+      {
+       "text": "Ngẫu nhiên giữa A và B",
+       "detail": "Chưa đúng. Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B."
+      },
+      {
+       "text": "A",
+       "detail": "Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B.",
+       "correct": true
+      },
+      {
+       "text": "B",
+       "detail": "Chưa đúng. Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B."
+      }
+     ],
+     "explanation": "Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B."
+    },
+    {
+     "question": "Để xem chính xác thứ tự tìm method của class C, dùng gì?",
+     "options": [
+      {
+       "text": "C.__mro__",
+       "detail": "__mro__ chứa các class theo thứ tự tra cứu method.",
+       "correct": true
+      },
+      {
+       "text": "C.__dict__[\"random\"]",
+       "detail": "Chưa đúng. __mro__ chứa các class theo thứ tự tra cứu method."
+      },
+      {
+       "text": "C.__name__ để suy đoán",
+       "detail": "Chưa đúng. __mro__ chứa các class theo thứ tự tra cứu method."
+      }
+     ],
+     "explanation": "__mro__ chứa các class theo thứ tự tra cứu method."
+    }
+   ],
    "practice": [
     {
      "prompt": "C(A, B) và C(B, A) có luôn cùng hành vi không?",
@@ -130,5 +189,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

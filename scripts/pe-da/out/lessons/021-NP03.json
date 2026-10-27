@@ -3,13 +3,13 @@
  "sort_order": 21,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP03 · Kiểu dữ liệu của array",
- "subtitle": "Cơ bản · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP03 · Kiểu dữ liệu của array",
-  "subtitle": "Cơ bản · M2 · 8 phút",
+  "subtitle": "Cơ bản · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP03",
@@ -75,6 +75,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "np.array([3, 4.5]) được NumPy chọn kiểu số nào trong ví dụ?",
+     "options": [
+      {
+       "text": "Mỗi phần tử có một dtype khác nhau",
+       "detail": "Array số thông thường dùng một dtype chung."
+      },
+      {
+       "text": "Số thực",
+       "detail": "Đúng. Kiểu chung cần lưu được 4.5.",
+       "correct": true
+      },
+      {
+       "text": "Số nguyên",
+       "detail": "Kiểu số nguyên sẽ không giữ phần .5 như dữ liệu ban đầu."
+      }
+     ],
+     "explanation": "Đúng. Kiểu chung cần lưu được 4.5."
+    },
+    {
+     "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'float64'",
+       "detail": "NumPy dùng kiểu số thực để giữ cả hai giá trị.",
+       "correct": true
+      },
+      {
+       "text": "'int64'",
+       "detail": "Kiểu nguyên không giữ được phần .5 ở giá thứ hai."
+      },
+      {
+       "text": "'str'",
+       "detail": "Không có chuỗi trong dãy này."
+      }
+     ],
+     "explanation": "NumPy dùng kiểu số thực để giữ cả hai giá trị."
+    },
+    {
+     "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'float64'",
+       "detail": "dtype=float chọn kiểu số thực dù literal đầu vào là số nguyên.",
+       "correct": true
+      },
+      {
+       "text": "'int64'",
+       "detail": "dtype=float đã yêu cầu kiểu thực."
+      },
+      {
+       "text": "'bool'",
+       "detail": "Điểm không được tạo thành Boolean ở đây."
+      }
+     ],
+     "explanation": "dtype=float chọn kiểu số thực dù literal đầu vào là số nguyên."
+    }
+   ],
    "practice": [
     {
      "prompt": "`6` và `6.5` khác nhau ở điểm nào về kiểu dữ liệu?",
@@ -163,5 +222,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

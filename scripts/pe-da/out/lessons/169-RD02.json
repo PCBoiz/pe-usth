@@ -3,13 +3,13 @@
  "sort_order": 169,
  "module": "M10 · Ôn API trực quan hóa và mở rộng NumPy cho phân tích",
  "title": "RD02 · Đổi trục và ghép các lô array",
- "subtitle": "Nâng cao · M10 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Nâng cao · M10 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RD02 · Đổi trục và ghép các lô array",
-  "subtitle": "Nâng cao · M10 · 8 phút",
+  "subtitle": "Nâng cao · M10 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RD02",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai array (1,3) nối bằng concatenate axis=0 có shape gì?",
+     "options": [
+      {
+       "text": "(2,3)",
+       "detail": "Đúng. Thêm hàng trên chiều có sẵn.",
+       "correct": true
+      },
+      {
+       "text": "(1,6)",
+       "detail": "Đó là nối axis=1 trong trường hợp này."
+      },
+      {
+       "text": "(2,1,3)",
+       "detail": "Đó có thể là thêm chiều mới bằng stack, không phải concatenate."
+      }
+     ],
+     "explanation": "Đúng. Thêm hàng trên chiều có sẵn."
+    },
+    {
+     "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[1, 4], [2, 5], [3, 6]]",
+       "detail": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị.",
+       "correct": true
+      },
+      {
+       "text": "[[3, 2, 1], [6, 5, 4]]",
+       "detail": "Transpose không đảo thứ tự phần tử trong từng hàng."
+      },
+      {
+       "text": "[[1, 2, 3], [4, 5, 6]]",
+       "detail": "Hai trục đã được đổi vai trò."
+      }
+     ],
+     "explanation": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị."
+    },
+    {
+     "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(4, 2)",
+       "detail": "Đổi hai trục làm số hàng mới bằng số cột cũ.",
+       "correct": true
+      },
+      {
+       "text": "[2, 4]",
+       "detail": "Đó là shape trước transpose."
+      },
+      {
+       "text": "[8]",
+       "detail": "Transpose không làm phẳng bảng."
+      }
+     ],
+     "explanation": "Đổi hai trục làm số hàng mới bằng số cột cũ."
+    }
+   ],
    "practice": [
     {
      "prompt": "sales có shape (2,3). sales.T có shape gì và hàng đầu biểu diễn gì?",
@@ -194,5 +253,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

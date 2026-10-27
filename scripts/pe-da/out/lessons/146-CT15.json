@@ -3,13 +3,13 @@
  "sort_order": 146,
  "module": "M7 · Multiprocessing và shell thực hành",
  "title": "CT15 · PW7: shell có chuyển hướng và pipe",
- "subtitle": "Nâng cao · M7 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Nâng cao · M7 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT15 · PW7: shell có chuyển hướng và pipe",
-  "subtitle": "Nâng cao · M7 · 9 phút",
+  "subtitle": "Nâng cao · M7 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT15",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Lệnh chứa đối số \"two words\" có thể tách đúng bằng str.split() trong mọi trường hợp không?",
+     "options": [
+      {
+       "text": "Không; split không hiểu dấu nháy của lệnh",
+       "detail": "shlex.split giúp phân nhóm từ có quote theo quy tắc đã chọn.",
+       "correct": true
+      },
+      {
+       "text": "Có; khoảng trắng luôn tách đối số",
+       "detail": "Khoảng trắng trong quote phải được giữ trong một đối số."
+      },
+      {
+       "text": "Không; phải dùng eval lệnh người nhập",
+       "detail": "eval không phải bộ tách lệnh và không cần để chạy chương trình con."
+      }
+     ],
+     "explanation": "shlex.split giúp phân nhóm từ có quote theo quy tắc đã chọn."
+    },
+    {
+     "question": "Trong shell thực hành, dấu > nên được xử lý ở đâu?",
+     "options": [
+      {
+       "text": "Bỏ qua vì Python không có print",
+       "detail": "Chưa đúng. Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
+      },
+      {
+       "text": "Parser/executor mở file và nối stdout",
+       "detail": "Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình.",
+       "correct": true
+      },
+      {
+       "text": "Truyền nguyên dấu > như đối số cho mọi chương trình",
+       "detail": "Chưa đúng. Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
+      }
+     ],
+     "explanation": "Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
+    },
+    {
+     "question": "Dấu < thay đổi nguồn của luồng nào?",
+     "options": [
+      {
+       "text": "stdin",
+       "detail": "Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường.",
+       "correct": true
+      },
+      {
+       "text": "stderr luôn",
+       "detail": "Chưa đúng. Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
+      },
+      {
+       "text": "Mã thoát",
+       "detail": "Chưa đúng. Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
+      }
+     ],
+     "explanation": "Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
+    }
+   ],
    "practice": [
     {
      "prompt": "Dấu > và | có vai trò gì?",
@@ -104,5 +163,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

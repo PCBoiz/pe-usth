@@ -3,13 +3,13 @@
  "sort_order": 83,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ10 · Màu sắc và khả năng đọc cho nhiều người",
- "subtitle": "Trung cấp · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M4 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ10 · Màu sắc và khả năng đọc cho nhiều người",
-  "subtitle": "Trung cấp · M4 · 15 phút",
+  "subtitle": "Trung cấp · M4 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ10",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai đường đã có màu khác nhau. Vì sao còn dùng marker khác nhau?",
+     "options": [
+      {
+       "text": "Để tự thay đổi dữ liệu",
+       "detail": "Marker chỉ đổi cách biểu diễn."
+      },
+      {
+       "text": "Để tăng số quan sát",
+       "detail": "Marker không tạo dữ liệu mới."
+      },
+      {
+       "text": "Để vẫn phân biệt khi khó nhìn màu hoặc in đen trắng",
+       "detail": "Đúng: thêm một dấu hiệu không phụ thuộc màu.",
+       "correct": true
+      }
+     ],
+     "explanation": "Khả năng đọc hình không nên phụ thuộc một kênh màu duy nhất."
+    },
+    {
+     "question": "Vì sao vẫn cần marker khi đã dùng hai màu?",
+     "options": [
+      {
+       "text": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu.",
+       "detail": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu.",
+       "correct": true
+      },
+      {
+       "text": "Để tự tăng số quan sát của chuỗi.",
+       "detail": "Marker không tạo thêm dữ liệu hay quan sát."
+      },
+      {
+       "text": "Để làm thay đổi giá trị gốc trong bảng.",
+       "detail": "Cách vẽ không làm thay giá trị nguồn."
+      }
+     ],
+     "explanation": "Để phân biệt chuỗi khi in đen trắng hoặc khi người đọc khó nhận ra chênh lệch màu."
+    },
+    {
+     "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?",
+     "options": [
+      {
+       "text": "Luôn dùng phân kỳ vì số 0 xuất hiện trong miền.",
+       "detail": "Có số 0 trong miền không tự làm thang phân kỳ trở nên phù hợp."
+      },
+      {
+       "text": "Chọn màu ngẫu nhiên cho từng số, không cần thứ tự.",
+       "detail": "Màu ngẫu nhiên không giúp đọc thứ tự tăng của các mức."
+      },
+      {
+       "text": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0.",
+       "detail": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0.",
+       "correct": true
+      }
+     ],
+     "explanation": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao vẫn cần marker khi đã dùng hai màu?",
@@ -184,5 +243,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 76,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu",
- "subtitle": "Cơ bản · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ03 · Line chart: thời gian, thứ tự và dữ liệu thiếu",
-  "subtitle": "Cơ bản · M4 · 13 phút",
+  "subtitle": "Cơ bản · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ03",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Ngày [3,1,2] đi với doanh thu [7,8,10]. Sau khi sắp ngày tăng, doanh thu phải là gì?",
+     "options": [
+      {
+       "text": "[8,10,7]",
+       "detail": "Đúng: di chuyển cả cặp ngày–doanh thu.",
+       "correct": true
+      },
+      {
+       "text": "[7,8,10]",
+       "detail": "Chỉ sắp ngày sẽ gán số tiền cho nhầm ngày."
+      },
+      {
+       "text": "[7,10,8]",
+       "detail": "Đây là sắp doanh thu, không sắp theo ngày."
+      }
+     ],
+     "explanation": "plot nối theo thứ tự đầu vào; cần sắp cả cặp dữ liệu."
+    },
+    {
+     "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?",
+     "options": [
+      {
+       "text": "Không cần làm gì vì plot tự sắp mọi ngày.",
+       "detail": "plot nối theo thứ tự đưa vào, không bảo đảm tự sắp ngày."
+      },
+      {
+       "text": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào.",
+       "detail": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ sắp ngày, giữ giá trị ở nguyên vị trí cũ.",
+       "detail": "Sắp riêng ngày sẽ ghép sai các cặp dữ liệu."
+      }
+     ],
+     "explanation": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào."
+    },
+    {
+     "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?",
+     "options": [
+      {
+       "text": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
+       "detail": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
+       "correct": true
+      },
+      {
+       "text": "Có; thiếu dữ liệu có cùng nghĩa với bán 0 cốc.",
+       "detail": "Điền 0 biến phần thiếu thành một phép đo không có thật."
+      },
+      {
+       "text": "Có; nan là cách viết khác của số 0.",
+       "detail": "NaN là giá trị thiếu, không phải tên khác của 0."
+      }
+     ],
+     "explanation": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0."
+    }
+   ],
    "practice": [
     {
      "prompt": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?",
@@ -187,5 +246,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

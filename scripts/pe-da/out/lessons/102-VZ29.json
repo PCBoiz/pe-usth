@@ -3,13 +3,13 @@
  "sort_order": 102,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ29 · Trường vector: arrow, quiver và streamplot",
- "subtitle": "Nâng cao · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Nâng cao · M4 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ29 · Trường vector: arrow, quiver và streamplot",
-  "subtitle": "Nâng cao · M4 · 15 phút",
+  "subtitle": "Nâng cao · M4 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ29",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "arrow(2,3,4,-1,length_includes_head=True) có đầu mũi tên ở đâu?",
+     "options": [
+      {
+       "text": "(2,3)",
+       "detail": "Đây là điểm đầu."
+      },
+      {
+       "text": "(6,2)",
+       "detail": "Đúng: điểm đầu cộng độ dời (4,-1).",
+       "correct": true
+      },
+      {
+       "text": "(4,-1)",
+       "detail": "Hai số cuối là độ dời, không phải điểm cuối."
+      }
+     ],
+     "explanation": "X,Y là vị trí; U,V là thành phần của vector tại vị trí đó."
+    },
+    {
+     "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?",
+     "options": [
+      {
+       "text": "Điểm (0,0), vì dx và dy bị bỏ qua.",
+       "detail": "Độ dời không bị bỏ; gốc và đầu mũi tên là hai điểm khác nhau."
+      },
+      {
+       "text": "Điểm (1,2), vì hai độ dời luôn đổi chỗ.",
+       "detail": "dx đi theo trục x và dy đi theo trục y, không đổi chỗ."
+      },
+      {
+       "text": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu.",
+       "detail": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu.",
+       "correct": true
+      }
+     ],
+     "explanation": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu."
+    },
+    {
+     "question": "U,V trong quiver là vị trí hay thành phần vector?",
+     "options": [
+      {
+       "text": "Cả bốn đều là tọa độ điểm cuối.",
+       "detail": "Quiver không mặc định nhận cả bốn mảng như các tọa độ điểm cuối."
+      },
+      {
+       "text": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector.",
+       "detail": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector.",
+       "correct": true
+      },
+      {
+       "text": "U,V là vị trí đặt vector; X,Y là thành phần.",
+       "detail": "Bạn đã đảo vai trò của X,Y với U,V."
+      }
+     ],
+     "explanation": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector."
+    }
+   ],
    "practice": [
     {
      "prompt": "arrow(0,0,2,1) trỏ đến điểm nào?",
@@ -204,5 +263,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

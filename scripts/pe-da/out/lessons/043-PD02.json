@@ -3,13 +3,13 @@
  "sort_order": 43,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD02 · DataFrame: đọc một bảng nhỏ",
- "subtitle": "Cơ bản · M3 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Cơ bản · M3 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD02 · DataFrame: đọc một bảng nhỏ",
-  "subtitle": "Cơ bản · M3 · 11 phút",
+  "subtitle": "Cơ bản · M3 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD02",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "df có 5 hàng và 2 cột. df.shape là gì?",
+     "options": [
+      {
+       "text": "10",
+       "detail": "10 là số ô, không phải shape."
+      },
+      {
+       "text": "(5, 2)",
+       "detail": "Đúng: số hàng đứng trước số cột.",
+       "correct": true
+      },
+      {
+       "text": "(2, 5)",
+       "detail": "Đây là thứ tự cột–hàng, ngược với shape."
+      }
+     ],
+     "explanation": "shape mô tả hai chiều của bảng, không phải tổng số ô."
+    },
+    {
+     "question": "shape bằng (100, 4) có nghĩa gì?",
+     "options": [
+      {
+       "text": "100 cột và 4 hàng.",
+       "detail": "Hai đại lượng đã bị đổi chỗ."
+      },
+      {
+       "text": "400 hàng và một cột.",
+       "detail": "Nhân hai kích thước cho số ô, không phải số hàng."
+      },
+      {
+       "text": "Bảng có 100 hàng và 4 cột.",
+       "detail": "Bảng có 100 hàng và 4 cột.",
+       "correct": true
+      }
+     ],
+     "explanation": "Bảng có 100 hàng và 4 cột."
+    },
+    {
+     "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?",
+     "options": [
+      {
+       "text": "Trả về bảng đã xóa các ô thiếu.",
+       "detail": "info báo thông tin; nó không làm sạch hoặc trả bảng đã xóa ô thiếu."
+      },
+      {
+       "text": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print.",
+       "detail": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print.",
+       "correct": true
+      },
+      {
+       "text": "Chỉ in các giá trị của hàng đầu.",
+       "detail": "head mới thường được dùng để nhìn vài hàng đầu."
+      }
+     ],
+     "explanation": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print."
+    }
+   ],
    "practice": [
     {
      "prompt": "shape bằng (100, 4) có nghĩa gì?",
@@ -207,5 +266,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

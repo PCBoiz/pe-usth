@@ -3,13 +3,13 @@
  "sort_order": 138,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT07 · Chạy lệnh, tách output và mã thoát",
- "subtitle": "Nâng cao · M6 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M6 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT07 · Chạy lệnh, tách output và mã thoát",
-  "subtitle": "Nâng cao · M6 · 13 phút",
+  "subtitle": "Nâng cao · M6 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT07",
@@ -69,6 +69,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "subprocess.run(..., capture_output=True, text=True) nhận stdout có kiểu gì?",
+     "options": [
+      {
+       "text": "bytes trong mọi trường hợp",
+       "detail": "Không đặt text/encoding mới thường nhận bytes."
+      },
+      {
+       "text": "Luôn là mã thoát số nguyên",
+       "detail": "returncode là mã thoát; stdout là nội dung được in."
+      },
+      {
+       "text": "str",
+       "detail": "text=True yêu cầu giải mã luồng thành chuỗi.",
+       "correct": true
+      }
+     ],
+     "explanation": "text=True yêu cầu giải mã luồng thành chuỗi."
+    },
+    {
+     "question": "subprocess.run trả về sau thời điểm nào trong cách dùng thông thường?",
+     "options": [
+      {
+       "text": "Chỉ sau khi cha kết thúc",
+       "detail": "Chưa đúng. run chờ con và trả CompletedProcess chứa output cùng mã thoát."
+      },
+      {
+       "text": "Sau khi process con kết thúc",
+       "detail": "run chờ con và trả CompletedProcess chứa output cùng mã thoát.",
+       "correct": true
+      },
+      {
+       "text": "Ngay trước khi tạo process con",
+       "detail": "Chưa đúng. run chờ con và trả CompletedProcess chứa output cùng mã thoát."
+      }
+     ],
+     "explanation": "run chờ con và trả CompletedProcess chứa output cùng mã thoát."
+    },
+    {
+     "question": "Process in \"0\" nhưng thoát mã 3. returncode là gì?",
+     "options": [
+      {
+       "text": "3",
+       "detail": "Nội dung in ra và trạng thái kết thúc nằm ở các trường khác nhau.",
+       "correct": true
+      },
+      {
+       "text": "Chuỗi \"0\"",
+       "detail": "Chưa đúng. Nội dung in ra và trạng thái kết thúc nằm ở các trường khác nhau."
+      },
+      {
+       "text": "0 vì stdout có số 0",
+       "detail": "Chưa đúng. Nội dung in ra và trạng thái kết thúc nằm ở các trường khác nhau."
+      }
+     ],
+     "explanation": "Nội dung in ra và trạng thái kết thúc nằm ở các trường khác nhau."
+    }
+   ],
    "practice": [
     {
      "prompt": "Chương trình in 42 và thoát thành công: stdout và returncode là gì?",
@@ -124,5 +183,6 @@
    "reason": "WASM không gọi được chương trình ngoài"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
 }

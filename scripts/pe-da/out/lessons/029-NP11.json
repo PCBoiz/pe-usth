@@ -3,13 +3,13 @@
  "sort_order": 29,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP11 · Tổng từng cột: axis=0",
- "subtitle": "Cơ bản · M2 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M2 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP11 · Tổng từng cột: axis=0",
-  "subtitle": "Cơ bản · M2 · 7 phút",
+  "subtitle": "Cơ bản · M2 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP11",
@@ -71,6 +71,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bảng có 4 hàng trạm và 3 cột thời điểm. sum(axis=0) có mấy kết quả?",
+     "options": [
+      {
+       "text": "4",
+       "detail": "Bốn kết quả là tổng mỗi hàng với axis=1."
+      },
+      {
+       "text": "1",
+       "detail": "Một kết quả là sum() không ghi axis."
+      },
+      {
+       "text": "3",
+       "detail": "Đúng. Mỗi cột thời điểm có một tổng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Mỗi cột thời điểm có một tổng."
+    },
+    {
+     "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[5, 7, 9]",
+       "detail": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột.",
+       "correct": true
+      },
+      {
+       "text": "[6, 15]",
+       "detail": "Đó là tổng theo hàng."
+      },
+      {
+       "text": "21",
+       "detail": "Đó là tổng toàn bảng."
+      }
+     ],
+     "explanation": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột."
+    },
+    {
+     "question": "Bảng bốn cửa hàng nhưng chỉ hai ngày. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "(2,)",
+       "detail": "Hai cột còn lại tạo hai tổng.",
+       "correct": true
+      },
+      {
+       "text": "[4]",
+       "detail": "4 là số hàng đã được gộp."
+      },
+      {
+       "text": "[4, 2]",
+       "detail": "Đó là shape của bảng gốc."
+      }
+     ],
+     "explanation": "Hai cột còn lại tạo hai tổng."
+    }
+   ],
    "practice": [
     {
      "prompt": "Cột gồm hai số 1 và 4 có tổng bao nhiêu?",
@@ -169,5 +228,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

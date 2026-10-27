@@ -3,13 +3,13 @@
  "sort_order": 92,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ19 · Seaborn: facet và đường hồi quy mô tả",
- "subtitle": "Nâng cao · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ19 · Seaborn: facet và đường hồi quy mô tả",
-  "subtitle": "Nâng cao · M4 · 13 phút",
+  "subtitle": "Nâng cao · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ19",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "sns.relplot và sns.scatterplot khác nhau về cấp đối tượng thế nào?",
+     "options": [
+      {
+       "text": "Cả hai đều bắt buộc nhận ax",
+       "detail": "relplot không dùng ax như hàm cấp Axes."
+      },
+      {
+       "text": "relplot chỉ tính số, không tạo hình",
+       "detail": "relplot là giao diện vẽ ở cấp Figure."
+      },
+      {
+       "text": "relplot tạo FacetGrid/Figure; scatterplot vẽ vào Axes",
+       "detail": "Đúng: relplot tự quản lý các ô facet.",
+       "correct": true
+      }
+     ],
+     "explanation": "Biết cấp Figure/Axes giúp tránh tạo hai hình rồi vẽ nhầm."
+    },
+    {
+     "question": "Vì sao không truyền ax vào relplot như scatterplot?",
+     "options": [
+      {
+       "text": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax.",
+       "detail": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax.",
+       "correct": true
+      },
+      {
+       "text": "Vì relplot không thể vẽ nhiều nhóm.",
+       "detail": "relplot có thể chia nhiều nhóm và tự tạo FacetGrid."
+      },
+      {
+       "text": "Vì scatterplot tạo Figure còn relplot chỉ sửa Axes hiện có.",
+       "detail": "Vai trò cấp Figure và cấp Axes đã bị đảo."
+      }
+     ],
+     "explanation": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax."
+    },
+    {
+     "question": "Muốn xem riêng từng cửa hàng, thêm tham số gì?",
+     "options": [
+      {
+       "text": "legend=\"store\" để tự tạo nhiều ô.",
+       "detail": "Legend giải thích ký hiệu, không tự tạo ô facet."
+      },
+      {
+       "text": "xlabel=\"store\" để tự chia cửa hàng.",
+       "detail": "Nhãn x không phân chia Figure thành nhiều ô."
+      },
+      {
+       "text": "col=\"store\" hoặc row=\"store\" tùy bố trí và số nhóm.",
+       "detail": "col=\"store\" hoặc row=\"store\" tùy bố trí và số nhóm.",
+       "correct": true
+      }
+     ],
+     "explanation": "col=\"store\" hoặc row=\"store\" tùy bố trí và số nhóm."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao không truyền ax vào relplot như scatterplot?",
@@ -111,5 +170,6 @@
    "reason": "seaborn chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
 }

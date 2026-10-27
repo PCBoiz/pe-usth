@@ -3,13 +3,13 @@
  "sort_order": 42,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD01 · Series: một cột dữ liệu có nhãn",
- "subtitle": "Cơ bản · M3 · 7 phút",
- "estimated_minutes": 7,
+ "subtitle": "Cơ bản · M3 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD01 · Series: một cột dữ liệu có nhãn",
-  "subtitle": "Cơ bản · M3 · 7 phút",
+  "subtitle": "Cơ bản · M3 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD01",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "s = pd.Series([4, 9], index=[\"AM\", \"PM\"]). s.loc[\"PM\"] trả gì?",
+     "options": [
+      {
+       "text": "1",
+       "detail": "1 là vị trí của PM, không phải giá trị cần lấy."
+      },
+      {
+       "text": "4",
+       "detail": "4 đi cùng nhãn AM, không phải PM."
+      },
+      {
+       "text": "9",
+       "detail": "Đúng: nhãn PM đi cùng giá trị 9.",
+       "correct": true
+      }
+     ],
+     "explanation": "loc dùng nhãn, không dùng vị trí số của phần tử."
+    },
+    {
+     "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?",
+     "options": [
+      {
+       "text": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
+       "detail": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
+       "correct": true
+      },
+      {
+       "text": "Nhãn 0.",
+       "detail": "Nhãn 0 thuộc phần tử đầu, có giá trị 12."
+      },
+      {
+       "text": "Nhãn 15.",
+       "detail": "15 là số cốc, không phải nhãn mặc định."
+      }
+     ],
+     "explanation": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0."
+    },
+    {
+     "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.",
+     "options": [
+      {
+       "text": "cups.loc['Tue'], nhận 15.",
+       "detail": "Tue là thứ Ba; đề đang hỏi thứ Tư."
+      },
+      {
+       "text": "cups.loc[2], vì Wed là ngày thứ ba.",
+       "detail": "Series đã dùng nhãn ngày; số 2 không phải một nhãn trong Series đó."
+      },
+      {
+       "text": "Dùng cups.loc['Wed'], nhận 9.",
+       "detail": "Dùng cups.loc['Wed'], nhận 9.",
+       "correct": true
+      }
+     ],
+     "explanation": "Dùng cups.loc['Wed'], nhận 9."
+    }
+   ],
    "practice": [
     {
      "prompt": "Trong ví dụ đầu, giá trị 15 có nhãn nào?",
@@ -163,5 +222,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

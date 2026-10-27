@@ -3,13 +3,13 @@
  "sort_order": 56,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD15 · Transform: giữ từng hàng và thêm số của nhóm",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD15 · Transform: giữ từng hàng và thêm số của nhóm",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD15",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "store=[A,A,B], amount=[5,15,8]. transform(\"sum\") cho gì?",
+     "options": [
+      {
+       "text": "[20,20,8]",
+       "detail": "Đúng: mỗi hàng nhận tổng nhóm của nó.",
+       "correct": true
+      },
+      {
+       "text": "[20,8]",
+       "detail": "Đây là kết quả tổng hợp một hàng mỗi nhóm."
+      },
+      {
+       "text": "[28,28,28]",
+       "detail": "28 là tổng cả bảng, không phải từng nhóm."
+      }
+     ],
+     "explanation": "transform giữ số hàng và index của bảng giao dịch."
+    },
+    {
+     "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?",
+     "options": [
+      {
+       "text": "Vì transform luôn sắp các hàng theo giá trị giảm dần.",
+       "detail": "Giữ index không đồng nghĩa tự sắp giảm dần giá trị."
+      },
+      {
+       "text": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào.",
+       "detail": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào.",
+       "correct": true
+      },
+      {
+       "text": "Vì transform chỉ trả một hàng cho mỗi nhóm.",
+       "detail": "Một hàng mỗi nhóm là kết quả tổng hợp, không phải transform."
+      }
+     ],
+     "explanation": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào."
+    },
+    {
+     "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?",
+     "options": [
+      {
+       "text": "Sắp xếp theo ngày trong nhóm trước.",
+       "detail": "Sắp xếp theo ngày trong nhóm trước.",
+       "correct": true
+      },
+      {
+       "text": "Không cần sắp; cumcount tự nhận ra thứ tự ngày.",
+       "detail": "cumcount không tự sắp theo cột ngày."
+      },
+      {
+       "text": "Bỏ cột ngày vì cumcount tự lấy lịch máy.",
+       "detail": "Ngày trên máy không xác định thứ tự các đơn trong dữ liệu."
+      }
+     ],
+     "explanation": "Sắp xếp theo ngày trong nhóm trước."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?",
@@ -163,5 +222,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

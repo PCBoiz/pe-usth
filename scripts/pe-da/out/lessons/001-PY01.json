@@ -3,13 +3,13 @@
  "sort_order": 1,
  "module": "M1 · Python nền tảng",
  "title": "PY01 · Chạy một phép tính và đọc kết quả",
- "subtitle": "Cơ bản · M1 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY01 · Chạy một phép tính và đọc kết quả",
-  "subtitle": "Cơ bản · M1 · 12 phút",
+  "subtitle": "Cơ bản · M1 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY01",
@@ -77,6 +77,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Chạy morning = 8; afternoon = 11; print(morning + afternoon) sẽ in gì?",
+     "options": [
+      {
+       "text": "19",
+       "detail": "Đúng. Python cộng hai giá trị 8 và 11 rồi print kết quả.",
+       "correct": true
+      },
+      {
+       "text": "811",
+       "detail": "Đó là ghép chuỗi; hai giá trị ở đây đều là số."
+      },
+      {
+       "text": "morning + afternoon",
+       "detail": "print nhận biểu thức, nên hiển thị kết quả chứ không hiển thị tên biến."
+      }
+     ],
+     "explanation": "Đúng. Python cộng hai giá trị 8 và 11 rồi print kết quả."
+    },
+    {
+     "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "17",
+       "detail": "10 + 7 tính tổng của hai buổi.",
+       "correct": true
+      },
+      {
+       "text": "107",
+       "detail": "Hai số nguyên được cộng; đây không phải ghép chữ."
+      },
+      {
+       "text": "3",
+       "detail": "Đó là hiệu, không phải tổng."
+      }
+     ],
+     "explanation": "10 + 7 tính tổng của hai buổi."
+    },
+    {
+     "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "28",
+       "detail": "Mỗi lần đọc cups nhận 14, nên hai lần đọc cộng lại là 28.",
+       "correct": true
+      },
+      {
+       "text": "14",
+       "detail": "Biểu thức dùng cups hai lần."
+      },
+      {
+       "text": "'cupscups'",
+       "detail": "cups là tên biến giữ số, không phải chuỗi chữ."
+      }
+     ],
+     "explanation": "Mỗi lần đọc cups nhận 14, nên hai lần đọc cộng lại là 28."
+    }
+   ],
    "practice": [
     {
      "prompt": "Đoạn đầu tính gì và hiển thị bao nhiêu?",
@@ -114,5 +173,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

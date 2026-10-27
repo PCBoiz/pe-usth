@@ -3,13 +3,13 @@
  "sort_order": 61,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD20 · Pivot table và bảng đếm chéo",
- "subtitle": "Trung cấp · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD20 · Pivot table và bảng đếm chéo",
-  "subtitle": "Trung cấp · M3 · 8 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD20",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "A-Jan có 5 và 15. pivot_table mặc định dùng mean trả gì?",
+     "options": [
+      {
+       "text": "15",
+       "detail": "Mặc định không lấy bản cuối."
+      },
+      {
+       "text": "10",
+       "detail": "Đúng: mean của 5 và 15 bằng 10.",
+       "correct": true
+      },
+      {
+       "text": "20",
+       "detail": "Muốn 20 phải ghi aggfunc=\"sum\"."
+      }
+     ],
+     "explanation": "Tên báo cáo tổng doanh thu cần đi cùng phép tổng, không dựa vào mặc định mean."
+    },
+    {
+     "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?",
+     "options": [
+      {
+       "text": "fill_value=\"sum\".",
+       "detail": "fill_value quyết định giá trị điền cho ô vắng, không chọn phép cộng."
+      },
+      {
+       "text": "normalize=\"sum\".",
+       "detail": "normalize dùng để chuẩn hóa tỷ lệ, không phải tham số chọn phép cộng của pivot_table."
+      },
+      {
+       "text": "aggfunc=\"sum\".",
+       "detail": "aggfunc=\"sum\".",
+       "correct": true
+      }
+     ],
+     "explanation": "aggfunc=\"sum\"."
+    },
+    {
+     "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?",
+     "options": [
+      {
+       "text": "Tổng số đơn trong cột yes.",
+       "detail": "Chuẩn hóa theo cột phải dùng mẫu số của cột, không phải index."
+      },
+      {
+       "text": "Tổng số đơn trong hàng web.",
+       "detail": "Tổng số đơn trong hàng web.",
+       "correct": true
+      },
+      {
+       "text": "Tổng số đơn của toàn bảng.",
+       "detail": "Mẫu số toàn bảng thuộc cách chuẩn hóa khác."
+      }
+     ],
+     "explanation": "Tổng số đơn trong hàng web."
+    }
+   ],
    "practice": [
     {
      "prompt": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?",
@@ -161,5 +220,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

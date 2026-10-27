@@ -3,13 +3,13 @@
  "sort_order": 79,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ06 · Histogram: khoảng chia, tần số và mật độ",
- "subtitle": "Cơ bản · M4 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M4 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ06 · Histogram: khoảng chia, tần số và mật độ",
-  "subtitle": "Cơ bản · M4 · 12 phút",
+  "subtitle": "Cơ bản · M4 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ06",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "bins=[0,3,6], giá trị 3 thuộc khoảng nào?",
+     "options": [
+      {
+       "text": "[3,6]",
+       "detail": "Đúng: khoảng đầu bỏ biên phải 3, khoảng cuối nhận cả 6.",
+       "correct": true
+      },
+      {
+       "text": "[0,3)",
+       "detail": "Khoảng [0,3) không nhận 3."
+      },
+      {
+       "text": "Cả hai",
+       "detail": "Một quan sát không được đếm hai lần vào hai khoảng kề nhau."
+      }
+     ],
+     "explanation": "Histogram phải có quy tắc nhận biên nhất quán."
+    },
+    {
+     "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?",
+     "options": [
+      {
+       "text": "[6,9], tức cột thứ ba.",
+       "detail": "4 chưa đến mép trái 6 của khoảng cuối."
+      },
+      {
+       "text": "[3,6), tức cột thứ hai.",
+       "detail": "[3,6), tức cột thứ hai.",
+       "correct": true
+      },
+      {
+       "text": "[0,3), tức cột thứ nhất.",
+       "detail": "4 đã vượt mép phải 3 của khoảng đầu."
+      }
+     ],
+     "explanation": "[3,6), tức cột thứ hai."
+    },
+    {
+     "question": "Histogram và bar chart khác nhau thế nào?",
+     "options": [
+      {
+       "text": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
+       "detail": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
+       "correct": true
+      },
+      {
+       "text": "Cả hai đều tự chia các tên nhóm thành khoảng số.",
+       "detail": "Nhóm danh mục không cần được chia thành bin số."
+      },
+      {
+       "text": "Bar chart chỉ dùng cho số liên tục, histogram chỉ dùng cho nhãn chữ.",
+       "detail": "Hai vai trò của bar chart và histogram đã bị đảo."
+      }
+     ],
+     "explanation": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống."
+    }
+   ],
    "practice": [
     {
      "prompt": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?",
@@ -178,5 +237,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

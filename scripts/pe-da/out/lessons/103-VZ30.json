@@ -3,13 +3,13 @@
  "sort_order": 103,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ30 · Tương tác với Matplotlib và nối sang GUI",
- "subtitle": "Nâng cao · M4 · 16 phút",
- "estimated_minutes": 16,
- "xp_reward": 10,
+ "subtitle": "Nâng cao · M4 · 19 phút",
+ "estimated_minutes": 19,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ30 · Tương tác với Matplotlib và nối sang GUI",
-  "subtitle": "Nâng cao · M4 · 16 phút",
+  "subtitle": "Nâng cao · M4 · 19 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ30",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bấm ngoài Axes thì xdata có thể là gì?",
+     "options": [
+      {
+       "text": "None",
+       "detail": "Đúng: cần kiểm tra trước khi dùng như một số.",
+       "correct": true
+      },
+      {
+       "text": "Luôn bằng 0",
+       "detail": "Khoảng trống không phải một quan sát ở x=0."
+      },
+      {
+       "text": "Điểm gần nhất tự được chọn",
+       "detail": "Không có quy tắc mặc định đó trong callback đang học."
+      }
+     ],
+     "explanation": "Một sự kiện chuột không tự tương ứng với một bản ghi dữ liệu."
+    },
+    {
+     "question": "Bấm ngoài Axes có nên lấy xdata làm số để tính ngay không?",
+     "options": [
+      {
+       "text": "Có; bấm ngoài Axes luôn lấy điểm gần nhất.",
+       "detail": "Cần tự chọn chính sách nếu muốn tìm điểm gần nhất; sự kiện không làm thay bước đó."
+      },
+      {
+       "text": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None.",
+       "detail": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None.",
+       "correct": true
+      },
+      {
+       "text": "Có; None tự được đổi thành 0 trong mọi phép tính.",
+       "detail": "None không tự trở thành số 0 an toàn trong mọi phép tính."
+      }
+     ],
+     "explanation": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None."
+    },
+    {
+     "question": "Agg có tạo một cửa sổ để bấm chuột không?",
+     "options": [
+      {
+       "text": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show().",
+       "detail": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show().",
+       "correct": true
+      },
+      {
+       "text": "Có; Agg tự tạo một cửa sổ Tkinter.",
+       "detail": "Agg không tự mở một cửa sổ Tkinter để nhận chuột."
+      },
+      {
+       "text": "Có; chỉ cần import pyplot là backend nào cũng nhận bấm chuột.",
+       "detail": "Khả năng nhận sự kiện thật phụ thuộc backend tương tác phù hợp."
+      }
+     ],
+     "explanation": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show()."
+    }
+   ],
    "practice": [
     {
      "prompt": "Bấm ngoài Axes có nên lấy xdata làm số để tính ngay không?",
@@ -201,5 +260,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 142,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT11 · Kế thừa Thread và truyền trạng thái",
- "subtitle": "Nâng cao · M6 · 12 phút",
- "estimated_minutes": 12,
- "xp_reward": 8,
+ "subtitle": "Nâng cao · M6 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT11 · Kế thừa Thread và truyền trạng thái",
-  "subtitle": "Nâng cao · M6 · 12 phút",
+  "subtitle": "Nâng cao · M6 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT11",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Subclass Thread định nghĩa __init__ nhưng bỏ super().__init__() thì có ổn không?",
+     "options": [
+      {
+       "text": "Có nếu gọi run trực tiếp",
+       "detail": "Gọi trực tiếp sẽ chạy như method thường; không kiểm được cách tạo thread đúng."
+      },
+      {
+       "text": "Không; trạng thái Thread cần được khởi tạo",
+       "detail": "Các method start/join dựa vào phần khởi tạo của Thread.",
+       "correct": true
+      },
+      {
+       "text": "Có; chỉ cần có method run",
+       "detail": "run không thay việc chuẩn bị trạng thái của lớp cha."
+      }
+     ],
+     "explanation": "Các method start/join dựa vào phần khởi tạo của Thread."
+    },
+    {
+     "question": "Trong subclass Thread, công việc nền thường được định nghĩa ở đâu?",
+     "options": [
+      {
+       "text": "Tên biến result bên ngoài class",
+       "detail": "Chưa đúng. Thread.start điều phối việc gọi run trên luồng mới."
+      },
+      {
+       "text": "run",
+       "detail": "Thread.start điều phối việc gọi run trên luồng mới.",
+       "correct": true
+      },
+      {
+       "text": "__str__",
+       "detail": "Chưa đúng. Thread.start điều phối việc gọi run trên luồng mới."
+      }
+     ],
+     "explanation": "Thread.start điều phối việc gọi run trên luồng mới."
+    },
+    {
+     "question": "Vì sao __init__ của worker gọi super().__init__()?",
+     "options": [
+      {
+       "text": "Khởi tạo phần trạng thái Thread của object",
+       "detail": "Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread.",
+       "correct": true
+      },
+      {
+       "text": "Để chạy công việc nền ngay lập tức",
+       "detail": "Chưa đúng. Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread."
+      },
+      {
+       "text": "Để tạo một heap riêng cho mỗi thread",
+       "detail": "Chưa đúng. Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread."
+      }
+     ],
+     "explanation": "Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vì sao gọi super().__init__ trong subclass Thread?",
@@ -163,5 +222,6 @@
    "reason": "bản Pyodide này không bật thread thật"
   }
  ],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

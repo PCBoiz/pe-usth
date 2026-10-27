@@ -3,13 +3,13 @@
  "sort_order": 100,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ27 · Cơ cấu của tổng, vùng tô và đa giác",
- "subtitle": "Trung cấp · M4 · 13 phút",
- "estimated_minutes": 13,
- "xp_reward": 8,
+ "subtitle": "Trung cấp · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ27 · Cơ cấu của tổng, vùng tô và đa giác",
-  "subtitle": "Trung cấp · M4 · 13 phút",
+  "subtitle": "Trung cấp · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ27",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Hai tỷ lệ lấy từ hai tập người khác nhau có ghép thành một pie không?",
+     "options": [
+      {
+       "text": "Không, cần các phần cùng một tổng và không chồng lặp",
+       "detail": "Đúng: các lát phải có chung mẫu số.",
+       "correct": true
+      },
+      {
+       "text": "Có, chỉ cần cùng đơn vị %",
+       "detail": "Cùng ký hiệu phần trăm chưa chứng minh cùng mẫu số."
+      },
+      {
+       "text": "Có nếu dùng hai màu khác",
+       "detail": "Màu không sửa được định nghĩa phần của tổng."
+      }
+     ],
+     "explanation": "Cơ cấu có ý nghĩa khi các phần cộng về cùng một tổng dương."
+    },
+    {
+     "question": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?",
+     "options": [
+      {
+       "text": "Có nếu mỗi phần dùng một màu riêng.",
+       "detail": "Màu khác nhau không sửa được vấn đề mẫu số khác nhau."
+      },
+      {
+       "text": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại.",
+       "detail": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại.",
+       "correct": true
+      },
+      {
+       "text": "Có; mọi tỷ lệ phần trăm đều cộng vào một pie được.",
+       "detail": "Tỷ lệ từ các mẫu số khác nhau không tự tạo thành một cơ cấu hợp lệ."
+      }
+     ],
+     "explanation": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại."
+    },
+    {
+     "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?",
+     "options": [
+      {
+       "text": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",
+       "detail": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",
+       "correct": true
+      },
+      {
+       "text": "Có; fill tự tích phân dữ liệu và báo tổng.",
+       "detail": "Hàm vẽ không tự xác định ý nghĩa thống kê hay tích phân bạn muốn."
+      },
+      {
+       "text": "Có; fill tự tính đường tích lũy từ mọi tọa độ.",
+       "detail": "Dữ liệu tích lũy phải được tính nếu đó là mục tiêu cần biểu diễn."
+      }
+     ],
+     "explanation": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định."
+    }
+   ],
    "practice": [
     {
      "prompt": "Hai tỷ lệ lấy từ hai tập khách khác nhau có nên ghép pie không?",
@@ -185,5 +244,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 36,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP18 · Broadcasting từ ví dụ giá bán",
- "subtitle": "Trung cấp · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP18 · Broadcasting từ ví dụ giá bán",
-  "subtitle": "Trung cấp · M2 · 8 phút",
+  "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP18",
@@ -79,6 +79,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "qty có shape (3,2), mỗi cột là một sản phẩm. Dãy giá phù hợp có shape nào?",
+     "options": [
+      {
+       "text": "(3,3)",
+       "detail": "Chiều cuối 3 không khớp với 2 trong ví dụ này."
+      },
+      {
+       "text": "(2,)",
+       "detail": "Đúng. Hai giá khớp chiều cuối gồm hai sản phẩm.",
+       "correct": true
+      },
+      {
+       "text": "(3,)",
+       "detail": "Ba là số đơn hàng, không phải số sản phẩm cần áp giá theo cột."
+      }
+     ],
+     "explanation": "Đúng. Hai giá khớp chiều cuối gồm hai sản phẩm."
+    },
+    {
+     "question": "Hai cửa hàng cùng dùng bảng giá. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[20, 20], [10, 60]]",
+       "detail": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột.",
+       "correct": true
+      },
+      {
+       "text": "[[20, 10], [20, 60]]",
+       "detail": "Giá 10 và 20 gắn với cột, không lần lượt với hàng."
+      },
+      {
+       "text": "[40, 70]",
+       "detail": "Đây là tiền từng loại, chưa cộng tổng đơn."
+      }
+     ],
+     "explanation": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột."
+    },
+    {
+     "question": "Ba đơn hàng có hai loại sản phẩm. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[[10, 0], [5, 30], [20, 10]]",
+       "detail": "Dãy shape (2,) được áp dụng lên từng hàng của bảng có hai cột.",
+       "correct": true
+      },
+      {
+       "text": "[[10, 0], [10, 30], [20, 5]]",
+       "detail": "Mỗi cột phải luôn dùng cùng giá của sản phẩm đó."
+      },
+      {
+       "text": "[10, 35, 30]",
+       "detail": "Đó là các tổng hàng, chưa phải kết quả nhân từng ô."
+      }
+     ],
+     "explanation": "Dãy shape (2,) được áp dụng lên từng hàng của bảng có hai cột."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một đơn có số lượng `[2, 1]`, bảng giá là `[10, 20]`. Tiền của từng loại sản phẩm là bao nhiêu?",
@@ -205,5 +264,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

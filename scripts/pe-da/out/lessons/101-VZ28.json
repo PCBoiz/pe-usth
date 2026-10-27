@@ -3,13 +3,13 @@
  "sort_order": 101,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ28 · Lưới 2D: pcolor, pcolormesh, contour và contourf",
- "subtitle": "Nâng cao · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Nâng cao · M4 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ28 · Lưới 2D: pcolor, pcolormesh, contour và contourf",
-  "subtitle": "Nâng cao · M4 · 15 phút",
+  "subtitle": "Nâng cao · M4 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ28",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Z shape=(2,3), shading=\"flat\" cần bao nhiêu biên x,y?",
+     "options": [
+      {
+       "text": "3 biên x và 2 biên y",
+       "detail": "Đây là số ô, chưa đủ xác định hai mép của mỗi ô."
+      },
+      {
+       "text": "6 biên cho cả hai",
+       "detail": "Tổng số ô không xác định số biên mỗi trục."
+      },
+      {
+       "text": "4 biên x và 3 biên y",
+       "detail": "Đúng: số biên bằng số cột/hàng cộng 1.",
+       "correct": true
+      }
+     ],
+     "explanation": "Mỗi ô lưới nằm giữa hai biên liên tiếp theo từng chiều."
+    },
+    {
+     "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?",
+     "options": [
+      {
+       "text": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
+       "detail": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
+       "correct": true
+      },
+      {
+       "text": "Hai biên x và hai biên y.",
+       "detail": "Hai biên chỉ giới hạn một ô, không tạo được hai ô trên chiều đó."
+      },
+      {
+       "text": "Bốn biên x và bốn biên y.",
+       "detail": "Bốn biên sẽ tạo ba ô trên một chiều, không phải hai."
+      }
+     ],
+     "explanation": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều."
+    },
+    {
+     "question": "contour khác contourf thế nào?",
+     "options": [
+      {
+       "text": "contour tô vùng, contourf chỉ vẽ đường.",
+       "detail": "Vai trò đường và vùng tô đã bị đảo."
+      },
+      {
+       "text": "Cả hai luôn tạo cùng một hình không có khác biệt.",
+       "detail": "Hai hàm có cách biểu diễn khác nhau dù có thể dùng cùng các mức."
+      },
+      {
+       "text": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
+       "detail": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
+       "correct": true
+      }
+     ],
+     "explanation": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức."
+    }
+   ],
    "practice": [
     {
      "prompt": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?",
@@ -222,5 +281,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

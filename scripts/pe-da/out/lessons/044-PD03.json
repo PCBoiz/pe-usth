@@ -3,13 +3,13 @@
  "sort_order": 44,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD03 · Chọn hàng và cột bằng loc, iloc",
- "subtitle": "Cơ bản · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Cơ bản · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD03 · Chọn hàng và cột bằng loc, iloc",
-  "subtitle": "Cơ bản · M3 · 8 phút",
+  "subtitle": "Cơ bản · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD03",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Series có nhãn [20, 10], giá trị [7, 9]. s.iloc[0] trả gì?",
+     "options": [
+      {
+       "text": "7",
+       "detail": "Đúng: iloc[0] lấy vị trí đầu tiên, mang nhãn 20.",
+       "correct": true
+      },
+      {
+       "text": "9",
+       "detail": "9 nằm ở vị trí 1."
+      },
+      {
+       "text": "20",
+       "detail": "20 là nhãn, không phải giá trị."
+      }
+     ],
+     "explanation": "iloc đếm vị trí từ 0, dù nhãn hàng là số."
+    },
+    {
+     "question": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?",
+     "options": [
+      {
+       "text": "Nhãn 20.",
+       "detail": "Nhãn 20 thuộc hàng thứ hai."
+      },
+      {
+       "text": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên.",
+       "detail": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên.",
+       "correct": true
+      },
+      {
+       "text": "Nhãn 0.",
+       "detail": "Vị trí 0 không có nghĩa nhãn hàng phải là 0."
+      }
+     ],
+     "explanation": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên."
+    },
+    {
+     "question": "loc['C01':'C02'] có lấy C02 không?",
+     "options": [
+      {
+       "text": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối.",
+       "detail": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối.",
+       "correct": true
+      },
+      {
+       "text": "Không; loc luôn bỏ nhãn cuối như iloc.",
+       "detail": "Quy tắc bỏ điểm cuối của lát cắt vị trí không áp nguyên cho loc."
+      },
+      {
+       "text": "Chỉ khi C02 là hàng đầu tiên.",
+       "detail": "Việc lấy nhãn cuối không phụ thuộc nó có là hàng đầu hay không."
+      }
+     ],
+     "explanation": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối."
+    }
+   ],
    "practice": [
     {
      "prompt": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?",
@@ -167,5 +226,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

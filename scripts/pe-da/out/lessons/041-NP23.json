@@ -3,13 +3,13 @@
  "sort_order": 41,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
- "subtitle": "Trung cấp · M2 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Trung cấp · M2 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP23 · Bài tổng hợp: điểm kiểm tra",
-  "subtitle": "Trung cấp · M2 · 8 phút",
+  "subtitle": "Trung cấp · M2 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP23",
@@ -81,6 +81,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Bảng có 3 hàng nhóm và 2 cột khoản chi. Muốn biết chi của từng nhóm, chọn gì?",
+     "options": [
+      {
+       "text": "sum(axis=0)",
+       "detail": "Đó là tổng từng loại khoản chi của cả ba nhóm."
+      },
+      {
+       "text": "sum()",
+       "detail": "Đó là một tổng chung, mất riêng từng nhóm."
+      },
+      {
+       "text": "sum(axis=1)",
+       "detail": "Đúng. Gộp hai khoản chi trong từng hàng.",
+       "correct": true
+      }
+     ],
+     "explanation": "Đúng. Gộp hai khoản chi trong từng hàng."
+    },
+    {
+     "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[11, 14, 14]",
+       "detail": "axis=1 gộp các cột của từng học viên.",
+       "correct": true
+      },
+      {
+       "text": "[17, 22]",
+       "detail": "Đó là tổng cho từng bài kiểm tra."
+      },
+      {
+       "text": "39",
+       "detail": "Đó là tổng toàn bộ bảng."
+      }
+     ],
+     "explanation": "axis=1 gộp các cột của từng học viên."
+    },
+    {
+     "question": "Báo cáo cần tổng điểm của ba học viên ở mỗi bài. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[17, 22]",
+       "detail": "axis=0 gộp các học viên và giữ hai cột bài kiểm tra.",
+       "correct": true
+      },
+      {
+       "text": "[11, 14, 14]",
+       "detail": "Đó là tổng từng học viên."
+      },
+      {
+       "text": "[3, 2]",
+       "detail": "Đó là shape của bảng."
+      }
+     ],
+     "explanation": "axis=0 gộp các học viên và giữ hai cột bài kiểm tra."
+    }
+   ],
    "practice": [
     {
      "prompt": "Bảng có 3 hàng học viên và 2 cột bài kiểm tra. Tổng điểm từng học viên có bao nhiêu phần tử?",
@@ -196,5 +255,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

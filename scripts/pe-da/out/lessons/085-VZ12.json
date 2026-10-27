@@ -3,13 +3,13 @@
  "sort_order": 85,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ12 · Subplot, thang chung và bố trí hình",
- "subtitle": "Trung cấp · M4 · 17 phút",
- "estimated_minutes": 17,
- "xp_reward": 10,
+ "subtitle": "Trung cấp · M4 · 20 phút",
+ "estimated_minutes": 20,
+ "xp_reward": 12,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ12 · Subplot, thang chung và bố trí hình",
-  "subtitle": "Trung cấp · M4 · 17 phút",
+  "subtitle": "Trung cấp · M4 · 20 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ12",
@@ -68,6 +68,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "sharey=True giúp hai subplot điều gì?",
+     "options": [
+      {
+       "text": "Dùng chung thang y",
+       "detail": "Đúng: cùng một lượng được đọc theo cùng thang đứng.",
+       "correct": true
+      },
+      {
+       "text": "Gộp mọi hàng thành một đường",
+       "detail": "Chia sẻ trục không tự tổng hợp dữ liệu."
+      },
+      {
+       "text": "Làm hai dữ liệu bằng nhau",
+       "detail": "Dữ liệu vẫn giữ các giá trị riêng."
+      }
+     ],
+     "explanation": "Bố trí hình và dữ liệu là hai phần khác nhau."
+    },
+    {
+     "question": "sharey=True giúp so sánh hai hình như thế nào?",
+     "options": [
+      {
+       "text": "Chỉ đổi màu nền hai hình thành cùng một màu.",
+       "detail": "Màu nền không phải đại lượng được sharey điều khiển."
+      },
+      {
+       "text": "Hai Axes chia sẻ thang y. Một đơn vị được biểu diễn theo cùng thang đứng.",
+       "detail": "Hai Axes chia sẻ thang y. Một đơn vị được biểu diễn theo cùng thang đứng.",
+       "correct": true
+      },
+      {
+       "text": "Tự đổi dữ liệu của hai cửa hàng thành giống nhau.",
+       "detail": "sharey không đồng nhất dữ liệu của các cửa hàng."
+      }
+     ],
+     "explanation": "Hai Axes chia sẻ thang y. Một đơn vị được biểu diễn theo cùng thang đứng."
+    },
+    {
+     "question": "Hai chữ số đầu trong add_subplot(212) có nghĩa gì?",
+     "options": [
+      {
+       "text": "Hai hàng và một cột; chữ số cuối 2 là ô thứ hai.",
+       "detail": "Hai hàng và một cột; chữ số cuối 2 là ô thứ hai.",
+       "correct": true
+      },
+      {
+       "text": "Hai cột và một hàng.",
+       "detail": "Bạn đã đảo số hàng và số cột."
+      },
+      {
+       "text": "Hai điểm dữ liệu với một đơn vị y.",
+       "detail": "Đó là mã bố trí ô, không phải số quan sát hay đơn vị y."
+      }
+     ],
+     "explanation": "Hai hàng và một cột; chữ số cuối 2 là ô thứ hai."
+    }
+   ],
    "practice": [
     {
      "prompt": "sharey=True giúp so sánh hai hình như thế nào?",
@@ -201,5 +260,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

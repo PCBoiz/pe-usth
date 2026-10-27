@@ -3,13 +3,13 @@
  "sort_order": 18,
  "module": "M1 · Python nền tảng",
  "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
- "subtitle": "Cơ bản · M1 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY18 · Ngoại lệ và dữ liệu không hợp lệ",
-  "subtitle": "Cơ bản · M1 · 11 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY18",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "float(\"\") gây ValueError. Bạn nên làm gì nếu chính sách là giữ chỗ dữ liệu hỏng?",
+     "options": [
+      {
+       "text": "Thay bằng 0 bất kể ý nghĩa",
+       "detail": "0 là một số đo; không tự thay ô hỏng bằng 0 nếu chưa có quy ước."
+      },
+      {
+       "text": "Bắt ValueError và thêm None",
+       "detail": "Đúng. Giữ vị trí để không làm lệch các hàng.",
+       "correct": true
+      },
+      {
+       "text": "except: pass để bỏ mọi lỗi",
+       "detail": "Cách này có thể che lỗi lập trình và làm mất dữ liệu mà không ghi nhận."
+      }
+     ],
+     "explanation": "Đúng. Giữ vị trí để không làm lệch các hàng."
+    },
+    {
+     "question": "Một ô nhập không phải số. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'invalid'",
+       "detail": "float không đọc được tea nên nhánh ValueError được chạy.",
+       "correct": true
+      },
+      {
+       "text": "0",
+       "detail": "Không có quy tắc tự đổi chữ thành 0."
+      },
+      {
+       "text": "'tea'",
+       "detail": "Code đi qua nhánh except đã viết."
+      }
+     ],
+     "explanation": "float không đọc được tea nên nhánh ValueError được chạy."
+    },
+    {
+     "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'rejected'",
+       "detail": "12 đọc được thành số nhưng bị quy tắc điểm từ chối.",
+       "correct": true
+      },
+      {
+       "text": "12.0",
+       "detail": "Hàm từ chối điểm ngoài thang trước return."
+      },
+      {
+       "text": "'TypeError'",
+       "detail": "Đổi 12 từ chuỗi thành số được; lỗi do raise ValueError của quy tắc."
+      }
+     ],
+     "explanation": "12 đọc được thành số nhưng bị quy tắc điểm từ chối."
+    }
+   ],
    "practice": [
     {
      "prompt": "Chuỗi trống chuyển bằng float thường gây lỗi gì?",
@@ -143,5 +202,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

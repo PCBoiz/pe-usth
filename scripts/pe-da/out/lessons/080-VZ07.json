@@ -3,13 +3,13 @@
  "sort_order": 80,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm",
- "subtitle": "Trung cấp · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M4 · 18 phút",
+ "estimated_minutes": 18,
+ "xp_reward": 11,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ07 · Boxplot và violinplot: đọc phân bố theo nhóm",
-  "subtitle": "Trung cấp · M4 · 15 phút",
+  "subtitle": "Trung cấp · M4 · 18 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ07",
@@ -74,6 +74,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Đường giữa hộp boxplot thường biểu diễn gì?",
+     "options": [
+      {
+       "text": "Trung bình",
+       "detail": "Không mặc định; mean cần được thể hiện theo cấu hình riêng."
+      },
+      {
+       "text": "Giá trị lớn nhất",
+       "detail": "Giá trị lớn nhất có thể nằm trên râu hoặc là điểm ngoài râu."
+      },
+      {
+       "text": "Trung vị",
+       "detail": "Đúng: hộp mặc định có đường trung vị.",
+       "correct": true
+      }
+     ],
+     "explanation": "Cần đọc đúng đại lượng tóm tắt trước khi diễn giải phân bố."
+    },
+    {
+     "question": "Điểm ngoài râu có phải luôn xóa không?",
+     "options": [
+      {
+       "text": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật.",
+       "detail": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật.",
+       "correct": true
+      },
+      {
+       "text": "Có; ngoài râu luôn là lỗi nhập liệu.",
+       "detail": "Ngoài râu là dấu hiệu thống kê, chưa phải xác nhận lỗi."
+      },
+      {
+       "text": "Có; boxplot đã tự kiểm tra tính hợp lệ của nguồn.",
+       "detail": "Boxplot không biết dữ liệu gốc được nhập và đo đúng hay chưa."
+      }
+     ],
+     "explanation": "Không. Xem nguồn và ngữ cảnh trước; đó có thể là đơn giao rất chậm nhưng có thật."
+    },
+    {
+     "question": "Đường giữa hộp thường là đại lượng gì?",
+     "options": [
+      {
+       "text": "Trung bình cộng.",
+       "detail": "Trung bình có thể khác đường trung vị trong hộp."
+      },
+      {
+       "text": "Giá trị lớn nhất.",
+       "detail": "Giá trị lớn nhất nằm ở phần khác của mô tả phân bố."
+      },
+      {
+       "text": "Trung vị, không phải trung bình.",
+       "detail": "Trung vị, không phải trung bình.",
+       "correct": true
+      }
+     ],
+     "explanation": "Trung vị, không phải trung bình."
+    }
+   ],
    "practice": [
     {
      "prompt": "Điểm ngoài râu có phải luôn xóa không?",
@@ -171,5 +230,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

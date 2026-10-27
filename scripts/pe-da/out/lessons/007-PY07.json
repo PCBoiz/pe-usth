@@ -3,13 +3,13 @@
  "sort_order": 7,
  "module": "M1 · Python nền tảng",
  "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
- "subtitle": "Cơ bản · M1 · 9 phút",
- "estimated_minutes": 9,
+ "subtitle": "Cơ bản · M1 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY07 · Lấy ký tự và một đoạn chuỗi",
-  "subtitle": "Cơ bản · M1 · 9 phút",
+  "subtitle": "Cơ bản · M1 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY07",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Với code = \"AB-2048\", code[-4:] là gì?",
+     "options": [
+      {
+       "text": "2048",
+       "detail": "Đúng. Lấy bốn ký tự từ cuối tới hết.",
+       "correct": true
+      },
+      {
+       "text": "AB-2",
+       "detail": "Đó là bốn ký tự đầu."
+      },
+      {
+       "text": "048",
+       "detail": "Bắt đầu từ -4 chứ không phải -3."
+      }
+     ],
+     "explanation": "Đúng. Lấy bốn ký tự từ cuối tới hết."
+    },
+    {
+     "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'s'",
+       "detail": "Chỉ số 0 trỏ ký tự đầu tiên.",
+       "correct": true
+      },
+      {
+       "text": "'a'",
+       "detail": "a ở chỉ số 1."
+      },
+      {
+       "text": "'sales'",
+       "detail": "[0] lấy một ký tự, không lấy cả từ."
+      }
+     ],
+     "explanation": "Chỉ số 0 trỏ ký tự đầu tiên."
+    },
+    {
+     "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "'t'",
+       "detail": "Chỉ số -1 lấy ký tự cuối của dãy.",
+       "correct": true
+      },
+      {
+       "text": "'r'",
+       "detail": "r là ký tự đầu."
+      },
+      {
+       "text": "'o'",
+       "detail": "o không ở vị trí cuối."
+      }
+     ],
+     "explanation": "Chỉ số -1 lấy ký tự cuối của dãy."
+    }
+   ],
    "practice": [
     {
      "prompt": "\"Python\"[-1] trả ký tự nào?",
@@ -125,5 +184,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

@@ -3,13 +3,13 @@
  "sort_order": 15,
  "module": "M1 · Python nền tảng",
  "title": "PY15 · While, break và continue",
- "subtitle": "Cơ bản · M1 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Cơ bản · M1 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY15 · While, break và continue",
-  "subtitle": "Cơ bản · M1 · 10 phút",
+  "subtitle": "Cơ bản · M1 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY15",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "Duyệt [2,-1,4,0,8], bỏ số âm bằng continue và dừng khi gặp 0 bằng break. Tổng là gì?",
+     "options": [
+      {
+       "text": "5",
+       "detail": "Số -1 đã bị bỏ nên không góp vào tổng."
+      },
+      {
+       "text": "6",
+       "detail": "Đúng. Chỉ 2 và 4 được cộng; 8 nằm sau điểm dừng.",
+       "correct": true
+      },
+      {
+       "text": "14",
+       "detail": "Không được cộng 8 vì đã break ở số 0."
+      }
+     ],
+     "explanation": "Đúng. Chỉ 2 và 4 được cộng; 8 nằm sau điểm dừng."
+    },
+    {
+     "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "3",
+       "detail": "Biến tăng lên 3 sau lượt cuối rồi vòng dừng.",
+       "correct": true
+      },
+      {
+       "text": "2",
+       "detail": "Vòng vẫn chạy khi attempt là 2."
+      },
+      {
+       "text": "4",
+       "detail": "Khi attempt bằng 3, điều kiện đã sai."
+      }
+     ],
+     "explanation": "Biến tăng lên 3 sau lượt cuối rồi vòng dừng."
+    },
+    {
+     "question": "Bỏ riêng số 2. Kết quả ở lệnh print cuối có giá trị nào?",
+     "options": [
+      {
+       "text": "[0, 1, 3]",
+       "detail": "continue chỉ bỏ phần còn lại của lượt hiện tại.",
+       "correct": true
+      },
+      {
+       "text": "[0, 1]",
+       "detail": "continue không kết thúc cả vòng lặp."
+      },
+      {
+       "text": "[0, 1, 2, 3]",
+       "detail": "Số 2 bỏ qua append."
+      }
+     ],
+     "explanation": "continue chỉ bỏ phần còn lại của lượt hiện tại."
+    }
+   ],
    "practice": [
     {
      "prompt": "Vòng đầu chạy mấy lượt?",
@@ -143,5 +202,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }

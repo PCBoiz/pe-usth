@@ -3,13 +3,13 @@
  "sort_order": 67,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD26 · Dữ liệu phân loại và chia khoảng",
- "subtitle": "Nâng cao · M3 · 8 phút",
- "estimated_minutes": 8,
+ "subtitle": "Nâng cao · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD26 · Dữ liệu phân loại và chia khoảng",
-  "subtitle": "Nâng cao · M3 · 8 phút",
+  "subtitle": "Nâng cao · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD26",
@@ -63,6 +63,65 @@
    }
   },
   "step_2": {
+   "mcq": [
+    {
+     "question": "pd.cut([0,10,20],bins=[0,10,20]) mặc định gán 10 vào đâu?",
+     "options": [
+      {
+       "text": "Thiếu",
+       "detail": "10 nằm đúng biên được nhận của khoảng đầu."
+      },
+      {
+       "text": "(0,10]",
+       "detail": "Đúng: khoảng mặc định nhận biên phải.",
+       "correct": true
+      },
+      {
+       "text": "(10,20]",
+       "detail": "Biên trái 10 của khoảng này bị loại."
+      }
+     ],
+     "explanation": "Dấu ngoặc tròn loại biên, ngoặc vuông nhận biên."
+    },
+    {
+     "question": "cut và qcut chọn ranh giới khác nhau thế nào?",
+     "options": [
+      {
+       "text": "cut luôn chia số lượng hàng đều nhau, qcut dùng biên cho trước.",
+       "detail": "Bạn đã đổi vai trò cut và qcut."
+      },
+      {
+       "text": "Hai hàm luôn cho cùng một kết quả.",
+       "detail": "Các biên và phân bố dữ liệu có thể làm hai kết quả khác nhau."
+      },
+      {
+       "text": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu.",
+       "detail": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu.",
+       "correct": true
+      }
+     ],
+     "explanation": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu."
+    },
+    {
+     "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?",
+     "options": [
+      {
+       "text": "Không thuộc khoảng nào vì 10 là biên.",
+       "detail": "Biên chung thuộc một khoảng theo quy tắc đóng biên, không tự bị loại."
+      },
+      {
+       "text": "(0,10], vì khoảng mặc định đóng bên phải.",
+       "detail": "(0,10], vì khoảng mặc định đóng bên phải.",
+       "correct": true
+      },
+      {
+       "text": "(10,50], vì mọi khoảng đóng bên trái.",
+       "detail": "Mặc định khoảng bên phải mới đóng, không phải bên trái."
+      }
+     ],
+     "explanation": "(0,10], vì khoảng mặc định đóng bên phải."
+    }
+   ],
    "practice": [
     {
      "prompt": "cut và qcut chọn ranh giới khác nhau thế nào?",
@@ -149,5 +208,6 @@
  },
  "_mode": "pyodide",
  "_blocked": [],
+ "_so_mcq": 3,
  "_bai_tap": "cham"
 }
