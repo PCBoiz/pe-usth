@@ -7,6 +7,7 @@ import { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
 import HintSheet from '@/components/lesson-chrome/exercises/HintSheet';
 import SandboxEditor from '@/components/lesson-chrome/exercises/SandboxEditor';
 import ShellB from '@/components/lesson-chrome/ShellB';
+import { ghiSuKien, ghiSuaMa } from '@/lib/learning-events';
 import { toCodeLines } from '@/lib/py-highlight';
 
 import c from '../studio-chrome.module.css';
@@ -191,13 +192,38 @@ export default function SandboxScreen({
           filename="main.py"
           langTag={runtimeStatus || 'CPython'}
           code={draft.code}
-          onCodeChange={(code) => update({ code })}
+          onCodeChange={(code) => {
+            // `ghiSuaMa` KHÔNG phát sự kiện nào — nó chỉ tăng một bộ đếm mà
+            // lượt chạy sau mang theo (`editsSinceLastRun`). Tín hiệu cần là
+            // TỈ SỐ sửa/chạy: nhiều sửa + ít chạy = tắc ở ngữ nghĩa, nhiều sửa
+            // + nhiều chạy = tắc ở cú pháp. Một sự kiện mỗi lần gõ là
+            // click-stream — nhân số hàng lên hàng trăm lần mà cho ra đúng con
+            // số một bộ đếm cho ra. Các lần gõ liên tiếp trong 1,5 giây được
+            // gộp thành MỘT lần sửa ngay trong hàm đó.
+            ghiSuaMa();
+            update({ code });
+          }}
           running={running}
           onRun={onRun}
           onStop={onStop}
           onShowSolution={
             four?.solutionCode && (!gate || draft.submitted)
               ? () => {
+                  // XEM LỜI GIẢI MẪU — tầng cuối của "Resource.View". Khác hẳn
+                  // mở gợi ý: gợi ý còn bắt họ tự viết, chèn lời giải thì
+                  // không. Ghi TRƯỚC `update` để nó không phụ thuộc việc ô soạn
+                  // mã nhận được chữ hay không.
+                  ghiSuKien('Resource.View', {
+                    screenKey: scr.key,
+                    payload: {
+                      resource: 'solution',
+                      gate,
+                      submitted: Boolean(draft.submitted),
+                      // Đã từng xem lời giải ở lượt trước chưa — xem lại lần
+                      // thứ ba nói khác lần đầu.
+                      again: Boolean(draft.solutionUsed),
+                    },
+                  });
                   update({ code: four.solutionCode!, solutionUsed: true, assisted: true });
                   setMessage('Đã chèn lời giải mẫu. Hãy đọc hiểu trước khi nộp.');
                 }

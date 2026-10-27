@@ -10,6 +10,12 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
+    // Cho phép import kèm đuôi `.ts`. CẦN cho frontend/src/lib/learning-events.ts:
+    // bộ test đơn vị chạy bằng `node --test` trên chính file .ts (xem
+    // package.json `test:unit`), mà ESM của Node KHÔNG tự thêm đuôi cho
+    // specifier tương đối — thiếu đuôi là ERR_MODULE_NOT_FOUND. Cờ này chỉ CHO
+    // PHÉP, không bắt buộc, nên các file khác không đổi gì.
+    "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "jsx": "react-jsx",
     "incremental": true,

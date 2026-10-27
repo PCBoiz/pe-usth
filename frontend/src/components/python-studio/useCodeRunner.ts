@@ -8,6 +8,7 @@
 // chấm chạy trong Docker, chỉ cần đổi lớp dựng trong `grab()` dưới đây.
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { ghiBamDung, ghiLuotChay } from '@/lib/learning-events';
 import {
   isGraded,
   parsonsCode,
@@ -153,7 +154,11 @@ export function useLessonRun({
    * các game chạy code. Bấm Dừng thì onDone KHÔNG được gọi — giữ đúng nếp cũ
    * là không hiện kết quả nào cho lượt bị bỏ.
    */
-  function execute(code: string, onDone: (data: RunResult) => void) {
+  function execute(
+    code: string,
+    onDone: (data: RunResult) => void,
+    ghi?: { submit: boolean; screenKey?: string },
+  ) {
     const four = lesson?.step_4;
     if (!four) return;
     setMessage('');
@@ -174,6 +179,33 @@ export function useLessonRun({
         contract: four.contract,
       })
       .then((data) => {
+        // GHI NHẬT KÝ LẦN THỬ — đặt ở đây vì đây là chỗ DUY NHẤT có đủ thông
+        // tin: mã người học, ca nào trượt, exception, và thời gian worker đo.
+        //
+        // `data === null` nghĩa là lượt chạy BỊ BỎ (bấm Dừng / rời trang). Ghi
+        // nó bằng `ghiBamDung` chứ không bằng một lượt trượt: người học không
+        // nhận được chẩn đoán nào, nên nó không phải một lần thử.
+        //
+        // `ghi` chỉ được truyền cho màn sandbox. Game chạy code (parsons/debug)
+        // KHÔNG ghi: ca chấm của chúng là ca của bài, nhưng "mã" lại là các dòng
+        // người học xếp — trộn vào cùng một loại sự kiện thì `editsSinceLastRun`
+        // và "trượt y hệt" đếm hai thứ khác nhau vào một chỗ. Khoá pe-da đang
+        // xuất bản không có game nào, nên hôm nay nhánh này không mất gì.
+        if (ghi) {
+          if (!data) ghiBamDung(ghi.screenKey);
+          else
+            ghiLuotChay(
+              {
+                submit: ghi.submit,
+                code,
+                tests: data.tests ?? [],
+                total: four.tests?.length ?? 0,
+                error: data.error,
+                machineMs: data.duration,
+              },
+              ghi.screenKey,
+            );
+        }
         if (data) onDone(data);
       });
   }
@@ -202,6 +234,7 @@ export function useLessonRun({
     setResult(null);
     // Cửa tự kiểm tra chỉ mở lời giải sau lần NỘP đầu, đạt hay chưa đạt.
     if (submit && !draft.submitted) update({ submitted: true });
+    const sandboxKey = screens[sandboxAt < 0 ? 0 : sandboxAt]?.key;
     execute(draft.code, (data) => {
       setResult(data);
       // Chỉ lượt NỘP mới ghi nhận: chạy thử đạt hết vẫn phải bấm nộp thì tiến
@@ -215,7 +248,7 @@ export function useLessonRun({
         const recapAt = screens.findIndex((x) => x.kind === 'recap');
         if (recapAt >= 0) goTo(recapAt + 1);
       }
-    });
+    }, { submit, screenKey: sandboxKey });
   }
 
   /** Mã đang chấm của game chạy code. */

@@ -3,7 +3,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "src",
   "compilerOptions": {
-    "assets": ["generated/prisma/**/*"],
+    "assets": ["generated/prisma/**/*", "quizzes/post-test-bank.json"],
     "deleteOutDir": true
   }
 }

@@ -47,6 +47,12 @@ describe('envValidationSchema — biến số phải ra SỐ, không phải chu�
     ['THROTTLE_SWEEP_INTERVAL_MS', '60000'],
     ['THROTTLE_MAX_KEYS', '200000'],
     ['TRUST_PROXY_HOPS', '1'],
+    // Cổng trễ của bài hậu kiểm: `QuizzesService` nhân giá trị này với
+    // 86 400 000 để tính mốc "đã đủ trễ". Giữ nguyên dạng chuỗi thì '7' * số
+    // vẫn ra số (JS ép ngầm) — nên lỗi ở đây không hiện ra như vụ 13/10, mà
+    // hiện ra khi biến để TRỐNG: Number('') = 0, cổng mở toang, bài hậu kiểm
+    // hỏi về bài vừa học hôm qua và vẫn báo ra một con số.
+    ['POSTTEST_DELAY_DAYS', '7'],
   ];
 
   it.each(SO)('%s nhập dạng chuỗi được ép về number', (key, mau) => {
@@ -159,5 +165,23 @@ describe('envValidationSchema — THROTTLE_* và TRUST_PROXY_HOPS', () => {
   it('TRUST_PROXY_HOPS không đặt → 0, trùng `?? 0` trong api-gateway.setup.ts', () => {
     const { value } = validate({});
     expect((value as Record<string, unknown>).TRUST_PROXY_HOPS).toBe(0);
+  });
+
+  // Hướng lệch KHÔNG đối xứng: cổng trễ đoán ngắn hơn là mở toang (đo trí nhớ
+  // ngắn hạn mà vẫn báo số), đoán dài hơn chỉ là cổng chưa mở. Nên giá trị rác
+  // phải bị TỪ CHỐI ngay lúc boot, không được hiểu thành 0.
+  // '31' có mặt vì trần 30 là ràng buộc CỨNG, không phải con số cho đẹp: phiên
+  // khách sống 30 ngày (JWT_GUEST_REFRESH_EXPIRES), trễ dài hơn thế thì người
+  // thử nhận userId mới và không ghép được hậu kiểm với tiền kiểm.
+  it.each(['', 'bảy', '-1', '3.5', '31', '400'])(
+    'POSTTEST_DELAY_DAYS=%p bị từ chối',
+    (v) => {
+      expect(validate({ POSTTEST_DELAY_DAYS: v }).error).toBeDefined();
+    },
+  );
+
+  it('POSTTEST_DELAY_DAYS không đặt → 7, trùng SO_NGAY_TRE_MAC_DINH', () => {
+    const { value } = validate({});
+    expect((value as Record<string, unknown>).POSTTEST_DELAY_DAYS).toBe(7);
   });
 });

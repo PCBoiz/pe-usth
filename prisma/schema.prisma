@@ -71,6 +71,7 @@ model User {
   userAchievements    UserAchievement[]
   following           UserFollow[] @relation("UserFollowers")
   followers           UserFollow[] @relation("UserFollowing")
+  learningEvents      LearningEvent[]
 
   // Bảng xếp hạng ORDER BY xp/streak DESC LIMIT 20.
   // `map:` giữ đúng tên trong prisma/optional-indexes.sql để bản chạy tay
@@ -209,6 +210,61 @@ model LessonProgress {
   @@map("lesson_progress")
 }
 
+// Nhật ký LẦN THỬ — phụ lục theo thời gian cho những gì `lesson_progress` không
+// ghi được. Chi tiết lý do từng cột nằm trong
+// prisma/migrations/20261028000000_learning_events/migration.sql; phần phải nhớ
+// khi sửa model này:
+//
+//  · `id` là Int (SERIAL) có chủ đích — BigInt làm `JSON.stringify` NÉM khi có
+//    route nào đọc lại bảng này.
+//  · KHÔNG có `lessonId` và KHÔNG có quan hệ tới `Lesson`/`Course`: bài tra theo
+//    `(courseId, lessonNo)` như cả hệ thống, còn khoá ngoại tới `lessons` sẽ làm
+//    MỘT sự kiện mang mã bài rác giết cả LÔ `createMany`.
+//  · `payload` đã được cắt trần ở `learning-events.sanitize.ts` trước khi tới
+//    đây. Mã nguồn của người học KHÔNG BAO GIỜ nằm trong này — kể cả dưới dạng
+//    hash (`code` và `codeHash` đều trong `KHOA_CAM_PAYLOAD`). Bảng giữ KẾT
+//    LUẬN `sameAsPrev`/`repeatStreak`, không giữ dấu vân tay.
+//  · HẠN LƯU 90 NGÀY (`HAN_LUU_NGAY`). Câu `DELETE` nằm ở cuối
+//    `scripts/learning-events/truy-van.sql`; không có job tự xoá, có chủ đích.
+//  · Lớp này chỉ phát ra sự kiện SAU khi người học đồng ý — cổng đồng ý nằm ở
+//    `frontend/src/lib/learning-events.ts`, mặc định TẮT.
+model LearningEvent {
+  id         Int       @id @default(autoincrement())
+  /// UUID v4 do CLIENT sinh cho TỪNG sự kiện — khoá chống trùng. Một lô gửi
+  /// lúc trang ẩn có thể TỚI máy chủ mà phản hồi không về kịp, nên client gửi
+  /// lại; `@unique` + `skipDuplicates` làm lần hai thành no-op, và `createMany`
+  /// trả về số hàng THẬT SỰ chèn nên tỉ lệ trùng là số đo miễn phí.
+  eventId    String    @unique(map: "uq_learning_events_event_id") @map("event_id")
+  userId     Int       @map("user_id")
+  courseId   String?   @map("course_id")
+  /// `lessons.sort_order` của bài, không phải `lessons.id` — khoá mà cả hệ
+  /// thống dùng, và là thứ câu SQL drop-off cần để xếp thứ bậc bài.
+  lessonNo   Int?      @map("lesson_no")
+  /// `LessonScreen.key` của màn đang mở (vd `s2-mcq-0`) — chỗ duy nhất nói được
+  /// "họ bỏ dở ở MÀN nào", không chỉ "ở bài nào".
+  screenKey  String?   @map("screen_key")
+  kind       String
+  payload    Json?     @db.JsonB
+  /// BA dấu thời gian, không phải hai (mẫu Snowplow `dtm`/`stm`/collector):
+  /// `clientAt` = thiết bị TẠO sự kiện, `clientSentAt` = thiết bị GỬI lô,
+  /// `createdAt` = máy chủ NHẬN. Hai mốc đầu cùng một đồng hồ nên HIỆU của
+  /// chúng đúng dù giờ máy sai; mốc dùng để so GIỮA người học là mốc suy ra
+  /// `createdAt - (clientSentAt - clientAt)`, không phải `clientAt`.
+  clientAt     DateTime? @map("client_at") @db.Timestamptz(6)
+  clientSentAt DateTime? @map("client_sent_at") @db.Timestamptz(6)
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Ba index phục vụ đúng ba câu trong scripts/learning-events/truy-van.sql.
+  // `kind` đứng đầu vì heartbeat là loại đông nhất: lọc nó ra trước là bỏ được
+  // phần lớn bảng.
+  @@index([kind, courseId, lessonNo], map: "idx_learning_events_kind_lesson")
+  @@index([userId, courseId, lessonNo, kind], map: "idx_learning_events_user_lesson")
+  @@index([createdAt(sort: Desc)], map: "idx_learning_events_created")
+  @@map("learning_events")
+}
+
 model CourseRating {
   userId    Int      @map("user_id")
   courseId  String   @map("course_id")
@@ -242,6 +298,14 @@ model Quiz {
   userId        Int         @map("user_id")
   courseId      String      @map("course_id")
   status        QuizStatus? @default(generated)
+  /// Loại đề. NULL = đề ôn tập thường (mọi bản ghi có trước cột này, và mọi
+  /// đề do `generateQuiz`/`generateReviewQuiz`/`generateTodayQuiz` phát).
+  /// `'post_test'` = BÀI HẬU KIỂM CÓ TRỄ, thứ chỉ được phát MỘT LẦN cho mỗi
+  /// học viên mỗi khoá — và cột này là chỗ duy nhất trả lời được câu "đã phát
+  /// chưa". Là chuỗi tự do chứ KHÔNG phải enum: thêm giá trị vào một enum
+  /// Postgres đang dùng chung với bản Django là đổi kiểu, mà luật của repo chỉ
+  /// cho THÊM cột nullable / thêm index.
+  kind          String?     @map("kind")
   questionsJson Json        @map("questions_json") @db.JsonB
   createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(6)
 
@@ -251,6 +315,9 @@ model Quiz {
 
   @@index([userId, courseId])
   @@index([status])
+  // Cổng một-lần của bài hậu kiểm tra đúng ba cột này mỗi lần người học mở
+  // trang; không có index là quét bảng quizzes (phình theo mọi lượt ôn tập).
+  @@index([userId, courseId, kind], map: "idx_quizzes_user_course_kind")
   @@map("quizzes")
 }
 

@@ -67,6 +67,11 @@ export const envValidationSchema = Joi.object({
   THROTTLE_GUEST_LIMIT: throttleLimit(120),
   THROTTLE_GUEST_TTL_SECONDS: throttleTtl(3600),
   THROTTLE_BADGE_LIMIT: throttleLimit(240),
+  // Ghi nhật ký lần thử (POST /api/events). Quota tính theo TÀI KHOẢN, không
+  // theo IP (CustomThrottlerGuard.getTracker), nên nó không bị cả phòng máy
+  // chung NAT ăn hết — xem learning-events.controller.ts để biết vì sao 600.
+  THROTTLE_EVENTS_LIMIT: throttleLimit(600),
+  THROTTLE_EVENTS_TTL_SECONDS: throttleTtl(3600),
   // Chu kỳ quét key hết hạn của FixedWindowThrottlerStorage; 0/NaN làm
   // setInterval chạy liên tục hoặc không bao giờ dọn.
   THROTTLE_SWEEP_INTERVAL_MS: Joi.number()
@@ -90,6 +95,32 @@ export const envValidationSchema = Joi.object({
 
   DATABASE_URL: Joi.string().required(),
   DIRECT_URL: Joi.string().required(),
+
+  // ---- Bài hậu kiểm có trễ -------------------------------------------------
+  //
+  // Khoảng TRỄ tối thiểu (ngày) giữa lúc hoàn thành một bài và lúc bài đó được
+  // phép xuất hiện trong đề hậu kiểm.
+  //
+  // 7 là QUY ƯỚC, không phải con số rút ra từ một nghiên cứu. Thứ có bằng
+  // chứng là ngưỡng **≥ 1 ngày**; lý do chi tiết (và vì sao "luật 10-20%" của
+  // Cepeda et al. KHÔNG nói gì về việc đặt trễ bao lâu) nằm ở
+  // `SO_NGAY_TRE_MAC_DINH` trong src/quizzes/post-test.ts.
+  //
+  // TRẦN 30, không phải 365: phiên của tài khoản khách sống theo
+  // `JWT_GUEST_REFRESH_EXPIRES` (mặc định 30d) và hết hạn là người thử nhận
+  // một `userId` MỚI — hậu kiểm không ghép được với tiền kiểm nữa. Đặt trễ dài
+  // hơn hạn phiên là đo được 0 người, nên đây là trần CỨNG của nền này chứ
+  // không phải một con số cho đẹp. Nới nó thì phải nới hạn phiên trước.
+  //
+  // KHAI Ở ĐÂY LÀ BẮT BUỘC, không phải cho đẹp: `QuizzesService` đọc biến này
+  // bằng `config.get<number>()`, mà `get<number>()` chỉ ép kiểu lúc BIÊN DỊCH.
+  // Không khai thì giá trị đặt trên Render giữ nguyên dạng CHUỖI và
+  // `Date.now() - '7' * 86400000` tuy vẫn ra số, nhưng một biến để TRỐNG thành
+  // Number('') = 0 — cổng trễ mở toang mà không ai thấy. Joi áp mặc định 7 và
+  // TỪ CHỐI KHỞI ĐỘNG khi giá trị sai.
+  // min(0) chứ không min(1): 0 ngày là cách tắt cổng trễ khi cần thử tay, và
+  // nó phải là điều người ta GÕ RA chứ không phải điều xảy ra vì để trống.
+  POSTTEST_DELAY_DAYS: Joi.number().integer().min(0).max(30).default(7),
 
   JWT_ACCESS_SECRET: Joi.string().min(32).required(),
   JWT_ACCESS_EXPIRES: Joi.string().default('30m'),

@@ -24,7 +24,7 @@
 //   useLessonProgress.ts  màn đang mở, màn đã đúng, điểm/combo, hiệu ứng
 //   cta.ts            luật của nút CTA dưới đáy (hàm thuần)
 //   answer-key.ts     bảng đáp án cho admin (hàm thuần)
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import LessonChrome from '@/components/lesson-chrome/LessonChrome';
 import ShellB from '@/components/lesson-chrome/ShellB';
@@ -39,6 +39,7 @@ import { useLessonDraft } from './useLessonDraft';
 import { useLessonProgress } from './useLessonProgress';
 import LessonScreenView from './screens';
 import { ICON } from './screens/chrome';
+import { datBoiCanhBai, dayNgay, ghiSuKien } from '@/lib/learning-events';
 import {
   buildScreens,
   EMPTY_SCORE,
@@ -110,6 +111,82 @@ export default function StudioLesson({
     };
   }, [loading]);
   const scr: LessonScreen | undefined = screens[d.step - 1];
+
+  /**
+   * NHỊP CÒN ĐANG MỞ BÀI + sự kiện BỎ DỞ.
+   *
+   * Vì sao cần cả hai, và vì sao chúng không thay nhau được:
+   *  · `X-Lesson.Open` một mình không phân biệt được "đọc 20 phút" với "mở tab
+   *    rồi đi ăn cơm". Chỉ nhịp heartbeat nói được họ còn ở đó.
+   *  · Nhưng "nhịp dừng" cũng xảy ra khi máy sleep hay mất mạng, nên nó KHÔNG
+   *    thay được `X-Lesson.Abandon` — cái đó là một HÀNH VI (tab bị ẩn / rời
+   *    trang khi chưa hoàn thành), không phải một khoảng lặng.
+   *
+   * Màn hiện tại đi kèm sự kiện bỏ dở: "bỏ ở màn nào" là thứ duy nhất phân biệt
+   * được "đề bài không hiểu nổi" với "đọc xong rồi bỏ".
+   *
+   * 30 giây: đủ thưa để một buổi học 40 phút chỉ sinh 80 sự kiện, đủ dày để
+   * phân giải thời-gian-trên-tác-vụ xuống nửa phút — mà phép đo đó chỉ dùng làm
+   * bộ phát hiện ngoại lai TRONG MỘT NGƯỜI ("người này mất 40 phút cho bài 12
+   * phút"), nên không cần mịn hơn.
+   *
+   * Đọc trạng thái qua REF, không qua dependency: để nhịp và listener gắn ĐÚNG
+   * MỘT LẦN cho cả lượt mở bài. Đưa `scr`/`completed` vào deps thì mỗi lần
+   * chuyển màn là gỡ rồi gắn lại interval, và nhịp 30 giây không bao giờ tới.
+   */
+  const trangThaiRef = useRef<{ screenKey?: string; completed: boolean; step: number }>({
+    completed: false,
+    step: 1,
+  });
+  // Đồng bộ trong EFFECT, không trong thân render: React 19 chặn việc ghi ref
+  // lúc render (`react-hooks/refs`), và luật đó đúng — ghi lúc render thì một
+  // lần render bị bỏ (StrictMode, Suspense) vẫn để lại giá trị mới.
+  // Không có mảng dep: effect này cố ý chạy sau MỌI lần render.
+  useEffect(() => {
+    trangThaiRef.current = { screenKey: scr?.key, completed, step: d.step };
+  });
+
+  useEffect(() => {
+    if (loading || !lesson) return;
+    const nhip = setInterval(() => {
+      // Tab đang ẩn thì KHÔNG đập nhịp: nhịp là để nói "họ còn ở đây", mà một
+      // tab ẩn thì họ không ở đây. (Trình duyệt cũng bóp `setInterval` ở tab
+      // nền, nên nhịp ở đó vừa sai vừa thưa.)
+      if (document.visibilityState !== 'visible') return;
+      const t = trangThaiRef.current;
+      ghiSuKien('X-Lesson.Heartbeat', {
+        screenKey: t.screenKey,
+        payload: { step: t.step, completed: t.completed },
+      });
+    }, 30_000);
+
+    const boDo = (vi_sao: 'hidden' | 'unmount') => {
+      const t = trangThaiRef.current;
+      // ĐÃ HOÀN THÀNH thì không phải bỏ dở. Ghi cả hai vào một loại là làm
+      // câu SQL "bài nào có người đâm tường" đếm cả những người học xong.
+      if (t.completed) return;
+      ghiSuKien('X-Lesson.Abandon', {
+        screenKey: t.screenKey,
+        payload: { step: t.step, totalSteps: screens.length, reason: vi_sao },
+      });
+    };
+    const khiAn = () => {
+      if (document.visibilityState === 'hidden') boDo('hidden');
+    };
+    document.addEventListener('visibilitychange', khiAn);
+
+    return () => {
+      clearInterval(nhip);
+      document.removeEventListener('visibilitychange', khiAn);
+      boDo('unmount');
+      // Gỡ bối cảnh = đóng cổng ghi, VÀ đẩy nốt những gì đang chờ. Không gỡ thì
+      // lần mở bài sau nối tiếp bối cảnh cũ và vài sự kiện bị gán nhầm bài.
+      datBoiCanhBai(null);
+      dayNgay();
+    };
+    // `lesson`/`loading` là hai thứ duy nhất quyết định lượt mở bài này có
+    // sống hay không; mọi trạng thái đổi theo từng màn đi qua ref ở trên.
+  }, [loading, lesson, screens.length]);
   const play = lesson?.play;
   const boss = Boolean(play?.boss);
   const game = lesson ? gameOf(lesson, scr) : undefined;
@@ -239,6 +316,31 @@ export default function StudioLesson({
         award(scr.key, v.correct, v.correct && !misses);
       }
       if (v?.correct) markDone(scr.key);
+      // ĐÁP ÁN TRẮC NGHIỆM CHI TIẾT, không chỉ điểm.
+      //
+      // `lesson_progress.quiz_score` là MỘT con số gộp cho cả bài, nên nó không
+      // bao giờ chỉ ra được distractor NÀO bị chọn lặp lại — mà đúng cái đó mới
+      // quyết định được bài nào cần `MisconceptionScreen`. Ghi `picked` (khoá
+      // phương án, kiểu 'A'/'B') chứ KHÔNG ghi nội dung phương án: nội dung là
+      // chữ của người soạn giáo trình, tra lại được bằng `screenKey` + `index`.
+      //
+      // Chỉ các màn CÓ CHẤM tại chỗ; `read`/`practice` của khoá bài đọc không
+      // có gì để so nên `screenVerdict` trả null ở đó.
+      if (v && (scr.kind === 'mcq' || scr.kind === 'predict')) {
+        ghiSuKien('X-Quiz.Answer', {
+          screenKey: scr.key,
+          payload: {
+            screenKind: scr.kind,
+            index: scr.index ?? 0,
+            picked: scr.kind === 'mcq' ? (d.mcq[scr.index ?? 0] ?? '') : d.predict,
+            correct: v.correct,
+            // Lần chấm ĐẦU của màn này hay chấm lại sau khi sai: một phương án
+            // sai bị chọn ở lần đầu nói khác hẳn với chọn sau khi đã thử hết.
+            firstTry: d.score?.firstTry?.[scr.key] === undefined,
+            assisted: Boolean(d.assisted),
+          },
+        });
+      }
       return;
     }
     if (action === 'retry') return setCheckedKey('');
@@ -296,6 +398,15 @@ export default function StudioLesson({
         }
         onSecondaryClick={() => {
           if (!hintOpen && !d.assisted) update({ assisted: true });
+          // MỞ GỢI Ý: `lesson_progress` không có chỗ nào ghi việc này, mà nó là
+          // dấu hiệu bỏ-cuộc mạnh nhất còn TRONG bài — người học vẫn ở đây
+          // nhưng đã hết tự lực. Chỉ ghi lúc MỞ, không ghi lúc đóng.
+          if (!hintOpen) {
+            ghiSuKien('Resource.View', {
+              screenKey: scr?.key,
+              payload: { resource: 'hint', level: hintIndex, gate, boss },
+            });
+          }
           setHintOpen((o) => !o);
         }}
         {...over}

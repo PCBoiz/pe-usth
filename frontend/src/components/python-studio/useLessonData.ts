@@ -12,7 +12,32 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { apiFetch, asList, findEnrollment } from '@/lib/api';
 import { la403ChuaGhiDanh } from '@/lib/lesson-load';
+import {
+  batDauGhi,
+  datBoiCanhBai,
+  ghiSuKien,
+  type BoiCanhBai,
+} from '@/lib/learning-events';
 import { buildScreens, type StudioLesson as Lesson } from '@/lib/studio-lesson';
+
+/**
+ * Mã của bài chạy ở ĐÂU. Đi vào payload của mọi sự kiện vì mọi phép gộp thời
+ * gian phải tách theo nó — 27/172 bài chạy TRÊN MÁY người học, nên `machineMs`
+ * của worker ở đó không đo cái gì cả, còn 26 bài biểu đồ trả thêm ~0,8 s chỉ để
+ * xuất PNG. Gộp chung là lấy trung bình của hai thứ khác loại.
+ *
+ * Suy từ chính nội dung bài, không từ một cột riêng (không có cột nào):
+ *  · `step_4.procedure` mà KHÔNG có ca chấm  → các bước làm trên máy thật.
+ *  · có `step_4.env` (dải cảnh báo "chạy trên máy của bạn") kèm ca chấm → hỗn
+ *    hợp: bài đọc chạy trên máy, bài tập chấm được ngay tại đây (CT10/CT11).
+ *  · còn lại → trong trình duyệt.
+ */
+function moiTruongCua(lesson: Lesson): BoiCanhBai['env'] {
+  const four = lesson.step_4;
+  if (four?.procedure?.length && !four?.tests?.length) return 'local';
+  if (four?.env) return 'mixed';
+  return 'browser';
+}
 
 export type Award = { name?: string | null; description?: string | null; icon?: string | null };
 export type LessonUser = { id: number; name: string; xp: number; role?: string };
@@ -189,6 +214,29 @@ export function useLessonData({
         return;
       }
       setLesson(content);
+      // GHI NHẬT KÝ LẦN THỬ — chỗ DUY NHẤT mở cổng cho cả lớp đó.
+      //
+      // `datBoiCanhBai` là hàng rào cấu trúc của luật "chỉ ghi ở trang bài
+      // học": `ghi()` không làm gì cho tới khi có bối cảnh, nên trang chủ,
+      // `/courses/*` và `/ide` không kích được một lượt gửi nào — và vì
+      // `apiFetch` gặp 401 là tự `ensureGuest()`, một lượt gửi ở trang công
+      // khai nghĩa là mỗi bot quét web sinh một tài khoản khách (AGENTS.md).
+      //
+      // Đặt SAU khi đã có nội dung bài, không sớm hơn: trước đó chưa biết `env`
+      // của bài, mà `env` đi vào payload của mọi sự kiện.
+      //
+      // Lớp này vẫn NẰM IM cho tới khi có ai gọi `datDongYGhiNhatKy(true)` —
+      // mặc định là TẮT, và giao diện xin đồng ý chưa dựng. Gọi ở đây là an
+      // toàn và không thu thập gì.
+      datBoiCanhBai({
+        courseId,
+        lessonNo,
+        env: moiTruongCua(content),
+      });
+      batDauGhi();
+      ghiSuKien('X-Lesson.Open', {
+        payload: { screens: list.length, completed: Boolean(payload.completed) },
+      });
       onDraftReady?.(content, Number(profile.id), list.length);
     } catch (error) {
       setLoadError(error instanceof Error ? error.message : 'Không kết nối được backend.');
