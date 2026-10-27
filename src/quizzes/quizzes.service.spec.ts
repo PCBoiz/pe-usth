@@ -4,9 +4,12 @@ import {
   ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Test } from '@nestjs/testing';
+import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { QuizzesService } from './quizzes.service';
+import { KHOA_SO_NGAY_TRE, POST_TEST_KIND } from './post-test';
 import { readFileSync } from 'fs';
 import { join } from 'path';
 
@@ -42,6 +45,37 @@ function peDa(code: string): unknown {
   if (!found) throw new Error(`không có bài ${code} trong bản dựng`);
   return found.content_json;
 }
+
+/** Câu trắc nghiệm ĐANG PHÁT trong bài (những câu người học ĐÃ thấy). */
+function mcqTrongBai(code: string): Array<{ question?: string }> {
+  const found = PE_DA.lessons.find((l) => l.lesson_code === code);
+  return (found?.content_json.step_2?.mcq ?? []) as Array<{
+    question?: string;
+  }>;
+}
+
+/**
+ * KHO ĐỀ HẬU KIỂM, đọc từ file THẬT mà service nạp lúc chạy.
+ *
+ * Cùng lý do như `PE_DA` ở trên: fixture bịa ở đây thì phép kiểm "không trùng
+ * câu đã phát trong bài" chứng minh được số 0 — nó là TOÀN BỘ giá trị của bộ
+ * giữ lại, và nó chỉ có thật nếu hai file thật sự rời nhau.
+ */
+const HAU_KIEM = JSON.parse(
+  readFileSync(join(__dirname, 'post-test-bank.json'), 'utf8'),
+) as {
+  course_id: string;
+  held_back_from: number;
+  lessons: Array<{
+    lesson_code: string;
+    source_ids: string[];
+    questions: Array<{
+      question: string;
+      options: Array<{ text?: string; detail?: string; correct?: boolean }>;
+      explanation?: string;
+    }>;
+  }>;
+};
 
 const SNAPSHOT = [
   { question: 'Q1', options: ['a', 'b'], correct: 0, explanation: 'vì a' },
@@ -96,6 +130,12 @@ type QuizCreateArg = {
     userId: number;
     courseId: string;
     status: string;
+    /**
+     * Nhãn loại đề. `undefined` cho mọi đề ôn tập (cột `kind` giữ NULL),
+     * `'post_test'` cho bài hậu kiểm. Khai ở đây để ca test gõ sai tên field
+     * là lỗi biên dịch, không phải một `undefined` lặng lẽ.
+     */
+    kind?: string;
     questionsJson: SavedQuestion[];
   };
 };
@@ -103,6 +143,24 @@ type QuizCreateArg = {
 /** Đối số `prisma.lesson.findMany({ where: { id: { in } } })`. */
 type LessonFindManyArg = {
   where: { id: { in: number[] } };
+};
+
+/**
+ * Đối số `prisma.lessonProgress.findMany({ where })`.
+ *
+ * Khai kiểu để ca test đọc lại ĐƯỢC mệnh đề WHERE. Đây là ngoại lệ có lý do
+ * cho luật "đừng kiểm đã gọi mấy truy vấn": `status: 'completed'` và
+ * `courseId` KHÔNG phải chi tiết hiệu năng — chúng LÀ hành vi ("chỉ hỏi về bài
+ * đã hoàn thành, trong đúng khoá này"), và mock Prisma không thực thi WHERE hộ,
+ * nên nếu không đọc lại mệnh đề thì gỡ nó ra mọi ca vẫn XANH.
+ */
+type LessonProgressFindManyArg = {
+  where: {
+    userId?: number;
+    courseId?: string;
+    status?: string;
+    completedAt?: { gte?: Date; lte?: Date };
+  };
 };
 
 /**
@@ -125,10 +183,11 @@ const asyncMock = <A extends unknown[] = unknown[]>(): AsyncMock<A> =>
 
 /** Chỉ những bảng/hàm mà QuizzesService thật sự gọi. */
 type PrismaMock = {
-  lessonProgress: { findMany: AsyncMock };
+  lessonProgress: { findMany: AsyncMock<[LessonProgressFindManyArg]> };
   lesson: { findMany: AsyncMock<[LessonFindManyArg]> };
   quiz: {
     create: AsyncMock<[QuizCreateArg]>;
+    findFirst: AsyncMock;
     findUnique: AsyncMock;
     update: AsyncMock;
     updateMany: AsyncMock;
@@ -144,13 +203,21 @@ type PrismaMock = {
 describe('QuizzesService', () => {
   let service: QuizzesService;
   let prisma: PrismaMock;
+  /**
+   * Giá trị thô mà ConfigService trả về CHO ĐÚNG khoá `POSTTEST_DELAY_DAYS`.
+   * Ca test đổi biến này thay vì dựng lại module.
+   */
+  let soNgayTreCauHinh: unknown;
 
   beforeEach(async () => {
+    soNgayTreCauHinh = 7;
     prisma = {
-      lessonProgress: { findMany: asyncMock() },
+      lessonProgress: { findMany: asyncMock<[LessonProgressFindManyArg]>() },
       lesson: { findMany: asyncMock<[LessonFindManyArg]>() },
       quiz: {
         create: asyncMock<[QuizCreateArg]>(),
+        // Cổng một-lần của bài hậu kiểm; mặc định CHƯA phát đề nào.
+        findFirst: asyncMock().mockResolvedValue(null),
         findUnique: asyncMock(),
         update: asyncMock(),
         // CAS generated -> submitted trong submitQuiz; mặc định giành được quyền.
@@ -168,7 +235,22 @@ describe('QuizzesService', () => {
     };
 
     const mod = await Test.createTestingModule({
-      providers: [QuizzesService, { provide: PrismaService, useValue: prisma }],
+      providers: [
+        QuizzesService,
+        { provide: PrismaService, useValue: prisma },
+        {
+          provide: ConfigService,
+          // PHÂN BIỆT KHOÁ, không phải `{ get: () => 7 }`. Bài học của
+          // `refresh-token.service.spec.ts`: một mock trả cùng giá trị cho mọi
+          // khoá làm MỌI ca so sánh theo khoá trở nên vô nghĩa mà vẫn XANH.
+          // Khoá lạ trả một chuỗi RÁC để ca test bắt được nếu service đọc sai
+          // tên biến — `soNgayTre()` sẽ rơi về mặc định 7 chứ không về 0.
+          useValue: {
+            get: (key: string): unknown =>
+              key === KHOA_SO_NGAY_TRE ? soNgayTreCauHinh : 'khoa-khac',
+          },
+        },
+      ],
     }).compile();
     service = mod.get(QuizzesService);
   });
@@ -895,6 +977,390 @@ describe('QuizzesService', () => {
       const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
       expect(luu.length).toBeGreaterThanOrEqual(5);
       expect(new Set(luu.map((q) => q.lessonId)).size).toBe(2);
+    });
+  });
+
+  // ---------- Bài hậu kiểm CÓ TRỄ ----------
+  describe('Bài hậu kiểm CÓ TRỄ', () => {
+    const NGAY = 86_400_000;
+
+    /**
+     * Dựng tiến độ + hàng lesson cho luồng hậu kiểm.
+     *
+     * `lesson.findMany` chạy theo ĐÚNG `where.id.in` mà service truyền, không
+     * trả bừa cả danh sách: cổng trễ được thực thi bằng chính bộ lọc đó, nên
+     * một mock bỏ qua nó sẽ làm ca "bài học hôm qua không bị hỏi" ĐẠT vì lý do
+     * sai — đúng họ bẫy fixture mà file này đã ghi ở đầu.
+     */
+    function dungTienDo(bai: Array<{ code: string; ngayTruoc: number }>) {
+      const hang = bai.map((b, i) => ({
+        id: i + 1,
+        courseId: 'python_advanced',
+        lessonCode: b.code,
+      }));
+      prisma.lessonProgress.findMany.mockResolvedValue(
+        bai.map((b, i) => ({
+          lessonId: i + 1,
+          completedAt: new Date(Date.now() - b.ngayTruoc * NGAY),
+        })),
+      );
+      prisma.lesson.findMany.mockImplementation((args) => {
+        const duoc = new Set(args.where.id.in);
+        return Promise.resolve(hang.filter((h) => duoc.has(h.id)));
+      });
+      prisma.quiz.create.mockResolvedValue({ id: 77 });
+      return hang;
+    }
+
+    /** 5 bài pe-da, tất cả hoàn thành 10 ngày trước -> cổng mở. */
+    const DU_TRE = ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+      code,
+      ngayTruoc: 10,
+    }));
+
+    // ---- Kho đề: không trùng một câu nào với 516 câu đang phát -------------
+    it('516 câu hậu kiểm, và KHÔNG câu nào trùng câu đang phát trong bài', () => {
+      // Đây là ca quan trọng nhất của cả khối. Trùng một câu là đo lại đúng
+      // thứ người học vừa đọc lời giải thích — bộ giữ lại mất hết giá trị.
+      expect(HAU_KIEM.course_id).toBe('python_advanced');
+      expect(HAU_KIEM.lessons.length).toBe(172);
+      const tongCau = HAU_KIEM.lessons.reduce(
+        (n, m) => n + m.questions.length,
+        0,
+      );
+      expect(tongCau).toBe(516);
+
+      let soSanh = 0;
+      for (const muc of HAU_KIEM.lessons) {
+        const trongBai = mcqTrongBai(muc.lesson_code);
+        // Mỗi bài phát ĐÚNG 3 câu; so bằng `length` chứ không bằng `Set.size`
+        // vì VZ20 có HAI câu trùng nguyên văn trong bài (hai biến thể dùng
+        // chung câu dẫn "Đoạn code dưới đây in gì?" và `cau_trac_nghiem()` bỏ
+        // trường `code` phân biệt chúng — khiếm khuyết của bộ 516 câu đang
+        // phát, không phải của kho này).
+        expect(trongBai.length).toBe(3);
+        const daThay = new Set(trongBai.map((q) => q.question));
+        for (const q of muc.questions) {
+          expect(daThay.has(q.question)).toBe(false);
+          soSanh += 1;
+        }
+      }
+      // Chứng minh vòng lặp đã chạy: một `for` trên danh sách rỗng cũng "đạt".
+      expect(soSanh).toBe(516);
+    });
+
+    it('mỗi câu hậu kiểm đúng MỘT đáp án, và đề bài TỰ ĐỦ (có code khi cần)', () => {
+      // 471/1032 câu của gói mang `code` ở một trường RIÊNG mà
+      // `cau_trac_nghiem()` bỏ đi; nếu kho này đi nguyên theo thì 257/516 câu
+      // là "Kết quả ở lệnh print cuối có giá trị nào?" mà không có code nào —
+      // câu không trả lời được, và bài đo gồm câu như vậy cho ra số vô nghĩa.
+      const noiToiCode = /[Dd]oạn code|lệnh print cuối|code dưới đây|dưới đây/;
+      let coCode = 0;
+      for (const muc of HAU_KIEM.lessons) {
+        expect(muc.questions.length).toBeGreaterThan(0);
+        for (const q of muc.questions) {
+          expect(q.options.filter((o) => o.correct === true).length).toBe(1);
+          expect(q.options.length).toBeGreaterThanOrEqual(2);
+          if (noiToiCode.test(q.question)) {
+            expect(q.question).toContain('\n');
+            coCode += 1;
+          }
+        }
+      }
+      expect(coCode).toBeGreaterThan(200);
+    });
+
+    // ---- Cổng TRỄ ----------------------------------------------------------
+    it('bài học HÔM QUA chưa được hỏi -> 400, không tạo đề', async () => {
+      dungTienDo(
+        ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+          code,
+          ngayTruoc: 1,
+        })),
+      );
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(BadRequestException);
+      expect(prisma.quiz.create).not.toHaveBeenCalled();
+    });
+
+    it('đúng mốc 7 ngày là ranh giới: 6 ngày chặn, 8 ngày cho qua', async () => {
+      dungTienDo(
+        ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+          code,
+          ngayTruoc: 6,
+        })),
+      );
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(BadRequestException);
+
+      dungTienDo(
+        ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+          code,
+          ngayTruoc: 8,
+        })),
+      );
+      const res = await service.generatePostTest(1, 'python_advanced');
+      expect(res.questions.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('CHỈ bài đã đủ trễ được hỏi, bài vừa học xong thì không', async () => {
+      // Hai bài cũ (đủ trễ) + ba bài mới. Pool phải chỉ gồm câu của hai bài
+      // cũ, nên đề 5 câu không được chứa lessonId của ba bài mới.
+      dungTienDo([
+        { code: 'PY01', ngayTruoc: 30 },
+        { code: 'PY02', ngayTruoc: 30 },
+        { code: 'PY03', ngayTruoc: 0 },
+        { code: 'PY04', ngayTruoc: 0 },
+        { code: 'PY05', ngayTruoc: 0 },
+      ]);
+      await service.generatePostTest(1, 'python_advanced');
+      const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      expect(new Set(luu.map((q) => q.lessonId))).toEqual(new Set([1, 2]));
+    });
+
+    it('biến môi trường rác KHÔNG làm cổng trễ về 0 ngày', async () => {
+      // Hướng lệch không đối xứng: đoán NGẮN hơn là mở toang cổng và đo trí
+      // nhớ ngắn hạn mà vẫn báo ra một con số. Rác -> mặc định 7, không -> 0.
+      soNgayTreCauHinh = 'bảy';
+      dungTienDo(
+        ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+          code,
+          ngayTruoc: 2,
+        })),
+      );
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(BadRequestException);
+      expect(prisma.quiz.create).not.toHaveBeenCalled();
+    });
+
+    it('POSTTEST_DELAY_DAYS=0 tắt được cổng (phải GÕ RA mới có)', async () => {
+      soNgayTreCauHinh = 0;
+      dungTienDo(
+        ['PY01', 'PY02', 'PY03', 'PY04', 'PY05'].map((code) => ({
+          code,
+          ngayTruoc: 0,
+        })),
+      );
+      const res = await service.generatePostTest(1, 'python_advanced');
+      expect(res.questions.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('CHỈ hỏi bài ĐÃ HOÀN THÀNH, và chỉ trong khoá này', async () => {
+      // Mock Prisma không thực thi WHERE hộ, nên phải đọc lại mệnh đề: gỡ
+      // `status: 'completed'` ra thì bài đang học dở (hoặc bài của khoá khác)
+      // cũng vào pool — hỏi điều chưa học thì không đo gì cả, mà mọi ca khác
+      // vẫn XANH.
+      dungTienDo(DU_TRE);
+      await service.generatePostTest(1, 'python_advanced');
+      const where = prisma.lessonProgress.findMany.mock.calls[0][0].where;
+      expect(where.status).toBe('completed');
+      expect(where.courseId).toBe('python_advanced');
+      expect(where.userId).toBe(1);
+    });
+
+    it('chưa hoàn thành bài nào -> 400 với lời nhắc riêng', async () => {
+      dungTienDo([]);
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(/hoàn thành ít nhất một bài học/);
+    });
+
+    // ---- Không lộ đáp án ----------------------------------------------------
+    it('response KHÔNG chứa đáp án, snapshot DB thì CÒN để chấm ở server', async () => {
+      dungTienDo(DU_TRE);
+      const res = await service.generatePostTest(1, 'python_advanced');
+
+      const raNgoai = JSON.stringify(res);
+      expect(raNgoai).not.toContain('correct');
+      expect(raNgoai).not.toContain('explanation');
+      // `detail` là lời phản hồi của từng lựa chọn — cũng là đáp án gián tiếp.
+      expect(raNgoai).not.toContain('detail');
+      // `source_ids` chỉ để truy vết; lọt ra là chỉ đường về gói nguồn.
+      expect(raNgoai).not.toContain('practice-1-v');
+
+      const luu = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+      expect(typeof luu[0].correct).toBe('number');
+      expect(JSON.stringify(luu)).toContain('correct');
+    });
+
+    it('getPostTestStatus không trả một đề bài nào', async () => {
+      dungTienDo(DU_TRE);
+      const res = await service.getPostTestStatus(1, 'python_advanced');
+      expect(res.state).toBe('ready');
+      const raNgoai = JSON.stringify(res);
+      for (const q of HAU_KIEM.lessons[0].questions) {
+        expect(raNgoai).not.toContain(q.question.slice(0, 20));
+      }
+      expect(prisma.quiz.create).not.toHaveBeenCalled();
+    });
+
+    // ---- MỘT LẦN -----------------------------------------------------------
+    it('đã phát đề rồi -> 409, không phát đề thứ hai', async () => {
+      dungTienDo(DU_TRE);
+      prisma.quiz.findFirst.mockResolvedValue({ id: 5, status: 'generated' });
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(ConflictException);
+      expect(prisma.quiz.create).not.toHaveBeenCalled();
+    });
+
+    it('bấm đúp: P2002 từ unique index một-phần -> 409 chứ không phải 500', async () => {
+      // Hai request đều đọc ra "chưa phát" rồi cả hai INSERT; chặn thật nằm ở
+      // `uq_quizzes_one_post_test` trong DB, không ở phép kiểm phía trên.
+      dungTienDo(DU_TRE);
+      prisma.quiz.create.mockRejectedValue(
+        new Prisma.PrismaClientKnownRequestError('trùng', {
+          code: 'P2002',
+          clientVersion: 'test',
+        }),
+      );
+      await expect(
+        service.generatePostTest(1, 'python_advanced'),
+      ).rejects.toThrow(ConflictException);
+    });
+
+    it('đã phát nhưng CHƯA nộp -> status "issued", không phải "ready"', async () => {
+      // Phân biệt này quan trọng vì giao diện dùng 'ready' để MỜI làm bài: để
+      // 'ready' khi đề đã phát là mời làm lần hai, rồi generate trả 409 — người
+      // học thấy một nút bấm vào là lỗi.
+      dungTienDo(DU_TRE);
+      prisma.quiz.findFirst.mockResolvedValue({ id: 5, status: 'generated' });
+      const res = await service.getPostTestStatus(1, 'python_advanced');
+      expect(res.state).toBe('issued');
+      expect(res.quiz_id).toBe(5);
+    });
+
+    it('đã nộp -> status "done" kèm điểm, không mời làm lại', async () => {
+      dungTienDo(DU_TRE);
+      prisma.quiz.findFirst.mockResolvedValue({ id: 5, status: 'submitted' });
+      prisma.reviewQuizResult.findFirst.mockResolvedValue({
+        score: 7,
+        total: 10,
+        submittedAt: new Date('2026-11-05T00:00:00Z'),
+      });
+      const res = await service.getPostTestStatus(1, 'python_advanced');
+      expect(res.state).toBe('done');
+      expect(res.score).toBe(7);
+      expect(res.total).toBe(10);
+    });
+
+    // ---- Nhãn `kind` -------------------------------------------------------
+    it('ghi kind="post_test"; đề ôn tập thường vẫn để kind NULL', async () => {
+      dungTienDo(DU_TRE);
+      await service.generatePostTest(1, 'python_advanced');
+      expect(prisma.quiz.create.mock.calls[0][0].data.kind).toBe(
+        POST_TEST_KIND,
+      );
+
+      // Đề ôn thường: nếu nó cũng mang nhãn thì cổng một-lần sẽ coi lần ôn đầu
+      // là "đã làm hậu kiểm" và không ai được làm bài đo.
+      prisma.quiz.create.mockClear();
+      prisma.lessonProgress.findMany.mockResolvedValue([
+        { lessonId: 1 },
+        { lessonId: 2 },
+      ]);
+      prisma.lesson.findMany.mockImplementation(() =>
+        Promise.resolve([
+          { id: 1, courseId: 'python_advanced', contentJson: peDa('PY01') },
+          { id: 2, courseId: 'python_advanced', contentJson: peDa('PY02') },
+        ]),
+      );
+      await service.generateQuiz(1, 'python_advanced');
+      expect(prisma.quiz.create.mock.calls[0][0].data.kind).toBeUndefined();
+    });
+
+    // ---- Bốc đều theo bài --------------------------------------------------
+    it('không lấy hai câu cùng một bài khi còn bài khác', async () => {
+      const ma = [
+        'PY01',
+        'PY02',
+        'PY03',
+        'PY04',
+        'PY05',
+        'PY06',
+        'PY07',
+        'PY08',
+        'PY09',
+        'PY10',
+        'PY11',
+        'PY12',
+      ];
+      dungTienDo(ma.map((code) => ({ code, ngayTruoc: 10 })));
+      // Luật này về xác suất; một lượt may mắn không chứng minh được gì.
+      for (let lan = 0; lan < 30; lan += 1) {
+        prisma.quiz.create.mockClear();
+        await service.generatePostTest(1, 'python_advanced');
+        const bai = prisma.quiz.create.mock.calls[0][0].data.questionsJson.map(
+          (q) => q.lessonId,
+        );
+        expect(new Set(bai).size).toBe(bai.length);
+      }
+    });
+
+    it('bài tự tạo lúc hoàn thành (lesson_code NULL) không làm vỡ pool', async () => {
+      // `resolveLesson()` tạo bản ghi lesson với lesson_code NULL — không tra
+      // được kho, phải BỎ chứ không được ném.
+      prisma.lessonProgress.findMany.mockResolvedValue(
+        [1, 2, 3].map((id) => ({
+          lessonId: id,
+          completedAt: new Date(Date.now() - 10 * NGAY),
+        })),
+      );
+      prisma.lesson.findMany.mockImplementation(() =>
+        Promise.resolve([
+          { id: 1, courseId: 'python_advanced', lessonCode: 'PY01' },
+          { id: 2, courseId: 'python_advanced', lessonCode: null },
+          { id: 3, courseId: 'python_advanced', lessonCode: 'PY02' },
+        ]),
+      );
+      prisma.quiz.create.mockResolvedValue({ id: 77 });
+      const res = await service.generatePostTest(1, 'python_advanced');
+      expect(res.questions.length).toBeGreaterThanOrEqual(5);
+    });
+
+    it('khoá KHÁC không có kho hậu kiểm -> 400, không phải 500', async () => {
+      prisma.lessonProgress.findMany.mockResolvedValue(
+        [1, 2].map((id) => ({
+          lessonId: id,
+          completedAt: new Date(Date.now() - 10 * NGAY),
+        })),
+      );
+      prisma.lesson.findMany.mockImplementation(() =>
+        Promise.resolve([
+          { id: 1, courseId: 'python', lessonCode: 'PY01' },
+          { id: 2, courseId: 'python', lessonCode: 'PY02' },
+        ]),
+      );
+      await expect(service.generatePostTest(1, 'python')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+
+    // ---- Nộp: dùng lại ĐÚNG submitQuiz -------------------------------------
+    it('nộp đề hậu kiểm chấm ở server và lần nộp thứ hai nhận 409', async () => {
+      // Snapshot thật của một đề hậu kiểm: lấy câu từ kho, qua service.
+      dungTienDo(DU_TRE);
+      await service.generatePostTest(1, 'python_advanced');
+      const snapshot = prisma.quiz.create.mock.calls[0][0].data.questionsJson;
+
+      prisma.quiz.findUnique.mockResolvedValue({
+        id: 77,
+        userId: 1,
+        status: 'generated',
+        questionsJson: snapshot,
+      });
+      // Trả lời đúng hết -> điểm phải bằng số câu, và điểm do SERVER tính.
+      const dung = snapshot.map((q) => q.correct);
+      const kq = await service.submitQuiz(1, 77, dung);
+      expect(kq.score).toBe(snapshot.length);
+
+      prisma.quiz.updateMany.mockResolvedValue({ count: 0 });
+      await expect(service.submitQuiz(1, 77, dung)).rejects.toThrow(
+        ConflictException,
+      );
     });
   });
 

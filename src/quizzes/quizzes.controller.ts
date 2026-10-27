@@ -69,6 +69,36 @@ export class QuizzesController {
     return this.quizzes.generateReviewQuiz(userId, courseId);
   }
 
+  // ---------- Bài hậu kiểm CÓ TRỄ ----------
+  /**
+   * Trạng thái cổng hậu kiểm. SERVER quyết định "đã đến lúc" — xem
+   * `getPostTestStatus`. Không trả câu hỏi nào.
+   */
+  @Get('courses/:id/post-test')
+  postTestStatus(
+    @CurrentUserId() userId: number,
+    @Param('id') courseId: string,
+  ) {
+    return this.quizzes.getPostTestStatus(userId, courseId);
+  }
+
+  /**
+   * Phát đề hậu kiểm — MỘT LẦN mỗi khoá, chỉ hỏi về bài đã học từ
+   * `POSTTEST_DELAY_DAYS` ngày trước. Nộp bằng `POST quizzes/:id/submit` như
+   * mọi đề khác: không có cơ chế chấm thứ hai.
+   *
+   * Route RIÊNG chứ không phải cờ trên `generate`, đúng lý do mà
+   * `generate-review` là route riêng: luồng cũ giữ nguyên hợp đồng.
+   */
+  @Post('courses/:id/post-test/generate')
+  @HttpCode(HttpStatus.OK)
+  generatePostTest(
+    @CurrentUserId() userId: number,
+    @Param('id') courseId: string,
+  ) {
+    return this.quizzes.generatePostTest(userId, courseId);
+  }
+
   // ---------- Task 132 ----------
   @Post('quizzes/:id/submit')
   @HttpCode(HttpStatus.OK)

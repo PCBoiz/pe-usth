@@ -5,9 +5,18 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { toStudyDate } from 'src/common/streak/streak.service';
+import {
+  KHOA_SO_NGAY_TRE,
+  POST_TEST_KIND,
+  khoHauKiemCua,
+  mocDuTre,
+  mocMoCong,
+  soNgayTre,
+} from './post-test';
 
 /**
  * `content_json` là JSON TỰ DO (quản trị dán vào, hoặc do scripts/pe-v4 sinh),
@@ -51,7 +60,10 @@ interface QuizQuestion {
 
 @Injectable()
 export class QuizzesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly config: ConfigService,
+  ) {}
 
   // ---------- Task 122-125 ----------
   async generateQuiz(userId: number, courseId: string) {
@@ -269,7 +281,18 @@ export class QuizzesService {
 
   // ---------- Task 126-128 ----------
   async submitQuiz(userId: number, quizId: number, answers: unknown[]) {
-    const quiz = await this.prisma.quiz.findUnique({ where: { id: quizId } });
+    // `select` tường minh, KHÔNG phải SELECT * — và lý do là một tai nạn deploy
+    // đang chờ xảy ra, không phải chuyện gọn gàng. `docs/deploy-runbook.md` cố
+    // ý KHÔNG đưa `prisma migrate deploy` vào Build Command, nên code lên
+    // production TRƯỚC migration. Cột `kind` mới thêm (migration
+    // 20261028010000) mà SELECT * đòi nó thì mọi lần NỘP BÀI trả 500 cho tới
+    // khi ai đó chạy migration bằng tay — tức làm vỡ đúng con đường chấm điểm
+    // duy nhất mà client không giả mạo được. Liệt kê cột thì cửa sổ đó chỉ còn
+    // ảnh hưởng hai route hậu kiểm (chưa có giao diện nào gọi).
+    const quiz = await this.prisma.quiz.findUnique({
+      where: { id: quizId },
+      select: { userId: true, status: true, questionsJson: true },
+    });
     if (!quiz) throw new NotFoundException('Không tìm thấy quiz');
 
     // Bước 1: chỉ chủ sở hữu, và chỉ nộp được 1 lần.
@@ -329,7 +352,16 @@ export class QuizzesService {
 
   // ---------- Task 129 ----------
   async getQuiz(userId: number, quizId: number) {
-    const quiz = await this.prisma.quiz.findUnique({ where: { id: quizId } });
+    // `select` tường minh — cùng lý do như `submitQuiz` ở trên.
+    const quiz = await this.prisma.quiz.findUnique({
+      where: { id: quizId },
+      select: {
+        id: true,
+        userId: true,
+        status: true,
+        questionsJson: true,
+      },
+    });
     // 404 (không phải 403) cho quiz của người khác — không tiết lộ quiz đó tồn tại.
     if (!quiz || quiz.userId !== userId) {
       throw new NotFoundException('Không tìm thấy quiz');
@@ -377,6 +409,234 @@ export class QuizzesService {
       },
     });
     return { ok: true, history: rows };
+  }
+
+  // ---------- Bài hậu kiểm CÓ TRỄ ----------
+  /**
+   * Trạng thái cổng hậu kiểm. Đây là chỗ SERVER nói "đã đến lúc", không phải
+   * chỗ người học tự quyết — và đó là điểm thiết kế, không phải tiện tay.
+   *
+   * Nghiên cứu về quiz ôn TỰ CHỌN cho một kết quả khó chịu, và nó có số:
+   * Fellman, Lincke & Jonsson 2020 (N = 105) thấy khả năng suy luận dự báo
+   * việc dùng quiz ôn tự chọn (β = 0,67, p = 0,011) — tức đúng những người cần
+   * nó nhất là người bỏ qua nó; ở một nơi khác chỉ 12% hoàn thành phần ôn tự
+   * chọn; và một nghiên cứu MOOC thấy lợi ích của giãn cách LỚN NHẤT ở nhóm
+   * yếu và nhóm ít hoàn thành hoạt động. Tự chọn phân phối lợi ích NGƯỢC.
+   * Vì vậy luồng hậu kiểm không được là một nút nằm trong trang "ôn tập" chờ
+   * ai tò mò bấm vào; nó phải là một việc được GIAO khi tới hạn. Route này là
+   * nguồn duy nhất của quyết định đó, để giao diện không tự nghĩ ra lịch riêng.
+   *
+   * CHỖ CHƯA BIẾT, giữ nguyên hình dạng chứ đừng lấp: KHÔNG nghiên cứu nào
+   * tách riêng được việc BẮT làm có giữ được hiệu ứng hay không. Lập luận ở
+   * trên nói rằng tự chọn phân phối sai, nó KHÔNG nói rằng bắt buộc thì hiệu
+   * ứng còn nguyên.
+   *
+   * KHÔNG trả câu hỏi nào, kể cả đề bài — chỉ trả trạng thái.
+   */
+  async getPostTestStatus(userId: number, courseId: string) {
+    const kq = await this.khaoSatHauKiem(userId, courseId);
+
+    if (kq.daPhat) {
+      // Đã phát rồi: trả điểm nếu đã nộp, để giao diện khỏi mời làm lần nữa.
+      const ketQua =
+        kq.daPhat.status === 'submitted'
+          ? await this.prisma.reviewQuizResult.findFirst({
+              where: { quizId: kq.daPhat.id, userId },
+              orderBy: { submittedAt: 'desc' },
+              select: { score: true, total: true, submittedAt: true },
+            })
+          : null;
+      return {
+        ok: true,
+        state: kq.daPhat.status === 'submitted' ? 'done' : 'issued',
+        delay_days: kq.soNgay,
+        quiz_id: kq.daPhat.id,
+        score: ketQua?.score ?? null,
+        total: ketQua?.total ?? null,
+        submitted_at: ketQua?.submittedAt ?? null,
+      };
+    }
+
+    const dayDu = kq.pool.length >= MIN_POOL;
+    return {
+      ok: true,
+      // 'none' = chưa học bài nào; 'waiting' = đã học nhưng chưa đủ trễ hoặc
+      // chưa đủ câu; 'ready' = server đang GIAO bài này.
+      state: kq.tongChin === 0 ? 'none' : dayDu ? 'ready' : 'waiting',
+      delay_days: kq.soNgay,
+      lessons_completed: kq.tongChin,
+      lessons_eligible: kq.soBaiDuTre,
+      questions_available: kq.pool.length,
+      min_questions: MIN_POOL,
+      unlocks_at: kq.moCong,
+      quiz_id: null,
+    };
+  }
+
+  /**
+   * Phát đề hậu kiểm. MỘT LẦN cho mỗi (học viên, khoá).
+   *
+   * Dùng lại NGUYÊN cơ chế đang có — `pickSpreadByLesson` để bốc, `persistQuiz`
+   * để lưu snapshot kèm đáp án rồi strip trước khi trả, `submitQuiz` để chấm ở
+   * server và chặn lần nộp thứ hai. Thứ duy nhất mới là nguồn câu hỏi (kho ở
+   * phía server) và hai cái cổng: TRỄ và MỘT LẦN.
+   *
+   * ĐIỂM CỦA ĐỀ NÀY LÀ CHỈ SỐ NỘI BỘ CỦA KHOÁ, KHÔNG PHẢI MỘT MỨC NĂNG LỰC.
+   * Đọc trước khi ai đó báo nó ra ngoài như một thang đo:
+   *  · ba biến thể của một bài đều sinh từ MỘT gốc câu hỏi, nên một đề 15 câu
+   *    lấy từ 5 bài là 5 CHÙM 3 CÂU — 5 đơn vị thông tin độc lập, không phải
+   *    15. Đó là lý do thứ hai (sau "đề trông lặp") để `pickSpreadByLesson`
+   *    trải theo BÀI; và là lý do một Cronbach's alpha đẹp ở đây KHÔNG chứng
+   *    minh gì — bản dịch SCS1 tiếng Brazil đã gặp đúng chuyện đó (alpha cao,
+   *    tương quan với điểm thật thì thấp).
+   *  · độ khó từng câu chưa bao giờ được kiểm bằng dữ liệu thực địa, và ở
+   *    n ≤ 40 thì sai số của tỉ lệ đúng một câu là khoảng ±15 điểm phần trăm.
+   * Nên con số dùng được là "cùng một người, trước so với sau, trong cùng khoá
+   * này", và phải báo kèm MẪU SỐ (11/34, không bao giờ 32%).
+   */
+  async generatePostTest(userId: number, courseId: string) {
+    const kq = await this.khaoSatHauKiem(userId, courseId);
+
+    if (kq.daPhat) {
+      throw new ConflictException(
+        'Bạn đã nhận bài hậu kiểm của khoá này rồi — mỗi khoá chỉ có một lần',
+      );
+    }
+    if (kq.tongChin === 0) {
+      throw new BadRequestException(
+        'Bạn cần hoàn thành ít nhất một bài học trước khi làm bài hậu kiểm',
+      );
+    }
+    if (kq.soBaiDuTre === 0) {
+      throw new BadRequestException(
+        `Bài hậu kiểm chỉ hỏi về bài đã học từ ${kq.soNgay} ngày trước, ` +
+          'hãy quay lại sau',
+      );
+    }
+    if (kq.pool.length < MIN_POOL) {
+      throw new BadRequestException(
+        'Chưa đủ câu hỏi cho bài hậu kiểm, hãy hoàn thành thêm bài học',
+      );
+    }
+
+    // Trọng số đều (1): bài hậu kiểm là phép ĐO, nên không được ưu tiên bài
+    // hay sai như `generateReviewQuiz` — làm vậy là tự chọn mẫu lệch về phần
+    // người học kém nhất rồi báo con số đó như là của cả khoá.
+    const picked = this.pickSpreadByLesson(
+      kq.pool,
+      kq.pool.map(() => 1),
+      this.sampleSize(kq.pool.length),
+    );
+
+    try {
+      return await this.persistQuiz(userId, courseId, picked, POST_TEST_KIND);
+    } catch (e) {
+      // Bấm đúp: hai request đều đọc ra `daPhat === null` rồi cả hai cùng
+      // INSERT. Unique index một-phần `uq_quizzes_one_post_test` (xem
+      // migration) mới là thứ chặn thật, giống hệt cách `resolveLesson` bắt
+      // P2002 sau khi có `uq_lessons_course_sort`.
+      if (
+        e instanceof Prisma.PrismaClientKnownRequestError &&
+        e.code === 'P2002'
+      ) {
+        throw new ConflictException(
+          'Bạn đã nhận bài hậu kiểm của khoá này rồi — mỗi khoá chỉ có một lần',
+        );
+      }
+      throw e;
+    }
+  }
+
+  /**
+   * Hai cổng của bài hậu kiểm, đo trong HAI truy vấn (+1 khi có bài đủ trễ).
+   *
+   * Lấy TOÀN BỘ bản ghi hoàn thành của khoá rồi lọc mốc trễ trong JS, thay vì
+   * thêm `completedAt: { lte: moc }` vào WHERE: cần cả "đã học mấy bài" (để
+   * phân biệt 'none' với 'waiting') lẫn "bài sớm nhất xong lúc nào" (để nói
+   * được cổng mở ngày nào), mà lọc ở SQL thì phải đi thêm một vòng nữa cho
+   * từng con số. Một khoá có 172 bài nên đây là tối đa 172 dòng hai cột.
+   */
+  private async khaoSatHauKiem(userId: number, courseId: string) {
+    const soNgay = soNgayTre(this.config.get<number>(KHOA_SO_NGAY_TRE));
+    const moc = mocDuTre(soNgay);
+
+    // SONG SONG: hai truy vấn không phụ thuộc nhau, và route này nằm trên
+    // đường mở trang khoá học.
+    const [daPhat, tienDo] = await Promise.all([
+      this.prisma.quiz.findFirst({
+        where: { userId, courseId, kind: POST_TEST_KIND },
+        orderBy: { createdAt: 'desc' },
+        select: { id: true, status: true },
+      }),
+      this.prisma.lessonProgress.findMany({
+        where: { userId, courseId, status: 'completed' },
+        select: { lessonId: true, completedAt: true },
+      }),
+    ]);
+
+    const duTre = tienDo.filter((r) => r.completedAt <= moc);
+    let somNhat: Date | null = null;
+    for (const r of tienDo) {
+      if (somNhat === null || r.completedAt < somNhat) somNhat = r.completedAt;
+    }
+
+    let pool: QuizQuestion[] = [];
+    if (duTre.length > 0 && !daPhat) {
+      const lessons = await this.prisma.lesson.findMany({
+        where: { id: { in: duTre.map((r) => r.lessonId) }, courseId },
+        // `lessonCode` là khoá nối sang kho hậu kiểm; `id`/`courseId` để gắn
+        // nhãn cho từng câu (xem QuizQuestion).
+        select: { id: true, courseId: true, lessonCode: true },
+      });
+      pool = this.gomCauHauKiem(lessons);
+    }
+
+    return {
+      soNgay,
+      daPhat,
+      tongChin: tienDo.length,
+      soBaiDuTre: duTre.length,
+      moCong: somNhat ? mocMoCong(somNhat, soNgay) : null,
+      pool,
+    };
+  }
+
+  /**
+   * Pool hậu kiểm: tra kho theo `lessons.lesson_code`, rồi qua ĐÚNG
+   * `normalizeQuestion` mà kho quiz trong bài đang dùng.
+   *
+   * Vì sao không gọi lại `collectQuestions`: bên đó đọc `contentJson.step_2`,
+   * tức đọc 516 câu người học ĐÃ THẤY — đúng thứ bài hậu kiểm phải tránh. Chỉ
+   * nguồn câu hỏi khác, phép chuẩn hoá thì dùng chung, nên một lần sửa
+   * `normalizeQuestion` áp cho cả hai.
+   */
+  private gomCauHauKiem(
+    lessons: Array<{
+      id: number;
+      courseId: string;
+      lessonCode: string | null;
+    }>,
+  ): QuizQuestion[] {
+    const kho = khoHauKiemCua(
+      lessons.length > 0 ? lessons[0].courseId : '__khong_co__',
+    );
+    const pool: QuizQuestion[] = [];
+
+    for (const lesson of lessons) {
+      // `lesson_code` NULL là bản ghi do `resolveLesson()` tự tạo lúc người học
+      // hoàn thành một bài chưa có trong DB — không tra được kho, bỏ qua.
+      if (!lesson.lessonCode) continue;
+      const cau = kho.get(lesson.lessonCode);
+      if (!cau) continue;
+
+      for (const raw of cau) {
+        const q = this.normalizeQuestion(raw);
+        if (q) {
+          pool.push({ ...q, lessonId: lesson.id, courseId: lesson.courseId });
+        }
+      }
+    }
+    return pool;
   }
 
   // ---------- helpers ----------
@@ -501,12 +761,20 @@ export class QuizzesService {
     userId: number,
     courseId: string,
     picked: QuizQuestion[],
+    /**
+     * Nhãn loại đề. `undefined` cho mọi đề ôn tập — Prisma bỏ qua field
+     * undefined, nên cột `kind` giữ NULL đúng như mọi bản ghi có trước cột đó.
+     * Chỉ bài hậu kiểm truyền `POST_TEST_KIND`, và nhãn ấy là chỗ DUY NHẤT trả
+     * lời được "học viên này đã nhận đề hậu kiểm chưa".
+     */
+    kind?: string,
   ) {
     const quiz = await this.prisma.quiz.create({
       data: {
         userId,
         courseId,
         status: 'generated',
+        kind,
         questionsJson: picked as unknown as Prisma.InputJsonValue,
       },
     });
