@@ -86,12 +86,44 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận một số. Bên trong, định nghĩa hàm add_one trả data + 1, gán chính hàm đó cho callback rồi trả kết quả callback(). Đây là lần thử quy tắc truyền hàm trước khi dùng nút bấm."
    },
-   "starterCode": "# ── Đoạn 1 ──\ndef greet():\n    return \"Hello\"\n\ncallback = greet\nprint(callback())\n\n# ── Đoạn 2 ──\nvalue = 10\ndef calculate():\n    value = 20\n    return value\n\nprint(calculate(), value)\n\n# ── Đoạn 3 ──\ncount = 0\ndef increment():\n    global count\n    count += 1\n\nincrement()\nprint(count)\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    def add_one():\n        return data + 1\n    callback = add_one\n    return callback()\n",
+   "tests": [
+    {
+     "name": "Số dương",
+     "input": 6,
+     "expected": 7
+    },
+    {
+     "name": "Số không",
+     "input": 0,
+     "expected": 1
+    },
+    {
+     "name": "Số âm",
+     "input": -2,
+     "expected": -1
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "add_one là hàm; add_one() là kết quả sau khi gọi."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Gán hàm cho callback trước, rồi mới gọi callback() ở dòng trả kết quả."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

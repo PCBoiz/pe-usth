@@ -90,12 +90,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận văn bản gồm nhiều dòng đơn hàng. Dùng StringIO để đọc từng dòng; trả list dòng bắt đầu đúng \"PAID:\" và bỏ newline cuối dòng. Không giữ dòng UNPAID: hay khoảng trắng đầu dòng."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom io import StringIO\nwith StringIO(\"AB\\nCD\\n\") as f:\n    print(repr(f.read(2)))\n    print(repr(f.readline()))\n    print(f.readlines())\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nwith BytesIO(b\"ABC\") as f:\n    f.seek(1)\n    f.write(b\"Z\")\n    f.seek(0)\n    print(f.read())\n\n# ── Đoạn 3 ──\ntext = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "from io import StringIO\ndef solve(data):\n    with StringIO(data) as f:\n        return [line.rstrip('\\r\\n') for line in f if line.startswith('PAID:')]\n",
+   "tests": [
+    {
+     "name": "xen kẽ",
+     "input": "PAID:12\nUNPAID:13\nPAID:14\n",
+     "expected": [
+      "PAID:12",
+      "PAID:14"
+     ]
+    },
+    {
+     "name": "dòng cuối không newline",
+     "input": "PAID:cà phê",
+     "expected": [
+      "PAID:cà phê"
+     ]
+    },
+    {
+     "name": "không khớp",
+     "input": " PAID:2\nUNPAID:3",
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

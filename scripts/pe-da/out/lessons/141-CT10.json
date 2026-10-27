@@ -84,15 +84,60 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy trên máy của bạn",
-    "body": "Bài này không chạy được trong trình duyệt: bản Pyodide này không bật thread thật. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận {\"values\": list số, \"factor\": số}. Tạo Thread(target=worker, args=(values,factor,result)); worker nhân từng số với factor rồi ghi vào result. Main start, join, trả result. Dùng một worker để thứ tự không phụ thuộc lịch chạy."
    },
-   "procedure": [
-    "Mở terminal tại thư mục làm việc của bạn.",
-    "Tạo môi trường: py -m venv .venv",
-    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
-    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
-   ]
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import threading\ndef worker(values, factor, result):\n    for number in values: result.append(number * factor)\ndef solve(data):\n    result = []\n    thread = threading.Thread(target=worker, args=(data['values'], data['factor'], result))\n    thread.start()\n    thread.join()\n    return result\n",
+   "tests": [
+    {
+     "name": "nhân ba",
+     "input": {
+      "values": [
+       1,
+       4
+      ],
+      "factor": 3
+     },
+     "expected": [
+      3,
+      12
+     ]
+    },
+    {
+     "name": "factor âm",
+     "input": {
+      "values": [
+       2,
+       -1
+      ],
+      "factor": -2
+     },
+     "expected": [
+      -4,
+      2
+     ]
+    },
+    {
+     "name": "rỗng",
+     "input": {
+      "values": [],
+      "factor": 5
+     },
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "local",
@@ -109,5 +154,6 @@
    "block": 2,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

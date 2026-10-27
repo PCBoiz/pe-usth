@@ -82,15 +82,86 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Một rạp ghi số vé theo ca. data gồm values, labels và pick; nhãn là duy nhất và pick có trong labels. Tạo Series và trả dictionary có selected (số vé của nhãn pick), total (tổng vé), count (số ca)."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])\n\n# ── Đoạn 3 ──\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.sum())\nprint(len(cups))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return {'selected': int(s.loc[data['pick']]), 'total': int(s.sum()), 'count': len(s)}\n",
+   "tests": [
+    {
+     "name": "ba ca mới",
+     "input": {
+      "values": [
+       7,
+       12,
+       5
+      ],
+      "labels": [
+       "AM",
+       "PM",
+       "Late"
+      ],
+      "pick": "Late"
+     },
+     "expected": {
+      "selected": 5,
+      "total": 24,
+      "count": 3
+     }
+    },
+    {
+     "name": "đổi thứ tự nhãn",
+     "input": {
+      "values": [
+       20,
+       3
+      ],
+      "labels": [
+       "PM",
+       "AM"
+      ],
+      "pick": "AM"
+     },
+     "expected": {
+      "selected": 3,
+      "total": 23,
+      "count": 2
+     }
+    },
+    {
+     "name": "ca chưa bán vé",
+     "input": {
+      "values": [
+       0
+      ],
+      "labels": [
+       "Only"
+      ],
+      "pick": "Only"
+     },
+     "expected": {
+      "selected": 0,
+      "total": 0,
+      "count": 1
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Ô vuông đang chứa nhãn PM, không chứa vị trí số."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo Series có nhãn và lấy một giá trị bằng loc."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

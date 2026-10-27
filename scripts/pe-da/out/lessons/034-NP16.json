@@ -94,15 +94,74 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dictionary values là số đo và weights là số lần đại diện cho từng số đo. Trả trung bình có trọng số. Các dãy không rỗng, cùng độ dài; trọng số không âm và có tổng dương."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nweighted = (7 * 2 + 8 * 3) / (2 + 3)\nprint(weighted)\n\n# ── Đoạn 2 ──\na = np.array([6, 8, 10])\nprint(a.mean(), a.min(), a.max())\n\n# ── Đoạn 3 ──\nmarks = np.array([7, 8])\ncredits = np.array([2, 3])\nprint(np.average(marks, weights=credits))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.average(data[\"values\"], weights=data[\"weights\"])\n",
+   "tests": [
+    {
+     "name": "Trọng số khác nhau",
+     "input": {
+      "values": [
+       6,
+       9
+      ],
+      "weights": [
+       1,
+       3
+      ]
+     },
+     "expected": 8.25
+    },
+    {
+     "name": "Trọng số bằng nhau",
+     "input": {
+      "values": [
+       4,
+       8
+      ],
+      "weights": [
+       2,
+       2
+      ]
+     },
+     "expected": 6.0
+    },
+    {
+     "name": "Một trọng số bằng không",
+     "input": {
+      "values": [
+       100,
+       7
+      ],
+      "weights": [
+       0,
+       5
+      ]
+     },
+     "expected": 7.0
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số đo thứ i phải đi cùng trọng số thứ i."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "np.average nhận dãy giá trị và weights; mẫu số là tổng trọng số."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

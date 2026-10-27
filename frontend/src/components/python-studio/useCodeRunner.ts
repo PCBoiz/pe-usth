@@ -168,6 +168,10 @@ export function useLessonRun({
         // liệu vào" thì truyền mảng dòng vào đúng chỗ này.
         stdin: [],
         packages: four.packages ?? [],
+        // Hợp đồng gọi của bài tập dạng dữ liệu. Phải đi cùng lượt chạy: bộ
+        // chấm cần nó TRƯỚC cả lần chạy chính, vì bài `mode: "script"` có đề
+        // cấp sẵn một biến mà mã học viên không gán ở đâu cả.
+        contract: four.contract,
       })
       .then((data) => {
         if (data) onDone(data);

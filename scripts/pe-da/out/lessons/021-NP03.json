@@ -94,15 +94,74 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list giá gồm số nguyên hoặc số thực. Tạo array với dtype=float rồi trả dictionary gồm values là array đó và dtype là str(array.dtype). Giữ nguyên các phần thập phân."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nprices = np.array([12.5, 20])\nprint(prices)\nprint(prices.dtype)\n\n# ── Đoạn 2 ──\na = np.array([6, 8], dtype=float)\nprint(a)\n\n# ── Đoạn 3 ──\na = np.array([6, 8.5])\nprint(a)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data, dtype=float)\n    return {\"values\": values, \"dtype\": str(values.dtype)}\n",
+   "tests": [
+    {
+     "name": "Có giá lẻ",
+     "input": [
+      3,
+      4.5
+     ],
+     "expected": {
+      "values": [
+       3.0,
+       4.5
+      ],
+      "dtype": "float64"
+     }
+    },
+    {
+     "name": "Toàn số nguyên",
+     "input": [
+      2,
+      8
+     ],
+     "expected": {
+      "values": [
+       2.0,
+       8.0
+      ],
+      "dtype": "float64"
+     }
+    },
+    {
+     "name": "Giá nhỏ",
+     "input": [
+      0,
+      0.25
+     ],
+     "expected": {
+      "values": [
+       0.0,
+       0.25
+      ],
+      "dtype": "float64"
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Các giá nguyên cũng phải được lưu bằng số thực trong bài này."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo bằng dtype=float; trả cả array và tên kiểu lấy từ str(values.dtype)."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

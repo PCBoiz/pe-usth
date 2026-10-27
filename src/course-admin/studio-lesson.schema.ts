@@ -93,7 +93,7 @@ export function validateStudioLesson(value: unknown): string[] {
 
   const one = lesson.step_1;
   if (isObject(one) && isObject(one.predict)) {
-    const predict = one.predict as Record<string, unknown>;
+    const predict = one.predict;
     const options = predict.options;
     if (!Array.isArray(options) || options.length < 2) {
       errors.push('step_1.predict.options: cần ít nhất 2 lựa chọn.');
@@ -133,7 +133,7 @@ export function validateStudioLesson(value: unknown): string[] {
     }
   }
   if (isObject(two) && isObject(two.classify)) {
-    const classify = two.classify as Record<string, unknown>;
+    const classify = two.classify;
     const bins = classify.bins;
     const tokens = classify.tokens;
     if (!Array.isArray(bins) || bins.length < 2) {
@@ -159,7 +159,7 @@ export function validateStudioLesson(value: unknown): string[] {
 
   const three = lesson.step_3;
   if (isObject(three) && isObject(three.scaffold)) {
-    const scaffold = three.scaffold as Record<string, unknown>;
+    const scaffold = three.scaffold;
     const template = scaffold.template;
     const slots = scaffold.slots;
     if (!nonEmptyString(template)) {
@@ -187,8 +187,43 @@ export function validateStudioLesson(value: unknown): string[] {
       if (!Array.isArray(tests) || tests.length === 0) {
         errors.push('step_4.tests: cần ít nhất 1 trường hợp kiểm thử.');
       } else {
+        // HAI hợp đồng ca chấm, và bộ này là CỬA DUY NHẤT đưa nội dung vào
+        // DB — nên nó phải biết cả hai, không thì bài tập được chấm không bao
+        // giờ tới được học viên.
+        //
+        //   BIỂU THỨC (pe-v4): `call` + `expect`, hai chuỗi Python.
+        //   DỮ LIỆU (pe-da, từ 26/10): `input` + `expected`, giá trị JSON
+        //   thuần. `expected: null` là đáp án HỢP LỆ của nhiều bài ("đầu vào
+        //   rỗng -> không có kết quả"), nên phép kiểm phải hỏi KHOÁ CÓ MẶT
+        //   không, chứ không hỏi giá trị có thật không.
+        //
+        // Đã gặp: bản đầu chỉ biết hợp đồng biểu thức, nên
+        // `update-lesson-content.ts --offline` từ chối cả 124 bài với "thiếu
+        // biểu thức gọi hàm" — một bộ chấm chạy đúng trong trình duyệt mà
+        // không có đường nào vào DB.
         tests.forEach((t, i) => {
           if (!isObject(t)) return errors.push(`step_4.tests[${i}]: sai kiểu.`);
+          const laBieuThuc = 'call' in t || 'expect' in t;
+          const laDuLieu = 'input' in t || 'expected' in t;
+          if (laBieuThuc && laDuLieu) {
+            // Trộn thì `step_4.contract` chỉ đúng cho một nửa số ca, mà nửa
+            // kia không báo gì: bộ chấm phân nhánh theo từng ca nên nó cứ chạy.
+            errors.push(
+              `step_4.tests[${i}]: trộn hai hợp đồng (call/expect lẫn input/expected).`,
+            );
+            return;
+          }
+          if (laDuLieu) {
+            if (!('input' in t))
+              errors.push(`step_4.tests[${i}].input: thiếu đầu vào.`);
+            if (!('expected' in t))
+              errors.push(
+                `step_4.tests[${i}].expected: thiếu kết quả mong đợi.`,
+              );
+            if (!nonEmptyString(t.name))
+              errors.push(`step_4.tests[${i}].name: ca chấm phải có tên.`);
+            return;
+          }
           if (!nonEmptyString(t.call))
             errors.push(`step_4.tests[${i}].call: thiếu biểu thức gọi hàm.`);
           if (!nonEmptyString(t.expect))
@@ -261,31 +296,44 @@ function validateFigure(value: unknown, at: string): string[] {
     errors.push(
       `${at}.src: phải là đường dẫn cùng miền tới file .svg (vd. /static/anim/P02-lifecycle.svg).`,
     );
-  if (!nonEmptyString(value.caption)) errors.push(`${at}.caption: thiếu chú thích.`);
-  if (!nonEmptyString(value.alt)) errors.push(`${at}.alt: thiếu mô tả cho trình đọc màn hình.`);
+  if (!nonEmptyString(value.caption))
+    errors.push(`${at}.caption: thiếu chú thích.`);
+  if (!nonEmptyString(value.alt))
+    errors.push(`${at}.alt: thiếu mô tả cho trình đọc màn hình.`);
   return errors;
 }
 
 function validateTheory(one: Record<string, unknown>): string[] {
   const errors: string[] = [];
-  if (one.figure !== undefined) errors.push(...validateFigure(one.figure, 'step_1.figure'));
+  if (one.figure !== undefined)
+    errors.push(...validateFigure(one.figure, 'step_1.figure'));
   if (one.theory === undefined) return errors;
-  if (!Array.isArray(one.theory)) return [...errors, 'step_1.theory: phải là mảng khối lý thuyết.'];
+  if (!Array.isArray(one.theory))
+    return [...errors, 'step_1.theory: phải là mảng khối lý thuyết.'];
   if (one.theory.length === 0)
-    return [...errors, 'step_1.theory: mảng rỗng — bỏ hẳn khoá này nếu bài không có lý thuyết.'];
+    return [
+      ...errors,
+      'step_1.theory: mảng rỗng — bỏ hẳn khoá này nếu bài không có lý thuyết.',
+    ];
   one.theory.forEach((block, i) => {
     const at = `step_1.theory[${i}]`;
     if (!isObject(block)) return errors.push(`${at}: phải là object.`);
-    if (!nonEmptyString(block.title)) errors.push(`${at}.title: thiếu tiêu đề khối.`);
+    if (!nonEmptyString(block.title))
+      errors.push(`${at}.title: thiếu tiêu đề khối.`);
     const bullets = block.bullets;
     if (bullets !== undefined) {
-      if (!Array.isArray(bullets)) errors.push(`${at}.bullets: phải là mảng chuỗi.`);
+      if (!Array.isArray(bullets))
+        errors.push(`${at}.bullets: phải là mảng chuỗi.`);
       else if (!bullets.every((b) => nonEmptyString(b)))
-        errors.push(`${at}.bullets: mỗi gạch đầu dòng phải là chuỗi không rỗng.`);
+        errors.push(
+          `${at}.bullets: mỗi gạch đầu dòng phải là chuỗi không rỗng.`,
+        );
     }
     const hasBullets = Array.isArray(bullets) && bullets.length > 0;
     if (!nonEmptyString(block.body) && !hasBullets)
-      errors.push(`${at}: phải có body hoặc bullets — khối rỗng không hiện được gì.`);
+      errors.push(
+        `${at}: phải có body hoặc bullets — khối rỗng không hiện được gì.`,
+      );
     if (block.figure !== undefined && block.figure !== null)
       errors.push(...validateFigure(block.figure, `${at}.figure`));
   });

@@ -91,15 +91,115 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.events là list {inside:bool,x:số hoặc None,y:số hoặc None}. Tạo Figure/Axes và callback như bài: chỉ khi inside=True, x và y đều có số thì cập nhật state.point thành [x,y]. Có thể dùng SimpleNamespace giả lập đối tượng event để kiểm callback; nối mpl_connect rồi ngắt sau các sự kiện. Trả point cuối hoặc None nếu chưa có sự kiện hợp lệ. Đây không chứng minh đã thao tác chuột thật. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom types import SimpleNamespace\nax.scatter([1, 2, 3], [8, 10, 7])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A click can be translated into data coordinates\")\nstate = {\"point\":None}\ndef on_click(event):\n    if event.inaxes is ax and event.xdata is not None:\n        state[\"point\"] = (round(event.xdata, 1), round(event.ydata, 1))\ncid = fig.canvas.mpl_connect(\"button_press_event\", on_click)\non_click(SimpleNamespace(inaxes=ax, xdata=2.0, ydata=10.0))\nprint(state[\"point\"])\nfig.canvas.mpl_disconnect(cid)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-1.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom types import SimpleNamespace\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     state = {'point':None}\n     def on_click(event):\n         if event.inaxes is ax and event.xdata is not None and event.ydata is not None:\n             state['point'] = [float(event.xdata),float(event.ydata)]\n     cid = fig.canvas.mpl_connect('button_press_event',on_click)\n     for e in data['events']:\n         on_click(SimpleNamespace(inaxes=ax if e['inside'] else None,xdata=e['x'],ydata=e['y']))\n     fig.canvas.mpl_disconnect(cid)\n     plt.close(fig)\n     return state['point']\n",
+   "tests": [
+    {
+     "name": "bỏ sự kiện ngoài vùng",
+     "input": {
+      "events": [
+       {
+        "inside": true,
+        "x": 2,
+        "y": 6
+       },
+       {
+        "inside": false,
+        "x": 9,
+        "y": 8
+       }
+      ]
+     },
+     "expected": [
+      2.0,
+      6.0
+     ]
+    },
+    {
+     "name": "chưa có tọa độ hợp lệ",
+     "input": {
+      "events": [
+       {
+        "inside": false,
+        "x": null,
+        "y": null
+       },
+       {
+        "inside": true,
+        "x": null,
+        "y": 3
+       }
+      ]
+     },
+     "expected": null
+    },
+    {
+     "name": "giữ lựa chọn mới nhất",
+     "input": {
+      "events": [
+       {
+        "inside": true,
+        "x": 0,
+        "y": 0
+       },
+       {
+        "inside": true,
+        "x": 4.5,
+        "y": 7
+       }
+      ]
+     },
+     "expected": [
+      4.5,
+      7.0
+     ]
+    },
+    {
+     "name": "bỏ tọa độ y thiếu",
+     "input": {
+      "events": [
+       {
+        "inside": true,
+        "x": 1,
+        "y": 4
+       },
+       {
+        "inside": true,
+        "x": 2,
+        "y": null
+       }
+      ]
+     },
+     "expected": [
+      1.0,
+      4.0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Sự kiện phải thuộc đúng Axes đang xét; kiểm tra đối tượng vùng vẽ của event."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Callback chỉ nhận sự kiện trong đúng Axes và có tọa độ hợp lệ."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

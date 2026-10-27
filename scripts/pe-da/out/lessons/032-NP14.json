@@ -96,15 +96,70 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả array các số từ 20 đến 35°C, nhận cả hai biên và giữ nguyên thứ tự."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrain = np.array([0., 2.5, 0., 7.])\nwet = rain > 0\nprint(rain[wet])\n\n# ── Đoạn 2 ──\na = np.array([3, 5, 8])\nmask = a >= 5\nprint(a[mask])\n\n# ── Đoạn 3 ──\na = np.array([-1, 4, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    temps = np.array(data)\n    valid = (temps >= 20) & (temps <= 35)\n    return temps[valid]\n",
+   "tests": [
+    {
+     "name": "Có số ở hai biên",
+     "input": [
+      18,
+      20,
+      28,
+      35,
+      37
+     ],
+     "expected": [
+      20,
+      28,
+      35
+     ]
+    },
+    {
+     "name": "Không số nào đạt",
+     "input": [
+      0,
+      40
+     ],
+     "expected": []
+    },
+    {
+     "name": "Thứ tự không tăng",
+     "input": [
+      35,
+      22,
+      20,
+      30
+     ],
+     "expected": [
+      35,
+      22,
+      20,
+      30
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Hai điều kiện phải cùng đúng và phải giữ cả 20 lẫn 35."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo (temps >= 20) & (temps <= 35), rồi dùng mask chọn từ temps."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

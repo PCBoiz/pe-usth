@@ -91,10 +91,82 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values có ít nhất hai số độc lập theo giả định bài. Tính mean và SE=std(ddof=1)/sqrt(n); tạo errorbar ở x=1, đặt title=\"Mean +/- 1 SE\". Trả mean, se, bounds=[mean-se,mean+se] và title từ Axes. Đây không phải CI 95%. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.errorbar([1, 2], [10, 12], yerr=[2, 3], fmt=\"o\", capsize=5)\nax.set(xticks=[1, 2], xticklabels=[\"A\", \"B\"], ylabel=\"Delivery (minutes)\", title=\"Means with supplied +/- standard deviations\")\nprint(10 - 2, 10 + 2)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\nmean = [10, 12, 11]\nax.plot(days, mean, marker=\"o\", label=\"Forecast\")\nax.fill_between(days, [8, 9, 9], [12, 15, 13], alpha=0.25, label=\"Illustrative interval\")\nax.set(xlabel=\"Day\", ylabel=\"Orders\", title=\"Label what the shaded interval means\")\nax.legend()\nprint([12-8, 15-9, 13-9])\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     values = np.asarray(data['values'],dtype=float)\n     mean = float(values.mean())\n     se = float(values.std(ddof=1)/np.sqrt(len(values)))\n     fig, ax = plt.subplots()\n     ax.errorbar([1],[mean],yerr=[se],fmt='o')\n     ax.set_title('Mean +/- 1 SE')\n     result = {'mean':mean,'se':se,'bounds':[mean-se,mean+se],'title':ax.get_title()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "hai giá trị",
+     "input": {
+      "values": [
+       2,
+       4
+      ]
+     },
+     "expected": {
+      "mean": 3.0,
+      "se": 1.0,
+      "bounds": [
+       2.0,
+       4.0
+      ],
+      "title": "Mean +/- 1 SE"
+     }
+    },
+    {
+     "name": "không phân tán",
+     "input": {
+      "values": [
+       5,
+       5,
+       5
+      ]
+     },
+     "expected": {
+      "mean": 5.0,
+      "se": 0.0,
+      "bounds": [
+       5.0,
+       5.0
+      ],
+      "title": "Mean +/- 1 SE"
+     }
+    },
+    {
+     "name": "thang mới",
+     "input": {
+      "values": [
+       10,
+       14
+      ]
+     },
+     "expected": {
+      "mean": 12.0,
+      "se": 2.0,
+      "bounds": [
+       10.0,
+       14.0
+      ],
+      "title": "Mean +/- 1 SE"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Độ lệch chuẩn mẫu chia cho n-1, nên số bậc tự do trừ đi là 1."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Phân biệt SD với SE và dựng error bar có ý nghĩa rõ."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -102,5 +174,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

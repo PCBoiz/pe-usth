@@ -94,15 +94,61 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dãy nhiệt độ. Trả mask đánh dấu những số đo từ 30°C trở lên. Giữ đủ số vị trí và thứ tự đầu vào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrain = np.array([0., 2.5, 0.])\nprint(rain > 0)\n\n# ── Đoạn 2 ──\na = np.array([3, 5, 8])\nprint(a >= 5)\n\n# ── Đoạn 3 ──\na = np.array([20, 35, 40])\nprint(a < 35)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data) >= 30\n",
+   "tests": [
+    {
+     "name": "Có số ở ngưỡng",
+     "input": [
+      29,
+      30,
+      32
+     ],
+     "expected": [
+      false,
+      true,
+      true
+     ]
+    },
+    {
+     "name": "Mọi số dưới ngưỡng",
+     "input": [
+      0,
+      20
+     ],
+     "expected": [
+      false,
+      false
+     ]
+    },
+    {
+     "name": "Chưa có số đo",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Bài chỉ cần dãy True/False, chưa lấy các nhiệt độ được chọn."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "So array với >= 30 để nhận cả giá trị đúng ngưỡng."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

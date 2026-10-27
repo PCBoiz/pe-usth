@@ -92,15 +92,94 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dictionary có values là dãy số và columns là số cột. Các dãy đều chia vừa. Trả bảng xếp lần lượt theo hàng với đúng số cột được yêu cầu."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nvalues = np.array([12, 15, 9, 10, 8, 14])\nsales = values.reshape(2, 3)\nprint(sales)\n\n# ── Đoạn 2 ──\na = np.arange(1, 7)\nprint(a.reshape(2, 3))\n\n# ── Đoạn 3 ──\na = np.arange(1, 7)\nprint(a.reshape(3, 2))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data[\"values\"])\n    return values.reshape(-1, data[\"columns\"])\n",
+   "tests": [
+    {
+     "name": "Sáu số ba cột",
+     "input": {
+      "values": [
+       1,
+       2,
+       3,
+       4,
+       5,
+       6
+      ],
+      "columns": 3
+     },
+     "expected": [
+      [
+       1,
+       2,
+       3
+      ],
+      [
+       4,
+       5,
+       6
+      ]
+     ]
+    },
+    {
+     "name": "Bốn số hai cột",
+     "input": {
+      "values": [
+       8,
+       6,
+       4,
+       2
+      ],
+      "columns": 2
+     },
+     "expected": [
+      [
+       8,
+       6
+      ],
+      [
+       4,
+       2
+      ]
+     ]
+    },
+    {
+     "name": "Một số một cột",
+     "input": {
+      "values": [
+       0
+      ],
+      "columns": 1
+     },
+     "expected": [
+      [
+       0
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số cột đã được cho; số hàng được suy ra từ tổng số phần tử."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "reshape cho phép để đúng một chiều là -1."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

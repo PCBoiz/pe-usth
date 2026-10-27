@@ -84,12 +84,59 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp. Tạo unique_codes là list mã khác nhau đã xếp tăng theo tên."
    },
-   "starterCode": "# ── Đoạn 1 ──\nregistered = {\"An\", \"Mai\", \"Lan\"}\nsubmitted = {\"Mai\", \"Lan\"}\nprint(sorted(registered - submitted))\nprint(len(registered))\n\n# ── Đoạn 2 ──\na, b = {1, 2}, {2, 3}\nprint(sorted(a | b))\nprint(sorted(a & b))\nprint(sorted(a - b))\n\n# ── Đoạn 3 ──\na, b = {1, 2}, {1, 2, 3}\nprint(a.issubset(b), b.issuperset(a))\nprint(a.isdisjoint({4, 5}))\nprint(len(set([1, 1, 2])))\n"
+   "starterCode": "# Hệ thống cung cấp codes là list mã phiếu, có thể bị lặp.\n# Hệ thống cung cấp codes; gán kết quả vào unique_codes.\n",
+   "solutionCode": "unique_codes = sorted(set(codes))\n",
+   "tests": [
+    {
+     "name": "Phiếu bị lặp",
+     "input": [
+      "B",
+      "A",
+      "B"
+     ],
+     "expected": [
+      "A",
+      "B"
+     ]
+    },
+    {
+     "name": "Một mã xuất hiện nhiều lần",
+     "input": [
+      "X",
+      "X",
+      "X"
+     ],
+     "expected": [
+      "X"
+     ]
+    },
+    {
+     "name": "Chưa có phiếu",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "codes",
+    "resultVariable": "unique_codes"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần bỏ mã lặp trước khi tạo thứ tự hiển thị."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "set giữ mã khác nhau; sorted trả list có thứ tự để gán vào unique_codes."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

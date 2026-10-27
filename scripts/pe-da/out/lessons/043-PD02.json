@@ -96,15 +96,116 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows là list các dictionary có item và units, có ít nhất một hàng. Tạo DataFrame, trả shape dưới dạng list hai số, first là dictionary hàng đầu và last là dictionary hàng cuối."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea', 'cocoa'], 'cups': [12, 8, 5]})\nprint(sales.head(1).to_dict('records'))\nprint(sales.tail(1).to_dict('records'))\nprint(sales[['cups']].to_numpy().tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows'])\n     return {'shape': list(frame.shape), 'first': frame.head(1).to_dict('records')[0], 'last': frame.tail(1).to_dict('records')[0]}\n",
+   "tests": [
+    {
+     "name": "ba mặt hàng",
+     "input": {
+      "rows": [
+       {
+        "item": "ink",
+        "units": 4
+       },
+       {
+        "item": "paper",
+        "units": 10
+       },
+       {
+        "item": "clip",
+        "units": 2
+       }
+      ]
+     },
+     "expected": {
+      "shape": [
+       3,
+       2
+      ],
+      "first": {
+       "item": "ink",
+       "units": 4
+      },
+      "last": {
+       "item": "clip",
+       "units": 2
+      }
+     }
+    },
+    {
+     "name": "một mặt hàng",
+     "input": {
+      "rows": [
+       {
+        "item": "eraser",
+        "units": 0
+       }
+      ]
+     },
+     "expected": {
+      "shape": [
+       1,
+       2
+      ],
+      "first": {
+       "item": "eraser",
+       "units": 0
+      },
+      "last": {
+       "item": "eraser",
+       "units": 0
+      }
+     }
+    },
+    {
+     "name": "hai mặt hàng",
+     "input": {
+      "rows": [
+       {
+        "item": "ruler",
+        "units": 6
+       },
+       {
+        "item": "tape",
+        "units": 9
+       }
+      ]
+     },
+     "expected": {
+      "shape": [
+       2,
+       2
+      ],
+      "first": {
+       "item": "ruler",
+       "units": 6
+      },
+      "last": {
+       "item": "tape",
+       "units": 9
+      }
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần phương thức lấy hàng cuối thay vì hàng đầu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đọc shape và lấy hàng đầu, hàng cuối của DataFrame."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

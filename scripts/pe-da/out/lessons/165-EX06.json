@@ -76,11 +76,79 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết solve(data) nhận {\"marks\": list số, \"extra\": số}. Chụp snapshot của marks, tạo worker ghi snapshot vào snapshot.gz bằng gzip/pickle. Sau start, thêm extra vào dữ liệu hiện tại. join, nhận thông báo, đọc file thật và trả {\"saved\": điểm đã lưu, \"current\": điểm hiện tại, \"status\": \"done\"}. Worker gửi lỗi qua Queue; không giả lập file bằng dictionary."
    },
-   "starterCode": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())\n",
-   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import copy, gzip, pickle\nfrom pathlib import Path\nfrom threading import Thread\nfrom queue import Queue\ndef solve(data):\n    current = {'marks':list(data['marks'])}\n    snapshot = copy.deepcopy(current)\n    messages = Queue()\n    path = Path('snapshot.gz')\n    def worker():\n        try:\n            with gzip.open(path,'wb') as stream:\n                pickle.dump(snapshot,stream)\n        except Exception as error:\n            messages.put(('error',str(error)))\n        else:\n            messages.put(('done',None))\n    task = Thread(target=worker)\n    task.start()\n    current['marks'].append(data['extra'])\n    task.join()\n    status, error = messages.get(timeout=2)\n    if status!='done':\n        raise RuntimeError(error)\n    with gzip.open(path,'rb') as stream:\n        loaded = pickle.load(stream)\n    return {'saved':loaded['marks'],'current':current['marks'],'status':status}\n",
+   "tests": [
+    {
+     "name": "đổi sau snapshot",
+     "input": {
+      "marks": [
+       6,
+       8
+      ],
+      "extra": 10
+     },
+     "expected": {
+      "saved": [
+       6,
+       8
+      ],
+      "current": [
+       6,
+       8,
+       10
+      ],
+      "status": "done"
+     }
+    },
+    {
+     "name": "điểm 0",
+     "input": {
+      "marks": [
+       0
+      ],
+      "extra": 5
+     },
+     "expected": {
+      "saved": [
+       0
+      ],
+      "current": [
+       0,
+       5
+      ],
+      "status": "done"
+     }
+    },
+    {
+     "name": "list rỗng",
+     "input": {
+      "marks": [],
+      "extra": 7
+     },
+     "expected": {
+      "saved": [],
+      "current": [
+       7
+      ],
+      "status": "done"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "mixed",
@@ -93,5 +161,6 @@
    "block": 2,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

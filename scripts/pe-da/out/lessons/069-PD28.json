@@ -82,15 +82,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.text là CSV một cột x với ít nhất một số, có thể có NA; data.chunksize >0. Đọc theo lô, cộng tổng và count giá trị không thiếu. Trả total, count và mean. Kết quả phải không phụ thuộc cách chia lô."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nnames = pd.Series(['north', 'south'] * 1000, dtype='object')\ncategories = names.astype('category')\nprint(categories.memory_usage(deep=True) < names.memory_usage(deep=True))\nprint(categories.astype('object').equals(names))\n\n# ── Đoạn 3 ──\nimport pandas as pd\nfrom io import StringIO\ntext = 'amount\\n10\\n20\\n30\\n40\\n'\ntotal = 0\nrows = 0\nfor chunk in pd.read_csv(StringIO(text), chunksize=2):\n    total += chunk['amount'].sum()\n    rows += len(chunk)\nprint(total, rows)\nprint(total / rows)\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     total, count = 0.0, 0\n     for chunk in pd.read_csv(StringIO(data['text']), chunksize=data['chunksize']):\n         total += chunk['x'].sum()\n         count += int(chunk['x'].count())\n     return {'total':float(total), 'count':count, 'mean':float(total/count)}\n",
+   "tests": [
+    {
+     "name": "lô cuối ngắn",
+     "input": {
+      "text": "x\n0\n0\n9\n",
+      "chunksize": 2
+     },
+     "expected": {
+      "total": 9.0,
+      "count": 3,
+      "mean": 3.0
+     }
+    },
+    {
+     "name": "ô thiếu",
+     "input": {
+      "text": "x\n4\nNA\n8\n",
+      "chunksize": 1
+     },
+     "expected": {
+      "total": 12.0,
+      "count": 2,
+      "mean": 6.0
+     }
+    },
+    {
+     "name": "một lô lớn",
+     "input": {
+      "text": "x\n2\n4\n6\n8\n",
+      "chunksize": 9
+     },
+     "expected": {
+      "total": 20.0,
+      "count": 4,
+      "mean": 5.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mỗi vòng chỉ đọc một phần số hàng đã quy định."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tính tổng và số quan sát qua các lô rồi mới chia."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

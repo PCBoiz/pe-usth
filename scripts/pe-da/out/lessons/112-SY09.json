@@ -98,12 +98,55 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Tạo JoinExporter(separator) có export(rows) nối các chuỗi và ReportService(exporter) có build(rows). solve(data) nhận {\"separator\": chuỗi, \"rows\": list chuỗi}, trả nội dung qua service. Dùng composition, không kế thừa JoinExporter trong service."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\ntry:\n    Exporter()\nexcept TypeError:\n    print(\"Can cai dat export\")\n\n# ── Đoạn 2 ──\nfrom abc import ABC, abstractmethod\nclass Exporter(ABC):\n    @abstractmethod\n    def export(self, rows): pass\nclass TextExporter(Exporter):\n    def export(self, rows): return \",\".join(rows)\nprint(TextExporter().export([\"A\", \"B\"]))\n\n# ── Đoạn 3 ──\nclass TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "class JoinExporter:\n    def __init__(self, separator): self.separator = separator\n    def export(self, rows): return self.separator.join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\ndef solve(data): return ReportService(JoinExporter(data['separator'])).build(data['rows'])\n",
+   "tests": [
+    {
+     "name": "phân cách chấm phẩy",
+     "input": {
+      "separator": ";",
+      "rows": [
+       "A",
+       "B"
+      ]
+     },
+     "expected": "A;B"
+    },
+    {
+     "name": "một hàng",
+     "input": {
+      "separator": "|",
+      "rows": [
+       "only"
+      ]
+     },
+     "expected": "only"
+    },
+    {
+     "name": "không có hàng",
+     "input": {
+      "separator": ",",
+      "rows": []
+     },
+     "expected": ""
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -14,7 +14,7 @@
 //
 // Hợp đồng thông điệp với worker (public/static/js/studio-lesson.worker.js —
 // file đó do phía runtime quản, ở đây không sửa):
-//   gửi đi : { code, tests, forbid, files, stdin, packages }   ← tên trường cố định
+//   gửi đi : { code, tests, forbid, files, stdin, packages, contract } ← tên cố định
 //   nhận về: [{ type: 'loading' }]  { type: 'ready' }  rồi  { type: 'result', ...RunResult }
 //   'loading' = worker đang tải/import thư viện của bài (numpy, pandas…): đồng hồ
 //   quay về mốc nạp runtime, 5 giây chỉ bắt đầu ở 'ready'.
@@ -166,6 +166,10 @@ export class PyodideRunner implements Runner {
       // Giữ nguyên trường stdin của hợp đồng dù lượt này chưa có UI nhập liệu.
       stdin: request.stdin ?? [],
       packages: request.packages ?? [],
+      // null chứ không undefined: worker JSON.stringify trường này rồi truyền
+      // vào Python, mà `JSON.stringify(undefined)` ra chuỗi "undefined" —
+      // json.loads nổ, và nổ ở chỗ không ai nghĩ tới.
+      contract: request.contract ?? null,
       // Worker biết giữ runtime sẽ hiểu cờ này là "chỉ nạp, chưa chấm gì".
       // Worker một-lượt không biết nó: nó chấm code rỗng với 0 ca — vô hại.
       ...(warmup ? { type: 'warmup' } : null),

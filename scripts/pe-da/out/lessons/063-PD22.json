@@ -82,15 +82,90 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows có date dạng ISO và amount, ít nhất một hàng. Gom tổng theo mốc đầu tháng bằng resample(\"MS\").sum(). Trả dictionary nhãn YYYY-MM → tổng, kể cả tháng ở giữa không có giao dịch (tổng mặc định 0)."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'date': ['2026-01-01', '2026-01-20', '2026-02-03'], 'amount': [10, 20, 40]})\ndf['date'] = pd.to_datetime(df['date'])\nmonthly = df.set_index('date')['amount'].resample('MS').sum()\nprint(monthly.index.strftime('%Y-%m-%d').tolist())\nprint(monthly.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ns = pd.Series([10, 30], index=pd.to_datetime(['2026-01-01', '2026-01-03']))\ndays = pd.date_range('2026-01-01', '2026-01-03', freq='D')\ndaily = s.reindex(days)\nprint(daily.isna().tolist())\nprint(daily.fillna(0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndates = pd.Series(pd.to_datetime(['2026-01-05', '2026-01-20', '2026-02-02']))\nmonths = dates.dt.to_period('M')\nprint(months.astype(str).tolist())\nprint(months.nunique())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     df['date'] = pd.to_datetime(df['date'])\n     monthly = df.set_index('date')['amount'].resample('MS').sum()\n     return {date.strftime('%Y-%m'):float(value) for date,value in monthly.items()}\n",
+   "tests": [
+    {
+     "name": "hai ngày cùng tháng",
+     "input": {
+      "rows": [
+       {
+        "date": "2026-03-01",
+        "amount": 2
+       },
+       {
+        "date": "2026-03-20",
+        "amount": 7
+       },
+       {
+        "date": "2026-04-02",
+        "amount": 4
+       }
+      ]
+     },
+     "expected": {
+      "2026-03": 9.0,
+      "2026-04": 4.0
+     }
+    },
+    {
+     "name": "tháng giữa vắng",
+     "input": {
+      "rows": [
+       {
+        "date": "2026-01-31",
+        "amount": 5
+       },
+       {
+        "date": "2026-03-01",
+        "amount": 8
+       }
+      ]
+     },
+     "expected": {
+      "2026-01": 5.0,
+      "2026-02": 0.0,
+      "2026-03": 8.0
+     }
+    },
+    {
+     "name": "ngày chưa sắp",
+     "input": {
+      "rows": [
+       {
+        "date": "2026-05-05",
+        "amount": 0
+       },
+       {
+        "date": "2026-05-01",
+        "amount": 3
+       }
+      ]
+     },
+     "expected": {
+      "2026-05": 3.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần đưa một lịch đầy đủ vào index; ngày chưa có dữ liệu trở thành giá trị thiếu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Gom giao dịch theo tháng bằng index thời gian."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

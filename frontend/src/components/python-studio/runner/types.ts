@@ -5,7 +5,12 @@
 // chạy trong Docker ở server. Mọi thứ phía trên chỉ được gọi qua `Runner` dưới
 // đây, nên thay bộ chấm là viết một lớp mới cùng hợp đồng này, không phải sửa
 // lại màn sandbox và các game chạy code.
-import type { LessonFile, LessonTest, StudioPackage } from '@/lib/studio-lesson';
+import type {
+  LessonContractCall,
+  LessonFile,
+  LessonTest,
+  StudioPackage,
+} from '@/lib/studio-lesson';
 
 export type TestResult = { name: string; passed: boolean; detail: string };
 
@@ -27,7 +32,7 @@ export type RunResult = {
 /**
  * Một lượt chạy. Các trường này cũng chính là HỢP ĐỒNG THÔNG ĐIỆP với
  * public/static/js/studio-lesson.worker.js — tên trường cố định, đừng đổi:
- *   { code, tests, forbid, files, stdin, packages }
+ *   { code, tests, forbid, files, stdin, packages, contract }
  */
 export type RunRequest = {
   code: string;
@@ -47,6 +52,14 @@ export type RunRequest = {
    * báo 'ready', nên thời gian tải không bị tính vào 5 giây chạy code.
    */
   packages?: StudioPackage[];
+  /**
+   * Hợp đồng gọi khi `tests` là ca dạng DỮ LIỆU (`input`/`expected`).
+   *
+   * Phải đi CÙNG lượt chạy, không đọc từ đâu khác: bộ chấm cần nó TRƯỚC cả lần
+   * chạy chính — bài `mode: "script"` có đề cấp sẵn một biến mà mã học viên
+   * không gán, nên thiếu hợp đồng là NameError ngay dòng đầu.
+   */
+  contract?: LessonContractCall;
 };
 
 /** Hai mốc thời gian chờ, tách ra để lớp gọi đọc được chứ không chôn số. */

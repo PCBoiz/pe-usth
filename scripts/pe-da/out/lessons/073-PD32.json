@@ -82,15 +82,144 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.orders có order, store, date ISO, amount; các dòng có thể trùng toàn bộ. data.stores có store, region và mã duy nhất. Chuẩn hóa mã store của cả orders và stores bằng strip/upper, bỏ dòng giống hệt, nối trái với validate many_to_one, vùng vắng là Unknown, tổng hợp theo YYYY-MM và region. Trả {report:list bản ghi month,region,amount đã sắp; total:tổng amount của đơn sau bỏ trùng}. Dữ liệu không có hai phiên bản xung đột của cùng order."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\nraw = 'order,store,date,amount\\nO1, a ,2026-01-01,10\\nO2,B,2026-01-02,20\\nO2,B,2026-01-02,20\\nO3,C,2026-02-01,30\\n'\ndf = pd.read_csv(StringIO(raw), dtype={'order': 'string', 'store': 'string'})\ndf['store'] = df['store'].str.strip().str.upper()\ndf['date'] = pd.to_datetime(df['date'], format='%Y-%m-%d')\nclean = df.drop_duplicates()\nassert clean['order'].is_unique\nprint(len(df), len(clean), clean['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'date': pd.to_datetime(['2026-01-01', '2026-01-02', '2026-02-01']), 'region': ['North', 'South', None], 'amount': [10, 20, 30]})\ndf['region'] = df['region'].fillna('Unknown')\ndf['month'] = df['date'].dt.to_period('M').astype(str)\nreport = df.groupby(['month', 'region'], as_index=False)['amount'].sum().sort_values(['month', 'region'])\nassert report['amount'].sum() == df['amount'].sum()\nprint(report.to_csv(index=False, lineterminator='\\n').strip())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders']).copy()\n     orders['store'] = orders['store'].str.strip().str.upper()\n     orders = orders.drop_duplicates()\n     stores = pd.DataFrame(data['stores']).copy()\n     stores['store'] = stores['store'].str.strip().str.upper()\n     joined = orders.merge(stores, on='store', how='left', validate='many_to_one')\n     joined['region'] = joined['region'].fillna('Unknown')\n     joined['month'] = pd.to_datetime(joined['date']).dt.to_period('M').astype(str)\n     report = joined.groupby(['month','region'], as_index=False)['amount'].sum().sort_values(['month','region'])\n     return {'report':report.to_dict('records'), 'total':float(orders['amount'].sum())}\n",
+   "tests": [
+    {
+     "name": "trùng và chưa khớp",
+     "input": {
+      "orders": [
+       {
+        "order": "1",
+        "store": " a ",
+        "date": "2026-03-01",
+        "amount": 5
+       },
+       {
+        "order": "1",
+        "store": " a ",
+        "date": "2026-03-01",
+        "amount": 5
+       },
+       {
+        "order": "2",
+        "store": "C",
+        "date": "2026-03-02",
+        "amount": 8
+       }
+      ],
+      "stores": [
+       {
+        "store": " a ",
+        "region": "East"
+       }
+      ]
+     },
+     "expected": {
+      "report": [
+       {
+        "month": "2026-03",
+        "region": "East",
+        "amount": 5
+       },
+       {
+        "month": "2026-03",
+        "region": "Unknown",
+        "amount": 8
+       }
+      ],
+      "total": 13.0
+     }
+    },
+    {
+     "name": "hai tháng",
+     "input": {
+      "orders": [
+       {
+        "order": "3",
+        "store": "B",
+        "date": "2026-01-02",
+        "amount": 2
+       },
+       {
+        "order": "4",
+        "store": "B",
+        "date": "2026-02-02",
+        "amount": 7
+       }
+      ],
+      "stores": [
+       {
+        "store": "b ",
+        "region": "West"
+       }
+      ]
+     },
+     "expected": {
+      "report": [
+       {
+        "month": "2026-01",
+        "region": "West",
+        "amount": 2
+       },
+       {
+        "month": "2026-02",
+        "region": "West",
+        "amount": 7
+       }
+      ],
+      "total": 9.0
+     }
+    },
+    {
+     "name": "đơn 0 vẫn còn",
+     "input": {
+      "orders": [
+       {
+        "order": "5",
+        "store": "Z",
+        "date": "2026-04-01",
+        "amount": 0
+       }
+      ],
+      "stores": [
+       {
+        "store": "A",
+        "region": "East"
+       }
+      ]
+     },
+     "expected": {
+      "report": [
+       {
+        "month": "2026-04",
+        "region": "Unknown",
+        "amount": 0
+       }
+      ],
+      "total": 0.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Một cửa hàng có nhiều đơn nhưng danh mục chỉ được có một hàng cho mỗi cửa hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Báo cáo tổng tháng vẫn giữ đơn chưa khớp và đối chiếu được tổng."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

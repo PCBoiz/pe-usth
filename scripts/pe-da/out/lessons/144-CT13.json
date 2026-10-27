@@ -80,11 +80,51 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận list số. Một Thread đưa lần lượt bình phương vào queue.Queue, sau đó put None làm dấu kết thúc. Main đọc đến None, join rồi trả list kết quả. Với bài CLI này, main được phép chờ get; không áp dụng vòng chặn đó vào callback Tkinter."
    },
-   "starterCode": "from queue import Queue, Empty\nq = Queue()\ntry:\n    q.get_nowait()\nexcept Empty:\n    print(\"no message\")\n",
-   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import threading, queue\ndef solve(data):\n    messages = queue.Queue()\n    def work():\n        for value in data: messages.put(value * value)\n        messages.put(None)\n    thread = threading.Thread(target=work)\n    thread.start()\n    result = []\n    while True:\n        value = messages.get()\n        if value is None: break\n        result.append(value)\n    thread.join()\n    return result\n",
+   "tests": [
+    {
+     "name": "hai kết quả",
+     "input": [
+      3,
+      7
+     ],
+     "expected": [
+      9,
+      49
+     ]
+    },
+    {
+     "name": "zero không phải dấu hết",
+     "input": [
+      0,
+      -2
+     ],
+     "expected": [
+      0,
+      4
+     ]
+    },
+    {
+     "name": "rỗng",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "mixed",
@@ -97,5 +137,6 @@
    "block": 2,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

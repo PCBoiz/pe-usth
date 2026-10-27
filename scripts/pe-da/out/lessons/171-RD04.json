@@ -80,15 +80,94 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận ma trận A vuông không suy biến và dãy b cùng kích thước. Trả nghiệm của A @ x = b bằng np.linalg.solve. Các bài kiểm đều có nghiệm duy nhất."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint((qty @ price).tolist())\nprint((qty * price).sum(axis=1).tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nA = np.array([[1., 1.], [2., 1.]])\nb = np.array([5., 8.])\nx = np.linalg.solve(A, b)\nprint(np.round(x, 6).tolist())\nprint(bool(np.allclose(A @ x, b)))\n\n# ── Đoạn 3 ──\nimport numpy as np\nvisits = np.array([0., 1., 2.])\nsales = np.array([2., 5., 8.])\ndesign = np.column_stack([np.ones(3), visits])\ncoef, residuals, rank, singular = np.linalg.lstsq(design, sales, rcond=None)\nprint(np.round(coef, 6).tolist())\nprint(np.round(design @ coef, 6).tolist())\nprint(rank)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    A = np.array(data[\"A\"], dtype=float)\n    b = np.array(data[\"b\"], dtype=float)\n    return np.linalg.solve(A, b)\n",
+   "tests": [
+    {
+     "name": "Hai phương trình",
+     "input": {
+      "A": [
+       [
+        1,
+        1
+       ],
+       [
+        2,
+        1
+       ]
+      ],
+      "b": [
+       7,
+       11
+      ]
+     },
+     "expected": [
+      4.0,
+      3.0
+     ]
+    },
+    {
+     "name": "Ma trận đơn vị",
+     "input": {
+      "A": [
+       [
+        1,
+        0
+       ],
+       [
+        0,
+        1
+       ]
+      ],
+      "b": [
+       2,
+       -1
+      ]
+     },
+     "expected": [
+      2.0,
+      -1.0
+     ]
+    },
+    {
+     "name": "Hệ một ẩn",
+     "input": {
+      "A": [
+       [
+        2
+       ]
+      ],
+      "b": [
+       6
+      ]
+     },
+     "expected": [
+      3.0
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Đầu vào đã bảo đảm hệ vuông không suy biến; không cần tự tính nghịch đảo."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đưa A và b về array số thực rồi gọi np.linalg.solve(A,b)."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

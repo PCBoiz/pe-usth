@@ -76,15 +76,67 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết solve(data) nhận CSV name,mark với ít nhất một dòng. Dùng genfromtxt, khai báo name là U20 và mark là float, ndmin=1. Trả list dictionary {\"name\": tên, \"mark\": điểm}; ô điểm trống trả None. Giữ tên và thứ tự."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,7.0\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.dtype.names)\nprint(table[\"name\"].tolist())\nprint(table[\"mark\"].tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8.5\\nAn,\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=None, encoding=\"utf-8\")\nprint(table.shape)\nprint(bool(np.isnan(table[\"mark\"][1])))\n\n# ── Đoạn 3 ──\nimport numpy as np\nfrom io import StringIO\nraw = \"name,mark\\nMai,8\\nAn,7\\n\"\ntable = np.genfromtxt(StringIO(raw), delimiter=\",\", names=True, dtype=[(\"name\", \"U8\"), (\"mark\", float)], encoding=\"utf-8\")\nprint(table[\"name\"][0], float(table[\"mark\"][0]))\nprint(table[\"mark\"].dtype.kind)\n",
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    table = np.genfromtxt(StringIO(data), delimiter=',', names=True, dtype=[('name','U20'),('mark',float)], encoding='utf-8', ndmin=1)\n    return [{'name':str(row['name']), 'mark':None if np.isnan(row['mark']) else float(row['mark'])} for row in table]\n",
+   "tests": [
+    {
+     "name": "đủ điểm",
+     "input": "name,mark\nLan,8.5\nMinh,7\n",
+     "expected": [
+      {
+       "name": "Lan",
+       "mark": 8.5
+      },
+      {
+       "name": "Minh",
+       "mark": 7.0
+      }
+     ]
+    },
+    {
+     "name": "thiếu điểm",
+     "input": "name,mark\nAn,\nBinh,0\n",
+     "expected": [
+      {
+       "name": "An",
+       "mark": null
+      },
+      {
+       "name": "Binh",
+       "mark": 0.0
+      }
+     ]
+    },
+    {
+     "name": "một bản ghi",
+     "input": "name,mark\nMai,9.25\n",
+     "expected": [
+      {
+       "name": "Mai",
+       "mark": 9.25
+      }
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

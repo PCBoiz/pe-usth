@@ -95,15 +95,70 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.target là mục tiêu, data.unit là nhãn trục y cần ghi. Tạo Figure, vẽ axhline(target,label=\"Target\"), đặt ylabel=unit. Trả target đọc từ line.get_ydata()[0], label từ line.get_label(), và ylabel từ Axes. Không thêm mục tiêu vào dãy quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Revenue\")\nax.set(xlabel=\"Day in January\", ylabel=\"Revenue (million VND)\", title=\"Revenue peaked on day 2\")\nax.legend()\nax.text(0, -0.30, \"Synthetic teaching data; three days only\", transform=ax.transAxes, fontsize=9)\nprint(ax.get_ylabel())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.annotate(\"Peak: 10\", xy=(2, 10), xytext=(2.2, 11), arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Explain a point\", ylim=(0, 13))\nprint(len(ax.texts))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.axhline(9, linestyle=\"--\", color=\"gray\", label=\"Target: 9\")\nax.axvline(2, linestyle=\":\", color=\"black\", label=\"Campaign day\")\nax.text(1.05, 10.5, r\"$\\sigma=2$\", fontsize=12)\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\", title=\"Targets and annotations\", ylim=(0, 12))\nax.legend(loc=\"lower left\")\nprint(len(ax.lines))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     line = ax.axhline(data['target'],label='Target')\n     ax.set_ylabel(data['unit'])\n     result = {'target':float(line.get_ydata()[0]),'label':line.get_label(),'ylabel':ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "mục tiêu mới",
+     "input": {
+      "target": 15,
+      "unit": "Books"
+     },
+     "expected": {
+      "target": 15.0,
+      "label": "Target",
+      "ylabel": "Books"
+     }
+    },
+    {
+     "name": "mốc 0",
+     "input": {
+      "target": 0,
+      "unit": "Change (%)"
+     },
+     "expected": {
+      "target": 0.0,
+      "label": "Target",
+      "ylabel": "Change (%)"
+     }
+    },
+    {
+     "name": "mốc số thực",
+     "input": {
+      "target": 2.5,
+      "unit": "Hours"
+     },
+     "expected": {
+      "target": 2.5,
+      "label": "Target",
+      "ylabel": "Hours"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Điểm cần chú thích khác vị trí đặt chữ; hãy chỉ rõ tọa độ điểm được chú thích."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đặt nhãn đơn vị và một mốc mục tiêu không giả làm quan sát."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

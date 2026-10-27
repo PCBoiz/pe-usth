@@ -92,15 +92,64 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận dãy điểm. Bỏ điểm ngoài 0–10, cộng thưởng 1 cho điểm hợp lệ rồi giới hạn kết quả ở 10. Trả array điểm cuối, giữ thứ tự."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nscores = np.array([4, 6, 9])\nlabels = np.where(scores >= 5, \"dat\", \"chua dat\")\nprint(labels)\n\n# ── Đoạn 2 ──\na = np.array([4, 6, 9])\nprint(a[a >= 5])\n\n# ── Đoạn 3 ──\na = np.array([9.8, 7.0])\nprint(np.clip(a + 0.5, 0, 10))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    scores = np.array(data, dtype=float)\n    valid = scores[(scores >= 0) & (scores <= 10)]\n    return np.clip(valid + 1, 0, 10)\n",
+   "tests": [
+    {
+     "name": "Có điểm sai và vượt sau thưởng",
+     "input": [
+      -2,
+      4,
+      9.5,
+      12
+     ],
+     "expected": [
+      5.0,
+      10.0
+     ]
+    },
+    {
+     "name": "Hai biên hợp lệ",
+     "input": [
+      0,
+      10
+     ],
+     "expected": [
+      1.0,
+      10.0
+     ]
+    },
+    {
+     "name": "Không có điểm hợp lệ",
+     "input": [
+      -1,
+      11
+     ],
+     "expected": []
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Nếu clip trước, điểm sai sẽ thành điểm ở biên và không còn bị loại."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Lọc 0–10 trước, cộng 1 cho phần còn lại rồi clip về 0–10."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -97,5 +97,6 @@
    "block": 2,
    "reason": "concurrent.futures chạy trên thread/process thật"
   }
- ]
+ ],
+ "_bai_tap": "khong co"
 }

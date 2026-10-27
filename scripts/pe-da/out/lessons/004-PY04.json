@@ -98,12 +98,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.5\". Gán giá hai vé vào total; đầu vào là chuỗi số hợp lệ, không âm."
    },
-   "starterCode": "# ── Đoạn 1 ──\nraw = \"15\"\nprice = int(raw)\nprint(price * 2)\nprint(type(raw).__name__, type(price).__name__)\n\n# ── Đoạn 2 ──\nvalue = \"15\"\nvalue = 15.5\nprint(type(value).__name__)\nprint(2e4)\n\n# ── Đoạn 3 ──\nimport keyword\nprint(\"total_cups\".isidentifier())\nprint(\"2cups\".isidentifier())\nprint(keyword.iskeyword(\"for\"))\n"
+   "starterCode": "# Hệ thống cung cấp raw là giá một vé dưới dạng chuỗi, ví dụ \"7.\n# Hệ thống cung cấp raw; gán kết quả vào total.\n",
+   "solutionCode": "price = float(raw)\ntotal = price * 2\n",
+   "tests": [
+    {
+     "name": "Giá thập phân",
+     "input": "7.5",
+     "expected": 15.0
+    },
+    {
+     "name": "Giá nguyên viết dạng chuỗi",
+     "input": "12",
+     "expected": 24.0
+    },
+    {
+     "name": "Vé miễn phí",
+     "input": "0",
+     "expected": 0.0
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "raw",
+    "resultVariable": "total"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "raw vẫn là chuỗi. Chọn phép đổi giữ được phần thập phân trước khi nhân."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng float để có giá số, rồi gán kết quả nhân 2 vào total."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -98,15 +98,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận seed và n không âm. Tạo hai bộ sinh riêng cùng seed, mỗi bộ sinh n số bằng integers(1,7,size=n). Trả dictionary count là số phần tử của dãy thứ nhất và same cho biết hai dãy có bằng nhau hay không."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=5)\nprint(rolls)\n\n# ── Đoạn 2 ──\nrng = np.random.default_rng(7)\na = rng.integers(1, 7, size=5)\nprint(a.shape)\nprint(((a >= 1) & (a <= 6)).all())\n\n# ── Đoạn 3 ──\na = np.random.default_rng(7).integers(1, 7, size=5)\nb = np.random.default_rng(7).integers(1, 7, size=5)\nprint(np.array_equal(a, b))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    first = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    second = np.random.default_rng(data[\"seed\"]).integers(1, 7, size=data[\"n\"])\n    return {\"count\": first.size, \"same\": np.array_equal(first, second)}\n",
+   "tests": [
+    {
+     "name": "Hai lần tung",
+     "input": {
+      "seed": 11,
+      "n": 2
+     },
+     "expected": {
+      "count": 2,
+      "same": true
+     }
+    },
+    {
+     "name": "Mười lần tung",
+     "input": {
+      "seed": 4,
+      "n": 10
+     },
+     "expected": {
+      "count": 10,
+      "same": true
+     }
+    },
+    {
+     "name": "Không yêu cầu lần tung",
+     "input": {
+      "seed": 0,
+      "n": 0
+     },
+     "expected": {
+      "count": 0,
+      "same": true
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Hai lời gọi nối tiếp trên cùng một rng không phải hai lần bắt đầu lại."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Khởi tạo hai default_rng với cùng seed rồi gọi cùng integers với cùng n."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

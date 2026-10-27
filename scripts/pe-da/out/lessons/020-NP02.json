@@ -103,15 +103,59 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list giá không rỗng. Tạo array rồi trả giá cuối cùng. Đừng cố định một chỉ số dương vì các list có độ dài khác nhau."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ncups = np.array([12, 15, 9])\nprint(cups[1])\n\n# ── Đoạn 2 ──\na = np.array([6, 8, 10])\nprint(a[1])\n\n# ── Đoạn 3 ──\na = np.array([6, 8, 10])\nprint(a[-1])\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    prices = np.array(data)\n    return prices[-1]\n",
+   "tests": [
+    {
+     "name": "Ba giá",
+     "input": [
+      18,
+      27,
+      35
+     ],
+     "expected": 35
+    },
+    {
+     "name": "Một giá",
+     "input": [
+      6
+     ],
+     "expected": 6
+    },
+    {
+     "name": "Nhiều giá",
+     "input": [
+      2,
+      4,
+      8,
+      16,
+      32
+     ],
+     "expected": 32
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Độ dài list thay đổi nên một chỉ số dương cố định có thể sai."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chỉ số -1 lấy phần tử cuối của array không rỗng."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

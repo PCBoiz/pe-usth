@@ -92,15 +92,94 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list các hàng số liệu có cùng số cột. Trả array hai chiều giữ nguyên thứ tự hàng và cột. Mỗi hàng là một trạm đo."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales)\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a)\n\n# ── Đoạn 3 ──\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data)\n",
+   "tests": [
+    {
+     "name": "Hai trạm ba mốc",
+     "input": [
+      [
+       2,
+       4,
+       6
+      ],
+      [
+       1,
+       3,
+       5
+      ]
+     ],
+     "expected": [
+      [
+       2,
+       4,
+       6
+      ],
+      [
+       1,
+       3,
+       5
+      ]
+     ]
+    },
+    {
+     "name": "Một trạm",
+     "input": [
+      [
+       7,
+       8
+      ]
+     ],
+     "expected": [
+      [
+       7,
+       8
+      ]
+     ]
+    },
+    {
+     "name": "Hai trạm một mốc",
+     "input": [
+      [
+       0
+      ],
+      [
+       9
+      ]
+     ],
+     "expected": [
+      [
+       0
+      ],
+      [
+       9
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function",
+    "returnType": "numpy.ndarray"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Danh sách con cần được giữ thành từng hàng của bảng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đưa list các hàng vào np.array; không nối các hàng thành một dãy phẳng."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

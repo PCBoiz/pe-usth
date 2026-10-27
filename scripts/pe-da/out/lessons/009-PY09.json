@@ -84,12 +84,51 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp score trong khoảng 0–10. Gán label bằng \"high\" nếu score từ 8, \"ready\" nếu từ 5 đến dưới 8, còn lại \"retry\"."
    },
-   "starterCode": "# ── Đoạn 1 ──\nscore = 7\nif score >= 8:\n    print(\"Good\")\nelif score >= 5:\n    print(\"Pass\")\nelse:\n    print(\"Retry\")\n\n# ── Đoạn 2 ──\nage, enrolled = 19, True\nprint(age >= 18 and enrolled)\nprint(not enrolled)\nprint(age != 20)\n\n# ── Đoạn 3 ──\nscore = 9\nif 0 <= score <= 10:\n    if score >= 8:\n        print(\"Valid and good\")\nelse:\n    print(\"Invalid\")\n"
+   "starterCode": "# Hệ thống cung cấp score trong khoảng 0–10.\n# Hệ thống cung cấp score; gán kết quả vào label.\n",
+   "solutionCode": "if score >= 8:\n    label = \"high\"\nelif score >= 5:\n    label = \"ready\"\nelse:\n    label = \"retry\"\n",
+   "tests": [
+    {
+     "name": "Đúng ngưỡng cao",
+     "input": 8,
+     "expected": "high"
+    },
+    {
+     "name": "Đúng ngưỡng sẵn sàng",
+     "input": 5,
+     "expected": "ready"
+    },
+    {
+     "name": "Chưa tới ngưỡng",
+     "input": 4,
+     "expected": "retry"
+    },
+    {
+     "name": "Ở trong khoảng giữa",
+     "input": 7.5,
+     "expected": "ready"
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "score",
+    "resultVariable": "label"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Xét ngưỡng cao trước để điểm 8 không bị nhận nhãn ready."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng if/elif/else; các biên 8 và 5 đều được nhận ở nhánh phía trên."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

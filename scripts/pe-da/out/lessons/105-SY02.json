@@ -88,12 +88,63 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Một danh sách mã lỗi được ghi theo thứ tự xuất hiện. Viết solve(data) nhận list chuỗi, trả {\"counts\": tần suất từng mã, \"top\": mã xuất hiện nhiều nhất}. Khi hòa, lấy mã gặp trước; list rỗng cho top=None."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport random\nrng = random.Random(7)\nsample = rng.choice([\"A01\", \"A02\", \"A03\"])\nprint(sample in [\"A01\", \"A02\", \"A03\"])\nprint(0 <= rng.random() < 1)\n\n# ── Đoạn 2 ──\nimport random\nrng = random.Random(12)\nvalues = [rng.randint(1, 3) for _ in range(5)]\nprint(len(values))\nprint(all(1 <= x <= 3 for x in values))\n\n# ── Đoạn 3 ──\nfrom collections import Counter\norders = [\"tea\", \"coffee\", \"tea\", \"water\", \"tea\"]\ncounts = Counter(orders)\nprint(counts[\"tea\"], counts[\"milk\"])\nprint(counts.most_common(2))\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "from collections import Counter\ndef solve(data):\n    counts = Counter(data)\n    return {'counts': dict(counts), 'top': counts.most_common(1)[0][0] if counts else None}\n",
+   "tests": [
+    {
+     "name": "mã lặp",
+     "input": [
+      "E2",
+      "E1",
+      "E2"
+     ],
+     "expected": {
+      "counts": {
+       "E2": 2,
+       "E1": 1
+      },
+      "top": "E2"
+     }
+    },
+    {
+     "name": "hòa theo thứ tự gặp",
+     "input": [
+      "B",
+      "A"
+     ],
+     "expected": {
+      "counts": {
+       "B": 1,
+       "A": 1
+      },
+      "top": "B"
+     }
+    },
+    {
+     "name": "không có lỗi",
+     "input": [],
+     "expected": {
+      "counts": {},
+      "top": null
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

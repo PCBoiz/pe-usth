@@ -96,15 +96,114 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận qty là bảng số lượng đơn hàng và price là dãy giá theo đúng thứ tự cột. Trả bảng tiền từng sản phẩm trong mỗi đơn, chưa cộng thành tổng đơn."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)\n\n# ── Đoạn 2 ──\nqty = np.array([[2, 1], [0, 3], [4, 2]])\nprice = np.array([10, 20])\nprint(qty * price)\n\n# ── Đoạn 3 ──\na = np.array([[2., 20.], [4., 40.]])\nmeans = a.mean(axis=0, keepdims=True)\nprint(a - means)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    qty = np.array(data[\"qty\"])\n    price = np.array(data[\"price\"])\n    return qty * price\n",
+   "tests": [
+    {
+     "name": "Hai sản phẩm",
+     "input": {
+      "qty": [
+       [
+        2,
+        1
+       ],
+       [
+        0,
+        3
+       ]
+      ],
+      "price": [
+       5,
+       8
+      ]
+     },
+     "expected": [
+      [
+       10,
+       8
+      ],
+      [
+       0,
+       24
+      ]
+     ]
+    },
+    {
+     "name": "Ba sản phẩm",
+     "input": {
+      "qty": [
+       [
+        1,
+        2,
+        0
+       ]
+      ],
+      "price": [
+       2,
+       3,
+       4
+      ]
+     },
+     "expected": [
+      [
+       2,
+       6,
+       0
+      ]
+     ]
+    },
+    {
+     "name": "Số lượng bằng không",
+     "input": {
+      "qty": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        0
+       ]
+      ],
+      "price": [
+       7,
+       9
+      ]
+     },
+     "expected": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       0
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mỗi cột là một sản phẩm nên giá phải ghép theo cột, không theo hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Nhân bảng qty với dãy price; broadcasting áp lại cùng dãy giá cho các hàng."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

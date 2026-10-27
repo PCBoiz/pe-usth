@@ -82,15 +82,97 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows chứa store và amount dạng chữ. Chuẩn hóa store bằng strip/upper và amount bằng to_numeric(coerce), không tự bỏ hàng lỗi. Trả records (ô amount thiếu là None), invalid là số amount thiếu. Không sửa data đầu vào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndef clean_sales(raw):\n    clean = raw.copy()\n    clean['store'] = clean['store'].str.strip().str.upper()\n    clean['amount'] = pd.to_numeric(clean['amount'], errors='coerce')\n    return clean\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': ['10', 'bad']})\nclean = clean_sales(raw)\nprint(clean['store'].tolist())\nprint(clean['amount'].isna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndef normalize(df):\n    return df.assign(store=df['store'].str.strip().str.upper())\nraw = pd.DataFrame({'store': [' a ', 'b'], 'amount': [10, 20]})\nclean = raw.pipe(normalize).sort_values('store').reset_index(drop=True)\nprint(clean.to_dict('records'))\nprint(normalize(clean).equals(clean))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).copy()\n     frame['store'] = frame['store'].str.strip().str.upper()\n     frame['amount'] = pd.to_numeric(frame['amount'], errors='coerce')\n     records = [{'store':row['store'], 'amount':None if pd.isna(row['amount']) else float(row['amount'])} for _,row in frame.iterrows()]\n     return {'records':records, 'invalid':int(frame['amount'].isna().sum())}\n",
+   "tests": [
+    {
+     "name": "chuỗi chưa chuẩn",
+     "input": {
+      "rows": [
+       {
+        "store": " e ",
+        "amount": "7"
+       },
+       {
+        "store": "w",
+        "amount": "oops"
+       }
+      ]
+     },
+     "expected": {
+      "records": [
+       {
+        "store": "E",
+        "amount": 7.0
+       },
+       {
+        "store": "W",
+        "amount": null
+       }
+      ],
+      "invalid": 1
+     }
+    },
+    {
+     "name": "không mất số 0",
+     "input": {
+      "rows": [
+       {
+        "store": " a ",
+        "amount": "0"
+       }
+      ]
+     },
+     "expected": {
+      "records": [
+       {
+        "store": "A",
+        "amount": 0.0
+       }
+      ],
+      "invalid": 0
+     }
+    },
+    {
+     "name": "âm chưa tự xóa",
+     "input": {
+      "rows": [
+       {
+        "store": "b",
+        "amount": "-2"
+       }
+      ]
+     },
+     "expected": {
+      "records": [
+       {
+        "store": "B",
+        "amount": -2.0
+       }
+      ],
+      "invalid": 0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần truyền cả bảng raw qua hàm normalize trong một chuỗi xử lý."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chuẩn hóa có thể chạy lại và để dữ liệu lỗi vẫn nhìn thấy."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

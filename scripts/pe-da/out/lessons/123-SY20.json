@@ -84,12 +84,51 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận dictionary tên thành viên → chuỗi UTF-8. Tạo ZIP trong BytesIO bằng writestr, mở lại, đọc mọi thành viên; trả dictionary cùng tên và nội dung đã decode. Không giải nén archive ra thư mục."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom io import BytesIO\nimport zipfile\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\", compression=zipfile.ZIP_DEFLATED) as archive:\n    archive.writestr(\"students.txt\", \"S01,An\\n\")\n    archive.writestr(\"courses.txt\", \"PY,Python\\n\")\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    print(archive.namelist())\n    print(archive.read(\"students.txt\").decode(\"utf8\").strip())\n\n# ── Đoạn 2 ──\nfrom io import BytesIO\nimport tarfile\nbuffer = BytesIO()\npayload = b\"S01,PY,8\\n\"\nwith tarfile.open(fileobj=buffer, mode=\"w:gz\") as archive:\n    entry = tarfile.TarInfo(\"marks.txt\"); entry.size = len(payload)\n    archive.addfile(entry, BytesIO(payload))\nwith tarfile.open(fileobj=BytesIO(buffer.getvalue()), mode=\"r:gz\") as archive:\n    print(archive.getnames())\n    print(archive.extractfile(\"marks.txt\").read().decode().strip())\n\n# ── Đoạn 3 ──\nimport zipfile\nfrom io import BytesIO\nfiles = {\"students.txt\": b\"A\", \"courses.txt\": b\"B\", \"marks.txt\": b\"C\"}\nbuffer = BytesIO()\nwith zipfile.ZipFile(buffer, \"w\") as archive:\n    for name, data in files.items(): archive.writestr(name, data)\nwith zipfile.ZipFile(BytesIO(buffer.getvalue())) as archive:\n    restored = {name: archive.read(name) for name in archive.namelist()}\nprint(restored == files)\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import io, zipfile\ndef solve(data):\n    stream = io.BytesIO()\n    with zipfile.ZipFile(stream, 'w', compression=zipfile.ZIP_DEFLATED) as archive:\n        for name, text in data.items(): archive.writestr(name, text.encode('utf-8'))\n    stream.seek(0)\n    with zipfile.ZipFile(stream, 'r') as archive:\n        return {name:archive.read(name).decode('utf-8') for name in archive.namelist()}\n",
+   "tests": [
+    {
+     "name": "hai bảng",
+     "input": {
+      "students.csv": "id,name\nS2,Lan",
+      "courses.csv": "id\nC1"
+     },
+     "expected": {
+      "students.csv": "id,name\nS2,Lan",
+      "courses.csv": "id\nC1"
+     }
+    },
+    {
+     "name": "unicode",
+     "input": {
+      "notes/a.txt": "đã lưu"
+     },
+     "expected": {
+      "notes/a.txt": "đã lưu"
+     }
+    },
+    {
+     "name": "archive rỗng",
+     "input": {},
+     "expected": {}
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

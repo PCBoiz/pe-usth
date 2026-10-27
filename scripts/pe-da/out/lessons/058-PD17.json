@@ -82,15 +82,85 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.orders là list mã id của đơn; data.catalog là list mã trong danh mục. Trả {valid:False,missing:[]} nếu danh mục trùng khóa; nếu hợp lệ, nối trái có validate và indicator rồi trả valid=True và list mã chưa khớp theo thứ tự đơn, giữ cả lần lặp."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)\n\n# ── Đoạn 3 ──\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1], 'city': ['HN']})\njoined = orders.merge(customers, on='customer_id', how='left', validate='many_to_one', indicator=True)\nprint(joined['_merge'].astype('string').tolist())\nprint(len(joined) == len(orders))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame({'id':data['orders']})\n     catalog = pd.DataFrame({'id':data['catalog']})\n     try:\n         joined = orders.merge(catalog, on='id', how='left', validate='many_to_one', indicator=True)\n     except pd.errors.MergeError:\n         return {'valid':False, 'missing':[]}\n     return {'valid':True, 'missing':joined.loc[joined['_merge'] == 'left_only','id'].tolist()}\n",
+   "tests": [
+    {
+     "name": "ghi mã chưa khớp",
+     "input": {
+      "orders": [
+       1,
+       4,
+       4,
+       2
+      ],
+      "catalog": [
+       1,
+       2
+      ]
+     },
+     "expected": {
+      "valid": true,
+      "missing": [
+       4,
+       4
+      ]
+     }
+    },
+    {
+     "name": "danh mục trùng",
+     "input": {
+      "orders": [
+       1,
+       2
+      ],
+      "catalog": [
+       1,
+       1,
+       2
+      ]
+     },
+     "expected": {
+      "valid": false,
+      "missing": []
+     }
+    },
+    {
+     "name": "khớp hết",
+     "input": {
+      "orders": [
+       3,
+       3
+      ],
+      "catalog": [
+       3
+      ]
+     },
+     "expected": {
+      "valid": true,
+      "missing": []
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Phía trái có thể lặp mã, phía phải phải duy nhất. Tên quy tắc mô tả quan hệ đó."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Kiểm quan hệ nối và ghi lại các mã chưa khớp."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

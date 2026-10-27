@@ -95,15 +95,101 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận day, revenue và labelPosition=[u,v]. Tạo Figure/Axes và annotation có mũi tên chỉ (day,revenue) theo dữ liệu; chữ ở labelPosition theo axes fraction. Trả target là note.xy, labelPosition là note.get_position(), targetCoordinates là note.xycoords và labelCoordinates là note.get_anncoords(), rồi đóng Figure. Hai thuộc tính cuối giúp kiểm hệ tọa độ thật của chú thích; không cần học thuộc tên getter. Bài kiểm cấu hình; hãy mở hình một lần trong môi trường có cửa sổ để tự xem."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nlabel = ax.text(0.05, 0.95, \"Three days only\", transform=ax.transAxes, va=\"top\")\nax.set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(label.get_position())\nplt.show()\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nnote = ax.annotate(\"Peak: 10\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0.05, 0.95), textcoords=\"axes fraction\",\n                   va=\"top\", arrowprops={\"arrowstyle\":\"->\"})\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(note.xy, note.get_position())\nplt.show()\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots()\nax.plot([1, 2, 3], [8, 10, 7])\nnote = ax.annotate(r\"$y=10$\", xy=(2, 10), xycoords=\"data\",\n                   xytext=(0, 12), textcoords=\"offset points\", ha=\"center\")\nax.set(xlim=(0.5, 3.5), ylim=(0, 13), xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\ntitle = ax.set_title(\"Three daily observations\", fontsize=14)\nprint(note.get_text(), title.get_fontsize())\nplt.show()\nplt.close(fig)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\ndef solve(data):\n    fig, ax = plt.subplots()\n    note = ax.annotate(\"Observed\", xy=(data[\"day\"], data[\"revenue\"]), xycoords=\"data\",\n                       xytext=data[\"labelPosition\"], textcoords=\"axes fraction\",\n                       arrowprops={\"arrowstyle\": \"->\"})\n    result = {\"target\": note.xy, \"labelPosition\": note.get_position(),\n              \"targetCoordinates\": note.xycoords, \"labelCoordinates\": note.get_anncoords()}\n    plt.close(fig)\n    return result\n",
+   "tests": [
+    {
+     "name": "Điểm giữa hình",
+     "input": {
+      "day": 2,
+      "revenue": 9,
+      "labelPosition": [
+       0.1,
+       0.9
+      ]
+     },
+     "expected": {
+      "target": [
+       2,
+       9
+      ],
+      "labelPosition": [
+       0.1,
+       0.9
+      ],
+      "targetCoordinates": "data",
+      "labelCoordinates": "axes fraction"
+     }
+    },
+    {
+     "name": "Điểm đầu",
+     "input": {
+      "day": 1,
+      "revenue": 4,
+      "labelPosition": [
+       0.2,
+       0.8
+      ]
+     },
+     "expected": {
+      "target": [
+       1,
+       4
+      ],
+      "labelPosition": [
+       0.2,
+       0.8
+      ],
+      "targetCoordinates": "data",
+      "labelCoordinates": "axes fraction"
+     }
+    },
+    {
+     "name": "Số đo bằng không",
+     "input": {
+      "day": 3,
+      "revenue": 0,
+      "labelPosition": [
+       0,
+       1
+      ]
+     },
+     "expected": {
+      "target": [
+       3,
+       0
+      ],
+      "labelPosition": [
+       0,
+       1
+      ],
+      "targetCoordinates": "data",
+      "labelCoordinates": "axes fraction"
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Điểm mũi tên và nơi đặt chữ có thể thuộc hai hệ tọa độ khác nhau."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng xycoords=\"data\" cho điểm, textcoords=\"axes fraction\" cho chữ rồi đọc lại các thuộc tính của note."
+    }
+   ],
    "packages": [
     "matplotlib"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

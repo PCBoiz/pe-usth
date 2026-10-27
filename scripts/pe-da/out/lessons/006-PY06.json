@@ -84,12 +84,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp city là tên địa điểm. Tạo report gồm dòng đầu \"Bao cao \" nối city, dòng sau đúng ba dấu gạch ngang. Giữ nguyên dấu và chữ hoa của city."
    },
-   "starterCode": "# ── Đoạn 1 ──\nstore = \"Hanoi\"\nprint(\"Bao cao \" + store)\nprint(\"-\" * 5)\n\n# ── Đoạn 2 ──\nmessage = \"Dong 1\\nDong 2\"\nprint(message)\n\n# ── Đoạn 3 ──\nname = \"Hà Nội\"\n# len đếm ký tự Unicode trong chuỗi này.\nprint(len(name))\nprint(\"Ha\" == \"Hà\")\n"
+   "starterCode": "# Hệ thống cung cấp city là tên địa điểm.\n# Hệ thống cung cấp city; gán kết quả vào report.\n",
+   "solutionCode": "report = \"Bao cao \" + city + \"\\n\" + \"-\" * 3\n",
+   "tests": [
+    {
+     "name": "Tên ngắn",
+     "input": "Hue",
+     "expected": "Bao cao Hue\n---"
+    },
+    {
+     "name": "Tên có khoảng cách",
+     "input": "Ha Noi",
+     "expected": "Bao cao Ha Noi\n---"
+    },
+    {
+     "name": "Tên có dấu",
+     "input": "Đà Nẵng",
+     "expected": "Bao cao Đà Nẵng\n---"
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "city",
+    "resultVariable": "report"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tạo hai dòng trong cùng một chuỗi bằng ký tự xuống dòng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Ghép tiền tố với city, thêm \\n rồi thêm chuỗi ba dấu gạch."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

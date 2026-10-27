@@ -84,12 +84,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp serial là chuỗi mã kiện hàng. Gán tối đa bốn ký tự cuối vào suffix. Với mã ngắn hơn bốn ký tự, giữ cả mã."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfilename = \"marks.csv\"\nprint(filename[-3:])\nprint(filename[0])\n\n# ── Đoạn 2 ──\ntext = \"Python\"\nprint(text[1:5:2])\nprint(text[::-1])\nprint(\"Py\" in text)\n\n# ── Đoạn 3 ──\ntext = \"data\"\ntry:\n    text[0] = \"D\"\nexcept TypeError as error:\n    print(type(error).__name__)\nprint(\"D\" + text[1:])\n"
+   "starterCode": "# Hệ thống cung cấp serial là chuỗi mã kiện hàng.\n# Hệ thống cung cấp serial; gán kết quả vào suffix.\n",
+   "solutionCode": "suffix = serial[-4:]\n",
+   "tests": [
+    {
+     "name": "Mã dài",
+     "input": "BOX-2048",
+     "expected": "2048"
+    },
+    {
+     "name": "Mã ngắn",
+     "input": "A7",
+     "expected": "A7"
+    },
+    {
+     "name": "Mã rỗng",
+     "input": "",
+     "expected": ""
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "serial",
+    "resultVariable": "suffix"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Bốn ký tự cuối cần một slice, không phải một chỉ số riêng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chỉ số âm đếm từ cuối; bỏ stop để lấy tới hết chuỗi."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

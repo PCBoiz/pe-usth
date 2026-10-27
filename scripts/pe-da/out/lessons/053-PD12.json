@@ -86,15 +86,75 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.text là CSV cột id;amount, ký hiệu missing là thiếu. Đọc với sep=\";\", id kiểu string. Trả ids giữ số 0 đầu và amounts, đổi ô thiếu thành None. Không viết hàm tách chuỗi CSV bằng tay."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))\n\n# ── Đoạn 3 ──\nimport pandas as pd\nfrom io import StringIO\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ntext = df.to_csv(index=False)\nback = pd.read_csv(StringIO(text))\nprint(text.splitlines()[0])\nprint(back['amount'].sum())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\nfrom io import StringIO\n\ndef solve(data):\n     df = pd.read_csv(StringIO(data['text']), sep=';', dtype={'id':'string'}, na_values=['missing'])\n     return {'ids': df['id'].tolist(), 'amounts': [None if pd.isna(v) else float(v) for v in df['amount']]}\n",
+   "tests": [
+    {
+     "name": "mã mới",
+     "input": {
+      "text": "id;amount\n004;3.5\n020;missing\n"
+     },
+     "expected": {
+      "ids": [
+       "004",
+       "020"
+      ],
+      "amounts": [
+       3.5,
+       null
+      ]
+     }
+    },
+    {
+     "name": "0 khác thiếu",
+     "input": {
+      "text": "id;amount\n001;0\n002;9\n"
+     },
+     "expected": {
+      "ids": [
+       "001",
+       "002"
+      ],
+      "amounts": [
+       0.0,
+       9.0
+      ]
+     }
+    },
+    {
+     "name": "một hàng",
+     "input": {
+      "text": "id;amount\nX07;12\n"
+     },
+     "expected": {
+      "ids": [
+       "X07"
+      ],
+      "amounts": [
+       12.0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Không xuất chỉ số hàng thành một cột CSV ngoài ý muốn."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đọc đúng dấu phân cách, mã chữ và ký hiệu thiếu của CSV."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -82,15 +82,100 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.batches là list các lô; mỗi lô là list số lượng. Có ít nhất một lô không rỗng. Tạo một DataFrame mỗi lô, concat một lần theo hàng với ignore_index=True. Trả values và index thành hai list; giữ mọi số kể cả số lặp."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nday1 = pd.DataFrame({'order': ['A'], 'amount': [10]})\nday2 = pd.DataFrame({'order': ['B'], 'amount': [20]})\nall_orders = pd.concat([day1, day2], ignore_index=True)\nprint(all_orders.to_dict('records'))\nprint(all_orders.index.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\na = pd.DataFrame({'amount': [10], 'note': ['ok']})\nb = pd.DataFrame({'amount': [20], 'city': ['HN']})\nouter = pd.concat([a, b], ignore_index=True)\ninner = pd.concat([a, b], ignore_index=True, join='inner')\nprint(outer.columns.tolist())\nprint(inner.columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nsales = pd.DataFrame({'revenue': [10, 20]}, index=['A', 'B'])\ntargets = pd.DataFrame({'target': [30, 15]}, index=['B', 'A'])\ncombined = pd.concat([sales, targets], axis=1)\nprint(combined['target'].tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     parts = [pd.DataFrame({'qty':part}) for part in data['batches']]\n     combined = pd.concat(parts, ignore_index=True)\n     return {'values':combined['qty'].tolist(), 'index':combined.index.tolist()}\n",
+   "tests": [
+    {
+     "name": "lô cuối ngắn",
+     "input": {
+      "batches": [
+       [
+        2,
+        3
+       ],
+       [
+        7
+       ]
+      ]
+     },
+     "expected": {
+      "values": [
+       2,
+       3,
+       7
+      ],
+      "index": [
+       0,
+       1,
+       2
+      ]
+     }
+    },
+    {
+     "name": "không tự bỏ trùng",
+     "input": {
+      "batches": [
+       [
+        4
+       ],
+       [
+        4,
+        0
+       ]
+      ]
+     },
+     "expected": {
+      "values": [
+       4,
+       4,
+       0
+      ],
+      "index": [
+       0,
+       1,
+       2
+      ]
+     }
+    },
+    {
+     "name": "lô đầu rỗng",
+     "input": {
+      "batches": [
+       [],
+       [
+        9
+       ]
+      ]
+     },
+     "expected": {
+      "values": [
+       9
+      ],
+      "index": [
+       0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Chỉ số cũ của mỗi batch không còn ý nghĩa sau khi nối."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Ghép lô theo hàng và hiểu ignore_index chỉ đổi nhãn."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

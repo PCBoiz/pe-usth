@@ -82,15 +82,84 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows có qty, price; data.cap là doanh thu áp dụng cố định cho mọi hàng qty>=3. Tạo revenue=qty*price, sửa revenue ở đúng các hàng đó bằng loc. Trả list revenue theo thứ tự hàng."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndf['revenue'] = df['qty'] * df['price']\nprint(df['revenue'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\npriced = df.assign(revenue=df['qty'] * df['price'])\npriced.loc[priced['qty'] >= 3, 'revenue'] = 50\nprint(priced['revenue'].tolist())\nprint(df.columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\nlarge = df.loc[df['qty'] >= 3].copy()\nlarge.loc[:, 'price'] = 18\nprint(df['price'].tolist())\nprint(large['price'].tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['qty','price'])\n     df['revenue'] = df['qty'] * df['price']\n     df.loc[df['qty'] >= 3, 'revenue'] = data['cap']\n     return df['revenue'].tolist()\n",
+   "tests": [
+    {
+     "name": "giới hạn khác ví dụ",
+     "input": {
+      "rows": [
+       {
+        "qty": 1,
+        "price": 12
+       },
+       {
+        "qty": 4,
+        "price": 20
+       }
+      ],
+      "cap": 60
+     },
+     "expected": [
+      12,
+      60
+     ]
+    },
+    {
+     "name": "đúng ngưỡng",
+     "input": {
+      "rows": [
+       {
+        "qty": 3,
+        "price": 9
+       },
+       {
+        "qty": 2,
+        "price": 8
+       }
+      ],
+      "cap": 25
+     },
+     "expected": [
+      25,
+      16
+     ]
+    },
+    {
+     "name": "số lượng 0",
+     "input": {
+      "rows": [
+       {
+        "qty": 0,
+        "price": 100
+       }
+      ],
+      "cap": 30
+     },
+     "expected": [
+      0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Chọn hàng và cột trong cùng một cặp ngoặc vuông để gán."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thêm cột tính toán và sửa bảng bằng loc."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

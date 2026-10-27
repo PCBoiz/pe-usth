@@ -85,15 +85,128 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.x, data.y, data.sizes cùng độ dài. Tạo scatter với s=data.sizes và alpha=0.5. Trả positions=get_offsets().tolist(), sizes=get_sizes().tolist() và alpha=get_alpha() của đối tượng scatter. Các getter chỉ dùng để đọc cấu hình và dữ liệu vừa vẽ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndistance = [1, 2, 3, 4]\nminutes = [8, 12, 11, 18]\nax.scatter(distance, minutes)\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"One point per order\")\nprint(len(distance))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2], [8, 12], marker=\"o\", color=\"#0072B2\", label=\"Bike\")\nax.scatter([2, 3], [10, 11], marker=\"^\", color=\"#D55E00\", label=\"Motorbike\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Separate delivery methods\")\nax.legend()\nprint(len(ax.collections))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     points = ax.scatter(data['x'],data['y'],s=data['sizes'],alpha=0.5)\n     result = {'positions':points.get_offsets().tolist(),'sizes':points.get_sizes().tolist(),'alpha':points.get_alpha()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "hai đơn mới",
+     "input": {
+      "x": [
+       1,
+       4
+      ],
+      "y": [
+       6,
+       18
+      ],
+      "sizes": [
+       25,
+       100
+      ]
+     },
+     "expected": {
+      "positions": [
+       [
+        1.0,
+        6.0
+       ],
+       [
+        4.0,
+        18.0
+       ]
+      ],
+      "sizes": [
+       25,
+       100
+      ],
+      "alpha": 0.5
+     }
+    },
+    {
+     "name": "điểm trùng vẫn giữ",
+     "input": {
+      "x": [
+       2,
+       2
+      ],
+      "y": [
+       7,
+       7
+      ],
+      "sizes": [
+       40,
+       40
+      ]
+     },
+     "expected": {
+      "positions": [
+       [
+        2.0,
+        7.0
+       ],
+       [
+        2.0,
+        7.0
+       ]
+      ],
+      "sizes": [
+       40,
+       40
+      ],
+      "alpha": 0.5
+     }
+    },
+    {
+     "name": "một quan sát",
+     "input": {
+      "x": [
+       0
+      ],
+      "y": [
+       0
+      ],
+      "sizes": [
+       10
+      ]
+     },
+     "expected": {
+      "positions": [
+       [
+        0.0,
+        0.0
+       ]
+      ],
+      "sizes": [
+       10
+      ],
+      "alpha": 0.5
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Độ trong suốt nằm trong khoảng 0 đến 1."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dựng scatter và phân biệt vị trí với diện tích marker."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

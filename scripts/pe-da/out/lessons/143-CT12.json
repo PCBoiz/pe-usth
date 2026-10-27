@@ -88,11 +88,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận list số nguyên không âm, mỗi số là số lượt tăng của một worker. Tạo đúng một Lock và count chung; mỗi Thread tăng count từng lượt trong with lock. Start tất cả, join tất cả rồi trả count. Số lượt mỗi worker nhỏ để bài tập chạy nhanh."
    },
-   "starterCode": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)\n",
-   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import threading\ndef solve(data):\n    lock = threading.Lock()\n    shared = {'count':0}\n    def increment(times):\n        for _ in range(times):\n            with lock: shared['count'] += 1\n    workers = [threading.Thread(target=increment, args=(times,)) for times in data]\n    for thread in workers: thread.start()\n    for thread in workers: thread.join()\n    return shared['count']\n",
+   "tests": [
+    {
+     "name": "ba worker",
+     "input": [
+      15,
+      20,
+      7
+     ],
+     "expected": 42
+    },
+    {
+     "name": "worker không việc",
+     "input": [
+      0,
+      8
+     ],
+     "expected": 8
+    },
+    {
+     "name": "không worker",
+     "input": [],
+     "expected": 0
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "mixed",
@@ -105,5 +140,6 @@
    "block": 2,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

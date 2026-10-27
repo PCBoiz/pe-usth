@@ -86,15 +86,71 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng số lượng kiện ở các khu kho. Trả tổng số kiện của mọi khu và mọi ca, không tách hàng hoặc cột."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum())\n\n# ── Đoạn 2 ──\na = np.array([2, 4, 6])\nprint(a.sum())\n\n# ── Đoạn 3 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum())\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum()\n",
+   "tests": [
+    {
+     "name": "Bảng có ô bằng không",
+     "input": [
+      [
+       2,
+       1
+      ],
+      [
+       0,
+       4
+      ]
+     ],
+     "expected": 7
+    },
+    {
+     "name": "Một hàng",
+     "input": [
+      [
+       3,
+       6,
+       1
+      ]
+     ],
+     "expected": 10
+    },
+    {
+     "name": "Tất cả bằng không",
+     "input": [
+      [
+       0,
+       0
+      ],
+      [
+       0,
+       0
+      ]
+     ],
+     "expected": 0
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Bài cần một tổng chung, không cần một tổng mỗi hàng hoặc cột."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "sum() không ghi axis cộng toàn bộ array."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

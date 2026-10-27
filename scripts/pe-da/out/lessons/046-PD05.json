@@ -82,15 +82,88 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows chứa order, city, amount; data.city và data.minimum là yêu cầu mới. Trả list mã order có city đúng và amount >= minimum, giữ thứ tự gốc."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120]})\nmask = df['amount'] >= 100\nprint(mask.tolist())\nprint(df.loc[mask, 'order'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'city': ['HN', 'HCM', 'DN'], 'amount': [80, 150, 120]})\nmask = df['city'].isin(['HN', 'DN']) & df['amount'].between(100, 200)\nprint(df.loc[mask, 'city'].tolist())\nprint(df.loc[~df['city'].isin(['HN']), 'city'].tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','city','amount'])\n     mask = (df['city'] == data['city']) & (df['amount'] >= data['minimum'])\n     return df.loc[mask, 'order'].tolist()\n",
+   "tests": [
+    {
+     "name": "hai điều kiện",
+     "input": {
+      "rows": [
+       {
+        "order": "X",
+        "city": "DN",
+        "amount": 60
+       },
+       {
+        "order": "Y",
+        "city": "HN",
+        "amount": 90
+       },
+       {
+        "order": "Z",
+        "city": "DN",
+        "amount": 100
+       }
+      ],
+      "city": "DN",
+      "minimum": 70
+     },
+     "expected": [
+      "Z"
+     ]
+    },
+    {
+     "name": "lấy cả biên",
+     "input": {
+      "rows": [
+       {
+        "order": "A",
+        "city": "HUE",
+        "amount": 50
+       }
+      ],
+      "city": "HUE",
+      "minimum": 50
+     },
+     "expected": [
+      "A"
+     ]
+    },
+    {
+     "name": "không đơn nào",
+     "input": {
+      "rows": [
+       {
+        "order": "B",
+        "city": "HN",
+        "amount": 20
+       }
+      ],
+      "city": "DN",
+      "minimum": 0
+     },
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Hai vế là Series Boolean; toán tử Python dành cho một Boolean sẽ không phù hợp."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo mask nhiều điều kiện và lọc các hàng thỏa điều kiện."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

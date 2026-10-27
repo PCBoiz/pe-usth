@@ -229,7 +229,9 @@ export function testRows(lesson: Lesson, data: RunResult | null | undefined): Sa
   return (lesson.step_4?.tests ?? []).map((t, i) => {
     const got = data?.tests?.[i];
     return {
-      label: t.name || t.call,
+      // Ca dạng dữ liệu không có `call`; `name` thì cả hai dạng đều có, nên
+      // chỉ cần dự phòng khi nó rỗng.
+      label: t.name || ('call' in t ? t.call : `Ca ${i + 1}`),
       detail: got?.detail,
       status: !data || !got ? 'pending' : got.passed ? 'pass' : 'fail',
     };

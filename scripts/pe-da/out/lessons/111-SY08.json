@@ -84,12 +84,51 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Tạo Report(content) trả content qua render và UpperMixin.render() đổi kết quả super thành chữ hoa. Tạo LoudReport(UpperMixin, Report). solve(data) nhận list chuỗi, trả các nội dung viết hoa qua LoudReport."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(A, B): pass\nprint(C().label())\nprint([x.__name__ for x in C.__mro__])\n\n# ── Đoạn 2 ──\nclass Report:\n    def render(self): return \"sales\"\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\nprint(LoudReport().render())\n\n# ── Đoạn 3 ──\nclass A:\n    def label(self): return \"A\"\nclass B:\n    def label(self): return \"B\"\nclass C(B, A): pass\nprint(C().label())\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "class Report:\n    def __init__(self, content): self.content = content\n    def render(self): return self.content\nclass UpperMixin:\n    def render(self): return super().render().upper()\nclass LoudReport(UpperMixin, Report): pass\ndef solve(data): return [LoudReport(s).render() for s in data]\n",
+   "tests": [
+    {
+     "name": "chữ thường",
+     "input": [
+      "daily sales"
+     ],
+     "expected": [
+      "DAILY SALES"
+     ]
+    },
+    {
+     "name": "nhiều mẫu",
+     "input": [
+      "a1",
+      "MiXeD"
+     ],
+     "expected": [
+      "A1",
+      "MIXED"
+     ]
+    },
+    {
+     "name": "rỗng",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

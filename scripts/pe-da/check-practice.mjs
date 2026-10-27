@@ -15,6 +15,7 @@
  * lỗi phải sửa trước khi bài tới tay người học.
  *
  *   npm i --no-save pyodide@314.0.7
+ *   py scripts/pe-da/build.py            # bộ này đọc BẢN DỰNG, nên dựng trước
  *   node scripts/pe-da/check-practice.mjs [MA,MA...] [--verbose]
  */
 import { readFileSync } from 'fs';
@@ -41,7 +42,31 @@ const LIMIT_MS = 5000;
 
 const harness = readFileSync(
   join(ROOT, 'frontend', 'public', 'static', 'js', 'studio-harness.py'), 'utf8');
-const goi = JSON.parse(readFileSync(join(HERE, 'source', 'practice.json'), 'utf8'));
+/**
+ * Đọc BẢN DỰNG, không đọc `source/practice.json`.
+ *
+ * Giữa gói và học viên có một cổng lọc (`bai_tap_cua` trong build.py) và một
+ * phép chuyển hình dạng. Kiểm nguồn thì một lỗi của build.py — chuyển sai
+ * `contract`, mất `starterCode`, phát bài tập cho bài mà thư viện thiếu —
+ * không làm đỏ ở đâu cả. Kiểm bản dựng thì mới là kiểm thứ sẽ chạy.
+ */
+const bundle = JSON.parse(readFileSync(join(HERE, 'out', 'lessons.json'), 'utf8'));
+const goi = {
+  lessons: bundle.lessons
+    .filter((b) => (b.content_json?.step_4?.tests ?? []).length)
+    .map((b) => ({
+      id: b.lesson_code,
+      title: b.title,
+      exercises: [{
+        id: `${b.lesson_code}-step4`,
+        starter: b.content_json.step_4.starterCode ?? '',
+        referenceSolution: b.content_json.step_4.solutionCode ?? '',
+        tests: b.content_json.step_4.tests,
+        packages: b.content_json.step_4.packages ?? [],
+        ...(b.content_json.step_4.contract ?? {}),
+      }],
+    })),
+};
 
 const lock = JSON.parse(readFileSync(join(RUNTIME, 'pyodide-lock.json'), 'utf8'));
 const coTrongLock = new Set(Object.keys(lock.packages));
@@ -121,7 +146,10 @@ const batDau = Date.now();
 for (const bai of goi.lessons) {
   if (only && !only.has(bai.id)) continue;
   for (const bt of bai.exercises) {
-    const can = thuVienCan(bt.referenceSolution || '');
+    // Dùng `packages` mà BẢN DỰNG khai, hợp nhất với phép quét. Dùng bản dựng
+    // là để kiểm chính nó: build.py khai thiếu một gói thì import nổ ở đây,
+    // đúng như nó sẽ nổ trong trình duyệt.
+    const can = [...new Set([...(bt.packages || []), ...thuVienCan(bt.referenceSolution || '')])];
     // Gói nào runtime không biết thì bài đó không chấm được ở đây — và cũng
     // không chấm được trong trình duyệt, vì cùng một thư mục wheel.
     const thieu = can.filter((p) => !coTrongLock.has(p) && !laStdlib(p));

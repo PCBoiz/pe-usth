@@ -82,15 +82,86 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows gồm group và value; mỗi nhóm có tổng dương. Trả list tỷ trọng value/tổng nhóm theo đúng thứ tự gốc. Không trả bảng đã gộp mất giao dịch."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nkept = df.groupby('store').filter(lambda group: len(group) >= 2)\nprint(kept['store'].tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     totals = df.groupby('group')['value'].transform('sum')\n     return (df['value'] / totals).tolist()\n",
+   "tests": [
+    {
+     "name": "tỷ trọng mới",
+     "input": {
+      "rows": [
+       {
+        "group": "X",
+        "value": 2
+       },
+       {
+        "group": "Y",
+        "value": 9
+       },
+       {
+        "group": "X",
+        "value": 6
+       }
+      ]
+     },
+     "expected": [
+      0.25,
+      1.0,
+      0.75
+     ]
+    },
+    {
+     "name": "nhóm chỉ có một hàng",
+     "input": {
+      "rows": [
+       {
+        "group": "A",
+        "value": 4
+       }
+      ]
+     },
+     "expected": [
+      1.0
+     ]
+    },
+    {
+     "name": "giá trị 0",
+     "input": {
+      "rows": [
+       {
+        "group": "B",
+        "value": 0
+       },
+       {
+        "group": "B",
+        "value": 5
+       }
+      ]
+     },
+     "expected": [
+      0.0,
+      1.0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần kết quả có cùng số hàng với bảng gốc, không rút thành một hàng mỗi nhóm."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đưa tổng nhóm về từng giao dịch bằng transform."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -96,15 +96,82 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng số không rỗng. Mỗi hàng là một trạm, cột cuối là mốc đo mới nhất. Trả array số đo mới nhất của mọi trạm."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales[:, 1])\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[1, 0])\nprint(a[0])\n\n# ── Đoạn 3 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a[:, 1])\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    readings = np.array(data)\n    return readings[:, -1]\n",
+   "tests": [
+    {
+     "name": "Hai trạm ba mốc",
+     "input": [
+      [
+       2,
+       4,
+       6
+      ],
+      [
+       1,
+       3,
+       5
+      ]
+     ],
+     "expected": [
+      6,
+      5
+     ]
+    },
+    {
+     "name": "Một mốc mỗi trạm",
+     "input": [
+      [
+       7
+      ],
+      [
+       8
+      ],
+      [
+       9
+      ]
+     ],
+     "expected": [
+      7,
+      8,
+      9
+     ]
+    },
+    {
+     "name": "Một trạm",
+     "input": [
+      [
+       0,
+       1
+      ]
+     ],
+     "expected": [
+      1
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Bạn cần tất cả trạm, nên không chọn riêng một chỉ số hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng : ở phần chọn hàng và -1 ở phần chọn cột."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

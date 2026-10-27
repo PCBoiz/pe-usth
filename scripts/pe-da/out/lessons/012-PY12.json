@@ -88,12 +88,53 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm. Gán amount bằng số lượng của P02, hoặc None nếu chưa có mã P02. Số lượng 0 phải được giữ nguyên."
    },
-   "starterCode": "# ── Đoạn 1 ──\nmarks = {\"S01\": 8, \"S02\": 0}\nprint(marks[\"S01\"])\nprint(marks.get(\"S03\", \"missing\"))\nprint(\"S02\" in marks)\n\n# ── Đoạn 2 ──\nmarks = {\"S01\": 8}\nmarks[\"S02\"] = 7\nmarks.update({\"S01\": 9})\nfor code, mark in marks.items():\n    print(code, mark)\nprint(list(marks.keys()), list(marks.values()))\n\n# ── Đoạn 3 ──\nmarks = {\"S01\": 8, \"S02\": 9, \"S03\": 5}\nbest = max(marks, key=marks.get)\nremoved = marks.pop(\"S03\")\nprint(best, removed)\nprint(min(marks, key=marks.get))\n"
+   "starterCode": "# Hệ thống cung cấp stock là dictionary tồn kho theo mã sản phẩm.\n# Hệ thống cung cấp stock; gán kết quả vào amount.\n",
+   "solutionCode": "amount = stock.get(\"P02\", None)\n",
+   "tests": [
+    {
+     "name": "Có hàng",
+     "input": {
+      "P01": 2,
+      "P02": 7
+     },
+     "expected": 7
+    },
+    {
+     "name": "Đã hết hàng",
+     "input": {
+      "P02": 0
+     },
+     "expected": 0
+    },
+    {
+     "name": "Chưa có mã",
+     "input": {
+      "P01": 4
+     },
+     "expected": null
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "stock",
+    "resultVariable": "amount"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Khóa thiếu khác khóa có số lượng bằng 0."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng get với mặc định None; không kiểm bằng if stock.get(...) rồi bỏ số 0."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

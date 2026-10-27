@@ -232,7 +232,48 @@ export type Step3 = {
   counter?: { question: string; options: string[]; correct: string };
 };
 
-export type LessonTest = { name: string; call: string; expect: string };
+/**
+ * Một ca chấm. HAI hợp đồng, và chúng không thay nhau được — xem chú thích dài
+ * ở studio-harness.py (`hợp đồng DỮ LIỆU`).
+ *
+ * BIỂU THỨC (pe-v4, 427 ca): `call` và `expect` là hai chuỗi Python được eval
+ * trong namespace của học viên rồi so bằng `==`. Cần thế vì ca pe-v4 phải gọi
+ * `_studio.run(...)`, dựng fixture, đọc timeline thread/process.
+ *
+ * DỮ LIỆU (gói practice, 419 ca): `input`/`expected` là giá trị JSON thuần; bộ
+ * chấm chạy LẠI chương trình cho từng ca rồi so sau khi chuẩn hoá (tuple và
+ * ndarray hạ về list, số so bằng isclose). Dạng này cần `Step4.contract` để
+ * biết gọi `solve(data)` hay tiêm biến rồi đọc biến kết quả.
+ *
+ * Bộ chấm phân nhánh theo TRƯỜNG CÓ MẶT (`call` -> biểu thức), không theo một
+ * cờ riêng: một cờ riêng là thứ thứ hai phải khớp, và nó sẽ lệch.
+ */
+export type LessonTest =
+  | { name: string; call: string; expect: string }
+  | { name: string; input: unknown; expected: unknown };
+
+/** Ca chấm dạng dữ liệu? Dùng chung cho UI và cho phép kiểm ở build/test. */
+export function laCaDuLieu(
+  t: LessonTest,
+): t is { name: string; input: unknown; expected: unknown } {
+  return !('call' in t);
+}
+
+/**
+ * Hợp đồng gọi của bài tập dạng dữ liệu — MỘT cho cả bài, không nhắc lại từng ca.
+ *
+ * `mode: "script"` nghĩa là đề cấp sẵn `inputVariable` và học viên gán kết quả
+ * vào `resultVariable`; bỏ trống thì bài theo hợp đồng `solve(data)`.
+ * `returnType` ghim KIỂU trả về (`tuple`, `numpy.ndarray`) cho những bài dạy
+ * dựng đúng cấu trúc dữ liệu — phép chuẩn hoá xoá sạch khác biệt đó nên không
+ * có nó thì trả list cũng đạt.
+ */
+export type LessonContractCall = {
+  mode?: 'script' | 'function';
+  inputVariable?: string;
+  resultVariable?: string;
+  returnType?: string;
+};
 
 /** File đặt sẵn trong thư mục chạy bài: module cấp sẵn (import được) hoặc dữ liệu (data.txt…). */
 export type LessonFile = { name: string; content: string; kind?: 'module' | 'data' };
@@ -257,6 +298,9 @@ export type Step4 = {
    *  máy. Không có mã Python để chạy nên Studio hiện khối này thay cho sandbox. */
   procedure?: string[];
   tests?: LessonTest[];
+  /** Hợp đồng gọi cho ca chấm dạng DỮ LIỆU. Bài dùng ca dạng biểu thức
+   *  (pe-v4) không khai trường này. */
+  contract?: LessonContractCall;
   /** Substrings that must not appear in the learner's code (anti-mutation guard). */
   forbid?: string[];
   /** Ghi vào thư mục chạy trước mỗi lần chạy; bộ chấm cho phép thay theo từng ca. */

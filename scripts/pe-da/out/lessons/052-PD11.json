@@ -82,15 +82,76 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values có số hoặc None, có ít nhất một số. Trả count, size, mean, median từ một Series. Dùng các đại lượng này để thấy số rất lớn có thể kéo mean khác median."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B', 'C'], 'revenue': [100, 300, 200]})\nprint(df.sort_values('revenue', ascending=False)['store'].tolist())\nprint(df.nlargest(2, 'revenue')['store'].tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nstatus = pd.Series(['paid', 'paid', 'cancelled', None], dtype='string')\nprint(status.value_counts().to_dict())\nprint(status.count())\nprint(status.size)\n\n# ── Đoạn 3 ──\nimport pandas as pd\namount = pd.Series([10, 20, 30, 100])\nsummary = amount.describe()\nprint(summary['min'], summary['max'])\nprint(amount.mean(), amount.median())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     return {'count': int(s.count()), 'size': int(s.size), 'mean': float(s.mean()), 'median': float(s.median())}\n",
+   "tests": [
+    {
+     "name": "giá trị xa",
+     "input": {
+      "values": [
+       2,
+       4,
+       6,
+       40
+      ]
+     },
+     "expected": {
+      "count": 4,
+      "size": 4,
+      "mean": 13.0,
+      "median": 5.0
+     }
+    },
+    {
+     "name": "một ô thiếu",
+     "input": {
+      "values": [
+       0,
+       null,
+       10
+      ]
+     },
+     "expected": {
+      "count": 2,
+      "size": 3,
+      "mean": 5.0,
+      "median": 5.0
+     }
+    },
+    {
+     "name": "một số",
+     "input": {
+      "values": [
+       7
+      ]
+     },
+     "expected": {
+      "count": 1,
+      "size": 1,
+      "mean": 7.0,
+      "median": 7.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần giữ cả nhóm giá trị thiếu khi đếm tần suất."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đếm giá trị đã biết và đọc trung bình cùng trung vị."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

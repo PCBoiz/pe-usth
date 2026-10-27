@@ -98,12 +98,51 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Report.render() trả \"Report\". Tạo SummaryReport nhận title; render của lớp con thêm \": \" và title vào kết quả super(). solve(data) nhận list tiêu đề, trả list nội dung báo cáo."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Report:\n    def render(self): return \"Bao cao\"\nclass SalesReport(Report):\n    def render(self): return super().render() + \": doanh thu\"\nreport = SalesReport()\nprint(report.render())\nprint(isinstance(report, Report))\n\n# ── Đoạn 2 ──\nclass Report: pass\nclass SalesReport(Report): pass\nreport = SalesReport()\nprint(isinstance(report, SalesReport))\nprint(issubclass(SalesReport, Report))\nprint(issubclass(Report, SalesReport))\n\n# ── Đoạn 3 ──\nclass Exporter:\n    def render(self): return \"first\"\n    def render(self, prefix=\"\"): return prefix + \"second\"\nprint(Exporter().render())\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "class Report:\n    def render(self): return 'Report'\nclass SummaryReport(Report):\n    def __init__(self, title): self.title = title\n    def render(self): return super().render() + ': ' + self.title\ndef solve(data): return [SummaryReport(title).render() for title in data]\n",
+   "tests": [
+    {
+     "name": "hai nội dung",
+     "input": [
+      "stock",
+      "orders"
+     ],
+     "expected": [
+      "Report: stock",
+      "Report: orders"
+     ]
+    },
+    {
+     "name": "tiêu đề rỗng",
+     "input": [
+      ""
+     ],
+     "expected": [
+      "Report: "
+     ]
+    },
+    {
+     "name": "không có báo cáo",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

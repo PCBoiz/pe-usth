@@ -91,10 +91,129 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.z là ma trận, xEdges và yEdges có đúng số biên cho shading=\"flat\". Vẽ pcolormesh với vmin=0,vmax=data.maximum rồi thêm colorbar label=\"Temperature\". Trả shape từ mesh.get_array().shape, clim từ get_clim(), colorbarLabel từ colorbar.ax.get_ylabel(). Không coi các ô là điểm x/y riêng lẻ. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, x)\nZ = X**2 + Y**2\nim = ax.contourf(X, Y, Z, levels=[0, 1, 2, 4, 8], cmap=\"viridis\")\nfig.colorbar(im, ax=ax, label=\"x squared + y squared\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Filled contour bands\", aspect=\"equal\")\nprint(round(float(Z.min()), 1), round(float(Z.max()), 1))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     mesh = ax.pcolormesh(data['xEdges'],data['yEdges'],data['z'],shading='flat',vmin=0,vmax=data['maximum'])\n     colorbar = fig.colorbar(mesh,ax=ax,label='Temperature')\n     result = {'shape':list(mesh.get_array().shape),'clim':list(mesh.get_clim()),'colorbarLabel':colorbar.ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "hai hàng ba cột",
+     "input": {
+      "z": [
+       [
+        1,
+        2,
+        3
+       ],
+       [
+        4,
+        5,
+        6
+       ]
+      ],
+      "xEdges": [
+       0,
+       1,
+       2,
+       4
+      ],
+      "yEdges": [
+       0,
+       2,
+       3
+      ],
+      "maximum": 10
+     },
+     "expected": {
+      "shape": [
+       2,
+       3
+      ],
+      "clim": [
+       0.0,
+       10.0
+      ],
+      "colorbarLabel": "Temperature"
+     }
+    },
+    {
+     "name": "một ô",
+     "input": {
+      "z": [
+       [
+        5
+       ]
+      ],
+      "xEdges": [
+       0,
+       3
+      ],
+      "yEdges": [
+       0,
+       2
+      ],
+      "maximum": 6
+     },
+     "expected": {
+      "shape": [
+       1,
+       1
+      ],
+      "clim": [
+       0.0,
+       6.0
+      ],
+      "colorbarLabel": "Temperature"
+     }
+    },
+    {
+     "name": "lưới có 0",
+     "input": {
+      "z": [
+       [
+        0,
+        2
+       ]
+      ],
+      "xEdges": [
+       0,
+       1,
+       3
+      ],
+      "yEdges": [
+       0,
+       1
+      ],
+      "maximum": 4
+     },
+     "expected": {
+      "shape": [
+       1,
+       2
+      ],
+      "clim": [
+       0.0,
+       4.0
+      ],
+      "colorbarLabel": "Temperature"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần viết giá trị lên các đường đồng mức đã tạo."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Ghép ma trận ô với đủ biên và giữ colorbar đúng đối tượng."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -102,5 +221,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

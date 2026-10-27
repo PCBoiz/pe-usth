@@ -82,15 +82,84 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows là giao dịch store, month, amount. Tháng và cửa hàng được hỏi đều xuất hiện trong bảng; giao dịch của cặp đó có thể vắng và được quy ước là 0. Pivot_table với sum, fill_value=0 rồi trả tổng cho data.store và data.month."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])\n\n# ── Đoạn 3 ──\nimport pandas as pd\nwide = pd.DataFrame({'Jan': [10, 30], 'Feb': [20, 40]}, index=['A', 'B'])\nlong = wide.stack()\nprint(long.loc[('A', 'Feb')])\nprint(long.unstack().equals(wide))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     table = pd.DataFrame(data['rows']).pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\n     return float(table.loc[data['store'], data['month']])\n",
+   "tests": [
+    {
+     "name": "cộng nhiều giao dịch",
+     "input": {
+      "rows": [
+       {
+        "store": "X",
+        "month": "Mar",
+        "amount": 3
+       },
+       {
+        "store": "X",
+        "month": "Mar",
+        "amount": 9
+       }
+      ],
+      "store": "X",
+      "month": "Mar"
+     },
+     "expected": 12.0
+    },
+    {
+     "name": "ô vắng quy ước 0",
+     "input": {
+      "rows": [
+       {
+        "store": "A",
+        "month": "Jan",
+        "amount": 2
+       },
+       {
+        "store": "B",
+        "month": "Feb",
+        "amount": 8
+       }
+      ],
+      "store": "A",
+      "month": "Feb"
+     },
+     "expected": 0.0
+    },
+    {
+     "name": "một đơn 0",
+     "input": {
+      "rows": [
+       {
+        "store": "C",
+        "month": "Apr",
+        "amount": 0
+       }
+      ],
+      "store": "C",
+      "month": "Apr"
+     },
+     "expected": 0.0
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Các bản ghi trùng cặp khóa phải được cộng lại."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tổng hợp các giao dịch khi chuyển tháng thành cột."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

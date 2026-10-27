@@ -82,15 +82,72 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values là các số. Chia theo bins=[0,10,20], labels=[\"low\",\"high\"], include_lowest=True. Trả list nhãn, giá trị ngoài 0..20 thành None."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nscores = pd.Series([10, 20, 30, 40])\nprint(pd.qcut(scores, q=2, labels=['lower', 'upper']).tolist())\ndf = pd.DataFrame({'group': pd.Categorical(['A', 'A'], categories=['A', 'B']), 'qty': [2, 3]})\nprint(df.groupby('group', observed=True)['qty'].sum().to_dict())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     bands = pd.cut(pd.Series(data['values']), bins=[0,10,20], labels=['low','high'], include_lowest=True)\n     return [None if pd.isna(v) else str(v) for v in bands]\n",
+   "tests": [
+    {
+     "name": "các biên",
+     "input": {
+      "values": [
+       0,
+       10,
+       20
+      ]
+     },
+     "expected": [
+      "low",
+      "low",
+      "high"
+     ]
+    },
+    {
+     "name": "ngoài miền",
+     "input": {
+      "values": [
+       -1,
+       21
+      ]
+     },
+     "expected": [
+      null,
+      null
+     ]
+    },
+    {
+     "name": "ở giữa khoảng",
+     "input": {
+      "values": [
+       3,
+       11,
+       9
+      ]
+     },
+     "expected": [
+      "low",
+      "high",
+      "low"
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Điểm bằng mép trái đầu tiên cần thuộc nhóm đầu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Gán khoảng theo biên rõ ràng và hiểu việc nhận hai đầu."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

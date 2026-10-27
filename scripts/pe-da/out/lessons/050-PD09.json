@@ -82,15 +82,89 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.names có chuỗi hoặc None; data.query là đoạn chữ thường cần tìm theo nghĩa đen. Chuẩn hóa strip/lower, thay ô thiếu bằng \"unknown\". Trả clean và matched là các tên đã chuẩn hóa chứa query; giữ thứ tự."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ncodes = pd.Series(['HN-001', 'DN-020'], dtype='string')\nprint(codes.str.split('-').str[0].tolist())\nprint(codes.str.extract(r'-(\\d+)', expand=False).tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     clean = pd.Series(data['names'], dtype='string').str.strip().str.lower().fillna('unknown')\n     mask = clean.str.contains(data['query'], regex=False, na=False)\n     return {'clean': clean.tolist(), 'matched': clean.loc[mask].tolist()}\n",
+   "tests": [
+    {
+     "name": "chuẩn hóa tên mới",
+     "input": {
+      "names": [
+       " East ",
+       "EAST",
+       "West"
+      ],
+      "query": "east"
+     },
+     "expected": {
+      "clean": [
+       "east",
+       "east",
+       "west"
+      ],
+      "matched": [
+       "east",
+       "east"
+      ]
+     }
+    },
+    {
+     "name": "dấu chấm là chữ",
+     "input": {
+      "names": [
+       "A.B",
+       "axb",
+       null
+      ],
+      "query": "a.b"
+     },
+     "expected": {
+      "clean": [
+       "a.b",
+       "axb",
+       "unknown"
+      ],
+      "matched": [
+       "a.b"
+      ]
+     }
+    },
+    {
+     "name": "giữ khoảng giữa",
+     "input": {
+      "names": [
+       " New Town "
+      ],
+      "query": " "
+     },
+     "expected": {
+      "clean": [
+       "new town"
+      ],
+      "matched": [
+       "new town"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Chuỗi a.b phải được tìm nguyên văn; dấu chấm không được coi là ký hiệu đặc biệt."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chuẩn hóa chữ và tìm một đoạn chữ theo nghĩa đen."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

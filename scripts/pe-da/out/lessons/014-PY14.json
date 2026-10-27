@@ -88,12 +88,52 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp weights là list khối lượng kiện hàng. Chỉ những kiện từ 3 kg trở lên được đưa vào chuyến lớn. Gán tổng khối lượng các kiện đó vào total; list rỗng có tổng 0."
    },
-   "starterCode": "# ── Đoạn 1 ──\ncups = [12, 15, 9]\ntotal = 0\nfor value in cups:\n    total += value\nprint(total)\n\n# ── Đoạn 2 ──\nprint(list(range(1, 5)))\nprint(list(range(5, 0, -2)))\nfor index, value in enumerate([6, 8]):\n    print(index, value)\n\n# ── Đoạn 3 ──\nnames, marks = [\"Mai\", \"An\"], [8, 7]\nfor name, mark in zip(names, marks):\n    print(name, mark)\nprint([x * 2 for x in [1, 2, 3] if x >= 2])\n"
+   "starterCode": "# Hệ thống cung cấp weights là list khối lượng kiện hàng.\n# Hệ thống cung cấp weights; gán kết quả vào total.\n",
+   "solutionCode": "total = 0\nfor weight in weights:\n    if weight >= 3:\n        total += weight\n",
+   "tests": [
+    {
+     "name": "Có kiện bị bỏ",
+     "input": [
+      2,
+      3,
+      4
+     ],
+     "expected": 7
+    },
+    {
+     "name": "Đúng ngưỡng",
+     "input": [
+      3
+     ],
+     "expected": 3
+    },
+    {
+     "name": "Chuyến trống",
+     "input": [],
+     "expected": 0
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "weights",
+    "resultVariable": "total"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Đặt total bằng 0 trước vòng lặp, không đặt lại ở mỗi lượt."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chỉ cộng weight khi weight >= 3; list rỗng sẽ giữ total bằng 0."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

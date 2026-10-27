@@ -85,10 +85,100 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.days là số ngày khác nhau, data.sales là số hoặc None theo cùng vị trí. Sắp cặp theo ngày, dùng np.nan cho None, vẽ line chart. Trả x và y đọc từ line.get_xdata()/get_ydata(); trong kết quả JSON đổi NaN trở lại None. Giữ nguyên ngày chưa đo, không nối bằng cách xóa hàng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     pairs = sorted(zip(data['days'],data['sales']))\n     x = [row[0] for row in pairs]\n     y = [np.nan if row[1] is None else row[1] for row in pairs]\n     fig, ax = plt.subplots()\n     line, = ax.plot(x,y,marker='o')\n     result = {'x':[int(v) for v in line.get_xdata()], 'y':[None if not np.isfinite(v) else float(v) for v in line.get_ydata()]}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "ngày chưa sắp",
+     "input": {
+      "days": [
+       4,
+       1,
+       2
+      ],
+      "sales": [
+       6,
+       9,
+       7
+      ]
+     },
+     "expected": {
+      "x": [
+       1,
+       2,
+       4
+      ],
+      "y": [
+       9.0,
+       7.0,
+       6.0
+      ]
+     }
+    },
+    {
+     "name": "ngày chưa đo",
+     "input": {
+      "days": [
+       1,
+       2,
+       3
+      ],
+      "sales": [
+       5,
+       null,
+       0
+      ]
+     },
+     "expected": {
+      "x": [
+       1,
+       2,
+       3
+      ],
+      "y": [
+       5.0,
+       null,
+       0.0
+      ]
+     }
+    },
+    {
+     "name": "một ngày",
+     "input": {
+      "days": [
+       8
+      ],
+      "sales": [
+       2
+      ]
+     },
+     "expected": {
+      "x": [
+       8
+      ],
+      "y": [
+       2.0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Giá trị chưa quan sát phải tạo khoảng đứt của đường, không thay bằng 0."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Giữ đúng cặp ngày–giá trị và không điền 0 cho quan sát thiếu."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -96,5 +186,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

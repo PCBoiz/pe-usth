@@ -21,6 +21,7 @@ py scripts/pe-da/check.py --strict     # kiểm cấu trúc (CI chạy bản nà
 py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
 npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
+node scripts/pe-da/check-practice.mjs  # chấm 377 ca BÀI TẬP + đòi 302 biến thể sai trượt
 node scripts/check-perf.mjs            # kiểm BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py
 node scripts/check-figures.mjs         # kiểm việc XUẤT HÌNH của studio-harness.py
 
@@ -44,14 +45,15 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 27 bộ, 271 ca, tất cả đạt |
-| Backend lint | 245 lỗi, 2 cảnh báo — **mốc trần trong CI là 265, chỉ được hạ** |
+| Backend test | 27 bộ, 277 ca, tất cả đạt |
+| Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **196 ca** / 18 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **210 ca** / 19 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~14 s |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, 655 câu luyện tập, **124 bài tập được chấm / 377 ca**, 1 836 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
+| pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **377 ca đạt**, 302 biến thể sai đều trượt, ~10 s |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
@@ -63,13 +65,12 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 196 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 210 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
-ide-trace 38 · label-version 2 · lesson-load 7 · prewarm-gate 5 · session-marker 5 ·
-studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 196. Mốc trước là 166; thêm worker-csp 7,
-ide-partial-output 10, label-version 2, session-marker 5, ide-brief-code 11 → 12, và
-ide-stop-autosave 24 → 28 (cổng xác nhận mã từ link).
+ide-trace 38 · label-version 2 · lesson-load 7 · practice-contract 14 · prewarm-gate 5 ·
+session-marker 5 · studio-lesson 40 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 210.
+Mốc trước là 196; thêm practice-contract 14 (đường đi của `contract` qua 5 chặng).
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -239,6 +240,70 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `LESSON_CACHE_TTL_MS` / `LESSON_CACHE_DISABLED` đã bỏ khỏi `.env.example`: không mã nào đọc
   chúng và `git log -S` trên `src/` không có commit nào — bộ cache đó chưa bao giờ được làm,
   nên dòng hứa "giảm ~550 ms mỗi lần mở bài" là tài liệu nói sai suốt từ đầu.
+- **Khoá 172 bài từng KHÔNG có một ca chấm nào, và bốn chỗ cùng ghi lại giả định đó.**
+  Đếm trên bản dựng ngày 26/10: 172/172 bài có `step_4.task`, 145 bài có `starterCode`, và
+  **0 bài** có `step_4.tests`. `step_2.practice` chỉ hiện đáp án mẫu. Người thử viết code rồi
+  tự so bằng mắt — đúng thứ cố vấn dự án gọi là tính năng lõi thì không có. Gói nội dung mới
+  mang 138 bài tự làm kèm 419 ca chấm thật và lời giải tham khảo cho từng bài.
+  **Hai hợp đồng ca chấm nay cùng tồn tại, và chúng KHÔNG thay nhau được:**
+  · BIỂU THỨC (`{name, call, expect}`) — hai chuỗi eval trong namespace học viên rồi so `==`.
+    pe-v4 cần nó để gọi `_studio.run(...)`, dựng fixture, đọc timeline thread/process. 427 ca.
+  · DỮ LIỆU (`{name, input, expected}`) — giá trị JSON thuần, mỗi ca chạy LẠI chương trình
+    trên namespace mới. 377 ca của 124 bài pe-da.
+  Bộ chấm phân nhánh theo **TRƯỜNG CÓ MẶT** (`'call' in case`), không theo một cờ riêng: một
+  cờ riêng là thứ thứ hai phải khớp, và nó sẽ lệch.
+  **Vì sao không quy hết về `==`:** đã đo, 65/389 ca trượt OAN, cả 65 vì hai chuyện máy móc.
+  JSON không có tuple nên `(8,3) == [8,3]` là False (8 ca: NP07/PY11/RD01); và
+  `np.array([1,2]) == [1,2]` trả về MẢNG, rồi `bool()` của nó ném "truth value of an array
+  with more than one element is ambiguous" (19 ca, 8 bài NP*) — học viên viết đúng mà nhận
+  lỗi numpy. Nên `_chuan_gia_tri`/`_bang_du_lieu` là bản CHÉP ngữ nghĩa từ
+  `practice/worker.py` của gói: 419 `expected` được VIẾT theo chúng, nghĩ ra cách chuẩn hoá
+  khác là tự tạo lệch. Giữ cả nhánh trông như dư (NAType/NaTType, float không hữu hạn).
+  **`_execute(inject=...)` là thứ thứ ba, khác cả `vars` lẫn `setup`:** `vars` thay VẾ PHẢI
+  một dòng gán đã có, `setup` chạy SAU mã học viên, `inject` đặt tên vào namespace TRƯỚC.
+  Cần cho 12 bài `mode: "script"` (đề cấp `raw`, học viên gán `total` — mã họ không có dòng
+  gán `raw` nào). Lần chạy CHÍNH cũng phải được tiêm: thiếu là 12/12 bài chết ở NameError
+  trước khi ca nào kịp chạy, vì vòng chấm nằm sau `if error is None`.
+  **BỐN chỗ ghi lại giả định "bộ đọc không có ca chấm", và mỗi chỗ chặn một kiểu:**
+  `scripts/pe-da/check.py` (128 lỗi), `frontend/e2e/unit/studio-lesson.test.mjs` (một
+  `assert.equal(l.step_4?.tests, undefined)` cho cả 172 bài),
+  `src/course-admin/studio-lesson.schema.ts` (từ chối cả 124 bài với "thiếu biểu thức gọi
+  hàm" — đây là CỬA DUY NHẤT vào DB, nên một bộ chấm chạy đúng trong trình duyệt mà không có
+  đường nào tới học viên), và `ide-brief-code.ts`/`answer-key.ts`/`chrome.tsx` (`t.call`
+  không còn chắc chắn tồn tại). Thêm hợp đồng mới thì phải đi hết bốn chỗ.
+  **Cổng của bài TẬP nới hơn cổng của bài ĐỌC, có lý do:** `phan_loai_khoi(cho_mo_phong=True)`
+  cho qua `threading`/`subprocess`/`multiprocessing` vì harness MÔ PHỎNG chúng và ca chấm chỉ
+  hỏi GIÁ TRỊ TRẢ VỀ. Bài đọc phải nghiêm hơn vì nó so đầu ra với dòng "Kết quả:" tác giả
+  ghi, mà mô phỏng in khác bản thật ở PID và thứ tự thread. Nới quá tay thì
+  `check-practice.mjs` đỏ — nó chạy đúng những bài tập build phát ra.
+  **14 bài không chấm được và đó KHÔNG phải lỗi:** openpyxl (PD13), seaborn (VZ16-19), plotly
+  (VZ20-22), ipywidgets (VZ23), h5py (SY23), sqlalchemy (SY24) — Pyodide 314 không có wheel;
+  CT07/CT08/EX04 vì `sys.executable` (bẫy "thuộc tính phơi ra máy thật" ở trên). Chúng giữ ô
+  chạy thử như cũ. CT10/CT11 thì ngược: code bài đọc phải chạy trên máy nhưng bài tập chấm
+  được tại đây, nên chúng PHẢI mang `env` nói rõ — không thì mất hẳn hướng dẫn "chạy trên
+  máy" mà nhánh `local` của `dung_sandbox` vốn in ra.
+  **Giá phải trả, có chủ đích:** 124 bài MẤT ô "sửa số liệu rồi chạy lại". Mọi đoạn code của
+  bài đã hiện kèm kết quả ở màn đọc, muốn thử tự do thì có `/ide`, còn chấm thì không chỗ nào
+  khác làm được.
+  **Pha "lời giải SAI phải trượt" không phải cho đủ bộ.** Ablate 7 mảnh của hợp đồng: 5 mảnh
+  gỡ ra làm pha 1 đỏ, nhưng `returnType` và "dict thừa khoá cũng là sai" gỡ ra pha 1 VẪN
+  XANH — lời giải ĐÚNG không bao giờ trả sai kiểu hay thừa khoá. Thêm hai biến thể BỌC quanh
+  lời giải mẫu (giữ nguyên giá trị, chỉ đổi hình dạng) thì cả 7 mảnh đều đỏ: 9 / 60 / 1 / 27
+  / 54 / 12 / 2 vấn đề.
+  **Luật "khung trống phải trượt HẾT" là SAI** và đã viết lại sau 5 dương tính giả: PY16,
+  NP17, VZ30, SY03, SY13 mỗi bài có một ca "đầu vào rỗng → null" mà `pass` trả đúng None. Ca
+  đó không sai — đáp án đúng cho "chưa có số đo" thật là không có kết quả. Luật đúng: khung
+  trống không được đạt ca có `expected` KHÁC null, và không được đạt hết. Cùng lý do,
+  `studio-lesson.schema.ts` phải kiểm KHOÁ CÓ MẶT chứ không kiểm giá trị khác null.
+  **`check-practice.mjs` đọc BẢN DỰNG, không đọc `source/practice.json`:** giữa gói và học
+  viên có một cổng lọc (`bai_tap_cua`) và một phép chuyển hình dạng, nên kiểm nguồn thì một
+  lỗi của build.py không làm đỏ ở đâu cả.
+  **Đã xem thật trong Chrome,** không chỉ chạy bằng Node: module worker nạp được, CSP của file
+  worker không chặn, `contract` sống qua `postMessage` (bài script tiêm được `raw`, đọc được
+  `total`), tuple/numpy/isclose đều đúng, lời giải sai bị đánh trượt, 2–6 ms mỗi lượt. Chính
+  lần xem đó bắt được hai chuỗi người học đọc bị MẤT DẤU ("Dat:", "Can co 15 nhung nhan 7.5")
+  — thứ không bộ test nào canh vì chúng chỉ là chuỗi hiển thị.
+
 - **Hạn phiên nay KHÁC NHAU theo loại tài khoản, và đó là một lựa chọn an ninh có chủ đích.**
   Đợt thử nghiệm cố ý không bắt đăng nhập, nên với người thử, refresh token CHÍNH LÀ thứ duy
   nhất giữ tiến độ: hết hạn là `apiFetch` rơi xuống `ensureGuest()` và cấp một tài khoản MỚI —

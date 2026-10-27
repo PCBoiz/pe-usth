@@ -96,15 +96,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận parts là dãy số và expected là tổng dự kiến. Trả kết quả np.isclose của tổng parts với expected, dùng atol=0.000001 và rtol=0."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nparts = np.array([0.1, 0.2])\nprint(np.isclose(parts.sum(), 0.3))\n\n# ── Đoạn 2 ──\nprint(0.1 + 0.2 == 0.3)\nprint(np.isclose(0.1 + 0.2, 0.3))\n\n# ── Đoạn 3 ──\nprint(np.allclose([1., 2.], [1., 2.00000001]))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    total = np.array(data[\"parts\"]).sum()\n    return np.isclose(total, data[\"expected\"], atol=0.000001, rtol=0)\n",
+   "tests": [
+    {
+     "name": "Sai lệch biểu diễn nhỏ",
+     "input": {
+      "parts": [
+       0.1,
+       0.2
+      ],
+      "expected": 0.3
+     },
+     "expected": true
+    },
+    {
+     "name": "Sai lệch đáng kể",
+     "input": {
+      "parts": [
+       1,
+       2
+      ],
+      "expected": 3.1
+     },
+     "expected": false
+    },
+    {
+     "name": "Tổng bằng không",
+     "input": {
+      "parts": [
+       0,
+       0
+      ],
+      "expected": 0
+     },
+     "expected": true
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Không làm tròn hay ép int trước khi kiểm, vì có thể xóa chênh lệch cần phát hiện."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "So tổng bằng isclose với atol=0.000001, rtol=0 đúng như yêu cầu."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

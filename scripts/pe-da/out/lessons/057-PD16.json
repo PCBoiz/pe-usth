@@ -82,15 +82,103 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.orders chứa product_id và qty; data.products chứa product_id và name, mã danh mục là duy nhất. Nối trái theo product_id, trả list tên theo thứ tự đơn; tên chưa khớp là \"Unknown\"."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))\n\n# ── Đoạn 2 ──\nimport pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))\n\n# ── Đoạn 3 ──\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [2, 1], 'amount': [20, 10]})\ncustomers = pd.DataFrame({'city': ['HN', 'DN']}, index=[1, 2])\nprint(orders.join(customers, on='customer_id')['city'].tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     orders = pd.DataFrame(data['orders'], columns=['product_id','qty'])\n     products = pd.DataFrame(data['products'], columns=['product_id','name'])\n     joined = orders.merge(products, on='product_id', how='left', sort=False)\n     return joined['name'].fillna('Unknown').tolist()\n",
+   "tests": [
+    {
+     "name": "danh mục khác thứ tự",
+     "input": {
+      "orders": [
+       {
+        "product_id": 2,
+        "qty": 1
+       },
+       {
+        "product_id": 1,
+        "qty": 3
+       }
+      ],
+      "products": [
+       {
+        "product_id": 1,
+        "name": "Book"
+       },
+       {
+        "product_id": 2,
+        "name": "Pen"
+       }
+      ]
+     },
+     "expected": [
+      "Pen",
+      "Book"
+     ]
+    },
+    {
+     "name": "mã chưa có",
+     "input": {
+      "orders": [
+       {
+        "product_id": 9,
+        "qty": 2
+       }
+      ],
+      "products": [
+       {
+        "product_id": 1,
+        "name": "Book"
+       }
+      ]
+     },
+     "expected": [
+      "Unknown"
+     ]
+    },
+    {
+     "name": "nhiều đơn cùng mã",
+     "input": {
+      "orders": [
+       {
+        "product_id": 1,
+        "qty": 1
+       },
+       {
+        "product_id": 1,
+        "qty": 2
+       }
+      ],
+      "products": [
+       {
+        "product_id": 1,
+        "name": "Tea"
+       }
+      ]
+     },
+     "expected": [
+      "Tea",
+      "Tea"
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Phía đơn hàng cần giữ cả mã chưa tìm được trong danh mục."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Nối bảng trái với danh mục mà vẫn giữ hàng chưa khớp."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

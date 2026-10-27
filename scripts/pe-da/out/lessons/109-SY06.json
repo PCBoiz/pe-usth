@@ -90,12 +90,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Tạo class Parcel(name, weight), __str__ trả name, __lt__ so weight. solve(data) tạo các Parcel rồi trả tên sau sorted tăng dần. Khi trọng lượng bằng nhau, giữ thứ tự đầu vào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))\n\n# ── Đoạn 2 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])\n\n# ── Đoạn 3 ──\nclass Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "class Parcel:\n    def __init__(self, name, weight): self.name, self.weight = name, weight\n    def __str__(self): return self.name\n    def __lt__(self, other):\n        if not isinstance(other, Parcel): return NotImplemented\n        return self.weight < other.weight\ndef solve(data):\n    return [str(p) for p in sorted([Parcel(row['name'], row['weight']) for row in data])]\n",
+   "tests": [
+    {
+     "name": "khác trọng lượng",
+     "input": [
+      {
+       "name": "Z",
+       "weight": 2
+      },
+      {
+       "name": "A",
+       "weight": 1
+      }
+     ],
+     "expected": [
+      "A",
+      "Z"
+     ]
+    },
+    {
+     "name": "hòa giữ thứ tự",
+     "input": [
+      {
+       "name": "B",
+       "weight": 1
+      },
+      {
+       "name": "A",
+       "weight": 1
+      }
+     ],
+     "expected": [
+      "B",
+      "A"
+     ]
+    },
+    {
+     "name": "không có kiện",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

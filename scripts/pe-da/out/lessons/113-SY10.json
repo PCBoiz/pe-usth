@@ -90,12 +90,70 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Tạo Grade có set_value kiểm số int/float hữu hạn từ 0 đến 10, loại bool. solve(data) bắt đầu bằng data[\"initial\"], thử lần lượt các data[\"updates\"]. Bỏ qua ValueError nhưng giữ điểm cũ; trả list giá trị sau mỗi lần thử."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())\n\n# ── Đoạn 2 ──\nclass Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))\n\n# ── Đoạn 3 ──\nclass Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import math\nclass Grade:\n    def __init__(self, value): self.set_value(value)\n    def set_value(self, value):\n        if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 10:\n            raise ValueError('score')\n        self._value = value\n    def get_value(self): return self._value\ndef solve(data):\n    grade = Grade(data['initial'])\n    result=[]\n    for value in data['updates']:\n        try: grade.set_value(value)\n        except ValueError: pass\n        result.append(grade.get_value())\n    return result\n",
+   "tests": [
+    {
+     "name": "giữ cũ khi ngoài miền",
+     "input": {
+      "initial": 8,
+      "updates": [
+       11,
+       7
+      ]
+     },
+     "expected": [
+      8,
+      7
+     ]
+    },
+    {
+     "name": "loại bool và text",
+     "input": {
+      "initial": 6,
+      "updates": [
+       true,
+       "9",
+       0
+      ]
+     },
+     "expected": [
+      6,
+      6,
+      0
+     ]
+    },
+    {
+     "name": "nhận hai biên",
+     "input": {
+      "initial": 5,
+      "updates": [
+       0,
+       10
+      ]
+     },
+     "expected": [
+      0,
+      10
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

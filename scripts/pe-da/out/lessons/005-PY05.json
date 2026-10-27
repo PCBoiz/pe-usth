@@ -84,12 +84,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp quantity là số sản phẩm trong một gói. Mỗi sản phẩm giá 12, phí giao mỗi gói là 3. Gán tổng tiền vào total, kể cả gói có quantity bằng 0 vẫn có phí giao."
    },
-   "starterCode": "# ── Đoạn 1 ──\nprint(3 * 15 - 5)\nprint(3 * (15 - 5))\n\n# ── Đoạn 2 ──\nprint(7 / 2)\nprint(7 // 2, 7 % 2)\nprint(-7 // 2)\n\n# ── Đoạn 3 ──\ntotal = 10\ntotal += 5\nprint(total)\nprint(2 ** 3)\nprint(99 / 100)\n"
+   "starterCode": "# Hệ thống cung cấp quantity là số sản phẩm trong một gói.\n# Hệ thống cung cấp quantity; gán kết quả vào total.\n",
+   "solutionCode": "total = quantity * 12 + 3\n",
+   "tests": [
+    {
+     "name": "Bốn sản phẩm",
+     "input": 4,
+     "expected": 51
+    },
+    {
+     "name": "Một sản phẩm",
+     "input": 1,
+     "expected": 15
+    },
+    {
+     "name": "Gói chỉ thu phí",
+     "input": 0,
+     "expected": 3
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "quantity",
+    "resultVariable": "total"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Phí giao tính một lần cho cả gói, không phải một lần mỗi sản phẩm."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tính quantity nhân 12 trước, rồi cộng thêm 3 và gán vào total."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

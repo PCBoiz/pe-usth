@@ -82,15 +82,84 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows có city, year, value; mỗi cặp city–year duy nhất. Đặt hai cột đó làm MultiIndex, sắp index rồi lấy data.city và data.year, trả value của cặp có thật đó."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\ns = df.set_index(['store', 'month'])['sales']\nwide = s.unstack('month')\nprint(wide.loc['A', 'Feb'])\nprint(pd.isna(wide.loc['B', 'Feb']))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     frame = pd.DataFrame(data['rows']).set_index(['city','year']).sort_index()\n     return float(frame.loc[(data['city'],data['year']),'value'])\n",
+   "tests": [
+    {
+     "name": "chọn đúng năm",
+     "input": {
+      "rows": [
+       {
+        "city": "HN",
+        "year": 2025,
+        "value": 3
+       },
+       {
+        "city": "HN",
+        "year": 2026,
+        "value": 7
+       }
+      ],
+      "city": "HN",
+      "year": 2026
+     },
+     "expected": 7.0
+    },
+    {
+     "name": "chọn thành phố",
+     "input": {
+      "rows": [
+       {
+        "city": "DN",
+        "year": 2026,
+        "value": 0
+       },
+       {
+        "city": "HUE",
+        "year": 2026,
+        "value": 4
+       }
+      ],
+      "city": "DN",
+      "year": 2026
+     },
+     "expected": 0.0
+    },
+    {
+     "name": "một cặp",
+     "input": {
+      "rows": [
+       {
+        "city": "CT",
+        "year": 2024,
+        "value": 9
+       }
+      ],
+      "city": "CT",
+      "year": 2024
+     },
+     "expected": 9.0
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần nói rõ Jan thuộc tầng month của MultiIndex."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đọc một cặp nhãn từ MultiIndex."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -80,15 +80,121 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng các mẫu bootstrap đã lấy, mỗi hàng là một mẫu thời gian giao hàng. Trả means là trung bình mỗi hàng và interval là hai phân vị 2.5%,97.5% của các trung bình. Các hàng đều có cùng số cột và không thiếu dữ liệu."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25, scale=2, size=100)\nprint(temps.shape)\nprint(bool(np.isfinite(temps).all()))\n\n# ── Đoạn 2 ──\nimport numpy as np\nrng = np.random.default_rng(7)\norders = np.array([10., 20., 30.])\nsample = rng.choice(orders, size=3, replace=True)\nprint(sample.shape)\nprint(bool(np.isin(sample, orders).all()))\nprint(sorted(rng.choice(orders, size=3, replace=False).tolist()))\n\n# ── Đoạn 3 ──\nimport numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    samples = np.array(data, dtype=float)\n    means = samples.mean(axis=1)\n    interval = np.quantile(means, [0.025, 0.975])\n    return {\"means\": means, \"interval\": interval}\n",
+   "tests": [
+    {
+     "name": "Ba mẫu hai đơn",
+     "input": [
+      [
+       10,
+       20
+      ],
+      [
+       20,
+       20
+      ],
+      [
+       10,
+       10
+      ]
+     ],
+     "expected": {
+      "means": [
+       15.0,
+       20.0,
+       10.0
+      ],
+      "interval": [
+       10.25,
+       19.75
+      ]
+     }
+    },
+    {
+     "name": "Mọi mẫu giống nhau",
+     "input": [
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       2
+      ],
+      [
+       2,
+       2
+      ]
+     ],
+     "expected": {
+      "means": [
+       2.0,
+       2.0,
+       2.0
+      ],
+      "interval": [
+       2.0,
+       2.0
+      ]
+     }
+    },
+    {
+     "name": "Bốn mẫu có lặp",
+     "input": [
+      [
+       0,
+       10
+      ],
+      [
+       10,
+       10
+      ],
+      [
+       0,
+       0
+      ],
+      [
+       10,
+       0
+      ]
+     ],
+     "expected": {
+      "means": [
+       5.0,
+       10.0,
+       0.0,
+       5.0
+      ],
+      "interval": [
+       0.375,
+       9.625
+      ]
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mỗi hàng của data là một mẫu; cần một trung bình cho mỗi hàng trước."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tính mean(axis=1), sau đó quantile của dãy means tại 0.025 và 0.975."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

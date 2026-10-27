@@ -95,15 +95,94 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values là dãy số. Vẽ một đường rồi dùng plt.setp để marker=\"s\",linestyle=\"--\",linewidth=2,alpha=0.5,color=\"black\". Trả marker, linestyle và width đọc từ Line2D. Các getter lần lượt là get_marker(),get_linestyle(),get_linewidth(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm values bằng list(line.get_ydata()), alpha bằng line.get_alpha() và color bằng line.get_color()."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], color=\"#0072B2\", marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], color=\"#D55E00\", marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Use more than color to distinguish groups\")\nax.legend()\nprint([line.get_marker() for line in ax.lines])\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nlines = ax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", label=\"Coffee\")\nplt.setp(lines, color=\"#0072B2\", linewidth=2.5)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Coffee: 8 to 10, then down to 7\")\nax.tick_params(labelsize=11)\nprint(\"Coffee: day 1 = 8; day 2 = 10; day 3 = 7 cups.\")\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     lines = ax.plot(data['values'])\n     plt.setp(lines,marker='s',linestyle='--',linewidth=2,alpha=0.5,color='black')\n     line = lines[0]\n     result = {'marker':line.get_marker(),'linestyle':line.get_linestyle(),'width':float(line.get_linewidth()),'values':list(line.get_ydata()),'alpha':line.get_alpha(),'color':line.get_color()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "đường mới",
+     "input": {
+      "values": [
+       3,
+       7,
+       5
+      ]
+     },
+     "expected": {
+      "marker": "s",
+      "linestyle": "--",
+      "width": 2.0,
+      "values": [
+       3,
+       7,
+       5
+      ],
+      "alpha": 0.5,
+      "color": "black"
+     }
+    },
+    {
+     "name": "một điểm",
+     "input": {
+      "values": [
+       0
+      ]
+     },
+     "expected": {
+      "marker": "s",
+      "linestyle": "--",
+      "width": 2.0,
+      "values": [
+       0
+      ],
+      "alpha": 0.5,
+      "color": "black"
+     }
+    },
+    {
+     "name": "giảm theo ngày",
+     "input": {
+      "values": [
+       9,
+       4
+      ]
+     },
+     "expected": {
+      "marker": "s",
+      "linestyle": "--",
+      "width": 2.0,
+      "values": [
+       9,
+       4
+      ],
+      "alpha": 0.5,
+      "color": "black"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Một nửa độ đậm màu tương ứng mức trong suốt 0.5, không thay đổi dữ liệu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Phân biệt chuỗi bằng marker và kiểu nét, không chỉ màu."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -88,15 +88,86 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng, mỗi hàng là một khu kho và mỗi cột là một ca. Trả tổng số kiện từng ca, giữ thứ tự cột."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=0))\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))\n\n# ── Đoạn 3 ──\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=0))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum(axis=0)\n",
+   "tests": [
+    {
+     "name": "Hai khu ba ca",
+     "input": [
+      [
+       2,
+       4,
+       1
+      ],
+      [
+       3,
+       1,
+       5
+      ]
+     ],
+     "expected": [
+      5,
+      5,
+      6
+     ]
+    },
+    {
+     "name": "Ba khu hai ca",
+     "input": [
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       5,
+       6
+      ]
+     ],
+     "expected": [
+      9,
+      12
+     ]
+    },
+    {
+     "name": "Một khu",
+     "input": [
+      [
+       0,
+       7
+      ]
+     ],
+     "expected": [
+      0,
+      7
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mỗi kết quả đại diện cho một ca, tức một cột."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Cộng các hàng bằng sum(axis=0), giữ thứ tự các cột."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

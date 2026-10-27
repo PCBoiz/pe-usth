@@ -91,16 +91,108 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows có category và revenue. groupby/sum theo category, sắp tên tăng, dùng Series.plot.bar(ax=ax). Trả names là các tên đã vẽ và heights từ ax.patches (mỗi patch là một bar), giữ đúng cặp tên–tổng. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"date\":[\"2026-01-03\", \"2026-01-01\", \"2026-01-02\"], \"cups\":[7, 8, 10]})\ndaily[\"date\"] = pd.to_datetime(daily[\"date\"])\ndaily = daily.sort_values(\"date\")\ndaily.plot(x=\"date\", y=\"cups\", ax=ax, marker=\"o\", legend=False)\nax.set(xlabel=\"Date\", ylabel=\"Cups\", title=\"Sort dates before joining observations\")\nprint(daily[\"cups\"].tolist())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nwait = pd.Series([2.0, None, 5.0], index=[1, 2, 3], name=\"Wait\")\nwait.plot(ax=ax, marker=\"o\")\nax.set(xlabel=\"Order\", ylabel=\"Wait (minutes)\", title=\"One missing observation\")\nprint(int(wait.count()), int(wait.isna().sum()))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nimport pandas as pd\n\ndef solve(data):\n     totals = pd.DataFrame(data['rows']).groupby('category')['revenue'].sum().sort_index()\n     fig, ax = plt.subplots()\n     totals.plot.bar(ax=ax,rot=0)\n     result = {'names':totals.index.tolist(),'heights':[float(bar.get_height()) for bar in ax.patches]}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "nhiều đơn cùng nhóm",
+     "input": {
+      "rows": [
+       {
+        "category": "Book",
+        "revenue": 3
+       },
+       {
+        "category": "Pen",
+        "revenue": 2
+       },
+       {
+        "category": "Book",
+        "revenue": 7
+       }
+      ]
+     },
+     "expected": {
+      "names": [
+       "Book",
+       "Pen"
+      ],
+      "heights": [
+       10.0,
+       2.0
+      ]
+     }
+    },
+    {
+     "name": "đổi thứ tự nguồn",
+     "input": {
+      "rows": [
+       {
+        "category": "Z",
+        "revenue": 4
+       },
+       {
+        "category": "A",
+        "revenue": 8
+       }
+      ]
+     },
+     "expected": {
+      "names": [
+       "A",
+       "Z"
+      ],
+      "heights": [
+       8.0,
+       4.0
+      ]
+     }
+    },
+    {
+     "name": "tổng 0",
+     "input": {
+      "rows": [
+       {
+        "category": "Only",
+        "revenue": 0
+       }
+      ]
+     },
+     "expected": {
+      "names": [
+       "Only"
+      ],
+      "heights": [
+       0.0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Muốn cột xuất hiện trong Axes đã tạo, phải truyền Axes đó vào lệnh vẽ."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tổng hợp DataFrame trước khi vẽ so sánh nhóm."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
+    "numpy",
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

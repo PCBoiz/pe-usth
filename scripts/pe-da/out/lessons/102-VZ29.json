@@ -95,10 +95,107 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.x,data.y là hai dãy vị trí lưới. Tạo X,Y bằng meshgrid, đặt U=-Y,V=X, vẽ quiver với angles=\"xy\",scale_units=\"xy\",scale=1 và aspect equal. Trả u,v đọc từ vectors.U/vectors.V (đã trải phẳng theo hàng), shape ban đầu của U. Không trả X,Y thay cho U,V. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncoords = np.linspace(-2, 2, 15)\nX, Y = np.meshgrid(coords, coords)\nU, V = -Y, X\nspeed = np.hypot(U, V)\nstream = ax.streamplot(coords, coords, U, V, color=speed, cmap=\"viridis\", density=0.8)\nfig.colorbar(stream.lines, ax=ax, label=\"Speed (arbitrary units)\")\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"A synthetic rotating vector field\", aspect=\"equal\")\nprint(U.shape)\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     X,Y = np.meshgrid(data['x'],data['y'])\n     U,V = -Y,X\n     fig, ax = plt.subplots()\n     vectors = ax.quiver(X,Y,U,V,angles='xy',scale_units='xy',scale=1)\n     ax.set_aspect('equal')\n     result = {'u':vectors.U.tolist(),'v':vectors.V.tolist(),'shape':list(U.shape)}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "trường xoay 2x2",
+     "input": {
+      "x": [
+       0,
+       1
+      ],
+      "y": [
+       0,
+       2
+      ]
+     },
+     "expected": {
+      "u": [
+       0,
+       0,
+       -2,
+       -2
+      ],
+      "v": [
+       0,
+       1,
+       0,
+       1
+      ],
+      "shape": [
+       2,
+       2
+      ]
+     }
+    },
+    {
+     "name": "một hàng âm",
+     "input": {
+      "x": [
+       -1,
+       1
+      ],
+      "y": [
+       -2
+      ]
+     },
+     "expected": {
+      "u": [
+       2,
+       2
+      ],
+      "v": [
+       -1,
+       1
+      ],
+      "shape": [
+       1,
+       2
+      ]
+     }
+    },
+    {
+     "name": "một điểm",
+     "input": {
+      "x": [
+       3
+      ],
+      "y": [
+       4
+      ]
+     },
+     "expected": {
+      "u": [
+       -4
+      ],
+      "v": [
+       3
+      ],
+      "shape": [
+       1,
+       1
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Thang mũi tên bằng 1 giữ độ dài theo đơn vị dữ liệu khi đã dùng scale_units=xy."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Giữ vị trí đặt vector khác thành phần hướng và độ lớn."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -106,5 +203,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

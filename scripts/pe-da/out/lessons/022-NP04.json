@@ -96,15 +96,63 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list độ dài tính bằng mét. Trả array độ dài tính bằng centimet, dùng 1 m = 100 cm. Dữ liệu gốc không cần thay đổi."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nscores = np.array([6., 8., 9.])\nprint(scores + 0.5)\n\n# ── Đoạn 2 ──\na = np.array([6, 8, 10])\nprint(a + 1)\n\n# ── Đoạn 3 ──\na = np.array([2, 4])\nprint(a * 3)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    meters = np.array(data, dtype=float)\n    return meters * 100\n",
+   "tests": [
+    {
+     "name": "Hai độ dài",
+     "input": [
+      1,
+      2.5
+     ],
+     "expected": [
+      100.0,
+      250.0
+     ]
+    },
+    {
+     "name": "Độ dài bằng không",
+     "input": [
+      0
+     ],
+     "expected": [
+      0.0
+     ]
+    },
+    {
+     "name": "Độ dài nhỏ",
+     "input": [
+      0.01,
+      0.5
+     ],
+     "expected": [
+      1.0,
+      50.0
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Một mét có 100 centimet. Mỗi phần tử cần cùng một hệ số."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo array số thực rồi nhân 100; không nhân trực tiếp list vì sẽ lặp list."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

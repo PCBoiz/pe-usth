@@ -100,15 +100,101 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng khoản chi; mỗi hàng là một nhóm, các cột là khoản chi không thiếu. Trả totals là tổng từng nhóm và labels bằng \"within\" nếu tổng không quá 10, còn lại \"over\"."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks.sum(axis=1))\n\n# ── Đoạn 2 ──\nmarks = np.array([[6., 8.], [7., 9.], [5., 6.]])\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\n# ── Đoạn 3 ──\nmarks = np.array([[6., 8.], [np.nan, 9.], [5., 6.]])\nprint(np.isnan(marks).sum())\nprint(np.nanmean(marks, axis=0))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    totals = np.array(data).sum(axis=1)\n    labels = np.where(totals <= 10, \"within\", \"over\")\n    return {\"totals\": totals, \"labels\": labels}\n",
+   "tests": [
+    {
+     "name": "Có nhóm vượt mức",
+     "input": [
+      [
+       4,
+       7
+      ],
+      [
+       3,
+       2
+      ]
+     ],
+     "expected": {
+      "totals": [
+       11,
+       5
+      ],
+      "labels": [
+       "over",
+       "within"
+      ]
+     }
+    },
+    {
+     "name": "Đúng mức",
+     "input": [
+      [
+       10,
+       0
+      ]
+     ],
+     "expected": {
+      "totals": [
+       10
+      ],
+      "labels": [
+       "within"
+      ]
+     }
+    },
+    {
+     "name": "Ba nhóm",
+     "input": [
+      [
+       0,
+       0
+      ],
+      [
+       5,
+       5
+      ],
+      [
+       8,
+       7
+      ]
+     ],
+     "expected": {
+      "totals": [
+       0,
+       10,
+       15
+      ],
+      "labels": [
+       "within",
+       "within",
+       "over"
+      ]
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Trước hết cần một tổng cho mỗi nhóm, tức mỗi hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng sum(axis=1), sau đó where theo điều kiện tổng <=10 để tạo đủ một nhãn mỗi nhóm."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

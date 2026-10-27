@@ -82,15 +82,90 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data có values, labels, label và position. labels duy nhất, label có trong labels, position hợp lệ. Tạo Series; trả [giá trị theo label, giá trị theo position]."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2]}, index=['C01'])\ntry:\n    df.loc['C99']\nexcept KeyError as error:\n    print(type(error).__name__)\ntry:\n    df.iloc[5]\nexcept IndexError as error:\n    print(type(error).__name__)\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], index=data['labels'])\n     return [int(s.loc[data['label']]), int(s.iloc[data['position']])]\n",
+   "tests": [
+    {
+     "name": "nhãn số không theo thứ tự",
+     "input": {
+      "values": [
+       6,
+       4,
+       8
+      ],
+      "labels": [
+       30,
+       10,
+       20
+      ],
+      "label": 10,
+      "position": 2
+     },
+     "expected": [
+      4,
+      8
+     ]
+    },
+    {
+     "name": "nhãn chữ",
+     "input": {
+      "values": [
+       5,
+       2
+      ],
+      "labels": [
+       "west",
+       "east"
+      ],
+      "label": "east",
+      "position": 0
+     },
+     "expected": [
+      2,
+      5
+     ]
+    },
+    {
+     "name": "vị trí âm",
+     "input": {
+      "values": [
+       9,
+       0,
+       3
+      ],
+      "labels": [
+       "A",
+       "B",
+       "C"
+      ],
+      "label": "B",
+      "position": -1
+     },
+     "expected": [
+      0,
+      3
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số 1 ở đây là vị trí, không phải nhãn."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Phân biệt nhãn hàng với vị trí hàng khi chọn dữ liệu."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

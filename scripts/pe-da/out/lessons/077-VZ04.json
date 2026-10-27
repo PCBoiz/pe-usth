@@ -85,10 +85,102 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows là list [name,count], count không âm, ít nhất một nhóm và không có hai count bằng nhau. Sắp tăng theo count rồi barh. Trả names theo thứ tự đã vẽ và widths đọc bằng get_width() của từng bar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.arange(2)\nax.bar(x - 0.2, [30, 18], width=0.4, label=\"Week 1\")\nax.bar(x + 0.2, [33, 21], width=0.4, label=\"Week 2\")\nax.set_xticks(x, [\"Coffee\", \"Tea\"])\nax.set(ylabel=\"Cups\", title=\"Compare the same drink across weeks\")\nax.legend()\nprint(33 - 30)\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     ordered = sorted(data['rows'], key=lambda row:row[1])\n     names, values = zip(*ordered)\n     fig, ax = plt.subplots()\n     bars = ax.barh(names,values)\n     result = {'names':list(names),'widths':[float(b.get_width()) for b in bars]}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "giữ cặp tên",
+     "input": {
+      "rows": [
+       [
+        "Poetry",
+        8
+       ],
+       [
+        "Travel",
+        3
+       ],
+       [
+        "Science",
+        12
+       ]
+      ]
+     },
+     "expected": {
+      "names": [
+       "Travel",
+       "Poetry",
+       "Science"
+      ],
+      "widths": [
+       3.0,
+       8.0,
+       12.0
+      ]
+     }
+    },
+    {
+     "name": "một nhóm",
+     "input": {
+      "rows": [
+       [
+        "Art",
+        5
+       ]
+      ]
+     },
+     "expected": {
+      "names": [
+       "Art"
+      ],
+      "widths": [
+       5.0
+      ]
+     }
+    },
+    {
+     "name": "nhóm có 0",
+     "input": {
+      "rows": [
+       [
+        "A",
+        6
+       ],
+       [
+        "B",
+        0
+       ]
+      ]
+     },
+     "expected": {
+      "names": [
+       "B",
+       "A"
+      ],
+      "widths": [
+       0.0,
+       6.0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Với cột nằm ngang, tên hàm có thêm ký tự chỉ hướng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Sắp cặp tên–lượng và dùng cột ngang cho tên nhóm."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -96,5 +188,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

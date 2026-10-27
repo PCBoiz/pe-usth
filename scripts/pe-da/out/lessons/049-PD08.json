@@ -82,15 +82,79 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values chứa số hoặc None. Tạo Series kiểu Float64. Trả known là các số không thiếu, missing là số ô thiếu, mean là trung bình hoặc None nếu chưa có số nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\nunknown = pd.Series([None, None], dtype='Float64')\nprint(unknown.sum())\nprint(pd.isna(unknown.sum(min_count=1)))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype='Float64')\n     value = s.mean()\n     return {'known': s.dropna().astype(float).tolist(), 'missing': int(s.isna().sum()), 'mean': None if pd.isna(value) else float(value)}\n",
+   "tests": [
+    {
+     "name": "một ô thiếu",
+     "input": {
+      "values": [
+       6,
+       null,
+       12
+      ]
+     },
+     "expected": {
+      "known": [
+       6.0,
+       12.0
+      ],
+      "missing": 1,
+      "mean": 9.0
+     }
+    },
+    {
+     "name": "toàn thiếu",
+     "input": {
+      "values": [
+       null,
+       null
+      ]
+     },
+     "expected": {
+      "known": [],
+      "missing": 2,
+      "mean": null
+     }
+    },
+    {
+     "name": "0 là số đã biết",
+     "input": {
+      "values": [
+       0,
+       10,
+       null
+      ]
+     },
+     "expected": {
+      "known": [
+       0.0,
+       10.0
+      ],
+      "missing": 1,
+      "mean": 5.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Nếu tất cả giá trị đều thiếu thì tổng phải là thiếu, không phải 0. Tham số cần số lượng tối thiểu giá trị đã biết."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tính từ dữ liệu đã biết mà không biến thiếu thành 0."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

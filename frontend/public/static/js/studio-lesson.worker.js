@@ -153,6 +153,10 @@ self.onmessage = async ({ data }) => {
     // stdin: các dòng input() sẽ đọc lần lượt. Hợp đồng với phía React —
     // tên trường này cố định, đừng đổi.
     const stdin = Array.isArray(data.stdin) ? data.stdin.map(String) : [];
+    // Hợp đồng gọi cho ca chấm dạng DỮ LIỆU (`input`/`expected`). `null` khi
+    // bài dùng ca dạng biểu thức của pe-v4 — bộ chấm phân nhánh theo trường có
+    // mặt trong từng ca, nên hai dạng dùng chung một đường thông điệp.
+    const contract = data.contract && typeof data.contract === 'object' ? data.contract : null;
 
     // Cheap source check first: no point booting a 10 MB runtime to reject this.
     const banned = forbid.filter((token) => String(data.code).includes(token));
@@ -190,7 +194,8 @@ self.onmessage = async ({ data }) => {
     const started = performance.now();
     const grade = py.globals.get('_studio_main');
     const result = JSON.parse(
-      grade(String(data.code), JSON.stringify(tests), JSON.stringify(files), JSON.stringify(stdin)),
+      grade(String(data.code), JSON.stringify(tests), JSON.stringify(files), JSON.stringify(stdin),
+        'null', JSON.stringify(contract)),
     );
     grade.destroy();
     self.postMessage({

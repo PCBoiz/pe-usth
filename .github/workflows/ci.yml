@@ -55,7 +55,7 @@ jobs:
             -f json -o "$RUNNER_TEMP/eslint-report.json" || true
           node -e "
           const r = require(process.env.RUNNER_TEMP + '/eslint-report.json');
-          const TRAN = 265; // đo được 245 ngày 26/10/2026 (thêm refresh-token.service.spec đã đặt lại kiểu); dư chỗ cho spec đang viết dở
+          const TRAN = 245; // đo được 225 ngày 27/10/2026 (dọn định dạng course-admin); dư chỗ cho spec đang viết dở
           const loi = r.reduce((s, f) => s + f.errorCount, 0);
           const canhBao = r.reduce((s, f) => s + f.warningCount, 0);
           const top = r.filter((f) => f.errorCount).sort((a, b) => b.errorCount - a.errorCount);
@@ -289,6 +289,9 @@ jobs:
   #     Lớp này bắt khoảng lệch phiên bản: gói gốc được kiểm trên matplotlib
   #     3.11 / numpy 2.5 / pandas 3.1, còn nền tảng có 3.8.4 / 2.0.2 / 2.2.3.
   #     Nó đã tìm ra VZ07 (tick_labels cần matplotlib ≥ 3.9) theo đúng cách đó.
+  #  4. check-practice.mjs — BÀI TẬP ĐƯỢC CHẤM: 377 ca của 124 bài phải đạt, và
+  #     302 biến thể SAI phải trượt. Ba lớp trên kiểm nội dung bài; lớp này kiểm
+  #     thứ quyết định học viên đạt hay không đạt.
   giao-trinh-da:
     runs-on: ubuntu-latest
     steps:
@@ -330,6 +333,21 @@ jobs:
       - run: npm ci
       - run: npm i --no-save pyodide@314.0.7
       - run: node scripts/pe-da/check-pyodide.mjs
+
+      # 4. check-practice.mjs — BÀI TẬP ĐƯỢC CHẤM, một thứ khác hẳn ba bộ trên.
+      #    Ba bộ kia kiểm NỘI DUNG bài (code trong bài in ra đúng chưa, cấu
+      #    trúc có hợp lệ không). Bộ này kiểm thứ quyết định học viên ĐẠT hay
+      #    KHÔNG ĐẠT: 377 ca chấm của 124 bài, chạy trong chính Pyodide và
+      #    chính harness của trình duyệt.
+      #    Hai pha, và pha 2 không phải cho đủ bộ: ablate 7 mảnh của hợp đồng
+      #    dữ liệu thì 5 mảnh làm pha 1 đỏ, nhưng `returnType` và "dict thừa
+      #    khoá" gỡ ra pha 1 VẪN XANH — lời giải ĐÚNG không bao giờ trả sai
+      #    kiểu hay thừa khoá, nên không ca nào của pha 1 đi qua hai nhánh đó.
+      #    Pha 2 thử 302 biến thể SAI và đòi chúng trượt hết.
+      #    Nó đọc BẢN DỰNG (out/lessons.json), không đọc source/practice.json:
+      #    giữa gói và học viên có một cổng lọc, nên kiểm nguồn thì một lỗi của
+      #    build.py không làm đỏ ở đâu cả.
+      - run: node scripts/pe-da/check-practice.mjs
 
       # Kiểm chính BỘ ĐO ĐỘ HIỆU QUẢ trong studio-harness.py. Tách khỏi hai bộ
       # trên vì chúng chỉ kiểm ĐÚNG/SAI: một lỗi làm số mũ luôn ra ≈ 1 đi qua cả

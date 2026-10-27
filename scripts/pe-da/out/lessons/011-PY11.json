@@ -88,12 +88,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp coordinates là một cặp [x, y]. Tạo swapped là tuple (y, x). Bạn không cần sửa từng phần tử của cặp đầu vào."
    },
-   "starterCode": "# ── Đoạn 1 ──\npoint = (10, 20)\nx, y = point\nprint(x, y)\nprint(type((10)).__name__, type((10,)).__name__)\n\n# ── Đoạn 2 ──\npoint = (10, 20)\ntry:\n    point[0] = 30\nexcept TypeError as error:\n    print(type(error).__name__)\n\n# ── Đoạn 3 ──\nraw = b\"AB\"\neditable = bytearray(raw)\neditable[0] = 67\nprint(raw)\nprint(bytes(editable))\n"
+   "starterCode": "# Hệ thống cung cấp coordinates là một cặp [x, y].\n# Hệ thống cung cấp coordinates; gán kết quả vào swapped.\n",
+   "solutionCode": "x, y = coordinates\nswapped = (y, x)\n",
+   "tests": [
+    {
+     "name": "Cặp thông thường",
+     "input": [
+      3,
+      8
+     ],
+     "expected": [
+      8,
+      3
+     ]
+    },
+    {
+     "name": "Có tọa độ âm",
+     "input": [
+      -2,
+      5
+     ],
+     "expected": [
+      5,
+      -2
+     ]
+    },
+    {
+     "name": "Hai tọa độ bằng nhau",
+     "input": [
+      0,
+      0
+     ],
+     "expected": [
+      0,
+      0
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "coordinates",
+    "resultVariable": "swapped",
+    "returnType": "tuple"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Unpacking giúp đặt tên x và y cho hai phần tử đầu vào."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo tuple mới với thứ tự y trước x; không sửa từng vị trí tuple."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

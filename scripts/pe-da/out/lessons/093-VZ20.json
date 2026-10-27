@@ -88,5 +88,6 @@
   }
  },
  "_mode": "local",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/"
 }

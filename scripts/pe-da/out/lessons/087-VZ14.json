@@ -91,15 +91,70 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.width,data.height là số inch dương, data.dpi là số nguyên dương. Tạo Figure đúng figsize, vẽ một đường bất kỳ, xuất PNG vào BytesIO không dùng bbox_inches=\"tight\". Dùng PIL.Image.open đọc size, trả [width_px,height_px]. Đóng Figure. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom io import BytesIO\nfrom PIL import Image\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A 900 by 450 pixel PNG\")\nbuffer = BytesIO()\nfig.savefig(buffer, format=\"png\", dpi=150)\nbuffer.seek(0)\nprint(Image.open(buffer).size)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-1.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 2 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)\n\n# ── Đoạn 3 ──\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3))\nax.plot([1, 2], [8, 10])\nplt.sca(ax)\nplt.cla()\nprint(len(ax.lines))\nax.bar([\"A\", \"B\"], [8, 10])\nax.set(ylabel=\"Cups\", title=\"Axes reused after clearing\")\nfig.canvas.draw()\nplt.clf()\nax = fig.add_subplot(111)\nax.plot([1, 2], [8, 10], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Figure reused after clearing\")\nprint(len(fig.axes))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-3.png\", dpi=130)\nplt.close(fig)\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\nfrom io import BytesIO\nfrom PIL import Image\n\ndef solve(data):\n     fig, ax = plt.subplots(figsize=(data['width'],data['height']))\n     ax.plot([0,1],[0,1])\n     buffer = BytesIO()\n     fig.savefig(buffer,format='png',dpi=data['dpi'])\n     buffer.seek(0)\n     result = list(Image.open(buffer).size)\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "ảnh ngang mới",
+     "input": {
+      "width": 4,
+      "height": 2,
+      "dpi": 120
+     },
+     "expected": [
+      480,
+      240
+     ]
+    },
+    {
+     "name": "ảnh vuông",
+     "input": {
+      "width": 3,
+      "height": 3,
+      "dpi": 100
+     },
+     "expected": [
+      300,
+      300
+     ]
+    },
+    {
+     "name": "ảnh nhỏ",
+     "input": {
+      "width": 2,
+      "height": 1,
+      "dpi": 80
+     },
+     "expected": [
+      160,
+      80
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Sau khi lưu, cần giải phóng Figure nếu không dùng tiếp."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Xuất ảnh với kích thước dự đoán được và đóng Figure."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

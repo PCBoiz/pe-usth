@@ -84,12 +84,50 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết solve(data) nhận {\"date\": chuỗi YYYY-MM-DD, \"days\": số nguyên}, trả chuỗi ngày hẹn YYYY-MM-DD. Chỉ dùng ngày hợp lệ; days có thể âm."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom datetime import datetime, timedelta\nday = datetime.strptime(\"2024-02-28\", \"%Y-%m-%d\")\nprint((day + timedelta(days=2)).strftime(\"%Y-%m-%d\"))\n\n# ── Đoạn 2 ──\nfrom datetime import datetime, timedelta\nend = datetime(year=2024, month=3, day=29)\nstart = end - timedelta(weeks=4)\nprint(start.strftime(\"%Y-%m-%d\"))\nprint((end - start).days)\n\n# ── Đoạn 3 ──\nfrom datetime import datetime\ntry:\n    datetime.strptime(\"2023-02-29\", \"%Y-%m-%d\")\nexcept ValueError:\n    print(\"Ngay khong hop le\")\nprint(isinstance(datetime.now(), datetime))\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "from datetime import datetime, timedelta\ndef solve(data):\n    start = datetime.strptime(data['date'], '%Y-%m-%d')\n    return (start + timedelta(days=data['days'])).strftime('%Y-%m-%d')\n",
+   "tests": [
+    {
+     "name": "qua năm",
+     "input": {
+      "date": "2026-12-31",
+      "days": 1
+     },
+     "expected": "2027-01-01"
+    },
+    {
+     "name": "qua ngày nhuận",
+     "input": {
+      "date": "2024-02-28",
+      "days": 2
+     },
+     "expected": "2024-03-01"
+    },
+    {
+     "name": "lùi ngày",
+     "input": {
+      "date": "2026-03-01",
+      "days": -1
+     },
+     "expected": "2026-02-28"
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

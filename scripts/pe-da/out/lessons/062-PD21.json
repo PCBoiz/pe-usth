@@ -82,15 +82,74 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.ordered và data.delivered là hai list chuỗi %d/%m/%Y hoặc chuỗi sai. Chuyển với errors=\"coerce\", trừ ngày giao cho ngày đặt. Trả list số ngày trọn; cặp chứa ngày sai trả None. Không tự cộng thêm ngày đầu."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'ordered': ['2026-01-01', '2026-01-03'], 'delivered': ['2026-01-03', '2026-01-04']})\ndays = pd.to_datetime(df['delivered']) - pd.to_datetime(df['ordered'])\nprint(days.dt.days.tolist())\nprint((pd.Timestamp('2026-01-01') + pd.Timedelta(days=2)).strftime('%Y-%m-%d'))\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     ordered = pd.to_datetime(pd.Series(data['ordered']), format='%d/%m/%Y', errors='coerce')\n     delivered = pd.to_datetime(pd.Series(data['delivered']), format='%d/%m/%Y', errors='coerce')\n     days = (delivered - ordered).dt.days\n     return [None if pd.isna(v) else int(v) for v in days]\n",
+   "tests": [
+    {
+     "name": "qua tháng",
+     "input": {
+      "ordered": [
+       "28/02/2026"
+      ],
+      "delivered": [
+       "02/03/2026"
+      ]
+     },
+     "expected": [
+      2
+     ]
+    },
+    {
+     "name": "ngày sai",
+     "input": {
+      "ordered": [
+       "bad",
+       "03/04/2026"
+      ],
+      "delivered": [
+       "05/04/2026",
+       "04/04/2026"
+      ]
+     },
+     "expected": [
+      null,
+      1
+     ]
+    },
+    {
+     "name": "cùng ngày",
+     "input": {
+      "ordered": [
+       "10/05/2026"
+      ],
+      "delivered": [
+       "10/05/2026"
+      ]
+     },
+     "expected": [
+      0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Muốn chuyển chuỗi thành ngày lỗi thành NaT, không dừng chương trình."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đọc ngày theo format rõ ràng và tính chênh lệch ngày."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

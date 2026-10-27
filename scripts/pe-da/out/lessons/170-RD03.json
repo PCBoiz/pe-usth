@@ -80,15 +80,97 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận names và amounts cùng độ dài. Trả names và amounts đã xếp tăng theo amounts; hai giá trị bằng nhau giữ thứ tự ban đầu. Không tách tên khỏi số tiền."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nnames = np.array([\"A\", \"B\", \"C\"])\nsales = np.array([30, 10, 20])\norder = np.argsort(sales, kind=\"stable\")\nprint(order.tolist())\nprint(names[order].tolist(), sales[order].tolist())\n\n# ── Đoạn 2 ──\nimport numpy as np\nsales = np.array([30, 10, 20])\nsorted_sales = np.sort(sales)\nprint(sorted_sales.tolist())\nprint(sales.tolist())\n\n# ── Đoạn 3 ──\nimport numpy as np\ncodes = np.array([\"B\", \"A\", \"B\", \"C\", \"A\"])\nvalues, counts = np.unique(codes, return_counts=True)\nprint(values.tolist())\nprint(counts.tolist())\nprint(int(counts.sum()))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    names = np.array(data[\"names\"])\n    amounts = np.array(data[\"amounts\"])\n    order = np.argsort(amounts, kind=\"stable\")\n    return {\"names\": names[order], \"amounts\": amounts[order]}\n",
+   "tests": [
+    {
+     "name": "Ba mức khác nhau",
+     "input": {
+      "names": [
+       "A",
+       "B",
+       "C"
+      ],
+      "amounts": [
+       30,
+       10,
+       20
+      ]
+     },
+     "expected": {
+      "names": [
+       "B",
+       "C",
+       "A"
+      ],
+      "amounts": [
+       10,
+       20,
+       30
+      ]
+     }
+    },
+    {
+     "name": "Hai mức bằng nhau",
+     "input": {
+      "names": [
+       "X",
+       "Y",
+       "Z"
+      ],
+      "amounts": [
+       5,
+       2,
+       5
+      ]
+     },
+     "expected": {
+      "names": [
+       "Y",
+       "X",
+       "Z"
+      ],
+      "amounts": [
+       2,
+       5,
+       5
+      ]
+     }
+    },
+    {
+     "name": "Chưa có dữ liệu",
+     "input": {
+      "names": [],
+      "amounts": []
+     },
+     "expected": {
+      "names": [],
+      "amounts": []
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Nếu sắp cột số riêng, tên vẫn ở chỗ cũ sẽ bị gán sai."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Lấy một argsort kind=\"stable\" rồi áp cùng order cho names và amounts."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

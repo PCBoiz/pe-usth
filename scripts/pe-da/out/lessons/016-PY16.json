@@ -84,12 +84,50 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list thời gian chờ. Trả trung bình nếu có số đo; trả None nếu list rỗng. Đừng chỉ print kết quả."
    },
-   "starterCode": "# ── Đoạn 1 ──\ndef total(price, quantity=1):\n    \"\"\"Return price multiplied by quantity.\"\"\"\n    return price * quantity\n\nprint(total(12, 3))\nprint(total(12, quantity=2))\n\n# ── Đoạn 2 ──\ndef display_total(price, quantity):\n    print(price * quantity)\n\nresult = display_total(12, 3)\nprint(result)\n\n# ── Đoạn 3 ──\ndef average(values):\n    \"\"\"Return the mean of a non-empty sequence.\"\"\"\n    return sum(values) / len(values)\n\nprint(average([6, 8, 10]))\nprint(min([6, 8, 10]), max([6, 8, 10]))\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    if len(data) == 0:\n        return None\n    return sum(data) / len(data)\n",
+   "tests": [
+    {
+     "name": "Ba số đo",
+     "input": [
+      4,
+      6,
+      8
+     ],
+     "expected": 6.0
+    },
+    {
+     "name": "Một số đo",
+     "input": [
+      2.5
+     ],
+     "expected": 2.5
+    },
+    {
+     "name": "Chưa có số đo",
+     "input": [],
+     "expected": null
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Hàm phải return để bước sau dùng được kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Kiểm list rỗng trước phép chia; với dữ liệu có số đo, chia tổng cho số phần tử."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

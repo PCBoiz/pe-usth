@@ -91,16 +91,102 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.names,complaints,orders có cùng độ dài, orders đều dương. Dựng bar chart của complaints/orders*100, ylabel=\"Complaints (%)\", trục y bắt đầu 0. Trả rates từ các bar và baseline là cận dưới get_ylim(). Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nrate = [20/1000*100, 10/100*100]\nbars = ax.bar([\"A\", \"B\"], rate)\nax.bar_label(bars, fmt=\"%.1f%%\")\nax.set(ylabel=\"Complaints (%)\", title=\"Use the relevant denominator\", ylim=(0, 12))\nprint(rate)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, axes = plt.subplots(2, 1, figsize=(6, 5), sharex=True, layout=\"constrained\")\naxes[0].plot([1, 2, 3], [100, 120, 110], marker=\"o\")\naxes[0].set(ylabel=\"Visitors\", title=\"Separate units; shared time\")\naxes[1].plot([1, 2, 3], [2, 4, 3], marker=\"s\", color=\"#D55E00\")\naxes[1].set(xlabel=\"Day\", ylabel=\"Revenue (million VND)\")\nprint(len(fig.axes))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\ndaily = pd.DataFrame({\"day\":[1, 2, 3], \"sales\":[100, 110, 90]})\nax.plot(daily[\"day\"], daily[\"sales\"], marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Three days do not establish annual growth\")\nfirst_to_last = (daily[\"sales\"].iloc[-1] / daily[\"sales\"].iloc[0] - 1) * 100\nprint(round(float(first_to_last), 1))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     rates = np.asarray(data['complaints']) / np.asarray(data['orders']) * 100\n     fig, ax = plt.subplots()\n     bars = ax.bar(data['names'],rates)\n     ax.set_ylabel('Complaints (%)')\n     ax.set_ylim(bottom=0)\n     result = {'rates':[float(bar.get_height()) for bar in bars],'baseline':float(ax.get_ylim()[0])}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "mẫu số đổi kết luận",
+     "input": {
+      "names": [
+       "A",
+       "B"
+      ],
+      "complaints": [
+       12,
+       6
+      ],
+      "orders": [
+       600,
+       60
+      ]
+     },
+     "expected": {
+      "rates": [
+       2.0,
+       10.0
+      ],
+      "baseline": 0.0
+     }
+    },
+    {
+     "name": "không có khiếu nại",
+     "input": {
+      "names": [
+       "X"
+      ],
+      "complaints": [
+       0
+      ],
+      "orders": [
+       20
+      ]
+     },
+     "expected": {
+      "rates": [
+       0.0
+      ],
+      "baseline": 0.0
+     }
+    },
+    {
+     "name": "cùng số đếm khác số đơn",
+     "input": {
+      "names": [
+       "E",
+       "W"
+      ],
+      "complaints": [
+       3,
+       3
+      ],
+      "orders": [
+       30,
+       300
+      ]
+     },
+     "expected": {
+      "rates": [
+       10.0,
+       1.0
+      ],
+      "baseline": 0.0
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tỷ lệ được so theo mẫu số là tổng đơn của chính cửa hàng."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "So tỷ lệ với đúng mẫu số và giữ đơn vị trong hình."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
-    "pandas"
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

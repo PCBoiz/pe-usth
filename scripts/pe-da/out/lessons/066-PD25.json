@@ -82,15 +82,80 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows có qty, price, discount (0..1). Trả list tiền sau giảm giá qty*price*(1-discount), theo thứ tự. Dùng các cột trực tiếp, không phải apply cho phép nhân đơn giản này."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nstatus = pd.Series(['P', 'C', 'X'])\nnames = status.map({'P': 'paid', 'C': 'cancelled'})\nprint(names.fillna('unknown').tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20], 'discount': [0.1, 0.0]})\ndf['net'] = df['qty'] * df['price'] * (1 - df['discount'])\nprint(df['net'].tolist())\nprint(df['net'].where(df['net'] >= 20, 0).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'qty': [2, 3], 'price': [10, 20]})\ndef row_total(row):\n    return row['qty'] * row['price']\nprint(df.apply(row_total, axis=1).tolist())\nprint((df['qty'] * df['price']).tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return (df['qty'] * df['price'] * (1 - df['discount'])).tolist()\n",
+   "tests": [
+    {
+     "name": "giảm một phần",
+     "input": {
+      "rows": [
+       {
+        "qty": 2,
+        "price": 15,
+        "discount": 0.2
+       },
+       {
+        "qty": 3,
+        "price": 8,
+        "discount": 0
+       }
+      ]
+     },
+     "expected": [
+      24.0,
+      24.0
+     ]
+    },
+    {
+     "name": "giảm toàn bộ",
+     "input": {
+      "rows": [
+       {
+        "qty": 5,
+        "price": 9,
+        "discount": 1
+       }
+      ]
+     },
+     "expected": [
+      0.0
+     ]
+    },
+    {
+     "name": "không mua",
+     "input": {
+      "rows": [
+       {
+        "qty": 0,
+        "price": 20,
+        "discount": 0.5
+       }
+      ]
+     },
+     "expected": [
+      0.0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần thay từng mã P/C bằng tên theo dictionary tra cứu."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng map cho nhãn và phép tính theo cột cho doanh thu."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

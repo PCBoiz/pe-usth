@@ -106,12 +106,54 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận dictionary đường dẫn tương đối → nội dung, chỉ gồm tên an toàn như reports/a.txt, không có .. hay đường dẫn tuyệt đối. Tạo các file này trong TemporaryDirectory, dùng os.walk tìm mọi .txt, trả đường dẫn tương đối chuẩn dấu / theo thứ tự chữ cái. Hãy thực sự tạo và duyệt cây."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom pathlib import Path\nimport tempfile, os\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    (root / \"sub\").mkdir()\n    (root / \"a.txt\").write_text(\"A\", encoding=\"utf8\")\n    (root / \"sub/b.txt\").write_text(\"B\", encoding=\"utf8\")\n    with os.scandir(root) as entries:\n        print(sorted((e.name, e.is_dir()) for e in entries))\n    print(sorted(p.relative_to(root).as_posix() for p in root.rglob(\"*.txt\")))\n\n# ── Đoạn 2 ──\nfrom pathlib import Path\nimport tempfile, os, shutil\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    os.makedirs(root / \"a/b\")\n    (root / \"old.txt\").write_text(\"A\", encoding=\"utf8\")\n    os.rename(root / \"old.txt\", root / \"new.txt\")\n    print(sorted(os.listdir(root)))\n    os.remove(root / \"new.txt\")\n    os.rmdir(root / \"a/b\")\n    shutil.rmtree(root / \"a\")\n    print(list(root.iterdir()))\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import os, tempfile\nfrom pathlib import Path\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        base = Path(folder)\n        for name, text in data.items():\n            path = base / name\n            path.parent.mkdir(parents=True, exist_ok=True)\n            path.write_text(text, encoding='utf-8')\n        found = []\n        for root, dirs, files in os.walk(base):\n            for name in files:\n                if name.endswith('.txt'): found.append((Path(root) / name).relative_to(base).as_posix())\n        return sorted(found)\n",
+   "tests": [
+    {
+     "name": "hai cấp",
+     "input": {
+      "a.txt": "A",
+      "reports/b.txt": "B",
+      "reports/c.csv": "C"
+     },
+     "expected": [
+      "a.txt",
+      "reports/b.txt"
+     ]
+    },
+    {
+     "name": "chỉ csv",
+     "input": {
+      "d/a.csv": "1"
+     },
+     "expected": []
+    },
+    {
+     "name": "ba cấp",
+     "input": {
+      "z/q/e.txt": "E"
+     },
+     "expected": [
+      "z/q/e.txt"
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

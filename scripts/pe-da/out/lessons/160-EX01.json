@@ -84,16 +84,53 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết solve(data) nhận chuỗi CSV có tiêu đề id,price và ít nhất một dòng số hợp lệ. Đọc riêng price bằng np.loadtxt, trả list giá theo thứ tự file. Với file chỉ có một dòng, kết quả vẫn phải là list một phần tử."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nfrom io import StringIO\ntext = \"id,mark\\n1,8.5\\n2,7.0\\n\"\nmarks = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(1,), dtype=float)\nprint(marks.tolist())\nprint(marks.shape, len(marks), marks.dtype.kind)\n\n# ── Đoạn 2 ──\nimport numpy as np\nfrom io import StringIO\ntext = \"name,city\\nMai,Hanoi\\nAn,Hue\\n\"\nnames = np.loadtxt(StringIO(text), delimiter=\",\", skiprows=1, usecols=(0,), dtype=str)\nprint(names.tolist())\nprint(names.shape)\n\n# ── Đoạn 3 ──\nimport tempfile, io, contextlib\nfrom pathlib import Path\nimport numpy as np\nimport pandas as pd\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"marks.txt\"\n    path.write_text(\"Mai,8\\nAn,7\\n\", encoding=\"utf-8\")\n    f = open(path, encoding=\"utf-8\")\n    print(f.readline().strip())\n    print(f.read().strip())\n    f.close()\n    print(f.closed)\n    with open(path, encoding=\"utf-8\") as stream:\n        print(len(stream.readlines()))\ninfo, help_text = io.StringIO(), io.StringIO()\nwith contextlib.redirect_stdout(info):\n    np.info(np.ndarray.dtype)\nwith contextlib.redirect_stdout(help_text):\n    help(pd.read_csv)\nprint(bool(info.getvalue().strip()), \"read_csv\" in help_text.getvalue())\n",
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import numpy as np\nfrom io import StringIO\ndef solve(data):\n    prices = np.loadtxt(StringIO(data), delimiter=',', skiprows=1, usecols=(1,), ndmin=1)\n    return prices.tolist()\n",
+   "tests": [
+    {
+     "name": "hai dòng",
+     "input": "id,price\n1,12.5\n2,9.0\n",
+     "expected": [
+      12.5,
+      9.0
+     ]
+    },
+    {
+     "name": "một dòng",
+     "input": "id,price\n8,0.0\n",
+     "expected": [
+      0.0
+     ]
+    },
+    {
+     "name": "giá không phải id",
+     "input": "id,price\n99,4\n2,7.25\n3,4\n",
+     "expected": [
+      4.0,
+      7.25,
+      4.0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
    "packages": [
-    "numpy",
-    "pandas"
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

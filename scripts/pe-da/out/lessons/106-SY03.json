@@ -84,12 +84,41 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Ghi chú giao hàng chứa mã P và đúng bốn chữ số, đứng thành một từ riêng. Viết solve(data) nhận chuỗi, trả mã khớp đầu tiên hoặc None. Không nhận P12 hay P12345."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport re\nmatch = re.search(r\"\\bS\\d{3}\\b\", \"Paid by S012 today\")\nprint(match.group(0) if match else None)\n\n# ── Đoạn 2 ──\nimport re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)\n\n# ── Đoạn 3 ──\nimport re\nprint(re.search(r\"\\bS\\d{3}\\b\", \"S12\") is None)\nprint(re.search(re.escape(\"a.b\"), \"a-b\") is None)\nprint(re.search(r\"\\d{4}-\\d{2}-\\d{2}\", \"2024-02-31\") is not None)\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import re\ndef solve(data):\n    match = re.search(r'\\bP\\d{4}\\b', data)\n    return match.group(0) if match else None\n",
+   "tests": [
+    {
+     "name": "có mã",
+     "input": "paid P2048 today",
+     "expected": "P2048"
+    },
+    {
+     "name": "quá dài",
+     "input": "P12345 then P0007",
+     "expected": "P0007"
+    },
+    {
+     "name": "không có mã",
+     "input": "P12 pending",
+     "expected": null
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

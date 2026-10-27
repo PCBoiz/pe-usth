@@ -90,12 +90,22 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
     ...base,
     step_1: {
       theory: [
-        { title: 'Định nghĩa: GUI và CLI', body: 'CLI nhận lệnh gõ trong terminal…' },
+        {
+          title: 'Định nghĩa: GUI và CLI',
+          body: 'CLI nhận lệnh gõ trong terminal…',
+        },
         {
           title: 'Tkinter gồm bốn phần',
-          bullets: ['Window: tk.Tk() là cửa sổ chính', 'Widgets: Frame, Label, Button…'],
+          bullets: [
+            'Window: tk.Tk() là cửa sổ chính',
+            'Widgets: Frame, Label, Button…',
+          ],
         },
-        { title: 'Đọc sơ đồ', body: 'Thanh tiêu đề mang chuỗi của title()…', figure },
+        {
+          title: 'Đọc sơ đồ',
+          body: 'Thanh tiêu đề mang chuỗi của title()…',
+          figure,
+        },
       ],
       figure: { ...figure, name: 'G01-window-anatomy' },
     },
@@ -106,7 +116,9 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
   });
 
   it('bài không khai theory/figure vẫn hợp lệ như cũ (M4–M8, khoá cũ)', () => {
-    expect(validateStudioLesson({ ...base, step_1: { context: { body: 'a' } } })).toEqual([]);
+    expect(
+      validateStudioLesson({ ...base, step_1: { context: { body: 'a' } } }),
+    ).toEqual([]);
   });
 
   it('bắt khối rỗng, thiếu tiêu đề và hình thiếu alt/src ngoài miền', () => {
@@ -116,7 +128,11 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
         theory: [
           { title: 'Chỉ có tiêu đề' },
           { body: 'Thiếu title.' },
-          { title: 'Hình hỏng', body: 'x', figure: { src: 'https://cdn.example.com/a.svg', caption: 'c' } },
+          {
+            title: 'Hình hỏng',
+            body: 'x',
+            figure: { src: 'https://cdn.example.com/a.svg', caption: 'c' },
+          },
         ],
         figure: { src: '/static/anim/x.png', caption: 'c', alt: 'a' },
       },
@@ -129,14 +145,80 @@ describe('validateStudioLesson — lý thuyết + hình (step_1.theory / step_1.
   });
 
   it('theory sai kiểu bị từ chối', () => {
-    expect(validateStudioLesson({ ...base, step_1: { theory: 'ba khối' } }).join()).toContain(
-      'step_1.theory: phải là mảng',
+    expect(
+      validateStudioLesson({ ...base, step_1: { theory: 'ba khối' } }).join(),
+    ).toContain('step_1.theory: phải là mảng');
+    expect(
+      validateStudioLesson({ ...base, step_1: { theory: [] } }).join(),
+    ).toContain('step_1.theory: mảng rỗng');
+    expect(
+      validateStudioLesson({ ...base, step_1: { figure: 'P01' } }).join(),
+    ).toContain('step_1.figure: phải là object');
+  });
+});
+
+describe('validateStudioLesson — hai hợp đồng ca chấm', () => {
+  // Bộ xác thực này là CỬA DUY NHẤT đưa nội dung vào DB
+  // (scripts/update-lesson-content.ts gọi nó). Bản đầu chỉ biết hợp đồng
+  // BIỂU THỨC của pe-v4, nên khi 124 bài pe-da có bài tập được chấm theo hợp
+  // đồng DỮ LIỆU thì `--offline` từ chối sạch với "thiếu biểu thức gọi hàm":
+  // một bộ chấm chạy đúng trong trình duyệt mà không có đường nào vào DB.
+  const baiDoc = (tests: unknown[]) => ({
+    title: 'PY04 · Đổi chuỗi thành số',
+    // `step_1.read` là dấu nhận biết BÀI ĐỌC — xem chú thích trong schema.
+    step_1: { read: [[{ type: 'paragraph', text: 'x' }]] },
+    step_4: { starterCode: 'def solve(data):\n    pass\n', tests },
+  });
+
+  it('nhận ca dạng DỮ LIỆU (input/expected)', () => {
+    expect(
+      validateStudioLesson(
+        baiDoc([{ name: 'ba số', input: [3, 1, 2], expected: [1, 2, 3] }]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('`expected: null` là đáp án HỢP LỆ, không phải thiếu dữ liệu', () => {
+    // 5 bài (PY16, NP17, VZ30, SY03, SY13) có ca "đầu vào rỗng -> null": đáp án
+    // đúng cho "chưa có số đo" thật là không có kết quả. Kiểm bằng giá trị
+    // thay vì bằng khoá-có-mặt là đánh trượt đúng những ca đó.
+    expect(
+      validateStudioLesson(
+        baiDoc([{ name: 'rỗng', input: [], expected: null }]),
+      ),
+    ).toEqual([]);
+  });
+
+  it('vẫn nhận ca dạng BIỂU THỨC của pe-v4', () => {
+    expect(validateStudioLesson(base)).toEqual([]);
+  });
+
+  it('TỪ CHỐI ca trộn hai hợp đồng', () => {
+    // Trộn thì `step_4.contract` chỉ đúng cho một nửa số ca, mà nửa kia không
+    // báo gì — bộ chấm phân nhánh theo từng ca nên nó cứ chạy và cứ trả kết quả.
+    const errors = validateStudioLesson(
+      baiDoc([
+        {
+          name: 'lạ',
+          call: 'solve([1])',
+          expect: '1',
+          input: [1],
+          expected: 1,
+        },
+      ]),
     );
-    expect(validateStudioLesson({ ...base, step_1: { theory: [] } }).join()).toContain(
-      'step_1.theory: mảng rỗng',
-    );
-    expect(validateStudioLesson({ ...base, step_1: { figure: 'P01' } }).join()).toContain(
-      'step_1.figure: phải là object',
-    );
+    expect(errors.join(' | ')).toContain('trộn hai hợp đồng');
+  });
+
+  it('TỪ CHỐI ca dữ liệu thiếu tên', () => {
+    // Tên rỗng thì bảng kết quả dưới editor hiện một dòng trống: học viên thấy
+    // "TRƯỢT" mà không biết ca nào.
+    const errors = validateStudioLesson(baiDoc([{ input: [1], expected: 1 }]));
+    expect(errors.join(' | ')).toContain('ca chấm phải có tên');
+  });
+
+  it('TỪ CHỐI ca dữ liệu thiếu expected', () => {
+    const errors = validateStudioLesson(baiDoc([{ name: 'x', input: [1] }]));
+    expect(errors.join(' | ')).toContain('thiếu kết quả mong đợi');
   });
 });

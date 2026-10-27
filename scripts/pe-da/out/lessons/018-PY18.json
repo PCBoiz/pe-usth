@@ -84,12 +84,64 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list chuỗi số. Trả list cùng độ dài, đổi từng chuỗi hợp lệ bằng float và thay chuỗi không chuyển được bằng None. Đầu vào không chứa chuỗi NaN hoặc vô cực."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfor raw in [\"6\", \"\", \"8\"]:\n    try:\n        print(float(raw))\n    except ValueError:\n        print(\"missing\")\n\n# ── Đoạn 2 ──\ndef read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"Outside 0..10\")\n    return mark\n\ntry:\n    read_mark(\"12\")\nexcept ValueError as error:\n    print(str(error))\n\n# ── Đoạn 3 ──\ntry:\n    number = int(\"8\")\nexcept ValueError:\n    print(\"invalid\")\nelse:\n    print(number)\nfinally:\n    print(\"finished\")\n"
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "def solve(data):\n    values = []\n    for raw in data:\n        try:\n            values.append(float(raw))\n        except ValueError:\n            values.append(None)\n    return values\n",
+   "tests": [
+    {
+     "name": "Có một ô hỏng",
+     "input": [
+      "1",
+      "",
+      "3.5"
+     ],
+     "expected": [
+      1.0,
+      null,
+      3.5
+     ]
+    },
+    {
+     "name": "Tất cả hợp lệ",
+     "input": [
+      "-2",
+      "0"
+     ],
+     "expected": [
+      -2.0,
+      0.0
+     ]
+    },
+    {
+     "name": "Toàn chuỗi lỗi",
+     "input": [
+      "bad",
+      "?"
+     ],
+     "expected": [
+      null,
+      null
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Giữ một vị trí đầu ra cho mỗi chuỗi đầu vào, kể cả chuỗi lỗi."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử float trong try; chỉ bắt ValueError rồi thêm None cho đúng vị trí đó."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

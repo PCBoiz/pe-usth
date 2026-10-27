@@ -82,15 +82,97 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.codes là list mã dạng chữ; data.qty chứa số nguyên viết bằng chữ, None hoặc chuỗi lỗi. Giữ codes bằng dtype string; chuyển qty qua to_numeric(errors=\"coerce\") rồi Int64. Trả codes, qty (ô thiếu thành None) và dtype của qty."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': pd.Series(['001', '002'], dtype='string'),\n                   'qty': pd.Series([2, None], dtype='Int64')})\nprint(df['order'].tolist())\nprint(str(df['qty'].dtype))\nprint(df['qty'].isna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\nraw = pd.Series(['12', 'bad', '8'])\nnumbers = pd.to_numeric(raw, errors='coerce')\nprint(numbers.isna().tolist())\nprint(numbers.dropna().tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ns = pd.Series([1.0, 2.0])\nconverted = s.astype('Int64')\nprint(str(converted.dtype))\nprint(converted.tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     codes = pd.Series(data['codes'], dtype='string')\n     qty = pd.to_numeric(pd.Series(data['qty']), errors='coerce').astype('Int64')\n     return {'codes': codes.tolist(), 'qty': [None if pd.isna(v) else int(v) for v in qty], 'dtype': str(qty.dtype)}\n",
+   "tests": [
+    {
+     "name": "mã có số 0 đầu",
+     "input": {
+      "codes": [
+       "003",
+       "010"
+      ],
+      "qty": [
+       "4",
+       "bad"
+      ]
+     },
+     "expected": {
+      "codes": [
+       "003",
+       "010"
+      ],
+      "qty": [
+       4,
+       null
+      ],
+      "dtype": "Int64"
+     }
+    },
+    {
+     "name": "thiếu khác 0",
+     "input": {
+      "codes": [
+       "A",
+       "B"
+      ],
+      "qty": [
+       null,
+       "0"
+      ]
+     },
+     "expected": {
+      "codes": [
+       "A",
+       "B"
+      ],
+      "qty": [
+       null,
+       0
+      ],
+      "dtype": "Int64"
+     }
+    },
+    {
+     "name": "âm vẫn là số đọc được",
+     "input": {
+      "codes": [
+       "X"
+      ],
+      "qty": [
+       "-2"
+      ]
+     },
+     "expected": {
+      "codes": [
+       "X"
+      ],
+      "qty": [
+       -2
+      ],
+      "dtype": "Int64"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Giá trị không đọc được thành số cần chuyển thành giá trị thiếu, không làm dừng phép đọc."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Giữ mã dạng chữ và chuyển số lỗi thành ô thiếu có thể nhìn thấy."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

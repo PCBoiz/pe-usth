@@ -8,6 +8,7 @@
 // `content_json` (gồm đáp án) đã được gửi cho mọi học viên — xem AGENTS.md.
 import {
   correctIndex,
+  laCaDuLieu,
   letterKey,
   optionText,
   parsonsCode,
@@ -193,9 +194,24 @@ export function answerKeyFor({ lesson, scr, game, draft }: AnswerKeyContext): {
     return {
       // Ca kiểm tra stdout của bài PE là cả một chuỗi exec(...) — in ra chỉ
       // gây rối, lời giải mẫu bên dưới đã đủ để đối chiếu.
+      // Hai dạng ca chấm hiện khác nhau ở đây, và cố ý:
+      //   · dạng BIỂU THỨC in `call → expect` (đọc được: `f(3) → 9`);
+      //   · dạng DỮ LIỆU in `input → expected` qua JSON, vì `input` có thể là
+      //     cả một dict nhiều khoá chứ không phải một lời gọi gọn.
+      // Ca stdout của bài PE là một chuỗi exec(...) dài — in ra chỉ gây rối,
+      // lời giải mẫu bên dưới đã đủ để đối chiếu.
       rows: tests
-        .filter((t) => t.call.length <= 120 && !t.call.includes('exec('))
-        .map((t) => ({ label: t.name || 'Ca kiểm thử', value: `${t.call} → ${t.expect}` })),
+        .map((t) => {
+          if (laCaDuLieu(t)) {
+            const vao = JSON.stringify(t.input);
+            const ra = JSON.stringify(t.expected);
+            if ((vao?.length ?? 0) > 120) return null;
+            return { label: t.name || 'Ca kiểm thử', value: `${vao} → ${ra}` };
+          }
+          if (t.call.length > 120 || t.call.includes('exec(')) return null;
+          return { label: t.name || 'Ca kiểm thử', value: `${t.call} → ${t.expect}` };
+        })
+        .filter((r): r is { label: string; value: string } => r !== null),
       code: solution,
       fill: solution ? { code: solution } : undefined,
     };

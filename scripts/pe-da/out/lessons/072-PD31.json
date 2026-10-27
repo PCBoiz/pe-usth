@@ -82,15 +82,104 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.rows là các đơn với channel và amount (đã biết, mỗi hàng là một đơn). Trả dictionary mỗi channel chứa count, mean, median. Cần có số quan sát bên cạnh các số tóm tắt, không suy ra nhân quả."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))\n\n# ── Đoạn 2 ──\nimport pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'ad_spend': [1, 2, 3, 4], 'sales': [10, 20, 30, 40]})\nprint(round(df['ad_spend'].corr(df['sales']), 2))\nprint(df[['ad_spend', 'sales']].dropna().shape[0])\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'])\n     return df.groupby('channel')['amount'].agg(['count','mean','median']).to_dict('index')\n",
+   "tests": [
+    {
+     "name": "cỡ mẫu khác nhau",
+     "input": {
+      "rows": [
+       {
+        "channel": "app",
+        "amount": 4
+       },
+       {
+        "channel": "app",
+        "amount": 8
+       },
+       {
+        "channel": "store",
+        "amount": 20
+       }
+      ]
+     },
+     "expected": {
+      "app": {
+       "count": 2,
+       "mean": 6.0,
+       "median": 6.0
+      },
+      "store": {
+       "count": 1,
+       "mean": 20.0,
+       "median": 20.0
+      }
+     }
+    },
+    {
+     "name": "mean khác median",
+     "input": {
+      "rows": [
+       {
+        "channel": "web",
+        "amount": 0
+       },
+       {
+        "channel": "web",
+        "amount": 3
+       },
+       {
+        "channel": "web",
+        "amount": 30
+       }
+      ]
+     },
+     "expected": {
+      "web": {
+       "count": 3,
+       "mean": 11.0,
+       "median": 3.0
+      }
+     }
+    },
+    {
+     "name": "một đơn",
+     "input": {
+      "rows": [
+       {
+        "channel": "phone",
+        "amount": 7
+       }
+      ]
+     },
+     "expected": {
+      "phone": {
+       "count": 1,
+       "mean": 7.0,
+       "median": 7.0
+      }
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Khoảng tứ phân vị là độ dài đoạn từ Q1 đến Q3."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Kèm số quan sát và kiểm ngoại lệ trước khi diễn giải trung bình."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

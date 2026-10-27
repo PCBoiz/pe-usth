@@ -89,10 +89,101 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.z là ma trận chữ nhật, data.maximum >0. Tạo imshow với vmin=0,vmax=maximum,interpolation=\"nearest\"; thêm colorbar nằm ngang. Trả shape từ image.get_array().shape, clim từ image.get_clim(), và orientation của colorbar. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5, 3], [4, 1, 6]])\nim = ax.imshow(counts, cmap=\"viridis\", vmin=0, vmax=6, aspect=\"auto\")\nax.set_xticks([0, 1, 2], [\"Morning\", \"Noon\", \"Evening\"])\nax.set_yticks([0, 1], [\"Store A\", \"Store B\"])\nax.set_title(\"Orders by store and time\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(counts.shape)\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5], [4, 1]])\nim = ax.imshow(counts, cmap=\"Blues\", vmin=0, vmax=6)\nfor (row, col), value in np.ndenumerate(counts):\n    ax.text(col, row, str(value), ha=\"center\", va=\"center\", color=\"black\")\nax.set(xticks=[0, 1], xticklabels=[\"Morning\", \"Noon\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Read the count in each cell\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(int(counts.sum()))\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nchange = np.array([[-2, 1], [0, 3]])\nim = ax.imshow(change, cmap=\"RdBu\", vmin=-3, vmax=3)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Change relative to last week\")\nfig.colorbar(im, ax=ax, label=\"Change (orders)\", orientation=\"horizontal\")\nprint(int(change.min()), int(change.max()))\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     image = ax.imshow(data['z'],vmin=0,vmax=data['maximum'],interpolation='nearest')\n     colorbar = fig.colorbar(image,ax=ax,orientation='horizontal')\n     result = {'shape':list(image.get_array().shape),'clim':list(image.get_clim()),'orientation':colorbar.orientation}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "bảng 2x3",
+     "input": {
+      "z": [
+       [
+        1,
+        2,
+        3
+       ],
+       [
+        4,
+        5,
+        6
+       ]
+      ],
+      "maximum": 10
+     },
+     "expected": {
+      "shape": [
+       2,
+       3
+      ],
+      "clim": [
+       0.0,
+       10.0
+      ],
+      "orientation": "horizontal"
+     }
+    },
+    {
+     "name": "một ô",
+     "input": {
+      "z": [
+       [
+        0
+       ]
+      ],
+      "maximum": 4
+     },
+     "expected": {
+      "shape": [
+       1,
+       1
+      ],
+      "clim": [
+       0.0,
+       4.0
+      ],
+      "orientation": "horizontal"
+     }
+    },
+    {
+     "name": "bảng khác cực đại",
+     "input": {
+      "z": [
+       [
+        8,
+        2
+       ]
+      ],
+      "maximum": 20
+     },
+     "expected": {
+      "shape": [
+       1,
+       2
+      ],
+      "clim": [
+       0.0,
+       20.0
+      ],
+      "orientation": "horizontal"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần tránh làm mượt màu giữa những ô dữ liệu rời rạc."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Giữ cùng thang màu khi so các ma trận."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
     "matplotlib",
     "numpy"
@@ -100,5 +191,6 @@
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

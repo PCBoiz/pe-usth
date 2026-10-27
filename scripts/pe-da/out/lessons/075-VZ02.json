@@ -89,15 +89,120 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.left và data.right là hai dãy số, mỗi dãy ít nhất một phần tử. Tạo Figure với hai Axes cạnh nhau bằng add_subplot(121), add_subplot(122), vẽ một đường trên mỗi Axes. Trả axes là số Axes và lines là list số đường của trái/phải. fig.axes và ax.lines là các danh sách đối tượng để đối chiếu, không phải số quan sát. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve. Trả thêm leftY và rightY: list giá trị y đọc từ đường trong từng Axes (line.get_ydata())."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_axes([0.15, 0.2, 0.8, 0.65])\nax.scatter([1, 2, 3], [12, 15, 9])\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Manually positioned Axes\")\nprint([round(float(v), 2) for v in ax.get_position().bounds])\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig = plt.figure()\n     left = fig.add_subplot(121)\n     right = fig.add_subplot(122)\n     left.plot(data['left'])\n     right.plot(data['right'])\n     result = {'axes':len(fig.axes), 'lines':[len(left.lines),len(right.lines)],'leftY':list(left.lines[0].get_ydata()),'rightY':list(right.lines[0].get_ydata())}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "hai dãy khác độ dài",
+     "input": {
+      "left": [
+       1,
+       4,
+       2
+      ],
+      "right": [
+       5,
+       8
+      ]
+     },
+     "expected": {
+      "axes": 2,
+      "lines": [
+       1,
+       1
+      ],
+      "leftY": [
+       1,
+       4,
+       2
+      ],
+      "rightY": [
+       5,
+       8
+      ]
+     }
+    },
+    {
+     "name": "một điểm mỗi hình",
+     "input": {
+      "left": [
+       0
+      ],
+      "right": [
+       7
+      ]
+     },
+     "expected": {
+      "axes": 2,
+      "lines": [
+       1,
+       1
+      ],
+      "leftY": [
+       0
+      ],
+      "rightY": [
+       7
+      ]
+     }
+    },
+    {
+     "name": "dãy mới",
+     "input": {
+      "left": [
+       10,
+       8
+      ],
+      "right": [
+       3,
+       3,
+       4,
+       5
+      ]
+     },
+     "expected": {
+      "axes": 2,
+      "lines": [
+       1,
+       1
+      ],
+      "leftY": [
+       10,
+       8
+      ],
+      "rightY": [
+       3,
+       3,
+       4,
+       5
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần lưu cả Figure, không chỉ một Axes riêng lẻ."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Tạo Figure có Axes riêng và vẽ đúng vào Axes được chọn."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

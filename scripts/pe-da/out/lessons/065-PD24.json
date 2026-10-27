@@ -82,15 +82,77 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "data.values là số; data.window là số hàng cửa sổ dương. Tính rolling mean khi đủ window giá trị rồi shift(1). Trả list cùng độ dài, ô chưa đủ dữ liệu là None. Giá trị tại hàng t không được dùng trong đặc trưng cho chính t."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ns = pd.Series([10, 20, 30, 40])\nmoving = s.rolling(3, min_periods=3).mean()\nprint(moving.isna().tolist())\nprint(moving.dropna().tolist())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ns = pd.Series([10, 20, 30])\nprint(s.ewm(alpha=0.5, adjust=False).mean().tolist())\nprint(s.rolling(2).mean().shift(1).dropna().tolist())\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     s = pd.Series(data['values'], dtype=float)\n     result = s.rolling(data['window'], min_periods=data['window']).mean().shift(1)\n     return [None if pd.isna(v) else float(v) for v in result]\n",
+   "tests": [
+    {
+     "name": "cửa sổ hai hàng trước",
+     "input": {
+      "values": [
+       4,
+       8,
+       12,
+       20
+      ],
+      "window": 2
+     },
+     "expected": [
+      null,
+      null,
+      6.0,
+      10.0
+     ]
+    },
+    {
+     "name": "chưa đủ cửa sổ",
+     "input": {
+      "values": [
+       5,
+       9
+      ],
+      "window": 3
+     },
+     "expected": [
+      null,
+      null
+     ]
+    },
+    {
+     "name": "window bằng 1",
+     "input": {
+      "values": [
+       7,
+       0,
+       3
+      ],
+      "window": 1
+     },
+     "expected": [
+      null,
+      7.0,
+      0.0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Dời kết quả một hàng để không dùng dữ liệu hiện tại."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Dùng cửa sổ đã đủ mẫu và dịch để không dùng giá trị cần dự báo."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

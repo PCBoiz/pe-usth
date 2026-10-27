@@ -82,15 +82,99 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Mỗi data.rows có order, version, amount. Mỗi order có các version khác nhau. Trả list bản ghi mới nhất của mỗi order, xếp order tăng dần; không cộng hai phiên bản thành hai giao dịch."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())\n\n# ── Đoạn 2 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())\n\n# ── Đoạn 3 ──\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'version': [1, 2, 1], 'amount': [10, 12, 20]})\nlatest = df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order')\nprint(latest['amount'].tolist())\nprint(latest['order'].is_unique)\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import pandas as pd\n\ndef solve(data):\n     df = pd.DataFrame(data['rows'], columns=['order','version','amount'])\n     return df.sort_values('version').drop_duplicates('order', keep='last').sort_values('order').to_dict('records')\n",
+   "tests": [
+    {
+     "name": "bản mới đến trước",
+     "input": {
+      "rows": [
+       {
+        "order": "A",
+        "version": 2,
+        "amount": 17
+       },
+       {
+        "order": "A",
+        "version": 1,
+        "amount": 10
+       },
+       {
+        "order": "B",
+        "version": 1,
+        "amount": 5
+       }
+      ]
+     },
+     "expected": [
+      {
+       "order": "A",
+       "version": 2,
+       "amount": 17
+      },
+      {
+       "order": "B",
+       "version": 1,
+       "amount": 5
+      }
+     ]
+    },
+    {
+     "name": "hai mã đổi thứ tự",
+     "input": {
+      "rows": [
+       {
+        "order": "Z",
+        "version": 3,
+        "amount": 9
+       },
+       {
+        "order": "X",
+        "version": 4,
+        "amount": 8
+       }
+      ]
+     },
+     "expected": [
+      {
+       "order": "X",
+       "version": 4,
+       "amount": 8
+      },
+      {
+       "order": "Z",
+       "version": 3,
+       "amount": 9
+      }
+     ]
+    },
+    {
+     "name": "chưa có giao dịch",
+     "input": {
+      "rows": []
+     },
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Bản có version lớn hơn nằm sau khi sắp tăng dần."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chọn bản cập nhật mới nhất sau khi sắp đúng phiên bản."
+    }
+   ],
    "packages": [
     "pandas"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

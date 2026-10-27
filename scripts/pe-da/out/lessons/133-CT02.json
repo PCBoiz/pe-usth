@@ -113,5 +113,6 @@
    "block": 2,
    "reason": "WASM không gọi được chương trình ngoài"
   }
- ]
+ ],
+ "_bai_tap": "khong co"
 }

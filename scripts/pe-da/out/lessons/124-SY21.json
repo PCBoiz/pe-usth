@@ -94,12 +94,74 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận list số. Tạo tuple từ list này; round-trip qua JSON và qua pickle trong bộ nhớ. Trả {\"json_type\": tên kiểu nhận từ JSON, \"pickle_type\": tên kiểu nhận từ pickle, \"json_values\": list giá trị, \"pickle_values\": list giá trị}. Chỉ unpickle byte vừa tự tạo."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)\n\n# ── Đoạn 2 ──\nimport pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)\n\n# ── Đoạn 3 ──\nimport gzip, pickle\nstate = {\"version\": 1, \"students\": {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}}}\npacked = gzip.compress(pickle.dumps(state))\nrestored = pickle.loads(gzip.decompress(packed))\nprint(restored[\"version\"])\nprint(restored[\"students\"][\"S01\"][\"name\"])\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import json, pickle\ndef solve(data):\n    original = tuple(data)\n    from_json = json.loads(json.dumps(original))\n    from_pickle = pickle.loads(pickle.dumps(original))\n    return {'json_type':type(from_json).__name__, 'pickle_type':type(from_pickle).__name__, 'json_values':from_json, 'pickle_values':list(from_pickle)}\n",
+   "tests": [
+    {
+     "name": "hai số",
+     "input": [
+      2,
+      9
+     ],
+     "expected": {
+      "json_type": "list",
+      "pickle_type": "tuple",
+      "json_values": [
+       2,
+       9
+      ],
+      "pickle_values": [
+       2,
+       9
+      ]
+     }
+    },
+    {
+     "name": "rỗng",
+     "input": [],
+     "expected": {
+      "json_type": "list",
+      "pickle_type": "tuple",
+      "json_values": [],
+      "pickle_values": []
+     }
+    },
+    {
+     "name": "âm và thực",
+     "input": [
+      -1,
+      2.5
+     ],
+     "expected": {
+      "json_type": "list",
+      "pickle_type": "tuple",
+      "json_values": [
+       -1,
+       2.5
+      ],
+      "pickle_values": [
+       -1,
+       2.5
+      ]
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

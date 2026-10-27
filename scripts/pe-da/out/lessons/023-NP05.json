@@ -90,15 +90,53 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận số nguyên n không âm. Trả array các số ghế chẵn từ 2 đến 2*n. Với n=0, trả dãy rỗng."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ndays = np.arange(1, 8)\nprint(days)\n\n# ── Đoạn 2 ──\nprint(np.arange(1, 5))\n\n# ── Đoạn 3 ──\nprint(np.arange(0, 7, 2))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.arange(2, 2 * data + 1, 2)\n",
+   "tests": [
+    {
+     "name": "Ba ghế",
+     "input": 3,
+     "expected": [
+      2,
+      4,
+      6
+     ]
+    },
+    {
+     "name": "Một ghế",
+     "input": 1,
+     "expected": [
+      2
+     ]
+    },
+    {
+     "name": "Không có ghế",
+     "input": 0,
+     "expected": []
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số ghế cuối cần lấy là 2*n, nhưng arange không lấy stop."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Bắt đầu ở 2, bước nhảy 2 và chọn stop vừa qua 2*n."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

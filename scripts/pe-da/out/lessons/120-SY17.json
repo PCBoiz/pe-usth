@@ -92,12 +92,50 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Dùng tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf-8\") để ghi chuỗi data, flush, seek(0) rồi đọc. Sau khi rời with, trả {\"text\": nội dung đọc, \"closed\": trạng thái đóng của file}. Không tạo file cố định trong thư mục làm việc."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport tempfile\nwith tempfile.TemporaryFile(mode=\"w+t\", encoding=\"utf8\") as f:\n    f.write(\"A\\n\")\n    f.flush()\n    f.seek(0)\n    print(f.readline().strip())\nprint(f.closed)\n\n# ── Đoạn 2 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"raw.bin\"\n    with open(path, \"wb\", buffering=0) as f: print(f.write(b\"AB\"))\n    with open(path, \"r\", encoding=\"ascii\", buffering=1) as f: print(f.read())\n\n# ── Đoạn 3 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"missing.txt\"\n    try:\n        with open(path, encoding=\"utf8\") as f: print(f.read())\n    except FileNotFoundError:\n        print(\"Thieu file\")\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import tempfile\ndef solve(data):\n    with tempfile.TemporaryFile(mode='w+t', encoding='utf-8') as f:\n        f.write(data)\n        f.flush()\n        f.seek(0)\n        text = f.read()\n    return {'text': text, 'closed': f.closed}\n",
+   "tests": [
+    {
+     "name": "văn bản",
+     "input": "ready",
+     "expected": {
+      "text": "ready",
+      "closed": true
+     }
+    },
+    {
+     "name": "unicode",
+     "input": "đã xong",
+     "expected": {
+      "text": "đã xong",
+      "closed": true
+     }
+    },
+    {
+     "name": "rỗng",
+     "input": "",
+     "expected": {
+      "text": "",
+      "closed": true
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

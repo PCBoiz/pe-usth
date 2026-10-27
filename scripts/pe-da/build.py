@@ -7,10 +7,18 @@ Nguồn là `source/course.json` — bản đã bỏ trường `html` của gói
 HTML dựng lại được từ `reading`, giữ lại chỉ làm file phình gấp đôi mà không ai
 đọc). Hình dạng đích: xem SCHEMA.md cùng thư mục.
 
-Bộ này KHÔNG có trắc nghiệm, scaffold hay ca chấm — nên build không phát
-`step_2.mcq`, `step_3`, `step_4.tests`. Đừng "bù" bằng cách tự sinh: câu hỏi do
-máy sinh từ chính lời giảng chỉ kiểm được trí nhớ ngắn hạn, và nó làm người đọc
-báo cáo tưởng khoá có phần luyện đã được kiểm duyệt.
+`source/practice.json` là nguồn THỨ HAI: 138 bài tự làm kèm 419 ca chấm thật
+và lời giải tham khảo, trích từ lớp practice của gói gốc. Bài nào có bài tập
+CHẤM ĐƯỢC trong trình duyệt thì `step_4` là bài tập đó (task + starterCode +
+tests + contract), thay cho ô chạy thử. Trước bản này cả 172 bài KHÔNG có một
+ca chấm nào — người thử viết code rồi tự so bằng mắt.
+
+Vẫn KHÔNG có trắc nghiệm hay scaffold (`step_2.mcq`, `step_3`), và đừng "bù"
+bằng cách tự sinh: câu hỏi do máy sinh từ chính lời giảng chỉ kiểm được trí nhớ
+ngắn hạn, và nó làm người đọc báo cáo tưởng khoá có phần luyện đã được kiểm
+duyệt. (Gói practice CÓ 1032 câu trắc nghiệm người viết, nhưng khoá `text`/
+`correct` của chúng lệch với `normalizeQuestion` ở backend — xem AGENTS.md —
+nên đó là việc riêng, không gộp vào đây.)
 """
 from __future__ import annotations
 
@@ -23,6 +31,7 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'source' / 'course.json'
+PRACTICE = HERE / 'source' / 'practice.json'
 OUT = HERE / 'out'
 
 COURSE_ID = 'python_advanced'
@@ -176,18 +185,31 @@ def ten_cua_goi(nut: ast.expr) -> str:
     return ''
 
 
-def phan_loai_khoi(code: str) -> tuple[bool, str]:
+# Module mà studio-harness.py MÔ PHỎNG: không có bản thật trong WASM, nhưng
+# harness thay bằng bản đơn luồng/chạy-lại-chương-trình đủ để chấm hợp đồng
+# (xem docstring của studio-harness.py). Bài ĐỌC vẫn bị chặn vì nó so đầu ra
+# với dòng "Kết quả:" tác giả ghi, mà mô phỏng in khác bản thật ở PID và thứ tự
+# thread. Bài TẬP thì ca chấm hỏi GIÁ TRỊ TRẢ VỀ, nên mô phỏng là đủ.
+DUOC_MO_PHONG = {'threading', 'subprocess', 'multiprocessing', 'concurrent',
+                 'signal', 'select', 'queue'}
+
+
+def phan_loai_khoi(code: str, cho_mo_phong: bool = False) -> tuple[bool, str]:
     """(chạy được trong Pyodide, lý do nếu không).
 
     Lệnh shell đã được `la_lenh_terminal()` lọc ra TRƯỚC khi vào đây, nên một
     đoạn không phân tích được cú pháp ở bước này là đoạn Python thật sự hỏng —
     không được lặng lẽ cho qua.
+
+    `cho_mo_phong=True` chỉ dùng cho BÀI TẬP được chấm — xem DUOC_MO_PHONG.
     """
     mods, goi, loi_cu_phap = modules_cua(code)
     if loi_cu_phap:
         return False, 'đoạn Python không phân tích được cú pháp — cần xem lại nội dung'
     for m in sorted(mods):
         if m in WASM_KHONG_CO:
+            if cho_mo_phong and m in DUOC_MO_PHONG:
+                continue
             return False, WASM_KHONG_CO[m]
         if m in THIEU_WHEEL:
             return False, f'{m} chưa có wheel trong /pyodide/v314.0.7/'
@@ -204,6 +226,84 @@ def phan_loai_khoi(code: str) -> tuple[bool, str]:
     if 'fixtures/' in code:
         return False, 'bài đọc file mẫu trong fixtures/ của gói gốc'
     return True, ''
+
+
+def bai_tap_cua(bai_tap: dict, mode: str = 'pyodide',
+                ly_do_doc: str = '') -> tuple[dict | None, str]:
+    """(step_4 cho bài tập được chấm, lý do nếu không chấm được).
+
+    Hai thứ quyết định chấm được hay không, và CHỈ hai thứ này:
+      · lời giải tham khảo có chạy trong Pyodide không (`phan_loai_khoi` — dùng
+        lại NGUYÊN hàm đã phân loại code bài đọc, không viết luật thứ hai, chỉ
+        bật `cho_mo_phong`);
+      · khung đề có chạy không (starter `pass` thì luôn chạy, nhưng bài nào
+        starter đã import thư viện thiếu thì cũng tắc ngay lần Chạy đầu).
+
+    Chạy không được thì trả (None, lý do) và bài giữ ô chạy thử như trước. 11
+    bài rơi vào đây: seaborn (VZ16-19), plotly (VZ20-22), ipywidgets (VZ23),
+    openpyxl (PD13), h5py (SY23), sqlalchemy (SY24) — Pyodide 314 không có
+    wheel cho chúng, nên chấm trong trình duyệt là không thể, không phải chưa
+    làm.
+
+    `cho_mo_phong=True` mới là chỗ cổng này KHÁC cổng bài đọc, và khác có lý:
+    bản dựng đầu dùng cổng nghiêm của bài đọc rồi chặn thêm 9 bài
+    (CT07-13, EX04, EX06) vì `threading`/`subprocess`. Nhưng harness MÔ PHỎNG
+    đúng hai thứ đó — nó tồn tại để pe-v4 dạy được chúng — và
+    `check-practice.mjs` đã chạy thật 9 lời giải ấy: đạt hết ca. Bài ĐỌC phải
+    nghiêm hơn vì nó so đầu ra với dòng "Kết quả:" tác giả ghi, mà mô phỏng thì
+    in khác bản thật ở chi tiết (PID, thứ tự thread). Bài TẬP không so đầu ra:
+    ca chấm hỏi giá trị trả về, nên mô phỏng là đủ.
+
+    Nếu cổng này nới quá tay thì `check-practice.mjs` ĐỎ — nó chạy đúng những
+    bài tập build phát ra, nên không có đường nào cho một bài tập không chạy
+    được lọt vào bản dựng mà vẫn xanh.
+    """
+    loi_giai = bai_tap.get('referenceSolution') or ''
+    chay, ly_do = phan_loai_khoi(loi_giai, cho_mo_phong=True)
+    if not chay:
+        return None, ly_do
+    khung = bai_tap.get('starter') or ''
+    chay_khung, ly_do_khung = phan_loai_khoi(khung, cho_mo_phong=True)
+    if not chay_khung:
+        return None, ly_do_khung
+
+    hop_dong = {k: bai_tap[k] for k in
+                ('mode', 'inputVariable', 'resultVariable', 'returnType')
+                if bai_tap.get(k)}
+    # Chỉ giữ hợp đồng khi nó NÓI điều gì: bài `solve(data)` thuần thì mọi
+    # trường đều mặc định, và một dict rỗng trong content_json chỉ làm người đọc
+    # tưởng có luật riêng.
+    ra: dict = {
+        'task': {
+            'title': bai_tap.get('title') or 'Thử thách độc lập',
+            'body': bai_tap.get('prompt') or '',
+        },
+        'starterCode': khung if khung.endswith('\n') else khung + '\n',
+        'solutionCode': loi_giai,
+        'tests': [{'name': t['name'], 'input': t.get('input'),
+                   'expected': t.get('expected')}
+                  for t in bai_tap.get('tests') or []],
+    }
+    if hop_dong:
+        ra['contract'] = hop_dong
+    goi_y = [g for g in bai_tap.get('hints') or [] if g]
+    if goi_y:
+        ra['hints'] = [{'title': f'Gợi ý {i + 1}', 'body': g}
+                       for i, g in enumerate(goi_y)]
+    goi = goi_can_tai([loi_giai, khung])
+    if goi:
+        ra['packages'] = goi
+    if mode != 'pyodide' and ly_do_doc:
+        # Bài tập chấm được NGAY ĐÂY nhưng code của BÀI ĐỌC thì không chạy được
+        # trong trình duyệt (CT10/CT11 dùng `subprocess`). Bản trước bỏ trống
+        # chỗ này và hệ quả thấy được: nhánh `local` của `dung_sandbox` vốn in
+        # cả một danh sách bước "mở terminal, tạo venv, chạy file" — thay step_4
+        # bằng bài tập là hướng dẫn đó MẤT HẲN, và học viên không còn chỗ nào
+        # biết phải làm gì với code trong bài. `check.py` chặn đúng chỗ này.
+        ra['env'] = (f'Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code '
+                     f'trong phần bài đọc thì không: {ly_do_doc}. Muốn chạy lại các '
+                     f'đoạn đó thì mở Python trên máy.')
+    return ra, ''
 
 
 def goi_can_tai(codes: list[str]) -> list[str]:
@@ -369,7 +469,7 @@ def cau_luyen(bai: dict) -> list[dict]:
 
 
 def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
-             ten_theo_id: dict[str, str]) -> dict:
+             ten_theo_id: dict[str, str], bai_tap: dict | None = None) -> dict:
     reading = bai['reading']
     man = chia_man(reading)
     luyen = cau_luyen(bai)
@@ -429,7 +529,19 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     }
     if luyen:
         noi_dung['step_2'] = {'practice': luyen}
-    noi_dung['step_4'] = dung_sandbox(mode, ly_do_bai, chay_duoc, chan)
+    # BÀI TẬP ĐƯỢC CHẤM đứng TRƯỚC ô chạy thử, không đứng cạnh.
+    #
+    # Mọi đoạn code của bài đã hiện kèm kết quả ở màn đọc, và muốn thử tự do
+    # thì có /ide — nên chỗ `step_4` đáng dành cho thứ duy nhất màn đọc không
+    # làm được: chấm xem học viên viết đúng chưa. Đổi lại, 127 bài mất ô "sửa
+    # số liệu rồi chạy lại"; đó là trao đổi có chủ đích, không phải bỏ sót.
+    ly_do_bt = ''
+    if bai_tap:
+        s4, ly_do_bt = bai_tap_cua(bai_tap, mode, ly_do_bai)
+        if s4:
+            noi_dung['step_4'] = s4
+    if 'step_4' not in noi_dung:
+        noi_dung['step_4'] = dung_sandbox(mode, ly_do_bai, chay_duoc, chan)
 
     return {
         'lesson_code': ma,
@@ -443,6 +555,11 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         # Không vào DB — chỉ để check.py và báo cáo đối chiếu.
         '_mode': mode,
         '_blocked': [{'block': i, 'reason': r} for i, r in chan],
+        # Không vào DB. '_bai_tap' nói bài này có bài tập được chấm hay không,
+        # và vì sao không — để check.py và báo cáo đối chiếu được, thay vì phải
+        # suy từ việc step_4 có `tests` hay không.
+        '_bai_tap': ('cham' if noi_dung['step_4'].get('tests')
+                     else (f'khong: {ly_do_bt}' if ly_do_bt else 'khong co')),
     }
 
 
@@ -537,6 +654,14 @@ def main() -> int:
 
     du_lieu = json.loads(SOURCE.read_text(encoding='utf-8'))
     bai_theo_id = {b['id']: b for b in du_lieu['lessons']}
+    # Bài tập tự làm, tra theo MÃ BÀI. Lấy bài tập CUỐI khi một bài có nhiều —
+    # gói xếp chúng theo độ khó tăng dần, nên cái cuối là bài chuyển giao
+    # (`transferNote`), đúng thứ thuộc về "Thử thách độc lập".
+    bai_tap_theo_ma: dict[str, dict] = {}
+    if PRACTICE.is_file():
+        for l in json.loads(PRACTICE.read_text(encoding='utf-8'))['lessons']:
+            if l.get('exercises'):
+                bai_tap_theo_ma[l['id']] = l['exercises'][-1]
     ten_theo_id = {b['id']: f'{b["id"]} · {b["title"]}' for b in du_lieu['lessons']}
 
     bai_ra: list[dict] = []
@@ -547,7 +672,8 @@ def main() -> int:
         trong_module = []
         for ma in nhom['ids']:
             thu_tu += 1
-            b = dung_bai(bai_theo_id[ma], thu_tu, so, ten_module, ten_theo_id)
+            b = dung_bai(bai_theo_id[ma], thu_tu, so, ten_module, ten_theo_id,
+                         bai_tap_theo_ma.get(ma))
             bai_ra.append(b)
             trong_module.append(b['title'])
         modules.append({'title': ten_module, 'lessons': trong_module})

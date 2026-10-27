@@ -88,15 +88,91 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng số không rỗng. Trả dictionary có shape, ndim và size của array được tạo từ bảng. Bạn có thể trả tuple ở shape; hệ thống sẽ hiển thị thành dãy."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.shape)\nprint(sales.size)\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.shape, a.ndim, a.size, len(a))\n\n# ── Đoạn 3 ──\na = np.array([4, 5, 6])\nprint(a.shape, a.ndim, a.size)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    a = np.array(data)\n    return {\"shape\": a.shape, \"ndim\": a.ndim, \"size\": a.size}\n",
+   "tests": [
+    {
+     "name": "Bảng ba hàng hai cột",
+     "input": [
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       5,
+       6
+      ]
+     ],
+     "expected": {
+      "shape": [
+       3,
+       2
+      ],
+      "ndim": 2,
+      "size": 6
+     }
+    },
+    {
+     "name": "Một hàng",
+     "input": [
+      [
+       2,
+       4,
+       6
+      ]
+     ],
+     "expected": {
+      "shape": [
+       1,
+       3
+      ],
+      "ndim": 2,
+      "size": 3
+     }
+    },
+    {
+     "name": "Một ô",
+     "input": [
+      [
+       0
+      ]
+     ],
+     "expected": {
+      "shape": [
+       1,
+       1
+      ],
+      "ndim": 2,
+      "size": 1
+     }
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Ba đại lượng trả lời ba câu khác nhau: hình dạng, số chiều và số ô."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Đọc a.shape, a.ndim và a.size sau khi tạo array."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -98,12 +98,55 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận list dòng không chứa newline. Trong TemporaryDirectory, tạo notes.txt bằng w ghi HEADER và newline, mở lại bằng a thêm từng dòng cùng newline; đọc lại bằng r và trả list dòng không có ký tự xuống dòng. Hãy thực hiện I/O file thật."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"report.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"12\\n\")\n    with open(path, \"r\", encoding=\"utf8\") as f: print(f.read().strip())\n    print(f.closed)\n\n# ── Đoạn 2 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"log.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"A\\n\")\n    with open(path, \"a\", encoding=\"utf8\") as f: f.write(\"B\\n\")\n    print(path.read_text(encoding=\"utf8\").splitlines())\n\n# ── Đoạn 3 ──\nimport tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"new.txt\"\n    with open(path, \"x\", encoding=\"utf8\") as f: f.write(\"first\")\n    try:\n        with open(path, \"x\", encoding=\"utf8\"): pass\n    except FileExistsError:\n        print(\"Da ton tai\")\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import tempfile\nfrom pathlib import Path\ndef solve(data):\n    with tempfile.TemporaryDirectory() as folder:\n        path = Path(folder) / 'notes.txt'\n        with path.open('w', encoding='utf-8') as f: f.write('HEADER\\n')\n        with path.open('a', encoding='utf-8') as f:\n            for line in data: f.write(line + '\\n')\n        with path.open('r', encoding='utf-8') as f: return f.read().splitlines()\n",
+   "tests": [
+    {
+     "name": "hai dòng",
+     "input": [
+      "tea",
+      "coffee"
+     ],
+     "expected": [
+      "HEADER",
+      "tea",
+      "coffee"
+     ]
+    },
+    {
+     "name": "unicode",
+     "input": [
+      "cà phê"
+     ],
+     "expected": [
+      "HEADER",
+      "cà phê"
+     ]
+    },
+    {
+     "name": "chưa có ghi chú",
+     "input": [],
+     "expected": [
+      "HEADER"
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

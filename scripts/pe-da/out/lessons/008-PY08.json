@@ -88,12 +88,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu. Gán vào message giá đã đổi sang số và hiển thị đúng hai chữ số sau dấu thập phân."
    },
-   "starterCode": "# ── Đoạn 1 ──\nname = \"  maI  \".strip().title()\ncode = \"23\".zfill(4)\nprint(f\"{code}: {name}\")\n\n# ── Đoạn 2 ──\nraw = \"12,18,20\\n\"\nprint(raw.rstrip().split(\",\"))\nprint(\"A\\nB\".splitlines())\n\n# ── Đoạn 3 ──\nname, total = \"Mai\", 12.5\nprint(\"{}: {:.1f}\".format(name, total))\nprint(f\"{name.lower()}: {total:.2f}\")\n"
+   "starterCode": "# Hệ thống cung cấp raw là chuỗi giá hợp lệ, có thể có khoảng trắng hai đầu.\n# Hệ thống cung cấp raw; gán kết quả vào message.\n",
+   "solutionCode": "price = float(raw.strip())\nmessage = f\"{price:.2f}\"\n",
+   "tests": [
+    {
+     "name": "Có khoảng trắng",
+     "input": " 7.5 ",
+     "expected": "7.50"
+    },
+    {
+     "name": "Giá nguyên",
+     "input": "12",
+     "expected": "12.00"
+    },
+    {
+     "name": "Giá bằng không",
+     "input": "0",
+     "expected": "0.00"
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "raw",
+    "resultVariable": "message"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Đầu vào là chuỗi. Đổi thành số trước khi dùng định dạng thập phân."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Định dạng .2f làm chuỗi kết quả có đúng hai chữ số sau dấu thập phân."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

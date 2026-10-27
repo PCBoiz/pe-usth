@@ -5399,8 +5399,8 @@ def _chay_ca_du_lieu(studio, case, hop_dong):
     thuc = _chuan_gia_tri(gia_tri)
     mong = case.get('expected')
     if _bang_du_lieu(thuc, mong):
-        return True, 'Dat: %s' % json.dumps(thuc, ensure_ascii=False)[:200]
-    return False, 'Can co %s nhung nhan %s' % (
+        return True, 'Đạt: %s' % json.dumps(thuc, ensure_ascii=False)[:200]
+    return False, 'Cần có %s nhưng nhận %s' % (
         json.dumps(mong, ensure_ascii=False)[:160],
         json.dumps(thuc, ensure_ascii=False)[:160])
 

@@ -168,13 +168,24 @@ def kiem_sandbox(bai: list[dict]) -> None:
     Tkinter/fork mà lỡ phát `starterCode` thì học viên bấm Chạy và nhận một
     traceback không ai giải thích — tệ hơn hẳn việc nói thẳng là phải chạy trên
     máy.
+
+    Từ 26/10 có BÀI TẬP ĐƯỢC CHẤM (`step_4.tests`, nguồn source/practice.json),
+    nên luật ở đây chia hai nhánh. Bài có bài tập thì `_mode` của BÀI ĐỌC không
+    còn quyết định ô soạn mã: CT10/CT11 có code bài đọc phải chạy trên máy
+    (`subprocess`) nhưng bài tập của chúng chỉ hỏi giá trị trả về, và harness
+    mô phỏng đủ để chấm — `check-practice.mjs` chạy thật và chúng đạt hết ca.
+    Đổi lại, bài như thế PHẢI mang `env` nói rõ chuyện đó, không thì học viên
+    mất hẳn hướng dẫn "chạy trên máy" mà bản cũ có.
     """
     hop_le = {'numpy', 'pandas', 'matplotlib', 'tzdata'}
     for b in bai:
         bon = b['content_json'].get('step_4') or {}
         mode = b['_mode']
         ma = b['lesson_code']
-        if mode == 'local':
+        co_bai_tap = bool(bon.get('tests'))
+        if co_bai_tap:
+            kiem_bai_tap(ma, bon, mode)
+        elif mode == 'local':
             if bon.get('starterCode'):
                 loi(f'{ma}: bài phải chạy trên máy nhưng vẫn phát starterCode')
             if not bon.get('procedure'):
@@ -186,10 +197,66 @@ def kiem_sandbox(bai: list[dict]) -> None:
                 loi(f'{ma}: vừa có starterCode vừa có procedure — ô soạn mã sẽ bị ẩn')
         la = set(bon.get('packages') or []) - hop_le
         if la:
-            loi(f'{ma}: khai gói không có wheel trong /pyodide/v0.27.7/ — {sorted(la)}')
-        if bon.get('tests'):
-            loi(f'{ma}: bộ đọc không có ca chấm, nhưng step_4.tests lại có — '
-                'nút sẽ hứa chấm điểm mà không chấm gì')
+            loi(f'{ma}: khai gói không có wheel trong /pyodide/v314.0.7/ — {sorted(la)}')
+
+
+def kiem_bai_tap(ma: str, bon: dict, mode: str) -> None:
+    """Bất biến của một bài tập ĐƯỢC CHẤM.
+
+    Mỗi luật ở đây tương ứng một cách bài tập hỏng mà KHÔNG ném gì cả: học viên
+    bấm Chạy, thấy một bảng ca kiểm thử, và bảng đó nói sai.
+    """
+    if not bon.get('starterCode', '').strip():
+        # Không có khung đề thì ô soạn mã bị ẩn (showEditorOf), nhưng `tests`
+        # vẫn ở đó: bảng ca kiểm thử hiện ra mà không có chỗ nào viết code.
+        loi(f'{ma}: có ca chấm nhưng starterCode rỗng — bảng ca kiểm thử không có ô để viết')
+    if bon.get('procedure'):
+        loi(f'{ma}: vừa có ca chấm vừa có procedure — ô soạn mã sẽ bị ẩn')
+    if not (bon.get('task') or {}).get('body', '').strip():
+        loi(f'{ma}: bài tập không có đề — học viên không biết phải viết gì')
+
+    giai = bon.get('solutionCode') or ''
+    if not giai.strip():
+        loi(f'{ma}: bài tập không có lời giải mẫu — check-practice.mjs không có thước đo')
+    elif giai.strip() == bon.get('starterCode', '').strip():
+        loi(f'{ma}: lời giải mẫu TRÙNG khung đề — khung đề đang chứa đáp án')
+
+    hd = bon.get('contract') or {}
+    la = set(hd) - {'mode', 'inputVariable', 'resultVariable', 'returnType'}
+    if la:
+        loi(f'{ma}: contract có khoá lạ {sorted(la)} — bộ chấm bỏ qua chúng im lặng')
+    if hd.get('mode') == 'script':
+        for truong in ('inputVariable', 'resultVariable'):
+            if not hd.get(truong):
+                # Thiếu thì bộ chấm rơi về tên mặc định ('data'/'result'), tức
+                # tiêm vào một tên mà đề không nói, và MỌI ca trượt với
+                # NameError — trên lời giải đúng.
+                loi(f'{ma}: contract mode=script nhưng thiếu {truong}')
+    elif hd.get('mode') not in (None, 'function'):
+        loi(f'{ma}: contract.mode lạ: {hd.get("mode")!r}')
+
+    bieu_thuc = du_lieu = 0
+    for i, ca in enumerate(bon['tests']):
+        if not (ca.get('name') or '').strip():
+            loi(f'{ma}: ca chấm {i} không có tên — bảng kết quả hiện một dòng trống')
+        if 'call' in ca:
+            bieu_thuc += 1
+            if not ca.get('expect'):
+                loi(f'{ma}: ca chấm {i} có call nhưng không có expect')
+        elif 'input' in ca and 'expected' in ca:
+            du_lieu += 1
+        else:
+            loi(f'{ma}: ca chấm {i} không theo hợp đồng nào — thiếu cả call và input/expected')
+    # Trộn hai hợp đồng trong một bài thì `contract` chỉ đúng cho một nửa, mà
+    # nửa kia không báo gì — bộ chấm phân nhánh theo từng ca nên nó cứ chạy.
+    if bieu_thuc and du_lieu:
+        loi(f'{ma}: trộn {bieu_thuc} ca biểu thức với {du_lieu} ca dữ liệu trong một bài')
+    if du_lieu and len(bon['tests']) < 2:
+        # Một ca duy nhất thì lời giải "return <hằng>" cũng đạt.
+        loi(f'{ma}: chỉ có 1 ca chấm — trả hằng là đạt, bài không hỏi gì')
+    if du_lieu and mode == 'local' and not bon.get('env'):
+        loi(f'{ma}: code bài đọc phải chạy trên máy nhưng bài tập chấm tại đây, '
+            'mà không có `env` nói rõ — học viên mất hướng dẫn chạy trên máy')
 
 
 def kiem_curricula(bai: list[dict]) -> None:

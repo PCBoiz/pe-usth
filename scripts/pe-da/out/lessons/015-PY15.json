@@ -84,12 +84,64 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp quantities là dãy số đọc theo thứ tự. Số 0 báo hết phiên; số âm là lần nhập hỏng cần bỏ. Gán tổng các số dương trước số 0 đầu tiên vào total."
    },
-   "starterCode": "# ── Đoạn 1 ──\nattempt = 0\nwhile attempt < 3:\n    attempt += 1\n    print(attempt)\n\n# ── Đoạn 2 ──\nfor number in range(6):\n    if number == 1:\n        continue\n    if number == 4:\n        break\n    print(number)\n\n# ── Đoạn 3 ──\ncommands = iter([\"sum\", \"quit\", \"sum\"])\nwhile True:\n    command = next(commands, \"quit\")\n    if command == \"quit\":\n        break\n    print(command)\n"
+   "starterCode": "# Hệ thống cung cấp quantities là dãy số đọc theo thứ tự.\n# Hệ thống cung cấp quantities; gán kết quả vào total.\n",
+   "solutionCode": "total = 0\nfor value in quantities:\n    if value == 0:\n        break\n    if value < 0:\n        continue\n    total += value\n",
+   "tests": [
+    {
+     "name": "Dừng giữa dãy",
+     "input": [
+      2,
+      -1,
+      4,
+      0,
+      8
+     ],
+     "expected": 6
+    },
+    {
+     "name": "Dừng ngay",
+     "input": [
+      0,
+      5
+     ],
+     "expected": 0
+    },
+    {
+     "name": "Không có sentinel",
+     "input": [
+      -2,
+      3,
+      1
+     ],
+     "expected": 4
+    },
+    {
+     "name": "Dãy rỗng",
+     "input": [],
+     "expected": 0
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "quantities",
+    "resultVariable": "total"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Số 0 kết thúc cả vòng lặp, còn số âm chỉ bỏ một lượt."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Xét break và continue trước bước cộng vào total."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

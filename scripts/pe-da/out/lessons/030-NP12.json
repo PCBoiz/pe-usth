@@ -96,15 +96,85 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận bảng số gói, mỗi hàng là một tuyến giao hàng, mỗi cột là một điểm dừng. Trả tổng số gói của từng tuyến."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\nsales = np.array([[12, 15, 9],\n                  [10,  8, 14]])\nprint(sales.sum(axis=1))\n\n# ── Đoạn 2 ──\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))\n\n# ── Đoạn 3 ──\nnumbers = np.arange(1, 13)\na = numbers.reshape(3, 4)\nprint(a.sum(axis=0))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    return np.array(data).sum(axis=1)\n",
+   "tests": [
+    {
+     "name": "Hai tuyến ba điểm",
+     "input": [
+      [
+       2,
+       4,
+       1
+      ],
+      [
+       3,
+       1,
+       5
+      ]
+     ],
+     "expected": [
+      7,
+      9
+     ]
+    },
+    {
+     "name": "Ba tuyến hai điểm",
+     "input": [
+      [
+       1,
+       2
+      ],
+      [
+       3,
+       4
+      ],
+      [
+       5,
+       6
+      ]
+     ],
+     "expected": [
+      3,
+      7,
+      11
+     ]
+    },
+    {
+     "name": "Tuyến chưa có gói",
+     "input": [
+      [
+       0,
+       0
+      ]
+     ],
+     "expected": [
+      0
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Mỗi tuyến là một hàng; cần cộng các điểm dừng trong chính hàng đó."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "sum(axis=1) để lại một tổng cho mỗi hàng."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

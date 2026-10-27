@@ -76,12 +76,46 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết solve(data) nhận mã nguồn dạng chuỗi. Chỉ compile mã ở chế độ exec, không thực thi. Nếu hợp lệ trả \"valid\"; nếu TabError trả \"TabError\"; nếu IndentationError khác trả \"IndentationError\"; SyntaxError khác trả \"SyntaxError\". Bắt TabError trước IndentationError vì nó là lớp con."
    },
-   "starterCode": "# ── Đoạn 1 ──\nfrom types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])\n\n# ── Đoạn 2 ──\nnumber = 2 ** 100\nprint(number > 2 ** 63)\nprint(number.bit_length())\nprint(type(\"A\").__name__)\n\n# ── Đoạn 3 ──\nsources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "def solve(data):\n    try:\n        compile(data,'submission.py','exec')\n    except TabError:\n        return 'TabError'\n    except IndentationError:\n        return 'IndentationError'\n    except SyntaxError:\n        return 'SyntaxError'\n    return 'valid'\n",
+   "tests": [
+    {
+     "name": "hợp lệ",
+     "input": "if True:\n    print(1)\n",
+     "expected": "valid"
+    },
+    {
+     "name": "thiếu thụt lề",
+     "input": "if True:\nprint(1)\n",
+     "expected": "IndentationError"
+    },
+    {
+     "name": "trộn thụt lề",
+     "input": "if True:\n\tprint(1)\n        print(2)\n",
+     "expected": "TabError"
+    },
+    {
+     "name": "cú pháp khác",
+     "input": "value = (",
+     "expected": "SyntaxError"
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

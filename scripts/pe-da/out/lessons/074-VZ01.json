@@ -91,15 +91,94 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Một thư viện báo số sách theo quầy. data.names và data.counts có cùng độ dài, ít nhất một nhóm. Tạo Figure/Axes và bar chart; đặt ylabel=\"Books\". Trả heights là list chiều cao đọc từ các bar và ylabel. get_height() đọc chiều cao cột, get_ylabel() đọc nhãn trục. Đóng Figure sau khi đọc. Các hàm get_* trong yêu cầu chỉ dùng đọc lại chart để kiểm tra, không phải kiến thức cần học thuộc. Sau khi đọc thuộc tính, đóng Figure bằng plt.close(fig); không gọi show() trong solve."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays = [1, 2, 3]\ncups = [12, 15, 9]\nax.plot(days, cups, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Cups sold over three days\")\nprint(sum(cups))\nplt.show()\n\n# ── Đoạn 2 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Coffee and tea sales\", ylim=(0, 40))\nprint(36 - 24)\nplt.show()\n\n# ── Đoạn 3 ──\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [2, 2, 3, 5, 6]\ncounts, edges, bars = ax.hist(wait, bins=[0, 4, 8], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Waiting time\")\nprint(counts.astype(int).tolist())\nplt.show()\n",
+   "starterCode": "def solve(data):\n    # Đọc yêu cầu về đầu vào và giá trị cần trả về.\n    pass\n",
+   "solutionCode": "import matplotlib.pyplot as plt\nimport numpy as np\n\ndef solve(data):\n     fig, ax = plt.subplots()\n     bars = ax.bar(data['names'], data['counts'])\n     ax.set_ylabel('Books')\n     result = {'heights':[float(bar.get_height()) for bar in bars], 'ylabel':ax.get_ylabel()}\n     plt.close(fig)\n     return result\n",
+   "tests": [
+    {
+     "name": "quầy sách mới",
+     "input": {
+      "names": [
+       "History",
+       "Science"
+      ],
+      "counts": [
+       7,
+       12
+      ]
+     },
+     "expected": {
+      "heights": [
+       7.0,
+       12.0
+      ],
+      "ylabel": "Books"
+     }
+    },
+    {
+     "name": "không bán vẫn có cột",
+     "input": {
+      "names": [
+       "A",
+       "B",
+       "C"
+      ],
+      "counts": [
+       0,
+       3,
+       1
+      ]
+     },
+     "expected": {
+      "heights": [
+       0.0,
+       3.0,
+       1.0
+      ],
+      "ylabel": "Books"
+     }
+    },
+    {
+     "name": "một quầy",
+     "input": {
+      "names": [
+       "Art"
+      ],
+      "counts": [
+       5
+      ]
+     },
+     "expected": {
+      "heights": [
+       5.0
+      ],
+      "ylabel": "Books"
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Cần vẽ các cột đứng có chiều cao bằng counts."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Chọn biểu đồ theo câu hỏi và dựng cột so sánh nhóm."
+    },
+    {
+     "title": "Gợi ý 3",
+     "body": "Khung đọc kết quả: sau khi vẽ, dùng các thuộc tính được nêu trong đề để tạo kết quả trả về. Bạn có thể mở một file riêng và gọi plt.show() khi muốn xem hình."
+    }
+   ],
    "packages": [
-    "matplotlib"
+    "matplotlib",
+    "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

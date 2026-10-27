@@ -62,7 +62,10 @@ export type BriefCodeLesson = {
   step_1?: { brief?: { code?: string; tests?: string[] } };
   step_4?: {
     starterCode?: string;
-    tests?: { call?: string; expect?: string }[];
+    // Nhận CẢ HAI dạng ca chấm. Hàm dưới chỉ dò chuỗi trong `call` để đoán
+    // bài có cần thư viện gì, nên ca dạng dữ liệu đơn giản là không đóng góp
+    // gì — nhưng kiểu phải cho qua, không thì cả StudioLesson không gán được.
+    tests?: ({ call?: string; expect?: string } | { input?: unknown; expected?: unknown })[];
     files?: { name?: string; content?: string }[];
   };
 };
@@ -135,7 +138,12 @@ export function ideCodeChoDeBai(lesson: BriefCodeLesson | null | undefined): str
   const starter = lesson?.step_4?.starterCode;
   if (!chayDuocTrongIde(starter)) return null;
 
+  // Chỉ ca dạng BIỂU THỨC vào được dòng chú thích này: `f(3) → 9` đọc được như
+  // một lời gọi, còn ca dạng dữ liệu thì `input` có thể là cả một dict nhiều
+  // khoá — dán vào đầu file chỉ làm người học rối. Bài chỉ có ca dạng dữ liệu
+  // thì trả nguyên starter (nhánh `!ca.length` ngay dưới).
   const ca = (lesson?.step_4?.tests ?? [])
+    .filter((t): t is { call?: string; expect?: string } => 'call' in t)
     .filter((t) => t.call && t.expect)
     .slice(0, 4)
     .map((t) => `#   ${t.call}  →  ${t.expect}`);

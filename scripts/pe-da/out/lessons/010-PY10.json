@@ -98,12 +98,79 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Hệ thống cung cấp readings là list các số đo. Tạo ordered là bản sắp tăng; không sắp trực tiếp readings vì còn cần giữ thứ tự thu thập. Cuối cùng gán result = [readings, ordered] để đối chiếu bản gốc và bản đã xếp."
    },
-   "starterCode": "# ── Đoạn 1 ──\ncups = [12, 15, 9]\ncups.append(11)\nprint(cups)\nprint(cups[-2:])\n\n# ── Đoạn 2 ──\na = [1, 2]\na.append([3, 4])\nb = [1, 2]\nb.extend([3, 4])\nb.insert(0, 0)\nprint(a)\nprint(b)\n\n# ── Đoạn 3 ──\nvalues = [3, 1, 2, 1]\nvalues.remove(1)\nlast = values.pop()\ndel values[0]\nvalues.sort()\nvalues.reverse()\nprint(last, values)\n"
+   "starterCode": "# Hệ thống cung cấp readings là list các số đo.\n# Hệ thống cung cấp readings; gán kết quả vào result.\n",
+   "solutionCode": "ordered = readings.copy()\nordered.sort()\nresult = [readings, ordered]\n",
+   "tests": [
+    {
+     "name": "Số đo chưa xếp",
+     "input": [
+      3,
+      1,
+      2
+     ],
+     "expected": [
+      [
+       3,
+       1,
+       2
+      ],
+      [
+       1,
+       2,
+       3
+      ]
+     ]
+    },
+    {
+     "name": "Số đo trùng và âm",
+     "input": [
+      2,
+      -1,
+      2
+     ],
+     "expected": [
+      [
+       2,
+       -1,
+       2
+      ],
+      [
+       -1,
+       2,
+       2
+      ]
+     ]
+    },
+    {
+     "name": "Chưa có số đo",
+     "input": [],
+     "expected": [
+      [],
+      []
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "script",
+    "inputVariable": "readings",
+    "resultVariable": "result"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Chỉ đặt một tên mới cho readings chưa tạo bản sao."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Gọi copy trước khi sort. result cần chứa cả readings và ordered để đối chiếu."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

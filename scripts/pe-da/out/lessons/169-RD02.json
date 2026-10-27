@@ -80,15 +80,119 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận first và second là hai lô bảng có cùng số cột. Ghép theo hàng rồi chuyển vị kết quả để mỗi cột cũ trở thành một hàng. Trả array đó."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\nsales = np.array([[12, 15, 9], [10, 8, 14]])\nby_day = sales.T\nprint(by_day.tolist())\nprint(by_day.shape)\n\n# ── Đoạn 2 ──\nimport numpy as np\nfirst = np.array([[12, 15, 9]])\nsecond = np.array([[10, 8, 14]])\nprint(np.concatenate([first, second], axis=0).tolist())\nprint(np.concatenate([first, second], axis=1).shape)\n\n# ── Đoạn 3 ──\nimport numpy as np\nmon = np.array([12, 10])\ntue = np.array([15, 8])\ndays = np.stack([mon, tue], axis=0)\nprint(days.tolist())\nprint(days.shape)\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    first = np.array(data[\"first\"])\n    second = np.array(data[\"second\"])\n    combined = np.concatenate([first, second], axis=0)\n    return combined.T\n",
+   "tests": [
+    {
+     "name": "Hai lô một hàng",
+     "input": {
+      "first": [
+       [
+        1,
+        2,
+        3
+       ]
+      ],
+      "second": [
+       [
+        4,
+        5,
+        6
+       ]
+      ]
+     },
+     "expected": [
+      [
+       1,
+       4
+      ],
+      [
+       2,
+       5
+      ],
+      [
+       3,
+       6
+      ]
+     ]
+    },
+    {
+     "name": "Lô đầu hai hàng",
+     "input": {
+      "first": [
+       [
+        1,
+        2
+       ],
+       [
+        3,
+        4
+       ]
+      ],
+      "second": [
+       [
+        5,
+        6
+       ]
+      ]
+     },
+     "expected": [
+      [
+       1,
+       3,
+       5
+      ],
+      [
+       2,
+       4,
+       6
+      ]
+     ]
+    },
+    {
+     "name": "Một cột",
+     "input": {
+      "first": [
+       [
+        0
+       ]
+      ],
+      "second": [
+       [
+        7
+       ]
+      ]
+     },
+     "expected": [
+      [
+       0,
+       7
+      ]
+     ]
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Nối hai lô theo hàng trước khi đổi vai trò hàng/cột."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "concatenate với axis=0 cho bảng chung, rồi lấy .T."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

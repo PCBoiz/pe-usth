@@ -84,15 +84,68 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy trên máy của bạn",
-    "body": "Bài này không chạy được trong trình duyệt: bản Pyodide này không bật thread thật. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết subclass TotalWorker nhận list số, khởi tạo lớp cha, đặt result=None rồi run gán sum(values). solve(data) tạo hai worker cho data[\"left\"] và data[\"right\"], start cả hai trước khi join, trả hai tổng theo thứ tự left/right."
    },
-   "procedure": [
-    "Mở terminal tại thư mục làm việc của bạn.",
-    "Tạo môi trường: py -m venv .venv",
-    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
-    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
-   ]
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import threading\nclass TotalWorker(threading.Thread):\n    def __init__(self, values):\n        super().__init__()\n        self.values = values\n        self.result = None\n    def run(self): self.result = sum(self.values)\ndef solve(data):\n    workers = [TotalWorker(data['left']), TotalWorker(data['right'])]\n    for worker in workers: worker.start()\n    for worker in workers: worker.join()\n    return [worker.result for worker in workers]\n",
+   "tests": [
+    {
+     "name": "hai nhóm",
+     "input": {
+      "left": [
+       1,
+       2
+      ],
+      "right": [
+       5,
+       7
+      ]
+     },
+     "expected": [
+      3,
+      12
+     ]
+    },
+    {
+     "name": "âm",
+     "input": {
+      "left": [
+       -2,
+       1
+      ],
+      "right": [
+       0
+      ]
+     },
+     "expected": [
+      -1,
+      0
+     ]
+    },
+    {
+     "name": "rỗng",
+     "input": {
+      "left": [],
+      "right": []
+     },
+     "expected": [
+      0,
+      0
+     ]
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "local",
@@ -109,5 +162,6 @@
    "block": 2,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

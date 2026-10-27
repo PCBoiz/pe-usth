@@ -88,12 +88,65 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "Viết class Course(cid, name) có method label() trả \"mã: tên\". Trong solve(data), tạo một Course từ mỗi dictionary đầu vào rồi trả list các label theo thứ tự. Không gọi input trong __init__."
    },
-   "starterCode": "# ── Đoạn 1 ──\nclass Student:\n    def __init__(self, sid, name, dob):\n        self.sid = sid\n        self.name = name\n        self.dob = dob\n    def label(self):\n        return self.sid + \": \" + self.name\nstudent = Student(\"S01\", \"An\", \"2005-01-02\")\nprint(student.label())\n\n# ── Đoạn 2 ──\nclass Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nsecond = Student(\"Binh\")\nfirst.name = \"Anh\"\nprint(first.name, second.name)\n\n# ── Đoạn 3 ──\nclass Student:\n    def __init__(self, name):\n        self.name = name\nfirst = Student(\"An\")\nalias = first\nalias.name = \"Anh\"\nprint(first.name)\nprint(alias is first)\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "class Course:\n    def __init__(self, cid, name):\n        self.cid, self.name = cid, name\n    def label(self):\n        return self.cid + ': ' + self.name\ndef solve(data):\n    return [Course(row['id'], row['name']).label() for row in data]\n",
+   "tests": [
+    {
+     "name": "hai môn",
+     "input": [
+      {
+       "id": "ST",
+       "name": "Statistics"
+      },
+      {
+       "id": "DB",
+       "name": "Database"
+      }
+     ],
+     "expected": [
+      "ST: Statistics",
+      "DB: Database"
+     ]
+    },
+    {
+     "name": "trùng tên khác mã",
+     "input": [
+      {
+       "id": "A",
+       "name": "Lab"
+      },
+      {
+       "id": "B",
+       "name": "Lab"
+      }
+     ],
+     "expected": [
+      "A: Lab",
+      "B: Lab"
+     ]
+    },
+    {
+     "name": "rỗng",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

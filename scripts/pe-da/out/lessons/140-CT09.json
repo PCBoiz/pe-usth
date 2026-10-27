@@ -104,11 +104,53 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (bản Pyodide này không bật thread thật) nên không nằm trong ô này."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận list số nguyên. Tạo list shared rỗng; một Thread chạy hàm worker thêm bình phương từng số vào chính shared, main join rồi trả shared. Không cần Lock vì chỉ một worker ghi và main chỉ đọc sau join. Không dùng ví dụ này để kết luận tăng tốc CPU."
    },
-   "starterCode": "single_core_schedule = [\"A\", \"B\", \"A\", \"B\"]\nprint(\"\".join(single_core_schedule))\nprint({\"core1\":\"A\", \"core2\":\"B\"})\n",
-   "env": "2 đoạn phải chạy bằng Python trên máy: bản Pyodide này không bật thread thật."
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import threading\ndef solve(data):\n    shared = []\n    def worker():\n        for number in data: shared.append(number * number)\n    thread = threading.Thread(target=worker)\n    thread.start()\n    thread.join()\n    return shared\n",
+   "tests": [
+    {
+     "name": "ba số",
+     "input": [
+      2,
+      4,
+      6
+     ],
+     "expected": [
+      4,
+      16,
+      36
+     ]
+    },
+    {
+     "name": "số âm",
+     "input": [
+      -3,
+      0
+     ],
+     "expected": [
+      9,
+      0
+     ]
+    },
+    {
+     "name": "không việc",
+     "input": [],
+     "expected": []
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ],
+   "env": "Bài tập dưới đây chấm được ngay trong trình duyệt. Nhưng code trong phần bài đọc thì không: bản Pyodide này không bật thread thật. Muốn chạy lại các đoạn đó thì mở Python trên máy."
   }
  },
  "_mode": "mixed",
@@ -121,5 +163,6 @@
    "block": 1,
    "reason": "bản Pyodide này không bật thread thật"
   }
- ]
+ ],
+ "_bai_tap": "cham"
 }

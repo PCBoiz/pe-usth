@@ -96,15 +96,57 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết và chạy trong terminal",
+    "body": "Viết solve(data) nhận list số đo; JSON dùng None để chỉ ô chưa biết. Tạo array dtype=float, bỏ NaN khi tính trung bình. Nếu không có số đo nào đã biết, trả None thay vì coi trung bình bằng 0."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport numpy as np\n\ntemps = np.array([28., np.nan, 32.])\nprint(np.nanmean(temps))\n\n# ── Đoạn 2 ──\na = np.array([6.0, np.nan, 10.0])\nprint(np.isnan(a))\n\n# ── Đoạn 3 ──\na = np.array([6.0, np.nan, 10.0])\nprint(np.nanmean(a))\n",
+   "starterCode": "def solve(data):\n    # Viết phần xử lý rồi return kết quả.\n    pass\n",
+   "solutionCode": "import numpy as np\ndef solve(data):\n    values = np.array(data, dtype=float)\n    known = values[~np.isnan(values)]\n    if len(known) == 0:\n        return None\n    return known.mean()\n",
+   "tests": [
+    {
+     "name": "Có một ô thiếu",
+     "input": [
+      24,
+      null,
+      30
+     ],
+     "expected": 27.0
+    },
+    {
+     "name": "Không có ô thiếu",
+     "input": [
+      0,
+      10
+     ],
+     "expected": 5.0
+    },
+    {
+     "name": "Toàn ô thiếu",
+     "input": [
+      null,
+      null
+     ],
+     "expected": null
+    }
+   ],
+   "contract": {
+    "mode": "function"
+   },
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tạo array dtype=float để các ô None thành dấu thiếu NaN trong bài này."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Giữ những ô ~np.isnan(values); nếu không còn ô nào thì trả None trước khi tính mean."
+    }
+   ],
    "packages": [
     "numpy"
    ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }

@@ -809,8 +809,27 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
     // được (QuizzesService đòi MIN_POOL = 5 câu lấy từ step_2.mcq).
     assert.equal(l.step_2?.mcq, undefined, code);
     assert.equal(l.step_3, undefined, code);
-    assert.equal(l.step_4?.tests, undefined, code);
     assert.equal(l.play, undefined, code);
+  }
+  // `step_4.tests` KHÔNG còn luôn rỗng. Dòng này từng là
+  // `assert.equal(l.step_4?.tests, undefined)` cho cả 172 bài, và nó đúng cho
+  // tới 26/10/2026 — khi đó khoá không có một ca chấm nào, người học viết code
+  // rồi tự so bằng mắt. Nay 124 bài có bài tập được chấm từ
+  // scripts/pe-da/source/practice.json. Số 124 và 377 được canh riêng ở
+  // practice-contract.test.mjs; ở đây chỉ chốt rằng bài nào CÓ ca chấm thì có
+  // đủ khung đề và lời giải mẫu — thiếu một trong hai là bảng ca kiểm thử hiện
+  // ra mà không có chỗ viết, hoặc không có thước đo nào chứng minh ca đúng.
+  const coCa = DA.filter(([, l]) => (l.step_4?.tests ?? []).length);
+  assert.ok(coCa.length > 0, 'bản dựng phải có bài tập được chấm');
+  for (const [code, l] of coCa) {
+    assert.ok(l.step_4.starterCode?.trim(), code);
+    assert.ok(l.step_4.solutionCode?.trim(), code);
+    // Hợp đồng DỮ LIỆU: `input`/`expected`, không phải `call`/`expect` của
+    // pe-v4. Trộn hai dạng thì `contract` chỉ đúng một nửa số ca.
+    for (const t of l.step_4.tests) {
+      assert.equal('call' in t, false, `${code}: ca dùng hợp đồng biểu thức`);
+      assert.ok('input' in t && 'expected' in t, `${code}: ca thiếu input/expected`);
+    }
   }
   // Số khối từng loại, đúng con số ghi trong SCHEMA.md. Đây là cái chốt: build
   // đổi hình dạng dữ liệu thì ca này đỏ TRƯỚC, thay vì để các ca dưới tiếp tục

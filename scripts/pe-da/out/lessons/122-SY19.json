@@ -84,12 +84,70 @@
   },
   "step_4": {
    "task": {
-    "title": "Chạy thử",
-    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
+    "title": "Tự viết rồi chạy Python",
+    "body": "solve(data) nhận {\"codec\": \"zlib\" | \"gzip\" | \"bz2\" | \"lzma\", \"text\": chuỗi}. Chọn module tương ứng, encode UTF-8, compress rồi decompress; trả {\"restored\": văn bản khôi phục, \"same\": so sánh byte trước/sau}. Không chấm theo kích thước hay thời gian nén."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport zlib, gzip\ndata = b\"paid\\n\" * 100\nprint(zlib.decompress(zlib.compress(data)) == data)\nprint(gzip.decompress(gzip.compress(data)) == data)\n\n# ── Đoạn 2 ──\nimport bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))\n\n# ── Đoạn 3 ──\nimport gzip\ntiny = b\"A\"\npacked = gzip.compress(tiny)\nprint(len(packed) > len(tiny))\ntry: gzip.decompress(b\"not a gzip stream\")\nexcept OSError: print(\"Du lieu nen khong hop le\")\n"
+   "starterCode": "def solve(data):\n    # Viết cách xử lý của bạn ở đây.\n    pass\n",
+   "solutionCode": "import zlib, gzip, bz2, lzma\ndef solve(data):\n    codec = {'zlib':zlib, 'gzip':gzip, 'bz2':bz2, 'lzma':lzma}[data['codec']]\n    raw = data['text'].encode('utf-8')\n    restored = codec.decompress(codec.compress(raw))\n    return {'restored':restored.decode('utf-8'), 'same':restored == raw}\n",
+   "tests": [
+    {
+     "name": "zlib unicode",
+     "input": {
+      "codec": "zlib",
+      "text": "cà phê"
+     },
+     "expected": {
+      "restored": "cà phê",
+      "same": true
+     }
+    },
+    {
+     "name": "gzip rỗng",
+     "input": {
+      "codec": "gzip",
+      "text": ""
+     },
+     "expected": {
+      "restored": "",
+      "same": true
+     }
+    },
+    {
+     "name": "bz2 lặp",
+     "input": {
+      "codec": "bz2",
+      "text": "ABCABC"
+     },
+     "expected": {
+      "restored": "ABCABC",
+      "same": true
+     }
+    },
+    {
+     "name": "lzma",
+     "input": {
+      "codec": "lzma",
+      "text": "line1\nline2"
+     },
+     "expected": {
+      "restored": "line1\nline2",
+      "same": true
+     }
+    }
+   ],
+   "hints": [
+    {
+     "title": "Gợi ý 1",
+     "body": "Tách yêu cầu thành các bước nhận dữ liệu, xử lý và trả kết quả."
+    },
+    {
+     "title": "Gợi ý 2",
+     "body": "Thử một đầu vào nhỏ bằng tay, rồi so với giá trị hàm của bạn trả về."
+    }
+   ]
   }
  },
  "_mode": "pyodide",
- "_blocked": []
+ "_blocked": [],
+ "_bai_tap": "cham"
 }
