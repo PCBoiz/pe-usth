@@ -2,6 +2,8 @@
 
 Nền tảng học lập trình: NestJS 11 + Prisma 7 + PostgreSQL (Neon), Next.js 16 + React 19,
 giáo trình Python chạy trong trình duyệt bằng Pyodide. Chi tiết kiến trúc: [README.md](README.md).
+**Vì sao chọn từng công nghệ, và nó đổi lấy gì** — kèm giá đã tra và so với các cách khác:
+[docs/cong-nghe-va-ha-tang.md](docs/cong-nghe-va-ha-tang.md).
 
 ## Lệnh hay dùng
 
@@ -50,7 +52,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **211 ca** / 19 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **231 ca** / 20 tệp, tất cả đạt |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
@@ -66,13 +68,14 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 211 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 231 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
 ide-trace 38 · label-version 2 · lesson-load 7 · practice-contract 14 · prewarm-gate 5 ·
-session-marker 5 · studio-lesson 41 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 211.
-Mốc trước là 196; thêm practice-contract 14 (đường đi của `contract` qua 5 chặng) và
-studio-lesson 40 → 41 (đi hết 3 màn trắc nghiệm như học viên thật).
+read-try-it 20 · session-marker 5 · studio-lesson 41 · tracer-web-sync 5 · trap-leak 3 ·
+worker-csp 7 = 231.
+Mốc trước là 211; thêm read-try-it 20 (nút "Try it Yourself" ở màn đọc — xem bẫy dưới).
+Trước đó 196 → 211 là practice-contract 14 và studio-lesson 40 → 41.
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -450,6 +453,37 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   xuống 300 ms: thấy "Chờ một chút…" rồi chuyển sang câu cold start đúng lúc quá mốc.
   Đây CHỈ là lớp giải thích, không phải sửa cold start. Muốn hết chờ thì phải chạm tới hạ tầng
   (giữ máy chủ thức, hoặc Neon không autosuspend) — việc đó chưa làm.
+- **Nút "Try it Yourself" đã dựng từ lâu và KHÔNG có đường tới người học — nay đã nối.**
+  `TryItButton` + `ideCodeHref` + `/ide#code=…` có đủ, nhưng nút chỉ được MOUNT ở màn `brief`
+  và màn `explain`, mà bộ 172 bài có **0/172** màn nào trong hai màn đó. Một tính năng có nút,
+  có cổng (`ide-brief-code.ts`), có test (`ide-brief-code.test.mjs` 12 ca vẫn xanh vì nó test
+  trên dữ liệu pe-v4 đã ẩn) — và không một người dùng nào. Chú thích trong `ide-brief-code.ts`
+  đã ghi đúng điều đó từ trước; cái thiếu là ai đi nối.
+  Nay khâu build phát cờ `tryIt` lên từng khối code của màn đọc và `ReadScreen` dựng nút dưới ô
+  "Kết quả:" — **406 nút / 145 bài**, 27 bài `local` không có nút nào.
+  **Phép phân loại phải nằm ở BUILD, không ở frontend.** `chayDuocTrongIde` là một regex trên
+  dòng `import`: nó bắt đúng giới hạn WASM (tkinter/threading/subprocess) nhưng KHÔNG biết thứ
+  thật sự chặn bài của khoá này — THIẾU WHEEL (seaborn, plotly, openpyxl, h5py, sqlalchemy,
+  ipywidgets), gói ẩn sau chuỗi (`engine="openpyxl"`), và thuộc tính phơi ra máy thật
+  (`sys.executable`). Chỉ `phan_loai_khoi()` biết cả ba, và nó đã tính sẵn phép phân loại đó
+  từ trước — chỉ thiếu đường đi tới từng khối (`thu_duoc` khoá theo `id()` của dict nguồn;
+  `chia_man` chia lại chính các dict trong `reading` nên id còn đúng).
+  **Mã bàn giao là TIỀN TỐ, không phải một khối — và đây là chỗ bản sửa nửa vời trông như
+  xong.** Nguồn viết các đoạn để chạy NỐI TIẾP nhau: đoạn 3 dùng `df` và `import pandas` của
+  đoạn 1. Bàn giao một mình đoạn 3 là mở tab mới rồi để người học đọc `NameError: name 'df' is
+  not defined` — đúng cái nút này ra đời để tránh. `maDeThu()` gộp mọi khối `tryIt` từ đầu bài
+  tới khối được bấm, **vắt qua ranh giới màn** (build đã chia bài thành màn nên đoạn 1 thường ở
+  màn trước). Nhãn nút đổi khi mã gồm cả đoạn trước.
+  **406 không phải con số tự chọn:** đó đúng là số đoạn `check-pyodide.mjs` chạy thật rồi so
+  với `expected`. Hai con số lệch nhau = nút trỏ vào đoạn chưa ai chạy thử.
+  **Phép nối phải khớp từng ký tự ở BA chỗ:** `noi_code()` (build.py), `_noi_nhu_build()`
+  (check.py — cố ý CHÉP chứ không import: import thì lỗi xuất hiện ở cả hai phía phép so và
+  luật không chứng minh gì), `maDeThu()` (studio-lesson.ts).
+  Luật "nối đầy đủ == `step_4.starterCode`" phải LOẠI bài có `tests`: `starterCode` của chúng
+  là KHUNG TRỐNG của bài tập, không phải mã bài đọc — lẫn hai thứ cho đúng 122 lỗi sai, đã gặp.
+  Ablation: không phát cờ → 145 lỗi check.py; lệch bản đồ `id()` → 7 lỗi; cờ lên cả khối
+  `terminal` → 88 lỗi. Phía frontend: không vắt qua màn → 3 ca đỏ; bỏ khối trước trong cùng màn
+  → 4; bỏ lọc `tryIt` → 4; bỏ mốc `# ── Đoạn i ──` → 3.
 - **Dải "mã đến từ link" từng hỏi cả khi link đến TỪ trang bài học.** Nút "Thử ngay trong
   IDE" cũng đi qua `/ide#code=…`, nên đường đi CHÍNH của sản phẩm cũng bị chặn một lần hỏi —
   và một lần hỏi xuất hiện ở mọi lần dùng bình thường thì người ta bấm qua nó theo phản xạ,
