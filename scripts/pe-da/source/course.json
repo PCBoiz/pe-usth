@@ -2044,7 +2044,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
+          "text": "Sổ tay của quán đã ghi được một tuần, giờ bạn cần tính trên cả cột số cốc một lượt. Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
         },
         {
           "type": "code",
@@ -2431,7 +2431,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một báo cáo tuần cần các số thứ tự từ 1 đến 7. Thay vì nhập từng số, bạn có thể tạo dãy bằng `np.arange`:"
+          "text": "Bài trước nhân cả dãy số cốc với đơn giá; lần này bạn cần tự tạo ra dãy. Một báo cáo tuần cần các số thứ tự từ 1 đến 7. Thay vì nhập từng số, bạn có thể tạo dãy bằng `np.arange`:"
         },
         {
           "type": "code",
@@ -2523,7 +2523,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
+          "text": "Quán có quầy thứ hai rồi, nên một dãy số không còn đủ. Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
         },
         {
           "type": "code",
@@ -2611,7 +2611,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn nhận một bảng được mô tả là dữ liệu của hai cửa hàng trong ba ngày. Trước khi cộng số bán, hãy kiểm tra bảng có đúng kích thước đó không:"
+          "text": "Bảng hai quầy của quán vừa dựng xong cần được kiểm hình dạng trước khi tính. Bạn nhận một bảng được mô tả là dữ liệu của hai cửa hàng trong ba ngày. Trước khi cộng số bán, hãy kiểm tra bảng có đúng kích thước đó không:"
         },
         {
           "type": "code",
@@ -2702,7 +2702,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một file xuất số bán thành dãy `[12, 15, 9, 10, 8, 14]`. Quy ước của file cho biết ba số đầu thuộc cửa hàng A, ba số sau thuộc cửa hàng B. Bạn có thể xếp lại thành bảng 2 hàng, 3 cột:"
+          "text": "Bảng của quán không phải lúc nào cũng về sẵn hai chiều như bài trước. Một file xuất số bán thành dãy `[12, 15, 9, 10, 8, 14]`. Quy ước của file cho biết ba số đầu thuộc cửa hàng A, ba số sau thuộc cửa hàng B. Bạn có thể xếp lại thành bảng 2 hàng, 3 cột:"
         },
         {
           "type": "code",
@@ -2794,7 +2794,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong bảng bán hàng, mỗi hàng là một cửa hàng và mỗi cột là một ngày. Bạn muốn lấy riêng số bán của ngày thứ hai ở cả hai cửa hàng:"
+          "text": "Bảng số cốc hai quầy đã xếp đúng rồi, giờ bạn lấy riêng từng hàng và từng cột. Trong bảng bán hàng, mỗi hàng là một cửa hàng và mỗi cột là một ngày. Bạn muốn lấy riêng số bán của ngày thứ hai ở cả hai cửa hàng:"
         },
         {
           "type": "code",
@@ -2889,7 +2889,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Cuối ba ngày, bạn cần biết cả hai cửa hàng đã bán tổng cộng bao nhiêu cốc. Vì chưa cần tách theo ngày hoặc cửa hàng, hãy cộng tất cả ô trong bảng:"
+          "text": "Lấy được từng ô rồi, bước tiếp là cộng cả bảng để biết quán bán bao nhiêu cốc. Cuối ba ngày, bạn cần biết cả hai cửa hàng đã bán tổng cộng bao nhiêu cốc. Vì chưa cần tách theo ngày hoặc cửa hàng, hãy cộng tất cả ô trong bảng:"
         },
         {
           "type": "code",
@@ -3067,7 +3067,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Vẫn là bảng bán hàng hai cửa hàng trong ba ngày, nhưng lần này bạn cần tổng của từng cửa hàng. Hãy cộng các ngày trong cùng một hàng:"
+          "text": "Bài trước cộng theo cột để ra số cốc mỗi ngày. Vẫn là bảng bán hàng hai cửa hàng trong ba ngày, nhưng lần này bạn cần tổng của từng cửa hàng. Hãy cộng các ngày trong cùng một hàng:"
         },
         {
           "type": "code",
@@ -3162,7 +3162,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
+          "text": "Phép cộng ở bài trước dùng cả bảng; lần này bạn cần đánh dấu riêng những ô đạt điều kiện. Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
         },
         {
           "type": "code",
@@ -3356,7 +3356,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn cần hiển thị điểm của ba học viên kèm trạng thái đạt hay chưa đạt. Ngưỡng đạt là 5. Để chọn nhãn cho mỗi điểm, dùng `np.where`:"
+          "text": "Phép lọc ở bài trước trả về các ô đạt mức, còn lần này bạn cần gắn nhãn cho từng ô. Bạn cần hiển thị điểm của ba học viên kèm trạng thái đạt hay chưa đạt. Ngưỡng đạt là 5. Để chọn nhãn cho mỗi điểm, dùng `np.where`:"
         },
         {
           "type": "code",
@@ -3451,7 +3451,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một môn 2 tín chỉ được 7 điểm, một môn 3 tín chỉ được 8 điểm. Để tính trung bình có xét tín chỉ, bạn nhân mỗi điểm với số tín chỉ rồi chia cho tổng tín chỉ: (7 × 2 + 8 × 3) / (2 + 3) = 7.6."
+          "text": "Nhãn vừa gắn ở bài trước chưa cho bạn một con số tóm cả bảng. Một môn 2 tín chỉ được 7 điểm, một môn 3 tín chỉ được 8 điểm. Để tính trung bình có xét tín chỉ, bạn nhân mỗi điểm với số tín chỉ rồi chia cho tổng tín chỉ: (7 × 2 + 8 × 3) / (2 + 3) = 7.6."
         },
         {
           "type": "code",
@@ -3549,7 +3549,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cảm biến ghi được 28°C, mất dữ liệu một ngày, rồi ghi được 32°C. Ngày mất dữ liệu không phải là ngày có nhiệt độ 0°C. Bạn có thể biểu diễn giá trị chưa biết bằng `np.nan`:"
+          "text": "Bảng vừa tính trung bình ở bài trước giả định mọi ô đều có số. Một cảm biến ghi được 28°C, mất dữ liệu một ngày, rồi ghi được 32°C. Ngày mất dữ liệu không phải là ngày có nhiệt độ 0°C. Bạn có thể biểu diễn giá trị chưa biết bằng `np.nan`:"
         },
         {
           "type": "code",
@@ -3645,7 +3645,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cửa hàng có hai sản phẩm, giá 10 và 20 nghìn đồng. Đơn đầu mua lần lượt 2 và 1 sản phẩm; đơn sau mua 1 và 3 sản phẩm. Để tính tiền từng loại trong mỗi đơn:"
+          "text": "Quán đã biết cách đánh dấu ô thiếu rồi, giờ quay lại phép tính giữa hai dãy khác cỡ. Một cửa hàng có hai sản phẩm, giá 10 và 20 nghìn đồng. Đơn đầu mua lần lượt 2 và 1 sản phẩm; đơn sau mua 1 và 3 sản phẩm. Để tính tiền từng loại trong mỗi đơn:"
         },
         {
           "type": "code",
@@ -3743,7 +3743,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn thử đổi giá của hai sản phẩm đầu, nhưng vẫn cần bảng giá gốc để đối chiếu. Hãy tạo bản sao trước khi sửa:"
+          "text": "Bảng giá vừa nhân ở bài trước là bảng gốc của quán, nên đừng sửa nó khi thử. Bạn muốn thử đổi giá của hai sản phẩm đầu, nhưng vẫn cần bảng giá gốc để đối chiếu. Hãy tạo bản sao trước khi sửa:"
         },
         {
           "type": "code",
@@ -3838,7 +3838,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn kiểm tra tổng 0.1 và 0.2 có khớp kết quả dự kiến là 0.3 không. Với số thực, kết quả tính có thể lệch một lượng rất nhỏ:"
+          "text": "Bản sao ở bài trước giữ được số gốc, nhưng số thực còn một cái bẫy riêng. Bạn muốn kiểm tra tổng 0.1 và 0.2 có khớp kết quả dự kiến là 0.3 không. Với số thực, kết quả tính có thể lệch một lượng rất nhỏ:"
         },
         {
           "type": "code",
@@ -3932,7 +3932,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
+          "text": "Tới đây mọi bảng đều do bạn gõ tay trong bài, còn sổ của quán nằm trong một file. Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
         },
         {
           "type": "code",
@@ -4035,7 +4035,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed (số khởi đầu) và chạy cùng lệnh:"
+          "text": "File của quán đã đọc được ở bài trước, nhưng lúc thử code bạn cần số liệu tự sinh. Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed (số khởi đầu) và chạy cùng lệnh:"
         },
         {
           "type": "code",
@@ -4134,7 +4134,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
+          "text": "Bài trước cố định bộ sinh để chạy lại được, và đây là bài gộp mọi phép tính trên bảng. Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
         },
         {
           "type": "code",
@@ -4177,7 +4177,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình)."
+          "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình). Quán đã có bảng số; chặng sau cho bảng đó cột có tên."
         }
       ],
       "level": "Trung cấp",
@@ -4239,7 +4239,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng Series. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
+          "text": "Bảng số ở phần trước mất tên món ngay khi bạn sắp lại thứ tự. Một quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Bạn có thể lưu dãy số này bằng Series. Mỗi giá trị đi cùng một nhãn để xác định nó thuộc ngày nào."
         },
         {
           "type": "code",
@@ -4317,7 +4317,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng bán hàng cần cả tên đồ uống và số cốc. DataFrame giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
+          "text": "Cột có nhãn ở bài trước giữ được số cốc, nhưng sổ của quán có nhiều cột. Bảng bán hàng cần cả tên đồ uống và số cốc. DataFrame giữ các cột này trong cùng một bảng; mỗi hàng ở ví dụ dưới là một loại đồ uống."
         },
         {
           "type": "code",
@@ -4410,7 +4410,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Danh sách khách có mã C01, C02, C03. Mã khách là nhãn của hàng, còn vị trí hàng vẫn được đếm từ 0. Hai cách chọn này cần được viết rõ để tránh lấy nhầm người."
+          "text": "Bảng khách của quán vừa đọc vào có cả hàng và cột, nên bạn cần cách chỉ đúng một ô. Danh sách khách có mã C01, C02, C03. Mã khách là nhãn của hàng, còn vị trí hàng vẫn được đếm từ 0. Hai cách chọn này cần được viết rõ để tránh lấy nhầm người."
         },
         {
           "type": "code",
@@ -4484,7 +4484,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai Series có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
+          "text": "Hai cách chọn ô ở bài trước đã tách nhãn khỏi vị trí; số của quán cũng tính theo nhãn. Doanh thu và chi phí có thể được xuất theo hai thứ tự cửa hàng khác nhau. Khi hai Series có nhãn cửa hàng, pandas ghép các số theo nhãn trước khi tính."
         },
         {
           "type": "code",
@@ -4559,7 +4559,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy True/False; dãy này quyết định giữ hàng nào."
+          "text": "Nhãn đã căn đúng rồi, giờ bạn chỉ muốn xem một phần các đơn của quán thay vì cả bảng, chẳng hạn các đơn lớn. Bạn cần xem các đơn từ 100 nghìn trở lên để kiểm tra chương trình khuyến mại. So sánh một cột với 100 tạo ra một dãy True/False; dãy này quyết định giữ hàng nào."
         },
         {
           "type": "code",
@@ -4634,7 +4634,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng đơn hàng đã có số lượng và đơn giá. Doanh thu từng hàng được tính bằng cách nhân hai cột cùng hàng."
+          "text": "Lọc ở bài trước chỉ chọn hàng; lần này quán cần thêm một cột mới. Bảng đơn hàng đã có số lượng và đơn giá. Doanh thu từng hàng được tính bằng cách nhân hai cột cùng hàng."
         },
         {
           "type": "code",
@@ -4709,7 +4709,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Mã đơn 001 cần giữ số 0 ở đầu; số lượng có thể chưa được nhập. Hai cột này không nên được xử lý cùng một kiểu."
+          "text": "Cột doanh thu của quán bạn vừa tính chạy đúng vì mọi ô đều là số. Mã đơn 001 cần giữ số 0 ở đầu; số lượng có thể chưa được nhập. Hai cột này không nên được xử lý cùng một kiểu."
         },
         {
           "type": "code",
@@ -4785,7 +4785,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
+          "text": "Kiểu của từng cột đã rõ ở bài trước, còn ô trống thì phải xem trước khi điền. Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
         },
         {
           "type": "code",
@@ -4860,7 +4860,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Tên khu vực được nhập là \" North \", \"NORTH\" và \"South\". Nếu đếm ngay, cùng một khu vực North có thể bị tách thành hai tên."
+          "text": "Ô trống đã đếm được rồi, nhưng chữ trong sổ quán còn lệch kiểu hoa và dính dấu cách. Tên khu vực được nhập là \" North \", \"NORTH\" và \"South\". Nếu đếm ngay, cùng một khu vực North có thể bị tách thành hai tên."
         },
         {
           "type": "code",
@@ -4935,7 +4935,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "File đơn hàng được ghép hai lần nên đơn A xuất hiện hai hàng giống nhau. Trước khi cộng doanh thu, bạn cần xác định đâu là dòng bị lặp."
+          "text": "Chữ trong cột đã về một khuôn ở bài trước, nên giờ các dòng trùng mới lộ ra. File đơn hàng được ghép hai lần nên đơn A xuất hiện hai hàng giống nhau. Trước khi cộng doanh thu, bạn cần xác định đâu là dòng bị lặp."
         },
         {
           "type": "code",
@@ -5011,7 +5011,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn có doanh thu ba cửa hàng và muốn xem cửa hàng cao nhất trước. Sắp xếp giúp đọc thứ tự; nó không thay đổi ý nghĩa của nhãn hàng."
+          "text": "Bảng đã bỏ dòng trùng rồi, giờ xếp lại để xem quầy nào của quán dẫn đầu. Bạn có doanh thu ba cửa hàng và muốn xem cửa hàng cao nhất trước. Sắp xếp giúp đọc thứ tự; nó không thay đổi ý nghĩa của nhãn hàng."
         },
         {
           "type": "code",
@@ -5089,7 +5089,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "File xuất từ cửa hàng dùng dấu chấm phẩy để ngăn cột và mã đơn có số 0 đầu. Bạn cần khai báo hai điều này khi đọc, thay vì sửa sau khi dữ liệu đã bị hiểu sai."
+          "text": "Mọi bảng tới đây đều gõ trong bài; file thật của quán thì có quy ước riêng. File xuất từ cửa hàng dùng dấu chấm phẩy để ngăn cột và mã đơn có số 0 đầu. Bạn cần khai báo hai điều này khi đọc, thay vì sửa sau khi dữ liệu đã bị hiểu sai."
         },
         {
           "type": "code",
@@ -5179,7 +5179,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
+          "text": "Sổ quán không chỉ ở dạng CSV như bài trước; nó còn về từ dịch vụ hoặc bảng tính. Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
         },
         {
           "type": "code",
@@ -5268,7 +5268,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng hiện có một hàng cho mỗi giao dịch. Để báo cáo doanh thu cửa hàng, bạn cần gộp các giao dịch có cùng mã cửa hàng rồi cộng amount."
+          "text": "Bảng đơn hàng đã đọc đúng rồi, giờ quán cần số tổng theo từng nhóm. Bảng hiện có một hàng cho mỗi giao dịch. Để báo cáo doanh thu cửa hàng, bạn cần gộp các giao dịch có cùng mã cửa hàng rồi cộng amount."
         },
         {
           "type": "code",
@@ -5343,7 +5343,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp thông thường làm mất từng giao dịch; transform đưa tổng của nhóm trở lại các hàng ban đầu."
+          "text": "Phép gộp ở bài trước làm bảng ngắn lại, nhưng có lúc quán cần giữ đủ từng hàng. Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp thông thường làm mất từng giao dịch; transform đưa tổng của nhóm trở lại các hàng ban đầu."
         },
         {
           "type": "code",
@@ -5418,7 +5418,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng đơn hàng chỉ có customer_id. Tên và khu vực nằm trong bảng khách. merge dùng mã chung để bổ sung thông tin khách vào mỗi đơn."
+          "text": "Số của nhóm đã về từng hàng rồi, nhưng tên khách của quán nằm ở một bảng khác. Bảng đơn hàng chỉ có customer_id. Tên và khu vực nằm trong bảng khách. merge dùng mã chung để bổ sung thông tin khách vào mỗi đơn."
         },
         {
           "type": "code",
@@ -5493,7 +5493,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một danh mục khách vô tình có hai dòng cho cùng mã. Nếu nối ngay với đơn hàng, một đơn có thể xuất hiện hai lần và làm tổng tiền tăng sai."
+          "text": "Phép nối ở bài trước chạy êm vì mỗi mã khách của quán chỉ có một dòng. Một danh mục khách vô tình có hai dòng cho cùng mã. Nếu nối ngay với đơn hàng, một đơn có thể xuất hiện hai lần và làm tổng tiền tăng sai."
         },
         {
           "type": "code",
@@ -5644,7 +5644,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
+          "text": "Các lô dữ liệu của quán đã ghép thành một bảng rồi, giờ đổi hình dạng để dễ đọc. Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
         },
         {
           "type": "code",
@@ -5720,7 +5720,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cửa hàng có nhiều giao dịch trong tháng. Báo cáo cần một ô tổng doanh thu cho mỗi cửa hàng và tháng, nên lần này phải tổng hợp dữ liệu khi đổi hình dạng."
+          "text": "Bảng báo cáo của quán ở bài trước giả định mỗi ô chỉ có một giá trị. Một cửa hàng có nhiều giao dịch trong tháng. Báo cáo cần một ô tổng doanh thu cho mỗi cửa hàng và tháng, nên lần này phải tổng hợp dữ liệu khi đổi hình dạng."
         },
         {
           "type": "code",
@@ -5795,7 +5795,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Ngày đặt hàng đang là chuỗi \"05/01/2026\". Nếu không biết quy ước ngày/tháng, bạn có thể đọc nhầm thành ngày 1 tháng 5. format giúp ghi rõ cách hiểu."
+          "text": "Bảng tổng theo tháng vừa dựng xong vẫn coi ngày là chữ. Ngày đặt hàng đang là chuỗi \"05/01/2026\". Nếu không biết quy ước ngày/tháng, bạn có thể đọc nhầm thành ngày 1 tháng 5. format giúp ghi rõ cách hiểu."
         },
         {
           "type": "code",
@@ -5871,7 +5871,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng giao dịch có nhiều ngày và bạn muốn báo cáo doanh thu tháng. Khi index là thời gian, resample gom các hàng vào những khoảng thời gian đều nhau."
+          "text": "Ngày đã về đúng kiểu rồi, giờ gom các đơn của quán theo ngày và theo tháng. Bảng giao dịch có nhiều ngày và bạn muốn báo cáo doanh thu tháng. Khi index là thời gian, resample gom các hàng vào những khoảng thời gian đều nhau."
         },
         {
           "type": "code",
@@ -5945,7 +5945,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hệ thống ghi đơn lúc 00:00 UTC. Người quản lý ở Việt Nam cần xem giờ địa phương để phân đơn vào đúng ngày kinh doanh."
+          "text": "Mốc thời gian ở bài trước chưa nói nó thuộc giờ nào. Hệ thống ghi đơn lúc 00:00 UTC. Người quản lý ở Việt Nam cần xem giờ địa phương để phân đơn vào đúng ngày kinh doanh."
         },
         {
           "type": "code",
@@ -6021,7 +6021,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Doanh thu từng ngày biến động mạnh. Trung bình ba ngày giúp xem xu hướng ngắn hạn, nhưng chỉ nên dùng dữ liệu từ hiện tại trở về trước."
+          "text": "Giờ hiển thị đã đúng rồi, nên bạn so được doanh thu của quán hôm nay với mấy ngày trước. Doanh thu từng ngày biến động mạnh. Trung bình ba ngày giúp xem xu hướng ngắn hạn, nhưng chỉ nên dùng dữ liệu từ hiện tại trở về trước."
         },
         {
           "type": "code",
@@ -6095,7 +6095,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Cột status chỉ ghi P và C. Bạn muốn đổi sang tên đọc được rồi tính doanh thu sau chiết khấu. Với từng loại thao tác, chọn hàm diễn đạt đúng việc cần làm."
+          "text": "Bài trước so kỳ này với kỳ trước; lần này bạn sửa chính giá trị trong cột. Cột status chỉ ghi P và C. Bạn muốn đổi sang tên đọc được rồi tính doanh thu sau chiết khấu. Với từng loại thao tác, chọn hàm diễn đạt đúng việc cần làm."
         },
         {
           "type": "code",
@@ -6171,7 +6171,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Mức ưu tiên low, medium, high có thứ tự riêng. Nếu sắp theo bảng chữ cái, high có thể đứng trước low; kiểu category cho phép bạn ghi rõ thứ tự mong muốn."
+          "text": "Phép đổi giá trị từng ô ở bài trước chưa dạy được thứ tự cho các nhãn. Mức ưu tiên low, medium, high có thứ tự riêng. Nếu sắp theo bảng chữ cái, high có thể đứng trước low; kiểu category cho phép bạn ghi rõ thứ tự mong muốn."
         },
         {
           "type": "code",
@@ -6247,7 +6247,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Báo cáo có cả cửa hàng và tháng. Khi cặp store–month xác định một hàng, bạn có thể dùng hai tầng index để chọn trực tiếp từng ô hoặc một lát báo cáo."
+          "text": "Nhãn đã có thứ tự rồi, nhưng báo cáo của quán còn chia theo hai cấp. Báo cáo có cả cửa hàng và tháng. Khi cặp store–month xác định một hàng, bạn có thể dùng hai tầng index để chọn trực tiếp từng ô hoặc một lát báo cáo."
         },
         {
           "type": "code",
@@ -6476,7 +6476,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Mỗi tuần bạn nhận cùng kiểu file doanh thu. Nếu sửa từng ô bằng tay, tuần sau rất khó biết mình đã làm gì. Một hàm làm sạch giúp chạy lại cùng quy tắc và kiểm tra kết quả."
+          "text": "Mọi cách đọc và làm sạch ở các bài trước nay phải thành một quy trình chốt sổ của quán. Mỗi tuần bạn nhận cùng kiểu file doanh thu. Nếu sửa từng ô bằng tay, tuần sau rất khó biết mình đã làm gì. Một hàm làm sạch giúp chạy lại cùng quy tắc và kiểm tra kết quả."
         },
         {
           "type": "code",
@@ -6553,7 +6553,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Phân tích khám phá dữ liệu, thường gọi là EDA, bắt đầu từ câu hỏi bạn muốn trả lời. Ở đây, bạn muốn so sánh giá trị đơn giữa hai kênh bán. Trước khi tính hoặc vẽ, cần xác định mỗi hàng là một đơn hay chỉ là một sản phẩm trong đơn; đếm nhầm đơn sẽ làm lệch kết quả so sánh."
+          "text": "Quy trình làm sạch đã chạy được rồi, giờ bạn hỏi bảng của quán một câu thật. Phân tích khám phá dữ liệu, thường gọi là EDA, bắt đầu từ câu hỏi bạn muốn trả lời. Ở đây, bạn muốn so sánh giá trị đơn giữa hai kênh bán. Trước khi tính hoặc vẽ, cần xác định mỗi hàng là một đơn hay chỉ là một sản phẩm trong đơn; đếm nhầm đơn sẽ làm lệch kết quả so sánh."
         },
         {
           "type": "code",
@@ -6629,7 +6629,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn nhận một CSV đơn hàng và một danh mục cửa hàng. Báo cáo cần doanh thu tháng theo khu vực, đồng thời cho biết có đơn nào chưa khớp danh mục. Ba đoạn dưới minh họa ba bước; mỗi đoạn tự tạo đủ dữ liệu để chạy riêng."
+          "text": "Các bảng kết quả ở bài trước còn rời; bản báo cáo thì phải đối chiếu được. Bạn nhận một CSV đơn hàng và một danh mục cửa hàng. Báo cáo cần doanh thu tháng theo khu vực, đồng thời cho biết có đơn nào chưa khớp danh mục. Ba đoạn dưới minh họa ba bước; mỗi đoạn tự tạo đủ dữ liệu để chạy riêng."
         },
         {
           "type": "code",
@@ -6656,7 +6656,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Báo cáo giữ nhóm Unknown để tổng vẫn đối chiếu được. Cột month, region, amount ở dạng dài sẵn sàng cho biểu đồ cột hoặc đường ở phần visualization. Khi giao báo cáo, ghi đơn vị tiền, khoảng ngày, định nghĩa doanh thu, cách bỏ trùng và số đơn chưa khớp; nhận xét nên bám vào dữ liệu, không tự suy ra nguyên nhân."
+          "text": "Báo cáo giữ nhóm Unknown để tổng vẫn đối chiếu được. Cột month, region, amount ở dạng dài sẵn sàng cho biểu đồ cột hoặc đường ở phần visualization. Khi giao báo cáo, ghi đơn vị tiền, khoảng ngày, định nghĩa doanh thu, cách bỏ trùng và số đơn chưa khớp; nhận xét nên bám vào dữ liệu, không tự suy ra nguyên nhân. Quán đã có báo cáo bằng số; chặng sau là làm cho người khác đọc được nó."
         }
       ],
       "drills": [
@@ -6704,7 +6704,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Nếu cần nhìn sự thay đổi theo ngày, đặt ngày lên trục ngang và số cốc lên trục dọc. Đường nối các điểm giúp bạn theo dõi thứ tự thời gian."
+          "text": "Bản báo cáo ở bài trước đọc được với bạn, nhưng người đồng sở hữu quán chỉ xem hình. Quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Nếu cần nhìn sự thay đổi theo ngày, đặt ngày lên trục ngang và số cốc lên trục dọc. Đường nối các điểm giúp bạn theo dõi thứ tự thời gian."
         },
         {
           "type": "code",
@@ -6901,7 +6901,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Doanh thu tuần này lần lượt là 8, 10 và 7 triệu đồng. Khi vẽ line chart, mỗi giá trị phải đi cùng đúng ngày của nó. Matplotlib nối theo thứ tự bạn đưa vào, vì vậy dữ liệu chưa sắp ngày có thể tạo ra đường đi ngược."
+          "text": "Hình đầu tiên đã dựng xong rồi, giờ chọn đúng loại cho số liệu theo ngày. Doanh thu tuần này lần lượt là 8, 10 và 7 triệu đồng. Khi vẽ line chart, mỗi giá trị phải đi cùng đúng ngày của nó. Matplotlib nối theo thứ tự bạn đưa vào, vì vậy dữ liệu chưa sắp ngày có thể tạo ra đường đi ngược."
         },
         {
           "type": "code",
@@ -6994,7 +6994,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Cửa hàng bán 18 cốc trà, 30 cốc cà phê và 12 cốc ca cao. Bar chart cho bạn so sánh ba lượng bán bằng chiều cao cột. Vì chiều dài cột biểu diễn lượng bán, trục số nên bắt đầu từ 0 để chênh lệch không bị phóng đại."
+          "text": "Đường ở bài trước nói về thời gian; so các món với nhau thì cần cột. Cửa hàng bán 18 cốc trà, 30 cốc cà phê và 12 cốc ca cao. Bar chart cho bạn so sánh ba lượng bán bằng chiều cao cột. Vì chiều dài cột biểu diễn lượng bán, trục số nên bắt đầu từ 0 để chênh lệch không bị phóng đại."
         },
         {
           "type": "code",
@@ -7085,7 +7085,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn có bốn đơn hàng, mỗi đơn có khoảng cách giao và số phút giao. Scatter plot đặt mỗi đơn thành một điểm. Nó giúp bạn xem đơn ở xa có thường giao lâu hơn không mà không giả định phải nối từ đơn này sang đơn khác."
+          "text": "Cột và đường ở bài trước so được các nhóm, còn đây là quan hệ giữa hai số đo của quán. Bạn có bốn đơn hàng, mỗi đơn có khoảng cách giao và số phút giao. Scatter plot đặt mỗi đơn thành một điểm. Nó giúp bạn xem đơn ở xa có thường giao lâu hơn không mà không giả định phải nối từ đơn này sang đơn khác."
         },
         {
           "type": "code",
@@ -7176,7 +7176,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong sáu đơn hàng, thời gian chờ là 1, 2, 2, 4, 5 và 8 phút. Thay vì vẽ một cột cho từng đơn, histogram gộp thời gian thành các khoảng rồi đếm có bao nhiêu đơn nằm trong mỗi khoảng."
+          "text": "Mỗi điểm một đơn như bài trước sẽ rối khi quán có hàng nghìn đơn. Trong sáu đơn hàng, thời gian chờ là 1, 2, 2, 4, 5 và 8 phút. Thay vì vẽ một cột cho từng đơn, histogram gộp thời gian thành các khoảng rồi đếm có bao nhiêu đơn nằm trong mỗi khoảng."
         },
         {
           "type": "code",
@@ -7269,7 +7269,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai ca làm có thể cùng thời gian giao trung bình nhưng độ phân tán khác nhau. Boxplot tóm tắt dữ liệu bằng trung vị và các phần tư, giúp bạn nhìn phần giữa của phân bố và các điểm nằm xa phần đó."
+          "text": "Phân bố đã thấy được qua các khoảng chia ở bài trước, giờ so hai nhóm cạnh nhau. Hai ca làm có thể cùng thời gian giao trung bình nhưng độ phân tán khác nhau. Boxplot tóm tắt dữ liệu bằng trung vị và các phần tư, giúp bạn nhìn phần giữa của phân bố và các điểm nằm xa phần đó."
         },
         {
           "type": "code",
@@ -7372,7 +7372,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một bảng đếm có hai cửa hàng và ba khung giờ. Heatmap biến mỗi ô thành một màu để bạn tìm giờ đông khách. imshow nhận array hai chiều; hàng và cột vẫn cần nhãn để biết ô màu đang nói về cửa hàng và giờ nào."
+          "text": "Hai nhóm so được rồi, nhưng bảng của quán có cả quầy lẫn khung giờ. Một bảng đếm có hai cửa hàng và ba khung giờ. Heatmap biến mỗi ô thành một màu để bạn tìm giờ đông khách. imshow nhận array hai chiều; hàng và cột vẫn cần nhãn để biết ô màu đang nói về cửa hàng và giờ nào."
         },
         {
           "type": "code",
@@ -7472,7 +7472,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một đường có các giá trị 8, 10 và 7 vẫn thiếu thông tin nếu người đọc không biết đó là cốc, triệu đồng hay phút. Tiêu đề cho biết câu hỏi; nhãn trục ghi biến và đơn vị. Dòng nguồn và thời gian đo giúp người khác hiểu giới hạn của hình khi nó được tách khỏi báo cáo."
+          "text": "Mọi hình ở các bài trước đều thiếu một thứ: chữ nói cho người xem biết đó là gì. Một đường có các giá trị 8, 10 và 7 vẫn thiếu thông tin nếu người đọc không biết đó là cốc, triệu đồng hay phút. Tiêu đề cho biết câu hỏi; nhãn trục ghi biến và đơn vị. Dòng nguồn và thời gian đo giúp người khác hiểu giới hạn của hình khi nó được tách khỏi báo cáo."
         },
         {
           "type": "code",
@@ -7576,7 +7576,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai chuỗi cà phê và trà sẽ khó phân biệt nếu chỉ khác một màu nhạt. Bạn có thể kết hợp màu, marker và kiểu nét để người có cách nhìn màu khác nhau vẫn đọc được hình. Nhãn trực tiếp và bảng số đi kèm cũng giúp biểu đồ không phụ thuộc hoàn toàn vào màu."
+          "text": "Nhãn và chú thích đã đủ rồi, nhưng người xem báo cáo không nhìn màu giống nhau. Hai chuỗi cà phê và trà sẽ khó phân biệt nếu chỉ khác một màu nhạt. Bạn có thể kết hợp màu, marker và kiểu nét để người có cách nhìn màu khác nhau vẫn đọc được hình. Nhãn trực tiếp và bảng số đi kèm cũng giúp biểu đồ không phụ thuộc hoàn toàn vào màu."
         },
         {
           "type": "code",
@@ -7681,7 +7681,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai cột 98 và 100 có thể trông chênh nhau rất lớn nếu trục đứng bắt đầu từ 97. Giới hạn trục thay đổi cảm nhận về hình nhưng không thay đổi dữ liệu. Với cột biểu diễn lượng, giữ mốc 0; với đường cần xem biến động nhỏ, có thể thu hẹp trục nhưng phải hiển thị mốc rõ."
+          "text": "Màu đã chọn xong rồi, nhưng trục mới là chỗ một hình nói sai sự thật. Hai cột 98 và 100 có thể trông chênh nhau rất lớn nếu trục đứng bắt đầu từ 97. Giới hạn trục thay đổi cảm nhận về hình nhưng không thay đổi dữ liệu. Với cột biểu diễn lượng, giữ mốc 0; với đường cần xem biến động nhỏ, có thể thu hẹp trục nhưng phải hiển thị mốc rõ."
         },
         {
           "type": "code",
@@ -7790,7 +7790,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. sharey=True giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
+          "text": "Trục đã đặt đúng ở bài trước, giờ xếp nhiều hình của quán lên một trang. Bạn muốn so sánh lượng bán của hai cửa hàng trên cùng trang. Hai subplot đặt cạnh nhau giúp giảm số đường chồng lên một vùng vẽ. sharey=True giữ chung thang đứng để một đường cao hơn thật sự có nghĩa là lượng bán lớn hơn."
         },
         {
           "type": "code",
@@ -7894,7 +7894,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai nhóm giao hàng có trung bình 10 và 12 phút. Chỉ hai điểm trung bình chưa cho biết các đơn phân tán ra sao hay trung bình được ước lượng chắc đến mức nào. Error bar có thể biểu diễn độ lệch chuẩn, khoảng phần trăm hoặc khoảng tin cậy; bạn cần ghi rõ mình đang vẽ loại nào."
+          "text": "Nhiều hình đã nằm chung một trang rồi, nhưng một con số trung bình vẫn chưa đủ. Hai nhóm giao hàng có trung bình 10 và 12 phút. Chỉ hai điểm trung bình chưa cho biết các đơn phân tán ra sao hay trung bình được ước lượng chắc đến mức nào. Error bar có thể biểu diễn độ lệch chuẩn, khoảng phần trăm hoặc khoảng tin cậy; bạn cần ghi rõ mình đang vẽ loại nào."
         },
         {
           "type": "code",
@@ -7993,7 +7993,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một hình nhìn rõ trong notebook vẫn có thể mờ khi đặt vào slide. figsize tính theo inch, còn dpi quyết định số pixel khi xuất ảnh raster. Hình rộng 6 inch ở 150 dpi có bề rộng 900 pixel nếu không cắt lại khung."
+          "text": "Hình của quán đã đủ thông tin rồi, giờ còn chuyện mang nó ra khỏi máy bạn. Một hình nhìn rõ trong notebook vẫn có thể mờ khi đặt vào slide. figsize tính theo inch, còn dpi quyết định số pixel khi xuất ảnh raster. Hình rộng 6 inch ở 150 dpi có bề rộng 900 pixel nếu không cắt lại khung."
         },
         {
           "type": "code",
@@ -8182,7 +8182,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
+          "text": "Bài trước vẽ thẳng từ bảng của quán; thư viện này nhận cả tên cột. Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
         },
         {
           "type": "code",
@@ -8276,7 +8276,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn có các đơn được gắn tên ca sáng hoặc tối. countplot đếm số dòng trong mỗi ca, còn boxplot mô tả phân bố thời gian của từng ca. Hai hình trả lời hai câu hỏi khác nhau dù cùng dùng tên ca trên trục ngang."
+          "text": "Phân bố một cột đã vẽ được rồi, giờ chia theo ca làm của quán. Bạn có các đơn được gắn tên ca sáng hoặc tối. countplot đếm số dòng trong mỗi ca, còn boxplot mô tả phân bố thời gian của từng ca. Hai hình trả lời hai câu hỏi khác nhau dù cùng dùng tên ca trên trục ngang."
         },
         {
           "type": "code",
@@ -8369,7 +8369,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bảng giao hàng có khoảng cách, thời gian và phương tiện. seaborn.scatterplot dùng hue cho màu và style cho marker, nên bạn có thể xem quan hệ khoảng cách–thời gian trong từng phương tiện mà vẫn giữ mỗi đơn là một điểm."
+          "text": "So hai ca ở bài trước dùng một cột, còn đây là quan hệ giữa hai cột. Bảng giao hàng có khoảng cách, thời gian và phương tiện. seaborn.scatterplot dùng hue cho màu và style cho marker, nên bạn có thể xem quan hệ khoảng cách–thời gian trong từng phương tiện mà vẫn giữ mỗi đơn là một điểm."
         },
         {
           "type": "code",
@@ -8467,7 +8467,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
+          "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
         },
         {
           "type": "code",
@@ -8852,7 +8852,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một dashboard nhỏ cần bộ chọn cửa hàng và các chỉ số thay đổi cùng bộ chọn. Hãy viết hàm lọc trước rồi mới gắn giao diện vào nó. Hàm độc lập dễ kiểm tra bằng dữ liệu nhỏ và có thể dùng lại trong notebook hoặc một ứng dụng web."
+          "text": "File tương tác ở bài trước vẫn cố định; người xem muốn tự chọn quầy. Một dashboard nhỏ cần bộ chọn cửa hàng và các chỉ số thay đổi cùng bộ chọn. Hãy viết hàm lọc trước rồi mới gắn giao diện vào nó. Hàm độc lập dễ kiểm tra bằng dữ liệu nhỏ và có thể dùng lại trong notebook hoặc một ứng dụng web."
         },
         {
           "type": "code",
@@ -8928,7 +8928,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Cửa hàng A có 20 khiếu nại, B có 10. Chỉ đếm khiếu nại sẽ khiến A trông kém hơn, nhưng A phục vụ 1000 đơn còn B phục vụ 100 đơn. Mẫu số thay đổi kết luận: tỷ lệ tương ứng là 2% và 10%. Trước khi chọn hình, cần biết đang so sánh tổng hay tỷ lệ."
+          "text": "Bộ chọn vừa dựng cho người khác tự xem số của quán, nên hình phải không gây hiểu lầm. Cửa hàng A có 20 khiếu nại, B có 10. Chỉ đếm khiếu nại sẽ khiến A trông kém hơn, nhưng A phục vụ 1000 đơn còn B phục vụ 100 đơn. Mẫu số thay đổi kết luận: tỷ lệ tương ứng là 2% và 10%. Trước khi chọn hình, cần biết đang so sánh tổng hay tỷ lệ."
         },
         {
           "type": "code",
@@ -9022,7 +9022,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
+          "text": "Bài trước nói về hình dễ gây hiểu lầm; bài này vẫn là hình, nhưng động. Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
         },
         {
           "type": "code",
@@ -9115,7 +9115,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn được hỏi: “Trong dữ liệu mẫu, loại đồ uống nào đóng góp doanh thu cao nhất?” Cần thống nhất doanh thu bằng số lượng nhân đơn giá, loại bỏ dòng không hợp lệ theo quy tắc công khai rồi mới tổng hợp. Ví dụ dưới giữ ba dòng có lượng và giá không âm; đây là dữ liệu minh họa, không phải kết quả kinh doanh thật."
+          "text": "Mọi loại hình ở các bài trước nay dùng để trả lời một câu hỏi của quán. Bạn được hỏi: “Trong dữ liệu mẫu, loại đồ uống nào đóng góp doanh thu cao nhất?” Cần thống nhất doanh thu bằng số lượng nhân đơn giá, loại bỏ dòng không hợp lệ theo quy tắc công khai rồi mới tổng hợp. Ví dụ dưới giữ ba dòng có lượng và giá không âm; đây là dữ liệu minh họa, không phải kết quả kinh doanh thật."
         },
         {
           "type": "code",
@@ -9214,7 +9214,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Đơn hàng có 60% cà phê và 40% trà. Nếu câu hỏi là cơ cấu của một tổng, có thể dùng cột chồng hoặc pie; phải chắc các phần thuộc cùng một tổng và không chồng lặp. Khi cần so chênh lệch chính xác, cột thường dễ đọc hơn góc của lát tròn."
+          "text": "Báo cáo vừa dựng xong trả lời một câu hỏi, còn đây là cơ cấu của một tổng. Đơn hàng có 60% cà phê và 40% trà. Nếu câu hỏi là cơ cấu của một tổng, có thể dùng cột chồng hoặc pie; phải chắc các phần thuộc cùng một tổng và không chồng lặp. Khi cần so chênh lệch chính xác, cột thường dễ đọc hơn góc của lát tròn."
         },
         {
           "type": "code",
@@ -9313,7 +9313,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một bảng nhiệt độ có các ô theo vị trí x và y, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
+          "text": "Vùng tô ở bài trước chia một tổng; lần này ô nằm theo hai trục toạ độ. Một bảng nhiệt độ có các ô theo vị trí x và y, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
         },
         {
           "type": "code",
@@ -9415,7 +9415,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Nếu dữ liệu là hướng di chuyển, một giá trị màu không đủ cho biết hướng. arrow vẽ một mũi tên đơn, quiver vẽ các vector tại nhiều vị trí, còn streamplot thể hiện các đường đi theo trường vector. Cần phân biệt vị trí bắt đầu với thành phần vector theo x và y."
+          "text": "Lưới ô vừa dựng ở bài trước chỉ nói độ lớn, không nói hướng. Nếu dữ liệu là hướng di chuyển, một giá trị màu không đủ cho biết hướng. arrow vẽ một mũi tên đơn, quiver vẽ các vector tại nhiều vị trí, còn streamplot thể hiện các đường đi theo trường vector. Cần phân biệt vị trí bắt đầu với thành phần vector theo x và y."
         },
         {
           "type": "code",
@@ -9521,7 +9521,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như Axes đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
+          "text": "Mọi hình tới đây đều là hình tĩnh; ở bài này bạn bấm được vào nó. Một cửa sổ xem hình có thể cho bạn bấm vào điểm để đọc dữ liệu. Matplotlib gửi sự kiện qua canvas; callback nhận thông tin như Axes đang bấm và tọa độ dữ liệu. Cơ chế này cần backend tương tác khi dùng chuột thật, nhưng phần xử lý có thể được kiểm tra riêng mà không mở cửa sổ."
         },
         {
           "type": "code",
@@ -9548,6 +9548,10 @@
           "code": "import matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfrom matplotlib.figure import Figure\ndef build_sales_chart(days, cups):\n    if len(days) != len(cups):\n        raise ValueError(\"Lengths must match\")\n    figure = Figure(figsize=(6, 3.5))\n    axes = figure.subplots()\n    axes.plot(days, cups, marker=\"o\")\n    axes.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"A chart function reusable in a GUI\")\n    return figure\nfig = build_sales_chart([1, 2, 3], [8, 10, 7])\nprint(len(fig.axes), len(fig.axes[0].lines))\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-3.png\", dpi=130)\nplt.close(fig)",
           "expected": "1 1",
           "figure": "visuals/VZ30-3.png"
+        },
+        {
+          "type": "paragraph",
+          "text": "Số của quán đã cho người khác đọc được; chặng sau gom code rời thành một hệ thống."
         }
       ],
       "drills": [
@@ -9607,7 +9611,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một báo cáo cần lấy đơn hàng từ ngày 28/02/2024 đến hai ngày sau đó. Nếu cộng trực tiếp vào phần ngày của chuỗi, bạn sẽ gặp ngày không tồn tại. Hãy chuyển chuỗi thành datetime trước:"
+          "text": "Quán đã có số và có hình rồi, nhưng code vẫn nằm rời trong từng ô notebook. Một báo cáo cần lấy đơn hàng từ ngày 28/02/2024 đến hai ngày sau đó. Nếu cộng trực tiếp vào phần ngày của chuỗi, bạn sẽ gặp ngày không tồn tại. Hãy chuyển chuỗi thành datetime trước:"
         },
         {
           "type": "code",
@@ -9687,7 +9691,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn có danh sách đơn hàng và muốn chọn ngẫu nhiên một đơn để kiểm tra. Để thử code mà không phụ thuộc trạng thái random của phần khác, tạo một bộ sinh riêng:"
+          "text": "Ngày tháng đã tính được rồi, giờ đến việc lấy mẫu từ sổ đơn của quán. Bạn có danh sách đơn hàng và muốn chọn ngẫu nhiên một đơn để kiểm tra. Để thử code mà không phụ thuộc trạng thái random của phần khác, tạo một bộ sinh riêng:"
         },
         {
           "type": "code",
@@ -9776,7 +9780,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong ghi chú \"Paid by S012 today\", bạn muốn lấy mã sinh viên thay vì dựa vào vị trí ký tự cố định. Regex mô tả dạng của mã:"
+          "text": "Mẫu ngẫu nhiên ở bài trước lấy cả dòng; có lúc bạn chỉ cần một mẩu trong dòng. Trong ghi chú \"Paid by S012 today\", bạn muốn lấy mã sinh viên thay vì dựa vào vị trí ký tự cố định. Regex mô tả dạng của mã:"
         },
         {
           "type": "code",
@@ -9855,7 +9859,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
+          "text": "Các hàm vừa viết cho quán đã đủ dài để bạn cần giữ lại từng bản. Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
         },
         {
           "type": "code",
@@ -9885,7 +9889,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn."
+          "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn. Lịch sử code của quán giữ được rồi, nên bạn dám sửa công thức tính tiền."
         }
       ],
       "drills": [
@@ -9937,7 +9941,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một hồ sơ sinh viên có mã, tên và ngày sinh. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Student; mã gọi làm việc qua thuộc tính và các hàm của từng sinh viên, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
+          "text": "Code có lịch sử rồi, giờ đến cấu trúc. Một hồ sơ sinh viên có mã, tên và ngày sinh. Theo cách viết thủ tục, bạn có thể dùng dict giữ hồ sơ và các hàm riêng để sửa, liệt kê. Cách hướng đối tượng gom dữ liệu này với hành vi liên quan vào Student; mã gọi làm việc qua thuộc tính và các hàm của từng sinh viên, gọi là method. Cả hai cách vẫn dùng hàm, nhưng khác nơi giữ dữ liệu và tổ chức trách nhiệm:"
         },
         {
           "type": "code",
@@ -10117,7 +10121,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
+          "text": "Lớp ở bài trước đã biết tự hiển thị; giờ hai lớp báo cáo của quán dùng chung một phần việc. Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
         },
         {
           "type": "code",
@@ -10395,7 +10399,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
+          "text": "Các lớp ở bài trước đã tách phần việc, nhưng chưa ai canh dữ liệu bên trong. Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
         },
         {
           "type": "code",
@@ -10481,7 +10485,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
+          "text": "Lớp vừa dựng đã giữ được dữ liệu hợp lệ, giờ đến chỗ đặt code của quán. Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
         },
         {
           "type": "code",
@@ -10673,7 +10677,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
+          "text": "Gói code của quán đã có điểm bắt đầu rồi, giờ quay lại mấy phép tính hay dùng. Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
         },
         {
           "type": "code",
@@ -10751,7 +10755,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một menu quản lý điểm có thể chạy ngay trong terminal: người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module curses hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
+          "text": "Phép tính đã gọn trong một gói rồi, nhưng người đứng quầy cần một màn hình để bấm. Một menu quản lý điểm có thể chạy ngay trong terminal: người dùng nhấn phím để chọn, màn hình được cập nhật thay vì in liên tục xuống dưới. Module curses hỗ trợ loại giao diện này. Một số hàm hỗ trợ ký tự không cần mở màn hình:"
         },
         {
           "type": "code",
@@ -10836,7 +10840,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn giữ tổng bán hàng sau khi tắt Python. Biến trong RAM không tự tồn tại qua lần chạy; một file giúp lưu dữ liệu. Các ví dụ chỉ ghi vào thư mục tạm của bài:"
+          "text": "Màn hình ở bài trước mất hết số liệu khi bạn tắt chương trình. Bạn muốn giữ tổng bán hàng sau khi tắt Python. Biến trong RAM không tự tồn tại qua lần chạy; một file giúp lưu dữ liệu. Các ví dụ chỉ ghi vào thư mục tạm của bài:"
         },
         {
           "type": "code",
@@ -11025,7 +11029,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một chương trình ghi nhiều dòng log nhỏ. Bộ đệm (buffer) gom dữ liệu trước khi chuyển tiếp để giảm số lần đọc/ghi (I/O). Gọi flush giúp đẩy dữ liệu ra khỏi bộ đệm của Python, nhưng chưa bảo đảm dữ liệu đã được ghi bền trên thiết bị khi mất điện:"
+          "text": "Bài trước đọc từng dòng trong file của quán; lần này nói về lúc ghi. Một chương trình ghi nhiều dòng log nhỏ. Bộ đệm (buffer) gom dữ liệu trước khi chuyển tiếp để giảm số lần đọc/ghi (I/O). Gọi flush giúp đẩy dữ liệu ra khỏi bộ đệm của Python, nhưng chưa bảo đảm dữ liệu đã được ghi bền trên thiết bị khi mất điện:"
         },
         {
           "type": "code",
@@ -11246,7 +11250,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
+          "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
         },
         {
           "type": "code",
@@ -11419,7 +11423,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+          "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
         },
         {
           "type": "code",
@@ -11690,7 +11694,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Dữ liệu đơn hàng có thể nằm trong cơ sở dữ liệu (database) thay vì CSV. Trong SQLAlchemy, engine quản lý việc tạo và dùng các kết nối, còn connection là kết nối bạn dùng để chạy SQL. Ví dụ sau dùng SQLite trong RAM nên không cần máy chủ riêng:"
+          "text": "Mấy định dạng file của quán ở các bài trước đều nằm trên đĩa của bạn. Dữ liệu đơn hàng có thể nằm trong cơ sở dữ liệu (database) thay vì CSV. Trong SQLAlchemy, engine quản lý việc tạo và dùng các kết nối, còn connection là kết nối bạn dùng để chạy SQL. Ví dụ sau dùng SQLite trong RAM nên không cần máy chủ riêng:"
         },
         {
           "type": "code",
@@ -11777,7 +11781,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
+          "text": "Mọi thứ của chặng này nay gộp vào một bài thực hành nối tiếp nhau. Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
         },
         {
           "type": "code",
@@ -11864,7 +11868,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
+          "text": "Bước trước giữ dữ liệu trong các collection rời nhau. PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
         },
         {
           "type": "code",
@@ -12057,7 +12061,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+          "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
         },
         {
           "type": "code",
@@ -12084,7 +12088,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó."
+          "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó. Quán đã thành một hệ thống chạy lại được; chặng sau là lúc nó có hai quầy."
         }
       ],
       "drills": [
@@ -12167,7 +12171,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn mở cùng một script phân tích hai lần. File chương trình vẫn là một, nhưng hệ điều hành tạo hai lần thực thi khác nhau. Mỗi lần thực thi được gọi là một process, có PID để nhận diện:"
+          "text": "Quy trình chốt sổ bạn vừa dựng chạy một mạch mỗi tối; quán có hai quầy thì nó chạy ở đâu? Bạn mở cùng một script phân tích hai lần. File chương trình vẫn là một, nhưng hệ điều hành tạo hai lần thực thi khác nhau. Mỗi lần thực thi được gọi là một process, có PID để nhận diện:"
         },
         {
           "type": "code",
@@ -12195,6 +12199,10 @@
         {
           "type": "paragraph",
           "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker (process con nhận phần việc), rồi worker tạo helper. Công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
+        },
+        {
+          "type": "paragraph",
+          "text": "Vì vậy khi quán cho việc chốt sổ chạy ở nền, đừng giả định nó là một lần thực thi duy nhất."
         }
       ],
       "drills": [
@@ -12280,7 +12288,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
+          "text": "Ở bài trước quán đã có hai lần thực thi cùng lúc. Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
         },
         {
           "type": "code",
@@ -12307,7 +12315,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng subprocess để thực hành trên cả Windows và UNIX."
+          "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng subprocess để thực hành trên cả Windows và UNIX. Quán của bạn sẽ gọi những lệnh này khi cần chạy một việc nền."
         }
       ],
       "drills": [
@@ -12391,7 +12399,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
+          "text": "Hai quầy của quán chạy cùng lúc trên một máy, và bài trước chỉ nói cách tạo ra chúng. Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
         },
         {
           "type": "code",
@@ -12423,6 +12431,10 @@
         {
           "type": "paragraph",
           "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive (thu CPU lại giữa chừng) không chờ tác vụ tự nhường; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
+        },
+        {
+          "type": "paragraph",
+          "text": "Vậy khi quán chạy một việc ở nền, nó không giữ CPU liên tục từ đầu đến cuối."
         }
       ],
       "drills": [
@@ -12502,7 +12514,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Ba việc cùng sẵn sàng lúc 0: A cần 6 đơn vị CPU, B cần 2, C cần 1. Nếu xử lý theo thứ tự đến A, B, C, việc ngắn C phải chờ cả A lẫn B:"
+          "text": "Hàng đợi ở bài trước chưa nói ai được chạy trước; ba việc của quán thì phải chọn. Ba việc cùng sẵn sàng lúc 0: A cần 6 đơn vị CPU, B cần 2, C cần 1. Nếu xử lý theo thứ tự đến A, B, C, việc ngắn C phải chờ cả A lẫn B:"
         },
         {
           "type": "code",
@@ -12529,7 +12541,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Trong bộ số giả định này, trung bình chờ của SJF thấp hơn. Kết luận phụ thuộc giả định biết burst và thời điểm đến. Hệ thống thật phải ước lượng thời gian chạy; các việc dài cũng có thể bị chờ lâu nếu việc ngắn tiếp tục đến."
+          "text": "Trong bộ số giả định này, trung bình chờ của SJF thấp hơn. Kết luận phụ thuộc giả định biết burst và thời điểm đến. Hệ thống thật phải ước lượng thời gian chạy; các việc dài cũng có thể bị chờ lâu nếu việc ngắn tiếp tục đến. Thứ tự này quyết định việc chốt sổ của quán chờ bao lâu."
         }
       ],
       "drills": [
@@ -12586,7 +12598,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "A bắt đầu chạy với 6 đơn vị CPU. Sau 1 đơn vị, B đến và chỉ cần 2 đơn vị. SRTF xem thời gian còn lại: A còn 5, nên B có thể được chạy trước."
+          "text": "Bài trước giả định mọi việc của quán đã sẵn sàng cùng lúc. A bắt đầu chạy với 6 đơn vị CPU. Sau 1 đơn vị, B đến và chỉ cần 2 đơn vị. SRTF xem thời gian còn lại: A còn 5, nên B có thể được chạy trước."
         },
         {
           "type": "code",
@@ -12613,7 +12625,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán."
+          "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán. Khi một việc của quán phải xong trước giờ mở cửa, mức ưu tiên là chỗ bạn khai nó."
         }
       ],
       "drills": [
@@ -12673,7 +12685,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
+          "text": "Hai cách chọn ở bài trước đều để một việc chạy tới khi xong. Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
         },
         {
           "type": "code",
@@ -12700,7 +12712,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python."
+          "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python. Nhờ cách chia lượt này, màn hình nhận đơn của quán không bị treo khi máy đang tính."
         }
       ],
       "drills": [
@@ -12767,7 +12779,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một bước phân tích cần gọi chương trình Python khác rồi nhận số liệu về. Bạn cần phân biệt thứ chương trình in ra với trạng thái nó kết thúc:"
+          "text": "Bài trước mới đọc cơ chế; giờ bạn gọi một chương trình khác từ code của quán. Một bước phân tích cần gọi chương trình Python khác rồi nhận số liệu về. Bạn cần phân biệt thứ chương trình in ra với trạng thái nó kết thúc:"
         },
         {
           "type": "code",
@@ -12986,7 +12998,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
+          "text": "Ở bài trước mỗi lệnh gọi tạo thêm một lần thực thi riêng, và bên trong nó còn chia nhỏ được nữa. Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
         },
         {
           "type": "code",
@@ -13013,7 +13025,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide."
+          "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide. Quán cần nó để màn hình vẫn nhận đơn lúc đang lưu sổ."
         }
       ],
       "drills": [
@@ -13262,7 +13274,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai worker cùng đọc bộ đếm là 0 rồi mỗi worker ghi thêm 1. Nếu lần ghi sau đè lần ghi trước, kết quả có thể chỉ là 1 dù có hai lượt tăng. Mô phỏng thứ tự xen kẽ đó:"
+          "text": "Hai luồng ở bài trước dùng chung bộ nhớ, như hai quầy dùng chung một máy xay. Hai worker cùng đọc bộ đếm là 0 rồi mỗi worker ghi thêm 1. Nếu lần ghi sau đè lần ghi trước, kết quả có thể chỉ là 1 dù có hai lượt tăng. Mô phỏng thứ tự xen kẽ đó:"
         },
         {
           "type": "code",
@@ -13290,6 +13302,10 @@
         {
           "type": "paragraph",
           "text": "Lock thông thường không cho thread đang giữ tự lấy lại lần nữa. Ví dụ dùng blocking=False để quan sát thất bại mà không treo. Nếu A giữ khóa X chờ Y trong khi B giữ Y chờ X, cả hai có thể deadlock. Dùng thứ tự lấy khóa nhất quán, thu nhỏ vùng tới hạn và tránh giữ khóa khi chờ lâu. CPython build có GIL dùng một khóa của interpreter, nhưng khóa đó không bảo vệ trọn quy tắc chuyển tiền hay cập nhật nhiều giá trị của ứng dụng. EX05 giải thích riêng mô hình GIL này."
+        },
+        {
+          "type": "paragraph",
+          "text": "Bộ đếm bị tranh ở đây chính là hình dạng của lỗi khi hai quầy cùng ghi vào một cuốn sổ."
         }
       ],
       "drills": [
@@ -13376,7 +13392,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Bản chụp (snapshot) cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy bản chụp. Gán thêm một tên không tự tạo bản chụp. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
+          "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Bản chụp (snapshot) cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy bản chụp. Gán thêm một tên không tự tạo bản chụp. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã. Quán đã chạy nhiều việc một lúc; chặng sau chia chúng ra nhiều tiến trình."
         }
       ],
       "drills": [
@@ -13421,7 +13437,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một phép tính Python thuần dùng nhiều CPU có thể cần process riêng thay vì thêm thread trong CPython build có GIL. Trước khi tìm cách tăng tốc, hãy kiểm tra dữ liệu của cha và con có được dùng chung không:"
+          "text": "Cách chia việc ở phần trước vẫn nằm gọn trong một chương trình. Một phép tính Python thuần dùng nhiều CPU có thể cần process riêng thay vì thêm thread trong CPython build có GIL. Trước khi tìm cách tăng tốc, hãy kiểm tra dữ liệu của cha và con có được dùng chung không:"
         },
         {
           "type": "code",
@@ -13499,7 +13515,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
+          "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
         },
         {
           "type": "code",
@@ -13530,7 +13546,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi thử lab, chạy `python projects/shell_lab.py` từ thư mục bộ học. Dùng đường dẫn/đối số có dấu nháy khi chứa khoảng trắng. Với pipeline, kiểm mã thoát của mọi stage; với lỗi cú pháp hoặc thiếu chương trình, báo lỗi rồi quay lại vòng nhập. Các cấu trúc shell khác như >>, biến môi trường hay wildcard không thuộc parser này."
+          "text": "Khi thử lab, chạy `python projects/shell_lab.py` từ thư mục bộ học. Dùng đường dẫn/đối số có dấu nháy khi chứa khoảng trắng. Với pipeline, kiểm mã thoát của mọi stage; với lỗi cú pháp hoặc thiếu chương trình, báo lỗi rồi quay lại vòng nhập. Các cấu trúc shell khác như >>, biến môi trường hay wildcard không thuộc parser này. Hiểu cách shell nối các lệnh giúp bạn tự động hoá những việc lặp lại của quán."
         }
       ],
       "drills": [
@@ -13590,7 +13606,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
+          "text": "Hai cách chia việc ở các bài trước đã đủ để bạn đọc sơ đồ của phần mềm thật. Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
         },
         {
           "type": "code",
@@ -13617,7 +13633,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Hình Chromium ở trang 276 đặt main thread và I/O thread trong browser process; renderer process có các thread của nó. Các đường từ browser sang renderer được ghi IPC (inter-process communication). Tách process có thể tăng cô lập, còn trao đổi giữa chúng cần giao thức và có chi phí. Ba ví dụ chỉ giúp đọc sơ đồ lịch sử của slide; chúng không khẳng định kiến trúc của mọi phiên bản Apache hoặc Chromium đang được dùng."
+          "text": "Hình Chromium ở trang 276 đặt main thread và I/O thread trong browser process; renderer process có các thread của nó. Các đường từ browser sang renderer được ghi IPC (inter-process communication). Tách process có thể tăng cô lập, còn trao đổi giữa chúng cần giao thức và có chi phí. Ba ví dụ chỉ giúp đọc sơ đồ lịch sử của slide; chúng không khẳng định kiến trúc của mọi phiên bản Apache hoặc Chromium đang được dùng. Quán của bạn chia việc theo đúng hai tầng đó."
         }
       ],
       "drills": [
@@ -13660,7 +13676,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một công cụ tính tiền có thể nhận lệnh \"3 20\" trong terminal hoặc có hai ô nhập và một nút Tính. Cả hai đều gọi được cùng hàm Python; phần khác nhau là cách người dùng gửi dữ liệu và đọc kết quả."
+          "text": "Quán có người đứng bán không biết Python, nên mọi thứ ở các bài trước phải có một màn hình. Một công cụ tính tiền có thể nhận lệnh \"3 20\" trong terminal hoặc có hai ô nhập và một nút Tính. Cả hai đều gọi được cùng hàm Python; phần khác nhau là cách người dùng gửi dữ liệu và đọc kết quả."
         },
         {
           "type": "code",
@@ -13784,7 +13800,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Ứng dụng quản lý điểm có một cửa sổ chính. Khi xem thông tin sinh viên, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
+          "text": "Bài trước đã chọn bộ công cụ; giờ dựng cửa sổ đầu tiên cho quầy. Ứng dụng quản lý điểm có một cửa sổ chính. Khi xem thông tin sinh viên, bạn có thể mở một cửa sổ phụ thuộc cửa sổ đó, thay vì tạo thêm một ứng dụng Tk độc lập."
         },
         {
           "type": "code",
@@ -13975,7 +13991,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Nút Tính GPA chỉ nên chạy phép tính khi người dùng bấm. command cần nhận hàm sẽ được gọi sau, không phải kết quả của một lần gọi ngay lúc dựng giao diện."
+          "text": "Các ô hiển thị đã xếp xong ở bài trước, nhưng chưa ô nào phản ứng khi bấm. Nút Tính GPA chỉ nên chạy phép tính khi người dùng bấm. command cần nhận hàm sẽ được gọi sau, không phải kết quả của một lần gọi ngay lúc dựng giao diện."
         },
         {
           "type": "code",
@@ -14076,7 +14092,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Form có ô tên và tùy chọn nhận thông báo. Entry luôn trả chữ; Checkbutton giữ trạng thái bật hoặc tắt độc lập với các ô khác."
+          "text": "Nút đã gọi được hàm của bạn rồi, giờ đến chỗ người bán gõ vào. Form có ô tên và tùy chọn nhận thông báo. Entry luôn trả chữ; Checkbutton giữ trạng thái bật hoặc tắt độc lập với các ô khác."
         },
         {
           "type": "code",
@@ -14168,7 +14184,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Người dùng chọn một hệ điểm 10 hoặc 20. Hai nút radio dùng chung một biến nên chỉ có một giá trị đang được chọn."
+          "text": "Ô nhập ở bài trước nhận chữ tự do; có lúc quầy chỉ được chọn một trong vài mục. Người dùng chọn một hệ điểm 10 hoặc 20. Hai nút radio dùng chung một biến nên chỉ có một giá trị đang được chọn."
         },
         {
           "type": "code",
@@ -14263,7 +14279,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Form nhập điểm cần chọn sinh viên và môn học. Listbox hiển thị nhiều phần tử, còn Combobox tiết kiệm chỗ bằng danh sách thả xuống."
+          "text": "Hai nút chọn ở bài trước đủ cho hai mức; thực đơn của quán thì dài hơn. Form nhập điểm cần chọn sinh viên và môn học. Listbox hiển thị nhiều phần tử, còn Combobox tiết kiệm chỗ bằng danh sách thả xuống."
         },
         {
           "type": "code",
@@ -14367,7 +14383,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Thanh công cụ có ba nút nằm cạnh nhau. pack xếp widget lần lượt vào phần không gian còn lại của parent, nên phù hợp cho hàng nút và các vùng trên–dưới."
+          "text": "Các ô đã có đủ rồi, nhưng chưa có luật nào xếp chúng trên màn hình. Thanh công cụ có ba nút nằm cạnh nhau. pack xếp widget lần lượt vào phần không gian còn lại của parent, nên phù hợp cho hàng nút và các vùng trên–dưới."
         },
         {
           "type": "code",
@@ -14462,7 +14478,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một nhãn trạng thái cần nằm ở góc của vùng xem trước. place cho bạn chỉ rõ tọa độ hoặc tỉ lệ của vùng cha, nhưng form nhiều chữ thường dễ bố trí hơn bằng grid."
+          "text": "Cách xếp lần lượt ở bài trước không đặt được một ô vào đúng góc. Một nhãn trạng thái cần nằm ở góc của vùng xem trước. place cho bạn chỉ rõ tọa độ hoặc tỉ lệ của vùng cha, nhưng form nhiều chữ thường dễ bố trí hơn bằng grid."
         },
         {
           "type": "code",
@@ -14786,7 +14802,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric."
+          "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric. Quán giờ có một màn hình cho người không viết code; hai chặng cuối ôn lại các chi tiết đã đi nhanh."
         }
       ],
       "drills": [
@@ -14854,7 +14870,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "File có một dòng tiêu đề và hai cột số. Bạn chỉ cần cột điểm, nên có thể bỏ tiêu đề bằng skiprows=1 và chọn cột bằng usecols. Chỉ số cột bắt đầu từ 0 giống chỉ số phần tử trong array."
+          "text": "Tám bài còn lại quay về các chi tiết mà những bài trước đi nhanh qua, trên đúng bảng của quán. File có một dòng tiêu đề và hai cột số. Bạn chỉ cần cột điểm, nên có thể bỏ tiêu đề bằng skiprows=1 và chọn cột bằng usecols. Chỉ số cột bắt đầu từ 0 giống chỉ số phần tử trong array."
         },
         {
           "type": "code",
@@ -15020,7 +15036,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
+          "text": "Môi trường riêng cho quán đã tạo ở bài trước, nhưng lệnh mở notebook có thể trỏ sai chỗ. Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
         },
         {
           "type": "code",
@@ -15044,6 +15060,10 @@
           "type": "code",
           "code": "roles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])",
           "expected": "execution\nmessages\nmath display"
+        },
+        {
+          "type": "paragraph",
+          "text": "Khi sổ của quán chạy sai vì cài nhầm chỗ, đây là nơi bạn xem trước."
         }
       ],
       "drills": [
@@ -15122,7 +15142,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một process con có thể mở thêm một process cháu. Muốn đọc cây process, đi theo quan hệ PID và PPID: PPID của con là PID cha trực tiếp, không phải mọi tổ tiên. Mô hình dưới dùng số giả định để bạn theo dõi quan hệ mà không phụ thuộc chương trình đang chạy trên máy."
+          "text": "Lệnh gọi chương trình ngoài ở bài trước đã dựng ra cả một cây, không chỉ một nhánh. Một process con có thể mở thêm một process cháu. Muốn đọc cây process, đi theo quan hệ PID và PPID: PPID của con là PID cha trực tiếp, không phải mọi tổ tiên. Mô hình dưới dùng số giả định để bạn theo dõi quan hệ mà không phụ thuộc chương trình đang chạy trên máy."
         },
         {
           "type": "code",
@@ -15146,6 +15166,10 @@
           "type": "code",
           "code": "family = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])",
           "expected": "('vector', True, False)\n('list', False, True)"
+        },
+        {
+          "type": "paragraph",
+          "text": "Khi quán cho một việc nền chạy, cây tiến trình này là thứ bạn đọc để biết việc đó còn sống."
         }
       ],
       "drills": [
@@ -15230,7 +15254,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
+          "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
         },
         {
           "type": "code",
@@ -15257,7 +15281,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu."
+          "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu. Chọn cách chạy nền nào cho quán là quyết định dựa trên chỗ này."
         }
       ],
       "drills": [
@@ -15399,7 +15423,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "“Python được thông dịch” không có nghĩa CPython bỏ qua bước biên dịch. compile tạo một code object từ mã nguồn; exec có thể thực thi code object đó. Đây là cách quan sát hai bước bằng một phép tính nhỏ, không cần học chi tiết từng opcode."
+          "text": "Bạn đã chạy rất nhiều code của quán ở các bài trước mà chưa xem Python làm gì với nó. “Python được thông dịch” không có nghĩa CPython bỏ qua bước biên dịch. compile tạo một code object từ mã nguồn; exec có thể thực thi code object đó. Đây là cách quan sát hai bước bằng một phép tính nhỏ, không cần học chi tiết từng opcode."
         },
         {
           "type": "code",
@@ -15423,6 +15447,10 @@
           "type": "code",
           "code": "sources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)",
           "expected": "IndentationError\nTabError"
+        },
+        {
+          "type": "paragraph",
+          "text": "Biết hai bước này giúp bạn đọc đúng tên lỗi khi sổ của quán không chạy."
         }
       ],
       "drills": [
@@ -15496,6 +15524,10 @@
           "type": "code",
           "code": "import numpy as np\nimport tempfile\nfrom pathlib import Path\nfrom matplotlib.cbook import get_sample_data\nimage = np.array([[0.0, 0.5], [0.75, 1.0]])\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"image.npy\"\n    np.save(path, image)\n    loaded = np.load(path, allow_pickle=False)\n    print(loaded.shape, bool(np.array_equal(image, loaded)))\nsample_path = get_sample_data(\"topobathy.npz\", asfileobj=False)\nwith np.load(sample_path, allow_pickle=False) as sample:\n    print(sorted(sample.files))\n    print(sample[\"topo\"].ndim)",
           "expected": "(2, 2) True\n['latitude', 'longitude', 'topo']\n2"
+        },
+        {
+          "type": "paragraph",
+          "text": "Chuẩn bị dãy số trước khi vẽ là bước bạn làm ở mọi hình của quán."
         }
       ],
       "drills": [
@@ -15549,7 +15581,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Doanh thu cao nhất nằm ở ngày 2, nhưng bạn muốn lời giải thích luôn ở góc trên bên trái dù người xem đổi giới hạn trục. Một vị trí thuộc dữ liệu, vị trí còn lại thuộc vùng vẽ. Matplotlib cho phép chọn hai hệ tọa độ này riêng."
+          "text": "Năm bài cuối quay lại đúng bảng và đúng hình của quán mà bạn đã dựng ở các bài trước. Doanh thu cao nhất nằm ở ngày 2, nhưng bạn muốn lời giải thích luôn ở góc trên bên trái dù người xem đổi giới hạn trục. Một vị trí thuộc dữ liệu, vị trí còn lại thuộc vùng vẽ. Matplotlib cho phép chọn hai hệ tọa độ này riêng."
         },
         {
           "type": "code",
@@ -15629,7 +15661,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai cửa hàng có số bán trong ba ngày. Trong file hiện tại, hàng là cửa hàng. Một hàm báo cáo khác lại cần hàng là ngày; transpose đổi hai chiều mà không đổi con số nào."
+          "text": "Chú thích đã đặt đúng chỗ rồi, giờ đến hình dạng của bảng số trong sổ quán. Hai cửa hàng có số bán trong ba ngày. Trong file hiện tại, hàng là cửa hàng. Một hàm báo cáo khác lại cần hàng là ngày; transpose đổi hai chiều mà không đổi con số nào."
         },
         {
           "type": "code",
@@ -15698,7 +15730,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn cần xếp ba cửa hàng theo doanh thu nhưng vẫn giữ tên đi cùng số tiền. Chỉ sort doanh thu rồi ghép lại tên cũ sẽ gán nhầm cửa hàng. argsort trả các vị trí theo thứ tự cần chọn."
+          "text": "Các lô dữ liệu đã ghép được ở bài trước, nhưng xếp lại thì dễ mất tên món của quán. Bạn cần xếp ba cửa hàng theo doanh thu nhưng vẫn giữ tên đi cùng số tiền. Chỉ sort doanh thu rồi ghép lại tên cũ sẽ gán nhầm cửa hàng. argsort trả các vị trí theo thứ tự cần chọn."
         },
         {
           "type": "code",
@@ -15768,7 +15800,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Mỗi hàng đơn hàng có số lượng hai sản phẩm; bảng giá là một dãy hai số. Phép @ có thể cộng các tích số lượng × giá để cho ngay tổng tiền từng đơn."
+          "text": "Tên món đã đi cùng số rồi, giờ nhân một đơn với bảng giá của quán. Mỗi hàng đơn hàng có số lượng hai sản phẩm; bảng giá là một dãy hai số. Phép @ có thể cộng các tích số lượng × giá để cho ngay tổng tiền từng đơn."
         },
         {
           "type": "code",
@@ -15838,7 +15870,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
+          "text": "Phép nhân ma trận ở bài trước cần số liệu; khi chưa có, bạn tự sinh ra chúng. Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
         },
         {
           "type": "code",
@@ -15866,6 +15898,10 @@
         {
           "type": "paragraph",
           "text": "Mỗi hàng của `samples` là một mẫu gồm ba đơn; `mean(axis=1)` tính một trung bình cho mỗi mẫu, được 1000 trung bình. `quantile` lấy phân vị 2.5% và 97.5% của các trung bình này để đặt hai đầu khoảng bootstrap theo phân vị. Ví dụ minh họa cách tính, trong khi ba đơn gốc quá ít để kết luận chắc về toàn bộ các đơn. Cách lấy mẫu từng hàng còn giả định các quan sát độc lập phù hợp với bài toán; dữ liệu gắn theo khách hoặc theo thời gian có thể cần cách lấy mẫu khác. Khoảng 95% không có nghĩa là trung bình tổng thể cố định có xác suất 95% nằm trong khoảng vừa tính."
+        },
+        {
+          "type": "paragraph",
+          "text": "Tới đây quán của bạn đã đi hết một vòng: từ cốc cà phê đầu tiên đến báo cáo và màn hình bán hàng."
         }
       ],
       "drills": [
