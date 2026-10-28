@@ -1,0 +1,108 @@
+{
+  "phienBan": 1,
+  "doc": "Danh sách MIỀN VÍ DỤ đã chốt của giáo trình pe-da. L14 và L15 cùng đọc file này nên chúng không lệch nhau được — cùng lý lẽ với thuatngu.json (VAN-PHONG.md §4). Đặt danh sách ở đây, KHÔNG nhúng regex vào check_vanphong.py: người sửa nội dung phải sửa được danh sách mà không mở script.",
+  "viSao": "Đo ngày 29/10/2026: ví dụ rải trên nhiều miền không liên quan và hơn một phần ba số bài không có bối cảnh nào. Chủ dự án nói nguyên văn: \"không có sự liên kết giữa các bài với nhau, như 1 hành trình để thực hiện hóa 1 cốc cà phê hay mở 1 quán cà phê.\" Một bài học đổi miền ví dụ là một lần người học phải dựng lại toàn bộ bối cảnh trong đầu trước khi học được cái mới.",
+  "mienChinh": "quan-ca-phe",
+  "vaiTro": {
+    "chinh": "Miền của cả khoá. Luôn hợp lệ. Một bài có dấu hiệu của miền này là bài đã neo được vào hành trình.",
+    "kemChinh": "Hợp lệ KHI bài đã neo vào miền chính. Đây là những miền mà quán cà phê có thật (đơn hàng, doanh thu, sản phẩm) — cấm hẳn là sai. Nhưng một bảng `sales` không có một chữ nào nói đây là quán nào thì nó là dữ liệu trơ, không phải một chặng của hành trình.",
+    "ngoai": "Ngoài hành trình. Không được dùng, trừ bài có trong `mienTru`.",
+    "trungTinh": "KHÔNG phải miền ví dụ, nên L14 không đọc tới. Giữ lại trong file để không ai đếm chúng thành miền lần nữa — xem `ghiChu` của từng mục."
+  },
+  "khopTuKhoa": "Từ khoá khớp cả hai biên, và GẠCH DƯỚI tính là biên: `cups` khớp trong `total_cups`, `cup` KHÔNG khớp trong `cupboard`. Nhờ vậy một danh sách dùng được cho cả văn xuôi lẫn định danh snake_case trong code. Dạng số nhiều phải khai riêng (`order` và `orders`) — khai tường minh thì người sau đọc file là biết luật, không phải đoán script nối thêm gì.",
+  "loaiTruTruoc": "`loaiTru` được XOÁ KHỎI VĂN BẢN trước khi đếm từ khoá, đúng cách §10 làm với backtick. Đây không phải chỗ cho sự tinh tế: nó là chỗ ghi lại những cụm đã đếm sai một lần rồi.",
+  "mien": [
+    {
+      "id": "quan-ca-phe",
+      "ten": "Quán cà phê",
+      "vaiTro": "chinh",
+      "tuKhoa": [
+        "cà phê", "cafe", "coffee", "espresso", "latte", "cappuccino",
+        "barista", "quán", "cốc", "cup", "cups", "đồ uống", "drink", "drinks",
+        "topping", "pha chế", "hạt rang", "ca phe"
+      ],
+      "loaiTru": ["nhất quán"],
+      "ghiChu": "`menu` CỐ Ý không nằm đây: SY14 và GU03 dùng `menu` cho giao diện terminal và thanh menu Tkinter, nên nó nhận diện sai thành quán cà phê ở đúng hai bài mà L14 cần nói là CHƯA neo. Thêm `menu` vào là tự tạo hai dương tính giả. Và `nhất quán` (= consistent) phải nằm trong `loaiTru`: nó xuất hiện 10 lần trong corpus, và ở PY09 nó là TOÀN BỘ dấu hiệu 'quán' của bài — tức bài trông như đã neo vào quán cà phê trong khi nó nói về sự nhất quán của dữ liệu. Dương tính giả ở miền CHÍNH tệ hơn ở miền ngoài: nó làm một bài chưa neo trông như đã neo, và luật im lặng."
+    },
+    {
+      "id": "ban-hang",
+      "ten": "Đơn hàng, doanh thu, sản phẩm",
+      "vaiTro": "kemChinh",
+      "tuKhoa": [
+        "đơn hàng", "hoá đơn", "hóa đơn", "doanh thu", "doanh số", "đơn giá",
+        "bán hàng", "cửa hàng", "sản phẩm", "mã hàng", "order", "orders",
+        "sales", "revenue", "invoice", "product", "products", "customer",
+        "customers"
+      ],
+      "loaiTru": ["sort order", "theo order", "ordered categorical"],
+      "ghiChu": "Vai trò `kemChinh` chứ không phải `ngoai`, và đó là chỗ dễ làm sai nhất của luật này: một quán cà phê CÓ đơn hàng và CÓ doanh thu. Nếu xếp miền này vào `ngoai` thì L14 báo lỗi đúng những bài đang làm đúng — bài đã kể chuyện quán rồi mới tính doanh thu của quán. Thứ sai là bảng `sales` không gắn với quán nào. DƯƠNG TÍNH GIẢ ĐÃ BIẾT: `order` trần cũng là tên biến của một phép sắp xếp (`order = np.argsort(sales)` ở RD03, 5 lần). Giữ từ khoá vì `order` là tên CỘT của bảng đơn hàng ở 6 bài PD, và vì RD03 đã trượt bằng các từ khoá khác nên dương tính giả này chưa đổi kết luận ở bài nào. Ngày nó đổi, thêm `np.argsort` vào `loaiTru` chứ đừng xoá từ khoá."
+    },
+    {
+      "id": "sinh-vien",
+      "ten": "Sinh viên, môn học, điểm",
+      "vaiTro": "ngoai",
+      "tuKhoa": [
+        "sinh viên", "học sinh", "điểm thi", "bảng điểm", "môn học", "học kỳ",
+        "tín chỉ", "lớp học", "student", "students", "grade", "grades",
+        "mark", "marks", "student_id", "course_id"
+      ],
+      "loaiTru": ["điểm thi hành"],
+      "ghiChu": "Miền ngoài hành trình ĐANG dùng nhiều nhất. Nó không chỉ nằm trong một ví dụ lẻ: SY25–SY28 là một project bốn bài về quản lý sinh viên. Sửa nó là sửa nội dung, không phải sửa một chữ — nên luật này để ở mức LỖI đúng với quy mô của việc."
+    },
+    {
+      "id": "thoi-tiet",
+      "ten": "Thời tiết",
+      "vaiTro": "ngoai",
+      "tuKhoa": [
+        "thời tiết", "nhiệt độ", "độ ẩm", "lượng mưa", "trạm đo",
+        "temperature", "temp_c", "weather", "rainfall", "humidity"
+      ],
+      "loaiTru": [],
+      "ghiChu": "CẢNH BÁO cho người sửa nội dung: `nhiệt độ` cũng là một đại lượng THẬT của quán cà phê (nhiệt độ nước pha, nhiệt độ sữa). Ngày câu chuyện quán dùng tới nó, thêm đúng cụm đó vào `loaiTru` — ví dụ \"nhiệt độ nước\", \"nhiệt độ sữa\" — đừng xoá từ khoá, vì xoá là mất luôn phép dò bảng dữ liệu thời tiết."
+    },
+    {
+      "id": "sach-thu-vien",
+      "ten": "Sách, thư viện sách",
+      "vaiTro": "ngoai",
+      "tuKhoa": [
+        "đầu sách", "tựa sách", "tác giả", "nhà xuất bản", "isbn",
+        "mượn sách", "trả sách", "thư viện sách", "author", "borrow"
+      ],
+      "loaiTru": ["danh sách", "chính sách", "sách lược"],
+      "ghiChu": "`book`/`books` ĐÃ THỬ VÀ BỎ: PD13 dùng `with pd.ExcelFile(...) as book:` rồi `book.parse(...)` — 6 lần `book` trong một bài không có quyển sách nào. Đó là bằng chứng DUY NHẤT của miền sách trong cả corpus, nên giữ từ khoá đó là đổi một con số 0 đúng thành một con số 1 sai. ĐÂY LÀ MỤC ĐÃ ĐẾM SAI MỘT LẦN. Bản audit đặt miền này ở 39 bài, ngang với bán hàng. Đo lại trên corpus: cả 35 lần xuất hiện của `sách` là `danh sách` (list) và `chính sách`, còn cả 25 lần `thư viện` là THƯ VIỆN MÃ (`numpy`, `venv`, `.so`) — miền sách không có mặt ở một bài nào. Vì vậy `sách` và `thư viện` KHÔNG được là từ khoá; chỉ các cụm gắn chặt với sách mới được. Mục này giữ lại để canh ngày có người thêm miền sách vào, không phải để đếm cái đang có."
+    },
+    {
+      "id": "ve-chuyen",
+      "ten": "Vé, chuyến",
+      "vaiTro": "ngoai",
+      "tuKhoa": [
+        "bán vé", "đặt vé", "hành khách", "chuyến bay", "chuyến xe",
+        "ticket", "tickets", "passenger", "flight"
+      ],
+      "loaiTru": [],
+      "ghiChu": "Bản audit đặt miền này ở 6 bài. Đo lại: chữ `vé` không xuất hiện một lần nào trong corpus này (0/172), nên con số 6 đến từ một gói nội dung khác, không từ `source/course.json`. Giữ mục này làm hàng rào, và `vé` trần KHÔNG là từ khoá — nó quá ngắn để đứng một mình."
+    },
+    {
+      "id": "he-thong-file",
+      "ten": "File, thư mục, log",
+      "vaiTro": "trungTinh",
+      "tuKhoa": ["file", "tệp", "thư mục", "đường dẫn", "log"],
+      "loaiTru": [],
+      "ghiChu": "Bản audit đếm cái này thành miền thứ tư (23 bài). Nó KHÔNG phải miền ví dụ: một bài dạy mở file buộc phải nói về file, và câu chuyện quán cà phê lưu đơn hàng vào file cũng vẫn là câu chuyện quán. Thứ quyết định là DỮ LIỆU TRONG file thuộc về ai — mà cái đó đã do các miền trên đo. Nên L14 không đọc mục này; nó ở đây để không ai đếm nó thành miền lần thứ hai."
+    }
+  ],
+  "mienTru": [
+    {
+      "bai": ["CT01", "CT02", "CT03", "CT04", "CT05", "CT06", "CT09", "CT12",
+              "EX04", "EX05"],
+      "lyDo": "ĐỐI TƯỢNG HỌC CHÍNH LÀ CÁI MÁY, nên dữ liệu của bài là trạng thái của máy: PID, cây fork/exec, PCB và các hàng đợi, thời gian burst của FCFS/SJF/SRTF/Round Robin, stack và program counter của từng thread, bộ đếm bị tranh trong race condition, reference count và GIL. Dán một bảng đơn hàng của quán lên những bài này không làm chúng thành bài về quán — nó chỉ thêm một lớp trang trí mà người học phải bóc ra mới thấy cơ chế. Đã đọc CT01, CT09, CT12, EX05 trước khi quyết.",
+      "phepThu": "Phép thử để quyết một bài có được miễn hay không: dữ liệu của bài CHỌN ĐƯỢC không? CT03 không chọn được (hàng đợi của scheduler là của hệ điều hành), nên miễn. SY11 chọn được (hàm làm tròn đặt trong module nào cũng được, và nó có thể là hàm tính tiền của quán), nên KHÔNG miễn — dù SY11 cũng là bài 'hệ thống'."
+    },
+    {
+      "bai": ["SY04", "EX03", "EX07", "CT15"],
+      "lyDo": "ĐỐI TƯỢNG HỌC CHÍNH LÀ BỘ CÔNG CỤ: commit/fork/clone của Git, `sys.executable` và môi trường của Notebook, `compile`/code object/bytecode, và một shell tự viết có `>` `<` `|`. Dữ liệu ở đây là mốc commit, đường dẫn interpreter, lệnh shell — không có chỗ cho một bảng dữ liệu nào, của quán hay của ai khác. Đã đọc SY04, EX03, EX07, CT15 trước khi quyết.",
+      "phepThu": "Cùng phép thử ở trên. SY19/SY20 (nén, ZIP/tar) KHÔNG được miễn dù cũng là bài 'hệ thống': chúng nén MỘT BẢNG NÀO ĐÓ, và hôm nay bảng đó là `students.txt`/`marks.txt`. SY14 (curses) cũng không được miễn: nó vẽ MỘT MENU NÀO ĐÓ, và menu của quán thì có thật."
+    }
+  ],
+  "phamViMienTru": "14/172 bài = 8%. Miễn trừ phải HẸP, vì mỗi bài được miễn là một bài người học đọc mà không có gì nối với bài trước. Đừng miễn theo TIỀN TỐ mã bài (`SY*`, `CT*`, `EX*`): đo trên corpus thì ba tiền tố đó có 51 bài, mà chỉ 14 bài trong số đó thật sự không chọn được dữ liệu. Miễn cả ba tiền tố là tắt luật trên 30% khoá học."
+}
