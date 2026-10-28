@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`indicator=True` thêm cột `_merge`: `both` nghĩa là mã có ở cả hai bảng, `left_only` chỉ có ở bảng trái và `right_only` chỉ có ở bảng phải. Với phép nối trái trong ví dụ, mã 2 được đánh dấu `left_only`. Sau khi nối, đếm số đơn chưa khớp và kiểm tra riêng số hàng, tổng tiền. Khác phép nối SQL thông thường, pandas có thể ghép hai khóa cùng thiếu với nhau, nên cần xử lý khóa thiếu trước."
+      "text": "`indicator=True` thêm cột `_merge`: `both` nghĩa là mã có ở cả hai bảng, `left_only` chỉ có ở bảng trái và `right_only` chỉ có ở bảng phải. Với phép nối trái trong ví dụ, mã 2 được đánh dấu `left_only`. Sau khi nối, đếm số đơn chưa khớp và kiểm tra riêng số hàng, tổng tiền. Khác phép nối SQL (ngôn ngữ hỏi dữ liệu trong cơ sở dữ liệu) thông thường, pandas có thể ghép hai khóa cùng thiếu với nhau. Vì vậy cần xử lý khóa thiếu trước."
      }
     ]
    ],

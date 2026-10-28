@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một API trả danh sách đơn dưới dạng JSON, trong khi đồng nghiệp gửi Excel có nhiều sheet. Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
+      "text": "Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
      },
      {
       "type": "code",

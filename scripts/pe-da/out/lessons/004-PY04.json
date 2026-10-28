@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới object khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
+      "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới một đối tượng (object) khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
      },
      {
       "type": "code",

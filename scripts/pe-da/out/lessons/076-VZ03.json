@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dùng marker để thấy từng quan sát, label để phân biệt chuỗi và legend để hiển thị tên. Màu và kiểu nét có thể cùng phân biệt hai chuỗi; người đọc vẫn nhận ra đường nào khi in đen trắng. Không nối qua một giá trị bị thiếu nếu việc nối khiến người đọc tưởng rằng ngày đó đã được đo."
+      "text": "Dùng marker (dấu vẽ tại từng điểm) để thấy từng quan sát, nhãn (label) để phân biệt chuỗi và legend để hiển thị tên. Màu và kiểu nét có thể cùng phân biệt hai chuỗi; người đọc vẫn nhận ra đường nào khi in đen trắng. Không nối qua một giá trị bị thiếu nếu việc nối khiến người đọc tưởng rằng ngày đó đã được đo."
      },
      {
       "type": "code",

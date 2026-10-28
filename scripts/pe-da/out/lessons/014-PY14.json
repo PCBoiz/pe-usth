@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, value nhận một phần tử theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
+      "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt input. Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
+      "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt đầu vào (input). Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
      }
     ]
    ],

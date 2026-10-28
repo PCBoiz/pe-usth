@@ -3,13 +3,13 @@
  "sort_order": 11,
  "module": "M1 · Python nền tảng",
  "title": "PY11 · Tuple, bytes và lựa chọn collection",
- "subtitle": "Cơ bản · M1 · 14 phút",
- "estimated_minutes": 14,
- "xp_reward": 8,
+ "subtitle": "Cơ bản · M1 · 15 phút",
+ "estimated_minutes": 15,
+ "xp_reward": 9,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY11 · Tuple, bytes và lựa chọn collection",
-  "subtitle": "Cơ bản · M1 · 14 phút",
+  "subtitle": "Cơ bản · M1 · 15 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY11",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
+      "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte (tám bit, đơn vị dữ liệu nhỏ nhất) thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
      }
     ]
    ],

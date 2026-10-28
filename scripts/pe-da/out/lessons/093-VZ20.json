@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một trace là một chuỗi dữ liệu có cách vẽ riêng. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend; thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML."
+      "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML (định dạng của trang web)."
      },
      {
       "type": "terminal",

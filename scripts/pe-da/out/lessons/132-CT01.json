@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack giữ khung lời gọi hàm; data section giữ dữ liệu tĩnh/toàn cục; heap phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
+      "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
      },
      {
       "type": "code",
@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker, rồi worker tạo helper; công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
+      "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker (process con nhận phần việc), rồi worker tạo helper. Công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
      }
     ]
    ],

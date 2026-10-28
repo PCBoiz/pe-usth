@@ -74,7 +74,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas hay Matplotlib."
+      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình)."
      }
     ]
    ],

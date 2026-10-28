@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`NaN` được dùng làm dấu hiệu dữ liệu thiếu trong các array số thực ở đây. `np.nanmean` bỏ qua NaN khi tính trung bình, nên kết quả là (28 + 32) / 2 = 30. Nếu tự điền 0, bạn sẽ thêm một số đo không có thật vào phép tính."
+      "text": "`NaN` được dùng làm dấu hiệu dữ liệu thiếu trong các array số thực ở đây. `np.nanmean` bỏ qua NaN (not a number — ô không có số) khi tính trung bình, nên kết quả là (28 + 32) / 2 = 30. Nếu tự điền 0, bạn sẽ thêm một số đo không có thật vào phép tính."
      },
      {
       "type": "paragraph",

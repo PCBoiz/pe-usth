@@ -252,9 +252,25 @@
     {
       "thuatNgu": "fork",
       "nhom": "C",
+      "nguCanh": "github-ban-sao-kho",
+      "chuGiai": "**Fork** trên GitHub là lấy một bản sao kho mã sang tài khoản của bạn.",
+      "phamVi": [
+        "SY"
+      ],
+      "baiDauTien": "SY04",
+      "ghiChu": "Nghĩa THỨ HAI của \"fork\". Ở SY04 (bài Git) \"Fork\" là thao tác lấy một bản sao kho mã sang tài khoản mình trên GitHub — không liên quan tới fork của UNIX. Thiếu `phamVi` là lý do `baiDauTien` từng trỏ nhầm vào SY04 và nghĩa UNIX không được chú giải ở đâu trong cả khoá."
+    },
+    {
+      "thuatNgu": "fork",
+      "nhom": "C",
       "nguCanh": "tao-tien-trinh-con",
       "chuGiai": "**fork** là cách UNIX tạo tiến trình con: hệ điều hành nhân đôi tiến trình đang chạy.",
-      "baiDauTien": "SY04"
+      "phamVi": [
+        "CT",
+        "RC",
+        "EX"
+      ],
+      "baiDauTien": "CT02"
     },
     {
       "thuatNgu": "stack",
@@ -360,11 +376,28 @@
     },
     {
       "thuatNgu": "method",
+      "nhom": "C",
+      "nguCanh": "plotly-khoa-nut",
+      "chuGiai": "Tham số **method** của một nút Plotly nói nút đó cập nhật hình theo cách nào.",
+      "phamVi": [
+        "VZ"
+      ],
+      "baiDauTien": "VZ21",
+      "ghiChu": "Nghĩa THỨ HAI của \"method\". Ở VZ21 `method=\"update\"` là KHOÁ của một nút dropdown Plotly, không phải phương thức OOP. Thiếu `phamVi` là lý do `baiDauTien` từng trỏ nhầm vào VZ21."
+    },
+    {
+      "thuatNgu": "method",
       "nhom": "B",
       "nguCanh": "lap-trinh-huong-doi-tuong",
       "tiengViet": "phương thức",
       "chuGiai": "Một **phương thức (method)** là hàm gắn với một đối tượng, gọi qua dấu chấm.",
-      "baiDauTien": "VZ21"
+      "phamVi": [
+        "SY",
+        "PY",
+        "NP",
+        "PD"
+      ],
+      "baiDauTien": "SY05"
     },
     {
       "thuatNgu": "package",

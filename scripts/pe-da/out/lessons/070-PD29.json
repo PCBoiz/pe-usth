@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tổng hợp ở SQL có thể giảm số hàng cần truyền và giữ trong RAM. Cần đối chiếu kiểu cột, khóa và quy tắc thiếu sau khi đọc. Khối with bảo đảm giao dịch của sqlite3 được xử lý khi thoát; với kết nối sqlite thật lâu dài, còn cần quản lý đóng kết nối rõ ràng theo vòng đời ứng dụng."
+      "text": "Tổng hợp ở SQL có thể giảm số hàng cần truyền và giữ trong RAM (bộ nhớ trong — mất khi chương trình kết thúc). Cần đối chiếu kiểu cột, khóa và quy tắc thiếu sau khi đọc. Khối with bảo đảm giao dịch của sqlite3 được xử lý khi thoát; với kết nối sqlite thật lâu dài, còn cần quản lý đóng kết nối rõ ràng theo vòng đời ứng dụng."
      }
     ]
    ],

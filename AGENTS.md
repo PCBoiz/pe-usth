@@ -55,7 +55,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Frontend unit test | `cd frontend && npm run test:unit` → **328 ca** / 27 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 346 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 347 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 408 đoạn code, **0 hỏng**, 14 cảnh báo, ~36 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
@@ -933,6 +933,38 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   vì giữa bài); `markDone` cho câu SAI thì ô "câu đúng" ở `RecapScreen` nói dối. Cần một
   trạng thái thứ ba ("đã xem đáp án") và đó là quyết định về cách chấm, không phải về giao
   diện. `score.firstTry` đã ghi sẵn lần đầu đúng hay sai nên XP không phải đổi.
+
+- **65 thuật ngữ từng được dùng lần đầu mà KHÔNG chú giải — nay 0, và phép sửa rẻ hơn
+  tưởng.** Đây là lời giải thích ĐO ĐƯỢC cho phản hồi "người chưa từng tiếp xúc python thì
+  cảm giác khó hiểu": không phải câu dài (trung vị chỉ 13 từ) mà là thuật ngữ thả vào trước
+  khi có nghĩa — `value` dùng trước định nghĩa **164 bài**, `thread` 136, `process` 118.
+  Sửa hết 65 chỗ chỉ tốn **+403 tiếng (+1,2%)** ở 57 khối của 40 bài.
+  **Ba nhóm, ba cách xử lý khác nhau** (`thuatngu.json`): nhóm **A** (định danh trong code)
+  KHÔNG chú giải bằng lời, chỉ bọc backtick; nhóm **B** dùng tiếng Việt làm chính kèm
+  `(tiếng Anh)` một lần; nhóm **C** GIỮ tiếng Anh kèm mô tả — **đừng dịch cố**, một bản dịch
+  tự chế còn khó hơn từ gốc.
+  **Chú giải CŨNG LÀ VĂN BẢN, và nó đẩy lần-dùng-đầu của thuật ngữ KHÁC lên sớm hơn.** Bản
+  đầu viết `script (file code chạy trực tiếp)` ở PY01 blk2, và chữ "file" trong đó dịch lần
+  đầu của `file` về trước blk8 — nơi `file` thật sự được chú giải — nên sinh một lỗi L10 MỚI.
+  Đổi thành `(đoạn code chạy trực tiếp từ dòng lệnh)`.
+  **Hai bước lùi khác, cùng họ:** chú giải tiếng Việt rơi vào đoạn mà bài đó gọi cùng thứ
+  bằng tiếng Anh làm L11 16 → 18 (`worker (tiến trình…)` ở CT01 nơi đoạn gọi "process"); và
+  thêm một lần nhắc thuật ngữ vào bài đã sát ngưỡng làm L8 43 → 44 (SY07 từ cảnh báo 60 lên
+  lỗi 62/1000 tiếng). **Chạy lại CẢ BẢNG sau khi sửa một luật, đừng chỉ chạy luật vừa sửa.**
+  **Mười chỗ phải CHẺ CÂU thay vì nhồi ngoặc**, vì nhồi vào đẩy câu qua 30 tiếng (L1) hoặc
+  đoạn qua 110 tiếng (L2). Chặt nhất là CT01 blk2: đoạn đã 97 tiếng, hai thuật ngữ
+  (`heap`, `stack`) trong một câu, biên 13 tiếng.
+  **`baiDauTien` thiếu `phamVi` là trỏ nhầm, và nó hỏng IM LẶNG.** `fork` khai một mục duy
+  nhất nên `baiDauTien` rơi vào **SY04 — bài Git**, nơi "Fork" là thao tác GitHub; hệ quả là
+  nghĩa UNIX của fork KHÔNG được chú giải ở đâu trong cả khoá, mà bộ kiểm vẫn xanh. Cùng
+  chuyện với `method` (VZ21 `method="update"` là khoá nút Plotly, không phải phương thức
+  OOP). Nay cả hai tách làm hai mục có `phamVi`, đúng khuôn `stack`/`index`/`kernel`/`pipe`
+  đã có. Lần dùng đầu THẬT: fork UNIX ở **CT02**, method OOP ở **SY05**.
+  **Chú giải phải khớp MỘT trong ba khuôn bộ kiểm nhận** (`X (tiếng Việt)`, `tiếng Việt (X)`,
+  `… gọi là X`). Viết bằng gạch ngang (`fork trên UNIX — lệnh nhân đôi tiến trình`) thì L10
+  VẪN ĐỎ dù câu đọc hoàn toàn có nghĩa — đã vấp một lần.
+  **Và §9.3 vẫn đúng:** bộ kiểm chỉ chứng minh chú giải CÓ MẶT, không chứng minh nó đúng hay
+  đủ. 65 câu này cần một lượt đọc của người soạn nội dung, nhất là 42 mục nhóm C.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

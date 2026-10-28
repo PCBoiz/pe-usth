@@ -256,7 +256,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook rồi chạy:"
+          "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
         },
         {
           "type": "code",
@@ -265,7 +265,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ script tự động hóa, backend web đến ứng dụng và phân tích dữ liệu. Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
+          "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ tự động hóa đến ứng dụng và phân tích dữ liệu. Nó cũng viết được script (đoạn code chạy trực tiếp từ dòng lệnh) và backend (phần chạy phía sau trang web). Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
         },
         {
           "type": "paragraph",
@@ -287,15 +287,15 @@
         },
         {
           "type": "paragraph",
-          "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào class."
+          "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào lớp (class)."
         },
         {
           "type": "paragraph",
-          "text": "Trong REPL, bạn nhập và chạy từng lệnh; trong script, bạn lưu code vào file `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
+          "text": "Trong REPL bạn nhập và chạy từng lệnh. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
         },
         {
           "type": "paragraph",
-          "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+          "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất. Tác vụ nặng CPU (bộ xử lý chạy từng lệnh) và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
         }
       ],
       "drills": [
@@ -382,11 +382,11 @@
         },
         {
           "type": "paragraph",
-          "text": "Số 3 cho biết đang dùng Python 3. `sys` là module có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
+          "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
         },
         {
           "type": "paragraph",
-          "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
+          "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
         },
         {
           "type": "code",
@@ -397,7 +397,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy. Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
+          "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
         },
         {
           "type": "code",
@@ -408,7 +408,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài package, thường từ kho PyPI; nó không tự đổi phiên bản Python."
+          "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package) — tập module nạp được như một đơn vị — thường từ kho PyPI; nó không tự đổi phiên bản Python."
         },
         {
           "type": "paragraph",
@@ -416,7 +416,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Sơ đồ trong slide còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc, cùng `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
+          "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
         }
       ],
       "drills": [
@@ -492,7 +492,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
+          "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel (tiến trình Python chạy phía sau notebook) còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
         },
         {
           "type": "code",
@@ -501,7 +501,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Notebook có cell code và cell văn bản, có thể chứa output, hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
+          "text": "Notebook có cell code và cell văn bản, có thể chứa đầu ra (output), hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
         },
         {
           "type": "code",
@@ -611,7 +611,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới object khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
+          "text": "Python dùng kiểu động: cùng tên `value` có thể được gán tới một đối tượng (object) khác kiểu. Điều đó không biến object chuỗi cũ thành số thực. `2e4` là cách viết số thực 2 × 10 mũ 4."
         },
         {
           "type": "code",
@@ -811,7 +811,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu comment, bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
+          "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu một chú thích (comment), bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
         }
       ],
       "drills": [
@@ -877,7 +877,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một slice, tức một đoạn. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
+          "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
         },
         {
           "type": "code",
@@ -979,7 +979,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`str.format()` và f-string chèn giá trị vào văn bản. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
+          "text": "`str.format()` và f-string chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
         }
       ],
       "drills": [
@@ -1264,7 +1264,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
+          "text": "`bytes` và `bytearray` cũng là sequence, nhưng chứa giá trị byte (tám bit, đơn vị dữ liệu nhỏ nhất) thay vì ký tự văn bản. bytes bất biến; bytearray cho phép đổi từng byte như ở chỉ số 0 của ví dụ. Không thể coi mỗi byte là một ký tự tiếng Việt; cần chọn cách mã hóa (encoding) để chuyển giữa str và bytes khi đọc/ghi văn bản."
         }
       ],
       "drills": [
@@ -1327,7 +1327,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Mỗi học viên có mã và điểm. Dictionary giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
+          "text": "Mỗi học viên có mã và điểm. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
         },
         {
           "type": "code",
@@ -1509,7 +1509,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, value nhận một phần tử theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
+          "text": "`total` được khởi tạo trước vòng lặp. Mỗi lượt, biến `value` nhận một giá trị (value) của dãy theo thứ tự. Khi cần tạo số thứ tự, dùng range:"
         },
         {
           "type": "code",
@@ -1527,7 +1527,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt input. Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
+          "text": "`zip` ghép các phần tử cùng vị trí; cách gọi này dừng khi dãy ngắn nhất hết phần tử. Trong `for name, mark`, cặp do zip tạo được unpack vào hai tên. List comprehension như `[x * 2 for x in values if x >= 2]` tạo list mới: điều kiện chọn phần tử, biểu thức tính giá trị được giữ. Nó giữ thứ tự duyệt đầu vào (input). Nếu cần nhiều bước, vòng lặp thường dễ đọc hơn."
         }
       ],
       "drills": [
@@ -1763,7 +1763,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một callback sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
+          "text": "Một callback (hàm bạn giao cho thư viện gọi hộ) sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
         },
         {
           "type": "code",
@@ -1772,7 +1772,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+          "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
         },
         {
           "type": "code",
@@ -1794,7 +1794,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi truyền đối số cho Thread, `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI."
+          "text": "Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI (giao diện đồ hoạ)."
         }
       ],
       "drills": [
@@ -1940,7 +1940,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một array để lưu và xử lý cùng nhau:"
+          "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
         },
         {
           "type": "code",
@@ -3454,7 +3454,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`NaN` được dùng làm dấu hiệu dữ liệu thiếu trong các array số thực ở đây. `np.nanmean` bỏ qua NaN khi tính trung bình, nên kết quả là (28 + 32) / 2 = 30. Nếu tự điền 0, bạn sẽ thêm một số đo không có thật vào phép tính."
+          "text": "`NaN` được dùng làm dấu hiệu dữ liệu thiếu trong các array số thực ở đây. `np.nanmean` bỏ qua NaN (not a number — ô không có số) khi tính trung bình, nên kết quả là (28 + 32) / 2 = 30. Nếu tự điền 0, bạn sẽ thêm một số đo không có thật vào phép tính."
         },
         {
           "type": "paragraph",
@@ -3828,7 +3828,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV. Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
+          "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
         },
         {
           "type": "code",
@@ -3931,7 +3931,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed và chạy cùng lệnh:"
+          "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed (số khởi đầu) và chạy cùng lệnh:"
         },
         {
           "type": "code",
@@ -4073,7 +4073,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas hay Matplotlib."
+          "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình)."
         }
       ],
       "level": "Trung cấp",
@@ -4144,7 +4144,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
+          "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
         },
         {
           "type": "code",
@@ -4858,7 +4858,7 @@
         },
         {
           "type": "paragraph",
-          "text": "keep=\"last\" giữ hàng cuối theo thứ tự hiện có, không tự hiểu hàng nào mới hơn. Vì vậy bạn cần sắp xếp version trước. `is_unique` giúp kiểm tra cột khóa sau khi làm sạch."
+          "text": "keep=\"last\" giữ hàng cuối theo thứ tự hiện có, không tự hiểu hàng nào mới hơn. Vì vậy bạn cần sắp xếp theo phiên bản (version) trước. `is_unique` giúp kiểm tra cột khóa sau khi làm sạch."
         }
       ],
       "drills": [
@@ -5075,7 +5075,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một API trả danh sách đơn dưới dạng JSON, trong khi đồng nghiệp gửi Excel có nhiều sheet. Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
+          "text": "Một API (tập hàm một dịch vụ mở ra cho bạn gọi) trả danh sách đơn, trong khi đồng nghiệp gửi Excel có nhiều sheet. Danh sách đó ở dạng JSON (định dạng text lưu dữ liệu lồng nhau). Cả hai có thể thành DataFrame, nhưng bạn cần biết cấu trúc dữ liệu trước khi đọc."
         },
         {
           "type": "code",
@@ -5416,7 +5416,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`indicator=True` thêm cột `_merge`: `both` nghĩa là mã có ở cả hai bảng, `left_only` chỉ có ở bảng trái và `right_only` chỉ có ở bảng phải. Với phép nối trái trong ví dụ, mã 2 được đánh dấu `left_only`. Sau khi nối, đếm số đơn chưa khớp và kiểm tra riêng số hàng, tổng tiền. Khác phép nối SQL thông thường, pandas có thể ghép hai khóa cùng thiếu với nhau, nên cần xử lý khóa thiếu trước."
+          "text": "`indicator=True` thêm cột `_merge`: `both` nghĩa là mã có ở cả hai bảng, `left_only` chỉ có ở bảng trái và `right_only` chỉ có ở bảng phải. Với phép nối trái trong ví dụ, mã 2 được đánh dấu `left_only`. Sau khi nối, đếm số đơn chưa khớp và kiểm tra riêng số hàng, tổng tiền. Khác phép nối SQL (ngôn ngữ hỏi dữ liệu trong cơ sở dữ liệu) thông thường, pandas có thể ghép hai khóa cùng thiếu với nhau. Vì vậy cần xử lý khóa thiếu trước."
         }
       ],
       "drills": [
@@ -6009,7 +6009,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
+          "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python; cách làm đó gọi là phép toán vector. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
         },
         {
           "type": "code",
@@ -6321,7 +6321,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Tổng hợp ở SQL có thể giảm số hàng cần truyền và giữ trong RAM. Cần đối chiếu kiểu cột, khóa và quy tắc thiếu sau khi đọc. Khối with bảo đảm giao dịch của sqlite3 được xử lý khi thoát; với kết nối sqlite thật lâu dài, còn cần quản lý đóng kết nối rõ ràng theo vòng đời ứng dụng."
+          "text": "Tổng hợp ở SQL có thể giảm số hàng cần truyền và giữ trong RAM (bộ nhớ trong — mất khi chương trình kết thúc). Cần đối chiếu kiểu cột, khóa và quy tắc thiếu sau khi đọc. Khối with bảo đảm giao dịch của sqlite3 được xử lý khi thoát; với kết nối sqlite thật lâu dài, còn cần quản lý đóng kết nối rõ ràng theo vòng đời ứng dụng."
         }
       ],
       "drills": [
@@ -6808,7 +6808,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Dùng marker để thấy từng quan sát, label để phân biệt chuỗi và legend để hiển thị tên. Màu và kiểu nét có thể cùng phân biệt hai chuỗi; người đọc vẫn nhận ra đường nào khi in đen trắng. Không nối qua một giá trị bị thiếu nếu việc nối khiến người đọc tưởng rằng ngày đó đã được đo."
+          "text": "Dùng marker (dấu vẽ tại từng điểm) để thấy từng quan sát, nhãn (label) để phân biệt chuỗi và legend để hiển thị tên. Màu và kiểu nét có thể cùng phân biệt hai chuỗi; người đọc vẫn nhận ra đường nào khi in đen trắng. Không nối qua một giá trị bị thiếu nếu việc nối khiến người đọc tưởng rằng ngày đó đã được đo."
         },
         {
           "type": "code",
@@ -8465,7 +8465,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Một trace là một chuỗi dữ liệu có cách vẽ riêng. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend; thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML."
+          "text": "Một chuỗi dữ liệu có cách vẽ riêng trên hình Plotly gọi là một trace. Khi chia màu theo cửa hàng, Plotly thường tạo một trace cho mỗi nhóm. Người xem có thể ẩn một trace qua legend. Thao tác đó thay đổi phần hiển thị chứ không xóa dữ liệu khỏi Figure hoặc file HTML (định dạng của trang web)."
         },
         {
           "type": "code",
@@ -8564,7 +8564,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Dropdown dưới đây có một trạng thái hiện cả hai cửa hàng và hai trạng thái chỉ hiện một cửa hàng. visible phải có một giá trị cho mỗi trace. method=\"update\" cho phép đổi đồng thời dữ liệu hiển thị và tiêu đề; nhờ vậy tiêu đề luôn khớp bộ lọc."
+          "text": "Dropdown dưới đây có một trạng thái hiện cả hai cửa hàng và hai trạng thái chỉ hiện một cửa hàng. visible phải có một giá trị cho mỗi trace. Tham số method (cách Plotly cập nhật hình) đặt thành `\"update\"` thì đổi được đồng thời dữ liệu hiển thị và tiêu đề. Nhờ vậy tiêu đề luôn khớp bộ lọc."
         },
         {
           "type": "code",
@@ -8757,7 +8757,7 @@
         },
         {
           "type": "paragraph",
-          "text": "ipywidgets.Dropdown giữ lựa chọn hiện tại trong value. Trong Jupyter có hỗ trợ widget, gọi display(control) để hiện bộ chọn. Tạo cùng đối tượng trong một script Python thường không tự mở giao diện hay trang web. Ví dụ dưới đặt value thành \"A\" rồi đọc lại, nên bạn có thể xem cách lưu lựa chọn trước khi thử nó trong notebook."
+          "text": "ipywidgets.Dropdown giữ lựa chọn hiện tại trong value. Trong Jupyter có hỗ trợ widget (thành phần giao diện như nút hoặc ô nhập), gọi display(control) để hiện bộ chọn. Tạo cùng đối tượng trong một script Python thường không tự mở giao diện hay trang web. Ví dụ dưới đặt value thành \"A\" rồi đọc lại, nên bạn có thể xem cách lưu lựa chọn trước khi thử nó trong notebook."
         },
         {
           "type": "code",
@@ -9751,7 +9751,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork tạo một bản kho mã (repository) trong tài khoản GitHub của bạn; clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
+          "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
         },
         {
           "type": "code",
@@ -10022,7 +10022,7 @@
         },
         {
           "type": "paragraph",
-          "text": "SalesReport kế thừa Report: đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
+          "text": "SalesReport kế thừa lớp báo cáo (Report): đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
         },
         {
           "type": "code",
@@ -10408,7 +10408,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Trang 137 còn minh họa thành phần dùng lại trong hệ thống: .ko là module kernel Linux, .so là thư viện dùng chung (shared library) thường gặp ở UNIX và .dll là thư viện động trên Windows. Đó là liên hệ về ý tưởng chia thành phần; Python module .py và package dùng import không có cùng định dạng hay API với các file nhị phân này."
+          "text": "Trang 137 còn minh họa thành phần dùng lại trong hệ thống: .ko là module của hạt nhân (kernel) Linux, .so là thư viện dùng chung (shared library) thường gặp ở UNIX và .dll là thư viện động trên Windows. Đó là liên hệ về ý tưởng chia thành phần; Python module .py và package dùng import không có cùng định dạng hay API với các file nhị phân này."
         }
       ],
       "drills": [
@@ -10741,7 +10741,7 @@
         },
         {
           "type": "paragraph",
-          "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
+          "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle (thẻ hệ điều hành trả về để bạn chỉ lại file đã mở) khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
         },
         {
           "type": "code",
@@ -10759,11 +10759,11 @@
         },
         {
           "type": "paragraph",
-          "text": "`x` chỉ tạo mới và từ chối ghi đè file đã có. Trong mô hình UNIX, nhiều tài nguyên được thao tác qua file descriptor; điều đó không có nghĩa mọi tài nguyên đều là một file văn bản trên đĩa."
+          "text": "`x` chỉ tạo mới và từ chối ghi đè file đã có. Trong mô hình UNIX, nhiều tài nguyên được thao tác qua file descriptor (số nhận diện một tài nguyên I/O đang mở). Điều đó không có nghĩa mọi tài nguyên đều là một file văn bản trên đĩa."
         },
         {
           "type": "paragraph",
-          "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
+          "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
         },
         {
           "type": "paragraph",
@@ -11051,7 +11051,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng; có thể làm tác vụ tương đương bằng code Python theo dòng."
+          "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell (chương trình nhận câu lệnh bạn gõ) review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng. Bạn có thể làm tác vụ tương đương bằng code Python theo dòng."
         },
         {
           "type": "paragraph",
@@ -11315,7 +11315,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+          "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
         },
         {
           "type": "code",
@@ -12072,7 +12072,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack giữ khung lời gọi hàm; data section giữ dữ liệu tĩnh/toàn cục; heap phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
+          "text": "Program là mô tả lệnh được lưu; process là một lần thực thi cùng trạng thái của nó. CPU context gồm program counter (vị trí lệnh đang thực hiện hoặc sẽ tiếp tục) và các thanh ghi giữ dữ liệu/trạng thái tính toán của CPU. Stack (khung lời gọi hàm đang mở) giữ biến cục bộ; data section giữ dữ liệu tĩnh/toàn cục. Heap (bộ nhớ xin thêm lúc chạy) phục vụ cấp phát động. File descriptor là số nhận diện tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị. Process cần các phần này để tiếp tục đúng công việc sau khi tạm nhường CPU."
         },
         {
           "type": "code",
@@ -12090,7 +12090,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker, rồi worker tạo helper; công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
+          "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker (process con nhận phần việc), rồi worker tạo helper. Công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
         }
       ],
       "drills": [
@@ -12185,7 +12185,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
+          "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork (lệnh UNIX nhân đôi tiến trình đang chạy): cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
         },
         {
           "type": "code",
@@ -12287,7 +12287,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Scheduler quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
+          "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
         },
         {
           "type": "code",
@@ -12296,7 +12296,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Đây là mô phỏng hàng đợi: job queue theo dõi các công việc đi vào hệ thống, theo mô hình slide có thể còn nằm trên đĩa; ready queue chứa process đã ở bộ nhớ và sẵn sàng dùng CPU; device queue chứa process chờ một thiết bị I/O. Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
+          "text": "Đây là mô phỏng hàng đợi (queue): job queue theo dõi các công việc đi vào hệ thống, theo mô hình slide có thể còn nằm trên đĩa; ready queue chứa process đã ở bộ nhớ và sẵn sàng dùng CPU; device queue chứa process chờ một thiết bị I/O. Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
         },
         {
           "type": "code",
@@ -12318,7 +12318,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive cho phép thu hồi CPU; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
+          "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive (thu CPU lại giữa chừng) không chờ tác vụ tự nhường; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
         }
       ],
       "drills": [
@@ -12569,7 +12569,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum rồi đưa việc chưa xong về cuối hàng:"
+          "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
         },
         {
           "type": "code",
@@ -12681,7 +12681,7 @@
         },
         {
           "type": "paragraph",
-          "text": "stdin, stdout và stderr là ba luồng chuẩn, thường gắn descriptor 0, 1 và 2. stdin thường nhận từ bàn phím; stdout/stderr thường hiện ở terminal. Chúng có thể được nối tới file hoặc pipe. Thu stdout không tự thu hoặc trộn stderr nếu bạn không cấu hình."
+          "text": "stdin, stdout và stderr là ba luồng chuẩn, thường gắn descriptor 0, 1 và 2. stdin thường nhận từ bàn phím; stdout/stderr thường hiện ở terminal. Chúng có thể được nối tới file hoặc pipe (đường ống nối đầu ra tiến trình này vào đầu vào tiến trình khác). Thu stdout không tự thu hoặc trộn stderr nếu bạn không cấu hình."
         },
         {
           "type": "code",
@@ -12909,7 +12909,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL trong CPython; RC01 đọc các sơ đồ Apache và Chromium của slide."
+          "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide."
         }
       ],
       "drills": [
@@ -13272,7 +13272,7 @@
         },
         {
           "type": "paragraph",
-          "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Snapshot cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy snapshot; gán thêm một tên không tự tạo snapshot. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
+          "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Bản chụp (snapshot) cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy bản chụp. Gán thêm một tên không tự tạo bản chụp. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
         }
       ],
       "drills": [
@@ -13486,7 +13486,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Trong hình Apache Prefork ở trang 274, một parent quản lý nhiều child process. Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
+          "text": "Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
         },
         {
           "type": "code",
@@ -13773,7 +13773,7 @@
       "reading": [
         {
           "type": "paragraph",
-          "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Frame nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
+          "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Khung (frame) nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
         },
         {
           "type": "code",

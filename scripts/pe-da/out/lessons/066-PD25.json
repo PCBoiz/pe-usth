@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
+      "text": "Phép nhân cột xử lý các hàng cùng lúc và rõ hơn một vòng lặp Python; cách làm đó gọi là phép toán vector. where giữ giá trị khi điều kiện True, thay bằng giá trị thứ hai khi False. “Vector hóa” không có nghĩa mọi thao tác đều có cùng tốc độ; vẫn phải đo với dữ liệu thực."
      },
      {
       "type": "code",

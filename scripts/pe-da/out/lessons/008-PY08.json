@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`str.format()` và f-string chèn giá trị vào văn bản. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
+      "text": "`str.format()` và f-string chèn giá trị vào một chuỗi (string), tức một dãy ký tự. `.2f` hiển thị hai chữ số sau dấu thập phân; nó không thay đổi số đang lưu. `input(\"Gia: \")` hiển thị lời nhắc, đọc một dòng từ luồng đầu vào chuẩn (stdin) và trả str. `print` ghi vào luồng đầu ra chuẩn (stdout), thường là màn hình terminal. Muốn tính với giá nhập, chuyển bằng float hoặc int trước. Các ví dụ dùng chuỗi có sẵn để bạn chạy mà không phải nhập tương tác."
      }
     ]
    ],

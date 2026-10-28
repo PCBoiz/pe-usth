@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "SalesReport kế thừa Report: đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
+      "text": "SalesReport kế thừa lớp báo cáo (Report): đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
      },
      {
       "type": "code",

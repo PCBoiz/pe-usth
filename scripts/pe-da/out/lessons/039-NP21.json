@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV. Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
+      "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
      },
      {
       "type": "code",

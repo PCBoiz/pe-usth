@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum rồi đưa việc chưa xong về cuối hàng:"
+      "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
      },
      {
       "type": "code",

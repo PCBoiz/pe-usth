@@ -57,7 +57,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng; có thể làm tác vụ tương đương bằng code Python theo dòng."
+      "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell (chương trình nhận câu lệnh bạn gõ) review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng. Bạn có thể làm tác vụ tương đương bằng code Python theo dòng."
      },
      {
       "type": "paragraph",

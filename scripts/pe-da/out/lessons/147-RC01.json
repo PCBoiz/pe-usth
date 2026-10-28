@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong hình Apache Prefork ở trang 274, một parent quản lý nhiều child process. Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
+      "text": "Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
      },
      {
       "type": "code",

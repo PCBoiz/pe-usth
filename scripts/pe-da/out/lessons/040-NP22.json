@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed và chạy cùng lệnh:"
+      "text": "Bạn và một bạn khác đang thử chương trình mô phỏng tung xúc xắc. Để hai người dùng cùng đầu vào, bạn tạo lại bộ sinh với cùng seed (số khởi đầu) và chạy cùng lệnh:"
      },
      {
       "type": "code",

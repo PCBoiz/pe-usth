@@ -34,11 +34,11 @@
     [
      {
       "type": "paragraph",
-      "text": "Số 3 cho biết đang dùng Python 3. `sys` là module có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
+      "text": "Số 3 cho biết đang dùng Python 3. `sys` là một module (file Python nạp được vào file khác) có sẵn của Python; `import sys` giúp bạn đọc thông tin môi trường. Khi cần xem đường dẫn Python đang chạy, gõ `print(sys.executable)`. Đường dẫn cụ thể sẽ khác nhau giữa các máy."
      },
      {
       "type": "paragraph",
-      "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
+      "text": "Môi trường ảo giữ thư viện của từng dự án riêng nhau. Mở terminal (cửa sổ bạn gõ câu lệnh vào) trong thư mục dự án rồi chạy lệnh sau. Đây là lệnh terminal, không phải code để dán vào cell Python:"
      },
      {
       "type": "terminal",
@@ -49,7 +49,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy. Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
+      "text": "Tên `.venv` là thư mục bạn chọn để chứa môi trường. Bước này tạo môi trường, chưa cài NumPy (thư viện tính toán trên cả dãy số một lượt). Trên Windows, kiểm tra pip của môi trường vừa tạo bằng:"
      },
      {
       "type": "terminal",
@@ -60,7 +60,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài package, thường từ kho PyPI; nó không tự đổi phiên bản Python."
+      "text": "Trên Linux/macOS, lệnh tương ứng là `.venv/bin/python -m pip --version`. Gọi pip qua đúng Python giúp tránh cài nhầm thư viện. Khi đến bài NumPy, cài bằng `.venv\\Scripts\\python -m pip install numpy` trên Windows hoặc `.venv/bin/python -m pip install numpy` trên Linux/macOS. `pip` cài gói (package) — tập module nạp được như một đơn vị — thường từ kho PyPI; nó không tự đổi phiên bản Python."
      },
      {
       "type": "paragraph",
@@ -68,7 +68,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Sơ đồ trong slide còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc, cùng `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
+      "text": "Sơ đồ trong slide (trang trình bày của bài giảng gốc) còn nhắc pipenv và Poetry để quản lý dự án/phụ thuộc. Nó cũng nhắc `setup.py` trong cách đóng gói truyền thống. Trước mắt, bạn chỉ cần một cách tạo môi trường và biết Python nào sẽ chạy bài. Khi chia sẻ dự án, ghi lại các phiên bản thư viện để người khác dựng lại môi trường."
      }
     ]
    ],

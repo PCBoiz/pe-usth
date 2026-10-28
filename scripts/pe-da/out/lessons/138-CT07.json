@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "stdin, stdout và stderr là ba luồng chuẩn, thường gắn descriptor 0, 1 và 2. stdin thường nhận từ bàn phím; stdout/stderr thường hiện ở terminal. Chúng có thể được nối tới file hoặc pipe. Thu stdout không tự thu hoặc trộn stderr nếu bạn không cấu hình."
+      "text": "stdin, stdout và stderr là ba luồng chuẩn, thường gắn descriptor 0, 1 và 2. stdin thường nhận từ bàn phím; stdout/stderr thường hiện ở terminal. Chúng có thể được nối tới file hoặc pipe (đường ống nối đầu ra tiến trình này vào đầu vào tiến trình khác). Thu stdout không tự thu hoặc trộn stderr nếu bạn không cấu hình."
      },
      {
       "type": "code",

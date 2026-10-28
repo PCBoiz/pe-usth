@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+      "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
      },
      {
       "type": "code",

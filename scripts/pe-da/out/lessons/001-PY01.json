@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook rồi chạy:"
+      "text": "Một quán bán 12 cốc vào buổi sáng và 9 cốc vào buổi chiều. Bạn muốn tính số cốc đã bán trong ngày. Mở Python hoặc một ô code (cell) trong notebook (trang gồm nhiều ô code chạy riêng được) rồi chạy:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ script tự động hóa, backend web đến ứng dụng và phân tích dữ liệu. Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
+      "text": "`print` hiển thị kết quả của biểu thức trong ngoặc. Python là ngôn ngữ bậc cao: bạn viết tên biến và phép tính thay vì các lệnh máy. Mã nguồn mở nghĩa là mã nguồn triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Python dùng được cho nhiều việc, từ tự động hóa đến ứng dụng và phân tích dữ liệu. Nó cũng viết được script (đoạn code chạy trực tiếp từ dòng lệnh) và backend (phần chạy phía sau trang web). Cách viết chú trọng khả năng đọc; tên biến rõ nghĩa và thụt lề giúp người đọc theo dõi chương trình."
      },
      {
       "type": "paragraph",
@@ -62,15 +62,15 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào class."
+      "text": "Nếu giá mỗi cốc là 15 nghìn đồng, doanh thu là 315 nghìn. Python cũng hỗ trợ lập trình hướng đối tượng; sau phần hàm, bạn sẽ học cách gom dữ liệu và hành vi vào lớp (class)."
      },
      {
       "type": "paragraph",
-      "text": "Trong REPL, bạn nhập và chạy từng lệnh; trong script, bạn lưu code vào file `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
+      "text": "Trong REPL bạn nhập và chạy từng lệnh. Trong script bạn lưu code vào một file (dữ liệu đã ghi xuống đĩa) có đuôi `.py` rồi chạy bằng `python ten_file.py`. Trên hệ UNIX, dòng đầu như `#!/usr/bin/env python3` có thể chỉ trình thông dịch khi file được cấp quyền chạy; bạn vẫn có thể gọi Python trực tiếp. Khóa học dùng Python 3; Python 2 đã ngừng được hỗ trợ."
      },
      {
       "type": "paragraph",
-      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất. Tác vụ nặng CPU (bộ xử lý chạy từng lệnh) và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
      }
     ]
    ],

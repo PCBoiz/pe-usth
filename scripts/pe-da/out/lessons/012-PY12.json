@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mỗi học viên có mã và điểm. Dictionary giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
+      "text": "Mỗi học viên có mã và điểm. Dictionary (kiểu từ điển lưu các cặp khoá–giá trị) giúp bạn lấy điểm theo mã thay vì nhớ vị trí trong một dãy:"
      },
      {
       "type": "code",

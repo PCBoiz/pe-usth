@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Snapshot cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy snapshot; gán thêm một tên không tự tạo snapshot. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
+      "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Bản chụp (snapshot) cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy bản chụp. Gán thêm một tên không tự tạo bản chụp. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
      }
     ]
    ],

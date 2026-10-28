@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "ipywidgets.Dropdown giữ lựa chọn hiện tại trong value. Trong Jupyter có hỗ trợ widget, gọi display(control) để hiện bộ chọn. Tạo cùng đối tượng trong một script Python thường không tự mở giao diện hay trang web. Ví dụ dưới đặt value thành \"A\" rồi đọc lại, nên bạn có thể xem cách lưu lựa chọn trước khi thử nó trong notebook."
+      "text": "ipywidgets.Dropdown giữ lựa chọn hiện tại trong value. Trong Jupyter có hỗ trợ widget (thành phần giao diện như nút hoặc ô nhập), gọi display(control) để hiện bộ chọn. Tạo cùng đối tượng trong một script Python thường không tự mở giao diện hay trang web. Ví dụ dưới đặt value thành \"A\" rồi đọc lại, nên bạn có thể xem cách lưu lựa chọn trước khi thử nó trong notebook."
      },
      {
       "type": "code",

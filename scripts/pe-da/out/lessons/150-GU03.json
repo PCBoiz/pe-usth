@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Frame nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
+      "text": "Một form nhập điểm thường có vùng thông tin sinh viên và vùng nhập môn học. Khung (frame) nhóm các widget của từng vùng để bạn bố trí và quản lý chúng cùng nhau."
      },
      {
       "type": "code",

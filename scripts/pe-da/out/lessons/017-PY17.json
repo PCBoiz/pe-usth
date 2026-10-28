@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một callback sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
+      "text": "Một callback (hàm bạn giao cho thư viện gọi hộ) sẽ chạy khi người dùng bấm nút. Để hiểu vì sao phải truyền tên hàm thay vì gọi ngay, trước hết thử lưu hàm trong một biến:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+      "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter (thư viện giao diện đồ hoạ đi kèm Python) dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
      },
      {
       "type": "code",
@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi truyền đối số cho Thread, `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI."
+      "text": "Khi truyền đối số cho một luồng (thread), `args=(10,)` là tuple một phần tử; dấu phẩy là cần thiết. Bạn sẽ dùng lại phân biệt “truyền hàm” và “gọi hàm” ở cả bài tiến trình, luồng và GUI (giao diện đồ hoạ)."
      }
     ]
    ],

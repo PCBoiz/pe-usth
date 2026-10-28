@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
+      "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork (lệnh UNIX nhân đôi tiến trình đang chạy): cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
      },
      {
       "type": "code",

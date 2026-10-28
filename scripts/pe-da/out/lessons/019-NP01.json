@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một array để lưu và xử lý cùng nhau:"
+      "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
      },
      {
       "type": "code",

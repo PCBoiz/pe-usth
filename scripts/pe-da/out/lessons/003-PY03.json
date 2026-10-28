@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
+      "text": "Trong notebook, bạn chạy cell gán `cups = 12` rồi chạy cell in `cups`. Kết quả đúng vì kernel (tiến trình Python chạy phía sau notebook) còn giữ biến từ cell trước. Hãy xem một lần chạy có đầy đủ đầu vào:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Notebook có cell code và cell văn bản, có thể chứa output, hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
+      "text": "Notebook có cell code và cell văn bản, có thể chứa đầu ra (output), hình và phương trình; Shift+Enter thường chạy cell hiện tại. Jupyter Notebook và JupyterLab là hai giao diện làm việc với notebook. Kernel là tiến trình thực thi và giữ trạng thái. Nếu chỉ gửi cell `print(cups + 1)` cho người khác, họ có thể chưa có biến `cups`."
      },
      {
       "type": "code",

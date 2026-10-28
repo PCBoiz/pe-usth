@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
+      "text": "Khi chưa đặt nhãn, pandas dùng các số 0, 1, 2. Đây là index (dãy nhãn của các hàng) của Series. Giá trị 15 nằm ở nhãn 1; số 1 là nhãn, không phải số cốc bán được. Bạn có thể thay các nhãn này bằng tên ngày."
      },
      {
       "type": "code",

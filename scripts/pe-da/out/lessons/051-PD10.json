@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "keep=\"last\" giữ hàng cuối theo thứ tự hiện có, không tự hiểu hàng nào mới hơn. Vì vậy bạn cần sắp xếp version trước. `is_unique` giúp kiểm tra cột khóa sau khi làm sạch."
+      "text": "keep=\"last\" giữ hàng cuối theo thứ tự hiện có, không tự hiểu hàng nào mới hơn. Vì vậy bạn cần sắp xếp theo phiên bản (version) trước. `is_unique` giúp kiểm tra cột khóa sau khi làm sạch."
      }
     ]
    ],

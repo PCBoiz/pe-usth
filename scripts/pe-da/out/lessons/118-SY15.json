@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
+      "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle (thẻ hệ điều hành trả về để bạn chỉ lại file đã mở) khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
      },
      {
       "type": "code",
@@ -58,11 +58,11 @@
     [
      {
       "type": "paragraph",
-      "text": "`x` chỉ tạo mới và từ chối ghi đè file đã có. Trong mô hình UNIX, nhiều tài nguyên được thao tác qua file descriptor; điều đó không có nghĩa mọi tài nguyên đều là một file văn bản trên đĩa."
+      "text": "`x` chỉ tạo mới và từ chối ghi đè file đã có. Trong mô hình UNIX, nhiều tài nguyên được thao tác qua file descriptor (số nhận diện một tài nguyên I/O đang mở). Điều đó không có nghĩa mọi tài nguyên đều là một file văn bản trên đĩa."
      },
      {
       "type": "paragraph",
-      "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
+      "text": "Trong RAM, biến thường mất khi tiến trình (process) kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
      },
      {
       "type": "paragraph",

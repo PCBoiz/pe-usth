@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu comment, bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
+      "text": "Chuỗi Python là Unicode nên bạn có thể dùng tiếng Việt. Một ký tự như \"A\" vẫn có kiểu str, không có kiểu char riêng. Hai chuỗi khác dấu là hai giá trị khác nhau. Dấu `#` bắt đầu một chú thích (comment), bỏ phần còn lại của dòng khỏi việc thực thi; có thể dùng nó để ghi lý do của một phép tính hoặc tạm vô hiệu hóa một dòng code. Comment không làm thay đổi giá trị của biến. Chuỗi ba nháy vẫn là object chuỗi; ở đầu hàm hoặc module, nó có thể làm docstring mô tả thành phần đó."
      }
     ]
    ],

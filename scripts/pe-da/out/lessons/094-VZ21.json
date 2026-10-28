@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dropdown dưới đây có một trạng thái hiện cả hai cửa hàng và hai trạng thái chỉ hiện một cửa hàng. visible phải có một giá trị cho mỗi trace. method=\"update\" cho phép đổi đồng thời dữ liệu hiển thị và tiêu đề; nhờ vậy tiêu đề luôn khớp bộ lọc."
+      "text": "Dropdown dưới đây có một trạng thái hiện cả hai cửa hàng và hai trạng thái chỉ hiện một cửa hàng. visible phải có một giá trị cho mỗi trace. Tham số method (cách Plotly cập nhật hình) đặt thành `\"update\"` thì đổi được đồng thời dữ liệu hiển thị và tiêu đề. Nhờ vậy tiêu đề luôn khớp bộ lọc."
      },
      {
       "type": "terminal",

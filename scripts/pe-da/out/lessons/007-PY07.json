@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một slice, tức một đoạn. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
+      "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một lát cắt (slice), tức một đoạn liên tiếp của dãy. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
      },
      {
       "type": "code",

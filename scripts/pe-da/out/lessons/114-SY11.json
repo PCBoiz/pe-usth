@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trang 137 còn minh họa thành phần dùng lại trong hệ thống: .ko là module kernel Linux, .so là thư viện dùng chung (shared library) thường gặp ở UNIX và .dll là thư viện động trên Windows. Đó là liên hệ về ý tưởng chia thành phần; Python module .py và package dùng import không có cùng định dạng hay API với các file nhị phân này."
+      "text": "Trang 137 còn minh họa thành phần dùng lại trong hệ thống: .ko là module của hạt nhân (kernel) Linux, .so là thư viện dùng chung (shared library) thường gặp ở UNIX và .dll là thư viện động trên Windows. Đó là liên hệ về ý tưởng chia thành phần; Python module .py và package dùng import không có cùng định dạng hay API với các file nhị phân này."
      }
     ]
    ],

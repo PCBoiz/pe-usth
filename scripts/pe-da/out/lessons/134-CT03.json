@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Scheduler quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
+      "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Đây là mô phỏng hàng đợi: job queue theo dõi các công việc đi vào hệ thống, theo mô hình slide có thể còn nằm trên đĩa; ready queue chứa process đã ở bộ nhớ và sẵn sàng dùng CPU; device queue chứa process chờ một thiết bị I/O. Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
+      "text": "Đây là mô phỏng hàng đợi (queue): job queue theo dõi các công việc đi vào hệ thống, theo mô hình slide có thể còn nằm trên đĩa; ready queue chứa process đã ở bộ nhớ và sẵn sàng dùng CPU; device queue chứa process chờ một thiết bị I/O. Các mục trong hàng đợi liên hệ với PCB (Process Control Block). Khi process chuyển từ running sang waiting để chờ ổ đĩa, PCB của nó được liên kết vào hàng đợi thiết bị; I/O xong thì nó quay về ready queue."
      },
      {
       "type": "code",
@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive cho phép thu hồi CPU; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
+      "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive (thu CPU lại giữa chừng) không chờ tác vụ tự nhường; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
      }
     ]
    ],

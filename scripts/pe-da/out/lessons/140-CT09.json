@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL trong CPython; RC01 đọc các sơ đồ Apache và Chromium của slide."
+      "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide."
      }
     ]
    ],

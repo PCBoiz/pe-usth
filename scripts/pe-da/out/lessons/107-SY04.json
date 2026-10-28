@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork tạo một bản kho mã (repository) trong tài khoản GitHub của bạn; clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
+      "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
      },
      {
       "type": "terminal",
