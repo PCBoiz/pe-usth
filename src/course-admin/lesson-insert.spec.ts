@@ -18,6 +18,7 @@ import { join } from 'path';
 import {
   fingerprint,
   planLessonInserts,
+  sinhDuocManNao,
   type ExistingLesson,
   type InsertRow,
 } from './lesson-insert';
@@ -151,12 +152,94 @@ describe('planLessonInserts', () => {
   });
 
   // ── Luật 6: gói dựng dở không ném lỗi nào cả ───────────────────────────────
-  it('TỪ CHỐI bài không có step_1.read lẫn play', () => {
+
+  /**
+   * LUẬT 6 TỪNG TỪ CHỐI OAN, và ca này khoá bản sửa.
+   *
+   * Luật cũ đòi `step_1.read` HOẶC `play`. Hai khoá đó đúng là thứ 172 + 48 bài
+   * đang có, nên nó trông đủ — nhưng `buildScreens()` ở frontend dựng màn từ
+   * `step_1.memory`, `step_2.mcq`, `step_3.trace`, `step_4.tests` mà KHÔNG cần
+   * read lẫn play. Bài nhập từ tài liệu theo mẫu `## S1..## S4` rơi đúng vào
+   * khe đó: dựng ra đủ màn trong trình duyệt, mà cổng INSERT bảo "gói dựng dở".
+   * Cách duy nhất đi tiếp khi đó là bịa thêm một phần `## Đọc` chỉ để qua cửa —
+   * tức cổng bắt người soạn đổi NỘI DUNG để chiều một phép kiểm sai.
+   */
+  it('NHẬN bài không có read lẫn play, miễn là nó dựng ra màn', () => {
+    // Lấy một bài THẬT CÓ ca chấm: bài nhập theo mẫu mang cả `starterCode` lẫn
+    // phần Test, và `validateStudioLesson` đòi đúng cặp đó khi bài không phải
+    // bài đọc. Lấy nhầm bài chỉ có `starterCode` là ca đỏ vì lý do khác hẳn.
+    const coCaCham = REAL.lessons.find((r) => {
+      const four = (r.content_json as Record<string, Record<string, unknown>>)
+        ?.step_4;
+      return Array.isArray(four?.tests) && four.tests.length > 0;
+    });
+    if (!coCaCham) throw new Error('Gói không còn bài nào có ca chấm.');
+
+    const baiNhap: InsertRow = {
+      ...structuredClone(coCaCham),
+      lesson_code: 'TH01',
+      sort_order: 173,
+    };
+    const noiDung = baiNhap.content_json as Record<string, unknown>;
+    const mcq = (noiDung.step_2 as Record<string, unknown>).mcq;
+    // Hình dạng của một bài nhập theo mẫu S1..S4: có bộ nhớ, có trắc nghiệm,
+    // có bài tập chấm — không có màn đọc nào.
+    noiDung.step_1 = { memory: { title: 'Nhớ', items: ['f-string'] } };
+    expect(Array.isArray(mcq) && mcq.length).toBeTruthy();
+
+    const { plan, errors } = planLessonInserts([baiNhap], DB_172);
+    expect(errors).toEqual([]);
+    expect(plan).toHaveLength(1);
+  });
+
+  it('TỪ CHỐI bài không dựng ra màn nào', () => {
     const rong = baiMoi('TH01', 173);
     rong.content_json = { step_4: { task: 'còn mỗi đề bài' } };
     const { plan, errors } = planLessonInserts([rong], DB_172);
     expect(plan).toEqual([]);
     expect(errors.join(' ')).toContain('dựng dở');
+  });
+
+  /**
+   * NGUỒN SỰ THẬT của luật 6 là `buildScreens()` ở frontend; `sinhDuocManNao`
+   * chép lại điều kiện của nó (chép chứ không import được — hai cây mã khác
+   * nhau). Ca này kiểm từng nhánh của bản chép, để một nhánh gõ sai không nằm
+   * im: nó sẽ từ chối oan đúng những bài chỉ có loại nội dung đó.
+   */
+  it.each([
+    ['play.games', { play: { games: [{ id: 'g1' }] } }],
+    ['step_1.read', { step_1: { read: [[]] } }],
+    ['step_1.theory', { step_1: { theory: ['a'] } }],
+    ['step_1.brief', { step_1: { brief: { task: 'x' } } }],
+    ['step_1.context', { step_1: { context: { body: 'x' } } }],
+    ['step_1.code', { step_1: { code: { source: 'x' } } }],
+    ['step_1.explain', { step_1: { explain: ['a'] } }],
+    ['step_1.memory', { step_1: { memory: { items: [] } } }],
+    ['step_1.misconception', { step_1: { misconception: { body: 'x' } } }],
+    ['step_1.predict', { step_1: { predict: { options: [1, 2] } } }],
+    ['step_2.mcq', { step_2: { mcq: [{ options: [1, 2] }] } }],
+    ['step_2.classify', { step_2: { classify: { tokens: ['t'] } } }],
+    ['step_2.practice', { step_2: { practice: [{}] } }],
+    ['step_2.selfExplain', { step_2: { selfExplain: { prompt: 'x' } } }],
+    ['step_3.scaffold', { step_3: { scaffold: { slots: [{}] } } }],
+    ['step_3.trace', { step_3: { trace: { steps: [{}] } } }],
+    ['step_3.task', { step_3: { task: { body: 'x' } } }],
+    ['step_3.counter', { step_3: { counter: { options: [{}] } } }],
+    ['step_4.task', { step_4: { task: { body: 'x' } } }],
+    ['step_4.starterCode', { step_4: { starterCode: 'x' } }],
+    ['step_4.tests', { step_4: { tests: [{}] } }],
+    ['step_4.solutionCode', { step_4: { solutionCode: 'x' } }],
+  ])('sinhDuocManNao: %s một mình đã đủ dựng màn', (_ten, noiDung) => {
+    expect(sinhDuocManNao(noiDung)).toBe(true);
+  });
+
+  it.each([
+    ['rỗng', {}],
+    ['không phải object', 'chuỗi'],
+    ['mcq 1 phương án — buildScreens bỏ qua', { step_2: { mcq: [{ options: [1] }] } }],
+    ['task của S3 kèm scaffold rỗng — buildScreens bỏ qua', { step_3: { task: { body: 'x' }, scaffold: { slots: [] } } }],
+  ])('sinhDuocManNao: %s KHÔNG dựng được màn', (_ten, noiDung) => {
+    expect(sinhDuocManNao(noiDung)).toBe(false);
   });
 
   it('TỪ CHỐI gói rỗng', () => {

@@ -79,6 +79,77 @@ export function fingerprint(content: unknown): {
   };
 }
 
+/** `x[k]` khi x là object, còn lại `undefined` — `content_json` vào đây là `unknown`. */
+function truong(value: unknown, key: string): unknown {
+  return isObject(value) ? value[key] : undefined;
+}
+
+function dai(value: unknown): number {
+  return Array.isArray(value) ? value.length : 0;
+}
+
+/**
+ * Bài này có dựng ra được màn nào không?
+ *
+ * VÌ SAO HÀM NÀY TỒN TẠI, và vì sao luật cũ SAI. Luật 6 trước đây đòi
+ * `step_1.read` (khoá bài đọc) HOẶC `play` (khoá mini-game) — hai khoá đó đúng
+ * là thứ 172 + 48 bài đang có, nên nó trông như một phép kiểm đủ. Nhưng nó
+ * KHÔNG phải điều kiện để bài dựng được màn: `buildScreens()` ở
+ * `frontend/src/lib/studio-lesson.ts` dựng màn từ `step_1.memory`,
+ * `step_2.mcq`, `step_3.trace`, `step_4.tests`… mà không cần `read` lẫn `play`.
+ * Hệ quả đo được: một bài nhập từ tài liệu theo mẫu `## S1..## S4` dựng ra đủ
+ * màn trong trình duyệt nhưng bị cổng INSERT TỪ CHỐI với câu "gói dựng dở" —
+ * cổng nói sai về chính thứ nó đang canh, và cách duy nhất đi tiếp là bịa thêm
+ * một phần `## Đọc` chỉ để qua cửa.
+ *
+ * NGUỒN SỰ THẬT là `buildScreens()`; hàm này CHÉP lại điều kiện của nó. Chép
+ * chứ không import được: đây là backend, nó là frontend. Nên có một ca test ở
+ * `frontend/e2e/unit/` đọc CẢ HAI cây mã và bắt hai danh sách khoá phải khớp —
+ * nếu không thì thêm một loại màn mới ở frontend sẽ làm cổng này từ chối oan
+ * đúng những bài chỉ có loại màn đó, im lặng, đúng một lần nữa.
+ */
+export function sinhDuocManNao(content: unknown): boolean {
+  if (dai(truong(truong(content, 'play'), 'games'))) return true;
+
+  const one = truong(content, 'step_1');
+  if (dai(truong(one, 'read'))) return true;
+  if (dai(truong(one, 'theory'))) return true;
+  if (truong(truong(one, 'brief'), 'task')) return true;
+  if (truong(truong(one, 'context'), 'body')) return true;
+  if (truong(truong(one, 'code'), 'source')) return true;
+  if (dai(truong(one, 'explain'))) return true;
+  if (truong(one, 'memory')) return true;
+  if (truong(truong(one, 'misconception'), 'body')) return true;
+  if (dai(truong(truong(one, 'predict'), 'options')) >= 2) return true;
+
+  const two = truong(content, 'step_2');
+  const mcq = truong(two, 'mcq');
+  // Chỉ câu có từ 2 phương án mới thành màn — khớp buildScreens, và đó là phép
+  // lọc thật: một câu 0 phương án lọt qua thì bài vẫn trắng ở đúng màn đó.
+  if (Array.isArray(mcq) && mcq.some((q) => dai(truong(q, 'options')) >= 2)) {
+    return true;
+  }
+  if (dai(truong(truong(two, 'classify'), 'tokens'))) return true;
+  if (dai(truong(two, 'practice'))) return true;
+  if (truong(truong(two, 'selfExplain'), 'prompt')) return true;
+
+  const three = truong(content, 'step_3');
+  if (dai(truong(truong(three, 'scaffold'), 'slots'))) return true;
+  if (dai(truong(truong(three, 'trace'), 'steps'))) return true;
+  if (truong(truong(three, 'task'), 'body') && !truong(three, 'scaffold')) {
+    return true;
+  }
+  if (dai(truong(truong(three, 'counter'), 'options'))) return true;
+
+  const four = truong(content, 'step_4');
+  if (truong(truong(four, 'task'), 'body')) return true;
+  if (truong(four, 'starterCode')) return true;
+  if (dai(truong(four, 'tests'))) return true;
+  if (truong(four, 'solutionCode')) return true;
+
+  return false;
+}
+
 /**
  * Lập kế hoạch INSERT. Trả lỗi thay vì ném, để script in hết một lượt rồi dừng
  * — in từng lỗi một bắt người chạy sửa rồi chạy lại nhiều vòng.
@@ -100,8 +171,8 @@ export function fingerprint(content: unknown): {
  *  5. Nội dung phải qua `validateStudioLesson` — cùng cửa mà đường cập nhật đi
  *     qua. Đây là CỬA DUY NHẤT vào DB; bỏ nó là nạp được một bài mà frontend
  *     dựng ra màn trắng.
- *  6. Bài phải có `step_1.read` hoặc `play`. Gói dựng dở không ném lỗi nào cả,
- *     nó chỉ tạo ra một bài mở lên trống trơn.
+ *  6. Bài phải sinh ra ÍT NHẤT MỘT màn. Gói dựng dở không ném lỗi nào cả, nó
+ *     chỉ tạo ra một bài mở lên trống trơn — xem `sinhDuocManNao`.
  */
 export function planLessonInserts(
   rows: readonly InsertRow[],
@@ -150,13 +221,11 @@ export function planLessonInserts(
     maTrongGoi.add(ma);
     oTrongGoi.add(row.sort_order);
 
-    // 6 — gói dựng dở.
-    const noiDung = isObject(row.content_json) ? row.content_json : null;
-    const coPlay = Boolean(noiDung?.play);
-    const coBaiDoc =
-      isObject(noiDung?.step_1) && Array.isArray(noiDung.step_1.read);
-    if (!coPlay && !coBaiDoc) {
-      errors.push(`${ma}: không có khối play lẫn step_1.read — gói dựng dở?`);
+    // 6 — gói dựng dở: bài KHÔNG sinh ra màn nào.
+    if (!sinhDuocManNao(row.content_json)) {
+      errors.push(
+        `${ma}: không nội dung nào dựng được thành màn học — gói dựng dở?`,
+      );
     }
     // 5 — cửa duy nhất vào DB.
     const invalid = validateStudioLesson(row.content_json);
