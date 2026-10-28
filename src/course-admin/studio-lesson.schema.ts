@@ -11,6 +11,35 @@ export const STUDIO_LESSON_SCHEMA = 'studio-lesson/v1';
 /** v1 + khối `play` (mini-game của khoá Python Advanced). */
 export const STUDIO_LESSON_SCHEMA_V2 = 'studio-lesson/v2';
 
+/**
+ * DANH SÁCH TRẮNG file dữ liệu — bài chỉ khai được đúng những tên này.
+ *
+ * Đây là CỬA DUY NHẤT vào DB (`lesson-content-update.ts` / lớp import gọi
+ * `validateStudioLesson`), nên một trường mới không qua đây thì một bài chạy
+ * đúng trong trình duyệt vẫn không có đường tới học viên — chuyện đã xảy ra với
+ * 124 bài tập được chấm, xem AGENTS.md.
+ *
+ * Vì sao là bản LITERAL chứ không đọc thư mục: backend chạy ở nơi KHÔNG có
+ * `frontend/public/` (Render chỉ deploy phần NestJS), nên một phép kiểm "file
+ * có trên đĩa không" ở đây sẽ luôn trượt — hoặc tệ hơn, luôn qua. Bản literal
+ * được ghim vào thư mục thật bởi `frontend/e2e/unit/data-files.test.mjs`: thêm
+ * một file vào `static/da-dulieu/` mà quên khai ở đây là ca test đó đỏ.
+ *
+ * Nội dung các file: xem `frontend/public/static/da-dulieu/NOTICE.md`
+ * (`coffee-sales-cc0.csv` là dữ liệu CC0 của người khác; bốn file còn lại do
+ * `scripts/pe-da/gen_dulieu.py` sinh ra).
+ */
+export const DU_LIEU_HOP_LE = [
+  'coffee-sales-cc0.csv',
+  'don_hang.csv',
+  'mon.csv',
+  'nguyen_lieu.csv',
+  'quay.csv',
+] as const;
+
+/** Tên file trơn, chữ thường, chỉ .csv — khớp TEN_DU_LIEU của worker. */
+const TEN_DU_LIEU = /^[a-z0-9_-]+\.csv$/;
+
 export const PLAY_GAME_TYPES = [
   'traceTable',
   'match',
@@ -39,6 +68,9 @@ export interface Mcq {
  * step_4.packages: (khoá Python Advanced pe-v4) thư viện Pyodide bài cần — numpy,
  * pandas, matplotlib, sqlite3. scripts/pe-v4/build.py đã chặn giá trị lạ; ở đây
  * không kiểm thêm vì worker tự bỏ qua gói nó không có.
+ * step_4.dataFiles: tên file của bộ dữ liệu quán mà mọi lần chạy của bài cần có
+ * trong thư mục làm việc. Ở đây KIỂM, khác `packages`: worker ghép tên vào một
+ * đường dẫn rồi fetch, nên tên lạ là một request lạ — xem DU_LIEU_HOP_LE.
  */
 export interface StudioLesson {
   schema?: string;
@@ -267,6 +299,42 @@ export function validateStudioLesson(value: unknown): string[] {
             );
           if (typeof f.content !== 'string')
             errors.push(`step_4.files[${i}].content: phải là chuỗi.`);
+        });
+      }
+    }
+    // FILE DỮ LIỆU của bộ dữ liệu quán: chỉ TÊN, và chỉ tên trong danh sách
+    // trắng. Worker ghép tên này vào `/static/da-dulieu/` rồi fetch, nên một
+    // tên tuỳ ý ở đây là một đường dẫn tuỳ ý trong thư mục public.
+    if (four.dataFiles !== undefined) {
+      if (!Array.isArray(four.dataFiles)) {
+        errors.push('step_4.dataFiles: phải là mảng tên file.');
+      } else {
+        const daThay = new Set<string>();
+        // `unknown[]` chứ không để TS suy ra `any[]`: một `any` ở đây chảy
+        // xuống mọi phép kiểm bên dưới và làm chúng biên dịch kể cả khi sai
+        // kiểu — đúng họ lỗi mà AGENTS.md ghi ở mục dọn lint.
+        const khai: unknown[] = four.dataFiles;
+        khai.forEach((raw, i) => {
+          const name = typeof raw === 'string' ? raw : '';
+          if (!name || !TEN_DU_LIEU.test(name)) {
+            errors.push(
+              `step_4.dataFiles[${i}]: cần tên file trơn (chữ thường, số, _ -, .csv).`,
+            );
+            return;
+          }
+          if (!(DU_LIEU_HOP_LE as readonly string[]).includes(name)) {
+            errors.push(
+              `step_4.dataFiles[${i}]: "${name}" không có trong bộ dữ liệu ` +
+                `(cho phép: ${DU_LIEU_HOP_LE.join(', ')}).`,
+            );
+            return;
+          }
+          // Trùng tên thì worker tải hai lần cùng một file và bộ chấm ghi hai
+          // lần cùng một nội dung — vô hại, nhưng nó là dấu của một bản dựng
+          // đang gộp hai danh sách mà không ai để ý.
+          if (daThay.has(name))
+            errors.push(`step_4.dataFiles[${i}]: "${name}" khai trùng.`);
+          daThay.add(name);
         });
       }
     }

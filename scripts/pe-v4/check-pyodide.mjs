@@ -57,6 +57,24 @@ globalThis.fetch = (u, ...r) => {
   return fetchThat(u, ...r);
 };
 
+// FILE DỮ LIỆU (`step_4.dataFiles`) — bộ chấm NÀY không nạp được.
+//
+// Cơ chế nạp file của khoá 172 bài (xem scripts/pe-da/check-pyodide.mjs) đọc
+// CSV từ frontend/public/static/da-dulieu/ rồi đưa vào tham số `files` của
+// `_studio_main`. pe-v4 đã đóng băng và không bài nào khai trường đó, nên ở đây
+// KHÔNG thêm nhánh nạp — một nhánh không bài nào dùng là lại dựng một thứ không
+// có đường tới người học, đúng lỗi mà AGENTS.md gọi là "built but unreachable".
+// Thay vào đó: nếu có ngày một bài pe-v4 khai file dữ liệu thì bộ chấm phải NÓI
+// RA, chứ không lặng lẽ chạy rồi đỏ bằng FileNotFoundError ở chỗ khác.
+const khaiDuLieu = qa.filter((l) => (l.dataFiles || []).length).map((l) => l.code);
+if (khaiDuLieu.length) {
+  console.error(
+    `bộ chấm pe-v4 chưa nạp được file dữ liệu, mà ${khaiDuLieu.join(', ')} có khai.\n`
+    + '  → chép nhánh đọc-từ-đĩa trong scripts/pe-da/check-pyodide.mjs sang đây trước.',
+  );
+  process.exit(1);
+}
+
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');

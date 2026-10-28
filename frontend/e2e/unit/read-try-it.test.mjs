@@ -221,7 +221,11 @@ test('bản dựng: tiền tố ĐẦY ĐỦ khớp step_4.starterCode của ô 
   let daSo = 0;
   for (const b of bai) {
     const bon = b.content_json?.step_4 ?? {};
-    if (bon.tests || !bon.starterCode) continue;
+    // Bỏ cả bài khai FILE DỮ LIỆU: `starterCode` của chúng có thêm khối đọc
+    // file — khối đó CHẠY ĐƯỢC ở đây, chỉ /ide là chưa nạp được file, nên nó
+    // cố ý không có cờ `tryIt` và tiền tố sẽ thiếu đúng nó. Xem
+    // e2e/unit/data-files.test.mjs và KHOI_DU_LIEU trong scripts/pe-da/build.py.
+    if (bon.tests || bon.dataFiles?.length || !bon.starterCode) continue;
     const read = khoiCua(b);
     let cuoi = null;
     read.forEach((lat, i) => lat.forEach((k, j) => { if (k.tryIt) cuoi = [i, j]; }));

@@ -881,9 +881,14 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // kết vào đoạn cuối sẽ đẩy đoạn qua trần L2, hoặc khối CUỐI của bài là
   // `code` nên đoạn văn cuối không phải chỗ người học đọc sau cùng. Mọi loại
   // khối khác không nhúc nhích một đơn vị nào.
+  // 29/10/2026 (đợt FILE DỮ LIỆU): +1 paragraph và +1 code. Đúng một khối đọc
+  // `mon.csv`/`quay.csv` thật, chèn vào cuối PD13 cùng đoạn văn dẫn nó — khối
+  // đầu tiên của khoá đọc một FILE chứ không dựng dữ liệu bằng `StringIO`.
+  // Nguồn khai báo nằm ở `KHOI_DU_LIEU` trong build.py, không phải course.json,
+  // vì cùng lý lẽ với SO_DO_DOC: đây là phép thử cho cơ chế nạp file.
   assert.deepEqual(count, {
-    paragraph: 773,
-    code: 499,
+    paragraph: 774,
+    code: 500,
     terminal: 17,
     figure: 80,
     table: 1,

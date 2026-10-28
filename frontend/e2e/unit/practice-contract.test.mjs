@@ -151,8 +151,14 @@ test('contract gửi đi là null, KHÔNG phải undefined', () => {
 test('hợp đồng thông điệp trong chú thích có nhắc contract', () => {
   // Chú thích đó là chỗ duy nhất liệt kê tên trường cố định giữa React và
   // worker; để nó lỗi thời là người sau đọc xong vẫn không biết có trường này.
+  // 29/10: thêm `dataFiles` (tên file của bộ dữ liệu quán — xem
+  // e2e/unit/data-files.test.mjs). Danh sách này phải ĐẦY ĐỦ, không chỉ "có
+  // chữ contract": nó là chỗ duy nhất một người đọc biết worker nhận gì.
   const types = doc('src', 'components', 'python-studio', 'runner', 'types.ts');
-  assert.match(types, /\{ code, tests, forbid, files, stdin, packages, contract \}/);
+  assert.match(
+    types,
+    /\{ code, tests, forbid, files, dataFiles, stdin, packages, contract \}/,
+  );
 });
 
 test('worker đọc contract từ thông điệp', () => {

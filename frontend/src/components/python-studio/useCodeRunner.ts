@@ -177,6 +177,8 @@ export function useLessonRun({
         tests: four.tests ?? [],
         forbid: four.forbid ?? [],
         files: four.files ?? [],
+        // File dữ liệu của bài: chỉ TÊN đi qua đây, worker tự tải nội dung.
+        dataFiles: four.dataFiles ?? [],
         // Hợp đồng với worker có trường `stdin` (các dòng input() đọc lần
         // lượt). Chưa có UI để học viên tự nhập ở lượt này; khi thêm ô "dữ
         // liệu vào" thì truyền mảng dòng vào đúng chỗ này.

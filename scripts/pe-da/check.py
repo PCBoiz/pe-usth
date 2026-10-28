@@ -26,6 +26,12 @@ OUT = HERE / 'out'
 SOURCE = HERE / 'source' / 'course.json'
 PRACTICE = HERE / 'source' / 'practice.json'
 ANH = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da'
+# Bộ dữ liệu quán, phục vụ ở cùng origin — xem kiem_du_lieu().
+DU_LIEU = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da-dulieu'
+# Khớp TEN_FILE_DU_LIEU của build.py, TEN_DU_LIEU của studio-lesson.worker.js và
+# của studio-lesson.schema.ts. CỐ Ý chép, không import: check.py là phía đối
+# chứng, import thì một lỗi trong khâu dựng xuất hiện ở cả hai phía phép so.
+TEN_FILE_DU_LIEU = re.compile(r'^[a-z0-9_-]+\.csv$')
 CURRICULA = HERE.parent.parent / 'frontend' / 'src' / 'lib' / 'curricula.json'
 
 # SÁU loại khối màn đọc dựng được — khớp ReadBlock trong
@@ -66,6 +72,7 @@ def main() -> int:
     kiem_vet(bai)
     kiem_bai_tap_doi_nguon(bai)
     kiem_thu_trong_ide(bai)
+    kiem_du_lieu(bai)
     kiem_sandbox(bai)
     kiem_trac_nghiem(bai)
     kiem_curricula(bai)
@@ -486,7 +493,13 @@ def kiem_thu_trong_ide(bai: list[dict]) -> None:
                     continue
                 co_co.append(k['code'])
 
-        can = len(_code_bai_doc(c)) - len(b['_blocked'])
+        # Khối ĐỌC FILE DỮ LIỆU không có nút, và vì mã bàn giao là TIỀN TỐ thì
+        # mọi khối SAU nó cũng không có: tiền tố sẽ thiếu đúng dòng đọc file.
+        # Nên số nút = số khối chạy được ĐỨNG TRƯỚC khối dữ liệu đầu tiên.
+        khoi_du_lieu = (b.get('_du_lieu') or {}).get('blocks') or []
+        tat_tu = min(khoi_du_lieu) if khoi_du_lieu else len(_code_bai_doc(c))
+        chan_chi_so = {x['block'] for x in b['_blocked']}
+        can = sum(1 for i in range(tat_tu) if i not in chan_chi_so)
         if len(co_co) != can:
             loi(f'{ma}: {len(co_co)} khối có nút Thử-trong-IDE nhưng {can} khối chạy được')
         if mode == 'local' and co_co:
@@ -497,10 +510,93 @@ def kiem_thu_trong_ide(bai: list[dict]) -> None:
         # phải mã bài đọc, nên so với nó thì cả 122 bài đều "sai" (đã chạy và
         # thấy đúng 122 lỗi đó trước khi siết điều kiện này).
         bon = c.get('step_4') or {}
-        khoi_dau = None if bon.get('tests') else bon.get('starterCode')
+        # Bài khai FILE DỮ LIỆU cũng ra khỏi luật 4: `starterCode` của ô chạy
+        # thử có cả khối dữ liệu (nó CHẠY ĐƯỢC ở đây — chỉ /ide là không), nên
+        # nối các khối có cờ sẽ thiếu đúng khối đó. Luật 3 ngay trên vẫn canh
+        # được việc cờ gắn đúng khối, vì nó đếm theo chỉ số.
+        khoi_dau = (None if bon.get('tests') or bon.get('dataFiles')
+                    else bon.get('starterCode'))
         if khoi_dau and co_co and _noi_nhu_build(co_co) != khoi_dau:
             loi(f'{ma}: nối các khối có tryIt KHÔNG ra đúng step_4.starterCode — '
                 'cờ gắn sai khối')
+
+
+def kiem_du_lieu(bai: list[dict]) -> None:
+    """`step_4.dataFiles` — file dữ liệu nạp vào hệ tệp ảo của Pyodide.
+
+    Tám luật, và mỗi luật chặn một cách cơ chế này hỏng IM LẶNG:
+      1. tên phải khớp `TEN_FILE_DU_LIEU` — worker ghép tên vào
+         `/static/da-dulieu/` rồi fetch, nên một tên có `/` là một request đi
+         chỗ khác;
+      2. file phải CÓ THẬT trên đĩa. Thiếu thì worker nhận 404 và cả bài chết ở
+         lần bấm Chạy đầu bằng một câu lỗi hạ tầng người học không gỡ được —
+         còn bộ chấm nội dung thì đỏ, nên luật này chỉ là chặn SỚM hơn;
+      3. không khai trùng;
+      4. bài khai file thì phải CÓ khối code đọc file đó. Khai mà không đọc là
+         bắt mọi học viên của bài tải thêm 1,29 MB cho một file không ai dùng —
+         và nó không hỏng gì cả, nên không có cách nào khác để biết;
+      5. ngược lại: khối nào gọi `read_csv('<tên trong bộ dữ liệu>')` thì bài
+         PHẢI khai tên đó. Đây là luật bắt được lỗi ngược — thêm một đoạn đọc
+         `don_hang.csv` mà quên khai là FileNotFoundError trước mặt học viên;
+      6. khối dữ liệu KHÔNG được mang `trace`: vết sinh bằng CPython ở
+         gen_traces.py, trong thư mục tạm không có file dữ liệu nào (xem
+         `bo_qua` của vet_cua_bai trong build.py);
+      6b. và KHÔNG được mang `tryIt`: /ide chưa nạp được file, nên bàn giao
+         sang đó là `FileNotFoundError` trước mặt người học — xem luật 3 của
+         `kiem_thu_trong_ide` để biết vì sao cả khối SAU nó cũng mất nút;
+      7. bài có BÀI TẬP ĐƯỢC CHẤM thì không được khai file dữ liệu:
+         `check-practice.mjs` chưa có nhánh nạp file, nên ca chấm sẽ trượt ở CI
+         bằng FileNotFoundError. build.py cũng chặn; ở đây chặn lần hai vì đây
+         là phía đối chứng.
+    """
+    co_san = {p.name for p in DU_LIEU.glob('*.csv')} if DU_LIEU.is_dir() else set()
+    for b in bai:
+        ma = b['lesson_code']
+        c = b['content_json']
+        khai = (c.get('step_4') or {}).get('dataFiles') or []
+        bao_cao = b.get('_du_lieu') or {}
+        if sorted(khai) != sorted(bao_cao.get('files') or []):
+            loi(f'{ma}: step_4.dataFiles {khai} lệch với báo cáo {bao_cao.get("files")}')
+        for ten in khai:
+            if not TEN_FILE_DU_LIEU.match(str(ten)):
+                loi(f'{ma}: tên file dữ liệu "{ten}" không phải tên trơn .csv')
+            elif ten not in co_san:
+                loi(f'{ma}: khai file dữ liệu "{ten}" nhưng '
+                    f'frontend/public/static/da-dulieu/ không có — worker nhận 404')
+        if len(set(khai)) != len(khai):
+            loi(f'{ma}: khai trùng tên file dữ liệu: {khai}')
+
+        # Khối nào THẬT SỰ đọc file nào. Dò theo tên file xuất hiện trong code:
+        # mọi cách đọc đều phải gõ tên file ra (`read_csv`, `open`, `Path`), nên
+        # phép dò này không phụ thuộc vào hàm nào được gọi.
+        khoi_code = [k for lat in (c.get('step_1', {}).get('read') or [])
+                     for k in lat if k['type'] == 'code']
+        # Dò trên CẢ tên đã khai, không chỉ tên có trên đĩa: file bị xoá đi thì
+        # luật 2 ở trên đã báo, và nếu ở đây chỉ dò theo đĩa thì cùng một sự cố
+        # còn đẻ thêm một câu "khai thừa" nói ngược sự thật.
+        ten_can_do = co_san | set(khai)
+        doc_file = {ten for ten in ten_can_do
+                    for k in khoi_code if f"'{ten}'" in k['code'] or f'"{ten}"' in k['code']}
+        thua = set(khai) - doc_file
+        if thua:
+            loi(f'{ma}: khai file dữ liệu {sorted(thua)} nhưng không khối code nào '
+                f'đọc chúng — học viên tải thêm một file không ai dùng')
+        thieu = doc_file - set(khai)
+        if thieu:
+            loi(f'{ma}: có khối đọc {sorted(thieu)} nhưng bài KHÔNG khai trong '
+                f'step_4.dataFiles — chạy là FileNotFoundError')
+
+        chi_so = set(bao_cao.get('blocks') or [])
+        for i, k in enumerate(khoi_code):
+            if i in chi_so and k.get('trace'):
+                loi(f'{ma}: khối {i} đọc file dữ liệu mà vẫn có bảng từng bước — '
+                    'vết được sinh ở nơi không có file đó')
+            if i in chi_so and k.get('tryIt'):
+                loi(f'{ma}: khối {i} đọc file dữ liệu mà vẫn có nút Thử-trong-IDE — '
+                    '/ide không có cơ chế nạp file, người học sẽ nhận FileNotFoundError')
+        if khai and (c.get('step_4') or {}).get('tests'):
+            loi(f'{ma}: vừa có ca chấm vừa khai file dữ liệu — check-practice.mjs '
+                'chưa nạp được file, ca chấm sẽ trượt ở CI')
 
 
 def _code_bai_doc(c: dict) -> list[str]:

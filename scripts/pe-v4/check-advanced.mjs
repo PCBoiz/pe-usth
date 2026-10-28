@@ -47,6 +47,21 @@ globalThis.fetch = (u, ...r) => {
   return fetchThat(u, ...r);
 };
 
+// FILE DỮ LIỆU (`step_4.dataFiles`) — bộ chấm NÀY không nạp được. Cùng lý lẽ
+// với scripts/pe-v4/check-pyodide.mjs: pe-v4 đã đóng băng, nên chỗ đúng để nói
+// điều đó là một câu lỗi rõ ràng chứ không phải một nhánh không ai gọi. Ở đây
+// đọc được TẬN content_json, nên luật chạm đúng thứ sẽ vào DB.
+const khaiDuLieu = (bundle.lessons || [])
+  .filter((b) => ((b.content_json?.step_4 || {}).dataFiles || []).length)
+  .map((b) => b.lesson_code);
+if (khaiDuLieu.length) {
+  console.error(
+    `bộ chấm pe-v4 chưa nạp được file dữ liệu, mà ${khaiDuLieu.join(', ')} có khai.\n`
+    + '  → chép nhánh đọc-từ-đĩa trong scripts/pe-da/check-pyodide.mjs sang đây trước.',
+  );
+  process.exit(1);
+}
+
 const py = await loadPyodide({ indexURL: RUNTIME });
 await py.runPythonAsync(harness);
 const grade = py.globals.get('_studio_main');

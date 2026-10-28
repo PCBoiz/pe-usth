@@ -163,6 +163,11 @@ export class PyodideRunner implements Runner {
       tests: request.tests,
       forbid: request.forbid,
       files: request.files,
+      // Tên các file DỮ LIỆU bài khai (step_4.dataFiles). Worker tự tải nội
+      // dung từ /static/da-dulieu/ rồi gộp vào `files` — nội dung KHÔNG đi qua
+      // đây, vì don_hang.csv là 1,29 MB và nó sẽ nằm trong content_json của
+      // mọi lượt mở bài.
+      dataFiles: request.dataFiles ?? [],
       // Giữ nguyên trường stdin của hợp đồng dù lượt này chưa có UI nhập liệu.
       stdin: request.stdin ?? [],
       packages: request.packages ?? [],

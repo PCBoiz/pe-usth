@@ -32,7 +32,7 @@ export type RunResult = {
 /**
  * Một lượt chạy. Các trường này cũng chính là HỢP ĐỒNG THÔNG ĐIỆP với
  * public/static/js/studio-lesson.worker.js — tên trường cố định, đừng đổi:
- *   { code, tests, forbid, files, stdin, packages, contract }
+ *   { code, tests, forbid, files, dataFiles, stdin, packages, contract }
  */
 export type RunRequest = {
   code: string;
@@ -41,6 +41,13 @@ export type RunRequest = {
   forbid: string[];
   /** File đặt sẵn cạnh main.py mỗi lần chạy (chỉ đọc). */
   files: LessonFile[];
+  /**
+   * TÊN các file của bộ dữ liệu quán bài cần (`step_4.dataFiles`). Chỉ tên:
+   * worker tải nội dung từ `/static/da-dulieu/` (cùng origin) rồi gộp vào
+   * `files` trước khi chấm. Nội dung không đi qua đây — xem chú thích ở
+   * studio-lesson.worker.js để biết vì sao (1,29 MB cho một file).
+   */
+  dataFiles?: string[];
   /**
    * Các dòng `input()` sẽ đọc lần lượt. Chưa có UI để học viên tự nhập ở lượt
    * này, nhưng bộ chấm trong worker đã nhận trường này — giữ nguyên để khi

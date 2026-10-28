@@ -36,8 +36,39 @@ const LIMIT_MS = 5000;
 const harness = readFileSync(
   join(ROOT, 'frontend', 'public', 'static', 'js', 'studio-harness.py'), 'utf8');
 const bundle = JSON.parse(readFileSync(join(HERE, 'out', 'lessons.json'), 'utf8'));
-const source = JSON.parse(readFileSync(join(HERE, 'source', 'course.json'), 'utf8'));
-const byId = new Map(source.lessons.map((l) => [l.id, l]));
+
+/**
+ * Thư mục FILE DỮ LIỆU — nhánh ĐỌC-TỪ-ĐĨA của cơ chế nạp file.
+ *
+ * Trong trình duyệt, `studio-lesson.worker.js` lấy các file này bằng
+ * `fetch('/static/da-dulieu/<tên>')` (cùng origin, CSP `connect-src 'self'` của
+ * file worker cho phép). Ở đây KHÔNG được fetch: bộ chấm đã cố ý vá
+ * `globalThis.fetch` để từ chối mọi địa chỉ http(s) — xem khối "CẤM ĐI MẠNG"
+ * dưới đây. Đọc thẳng từ đĩa cũng đúng hơn về mặt bằng chứng: nó chứng minh
+ * CHÍNH file trong repo dùng được, không phải một bản nào đó trên mạng.
+ *
+ * Đổi tên một file dữ liệu đi là bộ chấm ĐỎ ngay ở bài khai nó — đó là phép
+ * ablate của cơ chế này.
+ */
+const DU_LIEU = join(ROOT, 'frontend', 'public', 'static', 'da-dulieu');
+/** Khớp TEN_FILE_DU_LIEU của build.py và TEN_DU_LIEU của worker. */
+const TEN_DU_LIEU = /^[a-z0-9_-]+\.csv$/;
+/** Đọc một lần rồi giữ: 172 bài có thể cùng khai `don_hang.csv` (1,29 MB). */
+const daDoc = new Map();
+
+/**
+ * `files` cho `_studio_main` — cùng hợp đồng mà worker gửi đi:
+ * [{ name, content }] được `_prepare_dir` ghi vào thư mục chạy, nên mã học viên
+ * đọc bằng TÊN TRƠN (`pd.read_csv('mon.csv')`).
+ */
+function fileDuLieu(ten_list) {
+  return (ten_list || []).map((raw) => {
+    const ten = String(raw);
+    if (!TEN_DU_LIEU.test(ten)) throw new Error(`tên file dữ liệu không hợp lệ: ${ten}`);
+    if (!daDoc.has(ten)) daDoc.set(ten, readFileSync(join(DU_LIEU, ten), 'utf8'));
+    return { name: ten, content: daDoc.get(ten) };
+  });
+}
 
 const args = process.argv.slice(2);
 const verbose = args.includes('--verbose');
@@ -92,13 +123,33 @@ const grade = py.globals.get('_studio_main');
 const preload = py.globals.get('_studio_preload');
 const warmed = new Set();
 
-/** Bản code NGƯỜI HỌC đọc — khớp code_hoc_vien() trong build.py. */
-function hocVien(block) {
-  return {
-    code: block.displayCode || block.code,
-    expected: block.displayExpected !== undefined ? block.displayExpected : block.expected,
-    terminal: block.kind === 'terminal' || block.mode === 'manual' || block.displayMode === 'manual',
-  };
+/**
+ * Các khối code của bài, ĐỌC TỪ BẢN DỰNG (không từ `source/course.json`).
+ *
+ * Trước đây hàm này dựng lại từ nguồn và tự chọn `displayCode`/`displayExpected`
+ * như `code_hoc_vien()` của build.py. Nhưng build PHÁT RA cả khối không có
+ * trong nguồn — khối đọc file dữ liệu (`KHOI_DU_LIEU`) đúng như sơ đồ
+ * (`SO_DO_DOC`) và bảng từng bước — nên đọc nguồn là bộ chấm không nhìn thấy
+ * chúng: một đoạn code mới ghi "Kết quả:" sai vẫn xanh CI. Bản dựng cũng là thứ
+ * ĐI VÀO DB, tức đúng thứ người học đọc.
+ *
+ * Khối `terminal` ở bản dựng đã là một LOẠI riêng (build gọi la_lenh_terminal
+ * rồi đặt type), nên không phải dò `kind`/`mode` nữa. Chỉ số khối khớp với
+ * `_blocked` vì cả hai đếm trên cùng dãy khối `code` theo thứ tự đọc.
+ */
+function khoiCodeCuaBai(lesson) {
+  const chan = new Set((lesson._blocked || []).map((b) => b.block));
+  const ra = [];
+  let chiSo = -1;
+  for (const lat of lesson.content_json.step_1?.read || []) {
+    for (const k of lat) {
+      if (k.type !== 'code') continue;
+      chiSo += 1;
+      if (chan.has(chiSo)) continue;  // đoạn này bài đã khai là phải chạy trên máy
+      ra.push({ code: k.code, expected: k.expected });
+    }
+  }
+  return ra;
 }
 
 /**
@@ -154,19 +205,18 @@ for (const lesson of bundle.lessons) {
   // Bài phải chạy trên máy (Tkinter, fork, seaborn…) không có gì để chấm ở đây.
   if (lesson._mode === 'local') continue;
 
-  const goc = byId.get(ma);
-  const chan = new Set((lesson._blocked || []).map((b) => b.block));
-  const khoi = [];
-  let chiSo = -1;
-  for (const b of goc.reading) {
-    if (b.type !== 'code') continue;
-    const hv = hocVien(b);
-    if (hv.terminal) continue;
-    chiSo += 1;
-    if (chan.has(chiSo)) continue;   // đoạn này bài đã khai là phải chạy trên máy
-    khoi.push(hv);
-  }
+  const khoi = khoiCodeCuaBai(lesson);
   if (!khoi.length) continue;
+
+  // FILE DỮ LIỆU của bài. Đọc TRƯỚC khi chạy, và để lỗi nổ thành một mục `hong`
+  // mang tên file — thiếu file là lỗi của bản dựng, không phải lỗi của bài.
+  let fileCuaBai;
+  try {
+    fileCuaBai = fileDuLieu(lesson.content_json.step_4?.dataFiles);
+  } catch (e) {
+    hong.push({ ma, loai: 'thiếu file dữ liệu', chiTiet: String(e.message) });
+    continue;
+  }
 
   // Như worker: tải wheel + import sẵn TRƯỚC khi bấm giờ.
   const khai = lesson.content_json.step_4?.packages || [];
@@ -219,7 +269,7 @@ for (const lesson of bundle.lessons) {
   const mongDoi = chuanHoa(khoi.map((k) => k.expected).filter((e) => e).join('\n'));
 
   const t0 = performance.now();
-  const res = JSON.parse(grade(code, '[]', '[]'));
+  const res = JSON.parse(grade(code, '[]', JSON.stringify(fileCuaBai)));
   const ms = Math.round(performance.now() - t0);
   daChay += 1;
   soDoan += khoi.length;

@@ -480,6 +480,21 @@ export type LessonContractCall = {
 /** File đặt sẵn trong thư mục chạy bài: module cấp sẵn (import được) hoặc dữ liệu (data.txt…). */
 export type LessonFile = { name: string; content: string; kind?: 'module' | 'data' };
 
+/**
+ * Tên một file của BỘ DỮ LIỆU QUÁN (`frontend/public/static/da-dulieu/`).
+ *
+ * Khác `LessonFile` ở đúng một chỗ, và đó là cả lý do nó tồn tại: ở đây chỉ có
+ * TÊN, nội dung nằm trên đĩa và được phục vụ ở cùng origin. `don_hang.csv` là
+ * 1,29 MB — nhúng nó vào `content_json` là bắt mọi lượt mở bài tải nó qua API,
+ * và nhồi nó vào DB. Worker (`studio-lesson.worker.js`) tải theo tên rồi gộp
+ * vào `files` trước khi chấm, nên mã học viên vẫn đọc bằng tên trơn:
+ * `pd.read_csv('mon.csv')`.
+ *
+ * Danh sách trắng nằm ở `src/course-admin/studio-lesson.schema.ts` (cửa duy
+ * nhất vào DB) — bài không khai được một đường dẫn tuỳ ý.
+ */
+export type LessonDataFile = string;
+
 /** "Hợp đồng" của một hàm/method: nhận gì, trả gì, tác dụng phụ — đúng mẫu thẻ hàm của PE v3. */
 export type LessonContract = {
   sig: string;
@@ -507,6 +522,13 @@ export type Step4 = {
   forbid?: string[];
   /** Ghi vào thư mục chạy trước mỗi lần chạy; bộ chấm cho phép thay theo từng ca. */
   files?: LessonFile[];
+  /**
+   * File của bộ dữ liệu quán mà MỌI lần chạy Python của bài này cần có trong
+   * thư mục làm việc. Khai ở cấp BÀI (cạnh `packages`) vì thư mục chạy là của
+   * cả lần chạy, không của từng khối — xem KHOI_DU_LIEU trong
+   * scripts/pe-da/build.py.
+   */
+  dataFiles?: LessonDataFile[];
   contracts?: LessonContract[];
   /**
    * Cửa tự kiểm tra: lời giải chỉ mở sau khi bài được ghi nhận HOÀN THÀNH.

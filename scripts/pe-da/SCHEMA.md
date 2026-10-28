@@ -110,6 +110,75 @@ Quyết định theo `runnable.json` (do khâu kiểm code sinh ra), mỗi bài 
 lưu trữ trong `frontend/public/pyodide/v314.0.7/`. seaborn và plotly KHÔNG có
 wheel ở đó, nên bài dùng chúng là `local`, không phải `pyodide`.
 
+### `step_4.dataFiles` — file dữ liệu nạp vào hệ tệp ảo của Pyodide
+
+```ts
+/** TÊN file trong frontend/public/static/da-dulieu/ — không phải nội dung. */
+dataFiles?: string[];   // vd ['mon.csv', 'quay.csv']
+```
+
+Trước 29/10/2026 **không có đường nào** để một file dữ liệu tới được Pyodide:
+worker chỉ biết `step_4.packages` → `loadPackage`, nên cả 499 khối code của bản
+dựng đều tự dựng dữ liệu tại chỗ (`StringIO` 19 · `BytesIO` 9 · `tempfile` 36 ·
+`open()` 18) và `read_csv` một file thật đếm được đúng **7** lần — không lần nào
+đọc được gì. Bộ dữ liệu quán (`gen_dulieu.py`, tầng 2) nằm sẵn trên đĩa mà không
+bài nào chạm tới được.
+
+**Khai ở cấp BÀI, không ở cấp khối.** Thư mục làm việc là của CẢ LẦN CHẠY:
+`_prepare_dir()` trong `studio-harness.py` tạo một thư mục rồi `chdir` vào đó cho
+toàn bộ chương trình, mà ô "Chạy thử" nối MỌI khối chạy được thành một chương
+trình. "File này chỉ có ở khối 3" là một lời hứa hệ tệp không giữ được. `packages`
+cũng ở cấp bài với cùng một nghĩa — "mọi lần chạy Python của bài này có sẵn thứ
+này" — và hai cơ chế cùng nghĩa mà khác cấp là thứ sẽ lệch.
+
+**Chỉ TÊN, nội dung ở trên đĩa.** `don_hang.csv` là 1,29 MB: nhúng vào
+`content_json` như `step_4.files` (hợp đồng cũ của pe-v4, dành cho fixture vài
+dòng) là nhồi nó vào DB và bắt mọi lượt mở bài tải nó qua API. Tham chiếu theo
+tên thì chỉ bài nào khai mới tải, và tải một lần cho cả phiên.
+
+**Hai nhánh, một kết quả.** Cả hai đều nạp vào CHÍNH tham số `files` của
+`_studio_main` — không thêm hợp đồng thứ hai cho bộ chấm:
+
+| nơi chạy | lấy file bằng | vì sao không dùng cách kia |
+|---|---|---|
+| trình duyệt (`studio-lesson.worker.js`) | `fetch('/static/da-dulieu/<tên>')` | Node không có server nào để fetch |
+| Node (`check-pyodide.mjs`) | `readFileSync` | ba bộ chấm đã vá `fetch` để TỪ CHỐI mọi địa chỉ `http(s)` — xem AGENTS.md |
+
+CSP không phải sửa: `frontend/next.config.ts` đã có entry riêng cho ba file
+worker với `connect-src 'self'`, nên fetch cùng origin được phép (và một địa chỉ
+CDN thì bị chặn — đúng điều phép vá `fetch` ở Node đang mô phỏng).
+
+**Không gzip.** 1,29 MB → 181 KB là hấp dẫn, nhưng `_prepare_dir()` ghi file ở
+chế độ TEXT, nên giải nén phải nằm trong `studio-harness.py` — file dùng chung
+với pe-v4 và với ba bộ chấm. Đổi lấy: một bản `.gz` thứ hai trên đĩa phải giữ
+đồng bộ với bản gốc. Mà phần thắng thì đã có sẵn và đã ĐO: Next.js nén response
+tĩnh (`compress` mặc định `true`) —
+`curl -H 'Accept-Encoding: gzip' /static/da-dulieu/don_hang.csv` trả
+`Content-Encoding: gzip` và **185 075 byte** thay cho 1 289 915 (14,3%).
+
+**Danh sách trắng, ba bản, mỗi bản có lý do riêng:** thư mục
+`frontend/public/static/da-dulieu/` là nguồn sự thật; `build.py`/`check.py` so
+thẳng với nó; `DU_LIEU_HOP_LE` trong `src/course-admin/studio-lesson.schema.ts`
+là bản literal vì backend chạy ở nơi KHÔNG có `frontend/public/`. Bản literal
+được ghim vào thư mục thật bởi `frontend/e2e/unit/data-files.test.mjs`.
+
+**Khối đọc file dữ liệu KHÔNG có nút "Thử ngay trong IDE" và KHÔNG có bảng từng
+bước**, và cả bài cũng mất nút từ khối đó trở đi: /ide chưa có cơ chế nạp file
+(bàn giao sang đó là `FileNotFoundError` trước mặt người học), còn vết thì sinh
+bằng CPython ở `gen_traces.py` trong một thư mục tạm không có file nào. Mã bàn
+giao là TIỀN TỐ, nên một khối cần dữ liệu làm mọi khối SAU nó cũng không bàn
+giao được.
+
+**Bài có `tests` (bài tập được chấm) chưa được khai `dataFiles`** —
+`check-practice.mjs` chưa có nhánh nạp file, nên ca chấm sẽ trượt ở CI bằng
+`FileNotFoundError`. build.py dừng hẳn và check.py báo lỗi; thêm nhánh đó vào
+`check-practice.mjs` trước khi bỏ luật này. Đây là việc đầu tiên phải làm khi
+module thực hành (module 11) cần bộ dữ liệu.
+
+Hôm nay đúng **một** bài dùng: PD13 ("JSON và Excel: chọn đúng bảng cần đọc") đọc
+`mon.csv` + `quay.csv`. Khai báo nằm ở `KHOI_DU_LIEU` trong `build.py`, không
+phải trường mới của `source/course.json` — cùng lý lẽ với `SO_DO_DOC`.
+
 ## Không khai gì nữa
 
 `step_1.brief`, `step_1.theory`, `step_2.mcq`, `step_3.*`, `play`, `step_4.tests`,

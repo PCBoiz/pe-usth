@@ -3,13 +3,13 @@
  "sort_order": 54,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
- "subtitle": "Trung cấp · M3 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Trung cấp · M3 · 17 phút",
+ "estimated_minutes": 17,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD13 · JSON và Excel: chọn đúng bảng cần đọc",
-  "subtitle": "Trung cấp · M3 · 15 phút",
+  "subtitle": "Trung cấp · M3 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD13",
@@ -51,10 +51,21 @@
       "type": "code",
       "code": "import pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\nwith pd.ExcelWriter(buffer, engine='openpyxl') as writer:\n    pd.DataFrame({'amount': [10]}).to_excel(writer, sheet_name='Sales', index=False)\n    pd.DataFrame({'target': [20]}).to_excel(writer, sheet_name='Targets', index=False, startrow=1)\nbuffer.seek(0)\nwith pd.ExcelFile(buffer, engine='openpyxl') as book:\n    print(book.sheet_names)\n    print(book.parse(sheet_name=0, usecols=['amount']).loc[0, 'amount'])\n    target = book.parse(sheet_name='Targets', usecols=[0], skiprows=[0], names=['weekly_target'])\n    print(target.loc[0, 'weekly_target'])",
       "expected": "['Sales', 'Targets']\n10\n20"
-     },
+     }
+    ],
+    [
      {
       "type": "paragraph",
       "text": "ExcelFile giúp xem tên sheet rồi đọc đúng bảng. book.parse(sheet_name=0) và pd.read_excel(book, sheet_name=0) là hai cách đọc tương đương; số 0 chọn sheet đầu, còn chuỗi \"Sales\" chọn theo tên. Targets có một hàng trống đầu file do startrow=1 lúc ghi; skiprows=[0] bỏ hàng đó, còn names đặt tên cột đọc vào. Trong tờ tóm tắt cũ, parse_cols chọn cột; tham số hiện hành là usecols. Không đổi parse thành một API đã bị bỏ: ExcelFile.parse vẫn có trong tài liệu pandas ổn định được kiểm khi biên tập. Đừng mặc định sheet đầu luôn là bảng cần dùng; nó có thể chỉ là hướng dẫn."
+     },
+     {
+      "type": "paragraph",
+      "text": "Hai bảng tra của quán có THẬT trong thư mục của bài này: `mon.csv` giữ giá niêm yết từng món, `quay.csv` giữ ba quầy. Khi file đã nằm cạnh chương trình thì `pd.read_csv` nhận luôn tên file — không cần `StringIO` như các ví dụ ở trên. Việc đầu tiên vẫn là xem bảng nào có cột mình cần, chứ không phải đọc cả hai rồi mới tính."
+     },
+     {
+      "type": "code",
+      "code": "import pandas as pd\n\nmon = pd.read_csv('mon.csv')\nquay = pd.read_csv('quay.csv')\nprint(mon.shape, quay.shape)\nprint(list(mon.columns))\nprint(mon.groupby('nhom')['gia_niem_yet'].mean().astype(int).to_dict())\nprint(quay.loc[0, 'ten'])\n",
+      "expected": "(12, 4) (3, 4)\n['mon', 'ten_mon', 'nhom', 'gia_niem_yet']\n{'Bánh': 28500, 'Cà phê': 34571, 'Trà': 40500, 'Đá xay': 49000}\nQuầy mặt phố"
      }
     ]
    ],
@@ -149,11 +160,15 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (openpyxl chưa có wheel trong /pyodide/v314.0.7/) nên không nằm trong ô này."
    },
-   "starterCode": "import pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))\n",
+   "starterCode": "# ── Đoạn 1 ──\nimport pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))\n\n# ── Đoạn 2 ──\nimport pandas as pd\n\nmon = pd.read_csv('mon.csv')\nquay = pd.read_csv('quay.csv')\nprint(mon.shape, quay.shape)\nprint(list(mon.columns))\nprint(mon.groupby('nhom')['gia_niem_yet'].mean().astype(int).to_dict())\nprint(quay.loc[0, 'ten'])\n",
    "packages": [
     "pandas"
    ],
-   "env": "2 đoạn phải chạy bằng Python trên máy: openpyxl chưa có wheel trong /pyodide/v314.0.7/."
+   "env": "2 đoạn phải chạy bằng Python trên máy: openpyxl chưa có wheel trong /pyodide/v314.0.7/.",
+   "dataFiles": [
+    "mon.csv",
+    "quay.csv"
+   ]
   }
  },
  "_mode": "mixed",
@@ -167,6 +182,15 @@
    "reason": "openpyxl chưa có wheel trong /pyodide/v314.0.7/"
   }
  ],
+ "_du_lieu": {
+  "files": [
+   "mon.csv",
+   "quay.csv"
+  ],
+  "blocks": [
+   3
+  ]
+ },
  "_so_mcq": 3,
  "_bai_tap": "khong: openpyxl chưa có wheel trong /pyodide/v314.0.7/",
  "_vet": {

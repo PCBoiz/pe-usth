@@ -61,6 +61,51 @@ let runtime = null;
 // lần chạy. `tzdata` thì ngược lại — `zoneinfo` là stdlib nhưng RỖNG dữ liệu
 // múi giờ, phải tải gói mới tra được "Asia/Ho_Chi_Minh".
 const PACKAGES = { numpy: 'numpy', pandas: 'pandas', matplotlib: 'matplotlib', tzdata: 'zoneinfo' };
+
+// ───────────────────────────── FILE DỮ LIỆU ─────────────────────────────
+//
+// Bộ dữ liệu quán (frontend/public/static/da-dulieu/) phục vụ ở CÙNG ORIGIN.
+// Bài khai `step_4.dataFiles: ["mon.csv", …]`; worker tải chúng rồi gộp vào
+// CHÍNH trường `files` mà bộ chấm đã nhận từ trước — `_prepare_dir` trong
+// studio-harness.py ghi mỗi file vào thư mục chạy rồi `chdir` vào đó, nên mã
+// học viên đọc bằng TÊN TRƠN: `pd.read_csv('mon.csv')`.
+//
+// Vì sao KHÔNG nhúng nội dung vào `content_json` như `step_4.files` của pe-v4:
+// `don_hang.csv` là 1,29 MB. Nhúng là bắt MỌI lượt mở bài tải nó qua API và
+// nằm trong DB; tham chiếu theo tên thì chỉ bài nào khai mới tải, và tải một
+// lần cho cả phiên (`daTaiDuLieu`).
+//
+// CSP: file worker có entry riêng trong frontend/next.config.ts với
+// `connect-src 'self'`, nên fetch cùng origin đã được phép — KHÔNG phải mở
+// thêm gì. Đừng đổi sang một origin khác (CDN): nó sẽ bị chặn ở trình duyệt
+// trong khi vẫn chạy được dưới Node, đúng cái bẫy mà ba bộ chấm vá `fetch` để
+// khỏi mắc lại.
+const DU_LIEU_DIR = '/static/da-dulieu/';
+// Tên file TRƠN, chữ thường, chỉ .csv. Khớp TEN_FILE_DU_LIEU của
+// scripts/pe-da/build.py và DU_LIEU_HOP_LE của studio-lesson.schema.ts. Cổng
+// thật là danh sách trắng ở schema (cửa duy nhất vào DB); regex ở đây chặn
+// đường `../` nếu có ai nhồi được một tên lạ vào thông điệp.
+const TEN_DU_LIEU = /^[a-z0-9_-]+\.csv$/;
+/** Nội dung đã tải, GIỮ LẠI giữa các lần chạy như `warmed` của gói. */
+const daTaiDuLieu = new Map();
+
+/** [{name, content}] cho bộ chấm. Ném nếu thiếu file — KHÔNG chạy tiếp lặng lẽ. */
+async function taiDuLieu(names) {
+  const ra = [];
+  for (const raw of names) {
+    const ten = String(raw);
+    if (!TEN_DU_LIEU.test(ten)) throw new Error(`tên file dữ liệu không hợp lệ: ${ten}`);
+    if (!daTaiDuLieu.has(ten)) {
+      const r = await fetch(DU_LIEU_DIR + ten, { cache: 'force-cache' });
+      // Thiếu file thì PHẢI nổ ở đây. Để nó chạy tiếp là mã học viên nhận
+      // FileNotFoundError ở giữa bài và họ đi tìm lỗi trong code của mình.
+      if (!r.ok) throw new Error(`không tải được dữ liệu ${ten} (${r.status})`);
+      daTaiDuLieu.set(ten, await r.text());
+    }
+    ra.push({ name: ten, content: daTaiDuLieu.get(ten), kind: 'data' });
+  }
+  return ra;
+}
 const IMPORT_TO_PACKAGE = Object.fromEntries(Object.entries(PACKAGES).map(([pkg, mod]) => [mod, pkg]));
 /** Gói đã tải VÀ đã import sẵn trong runtime đang giữ. */
 const warmed = new Set();
@@ -150,6 +195,8 @@ self.onmessage = async ({ data }) => {
     const tests = Array.isArray(data.tests) ? data.tests : [];
     const forbid = Array.isArray(data.forbid) ? data.forbid : [];
     const files = Array.isArray(data.files) ? data.files : [];
+    // Tên file dữ liệu bài khai (step_4.dataFiles) — nội dung tải ở dưới.
+    const dataFiles = Array.isArray(data.dataFiles) ? data.dataFiles : [];
     // stdin: các dòng input() sẽ đọc lần lượt. Hợp đồng với phía React —
     // tên trường này cố định, đừng đổi.
     const stdin = Array.isArray(data.stdin) ? data.stdin.map(String) : [];
@@ -187,6 +234,12 @@ self.onmessage = async ({ data }) => {
         await warmPackages(py, missing);
       }
     }
+    // FILE DỮ LIỆU: tải TRƯỚC khi báo 'ready'. Vì sao đúng chỗ này — phía React
+    // bắt đầu đếm 5 giây của học viên từ lúc nhận 'ready' (DEFAULT_LIMITS.execMs),
+    // nên một file 1,29 MB tải sau đó sẽ ăn vào hạn chạy của họ. Trước 'ready'
+    // thì nó nằm trong hạn NẠP (readyMs 60 s), đúng chỗ của việc tải thư viện —
+    // cùng bài học mà `loadPackage` đã học được (xem warmPackages).
+    const fileDuLieu = dataFiles.length ? await taiDuLieu(dataFiles) : [];
     // Print nào lọt ra ngoài bộ chấm (hiếm) vẫn được giữ lại để hiện cho học
     // viên. Dọn trước mỗi lần chạy vì runtime nay dùng lại giữa các lần.
     box.stray = '';
@@ -194,7 +247,11 @@ self.onmessage = async ({ data }) => {
     const started = performance.now();
     const grade = py.globals.get('_studio_main');
     const result = JSON.parse(
-      grade(String(data.code), JSON.stringify(tests), JSON.stringify(files), JSON.stringify(stdin),
+      // File dữ liệu đứng TRƯỚC `files` của bài: bộ chấm dựng một dict theo tên
+      // nên mục sau ghi đè mục trước, và nội dung do tác giả viết thẳng trong
+      // bài là thứ cụ thể hơn — nó phải thắng.
+      grade(String(data.code), JSON.stringify(tests),
+        JSON.stringify([...fileDuLieu, ...files]), JSON.stringify(stdin),
         'null', JSON.stringify(contract)),
     );
     grade.destroy();

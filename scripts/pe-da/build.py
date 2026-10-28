@@ -62,6 +62,90 @@ ANH_URL = '/static/da/'
 IMPORTED_AT = '2026-10-24T00:00:00+00:00'
 
 # ---------------------------------------------------------------------------
+# FILE DỮ LIỆU — bộ dữ liệu quán, nạp vào hệ tệp ảo của Pyodide
+#
+# Trước bản này KHÔNG có đường nào để một file dữ liệu tới được Pyodide: worker
+# chỉ biết `step_4.packages` → `loadPackage`, và cả 499 khối code của bản dựng
+# đều tự dựng dữ liệu tại chỗ (`StringIO`, `tempfile`, `df = pd.DataFrame(...)`)
+# — `read_csv` một file thật xuất hiện đúng 7 lần, và không lần nào đọc được gì.
+#
+# Khai ở CẤP BÀI (`step_4.dataFiles`), không ở cấp khối, vì ba lý do đo được:
+#   · thư mục làm việc là của CẢ LẦN CHẠY. `_prepare_dir` trong
+#     studio-harness.py tạo một thư mục rồi `chdir` vào đó cho toàn bộ chương
+#     trình, mà ô "Chạy thử" nối MỌI khối chạy được thành một chương trình —
+#     nên "file này chỉ có ở khối 3" là một lời hứa hệ tệp không giữ được;
+#   · `packages` đã ở cấp bài và cùng một ý nghĩa ("mọi lần chạy Python của bài
+#     này có sẵn thứ này"). Hai cơ chế cùng nghĩa mà khác cấp là thứ sẽ lệch;
+#   · bộ chấm nội dung (check-pyodide.mjs) chạy DỒN các khối của bài thành một
+#     chương trình, nên nó cũng chỉ hỏi được câu "bài này cần file nào".
+#
+# ĐƯỜNG DẪN TRONG CODE HỌC VIÊN LÀ TÊN FILE TRƠN (`pd.read_csv('mon.csv')`):
+# người học đang học pandas, không học đường dẫn của website này. File được ghi
+# vào chính thư mục chạy nên tên trơn là đúng.
+#
+# Danh sách trắng KHÔNG phải một hằng ở đây mà là CHÍNH THƯ MỤC dưới đây: bài
+# chỉ khai được tên file có thật trong đó, và `main()` chặn ở khâu dựng. Lý do
+# không chép thành danh sách thứ hai trong file này: ba chỗ (thư mục, bản literal
+# ở studio-lesson.schema.ts, luật ở check.py) đã là nhiều nhất còn canh được —
+# bản literal ở schema là bắt buộc vì backend chạy ở nơi KHÔNG có frontend/public.
+DU_LIEU_DICH = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da-dulieu'
+# Dùng cho thông báo lỗi; đường fetch thật nằm trong studio-lesson.worker.js.
+DU_LIEU_URL = '/static/da-dulieu/'
+# Chỉ CSV, chữ thường, không đường dẫn. `-` có trong `coffee-sales-cc0.csv`.
+# Khớp TEN_DU_LIEU của worker và DU_LIEU_HOP_LE của studio-lesson.schema.ts.
+TEN_FILE_DU_LIEU = re.compile(r'^[a-z0-9_-]+\.csv$')
+
+# Khối đọc file dữ liệu, PHÁT TỪ BUILD — hôm nay đúng MỘT bài.
+#
+# Vì sao bảng nằm ở đây và không thành trường mới trong `source/course.json`:
+# cùng lý lẽ đã viết cho SO_DO_DOC bên dưới — gói nội dung còn được giao lại
+# nhiều lần, và đây là PHÉP THỬ cho cơ chế nạp file, không phải một đặc tả.
+# Ngày module thực hành (module 11) cần bộ dữ liệu này cho cả chục bài thì
+# chuyển khai báo sang gói nguồn, đừng nuôi bảng này thành danh bạ.
+#
+# Vì sao PD13 chứ không PD12: bài nào có BÀI TẬP ĐƯỢC CHẤM thì `step_4` là bài
+# tập đó, nên mã bài đọc KHÔNG còn được học viên chạy trong trình duyệt — khối
+# dữ liệu đặt ở đó chỉ chạy dưới Node (check-pyodide.mjs) và lại thành một thứ
+# "dựng rồi mà không ai tới được". PD13 là bài pandas duy nhất mà bài tập của
+# gói không chấm được (openpyxl thiếu wheel), nên `step_4` của nó vẫn là ô
+# "Chạy thử" nối các khối chạy được — tức khối dưới đây CÓ người bấm Chạy. Chủ
+# đề cũng khớp: "chọn đúng bảng cần đọc".
+#
+# Khối được CHÈN VÀO CUỐI phần đọc, không chèn theo chỉ số: nguồn còn được viết
+# lại, và một khoá theo chỉ số khối sẽ trôi im lặng.
+KHOI_DU_LIEU: dict[str, dict] = {
+    'PD13': {
+        'files': ['mon.csv', 'quay.csv'],
+        'paragraph':
+            'Hai bảng tra của quán có THẬT trong thư mục của bài này: '
+            '`mon.csv` giữ giá niêm yết từng món, `quay.csv` giữ ba quầy. Khi '
+            'file đã nằm cạnh chương trình thì `pd.read_csv` nhận luôn tên '
+            'file — không cần `StringIO` như các ví dụ ở trên. Việc đầu tiên '
+            'vẫn là xem bảng nào có cột mình cần, chứ không phải đọc cả hai '
+            'rồi mới tính.',
+        'code': (
+            "import pandas as pd\n"
+            "\n"
+            "mon = pd.read_csv('mon.csv')\n"
+            "quay = pd.read_csv('quay.csv')\n"
+            "print(mon.shape, quay.shape)\n"
+            "print(list(mon.columns))\n"
+            "print(mon.groupby('nhom')['gia_niem_yet'].mean().astype(int).to_dict())\n"
+            "print(quay.loc[0, 'ten'])\n"
+        ),
+        # Kết quả THẬT, do `node scripts/pe-da/check-pyodide.mjs PD13` đo trên
+        # chính Pyodide của trình duyệt. Đừng sửa bằng tay: sửa là tự tạo ra
+        # đúng loại lỗi bộ chấm đó tồn tại để bắt.
+        'expected': (
+            "(12, 4) (3, 4)\n"
+            "['mon', 'ten_mon', 'nhom', 'gia_niem_yet']\n"
+            "{'Bánh': 28500, 'Cà phê': 34571, 'Trà': 40500, 'Đá xay': 49000}\n"
+            "Quầy mặt phố"
+        ),
+    },
+}
+
+# ---------------------------------------------------------------------------
 # Chạy được trong trình duyệt hay không
 #
 # Phân loại nằm NGAY TRONG build (không đọc file ngoài) để lần dựng nào cũng ra
@@ -806,8 +890,16 @@ def bam_code(chay_duoc: list[str]) -> str:
 
 def vet_cua_bai(ma_bai: str, module_so: int, khoi_code: list[dict],
                 phan_loai: list[tuple[bool, str]], chay_duoc: list[str],
-                vet_bai: dict | None) -> tuple[dict[int, dict], dict]:
+                vet_bai: dict | None,
+                bo_qua: set[int] | None = None) -> tuple[dict[int, dict], dict]:
     """({id(khối) -> vết}, báo cáo đối chiếu). KHÔNG tự chạy tracer.
+
+    `bo_qua` = chỉ số các khối KHÔNG được ghi vết: hôm nay là các khối đọc file
+    dữ liệu (KHOI_DU_LIEU). Không phải để cho tiện — `gen_traces.py` chạy tracer
+    bằng CPython trên máy, trong một thư mục tạm KHÔNG có file dữ liệu nào, nên
+    "bảng từng bước" của một khối `pd.read_csv('mon.csv')` sẽ là một
+    FileNotFoundError. Giữ chúng ngoài cũng giữ `codeHash` của 128 bài đã sinh
+    vết không đổi, tức thêm một khối dữ liệu không bắt sinh lại vết cả khoá.
 
     CỔNG CHỐNG "BUILT BUT UNREACHABLE". Repo này đã dính bốn lần (bộ ghi vết
     không bài nào tới, nút "Try it Yourself" không màn nào mount, 13 màn tối,
@@ -825,7 +917,8 @@ def vet_cua_bai(ma_bai: str, module_so: int, khoi_code: list[dict],
         bài" của `kiem_so_do`;
       · thiếu/thừa khoá khối → lệch chỉ số, tức bảng của đoạn 2 nằm dưới đoạn 3.
     """
-    du = [i for i, (ok, _) in enumerate(phan_loai) if ok]
+    bo_qua = bo_qua or set()
+    du = [i for i, (ok, _) in enumerate(phan_loai) if ok and i not in bo_qua]
     co_quyen = module_so >= MODULE_DAU_TIEN_CO_VET and bool(du)
     bao_cao: dict = {'can': len(du) if co_quyen else 0, 'co': 0, 'bo': 0, 'loi': []}
     if not co_quyen:
@@ -937,7 +1030,22 @@ def cau_luyen(bai: dict) -> list[dict]:
 def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
              ten_theo_id: dict[str, str], bai_tap: dict | None = None,
              mcq: dict | None = None, vet_bai: dict | None = None) -> dict:
+    # Khối đọc file dữ liệu được CHÈN VÀO CUỐI phần đọc (xem KHOI_DU_LIEU).
+    # Danh sách mới, không sửa `bai['reading']` tại chỗ: nguồn được đọc một lần
+    # và dùng cho cả báo cáo đối chiếu, nên làm bẩn nó là làm lệch phép so.
     reading = bai['reading']
+    khai_du_lieu = KHOI_DU_LIEU.get(bai['id'])
+    # id() của các khối cần file dữ liệu — cùng cơ chế định vị khối mà
+    # `thu_duoc`/`so_do`/`vet` đang dùng, không thêm cách thứ hai.
+    can_du_lieu: set[int] = set()
+    if khai_du_lieu:
+        khoi_moi = {'type': 'code', 'code': khai_du_lieu['code'],
+                    'expected': khai_du_lieu['expected']}
+        can_du_lieu.add(id(khoi_moi))
+        reading = reading + [
+            {'type': 'paragraph', 'text': khai_du_lieu['paragraph']},
+            khoi_moi,
+        ]
     man = chia_man(reading)
     luyen = cau_luyen(bai)
     trac_nghiem = cau_trac_nghiem(mcq, bai['id']) if mcq else []
@@ -957,6 +1065,9 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         phan_loai.append((False, lech) if lech else phan_loai_khoi(c))
     chay_duoc = [c for c, (ok, _) in zip(codes, phan_loai) if ok]
     chan = [(i, ly_do) for i, (ok, ly_do) in enumerate(phan_loai) if not ok]
+    # Chỉ số các khối CẦN FILE DỮ LIỆU, tính trên cùng `khoi_code` mà `_blocked`
+    # đếm trên — để check.py đối chiếu được bằng một con số, không phải bằng id().
+    chi_so_du_lieu = [i for i, k in enumerate(khoi_code) if id(k) in can_du_lieu]
 
     if not codes:
         mode = 'local'
@@ -979,13 +1090,27 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     # `chia_man` chia lại CHÍNH các dict trong `reading` (không chép), nên khoá
     # theo id() còn đúng tới hết hàm. Phép phân loại đã tính ở `phan_loai` ngay
     # trên — ở đây chỉ nối nó tới từng khối.
-    thu_duoc = {id(k): ok for k, (ok, _) in zip(khoi_code, phan_loai)}
+    #
+    # NÚT "THỬ NGAY TRONG IDE" TẮT TỪ KHỐI DỮ LIỆU TRỞ ĐI. /ide chưa có cơ chế
+    # nạp file dữ liệu, nên bàn giao một đoạn `pd.read_csv('mon.csv')` sang đó
+    # là mở tab mới để người học đọc `FileNotFoundError` — đúng cái nút này ra
+    # đời để tránh. Và vì mã bàn giao là TIỀN TỐ (`maDeThu` gộp mọi khối tryIt
+    # từ đầu bài tới khối được bấm), một khối cần dữ liệu làm mọi khối SAU nó
+    # cũng không bàn giao được: thiếu đúng dòng đọc file trong tiền tố.
+    dau_du_lieu = min(chi_so_du_lieu) if chi_so_du_lieu else len(khoi_code)
+    thu_duoc = {id(k): ok and i < dau_du_lieu
+                for i, (k, (ok, _)) in enumerate(zip(khoi_code, phan_loai))}
     # Sơ đồ DOM của màn đọc, khoá theo cùng id() — xem SO_DO_DOC để biết vì sao
     # bảng nằm trong build.py chứ không thành trường mới của course.json.
     so_do = {id(k): SO_DO_DOC[(ma_bai, i)]
              for i, k in enumerate(khoi_code) if (ma_bai, i) in SO_DO_DOC}
+    # `chay_duoc` cho vết KHÔNG gồm khối dữ liệu: chương trình gen_traces.py đã
+    # ghi vết là chương trình KHÔNG có chúng, nên `codeHash` phải tính trên
+    # đúng chuỗi đó (xem `bo_qua` trong vet_cua_bai).
+    chay_duoc_vet = [c for i, (c, (ok, _)) in enumerate(zip(codes, phan_loai))
+                     if ok and i not in set(chi_so_du_lieu)]
     vet, vet_bao_cao = vet_cua_bai(ma_bai, module_so, khoi_code, phan_loai,
-                                   chay_duoc, vet_bai)
+                                   chay_duoc_vet, vet_bai, set(chi_so_du_lieu))
     step_1: dict = {
         'read': [[r for k in lat for r in khoi_doc(k, thu_duoc, so_do, vet)]
                  for lat in man],
@@ -1033,6 +1158,20 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     if 'step_4' not in noi_dung:
         noi_dung['step_4'] = dung_sandbox(mode, ly_do_bai, chay_duoc, chan)
 
+    # FILE DỮ LIỆU: khai ở cấp bài, cạnh `packages`, vì cùng một ý nghĩa —
+    # "mọi lần chạy Python của bài này có sẵn thứ này trong thư mục làm việc".
+    if khai_du_lieu:
+        if noi_dung['step_4'].get('tests'):
+            # Chặn ở khâu dựng chứ không để nó hỏng im lặng: bộ chấm bài tập
+            # (`check-practice.mjs`) chưa có nhánh nạp file, nên một bài tập
+            # được chấm mà đọc file dữ liệu sẽ trượt hết ca ở CI bằng
+            # FileNotFoundError — hoặc tệ hơn, chấm đúng trong trình duyệt và
+            # đỏ ở CI. Thêm nhánh đó vào check-practice.mjs TRƯỚC khi bỏ dòng này.
+            raise SystemExit(
+                f'LỖI: {ma_bai} vừa có bài tập được chấm vừa khai file dữ liệu — '
+                'check-practice.mjs chưa nạp được file, xem KHOI_DU_LIEU.')
+        noi_dung['step_4']['dataFiles'] = list(khai_du_lieu['files'])
+
     return {
         'lesson_code': ma,
         'sort_order': thu_tu,
@@ -1045,6 +1184,13 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         # Không vào DB — chỉ để check.py và báo cáo đối chiếu.
         '_mode': mode,
         '_blocked': [{'block': i, 'reason': r} for i, r in chan],
+        # Không vào DB — khối nào CẦN FILE DỮ LIỆU (chỉ số trên cùng dãy khối
+        # code mà `_blocked` đếm trên) và bài khai những file nào. check.py đối
+        # chiếu cả hai với đĩa và với cờ `tryIt`. CHỈ phát ở bài có khai: một
+        # khoá `null` ở 171 bài còn lại chỉ làm bản dựng nặng thêm và làm diff
+        # của mọi lần dựng sau này lớn hơn chính thay đổi của nó.
+        **({'_du_lieu': {'files': list(khai_du_lieu['files']),
+                         'blocks': chi_so_du_lieu}} if khai_du_lieu else {}),
         # Không vào DB — chỉ để check.py và báo cáo đối chiếu.
         '_so_mcq': len(trac_nghiem),
         # '_bai_tap' nói bài này có bài tập được chấm hay không, và vì sao
@@ -1193,6 +1339,32 @@ def main() -> int:
               f'{so_do_phat} — có khoá không trúng khối code nào '
               f'(mã bài sai, hoặc chỉ số khối lệch).')
         return 1
+
+    # FILE DỮ LIỆU: mọi khai báo phải TRÚNG một file có thật trong thư mục được
+    # phục vụ, và mọi bài khai trong KHOI_DU_LIEU phải phát ra được khai báo đó.
+    #
+    # Vì sao là LỖI chứ không cảnh báo: khai một tên file không có trên đĩa thì
+    # worker nhận 404, và cả bài chết ở lần bấm Chạy đầu với một câu lỗi hạ tầng
+    # — thứ không ai gỡ được từ phía người học. Và đây là chỗ DUY NHẤT trong
+    # khâu dựng còn nhìn thấy đĩa: schema ở backend phải mang bản literal vì nó
+    # chạy ở nơi không có frontend/public.
+    phat_du_lieu = {b['lesson_code']: b['content_json']['step_4'].get('dataFiles')
+                    for b in bai_ra if b['content_json']['step_4'].get('dataFiles')}
+    if set(phat_du_lieu) != set(KHOI_DU_LIEU):
+        print(f'LỖI: KHOI_DU_LIEU khai {sorted(KHOI_DU_LIEU)} nhưng bản dựng '
+              f'phát khai báo file cho {sorted(phat_du_lieu)} — mã bài sai.')
+        return 1
+    for ma_bai, ten_files in sorted(phat_du_lieu.items()):
+        for ten in ten_files:
+            if not TEN_FILE_DU_LIEU.match(ten):
+                print(f'LỖI: {ma_bai} khai file dữ liệu "{ten}" — tên phải khớp '
+                      f'{TEN_FILE_DU_LIEU.pattern} (tên trơn, chữ thường, .csv).')
+                return 1
+            if not (DU_LIEU_DICH / ten).is_file():
+                print(f'LỖI: {ma_bai} khai file dữ liệu "{ten}" nhưng '
+                      f'{DU_LIEU_DICH / ten} không có — worker sẽ nhận 404 '
+                      f'({DU_LIEU_URL}{ten}).')
+                return 1
 
     # BẢNG TỪNG BƯỚC: số vết PHÁT RA phải bằng số khối đủ điều kiện trừ số khối
     # khâu sinh đã bỏ qua. Đây là cổng chống "built but unreachable" — xem
