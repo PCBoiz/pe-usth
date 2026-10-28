@@ -353,7 +353,17 @@ export default function StudioLesson({
   }
 
   function leave() {
-    window.location.assign(`/courses/${courseId}`);
+    // Mang theo chỉ số bài để trang khoá học mở đúng module chứa nó. Một
+    // người thử ngày 27/10: "khi mà t click vào dấu x để tắt hoặc về trang thì
+    // nó lại mở full list mục 1 và t lại phải tìm lại bài nếu t học mục 2,3".
+    // Tức đường ra duy nhất của màn bài học luôn thả người ta xuống đầu khoá
+    // 172 bài.
+    //
+    // `lessonNo - 1` vì hai bên đánh số LỆCH NHAU: `lessonNo` là `sort_order`
+    // đếm từ 1, còn link ở trang khoá học là chỉ số phẳng đếm từ 0. Quên trừ
+    // thì nó mở đúng module trong hầu hết trường hợp nên trông như chạy được,
+    // chỉ sai ở bài ĐẦU của mỗi module — đúng kiểu lỗi không ai thấy.
+    window.location.assign(`/courses/${courseId}?lesson=${lessonNo - 1}`);
   }
 
   // ---------- Vỏ ----------

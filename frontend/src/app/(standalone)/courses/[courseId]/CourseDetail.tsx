@@ -21,11 +21,12 @@
 // Cũng không còn nạp course_detail.js/edu-chrome.js: hai file đó chỉ phục vụ nút
 // Đăng ký, goLesson() và chuông thông báo của Sidebar/HeaderBar đã gỡ.
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import PageStyles from '@/components/PageStyles';
 import SiteHeader from '@/components/SiteHeader';
 import { findCourse, LEVEL_LABEL } from '@/lib/catalog';
+import { moduleChuaBai } from '@/lib/curriculum-nav';
 import CURRICULA_JSON from '@/lib/curricula.json';
 
 import styles from '@/components/CourseShell.module.css';
@@ -85,6 +86,71 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
    * đúng. Khoá theo chỉ số module; module đầu mở sẵn.
    */
   const [openModules, setOpenModules] = useState<Record<number, boolean>>({});
+  /**
+   * Module mở SẴN khi chưa ai bấm gì. Trước đây ghim cứng là module 0, và một
+   * người thử ngày 27/10 nêu đúng cái giá của nó:
+   *
+   *   "khi mà t click vào dấu x để tắt hoặc về trang thì nó lại mở full list
+   *    mục 1 và t lại phải tìm lại bài nếu t học mục 2,3"
+   *
+   * Tức nút đóng bài — đường ra duy nhất của màn bài học — luôn thả người học
+   * xuống đầu khoá 172 bài. Nay bài học mang theo `?lesson=` khi đóng, và
+   * effect dưới đây mở đúng module chứa bài đó.
+   */
+  const [moduleMacDinh, setModuleMacDinh] = useState(0);
+
+  /** Bài cần cuộn tới, suy từ `?lesson=`. -1 = không có yêu cầu nào. */
+  const [baiCanCuon, setBaiCanCuon] = useState(-1);
+
+  /**
+   * Đọc `?lesson=` sau khi đã hydrate, KHÔNG trong `useState(() => ...)`:
+   * trang này là SSG, máy chủ dựng HTML với module 0 mở — khởi tạo state từ
+   * `window` làm hai bên lệch nhau và React cảnh báo hydration mismatch. Và
+   * KHÔNG dùng `useSearchParams()`: nó buộc trang rời khỏi dạng tĩnh.
+   */
+  useEffect(() => {
+    const raw = new URLSearchParams(window.location.search).get('lesson');
+    const idx = Number(raw);
+    if (raw === null) return;
+    const mi = moduleChuaBai(CURRICULA[courseId]?.modules ?? [], idx);
+    if (mi < 0) return;
+    // setState trong một timer, KHÔNG gọi thẳng trong thân effect: React 19
+    // chặn chuyện đó (`react-hooks/set-state-in-effect` — "cascading renders"),
+    // và đây là khuôn mà chỗ khác trong repo đã dùng cho cùng loại việc (cờ
+    // cold-start ở StudioLesson). Nhịp trễ không thêm nháy nào: trang này là
+    // SSG nên máy chủ KHÔNG biết `?lesson=`, một nhịp module 1 mở trước là
+    // không tránh được dù viết cách nào.
+    const t = setTimeout(() => {
+      setModuleMacDinh(mi);
+      setBaiCanCuon(idx);
+    }, 0);
+    return () => clearTimeout(t);
+  }, [courseId]);
+
+  /**
+   * Cuộn tới bài — effect RIÊNG, phụ thuộc `moduleMacDinh`, không phải một
+   * `requestAnimationFrame` nhét trong effect ở trên. Đã thử cách đó và đo
+   * được `scrollY` vẫn bằng 0: lúc rAF chạy thì module chứa bài còn chưa mở,
+   * nên `scrollIntoView` nhắm vào một phần tử chưa có chỗ trên trang và không
+   * cuộn đi đâu cả. Tách ra thì effect này chỉ chạy SAU khi React đã áp
+   * `moduleMacDinh` và dựng lại danh sách bài.
+   *
+   * Mở module thôi chưa đủ: module dài nhất của khoá này có 20 bài, nên bài
+   * vừa học vẫn có thể nằm ngoài màn hình. `block: 'center'` chứ không
+   * 'start' — 'start' nhét bài lên sát mép trên và mất ngữ cảnh module.
+   */
+  useEffect(() => {
+    if (baiCanCuon < 0) return;
+    const el = document.getElementById(`cd-lesson-${baiCanCuon}`);
+    if (!el) return;
+    // Hoãn một nhịp: App Router khôi phục vị trí cuộn sau khi hydrate, nên
+    // cuộn ngay trong effect sẽ bị nó ghi đè về đầu trang.
+    const t = setTimeout(
+      () => el.scrollIntoView({ block: 'center', behavior: 'smooth' }),
+      0,
+    );
+    return () => clearTimeout(t);
+  }, [baiCanCuon, moduleMacDinh]);
 
   // Trang cha đã trả 404 cho mã lạ; nhánh này chỉ để thu hẹp kiểu.
   if (!course) return null;
@@ -174,7 +240,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                 </div>
                 <div className="cd-block-body" style={{ paddingTop: 10 }}>
                   {modules.map((module, mi) => {
-                    const open = openModules[mi] ?? mi === 0;
+                    const open = openModules[mi] ?? mi === moduleMacDinh;
                     const bodyId = `cd-module-body-${mi}`;
                     return (
                       <div className="edu-cd-module" key={mi}>
@@ -202,6 +268,7 @@ export default function CourseDetail({ courseId }: { courseId: string }) {
                                 <a
                                   className={`edu-cd-lesson ${styles.lessonLink}`}
                                   key={index}
+                                  id={`cd-lesson-${index}`}
                                   data-clickable="1"
                                   href={`${course.lessonUrl}?lesson=${index}`}
                                 >
