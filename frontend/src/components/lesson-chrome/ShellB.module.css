@@ -65,10 +65,17 @@
   text-align: center;
 }
 
+/* ĐỀ BÀI của mọi màn đi qua đây — câu hỏi trắc nghiệm, đề luyện tập, yêu cầu
+   của màn thử thách. 14px + t3 là tổ hợp NHỎ NHẤT và NHẠT NHẤT trên màn hình,
+   mà nó lại đang gánh thứ người học phải đọc kỹ nhất. Nới lên 15px + t2 ngày
+   29/10/2026 sau đợt thử nghiệm (ba trên bốn người báo chữ quá nhỏ).
+
+   Không lên thẳng t1: t1 là màu của tiêu đề ngay trên nó, dùng chung thì hai
+   dòng dính thành một khối và mất thứ bậc. t2 = 8,93:1 trên nền trắng. */
 .description {
-  font-size: 14px;
-  color: var(--edu-t3);
-  line-height: 1.6;
+  font-size: 15px;
+  color: var(--edu-t2);
+  line-height: 1.65;
   margin: 8px 0 0;
 }
 .descriptionCentered {

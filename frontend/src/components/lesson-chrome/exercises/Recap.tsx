@@ -72,8 +72,11 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
                 background: 'var(--edu-panel-bg-solid)',
                 border: '1px solid var(--edu-sidebar-border)',
                 borderRadius: 10,
-                padding: '10px 14px',
-                fontSize: 13,
+                padding: '11px 14px',
+                // 14px, không 13: ô này là "KIẾN THỨC CỐT LÕI ĐÃ HỌC", tức thứ
+                // người học đọc lại khi ôn. Xem lý do đầy đủ ở .read p.
+                fontSize: 14,
+                lineHeight: 1.6,
                 color: 'var(--edu-t1)',
               }}
             >

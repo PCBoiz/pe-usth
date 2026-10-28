@@ -774,11 +774,24 @@
   margin: 0 0 4px;
 }
 
+/* 17px và màu t1, KHÔNG phải 16px/t2 như trước. Đổi ngày 29/10/2026 sau đợt
+   thử nghiệm: BA trên bốn người trả lời khảo sát chọn "Nhiều chỗ chữ quá nhỏ,
+   phải phóng to mới đọc được", và một người viết riêng "nên để cỡ chữ to hơn
+   và sử dụng chữ màu đen cho dễ nhìn".
+
+   Đã đo tương phản, và đây KHÔNG phải lỗi WCAG — nên đừng sửa lại vì tưởng nó
+   là: t2 (#3a4a66) trên nền trắng là 8,93:1, thừa mức AA. Vấn đề là chỗ này
+   mang THÂN BÀI của 145 bài đọc, tức thứ người học nhìn lâu nhất trong khoá, mà
+   nó lại đang nhạt hơn cả tiêu đề lẫn chữ trong bảng ngay cạnh nó. t1 là
+   17,14:1.
+
+   1.75 giữ nguyên: nới cỡ chữ mà giữ nguyên line-height tính theo bội số thì
+   giãn dòng tự đi theo. */
 .read p {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   line-height: 1.75;
-  color: var(--edu-t2);
+  color: var(--edu-t1);
 }
 
 /* .codeCard tự mang margin-bottom 16px (nó được thiết kế để đứng rời trong
