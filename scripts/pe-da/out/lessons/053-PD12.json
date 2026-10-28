@@ -71,13 +71,13 @@
      "question": "CSV dùng dấu ; nhưng bạn để sep mặc định ,. Bảng thường gặp vấn đề gì?",
      "options": [
       {
+       "text": "pandas tự biết mọi dấu phân cách",
+       "detail": "Không nên dựa vào điều đó; hãy khai báo đúng mẫu file."
+      },
+      {
        "text": "Dòng có thể bị đọc thành một cột",
        "detail": "Đúng: bộ đọc chưa tách theo dấu thực sự trong file.",
        "correct": true
-      },
-      {
-       "text": "pandas tự biết mọi dấu phân cách",
-       "detail": "Không nên dựa vào điều đó; hãy khai báo đúng mẫu file."
       },
       {
        "text": "Mọi giá trị tự thành 0",
@@ -90,13 +90,13 @@
      "question": "sep=\";\" có tác dụng gì?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'order;amount\\n001;12.5\\n002;missing\\n'\ndf = pd.read_csv(StringIO(text), sep=';', dtype={'order': 'string'}, na_values=['missing'])\nprint(df['order'].tolist())\nprint(df['amount'].isna().tolist())",
      "options": [
       {
-       "text": "Bỏ mọi dòng có dấu chấm phẩy.",
-       "detail": "sep chia cột; nó không yêu cầu bỏ những dòng có dấu đó."
-      },
-      {
        "text": "Dùng dấu chấm phẩy để tách cột.",
        "detail": "Dùng dấu chấm phẩy để tách cột.",
        "correct": true
+      },
+      {
+       "text": "Bỏ mọi dòng có dấu chấm phẩy.",
+       "detail": "sep chia cột; nó không yêu cầu bỏ những dòng có dấu đó."
       },
       {
        "text": "Dùng dấu phẩy để tách cột.",
@@ -109,17 +109,17 @@
      "question": "Vì sao nên đặt dtype string cho mã 001 ngay khi đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '# exported today\\norder,amount,note\\nA,10,ok\\nB,20,ok\\n'\ndf = pd.read_csv(StringIO(text), comment='#', header=0, nrows=1, usecols=['order', 'amount'])\nprint(df.to_dict('records'))",
      "options": [
       {
-       "text": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
-       "detail": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
-       "correct": true
+       "text": "Vì string tự loại mọi mã trùng.",
+       "detail": "Chọn kiểu string không tự khử trùng mã."
       },
       {
        "text": "Vì đổi số 1 trở lại string tự khôi phục được 001.",
        "detail": "str(1) chỉ cho \"1\", không tự biết mã có độ rộng ba chữ số."
       },
       {
-       "text": "Vì string tự loại mọi mã trùng.",
-       "detail": "Chọn kiểu string không tự khử trùng mã."
+       "text": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
+       "detail": "Để không mất số 0 đầu khi pandas suy luận mã thành số.",
+       "correct": true
       }
      ],
      "explanation": "Để không mất số 0 đầu khi pandas suy luận mã thành số."

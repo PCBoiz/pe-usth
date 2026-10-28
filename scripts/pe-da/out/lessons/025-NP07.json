@@ -79,17 +79,17 @@
      "question": "a có shape (3,2). a.size bằng bao nhiêu?",
      "options": [
       {
-       "text": "6",
-       "detail": "Đúng. Có 3×2 ô.",
-       "correct": true
+       "text": "2",
+       "detail": "2 là số chiều hoặc số cột trong ví dụ, không phải tổng số ô."
       },
       {
        "text": "3",
        "detail": "3 là độ dài chiều đầu, cũng là len(a) ở bảng này."
       },
       {
-       "text": "2",
-       "detail": "2 là số chiều hoặc số cột trong ví dụ, không phải tổng số ô."
+       "text": "6",
+       "detail": "Đúng. Có 3×2 ô.",
+       "correct": true
       }
      ],
      "explanation": "Đúng. Có 3×2 ô."
@@ -103,12 +103,12 @@
        "correct": true
       },
       {
-       "text": "[3, 2]",
-       "detail": "shape ghi số hàng trước số cột."
-      },
-      {
        "text": "6",
        "detail": "6 là size, không phải shape."
+      },
+      {
+       "text": "[3, 2]",
+       "detail": "shape ghi số hàng trước số cột."
       }
      ],
      "explanation": "Có hai list con, mỗi list ba phần tử nên shape là (2,3)."
@@ -117,17 +117,17 @@
      "question": "Đếm tất cả số đo trong bảng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.size)",
      "options": [
       {
-       "text": "6",
-       "detail": "size bằng 2 × 3, tức sáu phần tử.",
-       "correct": true
-      },
-      {
        "text": "2",
        "detail": "2 là số hàng."
       },
       {
        "text": "3",
        "detail": "3 là số cột."
+      },
+      {
+       "text": "6",
+       "detail": "size bằng 2 × 3, tức sáu phần tử.",
+       "correct": true
       }
      ],
      "explanation": "size bằng 2 × 3, tức sáu phần tử."

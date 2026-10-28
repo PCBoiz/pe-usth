@@ -68,10 +68,6 @@
      "question": "tk.Label(frame, ...) thuộc vùng chứa nào?",
      "options": [
       {
-       "text": "Tự chuyển vào root dù truyền frame",
-       "detail": "Widget được tạo với frame làm parent theo quan hệ đã truyền."
-      },
-      {
        "text": "Bất kỳ Frame được tạo gần nhất",
        "detail": "Tkinter không suy đoán parent theo thời điểm tạo gần nhất."
       },
@@ -79,6 +75,10 @@
        "text": "frame",
        "detail": "Parent xác định cây widget, không chỉ màu nền của widget.",
        "correct": true
+      },
+      {
+       "text": "Tự chuyển vào root dù truyền frame",
+       "detail": "Widget được tạo với frame làm parent theo quan hệ đã truyền."
       }
      ],
      "explanation": "Parent xác định cây widget, không chỉ màu nền của widget."
@@ -87,6 +87,10 @@
      "question": "Frame chủ yếu dùng để làm gì?",
      "options": [
       {
+       "text": "Tự thay mọi phép tính Python",
+       "detail": "Chưa đúng. Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
+      },
+      {
        "text": "Chỉ chứa được văn bản không có nút",
        "detail": "Chưa đúng. Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
       },
@@ -94,10 +98,6 @@
        "text": "Nhóm và chứa widget con",
        "detail": "Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm.",
        "correct": true
-      },
-      {
-       "text": "Tự thay mọi phép tính Python",
-       "detail": "Chưa đúng. Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."
       }
      ],
      "explanation": "Frame tạo vùng chứa để tổ chức cây widget và bố cục theo nhóm."

@@ -100,13 +100,13 @@
        "detail": "Chưa đúng. Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
       },
       {
+       "text": "ready queue vì đã chạy trước đó",
+       "detail": "Chưa đúng. Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
+      },
+      {
        "text": "device queue",
        "detail": "Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU.",
        "correct": true
-      },
-      {
-       "text": "ready queue vì đã chạy trước đó",
-       "detail": "Chưa đúng. Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
       }
      ],
      "explanation": "Queue thiết bị theo dõi process chờ sự kiện I/O; ready queue dành cho process sẵn sàng dùng CPU."
@@ -115,16 +115,16 @@
      "question": "Short-term scheduler chủ yếu chọn gì?",
      "options": [
       {
+       "text": "Những job được phép vào hệ thống từ đầu",
+       "detail": "Chưa đúng. Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
+      },
+      {
        "text": "Process sẵn sàng sẽ chạy CPU tiếp theo",
        "detail": "Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo.",
        "correct": true
       },
       {
        "text": "Tên file để cài Python",
-       "detail": "Chưa đúng. Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
-      },
-      {
-       "text": "Những job được phép vào hệ thống từ đầu",
        "detail": "Chưa đúng. Long-term điều tiết nhận việc; short-term quyết định lượt CPU tiếp theo."
       }
      ],

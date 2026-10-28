@@ -89,10 +89,6 @@
      "question": "Bảng có 3 hàng nhóm và 2 cột khoản chi. Muốn biết chi của từng nhóm, chọn gì?",
      "options": [
       {
-       "text": "sum(axis=0)",
-       "detail": "Đó là tổng từng loại khoản chi của cả ba nhóm."
-      },
-      {
        "text": "sum()",
        "detail": "Đó là một tổng chung, mất riêng từng nhóm."
       },
@@ -100,6 +96,10 @@
        "text": "sum(axis=1)",
        "detail": "Đúng. Gộp hai khoản chi trong từng hàng.",
        "correct": true
+      },
+      {
+       "text": "sum(axis=0)",
+       "detail": "Đó là tổng từng loại khoản chi của cả ba nhóm."
       }
      ],
      "explanation": "Đúng. Gộp hai khoản chi trong từng hàng."
@@ -108,17 +108,17 @@
      "question": "Mỗi hàng là một học viên, hai cột là hai bài. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[4, 7], [8, 6], [5, 9]])\nprint(marks.sum(axis=1))",
      "options": [
       {
-       "text": "[11, 14, 14]",
-       "detail": "axis=1 gộp các cột của từng học viên.",
-       "correct": true
-      },
-      {
        "text": "[17, 22]",
        "detail": "Đó là tổng cho từng bài kiểm tra."
       },
       {
        "text": "39",
        "detail": "Đó là tổng toàn bộ bảng."
+      },
+      {
+       "text": "[11, 14, 14]",
+       "detail": "axis=1 gộp các cột của từng học viên.",
+       "correct": true
       }
      ],
      "explanation": "axis=1 gộp các cột của từng học viên."
@@ -132,12 +132,12 @@
        "correct": true
       },
       {
-       "text": "[11, 14, 14]",
-       "detail": "Đó là tổng từng học viên."
-      },
-      {
        "text": "[3, 2]",
        "detail": "Đó là shape của bảng."
+      },
+      {
+       "text": "[11, 14, 14]",
+       "detail": "Đó là tổng từng học viên."
       }
      ],
      "explanation": "axis=0 gộp các học viên và giữ hai cột bài kiểm tra."

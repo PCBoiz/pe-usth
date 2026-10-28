@@ -78,13 +78,13 @@
        "detail": "Không đặt text/encoding mới thường nhận bytes."
       },
       {
-       "text": "Luôn là mã thoát số nguyên",
-       "detail": "returncode là mã thoát; stdout là nội dung được in."
-      },
-      {
        "text": "str",
        "detail": "text=True yêu cầu giải mã luồng thành chuỗi.",
        "correct": true
+      },
+      {
+       "text": "Luôn là mã thoát số nguyên",
+       "detail": "returncode là mã thoát; stdout là nội dung được in."
       }
      ],
      "explanation": "text=True yêu cầu giải mã luồng thành chuỗi."
@@ -97,13 +97,13 @@
        "detail": "Chưa đúng. run chờ con và trả CompletedProcess chứa output cùng mã thoát."
       },
       {
+       "text": "Ngay trước khi tạo process con",
+       "detail": "Chưa đúng. run chờ con và trả CompletedProcess chứa output cùng mã thoát."
+      },
+      {
        "text": "Sau khi process con kết thúc",
        "detail": "run chờ con và trả CompletedProcess chứa output cùng mã thoát.",
        "correct": true
-      },
-      {
-       "text": "Ngay trước khi tạo process con",
-       "detail": "Chưa đúng. run chờ con và trả CompletedProcess chứa output cùng mã thoát."
       }
      ],
      "explanation": "run chờ con và trả CompletedProcess chứa output cùng mã thoát."

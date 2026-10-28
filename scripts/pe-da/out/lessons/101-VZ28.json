@@ -86,13 +86,13 @@
        "detail": "Đây là số ô, chưa đủ xác định hai mép của mỗi ô."
       },
       {
-       "text": "6 biên cho cả hai",
-       "detail": "Tổng số ô không xác định số biên mỗi trục."
-      },
-      {
        "text": "4 biên x và 3 biên y",
        "detail": "Đúng: số biên bằng số cột/hàng cộng 1.",
        "correct": true
+      },
+      {
+       "text": "6 biên cho cả hai",
+       "detail": "Tổng số ô không xác định số biên mỗi trục."
       }
      ],
      "explanation": "Mỗi ô lưới nằm giữa hai biên liên tiếp theo từng chiều."
@@ -101,17 +101,17 @@
      "question": "Ma trận 2x2 với shading=\"flat\" cần mấy biên theo mỗi trục?\n\nimport matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
      "options": [
       {
-       "text": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
-       "detail": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
-       "correct": true
-      },
-      {
        "text": "Hai biên x và hai biên y.",
        "detail": "Hai biên chỉ giới hạn một ô, không tạo được hai ô trên chiều đó."
       },
       {
        "text": "Bốn biên x và bốn biên y.",
        "detail": "Bốn biên sẽ tạo ba ô trên một chiều, không phải hai."
+      },
+      {
+       "text": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
+       "detail": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều.",
+       "correct": true
       }
      ],
      "explanation": "3 biên x và 3 biên y để tạo 2 ô trên mỗi chiều."
@@ -120,17 +120,17 @@
      "question": "contour khác contourf thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nx = np.linspace(-2, 2, 25)\ny = np.linspace(-2, 2, 25)\nX, Y = np.meshgrid(x, y)\nZ = X**2 + Y**2\ncs = ax.contour(X, Y, Z, levels=[1, 2, 4], colors=\"black\")\nax.clabel(cs, inline=True, fontsize=9)\nax.set(xlabel=\"x\", ylabel=\"y\", title=\"Contours of x squared plus y squared\", aspect=\"equal\")\nprint(cs.levels.tolist())\nplt.show()",
      "options": [
       {
-       "text": "contour tô vùng, contourf chỉ vẽ đường.",
-       "detail": "Vai trò đường và vùng tô đã bị đảo."
+       "text": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
+       "detail": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
+       "correct": true
       },
       {
        "text": "Cả hai luôn tạo cùng một hình không có khác biệt.",
        "detail": "Hai hàm có cách biểu diễn khác nhau dù có thể dùng cùng các mức."
       },
       {
-       "text": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
-       "detail": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức.",
-       "correct": true
+       "text": "contour tô vùng, contourf chỉ vẽ đường.",
+       "detail": "Vai trò đường và vùng tô đã bị đảo."
       }
      ],
      "explanation": "contour vẽ đường cùng mức; contourf tô vùng giữa các mức."

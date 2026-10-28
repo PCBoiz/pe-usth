@@ -85,10 +85,6 @@
      "question": "a có shape (2,4). sum(axis=1) trả mấy số?",
      "options": [
       {
-       "text": "8",
-       "detail": "Tám là số ô đầu vào, không phải số tổng hàng."
-      },
-      {
        "text": "2",
        "detail": "Đúng. Hai hàng còn hai tổng.",
        "correct": true
@@ -96,6 +92,10 @@
       {
        "text": "4",
        "detail": "Bốn số là kết quả của axis=0 trên bảng này."
+      },
+      {
+       "text": "8",
+       "detail": "Tám là số ô đầu vào, không phải số tổng hàng."
       }
      ],
      "explanation": "Đúng. Hai hàng còn hai tổng."
@@ -104,13 +104,13 @@
      "question": "Mỗi hàng là một đơn hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=1))",
      "options": [
       {
+       "text": "[5, 7, 9]",
+       "detail": "Đó là tổng từng cột."
+      },
+      {
        "text": "[6, 15]",
        "detail": "axis=1 gộp các cột trong từng hàng.",
        "correct": true
-      },
-      {
-       "text": "[5, 7, 9]",
-       "detail": "Đó là tổng từng cột."
       },
       {
        "text": "21",
@@ -123,17 +123,17 @@
      "question": "Bảng có ba học viên, hai bài kiểm tra. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[4, 6], [5, 7], [8, 9]])\nprint(a.sum(axis=1).shape)",
      "options": [
       {
-       "text": "(3,)",
-       "detail": "Mỗi học viên giữ một tổng nên còn ba kết quả.",
-       "correct": true
-      },
-      {
        "text": "[2]",
        "detail": "2 là số cột đã được gộp."
       },
       {
        "text": "[3, 2]",
        "detail": "Đó là shape bảng gốc."
+      },
+      {
+       "text": "(3,)",
+       "detail": "Mỗi học viên giữ một tổng nên còn ba kết quả.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi học viên giữ một tổng nên còn ba kết quả."

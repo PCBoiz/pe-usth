@@ -120,10 +120,6 @@
      "question": "Giá trị từ 0 đến 100 nên dùng thang tuần tự hay phân kỳ quanh 0?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nim = ax.imshow([[1, 2], [3, 4]], cmap=\"viridis\", vmin=0, vmax=4)\nax.set(xticks=[0, 1], xticklabels=[\"Mon\", \"Tue\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"A sequential numeric scale\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(im.get_clim())\nplt.show()",
      "options": [
       {
-       "text": "Luôn dùng phân kỳ vì số 0 xuất hiện trong miền.",
-       "detail": "Có số 0 trong miền không tự làm thang phân kỳ trở nên phù hợp."
-      },
-      {
        "text": "Chọn màu ngẫu nhiên cho từng số, không cần thứ tự.",
        "detail": "Màu ngẫu nhiên không giúp đọc thứ tự tăng của các mức."
       },
@@ -131,6 +127,10 @@
        "text": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0.",
        "detail": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0.",
        "correct": true
+      },
+      {
+       "text": "Luôn dùng phân kỳ vì số 0 xuất hiện trong miền.",
+       "detail": "Có số 0 trong miền không tự làm thang phân kỳ trở nên phù hợp."
       }
      ],
      "explanation": "Dùng tuần tự nếu muốn thể hiện mức tăng. Phân kỳ phù hợp khi có mốc giữa mang ý nghĩa như sai lệch 0."

@@ -82,10 +82,6 @@
      "question": "SD mẫu=6, n=9 quan sát độc lập. SE trung bình bằng bao nhiêu?",
      "options": [
       {
-       "text": "6",
-       "detail": "6 là SD, chưa chia căn số quan sát."
-      },
-      {
        "text": "0.667",
        "detail": "Đây là chia n, không chia sqrt(n)."
       },
@@ -93,6 +89,10 @@
        "text": "2",
        "detail": "Đúng: 6/sqrt(9)=2.",
        "correct": true
+      },
+      {
+       "text": "6",
+       "detail": "6 là SD, chưa chia căn số quan sát."
       }
      ],
      "explanation": "SE của trung bình khác độ phân tán của từng quan sát."
@@ -120,12 +120,12 @@
      "question": "Với SD=4 và n=16, sai số chuẩn trung bình bằng bao nhiêu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ntimes = np.array([8, 10, 12, 10], dtype=float)\nsd = times.std(ddof=1)\nse = sd / np.sqrt(len(times))\nax.errorbar([1], [times.mean()], yerr=[se], fmt=\"o\", capsize=5)\nax.set(xticks=[1], xticklabels=[\"A\"], ylabel=\"Delivery (minutes)\", title=\"Mean +/- one standard error; n=4\")\nprint(round(float(sd), 2), round(float(se), 2))\nplt.show()",
      "options": [
       {
-       "text": "SE=4 vì cỡ mẫu không ảnh hưởng.",
-       "detail": "Giữ nguyên SD đã bỏ qua cỡ mẫu trong công thức SE."
-      },
-      {
        "text": "SE=0.25 vì chia trực tiếp SD cho n.",
        "detail": "Chia thẳng cho n không đúng công thức đang được học."
+      },
+      {
+       "text": "SE=4 vì cỡ mẫu không ảnh hưởng.",
+       "detail": "Giữ nguyên SD đã bỏ qua cỡ mẫu trong công thức SE."
       },
       {
        "text": "SE=4/sqrt(16)=1, khi điều kiện lấy mẫu độc lập phù hợp.",

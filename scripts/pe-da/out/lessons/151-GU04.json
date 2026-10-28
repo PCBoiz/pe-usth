@@ -68,13 +68,13 @@
      "question": "command=show_message() khiến hàm chạy lúc nào?",
      "options": [
       {
-       "text": "Sau khi đóng root",
-       "detail": "Không có quy tắc trì hoãn tới khi đóng cửa sổ."
-      },
-      {
        "text": "Ngay khi biểu thức tạo Button được đánh giá",
        "detail": "Muốn chờ bấm thường truyền command=show_message, hoặc lambda nếu cần đối số.",
        "correct": true
+      },
+      {
+       "text": "Sau khi đóng root",
+       "detail": "Không có quy tắc trì hoãn tới khi đóng cửa sổ."
       },
       {
        "text": "Chỉ sau lần bấm đầu",
@@ -91,13 +91,13 @@
        "detail": "Chưa đúng. Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
       },
       {
+       "text": "Hai dạng luôn giống nhau",
+       "detail": "Chưa đúng. Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
+      },
+      {
        "text": "Dạng đầu truyền callback; dạng sau gọi ngay khi tạo nút",
        "detail": "Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay.",
        "correct": true
-      },
-      {
-       "text": "Hai dạng luôn giống nhau",
-       "detail": "Chưa đúng. Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
       }
      ],
      "explanation": "Callback cần được giữ lại để gọi khi có tương tác; dấu ngoặc thực thi hàm ngay."
@@ -106,16 +106,16 @@
      "question": "Callback nút trả một chuỗi có làm Tkinter tự hiển thị chuỗi đó không?",
      "options": [
       {
+       "text": "Chỉ hiện nếu chuỗi là tiếng Anh",
+       "detail": "Chưa đúng. Giá trị trả từ hàm không tự biến thành nội dung UI."
+      },
+      {
        "text": "Không; cần cập nhật widget hoặc gọi hộp thoại",
        "detail": "Giá trị trả từ hàm không tự biến thành nội dung UI.",
        "correct": true
       },
       {
        "text": "Có; mọi return thành Label",
-       "detail": "Chưa đúng. Giá trị trả từ hàm không tự biến thành nội dung UI."
-      },
-      {
-       "text": "Chỉ hiện nếu chuỗi là tiếng Anh",
        "detail": "Chưa đúng. Giá trị trả từ hàm không tự biến thành nội dung UI."
       }
      ],

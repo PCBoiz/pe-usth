@@ -75,13 +75,13 @@
        "detail": "10 nằm đúng biên được nhận của khoảng đầu."
       },
       {
+       "text": "(10,20]",
+       "detail": "Biên trái 10 của khoảng này bị loại."
+      },
+      {
        "text": "(0,10]",
        "detail": "Đúng: khoảng mặc định nhận biên phải.",
        "correct": true
-      },
-      {
-       "text": "(10,20]",
-       "detail": "Biên trái 10 của khoảng này bị loại."
       }
      ],
      "explanation": "Dấu ngoặc tròn loại biên, ngoặc vuông nhận biên."
@@ -90,10 +90,6 @@
      "question": "cut và qcut chọn ranh giới khác nhau thế nào?\n\nimport pandas as pd\nkind = pd.CategoricalDtype(categories=['low', 'medium', 'high'], ordered=True)\npriority = pd.Series(['high', 'low', 'medium'], dtype=kind)\nprint(priority.sort_values().tolist())\nprint(priority.cat.categories.tolist())",
      "options": [
       {
-       "text": "cut luôn chia số lượng hàng đều nhau, qcut dùng biên cho trước.",
-       "detail": "Bạn đã đổi vai trò cut và qcut."
-      },
-      {
        "text": "Hai hàm luôn cho cùng một kết quả.",
        "detail": "Các biên và phân bố dữ liệu có thể làm hai kết quả khác nhau."
       },
@@ -101,6 +97,10 @@
        "text": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu.",
        "detail": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu.",
        "correct": true
+      },
+      {
+       "text": "cut luôn chia số lượng hàng đều nhau, qcut dùng biên cho trước.",
+       "detail": "Bạn đã đổi vai trò cut và qcut."
       }
      ],
      "explanation": "cut dùng các mốc được chỉ định hoặc khoảng giá trị; qcut dựa trên phân vị dữ liệu."
@@ -109,13 +109,13 @@
      "question": "Với bins=[0,10,50], giá trị 10 mặc định thuộc khoảng nào?\n\nimport pandas as pd\namount = pd.Series([5, 20, 60])\nbands = pd.cut(amount, bins=[0, 10, 50, 100], labels=['small', 'medium', 'large'])\nprint(bands.tolist())",
      "options": [
       {
-       "text": "Không thuộc khoảng nào vì 10 là biên.",
-       "detail": "Biên chung thuộc một khoảng theo quy tắc đóng biên, không tự bị loại."
-      },
-      {
        "text": "(0,10], vì khoảng mặc định đóng bên phải.",
        "detail": "(0,10], vì khoảng mặc định đóng bên phải.",
        "correct": true
+      },
+      {
+       "text": "Không thuộc khoảng nào vì 10 là biên.",
+       "detail": "Biên chung thuộc một khoảng theo quy tắc đóng biên, không tự bị loại."
       },
       {
        "text": "(10,50], vì mọi khoảng đóng bên trái.",

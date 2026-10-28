@@ -82,6 +82,10 @@
      "question": "Có ba đơn cùng drink. Muốn một cột tổng cho drink, làm gì trước plot.bar?",
      "options": [
       {
+       "text": "Chỉ giữ đơn đầu",
+       "detail": "Sẽ mất doanh thu các đơn sau."
+      },
+      {
        "text": "groupby drink rồi sum",
        "detail": "Đúng: mỗi cột mới biểu diễn đúng tổng nhóm.",
        "correct": true
@@ -89,10 +93,6 @@
       {
        "text": "Vẽ từng hàng rồi đổi title thành tổng",
        "detail": "Đổi chữ không tự tổng hợp ba hàng."
-      },
-      {
-       "text": "Chỉ giữ đơn đầu",
-       "detail": "Sẽ mất doanh thu các đơn sau."
       }
      ],
      "explanation": "Dữ liệu truyền vào hình phải khớp câu hỏi báo cáo."
@@ -101,6 +101,10 @@
      "question": "Bảng có ba dòng cà phê. Muốn một cột tổng doanh thu cần làm gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\norders = pd.DataFrame({\"drink\":[\"Coffee\", \"Tea\", \"Coffee\"], \"revenue\":[20, 12, 30]})\ntotals = orders.groupby(\"drink\")[\"revenue\"].sum()\ntotals.plot.bar(ax=ax, rot=0)\nax.set(xlabel=\"Drink\", ylabel=\"Revenue (thousand VND)\", title=\"Aggregate before comparing categories\")\nprint(totals.to_dict())\nplt.show()",
      "options": [
       {
+       "text": "Vẽ từng hàng thành cột rồi tự coi chúng là tổng.",
+       "detail": "Vẽ từng dòng giao dịch không tạo ra tổng theo đồ uống."
+      },
+      {
        "text": "Chỉ đổi index thành tên đồ uống, không cần tổng hợp.",
        "detail": "Đổi nhãn index không tự cộng các hàng cùng loại."
       },
@@ -108,10 +112,6 @@
        "text": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả.",
        "detail": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả.",
        "correct": true
-      },
-      {
-       "text": "Vẽ từng hàng thành cột rồi tự coi chúng là tổng.",
-       "detail": "Vẽ từng dòng giao dịch không tạo ra tổng theo đồ uống."
       }
      ],
      "explanation": "groupby theo đồ uống rồi sum doanh thu, sau đó plot.bar kết quả."

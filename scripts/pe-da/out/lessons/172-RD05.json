@@ -71,6 +71,10 @@
      "question": "Có ba đơn gốc, tạo 1000 mẫu bootstrap. Bạn có 1000 đơn gốc mới không?",
      "options": [
       {
+       "text": "Có nếu cố định seed",
+       "detail": "Seed giúp tái lập, không làm xuất hiện thêm dữ liệu thật."
+      },
+      {
        "text": "Không; đó là nhiều lần lấy mẫu lại từ ba đơn",
        "detail": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "Có, mỗi trung bình là một đơn mới",
        "detail": "Trung bình mẫu lại là thống kê, không phải một đơn quan sát."
-      },
-      {
-       "text": "Có nếu cố định seed",
-       "detail": "Seed giúp tái lập, không làm xuất hiện thêm dữ liệu thật."
       }
      ],
      "explanation": "Đúng. Tăng số lần lặp không tạo thêm quan sát gốc."
@@ -90,17 +90,17 @@
      "question": "Tạo 20 số mô phỏng, chưa phải 20 phép đo thật. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\ntemps = rng.normal(loc=25,scale=2,size=20)\nprint(temps.shape)",
      "options": [
       {
-       "text": "(20,)",
-       "detail": "size quyết định số giá trị sinh ra, tách khỏi loc và scale.",
-       "correct": true
-      },
-      {
        "text": "[25]",
        "detail": "25 là tham số loc, không phải số mẫu."
       },
       {
        "text": "[2]",
        "detail": "2 là scale, không phải số mẫu."
+      },
+      {
+       "text": "(20,)",
+       "detail": "size quyết định số giá trị sinh ra, tách khỏi loc và scale.",
+       "correct": true
       }
      ],
      "explanation": "size quyết định số giá trị sinh ra, tách khỏi loc và scale."

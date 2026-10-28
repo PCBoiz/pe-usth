@@ -81,10 +81,6 @@
      "question": "Bạn gửi riêng cell print(cups + 1) cho một bạn mới mở kernel. Vì sao bạn ấy có thể nhận NameError?",
      "options": [
       {
-       "text": "Notebook luôn tự giữ mọi biến giữa các máy",
-       "detail": "Trạng thái kernel thuộc phiên làm việc; gửi cell không gửi kèm bộ nhớ của bạn."
-      },
-      {
        "text": "Bạn ấy chưa chạy cell tạo cups",
        "detail": "Đúng. Kernel mới chưa có tên cups.",
        "correct": true
@@ -92,6 +88,10 @@
       {
        "text": "print chỉ dùng được trong file .py",
        "detail": "print dùng được trong cả notebook và script."
+      },
+      {
+       "text": "Notebook luôn tự giữ mọi biến giữa các máy",
+       "detail": "Trạng thái kernel thuộc phiên làm việc; gửi cell không gửi kèm bộ nhớ của bạn."
       }
      ],
      "explanation": "Đúng. Kernel mới chưa có tên cups."
@@ -100,17 +100,17 @@
      "question": "Một cell khởi tạo số cốc rồi cell tiếp theo cộng thêm. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 11\nprint(cups + 1)",
      "options": [
       {
-       "text": "12",
-       "detail": "Lệnh sau đọc giá trị được lệnh trước tạo.",
-       "correct": true
+       "text": "1",
+       "detail": "cups đã có giá trị 11, không bị bỏ qua."
       },
       {
        "text": "11",
        "detail": "Biểu thức còn cộng thêm 1."
       },
       {
-       "text": "1",
-       "detail": "cups đã có giá trị 11, không bị bỏ qua."
+       "text": "12",
+       "detail": "Lệnh sau đọc giá trị được lệnh trước tạo.",
+       "correct": true
       }
      ],
      "explanation": "Lệnh sau đọc giá trị được lệnh trước tạo."
@@ -119,13 +119,13 @@
      "question": "Bạn sửa số lượng rồi đọc lại. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 12\ncups = 18\nprint(cups)",
      "options": [
       {
+       "text": "12",
+       "detail": "Đây là giá trị trước lần gán mới."
+      },
+      {
        "text": "18",
        "detail": "Lần gán cuối quyết định giá trị cups được đọc lúc này.",
        "correct": true
-      },
-      {
-       "text": "12",
-       "detail": "Đây là giá trị trước lần gán mới."
       },
       {
        "text": "30",

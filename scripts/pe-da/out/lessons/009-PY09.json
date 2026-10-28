@@ -90,17 +90,17 @@
      "question": "Điểm bằng đúng ngưỡng tốt. Kết quả ở lệnh print cuối có giá trị nào?\n\nscore = 8\nif score >= 8:\n    result = \"Good\"\nelif score >= 5:\n    result = \"Pass\"\nelse:\n    result = \"Retry\"\nprint(result)",
      "options": [
       {
-       "text": "'Good'",
-       "detail": "Điều kiện >= nhận cả giá trị bằng 8.",
-       "correct": true
-      },
-      {
        "text": "'Pass'",
        "detail": "Nhánh đầu đã đúng, nên elif không được xét tiếp."
       },
       {
        "text": "'Retry'",
        "detail": "Điểm 8 không rơi vào else."
+      },
+      {
+       "text": "'Good'",
+       "detail": "Điều kiện >= nhận cả giá trị bằng 8.",
+       "correct": true
       }
      ],
      "explanation": "Điều kiện >= nhận cả giá trị bằng 8."
@@ -114,12 +114,12 @@
        "correct": true
       },
       {
-       "text": "'Good'",
-       "detail": "6 không đạt điều kiện >=8."
-      },
-      {
        "text": "'Retry'",
        "detail": "Điều kiện elif đã đúng."
+      },
+      {
+       "text": "'Good'",
+       "detail": "6 không đạt điều kiện >=8."
       }
      ],
      "explanation": "Sau điều kiện đầu sai, Python chọn elif đúng."

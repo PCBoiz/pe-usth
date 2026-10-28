@@ -85,17 +85,17 @@
      "question": "a=np.array([2,5]); a*2 cho gì?",
      "options": [
       {
-       "text": "[4,10]",
-       "detail": "Đúng. Mỗi số được nhân 2.",
-       "correct": true
+       "text": "14",
+       "detail": "Muốn tổng các giá trị còn cần phép cộng gộp; nhân array không tự gộp."
       },
       {
        "text": "[2,5,2,5]",
        "detail": "Đây là hành vi nhân list, không phải array số."
       },
       {
-       "text": "14",
-       "detail": "Muốn tổng các giá trị còn cần phép cộng gộp; nhân array không tự gộp."
+       "text": "[4,10]",
+       "detail": "Đúng. Mỗi số được nhân 2.",
+       "correct": true
       }
      ],
      "explanation": "Đúng. Mỗi số được nhân 2."
@@ -123,6 +123,10 @@
      "question": "Số lượng mỗi loại tăng gấp ba. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([2, 5])\nprint(a * 3)",
      "options": [
       {
+       "text": "[5, 8]",
+       "detail": "Đó là cộng 3, không phải nhân 3."
+      },
+      {
        "text": "[6, 15]",
        "detail": "Mỗi phần tử được nhân với 3.",
        "correct": true
@@ -130,10 +134,6 @@
       {
        "text": "[2, 5, 2, 5, 2, 5]",
        "detail": "Lặp list khác với nhân array."
-      },
-      {
-       "text": "[5, 8]",
-       "detail": "Đó là cộng 3, không phải nhân 3."
       }
      ],
      "explanation": "Mỗi phần tử được nhân với 3."

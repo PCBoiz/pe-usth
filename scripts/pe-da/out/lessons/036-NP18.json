@@ -87,10 +87,6 @@
      "question": "qty có shape (3,2), mỗi cột là một sản phẩm. Dãy giá phù hợp có shape nào?",
      "options": [
       {
-       "text": "(3,3)",
-       "detail": "Chiều cuối 3 không khớp với 2 trong ví dụ này."
-      },
-      {
        "text": "(2,)",
        "detail": "Đúng. Hai giá khớp chiều cuối gồm hai sản phẩm.",
        "correct": true
@@ -98,6 +94,10 @@
       {
        "text": "(3,)",
        "detail": "Ba là số đơn hàng, không phải số sản phẩm cần áp giá theo cột."
+      },
+      {
+       "text": "(3,3)",
+       "detail": "Chiều cuối 3 không khớp với 2 trong ví dụ này."
       }
      ],
      "explanation": "Đúng. Hai giá khớp chiều cuối gồm hai sản phẩm."
@@ -106,17 +106,17 @@
      "question": "Hai cửa hàng cùng dùng bảng giá. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[2, 1], [1, 3]])\nprice = np.array([10, 20])\nprint(qty * price)",
      "options": [
       {
-       "text": "[[20, 20], [10, 60]]",
-       "detail": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột.",
-       "correct": true
-      },
-      {
        "text": "[[20, 10], [20, 60]]",
        "detail": "Giá 10 và 20 gắn với cột, không lần lượt với hàng."
       },
       {
        "text": "[40, 70]",
        "detail": "Đây là tiền từng loại, chưa cộng tổng đơn."
+      },
+      {
+       "text": "[[20, 20], [10, 60]]",
+       "detail": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi hàng dùng lại dãy hai giá theo đúng hai cột."
@@ -125,13 +125,13 @@
      "question": "Ba đơn hàng có hai loại sản phẩm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nqty = np.array([[2, 0], [1, 3], [4, 1]])\nprice = np.array([5, 10])\nprint(qty * price)",
      "options": [
       {
+       "text": "[[10, 0], [10, 30], [20, 5]]",
+       "detail": "Mỗi cột phải luôn dùng cùng giá của sản phẩm đó."
+      },
+      {
        "text": "[[10, 0], [5, 30], [20, 10]]",
        "detail": "Dãy shape (2,) được áp dụng lên từng hàng của bảng có hai cột.",
        "correct": true
-      },
-      {
-       "text": "[[10, 0], [10, 30], [20, 5]]",
-       "detail": "Mỗi cột phải luôn dùng cùng giá của sản phẩm đó."
       },
       {
        "text": "[10, 35, 30]",

@@ -92,12 +92,12 @@
      "question": "prices = np.array([18, 27, 35]). prices[1] trả gì?",
      "options": [
       {
-       "text": "18",
-       "detail": "18 ở chỉ số 0."
-      },
-      {
        "text": "1",
        "detail": "Chỉ số xác định vị trí, không phải giá trị trả về."
+      },
+      {
+       "text": "18",
+       "detail": "18 ở chỉ số 0."
       },
       {
        "text": "27",
@@ -111,6 +111,10 @@
      "question": "Đọc lượng bán ngày đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([9, 14, 11])\nprint(cups[0])",
      "options": [
       {
+       "text": "0",
+       "detail": "Chỉ số 0 là vị trí, không phải giá trị được trả."
+      },
+      {
        "text": "9",
        "detail": "Vị trí đầu tiên có index 0 và giá trị 9.",
        "correct": true
@@ -118,10 +122,6 @@
       {
        "text": "14",
        "detail": "14 ở vị trí thứ hai, chỉ số 1."
-      },
-      {
-       "text": "0",
-       "detail": "Chỉ số 0 là vị trí, không phải giá trị được trả."
       }
      ],
      "explanation": "Vị trí đầu tiên có index 0 và giá trị 9."
@@ -130,13 +130,13 @@
      "question": "Số 8 nằm ở vị trí thứ hai. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([6, 8, 10])\nprint(a[1])",
      "options": [
       {
+       "text": "1",
+       "detail": "1 là chỉ số đã dùng, không phải phần tử nhận được."
+      },
+      {
        "text": "8",
        "detail": "a[1] đọc phần tử ở vị trí 1, tức giá trị 8.",
        "correct": true
-      },
-      {
-       "text": "1",
-       "detail": "1 là chỉ số đã dùng, không phải phần tử nhận được."
       },
       {
        "text": "10",

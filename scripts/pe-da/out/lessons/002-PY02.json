@@ -87,13 +87,13 @@
        "detail": "Lệnh này có thể tìm pip ở nơi khác trên PATH."
       },
       {
-       "text": "python -m venv pip",
-       "detail": "Lệnh này tạo một thư mục môi trường tên pip; nó không kiểm pip trong .venv."
-      },
-      {
        "text": ".venv\\Scripts\\python -m pip --version",
        "detail": "Đúng. Lệnh dùng chính trình thông dịch trong .venv.",
        "correct": true
+      },
+      {
+       "text": "python -m venv pip",
+       "detail": "Lệnh này tạo một thư mục môi trường tên pip; nó không kiểm pip trong .venv."
       }
      ],
      "explanation": "Đúng. Lệnh dùng chính trình thông dịch trong .venv."
@@ -121,17 +121,17 @@
      "question": "Trên Windows, cách nào kiểm pip thuộc chính .venv?",
      "options": [
       {
-       "text": ".venv\\Scripts\\python -m pip --version",
-       "detail": "Dùng đường dẫn interpreter của .venv rồi gọi module pip.",
-       "correct": true
+       "text": "python -m venv --pip-version",
+       "detail": "Đây không phải cách xem pip của môi trường đã tạo."
       },
       {
        "text": "pip --version luôn thuộc .venv",
        "detail": "Lệnh pip trong PATH có thể thuộc Python khác."
       },
       {
-       "text": "python -m venv --pip-version",
-       "detail": "Đây không phải cách xem pip của môi trường đã tạo."
+       "text": ".venv\\Scripts\\python -m pip --version",
+       "detail": "Dùng đường dẫn interpreter của .venv rồi gọi module pip.",
+       "correct": true
       }
      ],
      "explanation": "Dùng đường dẫn interpreter của .venv rồi gọi module pip."

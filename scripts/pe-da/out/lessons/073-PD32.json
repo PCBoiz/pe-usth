@@ -71,8 +71,8 @@
      "question": "Đơn của cửa hàng chưa có vùng nên xử lý thế nào để tổng không mất?",
      "options": [
       {
-       "text": "Đổi amount của đơn thành 0",
-       "detail": "Chưa có vùng không có nghĩa chưa có doanh thu."
+       "text": "Bỏ đơn bằng inner merge",
+       "detail": "Có thể làm mất doanh thu của đơn hợp lệ."
       },
       {
        "text": "Giữ đơn và ghi vùng Unknown để xem lại",
@@ -80,8 +80,8 @@
        "correct": true
       },
       {
-       "text": "Bỏ đơn bằng inner merge",
-       "detail": "Có thể làm mất doanh thu của đơn hợp lệ."
+       "text": "Đổi amount của đơn thành 0",
+       "detail": "Chưa có vùng không có nghĩa chưa có doanh thu."
       }
      ],
      "explanation": "Thiếu danh mục và thiếu doanh thu là hai vấn đề khác nhau."
@@ -109,10 +109,6 @@
      "question": "Tại sao giữ nhóm Unknown trong báo cáo mẫu?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2', 'O3'], 'store': ['A', 'B', 'C'], 'amount': [10, 20, 30]})\nstores = pd.DataFrame({'store': ['A', 'B'], 'region': ['North', 'South']})\njoined = orders.merge(stores, on='store', how='left', validate='many_to_one', indicator=True)\nassert len(joined) == len(orders)\nassert joined['amount'].sum() == orders['amount'].sum()\nprint(joined.loc[joined['_merge'] == 'left_only', 'order'].tolist())\nprint(joined['amount'].sum())",
      "options": [
       {
-       "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",
-       "detail": "Loại các đơn đó sẽ làm mất đóng góp của chúng khỏi báo cáo."
-      },
-      {
        "text": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
        "detail": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn.",
        "correct": true
@@ -120,6 +116,10 @@
       {
        "text": "Để tự coi các đơn chưa khớp là đã biết vùng.",
        "detail": "Unknown ghi rõ chưa xác định, không giả vờ đã biết vùng."
+      },
+      {
+       "text": "Để bỏ các đơn chưa khớp ra khỏi tổng đối chiếu.",
+       "detail": "Loại các đơn đó sẽ làm mất đóng góp của chúng khỏi báo cáo."
       }
      ],
      "explanation": "Để các đơn chưa khớp khu vực vẫn được thể hiện và tổng báo cáo còn khớp tổng đơn."

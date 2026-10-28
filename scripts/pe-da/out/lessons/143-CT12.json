@@ -69,6 +69,10 @@
      "question": "counter += 1 có nên mặc định coi là giao dịch an toàn nhờ GIL không?",
      "options": [
       {
+       "text": "Không; thread không được dùng chung biến nào",
+       "detail": "Có thể chia sẻ biến nếu tổ chức đồng bộ đúng."
+      },
+      {
        "text": "Không; cần đồng bộ thao tác cập nhật chung",
        "detail": "Tính đúng ứng dụng cần bảo vệ cả đoạn đọc–sửa–ghi theo hợp đồng dữ liệu.",
        "correct": true
@@ -76,10 +80,6 @@
       {
        "text": "Có; GIL thay mọi Lock",
        "detail": "GIL không cung cấp hợp đồng giao dịch cho mọi cập nhật của ứng dụng."
-      },
-      {
-       "text": "Không; thread không được dùng chung biến nào",
-       "detail": "Có thể chia sẻ biến nếu tổ chức đồng bộ đúng."
       }
      ],
      "explanation": "Tính đúng ứng dụng cần bảo vệ cả đoạn đọc–sửa–ghi theo hợp đồng dữ liệu."
@@ -88,13 +88,13 @@
      "question": "Hai worker đọc 0 rồi đều ghi 1 có thể để counter bằng bao nhiêu sau hai lượt tăng?",
      "options": [
       {
-       "text": "Bắt buộc 0",
-       "detail": "Chưa đúng. Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ."
-      },
-      {
        "text": "1",
        "detail": "Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ.",
        "correct": true
+      },
+      {
+       "text": "Bắt buộc 0",
+       "detail": "Chưa đúng. Một lần ghi có thể đè kết quả lần kia; đó là cập nhật bị mất do xen kẽ."
       },
       {
        "text": "Bắt buộc 2",
@@ -107,17 +107,17 @@
      "question": "Để bảo vệ một lần tăng theo mô hình đọc–tính–ghi, khóa phần nào?",
      "options": [
       {
-       "text": "Toàn bộ chuỗi cập nhật cần nhất quán",
-       "detail": "Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị.",
-       "correct": true
-      },
-      {
        "text": "Chỉ lệnh print sau cùng",
        "detail": "Chưa đúng. Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."
       },
       {
        "text": "Chỉ lúc tạo biến tên counter",
        "detail": "Chưa đúng. Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."
+      },
+      {
+       "text": "Toàn bộ chuỗi cập nhật cần nhất quán",
+       "detail": "Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị.",
+       "correct": true
       }
      ],
      "explanation": "Ranh giới vùng tới hạn phải bao trọn thao tác mà ứng dụng cần coi là một đơn vị."

@@ -86,13 +86,13 @@
        "detail": "Không chia dpi cho inch."
       },
       {
+       "text": "125",
+       "detail": "Không cộng inch với dpi."
+      },
+      {
        "text": "600",
        "detail": "Đúng: 5×120=600 pixel.",
        "correct": true
-      },
-      {
-       "text": "125",
-       "detail": "Không cộng inch với dpi."
       }
      ],
      "explanation": "Công thức inch×dpi áp dụng khi không cắt hoặc đổi kích thước sau xuất."
@@ -105,13 +105,13 @@
        "detail": "400 là mức có thể nhận khi dùng 100 dpi, không phải 200."
       },
       {
-       "text": "200 pixel.",
-       "detail": "200 mới là mật độ trên mỗi inch, chưa phải tổng chiều rộng."
-      },
-      {
        "text": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất.",
        "detail": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất.",
        "correct": true
+      },
+      {
+       "text": "200 pixel.",
+       "detail": "200 mới là mật độ trên mỗi inch, chưa phải tổng chiều rộng."
       }
      ],
      "explanation": "800 pixel. Điều này giả định không cắt hoặc thay đổi kích thước sau xuất."
@@ -120,10 +120,6 @@
      "question": "Muốn đặt hình lên nền slide có màu, cân nhắc tham số nào?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom io import StringIO\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"Vector export\")\nbuffer = StringIO()\nfig.savefig(buffer, format=\"svg\", transparent=True, bbox_inches=\"tight\")\nsvg = buffer.getvalue()\nprint(\"<svg\" in svg)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ14-2.png\", dpi=130)\nplt.close(fig)",
      "options": [
       {
-       "text": "Chỉ tăng linewidth mà không kiểm nền.",
-       "detail": "Độ dày nét không thay cài đặt nền trong suốt."
-      },
-      {
        "text": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật.",
        "detail": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật.",
        "correct": true
@@ -131,6 +127,10 @@
       {
        "text": "Chỉ giảm dpi xuống 1.",
        "detail": "Dpi rất thấp làm giảm độ rõ, không tạo nền trong suốt."
+      },
+      {
+       "text": "Chỉ tăng linewidth mà không kiểm nền.",
+       "detail": "Độ dày nét không thay cài đặt nền trong suốt."
       }
      ],
      "explanation": "transparent=True; sau đó kiểm tra tương phản trên nền slide thật."

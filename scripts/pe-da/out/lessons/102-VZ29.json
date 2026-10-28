@@ -86,13 +86,13 @@
        "detail": "Đây là điểm đầu."
       },
       {
+       "text": "(4,-1)",
+       "detail": "Hai số cuối là độ dời, không phải điểm cuối."
+      },
+      {
        "text": "(6,2)",
        "detail": "Đúng: điểm đầu cộng độ dời (4,-1).",
        "correct": true
-      },
-      {
-       "text": "(4,-1)",
-       "detail": "Hai số cuối là độ dời, không phải điểm cuối."
       }
      ],
      "explanation": "X,Y là vị trí; U,V là thành phần của vector tại vị trí đó."
@@ -101,10 +101,6 @@
      "question": "ax.arrow(0, 0, 2, 1, length_includes_head=True) có đầu mũi tên ở tọa độ nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.arrow(0, 0, 2, 1, width=0.03, length_includes_head=True, color=\"#0072B2\")\nax.set(xlim=(-0.5, 2.5), ylim=(-0.5, 1.5), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"One displacement: dx=2, dy=1\", aspect=\"equal\")\nprint((0 + 2, 0 + 1))\nplt.show()",
      "options": [
       {
-       "text": "Điểm (0,0), vì dx và dy bị bỏ qua.",
-       "detail": "Độ dời không bị bỏ; gốc và đầu mũi tên là hai điểm khác nhau."
-      },
-      {
        "text": "Điểm (1,2), vì hai độ dời luôn đổi chỗ.",
        "detail": "dx đi theo trục x và dy đi theo trục y, không đổi chỗ."
       },
@@ -112,6 +108,10 @@
        "text": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu.",
        "detail": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu.",
        "correct": true
+      },
+      {
+       "text": "Điểm (0,0), vì dx và dy bị bỏ qua.",
+       "detail": "Độ dời không bị bỏ; gốc và đầu mũi tên là hai điểm khác nhau."
       }
      ],
      "explanation": "(2,1), vì hai tham số cuối là độ dời dx=2,dy=1, không phải một cặp tọa độ độc lập với điểm bắt đầu."
@@ -120,10 +120,6 @@
      "question": "U,V trong quiver là vị trí hay thành phần vector?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nX, Y = np.meshgrid([0, 1], [0, 1])\nU = np.ones_like(X)\nV = np.zeros_like(Y)\nax.quiver(X, Y, U, V, angles=\"xy\", scale_units=\"xy\", scale=1)\nax.set(xlim=(-0.2, 2.2), ylim=(-0.2, 1.2), xlabel=\"x (m)\", ylabel=\"y (m)\", title=\"Four vectors pointing right\", aspect=\"equal\")\nprint(int(U.size))\nplt.show()",
      "options": [
       {
-       "text": "Cả bốn đều là tọa độ điểm cuối.",
-       "detail": "Quiver không mặc định nhận cả bốn mảng như các tọa độ điểm cuối."
-      },
-      {
        "text": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector.",
        "detail": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector.",
        "correct": true
@@ -131,6 +127,10 @@
       {
        "text": "U,V là vị trí đặt vector; X,Y là thành phần.",
        "detail": "Bạn đã đảo vai trò của X,Y với U,V."
+      },
+      {
+       "text": "Cả bốn đều là tọa độ điểm cuối.",
+       "detail": "Quiver không mặc định nhận cả bốn mảng như các tọa độ điểm cuối."
       }
      ],
      "explanation": "Là thành phần vector theo x và y. X,Y xác định vị trí đặt vector."

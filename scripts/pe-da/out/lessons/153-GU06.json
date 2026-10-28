@@ -72,13 +72,13 @@
        "detail": "Đó là text để người dùng đọc, không phải value đã cấu hình."
       },
       {
-       "text": "True",
-       "detail": "Radio group trong ví dụ lưu chuỗi lựa chọn, không phải BooleanVar."
-      },
-      {
        "text": "express",
        "detail": "text là nhãn nhìn thấy; value là dữ liệu gán vào biến chung.",
        "correct": true
+      },
+      {
+       "text": "True",
+       "detail": "Radio group trong ví dụ lưu chuỗi lựa chọn, không phải BooleanVar."
       }
      ],
      "explanation": "text là nhãn nhìn thấy; value là dữ liệu gán vào biến chung."
@@ -87,6 +87,10 @@
      "question": "Các Radiobutton cùng một nhóm thường dùng chung gì?",
      "options": [
       {
+       "text": "Một root riêng cho từng nút",
+       "detail": "Chưa đúng. Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
+      },
+      {
        "text": "Một giá trị value giống hệt nhau",
        "detail": "Chưa đúng. Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
       },
@@ -94,10 +98,6 @@
        "text": "Một biến trạng thái như StringVar",
        "detail": "Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt.",
        "correct": true
-      },
-      {
-       "text": "Một root riêng cho từng nút",
-       "detail": "Chưa đúng. Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."
       }
      ],
      "explanation": "Biến chung lưu lựa chọn hiện tại; mỗi nút dùng value riêng để phân biệt."

@@ -76,13 +76,13 @@
      "question": "Ngày [3,1,2] đi với doanh thu [7,8,10]. Sau khi sắp ngày tăng, doanh thu phải là gì?",
      "options": [
       {
+       "text": "[7,8,10]",
+       "detail": "Chỉ sắp ngày sẽ gán số tiền cho nhầm ngày."
+      },
+      {
        "text": "[8,10,7]",
        "detail": "Đúng: di chuyển cả cặp ngày–doanh thu.",
        "correct": true
-      },
-      {
-       "text": "[7,8,10]",
-       "detail": "Chỉ sắp ngày sẽ gán số tiền cho nhầm ngày."
       },
       {
        "text": "[7,10,8]",
@@ -95,13 +95,13 @@
      "question": "Dữ liệu ngày 3, ngày 1, ngày 2 cần xử lý gì trước khi vẽ?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nfrom datetime import date\ndays = [date(2026, 1, 1), date(2026, 1, 2), date(2026, 1, 3)]\nsales = [8, 10, 7]\nax.plot(days, sales, marker=\"o\")\nax.set(xlabel=\"Date\", ylabel=\"Sales (million VND)\", title=\"Three daily observations\")\nfig.autofmt_xdate()\nprint(max(sales))\nplt.show()",
      "options": [
       {
-       "text": "Không cần làm gì vì plot tự sắp mọi ngày.",
-       "detail": "plot nối theo thứ tự đưa vào, không bảo đảm tự sắp ngày."
-      },
-      {
        "text": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào.",
        "detail": "Sắp theo ngày và giữ đúng cặp ngày–giá trị. plot nối theo thứ tự đầu vào.",
        "correct": true
+      },
+      {
+       "text": "Không cần làm gì vì plot tự sắp mọi ngày.",
+       "detail": "plot nối theo thứ tự đưa vào, không bảo đảm tự sắp ngày."
       },
       {
        "text": "Chỉ sắp ngày, giữ giá trị ở nguyên vị trí cũ.",
@@ -114,17 +114,17 @@
      "question": "np.nan ở giữa một đường cho biết ngày đó bán được 0 không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [8, 10, 7], marker=\"o\", linestyle=\"-\", label=\"Coffee\")\nax.plot([1, 2, 3], [5, 6, 6], marker=\"s\", linestyle=\"--\", label=\"Tea\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Sales by drink\")\nax.legend()\nprint(len(ax.lines))\nplt.show()",
      "options": [
       {
-       "text": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
-       "detail": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
-       "correct": true
-      },
-      {
        "text": "Có; thiếu dữ liệu có cùng nghĩa với bán 0 cốc.",
        "detail": "Điền 0 biến phần thiếu thành một phép đo không có thật."
       },
       {
        "text": "Có; nan là cách viết khác của số 0.",
        "detail": "NaN là giá trị thiếu, không phải tên khác của 0."
+      },
+      {
+       "text": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
+       "detail": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0.",
+       "correct": true
       }
      ],
      "explanation": "Không. Nó là giá trị thiếu; 0 là một phép đo có giá trị bằng 0."

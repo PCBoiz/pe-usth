@@ -113,13 +113,13 @@
        "detail": "axis=0 mới đưa từng cột cho hàm apply."
       },
       {
-       "text": "Toàn bộ DataFrame một lần.",
-       "detail": "Hàm được gọi cho từng hàng, không chỉ một lần cho toàn bảng."
-      },
-      {
        "text": "Từng hàng.",
        "detail": "Từng hàng.",
        "correct": true
+      },
+      {
+       "text": "Toàn bộ DataFrame một lần.",
+       "detail": "Hàm được gọi cho từng hàng, không chỉ một lần cho toàn bảng."
       }
      ],
      "explanation": "Từng hàng."

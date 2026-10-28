@@ -71,6 +71,10 @@
      "question": "Một hàm chỉ gọi print(12) và không return. Giá trị nhận được khi gán result = hàm() là gì?",
      "options": [
       {
+       "text": "Chuỗi \"12\"",
+       "detail": "print không chuyển output thành giá trị trả về của hàm."
+      },
+      {
        "text": "None",
        "detail": "Đúng. print hiển thị 12 nhưng hàm không trả 12.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "12",
        "detail": "Muốn nhận 12 từ lời gọi, thân hàm phải return 12."
-      },
-      {
-       "text": "Chuỗi \"12\"",
-       "detail": "print không chuyển output thành giá trị trả về của hàm."
       }
      ],
      "explanation": "Đúng. print hiển thị 12 nhưng hàm không trả 12."
@@ -95,12 +95,12 @@
        "correct": true
       },
       {
-       "text": "1",
-       "detail": "1 là quantity, còn giá là 8."
-      },
-      {
        "text": "'TypeError'",
        "detail": "quantity đã có giá trị mặc định."
+      },
+      {
+       "text": "1",
+       "detail": "1 là quantity, còn giá là 8."
       }
      ],
      "explanation": "Hàm dùng quantity=1 khi lời gọi không ghi đối số đó."
@@ -109,17 +109,17 @@
      "question": "Chỉ rõ số lượng khi gọi hàm. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef total(price, quantity=1):\n    return price * quantity\nprint(total(8, quantity=3))",
      "options": [
       {
-       "text": "24",
-       "detail": "Đối số theo tên thay giá trị mặc định của quantity.",
-       "correct": true
+       "text": "8",
+       "detail": "Lời gọi đã ghi quantity=3."
       },
       {
        "text": "11",
        "detail": "Hàm nhân giá với số lượng, không cộng."
       },
       {
-       "text": "8",
-       "detail": "Lời gọi đã ghi quantity=3."
+       "text": "24",
+       "detail": "Đối số theo tên thay giá trị mặc định của quantity.",
+       "correct": true
       }
      ],
      "explanation": "Đối số theo tên thay giá trị mặc định của quantity."

@@ -83,10 +83,6 @@
      "question": "np.array([3, 4.5]) được NumPy chọn kiểu số nào trong ví dụ?",
      "options": [
       {
-       "text": "Mỗi phần tử có một dtype khác nhau",
-       "detail": "Array số thông thường dùng một dtype chung."
-      },
-      {
        "text": "Số thực",
        "detail": "Đúng. Kiểu chung cần lưu được 4.5.",
        "correct": true
@@ -94,6 +90,10 @@
       {
        "text": "Số nguyên",
        "detail": "Kiểu số nguyên sẽ không giữ phần .5 như dữ liệu ban đầu."
+      },
+      {
+       "text": "Mỗi phần tử có một dtype khác nhau",
+       "detail": "Array số thông thường dùng một dtype chung."
       }
      ],
      "explanation": "Đúng. Kiểu chung cần lưu được 4.5."
@@ -102,17 +102,17 @@
      "question": "Một giá có phần thập phân. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprices = np.array([3, 4.5])\nprint(str(prices.dtype))",
      "options": [
       {
-       "text": "'float64'",
-       "detail": "NumPy dùng kiểu số thực để giữ cả hai giá trị.",
-       "correct": true
-      },
-      {
        "text": "'int64'",
        "detail": "Kiểu nguyên không giữ được phần .5 ở giá thứ hai."
       },
       {
        "text": "'str'",
        "detail": "Không có chuỗi trong dãy này."
+      },
+      {
+       "text": "'float64'",
+       "detail": "NumPy dùng kiểu số thực để giữ cả hai giá trị.",
+       "correct": true
       }
      ],
      "explanation": "NumPy dùng kiểu số thực để giữ cả hai giá trị."
@@ -121,13 +121,13 @@
      "question": "Các điểm ban đầu viết như số nguyên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([6, 9], dtype=float)\nprint(str(marks.dtype))",
      "options": [
       {
+       "text": "'int64'",
+       "detail": "dtype=float đã yêu cầu kiểu thực."
+      },
+      {
        "text": "'float64'",
        "detail": "dtype=float chọn kiểu số thực dù literal đầu vào là số nguyên.",
        "correct": true
-      },
-      {
-       "text": "'int64'",
-       "detail": "dtype=float đã yêu cầu kiểu thực."
       },
       {
        "text": "'bool'",

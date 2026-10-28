@@ -83,17 +83,17 @@
      "question": "Ẩn một trace bằng legend có xóa dữ liệu khỏi HTML không?\n\nimport pandas as pd\nimport plotly.express as px\norders = pd.DataFrame({\"km\":[1, 2, 3], \"minutes\":[8, 12, 11], \"store\":[\"A\", \"B\", \"A\"]})\nfig = px.scatter(orders, x=\"km\", y=\"minutes\", color=\"store\", symbol=\"store\", hover_data=[\"store\"], labels={\"km\":\"Distance (km)\", \"minutes\":\"Delivery (minutes)\"}, title=\"Inspect an order with hover\")\nprint(len(fig.data))\nfig.show()",
      "options": [
       {
-       "text": "Có; ẩn trace sẽ xóa sạch dữ liệu khỏi file đã xuất.",
-       "detail": "Ẩn trên legend thường không xóa mảng dữ liệu của trace."
+       "text": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
+       "detail": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
+       "correct": true
       },
       {
        "text": "Có; legend là một cơ chế mã hóa dữ liệu.",
        "detail": "Legend không mã hóa dữ liệu trong HTML."
       },
       {
-       "text": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
-       "detail": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu.",
-       "correct": true
+       "text": "Có; ẩn trace sẽ xóa sạch dữ liệu khỏi file đã xuất.",
+       "detail": "Ẩn trên legend thường không xóa mảng dữ liệu của trace."
       }
      ],
      "explanation": "Không. Dữ liệu của trace thường vẫn nằm trong file; ẩn không phải biện pháp bảo vệ dữ liệu."
@@ -106,13 +106,13 @@
        "detail": "Cùng giảm alpha không tạo một ký hiệu riêng cho từng nhóm."
       },
       {
+       "text": "Chỉ đổi tên file HTML.",
+       "detail": "Tên file không giúp phân biệt hai nhóm trong vùng vẽ."
+      },
+      {
        "text": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ.",
        "detail": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ.",
        "correct": true
-      },
-      {
-       "text": "Chỉ đổi tên file HTML.",
-       "detail": "Tên file không giúp phân biệt hai nhóm trong vùng vẽ."
       }
      ],
      "explanation": "Thêm symbol cho scatter hoặc line_dash cho line, cùng legend và nhãn rõ."

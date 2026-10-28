@@ -68,6 +68,10 @@
      "question": "Popen có stdin=PIPE, stdout=PIPE. Với lượng dữ liệu lớn, communicate giúp gì?",
      "options": [
       {
+       "text": "Chỉ trả PID, không đọc output",
+       "detail": "PID nằm ở thuộc tính pid; communicate trả output/error."
+      },
+      {
        "text": "Tự giết mọi tiến trình nếu quá thời gian mà không cần xử lý",
        "detail": "Khi communicate timeout cần xử lý tiến trình và gọi lại để thu/dọn."
       },
@@ -75,10 +79,6 @@
        "text": "Gửi input và thu output để tránh tự chờ sai thứ tự",
        "detail": "communicate xử lý trao đổi với các pipe và chờ kết thúc.",
        "correct": true
-      },
-      {
-       "text": "Chỉ trả PID, không đọc output",
-       "detail": "PID nằm ở thuộc tính pid; communicate trả output/error."
       }
      ],
      "explanation": "communicate xử lý trao đổi với các pipe và chờ kết thúc."
@@ -87,13 +87,13 @@
      "question": "Popen khác run ở điểm chờ nào?",
      "options": [
       {
-       "text": "run không bao giờ chờ con",
-       "detail": "Chưa đúng. Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng."
-      },
-      {
        "text": "Popen cho phép cha tiếp tục sau khi khởi tạo con",
        "detail": "Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng.",
        "correct": true
+      },
+      {
+       "text": "run không bao giờ chờ con",
+       "detail": "Chưa đúng. Sau Popen, có thể giao tiếp/chờ bằng communicate hoặc wait theo cách dùng."
       },
       {
        "text": "Popen luôn chờ toàn bộ con xong trước khi trả",
@@ -106,16 +106,16 @@
      "question": "Popen(text=True) nhận input cho communicate theo kiểu nào trong bài?",
      "options": [
       {
+       "text": "Chỉ int",
+       "detail": "Chưa đúng. Text mode xử lý chuỗi; binary mode dùng bytes."
+      },
+      {
        "text": "str",
        "detail": "Text mode xử lý chuỗi; binary mode dùng bytes.",
        "correct": true
       },
       {
        "text": "Chỉ bytes",
-       "detail": "Chưa đúng. Text mode xử lý chuỗi; binary mode dùng bytes."
-      },
-      {
-       "text": "Chỉ int",
        "detail": "Chưa đúng. Text mode xử lý chuỗi; binary mode dùng bytes."
       }
      ],

@@ -94,12 +94,12 @@
        "correct": true
       },
       {
-       "text": "Có, mọi lời gọi đều tự reset",
-       "detail": "Seed đặt khi khởi tạo; lời gọi sau tiếp tục trạng thái."
-      },
-      {
        "text": "Seed buộc mỗi mặt xúc xắc xuất hiện đúng bằng nhau",
        "detail": "Seed không ép tần suất của một mẫu nhỏ bằng nhau."
+      },
+      {
+       "text": "Có, mọi lời gọi đều tự reset",
+       "detail": "Seed đặt khi khởi tạo; lời gọi sau tiếp tục trạng thái."
       }
      ],
      "explanation": "Đúng. Muốn bắt đầu lại cùng chuỗi, tạo lại bộ sinh với cùng seed và cùng thứ tự lệnh."
@@ -108,17 +108,17 @@
      "question": "Mô phỏng xúc xắc; kiểm có số nào đạt 7 không. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=20)\nprint(bool((rolls < 7).all()))",
      "options": [
       {
-       "text": "True",
-       "detail": "Mọi số sinh được nằm từ 1 tới 6.",
-       "correct": true
+       "text": "'Chỉ đúng nếu seed chẵn'",
+       "detail": "Seed không thay quy tắc loại cận trên."
       },
       {
        "text": "False",
        "detail": "Cận trên 7 không được lấy trong integers(1,7)."
       },
       {
-       "text": "'Chỉ đúng nếu seed chẵn'",
-       "detail": "Seed không thay quy tắc loại cận trên."
+       "text": "True",
+       "detail": "Mọi số sinh được nằm từ 1 tới 6.",
+       "correct": true
       }
      ],
      "explanation": "Mọi số sinh được nằm từ 1 tới 6."
@@ -127,13 +127,13 @@
      "question": "Lấy 12 lần tung, không phải 12 mặt. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrng = np.random.default_rng(7)\nrolls = rng.integers(1, 7, size=12)\nprint(rolls.shape)",
      "options": [
       {
+       "text": "[6]",
+       "detail": "6 là số mặt có thể nhận, không phải số lượt."
+      },
+      {
        "text": "(12,)",
        "detail": "size=12 yêu cầu một dãy gồm 12 kết quả.",
        "correct": true
-      },
-      {
-       "text": "[6]",
-       "detail": "6 là số mặt có thể nhận, không phải số lượt."
       },
       {
        "text": "[1, 7]",

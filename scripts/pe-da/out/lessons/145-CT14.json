@@ -74,6 +74,10 @@
      "question": "Con sửa một list Python thông thường sau spawn. List ở cha có tự đổi không?",
      "options": [
       {
+       "text": "Có; giống hai thread cùng heap",
+       "detail": "Spawn tạo process riêng, không dùng chung list Python thông thường."
+      },
+      {
        "text": "Không; process không thể gửi kết quả",
        "detail": "Queue, pipe và các cơ chế IPC phục vụ việc trao đổi đó."
       },
@@ -81,10 +85,6 @@
        "text": "Không; hai process có không gian dữ liệu riêng",
        "detail": "Cần cơ chế trao đổi như multiprocessing.Queue nếu muốn gửi kết quả.",
        "correct": true
-      },
-      {
-       "text": "Có; giống hai thread cùng heap",
-       "detail": "Spawn tạo process riêng, không dùng chung list Python thông thường."
       }
      ],
      "explanation": "Cần cơ chế trao đổi như multiprocessing.Queue nếu muốn gửi kết quả."
@@ -117,11 +117,11 @@
        "correct": true
       },
       {
-       "text": "Mọi hàm worker bị gọi đúng một lần toàn hệ",
+       "text": "Mọi lỗi serialize dữ liệu",
        "detail": "Chưa đúng. Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module."
       },
       {
-       "text": "Mọi lỗi serialize dữ liệu",
+       "text": "Mọi hàm worker bị gọi đúng một lần toàn hệ",
        "detail": "Chưa đúng. Guard giới hạn phần khởi chạy vào lượt chạy trực tiếp của module."
       }
      ],

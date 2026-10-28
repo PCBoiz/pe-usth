@@ -75,13 +75,13 @@
      "question": "main.py có main guard gọi run(). Chạy python -c \"import main\" sẽ tự gọi run không?",
      "options": [
       {
-       "text": "Không thể import file tên main.py",
-       "detail": "main là tên module hợp lệ; vấn đề là lời gọi có được bảo vệ không."
-      },
-      {
        "text": "Không",
        "detail": "Khi import, __name__ của module là main chứ không phải __main__.",
        "correct": true
+      },
+      {
+       "text": "Không thể import file tên main.py",
+       "detail": "main là tên module hợp lệ; vấn đề là lời gọi có được bảo vệ không."
       },
       {
        "text": "Có, main guard chạy ở mọi lần import",
@@ -94,7 +94,7 @@
      "question": "Tên module nhiều tầng thường viết như thế nào?",
      "options": [
       {
-       "text": "domains\\reports\\summary.py trong câu import",
+       "text": "domains/reports/summary trong câu import",
        "detail": "Chưa đúng. Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác."
       },
       {
@@ -103,7 +103,7 @@
        "correct": true
       },
       {
-       "text": "domains/reports/summary trong câu import",
+       "text": "domains\\reports\\summary.py trong câu import",
        "detail": "Chưa đúng. Tên package/module dùng dấu chấm; đường dẫn file trên đĩa là một biểu diễn khác."
       }
      ],
@@ -113,17 +113,17 @@
      "question": "Trong regular package của bài, __init__.py có vai trò gì?",
      "options": [
       {
-       "text": "File khởi tạo package",
-       "detail": "__init__.py của package khác method __init__ của một class.",
-       "correct": true
+       "text": "File chỉ chạy khi gọi pip",
+       "detail": "Chưa đúng. __init__.py của package khác method __init__ của một class."
       },
       {
        "text": "Method khởi tạo của mọi class bên trong",
        "detail": "Chưa đúng. __init__.py của package khác method __init__ của một class."
       },
       {
-       "text": "File chỉ chạy khi gọi pip",
-       "detail": "Chưa đúng. __init__.py của package khác method __init__ của một class."
+       "text": "File khởi tạo package",
+       "detail": "__init__.py của package khác method __init__ của một class.",
+       "correct": true
       }
      ],
      "explanation": "__init__.py của package khác method __init__ của một class."

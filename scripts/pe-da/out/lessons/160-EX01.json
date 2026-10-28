@@ -67,8 +67,8 @@
      "question": "File id,mark có hai cột. usecols=(1,) chọn cột nào?",
      "options": [
       {
-       "text": "Cả hai cột",
-       "detail": "Tuple chỉ chứa 1 yêu cầu đọc riêng một cột."
+       "text": "id",
+       "detail": "Đó là cột có chỉ số 0."
       },
       {
        "text": "mark",
@@ -76,8 +76,8 @@
        "correct": true
       },
       {
-       "text": "id",
-       "detail": "Đó là cột có chỉ số 0."
+       "text": "Cả hai cột",
+       "detail": "Tuple chỉ chứa 1 yêu cầu đọc riêng một cột."
       }
      ],
      "explanation": "Chỉ số cột bắt đầu từ 0: id ở 0, mark ở 1."
@@ -86,13 +86,13 @@
      "question": "File id,mark có một dòng tiêu đề. skiprows=1 bỏ phần nào?",
      "options": [
       {
-       "text": "Phần tử cuối mỗi hàng",
-       "detail": "Chưa đúng. Skiprows áp dụng lên dòng; usecols mới lựa chọn cột."
-      },
-      {
        "text": "Dòng đầu",
        "detail": "Skiprows áp dụng lên dòng; usecols mới lựa chọn cột.",
        "correct": true
+      },
+      {
+       "text": "Phần tử cuối mỗi hàng",
+       "detail": "Chưa đúng. Skiprows áp dụng lên dòng; usecols mới lựa chọn cột."
       },
       {
        "text": "Cột đầu",
@@ -105,17 +105,17 @@
      "question": "usecols=(1,) chọn cột nào khi cột đầu có chỉ số 0?",
      "options": [
       {
-       "text": "Cột thứ hai",
-       "detail": "Chỉ số cột theo 0, nên 1 là cột thứ hai.",
-       "correct": true
+       "text": "Hai cột đầu",
+       "detail": "Chưa đúng. Chỉ số cột theo 0, nên 1 là cột thứ hai."
       },
       {
        "text": "Cột đầu tiên",
        "detail": "Chưa đúng. Chỉ số cột theo 0, nên 1 là cột thứ hai."
       },
       {
-       "text": "Hai cột đầu",
-       "detail": "Chưa đúng. Chỉ số cột theo 0, nên 1 là cột thứ hai."
+       "text": "Cột thứ hai",
+       "detail": "Chỉ số cột theo 0, nên 1 là cột thứ hai.",
+       "correct": true
       }
      ],
      "explanation": "Chỉ số cột theo 0, nên 1 là cột thứ hai."

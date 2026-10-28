@@ -71,13 +71,13 @@
      "question": "A-Jan có 5 và 15. pivot_table mặc định dùng mean trả gì?",
      "options": [
       {
-       "text": "15",
-       "detail": "Mặc định không lấy bản cuối."
-      },
-      {
        "text": "10",
        "detail": "Đúng: mean của 5 và 15 bằng 10.",
        "correct": true
+      },
+      {
+       "text": "15",
+       "detail": "Mặc định không lấy bản cuối."
       },
       {
        "text": "20",
@@ -90,12 +90,12 @@
      "question": "Muốn doanh thu tổng trong pivot_table, phải chỉ rõ tham số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Jan', 'Feb'], 'amount': [10, 20, 40]})\ntable = df.pivot_table(index='store', columns='month', values='amount', aggfunc='sum', fill_value=0)\nprint(table.loc['A', 'Jan'])\nprint(table.loc['A', 'Feb'])",
      "options": [
       {
-       "text": "fill_value=\"sum\".",
-       "detail": "fill_value quyết định giá trị điền cho ô vắng, không chọn phép cộng."
-      },
-      {
        "text": "normalize=\"sum\".",
        "detail": "normalize dùng để chuẩn hóa tỷ lệ, không phải tham số chọn phép cộng của pivot_table."
+      },
+      {
+       "text": "fill_value=\"sum\".",
+       "detail": "fill_value quyết định giá trị điền cho ô vắng, không chọn phép cộng."
       },
       {
        "text": "aggfunc=\"sum\".",
@@ -109,8 +109,8 @@
      "question": "Tỷ lệ web–yes=0.5 khi normalize=\"index\" dùng mẫu số nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'channel': ['web', 'web', 'shop'], 'paid': ['yes', 'no', 'yes']})\ncounts = pd.crosstab(df['channel'], df['paid'])\nrates = pd.crosstab(df['channel'], df['paid'], normalize='index')\nprint(counts.loc['web', 'yes'])\nprint(rates.loc['web', 'yes'])",
      "options": [
       {
-       "text": "Tổng số đơn trong cột yes.",
-       "detail": "Chuẩn hóa theo cột phải dùng mẫu số của cột, không phải index."
+       "text": "Tổng số đơn của toàn bảng.",
+       "detail": "Mẫu số toàn bảng thuộc cách chuẩn hóa khác."
       },
       {
        "text": "Tổng số đơn trong hàng web.",
@@ -118,8 +118,8 @@
        "correct": true
       },
       {
-       "text": "Tổng số đơn của toàn bảng.",
-       "detail": "Mẫu số toàn bảng thuộc cách chuẩn hóa khác."
+       "text": "Tổng số đơn trong cột yes.",
+       "detail": "Chuẩn hóa theo cột phải dùng mẫu số của cột, không phải index."
       }
      ],
      "explanation": "Tổng số đơn trong hàng web."

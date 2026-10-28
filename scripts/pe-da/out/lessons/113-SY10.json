@@ -77,13 +77,13 @@
      "question": "Điểm cũ là 8. Setter kiểm đầu vào mới 11 trước phép gán rồi raise ValueError. Điểm cũ còn bao nhiêu?",
      "options": [
       {
+       "text": "11",
+       "detail": "Chỉ khi gán trước khi kiểm mới làm mất trạng thái hợp lệ."
+      },
+      {
        "text": "8",
        "detail": "Ngoại lệ xảy ra trước phép gán nên trạng thái cũ còn nguyên.",
        "correct": true
-      },
-      {
-       "text": "11",
-       "detail": "Chỉ khi gán trước khi kiểm mới làm mất trạng thái hợp lệ."
       },
       {
        "text": "None",
@@ -96,13 +96,13 @@
      "question": "Setter nên làm gì trước khi thay điểm đang lưu?",
      "options": [
       {
-       "text": "Xóa điểm cũ vô điều kiện",
-       "detail": "Chưa đúng. Kiểm trước khi gán giữ trạng thái cũ nếu lần cập nhật bị từ chối."
-      },
-      {
        "text": "Kiểm dữ liệu mới có hợp lệ không",
        "detail": "Kiểm trước khi gán giữ trạng thái cũ nếu lần cập nhật bị từ chối.",
        "correct": true
+      },
+      {
+       "text": "Xóa điểm cũ vô điều kiện",
+       "detail": "Chưa đúng. Kiểm trước khi gán giữ trạng thái cũ nếu lần cập nhật bị từ chối."
       },
       {
        "text": "Gán điểm mới rồi mới kiểm sau",
@@ -115,17 +115,17 @@
      "question": "Tên _value có ngăn mọi code bên ngoài truy cập không?",
      "options": [
       {
-       "text": "Không; đây là quy ước nội bộ",
-       "detail": "Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật.",
-       "correct": true
+       "text": "Có; chỉ hệ điều hành mới đọc được",
+       "detail": "Chưa đúng. Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật."
       },
       {
        "text": "Có; dữ liệu đã được mã hóa",
        "detail": "Chưa đúng. Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật."
       },
       {
-       "text": "Có; chỉ hệ điều hành mới đọc được",
-       "detail": "Chưa đúng. Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật."
+       "text": "Không; đây là quy ước nội bộ",
+       "detail": "Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật.",
+       "correct": true
       }
      ],
      "explanation": "Một dấu gạch dưới nhắc người dùng về chi tiết triển khai, không phải ranh giới bảo mật."

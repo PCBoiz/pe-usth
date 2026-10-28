@@ -71,13 +71,13 @@
      "question": "Điểm 8 và 6, tín chỉ lần lượt 3 và 1: GPA là bao nhiêu?",
      "options": [
       {
+       "text": "7.0",
+       "detail": "Đây là trung bình không trọng số, bỏ qua tín chỉ khác nhau."
+      },
+      {
        "text": "7.5",
        "detail": "Tổng có trọng số (8×3+6×1)=30, chia tổng tín chỉ 4.",
        "correct": true
-      },
-      {
-       "text": "7.0",
-       "detail": "Đây là trung bình không trọng số, bỏ qua tín chỉ khác nhau."
       },
       {
        "text": "15.0",
@@ -90,6 +90,10 @@
      "question": "Điểm [8,6], tín chỉ [3,1]. Trung bình không trọng số bỏ qua điều gì?",
      "options": [
       {
+       "text": "Số thứ tự của array bắt đầu từ 0",
+       "detail": "Chưa đúng. GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
+      },
+      {
        "text": "Kiểu chữ của tên môn",
        "detail": "Chưa đúng. GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
       },
@@ -97,10 +101,6 @@
        "text": "Môn 3 tín chỉ phải đóng góp nhiều hơn",
        "detail": "GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ.",
        "correct": true
-      },
-      {
-       "text": "Số thứ tự của array bắt đầu từ 0",
-       "detail": "Chưa đúng. GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
       }
      ],
      "explanation": "GPA theo tín chỉ chia tổng điểm×tín chỉ cho tổng tín chỉ."
@@ -114,11 +114,11 @@
        "correct": true
       },
       {
-       "text": "8.8",
+       "text": "8.79",
        "detail": "Chưa đúng. Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống."
       },
       {
-       "text": "8.79",
+       "text": "8.8",
        "detail": "Chưa đúng. Floor một chữ số giữ phần đến hàng phần mười theo hướng làm tròn xuống."
       }
      ],

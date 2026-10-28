@@ -68,17 +68,17 @@
      "question": "Thread(target=work()) khác target=work ở đâu?",
      "options": [
       {
-       "text": "Không khác nhau",
-       "detail": "Dấu ngoặc tạo lời gọi ngay, thay đổi thời điểm và giá trị target."
+       "text": "work() chạy ngay khi xây đối số",
+       "detail": "target cần callable để thread gọi sau; target=work() truyền kết quả của lời gọi.",
+       "correct": true
       },
       {
        "text": "work() luôn chạy nhanh hơn trong thread",
        "detail": "Ở đây chưa có thread nào được start khi biểu thức đối số chạy."
       },
       {
-       "text": "work() chạy ngay khi xây đối số",
-       "detail": "target cần callable để thread gọi sau; target=work() truyền kết quả của lời gọi.",
-       "correct": true
+       "text": "Không khác nhau",
+       "detail": "Dấu ngoặc tạo lời gọi ngay, thay đổi thời điểm và giá trị target."
       }
      ],
      "explanation": "target cần callable để thread gọi sau; target=work() truyền kết quả của lời gọi."
@@ -106,17 +106,17 @@
      "question": "args=(4,) khác args=(4) ở điểm gì?",
      "options": [
       {
-       "text": "(4,) là tuple một phần tử",
-       "detail": "Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số.",
-       "correct": true
+       "text": "Dấu phẩy khiến số 4 thành chuỗi",
+       "detail": "Chưa đúng. Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
       },
       {
        "text": "(4) cũng là tuple một phần tử",
        "detail": "Chưa đúng. Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
       },
       {
-       "text": "Dấu phẩy khiến số 4 thành chuỗi",
-       "detail": "Chưa đúng. Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."
+       "text": "(4,) là tuple một phần tử",
+       "detail": "Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số.",
+       "correct": true
       }
      ],
      "explanation": "Dấu phẩy tạo tuple một phần tử để truyền đúng danh sách đối số."

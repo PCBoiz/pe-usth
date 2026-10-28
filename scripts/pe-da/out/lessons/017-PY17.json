@@ -77,17 +77,17 @@
      "question": "callback = greet khác callback = greet() ở điểm nào?",
      "options": [
       {
+       "text": "Cách đầu giữ hàm, cách sau gọi hàm ngay",
+       "detail": "Đúng. Dấu ngoặc thực hiện lời gọi.",
+       "correct": true
+      },
+      {
        "text": "Hai cách đều chờ tới khi bấm nút",
        "detail": "greet() chạy ngay khi dòng gán được thực thi."
       },
       {
        "text": "Cách đầu gọi hai lần",
        "detail": "Gán tham chiếu hàm không gọi hàm lần nào."
-      },
-      {
-       "text": "Cách đầu giữ hàm, cách sau gọi hàm ngay",
-       "detail": "Đúng. Dấu ngoặc thực hiện lời gọi.",
-       "correct": true
       }
      ],
      "explanation": "Đúng. Dấu ngoặc thực hiện lời gọi."
@@ -96,17 +96,17 @@
      "question": "Gán hàm cho một tên khác rồi gọi sau. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef greet():\n    return \"Hello\"\ncallback = greet\nprint(callback())",
      "options": [
       {
-       "text": "'Hello'",
-       "detail": "callback và greet cùng tham chiếu tới một hàm.",
-       "correct": true
+       "text": "'greet'",
+       "detail": "Lời gọi thực thi thân hàm, không trả tên hàm."
       },
       {
        "text": "None",
        "detail": "callback vẫn là callable và có return."
       },
       {
-       "text": "'greet'",
-       "detail": "Lời gọi thực thi thân hàm, không trả tên hàm."
+       "text": "'Hello'",
+       "detail": "callback và greet cùng tham chiếu tới một hàm.",
+       "correct": true
       }
      ],
      "explanation": "callback và greet cùng tham chiếu tới một hàm."
@@ -115,6 +115,10 @@
      "question": "Biến bên trong hàm có cùng tên biến bên ngoài. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalue = 10\ndef calculate():\n    value = 20\n    return value\ninside = calculate()\nprint([inside, value])",
      "options": [
       {
+       "text": "[10, 10]",
+       "detail": "Hàm tạo biến local giá trị 20."
+      },
+      {
        "text": "[20, 10]",
        "detail": "inside nhận kết quả local, value bên ngoài vẫn 10.",
        "correct": true
@@ -122,10 +126,6 @@
       {
        "text": "[20, 20]",
        "detail": "Gán value trong hàm không đổi biến module ở đây."
-      },
-      {
-       "text": "[10, 10]",
-       "detail": "Hàm tạo biến local giá trị 20."
       }
      ],
      "explanation": "inside nhận kết quả local, value bên ngoài vẫn 10."

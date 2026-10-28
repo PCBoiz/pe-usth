@@ -66,8 +66,8 @@
      "question": "Process 102 có PPID=101; 101 có PPID=100. Cha trực tiếp của 102 là ai?",
      "options": [
       {
-       "text": "102",
-       "detail": "PID bản thân không trở thành PPID của chính nó trong cây này."
+       "text": "100",
+       "detail": "100 là tổ tiên ở đây, không phải cha trực tiếp."
       },
       {
        "text": "101",
@@ -75,8 +75,8 @@
        "correct": true
       },
       {
-       "text": "100",
-       "detail": "100 là tổ tiên ở đây, không phải cha trực tiếp."
+       "text": "102",
+       "detail": "PID bản thân không trở thành PPID của chính nó trong cây này."
       }
      ],
      "explanation": "PPID trỏ cha trực tiếp, không bỏ qua một thế hệ."
@@ -85,7 +85,7 @@
      "question": "Process 8 có PPID 5, process 5 có PPID 1. Cha trực tiếp của 8 là ai?",
      "options": [
       {
-       "text": "8",
+       "text": "1",
        "detail": "Chưa đúng. PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây."
       },
       {
@@ -94,7 +94,7 @@
        "correct": true
       },
       {
-       "text": "1",
+       "text": "8",
        "detail": "Chưa đúng. PPID trỏ cha trực tiếp; tổ tiên xa hơn cần đi thêm một bước cây."
       }
      ],
@@ -109,11 +109,11 @@
        "correct": true
       },
       {
-       "text": "Có; tên list giống nhau là đủ",
+       "text": "Chỉ đổi khi cả hai dùng cùng version Python",
        "detail": "Chưa đúng. Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu."
       },
       {
-       "text": "Chỉ đổi khi cả hai dùng cùng version Python",
+       "text": "Có; tên list giống nhau là đủ",
        "detail": "Chưa đúng. Không gian địa chỉ riêng cần cơ chế chia sẻ/IPC nếu muốn trao đổi dữ liệu."
       }
      ],

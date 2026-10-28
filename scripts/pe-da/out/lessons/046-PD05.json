@@ -71,13 +71,13 @@
      "question": "df có amount=[80,120,150], city=[\"HN\",\"HCM\",\"HN\"]. Mask (df[\"amount\"] >= 100) & (df[\"city\"] == \"HN\") giữ vị trí nào?",
      "options": [
       {
-       "text": "0 và 2",
-       "detail": "Đây chỉ kiểm city, bỏ điều kiện tiền."
-      },
-      {
        "text": "2",
        "detail": "Đúng: hàng thứ ba thỏa cả hai điều kiện.",
        "correct": true
+      },
+      {
+       "text": "0 và 2",
+       "detail": "Đây chỉ kiểm city, bỏ điều kiện tiền."
       },
       {
        "text": "1 và 2",
@@ -94,13 +94,13 @@
        "detail": "Vị trí 1 đang có False."
       },
       {
-       "text": "Vị trí 1 và 3 vì vị trí bắt đầu từ 1.",
-       "detail": "Vị trí Python bắt đầu từ 0, không phải 1."
-      },
-      {
        "text": "Giữ vị trí 0 và 2.",
        "detail": "Giữ vị trí 0 và 2.",
        "correct": true
+      },
+      {
+       "text": "Vị trí 1 và 3 vì vị trí bắt đầu từ 1.",
+       "detail": "Vị trí Python bắt đầu từ 0, không phải 1."
       }
      ],
      "explanation": "Giữ vị trí 0 và 2."
@@ -109,6 +109,10 @@
      "question": "Điều kiện amount >= 100 và city == HN nối bằng and hay &?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [80, 150, 120], 'city': ['HN', 'HN', 'HCM']})\nmask = (df['amount'] >= 100) & (df['city'] == 'HN')\nprint(df.loc[mask, ['order', 'amount']].to_dict('records'))",
      "options": [
       {
+       "text": "Dùng and, không cần ngoặc.",
+       "detail": "and không kết hợp từng phần tử của hai Series."
+      },
+      {
        "text": "Dùng | vì cần thỏa đồng thời hai điều kiện.",
        "detail": "Dấu | là điều kiện hoặc, không buộc cả hai vế cùng đúng."
       },
@@ -116,10 +120,6 @@
        "text": "Dùng &, với ngoặc bao từng phép so sánh.",
        "detail": "Dùng &, với ngoặc bao từng phép so sánh.",
        "correct": true
-      },
-      {
-       "text": "Dùng and, không cần ngoặc.",
-       "detail": "and không kết hợp từng phần tử của hai Series."
       }
      ],
      "explanation": "Dùng &, với ngoặc bao từng phép so sánh."

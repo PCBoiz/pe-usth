@@ -68,10 +68,6 @@
      "question": "Entry grid(sticky=\"ew\") nhưng cột không có weight thì luôn giãn theo cửa sổ không?",
      "options": [
       {
-       "text": "Không; Entry không thể thay độ rộng",
-       "detail": "Entry có thể giãn khi cả cell và widget được cấu hình đúng."
-      },
-      {
        "text": "Không; cột cần được cấp phần chỗ tăng thêm",
        "detail": "sticky kéo trong cell; columnconfigure(weight=...) phân bổ chỗ dư cho cột.",
        "correct": true
@@ -79,6 +75,10 @@
       {
        "text": "Có; sticky tự thay weight của cột",
        "detail": "Đó là hai cấu hình khác nhau."
+      },
+      {
+       "text": "Không; Entry không thể thay độ rộng",
+       "detail": "Entry có thể giãn khi cả cell và widget được cấu hình đúng."
       }
      ],
      "explanation": "sticky kéo trong cell; columnconfigure(weight=...) phân bổ chỗ dư cho cột."
@@ -91,13 +91,13 @@
        "detail": "Chưa đúng. Grid chia parent thành hàng/cột; số ở đây không là tọa độ pixel."
       },
       {
+       "text": "Pixel x=1,y=0",
+       "detail": "Chưa đúng. Grid chia parent thành hàng/cột; số ở đây không là tọa độ pixel."
+      },
+      {
        "text": "Hàng 1, cột 0 của parent",
        "detail": "Grid chia parent thành hàng/cột; số ở đây không là tọa độ pixel.",
        "correct": true
-      },
-      {
-       "text": "Pixel x=1,y=0",
-       "detail": "Chưa đúng. Grid chia parent thành hàng/cột; số ở đây không là tọa độ pixel."
       }
      ],
      "explanation": "Grid chia parent thành hàng/cột; số ở đây không là tọa độ pixel."
@@ -106,16 +106,16 @@
      "question": "sticky=\"ew\" yêu cầu gì?",
      "options": [
       {
+       "text": "Đặt widget vào hai cửa sổ",
+       "detail": "Chưa đúng. Sticky xử lý vị trí/giãn trong cell; phân bổ chỗ dư cho cột cần cấu hình weight."
+      },
+      {
        "text": "Kéo widget về hai cạnh đông/tây trong cell",
        "detail": "Sticky xử lý vị trí/giãn trong cell; phân bổ chỗ dư cho cột cần cấu hình weight.",
        "correct": true
       },
       {
        "text": "Tự cấp weight cho mọi cột",
-       "detail": "Chưa đúng. Sticky xử lý vị trí/giãn trong cell; phân bổ chỗ dư cho cột cần cấu hình weight."
-      },
-      {
-       "text": "Đặt widget vào hai cửa sổ",
        "detail": "Chưa đúng. Sticky xử lý vị trí/giãn trong cell; phân bổ chỗ dư cho cột cần cấu hình weight."
       }
      ],

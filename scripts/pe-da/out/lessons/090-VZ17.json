@@ -77,13 +77,13 @@
        "detail": "Muốn đọc trung vị phân bố thường dùng boxplot hoặc tính riêng."
       },
       {
+       "text": "Trung bình thời gian chờ",
+       "detail": "countplot không tự tổng hợp cột wait thành mean."
+      },
+      {
        "text": "Số hàng mỗi ca",
        "detail": "Đúng: mỗi quan sát đóng góp vào số đếm của ca.",
        "correct": true
-      },
-      {
-       "text": "Trung bình thời gian chờ",
-       "detail": "countplot không tự tổng hợp cột wait thành mean."
       }
      ],
      "explanation": "Tên nhóm giống nhau không làm hai loại biểu đồ trả cùng câu hỏi."
@@ -92,17 +92,17 @@
      "question": "countplot trục y là trung bình thời gian chờ hay số dòng?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"AM\", \"PM\", \"PM\"]})\nsns.countplot(data=orders, x=\"shift\", order=[\"AM\", \"PM\"], color=\"#0072B2\", ax=ax)\nax.set(xlabel=\"Shift\", ylabel=\"Orders\", title=\"Count rows in each shift\")\nprint(orders[\"shift\"].value_counts().to_dict())\nplt.show()",
      "options": [
       {
-       "text": "Trung bình của mọi cột số trong nhóm.",
-       "detail": "Đó là mean, không phải count của từng nhóm."
+       "text": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
+       "detail": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
+       "correct": true
       },
       {
        "text": "Tổng thời gian chờ của nhóm.",
        "detail": "Cộng thời gian chờ khác với đếm số dòng."
       },
       {
-       "text": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
-       "detail": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian.",
-       "correct": true
+       "text": "Trung bình của mọi cột số trong nhóm.",
+       "detail": "Đó là mean, không phải count của từng nhóm."
       }
      ],
      "explanation": "Là số dòng thuộc mỗi nhóm; nó không tự tính trung bình cột thời gian."
@@ -111,8 +111,8 @@
      "question": "Khi cả ca có 3 quan sát, tại sao vẽ thêm stripplot?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"AM\", \"PM\", \"PM\", \"PM\"], \"wait\":[2, 3, 8, 3, 4, 5]})\nsns.stripplot(data=orders, x=\"shift\", y=\"wait\", jitter=False, color=\"#D55E00\", ax=ax)\nax.set(xlabel=\"Shift\", ylabel=\"Wait (minutes)\", title=\"Every dot is an observed order\")\nprint(orders.groupby(\"shift\")[\"wait\"].median().to_dict())\nplt.show()",
      "options": [
       {
-       "text": "Để thay thế dữ liệu gốc bằng đường hồi quy.",
-       "detail": "Điểm gốc không phải đường hồi quy và không thay dữ liệu."
+       "text": "Để tự làm cỡ mẫu tăng từ 3 lên 30.",
+       "detail": "Số quan sát vẫn là 3, dù mỗi quan sát được hiện rõ hơn."
       },
       {
        "text": "Để thấy giá trị thật và cỡ mẫu thay vì suy luận từ hộp tóm tắt.",
@@ -120,8 +120,8 @@
        "correct": true
       },
       {
-       "text": "Để tự làm cỡ mẫu tăng từ 3 lên 30.",
-       "detail": "Số quan sát vẫn là 3, dù mỗi quan sát được hiện rõ hơn."
+       "text": "Để thay thế dữ liệu gốc bằng đường hồi quy.",
+       "detail": "Điểm gốc không phải đường hồi quy và không thay dữ liệu."
       }
      ],
      "explanation": "Để thấy giá trị thật và cỡ mẫu thay vì suy luận từ hộp tóm tắt."

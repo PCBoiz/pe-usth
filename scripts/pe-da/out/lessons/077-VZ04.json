@@ -76,10 +76,6 @@
      "question": "Tên [A,B] đi với lượng [2,9]. Nếu chỉ sắp lượng thành [9,2], vấn đề gì xảy ra?",
      "options": [
       {
-       "text": "Không có vấn đề vì tổng không đổi",
-       "detail": "Tổng giữ nguyên nhưng nhãn từng nhóm đã sai."
-      },
-      {
        "text": "Cả hai cột biến mất",
        "detail": "Vẫn vẽ được, nên lỗi nhãn càng dễ bị bỏ qua."
       },
@@ -87,6 +83,10 @@
        "text": "A bị gán nhầm lượng của B",
        "detail": "Đúng: phải di chuyển tên và giá trị cùng nhau.",
        "correct": true
+      },
+      {
+       "text": "Không có vấn đề vì tổng không đổi",
+       "detail": "Tổng giữ nguyên nhưng nhãn từng nhóm đã sai."
       }
      ],
      "explanation": "Số liệu có ý nghĩa khi vẫn đi cùng đúng nhóm."
@@ -95,17 +95,17 @@
      "question": "Cà phê 30 cốc và trà 18 cốc chênh nhau bao nhiêu?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nbars = ax.bar([\"Tea\", \"Coffee\", \"Cocoa\"], [18, 30, 12])\nax.set(ylabel=\"Cups\", title=\"Sales by drink\", ylim=(0, 35))\nax.bar_label(bars)\nprint(sum(bar.get_height() for bar in bars))\nplt.show()",
      "options": [
       {
-       "text": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
-       "detail": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
-       "correct": true
+       "text": "Chênh 1.67 cốc vì phải chia hai cột.",
+       "detail": "Tỷ số không có cùng đơn vị cốc với độ chênh."
       },
       {
        "text": "Chênh 48 cốc vì phải cộng hai cột.",
        "detail": "48 là tổng hai lượng, không phải độ chênh."
       },
       {
-       "text": "Chênh 1.67 cốc vì phải chia hai cột.",
-       "detail": "Tỷ số không có cùng đơn vị cốc với độ chênh."
+       "text": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
+       "detail": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh.",
+       "correct": true
       }
      ],
      "explanation": "12 cốc. Trục bắt đầu từ 0 để độ dài hai cột có chung mốc so sánh."
@@ -114,17 +114,17 @@
      "question": "Khi tên nhóm dài, nên đổi sang hàm nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
      "options": [
       {
+       "text": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
+       "detail": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
+       "correct": true
+      },
+      {
        "text": "hist vì nhãn dài là dữ liệu số.",
        "detail": "Histogram phục vụ khoảng số, không giải quyết nhãn danh mục dài."
       },
       {
        "text": "pie vì barh không hỗ trợ nhãn chữ.",
        "detail": "Barh hỗ trợ nhãn chữ và thường phù hợp tên dài."
-      },
-      {
-       "text": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
-       "detail": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn.",
-       "correct": true
       }
      ],
      "explanation": "barh để vẽ cột ngang, giảm nhu cầu xoay nhãn."

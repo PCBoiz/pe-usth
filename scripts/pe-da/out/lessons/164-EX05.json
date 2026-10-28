@@ -70,6 +70,10 @@
      "question": "Trong CPython có GIL, có cần Lock cho một cập nhật gồm nhiều bước trên dữ liệu chung không?",
      "options": [
       {
+       "text": "Chỉ cần Lock nếu có nhiều process",
+       "detail": "Các thread cũng có thể cùng sửa một object."
+      },
+      {
        "text": "Có, khi các bước cần được bảo vệ như một đơn vị",
        "detail": "GIL bảo vệ trạng thái interpreter, không bảo đảm toàn bộ thuật toán của bạn là nguyên tử.",
        "correct": true
@@ -77,10 +81,6 @@
       {
        "text": "Không, GIL thay cho mọi Lock",
        "detail": "GIL không diễn tả ranh giới thao tác nghiệp vụ cần bảo vệ."
-      },
-      {
-       "text": "Chỉ cần Lock nếu có nhiều process",
-       "detail": "Các thread cũng có thể cùng sửa một object."
       }
      ],
      "explanation": "GIL bảo vệ trạng thái interpreter, không bảo đảm toàn bộ thuật toán của bạn là nguyên tử."
@@ -89,13 +89,13 @@
      "question": "a và alias cùng trỏ một list. Thêm phần tử qua alias có thấy khi đọc a không?",
      "options": [
       {
-       "text": "Chỉ thấy nếu gọi gc.collect",
-       "detail": "Chưa đúng. Phép gán tên giữ tham chiếu cùng object, không tạo bản sao cấu trúc."
-      },
-      {
        "text": "Có",
        "detail": "Phép gán tên giữ tham chiếu cùng object, không tạo bản sao cấu trúc.",
        "correct": true
+      },
+      {
+       "text": "Chỉ thấy nếu gọi gc.collect",
+       "detail": "Chưa đúng. Phép gán tên giữ tham chiếu cùng object, không tạo bản sao cấu trúc."
       },
       {
        "text": "Không; alias luôn là bản sao",
@@ -108,17 +108,17 @@
      "question": "Hai Node tham chiếu vòng nhưng không còn truy cập từ ngoài có thể cần cơ chế nào?",
      "options": [
       {
-       "text": "Bộ thu gom chu kỳ",
-       "detail": "Reference counting và phát hiện chu kỳ không phải cùng một thao tác.",
-       "correct": true
+       "text": "Tạo thêm một alias mạnh",
+       "detail": "Chưa đúng. Reference counting và phát hiện chu kỳ không phải cùng một thao tác."
       },
       {
        "text": "Chỉ đổi tên biến thành None ở bên trong Node",
        "detail": "Chưa đúng. Reference counting và phát hiện chu kỳ không phải cùng một thao tác."
       },
       {
-       "text": "Tạo thêm một alias mạnh",
-       "detail": "Chưa đúng. Reference counting và phát hiện chu kỳ không phải cùng một thao tác."
+       "text": "Bộ thu gom chu kỳ",
+       "detail": "Reference counting và phát hiện chu kỳ không phải cùng một thao tác.",
+       "correct": true
       }
      ],
      "explanation": "Reference counting và phát hiện chu kỳ không phải cùng một thao tác."

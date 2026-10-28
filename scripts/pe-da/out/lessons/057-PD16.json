@@ -71,17 +71,17 @@
      "question": "Trái có mã [1,2], phải chỉ có 1. left merge giữ mã nào?",
      "options": [
       {
-       "text": "[1]",
-       "detail": "Đó là inner merge."
+       "text": "[1,2]",
+       "detail": "Đúng: giữ các hàng bên trái, bổ sung thiếu cho mã 2.",
+       "correct": true
       },
       {
        "text": "[]",
        "detail": "Vẫn có một mã khớp và left còn giữ mã chưa khớp."
       },
       {
-       "text": "[1,2]",
-       "detail": "Đúng: giữ các hàng bên trái, bổ sung thiếu cho mã 2.",
-       "correct": true
+       "text": "[1]",
+       "detail": "Đó là inner merge."
       }
      ],
      "explanation": "how=\"left\" giữ bảng chính khi bổ sung thông tin danh mục."
@@ -90,13 +90,13 @@
      "question": "Muốn giữ các đơn chưa tìm thấy khách, chọn how nào?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['O1', 'O2'], 'customer_id': [1, 2]})\ncustomers = pd.DataFrame({'customer_id': [1, 2], 'name': ['An', 'Binh']})\njoined = orders.merge(customers, on='customer_id', how='left')\nprint(joined[['order', 'name']].to_dict('records'))",
      "options": [
       {
+       "text": "how=\"inner\" sẽ giữ mọi hàng của orders.",
+       "detail": "inner chỉ giữ phần khớp ở cả hai bên."
+      },
+      {
        "text": "how=\"left\", khi orders nằm bên trái.",
        "detail": "how=\"left\", khi orders nằm bên trái.",
        "correct": true
-      },
-      {
-       "text": "how=\"inner\" sẽ giữ mọi hàng của orders.",
-       "detail": "inner chỉ giữ phần khớp ở cả hai bên."
       },
       {
        "text": "how=\"right\" luôn giữ toàn bộ orders bên trái.",
@@ -109,12 +109,12 @@
      "question": "inner join giữa các mã [1,2] và [2,3] giữ mã nào?\n\nimport pandas as pd\nleft = pd.DataFrame({'id': [1, 2], 'amount': [10, 20]})\nright = pd.DataFrame({'id': [2, 3], 'city': ['HN', 'DN']})\nprint(left.merge(right, on='id', how='inner')['id'].tolist())\nprint(left.merge(right, on='id', how='left')['city'].isna().tolist())\nprint(sorted(left.merge(right, on='id', how='outer')['id'].tolist()))",
      "options": [
       {
-       "text": "Giữ cả 1, 2 và 3.",
-       "detail": "Đây là hợp của hai tập khóa, phù hợp outer hơn."
-      },
-      {
        "text": "Không giữ mã nào vì hai list không giống hệt.",
        "detail": "Hai tập không cần giống hệt để có một phần giao."
+      },
+      {
+       "text": "Giữ cả 1, 2 và 3.",
+       "detail": "Đây là hợp của hai tập khóa, phù hợp outer hơn."
       },
       {
        "text": "Chỉ mã 2.",

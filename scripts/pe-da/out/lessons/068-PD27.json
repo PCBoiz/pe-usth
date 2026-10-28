@@ -71,17 +71,17 @@
      "question": "MultiIndex [store,month] cần nhãn nào để lấy đúng A-Feb?",
      "options": [
       {
-       "text": "Tuple (\"A\",\"Feb\")",
-       "detail": "Đúng: hai phần ứng với hai tầng nhãn.",
-       "correct": true
-      },
-      {
        "text": "Chỉ \"Feb\"",
        "detail": "Thiếu tầng store nên chưa xác định cùng một hàng."
       },
       {
        "text": "Số 2",
        "detail": "Đó có thể là vị trí, không phải cặp nhãn."
+      },
+      {
+       "text": "Tuple (\"A\",\"Feb\")",
+       "detail": "Đúng: hai phần ứng với hai tầng nhãn.",
+       "correct": true
       }
      ],
      "explanation": "Tên tầng giúp bạn giữ rõ mỗi phần của khóa."
@@ -90,10 +90,6 @@
      "question": "Tuple (A, Feb) trong ví dụ chứa bao nhiêu tầng nhãn?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.loc[('A', 'Feb'), 'sales'])\nprint(indexed.index.names)",
      "options": [
       {
-       "text": "Ba tầng vì Feb là tháng thứ hai.",
-       "detail": "Tháng Feb là một giá trị của tầng month, không thêm tầng thứ ba."
-      },
-      {
        "text": "Hai tầng: store và month.",
        "detail": "Hai tầng: store và month.",
        "correct": true
@@ -101,6 +97,10 @@
       {
        "text": "Một tầng vì tuple là một object.",
        "detail": "Một tuple có thể chứa nhãn của nhiều tầng."
+      },
+      {
+       "text": "Ba tầng vì Feb là tháng thứ hai.",
+       "detail": "Tháng Feb là một giá trị của tầng month, không thêm tầng thứ ba."
       }
      ],
      "explanation": "Hai tầng: store và month."
@@ -109,6 +109,10 @@
      "question": "Muốn lấy Jan ở mọi cửa hàng bằng tên tầng, dùng gì?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'month': ['Jan', 'Feb', 'Jan'], 'sales': [10, 20, 30]})\nindexed = df.set_index(['store', 'month']).sort_index()\nprint(indexed.xs('Jan', level='month')['sales'].to_dict())\nprint(indexed.reset_index().columns.tolist())",
      "options": [
       {
+       "text": "xs(\"Jan\", level=\"store\").",
+       "detail": "Jan là giá trị tháng, không phải giá trị của tầng store."
+      },
+      {
        "text": "xs(\"Jan\", level=\"month\").",
        "detail": "xs(\"Jan\", level=\"month\").",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "iloc[\"Jan\"].",
        "detail": "iloc chỉ nhận vị trí, không tra chuỗi Jan như nhãn."
-      },
-      {
-       "text": "xs(\"Jan\", level=\"store\").",
-       "detail": "Jan là giá trị tháng, không phải giá trị của tầng store."
       }
      ],
      "explanation": "xs(\"Jan\", level=\"month\")."

@@ -68,17 +68,17 @@
      "question": "place(relx=0.5, rely=0.5, anchor=\"center\") đặt điểm nào của widget ở giữa parent?",
      "options": [
       {
+       "text": "Tâm widget",
+       "detail": "relx/rely chọn vị trí trong parent; anchor chọn điểm widget gắn vào đó.",
+       "correct": true
+      },
+      {
        "text": "Góc trên trái widget",
        "detail": "Điều đó xảy ra với anchor mặc định nw, không phải center."
       },
       {
        "text": "Tâm toàn màn hình bất kể parent",
        "detail": "Tọa độ tương đối được tính theo parent của widget."
-      },
-      {
-       "text": "Tâm widget",
-       "detail": "relx/rely chọn vị trí trong parent; anchor chọn điểm widget gắn vào đó.",
-       "correct": true
       }
      ],
      "explanation": "relx/rely chọn vị trí trong parent; anchor chọn điểm widget gắn vào đó."
@@ -106,17 +106,17 @@
      "question": "relx=0.5 dựa theo chiều rộng của ai?",
      "options": [
       {
-       "text": "Parent của widget",
-       "detail": "Tọa độ tương đối trong place được tính theo vùng chứa.",
-       "correct": true
+       "text": "Số ký tự trong text",
+       "detail": "Chưa đúng. Tọa độ tương đối trong place được tính theo vùng chứa."
       },
       {
        "text": "Luôn toàn màn hình vật lý",
        "detail": "Chưa đúng. Tọa độ tương đối trong place được tính theo vùng chứa."
       },
       {
-       "text": "Số ký tự trong text",
-       "detail": "Chưa đúng. Tọa độ tương đối trong place được tính theo vùng chứa."
+       "text": "Parent của widget",
+       "detail": "Tọa độ tương đối trong place được tính theo vùng chứa.",
+       "correct": true
       }
      ],
      "explanation": "Tọa độ tương đối trong place được tính theo vùng chứa."

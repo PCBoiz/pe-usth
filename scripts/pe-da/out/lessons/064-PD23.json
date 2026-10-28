@@ -71,10 +71,6 @@
      "question": "2026-05-01 23:30 UTC ở Việt Nam thuộc ngày nào?",
      "options": [
       {
-       "text": "2026-04-30",
-       "detail": "Việt Nam đi trước UTC, không lùi một ngày."
-      },
-      {
        "text": "2026-05-02",
        "detail": "Đúng: UTC+7 là 06:30 ngày tiếp theo.",
        "correct": true
@@ -82,6 +78,10 @@
       {
        "text": "2026-05-01",
        "detail": "Đó vẫn là ngày UTC, chưa chuyển múi giờ."
+      },
+      {
+       "text": "2026-04-30",
+       "detail": "Việt Nam đi trước UTC, không lùi một ngày."
       }
      ],
      "explanation": "Cùng sự kiện có thể thuộc hai ngày lịch khác nhau tùy múi giờ."
@@ -109,8 +109,8 @@
      "question": "23:00 UTC ngày 1/1 ở Việt Nam thuộc ngày nào?\n\nimport pandas as pd\nwall_time = pd.DatetimeIndex(['2026-01-01 07:00'])\nlocal = wall_time.tz_localize('Asia/Ho_Chi_Minh')\nprint(local.tz_convert('UTC').strftime('%Y-%m-%d %H:%M %z').tolist())",
      "options": [
       {
-       "text": "Ngày 1/1 lúc 16:00.",
-       "detail": "Phương án này trừ chênh lệch thay vì cộng."
+       "text": "Vẫn là ngày 1/1 lúc 23:00.",
+       "detail": "Mốc 23:00 cộng chênh lệch có thể sang ngày kế tiếp."
       },
       {
        "text": "Ngày 2/1 lúc 06:00.",
@@ -118,8 +118,8 @@
        "correct": true
       },
       {
-       "text": "Vẫn là ngày 1/1 lúc 23:00.",
-       "detail": "Mốc 23:00 cộng chênh lệch có thể sang ngày kế tiếp."
+       "text": "Ngày 1/1 lúc 16:00.",
+       "detail": "Phương án này trừ chênh lệch thay vì cộng."
       }
      ],
      "explanation": "Ngày 2/1 lúc 06:00."

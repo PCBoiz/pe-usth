@@ -71,17 +71,17 @@
      "question": "Một gói hàng có 4 sản phẩm giá 12, phí giao cả gói là 3. Tổng tiền là biểu thức nào?",
      "options": [
       {
-       "text": "4 * (12 + 3)",
-       "detail": "Cách này thu phí giao bốn lần."
+       "text": "4 * 12 + 3",
+       "detail": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm.",
+       "correct": true
       },
       {
        "text": "4 + 12 * 3",
        "detail": "Cách này nhân đơn giá với phí giao, không phản ánh đề bài."
       },
       {
-       "text": "4 * 12 + 3",
-       "detail": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm.",
-       "correct": true
+       "text": "4 * (12 + 3)",
+       "detail": "Cách này thu phí giao bốn lần."
       }
      ],
      "explanation": "Đúng. Phí giao cộng một lần sau tiền bốn sản phẩm."
@@ -90,13 +90,13 @@
      "question": "Bán 4 món giá 10, trừ 3 phí chung. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(4 * 10 - 3)",
      "options": [
       {
+       "text": "28",
+       "detail": "4 * (10 - 3) trừ phí bốn lần."
+      },
+      {
        "text": "37",
        "detail": "Phép nhân tính tiền bán trước khi trừ một lần phí chung.",
        "correct": true
-      },
-      {
-       "text": "28",
-       "detail": "4 * (10 - 3) trừ phí bốn lần."
       },
       {
        "text": "43",
@@ -109,17 +109,17 @@
      "question": "Chia đều 9 lít cho 2 bình. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(9 / 2)",
      "options": [
       {
-       "text": "4.5",
-       "detail": "/ thực hiện chia thực trong Python 3.",
-       "correct": true
+       "text": "1",
+       "detail": "Đó là số dư khi chia 9 cho 2."
       },
       {
        "text": "4",
        "detail": "Đó là phần nguyên của phép chia, không phải /. "
       },
       {
-       "text": "1",
-       "detail": "Đó là số dư khi chia 9 cho 2."
+       "text": "4.5",
+       "detail": "/ thực hiện chia thực trong Python 3.",
+       "correct": true
       }
      ],
      "explanation": "/ thực hiện chia thực trong Python 3."

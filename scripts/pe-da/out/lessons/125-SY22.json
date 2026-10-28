@@ -74,12 +74,12 @@
        "correct": true
       },
       {
-       "text": "Có; hai tên gọi cùng định dạng",
-       "detail": "XPORT là định dạng trao đổi khác SAS7BDAT."
-      },
-      {
        "text": "Chỉ cần đổi đuôi file",
        "detail": "Đổi tên không chuyển đổi cấu trúc byte của file."
+      },
+      {
+       "text": "Có; hai tên gọi cùng định dạng",
+       "detail": "XPORT là định dạng trao đổi khác SAS7BDAT."
       }
      ],
      "explanation": "Cần chọn format hoặc bộ đọc đúng với file được cung cấp."
@@ -88,7 +88,7 @@
      "question": "Đồng nghiệp gửi Stata .dta. Đổi đuôi thành .csv có biến nó thành CSV không?",
      "options": [
       {
-       "text": "Chỉ cần thêm dấu phẩy vào tên file",
+       "text": "Có; mọi định dạng chỉ khác tên",
        "detail": "Chưa đúng. Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên."
       },
       {
@@ -97,7 +97,7 @@
        "correct": true
       },
       {
-       "text": "Có; mọi định dạng chỉ khác tên",
+       "text": "Chỉ cần thêm dấu phẩy vào tên file",
        "detail": "Chưa đúng. Bytes và cấu trúc file quyết định cách đọc, không phải việc đổi tên."
       }
      ],
@@ -107,17 +107,17 @@
      "question": "pd.read_stata thường trả dữ liệu dạng nào?",
      "options": [
       {
-       "text": "DataFrame",
-       "detail": "Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích.",
-       "correct": true
-      },
-      {
        "text": "Một cửa sổ đồ họa",
        "detail": "Chưa đúng. Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."
       },
       {
        "text": "Một kernel Notebook",
        "detail": "Chưa đúng. Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."
+      },
+      {
+       "text": "DataFrame",
+       "detail": "Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích.",
+       "correct": true
       }
      ],
      "explanation": "Reader đưa bảng từ file Stata vào DataFrame để tiếp tục phân tích."

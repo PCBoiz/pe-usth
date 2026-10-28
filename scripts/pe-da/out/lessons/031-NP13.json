@@ -102,13 +102,13 @@
      "question": "Đánh dấu điểm từ 5 trở lên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([4, 5, 8])\nprint(marks >= 5)",
      "options": [
       {
+       "text": "[False, False, True]",
+       "detail": "Dấu >= nhận cả điểm bằng 5."
+      },
+      {
        "text": "[False, True, True]",
        "detail": "Mỗi vị trí được thay bằng kết quả đúng/sai của cùng điều kiện.",
        "correct": true
-      },
-      {
-       "text": "[False, False, True]",
-       "detail": "Dấu >= nhận cả điểm bằng 5."
       },
       {
        "text": "[5, 8]",
@@ -121,17 +121,17 @@
      "question": "Chỉ đánh dấu nhiệt độ vượt 30. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ntemps = np.array([28, 30, 32])\nprint(temps > 30)",
      "options": [
       {
-       "text": "[False, False, True]",
-       "detail": "30 không lớn hơn chính nó, nên vị trí giữa là False.",
-       "correct": true
-      },
-      {
        "text": "[False, True, True]",
        "detail": "Đó là >=30, có nhận số bằng 30."
       },
       {
        "text": "[32]",
        "detail": "Đây là kết quả lọc, chưa phải mask so sánh."
+      },
+      {
+       "text": "[False, False, True]",
+       "detail": "30 không lớn hơn chính nó, nên vị trí giữa là False.",
+       "correct": true
       }
      ],
      "explanation": "30 không lớn hơn chính nó, nên vị trí giữa là False."

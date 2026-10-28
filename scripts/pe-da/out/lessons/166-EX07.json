@@ -67,10 +67,6 @@
      "question": "compile(\"x = 3\", \"example.py\", \"exec\") đã tạo biến x trong namespace của bạn chưa?",
      "options": [
       {
-       "text": "Không thể compile một phép gán",
-       "detail": "Chế độ exec hỗ trợ các câu lệnh như phép gán."
-      },
-      {
        "text": "Chưa; nó trả code object",
        "detail": "Cần thực thi code object mới chạy phép gán.",
        "correct": true
@@ -78,6 +74,10 @@
       {
        "text": "Rồi; compile và exec là một lời gọi",
        "detail": "compile tạo đối tượng code; exec thực thi nó."
+      },
+      {
+       "text": "Không thể compile một phép gán",
+       "detail": "Chế độ exec hỗ trợ các câu lệnh như phép gán."
       }
      ],
      "explanation": "Cần thực thi code object mới chạy phép gán."
@@ -105,17 +105,17 @@
      "question": "Sau compile(\"x=3\",...,\"exec\") mà chưa exec, biến x đã được gán trong namespace đích chưa?",
      "options": [
       {
-       "text": "Chưa",
-       "detail": "Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình.",
-       "correct": true
+       "text": "Chỉ gán nếu x là số nguyên",
+       "detail": "Chưa đúng. Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
       },
       {
        "text": "Rồi; compile luôn chạy phép gán",
        "detail": "Chưa đúng. Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
       },
       {
-       "text": "Chỉ gán nếu x là số nguyên",
-       "detail": "Chưa đúng. Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."
+       "text": "Chưa",
+       "detail": "Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình.",
+       "correct": true
       }
      ],
      "explanation": "Biên dịch không đồng nghĩa thực thi câu lệnh của chương trình."

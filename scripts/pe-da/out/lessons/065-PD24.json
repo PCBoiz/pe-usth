@@ -76,12 +76,12 @@
        "correct": true
       },
       {
-       "text": "2",
-       "detail": "Chỉ đúng nếu cho phép min_periods=1."
-      },
-      {
        "text": "3",
        "detail": "3 là kết quả tại hàng thứ hai."
+      },
+      {
+       "text": "2",
+       "detail": "Chỉ đúng nếu cho phép min_periods=1."
       }
      ],
      "explanation": "window và min_periods xác định dữ liệu được dùng ở mỗi hàng."
@@ -109,17 +109,17 @@
      "question": "pct_change trả 0.2 có nghĩa là 0.2% hay 20%?\n\nimport pandas as pd\ns = pd.Series([100, 120, 90])\nprint(s.shift(1).dropna().tolist())\nprint(s.diff().dropna().tolist())\nprint(s.pct_change(fill_method=None).dropna().round(2).tolist())",
      "options": [
       {
-       "text": "20%.",
-       "detail": "20%.",
-       "correct": true
-      },
-      {
        "text": "0.2%.",
        "detail": "0.2 là một phần năm, không phải 0.2 phần trăm."
       },
       {
        "text": "200%.",
        "detail": "200% tương ứng tỷ lệ 2.0."
+      },
+      {
+       "text": "20%.",
+       "detail": "20%.",
+       "correct": true
       }
      ],
      "explanation": "20%."

@@ -71,17 +71,17 @@
      "question": "raw = \"  hN  \". Muốn nhận \"hn\" mà không còn khoảng trắng hai đầu, dùng gì?",
      "options": [
       {
-       "text": "raw.lower()",
-       "detail": "lower vẫn giữ khoảng trắng ở hai đầu."
+       "text": "raw.strip().lower()",
+       "detail": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường.",
+       "correct": true
       },
       {
        "text": "raw.strip().title()",
        "detail": "title đổi cách viết hoa, không cho \"hn\"."
       },
       {
-       "text": "raw.strip().lower()",
-       "detail": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường.",
-       "correct": true
+       "text": "raw.lower()",
+       "detail": "lower vẫn giữ khoảng trắng ở hai đầu."
       }
      ],
      "explanation": "Đúng. strip bỏ hai đầu, lower đổi chữ thành thường."
@@ -90,17 +90,17 @@
      "question": "Tên được nhập với khoảng trắng hai đầu. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"  lAN  \"\nprint(raw.strip().title())",
      "options": [
       {
-       "text": "'Lan'",
-       "detail": "strip làm sạch hai đầu rồi title viết hoa đầu từ.",
-       "correct": true
+       "text": "''",
+       "detail": "strip không xóa nội dung tên; nó chỉ bỏ khoảng trắng ở hai đầu."
       },
       {
        "text": "'  Lan  '",
        "detail": "strip đã bỏ khoảng trắng hai đầu."
       },
       {
-       "text": "''",
-       "detail": "strip không xóa nội dung tên; nó chỉ bỏ khoảng trắng ở hai đầu."
+       "text": "'Lan'",
+       "detail": "strip làm sạch hai đầu rồi title viết hoa đầu từ.",
+       "correct": true
       }
      ],
      "explanation": "strip làm sạch hai đầu rồi title viết hoa đầu từ."
@@ -109,6 +109,10 @@
      "question": "Mã cần đủ bốn ký tự. Kết quả ở lệnh print cuối có giá trị nào?\n\ncode = \"8\"\nprint(code.zfill(4))",
      "options": [
       {
+       "text": "'00008'",
+       "detail": "Độ dài cần là 4, không phải thêm bốn số 0."
+      },
+      {
        "text": "'0008'",
        "detail": "Bổ sung ba số 0 để cả mã dài bốn ký tự.",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "'8000'",
        "detail": "zfill thêm số 0 ở phía đầu."
-      },
-      {
-       "text": "'00008'",
-       "detail": "Độ dài cần là 4, không phải thêm bốn số 0."
       }
      ],
      "explanation": "Bổ sung ba số 0 để cả mã dài bốn ký tự."

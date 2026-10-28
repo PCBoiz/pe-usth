@@ -71,8 +71,8 @@
      "question": "g=[N,N,S], qty=[2,5,4]. Tổng của N là gì?",
      "options": [
       {
-       "text": "11",
-       "detail": "11 là tổng mọi nhóm, không phải riêng N."
+       "text": "3",
+       "detail": "3 là tổng số hàng của bảng."
       },
       {
        "text": "7",
@@ -80,8 +80,8 @@
        "correct": true
       },
       {
-       "text": "3",
-       "detail": "3 là tổng số hàng của bảng."
+       "text": "11",
+       "detail": "11 là tổng mọi nhóm, không phải riêng N."
       }
      ],
      "explanation": "groupby chia theo khóa rồi mới tính trên từng nhóm."
@@ -90,17 +90,17 @@
      "question": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 20, 40]})\nresult = df.groupby('store')['amount'].sum()\nprint(result.to_dict())",
      "options": [
       {
+       "text": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
+       "detail": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
+       "correct": true
+      },
+      {
        "text": "Luôn giữ đúng từng hàng như transform.",
        "detail": "transform mới phù hợp với kết quả giữ từng hàng như vậy."
       },
       {
        "text": "Luôn có số hàng bằng số cột gốc.",
        "detail": "Số cột gốc không quyết định số nhóm."
-      },
-      {
-       "text": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
-       "detail": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm.",
-       "correct": true
       }
      ],
      "explanation": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
@@ -113,13 +113,13 @@
        "detail": "count không tính amount bị thiếu."
       },
       {
+       "text": "size=1, count=2.",
+       "detail": "Bạn đã đổi chỗ size và count."
+      },
+      {
        "text": "size là 2; count của amount là 1.",
        "detail": "size là 2; count của amount là 1.",
        "correct": true
-      },
-      {
-       "text": "size=1, count=2.",
-       "detail": "Bạn đã đổi chỗ size và count."
       }
      ],
      "explanation": "size là 2; count của amount là 1."

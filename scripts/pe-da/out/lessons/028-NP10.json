@@ -75,6 +75,10 @@
      "question": "a=np.array([[2,1],[0,4]]). a.sum() trả gì?",
      "options": [
       {
+       "text": "[2,5]",
+       "detail": "Đó là tổng theo cột, cần axis=0."
+      },
+      {
        "text": "7",
        "detail": "Đúng. Không ghi axis thì cộng cả bốn ô.",
        "correct": true
@@ -82,10 +86,6 @@
       {
        "text": "[3,4]",
        "detail": "Đó là tổng theo hàng, cần axis=1."
-      },
-      {
-       "text": "[2,5]",
-       "detail": "Đó là tổng theo cột, cần axis=0."
       }
      ],
      "explanation": "Đúng. Không ghi axis thì cộng cả bốn ô."
@@ -94,17 +94,17 @@
      "question": "Cộng ba ca làm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([3, 5, 7])\nprint(a.sum())",
      "options": [
       {
-       "text": "15",
-       "detail": "Không ghi axis thì sum cộng mọi phần tử.",
-       "correct": true
-      },
-      {
        "text": "3",
        "detail": "3 là số phần tử, không phải tổng."
       },
       {
        "text": "7",
        "detail": "sum không chỉ lấy giá trị cuối."
+      },
+      {
+       "text": "15",
+       "detail": "Không ghi axis thì sum cộng mọi phần tử.",
+       "correct": true
       }
      ],
      "explanation": "Không ghi axis thì sum cộng mọi phần tử."

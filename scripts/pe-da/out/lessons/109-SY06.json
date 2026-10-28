@@ -77,8 +77,8 @@
      "question": "Trong __str__, chỉ print(\"A\") rồi không return thì có đáp ứng yêu cầu không?",
      "options": [
       {
-       "text": "Có nếu class có __init__",
-       "detail": "__init__ không thay quy tắc giá trị trả về của __str__."
+       "text": "Có, vì người dùng vẫn nhìn thấy A",
+       "detail": "Việc in và trả chuỗi là hai thao tác khác nhau."
       },
       {
        "text": "Không, __str__ phải trả str",
@@ -86,8 +86,8 @@
        "correct": true
       },
       {
-       "text": "Có, vì người dùng vẫn nhìn thấy A",
-       "detail": "Việc in và trả chuỗi là hai thao tác khác nhau."
+       "text": "Có nếu class có __init__",
+       "detail": "__init__ không thay quy tắc giá trị trả về của __str__."
       }
      ],
      "explanation": "Python dùng giá trị trả về của __str__, không dùng nội dung method tự in."
@@ -96,6 +96,10 @@
      "question": "print(Grade(8)) dùng method nào để lấy chuỗi mô tả?",
      "options": [
       {
+       "text": "__lt__",
+       "detail": "Chưa đúng. __str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
+      },
+      {
        "text": "__init__ phải tự print",
        "detail": "Chưa đúng. __str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
       },
@@ -103,10 +107,6 @@
        "text": "__str__",
        "detail": "__str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn.",
        "correct": true
-      },
-      {
-       "text": "__lt__",
-       "detail": "Chưa đúng. __str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."
       }
      ],
      "explanation": "__str__ trả chuỗi cho việc hiển thị; __lt__ phục vụ phép so sánh nhỏ hơn."

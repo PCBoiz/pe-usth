@@ -75,13 +75,13 @@
        "detail": "Python không chọn method theo tên chữ cái."
       },
       {
-       "text": "Chạy cả A và B rồi nối lại",
-       "detail": "Một lời gọi không tự gọi mọi lớp cha."
-      },
-      {
        "text": "B",
        "detail": "MRO của cấu trúc đơn giản này đặt B trước A.",
        "correct": true
+      },
+      {
+       "text": "Chạy cả A và B rồi nối lại",
+       "detail": "Một lời gọi không tự gọi mọi lớp cha."
       }
      ],
      "explanation": "MRO của cấu trúc đơn giản này đặt B trước A."
@@ -90,13 +90,13 @@
      "question": "A và B đều có label. C(A,B) không override label sẽ tìm lớp nào trước?",
      "options": [
       {
-       "text": "Ngẫu nhiên giữa A và B",
-       "detail": "Chưa đúng. Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B."
-      },
-      {
        "text": "A",
        "detail": "Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B.",
        "correct": true
+      },
+      {
+       "text": "Ngẫu nhiên giữa A và B",
+       "detail": "Chưa đúng. Trong ví dụ kế thừa đơn giản này, MRO tìm C rồi A trước B."
       },
       {
        "text": "B",
@@ -109,17 +109,17 @@
      "question": "Để xem chính xác thứ tự tìm method của class C, dùng gì?",
      "options": [
       {
-       "text": "C.__mro__",
-       "detail": "__mro__ chứa các class theo thứ tự tra cứu method.",
-       "correct": true
-      },
-      {
        "text": "C.__dict__[\"random\"]",
        "detail": "Chưa đúng. __mro__ chứa các class theo thứ tự tra cứu method."
       },
       {
        "text": "C.__name__ để suy đoán",
        "detail": "Chưa đúng. __mro__ chứa các class theo thứ tự tra cứu method."
+      },
+      {
+       "text": "C.__mro__",
+       "detail": "__mro__ chứa các class theo thứ tự tra cứu method.",
+       "correct": true
       }
      ],
      "explanation": "__mro__ chứa các class theo thứ tự tra cứu method."

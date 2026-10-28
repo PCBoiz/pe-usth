@@ -90,13 +90,13 @@
      "question": "Tăng số lượt cho tới 3. Kết quả ở lệnh print cuối có giá trị nào?\n\nattempt = 0\nwhile attempt < 3:\n    attempt += 1\nprint(attempt)",
      "options": [
       {
+       "text": "2",
+       "detail": "Vòng vẫn chạy khi attempt là 2."
+      },
+      {
        "text": "3",
        "detail": "Biến tăng lên 3 sau lượt cuối rồi vòng dừng.",
        "correct": true
-      },
-      {
-       "text": "2",
-       "detail": "Vòng vẫn chạy khi attempt là 2."
       },
       {
        "text": "4",
@@ -114,12 +114,12 @@
        "correct": true
       },
       {
-       "text": "[0, 1]",
-       "detail": "continue không kết thúc cả vòng lặp."
-      },
-      {
        "text": "[0, 1, 2, 3]",
        "detail": "Số 2 bỏ qua append."
+      },
+      {
+       "text": "[0, 1]",
+       "detail": "continue không kết thúc cả vòng lặp."
       }
      ],
      "explanation": "continue chỉ bỏ phần còn lại của lượt hiện tại."

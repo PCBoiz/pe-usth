@@ -71,8 +71,8 @@
      "question": "marks={\"S02\":0}. marks.get(\"S02\", None) trả gì?",
      "options": [
       {
-       "text": "KeyError",
-       "detail": "get cho phép giá trị mặc định; truy cập [] vào khóa thiếu mới gây KeyError."
+       "text": "None",
+       "detail": "Giá trị mặc định chỉ dùng khi thiếu khóa."
       },
       {
        "text": "0",
@@ -80,8 +80,8 @@
        "correct": true
       },
       {
-       "text": "None",
-       "detail": "Giá trị mặc định chỉ dùng khi thiếu khóa."
+       "text": "KeyError",
+       "detail": "get cho phép giá trị mặc định; truy cập [] vào khóa thiếu mới gây KeyError."
       }
      ],
      "explanation": "Đúng. Khóa tồn tại và giữ điểm 0."
@@ -95,12 +95,12 @@
        "correct": true
       },
       {
-       "text": "None",
-       "detail": "Khóa A tồn tại và giữ điểm 0."
-      },
-      {
        "text": "8",
        "detail": "8 thuộc khóa B."
+      },
+      {
+       "text": "None",
+       "detail": "Khóa A tồn tại và giữ điểm 0."
       }
      ],
      "explanation": "Tra đúng khóa nhận đúng giá trị, kể cả khi giá trị là 0."
@@ -109,17 +109,17 @@
      "question": "Chưa có mã C. Kết quả ở lệnh print cuối có giá trị nào?\n\nmarks = {\"A\": 7}\nprint(marks.get(\"C\", \"missing\"))",
      "options": [
       {
-       "text": "'missing'",
-       "detail": "Không có C nên get trả đối số mặc định.",
-       "correct": true
-      },
-      {
        "text": "None",
        "detail": "Mặc định đã được truyền là chuỗi missing."
       },
       {
        "text": "'KeyError'",
        "detail": "get với mặc định không gây KeyError khi thiếu khóa."
+      },
+      {
+       "text": "'missing'",
+       "detail": "Không có C nên get trả đối số mặc định.",
+       "correct": true
       }
      ],
      "explanation": "Không có C nên get trả đối số mặc định."

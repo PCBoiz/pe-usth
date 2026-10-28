@@ -69,12 +69,12 @@
      "question": "Workbook có [\"Notes\",\"Sales\"]. sheet_name=0 chọn gì?",
      "options": [
       {
-       "text": "Sales",
-       "detail": "Tên Sales không quyết định vị trí 0."
-      },
-      {
        "text": "Cả hai",
        "detail": "Một số 0 chọn một sheet, không phải mọi sheet."
+      },
+      {
+       "text": "Sales",
+       "detail": "Tên Sales không quyết định vị trí 0."
       },
       {
        "text": "Notes",
@@ -88,6 +88,10 @@
      "question": "orient=\"records\" mô tả JSON như thế nào?\n\nimport pandas as pd\nfrom io import StringIO\ntext = '[{\"order\":\"A\",\"amount\":10},{\"order\":\"B\",\"amount\":20}]'\ndf = pd.read_json(StringIO(text), orient='records')\nprint(df['amount'].sum())\nprint(df.to_json(orient='records'))",
      "options": [
       {
+       "text": "Một chuỗi duy nhất chứa tên sheet Excel.",
+       "detail": "JSON records không mô tả tên sheet của workbook."
+      },
+      {
        "text": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
        "detail": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng.",
        "correct": true
@@ -95,10 +99,6 @@
       {
        "text": "Một dictionary cho mỗi cột, không có hàng.",
        "detail": "Mô tả này nghiêng về dạng ánh xạ theo cột, không phải records."
-      },
-      {
-       "text": "Một chuỗi duy nhất chứa tên sheet Excel.",
-       "detail": "JSON records không mô tả tên sheet của workbook."
       }
      ],
      "explanation": "Một danh sách đối tượng, mỗi đối tượng tương ứng một hàng."
@@ -107,17 +107,17 @@
      "question": "Vì sao buffer.seek(0) xuất hiện trước khi đọc Excel trong ví dụ?\n\nimport pandas as pd\nfrom io import BytesIO\nbuffer = BytesIO()\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ndf.to_excel(buffer, index=False, sheet_name='Sales', engine='openpyxl')\nbuffer.seek(0)\nback = pd.read_excel(buffer, sheet_name='Sales', usecols=['amount'], engine='openpyxl')\nprint(back['amount'].sum())",
      "options": [
       {
-       "text": "Để xóa workbook trước khi đọc.",
-       "detail": "seek(0) đổi vị trí đọc, không xóa dữ liệu."
+       "text": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
+       "detail": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
+       "correct": true
       },
       {
        "text": "Để đổi sheet đầu tiên thành Sales.",
        "detail": "Chọn sheet là trách nhiệm của sheet_name hoặc parse."
       },
       {
-       "text": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
-       "detail": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc.",
-       "correct": true
+       "text": "Để xóa workbook trước khi đọc.",
+       "detail": "seek(0) đổi vị trí đọc, không xóa dữ liệu."
       }
      ],
      "explanation": "Vì sau khi ghi, con trỏ đang ở cuối dữ liệu; cần đưa về đầu để đọc."

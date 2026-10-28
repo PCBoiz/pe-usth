@@ -68,13 +68,13 @@
      "question": "Gọi time.sleep(3) trong callback nút sẽ có tác động gì?",
      "options": [
       {
+       "text": "Tự chuyển việc sang thread nền",
+       "detail": "sleep không tạo thread."
+      },
+      {
        "text": "Event loop bị chặn trong thời gian đó",
        "detail": "Callback chạy trên UI thread; nó phải kết thúc để xử lý sự kiện tiếp.",
        "correct": true
-      },
-      {
-       "text": "Tự chuyển việc sang thread nền",
-       "detail": "sleep không tạo thread."
       },
       {
        "text": "Chỉ riêng Label ngủ, cửa sổ vẫn xử lý mọi sự kiện",
@@ -87,6 +87,10 @@
      "question": "Callback gọi một phép tính dài trực tiếp sẽ ảnh hưởng gì?",
      "options": [
       {
+       "text": "Mọi callback tự chuyển sang thread nền",
+       "detail": "Chưa đúng. Event loop cần được trả quyền để xử lý các sự kiện tiếp theo."
+      },
+      {
        "text": "Chỉ văn bản trong Label bị chậm",
        "detail": "Chưa đúng. Event loop cần được trả quyền để xử lý các sự kiện tiếp theo."
       },
@@ -94,10 +98,6 @@
        "text": "UI có thể không xử lý sự kiện đến khi callback trả về",
        "detail": "Event loop cần được trả quyền để xử lý các sự kiện tiếp theo.",
        "correct": true
-      },
-      {
-       "text": "Mọi callback tự chuyển sang thread nền",
-       "detail": "Chưa đúng. Event loop cần được trả quyền để xử lý các sự kiện tiếp theo."
       }
      ],
      "explanation": "Event loop cần được trả quyền để xử lý các sự kiện tiếp theo."
@@ -111,11 +111,11 @@
        "correct": true
       },
       {
-       "text": "Có; giống poll() tại chỗ",
+       "text": "Chỉ chạy nếu tự tạo process mới",
        "detail": "Chưa đúng. Truyền callable và nhường quyền cho event loop; thời điểm thực tế còn phụ thuộc lúc loop xử lý được."
       },
       {
-       "text": "Chỉ chạy nếu tự tạo process mới",
+       "text": "Có; giống poll() tại chỗ",
        "detail": "Chưa đúng. Truyền callable và nhường quyền cho event loop; thời điểm thực tế còn phụ thuộc lúc loop xử lý được."
       }
      ],

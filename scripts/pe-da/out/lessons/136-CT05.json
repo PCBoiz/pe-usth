@@ -94,13 +94,13 @@
        "detail": "Chưa đúng. SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
       },
       {
+       "text": "Luôn đợi A xong vì SRTF non-preemptive",
+       "detail": "Chưa đúng. SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
+      },
+      {
        "text": "Thu CPU của A để B chạy",
        "detail": "SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn.",
        "correct": true
-      },
-      {
-       "text": "Luôn đợi A xong vì SRTF non-preemptive",
-       "detail": "Chưa đúng. SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
       }
      ],
      "explanation": "SRTF so phần thời gian còn lại và cho phép preemption khi xuất hiện việc ngắn hơn."
@@ -114,11 +114,11 @@
        "correct": true
       },
       {
-       "text": "Burst ngắn nhất trong mọi trường hợp",
+       "text": "Thứ tự chữ cái tên job",
        "detail": "Chưa đúng. Deadline là hạn hoàn thành, khác lượng CPU mà job cần."
       },
       {
-       "text": "Thứ tự chữ cái tên job",
+       "text": "Burst ngắn nhất trong mọi trường hợp",
        "detail": "Chưa đúng. Deadline là hạn hoàn thành, khác lượng CPU mà job cần."
       }
      ],

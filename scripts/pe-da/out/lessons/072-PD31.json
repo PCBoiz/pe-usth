@@ -90,6 +90,10 @@
      "question": "Trước khi tính giá trị đơn trung bình, cần kiểm tra điều gì về mỗi hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'order': ['A', 'B', 'C', 'D'], 'channel': ['web', 'web', 'shop', 'shop'], 'amount': [10, 30, 20, 100]})\nassert orders['order'].is_unique\nsummary = orders.groupby('channel')['amount'].agg(['count', 'mean', 'median'])\nprint(summary.to_dict('index'))",
      "options": [
       {
+       "text": "Có thể bỏ qua ý nghĩa hàng nếu cột amount là số.",
+       "detail": "Cột số vẫn có thể được cộng/lấy mean ở sai mức quan sát."
+      },
+      {
        "text": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước.",
        "detail": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước.",
        "correct": true
@@ -97,10 +101,6 @@
       {
        "text": "Chỉ cần biết có bao nhiêu cột.",
        "detail": "Số cột không đủ xác định đơn vị quan sát của bảng."
-      },
-      {
-       "text": "Có thể bỏ qua ý nghĩa hàng nếu cột amount là số.",
-       "detail": "Cột số vẫn có thể được cộng/lấy mean ở sai mức quan sát."
       }
      ],
      "explanation": "Mỗi hàng có đúng là một đơn hay cần tổng hợp các sản phẩm trong cùng đơn trước."
@@ -109,17 +109,17 @@
      "question": "Một điểm bị gắn cờ IQR có bắt buộc xóa không?\n\nimport pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
      "options": [
       {
-       "text": "Có; cứ ngoài 1.5 IQR là dữ liệu sai.",
-       "detail": "Ngưỡng IQR không tự xác định lỗi nhập liệu."
+       "text": "Không; cần kiểm tra nguồn và nghiệp vụ.",
+       "detail": "Không; cần kiểm tra nguồn và nghiệp vụ.",
+       "correct": true
       },
       {
        "text": "Có; xóa tự động sẽ luôn làm báo cáo chính xác hơn.",
        "detail": "Xóa một quan sát thật có thể làm báo cáo kém chính xác hơn."
       },
       {
-       "text": "Không; cần kiểm tra nguồn và nghiệp vụ.",
-       "detail": "Không; cần kiểm tra nguồn và nghiệp vụ.",
-       "correct": true
+       "text": "Có; cứ ngoài 1.5 IQR là dữ liệu sai.",
+       "detail": "Ngưỡng IQR không tự xác định lỗi nhập liệu."
       }
      ],
      "explanation": "Không; cần kiểm tra nguồn và nghiệp vụ."

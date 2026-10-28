@@ -103,12 +103,12 @@
        "correct": true
       },
       {
-       "text": "[3, 5, 7, 9]",
-       "detail": "Hai list con giữ thành hai hàng, chưa bị làm phẳng."
-      },
-      {
        "text": "[[3, 7], [5, 9]]",
        "detail": "Tạo array không tự chuyển hàng thành cột."
+      },
+      {
+       "text": "[3, 5, 7, 9]",
+       "detail": "Hai list con giữ thành hai hàng, chưa bị làm phẳng."
       }
      ],
      "explanation": "Các list con có cùng độ dài tạo bảng hai chiều."
@@ -117,17 +117,17 @@
      "question": "Mỗi hàng giữ điểm của một học viên. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([[6, 8], [7, 9], [5, 6]])\nprint(marks)",
      "options": [
       {
-       "text": "[[6, 8], [7, 9], [5, 6]]",
-       "detail": "Tạo bảng giữ nguyên ba hàng và hai giá trị trong mỗi hàng.",
-       "correct": true
-      },
-      {
        "text": "[[6, 7, 5], [8, 9, 6]]",
        "detail": "Đó là cách đổi trục, không phải dữ liệu vừa tạo."
       },
       {
        "text": "[14, 16, 11]",
        "detail": "Chưa có phép tính tổng từng hàng."
+      },
+      {
+       "text": "[[6, 8], [7, 9], [5, 6]]",
+       "detail": "Tạo bảng giữ nguyên ba hàng và hai giá trị trong mỗi hàng.",
+       "correct": true
       }
      ],
      "explanation": "Tạo bảng giữ nguyên ba hàng và hai giá trị trong mỗi hàng."

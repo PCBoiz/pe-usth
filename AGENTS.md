@@ -306,6 +306,49 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   lựa chọn hơn — học viên đó mở bài là crash, mãi mãi. Nay `picked >= 0` và `optionDetail` nhận
   `undefined`.
 
+- **Vị trí đáp án trắc nghiệm từng được XOAY THEO CÔNG THỨC, không trộn — và nó làm 46 bài
+  không đo được gì.** Đo trên `source/practice.json`: 1 032 câu, tất cả đúng 3 phương án, mà
+  **519 câu (50,3%) có đáp án ở vị trí 1** (ngẫu nhiên phải ~33%); cả 172 bài chỉ sinh ra
+  **8 dãy vị trí khác nhau**, câu đầu mỗi bài chạy đúng chu kỳ 1→3→2. Hệ quả: bấm "a" cho mọi
+  câu đúng **6/6 ở 16 bài, 5/6 ở 30 bài**. Nay `tron_vi_tri_dap_an()` trong build.py trộn
+  NGẪU NHIÊN CÓ PHÂN TẦNG: 516 câu đang phát về **32,8 / 34,1 / 33,1 %**, 0 bài bấm "a" được
+  ≥2/3, số dãy 8 → 11. Kho hậu kiểm (`src/quizzes/post-test-bank.json`) có cùng bệnh và cùng
+  thuốc: 51,2% → 32,4 / 35,1 / 32,6 %, 46 bài → 0.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC:** điểm trắc nghiệm sẽ GIẢM, vì mẹo "luôn bấm phương án
+  đầu" mất tác dụng. Đó là mục đích, không phải tác dụng phụ.
+  **PHÂN TẦNG chứ không ngẫu nhiên thuần, và đã ablate:** với đề 3 câu, xác suất cả 3 cùng vị
+  trí là 1/9 — đổi sang `rng.randrange()` thì **23/172 bài** có cả 3 câu cùng một vị trí, tức
+  23 bài trông y như bệnh cũ với người học mà không ai biết là tình cờ.
+  **Seed phải CỐ ĐỊNH và KHÔNG được là `hash()` dựng sẵn.** Với chuỗi, `hash()` băm theo
+  PYTHONHASHSEED ngẫu nhiên mỗi tiến trình, nên `random.Random(hash(ma_bai))` ra kết quả KHÁC
+  mỗi lần dựng — mỗi lần build lại là một lần đổi đáp án của học viên đang học dở, và
+  `update-lesson-content.ts` (in sha256 cũ → mới) hết so được. Nay seed là
+  `f'{SEED_TRON}/{ma_bai}'`; kiểm bằng cách dựng hai lần và so md5 `out/lessons.json`.
+  **`feedback` phải đi THEO phương án, không theo vị trí** — lỗi im lặng tệ nhất ở khâu này:
+  học viên chọn sai rồi đọc lời giải thích của một phương án khác, không gì đỏ. Ablate (giữ
+  `feedback` theo vị trí): check.py **900 lỗi**, build_posttest **826**.
+  **Phương án là DÃY SỐ thì SẮP TĂNG, không trộn** (`la_day_so()`): với `12 / 11 / 1` thì thứ
+  tự là manh mối hợp lệ, và thứ tự của một dãy số do con số quyết định chứ không do người
+  soạn. 98/1032 câu rơi vào nhóm này, và chỉ 24 trong số đó đang được trình bày theo thứ tự.
+  Giá: vị trí của chúng dồn về GIỮA (10/62/26) vì nhiễu hay kẹp hai bên đáp án — đó là tính
+  chất của NỘI DUNG, nên luật "không bài nào có cả 3 câu cùng vị trí" MIỄN TRỪ bài mà MỌI câu
+  là dãy số. Hôm nay đúng **1 bài** (NP16); một câu không phải dãy số là hết miễn trừ.
+  **Hai phép so với nguồn phải chuyển từ VỊ TRÍ sang CHỮ, ở hai file.** `kiem_trac_nghiem()`
+  (check.py) và `kiem_dap_an()` (build_posttest.py) so `options[i].text` theo chỉ số — để
+  nguyên thì 1 531 lỗi GIẢ nổi lên và không lỗi thật nào bị bắt. Nới đúng MỘT bậc: tập chữ
+  phải khớp (sửa/thêm/bớt một phương án vẫn đỏ), còn đáp án thì so bằng CHỮ của phương án mà
+  `correctOption` trỏ tới — nên phép so vẫn chạm tới NGUỒN.
+  **`kiem_khong_trung()` phải so bộ lựa chọn KHÔNG theo thứ tự** (frozenset), vì hai kho trộn
+  bằng hai seed; nhưng bộ TOÀN SỐ được miễn — NP07 có bốn câu khác nhau (`a.size`, `a.shape`,
+  `len(a)`, đếm số đo) trên cùng mảng 3×2 nên cả bốn đều có phương án {2, 3, 6}. Luật cũ bỏ
+  qua chúng nhờ thứ tự khác nhau, tức nhờ tình cờ.
+  Ablate phép trộn hẳn: `check.py --strict` **17 lỗi** (15 bài dồn một vị trí + 2 luật phân
+  bố). Ba bẫy còn lại của VAN-PHONG.md §8 M2 nằm ở `kiem_phuong_an()`: cấm "tất cả đều đúng"
+  (nguồn có 0 câu — luật canh gói SAU), trần 21 câu có đáp án dài hơn hẳn mọi nhiễu (khiếm
+  khuyết NỘI DUNG, phép trộn không chữa được — **chỉ được hạ**), và tỉ lệ nhiễu-giống-nhất
+  đứng liền trước đáp án: 24,8% trước (THẤP hơn tình cờ vì đáp án hay ở vị trí 1, nơi không
+  có "liền trước") → **32,6%**, đúng mức tình cờ 33,3%.
+
 - **Khoá 172 bài từng KHÔNG có một ca chấm nào, và bốn chỗ cùng ghi lại giả định đó.**
   Đếm trên bản dựng ngày 26/10: 172/172 bài có `step_4.task`, 145 bài có `starterCode`, và
   **0 bài** có `step_4.tests`. `step_2.practice` chỉ hiện đáp án mẫu. Người thử viết code rồi

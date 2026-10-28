@@ -69,13 +69,13 @@
      "question": "Hai thread trong cùng process có bắt buộc hai heap độc lập như hai process không?",
      "options": [
       {
+       "text": "Có; mọi biến luôn bị sao chép khi start",
+       "detail": "Thread không sao chép toàn bộ không gian địa chỉ như mô hình process độc lập."
+      },
+      {
        "text": "Không; chúng dùng chung heap của process",
        "detail": "Mỗi thread có stack/PC/thanh ghi riêng nhưng có thể truy cập các object chung.",
        "correct": true
-      },
-      {
-       "text": "Có; mọi biến luôn bị sao chép khi start",
-       "detail": "Thread không sao chép toàn bộ không gian địa chỉ như mô hình process độc lập."
       },
       {
        "text": "Không; vậy chúng cũng chung một stack duy nhất",
@@ -88,13 +88,13 @@
      "question": "Trong một process nhiều thread, tài nguyên nào thường riêng theo thread?",
      "options": [
       {
-       "text": "Mã chương trình thành file riêng",
-       "detail": "Chưa đúng. Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung."
-      },
-      {
        "text": "Stack và ngữ cảnh thực thi",
        "detail": "Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung.",
        "correct": true
+      },
+      {
+       "text": "Mã chương trình thành file riêng",
+       "detail": "Chưa đúng. Thread có stack, program counter và thanh ghi riêng, còn nhiều tài nguyên thuộc process được dùng chung."
       },
       {
        "text": "Toàn bộ heap thành bản sao riêng",
@@ -107,17 +107,17 @@
      "question": "Hai thread trong cùng process có thể nhìn cùng một list trên heap không?",
      "options": [
       {
-       "text": "Có",
-       "detail": "Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa.",
-       "correct": true
-      },
-      {
        "text": "Không; mọi list tự copy khi start",
        "detail": "Chưa đúng. Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."
       },
       {
        "text": "Chỉ khi list có đúng hai phần tử",
        "detail": "Chưa đúng. Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."
+      },
+      {
+       "text": "Có",
+       "detail": "Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa.",
+       "correct": true
       }
      ],
      "explanation": "Không gian địa chỉ chung cho phép chia sẻ object; đây cũng là lý do cần đồng bộ khi cùng sửa."

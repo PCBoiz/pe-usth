@@ -77,10 +77,6 @@
      "question": "Sau from math import floor as down, muốn làm tròn xuống 3.8 thì gọi gì?",
      "options": [
       {
-       "text": "math.down(3.8)",
-       "detail": "Lời import này không tạo thuộc tính math.down."
-      },
-      {
        "text": "floor.py(3.8)",
        "detail": "Tên module/hàm Python không được gọi kèm đuôi file theo cách đó."
       },
@@ -88,6 +84,10 @@
        "text": "down(3.8)",
        "detail": "Bí danh down trỏ tới hàm floor đã import.",
        "correct": true
+      },
+      {
+       "text": "math.down(3.8)",
+       "detail": "Lời import này không tạo thuộc tính math.down."
       }
      ],
      "explanation": "Bí danh down trỏ tới hàm floor đã import."
@@ -96,13 +96,13 @@
      "question": "Sau import math, cách gọi floor nào đúng?",
      "options": [
       {
-       "text": "math(8.9).floor",
-       "detail": "Chưa đúng. import math đưa tên module math vào nơi gọi; hàm nằm trong module đó."
-      },
-      {
        "text": "math.floor(8.9)",
        "detail": "import math đưa tên module math vào nơi gọi; hàm nằm trong module đó.",
        "correct": true
+      },
+      {
+       "text": "math(8.9).floor",
+       "detail": "Chưa đúng. import math đưa tên module math vào nơi gọi; hàm nằm trong module đó."
       },
       {
        "text": "floor.math(8.9)",
@@ -115,17 +115,17 @@
      "question": "Sau from math import floor, tên nào có sẵn để gọi trực tiếp?",
      "options": [
       {
-       "text": "floor",
-       "detail": "Câu import này đưa riêng tên floor vào namespace hiện tại.",
-       "correct": true
-      },
-      {
        "text": "math luôn tự có sẵn",
        "detail": "Chưa đúng. Câu import này đưa riêng tên floor vào namespace hiện tại."
       },
       {
        "text": "math.py",
        "detail": "Chưa đúng. Câu import này đưa riêng tên floor vào namespace hiện tại."
+      },
+      {
+       "text": "floor",
+       "detail": "Câu import này đưa riêng tên floor vào namespace hiện tại.",
+       "correct": true
       }
      ],
      "explanation": "Câu import này đưa riêng tên floor vào namespace hiện tại."

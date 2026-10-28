@@ -76,12 +76,12 @@
        "correct": true
       },
       {
-       "text": "AB-2",
-       "detail": "Đó là bốn ký tự đầu."
-      },
-      {
        "text": "048",
        "detail": "Bắt đầu từ -4 chứ không phải -3."
+      },
+      {
+       "text": "AB-2",
+       "detail": "Đó là bốn ký tự đầu."
       }
      ],
      "explanation": "Đúng. Lấy bốn ký tự từ cuối tới hết."
@@ -90,17 +90,17 @@
      "question": "Đọc ký tự đầu của mã file. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"sales.csv\"\nprint(name[0])",
      "options": [
       {
-       "text": "'s'",
-       "detail": "Chỉ số 0 trỏ ký tự đầu tiên.",
-       "correct": true
-      },
-      {
        "text": "'a'",
        "detail": "a ở chỉ số 1."
       },
       {
        "text": "'sales'",
        "detail": "[0] lấy một ký tự, không lấy cả từ."
+      },
+      {
+       "text": "'s'",
+       "detail": "Chỉ số 0 trỏ ký tự đầu tiên.",
+       "correct": true
       }
      ],
      "explanation": "Chỉ số 0 trỏ ký tự đầu tiên."
@@ -109,13 +109,13 @@
      "question": "Đọc ký tự cuối. Kết quả ở lệnh print cuối có giá trị nào?\n\nname = \"report\"\nprint(name[-1])",
      "options": [
       {
+       "text": "'r'",
+       "detail": "r là ký tự đầu."
+      },
+      {
        "text": "'t'",
        "detail": "Chỉ số -1 lấy ký tự cuối của dãy.",
        "correct": true
-      },
-      {
-       "text": "'r'",
-       "detail": "r là ký tự đầu."
       },
       {
        "text": "'o'",

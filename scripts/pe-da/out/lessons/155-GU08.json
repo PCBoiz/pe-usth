@@ -68,13 +68,13 @@
      "question": "pack(fill=\"x\") tự dành toàn bộ chỗ trống mới khi cửa sổ lớn lên không?",
      "options": [
       {
+       "text": "Có; fill và expand là một thuộc tính",
+       "detail": "Hai thuộc tính xử lý hai bước khác nhau của bố cục."
+      },
+      {
        "text": "Không; fill chỉ kéo widget trong phần chỗ đã được cấp",
        "detail": "expand quyết định phân bổ thêm khoảng trống cho vùng của widget.",
        "correct": true
-      },
-      {
-       "text": "Có; fill và expand là một thuộc tính",
-       "detail": "Hai thuộc tính xử lý hai bước khác nhau của bố cục."
       },
       {
        "text": "Không; pack không hỗ trợ resize",
@@ -87,6 +87,10 @@
      "question": "pack(side=\"left\") thường xếp widget từ phía nào của parent?",
      "options": [
       {
+       "text": "Tâm màn hình luôn",
+       "detail": "Chưa đúng. side định hướng xếp theo cạnh trong vùng parent."
+      },
+      {
        "text": "Hàng grid số 1",
        "detail": "Chưa đúng. side định hướng xếp theo cạnh trong vùng parent."
       },
@@ -94,10 +98,6 @@
        "text": "Cạnh trái",
        "detail": "side định hướng xếp theo cạnh trong vùng parent.",
        "correct": true
-      },
-      {
-       "text": "Tâm màn hình luôn",
-       "detail": "Chưa đúng. side định hướng xếp theo cạnh trong vùng parent."
       }
      ],
      "explanation": "side định hướng xếp theo cạnh trong vùng parent."
@@ -111,11 +111,11 @@
        "correct": true
       },
       {
-       "text": "Tự nhận mọi phần chỗ dư của cửa sổ",
+       "text": "Tự tăng số cột grid",
        "detail": "Chưa đúng. Fill nói về kéo widget trong vùng cấp; expand nói về nhận thêm khoảng trống."
       },
       {
-       "text": "Tự tăng số cột grid",
+       "text": "Tự nhận mọi phần chỗ dư của cửa sổ",
        "detail": "Chưa đúng. Fill nói về kéo widget trong vùng cấp; expand nói về nhận thêm khoảng trống."
       }
      ],

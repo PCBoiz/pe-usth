@@ -88,12 +88,12 @@
        "correct": true
       },
       {
-       "text": "[2 4 9]",
-       "detail": "array không tự sắp tăng."
-      },
-      {
        "text": "[9 2 4]",
        "detail": "array không tự đảo thứ tự."
+      },
+      {
+       "text": "[2 4 9]",
+       "detail": "array không tự sắp tăng."
       }
      ],
      "explanation": "Đúng. np.array giữ thứ tự dữ liệu nhập."
@@ -102,17 +102,17 @@
      "question": "Ba ca lần lượt bán 8, 11 và 6 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\ncups = np.array([8, 11, 6])\nprint(cups)",
      "options": [
       {
-       "text": "[8, 11, 6]",
-       "detail": "Array giữ đúng thứ tự các số đã nhập.",
-       "correct": true
-      },
-      {
        "text": "[6, 8, 11]",
        "detail": "Tạo array không tự sắp xếp dữ liệu."
       },
       {
        "text": "25",
        "detail": "np.array lưu các số; nó chưa cộng chúng."
+      },
+      {
+       "text": "[8, 11, 6]",
+       "detail": "Array giữ đúng thứ tự các số đã nhập.",
+       "correct": true
       }
      ],
      "explanation": "Array giữ đúng thứ tự các số đã nhập."
@@ -121,13 +121,13 @@
      "question": "Một dãy điểm có hai bài cùng điểm. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nmarks = np.array([7, 7, 9])\nprint(marks)",
      "options": [
       {
+       "text": "[7, 9]",
+       "detail": "Array không tự loại các số lặp."
+      },
+      {
        "text": "[7, 7, 9]",
        "detail": "Mỗi vị trí đầu vào trở thành một vị trí trong array, kể cả số lặp.",
        "correct": true
-      },
-      {
-       "text": "[7, 9]",
-       "detail": "Array không tự loại các số lặp."
       },
       {
        "text": "[9, 7, 7]",

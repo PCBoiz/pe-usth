@@ -68,17 +68,17 @@
      "question": "Curses wrapper giúp gì khi main kết thúc hoặc lỗi?",
      "options": [
       {
+       "text": "Khôi phục trạng thái terminal",
+       "detail": "wrapper chuẩn bị màn hình và thu dọn khi rời hàm.",
+       "correct": true
+      },
+      {
        "text": "Tính GPA tự động",
        "detail": "Curses quản lý giao diện; công thức vẫn cần hàm nghiệp vụ."
       },
       {
        "text": "Tạo cửa sổ Tkinter",
        "detail": "Đây là giao diện trong terminal, không phải GUI Tkinter."
-      },
-      {
-       "text": "Khôi phục trạng thái terminal",
-       "detail": "wrapper chuẩn bị màn hình và thu dọn khi rời hàm.",
-       "correct": true
       }
      ],
      "explanation": "wrapper chuẩn bị màn hình và thu dọn khi rời hàm."
@@ -91,13 +91,13 @@
        "detail": "Chưa đúng. Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
       },
       {
+       "text": "Ô output tĩnh không nhận bàn phím",
+       "detail": "Chưa đúng. Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
+      },
+      {
        "text": "Terminal thật có hỗ trợ curses",
        "detail": "Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác.",
        "correct": true
-      },
-      {
-       "text": "Ô output tĩnh không nhận bàn phím",
-       "detail": "Chưa đúng. Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
       }
      ],
      "explanation": "Phần giao diện cần terminal có khả năng nhận và hiển thị tương tác."
@@ -106,13 +106,13 @@
      "question": "wrapper giúp gì khi ứng dụng curses kết thúc?",
      "options": [
       {
+       "text": "Tự tính GPA",
+       "detail": "Chưa đúng. wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng."
+      },
+      {
        "text": "Chuẩn bị rồi khôi phục trạng thái terminal",
        "detail": "wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng.",
        "correct": true
-      },
-      {
-       "text": "Tự tính GPA",
-       "detail": "Chưa đúng. wrapper quản lý vòng đời môi trường terminal quanh hàm ứng dụng."
       },
       {
        "text": "Tự tạo cửa sổ Tkinter",

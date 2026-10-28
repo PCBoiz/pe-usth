@@ -74,17 +74,17 @@
      "question": "Trong with h5py.File(...), f[\"scores\"] là gì trước khi dùng [()]?",
      "options": [
       {
-       "text": "Luôn là list độc lập",
-       "detail": "Dataset không phải list Python đã sao chép sẵn."
+       "text": "Dataset gắn với file",
+       "detail": "Dùng [()] lấy dữ liệu ra bộ nhớ khi file còn mở.",
+       "correct": true
       },
       {
        "text": "Một đường dẫn thư mục hệ điều hành",
        "detail": "Đây là tên đối tượng bên trong HDF5."
       },
       {
-       "text": "Dataset gắn với file",
-       "detail": "Dùng [()] lấy dữ liệu ra bộ nhớ khi file còn mở.",
-       "correct": true
+       "text": "Luôn là list độc lập",
+       "detail": "Dataset không phải list Python đã sao chép sẵn."
       }
      ],
      "explanation": "Dùng [()] lấy dữ liệu ra bộ nhớ khi file còn mở."
@@ -93,7 +93,7 @@
      "question": "Muốn array dùng được sau khi đóng HDF5, nên lấy gì khi file còn mở?",
      "options": [
       {
-       "text": "Tên file viết hoa",
+       "text": "Chỉ giữ dataset handle rồi đóng file",
        "detail": "Chưa đúng. Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file."
       },
       {
@@ -102,7 +102,7 @@
        "correct": true
       },
       {
-       "text": "Chỉ giữ dataset handle rồi đóng file",
+       "text": "Tên file viết hoa",
        "detail": "Chưa đúng. Dataset handle phụ thuộc file; đọc giá trị ra array tách dữ liệu cần dùng khỏi vòng đời file."
       }
      ],
@@ -112,17 +112,17 @@
      "question": "Đọc đúng dataset trong HDF5 nên dựa vào điều gì?",
      "options": [
       {
-       "text": "Tên và cấu trúc đã kiểm, không mặc định key đầu tiên",
-       "detail": "Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype.",
-       "correct": true
-      },
-      {
        "text": "Luôn key có tên ngắn nhất",
        "detail": "Chưa đúng. Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."
       },
       {
        "text": "Màu icon của file",
        "detail": "Chưa đúng. Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."
+      },
+      {
+       "text": "Tên và cấu trúc đã kiểm, không mặc định key đầu tiên",
+       "detail": "Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype.",
+       "correct": true
       }
      ],
      "explanation": "Một file có nhiều mảng và metadata; cần chọn đúng tên rồi kiểm shape/dtype."

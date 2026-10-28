@@ -87,12 +87,12 @@
        "correct": true
       },
       {
-       "text": "Có, chỉ cần cùng đơn vị %",
-       "detail": "Cùng ký hiệu phần trăm chưa chứng minh cùng mẫu số."
-      },
-      {
        "text": "Có nếu dùng hai màu khác",
        "detail": "Màu không sửa được định nghĩa phần của tổng."
+      },
+      {
+       "text": "Có, chỉ cần cùng đơn vị %",
+       "detail": "Cùng ký hiệu phần trăm chưa chứng minh cùng mẫu số."
       }
      ],
      "explanation": "Cơ cấu có ý nghĩa khi các phần cộng về cùng một tổng dương."
@@ -105,13 +105,13 @@
        "detail": "Màu khác nhau không sửa được vấn đề mẫu số khác nhau."
       },
       {
+       "text": "Có; mọi tỷ lệ phần trăm đều cộng vào một pie được.",
+       "detail": "Tỷ lệ từ các mẫu số khác nhau không tự tạo thành một cơ cấu hợp lệ."
+      },
+      {
        "text": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại.",
        "detail": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại.",
        "correct": true
-      },
-      {
-       "text": "Có; mọi tỷ lệ phần trăm đều cộng vào một pie được.",
-       "detail": "Tỷ lệ từ các mẫu số khác nhau không tự tạo thành một cơ cấu hợp lệ."
       }
      ],
      "explanation": "Không. Các phần của pie phải thuộc cùng một tổng và có ý nghĩa cộng lại."
@@ -120,6 +120,10 @@
      "question": "fill có tự tính diện tích hay tổng tích lũy cho bạn không?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwedges, labels, values = ax.pie([60, 40], labels=[\"Coffee\", \"Tea\"], autopct=\"%.0f%%\", colors=[\"#0072B2\", \"#D55E00\"])\nax.set_title(\"Only two mutually exclusive shares\")\nprint([text.get_text() for text in values])\nplt.show()",
      "options": [
       {
+       "text": "Có; fill tự tính đường tích lũy từ mọi tọa độ.",
+       "detail": "Dữ liệu tích lũy phải được tính nếu đó là mục tiêu cần biểu diễn."
+      },
+      {
        "text": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",
        "detail": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định.",
        "correct": true
@@ -127,10 +131,6 @@
       {
        "text": "Có; fill tự tích phân dữ liệu và báo tổng.",
        "detail": "Hàm vẽ không tự xác định ý nghĩa thống kê hay tích phân bạn muốn."
-      },
-      {
-       "text": "Có; fill tự tính đường tích lũy từ mọi tọa độ.",
-       "detail": "Dữ liệu tích lũy phải được tính nếu đó là mục tiêu cần biểu diễn."
       }
      ],
      "explanation": "Không. Nó tô đa giác từ tọa độ; ý nghĩa và phép tính do bạn xác định."

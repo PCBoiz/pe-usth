@@ -82,10 +82,6 @@
      "question": "Đường giữa hộp boxplot thường biểu diễn gì?",
      "options": [
       {
-       "text": "Trung bình",
-       "detail": "Không mặc định; mean cần được thể hiện theo cấu hình riêng."
-      },
-      {
        "text": "Giá trị lớn nhất",
        "detail": "Giá trị lớn nhất có thể nằm trên râu hoặc là điểm ngoài râu."
       },
@@ -93,6 +89,10 @@
        "text": "Trung vị",
        "detail": "Đúng: hộp mặc định có đường trung vị.",
        "correct": true
+      },
+      {
+       "text": "Trung bình",
+       "detail": "Không mặc định; mean cần được thể hiện theo cấu hình riêng."
       }
      ],
      "explanation": "Cần đọc đúng đại lượng tóm tắt trước khi diễn giải phân bố."

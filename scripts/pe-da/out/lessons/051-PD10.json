@@ -71,10 +71,6 @@
      "question": "Dữ liệu A-v2 rồi A-v1. drop_duplicates(\"order\",keep=\"last\") chưa sort giữ bản nào?",
      "options": [
       {
-       "text": "v2",
-       "detail": "Chỉ đúng nếu đã sắp version tăng trước."
-      },
-      {
        "text": "Cả hai",
        "detail": "drop_duplicates theo order chỉ giữ một bản trong lựa chọn này."
       },
@@ -82,6 +78,10 @@
        "text": "v1",
        "detail": "Đúng: last là hàng cuối hiện tại, không phải version lớn nhất.",
        "correct": true
+      },
+      {
+       "text": "v2",
+       "detail": "Chỉ đúng nếu đã sắp version tăng trước."
       }
      ],
      "explanation": "Hàm không hiểu ý nghĩa mới/cũ nếu bạn chưa sắp theo cột phiên bản."
@@ -90,17 +90,17 @@
      "question": "duplicated mặc định đánh dấu bản đầu hay bản sau?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'amount': [10, 10, 20]})\nprint(df.duplicated().tolist())\nprint(df.drop_duplicates()['amount'].sum())",
      "options": [
       {
-       "text": "Đánh dấu các bản sau là True; bản đầu được giữ.",
-       "detail": "Đánh dấu các bản sau là True; bản đầu được giữ.",
-       "correct": true
+       "text": "Đánh dấu mọi hàng là True dù không trùng.",
+       "detail": "Hàng không lặp không bị đánh dấu là trùng."
       },
       {
        "text": "Đánh dấu bản đầu là True, các bản sau False.",
        "detail": "Bạn đã đảo vai trò của bản đầu và bản lặp sau."
       },
       {
-       "text": "Đánh dấu mọi hàng là True dù không trùng.",
-       "detail": "Hàng không lặp không bị đánh dấu là trùng."
+       "text": "Đánh dấu các bản sau là True; bản đầu được giữ.",
+       "detail": "Đánh dấu các bản sau là True; bản đầu được giữ.",
+       "correct": true
       }
      ],
      "explanation": "Đánh dấu các bản sau là True; bản đầu được giữ."
@@ -109,17 +109,17 @@
      "question": "Một đơn có nhiều mặt hàng. Có nên drop_duplicates chỉ theo order không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'A', 'B'], 'item': ['tea', 'coffee', 'tea']})\nprint(df.duplicated(subset=['order']).tolist())\nprint(df.duplicated(subset=['order', 'item']).tolist())",
      "options": [
       {
-       "text": "Có; order luôn là khóa duy nhất trong mọi bảng.",
-       "detail": "Một order có thể xuất hiện hợp lệ ở nhiều mặt hàng."
+       "text": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
+       "detail": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
+       "correct": true
       },
       {
        "text": "Có; drop_duplicates tự cộng các mặt hàng bị bỏ.",
        "detail": "drop_duplicates không cộng lượng của những hàng bị bỏ."
       },
       {
-       "text": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
-       "detail": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng.",
-       "correct": true
+       "text": "Có; order luôn là khóa duy nhất trong mọi bảng.",
+       "detail": "Một order có thể xuất hiện hợp lệ ở nhiều mặt hàng."
       }
      ],
      "explanation": "Không nếu mỗi hàng là một mặt hàng; cần xác định khóa theo cấu trúc bảng."

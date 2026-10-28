@@ -68,13 +68,13 @@
      "question": "Muốn mở cửa sổ Chi tiết trong app đã có root thì dùng gì?",
      "options": [
       {
+       "text": "Tạo tk.Tk() mới cho mỗi lần bấm",
+       "detail": "Điều đó tạo thêm root/interpreter, không phải quan hệ cửa sổ phụ mong muốn."
+      },
+      {
        "text": "tk.Toplevel(root)",
        "detail": "Một ứng dụng thường dùng một Tk làm root; cửa sổ phụ là Toplevel.",
        "correct": true
-      },
-      {
-       "text": "Tạo tk.Tk() mới cho mỗi lần bấm",
-       "detail": "Điều đó tạo thêm root/interpreter, không phải quan hệ cửa sổ phụ mong muốn."
       },
       {
        "text": "root.mainloop() lần nữa",
@@ -87,13 +87,13 @@
      "question": "Ứng dụng đã có root, muốn mở cửa sổ Chi tiết nên dùng gì?",
      "options": [
       {
-       "text": "mainloop mới thay cho cửa sổ",
-       "detail": "Chưa đúng. Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root."
-      },
-      {
        "text": "tk.Toplevel(root)",
        "detail": "Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root.",
        "correct": true
+      },
+      {
+       "text": "mainloop mới thay cho cửa sổ",
+       "detail": "Chưa đúng. Toplevel dùng cùng hệ ứng dụng và parent; không cần tạo thêm root."
       },
       {
        "text": "Tk mới cho từng lần bấm",
@@ -106,17 +106,17 @@
      "question": "geometry(\"480x300\") quy định gì trong ví dụ?",
      "options": [
       {
-       "text": "Kích thước cửa sổ theo pixel",
-       "detail": "Geometry của cửa sổ khác với các tham số bố trí widget.",
-       "correct": true
+       "text": "Hàng và cột của grid",
+       "detail": "Chưa đúng. Geometry của cửa sổ khác với các tham số bố trí widget."
       },
       {
        "text": "Số widget tối đa",
        "detail": "Chưa đúng. Geometry của cửa sổ khác với các tham số bố trí widget."
       },
       {
-       "text": "Hàng và cột của grid",
-       "detail": "Chưa đúng. Geometry của cửa sổ khác với các tham số bố trí widget."
+       "text": "Kích thước cửa sổ theo pixel",
+       "detail": "Geometry của cửa sổ khác với các tham số bố trí widget.",
+       "correct": true
       }
      ],
      "explanation": "Geometry của cửa sổ khác với các tham số bố trí widget."

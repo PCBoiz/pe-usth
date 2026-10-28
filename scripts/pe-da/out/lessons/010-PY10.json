@@ -77,6 +77,10 @@
      "question": "a=[1,2]; a.append([3,4]). a có bao nhiêu phần tử?",
      "options": [
       {
+       "text": "2",
+       "detail": "append làm list thay đổi, không chỉ tạo bản xem."
+      },
+      {
        "text": "3",
        "detail": "Đúng. List [3,4] được thêm như một phần tử.",
        "correct": true
@@ -84,10 +88,6 @@
       {
        "text": "4",
        "detail": "extend([3,4]) mới thêm hai số riêng."
-      },
-      {
-       "text": "2",
-       "detail": "append làm list thay đổi, không chỉ tạo bản xem."
       }
      ],
      "explanation": "Đúng. List [3,4] được thêm như một phần tử."
@@ -101,12 +101,12 @@
        "correct": true
       },
       {
-       "text": "[1, 2, 3, 4]",
-       "detail": "extend mới thêm từng phần tử của list nhận vào."
-      },
-      {
        "text": "[3, 4, 1, 2]",
        "detail": "append thêm ở cuối, không ở đầu."
+      },
+      {
+       "text": "[1, 2, 3, 4]",
+       "detail": "extend mới thêm từng phần tử của list nhận vào."
       }
      ],
      "explanation": "append thêm đối số như một phần tử duy nhất."
@@ -115,17 +115,17 @@
      "question": "Thêm từng mã mới. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [1, 2]\nvalues.extend([3, 4])\nprint(values)",
      "options": [
       {
-       "text": "[1, 2, 3, 4]",
-       "detail": "extend đưa từng phần tử của iterable vào list hiện tại.",
-       "correct": true
+       "text": "[3, 4]",
+       "detail": "extend không bỏ các phần tử đã có."
       },
       {
        "text": "[1, 2, [3, 4]]",
        "detail": "Đó là kết quả của append một list."
       },
       {
-       "text": "[3, 4]",
-       "detail": "extend không bỏ các phần tử đã có."
+       "text": "[1, 2, 3, 4]",
+       "detail": "extend đưa từng phần tử của iterable vào list hiện tại.",
+       "correct": true
       }
      ],
      "explanation": "extend đưa từng phần tử của iterable vào list hiện tại."

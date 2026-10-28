@@ -77,13 +77,13 @@
      "question": "Viết hai def render trong cùng một class thông thường sẽ tạo overload theo chữ ký không?",
      "options": [
       {
+       "text": "Có; Python tự chọn theo số đối số",
+       "detail": "Đó không phải cơ chế tự động của hai def trùng tên trong Python."
+      },
+      {
        "text": "Không; def sau gán lại tên render",
        "detail": "Tên method chỉ trỏ tới định nghĩa cuối trong class thông thường.",
        "correct": true
-      },
-      {
-       "text": "Có; Python tự chọn theo số đối số",
-       "detail": "Đó không phải cơ chế tự động của hai def trùng tên trong Python."
       },
       {
        "text": "Cả hai luôn chạy nối tiếp",
@@ -100,13 +100,13 @@
        "detail": "Chưa đúng. Kế thừa diễn tả quan hệ is-a; subclass vẫn có thể dùng hành vi từ superclass."
       },
       {
+       "text": "Report là một thuộc tính bắt buộc của mọi object",
+       "detail": "Chưa đúng. Kế thừa diễn tả quan hệ is-a; subclass vẫn có thể dùng hành vi từ superclass."
+      },
+      {
        "text": "SalesReport là một loại Report",
        "detail": "Kế thừa diễn tả quan hệ is-a; subclass vẫn có thể dùng hành vi từ superclass.",
        "correct": true
-      },
-      {
-       "text": "Report là một thuộc tính bắt buộc của mọi object",
-       "detail": "Chưa đúng. Kế thừa diễn tả quan hệ is-a; subclass vẫn có thể dùng hành vi từ superclass."
       }
      ],
      "explanation": "Kế thừa diễn tả quan hệ is-a; subclass vẫn có thể dùng hành vi từ superclass."
@@ -120,11 +120,11 @@
        "correct": true
       },
       {
-       "text": "Luôn báo thiếu method",
+       "text": "Python tự tạo file save.py",
        "detail": "Chưa đúng. Method lookup có thể tìm save trong lớp cha khi lớp con không ghi đè."
       },
       {
-       "text": "Python tự tạo file save.py",
+       "text": "Luôn báo thiếu method",
        "detail": "Chưa đúng. Method lookup có thể tìm save trong lớp cha khi lớp con không ghi đè."
       }
      ],

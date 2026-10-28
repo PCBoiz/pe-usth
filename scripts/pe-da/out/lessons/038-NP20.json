@@ -89,13 +89,13 @@
        "detail": "Ép int có thể xóa cả một chênh lệch quan trọng."
       },
       {
-       "text": "Hai số in giống nhau thì == chắc chắn True",
-       "detail": "Định dạng hiển thị có thể che phần chênh lệch nhỏ."
-      },
-      {
        "text": "Biểu diễn số thực có thể lệch rất nhỏ; có thể dùng isclose với sai số phù hợp",
        "detail": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra.",
        "correct": true
+      },
+      {
+       "text": "Hai số in giống nhau thì == chắc chắn True",
+       "detail": "Định dạng hiển thị có thể che phần chênh lệch nhỏ."
       }
      ],
      "explanation": "Đúng. Phải chọn sai số phù hợp đơn vị và mục tiêu kiểm tra."
@@ -109,12 +109,12 @@
        "correct": true
       },
       {
-       "text": "True",
-       "detail": "Biểu diễn số thực nhị phân có thể để lại chênh lệch nhỏ."
-      },
-      {
        "text": "'TypeError'",
        "detail": "Hai số thực vẫn so sánh được bằng ==."
+      },
+      {
+       "text": "True",
+       "detail": "Biểu diễn số thực nhị phân có thể để lại chênh lệch nhỏ."
       }
      ],
      "explanation": "Tổng được lưu không trùng chính xác với biểu diễn của 0.3."
@@ -123,17 +123,17 @@
      "question": "Dùng sai số mặc định để kiểm tổng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.isclose(0.1 + 0.2, 0.3))",
      "options": [
       {
-       "text": "True",
-       "detail": "isclose chấp nhận chênh lệch nhỏ của phép tính số thực.",
-       "correct": true
-      },
-      {
        "text": "False",
        "detail": "Chênh lệch trong ví dụ nhỏ hơn sai số mặc định."
       },
       {
        "text": "'0.3'",
        "detail": "isclose trả Boolean, không trả giá trị đích."
+      },
+      {
+       "text": "True",
+       "detail": "isclose chấp nhận chênh lệch nhỏ của phép tính số thực.",
+       "correct": true
       }
      ],
      "explanation": "isclose chấp nhận chênh lệch nhỏ của phép tính số thực."

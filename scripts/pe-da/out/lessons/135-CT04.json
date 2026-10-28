@@ -90,16 +90,16 @@
      "question": "A đến trước B. FCFS non-preemptive có tự ngắt A chỉ vì B ngắn hơn không?",
      "options": [
       {
-       "text": "Chỉ ngắt khi B ngắn hơn A rất nhiều",
-       "detail": "Chưa đúng. FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
-      },
-      {
        "text": "Không",
        "detail": "FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF.",
        "correct": true
       },
       {
        "text": "Có; luôn ưu tiên việc ngắn",
+       "detail": "Chưa đúng. FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
+      },
+      {
+       "text": "Chỉ ngắt khi B ngắn hơn A rất nhiều",
        "detail": "Chưa đúng. FCFS theo thứ tự đến; mô hình non-preemptive không thu CPU giữa burst như SRTF."
       }
      ],
@@ -109,13 +109,13 @@
      "question": "SJF được chọn một job ngắn chưa đến hệ thống không?",
      "options": [
       {
+       "text": "Có; biết burst là đủ",
+       "detail": "Chưa đúng. Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn."
+      },
+      {
        "text": "Không; chỉ chọn trong các việc đang sẵn sàng",
        "detail": "Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn.",
        "correct": true
-      },
-      {
-       "text": "Có; biết burst là đủ",
-       "detail": "Chưa đúng. Thời điểm đến ràng buộc tập job sẵn có tại thời điểm lựa chọn."
       },
       {
        "text": "Chỉ chọn nếu job có deadline",

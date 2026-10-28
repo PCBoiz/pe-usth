@@ -76,12 +76,12 @@
        "correct": true
       },
       {
-       "text": "submitted - registered",
-       "detail": "Phép này tìm người đã nộp nhưng không có trong đăng ký."
-      },
-      {
        "text": "registered & submitted",
        "detail": "Giao tìm những người có ở cả hai nhóm, tức đã nộp hợp lệ."
+      },
+      {
+       "text": "submitted - registered",
+       "detail": "Phép này tìm người đã nộp nhưng không có trong đăng ký."
       }
      ],
      "explanation": "Đúng. Giữ người thuộc đăng ký nhưng không thuộc đã nộp."
@@ -90,17 +90,17 @@
      "question": "Tìm người đăng ký chưa nộp. Kết quả ở lệnh print cuối có giá trị nào?\n\nregistered = {\"An\", \"Binh\", \"Chi\"}\nsubmitted = {\"Binh\", \"Chi\"}\nprint(sorted(registered - submitted))",
      "options": [
       {
-       "text": "['An']",
-       "detail": "Hiệu giữ người thuộc registered mà không thuộc submitted.",
-       "correct": true
+       "text": "['An', 'Binh', 'Chi']",
+       "detail": "Hiệu loại các phần tử đã có trong submitted."
       },
       {
        "text": "['Binh', 'Chi']",
        "detail": "Đây là nhóm đã nộp, không phải phần còn thiếu."
       },
       {
-       "text": "['An', 'Binh', 'Chi']",
-       "detail": "Hiệu loại các phần tử đã có trong submitted."
+       "text": "['An']",
+       "detail": "Hiệu giữ người thuộc registered mà không thuộc submitted.",
+       "correct": true
       }
      ],
      "explanation": "Hiệu giữ người thuộc registered mà không thuộc submitted."
@@ -109,13 +109,13 @@
      "question": "Giữ các mã có trong cả hai tập. Kết quả ở lệnh print cuối có giá trị nào?\n\na = {1, 2}\nb = {2, 3}\nprint(sorted(a & b))",
      "options": [
       {
+       "text": "[1, 2, 3]",
+       "detail": "Đây là hợp, không phải giao."
+      },
+      {
        "text": "[2]",
        "detail": "Chỉ 2 xuất hiện trong cả a lẫn b.",
        "correct": true
-      },
-      {
-       "text": "[1, 2, 3]",
-       "detail": "Đây là hợp, không phải giao."
       },
       {
        "text": "[1]",

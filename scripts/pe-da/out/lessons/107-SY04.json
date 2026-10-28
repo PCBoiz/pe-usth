@@ -87,6 +87,10 @@
      "question": "Bạn muốn có bản repository trong tài khoản GitHub của mình trước khi làm PW0. Thao tác nào phù hợp?",
      "options": [
       {
+       "text": "git add",
+       "detail": "Chưa đúng. Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
+      },
+      {
        "text": "git diff",
        "detail": "Chưa đúng. Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
       },
@@ -94,10 +98,6 @@
        "text": "Fork",
        "detail": "Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local.",
        "correct": true
-      },
-      {
-       "text": "git add",
-       "detail": "Chưa đúng. Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
       }
      ],
      "explanation": "Fork tạo repository riêng trên dịch vụ; add và diff làm việc với thay đổi trong bản local."
@@ -106,16 +106,16 @@
      "question": "git clone tạo gì trên máy?",
      "options": [
       {
+       "text": "Một commit mới trên repository giảng viên",
+       "detail": "Chưa đúng. Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
+      },
+      {
        "text": "Bản làm việc cùng lịch sử Git",
        "detail": "Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc.",
        "correct": true
       },
       {
        "text": "Chỉ một ảnh chụp README",
-       "detail": "Chưa đúng. Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
-      },
-      {
-       "text": "Một commit mới trên repository giảng viên",
        "detail": "Chưa đúng. Clone lấy repository về máy để làm việc; nó không tự tạo thay đổi ở kho gốc."
       }
      ],

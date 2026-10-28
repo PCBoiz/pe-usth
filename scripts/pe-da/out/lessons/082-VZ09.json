@@ -82,6 +82,10 @@
      "question": "axhline(9) trong hình doanh thu là gì?",
      "options": [
       {
+       "text": "Một đường ở x=9",
+       "detail": "axhline dùng tọa độ y, axvline mới dùng x."
+      },
+      {
        "text": "Một đường mốc ngang ở y=9",
        "detail": "Đúng: nó có thể biểu diễn mục tiêu đã ghi rõ.",
        "correct": true
@@ -89,10 +93,6 @@
       {
        "text": "Một đơn hàng mới có doanh thu 9",
        "detail": "Đường mốc không thêm một quan sát vào bảng dữ liệu."
-      },
-      {
-       "text": "Một đường ở x=9",
-       "detail": "axhline dùng tọa độ y, axvline mới dùng x."
       }
      ],
      "explanation": "Mốc tham chiếu phải được phân biệt với các quan sát có thật."
@@ -105,13 +105,13 @@
        "detail": "Xóa số trục làm mất thông tin thay vì giải thích nó."
       },
       {
+       "text": "Chỉ cần thêm màu nền cho hình.",
+       "detail": "Màu nền không bổ sung đơn vị hoặc kỳ báo cáo."
+      },
+      {
        "text": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp.",
        "detail": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp.",
        "correct": true
-      },
-      {
-       "text": "Chỉ cần thêm màu nền cho hình.",
-       "detail": "Màu nền không bổ sung đơn vị hoặc kỳ báo cáo."
       }
      ],
      "explanation": "Cần đơn vị, khoảng thời gian và phạm vi dữ liệu; đặt vào nhãn hoặc chú thích phù hợp."

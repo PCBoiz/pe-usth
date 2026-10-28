@@ -96,6 +96,10 @@
      "question": "Giá vé từ ô nhập là chuỗi. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"18\"\nprice = int(raw)\nprint(price * 2)",
      "options": [
       {
+       "text": "20",
+       "detail": "Phép tính là nhân giá với hai vé, không cộng 2."
+      },
+      {
        "text": "36",
        "detail": "int(\"18\") tạo số nguyên 18 trước phép nhân.",
        "correct": true
@@ -103,10 +107,6 @@
       {
        "text": "1818",
        "detail": "Giá đã được đổi thành int trước khi nhân."
-      },
-      {
-       "text": "20",
-       "detail": "Phép tính là nhân giá với hai vé, không cộng 2."
       }
      ],
      "explanation": "int(\"18\") tạo số nguyên 18 trước phép nhân."
@@ -115,17 +115,17 @@
      "question": "Giá có phần lẻ. Kết quả ở lệnh print cuối có giá trị nào?\n\nraw = \"7.5\"\nprice = float(raw)\nprint(price * 2)",
      "options": [
       {
-       "text": "15.0",
-       "detail": "float giữ phần thập phân; hai giá 7.5 cộng lại là 15.",
-       "correct": true
+       "text": "'7.57.5'",
+       "detail": "float đã chuyển chuỗi thành số."
       },
       {
        "text": "14",
        "detail": "Không cắt 7.5 xuống 7."
       },
       {
-       "text": "'7.57.5'",
-       "detail": "float đã chuyển chuỗi thành số."
+       "text": "15.0",
+       "detail": "float giữ phần thập phân; hai giá 7.5 cộng lại là 15.",
+       "correct": true
       }
      ],
      "explanation": "float giữ phần thập phân; hai giá 7.5 cộng lại là 15."

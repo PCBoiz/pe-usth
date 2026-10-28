@@ -72,13 +72,13 @@
        "detail": "Gọi trực tiếp sẽ chạy như method thường; không kiểm được cách tạo thread đúng."
       },
       {
+       "text": "Có; chỉ cần có method run",
+       "detail": "run không thay việc chuẩn bị trạng thái của lớp cha."
+      },
+      {
        "text": "Không; trạng thái Thread cần được khởi tạo",
        "detail": "Các method start/join dựa vào phần khởi tạo của Thread.",
        "correct": true
-      },
-      {
-       "text": "Có; chỉ cần có method run",
-       "detail": "run không thay việc chuẩn bị trạng thái của lớp cha."
       }
      ],
      "explanation": "Các method start/join dựa vào phần khởi tạo của Thread."
@@ -87,13 +87,13 @@
      "question": "Trong subclass Thread, công việc nền thường được định nghĩa ở đâu?",
      "options": [
       {
-       "text": "Tên biến result bên ngoài class",
-       "detail": "Chưa đúng. Thread.start điều phối việc gọi run trên luồng mới."
-      },
-      {
        "text": "run",
        "detail": "Thread.start điều phối việc gọi run trên luồng mới.",
        "correct": true
+      },
+      {
+       "text": "Tên biến result bên ngoài class",
+       "detail": "Chưa đúng. Thread.start điều phối việc gọi run trên luồng mới."
       },
       {
        "text": "__str__",
@@ -106,13 +106,13 @@
      "question": "Vì sao __init__ của worker gọi super().__init__()?",
      "options": [
       {
+       "text": "Để chạy công việc nền ngay lập tức",
+       "detail": "Chưa đúng. Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread."
+      },
+      {
        "text": "Khởi tạo phần trạng thái Thread của object",
        "detail": "Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread.",
        "correct": true
-      },
-      {
-       "text": "Để chạy công việc nền ngay lập tức",
-       "detail": "Chưa đúng. Subclass cần khởi tạo lớp nền trước khi dùng vòng đời start/join của Thread."
       },
       {
        "text": "Để tạo một heap riêng cho mỗi thread",

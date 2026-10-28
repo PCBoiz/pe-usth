@@ -71,17 +71,17 @@
      "question": "Biểu thức nào tạo tuple có đúng một phần tử 7?",
      "options": [
       {
+       "text": "(7,)",
+       "detail": "Đúng. Dấu phẩy tạo tuple một phần tử.",
+       "correct": true
+      },
+      {
        "text": "(7)",
        "detail": "Đây vẫn là số 7 được bọc ngoặc."
       },
       {
        "text": "[7]",
        "detail": "Đây là list, không phải tuple."
-      },
-      {
-       "text": "(7,)",
-       "detail": "Đúng. Dấu phẩy tạo tuple một phần tử.",
-       "correct": true
       }
      ],
      "explanation": "Đúng. Dấu phẩy tạo tuple một phần tử."
@@ -90,6 +90,10 @@
      "question": "Tách hai tọa độ. Kết quả ở lệnh print cuối có giá trị nào?\n\npoint = (4, 9)\nx, y = point\nprint(x + y)",
      "options": [
       {
+       "text": "9",
+       "detail": "Biểu thức dùng cả x lẫn y."
+      },
+      {
        "text": "13",
        "detail": "Unpack gán 4 cho x và 9 cho y.",
        "correct": true
@@ -97,10 +101,6 @@
       {
        "text": "49",
        "detail": "x và y là số nên được cộng."
-      },
-      {
-       "text": "9",
-       "detail": "Biểu thức dùng cả x lẫn y."
       }
      ],
      "explanation": "Unpack gán 4 cho x và 9 cho y."
@@ -109,17 +109,17 @@
      "question": "Dấu phẩy tạo tuple chỉ có một phần tử. Kết quả ở lệnh print cuối có giá trị nào?\n\nitem = (7,)\nprint(type(item).__name__)",
      "options": [
       {
-       "text": "'tuple'",
-       "detail": "Dấu phẩy là chi tiết quyết định tuple một phần tử.",
-       "correct": true
-      },
-      {
        "text": "'int'",
        "detail": "(7) không dấu phẩy mới là int."
       },
       {
        "text": "'list'",
        "detail": "List dùng dấu ngoặc vuông."
+      },
+      {
+       "text": "'tuple'",
+       "detail": "Dấu phẩy là chi tiết quyết định tuple một phần tử.",
+       "correct": true
       }
      ],
      "explanation": "Dấu phẩy là chi tiết quyết định tuple một phần tử."

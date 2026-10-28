@@ -90,17 +90,17 @@
      "question": "Hai cửa hàng, ba ngày cần chuyển thành ba hàng ngày. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nsales = np.array([[1, 2, 3], [4, 5, 6]])\nprint(sales.T)",
      "options": [
       {
-       "text": "[[1, 4], [2, 5], [3, 6]]",
-       "detail": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị.",
-       "correct": true
+       "text": "[[1, 2, 3], [4, 5, 6]]",
+       "detail": "Hai trục đã được đổi vai trò."
       },
       {
        "text": "[[3, 2, 1], [6, 5, 4]]",
        "detail": "Transpose không đảo thứ tự phần tử trong từng hàng."
       },
       {
-       "text": "[[1, 2, 3], [4, 5, 6]]",
-       "detail": "Hai trục đã được đổi vai trò."
+       "text": "[[1, 4], [2, 5], [3, 6]]",
+       "detail": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị.",
+       "correct": true
       }
      ],
      "explanation": "Các cột của bảng gốc trở thành các hàng của bảng chuyển vị."
@@ -109,6 +109,10 @@
      "question": "Bảng gốc hai hàng và bốn cột. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1,2,3,4],[5,6,7,8]])\nprint(a.T.shape)",
      "options": [
       {
+       "text": "[8]",
+       "detail": "Transpose không làm phẳng bảng."
+      },
+      {
        "text": "(4, 2)",
        "detail": "Đổi hai trục làm số hàng mới bằng số cột cũ.",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "[2, 4]",
        "detail": "Đó là shape trước transpose."
-      },
-      {
-       "text": "[8]",
-       "detail": "Transpose không làm phẳng bảng."
       }
      ],
      "explanation": "Đổi hai trục làm số hàng mới bằng số cột cũ."

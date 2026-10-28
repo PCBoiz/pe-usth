@@ -71,6 +71,10 @@
      "question": "Mẫu r\"a.b\" có khớp chuỗi \"a-b\" không?",
      "options": [
       {
+       "text": "Không, vì thiếu dấu chấm thật",
+       "detail": "Muốn dấu chấm thật cần escape; dấu chấm không escape mang nghĩa mẫu."
+      },
+      {
        "text": "Chỉ khớp khi chuỗi bắt đầu bằng số",
        "detail": "Mẫu không có yêu cầu chữ số nào."
       },
@@ -78,10 +82,6 @@
        "text": "Có",
        "detail": "Dấu chấm trong regex khớp một ký tự bất kỳ, trừ newline trong chế độ mặc định.",
        "correct": true
-      },
-      {
-       "text": "Không, vì thiếu dấu chấm thật",
-       "detail": "Muốn dấu chấm thật cần escape; dấu chấm không escape mang nghĩa mẫu."
       }
      ],
      "explanation": "Dấu chấm trong regex khớp một ký tự bất kỳ, trừ newline trong chế độ mặc định."

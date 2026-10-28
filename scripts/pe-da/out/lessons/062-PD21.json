@@ -71,6 +71,10 @@
      "question": "\"04/03/2026\" với format %d/%m/%Y là ngày nào?",
      "options": [
       {
+       "text": "Không thể đọc vì có dấu /",
+       "detail": "Dấu / có trong format nên hoàn toàn hợp lệ."
+      },
+      {
        "text": "4 tháng 3",
        "detail": "Đúng: %d là ngày, %m là tháng.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "3 tháng 4",
        "detail": "Đây là cách đọc theo tháng/ngày."
-      },
-      {
-       "text": "Không thể đọc vì có dấu /",
-       "detail": "Dấu / có trong format nên hoàn toàn hợp lệ."
       }
      ],
      "explanation": "Format ghi rõ ý nghĩa của từng phần trong chuỗi ngày."
@@ -90,13 +90,13 @@
      "question": "Chuỗi 05/01/2026 theo %d/%m/%Y là ngày nào?\n\nimport pandas as pd\nraw = pd.Series(['05/01/2026', '07/01/2026'])\ndates = pd.to_datetime(raw, format='%d/%m/%Y')\nprint(dates.dt.strftime('%Y-%m-%d').tolist())\nprint(dates.dt.month.tolist())",
      "options": [
       {
-       "text": "Ngày 5 tháng 1 năm 2025.",
-       "detail": "Năm được ghi rõ là 2026."
-      },
-      {
        "text": "Ngày 5 tháng 1 năm 2026.",
        "detail": "Ngày 5 tháng 1 năm 2026.",
        "correct": true
+      },
+      {
+       "text": "Ngày 5 tháng 1 năm 2025.",
+       "detail": "Năm được ghi rõ là 2026."
       },
       {
        "text": "Ngày 1 tháng 5 năm 2026.",
@@ -109,17 +109,17 @@
      "question": "errors=\"coerce\" tạo giá trị gì khi ngày sai?\n\nimport pandas as pd\ndates = pd.to_datetime(pd.Series(['2026-01-05', 'not-a-date']), format='%Y-%m-%d', errors='coerce')\nprint(dates.isna().tolist())\nprint(dates.dt.day_of_week.dropna().astype(int).tolist())",
      "options": [
       {
-       "text": "NaT, được phát hiện bằng isna().",
-       "detail": "NaT, được phát hiện bằng isna().",
-       "correct": true
-      },
-      {
        "text": "0 để thay cho ngày sai.",
        "detail": "0 không phải giá trị thiếu dành cho kiểu datetime."
       },
       {
        "text": "Một ngày hợp lệ gần ngày sai nhất.",
        "detail": "coerce không đoán một ngày gần nhất để sửa dữ liệu."
+      },
+      {
+       "text": "NaT, được phát hiện bằng isna().",
+       "detail": "NaT, được phát hiện bằng isna().",
+       "correct": true
       }
      ],
      "explanation": "NaT, được phát hiện bằng isna()."

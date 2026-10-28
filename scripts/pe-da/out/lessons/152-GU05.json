@@ -68,13 +68,13 @@
      "question": "Entry có show=\"*\" có mã hóa mật khẩu được lưu không?",
      "options": [
       {
+       "text": "Có; get sẽ trả các dấu sao",
+       "detail": "show thay cách vẽ chữ, không đổi giá trị bên trong."
+      },
+      {
        "text": "Không; nó chỉ che cách hiển thị",
        "detail": "Entry.get vẫn trả nội dung; lưu trữ và bảo vệ dữ liệu là chuyện khác.",
        "correct": true
-      },
-      {
-       "text": "Có; get sẽ trả các dấu sao",
-       "detail": "show thay cách vẽ chữ, không đổi giá trị bên trong."
       },
       {
        "text": "Có; mọi dữ liệu tự thành bytes mã hóa",
@@ -87,6 +87,10 @@
      "question": "Entry.get() trả gì kể cả khi người dùng gõ 12?",
      "options": [
       {
+       "text": "Luôn số nguyên 12",
+       "detail": "Chưa đúng. Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
+      },
+      {
        "text": "Một StringVar mới",
        "detail": "Chưa đúng. Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
       },
@@ -94,10 +98,6 @@
        "text": "Chuỗi \"12\"",
        "detail": "Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng.",
        "correct": true
-      },
-      {
-       "text": "Luôn số nguyên 12",
-       "detail": "Chưa đúng. Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."
       }
      ],
      "explanation": "Nội dung ô nhập là văn bản; chuyển sang số cần thao tác rõ ràng."

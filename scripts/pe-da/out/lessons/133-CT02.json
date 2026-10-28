@@ -93,13 +93,13 @@
        "detail": "Chưa đúng. Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
       },
       {
+       "text": "PID của chính cha",
+       "detail": "Chưa đúng. Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
+      },
+      {
        "text": "0",
        "detail": "Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh.",
        "correct": true
-      },
-      {
-       "text": "PID của chính cha",
-       "detail": "Chưa đúng. Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."
       }
      ],
      "explanation": "Cha nhận PID con, còn con nhận 0 để chương trình phân biệt hai nhánh."

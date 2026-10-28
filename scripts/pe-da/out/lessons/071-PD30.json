@@ -76,12 +76,12 @@
        "correct": true
       },
       {
-       "text": "0 vì đó là doanh thu an toàn",
-       "detail": "0 là dữ liệu mới không được nguồn xác nhận."
-      },
-      {
        "text": "Bỏ cả bảng",
        "detail": "Một ô lỗi chưa buộc mọi hàng hợp lệ bị bỏ."
+      },
+      {
+       "text": "0 vì đó là doanh thu an toàn",
+       "detail": "0 là dữ liệu mới không được nguồn xác nhận."
       }
      ],
      "explanation": "Hàm làm sạch và quyết định nghiệp vụ về dữ liệu lỗi cần rõ ràng."
@@ -94,13 +94,13 @@
        "detail": "Xóa ngay có thể làm mất đơn trước khi có quy tắc xử lý phù hợp."
       },
       {
+       "text": "Để mọi lỗi trở thành đơn có doanh thu 0 hợp lệ.",
+       "detail": "Điền 0 sẽ che mất khác biệt giữa lỗi và doanh thu 0 thật."
+      },
+      {
        "text": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ.",
        "detail": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ.",
        "correct": true
-      },
-      {
-       "text": "Để mọi lỗi trở thành đơn có doanh thu 0 hợp lệ.",
-       "detail": "Điền 0 sẽ che mất khác biệt giữa lỗi và doanh thu 0 thật."
       }
      ],
      "explanation": "Để lỗi vẫn được nhìn thấy và xử lý theo quy tắc nghiệp vụ."
@@ -109,6 +109,10 @@
      "question": "Một quy tắc không âm có phù hợp mọi bảng giao dịch không?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\nassert df['order'].notna().all()\nassert df['order'].is_unique\nassert df['amount'].notna().all()\nassert (df['amount'] >= 0).all()\nprint('Passed: 2 orders, total', df['amount'].sum())",
      "options": [
       {
+       "text": "Có; số âm tự được đổi thành số dương khi đọc CSV.",
+       "detail": "Pandas không mặc định đổi mọi số âm thành số dương."
+      },
+      {
        "text": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",
        "detail": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ.",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "Có; số âm luôn là lỗi trong mọi nghiệp vụ.",
        "detail": "Giá trị âm có thể mang ý nghĩa hợp lệ trong một loại bảng khác."
-      },
-      {
-       "text": "Có; số âm tự được đổi thành số dương khi đọc CSV.",
-       "detail": "Pandas không mặc định đổi mọi số âm thành số dương."
       }
      ],
      "explanation": "Không; ví dụ bảng có hoàn tiền có thể cần giá trị âm hợp lệ."

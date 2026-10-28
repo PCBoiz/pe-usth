@@ -71,12 +71,12 @@
      "question": "total=0; duyệt [2,4,6] rồi total += value mỗi lượt. total cuối là gì?",
      "options": [
       {
-       "text": "6",
-       "detail": "6 chỉ là giá trị ở lượt cuối, không phải tổng."
-      },
-      {
        "text": "0",
        "detail": "Các lần += đã cập nhật total."
+      },
+      {
+       "text": "6",
+       "detail": "6 chỉ là giá trị ở lượt cuối, không phải tổng."
       },
       {
        "text": "12",
@@ -90,17 +90,17 @@
      "question": "Cộng các ca bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nvalues = [3, 5, 2]\ntotal = 0\nfor value in values:\n    total += value\nprint(total)",
      "options": [
       {
-       "text": "10",
-       "detail": "Mỗi lượt cộng một số vào total đã khởi tạo.",
-       "correct": true
-      },
-      {
        "text": "2",
        "detail": "Biến total giữ tổng, không chỉ phần tử cuối."
       },
       {
        "text": "3",
        "detail": "3 là số ca, không phải tổng lượng bán."
+      },
+      {
+       "text": "10",
+       "detail": "Mỗi lượt cộng một số vào total đã khởi tạo.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi lượt cộng một số vào total đã khởi tạo."
@@ -109,13 +109,13 @@
      "question": "Các mã tăng hai đơn vị. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(list(range(1, 7, 2)))",
      "options": [
       {
+       "text": "[1, 3, 5, 7]",
+       "detail": "7 là điểm dừng nên bị loại."
+      },
+      {
        "text": "[1, 3, 5]",
        "detail": "range bắt đầu 1, tăng 2 và dừng trước 7.",
        "correct": true
-      },
-      {
-       "text": "[1, 3, 5, 7]",
-       "detail": "7 là điểm dừng nên bị loại."
       },
       {
        "text": "[1, 2, 3, 4, 5, 6]",

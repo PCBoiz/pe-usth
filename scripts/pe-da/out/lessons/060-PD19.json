@@ -75,13 +75,13 @@
        "detail": "pivot chỉ đổi vị trí, không tự cộng."
       },
       {
-       "text": "Giữ 8",
-       "detail": "Không tự bỏ giá trị 5 mà không có quy tắc."
-      },
-      {
        "text": "Không, pivot báo lỗi vì một ô có hai giá trị",
        "detail": "Đúng: cần tổng hợp trước hoặc dùng pivot_table.",
        "correct": true
+      },
+      {
+       "text": "Giữ 8",
+       "detail": "Không tự bỏ giá trị 5 mà không có quy tắc."
       }
      ],
      "explanation": "Đổi hình dạng không tự xác định quy tắc tổng hợp."
@@ -95,12 +95,12 @@
        "correct": true
       },
       {
-       "text": "Có; pivot luôn cộng mọi giao dịch trùng.",
-       "detail": "Phép cộng cần bước tổng hợp hoặc pivot_table."
-      },
-      {
        "text": "Có; pivot luôn lấy trung bình các giao dịch trùng.",
        "detail": "Pivot không mặc định lấy trung bình cho ô bị trùng."
+      },
+      {
+       "text": "Có; pivot luôn cộng mọi giao dịch trùng.",
+       "detail": "Phép cộng cần bước tổng hợp hoặc pivot_table."
       }
      ],
      "explanation": "Không; nó yêu cầu mỗi ô được xác định duy nhất."

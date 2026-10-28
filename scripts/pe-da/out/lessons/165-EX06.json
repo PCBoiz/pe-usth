@@ -65,17 +65,17 @@
      "question": "messages.put(\"done\") trước with gzip.open(...) có chứng minh file lưu xong không?",
      "options": [
       {
+       "text": "Không; thông báo phải đến sau khi ghi và đóng file thành công",
+       "detail": "Bên nhận dùng thông báo để quyết định khi nào có thể đọc dữ liệu đã lưu.",
+       "correct": true
+      },
+      {
        "text": "Có; start thread nghĩa là ghi đã xong",
        "detail": "start chỉ khởi chạy công việc."
       },
       {
        "text": "Có nếu tên file kết thúc .gz",
        "detail": "Đuôi file không quyết định tiến độ hoặc nội dung file."
-      },
-      {
-       "text": "Không; thông báo phải đến sau khi ghi và đóng file thành công",
-       "detail": "Bên nhận dùng thông báo để quyết định khi nào có thể đọc dữ liệu đã lưu.",
-       "correct": true
       }
      ],
      "explanation": "Bên nhận dùng thông báo để quyết định khi nào có thể đọc dữ liệu đã lưu."
@@ -88,13 +88,13 @@
        "detail": "Chưa đúng. Hai lớp xử lý phối hợp: object cần serialize và dữ liệu serialize có thể được nén."
       },
       {
+       "text": "Cả hai đều chỉ đổi tên đuôi file",
+       "detail": "Chưa đúng. Hai lớp xử lý phối hợp: object cần serialize và dữ liệu serialize có thể được nén."
+      },
+      {
        "text": "Biểu diễn object thành dữ liệu nhị phân rồi nén",
        "detail": "Hai lớp xử lý phối hợp: object cần serialize và dữ liệu serialize có thể được nén.",
        "correct": true
-      },
-      {
-       "text": "Cả hai đều chỉ đổi tên đuôi file",
-       "detail": "Chưa đúng. Hai lớp xử lý phối hợp: object cần serialize và dữ liệu serialize có thể được nén."
       }
      ],
      "explanation": "Hai lớp xử lý phối hợp: object cần serialize và dữ liệu serialize có thể được nén."
@@ -103,16 +103,16 @@
      "question": "Deepcopy snapshot trước start worker giúp tách điều gì trong ví dụ marks lồng nhau?",
      "options": [
       {
+       "text": "Bảo đảm mọi pickle ngoài đều an toàn",
+       "detail": "Chưa đúng. Với cấu trúc dữ liệu của bài, bản sao sâu tách container lồng; tính nhất quán lúc chụp vẫn cần được bảo đảm."
+      },
+      {
        "text": "Dữ liệu đã chụp khỏi thay đổi list sau đó",
        "detail": "Với cấu trúc dữ liệu của bài, bản sao sâu tách container lồng; tính nhất quán lúc chụp vẫn cần được bảo đảm.",
        "correct": true
       },
       {
        "text": "Mọi thread khỏi process chứa nó",
-       "detail": "Chưa đúng. Với cấu trúc dữ liệu của bài, bản sao sâu tách container lồng; tính nhất quán lúc chụp vẫn cần được bảo đảm."
-      },
-      {
-       "text": "Bảo đảm mọi pickle ngoài đều an toàn",
        "detail": "Chưa đúng. Với cấu trúc dữ liệu của bài, bản sao sâu tách container lồng; tính nhất quán lúc chụp vẫn cần được bảo đảm."
       }
      ],

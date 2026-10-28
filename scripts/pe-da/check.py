@@ -16,6 +16,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections import Counter
+from difflib import SequenceMatcher
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -483,8 +485,17 @@ def kiem_trac_nghiem(bai: list[dict]) -> None:
             if len(lc_dung) != len(lc_goc):
                 loi(f'{ma} câu {i}: dựng {len(lc_dung)} lựa chọn, nguồn có {len(lc_goc)}')
                 continue
-            if [o.get('text') for o in lc_dung] != [o.get('text') for o in lc_goc]:
-                loi(f'{ma} câu {i}: chữ của lựa chọn không khớp nguồn')
+            # So theo TẬP CHỮ, không theo vị trí.
+            #
+            # Luật này từng là `[text...] == [text...]` thẳng, và nó đúng cho
+            # tới ngày build.py bắt đầu TRỘN vị trí đáp án (xem
+            # `tron_vi_tri_dap_an`). Nó phải nới đúng một bậc — từ "cùng thứ
+            # tự" xuống "cùng tập chữ" — và KHÔNG nới thêm: phép so đáp án
+            # ngay dưới chuyển sang so bằng CHỮ, nên một phương án bị sửa chữ,
+            # bị thêm hay bị bớt vẫn đỏ.
+            if sorted(o.get('text') or '' for o in lc_dung) != sorted(
+                    o.get('text') or '' for o in lc_goc):
+                loi(f'{ma} câu {i}: tập chữ của lựa chọn không khớp nguồn')
                 continue
 
             danh_dau = [j for j, o in enumerate(lc_dung) if o.get('correct') is True]
@@ -492,24 +503,47 @@ def kiem_trac_nghiem(bai: list[dict]) -> None:
                 loi(f'{ma} câu {i}: có {len(danh_dau)} lựa chọn được đánh dấu đúng, cần đúng 1')
                 continue
             # ĐÂY là phép kiểm mà bộ test backend không làm được.
-            vi_tri_goc = next(
-                (j for j, o in enumerate(lc_goc) if o.get('id') == g.get('correctOption')), -1)
-            if danh_dau[0] != vi_tri_goc:
-                loi(f'{ma} câu {i}: đánh dấu lựa chọn {danh_dau[0]} là đúng, '
+            #
+            # So bằng CHỮ chứ không bằng vị trí, vì vị trí nay do phép trộn
+            # quyết định. Chữ thì không: `correctOption` của nguồn trỏ tới một
+            # `id`, `id` trỏ tới một phương án, và phương án đó mang chữ của
+            # nó đi theo khi đổi chỗ. Nên phép so này vẫn chạm tới NGUỒN —
+            # trộn sai (mang cờ `correct` sang phương án khác) là đỏ.
+            chu_dung_nguon = next(
+                (o.get('text') or '' for o in lc_goc if o.get('id') == g.get('correctOption')),
+                None)
+            chu_dung_dung = lc_dung[danh_dau[0]].get('text') or ''
+            if chu_dung_dung != chu_dung_nguon:
+                loi(f'{ma} câu {i}: đánh dấu đúng cho {chu_dung_dung!r}, '
                     f'nhưng nguồn nói correctOption={g.get("correctOption")!r} '
-                    f'(lựa chọn {vi_tri_goc})')
+                    f'tức {chu_dung_nguon!r}')
             if not (q.get('question') or '').strip():
                 loi(f'{ma} câu {i}: câu hỏi rỗng')
+            # Ghép bản dựng với nguồn THEO CHỮ, cùng lý do như trên. Nguồn hôm
+            # nay có 0/1032 câu trùng chữ giữa hai phương án (đã đo), nên phép
+            # ghép này là song ánh; `tron_vi_tri_dap_an` cũng không trộn câu
+            # trùng chữ, nên hai phía không lệch nhau được.
+            fb_nguon = {o.get('text') or '': (o.get('feedback') or '') for o in lc_goc}
             for j, o in enumerate(lc_dung):
-                if not (o.get('text') or '').strip():
+                chu = o.get('text') or ''
+                if not chu.strip():
                     loi(f'{ma} câu {i}: lựa chọn {j} không có chữ')
                 # `detail` là lời phản hồi RIÊNG của từng lựa chọn — thứ nói
                 # vì sao lựa chọn SAI là sai. Nguồn có nó cho cả 3 096 lựa
                 # chọn; mất nó thì học viên chọn sai rồi chỉ thấy một dấu X,
                 # và màn trắc nghiệm hết tác dụng dạy. Bỏ đi không làm gì đỏ
                 # nên phải canh ở đây.
-                if (lc_goc[j].get('feedback') or '').strip()                         and not (o.get('detail') or '').strip():
-                    loi(f'{ma} câu {i}: lựa chọn {j} mất `detail` — nguồn CÓ feedback')
+                #
+                # Từ ngày có phép trộn, luật này canh thêm một lỗi KHÁC và tệ
+                # hơn: `feedback` phải đi THEO phương án, không theo vị trí.
+                # Trộn chữ mà để lời phản hồi ở lại chỗ cũ thì học viên chọn
+                # sai rồi đọc được lời giải thích của một phương án khác — và
+                # không ngoại lệ nào được ném. So THEO CHỮ bắt được đúng chuyện
+                # đó, so theo vị trí thì không.
+                if fb_nguon.get(chu, '').strip() and not (o.get('detail') or '').strip():
+                    loi(f'{ma} câu {i}: lựa chọn {j} ({chu!r}) mất `detail` — nguồn CÓ feedback')
+                if fb_nguon.get(chu) and (o.get('detail') or '') != fb_nguon[chu]:
+                    loi(f'{ma} câu {i}: lựa chọn {j} ({chu!r}) mang `detail` của phương án khác')
 
     # MIN_POOL của backend là 5 CÂU: 3 câu mỗi bài nghĩa là phải xong 2 bài mới
     # mở được quiz ôn. Hạ xuống 1-2 câu/bài là đổi hành vi người dùng thấy
@@ -521,6 +555,181 @@ def kiem_trac_nghiem(bai: list[dict]) -> None:
                 'đủ MIN_POOL=5 của kho quiz')
     if tong and tong != 3 * len(bai):
         canh_bao(f'tổng câu trắc nghiệm là {tong}, không phải 3 × {len(bai)} bài')
+
+    kiem_vi_tri_dap_an(bai)
+    kiem_phuong_an(bai)
+
+
+# Ngưỡng cho phân bố vị trí đáp án trên CẢ bản dựng, tính theo điểm phần trăm
+# lệch khỏi mức đều (1/số lựa chọn).
+#
+# 8 điểm phần trăm, và con số đó có hai đầu:
+#  · bệnh cũ là 49,4% ở vị trí 1 trên 516 câu đang phát, tức lệch +16,1 điểm —
+#    ngưỡng 8 bắt nó với biên gấp đôi;
+#  · bản trộn đo được 32,8 / 34,1 / 33,1 (lệch tối đa 0,8 điểm), nên ngưỡng 8
+#    cách số thật 10 lần. Nó canh một THIÊN LỆCH HỆ THỐNG, không canh nhiễu
+#    thống kê: với 516 câu, sai số chuẩn của một tỉ lệ 1/3 là ~2,1 điểm, nên
+#    đặt ngưỡng sát hơn là tự tạo lỗi ngẫu nhiên vào ngày nguồn đổi vài câu.
+NGUONG_LECH_VI_TRI = 8.0
+
+# Trần số câu mà đáp án DÀI HƠN HẲN mọi phương án nhiễu (dài hơn 2 lần + 3 ký
+# tự). Đây là một mẹo lộ bài có tên trong tài liệu đo lường: người học không
+# biết câu trả lời vẫn chọn đúng vì phương án đúng được viết kỹ hơn.
+#
+# Nó là KHIẾM KHUYẾT CỦA NỘI DUNG, không phải của khâu dựng — phép trộn không
+# chữa được (đo: 21 câu trước khi trộn, 21 câu sau khi trộn, y nhau). Nên đây
+# là một mốc TRẦN như mốc lint của backend: **chỉ được hạ**. Gói nội dung mới
+# làm nó tăng là một câu hỏi phải viết lại, không phải một con số phải nới.
+TRAN_LECH_DO_DAI = 21
+
+# "Tất cả đều đúng" / "không phương án nào đúng" bị CẤM HẲN (VAN-PHONG.md §8
+# M2). Lý do không phải thẩm mỹ: chúng biến câu 3 phương án thành câu đúng/sai
+# đội lốt, và người học loại được chúng bằng luật "ra đề thì ít ai viết vậy"
+# mà không cần biết nội dung. Nguồn hôm nay có 0 câu như vậy — luật này canh
+# gói nội dung SAU.
+CAM_PHUONG_AN = (
+    ('tất cả', 'đúng'), ('tất cả', 'trên'), ('cả ba', 'đúng'), ('cả 3', 'đúng'),
+    ('không', 'nào', 'đúng'), ('all of the above',), ('none of the above',),
+)
+
+
+def _la_day_so(texts: list[str]) -> bool:
+    """Mọi phương án đều là số? — bản ĐỘC LẬP của `la_day_so()` trong build.py.
+
+    Cố ý CHÉP chứ không import: nếu check.py gọi chính hàm của build.py thì một
+    lỗi trong phép phân loại đó xuất hiện ở CẢ HAI phía phép so, và luật miễn
+    trừ dưới đây không chứng minh được gì. Đúng lý do mà `_noi_nhu_build()`
+    trong file này cũng là bản chép.
+    """
+    if not texts:
+        return False
+    for t in texts:
+        try:
+            float((t or '').strip().replace('_', ''))
+        except ValueError:
+            return False
+    return True
+
+
+def kiem_vi_tri_dap_an(bai: list[dict]) -> None:
+    """Vị trí đáp án phải RẢI ĐỀU — trên cả khoá và trong từng bài.
+
+    VÌ SAO LUẬT NÀY PHẢI CÓ. Ngân hàng nguồn được dựng bằng cách XOAY vị trí
+    đáp án theo công thức, không trộn. Đo trên nguồn: 1 032 câu, tất cả đúng 3
+    phương án, mà **519 câu (50,3%) có đáp án ở vị trí 1**; cả 172 bài chỉ sinh
+    ra **8 dãy vị trí khác nhau**, và câu đầu mỗi bài chạy đúng chu kỳ 1→3→2.
+    Trên 516 câu ĐANG PHÁT thì là 49,4% / 31,4% / 19,2%, với **16 bài có cả 3
+    câu cùng một vị trí** và **88 bài** mà bấm "a" cho mọi câu đúng ≥2/3.
+
+    Và nó không ném ở đâu cả: mọi câu vẫn chấm bình thường, chỉ là phần chấm
+    trắc nghiệm không đo được học viên có hiểu hay không. Thứ duy nhất nhìn
+    thấy được chuyện này là một phép đếm trên CẢ bản dựng — nên nó ở đây, chứ
+    không ở một ca test đọc một bài.
+    """
+    vi_tri: list[int] = []
+    so_lua_chon = Counter()
+    for b in bai:
+        ma = b['lesson_code']
+        cau = (b['content_json'].get('step_2') or {}).get('mcq') or []
+        trong_bai: list[int] = []
+        toan_day_so = bool(cau)
+        for q in cau:
+            op = q.get('options') or []
+            j = next((k for k, o in enumerate(op) if o.get('correct') is True), None)
+            if j is None:
+                continue  # đã có luật riêng báo chuyện này
+            trong_bai.append(j)
+            vi_tri.append(j)
+            so_lua_chon[len(op)] += 1
+            if not _la_day_so([o.get('text') or '' for o in op]):
+                toan_day_so = False
+        # Trong MỖI bài, các câu không được dồn vào một vị trí. Ngẫu nhiên
+        # THUẦN không đủ để hứa điều này: với đề 3 câu, xác suất cả 3 cùng vị
+        # trí là 1/9, tức ~19/172 bài sẽ trông y như bệnh cũ với người học. Nên
+        # build.py trộn CÓ PHÂN TẦNG, và đây là phép kiểm của tính chất đó.
+        #
+        # MIỄN TRỪ cho bài mà MỌI câu là dãy số: những câu đó được SẮP chứ
+        # không trộn (xem `la_day_so()` trong build.py), nên vị trí đáp án do
+        # chính con số quyết định và không có cách nào rải nó. Hôm nay đúng 1
+        # bài rơi vào đây — NP16, cả 3 câu đáp án nằm giữa hai nhiễu kẹp hai
+        # bên. Miễn trừ này HẸP có chủ đích: một bài chỉ cần MỘT câu không phải
+        # dãy số là hết miễn trừ.
+        if len(trong_bai) > 1 and len(set(trong_bai)) == 1 and not toan_day_so:
+            loi(f'{ma}: cả {len(trong_bai)} câu trắc nghiệm có đáp án ở cùng vị trí '
+                f'{trong_bai[0] + 1} — bấm một phương án là đúng hết bài')
+    if not vi_tri:
+        return
+    k = max(so_lua_chon) if so_lua_chon else 3
+    deu = 100.0 / k
+    dem = Counter(vi_tri)
+    for p in range(k):
+        ti_le = 100.0 * dem.get(p, 0) / len(vi_tri)
+        if abs(ti_le - deu) > NGUONG_LECH_VI_TRI:
+            loi(f'đáp án ở vị trí {p + 1} chiếm {ti_le:.1f}% ({dem.get(p, 0)}/{len(vi_tri)} '
+                f'câu), lệch quá {NGUONG_LECH_VI_TRI:.0f} điểm khỏi mức đều {deu:.1f}% — '
+                'vị trí đáp án đang theo công thức, không được trộn')
+
+
+def kiem_phuong_an(bai: list[dict]) -> None:
+    """Ba bẫy còn lại của VAN-PHONG.md §8 M2, trên bản dựng.
+
+    Trộn vị trí không chữa được bẫy nào trong ba bẫy này — chúng là tính chất
+    của chính các phương án — nên chúng cần phép đếm riêng, không phải một
+    nhánh của phép trộn.
+    """
+    cam: list[str] = []
+    lech_dai: list[str] = []
+    lien_truoc = tong = 0
+    for b in bai:
+        ma = b['lesson_code']
+        for i, q in enumerate((b['content_json'].get('step_2') or {}).get('mcq') or []):
+            op = q.get('options') or []
+            texts = [o.get('text') or '' for o in op]
+            for t in texts:
+                thap = t.lower()
+                if any(all(x in thap for x in bo) for bo in CAM_PHUONG_AN):
+                    cam.append(f'{ma} câu {i}: phương án bị cấm {t!r}')
+            j = next((k for k, o in enumerate(op) if o.get('correct') is True), None)
+            if j is None or len(op) < 3:
+                continue
+            tong += 1
+            nhieu_dai = max(len(t) for k, t in enumerate(texts) if k != j)
+            # Đáp án dài hơn 2 lần + 3 ký tự: "+3" để một đáp án 5 ký tự cạnh
+            # nhiễu 1 ký tự ("Thiếu" vs "0") không bị đếm chỉ vì cả hai đều
+            # ngắn.
+            if len(texts[j]) >= 2 * max(nhieu_dai, 1) + 3:
+                lech_dai.append(f'{ma} câu {i}: đáp án {len(texts[j])} ký tự, '
+                                f'nhiễu dài nhất {nhieu_dai}')
+            # Bẫy thứ ba: nhiễu GIỐNG ĐÁP ÁN NHẤT không được LUÔN đứng liền
+            # trước đáp án — người học quét hai phương án cạnh nhau rồi chọn
+            # cái sau là đúng, không cần đọc đề. Với 3 phương án, mức tình cờ
+            # là 1/3 (đáp án ở vị trí 2 hoặc 3 — xác suất 2/3 — rồi nhiễu
+            # giống nhất rơi đúng vào chỗ trước nó — 1/2). Đo được: 24,8%
+            # trước khi trộn (THẤP hơn tình cờ, vì đáp án hay ở vị trí 1 nơi
+            # không có "liền trước"), 32,6% sau khi trộn.
+            giong = max(range(len(texts)), key=lambda k: (
+                -1.0 if k == j else SequenceMatcher(None, texts[j], texts[k]).ratio()))
+            if giong == j - 1:
+                lien_truoc += 1
+    for m in cam:
+        loi(m)
+    if len(lech_dai) > TRAN_LECH_DO_DAI:
+        loi(f'{len(lech_dai)} câu có đáp án dài hơn hẳn mọi nhiễu, trần là '
+            f'{TRAN_LECH_DO_DAI} — đáp án dài hơn hẳn là mẹo lộ bài, '
+            f'phải viết lại câu chứ không nới trần. Ví dụ: {lech_dai[:3]}')
+    elif len(lech_dai) < TRAN_LECH_DO_DAI:
+        canh_bao(f'chỉ còn {len(lech_dai)} câu lệch độ dài (trần {TRAN_LECH_DO_DAI}) — '
+                 'hạ TRAN_LECH_DO_DAI trong check.py xuống con số này')
+    if tong:
+        ti_le = 100.0 * lien_truoc / tong
+        # Ngưỡng 50%: mức tình cờ là 33,3%, nên 50% là "nhiều hơn tình cờ một
+        # nửa" — đủ xa để không báo oan, đủ gần để bắt được một luật sắp xếp
+        # (nếu nhiễu giống nhất LUÔN đứng liền trước thì tỉ lệ là 66,7%, vì nó
+        # chỉ không làm được khi đáp án ở vị trí 1).
+        if ti_le > 50.0:
+            loi(f'{lien_truoc}/{tong} câu ({ti_le:.1f}%) có nhiễu giống đáp án nhất '
+                'đứng LIỀN TRƯỚC đáp án — mức tình cờ là 33,3%, đây là một luật '
+                'sắp xếp người học đọc ra được')
 
 
 def kiem_curricula(bai: list[dict]) -> None:

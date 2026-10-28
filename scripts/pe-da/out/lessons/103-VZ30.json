@@ -105,13 +105,13 @@
        "detail": "Cần tự chọn chính sách nếu muốn tìm điểm gần nhất; sự kiện không làm thay bước đó."
       },
       {
+       "text": "Có; None tự được đổi thành 0 trong mọi phép tính.",
+       "detail": "None không tự trở thành số 0 an toàn trong mọi phép tính."
+      },
+      {
        "text": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None.",
        "detail": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None.",
        "correct": true
-      },
-      {
-       "text": "Có; None tự được đổi thành 0 trong mọi phép tính.",
-       "detail": "None không tự trở thành số 0 an toàn trong mọi phép tính."
       }
      ],
      "explanation": "Không. Kiểm tra event.inaxes và xdata/ydata trước vì chúng có thể là None."
@@ -120,13 +120,13 @@
      "question": "Agg có tạo một cửa sổ để bấm chuột không?\n\nimport matplotlib\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndays, cups = [1, 2, 3], [8, 10, 7]\nax.scatter(days, cups)\nlabel = ax.text(0.03, 0.95, \"No selection\", transform=ax.transAxes, va=\"top\")\ndef select(index):\n    if not 0 <= index < len(days):\n        raise IndexError(\"Observation not found\")\n    label.set_text(f\"Day {days[index]}: {cups[index]} cups\")\n    fig.canvas.draw_idle()\nselect(1)\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Only select an existing observation\")\nprint(label.get_text())\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.savefig(out / \"VZ30-2.png\", dpi=130)\nplt.close(fig)",
      "options": [
       {
+       "text": "Có; Agg tự tạo một cửa sổ Tkinter.",
+       "detail": "Agg không tự mở một cửa sổ Tkinter để nhận chuột."
+      },
+      {
        "text": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show().",
        "detail": "Không. Agg là backend raster không tương tác; dùng backend phù hợp khi cần cửa sổ và show().",
        "correct": true
-      },
-      {
-       "text": "Có; Agg tự tạo một cửa sổ Tkinter.",
-       "detail": "Agg không tự mở một cửa sổ Tkinter để nhận chuột."
       },
       {
        "text": "Có; chỉ cần import pyplot là backend nào cũng nhận bấm chuột.",

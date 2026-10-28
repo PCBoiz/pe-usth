@@ -98,13 +98,13 @@
        "detail": "Chưa đúng. Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
       },
       {
+       "text": "Truyền nguyên dấu > như đối số cho mọi chương trình",
+       "detail": "Chưa đúng. Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
+      },
+      {
        "text": "Parser/executor mở file và nối stdout",
        "detail": "Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình.",
        "correct": true
-      },
-      {
-       "text": "Truyền nguyên dấu > như đối số cho mọi chương trình",
-       "detail": "Chưa đúng. Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
       }
      ],
      "explanation": "Chuyển hướng là trách nhiệm shell; chương trình con nhận luồng đã được cấu hình."
@@ -113,16 +113,16 @@
      "question": "Dấu < thay đổi nguồn của luồng nào?",
      "options": [
       {
+       "text": "Mã thoát",
+       "detail": "Chưa đúng. Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
+      },
+      {
        "text": "stdin",
        "detail": "Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường.",
        "correct": true
       },
       {
        "text": "stderr luôn",
-       "detail": "Chưa đúng. Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
-      },
-      {
-       "text": "Mã thoát",
        "detail": "Chưa đúng. Chuyển hướng đầu vào lấy nội dung file thay cho nguồn nhập thường."
       }
      ],

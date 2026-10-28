@@ -104,6 +104,10 @@
      "question": "Buổi sáng bán 10 cốc, chiều bán 7 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(10 + 7)",
      "options": [
       {
+       "text": "3",
+       "detail": "Đó là hiệu, không phải tổng."
+      },
+      {
        "text": "17",
        "detail": "10 + 7 tính tổng của hai buổi.",
        "correct": true
@@ -111,10 +115,6 @@
       {
        "text": "107",
        "detail": "Hai số nguyên được cộng; đây không phải ghép chữ."
-      },
-      {
-       "text": "3",
-       "detail": "Đó là hiệu, không phải tổng."
       }
      ],
      "explanation": "10 + 7 tính tổng của hai buổi."
@@ -123,17 +123,17 @@
      "question": "Một ca bán được 14 cốc. Kết quả ở lệnh print cuối có giá trị nào?\n\ncups = 14\nprint(cups + cups)",
      "options": [
       {
-       "text": "28",
-       "detail": "Mỗi lần đọc cups nhận 14, nên hai lần đọc cộng lại là 28.",
-       "correct": true
+       "text": "'cupscups'",
+       "detail": "cups là tên biến giữ số, không phải chuỗi chữ."
       },
       {
        "text": "14",
        "detail": "Biểu thức dùng cups hai lần."
       },
       {
-       "text": "'cupscups'",
-       "detail": "cups là tên biến giữ số, không phải chuỗi chữ."
+       "text": "28",
+       "detail": "Mỗi lần đọc cups nhận 14, nên hai lần đọc cộng lại là 28.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi lần đọc cups nhận 14, nên hai lần đọc cộng lại là 28."

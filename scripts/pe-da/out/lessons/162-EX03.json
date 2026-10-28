@@ -85,13 +85,13 @@
      "question": "sys.executable trong cell cho biết gì?",
      "options": [
       {
-       "text": "Thư viện vừa import gần nhất",
-       "detail": "Chưa đúng. Đây là đường dẫn interpreter thực sự của phiên thực thi."
-      },
-      {
        "text": "Python đang thực thi kernel",
        "detail": "Đây là đường dẫn interpreter thực sự của phiên thực thi.",
        "correct": true
+      },
+      {
+       "text": "Thư viện vừa import gần nhất",
+       "detail": "Chưa đúng. Đây là đường dẫn interpreter thực sự của phiên thực thi."
       },
       {
        "text": "Chỉ tên notebook",
@@ -104,16 +104,16 @@
      "question": "Lệnh python -m pip install notebook chạy ở đâu theo hướng dẫn?",
      "options": [
       {
+       "text": "Trong đối số title của Tkinter",
+       "detail": "Chưa đúng. Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
+      },
+      {
        "text": "Terminal của môi trường dự án",
        "detail": "Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell.",
        "correct": true
       },
       {
        "text": "Viết như cú pháp Python thuần trong cell",
-       "detail": "Chưa đúng. Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
-      },
-      {
-       "text": "Trong đối số title của Tkinter",
        "detail": "Chưa đúng. Lệnh cài môi trường là lệnh terminal; không phải lời gọi hàm Python trong cell."
       }
      ],

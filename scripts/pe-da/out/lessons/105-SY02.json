@@ -75,13 +75,13 @@
        "detail": "Dictionary thường có thể báo KeyError; Counter hỗ trợ tần suất mặc định 0."
       },
       {
-       "text": "Một mã ngẫu nhiên",
-       "detail": "Counter đếm dữ liệu; nó không thực hiện chọn mẫu."
-      },
-      {
        "text": "0",
        "detail": "Counter cho tần suất 0 khi giá trị chưa xuất hiện.",
        "correct": true
+      },
+      {
+       "text": "Một mã ngẫu nhiên",
+       "detail": "Counter đếm dữ liệu; nó không thực hiện chọn mẫu."
       }
      ],
      "explanation": "Counter cho tần suất 0 khi giá trị chưa xuất hiện."
@@ -90,16 +90,16 @@
      "question": "rng.choice([]) có đáp ứng yêu cầu lấy một mã đơn không?",
      "options": [
       {
-       "text": "Có; luôn trả 0",
-       "detail": "Chưa đúng. choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
-      },
-      {
        "text": "Không; cần xử lý danh sách rỗng trước",
        "detail": "choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng.",
        "correct": true
       },
       {
        "text": "Có; luôn trả chuỗi rỗng",
+       "detail": "Chưa đúng. choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
+      },
+      {
+       "text": "Có; luôn trả 0",
        "detail": "Chưa đúng. choice cần có ít nhất một phần tử để chọn. Hàm của ứng dụng nên nêu rõ cách xử lý đầu vào rỗng."
       }
      ],
@@ -109,17 +109,17 @@
      "question": "Trong module random của Python, rng = random.Random(...). rng.randint(1, 3) có thể trả 3 không?",
      "options": [
       {
-       "text": "Có",
-       "detail": "randint nhận cả hai đầu của khoảng số nguyên.",
-       "correct": true
+       "text": "Chỉ khi list có ba phần tử",
+       "detail": "Chưa đúng. randint nhận cả hai đầu của khoảng số nguyên."
       },
       {
        "text": "Không; chỉ có 1 hoặc 2",
        "detail": "Chưa đúng. randint nhận cả hai đầu của khoảng số nguyên."
       },
       {
-       "text": "Chỉ khi list có ba phần tử",
-       "detail": "Chưa đúng. randint nhận cả hai đầu của khoảng số nguyên."
+       "text": "Có",
+       "detail": "randint nhận cả hai đầu của khoảng số nguyên.",
+       "correct": true
       }
      ],
      "explanation": "randint nhận cả hai đầu của khoảng số nguyên."

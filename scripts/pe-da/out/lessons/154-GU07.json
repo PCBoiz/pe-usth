@@ -68,8 +68,8 @@
      "question": "Listbox đang có mục active nhưng curselection() rỗng. Có thể kết luận người dùng đã chọn mục đó không?",
      "options": [
       {
-       "text": "Không; Listbox không cho chọn mục",
-       "detail": "Listbox có selection; cần dùng đúng API và trạng thái."
+       "text": "Có; ACTIVE luôn đồng nghĩa selected",
+       "detail": "ACTIVE là mục bàn phím đang active, có thể khác tập selection."
       },
       {
        "text": "Không; active và selection là hai trạng thái",
@@ -77,8 +77,8 @@
        "correct": true
       },
       {
-       "text": "Có; ACTIVE luôn đồng nghĩa selected",
-       "detail": "ACTIVE là mục bàn phím đang active, có thể khác tập selection."
+       "text": "Không; Listbox không cho chọn mục",
+       "detail": "Listbox có selection; cần dùng đúng API và trạng thái."
       }
      ],
      "explanation": "Nên đọc curselection rồi kiểm rỗng khi yêu cầu là mục đã chọn."
@@ -87,16 +87,16 @@
      "question": "Listbox.insert dùng để làm gì?",
      "options": [
       {
-       "text": "Đặt tên cửa sổ",
-       "detail": "Chưa đúng. Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
-      },
-      {
        "text": "Thêm phần tử vào danh sách",
        "detail": "Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop.",
        "correct": true
       },
       {
        "text": "Tự chọn một process CPU",
+       "detail": "Chưa đúng. Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
+      },
+      {
+       "text": "Đặt tên cửa sổ",
        "detail": "Chưa đúng. Listbox quản lý các mục hiển thị; thao tác thêm khác bố trí hoặc event loop."
       }
      ],
@@ -106,17 +106,17 @@
      "question": "Chưa có mục được chọn, callback có nên mặc định luôn lấy phần tử đầu của curselection không?",
      "options": [
       {
-       "text": "Không; cần kiểm tập chỉ số được chọn có rỗng không",
-       "detail": "Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi.",
-       "correct": true
+       "text": "Chỉ kiểm nếu danh sách có chữ",
+       "detail": "Chưa đúng. Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
       },
       {
        "text": "Có; curselection luôn có một chỉ số",
        "detail": "Chưa đúng. Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
       },
       {
-       "text": "Chỉ kiểm nếu danh sách có chữ",
-       "detail": "Chưa đúng. Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."
+       "text": "Không; cần kiểm tập chỉ số được chọn có rỗng không",
+       "detail": "Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi.",
+       "correct": true
       }
      ],
      "explanation": "Người dùng có thể chưa chọn; truy cập [0] trên kết quả rỗng sẽ lỗi."

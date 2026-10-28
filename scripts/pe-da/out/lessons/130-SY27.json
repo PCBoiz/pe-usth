@@ -90,6 +90,10 @@
      "question": "Tên môn chứa dấu phẩy. Vì sao không đọc CSV bằng split(\",\") đơn giản?",
      "options": [
       {
+       "text": "Vì CSV không bao giờ chứa chữ",
+       "detail": "Chưa đúng. CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
+      },
+      {
        "text": "Vì split luôn xóa mọi chữ số",
        "detail": "Chưa đúng. CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
       },
@@ -97,10 +101,6 @@
        "text": "Dấu phẩy trong trường có quote không phải ranh giới cột",
        "detail": "CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy.",
        "correct": true
-      },
-      {
-       "text": "Vì CSV không bao giờ chứa chữ",
-       "detail": "Chưa đúng. CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."
       }
      ],
      "explanation": "CSV có quy tắc quote/escape; dùng csv reader để giữ trường có dấu phẩy."

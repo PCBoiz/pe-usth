@@ -71,17 +71,17 @@
      "question": "Hai lô [0,0] và [9] có trung bình toàn bộ bao nhiêu?",
      "options": [
       {
+       "text": "3",
+       "detail": "Đúng: tổng 9 chia 3 quan sát.",
+       "correct": true
+      },
+      {
        "text": "4.5",
        "detail": "Đây là trung bình 0 và 9, đã cho hai lô trọng số bằng nhau."
       },
       {
        "text": "9",
        "detail": "Đây là tổng, không phải trung bình."
-      },
-      {
-       "text": "3",
-       "detail": "Đúng: tổng 9 chia 3 quan sát.",
-       "correct": true
       }
      ],
      "explanation": "Lô ngắn không được có cùng trọng số với lô dài khi tính mean của mọi hàng."
@@ -90,17 +90,17 @@
      "question": "usecols giảm phần dữ liệu nào được đọc?\n\nimport pandas as pd\nfrom io import StringIO\ntext = 'store,amount,note\\nA,10,long note\\nB,20,another note\\n'\ndf = pd.read_csv(StringIO(text), usecols=['store', 'amount'])\nprint(df.columns.tolist())\nprint(df['amount'].sum())",
      "options": [
       {
-       "text": "Giảm số cột được nạp.",
-       "detail": "Giảm số cột được nạp.",
-       "correct": true
-      },
-      {
        "text": "Giảm số hàng, giữ mọi cột.",
        "detail": "Giới hạn hàng là nhiệm vụ của tham số khác như nrows."
       },
       {
        "text": "Xóa các giá trị không phải số trong bảng.",
        "detail": "Chọn cột không đồng nghĩa làm sạch các giá trị trong cột."
+      },
+      {
+       "text": "Giảm số cột được nạp.",
+       "detail": "Giảm số cột được nạp.",
+       "correct": true
       }
      ],
      "explanation": "Giảm số cột được nạp."
@@ -113,13 +113,13 @@
        "detail": "Các trung bình lô không nhất thiết bằng nhau."
       },
       {
-       "text": "Vì trung bình lô không thể biểu diễn bằng số thực.",
-       "detail": "Có thể tính trung bình; vấn đề là trọng số theo số quan sát."
-      },
-      {
        "text": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát.",
        "detail": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát.",
        "correct": true
+      },
+      {
+       "text": "Vì trung bình lô không thể biểu diễn bằng số thực.",
+       "detail": "Có thể tính trung bình; vấn đề là trọng số theo số quan sát."
       }
      ],
      "explanation": "Vì mỗi lô sẽ có trọng số bằng nhau dù số quan sát khác nhau; phải cộng tổng và số quan sát."

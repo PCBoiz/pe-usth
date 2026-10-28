@@ -82,8 +82,8 @@
      "question": "Trên thang log10, 1→10 và 10→100 có khoảng cách thế nào?",
      "options": [
       {
-       "text": "Tùy số hàng bảng",
-       "detail": "Số hàng không quyết định thang trục."
+       "text": "Khoảng sau lớn gấp 10",
+       "detail": "Đó là cách đọc hiệu số trên thang tuyến tính."
       },
       {
        "text": "Bằng nhau vì cùng gấp 10",
@@ -91,8 +91,8 @@
        "correct": true
       },
       {
-       "text": "Khoảng sau lớn gấp 10",
-       "detail": "Đó là cách đọc hiệu số trên thang tuyến tính."
+       "text": "Tùy số hàng bảng",
+       "detail": "Số hàng không quyết định thang trục."
       }
      ],
      "explanation": "Cần phân biệt hiệu số bằng nhau với tỷ số bằng nhau."
@@ -101,17 +101,17 @@
      "question": "Hai giá trị 98 và 100 chênh 2 hay 200 đơn?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.bar([\"A\", \"B\"], [98, 100])\nax.set(ylabel=\"Orders\", title=\"Keep a meaningful bar baseline\", ylim=(0, 110))\nax.set_yticks([0, 50, 100])\nprint(round(100 / 98, 3))\nplt.show()",
      "options": [
       {
-       "text": "Chênh 200 đơn vì trục đã rút ngắn.",
-       "detail": "Trục hẹp chỉ thay cách trình bày, không nhân độ chênh lên 100 lần."
+       "text": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
+       "detail": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
+       "correct": true
       },
       {
        "text": "Chênh 102 đơn vì cộng hai mức.",
        "detail": "102 là tổng hai số, không phải hiệu."
       },
       {
-       "text": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
-       "detail": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên.",
-       "correct": true
+       "text": "Chênh 200 đơn vì trục đã rút ngắn.",
+       "detail": "Trục hẹp chỉ thay cách trình bày, không nhân độ chênh lên 100 lần."
       }
      ],
      "explanation": "Chênh 2 đơn. Thu hẹp trục không làm chênh lệch số học lớn lên."
@@ -124,13 +124,13 @@
        "detail": "Không nên giả định thư viện âm thầm thay 0 thành 1 cho đúng nghĩa dữ liệu."
       },
       {
+       "text": "Vì log(0)=0 nên nó trùng với nhãn đầu trục.",
+       "detail": "log(0) không bằng 0."
+      },
+      {
        "text": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu.",
        "detail": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu.",
        "correct": true
-      },
-      {
-       "text": "Vì log(0)=0 nên nó trùng với nhãn đầu trục.",
-       "detail": "log(0) không bằng 0."
       }
      ],
      "explanation": "log(0) không có giá trị hữu hạn; cần chọn cách biểu diễn khác phù hợp với ý nghĩa dữ liệu."

@@ -76,6 +76,10 @@
      "question": "scatter s tăng từ 20 lên 80 làm đại lượng nào tăng 4 lần?",
      "options": [
       {
+       "text": "Bán kính",
+       "detail": "Bán kính không tỷ lệ trực tiếp với s."
+      },
+      {
        "text": "Khoảng cách giao hàng",
        "detail": "s không tự thay đổi tọa độ x của quan sát."
       },
@@ -83,10 +87,6 @@
        "text": "Diện tích marker",
        "detail": "Đúng: s là diện tích theo điểm in bình phương.",
        "correct": true
-      },
-      {
-       "text": "Bán kính",
-       "detail": "Bán kính không tỷ lệ trực tiếp với s."
       }
      ],
      "explanation": "Mỗi tham số mã hóa một đại lượng; s không phải bán kính hay vị trí."
@@ -99,13 +99,13 @@
        "detail": "Dữ liệu ở đây có từng đơn, không chỉ một điểm trung bình."
       },
       {
-       "text": "Một điểm chỉ biểu diễn khoảng cách, không có thời gian.",
-       "detail": "Thời gian của cùng đơn là tọa độ còn lại."
-      },
-      {
        "text": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó.",
        "detail": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó.",
        "correct": true
+      },
+      {
+       "text": "Một điểm chỉ biểu diễn khoảng cách, không có thời gian.",
+       "detail": "Thời gian của cùng đơn là tọa độ còn lại."
       }
      ],
      "explanation": "Một đơn hàng; tọa độ cho biết khoảng cách và số phút giao của cùng đơn đó."
@@ -114,10 +114,6 @@
      "question": "Tăng s từ 40 lên 160 làm diện tích marker tăng mấy lần?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.scatter([1, 2, 3], [8, 12, 11], s=[40, 80, 160], alpha=0.6, edgecolors=\"black\")\nax.set(xlabel=\"Distance (km)\", ylabel=\"Delivery (minutes)\", title=\"Marker area encodes order size\")\nprint([40, 80, 160][-1] / 40)\nplt.show()",
      "options": [
       {
-       "text": "Diện tích tăng 2 lần.",
-       "detail": "160 chia 40 là 4, không phải 2."
-      },
-      {
        "text": "4 lần. Bán kính không tăng 4 lần.",
        "detail": "4 lần. Bán kính không tăng 4 lần.",
        "correct": true
@@ -125,6 +121,10 @@
       {
        "text": "Bán kính tăng 4 lần, diện tích tăng 16 lần.",
        "detail": "Bạn đã áp tỷ lệ của s cho bán kính thay vì diện tích."
+      },
+      {
+       "text": "Diện tích tăng 2 lần.",
+       "detail": "160 chia 40 là 4, không phải 2."
       }
      ],
      "explanation": "4 lần. Bán kính không tăng 4 lần."

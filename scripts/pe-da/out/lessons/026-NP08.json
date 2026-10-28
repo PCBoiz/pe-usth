@@ -81,17 +81,17 @@
      "question": "Có 8 số. Cách xếp nào vừa đủ?",
      "options": [
       {
-       "text": "reshape(3,3)",
-       "detail": "Cách này cần 9 số."
+       "text": "reshape(4,2)",
+       "detail": "Đúng. 4×2=8.",
+       "correct": true
       },
       {
        "text": "reshape(2,3)",
        "detail": "Cách này chỉ có 6 ô, không giữ đủ 8 số."
       },
       {
-       "text": "reshape(4,2)",
-       "detail": "Đúng. 4×2=8.",
-       "correct": true
+       "text": "reshape(3,3)",
+       "detail": "Cách này cần 9 số."
       }
      ],
      "explanation": "Đúng. 4×2=8."
@@ -100,17 +100,17 @@
      "question": "Sáu giá trị điền lần lượt theo hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(2, 3))",
      "options": [
       {
-       "text": "[[1, 2, 3], [4, 5, 6]]",
-       "detail": "Hai hàng, mỗi hàng ba giá trị, giữ thứ tự dãy ban đầu.",
-       "correct": true
-      },
-      {
        "text": "[[1, 3, 5], [2, 4, 6]]",
        "detail": "reshape mặc định điền theo hàng, không lấy xen kẽ."
       },
       {
        "text": "[[1, 2], [3, 4], [5, 6]]",
        "detail": "Đó là reshape(3,2)."
+      },
+      {
+       "text": "[[1, 2, 3], [4, 5, 6]]",
+       "detail": "Hai hàng, mỗi hàng ba giá trị, giữ thứ tự dãy ban đầu.",
+       "correct": true
       }
      ],
      "explanation": "Hai hàng, mỗi hàng ba giá trị, giữ thứ tự dãy ban đầu."
@@ -119,6 +119,10 @@
      "question": "Cũng sáu số nhưng mỗi hàng hai ô. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.arange(1, 7)\nprint(a.reshape(3, 2))",
      "options": [
       {
+       "text": "[[1, 4], [2, 5], [3, 6]]",
+       "detail": "Không phải chuyển vị của bảng trước."
+      },
+      {
        "text": "[[1, 2], [3, 4], [5, 6]]",
        "detail": "reshape chia dãy lần lượt thành ba hàng có hai cột.",
        "correct": true
@@ -126,10 +130,6 @@
       {
        "text": "[[1, 2, 3], [4, 5, 6]]",
        "detail": "Đó là hai hàng ba cột."
-      },
-      {
-       "text": "[[1, 4], [2, 5], [3, 6]]",
-       "detail": "Không phải chuyển vị của bảng trước."
       }
      ],
      "explanation": "reshape chia dãy lần lượt thành ba hàng có hai cột."

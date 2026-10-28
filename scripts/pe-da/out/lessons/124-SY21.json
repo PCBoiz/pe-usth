@@ -77,6 +77,10 @@
      "question": "pickle.loads từ file người lạ gửi có an toàn chỉ vì đuôi .dat không?",
      "options": [
       {
+       "text": "Có; .dat chỉ chứa dữ liệu",
+       "detail": "Phần mở rộng không giới hạn khả năng của pickle."
+      },
+      {
        "text": "Có nếu thử json.loads trước",
        "detail": "Thử bộ đọc khác không chứng minh payload pickle an toàn."
       },
@@ -84,10 +88,6 @@
        "text": "Không; chỉ unpickle dữ liệu đáng tin",
        "detail": "Quá trình unpickle có thể thực thi hành vi; đổi tên file không loại bỏ điều đó.",
        "correct": true
-      },
-      {
-       "text": "Có; .dat chỉ chứa dữ liệu",
-       "detail": "Phần mở rộng không giới hạn khả năng của pickle."
       }
      ],
      "explanation": "Quá trình unpickle có thể thực thi hành vi; đổi tên file không loại bỏ điều đó."
@@ -96,7 +96,7 @@
      "question": "JSON round trip một tuple (\"S1\",[8,9]) thường khôi phục phần ngoài thành gì?",
      "options": [
       {
-       "text": "set",
+       "text": "tuple",
        "detail": "Chưa đúng. JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python."
       },
       {
@@ -105,7 +105,7 @@
        "correct": true
       },
       {
-       "text": "tuple",
+       "text": "set",
        "detail": "Chưa đúng. JSON array được đọc thành list theo bộ đọc mặc định; nó không giữ mọi kiểu Python."
       }
      ],
@@ -120,11 +120,11 @@
        "correct": true
       },
       {
-       "text": "Cả hai chỉ ghi file text",
+       "text": "dump trả JSON còn dumps trả str",
        "detail": "Chưa đúng. Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi."
       },
       {
-       "text": "dump trả JSON còn dumps trả str",
+       "text": "Cả hai chỉ ghi file text",
        "detail": "Chưa đúng. Hậu tố s dùng dữ liệu trong RAM; dump nhận file để ghi."
       }
      ],

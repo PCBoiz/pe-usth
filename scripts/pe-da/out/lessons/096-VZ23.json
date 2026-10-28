@@ -84,12 +84,12 @@
      "question": "Vì sao viết hàm summarize trước khi làm widget?\n\nimport pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
      "options": [
       {
-       "text": "Để widget tự quyết định công thức tính KPI.",
-       "detail": "Widget không tự xác định công thức nghiệp vụ đúng."
-      },
-      {
        "text": "Để mọi lỗi dữ liệu chỉ xuất hiện sau khi đã dựng giao diện.",
        "detail": "Kiểm hàm độc lập giúp phát hiện lỗi dữ liệu sớm hơn giao diện."
+      },
+      {
+       "text": "Để widget tự quyết định công thức tính KPI.",
+       "detail": "Widget không tự xác định công thức nghiệp vụ đúng."
       },
       {
        "text": "Để kiểm tra quy tắc lọc và chỉ số bằng code độc lập, tránh lỗi giao diện che lỗi tính toán.",
@@ -103,10 +103,6 @@
      "question": "Widget được tạo trong script có tự biến thành website không?\n\nimport ipywidgets as widgets\ncontrol = widgets.Dropdown(options=[\"All\", \"A\", \"B\"], value=\"All\", description=\"Store:\")\ncontrol.value = \"A\"\nprint(control.value)\ncontrol.close()",
      "options": [
       {
-       "text": "Có; ipywidgets tự triển khai máy chủ khi được import.",
-       "detail": "Import thư viện không đồng nghĩa triển khai máy chủ ứng dụng."
-      },
-      {
        "text": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp.",
        "detail": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp.",
        "correct": true
@@ -114,6 +110,10 @@
       {
        "text": "Có; tạo Dropdown trong file .py tự tạo website công khai.",
        "detail": "Tạo Dropdown không tự công bố một website."
+      },
+      {
+       "text": "Có; ipywidgets tự triển khai máy chủ khi được import.",
+       "detail": "Import thư viện không đồng nghĩa triển khai máy chủ ứng dụng."
       }
      ],
      "explanation": "Không. Hiển thị tương tác cần môi trường hỗ trợ như Jupyter; ứng dụng web cần framework và máy chủ phù hợp."

@@ -80,10 +80,6 @@
      "question": "os.scandir(folder) tự đi qua toàn bộ thư mục cháu không?",
      "options": [
       {
-       "text": "Chỉ trả tên file .txt",
-       "detail": "Nó không tự lọc phần mở rộng hay loại mục."
-      },
-      {
        "text": "Không; nó liệt kê các mục trực tiếp",
        "detail": "Muốn duyệt cây thư mục có thể dùng os.walk.",
        "correct": true
@@ -91,6 +87,10 @@
       {
        "text": "Có, mọi cấp",
        "detail": "scandir không tự đệ quy."
+      },
+      {
+       "text": "Chỉ trả tên file .txt",
+       "detail": "Nó không tự lọc phần mở rộng hay loại mục."
       }
      ],
      "explanation": "Muốn duyệt cây thư mục có thể dùng os.walk."
@@ -99,7 +99,7 @@
      "question": "os.chdir(folder) có chuyển các file sang folder không?",
      "options": [
       {
-       "text": "Chỉ chuyển các file .py",
+       "text": "Có; mọi file tự đi theo",
        "detail": "Chưa đúng. Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển."
       },
       {
@@ -108,7 +108,7 @@
        "correct": true
       },
       {
-       "text": "Có; mọi file tự đi theo",
+       "text": "Chỉ chuyển các file .py",
        "detail": "Chưa đúng. Đường dẫn tương đối từ đó được hiểu theo nơi mới; dữ liệu trên đĩa không tự di chuyển."
       }
      ],
@@ -118,17 +118,17 @@
      "question": "Muốn tạo cả chuỗi thư mục cha còn thiếu, dùng hàm nào?",
      "options": [
       {
-       "text": "os.makedirs",
-       "detail": "Tên API là makedirs; mkdir đơn thường tạo một tầng.",
-       "correct": true
+       "text": "os.rmdir",
+       "detail": "Chưa đúng. Tên API là makedirs; mkdir đơn thường tạo một tầng."
       },
       {
        "text": "os.mkdirs",
        "detail": "Chưa đúng. Tên API là makedirs; mkdir đơn thường tạo một tầng."
       },
       {
-       "text": "os.rmdir",
-       "detail": "Chưa đúng. Tên API là makedirs; mkdir đơn thường tạo một tầng."
+       "text": "os.makedirs",
+       "detail": "Tên API là makedirs; mkdir đơn thường tạo một tầng.",
+       "correct": true
       }
      ],
      "explanation": "Tên API là makedirs; mkdir đơn thường tạo một tầng."

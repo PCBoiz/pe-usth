@@ -102,10 +102,6 @@
      "question": "Ẩn email trong hover có bảo đảm email không còn trong Figure không?\n\nimport plotly.graph_objects as go\nfig = go.Figure(go.Scatter(x=[1, 2], y=[8, 10], mode=\"lines+markers\"))\nfig.update_layout(title=\"A fragment for an existing page\", xaxis_title=\"Day\", yaxis_title=\"Cups\")\nfragment = fig.to_html(include_plotlyjs=False, full_html=False)\nprint(\"<html>\" in fragment, \"Plotly.newPlot\" in fragment)\nfrom pathlib import Path\nfrom tempfile import gettempdir\nout = Path(gettempdir()) / \"python-da-viz\"\nout.mkdir(exist_ok=True)\nfig.write_html(out / \"VZ22-2.html\", include_plotlyjs=True, auto_open=False)",
      "options": [
       {
-       "text": "Có; hover là nơi duy nhất có thể chứa dữ liệu.",
-       "detail": "Dữ liệu có thể nằm ở những trường ngoài hover."
-      },
-      {
        "text": "Có; trace ẩn không được ghi vào HTML.",
        "detail": "Trace ẩn vẫn có thể được serialize vào HTML."
       },
@@ -113,6 +109,10 @@
        "text": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn.",
        "detail": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn.",
        "correct": true
+      },
+      {
+       "text": "Có; hover là nơi duy nhất có thể chứa dữ liệu.",
+       "detail": "Dữ liệu có thể nằm ở những trường ngoài hover."
       }
      ],
      "explanation": "Không. Cần loại khỏi dữ liệu thực sự truyền vào Figure và kiểm tra bản xuất, kể cả customdata hoặc trace ẩn."

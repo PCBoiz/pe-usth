@@ -71,8 +71,8 @@
      "question": "float(\"\") gây ValueError. Bạn nên làm gì nếu chính sách là giữ chỗ dữ liệu hỏng?",
      "options": [
       {
-       "text": "Thay bằng 0 bất kể ý nghĩa",
-       "detail": "0 là một số đo; không tự thay ô hỏng bằng 0 nếu chưa có quy ước."
+       "text": "except: pass để bỏ mọi lỗi",
+       "detail": "Cách này có thể che lỗi lập trình và làm mất dữ liệu mà không ghi nhận."
       },
       {
        "text": "Bắt ValueError và thêm None",
@@ -80,8 +80,8 @@
        "correct": true
       },
       {
-       "text": "except: pass để bỏ mọi lỗi",
-       "detail": "Cách này có thể che lỗi lập trình và làm mất dữ liệu mà không ghi nhận."
+       "text": "Thay bằng 0 bất kể ý nghĩa",
+       "detail": "0 là một số đo; không tự thay ô hỏng bằng 0 nếu chưa có quy ước."
       }
      ],
      "explanation": "Đúng. Giữ vị trí để không làm lệch các hàng."
@@ -109,17 +109,17 @@
      "question": "Điểm vượt thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\ndef read_mark(raw):\n    mark = float(raw)\n    if not 0 <= mark <= 10:\n        raise ValueError(\"outside\")\n    return mark\ntry:\n    result = read_mark(\"12\")\nexcept ValueError:\n    result = \"rejected\"\nprint(result)",
      "options": [
       {
-       "text": "'rejected'",
-       "detail": "12 đọc được thành số nhưng bị quy tắc điểm từ chối.",
-       "correct": true
-      },
-      {
        "text": "12.0",
        "detail": "Hàm từ chối điểm ngoài thang trước return."
       },
       {
        "text": "'TypeError'",
        "detail": "Đổi 12 từ chuỗi thành số được; lỗi do raise ValueError của quy tắc."
+      },
+      {
+       "text": "'rejected'",
+       "detail": "12 đọc được thành số nhưng bị quy tắc điểm từ chối.",
+       "correct": true
       }
      ],
      "explanation": "12 đọc được thành số nhưng bị quy tắc điểm từ chối."

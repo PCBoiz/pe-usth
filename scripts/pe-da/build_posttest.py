@@ -62,7 +62,8 @@ HERE = Path(__file__).resolve().parent
 # Import build.py để dùng lại NGUYÊN phép đổi tên hình dạng. build.py không có
 # tác dụng lề lúc import (mọi thứ nằm trong main()), nên import là an toàn.
 sys.path.insert(0, str(HERE))
-from build import COURSE_ID, PRACTICE, SO_CAU_MCQ, cau_trac_nghiem  # noqa: E402
+from build import (  # noqa: E402
+    COURSE_ID, PRACTICE, SO_CAU_MCQ, cau_trac_nghiem, la_day_so)
 
 BAN_DUNG = HERE / 'out' / 'lessons.json'
 DICH = HERE.parent.parent / 'src' / 'quizzes' / 'post-test-bank.json'
@@ -81,17 +82,25 @@ def cau_giu_lai(mcq: dict) -> list[dict]:
     return ([mcq] + bien_the)[SO_CAU_MCQ:]
 
 
-def doi_hinh_dang(giu: list[dict]) -> list[dict]:
+def doi_hinh_dang(ma: str, giu: list[dict]) -> list[dict]:
     """Đổi tên bằng ĐÚNG `cau_trac_nghiem()` của build.py.
 
     Hàm đó nhận một câu GỐC rồi tự lấy thêm `variants` của nó, nên ở đây dựng
     một "gốc giả" từ câu giữ lại đầu tiên và treo phần còn lại vào `variants`.
     Vòng vo một chút, nhưng rẻ hơn hẳn việc có bản thứ hai của phép đổi tên.
+
+    `ma` phải truyền vào, không được để trống: từ 29/10 `cau_trac_nghiem()`
+    TRỘN vị trí đáp án với seed suy từ mã bài, và kho hậu kiểm mang đúng cái
+    bệnh mà phép trộn ra đời để chữa — 1 032 câu nguồn có 50,3% đáp án ở vị
+    trí 1, và ba câu giữ lại của mỗi bài là ba câu trong số đó. Để trống `ma`
+    thì cả 172 bài dùng CÙNG một seed: vẫn trộn, nhưng trộn theo cùng một dãy,
+    nên dãy vị trí của mọi bài giống nhau — đổi một bệnh lấy một bệnh khác, và
+    bệnh mới thì không phép kiểm nào đang canh.
     """
     if not giu:
         return []
     goc_gia = {**giu[0], 'variants': giu[1:]}
-    return cau_trac_nghiem(goc_gia, so_cau=len(giu))
+    return cau_trac_nghiem(goc_gia, ma, so_cau=len(giu))
 
 
 def gan_code(ra: list[dict], giu: list[dict]) -> int:
@@ -169,19 +178,36 @@ def kiem_dap_an(ma: str, ra: list[dict], giu: list[dict]) -> list[str]:
         if len(lua_chon_nguon) != len(q['options']):
             loi.append(f'{ma}: số lựa chọn lệch nguồn ({len(q["options"])} vs {len(lua_chon_nguon)})')
             continue
-        dung_nguon = next(
-            (i for i, o in enumerate(lua_chon_nguon)
-             if o.get('id') == nguon.get('correctOption')), -1)
-        if dung_nguon != co_co[0]:
+        # So bằng CHỮ, không bằng vị trí.
+        #
+        # Vị trí nay do `tron_vi_tri_dap_an()` quyết (sửa 29/10: ngân hàng
+        # nguồn xoay đáp án theo công thức, 50,3% ở vị trí 1). Chữ thì không
+        # đổi: `correctOption` trỏ tới một `id`, `id` trỏ tới một phương án, và
+        # phương án mang chữ của nó đi theo khi đổi chỗ. Nên phép so này vẫn
+        # chạm tới NGUỒN — trộn mà mang cờ `correct` sang phương án khác là đỏ.
+        # So theo vị trí thì 1 531 lỗi giả nổi lên và không lỗi thật nào bị bắt.
+        chu_dung_nguon = next(
+            (o.get('text') or '' for o in lua_chon_nguon
+             if o.get('id') == nguon.get('correctOption')), None)
+        if (q['options'][co_co[0]].get('text') or '') != chu_dung_nguon:
             loi.append(
-                f'{ma}: đáp án lệch nguồn — bản dựng đánh dấu lựa chọn {co_co[0]}, '
-                f'nguồn nói correctOption="{nguon.get("correctOption")}" '
-                f'(lựa chọn {dung_nguon})')
-        # Nội dung lựa chọn phải đi nguyên văn, không chỉ đúng vị trí: một phép
-        # sắp xếp lại lặng lẽ cũng làm "đúng vị trí" mà sai câu trả lời.
-        for i, (a, b) in enumerate(zip(q['options'], lua_chon_nguon)):
-            if a.get('text') != (b.get('text') or ''):
-                loi.append(f'{ma}: lựa chọn {i} lệch nội dung nguồn')
+                f'{ma}: đáp án lệch nguồn — bản dựng đánh dấu '
+                f'{q["options"][co_co[0]].get("text")!r}, nguồn nói '
+                f'correctOption="{nguon.get("correctOption")}" tức {chu_dung_nguon!r}')
+        # TẬP chữ phải đi nguyên văn — nới đúng một bậc so với luật cũ ("cùng
+        # thứ tự") và không nới thêm: một phương án bị sửa chữ, bị thêm hay bị
+        # bớt vẫn đỏ, chỉ thứ tự là được phép khác.
+        if sorted(o.get('text') or '' for o in q['options']) != sorted(
+                o.get('text') or '' for o in lua_chon_nguon):
+            loi.append(f'{ma}: tập chữ của lựa chọn lệch nguồn')
+        # `feedback` phải đi THEO phương án, không theo vị trí. Đây là lỗi im
+        # lặng tệ nhất mà phép trộn có thể gây ra: học viên chọn sai rồi đọc
+        # được lời giải thích của một phương án khác, và không gì đỏ.
+        fb = {o.get('text') or '': (o.get('feedback') or '') for o in lua_chon_nguon}
+        for o in q['options']:
+            chu = o.get('text') or ''
+            if fb.get(chu) and (o.get('detail') or '') != fb[chu]:
+                loi.append(f'{ma}: lựa chọn {chu!r} mang `detail` của phương án khác')
     return loi
 
 
@@ -192,19 +218,32 @@ def kiem_khong_trung(kho: list[dict], trong_bai: dict[str, list[dict]]) -> list[
     So theo HAI dấu: `question` (đề bài) và bộ nội dung lựa chọn. Chỉ so đề bài
     là bỏ sót trường hợp hai biến thể dùng chung một câu dẫn với lựa chọn khác;
     chỉ so lựa chọn là bỏ sót trường hợp ngược lại.
+
+    Bộ lựa chọn so KHÔNG theo thứ tự (frozenset), vì từ 29/10 hai kho được
+    trộn bằng hai seed khác nhau: cùng ba phương án mà khác thứ tự thì tuple
+    không khớp, nên luật cũ sẽ cho một câu TRÙNG đi qua — và trùng một câu là
+    đo lại thứ người học vừa đọc đáp án, tức mất toàn bộ giá trị của kho này.
+
+    Nhưng bộ lựa chọn TOÀN SỐ thì được MIỄN, và đó là một kết luận đã đo chứ
+    không phải chỗ bỏ sót: NP07 có bốn câu KHÁC NHAU (`a.size`, `a.shape`,
+    `len(a)`, đếm số đo) mà cùng hỏi về một mảng 3×2, nên cả bốn đều có bộ
+    phương án {2, 3, 6}. Luật cũ bỏ qua chúng nhờ thứ tự KHÁC nhau — tức nhờ
+    tình cờ, không nhờ thiết kế. Bỏ miễn trừ này thì 2 lỗi GIẢ nổi lên và hai
+    câu hậu kiểm hợp lệ bị loại. Với phương án toàn số, dấu `question` (nay đã
+    gấp sẵn đoạn code) là dấu đủ: bốn câu đó có bốn đề bài khác nhau.
     """
     loi: list[str] = []
     for muc in kho:
         ma = muc['lesson_code']
         bai = trong_bai.get(ma) or []
         de_bai = {q.get('question') for q in bai}
-        lua_chon = {tuple(o.get('text') for o in (q.get('options') or [])) for q in bai}
+        lua_chon = {frozenset(o.get('text') for o in (q.get('options') or [])) for q in bai}
         for q in muc['questions']:
             if q['question'] in de_bai:
                 loi.append(f'{ma}: đề bài "{q["question"][:50]}…" ĐÃ phát trong bài')
-            khoa = tuple(o.get('text') for o in q['options'])
-            if khoa in lua_chon:
-                loi.append(f'{ma}: bộ lựa chọn {khoa} ĐÃ phát trong bài')
+            khoa = frozenset(o.get('text') for o in q['options'])
+            if khoa in lua_chon and not la_day_so([str(t) for t in khoa]):
+                loi.append(f'{ma}: bộ lựa chọn {sorted(khoa)} ĐÃ phát trong bài')
     return loi
 
 
@@ -241,7 +280,7 @@ def main() -> int:
         if not giu:
             loi.append(f'{ma}: không còn câu nào sau khi build.py lấy {SO_CAU_MCQ} câu đầu')
             continue
-        ra = doi_hinh_dang(giu)
+        ra = doi_hinh_dang(ma, giu)
         loi += kiem_dap_an(ma, ra, giu)
         so_gap_code += gan_code(ra, giu)
         if not ra:

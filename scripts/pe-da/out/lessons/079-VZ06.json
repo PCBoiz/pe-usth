@@ -76,6 +76,10 @@
      "question": "bins=[0,3,6], giá trị 3 thuộc khoảng nào?",
      "options": [
       {
+       "text": "Cả hai",
+       "detail": "Một quan sát không được đếm hai lần vào hai khoảng kề nhau."
+      },
+      {
        "text": "[3,6]",
        "detail": "Đúng: khoảng đầu bỏ biên phải 3, khoảng cuối nhận cả 6.",
        "correct": true
@@ -83,10 +87,6 @@
       {
        "text": "[0,3)",
        "detail": "Khoảng [0,3) không nhận 3."
-      },
-      {
-       "text": "Cả hai",
-       "detail": "Một quan sát không được đếm hai lần vào hai khoảng kề nhau."
       }
      ],
      "explanation": "Histogram phải có quy tắc nhận biên nhất quán."
@@ -95,10 +95,6 @@
      "question": "Với bins=[0,3,6,9], giá trị 4 thuộc khoảng nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 3, 6, 9], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"Counts in fixed intervals\")\nprint(counts.astype(int).tolist())\nplt.show()",
      "options": [
       {
-       "text": "[6,9], tức cột thứ ba.",
-       "detail": "4 chưa đến mép trái 6 của khoảng cuối."
-      },
-      {
        "text": "[3,6), tức cột thứ hai.",
        "detail": "[3,6), tức cột thứ hai.",
        "correct": true
@@ -106,6 +102,10 @@
       {
        "text": "[0,3), tức cột thứ nhất.",
        "detail": "4 đã vượt mép phải 3 của khoảng đầu."
+      },
+      {
+       "text": "[6,9], tức cột thứ ba.",
+       "detail": "4 chưa đến mép trái 6 của khoảng cuối."
       }
      ],
      "explanation": "[3,6), tức cột thứ hai."
@@ -114,17 +114,17 @@
      "question": "Histogram và bar chart khác nhau thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nwait = [1, 2, 2, 4, 5, 8]\ncounts, edges, bars = ax.hist(wait, bins=[0, 5, 10], edgecolor=\"white\")\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"The same data, wider bins\")\nprint(counts.astype(int).tolist())\nplt.show()",
      "options": [
       {
-       "text": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
-       "detail": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
-       "correct": true
+       "text": "Bar chart chỉ dùng cho số liên tục, histogram chỉ dùng cho nhãn chữ.",
+       "detail": "Hai vai trò của bar chart và histogram đã bị đảo."
       },
       {
        "text": "Cả hai đều tự chia các tên nhóm thành khoảng số.",
        "detail": "Nhóm danh mục không cần được chia thành bin số."
       },
       {
-       "text": "Bar chart chỉ dùng cho số liên tục, histogram chỉ dùng cho nhãn chữ.",
-       "detail": "Hai vai trò của bar chart và histogram đã bị đảo."
+       "text": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
+       "detail": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống.",
+       "correct": true
       }
      ],
      "explanation": "Histogram chia miền số thành các khoảng. Bar chart so sánh các nhóm đã xác định như tên đồ uống."

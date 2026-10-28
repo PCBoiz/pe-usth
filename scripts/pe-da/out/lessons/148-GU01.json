@@ -75,13 +75,13 @@
      "question": "Hàm tính thành tiền phải viết hai công thức khác nhau cho CLI và GUI không?",
      "options": [
       {
-       "text": "Không; GUI tự biết mọi công thức",
-       "detail": "Bạn vẫn phải viết công thức và chuyển đổi dữ liệu nhập."
-      },
-      {
        "text": "Không; hai giao diện có thể gọi cùng hàm nghiệp vụ",
        "detail": "Cách nhận/hiển thị dữ liệu thay đổi; công thức không phụ thuộc widget.",
        "correct": true
+      },
+      {
+       "text": "Không; GUI tự biết mọi công thức",
+       "detail": "Bạn vẫn phải viết công thức và chuyển đổi dữ liệu nhập."
       },
       {
        "text": "Có; Tkinter không gọi được hàm Python thường",
@@ -113,17 +113,17 @@
      "question": "GUI có mặc định nhanh hơn CLI cho mọi tác vụ không?",
      "options": [
       {
-       "text": "Không; phụ thuộc việc cần làm",
-       "detail": "Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI.",
-       "correct": true
-      },
-      {
        "text": "Có; có nút bấm luôn nhanh hơn",
        "detail": "Chưa đúng. Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."
       },
       {
        "text": "Chỉ nhanh hơn nếu nền sáng",
        "detail": "Chưa đúng. Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."
+      },
+      {
+       "text": "Không; phụ thuộc việc cần làm",
+       "detail": "Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI.",
+       "correct": true
       }
      ],
      "explanation": "Chọn cách tương tác theo người dùng và tác vụ; không xếp hạng tuyệt đối từ tên GUI/CLI."

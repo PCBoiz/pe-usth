@@ -71,17 +71,17 @@
      "question": "\" A B \".strip().lower() cho gì?",
      "options": [
       {
-       "text": "\"a b\"",
-       "detail": "Đúng: bỏ khoảng trắng hai đầu, giữ khoảng trắng ở giữa.",
-       "correct": true
-      },
-      {
        "text": "\"ab\"",
        "detail": "strip không xóa khoảng trắng nằm giữa hai từ."
       },
       {
        "text": "\" A B \"",
        "detail": "strip và lower đều tạo kết quả mới đã thay đổi."
+      },
+      {
+       "text": "\"a b\"",
+       "detail": "Đúng: bỏ khoảng trắng hai đầu, giữ khoảng trắng ở giữa.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi bước làm một việc; chuẩn hóa không tự sửa mọi lỗi dữ liệu."
@@ -90,13 +90,13 @@
      "question": "strip có xóa dấu cách giữa hai từ không?\n\nimport pandas as pd\nregion = pd.Series([' North ', 'NORTH', 'South'], dtype='string')\nclean = region.str.strip().str.lower()\nprint(clean.tolist())\nprint(clean.nunique())",
      "options": [
       {
-       "text": "Có; strip nối các từ và tự đổi thành chữ thường.",
-       "detail": "strip không đồng thời thực hiện lower."
-      },
-      {
        "text": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
        "detail": "Không; strip chỉ bỏ ký tự ở đầu và cuối chuỗi theo quy tắc được chọn.",
        "correct": true
+      },
+      {
+       "text": "Có; strip nối các từ và tự đổi thành chữ thường.",
+       "detail": "strip không đồng thời thực hiện lower."
       },
       {
        "text": "Có; strip bỏ mọi dấu cách trong cả chuỗi.",
@@ -109,13 +109,13 @@
      "question": "Tại sao contains thường thêm na=False khi dùng làm mask?\n\nimport pandas as pd\nnames = pd.Series(['Coffee XL', None, 'Tea'], dtype='string')\nprint(names.str.contains('Coffee', regex=False, na=False).tolist())\nprint(names.str.replace(' XL', '', regex=False).fillna('unknown').tolist())",
      "options": [
       {
+       "text": "Để biến mọi ô thiếu thành kết quả khớp.",
+       "detail": "na=False làm ô thiếu không khớp, không biến nó thành True."
+      },
+      {
        "text": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",
        "detail": "Để ô thiếu được xem là không khớp thay vì để mask có giá trị thiếu.",
        "correct": true
-      },
-      {
-       "text": "Để biến mọi ô thiếu thành kết quả khớp.",
-       "detail": "na=False làm ô thiếu không khớp, không biến nó thành True."
       },
       {
        "text": "Để bắt contains đọc cả cột thành số.",

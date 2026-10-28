@@ -71,17 +71,17 @@
      "question": "Snapshot đọc được nhưng sai version. Có nên gán ngay vào dữ liệu hiện tại rồi mới kiểm không?",
      "options": [
       {
-       "text": "Không; đọc vào biến tạm và kiểm trước",
-       "detail": "Chỉ thay trạng thái đang dùng sau khi cấu trúc, version và dữ liệu đều hợp lệ.",
-       "correct": true
-      },
-      {
        "text": "Có; có thể kiểm sau khi đã mất dữ liệu cũ",
        "detail": "Gán sớm có thể thay trạng thái tốt bằng dữ liệu không dùng được."
       },
       {
        "text": "Chỉ kiểm đuôi .dat là đủ",
        "detail": "Đuôi không xác nhận cấu trúc hay version snapshot."
+      },
+      {
+       "text": "Không; đọc vào biến tạm và kiểm trước",
+       "detail": "Chỉ thay trạng thái đang dùng sau khi cấu trúc, version và dữ liệu đều hợp lệ.",
+       "correct": true
       }
      ],
      "explanation": "Chỉ thay trạng thái đang dùng sau khi cấu trúc, version và dữ liệu đều hợp lệ."
@@ -90,13 +90,13 @@
      "question": "PW6 dùng gzip.open(...,\"wb\") cùng pickle.dump. Hai phần làm gì?",
      "options": [
       {
-       "text": "gzip thay thế luôn việc serialize object",
-       "detail": "Chưa đúng. Serialize và nén là hai tầng xử lý với vai trò khác nhau."
-      },
-      {
        "text": "Pickle tạo biểu diễn object, gzip nén dữ liệu ghi",
        "detail": "Serialize và nén là hai tầng xử lý với vai trò khác nhau.",
        "correct": true
+      },
+      {
+       "text": "gzip thay thế luôn việc serialize object",
+       "detail": "Chưa đúng. Serialize và nén là hai tầng xử lý với vai trò khác nhau."
       },
       {
        "text": "Cả hai đều chỉ mã hóa mật khẩu",
@@ -109,16 +109,16 @@
      "question": "Vì sao snapshot có trường version?",
      "options": [
       {
+       "text": "Để GPA tự cập nhật",
+       "detail": "Chưa đúng. Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
+      },
+      {
        "text": "Nhận biết cấu trúc cần đọc hoặc chuyển đổi",
        "detail": "Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong.",
        "correct": true
       },
       {
        "text": "Để mọi file lạ tự an toàn",
-       "detail": "Chưa đúng. Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
-      },
-      {
-       "text": "Để GPA tự cập nhật",
        "detail": "Chưa đúng. Version giúp quyết định dữ liệu có tương thích, không thay việc kiểm các trường bên trong."
       }
      ],

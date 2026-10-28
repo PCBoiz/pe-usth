@@ -81,10 +81,6 @@
      "question": "Môn A điểm 8 tín chỉ 3, môn B chưa có điểm tín chỉ 2. Nếu tính GPA phần đã có điểm thì mẫu số là gì?",
      "options": [
       {
-       "text": "5",
-       "detail": "Bạn đã cho môn chưa chấm tham gia mẫu số mà không có điểm tương ứng."
-      },
-      {
        "text": "2",
        "detail": "Số môn khác tổng tín chỉ; môn có điểm mang 3 tín chỉ."
       },
@@ -92,6 +88,10 @@
        "text": "3",
        "detail": "Chỉ tín chỉ môn đã có điểm tham gia GPA phần đã biết.",
        "correct": true
+      },
+      {
+       "text": "5",
+       "detail": "Bạn đã cho môn chưa chấm tham gia mẫu số mà không có điểm tương ứng."
       }
      ],
      "explanation": "Chỉ tín chỉ môn đã có điểm tham gia GPA phần đã biết."
@@ -100,6 +100,10 @@
      "question": "Tạo Student từ file có nên buộc __init__ luôn gọi input không?",
      "options": [
       {
+       "text": "Có; object chỉ được tạo từ bàn phím",
+       "detail": "Chưa đúng. Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
+      },
+      {
        "text": "Chỉ cần input khi tên có dấu",
        "detail": "Chưa đúng. Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
       },
@@ -107,10 +111,6 @@
        "text": "Không; nhận dữ liệu qua tham số để dùng lại",
        "detail": "Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn.",
        "correct": true
-      },
-      {
-       "text": "Có; object chỉ được tạo từ bàn phím",
-       "detail": "Chưa đúng. Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."
       }
      ],
      "explanation": "Constructor nhận tham số giúp cả UI lẫn loader tạo object mà không phát sinh prompt ngoài ý muốn."

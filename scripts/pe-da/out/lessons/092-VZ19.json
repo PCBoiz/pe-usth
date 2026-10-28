@@ -73,17 +73,17 @@
      "question": "sns.relplot và sns.scatterplot khác nhau về cấp đối tượng thế nào?",
      "options": [
       {
+       "text": "relplot tạo FacetGrid/Figure; scatterplot vẽ vào Axes",
+       "detail": "Đúng: relplot tự quản lý các ô facet.",
+       "correct": true
+      },
+      {
        "text": "Cả hai đều bắt buộc nhận ax",
        "detail": "relplot không dùng ax như hàm cấp Axes."
       },
       {
        "text": "relplot chỉ tính số, không tạo hình",
        "detail": "relplot là giao diện vẽ ở cấp Figure."
-      },
-      {
-       "text": "relplot tạo FacetGrid/Figure; scatterplot vẽ vào Axes",
-       "detail": "Đúng: relplot tự quản lý các ô facet.",
-       "correct": true
       }
      ],
      "explanation": "Biết cấp Figure/Axes giúp tránh tạo hai hình rồi vẽ nhầm."
@@ -92,13 +92,13 @@
      "question": "Vì sao không truyền ax vào relplot như scatterplot?\n\nimport matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"km\":[1, 2, 1, 2], \"minutes\":[8, 12, 7, 9], \"store\":[\"A\", \"A\", \"B\", \"B\"]})\ng = sns.relplot(data=data, x=\"km\", y=\"minutes\", col=\"store\", height=2.6, aspect=1)\ng.set_axis_labels(\"Distance (km)\", \"Delivery (minutes)\")\ng.set_titles(\"Store {col_name}\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
      "options": [
       {
+       "text": "Vì relplot không thể vẽ nhiều nhóm.",
+       "detail": "relplot có thể chia nhiều nhóm và tự tạo FacetGrid."
+      },
+      {
        "text": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax.",
        "detail": "relplot là hàm ở cấp Figure, tự tạo FacetGrid. scatterplot là hàm ở cấp Axes và nhận ax.",
        "correct": true
-      },
-      {
-       "text": "Vì relplot không thể vẽ nhiều nhóm.",
-       "detail": "relplot có thể chia nhiều nhóm và tự tạo FacetGrid."
       },
       {
        "text": "Vì scatterplot tạo Figure còn relplot chỉ sửa Axes hiện có.",
@@ -111,12 +111,12 @@
      "question": "Muốn xem riêng từng cửa hàng, thêm tham số gì?\n\nimport matplotlib.pyplot as plt\nimport pandas as pd\nimport seaborn as sns\ndata = pd.DataFrame({\"shift\":[\"AM\", \"AM\", \"PM\", \"PM\"], \"wait\":[2, 4, 3, 5], \"store\":[\"A\", \"B\", \"A\", \"B\"]})\ng = sns.catplot(data=data, x=\"shift\", y=\"wait\", col=\"store\", kind=\"strip\", jitter=False, height=2.6)\ng.set_axis_labels(\"Shift\", \"Wait (minutes)\")\nfig = g.figure\nprint(len(g.axes.flat))\nplt.show()",
      "options": [
       {
-       "text": "legend=\"store\" để tự tạo nhiều ô.",
-       "detail": "Legend giải thích ký hiệu, không tự tạo ô facet."
-      },
-      {
        "text": "xlabel=\"store\" để tự chia cửa hàng.",
        "detail": "Nhãn x không phân chia Figure thành nhiều ô."
+      },
+      {
+       "text": "legend=\"store\" để tự tạo nhiều ô.",
+       "detail": "Legend giải thích ký hiệu, không tự tạo ô facet."
       },
       {
        "text": "col=\"store\" hoặc row=\"store\" tùy bố trí và số nhóm.",

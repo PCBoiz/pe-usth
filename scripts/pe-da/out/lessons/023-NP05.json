@@ -79,17 +79,17 @@
      "question": "np.arange(2, 9, 2) tạo dãy nào?",
      "options": [
       {
+       "text": "[2,4,6,8]",
+       "detail": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9.",
+       "correct": true
+      },
+      {
        "text": "[2,4,6,8,9]",
        "detail": "9 là điểm dừng, không được lấy."
       },
       {
        "text": "[2,3,4,5,6,7,8]",
        "detail": "Dãy này dùng bước 1, không phải bước 2."
-      },
-      {
-       "text": "[2,4,6,8]",
-       "detail": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9.",
-       "correct": true
       }
      ],
      "explanation": "Đúng. Bắt đầu 2, nhảy 2 và dừng trước 9."
@@ -98,17 +98,17 @@
      "question": "Tạo số thứ tự từ 2 đến trước 6. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.arange(2, 6))",
      "options": [
       {
-       "text": "[2, 3, 4, 5]",
-       "detail": "Dãy bắt đầu ở 2 và không chứa 6.",
-       "correct": true
+       "text": "[1, 2, 3, 4, 5]",
+       "detail": "Điểm bắt đầu được truyền là 2."
       },
       {
        "text": "[2, 3, 4, 5, 6]",
        "detail": "arange không lấy điểm dừng 6."
       },
       {
-       "text": "[1, 2, 3, 4, 5]",
-       "detail": "Điểm bắt đầu được truyền là 2."
+       "text": "[2, 3, 4, 5]",
+       "detail": "Dãy bắt đầu ở 2 và không chứa 6.",
+       "correct": true
       }
      ],
      "explanation": "Dãy bắt đầu ở 2 và không chứa 6."
@@ -117,13 +117,13 @@
      "question": "Chọn các mốc giờ chẵn. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nprint(np.arange(0, 8, 2))",
      "options": [
       {
+       "text": "[0, 2, 4, 6, 8]",
+       "detail": "8 là điểm dừng nên bị loại."
+      },
+      {
        "text": "[0, 2, 4, 6]",
        "detail": "Bắt đầu 0, thêm 2 mỗi lần, dừng trước 8.",
        "correct": true
-      },
-      {
-       "text": "[0, 2, 4, 6, 8]",
-       "detail": "8 là điểm dừng nên bị loại."
       },
       {
        "text": "[0, 1, 2, 3, 4, 5, 6, 7]",

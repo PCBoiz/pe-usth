@@ -71,13 +71,13 @@
      "question": "print(\"A\\nB\") hiển thị như thế nào?",
      "options": [
       {
-       "text": "AB không có khoảng cách",
-       "detail": "Ký tự xuống dòng vẫn được giữ khi in."
-      },
-      {
        "text": "A và B trên hai dòng",
        "detail": "Đúng. \\n trong chuỗi là ký tự xuống dòng.",
        "correct": true
+      },
+      {
+       "text": "AB không có khoảng cách",
+       "detail": "Ký tự xuống dòng vẫn được giữ khi in."
       },
       {
        "text": "A\\nB trên một dòng",
@@ -90,6 +90,10 @@
      "question": "Tạo nhãn có tên thành phố. Kết quả ở lệnh print cuối có giá trị nào?\n\ncity = \"Hue\"\nprint(\"Store: \" + city)",
      "options": [
       {
+       "text": "'Store:Hue'",
+       "detail": "Chuỗi bên trái có một dấu cách sau dấu hai chấm."
+      },
+      {
        "text": "'Store: Hue'",
        "detail": "Dấu + nối nguyên các ký tự của hai chuỗi.",
        "correct": true
@@ -97,10 +101,6 @@
       {
        "text": "'Store: city'",
        "detail": "city không nằm trong dấu nháy nên được đọc giá trị."
-      },
-      {
-       "text": "'Store:Hue'",
-       "detail": "Chuỗi bên trái có một dấu cách sau dấu hai chấm."
       }
      ],
      "explanation": "Dấu + nối nguyên các ký tự của hai chuỗi."
@@ -109,17 +109,17 @@
      "question": "In đường phân cách ngắn. Kết quả ở lệnh print cuối có giá trị nào?\n\nprint(\"=-\" * 3)",
      "options": [
       {
-       "text": "'=-=-=-'",
-       "detail": "Mỗi lượt lặp thêm một cặp =-.",
-       "correct": true
-      },
-      {
        "text": "'===---'",
        "detail": "Cả chuỗi =- được lặp theo thứ tự."
       },
       {
        "text": "'=-3'",
        "detail": "Nhân chuỗi với số nguyên không nối chữ số 3."
+      },
+      {
+       "text": "'=-=-=-'",
+       "detail": "Mỗi lượt lặp thêm một cặp =-.",
+       "correct": true
       }
      ],
      "explanation": "Mỗi lượt lặp thêm một cặp =-."

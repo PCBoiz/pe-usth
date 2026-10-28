@@ -75,13 +75,13 @@
        "detail": "Không tự giữ số hàng của bảng trái nếu khóa phải trùng."
       },
       {
+       "text": "3",
+       "detail": "Không chỉ lấy số hàng lớn hơn trong hai phía."
+      },
+      {
        "text": "6",
        "detail": "Đúng: mọi cặp cùng khóa đều được ghép.",
        "correct": true
-      },
-      {
-       "text": "3",
-       "detail": "Không chỉ lấy số hàng lớn hơn trong hai phía."
       }
      ],
      "explanation": "Danh mục trùng khóa có thể nhân hàng; many_to_one phát hiện trường hợp này."
@@ -90,17 +90,17 @@
      "question": "Hai hàng cùng khóa bên trái nối với ba hàng cùng khóa bên phải tạo bao nhiêu hàng?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\njoined = orders.merge(customers, on='customer_id')\nprint(len(joined))\nprint(joined['amount'].sum())",
      "options": [
       {
-       "text": "Năm hàng, vì cộng hai kích thước.",
-       "detail": "Số cặp ghép dùng phép nhân, không dùng phép cộng."
+       "text": "Sáu hàng.",
+       "detail": "Sáu hàng.",
+       "correct": true
       },
       {
        "text": "Ba hàng, vì merge luôn giữ số hàng lớn hơn.",
        "detail": "Không có quy tắc chỉ lấy kích thước lớn hơn khi khóa lặp."
       },
       {
-       "text": "Sáu hàng.",
-       "detail": "Sáu hàng.",
-       "correct": true
+       "text": "Năm hàng, vì cộng hai kích thước.",
+       "detail": "Số cặp ghép dùng phép nhân, không dùng phép cộng."
       }
      ],
      "explanation": "Sáu hàng."
@@ -109,8 +109,8 @@
      "question": "Đơn hàng nối danh mục khách duy nhất nên dùng validate nào?\n\nimport pandas as pd\norders = pd.DataFrame({'customer_id': [1, 1], 'amount': [10, 20]})\ncustomers = pd.DataFrame({'customer_id': [1, 1], 'city': ['HN', 'DN']})\ntry:\n    orders.merge(customers, on='customer_id', validate='many_to_one')\nexcept pd.errors.MergeError as error:\n    print(type(error).__name__)",
      "options": [
       {
-       "text": "many_to_many để bảo đảm danh mục không lặp mã.",
-       "detail": "many_to_many không kiểm điều kiện duy nhất của danh mục."
+       "text": "one_to_one dù một khách có nhiều đơn.",
+       "detail": "one_to_one từ chối tình huống khách có nhiều đơn hợp lệ."
       },
       {
        "text": "many_to_one, khi đơn hàng ở bên trái.",
@@ -118,8 +118,8 @@
        "correct": true
       },
       {
-       "text": "one_to_one dù một khách có nhiều đơn.",
-       "detail": "one_to_one từ chối tình huống khách có nhiều đơn hợp lệ."
+       "text": "many_to_many để bảo đảm danh mục không lặp mã.",
+       "detail": "many_to_many không kiểm điều kiện duy nhất của danh mục."
       }
      ],
      "explanation": "many_to_one, khi đơn hàng ở bên trái."

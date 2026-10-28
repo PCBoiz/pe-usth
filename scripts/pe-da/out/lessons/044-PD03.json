@@ -90,6 +90,10 @@
      "question": "Một bảng có nhãn hàng [10, 20]. iloc[0] lấy nhãn nào?\n\nimport pandas as pd\ndf = pd.DataFrame({'name': ['An', 'Binh', 'Chi'], 'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C02', 'name'])\nprint(df.iloc[1, 0])",
      "options": [
       {
+       "text": "Nhãn 0.",
+       "detail": "Vị trí 0 không có nghĩa nhãn hàng phải là 0."
+      },
+      {
        "text": "Nhãn 20.",
        "detail": "Nhãn 20 thuộc hàng thứ hai."
       },
@@ -97,10 +101,6 @@
        "text": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên.",
        "detail": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên.",
        "correct": true
-      },
-      {
-       "text": "Nhãn 0.",
-       "detail": "Vị trí 0 không có nghĩa nhãn hàng phải là 0."
       }
      ],
      "explanation": "Lấy hàng có nhãn 10, vì đây là hàng đầu tiên."
@@ -109,6 +109,10 @@
      "question": "loc['C01':'C02'] có lấy C02 không?\n\nimport pandas as pd\ndf = pd.DataFrame({'orders': [2, 4, 1]}, index=['C01', 'C02', 'C03'])\nprint(df.loc['C01':'C02', 'orders'].tolist())\nprint(df.iloc[0:2, 0].tolist())",
      "options": [
       {
+       "text": "Chỉ khi C02 là hàng đầu tiên.",
+       "detail": "Việc lấy nhãn cuối không phụ thuộc nó có là hàng đầu hay không."
+      },
+      {
        "text": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối.",
        "detail": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối.",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "Không; loc luôn bỏ nhãn cuối như iloc.",
        "detail": "Quy tắc bỏ điểm cuối của lát cắt vị trí không áp nguyên cho loc."
-      },
-      {
-       "text": "Chỉ khi C02 là hàng đầu tiên.",
-       "detail": "Việc lấy nhãn cuối không phụ thuộc nó có là hàng đầu hay không."
       }
      ],
      "explanation": "Có, khi lát cắt nhãn này hợp lệ; loc gồm nhãn cuối."

@@ -71,6 +71,10 @@
      "question": "Điểm chưa được nhập nên lưu như 0 để tiện tính không?",
      "options": [
       {
+       "text": "Xóa sinh viên đó",
+       "detail": "Thiếu điểm không làm hồ sơ sinh viên mất hiệu lực."
+      },
+      {
        "text": "Không; chưa có điểm khác điểm 0",
        "detail": "0 là điểm đã biết; thiếu điểm là trạng thái khác cần giữ riêng.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "Có; cả hai đều không đạt",
        "detail": "Một điểm đã chấm 0 vẫn phải hiển thị và có thể tham gia phép tính."
-      },
-      {
-       "text": "Xóa sinh viên đó",
-       "detail": "Thiếu điểm không làm hồ sơ sinh viên mất hiệu lực."
       }
      ],
      "explanation": "0 là điểm đã biết; thiếu điểm là trạng thái khác cần giữ riêng."
@@ -90,6 +90,10 @@
      "question": "Điểm một sinh viên trong một môn nên gắn với khóa nào?",
      "options": [
       {
+       "text": "Chỉ tên sinh viên không duy nhất",
+       "detail": "Chưa đúng. Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
+      },
+      {
        "text": "Số thứ tự dòng in ra terminal",
        "detail": "Chưa đúng. Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
       },
@@ -97,10 +101,6 @@
        "text": "(student_id, course_id)",
        "detail": "Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học.",
        "correct": true
-      },
-      {
-       "text": "Chỉ tên sinh viên không duy nhất",
-       "detail": "Chưa đúng. Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."
       }
      ],
      "explanation": "Hai mã xác định quan hệ giữa hồ sơ sinh viên và môn học."

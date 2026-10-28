@@ -28,8 +28,10 @@ from __future__ import annotations
 import argparse
 import ast
 import json
+import random
 import re
 import sys
+from collections import Counter
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -248,7 +250,170 @@ def phan_loai_khoi(code: str, cho_mo_phong: bool = False) -> tuple[bool, str]:
 NOI_DE_CODE = '\n\n'
 
 
-def cau_trac_nghiem(mcq: dict, so_cau: int = SO_CAU_MCQ) -> list[dict]:
+# ---------------------------------------------------------------------------
+# Trộn vị trí đáp án — ngẫu nhiên CÓ PHÂN TẦNG, seed cố định
+#
+# BỆNH ĐANG CHỮA, đo trên ngân hàng nguồn `source/practice.json`: 1 032 câu, tất
+# cả đúng 3 phương án, mà **519 câu (50,3%) có đáp án ở vị trí 1** — ngẫu nhiên
+# phải ~33%. Cả 172 bài chỉ sinh ra **8 dãy vị trí khác nhau**, và câu đầu mỗi
+# bài chạy đúng chu kỳ 1→3→2: nghĩa là người soạn (hoặc công cụ sinh của gói)
+# XOAY vị trí theo công thức chứ không trộn. Hệ quả đo được: học viên bấm phương
+# án "a" cho mọi câu được **6/6 ở 16 bài và 5/6 ở 30 bài** — 46 bài mà phần chấm
+# trắc nghiệm không đo được gì.
+#
+# Thiên lệch này KHÔNG chỉ là mẹo đoán. Với đề lập trình, thiên lệch chọn của
+# sinh viên đi theo hướng vị trí ĐẦU (Tellinghuisen & Sulikowski, 676 sinh
+# viên), nên 50,3% ở vị trí 1 làm cả ngân hàng vừa dễ hơn vừa phân biệt kém hơn.
+# Xem VAN-PHONG.md §8 M2.
+#
+# BA lựa chọn thiết kế, mỗi cái chống một lỗi khác:
+#
+#  1. PHÂN TẦNG, không ngẫu nhiên thuần. Với đề 3 câu, xác suất cả 3 câu cùng
+#     rơi vào một vị trí là 1/9 — tức ~19/172 bài sẽ trông y như bệnh cũ với
+#     người học, và họ không có cách nào biết đó là tình cờ. Phân tầng nghĩa là
+#     trong MỖI bài, ba câu rơi vào BA vị trí khác nhau.
+#
+#  2. Ở khâu BUILD, không ở frontend. Kho quiz chấm Ở SERVER lấy snapshot từ
+#     `content_json`, nên trộn ở client là trộn sau khi đáp án đã được chốt —
+#     hai phía sẽ nói hai chuyện khác nhau về "lựa chọn số mấy là đúng".
+#
+#  3. Seed CỐ ĐỊNH suy từ mã bài. Dựng hai lần phải ra giống hệt từng byte: nếu
+#     không thì mỗi lần build lại là một lần đổi đáp án của học viên đang học
+#     dở, và `update-lesson-content.ts` (in sha256 cũ → mới) không so được gì.
+#     KHÔNG dùng `hash()` dựng sẵn: với chuỗi, nó được băm theo PYTHONHASHSEED
+#     ngẫu nhiên mỗi tiến trình, nên `random.Random(hash(ma_bai))` ra một kết
+#     quả KHÁC mỗi lần chạy — đúng cái bẫy mà seed cố định sinh ra để tránh, và
+#     nó im lặng (bản dựng vẫn hợp lệ, chỉ là khác bản trước).
+SEED_TRON = 'pe-da/mcq/v1'
+
+
+def _so_cua(text: str) -> float | None:
+    """Giá trị số của một phương án, hoặc None nếu nó không phải số."""
+    t = (text or '').strip().replace('_', '')
+    try:
+        return float(t)
+    except ValueError:
+        return None
+
+
+def la_day_so(texts: list[str]) -> bool:
+    """Các phương án có phải một DÃY SỐ (có thứ tự tự nhiên) không?
+
+    Bẫy thứ nhất của M2: **không trộn** phương án là dãy số. Với `12 / 11 / 1`
+    thì thứ tự chính nó là manh mối hợp lệ — người học đọc ba số cạnh nhau để
+    thấy chúng lệch nhau ở đâu. Trộn chúng lấy đi manh mối đó mà không mua lại
+    gì, vì thứ cần phá là THIÊN LỆCH CỦA NGƯỜI SOẠN, còn thứ tự của một dãy số
+    thì do chính con số quyết định, không do người soạn.
+
+    Nên nhóm này được SẮP TĂNG thay vì trộn: vừa giữ được manh mối (đo trên
+    nguồn: chỉ 24/98 câu đang được trình bày theo thứ tự, 74 câu còn lại đang
+    lộn xộn), vừa đưa vị trí đáp án về chỗ do con số quyết định. Đo sau khi
+    sắp: 10 / 62 / 26 — vẫn lệch về giữa, nhưng lệch đó là tính chất của NỘI
+    DUNG (nhiễu hay kẹp hai bên đáp án), không phải của khâu dựng, và 98 câu
+    trên 1 032 không đủ kéo tổng phân bố ra khỏi ngưỡng.
+    """
+    return bool(texts) and all(_so_cua(t) is not None for t in texts)
+
+
+def _vi_tri_dich(rng: random.Random, so_cau: int, so_lua_chon: int,
+                 da_chiem: list[int]) -> list[int]:
+    """Túi vị trí đích cho các câu CÒN PHẢI TRỘN của một bài.
+
+    Phân tầng = chia đều: `so_cau` câu trên `so_lua_chon` vị trí thì mỗi vị trí
+    nhận `so_cau // so_lua_chon` câu, phần dư rải bằng rng. `da_chiem` là vị
+    trí mà các câu "dãy số" đã lấy (chúng không trộn được nên vị trí của chúng
+    là dữ kiện, không phải lựa chọn) — trừ chúng ra khỏi chỉ tiêu để tổng của
+    cả BÀI vẫn đều, chứ không chỉ phần trộn được đều.
+    """
+    chi_tieu: list[int] = []
+    for i in range(so_cau):
+        chi_tieu.append(i % so_lua_chon)
+    # Phần dư thuộc về vị trí nào là do rng quyết, không phải luôn là vị trí 0.
+    if so_cau % so_lua_chon:
+        vt = list(range(so_lua_chon))
+        rng.shuffle(vt)
+        chi_tieu = chi_tieu[:so_cau - so_cau % so_lua_chon] + vt[:so_cau % so_lua_chon]
+    con = Counter(chi_tieu)
+    for p in da_chiem:
+        if con.get(p):
+            con[p] -= 1
+    tui = [p for p in range(so_lua_chon) for _ in range(con.get(p, 0))]
+    can = so_cau - len(da_chiem)
+    # Bài có nhiều câu "dãy số" dồn vào một vị trí thì túi hụt — bù bằng vị trí
+    # đang ít câu nhất, để không bao giờ phải trả về túi rỗng rồi trộn hỏng.
+    while len(tui) < can:
+        dem = Counter(da_chiem) + Counter(tui)
+        tui.append(min(range(so_lua_chon), key=lambda p: (dem.get(p, 0), p)))
+    rng.shuffle(tui)
+    return tui[:can]
+
+
+def tron_vi_tri_dap_an(ma_bai: str, cau: list[dict]) -> list[dict]:
+    """Đổi chỗ phương án của từng câu để vị trí đáp án rải đều trong bài.
+
+    Nhận/trả danh sách câu ở hình dạng NGUỒN (`options` mang `id`/`text`/
+    `feedback`, `correctOption` là id). Trả về bản mới với `options` đã đổi chỗ;
+    `correctOption` KHÔNG đổi vì nó trỏ theo `id`, nên không có cách nào để
+    phép đổi chỗ này làm lệch đáp án — đó là lý do trộn ở đây chứ không ở sau
+    bước quy về vị trí.
+
+    Bẫy thứ ba và thứ tư của M2 được xử ở đây:
+      · nhiễu được trộn bằng chính rng (không giữ thứ tự nguồn), nên nhiễu
+        giống đáp án nhất không ĐỨNG LIỀN TRƯỚC đáp án theo một luật nào —
+        `kiem_trac_nghiem()` đo tỉ lệ đó và đòi nó quanh mức tình cờ;
+      · độ dài phương án thì phép trộn không chữa được (nó là việc của người
+        soạn), nên check.py BÁO ra câu nào lệch nhiều thay vì im lặng.
+
+    `feedback` đi THEO phương án vì cả dict được mang nguyên sang chỗ mới. Đây
+    là lỗi im lặng tệ nhất có thể có ở khâu này: trộn chữ mà để `feedback` ở
+    lại theo vị trí thì học viên chọn sai và đọc được lời giải thích của một
+    phương án khác — không ngoại lệ nào được ném, không log nào đỏ.
+    """
+    rng = random.Random(f'{SEED_TRON}/{ma_bai}')
+    # Pha 1: các câu "dãy số" được SẮP, và vị trí đáp án của chúng là dữ kiện.
+    sap: dict[int, list[dict]] = {}
+    da_chiem: list[int] = []
+    so_lua_chon = max((len(q.get('options') or []) for q in cau), default=0)
+    for i, q in enumerate(cau):
+        op = list(q.get('options') or [])
+        texts = [o.get('text') or '' for o in op]
+        # Hai lý do để KHÔNG trộn một câu, và cả hai đều khoá vị trí của nó lại:
+        #  · dãy số — xem `la_day_so()`, câu được SẮP TĂNG;
+        #  · hai phương án cùng chữ — không phân biệt được chúng ở đâu sau khi
+        #    trộn, mà check.py đối chiếu bản dựng với nguồn THEO CHỮ. Nguồn hôm
+        #    nay có 0/1032 câu như vậy; giữ nhánh này để ngày nào có thì câu đó
+        #    được để NGUYÊN chứ không trộn sai.
+        trung_chu = len(set(texts)) != len(texts)
+        if not (trung_chu or la_day_so(texts)):
+            continue
+        if not trung_chu:
+            op.sort(key=lambda o: _so_cua(o.get('text') or '') or 0.0)
+        sap[i] = op
+        da_chiem.append(next((j for j, o in enumerate(op)
+                              if o.get('id') == q.get('correctOption')), 0))
+    # Pha 2: phần còn lại nhận túi vị trí đã trừ chỗ pha 1 chiếm.
+    con = [i for i in range(len(cau)) if i not in sap]
+    tui = _vi_tri_dich(rng, len(cau), so_lua_chon or 1, da_chiem) if con else []
+    ra: list[dict] = []
+    for i, q in enumerate(cau):
+        if i in sap:
+            ra.append({**q, 'options': sap[i]})
+            continue
+        op = list(q.get('options') or [])
+        dung = next((j for j, o in enumerate(op)
+                     if o.get('id') == q.get('correctOption')), None)
+        if dung is None or len(op) < 2:
+            ra.append(q)
+            continue
+        nhieu = [o for j, o in enumerate(op) if j != dung]
+        rng.shuffle(nhieu)
+        dich = min(tui.pop() if tui else 0, len(op) - 1)
+        moi = nhieu[:dich] + [op[dung]] + nhieu[dich:]
+        ra.append({**q, 'options': moi})
+    return ra
+
+
+def cau_trac_nghiem(mcq: dict, ma_bai: str = '', so_cau: int = SO_CAU_MCQ) -> list[dict]:
     """Chuyển câu trắc nghiệm của gói sang hình dạng `step_2.mcq`.
 
     HAI phía đọc trường này, và cả hai đã nhận cùng một hình dạng từ trước:
@@ -268,16 +433,20 @@ def cau_trac_nghiem(mcq: dict, so_cau: int = SO_CAU_MCQ) -> list[dict]:
     chạy đúng khi lựa chọn sai không có khoá đó, và bỏ nó đi thì
     `content_json` nhỏ hơn 1 032 khoá.
     """
+    # Câu hỏng thì BỎ, không phát ra nửa vời: một câu không có đáp án đúng nào
+    # làm `correctIndex()` trả -1, và màn trắc nghiệm thành màn không bao giờ
+    # đúng được — `firstUnfinished()` chặn luôn nút kết thúc bài.
+    chon = [q for q in [mcq] + list(mcq.get('variants') or [])[:so_cau - 1]
+            if len(q.get('options') or []) >= 2
+            and q.get('correctOption') in {o.get('id') for o in (q.get('options') or [])}]
+    # Trộn TRƯỚC khi quy về `correct: True`, và trộn trên DANH SÁCH ĐÃ LỌC: phân
+    # tầng chia đều trên số câu THẬT SỰ phát ra, nên một bài mất một câu hỏng
+    # vẫn rải đều hai câu còn lại.
+    chon = tron_vi_tri_dap_an(ma_bai, chon)
     ra: list[dict] = []
-    for q in [mcq] + list(mcq.get('variants') or [])[:so_cau - 1]:
+    for q in chon:
         lua_chon = q.get('options') or []
         dung = q.get('correctOption')
-        if len(lua_chon) < 2 or dung not in {o.get('id') for o in lua_chon}:
-            # Câu hỏng thì BỎ, không phát ra nửa vời: một câu không có đáp án
-            # đúng nào làm `correctIndex()` trả -1, và màn trắc nghiệm thành
-            # màn không bao giờ đúng được — `firstUnfinished()` chặn luôn nút
-            # kết thúc bài.
-            continue
         # GẤP `code` của nguồn vào CHÍNH đề bài.
         #
         # Bản dựng đầu BỎ trường này, và đó là một lỗi có thật đã tới tay người
@@ -586,7 +755,7 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     reading = bai['reading']
     man = chia_man(reading)
     luyen = cau_luyen(bai)
-    trac_nghiem = cau_trac_nghiem(mcq) if mcq else []
+    trac_nghiem = cau_trac_nghiem(mcq, bai['id']) if mcq else []
     phut = phut_cua(reading, len(luyen), len(trac_nghiem))
 
     # Phân loại theo code NGƯỜI HỌC đọc, không theo bản xuất hình: hai bản

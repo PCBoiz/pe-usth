@@ -71,17 +71,17 @@
      "question": "store=[A,A,B], amount=[5,15,8]. transform(\"sum\") cho gì?",
      "options": [
       {
-       "text": "[20,20,8]",
-       "detail": "Đúng: mỗi hàng nhận tổng nhóm của nó.",
-       "correct": true
-      },
-      {
        "text": "[20,8]",
        "detail": "Đây là kết quả tổng hợp một hàng mỗi nhóm."
       },
       {
        "text": "[28,28,28]",
        "detail": "28 là tổng cả bảng, không phải từng nhóm."
+      },
+      {
+       "text": "[20,20,8]",
+       "detail": "Đúng: mỗi hàng nhận tổng nhóm của nó.",
+       "correct": true
       }
      ],
      "explanation": "transform giữ số hàng và index của bảng giao dịch."
@@ -90,10 +90,6 @@
      "question": "Vì sao transform phù hợp để thêm tổng nhóm vào bảng giao dịch?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\ntotal = df.groupby('store')['amount'].transform('sum')\ndf['share'] = df['amount'] / total\nprint(total.tolist())\nprint(df['share'].tolist())",
      "options": [
       {
-       "text": "Vì transform luôn sắp các hàng theo giá trị giảm dần.",
-       "detail": "Giữ index không đồng nghĩa tự sắp giảm dần giá trị."
-      },
-      {
        "text": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào.",
        "detail": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào.",
        "correct": true
@@ -101,6 +97,10 @@
       {
        "text": "Vì transform chỉ trả một hàng cho mỗi nhóm.",
        "detail": "Một hàng mỗi nhóm là kết quả tổng hợp, không phải transform."
+      },
+      {
+       "text": "Vì transform luôn sắp các hàng theo giá trị giảm dần.",
+       "detail": "Giữ index không đồng nghĩa tự sắp giảm dần giá trị."
       }
      ],
      "explanation": "Vì kết quả giữ các hàng và index tương ứng với bảng đầu vào."
@@ -109,6 +109,10 @@
      "question": "Cần làm gì trước cumcount nếu muốn đánh số đơn theo ngày?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'A', 'B'], 'amount': [10, 30, 20]})\nprint(df.groupby('store')['amount'].rank(ascending=False, method='dense').tolist())\nprint((df.groupby('store').cumcount() + 1).tolist())",
      "options": [
       {
+       "text": "Bỏ cột ngày vì cumcount tự lấy lịch máy.",
+       "detail": "Ngày trên máy không xác định thứ tự các đơn trong dữ liệu."
+      },
+      {
        "text": "Sắp xếp theo ngày trong nhóm trước.",
        "detail": "Sắp xếp theo ngày trong nhóm trước.",
        "correct": true
@@ -116,10 +120,6 @@
       {
        "text": "Không cần sắp; cumcount tự nhận ra thứ tự ngày.",
        "detail": "cumcount không tự sắp theo cột ngày."
-      },
-      {
-       "text": "Bỏ cột ngày vì cumcount tự lấy lịch máy.",
-       "detail": "Ngày trên máy không xác định thứ tự các đơn trong dữ liệu."
       }
      ],
      "explanation": "Sắp xếp theo ngày trong nhóm trước."

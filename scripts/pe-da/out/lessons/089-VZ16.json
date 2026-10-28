@@ -79,12 +79,12 @@
      "question": "Dữ liệu [1,2,2,5]. ECDF tại 2 bằng gì?",
      "options": [
       {
-       "text": "2/4",
-       "detail": "Hai giá trị 2 không phải toàn bộ các giá trị ≤2; còn số 1."
-      },
-      {
        "text": "1/4",
        "detail": "Đây không phải tỷ lệ lớn hơn ngưỡng."
+      },
+      {
+       "text": "2/4",
+       "detail": "Hai giá trị 2 không phải toàn bộ các giá trị ≤2; còn số 1."
       },
       {
        "text": "3/4",
@@ -98,6 +98,10 @@
      "question": "ECDF tại 4 bằng 4/6 có nghĩa gì?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.histplot(data=orders, x=\"wait\", bins=[0, 3, 6, 9], ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Orders\", title=\"A named column in a DataFrame\")\nprint(len(orders))\nplt.show()",
      "options": [
       {
+       "text": "Mỗi quan sát chắc chắn có xác suất đúng 4/6.",
+       "detail": "Tỷ lệ tích lũy không gán cùng xác suất 4/6 cho từng điểm riêng."
+      },
+      {
        "text": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
        "detail": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút.",
        "correct": true
@@ -105,10 +109,6 @@
       {
        "text": "Có bốn quan sát lớn hơn 4 trong sáu quan sát.",
        "detail": "Đây là phía lớn hơn ngưỡng, ngược với tích lũy tới ngưỡng."
-      },
-      {
-       "text": "Mỗi quan sát chắc chắn có xác suất đúng 4/6.",
-       "detail": "Tỷ lệ tích lũy không gán cùng xác suất 4/6 cho từng điểm riêng."
       }
      ],
      "explanation": "Bốn trong sáu quan sát có thời gian chờ nhỏ hơn hoặc bằng 4 phút."
@@ -117,17 +117,17 @@
      "question": "Tăng bw_adjust thường làm KDE thay đổi thế nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport pandas as pd\nimport seaborn as sns\norders = pd.DataFrame({\"wait\":[1, 2, 2, 4, 5, 8]})\nsns.ecdfplot(data=orders, x=\"wait\", ax=ax)\nax.set(xlabel=\"Wait (minutes)\", ylabel=\"Proportion <= x\", title=\"How many orders wait at most four minutes?\")\nprint(round(float((orders[\"wait\"] <= 4).mean()), 3))\nplt.show()",
      "options": [
       {
-       "text": "Tự tăng số quan sát trong dữ liệu.",
-       "detail": "Làm mượt không sinh thêm quan sát gốc."
+       "text": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
+       "detail": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
+       "correct": true
       },
       {
        "text": "Luôn tạo thêm nhiều đỉnh hơn.",
        "detail": "Mức làm mượt cao hơn thường có thể che các đỉnh nhỏ, không bảo đảm tạo thêm đỉnh."
       },
       {
-       "text": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
-       "detail": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ.",
-       "correct": true
+       "text": "Tự tăng số quan sát trong dữ liệu.",
+       "detail": "Làm mượt không sinh thêm quan sát gốc."
       }
      ],
      "explanation": "Đường được làm mượt hơn; có thể che những chi tiết hoặc đỉnh nhỏ."

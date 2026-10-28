@@ -71,6 +71,10 @@
      "question": "qty = pd.Series([2,4]); price = pd.Series([3,5]). (qty * price).tolist() cho gì?",
      "options": [
       {
+       "text": "[6, 10, 12, 20]",
+       "detail": "Không tạo mọi cặp giá trị giữa hai cột."
+      },
+      {
        "text": "[6, 20]",
        "detail": "Đúng: hai Series cùng nhãn được nhân theo từng hàng.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "[5, 9]",
        "detail": "Đây là phép cộng, không phải nhân."
-      },
-      {
-       "text": "[6, 10, 12, 20]",
-       "detail": "Không tạo mọi cặp giá trị giữa hai cột."
       }
      ],
      "explanation": "Doanh thu thuộc từng hàng có cùng số lượng và đơn giá."
@@ -94,13 +94,13 @@
        "detail": "Không cần tạo tích của mọi cặp giữa hai cột."
       },
       {
+       "text": "[12, 23].",
+       "detail": "Bạn đang cộng hai cột thay vì nhân."
+      },
+      {
        "text": "[20, 60].",
        "detail": "[20, 60].",
        "correct": true
-      },
-      {
-       "text": "[12, 23].",
-       "detail": "Bạn đang cộng hai cột thay vì nhân."
       }
      ],
      "explanation": "[20, 60]."

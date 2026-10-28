@@ -71,10 +71,6 @@
      "question": "revenue A=50,B=30; cost B=8,A=20. Lợi nhuận A bằng bao nhiêu?",
      "options": [
       {
-       "text": "42",
-       "detail": "42 trừ theo vị trí đầu vào, ghép sai cửa hàng."
-      },
-      {
        "text": "20",
        "detail": "20 là chi phí của A, chưa trừ khỏi doanh thu."
       },
@@ -82,6 +78,10 @@
        "text": "30",
        "detail": "Đúng: nhãn A ghép 50 với 20.",
        "correct": true
+      },
+      {
+       "text": "42",
+       "detail": "42 trừ theo vị trí đầu vào, ghép sai cửa hàng."
       }
      ],
      "explanation": "Phép tính giữa Series căn các giá trị có cùng nhãn."
@@ -109,12 +109,12 @@
      "question": "reset_index() thường chuyển index về đâu?\n\nimport pandas as pd\ndf = pd.DataFrame({'store': ['A', 'B'], 'sales': [100, 80]})\nindexed = df.set_index('store')\nprint(indexed.loc['B', 'sales'])\nprint(indexed.reset_index().columns.tolist())",
      "options": [
       {
-       "text": "Xóa mọi giá trị trong index và các cột.",
-       "detail": "reset_index không xóa mọi cột hoặc mọi giá trị."
-      },
-      {
        "text": "Chuyển mọi cột thành index mà không tạo cột mới.",
        "detail": "set_index mới là thao tác đưa cột vào index."
+      },
+      {
+       "text": "Xóa mọi giá trị trong index và các cột.",
+       "detail": "reset_index không xóa mọi cột hoặc mọi giá trị."
       },
       {
        "text": "Thành một hoặc nhiều cột; index mới thường là số thứ tự.",

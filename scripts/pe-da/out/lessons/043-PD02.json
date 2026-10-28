@@ -81,13 +81,13 @@
        "detail": "10 là số ô, không phải shape."
       },
       {
+       "text": "(2, 5)",
+       "detail": "Đây là thứ tự cột–hàng, ngược với shape."
+      },
+      {
        "text": "(5, 2)",
        "detail": "Đúng: số hàng đứng trước số cột.",
        "correct": true
-      },
-      {
-       "text": "(2, 5)",
-       "detail": "Đây là thứ tự cột–hàng, ngược với shape."
       }
      ],
      "explanation": "shape mô tả hai chiều của bảng, không phải tổng số ô."
@@ -96,17 +96,17 @@
      "question": "shape bằng (100, 4) có nghĩa gì?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(sales.shape)\nprint(sales.columns.tolist())",
      "options": [
       {
-       "text": "100 cột và 4 hàng.",
-       "detail": "Hai đại lượng đã bị đổi chỗ."
+       "text": "Bảng có 100 hàng và 4 cột.",
+       "detail": "Bảng có 100 hàng và 4 cột.",
+       "correct": true
       },
       {
        "text": "400 hàng và một cột.",
        "detail": "Nhân hai kích thước cho số ô, không phải số hàng."
       },
       {
-       "text": "Bảng có 100 hàng và 4 cột.",
-       "detail": "Bảng có 100 hàng và 4 cột.",
-       "correct": true
+       "text": "100 cột và 4 hàng.",
+       "detail": "Hai đại lượng đã bị đổi chỗ."
       }
      ],
      "explanation": "Bảng có 100 hàng và 4 cột."
@@ -115,8 +115,8 @@
      "question": "sales.info() cho biết điều gì về các cột? Có cần viết print(sales.info()) không?\n\nimport pandas as pd\nsales = pd.DataFrame({'drink': ['coffee', 'tea'], 'cups': [12, 8]})\nprint(type(sales['cups']).__name__)\nprint(type(sales[['cups']]).__name__)\nprint(sales['cups'].tolist())",
      "options": [
       {
-       "text": "Trả về bảng đã xóa các ô thiếu.",
-       "detail": "info báo thông tin; nó không làm sạch hoặc trả bảng đã xóa ô thiếu."
+       "text": "Chỉ in các giá trị của hàng đầu.",
+       "detail": "head mới thường được dùng để nhìn vài hàng đầu."
       },
       {
        "text": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print.",
@@ -124,8 +124,8 @@
        "correct": true
       },
       {
-       "text": "Chỉ in các giá trị của hàng đầu.",
-       "detail": "head mới thường được dùng để nhìn vài hàng đầu."
+       "text": "Trả về bảng đã xóa các ô thiếu.",
+       "detail": "info báo thông tin; nó không làm sạch hoặc trả bảng đã xóa ô thiếu."
       }
      ],
      "explanation": "Nó cho biết kiểu dữ liệu và số giá trị không thiếu, cùng thông tin tổng quan của bảng. info đã in trực tiếp nên gọi sales.info(), không cần bọc print."

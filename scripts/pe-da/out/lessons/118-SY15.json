@@ -81,13 +81,13 @@
      "question": "File chứa A. Mở bằng w và ghi B thì còn gì?",
      "options": [
       {
-       "text": "A",
-       "detail": "Lệnh ghi B đã thay dữ liệu sau khi file bị làm rỗng."
-      },
-      {
        "text": "B",
        "detail": "w xóa nội dung cũ khi mở file thành công.",
        "correct": true
+      },
+      {
+       "text": "A",
+       "detail": "Lệnh ghi B đã thay dữ liệu sau khi file bị làm rỗng."
       },
       {
        "text": "AB",
@@ -119,17 +119,17 @@
      "question": "Muốn tạo file mới nhưng báo lỗi nếu tên đã tồn tại, chọn mode nào?",
      "options": [
       {
-       "text": "x",
-       "detail": "x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có.",
-       "correct": true
+       "text": "r",
+       "detail": "Chưa đúng. x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
       },
       {
        "text": "a",
        "detail": "Chưa đúng. x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
       },
       {
-       "text": "r",
-       "detail": "Chưa đúng. x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."
+       "text": "x",
+       "detail": "x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có.",
+       "correct": true
       }
      ],
      "explanation": "x dùng để tạo độc quyền; nó không âm thầm ghi đè file đã có."

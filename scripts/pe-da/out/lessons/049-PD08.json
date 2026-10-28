@@ -75,13 +75,13 @@
        "detail": "Thiếu không có nghĩa tất cả các số đều bằng 0."
       },
       {
+       "text": "4",
+       "detail": "Đây là (4+0+8)/3, đã tự điền 0."
+      },
+      {
        "text": "6",
        "detail": "Đúng: (4+8)/2, bỏ ô thiếu.",
        "correct": true
-      },
-      {
-       "text": "4",
-       "detail": "Đây là (4+0+8)/3, đã tự điền 0."
       }
      ],
      "explanation": "Cần giữ riêng việc chưa có số đo với một số đo bằng 0."
@@ -90,17 +90,17 @@
      "question": "Trung bình của [20, thiếu, 22] mặc định là bao nhiêu?\n\nimport pandas as pd\ntemperature = pd.Series([20.0, None, 22.0])\nprint(temperature.isna().tolist())\nprint(temperature.isna().sum())\nprint(temperature.mean())",
      "options": [
       {
-       "text": "14, vì ô thiếu được coi là 0.",
-       "detail": "Chia tổng cho cả ba vị trí sẽ coi thiếu như 0."
+       "text": "21, vì phép tính bỏ giá trị thiếu.",
+       "detail": "21, vì phép tính bỏ giá trị thiếu.",
+       "correct": true
       },
       {
        "text": "22, vì chỉ giữ phần tử cuối.",
        "detail": "Phép mean không chỉ lấy phần tử cuối."
       },
       {
-       "text": "21, vì phép tính bỏ giá trị thiếu.",
-       "detail": "21, vì phép tính bỏ giá trị thiếu.",
-       "correct": true
+       "text": "14, vì ô thiếu được coi là 0.",
+       "detail": "Chia tổng cho cả ba vị trí sẽ coi thiếu như 0."
       }
      ],
      "explanation": "21, vì phép tính bỏ giá trị thiếu."
@@ -109,8 +109,8 @@
      "question": "Vì sao không nên luôn fillna(0)?\n\nimport pandas as pd\ndf = pd.DataFrame({'order': ['A', 'B', 'C'], 'amount': [10.0, None, 30.0]})\nknown = df.dropna(subset=['amount'])\nprint(known['order'].tolist())\nprint(df['amount'].fillna(0).tolist())",
      "options": [
       {
-       "text": "Vì pandas không cho phép số 0.",
-       "detail": "Số 0 hợp lệ; vấn đề là nó có đúng ý nghĩa của ô thiếu hay không."
+       "text": "Vì fillna(0) tự khôi phục đúng mọi số bị mất.",
+       "detail": "fillna không có cách biết giá trị thực đã mất là bao nhiêu."
       },
       {
        "text": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0.",
@@ -118,8 +118,8 @@
        "correct": true
       },
       {
-       "text": "Vì fillna(0) tự khôi phục đúng mọi số bị mất.",
-       "detail": "fillna không có cách biết giá trị thực đã mất là bao nhiêu."
+       "text": "Vì pandas không cho phép số 0.",
+       "detail": "Số 0 hợp lệ; vấn đề là nó có đúng ý nghĩa của ô thiếu hay không."
       }
      ],
      "explanation": "Vì thiếu dữ liệu không nhất thiết có nghĩa là giá trị bằng 0."

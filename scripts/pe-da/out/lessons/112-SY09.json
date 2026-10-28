@@ -77,10 +77,6 @@
      "question": "ReportService giữ self.exporter để gọi export. Đây là quan hệ nào?",
      "options": [
       {
-       "text": "Không thể làm vì Python cần interface keyword",
-       "detail": "Python có thể làm qua object có method phù hợp hoặc ABC."
-      },
-      {
        "text": "has-a: service sử dụng một exporter",
        "detail": "Service chứa object thực hiện công việc, không cần kế thừa Exporter.",
        "correct": true
@@ -88,6 +84,10 @@
       {
        "text": "is-a: service bắt buộc là exporter",
        "detail": "Có một thuộc tính exporter không tạo quan hệ kế thừa."
+      },
+      {
+       "text": "Không thể làm vì Python cần interface keyword",
+       "detail": "Python có thể làm qua object có method phù hợp hoặc ABC."
       }
      ],
      "explanation": "Service chứa object thực hiện công việc, không cần kế thừa Exporter."
@@ -96,6 +96,10 @@
      "question": "Exporter còn abstract method export chưa triển khai có tạo instance trực tiếp được không?",
      "options": [
       {
+       "text": "Có; method tự trả dữ liệu mặc định",
+       "detail": "Chưa đúng. Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
+      },
+      {
        "text": "Có; tên Exporter tự động bỏ abstract",
        "detail": "Chưa đúng. Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
       },
@@ -103,10 +107,6 @@
        "text": "Không; ABC ngăn tạo instance khi còn abstract method",
        "detail": "Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể.",
        "correct": true
-      },
-      {
-       "text": "Có; method tự trả dữ liệu mặc định",
-       "detail": "Chưa đúng. Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
       }
      ],
      "explanation": "Abstract method mô tả thao tác subclass còn phải cung cấp; class chưa hoàn tất không tạo instance như class cụ thể."
@@ -115,13 +115,13 @@
      "question": "ReportService giữ một exporter trong thuộc tính. Đây là quan hệ nào?",
      "options": [
       {
+       "text": "is-a bắt buộc",
+       "detail": "Chưa đúng. Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu."
+      },
+      {
        "text": "has-a",
        "detail": "Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu.",
        "correct": true
-      },
-      {
-       "text": "is-a bắt buộc",
-       "detail": "Chưa đúng. Service sử dụng một thành phần exporter thay vì kế thừa mọi chi tiết xuất dữ liệu."
       },
       {
        "text": "Hai class phải có cùng MRO",

@@ -69,12 +69,12 @@
      "question": "get_nowait báo queue.Empty khi worker chưa xong có đồng nghĩa worker thất bại không?",
      "options": [
       {
-       "text": "Có; Empty luôn là exception của worker",
-       "detail": "Empty mô tả queue tại thời điểm đọc, không mô tả nguyên nhân worker chưa gửi."
-      },
-      {
        "text": "Không; nên chặn GUI bằng join ngay",
        "detail": "join trong callback dài có thể làm event loop đứng chờ."
+      },
+      {
+       "text": "Có; Empty luôn là exception của worker",
+       "detail": "Empty mô tả queue tại thời điểm đọc, không mô tả nguyên nhân worker chưa gửi."
       },
       {
        "text": "Không; lúc đó chưa có thông điệp",

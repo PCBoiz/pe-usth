@@ -76,13 +76,13 @@
      "question": "Chỉ có qty và price, đã tính revenue. Có gọi nhóm revenue cao nhất là lợi nhuận cao nhất không?",
      "options": [
       {
-       "text": "Có nếu vẽ bằng barh",
-       "detail": "Loại hình không thay định nghĩa chỉ số."
-      },
-      {
        "text": "Không, còn thiếu chi phí",
        "detail": "Đúng: doanh thu không phải lợi nhuận.",
        "correct": true
+      },
+      {
+       "text": "Có nếu vẽ bằng barh",
+       "detail": "Loại hình không thay định nghĩa chỉ số."
       },
       {
        "text": "Có, hai từ cùng nghĩa",
@@ -99,13 +99,13 @@
        "detail": "32 chỉ cộng hai đơn giá và bỏ số lượng."
       },
       {
-       "text": "Tổng 5 vì chỉ đếm số lượng.",
-       "detail": "5 chỉ cộng số lượng, chưa dùng đơn giá."
-      },
-      {
        "text": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá.",
        "detail": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá.",
        "correct": true
+      },
+      {
+       "text": "Tổng 5 vì chỉ đếm số lượng.",
+       "detail": "5 chỉ cộng số lượng, chưa dùng đơn giá."
       }
      ],
      "explanation": "Cà phê 40, trà 36; tổng 76 theo cùng đơn vị giá. Phải ghi rõ đơn vị và quy tắc lượng, giá."
@@ -118,13 +118,13 @@
        "detail": "Không được tự giả định chi phí mọi đơn đều bằng 0."
       },
       {
+       "text": "Có; doanh thu và lợi nhuận là một khái niệm.",
+       "detail": "Hai đại lượng có công thức khác nhau khi có chi phí."
+      },
+      {
        "text": "Không. Cần chi phí để tính lợi nhuận.",
        "detail": "Không. Cần chi phí để tính lợi nhuận.",
        "correct": true
-      },
-      {
-       "text": "Có; doanh thu và lợi nhuận là một khái niệm.",
-       "detail": "Hai đại lượng có công thức khác nhau khi có chi phí."
       }
      ],
      "explanation": "Không. Cần chi phí để tính lợi nhuận."

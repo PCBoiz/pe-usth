@@ -79,10 +79,6 @@
      "question": "Bảng có 4 hàng trạm và 3 cột thời điểm. sum(axis=0) có mấy kết quả?",
      "options": [
       {
-       "text": "4",
-       "detail": "Bốn kết quả là tổng mỗi hàng với axis=1."
-      },
-      {
        "text": "1",
        "detail": "Một kết quả là sum() không ghi axis."
       },
@@ -90,6 +86,10 @@
        "text": "3",
        "detail": "Đúng. Mỗi cột thời điểm có một tổng.",
        "correct": true
+      },
+      {
+       "text": "4",
+       "detail": "Bốn kết quả là tổng mỗi hàng với axis=1."
       }
      ],
      "explanation": "Đúng. Mỗi cột thời điểm có một tổng."
@@ -98,17 +98,17 @@
      "question": "Mỗi cột là một ngày bán hàng. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([[1, 2, 3], [4, 5, 6]])\nprint(a.sum(axis=0))",
      "options": [
       {
-       "text": "[5, 7, 9]",
-       "detail": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột.",
-       "correct": true
-      },
-      {
        "text": "[6, 15]",
        "detail": "Đó là tổng theo hàng."
       },
       {
        "text": "21",
        "detail": "Đó là tổng toàn bảng."
+      },
+      {
+       "text": "[5, 7, 9]",
+       "detail": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột.",
+       "correct": true
       }
      ],
      "explanation": "axis=0 gộp các hàng, còn một kết quả ở mỗi cột."

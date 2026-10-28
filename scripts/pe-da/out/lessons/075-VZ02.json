@@ -76,8 +76,8 @@
      "question": "Có left và right là hai Axes. Muốn chắc đường nằm bên phải, dùng gì?",
      "options": [
       {
-       "text": "fig.plot(x,y)",
-       "detail": "Figure không có plot giống Axes trong cách dùng này."
+       "text": "plt.plot(x,y) luôn vào bên phải",
+       "detail": "pyplot phụ thuộc Axes hiện tại, không luôn là bên phải."
       },
       {
        "text": "right.plot(x,y)",
@@ -85,8 +85,8 @@
        "correct": true
       },
       {
-       "text": "plt.plot(x,y) luôn vào bên phải",
-       "detail": "pyplot phụ thuộc Axes hiện tại, không luôn là bên phải."
+       "text": "fig.plot(x,y)",
+       "detail": "Figure không có plot giống Axes trong cách dùng này."
       }
      ],
      "explanation": "Figure chứa các vùng vẽ; Axes mới nhận lệnh plot trực tiếp."
@@ -95,12 +95,12 @@
      "question": "Muốn lưu toàn bộ hình thì dùng đối tượng nào?\n\nimport matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nax.plot([1, 2, 3], [12, 15, 9], marker=\"o\", label=\"Coffee\")\nax.set(xlabel=\"Day\", ylabel=\"Cups\", title=\"Daily sales\")\nax.legend()\nprint(len(fig.axes), len(ax.lines))\nplt.show()",
      "options": [
       {
-       "text": "Dùng ax.savefig vì Figure chỉ giữ tên hình.",
-       "detail": "savefig là phương thức của Figure, không phải Axes."
-      },
-      {
        "text": "Dùng ax.plot vì plot tự lưu mọi hình ra file.",
        "detail": "plot tạo đường trong Axes; nó không tự lưu toàn hình."
+      },
+      {
+       "text": "Dùng ax.savefig vì Figure chỉ giữ tên hình.",
+       "detail": "savefig là phương thức của Figure, không phải Axes."
       },
       {
        "text": "Dùng fig.savefig(...). Axes dùng để vẽ và sửa vùng dữ liệu.",
@@ -114,13 +114,13 @@
      "question": "add_subplot(221) mô tả vị trí nào?\n\nimport matplotlib.pyplot as plt\nfig = plt.figure(figsize=(6, 3.5))\nax = fig.add_subplot(111)\nax.bar([\"Coffee\", \"Tea\"], [36, 24])\nax.set(ylabel=\"Cups\", title=\"A subplot inside a Figure\")\nprint(ax.get_subplotspec().get_geometry())\nplt.show()",
      "options": [
       {
-       "text": "Hai hàng, một cột, ô thứ hai.",
-       "detail": "Chuỗi 221 mô tả hai cột, không phải một cột."
-      },
-      {
        "text": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng.",
        "detail": "Hai hàng, hai cột, ô thứ nhất; vị trí được đếm từ 1, từ trái qua phải rồi xuống hàng.",
        "correct": true
+      },
+      {
+       "text": "Hai hàng, một cột, ô thứ hai.",
+       "detail": "Chuỗi 221 mô tả hai cột, không phải một cột."
       },
       {
        "text": "Hai hàng, hai cột, ô số 0.",

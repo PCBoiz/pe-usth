@@ -71,13 +71,13 @@
      "question": "Ngày 2024-02-28 cộng 2 ngày bằng timedelta là ngày nào?",
      "options": [
       {
+       "text": "2024-02-30",
+       "detail": "Tháng 2 không có ngày 30; không cộng vào riêng phần ngày của chuỗi."
+      },
+      {
        "text": "2024-03-01",
        "detail": "Năm 2024 có ngày 29/02; timedelta đi qua ranh giới tháng.",
        "correct": true
-      },
-      {
-       "text": "2024-02-30",
-       "detail": "Tháng 2 không có ngày 30; không cộng vào riêng phần ngày của chuỗi."
       },
       {
        "text": "2024-03-02",
@@ -90,16 +90,16 @@
      "question": "Bạn có chuỗi \"2026-12-31\" và cần một datetime. Dùng thao tác nào?",
      "options": [
       {
-       "text": "timedelta với chuỗi ngày",
-       "detail": "Chưa đúng. strptime đọc chuỗi theo format; strftime tạo chuỗi từ đối tượng ngày."
-      },
-      {
        "text": "datetime.strptime với format %Y-%m-%d",
        "detail": "strptime đọc chuỗi theo format; strftime tạo chuỗi từ đối tượng ngày.",
        "correct": true
       },
       {
        "text": "datetime.strftime trên chính chuỗi",
+       "detail": "Chưa đúng. strptime đọc chuỗi theo format; strftime tạo chuỗi từ đối tượng ngày."
+      },
+      {
+       "text": "timedelta với chuỗi ngày",
        "detail": "Chưa đúng. strptime đọc chuỗi theo format; strftime tạo chuỗi từ đối tượng ngày."
       }
      ],
@@ -109,17 +109,17 @@
      "question": "Báo cáo cần hiển thị ngày dưới dạng 05/01/2026. Format nào phù hợp?",
      "options": [
       {
-       "text": "%d/%m/%Y",
-       "detail": "%d là ngày, %m là tháng, %Y là năm bốn chữ số.",
-       "correct": true
-      },
-      {
        "text": "%Y/%m/%d",
        "detail": "Chưa đúng. %d là ngày, %m là tháng, %Y là năm bốn chữ số."
       },
       {
        "text": "%m/%Y/%d",
        "detail": "Chưa đúng. %d là ngày, %m là tháng, %Y là năm bốn chữ số."
+      },
+      {
+       "text": "%d/%m/%Y",
+       "detail": "%d là ngày, %m là tháng, %Y là năm bốn chữ số.",
+       "correct": true
       }
      ],
      "explanation": "%d là ngày, %m là tháng, %Y là năm bốn chữ số."

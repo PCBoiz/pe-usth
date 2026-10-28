@@ -67,17 +67,17 @@
      "question": "np.mgrid[-1:1:3j] tạo bao nhiêu điểm?",
      "options": [
       {
-       "text": "3",
-       "detail": "Bước phức 3j yêu cầu ba điểm, gồm hai đầu -1 và 1.",
-       "correct": true
-      },
-      {
        "text": "2",
        "detail": "Không diễn giải 3j như khoảng cách giữa hai điểm."
       },
       {
        "text": "Không xác định vì số phức",
        "detail": "Trong cú pháp mgrid, phần ảo chỉ định số điểm."
+      },
+      {
+       "text": "3",
+       "detail": "Bước phức 3j yêu cầu ba điểm, gồm hai đầu -1 và 1.",
+       "correct": true
       }
      ],
      "explanation": "Bước phức 3j yêu cầu ba điểm, gồm hai đầu -1 và 1."
@@ -86,13 +86,13 @@
      "question": "linspace(0, pi, 3) tạo mấy vị trí?",
      "options": [
       {
-       "text": "pi vị trí",
-       "detail": "Chưa đúng. Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu."
-      },
-      {
        "text": "3",
        "detail": "Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu.",
        "correct": true
+      },
+      {
+       "text": "pi vị trí",
+       "detail": "Chưa đúng. Tham số thứ ba là số điểm; mặc định cách dùng này gồm cả hai đầu."
       },
       {
        "text": "2",
@@ -105,16 +105,16 @@
      "question": "np.sin(x) với x là array làm gì trước khi vẽ?",
      "options": [
       {
+       "text": "Đổi mọi phần tử thành chỉ số",
+       "detail": "Chưa đúng. Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
+      },
+      {
        "text": "Tính sin từng phần tử thành array",
        "detail": "Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ.",
        "correct": true
       },
       {
        "text": "Tự mở đồ thị sin",
-       "detail": "Chưa đúng. Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
-      },
-      {
-       "text": "Đổi mọi phần tử thành chỉ số",
        "detail": "Chưa đúng. Tính giá trị và tạo hình là hai bước riêng; sin không tự vẽ."
       }
      ],

@@ -71,6 +71,10 @@
      "question": "Round Robin quantum=2, A cần 3 và B cần 2, đều đến lúc 0 theo A/B. Sau A chạy 2 đơn vị, ai chạy?",
      "options": [
       {
+       "text": "Cả A và B đồng thời trên một CPU",
+       "detail": "Trong mô hình một CPU, chỉ một job thực thi ở mỗi thời điểm."
+      },
+      {
        "text": "B",
        "detail": "A chưa xong nên về cuối queue; B đang ở đầu.",
        "correct": true
@@ -78,10 +82,6 @@
       {
        "text": "A tiếp tục tới hết",
        "detail": "Điều đó bỏ qua quantum và lượt của B."
-      },
-      {
-       "text": "Cả A và B đồng thời trên một CPU",
-       "detail": "Trong mô hình một CPU, chỉ một job thực thi ở mỗi thời điểm."
       }
      ],
      "explanation": "A chưa xong nên về cuối queue; B đang ở đầu."
@@ -90,16 +90,16 @@
      "question": "Một job dùng hết quantum mà vẫn còn CPU burst thì đi đâu trong Round Robin cơ bản?",
      "options": [
       {
-       "text": "Trạng thái terminated ngay",
-       "detail": "Chưa đúng. Job chưa xong được xếp lại để các job khác có lượt."
-      },
-      {
        "text": "Cuối ready queue",
        "detail": "Job chưa xong được xếp lại để các job khác có lượt.",
        "correct": true
       },
       {
        "text": "Đầu queue vĩnh viễn",
+       "detail": "Chưa đúng. Job chưa xong được xếp lại để các job khác có lượt."
+      },
+      {
+       "text": "Trạng thái terminated ngay",
        "detail": "Chưa đúng. Job chưa xong được xếp lại để các job khác có lượt."
       }
      ],
@@ -109,17 +109,17 @@
      "question": "Burst còn 1 nhưng quantum=3. Job có bắt buộc chạy đủ 3 đơn vị không?",
      "options": [
       {
-       "text": "Không; nó kết thúc sau 1",
-       "detail": "Quantum là mức cấp tối đa cho lượt, không phải lượng tính bắt buộc của job.",
-       "correct": true
-      },
-      {
        "text": "Có; luôn đợi hết quantum mới kết thúc",
        "detail": "Chưa đúng. Quantum là mức cấp tối đa cho lượt, không phải lượng tính bắt buộc của job."
       },
       {
        "text": "Chỉ kết thúc nếu đứng cuối queue",
        "detail": "Chưa đúng. Quantum là mức cấp tối đa cho lượt, không phải lượng tính bắt buộc của job."
+      },
+      {
+       "text": "Không; nó kết thúc sau 1",
+       "detail": "Quantum là mức cấp tối đa cho lượt, không phải lượng tính bắt buộc của job.",
+       "correct": true
       }
      ],
      "explanation": "Quantum là mức cấp tối đa cho lượt, không phải lượng tính bắt buộc của job."

@@ -69,10 +69,6 @@
      "question": "Một editor được mở hai lần từ cùng file chương trình. Hai lần mở có bắt buộc cùng PID không?",
      "options": [
       {
-       "text": "Có; PID là tên file chương trình",
-       "detail": "PID nhận diện tiến trình, không phải tên executable."
-      },
-      {
        "text": "Không thể chạy cùng program hai lần",
        "detail": "Hệ điều hành có thể tạo nhiều tiến trình từ cùng program."
       },
@@ -80,6 +76,10 @@
        "text": "Không; đó có thể là hai tiến trình có PID riêng",
        "detail": "Program là mã chương trình; process là một lần thực thi có trạng thái và tài nguyên.",
        "correct": true
+      },
+      {
+       "text": "Có; PID là tên file chương trình",
+       "detail": "PID nhận diện tiến trình, không phải tên executable."
       }
      ],
      "explanation": "Program là mã chương trình; process là một lần thực thi có trạng thái và tài nguyên."
@@ -92,13 +92,13 @@
        "detail": "Chưa đúng. Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
       },
       {
+       "text": "Có; tên file quyết định duy nhất một process",
+       "detail": "Chưa đúng. Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
+      },
+      {
        "text": "Không; một program có thể có nhiều lần thực thi",
        "detail": "Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi.",
        "correct": true
-      },
-      {
-       "text": "Có; tên file quyết định duy nhất một process",
-       "detail": "Chưa đúng. Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
       }
      ],
      "explanation": "Program là mô tả được lưu; process là một lần chạy cùng trạng thái thực thi."
@@ -112,11 +112,11 @@
        "correct": true
       },
       {
-       "text": "waiting vì đang chờ đọc đĩa",
+       "text": "terminated",
        "detail": "Chưa đúng. Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O."
       },
       {
-       "text": "terminated",
+       "text": "waiting vì đang chờ đọc đĩa",
        "detail": "Chưa đúng. Ready là chờ được cấp CPU; waiting là chờ một sự kiện hay I/O."
       }
      ],

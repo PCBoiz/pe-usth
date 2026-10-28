@@ -90,13 +90,13 @@
      "question": "Trong ví dụ đầu, giá trị 15 có nhãn nào?\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9])\nprint(cups.tolist())\nprint(cups.index.tolist())",
      "options": [
       {
+       "text": "Nhãn 0.",
+       "detail": "Nhãn 0 thuộc phần tử đầu, có giá trị 12."
+      },
+      {
        "text": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
        "detail": "Nhãn 1, vì pandas tạo nhãn mặc định từ 0.",
        "correct": true
-      },
-      {
-       "text": "Nhãn 0.",
-       "detail": "Nhãn 0 thuộc phần tử đầu, có giá trị 12."
       },
       {
        "text": "Nhãn 15.",
@@ -109,17 +109,17 @@
      "question": "Với index Mon, Tue, Wed, viết biểu thức lấy số cốc thứ Tư.\n\nimport pandas as pd\ncups = pd.Series([12, 15, 9], index=['Mon', 'Tue', 'Wed'])\nprint(cups.loc['Tue'])",
      "options": [
       {
+       "text": "Dùng cups.loc['Wed'], nhận 9.",
+       "detail": "Dùng cups.loc['Wed'], nhận 9.",
+       "correct": true
+      },
+      {
        "text": "cups.loc['Tue'], nhận 15.",
        "detail": "Tue là thứ Ba; đề đang hỏi thứ Tư."
       },
       {
        "text": "cups.loc[2], vì Wed là ngày thứ ba.",
        "detail": "Series đã dùng nhãn ngày; số 2 không phải một nhãn trong Series đó."
-      },
-      {
-       "text": "Dùng cups.loc['Wed'], nhận 9.",
-       "detail": "Dùng cups.loc['Wed'], nhận 9.",
-       "correct": true
       }
      ],
      "explanation": "Dùng cups.loc['Wed'], nhận 9."

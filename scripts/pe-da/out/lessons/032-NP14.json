@@ -85,17 +85,17 @@
      "question": "a=np.array([-2,0,7,12]); a[(a>=0)&(a<=10)] còn gì?",
      "options": [
       {
-       "text": "[-2,0,7,12]",
-       "detail": "Lọc bằng mask bỏ những vị trí không thỏa điều kiện."
+       "text": "[0,7]",
+       "detail": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10.",
+       "correct": true
       },
       {
        "text": "[True,True]",
        "detail": "Kết quả lựa chọn là giá trị của a, không phải mask."
       },
       {
-       "text": "[0,7]",
-       "detail": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10.",
-       "correct": true
+       "text": "[-2,0,7,12]",
+       "detail": "Lọc bằng mask bỏ những vị trí không thỏa điều kiện."
       }
      ],
      "explanation": "Đúng. Giữ cả biên 0 và các giá trị không vượt 10."
@@ -104,17 +104,17 @@
      "question": "Chọn các ngày có mưa. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\nrain = np.array([0., 3.5, 0., 6.])\nwet = rain > 0\nprint(rain[wet])",
      "options": [
       {
-       "text": "[3.5, 6.0]",
-       "detail": "Index bằng mask giữ các giá trị ở vị trí True.",
-       "correct": true
+       "text": "[0, 3.5, 0, 6]",
+       "detail": "Hai ngày 0 không đạt điều kiện."
       },
       {
        "text": "[False, True, False, True]",
        "detail": "Đó là mask wet, chưa lấy rain[wet]."
       },
       {
-       "text": "[0, 3.5, 0, 6]",
-       "detail": "Hai ngày 0 không đạt điều kiện."
+       "text": "[3.5, 6.0]",
+       "detail": "Index bằng mask giữ các giá trị ở vị trí True.",
+       "correct": true
       }
      ],
      "explanation": "Index bằng mask giữ các giá trị ở vị trí True."
@@ -123,13 +123,13 @@
      "question": "Chỉ giữ điểm trong thang 0–10. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([-1, 0, 6, 10, 12])\nvalid = (a >= 0) & (a <= 10)\nprint(a[valid])",
      "options": [
       {
+       "text": "[6]",
+       "detail": "Hai điều kiện <= và >= nhận cả hai biên."
+      },
+      {
        "text": "[0, 6, 10]",
        "detail": "Hai so sánh được nối bằng & để cùng đúng ở một vị trí.",
        "correct": true
-      },
-      {
-       "text": "[6]",
-       "detail": "Hai điều kiện <= và >= nhận cả hai biên."
       },
       {
        "text": "[-1, 0, 6, 10, 12]",

@@ -68,10 +68,6 @@
      "question": "Vì sao dùng WHERE score >= :limit cùng dictionary tham số?",
      "options": [
       {
-       "text": "Để truy vấn tự tạo bảng còn thiếu",
-       "detail": "Tham số không định nghĩa cấu trúc bảng."
-      },
-      {
        "text": "Tách giá trị đầu vào khỏi cú pháp SQL",
        "detail": "Bind parameter để driver truyền giá trị thay vì ghép nó vào câu SQL.",
        "correct": true
@@ -79,6 +75,10 @@
       {
        "text": "Để tên bảng có thể tùy ý là tham số",
        "detail": "Bind parameter ở đây dành cho giá trị, không thay mọi thành phần cú pháp."
+      },
+      {
+       "text": "Để truy vấn tự tạo bảng còn thiếu",
+       "detail": "Tham số không định nghĩa cấu trúc bảng."
       }
      ],
      "explanation": "Bind parameter để driver truyền giá trị thay vì ghép nó vào câu SQL."
@@ -87,7 +87,7 @@
      "question": "Engine và connection trong SQLAlchemy có cùng vai trò không?",
      "options": [
       {
-       "text": "Engine luôn là một DataFrame",
+       "text": "Có; cả hai chỉ là chuỗi tên bảng",
        "detail": "Chưa đúng. Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ."
       },
       {
@@ -96,7 +96,7 @@
        "correct": true
       },
       {
-       "text": "Có; cả hai chỉ là chuỗi tên bảng",
+       "text": "Engine luôn là một DataFrame",
        "detail": "Chưa đúng. Phân biệt nơi quản lý kết nối với kết nối đang dùng giúp quản lý vòng đời rõ."
       }
      ],
@@ -106,17 +106,17 @@
      "question": "Muốn liệt kê tên bảng theo API hiện hành của bài, chọn gì?",
      "options": [
       {
-       "text": "inspect(engine).get_table_names()",
-       "detail": "Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài.",
-       "correct": true
-      },
-      {
        "text": "engine.table_names() trong ví dụ cũ",
        "detail": "Chưa đúng. Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."
       },
       {
        "text": "engine.fetchmany() để lấy tên mọi bảng",
        "detail": "Chưa đúng. Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."
+      },
+      {
+       "text": "inspect(engine).get_table_names()",
+       "detail": "Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài.",
+       "correct": true
       }
      ],
      "explanation": "Inspector cung cấp metadata; table_names trên engine là cách cũ đã được thay trong bài."

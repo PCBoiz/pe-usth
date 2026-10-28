@@ -85,13 +85,13 @@
      "question": "b=a[:2]; b[0]=9. Vì sao a cũng đổi?",
      "options": [
       {
+       "text": "Python luôn tự sao chép rồi chép ngược",
+       "detail": "Không có bước sao chép ngược tự động; hai cách truy cập dùng chung dữ liệu."
+      },
+      {
        "text": "Slice cơ bản dùng chung dữ liệu với a trong ví dụ",
        "detail": "Đúng. b là view vào vùng nhớ a đang dùng.",
        "correct": true
-      },
-      {
-       "text": "Python luôn tự sao chép rồi chép ngược",
-       "detail": "Không có bước sao chép ngược tự động; hai cách truy cập dùng chung dữ liệu."
       },
       {
        "text": "Tên b bắt buộc đồng nghĩa với tên a",
@@ -104,17 +104,17 @@
      "question": "Sửa phần đầu được cắt từ array. Kết quả ở lệnh print cuối có giá trị nào?\n\nimport numpy as np\na = np.array([1, 2, 3])\nb = a[:2]\nb[0] = 9\nprint(a)",
      "options": [
       {
-       "text": "[9, 2, 3]",
-       "detail": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc.",
-       "correct": true
-      },
-      {
        "text": "[1, 2, 3]",
        "detail": "b là view nên chia sẻ vùng dữ liệu với a."
       },
       {
        "text": "[9, 2]",
        "detail": "a vẫn có ba phần tử."
+      },
+      {
+       "text": "[9, 2, 3]",
+       "detail": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc.",
+       "correct": true
       }
      ],
      "explanation": "Sửa b[0] sửa cùng ô dữ liệu mà a[0] đang đọc."
@@ -128,12 +128,12 @@
        "correct": true
       },
       {
-       "text": "[9, 2, 3]",
-       "detail": "copy tách dữ liệu của b khỏi a."
-      },
-      {
        "text": "[1, 2]",
        "detail": "Cắt b không làm a ngắn lại."
+      },
+      {
+       "text": "[9, 2, 3]",
+       "detail": "copy tách dữ liệu của b khỏi a."
       }
      ],
      "explanation": "Bản sao có dữ liệu riêng nên a giữ nguyên."
