@@ -11,10 +11,30 @@
    working unchanged.
    ══════════════════════════════════════════════════════════════ */
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --edu-font: 'Poppins', system-ui, sans-serif;
+  /* MONTSERRAT, không phải Poppins. Đổi ngày 29/10/2026 sau đợt thử nghiệm.
+     Hai lý do, và lý do thứ hai mới là lý do thật:
+
+     1. Một người thử đề xuất đích danh: "dùng font poppins ak, rcm sang
+        montserrat hoặc helvetica nhé vì đấy là font siêu an toàn và dễ nhìn".
+
+     2. Ba trên bốn người trả lời khảo sát chọn "Nhiều chỗ chữ quá nhỏ, phải
+        phóng to mới đọc được", và một người viết riêng "nên để cỡ chữ to hơn".
+        Poppins có x-height THẤP so với chiều cao chữ hoa — cùng một
+        `font-size`, phần thân chữ thường của nó nhỏ hơn hẳn các font sans
+        khác, nên chữ TRÔNG nhỏ hơn con số px nói. Montserrat có x-height cao
+        hơn rõ rệt, nên nó đọc to hơn mà không phải nới một px nào.
+
+     Và nó khớp với "lỗi font chữ nha" / "Text chữ có vấn đề chữ cao chữ thấp"
+     mà hai người khác báo: Poppins là font hình học, chữ thường gần như tròn
+     đều nên dòng chữ thiếu mốc để mắt bám.
+
+     Helvetica (lựa chọn còn lại người thử nêu) không chọn vì nó không có trên
+     Windows — ở đó nó rơi về Arial, tức hai máy hiện hai font khác nhau.
+     Montserrat tải từ Google Fonts nên mọi máy thấy một thứ. */
+  --edu-font: 'Montserrat', system-ui, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 
   /* accent — identical in light & dark */
   --edu-accent: #2563eb;

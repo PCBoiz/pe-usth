@@ -2,7 +2,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Poppins', 'Plus Jakarta Sans', 'sans-serif'],
+                        sans: ['Montserrat', 'Plus Jakarta Sans', 'sans-serif'],
                         mono: ['Fira Code', 'monospace'],
                     },
                     colors: {

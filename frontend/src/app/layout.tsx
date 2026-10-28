@@ -35,12 +35,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             đọc .content KHÔNG guard → meta phải tồn tại (rỗng — auth giờ là JWT). */}
         <meta name="csrf-token" content="" />
         {/* ── RÚT NGẮN ĐƯỜNG TẢI FONT ──────────────────────────────────────
-            edu-theme.css dòng 14 nạp Poppins bằng `@import url(fonts.
+            edu-theme.css dòng 14 nạp Montserrat bằng `@import url(fonts.
             googleapis.com/...&display=swap)`. @import nằm BÊN TRONG một file
             tải qua <link>, nên trình duyệt chỉ biết tới nó sau khi đã tải và
             phân tích xong edu-theme.css: chuỗi phụ thuộc là HTML → edu-theme
             .css → CSS của Google Fonts → file .woff2. Với `display=swap`, chữ
-            vẽ bằng font dự phòng trước rồi mới nhảy sang Poppins — mỗi nhịp
+            vẽ bằng font dự phòng trước rồi mới nhảy sang Montserrat — mỗi nhịp
             chậm trong chuỗi đó là một nhịp dịch bố cục (CLS).
 
             preconnect: dựng sẵn DNS + TLS cho hai origin của Google Fonts.
@@ -61,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link
           rel="preload"
           as="style"
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap"
         />
         {/* Origin backend cho pe-bridge.js — phải có TRƯỚC mọi script legacy */}
         <script
