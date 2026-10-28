@@ -52,7 +52,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **310 ca** / 24 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **328 ca** / 27 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
@@ -69,13 +69,18 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 310 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
-catalog-duration 2 · catalog-naming 3 · consent-banner 15 · editor-load-gate 14 ·
-feedback-link 9 · forum-xss 1 · ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 ·
-ide-stop-autosave 27 · ide-trace 38 · label-version 2 · learning-events 48 · lesson-load 7 ·
-mcq-code 9 · practice-contract 14 · prewarm-gate 5 · read-try-it 20 · session-marker 5 ·
-studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 310.
-Mốc trước là 295; thêm consent-banner 15.
+**Con số 328 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
+editor-load-gate 14 · feedback-link 9 · forum-xss 1 · ide-brief-code 12 ·
+ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 · ide-trace 38 ·
+inline-code 3 · label-version 2 · learning-events 48 · lesson-back 7 ·
+lesson-load 7 · mcq-code 9 · practice-contract 14 · prewarm-gate 5 ·
+read-try-it 20 · session-marker 5 · studio-lesson 41 · tracer-limits 7 ·
+tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 328.
+Mốc trước là 310; thêm lesson-back 7, course-resume 8 và inline-code 3 — cả ba đến từ
+đợt phản hồi của người thử ngày 27/10 (xem bẫy "Năm người thử cùng báo thiếu nút quay
+lại" ở dưới).
+Trước đó 295 → 310 là consent-banner 15.
 Trước đó 231 → 295 là learning-events 48, mcq-code 9 và tracer-limits 7.
 Trước đó 211 → 231 là read-try-it 20 (nút "Try it Yourself" ở màn đọc — xem bẫy dưới),
 và 196 → 211 là practice-contract 14 và studio-lesson 40 → 41.
@@ -809,6 +814,82 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   vô hại"). Ngày nào một trang công khai THẬT SỰ cần gọi API thì ĐÓ là lúc phải viết
   `apiFetchSessionOnly` (chỉ gửi kèm phiên đang có; 401 thì trả 401 và để UI hiện "chưa đăng
   nhập"; KHÔNG gọi `ensureGuest()`) — đừng cho rằng nó đã có.
+
+- **NĂM người thử cùng báo "không có nút back" — mà cơ chế quay lại ĐÃ CÓ.** Đợt thử
+  nghiệm 27/10/2026: "không có nút back", "chưa có nút return", "sao không cho quay lại
+  lỡ bấm nhầm nút tiếp theo", một người trong đó tự nhận làm frontend. Nhưng `goTo()`
+  nhận số màn bất kỳ từ lâu, và thanh tiến độ trên đỉnh đã dựng mỗi đoạn đã đi qua thành
+  một `<button>` gọi `onSeek`. Thứ thiếu là cái TRÔNG NHƯ bấm được: thanh tiến độ là một
+  dải đoạn cao 4px, không viền, không nhãn. Nguyên văn một người: "ko có nút back mà bấm
+  trên thanh tiến độ để chuyển à" — họ phải ĐOÁN ra. **Một đường đi mà người dùng phải
+  đoán thì trên thực tế nó không tồn tại**, và đây là lần thứ ba cùng một hình dạng lỗi
+  trong repo này (tracer không bài nào tới, nút "Try it Yourself" không màn nào mount).
+  Nay có nút "← Quay lại" ở ô TRÁI thanh dưới. Nó gọi lại CHÍNH `goTo` — `goTo` xoá kết
+  quả chấm màn cũ, đóng gợi ý và cuộn lên đầu, bỏ sót một trong ba thì màn mới mở ra kèm
+  băng "Chưa đúng" của màn trước. KHÔNG `history.back()`: bài học là một trang đổi
+  `d.step`, nó sẽ rời hẳn bài. Bốn khung không có nội dung (đang tải, lỗi nạp, chưa ghi
+  danh, bài rỗng) dựng cùng `frame()` nên thừa hưởng mọi prop — phải `onBack: undefined`
+  cả bốn, quên một cái là có nút Quay lại trên màn "Đang tải bài học…".
+  **Đi kèm, và phải sửa cùng lúc:** nút × đóng bài thả người học về `/courses/<id>` trần,
+  mà `CourseDetail` ghim cứng module 0 mở sẵn — nên đường ra duy nhất của màn bài học
+  luôn đổ người ta xuống đầu một khoá 172 bài chia 10 module. Nay `leave()` mang theo
+  `?lesson=`. **Lệch một đơn vị ở đây hỏng IM LẶNG**: `lessonNo` là `sort_order` đếm từ
+  1, link ở trang khoá học là chỉ số PHẲNG đếm từ 0 — quên `- 1` thì vẫn mở đúng module
+  ở hầu hết các bài, chỉ sai ở bài ĐẦU của mỗi module. Phép ánh xạ nằm ở
+  `src/lib/curriculum-nav.ts` (hàm thuần, không import gì) để ca test gọi thẳng được với
+  cả 10 module thật.
+  **Cuộn phải là effect RIÊNG**: bản đầu nhét `requestAnimationFrame` vào cùng effect mở
+  module và đo được `scrollY` vẫn bằng 0 — lúc đó module còn chưa mở nên `scrollIntoView`
+  nhắm vào phần tử chưa có chỗ trên trang. Và `setState` phải HOÃN khỏi thân effect
+  (React 19 chặn, đã làm lint đỏ ngay trong lần sửa đó). KHÔNG dùng `useSearchParams()`:
+  nó buộc trang khoá học rời khỏi dạng tĩnh, mà đó là trang CÔNG KHAI không được gọi API.
+- **Phản hồi "chữ quá nhỏ" có nguyên nhân là FONT, không phải `font-size`.** Ba trên bốn
+  người trả lời khảo sát chọn "Nhiều chỗ chữ quá nhỏ, phải phóng to mới đọc được"; hai
+  người khác báo "lỗi font chữ" / "chữ cao chữ thấp". Poppins có x-height THẤP so với
+  chiều cao chữ hoa, nên cùng một `font-size` nó TRÔNG nhỏ hơn con số px nói, và vì là
+  font hình học, chữ thường gần như tròn đều nên dòng chữ thiếu mốc cho mắt bám. Đổi sang
+  **Montserrat** (người thử đề xuất đích danh) xử lý cả hai lời phàn nàn tưởng khác nhau.
+  KHÔNG chọn Helvetica — lựa chọn còn lại họ nêu — vì nó không có trên Windows, ở đó rơi
+  về Arial, tức hai máy hiện hai font khác nhau.
+  **SÁU chỗ khai font phải đi cùng nhau**, bỏ sót một là lệch font giữa các trang:
+  `edu-theme.css` (@import + biến `--edu-font`), `layout.tsx` (thẻ preload — trỏ sai là
+  tải THỪA hẳn một font), `roadmap.css` (chuỗi dự phòng riêng), và ba `*.tailwind.js`.
+  **Và phải bump `ASSET_VERSION`**: file trong `public/` không đi qua bundler nên URL
+  không đổi theo nội dung — không bump thì người đã mở trang vẫn giữ CSS cũ trong cache,
+  tức bản sửa không tới được đúng những người đã báo lỗi. Chính `assetVersion.ts` đã dặn
+  điều đó.
+  Đo tương phản trước khi đổi màu chữ, **và kết quả là KHÔNG có lỗi WCAG nào** — đừng
+  "sửa" lại vì tưởng có: t1 #0f1b33 = 17,14:1 · t2 #3a4a66 = 8,93:1 · t3 #5b6a85 =
+  5,46:1 trên nền trắng, cả ba vượt AA. Vấn đề là chỗ NÀO dùng cái gì: `.read p` (thân
+  bài của 145 bài đọc) và `ShellB .description` (đề bài của MỌI màn) đang dùng tổ hợp nhỏ
+  nhất và nhạt nhất trên màn hình. Nới đúng hai chỗ đó cộng ô tổng kết; KHÔNG nới tràn
+  mọi `font-size` nhỏ — nhãn và chip ở cỡ nhỏ là đúng, nới hết thì mất thứ bậc.
+- **Favicon là bản MẶC ĐỊNH của Vercel, và `metadata.icons` không cứu được.** Người thử
+  nhận ra ngay ("Favicon hình như là default của Vercel"). `frontend/src/app/favicon.ico`
+  đúng là file create-next-app sinh ra (25 931 byte, tam giác Vercel). Mà `layout.tsx` ĐÃ
+  khai `metadata.icons` một tên lửa 🚀 từ lâu — trong App Router quy ước FILE thắng
+  `metadata.icons`, nên dòng khai đó chưa bao giờ hiện ra lần nào. Nay là
+  `src/app/icon.svg` (cũng quy ước file, không còn lớp nào đè) và `metadata.icons` đã
+  XOÁ: khai lại ở đó là dựng lại đúng lớp đè đã gây ra chuyện này.
+- **`withInlineCode` phải dùng CHUNG một bản — ô tổng kết từng in nguyên dấu backtick.**
+  Người thử gửi ảnh ô "KIẾN THỨC CỐT LÕI ĐÃ HỌC" hiện `` `.venv\Scripts\python -m pip
+  install numpy` `` kèm cả hai backtick. Hàm bóc backtick ĐÃ CÓ và màn đọc ĐÃ dùng; ô
+  tổng kết lấy ĐOẠN VĂN ĐẦU của từng màn đọc làm ý chính (`RecapScreen.facts`) rồi dựng
+  thẳng `{f}`. Cùng MỘT câu chữ, hai đường, hai kết quả — và đường hỏng là đường không ai
+  nghĩ tới vì nó chỉ MƯỢN LẠI dữ liệu của đường kia. Hàm nay ở `src/lib/inline-code.tsx`;
+  ô tổng kết nằm ở `lesson-chrome/exercises/` (dùng chung cho mọi loại bài) nên nó không
+  được import ngược vào `components/python-studio/`. Ca test canh "hai nơi dùng CHUNG một
+  hàm", không canh "Recap có gọi bóc backtick": nơi thứ ba mượn lại cùng dữ liệu sẽ lại
+  hỏng đúng kiểu này.
+- **Trắc nghiệm sai thì KHÔNG có đường đi tiếp — chưa sửa, và nó không phải lỗi CSS.**
+  `primaryCta`: `if (verdict && !verdict.correct) return { label: 'Thử lại', ... }`, tức
+  nút duy nhất sau một câu sai là Thử lại. Người thử nói đúng cái giá: "nếu sai rồi thì
+  cho next luôn vì thử lại ở đây cũng ko làm đc gì. căn bản là người dùng chỉ cần nhớ đáp
+  án rồi chọn lại là được." Chưa sửa VÌ nó không sửa được bằng một dòng: cho đi tiếp mà
+  không `markDone` thì `firstUnfinished` chặn ở màn tổng kết (tệ hơn — kẹt ở cuối bài thay
+  vì giữa bài); `markDone` cho câu SAI thì ô "câu đúng" ở `RecapScreen` nói dối. Cần một
+  trạng thái thứ ba ("đã xem đáp án") và đó là quyết định về cách chấm, không phải về giao
+  diện. `score.firstTry` đã ghi sẵn lần đầu đúng hay sai nên XP không phải đổi.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
