@@ -82,7 +82,15 @@ export default function Mcq({
               onClick={() => onSelect(opt.key)}
               disabled={checked}
               aria-pressed={isSelected}
-              style={checked && !isRight && !isWrong ? { opacity: 0.55 } : undefined}
+              // Phương án KHÔNG được chọn và KHÔNG phải đáp án: mờ đi để hai ô
+              // kia nổi lên. Nhưng nếu nó mang lời giải thích thì chữ đó là thứ
+              // người học phải ĐỌC được — phản hồi có giải thích là d = 0,49,
+              // cao gấp gần 10 lần kiểu chỉ nói đúng/sai (Van der Kleij 2015),
+              // và 1 548/1 548 phương án của khoá 172 bài đều có `detail`. Mờ
+              // 0,8 thay vì 0,55: vẫn tụt hẳn so với hai ô kia, vẫn đọc được.
+              style={
+                checked && !isRight && !isWrong ? { opacity: opt.sub ? 0.8 : 0.55 } : undefined
+              }
             >
               <span className={styles.optionMain}>
                 <code>{opt.key}.</code> {opt.label}

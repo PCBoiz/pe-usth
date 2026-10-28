@@ -52,7 +52,7 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **328 ca** / 27 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **351 ca** / 28 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 347 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
@@ -69,15 +69,16 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 328 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 351 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 editor-load-gate 14 · feedback-link 9 · forum-xss 1 · ide-brief-code 12 ·
 ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 · ide-trace 38 ·
 inline-code 3 · label-version 2 · learning-events 48 · lesson-back 7 ·
-lesson-load 7 · mcq-code 9 · practice-contract 14 · prewarm-gate 5 ·
-read-try-it 20 · session-marker 5 · studio-lesson 41 · tracer-limits 7 ·
-tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 328.
-Mốc trước là 310; thêm lesson-back 7, course-resume 8 và inline-code 3 — cả ba đến từ
+lesson-load 7 · mcq-code 9 · mcq-next-after-wrong 23 · practice-contract 14 ·
+prewarm-gate 5 · read-try-it 20 · session-marker 5 · studio-lesson 41 ·
+tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 351.
+Mốc trước là 328; thêm mcq-next-after-wrong 23.
+Trước đó 310 → 328 là lesson-back 7, course-resume 8 và inline-code 3 — cả ba đến từ
 đợt phản hồi của người thử ngày 27/10 (xem bẫy "Năm người thử cùng báo thiếu nút quay
 lại" ở dưới).
 Trước đó 295 → 310 là consent-banner 15.
@@ -924,47 +925,44 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   được import ngược vào `components/python-studio/`. Ca test canh "hai nơi dùng CHUNG một
   hàm", không canh "Recap có gọi bóc backtick": nơi thứ ba mượn lại cùng dữ liệu sẽ lại
   hỏng đúng kiểu này.
-- **Trắc nghiệm sai thì KHÔNG có đường đi tiếp — chưa sửa, và nó không phải lỗi CSS.**
-  `primaryCta`: `if (verdict && !verdict.correct) return { label: 'Thử lại', ... }`, tức
-  nút duy nhất sau một câu sai là Thử lại. Người thử nói đúng cái giá: "nếu sai rồi thì
-  cho next luôn vì thử lại ở đây cũng ko làm đc gì. căn bản là người dùng chỉ cần nhớ đáp
-  án rồi chọn lại là được." Chưa sửa VÌ nó không sửa được bằng một dòng: cho đi tiếp mà
-  không `markDone` thì `firstUnfinished` chặn ở màn tổng kết (tệ hơn — kẹt ở cuối bài thay
-  vì giữa bài); `markDone` cho câu SAI thì ô "câu đúng" ở `RecapScreen` nói dối. Cần một
-  trạng thái thứ ba ("đã xem đáp án") và đó là quyết định về cách chấm, không phải về giao
-  diện. `score.firstTry` đã ghi sẵn lần đầu đúng hay sai nên XP không phải đổi.
-
-- **65 thuật ngữ từng được dùng lần đầu mà KHÔNG chú giải — nay 0, và phép sửa rẻ hơn
-  tưởng.** Đây là lời giải thích ĐO ĐƯỢC cho phản hồi "người chưa từng tiếp xúc python thì
-  cảm giác khó hiểu": không phải câu dài (trung vị chỉ 13 từ) mà là thuật ngữ thả vào trước
-  khi có nghĩa — `value` dùng trước định nghĩa **164 bài**, `thread` 136, `process` 118.
-  Sửa hết 65 chỗ chỉ tốn **+403 tiếng (+1,2%)** ở 57 khối của 40 bài.
-  **Ba nhóm, ba cách xử lý khác nhau** (`thuatngu.json`): nhóm **A** (định danh trong code)
-  KHÔNG chú giải bằng lời, chỉ bọc backtick; nhóm **B** dùng tiếng Việt làm chính kèm
-  `(tiếng Anh)` một lần; nhóm **C** GIỮ tiếng Anh kèm mô tả — **đừng dịch cố**, một bản dịch
-  tự chế còn khó hơn từ gốc.
-  **Chú giải CŨNG LÀ VĂN BẢN, và nó đẩy lần-dùng-đầu của thuật ngữ KHÁC lên sớm hơn.** Bản
-  đầu viết `script (file code chạy trực tiếp)` ở PY01 blk2, và chữ "file" trong đó dịch lần
-  đầu của `file` về trước blk8 — nơi `file` thật sự được chú giải — nên sinh một lỗi L10 MỚI.
-  Đổi thành `(đoạn code chạy trực tiếp từ dòng lệnh)`.
-  **Hai bước lùi khác, cùng họ:** chú giải tiếng Việt rơi vào đoạn mà bài đó gọi cùng thứ
-  bằng tiếng Anh làm L11 16 → 18 (`worker (tiến trình…)` ở CT01 nơi đoạn gọi "process"); và
-  thêm một lần nhắc thuật ngữ vào bài đã sát ngưỡng làm L8 43 → 44 (SY07 từ cảnh báo 60 lên
-  lỗi 62/1000 tiếng). **Chạy lại CẢ BẢNG sau khi sửa một luật, đừng chỉ chạy luật vừa sửa.**
-  **Mười chỗ phải CHẺ CÂU thay vì nhồi ngoặc**, vì nhồi vào đẩy câu qua 30 tiếng (L1) hoặc
-  đoạn qua 110 tiếng (L2). Chặt nhất là CT01 blk2: đoạn đã 97 tiếng, hai thuật ngữ
-  (`heap`, `stack`) trong một câu, biên 13 tiếng.
-  **`baiDauTien` thiếu `phamVi` là trỏ nhầm, và nó hỏng IM LẶNG.** `fork` khai một mục duy
-  nhất nên `baiDauTien` rơi vào **SY04 — bài Git**, nơi "Fork" là thao tác GitHub; hệ quả là
-  nghĩa UNIX của fork KHÔNG được chú giải ở đâu trong cả khoá, mà bộ kiểm vẫn xanh. Cùng
-  chuyện với `method` (VZ21 `method="update"` là khoá nút Plotly, không phải phương thức
-  OOP). Nay cả hai tách làm hai mục có `phamVi`, đúng khuôn `stack`/`index`/`kernel`/`pipe`
-  đã có. Lần dùng đầu THẬT: fork UNIX ở **CT02**, method OOP ở **SY05**.
-  **Chú giải phải khớp MỘT trong ba khuôn bộ kiểm nhận** (`X (tiếng Việt)`, `tiếng Việt (X)`,
-  `… gọi là X`). Viết bằng gạch ngang (`fork trên UNIX — lệnh nhân đôi tiến trình`) thì L10
-  VẪN ĐỎ dù câu đọc hoàn toàn có nghĩa — đã vấp một lần.
-  **Và §9.3 vẫn đúng:** bộ kiểm chỉ chứng minh chú giải CÓ MẶT, không chứng minh nó đúng hay
-  đủ. 65 câu này cần một lượt đọc của người soạn nội dung, nhất là 42 mục nhóm C.
+- **Trắc nghiệm sai từng KHÔNG có đường đi tiếp — ĐÃ sửa, và trạng thái thứ ba không
+  phải một trường mới.** Người thử: *"nếu sai rồi thì cho next luôn vì thử lại ở đây cũng
+  ko làm đc gì. căn bản là người dùng chỉ cần nhớ đáp án rồi chọn lại là được."* Họ đúng cả
+  về cấu trúc lẫn về bằng chứng: với 3 phương án, làm lại vô hạn đảm bảo đúng sau tối đa 3
+  lần bấm, nên câu hỏi KHÔNG CÒN MANG THÔNG TIN NÀO. Van der Kleij 2015 (40 nghiên cứu / 70
+  cỡ hiệu ứng): phản hồi có giải thích **d = 0,49** · hiện đáp án đúng **0,32** · chỉ nói
+  đúng/sai **0,05** — nút "Thử lại" trần chính là loại 0,05, dạng yếu nhất, và nó còn chặn
+  người học lại.
+  **Trạng thái thứ ba = "có `score.firstTry[key]` nhưng không có `done[key]`"**, đọc qua
+  `screenAnswered` / `screenSettled` / `isChoiceScreen` trong `studio-lesson.ts`. KHÔNG thêm
+  một trường `reviewed` vào bản nháp: đó là thứ thứ hai phải khớp với `firstTry`, và nó sẽ
+  lệch — đúng họ bẫy fixture mà file này đã ghi nhiều lần.
+  **Giá phải trả, có chủ đích:** `award()` trước đây `return` ngay khi khoá không có
+  mini-game, nên với khoá 172 bài `score.firstTry` **RỖNG HOÀN TOÀN**. Nay nó ghi cho MỌI
+  khoá; chỉ hiệu ứng "+10 điểm" mới còn gắn với `scored`.
+  **Chỉ nới cho `mcq` và `predict`.** Các màn chấm khác (`classify`/`scaffold`/`counter`/
+  `selfExplain`/`game`) giữ "Thử lại" làm nút chính, vì ở đó làm lại là làm lại VIỆC (xếp
+  lại dòng code, sửa hàm) chứ không phải chọn lại một phương án.
+  **ĐỔI HÀNH VI NGƯỜI HỌC THẤY ĐƯỢC, và chỗ này mới là chỗ đắt:** `complete()` trước đây gửi
+  `play ? quizPercent(…) : 100`, tức khoá 172 bài LUÔN gửi **100** kể cả sai cả 3 câu — vì
+  `firstTry` của nó rỗng. Nay cả hai chỗ gọi dùng chung `diemBai()`. Mà `scaledXp` ở backend
+  là `xp_reward × (50% + 50% × quizScore)` và `SCORED_XP_COURSES` CÓ `python_advanced`, nên
+  **sai cả 3 câu = 50% XP của bài**; trước bản này mọi người đều nhận 100%.
+  **Một hệ quả KÉO THEO, chưa ai quyết riêng:** trần "có hỗ trợ" của `quizPercent` (mở gợi ý
+  → tối đa 80) nay cũng áp cho khoá bài đọc.
+  **Ô thống kê phải đếm `firstTry`, KHÔNG đếm `done`** — đếm `done` thì bấm "Chọn lại" rồi
+  chọn phương án vừa đọc được là về 3/3, tức mẹo người thử nói ra sống lại nguyên vẹn.
+  **Lời giải thích của phương án KHÔNG được làm mờ nhất.** Phương án không-được-chọn-và-
+  không-phải-đáp-án từng bị `opacity: 0.55`, tức đúng phần d = 0,49 bị làm mờ hơn cả.
+  **Nhãn nút phải ≤ 20 ký tự** (có ca test): dưới 560px thanh dưới là flex với nút chính
+  `flex:1; min-width:132px`, nên "Đã xem đáp án — tiếp tục →" (26 ký tự) tràn ngang.
+  Và sửa kèm một lỗi dữ liệu: `X-Quiz.Answer` suy "lần đầu" bằng `firstTry[key] === undefined`
+  nên ở khoá bài đọc MỌI lần chấm đều bị ghi là lần đầu.
+  Ablate 13 mảnh: `screenSettled` về `done` thuần → **5 đỏ**; `isChoiceScreen` nới ra mọi màn
+  có chấm → 3; `markDoneOnNext` luôn markDone → 2; bỏ `secondaryCta` → 2; chín mảnh còn lại
+  mỗi mảnh 1. `mcq-next-after-wrong.test.mjs`, 23 ca.
+  **Giới hạn đã nói ra:** `primaryCta` không import được vào `node --test` (`cta.ts` import
+  một `.tsx`), nên nhánh nút chính chỉ canh được bằng phép đọc cây mã.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

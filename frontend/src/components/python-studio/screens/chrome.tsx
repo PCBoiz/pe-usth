@@ -7,7 +7,12 @@
 import { withInlineCode } from '@/lib/inline-code';
 import FeedbackBanner from '@/components/lesson-chrome/exercises/FeedbackBanner';
 import ShellB from '@/components/lesson-chrome/ShellB';
-import type { LessonScreen, PlayGame, StudioLesson as Lesson } from '@/lib/studio-lesson';
+import {
+  isChoiceScreen,
+  type LessonScreen,
+  type PlayGame,
+  type StudioLesson as Lesson,
+} from '@/lib/studio-lesson';
 
 import type { RunResult } from '../runner/types';
 import type { SandboxTestRow } from '@/components/lesson-chrome/exercises/SandboxEditor';
@@ -146,7 +151,15 @@ export function ScreenShell({
                 : 'Chưa đủ ý — viết thêm nhé'
               : verdict.correct
                 ? 'Chính xác!'
-                : 'Chưa đúng — thử lại nhé'
+                : // Câu chọn phương án KHÔNG còn bắt làm lại, nên băng này
+                  // không được nói "thử lại nhé" — nó sẽ chỉ vào một nút không
+                  // còn là đường đi chính, và câu "thử lại" không kèm giải
+                  // thích đúng là loại phản hồi d = 0,05 của Van der Kleij
+                  // 2015. Chỉ sang chỗ CÓ giải thích: cả ba phương án đều đã
+                  // hiện lý do ngay bên trên.
+                  isChoiceScreen(scr.kind)
+                  ? 'Chưa đúng — đáp án đúng và lý do của từng phương án ở ngay trên'
+                  : 'Chưa đúng — thử lại nhé'
           }
           explanation={verdict.explain}
         />

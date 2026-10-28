@@ -84,15 +84,29 @@ export function useLessonProgress({
     [clearMessage, screens.length, setDraft],
   );
 
-  /** Cộng điểm (chỉ khoá có mini-game). clean=false: đúng nhưng đã nhầm trước đó. */
+  /**
+   * Ghi lại một lần bấm "Kiểm tra". clean=false: đúng nhưng đã nhầm trước đó.
+   *
+   * GHI CHO MỌI KHOÁ, chỉ hiệu ứng "+10 điểm" mới gắn với `scored`. Trước đây
+   * hàm này `return` ngay khi khoá không có mini-game, nên với khoá 172 bài
+   * `score.firstTry` RỖNG hoàn toàn — mà nó là thứ ba việc khác đang đọc:
+   * trạng thái thứ ba "đã trả lời và đã xem đáp án" (`screenAnswered`), ô
+   * thống kê ở màn tổng kết, và `quizPercent` gửi về backend. Bỏ cổng đó cũng
+   * sửa một lỗi dữ liệu nhỏ đi kèm: sự kiện `X-Quiz.Answer` suy "lần đầu" bằng
+   * `firstTry[key] === undefined`, nên ở khoá bài đọc MỌI lần chấm đều được ghi
+   * là lần đầu.
+   *
+   * `points`/`combo` vẫn được tính (`scoreCheck` làm cả hai việc trong một hàm
+   * thuần) nhưng chỉ khoá có `play` mới HIỆN chúng — xem
+   * `points={play ? … : undefined}` trong StudioLesson.tsx.
+   */
   const award = useCallback(
     (key: string, correct: boolean, clean = correct) => {
-      if (!scored) return;
       let s = draft.score ?? EMPTY_SCORE;
       if (correct && !clean) s = scoreCheck(s, key, false).score;
       const r = scoreCheck(s, key, correct);
       update({ score: r.score });
-      if (r.gained > 0)
+      if (scored && r.gained > 0)
         setPop((prev) => ({
           id: (prev?.id ?? 0) + 1,
           text: `+${r.gained} điểm${r.score.combo >= 3 ? ` · Combo x${r.score.combo} 🔥` : ''}`,

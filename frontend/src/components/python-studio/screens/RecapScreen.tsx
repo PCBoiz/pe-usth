@@ -91,6 +91,22 @@ export default function RecapScreen({
   const readSlices = lesson.step_1?.read?.length ?? 0;
   const practice = lesson.step_2?.practice?.length ?? 0;
   const reading = readSlices > 0;
+  // Ô TRẮC NGHIỆM của khoá bài đọc, và nó phải nói THẬT.
+  //
+  // Khoá 172 bài có 3 câu trắc nghiệm được chấm mỗi bài, mà ba ô của nhánh này
+  // ("Phần đã đọc", "Câu luyện tập", "Màn đã học") không ô nào nói tới chúng —
+  // tức màn tổng kết im lặng về đúng phần duy nhất có đo lường. Nay câu trắc
+  // nghiệm thay ô "Màn đã học" (ô ít nghĩa nhất: nó chỉ đếm lại thanh tiến độ).
+  //
+  // Đếm bằng `firstTry === true`, KHÔNG bằng `draft.done`: `done` là "đã làm
+  // đúng ở lần nào đó", nên sau khi bấm "Chọn lại" rồi chọn phương án vừa đọc
+  // được trong lời giải thích, nó lại về 3/3 — đúng cái mẹo mà người thử nói
+  // ra. `firstTry` khoá kết quả ở lần chấm ĐẦU, nên con số này là con số duy
+  // nhất ở đây còn đo được gì.
+  const quizStat =
+    graded.length > 0
+      ? { icon: '🎯', value: `${firstTry}/${graded.length}`, label: 'Trắc nghiệm đúng lần đầu' }
+      : { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' };
 
   return (
     <Recap
@@ -104,6 +120,13 @@ export default function RecapScreen({
             : sandboxMode(lesson) === 'procedure'
               ? 'Bài này thực hành trên máy lab nên không có ca chấm tự động. Xác nhận khi bạn đã làm xong.'
               : 'Bài đọc — không có ca chấm nào. Xác nhận khi bạn đã đọc hết và thử lại ví dụ.') +
+        // Nói ra luật tính điểm, vì nó vừa đổi: trả lời sai một câu trắc
+        // nghiệm KHÔNG còn chặn đường đi tiếp, nhưng cũng không chọn lại được
+        // để lấy lại điểm. Im lặng về chuyện đó thì con số XP thấp hơn trông
+        // như lỗi.
+        (graded.length
+          ? ` Điểm bài tính theo số câu trắc nghiệm đúng ngay lần trả lời đầu (${firstTry}/${graded.length}) — trả lời sai vẫn đi tiếp được.`
+          : '') +
         (draft.assisted
           ? gate
             ? ' Lượt này có dùng gợi ý/lời giải: cửa tự kiểm tra tính là "có hỗ trợ" — hãy tự làm lại với dữ liệu mới.'
@@ -115,7 +138,7 @@ export default function RecapScreen({
           ? [
               { icon: '📖', value: `${readSlices}`, label: 'Phần đã đọc' },
               { icon: '✍️', value: `${practice}`, label: 'Câu luyện tập' },
-              { icon: '📚', value: `${screens.length - 1}`, label: 'Màn đã học' },
+              quizStat,
             ]
           : [
               { icon: '🎯', value: `${done}/${graded.length || 0}`, label: 'Câu đã làm đúng' },

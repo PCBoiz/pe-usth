@@ -985,6 +985,99 @@ export function gameVerdict(
   }
 }
 
+// ------------------------------------------------- ba trạng thái của một màn
+//
+// TRẠNG THÁI THỨ BA: "đã trả lời và đã xem đáp án", khác hẳn "đã làm đúng".
+//
+// Trước bản này một màn có chấm chỉ có HAI trạng thái — `done[key]` true hoặc
+// false — nên trả lời sai là không có đường nào đi tiếp: `primaryCta` trả đúng
+// một nút "Thử lại". Một người thử ngày 27/10/2026 nói đúng cái giá: "mấy cái
+// câu trắc nghiệm ấy nếu sai rồi thì cho next luôn vì thử lại ở đây cũng ko làm
+// đc gì. căn bản là người dùng chỉ cần nhớ đáp án rồi chọn lại là được."
+//
+// Vì sao bắt-làm-lại không mua thêm gì (VAN-PHONG.md §8 M5): Van der Kleij
+// 2015, 40 nghiên cứu / 70 cỡ hiệu ứng — phản hồi CÓ GIẢI THÍCH d = 0,49, hiện
+// đáp án đúng d = 0,32, chỉ nói đúng/sai d = 0,05. Nút "Thử lại" không kèm
+// giải thích chính là loại d = 0,05. Butler 2007: bắt-làm-lại TƯƠNG ĐƯƠNG hiện
+// thẳng đáp án. Bằng chứng mục này HỖN HỢP (vài nghiên cứu ủng hộ multiple-try)
+// nên phát biểu mạnh nhất được phép là: bắt làm lại không mua thêm gì so với
+// hiện đáp án, và trên 3 phương án nó phá giá trị ĐO LƯỜNG — làm lại vô hạn
+// đảm bảo đúng sau tối đa 3 lần bấm, lúc đó câu hỏi không còn mang thông tin.
+//
+// Vì sao KHÔNG sửa bằng một dòng (AGENTS.md đã ghi): cho đi tiếp mà không
+// `markDone` thì `firstUnfinished()` chặn ở màn TỔNG KẾT — kẹt ở cuối bài thay
+// vì giữa bài, tệ hơn; còn `markDone` cho câu SAI thì ô "câu đúng" ở
+// RecapScreen nói dối. Nên phải có một trạng thái thứ ba.
+//
+// Nó KHÔNG là một trường nháp mới: `score.firstTry[key]` đã ghi sẵn kết quả của
+// LẦN CHẤM ĐẦU (true/false), nên "đã chấm ít nhất một lần" đọc được từ chính
+// nó. Thêm một `reviewed: Record<string, boolean>` là dựng thứ thứ hai phải
+// khớp với nó, và nó sẽ lệch — đúng họ bẫy mà AGENTS.md cảnh báo. Đổi lại,
+// `award()` trong useLessonProgress.ts phải GHI `firstTry` cho MỌI khoá, không
+// chỉ khoá có mini-game (xem chú thích ở đó).
+
+/**
+ * Màn mà "làm lại tới khi đúng" KHÔNG đo được gì: chọn MỘT phương án trong một
+ * danh sách ngắn (3 phương án ở cả 516 câu của khoá 172 bài).
+ *
+ * Danh sách TRẮNG, cố ý: `classify`/`scaffold`/`counter`/`selfExplain`/`game`
+ * cũng được chấm, nhưng làm lại ở đó là LÀM LẠI VIỆC (xếp lại dòng code, sửa
+ * lại hàm) chứ không phải bấm nốt hai phương án còn lại — lý lẽ của M5 không
+ * với tới chúng, nên chúng giữ nguyên nút "Thử lại" làm nút chính.
+ */
+export function isChoiceScreen(kind: ScreenKind): boolean {
+  return kind === 'mcq' || kind === 'predict';
+}
+
+/** Đã bấm "Kiểm tra" ở màn này ít nhất một lần — KỂ CẢ khi trả lời sai. */
+export function screenAnswered(d: LessonDraft, key: string): boolean {
+  return d.score?.firstTry?.[key] !== undefined;
+}
+
+/**
+ * Màn này còn CHẶN đường đi tiếp hay không. Làm đúng thì thôi chặn (như cũ);
+ * câu chọn phương án thì trả lời MỘT lần là thôi chặn, đúng hay sai.
+ */
+export function screenSettled(scr: LessonScreen, d: LessonDraft): boolean {
+  return Boolean(d.done[scr.key]) || (isChoiceScreen(scr.kind) && screenAnswered(d, scr.key));
+}
+
+/**
+ * Màn có chấm mà học viên chưa giải quyết — chặn việc kết thúc bài.
+ * Ở đây (lib) chứ không ở cta.ts: `cta.ts` import một file .tsx nên
+ * `node --test` không nạp được, mà đây là luật phải có test chạy thật.
+ */
+export function firstUnfinished(
+  screens: LessonScreen[],
+  d: LessonDraft,
+): LessonScreen | undefined {
+  return screens.find((x) => isGraded(x.kind) && !screenSettled(x, d));
+}
+
+/**
+ * Màn xa nhất thanh tiến độ cho nhảy TỚI. Màn đã giải quyết thì mở, nên câu
+ * trả lời sai cũng không khoá đường nhảy về phía trước — người học vừa đi qua
+ * nó bằng nút CTA thì bấm lại trên thanh tiến độ phải tới được.
+ */
+export function maxReachedStep(screens: LessonScreen[], d: LessonDraft): number {
+  return screens.reduce((acc, x, i) => (screenSettled(x, d) ? Math.max(acc, i + 2) : acc), 1);
+}
+
+/**
+ * Bấm nút đi tiếp thì có được đánh dấu màn này "đã làm đúng" hay không.
+ *
+ * Nút đi tiếp của màn có chấm trước đây chỉ xuất hiện khi ĐÚNG, nên nhánh
+ * cuối của `doAction` gọi `markDone` cho mọi màn mà không cần hỏi. Nay câu
+ * chọn phương án đi tiếp được cả khi SAI, và nếu vẫn `markDone` thì ô "Câu đã
+ * làm đúng" ở màn tổng kết đếm luôn cả câu sai.
+ */
+export function markDoneOnNext(
+  scr: LessonScreen,
+  verdict: { correct: boolean } | null | undefined,
+): boolean {
+  return !(isGraded(scr.kind) && Boolean(verdict) && !verdict?.correct);
+}
+
 /**
  * Cộng điểm cho một lần bấm "Kiểm tra". Đúng ngay lần đầu: +10, chuỗi đúng
  * liên tiếp từ 3 trở lên: +20. Sai rồi sửa đúng: +5 và mất chuỗi. Đúng lần nữa

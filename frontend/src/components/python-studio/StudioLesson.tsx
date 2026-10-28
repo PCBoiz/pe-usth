@@ -32,7 +32,7 @@ import c from './studio-chrome.module.css';
 import AdminAnswerKey from './AdminAnswerKey';
 import LessonOverlays from './LessonOverlays';
 import { answerKeyFor } from './answer-key';
-import { firstUnfinished, primaryCta, type Action, type Cta } from './cta';
+import { primaryCta, secondaryCta, type Action, type Cta } from './cta';
 import { useLessonRun } from './useCodeRunner';
 import { useLessonData } from './useLessonData';
 import { useLessonDraft } from './useLessonDraft';
@@ -45,8 +45,11 @@ import ConsentBanner from './ConsentBanner';
 import {
   buildScreens,
   EMPTY_SCORE,
+  firstUnfinished,
   gameOf,
   isRunnableGame,
+  markDoneOnNext,
+  maxReachedStep,
   quizPercent,
   screenVerdict,
   type LessonScreen,
@@ -255,11 +258,24 @@ export default function StudioLesson({
     setCelebrate,
     // `quizScore` do TRÌNH DUYỆT chấm (AGENTS.md: server tin con số này, chỉ
     // chặn trần XP bằng `lessons.xp_reward`).
-    saveCompletion: () => data.complete(play ? quizPercent(screens, d, boss) : 100),
+    saveCompletion: () => data.complete(diemBai()),
   });
   const { running, runtimeStatus, result, run, runGame } = lessonRun;
   const cancelRun = lessonRun.cancel;
-  const complete = () => data.complete(play ? quizPercent(screens, d, boss) : 100);
+  /**
+   * Điểm bài gửi về backend: tỉ lệ màn chấm ĐÚNG NGAY LẦN ĐẦU.
+   *
+   * Trước đây là `play ? quizPercent(…) : 100` — tức khoá 172 bài luôn gửi
+   * 100, kể cả khi trả lời sai cả 3 câu trắc nghiệm, vì `score.firstTry` của
+   * nó rỗng (xem `award`). Cộng với luật cũ "sai thì chỉ còn nút Thử lại",
+   * điểm bài là 100% với MỌI người học sau vài lần bấm. Nay `quizPercent` tự
+   * trả 100 khi bài không có màn nào được chấm (bài quy trình, bài làm trên
+   * máy), nên không cần cổng `play` nữa.
+   */
+  function diemBai(): number {
+    return quizPercent(screens, d, boss);
+  }
+  const complete = () => data.complete(diemBai());
 
   // ---------- Trạng thái màn hiện tại ----------
 
@@ -348,7 +364,10 @@ export default function StudioLesson({
       return;
     }
     if (action === 'retry') return setCheckedKey('');
-    if (scr) markDone(scr.key);
+    // ĐI TIẾP. `markDoneOnNext` chứ không `markDone` trần: câu chọn phương án
+    // nay đi tiếp được cả khi SAI, mà đánh dấu "đã làm đúng" cho một câu sai
+    // thì ô "Câu đã làm đúng" ở màn tổng kết đếm luôn cả nó.
+    if (scr && markDoneOnNext(scr, verdict)) markDone(scr.key);
     goTo(d.step + 1);
   }
 
@@ -369,11 +388,24 @@ export default function StudioLesson({
   // ---------- Vỏ ----------
 
   const cta = primary();
+  /** Nút PHỤ của màn đang mở (hôm nay: "Chọn lại" sau câu trắc nghiệm sai). */
+  const phu = secondaryCta({
+    lesson,
+    scr,
+    screens,
+    draft: d,
+    game,
+    checked,
+    verdict,
+    completed,
+    hasNextLesson,
+    lessonNo,
+    running,
+    busy,
+    result,
+  });
   const adminKey = user?.role === 'admin' ? answerKeyFor({ lesson, scr, game, draft: d }) : null;
-  const reached = screens.reduce(
-    (acc, x, i) => (d.done[x.key] ? Math.max(acc, i + 2) : acc),
-    1,
-  );
+  const reached = maxReachedStep(screens, d);
   function frame(children: React.ReactNode, over?: Partial<React.ComponentProps<typeof LessonChrome>>) {
     return (
       <LessonChrome
@@ -406,16 +438,23 @@ export default function StudioLesson({
         // trong LessonChrome.module.css (hình minh hoạ khổ 1280×640; bài đọc
         // thì vì bảng và khối code cần chiều ngang — chữ vẫn bó ~78 ký tự).
         wide={scr?.kind === 'theory' || scr?.kind === 'read'}
+        // Ô nút phụ có HAI người dùng, và chúng không bao giờ cùng xuất hiện:
+        // "Chọn lại" sau một câu trắc nghiệm sai (màn mcq/predict) và "💡 Gợi
+        // ý" (chỉ màn sandbox). `secondaryCta` được hỏi TRƯỚC vì nó nói về màn
+        // đang mở, còn nhánh gợi ý mới là nhánh mặc định của màn sandbox.
         secondaryLabel={
-          hints.length && scr?.kind === 'sandbox' && !boss
-            ? hintOpen
-              ? '💡 Ẩn gợi ý'
-              : gate && !d.assisted
-                ? '💡 Gợi ý (tính là có hỗ trợ)'
-                : '💡 Gợi ý'
-            : undefined
+          phu
+            ? phu.label
+            : hints.length && scr?.kind === 'sandbox' && !boss
+              ? hintOpen
+                ? '💡 Ẩn gợi ý'
+                : gate && !d.assisted
+                  ? '💡 Gợi ý (tính là có hỗ trợ)'
+                  : '💡 Gợi ý'
+              : undefined
         }
         onSecondaryClick={() => {
+          if (phu) return doAction(phu.action);
           if (!hintOpen && !d.assisted) update({ assisted: true });
           // MỞ GỢI Ý: `lesson_progress` không có chỗ nào ghi việc này, mà nó là
           // dấu hiệu bỏ-cuộc mạnh nhất còn TRONG bài — người học vẫn ở đây
