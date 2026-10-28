@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Nội dung trợ giúp có thể dài; hãy tìm phần tham số và ví dụ phù hợp với việc bạn đang làm."
+      "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Help có output dài nên không cần chép hết vào bài; hãy tìm phần tham số và ví dụ bạn đang cần."
      },
      {
       "type": "paragraph",
@@ -66,7 +66,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không thực thi code Python thay kernel và bạn không cần tự cài từng cái để viết một cell."
+      "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không tính thay kernel và bạn không cần tự cài từng cái để viết một cell."
      }
     ]
    ],
@@ -146,7 +146,7 @@
     },
     {
      "prompt": "Máy đã có Python nhưng chưa có Notebook: cài và mở bằng lệnh nào? Sau đó kiểm tra một notebook không phụ thuộc trạng thái cũ ra sao?",
-     "answer": "Trong terminal của môi trường dự án, chạy python -m pip install notebook rồi jupyter notebook. Với notebook đã mở, chọn Restart kernel rồi Run All để chạy lại từ đầu. Kiểm tra kết quả và ghi lại môi trường khi chia sẻ. Việc cài đặt cần kết nối mạng và quyền phù hợp; các lệnh cài đặt được chạy trong terminal."
+     "answer": "Trong terminal của môi trường dự án, chạy python -m pip install notebook rồi jupyter notebook. Với notebook đã mở, Restart kernel rồi Run All theo đúng thứ tự, kiểm lại kết quả và ghi môi trường khi chia sẻ. Bước cài cần kết nối và quyền phù hợp; không coi là câu lệnh Python trong cell."
     },
     {
      "prompt": "Bạn cần sửa file .py và đặt breakpoint. Editor và IDE khác nhau ở đâu? Notebook có thêm loại nội dung nào ngoài code?",

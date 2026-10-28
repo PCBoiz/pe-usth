@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp bằng `agg` cho một hàng mỗi cửa hàng, nên kết quả không còn liệt kê từng giao dịch. `transform` đưa tổng của cửa hàng vào từng hàng giao dịch tương ứng."
+      "text": "Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp thông thường làm mất từng giao dịch; transform đưa tổng của nhóm trở lại các hàng ban đầu."
      },
      {
       "type": "code",

@@ -150,10 +150,10 @@
     },
     {
      "prompt": "GUI có luôn nhanh hơn để học và luôn chậm hơn để xử lý dữ liệu không? Bộ nhớ và theme liên quan gì?",
-     "answer": "Không có kết luận đúng cho mọi ứng dụng. Widget và phần hiển thị dùng thêm bộ nhớ, còn tốc độ xử lý phụ thuộc tác vụ. Giao diện rõ giúp người mới tìm thao tác; CLI có thể thuận tiện hơn khi cần lặp lệnh hoặc tự động hóa. Theme đổi diện mạo của widget, nhưng không tự làm ứng dụng dễ học hay linh hoạt hơn."
+     "answer": "Không có kết luận tuyệt đối. Widget/hiển thị thêm chi phí bộ nhớ; tốc độ tùy tác vụ. GUI có thể giúp khám phá thao tác và đổi theme, nhưng khả năng học/flexibility còn tùy thiết kế."
     },
     {
-     "prompt": "Ghép Tkinter, PyQt, Kivy và wxPython với nền tảng tương ứng: Tcl/Tk, Qt, OpenGL và wxWidgets. Phần thực hành trong khóa này dùng toolkit nào?",
+     "prompt": "Ghép bốn tên toolkit với backend và cho biết khóa này thực hành tên nào: Tkinter, PyQt, Kivy, wxPython.",
      "answer": "Tkinter–Tcl/Tk; PyQt–Qt; Kivy–OpenGL; wxPython–wxWidgets. Các bộ hỗ trợ nhiều nền tảng nhưng cần môi trường thích hợp; Tkinter có trong nhiều bản Python dưới dạng module tùy chọn. Ba bộ còn lại cần cài thêm, chỉ được giới thiệu ở đây."
     }
    ]

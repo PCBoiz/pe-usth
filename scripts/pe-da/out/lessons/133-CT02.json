@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn muốn chương trình con chạy trong thư mục dữ liệu riêng và nhận một số biến môi trường. Trên Windows, API CreateProcess có các tham số cho dòng lệnh, môi trường, thư mục làm việc và việc kế thừa handle qua bInheritHandles. Handle là tham chiếu mà Windows dùng để nhận diện một tài nguyên. CreateProcess nạp chương trình vào process mới, tạo thread đầu tiên và trả thông tin nhận diện cùng handle của process và thread. WinExec là API cũ, được khuyến cáo thay bằng CreateProcess. Các tên này xuất hiện trong ví dụ WinAPI/C của slide; chúng không phải hàm Python có sẵn để gọi trực tiếp."
+      "text": "Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. Trong C, fork trả -1 khi lỗi; os.fork của Python báo lỗi bằng ngoại lệ và không có trên Windows. Sau khi fork thành công, cha và con có PID khác nhau, cùng tiếp tục từ vị trí sau lời gọi, nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write: các trang nhớ chỉ cần được sao chép riêng khi có bên sửa chúng, thay vì sao chép vật lý toàn bộ bộ nhớ ngay lúc tạo con."
+      "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dictionary này mô phỏng exec: chương trình \"shell\" được thay bằng \"analysis\" trong process 101, nên PID vẫn là 101. exec không tạo thêm process. Trong họ hàm exec, hậu tố l nhận từng đối số riêng, v nhận một dãy đối số argv, p tìm chương trình qua PATH và e cho phép truyền môi trường tường minh. Vì vậy, execl và execv khác cách nhận đối số; execlp và execvp có thêm bước tìm qua PATH; execle nhận cả môi trường. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\" và NULL đánh dấu kết thúc. Khi thực hành bằng subprocess, bạn truyền một list đối số Python thay vì chép nguyên chữ ký hàm C."
+      "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một list đối số thay cho việc bạn tự chép nguyên chữ ký C."
      },
      {
       "type": "code",

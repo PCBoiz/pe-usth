@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển cộng thêm 0.2. Quantum nhỏ cho việc phía sau có lượt sớm hơn, nhưng có thể làm tổng thời gian tăng vì chuyển ngữ cảnh nhiều hơn. Đây là tính toán trên số giả định để so sánh hai lựa chọn, không phải kết quả đo scheduler của máy đang chạy Python."
+      "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python."
      }
     ]
    ],

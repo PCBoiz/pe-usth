@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai class A và B đều có method label, nhưng trả nội dung khác nhau. Nếu C kế thừa cả A lẫn B thì `C().label()` sẽ dùng method nào? Hãy xem thứ tự Python tìm method:"
+      "text": "Bạn có một lớp tạo báo cáo và một phần mở rộng thêm tiền tố. Đa kế thừa ghép hành vi từ nhiều lớp, nhưng cần biết thứ tự tìm method:"
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "UpperMixin gọi method tiếp theo theo MRO rồi đổi kết quả thành chữ hoa. Nhờ super, phần mở rộng phối hợp được với Report mà không cần gọi đích danh Report.render. Một mixin là lớp bổ sung hành vi cho lớp khác qua kế thừa. Nó nên đảm nhiệm một phần hành vi nhỏ; nếu nhiều lớp cùng sửa một trạng thái, cần kiểm kỹ thứ tự gọi."
+      "text": "UpperMixin gọi method tiếp theo theo MRO rồi đổi kết quả thành chữ hoa. Nhờ super, phần mở rộng phối hợp được với Report mà không cần gọi đích danh Report.render. Mixin nên đảm nhiệm một phần hành vi nhỏ; nếu nhiều lớp cùng sửa một trạng thái, cần kiểm kỹ thứ tự gọi."
      },
      {
       "type": "code",

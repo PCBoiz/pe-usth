@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong ví dụ tiếp theo, a và b giữ tham chiếu tới nhau qua thuộc tính peer. Sau khi make_cycle kết thúc, chương trình không còn biến nào dẫn tới hai object đó, nhưng chúng vẫn tham chiếu lẫn nhau. weakref giữ một tham chiếu yếu, cho phép quan sát object mà không tự giữ nó sống. Sau gc.collect(), reference() là None, cho biết object được quan sát đã bị thu hồi. Không dùng tổng số object mà gc.collect trả về để kết luận riêng về ví dụ, vì nó có thể thu hồi cả object khác trong môi trường."
+      "text": "Hai object trỏ vòng nhau có thể không còn đường truy cập từ chương trình nhưng vẫn tham chiếu lẫn nhau. Ví dụ tạo một chu kỳ riêng, giữ weakref để quan sát rồi chạy gc.collect. Không cần nhớ tổng số object collector thu hồi vì môi trường có thể có object khác; chỉ kiểm object của ví dụ đã biến mất."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "GIL (Global Interpreter Lock) là khóa của trình thông dịch. Trong bản CPython có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Khóa bảo vệ trạng thái nội bộ của CPython, nhưng không làm toàn bộ thao tác cập nhật dữ liệu của ứng dụng trở thành một bước nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
+      "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một thread thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
      },
      {
       "type": "code",
@@ -55,7 +55,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ cuối cho thấy pool trả kết quả theo thứ tự [3, 4] ở đầu vào. Hàm chỉ nhân số, không đọc dữ liệu hay chờ I/O, nên ví dụ không cho biết thread có tăng tốc việc đọc file hay không. Để so hiệu năng, cần chọn một tác vụ thực tế, đo nhiều lượt và ghi cấu hình máy. Các sơ đồ Apache và Chromium trong slide còn minh họa một lý do khác để dùng process: tách bộ nhớ để tăng tính cô lập. Thread bên trong mỗi process vẫn có thể dùng chung dữ liệu của process đó."
+      "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu."
      }
     ]
    ],

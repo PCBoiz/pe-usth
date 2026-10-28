@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn đọc hai ký tự đầu rồi đọc tiếp cùng file. Lần đọc sau bắt đầu ở vị trí hiện tại, không tự quay về đầu. Ở ví dụ này, StringIO giữ văn bản trong RAM và cho phép đọc như một file:"
+      "text": "Bạn đọc hai ký tự đầu rồi đọc tiếp cùng file. Lần đọc sau bắt đầu ở vị trí hiện tại, không tự quay về đầu:"
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`seek(1)` trên dữ liệu nhị phân đưa con trỏ đến vị trí byte số 1, tính từ 0. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
+      "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
      },
      {
       "type": "code",

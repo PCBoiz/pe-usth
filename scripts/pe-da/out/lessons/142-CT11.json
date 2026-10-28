@@ -132,12 +132,12 @@
      "answer": "Trong run. __init__ chạy ngay khi tạo object trên thread gọi nó."
     },
     {
-     "prompt": "Hai instance có các thuộc tính self riêng có nghĩa là những object mà các thuộc tính đó trỏ tới cũng luôn độc lập không?",
+     "prompt": "Có thuộc tính self riêng nghĩa là mọi object con nó trỏ tới đều độc lập không?",
      "answer": "Không. Hai thuộc tính vẫn có thể tham chiếu cùng một list hoặc object khác."
     },
     {
-     "prompt": "Trong class Pause, bạn muốn mỗi instance nhận một thời gian chờ delay khác nhau. Giá trị này được truyền và lưu ở đâu? sleep chạy trên thread nào khi gọi start?",
-     "answer": "Nhận delay trong __init__, gọi super().__init__() rồi lưu vào self.delay. Phương thức run gọi sleep(self.delay). Khi gọi start, run thực hiện trên thread worker; join cho thread đang gọi chờ worker kết thúc."
+     "prompt": "Trong subclass Pause, muốn mỗi instance nhận sleepTime khác nhau thì dữ liệu đi qua đâu và sleep chạy ở đâu?",
+     "answer": "Nhận sleepTime trong __init__, gọi super().__init__, lưu self.delay; run gọi time.sleep(self.delay). Tạo instance rồi start để chạy run ở worker, join để chờ xong."
     }
    ]
   },

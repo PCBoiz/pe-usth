@@ -148,7 +148,7 @@
     },
     {
      "prompt": "Vì sao hai dự án nên có môi trường riêng?",
-     "answer": "Mỗi dự án có thể cần phiên bản thư viện khác nhau. Môi trường riêng giúp việc cài hoặc nâng cấp package ở dự án này không làm thay đổi dự án kia. Khi chia sẻ dự án, kiểm tra đường dẫn Python đang chạy và ghi lại các phiên bản thư viện."
+     "answer": "Để phụ thuộc của mỗi dự án không bị thay bởi việc cài hoặc nâng cấp package cho dự án khác. Kiểm tra interpreter thực tế và ghi phiên bản khi bàn giao."
     },
     {
      "prompt": "Khóa học dùng Python 2 hay Python 3? Vì sao không bắt đầu dự án mới bằng Python 2?",

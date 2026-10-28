@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "scandir trả DirEntry của tầng trực tiếp; walk hoặc rglob đi nhiều tầng. `os.getcwd` đọc thư mục làm việc; đường dẫn tương đối được hiểu từ thư mục đó. `os.chdir` đổi thư mục làm việc của tiến trình đang chạy, không di chuyển file. Trong notebook, !ls, %cd, %pwd thuộc IPython, không phải cú pháp dùng được trong script Python thuần."
+      "text": "scandir trả DirEntry của tầng trực tiếp; walk hoặc rglob đi nhiều tầng. `os.getcwd` đọc thư mục làm việc; đường dẫn tương đối được hiểu từ thư mục đó. `os.chdir` thay working directory của process, không di chuyển file. Trong notebook, !ls, %cd, %pwd thuộc IPython, không phải cú pháp dùng được trong script Python thuần."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`mkdir` tạo một tầng; `makedirs` tạo nhiều tầng, tên hàm đúng là os.makedirs, không phải os.mkdirs như lỗi gõ trong slide. `rmdir` chỉ xóa thư mục rỗng; `rmtree` xóa cả cây. Ví dụ chỉ tác động cây tạm nó vừa tạo. Khi làm thật, xác định đường dẫn tuyệt đối và giới hạn vùng được phép trước thao tác xóa."
+      "text": "`mkdir` tạo một tầng; `makedirs` tạo nhiều tầng, không có hàm os.mkdirs như typo trong slide. `rmdir` chỉ xóa thư mục rỗng; `rmtree` xóa cả cây. Ví dụ chỉ tác động cây tạm nó vừa tạo. Khi làm thật, xác định đường dẫn tuyệt đối và giới hạn vùng được phép trước thao tác xóa."
      },
      {
       "type": "terminal",
@@ -57,7 +57,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Symlink lưu liên kết tới một đường dẫn, không chứa bản sao dữ liệu đích. Vì vậy, xóa link không xóa file mà nó trỏ tới. Trên Windows, tạo symlink có thể cần Developer Mode hoặc quyền phù hợp. Nếu Python từ chối tạo link, kiểm tra quyền và cấu hình này trước khi chạy lại ví dụ."
+      "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng; có thể làm tác vụ tương đương bằng code Python theo dòng."
      },
      {
       "type": "paragraph",
@@ -137,7 +137,7 @@
    "practice": [
     {
      "prompt": "os.chdir có đổi vị trí file không?",
-     "answer": "Không. Nó đổi thư mục dùng làm mốc cho các đường dẫn tương đối của tiến trình. Nếu chỉ đổi tạm thời, lưu thư mục cũ và dùng finally để quay lại."
+     "answer": "Không. Nó đổi nơi giải đường dẫn tương đối của process; lưu cwd cũ và khôi phục bằng finally nếu cần dùng."
     },
     {
      "prompt": "scandir và walk khác gì?",

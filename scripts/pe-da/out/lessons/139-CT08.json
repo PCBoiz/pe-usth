@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi Popen.communicate báo TimeoutExpired, process con có thể vẫn đang chạy. Ví dụ gọi kill rồi communicate lần nữa để đọc phần đầu ra còn lại và chờ con kết thúc. terminate và kill kết thúc process theo cơ chế của nền tảng: trên POSIX, kill mạnh hơn; trên Windows, hai phương thức đều dùng cơ chế kết thúc process của Windows. Không nên trông đợi terminate luôn cho chương trình con chạy xong phần dọn dẹp. Khác với communicate, run(timeout=...) tự dừng và chờ con khi hết hạn."
+      "text": "Timeout của Popen.communicate không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
      }
     ]
    ],
@@ -145,7 +145,7 @@
     },
     {
      "prompt": "Sau communicate timeout, nêu thứ tự dừng và thu hồi. terminate và kill có luôn khác nhau trên mọi OS không?",
-     "answer": "Sau timeout, gọi terminate hoặc kill cho process con do bạn tạo theo cách xử lý đã chọn, rồi communicate hoặc wait để chờ nó kết thúc. communicate còn đọc phần đầu ra đang chờ. terminate và kill không luôn khác nhau: trên POSIX, kill mạnh hơn; trên Windows, cả hai dùng cơ chế kết thúc process của Windows."
+     "answer": "Áp chính sách terminate/kill cho con do mình tạo rồi communicate/wait để thu output và trạng thái. Trên POSIX kill mạnh hơn; trên Windows terminate/kill dùng cơ chế kết thúc process tương ứng của Windows."
     },
     {
      "prompt": "Vẽ đường đi dữ liệu cho input.txt → A → B → out.txt bằng stdin/stdout. Cần kiểm mã thoát của ai?",

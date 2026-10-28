@@ -54,7 +54,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn cần ghi rõ dải quanh đường biểu diễn điều gì. errorbar=\"sd\" vẽ độ lệch chuẩn, còn errorbar=(\"ci\", 95) dùng bootstrap để ước lượng khoảng tin cậy. Bootstrap lấy mẫu lại nhiều lần từ dữ liệu đang có rồi tính lại đại lượng cần quan sát. n_boot là số lần lấy mẫu lại; seed cố định giúp thu được cùng kết quả khi chạy lại. Cách lấy từng dòng riêng phù hợp khi các dòng là các đơn vị lấy mẫu độc lập. Nếu nhiều dòng thuộc cùng người, cùng nhóm hoặc một chuỗi thời gian phụ thuộc, cần cách lấy mẫu lại phù hợp với cấu trúc đó. Tăng n_boot không sửa được sai lệch trong cách thu thập dữ liệu."
+      "text": "Các dải errorbar cần được chọn có chủ đích. errorbar=\"sd\" vẽ độ phân tán, còn (\"ci\",95) trong seaborn dùng bootstrap cho khoảng tin cậy. seed cố định giúp tái lập; n_boot là số lần lấy mẫu lại. Bootstrap từng dòng giả định các đơn vị lấy mẫu phù hợp: dữ liệu nhiều dòng từ cùng người, chuỗi thời gian hoặc nhóm phụ thuộc cần cách resampling khác. Tăng n_boot không sửa được sai lệch thu thập dữ liệu."
      },
      {
       "type": "code",

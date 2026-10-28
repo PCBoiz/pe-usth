@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "sum, len, min và max là các hàm có sẵn của Python (built-in). Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ điều kiện dữ liệu không được rỗng. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
+      "text": "sum, len, min và max là built-in có sẵn. Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ hợp đồng đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
      }
     ]
    ],

@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "shlex giữ \"two words\" thành một đối số, dù bên trong có khoảng trắng. Parser sau đó dùng dấu | để tách các bước của pipeline và dùng <, > để nhận ra chuyển hướng. File projects/shell_lab.py đi kèm có vòng nhập lệnh, cách tách đối số, chuyển hướng và chạy pipeline. Chương trình tự xử lý những ký hiệu này thay vì giao cả chuỗi cho shell của hệ điều hành bằng shell=True."
+      "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi shell=True: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
      },
      {
       "type": "paragraph",

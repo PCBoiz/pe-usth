@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải thêm dấu gạch chéo để biểu diễn dấu nháy bên trong. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
+      "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải escape khi nội dung chứa dấu nháy. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
      },
      {
       "type": "code",

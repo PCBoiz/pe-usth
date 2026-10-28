@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Kết quả có cùng index với bảng. Bạn cũng có thể dùng `assign` để nhận một bảng có cột mới, rồi lưu vào biến khác. Trong ví dụ sau, giả sử đơn từ 3 sản phẩm trở lên được giảm tổng tiền còn 50; dùng `loc` để chỉ rõ hàng và cột cần sửa."
+      "text": "Kết quả có cùng index với bảng. Bạn cũng có thể dùng assign để nhận một bảng có cột mới, rồi lưu vào biến khác. Khi chỉ sửa một số hàng, loc chỉ rõ cả hàng và cột cần cập nhật."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tránh viết `df[mask][\"price\"] = 18`: đây là chained assignment, tức gán sau hai lần chọn dữ liệu liên tiếp. Từ pandas 3.0, cơ chế Copy-on-Write giúp dữ liệu chỉ được sao chép khi cần sửa, và cách gán qua hai lần chọn này không cập nhật `df`. Nếu muốn sửa bảng gốc, dùng `df.loc[mask, \"price\"] = 18`. Ở các phiên bản cũ, hành vi của chained assignment cũng không nhất quán."
+      "text": "Tránh viết df[mask][\"price\"] = 18: đây là chained assignment, tức sửa qua hai lần chọn liên tiếp. Hành vi từng khác giữa các phiên bản; với Copy-on-Write là chế độ duy nhất từ pandas 3.0, cách đó không cập nhật df. Dùng df.loc[mask, \"price\"] = 18 nếu muốn sửa bảng gốc."
      }
     ]
    ],

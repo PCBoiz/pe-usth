@@ -38,7 +38,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Bạn có thể kiểm tra dãy vừa tạo có đủ năm số và mọi số đều nằm trong khoảng từ 1 đến 6:"
+      "text": "Bạn cũng có thể giữ bộ sinh trong biến `rng` rồi dùng nó để tạo dãy:"
      },
      {
       "type": "code",

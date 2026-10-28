@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mỗi kênh mới có hai đơn, nên chênh lệch trung bình chưa chứng minh kết quả sẽ ổn định trên nhiều đơn hơn. Báo cáo cần kèm số quan sát và khoảng thời gian. Khi xem các giá trị bất thường, bạn có thể dùng tứ phân vị thứ nhất Q1 (phân vị 25%) và thứ ba Q3 (phân vị 75%). Hiệu Q3 − Q1 gọi là khoảng tứ phân vị, viết tắt IQR."
+      "text": "Mỗi kênh mới có hai đơn, nên chênh lệch trung bình chưa chứng minh khác biệt ổn định. Báo cáo cần kèm số quan sát và khoảng thời gian. Khi xem các giá trị bất thường, bạn có thể dùng tứ phân vị thứ nhất Q1 (phân vị 25%) và thứ ba Q3 (phân vị 75%). Hiệu Q3 − Q1 gọi là khoảng tứ phân vị, viết tắt IQR."
      },
      {
       "type": "code",

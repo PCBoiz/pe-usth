@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở ví dụ cuối, add_command thêm mục Lưu vào menu, command nhận hàm xử lý, còn menu.invoke(0) gọi mục đầu tiên bằng code. Muốn thử người dùng mở menu và chọn Lưu, bạn cần hiện cửa sổ. Slide chỉ nhắc tên Menu; ví dụ triển khai này là phần bổ sung của bài."
+      "text": "Menu được slide liệt kê nhưng không triển khai riêng. Đoạn cuối là phần bổ sung: add_command thêm một thao tác, command nhận hàm xử lý, còn invoke gọi mục menu bằng code để kiểm tra. Quan sát menu thật vẫn cần mở cửa sổ."
      }
     ]
    ],
@@ -142,8 +142,8 @@
      "answer": "Không. Frame thường dùng khoảng cách màn hình; Label chữ thường dùng ký tự/dòng. bg đặt nền widget Tk cổ điển; Frame chứa widget con còn Label hiển thị chữ."
     },
     {
-     "prompt": "Trong ví dụ menu, add_command, command và invoke lần lượt làm gì? Ví dụ này được triển khai trong slide hay được bổ sung ở bài học?",
-     "answer": "add_command thêm một mục menu; command nhận hàm cần gọi khi chọn mục đó; invoke gọi mục menu bằng code. Slide chỉ liệt kê tên Menu, còn ví dụ triển khai là phần bổ sung ở đây."
+     "prompt": "Menu có được slide dạy một ví dụ hoàn chỉnh không? Đoạn add_command trong bài thuộc phạm vi nào?",
+     "answer": "Slide chỉ liệt kê Menu. Ví dụ add_command/command trong bài là phần bổ sung và phải được ghi như vậy, không quy thành mã ví dụ gốc của USTH."
     }
    ]
   },

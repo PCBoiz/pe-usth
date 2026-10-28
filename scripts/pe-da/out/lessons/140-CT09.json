@@ -145,16 +145,16 @@
      "answer": "Không. Các thread cùng process có thể truy cập descriptor/tài nguyên chung, nên phải xét cách phối hợp. Slide nhắc signals như cơ chế OS; quy tắc signal không được suy thành biến Python riêng cho từng thread."
     },
     {
-     "prompt": "So sánh việc tạo process có trạng thái riêng với việc thêm thread dùng chung tài nguyên của process. Chi phí tạo, kết thúc và chuyển ngữ cảnh thường khác nhau thế nào?",
-     "answer": "Process có trạng thái và không gian địa chỉ riêng theo cơ chế tạo. Thread dùng chung nhiều tài nguyên của process nên thường tốn ít chi phí tạo, kết thúc và chuyển ngữ cảnh hơn. Mức chênh lệch phụ thuộc hệ điều hành và loại công việc, không có một tỷ lệ đúng cho mọi máy."
+     "prompt": "So resource cloning khi tạo process với resource sharing giữa thread. Chi phí tạo, kết thúc và context switch thường khác thế nào?",
+     "answer": "Process có trạng thái và không gian địa chỉ riêng theo cơ chế tạo; thread dùng chung nhiều tài nguyên process. Thread thường có chi phí thấp hơn ở các thao tác đó, nhưng mức chênh tùy OS/workload."
     },
     {
-     "prompt": "Bạn tạo 500 thread cho 500 phép tính rất nhỏ. Có chắc tận dụng các lõi CPU tốt hơn và làm giao diện phản hồi nhanh hơn không?",
-     "answer": "Không. Chi phí tạo, chuyển giữa các thread và đồng bộ có thể lớn hơn phần thời gian tính toán hữu ích. Kết quả còn phụ thuộc loại công việc, số lõi CPU, trình thông dịch và cách truy cập dữ liệu chung."
+     "prompt": "Bạn tạo 500 thread cho 500 phép tính rất nhỏ. Có chắc tận dụng core tốt và UI đáp ứng hơn không?",
+     "answer": "Không. Overhead tạo/chuyển và đồng bộ có thể vượt phần việc hữu ích; khả năng mở rộng tùy workload, số core, interpreter và quy tắc truy cập tài nguyên."
     },
     {
      "prompt": "Một worker chờ file trong khi UI nhận phím. Đây là lợi ích gì? Rủi ro gì khi cả hai sửa dữ liệu chung?",
-     "answer": "Giao diện vẫn phản hồi trong lúc worker bị chặn chờ I/O; đây là lợi ích về khả năng đáp ứng. Tuy nhiên, thứ tự chạy giữa chúng không xác định. Nếu cùng sửa dữ liệu mà không phối hợp, chúng có thể gặp race condition; nếu chờ khóa của nhau theo vòng, chúng có thể deadlock. Tạo thêm thread không tự giải quyết hai lỗi này."
+     "answer": "Đây là responsiveness khi có blocking I/O. Thứ tự xen kẽ không xác định; thao tác chung có thể race, chờ khóa vòng có thể deadlock. Tách thread không tự giải quyết hai lỗi đó."
     },
     {
      "prompt": "Một process đơn luồng có mấy stack/PC context? Khi thêm thread, code, global data, heap và file descriptors được chia thế nào?",

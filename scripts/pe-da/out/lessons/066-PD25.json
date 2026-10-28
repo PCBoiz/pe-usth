@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cột `status` dùng P cho đơn đã thanh toán và C cho đơn đã hủy. Bạn muốn đổi các mã này sang tên dễ đọc. Sau đó, bảng số lượng, đơn giá và tỷ lệ giảm giá được dùng để tính doanh thu sau chiết khấu."
+      "text": "Cột status chỉ ghi P và C. Bạn muốn đổi sang tên đọc được rồi tính doanh thu sau chiết khấu. Với từng loại thao tác, chọn hàm diễn đạt đúng việc cần làm."
      },
      {
       "type": "code",

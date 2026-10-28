@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. Môn có mã GUI chưa có điểm nên không góp vào mẫu số; điểm thiếu không được coi là 0. Sinh viên chưa có điểm nào được hiển thị dấu gạch thay vì GPA 0. Bạn có thể sắp danh sách GPA theo thứ tự giảm dần."
+      "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. GUI chưa có điểm nên không nằm trong mẫu số; không coi điểm thiếu bằng 0. Sinh viên chưa có điểm được hiển thị dấu gạch thay vì GPA 0. Danh sách GPA có thể sắp giảm dần."
      },
      {
       "type": "code",
@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Chạy ứng dụng bằng python projects/grade_app.py --data duong-dan/grades.pkl.gz. Nếu file chưa tồn tại, ứng dụng bắt đầu với dữ liệu rỗng. Nếu file hỏng, ứng dụng báo lỗi và không tự ghi đè. Các bài kiểm tra đi kèm kiểm tra dữ liệu, GPA, việc lưu và nạp cùng một số callback. Để xem giao diện có dễ dùng và bố trí có vừa không, hãy chạy các bước thực hành bên dưới bằng chuột, bàn phím và cửa sổ thật."
+      "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric."
      }
     ]
    ],

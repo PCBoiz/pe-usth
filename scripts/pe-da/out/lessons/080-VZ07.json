@@ -151,7 +151,7 @@
     },
     {
      "prompt": "Để biết bao nhiêu đơn nằm trong từng khoảng chờ, chọn histogram, boxplot hay violinplot? Để đọc trung vị và phần giữa thì chọn gì? Độ phình violin có phải số đếm không?",
-     "answer": "Chọn histogram để đếm số đơn trong từng khoảng chờ. Chọn boxplot để đọc trung vị, Q1, Q3 và râu. Violinplot ước lượng mật độ sau khi làm mượt; độ phình không cho bạn một số đếm chính xác. Điểm ngoài râu boxplot cần được xem lại trong ngữ cảnh, không mặc định là lỗi."
+     "answer": "Histogram đếm trong bins. Boxplot tóm tắt trung vị, Q1/Q3 và râu. Violinplot ước lượng mật độ đã làm mượt; độ phình không phải một count chính xác. Điểm ngoài râu là cờ xem lại, không mặc định là lỗi."
     }
    ]
   },

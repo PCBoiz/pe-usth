@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trên hệ POSIX như UNIX/Linux, fork trả PID con ở cha và 0 ở con; cả hai tiếp tục từ vị trí sau fork. exec thay chương trình trong process hiện tại và giữ PID. Trong họ hàm exec, hậu tố l nhận từng đối số riêng; v nhận một dãy đối số; p tìm chương trình qua PATH; e cho phép truyền môi trường tường minh. Slide nhắc execl, execle, execlp, execv và execvp theo các đặc điểm đó. Windows dùng CreateProcess và còn có API cũ WinExec. Các tên, chữ ký và cờ trong ví dụ C/WinAPI không phải cú pháp Python. Để thực hành trên cả Windows và UNIX, dùng subprocess."
+      "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/list đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
      },
      {
       "type": "code",
@@ -126,8 +126,8 @@
      "answer": "Cha trực tiếp 101, ông 100. Một dòng cây process biểu diễn quan hệ, không nói các process dùng chung mọi biến."
     },
     {
-     "prompt": "fork tạo thêm process hay thay chương trình đang chạy? exec có đổi PID theo mô hình đang học không?",
-     "answer": "fork tạo process con có PID khác. exec thay chương trình trong process hiện tại và giữ PID; nó không tạo thêm process thứ ba."
+     "prompt": "Fork tạo thêm lần thực thi hay thay image? Exec có đổi PID theo mô hình đang học không?",
+     "answer": "fork tạo process con với PID khác. exec thay image hiện tại và giữ PID; không tạo thêm process thứ ba."
     },
     {
      "prompt": "execvp khác execle ở cách nhận đối số, PATH và environment thế nào? Có chép cờ CreateProcess của C vào subprocess.run được không?",

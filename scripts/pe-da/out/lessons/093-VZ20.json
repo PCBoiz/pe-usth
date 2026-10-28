@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Định dạng hover giúp rút gọn số thập phân và ghi đơn vị ngay cạnh giá trị. Trong ví dụ cuối, %{y:.1f} hiển thị y với một chữ số sau dấu thập phân. Cặp thẻ <extra></extra> bỏ ô tên trace bên cạnh nội dung hover. Dòng print cho biết mẫu định dạng có trong Figure; để xem nó hiển thị ra sao, mở hình HTML rồi đưa chuột vào từng cột."
+      "text": "Định dạng hover giúp tránh những số thập phân dài và nhắc lại đơn vị đúng chỗ. hovertemplate dùng cú pháp của Plotly; phần extra có thể xóa ô tên trace nếu tên đó không cần thiết. Kết quả in dưới chỉ xác nhận định dạng, còn hình HTML cho phép thử rê chuột trực tiếp."
      },
      {
       "type": "terminal",

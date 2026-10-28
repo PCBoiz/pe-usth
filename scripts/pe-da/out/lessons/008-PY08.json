@@ -144,7 +144,7 @@
     },
     {
      "prompt": "len([6,8,10]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
-     "answer": "`len([6, 8, 10])` bằng 3 vì list có ba phần tử. `input` trả chuỗi, dù bạn gõ `12.5`. Nó hiển thị lời nhắc rồi đọc từ stdin; `print` ghi vào stdout. Muốn dùng giá nhập để tính toán, đổi chuỗi bằng `float` trước."
+     "answer": "Độ dài là 3. input trả str, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
     }
    ]
   },

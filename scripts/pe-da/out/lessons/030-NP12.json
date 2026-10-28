@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Bạn có thể ghép các thao tác đã học: tạo các số từ 1 đến 12 bằng `arange`, xếp thành bảng 3 hàng, 4 cột bằng `reshape`, rồi tính tổng từng cột:"
+      "text": "Bạn đã có thể đọc câu hỏi ghép từ đầu khóa học. Trước hết tạo các số từ 1 đến 12, sau đó xếp thành bảng 3 hàng, 4 cột:"
      },
      {
       "type": "code",

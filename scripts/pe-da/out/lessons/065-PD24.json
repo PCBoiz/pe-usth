@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`shift(1)` đưa giá trị kỳ trước về hàng hiện tại. `diff()` lấy giá trị hiện tại trừ kỳ trước, nên 120 trừ 100 bằng 20, còn 90 trừ 120 bằng -30. `pct_change()` chia chênh lệch đó cho giá trị kỳ trước; 0.2 nghĩa là tăng 20%. Khi kỳ trước bằng 0 hoặc thiếu, bạn cần đặt quy tắc riêng."
+      "text": "shift(1) đưa giá trị kỳ trước về hàng hiện tại. diff tính chênh lệch tuyệt đối; pct_change trả tỷ lệ thay đổi, nên 0.2 nghĩa là tăng 20%. Khi kỳ trước bằng 0 hoặc thiếu, bạn phải đặt quy tắc riêng."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`ewm` tính trung bình với trọng số giảm dần cho các quan sát cũ. Với `alpha=0.5, adjust=False`, mỗi kết quả sau lấy một nửa giá trị mới cộng một nửa kết quả trước: 0.5 × 20 + 0.5 × 10 = 15, rồi 0.5 × 30 + 0.5 × 15 = 22.5. Dòng `rolling(2).mean().shift(1)` đưa trung bình hai hàng trước về hàng hiện tại; vì vậy kết quả ở hàng có giá trị 30 là trung bình của 10 và 20, bằng 15. Khi tạo dữ liệu cho dự báo, cách dịch này giúp tránh dùng chính giá trị đang cần dự báo."
+      "text": "ewm tính trung bình với trọng số giảm dần cho các quan sát cũ. Câu thứ hai dịch trung bình hai hàng lại một kỳ, để giá trị tại hàng hiện tại không dùng số của chính hàng đó. Điều này hữu ích khi tạo đặc trưng dự báo và tránh dùng dữ liệu tương lai."
      }
     ]
    ],

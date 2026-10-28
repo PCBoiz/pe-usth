@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong RAM. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
+      "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
      },
      {
       "type": "code",
@@ -58,7 +58,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Chỉ dùng pickle để đọc dữ liệu do bạn tạo và tin cậy, vì thao tác đọc pickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm một file lạ an toàn hơn. JSON thường tiện hơn khi trao đổi với hệ khác. Pickle có thể phù hợp để lưu dữ liệu Python trong bài thực hành nếu bạn quản lý nơi tạo file và phiên bản cấu trúc dữ liệu."
+      "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
      },
      {
       "type": "paragraph",
@@ -138,14 +138,14 @@
     },
     {
      "prompt": "Có thể tải pickle người lạ rồi thử load để xem có an toàn không?",
-     "answer": "Không. Ngay thao tác load đã có thể chạy mã; chỉ dùng dữ liệu mẫu do bạn tạo hoặc có nguồn tin cậy trong bài thực hành."
+     "answer": "Không. Ngay thao tác load đã có thể chạy mã; chỉ dùng fixture tin cậy trong lab."
     },
     {
-     "prompt": "Làm PW6 thay cách lưu dữ liệu văn bản bằng gzip+pickle, giữ kiểu và version.",
-     "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi xóa dữ liệu đang giữ trong RAM, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
+     "prompt": "Làm PW6 thay state text bằng gzip+pickle, giữ kiểu và version.",
+     "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi reset state, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
     },
     {
-     "prompt": "Có phải mọi giá trị đơn và mọi collection đều lưu được bằng pickle không? Hàm/class ở cấp module khác file đang mở hoặc socket đang kết nối ở điểm nào khi lưu?",
+     "prompt": "Pickle scalar/collection có luôn được không? Lưu function/class cấp module và file/socket khác nhau thế nào?",
      "answer": "Chỉ được khi các thành phần pickle được. Function/class cấp module thường được lưu theo tên, load cần đúng module/định nghĩa tương thích. File handle/socket là tài nguyên đang mở, không tự pickle rồi khôi phục kết nối được."
     },
     {

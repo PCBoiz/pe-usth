@@ -3,13 +3,13 @@
  "sort_order": 11,
  "module": "M1 · Python nền tảng",
  "title": "PY11 · Tuple, bytes và lựa chọn collection",
- "subtitle": "Cơ bản · M1 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Cơ bản · M1 · 14 phút",
+ "estimated_minutes": 14,
+ "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PY11 · Tuple, bytes và lựa chọn collection",
-  "subtitle": "Cơ bản · M1 · 15 phút",
+  "subtitle": "Cơ bản · M1 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PY11",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Bạn không thể gán giá trị khác vào một vị trí của tuple, chẳng hạn `point[0] = 30`. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
+      "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Tuple không cho gán lại các vị trí tham chiếu. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
      },
      {
       "type": "code",

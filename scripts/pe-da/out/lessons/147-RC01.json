@@ -3,13 +3,13 @@
  "sort_order": 147,
  "module": "M7 · Multiprocessing và shell thực hành",
  "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
- "subtitle": "Trung cấp · M7 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M7 · 10 phút",
+ "estimated_minutes": 10,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
-  "subtitle": "Trung cấp · M7 · 11 phút",
+  "subtitle": "Trung cấp · M7 · 10 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RC01",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong hình Apache Prefork ở trang 274, một process cha quản lý nhiều process con. Mỗi process con được nối với một yêu cầu HTTP từ phía người dùng web. Bạn có thể chép các ô đó thành một dictionary để đếm số process con mà không cần chạy web server:"
+      "text": "Trong hình Apache Prefork ở trang 274, một parent quản lý nhiều child process. Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
      },
      {
       "type": "code",

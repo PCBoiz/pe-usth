@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong hình đầu, vị trí ngang của mỗi điểm cho biết ngày, còn vị trí dọc cho biết số cốc bán được. Khi đổi câu hỏi sang so sánh cà phê với trà, bạn có thể dùng hai cột bắt đầu từ mốc 0. Hai loại đồ uống là hai nhóm riêng, nên nối chúng bằng một đường sẽ không biểu diễn sự thay đổi theo thời gian."
+      "text": "Trục và độ cao của điểm đang mã hóa dữ liệu: vị trí cho biết ngày và lượng bán. Khi đổi câu hỏi sang so sánh hai loại đồ uống, dùng hai cột có chung mốc 0 sẽ dễ đọc hơn. Các tên loại là nhóm, không phải thời gian để nối thành một xu hướng."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Với thời gian chờ của nhiều đơn hàng, histogram chia thời gian thành các khoảng rồi đếm số đơn trong mỗi khoảng. Line chart, bar chart và histogram trả lời những câu hỏi khác nhau; hãy chọn theo điều bạn muốn biết. Các ví dụ dùng plt.show() để hiện hình. Trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bạn sẽ học cách lưu hình thành file ở VZ14."
+      "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng plt.show() để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
      },
      {
       "type": "code",

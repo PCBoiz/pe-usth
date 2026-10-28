@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "after lên lịch để event loop gọi một hàm; nó không tạo thread mới. Trong ví dụ, after(0, ...) xếp thao tác thêm \"tick\" vào list, còn after(20, r.quit) yêu cầu dừng mainloop sau khoảng 20 mili giây. quit dừng vòng xử lý sự kiện đang chạy, còn destroy hủy cửa sổ. Ứng dụng dùng thật thường giữ mainloop chạy cho tới khi người dùng đóng cửa sổ."
+      "text": "after lên lịch callback trong event loop. Nó không tạo thread mới. quit làm mainloop đang chạy kết thúc; destroy hủy cửa sổ. Đoạn này tự thoát sau 20ms để kiểm tra hữu hạn, không phải một ứng dụng người dùng hoàn chỉnh."
      },
      {
       "type": "code",
@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Worker chỉ tính tổng và gửi kết quả qua Queue. Thread đã tạo Tk đọc kết quả rồi cập nhật StringVar. Trong ví dụ nhỏ này, join chờ phép tính hoàn tất trước khi đọc queue. Với việc lưu file lâu trong ứng dụng thật, không gọi join trong callback giao diện, vì giao diện sẽ phải chờ theo. Ví dụ tiếp dùng after để kiểm tra kết quả mà không chặn vòng xử lý sự kiện."
+      "text": "Worker chỉ tính và gửi kết quả qua Queue; thao tác StringVar diễn ra trên thread tạo Tk. join ở đây chỉ là ranh giới kiểm tra một phép tính nhỏ trong ví dụ ẩn. Không đặt join cho tác vụ lâu trong callback giao diện vì nó vẫn chặn UI."
      },
      {
       "type": "code",

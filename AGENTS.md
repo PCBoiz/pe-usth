@@ -55,8 +55,8 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Frontend unit test | `cd frontend && npm run test:unit` → **328 ca** / 27 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
-| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 346 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 408 đoạn code, **0 hỏng**, 14 cảnh báo, ~36 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |

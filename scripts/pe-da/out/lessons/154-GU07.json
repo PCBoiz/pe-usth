@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "insert(END, ...) thêm phần tử vào cuối danh sách. ACTIVE là phần tử mà Listbox đang dùng làm vị trí hoạt động cho thao tác bàn phím. Nó có thể khác phần tử đang được chọn và tô sáng. Muốn biết những dòng người dùng đã chọn, gọi curselection()."
+      "text": "insert(END,...) thêm phần tử ở cuối. ACTIVE là phần tử đang active để thao tác bàn phím; nó có thể khác lựa chọn đang được tô sáng. Muốn lấy các lựa chọn thực sự, dùng curselection."
      },
      {
       "type": "code",
@@ -44,7 +44,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở đây, vị trí hoạt động là Chi nhưng dòng được chọn là An. Vì vậy, get(tk.ACTIVE) trả \"Chi\", còn curselection() cho vị trí của \"An\". Nếu chưa có dòng nào được chọn, curselection() trả một dãy rỗng; hãy kiểm tra trước khi lấy phần tử đầu."
+      "text": "Ví dụ cố ý để active ở Chi nhưng selected ở An. curselection trả các vị trí đã chọn; danh sách có thể rỗng, nên cần kiểm tra trước khi lấy phần tử đầu."
      },
      {
       "type": "code",

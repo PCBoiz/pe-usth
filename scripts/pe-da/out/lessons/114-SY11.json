@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết, thử gọi một hàm qua tên của module có sẵn:"
+      "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
      },
      {
       "type": "code",
@@ -46,18 +46,19 @@
     [
      {
       "type": "paragraph",
-      "text": "File grades.py có thể chứa các hàm tính điểm. Tạo hai file dưới đây trong cùng một thư mục. Trong main.py, viết `import grades` rồi gọi `grades.passed(6)`; không viết đuôi .py trong câu import."
+      "text": "Khi tự tạo module, file grades.py có thể chứa các hàm tính điểm. Import dùng tên grades, không viết grades.py hay đường dẫn hệ điều hành. Ví dụ dưới tạo một module nhỏ trong thư mục tạm và nạp đúng file đó để minh họa mà không sửa dự án của bạn:"
      },
      {
-      "type": "terminal",
-      "code": "# grades.py\ndef passed(score):\n    return score >= 5\n\n# main.py\nimport grades\nprint(grades.passed(6))",
-      "expected": "Lưu grades.py và main.py trong cùng một thư mục. Mở terminal ở thư mục đó rồi chạy python main.py. Kết quả: True."
+      "type": "code",
+      "code": "import tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))",
+      "expected": "True",
+      "tryIt": true
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Chạy `python main.py` từ thư mục chứa hai file. Python tìm module grades và gọi hàm passed đã định nghĩa ở đó. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi dễ bảo trì hơn chép nhiều bản. Nó còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
+      "text": "Trong dự án thông thường, đặt grades.py bên cạnh main.py rồi viết `import grades`; không cần importlib như ví dụ tự chứa. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi sẽ dễ bảo trì hơn chép nhiều bản. Module còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
      },
      {
       "type": "paragraph",
@@ -137,7 +138,7 @@
     },
     {
      "prompt": "np trong import numpy as np có phải keyword không?",
-     "answer": "Không. Đó là bí danh (alias) do người viết chọn; np là quy ước phổ biến cho NumPy."
+     "answer": "Không. Đó là alias do người viết chọn; np là quy ước phổ biến cho NumPy."
     },
     {
      "prompt": "Tạo grades.py có passed và main.py dùng hàm đó.",
@@ -149,7 +150,7 @@
     },
     {
      "prompt": "import numpy as np và from math import floor as down đưa các tên nào vào nơi gọi? __init__.py có giống __init__(self) không?",
-     "answer": "Tên np trỏ module NumPy; tên down trỏ floor. __init__.py là file khởi tạo một package thông thường; __init__(self) là method khởi tạo instance, không phải hai cách viết cùng việc."
+     "answer": "Tên np trỏ module NumPy; tên down trỏ floor. __init__.py là file khởi tạo regular package; __init__(self) là method khởi tạo instance, không phải hai cách viết cùng việc."
     }
    ]
   },
@@ -158,7 +159,7 @@
     "title": "Chạy thử",
     "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
    },
-   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n"
+   "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n\n# ── Đoạn 3 ──\nimport tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))\n"
   }
  },
  "_mode": "pyodide",

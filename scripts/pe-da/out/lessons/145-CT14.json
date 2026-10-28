@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có một tác vụ tính toán viết bằng Python thuần và muốn dùng nhiều lõi CPU. Với bản CPython có GIL, có thể cần nhiều process thay vì chỉ thêm thread. Trước khi tìm cách tăng tốc, hãy xem việc sửa list trong process con có làm list ở cha thay đổi không:"
+      "text": "Một phép tính Python thuần dùng nhiều CPU có thể cần process riêng thay vì thêm thread trong CPython build có GIL. Trước khi tìm cách tăng tốc, hãy kiểm tra dữ liệu của cha và con có được dùng chung không:"
      },
      {
       "type": "code",

@@ -130,14 +130,14 @@
     },
     {
      "prompt": "Lock nên chỉ bảo vệ phép ghi hay cả đọc-tính-ghi?",
-     "answer": "Cần bảo vệ cả chuỗi đọc giá trị, tính giá trị mới và ghi lại, bằng cùng một khóa. Chỉ khóa lần ghi vẫn có thể để hai thread tính từ cùng giá trị cũ."
+     "answer": "Cả thao tác read-modify-write liên quan."
     },
     {
      "prompt": "Hai thread lấy hai khóa theo thứ tự ngược nhau có rủi ro gì?",
      "answer": "Deadlock: mỗi thread giữ một khóa và chờ khóa mà thread kia đang giữ."
     },
     {
-     "prompt": "Vì sao dùng with lock thường an toàn hơn tự gọi acquire rồi có thể quên release? Nếu mỗi worker tạo một lock riêng, các khóa đó có phối hợp để bảo vệ cùng state không?",
+     "prompt": "Vì sao với lock: thường an toàn hơn acquire rồi quên release? Nếu tạo mỗi worker một lock mới thì có cùng bảo vệ state không?",
      "answer": "with tự acquire/release kể cả khi có ngoại lệ. Mọi worker liên quan phải dùng cùng lock cho cùng quy tắc dữ liệu; lock riêng không tạo loại trừ giữa chúng."
     },
     {

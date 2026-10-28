@@ -180,10 +180,14 @@ test('bản dựng: KHÔNG bài nào phát `tryIt: false`', boQua, () => {
   assert.deepEqual(sai, []);
 });
 
-test('bản dựng: 406 nút trên 145 bài — khớp số đoạn check-pyodide.mjs chạy thật', boQua, () => {
-  // 406 KHÔNG phải một con số tự chọn: đó đúng là số đoạn mà
+test('bản dựng: 408 nút trên 146 bài — khớp số đoạn check-pyodide.mjs chạy thật', boQua, () => {
+  // 408 KHÔNG phải một con số tự chọn: đó đúng là số đoạn mà
   // `node scripts/pe-da/check-pyodide.mjs` chạy trong Pyodide rồi so với
-  // `expected` của bài (mốc trong AGENTS.md: "145 bài, 406 đoạn code, 0 hỏng").
+  // `expected` của bài (mốc trong AGENTS.md: "146 bài, 408 đoạn code, 0 hỏng").
+  //
+  // 29/10/2026: 406/145 -> 408/146. Hai đoạn mới đến từ SY11 và SY12, nơi bản
+  // văn mới viết lại hai khối mã GIẢ (dán `# grades.py` và `# main.py` vào cùng
+  // một khối) thành Python chạy được thật. Xem chú thích ở studio-lesson.test.mjs.
   // Nghĩa là mọi nút ở đây trỏ vào đoạn mã ĐÃ được chứng minh chạy được và in
   // ra đúng cái bài nói nó in ra. Hai con số lệch nhau = nút trỏ vào đoạn chưa
   // ai chạy thử.
@@ -194,8 +198,8 @@ test('bản dựng: 406 nút trên 145 bài — khớp số đoạn check-pyodid
       for (const k of lat) if (k.tryIt) { nut += 1; coNut.add(b.lesson_code); }
     }
   }
-  assert.equal(nut, 406);
-  assert.equal(coNut.size, 145);
+  assert.equal(nut, 408);
+  assert.equal(coNut.size, 146);
 });
 
 test('bản dựng: bài phải chạy trên máy thì KHÔNG có nút nào', boQua, () => {

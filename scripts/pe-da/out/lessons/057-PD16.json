@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`inner` chỉ giữ mã có ở cả hai bảng; `outer` giữ mã có ở ít nhất một bảng. Nếu hai bảng có cột trùng tên ngoài khóa, dùng `suffixes=(\"_order\", \"_customer\")` để phân biệt cột từ mỗi bảng. Khi mã khách nằm ở index của bảng bên phải, bạn có thể dùng `join`."
+      "text": "inner chỉ giữ khóa có ở cả hai phía; outer giữ hợp các khóa. Nếu hai bảng có cột trùng tên ngoài khóa, suffixes=(\"_order\", \"_customer\") giúp phân biệt nguồn cột. Khi khóa nằm ở index bảng phải, có thể dùng join."
      },
      {
       "type": "code",

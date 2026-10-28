@@ -2,13 +2,13 @@
  "lesson_code": "EX02",
  "sort_order": 161,
  "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
- "title": "EX02 · Structured array: bảng có tên và điểm",
+ "title": "EX02 · Bảng hỗn hợp và field names của structured array",
  "subtitle": "Trung cấp · M9 · 12 phút",
  "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "EX02 · Structured array: bảng có tên và điểm",
+  "title": "EX02 · Bảng hỗn hợp và field names của structured array",
   "subtitle": "Trung cấp · M9 · 12 phút",
   "source": {
    "kind": "python-da",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`dtype=None` để NumPy tự chọn kiểu cho từng trường; `encoding=\"utf-8\"` quy định cách đọc phần văn bản. `table[\"mark\"]` lấy trường điểm của các học viên, còn `table[0]` lấy bản ghi đầu tiên gồm cả tên và điểm. Vì vậy, nguồn có hai cột không có nghĩa structured array có hai chiều."
+      "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"mark\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ô điểm trống được đọc thành NaN vì trường `mark` ở đây có kiểu số thực. Nếu một cột chỉ chứa số nguyên và ô trống, NumPy có thể suy ra kiểu và giá trị điền khác; hãy xem `dtype` và khai báo rõ kiểu, giá trị thiếu cần dùng. Ví dụ cuối đặt trường điểm là `float` thay vì để NumPy suy luận. Với code cũ gọi `recfromcsv`, dùng `genfromtxt` cùng các tham số tương ứng vì `recfromcsv` đã bị bỏ từ NumPy 2."
+      "text": "Ô điểm trống thành NaN trong field số thực này. Cách suy luận còn phụ thuộc dữ liệu: một cột chỉ có số nguyên và ô trống có thể dùng giá trị điền khác, nên cần xem dtype và chỉ định kiểu hoặc missing policy nếu quy tắc phải ổn định. recfromcsv trong tờ tóm tắt là API cũ đã bị bỏ ở NumPy 2; dùng genfromtxt với các tham số rõ, không cài phiên bản cũ chỉ để giữ tên hàm."
      },
      {
       "type": "code",
@@ -123,7 +123,7 @@
    ],
    "practice": [
     {
-     "prompt": "`names=True` lấy thông tin gì từ dòng đầu? Muốn lấy toàn bộ điểm trong trường `mark`, bạn viết thế nào?",
+     "prompt": "names=True lấy gì từ dòng đầu? Muốn cột mark viết gì?",
      "answer": "Lấy tên field. Dùng table[\"mark\"]; table[0] là bản ghi đầu tiên, không phải cột đầu."
     },
     {

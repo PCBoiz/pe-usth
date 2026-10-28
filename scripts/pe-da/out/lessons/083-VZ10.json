@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi gửi hình, thêm một chú thích nêu xu hướng và con số cần chú ý. Chẳng hạn, với chuỗi cà phê, bạn có thể viết: “Số cốc tăng từ 8 lên 10 rồi giảm còn 7 trong ba ngày.” Kiểm tra cỡ chữ ở kích thước người đọc sẽ xem, độ tương phản và bản in đen trắng. Trong ví dụ cuối, plot trả về list lines chứa các đối tượng Line2D, mỗi đối tượng là một đường. plt.setp(lines, linewidth=2.5) đổi độ dày các đường đó mà không thay dữ liệu gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để đổi thành màu qua cmap. alpha=0 là hoàn toàn trong suốt, còn alpha=1 là hoàn toàn không trong suốt."
+      "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một list các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong list đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
      },
      {
       "type": "code",

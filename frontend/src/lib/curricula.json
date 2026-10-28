@@ -170,7 +170,7 @@
             "SY25 · PW1: quản lý sinh viên, môn học và điểm bằng collection",
             "SY26 · PW2–PW4: chuyển sang object rồi chia package",
             "SY27 · PW5: lưu ba file, nén và nạp lại",
-            "SY28 · PW6: lưu dữ liệu bằng pickle có nén"
+            "SY28 · PW6: đổi persistence sang pickle có nén"
           ]
         },
         {
@@ -220,7 +220,7 @@
           "title": "M9 · Ôn tập và thực hành các chi tiết trong slide",
           "lessons": [
             "EX01 · Đọc bảng cùng kiểu bằng loadtxt và tra đúng trợ giúp",
-            "EX02 · Structured array: bảng có tên và điểm",
+            "EX02 · Bảng hỗn hợp và field names của structured array",
             "EX03 · Tự mở Notebook trong đúng môi trường",
             "EX04 · Đọc cây process và phân biệt fork với exec",
             "EX05 · GIL, reference counting và chọn đúng kiểu đồng thời",

@@ -38,7 +38,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi mẫu ít, stripplot cho thấy từng quan sát thay vì chỉ một số tóm tắt. jitter dịch nhẹ các điểm theo chiều ngang để chúng bớt chồng lên nhau; nó không đổi thời gian chờ trên trục y. Ví dụ này tắt jitter nên các điểm của mỗi ca nằm trên cùng một vị trí x. Bạn có thể vẽ boxplot trước rồi đặt các điểm gốc lên trên để vừa đọc phần tóm tắt, vừa thấy dữ liệu từng đơn."
+      "text": "Khi mẫu ít, stripplot cho thấy từng quan sát thay vì chỉ một số tóm tắt. jitter có thể tránh chồng điểm; ví dụ này tắt jitter để vị trí tái lập. Nếu cần so sánh phần giữa và độ phân tán, thêm boxplot rồi giữ điểm gốc phía trên."
      },
      {
       "type": "code",

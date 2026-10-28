@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute trực tiếp một chuỗi trong cheat sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
+      "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute chuỗi trần trong sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
      }
     ]
    ],

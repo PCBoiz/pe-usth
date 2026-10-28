@@ -73,7 +73,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode, một dạng lệnh trung gian, trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+        "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
        }
       ]
      ],
@@ -157,11 +157,11 @@
       },
       {
        "prompt": "Python bậc cao, đa dụng và mã nguồn mở có nghĩa gì? Nêu một việc ở backend và một việc của Data Analyst có thể dùng Python.",
-       "answer": "Bậc cao nghĩa là bạn viết thao tác gần với bài toán hơn là lệnh máy. Đa dụng nghĩa là Python dùng được cho nhiều loại công việc. Mã nguồn mở nghĩa là mã triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Ví dụ, backend có thể dùng Python để xử lý yêu cầu web, còn Data Analyst dùng Python để đọc đơn hàng và tính doanh thu."
+       "answer": "Bậc cao: viết thao tác gần vấn đề hơn lệnh máy. Đa dụng: cùng ngôn ngữ phục vụ nhiều loại tác vụ. Mã nguồn triển khai được công khai theo giấy phép. Ví dụ backend xử lý yêu cầu web; DA đọc đơn hàng rồi tính doanh thu. Tên rõ nghĩa và thụt lề giúp đọc code."
       },
       {
        "prompt": "So sánh gõ print(12 + 9) trong REPL với lưu cùng lệnh vào sales.py. Shebang dùng để làm gì?",
-       "answer": "Trong REPL, bạn nhập từng lệnh và nhận kết quả ngay. Với script, bạn lưu các lệnh rồi chạy bằng `python sales.py`. Trên hệ có hỗ trợ, shebang ở đầu file chỉ ra trình thông dịch cần dùng khi chạy trực tiếp một file có quyền thực thi. Cách xử lý shebang phụ thuộc hệ điều hành."
+       "answer": "REPL nhận và thực thi từng lệnh; script chứa chuỗi lệnh chạy bằng python sales.py. Trên hệ hỗ trợ, shebang đầu file gợi interpreter khi chạy file có quyền thực thi; nó không thay nội dung Python hay áp dụng giống nhau trên mọi hệ."
       },
       {
        "prompt": "Có đúng là CPython không biên dịch và luôn nhanh nhất cho mọi việc không?",
@@ -332,7 +332,7 @@
       },
       {
        "prompt": "Vì sao hai dự án nên có môi trường riêng?",
-       "answer": "Mỗi dự án có thể cần phiên bản thư viện khác nhau. Môi trường riêng giúp việc cài hoặc nâng cấp package ở dự án này không làm thay đổi dự án kia. Khi chia sẻ dự án, kiểm tra đường dẫn Python đang chạy và ghi lại các phiên bản thư viện."
+       "answer": "Để phụ thuộc của mỗi dự án không bị thay bởi việc cài hoặc nâng cấp package cho dự án khác. Kiểm tra interpreter thực tế và ghi phiên bản khi bàn giao."
       },
       {
        "prompt": "Khóa học dùng Python 2 hay Python 3? Vì sao không bắt đầu dự án mới bằng Python 2?",
@@ -421,7 +421,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Nội dung trợ giúp có thể dài; hãy tìm phần tham số và ví dụ phù hợp với việc bạn đang làm."
+        "text": "`type(12)` cho biết 12 có kiểu int, còn `type(\"data\")` cho biết chuỗi có kiểu str. Bạn sẽ gặp hai kiểu này ở các bài tiếp. Khi cần tra, gõ `dir(object)` để xem tên thuộc tính/phương thức, hoặc `help(print)` để đọc hướng dẫn dùng print. Help có output dài nên không cần chép hết vào bài; hãy tìm phần tham số và ví dụ bạn đang cần."
        },
        {
         "type": "paragraph",
@@ -429,7 +429,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không thực thi code Python thay kernel và bạn không cần tự cài từng cái để viết một cell."
+        "text": "Jupyter phát triển từ dự án IPython. Với notebook Python, IPython kernel thực thi code và giữ các biến; Notebook và JupyterLab là các giao diện người học dùng để gửi code tới kernel. Trong sơ đồ lịch sử của slide, ZeroMQ vận chuyển thông điệp và Tornado phục vụ phần web. jQuery và Bootstrap giúp dựng giao diện; MathJax hiển thị công thức toán. Những thành phần giao diện này không tính thay kernel và bạn không cần tự cài từng cái để viết một cell."
        }
       ]
      ],
@@ -509,7 +509,7 @@
       },
       {
        "prompt": "Máy đã có Python nhưng chưa có Notebook: cài và mở bằng lệnh nào? Sau đó kiểm tra một notebook không phụ thuộc trạng thái cũ ra sao?",
-       "answer": "Trong terminal của môi trường dự án, chạy python -m pip install notebook rồi jupyter notebook. Với notebook đã mở, chọn Restart kernel rồi Run All để chạy lại từ đầu. Kiểm tra kết quả và ghi lại môi trường khi chia sẻ. Việc cài đặt cần kết nối mạng và quyền phù hợp; các lệnh cài đặt được chạy trong terminal."
+       "answer": "Trong terminal của môi trường dự án, chạy python -m pip install notebook rồi jupyter notebook. Với notebook đã mở, Restart kernel rồi Run All theo đúng thứ tự, kiểm lại kết quả và ghi môi trường khi chia sẻ. Bước cài cần kết nối và quyền phù hợp; không coi là câu lệnh Python trong cell."
       },
       {
        "prompt": "Bạn cần sửa file .py và đặt breakpoint. Editor và IDE khác nhau ở đâu? Notebook có thêm loại nội dung nào ngoài code?",
@@ -570,7 +570,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`type(raw).__name__` cho tên kiểu của raw; `type(price).__name__` làm tương tự với price. `str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
+        "text": "`str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
        },
        {
         "type": "code",
@@ -682,7 +682,7 @@
       },
       {
        "prompt": "Sau cups = 12; Cups = 9; cups = 15, hai tên giữ gì? \"coffee\" và 'coffee' có khác giá trị không?",
-       "answer": "`cups` giữ 15, còn `Cups` giữ 9 vì tên biến phân biệt chữ hoa và chữ thường. `\"coffee\"` và `'coffee'` có cùng giá trị; bạn có thể dùng một trong hai kiểu dấu nháy. Các giá trị được viết trực tiếp trong code như `12`, `15` hay `\"coffee\"` được gọi là literal."
+       "answer": "cups giữ 15, Cups giữ 9 vì tên phân biệt hoa thường. Hai literal chuỗi khác kiểu dấu nháy này có cùng giá trị coffee; 12 và 15 là literal số."
       },
       {
        "prompt": "Kiểm các tên total cups, total-cups, for, total_cups và tra danh sách từ khóa của Python đang chạy thế nào?",
@@ -985,7 +985,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải thêm dấu gạch chéo để biểu diễn dấu nháy bên trong. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
+        "text": "`\\n` trong literal tạo ký tự xuống dòng. Nháy đơn và nháy đôi đều tạo chuỗi; chọn loại giúp ít phải escape khi nội dung chứa dấu nháy. Ba dấu nháy liên tiếp có thể viết chuỗi nhiều dòng."
        },
        {
         "type": "code",
@@ -1165,7 +1165,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một slice, tức một đoạn. Với bước dương, bỏ vị trí bắt đầu (start) như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ vị trí dừng (stop) như `filename[2:]` là lấy đến hết."
+        "text": "Chỉ số bắt đầu từ 0; chỉ số âm đếm từ cuối. `filename[-3:]` lấy từ ký tự thứ ba tính từ cuối đến hết chuỗi. Dấu `:` tạo một slice, tức một đoạn. Với bước dương, bỏ start như `filename[:5]` nghĩa là lấy từ đầu, còn bỏ stop như `filename[2:]` là lấy đến hết."
        },
        {
         "type": "code",
@@ -1472,7 +1472,7 @@
       },
       {
        "prompt": "len([6,8,10]) là bao nhiêu? input(\"Gia: \") trả số hay chuỗi, và input/print dùng các luồng nào?",
-       "answer": "`len([6, 8, 10])` bằng 3 vì list có ba phần tử. `input` trả chuỗi, dù bạn gõ `12.5`. Nó hiển thị lời nhắc rồi đọc từ stdin; `print` ghi vào stdout. Muốn dùng giá nhập để tính toán, đổi chuỗi bằng `float` trước."
+       "answer": "Độ dài là 3. input trả str, ghi lời nhắc rồi đọc stdin; print ghi stdout. Vì vậy nhập 12.5 cần float trước phép tính."
       }
      ]
     },
@@ -1874,7 +1874,7 @@
        "answer": "remove(1) xóa số 1 đầu tiên: [3,2,1]. pop(0) trả 3 và còn [2,1]. reverse đảo tại chỗ thành [1,2]. sort cũng sửa tại chỗ và trả None; del a[0] xóa theo vị trí mà không trả phần tử."
       },
       {
-       "prompt": "Với `a = list(range(10))`, `a[1::2]` và `a[-5:]` lấy những phần tử nào?",
+       "prompt": "Với list(range(10)), [1::2] và [-5:] chọn gì?",
        "answer": "Lần lượt [1,3,5,7,9] và [5,6,7,8,9]. Đây là đọc slice, không xóa phần tử."
       }
      ]
@@ -1963,13 +1963,13 @@
    "sort_order": 11,
    "module": "M1 · Python nền tảng",
    "title": "PY11 · Tuple, bytes và lựa chọn collection",
-   "subtitle": "Cơ bản · M1 · 15 phút",
-   "estimated_minutes": 15,
-   "xp_reward": 9,
+   "subtitle": "Cơ bản · M1 · 14 phút",
+   "estimated_minutes": 14,
+   "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PY11 · Tuple, bytes và lựa chọn collection",
-    "subtitle": "Cơ bản · M1 · 15 phút",
+    "subtitle": "Cơ bản · M1 · 14 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PY11",
@@ -1994,7 +1994,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Bạn không thể gán giá trị khác vào một vị trí của tuple, chẳng hạn `point[0] = 30`. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
+        "text": "Tuple có thứ tự và đọc theo chỉ số như list: `point[0]` là 10. Tuple không cho gán lại các vị trí tham chiếu. Nếu một phần tử trỏ tới list, list đó vẫn có thể thay đổi; tính bất biến của tuple không tự đóng băng object con. Dấu phẩy tạo tuple một phần tử: `(10,)`; `(10)` vẫn là số 10. Thao tác `x, y = point` được gọi là unpacking: gán mỗi phần tử vào một tên; dạng cơ bản cần số tên bằng số phần tử."
        },
        {
         "type": "code",
@@ -2302,7 +2302,7 @@
      ],
      "practice": [
       {
-       "prompt": "Với `student = {\"name\": \"Mai\"}`, `\"Mai\" in student` kiểm tra khóa hay giá trị? Muốn tìm trong các giá trị thì viết thế nào?",
+       "prompt": "\"Mai\" in student kiểm tra tên trong values hay khóa?",
        "answer": "Kiểm tra khóa; muốn tìm trong values dùng \"Mai\" in student.values()."
       },
       {
@@ -3086,7 +3086,7 @@
        },
        {
         "type": "paragraph",
-        "text": "sum, len, min và max là các hàm có sẵn của Python (built-in). Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ điều kiện dữ liệu không được rỗng. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
+        "text": "sum, len, min và max là built-in có sẵn. Hàm average trên yêu cầu dữ liệu không rỗng; với list rỗng nó chia cho 0. Docstring ở đầu hàm nêu rõ hợp đồng đó. Một hàm nhỏ nên có đầu vào, đầu ra và điều kiện sử dụng đủ rõ để người khác gọi đúng."
        }
       ]
      ],
@@ -3268,7 +3268,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`greet` tham chiếu tới chính hàm đó; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+        "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
        },
        {
         "type": "code",
@@ -3372,7 +3372,7 @@
       },
       {
        "prompt": "Vì sao calculate() trả 20 nhưng value bên ngoài vẫn là 10?",
-       "answer": "value bên trong là biến cục bộ của hàm, khác với value ở cấp module."
+       "answer": "value bên trong là biến local khác với tên cấp module."
       },
       {
        "prompt": "Trong Button, command=save và command=save() khác nhau thế nào?",
@@ -6256,7 +6256,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Bạn có thể ghép các thao tác đã học: tạo các số từ 1 đến 12 bằng `arange`, xếp thành bảng 3 hàng, 4 cột bằng `reshape`, rồi tính tổng từng cột:"
+        "text": "Bạn đã có thể đọc câu hỏi ghép từ đầu khóa học. Trước hết tạo các số từ 1 đến 12, sau đó xếp thành bảng 3 hàng, 4 cột:"
        },
        {
         "type": "code",
@@ -7434,7 +7434,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Có hai điểm đã biết là 6 và 10, nên trung bình bằng 8. Nếu mọi phần tử đều là NaN, `nanmean` trả NaN và phát cảnh báo; khi đó cần báo chưa có dữ liệu để tính trung bình."
+        "text": "Có hai điểm thực là 6 và 10, nên trung bình bằng 8. Nếu mọi phần tử đều là NaN, `nanmean` trả NaN và phát cảnh báo; khi đó cần báo chưa có dữ liệu, không ghi một điểm trung bình giả."
        },
        {
         "type": "paragraph",
@@ -8593,7 +8593,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Bạn có thể kiểm tra dãy vừa tạo có đủ năm số và mọi số đều nằm trong khoảng từ 1 đến 6:"
+        "text": "Bạn cũng có thể giữ bộ sinh trong biến `rng` rồi dùng nó để tạo dãy:"
        },
        {
         "type": "code",
@@ -8814,7 +8814,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Phần tính tổng này chỉ dùng các thao tác đã học đến NP15; bạn có thể làm trước nếu chưa học thống kê và dữ liệu thiếu ở NP16–NP17."
+        "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Bản tổng hợp nền tảng dùng dữ liệu đầy đủ và các thao tác đã học đến NP15. Bạn có thể làm phần đó trước khi học các bài phân tích dữ liệu phía sau."
        },
        {
         "type": "paragraph",
@@ -8838,7 +8838,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Nếu một học viên chưa được nhập điểm, hãy đánh dấu ô đó bằng NaN. Với `nanmean` đã học ở NP17, bạn có thể tính trung bình từ các điểm hiện có:"
+        "text": "Bản DA thêm một điểm chưa được nhập. Bạn cần biết NP16 và NP17 để đọc phép tính trung bình này:"
        },
        {
         "type": "code",
@@ -8933,8 +8933,8 @@
        "answer": "Điền `0`: `marks.sum(axis=0)`."
       },
       {
-       "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in `shape`, tổng từng hàng và tổng từng cột. Nếu đã học NP16–NP17, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
-       "answer": "Ví dụ dưới tính tổng trên bảng đầy đủ, rồi tính số ô thiếu và trung bình trên bảng có một điểm chưa nhập:",
+       "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in shape, tổng hàng và tổng cột. Nếu đã học phần DA, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
+       "answer": "Một cách làm bản nền tảng và bản DA trên cùng dữ liệu mới:",
        "answerCode": "import numpy as np\n\nmarks = np.array([[4., 7.], [8., 6.], [5., 9.]])\nprint(marks.shape)\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\nmissing = np.array([[4., 7.], [np.nan, 6.], [5., 9.]])\nprint(np.isnan(missing).sum())\nprint(np.nanmean(missing, axis=0))",
        "answerExpected": "(3, 2)\n[11. 14. 14.]\n[17. 22.]\n1\n[4.5        7.33333333]"
       }
@@ -9319,7 +9319,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`sales['cups']` lấy một cột thành Series. Khi truyền danh sách tên cột như `sales[['cups']]`, kết quả vẫn là DataFrame. Để xem vài hàng đầu hoặc cuối, dùng `head()` và `tail()`. `to_dict(\"records\")` chuyển mỗi hàng thành một dictionary để kết quả ngắn dễ đọc hơn."
+        "text": "Một cặp ngoặc chọn cột thành Series; danh sách tên cột giữ kết quả là DataFrame. Để xem vài hàng đầu hoặc cuối, dùng head và tail. `to_dict(\"records\")` in mỗi hàng thành một dictionary nên dễ đọc trong ví dụ ngắn."
        },
        {
         "type": "code",
@@ -10291,7 +10291,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Kết quả có cùng index với bảng. Bạn cũng có thể dùng `assign` để nhận một bảng có cột mới, rồi lưu vào biến khác. Trong ví dụ sau, giả sử đơn từ 3 sản phẩm trở lên được giảm tổng tiền còn 50; dùng `loc` để chỉ rõ hàng và cột cần sửa."
+        "text": "Kết quả có cùng index với bảng. Bạn cũng có thể dùng assign để nhận một bảng có cột mới, rồi lưu vào biến khác. Khi chỉ sửa một số hàng, loc chỉ rõ cả hàng và cột cần cập nhật."
        },
        {
         "type": "code",
@@ -10313,7 +10313,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Tránh viết `df[mask][\"price\"] = 18`: đây là chained assignment, tức gán sau hai lần chọn dữ liệu liên tiếp. Từ pandas 3.0, cơ chế Copy-on-Write giúp dữ liệu chỉ được sao chép khi cần sửa, và cách gán qua hai lần chọn này không cập nhật `df`. Nếu muốn sửa bảng gốc, dùng `df.loc[mask, \"price\"] = 18`. Ở các phiên bản cũ, hành vi của chained assignment cũng không nhất quán."
+        "text": "Tránh viết df[mask][\"price\"] = 18: đây là chained assignment, tức sửa qua hai lần chọn liên tiếp. Hành vi từng khác giữa các phiên bản; với Copy-on-Write là chế độ duy nhất từ pandas 3.0, cách đó không cập nhật df. Dùng df.loc[mask, \"price\"] = 18 nếu muốn sửa bảng gốc."
        }
       ]
      ],
@@ -10519,7 +10519,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Kiểu `string` giữ mã như chữ. `Int64` viết hoa I là kiểu số nguyên của pandas cho phép có ô thiếu; những ô đó được biểu diễn bằng `pd.NA`. Nó khác kiểu `int64` thông thường của NumPy, vốn không chứa được `pd.NA`. Dùng `df.dtypes` để xem kiểu của từng cột."
+        "text": "Kiểu string giữ mã như chữ. Int64 viết hoa I là kiểu số nguyên nullable của pandas, cho phép chứa pd.NA. Nó khác NumPy int64 thông thường. Có thể xem nhiều kiểu cùng lúc bằng df.dtypes."
        },
        {
         "type": "code",
@@ -10616,7 +10616,7 @@
        "answer": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
       },
       {
-       "prompt": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+       "prompt": "Int64 nullable giúp giải quyết trường hợp nào?",
        "answer": "Cột số nguyên có giá trị thiếu."
       },
       {
@@ -10772,7 +10772,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`dropna` ở đây bỏ các hàng thiếu `amount`, còn `fillna(0)` trả về cột với ô thiếu đã được điền số 0. Ví dụ đầu giữ các đơn đã biết số tiền; ví dụ sau giữ đủ các đơn và thay số tiền chưa biết bằng 0. Chỉ chọn cách thứ hai nếu quy ước dữ liệu cho biết ô trống nghĩa là không phát sinh tiền."
+        "text": "dropna ở đây bỏ hàng thiếu amount; fillna trả cột đã được điền. Hai cách trả lời hai câu hỏi khác nhau. Điền 0 chỉ hợp lý nếu bạn có quy ước rằng ô trống nghĩa là không phát sinh tiền."
        },
        {
         "type": "code",
@@ -10782,7 +10782,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Tổng của một cột chỉ có ô thiếu mặc định có thể bằng 0. `min_count=1` yêu cầu có ít nhất một giá trị không thiếu mới tính tổng; nếu không, kết quả vẫn thiếu. Nhờ vậy, bạn phân biệt được “doanh thu bằng 0” với “chưa có dữ liệu doanh thu”."
+        "text": "Tổng một cột chỉ có ô thiếu mặc định có thể bằng 0. `min_count=1` yêu cầu ít nhất một giá trị thật mới tính tổng; nếu không, kết quả vẫn thiếu. Điều kiện này giúp phân biệt “không có doanh thu” với “chưa có dữ liệu”."
        }
       ]
      ],
@@ -11005,7 +11005,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`split` tách mã ở dấu gạch ngang, rồi `.str[0]` lấy phần đầu như HN hoặc DN. Trong mẫu `r'-(\\d+)'`, dấu `-` khớp dấu gạch ngang, `\\d+` khớp một hoặc nhiều chữ số, còn cặp ngoặc đánh dấu phần cần lấy. Vì vậy, `extract` lấy được 001 và 020. Kết quả vẫn là chuỗi nên giữ được số 0 ở đầu."
+        "text": "split tách mã ở dấu gạch ngang rồi lấy phần đầu. extract dùng nhóm trong ngoặc của regex để lấy dãy chữ số sau dấu gạch. Ở đây kết quả vẫn là chữ, nên mã 001 không mất số 0."
        }
       ]
      ],
@@ -11228,7 +11228,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Nếu mỗi hàng là một sản phẩm trong đơn, có thể cần cả `order` và `item` để phân biệt các hàng. Gọi `drop_duplicates(subset=[\"order\"])` lúc này sẽ bỏ cả sản phẩm hợp lệ. Với bảng cập nhật theo phiên bản, bạn có thể giữ bản mới nhất sau khi sắp xếp đúng thứ tự."
+        "text": "Khi mỗi hàng là một sản phẩm trong đơn, khóa có thể cần cả order và item. Chỉ dùng subset=[\"order\"] sẽ làm mất sản phẩm hợp lệ. Với bảng cập nhật theo phiên bản, bạn có thể giữ bản mới nhất sau khi sắp xếp đúng."
        },
        {
         "type": "code",
@@ -11500,7 +11500,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`value_counts()` mặc định bỏ ô thiếu; thêm `dropna=False` nếu cần đếm cả chúng. `count()` đếm giá trị không thiếu, còn `size` đếm tất cả phần tử. Với cột số, `describe()` cho các thống kê như số giá trị đã có (`count`), trung bình (`mean`), độ lệch chuẩn (`std`), số nhỏ nhất, các tứ phân vị và số lớn nhất. Các tứ phân vị chia dãy đã sắp xếp thành bốn phần có số quan sát gần bằng nhau."
+        "text": "value_counts mặc định bỏ ô thiếu; thêm dropna=False nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
        },
        {
         "type": "code",
@@ -11951,7 +11951,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`ExcelFile` giúp xem tên sheet rồi đọc đúng bảng. `book.parse(sheet_name=0)` đọc sheet đầu, còn `book.parse(sheet_name=\"Sales\")` chọn theo tên; cũng có thể dùng `pd.read_excel(book, ...)`. Trong ví dụ, sheet Targets có một hàng trống ở đầu do `startrow=1` lúc ghi. `skiprows=[0]` bỏ hàng đó, còn `names` đặt tên cột đọc vào. Slide cũ dùng tham số `parse_cols` để chọn cột; hiện nay dùng `usecols`, còn `ExcelFile.parse` vẫn được sử dụng. Hãy xem tên sheet trước khi chọn, vì sheet đầu có thể chỉ chứa hướng dẫn."
+        "text": "ExcelFile giúp xem tên sheet rồi đọc đúng bảng. book.parse(sheet_name=0) và pd.read_excel(book, sheet_name=0) là hai cách đọc tương đương; số 0 chọn sheet đầu, còn chuỗi \"Sales\" chọn theo tên. Targets có một hàng trống đầu file do startrow=1 lúc ghi; skiprows=[0] bỏ hàng đó, còn names đặt tên cột đọc vào. Trong tờ tóm tắt cũ, parse_cols chọn cột; tham số hiện hành là usecols. Không đổi parse thành một API đã bị bỏ: ExcelFile.parse vẫn có trong tài liệu pandas ổn định được kiểm khi biên tập. Đừng mặc định sheet đầu luôn là bảng cần dùng; nó có thể chỉ là hướng dẫn."
        }
       ]
      ],
@@ -12196,7 +12196,7 @@
      ],
      "practice": [
       {
-       "prompt": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+       "prompt": "agg và bảng đầu vào có cùng số hàng không?",
        "answer": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
       },
       {
@@ -12331,7 +12331,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp bằng `agg` cho một hàng mỗi cửa hàng, nên kết quả không còn liệt kê từng giao dịch. `transform` đưa tổng của cửa hàng vào từng hàng giao dịch tương ứng."
+        "text": "Bạn muốn biết mỗi giao dịch đóng góp bao nhiêu vào doanh thu cửa hàng. Tổng hợp thông thường làm mất từng giao dịch; transform đưa tổng của nhóm trở lại các hàng ban đầu."
        },
        {
         "type": "code",
@@ -12585,7 +12585,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`inner` chỉ giữ mã có ở cả hai bảng; `outer` giữ mã có ở ít nhất một bảng. Nếu hai bảng có cột trùng tên ngoài khóa, dùng `suffixes=(\"_order\", \"_customer\")` để phân biệt cột từ mỗi bảng. Khi mã khách nằm ở index của bảng bên phải, bạn có thể dùng `join`."
+        "text": "inner chỉ giữ khóa có ở cả hai phía; outer giữ hợp các khóa. Nếu hai bảng có cột trùng tên ngoài khóa, suffixes=(\"_order\", \"_customer\") giúp phân biệt nguồn cột. Khi khóa nằm ở index bảng phải, có thể dùng join."
        },
        {
         "type": "code",
@@ -13018,13 +13018,13 @@
    "sort_order": 59,
    "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
    "title": "PD18 · Concat: ghép các lô dữ liệu",
-   "subtitle": "Trung cấp · M3 · 12 phút",
-   "estimated_minutes": 12,
+   "subtitle": "Trung cấp · M3 · 11 phút",
+   "estimated_minutes": 11,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "PD18 · Concat: ghép các lô dữ liệu",
-    "subtitle": "Trung cấp · M3 · 12 phút",
+    "subtitle": "Trung cấp · M3 · 11 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#PD18",
@@ -13061,7 +13061,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi nối theo hàng, mặc định kết quả giữ tất cả tên cột xuất hiện trong các bảng; hàng nào không có cột tương ứng thì nhận ô thiếu. Trong ví dụ, kết quả có cả `amount`, `note` và `city`. `join=\"inner\"` chỉ giữ cột chung là `amount`. Chọn cách nào tùy việc bạn cần giữ các thông tin khác nhau giữa các lô hay chỉ cần phần chung."
+        "text": "Mặc định nối theo hàng giữ hợp tên cột và điền thiếu ở phần không có. join=\"inner\" chỉ giữ các cột chung. Chọn cách nào phụ thuộc việc bạn muốn giữ hay loại thông tin mới trong các lô."
        },
        {
         "type": "code",
@@ -13281,7 +13281,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bảng doanh thu hiện có một hàng cho mỗi cặp cửa hàng và tháng. Để so sánh các tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
+        "text": "Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
        },
        {
         "type": "code",
@@ -13541,7 +13541,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`aggfunc=\"sum\"` yêu cầu tính tổng; mặc định `pivot_table` dùng trung bình (`mean`), nên hãy ghi rõ khi làm báo cáo tổng doanh thu. Trong ví dụ, A–Jan bằng 10 + 20 = 30. Không có giao dịch A–Feb nên ô đó được điền 0 bằng `fill_value=0`. Chỉ điền như vậy nếu dữ liệu đầy đủ và không có giao dịch thực sự có nghĩa là doanh thu bằng 0."
+        "text": "aggfunc=\"sum\" nêu rõ cách tính; mặc định pivot_table thường dùng mean nên không nên bỏ trống khi báo cáo tổng. fill_value=0 điền ô chưa có tổ hợp sau tổng hợp, chỉ phù hợp nếu không có giao dịch nghĩa là 0."
        },
        {
         "type": "code",
@@ -14467,7 +14467,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`shift(1)` đưa giá trị kỳ trước về hàng hiện tại. `diff()` lấy giá trị hiện tại trừ kỳ trước, nên 120 trừ 100 bằng 20, còn 90 trừ 120 bằng -30. `pct_change()` chia chênh lệch đó cho giá trị kỳ trước; 0.2 nghĩa là tăng 20%. Khi kỳ trước bằng 0 hoặc thiếu, bạn cần đặt quy tắc riêng."
+        "text": "shift(1) đưa giá trị kỳ trước về hàng hiện tại. diff tính chênh lệch tuyệt đối; pct_change trả tỷ lệ thay đổi, nên 0.2 nghĩa là tăng 20%. Khi kỳ trước bằng 0 hoặc thiếu, bạn phải đặt quy tắc riêng."
        },
        {
         "type": "code",
@@ -14477,7 +14477,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`ewm` tính trung bình với trọng số giảm dần cho các quan sát cũ. Với `alpha=0.5, adjust=False`, mỗi kết quả sau lấy một nửa giá trị mới cộng một nửa kết quả trước: 0.5 × 20 + 0.5 × 10 = 15, rồi 0.5 × 30 + 0.5 × 15 = 22.5. Dòng `rolling(2).mean().shift(1)` đưa trung bình hai hàng trước về hàng hiện tại; vì vậy kết quả ở hàng có giá trị 30 là trung bình của 10 và 20, bằng 15. Khi tạo dữ liệu cho dự báo, cách dịch này giúp tránh dùng chính giá trị đang cần dự báo."
+        "text": "ewm tính trung bình với trọng số giảm dần cho các quan sát cũ. Câu thứ hai dịch trung bình hai hàng lại một kỳ, để giá trị tại hàng hiện tại không dùng số của chính hàng đó. Điều này hữu ích khi tạo đặc trưng dự báo và tránh dùng dữ liệu tương lai."
        }
       ]
      ],
@@ -14664,7 +14664,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Cột `status` dùng P cho đơn đã thanh toán và C cho đơn đã hủy. Bạn muốn đổi các mã này sang tên dễ đọc. Sau đó, bảng số lượng, đơn giá và tỷ lệ giảm giá được dùng để tính doanh thu sau chiết khấu."
+        "text": "Cột status chỉ ghi P và C. Bạn muốn đổi sang tên đọc được rồi tính doanh thu sau chiết khấu. Với từng loại thao tác, chọn hàm diễn đạt đúng việc cần làm."
        },
        {
         "type": "code",
@@ -14912,7 +14912,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`cut` dùng các mốc bạn đặt. Mặc định, một khoảng không lấy mốc bên trái nhưng có lấy mốc bên phải: khoảng `(0, 10]` nhận các số lớn hơn 0 và nhỏ hơn hoặc bằng 10. Vì vậy, 10 thuộc nhóm đầu. Giá trị ngoài các khoảng thành thiếu. Thêm `include_lowest=True` nếu cần nhận cả mốc thấp nhất là 0."
+        "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng include_lowest=True nếu cần nhận cả mốc thấp nhất."
        },
        {
         "type": "code",
@@ -15104,7 +15104,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Báo cáo có cả cửa hàng và tháng. Khi mỗi cặp `store`–`month` xác định một hàng, bạn có thể dùng hai tầng index để lấy doanh thu của một cửa hàng trong một tháng, hoặc lấy cùng một tháng ở tất cả cửa hàng."
+        "text": "Báo cáo có cả cửa hàng và tháng. Khi cặp store–month xác định một hàng, bạn có thể dùng hai tầng index để chọn trực tiếp từng ô hoặc một lát báo cáo."
        },
        {
         "type": "code",
@@ -15128,7 +15128,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`xs` chọn theo một tầng index được đặt tên; ở đây, `xs(\"Jan\", level=\"month\")` lấy doanh thu tháng Jan của tất cả cửa hàng. `reset_index()` đưa cả hai tầng trở lại thành cột nếu bạn muốn dùng `merge` hoặc xuất file."
+        "text": "xs chọn một lát theo tầng được đặt tên; ở đây lấy Jan ở tất cả cửa hàng. reset_index đưa cả hai tầng trở lại thành cột nếu bạn muốn dùng merge hoặc xuất file."
        },
        {
         "type": "code",
@@ -15585,7 +15585,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Dấu `?` là chỗ để sqlite3 nhận giá trị qua `params`. Trong ví dụ, `params=(20,)` thay ngưỡng 20 vào điều kiện `amount > ?`. Truyền giá trị riêng như vậy thay vì ghép trực tiếp dữ liệu người dùng vào câu SQL bằng f-string. Ký hiệu này có thể khác giữa các driver và dùng cho giá trị, không dùng tùy ý để thay tên bảng hoặc tên cột."
+        "text": "Dấu ? là placeholder của sqlite3; params truyền giá trị riêng. Không ghép trực tiếp dữ liệu người dùng vào câu SQL bằng f-string. Placeholder tùy driver, và không dùng để thay thế tùy ý tên bảng hoặc tên cột."
        },
        {
         "type": "code",
@@ -15671,7 +15671,7 @@
       },
       {
        "prompt": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
-       "answer": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó."
+       "answer": "Để driver xử lý giá trị riêng với cú pháp SQL, tránh lỗi quoting và SQL injection qua giá trị."
       },
       {
        "prompt": "Tạo bảng amount=[5,8], dùng SQL tính SUM và nhận kết quả bằng pandas.",
@@ -15815,7 +15815,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Điều kiện số tiền không âm chỉ đúng với bảng doanh thu chưa chứa hoàn tiền; bảng khác có thể cần quy tắc khác. `assert` hữu ích trong bài phân tích và kiểm thử. Với ứng dụng đang vận hành, hãy dùng điều kiện kiểm tra và `raise` rõ ràng, vì Python có chế độ chạy tắt các câu lệnh `assert`."
+        "text": "Điều kiện không âm chỉ đúng với bảng doanh thu chưa chứa hoàn tiền; bảng nghiệp vụ khác cần quy tắc khác. assert hữu ích trong bài phân tích và kiểm thử; ứng dụng production nên dùng kiểm tra rõ ràng và raise vì Python có chế độ tắt assert."
        },
        {
         "type": "code",
@@ -16044,7 +16044,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Mỗi kênh mới có hai đơn, nên chênh lệch trung bình chưa chứng minh kết quả sẽ ổn định trên nhiều đơn hơn. Báo cáo cần kèm số quan sát và khoảng thời gian. Khi xem các giá trị bất thường, bạn có thể dùng tứ phân vị thứ nhất Q1 (phân vị 25%) và thứ ba Q3 (phân vị 75%). Hiệu Q3 − Q1 gọi là khoảng tứ phân vị, viết tắt IQR."
+        "text": "Mỗi kênh mới có hai đơn, nên chênh lệch trung bình chưa chứng minh khác biệt ổn định. Báo cáo cần kèm số quan sát và khoảng thời gian. Khi xem các giá trị bất thường, bạn có thể dùng tứ phân vị thứ nhất Q1 (phân vị 25%) và thứ ba Q3 (phân vị 75%). Hiệu Q3 − Q1 gọi là khoảng tứ phân vị, viết tắt IQR."
        },
        {
         "type": "code",
@@ -16585,7 +16585,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong hình đầu, vị trí ngang của mỗi điểm cho biết ngày, còn vị trí dọc cho biết số cốc bán được. Khi đổi câu hỏi sang so sánh cà phê với trà, bạn có thể dùng hai cột bắt đầu từ mốc 0. Hai loại đồ uống là hai nhóm riêng, nên nối chúng bằng một đường sẽ không biểu diễn sự thay đổi theo thời gian."
+        "text": "Trục và độ cao của điểm đang mã hóa dữ liệu: vị trí cho biết ngày và lượng bán. Khi đổi câu hỏi sang so sánh hai loại đồ uống, dùng hai cột có chung mốc 0 sẽ dễ đọc hơn. Các tên loại là nhóm, không phải thời gian để nối thành một xu hướng."
        },
        {
         "type": "code",
@@ -16602,7 +16602,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Với thời gian chờ của nhiều đơn hàng, histogram chia thời gian thành các khoảng rồi đếm số đơn trong mỗi khoảng. Line chart, bar chart và histogram trả lời những câu hỏi khác nhau; hãy chọn theo điều bạn muốn biết. Các ví dụ dùng plt.show() để hiện hình. Trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bạn sẽ học cách lưu hình thành file ở VZ14."
+        "text": "Một biểu đồ cần trả lời một câu hỏi cụ thể. Với thời gian chờ của nhiều đơn hàng, histogram cho biết các khoảng có bao nhiêu đơn. Ba loại biểu đồ ở đây không thay thế nhau chỉ vì cùng vẽ được các con số. Các ví dụ dùng plt.show() để hiện hình; trong notebook, hình cũng có thể tự hiện sau khi chạy cell. Bản code đầy đủ để kiểm tra và lưu ảnh được giữ riêng; bạn sẽ học xuất file ở VZ14."
        },
        {
         "type": "code",
@@ -16832,7 +16832,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở ví dụ đầu, fig có một vùng vẽ ax và ax có một đường. Bạn cũng có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. Nếu cần đặt vị trí cụ thể, add_axes([left, bottom, width, height]) nhận bốn tỷ lệ so với Figure. Ví dụ [0.15, 0.2, 0.8, 0.65] đặt mép trái ở 15%, mép dưới ở 20%, chiều rộng 80% và chiều cao 65% của Figure. Khi dùng pyplot, plt.plot(...) vẽ vào vùng hiện tại; ax.plot(...) chỉ rõ vùng cần vẽ. Vì vậy, khi có nhiều Axes, dùng ax giúp tránh vẽ nhầm. Bạn thường chuẩn bị dữ liệu, tạo Figure và Axes, vẽ, chỉnh nhãn và bố trí, rồi lưu nếu cần trước khi gọi show."
+        "text": "Có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của Figure, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái Figure/Axes hiện tại: plt.plot(...) vẽ vào Axes hiện tại, còn ax.plot(...) chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều Axes, viết rõ ax giúp tránh vẽ nhầm vùng."
        },
        {
         "type": "code",
@@ -18245,7 +18245,7 @@
       },
       {
        "prompt": "Để biết bao nhiêu đơn nằm trong từng khoảng chờ, chọn histogram, boxplot hay violinplot? Để đọc trung vị và phần giữa thì chọn gì? Độ phình violin có phải số đếm không?",
-       "answer": "Chọn histogram để đếm số đơn trong từng khoảng chờ. Chọn boxplot để đọc trung vị, Q1, Q3 và râu. Violinplot ước lượng mật độ sau khi làm mượt; độ phình không cho bạn một số đếm chính xác. Điểm ngoài râu boxplot cần được xem lại trong ngữ cảnh, không mặc định là lỗi."
+       "answer": "Histogram đếm trong bins. Boxplot tóm tắt trung vị, Q1/Q3 và râu. Violinplot ước lượng mật độ đã làm mượt; độ phình không phải một count chính xác. Điểm ngoài râu là cờ xem lại, không mặc định là lỗi."
       }
      ]
     },
@@ -18371,7 +18371,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Colorbar cho biết mỗi màu ứng với giá trị nào. Nếu hai heatmap tự chọn thang màu riêng, cùng một màu có thể đại diện cho hai con số khác nhau. Khi cần so sánh, giữ chung cmap, vmin, vmax và đơn vị. Với bảng ít ô, bạn có thể ghi thêm số vào từng ô như ví dụ tiếp theo. cmap chọn thang màu, còn vmin và vmax đặt giá trị ở hai đầu thang. orientation=\"horizontal\" đặt colorbar nằm ngang; \"vertical\" đặt nó đứng dọc. Muốn giữ từng ô thành một khối màu rõ, dùng imshow(..., interpolation=\"nearest\"). Màu trung gian do nội suy chỉ thay đổi cách hiển thị, không phải số đo mới."
+        "text": "Colorbar giải thích con số ứng với màu. Nếu hai heatmap dùng hai thang màu tự co giãn, cùng một màu có thể đại diện cho hai giá trị khác nhau. Khi so sánh, giữ chung vmin, vmax và đơn vị. Các ô ít có thể ghi thêm số để người đọc không phải ước lượng màu. cmap chọn quy tắc đổi số thành màu, còn vmin/vmax đặt hai đầu thang số. orientation=\"horizontal\" đặt colorbar nằm ngang; \"vertical\" đặt nó đứng dọc. Muốn giữ các ô như các khối màu rõ, imshow(..., interpolation=\"nearest\") tránh làm mượt giữa ô; màu trung gian do nội suy không phải số đo mới."
        },
        {
         "type": "code",
@@ -18874,7 +18874,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi gửi hình, thêm một chú thích nêu xu hướng và con số cần chú ý. Chẳng hạn, với chuỗi cà phê, bạn có thể viết: “Số cốc tăng từ 8 lên 10 rồi giảm còn 7 trong ba ngày.” Kiểm tra cỡ chữ ở kích thước người đọc sẽ xem, độ tương phản và bản in đen trắng. Trong ví dụ cuối, plot trả về list lines chứa các đối tượng Line2D, mỗi đối tượng là một đường. plt.setp(lines, linewidth=2.5) đổi độ dày các đường đó mà không thay dữ liệu gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để đổi thành màu qua cmap. alpha=0 là hoàn toàn trong suốt, còn alpha=1 là hoàn toàn không trong suốt."
+        "text": "Khi gửi hình, thêm mô tả bằng chữ nêu xu hướng và con số quan trọng; một caption chỉ nói “biểu đồ” không đủ. Kiểm tra cỡ chữ ở kích thước thật, độ tương phản và bản in đen trắng. setp cho phép sửa đồng thời các đường đã vẽ thay vì tạo lại dữ liệu. plot trả về một list các Line2D, mỗi phần tử là một đường đã vẽ. plt.setp(lines, linewidth=2.5) thay thuộc tính các đường trong list đó, không thay các con số gốc. color chọn màu cố định; trong scatter, c còn có thể nhận dãy số để ánh xạ qua cmap. alpha=0 là trong suốt, alpha=1 là đục hoàn toàn."
        },
        {
         "type": "code",
@@ -19219,8 +19219,8 @@
        "answer": "ax.spines[\"top\"].set_visible(False). Giữ đủ dấu trục và nhãn để đọc được số."
       },
       {
-       "prompt": "Bạn vẽ một vùng theo đơn vị km trên cả hai trục. Hãy viết các lệnh để một đơn vị x dài bằng một đơn vị y; giới hạn x từ 0 đến 3; thêm đệm 10% khi trục đang tự chọn giới hạn; đặt tick y hướng vào trong, dài 8 điểm; và ẩn viền trên. Nếu đã đặt xlim cố định, gọi margins sau đó có tự thay đổi giới hạn x không?",
-       "answer": "Dùng ax.set_aspect(\"equal\"), ax.set_xlim(0, 3), ax.margins(x=0.1, y=0.1), ax.tick_params(axis=\"y\", direction=\"in\", length=8) và ax.spines[\"top\"].set_visible(False) cho từng việc tương ứng. Đặt xlim cố định sẽ tắt việc tự chọn giới hạn theo chiều x, nên margins không ghi đè giới hạn đó. Muốn thêm đệm tự động theo dữ liệu, cần bật lại autoscale cho chiều đó. Để đưa viền dưới ra ngoài 5 điểm, dùng ax.spines[\"bottom\"].set_position((\"outward\", 5))."
+       "prompt": "Hình bản đồ đơn giản cần một đơn vị x bằng một đơn vị y, giới hạn x từ 0 đến 3, thêm đệm 10% khi autoscale, tick y hướng vào dài 8 điểm và giấu viền trên. Nêu lệnh cho từng việc; đặt xlim trước rồi margins có tự đổi giới hạn x cố định không?",
+       "answer": "ax.set_aspect(\"equal\"); ax.set_xlim(0,3); ax.margins(x=0.1,y=0.1); ax.tick_params(axis=\"y\", direction=\"in\", length=8); ax.spines[\"top\"].set_visible(False). margins không ghi đè xlim đã tắt autoscale. Muốn đệm tự động phải dùng autoscale cho chiều đó. Di chuyển viền dưới ra ngoài 5 điểm: ax.spines[\"bottom\"].set_position((\"outward\",5))."
       },
       {
        "prompt": "Đặt ba tick ngang ở vị trí [1,2,3] với nhãn [\"Start\",\"Middle\",\"End\"] bằng cách nào? Việc đổi nhãn có đổi giá trị dữ liệu thành ba chữ đó không?",
@@ -19465,8 +19465,8 @@
        "answer": "Tỷ lệ cao/rộng của Figure bằng 0.5 trong kích thước ví dụ. 221 là 2 hàng × 2 cột, ô 1; 212 là 2 hàng × 1 cột, ô 2. Hai lưới khác nhau. figaspect không làm một đơn vị x dài bằng một đơn vị y; việc đó thuộc set_aspect."
       },
       {
-       "prompt": "Nhãn của các subplot đang quá sát nhau. Nêu một cách bố trí tự động. Nếu muốn tự đặt khoảng, hãy cho khoảng ngang bằng 0.4, khoảng dọc 0.3, mép trái 0.15, phải 0.95, dưới 0.2 và trên 0.9.",
-       "answer": "Để bố trí tự động, gọi fig.tight_layout() hoặc tạo hình với layout=\"constrained\"; chọn một trong hai. Để tự đặt khoảng, không bật bố trí tự động và gọi fig.subplots_adjust(wspace=0.4, hspace=0.3, left=0.15, right=0.95, bottom=0.2, top=0.9). Mở hình ở kích thước sẽ sử dụng và kiểm tra nhãn có bị cắt không."
+       "prompt": "Viết một lựa chọn tự động và một lựa chọn thủ công để chừa khoảng nhãn: khoảng ngang 0.4, dọc 0.3, khung trái 0.15, phải 0.95, dưới 0.2, trên 0.9.",
+       "answer": "Tự động: fig.tight_layout() hoặc tạo với layout=\"constrained\", chọn một. Thủ công: không bật layout tự động rồi gọi fig.subplots_adjust(wspace=0.4,hspace=0.3,left=0.15,right=0.95,bottom=0.2,top=0.9). Kiểm hình thực tế để tránh cắt chữ."
       }
      ]
     },
@@ -20530,7 +20530,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi mẫu ít, stripplot cho thấy từng quan sát thay vì chỉ một số tóm tắt. jitter dịch nhẹ các điểm theo chiều ngang để chúng bớt chồng lên nhau; nó không đổi thời gian chờ trên trục y. Ví dụ này tắt jitter nên các điểm của mỗi ca nằm trên cùng một vị trí x. Bạn có thể vẽ boxplot trước rồi đặt các điểm gốc lên trên để vừa đọc phần tóm tắt, vừa thấy dữ liệu từng đơn."
+        "text": "Khi mẫu ít, stripplot cho thấy từng quan sát thay vì chỉ một số tóm tắt. jitter có thể tránh chồng điểm; ví dụ này tắt jitter để vị trí tái lập. Nếu cần so sánh phần giữa và độ phân tán, thêm boxplot rồi giữ điểm gốc phía trên."
        },
        {
         "type": "code",
@@ -20721,7 +20721,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn cần ghi rõ dải quanh đường biểu diễn điều gì. errorbar=\"sd\" vẽ độ lệch chuẩn, còn errorbar=(\"ci\", 95) dùng bootstrap để ước lượng khoảng tin cậy. Bootstrap lấy mẫu lại nhiều lần từ dữ liệu đang có rồi tính lại đại lượng cần quan sát. n_boot là số lần lấy mẫu lại; seed cố định giúp thu được cùng kết quả khi chạy lại. Cách lấy từng dòng riêng phù hợp khi các dòng là các đơn vị lấy mẫu độc lập. Nếu nhiều dòng thuộc cùng người, cùng nhóm hoặc một chuỗi thời gian phụ thuộc, cần cách lấy mẫu lại phù hợp với cấu trúc đó. Tăng n_boot không sửa được sai lệch trong cách thu thập dữ liệu."
+        "text": "Các dải errorbar cần được chọn có chủ đích. errorbar=\"sd\" vẽ độ phân tán, còn (\"ci\",95) trong seaborn dùng bootstrap cho khoảng tin cậy. seed cố định giúp tái lập; n_boot là số lần lấy mẫu lại. Bootstrap từng dòng giả định các đơn vị lấy mẫu phù hợp: dữ liệu nhiều dòng từ cùng người, chuỗi thời gian hoặc nhóm phụ thuộc cần cách resampling khác. Tăng n_boot không sửa được sai lệch thu thập dữ liệu."
        },
        {
         "type": "code",
@@ -21067,7 +21067,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Định dạng hover giúp rút gọn số thập phân và ghi đơn vị ngay cạnh giá trị. Trong ví dụ cuối, %{y:.1f} hiển thị y với một chữ số sau dấu thập phân. Cặp thẻ <extra></extra> bỏ ô tên trace bên cạnh nội dung hover. Dòng print cho biết mẫu định dạng có trong Figure; để xem nó hiển thị ra sao, mở hình HTML rồi đưa chuột vào từng cột."
+        "text": "Định dạng hover giúp tránh những số thập phân dài và nhắc lại đơn vị đúng chỗ. hovertemplate dùng cú pháp của Plotly; phần extra có thể xóa ô tên trace nếu tên đó không cần thiết. Kết quả in dưới chỉ xác nhận định dạng, còn hình HTML cho phép thử rê chuột trực tiếp."
        },
        {
         "type": "terminal",
@@ -22171,13 +22171,13 @@
    "sort_order": 99,
    "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
    "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
-   "subtitle": "Nâng cao · M4 · 17 phút",
-   "estimated_minutes": 17,
+   "subtitle": "Nâng cao · M4 · 16 phút",
+   "estimated_minutes": 16,
    "xp_reward": 10,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
-    "subtitle": "Nâng cao · M4 · 17 phút",
+    "subtitle": "Nâng cao · M4 · 16 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#VZ26",
@@ -22224,7 +22224,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi gửi báo cáo, bạn có thể kèm hình tĩnh để chèn vào tài liệu và HTML để người đọc xem giá trị chi tiết. Gửi cả bảng dữ liệu được dùng, công thức tính chỉ số và khoảng dữ liệu mà báo cáo bao quát. Trước khi gửi, đối chiếu tổng trước và sau lọc, kiểm tra tiêu đề khớp dữ liệu, nhãn không bị cắt và các file mở được. Nếu thêm một kỳ so sánh, áp dụng cùng quy tắc tính cho cả hai kỳ. Chỉ có chênh lệch doanh thu chưa đủ để kết luận nguyên nhân tăng trưởng."
+        "text": "Một bản giao có hình tĩnh cho báo cáo và HTML để xem giá trị chi tiết, kèm dữ liệu, công thức chỉ số và mô tả phạm vi. Kiểm tra tổng trước và sau lọc, tiêu đề có khớp dữ liệu, nhãn không bị cắt và file mở được. Trong dự án thật, thêm một kỳ so sánh có cùng quy tắc; không viết nguyên nhân tăng trưởng nếu dữ liệu chỉ cho thấy chênh lệch."
        },
        {
         "type": "terminal",
@@ -23008,7 +23008,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong quiver(X, Y, U, V), X và Y xác định nơi đặt mũi tên, còn U và V là độ dời theo x và y. Ví dụ dưới đặt U=1, V=0, nên mỗi mũi tên chỉ sang phải một đơn vị. Các tùy chọn angles=\"xy\", scale_units=\"xy\", scale=1 giữ hướng và độ dài theo đơn vị tọa độ. Nếu để Matplotlib tự co giãn, độ dài mũi tên trên hình không nhất thiết bằng trực tiếp giá trị U và V. Khi vẽ dữ liệu thật, ghi rõ đơn vị và cách đọc độ dài vector."
+        "text": "Trong quiver(X,Y,U,V), X và Y cho vị trí, U và V là hai thành phần vector. angles=\"xy\", scale_units=\"xy\", scale=1 giữ chiều và độ dài theo tọa độ dữ liệu cho ví dụ đơn vị dưới đây; mặc định tự co giãn có thể làm độ dài không còn bằng trực tiếp số bạn đưa vào. Với dữ liệu thật cần giải thích thang vector và đơn vị."
        },
        {
         "type": "code",
@@ -23669,7 +23669,7 @@
       },
       {
        "prompt": "Tạo datetime cho 31/12/2020 rồi cộng một ngày và định dạng YYYY-MM-DD. datetime.now có thể đặt một output ngày cố định cho mọi lần chạy không?",
-       "answer": "`datetime(year=2020, month=12, day=31) + timedelta(days=1)` cho ngày 01/01/2021. Gọi `strftime(\"%Y-%m-%d\")` để nhận chuỗi `\"2021-01-01\"`. `datetime.now()` lấy thời điểm đang chạy nên kết quả có thể thay đổi; khi luyện phép tính lịch, dùng một mốc cố định để dễ đối chiếu."
+       "answer": "datetime(year=2020,month=12,day=31) + timedelta(days=1) cho ngày 2021-01-01; gọi strftime(\"%Y-%m-%d\"). datetime.now phụ thuộc lúc chạy nên không cố định ngày trong expected; dùng mốc cố định khi luyện phép tính lịch."
       }
      ]
     },
@@ -23759,7 +23759,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`choice` chọn một phần tử, nên danh sách phải không rỗng. `random()` trả số thực từ 0 đến trước 1. Số 7 trong `Random(7)` là seed, dùng để khởi tạo bộ sinh. Giữ cùng môi trường và cùng thứ tự gọi sẽ giúp bạn lặp lại lần thử; nếu cần chạy ổn định giữa các môi trường, đừng mặc định mọi cách lấy mẫu đều cho cùng một dãy."
+        "text": "`choice` chọn một phần tử; danh sách phải không rỗng. `random()` trả số thực từ 0 đến trước 1. Seed giúp tái lập một lần thử trong môi trường đã chốt, nhưng tên đơn được chọn không phải điều kiện để đánh giá mọi thuật toán lấy mẫu."
        },
        {
         "type": "code",
@@ -23771,7 +23771,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`randint(1, 3)` có thể trả cả 1 lẫn 3, khác `range` không lấy điểm dừng. Ví dụ lấy năm lần rồi kiểm tra có đủ năm số và tất cả đều nằm trong khoảng 1 đến 3. Hai dòng True cho bạn thấy các điều kiện đó đã đúng; chúng không hiển thị dãy số vừa lấy."
+        "text": "`randint(1, 3)` có thể trả cả 1 lẫn 3. Nó khác quy tắc stop không lấy của range. Trong bài kiểm thử này, điều cần kiểm là số lần lấy và miền hợp lệ, thay vì đoán ngẫu nhiên sẽ trả dãy nào."
        },
        {
         "type": "code",
@@ -23781,7 +23781,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`Counter` đếm số lần xuất hiện. Có 5 lượt mua nhưng chỉ 3 loại đồ uống. `most_common(2)` lấy hai loại có tần suất cao nhất; nếu hòa, Counter giữ thứ tự gặp đầu trong dữ liệu. Tần suất này mô tả dữ liệu đã có, khác việc chọn mẫu ngẫu nhiên."
+        "text": "`Counter` đếm số lần xuất hiện. Có 5 lượt mua nhưng chỉ 3 loại đồ uống. `most_common(2)` lấy hai loại có tần suất cao nhất; nếu hòa, Counter giữ thứ tự gặp đầu trong dữ liệu. Chỉ số này mô tả dữ liệu đã có, khác việc chọn mẫu ngẫu nhiên."
        }
       ]
      ],
@@ -23865,7 +23865,7 @@
       },
       {
        "prompt": "Với [\"A\",\"B\",\"A\",\"C\",\"A\"], Counter có bao nhiêu key và tổng count là bao nhiêu? Lấy hai mã phổ biến nhất thế nào?",
-       "answer": "Có 3 mã khác nhau và tổng cộng 5 lượt. Với `counts = Counter(values)`, `counts.most_common(2)` trả `[(\"A\", 3), (\"B\", 1)]`. Số khóa cho biết có bao nhiêu mã khác nhau; tổng tần suất cho biết có bao nhiêu lượt xuất hiện."
+       "answer": "Counter có 3 key, tổng lượt là 5; counts=Counter(values), counts.most_common(2) cho [(\"A\",3),(\"B\",1)]. Số key khác tổng tần suất."
       },
       {
        "prompt": "choice(ids), random() và randint(1,3) trả loại kết quả nào? Kiểm mẫu ngẫu nhiên mà không đoán đúng một dãy cụ thể thế nào?",
@@ -23984,7 +23984,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`sub` thay các đoạn khớp, ở đây gộp khoảng trắng liên tiếp thành một dấu cách. Khác search, kết quả của sub là chuỗi mới. Dấu chấm trong regex thường khớp một ký tự bất kỳ trừ ký tự xuống dòng. Muốn tìm dấu chấm thật, viết `r\"a\\.b\"` hoặc dùng `re.escape(\"a.b\")` để tạo mẫu tìm đúng chuỗi đó."
+        "text": "`sub` thay các đoạn khớp, ở đây gộp khoảng trắng liên tiếp thành một dấu cách. Khác search, kết quả của sub là chuỗi mới. Dấu chấm trong regex thường khớp một ký tự bất kỳ trừ newline; muốn tìm dấu chấm thật thì escape nó hoặc dùng re.escape cho toàn chuỗi literal."
        },
        {
         "type": "code",
@@ -24077,7 +24077,7 @@
        "answer": "m = re.search(r\"\\bS\\d{3}\\b\", text); return m.group(0) if m else None. Thử S012, S12, S0123 và chuỗi không có mã."
       },
       {
-       "prompt": "`re.search(r\"a.b\", \"a-b\")` có khớp không? Muốn tìm đúng chuỗi `a.b` thì viết thế nào? Sau đó viết lệnh gộp các khoảng trắng liên tiếp thành một dấu cách.",
+       "prompt": "re.search(r\"a.b\", \"a-b\") có khớp không? Muốn tìm đúng literal a.b và thay mọi khoảng trắng liên tiếp cần viết gì?",
        "answer": "Có vì dấu chấm regex khớp một ký tự. Dùng re.search(re.escape(\"a.b\"), text) cho literal; re.sub(r\"\\s+\", \" \", text) tạo chuỗi mới. Import re trước khi gọi; search không thấy trả None."
       }
      ]
@@ -24183,7 +24183,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Push gửi các commit trên máy lên repository ở remote. Vì vậy, commit chưa push vẫn nằm trên máy bạn, nhưng người khác chưa lấy được nó từ fork. Bài này cần Git, tài khoản GitHub và quyền truy cập repository. Sau khi push, mở fork trên GitHub và kiểm tra commit cùng phần README vừa sửa."
+        "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn."
        }
       ]
      ],
@@ -24770,7 +24770,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo cùng có method render để tạo nội dung, nhưng mỗi loại có thể tạo kết quả khác nhau:"
+        "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
        },
        {
         "type": "code",
@@ -24782,7 +24782,7 @@
       [
        {
         "type": "paragraph",
-        "text": "SalesReport kế thừa Report: đây là quan hệ is-a: một SalesReport cũng là một Report. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
+        "text": "SalesReport kế thừa Report: đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
        },
        {
         "type": "code",
@@ -24894,7 +24894,7 @@
       },
       {
        "prompt": "SalesReport(Report) có save kế thừa và render ghi đè. Class nào là superclass/subclass; có thể thêm method riêng không? super tạo object cha mới không?",
-       "answer": "Report là superclass; SalesReport là subclass, dùng save nếu không ghi đè và có thể thêm method riêng. super tìm method tiếp theo theo thứ tự kế thừa của cùng instance, không tạo một object cha mới."
+       "answer": "Report là superclass; SalesReport là subclass, dùng save nếu không ghi đè và có thể thêm method riêng. super tìm method tiếp theo theo MRO trên cùng instance, không tạo một object cha mới."
       },
       {
        "prompt": "Một hàm cần object có render(); SalesReport thỏa yêu cầu đó thế nào? Override khác overload ở điểm gì?",
@@ -24994,7 +24994,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hai class A và B đều có method label, nhưng trả nội dung khác nhau. Nếu C kế thừa cả A lẫn B thì `C().label()` sẽ dùng method nào? Hãy xem thứ tự Python tìm method:"
+        "text": "Bạn có một lớp tạo báo cáo và một phần mở rộng thêm tiền tố. Đa kế thừa ghép hành vi từ nhiều lớp, nhưng cần biết thứ tự tìm method:"
        },
        {
         "type": "code",
@@ -25018,7 +25018,7 @@
       [
        {
         "type": "paragraph",
-        "text": "UpperMixin gọi method tiếp theo theo MRO rồi đổi kết quả thành chữ hoa. Nhờ super, phần mở rộng phối hợp được với Report mà không cần gọi đích danh Report.render. Một mixin là lớp bổ sung hành vi cho lớp khác qua kế thừa. Nó nên đảm nhiệm một phần hành vi nhỏ; nếu nhiều lớp cùng sửa một trạng thái, cần kiểm kỹ thứ tự gọi."
+        "text": "UpperMixin gọi method tiếp theo theo MRO rồi đổi kết quả thành chữ hoa. Nhờ super, phần mở rộng phối hợp được với Report mà không cần gọi đích danh Report.render. Mixin nên đảm nhiệm một phần hành vi nhỏ; nếu nhiều lớp cùng sửa một trạng thái, cần kiểm kỹ thứ tự gọi."
        },
        {
         "type": "code",
@@ -25240,7 +25240,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Python cho phép `class C(A, B)` kế thừa nhiều class. Java chỉ cho một superclass trực tiếp, nhưng một class có thể implement nhiều interface. Interface mô tả các thao tác mà bên dùng được quyền trông chờ; abstract class có thể nêu các method lớp con cần có và cung cấp hành vi dùng chung. Phần ôn này giúp đọc câu hỏi Java trong slide; bạn không cần viết lại bài Python bằng Java."
+        "text": "Python cho phép `class C(A, B)` kế thừa nhiều class. Java chỉ cho một superclass trực tiếp, nhưng một class có thể implement nhiều interface. Interface mô tả các thao tác mà bên dùng được quyền trông chờ; abstract class có thể gom cả hợp đồng và hành vi dùng chung. Phần ôn này giúp đọc câu hỏi Java trong slide; bạn không cần viết lại bài Python bằng Java."
        }
       ]
      ],
@@ -25542,7 +25542,7 @@
       },
       {
        "prompt": "__value có phải mã hóa hay bảo mật dữ liệu không?",
-       "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập bằng tên đã được Python đổi."
+       "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập tên mangled."
       },
       {
        "prompt": "Sửa Grade để chỉ nhận int/float hữu hạn, bỏ bool và giữ điểm cũ khi sai.",
@@ -25648,7 +25648,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết, thử gọi một hàm qua tên của module có sẵn:"
+        "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
        },
        {
         "type": "code",
@@ -25672,18 +25672,19 @@
       [
        {
         "type": "paragraph",
-        "text": "File grades.py có thể chứa các hàm tính điểm. Tạo hai file dưới đây trong cùng một thư mục. Trong main.py, viết `import grades` rồi gọi `grades.passed(6)`; không viết đuôi .py trong câu import."
+        "text": "Khi tự tạo module, file grades.py có thể chứa các hàm tính điểm. Import dùng tên grades, không viết grades.py hay đường dẫn hệ điều hành. Ví dụ dưới tạo một module nhỏ trong thư mục tạm và nạp đúng file đó để minh họa mà không sửa dự án của bạn:"
        },
        {
-        "type": "terminal",
-        "code": "# grades.py\ndef passed(score):\n    return score >= 5\n\n# main.py\nimport grades\nprint(grades.passed(6))",
-        "expected": "Lưu grades.py và main.py trong cùng một thư mục. Mở terminal ở thư mục đó rồi chạy python main.py. Kết quả: True."
+        "type": "code",
+        "code": "import tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))",
+        "expected": "True",
+        "tryIt": true
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Chạy `python main.py` từ thư mục chứa hai file. Python tìm module grades và gọi hàm passed đã định nghĩa ở đó. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi dễ bảo trì hơn chép nhiều bản. Nó còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
+        "text": "Trong dự án thông thường, đặt grades.py bên cạnh main.py rồi viết `import grades`; không cần importlib như ví dụ tự chứa. Module giúp nhiều file cùng dùng một hàm; sửa công thức ở một nơi sẽ dễ bảo trì hơn chép nhiều bản. Module còn có thể chứa class và hằng số, chẳng hạn Student và PASS_MARK. `from math import *` đưa nhiều tên vào nơi gọi và có thể che tên cũ, nên ưu tiên import rõ tên."
        },
        {
         "type": "paragraph",
@@ -25763,7 +25764,7 @@
       },
       {
        "prompt": "np trong import numpy as np có phải keyword không?",
-       "answer": "Không. Đó là bí danh (alias) do người viết chọn; np là quy ước phổ biến cho NumPy."
+       "answer": "Không. Đó là alias do người viết chọn; np là quy ước phổ biến cho NumPy."
       },
       {
        "prompt": "Tạo grades.py có passed và main.py dùng hàm đó.",
@@ -25775,7 +25776,7 @@
       },
       {
        "prompt": "import numpy as np và from math import floor as down đưa các tên nào vào nơi gọi? __init__.py có giống __init__(self) không?",
-       "answer": "Tên np trỏ module NumPy; tên down trỏ floor. __init__.py là file khởi tạo một package thông thường; __init__(self) là method khởi tạo instance, không phải hai cách viết cùng việc."
+       "answer": "Tên np trỏ module NumPy; tên down trỏ floor. __init__.py là file khởi tạo regular package; __init__(self) là method khởi tạo instance, không phải hai cách viết cùng việc."
       }
      ]
     },
@@ -25784,7 +25785,7 @@
       "title": "Chạy thử",
       "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào."
      },
-     "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n"
+     "starterCode": "# ── Đoạn 1 ──\nimport math\nprint(math.floor(8.79 * 10) / 10)\nfrom math import floor\nprint(floor(8.79 * 10) / 10)\n\n# ── Đoạn 2 ──\nimport math as mt\nfrom math import floor as down\nprint(mt.pi > 3)\nprint(down(-1.2))\n\n# ── Đoạn 3 ──\nimport tempfile, importlib.util\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"grades.py\"\n    path.write_text(\"def passed(score): return score >= 5\\n\", encoding=\"utf8\")\n    spec = importlib.util.spec_from_file_location(\"grades_demo\", path)\n    module = importlib.util.module_from_spec(spec)\n    spec.loader.exec_module(module)\n    print(module.passed(6))\n"
     }
    },
    "_mode": "pyodide",
@@ -25819,9 +25820,10 @@
         "text": "Dự án có thể cần nhiều module. Bạn có thể gom chúng vào một package, rồi chia tiếp thành package con. Ví dụ này dùng domains chứa grades và package con reports; reports chứa module summary. Tạo hai file __init__.py rỗng ở domains và domains/reports. Đó là các file khởi tạo package thông thường (regular package), khác với method __init__ của class:"
        },
        {
-        "type": "terminal",
-        "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/reports/summary.py\nfrom ..grades import passed\n\ndef report(score):\n    return \"Pass\" if passed(score) else \"Retry\"\n\n# main.py\nfrom domains.reports.summary import report\nprint(report(6))",
-        "expected": "Tạo domains/__init__.py và domains/reports/__init__.py rỗng, rồi lưu ba file như chú thích. Đặt main.py bên cạnh thư mục domains. Chạy python main.py tại thư mục đó. Kết quả: Pass."
+        "type": "code",
+        "code": "from pathlib import PurePosixPath\nfiles = [\"domains/__init__.py\", \"domains/grades.py\", \"domains/reports/__init__.py\", \"domains/reports/summary.py\", \"main.py\"]\nprint(PurePosixPath(files[3]).parent)\nprint(files[0].endswith(\"__init__.py\"))",
+        "expected": "domains/reports\nTrue",
+        "tryIt": true
        }
       ],
       [
@@ -25830,20 +25832,20 @@
         "text": "`domains.reports.summary` là tên module theo các tầng thư mục, không phải một đường dẫn có dấu slash. Trong summary.py, `from ..grades import passed` đi lên package domains rồi lấy module grades. Python còn hỗ trợ namespace packages không cần __init__.py; khóa này dùng regular package để cấu trúc dễ theo dõi."
        },
        {
-        "type": "terminal",
-        "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/__init__.py\nfrom .grades import passed\n\n# main.py\nimport domains\nprint(domains.passed(6))",
-        "expected": "Giữ grades.py trong domains, thêm dòng import vào domains/__init__.py và thay main.py như trên. Chạy python main.py từ thư mục chứa domains. Kết quả: True."
+        "type": "code",
+        "code": "from pathlib import Path\nimport tempfile, subprocess, sys\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder); pkg = root / \"domains\"; pkg.mkdir()\n    (pkg / \"__init__.py\").write_text(\"from .grades import passed\\n\", encoding=\"utf8\")\n    (pkg / \"grades.py\").write_text(\"def passed(x): return x >= 5\\n\", encoding=\"utf8\")\n    result = subprocess.run([sys.executable, \"-c\", \"import domains; print(domains.passed(6))\"], cwd=root, capture_output=True, text=True, check=True)\n    print(result.stdout.strip())",
+        "expected": "True"
        }
       ],
       [
        {
         "type": "paragraph",
-        "text": "Khi import package, Python không tự import mọi module con. Ở ví dụ dưới đây, dòng `from .grades import passed` trong domains/__init__.py đưa hàm passed ra ngoài package, nên main.py gọi được `domains.passed(6)`. Khi cài thư viện ngoài, dùng `python -m pip install ten_package` trong đúng môi trường; tên cài trên PyPI đôi khi khác tên dùng để import."
+        "text": "Import package không tự import mọi submodule. Ví dụ trên chủ động export passed ở __init__.py. Khi cài thư viện bên ngoài, dùng Python đúng môi trường với `python -m pip install ten_package`; tên cài trên PyPI và tên import đôi khi khác nhau."
        },
        {
-        "type": "terminal",
-        "code": "# main.py\ndef run():\n    print(\"Started\")\n\nif __name__ == \"__main__\":\n    run()",
-        "expected": "Lưu main.py như trên. Chạy python main.py sẽ in Started. Chạy python -c \"import main\" từ cùng thư mục sẽ không in gì, vì import không gọi run()."
+        "type": "code",
+        "code": "import tempfile, subprocess, sys\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"main.py\"\n    path.write_text('def run(): print(\"Started\")\\nif __name__ == \"__main__\": run()\\n', encoding=\"utf8\")\n    imported = subprocess.run([sys.executable, \"-c\", \"import main\"], cwd=folder, capture_output=True, text=True, check=True)\n    direct = subprocess.run([sys.executable, str(path)], capture_output=True, text=True, check=True)\n    print(repr(imported.stdout))\n    print(direct.stdout.strip())",
+        "expected": "''\nStarted"
        }
       ],
       [
@@ -25932,34 +25934,39 @@
        "answer": "from ..grades import passed; chạy chương trình từ điểm bắt đầu phù hợp của package, không sửa sys.path để che cấu trúc sai."
       },
       {
-       "prompt": "Khi đã hoàn thành chương trình quản lý điểm PW1–PW3, tách nó thành các module theo yêu cầu PW4 rồi kiểm tra lại chức năng. Nếu chưa làm dự án này, xem SY25–SY26 trước khi thực hành câu này.",
-       "answer": "Tạo input.py cho nhập liệu, output.py cho hiển thị bằng curses, package domains cho các class và main.py để điều phối. Giữ công thức và quy tắc điểm ngoài phần giao diện. Khi import main, chương trình chưa mở giao diện. Khi chạy main trực tiếp, các thao tác nhập, liệt kê và tính GPA phải còn hoạt động như trước. Truyền cùng một Registry vào các hàm để chúng dùng chung dữ liệu."
+       "prompt": "Tách bài quản lý điểm đúng PW4, kiểm bằng cách nào?",
+       "answer": "Tạo input.py/output.py/domains/__init__.py và các class domain/main.py; giữ logic nghiệp vụ ngoài UI. Import main không mở giao diện. Chạy main vẫn nhập, liệt kê và tính GPA như trước; giữ trạng thái trong registry được truyền vào các hàm."
       },
       {
        "prompt": "domains/reports/summary.py thuộc cây package nào? import domains.grades khác import domains ở đâu, và export passed trong __init__.py thế nào?",
-       "answer": "domains là package, reports là subpackage, summary là module; dùng tên nhiều tầng với dấu chấm: domains.reports.summary. Import domains.grades nạp submodule đó; chỉ import domains không bảo đảm nó đã nạp. Trong domains/__init__.py viết from .grades import passed để domains.passed có sẵn. Regular package có __init__.py; nhiều tầng có file đó ở các tầng package."
+       "answer": "domains là package, reports là subpackage, summary là module; dùng tên dotted domains.reports.summary. Import domains.grades nạp submodule đó; chỉ import domains không bảo đảm nó đã nạp. Trong domains/__init__.py viết from .grades import passed để domains.passed có sẵn. Regular package có __init__.py; nhiều tầng có file đó ở các tầng package."
       },
       {
        "prompt": "pip install một package lấy từ đâu và có chắc tên cài bằng tên import không?",
-       "answer": "pip thường lấy phân phối từ PyPI và cài vào môi trường được chọn. Tên phân phối có thể khác tên import; tra tài liệu rồi dùng python -m pip của đúng trình thông dịch Python. Package là đơn vị tổ chức module/subpackage, không chỉ là tên của một thư viện trên PyPI."
+       "answer": "pip thường lấy phân phối từ PyPI và cài vào môi trường được chọn. Tên phân phối có thể khác tên import; tra tài liệu rồi dùng python -m pip của đúng interpreter. Package là đơn vị tổ chức module/subpackage, không chỉ tên trên cửa hàng."
       }
      ]
     },
     "step_4": {
      "task": {
-      "title": "Chạy trên máy của bạn",
-      "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+      "title": "Chạy thử",
+      "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (WASM không gọi được chương trình ngoài) nên không nằm trong ô này."
      },
-     "procedure": [
-      "Mở terminal tại thư mục làm việc của bạn.",
-      "Tạo môi trường: py -m venv .venv",
-      "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
-      "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
-     ]
+     "starterCode": "from pathlib import PurePosixPath\nfiles = [\"domains/__init__.py\", \"domains/grades.py\", \"domains/reports/__init__.py\", \"domains/reports/summary.py\", \"main.py\"]\nprint(PurePosixPath(files[3]).parent)\nprint(files[0].endswith(\"__init__.py\"))\n",
+     "env": "2 đoạn phải chạy bằng Python trên máy: WASM không gọi được chương trình ngoài."
     }
    },
-   "_mode": "local",
-   "_blocked": [],
+   "_mode": "mixed",
+   "_blocked": [
+    {
+     "block": 1,
+     "reason": "WASM không gọi được chương trình ngoài"
+    },
+    {
+     "block": 2,
+     "reason": "WASM không gọi được chương trình ngoài"
+    }
+   ],
    "_so_mcq": 3,
    "_bai_tap": "khong co"
   },
@@ -26011,7 +26018,7 @@
       [
        {
         "type": "paragraph",
-        "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor làm tròn xuống về phía số nhỏ hơn, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu cần làm tròn đúng theo số thập phân người dùng đã nhập, hãy dùng Decimal và nêu rõ quy tắc làm tròn."
+        "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor đi về âm vô cùng, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu hợp đồng làm tròn trên chuỗi thập phân cần Decimal với quy tắc đã nêu."
        },
        {
         "type": "code",
@@ -26021,7 +26028,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`key=lambda x: x[\"gpa\"]` là một hàm ngắn lấy GPA của mỗi sinh viên để sắp xếp; `reverse=True` đổi sang thứ tự giảm dần. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự nhập ban đầu. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
+        "text": "Xếp giảm dần theo GPA giúp báo cáo có ý nghĩa rõ. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự input. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
        }
       ]
      ],
@@ -26239,7 +26246,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Student/Course/Mark thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý khi kích thước cửa sổ terminal thay đổi và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
+        "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Student/Course/Mark thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
        }
       ]
      ],
@@ -26318,7 +26325,7 @@
        "answer": "Nên tính ở phần nghiệp vụ rồi đưa kết quả sang output; như vậy kiểm thử công thức không cần terminal."
       },
       {
-       "prompt": "Khi đã có chương trình quản lý điểm PW3, thêm menu để xem sinh viên, môn học và danh sách GPA giảm dần. Nếu chưa làm dự án, đọc SY25–SY26 trước khi làm câu này.",
+       "prompt": "Làm menu PW3 có xem sinh viên, môn và GPA giảm dần.",
        "answer": "Dùng phím 1/2/3/q, mỗi lần đổi màn hình erase rồi addstr/refresh. Gọi registry để lấy dữ liệu, không tạo danh sách điểm riêng ở UI. Nộp video/ghi nhận thao tác terminal thật; thử phím ngoài menu và thoát khi có lỗi."
       }
      ]
@@ -26377,7 +26384,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` tự đóng file khi rời khối lệnh. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
+        "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
        },
        {
         "type": "code",
@@ -26389,7 +26396,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là chế độ văn bản mặc định, dùng str; `b` là chế độ nhị phân, dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
+        "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
        },
        {
         "type": "code",
@@ -26405,7 +26412,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên đối tượng file đó gây ValueError."
+        "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
        },
        {
         "type": "paragraph",
@@ -26493,7 +26500,7 @@
       },
       {
        "prompt": "Cần đọc file cũ, thay toàn nội dung, tạo chỉ khi chưa có, hoặc nối log: chọn r/w/x/a thế nào? r+, w+, a+ khác ở đâu?",
-       "answer": "r đọc file đã có; w tạo/cắt file; x chỉ tạo file mới và báo lỗi nếu file đã tồn tại; a ghi nối cuối và có thể tạo mới. Dấu + thêm khả năng đọc/ghi: r+ không cắt nhưng cần file có; w+ cắt/tạo; a+ ghi vẫn nối cuối. t dùng str, b dùng bytes."
+       "answer": "r đọc file đã có; w tạo/cắt file; x tạo độc quyền, tồn tại thì lỗi; a ghi nối cuối và có thể tạo mới. Dấu + thêm khả năng đọc/ghi: r+ không cắt nhưng cần file có; w+ cắt/tạo; a+ ghi vẫn nối cuối. t dùng str, b dùng bytes."
       },
       {
        "prompt": "open trả gì? f.close() và with liên hệ thế nào; dùng f sau close có được không? RAM/file khác gì qua lần chạy?",
@@ -26580,7 +26587,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn đọc hai ký tự đầu rồi đọc tiếp cùng file. Lần đọc sau bắt đầu ở vị trí hiện tại, không tự quay về đầu. Ở ví dụ này, StringIO giữ văn bản trong RAM và cho phép đọc như một file:"
+        "text": "Bạn đọc hai ký tự đầu rồi đọc tiếp cùng file. Lần đọc sau bắt đầu ở vị trí hiện tại, không tự quay về đầu:"
        },
        {
         "type": "code",
@@ -26604,7 +26611,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`seek(1)` trên dữ liệu nhị phân đưa con trỏ đến vị trí byte số 1, tính từ 0. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
+        "text": "`seek(1)` ở binary đưa con trỏ đến byte có offset 1. Ghi Z thay byte B, không tự chèn thêm phần tử như list.insert. Khi dùng file thật với r+b, quy tắc này cũng áp dụng."
        },
        {
         "type": "code",
@@ -26892,7 +26899,7 @@
      "practice": [
       {
        "prompt": "buffering=0 dùng với text được không?",
-       "answer": "Không. Chỉ dữ liệu nhị phân mới dùng được chế độ không có bộ đệm (`buffering=0`). Với văn bản, bạn có thể dùng bộ đệm theo dòng (`buffering=1`)."
+       "answer": "Không. Unbuffered IO chỉ dùng binary; text có thể dùng line buffering."
       },
       {
        "prompt": "TemporaryFile đóng rồi có dùng tiếp được không?",
@@ -26900,7 +26907,7 @@
       },
       {
        "prompt": "Viết read_status trả ok/missing/denied.",
-       "answer": "Trong try, with open đọc và trả (\"ok\", text). except FileNotFoundError trả (\"missing\", None); except PermissionError trả (\"denied\", None). Lỗi khác cho truyền ra. Thử missing thật; Để thử PermissionError mà không đổi quyền thư mục, có thể thay thao tác mở file trong bài kiểm thử bằng một hàm chủ động báo lỗi này. Ghi rõ bạn đã dùng cách thử đó."
+       "answer": "Trong try, with open đọc và trả (\"ok\", text). except FileNotFoundError trả (\"missing\", None); except PermissionError trả (\"denied\", None). Lỗi khác cho truyền ra. Thử missing thật; PermissionError có thể kiểm bằng injection nếu không muốn sửa quyền máy, ghi rõ cách thử."
       },
       {
        "prompt": "Ghép buffering=-1, 0, 1, 8192 với mặc định, không buffer, theo dòng text và cỡ buffer binary. flush có bảo đảm ghi đến thiết bị khi mất điện không?",
@@ -27002,7 +27009,7 @@
       [
        {
         "type": "paragraph",
-        "text": "scandir trả DirEntry của tầng trực tiếp; walk hoặc rglob đi nhiều tầng. `os.getcwd` đọc thư mục làm việc; đường dẫn tương đối được hiểu từ thư mục đó. `os.chdir` đổi thư mục làm việc của tiến trình đang chạy, không di chuyển file. Trong notebook, !ls, %cd, %pwd thuộc IPython, không phải cú pháp dùng được trong script Python thuần."
+        "text": "scandir trả DirEntry của tầng trực tiếp; walk hoặc rglob đi nhiều tầng. `os.getcwd` đọc thư mục làm việc; đường dẫn tương đối được hiểu từ thư mục đó. `os.chdir` thay working directory của process, không di chuyển file. Trong notebook, !ls, %cd, %pwd thuộc IPython, không phải cú pháp dùng được trong script Python thuần."
        },
        {
         "type": "code",
@@ -27014,7 +27021,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`mkdir` tạo một tầng; `makedirs` tạo nhiều tầng, tên hàm đúng là os.makedirs, không phải os.mkdirs như lỗi gõ trong slide. `rmdir` chỉ xóa thư mục rỗng; `rmtree` xóa cả cây. Ví dụ chỉ tác động cây tạm nó vừa tạo. Khi làm thật, xác định đường dẫn tuyệt đối và giới hạn vùng được phép trước thao tác xóa."
+        "text": "`mkdir` tạo một tầng; `makedirs` tạo nhiều tầng, không có hàm os.mkdirs như typo trong slide. `rmdir` chỉ xóa thư mục rỗng; `rmtree` xóa cả cây. Ví dụ chỉ tác động cây tạm nó vừa tạo. Khi làm thật, xác định đường dẫn tuyệt đối và giới hạn vùng được phép trước thao tác xóa."
        },
        {
         "type": "terminal",
@@ -27025,7 +27032,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Symlink lưu liên kết tới một đường dẫn, không chứa bản sao dữ liệu đích. Vì vậy, xóa link không xóa file mà nó trỏ tới. Trên Windows, tạo symlink có thể cần Developer Mode hoặc quyền phù hợp. Nếu Python từ chối tạo link, kiểm tra quyền và cấu hình này trước khi chạy lại ví dụ."
+        "text": "Symlink lưu liên kết tới một đường dẫn; nó không chứa bản sao dữ liệu đích. Xóa link không xóa target. Tạo symlink trên Windows có thể cần Developer Mode hoặc quyền phù hợp; nếu môi trường từ chối, đó là giới hạn lab, không phải kết quả False để học thuộc. Shell review trong nguồn có ls để liệt kê, cat để đọc và grep để lọc dòng; có thể làm tác vụ tương đương bằng code Python theo dòng."
        },
        {
         "type": "paragraph",
@@ -27105,7 +27112,7 @@
      "practice": [
       {
        "prompt": "os.chdir có đổi vị trí file không?",
-       "answer": "Không. Nó đổi thư mục dùng làm mốc cho các đường dẫn tương đối của tiến trình. Nếu chỉ đổi tạm thời, lưu thư mục cũ và dùng finally để quay lại."
+       "answer": "Không. Nó đổi nơi giải đường dẫn tương đối của process; lưu cwd cũ và khôi phục bằng finally nếu cần dùng."
       },
       {
        "prompt": "scandir và walk khác gì?",
@@ -27205,13 +27212,13 @@
    "sort_order": 122,
    "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
    "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
-   "subtitle": "Trung cấp · M5 · 13 phút",
-   "estimated_minutes": 13,
+   "subtitle": "Trung cấp · M5 · 12 phút",
+   "estimated_minutes": 12,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
-    "subtitle": "Trung cấp · M5 · 13 phút",
+    "subtitle": "Trung cấp · M5 · 12 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#SY19",
@@ -27258,7 +27265,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Dữ liệu rất ngắn có thể lớn hơn sau khi nén vì định dạng nén còn cần phần đầu và thông tin điều khiển. Nén cũng không phải mã hóa bảo mật: người có file và công cụ phù hợp vẫn có thể giải nén. Một số định dạng đóng gói hỗ trợ mật khẩu, nhưng đó là tính năng riêng, không phải tính chất của mọi thuật toán nén."
+        "text": "Input rất ngắn có thể lớn hơn sau nén vì header và overhead. Nén cũng không phải encryption: người có file và đúng codec có thể giải nén. Chỉ thêm password vào một hệ archive có hỗ trợ không biến mọi thuật toán nén thành cơ chế bảo mật."
        }
       ]
      ],
@@ -27334,7 +27341,7 @@
       },
       {
        "prompt": "Tại sao file ngắn nén xong lớn hơn?",
-       "answer": "Phần đầu và thông tin điều khiển của định dạng nén có thể lớn hơn số byte tiết kiệm được. Hãy giải nén rồi so với dữ liệu ban đầu để kiểm tra có mất dữ liệu hay không."
+       "answer": "Header và thông tin điều khiển có thể lớn hơn phần tiết kiệm; kiểm round-trip trước khi kết luận lỗi."
       },
       {
        "prompt": "Viết compress_bytes(data, method) và decompress_bytes cho bốn codec.",
@@ -27440,7 +27447,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; một archive gom các file vào một gói và giữ tên từng file bên trong:"
+        "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; archive gom chúng vào một gói có tên thành viên:"
        },
        {
         "type": "code",
@@ -27474,7 +27481,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Sau khi đóng gói rồi đọc lại, restored bằng files: cả tên file lẫn nội dung đều được giữ nguyên. Với file ngoài, kiểm danh sách tên và dung lượng trước khi nạp; không tự ghi đường dẫn chứa .. hoặc đường dẫn tuyệt đối ra ngoài vùng bài tập. Đề PW5 có thể chọn một cách archive/nén miễn khôi phục được cả ba file."
+        "text": "Đây là kiểm tra round-trip cả tên lẫn nội dung. Với file ngoài, kiểm danh sách tên và dung lượng trước khi nạp; không tự ghi đường dẫn chứa .. hoặc đường dẫn tuyệt đối ra ngoài vùng bài tập. Đề PW5 có thể chọn một cách archive/nén miễn khôi phục được cả ba file."
        }
       ]
      ],
@@ -27554,7 +27561,7 @@
       },
       {
        "prompt": "Đóng đúng ba file PW5 vào students.dat và kiểm khôi phục.",
-       "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, đọc dữ liệu theo cấu trúc đã chọn rồi so với trước khi đóng gói. Chạy lại khi bộ dữ liệu trong RAM đang rỗng; không chỉ kiểm file .dat tồn tại."
+       "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, parse dữ liệu rồi so với trước khi đóng. Chạy lại từ state rỗng; không chỉ kiểm file .dat tồn tại."
       },
       {
        "prompt": "Cần gom thư mục reports có hai file vào một gói: ZIP giữ được tên file/thư mục không? tarfile mode w có tự nén giống w:gz không?",
@@ -27670,7 +27677,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong RAM. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
+        "text": "`dump/load` nhận file binary, còn `dumps/loads` dùng bytes trong memory. Function và class cấp module thường được lưu theo tên tham chiếu; khi load phải còn module/class tương thích. File handle hoặc socket không tự khôi phục kết nối chỉ nhờ pickle."
        },
        {
         "type": "code",
@@ -27682,7 +27689,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Chỉ dùng pickle để đọc dữ liệu do bạn tạo và tin cậy, vì thao tác đọc pickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm một file lạ an toàn hơn. JSON thường tiện hơn khi trao đổi với hệ khác. Pickle có thể phù hợp để lưu dữ liệu Python trong bài thực hành nếu bạn quản lý nơi tạo file và phiên bản cấu trúc dữ liệu."
+        "text": "Chỉ unpickle dữ liệu do bạn tạo và tin cậy: unpickle có thể thực thi mã. Đuôi .dat hay nén gzip không làm file lạ an toàn. Để trao đổi dữ liệu với hệ khác, JSON thường tiện hơn; để lưu state Python trong lab, pickle có thể phù hợp nếu bạn quản lý phiên bản schema và nơi tạo file."
        },
        {
         "type": "paragraph",
@@ -27762,14 +27769,14 @@
       },
       {
        "prompt": "Có thể tải pickle người lạ rồi thử load để xem có an toàn không?",
-       "answer": "Không. Ngay thao tác load đã có thể chạy mã; chỉ dùng dữ liệu mẫu do bạn tạo hoặc có nguồn tin cậy trong bài thực hành."
+       "answer": "Không. Ngay thao tác load đã có thể chạy mã; chỉ dùng fixture tin cậy trong lab."
       },
       {
-       "prompt": "Làm PW6 thay cách lưu dữ liệu văn bản bằng gzip+pickle, giữ kiểu và version.",
-       "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi xóa dữ liệu đang giữ trong RAM, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
+       "prompt": "Làm PW6 thay state text bằng gzip+pickle, giữ kiểu và version.",
+       "answer": "Lưu dict version/students/courses/marks qua pickle.dump trong gzip.open(...,\"wb\"); load bằng rb, kiểm version trước dùng. Thử mở lại sau khi reset state, tuple/set, file thiếu, gzip hỏng. Không trả state rỗng khi có file hỏng mà không báo lỗi."
       },
       {
-       "prompt": "Có phải mọi giá trị đơn và mọi collection đều lưu được bằng pickle không? Hàm/class ở cấp module khác file đang mở hoặc socket đang kết nối ở điểm nào khi lưu?",
+       "prompt": "Pickle scalar/collection có luôn được không? Lưu function/class cấp module và file/socket khác nhau thế nào?",
        "answer": "Chỉ được khi các thành phần pickle được. Function/class cấp module thường được lưu theo tên, load cần đúng module/định nghĩa tương thích. File handle/socket là tài nguyên đang mở, không tự pickle rồi khôi phục kết nối được."
       },
       {
@@ -27876,7 +27883,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Một đồng nghiệp gửi file .dta hoặc .sas7bdat. Đổi tên thành .csv không đổi cấu trúc bên trong; cần hàm đọc đúng định dạng. Với Stata, bạn có thể tạo một file nhỏ rồi đọc lại để hiểu cách làm:"
+        "text": "Một đồng nghiệp gửi file .dta hoặc .sas7bdat. Đổi tên thành .csv không đổi cấu trúc bên trong; cần reader phù hợp. Với Stata, bạn có thể tạo một file nhỏ rồi đọc lại để hiểu cách làm:"
        },
        {
         "type": "code",
@@ -27888,7 +27895,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Stata có định dạng nhị phân riêng; read_stata trả DataFrame. SAS7BDAT và SAS XPORT là hai định dạng khác nhau trong hệ SAS. Thư mục fixtures của bộ học có file mẫu test1.sas7bdat lấy từ bộ kiểm thử công khai của pandas, kèm CSV đối chiếu và giấy phép. Với hai ví dụ tiếp theo, mở terminal tại thư mục python-da có chứa fixtures; nếu chuyển file mẫu sang nơi khác, chỉnh lại đường dẫn trong code."
+        "text": "Stata có format nhị phân riêng; read_stata trả DataFrame. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
        },
        {
         "type": "code",
@@ -27908,7 +27915,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ví dụ thứ ba dùng package sas7bdat được nêu trong cheat sheet; bạn cần cài package này riêng. Nếu nó không tương thích với môi trường, có thể dùng read_sas của pandas với đúng định dạng rồi ghi lại lựa chọn đó. SAS XPORT vẫn cần cách đọc phù hợp riêng. Khi đối chiếu với CSV được cấp, lưu ý một số cột ngày đang lưu số ngày tính từ 1960-01-01, nên phải chuyển về cùng kiểu ngày trước khi so sánh."
+        "text": "Cách thứ ba bám API được nêu trong cheat sheet; cần cài sas7bdat riêng. Nếu thư viện cũ không tương thích môi trường, dùng reader pandas đã kiểm đúng format và ghi lại thay đổi. Không lấy kết quả đọc XPORT làm bằng chứng đã đọc SAS7BDAT. Một vài cột ngày trong fixture CSV lưu số ngày từ 1960-01-01; khi so với SAS cần chuyển đúng kiểu trước."
        }
       ]
      ],
@@ -27983,8 +27990,8 @@
        "answer": "Không. Tên đuôi không chuyển cấu trúc file."
       },
       {
-       "prompt": "Đọc được file SAS XPORT có nghĩa là cùng cách gọi đó sẽ đọc được SAS7BDAT không?",
-       "answer": "Không. Dùng `format=\"sas7bdat\"` hoặc `format=\"xport\"` theo đúng file đang có, rồi thử bằng một file mẫu của chính định dạng đó."
+       "prompt": "SAS7BDAT và XPORT có được kiểm như một format không?",
+       "answer": "Không. Dùng format=\"sas7bdat\" hoặc \"xport\" đúng với dữ liệu thật, và có fixture riêng cho mỗi định dạng cần hỗ trợ."
       },
       {
        "prompt": "Đọc fixture SAS rồi đối chiếu CSV được cấp.",
@@ -28124,7 +28131,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`f[\"scores\"]` là đối tượng đại diện cho dataset trong file, nên còn phụ thuộc vào file đang mở. Thêm `[()]` để đọc giá trị ra một array; array này vẫn dùng được sau khi đóng file. Nhóm meta chứa dataset source, được truy cập bằng tên. Với API h5py dùng ở bài này, đọc bằng `[()]` thay cho thuộc tính .value cũ trong cheat sheet."
+        "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính .value cũ của h5py trong cheat sheet."
        },
        {
         "type": "code",
@@ -28222,7 +28229,7 @@
      "practice": [
       {
        "prompt": "Vì sao cần đọc [()] trước khi rời with h5py.File?",
-       "answer": "Để giữ giá trị array độc lập với đối tượng dataset còn phụ thuộc vào file đang mở."
+       "answer": "Để giữ giá trị array độc lập với dataset handle của file đã đóng."
       },
       {
        "prompt": "Muốn lấy nguồn trong meta/source dùng gì?",
@@ -28324,7 +28331,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute trực tiếp một chuỗi trong cheat sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
+        "text": "Pandas giữ kết quả cùng tên cột trong DataFrame. Với SQLAlchemy mới, dùng text cho câu SQL như trên thay cách execute chuỗi trần trong sheet cũ. Dữ liệu người dùng đưa vào params; không ghép nó thẳng vào SQL bằng f-string. ORDER BY là nơi công bố thứ tự kết quả, không mặc định database luôn trả thứ tự chèn."
        }
       ]
      ],
@@ -28501,7 +28508,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Hàm read_student nhận một hàm ask để lấy dữ liệu. Trong ví dụ, lambda trả lần lượt các câu trả lời có sẵn nên bạn có thể chạy ngay mà không gõ bàn phím. Khi làm chương trình terminal, gọi `read_student(input)`. Bài hoàn chỉnh cần nhập số lượng rồi từng hồ sơ sinh viên, nhập số môn và mã/tên từng môn, chọn môn để nhập điểm, và liệt kê lại các danh sách. Các thao tác phải dùng chung bộ dữ liệu để hồ sơ và điểm luôn khớp nhau."
+        "text": "Truyền ask làm ví dụ tự chạy được với dữ liệu cố định; khi mở CLI dùng read_student(input). Bài hoàn chỉnh cần hàm nhập số lượng sinh viên, nhập từng hồ sơ; nhập số môn và id/name từng môn; chọn môn nhập điểm từng sinh viên; liệt kê sinh viên/môn/điểm môn. Giữ một state chung để danh sách và điểm không bị lệch."
        }
       ]
      ],
@@ -28581,7 +28588,7 @@
       },
       {
        "prompt": "Hoàn thiện PW1 không dùng class domain và tự kiểm đủ yêu cầu.",
-       "answer": "Tạo file 1.student.mark.py. Viết các hàm read_count nhận số nguyên không âm; read_students(count) nhận mã, tên và DoB, không cho trùng mã; read_courses(count) nhận mã và tên môn, không cho trùng mã; read_marks(course_id) nhận điểm hữu hạn từ 0 đến 10. Thêm list_students, list_courses và list_course_marks để xem lại dữ liệu. Chương trình terminal cần menu nhập, xem và thoát; dùng input để nhận dữ liệu, hoặc truyền ask khi chạy thử. Thử hai sinh viên trùng tên nhưng khác mã, hai môn, điểm 0, mã không tồn tại, số lượng sai và ngày không hợp lệ. Đối chiếu danh sách điểm của từng môn, rồi commit và push bài lên fork."
+       "answer": "Nộp 1.student.mark.py có read_count (int không âm), read_students(count) với id/name/DoB không trùng, read_courses(count) id/name không trùng, read_marks(course_id) kiểm điểm hữu hạn 0..10; list_students/list_courses/list_course_marks. CLI đọc count, các hồ sơ, rồi menu lặp chọn môn/nhập/xem/thoát. Dùng input cho tương tác thật, có thể truyền ask để test. Thử 2 sinh viên trùng tên khác mã, 2 môn, điểm 0, mã lạ, count sai và ngày không tồn tại. Nộp kết quả listing đúng từng môn và commit lên fork; không chỉ in dữ liệu mẫu."
       }
      ]
     },
@@ -28634,7 +28641,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Vòng lặp gọi cùng describe trên hai loại object. Vòng lặp liệt kê không cần biết đang nhận Student hay Course; mỗi object tự tạo phần mô tả phù hợp. Đó là đa hình. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
+        "text": "Vòng lặp gọi cùng describe trên hai loại object. Đây là một cách thấy đa hình ở thao tác listing. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
        },
        {
         "type": "code",
@@ -28646,7 +28653,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở PW3, làm tròn xuống ngay khi nhận điểm rồi dùng điểm đã lưu để tính GPA. Với 8.7 và 6.2, trung bình có trọng số là 8.075. Dòng round chỉ minh họa cách hiển thị trên số float; nếu cần một quy tắc làm tròn thập phân chính xác, phải chọn và nêu riêng. Khi xếp hạng, cũng cần nói rõ dùng GPA nào và xử lý ra sao khi hai sinh viên bằng điểm."
+        "text": "Ở PW3, floor được áp lúc nhận điểm, rồi GPA dùng điểm đã lưu. Với 8.7 và 6.2, trung bình trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc tài chính thập phân. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
        },
        {
         "type": "code",
@@ -28738,7 +28745,7 @@
      "practice": [
       {
        "prompt": "PW2 có được bỏ ngày sinh hoặc chỉ giữ một môn để đơn giản hóa không?",
-       "answer": "Không. PW2 vẫn giữ đầy đủ chức năng PW1, rồi tổ chức dữ liệu thành object, gom quy tắc vào các class và dùng hành vi đa hình khi liệt kê."
+       "answer": "Không. Phải giữ tính năng PW1, bổ sung cách tổ chức bằng object, encapsulation và hành vi đa hình."
       },
       {
        "prompt": "Công thức GPA ở ví dụ dùng điểm 8.79 hay 8.7?",
@@ -28746,11 +28753,11 @@
       },
       {
        "prompt": "Nộp gói PW2–PW4 có đủ chức năng và cách xác nhận.",
-       "answer": "Ở PW2, tạo Student, Course, StudentMark và Registry; dùng setter kiểm dữ liệu và để các object cung cấp cùng thao tác mô tả khi liệt kê. Ở PW3, làm tròn xuống một chữ số lúc nhập điểm, dùng NumPy tính GPA theo tín chỉ, xếp giảm dần và làm menu curses theo SY14. Ở PW4, tách input.py, output.py, domains và main.py; import main không tự mở giao diện. Chạy thử cùng hai sinh viên và hai môn qua từng mốc: giữ ngày sinh, cập nhật điểm, điểm 0, GPA, thứ tự xếp hạng và lỗi trùng mã. Nộp cả cây file, ghi hình thao tác menu trong terminal và lưu commit cho từng mốc."
+       "answer": "Tạo Student/Course/StudentMark/Registry; setter kiểm dữ liệu; các object có hành vi listing chung. PW3: math.floor 1 chữ số lúc nhập, NumPy GPA trọng số tín chỉ, xếp GPA giảm dần, curses menu thật theo SY14. PW4: tách input.py/output.py/domains/main.py, import không tự mở UI. Nộp toàn cây file và video/menu terminal; kiểm cùng 2 sinh viên/2 môn, đổi điểm, giữ DoB, điểm 0, xếp GPA và lỗi mã trùng; ghi commit từng bước thay vì coi sơ đồ file là code đã chạy."
       },
       {
-       "prompt": "Điểm cũ là 8.7. Nếu gọi set_score với 11, True hoặc NaN, điểm đã lưu có thay đổi không? Khi hai sinh viên bằng GPA và một sinh viên chưa có điểm môn nào, bạn sẽ xếp danh sách thế nào?",
-       "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và nêu rõ cách xếp khi bằng GPA, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
+       "prompt": "Điểm cũ 8.7: gọi set_score với 11, True hoặc NaN có được đổi state không? Khi hai GPA bằng nhau và một sinh viên chưa có điểm môn nào, bạn xếp thế nào?",
+       "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và công bố tie-break, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
       }
      ]
     },
@@ -28806,7 +28813,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Không dùng split(\",\") để đọc CSV có trường được bao trong dấu nháy. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc chương trình lỗi mới bắt đầu lưu."
+        "text": "Không dùng split(\",\") để đọc CSV có quoted field. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc program lỗi mới bắt đầu lưu."
        },
        {
         "type": "code",
@@ -28818,7 +28825,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi đưa dữ liệu vào chương trình."
+        "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi nạp state."
        },
        {
         "type": "code",
@@ -28900,7 +28907,7 @@
      "practice": [
       {
        "prompt": "Tên có dấu phẩy đọc bằng split có ổn không?",
-       "answer": "Không, vì dấu phẩy trong tên có thể bị hiểu nhầm là dấu tách cột. Dùng csv.writer để ghi và csv.DictReader để đọc theo đúng quy tắc dấu nháy và xuống dòng của CSV."
+       "answer": "Không nói chung. Dùng csv.writer/DictReader với quoting và newline phù hợp."
       },
       {
        "prompt": "students.dat có nhất thiết là định dạng nhị phân mới tự thiết kế không?",
@@ -28908,7 +28915,7 @@
       },
       {
        "prompt": "Hoàn thiện PW5 và chứng minh dữ liệu tồn tại qua lần chạy.",
-       "answer": "Sau mỗi nhóm nhập, ghi students.txt (mã/tên/DoB), courses.txt (mã/tên/tín chỉ) và marks.txt (mã sinh viên/mã môn/điểm). Khi thoát, đóng gói cả ba file vào students.dat. Lúc khởi động, kiểm tra file có tồn tại, đọc đủ ba thành viên, kiểm mã duy nhất, mã tham chiếu và điểm; chỉ cập nhật Registry sau khi toàn bộ dữ liệu hợp lệ. Thử một lần nhập hai sinh viên và hai môn rồi thoát. Chạy lại chương trình, không nhập thêm và kiểm tra danh sách cùng GPA còn đúng. Thử thêm file thiếu, gói nén hỏng, thiếu thành viên và tên có dấu phẩy."
+       "answer": "Ghi students.txt(id/name/DoB),courses.txt(id/name/credits),marks.txt(student_id/course_id/score) sau từng nhóm nhập. Khi thoát đóng cả3 vào students.dat; khởi động kiểm tồn tại, đọc đủ thành viên, parse/kiểm mã duy nhất/tham chiếu/điểm rồi thay registry sau khi tất cả hợp lệ. Test chạy 1 nhập 2 SV/2 môn, thoát; chạy 2 không nhập lại vẫn list/GPA đúng. Test file thiếu, archive hỏng, thiếu thành viên, tên có dấu phẩy. Không đánh dấu hoàn thành chỉ vì tạo được .dat."
       }
      ]
     },
@@ -28929,13 +28936,13 @@
    "lesson_code": "SY28",
    "sort_order": 131,
    "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
-   "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+   "title": "SY28 · PW6: đổi persistence sang pickle có nén",
    "subtitle": "Trung cấp · M5 · 13 phút",
    "estimated_minutes": 13,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
-    "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+    "title": "SY28 · PW6: đổi persistence sang pickle có nén",
     "subtitle": "Trung cấp · M5 · 13 phút",
     "source": {
      "kind": "python-da",
@@ -28961,7 +28968,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Pickle giữ được tuple làm khóa của marks, còn JSON không hỗ trợ trực tiếp kiểu khóa này. Nếu lưu instance như Student hay Course, đặt class ở module ổn định, chẳng hạn domains.student, để Python tìm lại đúng class khi đọc file. Gom toàn bộ dữ liệu trong một dict có trường version giúp bạn nhận biết phiên bản cấu trúc trước khi cập nhật Registry."
+        "text": "Pickle giữ tuple key của marks mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.student; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
        },
        {
         "type": "code",
@@ -28973,7 +28980,7 @@
       [
        {
         "type": "paragraph",
-        "text": "gzip.open kết hợp mở file với nén dữ liệu; pickle.dump vẫn ghi dữ liệu nhị phân. Chỉ đọc file pickle do bạn tạo và tin cậy. Nếu version hoặc định nghĩa class không còn tương thích, báo rằng cần chuyển đổi dữ liệu sang phiên bản mới thay vì đoán cấu trúc."
+        "text": "gzip.open ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
        },
        {
         "type": "code",
@@ -28983,7 +28990,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Đọc dữ liệu vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi cách lưu ở đây chưa tự có hai tính năng đó."
+        "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó."
        }
       ]
      ],
@@ -29062,8 +29069,8 @@
        "answer": "Không. Sau giải nén, pickle.load vẫn có thể thực thi mã."
       },
       {
-       "prompt": "Hoàn thiện PW6 để lưu các object quản lý điểm, đọc lại ở lần chạy sau và giữ đủ chức năng của PW5.",
-       "answer": "Ghi Registry bằng gzip.open ở chế độ wb và pickle.dump; đọc lại bằng chế độ rb và pickle.load từ file tin cậy. Đặt Student, Course và StudentMark trong package domains có cấu trúc ổn định. Đọc vào một biến tạm, kiểm version, mã, DoB, tín chỉ và điểm rồi mới cập nhật Registry. Thử đóng rồi chạy lại để kiểm tra các instance được khôi phục, điểm 0 và GPA cùng thứ tự xếp hạng không đổi. Thử file thiếu, file hỏng và version chưa hỗ trợ. Khi đọc lỗi, giữ dữ liệu hiện tại và file cũ. Chỉ báo lưu thành công sau khi ghi và đóng file xong."
+       "prompt": "Hoàn thiện PW6 với state domain và kiểm đủ tính năng cũ.",
+       "answer": "Lưu registry qua gzip.open wb + pickle.dump, load rb + pickle.load từ file tin cậy. Đặt Student/Course/StudentMark trong module domains ổn định. Nạp vào tempstate, kiểm version/ID/DoB/credits/marks, rồi mới thay registry. Thử hai lần chạy, kiểu object giữ được, điểm 0, GPA/ranking như cũ, file thiếu/file hỏng/version lạ. Lỗi load giữ state hiện tại và filecũ; không báo lưu thành công trước khi dump/close xong."
       }
      ]
     },
@@ -29127,7 +29134,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Dictionary trên mô phỏng các trạng thái của process trong slide: new là mới tạo; ready là đã sẵn sàng và đang đợi CPU; running là đang chạy; waiting là đang chờ một sự kiện như I/O; terminated là đã kết thúc. Khi bị ngắt để nhường CPU, process có thể chuyển từ running về ready. Khi I/O hoàn thành, nó thường chuyển từ waiting về ready, chứ chưa chắc được chạy ngay."
+        "text": "Đây là mô phỏng trạng thái trên slide. new là mới tạo; ready đã sẵn sàng nhưng chưa được CPU; running đang chạy; waiting chờ sự kiện như I/O; terminated đã kết thúc. Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
        },
        {
         "type": "code",
@@ -29240,7 +29247,7 @@
       },
       {
        "prompt": "Con được tạo từ cha có luôn dùng chung mọi biến Python không? Slide nêu những mức chia sẻ nào?",
-       "answer": "Không. Tùy hệ điều hành và cơ chế tạo process, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ loại tài nguyên đang xét. Với một object Python cụ thể, cần biết nó được sao chép hay được chia sẻ qua cơ chế nào; không mặc định mọi biến đều dùng chung."
+       "answer": "Không. Mức tài nguyên được chia sẻ tùy OS/cơ chế: toàn bộ, một phần hoặc không đối với tài nguyên đang xét; phải kiểm mô hình thay vì mặc định chung mọi object."
       }
      ]
     },
@@ -29291,7 +29298,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn muốn chương trình con chạy trong thư mục dữ liệu riêng và nhận một số biến môi trường. Trên Windows, API CreateProcess có các tham số cho dòng lệnh, môi trường, thư mục làm việc và việc kế thừa handle qua bInheritHandles. Handle là tham chiếu mà Windows dùng để nhận diện một tài nguyên. CreateProcess nạp chương trình vào process mới, tạo thread đầu tiên và trả thông tin nhận diện cùng handle của process và thread. WinExec là API cũ, được khuyến cáo thay bằng CreateProcess. Các tên này xuất hiện trong ví dụ WinAPI/C của slide; chúng không phải hàm Python có sẵn để gọi trực tiếp."
+        "text": "Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
        },
        {
         "type": "code",
@@ -29303,7 +29310,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. Trong C, fork trả -1 khi lỗi; os.fork của Python báo lỗi bằng ngoại lệ và không có trên Windows. Sau khi fork thành công, cha và con có PID khác nhau, cùng tiếp tục từ vị trí sau lời gọi, nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write: các trang nhớ chỉ cần được sao chép riêng khi có bên sửa chúng, thay vì sao chép vật lý toàn bộ bộ nhớ ngay lúc tạo con."
+        "text": "Ví dụ vừa rồi mô phỏng giá trị trả về của fork trên UNIX: cha nhận PID con, con nhận 0. API C trả -1 khi lỗi; Python os.fork báo lỗi bằng ngoại lệ và không có trên Windows. Sau fork, cha/con có PID khác, cùng tiếp tục từ vị trí sau lời gọi nhưng không có thứ tự chạy được đảm bảo. Hệ điều hành thường dùng copy-on-write thay vì sao chép vật lý toàn bộ bộ nhớ ngay."
        },
        {
         "type": "code",
@@ -29315,7 +29322,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Dictionary này mô phỏng exec: chương trình \"shell\" được thay bằng \"analysis\" trong process 101, nên PID vẫn là 101. exec không tạo thêm process. Trong họ hàm exec, hậu tố l nhận từng đối số riêng, v nhận một dãy đối số argv, p tìm chương trình qua PATH và e cho phép truyền môi trường tường minh. Vì vậy, execl và execv khác cách nhận đối số; execlp và execvp có thêm bước tìm qua PATH; execle nhận cả môi trường. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\" và NULL đánh dấu kết thúc. Khi thực hành bằng subprocess, bạn truyền một list đối số Python thay vì chép nguyên chữ ký hàm C."
+        "text": "Đây là mô hình của exec: thay image chương trình trong process hiện tại, giữ PID và không tạo process thứ ba. Trong tên họ hàm, l nhận các đối số riêng, v nhận vector argv; p tìm chương trình qua PATH và e nhận environment tường minh. Vì thế execl/execv khác cách truyền đối số, execlp/execvp thêm tìm PATH, execle thêm environment. Trong ví dụ C của slide, argv gồm \"/bin/ps\", \"-ef\", rồi NULL kết thúc danh sách. Python subprocess nhận một list đối số thay cho việc bạn tự chép nguyên chữ ký C."
        },
        {
         "type": "code",
@@ -29452,13 +29459,13 @@
    "sort_order": 134,
    "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
    "title": "CT03 · Scheduler, PCB và các hàng đợi",
-   "subtitle": "Nâng cao · M6 · 22 phút",
-   "estimated_minutes": 22,
+   "subtitle": "Nâng cao · M6 · 21 phút",
+   "estimated_minutes": 21,
    "xp_reward": 13,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "CT03 · Scheduler, PCB và các hàng đợi",
-    "subtitle": "Nâng cao · M6 · 22 phút",
+    "subtitle": "Nâng cao · M6 · 21 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#CT03",
@@ -29495,7 +29502,7 @@
       [
        {
         "type": "paragraph",
-        "text": "PCB lưu PID, trạng thái, program counter và thanh ghi để process có thể tiếp tục đúng chỗ. Nó còn theo dõi tài nguyên đang mở, thông tin điều phối CPU và thông tin sử dụng tài nguyên. Khi chuyển ngữ cảnh, hệ điều hành lưu ngữ cảnh cũ rồi nạp ngữ cảnh mới. Thời gian dành cho việc chuyển này chưa thực hiện công việc của process nào; đó là chi phí chuyển ngữ cảnh, hay overhead."
+        "text": "PCB giữ thông tin như PID, trạng thái, PC/thanh ghi, file descriptors, thông tin điều phối và kế toán. Context switch lưu ngữ cảnh cũ rồi nạp ngữ cảnh mới. Trong thời gian chuyển, CPU chưa làm phần việc hữu ích của hai process, nên việc chuyển có overhead."
        },
        {
         "type": "code",
@@ -29610,11 +29617,11 @@
        "answer": "Long-term scheduler điều chỉnh công việc được nhận; short-term scheduler chọn process sẵn sàng chạy kế tiếp."
       },
       {
-       "prompt": "PCB lưu PID và trạng thái, program counter và thanh ghi, các file descriptor đang mở, cùng thông tin điều phối và sử dụng tài nguyên. Mỗi nhóm thông tin này phục vụ việc gì?",
-       "answer": "PID và trạng thái giúp nhận diện process và biết nó đang chờ hay đang chạy. Program counter và thanh ghi dùng để khôi phục ngữ cảnh CPU. File descriptor theo dõi tài nguyên đang mở. Thông tin điều phối và sử dụng tài nguyên giúp hệ điều hành quyết định cấp CPU và ghi nhận tài nguyên process đã dùng."
+       "prompt": "PCB cần PID/state, PC/registers, open_fds và scheduling/accounting info để làm gì?",
+       "answer": "Nhận diện và theo dõi trạng thái process, phục hồi CPU context, quản lý tài nguyên đang mở, và quyết định/ghi nhận việc cấp CPU."
       },
       {
-       "prompt": "A có độ ưu tiên cao nhưng đang chờ ổ đĩa. Scheduler có thể cho A chạy ngay không? Time quantum quy định điều gì trong một lượt dùng CPU?",
+       "prompt": "Nếu priority của A cao nhưng A đang chờ ổ đĩa, có nên cấp CPU cho A? Quantum liên quan quyết định nào?",
        "answer": "Không nếu A chưa ready. Priority/ràng buộc chọn trong các process phù hợp; quantum giới hạn thời gian của lượt chạy."
       },
       {
@@ -29853,7 +29860,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ở mô phỏng cuối, A chuyển từ hàng ưu tiên cao xuống hàng thấp sau khi dùng CPU. Multilevel Queue chia công việc vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép công việc đổi hàng theo hành vi hoặc thời gian CPU đã dùng. Ngoài chính sách bên trong từng hàng, hệ thống còn cần quy tắc chọn hàng ưu tiên và quyết định khi nào thu hồi CPU. Chỉ tên thuật toán chưa cho biết đầy đủ những quy tắc đó."
+        "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán."
        }
       ]
      ],
@@ -29936,8 +29943,8 @@
        "answer": "Feedback cho phép công việc chuyển giữa các hàng theo quy tắc; phân lớp ở Multilevel Queue thường cố định."
       },
       {
-       "prompt": "Hàng dành cho công việc tương tác dùng Round Robin, còn hàng cho tác vụ nền dùng FCFS. Một hệ thống có được dùng hai chính sách khác nhau như vậy không?",
-       "answer": "Có. Trong Multilevel Queue, mỗi hàng có thể dùng chính sách riêng. Hệ thống vẫn cần quy tắc chọn giữa các hàng, gồm độ ưu tiên và điều kiện thu hồi CPU từ công việc đang chạy."
+       "prompt": "Hàng foreground dùng Round Robin, hàng background dùng FCFS: có được dùng hai chính sách khác nhau không?",
+       "answer": "Có. Multilevel Queue có nhiều subqueue, mỗi hàng có chính sách riêng; việc ưu tiên hoặc preempt giữa hàng cần được cấu hình."
       },
       {
        "prompt": "A bị chuyển từ hàng cao xuống thấp vì dùng hết quantum. Cơ chế này thuộc Queue cố định hay Feedback Queue?",
@@ -30016,7 +30023,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển cộng thêm 0.2. Quantum nhỏ cho việc phía sau có lượt sớm hơn, nhưng có thể làm tổng thời gian tăng vì chuyển ngữ cảnh nhiều hơn. Đây là tính toán trên số giả định để so sánh hai lựa chọn, không phải kết quả đo scheduler của máy đang chạy Python."
+        "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python."
        }
       ]
      ],
@@ -30152,7 +30159,7 @@
       [
        {
         "type": "paragraph",
-        "text": "run chờ chương trình con kết thúc rồi trả một đối tượng CompletedProcess. Trong kết quả r, stdout chứa văn bản chương trình đã in, còn returncode cho biết mã thoát. Theo quy ước phổ biến, mã 0 là thành công. List truyền vào run tách rõ đường dẫn chương trình ở phần tử đầu và từng đối số ở những phần tử sau."
+        "text": "run chờ chương trình con kết thúc và trả CompletedProcess. stdout là nội dung đầu ra; returncode là mã thoát. Theo quy ước phổ biến, 0 là thành công. Truyền danh sách đối số giúp tách executable và từng argument rõ ràng."
        },
        {
         "type": "code",
@@ -30265,12 +30272,12 @@
        "answer": "0 là stdin thường nhận bàn phím; 1 stdout và 2 stderr thường ra terminal. Có thể thay các kết nối bằng file/pipe."
       },
       {
-       "prompt": "Chọn API os phù hợp với từng việc: chạy chuỗi lệnh qua shell rồi chờ; mở luồng đọc hoặc ghi tới một lệnh; tạo cặp đầu đọc và ghi của pipe; tạo process con trên hệ POSIX; gửi yêu cầu kết thúc tới một PID.",
+       "prompt": "Chọn API tham khảo: chạy command string rồi chờ; mở stream tới command; tạo cặp descriptor đọc/ghi; tạo child POSIX; yêu cầu dừng PID.",
        "answer": "Lần lượt os.system, os.popen, os.pipe, os.fork, os.kill với signal.SIGTERM. Chúng không cùng vai trò, và os.fork không có trên Windows."
       },
       {
        "prompt": "Một lần check_output thành công in report. Hàm trả report hay số 0? Muốn đặt giới hạn chạy run thì dùng gì?",
-       "answer": "check_output trả nội dung đầu ra, không phải mã thoát 0. Để giới hạn thời gian chạy run, truyền timeout theo số giây. Khi hết hạn, run dừng và chờ process con rồi gây TimeoutExpired. Nếu chương trình thoát với mã lỗi và có check=True, run gây CalledProcessError."
+       "answer": "Trả output, không phải exit code. run nhận timeout theo giây; khi hết hạn raise TimeoutExpired sau cơ chế dừng/chờ con của run. Mã lỗi với check=True gây CalledProcessError."
       }
      ]
     },
@@ -30360,7 +30367,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Khi Popen.communicate báo TimeoutExpired, process con có thể vẫn đang chạy. Ví dụ gọi kill rồi communicate lần nữa để đọc phần đầu ra còn lại và chờ con kết thúc. terminate và kill kết thúc process theo cơ chế của nền tảng: trên POSIX, kill mạnh hơn; trên Windows, hai phương thức đều dùng cơ chế kết thúc process của Windows. Không nên trông đợi terminate luôn cho chương trình con chạy xong phần dọn dẹp. Khác với communicate, run(timeout=...) tự dừng và chờ con khi hết hạn."
+        "text": "Timeout của Popen.communicate không tự bảo đảm đã dừng process. Ví dụ chủ động kill rồi communicate lại để thu hồi. terminate yêu cầu kết thúc theo cơ chế nền tảng; kill mạnh hơn trên POSIX, nhưng trên Windows hai phương thức cùng dẫn tới cơ chế kết thúc process của Windows. Không dựa vào terminate để chắc chắn chạy phần cleanup của chương trình con. run(timeout=...) có quản lý kill/wait riêng khi hết hạn."
        }
       ]
      ],
@@ -30452,7 +30459,7 @@
       },
       {
        "prompt": "Sau communicate timeout, nêu thứ tự dừng và thu hồi. terminate và kill có luôn khác nhau trên mọi OS không?",
-       "answer": "Sau timeout, gọi terminate hoặc kill cho process con do bạn tạo theo cách xử lý đã chọn, rồi communicate hoặc wait để chờ nó kết thúc. communicate còn đọc phần đầu ra đang chờ. terminate và kill không luôn khác nhau: trên POSIX, kill mạnh hơn; trên Windows, cả hai dùng cơ chế kết thúc process của Windows."
+       "answer": "Áp chính sách terminate/kill cho con do mình tạo rồi communicate/wait để thu output và trạng thái. Trên POSIX kill mạnh hơn; trên Windows terminate/kill dùng cơ chế kết thúc process tương ứng của Windows."
       },
       {
        "prompt": "Vẽ đường đi dữ liệu cho input.txt → A → B → out.txt bằng stdin/stdout. Cần kiểm mã thoát của ai?",
@@ -30638,16 +30645,16 @@
        "answer": "Không. Các thread cùng process có thể truy cập descriptor/tài nguyên chung, nên phải xét cách phối hợp. Slide nhắc signals như cơ chế OS; quy tắc signal không được suy thành biến Python riêng cho từng thread."
       },
       {
-       "prompt": "So sánh việc tạo process có trạng thái riêng với việc thêm thread dùng chung tài nguyên của process. Chi phí tạo, kết thúc và chuyển ngữ cảnh thường khác nhau thế nào?",
-       "answer": "Process có trạng thái và không gian địa chỉ riêng theo cơ chế tạo. Thread dùng chung nhiều tài nguyên của process nên thường tốn ít chi phí tạo, kết thúc và chuyển ngữ cảnh hơn. Mức chênh lệch phụ thuộc hệ điều hành và loại công việc, không có một tỷ lệ đúng cho mọi máy."
+       "prompt": "So resource cloning khi tạo process với resource sharing giữa thread. Chi phí tạo, kết thúc và context switch thường khác thế nào?",
+       "answer": "Process có trạng thái và không gian địa chỉ riêng theo cơ chế tạo; thread dùng chung nhiều tài nguyên process. Thread thường có chi phí thấp hơn ở các thao tác đó, nhưng mức chênh tùy OS/workload."
       },
       {
-       "prompt": "Bạn tạo 500 thread cho 500 phép tính rất nhỏ. Có chắc tận dụng các lõi CPU tốt hơn và làm giao diện phản hồi nhanh hơn không?",
-       "answer": "Không. Chi phí tạo, chuyển giữa các thread và đồng bộ có thể lớn hơn phần thời gian tính toán hữu ích. Kết quả còn phụ thuộc loại công việc, số lõi CPU, trình thông dịch và cách truy cập dữ liệu chung."
+       "prompt": "Bạn tạo 500 thread cho 500 phép tính rất nhỏ. Có chắc tận dụng core tốt và UI đáp ứng hơn không?",
+       "answer": "Không. Overhead tạo/chuyển và đồng bộ có thể vượt phần việc hữu ích; khả năng mở rộng tùy workload, số core, interpreter và quy tắc truy cập tài nguyên."
       },
       {
        "prompt": "Một worker chờ file trong khi UI nhận phím. Đây là lợi ích gì? Rủi ro gì khi cả hai sửa dữ liệu chung?",
-       "answer": "Giao diện vẫn phản hồi trong lúc worker bị chặn chờ I/O; đây là lợi ích về khả năng đáp ứng. Tuy nhiên, thứ tự chạy giữa chúng không xác định. Nếu cùng sửa dữ liệu mà không phối hợp, chúng có thể gặp race condition; nếu chờ khóa của nhau theo vòng, chúng có thể deadlock. Tạo thêm thread không tự giải quyết hai lỗi này."
+       "answer": "Đây là responsiveness khi có blocking I/O. Thứ tự xen kẽ không xác định; thao tác chung có thể race, chờ khóa vòng có thể deadlock. Tách thread không tự giải quyết hai lỗi đó."
       },
       {
        "prompt": "Một process đơn luồng có mấy stack/PC context? Khi thêm thread, code, global data, heap và file descriptors được chia thế nào?",
@@ -31098,12 +31105,12 @@
        "answer": "Trong run. __init__ chạy ngay khi tạo object trên thread gọi nó."
       },
       {
-       "prompt": "Hai instance có các thuộc tính self riêng có nghĩa là những object mà các thuộc tính đó trỏ tới cũng luôn độc lập không?",
+       "prompt": "Có thuộc tính self riêng nghĩa là mọi object con nó trỏ tới đều độc lập không?",
        "answer": "Không. Hai thuộc tính vẫn có thể tham chiếu cùng một list hoặc object khác."
       },
       {
-       "prompt": "Trong class Pause, bạn muốn mỗi instance nhận một thời gian chờ delay khác nhau. Giá trị này được truyền và lưu ở đâu? sleep chạy trên thread nào khi gọi start?",
-       "answer": "Nhận delay trong __init__, gọi super().__init__() rồi lưu vào self.delay. Phương thức run gọi sleep(self.delay). Khi gọi start, run thực hiện trên thread worker; join cho thread đang gọi chờ worker kết thúc."
+       "prompt": "Trong subclass Pause, muốn mỗi instance nhận sleepTime khác nhau thì dữ liệu đi qua đâu và sleep chạy ở đâu?",
+       "answer": "Nhận sleepTime trong __init__, gọi super().__init__, lưu self.delay; run gọi time.sleep(self.delay). Tạo instance rồi start để chạy run ở worker, join để chờ xong."
       }
      ]
     },
@@ -31323,14 +31330,14 @@
       },
       {
        "prompt": "Lock nên chỉ bảo vệ phép ghi hay cả đọc-tính-ghi?",
-       "answer": "Cần bảo vệ cả chuỗi đọc giá trị, tính giá trị mới và ghi lại, bằng cùng một khóa. Chỉ khóa lần ghi vẫn có thể để hai thread tính từ cùng giá trị cũ."
+       "answer": "Cả thao tác read-modify-write liên quan."
       },
       {
        "prompt": "Hai thread lấy hai khóa theo thứ tự ngược nhau có rủi ro gì?",
        "answer": "Deadlock: mỗi thread giữ một khóa và chờ khóa mà thread kia đang giữ."
       },
       {
-       "prompt": "Vì sao dùng with lock thường an toàn hơn tự gọi acquire rồi có thể quên release? Nếu mỗi worker tạo một lock riêng, các khóa đó có phối hợp để bảo vệ cùng state không?",
+       "prompt": "Vì sao với lock: thường an toàn hơn acquire rồi quên release? Nếu tạo mỗi worker một lock mới thì có cùng bảo vệ state không?",
        "answer": "with tự acquire/release kể cả khi có ngoại lệ. Mọi worker liên quan phải dùng cùng lock cho cùng quy tắc dữ liệu; lock riêng không tạo loại trừ giữa chúng."
       },
       {
@@ -31462,13 +31469,13 @@
        },
        {
         "type": "paragraph",
-        "text": "Ví dụ này nén dữ liệu trong bộ nhớ rồi nạp lại để đối chiếu. Bài thực hành PW8 còn yêu cầu ghi ra file, xử lý lỗi và nạp lại khi mở ứng dụng. Dữ liệu đưa cho worker phải là một bản chụp nhất quán, hay snapshot: trong lúc worker đọc, không được trộn các thay đổi ở nhiều thời điểm. Bạn có thể sao chép cấu trúc phù hợp hoặc đồng bộ khi lấy snapshot. Chỉ gán snapshot = data sẽ tạo thêm tên trỏ tới cùng dữ liệu, không tạo bản sao. Chỉ nạp pickle từ nguồn tin cậy vì việc nạp có thể thực thi mã."
+        "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Snapshot cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy snapshot; gán thêm một tên không tự tạo snapshot. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
        }
       ]
      ],
      "context": {
       "level": "Nâng cao",
-      "prereq": "CT12 · Race condition, Lock và tránh deadlock, SY28 · PW6: lưu dữ liệu bằng pickle có nén"
+      "prereq": "CT12 · Race condition, Lock và tránh deadlock, SY28 · PW6: đổi persistence sang pickle có nén"
      }
     },
     "step_2": {
@@ -31642,7 +31649,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn có một tác vụ tính toán viết bằng Python thuần và muốn dùng nhiều lõi CPU. Với bản CPython có GIL, có thể cần nhiều process thay vì chỉ thêm thread. Trước khi tìm cách tăng tốc, hãy xem việc sửa list trong process con có làm list ở cha thay đổi không:"
+        "text": "Một phép tính Python thuần dùng nhiều CPU có thể cần process riêng thay vì thêm thread trong CPython build có GIL. Trước khi tìm cách tăng tốc, hãy kiểm tra dữ liệu của cha và con có được dùng chung không:"
        },
        {
         "type": "code",
@@ -31852,7 +31859,7 @@
       [
        {
         "type": "paragraph",
-        "text": "shlex giữ \"two words\" thành một đối số, dù bên trong có khoảng trắng. Parser sau đó dùng dấu | để tách các bước của pipeline và dùng <, > để nhận ra chuyển hướng. File projects/shell_lab.py đi kèm có vòng nhập lệnh, cách tách đối số, chuyển hướng và chạy pipeline. Chương trình tự xử lý những ký hiệu này thay vì giao cả chuỗi cho shell của hệ điều hành bằng shell=True."
+        "text": "Parser giữ \"two words\" thành một argument rồi chia lệnh thành các stage. File projects/shell_lab.py đi kèm triển khai vòng nhập, argv, chuyển hướng hai phía và pipeline. Nó không gọi shell=True: bộ ký hiệu hỗ trợ được xử lý trực tiếp."
        },
        {
         "type": "paragraph",
@@ -31968,13 +31975,13 @@
    "sort_order": 147,
    "module": "M7 · Multiprocessing và shell thực hành",
    "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
-   "subtitle": "Trung cấp · M7 · 11 phút",
-   "estimated_minutes": 11,
+   "subtitle": "Trung cấp · M7 · 10 phút",
+   "estimated_minutes": 10,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
     "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
-    "subtitle": "Trung cấp · M7 · 11 phút",
+    "subtitle": "Trung cấp · M7 · 10 phút",
     "source": {
      "kind": "python-da",
      "filename": "course.json#RC01",
@@ -31987,7 +31994,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong hình Apache Prefork ở trang 274, một process cha quản lý nhiều process con. Mỗi process con được nối với một yêu cầu HTTP từ phía người dùng web. Bạn có thể chép các ô đó thành một dictionary để đếm số process con mà không cần chạy web server:"
+        "text": "Trong hình Apache Prefork ở trang 274, một parent quản lý nhiều child process. Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
        },
        {
         "type": "code",
@@ -32270,10 +32277,10 @@
       },
       {
        "prompt": "GUI có luôn nhanh hơn để học và luôn chậm hơn để xử lý dữ liệu không? Bộ nhớ và theme liên quan gì?",
-       "answer": "Không có kết luận đúng cho mọi ứng dụng. Widget và phần hiển thị dùng thêm bộ nhớ, còn tốc độ xử lý phụ thuộc tác vụ. Giao diện rõ giúp người mới tìm thao tác; CLI có thể thuận tiện hơn khi cần lặp lệnh hoặc tự động hóa. Theme đổi diện mạo của widget, nhưng không tự làm ứng dụng dễ học hay linh hoạt hơn."
+       "answer": "Không có kết luận tuyệt đối. Widget/hiển thị thêm chi phí bộ nhớ; tốc độ tùy tác vụ. GUI có thể giúp khám phá thao tác và đổi theme, nhưng khả năng học/flexibility còn tùy thiết kế."
       },
       {
-       "prompt": "Ghép Tkinter, PyQt, Kivy và wxPython với nền tảng tương ứng: Tcl/Tk, Qt, OpenGL và wxWidgets. Phần thực hành trong khóa này dùng toolkit nào?",
+       "prompt": "Ghép bốn tên toolkit với backend và cho biết khóa này thực hành tên nào: Tkinter, PyQt, Kivy, wxPython.",
        "answer": "Tkinter–Tcl/Tk; PyQt–Qt; Kivy–OpenGL; wxPython–wxWidgets. Các bộ hỗ trợ nhiều nền tảng nhưng cần môi trường thích hợp; Tkinter có trong nhiều bản Python dưới dạng module tùy chọn. Ba bộ còn lại cần cài thêm, chỉ được giới thiệu ở đây."
       }
      ]
@@ -32532,7 +32539,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ở ví dụ cuối, add_command thêm mục Lưu vào menu, command nhận hàm xử lý, còn menu.invoke(0) gọi mục đầu tiên bằng code. Muốn thử người dùng mở menu và chọn Lưu, bạn cần hiện cửa sổ. Slide chỉ nhắc tên Menu; ví dụ triển khai này là phần bổ sung của bài."
+        "text": "Menu được slide liệt kê nhưng không triển khai riêng. Đoạn cuối là phần bổ sung: add_command thêm một thao tác, command nhận hàm xử lý, còn invoke gọi mục menu bằng code để kiểm tra. Quan sát menu thật vẫn cần mở cửa sổ."
        }
       ]
      ],
@@ -32621,8 +32628,8 @@
        "answer": "Không. Frame thường dùng khoảng cách màn hình; Label chữ thường dùng ký tự/dòng. bg đặt nền widget Tk cổ điển; Frame chứa widget con còn Label hiển thị chữ."
       },
       {
-       "prompt": "Trong ví dụ menu, add_command, command và invoke lần lượt làm gì? Ví dụ này được triển khai trong slide hay được bổ sung ở bài học?",
-       "answer": "add_command thêm một mục menu; command nhận hàm cần gọi khi chọn mục đó; invoke gọi mục menu bằng code. Slide chỉ liệt kê tên Menu, còn ví dụ triển khai là phần bổ sung ở đây."
+       "prompt": "Menu có được slide dạy một ví dụ hoàn chỉnh không? Đoạn add_command trong bài thuộc phạm vi nào?",
+       "answer": "Slide chỉ liệt kê Menu. Ví dụ add_command/command trong bài là phần bổ sung và phải được ghi như vậy, không quy thành mã ví dụ gốc của USTH."
       }
      ]
     },
@@ -33216,7 +33223,7 @@
       [
        {
         "type": "paragraph",
-        "text": "insert(END, ...) thêm phần tử vào cuối danh sách. ACTIVE là phần tử mà Listbox đang dùng làm vị trí hoạt động cho thao tác bàn phím. Nó có thể khác phần tử đang được chọn và tô sáng. Muốn biết những dòng người dùng đã chọn, gọi curselection()."
+        "text": "insert(END,...) thêm phần tử ở cuối. ACTIVE là phần tử đang active để thao tác bàn phím; nó có thể khác lựa chọn đang được tô sáng. Muốn lấy các lựa chọn thực sự, dùng curselection."
        },
        {
         "type": "code",
@@ -33227,7 +33234,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ở đây, vị trí hoạt động là Chi nhưng dòng được chọn là An. Vì vậy, get(tk.ACTIVE) trả \"Chi\", còn curselection() cho vị trí của \"An\". Nếu chưa có dòng nào được chọn, curselection() trả một dãy rỗng; hãy kiểm tra trước khi lấy phần tử đầu."
+        "text": "Ví dụ cố ý để active ở Chi nhưng selected ở An. curselection trả các vị trí đã chọn; danh sách có thể rỗng, nên cần kiểm tra trước khi lấy phần tử đầu."
        },
        {
         "type": "code",
@@ -33849,8 +33856,8 @@
        "answerExpected": "3"
       },
       {
-       "prompt": "Hãy mô tả cách dùng grid cho form có hai hàng Username và Password, ô nhập bên phải mỗi nhãn, cùng nút Login bên dưới chiếm hai cột. Đặt khoảng đệm bằng padx và pady. Nếu cần widget chiếm nhiều hàng thay vì nhiều cột, dùng tùy chọn nào?",
-       "answer": "Đặt nhãn Username ở row=0, column=0 và Password ở row=1, column=0. Hai Entry ở column=1, dùng sticky=tk.EW và padx, pady để giãn ngang và chừa khoảng. Nút Login ở row=2, column=0, columnspan=2. Hàng và cột bắt đầu từ 0; rowspan cho widget trải qua nhiều hàng. Muốn cột nhận thêm không gian khi kéo rộng cửa sổ, đặt weight cho cột trong đúng widget cha."
+       "prompt": "Tả form Username/Password/Login dùng grid: vị trí, khoảng đệm và nút chiếm hai cột; rowspan khác gì?",
+       "answer": "Nhãn ở (row0,col0)/(row1,col0), Entry ở col1 với sticky=tk.EW và padx/pady; Login row2 col0 columnspan=2. Đánh số từ0; rowspan chiếm nhiều hàng. Parent cần column weight nếu muốn nhận chỗ dư."
       }
      ]
     },
@@ -33920,7 +33927,7 @@
       [
        {
         "type": "paragraph",
-        "text": "after lên lịch để event loop gọi một hàm; nó không tạo thread mới. Trong ví dụ, after(0, ...) xếp thao tác thêm \"tick\" vào list, còn after(20, r.quit) yêu cầu dừng mainloop sau khoảng 20 mili giây. quit dừng vòng xử lý sự kiện đang chạy, còn destroy hủy cửa sổ. Ứng dụng dùng thật thường giữ mainloop chạy cho tới khi người dùng đóng cửa sổ."
+        "text": "after lên lịch callback trong event loop. Nó không tạo thread mới. quit làm mainloop đang chạy kết thúc; destroy hủy cửa sổ. Đoạn này tự thoát sau 20ms để kiểm tra hữu hạn, không phải một ứng dụng người dùng hoàn chỉnh."
        },
        {
         "type": "code",
@@ -33931,7 +33938,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Worker chỉ tính tổng và gửi kết quả qua Queue. Thread đã tạo Tk đọc kết quả rồi cập nhật StringVar. Trong ví dụ nhỏ này, join chờ phép tính hoàn tất trước khi đọc queue. Với việc lưu file lâu trong ứng dụng thật, không gọi join trong callback giao diện, vì giao diện sẽ phải chờ theo. Ví dụ tiếp dùng after để kiểm tra kết quả mà không chặn vòng xử lý sự kiện."
+        "text": "Worker chỉ tính và gửi kết quả qua Queue; thao tác StringVar diễn ra trên thread tạo Tk. join ở đây chỉ là ranh giới kiểm tra một phép tính nhỏ trong ví dụ ẩn. Không đặt join cho tác vụ lâu trong callback giao diện vì nó vẫn chặn UI."
        },
        {
         "type": "code",
@@ -34109,7 +34116,7 @@
       [
        {
         "type": "paragraph",
-        "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. Môn có mã GUI chưa có điểm nên không góp vào mẫu số; điểm thiếu không được coi là 0. Sinh viên chưa có điểm nào được hiển thị dấu gạch thay vì GPA 0. Bạn có thể sắp danh sách GPA theo thứ tự giảm dần."
+        "text": "GPA mẫu là trung bình có trọng số trên các môn đã có điểm. GUI chưa có điểm nên không nằm trong mẫu số; không coi điểm thiếu bằng 0. Sinh viên chưa có điểm được hiển thị dấu gạch thay vì GPA 0. Danh sách GPA có thể sắp giảm dần."
        },
        {
         "type": "code",
@@ -34125,7 +34132,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Chạy ứng dụng bằng python projects/grade_app.py --data duong-dan/grades.pkl.gz. Nếu file chưa tồn tại, ứng dụng bắt đầu với dữ liệu rỗng. Nếu file hỏng, ứng dụng báo lỗi và không tự ghi đè. Các bài kiểm tra đi kèm kiểm tra dữ liệu, GPA, việc lưu và nạp cùng một số callback. Để xem giao diện có dễ dùng và bố trí có vừa không, hãy chạy các bước thực hành bên dưới bằng chuột, bàn phím và cửa sổ thật."
+        "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric."
        }
       ]
      ],
@@ -34260,7 +34267,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`loadtxt` đọc các giá trị theo kiểu đã chọn. `delimiter` chỉ ký tự ngăn cột, còn `dtype` chọn kiểu của các phần tử. `StringIO` cho phép dùng chuỗi như một file văn bản; với file thật, thay nó bằng đường dẫn. Ở ví dụ, chỉ có cột điểm được chọn từ hai dòng, nên kết quả là array một chiều gồm hai số: `shape=(2,)`, `len=2`. Trong `dtype.kind`, ký tự `f` là nhóm kiểu số thực."
+        "text": "loadtxt phù hợp khi phần bảng bạn đọc có cùng kiểu. delimiter chỉ ký tự ngăn cột, dtype chọn kiểu của các phần tử. StringIO ở đây đóng vai trò một file văn bản để ví dụ chạy độc lập; với file thật, thay nó bằng đường dẫn. Nếu lấy một cột từ hai dòng, kết quả thường là array một chiều chứ không tự giữ thành bảng hai cột."
        },
        {
         "type": "code",
@@ -34272,7 +34279,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Nếu chưa nhớ tham số, dùng `help(pd.read_csv)` để xem cách đọc CSV hoặc `np.info(np.ndarray.dtype)` để xem mô tả `dtype`. Đây là các lệnh xem tài liệu, không đọc dữ liệu trong bảng. Đoạn dưới còn minh họa cách đọc file văn bản: lấy dòng đầu bằng `readline()`, lấy phần còn lại bằng `read()`, rồi đóng file bằng `close()`. Với `with open(...)`, file được đóng tự động khi ra khỏi khối. Hai giá trị True cuối chỉ xác nhận rằng các lệnh trợ giúp đã trả về nội dung; khi tự tra cứu, bạn có thể gọi hai lệnh đó trực tiếp."
+        "text": "Trước khi đổi tham số theo phỏng đoán, dùng help(pd.read_csv) hoặc np.info(np.ndarray.dtype) để xem tài liệu. Kết quả trợ giúp mô tả API; nó không phải nội dung bảng đang phân tích. Ví dụ dưới vừa đọc file thật trong thư mục tạm, vừa kiểm phần mô tả có tồn tại; nó không in toàn bộ tài liệu dài."
        },
        {
         "type": "code",
@@ -34366,7 +34373,7 @@
       },
       {
        "prompt": "marks có shape (2,), dtype=float64. len(marks) bằng bao nhiêu? Vì sao import numpy as np cần xuất hiện trước np.loadtxt?",
-       "answer": "`len(marks)` bằng 2, tức có hai phần tử theo chiều đầu. `import numpy as np` nạp thư viện và đặt tên ngắn là `np`. Trong một lần chạy mới, nếu chưa import hoặc định nghĩa tên `np`, dùng `np.loadtxt` sẽ báo `NameError`."
+       "answer": "len bằng 2, tức hai phần tử theo chiều đầu. import nạp thư viện và gán tên np; dùng np trước khi tên được định nghĩa sẽ báo NameError trong phiên sạch."
       }
      ]
     },
@@ -34427,13 +34434,13 @@
    "lesson_code": "EX02",
    "sort_order": 161,
    "module": "M9 · Ôn tập và thực hành các chi tiết trong slide",
-   "title": "EX02 · Structured array: bảng có tên và điểm",
+   "title": "EX02 · Bảng hỗn hợp và field names của structured array",
    "subtitle": "Trung cấp · M9 · 12 phút",
    "estimated_minutes": 12,
    "xp_reward": 8,
    "content_json": {
     "schema": "studio-lesson/v2",
-    "title": "EX02 · Structured array: bảng có tên và điểm",
+    "title": "EX02 · Bảng hỗn hợp và field names của structured array",
     "subtitle": "Trung cấp · M9 · 12 phút",
     "source": {
      "kind": "python-da",
@@ -34459,7 +34466,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`dtype=None` để NumPy tự chọn kiểu cho từng trường; `encoding=\"utf-8\"` quy định cách đọc phần văn bản. `table[\"mark\"]` lấy trường điểm của các học viên, còn `table[0]` lấy bản ghi đầu tiên gồm cả tên và điểm. Vì vậy, nguồn có hai cột không có nghĩa structured array có hai chiều."
+        "text": "dtype=None cho phép suy luận kiểu của từng field; encoding=\"utf-8\" giữ phần tên dưới dạng chuỗi. table[\"mark\"] chọn một field, khác với table[0] chọn bản ghi đầu tiên. Đừng mặc định shape có hai chiều chỉ vì nguồn có hai cột."
        },
        {
         "type": "code",
@@ -34471,7 +34478,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Ô điểm trống được đọc thành NaN vì trường `mark` ở đây có kiểu số thực. Nếu một cột chỉ chứa số nguyên và ô trống, NumPy có thể suy ra kiểu và giá trị điền khác; hãy xem `dtype` và khai báo rõ kiểu, giá trị thiếu cần dùng. Ví dụ cuối đặt trường điểm là `float` thay vì để NumPy suy luận. Với code cũ gọi `recfromcsv`, dùng `genfromtxt` cùng các tham số tương ứng vì `recfromcsv` đã bị bỏ từ NumPy 2."
+        "text": "Ô điểm trống thành NaN trong field số thực này. Cách suy luận còn phụ thuộc dữ liệu: một cột chỉ có số nguyên và ô trống có thể dùng giá trị điền khác, nên cần xem dtype và chỉ định kiểu hoặc missing policy nếu quy tắc phải ổn định. recfromcsv trong tờ tóm tắt là API cũ đã bị bỏ ở NumPy 2; dùng genfromtxt với các tham số rõ, không cài phiên bản cũ chỉ để giữ tên hàm."
        },
        {
         "type": "code",
@@ -34548,7 +34555,7 @@
      ],
      "practice": [
       {
-       "prompt": "`names=True` lấy thông tin gì từ dòng đầu? Muốn lấy toàn bộ điểm trong trường `mark`, bạn viết thế nào?",
+       "prompt": "names=True lấy gì từ dòng đầu? Muốn cột mark viết gì?",
        "answer": "Lấy tên field. Dùng table[\"mark\"]; table[0] là bản ghi đầu tiên, không phải cột đầu."
       },
       {
@@ -34652,7 +34659,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Bạn đã tạo môi trường cho dự án, nhưng Notebook lại chạy bằng một bản Python khác. Trước khi cài thêm thư viện, hãy dùng sys.executable để xem đường dẫn tới Python đang thực thi code. Đường dẫn này giúp xác nhận đúng môi trường thay vì đoán qua tên cửa sổ terminal."
+        "text": "Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
        },
        {
         "type": "code",
@@ -34675,7 +34682,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Kernel là tiến trình thực thi code và giữ các biến trong phiên Notebook. Trong mô hình được slide giới thiệu, IPython hỗ trợ việc thực thi, ZeroMQ chuyển thông điệp giữa các thành phần, Tornado phục vụ phần web và MathJax hiển thị công thức. jQuery và Bootstrap là các thành phần giao diện lịch sử trên sơ đồ. Bạn không cần tự gọi chúng để tính toán dữ liệu trong cell. Khi hoàn thành một notebook, hãy khởi động lại kernel rồi chạy tất cả cell từ đầu bằng Restart/Run All. Cách này giúp phát hiện cell phụ thuộc vào biến chỉ có từ một lượt chạy cũ."
+        "text": "Kernel giữ trạng thái và thực thi code; ZeroMQ vận chuyển thông điệp trong mô hình được slide giới thiệu. Tornado thuộc phần web, MathJax hiển thị công thức; jQuery/Bootstrap là các thành phần giao diện lịch sử trên sơ đồ. Không cần tự gọi các thư viện giao diện này để tính tổng một cột. Với một notebook hoàn chỉnh, Restart/Run All giúp phát hiện biến chỉ có trong phiên chạy cũ."
        },
        {
         "type": "code",
@@ -34760,8 +34767,8 @@
        "answer": "conda install -c conda-forge notebook. Kernel có thể trỏ tới môi trường khác terminal; sys.executable giúp kiểm Python thực tế."
       },
       {
-       "prompt": "Ghép IPython, ZeroMQ, Tornado và MathJax với vai trò tương ứng. jQuery và Bootstrap có thực thi phép tính Python trong cell không?",
-       "answer": "IPython hỗ trợ thực thi code; ZeroMQ chuyển thông điệp; Tornado phục vụ phần web; MathJax hiển thị công thức. jQuery và Bootstrap thuộc phần giao diện lịch sử trong sơ đồ, không phải thành phần thực thi phép tính Python trong cell."
+       "prompt": "Ghép vai trò: IPython, ZeroMQ, Tornado, MathJax; jQuery/Bootstrap có tính điểm cho cell không?",
+       "answer": "IPython thực thi; ZeroMQ vận chuyển thông điệp; Tornado phục vụ thành phần web; MathJax hiển thị toán. jQuery/Bootstrap liên quan UI lịch sử, không phải bộ tính điểm của cell."
       }
      ]
     },
@@ -34831,7 +34838,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trên hệ POSIX như UNIX/Linux, fork trả PID con ở cha và 0 ở con; cả hai tiếp tục từ vị trí sau fork. exec thay chương trình trong process hiện tại và giữ PID. Trong họ hàm exec, hậu tố l nhận từng đối số riêng; v nhận một dãy đối số; p tìm chương trình qua PATH; e cho phép truyền môi trường tường minh. Slide nhắc execl, execle, execlp, execv và execvp theo các đặc điểm đó. Windows dùng CreateProcess và còn có API cũ WinExec. Các tên, chữ ký và cờ trong ví dụ C/WinAPI không phải cú pháp Python. Để thực hành trên cả Windows và UNIX, dùng subprocess."
+        "text": "Ở POSIX, fork trả PID con ở cha và 0 ở con, sau đó hai nhánh tiếp tục từ vị trí sau fork. exec thay image của process hiện tại. Hậu tố l nhận danh sách đối số riêng, v nhận một vector/list đối số, p tìm executable qua PATH, e nhận environment tường minh. execl, execle, execlp, execv và execvp là các biến thể được nhắc trong slide. Windows có CreateProcess và API cũ WinExec; tên và cờ WinAPI trong đoạn C không phải cú pháp Python. Dùng subprocess nếu muốn bài thực hành chạy trên cả Windows và UNIX."
        },
        {
         "type": "code",
@@ -34912,8 +34919,8 @@
        "answer": "Cha trực tiếp 101, ông 100. Một dòng cây process biểu diễn quan hệ, không nói các process dùng chung mọi biến."
       },
       {
-       "prompt": "fork tạo thêm process hay thay chương trình đang chạy? exec có đổi PID theo mô hình đang học không?",
-       "answer": "fork tạo process con có PID khác. exec thay chương trình trong process hiện tại và giữ PID; nó không tạo thêm process thứ ba."
+       "prompt": "Fork tạo thêm lần thực thi hay thay image? Exec có đổi PID theo mô hình đang học không?",
+       "answer": "fork tạo process con với PID khác. exec thay image hiện tại và giữ PID; không tạo thêm process thứ ba."
       },
       {
        "prompt": "execvp khác execle ở cách nhận đối số, PATH và environment thế nào? Có chép cờ CreateProcess của C vào subprocess.run được không?",
@@ -34976,7 +34983,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong ví dụ tiếp theo, a và b giữ tham chiếu tới nhau qua thuộc tính peer. Sau khi make_cycle kết thúc, chương trình không còn biến nào dẫn tới hai object đó, nhưng chúng vẫn tham chiếu lẫn nhau. weakref giữ một tham chiếu yếu, cho phép quan sát object mà không tự giữ nó sống. Sau gc.collect(), reference() là None, cho biết object được quan sát đã bị thu hồi. Không dùng tổng số object mà gc.collect trả về để kết luận riêng về ví dụ, vì nó có thể thu hồi cả object khác trong môi trường."
+        "text": "Hai object trỏ vòng nhau có thể không còn đường truy cập từ chương trình nhưng vẫn tham chiếu lẫn nhau. Ví dụ tạo một chu kỳ riêng, giữ weakref để quan sát rồi chạy gc.collect. Không cần nhớ tổng số object collector thu hồi vì môi trường có thể có object khác; chỉ kiểm object của ví dụ đã biến mất."
        },
        {
         "type": "code",
@@ -34988,7 +34995,7 @@
       [
        {
         "type": "paragraph",
-        "text": "GIL (Global Interpreter Lock) là khóa của trình thông dịch. Trong bản CPython có GIL, mỗi thời điểm chỉ một thread thực thi Python bytecode. Khóa bảo vệ trạng thái nội bộ của CPython, nhưng không làm toàn bộ thao tác cập nhật dữ liệu của ứng dụng trở thành một bước nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
+        "text": "GIL (Global Interpreter Lock) là khóa của interpreter. Trong CPython build có GIL, chỉ một thread thực thi Python bytecode tại một thời điểm. Khóa này giúp bảo vệ trạng thái nội bộ; nó không làm mọi quy tắc cập nhật dữ liệu ứng dụng trở thành nguyên tử. Khi một thread chờ I/O, thread khác có thể tiếp tục. Với tính toán Python thuần nặng CPU, nhiều process thường là cách dùng nhiều lõi trong mô hình này. Một số code native, tức code biên dịch như C/C++, có thể nhả GIL; không phải mọi thao tác NumPy đều làm vậy. Bỏ GIL còn đòi hỏi thay cách đồng bộ và quản lý tham chiếu, xét hiệu năng đơn luồng và khả năng tương thích với thư viện mở rộng C. CPython cũng có bản free-threaded với mô hình khác, nên khi so sánh cần ghi rõ trình thông dịch và loại bản dựng đang dùng."
        },
        {
         "type": "code",
@@ -34997,7 +35004,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ví dụ cuối cho thấy pool trả kết quả theo thứ tự [3, 4] ở đầu vào. Hàm chỉ nhân số, không đọc dữ liệu hay chờ I/O, nên ví dụ không cho biết thread có tăng tốc việc đọc file hay không. Để so hiệu năng, cần chọn một tác vụ thực tế, đo nhiều lượt và ghi cấu hình máy. Các sơ đồ Apache và Chromium trong slide còn minh họa một lý do khác để dùng process: tách bộ nhớ để tăng tính cô lập. Thread bên trong mỗi process vẫn có thể dùng chung dữ liệu của process đó."
+        "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu."
        }
       ]
      ],
@@ -35140,7 +35147,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trước khi tạo worker, chương trình dùng deepcopy để lấy một bản chụp dữ liệu, hay snapshot. Trong ví dụ này, các phần tử chỉ là số nên bản sao tách được cấu trúc cần lưu khỏi data đang thay đổi. Sau khi file được đóng, worker gửi thông điệp hoàn tất. Thread chính dùng join để chờ trong ví dụ dòng lệnh. Với GUI, cần kiểm tra queue qua event loop; gọi join trong một callback lâu sẽ làm giao diện phải chờ theo."
+        "text": "Worker nhận một snapshot đã tách khỏi trạng thái đang sửa. Ở đây các phần tử chỉ là số nên deepcopy đủ để tách cấu trúc. Worker gửi thông điệp hoàn tất sau khi file đã được đóng. Thread chính trong ví dụ dòng lệnh dùng join; GUI phải kiểm queue theo event loop thay vì gọi join lâu trong callback."
        },
        {
         "type": "code",
@@ -35151,7 +35158,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Nếu việc ghi file lỗi bên trong worker, callback đã tạo worker không tự nhận được ngoại lệ đó. Worker cần bắt lỗi và gửi qua queue để giao diện báo cho người dùng rồi cho phép thử lại. Ví dụ dưới ghi vào một thư mục chưa tồn tại, bắt OSError và gửi thông điệp error, thay vì bỏ qua lỗi bằng except: pass. Bạn đang kiểm tra phần ghi file và báo lỗi của PW8. Để biết cửa sổ còn phản hồi trong lúc lưu hay không, cần thử ứng dụng có giao diện ở PW9."
+        "text": "Lỗi bên trong thread không tự trở thành ngoại lệ trong callback đã tạo nó. Worker cần gửi lỗi qua kênh kết quả để giao diện có thể báo và cho thử lại. Ví dụ cố ghi file dưới một thư mục chưa tồn tại, bắt OSError rồi gửi trạng thái; không bỏ lỗi bằng except: pass. Chưa có UI trong bài này, nên đây là nghiệm thu phần file/worker của PW8, không phải nghiệm thu khả năng đáp ứng của PW9."
        },
        {
         "type": "code",
@@ -35232,7 +35239,7 @@
       },
       {
        "prompt": "Sau thông điệp done, kiểm gì để biết file thật có ích?",
-       "answer": "Mở lại file qua gzip và pickle.load, rồi đối chiếu cấu trúc dữ liệu cùng các giá trị với snapshot. Có thể thử nạp trong một lượt chạy mới để chắc rằng kết quả không phụ thuộc dữ liệu còn trong bộ nhớ. Chỉ thấy đường dẫn tồn tại chưa cho biết dữ liệu đã khôi phục đúng."
+       "answer": "Mở lại qua gzip rồi pickle.load trong một luồng đọc mới; đối chiếu schema và giá trị với snapshot. Một đường dẫn tồn tại chưa đủ chứng minh dữ liệu khôi phục đúng."
       },
       {
        "prompt": "Worker báo error thì UI nên làm gì? Có gọi join dài trong callback để chờ được không?",
@@ -35379,7 +35386,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Python dùng thụt lề để xác định các câu lệnh thuộc cùng một khối. Thiếu thụt lề sau if hoặc dùng tab và dấu cách không nhất quán có thể gây lỗi cú pháp. Ví dụ dưới dùng compile để biên dịch hai chuỗi chứa lỗi rồi in tên lỗi nhận được. Bạn không cần tạo hai file .py lỗi để thử chúng."
+        "text": "Thụt lề sai là lỗi cú pháp, không phải cách Python tự đoán nhóm câu lệnh. compile dưới đây phân biệt thiếu thụt lề sau if với việc dùng tab và space không nhất quán. Không cần chạy hai đoạn lỗi để tạo file hoặc sửa trình soạn thảo; chỉ biên dịch chuỗi rồi đọc tên lỗi."
        },
        {
         "type": "code",
@@ -35539,7 +35546,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Để vẽ đường sin, bạn cần các vị trí x và giá trị sin tương ứng. `linspace` tạo các vị trí cách đều; `sin` và `cos` tính trên từng phần tử của array. Ví dụ dưới cũng tạo bảng số ngẫu nhiên bằng một bộ sinh riêng `rng`. Seed giúp chạy lại ví dụ trong cùng môi trường, nhưng các số sinh ra vẫn là dữ liệu mô phỏng. Lệnh cũ `np.random.random((2, 3))` dùng bộ sinh toàn cục, cho bảng 2 hàng, 3 cột với các số từ 0 đến dưới 1. Giữ `rng` riêng giúp bạn điều khiển seed mà không đổi trạng thái ngẫu nhiên của phần code khác."
+        "text": "Một đường sin cần nhiều vị trí x hơn ba điểm bán hàng. linspace chọn các vị trí cách đều, còn sin/cos tính trên từng phần tử của array. Khi code dùng dữ liệu ngẫu nhiên để kiểm hình, cố định seed giúp bạn chạy lại cùng một ví dụ; đó không phải dữ liệu quan sát ngoài đời. np.random.random((2,3)) trong slide dùng bộ sinh toàn cục và cũng cho bảng 2 hàng, 3 cột với số từ 0 đến dưới 1. Với code mới, giữ rng riêng giúp kiểm soát seed mà không đổi trạng thái ngẫu nhiên của phần khác."
        },
        {
         "type": "code",
@@ -35551,7 +35558,7 @@
       [
        {
         "type": "paragraph",
-        "text": "Trong `np.mgrid`, `3j` yêu cầu ba điểm tính cả hai đầu, không phải khoảng cách 3 giữa các điểm. Ví dụ lấy ba vị trí x từ -1 đến 1 và năm vị trí y từ -2 đến 2. `X` và `Y` là hai bảng tọa độ có cùng `shape=(3, 5)`. Tại mỗi vị trí, đặt `U=-Y` và `V=X` để có hai thành phần của vector xoay; VZ29 dùng các bảng này để vẽ trường vector. Với bước là số thực như 0.5, `mgrid` hiểu đó là khoảng cách giữa các điểm."
+        "text": "Trong np.mgrid, bước complex như 3j yêu cầu ba điểm tính cả hai đầu, khác với bước thực là khoảng cách giữa điểm. Hai lưới X/Y có cùng shape; từ đó tạo U/V cho trường vector. Bảng nhỏ dưới giữ quy tắc U=-Y, V=X như trường xoay trong VZ29."
        },
        {
         "type": "code",
@@ -35563,7 +35570,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`np.load` đọc file định dạng NumPy. Đoạn dưới lưu array ảnh vào `image.npy`, đọc lại rồi kiểm tra dữ liệu có giữ nguyên không. Tiếp theo, `get_sample_data(\"topobathy.npz\", asfileobj=False)` lấy đường dẫn file mẫu đi kèm Matplotlib. File `.npz` này chứa ba array: `topo` (độ cao/độ sâu), `longitude` (kinh độ) và `latitude` (vĩ độ). Dùng `np.load` để mở rồi chọn array theo tên. Một số file mẫu cũ như `bivariate_normal.npy` không có ở mọi phiên bản; nếu thiếu, hãy xem các mẫu có sẵn hoặc dùng array tự tạo."
+        "text": "np.load đọc array đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp array của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng array tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
        },
        {
         "type": "code",
@@ -35649,7 +35656,7 @@
       },
       {
        "prompt": "np.load(path) và get_sample_data(name) có cùng đọc CSV không? Làm gì nếu ví dụ cũ thiếu ảnh mẫu?",
-       "answer": "Không. `np.load` đọc file định dạng NumPy, còn `get_sample_data` tìm hoặc mở dữ liệu mẫu đi kèm Matplotlib. Nếu file mẫu không có trong phiên bản đang dùng, chọn mẫu khác hoặc tạo một array ảnh để thử; một tên file trong ví dụ cũ không chắc còn được cung cấp."
+       "answer": "Không. np.load nạp định dạng NumPy; helper tìm/mở dữ liệu mẫu đi kèm Matplotlib. Kiểm API và file phiên bản hiện tại, hoặc tạo fixture array ảnh cùng loại như ví dụ; không suy một tên mẫu cũ luôn có sẵn."
       },
       {
        "prompt": "np.random.random((2,3)) trong slide cho bao nhiêu số và khoảng giá trị nào? np.mgrid[0:1:100j] cho bước dài 100 hay 100 vị trí?",
@@ -35657,7 +35664,7 @@
       },
       {
        "prompt": "Bạn có X,Y cùng shape (3,5) và muốn trường xoay. Viết U,V; lấy đường dẫn dữ liệu mẫu Matplotlib rồi nạp archive NumPy bằng lệnh nào?",
-       "answer": "Đặt `U, V = -Y, X`; cả bốn array có `shape=(3, 5)`. Lấy đường dẫn bằng `path = get_sample_data(\"topobathy.npz\", asfileobj=False)`, rồi mở bằng `with np.load(path, allow_pickle=False) as sample:`. Trong khối `with`, dùng `topo = sample[\"topo\"].copy()` để lấy bản sao array độ cao/độ sâu. `np.load` không đọc CSV; nếu phiên bản đang dùng thiếu file mẫu, có thể dùng array tự tạo có cùng ý nghĩa."
+       "answer": "U,V=-Y,X nên cả bốn mảng có shape (3,5). path=get_sample_data(\"topobathy.npz\",asfileobj=False); with np.load(path,allow_pickle=False) as sample: topo=sample[\"topo\"].copy(). Không dùng np.load để đọc CSV; với mẫu thiếu ở phiên bản khác, dùng array tự tạo có cùng ý nghĩa."
       }
      ]
     },
@@ -35805,7 +35812,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`ax.text(x, y, ...)` mặc định hiểu x và y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ của vùng vẽ: `(0, 0)` là góc dưới trái, `(1, 1)` là góc trên phải. Vị trí `(0.05, 0.95)` cách cạnh trái 5% chiều rộng và nằm ở 95% chiều cao tính từ dưới lên. `va=\"top\"` đặt cạnh trên của dòng chữ tại vị trí đó."
+        "text": "ax.text(x,y,...) mặc định hiểu x/y theo dữ liệu. transform=ax.transAxes đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
        },
        {
         "type": "code",
@@ -35822,7 +35829,7 @@
       [
        {
         "type": "paragraph",
-        "text": "`xy` là điểm mà mũi tên chỉ tới; với `xycoords=\"data\"`, điểm `(2, 10)` vẫn là ngày 2 có doanh thu 10. `xytext` chọn nơi đặt chữ, còn `textcoords=\"axes fraction\"` diễn giải nơi đó theo tỷ lệ vùng vẽ. Nếu muốn chữ luôn cách điểm dữ liệu một khoảng nhỏ, dùng `textcoords=\"offset points\"`; khi ấy khoảng cách được đo bằng point, đơn vị cỡ chữ có 72 point trong một inch."
+        "text": "xy là điểm mà mũi tên chỉ tới; xycoords=\"data\" giữ nó ở ngày 2, doanh thu 10. xytext và textcoords chọn nơi đặt chữ. \"axes fraction\" giúp chữ giữ vị trí tương đối trong vùng vẽ. Nếu chỉ muốn chữ nằm cách điểm một khoảng nhỏ cố định, textcoords=\"offset points\" dùng khoảng cách theo điểm in."
        },
        {
         "type": "code",
@@ -35837,7 +35844,7 @@
        },
        {
         "type": "paragraph",
-        "text": "Ở ví dụ cuối, `xytext=(0, 12)` đặt chữ cao hơn điểm dữ liệu 12 point. Dấu `$` trong `r\"$y=10$\"` bật Mathtext để định dạng biểu thức toán. Tiền tố `r` giữ nguyên các dấu gạch chéo trong chuỗi, nên hữu ích khi viết ký hiệu như `r\"$\\sigma$\"`. Mathtext chỉ định dạng ký hiệu, không tính giá trị. Gọi `plt.show()` để xem hình và `plt.close(fig)` sau khi xem xong."
+        "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi plt.show() trước plt.close(fig); các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
        }
       ]
      ],
@@ -36603,7 +36610,7 @@
        },
        {
         "type": "paragraph",
-        "text": "`design` có cột đầu toàn số 1 để biểu diễn hệ số chặn và cột thứ hai chứa số lượt truy cập `visits`. `lstsq` tìm các hệ số làm tổng bình phương sai lệch giữa dự đoán và dữ liệu nhỏ nhất. Kết quả `[2, 3]` cho công thức `sales ≈ 2 + 3 × visits`. `column_stack` ghép các dãy thành cột; `rank=2` cho biết hai cột trong ví dụ độc lập tuyến tính. Với dữ liệu thật, hãy xem phần dư (giá trị quan sát trừ dự đoán), khoảng giá trị `visits` đã có và cách lấy mẫu. Đường khớp không chứng minh thêm lượt truy cập làm tăng doanh thu; dự đoán ngoài khoảng dữ liệu đã quan sát cũng có thể sai."
+        "text": "Hai cột design là hệ số chặn 1 và số lượt thăm. lstsq tìm hệ số để tổng bình phương sai lệch nhỏ nhất: ví dụ cho sales≈2+3×visits. column_stack đặt các dãy thành cột; rank=2 cho thấy hai cột độc lập trong ví dụ này. Dữ liệu thật hiếm khi nằm chính xác trên một đường: xem phần dư, phạm vi x và cách lấy mẫu. Đường khớp không chứng minh thêm lượt thăm gây tăng doanh thu và không bảo đảm ngoại suy đúng."
        }
       ]
      ],

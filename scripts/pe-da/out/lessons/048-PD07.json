@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Kiểu `string` giữ mã như chữ. `Int64` viết hoa I là kiểu số nguyên của pandas cho phép có ô thiếu; những ô đó được biểu diễn bằng `pd.NA`. Nó khác kiểu `int64` thông thường của NumPy, vốn không chứa được `pd.NA`. Dùng `df.dtypes` để xem kiểu của từng cột."
+      "text": "Kiểu string giữ mã như chữ. Int64 viết hoa I là kiểu số nguyên nullable của pandas, cho phép chứa pd.NA. Nó khác NumPy int64 thông thường. Có thể xem nhiều kiểu cùng lúc bằng df.dtypes."
      },
      {
       "type": "code",
@@ -131,7 +131,7 @@
      "answer": "Vì 001 là mã định danh; chuyển thành số sẽ mất số 0 đầu."
     },
     {
-     "prompt": "Kiểu số nguyên `Int64` của pandas giúp xử lý cột có ô thiếu như thế nào?",
+     "prompt": "Int64 nullable giúp giải quyết trường hợp nào?",
      "answer": "Cột số nguyên có giá trị thiếu."
     },
     {

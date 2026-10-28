@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn đã tạo môi trường cho dự án, nhưng Notebook lại chạy bằng một bản Python khác. Trước khi cài thêm thư viện, hãy dùng sys.executable để xem đường dẫn tới Python đang thực thi code. Đường dẫn này giúp xác nhận đúng môi trường thay vì đoán qua tên cửa sổ terminal."
+      "text": "Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
      },
      {
       "type": "code",
@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Kernel là tiến trình thực thi code và giữ các biến trong phiên Notebook. Trong mô hình được slide giới thiệu, IPython hỗ trợ việc thực thi, ZeroMQ chuyển thông điệp giữa các thành phần, Tornado phục vụ phần web và MathJax hiển thị công thức. jQuery và Bootstrap là các thành phần giao diện lịch sử trên sơ đồ. Bạn không cần tự gọi chúng để tính toán dữ liệu trong cell. Khi hoàn thành một notebook, hãy khởi động lại kernel rồi chạy tất cả cell từ đầu bằng Restart/Run All. Cách này giúp phát hiện cell phụ thuộc vào biến chỉ có từ một lượt chạy cũ."
+      "text": "Kernel giữ trạng thái và thực thi code; ZeroMQ vận chuyển thông điệp trong mô hình được slide giới thiệu. Tornado thuộc phần web, MathJax hiển thị công thức; jQuery/Bootstrap là các thành phần giao diện lịch sử trên sơ đồ. Không cần tự gọi các thư viện giao diện này để tính tổng một cột. Với một notebook hoàn chỉnh, Restart/Run All giúp phát hiện biến chỉ có trong phiên chạy cũ."
      },
      {
       "type": "code",
@@ -130,8 +130,8 @@
      "answer": "conda install -c conda-forge notebook. Kernel có thể trỏ tới môi trường khác terminal; sys.executable giúp kiểm Python thực tế."
     },
     {
-     "prompt": "Ghép IPython, ZeroMQ, Tornado và MathJax với vai trò tương ứng. jQuery và Bootstrap có thực thi phép tính Python trong cell không?",
-     "answer": "IPython hỗ trợ thực thi code; ZeroMQ chuyển thông điệp; Tornado phục vụ phần web; MathJax hiển thị công thức. jQuery và Bootstrap thuộc phần giao diện lịch sử trong sơ đồ, không phải thành phần thực thi phép tính Python trong cell."
+     "prompt": "Ghép vai trò: IPython, ZeroMQ, Tornado, MathJax; jQuery/Bootstrap có tính điểm cho cell không?",
+     "answer": "IPython thực thi; ZeroMQ vận chuyển thông điệp; Tornado phục vụ thành phần web; MathJax hiển thị toán. jQuery/Bootstrap liên quan UI lịch sử, không phải bộ tính điểm của cell."
     }
    ]
   },

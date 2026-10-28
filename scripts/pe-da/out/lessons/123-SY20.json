@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; một archive gom các file vào một gói và giữ tên từng file bên trong:"
+      "text": "Hệ quản lý có students.txt, courses.txt và marks.txt. Nén riêng từng chuỗi chưa đủ giữ tên ba file; archive gom chúng vào một gói có tên thành viên:"
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Sau khi đóng gói rồi đọc lại, restored bằng files: cả tên file lẫn nội dung đều được giữ nguyên. Với file ngoài, kiểm danh sách tên và dung lượng trước khi nạp; không tự ghi đường dẫn chứa .. hoặc đường dẫn tuyệt đối ra ngoài vùng bài tập. Đề PW5 có thể chọn một cách archive/nén miễn khôi phục được cả ba file."
+      "text": "Đây là kiểm tra round-trip cả tên lẫn nội dung. Với file ngoài, kiểm danh sách tên và dung lượng trước khi nạp; không tự ghi đường dẫn chứa .. hoặc đường dẫn tuyệt đối ra ngoài vùng bài tập. Đề PW5 có thể chọn một cách archive/nén miễn khôi phục được cả ba file."
      }
     ]
    ],
@@ -136,7 +136,7 @@
     },
     {
      "prompt": "Đóng đúng ba file PW5 vào students.dat và kiểm khôi phục.",
-     "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, đọc dữ liệu theo cấu trúc đã chọn rồi so với trước khi đóng gói. Chạy lại khi bộ dữ liệu trong RAM đang rỗng; không chỉ kiểm file .dat tồn tại."
+     "answer": "Dùng ZipFile trên students.dat hoặc tar.gz; thành viên students.txt/courses.txt/marks.txt. Khi đọc, xác nhận đủ đúng tên, parse dữ liệu rồi so với trước khi đóng. Chạy lại từ state rỗng; không chỉ kiểm file .dat tồn tại."
     },
     {
      "prompt": "Cần gom thư mục reports có hai file vào một gói: ZIP giữ được tên file/thư mục không? tarfile mode w có tự nén giống w:gz không?",

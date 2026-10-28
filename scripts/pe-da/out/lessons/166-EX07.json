@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Python dùng thụt lề để xác định các câu lệnh thuộc cùng một khối. Thiếu thụt lề sau if hoặc dùng tab và dấu cách không nhất quán có thể gây lỗi cú pháp. Ví dụ dưới dùng compile để biên dịch hai chuỗi chứa lỗi rồi in tên lỗi nhận được. Bạn không cần tạo hai file .py lỗi để thử chúng."
+      "text": "Thụt lề sai là lỗi cú pháp, không phải cách Python tự đoán nhóm câu lệnh. compile dưới đây phân biệt thiếu thụt lề sau if với việc dùng tab và space không nhất quán. Không cần chạy hai đoạn lỗi để tạo file hoặc sửa trình soạn thảo; chỉ biên dịch chuỗi rồi đọc tên lỗi."
      },
      {
       "type": "code",

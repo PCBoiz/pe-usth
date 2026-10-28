@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "run chờ chương trình con kết thúc rồi trả một đối tượng CompletedProcess. Trong kết quả r, stdout chứa văn bản chương trình đã in, còn returncode cho biết mã thoát. Theo quy ước phổ biến, mã 0 là thành công. List truyền vào run tách rõ đường dẫn chương trình ở phần tử đầu và từng đối số ở những phần tử sau."
+      "text": "run chờ chương trình con kết thúc và trả CompletedProcess. stdout là nội dung đầu ra; returncode là mã thoát. Theo quy ước phổ biến, 0 là thành công. Truyền danh sách đối số giúp tách executable và từng argument rõ ràng."
      },
      {
       "type": "code",
@@ -146,12 +146,12 @@
      "answer": "0 là stdin thường nhận bàn phím; 1 stdout và 2 stderr thường ra terminal. Có thể thay các kết nối bằng file/pipe."
     },
     {
-     "prompt": "Chọn API os phù hợp với từng việc: chạy chuỗi lệnh qua shell rồi chờ; mở luồng đọc hoặc ghi tới một lệnh; tạo cặp đầu đọc và ghi của pipe; tạo process con trên hệ POSIX; gửi yêu cầu kết thúc tới một PID.",
+     "prompt": "Chọn API tham khảo: chạy command string rồi chờ; mở stream tới command; tạo cặp descriptor đọc/ghi; tạo child POSIX; yêu cầu dừng PID.",
      "answer": "Lần lượt os.system, os.popen, os.pipe, os.fork, os.kill với signal.SIGTERM. Chúng không cùng vai trò, và os.fork không có trên Windows."
     },
     {
      "prompt": "Một lần check_output thành công in report. Hàm trả report hay số 0? Muốn đặt giới hạn chạy run thì dùng gì?",
-     "answer": "check_output trả nội dung đầu ra, không phải mã thoát 0. Để giới hạn thời gian chạy run, truyền timeout theo số giây. Khi hết hạn, run dừng và chờ process con rồi gây TimeoutExpired. Nếu chương trình thoát với mã lỗi và có check=True, run gây CalledProcessError."
+     "answer": "Trả output, không phải exit code. run nhận timeout theo giây; khi hết hạn raise TimeoutExpired sau cơ chế dừng/chờ con của run. Mã lỗi với check=True gây CalledProcessError."
     }
    ]
   },

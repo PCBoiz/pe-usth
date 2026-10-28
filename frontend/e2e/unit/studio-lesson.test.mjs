@@ -863,7 +863,13 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // xanh trên dữ liệu không còn tồn tại.
   const count = {};
   for (const b of daBlocks) count[b.type] = (count[b.type] ?? 0) + 1;
-  assert.deepEqual(count, { paragraph: 738, code: 495, terminal: 21, figure: 80, table: 1 });
+  // 29/10/2026: code 495 -> 499, terminal 21 -> 17. BỐN khối đổi nhánh, và đó là
+  // CẢI THIỆN chứ không phải hỏng: SY11 và SY12 trước đây dán hai file giả vào
+  // một khối (`# grades.py` … `# main.py`) nên build xếp chúng là `terminal` —
+  // mã không chạy được. Bản văn mới viết lại thành Python chạy thật (tạo file
+  // trong thư mục tạm rồi import), nên chúng thành `code`. Bằng chứng:
+  // `check-pyodide.mjs` đi từ 406 lên 408 đoạn mà vẫn 0 hỏng.
+  assert.deepEqual(count, { paragraph: 738, code: 499, terminal: 17, figure: 80, table: 1 });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để
   // so, nên không chấm được. Đây là lý do isGraded('practice') phải là false.
   for (const d of vz01.step_2.practice) {

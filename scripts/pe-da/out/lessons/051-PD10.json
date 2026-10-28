@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu mỗi hàng là một sản phẩm trong đơn, có thể cần cả `order` và `item` để phân biệt các hàng. Gọi `drop_duplicates(subset=[\"order\"])` lúc này sẽ bỏ cả sản phẩm hợp lệ. Với bảng cập nhật theo phiên bản, bạn có thể giữ bản mới nhất sau khi sắp xếp đúng thứ tự."
+      "text": "Khi mỗi hàng là một sản phẩm trong đơn, khóa có thể cần cả order và item. Chỉ dùng subset=[\"order\"] sẽ làm mất sản phẩm hợp lệ. Với bảng cập nhật theo phiên bản, bạn có thể giữ bản mới nhất sau khi sắp xếp đúng."
      },
      {
       "type": "code",

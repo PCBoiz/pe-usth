@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dictionary trên mô phỏng các trạng thái của process trong slide: new là mới tạo; ready là đã sẵn sàng và đang đợi CPU; running là đang chạy; waiting là đang chờ một sự kiện như I/O; terminated là đã kết thúc. Khi bị ngắt để nhường CPU, process có thể chuyển từ running về ready. Khi I/O hoàn thành, nó thường chuyển từ waiting về ready, chứ chưa chắc được chạy ngay."
+      "text": "Đây là mô phỏng trạng thái trên slide. new là mới tạo; ready đã sẵn sàng nhưng chưa được CPU; running đang chạy; waiting chờ sự kiện như I/O; terminated đã kết thúc. Một interrupt có thể đưa running về ready. I/O hoàn thành thường đưa waiting về ready, không đảm bảo được chạy ngay."
      },
      {
       "type": "code",
@@ -158,7 +158,7 @@
     },
     {
      "prompt": "Con được tạo từ cha có luôn dùng chung mọi biến Python không? Slide nêu những mức chia sẻ nào?",
-     "answer": "Không. Tùy hệ điều hành và cơ chế tạo process, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ loại tài nguyên đang xét. Với một object Python cụ thể, cần biết nó được sao chép hay được chia sẻ qua cơ chế nào; không mặc định mọi biến đều dùng chung."
+     "answer": "Không. Mức tài nguyên được chia sẻ tùy OS/cơ chế: toàn bộ, một phần hoặc không đối với tài nguyên đang xét; phải kiểm mô hình thay vì mặc định chung mọi object."
     }
    ]
   },

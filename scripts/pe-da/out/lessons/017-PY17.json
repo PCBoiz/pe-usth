@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`greet` tham chiếu tới chính hàm đó; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
+      "text": "`greet` là chính object hàm; `greet()` gọi hàm và nhận kết quả. Trong Tkinter dùng `command=greet`, trong threading dùng `target=worker`. Nếu viết `command=greet()`, hàm chạy ngay và giá trị trả về bị dùng thay cho callback."
      },
      {
       "type": "code",
@@ -138,7 +138,7 @@
     },
     {
      "prompt": "Vì sao calculate() trả 20 nhưng value bên ngoài vẫn là 10?",
-     "answer": "value bên trong là biến cục bộ của hàm, khác với value ở cấp module."
+     "answer": "value bên trong là biến local khác với tên cấp module."
     },
     {
      "prompt": "Trong Button, command=save và command=save() khác nhau thế nào?",

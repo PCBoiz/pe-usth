@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`split` tách mã ở dấu gạch ngang, rồi `.str[0]` lấy phần đầu như HN hoặc DN. Trong mẫu `r'-(\\d+)'`, dấu `-` khớp dấu gạch ngang, `\\d+` khớp một hoặc nhiều chữ số, còn cặp ngoặc đánh dấu phần cần lấy. Vì vậy, `extract` lấy được 001 và 020. Kết quả vẫn là chuỗi nên giữ được số 0 ở đầu."
+      "text": "split tách mã ở dấu gạch ngang rồi lấy phần đầu. extract dùng nhóm trong ngoặc của regex để lấy dãy chữ số sau dấu gạch. Ở đây kết quả vẫn là chữ, nên mã 001 không mất số 0."
      }
     ]
    ],

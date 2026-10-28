@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Báo cáo có cả cửa hàng và tháng. Khi mỗi cặp `store`–`month` xác định một hàng, bạn có thể dùng hai tầng index để lấy doanh thu của một cửa hàng trong một tháng, hoặc lấy cùng một tháng ở tất cả cửa hàng."
+      "text": "Báo cáo có cả cửa hàng và tháng. Khi cặp store–month xác định một hàng, bạn có thể dùng hai tầng index để chọn trực tiếp từng ô hoặc một lát báo cáo."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`xs` chọn theo một tầng index được đặt tên; ở đây, `xs(\"Jan\", level=\"month\")` lấy doanh thu tháng Jan của tất cả cửa hàng. `reset_index()` đưa cả hai tầng trở lại thành cột nếu bạn muốn dùng `merge` hoặc xuất file."
+      "text": "xs chọn một lát theo tầng được đặt tên; ở đây lấy Jan ở tất cả cửa hàng. reset_index đưa cả hai tầng trở lại thành cột nếu bạn muốn dùng merge hoặc xuất file."
      },
      {
       "type": "code",

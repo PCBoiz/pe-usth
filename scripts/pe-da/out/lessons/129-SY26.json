@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Vòng lặp gọi cùng describe trên hai loại object. Vòng lặp liệt kê không cần biết đang nhận Student hay Course; mỗi object tự tạo phần mô tả phù hợp. Đó là đa hình. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
+      "text": "Vòng lặp gọi cùng describe trên hai loại object. Đây là một cách thấy đa hình ở thao tác listing. Trong ứng dụng hoàn chỉnh, Registry quản lý dữ liệu và kiểm mã tham chiếu; StudentMark giữ mã sinh viên/môn và điểm. Không đặt việc gọi input ngay trong __init__ nếu còn muốn tạo object từ file."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở PW3, làm tròn xuống ngay khi nhận điểm rồi dùng điểm đã lưu để tính GPA. Với 8.7 và 6.2, trung bình có trọng số là 8.075. Dòng round chỉ minh họa cách hiển thị trên số float; nếu cần một quy tắc làm tròn thập phân chính xác, phải chọn và nêu riêng. Khi xếp hạng, cũng cần nói rõ dùng GPA nào và xử lý ra sao khi hai sinh viên bằng điểm."
+      "text": "Ở PW3, floor được áp lúc nhận điểm, rồi GPA dùng điểm đã lưu. Với 8.7 và 6.2, trung bình trọng số là 8.075; ví dụ round trên float chỉ minh họa hiển thị, không thiết lập quy tắc tài chính thập phân. Đề phải nói rõ dùng giá trị nào để xếp hạng và tie-break khi bằng nhau."
      },
      {
       "type": "code",
@@ -138,7 +138,7 @@
    "practice": [
     {
      "prompt": "PW2 có được bỏ ngày sinh hoặc chỉ giữ một môn để đơn giản hóa không?",
-     "answer": "Không. PW2 vẫn giữ đầy đủ chức năng PW1, rồi tổ chức dữ liệu thành object, gom quy tắc vào các class và dùng hành vi đa hình khi liệt kê."
+     "answer": "Không. Phải giữ tính năng PW1, bổ sung cách tổ chức bằng object, encapsulation và hành vi đa hình."
     },
     {
      "prompt": "Công thức GPA ở ví dụ dùng điểm 8.79 hay 8.7?",
@@ -146,11 +146,11 @@
     },
     {
      "prompt": "Nộp gói PW2–PW4 có đủ chức năng và cách xác nhận.",
-     "answer": "Ở PW2, tạo Student, Course, StudentMark và Registry; dùng setter kiểm dữ liệu và để các object cung cấp cùng thao tác mô tả khi liệt kê. Ở PW3, làm tròn xuống một chữ số lúc nhập điểm, dùng NumPy tính GPA theo tín chỉ, xếp giảm dần và làm menu curses theo SY14. Ở PW4, tách input.py, output.py, domains và main.py; import main không tự mở giao diện. Chạy thử cùng hai sinh viên và hai môn qua từng mốc: giữ ngày sinh, cập nhật điểm, điểm 0, GPA, thứ tự xếp hạng và lỗi trùng mã. Nộp cả cây file, ghi hình thao tác menu trong terminal và lưu commit cho từng mốc."
+     "answer": "Tạo Student/Course/StudentMark/Registry; setter kiểm dữ liệu; các object có hành vi listing chung. PW3: math.floor 1 chữ số lúc nhập, NumPy GPA trọng số tín chỉ, xếp GPA giảm dần, curses menu thật theo SY14. PW4: tách input.py/output.py/domains/main.py, import không tự mở UI. Nộp toàn cây file và video/menu terminal; kiểm cùng 2 sinh viên/2 môn, đổi điểm, giữ DoB, điểm 0, xếp GPA và lỗi mã trùng; ghi commit từng bước thay vì coi sơ đồ file là code đã chạy."
     },
     {
-     "prompt": "Điểm cũ là 8.7. Nếu gọi set_score với 11, True hoặc NaN, điểm đã lưu có thay đổi không? Khi hai sinh viên bằng GPA và một sinh viên chưa có điểm môn nào, bạn sẽ xếp danh sách thế nào?",
-     "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và nêu rõ cách xếp khi bằng GPA, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
+     "prompt": "Điểm cũ 8.7: gọi set_score với 11, True hoặc NaN có được đổi state không? Khi hai GPA bằng nhau và một sinh viên chưa có điểm môn nào, bạn xếp thế nào?",
+     "answer": "Cả ba đầu vào phải bị từ chối trước khi gán, giữ điểm cũ 8.7. Chọn và công bố tie-break, ví dụ GPA giảm rồi mã tăng bằng key=(-gpa,sid). GPA tính trên các môn đã có điểm cùng tín chỉ tương ứng. Sinh viên chưa có điểm môn nào có GPA=None và được xếp riêng sau nhóm có GPA; không âm thầm gán 0 cho môn thiếu điểm."
     }
    ]
   },

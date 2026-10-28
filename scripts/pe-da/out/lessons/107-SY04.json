@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Push gửi các commit trên máy lên repository ở remote. Vì vậy, commit chưa push vẫn nằm trên máy bạn, nhưng người khác chưa lấy được nó từ fork. Bài này cần Git, tài khoản GitHub và quyền truy cập repository. Sau khi push, mở fork trên GitHub và kiểm tra commit cùng phần README vừa sửa."
+      "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn."
      }
     ]
    ],

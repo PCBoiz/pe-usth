@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở mô phỏng cuối, A chuyển từ hàng ưu tiên cao xuống hàng thấp sau khi dùng CPU. Multilevel Queue chia công việc vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép công việc đổi hàng theo hành vi hoặc thời gian CPU đã dùng. Ngoài chính sách bên trong từng hàng, hệ thống còn cần quy tắc chọn hàng ưu tiên và quyết định khi nào thu hồi CPU. Chỉ tên thuật toán chưa cho biết đầy đủ những quy tắc đó."
+      "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán."
      }
     ]
    ],
@@ -139,8 +139,8 @@
      "answer": "Feedback cho phép công việc chuyển giữa các hàng theo quy tắc; phân lớp ở Multilevel Queue thường cố định."
     },
     {
-     "prompt": "Hàng dành cho công việc tương tác dùng Round Robin, còn hàng cho tác vụ nền dùng FCFS. Một hệ thống có được dùng hai chính sách khác nhau như vậy không?",
-     "answer": "Có. Trong Multilevel Queue, mỗi hàng có thể dùng chính sách riêng. Hệ thống vẫn cần quy tắc chọn giữa các hàng, gồm độ ưu tiên và điều kiện thu hồi CPU từ công việc đang chạy."
+     "prompt": "Hàng foreground dùng Round Robin, hàng background dùng FCFS: có được dùng hai chính sách khác nhau không?",
+     "answer": "Có. Multilevel Queue có nhiều subqueue, mỗi hàng có chính sách riêng; việc ưu tiên hoặc preempt giữa hàng cần được cấu hình."
     },
     {
      "prompt": "A bị chuyển từ hàng cao xuống thấp vì dùng hết quantum. Cơ chế này thuộc Queue cố định hay Feedback Queue?",

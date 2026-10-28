@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`cut` dùng các mốc bạn đặt. Mặc định, một khoảng không lấy mốc bên trái nhưng có lấy mốc bên phải: khoảng `(0, 10]` nhận các số lớn hơn 0 và nhỏ hơn hoặc bằng 10. Vì vậy, 10 thuộc nhóm đầu. Giá trị ngoài các khoảng thành thiếu. Thêm `include_lowest=True` nếu cần nhận cả mốc thấp nhất là 0."
+      "text": "cut dùng các mốc bạn đặt; mặc định các khoảng mở trái, đóng phải, nên 10 thuộc nhóm đầu (0,10]. Các giá trị ngoài khoảng thành thiếu. Dùng include_lowest=True nếu cần nhận cả mốc thấp nhất."
      },
      {
       "type": "code",

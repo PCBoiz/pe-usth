@@ -148,8 +148,8 @@
      "answer": "Tỷ lệ cao/rộng của Figure bằng 0.5 trong kích thước ví dụ. 221 là 2 hàng × 2 cột, ô 1; 212 là 2 hàng × 1 cột, ô 2. Hai lưới khác nhau. figaspect không làm một đơn vị x dài bằng một đơn vị y; việc đó thuộc set_aspect."
     },
     {
-     "prompt": "Nhãn của các subplot đang quá sát nhau. Nêu một cách bố trí tự động. Nếu muốn tự đặt khoảng, hãy cho khoảng ngang bằng 0.4, khoảng dọc 0.3, mép trái 0.15, phải 0.95, dưới 0.2 và trên 0.9.",
-     "answer": "Để bố trí tự động, gọi fig.tight_layout() hoặc tạo hình với layout=\"constrained\"; chọn một trong hai. Để tự đặt khoảng, không bật bố trí tự động và gọi fig.subplots_adjust(wspace=0.4, hspace=0.3, left=0.15, right=0.95, bottom=0.2, top=0.9). Mở hình ở kích thước sẽ sử dụng và kiểm tra nhãn có bị cắt không."
+     "prompt": "Viết một lựa chọn tự động và một lựa chọn thủ công để chừa khoảng nhãn: khoảng ngang 0.4, dọc 0.3, khung trái 0.15, phải 0.95, dưới 0.2, trên 0.9.",
+     "answer": "Tự động: fig.tight_layout() hoặc tạo với layout=\"constrained\", chọn một. Thủ công: không bật layout tự động rồi gọi fig.subplots_adjust(wspace=0.4,hspace=0.3,left=0.15,right=0.95,bottom=0.2,top=0.9). Kiểm hình thực tế để tránh cắt chữ."
     }
    ]
   },

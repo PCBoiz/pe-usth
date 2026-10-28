@@ -25,9 +25,10 @@
       "text": "Dự án có thể cần nhiều module. Bạn có thể gom chúng vào một package, rồi chia tiếp thành package con. Ví dụ này dùng domains chứa grades và package con reports; reports chứa module summary. Tạo hai file __init__.py rỗng ở domains và domains/reports. Đó là các file khởi tạo package thông thường (regular package), khác với method __init__ của class:"
      },
      {
-      "type": "terminal",
-      "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/reports/summary.py\nfrom ..grades import passed\n\ndef report(score):\n    return \"Pass\" if passed(score) else \"Retry\"\n\n# main.py\nfrom domains.reports.summary import report\nprint(report(6))",
-      "expected": "Tạo domains/__init__.py và domains/reports/__init__.py rỗng, rồi lưu ba file như chú thích. Đặt main.py bên cạnh thư mục domains. Chạy python main.py tại thư mục đó. Kết quả: Pass."
+      "type": "code",
+      "code": "from pathlib import PurePosixPath\nfiles = [\"domains/__init__.py\", \"domains/grades.py\", \"domains/reports/__init__.py\", \"domains/reports/summary.py\", \"main.py\"]\nprint(PurePosixPath(files[3]).parent)\nprint(files[0].endswith(\"__init__.py\"))",
+      "expected": "domains/reports\nTrue",
+      "tryIt": true
      }
     ],
     [
@@ -36,20 +37,20 @@
       "text": "`domains.reports.summary` là tên module theo các tầng thư mục, không phải một đường dẫn có dấu slash. Trong summary.py, `from ..grades import passed` đi lên package domains rồi lấy module grades. Python còn hỗ trợ namespace packages không cần __init__.py; khóa này dùng regular package để cấu trúc dễ theo dõi."
      },
      {
-      "type": "terminal",
-      "code": "# domains/grades.py\ndef passed(score):\n    return score >= 5\n\n# domains/__init__.py\nfrom .grades import passed\n\n# main.py\nimport domains\nprint(domains.passed(6))",
-      "expected": "Giữ grades.py trong domains, thêm dòng import vào domains/__init__.py và thay main.py như trên. Chạy python main.py từ thư mục chứa domains. Kết quả: True."
+      "type": "code",
+      "code": "from pathlib import Path\nimport tempfile, subprocess, sys\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder); pkg = root / \"domains\"; pkg.mkdir()\n    (pkg / \"__init__.py\").write_text(\"from .grades import passed\\n\", encoding=\"utf8\")\n    (pkg / \"grades.py\").write_text(\"def passed(x): return x >= 5\\n\", encoding=\"utf8\")\n    result = subprocess.run([sys.executable, \"-c\", \"import domains; print(domains.passed(6))\"], cwd=root, capture_output=True, text=True, check=True)\n    print(result.stdout.strip())",
+      "expected": "True"
      }
     ],
     [
      {
       "type": "paragraph",
-      "text": "Khi import package, Python không tự import mọi module con. Ở ví dụ dưới đây, dòng `from .grades import passed` trong domains/__init__.py đưa hàm passed ra ngoài package, nên main.py gọi được `domains.passed(6)`. Khi cài thư viện ngoài, dùng `python -m pip install ten_package` trong đúng môi trường; tên cài trên PyPI đôi khi khác tên dùng để import."
+      "text": "Import package không tự import mọi submodule. Ví dụ trên chủ động export passed ở __init__.py. Khi cài thư viện bên ngoài, dùng Python đúng môi trường với `python -m pip install ten_package`; tên cài trên PyPI và tên import đôi khi khác nhau."
      },
      {
-      "type": "terminal",
-      "code": "# main.py\ndef run():\n    print(\"Started\")\n\nif __name__ == \"__main__\":\n    run()",
-      "expected": "Lưu main.py như trên. Chạy python main.py sẽ in Started. Chạy python -c \"import main\" từ cùng thư mục sẽ không in gì, vì import không gọi run()."
+      "type": "code",
+      "code": "import tempfile, subprocess, sys\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"main.py\"\n    path.write_text('def run(): print(\"Started\")\\nif __name__ == \"__main__\": run()\\n', encoding=\"utf8\")\n    imported = subprocess.run([sys.executable, \"-c\", \"import main\"], cwd=folder, capture_output=True, text=True, check=True)\n    direct = subprocess.run([sys.executable, str(path)], capture_output=True, text=True, check=True)\n    print(repr(imported.stdout))\n    print(direct.stdout.strip())",
+      "expected": "''\nStarted"
      }
     ],
     [
@@ -138,34 +139,39 @@
      "answer": "from ..grades import passed; chạy chương trình từ điểm bắt đầu phù hợp của package, không sửa sys.path để che cấu trúc sai."
     },
     {
-     "prompt": "Khi đã hoàn thành chương trình quản lý điểm PW1–PW3, tách nó thành các module theo yêu cầu PW4 rồi kiểm tra lại chức năng. Nếu chưa làm dự án này, xem SY25–SY26 trước khi thực hành câu này.",
-     "answer": "Tạo input.py cho nhập liệu, output.py cho hiển thị bằng curses, package domains cho các class và main.py để điều phối. Giữ công thức và quy tắc điểm ngoài phần giao diện. Khi import main, chương trình chưa mở giao diện. Khi chạy main trực tiếp, các thao tác nhập, liệt kê và tính GPA phải còn hoạt động như trước. Truyền cùng một Registry vào các hàm để chúng dùng chung dữ liệu."
+     "prompt": "Tách bài quản lý điểm đúng PW4, kiểm bằng cách nào?",
+     "answer": "Tạo input.py/output.py/domains/__init__.py và các class domain/main.py; giữ logic nghiệp vụ ngoài UI. Import main không mở giao diện. Chạy main vẫn nhập, liệt kê và tính GPA như trước; giữ trạng thái trong registry được truyền vào các hàm."
     },
     {
      "prompt": "domains/reports/summary.py thuộc cây package nào? import domains.grades khác import domains ở đâu, và export passed trong __init__.py thế nào?",
-     "answer": "domains là package, reports là subpackage, summary là module; dùng tên nhiều tầng với dấu chấm: domains.reports.summary. Import domains.grades nạp submodule đó; chỉ import domains không bảo đảm nó đã nạp. Trong domains/__init__.py viết from .grades import passed để domains.passed có sẵn. Regular package có __init__.py; nhiều tầng có file đó ở các tầng package."
+     "answer": "domains là package, reports là subpackage, summary là module; dùng tên dotted domains.reports.summary. Import domains.grades nạp submodule đó; chỉ import domains không bảo đảm nó đã nạp. Trong domains/__init__.py viết from .grades import passed để domains.passed có sẵn. Regular package có __init__.py; nhiều tầng có file đó ở các tầng package."
     },
     {
      "prompt": "pip install một package lấy từ đâu và có chắc tên cài bằng tên import không?",
-     "answer": "pip thường lấy phân phối từ PyPI và cài vào môi trường được chọn. Tên phân phối có thể khác tên import; tra tài liệu rồi dùng python -m pip của đúng trình thông dịch Python. Package là đơn vị tổ chức module/subpackage, không chỉ là tên của một thư viện trên PyPI."
+     "answer": "pip thường lấy phân phối từ PyPI và cài vào môi trường được chọn. Tên phân phối có thể khác tên import; tra tài liệu rồi dùng python -m pip của đúng interpreter. Package là đơn vị tổ chức module/subpackage, không chỉ tên trên cửa hàng."
     }
    ]
   },
   "step_4": {
    "task": {
-    "title": "Chạy trên máy của bạn",
-    "body": "Bài này không chạy được trong trình duyệt: bài này là các lệnh gõ trong terminal. Mở Python trên máy rồi gõ lại các đoạn code ở trên."
+    "title": "Chạy thử",
+    "body": "Ô này chạy Python ngay trong trình duyệt. Code của bài đã có sẵn — sửa số liệu, thêm print() rồi chạy lại để xem kết quả đổi thế nào. 2 đoạn trong bài không chạy được ở đây (WASM không gọi được chương trình ngoài) nên không nằm trong ô này."
    },
-   "procedure": [
-    "Mở terminal tại thư mục làm việc của bạn.",
-    "Tạo môi trường: py -m venv .venv",
-    "Cài thư viện bài cần: .venv\\Scripts\\python -m pip install <tên gói>",
-    "Lưu đoạn code vào một file .py rồi chạy: .venv\\Scripts\\python ten_file.py"
-   ]
+   "starterCode": "from pathlib import PurePosixPath\nfiles = [\"domains/__init__.py\", \"domains/grades.py\", \"domains/reports/__init__.py\", \"domains/reports/summary.py\", \"main.py\"]\nprint(PurePosixPath(files[3]).parent)\nprint(files[0].endswith(\"__init__.py\"))\n",
+   "env": "2 đoạn phải chạy bằng Python trên máy: WASM không gọi được chương trình ngoài."
   }
  },
- "_mode": "local",
- "_blocked": [],
+ "_mode": "mixed",
+ "_blocked": [
+  {
+   "block": 1,
+   "reason": "WASM không gọi được chương trình ngoài"
+  },
+  {
+   "block": 2,
+   "reason": "WASM không gọi được chương trình ngoài"
+  }
+ ],
  "_so_mcq": 3,
  "_bai_tap": "khong co"
 }

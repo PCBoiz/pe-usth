@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor làm tròn xuống về phía số nhỏ hơn, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu cần làm tròn đúng theo số thập phân người dùng đã nhập, hãy dùng Decimal và nêu rõ quy tắc làm tròn."
+      "text": "PW3 yêu cầu làm tròn xuống một chữ số sau dấu thập phân lúc nhập điểm. floor đi về âm vô cùng, khác round chọn gần nhất. Điểm âm phải bị từ chối theo quy tắc điểm trước khi lưu; ví dụ âm chỉ để làm rõ nghĩa của floor. Số thực nhị phân còn có sai số biểu diễn; nếu hợp đồng làm tròn trên chuỗi thập phân cần Decimal với quy tắc đã nêu."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`key=lambda x: x[\"gpa\"]` là một hàm ngắn lấy GPA của mỗi sinh viên để sắp xếp; `reverse=True` đổi sang thứ tự giảm dần. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự nhập ban đầu. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
+      "text": "Xếp giảm dần theo GPA giúp báo cáo có ý nghĩa rõ. Nếu cần thứ tự khi GPA bằng nhau, công bố thêm quy tắc theo mã hoặc giữ thứ tự input. `sorted` trả danh sách mới, không sửa danh sách ban đầu."
      }
     ]
    ],

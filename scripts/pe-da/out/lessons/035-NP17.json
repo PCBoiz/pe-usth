@@ -66,7 +66,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Có hai điểm đã biết là 6 và 10, nên trung bình bằng 8. Nếu mọi phần tử đều là NaN, `nanmean` trả NaN và phát cảnh báo; khi đó cần báo chưa có dữ liệu để tính trung bình."
+      "text": "Có hai điểm thực là 6 và 10, nên trung bình bằng 8. Nếu mọi phần tử đều là NaN, `nanmean` trả NaN và phát cảnh báo; khi đó cần báo chưa có dữ liệu, không ghi một điểm trung bình giả."
      },
      {
       "type": "paragraph",

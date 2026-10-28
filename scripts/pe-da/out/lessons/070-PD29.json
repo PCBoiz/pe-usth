@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Dấu `?` là chỗ để sqlite3 nhận giá trị qua `params`. Trong ví dụ, `params=(20,)` thay ngưỡng 20 vào điều kiện `amount > ?`. Truyền giá trị riêng như vậy thay vì ghép trực tiếp dữ liệu người dùng vào câu SQL bằng f-string. Ký hiệu này có thể khác giữa các driver và dùng cho giá trị, không dùng tùy ý để thay tên bảng hoặc tên cột."
+      "text": "Dấu ? là placeholder của sqlite3; params truyền giá trị riêng. Không ghép trực tiếp dữ liệu người dùng vào câu SQL bằng f-string. Placeholder tùy driver, và không dùng để thay thế tùy ý tên bảng hoặc tên cột."
      },
      {
       "type": "code",
@@ -132,7 +132,7 @@
     },
     {
      "prompt": "Vì sao truyền ngưỡng bằng params thay vì nối chuỗi SQL?",
-     "answer": "Để driver phân biệt giá trị với cú pháp SQL và tự xử lý dấu nháy, thay vì coi dữ liệu nhập vào là một phần câu lệnh. Cách này cũng ngăn việc chèn lệnh SQL qua các giá trị đó."
+     "answer": "Để driver xử lý giá trị riêng với cú pháp SQL, tránh lỗi quoting và SQL injection qua giá trị."
     },
     {
      "prompt": "Tạo bảng amount=[5,8], dùng SQL tính SUM và nhận kết quả bằng pandas.",

@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Không dùng split(\",\") để đọc CSV có trường được bao trong dấu nháy. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc chương trình lỗi mới bắt đầu lưu."
+      "text": "Không dùng split(\",\") để đọc CSV có quoted field. Courses cần id/name và credits để phục vụ GPA của PW3; marks cần student_id/course_id/score. Sau mỗi nhóm nhập, ghi đúng file tương ứng, không đợi đến lúc program lỗi mới bắt đầu lưu."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi đưa dữ liệu vào chương trình."
+      "text": "Khi kết thúc chương trình, lưu gói nén dưới tên students.dat. Tên .dat chỉ là tên do đề chọn; bên trong ví dụ này vẫn là ZIP. Khi khởi động lại, kiểm file tồn tại rồi đọc đủ ba thành viên trước khi nạp state."
      },
      {
       "type": "code",
@@ -128,7 +128,7 @@
    "practice": [
     {
      "prompt": "Tên có dấu phẩy đọc bằng split có ổn không?",
-     "answer": "Không, vì dấu phẩy trong tên có thể bị hiểu nhầm là dấu tách cột. Dùng csv.writer để ghi và csv.DictReader để đọc theo đúng quy tắc dấu nháy và xuống dòng của CSV."
+     "answer": "Không nói chung. Dùng csv.writer/DictReader với quoting và newline phù hợp."
     },
     {
      "prompt": "students.dat có nhất thiết là định dạng nhị phân mới tự thiết kế không?",
@@ -136,7 +136,7 @@
     },
     {
      "prompt": "Hoàn thiện PW5 và chứng minh dữ liệu tồn tại qua lần chạy.",
-     "answer": "Sau mỗi nhóm nhập, ghi students.txt (mã/tên/DoB), courses.txt (mã/tên/tín chỉ) và marks.txt (mã sinh viên/mã môn/điểm). Khi thoát, đóng gói cả ba file vào students.dat. Lúc khởi động, kiểm tra file có tồn tại, đọc đủ ba thành viên, kiểm mã duy nhất, mã tham chiếu và điểm; chỉ cập nhật Registry sau khi toàn bộ dữ liệu hợp lệ. Thử một lần nhập hai sinh viên và hai môn rồi thoát. Chạy lại chương trình, không nhập thêm và kiểm tra danh sách cùng GPA còn đúng. Thử thêm file thiếu, gói nén hỏng, thiếu thành viên và tên có dấu phẩy."
+     "answer": "Ghi students.txt(id/name/DoB),courses.txt(id/name/credits),marks.txt(student_id/course_id/score) sau từng nhóm nhập. Khi thoát đóng cả3 vào students.dat; khởi động kiểm tồn tại, đọc đủ thành viên, parse/kiểm mã duy nhất/tham chiếu/điểm rồi thay registry sau khi tất cả hợp lệ. Test chạy 1 nhập 2 SV/2 môn, thoát; chạy 2 không nhập lại vẫn list/GPA đúng. Test file thiếu, archive hỏng, thiếu thành viên, tên có dấu phẩy. Không đánh dấu hoàn thành chỉ vì tạo được .dat."
     }
    ]
   },

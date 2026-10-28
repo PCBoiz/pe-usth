@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`aggfunc=\"sum\"` yêu cầu tính tổng; mặc định `pivot_table` dùng trung bình (`mean`), nên hãy ghi rõ khi làm báo cáo tổng doanh thu. Trong ví dụ, A–Jan bằng 10 + 20 = 30. Không có giao dịch A–Feb nên ô đó được điền 0 bằng `fill_value=0`. Chỉ điền như vậy nếu dữ liệu đầy đủ và không có giao dịch thực sự có nghĩa là doanh thu bằng 0."
+      "text": "aggfunc=\"sum\" nêu rõ cách tính; mặc định pivot_table thường dùng mean nên không nên bỏ trống khi báo cáo tổng. fill_value=0 điền ô chưa có tổ hợp sau tổng hợp, chỉ phù hợp nếu không có giao dịch nghĩa là 0."
      },
      {
       "type": "code",

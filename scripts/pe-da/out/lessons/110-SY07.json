@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo cùng có method render để tạo nội dung, nhưng mỗi loại có thể tạo kết quả khác nhau:"
+      "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "SalesReport kế thừa Report: đây là quan hệ is-a: một SalesReport cũng là một Report. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
+      "text": "SalesReport kế thừa Report: đây là quan hệ is-a. Method render ở lớp con ghi đè method cùng tên, gọi là override. `super().render()` tiếp tục tìm method theo thứ tự kế thừa; nó không tạo thêm một Report riêng."
      },
      {
       "type": "code",
@@ -146,7 +146,7 @@
     },
     {
      "prompt": "SalesReport(Report) có save kế thừa và render ghi đè. Class nào là superclass/subclass; có thể thêm method riêng không? super tạo object cha mới không?",
-     "answer": "Report là superclass; SalesReport là subclass, dùng save nếu không ghi đè và có thể thêm method riêng. super tìm method tiếp theo theo thứ tự kế thừa của cùng instance, không tạo một object cha mới."
+     "answer": "Report là superclass; SalesReport là subclass, dùng save nếu không ghi đè và có thể thêm method riêng. super tìm method tiếp theo theo MRO trên cùng instance, không tạo một object cha mới."
     },
     {
      "prompt": "Một hàm cần object có render(); SalesReport thỏa yêu cầu đó thế nào? Override khác overload ở điểm gì?",

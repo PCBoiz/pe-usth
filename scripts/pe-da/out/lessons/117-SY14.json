@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Student/Course/Mark thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý khi kích thước cửa sổ terminal thay đổi và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
+      "text": "Ở PW4, các thao tác curses thuộc output.py; dữ liệu Student/Course/Mark thuộc domains. Terminal có kích thước giới hạn: khi làm tiếp, xử lý resize và không ghi vượt hàng/cột. Curses là UI terminal, khác Tkinter tạo cửa sổ đồ họa."
      }
     ]
    ],
@@ -132,7 +132,7 @@
      "answer": "Nên tính ở phần nghiệp vụ rồi đưa kết quả sang output; như vậy kiểm thử công thức không cần terminal."
     },
     {
-     "prompt": "Khi đã có chương trình quản lý điểm PW3, thêm menu để xem sinh viên, môn học và danh sách GPA giảm dần. Nếu chưa làm dự án, đọc SY25–SY26 trước khi làm câu này.",
+     "prompt": "Làm menu PW3 có xem sinh viên, môn và GPA giảm dần.",
      "answer": "Dùng phím 1/2/3/q, mỗi lần đổi màn hình erase rồi addstr/refresh. Gọi registry để lấy dữ liệu, không tạo danh sách điểm riêng ở UI. Nộp video/ghi nhận thao tác terminal thật; thử phím ngoài menu và thoát khi có lỗi."
     }
    ]

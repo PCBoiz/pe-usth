@@ -128,7 +128,7 @@
    "practice": [
     {
      "prompt": "buffering=0 dùng với text được không?",
-     "answer": "Không. Chỉ dữ liệu nhị phân mới dùng được chế độ không có bộ đệm (`buffering=0`). Với văn bản, bạn có thể dùng bộ đệm theo dòng (`buffering=1`)."
+     "answer": "Không. Unbuffered IO chỉ dùng binary; text có thể dùng line buffering."
     },
     {
      "prompt": "TemporaryFile đóng rồi có dùng tiếp được không?",
@@ -136,7 +136,7 @@
     },
     {
      "prompt": "Viết read_status trả ok/missing/denied.",
-     "answer": "Trong try, with open đọc và trả (\"ok\", text). except FileNotFoundError trả (\"missing\", None); except PermissionError trả (\"denied\", None). Lỗi khác cho truyền ra. Thử missing thật; Để thử PermissionError mà không đổi quyền thư mục, có thể thay thao tác mở file trong bài kiểm thử bằng một hàm chủ động báo lỗi này. Ghi rõ bạn đã dùng cách thử đó."
+     "answer": "Trong try, with open đọc và trả (\"ok\", text). except FileNotFoundError trả (\"missing\", None); except PermissionError trả (\"denied\", None). Lỗi khác cho truyền ra. Thử missing thật; PermissionError có thể kiểm bằng injection nếu không muốn sửa quyền máy, ghi rõ cách thử."
     },
     {
      "prompt": "Ghép buffering=-1, 0, 1, 8192 với mặc định, không buffer, theo dòng text và cỡ buffer binary. flush có bảo đảm ghi đến thiết bị khi mất điện không?",

@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ở ví dụ đầu, fig có một vùng vẽ ax và ax có một đường. Bạn cũng có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. Nếu cần đặt vị trí cụ thể, add_axes([left, bottom, width, height]) nhận bốn tỷ lệ so với Figure. Ví dụ [0.15, 0.2, 0.8, 0.65] đặt mép trái ở 15%, mép dưới ở 20%, chiều rộng 80% và chiều cao 65% của Figure. Khi dùng pyplot, plt.plot(...) vẽ vào vùng hiện tại; ax.plot(...) chỉ rõ vùng cần vẽ. Vì vậy, khi có nhiều Axes, dùng ax giúp tránh vẽ nhầm. Bạn thường chuẩn bị dữ liệu, tạo Figure và Axes, vẽ, chỉnh nhãn và bố trí, rồi lưu nếu cần trước khi gọi show."
+      "text": "Có thể tạo Figure trước rồi thêm vùng vẽ bằng add_subplot(111). Ba chữ số lần lượt chỉ số hàng, số cột và vị trí: 111 nghĩa là một hàng, một cột, ô thứ nhất. add_axes([left, bottom, width, height]) lại đặt vùng vẽ theo phần tỷ lệ của Figure, phù hợp khi bạn cần điều khiển vị trí cụ thể. Lệnh add_axes() thiếu tọa độ trong tờ tóm tắt không đủ để tạo ví dụ hoàn chỉnh. pyplot giữ trạng thái Figure/Axes hiện tại: plt.plot(...) vẽ vào Axes hiện tại, còn ax.plot(...) chỉ rõ đối tượng cần vẽ. Quy trình thường là chuẩn bị dữ liệu → tạo Figure/Axes → vẽ → chỉnh nhãn và bố trí → lưu nếu cần → show. Nếu có nhiều Axes, viết rõ ax giúp tránh vẽ nhầm vùng."
      },
      {
       "type": "code",

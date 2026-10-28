@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Phần tính tổng này chỉ dùng các thao tác đã học đến NP15; bạn có thể làm trước nếu chưa học thống kê và dữ liệu thiếu ở NP16–NP17."
+      "text": "Ba tổng 14, 16 và 11 lần lượt thuộc ba học viên. Bản tổng hợp nền tảng dùng dữ liệu đầy đủ và các thao tác đã học đến NP15. Bạn có thể làm phần đó trước khi học các bài phân tích dữ liệu phía sau."
      },
      {
       "type": "paragraph",
@@ -58,7 +58,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Nếu một học viên chưa được nhập điểm, hãy đánh dấu ô đó bằng NaN. Với `nanmean` đã học ở NP17, bạn có thể tính trung bình từ các điểm hiện có:"
+      "text": "Bản DA thêm một điểm chưa được nhập. Bạn cần biết NP16 và NP17 để đọc phép tính trung bình này:"
      },
      {
       "type": "code",
@@ -153,8 +153,8 @@
      "answer": "Điền `0`: `marks.sum(axis=0)`."
     },
     {
-     "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in `shape`, tổng từng hàng và tổng từng cột. Nếu đã học NP16–NP17, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
-     "answer": "Ví dụ dưới tính tổng trên bảng đầy đủ, rồi tính số ô thiếu và trung bình trên bảng có một điểm chưa nhập:",
+     "prompt": "Tự tạo bảng điểm 3 học viên, 2 bài kiểm tra; in shape, tổng hàng và tổng cột. Nếu đã học phần DA, thêm một ô NaN rồi báo số ô thiếu và trung bình mỗi cột.",
+     "answer": "Một cách làm bản nền tảng và bản DA trên cùng dữ liệu mới:",
      "answerCode": "import numpy as np\n\nmarks = np.array([[4., 7.], [8., 6.], [5., 9.]])\nprint(marks.shape)\nprint(marks.sum(axis=1))\nprint(marks.sum(axis=0))\n\nmissing = np.array([[4., 7.], [np.nan, 6.], [5., 9.]])\nprint(np.isnan(missing).sum())\nprint(np.nanmean(missing, axis=0))",
      "answerExpected": "(3, 2)\n[11. 14. 14.]\n[17. 22.]\n1\n[4.5        7.33333333]"
     }

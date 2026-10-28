@@ -3,13 +3,13 @@
  "sort_order": 134,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT03 · Scheduler, PCB và các hàng đợi",
- "subtitle": "Nâng cao · M6 · 22 phút",
- "estimated_minutes": 22,
+ "subtitle": "Nâng cao · M6 · 21 phút",
+ "estimated_minutes": 21,
  "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT03 · Scheduler, PCB và các hàng đợi",
-  "subtitle": "Nâng cao · M6 · 22 phút",
+  "subtitle": "Nâng cao · M6 · 21 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT03",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "PCB lưu PID, trạng thái, program counter và thanh ghi để process có thể tiếp tục đúng chỗ. Nó còn theo dõi tài nguyên đang mở, thông tin điều phối CPU và thông tin sử dụng tài nguyên. Khi chuyển ngữ cảnh, hệ điều hành lưu ngữ cảnh cũ rồi nạp ngữ cảnh mới. Thời gian dành cho việc chuyển này chưa thực hiện công việc của process nào; đó là chi phí chuyển ngữ cảnh, hay overhead."
+      "text": "PCB giữ thông tin như PID, trạng thái, PC/thanh ghi, file descriptors, thông tin điều phối và kế toán. Context switch lưu ngữ cảnh cũ rồi nạp ngữ cảnh mới. Trong thời gian chuyển, CPU chưa làm phần việc hữu ích của hai process, nên việc chuyển có overhead."
      },
      {
       "type": "code",
@@ -161,11 +161,11 @@
      "answer": "Long-term scheduler điều chỉnh công việc được nhận; short-term scheduler chọn process sẵn sàng chạy kế tiếp."
     },
     {
-     "prompt": "PCB lưu PID và trạng thái, program counter và thanh ghi, các file descriptor đang mở, cùng thông tin điều phối và sử dụng tài nguyên. Mỗi nhóm thông tin này phục vụ việc gì?",
-     "answer": "PID và trạng thái giúp nhận diện process và biết nó đang chờ hay đang chạy. Program counter và thanh ghi dùng để khôi phục ngữ cảnh CPU. File descriptor theo dõi tài nguyên đang mở. Thông tin điều phối và sử dụng tài nguyên giúp hệ điều hành quyết định cấp CPU và ghi nhận tài nguyên process đã dùng."
+     "prompt": "PCB cần PID/state, PC/registers, open_fds và scheduling/accounting info để làm gì?",
+     "answer": "Nhận diện và theo dõi trạng thái process, phục hồi CPU context, quản lý tài nguyên đang mở, và quyết định/ghi nhận việc cấp CPU."
     },
     {
-     "prompt": "A có độ ưu tiên cao nhưng đang chờ ổ đĩa. Scheduler có thể cho A chạy ngay không? Time quantum quy định điều gì trong một lượt dùng CPU?",
+     "prompt": "Nếu priority của A cao nhưng A đang chờ ổ đĩa, có nên cấp CPU cho A? Quantum liên quan quyết định nào?",
      "answer": "Không nếu A chưa ready. Priority/ràng buộc chọn trong các process phù hợp; quantum giới hạn thời gian của lượt chạy."
     },
     {

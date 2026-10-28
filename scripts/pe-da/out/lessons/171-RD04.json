@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`design` có cột đầu toàn số 1 để biểu diễn hệ số chặn và cột thứ hai chứa số lượt truy cập `visits`. `lstsq` tìm các hệ số làm tổng bình phương sai lệch giữa dự đoán và dữ liệu nhỏ nhất. Kết quả `[2, 3]` cho công thức `sales ≈ 2 + 3 × visits`. `column_stack` ghép các dãy thành cột; `rank=2` cho biết hai cột trong ví dụ độc lập tuyến tính. Với dữ liệu thật, hãy xem phần dư (giá trị quan sát trừ dự đoán), khoảng giá trị `visits` đã có và cách lấy mẫu. Đường khớp không chứng minh thêm lượt truy cập làm tăng doanh thu; dự đoán ngoài khoảng dữ liệu đã quan sát cũng có thể sai."
+      "text": "Hai cột design là hệ số chặn 1 và số lượt thăm. lstsq tìm hệ số để tổng bình phương sai lệch nhỏ nhất: ví dụ cho sales≈2+3×visits. column_stack đặt các dãy thành cột; rank=2 cho thấy hai cột độc lập trong ví dụ này. Dữ liệu thật hiếm khi nằm chính xác trên một đường: xem phần dư, phạm vi x và cách lấy mẫu. Đường khớp không chứng minh thêm lượt thăm gây tăng doanh thu và không bảo đảm ngoại suy đúng."
      }
     ]
    ],

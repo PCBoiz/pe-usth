@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trước khi tạo worker, chương trình dùng deepcopy để lấy một bản chụp dữ liệu, hay snapshot. Trong ví dụ này, các phần tử chỉ là số nên bản sao tách được cấu trúc cần lưu khỏi data đang thay đổi. Sau khi file được đóng, worker gửi thông điệp hoàn tất. Thread chính dùng join để chờ trong ví dụ dòng lệnh. Với GUI, cần kiểm tra queue qua event loop; gọi join trong một callback lâu sẽ làm giao diện phải chờ theo."
+      "text": "Worker nhận một snapshot đã tách khỏi trạng thái đang sửa. Ở đây các phần tử chỉ là số nên deepcopy đủ để tách cấu trúc. Worker gửi thông điệp hoàn tất sau khi file đã được đóng. Thread chính trong ví dụ dòng lệnh dùng join; GUI phải kiểm queue theo event loop thay vì gọi join lâu trong callback."
      },
      {
       "type": "code",
@@ -45,7 +45,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu việc ghi file lỗi bên trong worker, callback đã tạo worker không tự nhận được ngoại lệ đó. Worker cần bắt lỗi và gửi qua queue để giao diện báo cho người dùng rồi cho phép thử lại. Ví dụ dưới ghi vào một thư mục chưa tồn tại, bắt OSError và gửi thông điệp error, thay vì bỏ qua lỗi bằng except: pass. Bạn đang kiểm tra phần ghi file và báo lỗi của PW8. Để biết cửa sổ còn phản hồi trong lúc lưu hay không, cần thử ứng dụng có giao diện ở PW9."
+      "text": "Lỗi bên trong thread không tự trở thành ngoại lệ trong callback đã tạo nó. Worker cần gửi lỗi qua kênh kết quả để giao diện có thể báo và cho thử lại. Ví dụ cố ghi file dưới một thư mục chưa tồn tại, bắt OSError rồi gửi trạng thái; không bỏ lỗi bằng except: pass. Chưa có UI trong bài này, nên đây là nghiệm thu phần file/worker của PW8, không phải nghiệm thu khả năng đáp ứng của PW9."
      },
      {
       "type": "code",
@@ -126,7 +126,7 @@
     },
     {
      "prompt": "Sau thông điệp done, kiểm gì để biết file thật có ích?",
-     "answer": "Mở lại file qua gzip và pickle.load, rồi đối chiếu cấu trúc dữ liệu cùng các giá trị với snapshot. Có thể thử nạp trong một lượt chạy mới để chắc rằng kết quả không phụ thuộc dữ liệu còn trong bộ nhớ. Chỉ thấy đường dẫn tồn tại chưa cho biết dữ liệu đã khôi phục đúng."
+     "answer": "Mở lại qua gzip rồi pickle.load trong một luồng đọc mới; đối chiếu schema và giá trị với snapshot. Một đường dẫn tồn tại chưa đủ chứng minh dữ liệu khôi phục đúng."
     },
     {
      "prompt": "Worker báo error thì UI nên làm gì? Có gọi join dài trong callback để chờ được không?",

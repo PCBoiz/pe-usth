@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một đồng nghiệp gửi file .dta hoặc .sas7bdat. Đổi tên thành .csv không đổi cấu trúc bên trong; cần hàm đọc đúng định dạng. Với Stata, bạn có thể tạo một file nhỏ rồi đọc lại để hiểu cách làm:"
+      "text": "Một đồng nghiệp gửi file .dta hoặc .sas7bdat. Đổi tên thành .csv không đổi cấu trúc bên trong; cần reader phù hợp. Với Stata, bạn có thể tạo một file nhỏ rồi đọc lại để hiểu cách làm:"
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Stata có định dạng nhị phân riêng; read_stata trả DataFrame. SAS7BDAT và SAS XPORT là hai định dạng khác nhau trong hệ SAS. Thư mục fixtures của bộ học có file mẫu test1.sas7bdat lấy từ bộ kiểm thử công khai của pandas, kèm CSV đối chiếu và giấy phép. Với hai ví dụ tiếp theo, mở terminal tại thư mục python-da có chứa fixtures; nếu chuyển file mẫu sang nơi khác, chỉnh lại đường dẫn trong code."
+      "text": "Stata có format nhị phân riêng; read_stata trả DataFrame. SAS7BDAT khác SAS XPORT, dù đều thuộc hệ SAS. Bộ tài liệu có fixture test1.sas7bdat từ bộ test công khai của pandas, kèm CSV đối chiếu và giấy phép. Hai ví dụ tiếp theo chạy từ thư mục gốc dự án PE USTH; khi chuyển dự án, chỉnh đường dẫn fixture tương ứng."
      },
      {
       "type": "code",
@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ thứ ba dùng package sas7bdat được nêu trong cheat sheet; bạn cần cài package này riêng. Nếu nó không tương thích với môi trường, có thể dùng read_sas của pandas với đúng định dạng rồi ghi lại lựa chọn đó. SAS XPORT vẫn cần cách đọc phù hợp riêng. Khi đối chiếu với CSV được cấp, lưu ý một số cột ngày đang lưu số ngày tính từ 1960-01-01, nên phải chuyển về cùng kiểu ngày trước khi so sánh."
+      "text": "Cách thứ ba bám API được nêu trong cheat sheet; cần cài sas7bdat riêng. Nếu thư viện cũ không tương thích môi trường, dùng reader pandas đã kiểm đúng format và ghi lại thay đổi. Không lấy kết quả đọc XPORT làm bằng chứng đã đọc SAS7BDAT. Một vài cột ngày trong fixture CSV lưu số ngày từ 1960-01-01; khi so với SAS cần chuyển đúng kiểu trước."
      }
     ]
    ],
@@ -129,8 +129,8 @@
      "answer": "Không. Tên đuôi không chuyển cấu trúc file."
     },
     {
-     "prompt": "Đọc được file SAS XPORT có nghĩa là cùng cách gọi đó sẽ đọc được SAS7BDAT không?",
-     "answer": "Không. Dùng `format=\"sas7bdat\"` hoặc `format=\"xport\"` theo đúng file đang có, rồi thử bằng một file mẫu của chính định dạng đó."
+     "prompt": "SAS7BDAT và XPORT có được kiểm như một format không?",
+     "answer": "Không. Dùng format=\"sas7bdat\" hoặc \"xport\" đúng với dữ liệu thật, và có fixture riêng cho mỗi định dạng cần hỗ trợ."
     },
     {
      "prompt": "Đọc fixture SAS rồi đối chiếu CSV được cấp.",

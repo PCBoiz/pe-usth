@@ -2,13 +2,13 @@
  "lesson_code": "SY28",
  "sort_order": 131,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
- "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+ "title": "SY28 · PW6: đổi persistence sang pickle có nén",
  "subtitle": "Trung cấp · M5 · 13 phút",
  "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
-  "title": "SY28 · PW6: lưu dữ liệu bằng pickle có nén",
+  "title": "SY28 · PW6: đổi persistence sang pickle có nén",
   "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Pickle giữ được tuple làm khóa của marks, còn JSON không hỗ trợ trực tiếp kiểu khóa này. Nếu lưu instance như Student hay Course, đặt class ở module ổn định, chẳng hạn domains.student, để Python tìm lại đúng class khi đọc file. Gom toàn bộ dữ liệu trong một dict có trường version giúp bạn nhận biết phiên bản cấu trúc trước khi cập nhật Registry."
+      "text": "Pickle giữ tuple key của marks mà JSON không hỗ trợ trực tiếp cho key. Khi lưu object domain thật, giữ class ở module ổn định như domains.student; khi load Python cần tìm đúng class đó. Giữ toàn bộ state trong một dict version giúp kiểm schema trước khi cập nhật registry."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "gzip.open kết hợp mở file với nén dữ liệu; pickle.dump vẫn ghi dữ liệu nhị phân. Chỉ đọc file pickle do bạn tạo và tin cậy. Nếu version hoặc định nghĩa class không còn tương thích, báo rằng cần chuyển đổi dữ liệu sang phiên bản mới thay vì đoán cấu trúc."
+      "text": "gzip.open ghép file IO và nén; pickle.dump vẫn ghi binary. Mã load chỉ dùng file do lab tạo và tin cậy. Nếu đổi version hoặc class không còn tương thích, hãy thông báo cần migration thay vì đoán cấu trúc."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Đọc dữ liệu vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi cách lưu ở đây chưa tự có hai tính năng đó."
+      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó."
      }
     ]
    ],
@@ -135,8 +135,8 @@
      "answer": "Không. Sau giải nén, pickle.load vẫn có thể thực thi mã."
     },
     {
-     "prompt": "Hoàn thiện PW6 để lưu các object quản lý điểm, đọc lại ở lần chạy sau và giữ đủ chức năng của PW5.",
-     "answer": "Ghi Registry bằng gzip.open ở chế độ wb và pickle.dump; đọc lại bằng chế độ rb và pickle.load từ file tin cậy. Đặt Student, Course và StudentMark trong package domains có cấu trúc ổn định. Đọc vào một biến tạm, kiểm version, mã, DoB, tín chỉ và điểm rồi mới cập nhật Registry. Thử đóng rồi chạy lại để kiểm tra các instance được khôi phục, điểm 0 và GPA cùng thứ tự xếp hạng không đổi. Thử file thiếu, file hỏng và version chưa hỗ trợ. Khi đọc lỗi, giữ dữ liệu hiện tại và file cũ. Chỉ báo lưu thành công sau khi ghi và đóng file xong."
+     "prompt": "Hoàn thiện PW6 với state domain và kiểm đủ tính năng cũ.",
+     "answer": "Lưu registry qua gzip.open wb + pickle.dump, load rb + pickle.load từ file tin cậy. Đặt Student/Course/StudentMark trong module domains ổn định. Nạp vào tempstate, kiểm version/ID/DoB/credits/marks, rồi mới thay registry. Thử hai lần chạy, kiểu object giữ được, điểm 0, GPA/ranking như cũ, file thiếu/file hỏng/version lạ. Lỗi load giữ state hiện tại và filecũ; không báo lưu thành công trước khi dump/close xong."
     }
    ]
   },

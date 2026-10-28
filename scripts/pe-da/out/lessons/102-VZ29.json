@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong quiver(X, Y, U, V), X và Y xác định nơi đặt mũi tên, còn U và V là độ dời theo x và y. Ví dụ dưới đặt U=1, V=0, nên mỗi mũi tên chỉ sang phải một đơn vị. Các tùy chọn angles=\"xy\", scale_units=\"xy\", scale=1 giữ hướng và độ dài theo đơn vị tọa độ. Nếu để Matplotlib tự co giãn, độ dài mũi tên trên hình không nhất thiết bằng trực tiếp giá trị U và V. Khi vẽ dữ liệu thật, ghi rõ đơn vị và cách đọc độ dài vector."
+      "text": "Trong quiver(X,Y,U,V), X và Y cho vị trí, U và V là hai thành phần vector. angles=\"xy\", scale_units=\"xy\", scale=1 giữ chiều và độ dài theo tọa độ dữ liệu cho ví dụ đơn vị dưới đây; mặc định tự co giãn có thể làm độ dài không còn bằng trực tiếp số bạn đưa vào. Với dữ liệu thật cần giải thích thang vector và đơn vị."
      },
      {
       "type": "code",

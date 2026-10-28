@@ -3,13 +3,13 @@
  "sort_order": 59,
  "module": "M3 · pandas: từ bảng đầu tiên đến quy trình phân tích",
  "title": "PD18 · Concat: ghép các lô dữ liệu",
- "subtitle": "Trung cấp · M3 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Trung cấp · M3 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "PD18 · Concat: ghép các lô dữ liệu",
-  "subtitle": "Trung cấp · M3 · 12 phút",
+  "subtitle": "Trung cấp · M3 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#PD18",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi nối theo hàng, mặc định kết quả giữ tất cả tên cột xuất hiện trong các bảng; hàng nào không có cột tương ứng thì nhận ô thiếu. Trong ví dụ, kết quả có cả `amount`, `note` và `city`. `join=\"inner\"` chỉ giữ cột chung là `amount`. Chọn cách nào tùy việc bạn cần giữ các thông tin khác nhau giữa các lô hay chỉ cần phần chung."
+      "text": "Mặc định nối theo hàng giữ hợp tên cột và điền thiếu ở phần không có. join=\"inner\" chỉ giữ các cột chung. Chọn cách nào phụ thuộc việc bạn muốn giữ hay loại thông tin mới trong các lô."
      },
      {
       "type": "code",

@@ -138,8 +138,8 @@
      "answerExpected": "3"
     },
     {
-     "prompt": "Hãy mô tả cách dùng grid cho form có hai hàng Username và Password, ô nhập bên phải mỗi nhãn, cùng nút Login bên dưới chiếm hai cột. Đặt khoảng đệm bằng padx và pady. Nếu cần widget chiếm nhiều hàng thay vì nhiều cột, dùng tùy chọn nào?",
-     "answer": "Đặt nhãn Username ở row=0, column=0 và Password ở row=1, column=0. Hai Entry ở column=1, dùng sticky=tk.EW và padx, pady để giãn ngang và chừa khoảng. Nút Login ở row=2, column=0, columnspan=2. Hàng và cột bắt đầu từ 0; rowspan cho widget trải qua nhiều hàng. Muốn cột nhận thêm không gian khi kéo rộng cửa sổ, đặt weight cho cột trong đúng widget cha."
+     "prompt": "Tả form Username/Password/Login dùng grid: vị trí, khoảng đệm và nút chiếm hai cột; rowspan khác gì?",
+     "answer": "Nhãn ở (row0,col0)/(row1,col0), Entry ở col1 với sticky=tk.EW và padx/pady; Login row2 col0 columnspan=2. Đánh số từ0; rowspan chiếm nhiều hàng. Parent cần column weight nếu muốn nhận chỗ dư."
     }
    ]
   },

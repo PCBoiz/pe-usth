@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Để vẽ đường sin, bạn cần các vị trí x và giá trị sin tương ứng. `linspace` tạo các vị trí cách đều; `sin` và `cos` tính trên từng phần tử của array. Ví dụ dưới cũng tạo bảng số ngẫu nhiên bằng một bộ sinh riêng `rng`. Seed giúp chạy lại ví dụ trong cùng môi trường, nhưng các số sinh ra vẫn là dữ liệu mô phỏng. Lệnh cũ `np.random.random((2, 3))` dùng bộ sinh toàn cục, cho bảng 2 hàng, 3 cột với các số từ 0 đến dưới 1. Giữ `rng` riêng giúp bạn điều khiển seed mà không đổi trạng thái ngẫu nhiên của phần code khác."
+      "text": "Một đường sin cần nhiều vị trí x hơn ba điểm bán hàng. linspace chọn các vị trí cách đều, còn sin/cos tính trên từng phần tử của array. Khi code dùng dữ liệu ngẫu nhiên để kiểm hình, cố định seed giúp bạn chạy lại cùng một ví dụ; đó không phải dữ liệu quan sát ngoài đời. np.random.random((2,3)) trong slide dùng bộ sinh toàn cục và cũng cho bảng 2 hàng, 3 cột với số từ 0 đến dưới 1. Với code mới, giữ rng riêng giúp kiểm soát seed mà không đổi trạng thái ngẫu nhiên của phần khác."
      },
      {
       "type": "code",
@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong `np.mgrid`, `3j` yêu cầu ba điểm tính cả hai đầu, không phải khoảng cách 3 giữa các điểm. Ví dụ lấy ba vị trí x từ -1 đến 1 và năm vị trí y từ -2 đến 2. `X` và `Y` là hai bảng tọa độ có cùng `shape=(3, 5)`. Tại mỗi vị trí, đặt `U=-Y` và `V=X` để có hai thành phần của vector xoay; VZ29 dùng các bảng này để vẽ trường vector. Với bước là số thực như 0.5, `mgrid` hiểu đó là khoảng cách giữa các điểm."
+      "text": "Trong np.mgrid, bước complex như 3j yêu cầu ba điểm tính cả hai đầu, khác với bước thực là khoảng cách giữa điểm. Hai lưới X/Y có cùng shape; từ đó tạo U/V cho trường vector. Bảng nhỏ dưới giữ quy tắc U=-Y, V=X như trường xoay trong VZ29."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`np.load` đọc file định dạng NumPy. Đoạn dưới lưu array ảnh vào `image.npy`, đọc lại rồi kiểm tra dữ liệu có giữ nguyên không. Tiếp theo, `get_sample_data(\"topobathy.npz\", asfileobj=False)` lấy đường dẫn file mẫu đi kèm Matplotlib. File `.npz` này chứa ba array: `topo` (độ cao/độ sâu), `longitude` (kinh độ) và `latitude` (vĩ độ). Dùng `np.load` để mở rồi chọn array theo tên. Một số file mẫu cũ như `bivariate_normal.npy` không có ở mọi phiên bản; nếu thiếu, hãy xem các mẫu có sẵn hoặc dùng array tự tạo."
+      "text": "np.load đọc array đã lưu trong file NumPy, khác với đọc bảng text. matplotlib.cbook.get_sample_data tìm dữ liệu mẫu đi kèm bản Matplotlib. Ví dụ dưới trước hết lưu/nạp array của chính mình; sau đó dùng asfileobj=False để lấy đường dẫn mẫu topobathy.npz rồi mở bằng np.load. Archive này có các mảng topo, longitude và latitude. Tên bivariate_normal.npy trong slide cũ không có ở mọi phiên bản; nếu thiếu file mẫu, kiểm danh sách mẫu hoặc dùng array tự tạo thay vì cài lại thư viện cũ chỉ để giữ tên file."
      },
      {
       "type": "code",
@@ -132,7 +132,7 @@
     },
     {
      "prompt": "np.load(path) và get_sample_data(name) có cùng đọc CSV không? Làm gì nếu ví dụ cũ thiếu ảnh mẫu?",
-     "answer": "Không. `np.load` đọc file định dạng NumPy, còn `get_sample_data` tìm hoặc mở dữ liệu mẫu đi kèm Matplotlib. Nếu file mẫu không có trong phiên bản đang dùng, chọn mẫu khác hoặc tạo một array ảnh để thử; một tên file trong ví dụ cũ không chắc còn được cung cấp."
+     "answer": "Không. np.load nạp định dạng NumPy; helper tìm/mở dữ liệu mẫu đi kèm Matplotlib. Kiểm API và file phiên bản hiện tại, hoặc tạo fixture array ảnh cùng loại như ví dụ; không suy một tên mẫu cũ luôn có sẵn."
     },
     {
      "prompt": "np.random.random((2,3)) trong slide cho bao nhiêu số và khoảng giá trị nào? np.mgrid[0:1:100j] cho bước dài 100 hay 100 vị trí?",
@@ -140,7 +140,7 @@
     },
     {
      "prompt": "Bạn có X,Y cùng shape (3,5) và muốn trường xoay. Viết U,V; lấy đường dẫn dữ liệu mẫu Matplotlib rồi nạp archive NumPy bằng lệnh nào?",
-     "answer": "Đặt `U, V = -Y, X`; cả bốn array có `shape=(3, 5)`. Lấy đường dẫn bằng `path = get_sample_data(\"topobathy.npz\", asfileobj=False)`, rồi mở bằng `with np.load(path, allow_pickle=False) as sample:`. Trong khối `with`, dùng `topo = sample[\"topo\"].copy()` để lấy bản sao array độ cao/độ sâu. `np.load` không đọc CSV; nếu phiên bản đang dùng thiếu file mẫu, có thể dùng array tự tạo có cùng ý nghĩa."
+     "answer": "U,V=-Y,X nên cả bốn mảng có shape (3,5). path=get_sample_data(\"topobathy.npz\",asfileobj=False); with np.load(path,allow_pickle=False) as sample: topo=sample[\"topo\"].copy(). Không dùng np.load để đọc CSV; với mẫu thiếu ở phiên bản khác, dùng array tự tạo có cùng ý nghĩa."
     }
    ]
   },

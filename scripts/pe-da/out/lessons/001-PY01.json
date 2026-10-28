@@ -70,7 +70,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode, một dạng lệnh trung gian, trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
+      "text": "Python thường được gọi là ngôn ngữ thông dịch. CPython còn biên dịch mã nguồn thành bytecode trước khi thực thi, nên “thông dịch” không có nghĩa hoàn toàn không biên dịch. Tính dễ đọc cũng không có nghĩa Python luôn nhanh nhất: tác vụ nặng CPU và môi trường triển khai vẫn cần lựa chọn cách xử lý phù hợp."
      }
     ]
    ],
@@ -154,11 +154,11 @@
     },
     {
      "prompt": "Python bậc cao, đa dụng và mã nguồn mở có nghĩa gì? Nêu một việc ở backend và một việc của Data Analyst có thể dùng Python.",
-     "answer": "Bậc cao nghĩa là bạn viết thao tác gần với bài toán hơn là lệnh máy. Đa dụng nghĩa là Python dùng được cho nhiều loại công việc. Mã nguồn mở nghĩa là mã triển khai được công khai theo giấy phép cho phép sử dụng và đóng góp. Ví dụ, backend có thể dùng Python để xử lý yêu cầu web, còn Data Analyst dùng Python để đọc đơn hàng và tính doanh thu."
+     "answer": "Bậc cao: viết thao tác gần vấn đề hơn lệnh máy. Đa dụng: cùng ngôn ngữ phục vụ nhiều loại tác vụ. Mã nguồn triển khai được công khai theo giấy phép. Ví dụ backend xử lý yêu cầu web; DA đọc đơn hàng rồi tính doanh thu. Tên rõ nghĩa và thụt lề giúp đọc code."
     },
     {
      "prompt": "So sánh gõ print(12 + 9) trong REPL với lưu cùng lệnh vào sales.py. Shebang dùng để làm gì?",
-     "answer": "Trong REPL, bạn nhập từng lệnh và nhận kết quả ngay. Với script, bạn lưu các lệnh rồi chạy bằng `python sales.py`. Trên hệ có hỗ trợ, shebang ở đầu file chỉ ra trình thông dịch cần dùng khi chạy trực tiếp một file có quyền thực thi. Cách xử lý shebang phụ thuộc hệ điều hành."
+     "answer": "REPL nhận và thực thi từng lệnh; script chứa chuỗi lệnh chạy bằng python sales.py. Trên hệ hỗ trợ, shebang đầu file gợi interpreter khi chạy file có quyền thực thi; nó không thay nội dung Python hay áp dụng giống nhau trên mọi hệ."
     },
     {
      "prompt": "Có đúng là CPython không biên dịch và luôn nhanh nhất cho mọi việc không?",

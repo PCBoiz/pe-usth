@@ -150,8 +150,8 @@
      "answer": "ax.spines[\"top\"].set_visible(False). Giữ đủ dấu trục và nhãn để đọc được số."
     },
     {
-     "prompt": "Bạn vẽ một vùng theo đơn vị km trên cả hai trục. Hãy viết các lệnh để một đơn vị x dài bằng một đơn vị y; giới hạn x từ 0 đến 3; thêm đệm 10% khi trục đang tự chọn giới hạn; đặt tick y hướng vào trong, dài 8 điểm; và ẩn viền trên. Nếu đã đặt xlim cố định, gọi margins sau đó có tự thay đổi giới hạn x không?",
-     "answer": "Dùng ax.set_aspect(\"equal\"), ax.set_xlim(0, 3), ax.margins(x=0.1, y=0.1), ax.tick_params(axis=\"y\", direction=\"in\", length=8) và ax.spines[\"top\"].set_visible(False) cho từng việc tương ứng. Đặt xlim cố định sẽ tắt việc tự chọn giới hạn theo chiều x, nên margins không ghi đè giới hạn đó. Muốn thêm đệm tự động theo dữ liệu, cần bật lại autoscale cho chiều đó. Để đưa viền dưới ra ngoài 5 điểm, dùng ax.spines[\"bottom\"].set_position((\"outward\", 5))."
+     "prompt": "Hình bản đồ đơn giản cần một đơn vị x bằng một đơn vị y, giới hạn x từ 0 đến 3, thêm đệm 10% khi autoscale, tick y hướng vào dài 8 điểm và giấu viền trên. Nêu lệnh cho từng việc; đặt xlim trước rồi margins có tự đổi giới hạn x cố định không?",
+     "answer": "ax.set_aspect(\"equal\"); ax.set_xlim(0,3); ax.margins(x=0.1,y=0.1); ax.tick_params(axis=\"y\", direction=\"in\", length=8); ax.spines[\"top\"].set_visible(False). margins không ghi đè xlim đã tắt autoscale. Muốn đệm tự động phải dùng autoscale cho chiều đó. Di chuyển viền dưới ra ngoài 5 điểm: ax.spines[\"bottom\"].set_position((\"outward\",5))."
     },
     {
      "prompt": "Đặt ba tick ngang ở vị trí [1,2,3] với nhãn [\"Start\",\"Middle\",\"End\"] bằng cách nào? Việc đổi nhãn có đổi giá trị dữ liệu thành ba chữ đó không?",

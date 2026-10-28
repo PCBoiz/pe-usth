@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Colorbar cho biết mỗi màu ứng với giá trị nào. Nếu hai heatmap tự chọn thang màu riêng, cùng một màu có thể đại diện cho hai con số khác nhau. Khi cần so sánh, giữ chung cmap, vmin, vmax và đơn vị. Với bảng ít ô, bạn có thể ghi thêm số vào từng ô như ví dụ tiếp theo. cmap chọn thang màu, còn vmin và vmax đặt giá trị ở hai đầu thang. orientation=\"horizontal\" đặt colorbar nằm ngang; \"vertical\" đặt nó đứng dọc. Muốn giữ từng ô thành một khối màu rõ, dùng imshow(..., interpolation=\"nearest\"). Màu trung gian do nội suy chỉ thay đổi cách hiển thị, không phải số đo mới."
+      "text": "Colorbar giải thích con số ứng với màu. Nếu hai heatmap dùng hai thang màu tự co giãn, cùng một màu có thể đại diện cho hai giá trị khác nhau. Khi so sánh, giữ chung vmin, vmax và đơn vị. Các ô ít có thể ghi thêm số để người đọc không phải ước lượng màu. cmap chọn quy tắc đổi số thành màu, còn vmin/vmax đặt hai đầu thang số. orientation=\"horizontal\" đặt colorbar nằm ngang; \"vertical\" đặt nó đứng dọc. Muốn giữ các ô như các khối màu rõ, imshow(..., interpolation=\"nearest\") tránh làm mượt giữa ô; màu trung gian do nội suy không phải số đo mới."
      },
      {
       "type": "code",

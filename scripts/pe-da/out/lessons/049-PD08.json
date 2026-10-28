@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`dropna` ở đây bỏ các hàng thiếu `amount`, còn `fillna(0)` trả về cột với ô thiếu đã được điền số 0. Ví dụ đầu giữ các đơn đã biết số tiền; ví dụ sau giữ đủ các đơn và thay số tiền chưa biết bằng 0. Chỉ chọn cách thứ hai nếu quy ước dữ liệu cho biết ô trống nghĩa là không phát sinh tiền."
+      "text": "dropna ở đây bỏ hàng thiếu amount; fillna trả cột đã được điền. Hai cách trả lời hai câu hỏi khác nhau. Điền 0 chỉ hợp lý nếu bạn có quy ước rằng ô trống nghĩa là không phát sinh tiền."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Tổng của một cột chỉ có ô thiếu mặc định có thể bằng 0. `min_count=1` yêu cầu có ít nhất một giá trị không thiếu mới tính tổng; nếu không, kết quả vẫn thiếu. Nhờ vậy, bạn phân biệt được “doanh thu bằng 0” với “chưa có dữ liệu doanh thu”."
+      "text": "Tổng một cột chỉ có ô thiếu mặc định có thể bằng 0. `min_count=1` yêu cầu ít nhất một giá trị thật mới tính tổng; nếu không, kết quả vẫn thiếu. Điều kiện này giúp phân biệt “không có doanh thu” với “chưa có dữ liệu”."
      }
     ]
    ],

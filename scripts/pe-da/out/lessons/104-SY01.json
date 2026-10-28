@@ -140,7 +140,7 @@
     },
     {
      "prompt": "Tạo datetime cho 31/12/2020 rồi cộng một ngày và định dạng YYYY-MM-DD. datetime.now có thể đặt một output ngày cố định cho mọi lần chạy không?",
-     "answer": "`datetime(year=2020, month=12, day=31) + timedelta(days=1)` cho ngày 01/01/2021. Gọi `strftime(\"%Y-%m-%d\")` để nhận chuỗi `\"2021-01-01\"`. `datetime.now()` lấy thời điểm đang chạy nên kết quả có thể thay đổi; khi luyện phép tính lịch, dùng một mốc cố định để dễ đối chiếu."
+     "answer": "datetime(year=2020,month=12,day=31) + timedelta(days=1) cho ngày 2021-01-01; gọi strftime(\"%Y-%m-%d\"). datetime.now phụ thuộc lúc chạy nên không cố định ngày trong expected; dùng mốc cố định khi luyện phép tính lịch."
     }
    ]
   },

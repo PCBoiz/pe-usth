@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`choice` chọn một phần tử, nên danh sách phải không rỗng. `random()` trả số thực từ 0 đến trước 1. Số 7 trong `Random(7)` là seed, dùng để khởi tạo bộ sinh. Giữ cùng môi trường và cùng thứ tự gọi sẽ giúp bạn lặp lại lần thử; nếu cần chạy ổn định giữa các môi trường, đừng mặc định mọi cách lấy mẫu đều cho cùng một dãy."
+      "text": "`choice` chọn một phần tử; danh sách phải không rỗng. `random()` trả số thực từ 0 đến trước 1. Seed giúp tái lập một lần thử trong môi trường đã chốt, nhưng tên đơn được chọn không phải điều kiện để đánh giá mọi thuật toán lấy mẫu."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`randint(1, 3)` có thể trả cả 1 lẫn 3, khác `range` không lấy điểm dừng. Ví dụ lấy năm lần rồi kiểm tra có đủ năm số và tất cả đều nằm trong khoảng 1 đến 3. Hai dòng True cho bạn thấy các điều kiện đó đã đúng; chúng không hiển thị dãy số vừa lấy."
+      "text": "`randint(1, 3)` có thể trả cả 1 lẫn 3. Nó khác quy tắc stop không lấy của range. Trong bài kiểm thử này, điều cần kiểm là số lần lấy và miền hợp lệ, thay vì đoán ngẫu nhiên sẽ trả dãy nào."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "`Counter` đếm số lần xuất hiện. Có 5 lượt mua nhưng chỉ 3 loại đồ uống. `most_common(2)` lấy hai loại có tần suất cao nhất; nếu hòa, Counter giữ thứ tự gặp đầu trong dữ liệu. Tần suất này mô tả dữ liệu đã có, khác việc chọn mẫu ngẫu nhiên."
+      "text": "`Counter` đếm số lần xuất hiện. Có 5 lượt mua nhưng chỉ 3 loại đồ uống. `most_common(2)` lấy hai loại có tần suất cao nhất; nếu hòa, Counter giữ thứ tự gặp đầu trong dữ liệu. Chỉ số này mô tả dữ liệu đã có, khác việc chọn mẫu ngẫu nhiên."
      }
     ]
    ],
@@ -140,7 +140,7 @@
     },
     {
      "prompt": "Với [\"A\",\"B\",\"A\",\"C\",\"A\"], Counter có bao nhiêu key và tổng count là bao nhiêu? Lấy hai mã phổ biến nhất thế nào?",
-     "answer": "Có 3 mã khác nhau và tổng cộng 5 lượt. Với `counts = Counter(values)`, `counts.most_common(2)` trả `[(\"A\", 3), (\"B\", 1)]`. Số khóa cho biết có bao nhiêu mã khác nhau; tổng tần suất cho biết có bao nhiêu lượt xuất hiện."
+     "answer": "Counter có 3 key, tổng lượt là 5; counts=Counter(values), counts.most_common(2) cho [(\"A\",3),(\"B\",1)]. Số key khác tổng tần suất."
     },
     {
      "prompt": "choice(ids), random() và randint(1,3) trả loại kết quả nào? Kiểm mẫu ngẫu nhiên mà không đoán đúng một dãy cụ thể thế nào?",

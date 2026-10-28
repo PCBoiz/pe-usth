@@ -33,7 +33,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`f[\"scores\"]` là đối tượng đại diện cho dataset trong file, nên còn phụ thuộc vào file đang mở. Thêm `[()]` để đọc giá trị ra một array; array này vẫn dùng được sau khi đóng file. Nhóm meta chứa dataset source, được truy cập bằng tên. Với API h5py dùng ở bài này, đọc bằng `[()]` thay cho thuộc tính .value cũ trong cheat sheet."
+      "text": "`f[\"scores\"]` là dataset handle còn gắn với file. `[()]` đọc giá trị ra array; dùng array này sau khi file đóng được. Group meta chứa dataset source, truy cập theo key. Không dùng thuộc tính .value cũ của h5py trong cheat sheet."
      },
      {
       "type": "code",
@@ -131,7 +131,7 @@
    "practice": [
     {
      "prompt": "Vì sao cần đọc [()] trước khi rời with h5py.File?",
-     "answer": "Để giữ giá trị array độc lập với đối tượng dataset còn phụ thuộc vào file đang mở."
+     "answer": "Để giữ giá trị array độc lập với dataset handle của file đã đóng."
     },
     {
      "prompt": "Muốn lấy nguồn trong meta/source dùng gì?",

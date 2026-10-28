@@ -127,7 +127,7 @@
    ],
    "practice": [
     {
-     "prompt": "Bảng kết quả sau `groupby(...).agg(...)` có luôn cùng số hàng với bảng đầu vào không?",
+     "prompt": "agg và bảng đầu vào có cùng số hàng không?",
      "answer": "Không nhất thiết; tổng hợp thường trả một hàng cho mỗi nhóm."
     },
     {

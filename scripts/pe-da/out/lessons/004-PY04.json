@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`type(raw).__name__` cho tên kiểu của raw; `type(price).__name__` làm tương tự với price. `str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
+      "text": "`str` là chuỗi, `int` là số nguyên, `float` là số thực và `bool` gồm True/False. Số nguyên Python không bị cố định trong 32 hay 64 bit; số lớn vẫn bị giới hạn bởi bộ nhớ và tài nguyên máy. `int(raw)` tạo giá trị số từ chuỗi phù hợp; chuỗi ban đầu vẫn là chuỗi. Nếu raw là \"mười lăm\", phép chuyển gây ValueError."
      },
      {
       "type": "code",
@@ -146,7 +146,7 @@
     },
     {
      "prompt": "Sau cups = 12; Cups = 9; cups = 15, hai tên giữ gì? \"coffee\" và 'coffee' có khác giá trị không?",
-     "answer": "`cups` giữ 15, còn `Cups` giữ 9 vì tên biến phân biệt chữ hoa và chữ thường. `\"coffee\"` và `'coffee'` có cùng giá trị; bạn có thể dùng một trong hai kiểu dấu nháy. Các giá trị được viết trực tiếp trong code như `12`, `15` hay `\"coffee\"` được gọi là literal."
+     "answer": "cups giữ 15, Cups giữ 9 vì tên phân biệt hoa thường. Hai literal chuỗi khác kiểu dấu nháy này có cùng giá trị coffee; 12 và 15 là literal số."
     },
     {
      "prompt": "Kiểm các tên total cups, total-cups, for, total_cups và tra danh sách từ khóa của Python đang chạy thế nào?",

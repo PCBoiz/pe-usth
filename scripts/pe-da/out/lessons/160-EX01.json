@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`loadtxt` đọc các giá trị theo kiểu đã chọn. `delimiter` chỉ ký tự ngăn cột, còn `dtype` chọn kiểu của các phần tử. `StringIO` cho phép dùng chuỗi như một file văn bản; với file thật, thay nó bằng đường dẫn. Ở ví dụ, chỉ có cột điểm được chọn từ hai dòng, nên kết quả là array một chiều gồm hai số: `shape=(2,)`, `len=2`. Trong `dtype.kind`, ký tự `f` là nhóm kiểu số thực."
+      "text": "loadtxt phù hợp khi phần bảng bạn đọc có cùng kiểu. delimiter chỉ ký tự ngăn cột, dtype chọn kiểu của các phần tử. StringIO ở đây đóng vai trò một file văn bản để ví dụ chạy độc lập; với file thật, thay nó bằng đường dẫn. Nếu lấy một cột từ hai dòng, kết quả thường là array một chiều chứ không tự giữ thành bảng hai cột."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu chưa nhớ tham số, dùng `help(pd.read_csv)` để xem cách đọc CSV hoặc `np.info(np.ndarray.dtype)` để xem mô tả `dtype`. Đây là các lệnh xem tài liệu, không đọc dữ liệu trong bảng. Đoạn dưới còn minh họa cách đọc file văn bản: lấy dòng đầu bằng `readline()`, lấy phần còn lại bằng `read()`, rồi đóng file bằng `close()`. Với `with open(...)`, file được đóng tự động khi ra khỏi khối. Hai giá trị True cuối chỉ xác nhận rằng các lệnh trợ giúp đã trả về nội dung; khi tự tra cứu, bạn có thể gọi hai lệnh đó trực tiếp."
+      "text": "Trước khi đổi tham số theo phỏng đoán, dùng help(pd.read_csv) hoặc np.info(np.ndarray.dtype) để xem tài liệu. Kết quả trợ giúp mô tả API; nó không phải nội dung bảng đang phân tích. Ví dụ dưới vừa đọc file thật trong thư mục tạm, vừa kiểm phần mô tả có tồn tại; nó không in toàn bộ tài liệu dài."
      },
      {
       "type": "code",
@@ -140,7 +140,7 @@
     },
     {
      "prompt": "marks có shape (2,), dtype=float64. len(marks) bằng bao nhiêu? Vì sao import numpy as np cần xuất hiện trước np.loadtxt?",
-     "answer": "`len(marks)` bằng 2, tức có hai phần tử theo chiều đầu. `import numpy as np` nạp thư viện và đặt tên ngắn là `np`. Trong một lần chạy mới, nếu chưa import hoặc định nghĩa tên `np`, dùng `np.loadtxt` sẽ báo `NameError`."
+     "answer": "len bằng 2, tức hai phần tử theo chiều đầu. import nạp thư viện và gán tên np; dùng np trước khi tên được định nghĩa sẽ báo NameError trong phiên sạch."
     }
    ]
   },

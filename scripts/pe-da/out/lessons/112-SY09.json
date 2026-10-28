@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Python cho phép `class C(A, B)` kế thừa nhiều class. Java chỉ cho một superclass trực tiếp, nhưng một class có thể implement nhiều interface. Interface mô tả các thao tác mà bên dùng được quyền trông chờ; abstract class có thể nêu các method lớp con cần có và cung cấp hành vi dùng chung. Phần ôn này giúp đọc câu hỏi Java trong slide; bạn không cần viết lại bài Python bằng Java."
+      "text": "Python cho phép `class C(A, B)` kế thừa nhiều class. Java chỉ cho một superclass trực tiếp, nhưng một class có thể implement nhiều interface. Interface mô tả các thao tác mà bên dùng được quyền trông chờ; abstract class có thể gom cả hợp đồng và hành vi dùng chung. Phần ôn này giúp đọc câu hỏi Java trong slide; bạn không cần viết lại bài Python bằng Java."
      }
     ]
    ],

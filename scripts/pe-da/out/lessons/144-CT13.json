@@ -54,13 +54,13 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ này nén dữ liệu trong bộ nhớ rồi nạp lại để đối chiếu. Bài thực hành PW8 còn yêu cầu ghi ra file, xử lý lỗi và nạp lại khi mở ứng dụng. Dữ liệu đưa cho worker phải là một bản chụp nhất quán, hay snapshot: trong lúc worker đọc, không được trộn các thay đổi ở nhiều thời điểm. Bạn có thể sao chép cấu trúc phù hợp hoặc đồng bộ khi lấy snapshot. Chỉ gán snapshot = data sẽ tạo thêm tên trỏ tới cùng dữ liệu, không tạo bản sao. Chỉ nạp pickle từ nguồn tin cậy vì việc nạp có thể thực thi mã."
+      "text": "Ví dụ nén trong bộ nhớ để kiểm dữ liệu phục hồi. Bài PW8 thật còn phải ghi file, xử lý lỗi và nạp lại khi mở ứng dụng. Snapshot cần ổn định khi worker đọc: sao chép cấu trúc phù hợp hoặc đồng bộ lúc lấy snapshot; gán thêm một tên không tự tạo snapshot. Chỉ unpickle dữ liệu tin cậy vì thao tác nạp có thể thực thi mã."
      }
     ]
    ],
    "context": {
     "level": "Nâng cao",
-    "prereq": "CT12 · Race condition, Lock và tránh deadlock, SY28 · PW6: lưu dữ liệu bằng pickle có nén"
+    "prereq": "CT12 · Race condition, Lock và tránh deadlock, SY28 · PW6: đổi persistence sang pickle có nén"
    }
   },
   "step_2": {

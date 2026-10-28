@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng doanh thu hiện có một hàng cho mỗi cặp cửa hàng và tháng. Để so sánh các tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
+      "text": "Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
      },
      {
       "type": "code",

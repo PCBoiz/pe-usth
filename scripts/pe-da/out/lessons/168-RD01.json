@@ -39,7 +39,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`ax.text(x, y, ...)` mặc định hiểu x và y theo dữ liệu. `transform=ax.transAxes` đổi sang tỷ lệ của vùng vẽ: `(0, 0)` là góc dưới trái, `(1, 1)` là góc trên phải. Vị trí `(0.05, 0.95)` cách cạnh trái 5% chiều rộng và nằm ở 95% chiều cao tính từ dưới lên. `va=\"top\"` đặt cạnh trên của dòng chữ tại vị trí đó."
+      "text": "ax.text(x,y,...) mặc định hiểu x/y theo dữ liệu. transform=ax.transAxes đổi sang tỷ lệ Axes: (0,0) là góc dưới trái và (1,1) là góc trên phải. Trong ví dụ, chữ cách trái 5%, cách dưới 95%; va=\"top\" neo cạnh trên của chữ vào vị trí đó."
      },
      {
       "type": "code",
@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`xy` là điểm mà mũi tên chỉ tới; với `xycoords=\"data\"`, điểm `(2, 10)` vẫn là ngày 2 có doanh thu 10. `xytext` chọn nơi đặt chữ, còn `textcoords=\"axes fraction\"` diễn giải nơi đó theo tỷ lệ vùng vẽ. Nếu muốn chữ luôn cách điểm dữ liệu một khoảng nhỏ, dùng `textcoords=\"offset points\"`; khi ấy khoảng cách được đo bằng point, đơn vị cỡ chữ có 72 point trong một inch."
+      "text": "xy là điểm mà mũi tên chỉ tới; xycoords=\"data\" giữ nó ở ngày 2, doanh thu 10. xytext và textcoords chọn nơi đặt chữ. \"axes fraction\" giúp chữ giữ vị trí tương đối trong vùng vẽ. Nếu chỉ muốn chữ nằm cách điểm một khoảng nhỏ cố định, textcoords=\"offset points\" dùng khoảng cách theo điểm in."
      },
      {
       "type": "code",
@@ -71,7 +71,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ở ví dụ cuối, `xytext=(0, 12)` đặt chữ cao hơn điểm dữ liệu 12 point. Dấu `$` trong `r\"$y=10$\"` bật Mathtext để định dạng biểu thức toán. Tiền tố `r` giữ nguyên các dấu gạch chéo trong chuỗi, nên hữu ích khi viết ký hiệu như `r\"$\\sigma$\"`. Mathtext chỉ định dạng ký hiệu, không tính giá trị. Gọi `plt.show()` để xem hình và `plt.close(fig)` sau khi xem xong."
+      "text": "Chữ ở ví dụ cuối nằm cao hơn điểm 12 điểm in. Chuỗi raw r\"...\" giữ dấu gạch chéo cho các lệnh toán như r\"$\\sigma$\"; dấu $ bật Mathtext. Mathtext định dạng ký hiệu chứ không tính giá trị. Khi chạy để xem hình, gọi plt.show() trước plt.close(fig); các ví dụ ở đây đóng hình sau khi kiểm các thuộc tính."
      }
     ]
    ],

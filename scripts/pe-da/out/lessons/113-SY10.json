@@ -138,7 +138,7 @@
     },
     {
      "prompt": "__value có phải mã hóa hay bảo mật dữ liệu không?",
-     "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập bằng tên đã được Python đổi."
+     "answer": "Không. Python đổi tên để tránh đụng tên, vẫn có thể truy cập tên mangled."
     },
     {
      "prompt": "Sửa Grade để chỉ nhận int/float hữu hạn, bỏ bool và giữ điểm cũ khi sai.",

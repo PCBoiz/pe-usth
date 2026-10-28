@@ -3,13 +3,13 @@
  "sort_order": 99,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
- "subtitle": "Nâng cao · M4 · 17 phút",
- "estimated_minutes": 17,
+ "subtitle": "Nâng cao · M4 · 16 phút",
+ "estimated_minutes": 16,
  "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
-  "subtitle": "Nâng cao · M4 · 17 phút",
+  "subtitle": "Nâng cao · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ26",
@@ -56,7 +56,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi gửi báo cáo, bạn có thể kèm hình tĩnh để chèn vào tài liệu và HTML để người đọc xem giá trị chi tiết. Gửi cả bảng dữ liệu được dùng, công thức tính chỉ số và khoảng dữ liệu mà báo cáo bao quát. Trước khi gửi, đối chiếu tổng trước và sau lọc, kiểm tra tiêu đề khớp dữ liệu, nhãn không bị cắt và các file mở được. Nếu thêm một kỳ so sánh, áp dụng cùng quy tắc tính cho cả hai kỳ. Chỉ có chênh lệch doanh thu chưa đủ để kết luận nguyên nhân tăng trưởng."
+      "text": "Một bản giao có hình tĩnh cho báo cáo và HTML để xem giá trị chi tiết, kèm dữ liệu, công thức chỉ số và mô tả phạm vi. Kiểm tra tổng trước và sau lọc, tiêu đề có khớp dữ liệu, nhãn không bị cắt và file mở được. Trong dự án thật, thêm một kỳ so sánh có cùng quy tắc; không viết nguyên nhân tăng trưởng nếu dữ liệu chỉ cho thấy chênh lệch."
      },
      {
       "type": "terminal",

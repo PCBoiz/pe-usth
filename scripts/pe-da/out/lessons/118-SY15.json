@@ -34,7 +34,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` tự đóng file khi rời khối lệnh. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
+      "text": "`open` trả file object. `w` tạo file hoặc xóa nội dung cũ ngay lúc mở; `r` đọc và báo lỗi nếu không có file. `with` đóng handle khi rời block. File vẫn có thể tồn tại sau close; thư mục tạm của ví dụ được dọn khi rời block ngoài."
      },
      {
       "type": "code",
@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là chế độ văn bản mặc định, dùng str; `b` là chế độ nhị phân, dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
+      "text": "`a` nối ở cuối, phù hợp nhật ký. Mở log bằng w để thêm một dòng sẽ làm mất phần cũ. `t` là text mặc định; `b` là binary dùng bytes. Dấu + cho phép cả đọc và ghi, nhưng không bỏ qua quy tắc ghi đè của w hoặc nối cuối của a."
      },
      {
       "type": "code",
@@ -62,7 +62,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên đối tượng file đó gây ValueError."
+      "text": "Trong RAM, biến thường mất khi process kết thúc. File đã ghi và đóng có thể được đọc ở lần chạy sau; lưu bền không có nghĩa file không thể bị xóa hoặc hỏng. Vòng đời thông thường là open → đọc hoặc ghi → close. Sau close, `f.closed` là True và gọi read/write trên handle đó gây ValueError."
      },
      {
       "type": "paragraph",
@@ -150,7 +150,7 @@
     },
     {
      "prompt": "Cần đọc file cũ, thay toàn nội dung, tạo chỉ khi chưa có, hoặc nối log: chọn r/w/x/a thế nào? r+, w+, a+ khác ở đâu?",
-     "answer": "r đọc file đã có; w tạo/cắt file; x chỉ tạo file mới và báo lỗi nếu file đã tồn tại; a ghi nối cuối và có thể tạo mới. Dấu + thêm khả năng đọc/ghi: r+ không cắt nhưng cần file có; w+ cắt/tạo; a+ ghi vẫn nối cuối. t dùng str, b dùng bytes."
+     "answer": "r đọc file đã có; w tạo/cắt file; x tạo độc quyền, tồn tại thì lỗi; a ghi nối cuối và có thể tạo mới. Dấu + thêm khả năng đọc/ghi: r+ không cắt nhưng cần file có; w+ cắt/tạo; a+ ghi vẫn nối cuối. t dùng str, b dùng bytes."
     },
     {
      "prompt": "open trả gì? f.close() và with liên hệ thế nào; dùng f sau close có được không? RAM/file khác gì qua lần chạy?",

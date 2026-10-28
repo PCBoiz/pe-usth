@@ -3,13 +3,13 @@
  "sort_order": 122,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
- "subtitle": "Trung cấp · M5 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Trung cấp · M5 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
-  "subtitle": "Trung cấp · M5 · 13 phút",
+  "subtitle": "Trung cấp · M5 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY19",
@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Dữ liệu rất ngắn có thể lớn hơn sau khi nén vì định dạng nén còn cần phần đầu và thông tin điều khiển. Nén cũng không phải mã hóa bảo mật: người có file và công cụ phù hợp vẫn có thể giải nén. Một số định dạng đóng gói hỗ trợ mật khẩu, nhưng đó là tính năng riêng, không phải tính chất của mọi thuật toán nén."
+      "text": "Input rất ngắn có thể lớn hơn sau nén vì header và overhead. Nén cũng không phải encryption: người có file và đúng codec có thể giải nén. Chỉ thêm password vào một hệ archive có hỗ trợ không biến mọi thuật toán nén thành cơ chế bảo mật."
      }
     ]
    ],
@@ -132,7 +132,7 @@
     },
     {
      "prompt": "Tại sao file ngắn nén xong lớn hơn?",
-     "answer": "Phần đầu và thông tin điều khiển của định dạng nén có thể lớn hơn số byte tiết kiệm được. Hãy giải nén rồi so với dữ liệu ban đầu để kiểm tra có mất dữ liệu hay không."
+     "answer": "Header và thông tin điều khiển có thể lớn hơn phần tiết kiệm; kiểm round-trip trước khi kết luận lỗi."
     },
     {
      "prompt": "Viết compress_bytes(data, method) và decompress_bytes cho bốn codec.",

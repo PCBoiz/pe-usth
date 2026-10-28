@@ -56,7 +56,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Hàm read_student nhận một hàm ask để lấy dữ liệu. Trong ví dụ, lambda trả lần lượt các câu trả lời có sẵn nên bạn có thể chạy ngay mà không gõ bàn phím. Khi làm chương trình terminal, gọi `read_student(input)`. Bài hoàn chỉnh cần nhập số lượng rồi từng hồ sơ sinh viên, nhập số môn và mã/tên từng môn, chọn môn để nhập điểm, và liệt kê lại các danh sách. Các thao tác phải dùng chung bộ dữ liệu để hồ sơ và điểm luôn khớp nhau."
+      "text": "Truyền ask làm ví dụ tự chạy được với dữ liệu cố định; khi mở CLI dùng read_student(input). Bài hoàn chỉnh cần hàm nhập số lượng sinh viên, nhập từng hồ sơ; nhập số môn và id/name từng môn; chọn môn nhập điểm từng sinh viên; liệt kê sinh viên/môn/điểm môn. Giữ một state chung để danh sách và điểm không bị lệch."
      }
     ]
    ],
@@ -136,7 +136,7 @@
     },
     {
      "prompt": "Hoàn thiện PW1 không dùng class domain và tự kiểm đủ yêu cầu.",
-     "answer": "Tạo file 1.student.mark.py. Viết các hàm read_count nhận số nguyên không âm; read_students(count) nhận mã, tên và DoB, không cho trùng mã; read_courses(count) nhận mã và tên môn, không cho trùng mã; read_marks(course_id) nhận điểm hữu hạn từ 0 đến 10. Thêm list_students, list_courses và list_course_marks để xem lại dữ liệu. Chương trình terminal cần menu nhập, xem và thoát; dùng input để nhận dữ liệu, hoặc truyền ask khi chạy thử. Thử hai sinh viên trùng tên nhưng khác mã, hai môn, điểm 0, mã không tồn tại, số lượng sai và ngày không hợp lệ. Đối chiếu danh sách điểm của từng môn, rồi commit và push bài lên fork."
+     "answer": "Nộp 1.student.mark.py có read_count (int không âm), read_students(count) với id/name/DoB không trùng, read_courses(count) id/name không trùng, read_marks(course_id) kiểm điểm hữu hạn 0..10; list_students/list_courses/list_course_marks. CLI đọc count, các hồ sơ, rồi menu lặp chọn môn/nhập/xem/thoát. Dùng input cho tương tác thật, có thể truyền ask để test. Thử 2 sinh viên trùng tên khác mã, 2 môn, điểm 0, mã lạ, count sai và ngày không tồn tại. Nộp kết quả listing đúng từng môn và commit lên fork; không chỉ in dữ liệu mẫu."
     }
    ]
   },

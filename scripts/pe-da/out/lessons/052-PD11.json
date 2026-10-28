@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "`value_counts()` mặc định bỏ ô thiếu; thêm `dropna=False` nếu cần đếm cả chúng. `count()` đếm giá trị không thiếu, còn `size` đếm tất cả phần tử. Với cột số, `describe()` cho các thống kê như số giá trị đã có (`count`), trung bình (`mean`), độ lệch chuẩn (`std`), số nhỏ nhất, các tứ phân vị và số lớn nhất. Các tứ phân vị chia dãy đã sắp xếp thành bốn phần có số quan sát gần bằng nhau."
+      "text": "value_counts mặc định bỏ ô thiếu; thêm dropna=False nếu cần đếm cả chúng. count đếm giá trị không thiếu, còn size đếm tất cả phần tử. Với cột số, describe cho các thống kê như count, mean, std, min, các tứ phân vị và max."
      },
      {
       "type": "code",

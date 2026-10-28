@@ -127,7 +127,7 @@
    ],
    "practice": [
     {
-     "prompt": "Với `student = {\"name\": \"Mai\"}`, `\"Mai\" in student` kiểm tra khóa hay giá trị? Muốn tìm trong các giá trị thì viết thế nào?",
+     "prompt": "\"Mai\" in student kiểm tra tên trong values hay khóa?",
      "answer": "Kiểm tra khóa; muốn tìm trong values dùng \"Mai\" in student.values()."
     },
     {

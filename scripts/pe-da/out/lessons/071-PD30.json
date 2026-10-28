@@ -46,7 +46,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Điều kiện số tiền không âm chỉ đúng với bảng doanh thu chưa chứa hoàn tiền; bảng khác có thể cần quy tắc khác. `assert` hữu ích trong bài phân tích và kiểm thử. Với ứng dụng đang vận hành, hãy dùng điều kiện kiểm tra và `raise` rõ ràng, vì Python có chế độ chạy tắt các câu lệnh `assert`."
+      "text": "Điều kiện không âm chỉ đúng với bảng doanh thu chưa chứa hoàn tiền; bảng nghiệp vụ khác cần quy tắc khác. assert hữu ích trong bài phân tích và kiểm thử; ứng dụng production nên dùng kiểm tra rõ ràng và raise vì Python có chế độ tắt assert."
      },
      {
       "type": "code",
