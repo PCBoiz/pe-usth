@@ -384,6 +384,11 @@ export default function StudioLesson({
         primaryTone={cta.tone}
         primaryDisabled={cta.disabled}
         onPrimaryClick={() => doAction(cta.action)}
+        // Quay lại màn trước. Dùng CHÍNH `goTo` mà thanh tiến độ dùng, không
+        // viết một đường đi thứ hai: `goTo` đã lo xoá kết quả chấm của màn cũ,
+        // đóng gợi ý và cuộn lên đầu — bỏ sót một trong ba thứ đó thì màn mới
+        // mở ra kèm băng "Chưa đúng" của màn trước.
+        onBack={() => goTo(d.step - 1)}
         onSeek={screens.length > 1 ? goTo : undefined}
         seekMax={Math.max(d.step, Math.min(screens.length, reached))}
         doneSteps={screens.map((x) => completed || Boolean(d.done[x.key]))}
@@ -454,6 +459,7 @@ export default function StudioLesson({
       primaryDisabled: true,
       onPrimaryClick: () => undefined,
       onSeek: undefined,
+      onBack: undefined,
     });
 
   if (loadError)
@@ -461,6 +467,7 @@ export default function StudioLesson({
       primaryLabel: 'Thử lại',
       onPrimaryClick: () => void load(),
       onSeek: undefined,
+      onBack: undefined,
     });
 
   if (!enrolled && user?.role !== 'admin')
@@ -474,6 +481,7 @@ export default function StudioLesson({
         primaryDisabled: busy,
         onPrimaryClick: () => void enroll(),
         onSeek: undefined,
+        onBack: undefined,
       },
     );
 
@@ -484,7 +492,7 @@ export default function StudioLesson({
         'Bài học này chưa có nội dung Studio. Quản trị viên có thể nhập nội dung từ file PDF hoặc Markdown trong trang quản trị.',
         'Đang biên soạn',
       ),
-      { primaryLabel: 'Về khóa học →', onPrimaryClick: leave, onSeek: undefined },
+      { primaryLabel: 'Về khóa học →', onPrimaryClick: leave, onSeek: undefined, onBack: undefined },
     );
 
   return frame(

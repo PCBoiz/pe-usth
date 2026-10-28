@@ -28,6 +28,17 @@ export interface LessonChromeProps {
   /** Nút phụ bên trái nút chính (ví dụ "Gợi ý"). */
   secondaryLabel?: React.ReactNode;
   onSecondaryClick?: () => void;
+  /**
+   * Lùi một màn. Không truyền (hoặc đang ở màn 1) thì nút không dựng.
+   *
+   * Vì sao nó phải LÀ MỘT NÚT, trong khi thanh tiến độ đã bấm được: năm người
+   * thử ngày 27/10 đều báo "không có nút back" / "chưa có nút return" — kể cả
+   * người tự nhận làm frontend. Thanh tiến độ là một dải đoạn cao 4px, nó
+   * không trông như thứ bấm được, nên trên thực tế nó không phải đường quay
+   * lại của ai cả. Hai người nói thẳng cái giá: lỡ bấm Tiếp theo là phải đóng
+   * bài rồi tìm lại từ đầu, và màn luyện tập thì không xem lại được đề.
+   */
+  onBack?: () => void;
   /** Cho quay lại màn đã qua bằng cách bấm vào đoạn tương ứng trên thanh tiến
    *  độ. Không truyền thì thanh chỉ để xem (đúng như bản Stitch gốc). */
   onSeek?: (step: number) => void;
@@ -62,6 +73,7 @@ export default function LessonChrome({
   primaryTone = 'accent',
   secondaryLabel,
   onSecondaryClick,
+  onBack,
   onSeek,
   seekMax,
   doneSteps,
@@ -164,7 +176,29 @@ export default function LessonChrome({
 
       <footer className={styles.bottomBar}>
         <div className={styles.bottomBarInner}>
-          <span className={styles.saveLabel} role="status">{saveLabel}</span>
+          {/* Ô trái giữ nguyên MỘT ô của lưới 3 cột, nếu không nút chính lệch
+              khỏi giữa thanh. Nút quay lại đứng trước nhãn lưu vì nó là thứ
+              người ta đi tìm; nhãn lưu chỉ để đọc. */}
+          <span className={styles.leftSlot}>
+            {onBack && step > 1 && (
+              <button
+                type="button"
+                className={styles.backBtn}
+                onClick={onBack}
+                data-cta="back"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M15 18l-6-6 6-6" />
+                </svg>
+                {/* Chữ ẩn ở màn hẹp (xem .backText), nhưng PHẢI nằm trong DOM:
+                    nút chỉ còn mũi tên thì trình đọc màn hình không đọc được
+                    gì. aria-label trên <button> sẽ ghi đè cả chữ này nên không
+                    dùng — để chữ thật làm tên luôn. */}
+                <span className={styles.backText}>Quay lại</span>
+              </button>
+            )}
+            <span className={styles.saveLabel} role="status">{saveLabel}</span>
+          </span>
           <button
             type="button"
             className={primaryClass}
