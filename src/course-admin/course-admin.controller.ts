@@ -38,6 +38,14 @@ export class CourseAdminController {
   /**
    * Đọc một file .md/.pdf và trả BẢN NHÁP studio-lesson/v1 — KHÔNG ghi DB.
    * Admin xem lại rồi mới lưu qua POST admin/lessons như bình thường.
+   *
+   * CHỈ parse theo MẪU (`LESSON-IMPORT-FORMAT.md`). Nhánh AI dự phòng đã gỡ
+   * hẳn: file lệch mẫu bị TỪ CHỐI kèm danh sách lỗi chỉ rõ thiếu gì ở phần
+   * nào, chứ không đoán — nội dung bài học là thứ phải đúng, mà một bộ suy
+   * đoán thì không nói được nó đã bịa ở chỗ nào.
+   *
+   * Đường dùng được HÔM NAY là `scripts/import-lesson.ts` (xem-trước → lưu):
+   * chưa có trang /admin nào gọi route này.
    */
   @Post('lessons/import')
   @HttpCode(HttpStatus.OK)
