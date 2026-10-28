@@ -59,11 +59,41 @@ bẫy "so bản dựng với chính nó" mà AGENTS.md đã ghi cho bộ trắc 
 
 ### L8 · Mật độ thuật ngữ ≤ 40/1000 tiếng (lỗi > 60)
 
-Hiện p90 = 46, max = **96** (CT09: 13 thuật ngữ khác nhau trong 353 tiếng).
+⚠️ **Số tuyệt đối của L8 và L10 tỉ lệ với ĐỘ LỚN TERMBANK**, nên đừng so thẳng hai
+phép đo dùng hai danh sách khác nhau. Các con số ở §1 đo bằng danh sách **40 từ
+thông dụng nhất**; `thuatngu.json` khai **110 mục**, nên mọi con số xấp xỉ gấp đôi.
 
-### L9 · ≤ 3 thuật ngữ MỚI mỗi màn đọc (lỗi > 5)
+Giới hạn lại cho so được thì chúng **khớp**: với đúng 40 thuật ngữ thông dụng nhất,
+bộ kiểm báo **27/31** thuật ngữ thiếu chú giải, so với "23/40" của §1 — cùng hiện
+tượng, cùng cỡ.
 
-Hiện trung vị 2, **max 13**. Đây là luật nói "chẻ bài ra", không phải "viết lại câu".
+Đo bằng termbank 110 mục: trung vị 32 · p90 **90** · max **166** (RC01).
+
+### L9 · ≤ 3 thuật ngữ MỚI mỗi màn đọc (lỗi > 5) — **HÀNG RÀO, không phải việc phải làm**
+
+Đo lại trên 544 màn bằng **termbank**: trung vị 0, **max 3, 0 ca vi phạm**.
+
+Con số "max 13" ghi ở §1 **không thuộc luật này** — nó đếm TỪ TIẾNG ANH trong văn
+xuôi, tức một thống kê của **L8**. L9 đếm **mục termbank**. Hai phép đếm khác bản
+chất, và gộp chúng làm một là lỗi của bản đặc tả đầu.
+
+Nên L9 xếp cùng nhóm L4–L7: corpus đã đạt, luật ở đây để **chống tụt**. Nó vẫn có
+răng — ablate (dồn 6 thuật ngữ chưa gặp vào màn đầu PY01) làm nó đỏ ngay.
+
+### Phép chẻ câu — định nghĩa MỘT lần, ở đây
+
+Mọi luật đếm câu (L1, L2, L3, L12) chẻ câu ở **`.` `!` `?` `…`**, và **chỉ** ở đó.
+
+Phải nói ra vì bản đầu của đặc tả này không nói, và nó mang **ba** con số câu từ
+**ba** phép chẻ khác nhau — 2 182 (`.!?…`) · 2 750 (thêm `;` và `:`) · 3 059 (§2).
+Bộ kiểm đã bắt được chuyện đó.
+
+Vì sao chọn `.!?…`: thêm `;` vào phép chẻ thì **L3 không còn chạy được**, vì `;`
+chính là thứ L3 phải đếm BÊN TRONG một câu.
+
+⚠️ Và con số 59 của L3 dưới đây có lẽ **đo khi chưa áp tiền xử lý số 1 của §10**
+(thay backtick bằng token trơ): đo lại có bỏ backtick ra **48**, không bỏ ra
+**57** — rất gần 59. Con số phải tin là con số của bộ kiểm, vì nó áp đủ tiền xử lý.
 
 ### L3 · Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng phải thành bullet hoặc bảng — **LỖI**
 
@@ -188,6 +218,12 @@ có bị động hay không (Cao Xuân Hạo 2003; Nguyễn Kim Thản; Nguyễn
 `thực hiện` (khi thay được bằng động từ thật), `đối với`, `nhằm`, `thông qua việc`,
 `một cách` + tính từ, `tiến hành`, `vui lòng`.
 
+⚠️ **Ít nhất 4 trong 11 ca hiện tại là DƯƠNG TÍNH GIẢ** — đọc trước khi "sửa":
+"một cách truy cập", "một cách gom", "một cách nêu" là **danh ngữ** ("một cách
+để…"), không phải trạng ngữ `một cách + tính từ` mà luật cấm. Phân biệt được cần từ
+loại của từ đứng sau, tức cần tách từ — thứ §10 nói rõ là đừng cài. Nên L6 là luật
+phải **đọc từng ca**, không phải luật sửa hàng loạt.
+
 ### L12 · ≤ 1 hedge mỗi câu — LỖI
 
 **Không cấm `có thể`.** Nhiều chỗ nó đúng và cần. Cấm là **chồng**: hiện có 10 câu chồng ≥ 3
@@ -198,6 +234,11 @@ hedge, nặng nhất 4.
 
 Số nền: **703 hedge / 16,95 trên 1000 từ** — một lần mỗi 4,4 câu. Trong đó **67 lần** là
 phủ-định-gấp-đôi nói về điều **không** xảy ra (`không tự`, `không có nghĩa`, `chưa phải`).
+
+⚠️ **Bản đầu của đặc tả này TỰ MÂU THUẪN ở L12** và bộ kiểm bắt được: §6 ghi "câu có
+≥2 hedge: 6/2791", §11 ghi "10 câu" cho ngưỡng ≥3. Không thể có 10 câu ≥3 hedge mà
+chỉ 6 câu ≥2 — tập sau chứa tập trước. Số đo lại, bằng một danh sách hedge hẹp hơn:
+**447 hedge · 47 câu ≥2 · 4 câu ≥3**. Ngưỡng: **lỗi ở ≥3**, cảnh báo ở ≥2.
 
 ### L13 · Ưu tiên từ thuần Việt theo danh sách cặp tường minh — CẢNH BÁO
 
@@ -356,24 +397,40 @@ VnCoreNLP (F1 ~97%, nhiễu ~3%), và mọi ngưỡng ở trên đã hiệu chu�
 
 | | Luật | Mức | Corpus hiện trượt |
 |---|---|---|---|
-| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 64 / 14 câu |
-| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | p90 78t |
-| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **59 câu** |
-| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 1/738 |
-| L5 | Cấm `được/bị + V + bởi` | LỖI | 1 |
-| L6 | Từ cấm hành chính | LỖI | 11 |
-| L7 | Chỉ "bạn" | LỖI | 0 |
-| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **p90 46, max 96** |
-| **L9** | **≤ 3 thuật ngữ mới mỗi màn** | CB/LỖI | **max 13** |
-| **L10** | **Thuật ngữ lần đầu phải có chú giải** | **LỖI** | **~17** |
-| L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 2 |
-| L12 | ≤ 1 hedge/câu | LỖI | 10 câu |
-| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | chưa đo |
+| L1 | Câu > 25 tiếng cảnh báo, > 30 lỗi | CB/LỖI | 25 lỗi · 94 cb |
+| L2 | Đoạn > 90 tiếng hoặc > 6 câu | CB/LỖI | 7 lỗi · 19 cb |
+| **L3** | **Câu ≥ 3 dấu `,`/`;` và ≥ 20 tiếng → bảng** | **LỖI** | **48 câu** |
+| L4 | Không mở câu bằng danh-từ-hoá | LỖI | 6 |
+| L5 | Cấm `được/bị + V + bởi` | LỖI | 2 |
+| L6 | Từ cấm hành chính (≥4/11 là dương tính giả) | LỖI | 11 |
+| L7 | Chỉ "bạn" | LỖI | 0 lỗi · 19 cb |
+| **L8** | **Mật độ thuật ngữ ≤ 40/1000 tiếng** | CB/LỖI | **43 lỗi · 30 cb** |
+| L9 | ≤ 3 thuật ngữ mới mỗi màn — *hàng rào* | CB/LỖI | **0** (max đo được 3) |
+| **L10** | **Thuật ngữ lần đầu phải có chú giải** | **LỖI** | **65** |
+| L11 | Một thuật ngữ một cách gọi, khoá (thuật ngữ, ngữ cảnh) | LỖI | 16 |
+| L12 | ≤ 1 hedge/câu (lỗi ở ≥3) | LỖI | 4 lỗi · 43 cb |
+| L13 | Ưu tiên thuần Việt theo danh sách | CẢNH BÁO | 0 lỗi · 247 cb |
+| TB | Bất biến termbank: `baiDauTien` khớp corpus | LỖI | 0 |
+| §4-A | Định danh nhóm A phải nằm trong backtick | CẢNH BÁO | 266 |
 | **M1** | **3 phương án mặc định** | **LỖI** | 0 (đang đúng) |
 | **M2** | **Trộn vị trí có phân tầng** | **LỖI** | **1 032/1 032** |
 | M3 | Nhiễu phải có lý do lưu kèm | LỖI | 1 032 |
 | M4 | Không bài nào 3 câu cùng một ô Block Model | LỖI | 172/172 |
 | M5 | Một lần trả lời, rồi đi tiếp | LỖI | toàn bộ |
 
-**Nếu chỉ làm được một việc:** L10 (≈17 cặp ngoặc).
+**Tổng trên corpus thật: 227 lỗi · 718 cảnh báo.**
+
+**Nếu chỉ làm được một việc:** L10. Cụ thể: `py -I scripts/pe-da/check_vanphong.py
+--luat L10 --chi-tiet 0` in ra đúng danh sách bài + câu phải sửa.
 **Nếu làm được hai:** thêm M2 (trộn vị trí — 46 bài đang cho 5/6 điểm cho người chọn "a").
+
+---
+
+## 12. Đừng bật `--strict` trong CI ngày đầu
+
+`check_vanphong.py` hôm nay cho **227 lỗi**. Nối thẳng vào `check.py --strict` là
+làm CI đỏ ngay, và một CI đỏ thường trực thì không ai đọc nữa.
+
+Dùng đúng khuôn mà repo đã có cho lint backend: **một mốc trần, CHỈ ĐƯỢC HẠ**
+(AGENTS.md: "mốc trần trong CI là 245, chỉ được hạ"). Đặt trần ở 227, hạ dần theo
+từng đợt sửa.

@@ -1,0 +1,838 @@
+{
+  "phienBan": 1,
+  "doc": "Termbank của giáo trình pe-da. Đặc tả: scripts/pe-da/VAN-PHONG.md §4. L8, L9, L10, L11, L13 CÙNG đọc file này nên chúng không lệch nhau được — cùng lý lẽ với HAU_TO_KHACH export từ một chỗ (AGENTS.md).",
+  "nhom": {
+    "A": "Định danh trong code. Giữ nguyên, LUÔN trong backtick, không cần chú giải. Xuất hiện trần trong văn xuôi là lỗi §4-A.",
+    "B": "Đã có từ Việt đứng được. Dùng tiếng Việt, chú giải tiếng Anh MỘT lần ở bài đầu tiên.",
+    "C": "Chưa có từ Việt đứng được. Giữ tiếng Anh, chú giải MÔ TẢ một lần. ĐỪNG dịch cố — một bản dịch tự chế còn khó hơn từ gốc."
+  },
+  "khoa": "Khoá là (thuatNgu, nguCanh), KHÔNG phải một trường. Corpus có \"stack\" mang hai nghĩa không liên quan (CT01 là call stack, PD20 là `DataFrame.stack()`), \"index\" hai nghĩa (vị trí trong array ở NP02, đối tượng nhãn hàng ở PD01) và \"pipe\"/\"kernel\" cũng vậy. Khoá một trường ép những thứ đó thành một.",
+  "truong": {
+    "phamVi": "Tiền tố mã bài mà NGHĨA này áp dụng. Vắng mặt = toàn khoá. Đây là thứ làm khoá hai trường CHẠY ĐƯỢC thay vì chỉ được khai: không có nó, script không biết \"stack\" ở PD20 là nghĩa nào.",
+    "baiDauTien": "Bài đầu tiên THEO THỨ TỰ CHƯƠNG mà thuật ngữ xuất hiện ngoài backtick, trong phạm vi. KHÔNG gõ tay: check_vanphong.py đối chiếu lại nó với corpus ở MỖI lần chạy (luật TB) và báo lỗi nếu lệch — nếu không, chèn một đoạn mới vào giữa khoá là L10 đi kiểm chú giải Ở SAI BÀI mà không ai thấy.",
+    "chuGiai": "Câu chú giải MẪU. L10 chỉ kiểm CÓ MẶT một chú giải, không kiểm nó đúng hay đủ (§9.3)."
+  },
+  "thuatNgu": [
+    {
+      "thuatNgu": "print",
+      "nhom": "A",
+      "nguCanh": "ham-dung-san",
+      "baiDauTien": "PY03"
+    },
+    {
+      "thuatNgu": "list",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY08"
+    },
+    {
+      "thuatNgu": "dict",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY11"
+    },
+    {
+      "thuatNgu": "dictionary",
+      "nhom": "C",
+      "nguCanh": "kieu-tu-dien",
+      "chuGiai": "Một **dictionary** (`dict`) lưu các cặp khoá–giá trị và tra theo khoá thay vì theo vị trí.",
+      "baiDauTien": "PY12",
+      "ghiChu": "KHÔNG phải nhóm A: `dict` là định danh trong code, còn \"dictionary\" là từ tiếng Anh trong văn xuôi — đòi nó nằm trong backtick là sai."
+    },
+    {
+      "thuatNgu": "tuple",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY11"
+    },
+    {
+      "thuatNgu": "set",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "phamVi": [
+        "PY",
+        "SY"
+      ],
+      "baiDauTien": "PY11"
+    },
+    {
+      "thuatNgu": "int",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY03"
+    },
+    {
+      "thuatNgu": "float",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY05"
+    },
+    {
+      "thuatNgu": "str",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY03"
+    },
+    {
+      "thuatNgu": "bytes",
+      "nhom": "A",
+      "nguCanh": "kieu-python",
+      "baiDauTien": "PY11"
+    },
+    {
+      "thuatNgu": "byte",
+      "nhom": "C",
+      "nguCanh": "don-vi-du-lieu",
+      "chuGiai": "Một **byte** là tám bit, đơn vị nhỏ nhất mà file được đo bằng.",
+      "baiDauTien": "PY11"
+    },
+    {
+      "thuatNgu": "True",
+      "nhom": "A",
+      "nguCanh": "hang-python",
+      "baiDauTien": "PY04"
+    },
+    {
+      "thuatNgu": "False",
+      "nhom": "A",
+      "nguCanh": "hang-python",
+      "baiDauTien": "PY04"
+    },
+    {
+      "thuatNgu": "None",
+      "nhom": "A",
+      "nguCanh": "hang-python",
+      "baiDauTien": "PY10"
+    },
+    {
+      "thuatNgu": "NaN",
+      "nhom": "C",
+      "nguCanh": "du-lieu-thieu",
+      "chuGiai": "**NaN** (not a number) là ô không có số — pandas và NumPy dùng nó để đánh dấu dữ liệu thiếu.",
+      "baiDauTien": "NP17"
+    },
+    {
+      "thuatNgu": "DataFrame",
+      "nhom": "A",
+      "nguCanh": "pandas-bang",
+      "baiDauTien": "PD02"
+    },
+    {
+      "thuatNgu": "Series",
+      "nhom": "A",
+      "nguCanh": "pandas-cot",
+      "baiDauTien": "PD01"
+    },
+    {
+      "thuatNgu": "groupby",
+      "nhom": "A",
+      "nguCanh": "pandas-gom-nhom",
+      "baiDauTien": "PD14"
+    },
+    {
+      "thuatNgu": "numpy",
+      "nhom": "C",
+      "nguCanh": "ten-thu-vien",
+      "chuGiai": "**NumPy** là thư viện tính toán trên cả dãy số một lượt, nền của pandas và matplotlib.",
+      "baiDauTien": "PY02",
+      "ghiChu": "Tên THƯ VIỆN là danh từ riêng trong văn xuôi (\"NumPy là package bên ngoài\"), không phải định danh trong code — xếp nhóm A thì §4-A báo oan 26 lần. Định danh `np`/`np.array` vẫn phải trong backtick."
+    },
+    {
+      "thuatNgu": "pandas",
+      "nhom": "C",
+      "nguCanh": "ten-thu-vien",
+      "chuGiai": "**pandas** là thư viện làm việc với bảng dữ liệu có nhãn hàng và nhãn cột.",
+      "baiDauTien": "NP23"
+    },
+    {
+      "thuatNgu": "matplotlib",
+      "nhom": "C",
+      "nguCanh": "ten-thu-vien",
+      "chuGiai": "**matplotlib** là thư viện vẽ hình của Python.",
+      "baiDauTien": "NP23"
+    },
+    {
+      "thuatNgu": "tkinter",
+      "nhom": "C",
+      "nguCanh": "ten-thu-vien",
+      "chuGiai": "**Tkinter** là thư viện giao diện đồ hoạ đi kèm Python.",
+      "baiDauTien": "PY17"
+    },
+    {
+      "thuatNgu": "curses",
+      "nhom": "A",
+      "nguCanh": "ten-thu-vien",
+      "baiDauTien": "SY12"
+    },
+    {
+      "thuatNgu": "subprocess",
+      "nhom": "A",
+      "nguCanh": "ten-thu-vien",
+      "baiDauTien": "CT02"
+    },
+    {
+      "thuatNgu": "pickle",
+      "nhom": "C",
+      "nguCanh": "dinh-dang-luu",
+      "chuGiai": "**Pickle** là định dạng nhị phân riêng của Python để lưu nguyên một object ra file rồi đọc lại.",
+      "baiDauTien": "SY21"
+    },
+    {
+      "thuatNgu": "gzip",
+      "nhom": "A",
+      "nguCanh": "ten-thu-vien",
+      "baiDauTien": "SY19"
+    },
+    {
+      "thuatNgu": "plt",
+      "nhom": "A",
+      "nguCanh": "bien-quy-uoc",
+      "baiDauTien": "VZ01"
+    },
+    {
+      "thuatNgu": "fig",
+      "nhom": "A",
+      "nguCanh": "bien-quy-uoc",
+      "baiDauTien": "VZ02"
+    },
+    {
+      "thuatNgu": "ax",
+      "nhom": "A",
+      "nguCanh": "bien-quy-uoc",
+      "baiDauTien": "VZ02"
+    },
+    {
+      "thuatNgu": "Figure",
+      "nhom": "A",
+      "nguCanh": "matplotlib-doi-tuong",
+      "baiDauTien": "VZ02"
+    },
+    {
+      "thuatNgu": "Axes",
+      "nhom": "A",
+      "nguCanh": "matplotlib-doi-tuong",
+      "baiDauTien": "VZ02"
+    },
+    {
+      "thuatNgu": "Thread",
+      "nhom": "A",
+      "nguCanh": "lop-threading",
+      "baiDauTien": "PY17"
+    },
+    {
+      "thuatNgu": "Popen",
+      "nhom": "A",
+      "nguCanh": "lop-subprocess",
+      "baiDauTien": "CT07"
+    },
+    {
+      "thuatNgu": "mainloop",
+      "nhom": "A",
+      "nguCanh": "tkinter-vong-lap",
+      "baiDauTien": "GU01"
+    },
+    {
+      "thuatNgu": "pip",
+      "nhom": "A",
+      "nguCanh": "lenh-cong-cu",
+      "baiDauTien": "PY02"
+    },
+    {
+      "thuatNgu": "conda",
+      "nhom": "A",
+      "nguCanh": "lenh-cong-cu",
+      "baiDauTien": "PY02"
+    },
+    {
+      "thuatNgu": "exec",
+      "nhom": "A",
+      "nguCanh": "ho-ham-he-dieu-hanh",
+      "baiDauTien": "CT02"
+    },
+    {
+      "thuatNgu": "fork",
+      "nhom": "C",
+      "nguCanh": "tao-tien-trinh-con",
+      "chuGiai": "**fork** là cách UNIX tạo tiến trình con: hệ điều hành nhân đôi tiến trình đang chạy.",
+      "baiDauTien": "SY04"
+    },
+    {
+      "thuatNgu": "stack",
+      "nhom": "A",
+      "nguCanh": "pandas-doi-hinh-dang",
+      "phamVi": [
+        "PD",
+        "RD"
+      ],
+      "baiDauTien": "PD20",
+      "ghiChu": "Nghĩa THỨ HAI của \"stack\" — `DataFrame.stack()`. Không liên quan gì tới call stack ở CT01; đây là lý do khoá phải là (thuật ngữ, ngữ cảnh)."
+    },
+    {
+      "thuatNgu": "pipe",
+      "nhom": "A",
+      "nguCanh": "pandas-noi-buoc",
+      "phamVi": [
+        "PD"
+      ],
+      "baiDauTien": "PD30",
+      "ghiChu": "Nghĩa THỨ HAI của \"pipe\" — `DataFrame.pipe()`, khác hẳn pipe của hệ điều hành ở CT07."
+    },
+    {
+      "thuatNgu": "thread",
+      "nhom": "B",
+      "nguCanh": "da-luong",
+      "tiengViet": "luồng",
+      "chuGiai": "Một **luồng (thread)** là một dòng thực thi bên trong cùng một tiến trình; các luồng dùng chung bộ nhớ của tiến trình đó.",
+      "baiDauTien": "PY17"
+    },
+    {
+      "thuatNgu": "process",
+      "nhom": "B",
+      "nguCanh": "he-dieu-hanh",
+      "tiengViet": "tiến trình",
+      "chuGiai": "Mỗi lần chương trình được chạy là một **tiến trình (process)**, có số nhận diện riêng và vùng bộ nhớ riêng.",
+      "baiDauTien": "SY15"
+    },
+    {
+      "thuatNgu": "buffer",
+      "nhom": "B",
+      "nguCanh": "vao-ra",
+      "tiengViet": "bộ đệm",
+      "chuGiai": "**Bộ đệm (buffer)** gom dữ liệu lại trước khi chuyển tiếp, để giảm số lần đọc/ghi.",
+      "baiDauTien": "SY17"
+    },
+    {
+      "thuatNgu": "index",
+      "nhom": "B",
+      "nguCanh": "vi-tri-trong-day",
+      "tiengViet": "chỉ số",
+      "chuGiai": "Một **index (chỉ số)** đại diện cho một vị trí trong array.",
+      "phamVi": [
+        "PY",
+        "NP",
+        "RD",
+        "EX"
+      ],
+      "baiDauTien": "NP02"
+    },
+    {
+      "thuatNgu": "index",
+      "nhom": "C",
+      "nguCanh": "pandas-nhan-hang",
+      "chuGiai": "**Index** của một Series hay DataFrame là dãy nhãn của các hàng — nó là nhãn, không phải số đo.",
+      "phamVi": [
+        "PD"
+      ],
+      "baiDauTien": "PD01",
+      "ghiChu": "Nghĩa THỨ HAI của \"index\": ở pandas nó là ĐỐI TƯỢNG nhãn hàng, không phải một vị trí. Khoá một trường sẽ ép hai nghĩa này thành một."
+    },
+    {
+      "thuatNgu": "queue",
+      "nhom": "B",
+      "nguCanh": "hang-doi",
+      "tiengViet": "hàng đợi",
+      "chuGiai": "**Hàng đợi (queue)** giữ các việc đang chờ, lấy ra theo thứ tự vào.",
+      "baiDauTien": "CT03"
+    },
+    {
+      "thuatNgu": "array",
+      "nhom": "B",
+      "nguCanh": "numpy-mang",
+      "tiengViet": "mảng",
+      "chuGiai": "Một **mảng (array)** của NumPy giữ nhiều số cùng kiểu và tính toán trên cả dãy một lượt.",
+      "baiDauTien": "NP01"
+    },
+    {
+      "thuatNgu": "object",
+      "nhom": "B",
+      "nguCanh": "python-doi-tuong",
+      "tiengViet": "đối tượng",
+      "chuGiai": "Trong Python mọi giá trị là một **đối tượng (object)**: nó mang kiểu và mang các thao tác của kiểu đó.",
+      "baiDauTien": "PY04"
+    },
+    {
+      "thuatNgu": "class",
+      "nhom": "B",
+      "nguCanh": "lap-trinh-huong-doi-tuong",
+      "tiengViet": "lớp",
+      "chuGiai": "Một **lớp (class)** là khuôn mô tả dữ liệu và thao tác; từ khuôn đó tạo ra các đối tượng cụ thể.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "method",
+      "nhom": "B",
+      "nguCanh": "lap-trinh-huong-doi-tuong",
+      "tiengViet": "phương thức",
+      "chuGiai": "Một **phương thức (method)** là hàm gắn với một đối tượng, gọi qua dấu chấm.",
+      "baiDauTien": "VZ21"
+    },
+    {
+      "thuatNgu": "package",
+      "nhom": "B",
+      "nguCanh": "goi-thu-vien",
+      "tiengViet": "gói",
+      "chuGiai": "Một **gói (package)** là một tập module cài và nạp được như một đơn vị.",
+      "baiDauTien": "PY02"
+    },
+    {
+      "thuatNgu": "value",
+      "nhom": "B",
+      "nguCanh": "gia-tri",
+      "tiengViet": "giá trị",
+      "chuGiai": "Mỗi lượt lặp, biến nhận một **giá trị (value)** của dãy.",
+      "baiDauTien": "PY14"
+    },
+    {
+      "thuatNgu": "output",
+      "nhom": "B",
+      "nguCanh": "dau-ra",
+      "tiengViet": "đầu ra",
+      "chuGiai": "**Đầu ra (output)** là phần chương trình in ra cho bạn đọc.",
+      "baiDauTien": "PY03"
+    },
+    {
+      "thuatNgu": "input",
+      "nhom": "B",
+      "nguCanh": "dau-vao",
+      "tiengViet": "đầu vào",
+      "chuGiai": "**Đầu vào (input)** là dữ liệu chương trình nhận để xử lý.",
+      "baiDauTien": "PY14"
+    },
+    {
+      "thuatNgu": "label",
+      "nhom": "B",
+      "nguCanh": "nhan-hinh-ve",
+      "tiengViet": "nhãn",
+      "chuGiai": "Một **nhãn (label)** là chữ đặt cạnh một đường hay một trục để nói nó là gì.",
+      "baiDauTien": "VZ03"
+    },
+    {
+      "thuatNgu": "string",
+      "nhom": "B",
+      "nguCanh": "kieu-chuoi",
+      "tiengViet": "chuỗi",
+      "chuGiai": "Một **chuỗi (string)** là dãy ký tự; trong Python nó không sửa được tại chỗ.",
+      "baiDauTien": "PY08"
+    },
+    {
+      "thuatNgu": "comment",
+      "nhom": "B",
+      "nguCanh": "ghi-chu-trong-code",
+      "tiengViet": "chú thích",
+      "chuGiai": "Một **chú thích (comment)** là dòng Python bỏ qua, viết cho người đọc.",
+      "baiDauTien": "PY06"
+    },
+    {
+      "thuatNgu": "version",
+      "nhom": "B",
+      "nguCanh": "phien-ban",
+      "tiengViet": "phiên bản",
+      "chuGiai": "**Phiên bản (version)** của một thư viện quyết định hàm nào có mặt.",
+      "baiDauTien": "PD10"
+    },
+    {
+      "thuatNgu": "report",
+      "nhom": "B",
+      "nguCanh": "bao-cao",
+      "tiengViet": "báo cáo",
+      "chuGiai": "Một **báo cáo (report)** là bản kết quả xuất ra cho người đọc.",
+      "baiDauTien": "SY07"
+    },
+    {
+      "thuatNgu": "slice",
+      "nhom": "B",
+      "nguCanh": "lat-cat",
+      "tiengViet": "lát cắt",
+      "chuGiai": "Dấu hai chấm tạo một **lát cắt (slice)**, tức một đoạn liên tiếp của dãy.",
+      "baiDauTien": "PY07"
+    },
+    {
+      "thuatNgu": "parent",
+      "nhom": "B",
+      "nguCanh": "cay-tien-trinh",
+      "tiengViet": "tiến trình cha",
+      "chuGiai": "**Tiến trình cha (parent)** là tiến trình đã tạo ra tiến trình đang xét.",
+      "baiDauTien": "RC01"
+    },
+    {
+      "thuatNgu": "child",
+      "nhom": "B",
+      "nguCanh": "cay-tien-trinh",
+      "tiengViet": "tiến trình con",
+      "chuGiai": "**Tiến trình con (child)** là tiến trình do một tiến trình khác tạo ra.",
+      "baiDauTien": "RC01"
+    },
+    {
+      "thuatNgu": "scheduler",
+      "nhom": "B",
+      "nguCanh": "dieu-phoi-cpu",
+      "tiengViet": "bộ điều phối",
+      "chuGiai": "**Bộ điều phối (scheduler)** của hệ điều hành chọn tiến trình nào được dùng CPU tiếp theo.",
+      "baiDauTien": "CT03"
+    },
+    {
+      "thuatNgu": "frame",
+      "nhom": "B",
+      "nguCanh": "tkinter-khung",
+      "tiengViet": "khung",
+      "chuGiai": "Một **khung (frame)** là vùng chứa để xếp các thành phần giao diện vào bên trong.",
+      "phamVi": [
+        "GU"
+      ],
+      "baiDauTien": "GU03"
+    },
+    {
+      "thuatNgu": "snapshot",
+      "nhom": "B",
+      "nguCanh": "ban-chup-trang-thai",
+      "tiengViet": "bản chụp",
+      "chuGiai": "Một **bản chụp (snapshot)** là trạng thái dữ liệu tại một thời điểm, giữ lại để so sánh.",
+      "baiDauTien": "CT13"
+    },
+    {
+      "thuatNgu": "kernel",
+      "nhom": "B",
+      "nguCanh": "hat-nhan-he-dieu-hanh",
+      "tiengViet": "hạt nhân",
+      "chuGiai": "**Hạt nhân (kernel)** là phần lõi của hệ điều hành, phần duy nhất chạm trực tiếp vào thiết bị.",
+      "phamVi": [
+        "SY",
+        "CT",
+        "RC"
+      ],
+      "baiDauTien": "SY11",
+      "ghiChu": "Nghĩa THỨ HAI của \"kernel\". Ở PY03 nó là kernel của Jupyter — một tiến trình Python giữ biến giữa các cell — không phải hạt nhân hệ điều hành."
+    },
+    {
+      "thuatNgu": "kernel",
+      "nhom": "C",
+      "nguCanh": "jupyter-tien-trinh-tinh",
+      "chuGiai": "**Kernel** của notebook là tiến trình Python chạy phía sau và giữ lại các biến giữa những lần chạy cell.",
+      "phamVi": [
+        "PY",
+        "EX"
+      ],
+      "baiDauTien": "PY03"
+    },
+    {
+      "thuatNgu": "cell",
+      "nhom": "B",
+      "nguCanh": "notebook-o-code",
+      "tiengViet": "ô code",
+      "chuGiai": "Mở Python hoặc một **ô code (cell)** trong notebook rồi chạy.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "GPA",
+      "nhom": "B",
+      "nguCanh": "diem-trung-binh",
+      "tiengViet": "điểm trung bình",
+      "chuGiai": "**Điểm trung bình (GPA)** là trung bình có trọng số theo số tín chỉ.",
+      "baiDauTien": "SY13"
+    },
+    {
+      "thuatNgu": "file",
+      "nhom": "C",
+      "nguCanh": "tep-tren-dia",
+      "chuGiai": "Một **file** là dữ liệu đã ghi xuống đĩa, đọc lại được ở lần chạy sau.",
+      "baiDauTien": "PY01",
+      "ghiChu": "\"Tệp tin\" đứng được, nhưng toàn bộ corpus và tài liệu Python tiếng Việt dùng \"file\"; xếp C để L13 không sinh 158 cảnh báo không ai sửa."
+    },
+    {
+      "thuatNgu": "code",
+      "nhom": "C",
+      "nguCanh": "ma-chuong-trinh",
+      "chuGiai": "**Code** là phần chữ bạn viết cho máy chạy.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "script",
+      "nhom": "C",
+      "nguCanh": "file-chay-truc-tiep",
+      "chuGiai": "Một **script** là một file code chạy trực tiếp từ dòng lệnh.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "module",
+      "nhom": "C",
+      "nguCanh": "don-vi-nap-duoc",
+      "chuGiai": "Một **module** là một file Python nạp được vào file khác bằng `import`.",
+      "baiDauTien": "PY02"
+    },
+    {
+      "thuatNgu": "heap",
+      "nhom": "C",
+      "nguCanh": "vung-cap-phat-dong",
+      "chuGiai": "**Heap** là vùng bộ nhớ chương trình xin thêm trong lúc chạy, khác với phần đã định trước.",
+      "baiDauTien": "CT01"
+    },
+    {
+      "thuatNgu": "stack",
+      "nhom": "C",
+      "nguCanh": "khung-loi-goi-ham",
+      "chuGiai": "**Stack** giữ khung của các lời gọi hàm đang mở: hàm nào gọi hàm nào, và biến cục bộ của từng lần gọi.",
+      "phamVi": [
+        "CT",
+        "RC",
+        "EX",
+        "SY"
+      ],
+      "baiDauTien": "CT01"
+    },
+    {
+      "thuatNgu": "callback",
+      "nhom": "C",
+      "nguCanh": "ham-duoc-goi-lai",
+      "chuGiai": "Một **callback** là hàm bạn giao cho thư viện gọi hộ khi một việc xảy ra.",
+      "baiDauTien": "PY17"
+    },
+    {
+      "thuatNgu": "descriptor",
+      "nhom": "C",
+      "nguCanh": "so-nhan-dien-vao-ra",
+      "chuGiai": "**File descriptor** là số nhận diện một tài nguyên I/O đang mở, chẳng hạn file hoặc thiết bị.",
+      "baiDauTien": "SY15"
+    },
+    {
+      "thuatNgu": "mask",
+      "nhom": "C",
+      "nguCanh": "mang-true-false-de-loc",
+      "chuGiai": "Array True/False dùng để đánh dấu các vị trí như vậy được gọi là **mask**.",
+      "baiDauTien": "NP13"
+    },
+    {
+      "thuatNgu": "worker",
+      "nhom": "C",
+      "nguCanh": "luong-hoac-tien-trinh-lam-viec",
+      "chuGiai": "Một **worker** là luồng hoặc tiến trình nhận phần việc nặng, để phần chính không phải chờ.",
+      "baiDauTien": "CT01"
+    },
+    {
+      "thuatNgu": "widget",
+      "nhom": "C",
+      "nguCanh": "thanh-phan-giao-dien",
+      "chuGiai": "Một **widget** là một thành phần giao diện: nút, ô nhập, danh sách chọn.",
+      "baiDauTien": "VZ23"
+    },
+    {
+      "thuatNgu": "instance",
+      "nhom": "C",
+      "nguCanh": "doi-tuong-cu-the-cua-class",
+      "chuGiai": "Một object cụ thể được tạo từ một class gọi là **instance** của class đó.",
+      "baiDauTien": "SY05"
+    },
+    {
+      "thuatNgu": "seed",
+      "nhom": "C",
+      "nguCanh": "co-dinh-so-ngau-nhien",
+      "chuGiai": "**Seed** là số khởi đầu của bộ sinh số ngẫu nhiên: cùng seed thì cùng dãy số.",
+      "baiDauTien": "NP22"
+    },
+    {
+      "thuatNgu": "marker",
+      "nhom": "C",
+      "nguCanh": "dau-diem-tren-duong",
+      "chuGiai": "**Marker** là dấu vẽ tại từng điểm dữ liệu trên đường.",
+      "baiDauTien": "VZ03"
+    },
+    {
+      "thuatNgu": "trace",
+      "nhom": "C",
+      "nguCanh": "plotly-mot-chuoi-du-lieu",
+      "chuGiai": "Trong Plotly, một **trace** là một chuỗi dữ liệu được vẽ trên hình.",
+      "phamVi": [
+        "VZ"
+      ],
+      "baiDauTien": "VZ20"
+    },
+    {
+      "thuatNgu": "shell",
+      "nhom": "C",
+      "nguCanh": "chuong-trinh-nhan-lenh",
+      "chuGiai": "**Shell** là chương trình nhận câu lệnh bạn gõ và chạy chúng hộ bạn.",
+      "baiDauTien": "SY18"
+    },
+    {
+      "thuatNgu": "terminal",
+      "nhom": "C",
+      "nguCanh": "cua-so-dong-lenh",
+      "chuGiai": "**Terminal** là cửa sổ bạn gõ câu lệnh vào, không phải chỗ dán code Python.",
+      "baiDauTien": "PY02"
+    },
+    {
+      "thuatNgu": "notebook",
+      "nhom": "C",
+      "nguCanh": "moi-truong-o-code",
+      "chuGiai": "Một **notebook** là trang gồm nhiều ô code và ô văn bản, chạy được từng ô một.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "backend",
+      "nhom": "C",
+      "nguCanh": "phan-chay-phia-sau",
+      "chuGiai": "**Backend** là phần chương trình chạy phía sau, không phải phần người dùng nhìn thấy.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "pipe",
+      "nhom": "C",
+      "nguCanh": "duong-ong-giua-tien-trinh",
+      "chuGiai": "Một **pipe** là đường ống nối đầu ra của một tiến trình vào đầu vào của tiến trình khác.",
+      "phamVi": [
+        "CT",
+        "SY",
+        "EX",
+        "RC"
+      ],
+      "baiDauTien": "CT07"
+    },
+    {
+      "thuatNgu": "handle",
+      "nhom": "C",
+      "nguCanh": "the-nhan-dien-tai-nguyen",
+      "chuGiai": "Một **handle** là thẻ hệ điều hành trả về để bạn chỉ lại tài nguyên đã mở.",
+      "baiDauTien": "SY15"
+    },
+    {
+      "thuatNgu": "quantum",
+      "nhom": "C",
+      "nguCanh": "luot-cpu-moi-tien-trinh",
+      "chuGiai": "**Quantum** là khoảng thời gian CPU mỗi tiến trình được dùng trước khi bị thu lại.",
+      "baiDauTien": "CT06"
+    },
+    {
+      "thuatNgu": "preemptive",
+      "nhom": "C",
+      "nguCanh": "thu-cpu-giua-chung",
+      "chuGiai": "Điều phối **preemptive** là khi hệ điều hành thu CPU lại giữa chừng, không chờ tiến trình tự nhường.",
+      "baiDauTien": "CT03"
+    },
+    {
+      "thuatNgu": "GIL",
+      "nhom": "C",
+      "nguCanh": "khoa-thong-dich-python",
+      "chuGiai": "**GIL** (global interpreter lock) là khoá chỉ cho một luồng chạy bytecode Python tại một thời điểm.",
+      "baiDauTien": "CT09"
+    },
+    {
+      "thuatNgu": "PID",
+      "nhom": "C",
+      "nguCanh": "so-nhan-dien-tien-trinh",
+      "chuGiai": "**PID** là số hệ điều hành gán để nhận diện một tiến trình.",
+      "baiDauTien": "CT01"
+    },
+    {
+      "thuatNgu": "CPU",
+      "nhom": "C",
+      "nguCanh": "bo-xu-ly",
+      "chuGiai": "**CPU** là bộ xử lý: phần thực sự chạy từng lệnh của chương trình.",
+      "baiDauTien": "PY01"
+    },
+    {
+      "thuatNgu": "RAM",
+      "nhom": "C",
+      "nguCanh": "bo-nho-trong",
+      "chuGiai": "**RAM** là bộ nhớ trong — nhanh, nhưng mất khi tiến trình kết thúc.",
+      "baiDauTien": "PD29"
+    },
+    {
+      "thuatNgu": "stdout",
+      "nhom": "C",
+      "nguCanh": "luong-ra-chuan",
+      "chuGiai": "**stdout** là luồng ra chuẩn: chỗ `print` gửi chữ tới.",
+      "baiDauTien": "PY08"
+    },
+    {
+      "thuatNgu": "stdin",
+      "nhom": "C",
+      "nguCanh": "luong-vao-chuan",
+      "chuGiai": "**stdin** là luồng vào chuẩn, thường nhận từ bàn phím.",
+      "baiDauTien": "PY08"
+    },
+    {
+      "thuatNgu": "CSV",
+      "nhom": "C",
+      "nguCanh": "dinh-dang-bang-text",
+      "chuGiai": "**CSV** là file text lưu bảng, mỗi dòng một hàng và các ô cách nhau bằng dấu phẩy.",
+      "baiDauTien": "NP21"
+    },
+    {
+      "thuatNgu": "JSON",
+      "nhom": "C",
+      "nguCanh": "dinh-dang-du-lieu-text",
+      "chuGiai": "**JSON** là định dạng text lưu dữ liệu lồng nhau, đọc được bằng mắt.",
+      "baiDauTien": "PD13"
+    },
+    {
+      "thuatNgu": "SQL",
+      "nhom": "C",
+      "nguCanh": "ngon-ngu-truy-van",
+      "chuGiai": "**SQL** là ngôn ngữ hỏi dữ liệu trong cơ sở dữ liệu quan hệ.",
+      "baiDauTien": "PD17"
+    },
+    {
+      "thuatNgu": "HTML",
+      "nhom": "C",
+      "nguCanh": "dinh-dang-trang-web",
+      "chuGiai": "**HTML** là định dạng của trang web — hình Plotly xuất ra một file như vậy.",
+      "baiDauTien": "VZ20"
+    },
+    {
+      "thuatNgu": "API",
+      "nhom": "C",
+      "nguCanh": "tap-ham-mot-thu-vien-mo-ra",
+      "chuGiai": "**API** là tập hàm và quy ước mà một thư viện mở ra cho bạn gọi.",
+      "baiDauTien": "PD13"
+    },
+    {
+      "thuatNgu": "GUI",
+      "nhom": "C",
+      "nguCanh": "giao-dien-do-hoa",
+      "chuGiai": "**GUI** là giao diện đồ hoạ: cửa sổ, nút, ô nhập — thay cho dòng lệnh.",
+      "baiDauTien": "PY17"
+    },
+    {
+      "thuatNgu": "CLI",
+      "nhom": "C",
+      "nguCanh": "giao-dien-dong-lenh",
+      "chuGiai": "**CLI** là giao diện dòng lệnh: bạn gõ lệnh và đọc chữ trả về.",
+      "baiDauTien": "PY15"
+    },
+    {
+      "thuatNgu": "IQR",
+      "nhom": "C",
+      "nguCanh": "khoang-tu-phan-vi",
+      "chuGiai": "**IQR** là khoảng giữa tứ phân vị thứ nhất và thứ ba, dùng để tìm điểm ngoại lai.",
+      "baiDauTien": "PD31"
+    },
+    {
+      "thuatNgu": "vector",
+      "nhom": "C",
+      "nguCanh": "phep-toan-tren-ca-day",
+      "chuGiai": "Viết phép toán **vector** nghĩa là áp một phép tính lên cả dãy số một lượt, không viết vòng lặp.",
+      "baiDauTien": "PD25"
+    },
+    {
+      "thuatNgu": "slide",
+      "nhom": "C",
+      "nguCanh": "trang-trinh-bay-bai-giang-goc",
+      "chuGiai": "**Slide** ở đây là trang trình bày của bài giảng gốc mà giáo trình này dựa vào.",
+      "baiDauTien": "PY02",
+      "ghiChu": "Thuật ngữ tham chiếu NGUỒN, không phải thuật ngữ lập trình. Nó xuất hiện 30 lần trong phần giảng, đúng loại rò ghi-chú-cho-dev mà §7 nói tới."
+    },
+    {
+      "thuatNgu": "repository",
+      "nhom": "C",
+      "nguCanh": "kho-ma-nguon",
+      "chuGiai": "Một **repository** là kho chứa mã nguồn cùng toàn bộ lịch sử sửa của nó.",
+      "baiDauTien": "SY04"
+    },
+    {
+      "thuatNgu": "commit",
+      "nhom": "C",
+      "nguCanh": "mot-lan-ghi-lich-su",
+      "chuGiai": "Một **commit** là một lần ghi thay đổi vào lịch sử của repository.",
+      "baiDauTien": "SY04"
+    }
+  ]
+}
