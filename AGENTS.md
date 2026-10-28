@@ -43,16 +43,17 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 
 ## Mốc nền
 
-Đo lại ngày 24/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
+Đo lại ngày 28/10/2026, bằng cách tự chạy từng lệnh. Đừng để tụt xuống dưới mức này:
 
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | 27 bộ, 283 ca, tất cả đạt |
+| Backend test | **30 bộ, 363 ca**, tất cả đạt |
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **231 ca** / 20 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **295 ca** / 23 tệp, tất cả đạt |
+| Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 145 bài, 406 đoạn code, **0 hỏng**, 14 cảnh báo, ~33 s |
@@ -68,14 +69,26 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 231 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 295 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
 ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
-ide-trace 38 · label-version 2 · lesson-load 7 · practice-contract 14 · prewarm-gate 5 ·
-read-try-it 20 · session-marker 5 · studio-lesson 41 · tracer-web-sync 5 · trap-leak 3 ·
-worker-csp 7 = 231.
-Mốc trước là 211; thêm read-try-it 20 (nút "Try it Yourself" ở màn đọc — xem bẫy dưới).
-Trước đó 196 → 211 là practice-contract 14 và studio-lesson 40 → 41.
+ide-trace 38 · label-version 2 · learning-events 48 · lesson-load 7 · mcq-code 9 ·
+practice-contract 14 · prewarm-gate 5 · read-try-it 20 · session-marker 5 ·
+studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 295.
+Mốc trước là 231; thêm learning-events 48, mcq-code 9 và tracer-limits 7.
+Trước đó 211 → 231 là read-try-it 20 (nút "Try it Yourself" ở màn đọc — xem bẫy dưới),
+và 196 → 211 là practice-contract 14 và studio-lesson 40 → 41.
+
+**Đếm phân rã bằng `sed`, đừng bằng `grep -E "^. pass"`** — dòng tổng kết của
+`node --test` mở đầu bằng `ℹ` (multibyte), nên `^.` không khớp và vòng lặp trả về RỖNG
+cho mọi file mà không báo lỗi. Cùng họ bẫy CRLF ghi ở `label-version` dưới đây:
+
+```bash
+cd frontend && for f in e2e/unit/*.test.mjs; do
+  node --test --experimental-strip-types "$f" 2>&1 \
+    | sed -n 's/.*[[:space:]]pass \([0-9]\+\)[[:space:]]*$/\1/p' | tail -1
+done
+```
 
 Dòng này từng ghi **204** trong khi cây mã chỉ có 134 — một con số cũ trong bảng không phải
 chú thích lỗi thời vô hại, nó là 70 ca test tưởng có mà không có. Thêm/bớt ca ⇒ chạy lệnh,
@@ -441,6 +454,60 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   cách duy nhất để một route nói câu 429 riêng. `docs/azure-runner-plan.md` (909 dòng) được
   ĐÁNH DẤU lỗi thời chứ không xoá: phần nghiên cứu chi phí còn giá trị cho ngày cần chạy mã ở
   máy chủ thật. Mục 6 của `docs/deploy-runbook.md` đã viết lại.
+- **`build-tracer-source.mjs` HỎNG từ 25/10 tới 28/10, và bộ canh lệch không thấy được.**
+  Nó ghi `src/python-runner/tracer/tracer-source.ts` TRƯỚC rồi mới ghi bản cho trình duyệt,
+  mà thư mục đó bị xoá cùng bộ chạy máy chủ — `mkdirSync` chỉ chạy cho đích WEB và chạy
+  SAU, nên script chết `ENOENT` trước khi ghi được gì. Hệ quả: suốt ba ngày **không ai
+  sinh lại được `pe_tracer.min.py`** — tức sửa `scripts/tracer/pe_tracer.py` là sửa vào
+  một file không có đường nào tới trình duyệt. `tracer-web-sync.test.mjs` bắt được "hai
+  bản LỆCH" nhưng không bắt được "không có cách nào làm cho khớp": nó so hai file, và hai
+  file đó vẫn khớp nhau ở bản cũ. Nay chỉ còn MỘT đích (bản nhúng TS không còn ai import,
+  đã grep). Kiểm lại: `node scripts/build-tracer-source.mjs` phải in ra số byte, và chạy
+  hai lần phải ra file giống nhau từng byte.
+- **Hai trần của tracer từng được biện minh bằng hạ tầng ĐÃ XOÁ — và một trong hai làm
+  MẤT HẲN vết.** `maxBytes` 700 KB vì *"Node giữ tối đa 1 MB mỗi luồng (MAX_BUFFER trong
+  `docker-sandbox.ts`)"*, `timeBudgetMs` 6 500 vì *"container bị giết ở 10 s"*. Không còn
+  luồng Node nào, không còn container nào. Và cái giá không phải một chú thích lỗi thời vô
+  hại: **6 500 > trần 5 000 ms của bài học** (`DEFAULT_LIMITS.execMs` trong
+  `runner/types.ts`), nên trên đường đó tracer KHÔNG BAO GIỜ tới được trần của chính mình
+  — `terminate()` tới trước, và `terminate()` thì không có thông điệp `result` nào mang
+  vết về. Người học nhận **ô TRỐNG** thay vì vết một phần. Đúng họ bẫy "`terminate()` giết
+  luôn thông điệp 'result'" ghi ở trên, lần này ở đường ghi vết.
+  Nay `maxBytes` **1 536 KB** và `timeBudgetMs` **4 000** — đo trong module worker THẬT
+  (`node scripts/tracer/do-settrace.mjs`, Pyodide 314.0.7, trung vị 8 lượt):
+  · ca chậm nhất của 8 đoạn mẫu là **230–290 ms**, nên 4 000 ms là hơn 13 lần biên;
+  · 1,5 MB tốn ~290 ms và **4,54 MB** heap main thread (CDP `Runtime.getHeapUsage` sau
+    `collectGarbage`; `performance.memory` VÔ DỤNG — Chrome làm tròn về đúng 10 000 000),
+    và nó MUA được thứ 700 KB đang lấy đi: `rows.append({...})` 400 lần đi từ bước
+    **150 → 223**, ma trận 60×60 từ **350 → 524**. **Trần BYTE, không phải trần bước, mới
+    quyết định người học xem được bao nhiêu** — mỗi bước chụp lại cả collection nên JSON
+    phình bình phương. Đừng coi 1,5 MB là bậc thang đầu của một dãy: gấp đôi byte chỉ thêm
+    ~50% bước, muốn hơn thì phải sửa CÁCH CHỤP (`maxItems`, chụp vi phân), chưa làm.
+  **`timeBudgetMs` là trần MỀM, và chỗ này là chỗ duy nhất nói ra.** Trong Pyodide
+  `hasattr(signal, "setitimer")` là **False** (Emscripten-5.0.3-wasm32) — `SIGALRM` thì CÓ
+  và `signal.signal` chạy không lỗi, nên **suy từ `SIGALRM` là suy sai**. Vậy
+  `st["watchdog"]` không bao giờ True ⇒ `_stop_tracing()` GIỮ callback ⇒ hai hệ quả đã đo:
+  · trần thời gian chỉ được kiểm TRONG callback, nên `time.sleep(8)` sau trần bước làm
+    tracer về ở **8 044 ms** chứ không ở 4 000 — vì vậy hạn 20 s của `ide-trace.ts` PHẢI
+    ở lại, nó là đường cắt duy nhất còn sống;
+  · **hạ `maxSteps` KHÔNG cứu được ca xấu** nên nó giữ 1 000: `while True: i += 1` đi qua
+    **4 055 730 lượt gọi callback** (~1,6 µs/lượt) để ghi đúng 1 000 bước. Chi phí trội
+    nằm ở SỐ SỰ KIỆN, không ở số bước ghi. Và hệ số chậm cao nhất (57×) đến từ việc TUẦN
+    TỰ HOÁ GIÁ TRỊ, không từ chi phí callback — nên "hệ số cao" ở đây KHÔNG đồng nghĩa
+    "phải hạ trần bước".
+  Hệ số `sys.settrace` dưới WASM (không nguồn nào trên thế giới lượng hoá): mã vô
+  hướng/điều khiển luồng **5,6×–57×**, mã dữ liệu (`df.groupby().agg()`, numpy) chỉ
+  **1,1×–1,3×** vì tracer lọc theo `co_filename` nên ruột thư viện không sinh sự kiện.
+  Tham chiếu desktop gần nhất là ~5× (benchmark của coverage.py) — nhớ điều đó nếu có
+  ngày tính sẵn vết tại build cho cả 172 bài.
+  `tracer-limits.test.mjs` (7 ca) canh QUAN HỆ giữa trần của tracer và trần của các lớp sẽ
+  cắt nó, chứ không canh "con số bằng mấy", và nó đọc trần 5 giây từ chính `runner/types.ts`
+  thay vì chép thành hằng thứ hai. Ablate: trả nguyên khối `PE_LIMITS` cũ → 3 đỏ; chạm
+  trần bước mà `return None` (cắt im lặng) → 1; `do-settrace.mjs` thôi tạo module worker →
+  1; sửa `.py` mà quên sinh lại `.min.py` → 1.
+  **Fixture của `ide-trace.test.mjs` CỐ Ý không khớp hằng thật** (`timeBudgetMs: 6500`):
+  đó là thứ duy nhất chứng minh `stopNotice` lấy số từ `doc.limits`. Fixture trùng hằng
+  thật thì một bản ghi cứng "4 giây" cũng ĐẠT. Đừng "sửa cho khớp".
 - **Request API ĐẦU TIÊN sau lúc máy chủ nghỉ mất hơn 25 giây, và trang không nói gì.**
   Đo trên production 25/10/2026: lượt đầu >25 s (Render + Neon thức dậy), các lượt sau 300 ms.
   Suốt quãng đó `StudioLesson` chỉ hiện "Đang tải bài học…" — không một chữ nào nói vì sao,
@@ -688,10 +755,20 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   và nhồi rác `@guest.local` vào bảng users. Hạn mức tính theo IP nên cả phòng máy chung một
   NAT sẽ nhận 429 đúng lúc có người cần tài khoản thật. Luật dùng:
   · trang BÀI HỌC (`/lesson/*`) — nơi học viên thật sự cần một danh tính để lưu tiến độ — dùng
-    `apiFetch`;
-  · mọi trang công khai (trang chủ, `/courses/*`, badge "Tiếp tục ở bài X"…) dùng
-    **`apiFetchSessionOnly`**: nó chỉ gửi kèm phiên đang có, 401 thì trả về 401 và để UI hiện
-    trạng thái "chưa đăng nhập", KHÔNG tạo tài khoản.
+    `apiFetch`. Hôm nay đúng ba chỗ gọi nó, và cả ba đều ở bài học: `useLessonData.ts`,
+    `PythonStudio.tsx`, `LessonDbDesign.tsx` (cộng `learning-events.ts` khi lớp log được bật);
+  · **mọi trang công khai KHÔNG gọi API nào cả** — trang chủ và `/courses/*` đọc danh mục TĨNH
+    (`catalog.ts` + `curricula.json`), còn badge "Tiếp tục ở bài X" đọc cookie mốc
+    `pe_has_session` qua `pe-bridge.js`. Đó là cơ chế THẬT đang chặn chuyện bot sinh tài khoản,
+    và nó mạnh hơn một hàm fetch cẩn thận: không có đường nào để gọi sai.
+  **Dòng này từng ghi "mọi trang công khai dùng `apiFetchSessionOnly`" — hàm đó CHƯA BAO GIỜ
+  được viết.** `grep -rn apiFetchSessionOnly frontend/ src/` ra 0 kết quả; `api.ts` chỉ export
+  `apiFetch`, `danhDauPhien`, `asList`, `findEnrollment`, `HAN_DU_PHONG_GIAY`. Luật đúng về tinh
+  thần nhưng nó đặt tên một cơ chế không tồn tại, nên nó không chặn được gì — đúng họ bẫy mà
+  chính file này cảnh báo ở mục mốc nền ("một con số cũ trong bảng không phải chú thích lỗi thời
+  vô hại"). Ngày nào một trang công khai THẬT SỰ cần gọi API thì ĐÓ là lúc phải viết
+  `apiFetchSessionOnly` (chỉ gửi kèm phiên đang có; 401 thì trả 401 và để UI hiện "chưa đăng
+  nhập"; KHÔNG gọi `ensureGuest()`) — đừng cho rằng nó đã có.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 
