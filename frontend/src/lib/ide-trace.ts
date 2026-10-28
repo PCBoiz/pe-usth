@@ -25,11 +25,17 @@ export type IdeTraceResult = { trace: TraceDocument; run: TraceRunInfo };
 export class IdeTraceError extends Error {}
 
 /**
- * Dài hơn `timeBudgetMs` 6 500 ms của chính tracer, cộng chỗ cho lần nạp runtime
- * đầu tiên (~2 giây). Tracer TỰ dừng ở 6,5 giây và vẫn in ra vết đã ghi được —
+ * Dài hơn `timeBudgetMs` 4 000 ms của chính tracer, cộng chỗ cho lần nạp runtime
+ * đầu tiên (~2 giây). Tracer TỰ dừng ở 4 giây và vẫn trả về vết đã ghi được —
  * nên cái hẹn này chỉ để bắt trường hợp tracer không trả lời được nữa, và nó
- * phải thua cuộc trong mọi tình huống bình thường. Đặt ngắn hơn 6,5 giây là
- * cướp mất vết một phần mà học viên lẽ ra đã được xem.
+ * phải thua cuộc trong mọi tình huống bình thường. Đặt ngắn hơn 4 giây là cướp
+ * mất vết một phần mà học viên lẽ ra đã được xem.
+ *
+ * Con số 4 000 nằm ở `PE_LIMITS` trong `scripts/tracer/pe_tracer.py`, KHÔNG ở
+ * đây — đừng chép nó thành hằng thứ hai. Và nó là trần MỀM: đo được rằng
+ * `signal.setitimer` không tồn tại trong Pyodide, nên tracer chỉ kiểm giờ TRONG
+ * callback và một lời gọi thư viện dài (ví dụ `time.sleep(8)`) đi quá hạn mà
+ * không ai cắt được. Chính vì vậy cái hẹn 20 giây ở đây phải ở lại.
  */
 const TIMEOUT_MS = 20_000;
 

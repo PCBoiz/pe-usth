@@ -37,6 +37,11 @@ import {
   stopNotice,
 } from '../../src/lib/trace.ts';
 
+// CỐ Ý KHÔNG khớp `PE_LIMITS` thật (nay là timeBudgetMs 4000): câu cảnh báo
+// "hết thời gian" phải lấy số TỪ `doc.limits`, nên một fixture mang con số khác
+// là thứ duy nhất chứng minh được điều đó. Fixture trùng hằng thật thì một bản
+// `stopNotice` ghi cứng "4 giây" cũng ĐẠT. Trần đang chạy nằm ở
+// `scripts/tracer/pe_tracer.py`; `tracer-limits.test.mjs` canh con số đó.
 const LIMITS = {
   maxSteps: 1000,
   maxStringChars: 200,

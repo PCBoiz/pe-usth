@@ -1,31 +1,42 @@
 # -*- coding: utf-8 -*-
-"""Bộ ghi vết (tracer) chạy BÊN TRONG sandbox Docker, in ra một tài liệu JSON.
+"""Bộ ghi vết (tracer): chạy mã người học rồi trả về MỘT tài liệu JSON.
 
 Vì sao nó tồn tại: `/ide` cần cho người học bước từng dòng qua chương trình của
 mình — thấy dòng đang chạy, biến và giá trị, call stack, đầu ra tới thời điểm đó.
-Chấm/chạy đã nằm ở Python THẬT trong sandbox (xem src/python-runner), nên trực
-quan hoá cũng phải chạy ở đúng chỗ đó, không mô phỏng lại trong trình duyệt —
-người học phải thấy đúng cái Python mà họ sẽ nhận khi bấm Chạy.
+Trực quan hoá phải chạy ở ĐÚNG chỗ mã của họ chạy, không mô phỏng lại ở nơi khác:
+người học phải thấy đúng cái Python mà họ nhận khi bấm Chạy.
 
-Vì sao MỘT lần chạy ra TOÀN BỘ vết: mỗi lượt chạy là một container dùng một lần,
-không có tiến trình nào sống sót giữa hai request. Không thể "bước tiếp" bằng
-cách gọi lại máy chủ. Nên tiến trình này ghi lại mọi bước rồi in ra một lần; UI
-bước qua lại cục bộ trên dữ liệu đó.
+CHỖ ĐÓ NAY LÀ TRÌNH DUYỆT. Đường qua máy chủ (`src/python-runner`, container
+Docker, `POST /api/python/trace`) đã bị xoá ngày 25/10/2026. Hôm nay file này là
+NGUỒN sinh ra `frontend/public/static/py/pe_tracer.min.py`
+(`node scripts/build-tracer-source.mjs`), và `ide.worker.js` — một module worker
+chạy Pyodide 314.0.7 — fetch bản đó rồi gọi `_pe_run` trong chính runtime nó
+đang giữ. Hai chỗ nó vá khi nạp: `_pe_write` (giữ `doc` lại thay vì ghi ra fd) và
+`os._exit` (ném ngoại lệ thay vì giết runtime). Xem trace() trong ide.worker.js.
 
-Đường đi: backend dán file này + mã người học (base64) thành MỘT file Python rồi
-gửi qua đúng POST /run hiện có (cùng hàng đợi, cùng cờ cách ly, cùng trần thời
-gian). Xem src/python-runner/tracer/trace-program.ts.
+Vì sao MỘT lần chạy ra TOÀN BỘ vết: `runPythonAsync` chặn luôn vòng lặp sự kiện
+của worker, nên trong lúc chạy không có thông điệp nào vào hay ra được — không
+thể "bước tiếp" bằng cách gọi lại. Nên lượt này ghi lại mọi bước rồi trả về một
+lần; UI bước qua lại cục bộ trên dữ liệu đó.
 
-Ba trần phải có, vì mã của sinh viên thật sẽ chạm vào cả ba:
+Ba trần phải có, vì mã của sinh viên thật sẽ chạm vào cả ba. Lý lẽ CỦA TỪNG CON
+SỐ nằm ngay cạnh nó trong PE_LIMITS; ở đây chỉ là luật chung:
   1. SỐ BƯỚC — `for i in range(1000000)` sinh hàng triệu sự kiện. Chạm trần thì
-     NGỪNG GHI nhưng vẫn để chương trình chạy tiếp (không ghi nên nhanh), rồi nói
-     thẳng trong tài liệu là đã chạm trần. Không cắt im lặng.
-  2. SỐ BYTE — vết phải về được qua stdout (Node giữ tối đa 1 MB, vượt là bị cắt
-     giữa dòng và JSON thành rác). Tự dừng ở MAX_JSON_BYTES trước khi tới đó.
-  3. THỜI GIAN — container bị SIGKILL sau PY_RUN_TIMEOUT_MS; lúc đó không còn cơ
-     hội in gì cả. Vòng lặp vô hạn là thứ sinh viên viết hằng ngày, nên phải tự
-     đặt báo thức SỚM HƠN (SIGALRM) để kịp in vết đã ghi được. Không có báo thức
-     thì `while True: pass` trả về một ô trống, không giải thích gì.
+     NGỪNG GHI nhưng vẫn để chương trình chạy tiếp, rồi nói thẳng trong tài liệu
+     là đã chạm trần. Không cắt im lặng.
+  2. SỐ BYTE — vết phải về được tới người đọc nó: qua `postMessage` khi chạy
+     trong worker (đường duy nhất còn sống), qua stdout khi chạy bằng một tiến
+     trình Python riêng (pe_tracer_test.py). Tự dừng ở maxBytes.
+  3. THỜI GIAN — tracer phải tự dừng TRƯỚC khi lớp ngoài cắt, vì lớp ngoài cắt
+     bằng `worker.terminate()` và lúc đó không còn đường nào trả vết về. Vòng
+     lặp vô hạn là thứ sinh viên viết hằng ngày.
+
+     Lưới cuối SIGALRM chỉ có ở CPython trên Linux. Trong Pyodide không có
+     `signal.setitimer` (đo được: `hasattr(signal, "setitimer")` là False trên
+     Emscripten-5.0.3-wasm32, dù `SIGALRM` vẫn có mặt), nên `st["watchdog"]`
+     luôn False và trần thời gian chỉ được canh TRONG callback — tức nó là trần
+     MỀM: một lời gọi thư viện dài không sinh sự kiện nào thì không ai cắt được.
+     Xem _stop_tracing().
 
 Giá trị thì phải tuần tự hoá được MÀ KHÔNG BAO GIỜ nổ: tự tham chiếu (`a.append(a)`),
 repr ném lỗi, danh sách một triệu phần tử, chuỗi khổng lồ. Cách làm: đi theo đường
@@ -36,9 +47,10 @@ Không nhìn thấy khung của chính mình: lọc theo `co_filename` — chỉ
 file mã người học (`main.py`, tên giả), nên khung của tracer và của thư viện
 chuẩn không bao giờ lọt vào vết.
 
-Tương thích: cố ý chỉ dùng API có từ Python 3.8 (sandbox dùng 3.12, máy dev có
-thể 3.14). `sys.settrace` chứ không phải `sys.monitoring` — xem GHI CHÚ CHỌN API
-ở cuối file.
+Tương thích: cố ý chỉ dùng API có từ Python 3.8. Phải chạy được ở HAI nơi —
+Pyodide 314.0.7 (3.14.2, Emscripten) trong trình duyệt, và CPython trên máy dev
+khi `pe_tracer_test.py` chạy nó bằng một tiến trình riêng. `sys.settrace` chứ
+không phải `sys.monitoring` — xem GHI CHÚ CHỌN API ở cuối file.
 """
 
 # Tên file giả của mã người học. Hai việc phụ thuộc vào nó:
@@ -54,14 +66,65 @@ PE_BEGIN = "__PE_TRACE_V1_BEGIN__"
 PE_END = "__PE_TRACE_V1_END__"
 
 PE_LIMITS = {
-    # 1000 bước đủ cho mọi bài học (vòng lặp 50 vòng, đệ quy 20 tầng) mà JSON
-    # vẫn ~300-500 KB trường hợp xấu. Xem mục "Trần" ở đầu file.
+    # 1000 bước đủ cho mọi bài học (vòng lặp 50 vòng, đệ quy 20 tầng). GIỮ
+    # NGUYÊN: Guo (Python Tutor, SIGCSE 2013) chọn 300 và nói thẳng rằng trần đó
+    # là ĐỊNH NGHĨA PHẠM VI của công cụ, không phải lỗi cần lách.
+    #
+    # Đo được 28/10/2026 rằng hạ con số này KHÔNG cứu được ca xấu: `while True:
+    # i += 1` đi qua 4 055 730 sự kiện trong 6,5 giây (tức ~1,6 µs mỗi lượt gọi
+    # callback) mà chỉ 1 000 trong số đó được ghi — hơn bốn triệu lượt còn lại
+    # vẫn phải vào Python rồi quay ra, vì trong Pyodide không có báo thức nên
+    # callback KHÔNG được tắt sau khi chạm trần (xem _stop_tracing). Chi phí trội
+    # của vòng lặp dài nằm ở SỐ SỰ KIỆN, không ở số bước được ghi.
     "maxSteps": 1000,
-    # Node giữ tối đa 1 MB mỗi luồng (MAX_BUFFER trong docker-sandbox.ts) và vượt
-    # là CẮT + giết tiến trình. 700 KB để còn chỗ cho stdout/stderr của chương trình.
-    "maxBytes": 700 * 1024,
-    # Container bị giết ở 10 s. Dừng ở 6,5 s để còn thời gian tuần tự hoá và in.
-    "timeBudgetMs": 6500,
+    # Vết phải về được qua `postMessage` tới main thread (JSON do worker trả về,
+    # xem trace() trong frontend/public/static/js/ide.worker.js).
+    #
+    # Con số CŨ là 700 KB vì "Node giữ tối đa 1 MB mỗi luồng (MAX_BUFFER trong
+    # docker-sandbox.ts)" — `docker-sandbox.ts` đã bị xoá ngày 25/10/2026 cùng
+    # toàn bộ đường chạy ở máy chủ, nên trần đó mồ côi. Trong trình duyệt KHÔNG
+    # có bức tường 1 MB nào: structured clone không có trần kích thước, và đo
+    # được một tài liệu 697 KB chỉ tốn ~18 ms để qua postMessage + JSON.parse.
+    #
+    # Thứ còn phải trả là THỜI GIAN và BỘ NHỚ, và cả hai đã đo ở 1,5 MB:
+    #   · 215 ms bên trong tracer (ghi bước + đo cỡ từng bước bằng json.dumps),
+    #     cộng ~75 ms cho json.dumps cả tài liệu, structured clone và JSON.parse
+    #     ở main thread = ~290 ms. Đó là 7% của timeBudgetMs dưới đây, và 1,5%
+    #     của hạn 20 giây mà ide-trace.ts áp. Xem thật trên /ide: giao diện báo
+    #     "Ghi vết mất 0.28 s · 223 bước ghi được / 805 bước đã chạy".
+    #   · 4,54 MB heap ở main thread cho một tài liệu 1 533 KB (đo bằng CDP
+    #     Runtime.getHeapUsage sau collectGarbage) — khoảng 3 lần cỡ JSON, và
+    #     nhỏ bên cạnh 30 MB runtime Pyodide vẫn đang nằm đó.
+    # Và nó MUA được thứ 700 KB đang lấy đi: một chương trình tầm thường
+    # (`rows.append({...})` 400 lần) chạm trần byte ở ĐÚNG BƯỚC 150 trong 805 sự
+    # kiện, 1,5 MB cho 223; ma trận 60x60 đi từ bước 350 lên 524 trong 7 445.
+    # Trần BYTE — không phải trần bước — mới là thứ quyết định người học xem được
+    # bao nhiêu, vì mỗi bước chụp lại cả collection nên JSON phình bình phương.
+    # Nâng tiếp thì lợi giảm nhanh (gấp đôi byte chỉ thêm ~50% bước), nên đừng
+    # coi 1,5 MB là bậc thang đầu của một dãy — muốn hơn thì phải sửa CÁCH CHỤP
+    # (maxItems, chụp vi phân), không phải nâng trần.
+    "maxBytes": 1536 * 1024,
+    # Trần THỜI GIAN. Phải NHỎ HƠN mọi hạn mà bên ngoài áp, cộng chỗ để tuần tự
+    # hoá và gửi vết đi: tracer chỉ có giá trị khi nó tự dừng TRƯỚC rồi còn kịp
+    # trả về phần đã ghi. Vượt hạn ngoài là `terminate()`, và `terminate()` thì
+    # thông điệp 'result' không bao giờ tới — người học nhận một ô trống.
+    #
+    # Con số CŨ là 6 500 vì "container bị giết ở 10 s". Không còn container nào.
+    # Hạn ngoài hôm nay là 20 s (TIMEOUT_MS trong frontend/src/lib/ide-trace.ts),
+    # nhưng bài học chạy mã trong trần 5 GIÂY — và 6 500 > 5 000 nghĩa là trên
+    # đường đó tracer KHÔNG BAO GIỜ tới được trần của chính mình. 4 000 ms nằm
+    # dưới cả hai, chừa 1 giây cho việc dựng và gửi tài liệu.
+    #
+    # Không mất gì thật: đo 28/10/2026 trong Pyodide 314.0.7
+    # (`node scripts/tracer/do-settrace.mjs`), ca chậm nhất của 8 đoạn mẫu là
+    # 230-290 ms qua nhiều lượt đo — 4 000 ms là hơn 13 lần biên. Mọi chương
+    # trình đủ dài để chạm 4 giây đều đã chạm trần bước hoặc trần byte trong
+    # vài trăm ms đầu.
+    #
+    # ĐÂY LÀ TRẦN MỀM, và chỗ này là chỗ duy nhất nói ra: nó chỉ được kiểm TRONG
+    # callback, nên một lời gọi thư viện dài không bị cắt. Đo được: sau khi chạm
+    # trần bước rồi `time.sleep(8)`, tracer về ở 8 044 ms chứ không ở 4 000 ms.
+    "timeBudgetMs": 4000,
     # Lồng sâu hơn thì thay bằng {"t":"depth"} — người học không đọc nổi 5 tầng
     # trong một ô biến, và đây là nơi dễ nổ nhất với dữ liệu tự tham chiếu.
     "maxDepth": 4,
@@ -146,12 +209,13 @@ class _PEOut:
 def _pe_run(src_b64):
     """Chạy mã người học rồi in tài liệu vết ra stdout.
 
-    `src_b64` là base64 của zlib(UTF-8 của mã người học). Vì sao nén: tracer +
-    mã người học phải cùng nằm trong MỘT file dưới 20 KB (MAX_CODE_BYTES của
-    POST /run). Tracer rút gọn đã chiếm ~12,5 KB; base64 thô lại phình 33% nên
-    người học chỉ còn ~5,8 KB. Mã Python nén được 3-4 lần, nên nén xong thì gần
-    như mọi chương trình trong trần 20 KB của editor đều vừa. Backend đo kích
-    thước THẬT sau khi dựng và từ chối kèm con số, không đoán trước.
+    `src_b64` là base64 của zlib(UTF-8 của mã người học). Vì sao nén, và vì sao
+    GIỮ cách này sau khi backend đi: hồi còn gửi qua `POST /run`, tracer + mã
+    người học phải cùng nằm trong MỘT file dưới 20 KB nên nén là bắt buộc. Nay
+    `ide.worker.js` gọi `_pe_run` trực tiếp và vẫn tự nén trước khi gọi — vì
+    tham số là MỘT chuỗi ASCII thuần, không có ký tự nào cần escape và không có
+    đường nào để mã người học chen vào câu Python đang dựng. Đổi sang truyền
+    thẳng chuỗi là tự mở lại chuyện đó mà chẳng được gì.
     """
     import base64
     import zlib
@@ -283,10 +347,22 @@ def _pe_run(src_b64):
     def _stop_tracing():
         """Ngừng ghi. Tắt hẳn callback CHỈ KHI còn một lưới khác canh thời gian.
 
-        Không có SIGALRM (Windows, hay báo thức đặt không được) mà lại tắt
-        callback thì `while True: pass` sau bước thứ 1000 chạy tới khi container
-        bị SIGKILL — và lúc đó không còn ai in vết ra. Thà chậm còn hơn trả về
-        một ô trống, nên khi không có lưới thì giữ callback để còn đo được giờ.
+        Không có SIGALRM mà lại tắt callback thì `while True: pass` sau bước thứ
+        1000 chạy tới khi lớp ngoài `terminate()` — và lúc đó không còn đường
+        nào trả vết về. Thà chậm còn hơn trả về một ô trống, nên khi không có
+        lưới thì giữ callback để còn đo được giờ.
+
+        TRONG PYODIDE NHÁNH NÀY LUÔN LÀ NHÁNH "KHÔNG CÓ LƯỚI": `signal.setitimer`
+        không tồn tại trên Emscripten, nên `st["watchdog"]` không bao giờ True.
+        Hai hệ quả đã ĐO, không suy diễn (28/10/2026, Pyodide 314.0.7):
+          · sau khi chạm trần bước, callback vẫn được gọi cho MỌI sự kiện còn
+            lại — `while True: i += 1` đi qua 4 055 730 lượt gọi trong 6,5 giây
+            để ghi đúng 1 000 bước. Đó là lý do hạ `maxSteps` không cứu được ca
+            này, và cũng là lý do giữ nó ở 1 000.
+          · trần thời gian thành trần MỀM: `time.sleep(8)` sau trần bước làm
+            tracer về ở 8 044 ms chứ không ở `timeBudgetMs`.
+        Nhánh SIGALRM giữ lại vì `pe_tracer_test.py` chạy file này bằng CPython
+        thật, ở đó lưới đó có thật và có ca test canh nó.
         """
         if st["watchdog"]:
             st["off"] = True
@@ -350,9 +426,13 @@ def _pe_run(src_b64):
             pass
 
     def no_input(prompt=""):
-        # Sandbox chạy `docker run` KHÔNG có -i: stdin đóng ngay, nên input()
-        # thật chỉ ném EOFError trần trụi. Giữ nguyên LOẠI ngoại lệ (để giống
-        # lúc bấm Chạy) nhưng nói rõ vì sao và phải làm gì.
+        # Không có bàn phím ở đâu trên đường này: trong worker Pyodide thì
+        # `input()` thật ném "OSError: [Errno 29] I/O error", còn khi chạy bằng
+        # một tiến trình Python riêng (pe_tracer_test.py) thì stdin đóng và nó
+        # ném EOFError. Giữ LOẠI ngoại lệ bằng với lúc bấm Chạy — `_ide_input`
+        # trong ide.worker.js cũng ném EOFError — nhưng nói rõ vì sao và phải
+        # làm gì. Hai nơi nói khác nhau về cùng một giới hạn thì người học tưởng
+        # là hai lỗi khác.
         if prompt:
             out.write(str(prompt))
         raise EOFError(
@@ -645,15 +725,32 @@ def _pe_value(o, depth, seen, lim, st):
 #   2. settrace có trace function CỤC BỘ theo frame: trả về `tracer` thì frame đó
 #      được theo tiếp, trả về None thì không. Nhờ vậy việc lọc "chỉ theo file mã
 #      người học" là MỘT phép so chuỗi ở sự kiện `call`.
-#   3. Hiệu năng không phải ràng buộc: trần là 1000 bước, không phải 10 triệu.
-#      Chi phí thật của một lượt là tạo container (0,2-0,6 s), không phải callback.
-#   4. settrace chạy từ 3.8 tới 3.14 với cùng một đoạn mã; sandbox hiện dùng
-#      3.12 nhưng đừng buộc trực quan hoá vào đúng một phiên bản.
+#   3. Hiệu năng ĐÃ ĐO, và nó không đổi được kết luận. Lý do cũ ở đây là "chi
+#      phí thật của một lượt là tạo container (0,2-0,6 s), không phải callback" —
+#      bỏ container là bỏ cái mẫu số đó, nên lý do cũ vô hiệu và phải đo lại.
+#      Đo 28/10/2026 trong module worker thật (`node scripts/tracer/do-settrace.mjs`):
+#      mã vô hướng/điều khiển luồng chậm hơn 5x-96x khi có trace, mã dữ liệu
+#      (một câu `df.groupby().agg()`, một phép numpy) chỉ 1,1-1,4x vì tracer lọc
+#      theo `co_filename` nên ruột thư viện không sinh sự kiện nào. Hệ số thì
+#      xấu, nhưng SỐ TUYỆT ĐỐI thì không: ca chậm nhất 290 ms, trong khi hạn
+#      ngoài là 20 giây. Hệ số lớn nhất lại KHÔNG đến từ chi phí callback mà từ
+#      việc tuần tự hoá giá trị (ca 96x là một list 400 dict, mỗi bước chụp lại
+#      cả list) — nên "hệ số cao" ở đây không đồng nghĩa với "phải hạ trần bước".
+#      Không có nguồn nào trên thế giới lượng hoá `sys.settrace` dưới
+#      WASM; tham chiếu desktop gần nhất là ~5x (hook Python, benchmark của
+#      coverage.py) nên con số WASM cao hơn đáng kể — nhớ điều đó nếu có ngày
+#      tính sẵn vết tại build cho cả 172 bài.
+#   4. settrace chạy từ 3.8 tới 3.14 với cùng một đoạn mã; đừng buộc trực quan
+#      hoá vào đúng một phiên bản — Pyodide nâng bản là đổi cả Python.
 #
 # Giới hạn đã biết của lựa chọn này (nói thẳng, không che):
 #   - Chỉ theo LUỒNG CHÍNH. Mã dùng threading thì luồng con không có vết (muốn có
 #     thì phải threading.settrace). Vết vẫn ghi phần luồng chính, không sai.
 #   - Mã người học gọi `sys.settrace(None)` thì tracer tắt từ đó; vết vẫn in ra
-#     phần đã ghi. Đây là ranh giới TIN CẬY đã biết: lớp bảo vệ thật là container
-#     (xem docker-sandbox.ts), không phải tracer.
-#   - `os._exit()` trong mã người học bỏ qua mọi thứ, kể cả phần in vết.
+#     phần đã ghi. Đây là ranh giới TIN CẬY đã biết: lớp bảo vệ thật nay là
+#     chính WORKER (CSP riêng cho file worker + `delete self.Worker`, xem
+#     ide.worker.js và frontend/next.config.ts), không phải tracer. Container
+#     thì không còn.
+#   - `os._exit()` trong mã người học bỏ qua mọi thứ, kể cả phần in vết. Trong
+#     worker thì `trace()` đã thay `os._exit` bằng một ngoại lệ riêng, nên nó
+#     không giết được runtime — nhưng vết của lượt đó vẫn mất.

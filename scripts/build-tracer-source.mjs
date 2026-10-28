@@ -1,21 +1,27 @@
 /**
- * Nhúng tracer Python vào một module TypeScript để backend gửi đi được.
+ * Sinh bản tracer Python mà TRÌNH DUYỆT tải về khi bấm "Xem từng bước".
  *
- * Vì sao phải nhúng: backend dán tracer + mã người học thành MỘT file Python rồi
- * gửi qua POST /run như một lượt chạy bình thường (xem trace-program.ts). Nên
- * tracer phải có mặt ngay trong tiến trình Node — `nest build` không chép file
- * .py sang dist/, và đọc theo đường dẫn tương đối thì chạy được ở src/ rồi chết
- * ở dist/ trên Render. Nhúng thành chuỗi là cách không có bước deploy nào làm sai.
+ * Nguồn duy nhất là `scripts/tracer/pe_tracer.py`; đích là
+ * `frontend/public/static/py/pe_tracer.min.py`, phục vụ tĩnh cùng origin để
+ * `ide.worker.js` fetch được (CSP của file worker chỉ cho `connect-src 'self'`).
  *
- * Vì sao nhúng bản RÚT GỌN: POST /run chặn mã nguồn ở 20 KB (MAX_CODE_BYTES);
- * pe_tracer.py với chú thích tiếng Việt đã ~26 KB, tự nó đã vượt trần. Bản rút
- * gọn (bỏ chú thích + docstring, bằng ast.unparse — xem scripts/pe-tracer-strip.py)
- * còn ~12,8 KB. File .py vẫn là NGUỒN DUY NHẤT: nó chạy được, test được bằng
- * `py src/python-runner/tracer/pe_tracer_test.py`.
+ * Vì sao sinh bản RÚT GỌN chứ không chép nguyên: pe_tracer.py với chú thích
+ * tiếng Việt là ~30 KB và người học phải tải nó mỗi phiên. Bản rút gọn (bỏ chú
+ * thích + docstring bằng ast.unparse — xem scripts/pe-tracer-strip.py) còn
+ * ~13 KB. File .py vẫn là NGUỒN DUY NHẤT: nó chạy được, test được bằng
+ * `py scripts/tracer/pe_tracer_test.py`.
  *
- * Canh lệch: file sinh ra mang luôn SHA-256 của bản .py, và
- * `tracer-source.spec.ts` băm lại file .py rồi so — sửa .py mà quên sinh lại là
- * `npx jest` đỏ ngay, không phải phát hiện khi người học bấm nút.
+ * KHÔNG CÒN SINH `src/python-runner/tracer/tracer-source.ts`. Bản nhúng đó tồn
+ * tại vì backend dán tracer + mã người học thành một file rồi gửi qua POST /run;
+ * cả module đó đã bị xoá ngày 25/10/2026. Và vì thư mục đích không còn, script
+ * này CHẾT với ENOENT ở `writeFileSync` TRƯỚC khi ghi được bản cho trình duyệt —
+ * tức từ hôm đó tới 28/10/2026 không ai sinh lại được bản .min.py. Phát hiện ra
+ * vì không ghi được bản mới sau khi hiệu chỉnh PE_LIMITS.
+ *
+ * Canh lệch: bản sinh ra mang SHA-256 của file .py, và
+ * `frontend/e2e/unit/tracer-web-sync.test.mjs` băm lại file .py rồi so — sửa .py
+ * mà quên sinh lại là bộ test frontend đỏ ngay, không phải phát hiện khi người
+ * học bấm nút.
  *
  * Chạy (Windows dùng `py`, không dùng `python`):
  *   node scripts/build-tracer-source.mjs
@@ -33,15 +39,13 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 // và xoá cả cụm là giết nút "Xem từng bước".
 const pySource = join(root, 'scripts/tracer/pe_tracer.py');
 const stripper = join(root, 'scripts/pe-tracer-strip.py');
-const tsTarget = join(root, 'src/python-runner/tracer/tracer-source.ts');
-// Bản thứ hai, PHỤC VỤ TĨNH cho trình duyệt: khi "Xem từng bước" chạy bằng
-// Pyodide trong worker, tracer phải tải được qua HTTP cùng origin. Sinh từ CÙNG
-// một nguồn và CÙNG một lượt rút gọn với bản nhúng cho backend — hai bản lệch
-// nhau thì cùng một đoạn mã cho ra hai vết khác nhau tuỳ đường nào chạy.
+// Đích DUY NHẤT, phục vụ tĩnh cho trình duyệt: khi "Xem từng bước" chạy bằng
+// Pyodide trong worker, tracer phải tải được qua HTTP cùng origin.
 const webTarget = join(root, 'frontend/public/static/py/pe_tracer.min.py');
 
-// Chuẩn hoá về \n: bản nhúng phải giống nhau trên Windows và Linux, nếu không
-// cùng một commit lại gửi hai đoạn Python khác nhau tuỳ máy nào build.
+// Chuẩn hoá về \n: bản sinh ra phải giống nhau trên Windows và Linux, nếu không
+// cùng một commit lại gửi hai đoạn Python khác nhau tuỳ máy nào build — và
+// `tracer-web-sync.test.mjs` băm nguồn theo \n nên lệch là đỏ.
 const original = readFileSync(pySource, 'utf8').replace(/\r\n/g, '\n');
 const sha = createHash('sha256').update(original, 'utf8').digest('hex');
 
@@ -65,37 +69,15 @@ if (!stripped.includes('def _pe_run(')) {
   throw new Error('Bản rút gọn không còn _pe_run — bước rút gọn đã làm hỏng mã.');
 }
 
-/** Ba thứ phải escape trong template literal: dấu chéo ngược, dấu huyền, và mở ngoặc nội suy. */
-const escaped = stripped
-  .replace(/\\/g, '\\\\')
-  .replace(/`/g, '\\`')
-  .replace(/\$\{/g, '\\${');
-
-const out = `/**
- * TỆP SINH TỰ ĐỘNG — ĐỪNG SỬA TAY.
- *
- * Nguồn: src/python-runner/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)
- * Sinh lại: node scripts/build-tracer-source.mjs
- * Canh lệch: src/python-runner/tracer/tracer-source.spec.ts
- */
-
-/** SHA-256 của pe_tracer.py lúc sinh file này. Lệch nghĩa là quên sinh lại. */
-export const TRACER_SOURCE_SHA256 =
-  '${sha}';
-
-/** Tracer Python đã bỏ chú thích/docstring — đúng chuỗi được gửi vào sandbox. */
-export const TRACER_SOURCE = \`${escaped}\`;
-`;
-
-writeFileSync(tsTarget, out, 'utf8');
-
 mkdirSync(dirname(webTarget), { recursive: true });
 writeFileSync(
   webTarget,
   [
     '# TỆP SINH TỰ ĐỘNG — ĐỪNG SỬA TAY.',
-    '# Nguồn: src/python-runner/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)',
+    '# Nguồn: scripts/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)',
     '# Sinh lại: node scripts/build-tracer-source.mjs',
+    // Dòng này là thứ `tracer-web-sync.test.mjs` đọc để biết bản .min.py có cũ
+    // hơn nguồn không. Đổi định dạng dòng thì phải đổi regex trong ca test đó.
     `# sha256 của nguồn: ${sha}`,
     stripped,
     '',
@@ -103,8 +85,7 @@ writeFileSync(
   'utf8',
 );
 
-process.stdout.write(`Đã ghi bản cho trình duyệt: ${webTarget}\n`);
 process.stdout.write(
-  `Đã nhúng ${Buffer.byteLength(stripped, 'utf8')} byte Python (rút gọn từ ` +
-    `${Buffer.byteLength(original, 'utf8')} byte) vào ${tsTarget}\n`,
+  `Đã ghi ${Buffer.byteLength(stripped, 'utf8')} byte Python (rút gọn từ `
+    + `${Buffer.byteLength(original, 'utf8')} byte) vào ${webTarget}\n`,
 );

@@ -1,11 +1,11 @@
 # TỆP SINH TỰ ĐỘNG — ĐỪNG SỬA TAY.
-# Nguồn: src/python-runner/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)
+# Nguồn: scripts/tracer/pe_tracer.py (bản rút gọn, bỏ chú thích)
 # Sinh lại: node scripts/build-tracer-source.mjs
-# sha256 của nguồn: 4b4c0dad04d9f7e27193d00cf27ea32fddccc88f8cd509007c2a249cb038723e
+# sha256 của nguồn: 89d7527057a9457f28e3b87ae80dbe22d062a9f00cfa7571f5266b9835f8fee4
 PE_FILENAME = 'main.py'
 PE_BEGIN = '__PE_TRACE_V1_BEGIN__'
 PE_END = '__PE_TRACE_V1_END__'
-PE_LIMITS = {'maxSteps': 1000, 'maxBytes': 700 * 1024, 'timeBudgetMs': 6500, 'maxDepth': 4, 'maxItems': 100, 'maxDictItems': 50, 'maxAttrs': 30, 'maxStringChars': 200, 'maxFrames': 20, 'maxLocals': 60, 'maxOutputChars': 60000}
+PE_LIMITS = {'maxSteps': 1000, 'maxBytes': 1536 * 1024, 'timeBudgetMs': 4000, 'maxDepth': 4, 'maxItems': 100, 'maxDictItems': 50, 'maxAttrs': 30, 'maxStringChars': 200, 'maxFrames': 20, 'maxLocals': 60, 'maxOutputChars': 60000}
 
 class _PEStop(BaseException):
     pass
