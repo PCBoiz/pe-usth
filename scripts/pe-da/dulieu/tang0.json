@@ -1,0 +1,565 @@
+{
+  "donVi": {
+    "tien": "VNĐ",
+    "luong": "g / ml"
+  },
+  "bangGia": {
+    "ca-phe-den": 20000,
+    "ca-phe-sua": 25000,
+    "bac-xiu": 29000,
+    "latte": 45000,
+    "tra-dao": 42000
+  },
+  "motDongHoaDon": [
+    1,
+    39000
+  ],
+  "soCocHaiBuoi": [
+    40,
+    22
+  ],
+  "maTranNgayMon": {
+    "ngay": [
+      "2025-09-08",
+      "2025-09-09",
+      "2025-09-10",
+      "2025-09-11",
+      "2025-09-12"
+    ],
+    "mon": [
+      "ca-phe-sua",
+      "ca-phe-den",
+      "latte"
+    ],
+    "so_coc": [
+      [
+        6,
+        5,
+        3
+      ],
+      [
+        5,
+        0,
+        0
+      ],
+      [
+        2,
+        5,
+        7
+      ],
+      [
+        8,
+        12,
+        4
+      ],
+      [
+        8,
+        10,
+        6
+      ]
+    ]
+  },
+  "bangNgayQuay": {
+    "ngay": [
+      "2025-01-02",
+      "2025-01-03",
+      "2025-01-04",
+      "2025-01-05",
+      "2025-01-06",
+      "2025-01-07",
+      "2025-01-08"
+    ],
+    "quay": [
+      "Q1",
+      "Q2"
+    ],
+    "so_coc": [
+      [
+        30,
+        null
+      ],
+      [
+        31,
+        null
+      ],
+      [
+        59,
+        null
+      ],
+      [
+        50,
+        null
+      ],
+      [
+        41,
+        null
+      ],
+      [
+        25,
+        null
+      ],
+      [
+        38,
+        null
+      ]
+    ]
+  },
+  "donHangNho": [
+    {
+      "ma_don": "DH-2025-011643",
+      "thoi_diem": "2025-09-08 07:00:00",
+      "quay": "Q2",
+      "mon": "americano",
+      "so_coc": 1,
+      "don_gia": 39000,
+      "tong_tien": 39000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011644",
+      "thoi_diem": "2025-09-08 07:08:58",
+      "quay": "Q1",
+      "mon": "ca-phe-da-xay",
+      "so_coc": 1,
+      "don_gia": 49000,
+      "tong_tien": 49000,
+      "thanh_toan": "tien_mat",
+      "ma_the_tich_diem": "TD00779"
+    },
+    {
+      "ma_don": "DH-2025-011645",
+      "thoi_diem": "2025-09-08 07:33:10",
+      "quay": "Q1",
+      "mon": "bac-xiu",
+      "so_coc": 2,
+      "don_gia": 29000,
+      "tong_tien": 58000,
+      "thanh_toan": "the",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011646",
+      "thoi_diem": "2025-09-08 08:00:37",
+      "quay": "Q1",
+      "mon": "ca-phe-sua",
+      "so_coc": 2,
+      "don_gia": 25000,
+      "tong_tien": 50000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011647",
+      "thoi_diem": "2025-09-08 08:01:31",
+      "quay": "Q1",
+      "mon": "latte",
+      "so_coc": 1,
+      "don_gia": 45000,
+      "tong_tien": 45000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011648",
+      "thoi_diem": "2025-09-08 08:18:00",
+      "quay": "Q2",
+      "mon": "banh-mi-pate",
+      "so_coc": 1,
+      "don_gia": 25000,
+      "tong_tien": 25000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011649",
+      "thoi_diem": "2025-09-08 08:18:02",
+      "quay": "Q2",
+      "mon": "tra-sen",
+      "so_coc": 1,
+      "don_gia": 39000,
+      "tong_tien": 39000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011696",
+      "thoi_diem": "2025-09-09 08:26:13",
+      "quay": "Q2",
+      "mon": "ca-phe-sua",
+      "so_coc": 1,
+      "don_gia": 25000,
+      "tong_tien": 25000,
+      "thanh_toan": "the",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011696",
+      "thoi_diem": "2025-09-09 08:26:13",
+      "quay": "Q2",
+      "mon": "ca-phe-sua",
+      "so_coc": 1,
+      "don_gia": 25000,
+      "tong_tien": 25000,
+      "thanh_toan": "the",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011733",
+      "thoi_diem": "2025-09-10 07:12:57",
+      "quay": "Q2",
+      "mon": " ca-phe-den",
+      "so_coc": 3,
+      "don_gia": 20000,
+      "tong_tien": 60000,
+      "thanh_toan": "vi_dien_tu",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011828",
+      "thoi_diem": "2025-09-12 07:17:49",
+      "quay": "Q2",
+      "mon": "americano",
+      "so_coc": 1,
+      "don_gia": 39000,
+      "tong_tien": 390000,
+      "thanh_toan": "tien_mat",
+      "ma_the_tich_diem": ""
+    },
+    {
+      "ma_don": "DH-2025-011927",
+      "thoi_diem": "2025-09-13 13:26:22",
+      "quay": "Q1",
+      "mon": "tra-sen",
+      "so_coc": 2,
+      "don_gia": 39000,
+      "tong_tien": 78000,
+      "thanh_toan": "",
+      "ma_the_tich_diem": ""
+    }
+  ],
+  "quay": [
+    {
+      "quay": "Q1",
+      "ten": "Quầy mặt phố",
+      "khu_vuc": "Trung tâm",
+      "ngay_mo": "2025-01-01"
+    },
+    {
+      "quay": "Q2",
+      "ten": "Quầy toà nhà Sao Mai",
+      "khu_vuc": "Phía Tây",
+      "ngay_mo": "2025-05-05"
+    },
+    {
+      "quay": "Q3",
+      "ten": "Quầy xe đẩy chợ đêm",
+      "khu_vuc": "Phía Nam",
+      "ngay_mo": "2026-03-01"
+    }
+  ],
+  "mon": [
+    {
+      "mon": "ca-phe-den",
+      "ten_mon": "Cà phê đen đá",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 20000
+    },
+    {
+      "mon": "ca-phe-sua",
+      "ten_mon": "Cà phê sữa đá",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 25000
+    },
+    {
+      "mon": "bac-xiu",
+      "ten_mon": "Bạc xỉu",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 29000
+    },
+    {
+      "mon": "espresso",
+      "ten_mon": "Espresso",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 35000
+    },
+    {
+      "mon": "americano",
+      "ten_mon": "Americano",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 39000
+    },
+    {
+      "mon": "latte",
+      "ten_mon": "Latte",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 45000
+    },
+    {
+      "mon": "mocha",
+      "ten_mon": "Mocha",
+      "nhom": "Cà phê",
+      "gia_niem_yet": 49000
+    },
+    {
+      "mon": "tra-sen",
+      "ten_mon": "Trà sen vàng",
+      "nhom": "Trà",
+      "gia_niem_yet": 39000
+    },
+    {
+      "mon": "tra-dao",
+      "ten_mon": "Trà đào cam sả",
+      "nhom": "Trà",
+      "gia_niem_yet": 42000
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "ten_mon": "Cà phê đá xay",
+      "nhom": "Đá xay",
+      "gia_niem_yet": 49000
+    },
+    {
+      "mon": "banh-mi-pate",
+      "ten_mon": "Bánh mì pa-tê",
+      "nhom": "Bánh",
+      "gia_niem_yet": 25000
+    },
+    {
+      "mon": "croissant",
+      "ten_mon": "Bánh sừng bò",
+      "nhom": "Bánh",
+      "gia_niem_yet": 32000
+    }
+  ],
+  "nguyenLieu": [
+    {
+      "mon": "ca-phe-den",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-den",
+      "nguyen_lieu": "da",
+      "luong": 150,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-den",
+      "nguyen_lieu": "duong",
+      "luong": 5,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-sua",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-sua",
+      "nguyen_lieu": "sua-dac",
+      "luong": 30,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "ca-phe-sua",
+      "nguyen_lieu": "da",
+      "luong": 150,
+      "don_vi": "g"
+    },
+    {
+      "mon": "bac-xiu",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 9,
+      "don_vi": "g"
+    },
+    {
+      "mon": "bac-xiu",
+      "nguyen_lieu": "sua-dac",
+      "luong": 30,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "bac-xiu",
+      "nguyen_lieu": "sua-tuoi",
+      "luong": 80,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "bac-xiu",
+      "nguyen_lieu": "da",
+      "luong": 150,
+      "don_vi": "g"
+    },
+    {
+      "mon": "espresso",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "americano",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "americano",
+      "nguyen_lieu": "da",
+      "luong": 120,
+      "don_vi": "g"
+    },
+    {
+      "mon": "latte",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "latte",
+      "nguyen_lieu": "sua-tuoi",
+      "luong": 180,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "mocha",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "mocha",
+      "nguyen_lieu": "sua-tuoi",
+      "luong": 120,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "mocha",
+      "nguyen_lieu": "bot-cacao",
+      "luong": 8,
+      "don_vi": "g"
+    },
+    {
+      "mon": "mocha",
+      "nguyen_lieu": "syrup-caramel",
+      "luong": 15,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "tra-sen",
+      "nguyen_lieu": "tra-den",
+      "luong": 4,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-sen",
+      "nguyen_lieu": "hoa-sen",
+      "luong": 3,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-sen",
+      "nguyen_lieu": "duong",
+      "luong": 10,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-sen",
+      "nguyen_lieu": "da",
+      "luong": 150,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-dao",
+      "nguyen_lieu": "tra-den",
+      "luong": 4,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-dao",
+      "nguyen_lieu": "dao-ngam",
+      "luong": 60,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-dao",
+      "nguyen_lieu": "sa",
+      "luong": 10,
+      "don_vi": "g"
+    },
+    {
+      "mon": "tra-dao",
+      "nguyen_lieu": "da",
+      "luong": 150,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "nguyen_lieu": "ca-phe-hat",
+      "luong": 18,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "nguyen_lieu": "sua-tuoi",
+      "luong": 120,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "nguyen_lieu": "da",
+      "luong": 200,
+      "don_vi": "g"
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "nguyen_lieu": "syrup-caramel",
+      "luong": 20,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "ca-phe-da-xay",
+      "nguyen_lieu": "kem-tuoi",
+      "luong": 30,
+      "don_vi": "ml"
+    },
+    {
+      "mon": "banh-mi-pate",
+      "nguyen_lieu": "bot-mi",
+      "luong": 90,
+      "don_vi": "g"
+    },
+    {
+      "mon": "banh-mi-pate",
+      "nguyen_lieu": "pa-te",
+      "luong": 40,
+      "don_vi": "g"
+    },
+    {
+      "mon": "banh-mi-pate",
+      "nguyen_lieu": "bo",
+      "luong": 10,
+      "don_vi": "g"
+    },
+    {
+      "mon": "croissant",
+      "nguyen_lieu": "bot-mi",
+      "luong": 70,
+      "don_vi": "g"
+    },
+    {
+      "mon": "croissant",
+      "nguyen_lieu": "bo",
+      "luong": 35,
+      "don_vi": "g"
+    },
+    {
+      "mon": "croissant",
+      "nguyen_lieu": "duong",
+      "luong": 8,
+      "don_vi": "g"
+    }
+  ]
+}
