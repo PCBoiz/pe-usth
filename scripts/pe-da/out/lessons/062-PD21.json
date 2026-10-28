@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Ngày đặt hàng đang là chuỗi \"05/01/2026\". Nếu không biết quy ước ngày/tháng, bạn có thể đọc nhầm thành ngày 1 tháng 5. format giúp ghi rõ cách hiểu."
+      "text": "Bảng tổng theo tháng vừa dựng xong vẫn coi ngày là chữ. Ngày đặt hàng đang là chuỗi \"05/01/2026\". Nếu không biết quy ước ngày/tháng, bạn có thể đọc nhầm thành ngày 1 tháng 5. format giúp ghi rõ cách hiểu."
      },
      {
       "type": "code",
@@ -214,5 +214,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

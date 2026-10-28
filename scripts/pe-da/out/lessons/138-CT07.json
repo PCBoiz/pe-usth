@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một bước phân tích cần gọi chương trình Python khác rồi nhận số liệu về. Bạn cần phân biệt thứ chương trình in ra với trạng thái nó kết thúc:"
+      "text": "Bài trước mới đọc cơ chế; giờ bạn gọi một chương trình khác từ code của quán. Một bước phân tích cần gọi chương trình Python khác rồi nhận số liệu về. Bạn cần phân biệt thứ chương trình in ra với trạng thái nó kết thúc:"
      },
      {
       "type": "code",
@@ -184,5 +184,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
+ "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

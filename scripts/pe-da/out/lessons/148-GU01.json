@@ -22,13 +22,89 @@
     [
      {
       "type": "paragraph",
-      "text": "Một công cụ tính tiền có thể nhận lệnh \"3 20\" trong terminal hoặc có hai ô nhập và một nút Tính. Cả hai đều gọi được cùng hàm Python; phần khác nhau là cách người dùng gửi dữ liệu và đọc kết quả."
+      "text": "Quán có người đứng bán không biết Python, nên mọi thứ ở các bài trước phải có một màn hình. Một công cụ tính tiền có thể nhận lệnh \"3 20\" trong terminal hoặc có hai ô nhập và một nút Tính. Cả hai đều gọi được cùng hàm Python; phần khác nhau là cách người dùng gửi dữ liệu và đọc kết quả."
      },
      {
       "type": "code",
       "code": "def total(qty, price):\n    return qty * price\ncommand = '3 20'\nqty, price = map(int, command.split())\nprint(total(qty, price))",
       "expected": "60",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "qty",
+        "prompt": "Sau khi chạy xong, `qty` bằng mấy?",
+        "answer": "3"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "total",
+           "<hàm total>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "command",
+           "'3 20'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "price",
+           "20"
+          ],
+          [
+           "qty",
+           "3"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 1,
+         "fn": "total",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "price",
+           "20"
+          ],
+          [
+           "qty",
+           "3"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "total",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "total",
+         "depth": 1,
+         "ret": "60",
+         "out": "60"
+        },
+        {
+         "line": 5,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -179,5 +255,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 1,
+  "co": 1,
+  "bo": 0,
+  "loi": []
+ }
 }

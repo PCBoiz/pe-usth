@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
+      "text": "Phép cộng ở bài trước dùng cả bảng; lần này bạn cần đánh dấu riêng những ô đạt điều kiện. Lượng mưa trong ba ngày là 0, 2.5 và 0 mm. Để biết ngày nào có mưa, bạn so sánh từng số với 0:"
      },
      {
       "type": "code",
@@ -222,5 +222,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

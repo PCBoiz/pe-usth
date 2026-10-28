@@ -3,13 +3,13 @@
  "sort_order": 147,
  "module": "M7 · Multiprocessing và shell thực hành",
  "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
- "subtitle": "Trung cấp · M7 · 10 phút",
- "estimated_minutes": 10,
+ "subtitle": "Trung cấp · M7 · 11 phút",
+ "estimated_minutes": 11,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "RC01 · Đọc sơ đồ Apache và Chromium: process ở ngoài, thread ở trong",
-  "subtitle": "Trung cấp · M7 · 10 phút",
+  "subtitle": "Trung cấp · M7 · 11 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#RC01",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
+      "text": "Hai cách chia việc ở các bài trước đã đủ để bạn đọc sơ đồ của phần mềm thật. Trong hình Apache Prefork ở trang 274, một tiến trình cha (parent) quản lý nhiều tiến trình con (child). Mỗi ô child nối với HTTP request. Bạn có thể đếm số child mà không cần triển khai một web server:"
      },
      {
       "type": "code",
@@ -40,7 +40,110 @@
       "type": "code",
       "code": "worker_model = {\"P1\": [\"T1\", \"T2\"], \"P2\": [\"T3\", \"T4\"]}\nprint(len(worker_model))\nprint(sum(len(threads) for threads in worker_model.values()))",
       "expected": "2\n4",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "threads",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `threads` bằng mấy?",
+        "answer": "['T1', 'T2']"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "worker_model",
+           "{'P1': ['T1', 'T2'], 'P2': ['T3', 'T4']}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "out": "2"
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "threads",
+           "['T1', 'T2']"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "2"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "threads",
+           "['T1', 'T2']"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "threads",
+           "['T3', 'T4']"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "2"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "threads",
+           "['T3', 'T4']"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "None",
+         "out": "4"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,11 +155,85 @@
       "type": "code",
       "code": "links = [(\"browser-main\", \"browser-io\", \"inside-process\"),\n         (\"browser\", \"renderer\", \"IPC\")]\nprint([kind for a, b, kind in links if a == \"browser\"])",
       "expected": "['IPC']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "a",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `a` bằng mấy?",
+        "answer": "'browser-main'"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 1,
+         "set": [
+          [
+           "links",
+           "[('browser-main', 'browser-io', 'inside-process'), ('browser', 'rendere…"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "a",
+           "'browser-main'"
+          ],
+          [
+           "b",
+           "'browser-io'"
+          ],
+          [
+           "kind",
+           "'inside-process'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "a",
+           "'browser'"
+          ],
+          [
+           "b",
+           "'renderer'"
+          ],
+          [
+           "kind",
+           "'IPC'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "links",
+           "[('browser-main', 'browser-io', 'inside-process'), ('browser', 'rendere…"
+          ]
+         ],
+         "out": "['IPC']"
+        },
+        {
+         "line": 3,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
-      "text": "Hình Chromium ở trang 276 đặt main thread và I/O thread trong browser process; renderer process có các thread của nó. Các đường từ browser sang renderer được ghi IPC (inter-process communication). Tách process có thể tăng cô lập, còn trao đổi giữa chúng cần giao thức và có chi phí. Ba ví dụ chỉ giúp đọc sơ đồ lịch sử của slide; chúng không khẳng định kiến trúc của mọi phiên bản Apache hoặc Chromium đang được dùng."
+      "text": "Hình Chromium ở trang 276 đặt main thread và I/O thread trong browser process; renderer process có các thread của nó. Các đường từ browser sang renderer được ghi IPC (inter-process communication). Tách process có thể tăng cô lập, còn trao đổi giữa chúng cần giao thức và có chi phí. Ba ví dụ chỉ giúp đọc sơ đồ lịch sử của slide; chúng không khẳng định kiến trúc của mọi phiên bản Apache hoặc Chromium đang được dùng. Quán của bạn chia việc theo đúng hai tầng đó."
      }
     ]
    ],
@@ -151,5 +328,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

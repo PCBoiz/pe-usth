@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
+      "text": "Ba file ở bước trước lưu được dữ liệu, nhưng mỗi lần đọc lại phải tự ghép. PW5 đã đọc được dữ liệu text. Ở PW6, bạn giữ chức năng chương trình nhưng thay cách lưu bằng pickle có nén. Bắt đầu từ bộ dữ liệu gồm cả thông tin định danh và phiên bản cấu trúc (version):"
      },
      {
       "type": "code",
@@ -40,7 +40,86 @@
       "type": "code",
       "code": "import gzip, pickle, tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f: pickle.dump({\"version\": 1, \"marks\": (8, 9)}, f)\n    with gzip.open(path, \"rb\") as f: loaded = pickle.load(f)\n    print(type(loaded[\"marks\"]).__name__)\n    print(loaded[\"version\"])",
       "expected": "tuple\n1",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "loaded",
+        "prompt": "Sau khi chạy xong, `loaded` bằng mấy?",
+        "answer": "{'version': 1, 'marks': (8, 9)}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "tempfile",
+           "<thư viện tempfile>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "Path",
+           "<lớp Path>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "folder",
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpi12k9asl'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "path",
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpi12k9asl…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='wb', fileobj=None, _buffer=BufferedWriter(), myfileobj=N…"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='rb', fileobj=None, _buffer=BufferedReader(), myfileobj=N…"
+          ],
+          [
+           "loaded",
+           "{'version': 1, 'marks': (8, 9)}"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "out": "tuple"
+        },
+        {
+         "line": 8,
+         "out": "1"
+        },
+        {
+         "line": 3
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,11 +131,118 @@
       "type": "code",
       "code": "def validate_version(state):\n    if not isinstance(state, dict) or state.get(\"version\") != 1:\n        raise ValueError(\"unsupported schema\")\n    return state\ntry:\n    validate_version({\"version\": 2})\nexcept ValueError:\n    print(\"Can chuyen doi du lieu\")\nprint(validate_version({\"version\": 1})[\"version\"])",
       "expected": "Can chuyen doi du lieu\n1",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "state",
+        "line": 1,
+        "prompt": "Ngay sau khi dòng 1 chạy, `state` bằng mấy?",
+        "answer": "{'version': 2}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "validate_version",
+           "<hàm validate_version>"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 1,
+         "fn": "validate_version",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "state",
+           "{'version': 2}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "validate_version",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "validate_version",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "validate_version",
+         "depth": 1,
+         "exc": "ValueError: unsupported schema"
+        },
+        {
+         "line": 3,
+         "fn": "validate_version",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 6,
+         "exc": "ValueError: unsupported schema"
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 8,
+         "out": "Can chuyen doi du lieu"
+        },
+        {
+         "line": 9
+        },
+        {
+         "line": 1,
+         "fn": "validate_version",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "state",
+           "{'version': 1}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "validate_version",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "validate_version",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "validate_version",
+         "depth": 1,
+         "ret": "{'version': 1}",
+         "out": "1"
+        },
+        {
+         "line": 9,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
-      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó."
+      "text": "Kiểm version chỉ là bước đầu; vẫn phải kiểm sinh viên/môn/điểm và tham chiếu như PW5. Nạp state vào biến tạm, xác nhận hợp lệ rồi mới thay registry đang dùng. Bước tiếp theo của nguồn là PW8 đưa việc lưu này sang thread nền và PW9 dùng GUI; đổi persistence ở đây chưa tự có hai tính năng đó. Quán đã thành một hệ thống chạy lại được; chặng sau là lúc nó có hai quầy."
      }
     ]
    ],
@@ -151,5 +337,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

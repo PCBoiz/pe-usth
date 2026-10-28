@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
+      "text": "Gói code của quán đã có điểm bắt đầu rồi, giờ quay lại mấy phép tính hay dùng. Môn Python có 3 tín chỉ, môn Database có 1. Hai điểm 8 và 6 không đóng góp như nhau vào điểm trung bình (GPA). Trước khi tính trung bình, hãy làm riêng phép nhân điểm với trọng số:"
      },
      {
       "type": "code",
@@ -52,7 +52,150 @@
       "type": "code",
       "code": "students = [{\"id\": \"A\", \"gpa\": 7.5}, {\"id\": \"B\", \"gpa\": 8.0}]\nranked = sorted(students, key=lambda x: x[\"gpa\"], reverse=True)\nprint([s[\"id\"] for s in ranked])\nprint([s[\"id\"] for s in students])",
       "expected": "['B', 'A']\n['A', 'B']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "x",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `x` bằng mấy?",
+        "answer": "{'id': 'A', 'gpa': 7.5}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "students",
+           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+          ]
+         ]
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "x",
+           "{'id': 'A', 'gpa': 7.5}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "7.5",
+         "set": [
+          [
+           "x",
+           "{'id': 'B', 'gpa': 8.0}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "x",
+           "{'id': 'B', 'gpa': 8.0}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "8.0"
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "s",
+           "{'id': 'B', 'gpa': 8.0}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "s",
+           "{'id': 'A', 'gpa': 7.5}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "ranked",
+           "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+          ],
+          [
+           "students",
+           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+          ]
+         ],
+         "out": "['B', 'A']"
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "s",
+           "{'id': 'A', 'gpa': 7.5}"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "s",
+           "{'id': 'B', 'gpa': 8.0}"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "ranked",
+           "[{'id': 'B', 'gpa': 8.0}, {'id': 'A', 'gpa': 7.5}]"
+          ],
+          [
+           "students",
+           "[{'id': 'A', 'gpa': 7.5}, {'id': 'B', 'gpa': 8.0}]"
+          ]
+         ],
+         "out": "['A', 'B']"
+        },
+        {
+         "line": 4,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
@@ -217,5 +360,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

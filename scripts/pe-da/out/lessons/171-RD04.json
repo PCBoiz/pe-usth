@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mỗi hàng đơn hàng có số lượng hai sản phẩm; bảng giá là một dãy hai số. Phép @ có thể cộng các tích số lượng × giá để cho ngay tổng tiền từng đơn."
+      "text": "Tên món đã đi cùng số rồi, giờ nhân một đơn với bảng giá của quán. Mỗi hàng đơn hàng có số lượng hai sản phẩm; bảng giá là một dãy hai số. Phép @ có thể cộng các tích số lượng × giá để cho ngay tổng tiền từng đơn."
      },
      {
       "type": "code",
@@ -232,5 +232,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

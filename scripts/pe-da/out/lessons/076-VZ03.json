@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Doanh thu tuần này lần lượt là 8, 10 và 7 triệu đồng. Khi vẽ line chart, mỗi giá trị phải đi cùng đúng ngày của nó. Matplotlib nối theo thứ tự bạn đưa vào, vì vậy dữ liệu chưa sắp ngày có thể tạo ra đường đi ngược."
+      "text": "Hình đầu tiên đã dựng xong rồi, giờ chọn đúng loại cho số liệu theo ngày. Doanh thu tuần này lần lượt là 8, 10 và 7 triệu đồng. Khi vẽ line chart, mỗi giá trị phải đi cùng đúng ngày của nó. Matplotlib nối theo thứ tự bạn đưa vào, vì vậy dữ liệu chưa sắp ngày có thể tạo ra đường đi ngược."
      },
      {
       "type": "code",
@@ -56,7 +56,58 @@
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\nsales = [8, np.nan, 7]\nax.plot([1, 2, 3], sales, marker=\"o\")\nax.set(xlabel=\"Day\", ylabel=\"Sales (million VND)\", title=\"Day 2 was not recorded\")\nprint(int(np.isfinite(sales).sum()))\nplt.show()",
       "expected": "2",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "sales",
+        "prompt": "Sau khi chạy xong, `sales` bằng mấy?",
+        "answer": "[8, nan, 7]"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "np",
+           "<thư viện numpy>"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "sales",
+           "[8, nan, 7]"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "out": "2"
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 8,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "figure",
@@ -250,5 +301,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

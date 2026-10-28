@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
+      "text": "Kiểu của từng cột đã rõ ở bài trước, còn ô trống thì phải xem trước khi điền. Một cảm biến gửi nhiệt độ 20, bỏ trống lần đo tiếp theo rồi gửi 22. Ô trống có nghĩa là chưa có số đo, nên chưa thể coi đó là 0 độ."
      },
      {
       "type": "code",
@@ -219,5 +219,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

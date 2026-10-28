@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một cửa hàng có hai sản phẩm, giá 10 và 20 nghìn đồng. Đơn đầu mua lần lượt 2 và 1 sản phẩm; đơn sau mua 1 và 3 sản phẩm. Để tính tiền từng loại trong mỗi đơn:"
+      "text": "Quán đã biết cách đánh dấu ô thiếu rồi, giờ quay lại phép tính giữa hai dãy khác cỡ. Một cửa hàng có hai sản phẩm, giá 10 và 20 nghìn đồng. Đơn đầu mua lần lượt 2 và 1 sản phẩm; đơn sau mua 1 và 3 sản phẩm. Để tính tiền từng loại trong mỗi đơn:"
      },
      {
       "type": "code",
@@ -268,5 +268,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

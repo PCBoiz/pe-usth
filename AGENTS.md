@@ -21,6 +21,9 @@ cd frontend && npm run dev # cổng 3000
 py scripts/pe-da/build.py              # course.json -> scripts/pe-da/out/ + chép 80 ảnh
 py scripts/pe-da/check.py --strict     # kiểm cấu trúc (CI chạy bản này)
 py scripts/pe-da/sync_curricula.py     # chép giáo trình sang frontend/src/lib/curricula.json
+py scripts/pe-da/gen_traces.py         # SINH LẠI traces.json (bảng từng bước) — ~20 phút,
+                                       # chỉ chạy khi code bài ĐỔI; cần numpy/pandas/matplotlib
+                                       # trên máy, nên KHÔNG chạy được trên CI (xem bẫy dưới)
 npm i --no-save pyodide@314.0.7
 node scripts/pe-da/check-pyodide.mjs   # chạy code từng bài trong Pyodide, so với `expected`
 node scripts/pe-da/check-practice.mjs  # chấm 415 ca BÀI TẬP + đòi 556 biến thể sai trượt
@@ -48,16 +51,17 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **31 bộ, 383 ca**, tất cả đạt |
+| Backend test | **32 bộ, 396 ca**, tất cả đạt |
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **378 ca** / 30 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **393 ca** / 31 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 553 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 360 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 556 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 373 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 408 đoạn code, **0 hỏng**, 14 cảnh báo, ~36 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
+| pe-da bảng từng bước | `py scripts/pe-da/gen_traces.py` → **57 vết / 356 khối đủ điều kiện** (299 bỏ qua, 277 trong đó vì không ra được câu dự đoán nào ĐÁNG hỏi); build.py `return 1` nếu lệch |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
 | Xuất hình cho người học | `node scripts/check-figures.mjs` → 16 ca, **0 hỏng** |
 | Runtime | Pyodide **314.0.7** (Python 3.14.2 · numpy 2.4.6 · pandas 3.0.2 · matplotlib 3.10.8), 30 MB |
@@ -69,16 +73,17 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 378 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 393 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 editor-load-gate 14 · feedback-link 9 · forum-xss 1 · ide-brief-code 12 ·
 ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 · ide-trace 38 ·
 inline-code 3 · label-version 2 · learning-events 48 · lesson-back 7 ·
 lesson-load 7 · mcq-code 9 · mcq-next-after-wrong 23 · practice-contract 14 ·
-prewarm-gate 5 · read-diagram 12 · read-try-it 20 · run-stale 15 ·
+prewarm-gate 5 · read-diagram 12 · read-trace 15 · read-try-it 20 · run-stale 15 ·
 session-marker 5 · studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 ·
-trap-leak 3 · worker-csp 7 = 378.
-Mốc trước là 351; thêm run-stale 15 ("kết quả này của bản code trước") và
+trap-leak 3 · worker-csp 7 = 393.
+Mốc trước là 378; thêm read-trace 15 (BẢNG TỪNG BƯỚC của màn đọc — xem bẫy cuối file).
+Trước đó 351 → 378 là run-stale 15 ("kết quả này của bản code trước") và
 read-diagram 12 (sơ đồ bằng DOM) — xem hai bẫy cuối file.
 Trước đó 328 → 351 là mcq-next-after-wrong 23.
 Trước đó 310 → 328 là lesson-back 7, course-resume 8 và inline-code 3 — cả ba đến từ
@@ -160,6 +165,12 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   `switch` có nhánh `default` ép `never`.
   Loại thứ sáu (`diagram`, thêm 29/10/2026) là PHÉP THỬ, hôm nay đúng MỘT bài — xem bẫy
   "Chữ TRONG sơ đồ không phóng to được" ở dưới.
+  **`trace` (bảng từng bước) KHÔNG phải loại khối thứ bảy — nó là một TRƯỜNG của khối
+  `code`**, và đó là một lựa chọn: bảng nói về đúng một đoạn mã (số dòng trong bảng là số
+  dòng của `block.code` ngay trên nó), nên để nó thành khối riêng là tạo thêm một thứ có
+  thể trôi lệch khỏi khối nó nói về — đúng cái bệnh mà `kiem_so_do` phải sinh ra để chữa
+  cho `diagram`. BỐN chỗ vẫn là bốn: `ReadBlock.trace` + `ReadTrace`, `StepTrace.tsx` dựng
+  từ `ReadScreen`, `vet_cua_bai()` trong build.py, `kiem_vet()` trong check.py.
 - **"Hình" của bốn bài Plotly là file HTML 4,7 MB, không phải ảnh.** VZ20–VZ22 và VZ26 khai
   `figure` trỏ tới `.html` do Plotly xuất, mỗi file nhúng sẵn cả plotly.js. Chép theo tên
   file làm `frontend/public/static/da/` phình từ 2,3 MB lên **49 MB**, lại còn vào thẻ
@@ -1044,6 +1055,86 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Chưa tới người học cho tới khi nạp DB:** `scripts/pe-da/out/lessons.json` đã có sơ đồ,
   nhưng nội dung bài thì đọc từ DB — cần
   `npx ts-node scripts/update-lesson-content.ts --codes=PY05 --apply --backup=<file.json>`.
+
+- **BẢNG TỪNG BƯỚC của màn đọc: vết TÍNH SẴN, và nó KHÔNG sinh được trong build.py.**
+  Màn đọc hôm qua chỉ có khối code rồi một ô "KẾT QUẢ:" với toàn bộ đầu ra — không thấy
+  được gì xảy ra ở giữa. Nay mỗi khối code đủ điều kiện mang thêm trường `trace`
+  (`ReadBlock.trace` → `StepTrace.tsx`): nút "Xem từng bước" ẩn sẵn, bấm thì HỎI DỰ ĐOÁN
+  trước, trả lời xong mới mở bảng.
+  **VÌ SAO KHÔNG SINH TRONG `build.py`, dù `SO_DO_DOC` đã ở đó.** CI chạy
+  `python scripts/pe-da/build.py` rồi ĐÒI bản dựng trùng TỪNG BYTE với bản đã commit, trên
+  runner **Python 3.12 không có numpy/pandas/matplotlib** — mà 90/154 bài từ module 2 trở
+  đi import chúng. Build mà tự chạy tracer thì máy người soạn ghi vết, CI bỏ qua, hai bản
+  dựng khác nhau, CI đỏ mãi mà không ai sửa được. Thêm nữa `repr` đổi theo phiên bản
+  Python, nên cả bài stdlib thuần cũng không chắc dựng giống nhau. Vết vì vậy sinh bằng
+  `py scripts/pe-da/gen_traces.py` và COMMIT vào `scripts/pe-da/traces.json`; build chỉ
+  ĐỌC. Đúng khuôn `chep_anh()` đã dùng cho 80 ảnh: gói nguồn chỉ có trên máy người soạn.
+  **DÙNG LẠI tracer của `/ide`, không viết tracer thứ hai:** `gen_traces.py` dựng đúng file
+  mà worker dựng (`scripts/tracer/pe_tracer.py` + `_pe_run(<mã đã nén>)`) rồi chạy bằng một
+  tiến trình riêng — y hệt `pe_tracer_test.py`.
+  **MỘT lần chạy MỖI BÀI, không mỗi khối.** Nguồn viết các đoạn để chạy NỐI TIẾP (đoạn 3
+  dùng `df` của đoạn 1), nên trace riêng đoạn 3 là trace một chương trình chết ở NameError.
+  Cả bài được nối bằng CHÍNH `noi_code()` rồi cắt theo khoảng dòng của từng đoạn và đánh số
+  lại về 1. **Và phép cắt KHÔNG được chỉ lọc theo DÒNG:** bài định nghĩa hàm ở đoạn 1 rồi
+  gọi ở đoạn 3 thì thân hàm chạy ở đoạn 3 nhưng số dòng vẫn thuộc đoạn 1 — lọc theo dòng là
+  nhét mấy bước đó vào cuối bảng của đoạn 1 kèm tham số mà đoạn 1 chưa có biến nào mang.
+  Bảng của đoạn j dừng ở lần đầu luồng chạy sang một đoạn SAU nó.
+  **HAI con số của tracer phải đổi ở khâu build, và chỉ một trong hai:** `timeBudgetMs`
+  4 000 được chọn để nhỏ hơn hạn 5 giây CỦA BÀI HỌC, mà ở build không có hạn nào như thế —
+  để nguyên thì **44 khối** bị bỏ với `time-limit` và **15 khối** quá timeout, gần hết là
+  bài matplotlib (riêng `import matplotlib.pyplot` đã vài giây và nó nằm TRONG mã người
+  học). Nâng lên 60 000 ở khâu sinh. `maxSteps`/`maxBytes` thì GIỮ: chúng bó cái BẢNG.
+  **`MPLBACKEND=Agg` là bắt buộc:** `code_hoc_vien()` trả bản `displayCode` có `plt.show()`,
+  và trên máy người soạn matplotlib chọn backend Tk — `plt.show()` MỞ CỬA SỔ rồi CHẶN tới
+  khi có người đóng. Đo được: 30 bài VZ mỗi bài treo tới hết timeout. Đây đúng là việc
+  `studio-harness.py` làm cho đường trình duyệt.
+  **CÂU DỰ ĐOÁN KHÔNG ĐƯỢC BỎ CHO GỌN — có bằng chứng.** Hundhausen 2002 tổng hợp 24 thực
+  nghiệm CÓ ĐỐI CHỨNG: chỉ 46% cho kết quả có ý nghĩa, 42% KHÔNG, và Gurka lặp lại thí
+  nghiệm nhưng BỎ điều kiện "dự đoán" thì lợi thế BIẾN MẤT. Brod 2021 nói ra cơ chế: đoán
+  sai → ngạc nhiên → chú ý dồn vào đáp án đúng. Nên nút "Mở bảng" chỉ bật khi đã gõ câu trả
+  lời (`disabled={!doan.trim()}` — một dòng, và là toàn bộ phần có bằng chứng của tính
+  năng), và khâu sinh **BỎ QUA và ĐẾM** mọi khối không ra được câu hỏi nào bảng trả lời
+  được, thay vì phát một cái bảng không ai phải đoán gì.
+  **BỐN luật làm nên một câu dự đoán THẬT, và `kiem_vet()` của check.py bắt được cả bốn
+  trên bản dựng thật — đây là số ĐÃ ĐO, không phải lý thuyết:**
+  · đáp án không được có trong ô "Kết quả:" ngay phía trên (bản sinh đầu quên áp luật này
+    cho câu `count`) → **3 lỗi**: PD29, VZ02, CT06 — vòng lặp chạy 3 lần và bài in ra một
+    dòng có chữ số 3, nên đọc ô Kết quả là đoán trúng;
+  · đáp án không được nằm nguyên văn trong CHÍNH ĐOẠN CODE khi biến chỉ gán một lần
+    (EX02 `raw = "name,mark\nMai,8.5\nAn,7.0\n"`), và câu `count` chỉ được hỏi về một dòng
+    THÂN vòng lặp — hỏi chính dòng `for` thì đáp án là n+1, còn hỏi một dòng có
+    comprehension thì con số là chi tiết nội tuyến hoá của Python 3.12 (PEP 709): SY13
+    `print([s["id"] for s in students])` ra "4 lần" → hai luật này **46 lỗi**;
+  · đáp án phải GÕ LẠI ĐƯỢC — `ndarray: array([1, 2, 3])`, `<thư viện numpy>`,
+    `property: <property object>`, hay 31 chữ số của `2 ** 100` thì không ai gõ, mà gõ lại
+    chính là hành động cam kết cả bước này tồn tại để lấy → **9 lỗi**.
+  **Hai thứ nữa mà `f_locals` mức module bịa ra, và cả hai đã cắn:** biến chạy của
+  comprehension (`s` trong `[s["id"] for s in ranked]`) hiện ra LÚC comprehension chạy rồi
+  biến mất, nên "sau khi chạy xong `s` bằng mấy" hỏi về một biến không còn tồn tại; và biến
+  của ĐOẠN TRƯỚC trông như vừa đổi (SY13 hiện `credits = ndarray…` giữa hai dòng `print`
+  của một đoạn không nhắc tới nó). Luật chữa: ứng viên phải CÒN trong locals ở bước cuối,
+  và bảng của một đoạn chỉ hiện biến mà ĐOẠN ĐÓ nhắc tới.
+  **Coverage là 57 vết / 356 khối đủ điều kiện / 38 bài**, 299 bỏ qua — và hình dạng của
+  phần bỏ nói đúng một chuyện: **277 khối không ra được câu dự đoán nào đáng hỏi**, gần hết
+  là bài pandas/numpy/matplotlib, vì ở đó mọi biến là đối tượng mờ (DataFrame, ndarray,
+  Figure) và thứ duy nhất đọc được thì bài đã `print` ra sẵn. Nó khớp số đo đã có trong
+  repo: tracer lọc theo `co_filename` nên mã dữ liệu chỉ 1,1×–1,3× — tức gần như KHÔNG sinh
+  sự kiện nào, tức bảng chẳng có gì để hiện. Bảng từng bước là công cụ cho mã ĐIỀU KHIỂN
+  LUỒNG (SY 28 · CT 9 · VZ 7 · EX 5 · GU 3 · PD 3 · RC 2), và nó tự dồn về đúng chỗ đó.
+  **Đừng "nâng coverage" bằng cách nới luật:** mỗi lần nới là một cái bảng mà người học
+  cuộn qua, và đó đúng là điều kiện mà Hundhausen đo được là KHÔNG có tác dụng.
+  **Module 1 KHÔNG có bảng** (quyết định đã chốt): ở đó code còn là `print(2 + 3)`, bảng
+  không nói thêm gì mà lại dạy người học bỏ qua cái nút đúng lúc nó chưa đáng bấm.
+  **Cổng chống "built but unreachable" nằm ở `vet_cua_bai()` + `main()`:** vết sinh ở MỘT
+  LẦN CHẠY KHÁC nên nó có thể cũ, mồ côi hoặc lệch chỉ số. build.py `return 1` khi số vết
+  phát ra ≠ số khối đủ điều kiện trừ số bỏ qua, khi traces.json có mục cho bài không được
+  có vết, và khi **`codeHash` lệch** — lệch nguy hiểm nhất, vì bảng vẫn mở ra, vẫn đẹp, và
+  dạy một đoạn code không còn tồn tại (cùng họ "sơ đồ đã trôi khỏi bài"). Hash tính trên
+  CHƯƠNG TRÌNH ĐÃ NỐI, không trên từng khối rời: sửa khối 1 làm vết của khối 3 sai.
+  **MÀN ĐỌC KHÔNG CÓ Ô SOẠN MÃ** — khối `code` dựng `CodeBlock`, chỉ đọc. Nên phần "sửa
+  code rồi chạy lại" KHÔNG áp dụng ở đây: chỗ đó là `/ide`, và nút "Thử ngay trong IDE"
+  ngay trên nút này đã bàn giao đúng tiền tố mã sang đó. Dựng thêm một ô soạn mã ở màn đọc
+  là dựng lại `/ide` trong một cái accordion.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

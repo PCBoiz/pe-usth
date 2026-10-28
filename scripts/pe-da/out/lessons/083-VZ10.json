@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai chuỗi cà phê và trà sẽ khó phân biệt nếu chỉ khác một màu nhạt. Bạn có thể kết hợp màu, marker và kiểu nét để người có cách nhìn màu khác nhau vẫn đọc được hình. Nhãn trực tiếp và bảng số đi kèm cũng giúp biểu đồ không phụ thuộc hoàn toàn vào màu."
+      "text": "Nhãn và chú thích đã đủ rồi, nhưng người xem báo cáo không nhìn màu giống nhau. Hai chuỗi cà phê và trà sẽ khó phân biệt nếu chỉ khác một màu nhạt. Bạn có thể kết hợp màu, marker và kiểu nét để người có cách nhìn màu khác nhau vẫn đọc được hình. Nhãn trực tiếp và bảng số đi kèm cũng giúp biểu đồ không phụ thuộc hoàn toàn vào màu."
      },
      {
       "type": "code",
@@ -247,5 +247,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

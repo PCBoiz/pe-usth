@@ -52,7 +52,186 @@
       "type": "code",
       "code": "class TextExporter:\n    def export(self, rows): return \",\".join(rows)\nclass ReportService:\n    def __init__(self, exporter): self.exporter = exporter\n    def build(self, rows): return self.exporter.export(rows)\nprint(ReportService(TextExporter()).build([\"A\", \"B\"]))",
       "expected": "A,B",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 4,
+        "prompt": "Ngay sau khi dòng 4 chạy, `self` bằng mấy?",
+        "answer": "ReportService()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "TextExporter",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "TextExporter",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "TextExporter",
+         "depth": 1,
+         "set": [
+          [
+           "export",
+           "<hàm export>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "TextExporter",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "ReportService",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 3,
+         "fn": "ReportService",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "ReportService",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "ReportService",
+         "depth": 1,
+         "set": [
+          [
+           "build",
+           "<hàm build>"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "ReportService",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 4,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "exporter",
+           "TextExporter()"
+          ],
+          [
+           "self",
+           "ReportService()"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "ReportService(exporter=TextExporter())"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 5,
+         "fn": "build",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "rows",
+           "['A', 'B']"
+          ],
+          [
+           "self",
+           "ReportService(exporter=TextExporter())"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "build",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "export",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "rows",
+           "['A', 'B']"
+          ],
+          [
+           "self",
+           "TextExporter()"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "export",
+         "depth": 2
+        },
+        {
+         "line": 2,
+         "fn": "export",
+         "depth": 2,
+         "ret": "'A,B'"
+        },
+        {
+         "line": 5,
+         "fn": "build",
+         "depth": 1,
+         "ret": "'A,B'",
+         "out": "A,B"
+        },
+        {
+         "line": 6,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -222,5 +401,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

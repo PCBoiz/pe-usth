@@ -966,18 +966,236 @@
   color: var(--edu-t2);
 }
 
-/* Nguồn slide của giảng viên, in cuối màn đọc cuối cùng. */
-.readSource {
+/* ── BẢNG TỪNG BƯỚC (ReadTrace) ─────────────────────────────────────────────
+   Vết đã tính sẵn lúc build; ở đây chỉ là cách trình bày nó. Giống khối
+   `diagram`: CHỮ THẬT, không ảnh, không canvas — cùng lời phàn nàn "chữ trong
+   sơ đồ quá nhỏ" của khảo sát 29/10/2026, và CSS không với tới pixel trong ảnh.
+
+   Không khai `font-family` cho phần chữ thường (chỉ cho cột mã, vì đó là code):
+   mục đích là kế thừa --edu-font của trang. */
+.traceRow {
+  margin: 10px 0 0;
+}
+
+.traceOpen {
+  padding: 7px 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 999px;
+  background: var(--edu-card-bg);
+  color: var(--edu-t2);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.traceOpen:hover {
+  border-color: var(--edu-accent);
+  color: var(--edu-t1);
+}
+
+.trace {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 14px;
+  background: var(--edu-card-bg);
+  /* Mở ra có một nhịp rất ngắn để mắt biết khối mới xuất hiện ở đâu. Nó bị TẮT
+     HẲN khi người dùng đã nói không muốn chuyển động — xem @media cuối khối. */
+  animation: traceVao 160ms ease-out;
+}
+
+@keyframes traceVao {
+  from {
+    opacity: 0;
+  }
+}
+
+/* CỔNG DỰ ĐOÁN — xem lý lẽ (Hundhausen 2002 / Brod 2021) ở đầu StepTrace.tsx. */
+.tracePredict {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.tracePredictAsk {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--edu-t1);
+}
+
+.tracePredictWhy {
   margin: 0;
   font-size: 14px;
+  line-height: 1.6;
   color: var(--edu-t3);
 }
 
-/* Màn đọc chạy ở CỘT RỘNG như màn lý thuyết (bảng và code cần chiều ngang),
+/* Ô nhập + nút: `wrap` để ở 360px nút tụt xuống dòng dưới thay vì bóp ô nhập
+   còn 80px. */
+.tracePredictLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tracePredictInput {
+  flex: 1 1 160px;
+  min-width: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 10px;
+  background: var(--edu-panel-bg-solid);
+  color: var(--edu-t1);
+  /* 16px, KHÔNG nhỏ hơn: iOS Safari tự phóng cả trang khi focus vào input có
+     font-size < 16px, và lúc đó người học mất chỗ đang đọc. */
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 16px;
+}
+
+.tracePredictGo {
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--edu-accent);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.tracePredictGo:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.traceVerdictOk,
+.traceVerdictNo {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.traceVerdictOk {
+  color: var(--edu-accent-text);
+}
+
+.traceVerdictNo {
+  color: var(--edu-t1);
+}
+
+.traceVerdictNote {
+  font-weight: 400;
+  color: var(--edu-t2);
+}
+
+/* Cuộn NGANG ở màn hẹp. Ba cột với một cột mã `white-space: pre` thì ở 360px
+   không có cách nào vừa mà vẫn đọc được thụt lề — mà thụt lề chính là thứ nói
+   ra "dòng này nằm trong vòng lặp". Cuộn ngang giữ được cả hai. */
+.traceTable {
+  overflow-x: auto;
+}
+
+.traceTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.traceTable caption {
+  margin-bottom: 8px;
+  color: var(--edu-t3);
+  font-size: 12px;
+  text-align: left;
+}
+
+.traceTable th,
+.traceTable td {
+  border: 1px solid var(--edu-sidebar-border);
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+  color: var(--edu-t2);
+}
+
+.traceTable thead th {
+  background: var(--edu-panel-bg-solid);
+  color: var(--edu-t1);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.traceTable tbody th {
+  white-space: nowrap;
+  color: var(--edu-t3);
+  font-weight: 600;
+}
+
+.traceFn {
+  display: block;
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.traceCode {
+  display: block;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  white-space: pre;
+  color: var(--edu-t1);
+}
+
+.traceEnter,
+.traceOut,
+.traceNone {
+  display: block;
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--edu-t3);
+}
+
+/* Mỗi biến đổi là một mẩu riêng trên một dòng riêng: ba biến đổi cùng lúc mà
+   dồn vào một dòng thì không ai tách được `a = 1 b = 2` ra. */
+.traceSet {
+  display: block;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  color: var(--edu-t1);
+  overflow-wrap: anywhere;
+}
+
+.traceOut code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--st-syn-string);
+  white-space: pre-wrap;
+}
+
+.traceElided td {
+  color: var(--edu-t3);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* Người dùng đã nói họ không muốn chuyển động thì KHÔNG có chuyển động nào —
+   không phải "chậm hơn". Khối này vốn chỉ có một nhịp mờ dần duy nhất, nên
+   tắt nó là tắt hết. */
+@media (prefers-reduced-motion: reduce) {
+  .trace {
+    animation: none;
+  }
+}
+
+/* `.readSource` (dòng "Nguồn: All_slide_one_file.pdf tr. 34-36; Python —
+   Tutorial" ở cuối màn đọc cuối) đã BỎ ngày 29/10/2026 theo yêu cầu của chủ dự
+   án: "không cần ghi nguồn". Dữ liệu `source.slides` vẫn còn trong bản dựng và
+   trong nguồn — chỉ thôi dựng nó ra — nên muốn bật lại thì chỉ là một khối JSX.
+
+   Màn đọc chạy ở CỘT RỘNG như màn lý thuyết (bảng và code cần chiều ngang),
    nhưng chữ thì bó lại ~78 ký tự — xem ghi chú ở .theoryBlock p. */
 @media (min-width: 1000px) {
-  .read p,
-  .readSource {
+  .read p {
     max-width: 78ch;
   }
 }

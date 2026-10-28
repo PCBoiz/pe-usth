@@ -3,13 +3,13 @@
  "sort_order": 39,
  "module": "M2 · NumPy từ dãy số đến bảng",
  "title": "NP21 · Đọc bảng số từ CSV",
- "subtitle": "Trung cấp · M2 · 11 phút",
- "estimated_minutes": 11,
+ "subtitle": "Trung cấp · M2 · 12 phút",
+ "estimated_minutes": 12,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "NP21 · Đọc bảng số từ CSV",
-  "subtitle": "Trung cấp · M2 · 11 phút",
+  "subtitle": "Trung cấp · M2 · 12 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#NP21",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
+      "text": "Tới đây mọi bảng đều do bạn gõ tay trong bài, còn sổ của quán nằm trong một file. Nhóm khảo sát lưu số lượng chim và thỏ theo từng năm trong một bảng CSV (file text, các ô cách nhau bằng dấu phẩy). Dòng đầu ghi tên cột; hai dòng sau chứa số liệu. Bạn muốn đọc bảng đó vào NumPy:"
      },
      {
       "type": "code",
@@ -212,5 +212,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

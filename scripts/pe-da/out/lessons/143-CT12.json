@@ -22,13 +22,70 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai worker cùng đọc bộ đếm là 0 rồi mỗi worker ghi thêm 1. Nếu lần ghi sau đè lần ghi trước, kết quả có thể chỉ là 1 dù có hai lượt tăng. Mô phỏng thứ tự xen kẽ đó:"
+      "text": "Hai luồng ở bài trước dùng chung bộ nhớ, như hai quầy dùng chung một máy xay. Hai worker cùng đọc bộ đếm là 0 rồi mỗi worker ghi thêm 1. Nếu lần ghi sau đè lần ghi trước, kết quả có thể chỉ là 1 dù có hai lượt tăng. Mô phỏng thứ tự xen kẽ đó:"
      },
      {
       "type": "code",
       "code": "count = 0\nread_a = count\nread_b = count\ncount = read_a + 1\ncount = read_b + 1\nprint(count)",
       "expected": "1",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "read_b",
+        "prompt": "Sau khi chạy xong, `read_b` bằng mấy?",
+        "answer": "0"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "count",
+           "0"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "read_a",
+           "0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "read_b",
+           "0"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "count",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 6,
+         "out": "1"
+        },
+        {
+         "line": 6,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -51,10 +108,16 @@
       "type": "code",
       "code": "from threading import Lock\nlock = Lock()\nlock.acquire()\ntry:\n    print(lock.acquire(blocking=False))\nfinally:\n    lock.release()\nprint(lock.locked())",
       "expected": "False\nFalse"
-     },
+     }
+    ],
+    [
      {
       "type": "paragraph",
       "text": "Lock thông thường không cho thread đang giữ tự lấy lại lần nữa. Ví dụ dùng blocking=False để quan sát thất bại mà không treo. Nếu A giữ khóa X chờ Y trong khi B giữ Y chờ X, cả hai có thể deadlock. Dùng thứ tự lấy khóa nhất quán, thu nhỏ vùng tới hạn và tránh giữ khóa khi chờ lâu. CPython build có GIL dùng một khóa của interpreter, nhưng khóa đó không bảo vệ trọn quy tắc chuyển tiền hay cập nhật nhiều giá trị của ứng dụng. EX05 giải thích riêng mô hình GIL này."
+     },
+     {
+      "type": "paragraph",
+      "text": "Bộ đếm bị tranh ở đây chính là hình dạng của lỗi khi hai quầy cùng ghi vào một cuốn sổ."
      }
     ]
    ],
@@ -211,5 +274,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 1,
+  "co": 1,
+  "bo": 0,
+  "loi": []
+ }
 }

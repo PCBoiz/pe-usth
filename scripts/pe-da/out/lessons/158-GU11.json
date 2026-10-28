@@ -172,5 +172,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

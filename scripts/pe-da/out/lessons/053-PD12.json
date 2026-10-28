@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "File xuất từ cửa hàng dùng dấu chấm phẩy để ngăn cột và mã đơn có số 0 đầu. Bạn cần khai báo hai điều này khi đọc, thay vì sửa sau khi dữ liệu đã bị hiểu sai."
+      "text": "Mọi bảng tới đây đều gõ trong bài; file thật của quán thì có quy ước riêng. File xuất từ cửa hàng dùng dấu chấm phẩy để ngăn cột và mã đơn có số 0 đầu. Bạn cần khai báo hai điều này khi đọc, thay vì sửa sau khi dữ liệu đã bị hiểu sai."
      },
      {
       "type": "code",
@@ -52,7 +52,56 @@
       "type": "code",
       "code": "import pandas as pd\nfrom io import StringIO\ndf = pd.DataFrame({'order': ['A', 'B'], 'amount': [10, 20]})\ntext = df.to_csv(index=False)\nback = pd.read_csv(StringIO(text))\nprint(text.splitlines()[0])\nprint(back['amount'].sum())",
       "expected": "order,amount\n30",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "text",
+        "prompt": "Sau khi chạy xong, `text` bằng mấy?",
+        "answer": "'order,amount\\r\\nA,10\\r\\nB,20\\r\\n'"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "text",
+           "'order,amount\\r\\nA,10\\r\\nB,20\\r\\n'"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "back",
+           "DataFrame(_mgr=BlockManager(), _attrs={}, _flags=Flags(_allows_duplicat…"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "out": "order,amount"
+        },
+        {
+         "line": 7,
+         "out": "30"
+        },
+        {
+         "line": 7,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
@@ -219,5 +268,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

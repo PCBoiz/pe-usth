@@ -22,13 +22,63 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
+      "text": "Ở bài trước bạn đọc cây tiến trình của máy. Trong ví dụ dưới, values và alias cùng trỏ tới một list. Vì vậy, thêm phần tử qua alias cũng làm bạn thấy phần tử mới khi đọc values. CPython dùng cơ chế đếm tham chiếu, gọi là reference counting, để theo dõi các tham chiếu tới object. Bộ thu gom rác còn xử lý những nhóm object tham chiếu vòng nhau. Số tham chiếu bạn thấy khi debug có thể gồm cả tham chiếu tạm do công cụ quan sát tạo ra, nên không nên coi đó là số biến bạn đã tự viết."
      },
      {
       "type": "code",
       "code": "values = [6, 8]\nalias = values\nalias.append(10)\nprint(alias is values)\nprint(values)",
       "expected": "True\n[6, 8, 10]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "alias",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `alias` bằng mấy?",
+        "answer": "[6, 8]"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "values",
+           "[6, 8]"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "alias",
+           "[6, 8]"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "alias",
+           "[6, 8, 10]"
+          ],
+          [
+           "values",
+           "[6, 8, 10]"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "True"
+        },
+        {
+         "line": 5,
+         "out": "[6, 8, 10]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +90,132 @@
       "type": "code",
       "code": "import gc, weakref\nclass Node:\n    pass\ndef make_cycle():\n    a, b = Node(), Node()\n    a.peer, b.peer = b, a\n    return weakref.ref(a)\nreference = make_cycle()\ngc.collect()\nprint(reference() is None)",
       "expected": "True",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "a",
+        "line": 5,
+        "prompt": "Ngay sau khi dòng 5 chạy, `a` bằng mấy?",
+        "answer": "Node()"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "gc",
+           "<thư viện gc>"
+          ],
+          [
+           "weakref",
+           "<thư viện weakref>"
+          ]
+         ]
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 2,
+         "fn": "Node",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 2,
+         "fn": "Node",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "Node",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "Node",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "make_cycle",
+           "<hàm make_cycle>"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 4,
+         "fn": "make_cycle",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 5,
+         "fn": "make_cycle",
+         "depth": 1,
+         "set": [
+          [
+           "a",
+           "Node()"
+          ],
+          [
+           "b",
+           "Node()"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "make_cycle",
+         "depth": 1,
+         "set": [
+          [
+           "a",
+           "Node(peer=Node(peer=<tự tham chiếu>))"
+          ],
+          [
+           "b",
+           "Node(peer=Node(peer=<tự tham chiếu>))"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "fn": "make_cycle",
+         "depth": 1
+        },
+        {
+         "line": 7,
+         "fn": "make_cycle",
+         "depth": 1,
+         "ret": "ReferenceType: <weakref; to 'Node'>"
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "reference",
+           "ReferenceType: <weakref; dead>"
+          ]
+         ]
+        },
+        {
+         "line": 10,
+         "out": "True"
+        },
+        {
+         "line": 10,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -55,7 +230,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu."
+      "text": "Ví dụ cuối chỉ kiểm cách lấy kết quả theo thứ tự đầu vào; hàm không làm I/O thật và không đo tăng tốc. Nếu cần chứng minh hiệu năng, chọn workload có đại lượng đo, chạy lặp và ghi cấu hình máy. Apache Prefork/Worker và Chromium trong slide còn cho thấy process dùng cho tổ chức tài nguyên và cô lập, trong khi thread bên trong process thuận tiện chia sẻ dữ liệu. Chọn cách chạy nền nào cho quán là quyết định dựa trên chỗ này."
      }
     ]
    ],
@@ -160,5 +335,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 2,
+  "co": 2,
+  "bo": 0,
+  "loi": []
+ }
 }

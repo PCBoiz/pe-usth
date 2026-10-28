@@ -22,13 +22,257 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
+      "text": "Hai cách chọn ở bài trước đều để một việc chạy tới khi xong. Hai việc A và B cùng cần CPU. Bạn muốn mỗi việc có cơ hội chạy thay vì A giữ CPU đến hết. Round Robin cấp một quantum (thời gian CPU mỗi việc được dùng trước khi bị thu lại) rồi đưa việc chưa xong về cuối hàng:"
      },
      {
       "type": "code",
       "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(1, remaining)\n    trace.append(name)\n    if remaining > used:\n        ready.append((name, remaining-used))\nprint(trace)",
       "expected": "['A', 'B', 'A', 'B', 'A']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "remaining",
+        "prompt": "Sau khi chạy xong, `remaining` bằng mấy?",
+        "answer": "1"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "deque",
+           "<lớp deque>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('A', 3), ('B', 2)])"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "trace",
+           "[]"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'A'"
+          ],
+          [
+           "ready",
+           "deque: deque([('B', 2)])"
+          ],
+          [
+           "remaining",
+           "3"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "used",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "['A']"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('B', 2), ('A', 2)])"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'B'"
+          ],
+          [
+           "ready",
+           "deque: deque([('A', 2)])"
+          ],
+          [
+           "remaining",
+           "2"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "['A', 'B']"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('A', 2), ('B', 1)])"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'A'"
+          ],
+          [
+           "ready",
+           "deque: deque([('B', 1)])"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "['A', 'B', 'A']"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('B', 1), ('A', 1)])"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'B'"
+          ],
+          [
+           "ready",
+           "deque: deque([('A', 1)])"
+          ],
+          [
+           "remaining",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "['A', 'B', 'A', 'B']"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'A'"
+          ],
+          [
+           "ready",
+           "deque: deque([])"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "['A', 'B', 'A', 'B', 'A']"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 10,
+         "out": "['A', 'B', 'A', 'B', 'A']"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +284,164 @@
       "type": "code",
       "code": "from collections import deque\nready = deque([(\"A\", 3), (\"B\", 2)])\ntrace = []\nwhile ready:\n    name, remaining = ready.popleft()\n    used = min(2, remaining)\n    trace.append((name, used))\n    if remaining > used: ready.append((name, remaining-used))\nprint(trace)",
       "expected": "[('A', 2), ('B', 2), ('A', 1)]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "count",
+        "line": 5,
+        "prompt": "Dòng 5 chạy bao nhiêu lần?",
+        "answer": "3"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('A', 3), ('B', 2)])"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "trace",
+           "[]"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('B', 2)])"
+          ],
+          [
+           "remaining",
+           "3"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "used",
+           "2"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "[('A', 2)]"
+          ]
+         ]
+        },
+        {
+         "line": 8,
+         "set": [
+          [
+           "ready",
+           "deque: deque([('B', 2), ('A', 1)])"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'B'"
+          ],
+          [
+           "ready",
+           "deque: deque([('A', 1)])"
+          ],
+          [
+           "remaining",
+           "2"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "[('A', 2), ('B', 2)]"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "name",
+           "'A'"
+          ],
+          [
+           "ready",
+           "deque: deque([])"
+          ],
+          [
+           "remaining",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "used",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "trace",
+           "[('A', 2), ('B', 2), ('A', 1)]"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 9,
+         "out": "[('A', 2), ('B', 2), ('A', 1)]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -56,7 +457,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python."
+      "text": "Nếu mỗi lần chuyển tốn 0.1 đơn vị, bốn lần chuyển cộng thêm 0.4, còn hai lần chuyển thêm 0.2. Các số giả định giúp đọc trade-off; chúng không đo scheduler của máy đang chạy Python. Nhờ cách chia lượt này, màn hình nhận đơn của quán không bị treo khi máy đang tính."
      }
     ]
    ],
@@ -155,5 +556,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

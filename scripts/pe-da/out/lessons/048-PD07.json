@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Mã đơn 001 cần giữ số 0 ở đầu; số lượng có thể chưa được nhập. Hai cột này không nên được xử lý cùng một kiểu."
+      "text": "Cột doanh thu của quán bạn vừa tính chạy đúng vì mọi ô đều là số. Mã đơn 001 cần giữ số 0 ở đầu; số lượng có thể chưa được nhập. Hai cột này không nên được xử lý cùng một kiểu."
      },
      {
       "type": "code",
@@ -237,5 +237,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

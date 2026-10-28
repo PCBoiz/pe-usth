@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong ghi chú \"Paid by S012 today\", bạn muốn lấy mã sinh viên thay vì dựa vào vị trí ký tự cố định. Regex mô tả dạng của mã:"
+      "text": "Mẫu ngẫu nhiên ở bài trước lấy cả dòng; có lúc bạn chỉ cần một mẩu trong dòng. Trong ghi chú \"Paid by S012 today\", bạn muốn lấy mã sinh viên thay vì dựa vào vị trí ký tự cố định. Regex mô tả dạng của mã:"
      },
      {
       "type": "code",
@@ -40,7 +40,42 @@
       "type": "code",
       "code": "import re\ntext = \"An   paid\\t today\"\nclean = re.sub(r\"\\s+\", \" \", text)\nprint(clean)",
       "expected": "An paid today",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "clean",
+        "prompt": "Sau khi chạy xong, `clean` bằng mấy?",
+        "answer": "'An paid today'"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "text",
+           "'An paid\\t today'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "clean",
+           "'An paid today'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "An paid today"
+        }
+       ]
+      }
      }
     ],
     [
@@ -188,5 +223,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

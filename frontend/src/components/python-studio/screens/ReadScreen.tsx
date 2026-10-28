@@ -21,6 +21,7 @@ import { maDeThu, type ReadBlock } from '@/lib/studio-lesson';
 import c from '../studio-chrome.module.css';
 import { paragraphs, ScreenShell } from './chrome';
 import type { ShellProps } from './props';
+import StepTrace from './StepTrace';
 
 /**
  * Một khối — SÁU loại (xem READ_BLOCK_TYPES).
@@ -74,6 +75,12 @@ function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
               spaced
             />
           ) : null}
+          {/* BẢNG TỪNG BƯỚC, ẨN SẴN. Đứng SAU nút "Thử ngay trong IDE" có lý
+              do: hai nút trả lời hai câu khác nhau, và câu "đoạn này chạy thế
+              nào" chỉ nảy ra SAU khi người học đã thấy có chỗ để tự thử. Vết
+              chỉ có ở khối nào khâu build sinh được (module 2 trở đi, và phải
+              ra được một câu dự đoán) — xem ReadTrace. */}
+          {block.trace ? <StepTrace trace={block.trace} code={block.code} /> : null}
         </>
       );
 
@@ -204,7 +211,6 @@ export default function ReadScreen({ lesson, scr, metaLabel }: ShellProps) {
   const slices = lesson.step_1?.read ?? [];
   const at = scr.index ?? 0;
   const blocks = slices[at] ?? [];
-  const slides = lesson.source?.slides;
 
   return (
     <ScreenShell
@@ -229,12 +235,14 @@ export default function ReadScreen({ lesson, scr, metaLabel }: ShellProps) {
           />
         ))}
       </div>
-      {/* Nguồn slide chỉ in ở màn đọc CUỐI: lặp lại ở từng lát thì nó thành
-          nhiễu, mà bỏ hẳn thì mất đường truy nguồn. In nguyên văn — chuỗi này
-          có thể là nhiều khoảng trang rời ("SL 95-105, 133"). */}
-      {slides && at === slices.length - 1 && (
-        <p className={c.readSource}>Nguồn: {slides}</p>
-      )}
+      {/* ĐÃ BỎ dòng "Nguồn: All_slide_one_file.pdf tr. 34-36; Python —
+          Tutorial" ở cuối màn đọc cuối (29/10/2026). Chủ dự án: "không cần ghi
+          nguồn" — nó là mốc truy nguồn của khâu soạn sách, còn với người học
+          thì số trang của một file PDF họ không có là một dòng chữ không dùng
+          được.
+          `source.slides` VẪN còn trong bản dựng và trong `course.json`: bỏ
+          phần DỰNG RA, không bỏ dữ liệu. `check.py` vẫn cảnh báo khi một bài
+          mất nó, nên đường truy nguồn ở phía soạn sách không mất. */}
     </ScreenShell>
   );
 }

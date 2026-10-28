@@ -22,13 +22,172 @@
     [
      {
       "type": "paragraph",
-      "text": "Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
+      "text": "Các lớp ở bài trước đã tách phần việc, nhưng chưa ai canh dữ liệu bên trong. Điểm sinh viên phải từ 0 đến 10. Nếu chỗ nào cũng có thể gán điểm tùy ý, bạn sẽ phải kiểm tra cùng quy tắc nhiều lần. Một setter gom kiểm tra về một nơi:"
      },
      {
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.set_value(value)\n    def get_value(self): return self._value\n    def set_value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\nprint(grade.get_value())",
       "expected": "8",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Grade()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "get_value",
+           "<hàm get_value>"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "set_value",
+           "<hàm set_value>"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "Grade",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "set_value",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "set_value",
+         "depth": 2
+        },
+        {
+         "line": 6,
+         "fn": "set_value",
+         "depth": 2,
+         "set": [
+          [
+           "self",
+           "Grade(_value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "set_value",
+         "depth": 2,
+         "ret": "None"
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade(_value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1,
+         "ret": "8",
+         "out": "8"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +199,123 @@
       "type": "code",
       "code": "class Salary:\n    def __init__(self): self.__value = 100\n    def get_value(self): return self.__value\nsalary = Salary()\nprint(salary.get_value())\nprint(\"_Salary__value\" in vars(salary))",
       "expected": "100\nTrue",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Salary()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Salary",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Salary",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Salary",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Salary",
+         "depth": 1,
+         "set": [
+          [
+           "get_value",
+           "<hàm get_value>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Salary",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Salary()"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Salary(_Salary__value=100)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Salary(_Salary__value=100)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "get_value",
+         "depth": 1,
+         "ret": "100",
+         "out": "100"
+        },
+        {
+         "line": 6,
+         "out": "True"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,7 +327,206 @@
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self._value = value\n    @property\n    def value(self): return self._value\n    @value.setter\n    def value(self, value):\n        if not 0 <= value <= 10: raise ValueError(\"score\")\n        self._value = value\ngrade = Grade(8)\ntry: grade.value = 11\nexcept ValueError: print(\"Tu choi\")\nprint(grade.value)",
       "expected": "Tu choi\n8",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Grade()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "value",
+           "property: <property object>"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 6,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 6,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 6,
+         "fn": "Grade",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 9
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(_value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 10
+        },
+        {
+         "line": 5,
+         "fn": "value",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade(_value=8)"
+          ],
+          [
+           "value",
+           "11"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "fn": "value",
+         "depth": 1
+        },
+        {
+         "line": 7,
+         "fn": "value",
+         "depth": 1,
+         "exc": "ValueError: score"
+        },
+        {
+         "line": 7,
+         "fn": "value",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 10,
+         "exc": "ValueError: score"
+        },
+        {
+         "line": 11,
+         "out": "Tu choi"
+        },
+        {
+         "line": 12
+        },
+        {
+         "line": 3,
+         "fn": "value",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade(_value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "value",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "value",
+         "depth": 1,
+         "ret": "8",
+         "out": "8"
+        },
+        {
+         "line": 12,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -218,5 +692,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 3,
+  "bo": 0,
+  "loi": []
+ }
 }

@@ -3,13 +3,13 @@
  "sort_order": 134,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT03 · Scheduler, PCB và các hàng đợi",
- "subtitle": "Nâng cao · M6 · 21 phút",
- "estimated_minutes": 21,
+ "subtitle": "Nâng cao · M6 · 22 phút",
+ "estimated_minutes": 22,
  "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT03 · Scheduler, PCB và các hàng đợi",
-  "subtitle": "Nâng cao · M6 · 21 phút",
+  "subtitle": "Nâng cao · M6 · 22 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT03",
@@ -22,13 +22,49 @@
     [
      {
       "type": "paragraph",
-      "text": "Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
+      "text": "Hai quầy của quán chạy cùng lúc trên một máy, và bài trước chỉ nói cách tạo ra chúng. Một process đang chờ đọc file, trong khi process khác có việc tính toán. Bộ điều phối (scheduler) quyết định ai dùng CPU, với mục tiêu sử dụng CPU và khả năng đáp ứng phù hợp. Tác vụ CPU-bound dành nhiều thời gian tính; I/O-bound dành nhiều thời gian chờ dữ liệu."
      },
      {
       "type": "code",
       "code": "queues = {\"job\": [\"A\", \"B\", \"C\"], \"ready\": [\"A\", \"B\"], \"disk\": [\"C\"]}\ncurrent = queues[\"ready\"].pop(0)\nprint(current, queues[\"disk\"])",
       "expected": "A ['C']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "current",
+        "prompt": "Sau khi chạy xong, `current` bằng mấy?",
+        "answer": "'A'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "queues",
+           "{'job': ['A', 'B', 'C'], 'ready': ['A', 'B'], 'disk': ['C']}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "current",
+           "'A'"
+          ],
+          [
+           "queues",
+           "{'job': ['A', 'B', 'C'], 'ready': ['B'], 'disk': ['C']}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "out": "A ['C']"
+        }
+       ]
+      }
      }
     ],
     [
@@ -63,6 +99,10 @@
      {
       "type": "paragraph",
       "text": "Short-term scheduler chọn process chạy tiếp; long-term scheduler kiểm soát công việc được đưa vào tập xử lý. Khi nhiều việc tính nặng cùng đến, quyết định nhận thêm việc ảnh hưởng lượng bộ nhớ và mức tranh CPU. Multitasking giữ nhiều việc có thể tiến triển; scheduler cân bằng sử dụng CPU với độ đáp ứng, chẳng hạn không để giao diện chờ quá lâu. Preemptive (thu CPU lại giữa chừng) không chờ tác vụ tự nhường; non-preemptive/cooperative thường chờ tác vụ nhường, chặn hoặc kết thúc. Priority và ràng buộc giúp quyết định chọn ai và cấp CPU trong bao lâu."
+     },
+     {
+      "type": "paragraph",
+      "text": "Vậy khi quán chạy một việc ở nền, nó không giữ CPU liên tục từ đầu đến cuối."
      }
     ]
    ],
@@ -185,5 +225,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

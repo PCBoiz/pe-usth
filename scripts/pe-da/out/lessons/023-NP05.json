@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một báo cáo tuần cần các số thứ tự từ 1 đến 7. Thay vì nhập từng số, bạn có thể tạo dãy bằng `np.arange`:"
+      "text": "Bài trước nhân cả dãy số cốc với đơn giá; lần này bạn cần tự tạo ra dãy. Một báo cáo tuần cần các số thứ tự từ 1 đến 7. Thay vì nhập từng số, bạn có thể tạo dãy bằng `np.arange`:"
      },
      {
       "type": "code",
@@ -212,5 +212,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

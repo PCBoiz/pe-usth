@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
+      "text": "Lớp vừa dựng đã giữ được dữ liệu hợp lệ, giờ đến chỗ đặt code của quán. Bạn dùng công thức làm tròn xuống ở nhiều báo cáo. Thay vì chép lại hàm, đặt nó trong một file .py rồi import. Trước hết xem namespace của module có sẵn:"
      },
      {
       "type": "code",
@@ -165,5 +165,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

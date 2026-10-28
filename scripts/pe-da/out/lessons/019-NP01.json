@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
+      "text": "Sổ tay của quán đã ghi được một tuần, giờ bạn cần tính trên cả cột số cốc một lượt. Thứ Hai, một quán cà phê bán 12 cốc; thứ Ba bán 15 cốc; thứ Tư bán 9 cốc. Bạn có thể đặt ba số này vào một mảng (array) của NumPy để lưu và xử lý cùng nhau:"
      },
      {
       "type": "code",
@@ -214,5 +214,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

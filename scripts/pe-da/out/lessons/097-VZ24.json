@@ -3,13 +3,13 @@
  "sort_order": 97,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
- "subtitle": "Trung cấp · M4 · 16 phút",
- "estimated_minutes": 16,
+ "subtitle": "Trung cấp · M4 · 17 phút",
+ "estimated_minutes": 17,
  "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ24 · Nhận ra biểu đồ gây hiểu lầm",
-  "subtitle": "Trung cấp · M4 · 16 phút",
+  "subtitle": "Trung cấp · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ24",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cửa hàng A có 20 khiếu nại, B có 10. Chỉ đếm khiếu nại sẽ khiến A trông kém hơn, nhưng A phục vụ 1000 đơn còn B phục vụ 100 đơn. Mẫu số thay đổi kết luận: tỷ lệ tương ứng là 2% và 10%. Trước khi chọn hình, cần biết đang so sánh tổng hay tỷ lệ."
+      "text": "Bộ chọn vừa dựng cho người khác tự xem số của quán, nên hình phải không gây hiểu lầm. Cửa hàng A có 20 khiếu nại, B có 10. Chỉ đếm khiếu nại sẽ khiến A trông kém hơn, nhưng A phục vụ 1000 đơn còn B phục vụ 100 đơn. Mẫu số thay đổi kết luận: tỷ lệ tương ứng là 2% và 10%. Trước khi chọn hình, cần biết đang so sánh tổng hay tỷ lệ."
      },
      {
       "type": "code",
@@ -251,5 +251,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

@@ -3,13 +3,13 @@
  "sort_order": 99,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
- "subtitle": "Nâng cao · M4 · 16 phút",
- "estimated_minutes": 16,
+ "subtitle": "Nâng cao · M4 · 17 phút",
+ "estimated_minutes": 17,
  "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ26 · Dự án: từ câu hỏi phân tích đến báo cáo có thể kiểm tra",
-  "subtitle": "Nâng cao · M4 · 16 phút",
+  "subtitle": "Nâng cao · M4 · 17 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ26",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn được hỏi: “Trong dữ liệu mẫu, loại đồ uống nào đóng góp doanh thu cao nhất?” Cần thống nhất doanh thu bằng số lượng nhân đơn giá, loại bỏ dòng không hợp lệ theo quy tắc công khai rồi mới tổng hợp. Ví dụ dưới giữ ba dòng có lượng và giá không âm; đây là dữ liệu minh họa, không phải kết quả kinh doanh thật."
+      "text": "Mọi loại hình ở các bài trước nay dùng để trả lời một câu hỏi của quán. Bạn được hỏi: “Trong dữ liệu mẫu, loại đồ uống nào đóng góp doanh thu cao nhất?” Cần thống nhất doanh thu bằng số lượng nhân đơn giá, loại bỏ dòng không hợp lệ theo quy tắc công khai rồi mới tổng hợp. Ví dụ dưới giữ ba dòng có lượng và giá không âm; đây là dữ liệu minh họa, không phải kết quả kinh doanh thật."
      },
      {
       "type": "code",
@@ -256,5 +256,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 2,
+  "co": 0,
+  "bo": 2,
+  "loi": []
+ }
 }

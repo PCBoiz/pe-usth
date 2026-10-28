@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một file xuất số bán thành dãy `[12, 15, 9, 10, 8, 14]`. Quy ước của file cho biết ba số đầu thuộc cửa hàng A, ba số sau thuộc cửa hàng B. Bạn có thể xếp lại thành bảng 2 hàng, 3 cột:"
+      "text": "Bảng của quán không phải lúc nào cũng về sẵn hai chiều như bài trước. Một file xuất số bán thành dãy `[12, 15, 9, 10, 8, 14]`. Quy ước của file cho biết ba số đầu thuộc cửa hàng A, ba số sau thuộc cửa hàng B. Bạn có thể xếp lại thành bảng 2 hàng, 3 cột:"
      },
      {
       "type": "code",
@@ -244,5 +244,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

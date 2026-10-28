@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
+      "text": "Lớp ở bài trước đã biết tự hiển thị; giờ hai lớp báo cáo của quán dùng chung một phần việc. Một báo cáo doanh thu có thể xuất CSV hoặc văn bản. Hai loại báo cáo dùng chung thao tác render nhưng tạo nội dung khác nhau:"
      },
      {
       "type": "code",
@@ -220,5 +220,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai nhóm giao hàng có trung bình 10 và 12 phút. Chỉ hai điểm trung bình chưa cho biết các đơn phân tán ra sao hay trung bình được ước lượng chắc đến mức nào. Error bar có thể biểu diễn độ lệch chuẩn, khoảng phần trăm hoặc khoảng tin cậy; bạn cần ghi rõ mình đang vẽ loại nào."
+      "text": "Nhiều hình đã nằm chung một trang rồi, nhưng một con số trung bình vẫn chưa đủ. Hai nhóm giao hàng có trung bình 10 và 12 phút. Chỉ hai điểm trung bình chưa cho biết các đơn phân tán ra sao hay trung bình được ước lượng chắc đến mức nào. Error bar có thể biểu diễn độ lệch chuẩn, khoảng phần trăm hoặc khoảng tin cậy; bạn cần ghi rõ mình đang vẽ loại nào."
      },
      {
       "type": "code",
@@ -238,5 +238,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

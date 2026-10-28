@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
+      "text": "Các hàm vừa viết cho quán đã đủ dài để bạn cần giữ lại từng bản. Bạn sửa một bài Python và muốn giữ lại bản trước khi thay công thức. Git lưu các mốc thay đổi của dự án, gọi là commit. Fork (lấy một bản sao sang tài khoản của bạn) tạo một kho mã (repository) riêng trên GitHub. Clone tải bản làm việc cùng lịch sử Git về máy. Các lệnh dưới chạy ở terminal trong thư mục lab, thay TEN_BAN bằng tài khoản thật:"
      },
      {
       "type": "terminal",
@@ -53,7 +53,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn."
+      "text": "Push gửi commit local đến remote. Một commit chưa push vẫn tồn tại trên máy bạn nhưng người khác chưa lấy được từ fork. Bài này cần Git, GitHub và quyền truy cập của người học; kết quả kiểm tra là commit thực có thể xem trên fork, không phải một ảnh dòng lệnh được soạn sẵn. Lịch sử code của quán giữ được rồi, nên bạn dám sửa công thức tính tiền."
      }
     ]
    ],
@@ -153,5 +153,11 @@
  "_mode": "local",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

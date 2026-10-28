@@ -22,13 +22,71 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
+      "text": "Nhiều file đã gom được vào một gói nén rồi, nhưng dữ liệu trong bộ nhớ thì khác. Bạn lưu một tuple gồm mã sinh viên và danh sách điểm. JSON và pickle (định dạng nhị phân riêng của Python) đều có thể lưu dữ liệu, nhưng kiểu khôi phục không giống nhau:"
      },
      {
       "type": "code",
       "code": "import pickle, json\nrecord = (\"S01\", [8, 9])\na = pickle.loads(pickle.dumps(record))\nb = json.loads(json.dumps(record))\nprint(type(a).__name__, type(b).__name__)\nprint(a == record)",
       "expected": "tuple list\nTrue",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "b",
+        "prompt": "Sau khi chạy xong, `b` bằng mấy?",
+        "answer": "['S01', [8, 9]]"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "json",
+           "<thư viện json>"
+          ],
+          [
+           "pickle",
+           "<thư viện pickle>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "record",
+           "('S01', [8, 9])"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "a",
+           "('S01', [8, 9])"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "b",
+           "['S01', [8, 9]]"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "out": "tuple list"
+        },
+        {
+         "line": 6,
+         "out": "True"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +98,70 @@
       "type": "code",
       "code": "import pickle, tempfile\nstate = {\"ids\": {\"S01\", \"S02\"}, \"marks\": (8, 9)}\nwith tempfile.TemporaryFile(mode=\"w+b\") as f:\n    pickle.dump(state, f)\n    f.seek(0)\n    restored = pickle.load(f)\nprint(restored == state)\nprint(type(restored[\"ids\"]).__name__)",
       "expected": "True\nset",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "restored",
+        "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
+        "answer": "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "tempfile",
+           "<thư viện tempfile>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "state",
+           "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "f",
+           "_TemporaryFileWrapper(file=BufferedRandom(), name='C:\\\\Users\\\\sonkh\\\\Ap…"
+          ]
+         ]
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "restored",
+           "{'ids': {'S01', 'S02'}, 'marks': (8, 9)}"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 7,
+         "out": "True"
+        },
+        {
+         "line": 8,
+         "out": "set"
+        }
+       ]
+      }
      }
     ],
     [
@@ -226,5 +347,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

@@ -22,13 +22,122 @@
     [
      {
       "type": "paragraph",
-      "text": "Ba việc cùng sẵn sàng lúc 0: A cần 6 đơn vị CPU, B cần 2, C cần 1. Nếu xử lý theo thứ tự đến A, B, C, việc ngắn C phải chờ cả A lẫn B:"
+      "text": "Hàng đợi ở bài trước chưa nói ai được chạy trước; ba việc của quán thì phải chọn. Ba việc cùng sẵn sàng lúc 0: A cần 6 đơn vị CPU, B cần 2, C cần 1. Nếu xử lý theo thứ tự đến A, B, C, việc ngắn C phải chờ cả A lẫn B:"
      },
      {
       "type": "code",
       "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in jobs:\n    print(name, clock)\n    clock += burst",
       "expected": "A 0\nB 6\nC 8",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "clock",
+        "prompt": "Sau khi chạy xong, `clock` bằng mấy?",
+        "answer": "9"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "jobs",
+           "[('A', 6), ('B', 2), ('C', 1)]"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "clock",
+           "0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "burst",
+           "6"
+          ],
+          [
+           "name",
+           "'A'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "A 0"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "6"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "burst",
+           "2"
+          ],
+          [
+           "name",
+           "'B'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "B 6"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "burst",
+           "1"
+          ],
+          [
+           "name",
+           "'C'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "C 8"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "9"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +149,181 @@
       "type": "code",
       "code": "jobs = [(\"A\", 6), (\"B\", 2), (\"C\", 1)]\nclock = 0\nfor name, burst in sorted(jobs, key=lambda job: job[1]):\n    print(name, clock)\n    clock += burst",
       "expected": "C 0\nB 1\nA 3",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "clock",
+        "prompt": "Sau khi chạy xong, `clock` bằng mấy?",
+        "answer": "9"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "clock",
+           "0"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "job",
+           "('A', 6)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "6",
+         "set": [
+          [
+           "job",
+           "('B', 2)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "job",
+           "('B', 2)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "2",
+         "set": [
+          [
+           "job",
+           "('C', 1)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "job",
+           "('C', 1)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "1"
+        },
+        {
+         "line": 4,
+         "out": "C 0"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "1"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "burst",
+           "2"
+          ],
+          [
+           "name",
+           "'B'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "B 1"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "3"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "burst",
+           "6"
+          ],
+          [
+           "name",
+           "'A'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "A 3"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "clock",
+           "9"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        }
+       ]
+      }
      }
     ],
     [
@@ -56,7 +339,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Trong bộ số giả định này, trung bình chờ của SJF thấp hơn. Kết luận phụ thuộc giả định biết burst và thời điểm đến. Hệ thống thật phải ước lượng thời gian chạy; các việc dài cũng có thể bị chờ lâu nếu việc ngắn tiếp tục đến."
+      "text": "Trong bộ số giả định này, trung bình chờ của SJF thấp hơn. Kết luận phụ thuộc giả định biết burst và thời điểm đến. Hệ thống thật phải ước lượng thời gian chạy; các việc dài cũng có thể bị chờ lâu nếu việc ngắn tiếp tục đến. Thứ tự này quyết định việc chốt sổ của quán chờ bao lâu."
      }
     ]
    ],
@@ -155,5 +438,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

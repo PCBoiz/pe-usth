@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một process con có thể mở thêm một process cháu. Muốn đọc cây process, đi theo quan hệ PID và PPID: PPID của con là PID cha trực tiếp, không phải mọi tổ tiên. Mô hình dưới dùng số giả định để bạn theo dõi quan hệ mà không phụ thuộc chương trình đang chạy trên máy."
+      "text": "Lệnh gọi chương trình ngoài ở bài trước đã dựng ra cả một cây, không chỉ một nhánh. Một process con có thể mở thêm một process cháu. Muốn đọc cây process, đi theo quan hệ PID và PPID: PPID của con là PID cha trực tiếp, không phải mọi tổ tiên. Mô hình dưới dùng số giả định để bạn theo dõi quan hệ mà không phụ thuộc chương trình đang chạy trên máy."
      },
      {
       "type": "code",
@@ -52,6 +52,10 @@
       "code": "family = {\"execl\":(\"list\", False, False), \"execle\":(\"list\", False, True), \"execlp\":(\"list\", True, False), \"execv\":(\"vector\", False, False), \"execvp\":(\"vector\", True, False)}\nprint(family[\"execvp\"])\nprint(family[\"execle\"])",
       "expected": "('vector', True, False)\n('list', False, True)",
       "tryIt": true
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi quán cho một việc nền chạy, cây tiến trình này là thứ bạn đọc để biết việc đó còn sống."
      }
     ]
    ],
@@ -152,5 +156,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
+ "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật",
+ "_vet": {
+  "can": 2,
+  "co": 0,
+  "bo": 2,
+  "loi": []
+ }
 }

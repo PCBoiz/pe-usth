@@ -27,6 +27,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
 import json
 import random
 import re
@@ -37,6 +38,12 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 SOURCE = HERE / 'source' / 'course.json'
 PRACTICE = HERE / 'source' / 'practice.json'
+# Vết TỪNG BƯỚC tính sẵn, sinh bởi `py scripts/pe-da/gen_traces.py` và COMMIT.
+# Vì sao không sinh ở đây: CI chạy build.py trên Python 3.12 không có
+# numpy/pandas rồi đòi bản dựng trùng từng byte với bản đã commit — build mà tự
+# chạy tracer thì hai môi trường ra hai bản dựng và CI đỏ mãi. Đúng khuôn mà
+# `chep_anh()` đã dùng cho 80 ảnh biểu đồ. Xem đầu gen_traces.py.
+TRACES = HERE / 'traces.json'
 OUT = HERE / 'out'
 
 COURSE_ID = 'python_advanced'
@@ -230,6 +237,27 @@ SO_DO_DOC: dict[tuple[str, int], dict] = {
         ],
     },
 }
+
+
+# ---------------------------------------------------------------------------
+# BẢNG TỪNG BƯỚC (vết tính sẵn) — module nào được có
+#
+# Module 1 (18 bài PY01–PY18) KHÔNG có bảng. Quyết định đã chốt với chủ dự án:
+# ở đó code còn là `print(2 + 3)`, nên một bảng "dòng 1 đã chạy" không nói thêm
+# gì — mà tệ hơn, nó dạy người học rằng cái nút đó không đáng bấm, rồi họ sẽ
+# không bấm nó cả ở module 5 khi nó mới thật sự đáng.
+#
+# Con số này phải khớp `MODULE_DAU_TIEN` trong gen_traces.py; nếu không thì
+# build đòi vết cho một module mà khâu sinh không sinh, và cổng đối chiếu ở
+# main() đỏ ngay — tức lệch không sống sót im lặng được.
+MODULE_DAU_TIEN_CO_VET = 2
+
+
+def nap_vet() -> dict[str, dict]:
+    """Đọc traces.json. Thiếu file = không bài nào có vết (và main() báo lỗi)."""
+    if not TRACES.is_file():
+        return {}
+    return json.loads(TRACES.read_text(encoding='utf-8')).get('lessons') or {}
 
 
 def modules_cua(code: str) -> tuple[set[str], set[str], bool]:
@@ -699,7 +727,8 @@ def la_lenh_terminal(khoi: dict) -> bool:
 
 
 def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
-             so_do: dict[int, dict] | None = None) -> list[dict]:
+             so_do: dict[int, dict] | None = None,
+             vet: dict[int, dict] | None = None) -> list[dict]:
     """Chuyển một khối nguồn sang các ReadBlock renderer hiểu được.
 
     `thu_duoc` khoá theo `id()` của chính dict nguồn, nói khối code này có chạy
@@ -714,6 +743,12 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
     `so_do` khoá theo cùng `id()` đó, nói khối này có một SƠ ĐỒ đi kèm hay
     không (xem SO_DO_DOC). Dùng lại đúng cơ chế của `thu_duoc` chứ không thêm
     cách thứ hai: hai cách định vị khối là hai cách sẽ lệch nhau.
+
+    `vet` cũng khoá theo cùng `id()` — BẢNG TỪNG BƯỚC tính sẵn của khối, đọc từ
+    traces.json. Đi vào CHÍNH khối `code` (không thành một loại khối riêng) vì
+    bảng gắn với đúng một đoạn mã: nút "Xem từng bước" đứng trong chân của khối
+    đó, và số dòng trong bảng là số dòng của `code` ngay trên. Một loại khối
+    riêng là một thứ nữa có thể trôi lệch khỏi khối nó nói về.
     """
     if khoi['type'] == 'paragraph':
         return [{'type': 'paragraph', 'text': khoi['text']}]
@@ -732,6 +767,9 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
     # content_json thì nhẹ hơn 406 khoá.
     if loai == 'code' and thu_duoc is not None and thu_duoc.get(id(khoi)):
         ra['tryIt'] = True
+    v = (vet or {}).get(id(khoi))
+    if loai == 'code' and v:
+        ra['trace'] = v
     khoi_ra = [ra]
     # Hình do chính đoạn code trên vẽ ra. Lời giảng trỏ thẳng vào nó ("trong
     # hình đầu, vị trí ngang cho biết ngày…") nên bỏ hình là bỏ nửa bài.
@@ -753,6 +791,79 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
         khoi_ra.append({'type': 'diagram', 'title': sd['title'],
                         'lanes': [dict(l) for l in sd['lanes']]})
     return khoi_ra
+
+
+def bam_code(chay_duoc: list[str]) -> str:
+    """Dấu ấn của CHƯƠNG TRÌNH ĐÃ NỐI mà vết được sinh từ đó.
+
+    Phải tính trên `noi_code(chay_duoc)` — đúng chuỗi gen_traces.py đưa cho
+    tracer — chứ không trên từng khối rời: vết của khối 3 phụ thuộc vào khối 1
+    (đoạn sau dùng biến và import của đoạn trước), nên một thay đổi ở khối 1
+    làm vết của khối 3 sai mà hash của riêng khối 3 không đổi.
+    """
+    return hashlib.sha256(noi_code(chay_duoc).encode('utf-8')).hexdigest()[:16]
+
+
+def vet_cua_bai(ma_bai: str, module_so: int, khoi_code: list[dict],
+                phan_loai: list[tuple[bool, str]], chay_duoc: list[str],
+                vet_bai: dict | None) -> tuple[dict[int, dict], dict]:
+    """({id(khối) -> vết}, báo cáo đối chiếu). KHÔNG tự chạy tracer.
+
+    CỔNG CHỐNG "BUILT BUT UNREACHABLE". Repo này đã dính bốn lần (bộ ghi vết
+    không bài nào tới, nút "Try it Yourself" không màn nào mount, 13 màn tối,
+    kho quiz rỗng), và mỗi lần nó im lặng: tính năng có mã, có test, không có
+    người dùng. Nên ở đây mọi lệch đều là LỖI chứ không phải cảnh báo, và
+    `main()` trả 1 khi có lỗi:
+
+      · bài ở module ≥ 2 có khối chạy được mà traces.json KHÔNG có mục → vết
+        chưa sinh (hoặc sinh rồi mà quên commit);
+      · bài ở module 1, hoặc bài không có khối nào chạy được, mà traces.json
+        LẠI có mục → mục mồ côi, nó sẽ không bao giờ được phát ra;
+      · `codeHash` lệch → nguồn đã sửa code sau khi vết được sinh. Đây là lệch
+        NGUY HIỂM NHẤT vì nó hỏng im lặng: bảng vẫn mở ra, vẫn đẹp, và dạy sai
+        một đoạn code không còn tồn tại. Cùng họ với luật "sơ đồ đã trôi khỏi
+        bài" của `kiem_so_do`;
+      · thiếu/thừa khoá khối → lệch chỉ số, tức bảng của đoạn 2 nằm dưới đoạn 3.
+    """
+    du = [i for i, (ok, _) in enumerate(phan_loai) if ok]
+    co_quyen = module_so >= MODULE_DAU_TIEN_CO_VET and bool(du)
+    bao_cao: dict = {'can': len(du) if co_quyen else 0, 'co': 0, 'bo': 0, 'loi': []}
+    if not co_quyen:
+        if vet_bai:
+            bao_cao['loi'].append(
+                f'{ma_bai}: traces.json có mục nhưng bài này không được có vết '
+                f'(module {module_so}, {len(du)} khối chạy được) — mục mồ côi')
+        return {}, bao_cao
+    if not vet_bai:
+        bao_cao['loi'].append(
+            f'{ma_bai}: {len(du)} khối đủ điều kiện nhưng traces.json không có '
+            f'mục nào — chạy `py scripts/pe-da/gen_traces.py`')
+        return {}, bao_cao
+    if vet_bai.get('codeHash') != bam_code(chay_duoc):
+        bao_cao['loi'].append(
+            f'{ma_bai}: code của bài đã đổi sau khi sinh vết (codeHash lệch) — '
+            f'chạy `py scripts/pe-da/gen_traces.py --only={ma_bai}`')
+        return {}, bao_cao
+    khoi = vet_bai.get('blocks') or {}
+    if set(khoi) != {str(i) for i in du}:
+        bao_cao['loi'].append(
+            f'{ma_bai}: traces.json khai các khối {sorted(khoi)} nhưng khối đủ '
+            f'điều kiện là {[str(i) for i in du]} — lệch chỉ số khối')
+        return {}, bao_cao
+    ra: dict[int, dict] = {}
+    for i in du:
+        m = khoi[str(i)]
+        if 'skip' in m:
+            bao_cao['bo'] += 1
+            continue
+        if not m.get('predict') or not m.get('rows'):
+            bao_cao['loi'].append(
+                f'{ma_bai}: vết của khối {i} thiếu câu dự đoán hoặc thiếu dòng '
+                f'bảng — xem gen_traces.py, nó phải BỎ QUA thay vì phát vết rỗng')
+            continue
+        ra[id(khoi_code[i])] = m
+        bao_cao['co'] += 1
+    return ra, bao_cao
 
 
 # ---------------------------------------------------------------------------
@@ -825,7 +936,7 @@ def cau_luyen(bai: dict) -> list[dict]:
 
 def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
              ten_theo_id: dict[str, str], bai_tap: dict | None = None,
-             mcq: dict | None = None) -> dict:
+             mcq: dict | None = None, vet_bai: dict | None = None) -> dict:
     reading = bai['reading']
     man = chia_man(reading)
     luyen = cau_luyen(bai)
@@ -873,8 +984,11 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     # bảng nằm trong build.py chứ không thành trường mới của course.json.
     so_do = {id(k): SO_DO_DOC[(ma_bai, i)]
              for i, k in enumerate(khoi_code) if (ma_bai, i) in SO_DO_DOC}
+    vet, vet_bao_cao = vet_cua_bai(ma_bai, module_so, khoi_code, phan_loai,
+                                   chay_duoc, vet_bai)
     step_1: dict = {
-        'read': [[r for k in lat for r in khoi_doc(k, thu_duoc, so_do)] for lat in man],
+        'read': [[r for k in lat for r in khoi_doc(k, thu_duoc, so_do, vet)]
+                 for lat in man],
     }
     truoc = [ten_theo_id[b] for b in bai.get('before') or [] if b in ten_theo_id]
     step_1['context'] = {
@@ -938,6 +1052,9 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
         # việc step_4 có `tests` hay không.
         '_bai_tap': ('cham' if noi_dung['step_4'].get('tests')
                      else (f'khong: {ly_do_bt}' if ly_do_bt else 'khong co')),
+        # Không vào DB — đối chiếu "bao nhiêu khối đủ điều kiện / bao nhiêu có
+        # bảng từng bước", cho cổng ở main() và cho check.py.
+        '_vet': vet_bao_cao,
     }
 
 
@@ -1047,6 +1164,7 @@ def main() -> int:
                 mcq_theo_ma[l['id']] = a
                 break
     ten_theo_id = {b['id']: f'{b["id"]} · {b["title"]}' for b in du_lieu['lessons']}
+    vet_theo_ma = nap_vet()
 
     bai_ra: list[dict] = []
     modules: list[dict] = []
@@ -1057,7 +1175,8 @@ def main() -> int:
         for ma in nhom['ids']:
             thu_tu += 1
             b = dung_bai(bai_theo_id[ma], thu_tu, so, ten_module, ten_theo_id,
-                         bai_tap_theo_ma.get(ma), mcq_theo_ma.get(ma))
+                         bai_tap_theo_ma.get(ma), mcq_theo_ma.get(ma),
+                         vet_theo_ma.get(ma))
             bai_ra.append(b)
             trong_module.append(b['title'])
         modules.append({'title': ten_module, 'lessons': trong_module})
@@ -1073,6 +1192,34 @@ def main() -> int:
         print(f'LỖI: SO_DO_DOC khai {len(SO_DO_DOC)} sơ đồ nhưng phát ra '
               f'{so_do_phat} — có khoá không trúng khối code nào '
               f'(mã bài sai, hoặc chỉ số khối lệch).')
+        return 1
+
+    # BẢNG TỪNG BƯỚC: số vết PHÁT RA phải bằng số khối đủ điều kiện trừ số khối
+    # khâu sinh đã bỏ qua. Đây là cổng chống "built but unreachable" — xem
+    # `vet_cua_bai` để biết từng loại lệch nó chặn. Mọi lệch là LỖI, không phải
+    # cảnh báo: một bảng không ai thấy, hay một bảng dạy đoạn code đã bị sửa,
+    # đều không ném ngoại lệ nào.
+    loi_vet = [m for b in bai_ra for m in b['_vet']['loi']]
+    vet_can = sum(b['_vet']['can'] for b in bai_ra)
+    vet_bo = sum(b['_vet']['bo'] for b in bai_ra)
+    vet_co = sum(b['_vet']['co'] for b in bai_ra)
+    vet_phat = sum(1 for b in bai_ra
+                   for lat in b['content_json']['step_1']['read']
+                   for k in lat if k.get('trace'))
+    mo_ta_vet = (f'bảng từng bước: {vet_co} vết / {vet_can} khối đủ điều kiện '
+                 f'({vet_bo} khối khâu sinh bỏ qua)')
+    print(mo_ta_vet)
+    if loi_vet or vet_phat != vet_co or vet_co + vet_bo != vet_can:
+        for m in loi_vet[:20]:
+            print(f'LỖI: {m}', file=sys.stderr)
+        if len(loi_vet) > 20:
+            print(f'… và {len(loi_vet) - 20} lỗi nữa', file=sys.stderr)
+        if vet_phat != vet_co:
+            print(f'LỖI: đếm được {vet_co} vết nhưng phát ra {vet_phat} khối có '
+                  f'`trace` — bản đồ id() lệch', file=sys.stderr)
+        if vet_co + vet_bo != vet_can:
+            print(f'LỖI: {vet_co} + {vet_bo} ≠ {vet_can} khối đủ điều kiện',
+                  file=sys.stderr)
         return 1
 
     tong_phut = sum(b['estimated_minutes'] for b in bai_ra)

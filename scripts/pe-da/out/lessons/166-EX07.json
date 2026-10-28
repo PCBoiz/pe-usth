@@ -22,13 +22,68 @@
     [
      {
       "type": "paragraph",
-      "text": "“Python được thông dịch” không có nghĩa CPython bỏ qua bước biên dịch. compile tạo một code object từ mã nguồn; exec có thể thực thi code object đó. Đây là cách quan sát hai bước bằng một phép tính nhỏ, không cần học chi tiết từng opcode."
+      "text": "Bạn đã chạy rất nhiều code của quán ở các bài trước mà chưa xem Python làm gì với nó. “Python được thông dịch” không có nghĩa CPython bỏ qua bước biên dịch. compile tạo một code object từ mã nguồn; exec có thể thực thi code object đó. Đây là cách quan sát hai bước bằng một phép tính nhỏ, không cần học chi tiết từng opcode."
      },
      {
       "type": "code",
       "code": "from types import CodeType\nprogram = compile(\"cups = 12 + 9\", \"example.py\", \"exec\")\nnamespace = {}\nexec(program, namespace)\nprint(isinstance(program, CodeType))\nprint(namespace[\"cups\"])",
       "expected": "True\n21",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "namespace",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `namespace` bằng mấy?",
+        "answer": "{}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "CodeType",
+           "<lớp code>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "program",
+           "code: <code object <module>, file \"example.py\", line 1>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "namespace",
+           "{}"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "namespace",
+           "{'__builtins__': {'__name__': 'builtins', '__doc__': \"Built-in function…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "out": "True"
+        },
+        {
+         "line": 6,
+         "out": "21"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,7 +107,101 @@
       "type": "code",
       "code": "sources = [\"if True:\\nprint(1)\", \"if True:\\n\\tprint(1)\\n        print(2)\"]\nfor source in sources:\n    try:\n        compile(source, \"example.py\", \"exec\")\n    except (IndentationError, TabError) as error:\n        print(type(error).__name__)",
       "expected": "IndentationError\nTabError",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "source",
+        "prompt": "Sau khi chạy xong, `source` bằng mấy?",
+        "answer": "'if True:\\n\\tprint(1)\\n print(2)'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "sources",
+           "['if True:\\nprint(1)', 'if True:\\n\\tprint(1)\\n print(2)']"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "source",
+           "'if True:\\nprint(1)'"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 4,
+         "exc": "IndentationError: expected an indented block after 'if' statement on li…"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "error",
+           "IndentationError()"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "out": "IndentationError"
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "source",
+           "'if True:\\n\\tprint(1)\\n print(2)'"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 4,
+         "exc": "TabError: inconsistent use of tabs and spaces in indentation (example.p…"
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "error",
+           "TabError()"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "out": "TabError"
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 2,
+         "ret": "None"
+        }
+       ]
+      }
+     },
+     {
+      "type": "paragraph",
+      "text": "Biết hai bước này giúp bạn đọc đúng tên lỗi khi sổ của quán không chạy."
      }
     ]
    ],
@@ -180,5 +329,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

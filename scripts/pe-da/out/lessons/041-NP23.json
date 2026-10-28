@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
+      "text": "Bài trước cố định bộ sinh để chạy lại được, và đây là bài gộp mọi phép tính trên bảng. Bạn có bảng điểm của ba học viên, mỗi người làm hai bài kiểm tra. Để báo tổng điểm của từng người, trước hết xác định hàng là học viên và cột là bài kiểm tra:"
      },
      {
       "type": "code",
@@ -74,7 +74,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình)."
+      "text": "Hãy giữ ý nghĩa dữ liệu đi cùng kết quả: mỗi số thuộc học viên nào hoặc bài kiểm tra nào, và phép tính đã xử lý ô thiếu ra sao. NP19 giúp bạn tránh sửa dữ liệu gốc khi thử cách xử lý khác; NP20 giúp kiểm các kết quả số thực. Bài này không yêu cầu pandas (thư viện bảng dữ liệu có nhãn hàng và nhãn cột) hay Matplotlib (thư viện vẽ hình). Quán đã có bảng số; chặng sau cho bảng đó cột có tên."
      }
     ]
    ],
@@ -259,5 +259,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

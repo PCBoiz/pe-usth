@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nút Tính GPA chỉ nên chạy phép tính khi người dùng bấm. command cần nhận hàm sẽ được gọi sau, không phải kết quả của một lần gọi ngay lúc dựng giao diện."
+      "text": "Các ô hiển thị đã xếp xong ở bài trước, nhưng chưa ô nào phản ứng khi bấm. Nút Tính GPA chỉ nên chạy phép tính khi người dùng bấm. command cần nhận hàm sẽ được gọi sau, không phải kết quả của một lần gọi ngay lúc dựng giao diện."
      },
      {
       "type": "code",
@@ -168,5 +168,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

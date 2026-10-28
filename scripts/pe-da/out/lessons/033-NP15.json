@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn cần hiển thị điểm của ba học viên kèm trạng thái đạt hay chưa đạt. Ngưỡng đạt là 5. Để chọn nhãn cho mỗi điểm, dùng `np.where`:"
+      "text": "Phép lọc ở bài trước trả về các ô đạt mức, còn lần này bạn cần gắn nhãn cho từng ô. Bạn cần hiển thị điểm của ba học viên kèm trạng thái đạt hay chưa đạt. Ngưỡng đạt là 5. Để chọn nhãn cho mỗi điểm, dùng `np.where`:"
      },
      {
       "type": "code",
@@ -224,5 +224,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

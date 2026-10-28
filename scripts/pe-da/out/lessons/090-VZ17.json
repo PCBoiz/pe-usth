@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có các đơn được gắn tên ca sáng hoặc tối. countplot đếm số dòng trong mỗi ca, còn boxplot mô tả phân bố thời gian của từng ca. Hai hình trả lời hai câu hỏi khác nhau dù cùng dùng tên ca trên trục ngang."
+      "text": "Phân bố một cột đã vẽ được rồi, giờ chia theo ca làm của quán. Bạn có các đơn được gắn tên ca sáng hoặc tối. countplot đếm số dòng trong mỗi ca, còn boxplot mô tả phân bố thời gian của từng ca. Hai hình trả lời hai câu hỏi khác nhau dù cùng dùng tên ca trên trục ngang."
      },
      {
       "type": "code",
@@ -171,5 +171,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Doanh thu từng ngày biến động mạnh. Trung bình ba ngày giúp xem xu hướng ngắn hạn, nhưng chỉ nên dùng dữ liệu từ hiện tại trở về trước."
+      "text": "Giờ hiển thị đã đúng rồi, nên bạn so được doanh thu của quán hôm nay với mấy ngày trước. Doanh thu từng ngày biến động mạnh. Trung bình ba ngày giúp xem xu hướng ngắn hạn, nhưng chỉ nên dùng dữ liệu từ hiện tại trở về trước."
      },
      {
       "type": "code",
@@ -217,5 +217,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

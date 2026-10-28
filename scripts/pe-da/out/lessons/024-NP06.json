@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
+      "text": "Quán có quầy thứ hai rồi, nên một dãy số không còn đủ. Cửa hàng A bán 12, 15 và 9 cốc trong ba ngày. Cửa hàng B bán 10, 8 và 14 cốc trong cùng ba ngày đó. Bạn có thể đặt mỗi cửa hàng trên một hàng để so sánh:"
      },
      {
       "type": "code",
@@ -244,5 +244,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

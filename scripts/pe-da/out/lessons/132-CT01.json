@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn mở cùng một script phân tích hai lần. File chương trình vẫn là một, nhưng hệ điều hành tạo hai lần thực thi khác nhau. Mỗi lần thực thi được gọi là một process, có PID để nhận diện:"
+      "text": "Quy trình chốt sổ bạn vừa dựng chạy một mạch mỗi tối; quán có hai quầy thì nó chạy ở đâu? Bạn mở cùng một script phân tích hai lần. File chương trình vẫn là một, nhưng hệ điều hành tạo hai lần thực thi khác nhau. Mỗi lần thực thi được gọi là một process, có PID để nhận diện:"
      },
      {
       "type": "code",
@@ -51,10 +51,16 @@
       "type": "code",
       "code": "import os, subprocess, sys\nparent = subprocess.check_output([sys.executable, \"-c\", \"import os; print(os.getppid())\"], text=True)\nprint(int(parent) == os.getpid())",
       "expected": "True"
-     },
+     }
+    ],
+    [
      {
       "type": "paragraph",
       "text": "Process đang chạy Python ở đây là cha của process vừa tạo. Con có thể tạo cháu, thành cây. Ví dụ cây `analysis(100) → worker(101) → helper(102)` đọc là analysis tạo worker (process con nhận phần việc), rồi worker tạo helper. Công cụ pstree hiển thị những quan hệ như vậy trên hệ hỗ trợ. Tùy cơ chế OS, cha và con có thể chia sẻ toàn bộ, một phần hoặc không chia sẻ tài nguyên được xét. Không được suy rằng mọi biến Python ở cha đều là biến dùng chung với con."
+     },
+     {
+      "type": "paragraph",
+      "text": "Vì vậy khi quán cho việc chốt sổ chạy ở nền, đừng giả định nó là một lần thực thi duy nhất."
      }
     ]
    ],
@@ -183,5 +189,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 1,
+  "co": 0,
+  "bo": 1,
+  "loi": []
+ }
 }

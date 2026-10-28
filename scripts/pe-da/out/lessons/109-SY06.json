@@ -28,7 +28,120 @@
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __str__(self): return f\"Diem {self.value}\"\nprint(Grade(8))",
       "expected": "Diem 8",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Grade()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__str__",
+           "<hàm __str__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 3,
+         "fn": "__str__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade(value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "__str__",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "__str__",
+         "depth": 1,
+         "ret": "'Diem 8'",
+         "out": "Diem 8"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +153,302 @@
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\nprint(Grade(5) < Grade(8))\nprint([g.value for g in sorted([Grade(8), Grade(5)])])",
       "expected": "True\n[5, 8]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Grade()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__lt__",
+           "<hàm __lt__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "5"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None",
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 3,
+         "fn": "__lt__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "other",
+           "Grade(value=8)"
+          ],
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__lt__",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "__lt__",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "__lt__",
+         "depth": 1,
+         "ret": "True",
+         "out": "True"
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "8"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None",
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "5"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "5"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 3,
+         "fn": "__lt__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "other",
+           "Grade(value=8)"
+          ],
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__lt__",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "__lt__",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "__lt__",
+         "depth": 1,
+         "ret": "True"
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "g",
+           "Grade(value=8)"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "Grade",
+           "<lớp Grade>"
+          ]
+         ],
+         "out": "[5, 8]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,7 +460,141 @@
       "type": "code",
       "code": "class Grade:\n    def __init__(self, value): self.value = value\n    def __lt__(self, other):\n        if not isinstance(other, Grade): return NotImplemented\n        return self.value < other.value\ntry:\n    print(Grade(5) < \"8\")\nexcept TypeError:\n    print(\"Khong cung loai de so sanh\")",
       "expected": "Khong cung loai de so sanh",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Grade()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Grade",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "set": [
+          [
+           "__lt__",
+           "<hàm __lt__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Grade",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Grade()"
+          ],
+          [
+           "value",
+           "5"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 3,
+         "fn": "__lt__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "other",
+           "'8'"
+          ],
+          [
+           "self",
+           "Grade(value=5)"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__lt__",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "__lt__",
+         "depth": 1,
+         "ret": "NotImplementedType: NotImplemented"
+        },
+        {
+         "line": 7,
+         "exc": "TypeError: '<' not supported between instances of 'Grade' and 'str'"
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9,
+         "out": "Khong cung loai de so sanh"
+        },
+        {
+         "line": 9,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -230,5 +772,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 3,
+  "bo": 0,
+  "loi": []
+ }
 }

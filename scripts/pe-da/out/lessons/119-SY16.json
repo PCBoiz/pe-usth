@@ -52,7 +52,51 @@
       "type": "code",
       "code": "text = \"cà phê\"\nblob = text.encode(\"utf8\")\nprint(len(text))\nprint(len(blob))\nprint(blob.decode(\"utf8\"))",
       "expected": "6\n8\ncà phê",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "blob",
+        "prompt": "Sau khi chạy xong, `blob` bằng mấy?",
+        "answer": "b'c\\xc3\\xa0 ph\\xc3\\xaa'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "text",
+           "'cà phê'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "blob",
+           "b'c\\xc3\\xa0 ph\\xc3\\xaa'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "out": "6"
+        },
+        {
+         "line": 4,
+         "out": "8"
+        },
+        {
+         "line": 5,
+         "out": "cà phê"
+        },
+        {
+         "line": 5,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -202,5 +246,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

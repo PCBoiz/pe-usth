@@ -22,13 +22,277 @@
     [
      {
       "type": "paragraph",
-      "text": "PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
+      "text": "Bước trước giữ dữ liệu trong các collection rời nhau. PW1 đã có cùng một dữ liệu đi qua nhiều hàm. Bây giờ chuyển hồ sơ thành object nhưng giữ các chức năng người dùng đang có. Mỗi Student vẫn cần mã, tên và ngày sinh:"
      },
      {
       "type": "code",
       "code": "class Student:\n    def __init__(self, sid, name, dob): self.sid, self.name, self.dob = sid, name, dob\n    def describe(self): return f\"{self.sid}: {self.name} ({self.dob})\"\nclass Course:\n    def __init__(self, cid, name, credits): self.cid, self.name, self.credits = cid, name, credits\n    def describe(self): return f\"{self.cid}: {self.name}\"\nfor item in [Student(\"S01\", \"An\", \"2005-01-02\"), Course(\"PY\", \"Python\", 3)]:\n    print(item.describe())",
       "expected": "S01: An (2005-01-02)\nPY: Python",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `self` bằng mấy?",
+        "answer": "Student()"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 1,
+         "fn": "Student",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 1,
+         "fn": "Student",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "Student",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Student",
+         "depth": 1,
+         "set": [
+          [
+           "describe",
+           "<hàm describe>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "Student",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 4,
+         "fn": "Course",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 4,
+         "fn": "Course",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "Course",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "Course",
+         "depth": 1,
+         "set": [
+          [
+           "describe",
+           "<hàm describe>"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "Course",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "dob",
+           "'2005-01-02'"
+          ],
+          [
+           "name",
+           "'An'"
+          ],
+          [
+           "self",
+           "Student()"
+          ],
+          [
+           "sid",
+           "'S01'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Student(sid='S01', name='An', dob='2005-01-02')"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None",
+         "set": [
+          [
+           "cid",
+           "'PY'"
+          ],
+          [
+           "credits",
+           "3"
+          ],
+          [
+           "name",
+           "'Python'"
+          ],
+          [
+           "self",
+           "Course()"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "cid",
+           "'PY'"
+          ],
+          [
+           "credits",
+           "3"
+          ],
+          [
+           "name",
+           "'Python'"
+          ],
+          [
+           "self",
+           "Course()"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "Course(cid='PY', name='Python', credits=3)"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 3,
+         "fn": "describe",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Student(sid='S01', name='An', dob='2005-01-02')"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "describe",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "describe",
+         "depth": 1,
+         "ret": "'S01: An (2005-01-02)'",
+         "out": "S01: An (2005-01-02)"
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "item",
+           "Course(cid='PY', name='Python', credits=3)"
+          ]
+         ]
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 6,
+         "fn": "describe",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "self",
+           "Course(cid='PY', name='Python', credits=3)"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "describe",
+         "depth": 1
+        },
+        {
+         "line": 6,
+         "fn": "describe",
+         "depth": 1,
+         "ret": "'PY: Python'",
+         "out": "PY: Python"
+        },
+        {
+         "line": 7
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +304,333 @@
       "type": "code",
       "code": "import math\nimport numpy as np\nclass StudentMark:\n    def __init__(self, sid, cid, score):\n        self.sid, self.cid = sid, cid\n        self.set_score(score)\n    def set_score(self, score):\n        if type(score) not in (int, float) or not math.isfinite(score):\n            raise ValueError(\"score\")\n        if not 0 <= score <= 10:\n            raise ValueError(\"score\")\n        self.score = math.floor(score * 10) / 10\nrows = [StudentMark(\"S01\", \"PY\", 8.79), StudentMark(\"S01\", \"DB\", 6.29)]\nmarks = np.array([row.score for row in rows])\ncredits = np.array([3, 1])\nprint(marks.tolist())\nprint(round(float((marks * credits).sum() / credits.sum()), 2))",
       "expected": "[8.7, 6.2]\n8.07",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "self",
+        "line": 4,
+        "prompt": "Ngay sau khi dòng 4 chạy, `self` bằng mấy?",
+        "answer": "StudentMark()"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "math",
+           "<thư viện math>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "np",
+           "<thư viện numpy>"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "StudentMark",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 3,
+         "fn": "StudentMark",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "StudentMark",
+         "depth": 1,
+         "set": [
+          [
+           "__init__",
+           "<hàm __init__>"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "fn": "StudentMark",
+         "depth": 1,
+         "set": [
+          [
+           "set_score",
+           "<hàm set_score>"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "fn": "StudentMark",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 13
+        },
+        {
+         "line": 4,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "cid",
+           "'PY'"
+          ],
+          [
+           "score",
+           "8.79"
+          ],
+          [
+           "self",
+           "StudentMark()"
+          ],
+          [
+           "sid",
+           "'S01'"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "StudentMark(sid='S01', cid='PY')"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "__init__",
+         "depth": 1
+        },
+        {
+         "line": 7,
+         "fn": "set_score",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "score",
+           "8.79"
+          ],
+          [
+           "self",
+           "StudentMark(sid='S01', cid='PY')"
+          ]
+         ]
+        },
+        {
+         "line": 8,
+         "fn": "set_score",
+         "depth": 2
+        },
+        {
+         "line": 10,
+         "fn": "set_score",
+         "depth": 2
+        },
+        {
+         "line": 12,
+         "fn": "set_score",
+         "depth": 2,
+         "set": [
+          [
+           "self",
+           "StudentMark(sid='S01', cid='PY', score=8.7)"
+          ]
+         ]
+        },
+        {
+         "line": 12,
+         "fn": "set_score",
+         "depth": 2,
+         "ret": "None"
+        },
+        {
+         "line": 6,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None",
+         "set": [
+          [
+           "cid",
+           "'DB'"
+          ],
+          [
+           "score",
+           "6.29"
+          ],
+          [
+           "self",
+           "StudentMark()"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "__init__",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "cid",
+           "'DB'"
+          ],
+          [
+           "score",
+           "6.29"
+          ],
+          [
+           "self",
+           "StudentMark()"
+          ],
+          [
+           "sid",
+           "'S01'"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "__init__",
+         "depth": 1,
+         "set": [
+          [
+           "self",
+           "StudentMark(sid='S01', cid='DB')"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "fn": "__init__",
+         "depth": 1
+        },
+        {
+         "line": 7,
+         "fn": "set_score",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "score",
+           "6.29"
+          ],
+          [
+           "self",
+           "StudentMark(sid='S01', cid='DB')"
+          ]
+         ]
+        },
+        {
+         "line": 8,
+         "fn": "set_score",
+         "depth": 2
+        },
+        {
+         "line": 10,
+         "fn": "set_score",
+         "depth": 2
+        },
+        {
+         "line": 12,
+         "fn": "set_score",
+         "depth": 2,
+         "set": [
+          [
+           "self",
+           "StudentMark(sid='S01', cid='DB', score=6.2)"
+          ]
+         ]
+        },
+        {
+         "line": 12,
+         "fn": "set_score",
+         "depth": 2,
+         "ret": "None"
+        },
+        {
+         "line": 6,
+         "fn": "__init__",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 14,
+         "set": [
+          [
+           "row",
+           "StudentMark(sid='S01', cid='PY', score=8.7)"
+          ]
+         ]
+        },
+        {
+         "line": 14,
+         "set": [
+          [
+           "row",
+           "StudentMark(sid='S01', cid='DB', score=6.2)"
+          ]
+         ]
+        },
+        {
+         "line": 14,
+         "set": [
+          [
+           "StudentMark",
+           "<lớp StudentMark>"
+          ],
+          [
+           "marks",
+           "ndarray: array([8.7, 6.2])"
+          ],
+          [
+           "math",
+           "<thư viện math>"
+          ],
+          [
+           "np",
+           "<thư viện numpy>"
+          ],
+          [
+           "rows",
+           "[StudentMark(sid='S01', cid='PY', score=8.7), StudentMark(sid='S01', ci…"
+          ]
+         ]
+        },
+        {
+         "line": 15,
+         "set": [
+          [
+           "credits",
+           "ndarray: array([3, 1])"
+          ]
+         ]
+        },
+        {
+         "line": 16,
+         "out": "[8.7, 6.2]"
+        },
+        {
+         "line": 17,
+         "out": "8.07"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,7 +642,234 @@
       "type": "code",
       "code": "files = {\"input.py\": \"doc du lieu\", \"output.py\": \"curses output\", \"domains/student.py\": \"Student\", \"domains/course.py\": \"Course\", \"domains/mark.py\": \"StudentMark\", \"domains/registry.py\": \"Registry\", \"domains/__init__.py\": \"exports\", \"main.py\": \"dieu phoi\"}\nprint(files[\"output.py\"])\nprint(sorted(name for name in files if name.startswith(\"domains/\")))",
       "expected": "curses output\n['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "name",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `name` bằng mấy?",
+        "answer": "'input.py'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "files",
+           "{'input.py': 'doc du lieu', 'output.py': 'curses output', 'domains/stud…"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "out": "curses output"
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'input.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'output.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'domains/student.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "'domains/student.py'"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "name",
+           "'domains/student.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'domains/course.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "'domains/course.py'"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "name",
+           "'domains/course.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'domains/mark.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "'domains/mark.py'"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "name",
+           "'domains/mark.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'domains/registry.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "'domains/registry.py'"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "name",
+           "'domains/registry.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'domains/__init__.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "'domains/__init__.py'"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "name",
+           "'domains/__init__.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "name",
+           "'main.py'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "None",
+         "out": "['domains/__init__.py', 'domains/course.py', 'domains/mark.py', 'domains/registry.py', 'domains/student.py']"
+        },
+        {
+         "line": 3,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -168,5 +985,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 3,
+  "bo": 0,
+  "loi": []
+ }
 }

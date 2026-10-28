@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
+      "text": "Phép nhân ma trận ở bài trước cần số liệu; khi chưa có, bạn tự sinh ra chúng. Bạn muốn thử chương trình đọc nhiệt độ khi chưa có dữ liệu cảm biến thật. Bộ sinh có thể tạo số theo phân phối chuẩn với trung bình và độ lệch chuẩn bạn chọn. Đây là giả định để mô phỏng, không phải bằng chứng nhiệt độ thực có phân phối đó."
      },
      {
       "type": "code",
@@ -53,10 +53,16 @@
       "code": "import numpy as np\norders = np.array([10., 20., 30.])\nrng = np.random.default_rng(7)\nsamples = rng.choice(orders, size=(1000, 3), replace=True)\nmeans = samples.mean(axis=1)\nlo, hi = np.quantile(means, [0.025, 0.975])\nprint(samples.shape, means.shape)\nprint(orders.mean())\nprint(bool(lo <= orders.mean() <= hi))",
       "expected": "(1000, 3) (1000,)\n20.0\nTrue",
       "tryIt": true
-     },
+     }
+    ],
+    [
      {
       "type": "paragraph",
       "text": "Mỗi hàng của `samples` là một mẫu gồm ba đơn; `mean(axis=1)` tính một trung bình cho mỗi mẫu, được 1000 trung bình. `quantile` lấy phân vị 2.5% và 97.5% của các trung bình này để đặt hai đầu khoảng bootstrap theo phân vị. Ví dụ minh họa cách tính, trong khi ba đơn gốc quá ít để kết luận chắc về toàn bộ các đơn. Cách lấy mẫu từng hàng còn giả định các quan sát độc lập phù hợp với bài toán; dữ liệu gắn theo khách hoặc theo thời gian có thể cần cách lấy mẫu khác. Khoảng 95% không có nghĩa là trung bình tổng thể cố định có xác suất 95% nằm trong khoảng vừa tính."
+     },
+     {
+      "type": "paragraph",
+      "text": "Tới đây quán của bạn đã đi hết một vòng: từ cốc cà phê đầu tiên đến báo cáo và màn hình bán hàng."
      }
     ]
    ],
@@ -259,5 +265,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

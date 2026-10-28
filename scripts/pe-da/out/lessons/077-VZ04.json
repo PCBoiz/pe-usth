@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cửa hàng bán 18 cốc trà, 30 cốc cà phê và 12 cốc ca cao. Bar chart cho bạn so sánh ba lượng bán bằng chiều cao cột. Vì chiều dài cột biểu diễn lượng bán, trục số nên bắt đầu từ 0 để chênh lệch không bị phóng đại."
+      "text": "Đường ở bài trước nói về thời gian; so các món với nhau thì cần cột. Cửa hàng bán 18 cốc trà, 30 cốc cà phê và 12 cốc ca cao. Bar chart cho bạn so sánh ba lượng bán bằng chiều cao cột. Vì chiều dài cột biểu diễn lượng bán, trục số nên bắt đầu từ 0 để chênh lệch không bị phóng đại."
      },
      {
       "type": "code",
@@ -45,7 +45,133 @@
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\ndata = sorted([(\"Tea\", 18), (\"Coffee\", 30), (\"Cocoa\", 12)], key=lambda row: row[1])\nnames, cups = zip(*data)\nax.barh(names, cups)\nax.set(xlabel=\"Cups\", title=\"Largest seller is at the top\", xlim=(0, 35))\nprint(names[-1])\nplt.show()",
       "expected": "Coffee",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "names",
+        "prompt": "Sau khi chạy xong, `names` bằng mấy?",
+        "answer": "('Cocoa', 'Tea', 'Coffee')"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "row",
+           "('Tea', 18)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "18",
+         "set": [
+          [
+           "row",
+           "('Coffee', 30)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "row",
+           "('Coffee', 30)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "30",
+         "set": [
+          [
+           "row",
+           "('Cocoa', 12)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "row",
+           "('Cocoa', 12)"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<lambda>",
+         "depth": 1,
+         "ret": "12"
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "cups",
+           "(12, 18, 30)"
+          ],
+          [
+           "names",
+           "('Cocoa', 'Tea', 'Coffee')"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 7,
+         "out": "Coffee"
+        },
+        {
+         "line": 8
+        }
+       ]
+      }
      },
      {
       "type": "figure",
@@ -252,5 +378,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

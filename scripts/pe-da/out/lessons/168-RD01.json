@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Doanh thu cao nhất nằm ở ngày 2, nhưng bạn muốn lời giải thích luôn ở góc trên bên trái dù người xem đổi giới hạn trục. Một vị trí thuộc dữ liệu, vị trí còn lại thuộc vùng vẽ. Matplotlib cho phép chọn hai hệ tọa độ này riêng."
+      "text": "Năm bài cuối quay lại đúng bảng và đúng hình của quán mà bạn đã dựng ở các bài trước. Doanh thu cao nhất nằm ở ngày 2, nhưng bạn muốn lời giải thích luôn ở góc trên bên trái dù người xem đổi giới hạn trục. Một vị trí thuộc dữ liệu, vị trí còn lại thuộc vùng vẽ. Matplotlib cho phép chọn hai hệ tọa độ này riêng."
      },
      {
       "type": "code",
@@ -254,5 +254,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

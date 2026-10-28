@@ -182,5 +182,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật"
+ "_bai_tap": "khong: sys.executable trong trình duyệt không trỏ tới file thật",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Thanh công cụ có ba nút nằm cạnh nhau. pack xếp widget lần lượt vào phần không gian còn lại của parent, nên phù hợp cho hàng nút và các vùng trên–dưới."
+      "text": "Các ô đã có đủ rồi, nhưng chưa có luật nào xếp chúng trên màn hình. Thanh công cụ có ba nút nằm cạnh nhau. pack xếp widget lần lượt vào phần không gian còn lại của parent, nên phù hợp cho hàng nút và các vùng trên–dưới."
      },
      {
       "type": "code",
@@ -172,5 +172,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

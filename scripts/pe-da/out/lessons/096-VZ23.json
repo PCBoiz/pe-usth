@@ -22,13 +22,131 @@
     [
      {
       "type": "paragraph",
-      "text": "Một dashboard nhỏ cần bộ chọn cửa hàng và các chỉ số thay đổi cùng bộ chọn. Hãy viết hàm lọc trước rồi mới gắn giao diện vào nó. Hàm độc lập dễ kiểm tra bằng dữ liệu nhỏ và có thể dùng lại trong notebook hoặc một ứng dụng web."
+      "text": "File tương tác ở bài trước vẫn cố định; người xem muốn tự chọn quầy. Một dashboard nhỏ cần bộ chọn cửa hàng và các chỉ số thay đổi cùng bộ chọn. Hãy viết hàm lọc trước rồi mới gắn giao diện vào nó. Hàm độc lập dễ kiểm tra bằng dữ liệu nhỏ và có thể dùng lại trong notebook hoặc một ứng dụng web."
      },
      {
       "type": "code",
       "code": "import pandas as pd\ndata = pd.DataFrame({\"store\":[\"A\", \"A\", \"B\"], \"cups\":[8, 10, 5]})\ndef summarize(store):\n    chosen = data if store == \"All\" else data.loc[data[\"store\"].eq(store)]\n    return int(chosen[\"cups\"].sum()), len(chosen)\nprint(summarize(\"A\"))\nprint(summarize(\"All\"))",
       "expected": "(18, 2)\n(23, 3)",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "store",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `store` bằng mấy?",
+        "answer": "'A'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "pd",
+           "<thư viện pandas>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "data",
+           "DataFrame(_mgr=BlockManager(), _attrs={}, _flags=Flags(_allows_duplicat…"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "summarize",
+           "<hàm summarize>"
+          ]
+         ]
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 3,
+         "fn": "summarize",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "store",
+           "'A'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "summarize",
+         "depth": 1,
+         "set": [
+          [
+           "chosen",
+           "DataFrame(_mgr=BlockManager(), _attrs={}, _flags=Flags(_allows_duplicat…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "summarize",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "summarize",
+         "depth": 1,
+         "ret": "(18, 2)",
+         "out": "(18, 2)"
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 3,
+         "fn": "summarize",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "store",
+           "'All'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "summarize",
+         "depth": 1,
+         "set": [
+          [
+           "chosen",
+           "DataFrame(_mgr=BlockManager(), _attrs={}, _flags=Flags(_allows_duplicat…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "fn": "summarize",
+         "depth": 1
+        },
+        {
+         "line": 5,
+         "fn": "summarize",
+         "depth": 1,
+         "ret": "(23, 3)",
+         "out": "(23, 3)"
+        },
+        {
+         "line": 7,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -158,5 +276,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: ipywidgets chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: ipywidgets chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 1,
+  "co": 1,
+  "bo": 0,
+  "loi": []
+ }
 }

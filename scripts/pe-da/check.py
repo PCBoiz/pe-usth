@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import Counter
 from difflib import SequenceMatcher
@@ -62,6 +63,7 @@ def main() -> int:
     kiem_noi_dung(bai, nguon_theo_id)
     kiem_anh(bai)
     kiem_so_do(bai, nguon_theo_id)
+    kiem_vet(bai)
     kiem_bai_tap_doi_nguon(bai)
     kiem_thu_trong_ide(bai)
     kiem_sandbox(bai)
@@ -244,6 +246,144 @@ def kiem_so_do(bai: list[dict], nguon: dict[str, dict]) -> None:
                     if gon(str(buoc[-1])) not in kq_nguon:
                         loi(f'{v}: kết quả "{buoc[-1]}" không có trong `expected` '
                             f'của bài {ma} — sơ đồ nói một con số bài không in ra')
+
+
+def kiem_vet(bai: list[dict]) -> None:
+    """BẢNG TỪNG BƯỚC (`trace` trên khối code của màn đọc).
+
+    Vì sao cần luật ở đây, chứ không tin build.py: vết được SINH Ở MỘT LẦN CHẠY
+    KHÁC (`gen_traces.py`, commit vào traces.json) và nó được cắt theo KHOẢNG
+    DÒNG của từng đoạn trong chương trình đã nối. Lệch một dòng ở phép cắt đó
+    là bảng của đoạn 2 nằm dưới đoạn 3 — và nó hỏng IM LẶNG: bảng vẫn mở ra,
+    vẫn có số dòng, chỉ là số dòng của một đoạn khác. build.py canh được
+    "có/không" và canh hash của NGUỒN; chỉ ở đây mới canh được "vết này có nói
+    về ĐÚNG đoạn code nằm ngay trên nó không".
+
+    Sáu luật, mỗi luật chặn một kiểu lệch:
+      1. `trace` chỉ nằm trên khối `code`;
+      2. mọi `line` phải trỏ vào một dòng CÓ THẬT và KHÔNG RỖNG của chính
+         `block.code` — đây là luật bắt phép cắt lệch đoạn;
+      3. bảng phải có ≥ 3 dòng (ít hơn thì không có gì để xem) và ≤ TRAN_DONG;
+      4. câu dự đoán phải có và đáp án không rỗng, backtick đi theo cặp;
+      5. đáp án KHÔNG được xuất hiện trong `expected` của chính khối — nếu có
+         thì "dự đoán" chỉ là chép lại ô "Kết quả:" ngay phía trên, và cơ chế
+         (đoán → ngạc nhiên → chú ý) mà bước này tồn tại để kích hoạt không
+         chạy lần nào;
+      6. đáp án phải TRẢ LỜI ĐƯỢC BẰNG BẢNG: `final`/`mid` thì biến được hỏi
+         phải xuất hiện trong một dòng bảng, `count` thì số lần đếm được ở mức
+         module phải đúng bằng đáp án.
+    """
+    # Trần dòng bảng — phải khớp TRAN_DONG của gen_traces.py. Chép chứ không
+    # import: check.py là phía đối chứng, import thì một lỗi trong khâu sinh
+    # xuất hiện ở cả hai phía phép so.
+    tran_dong = 42
+    tong = 0
+    for b in bai:
+        ma = b['lesson_code']
+        for i, lat in enumerate(b['content_json']['step_1']['read']):
+            for k in lat:
+                if 'trace' not in k:
+                    continue
+                o = f'{ma}: màn {i} vết'
+                if k['type'] != 'code':
+                    loi(f'{o} nằm trên khối "{k["type"]}" — chỉ khối code mới có '
+                        'bảng từng bước')
+                    continue
+                tong += 1
+                v = k['trace']
+                dong_ma = k['code'].split('\n')
+                hang = v.get('rows')
+                if not isinstance(hang, list) or len(hang) < 3:
+                    loi(f'{o} chỉ có {len(hang or [])} dòng — bảng không nói thêm gì')
+                    continue
+                if len(hang) > tran_dong:
+                    loi(f'{o} có {len(hang)} dòng, quá trần {tran_dong}')
+                for h in hang:
+                    n = h.get('line')
+                    if not isinstance(n, int) or not (1 <= n <= len(dong_ma)):
+                        loi(f'{o} trỏ vào dòng {n} nhưng khối chỉ có '
+                            f'{len(dong_ma)} dòng — phép cắt vết lệch đoạn')
+                        break
+                    if not dong_ma[n - 1].strip():
+                        loi(f'{o} nói dòng {n} đã chạy nhưng dòng đó RỖNG — '
+                            'phép cắt vết lệch đoạn')
+                        break
+                dd = v.get('predict') or {}
+                dap_an = str(dd.get('answer') or '')
+                if not dap_an.strip() or not str(dd.get('prompt') or '').strip():
+                    loi(f'{o} thiếu câu dự đoán hoặc đáp án')
+                    continue
+                # Đáp án phải GÕ LẠI ĐƯỢC. Bản vẽ của một đối tượng mờ
+                # (`ndarray: array([1, 2, 3])`), một cái tên trong ngoặc nhọn
+                # (`<thư viện numpy>`), hay một số nguyên 31 chữ số (`2 ** 100`
+                # ở EX07) thì không ai gõ lại — mà gõ lại chính là hành động
+                # cam kết mà cả bước dự đoán tồn tại để lấy.
+                if re.match(r'^(<|[A-Za-z_][\w.]*: )', dap_an) \
+                        or (dap_an.lstrip('-').isdigit() and len(dap_an.lstrip('-')) > 10):
+                    loi(f'{o}: đáp án "{dap_an[:40]}" không gõ lại được — '
+                        'khâu sinh phải BỎ QUA khối thay vì hỏi câu này')
+                if str(dd['prompt']).count('`') % 2:
+                    loi(f'{o} có dấu backtick lẻ trong câu hỏi — nó sẽ hiện ra '
+                        'nguyên văn trước mặt người học')
+                gon = lambda t: ''.join(str(t).split())  # noqa: E731
+                if gon(dap_an) and gon(dap_an) in gon(k.get('expected') or ''):
+                    loi(f'{o}: đáp án "{dap_an}" đã có sẵn trong ô Kết quả của '
+                        'chính khối — câu dự đoán chỉ là chép lại màn hình')
+                if dd.get('kind') in ('final', 'mid'):
+                    ten = dd.get('var')
+                    dat = [h for h in hang
+                           if any(ten == t for t, _ in h.get('set') or [])]
+                    if not dat:
+                        loi(f'{o} hỏi về `{ten}` nhưng không dòng bảng nào hiện '
+                            'biến đó — bảng không trả lời được câu hỏi của nó')
+                    elif len(dat) == 1:
+                        # Biến gán ĐÚNG MỘT LẦN bằng hằng viết ngay trên dòng đó
+                        # thì đáp án nằm nguyên văn trong ô code phía trên —
+                        # câu hỏi không bắt nghĩ một bước nào (lỗi thật ở EX02:
+                        # `raw = "name,mark\nMai,8.5\nAn,7.0\n"`). Bỏ dấu nháy
+                        # trước khi so: repr dùng nháy đơn, nguồn hay viết nháy kép.
+                        bo_nhay = lambda t: gon(t).replace("'", '').replace('"', '')  # noqa: E731
+                        n = dat[0].get('line') or 0
+                        if 1 <= n <= len(dong_ma) and bo_nhay(dap_an) in bo_nhay(dong_ma[n - 1]):
+                            loi(f'{o}: đáp án "{dap_an}" đã có nguyên văn trên dòng '
+                                f'{n} của chính đoạn code — không có gì để đoán')
+                elif dd.get('kind') == 'count':
+                    lan = sum(1 for h in hang
+                              if h.get('line') == dd.get('line') and not h.get('fn'))
+                    if str(lan) != dap_an:
+                        loi(f'{o} nói dòng {dd.get("line")} chạy {dap_an} lần '
+                            f'nhưng bảng đếm được {lan}')
+                    # Và dòng được hỏi phải là THÂN VÒNG LẶP. Hỏi chính dòng
+                    # `for` thì đáp án là n+1 (Python chạy qua nó thêm một lần
+                    # để biết đã hết), còn hỏi một dòng có comprehension thì số
+                    # đếm là chi tiết nội tuyến hoá của 3.12 (PEP 709) — cả hai
+                    # đều là con số của máy ảo, không phải điều bài dạy. Lỗi
+                    # thật: SY13 `print([s["id"] for s in students])` → "4 lần".
+                    n = dd.get('line') or 0
+                    cau = dong_ma[n - 1] if 1 <= n <= len(dong_ma) else ''
+                    thut = len(cau) - len(cau.lstrip())
+                    co_lap = any(
+                        re.match(r'\s*(for|while)\b', t)
+                        and len(t) - len(t.lstrip()) < thut
+                        for t in dong_ma[:max(n - 1, 0)] if t.strip())
+                    if re.match(r'\s*(for|while)\b', cau) or not co_lap \
+                            or re.search(r'[\[\{(][^\]\})]*\bfor\b', cau):
+                        loi(f'{o} đếm số lần chạy của dòng {n} ("{cau.strip()[:40]}") '
+                            '— chỉ được hỏi về một dòng THÂN vòng lặp')
+                else:
+                    loi(f'{o} có loại câu hỏi lạ: {dd.get("kind")!r}')
+
+    # Module 1 KHÔNG có bảng — quyết định đã chốt, và nó phải kiểm được từ bản
+    # dựng chứ không chỉ từ một hằng trong build.py. 18 bài đầu là module 1.
+    for b in bai:
+        if b['sort_order'] > 18:
+            continue
+        if any(k.get('trace') for lat in b['content_json']['step_1']['read'] for k in lat):
+            loi(f'{b["lesson_code"]}: bài module 1 mà có bảng từng bước')
+
+    if not tong:
+        loi('không bài nào có bảng từng bước — vết đã dựng nhưng không có đường '
+            'tới người học (xem traces.json và gen_traces.py)')
 
 
 def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:

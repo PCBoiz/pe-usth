@@ -145,6 +145,69 @@ export type TheoryBlock = {
  * code — renderer phải hiện nó TÁCH khỏi code, vì người học cần phân biệt
  * được đâu là lệnh và đâu là cái lệnh đó in ra.
  */
+/**
+ * MỘT DÒNG của bảng từng bước: một lần một dòng mã CHẠY XONG.
+ *
+ * `sys.settrace` phát sự kiện TRƯỚC khi dòng chạy, nên vết thô nói "trước khi
+ * chạy dòng 3, total = 0" và người đọc phải tự dịch sang "vậy dòng 2 làm total
+ * = 0". Khâu sinh (scripts/pe-da/gen_traces.py) đã dịch hộ: mỗi dòng bảng ghép
+ * từ MỘT CẶP bước liền nhau, nên `line` là dòng VỪA CHẠY và `set` là thứ nó vừa
+ * làm đổi.
+ */
+export type TraceRow = {
+  /** 1-based TRONG `code` của chính khối — ô code của màn đọc đánh số riêng. */
+  line: number;
+  /** Tên hàm/lớp đang chạy; vắng mặt = mã ở mức module. */
+  fn?: string;
+  /** Tầng call stack, 1 = trong một hàm. Vắng mặt = 0. */
+  depth?: number;
+  /** Bước BƯỚC VÀO hàm: `set` lúc này là các tham số vừa nhận. */
+  enter?: true;
+  /** Biến ĐỔI ở bước này, đã quy về chữ. Không đổi gì thì vắng mặt. */
+  set?: [string, string][];
+  /** Chương trình in ra gì ở dòng này. */
+  out?: string;
+  /** Giá trị hàm trả về (bước `return`). */
+  ret?: string;
+  /** Ngoại lệ ném ra ở dòng này. */
+  exc?: string;
+};
+
+/**
+ * BẢNG TỪNG BƯỚC tính sẵn cho một khối code của màn đọc.
+ *
+ * TÍNH SẴN LÚC BUILD, không chạy Pyodide ở màn đọc: màn đọc là chỗ người học
+ * ĐỌC, và nạp 30 MB runtime để hiện một bảng 12 dòng là trả giá cho một việc đã
+ * có kết quả xác định từ trước. Vết được sinh bằng CHÍNH tracer của `/ide`
+ * (`scripts/tracer/pe_tracer.py`) rồi commit vào `scripts/pe-da/traces.json` —
+ * xem đầu file `scripts/pe-da/gen_traces.py` để biết vì sao không sinh trong
+ * build.py (CI không có numpy/pandas và đòi bản dựng trùng từng byte).
+ *
+ * `predict` KHÔNG PHẢI TRANG TRÍ và không được bỏ cho gọn. Hundhausen 2002 tổng
+ * hợp 24 thực nghiệm có đối chứng về trực quan hoá thuật toán: chỉ 46% cho kết
+ * quả có ý nghĩa, 42% KHÔNG — và khi Gurka lặp lại thí nghiệm nhưng BỎ điều
+ * kiện "dự đoán trước" thì lợi thế biến mất. Brod 2021 nói ra cơ chế: đoán sai
+ * → ngạc nhiên → chú ý dồn vào đáp án đúng. Nghĩa là XEM THỤ ĐỘNG gần như
+ * không mua được gì. Nên khâu sinh BỎ QUA (và đếm) mọi khối không ra được một
+ * câu hỏi mà bảng trả lời được, chứ không phát một bảng không ai phải đoán gì.
+ */
+export type ReadTrace = {
+  predict: {
+    /** `final` giá trị cuối · `count` số lần một dòng chạy · `mid` giá trị trung gian. */
+    kind: 'final' | 'count' | 'mid';
+    /** Có backtick, nên PHẢI đi qua `withInlineCode` chứ không dựng trần. */
+    prompt: string;
+    answer: string;
+    var?: string;
+    line?: number;
+  };
+  rows: TraceRow[];
+  /** Số dòng bị bỏ ở GIỮA khi vết quá dài (giữ cả hai đầu). */
+  elided?: number;
+  /** Chỗ bỏ nằm ngay TRƯỚC `rows[elidedAt]`. */
+  elidedAt?: number;
+};
+
 export type ReadBlock =
   | { type: 'paragraph'; text: string }
   /**
@@ -159,7 +222,7 @@ export type ReadBlock =
    * sqlalchemy, ipywidgets), là gói ẩn sau chuỗi (`engine="openpyxl"`), và là
    * thuộc tính phơi ra máy thật (`sys.executable`). Chỉ build.py biết cả ba.
    */
-  | { type: 'code'; code: string; expected?: string; tryIt?: true }
+  | { type: 'code'; code: string; expected?: string; tryIt?: true; trace?: ReadTrace }
   /**
    * Lệnh gõ trong TERMINAL (`python -m venv .venv`, `git status`) — KHÔNG phải
    * Python. Phải hiện khác khối `code`, nếu không người học copy nó vào ô soạn
@@ -261,6 +324,27 @@ export function maDeThu(
   if (!doan.length) return null;
   if (doan.length === 1) return `${doan[0]}\n`;
   return `${doan.map((c, i) => `# ── Đoạn ${i + 1} ──\n${c}`).join('\n\n')}\n`;
+}
+
+/**
+ * So câu ĐOÁN của người học với đáp án của bảng từng bước.
+ *
+ * Nới đúng MỘT bậc — bỏ hết khoảng trắng — và chỉ một bậc đó. Đáp án là một giá
+ * trị Python (`{'high': [], 'low': ['B', 'A']}`), mà chỗ đặt dấu cách trong đó
+ * là quy ước IN của Python chứ không phải điều bài đang hỏi; bắt gõ đúng từng
+ * dấu cách là chấm sai người đoán đúng.
+ *
+ * Nhưng dấu NHÁY thì KHÔNG bóc hộ: `2` và `'2'` là hai giá trị khác nhau, và
+ * phân biệt được chúng đúng là một trong những thứ giáo trình này dạy — bóc
+ * nháy hộ là dạy ngược.
+ *
+ * Hàm nằm ở đây (không trong StepTrace.tsx) để có ca test thật: runner
+ * `node --test --experimental-strip-types` không nạp được JSX, nên logic nằm
+ * trong một file `.tsx` là logic chỉ kiểm được bằng cách đọc chuỗi nguồn.
+ */
+export function khopDapAn(doan: string, dapAn: string): boolean {
+  const gon = (s: string) => s.replace(/\s+/g, '');
+  return gon(doan).length > 0 && gon(doan) === gon(dapAn);
 }
 
 export type Step1 = {

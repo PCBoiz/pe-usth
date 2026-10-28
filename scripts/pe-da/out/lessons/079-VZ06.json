@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong sáu đơn hàng, thời gian chờ là 1, 2, 2, 4, 5 và 8 phút. Thay vì vẽ một cột cho từng đơn, histogram gộp thời gian thành các khoảng rồi đếm có bao nhiêu đơn nằm trong mỗi khoảng."
+      "text": "Mỗi điểm một đơn như bài trước sẽ rối khi quán có hàng nghìn đơn. Trong sáu đơn hàng, thời gian chờ là 1, 2, 2, 4, 5 và 8 phút. Thay vì vẽ một cột cho từng đơn, histogram gộp thời gian thành các khoảng rồi đếm có bao nhiêu đơn nằm trong mỗi khoảng."
      },
      {
       "type": "code",
@@ -241,5 +241,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

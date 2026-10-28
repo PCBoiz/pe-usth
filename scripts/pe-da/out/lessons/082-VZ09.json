@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một đường có các giá trị 8, 10 và 7 vẫn thiếu thông tin nếu người đọc không biết đó là cốc, triệu đồng hay phút. Tiêu đề cho biết câu hỏi; nhãn trục ghi biến và đơn vị. Dòng nguồn và thời gian đo giúp người khác hiểu giới hạn của hình khi nó được tách khỏi báo cáo."
+      "text": "Mọi hình ở các bài trước đều thiếu một thứ: chữ nói cho người xem biết đó là gì. Một đường có các giá trị 8, 10 và 7 vẫn thiếu thông tin nếu người đọc không biết đó là cốc, triệu đồng hay phút. Tiêu đề cho biết câu hỏi; nhãn trục ghi biến và đơn vị. Dòng nguồn và thời gian đo giúp người khác hiểu giới hạn của hình khi nó được tách khỏi báo cáo."
      },
      {
       "type": "code",
@@ -223,5 +223,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

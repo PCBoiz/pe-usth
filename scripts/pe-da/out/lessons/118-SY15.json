@@ -22,13 +22,86 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn muốn giữ tổng bán hàng sau khi tắt Python. Biến trong RAM không tự tồn tại qua lần chạy; một file giúp lưu dữ liệu. Các ví dụ chỉ ghi vào thư mục tạm của bài:"
+      "text": "Màn hình ở bài trước mất hết số liệu khi bạn tắt chương trình. Bạn muốn giữ tổng bán hàng sau khi tắt Python. Biến trong RAM không tự tồn tại qua lần chạy; một file giúp lưu dữ liệu. Các ví dụ chỉ ghi vào thư mục tạm của bài:"
      },
      {
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"report.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"12\\n\")\n    with open(path, \"r\", encoding=\"utf8\") as f: print(f.read().strip())\n    print(f.closed)",
       "expected": "12\nTrue",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "f",
+        "line": 5,
+        "prompt": "Ngay sau khi dòng 5 chạy, `f` bằng mấy?",
+        "answer": "TextIOWrapper(mode='w')"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "tempfile",
+           "<thư viện tempfile>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "Path",
+           "<lớp Path>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "folder",
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpyh2jnqry'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "path",
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpyh2jnqry…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "f",
+           "TextIOWrapper(mode='w')"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "f",
+           "TextIOWrapper(mode='r')"
+          ]
+         ],
+         "out": "12"
+        },
+        {
+         "line": 7,
+         "out": "True"
+        },
+        {
+         "line": 3
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +113,67 @@
       "type": "code",
       "code": "import tempfile\nfrom pathlib import Path\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"log.txt\"\n    with open(path, \"w\", encoding=\"utf8\") as f: f.write(\"A\\n\")\n    with open(path, \"a\", encoding=\"utf8\") as f: f.write(\"B\\n\")\n    print(path.read_text(encoding=\"utf8\").splitlines())",
       "expected": "['A', 'B']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "f",
+        "line": 5,
+        "prompt": "Ngay sau khi dòng 5 chạy, `f` bằng mấy?",
+        "answer": "TextIOWrapper(mode='w')"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "folder",
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpz377huqr'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "path",
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpz377huqr…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "f",
+           "TextIOWrapper(mode='w')"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "f",
+           "TextIOWrapper(mode='a')"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "out": "['A', 'B']"
+        },
+        {
+         "line": 3
+        }
+       ]
+      }
      }
     ],
     [
@@ -211,5 +344,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

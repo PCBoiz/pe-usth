@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Hai ca làm có thể cùng thời gian giao trung bình nhưng độ phân tán khác nhau. Boxplot tóm tắt dữ liệu bằng trung vị và các phần tư, giúp bạn nhìn phần giữa của phân bố và các điểm nằm xa phần đó."
+      "text": "Phân bố đã thấy được qua các khoảng chia ở bài trước, giờ so hai nhóm cạnh nhau. Hai ca làm có thể cùng thời gian giao trung bình nhưng độ phân tán khác nhau. Boxplot tóm tắt dữ liệu bằng trung vị và các phần tư, giúp bạn nhìn phần giữa của phân bố và các điểm nằm xa phần đó."
      },
      {
       "type": "code",
@@ -234,5 +234,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

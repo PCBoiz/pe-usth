@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
+      "text": "Quan hệ hai cột đã vẽ xong rồi, nhưng mỗi quầy của quán có thể có một dạng riêng. Khi cửa hàng A và B phục vụ hai nhóm khách khác nhau, trộn tất cả điểm vào một hình có thể che khác biệt giữa cửa hàng. Facet chia dữ liệu thành các ô có cùng cách vẽ, mỗi ô cho một nhóm. seaborn.relplot tạo cả Figure và các Axes; bạn không cần tạo fig, ax trước."
      },
      {
       "type": "code",
@@ -171,5 +171,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

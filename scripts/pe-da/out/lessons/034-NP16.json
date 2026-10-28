@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một môn 2 tín chỉ được 7 điểm, một môn 3 tín chỉ được 8 điểm. Để tính trung bình có xét tín chỉ, bạn nhân mỗi điểm với số tín chỉ rồi chia cho tổng tín chỉ: (7 × 2 + 8 × 3) / (2 + 3) = 7.6."
+      "text": "Nhãn vừa gắn ở bài trước chưa cho bạn một con số tóm cả bảng. Một môn 2 tín chỉ được 7 điểm, một môn 3 tín chỉ được 8 điểm. Để tính trung bình có xét tín chỉ, bạn nhân mỗi điểm với số tín chỉ rồi chia cho tổng tín chỉ: (7 × 2 + 8 × 3) / (2 + 3) = 7.6."
      },
      {
       "type": "code",
@@ -226,5 +226,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

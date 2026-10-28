@@ -3,13 +3,13 @@
  "sort_order": 152,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU05 · Entry, mật khẩu và Checkbutton",
- "subtitle": "Trung cấp · M8 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Trung cấp · M8 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU05 · Entry, mật khẩu và Checkbutton",
-  "subtitle": "Trung cấp · M8 · 13 phút",
+  "subtitle": "Trung cấp · M8 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU05",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Form có ô tên và tùy chọn nhận thông báo. Entry luôn trả chữ; Checkbutton giữ trạng thái bật hoặc tắt độc lập với các ô khác."
+      "text": "Nút đã gọi được hàm của bạn rồi, giờ đến chỗ người bán gõ vào. Form có ô tên và tùy chọn nhận thông báo. Entry luôn trả chữ; Checkbutton giữ trạng thái bật hoặc tắt độc lập với các ô khác."
      },
      {
       "type": "code",
@@ -172,5 +172,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

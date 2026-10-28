@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một cửa hàng có nhiều giao dịch trong tháng. Báo cáo cần một ô tổng doanh thu cho mỗi cửa hàng và tháng, nên lần này phải tổng hợp dữ liệu khi đổi hình dạng."
+      "text": "Bảng báo cáo của quán ở bài trước giả định mỗi ô chỉ có một giá trị. Một cửa hàng có nhiều giao dịch trong tháng. Báo cáo cần một ô tổng doanh thu cho mỗi cửa hàng và tháng, nên lần này phải tổng hợp dữ liệu khi đổi hình dạng."
      },
      {
       "type": "code",
@@ -249,5 +249,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng giao dịch có nhiều ngày và bạn muốn báo cáo doanh thu tháng. Khi index là thời gian, resample gom các hàng vào những khoảng thời gian đều nhau."
+      "text": "Ngày đã về đúng kiểu rồi, giờ gom các đơn của quán theo ngày và theo tháng. Bảng giao dịch có nhiều ngày và bạn muốn báo cáo doanh thu tháng. Khi index là thời gian, resample gom các hàng vào những khoảng thời gian đều nhau."
      },
      {
       "type": "code",
@@ -230,5 +230,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

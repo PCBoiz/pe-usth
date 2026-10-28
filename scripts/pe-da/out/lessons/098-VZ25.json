@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
+      "text": "Bài trước nói về hình dễ gây hiểu lầm; bài này vẫn là hình, nhưng động. Để minh họa một đường được vẽ dần, bạn không cần tạo Figure mới ở mỗi khung hình. Tạo Line2D một lần rồi gọi set_data để thay các điểm đang hiển thị. Hàm update nhận chỉ số khung và trả các đối tượng vừa đổi; nó chỉ cập nhật hình, không chạy lại chương trình dữ liệu từ đầu."
      },
      {
       "type": "code",
@@ -252,5 +252,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

@@ -28,7 +28,82 @@
       "type": "code",
       "code": "from decimal import Decimal, ROUND_FLOOR\nmarks=['14.29','16.00']\nnormalized=[float(Decimal(m).quantize(Decimal('0.1'),rounding=ROUND_FLOOR)) for m in marks]\nprint(normalized)",
       "expected": "[14.2, 16.0]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "marks",
+        "prompt": "Sau khi chạy xong, `marks` bằng mấy?",
+        "answer": "['14.29', '16.00']"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "Decimal",
+           "<lớp Decimal>"
+          ],
+          [
+           "ROUND_FLOOR",
+           "'ROUND_FLOOR'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "marks",
+           "['14.29', '16.00']"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "m",
+           "'14.29'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "m",
+           "'16.00'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "Decimal",
+           "<lớp Decimal>"
+          ],
+          [
+           "ROUND_FLOOR",
+           "'ROUND_FLOOR'"
+          ],
+          [
+           "marks",
+           "['14.29', '16.00']"
+          ],
+          [
+           "normalized",
+           "[14.2, 16.0]"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "[14.2, 16.0]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +115,240 @@
       "type": "code",
       "code": "marks={'PY':14.0,'DA':18.0}\ncredits={'PY':2,'DA':3,'GUI':1}\nweighted=sum(mark*credits[course] for course,mark in marks.items())\ndenominator=sum(credits[course] for course in marks)\nprint(weighted/denominator)",
       "expected": "16.4",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "course",
+        "line": 3,
+        "prompt": "Ngay sau khi dòng 3 chạy, `course` bằng mấy?",
+        "answer": "'PY'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "marks",
+           "{'PY': 14.0, 'DA': 18.0}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "credits",
+           "{'PY': 2, 'DA': 3, 'GUI': 1}"
+          ]
+         ]
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_itemiterator: <dict_itemiterator object>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "course",
+           "'PY'"
+          ],
+          [
+           "mark",
+           "14.0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "28.0"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_itemiterator: <dict_itemiterator object>"
+          ],
+          [
+           "course",
+           "'PY'"
+          ],
+          [
+           "mark",
+           "14.0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "course",
+           "'DA'"
+          ],
+          [
+           "mark",
+           "18.0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "54.0"
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_itemiterator: <dict_itemiterator object>"
+          ],
+          [
+           "course",
+           "'DA'"
+          ],
+          [
+           "mark",
+           "18.0"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1
+        },
+        {
+         "line": 3,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_keyiterator: <dict_keyiterator object>"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "course",
+           "'PY'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "2"
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_keyiterator: <dict_keyiterator object>"
+          ],
+          [
+           "course",
+           "'PY'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "set": [
+          [
+           "course",
+           "'DA'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "3"
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           ".0",
+           "dict_keyiterator: <dict_keyiterator object>"
+          ],
+          [
+           "course",
+           "'DA'"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1
+        },
+        {
+         "line": 4,
+         "fn": "<genexpr>",
+         "depth": 1,
+         "ret": "None"
+        },
+        {
+         "line": 5,
+         "out": "16.4"
+        }
+       ]
+      }
      }
     ],
     [
@@ -62,7 +370,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric."
+      "text": "Chạy bằng `python projects/grade_app.py --data duong-dan/grades.pkl.gz`. Nếu file chưa tồn tại, ứng dụng bắt đầu rỗng; nếu dữ liệu hỏng, nó báo lỗi và không tự ghi đè file đó. Bài kiểm tra tự động đi kèm xác nhận model, GPA, save/load và callback cơ bản. Quy trình giao diện thật, độ dễ dùng và bố cục còn cần kiểm tra thủ công theo rubric. Quán giờ có một màn hình cho người không viết code; hai chặng cuối ôn lại các chi tiết đã đi nhanh."
      }
     ]
    ],
@@ -159,5 +467,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

@@ -876,8 +876,13 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // hình dạng — gói nguồn được viết lại cùng ngày và tách thêm đoạn văn; số
   // khối code/terminal/figure/table không nhúc nhích. Đo lại bằng cách dựng
   // rồi đếm, đừng đoán.
+  // 29/10/2026 (đợt NỐI MODULE): 764 → 773. Đúng 9 đoạn CÂU KẾT thêm vào cuối
+  // CT01, CT03, CT12, RD05, VZ30, EX03, EX04, EX07, EX08 — mấy bài mà nối câu
+  // kết vào đoạn cuối sẽ đẩy đoạn qua trần L2, hoặc khối CUỐI của bài là
+  // `code` nên đoạn văn cuối không phải chỗ người học đọc sau cùng. Mọi loại
+  // khối khác không nhúc nhích một đơn vị nào.
   assert.deepEqual(count, {
-    paragraph: 764,
+    paragraph: 773,
     code: 499,
     terminal: 17,
     figure: 80,

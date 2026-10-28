@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Nếu cần nhìn sự thay đổi theo ngày, đặt ngày lên trục ngang và số cốc lên trục dọc. Đường nối các điểm giúp bạn theo dõi thứ tự thời gian."
+      "text": "Bản báo cáo ở bài trước đọc được với bạn, nhưng người đồng sở hữu quán chỉ xem hình. Quán cà phê ghi số cốc bán được trong ba ngày: 12, 15 và 9. Nếu cần nhìn sự thay đổi theo ngày, đặt ngày lên trục ngang và số cốc lên trục dọc. Đường nối các điểm giúp bạn theo dõi thứ tự thời gian."
      },
      {
       "type": "code",
@@ -243,5 +243,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

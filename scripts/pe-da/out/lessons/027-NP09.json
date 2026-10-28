@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Trong bảng bán hàng, mỗi hàng là một cửa hàng và mỗi cột là một ngày. Bạn muốn lấy riêng số bán của ngày thứ hai ở cả hai cửa hàng:"
+      "text": "Bảng số cốc hai quầy đã xếp đúng rồi, giờ bạn lấy riêng từng hàng và từng cột. Trong bảng bán hàng, mỗi hàng là một cửa hàng và mỗi cột là một ngày. Bạn muốn lấy riêng số bán của ngày thứ hai ở cả hai cửa hàng:"
      },
      {
       "type": "code",
@@ -236,5 +236,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

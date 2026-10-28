@@ -3,13 +3,13 @@
  "sort_order": 78,
  "module": "M4 · Trực quan hóa dữ liệu: Matplotlib, seaborn, Plotly và dashboard",
  "title": "VZ05 · Scatter plot: quan hệ giữa hai biến",
- "subtitle": "Cơ bản · M4 · 15 phút",
- "estimated_minutes": 15,
- "xp_reward": 9,
+ "subtitle": "Cơ bản · M4 · 16 phút",
+ "estimated_minutes": 16,
+ "xp_reward": 10,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "VZ05 · Scatter plot: quan hệ giữa hai biến",
-  "subtitle": "Cơ bản · M4 · 15 phút",
+  "subtitle": "Cơ bản · M4 · 16 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#VZ05",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn có bốn đơn hàng, mỗi đơn có khoảng cách giao và số phút giao. Scatter plot đặt mỗi đơn thành một điểm. Nó giúp bạn xem đơn ở xa có thường giao lâu hơn không mà không giả định phải nối từ đơn này sang đơn khác."
+      "text": "Cột và đường ở bài trước so được các nhóm, còn đây là quan hệ giữa hai số đo của quán. Bạn có bốn đơn hàng, mỗi đơn có khoảng cách giao và số phút giao. Scatter plot đặt mỗi đơn thành một điểm. Nó giúp bạn xem đơn ở xa có thường giao lâu hơn không mà không giả định phải nối từ đơn này sang đơn khác."
      },
      {
       "type": "code",
@@ -271,5 +271,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

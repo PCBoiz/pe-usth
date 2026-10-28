@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bảng giao hàng có khoảng cách, thời gian và phương tiện. seaborn.scatterplot dùng hue cho màu và style cho marker, nên bạn có thể xem quan hệ khoảng cách–thời gian trong từng phương tiện mà vẫn giữ mỗi đơn là một điểm."
+      "text": "So hai ca ở bài trước dùng một cột, còn đây là quan hệ giữa hai cột. Bảng giao hàng có khoảng cách, thời gian và phương tiện. seaborn.scatterplot dùng hue cho màu và style cho marker, nên bạn có thể xem quan hệ khoảng cách–thời gian trong từng phương tiện mà vẫn giữ mỗi đơn là một điểm."
      },
      {
       "type": "code",
@@ -177,5 +177,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

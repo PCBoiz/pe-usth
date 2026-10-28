@@ -3,13 +3,13 @@
  "sort_order": 104,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY01 · Đọc ngày tháng và tính khoảng thời gian",
- "subtitle": "Cơ bản · M5 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Cơ bản · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY01 · Đọc ngày tháng và tính khoảng thời gian",
-  "subtitle": "Cơ bản · M5 · 12 phút",
+  "subtitle": "Cơ bản · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY01",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một báo cáo cần lấy đơn hàng từ ngày 28/02/2024 đến hai ngày sau đó. Nếu cộng trực tiếp vào phần ngày của chuỗi, bạn sẽ gặp ngày không tồn tại. Hãy chuyển chuỗi thành datetime trước:"
+      "text": "Quán đã có số và có hình rồi, nhưng code vẫn nằm rời trong từng ô notebook. Một báo cáo cần lấy đơn hàng từ ngày 28/02/2024 đến hai ngày sau đó. Nếu cộng trực tiếp vào phần ngày của chuỗi, bạn sẽ gặp ngày không tồn tại. Hãy chuyển chuỗi thành datetime trước:"
      },
      {
       "type": "code",
@@ -192,5 +192,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

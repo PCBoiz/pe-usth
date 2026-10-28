@@ -22,13 +22,128 @@
     [
      {
       "type": "paragraph",
-      "text": "Một bảng nhiệt độ có các ô theo vị trí x và y, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
+      "text": "Vùng tô ở bài trước chia một tổng; lần này ô nằm theo hai trục toạ độ. Một bảng nhiệt độ có các ô theo vị trí x và y, không chỉ theo tên nhóm. pcolor và pcolormesh vẽ màu cho các ô lưới, còn đường contour nối các vị trí có cùng giá trị. Chúng hữu ích cho lưới đo hoặc bề mặt mô phỏng; tọa độ và đơn vị phải đi cùng ma trận."
      },
      {
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nimport numpy as np\nfig, axes = plt.subplots(1, 2, figsize=(7, 3), layout=\"constrained\")\nz = np.array([[1, 2], [3, 4]])\nfor ax, method in zip(axes, [\"pcolor\", \"pcolormesh\"]):\n    im = getattr(ax, method)([0, 1, 2], [0, 1, 2], z, cmap=\"viridis\", vmin=0, vmax=4, shading=\"flat\")\n    ax.set(xlabel=\"x (m)\", ylabel=\"y (m)\", title=method, aspect=\"equal\")\nfig.colorbar(im, ax=axes, label=\"Temperature (arbitrary units)\")\nprint(z.shape)\nplt.show()",
       "expected": "(2, 2)",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "method",
+        "prompt": "Sau khi chạy xong, `method` bằng mấy?",
+        "answer": "'pcolormesh'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "plt",
+           "<thư viện matplotlib.pyplot>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "np",
+           "<thư viện numpy>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "axes",
+           "ndarray: array([<Axes: >, <Axes: >], dtype=object)"
+          ],
+          [
+           "fig",
+           "Figure(_stale=True, stale_callback=<hàm _auto_draw_if_interactive>, _pa…"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "z",
+           "ndarray: array([[1, 2], [3, 4]])"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "ax",
+           "Axes(_stale=True, stale_callback=<hàm _stale_figure_callback>, _axes=<t…"
+          ],
+          [
+           "method",
+           "'pcolor'"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "im",
+           "PolyQuadMesh(_coordinates=MaskedArray(_fill_value=None, _hardmask=False…"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "set": [
+          [
+           "axes",
+           "ndarray: array([<Axes: title={'center': 'pcolor'}, xlabel='x (m)', ylab…"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "method",
+           "'pcolormesh'"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "im",
+           "QuadMesh(_coordinates=MaskedArray(_fill_value=None, _hardmask=False, _s…"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9,
+         "out": "(2, 2)"
+        },
+        {
+         "line": 10
+        }
+       ]
+      }
      },
      {
       "type": "figure",
@@ -285,5 +400,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

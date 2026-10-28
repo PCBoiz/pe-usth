@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "A bắt đầu chạy với 6 đơn vị CPU. Sau 1 đơn vị, B đến và chỉ cần 2 đơn vị. SRTF xem thời gian còn lại: A còn 5, nên B có thể được chạy trước."
+      "text": "Bài trước giả định mọi việc của quán đã sẵn sàng cùng lúc. A bắt đầu chạy với 6 đơn vị CPU. Sau 1 đơn vị, B đến và chỉ cần 2 đơn vị. SRTF xem thời gian còn lại: A còn 5, nên B có thể được chạy trước."
      },
      {
       "type": "code",
@@ -52,11 +52,60 @@
       "type": "code",
       "code": "queues = {\"high\": [\"A\"], \"low\": [\"B\"]}\nunfinished = queues[\"high\"].pop(0)\nqueues[\"low\"].append(unfinished)\nprint(queues[\"high\"], queues[\"low\"])",
       "expected": "[] ['B', 'A']",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "queues",
+        "prompt": "Sau khi chạy xong, `queues` bằng mấy?",
+        "answer": "{'high': [], 'low': ['B', 'A']}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "queues",
+           "{'high': ['A'], 'low': ['B']}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "queues",
+           "{'high': [], 'low': ['B']}"
+          ],
+          [
+           "unfinished",
+           "'A'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "queues",
+           "{'high': [], 'low': ['B', 'A']}"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "out": "[] ['B', 'A']"
+        },
+        {
+         "line": 4,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
-      "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán."
+      "text": "Mô phỏng cuối cho thấy một việc chuyển từ hàng ưu tiên cao xuống thấp. Multilevel Queue phân nhóm vào các hàng thường cố định, mỗi hàng có chính sách riêng. Multilevel Feedback Queue cho phép chuyển hàng dựa trên hành vi hoặc thời gian đã dùng. Cách ưu tiên và preempt giữa các hàng phải được cấu hình, không suy ra chỉ từ tên thuật toán. Khi một việc của quán phải xong trước giờ mở cửa, mức ưu tiên là chỗ bạn khai nó."
      }
     ]
    ],
@@ -159,5 +208,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

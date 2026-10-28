@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
+      "text": "Bài trước vẽ thẳng từ bảng của quán; thư viện này nhận cả tên cột. Một cột thời gian chờ trong DataFrame có thể vẽ ngay bằng seaborn.histplot. Bạn đưa tên cột vào x, còn seaborn lấy các giá trị từ data. Cách viết này giữ tên biến trong code rõ hơn khi bảng có nhiều cột."
      },
      {
       "type": "code",
@@ -177,5 +177,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: seaborn chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

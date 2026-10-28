@@ -149,5 +149,11 @@
  "_mode": "local",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/"
+ "_bai_tap": "khong: plotly chưa có wheel trong /pyodide/v314.0.7/",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

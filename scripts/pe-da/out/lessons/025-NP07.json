@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn nhận một bảng được mô tả là dữ liệu của hai cửa hàng trong ba ngày. Trước khi cộng số bán, hãy kiểm tra bảng có đúng kích thước đó không:"
+      "text": "Bảng hai quầy của quán vừa dựng xong cần được kiểm hình dạng trước khi tính. Bạn nhận một bảng được mô tả là dữ liệu của hai cửa hàng trong ba ngày. Trước khi cộng số bán, hãy kiểm tra bảng có đúng kích thước đó không:"
      },
      {
       "type": "code",
@@ -237,5 +237,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

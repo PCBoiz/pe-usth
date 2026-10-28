@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
+      "text": "Các lô dữ liệu của quán đã ghép thành một bảng rồi, giờ đổi hình dạng để dễ đọc. Doanh thu mỗi cửa hàng hiện là một hàng cho từng tháng. Để so sánh tháng bên cạnh nhau, bạn có thể chuyển tên tháng thành cột."
      },
      {
       "type": "code",
@@ -244,5 +244,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

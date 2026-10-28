@@ -28,7 +28,129 @@
       "type": "code",
       "code": "import tempfile, gzip, pickle\nfrom pathlib import Path\ndata = {\"marks\":[6, 8]}\nwith tempfile.TemporaryDirectory() as folder:\n    path = Path(folder) / \"students.dat\"\n    with gzip.open(path, \"wb\") as f:\n        pickle.dump(data, f)\n    with gzip.open(path, \"rb\") as f:\n        restored = pickle.load(f)\n    print(restored == data, path.exists())",
       "expected": "True True",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "restored",
+        "prompt": "Sau khi chạy xong, `restored` bằng mấy?",
+        "answer": "{'marks': [6, 8]}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "gzip",
+           "<thư viện gzip>"
+          ],
+          [
+           "pickle",
+           "<thư viện pickle>"
+          ],
+          [
+           "tempfile",
+           "<thư viện tempfile>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "Path",
+           "<lớp Path>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "data",
+           "{'marks': [6, 8]}"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "folder",
+           "'C:\\\\Users\\\\sonkh\\\\AppData\\\\Local\\\\Temp\\\\tmpcegn0rfr'"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "path",
+           "WindowsPath: WindowsPath('C:/Users/sonkh/AppData/Local/Temp/tmpcegn0rfr…"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='wb', fileobj=BufferedWriter(), _buffer=BufferedWriter(),…"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='wb', fileobj=None, _buffer=BufferedWriter(), myfileobj=N…"
+          ]
+         ]
+        },
+        {
+         "line": 8,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='rb', fileobj=BufferedReader(), _buffer=BufferedReader(),…"
+          ]
+         ]
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "restored",
+           "{'marks': [6, 8]}"
+          ]
+         ]
+        },
+        {
+         "line": 8,
+         "set": [
+          [
+           "f",
+           "GzipFile(mode='rb', fileobj=None, _buffer=BufferedReader(), myfileobj=N…"
+          ]
+         ]
+        },
+        {
+         "line": 10,
+         "out": "True True"
+        },
+        {
+         "line": 4
+        },
+        {
+         "line": 4,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -223,5 +345,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 1,
+  "co": 1,
+  "bo": 0,
+  "loi": []
+ }
 }

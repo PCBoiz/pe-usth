@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
+      "text": "Quán gọi công cụ ngoài bằng mấy hàm ở bài trước; một shell thì tự nối chúng lại. Một shell nhận lệnh, chạy chương trình và hiển thị kết quả. Khi có dấu >, output đi vào file; dấu < lấy input từ file; dấu | nối hai chương trình. Trước hết xem việc ghi output vào file mà không nhờ shell hệ điều hành:"
      },
      {
       "type": "code",
@@ -60,7 +60,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Khi thử lab, chạy `python projects/shell_lab.py` từ thư mục bộ học. Dùng đường dẫn/đối số có dấu nháy khi chứa khoảng trắng. Với pipeline, kiểm mã thoát của mọi stage; với lỗi cú pháp hoặc thiếu chương trình, báo lỗi rồi quay lại vòng nhập. Các cấu trúc shell khác như >>, biến môi trường hay wildcard không thuộc parser này."
+      "text": "Khi thử lab, chạy `python projects/shell_lab.py` từ thư mục bộ học. Dùng đường dẫn/đối số có dấu nháy khi chứa khoảng trắng. Với pipeline, kiểm mã thoát của mọi stage; với lỗi cú pháp hoặc thiếu chương trình, báo lỗi rồi quay lại vòng nhập. Các cấu trúc shell khác như >>, biến môi trường hay wildcard không thuộc parser này. Hiểu cách shell nối các lệnh giúp bạn tự động hoá những việc lặp lại của quán."
      }
     ]
    ],
@@ -165,5 +165,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 1,
+  "co": 0,
+  "bo": 1,
+  "loi": []
+ }
 }

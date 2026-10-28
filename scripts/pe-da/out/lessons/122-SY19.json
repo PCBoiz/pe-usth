@@ -3,13 +3,13 @@
  "sort_order": 122,
  "module": "M5 · Python ứng dụng, OOP và dữ liệu lưu trữ",
  "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
- "subtitle": "Trung cấp · M5 · 12 phút",
- "estimated_minutes": 12,
+ "subtitle": "Trung cấp · M5 · 13 phút",
+ "estimated_minutes": 13,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "SY19 · Nén dữ liệu với zlib, gzip, bz2 và lzma",
-  "subtitle": "Trung cấp · M5 · 12 phút",
+  "subtitle": "Trung cấp · M5 · 13 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#SY19",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
+      "text": "Cây thư mục của dự án quán đã rõ ở bài trước, giờ đến chỗ các file phình to. Một log lặp cùng mẫu hàng nghìn lần có thể được nén để giảm chỗ lưu. Điều đầu tiên cần kiểm là giải nén thu lại đúng bytes ban đầu:"
      },
      {
       "type": "code",
@@ -40,7 +40,47 @@
       "type": "code",
       "code": "import bz2, lzma\ndata = \"cà phê\".encode(\"utf8\")\nprint(bz2.decompress(bz2.compress(data)).decode(\"utf8\"))\nprint(lzma.decompress(lzma.compress(data)).decode(\"utf8\"))",
       "expected": "cà phê\ncà phê",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "data",
+        "prompt": "Sau khi chạy xong, `data` bằng mấy?",
+        "answer": "b'c\\xc3\\xa0 ph\\xc3\\xaa'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "bz2",
+           "<thư viện bz2>"
+          ],
+          [
+           "lzma",
+           "<thư viện lzma>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "data",
+           "b'c\\xc3\\xa0 ph\\xc3\\xaa'"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "out": "cà phê"
+        },
+        {
+         "line": 4,
+         "out": "cà phê"
+        }
+       ]
+      }
      }
     ],
     [
@@ -212,5 +252,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

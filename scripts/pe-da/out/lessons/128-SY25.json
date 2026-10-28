@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
+      "text": "Mọi thứ của chặng này nay gộp vào một bài thực hành nối tiếp nhau. Lớp có nhiều sinh viên và nhiều môn. Mỗi điểm phải gắn cả mã sinh viên lẫn mã môn; một danh sách điểm rời sẽ khó biết điểm thuộc về ai. Bắt đầu bằng cấu trúc dễ tra cứu:"
      },
      {
       "type": "code",
@@ -40,7 +40,133 @@
       "type": "code",
       "code": "def course_marks(students, marks, course_id):\n    return [(sid, students[sid][\"name\"], score) for (sid, cid), score in marks.items() if cid == course_id]\nstudents = {\"S01\": {\"name\": \"An\", \"dob\": \"2005-01-02\"}, \"S02\": {\"name\": \"Binh\", \"dob\": \"2005-02-03\"}}\nmarks = {(\"S01\", \"PY\"): 8, (\"S02\", \"PY\"): 0, (\"S01\", \"DB\"): 7}\nprint(course_marks(students, marks, \"PY\"))",
       "expected": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "cid",
+        "line": 2,
+        "prompt": "Ngay sau khi dòng 2 chạy, `cid` bằng mấy?",
+        "answer": "'PY'"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "course_marks",
+           "<hàm course_marks>"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "students",
+           "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "marks",
+           "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+          ]
+         ]
+        },
+        {
+         "line": 5
+        },
+        {
+         "line": 1,
+         "fn": "course_marks",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "course_id",
+           "'PY'"
+          ],
+          [
+           "marks",
+           "{('S01', 'PY'): 8, ('S02', 'PY'): 0, ('S01', 'DB'): 7}"
+          ],
+          [
+           "students",
+           "{'S01': {'name': 'An', 'dob': '2005-01-02'}, 'S02': {'name': 'Binh', 'd…"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "course_marks",
+         "depth": 1,
+         "set": [
+          [
+           "cid",
+           "'PY'"
+          ],
+          [
+           "score",
+           "8"
+          ],
+          [
+           "sid",
+           "'S01'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "course_marks",
+         "depth": 1,
+         "set": [
+          [
+           "score",
+           "0"
+          ],
+          [
+           "sid",
+           "'S02'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "course_marks",
+         "depth": 1,
+         "set": [
+          [
+           "cid",
+           "'DB'"
+          ],
+          [
+           "score",
+           "7"
+          ],
+          [
+           "sid",
+           "'S01'"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "course_marks",
+         "depth": 1
+        },
+        {
+         "line": 2,
+         "fn": "course_marks",
+         "depth": 1,
+         "ret": "[('S01', 'An', 8), ('S02', 'Binh', 0)]",
+         "out": "[('S01', 'An', 8), ('S02', 'Binh', 0)]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -52,7 +178,175 @@
       "type": "code",
       "code": "def read_student(ask):\n    sid = ask(\"Student id: \").strip()\n    name = ask(\"Name: \").strip()\n    dob = ask(\"DoB YYYY-MM-DD: \").strip()\n    if not sid or not name: raise ValueError(\"empty field\")\n    from datetime import datetime\n    datetime.strptime(dob, \"%Y-%m-%d\")\n    return sid, {\"name\": name, \"dob\": dob}\nanswers = iter([\"S01\", \"An\", \"2005-01-02\"])\nsid, info = read_student(lambda prompt: next(answers))\nprint(sid, info[\"name\"], info[\"dob\"])",
       "expected": "S01 An 2005-01-02",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "mid",
+        "var": "prompt",
+        "line": 10,
+        "prompt": "Ngay sau khi dòng 10 chạy, `prompt` bằng mấy?",
+        "answer": "'Student id: '"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "read_student",
+           "<hàm read_student>"
+          ]
+         ]
+        },
+        {
+         "line": 9,
+         "set": [
+          [
+           "answers",
+           "list_iterator: <list_iterator object>"
+          ]
+         ]
+        },
+        {
+         "line": 10
+        },
+        {
+         "line": 1,
+         "fn": "read_student",
+         "depth": 1,
+         "enter": true,
+         "set": [
+          [
+           "ask",
+           "<hàm <lambda>>"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "prompt",
+           "'Student id: '"
+          ]
+         ]
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "ret": "'S01'"
+        },
+        {
+         "line": 3,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "prompt",
+           "'Name: '"
+          ]
+         ]
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "ret": "'An'"
+        },
+        {
+         "line": 4,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "enter": true,
+         "set": [
+          [
+           "prompt",
+           "'DoB YYYY-MM-DD: '"
+          ]
+         ]
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2
+        },
+        {
+         "line": 10,
+         "fn": "<lambda>",
+         "depth": 2,
+         "ret": "'2005-01-02'"
+        },
+        {
+         "line": 5,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 6,
+         "fn": "read_student",
+         "depth": 1,
+         "set": [
+          [
+           "datetime",
+           "<lớp datetime>"
+          ]
+         ]
+        },
+        {
+         "line": 7,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 8,
+         "fn": "read_student",
+         "depth": 1
+        },
+        {
+         "line": 8,
+         "fn": "read_student",
+         "depth": 1,
+         "ret": "('S01', {'name': 'An', 'dob': '2005-01-02'})"
+        },
+        {
+         "line": 11,
+         "out": "S01 An 2005-01-02"
+        },
+        {
+         "line": 11,
+         "ret": "None"
+        }
+       ]
+      }
      },
      {
       "type": "paragraph",
@@ -151,5 +445,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 3,
+  "co": 2,
+  "bo": 1,
+  "loi": []
+ }
 }

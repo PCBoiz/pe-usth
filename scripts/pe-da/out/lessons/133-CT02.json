@@ -22,13 +22,49 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
+      "text": "Ở bài trước quán đã có hai lần thực thi cùng lúc. Bạn muốn chương trình con chạy với thư mục dữ liệu riêng. Trên Windows, CreateProcess nhận command line, environment, current directory và lựa chọn bInheritHandles; nó khởi tạo image của process, tạo thread ban đầu và trả thông tin/handle process, thread. Handle là tham chiếu tới tài nguyên của Windows; kế thừa handle quyết định những tài nguyên nào được chuyển cho con theo cấu hình. WinExec là API cũ đã được khuyến cáo thay. Đây là tên và chữ ký WinAPI/C trong slide, không phải các hàm Python để gọi như cú pháp thông thường."
      },
      {
       "type": "code",
       "code": "parent_pid, new_child_pid = 100, 101\nfork_returns = {\"parent\": new_child_pid, \"child\": 0}\nprint(fork_returns[\"parent\"], fork_returns[\"child\"])",
       "expected": "101 0",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "fork_returns",
+        "prompt": "Sau khi chạy xong, `fork_returns` bằng mấy?",
+        "answer": "{'parent': 101, 'child': 0}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "new_child_pid",
+           "101"
+          ],
+          [
+           "parent_pid",
+           "100"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "fork_returns",
+           "{'parent': 101, 'child': 0}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "out": "101 0"
+        }
+       ]
+      }
      }
     ],
     [
@@ -40,7 +76,43 @@
       "type": "code",
       "code": "process = {\"pid\": 101, \"program\": \"shell\"}\nprocess[\"program\"] = \"analysis\"\nprint(process[\"pid\"], process[\"program\"])",
       "expected": "101 analysis",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "process",
+        "prompt": "Sau khi chạy xong, `process` bằng mấy?",
+        "answer": "{'pid': 101, 'program': 'analysis'}"
+       },
+       "rows": [
+        {
+         "line": 1,
+         "set": [
+          [
+           "process",
+           "{'pid': 101, 'program': 'shell'}"
+          ]
+         ]
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "process",
+           "{'pid': 101, 'program': 'analysis'}"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "out": "101 analysis"
+        },
+        {
+         "line": 3,
+         "ret": "None"
+        }
+       ]
+      }
      }
     ],
     [
@@ -55,7 +127,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng subprocess để thực hành trên cả Windows và UNIX."
+      "text": "Cha có thể wait để thu trạng thái kết thúc của con. Trong ví dụ thật này, process con thoát với mã 3; wait và poll sau khi kết thúc đều cho mã đó. Trên UNIX, kết hợp fork/exec/wait là nền tảng của shell; bài Python sẽ dùng subprocess để thực hành trên cả Windows và UNIX. Quán của bạn sẽ gọi những lệnh này khi cần chạy một việc nền."
      }
     ]
    ],
@@ -176,5 +248,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 2,
+  "co": 2,
+  "bo": 0,
+  "loi": []
+ }
 }

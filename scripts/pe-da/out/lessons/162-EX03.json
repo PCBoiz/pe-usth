@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
+      "text": "Môi trường riêng cho quán đã tạo ở bài trước, nhưng lệnh mở notebook có thể trỏ sai chỗ. Bạn đã tạo môi trường cho dự án, nhưng lệnh jupyter mở một Python khác. Hãy kiểm tra interpreter đang chạy trước khi cài thêm package. sys.executable cho đường dẫn Python của tiến trình hiện tại; nó hữu ích hơn việc đoán dựa vào tên một cửa sổ terminal."
      },
      {
       "type": "code",
@@ -52,6 +52,10 @@
       "code": "roles = {\"IPython\":\"execution\", \"ZeroMQ\":\"messages\", \"Tornado\":\"web\", \"MathJax\":\"math display\", \"jQuery\":\"historical UI\", \"Bootstrap\":\"historical UI\"}\nprint(roles[\"IPython\"])\nprint(roles[\"ZeroMQ\"])\nprint(roles[\"MathJax\"])",
       "expected": "execution\nmessages\nmath display",
       "tryIt": true
+     },
+     {
+      "type": "paragraph",
+      "text": "Khi sổ của quán chạy sai vì cài nhầm chỗ, đây là nơi bạn xem trước."
      }
     ]
    ],
@@ -152,5 +156,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 2,
+  "co": 0,
+  "bo": 2,
+  "loi": []
+ }
 }

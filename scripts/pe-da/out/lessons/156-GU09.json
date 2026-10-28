@@ -3,13 +3,13 @@
  "sort_order": 156,
  "module": "M8 · Tkinter: từ form nhỏ đến quản lý điểm",
  "title": "GU09 · Place: vị trí tuyệt đối và tương đối",
- "subtitle": "Trung cấp · M8 · 13 phút",
- "estimated_minutes": 13,
+ "subtitle": "Trung cấp · M8 · 14 phút",
+ "estimated_minutes": 14,
  "xp_reward": 8,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "GU09 · Place: vị trí tuyệt đối và tương đối",
-  "subtitle": "Trung cấp · M8 · 13 phút",
+  "subtitle": "Trung cấp · M8 · 14 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#GU09",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một nhãn trạng thái cần nằm ở góc của vùng xem trước. place cho bạn chỉ rõ tọa độ hoặc tỉ lệ của vùng cha, nhưng form nhiều chữ thường dễ bố trí hơn bằng grid."
+      "text": "Cách xếp lần lượt ở bài trước không đặt được một ô vào đúng góc. Một nhãn trạng thái cần nằm ở góc của vùng xem trước. place cho bạn chỉ rõ tọa độ hoặc tỉ lệ của vùng cha, nhưng form nhiều chữ thường dễ bố trí hơn bằng grid."
      },
      {
       "type": "code",
@@ -172,5 +172,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "khong co"
+ "_bai_tap": "khong co",
+ "_vet": {
+  "can": 0,
+  "co": 0,
+  "bo": 0,
+  "loi": []
+ }
 }

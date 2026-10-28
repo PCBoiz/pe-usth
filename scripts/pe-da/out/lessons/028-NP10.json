@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Cuối ba ngày, bạn cần biết cả hai cửa hàng đã bán tổng cộng bao nhiêu cốc. Vì chưa cần tách theo ngày hoặc cửa hàng, hãy cộng tất cả ô trong bảng:"
+      "text": "Lấy được từng ô rồi, bước tiếp là cộng cả bảng để biết quán bán bao nhiêu cốc. Cuối ba ngày, bạn cần biết cả hai cửa hàng đã bán tổng cộng bao nhiêu cốc. Vì chưa cần tách theo ngày hoặc cửa hàng, hãy cộng tất cả ô trong bảng:"
      },
      {
       "type": "code",
@@ -229,5 +229,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }

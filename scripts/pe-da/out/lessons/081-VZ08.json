@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một bảng đếm có hai cửa hàng và ba khung giờ. Heatmap biến mỗi ô thành một màu để bạn tìm giờ đông khách. imshow nhận array hai chiều; hàng và cột vẫn cần nhãn để biết ô màu đang nói về cửa hàng và giờ nào."
+      "text": "Hai nhóm so được rồi, nhưng bảng của quán có cả quầy lẫn khung giờ. Một bảng đếm có hai cửa hàng và ba khung giờ. Heatmap biến mỗi ô thành một màu để bạn tìm giờ đông khách. imshow nhận array hai chiều; hàng và cột vẫn cần nhãn để biết ô màu đang nói về cửa hàng và giờ nào."
      },
      {
       "type": "code",
@@ -45,7 +45,136 @@
       "type": "code",
       "code": "import matplotlib.pyplot as plt\nfig, ax = plt.subplots(figsize=(6, 3.5), layout=\"constrained\")\nimport numpy as np\ncounts = np.array([[2, 5], [4, 1]])\nim = ax.imshow(counts, cmap=\"Blues\", vmin=0, vmax=6)\nfor (row, col), value in np.ndenumerate(counts):\n    ax.text(col, row, str(value), ha=\"center\", va=\"center\", color=\"black\")\nax.set(xticks=[0, 1], xticklabels=[\"Morning\", \"Noon\"], yticks=[0, 1], yticklabels=[\"A\", \"B\"], title=\"Read the count in each cell\")\nfig.colorbar(im, ax=ax, label=\"Orders\")\nprint(int(counts.sum()))\nplt.show()",
       "expected": "12",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "count",
+        "line": 7,
+        "prompt": "Dòng 7 chạy bao nhiêu lần?",
+        "answer": "4"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2
+        },
+        {
+         "line": 3
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "counts",
+           "ndarray: array([[2, 5], [4, 1]])"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "im",
+           "AxesImage(_extent=[-0.5, 1.5, 1.5, -0.5], _stale=True, stale_callback=<…"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "col",
+           "0"
+          ],
+          [
+           "row",
+           "0"
+          ],
+          [
+           "value",
+           "int64: np.int64(2)"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "col",
+           "1"
+          ],
+          [
+           "value",
+           "int64: np.int64(5)"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "col",
+           "0"
+          ],
+          [
+           "row",
+           "1"
+          ],
+          [
+           "value",
+           "int64: np.int64(4)"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 6,
+         "set": [
+          [
+           "col",
+           "1"
+          ],
+          [
+           "value",
+           "int64: np.int64(1)"
+          ]
+         ]
+        },
+        {
+         "line": 7
+        },
+        {
+         "line": 6
+        },
+        {
+         "line": 6,
+         "exc": "StopIteration:"
+        },
+        {
+         "line": 8
+        },
+        {
+         "line": 9
+        },
+        {
+         "line": 10,
+         "out": "12"
+        },
+        {
+         "line": 11
+        }
+       ]
+      }
      },
      {
       "type": "figure",
@@ -255,5 +384,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

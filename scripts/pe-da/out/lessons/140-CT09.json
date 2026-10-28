@@ -3,13 +3,13 @@
  "sort_order": 140,
  "module": "M6 · Hệ điều hành, tiến trình và đa luồng",
  "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
- "subtitle": "Nâng cao · M6 · 21 phút",
- "estimated_minutes": 21,
+ "subtitle": "Nâng cao · M6 · 22 phút",
+ "estimated_minutes": 22,
  "xp_reward": 13,
  "content_json": {
   "schema": "studio-lesson/v2",
   "title": "CT09 · Thread dùng chung gì, giữ riêng gì?",
-  "subtitle": "Nâng cao · M6 · 21 phút",
+  "subtitle": "Nâng cao · M6 · 22 phút",
   "source": {
    "kind": "python-da",
    "filename": "course.json#CT09",
@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
+      "text": "Ở bài trước mỗi lệnh gọi tạo thêm một lần thực thi riêng, và bên trong nó còn chia nhỏ được nữa. Một ứng dụng đọc file lâu nhưng vẫn cần nhận thao tác từ người dùng. Bạn có thể đặt việc đọc vào một thread khác. Thread là một luồng thực thi thuộc process; nhiều thread có thể cùng tiến triển trong một chương trình."
      },
      {
       "type": "code",
@@ -54,7 +54,7 @@
      },
      {
       "type": "paragraph",
-      "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide."
+      "text": "Dòng đầu mô phỏng concurrency trên một core: A và B xen kẽ theo thời gian. Hai core có khả năng chạy hai việc cùng lúc, gọi là parallelism. Có nhiều thread chưa chứng minh chúng đang chạy song song: còn tùy OS scheduler, interpreter và công việc cụ thể. EX05 giải thích thêm giới hạn GIL (khoá chỉ cho một thread chạy bytecode Python) trong CPython. RC01 đọc các sơ đồ Apache và Chromium của slide. Quán cần nó để màn hình vẫn nhận đơn lúc đang lưu sổ."
      }
     ]
    ],
@@ -236,5 +236,11 @@
   }
  ],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 1,
+  "co": 0,
+  "bo": 1,
+  "loi": []
+ }
 }

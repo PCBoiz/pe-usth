@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Phân tích khám phá dữ liệu, thường gọi là EDA, bắt đầu từ câu hỏi bạn muốn trả lời. Ở đây, bạn muốn so sánh giá trị đơn giữa hai kênh bán. Trước khi tính hoặc vẽ, cần xác định mỗi hàng là một đơn hay chỉ là một sản phẩm trong đơn; đếm nhầm đơn sẽ làm lệch kết quả so sánh."
+      "text": "Quy trình làm sạch đã chạy được rồi, giờ bạn hỏi bảng của quán một câu thật. Phân tích khám phá dữ liệu, thường gọi là EDA, bắt đầu từ câu hỏi bạn muốn trả lời. Ở đây, bạn muốn so sánh giá trị đơn giữa hai kênh bán. Trước khi tính hoặc vẽ, cần xác định mỗi hàng là một đơn hay chỉ là một sản phẩm trong đơn; đếm nhầm đơn sẽ làm lệch kết quả so sánh."
      },
      {
       "type": "code",
@@ -40,7 +40,68 @@
       "type": "code",
       "code": "import pandas as pd\namount = pd.Series([10, 11, 12, 13, 100])\nq1, q3 = amount.quantile([0.25, 0.75])\niqr = q3 - q1\nflag = (amount < q1 - 1.5 * iqr) | (amount > q3 + 1.5 * iqr)\nprint(q1, q3)\nprint(amount.loc[flag].tolist())",
       "expected": "11.0 13.0\n[100]",
-      "tryIt": true
+      "tryIt": true,
+      "trace": {
+       "predict": {
+        "kind": "final",
+        "var": "iqr",
+        "prompt": "Sau khi chạy xong, `iqr` bằng mấy?",
+        "answer": "2.0"
+       },
+       "rows": [
+        {
+         "line": 1
+        },
+        {
+         "line": 2,
+         "set": [
+          [
+           "amount",
+           "Series(_mgr=SingleBlockManager(axes=[RangeIndex(_range=range: range(0, …"
+          ]
+         ]
+        },
+        {
+         "line": 3,
+         "set": [
+          [
+           "q1",
+           "11.0"
+          ],
+          [
+           "q3",
+           "13.0"
+          ]
+         ]
+        },
+        {
+         "line": 4,
+         "set": [
+          [
+           "iqr",
+           "2.0"
+          ]
+         ]
+        },
+        {
+         "line": 5,
+         "set": [
+          [
+           "flag",
+           "Series(_mgr=SingleBlockManager(axes=[RangeIndex(_range=range: range(0, …"
+          ]
+         ]
+        },
+        {
+         "line": 6,
+         "out": "11.0 13.0"
+        },
+        {
+         "line": 7,
+         "out": "[100]"
+        }
+       ]
+      }
      }
     ],
     [
@@ -244,5 +305,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 1,
+  "bo": 2,
+  "loi": []
+ }
 }

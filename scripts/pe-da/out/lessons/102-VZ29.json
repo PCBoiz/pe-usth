@@ -22,7 +22,7 @@
     [
      {
       "type": "paragraph",
-      "text": "Nếu dữ liệu là hướng di chuyển, một giá trị màu không đủ cho biết hướng. arrow vẽ một mũi tên đơn, quiver vẽ các vector tại nhiều vị trí, còn streamplot thể hiện các đường đi theo trường vector. Cần phân biệt vị trí bắt đầu với thành phần vector theo x và y."
+      "text": "Lưới ô vừa dựng ở bài trước chỉ nói độ lớn, không nói hướng. Nếu dữ liệu là hướng di chuyển, một giá trị màu không đủ cho biết hướng. arrow vẽ một mũi tên đơn, quiver vẽ các vector tại nhiều vị trí, còn streamplot thể hiện các đường đi theo trường vector. Cần phân biệt vị trí bắt đầu với thành phần vector theo x và y."
      },
      {
       "type": "code",
@@ -267,5 +267,11 @@
  "_mode": "pyodide",
  "_blocked": [],
  "_so_mcq": 3,
- "_bai_tap": "cham"
+ "_bai_tap": "cham",
+ "_vet": {
+  "can": 3,
+  "co": 0,
+  "bo": 3,
+  "loi": []
+ }
 }
