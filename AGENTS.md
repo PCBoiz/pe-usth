@@ -48,11 +48,11 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Hạng mục | Mốc |
 |---|---|
 | Backend typecheck | sạch |
-| Backend test | **30 bộ, 363 ca**, tất cả đạt |
+| Backend test | **31 bộ, 383 ca**, tất cả đạt |
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **295 ca** / 23 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **310 ca** / 24 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
 | Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 352 phút; 131 bài chạy trong trình duyệt / 14 hỗn hợp / 27 trên máy |
@@ -69,13 +69,14 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 295 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
-catalog-duration 2 · catalog-naming 3 · editor-load-gate 14 · feedback-link 9 · forum-xss 1 ·
-ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 ·
-ide-trace 38 · label-version 2 · learning-events 48 · lesson-load 7 · mcq-code 9 ·
-practice-contract 14 · prewarm-gate 5 · read-try-it 20 · session-marker 5 ·
-studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 295.
-Mốc trước là 231; thêm learning-events 48, mcq-code 9 và tracer-limits 7.
+**Con số 310 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+catalog-duration 2 · catalog-naming 3 · consent-banner 15 · editor-load-gate 14 ·
+feedback-link 9 · forum-xss 1 · ide-brief-code 12 · ide-handoff 6 · ide-partial-output 10 ·
+ide-stop-autosave 27 · ide-trace 38 · label-version 2 · learning-events 48 · lesson-load 7 ·
+mcq-code 9 · practice-contract 14 · prewarm-gate 5 · read-try-it 20 · session-marker 5 ·
+studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 310.
+Mốc trước là 295; thêm consent-banner 15.
+Trước đó 231 → 295 là learning-events 48, mcq-code 9 và tracer-limits 7.
 Trước đó 211 → 231 là read-try-it 20 (nút "Try it Yourself" ở màn đọc — xem bẫy dưới),
 và 196 → 211 là practice-contract 14 và studio-lesson 40 → 41.
 
@@ -508,6 +509,45 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   **Fixture của `ide-trace.test.mjs` CỐ Ý không khớp hằng thật** (`timeBudgetMs: 6500`):
   đó là thứ duy nhất chứng minh `stopNotice` lấy số từ `doc.limits`. Fixture trùng hằng
   thật thì một bản ghi cứng "4 giây" cũng ĐẠT. Đừng "sửa cho khớp".
+- **Lớp ghi nhật ký lần thử: cổng duy nhất của nó từng ở CLIENT, và cổng ở client không
+  phải bằng chứng đồng ý.** `let dongY = false` trong `frontend/src/lib/learning-events.ts`
+  không nói được ai đã đồng ý / lúc nào / với ĐIỀU GÌ, nó mất cùng localStorage, và nó
+  không chặn được một request gửi tay — trong khi `record()` ở máy chủ nhận lô nào cũng
+  ghi. Dữ liệu theo dõi hành vi là dữ liệu **NHẠY CẢM** theo Luật 91/2025 + Nghị định
+  356/2025, và Điều 9(4) nói nguyên văn *"sự im lặng hoặc không phản hồi không được coi là
+  sự đồng ý"*. Nay cổng thật nằm ở `record()`: nó đọc `learning_event_consents` trước khi
+  ghi một hàng nào, và trả **202 kèm `refused: 'no-consent'`** chứ không 403 — lớp này là
+  ghi-rồi-quên, frontend `.catch()` nuốt mọi lỗi nên một 403 biến mất không dấu vết, còn
+  một trường trong body thì log HTTP và bộ test còn đọc được.
+  **Cột `version` là thứ dễ bỏ nhất, và bỏ nó thì sai IM LẶNG.** Sự đồng ý luôn là đồng ý
+  với MỘT bản mô tả ("ghi 10 loại sự kiện này, giữ 90 ngày"). Ngày ai đó thêm loại thứ 11
+  hoặc nâng `HAN_LUU_NGAY`, bản ghi cũ không còn phủ việc đang làm — nhưng hàng vẫn
+  `granted = true`, lớp ghi vẫn chạy, và dự án thu thập thứ chưa ai đồng ý cho. Không
+  ngoại lệ nào được ném. Nên `conHieuLuc()` trả false khi phiên bản lệch **theo CẢ HAI
+  chiều** (kể cả phiên bản MỚI hơn — một hàng mang phiên bản mã này chưa biết nghĩa là DB
+  đã bị một bản deploy khác ghi vào), và một ca GHIM cặp (`PHIEN_BAN_DONG_Y`,
+  `dauAnPhamVi()`) đỏ kèm câu dặn khi phạm vi đổi. Dấu ấn tính trên danh sách ĐÃ SẮP, nên
+  đổi thứ tự khai không bắt người học đồng ý lại.
+  **`canHoiLai()` KHÁC `!conHieuLuc()`, và gộp chúng là một lỗi về luật.** Người đã TỪ CHỐI
+  thì không ghi, nhưng cũng **không hỏi lại** — một hộp hiện lại mỗi lần mở bài là ép đồng ý
+  bằng sự mệt mỏi, tức sự đồng ý đó không còn tự nguyện. Nhưng phiên bản MỚI thì hỏi lại cả
+  người đã từ chối, vì câu trả lời cũ không phải câu trả lời cho câu hỏi mới.
+  **Ba thứ trong `ConsentBanner.tsx` là YÊU CẦU, không phải thẩm mỹ**, và `consent-banner.test.mjs`
+  khoá cả ba: hai nút CÙNG class/cùng cỡ (`flex: 1`) — làm nút "Đồng ý" nổi hơn là lấy sự
+  đồng ý bằng ma sát; KHÔNG có nút đóng và không tự tắt; `aria-modal={false}` — chặn bài học
+  để lấy đồng ý là cưỡng chế. Nguyên văn nằm ở `MO_TA_PHAM_VI` trong `log-consent.ts`,
+  CẠNH phiên bản nó mô tả, và một ca đọc cả hai cây mã để so số ngày trong hộp với
+  `HAN_LUU_NGAY` ở backend — hộp nói 90 mà backend giữ 365 là sự đồng ý lấy bằng thông tin
+  sai, và đó là phép so duy nhất bắt được nó.
+  **Lượt đọc trạng thái phải nằm TRONG `Promise.all` của `useLessonData`, không muộn hơn
+  `datBoiCanhBai`.** `ghi()` **BỎ** sự kiện khi cổng còn đóng chứ không xếp hàng, nên cổng
+  mở sau là mất hẳn `X-Lesson.Open` của lượt đó — câu SQL drop-off đếm thiếu đúng lượt mở
+  bài ĐẦU TIÊN của mỗi người. Ca cũ `lesson-load.test.mjs` ghim ĐÚNG BA nhánh đã bắt được
+  nhánh thứ tư này; nó được sửa thành ghim BỐN, **không** nới thành "bao nhiêu cũng được".
+  Ablate: gỡ `conHieuLuc` khỏi `record()` → 5 đỏ; thôi so `version` → 3; thôi hỏi lại khi
+  phiên bản đổi → 1; mười mảnh phía frontend mỗi mảnh 1 đỏ.
+  **Lớp này vẫn TẮT cho tới khi người học bấm.** Mặc định là không ghi gì, và không có biến
+  môi trường nào bật được — đừng thêm một cái.
 - **Request API ĐẦU TIÊN sau lúc máy chủ nghỉ mất hơn 25 giây, và trang không nói gì.**
   Đo trên production 25/10/2026: lượt đầu >25 s (Render + Neon thức dậy), các lượt sau 300 ms.
   Suốt quãng đó `StudioLesson` chỉ hiện "Đang tải bài học…" — không một chữ nào nói vì sao,
