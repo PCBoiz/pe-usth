@@ -15,10 +15,13 @@ export const metadata: Metadata = {
   description:
     'Programming EDU — học lập trình Python, Java, HTML/CSS và thiết kế cơ sở dữ liệu '
     + 'bằng bài tập chạy ngay trong trình duyệt, có chấm tự động và theo dõi tiến độ.',
-  icons: {
-    // favicon rocket 🚀 y hệt base.html
-    icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E",
-  },
+  // KHÔNG khai `icons` ở đây. Biểu tượng nay là `src/app/icon.svg` — quy ước
+  // FILE của App Router, và quy ước file THẮNG `metadata.icons`. Dòng cũ khai
+  // một tên lửa 🚀 bằng data URI và nó chưa bao giờ hiện ra, vì
+  // `src/app/favicon.ico` (bản mặc định của create-next-app — tam giác Vercel)
+  // đứng trên nó. Người thử ngày 27/10 nhìn ra ngay: "Favicon hình như là
+  // default của Vercel". File .ico đó đã xoá; khai lại `icons` ở đây là dựng
+  // lại đúng cái lớp đè đã gây ra chuyện này.
 };
 
 const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
