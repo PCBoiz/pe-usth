@@ -72,6 +72,11 @@ export const envValidationSchema = Joi.object({
   // chung NAT ăn hết — xem learning-events.controller.ts để biết vì sao 600.
   THROTTLE_EVENTS_LIMIT: throttleLimit(600),
   THROTTLE_EVENTS_TTL_SECONDS: throttleTtl(3600),
+  // Quyết định đồng ý ghi nhật ký (POST /api/events/consent). Chặt hơn HẲN vì
+  // nó là một lượt bấm nút của người thật, nhưng nó GHI vào một bảng
+  // append-only không có khoá unique — xem learning-events.controller.ts.
+  THROTTLE_CONSENT_LIMIT: throttleLimit(20),
+  THROTTLE_CONSENT_TTL_SECONDS: throttleTtl(3600),
   // Chu kỳ quét key hết hạn của FixedWindowThrottlerStorage; 0/NaN làm
   // setInterval chạy liên tục hoặc không bao giờ dọn.
   THROTTLE_SWEEP_INTERVAL_MS: Joi.number()

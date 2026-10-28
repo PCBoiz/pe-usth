@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 
+import { PHIEN_BAN_DONG_Y } from './learning-event-consent';
 import { GIOI_HAN } from './learning-event-kinds';
 import { LearningEventsService } from './learning-events.service';
 
@@ -34,8 +35,24 @@ type CreateManyArg = {
   skipDuplicates?: boolean;
 };
 
+/**
+ * Đối số thật của phép đọc bản ghi đồng ý. Khai kiểu để ca "đọc theo
+ * `created_at`, không theo `id`" chứng minh được điều nó nói: hai hàng của cùng
+ * một người vào trong cùng một millisecond thì thứ tự phải theo THỜI ĐIỂM
+ * QUYẾT, và `id` chỉ tình cờ cùng thứ tự hôm nay.
+ */
+type ConsentFindArg = {
+  where: { userId: number };
+  orderBy: { createdAt: 'desc' } | { id: 'desc' };
+  select?: Record<string, boolean>;
+};
+
 type PrismaMock = {
   learningEvent: { createMany: AsyncMock<[CreateManyArg]> };
+  learningEventConsent: {
+    findFirst: AsyncMock<[ConsentFindArg]>;
+    create: AsyncMock<[{ data: Record<string, unknown> }]>;
+  };
 };
 
 let demEid = 0;
@@ -80,6 +97,22 @@ describe('LearningEventsService.record', () => {
         createMany: asyncMock<[CreateManyArg]>().mockResolvedValue({
           count: 0,
         }),
+      },
+      learningEventConsent: {
+        // MẶC ĐỊNH LÀ ĐÃ ĐỒNG Ý, và `version` lấy từ hằng THẬT chứ không một
+        // chuỗi gõ tay: gõ tay thì ngày `PHIEN_BAN_DONG_Y` đổi, mọi ca ở đây
+        // lặng lẽ rơi vào nhánh "chưa đồng ý" và đo một đường đi khác hẳn mà
+        // vẫn xanh ở phần lớn các assert. Đúng họ bẫy fixture mà AGENTS.md ghi.
+        //
+        // Ca kiểm chính cái cổng này thì tự đặt lại mock — xem describe
+        // 'cổng đồng ý' ở dưới.
+        findFirst: asyncMock<[ConsentFindArg]>().mockResolvedValue({
+          granted: true,
+          version: PHIEN_BAN_DONG_Y,
+        }),
+        create: asyncMock<
+          [{ data: Record<string, unknown> }]
+        >().mockResolvedValue({ id: 1 }),
       },
     };
     const mod = await Test.createTestingModule({
@@ -238,5 +271,157 @@ describe('LearningEventsService.record', () => {
       BadRequestException,
     );
     expect(prisma.learningEvent.createMany).not.toHaveBeenCalled();
+  });
+});
+
+/**
+ * CỔNG ĐỒNG Ý Ở MÁY CHỦ.
+ *
+ * Trước bản này, cổng duy nhất là `let dongY = false` trong
+ * `frontend/src/lib/learning-events.ts` — tức ở client. `record()` nhận lô nào
+ * cũng ghi. Một cổng ở client không nói được ai đã đồng ý/lúc nào/với điều gì,
+ * nó mất cùng localStorage, và nó không chặn được một request gửi tay.
+ *
+ * Bằng chứng ba mảnh của cổng này đều CHỊU LỰC, không phải nhánh trang trí —
+ * đã ablate và ĐẾM:
+ *   · gỡ phép kiểm `conHieuLuc` khỏi `record()`        → **5 ca đỏ**;
+ *   · `conHieuLuc` thôi so `version`                   → **3 ca đỏ**;
+ *   · `canHoiLai` thôi hỏi lại khi phiên bản đổi       → **1 ca đỏ**.
+ * Và chính việc THÊM cổng đã làm 11 ca cũ đỏ cho tới khi mock có
+ * `learningEventConsent` — nó nằm trên đường đi chính của mọi lô, không ở một
+ * nhánh rẽ.
+ */
+describe('LearningEventsService — cổng đồng ý', () => {
+  let service: LearningEventsService;
+  let prisma: PrismaMock;
+
+  function datDongY(ban: { granted: boolean; version: string } | null) {
+    prisma.learningEventConsent.findFirst.mockResolvedValue(ban);
+  }
+
+  beforeEach(async () => {
+    prisma = {
+      learningEvent: {
+        createMany: asyncMock<[CreateManyArg]>().mockResolvedValue({
+          count: 1,
+        }),
+      },
+      learningEventConsent: {
+        findFirst: asyncMock<[ConsentFindArg]>().mockResolvedValue(null),
+        create: asyncMock<
+          [{ data: Record<string, unknown> }]
+        >().mockResolvedValue({ id: 1 }),
+      },
+    };
+    const mod = await Test.createTestingModule({
+      providers: [
+        LearningEventsService,
+        { provide: PrismaService, useValue: prisma },
+      ],
+    }).compile();
+    service = mod.get(LearningEventsService);
+    jest.spyOn(service['logger'], 'warn').mockImplementation(() => undefined);
+  });
+
+  it('CHƯA đồng ý -> KHÔNG ghi một hàng nào, và nói ra bằng `refused`', async () => {
+    datDongY(null);
+    const res = await service.record(7, [suKien(), suKien()]);
+
+    expect(prisma.learningEvent.createMany).not.toHaveBeenCalled();
+    expect(res.refused).toBe('no-consent');
+    // Hai sự kiện phải được đếm vào `dropped`, không biến mất khỏi mọi con số:
+    // `accepted 0 / dropped 0` đọc ra là "lô rỗng", một câu nói sai về chuyện
+    // vừa xảy ra — và nó là con số duy nhất log HTTP giữ lại.
+    expect(res.dropped).toBe(2);
+    expect(res.accepted).toBe(0);
+  });
+
+  it('đã RÚT LẠI -> KHÔNG ghi, dù trước đó từng đồng ý', async () => {
+    // Trạng thái hiện tại là hàng MỚI NHẤT, nên một hàng `granted: false` sau
+    // một hàng `granted: true` phải tắt lớp ghi. Bảng append-only làm chuyện
+    // này đọc được; một cột bị ghi đè thì không.
+    datDongY({ granted: false, version: PHIEN_BAN_DONG_Y });
+    const res = await service.record(7, [suKien()]);
+
+    expect(prisma.learningEvent.createMany).not.toHaveBeenCalled();
+    expect(res.refused).toBe('no-consent');
+  });
+
+  it('đồng ý với phiên bản CŨ -> KHÔNG ghi', async () => {
+    // Mở rộng phạm vi thu thập không được chạy dưới sự đồng ý cũ. Đây là nửa
+    // THI HÀNH của luật phiên bản; nửa còn lại là ca ghim dấu ấn trong
+    // learning-event-consent.spec.ts.
+    datDongY({ granted: true, version: '2026-01-01' });
+    const res = await service.record(7, [suKien()]);
+
+    expect(prisma.learningEvent.createMany).not.toHaveBeenCalled();
+    expect(res.refused).toBe('no-consent');
+  });
+
+  it('đã đồng ý ĐÚNG phiên bản -> ghi bình thường, không có `refused`', async () => {
+    datDongY({ granted: true, version: PHIEN_BAN_DONG_Y });
+    const res = await service.record(7, [suKien()]);
+
+    expect(prisma.learningEvent.createMany).toHaveBeenCalledTimes(1);
+    expect(res.refused).toBeUndefined();
+    expect(res.accepted).toBe(1);
+  });
+
+  it('đọc bản ghi theo `created_at` DESC, không theo `id`', async () => {
+    // Hai hàng của cùng một người có thể vào trong cùng một millisecond (bấm
+    // đúp), và thứ tự phải theo THỜI ĐIỂM QUYẾT. `id` tình cờ cùng thứ tự hôm
+    // nay — "tình cờ đúng" là thứ sẽ lệch ngày ai đó nhập dữ liệu cũ vào bảng.
+    // Và đây cũng là hình dạng mà `idx_log_consents_user_created` phủ.
+    datDongY({ granted: true, version: PHIEN_BAN_DONG_Y });
+    await service.record(7, [suKien()]);
+
+    const arg = prisma.learningEventConsent.findFirst.mock.calls[0][0];
+    expect(arg.orderBy).toEqual({ createdAt: 'desc' });
+    expect(arg.where).toEqual({ userId: 7 });
+  });
+
+  it('CHỈ MỘT vòng DB cho phép kiểm đồng ý, dù lô có bao nhiêu sự kiện', async () => {
+    // Giá của cổng này là một vòng DB mỗi LÔ. Nếu nó thành một vòng mỗi SỰ KIỆN
+    // thì ở nhịp dày nhất (20 sự kiện/lô, ~237 ms round-trip tới Neon) đó là
+    // ~4,7 giây giữ một connection — đúng cái giá mà `createMany` được chọn để
+    // tránh. Ca này khoá chỗ đó.
+    datDongY({ granted: true, version: PHIEN_BAN_DONG_Y });
+    await service.record(7, [suKien(), suKien(), suKien(), suKien()]);
+
+    expect(prisma.learningEventConsent.findFirst).toHaveBeenCalledTimes(1);
+  });
+
+  it('`ghiDongY` THÊM hàng, không cập nhật, và phiên bản do MÁY CHỦ đặt', async () => {
+    // `version` không nhận từ body: nếu nhận thì một client cũ ghi được "đã
+    // đồng ý với phiên bản hiện hành" trong khi hộp nó hiện ra là bản mô tả CŨ
+    // — bản ghi nói sai về điều người học thật sự đã đọc, đúng cái mà cột này
+    // tồn tại để nói đúng.
+    datDongY({ granted: true, version: PHIEN_BAN_DONG_Y });
+    await service.ghiDongY(7, true);
+
+    expect(prisma.learningEventConsent.create).toHaveBeenCalledTimes(1);
+    expect(prisma.learningEventConsent.create.mock.calls[0][0].data).toEqual({
+      userId: 7,
+      granted: true,
+      version: PHIEN_BAN_DONG_Y,
+    });
+  });
+
+  it('`trangThaiDongY` phân biệt "không được ghi" với "phải hỏi"', async () => {
+    // Người đã từ chối: không ghi, nhưng KHÔNG hỏi lại. Gộp hai câu này thành
+    // một là hiện lại hộp mỗi lần mở bài, tức ép đồng ý bằng sự mệt mỏi.
+    datDongY({ granted: false, version: PHIEN_BAN_DONG_Y });
+    expect(await service.trangThaiDongY(7)).toEqual({
+      granted: false,
+      shouldAsk: false,
+      version: PHIEN_BAN_DONG_Y,
+    });
+
+    datDongY(null);
+    expect(await service.trangThaiDongY(7)).toEqual({
+      granted: false,
+      shouldAsk: true,
+      version: PHIEN_BAN_DONG_Y,
+    });
   });
 });

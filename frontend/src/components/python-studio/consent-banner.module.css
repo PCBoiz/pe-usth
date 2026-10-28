@@ -1,0 +1,94 @@
+/* Hộp xin đồng ý ghi nhật ký. Dùng cùng bộ biến màu với studio-chrome.module.css
+   (--edu-*, --st-*) nên nó đi theo theme sáng/tối mà không cần khai lại. */
+
+.hop {
+  background: var(--edu-panel-bg-solid);
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  color: var(--edu-t2);
+}
+
+.tieuDe {
+  margin: 0 0 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--edu-t1);
+}
+
+.dungDeLam {
+  margin: 0 0 14px;
+}
+
+/* Hai cột trên màn rộng, xếp dọc trên điện thoại. Cột "KHÔNG ghi" phải nằm
+   ngang hàng với cột "ghi lại", không nhỏ hơn và không ở dưới cùng: nó là nửa
+   mà người đọc cần thấy nhất, và đặt nó dưới đáy là chôn nó. */
+.haiCot {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+@media (max-width: 560px) {
+  .haiCot {
+    grid-template-columns: 1fr;
+  }
+}
+
+.nhan {
+  margin: 0 0 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--edu-t3);
+}
+
+.danh {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+}
+
+.khong {
+  color: var(--edu-t2);
+}
+
+.phu {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--edu-t3);
+}
+
+/* Hai nút cùng cỡ, cùng độ nổi — yêu cầu, không phải thẩm mỹ: xem lý do 1 ở
+   đầu ConsentBanner.tsx. Nếu ai đổi một trong hai thành nút nhấn (màu nền
+   đậm, chữ trắng) thì ca test `consent-banner.test.mjs` sẽ đỏ. */
+.nut {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.chon {
+  flex: 1;
+  padding: 9px 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 8px;
+  background: var(--edu-card-bg);
+  color: var(--edu-t1);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.chon:hover:not(:disabled) {
+  border-color: var(--edu-t3);
+}
+
+.chon:disabled {
+  opacity: 0.6;
+  cursor: default;
+}

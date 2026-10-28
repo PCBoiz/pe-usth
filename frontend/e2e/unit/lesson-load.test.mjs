@@ -65,12 +65,28 @@ test('thứ không phải Error thì trả false, không ném', () => {
   }
 });
 
-test('ba lượt gọi lúc mở bài nằm trong MỘT Promise.all', () => {
+test('BỐN lượt gọi lúc mở bài nằm trong MỘT Promise.all', () => {
   // Quay về `await` nối đuôi nhau là mất 2,4 giây mà không có gì đỏ.
-  const m = /const \[profile, enrolledBody, contentDau\] = await Promise\.all\(\[([\s\S]*?)\]\);/
+  //
+  // Ca này từng ghim ĐÚNG BA nhánh, và nó đã làm việc của nó: lượt thứ tư
+  // (`napTrangThaiDongY` — trạng thái đồng ý ghi nhật ký, 28/10) làm nó ĐỎ. Nên
+  // nó được sửa thành ghim BỐN, không nới thành "bao nhiêu cũng được" — một ca
+  // chấp nhận mọi số nhánh thì không còn chặn được việc quay về tuần tự, tức là
+  // xoá chính thứ nó tồn tại để canh.
+  //
+  // Thêm nhánh thứ NĂM thì ca này lại đỏ, và đó là hành vi muốn có: mỗi nhánh là
+  // một connection nữa lấy từ pool của Neon trong cùng một khoảnh khắc, nên việc
+  // đó phải là một quyết định có người đọc chú thích này, không phải một dòng
+  // thêm vào cho tiện.
+  const m = /const \[profile, enrolledBody, contentDau, dongY\] = await Promise\.all\(\[([\s\S]*?)\]\);/
     .exec(NGUON);
-  assert.ok(m, 'không thấy ba lượt gọi trong một Promise.all — đã quay về tuần tự?');
-  for (const can of ["json('/api/user')", "json('/api/enrolled')", 'jsonChoPhep403(duongContent)']) {
+  assert.ok(m, 'không thấy bốn lượt gọi trong một Promise.all — đã quay về tuần tự?');
+  for (const can of [
+    "json('/api/user')",
+    "json('/api/enrolled')",
+    'jsonChoPhep403(duongContent)',
+    'napTrangThaiDongY()',
+  ]) {
     assert.ok(m[1].includes(can), `thiếu ${can} trong Promise.all`);
   }
 });

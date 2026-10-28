@@ -40,6 +40,8 @@ import { useLessonProgress } from './useLessonProgress';
 import LessonScreenView from './screens';
 import { ICON } from './screens/chrome';
 import { datBoiCanhBai, dayNgay, ghiSuKien } from '@/lib/learning-events';
+
+import ConsentBanner from './ConsentBanner';
 import {
   buildScreens,
   EMPTY_SCORE,
@@ -82,6 +84,8 @@ export default function StudioLesson({
     awards,
     setAwards,
     enroll,
+    consent,
+    decideConsent,
   } = data;
   const load = data.reload;
   const d = draftState.draft;
@@ -411,6 +415,16 @@ export default function StudioLesson({
         }}
         {...over}
       >
+        {/* HỘP XIN ĐỒNG Ý, đặt TRƯỚC nội dung bài có chủ đích: nó phải được
+            thấy, và một hộp dưới đáy một bài dài là một hộp không ai đọc. Nhưng
+            nó KHÔNG chặn bài — người học cuộn qua và học bình thường nếu chưa
+            muốn trả lời (chặn bài để lấy sự đồng ý là cưỡng chế).
+
+            `consent?.shouldAsk` chứ không `!consent?.granted`: người đã TỪ CHỐI
+            cũng là `granted: false` nhưng KHÔNG được hỏi lại — xem `canHoiLai()`
+            ở backend. Và `consent === null` (chưa đọc xong) cũng không hiện, nên
+            hộp không loé lên một nhịp ở mỗi lần mở bài. */}
+        {consent?.shouldAsk ? <ConsentBanner onDecide={decideConsent} /> : null}
         {children}
         <LessonOverlays
           pop={pop}

@@ -18,6 +18,11 @@ import {
   ghiSuKien,
   type BoiCanhBai,
 } from '@/lib/learning-events';
+import {
+  guiQuyetDinhDongY,
+  napTrangThaiDongY,
+  type TrangThaiDongY,
+} from '@/lib/log-consent';
 import { buildScreens, type StudioLesson as Lesson } from '@/lib/studio-lesson';
 
 /**
@@ -66,6 +71,13 @@ export type LessonData = {
   enroll: () => Promise<void>;
   /** `quizScore` là điểm do TRÌNH DUYỆT chấm — xem AGENTS.md, server tin nó. */
   complete: (quizScore: number) => Promise<void>;
+  /**
+   * Trạng thái đồng ý ghi nhật ký. `null` = CHƯA ĐỌC XONG, khác hẳn
+   * `{ shouldAsk: false }` = đã đọc và câu trả lời là "đừng hỏi" — gộp hai thứ
+   * đó là hiện hộp loé lên một nhịp ở mỗi lần mở bài của người đã trả lời.
+   */
+  consent: TrangThaiDongY | null;
+  decideConsent: (granted: boolean) => Promise<void>;
 };
 
 export function useLessonData({
@@ -91,6 +103,10 @@ export function useLessonData({
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const [awards, setAwards] = useState<Award[]>([]);
+  // `null` = chưa đọc được trạng thái đồng ý (lượt nạp chưa xong). Khác hẳn
+  // `{ shouldAsk: false }` = đã đọc, và câu trả lời là "đừng hỏi". Gộp hai thứ
+  // này là hiện hộp loé lên một nhịp ở mỗi lần mở bài của người đã trả lời.
+  const [consent, setConsent] = useState<TrangThaiDongY | null>(null);
   const [xpGained, setXpGained] = useState<number | null>(null);
 
   const json = useCallback(
@@ -158,11 +174,27 @@ export function useLessonData({
       // `/content` được phép 403: người chưa ghi danh thì nhánh ghi danh bên
       // dưới lo, và lúc đó mới gọi lại content. Tức người MỚI trả thêm một lượt,
       // người ĐANG HỌC (ca thường) tiết kiệm hai lượt.
-      const [profile, enrolledBody, contentDau] = await Promise.all([
+      // Lượt thứ TƯ, và nó phải nằm TRONG `Promise.all` này, không ở đâu khác.
+      //
+      // Hai ràng buộc kẹp nó vào đúng chỗ này:
+      //  · nối đuôi phía sau là đi ngược chính bản sửa ở trên (ba lượt tuần tự
+      //    3,7 s → song song 1,3 s). Song song thì nó gần như miễn phí: cả bốn
+      //    cùng chờ một round-trip.
+      //  · muộn hơn `datBoiCanhBai` ở dưới là MẤT sự kiện. `ghi()` BỎ sự kiện
+      //    khi cổng còn đóng chứ không xếp hàng, nên cổng mở sau là mất hẳn
+      //    `X-Lesson.Open` của lượt đó — tức câu SQL drop-off đếm thiếu đúng
+      //    lượt mở bài ĐẦU TIÊN của mỗi người, chỗ dễ kết luận sai nhất.
+      //
+      // `napTrangThaiDongY` không bao giờ ném (nó tự `catch` và trả về trạng
+      // thái ĐÓNG), nên nó không làm `Promise.all` đổ — một lượt mở bài không
+      // được vỡ vì cái hộp này.
+      const [profile, enrolledBody, contentDau, dongY] = await Promise.all([
         json('/api/user'),
         json('/api/enrolled'),
         jsonChoPhep403(duongContent),
+        napTrangThaiDongY(),
       ]);
+      setConsent(dongY);
       let enrollment = findEnrollment(asList(enrolledBody, 'enrolled'), courseId);
       // Trang khoá học nay là danh mục tĩnh, không còn nút "Đăng ký" — mở bài
       // là tự ghi danh, để người thử vào thẳng nội dung. Ghi danh lặp lại an
@@ -256,6 +288,17 @@ export function useLessonData({
       : 'Python Studio | Programming Edu';
   }, [meta?.title]);
 
+  /**
+   * Người học bấm Đồng ý / Không. Trạng thái mới lấy từ MÁY CHỦ TRẢ VỀ, không
+   * suy ra từ `granted` vừa gửi — nếu máy chủ không ghi được (429, mất mạng)
+   * thì tin vào giá trị mình vừa gửi là ẩn hộp đi trong khi chưa có bản ghi nào,
+   * và người học tưởng đã trả lời xong.
+   */
+  const decideConsent = useCallback(async (granted: boolean) => {
+    const tt = await guiQuyetDinhDongY(granted);
+    setConsent(tt);
+  }, []);
+
   const enroll = useCallback(async () => {
     setBusy(true);
     try {
@@ -341,5 +384,8 @@ export function useLessonData({
     reload: load,
     enroll,
     complete,
+    /** `null` khi chưa đọc xong; `shouldAsk` quyết định có hiện hộp hay không. */
+    consent,
+    decideConsent,
   };
 }

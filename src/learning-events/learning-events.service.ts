@@ -3,6 +3,12 @@ import { Prisma } from 'src/generated/prisma';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 import {
+  canHoiLai,
+  conHieuLuc,
+  PHIEN_BAN_DONG_Y,
+  type BanGhiDongY,
+} from './learning-event-consent';
+import {
   gioClientHoacNull,
   locLo,
   type KetQuaLoc,
@@ -21,6 +27,21 @@ export type KetQuaGhi = {
    */
   duplicates: number;
   reasons: KetQuaLoc['reasons'];
+  /**
+   * Cả lô bị bỏ vì người học CHƯA đồng ý (hoặc đã rút lại, hoặc đồng ý với một
+   * phiên bản khác). Chỉ có mặt khi điều đó xảy ra, nên client phân biệt được
+   * "đã ghi 0 sự kiện vì lô rỗng" với "không được ghi".
+   */
+  refused?: 'no-consent';
+};
+
+export type TrangThaiDongY = {
+  /** Lớp ghi được phép chạy ngay bây giờ. */
+  granted: boolean;
+  /** Nên hiện hộp xin đồng ý. KHÁC `!granted` — xem `canHoiLai()`. */
+  shouldAsk: boolean;
+  /** Phiên bản bản mô tả hiện hành; client hiện nó ra và gửi lại khi quyết. */
+  version: string;
 };
 
 /**
@@ -59,6 +80,39 @@ export class LearningEventsService {
     const { events, dropped, reasons } = locLo(raw);
     const clientSentAt = gioClientHoacNull(sentAt);
 
+    // CỔNG ĐỒNG Ý, và nó phải ở ĐÂY chứ không chỉ ở client.
+    //
+    // Cổng duy nhất trước bản này là `let dongY = false` trong
+    // frontend/src/lib/learning-events.ts — một cổng ở client, nên nó không nói
+    // được ai đã đồng ý/lúc nào/với điều gì, nó mất cùng localStorage, và nó
+    // không chặn được một request gửi tay. Dữ liệu theo dõi hành vi là dữ liệu
+    // NHẠY CẢM theo Luật 91/2025, nên chỗ quyết định phải là chỗ KHÔNG giả mạo
+    // được — đúng lý lẽ đã dùng cho kho quiz chấm ở server.
+    //
+    // Trả về 202 kèm `refused`, KHÔNG ném 403: lớp này là ghi-rồi-quên, frontend
+    // không đọc body trên đường đi chính và `.catch()` nuốt mọi lỗi — nên một
+    // 403 sẽ biến mất không dấu vết, trong khi một trường trong body còn đọc
+    // được từ log HTTP và từ bộ test. Và đây KHÔNG phải lỗi của client: lô có
+    // thể đang trên đường khi người học bấm rút lại.
+    //
+    // Giá phải trả, có chủ đích: MỘT vòng DB thêm cho mỗi lô. Ở nhịp dày nhất
+    // (360 lô/giờ/người, xem chú thích rate-limit ở controller) đó là 360 truy
+    // vấn index-only trên một bảng vài chục hàng — nhỏ hơn hẳn cái giá của việc
+    // ghi một sự kiện không được phép ghi.
+    if (!conHieuLuc(await this.banGhiDongY(userId))) {
+      // KHÔNG log warn: "chưa đồng ý" là trạng thái BÌNH THƯỜNG của mọi người
+      // học chưa trả lời hộp xin đồng ý, nên log nó là tự tạo một dòng warn mỗi
+      // 10 giây cho mỗi người — rồi warn thật chìm trong đó.
+      return {
+        ok: true,
+        accepted: 0,
+        dropped: dropped + events.length,
+        duplicates: 0,
+        reasons,
+        refused: 'no-consent',
+      };
+    }
+
     let accepted = 0;
     if (events.length) {
       const res = await this.prisma.learningEvent.createMany({
@@ -80,6 +134,51 @@ export class LearningEventsService {
     }
 
     return { ok: true, accepted, dropped, duplicates, reasons };
+  }
+
+  /**
+   * Quyết định MỚI NHẤT của người học, hoặc `null` nếu chưa bao giờ được hỏi.
+   *
+   * `orderBy: { createdAt: 'desc' }` chứ không `{ id: 'desc' }`: hai hàng của
+   * cùng một người có thể vào trong cùng một millisecond (bấm đúp), nhưng thứ
+   * tự phải theo THỜI ĐIỂM QUYẾT — đó là thứ `created_at` nói, và là thứ index
+   * `idx_log_consents_user_created` phủ. `id` tình cờ cùng thứ tự hôm nay, và
+   * "tình cờ đúng" là thứ sẽ lệch ngày ai đó nhập dữ liệu cũ vào bảng.
+   */
+  private async banGhiDongY(userId: number): Promise<BanGhiDongY> {
+    const ban = await this.prisma.learningEventConsent.findFirst({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      select: { granted: true, version: true },
+    });
+    return ban ?? null;
+  }
+
+  /** Trạng thái để client biết có phải hiện hộp xin đồng ý không. */
+  async trangThaiDongY(userId: number): Promise<TrangThaiDongY> {
+    const ban = await this.banGhiDongY(userId);
+    return {
+      granted: conHieuLuc(ban),
+      shouldAsk: canHoiLai(ban),
+      version: PHIEN_BAN_DONG_Y,
+    };
+  }
+
+  /**
+   * Ghi một quyết định. Luôn THÊM hàng, không bao giờ cập nhật — xem chú thích
+   * append-only ở migration 20261028020000.
+   *
+   * `version` do MÁY CHỦ đặt, không nhận từ body. Nếu client gửi phiên bản thì
+   * một client cũ (hoặc một request gửi tay) sẽ ghi được "đã đồng ý với phiên
+   * bản hiện hành" trong khi hộp nó hiện ra là bản mô tả CŨ — tức bản ghi nói
+   * sai về điều người học thật sự đã đọc, và đó đúng là thứ cột này tồn tại để
+   * nói đúng.
+   */
+  async ghiDongY(userId: number, granted: boolean): Promise<TrangThaiDongY> {
+    await this.prisma.learningEventConsent.create({
+      data: { userId, granted, version: PHIEN_BAN_DONG_Y },
+    });
+    return this.trangThaiDongY(userId);
   }
 
   /**

@@ -72,6 +72,7 @@ model User {
   following           UserFollow[] @relation("UserFollowers")
   followers           UserFollow[] @relation("UserFollowing")
   learningEvents      LearningEvent[]
+  logConsents         LearningEventConsent[]
 
   // Bảng xếp hạng ORDER BY xp/streak DESC LIMIT 20.
   // `map:` giữ đúng tên trong prisma/optional-indexes.sql để bản chạy tay
@@ -263,6 +264,44 @@ model LearningEvent {
   @@index([userId, courseId, lessonNo, kind], map: "idx_learning_events_user_lesson")
   @@index([createdAt(sort: Desc)], map: "idx_learning_events_created")
   @@map("learning_events")
+}
+
+/// SỰ ĐỒNG Ý cho lớp ghi nhật ký. Bảng CHỈ THÊM HÀNG (append-only): một hàng cho
+/// mỗi lần người học quyết, kể cả lần RÚT LẠI (`granted = false`). Trạng thái
+/// hiện tại là hàng MỚI NHẤT theo `created_at`.
+///
+/// Vì sao append-only chứ không một cột trên `users`: phải chứng minh được cả
+/// việc rút lại, và một cột bị ghi đè thì lịch sử đó không còn. Luật về dữ liệu
+/// nhạy cảm đòi chứng minh được sự đồng ý, mà một giá trị hiện tại không chứng
+/// minh được nó có từ lúc nào.
+///
+/// `version` là thứ làm cho "đã đồng ý" không tự động nghĩa là "đồng ý điều
+/// này" — xem `learning-event-consent.ts`. Không có nó thì mở rộng phạm vi thu
+/// thập sẽ chạy dưới sự đồng ý cũ mà không ai biết.
+model LearningEventConsent {
+  id Int @id @default(autoincrement())
+
+  userId Int @map("user_id")
+
+  /// `true` = đồng ý, `false` = từ chối HOẶC rút lại. Một cột boolean chứ không
+  /// hai loại hàng riêng: "từ chối" và "rút lại" là cùng một kết quả (không
+  /// được ghi), và phân biệt chúng được bằng việc có hàng `true` nào trước đó.
+  granted Boolean
+
+  /// Phiên bản bản mô tả mà người học đồng ý với (`PHIEN_BAN_DONG_Y`). Lưu lại
+  /// chứ không suy ra: sáu tháng sau, biết hàng này ứng với bản mô tả nào là
+  /// toàn bộ giá trị của nó.
+  version String
+
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Đọc trạng thái hiện tại là `WHERE user_id = ? ORDER BY created_at DESC
+  /// LIMIT 1`, và nó chạy MỘT LẦN mỗi lô sự kiện — nên index phải phủ đúng hình
+  /// dạng đó, không chỉ `user_id`.
+  @@index([userId, createdAt(sort: Desc)], map: "idx_log_consents_user_created")
+  @@map("learning_event_consents")
 }
 
 model CourseRating {

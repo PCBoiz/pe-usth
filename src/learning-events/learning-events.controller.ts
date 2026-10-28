@@ -1,5 +1,12 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
-import { IsArray, IsISO8601, IsOptional } from 'class-validator';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
+import { IsArray, IsBoolean, IsISO8601, IsOptional } from 'class-validator';
 import { Throttle, seconds } from '@nestjs/throttler';
 import { CurrentUserId } from 'src/common/decorators/current-user.decorator';
 
@@ -31,6 +38,25 @@ export class RecordEventsDto {
   @IsOptional()
   @IsISO8601({}, { message: '`sentAt` phải là mốc thời gian ISO 8601.' })
   sentAt?: string;
+}
+
+/**
+ * Quyết định của người học về việc ghi nhật ký.
+ *
+ * CHỈ có `granted`. Phiên bản bản mô tả do MÁY CHỦ đặt — xem `ghiDongY()`: nhận
+ * phiên bản từ body nghĩa là một client cũ ghi được "đã đồng ý với bản hiện
+ * hành" trong khi hộp nó hiện ra là bản CŨ, tức bản ghi nói sai về điều người
+ * học thật sự đã đọc.
+ *
+ * `@IsBoolean()` chứ không nhận chuỗi `'true'`: `granted` quyết định có được thu
+ * thập dữ liệu nhạy cảm hay không, nên nó không được đi qua một phép ép kiểu
+ * nào. `ValidationPipe` toàn cục có `forbidNonWhitelisted: true` nên một body
+ * mang khoá lạ (ví dụ `version`) bị TỪ CHỐI thẳng — ở route này thì đó là hành
+ * vi đúng, ngược với route nhận lô.
+ */
+export class SetConsentDto {
+  @IsBoolean({ message: '`granted` phải là true hoặc false.' })
+  granted!: boolean;
 }
 
 /**
@@ -83,5 +109,44 @@ export class LearningEventsController {
   })
   record(@CurrentUserId() userId: number, @Body() dto: RecordEventsDto) {
     return this.events.record(userId, dto.events, dto.sentAt);
+  }
+
+  /**
+   * Trạng thái đồng ý. Client gọi nó khi mở bài học để biết có phải hiện hộp
+   * xin đồng ý không — và để KHÔNG hỏi lại người đã từ chối.
+   *
+   * KHÔNG `@Public()`: trạng thái gắn với một tài khoản, và trang bài học vốn
+   * đã có JWT (khách tự nhận tài khoản qua `ensureGuest`). Đặt `@Public()` ở đây
+   * là mở một route cho mọi bot — và vì nó không đọc được ai thì nó cũng không
+   * trả lời được gì.
+   */
+  @Get('consent')
+  consent(@CurrentUserId() userId: number) {
+    return this.events.trangThaiDongY(userId);
+  }
+
+  /**
+   * Người học quyết: đồng ý, hoặc từ chối/rút lại.
+   *
+   * 200 chứ không 202: khác hẳn route ghi lô, đây là một hành động mà client
+   * PHẢI biết kết quả — nó quyết định lớp ghi có bật hay không và hộp có còn
+   * hiện nữa hay không. Response trả lại CHÍNH trạng thái vừa ghi, nên client
+   * không phải tự suy ra (tự suy ra là tạo nguồn sự thật thứ hai, và nó sẽ lệch
+   * đúng vào lúc phiên bản bản mô tả đổi).
+   *
+   * RATE LIMIT riêng và CHẶT: 20 lượt/giờ/tài khoản. Nó là một hành động của
+   * người thật bấm nút — không ai quyết 20 lần trong một giờ — nhưng nó GHI vào
+   * DB không có khoá unique nào (append-only, có chủ đích), nên một vòng lặp
+   * hỏng ở client sẽ nhồi hàng vô hạn. Đây là chỗ duy nhất chặn chuyện đó.
+   */
+  @Post('consent')
+  @Throttle({
+    ip_hour: {
+      limit: Number(process.env.THROTTLE_CONSENT_LIMIT ?? 20),
+      ttl: seconds(Number(process.env.THROTTLE_CONSENT_TTL_SECONDS ?? 3600)),
+    },
+  })
+  setConsent(@CurrentUserId() userId: number, @Body() dto: SetConsentDto) {
+    return this.events.ghiDongY(userId, dto.granted);
   }
 }
