@@ -27,9 +27,10 @@ PRACTICE = HERE / 'source' / 'practice.json'
 ANH = HERE.parent.parent / 'frontend' / 'public' / 'static' / 'da'
 CURRICULA = HERE.parent.parent / 'frontend' / 'src' / 'lib' / 'curricula.json'
 
-# Năm loại khối màn đọc dựng được — khớp ReadBlock trong frontend/src/lib/studio-lesson.ts
-# và mục "Hai khối mới" của SCHEMA.md. Ba chỗ này phải đổi CÙNG LÚC.
-LOAI_KHOI = {'paragraph', 'code', 'terminal', 'figure', 'table'}
+# SÁU loại khối màn đọc dựng được — khớp ReadBlock trong
+# frontend/src/lib/studio-lesson.ts và mục "Hai khối mới" của SCHEMA.md. BỐN chỗ
+# phải đổi CÙNG LÚC: hằng này, ReadBlock, ReadScreen và khâu phát ở build.py.
+LOAI_KHOI = {'paragraph', 'code', 'terminal', 'figure', 'table', 'diagram'}
 
 LOI: list[str] = []
 CANH_BAO: list[str] = []
@@ -60,6 +61,7 @@ def main() -> int:
     kiem_thu_tu(bai)
     kiem_noi_dung(bai, nguon_theo_id)
     kiem_anh(bai)
+    kiem_so_do(bai, nguon_theo_id)
     kiem_bai_tap_doi_nguon(bai)
     kiem_thu_trong_ide(bai)
     kiem_sandbox(bai)
@@ -165,6 +167,83 @@ def kiem_anh(bai: list[dict]) -> None:
     if thua:
         canh_bao(f'{len(thua)} ảnh trong public/static/da/ không bài nào dùng: '
                  f'{", ".join(sorted(thua)[:5])}…')
+
+
+def kiem_so_do(bai: list[dict], nguon: dict[str, dict]) -> None:
+    """Khối `diagram` (SƠ ĐỒ bằng DOM) phải còn NỐI VỚI bài nó giải thích.
+
+    Vì sao luật này tồn tại, chứ không chỉ để đủ bộ. Sơ đồ được khai trong
+    `SO_DO_DOC` của build.py — tức nó là chữ do người viết đặt, KHÔNG suy ra từ
+    nguồn. Nên nó có thể trôi: người soạn giáo trình sửa `3 * 15 - 5` thành con
+    số khác, bài dạy một chuyện và sơ đồ dạy chuyện khác ngay cạnh nó, không
+    exception nào được ném và không log nào đỏ. Phép so dưới đây là thứ duy nhất
+    chạm tới NGUỒN.
+
+    Nới đúng một bậc: chỉ bước ĐẦU (biểu thức) và bước CUỐI (kết quả) phải có
+    thật trong bài. Các bước giữa là phép rút gọn — đó chính là nội dung sơ đồ
+    thêm vào, nên nó không có trong nguồn và không được đòi.
+    """
+    def gon(t: str) -> str:
+        return ''.join(t.split())
+
+    for b in bai:
+        ma = b['lesson_code']
+        goc = nguon.get(ma) or {}
+        # Code và kết quả NGƯỜI HỌC ĐỌC (bản `displayCode` khi có) — cùng bản mà
+        # khoi_doc() phát ra, nếu không thì so với một văn bản khác hẳn.
+        khoi_code = [k for k in goc.get('reading') or [] if k['type'] == 'code']
+        ma_nguon = gon(''.join((k.get('displayCode') or k.get('code') or '')
+                               for k in khoi_code))
+        kq_nguon = gon(''.join(str(k.get('displayExpected', k.get('expected')) or '')
+                               for k in khoi_code))
+        da_thay_code = False
+        for i, lat in enumerate(b['content_json']['step_1']['read']):
+            for k in lat:
+                if k['type'] == 'code':
+                    da_thay_code = True
+                if k['type'] != 'diagram':
+                    continue
+                o = f'{ma}: màn {i} sơ đồ'
+                # Sơ đồ đứng TRƯỚC mọi khối code của bài là đọc đáp án trước đề.
+                if not da_thay_code:
+                    loi(f'{o} đứng trước mọi khối code — nó gộp lại điều đoạn '
+                        f'code vừa chứng minh, không giới thiệu thay cho code')
+                if not str(k.get('title', '')).strip():
+                    loi(f'{o} không có tiêu đề')
+                lan = k.get('lanes')
+                if not isinstance(lan, list) or len(lan) < 2:
+                    loi(f'{o} cần ít nhất 2 làn — một làn thì không có gì để so')
+                    continue
+                # SỐ CHẴN: grid dựng hai cột, một làn lẻ đứng một mình ở hàng
+                # cuối là mất phép so sánh, tức mất đúng thứ duy nhất khối này
+                # mang lại (và là lý do nó KHÔNG được làm thành animation).
+                if len(lan) % 2:
+                    loi(f'{o} có {len(lan)} làn — phải CHẴN để hai làn cạnh nhau '
+                        f'so được với nhau')
+                for j, l in enumerate(lan):
+                    v = f'{o} làn {j}'
+                    for truong in ('label', 'note'):
+                        chu = str(l.get(truong) or '')
+                        if not chu.strip():
+                            loi(f'{v} thiếu {truong}')
+                        # Backtick lẻ: `withInlineCode` chỉ bóc được CẶP, nên một
+                        # dấu lẻ hiện ra nguyên văn trước mặt người học — đúng
+                        # lỗi người thử gửi ảnh ngày 27/10 ở ô tổng kết.
+                        if chu.count('`') % 2:
+                            loi(f'{v} có dấu backtick lẻ trong {truong}')
+                    buoc = l.get('steps')
+                    if not isinstance(buoc, list) or len(buoc) < 2:
+                        loi(f'{v} cần ít nhất 2 bước mới là một phép rút gọn')
+                        continue
+                    if any(not str(x).strip() for x in buoc):
+                        loi(f'{v} có bước rỗng')
+                        continue
+                    if gon(str(buoc[0])) not in ma_nguon:
+                        loi(f'{v}: biểu thức "{buoc[0]}" không có trong code '
+                            f'của bài {ma} — sơ đồ đã trôi khỏi bài')
+                    if gon(str(buoc[-1])) not in kq_nguon:
+                        loi(f'{v}: kết quả "{buoc[-1]}" không có trong `expected` '
+                            f'của bài {ma} — sơ đồ nói một con số bài không in ra')
 
 
 def kiem_bai_tap_doi_nguon(bai: list[dict]) -> None:

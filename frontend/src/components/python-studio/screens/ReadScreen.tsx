@@ -23,7 +23,7 @@ import { paragraphs, ScreenShell } from './chrome';
 import type { ShellProps } from './props';
 
 /**
- * Một khối — NĂM loại (xem READ_BLOCK_TYPES).
+ * Một khối — SÁU loại (xem READ_BLOCK_TYPES).
  *
  * `switch` có nhánh `default` ép kiểu `never` chứ KHÔNG phải chuỗi `if` rồi
  * rơi tự do xuống nhánh cuối: bản trước viết `if paragraph … if code … return
@@ -150,6 +150,43 @@ function Block({ block, thu }: { block: ReadBlock; thu?: string | null }) {
             </tbody>
           </table>
         </div>
+      );
+
+    // SƠ ĐỒ bằng DOM, không phải ảnh. Xem ReadBlock để biết vì sao: chữ của
+    // trang reflow, chữ trong PNG thì scale — ba trên bốn người thử báo "chữ
+    // và nhãn TRONG sơ đồ quá nhỏ, phải phóng to mới đọc được", và CSS không
+    // với tới được pixel trong ảnh.
+    //
+    // <ol> chứ không phải chuỗi <span>: các bước là một DÃY CÓ THỨ TỰ, và danh
+    // sách có thứ tự nói ra điều đó cho trình đọc màn hình mà không cần thêm
+    // chữ nào ("mục 1 trên 3"). Dấu nối giữa các bước do CSS
+    // `li + li::before` vẽ: nó là trang trí, nên không nằm trong DOM — để nó
+    // trong DOM là bắt trình đọc màn hình đọc "right arrow" giữa mỗi bước.
+    case 'diagram':
+      return (
+        <figure className={c.readDiagram}>
+          {/* CẢ BA chỗ có chữ (title, label, note) đều đi qua CÙNG `paragraphs`,
+              tức cùng `withInlineCode`. Chỗ nào dựng chuỗi TRẦN là chỗ in ra
+              nguyên hai dấu backtick — đúng lỗi người thử gửi ảnh ngày 27/10 ở
+              ô tổng kết, và nó hỏng vì đúng lý do đó: cùng một câu chữ đi hai
+              đường, ra hai kết quả. */}
+          <figcaption className={c.readDiagramTitle}>{paragraphs(block.title)}</figcaption>
+          <div className={c.readDiagramGrid}>
+            {block.lanes.map((lane, i) => (
+              <div key={i} className={c.readDiagramLane}>
+                <p className={c.readDiagramLabel}>{paragraphs(lane.label)}</p>
+                <ol className={c.readDiagramSteps}>
+                  {lane.steps.map((step, j) => (
+                    <li key={j}>
+                      <code>{step}</code>
+                    </li>
+                  ))}
+                </ol>
+                <p className={c.readDiagramNote}>{paragraphs(lane.note)}</p>
+              </div>
+            ))}
+          </div>
+        </figure>
       );
 
     default: {

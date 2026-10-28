@@ -169,6 +169,69 @@ LECH_PHIEN_BAN = {
 }
 
 
+# ---------------------------------------------------------------------------
+# SƠ ĐỒ bằng DOM cho màn đọc — PHÉP THỬ, hôm nay đúng MỘT bài
+#
+# Vì sao có bảng này. Ba trên bốn người trả lời khảo sát ngày 29/10/2026 chọn
+# "Chữ và nhãn TRONG sơ đồ quá nhỏ, phải phóng to mới đọc được". Chữ đó nằm
+# trong PNG 780×455, nên CSS không với tới: chữ của TRANG reflow, chữ trong
+# ẢNH thì scale — trên màn 360px ảnh bị bóp 0,46× và nhãn 10pt hiện ra 4–5px.
+# Khối `diagram` dựng sơ đồ bằng DOM để chữ là chữ.
+#
+# Vì sao bảng nằm TRONG build.py, không thành trường mới trong course.json:
+#   · `source/course.json` là GÓI NỘI DUNG của người soạn giáo trình — thêm
+#     trường vào đó là đòi họ bảo trì một hình dạng dữ liệu mà hôm nay chỉ một
+#     bài dùng, và gói thì còn được giao lại nhiều lần nữa;
+#   · đây là PHÉP THỬ trước khi bỏ công cho cả bộ. Một dict 20 dòng rút lại
+#     được trong một commit; một trường trong đặc tả thì không.
+# Ngày bộ này lớn hơn chục bài thì chuyển nó sang gói nguồn, đừng nuôi bảng này
+# thành danh bạ.
+#
+# Khoá: (mã bài, chỉ số khối CODE của bài — đếm trên `khoi_code`, tức ĐÃ bỏ các
+# khối terminal). Sơ đồ được chèn NGAY SAU khối đó.
+#
+# RÀNG BUỘC do check.py canh, không phải thẩm mỹ:
+#   · số làn phải CHẴN — grid dựng hai cột, một làn lẻ đứng một mình là mất
+#     phép so sánh, tức mất đúng thứ duy nhất khối này mang lại;
+#   · bước ĐẦU của mỗi làn phải là một biểu thức CÓ THẬT trong code bài (so sau
+#     khi bỏ hết khoảng trắng), và bước CUỐI phải có thật trong `expected` của
+#     bài. Thiếu luật này thì sơ đồ trôi khỏi bài mà không gì đỏ: nguồn sửa
+#     `3 * 15 - 5` thành con số khác, bài dạy một chuyện và sơ đồ dạy chuyện
+#     khác ngay cạnh nó.
+SO_DO_DOC: dict[tuple[str, int], dict] = {
+    # PY05 "thứ tự phép tính". Đặt sau khối code THỨ HAI (`7 / 2`, `7 // 2`):
+    # tới đó người học đã thấy cả hai cặp — dấu ngoặc ở khối 1, chia ở khối 2 —
+    # nên sơ đồ là chỗ gộp chúng lại, không phải chỗ giới thiệu.
+    ('PY05', 1): {
+        'title': 'Thứ tự phép tính — hai cách đọc cùng một dãy số',
+        'lanes': [
+            {
+                'label': 'Không có ngoặc',
+                'steps': ['3 * 15 - 5', '45 - 5', '40'],
+                'note': 'Nhân chạy trước vì `*` ưu tiên hơn `-`: '
+                        'giảm 5 nghìn MỘT lần cho cả hoá đơn.',
+            },
+            {
+                'label': 'Có ngoặc',
+                'steps': ['3 * (15 - 5)', '3 * 10', '30'],
+                'note': 'Ngoặc chạy trước mọi thứ: '
+                        'giảm 5 nghìn cho TỪNG cốc, nên hoá đơn rẻ hơn 10 nghìn.',
+            },
+            {
+                'label': 'Chia thực `/`',
+                'steps': ['7 / 2', '3.5'],
+                'note': '`/` luôn trả số thực, kể cả khi chia hết — `4 / 2` ra `2.0`.',
+            },
+            {
+                'label': 'Chia lấy thương `//`',
+                'steps': ['7 // 2', '3'],
+                'note': '`//` làm tròn XUỐNG, nên `-7 // 2` ra `-4` chứ không phải `-3`.',
+            },
+        ],
+    },
+}
+
+
 def modules_cua(code: str) -> tuple[set[str], set[str], bool]:
     """(module import, lời gọi bị chặn, có lỗi cú pháp)."""
     try:
@@ -635,7 +698,8 @@ def la_lenh_terminal(khoi: dict) -> bool:
         khoi.get('mode'), khoi.get('displayMode'))
 
 
-def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None) -> list[dict]:
+def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None,
+             so_do: dict[int, dict] | None = None) -> list[dict]:
     """Chuyển một khối nguồn sang các ReadBlock renderer hiểu được.
 
     `thu_duoc` khoá theo `id()` của chính dict nguồn, nói khối code này có chạy
@@ -646,6 +710,10 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None) -> list[dict]:
     `LECH_PHIEN_BAN`. Cổng cũ `chayDuocTrongIde` ở frontend chỉ là một regex
     trên dòng `import` và nó KHÔNG biết seaborn/plotly/openpyxl thiếu wheel —
     đúng những thứ chặn bài của khoá này.
+
+    `so_do` khoá theo cùng `id()` đó, nói khối này có một SƠ ĐỒ đi kèm hay
+    không (xem SO_DO_DOC). Dùng lại đúng cơ chế của `thu_duoc` chứ không thêm
+    cách thứ hai: hai cách định vị khối là hai cách sẽ lệch nhau.
     """
     if khoi['type'] == 'paragraph':
         return [{'type': 'paragraph', 'text': khoi['text']}]
@@ -678,6 +746,12 @@ def khoi_doc(khoi: dict, thu_duoc: dict[int, bool] | None = None) -> list[dict]:
         ten = hinh.split('/')[-1]
         khoi_ra.append({'type': 'figure', 'src': f'{ANH_URL}{ten}',
                         'alt': f'Biểu đồ do đoạn code trên vẽ ra ({ten})'})
+    # Sơ đồ đứng SAU cả code lẫn hình: nó gộp lại điều đoạn code vừa chứng
+    # minh, nên đọc nó trước khi đọc code là đọc đáp án trước đề.
+    sd = (so_do or {}).get(id(khoi))
+    if sd:
+        khoi_ra.append({'type': 'diagram', 'title': sd['title'],
+                        'lanes': [dict(l) for l in sd['lanes']]})
     return khoi_ra
 
 
@@ -795,8 +869,12 @@ def dung_bai(bai: dict, thu_tu: int, module_so: int, module_ten: str,
     # theo id() còn đúng tới hết hàm. Phép phân loại đã tính ở `phan_loai` ngay
     # trên — ở đây chỉ nối nó tới từng khối.
     thu_duoc = {id(k): ok for k, (ok, _) in zip(khoi_code, phan_loai)}
+    # Sơ đồ DOM của màn đọc, khoá theo cùng id() — xem SO_DO_DOC để biết vì sao
+    # bảng nằm trong build.py chứ không thành trường mới của course.json.
+    so_do = {id(k): SO_DO_DOC[(ma_bai, i)]
+             for i, k in enumerate(khoi_code) if (ma_bai, i) in SO_DO_DOC}
     step_1: dict = {
-        'read': [[r for k in lat for r in khoi_doc(k, thu_duoc)] for lat in man],
+        'read': [[r for k in lat for r in khoi_doc(k, thu_duoc, so_do)] for lat in man],
     }
     truoc = [ten_theo_id[b] for b in bai.get('before') or [] if b in ten_theo_id]
     step_1['context'] = {
@@ -983,6 +1061,19 @@ def main() -> int:
             bai_ra.append(b)
             trong_module.append(b['title'])
         modules.append({'title': ten_module, 'lessons': trong_module})
+
+    # Mỗi khoá của SO_DO_DOC phải TRÚNG một khối thật. Gõ sai mã bài hay lệch
+    # chỉ số khối thì sơ đồ lặng lẽ không được phát ra — và một sơ đồ không ai
+    # thấy thì không có log nào đỏ, đúng kiểu lỗi mà AGENTS.md gọi là "built
+    # but unreachable".
+    so_do_phat = sum(1 for b in bai_ra
+                     for lat in b['content_json']['step_1']['read']
+                     for k in lat if k['type'] == 'diagram')
+    if so_do_phat != len(SO_DO_DOC):
+        print(f'LỖI: SO_DO_DOC khai {len(SO_DO_DOC)} sơ đồ nhưng phát ra '
+              f'{so_do_phat} — có khoá không trúng khối code nào '
+              f'(mã bài sai, hoặc chỉ số khối lệch).')
+        return 1
 
     tong_phut = sum(b['estimated_minutes'] for b in bai_ra)
     dem_mode: dict[str, int] = {}

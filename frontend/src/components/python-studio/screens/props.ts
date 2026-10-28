@@ -50,6 +50,13 @@ export type LessonScreenProps = {
   running: boolean;
   runtimeStatus: string;
   result: RunResult | null;
+  /**
+   * `result` đang hiện là của BẢN CODE TRƯỚC (người học đã sửa mà chưa chạy
+   * lại). Tính bằng `ketQuaLaCu` trong lib/run-freshness.ts — luật nằm ở hàm
+   * thuần đó, không ở component, vì logic trong component là logic không test
+   * được.
+   */
+  resultStale: boolean;
   onRun: () => void;
   onStop: () => void;
   busy: boolean;

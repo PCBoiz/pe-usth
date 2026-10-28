@@ -141,6 +141,15 @@ export function useLessonRun({
 }) {
   /** Kết quả chạy gần nhất của màn sandbox (không lưu vào bản nháp). */
   const [result, setResult] = useState<RunResult | null>(null);
+  /**
+   * Mã đã thật sự gửi vào worker ở lượt chạy gần nhất — XUẤT XỨ của `result`.
+   *
+   * Đi CẶP với `result` và chỉ được đặt cùng lúc với nó: thiếu nó thì không ai
+   * trả lời được câu "output đang nhìn thuộc bản code nào?" (xem
+   * lib/run-freshness.ts). Không lưu vào bản nháp — nó nói về một lượt chạy
+   * trong phiên này, mà `result` cũng không được lưu.
+   */
+  const [ranCode, setRanCode] = useState<string | null>(null);
   // Nạp sẵn runtime NGAY khi mở màn, không chờ API trả nội dung — xem
   // shouldPrewarm() để biết vì sao chờ là mất không 1,0–1,5 s mỗi lần mở bài.
   const runner = useCodeRunner({
@@ -235,8 +244,14 @@ export function useLessonRun({
     // Cửa tự kiểm tra chỉ mở lời giải sau lần NỘP đầu, đạt hay chưa đạt.
     if (submit && !draft.submitted) update({ submitted: true });
     const sandboxKey = screens[sandboxAt < 0 ? 0 : sandboxAt]?.key;
-    execute(draft.code, (data) => {
+    // Chụp lại mã NGAY LÚC GỬI, không đọc `draft.code` trong callback: người
+    // học gõ tiếp trong lúc worker đang chạy là chuyện thường, và lúc đó
+    // `draft.code` đã là bản khác hẳn bản worker nhận — ghi nó làm xuất xứ thì
+    // một kết quả CŨ lại được đóng dấu "của bản đang gõ".
+    const maDaGui = draft.code;
+    execute(maDaGui, (data) => {
       setResult(data);
+      setRanCode(maDaGui);
       // Chỉ lượt NỘP mới ghi nhận: chạy thử đạt hết vẫn phải bấm nộp thì tiến
       // độ mới được lưu, nếu không học viên tưởng xong mà backend không biết.
       if (submit && passedAll(data)) {
@@ -300,6 +315,7 @@ export function useLessonRun({
     running,
     runtimeStatus,
     result,
+    ranCode,
     run,
     runGame,
     cancel: runner.cancel,

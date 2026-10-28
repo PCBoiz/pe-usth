@@ -174,10 +174,38 @@ export type ReadBlock =
    * `LessonFigure`/`Figure` của màn lý thuyết — xem ReadScreen.
    */
   | { type: 'figure'; src: string; alt: string }
-  | { type: 'table'; headers: string[]; rows: string[][] };
+  | { type: 'table'; headers: string[]; rows: string[][] }
+  /**
+   * SƠ ĐỒ bằng HTML thật — chữ là `<p>`/`<code>`, không phải pixel trong ảnh.
+   *
+   * VÌ SAO loại khối này tồn tại. BA trên bốn người trả lời khảo sát ngày
+   * 29/10/2026 chọn "Chữ và nhãn TRONG sơ đồ quá nhỏ, phải phóng to mới đọc
+   * được". Chữ đó nằm trong PNG 780×455: chữ của trang REFLOW, chữ trong ảnh
+   * thì SCALE — trên màn 360px ảnh bị bóp 0,46× nên nhãn 10pt hiện ra 4–5px.
+   * CSS không với tới được. SVG cũng chỉ chữa một nửa: ở cỡ hiển thị mặc định
+   * nó có đúng cỡ chữ như PNG.
+   *
+   * Nên sơ đồ là DOM: kế thừa `--edu-font` và cỡ chữ của trang, reflow theo
+   * khung, trình đọc màn hình đọc được, dịch được, chọn-copy được.
+   *
+   * HÌNH TĨNH, KHÔNG animation — và đây là kết luận có bằng chứng, không phải
+   * để tiết kiệm công: toàn bộ giá trị nằm ở việc SO HAI LÀN cạnh nhau, mà so
+   * sánh thì cần cả hai cùng có mặt. Một animation chạy lần lượt phá đúng cái
+   * nó định dạy (Tversky 2002: "clever schematization of static diagrams may
+   * be just as effective as animation").
+   *
+   * `lanes` luôn là SỐ CHẴN: grid dựng hai cột, nên một làn lẻ đứng một mình
+   * là mất phép so sánh — đúng thứ duy nhất khối này mang lại. check.py chặn.
+   */
+  | {
+      type: 'diagram';
+      title: string;
+      /** Một làn = một biểu thức rút gọn từng bước. `steps` ≥ 2 mới là rút gọn. */
+      lanes: { label: string; steps: string[]; note: string }[];
+    };
 
 /**
- * NĂM loại khối, không phải ba. Bản đặc tả đầu của pe-da chỉ khai ba
+ * SÁU loại khối, không phải ba. Bản đặc tả đầu của pe-da chỉ khai ba
  * (paragraph/code/table) trong khi khâu build phát thêm `terminal` (21 khối,
  * 10 bài) và `figure` (80 khối, 26 bài): renderer viết theo đặc tả thì 26 bài
  * có hình ném TypeError ngay màn đọc.
@@ -192,6 +220,7 @@ export const READ_BLOCK_TYPES: ReadBlock['type'][] = [
   'terminal',
   'figure',
   'table',
+  'diagram',
 ];
 
 /**

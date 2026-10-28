@@ -52,10 +52,10 @@ Trên Windows dùng `py`, không dùng `python` — `python` là stub của Micr
 | Backend lint | 225 lỗi, 2 cảnh báo — **mốc trần trong CI là 245, chỉ được hạ** |
 | Frontend typecheck | sạch |
 | Frontend lint | 0 lỗi, 178 cảnh báo |
-| Frontend unit test | `cd frontend && npm run test:unit` → **351 ca** / 28 tệp, tất cả đạt |
+| Frontend unit test | `cd frontend && npm run test:unit` → **378 ca** / 30 tệp, tất cả đạt |
 | Bộ ghi vết | `py -I scripts/tracer/pe_tracer_test.py` → **65 phép kiểm**, trượt 0 |
 | Giáo trình pe-v4 (ẩn) | 48 bài, 427 ca chấm, 176 biến thể sai + 48 khung trống đều trượt |
-| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 544 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 347 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
+| Giáo trình pe-da (đang chạy) | 172 bài, 10 module, 553 màn đọc, **516 câu trắc nghiệm**, 655 câu luyện tập, **124 bài tập được chấm / 415 ca**, 2 360 phút; 131 bài chạy trong trình duyệt / 15 hỗn hợp / 26 trên máy |
 | pe-da chấm nội dung | `node scripts/pe-da/check-pyodide.mjs` → 146 bài, 408 đoạn code, **0 hỏng**, 14 cảnh báo, ~36 s |
 | pe-da chấm BÀI TẬP | `node scripts/pe-da/check-practice.mjs` → 124 bài, **415 ca đạt**, 556 biến thể sai đều trượt, ~15 s (pha 1 ~10 s) |
 | Bộ đo độ hiệu quả | `node scripts/check-perf.mjs` → 9 ca, **0 hỏng** |
@@ -69,15 +69,18 @@ và mất bộ kiểm duy nhất chấm được code học viên. `frontend/pub
 thì bộ 172 bài dùng lại NGUYÊN VẸN: chính nó đặt `MPLBACKEND=Agg` và móc `Figure`, nên
 26 bài biểu đồ chạy được trong worker. Đừng dọn "cho gọn".
 
-**Con số 351 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
+**Con số 378 phải đo lại mỗi lần thêm/bớt ca, không được đoán.** Phân rã hiện tại:
 catalog-duration 2 · catalog-naming 3 · consent-banner 15 · course-resume 8 ·
 editor-load-gate 14 · feedback-link 9 · forum-xss 1 · ide-brief-code 12 ·
 ide-handoff 6 · ide-partial-output 10 · ide-stop-autosave 27 · ide-trace 38 ·
 inline-code 3 · label-version 2 · learning-events 48 · lesson-back 7 ·
 lesson-load 7 · mcq-code 9 · mcq-next-after-wrong 23 · practice-contract 14 ·
-prewarm-gate 5 · read-try-it 20 · session-marker 5 · studio-lesson 41 ·
-tracer-limits 7 · tracer-web-sync 5 · trap-leak 3 · worker-csp 7 = 351.
-Mốc trước là 328; thêm mcq-next-after-wrong 23.
+prewarm-gate 5 · read-diagram 12 · read-try-it 20 · run-stale 15 ·
+session-marker 5 · studio-lesson 41 · tracer-limits 7 · tracer-web-sync 5 ·
+trap-leak 3 · worker-csp 7 = 378.
+Mốc trước là 351; thêm run-stale 15 ("kết quả này của bản code trước") và
+read-diagram 12 (sơ đồ bằng DOM) — xem hai bẫy cuối file.
+Trước đó 328 → 351 là mcq-next-after-wrong 23.
 Trước đó 310 → 328 là lesson-back 7, course-resume 8 và inline-code 3 — cả ba đến từ
 đợt phản hồi của người thử ngày 27/10 (xem bẫy "Năm người thử cùng báo thiếu nút quay
 lại" ở dưới).
@@ -148,12 +151,15 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   người mới học thói quen lưu hình vào thư mục tạm. Tương tự: `displayExpected`,
   `displayMode`, và `kind: "terminal"` / `mode: "manual"` đánh dấu khối là LỆNH SHELL —
   `git clone`, `python -m venv` — không được đưa vào sandbox Python.
-- **Màn đọc có NĂM loại khối, và ba chỗ phải đổi cùng lúc.** `paragraph · code · terminal ·
-  figure · table`. Chúng được khai ở `ReadBlock` (`frontend/src/lib/studio-lesson.ts`),
-  dựng ở `ReadScreen.tsx`, và phát ra ở `scripts/pe-da/build.py`. Bản đặc tả đầu chỉ ghi ba
-  loại, build thêm `figure`/`terminal` sau — 26 bài có hình ném TypeError ngay màn đọc và
-  không ai thấy cho tới khi mở đúng bài đó. `ReadScreen` phải `switch` có nhánh `default`
-  ép `never`, và `check.py` chặn loại khối lạ.
+- **Màn đọc có SÁU loại khối, và BỐN chỗ phải đổi cùng lúc.** `paragraph · code ·
+  terminal · figure · table · diagram`. Chúng được khai ở `ReadBlock`
+  (`frontend/src/lib/studio-lesson.ts`), dựng ở `ReadScreen.tsx`, phát ra ở
+  `scripts/pe-da/build.py`, và `LOAI_KHOI` trong `scripts/pe-da/check.py` chặn loại lạ.
+  Bản đặc tả đầu chỉ ghi ba loại, build thêm `figure`/`terminal` sau — 26 bài có hình ném
+  TypeError ngay màn đọc và không ai thấy cho tới khi mở đúng bài đó. `ReadScreen` phải
+  `switch` có nhánh `default` ép `never`.
+  Loại thứ sáu (`diagram`, thêm 29/10/2026) là PHÉP THỬ, hôm nay đúng MỘT bài — xem bẫy
+  "Chữ TRONG sơ đồ không phóng to được" ở dưới.
 - **"Hình" của bốn bài Plotly là file HTML 4,7 MB, không phải ảnh.** VZ20–VZ22 và VZ26 khai
   `figure` trỏ tới `.html` do Plotly xuất, mỗi file nhúng sẵn cả plotly.js. Chép theo tên
   file làm `frontend/public/static/da/` phình từ 2,3 MB lên **49 MB**, lại còn vào thẻ
@@ -963,6 +969,81 @@ Ghi lại để không ai vấp lại. Mỗi dòng là một lỗi có thật đ
   mỗi mảnh 1. `mcq-next-after-wrong.test.mjs`, 23 ca.
   **Giới hạn đã nói ra:** `primaryCta` không import được vào `node --test` (`cta.ts` import
   một `.tsx`), nên nhánh nút chính chỉ canh được bằng phép đọc cây mã.
+
+- **Ô kết quả từng không nói nổi nó là kết quả của BẢN CODE NÀO.** Bài PY01 có một câu
+  tự vấn viết sẵn trong nguồn — *"Nếu không bấm chạy lại, output đang nhìn thuộc bản code
+  nào?"* — và nền tảng không trả lời được. Người học sửa một dòng, không bấm Chạy, rồi đọc
+  tiếp console bên dưới như thể nó là kết quả của bản vừa sửa: console nguyên màu, chip
+  "✓ Đạt" của lượt trước vẫn xanh, dòng "123 ms" vẫn đứng đó. Nay sửa mà chưa chạy thì ô
+  kết quả tự làm mờ và nói thẳng *"Kết quả này của bản code trước — bấm Chạy để cập nhật."*
+  Rẻ, và đúng với **cả 172 bài** chứ không riêng bài nào: nó chỉ cần hai chuỗi.
+  **So MÃ, không so cờ "đã gõ phím".** Cờ đó bật ở lần `onChange` đầu và không có đường
+  tắt lại, nên người gõ rồi xoá về đúng như cũ sẽ bị dán nhãn "kết quả cũ" trong khi kết
+  quả vẫn ĐÚNG. Luật ở `ketQuaLaCu` (`frontend/src/lib/run-freshness.ts`, hàm thuần — logic
+  trong hook là logic không có test).
+  **Xuất xứ phải CHỤP lúc gửi, không đọc lại `draft.code` trong callback:** gõ tiếp trong
+  lúc worker đang chạy là chuyện thường, và lúc kết quả về thì `draft.code` đã là bản khác
+  — ghi nó làm xuất xứ thì một kết quả CŨ lại được đóng dấu "của bản đang gõ", tức bug sống
+  lại ở đúng ca người học sốt ruột nhất. `setRanCode(maDaGui)` đứng ngay cạnh
+  `setResult(data)` trong `useLessonRun`.
+  **Cổng `coKetQua` không phải phòng xa:** bấm Chạy rồi bấm Dừng thì `result` về null nhưng
+  xuất xứ vẫn giữ mã lượt TRƯỚC — thiếu cổng thì một console RỖNG lại đeo băng "kết quả của
+  bản code trước".
+  **Băng chữ ở tương phản ĐẦY ĐỦ, phần làm mờ mới là lớp phụ.** Làm ngược (chỉ mờ, không
+  chữ) thì với người dùng trình đọc màn hình không có gì xảy ra cả. `opacity` 0,62 kèm
+  `saturate(.45)`: thứ nói dối to nhất ở đây là MÀU — chip xanh của lượt trước nằm ngay
+  dưới một bản code chưa ai chạy — còn chữ thì vẫn phải đọc được, vì đối chiếu output cũ
+  với code mới chính là việc họ đang làm.
+  Ablate 11 mảnh (`run-stale.test.mjs`, 15 ca): so bằng cờ "đã gõ phím" → **3 đỏ**; chuẩn
+  hoá khoảng trắng trước khi so → 2; chín mảnh còn lại mỗi mảnh 1 (bỏ cổng `coKetQua`,
+  callback đọc `draft.code`, thôi trả `ranCode`, thôi truyền `resultStale`/`stale`, ghi lại
+  chuỗi thay vì dùng hằng chung, bỏ lớp bọc mờ, bỏ `role="status"`, bỏ quy tắc CSS).
+  **Phạm vi đã nói ra:** `DebugGame` cũng dùng `SandboxEditor` nhưng KHÔNG truyền `stale`
+  (prop tuỳ chọn) — `gameRun` không giữ mã đã chạy, và khoá 172 bài không có game nào.
+
+- **Chữ TRONG sơ đồ không phóng to được, và đó là lỗi VẬT LIỆU chứ không phải `font-size`.**
+  Ba trên bốn người trả lời khảo sát ngày 29/10/2026 chọn *"Chữ và nhãn TRONG sơ đồ quá nhỏ,
+  phải phóng to mới đọc được"*. Chữ đó nằm trong PNG 780×455: chữ của TRANG reflow, chữ
+  trong ẢNH thì scale — trên màn 360px ảnh bị bóp 0,46× nên nhãn 10pt hiện ra 4–5px. Không
+  quy tắc CSS nào với tới pixel trong ảnh, và **SVG chỉ chữa một nửa** (ở cỡ hiển thị mặc
+  định nó có đúng cỡ chữ như PNG). Nay có loại khối đọc thứ SÁU — `diagram` — dựng sơ đồ
+  bằng DOM: `<p>`/`<code>` thật, kế thừa `--edu-font` và cỡ chữ của trang, reflow, trình
+  đọc màn hình đọc được, dịch được. Không thêm thư viện nào.
+  **PHÉP THỬ, đúng một bài: PY05** (thứ tự phép tính) — hai cột `3*15-5 → 45-5 → 40` cạnh
+  `3*(15-5) → 3*10 → 30`, cộng một hàng `/` so với `//`. Đo lại trước khi bỏ công cho cả bộ.
+  **HÌNH TĨNH, KHÔNG animation — kết luận có bằng chứng, không phải để tiết kiệm công:**
+  toàn bộ giá trị nằm ở việc SO HAI LÀN, mà so sánh cần cả hai cùng có mặt. Animation chạy
+  lần lượt phá đúng cái nó định dạy (Tversky 2002: *"clever schematization of static
+  diagrams may be just as effective as animation"*). Có ca test ghim chuyện này, vì "thêm
+  một animation nhỏ cho sinh động" là việc rất dễ làm.
+  **Dữ liệu nằm ở `SO_DO_DOC` trong `scripts/pe-da/build.py`, KHÔNG thành trường mới của
+  `source/course.json`:** gói nguồn là của người soạn giáo trình và còn được giao lại nhiều
+  lần nữa, còn một dict 20 dòng thì rút lại được trong một commit. Ngày bộ này lớn hơn chục
+  bài thì chuyển sang gói nguồn, đừng nuôi bảng thành danh bạ.
+  **Vì nó là chữ người viết đặt, nó TRÔI ĐƯỢC** — nguồn sửa `3 * 15 - 5` thành con số khác
+  thì bài dạy một chuyện và sơ đồ dạy chuyện khác ngay cạnh nó, không exception nào ném.
+  `kiem_so_do()` (check.py) đòi bước ĐẦU của mỗi làn là biểu thức có thật trong code bài và
+  bước CUỐI có thật trong `expected`. Các bước GIỮA cố ý không bị đòi: đó chính là phần sơ
+  đồ thêm vào.
+  **Số làn phải CHẴN:** grid là `repeat(auto-fit, minmax(245px, 1fr))`, nên một làn lẻ đứng
+  một mình ở hàng cuối là mất phép so sánh, tức mất đúng thứ duy nhất khối này mang lại.
+  245px là SỐ ĐO (Chrome, sơ đồ PY05): dãy dài nhất rộng 212px + 29px padding/viền của
+  làn. Thấp hơn thì hai cột vẫn dựng nhưng mỗi dãy gãy làm hai dòng — mất đúng cái nhịp
+  nó bán. Đổi nội dung sơ đồ thì ĐO LẠI.
+  **Và một khoá `SO_DO_DOC` gõ sai thì sơ đồ lặng lẽ không được phát:** build.py đếm lại và
+  trả về 1 nếu số sơ đồ phát ra khác số khai — đúng họ lỗi "built but unreachable".
+  **KHÔNG khai `font-family` cho phần chữ của sơ đồ** (ngoại lệ duy nhất: biểu thức Python
+  dùng mono): mục đích của khối này là kế thừa font trang, ghi font ở đây là dựng lại cái
+  tường nó ra đời để phá — và sẽ lệch ở lần đổi font sau (Poppins → Montserrat đã phải đi
+  sáu chỗ). Cả ba chỗ có chữ (`title`, `label`, `note`) đi qua CÙNG `paragraphs`, tức cùng
+  `withInlineCode` — chỗ nào dựng chuỗi trần là chỗ in ra nguyên hai dấu backtick.
+  Ablate 12 mảnh (`read-diagram.test.mjs`, 12 ca): `SO_DO_DOC` rỗng → 1 đỏ ở đây **cộng
+  2 đỏ ở `studio-lesson.test.mjs`** (đếm khối + "không khai loại build không phát"); gỡ
+  nhánh `case 'diagram'` → 2 đỏ và typecheck đỏ; mười mảnh còn lại mỗi mảnh 1 (trong đó
+  bỏ `max-width` của grid, tức bỏ trần hai cột).
+  **Chưa tới người học cho tới khi nạp DB:** `scripts/pe-da/out/lessons.json` đã có sơ đồ,
+  nhưng nội dung bài thì đọc từ DB — cần
+  `npx ts-node scripts/update-lesson-content.ts --codes=PY05 --apply --backup=<file.json>`.
 
 ## Nạp dữ liệu vào DB — đừng mặc định dùng seed
 

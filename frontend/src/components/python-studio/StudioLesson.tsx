@@ -40,6 +40,7 @@ import { useLessonProgress } from './useLessonProgress';
 import LessonScreenView from './screens';
 import { ICON } from './screens/chrome';
 import { datBoiCanhBai, dayNgay, ghiSuKien } from '@/lib/learning-events';
+import { ketQuaLaCu } from '@/lib/run-freshness';
 
 import ConsentBanner from './ConsentBanner';
 import {
@@ -262,6 +263,14 @@ export default function StudioLesson({
   });
   const { running, runtimeStatus, result, run, runGame } = lessonRun;
   const cancelRun = lessonRun.cancel;
+  // Kết quả đang hiện có thuộc bản code đang gõ không. Luật nằm ở hàm thuần
+  // `ketQuaLaCu` (lib/run-freshness.ts), ở đó cũng ghi vì sao phép so là SO
+  // CHUỖI chứ không phải một cờ "đã gõ phím".
+  const resultStale = ketQuaLaCu({
+    daChay: lessonRun.ranCode,
+    dangGo: d.code,
+    coKetQua: result !== null,
+  });
   /**
    * Điểm bài gửi về backend: tỉ lệ màn chấm ĐÚNG NGAY LẦN ĐẦU.
    *
@@ -586,6 +595,7 @@ export default function StudioLesson({
           running={running}
           runtimeStatus={runtimeStatus}
           result={result}
+          resultStale={resultStale}
           onRun={() => run(false)}
           onStop={cancelRun}
           busy={busy}

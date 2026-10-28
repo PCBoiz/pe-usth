@@ -476,3 +476,45 @@ textarea.codeBody:focus-visible {
   outline: 3px solid var(--edu-accent-3);
   outline-offset: -3px;
 }
+
+/* ── "Kết quả này của bản code trước" (SandboxEditor, prop `stale`) ────────
+   Vì sao có: bài PY01 hỏi thẳng "nếu không bấm chạy lại, output đang nhìn
+   thuộc bản code nào?" và trước bản này không chỗ nào trên màn hình trả lời
+   được. Người học sửa một dòng, không chạy lại, rồi đọc tiếp console bên dưới
+   như thể nó là kết quả của bản vừa sửa. Luật so mã: lib/run-freshness.ts.
+
+   Băng chữ dùng BỘ MÀU CẢNH BÁO có sẵn (st-warn-*) chứ không phải màu lỗi:
+   kết quả cũ không phải một lỗi, nó chỉ hết hạn. */
+.staleNotice {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  border: 1px solid var(--st-warn-line);
+  border-radius: 10px;
+  background: var(--st-warn-bg);
+  color: var(--st-warn-text);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Làm mờ vùng kết quả. CỐ Ý không xuống thấp hơn 0,62: đây là lớp nhắc lại
+   bằng thị giác, không phải chỗ chở thông tin (băng chữ ở trên mới là), nên
+   không được mờ tới mức console thành không đọc nổi — người học vẫn phải đối
+   chiếu được output cũ với bản code mới, đó chính là việc họ đang làm.
+
+   `filter: saturate()` đi kèm vì thứ nói dối to nhất ở đây là MÀU: chip "✓ Đạt"
+   xanh của lượt trước nằm ngay dưới một bản code chưa ai chạy. Giảm độ bão hoà
+   lấy đi đúng tín hiệu đó mà vẫn giữ nguyên chữ. */
+.staleResult {
+  opacity: 0.62;
+  filter: saturate(0.45);
+  transition: opacity 0.15s ease, filter 0.15s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .staleResult {
+    transition: none;
+  }
+}

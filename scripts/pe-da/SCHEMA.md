@@ -22,21 +22,49 @@ type ReadBlock =
   | { type: 'terminal'; code: string; expected?: string }
   /** Biểu đồ do chính đoạn code ngay trên vẽ ra. Luôn là PNG cùng miền. */
   | { type: 'figure'; src: string; alt: string }
-  | { type: 'table'; headers: string[]; rows: string[][] };
+  | { type: 'table'; headers: string[]; rows: string[][] }
+  /**
+   * SƠ ĐỒ bằng DOM — chữ là `<p>`/`<code>`, không phải pixel trong ảnh. `lanes`
+   * luôn CHẴN (grid hai cột; một làn lẻ là mất phép so sánh).
+   */
+  | {
+      type: 'diagram';
+      title: string;
+      lanes: { label: string; steps: string[]; note: string }[];
+    };
 
 /** Mỗi phần tử là MỘT màn `read`; khâu build đã chia, renderer không chia lại. */
 read?: ReadBlock[][];
 ```
 
-Số khối thật trong bản dựng 172 bài: `paragraph` 738 · `code` 495 · `figure` 80
-(26 bài) · `terminal` 21 (10 bài) · `table` 1.
+Số khối thật trong bản dựng 172 bài: `paragraph` 738 · `code` 499 · `figure` 80
+(26 bài) · `terminal` 17 (10 bài) · `table` 1 · `diagram` 1 (PY05).
 
-**Năm loại, không phải ba.** Bản đặc tả đầu chỉ khai ba, build phát thêm
+**Sáu loại, không phải ba.** Bản đặc tả đầu chỉ khai ba, build phát thêm
 `terminal` và `figure` sau đó mà không ai sửa lại chỗ này — renderer viết theo
 đặc tả nên 26 bài có hình sẽ ném TypeError ngay màn đọc. Vì vậy `ReadScreen`
 phải phân nhánh bằng `switch (block.type)` có nhánh `default` ép kiểu `never`:
 thêm loại khối mà quên renderer thì typecheck đỏ, chứ không phải trang trắng
 trước mặt người học. `check.py` cũng chặn loại khối lạ.
+
+`diagram` là PHÉP THỬ, hôm nay đúng **một** bài. Ba trên bốn người trả lời khảo
+sát ngày 29/10/2026 chọn *"Chữ và nhãn TRONG sơ đồ quá nhỏ, phải phóng to mới
+đọc được"* — chữ đó nằm trong PNG 780×455, và chữ của TRANG reflow còn chữ
+trong ẢNH thì scale (trên màn 360px ảnh bị bóp 0,46× nên nhãn 10pt hiện ra
+4–5px). SVG chỉ chữa một nửa: ở cỡ hiển thị mặc định nó có đúng cỡ chữ như PNG.
+Nên sơ đồ là DOM, kế thừa `--edu-font` và cỡ chữ của trang.
+
+Dữ liệu sơ đồ nằm ở `SO_DO_DOC` trong `build.py`, **không** phải trường mới của
+`source/course.json`: đây là phép thử trước khi bỏ công cho cả bộ, và gói nguồn
+còn được giao lại nhiều lần nữa. Ngày bộ này lớn hơn chục bài thì chuyển nó
+sang gói nguồn. `kiem_so_do()` trong check.py canh việc sơ đồ còn nối với bài:
+bước ĐẦU của mỗi làn phải là biểu thức có thật trong code bài, bước CUỐI phải
+có thật trong `expected`.
+
+**HÌNH TĨNH, không animation** — kết luận có bằng chứng: toàn bộ giá trị nằm ở
+việc SO HAI LÀN cạnh nhau, mà so sánh cần cả hai cùng có mặt. Animation chạy
+lần lượt phá đúng cái nó định dạy (Tversky 2002: *"clever schematization of
+static diagrams may be just as effective as animation"*).
 
 `figure.src` **chỉ nhận `.png`**. Mười "hình" của VZ20–VZ22 và VZ26 là file
 `.html` do Plotly xuất ra, mỗi file nhúng sẵn cả plotly.js (4,7 MB/hình, 46 MB

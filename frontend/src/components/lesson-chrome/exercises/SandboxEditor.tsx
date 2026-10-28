@@ -6,6 +6,8 @@
 // Sandbox.tsx giữ nguyên cho trang xem trước; bài học thật dùng file này.
 import { useId, useState } from 'react';
 
+import { NHAN_KET_QUA_CU } from '@/lib/run-freshness';
+
 import styles from './exercises.module.css';
 import Console, { ConsoleLine } from './Console';
 
@@ -38,6 +40,14 @@ export interface SandboxEditorProps {
    */
   figures?: string[];
   tests: SandboxTestRow[];
+  /**
+   * Kết quả đang hiện là của BẢN CODE TRƯỚC: người học đã sửa ô soạn mã mà
+   * chưa bấm Chạy lại. Ô kết quả tự làm mờ và nói thẳng điều đó ra.
+   *
+   * Phép so nằm ở `ketQuaLaCu` trong lib/run-freshness.ts, không ở đây: màn
+   * này không biết lần chạy gần nhất đã gửi mã gì, và cũng không nên biết.
+   */
+  stale?: boolean;
   disabled?: boolean;
   /** Chữ mờ khi ô còn trống — bài không có code khởi tạo thì nói rõ ô này dùng làm gì. */
   placeholder?: string;
@@ -73,6 +83,7 @@ export default function SandboxEditor({
   consoleMeta,
   figures,
   tests,
+  stale,
   disabled,
   placeholder,
   noTestsHint = 'Bài này không có ca kiểm thử tự động',
@@ -182,100 +193,120 @@ export default function SandboxEditor({
         </span>
       </div>
 
-      <Console
-        title="KẾT QUẢ CHẠY"
-        meta={consoleMeta}
-        running={running}
-        lines={consoleLines}
-        // Dùng `filename` chứ không ghi cứng "solution.py": màn Thử thách độc
-        // lập truyền filename="main.py", nên ô này từng ghi `main.py` ở đầu rồi
-        // hứa chạy `solution.py` ở ngay dưới — hai tên cho một file.
-        placeholder={`Bấm "Chạy thử" để thực thi ${filename} ngay trong trình duyệt.`}
-      />
+      {/* XUẤT XỨ của ô kết quả, và nó là trạng thái CHỨ KHÔNG phải một sơ đồ.
+          Bài PY01 hỏi thẳng: "Nếu không bấm chạy lại, output đang nhìn thuộc
+          bản code nào?" — trước bản này màn hình không có chỗ nào trả lời, nên
+          người học sửa một dòng rồi đọc tiếp console bên dưới như thể nó là kết
+          quả của bản vừa sửa. Console vẫn nguyên màu, bảng ca kiểm thử vẫn ✓
+          xanh, dòng "123 ms" vẫn đứng đó.
 
-      {!!figures?.length && (
-        // Hình do CHÍNH chương trình vừa chạy dựng ra, không phải ảnh soạn sẵn
-        // của bài. Đặt ngay dưới console vì nó là một phần của "kết quả chạy".
-        //
-        // `data:` URI thì CSP cho qua: `img-src 'self' data: blob: https:`
-        // trong frontend/next.config.ts.
-        <div style={{ marginTop: 12 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t3)', marginBottom: 8, letterSpacing: '.04em' }}>
-            {figures.length > 1 ? `${figures.length} HÌNH VỪA VẼ` : 'HÌNH VỪA VẼ'}
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-            {figures.map((png, i) => (
-              // `next/image` không làm gì được ở đây: nguồn là `data:` URI vừa
-              // sinh trong trình duyệt, không phải file để tối ưu hay CDN để
-              // cache. Dùng <Image> là thêm một lớp bọc rồi vẫn phải
-              // `unoptimized`. Chỉ thị phải nằm NGAY TRÊN thẻ — để nó trên khối
-              // chú thích này thì nó trỏ vào một dòng comment, thành "unused
-              // directive" mà cảnh báo cũ vẫn còn.
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                key={i}
-                src={`data:image/png;base64,${png}`}
-                // Người dùng trình đọc màn hình không thấy được biểu đồ; nói ra
-                // thứ duy nhất chắc chắn đúng là nó là hình thứ mấy của lần
-                // chạy nào. Nội dung biểu đồ thì console và `notes` đã tả.
-                alt={figures.length > 1 ? `Hình ${i + 1} do chương trình vừa vẽ` : 'Hình do chương trình vừa vẽ'}
-                style={{
-                  maxWidth: '100%',
-                  // Nền trắng CỐ ĐỊNH: matplotlib xuất PNG nền trong suốt ở một
-                  // số style, và trên giao diện tối thì trục với chữ đen biến
-                  // mất hẳn.
-                  background: '#fff',
-                  borderRadius: 8,
-                  border: '1px solid var(--edu-line, rgba(0,0,0,.12))',
-                }}
-              />
-            ))}
-          </div>
-        </div>
+          Băng chữ này ở ĐỘ TƯƠNG PHẢN ĐẦY ĐỦ và mang `role="status"` — nó mới
+          là thứ chở thông tin. Phần làm mờ bên dưới chỉ là lớp nhắc lại bằng
+          thị giác, nên nó được phép nhạt; nếu làm ngược (chỉ mờ, không chữ) thì
+          với người dùng trình đọc màn hình không có gì xảy ra cả. */}
+      {stale && (
+        <p className={styles.staleNotice} role="status">
+          <span aria-hidden="true">⟳ </span>
+          {NHAN_KET_QUA_CU}
+        </p>
       )}
 
-      {tests.length > 0 && (
-        <div style={{ marginTop: 16, background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-t1)', marginBottom: 10 }}>
-            Kiểm thử &nbsp;
-            <span style={{ color: 'var(--edu-t3)', fontWeight: 500 }}>
-              {passed}/{tests.length} đạt
-            </span>
-          </div>
-          {/* Danh sách thật (ul/li): trình đọc màn hình đọc được "3 mục" thay vì
-              một chuỗi div không rõ đâu là hết. */}
-          <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'none', margin: 0, padding: 0 }}>
-            {tests.map((t, i) => {
-              const style = STATUS_STYLE[t.status];
-              return (
-                <li
+      <div className={stale ? styles.staleResult : undefined}>
+        <Console
+          title="KẾT QUẢ CHẠY"
+          meta={consoleMeta}
+          running={running}
+          lines={consoleLines}
+          // Dùng `filename` chứ không ghi cứng "solution.py": màn Thử thách độc
+          // lập truyền filename="main.py", nên ô này từng ghi `main.py` ở đầu rồi
+          // hứa chạy `solution.py` ở ngay dưới — hai tên cho một file.
+          placeholder={`Bấm "Chạy thử" để thực thi ${filename} ngay trong trình duyệt.`}
+        />
+
+        {!!figures?.length && (
+          // Hình do CHÍNH chương trình vừa chạy dựng ra, không phải ảnh soạn sẵn
+          // của bài. Đặt ngay dưới console vì nó là một phần của "kết quả chạy".
+          //
+          // `data:` URI thì CSP cho qua: `img-src 'self' data: blob: https:`
+          // trong frontend/next.config.ts.
+          <div style={{ marginTop: 12 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--edu-t3)', marginBottom: 8, letterSpacing: '.04em' }}>
+              {figures.length > 1 ? `${figures.length} HÌNH VỪA VẼ` : 'HÌNH VỪA VẼ'}
+            </div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+              {figures.map((png, i) => (
+                // `next/image` không làm gì được ở đây: nguồn là `data:` URI vừa
+                // sinh trong trình duyệt, không phải file để tối ưu hay CDN để
+                // cache. Dùng <Image> là thêm một lớp bọc rồi vẫn phải
+                // `unoptimized`. Chỉ thị phải nằm NGAY TRÊN thẻ — để nó trên khối
+                // chú thích này thì nó trỏ vào một dòng comment, thành "unused
+                // directive" mà cảnh báo cũ vẫn còn.
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
                   key={i}
+                  src={`data:image/png;base64,${png}`}
+                  // Người dùng trình đọc màn hình không thấy được biểu đồ; nói ra
+                  // thứ duy nhất chắc chắn đúng là nó là hình thứ mấy của lần
+                  // chạy nào. Nội dung biểu đồ thì console và `notes` đã tả.
+                  alt={figures.length > 1 ? `Hình ${i + 1} do chương trình vừa vẽ` : 'Hình do chương trình vừa vẽ'}
                   style={{
-                    background: 'var(--edu-panel-bg-solid)',
-                    border: '1px solid var(--edu-sidebar-border)',
+                    maxWidth: '100%',
+                    // Nền trắng CỐ ĐỊNH: matplotlib xuất PNG nền trong suốt ở một
+                    // số style, và trên giao diện tối thì trục với chữ đen biến
+                    // mất hẳn.
+                    background: '#fff',
                     borderRadius: 8,
-                    padding: '8px 12px',
-                    fontSize: 13,
+                    border: '1px solid var(--edu-line, rgba(0,0,0,.12))',
                   }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
-                    <span style={{ color: 'var(--edu-t1)' }}>{t.label}</span>
-                    <span
-                      className={styles.chip}
-                      style={{ background: style.bg, color: style.text, border: 0, cursor: 'default', flexShrink: 0 }}
-                    >
-                      {style.label}
-                    </span>
-                  </div>
-                  {t.detail && t.status !== 'pending' && (
-                    <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 4 }}>{t.detail}</div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {tests.length > 0 && (
+          <div style={{ marginTop: 16, background: 'var(--edu-card-bg)', borderRadius: 12, padding: 14 }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--edu-t1)', marginBottom: 10 }}>
+              Kiểm thử &nbsp;
+              <span style={{ color: 'var(--edu-t3)', fontWeight: 500 }}>
+                {passed}/{tests.length} đạt
+              </span>
+            </div>
+            {/* Danh sách thật (ul/li): trình đọc màn hình đọc được "3 mục" thay vì
+                một chuỗi div không rõ đâu là hết. */}
+            <ul style={{ display: 'flex', flexDirection: 'column', gap: 8, listStyle: 'none', margin: 0, padding: 0 }}>
+              {tests.map((t, i) => {
+                const style = STATUS_STYLE[t.status];
+                return (
+                  <li
+                    key={i}
+                    style={{
+                      background: 'var(--edu-panel-bg-solid)',
+                      border: '1px solid var(--edu-sidebar-border)',
+                      borderRadius: 8,
+                      padding: '8px 12px',
+                      fontSize: 13,
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                      <span style={{ color: 'var(--edu-t1)' }}>{t.label}</span>
+                      <span
+                        className={styles.chip}
+                        style={{ background: style.bg, color: style.text, border: 0, cursor: 'default', flexShrink: 0 }}
+                      >
+                        {style.label}
+                      </span>
+                    </div>
+                    {t.detail && t.status !== 'pending' && (
+                      <div style={{ fontSize: 12, color: 'var(--edu-t3)', marginTop: 4 }}>{t.detail}</div>
+                    )}
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

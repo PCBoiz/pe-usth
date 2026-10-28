@@ -869,7 +869,21 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   // mã không chạy được. Bản văn mới viết lại thành Python chạy thật (tạo file
   // trong thư mục tạm rồi import), nên chúng thành `code`. Bằng chứng:
   // `check-pyodide.mjs` đi từ 406 lên 408 đoạn mà vẫn 0 hỏng.
-  assert.deepEqual(count, { paragraph: 738, code: 499, terminal: 17, figure: 80, table: 1 });
+  // 29/10/2026: thêm `diagram: 1` — khối SƠ ĐỒ BẰNG DOM, hôm nay đúng một bài
+  // (PY05). Nó là PHÉP THỬ trước khi bỏ công cho cả bộ; dữ liệu nằm ở
+  // `SO_DO_DOC` trong build.py, không phải trường mới của course.json.
+  // 29/10/2026 (đợt sau): paragraph 738 → 764. Đây là ĐỔI NỘI DUNG, không đổi
+  // hình dạng — gói nguồn được viết lại cùng ngày và tách thêm đoạn văn; số
+  // khối code/terminal/figure/table không nhúc nhích. Đo lại bằng cách dựng
+  // rồi đếm, đừng đoán.
+  assert.deepEqual(count, {
+    paragraph: 764,
+    code: 499,
+    terminal: 17,
+    figure: 80,
+    table: 1,
+    diagram: 1,
+  });
   // Câu luyện tập là câu MỞ kèm lời giải mẫu — không có phương án sai nào để
   // so, nên không chấm được. Đây là lý do isGraded('practice') phải là false.
   for (const d of vz01.step_2.practice) {
@@ -880,12 +894,13 @@ test('fixture bài đọc: bản dựng pe-da đúng hình dạng ReadBlock/Prac
   }
 });
 
-test('bài đọc: renderer biết dựng ĐỦ 5 loại khối build phát ra', () => {
+test('bài đọc: renderer biết dựng ĐỦ 6 loại khối build phát ra', () => {
   // Nhánh `default: const unhandled: never = block` trong ReadScreen chỉ bắt
   // được lúc typecheck, mà DỮ LIỆU đổi không cần biên dịch lại — nên phải đối
   // chiếu "loại khối build phát ra" với "loại khối renderer khai".
   assert.deepEqual([...READ_BLOCK_TYPES].sort(), [
     'code',
+    'diagram',
     'figure',
     'paragraph',
     'table',

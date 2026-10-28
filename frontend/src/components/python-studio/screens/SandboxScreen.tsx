@@ -23,6 +23,7 @@ type Props = Pick<
   | 'draft'
   | 'update'
   | 'result'
+  | 'resultStale'
   | 'running'
   | 'runtimeStatus'
   | 'onRun'
@@ -66,6 +67,7 @@ export default function SandboxScreen({
   draft,
   update,
   result,
+  resultStale,
   running,
   runtimeStatus,
   onRun,
@@ -242,6 +244,11 @@ export default function SandboxScreen({
           }
           consoleLines={consoleLines(result, draft.code)}
           consoleMeta={result ? `${result.duration} ms` : runtimeStatus}
+          // Người học sửa code mà chưa bấm Chạy: ô kết quả bên dưới vẫn là của
+          // bản TRƯỚC. Xem lib/run-freshness.ts — bài PY01 hỏi thẳng câu này
+          // ("output đang nhìn thuộc bản code nào?") và trước bản này màn hình
+          // không trả lời được.
+          stale={resultStale}
           figures={result?.figures}
           tests={testRows(lesson, result)}
           noTestsHint={

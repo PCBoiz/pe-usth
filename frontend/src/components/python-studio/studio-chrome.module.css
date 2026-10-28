@@ -856,6 +856,116 @@
   font-weight: 600;
 }
 
+/* ── SƠ ĐỒ bằng DOM (khối `diagram` của màn đọc) ────────────────────────────
+   VÌ SAO không phải ảnh: ba trên bốn người trả lời khảo sát 29/10/2026 chọn
+   "Chữ và nhãn TRONG sơ đồ quá nhỏ, phải phóng to mới đọc được". Chữ đó nằm
+   trong PNG 780×455 — chữ của trang REFLOW, chữ trong ảnh thì SCALE, nên trên
+   màn 360px ảnh bị bóp 0,46× và nhãn 10pt hiện ra 4–5px. CSS không với tới
+   pixel trong ảnh; cách duy nhất là để chữ là chữ.
+
+   Không khai `font-family`: mục đích của khối này là KẾ THỪA --edu-font và cỡ
+   chữ của trang. Ghi font ở đây là dựng lại đúng cái tường mà nó ra đời để phá
+   (và sẽ lệch với Montserrat ở lần đổi font sau). */
+.readDiagram {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-radius: 14px;
+  background: var(--edu-card-bg);
+}
+
+.readDiagramTitle {
+  margin: 0 0 12px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--edu-t3);
+}
+
+/* HAI CỘT SÁT NHAU, và đó là toàn bộ giá trị của khối: so sánh cần cả hai cùng
+   có mặt (vì vậy cũng KHÔNG animation — xem ReadBlock).
+
+   `auto-fit` + minmax: hai cột khi còn chỗ, một cột khi khung hẹp hơn ~2×245px.
+   KHÔNG dùng `repeat(2, 1fr)` cố định: trên màn 360px hai làn 165px thì biểu
+   thức tự xuống dòng giữa toán tử, tức chữ vẫn đọc được nhưng SƠ ĐỒ thì hết là
+   sơ đồ.
+
+   245px là SỐ ĐO, không phải số chọn: đo trong Chrome trên chính sơ đồ PY05,
+   dãy dài nhất (`3 * (15 - 5) → 3 * 10 → 30`) rộng 212px, cộng padding và viền
+   của làn là 241px. Thấp hơn mức đó thì hai cột vẫn dựng được nhưng mỗi dãy tự
+   gãy làm hai dòng — mà dãy gãy dòng thì phép so hai cột mất đúng cái nhịp nó
+   bán. Đổi nội dung sơ đồ thì ĐO LẠI. */
+.readDiagramGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
+  /* TRẦN HAI CỘT, và nó là một phép tính chứ không phải thẩm mỹ: `auto-fit`
+     nhồi được bao nhiêu cột thì nhồi, nên ở cột rộng của màn đọc desktop cả
+     BỐN làn sẽ nằm trên MỘT hàng — lúc đó "hai làn cạnh nhau" không còn là
+     một cặp và phép so sánh tan ra. 620px lọt đúng giữa hai mốc: hai cột cần
+     2×245 + 10 = 500px (vừa), ba cột cần 3×245 + 20 = 755px (không vừa). */
+  max-width: 620px;
+  gap: 10px;
+}
+
+.readDiagramLane {
+  padding: 12px;
+  border: 1px solid var(--edu-sidebar-border);
+  border-left: 3px solid var(--edu-accent);
+  border-radius: 10px;
+  background: var(--edu-panel-bg-solid);
+}
+
+.readDiagramLabel {
+  margin: 0 0 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--edu-t1);
+}
+
+/* Dãy bước. `list-style: none` chỉ bỏ dấu đầu dòng — vai trò <ol> vẫn còn, nên
+   trình đọc màn hình vẫn đọc "mục 1 trên 3" và không cần thêm chữ nào để biết
+   đây là một chuỗi. */
+.readDiagramSteps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  padding: 0;
+  list-style: none;
+}
+
+.readDiagramSteps code {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* 14px, không 13: đây là thứ người học phải đọc được từ xa trong một sơ đồ,
+     không phải code nội tuyến giữa câu. */
+  font-size: 14px;
+  color: var(--edu-t1);
+}
+
+/* Mũi tên là TRANG TRÍ: nó do CSS vẽ nên không nằm trong DOM, và thứ tự thì
+   <ol> đã nói. */
+.readDiagramSteps li + li::before {
+  content: '→';
+  margin-right: 6px;
+  color: var(--edu-t3);
+}
+
+/* Bước CUỐI là kết quả: đậm lên để mắt bắt được ngay "40 so với 30" — đó là
+   câu trả lời của cả sơ đồ. */
+.readDiagramSteps li:last-child code {
+  font-weight: 700;
+  color: var(--edu-accent-text);
+}
+
+.readDiagramNote {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--edu-t2);
+}
+
 /* Nguồn slide của giảng viên, in cuối màn đọc cuối cùng. */
 .readSource {
   margin: 0;
