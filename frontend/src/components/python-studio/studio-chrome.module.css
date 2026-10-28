@@ -760,16 +760,8 @@
 /* `code nội tuyến` trong văn bản (paragraphs() ở screens/chrome.tsx). Nền nhạt
    + chữ monospace, KHÔNG dùng nền tối của .codeCard: nó nằm giữa dòng chữ nên
    một ô đen chen vào giữa câu làm mắt nhảy. */
-.inlineCode {
-  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.92em;
-  padding: 1px 5px;
-  border-radius: 5px;
-  background: var(--edu-card-bg);
-  border: 1px solid var(--edu-sidebar-border);
-  color: var(--edu-t1);
-  overflow-wrap: anywhere;
-}
+/* .inlineCode nay ở src/lib/inline-code.module.css — dùng chung với ô tổng
+   kết. Xem lý do ở đầu src/lib/inline-code.tsx. */
 
 /* ── Bài ĐỌC (step_1.read, khoá 172 bài — xem scripts/pe-da/SCHEMA.md) ──────
    Dùng lại ngôn ngữ thị giác của .theory: thẻ nền panel, viền sidebar, bo 14px.

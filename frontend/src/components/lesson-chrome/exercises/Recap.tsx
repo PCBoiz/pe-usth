@@ -1,5 +1,7 @@
 // Dịch từ màn Stitch "3. RECAP — Tổng kết bài học & Nhận XP". Cũng là màn
 // toàn thẻ, đứng độc lập như Checkpoint.
+import { withInlineCode } from '@/lib/inline-code';
+
 export interface RecapStat {
   icon: string;
   value: string;
@@ -76,7 +78,12 @@ export default function Recap({ xpLabel, title, description, stats, facts, onFin
               }}
             >
               <span aria-hidden="true" style={{ color: 'var(--st-ok-text)' }}>✓</span>
-              {f}
+              {/* withInlineCode, KHÔNG phải {f} trần: các ý chính ở đây lấy
+                  từ đoạn văn của màn đọc, mà giáo trình 172 bài dùng backtick
+                  dày đặc. Dựng trần thì học viên đọc ra cả dấu backtick —
+                  ảnh người thử gửi ngày 27/10 chụp đúng dòng
+                  `.venv\Scripts\python -m pip install numpy`. */}
+              {withInlineCode(f)}
             </li>
           ))}
         </ul>

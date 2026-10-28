@@ -4,11 +4,11 @@
 // Vì sao tách khỏi StudioLesson.tsx: mỗi màn trước đây là một nhánh `if` trong
 // một hàm render dài ~900 dòng, dùng chung closure `shell()` nên không màn nào
 // đọc hiểu hay sửa riêng được. Giờ mỗi màn là một component nhận props.
+import { withInlineCode } from '@/lib/inline-code';
 import FeedbackBanner from '@/components/lesson-chrome/exercises/FeedbackBanner';
 import ShellB from '@/components/lesson-chrome/ShellB';
 import type { LessonScreen, PlayGame, StudioLesson as Lesson } from '@/lib/studio-lesson';
 
-import c from '../studio-chrome.module.css';
 import type { RunResult } from '../runner/types';
 import type { SandboxTestRow } from '@/components/lesson-chrome/exercises/SandboxEditor';
 import type { ConsoleLine } from '@/components/lesson-chrome/exercises/Console';
@@ -48,38 +48,6 @@ export const ICON = {
     </svg>
   ),
 };
-
-/**
- * `code nội tuyến` trong dấu backtick → <code>.
- *
- * Trước đây paragraphs() trả nguyên chuỗi, nên nguồn Markdown hiện ra kèm cả
- * dấu backtick: học viên đọc `print` thành ‹backtick›print‹backtick›. Khoá
- * 172 bài đọc (scripts/pe-da) dùng backtick dày đặc — tên hàm, toán tử `=`,
- * đuôi file `.py` — nên phải bóc ở đây, không phải để từng màn tự xử lý.
- *
- * Chỉ nhận cặp backtick trên CÙNG một dòng: backtick lẻ trong văn bản thường
- * (hiếm, nhưng có) thì để nguyên chứ không nuốt cả đoạn sau nó.
- */
-const INLINE_CODE = /`([^`\n]+)`/g;
-
-function withInlineCode(text: string): React.ReactNode {
-  if (!text.includes('`')) return text;
-  const out: React.ReactNode[] = [];
-  let last = 0;
-  let key = 0;
-  for (const match of text.matchAll(INLINE_CODE)) {
-    const at = match.index ?? 0;
-    if (at > last) out.push(text.slice(last, at));
-    out.push(
-      <code key={key++} className={c.inlineCode}>
-        {match[1]}
-      </code>,
-    );
-    last = at + match[0].length;
-  }
-  if (last < text.length) out.push(text.slice(last));
-  return out;
-}
 
 /** Đoạn văn cách nhau bằng dòng trống → từng khối riêng (mô tả nằm trong <p>). */
 export function paragraphs(text?: string): React.ReactNode {

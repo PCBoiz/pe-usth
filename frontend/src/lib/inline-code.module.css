@@ -1,0 +1,14 @@
+/* Kiểu của `code nội tuyến`. Chuyển từ studio-chrome.module.css sang đây ngày
+   29/10/2026 vì nay có HAI nơi dựng nó (màn bài học và ô tổng kết), và chúng
+   nằm ở hai nhánh component khác nhau — ô tổng kết dùng chung cho mọi loại
+   bài, nó không được import ngược vào thư mục python-studio. */
+.inlineCode {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  padding: 1px 5px;
+  border-radius: 5px;
+  background: var(--edu-card-bg);
+  border: 1px solid var(--edu-sidebar-border);
+  color: var(--edu-t1);
+  overflow-wrap: anywhere;
+}
